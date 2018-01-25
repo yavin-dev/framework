@@ -1,7 +1,7 @@
 /**
-  * Copyright 2017, Yahoo Holdings Inc.
-  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
-  */
+ * Copyright 2017, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
 /* eslint-env node */
 const path  = require('path');
 const merge = require('merge');
@@ -21,11 +21,11 @@ function loadEnvironmentSettings(hostname, configFile) {
 }
 
 /**
-  * Default function that returns the current user of the app.
-  * Here it is hardcoded. Override by making your own function to grab the authenticated user.
-  * Used in use-config-middleware.js
-  * @returns {string} current user
-  */
+ * Default function that returns the current user of the app.
+ * Here it is hardcoded. Override by making your own function to grab the authenticated user.
+ * Used in use-config-middleware.js
+ * @returns {string} current user
+ */
 function getUser() {
   return 'navi-user';
 }

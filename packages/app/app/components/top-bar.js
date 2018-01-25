@@ -11,13 +11,13 @@ const { computed } = Ember;
 export default Ember.Component.extend({
 
   /**
-    * @property {Array} classNames
-    */
+   * @property {Array} classNames
+   */
   classNames: ['top-bar'],
 
   /**
-    * @property {String} loggedInUser - logged in User's id
-    */
+   * @property {String} loggedInUser - logged in User's id
+   */
   loggedInUser: computed(function() {
     return config.navi.user;
   })

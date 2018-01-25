@@ -10,13 +10,13 @@ import dimModels from './fixtures/metadata-dimensions';
 import metricModels from './fixtures/metadata-metrics';
 
 /**
-  * Method to configure metadata endpoints
-  */
+ * Method to configure metadata endpoints
+ */
 export default function() {
 
   /**
-    * /tables endpoint
-    */
+   * /tables endpoint
+   */
   this.get('/tables', (db, req) => {
     let tables = tableModels;
 

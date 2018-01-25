@@ -11,8 +11,10 @@ export function initialize() {
   // Navi specific configuration
   Object.assign(config.navi, {
     user: config.appSettings.user,
-    //TODO: set epoch date
-    //dataEpoch: NAVI_APP.appSettings.dataEpoch,
+    /*
+     *TODO: set epoch date
+     *dataEpoch: NAVI_APP.appSettings.dataEpoch,
+     */
     dataSources: [
       { name: 'facts', uri: config.appSettings.factApiHost}
     ],

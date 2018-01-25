@@ -8,20 +8,20 @@ const { get } = Ember;
 
 export default Ember.Route.extend({
   /**
-    * @property {Ember.Service}
-    */
+   * @property {Ember.Service}
+   */
   bardMetadata: Ember.inject.service(),
 
   /**
-    * @property {Ember.Service}
-    */
+   * @property {Ember.Service}
+   */
   user: Ember.inject.service(),
 
   /**
-    * @method model
-    * @override
-    * @returns {Ember.RSVP.Promise}
-    */
+   * @method model
+   * @override
+   * @returns {Ember.RSVP.Promise}
+   */
   model() {
     return Ember.RSVP.hash({
       user: get(this, 'user').findOrRegister(),
