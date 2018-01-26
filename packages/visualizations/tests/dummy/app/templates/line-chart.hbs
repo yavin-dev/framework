@@ -1,0 +1,58 @@
+{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+
+<h3>By Metric</h3>
+<div class='chart-container'>
+  {{visualization-config/wrapper
+    request=request
+    response=response
+    visualization=metricVisualization
+    onUpdateConfig=(action (mut metricOptions))
+  }}
+  {{navi-visualizations/line-chart
+    model=model
+    options=metricOptions
+  }}
+</div>
+
+<h3>By Year</h3>
+{{navi-visualizations/line-chart
+  model=model
+  options=timeOptions
+}}
+
+<h3>Hours by Day</h3>
+{{navi-visualizations/line-chart
+  model=hourGrainModel
+  options=hourByDayTimeOptions
+}}
+
+<h3>Minutes by Hour</h3>
+{{navi-visualizations/line-chart
+  model=minuteGrainModel
+  options=minuteByHourTimeOptions
+}}
+
+<h3>Seconds by Minute</h3>
+{{navi-visualizations/line-chart
+  model=secondGrainModel
+  options=secondByMinuteTimeOptions
+}}
+
+<h3>By Dimension</h3>
+<div class='chart-container'>
+  {{visualization-config/wrapper
+    request=request
+    response=dimensionModel
+    visualization=dimVisualization
+    onUpdateConfig=(action 'onUpdateConfig')
+  }}
+  {{navi-visualizations/line-chart
+    model=dimensionModel
+    options=dimensionOptions
+  }}
+</div>
+<h3>Highlight Anomalies</h3>
+{{navi-visualizations/line-chart
+  model=anomalousDataModel
+  options=amomalousOptions
+}}

@@ -1,0 +1,70 @@
+{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<div class='table-widget__row-info'>
+  <span class='table-widget__row-info--number'>{{format-number rowsInResponse fallback='0'}}</span> out of
+  <span class='table-widget__row-info--number'>{{format-number totalRows fallback='0'}}</span> rows
+</div>
+<div class="table-widget__horizontal-scroll-container">
+  <div class= 'table-widget-container'>
+      {{#sortable-group class='table-header-row' direction='x' onChange='updateColumnOrder' as | group |}}
+        {{#each columns as |column|}}
+
+          {{#sortable-item
+            class='table-header-cell'
+            classNameBindings='column.type column.field'
+            model=(readonly column)
+            group=group
+            click=(action 'headerClicked' column)
+          }}
+              <span class='table-header-cell__title' title='Drag column header to reorder'>{{column.displayName}}</span>
+
+              {{#if column.sortDirection}}
+                {{navi-table-sort-icon
+                  class='table-header-cell__icon'
+                  direction=(readonly column.sortDirection)
+                }}
+              {{else}}
+                {{tooltip-on-element
+                  text='Column cannot be sorted.'
+                  showOn="click"
+                  hideOn="mousedown mouseleave"
+                  duration=2000
+                }}
+              {{/if}}
+          {{/sortable-item}}
+
+        {{/each}}
+      {{/sortable-group}}
+
+    <div class='table-body'>
+      <div class='scroll-container'>
+        {{#ember-collection
+            buffer=10
+            cell-layout=(mixed-height-layout rowDimensions)
+            items=tableData
+            as |row idx|
+        }}
+          <div class='table-row {{if row.__meta__.isTotalRow 'table-row__total-row'}} {{if (eq idx (sub tableData.length 1)) 'table-row__last-row'}}'>
+            {{#each columns as |column|}}
+              <div class="table-cell">
+                {{#if (and (eq column.type 'dateTime') row.__meta__.isTotalRow)}}
+                  {{component
+                    (concat cellRendererPrefix 'total')
+                      data=row
+                      column=column
+                  }}
+                {{else}}
+                  {{table-cell-renderer
+                      data=row
+                      column=column
+                      request=request
+                  }}
+                {{/if}}
+              </div>
+            {{/each}}
+          </div>
+        {{/ember-collection}}
+      </div>
+
+    </div>
+  </div>
+</div>
