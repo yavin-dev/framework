@@ -1,0 +1,142 @@
+{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<div class='navi-report-widget'>
+    {{!-- Breadcrumb --}}
+    <div class='navi-report-widget__breadcrumb'>
+        {{#link-to 'dashboards' class='navi-report-widget__breadcrumb-link'}}Dashboards{{/link-to}}
+        {{navi-icon 'angle-right'}}
+        {{#with (model-for 'dashboards.dashboard') as |parentDashboard|}}
+          {{#link-to 'dashboards.dashboard' parentDashboard.id class='navi-report-widget__breadcrumb-link'}}
+            {{parentDashboard.title}}
+          {{/link-to}}
+        {{/with}}
+        {{navi-icon 'angle-right'}}
+    </div>
+
+    {{!-- Header --}}
+    <header class='navi-report-widget__header'>
+        <span class='navi-report-widget__title'>
+          {{#if model.dashboard.canUserEdit}}
+            {{editable-label
+               classNames='navi-report-widget__edit-title'
+               value=model.title
+               onChange=(route-action 'updateTitle')
+            }}
+          {{else}}
+            <span>{{model.title}}</span>
+          {{/if}}
+        </span>
+        {{#if (eq mode 'view')}}
+          <ul class='navi-report-widget__actions'>
+            <li class='navi-report-widget__action'>
+              {{!-- Get API action is only enabled when request is valid --}}
+              {{#common-actions/get-api
+                request=model.request
+                classNameBindings='model.request.validations.isTruelyValid::navi-report-widget__action--is-disabled'
+                disabled=(not model.request.validations.isTruelyValid)
+              }}
+                {{navi-icon 'code' class='navi-report-widget__icon'}}
+                Copy API Query
+                {{#tooltip-on-component}}
+                    Copy API Query
+                {{/tooltip-on-component}}
+              {{/common-actions/get-api}}
+            </li>
+            <li class='navi-report-widget__action'>
+              {{!-- Export action is only enabled when request is valid --}}
+              {{#report-actions/export
+                report=model
+                classNames='navi-report-widget__action-link'
+                disabled=(not model.request.validations.isTruelyValid)
+                classNameBindings='model.request.validations.isTruelyValid::navi-report-widget__action-link--is-disabled'
+              }}
+                {{navi-icon 'download' class='navi-report-widget__icon'}}
+                Export
+                {{#tooltip-on-component}}
+                    Export
+                {{/tooltip-on-component}}
+              {{/report-actions/export}}
+            </li>
+            <li class='navi-report-widget__action'>
+              {{#link-to 'dashboards.dashboard.widgets.widget.clone-to-report' classNames='navi-report-widget__action-link'}}
+                {{navi-icon 'copy' class='navi-report-widget__icon'}}
+                Clone As Report
+              {{/link-to}}
+            </li>
+            {{#if (not model.isNew)}}
+              {{!-- Share only enabled on a Valid widget --}}
+              <li class='navi-report-widget__action'>
+                {{#common-actions/share
+                  pageTitle=model.title
+                  disabled=(not model.request.validations.isTruelyValid)
+                }}
+                  {{navi-icon 'share' class='navi-report-widget__icon'}}
+                  Share
+                  {{#tooltip-on-component}}
+                      Share
+                  {{/tooltip-on-component}}
+                {{/common-actions/share}}
+              </li>
+            {{/if}}
+            {{#if model.dashboard.isUserOwner}}
+              <li class='navi-report-widget__action'>
+                {{#common-actions/delete
+                  model=model
+                  deleteAction=(route-action 'deleteWidget')
+                }}
+                  {{navi-icon 'trash-o' class='navi-report-widget__icon'}}
+                  Delete
+                {{/common-actions/delete}}
+              </li>
+            {{/if}}
+          </ul>
+        {{/if}}
+    </header>
+
+    {{!-- Body --}}
+    <div class='navi-report-widget__body'>
+      {{#report-builder
+          report=model
+      }}
+          {{outlet}}
+      {{/report-builder}}
+    </div>
+
+    {{!-- Footer --}}
+    <footer class='navi-report-widget__footer'>
+      <button
+        class='btn btn-primary btn-shadow navi-report-widget__run-btn'
+        onclick={{pipe
+          (route-action 'validate' model)
+          (route-action 'runReport' model)
+        }}
+      >
+        Run
+      </button>
+      {{#if (eq mode 'view')}}
+        {{#if (and model.dashboard.canUserEdit model.hasDirtyAttributes)}}
+          <button
+            class='btn btn-secondary btn-shadow navi-report-widget__save-btn'
+            onclick={{pipe
+              (route-action 'validate' model)
+              (route-action 'runReport' model)
+              (route-action 'saveWidget' model)
+            }}
+          >
+            {{#if model.isNew}}
+              Save Widget
+            {{else}}
+              Save Changes
+            {{/if}}
+          </button>
+        {{/if}}
+        {{#if (and model.hasDirtyAttributes (not model.isNew))}}
+          <button
+            class='btn btn-secondary btn-shadow navi-report-widget__revert-btn'
+            onclick={{route-action 'revertChanges' model}}
+          >
+            Revert Changes
+          </button>
+        {{/if}}
+      {{/if}}
+    </footer>
+</div>

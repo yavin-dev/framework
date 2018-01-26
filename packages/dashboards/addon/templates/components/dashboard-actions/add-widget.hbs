@@ -1,0 +1,36 @@
+{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{yield}}
+{{#navi-modal
+    isShown=showModal
+}}
+  <div class='add-widget-modal'>
+    <div class='navi-modal-header'>
+        <h1 class='primary-header'>Add Widget</h1>
+        <h5 class='secondary-header'>
+          <p>To add a widget, choose a report or create a new one using the dropdown below.</p>
+          <p>Then click on <em>{{navi-icon 'th-large' class='navi-icon__add-to-dash'}} Add To Dashboard</em> on the report results view.</p>
+        </h5>
+    </div>
+    {{#power-select
+      options=reportsWithCreate
+      selected=selectedReport
+      searchField='title'
+      searchPlaceholder='Search for a report...'
+      onchange=(action (mut selectedReport))
+      classNames='report-select'
+      tagName='div'
+      renderInPlace=true
+      as |report|
+    }}
+      {{report.title}}
+    {{/power-select}}
+    <div class='btn-container'>
+      {{#if (eq selectedReport.id 'new')}}
+        {{#link-to 'dashboards.dashboard.widgets.new' dashboard.id classNames='btn btn-primary shadow-btn add-to-dashboard'}}Take me there!{{/link-to}}
+      {{else}}
+        {{#link-to 'reports.report' selectedReport.id classNames='btn btn-primary shadow-btn add-to-dashboard'}}Take me there!{{/link-to}}
+      {{/if}}
+      <button class="btn btn-default shadow-btn" onclick={{action (toggle 'showModal' this)}}>Cancel</button>
+    </div>
+  </div>
+{{/navi-modal}}
