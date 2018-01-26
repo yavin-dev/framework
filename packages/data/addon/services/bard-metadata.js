@@ -142,7 +142,6 @@ export default Ember.Service.extend({
   /**
    * @method getMetadataById
    * @deprecated
-   *
    */
   getMetadataById() {
     Ember.deprecate('Method getMetadataById has been replaced with getById method', false, {
