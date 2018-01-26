@@ -1,6 +1,6 @@
 {
   "name": "navi-visualizations",
-  "version": "9.0.34",
+  "version": "0.0.0",
   "description": "Data visualizations library for navi",
   "author": "team-navi@googlegroups.com",
   "license": "MIT",
@@ -13,13 +13,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://git.corp.yahoo.com/ember-cmi/navi-mono/tree/master/packages/visualizations"
+    "url": "https://github.com/yahoo/navi/tree/master/packages/visualizations"
   },
   "scripts": {
     "postinstall": "bower install",
     "build": "ember build",
     "start": "ember server",
-    "test": "export COVERAGE=true; ember test --test-port 0 --silent | tee ${TEST_RESULTS_DIR}/visualizations-results.tap; exit ${PIPESTATUS[0]}",
+    "test": "export COVERAGE=true; ember test",
     "prepublishOnly": "ember build --environment=production"
   },
   "dependencies": {
@@ -71,32 +71,13 @@
     "ember-truth-helpers": "^2.0.0",
     "ember-uuid": "1.0.0",
     "loader.js": "^4.0.10",
-    "navi-core": "^9.0.34",
-    "navi-data": "^9.0.34"
+    "navi-core": "^0.0.0",
+    "navi-data": "^0.0.0"
   },
   "engines": {
     "node": "^4.5 || 6.* || >= 7.*"
   },
   "ember-addon": {
     "configPath": "tests/dummy/config"
-  },
-  "yahoo": {
-    "bugzilla": {
-      "product": "Navi-Visualizations",
-      "component": "General"
-    },
-    "custodian": {
-      "email": "digits-fe@yahoo-inc.com",
-      "url": "https://git.corp.yahoo.com/ember-cmi/navi-visualizations"
-    },
-    "bugs": {
-      "url": "https://git.corp.yahoo.com/ember-cmi/navi-visualizations",
-      "email": "digits-fe@yahoo-inc.com"
-    }
-  },
-  "yhint": {
-    "excludes": [
-      ".*"
-    ]
   }
 }
