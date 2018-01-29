@@ -12,8 +12,7 @@
     "build": "ember build",
     "start": "ember server",
     "test": "export COVERAGE=true; ember test",
-    "prepublishOnly": "ember build --environment=production",
-    "functional": "echo 'no functional test to run'"
+    "prepublishOnly": "ember build --environment=production"
   },
   "repository": {
     "type": "git",
@@ -79,11 +78,11 @@
     "ember-truth-helpers": "^2.0.0",
     "ember-uuid": "1.0.0",
     "loader.js": "^4.2.3",
-    "navi-core": "^9.0.26",
-    "navi-dashboards": "^9.0.26",
-    "navi-data": "^9.0.26",
-    "navi-reports": "^9.0.26",
-    "navi-visualizations": "^9.0.26"
+    "navi-core": "*",
+    "navi-dashboards": "*",
+    "navi-data": "*",
+    "navi-reports": "*",
+    "navi-visualizations": "*"
   },
   "engines": {
     "node": "^4.5 || 6.* || >= 7.*"
