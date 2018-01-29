@@ -1,0 +1,9 @@
+{
+  "default": {
+    "factApiHost":        "https://{filiHostname}",
+    "persistenceApiHost": "https://{naviwsHostname}"
+  },
+  "localhost": {
+    "user": "navi_user"
+  }
+}
