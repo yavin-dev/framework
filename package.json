@@ -1,5 +1,20 @@
 {
-    "devDependencies": {
-        "lerna": "^2.8.0"
-    }
+  "name": "navi",
+  "version": "0.0.0",
+  "description": "Navi Project",
+  "author": "team-navi@googlegroups.com",
+  "license": "MIT",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yahoo/navi"
+  },
+  "scripts": {
+    "start": "lerna exec --scope navi-app npm start",
+    "postinstall": "lerna bootstrap --concurrency 2",
+    "test": "lerna run test",
+  },
+  "devDependencies": {
+    "lerna": "^2.8.0"
+  }
 }
