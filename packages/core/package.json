@@ -1,20 +1,18 @@
 {
   "name": "navi-core",
-  "version": "9.0.48",
+  "version": "0.0.0",
   "description": "Library of common logic, components, and styles for navi",
   "directories": {
-    "doc": "doc",
     "test": "tests"
   },
   "scripts": {
     "build": "ember build",
     "start": "ember server",
-    "test": "export COVERAGE=true; ember test --test-port 0 --silent | tee ${TEST_RESULTS_DIR}/core-results.tap; exit ${PIPESTATUS[0]}",
-    "prepublishOnly": "ember build --environment=production"
+    "test": "export COVERAGE=true; ember test --test-port 0",
   },
   "repository": {
     "type": "git",
-    "url": "https://git.corp.yahoo.com/ember-cmi/navi-mono/tree/master/packages/core"
+    "url": "https://github.com/yahoo/navi/tree/master/packages/core"
   },
   "author": "team-navi@googlegroups.com",
   "license": "MIT",
@@ -59,20 +57,5 @@
   },
   "ember-addon": {
     "configPath": "tests/dummy/config"
-  },
-  "yahoo": {
-    "bugzilla": {
-      "product": "Navi",
-      "component": "General"
-    },
-    "custodian": {
-      "email": "ember-cmi@yahoo-inc.com",
-      "url": "http://yo/navi"
-    }
-  },
-  "yhint": {
-    "excludes": [
-      ".*"
-    ]
   }
 }

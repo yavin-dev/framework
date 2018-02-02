@@ -1,11 +1,11 @@
-# @navi/core
+# navi-core
 
 Library of common logic, components, and styles for navi
 
 ## Installation
 
 * Install Addon
-  * `ember install @navi/core`
+  * `ember install navi-core`
 
 ## Requirements
 
