@@ -1,0 +1,81 @@
+{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{#with item as | report |}}
+
+    {{!-- Clone only enabled on a saved report --}}
+    {{#if report.isNew}}
+        {{#link-to 'reports.report.clone' report.id disabled
+            classNames='navi-reports-index__report-control clone navi-report__action-link--force-disabled'
+        }}
+            {{navi-icon 'copy'}}
+            {{tooltip-on-component text='Save report to enable clone'}}
+        {{/link-to}}
+    {{else}}
+        {{#link-to 'reports.report.clone' report.id
+            classNames='navi-reports-index__report-control clone'
+        }}
+            {{navi-icon 'copy'}}
+            {{tooltip-on-component text='Clone the report'}}
+        {{/link-to}}
+    {{/if}}
+
+    {{!-- Export only enabled on a validated report --}}
+    {{#component
+        (concat 'report-actions/' (if (feature-flag 'enableMultipleExport') 'multiple-format-export' 'export'))
+        report=report
+        disabled=(not item.request.validations.isTruelyValid)
+        classNames='navi-reports-index__report-control export'
+        classNameBindings='item.request.validations.isTruelyValid::navi-report__action-link--force-disabled'
+    }}
+        {{navi-icon 'download'}}
+        {{#tooltip-on-component}}
+            {{if item.request.validations.isTruelyValid 'Export the report' 'Validate report to enable export'}}
+        {{/tooltip-on-component}}
+    {{/component}}
+
+    {{!-- Share only enabled on a saved report --}}
+    {{#common-actions/share
+        pageTitle=report.title
+        buildUrl=(route-action 'buildReportUrl' report)
+        disabled=item.isNew
+        classNames='navi-reports-index__report-control share'
+        classNameBindings='item.isNew:navi-report__action--is-disabled'
+    }}
+        {{navi-icon 'share'}}
+        {{#tooltip-on-component}}
+            {{if item.isNew 'Save report to enable share' 'Share the report'}}
+        {{/tooltip-on-component}}
+    {{/common-actions/share}}
+
+    {{!-- Check if user is the owner of the report --}}
+    {{#if report.isOwner}}
+        {{!-- Schedule only enabled for an owned report and if it valid--}}
+        {{#if (feature-flag 'enableScheduleReports')}}
+            {{#common-actions/schedule
+                model=report
+                classNames='navi-reports-index__report-control schedule'
+                disabled=(not item.request.validations.isTruelyValid)
+                onSave=(route-action 'saveDeliveryRule')
+                onRevert=(route-action 'revertDeliveryRule')
+                onDelete=(route-action 'deleteDeliveryRule')
+                classNameBindings='item.request.validations.isTruelyValid::navi-report__action--is-disabled'
+            }}
+                {{#tooltip-on-component}}
+                    {{if item.request.validations.isTruelyValid 'Schedule the report' 'Validate report to enable scheduling'}}
+                {{/tooltip-on-component}}
+            {{/common-actions/schedule}}
+        {{/if}}
+        {{!-- Delete Action enabled on an owned report --}}
+        {{#common-actions/delete
+            classNames='navi-reports-index__report-control delete'
+            model=report
+            warnMsg=(if report.deliveryRuleForUser
+                        'Are you sure you want to delete this report and the associated schedule?'
+                        'Are you sure you want to delete this report?')
+            deleteAction=(route-action 'deleteReport' report)
+        }}
+            {{navi-icon 'trash-o'}}
+            {{tooltip-on-component text='Delete the report'}}
+        {{/common-actions/delete}}
+
+    {{/if}}
+{{/with}}
