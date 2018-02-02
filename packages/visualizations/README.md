@@ -4,7 +4,7 @@ Data visualizations library for navi
 
 ## Installation
 
-* `ember install @navi/visualizations`
+* `ember install navi-visualizations`
 
 * Including CSS styling:
   * Add `@import "navi-visualizations.less"` into your `app.less`
