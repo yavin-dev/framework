@@ -1,0 +1,13 @@
+coverage/
+artifacts/
+node_modules/
+.nyc_output/
+**/npm-debug.log
+tmp/
+.DS_Store
+.*.swp
+*~
+.com.apple.timemachine.supported
+lerna-debug.log
+*.iml
+.idea/
