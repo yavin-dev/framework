@@ -117,7 +117,8 @@ export default Ember.Component.extend({
       { tooltip: get(this, 'chartTooltip') },
       { point },
       { axis: { x: { type: 'category' } } }, // Override old 'timeseries' config saved in db
-      get(this, 'yAxisLabelConfig')
+      get(this, 'yAxisLabelConfig'),
+      get(this, 'yAxisDataFormat')
     );
   }),
 
@@ -226,14 +227,13 @@ export default Ember.Component.extend({
          * Since tooltipData.x only contains the index value, map it
          * to the raw x value for better formatting
          */
-        let x = rawData[tooltipData[0].x].x.rawValue;
-
-        let tooltip = tooltipComponent.create({
-          tooltipData,
-          x,
-          request,
-          seriesConfig
-        });
+        let x = rawData[tooltipData[0].x].x.rawValue,
+            tooltip = tooltipComponent.create({
+              tooltipData,
+              x,
+              request,
+              seriesConfig
+            });
 
         Ember.run(() => {
           let element = document.createElement('div');
@@ -243,6 +243,30 @@ export default Ember.Component.extend({
         let innerHTML = tooltip.element.innerHTML;
         tooltip.destroy();
         return innerHTML;
+      }
+    };
+  }),
+
+  /**
+   * @property {Function} formattingFunction
+   * @callback formattingFunction
+   * @param {Number} val - number to format
+   * @returns {Number} - formatted number
+   */
+  formattingFunction: val => numeral(val).format('0.00a'),
+
+  /**
+   * @property {Object} yAxisDataFormat - adds the formattingFunction to the chart config
+   */
+  yAxisDataFormat: computed('formattingFunction', function() {
+    let formattingFunction = get(this, 'formattingFunction');
+    return {
+      axis: {
+        y: {
+          tick: {
+            format: formattingFunction
+          }
+        }
       }
     };
   })

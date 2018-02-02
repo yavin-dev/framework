@@ -14,7 +14,7 @@ module.exports = {
       packages: [
         { name: 'ember-cli-format-number',      target: '^2.0.0' },
         { name: 'ember-collection',             target: '1.0.0-alpha.7' },
-        { name: 'ember-composable-helpers',     target: '1.1.3' },
+        { name: 'ember-composable-helpers',     target: '^2.1.0' },
         { name: 'ember-cp-validations',         target: '3.1.2' },
         { name: 'ember-c3',                     target: '0.2.3' },
         { name: 'ember-data-model-fragments',   target: '2.11.5' },

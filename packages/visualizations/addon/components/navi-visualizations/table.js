@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -35,6 +35,11 @@ export default Ember.Component.extend({
    * @property {Array} classNames - list of component class names
    */
   classNames: [ 'table-widget' ],
+
+  /*
+   * @property {Boolean} occlusion - whether or not to incremental render
+   */
+  occlusion: true,
 
   /**
    * @property {String} selectedSubtotal

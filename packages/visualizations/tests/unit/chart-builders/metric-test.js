@@ -1,8 +1,10 @@
+import Ember from 'ember';
 import { test, module } from 'ember-qunit';
 import BuilderClass from 'navi-visualizations/chart-builders/metric';
 import TooltipTemplate from '../../../../navi-visualizations/templates/chart-tooltips/metric';
 
 const MetricChartBuilder = BuilderClass.create();
+const { get } = Ember;
 
 const DATA = [
         {
@@ -267,9 +269,30 @@ test('groupDataBySeries - month granularity series', function(assert) {
 });
 
 test('buildTooltip', function(assert) {
-  assert.expect(1);
+  assert.expect(2);
 
-  assert.equal(MetricChartBuilder.buildTooltip().layout,
+  let config = {
+        metrics: ['totalPageViews', 'uniqueIdentifier']
+      },
+      x = '2016-06-02 00:00:00.000',
+      tooltipData = [{
+        x,
+        name: 'uniqueIdentifier',
+        value: 180559793
+      }];
+
+  //Populates the 'byXSeries' property in the builder that buildTooltip uses
+  MetricChartBuilder.buildData(DATA, config, REQUEST);
+
+  let mixin = MetricChartBuilder.buildTooltip(DATA, config, REQUEST),
+      tooltipClass = Ember.Object.extend(mixin, {}),
+      tooltip = tooltipClass.create({config, REQUEST, tooltipData, x});
+
+  assert.equal(get(tooltip, 'layout'),
     TooltipTemplate,
-    'Tooltip uses metric template');
+    'Tooltip uses metric tooltip template');
+
+  assert.deepEqual(get(tooltip, 'rowData'),
+    DATA[3],
+    'The correct response row is given to the tooltip');
 });

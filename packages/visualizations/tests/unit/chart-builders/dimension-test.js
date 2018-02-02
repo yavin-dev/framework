@@ -1,8 +1,10 @@
 import { test, module } from 'ember-qunit';
+import Ember from 'ember';
 import BuilderClass from 'navi-visualizations/chart-builders/dimension';
 import TooltipTemplate from '../../../../navi-visualizations/templates/chart-tooltips/dimension';
 
 const DimensionChartBuilder = BuilderClass.create();
+const { get } = Ember;
 
 const DATA = [
   {
@@ -537,9 +539,41 @@ test('groupDataBySeries - many dimensions of different type with some that are n
 });
 
 test('buildTooltip', function(assert) {
-  assert.expect(1);
+  assert.expect(2);
 
-  assert.equal(DimensionChartBuilder.buildTooltip().layout,
+  let config = {
+        metric: 'totalPageViews',
+        dimensionOrder: ['age'],
+        dimensions: [
+          {
+            name: 'All Other',
+            values: {age: '-3'}
+          },
+          {
+            name: 'Under 13',
+            values: {age: '1'}
+          }
+        ]
+      },
+      x = '2016-05-31 00:00:00.000',
+      tooltipData = [{
+        x,
+        name: 'All Other',
+        value: 4088487125
+      }];
+
+  //Populates the 'byXSeries' property in the builder that buildTooltip uses
+  DimensionChartBuilder.buildData(DATA, config, REQUEST);
+
+  let mixin = DimensionChartBuilder.buildTooltip(DATA, config, REQUEST),
+      tooltipClass = Ember.Object.extend(mixin, {}),
+      tooltip = tooltipClass.create({config, REQUEST, tooltipData, x});
+
+  assert.equal(get(tooltip, 'layout'),
     TooltipTemplate,
-    'Tooltip uses dimension template');
+    'Tooltip uses dimension tooltip template');
+
+  assert.deepEqual(get(tooltip, 'rowData'),
+    [DATA[1]],
+    'The correct response row is given to the tooltip');
 });

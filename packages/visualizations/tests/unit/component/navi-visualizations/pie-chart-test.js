@@ -1,6 +1,8 @@
 import Ember from 'ember';
 import { moduleForComponent, test } from 'ember-qunit';
 
+const { get } = Ember;
+
 moduleForComponent('navi-visualizations/pie-chart', 'Unit | Component | pie chart', {
   unit: 'true',
   needs: ['helper:format-chart-tooltip-date', 'helper:smart-format-number', 'helper:format-number']
@@ -196,4 +198,32 @@ test('dataConfig', function(assert) {
       }
     ],
     'Data config updates when metric has been changed in series options');
+});
+
+test('tooltipComponent', function(assert) {
+  assert.expect(1);
+
+  let component = this.subject(),
+      model = { request: REQUEST, response: RESPONSE },
+      x = '2015-12-14 00:00:00.000',
+      requiredToolTipData = {
+        x,
+        name: '13 - 25'
+      };
+
+  component.set('model', Ember.A([ model ]));
+  component.set('options', OPTIONS);
+  component.get('dataConfig');
+
+  let metricName = component.get('seriesConfig.metric'),
+      tooltipComponent = component.get('tooltipComponent'),
+      tooltip = tooltipComponent.create({
+        requiredToolTipData,
+        metricName,
+        x
+      });
+
+  assert.deepEqual(get(tooltip, 'rowData'),
+    get(RESPONSE, 'rows')[2],
+    'The correct response row is passed to the tooltip');
 });

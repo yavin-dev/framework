@@ -32,9 +32,29 @@ import tooltipLayout from '../templates/chart-tooltips/dimension';
 import ChartAxisDateTimeFormats from 'navi-visualizations/utils/chart-axis-date-time-formats';
 import { groupDataByDimensions, buildSeriesKey, getSeriesName } from 'navi-visualizations/utils/chart-data';
 
-const { get } = Ember;
+const { get, set } = Ember;
 
 export default Ember.Object.extend({
+
+  /**
+   * @method getSeriesName
+   * @param {Object} row - single row of fact data
+   * @param {Object} config - series config
+   * @param {Object} request - request used to query fact data
+   * @returns {String} name of series given row belongs to
+   */
+  getSeriesName: (row, config/*, request */) => {
+    let dimensionOrder =  config.dimensionOrder;
+
+    return dimensionOrder.map(dim => get(row, `${dim}|desc`)).join(',');
+  },
+
+  /**
+   * @method getXValue
+   * @param {Object} row - single row of fact data
+   * @returns {String} name of x value given row belongs to
+   */
+  getXValue: (row) => moment(row.dateTime).format(DateUtils.API_DATE_FORMAT_STRING),
 
   /**
    * @function buildData
@@ -45,6 +65,14 @@ export default Ember.Object.extend({
    * @returns {Array} array of c3 data with x values
    */
   buildData(data, config, request) {
+    // Group data by x axis value + series name in order to lookup trends when building tooltip
+    set(this, 'byXSeries', new DataGroup(data, row => {
+      let seriesName = this.getSeriesName(row, config, request),
+          x = this.getXValue(row);
+
+      return x + seriesName;
+    }));
+
     // Support different `dateTime` formats by mapping them to a standard
     const buildDateKey = dateTime => moment(dateTime).format(DateUtils.API_DATE_FORMAT_STRING);
 
@@ -109,8 +137,22 @@ export default Ember.Object.extend({
    * @returns {Object} layout for tooltip
    */
   buildTooltip() {
-    return {
-      layout: tooltipLayout
-    };
+    let byXSeries = get(this, 'byXSeries');
+
+    return Ember.Mixin.create({
+      layout: tooltipLayout,
+
+      /**
+       * @property {Object[]} rowData - maps a response row to each series in a tooltip
+       */
+      rowData: Ember.computed('x', 'tooltipData', function() {
+        return get(this, 'tooltipData').map(series => {
+          // Get the full data for this combination of x + series
+          let dataForSeries = byXSeries.getDataForKey(get(this, 'x') + series.name) || [];
+
+          return dataForSeries[0];
+        });
+      })
+    });
   }
 });

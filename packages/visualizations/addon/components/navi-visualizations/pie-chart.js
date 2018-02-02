@@ -107,12 +107,23 @@ export default Ember.Component.extend({
    */
   tooltipComponent: computed(function() {
     let owner = getOwner(this),
+        byXSeries = get(this, 'builder.byXSeries'),
         tooltipComponent = Ember.Component.extend(
           owner.ownerInjection(),
+
           {
             layout: tooltipLayout,
-            renderer: owner.lookup('renderer:-dom'),
-          });
+
+            rowData: Ember.computed('x', 'requiredToolTipData', function() {
+              // Get the full data for this combination of x + series
+              let series = get(this, 'requiredToolTipData'),
+                  dataForSeries = byXSeries.getDataForKey(get(this, 'x') + series.name) || [];
+
+              return dataForSeries[0];
+            })
+          },
+          { renderer: owner.lookup('renderer:-dom') }
+        );
 
     return tooltipComponent;
   }),
@@ -120,14 +131,19 @@ export default Ember.Component.extend({
   /**
    * @property {Object} chartTooltip - configuration for tooltip
    */
-  chartTooltip: computed(function() {
-    let tooltipComponent = get(this, 'tooltipComponent');
+  chartTooltip: computed('seriesConfig.metric', function() {
+    let tooltipComponent = get(this, 'tooltipComponent'),
+        rawData = get(this, 'dataConfig.data.json'),
+        metricName = get(this, 'seriesConfig.metric');
 
     return {
       contents(tooltipData) {
-        let tooltip = tooltipComponent.create({
-          requiredToolTipData: tooltipData[0]
-        });
+        let x = rawData[0].x.rawValue,
+            tooltip = tooltipComponent.create({
+              x,
+              requiredToolTipData: tooltipData[0],
+              metricName
+            });
 
         Ember.run(() => {
           let element = document.createElement('div');

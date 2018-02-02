@@ -28,6 +28,12 @@ export default Ember.Controller.extend({
           name: 'uniqueIdentifier',
           longName: 'Unique Identifier'
         }
+      },
+      {
+        metric: {
+          name: 'revenue',
+          longName: 'Revenue'
+        }
       }
     ]
   },
@@ -82,14 +88,15 @@ export default Ember.Controller.extend({
       request: {
         metrics: [
           "uniqueIdentifier",
-          "totalPageViews"
+          "totalPageViews",
+          "revenue"
         ],
         logicalTable: {
-          timeGrain: "quarter"
+          timeGrain: 'day'
         },
         intervals: [
           {
-            start: '2015-12-13 00:00:00.000',
+            start: '2015-12-14 00:00:00.000',
             end: '2015-12-15 00:00:00.000'
           }
         ],
@@ -111,7 +118,8 @@ export default Ember.Controller.extend({
             "browser|id": "firefox",
             "browser|desc": "Mozilla Firefox",
             "uniqueIdentifier": 72620639,
-            "totalPageViews": 3072620639
+            "totalPageViews": 3072620639,
+            "revenue": 23435193.77284
           },
           {
             "dateTime": "2015-12-14 00:00:00.000",
@@ -120,7 +128,8 @@ export default Ember.Controller.extend({
             "browser|id": "Chrome",
             "browser|desc": "Google Chrome",
             "uniqueIdentifier": 55191081,
-            "totalPageViews": 155191081
+            "totalPageViews": 155191081,
+            "revenue": 12498623.29348
           },
           {
             "dateTime": "2015-12-14 00:00:00.000",
@@ -129,7 +138,8 @@ export default Ember.Controller.extend({
             "browser|id": "IE",
             "browser|desc": "Microsoft Internet Explorer",
             "uniqueIdentifier": 55191081,
-            "totalPageViews": 3072620639
+            "totalPageViews": 3072620639,
+            "revenue": 77348273.24588
           },
           {
             "dateTime": "2015-12-14 00:00:00.000",
@@ -138,7 +148,8 @@ export default Ember.Controller.extend({
             "browser|id": "firefox",
             "browser|desc": "Mozilla Firefox",
             "uniqueIdentifier": 72620639,
-            "totalPageViews": 72620639
+            "totalPageViews": 72620639,
+            "revenue": 98350255.98241
           },
           {
             "dateTime": "2015-12-14 00:00:00.000",
@@ -147,7 +158,18 @@ export default Ember.Controller.extend({
             "browser|id": "Chrome",
             "browser|desc": "Google Chrome",
             "uniqueIdentifier": 72620639,
-            "totalPageViews": 72620639
+            "totalPageViews": 72620639,
+            "revenue": 63491243.76920
+          },
+          {
+            "dateTime": "2015-12-14 00:00:00.000",
+            "age|id": "4",
+            "age|desc": "35 - 45",
+            "browser|id": "firefox",
+            "browser|desc": "Mozilla Firefox",
+            "uniqueIdentifier": 72620639,
+            "totalPageViews": 72620639,
+            "revenue": 35353239.99923
           }
         ]
       }
@@ -167,14 +189,20 @@ export default Ember.Controller.extend({
           name: 'uniqueIdentifier',
           longName: 'Unique Identifier'
         }
+      },
+      {
+        metric: {
+          name: 'revenue',
+          longName: 'Revenue'
+        }
       }
     ],
     logicalTable: {
-      timeGrain: "quarter"
+      timeGrain: 'day'
     },
     intervals: [
       {
-        start: '2015-12-13 00:00:00.000',
+        start: '2015-12-14 00:00:00.000',
         end: '2015-12-15 00:00:00.000'
       }
     ],
@@ -234,7 +262,7 @@ export default Ember.Controller.extend({
     }
   },
 
-  visualizationOptionsMultiDimension: Ember.computed('options', function() {
+  visualizationOptionsMultiDimension: Ember.computed('multiDimensionOptions', function() {
     return {
       type: 'pie-chart',
       version: 1,

@@ -21,7 +21,7 @@ const Validations = buildValidations({
   'metadata.columns': validator(function(columns, options) {
     let request = get(options, 'request');
 
-    return hasAllColumns(request, arr(columns));
+    return request && hasAllColumns(request, arr(columns));
   }, {
     dependentKeys: [
       'model._request.dimensions.[]',

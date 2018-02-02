@@ -20,9 +20,16 @@ import DataGroup from 'navi-core/utils/classes/data-group';
 import Interval from 'navi-core/utils/classes/interval';
 import DateUtils from 'navi-core/utils/date';
 
-const { get } = Ember;
+const { get, set } = Ember;
 
 export default Ember.Object.extend({
+  /**
+   * @method getXValue
+   * @param {Object} row - single row of fact data
+   * @returns {String} name of x value given row belongs to
+   */
+  getXValue: (row) => moment(row.dateTime).format(DateUtils.API_DATE_FORMAT_STRING),
+
   /**
    * @function buildData
    * @param {Object} data - response from fact service
@@ -32,6 +39,9 @@ export default Ember.Object.extend({
    * @returns {Array} array of c3 data with x values
    */
   buildData(data, config, request) {
+    // Group data by x axis value in order to lookup row data when building tooltip
+    set(this, 'byXSeries', new DataGroup(data, row => this.getXValue(row)));
+
     // Support different `dateTime` formats by mapping them to a standard
     const buildDateKey = dateTime => moment(dateTime).format(DateUtils.API_DATE_FORMAT_STRING);
 
@@ -72,9 +82,19 @@ export default Ember.Object.extend({
    * @returns {Object} layout for tooltip
    */
   buildTooltip() {
-    return {
-      layout: tooltipLayout
-    };
-  }
+    let byXSeries = get(this, 'byXSeries');
 
+    return Ember.Mixin.create({
+      layout: tooltipLayout,
+
+      /**
+       * @property {Object[]} rowData - maps a response row to each series in a tooltip
+       */
+      rowData: Ember.computed('x', 'tooltipData', function() {
+        // Get the full data for this combination of x + series
+        let dataForSeries = byXSeries.getDataForKey(get(this, 'x')) || [];
+        return dataForSeries[0];
+      })
+    });
+  }
 });

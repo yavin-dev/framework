@@ -5,6 +5,6 @@
         <svg class='pie-chart-tooltip__series-indicator'>
             <circle cx='50%' cy='50%' r='40%' class='chart-series-{{requiredToolTipData.seriesIndex}}'/>
         </svg>
-        <span>{{smart-format-number requiredToolTipData.value}}</span>
+        <span>{{tooltip-value-formatter requiredToolTipData.value metricName rowData}}</span>
     </li>
 </ol>

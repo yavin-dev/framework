@@ -1,4 +1,4 @@
-{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class='table-widget__row-info'>
   <span class='table-widget__row-info--number'>{{format-number rowsInResponse fallback='0'}}</span> out of
   <span class='table-widget__row-info--number'>{{format-number totalRows fallback='0'}}</span> rows
@@ -37,11 +37,11 @@
 
     <div class='table-body'>
       <div class='scroll-container'>
-        {{#ember-collection
-            buffer=10
-            cell-layout=(mixed-height-layout rowDimensions)
-            items=tableData
-            as |row idx|
+        {{#table-iterator
+          tableData=tableData
+          rowDimensions=rowDimensions
+          occlusion=occlusion
+          as |row idx|
         }}
           <div class='table-row {{if row.__meta__.isTotalRow 'table-row__total-row'}} {{if (eq idx (sub tableData.length 1)) 'table-row__last-row'}}'>
             {{#each columns as |column|}}
@@ -62,9 +62,8 @@
               </div>
             {{/each}}
           </div>
-        {{/ember-collection}}
+        {{/table-iterator}}
       </div>
-
     </div>
   </div>
 </div>

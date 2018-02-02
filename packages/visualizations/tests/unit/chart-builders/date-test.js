@@ -1,8 +1,10 @@
 import { test, module } from 'ember-qunit';
+import Ember from 'ember';
 import BuilderClass from 'navi-visualizations/chart-builders/date-time';
 import TooltipTemplate from '../../../../navi-visualizations/templates/chart-tooltips/date';
 
 const DateChartBuilder = BuilderClass.create();
+const { get } = Ember;
 
 module('Unit | Utils | Chart Builder Date Time');
 
@@ -329,7 +331,7 @@ test('seconds by minute', function(assert) {
 });
 
 test('buildTooltip', function(assert) {
-  assert.expect(1);
+  assert.expect(2);
 
   let request = {
         logicalTable: {
@@ -340,9 +342,36 @@ test('buildTooltip', function(assert) {
         timeGrain: 'month',
         metric: 'pageViews'
       },
-      tooltip = DateChartBuilder.buildTooltip(config, request);
+      response = [
+        {
+          dateTime: "2016-01-01 00:00:20.000",
+          pageViews: 1
+        },
+        {
+          dateTime: "2016-01-02 00:01:20.000",
+          pageViews: 2
+        },
+        {
+          dateTime: "2016-01-03 00:03:20.000",
+          pageViews: 3
+        }
+      ],
+      x = 2,
+      tooltipData = [{
+        x,
+        name: 'Jan 2016',
+        value: 2
+      }],
+      data = DateChartBuilder.buildData(response, config, request),
+      mixin = DateChartBuilder.buildTooltip(data, config, request),
+      tooltipClass = Ember.Object.extend(mixin, {}),
+      tooltip = tooltipClass.create({config, request, tooltipData, x});
 
-  assert.equal(tooltip.layout,
+  assert.equal(get(tooltip, 'layout'),
     TooltipTemplate,
     'Tooltip uses date template');
+
+  assert.deepEqual(get(tooltip, 'rowData'),
+    [response[1]],
+    'The correct response row is given to the tooltip');
 });

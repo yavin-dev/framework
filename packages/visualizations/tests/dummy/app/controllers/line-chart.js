@@ -24,6 +24,12 @@ export default Ember.Controller.extend({
           name: 'uniqueIdentifier',
           longName: 'Unique Identifier'
         }
+      },
+      {
+        metric: {
+          name: 'revenue',
+          longName: 'Revenue'
+        }
       }
     ]
   },
@@ -38,7 +44,7 @@ export default Ember.Controller.extend({
         series: {
           type: 'metric',
           config: {
-            metrics: ['uniqueIdentifier', 'totalPageViews']
+            metrics: ['uniqueIdentifier', 'totalPageViews', 'revenue']
           }
         }
       }
@@ -111,7 +117,9 @@ export default Ember.Controller.extend({
     {
       request: {
         metrics: [
-          "clicks"
+          "clicks",
+          "uniqueIdentifier",
+          "revenue"
         ],
         logicalTable: {
           timeGrain: "day"
@@ -125,31 +133,31 @@ export default Ember.Controller.extend({
       },
       response: {
         "rows": [
-          { "dateTime": "2017-02-09 00:00:00.000", "age|id": "-3", "age|desc": "All Other", "clicks": 112619, 'uniqueIdentifier': 100 },
-          { "dateTime": "2017-02-10 00:00:00.000", "age|id": "-3", "age|desc": "All Other", "clicks": 102039, 'uniqueIdentifier': 100 },
-          { "dateTime": "2017-02-11 00:00:00.000", "age|id": "-3", "age|desc": "All Other", "clicks": 99890, 'uniqueIdentifier': 100 },
-          { "dateTime": "2017-02-12 00:00:00.000", "age|id": "-3", "age|desc": "All Other", "clicks": 95337, 'uniqueIdentifier': 100 },
-          { "dateTime": "2017-02-14 00:00:00.000", "age|id": "-3", "age|desc": "All Other", "clicks": 58507, 'uniqueIdentifier': 100 },
-          { "dateTime": "2017-02-15 00:00:00.000", "age|id": "-3", "age|desc": "All Other", "clicks": 47163, 'uniqueIdentifier': 100 },
-          { "dateTime": "2017-02-16 00:00:00.000", "age|id": "-3", "age|desc": "All Other", "clicks": 35183, 'uniqueIdentifier': 100 },
-          { "dateTime": "2017-02-17 00:00:00.000", "age|id": "-3", "age|desc": "All Other", "clicks": 32758, 'uniqueIdentifier': 100 },
-          { "dateTime": "2017-02-18 00:00:00.000", "age|id": "-3", "age|desc": "All Other", "clicks": 32024, 'uniqueIdentifier': 100 },
-          { "dateTime": "2017-02-10 00:00:00.000", "age|id": "4", "age|desc": "21-24", "clicks": 62029, 'uniqueIdentifier': 100 },
-          { "dateTime": "2017-02-11 00:00:00.000", "age|id": "4", "age|desc": "21-24", "clicks": 95170, 'uniqueIdentifier': 100 },
-          { "dateTime": "2017-02-12 00:00:00.000", "age|id": "4", "age|desc": "21-24", "clicks": 135196, 'uniqueIdentifier': 100 },
-          { "dateTime": "2017-02-14 00:00:00.000", "age|id": "4", "age|desc": "21-24", "clicks": 158796, 'uniqueIdentifier': 100 },
-          { "dateTime": "2017-02-15 00:00:00.000", "age|id": "4", "age|desc": "21-24", "clicks": 166673, 'uniqueIdentifier': 100 },
-          { "dateTime": "2017-02-16 00:00:00.000", "age|id": "4", "age|desc": "21-24", "clicks": 186524, 'uniqueIdentifier': 100 },
-          { "dateTime": "2017-02-17 00:00:00.000", "age|id": "4", "age|desc": "21-24", "clicks": 164860, 'uniqueIdentifier': 100 },
-          { "dateTime": "2017-02-18 00:00:00.000", "age|id": "4", "age|desc": "21-24", "clicks": 167813, 'uniqueIdentifier': 100 },
-          { "dateTime": "2017-02-09 00:00:00.000", "age|id": "5", "age|desc": "25-29", "clicks": 184985, 'uniqueIdentifier': 100 },
-          { "dateTime": "2017-02-10 00:00:00.000", "age|id": "5", "age|desc": "25-29", "clicks": 196688, 'uniqueIdentifier': 100 },
-          { "dateTime": "2017-02-11 00:00:00.000", "age|id": "5", "age|desc": "25-29", "clicks": 176962, 'uniqueIdentifier': 100 },
-          { "dateTime": "2017-02-12 00:00:00.000", "age|id": "5", "age|desc": "25-29", "clicks": 151662, 'uniqueIdentifier': 100 },
-          { "dateTime": "2017-02-14 00:00:00.000", "age|id": "5", "age|desc": "25-29", "clicks": 141660, 'uniqueIdentifier': 100 },
-          { "dateTime": "2017-02-15 00:00:00.000", "age|id": "5", "age|desc": "25-29", "clicks": 130757, 'uniqueIdentifier': 100 },
-          { "dateTime": "2017-02-16 00:00:00.000", "age|id": "5", "age|desc": "25-29", "clicks": 115753, 'uniqueIdentifier': 100 },
-          { "dateTime": "2017-02-17 00:00:00.000", "age|id": "5", "age|desc": "25-29", "clicks": 93722, 'uniqueIdentifier': 100 }
+          { "dateTime": "2017-02-09 00:00:00.000", "age|id": "-3", "age|desc": "All Other", "clicks": 112619, "revenue": 93234.32304, 'uniqueIdentifier': 100 },
+          { "dateTime": "2017-02-10 00:00:00.000", "age|id": "-3", "age|desc": "All Other", "clicks": 102039, "revenue": 67234.12663, 'uniqueIdentifier': 100 },
+          { "dateTime": "2017-02-11 00:00:00.000", "age|id": "-3", "age|desc": "All Other", "clicks": 99890, "revenue": 12498.12298, 'uniqueIdentifier': 100 },
+          { "dateTime": "2017-02-12 00:00:00.000", "age|id": "-3", "age|desc": "All Other", "clicks": 95337, "revenue": 43992.98540, 'uniqueIdentifier': 100 },
+          { "dateTime": "2017-02-14 00:00:00.000", "age|id": "-3", "age|desc": "All Other", "clicks": 58507, "revenue": 78332.98822, 'uniqueIdentifier': 100 },
+          { "dateTime": "2017-02-15 00:00:00.000", "age|id": "-3", "age|desc": "All Other", "clicks": 47163, "revenue": 101242.53242, 'uniqueIdentifier': 100 },
+          { "dateTime": "2017-02-16 00:00:00.000", "age|id": "-3", "age|desc": "All Other", "clicks": 35183, "revenue": 120249.93840, 'uniqueIdentifier': 100 },
+          { "dateTime": "2017-02-17 00:00:00.000", "age|id": "-3", "age|desc": "All Other", "clicks": 32758, "revenue": 115234.33482, 'uniqueIdentifier': 100 },
+          { "dateTime": "2017-02-18 00:00:00.000", "age|id": "-3", "age|desc": "All Other", "clicks": 32024, "revenue": 98123.34991, 'uniqueIdentifier': 100 },
+          { "dateTime": "2017-02-10 00:00:00.000", "age|id": "4", "age|desc": "21-24", "clicks": 62029, "revenue": 89129.75744, 'uniqueIdentifier': 100 },
+          { "dateTime": "2017-02-11 00:00:00.000", "age|id": "4", "age|desc": "21-24", "clicks": 95170, "revenue": 77234.99801, 'uniqueIdentifier': 100 },
+          { "dateTime": "2017-02-12 00:00:00.000", "age|id": "4", "age|desc": "21-24", "clicks": 135196, "revenue": 93221.12390, 'uniqueIdentifier': 100 },
+          { "dateTime": "2017-02-14 00:00:00.000", "age|id": "4", "age|desc": "21-24", "clicks": 158796, "revenue": 105882.99283, 'uniqueIdentifier': 100 },
+          { "dateTime": "2017-02-15 00:00:00.000", "age|id": "4", "age|desc": "21-24", "clicks": 166673, "revenue": 100000.12312, 'uniqueIdentifier': 100 },
+          { "dateTime": "2017-02-16 00:00:00.000", "age|id": "4", "age|desc": "21-24", "clicks": 186524, "revenue": 96234.09383, 'uniqueIdentifier': 100 },
+          { "dateTime": "2017-02-17 00:00:00.000", "age|id": "4", "age|desc": "21-24", "clicks": 164860, "revenue": 140243.77293, 'uniqueIdentifier': 100 },
+          { "dateTime": "2017-02-18 00:00:00.000", "age|id": "4", "age|desc": "21-24", "clicks": 167813, "revenue": 147992.84392, 'uniqueIdentifier': 100 },
+          { "dateTime": "2017-02-09 00:00:00.000", "age|id": "5", "age|desc": "25-29", "clicks": 184985, "revenue": 149234.88192, 'uniqueIdentifier': 100 },
+          { "dateTime": "2017-02-10 00:00:00.000", "age|id": "5", "age|desc": "25-29", "clicks": 196688, "revenue": 156234.88239, 'uniqueIdentifier': 100 },
+          { "dateTime": "2017-02-11 00:00:00.000", "age|id": "5", "age|desc": "25-29", "clicks": 176962, "revenue": 150532.81759, 'uniqueIdentifier': 100 },
+          { "dateTime": "2017-02-12 00:00:00.000", "age|id": "5", "age|desc": "25-29", "clicks": 151662, "revenue": 135998.37414, 'uniqueIdentifier': 100 },
+          { "dateTime": "2017-02-14 00:00:00.000", "age|id": "5", "age|desc": "25-29", "clicks": 141660, "revenue": 129352.99810, 'uniqueIdentifier': 100 },
+          { "dateTime": "2017-02-15 00:00:00.000", "age|id": "5", "age|desc": "25-29", "clicks": 130757, "revenue": 120342.84859, 'uniqueIdentifier': 100 },
+          { "dateTime": "2017-02-16 00:00:00.000", "age|id": "5", "age|desc": "25-29", "clicks": 115753, "revenue": 99157.66384, 'uniqueIdentifier': 100 },
+          { "dateTime": "2017-02-17 00:00:00.000", "age|id": "5", "age|desc": "25-29", "clicks": 93722, "revenue": 80500.77383, 'uniqueIdentifier': 100 }
         ]
       }
     }

@@ -16,8 +16,9 @@
 import Ember from 'ember';
 import moment from 'moment';
 import tooltipLayout from '../templates/chart-tooltips/date';
+import DataGroup from 'navi-core/utils/classes/data-group';
 
-const { get } = Ember;
+const { get, set } = Ember;
 
 const API_DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss.SSS';
 
@@ -39,7 +40,7 @@ export const GROUP = {
    *     }
    *   }
    */
-   
+
   second: {
     by: {
       minute: {
@@ -166,7 +167,48 @@ const _buildDataRows = (seriesMap, grouper) => {
   return rows;
 };
 
+/**
+ * Gets the grouper for a given config and request
+ *
+ * @function _getGrouper
+ * @param {Object} request - request used to query fact data
+ * @param {Object} config - series config
+ * @returns {Object} grouper for request and config
+ */
+const _getGrouper = (request, config) => {
+  let timeGrain = get(request, 'logicalTable.timeGrain'),
+      seriesTimeGrain = get(config, 'timeGrain');
+
+  return GROUP[timeGrain].by[seriesTimeGrain];
+}
+
 export default Ember.Object.extend({
+  /**
+   * @method getSeriesName
+   * @param {Object} row - single row of fact data
+   * @param {Object} config - series config
+   * @param {Object} request - request used to query fact data
+   * @returns {String} name of series given row belongs to
+   */
+  getSeriesName(row, config, request) {
+    let grouper = _getGrouper(request, config);
+
+    return grouper.getSeries(moment(row.dateTime));
+  },
+
+  /**
+   * @method getXValue
+   * @param {Object} row - single row of fact data
+   * @param {Object} config - series config
+   * @param {Object} request - request used to query fact data
+   * @returns {String} name of x value given row belongs to
+   */
+  getXValue(row, config, request) {
+    let grouper = _getGrouper(request, config);
+
+    return grouper.getXValue(moment(row.dateTime));
+  },
+
   /**
    * @function buildData
    * @param {Object} data - rows of chart data to group
@@ -177,6 +219,14 @@ export default Ember.Object.extend({
    * @returns {Array} array of c3 data with x values
    */
   buildData(data, config, request) {
+    // Group data by x axis value + series name in order to lookup metric attributes when building tooltip
+    set(this, 'byXSeries', new DataGroup(data, row => {
+      let seriesName = this.getSeriesName(row, config, request),
+          x = this.getXValue(row, config, request);
+
+      return x + seriesName;
+    }));
+
     let { timeGrain: seriesTimeGrain, metric } = config,
         requestTimeGrain = get(request, 'logicalTable.timeGrain'),
         grouper = GROUP[requestTimeGrain].by[seriesTimeGrain];
@@ -191,8 +241,22 @@ export default Ember.Object.extend({
    * @returns {Object} object with tooltip template and rendering context
    */
   buildTooltip() {
-    return {
-      layout: tooltipLayout
-    };
+    let byXSeries = get(this, 'byXSeries');
+
+    return Ember.Mixin.create({
+      layout: tooltipLayout,
+
+      /**
+       * @property {Object[]} rowData - maps a response row to each series in a tooltip
+       */
+      rowData: Ember.computed('x', 'tooltipData', function() {
+        return get(this, 'tooltipData').map(series => {
+          // Get the full data for this combination of x + series
+          let dataForSeries = byXSeries.getDataForKey(get(this, 'x') + series.name) || [];
+
+          return dataForSeries[0];
+        });
+      })
+    });
   }
 });
