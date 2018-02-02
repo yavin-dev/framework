@@ -29,7 +29,7 @@ module.exports = function(environment) {
 
     navi: {
       dataSources: [
-        { name: 'dummy', uri: 'https://navi.data.yahoo.com:4443' }
+        { name: 'dummy', uri: 'https://data.naviapp.io' }
       ],
       searchThresholds: {
         contains: 600,
