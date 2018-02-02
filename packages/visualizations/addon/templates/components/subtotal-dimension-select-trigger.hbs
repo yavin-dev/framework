@@ -1,0 +1,17 @@
+{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<!-- Same as ember-power-select-trigger template except for 'subtotal-dimension-select-trigger__prefix' -->
+{{#if select.selected}}
+  {{#if selectedItemComponent}}
+    {{component selectedItemComponent option=(readonly select.selected) select=(readonly select)}}
+  {{else}}
+    <span class="ember-power-select-selected-item">
+      <span class='subtotal-dimension-select-trigger__prefix'>by</span> {{yield select.selected select}}
+    </span>
+  {{/if}}
+  {{#if (and allowClear (not select.disabled))}}
+    <span class="ember-power-select-clear-btn" onmousedown={{action "clear"}} ontouchstart={{action "clear"}}>&times;</span>
+  {{/if}}
+{{else}}
+  {{component placeholderComponent placeholder=placeholder}}
+{{/if}}
+<span class="ember-power-select-status-icon"></span>
