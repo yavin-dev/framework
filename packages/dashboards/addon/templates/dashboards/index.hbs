@@ -1,0 +1,17 @@
+{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<div class='page-header'>
+  <div class='page-title'>Dashboard</div>
+</div>
+{{#link-to 'dashboards.new'}}
+  <button class='btn btn-primary dashboards-index__new-btn'>
+  + New Dashboard
+  </button>
+{{/link-to}}
+{{navi-collection
+  items=model.dashboards
+  itemType='dashboard'
+  config=(hash
+    actions='dashboard-action-list'
+    filterable=true
+  )
+}}
