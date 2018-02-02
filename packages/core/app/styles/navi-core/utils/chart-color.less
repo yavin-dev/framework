@@ -1,0 +1,45 @@
+/**
+ * Copyright 2017, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ *
+ * Colors a css property to match chart series colors.
+ * Color is based on the `chart-series-x` class applied to the element.
+ *
+ * Usage:
+ *    div {
+ *       .generate-chart-colors-for(background-color);
+ *    }
+ *
+ *   <div class='chart-series-0'> This has an orange background! </div>
+ *   <div class='chart-series-1'> This has a blue background! </div>
+ *
+ */
+
+//Graph Stroke Colors
+@graph-stroke-0:             @navi-orange;
+@graph-stroke-1:             @navi-blue;
+@graph-stroke-2:             @navi-purple;
+@graph-stroke-3:             @navi-pink;
+@graph-stroke-4:             @navi-green;
+@graph-stroke-5:             @navi-yellow;
+@graph-stroke-6:             @navi-blue-900;
+@graph-stroke-7:             @navi-red;
+@graph-stroke-8:             @navi-gray-800;
+@graph-stroke-9:             @navi-magenta;
+@graph-stroke-10:            @navi-teal;
+
+@chart-max-series:           10;
+
+.generate-chart-colors-for(@property) {
+    .chart-color-loop(@chart-max-series);
+}
+
+.chart-color-loop(@n, @i:0) when(@i < @n) {
+    @stroke: "graph-stroke-@{i}";
+
+    &.chart-series-@{i} {
+      @{property}: @@stroke;
+    }
+
+    .chart-color-loop(@n,(@i+1));
+}

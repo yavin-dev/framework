@@ -1,0 +1,16 @@
+{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+
+{{!-- Lists of length 1 and 2 have special grammar rules --}}
+{{#if (eq list.length 1)}}
+    {{yield list.firstObject}}
+{{/if}}
+{{#if (eq list.length 2)}}
+    {{yield list.firstObject}} and {{yield list.lastObject}}
+{{/if}}
+
+{{!-- Everything else is `,` separated with `and` before the last item --}}
+{{#if (gt list.length 2)}}
+    {{#each _commaItems as |item index| ~}}
+        <span>{{yield item}}, </span>
+    {{~/each~}} and {{yield list.lastObject}}
+{{/if}}
