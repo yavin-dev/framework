@@ -1,0 +1,126 @@
+{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+
+{{!-- Check if in need of disabling the button when the action should be disabled --}}
+<button class='schedule-action__button btn' disabled={{disabled}}  onclick={{toggle 'showModal' this}}>
+    {{navi-icon 'clock-o' class='schedule-action__icon'}}
+    {{#if hasBlock}}
+        <span class='schedule-action__icon-label'>{{yield}}</span>
+    {{/if}}
+</button>
+
+{{#navi-modal
+    isShown=showModal
+    onClose=(action this.attrs.onRevert localDeliveryRule)
+}}
+    <div class='schedule-modal__header navi-modal-header'>
+        <h1 class='schedule-modal__header--primary primary-header'>Schedule "{{capitalize model.title}}"</h1>
+        {{#if deliveryRule.isRejected}}
+            <div class='schedule-modal__notification modal-notification alert failure'>
+                {{navi-icon 'exclamation-circle'}}
+                <div class='notification-text'>Oops! An error occurred while fetching the schedule for this report.</div>
+            </div>
+        {{else}}
+            <h5 class='schedule-modal__header--secondary secondary-header'>Please provide delivery rules for your report</h5>
+        {{/if}}
+    </div>
+    {{#if model.deliveryRuleForUser.isPending}}
+        {{navi-loader}}
+    {{else}}
+        <form class='schedule-modal__body navi-modal-body'>
+            <fieldset class='{{if (and attemptedSave (not isRuleValid)) 'schedule-modal__recipients--invalid'}} schedule-modal__section'>
+                <div class='schedule-modal__label'>Recipients</div>
+                {{textarea
+                     class='schedule-modal__input--recipients text-input'
+                     value=(readonly localDeliveryRule.recipients)
+                     key-up=(action 'updateRecipients')
+                     spellcheck=false
+                     disabled=deliveryRule.isRejected
+                }}
+                <div class='schedule-modal__helper-recipients'>
+                    Please enter valid email addresses separated by commas.
+                </div>
+            </fieldset>
+            <div class='schedule-modal__section-group'>
+                <fieldset class='schedule-modal__section'>
+                    <div class='schedule-modal__label'>Frequency</div>
+                    {{#power-select
+                        class='schedule-modal__dropdown schedule-modal__dropdown--frequency'
+                        options=frequencies
+                        renderInPlace=true
+                        selected=localDeliveryRule.frequency
+                        disabled=deliveryRule.isRejected
+                        searchEnabled=false
+                        tagName='div'
+                        onchange=(action (mut localDeliveryRule.frequency))
+                        as | frequency |
+                    }}
+                        {{capitalize frequency}}
+                    {{/power-select}}
+                </fieldset>
+                <fieldset class='schedule-modal__section'>
+                    <div class='schedule-modal__label'>Format</div>
+                    {{#power-select
+                        class='schedule-modal__dropdown schedule-modal__dropdown--format'
+                        disabled=true
+                        options=formats
+                        renderInPlace=true
+                        selected=localDeliveryRule.format.type
+                        searchEnabled=false
+                        tagName='div'
+                        onchange=(action (mut localDeliveryRule.format.type))
+                        as | format |
+                    }}
+                        {{format}}
+                    {{/power-select}}
+                </fieldset>
+            </div>
+            <div class='schedule-modal__btn-container btn-container'>
+                <div class='button-group'>
+                {{#if deliveryRule.isRejected}}
+                    <button
+                        class='schedule-modal__cancel-btn btn btn-primary'
+                        onclick={{pipe (action 'closeModal') (action this.attrs.onRevert localDeliveryRule)}}
+                        disabled={{isSaving}}
+                        type='button'
+                    > Cancel </button>
+                {{else}}
+                    <button
+                        class='schedule-modal__save-btn btn btn-primary'
+                        onclick={{action (pipe (toggle 'isSaving' this) (action 'onSave'))}}
+                        disabled={{isSaving}}
+                        type='button'
+                    >
+                        {{#if isSaving}}
+                            {{#loading-message}}
+                                Saving schedule
+                            {{/loading-message}}
+                        {{else}}
+                            {{#unless localDeliveryRule.isNew}}Save Changes{{else}}Save{{/unless}}
+                        {{/if}}
+                    </button>
+                    <button
+                        class='schedule-modal__cancel-btn btn btn-secondary'
+                        onclick={{pipe (action 'closeModal') (action this.attrs.onRevert localDeliveryRule)}}
+                        disabled={{isSaving}}
+                        type='button'
+                    > Cancel </button>
+                {{/if}}
+                </div>
+                <div class='button-group'>
+                {{#unless localDeliveryRule.isNew}}
+                    {{#common-actions/delete
+                        classNames='schedule-modal__delete-btn btn-secondary'
+                        disabled=isSaving
+                        model=deliveryRule
+                        modelName='schedule'
+                        headerMsg=(concat 'Delete schedule for "' model.title '"')
+                        warnMsg='Are you sure you want to delete the schedule for this report?'
+                        deleteAction=(pipe (action this.attrs.onDelete localDeliveryRule) (action 'closeModal'))
+                    }}Delete
+                    {{/common-actions/delete}}
+                {{/unless}}
+                </div>
+            </div>
+        </form>
+    {{/if}}
+{{/navi-modal}}

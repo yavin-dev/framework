@@ -1,0 +1,162 @@
+/**
+ * Copyright 2017, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
+
+@range-list-width: 150px;
+
+.navi-date-range-picker {
+
+    &.interval-set.error{
+        .selection-box {
+            .form-selector-error !important;
+        }
+    }
+
+    &__doc-link {
+        color: @link-blue;
+    }
+
+    &__advanced-calendar-toggle {
+        font-size: @font-size-mid;
+        color: @link-blue;
+        cursor: pointer;
+    }
+
+    &__start-input, &__end-input {
+        width: 180px;
+        border-radius: 3px;
+        height: 25px;
+        font-family:  @font-family-sans-serif;
+        background-color: @navi-white;
+        text-align: center;
+        color: @gray-11;
+    }
+
+    &__date-inputs {
+        margin: 10px 0;
+    }
+
+    &__date-label {
+        color: @navi-light-gray-1;
+        margin: 0 2px;
+        font-size: @font-size-small;
+    }
+
+    &__reset-btn {
+        font-size: @font-size-mid;
+        background: none;
+        border: none;
+        vertical-align: inherit;
+    }
+
+    &__apply-btn {
+        font-size: @font-size-mid;
+        border-radius: 5px;
+        border-width: 0 0 3px 0;
+        padding: 2px 13px;
+        margin: 0 0 4px 10px;
+    }
+
+    &__controls {
+        &--simple, &--advanced {
+            width: 100%;
+            background-color: @navi-lightest-gray;
+            border: 1px solid @gray-date-picker;
+            padding: 5px 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        &--simple {
+            align-items: center;
+        }
+
+        &--advanced {
+            flex-flow: column;
+        }
+
+        &--footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+    }
+
+    .selection-box {
+        .placeholder {
+            line-height: 49px;
+        }
+
+        label {
+            font-size: @font-size-mid;
+            padding: 6px 0 0;
+        }
+
+        .value {
+            .clickable;
+            color: @body-font-gray;
+            margin-top: -2px;
+        }
+
+        i {
+            margin-right: 10px;
+            color: @navi-placeholder-gray;
+        }
+    }
+
+    .date-range-form {
+        // Appear over other elements on the page
+        position: absolute;
+        width: @report-form-width;
+        z-index: 1000;
+
+        .custom-range-form .pick-form {
+            background: @navi-white;
+            position: absolute;
+            top: 0;
+            left: @range-list-width;
+            display: flex;
+            flex-wrap: wrap;
+
+            .date-picker-label {
+                color: @navi-light-gray-1;
+                width: 50%;
+                text-align: center;
+                font-size: @font-size-small;
+                background-color: @navi-purple-dark;
+                border: solid 1px @navi-border-gray;
+                border-bottom-width: 0;
+                padding: 5px;
+            }
+        }
+    }
+
+    .range-list {
+        background-color: @navi-white;
+        border-color: @navi-light-gray;
+        border-style: solid;
+        border-width: 0 1px 1px;
+        color: @body-font-gray;
+        font-size: @font-size-mid-base;
+        width: @range-list-width;
+
+        li {
+            .clickable;
+            padding: 4px 10px 4px 15px;
+
+            &:hover {
+                background-color: @navi-lightest-gray;
+            }
+
+            &.active {
+                background-color: @navi-purple-dark;
+                color: @navi-smoke-white;
+            }
+
+            .pick-form {
+                cursor: initial;
+            }
+        }
+    }
+}

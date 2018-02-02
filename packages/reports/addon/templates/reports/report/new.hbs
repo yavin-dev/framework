@@ -1,0 +1,20 @@
+{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{#navi-info-message classNames='navi-report-new__info-message'}}
+    <span class='navi-report-new__report-icons'>
+        {{navi-icon 'line-chart'}}
+        {{navi-icon 'bar-chart'}}
+        {{navi-icon 'table'}}
+    </span>
+    {{#with (model-for (parent-route)) as | report |}}
+        <p>Select some dimensions and metrics, then click
+            <a class='navi-link clickable'
+                onclick={{pipe
+                (route-action 'validate' report)
+                (route-action 'runReport' report)
+                (route-action 'setHasReportRun' true)
+            }}>
+                Run
+            </a>
+        </p>
+    {{/with}}
+{{/navi-info-message}}

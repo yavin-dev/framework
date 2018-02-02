@@ -1,0 +1,114 @@
+{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+
+{{!-- Add to Dashboard visible if a report has been run--}}
+{{#if (and (feature-flag 'dashboards') model.request.validations.isTruelyValid)}}
+    <li class='navi-report__action'>
+        {{#report-actions/add-to-dashboard
+            tagName='button'
+            classNames='btn'
+            report=model
+            dashboards=(get (get-user) 'dashboards')
+            onAddToDashboard=(route-action 'addToDashboard')
+            onAddToNewDashboard=(route-action 'addToNewDashboard')
+        }}
+            {{navi-icon 'th-large' class='navi-report__action-icon'}}
+            {{tooltip-on-component text='Add visualization to Dashboard' enableLazyRendering=true}}
+            Add to Dashboard
+        {{/report-actions/add-to-dashboard}}
+    </li>
+{{/if}}
+
+{{!-- Copy API Query Enabled only for a valid report --}}
+<li class='navi-report__action'>
+    {{#common-actions/get-api
+        request=model.request
+        classNames='navi-report__copy-api-btn'
+        disabled=(not model.request.validations.isTruelyValid)
+        classNameBindings='model.request.validations.isTruelyValid::navi-report__action--is-disabled'
+    }}
+        {{navi-icon 'code' class='navi-report__action-icon'}}
+        Copy API Query
+        {{#tooltip-on-component enableLazyRendering=true}}
+            {{if model.request.validations.isTruelyValid 'Copy API Query of the report' 'Validate report to enable Copy API Query'}}
+        {{/tooltip-on-component}}
+    {{/common-actions/get-api}}
+</li>
+
+{{!-- Clone only enabled on a Saved report --}}
+<li class='navi-report__action'>
+    {{#link-to
+        'reports.report.clone'
+        model.id
+        classNames='navi-report__action-link'
+        classNameBindings='model.isNew:navi-report__action-link--force-disabled'
+    }}
+        {{navi-icon 'copy' class='navi-report__action-icon'}}
+        {{#tooltip-on-component enableLazyRendering=true}}
+            {{if model.isNew 'Save report to enable clone' 'Clone the report'}}
+        {{/tooltip-on-component}}
+        Clone
+    {{/link-to}}
+</li>
+
+{{!-- Export only enabled on a valid report --}}
+<li class='navi-report__action'>
+    {{#component
+        (concat 'report-actions/' (if (feature-flag 'enableMultipleExport') 'multiple-format-export' 'export'))
+        report=model
+        disabled=(not model.validations.isTruelyValid)
+        classNames='navi-report__action-link'
+        classNameBindings='model.validations.isTruelyValid::navi-report__action-link--force-disabled'
+    }}
+        {{navi-icon 'download' class='navi-report__action-icon'}}
+        Export
+        {{#tooltip-on-component enableLazyRendering=true}}
+            {{if model.request.validations.isTruelyValid 'Export the report' 'Validate report to enable export'}}
+        {{/tooltip-on-component}}
+    {{/component}}
+</li>
+
+{{!-- Share only enabled on a Valid saved report --}}
+<li class='navi-report__action'>
+    {{#common-actions/share
+        pageTitle=model.title
+        disabled=model.isNew
+        classNameBindings='model.isNew:navi-report__action--is-disabled'
+    }}
+        {{navi-icon 'share' class='navi-report__action-icon'}}
+        Share
+        {{#tooltip-on-component enableLazyRendering=true}}
+            {{if model.isNew 'Save report to enable share' 'Share the report'}}
+        {{/tooltip-on-component}}
+    {{/common-actions/share}}
+</li>
+
+{{#if model.isOwner}}
+    {{!-- Schedule only visible for an owned and not is new report --}}
+    {{#if (and (feature-flag 'enableScheduleReports') (not model.isNew))}}
+        <li class='navi-report__action'>
+            {{#common-actions/schedule
+                model=model
+                disabled=(not model.request.validations.isTruelyValid)
+                request=model.request
+                onRevert=(route-action 'revertDeliveryRule')
+                onDelete=(route-action 'deleteDeliveryRule')
+                onSave=(route-action 'saveDeliveryRule')
+            }}
+                {{tooltip-on-component text='Schedule a report run' enableLazyRendering=true}}
+                Schedule
+            {{/common-actions/schedule}}
+        </li>
+    {{/if}}
+
+    {{!-- Delete enabled on an owned report --}}
+    <li class='navi-report__action'>
+        {{#common-actions/delete
+            model=model
+            deleteAction=(route-action 'deleteReport')
+        }}
+            {{navi-icon 'trash-o' class='navi-report__action-icon'}}
+            {{tooltip-on-component text='Delete the report' enableLazyRendering=true}}
+            Delete
+        {{/common-actions/delete}}
+    </li>
+{{/if}}

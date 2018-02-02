@@ -1,0 +1,8 @@
+{{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{component
+    visualizationComponent
+    model=(array visualizationHash annotationData)
+    options=report.visualization.metadata
+    onUpdateReport=(optional this.attrs.onUpdateReport)
+    containerComponent=(or container this)
+}}

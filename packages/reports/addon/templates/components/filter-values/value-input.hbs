@@ -1,0 +1,8 @@
+{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{input
+    value=(readonly filter.values.[0])
+    placeholder='Value'
+    classNames='filter-values--value-input'
+    classNameBindings='filter.validations.attrs.values.isInvalid:filter-values--value-input--error'
+    key-up=(action 'setValue')
+}}

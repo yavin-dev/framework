@@ -1,0 +1,70 @@
+@import "navi-reports";
+
+// Blue Palette
+// -----------
+@blue-200: #2698b8;
+@blue-300: #2285bc;
+@blue-400: #258dc8;
+@blue-500: #198fff;
+@blue-600: #1c66bf;
+@blue-700: #1e39a2;
+@blue-800: #211981;
+@blue-900: #210a6f;
+
+html, body {
+    display: flex;
+    flex-flow: column;
+    font-family: @font-family-sans-serif;
+    color: @gray-9;
+    height: 100vh;
+    margin: 0;
+}
+
+body > .ember-view {
+    display: flex;
+    flex: 1;
+    flex-flow: column;
+    min-height: 0;
+}
+
+.top-bar {
+    background: linear-gradient(
+        135deg,
+        @blue-900 0%,
+        @blue-800 11%,
+        @blue-700 36%,
+        @blue-600 64%,
+        @blue-400 83%,
+        @blue-300 95%,
+        @blue-200 99%
+    );
+
+    color: @navi-white;
+    display: flex;
+    padding: 10px 0;
+
+    &__logo {
+        display: flex;
+        flex-flow: column;
+        font-family: @font-family-thin;
+        font-size: @top-level-view-title;
+        justify-content: center;
+        margin-left: 20px;
+    }
+
+    &__logo-title {
+        color: @navi-white;
+    }
+}
+
+.navi__container {
+    margin: 10px 20px;
+    display: flex;
+    flex: 1;
+    min-height: 0;
+}
+
+#ember-testing {
+  transform: none !important;
+  zoom: 50%;
+}

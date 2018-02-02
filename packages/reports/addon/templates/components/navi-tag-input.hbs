@@ -1,0 +1,19 @@
+{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.--}}
+{{!-- This is a modification of the ember-tag-input template.
+   -- Original template at https://github.com/calvinlough/ember-tag-input/blob/master/addon/templates/components/tag-input.hbs --}}
+{{#each tags as |tag index|}}
+    <li class="emberTagInput-tag">
+        {{#if _isRemoveButtonVisible}}
+            <span role="button" class="emberTagInput-remove" {{action 'removeTag' index}}></span>
+        {{/if}}
+        {{yield tag}}
+    </li>
+{{/each}}
+
+<li class="emberTagInput-new">
+    {{input
+        disabled=readOnly
+        class=(concat 'emberTagInput-input js-ember-tag-input-new' (if readOnly ' is-disabled'))
+        placeholder=placeholder
+    }}
+</li>

@@ -1,0 +1,13 @@
+{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{#each-in groupedItems as | group items |}}
+    <details class='grouped-list__group' open={{this.attrs.shouldOpenAllGroups}}>
+        <summary class='grouped-list__group-header'>{{group}} ({{items.length}})</summary>
+        <ul>
+            {{#each items as |item|}}
+                <li class='grouped-list__item'>
+                    {{yield item}}
+                </li>
+            {{/each}}
+        </ul>
+    </details>
+{{/each-in}}

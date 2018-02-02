@@ -1,0 +1,51 @@
+{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<div class='report-view__visualization-main'>
+    {{#if hasNoData}}
+        <div class='report-view__visualization-no-results'>
+            No results available.
+        </div>
+    {{else}}
+        <div class='report-view__visualization-header'>
+            {{partial 'partials/visualization-toggle'}}
+            {{#if hasReportRun}}
+                {{#unless isEditingVisualization}}
+                    <div class='clickable report-view__visualization-edit-btn' onclick={{action 'toggleEditVisualization' this}}>
+                        Edit {{visualizationTypeLabel}}
+                        {{navi-icon 'pencil'}}
+                    </div>
+                {{/unless}}
+            {{else}}
+                <div class='report-view__info-text'>{{navi-icon 'exclamation-circle'}} Run request to update {{visualizationTypeLabel}}</div>
+            {{/if}}
+        </div>
+        {{report-visualization
+            classNames='report-view__visualization'
+            report=report
+            response=response
+            container=this
+            annotationData=annotationData
+            onUpdateReport=(pipe
+                (route-action 'onUpdateReport')
+                (route-action 'validate' report)
+                (route-action 'runReport' report)
+                (route-action 'setHasReportRun' true)
+            )
+        }}
+    {{/if}}
+</div>
+{{#if (and isEditingVisualization hasReportRun)}}
+    <div class='report-view__visualization-edit'>
+        <div class='report-view__visualization-edit-header'>
+            <div class='clickable report-view__visualization-edit-btn' onclick={{action 'toggleEditVisualization' this}}> Edit {{visualizationTypeLabel}}
+                {{navi-icon 'times'}}
+            </div>
+        </div>
+        {{visualization-config/wrapper
+            request=report.request
+            response=response.rows
+            classNames='report-view__visualization-config'
+            visualization=report.visualization
+            onUpdateConfig=(route-action 'onUpdateVisualizationConfig')
+         }}
+    </div>
+{{/if}}

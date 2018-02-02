@@ -1,0 +1,19 @@
+{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{yield}}
+{{#navi-modal
+    isShown=showModal
+}}
+    <div class='navi-modal-header'>
+        <h1 class='primary-header'>Delete '{{reportName}}'</h1>
+        <h5 class='secondary-header'>Are you sure you want to delete this report?</h5>
+    </div>
+    {{#if isDeleting}}
+        {{#loading-message}}
+            Deleting Report
+        {{/loading-message}}
+    {{/if}}
+    <div class='btn-container'>
+        <button class='btn btn-primary' {{action 'delete'}} disabled={{isDeleting}}>Confirm</button>
+        <button class='btn btn-secondary' {{action 'cancel'}} disabled={{isDeleting}}>Cancel</button>
+    </div>
+{{/navi-modal}}

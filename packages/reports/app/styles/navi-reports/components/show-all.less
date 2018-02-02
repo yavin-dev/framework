@@ -1,0 +1,42 @@
+/**
+ * Copyright 2017, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
+
+.show-all {
+    .item {
+        .navi-pill;
+
+        .remove-pill {
+            font-size: @font-size-mid-base;
+        }
+    }
+
+    .items-list {
+        margin-bottom: 0; // Override margin coming from ember-modal-dialog.less
+    }
+
+    .items-count {
+        color: @navi-purple-lighter;
+    }
+
+    .show-all {
+        background-color: @navi-white;
+        padding: 5px;
+        max-height: 200px;
+        overflow: auto;
+        .last-of-group-form-element;
+    }
+
+    .btn-container .btn-secondary {
+        margin-left: 5px;
+    }
+
+    .paginated-scroll-list {
+        margin-top: 5px;
+    }
+
+    .valid-id-count {
+        margin-top: 15px;
+    }
+}

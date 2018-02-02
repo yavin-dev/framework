@@ -1,0 +1,31 @@
+/**
+ * Copyright 2017, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
+.navi-report-collection-container {
+    display: flex;
+    flex: 1;
+    flex-flow: column;
+    min-height: 0;
+    position: relative;
+
+    &__page-title {
+        .navi-page-title;
+    }
+
+    .error-container,
+    .loader-container {
+        align-items: center;
+        background-color: #f7f8f9;
+        border-radius: 2px;
+        display: flex;
+        height: 500px;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .loader-container .spinner,
+    .error-container span {
+        width: 100%;
+    }
+}

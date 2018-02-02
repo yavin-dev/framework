@@ -1,0 +1,22 @@
+{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{#power-select-multiple
+    options=dimensionOptions
+    selected=selectedDimensions
+    extra=(hash filter=filter)
+    triggerComponent='power-select-bulk-import-trigger'
+    optionsComponent='power-select-collection-options'
+    onchange=(action 'setValues')
+    search=(action 'searchDimensionValues')
+    closeOnSelect=false
+    placeholder=(concat filter.subject.longName ' Values')
+    loadingMessage='Loading...'
+    dropdownClass='filter-values--dimension-select__dropdown'
+    triggerClass='filter-values--dimension-select__trigger'
+    class='filter-values--dimension-select'
+    classNameBindings='filter.validations.attrs.rawValues.isInvalid:filter-values--dimension-select--error'
+    as |item|
+}}
+    {{#with (format-dimension item) as |dimension|}}
+        <span title={{dimension}}>{{dimension}}</span>
+    {{/with}}
+{{/power-select-multiple}}
