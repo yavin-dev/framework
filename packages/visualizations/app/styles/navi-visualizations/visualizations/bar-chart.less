@@ -1,0 +1,15 @@
+/**
+ * Copyright 2017, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
+
+.bar-chart-widget {
+  &:extend(.line-chart-widget);
+
+  // Bar coloring
+  .c3-target {
+    path {
+      fill: inherit !important;
+    }
+  }
+}

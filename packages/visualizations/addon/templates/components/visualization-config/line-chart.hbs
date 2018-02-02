@@ -1,0 +1,8 @@
+{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{component
+  (concat typePrefix (readonly options.axis.y.series.type))
+  request=request
+  response=response
+  seriesConfig=(readonly options.axis.y.series.config)
+  onUpdateConfig=(action 'onUpdateConfig')
+}}
