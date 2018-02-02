@@ -1,0 +1,36 @@
+/**
+ * Copyright 2017, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
+
+.nav-bar {
+    color: @white-700;
+    display: flex;
+    font-family: @font-family-sans-serif-bold;
+    margin: 0 0 0 15px;
+    padding: 0;
+
+    &__nav-item {
+        margin: 0 30px;
+    }
+
+    &__nav-item-link {
+        display: flex;
+        flex-flow: column;
+        padding: 3px;
+        text-align: center;
+
+        &:hover {
+            color: @white-900;
+        }
+
+        &.active {
+            color: @white-900;
+            border-bottom: 2px solid @white-900;
+        }
+    }
+
+    &__icon {
+        font-size: @font-size-xlarge;
+    }
+}

@@ -1,0 +1,68 @@
+{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<div class="metric-label-config">
+    <div class="metric-label-config__section-header">
+        Label
+    </div>
+    <div class="metric-label-config__description metric-label-config__section">
+        {{input
+            class='metric-label-config__text-input metric-label-config__description-input'
+            name='metric-description-input'
+            type='text'
+            value=(readonly options.description)
+            enter='updateLabel'
+            focus-out='updateLabel'
+            placeholder='No Label'
+        }}
+    </div>
+    <div class="metric-label-config__section-header">
+        Format Type
+    </div>
+    <div class="metric-label-config__format-list metric-label-config__section">
+        {{#each predefinedFormats as |format|}}
+            <div class={{format.class}}>
+                {{#radio-button
+                    name='format'
+                    groupValue=(readonly options.format)
+                    changed=(action 'updateFormat' format.format)
+                    value=format.format
+                }}
+                    {{format.name}}
+                {{/radio-button}}
+            </div>
+        {{/each}}
+        <div class="metric-label-config__radio-custom">
+            {{#radio-button
+                name='format'
+                groupValue=(readonly options.format)
+                value=customFormat
+                changed=(action 'clearFormat')
+            }}
+                Custom
+            {{/radio-button}}
+        </div>
+    </div>
+
+    <div class="metric-label-config__section-header">
+        Format
+    </div>
+    <div class="metric-label-config__format metric-label-config__section">
+        {{input
+            autofocus=true
+            class='metric-label-config__format-input metric-label-config__text-input'
+            name='format-input'
+            type='text'
+            maxlength="22"
+            placeholder='Raw Format'
+            value=options.format
+            enter='updateFormat'
+            focus-out='updateFormat'
+        }}
+    </div>
+    <a class='metric-label-config__doc-link'
+       href='http://numeraljs.com/#format'
+       target='_blank'
+    >
+        {{navi-icon 'life-ring' class='metric-label-config__icon-documentation'}}
+        Format Documentation
+    </a>
+</div>

@@ -1,0 +1,7 @@
+{
+  "name": "navi-visualizations",
+  "dependencies": {
+    "c3": "~0.4.11",
+    "d3": "~3.5.17"
+  }
+}

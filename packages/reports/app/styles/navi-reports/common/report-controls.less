@@ -1,0 +1,27 @@
+/**
+ * Copyright 2017, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
+
+.content-nav .report-controls {
+    position: absolute;
+    right: 0;
+}
+
+.report-controls {
+    font-size: @font-size-base;
+    margin:  @font-size-base 0;
+
+    a, a:hover {
+        text-decoration: none;
+    }
+}
+
+.report-control {
+    display: inline-block;
+    cursor: pointer;
+
+    &.disabled {
+        color: @disabled-gray;
+    }
+}

@@ -1,0 +1,38 @@
+{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+
+<nav class='header'>
+  <h2 class="title">Navi Visualizations</h2>
+  <ul class='visualization-links'>
+    <li class='visualization-link'>
+      {{#link-to 'barChart'}}
+        {{navi-icon 'bar-chart'}} Bar Chart
+      {{/link-to}}
+    </li>
+    <li class='visualization-link'>
+      {{#link-to 'goalGauge'}}
+        {{navi-icon 'tachometer'}} Goal Gauge
+      {{/link-to}}
+    </li>
+    <li class='visualization-link'>
+      {{#link-to 'lineChart'}}
+        {{navi-icon 'line-chart'}}Line Chart
+      {{/link-to}}
+    </li>
+    <li class='visualization-link'>
+      {{#link-to 'metricLabel'}}
+        {{navi-icon 'list-alt'}} Metric Label
+      {{/link-to}}
+    </li>
+    <li class='visualization-link'>
+      {{#link-to 'pieChart'}}
+        {{navi-icon 'pie-chart'}} Pie Chart
+      {{/link-to}}
+    </li>
+    <li class='visualization-link'>
+      {{#link-to 'table'}}
+        {{navi-icon 'table'}} Table
+      {{/link-to}}
+    </li>
+  </ul>
+</nav>
+<div class='outlet'>{{outlet}}</div>

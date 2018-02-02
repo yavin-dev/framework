@@ -1,0 +1,59 @@
+/**
+ * Copyright 2017, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ *
+ * Usage:
+ *   {{navi-widget
+ *      model=widgetModel
+ *      data=dataPromiseObject
+ *      layoutOptions=layoutObject
+ *      canEdit=true
+ *   }}
+ */
+import Ember from 'ember';
+import layout from '../templates/components/navi-widget';
+
+const { get } = Ember;
+
+export default Ember.Component.extend({
+  layout,
+
+  /**
+   * @property {String} tagName - don't add a wrapper tag for this component
+   */
+  tagName:'',
+
+  /**
+   * @property {String} visualizationPrefix - prefix for all visualizations types
+   */
+  visualizationPrefix: 'navi-visualizations/',
+
+  /**
+   * @property {Object} widget - model for widget
+   */
+  model: undefined,
+
+  /**
+   * @property {DS.PromiseObject} data - data for widget
+   */
+  data: undefined,
+
+  /**
+   * @property {Object} layoutOptions - layout for dashboard presentation
+   */
+  layoutOptions: undefined,
+
+  /**
+   * @property {Object} options - object for grid-stack-item
+   */
+  options: Ember.computed('layoutOptions', function() {
+    let layout = get(this, 'layoutOptions'),
+        id     = get(this, 'model.id');
+
+    if (layout) {
+      // Map layout to gridstack options
+      let {column: x, row: y, height, width} = layout;
+      return { id, x, y, height, width };
+    }
+  })
+});

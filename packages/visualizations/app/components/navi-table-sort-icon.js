@@ -1,0 +1,1 @@
+export { default } from 'navi-visualizations/components/navi-table-sort-icon';

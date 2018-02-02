@@ -1,0 +1,37 @@
+{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{#navi-list-selector
+   items=allMetrics
+   searchField='longName'
+   selected=selectedMetrics
+   title='Metrics'
+   as | metrics areMetricsFiltered |
+}}
+    {{#grouped-list
+        items=metrics
+        shouldOpenAllGroups=areMetricsFiltered
+        groupByField='category'
+        sortByField='longName'
+        as | metric |
+    }}
+        <label class='grouped-list__item-label'>
+            <input class='checkbox-selector__checkbox' type='checkbox' onchange={{action 'metricClicked' metric}} checked={{get metricsChecked metric.name}} />
+            {{metric.longName}}
+        </label>
+
+        {{#navi-icon 'question-circle-o' class='grouped-list__item-info'}}
+            {{#tooltip-on-component enableLazyRendering=true side='right'}}
+                {{#if metric.extended.isPending}}
+                    {{loading-message}}
+                {{else}}
+                    {{or metric.extended.content.description 'No description available'}}
+                {{/if}}
+            {{/tooltip-on-component}}
+        {{/navi-icon}}
+
+        {{navi-icon
+            'filter'
+            class=(concat (if (get metricsFiltered metric.name) 'checkbox-selector__filter--active ') 'checkbox-selector__filter')
+            click=(action this.attrs.toggleMetricFilter metric)
+        }}
+    {{/grouped-list}}
+{{/navi-list-selector}}

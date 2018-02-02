@@ -1,0 +1,9 @@
+{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{component
+  (concat 'visualization-config/' visualization.type)
+  request=request
+  response=response
+  options=visualization.metadata
+  onUpdateConfig=(action onUpdateConfig)
+  classNames='visualization-config__contents'
+}}

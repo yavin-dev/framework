@@ -1,0 +1,57 @@
+{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{tooltip-on-component
+    text='Max number of series reached'
+    event='none'
+    isShown=showTooltip
+}}
+{{#pick-container
+    classNames='add-series'
+    updateSelection=(action this.attrs.addSeries)
+    formToggled='formToggled'
+    as |selection container|
+}}
+    {{#pick-value
+        classNameBindings='disableAdd:disableClick'
+    }}
+        <button class='btn btn-add' disabled={{disableAdd}}> + Add Series</button>
+    {{/pick-value}}
+    {{#pick-form classNames='series-select'}}
+
+        <div class='search chart-series-{{selectionIndex}}'>
+            {{navi-icon 'search' class='navi-icon__search'}}
+            {{input
+                value=searchTerm
+                placeholder='Search'
+            }}
+        </div>
+
+        <div class='table dimension-table'>
+            <div class='table-row table-header'>
+                {{#each seriesDimensions as |dimension|}}
+                    <div class='table-cell'>
+                        {{dimension.longName}}
+                    </div>
+                {{/each}}
+            </div>
+            <div class='table-body {{scrollableContainerClass}}'>
+                {{#if availableSeriesData}}
+                    {{#each paginatedSeriesData as |series|}}
+                        <div class='table-row' {{action 'applyChanges' series target=container}}>
+                            {{#each series.dimensions as |dimension|}}
+                                <div class='table-cell'>
+                                    {{format-dimension dimension.value}}
+                                </div>
+                            {{/each}}
+                        </div>
+                    {{else}}
+                        <div class='no-match'>No Matches Found</div>
+                    {{/each}}
+                {{else}}
+                    <div class='table-cell'>
+                        No Other Series Available
+                    </div>
+                {{/if}}
+            </div>
+        </div>
+    {{/pick-form}}
+{{/pick-container}}

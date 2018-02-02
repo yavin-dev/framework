@@ -1,0 +1,48 @@
+/*
+ * Copyright 2017, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ *
+ * These styles exist only to override the default styles that are included
+ * in the ember-tag-input addon
+ */
+
+.navi-tag-input {
+    padding: 0;
+
+    .emberTagInput {
+        padding: 0;
+        border: 1px solid @navi-gray-400;
+
+        &-remove {
+            opacity: 0.5;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        &-tag,
+        &-input {
+            font: @font-size-mid-base @font-family-thin;
+            margin: 0;
+            padding: 0 4px;
+        }
+
+        &-tag {
+            .navi-pill;
+            margin-left: 0;
+        }
+
+        &-tag--remove {
+            opacity: 0.5;
+        }
+
+        &-remove:before {
+            content: '×';
+        }
+
+        &-new {
+            padding: 4px 4px 4px 0;
+            display: inline-block;
+            opacity: 0.7;
+        }
+    }
+}
