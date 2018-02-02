@@ -1,0 +1,13 @@
+{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<header class='navi-app-header'>
+    {{top-bar}}
+    {{#each flashMessages.queue as |flash|}}
+        {{flash-message flash=flash}}
+    {{/each}}
+</header>
+<div class='navi-app-container' id='navi-root'>
+    {{outlet}}
+</div>
+<footer>
+    {{!-- optional footer --}}
+</footer>
