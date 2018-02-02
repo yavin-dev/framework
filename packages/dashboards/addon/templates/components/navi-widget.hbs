@@ -1,0 +1,60 @@
+{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{#grid-stack-item
+  classNames='navi-widget'
+  options=options
+  as |item|
+}}
+  <div class='navi-widget__header'>
+    <div class='navi-widget__title'>{{model.title}}</div>
+    <div class='navi-widget__actions'>
+      {{#link-to
+        'dashboards.dashboard.widgets.widget.view' model.dashboard.id model.id
+          classNames='navi-widget__action navi-widget__explore-btn'
+      }}
+        {{navi-icon 'pencil' class='navi-icon__edit' }}
+        {{tooltip-on-component text='Explore'}}
+      {{/link-to}}
+      {{#if canEdit}}
+        {{#common-actions/delete
+           classNames='navi-widget__action navi-widget__delete-btn'
+           model=model
+           deleteAction=(route-action "deleteWidget")
+         }}
+         {{navi-icon 'trash-o' class='navi-icon__delete'}}
+         {{tooltip-on-component text='Delete'}}
+        {{/common-actions/delete}}
+      {{/if}}
+    </div>
+  </div>
+
+  {{!-- Loading --}}
+  {{#if data.isPending}}
+    <div class='navi-widget__content loader-container'>
+      {{navi-loader}}
+    </div>
+  {{/if}}
+
+  {{!-- Error --}}
+  {{#if data.isRejected}}
+    {{#if (is-forbidden data.reason)}}
+      {{unauthorized-table report=model}}
+    {{else}}
+      <div class='navi-widget__content error-container'>
+        There was an error with your request.
+      </div>
+    {{/if}}
+  {{/if}}
+
+  {{!-- Success --}}
+  {{#if data.isFulfilled}}
+    <div class='navi-widget__content visualization-container'>
+      {{component
+        (concat visualizationPrefix model.visualization.type)
+        model=data
+        options=model.visualization.metadata
+        containerComponent=item
+      }}
+    </div>
+  {{/if}}
+
+{{/grid-stack-item}}
