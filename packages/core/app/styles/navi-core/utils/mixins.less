@@ -1,0 +1,48 @@
+/**
+ * Copyright 2017, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
+
+ .align {
+     &.middle { text-align: center; }
+     &.right  { text-align: right;  }
+     &.left   { text-align: left;   }
+ }
+
+.builder-max-width {
+    max-width: @report-form-max-width;
+    padding-left: @report-form-padding-left;
+    padding-right: @report-form-padding-right;
+}
+
+.clickable {
+    -webkit-touch-callout: none;
+    cursor: pointer;
+    user-select: none;
+}
+
+.ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.navi-3d-border-mixin() {
+    border: 1px solid @navi-lighter-gray;
+    border-bottom: 1px solid @navi-bottom-border-gray;
+}
+
+.navi-link {
+    color: @link-blue;
+}
+
+.navi-page-title {
+    background-color: @navi-white;
+    flex:none;
+    min-width: 0;
+    font-family: @font-family-thin;
+    font-size: @top-level-view-title;
+    margin-top: 5px;
+    text-transform: capitalize;
+    padding-bottom: 18px;
+}
