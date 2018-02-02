@@ -104,7 +104,7 @@
     {{!-- Footer --}}
     <footer class='navi-report-widget__footer'>
       <button
-        class='btn btn-primary btn-shadow navi-report-widget__run-btn'
+        class='btn btn-primary navi-report-widget__run-btn'
         onclick={{pipe
           (route-action 'validate' model)
           (route-action 'runReport' model)
@@ -115,7 +115,7 @@
       {{#if (eq mode 'view')}}
         {{#if (and model.dashboard.canUserEdit model.hasDirtyAttributes)}}
           <button
-            class='btn btn-secondary btn-shadow navi-report-widget__save-btn'
+            class='btn btn-secondary navi-report-widget__save-btn'
             onclick={{pipe
               (route-action 'validate' model)
               (route-action 'runReport' model)
@@ -131,7 +131,7 @@
         {{/if}}
         {{#if (and model.hasDirtyAttributes (not model.isNew))}}
           <button
-            class='btn btn-secondary btn-shadow navi-report-widget__revert-btn'
+            class='btn btn-secondary navi-report-widget__revert-btn'
             onclick={{route-action 'revertChanges' model}}
           >
             Revert Changes

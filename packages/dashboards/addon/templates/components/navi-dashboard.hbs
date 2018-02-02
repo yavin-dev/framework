@@ -34,20 +34,17 @@
         {{navi-icon 'copy' class='navi-icon__copy'}}
         Clone
       {{/link-to}}
-      {{tooltip-on-component text='Clone'}}
     {{/common-actions/buttonize}}
 
     {{#if (feature-flag 'enableDashboardExport')}}
       {{!-- Export action enabled if the dashboard is valid --}}
       {{#dashboard-actions/export
-        tagName='div'
         classNames='action export btn'
         dashboard=dashboard
-        disabled=(not item.validations.isTruelyValid)
+        disabled=(not dashboard.validations.isTruelyValid)
       }}
         {{navi-icon 'download' class='navi-icon__download'}}
         PDF Export
-        {{tooltip-on-component text='PDF Export'}}
       {{/dashboard-actions/export}}
     {{/if}}
 
@@ -59,7 +56,6 @@
     }}
       {{navi-icon 'share' class='navi-icon__share'}}
       Share
-      {{tooltip-on-component text='Share'}}
     {{/common-actions/share}}
 
     {{!-- Delete visible when user owns the Dashboard --}}
@@ -72,7 +68,6 @@
       }}
         {{navi-icon 'trash-o' class='navi-icon__delete'}}
         Delete
-        {{tooltip-on-component text='Delete'}}
       {{/common-actions/delete}}
     {{/if}}
 
@@ -83,7 +78,7 @@
         reports=(get (get-user) 'reports')
         dashboard=dashboard
       }}
-        <button class='btn btn-shadow btn-primary'>+ Add Widget</button>
+        <button class='btn btn-primary'>+ Add Widget</button>
       {{/dashboard-actions/add-widget}}
     {{/if}}
   </div>

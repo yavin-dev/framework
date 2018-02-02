@@ -13,7 +13,8 @@ module.exports = {
   afterInstall: function() {
     return this.addAddonsToProject({
       packages: [
-        { name: 'ember-composable-helpers',     target: '1.1.3' },
+        { name: 'ember-cli-string-helpers',     target: '^1.6.0' },
+        { name: 'ember-composable-helpers',     target: '^2.1.0' },
         { name: 'ember-cp-validations',         target: '3.1.2' },
         { name: 'ember-data-model-fragments',   target: '2.11.5' },
         { name: 'ember-get-config',             target: '0.2.4' },

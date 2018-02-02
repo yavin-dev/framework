@@ -15,12 +15,6 @@ import ExportAction from 'navi-reports/components/report-actions/export';
 
 export default ExportAction.extend({
   /**
-   * @property {Array} classNames
-   */
-  classNames: ['action', 'export'],
-
-
-  /**
    * @property {String} href - API link for the report
    */
   href: computed('dashboard', 'disabled', function () {
@@ -29,6 +23,6 @@ export default ExportAction.extend({
       return 'javascript:void(0);';
     }
 
-    // TODO: update to return the correct HREF when pdf export service is up
+    return `/export?dashboardId=${get(this, 'dashboard.id')}`;
   })
 });

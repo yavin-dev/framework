@@ -26,11 +26,11 @@
     {{/power-select}}
     <div class='btn-container'>
       {{#if (eq selectedReport.id 'new')}}
-        {{#link-to 'dashboards.dashboard.widgets.new' dashboard.id classNames='btn btn-primary shadow-btn add-to-dashboard'}}Take me there!{{/link-to}}
+        {{#link-to 'dashboards.dashboard.widgets.new' dashboard.id classNames='btn btn-primary add-to-dashboard'}}Take me there!{{/link-to}}
       {{else}}
-        {{#link-to 'reports.report' selectedReport.id classNames='btn btn-primary shadow-btn add-to-dashboard'}}Take me there!{{/link-to}}
+        {{#link-to 'reports.report' selectedReport.id classNames='btn btn-primary add-to-dashboard'}}Take me there!{{/link-to}}
       {{/if}}
-      <button class="btn btn-default shadow-btn" onclick={{action (toggle 'showModal' this)}}>Cancel</button>
+      <button class='btn btn-secondary' onclick={{action (toggle 'showModal' this)}}>Cancel</button>
     </div>
   </div>
 {{/navi-modal}}

@@ -10,21 +10,22 @@
       'dashboards.dashboard.clone' dashboard.id
     }}
       {{navi-icon 'copy' class='navi-icon__copy'}}
-      {{tooltip-on-component text='Clone'}}
+      {{tooltip-on-component text='Clone' enableLazyRendering=true}}
     {{/link-to}}
   {{/common-actions/buttonize}}
 
   {{#if (feature-flag 'enableDashboardExport')}}
-    {{!-- Export action enabled if the dashboard is valid --}}
-    {{#dashboard-actions/export
-      tagName='li'
-      classNames='action export btn'
-      dashboard=dashboard
-      disabled=(not item.validations.isTruelyValid)
-    }}
-      {{navi-icon 'download' class='navi-icon__download'}}
-      {{tooltip-on-component text='PDF Export'}}
-    {{/dashboard-actions/export}}
+    <li>
+      {{!-- Export action enabled if the dashboard is valid --}}
+      {{#dashboard-actions/export
+        classNames='action export btn'
+        dashboard=dashboard
+        disabled=(not item.validations.isTruelyValid)
+      }}
+        {{navi-icon 'download' class='navi-icon__download'}}
+        {{tooltip-on-component text='PDF Export' enableLazyRendering=true}}
+      {{/dashboard-actions/export}}
+    </li>
   {{/if}}
 
   {{!-- Share action enabled if the dashboard is valid --}}
@@ -36,7 +37,7 @@
     disabled=(not item.validations.isTruelyValid)
   }}
     {{navi-icon 'share' class='navi-icon__share'}}
-    {{#tooltip-on-component}}
+    {{#tooltip-on-component enableLazyRendering=true}}
         Share
     {{/tooltip-on-component}}
   {{/common-actions/share}}
@@ -51,7 +52,7 @@
       deleteAction=(route-action 'deleteDashboard' dashboard)
     }}
       {{navi-icon 'trash-o' class='navi-icon__delete'}}
-      {{tooltip-on-component text='Delete'}}
+      {{tooltip-on-component text='Delete' enableLazyRendering=true}}
     {{/common-actions/delete}}
   {{/if}}
 {{/with}}
