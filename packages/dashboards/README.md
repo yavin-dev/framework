@@ -1,11 +1,11 @@
-# @navi/dashboards
+# navi-dashboards
 
 Analytics dashboard library for navi
 
 ## Installation
 
 * Install Addon
-  * `ember install @navi/dashboards`
+  * `ember install navi-dashboards`
 
 * Including CSS styling:
   * Add `@import "navi-dashboards";` into your `app.less`
