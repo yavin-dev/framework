@@ -1,0 +1,38 @@
+/**
+ * Copyright 2017, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
+
+.ember-modal-dialog {
+  background-color: #f7f8f9;
+  z-index: 51;
+  position: fixed;
+  opacity: 1;
+  font-family: @font-family-sans-serif;
+  font-size: @font-size-base;
+
+  &.emd-in-place {
+    position: static;
+  }
+}
+
+.ember-modal-overlay {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 50;
+
+  &.translucent {
+    background-color: rgba(128, 128, 128, 0.77);
+  }
+}
+
+.ember-modal-wrapper.emd-static.emd-wrapper-target-attachment-center {
+  .ember-modal-dialog {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}

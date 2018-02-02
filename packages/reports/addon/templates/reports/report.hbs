@@ -1,0 +1,78 @@
+{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<div class='navi-report'>
+    <div class='navi-report__breadcrumb'>
+        {{#link-to 'reports' class='navi-report__breadcrumb-link'}}Reports{{/link-to}}
+        {{navi-icon 'angle-right'}}
+    </div>
+    <header class='navi-report__header'>
+        <span class='navi-report__title'>
+            {{#if model.isOwner}}
+                {{editable-label
+                     classNames='navi-report__edit-title'
+                     value=model.title
+                     onChange=(route-action 'updateTitle')
+                }}
+            {{else}}
+                <span>{{model.title}}</span>
+            {{/if}}
+
+            {{!-- Favorite icon is visible if a report has been saved --}}
+            {{#if (not model.isNew)}}
+                {{favorite-item
+                    user=(get-user)
+                    item=model
+                    click=(route-action 'toggleFavorite' model)
+                    classNames='navi-report__fav-icon'
+                }}
+            {{/if}}
+
+        </span>
+        <ul class='navi-report__actions'>
+            {{partial 'partials/report-actions'}}
+        </ul>
+    </header>
+    <div class='navi-report__body'>
+        {{#report-builder
+            report=model
+        }}
+            {{outlet}}
+        {{/report-builder}}
+    </div>
+    <footer class='navi-report__footer'>
+        <button
+            class='btn btn-primary navi-report__run-btn'
+            onclick={{pipe
+                (route-action 'validate' model)
+                (route-action 'runReport' model)
+                (route-action 'setHasReportRun' true)
+            }}
+        >
+            Run
+        </button>
+        {{#if (and model.isOwner model.hasDirtyAttributes)}}
+            <button
+                class='btn btn-secondary navi-report__save-btn'
+                onclick={{pipe
+                    (route-action 'validate' model)
+                    (route-action 'runReport' model)
+                    (route-action 'setHasReportRun' true)
+                    (route-action 'saveReport' model)
+                }}
+            >
+                {{#if model.isNew}}
+                    Save Report
+                {{else}}
+                    Save Changes
+                {{/if}}
+            </button>
+        {{/if}}
+        {{#if (and model.hasDirtyAttributes (not model.isNew))}}
+            <button
+                class='btn btn-secondary navi-report__revert-btn'
+                onclick={{route-action 'revertChanges' model}}
+            >
+                Revert Changes
+            </button>
+        {{/if}}
+    </footer>
+</div>

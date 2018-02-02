@@ -1,0 +1,38 @@
+{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{#navi-list-selector
+   items=listItems
+   searchField='longName'
+   selected=selectedItems
+   title='Dimensions'
+   as | items areItemsFiltered |
+}}
+    {{#grouped-list
+        items=items
+        shouldOpenAllGroups=areItemsFiltered
+        groupByField='category'
+        sortByField='longName'
+        as | item |
+    }}
+        <label class='grouped-list__item-label'>
+            <input class='checkbox-selector__checkbox' type='checkbox' onchange={{action 'itemClicked' item}} checked={{get itemsChecked item.name}} />
+            {{item.longName}}
+        </label>
+        {{#unless (eq item.category 'Time Grain')}}
+            {{#navi-icon 'question-circle-o' class='grouped-list__item-info'}}
+                {{#tooltip-on-component enableLazyRendering=true side='right'}}
+                    {{#if item.extended.isPending}}
+                        {{loading-message}}
+                    {{else}}
+                        {{or item.extended.content.description 'No description available'}}
+                    {{/if}}
+                {{/tooltip-on-component}}
+            {{/navi-icon}}
+
+            {{navi-icon
+                'filter'
+                class=(concat (if (get dimensionsFiltered item.name) 'checkbox-selector__filter--active ') 'checkbox-selector__filter')
+                click=(action this.attrs.toggleDimFilter item)
+            }}
+        {{/unless}}
+    {{/grouped-list}}
+{{/navi-list-selector}}

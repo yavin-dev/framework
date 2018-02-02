@@ -1,0 +1,11 @@
+{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<div class='{{_containerClass}} {{if trim 'trimmed' 'show-all'}}'>
+    <ul class='{{_collectionClass}}'>
+        {{#each _itemsToRender as |item|}}
+            <li class='item'>{{yield item}}</li>
+        {{/each}}
+    </ul>
+</div>
+{{#if _isTrimmed}}
+    <a href tabindex='-1' onclick={{action 'onShowMore'}}>{{moreLabel}}</a>
+{{/if}}

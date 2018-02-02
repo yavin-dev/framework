@@ -1,0 +1,83 @@
+/**
+ * Copyright 2017, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
+
+.navi-collection {
+    .is-loading td {
+        padding: 0;
+    }
+
+    .table {
+        width: 100%;
+        font-size: @font-size-base;
+
+        thead th {
+            font-size: @font-size-base;
+            font-weight: normal;
+        }
+
+        tr {
+            border-bottom: 1px solid @navi-lightest-gray;
+            &:nth-of-type(5n) {
+                border-color: @gray-row-strong;
+            }
+        }
+
+        td {
+            word-break: break-word;
+        }
+
+        .no-results td {
+            text-align: center;
+            vertical-align: middle;
+            height: 300px;
+            background-color: @navi-container-gray;
+        }
+
+        .table-striped > tbody > tr.no-results td {
+            background-color: @navi-lightest-gray;
+        }
+    }
+
+    &__actions {
+        width: 175px;
+
+        .navi-collection__row & > div {
+            color: @gray-6;
+            visibility: hidden;
+        }
+
+        .navi-collection__row:hover & > div{
+            color: inherit;
+            visibility: inherit;
+        }
+    }
+
+    .report-control {
+        margin-left: 0;
+        margin-right: 15px;
+    }
+
+    .pick-value {
+        text-align: right;
+        font-size: @font-size-base;
+        .value {
+            padding-right: 6px;
+        }
+    }
+
+    .pick-form {
+        .dropdown-list;
+        .dropdown-list .list;
+
+        min-width: 110px;
+        right: 0;
+    }
+
+    &__unsaved-label {
+        color: @disabled-gray;
+        font-size: @font-size-mid;
+        margin-left: 8px;
+    }
+}
