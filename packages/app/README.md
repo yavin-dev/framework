@@ -2,8 +2,6 @@
 
 __An indispensable guide to exploring your data.__
 
-![navi-gif](navi.gif)
-
 ## Prerequisites
 * Setup [Fili](https://github.com/yahoo/fili) API instance
 * Setup a Navi webservice instance
@@ -40,11 +38,11 @@ Yes! Steps coming soon.
 
 If you have an existing Ember.JS app and would like to add Navi functionality to it, checkout the following Ember Addons:
 
- - [Navi Core](https://npmjs.com/package/@navi/core)
- - [Navi Reports](https://npmjs.com/package/@navi/reports)
- - [Navi Dashboards](https://npmjs.com/package/@navi/dashboards)
- - [Navi Visualizations](https://npmjs.com/package/@navi/visualizations)
- - [Nav Data](https://npmjs.com/package/@navi/data)
+ - [Navi Core](https://npmjs.com/package/navi-core)
+ - [Navi Reports](https://npmjs.com/package/navi-reports)
+ - [Navi Dashboards](https://npmjs.com/package/navi-dashboards)
+ - [Navi Visualizations](https://npmjs.com/package/navi-visualizations)
+ - [Nav Data](https://npmjs.com/package/navi-data)
 
 ## Local Development
 
