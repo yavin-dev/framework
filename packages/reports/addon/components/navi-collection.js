@@ -4,7 +4,7 @@
  *
  * Usage:
  *   {{navi-collection
- *      items=items
+ *      model=model
  *      itemType='item type'
  *      config=(hash
  *          actions='actions-component'
@@ -18,7 +18,7 @@
 import Ember from 'ember';
 import layout from '../templates/components/navi-collection';
 
-const { computed, get, isEmpty } = Ember;
+const { computed, get } = Ember;
 
 export default Ember.Component.extend({
   layout,
@@ -29,63 +29,45 @@ export default Ember.Component.extend({
   classNames: ['navi-collection'],
 
   /**
-   * @property {DS.ArrayPromise} reports - array of reports
-   */
-  items: undefined,
-
-  /**
    * @param {Object} filter - current report table filter
    */
-  filter: computed.oneWay('filterOptions.firstObject'),
+  filters: computed('model', function() {
+    return Object.keys(get(this, 'model'));
+  }),
+
+  selectedFilter: computed('filters', function() {
+    return get(this, 'filters')[0];
+  }),
 
   /**
    *
    * @property {Array} filteredReports -  array of reports filtered by user selected filter
    */
-  filteredItems: computed('items.[]', 'filter', function() {
-    let {items, filter} = this.getProperties('items', 'filter');
+  filteredItems: computed('model', 'selectedFilter', function() {
+    let { model, selectedFilter } = this.getProperties('model', 'selectedFilter');
 
-    return isEmpty(items) ? undefined : filter.filterFn(items);
+    return get(model, selectedFilter);
   }),
 
   /**
    * @property {String} itemRoute - routes to ${itemType}.${item} by default
    */
-  itemRoute: computed('config.itemRoute', function() {
-    let itemType  = get(this, 'itemType'),
-        itemRoute = get(this, 'config.itemRoute') ||
-                        `${itemType}s.${itemType}`;
+  itemRoute: computed('itemType', 'selectedFilter', function() {
+    let itemType  = get(this, 'itemType');
 
-    return itemRoute;
+    if(get(this, 'selectedFilter') === 'collections') {
+      return `${itemType}Collections.collection`;
+    }
+
+    return `${itemType}s.${itemType}`;z
   }),
 
   /**
    * @property {String} itemNewRoute - routes to ${itemType}.new by default
    */
-  itemNewRoute: computed('config.itemNewRoute', function() {
-    let itemType        = get(this, 'itemType'),
-        itemNewRoute    = get(this, 'config.itemNewRoute') ||
-                              `${itemType}s.new`;
+  itemNewRoute: computed('selectedFilter', 'config.itemNewRoute', function() {
+    if(get(this, 'selectedFilter') === 'collections') return undefined;
 
-    return itemNewRoute;
-  }),
-
-  /**
-   * @param {Array} filterOptions - list of filters for the report table
-   */
-  filterOptions: Ember.A([
-    {
-      filterFn: item => item,
-      name:      'All'
-    },
-    {
-      filterFn: items => items.filterBy('isFavorite'),
-      name:      'Favorites'
-    }
-  ]),
-
-  /**
-   * @property {Boolean} hasTableLoaded - indicates if table has loaded
-   */
-  hasTableLoaded: computed.or('items.isSettled', 'items.isLoaded')
+    return get(this, 'config.itemNewRoute') || `${get(this, 'itemType')}s.new`;
+  })
 });
