@@ -33,3 +33,24 @@ test('disabled', function(assert) {
     'unsafe:javascript:void(0);',
     'When disabled, the export action href has no effect');
 });
+
+test('notifications', function(assert) {
+  assert.expect(1);
+
+  this.mockNotifications = {
+    add({ message }) {
+      assert.equal(message,
+        'The download should begin soon.',
+        'A notification is added when export is clicked.');
+    }
+  };
+
+  this.render(`
+    {{dashboard-actions/export
+      disabled=true
+      naviNotifications=mockNotifications
+    }}
+  `);
+
+  this.$('a').click();
+});
