@@ -39,7 +39,7 @@ export default ExportAction.extend({
   click() {
     get(this, 'naviNotifications').add({
       message: `The download should begin soon.`,
-      type: 'success',
+      type: 'info',
       timeout: 'medium'
     });
   }

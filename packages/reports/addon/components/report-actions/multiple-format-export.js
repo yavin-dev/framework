@@ -115,7 +115,7 @@ export default Ember.Component.extend({
     notify(type) {
       get(this, 'naviNotifications').add({
         message: `${type}? Got it. The download should begin soon.`,
-        type: 'success',
+        type: 'info',
         timeout: 'medium'
       });
     }
