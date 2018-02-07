@@ -303,7 +303,7 @@ test('groupDataBySeries all granularity - many dimensions of same type', functio
       'Under 13': 3669828357
     }
   ],
-  'A series has the properly formmatted displayValue');
+  'A series has the properly formatted displayValue');
 });
 
 test('groupDataBySeries hour granularity - many dimensions of same type', function(assert) {
