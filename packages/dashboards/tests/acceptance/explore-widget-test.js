@@ -1,6 +1,8 @@
 import { module, test } from 'qunit';
 import startApp from '../helpers/start-app';
 import Ember from 'ember';
+import config from 'ember-get-config';
+import Mirage from 'ember-cli-mirage';
 
 let Application;
 
@@ -293,5 +295,34 @@ test('Clone a widget', function(assert) {
 
     assert.ok(find('.navi-report__body .report-view__visualization-main').is(':visible'),
       'Report body has a visualization on the view route');
+  });
+});
+
+test('Error data request', function (assert) {
+  assert.expect(1);
+
+  server.get(`${config.navi.dataSources[0].uri}/v1/data/*path`, () => {
+    return new Mirage.Response(
+      500,
+      {},
+      { description: 'Cannot merge mismatched time grains month and day' }
+    );
+  });
+
+  //suppress errors and exceptions for this test
+  let originalLoggerError = Ember.Logger.error,
+      originalException = Ember.Test.adapter.exception;
+
+  Ember.Logger.error = function () { };
+  Ember.Test.adapter.exception = function () { };
+
+  visit('/dashboards/2/widgets/4/view');
+  andThen(() => {
+    assert.equal($('.navi-report-error__info-message').text().replace(/\s+/g, " ").trim(),
+      'Oops! There was an error with your request. Cannot merge mismatched time grains month and day',
+      'An error message is displayed for an invalid request');
+
+    Ember.Logger.error = originalLoggerError;
+    Ember.Test.adapter.exception = originalException;
   });
 });

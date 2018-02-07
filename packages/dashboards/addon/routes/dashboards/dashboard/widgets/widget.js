@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Ember from 'ember';
@@ -36,18 +36,6 @@ export default ReportRoute.extend({
   },
 
   actions: {
-    /**
-     * @action error
-     * @param {Object} error
-     */
-    error(error) {
-      get(this, 'naviNotifications').add({
-        message: `OOPS! ${error.message}`,
-        type: 'danger',
-        timeout: 'medium'
-      });
-    },
-
     /**
      * @action saveWidget
      * @param {DS.Model} widget - object to save
