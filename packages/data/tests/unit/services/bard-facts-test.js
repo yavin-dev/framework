@@ -188,16 +188,22 @@ test('request builder', function(assert){
 
   let requestBuilder = Service.request({
     metrics: [{
-      metric: 'pageViews'
+      metric: 'pageViews',
+      parameters: {
+        type: 'dimension'
+      }
     }]
   });
 
-  let newRequest = requestBuilder.addMetrics('adClicks');
+  let newRequest = requestBuilder.addMetrics({ metric: 'adClicks' });
 
   assert.deepEqual(newRequest.metrics,
     [
       {
-        metric: 'pageViews'
+        metric: 'pageViews',
+        parameters: {
+          type: 'dimension'
+        }
       },
       {
         metric: 'adClicks'

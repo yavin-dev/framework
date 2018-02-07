@@ -108,20 +108,20 @@ export default Ember.Object.extend({
 
   /**
    * @method addMetrics
-   * @param {...String} metrics - name of metrics
+   * @param {...Object} metrics - metric objects with name and parameters
    * @returns {Object} copy of request with property updated
    */
   addMetrics(...metrics) {
-    return this._push('metrics', this._wrap('metric', metrics));
+    return this._push('metrics', metrics);
   },
 
   /**
    * @method setMetrics
-   * @param {...String} metrics - name of metrics
+   * @param {...Object} metrics - metric objects with name and parameters
    * @returns {Object} copy of request with property updated
    */
   setMetrics(...metrics) {
-    return this.copy({metrics: this._wrap('metric', metrics)});
+    return this.copy({ metrics });
   },
 
   /**

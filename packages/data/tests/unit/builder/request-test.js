@@ -70,7 +70,7 @@ test('metrics', function(assert) {
     [],
     'metrics is initially an empty array');
 
-  let updatedRequest = Request.addMetrics('pageViews', 'adClicks');
+  let updatedRequest = Request.addMetrics({metric: 'pageViews'}, {metric: 'adClicks', parameters: {type: 'dimension'}});
 
   assert.deepEqual(updatedRequest.metrics,
     [
@@ -78,12 +78,15 @@ test('metrics', function(assert) {
         metric: 'pageViews'
       },
       {
-        metric: 'adClicks'
+        metric: 'adClicks',
+        parameters: {
+          type: 'dimension'
+        }
       }
     ],
     'metrics can be updated with add function');
 
-  updatedRequest = updatedRequest.setMetrics('navClicks', 'navClicksWoW');
+  updatedRequest = updatedRequest.setMetrics({metric: 'navClicks'}, {metric: 'navClicksWoW'});
   assert.deepEqual(updatedRequest.metrics,
     [
       {
