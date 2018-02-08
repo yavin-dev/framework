@@ -11,6 +11,7 @@
  */
 
 import { computed, get } from '@ember/object';
+import { dasherize } from '@ember/string';
 import ExportAction from 'navi-reports/components/report-actions/export';
 import { inject as service } from '@ember/service';
 
@@ -34,6 +35,13 @@ export default ExportAction.extend({
   }),
 
   /**
+   * @property {String} download - suggested filename
+   */
+  download: computed('dashboard', function() {
+    return dasherize(get(this, 'dashboard.title')) + '-dashboard';
+  }),
+
+  /**
    * @method click
    */
   click() {
@@ -43,5 +51,4 @@ export default ExportAction.extend({
       timeout: 'medium'
     });
   }
-
 });
