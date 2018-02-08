@@ -58,10 +58,11 @@ export default Ember.Component.extend({
     let { report, modelCompression, store } = getProperties(this, 'report', 'modelCompression', 'store'),
         modelWithId = report;
 
-        /*
-         * Model compression requires an id, so if the report doesn't have one,
-         * create a copy using the tempId as the id
-         */
+
+    /*
+     * Model compression requires an id, so if the report doesn't have one,
+     * create a copy using the tempId as the id
+     */
     if (!get(report, 'id')) {
       modelWithId = store.createRecord('report', report.clone());
       modelWithId.set('id', get(modelWithId, 'tempId'));

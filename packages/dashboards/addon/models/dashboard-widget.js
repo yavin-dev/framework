@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -8,10 +8,26 @@ import DS from 'ember-data';
 import MF from 'model-fragments';
 import { v1 } from "ember-uuid";
 import hasVisualization from 'navi-reports/mixins/models/has-visualization';
+import { validator, buildValidations } from 'ember-cp-validations';
 
 const { computed, get } = Ember;
+const Validations = buildValidations({
+  visualization: [
+    validator('belongs-to')
+  ],
+  request: [
+    validator('belongs-to')
+  ],
+  title: [
+    validator('presence', {
+      presence: true,
+      ignoreBlank: true,
+      message: 'The widget must have a title'
+    })
+  ]
+});
 
-export default DS.Model.extend(hasVisualization, {
+export default DS.Model.extend(hasVisualization, Validations, {
   dashboard:     DS.belongsTo('dashboard'),
   title:         DS.attr('string', { defaultValue: 'Untitled Widget' }),
   createdOn:     DS.attr('moment'),

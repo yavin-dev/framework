@@ -32,7 +32,9 @@ module.exports = function(environment) {
     },
 
     navi: {
-      FEATURES: {}
+      FEATURES: {
+        enableMultipleExport: false
+      }
     }
   };
 

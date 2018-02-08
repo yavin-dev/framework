@@ -4,6 +4,7 @@ module.exports = {
   },
   globals: {
     $: true,
+    clickDropdown: true,
     selectChoose: true,
     server: true,
     wait: true

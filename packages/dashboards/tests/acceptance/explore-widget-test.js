@@ -159,13 +159,20 @@ test('Revert changes', function(assert) {
 });
 
 test('Export action', function(assert) {
-  assert.expect(2);
+  assert.expect(3);
+
+  let originalFeatureFlag = config.navi.FEATURES.enableMultipleExport;
+
+  // Turn flag off
+  config.navi.FEATURES.enableMultipleExport = false;
 
   visit('/dashboards/1/widgets/2/view');
 
   andThen(() => {
     assert.notOk($('.navi-report-widget__action-link:contains(Export)').is('.navi-report-widget__action-link--is-disabled'),
       'Export action is enabled for a valid request');
+    assert.ok(find('.navi-report-widget__action-link:contains(Export)').attr('href').includes('metrics=adClicks%2CnavClicks'),
+      'Have correct metric in export url');
   });
 
   // Remove all metrics to create an invalid request
@@ -175,6 +182,19 @@ test('Export action', function(assert) {
   andThen(() => {
     assert.ok($('.navi-report-widget__action-link:contains(Export)').is('.navi-report-widget__action-link--is-disabled'),
       'Export action is disabled when request is not valid');
+
+    config.navi.FEATURES.enableMultipleExport = originalFeatureFlag;
+  });
+});
+
+test('Multi export action', function (assert) {
+  assert.expect(1);
+
+  visit('/dashboards/1/widgets/2/view');
+  clickDropdown('.multiple-format-export');
+  andThen(() => {
+    assert.ok(find('.multiple-format-export__dropdown a:contains(PDF)').attr('href').includes('export?reportModel='),
+      'Export url contains serialized report');
   });
 });
 
