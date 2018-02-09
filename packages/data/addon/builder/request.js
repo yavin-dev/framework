@@ -125,6 +125,15 @@ export default Ember.Object.extend({
   },
 
   /**
+   * @method setMetricsByName
+   * @param {...String} metrics - names of metrics
+   * @returns {Object} copy of request with property updated
+   */
+  setMetricsByName(...metrics) {
+    return this.copy({metrics: this._wrap('metric', metrics)});
+  },
+
+  /**
    * @method addInterval
    * @param {String} start
    * @param {String} end

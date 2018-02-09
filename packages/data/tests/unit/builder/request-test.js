@@ -64,7 +64,7 @@ test('dimensions', function(assert) {
 });
 
 test('metrics', function(assert) {
-  assert.expect(4);
+  assert.expect(5);
 
   assert.deepEqual(Request.metrics,
     [],
@@ -97,6 +97,18 @@ test('metrics', function(assert) {
       }
     ],
     'metrics can be replaced with set function');
+
+  updatedRequest = updatedRequest.setMetricsByName('adClicks', 'adClicksDoD');
+  assert.deepEqual(updatedRequest.metrics,
+    [
+      {
+        metric: 'adClicks'
+      },
+      {
+        metric: 'adClicksDoD'
+      }
+    ],
+    'metrics can be set with only the metric name');
 
   assert.notEqual(Request,
     updatedRequest,
