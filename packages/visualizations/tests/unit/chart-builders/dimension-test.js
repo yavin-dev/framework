@@ -558,6 +558,7 @@ test('buildTooltip', function(assert) {
       x = '2016-05-31 00:00:00.000',
       tooltipData = [{
         x,
+        id: -3,
         name: 'All Other',
         value: 4088487125
       }];
