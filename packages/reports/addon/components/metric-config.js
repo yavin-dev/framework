@@ -1,0 +1,133 @@
+/**
+ * Copyright 2018, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ *
+ * Usage:
+ *   {{metric-config
+ *      metric=metric
+ *      request=request
+ *   }}
+ */
+import Component from '@ember/component';
+import layout from '../templates/components/metric-config';
+import { inject as service } from '@ember/service';
+import { computed, get, observer, set } from '@ember/object';
+import { A as arr } from '@ember/array';
+import { hash } from 'rsvp';
+import forIn from 'lodash/forIn';
+
+export default Component.extend({
+  layout,
+
+  /**
+   * @property {Array} classNames
+   */
+  classNames: ['metric-config'],
+
+  /**
+   * @property {Service} parameterService - metric parameter service
+   */
+  parameterService: service('metric-parameter'),
+
+  /**
+   * @method init
+   * @override
+   */
+  init() {
+    this._super(...arguments);
+    this._fetchAllParams();
+  },
+
+  /**
+   * @method calculatePosition
+   * @returns {Object} - positioning info used by ember-basic-dropdown
+   */
+  calculatePosition(trigger, content) {
+    let { top, left, width, height } = trigger.getBoundingClientRect(),
+        { height: contentHeight } = content.getBoundingClientRect(),
+        margin = 15,
+        style = {
+          left: left + width + margin,
+          top: top +  window.pageYOffset + (height / 2) - contentHeight + margin
+        };
+
+    return { style };
+  },
+
+  /**
+   * @observer _fetchAllParams
+   * creates a hash of promises for all metric parameter values and sets the appropriate properties
+   */
+  _fetchAllParams: observer('metric', function() {
+    let promises = {},
+        parameters = arr(get(this, 'metric.parameters')).filterBy('type', 'dimension'),
+        allParametersMap = {},
+        allParamValues = [];
+
+    parameters.forEach(param => {
+      promises[param.dimensionName] = get(this, 'parameterService').fetchAllValues(param);
+    });
+
+    hash(promises).then(res => {
+      //add property param to every element in each array
+      forIn(res, (values, key) => {
+        let valArray = values.toArray();
+
+        valArray.forEach(val => {
+          val['param'] = key;
+
+          //add object to map
+          allParametersMap[`${key}|${val.id}`] = val;
+        });
+
+        allParamValues.push(...valArray);
+      });
+
+      set(this, 'allParametersMap', allParametersMap);
+      set(this, 'allParameters', allParamValues);
+    });
+  }),
+
+  /**
+   * @property {Object} allParametersMap - parameters map of param type and id to parameter object
+   * Ex: {
+   *    'currency|USD' : { id: USD, name: Dollars, param: 'currency' }
+   *    ...
+   *  }
+   */
+  allParametersMap: undefined,
+
+  /**
+   * @property {Array} allParameters - parameter value array
+   */
+  allParameters: undefined,
+
+  /**
+   * @property {Array} selectedParams - selected param objects
+   */
+  selectedParams: computed('request.metrics', 'metric', 'allParameters.content', function() {
+    let selectedMetrics = arr(get(this, 'request.metrics')).filterBy('metric', get(this, 'metric.name')),
+        selectedMetricParams = arr(selectedMetrics).mapBy('parameters'),
+        allParametersMap = get(this, 'allParametersMap') || {};
+
+    return selectedMetricParams.map(param => {
+      //delete alias key in copy
+      let paramCopy = Object.assign({}, param);
+      delete paramCopy.as;
+
+      //fetch from map
+      let [key, value] = Object.entries(paramCopy)[0];
+      return allParametersMap[`${key}|${value}`];
+    })
+  }),
+
+  /**
+   * @property {Array} parametersChecked - list of all parameters checked
+   */
+  parametersChecked: computed('selectedParams', function() {
+    return get(this, 'selectedParams').reduce((list, param) => {
+      list[get(param, 'id')] = true;
+      return list;
+    }, {});
+  })
+});

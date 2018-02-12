@@ -28,10 +28,12 @@
             {{/tooltip-on-component}}
         {{/navi-icon}}
 
-        {{navi-icon
-            'filter'
-            class=(concat (if (get metricsFiltered metric.name) 'checkbox-selector__filter--active ') 'checkbox-selector__filter')
-            click=(action this.attrs.toggleMetricFilter metric)
-        }}
+        <div class='metric-selector__icon-set'>
+          {{navi-icon
+              'filter'
+              class=(concat (if (get metricsFiltered metric.name) 'checkbox-selector__filter--active ') 'checkbox-selector__filter metric-selector__filter')
+              click=(action this.attrs.toggleMetricFilter metric)
+          }}
+        </div>
     {{/grouped-list}}
 {{/navi-list-selector}}
