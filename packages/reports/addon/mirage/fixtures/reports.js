@@ -283,5 +283,125 @@ export default [
       bardVersion: 'v1',
       requestVersion: 'v1'
     }
+  },
+  {
+    id: 7,
+    title: 'Revenue report 1',
+    createdOn: '2015-01-01 00:00:00',
+    updatedOn: '2015-01-01 00:00:00',
+    author: 'navi_user',
+    deliveryRules: [],
+    visualization:  {
+      type: 'table',
+      version: 1,
+      metadata: {
+        columns: [
+          {
+            field: 'dateTime',
+            type: 'dateTime',
+            displayName: 'Date'
+          },
+          {
+            field: 'revenue(currency=USD)',
+            type: 'metric',
+            displayName: 'Revenue (USD)'
+          }
+        ]
+      }
+    },
+    request: {
+      logicalTable: {
+        table: 'tableA',
+        timeGrain: 'day'
+      },
+      metrics: [
+        {
+          metric: 'revenue',
+          parameters: {
+            currency: 'USD'
+          }
+        }
+      ],
+      dimensions: [],
+      filters: [],
+      intervals: [
+        {
+          end: '2018-02-16 00:00:00.000',
+          start: '2018-02-09 00:00:00.000'
+        }
+      ],
+      bardVersion: 'v1',
+      requestVersion: 'v1'
+    }
+  },
+  {
+    id: 8,
+    title: 'Revenue report 2',
+    createdOn: '2015-01-01 00:00:00',
+    updatedOn: '2015-01-01 00:00:00',
+    author: 'navi_user',
+    deliveryRules: [],
+    visualization:  {
+      type: 'table',
+      version: 1,
+      metadata: {
+        columns: [
+          {
+            field: 'dateTime',
+            type: 'dateTime',
+            displayName: 'Date'
+          },
+          {
+            field: 'property',
+            type: 'dimension',
+            displayName: 'Property'
+          },
+          {
+            field: 'revenue(currency=USD)',
+            type: 'metric',
+            displayName: 'Revenue (USD)'
+          },
+          {
+            field: 'revenue(currency-EUR)',
+            type: 'metric',
+            displayName: 'Revenue (EUR)'
+          }
+        ]
+      }
+    },
+    request: {
+      logicalTable: {
+        table: 'tableA',
+        timeGrain: 'day'
+      },
+      metrics: [
+        {
+          metric: 'revenue',
+          parameters: {
+            currency: 'USD'
+          }
+        },
+        {
+          metric: 'revenue',
+          parameters: {
+            currency: 'EUR'
+          }
+        }
+      ],
+      dimensions: [
+        {
+          dimension: 'property'
+        }
+      ],
+      filters: [],
+      intervals: [
+        {
+          end: '2018-02-16 00:00:00.000',
+          start: '2018-02-09 00:00:00.000'
+        }
+      ],
+      bardVersion: 'v1',
+      requestVersion: 'v1'
+    }
   }
 ];

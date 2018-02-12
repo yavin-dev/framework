@@ -123,6 +123,7 @@ moduleForModel('report', 'Unit | Model | report', {
     'service:bard-metadata',
     'serializer:bard-request/fragments/logical-table',
     'serializer:bard-request/fragments/interval',
+    'serializer:bard-request/fragments/metric',
     'serializer:visualization',
     'serializer:report',
     'serializer:user',
@@ -133,7 +134,8 @@ moduleForModel('report', 'Unit | Model | report', {
     'service:bard-facts',
     'service:user',
     'service:bard-dimensions',
-    'validator:recipients'
+    'validator:recipients',
+    'validator:request-time-grain'
   ],
 
   beforeEach() {

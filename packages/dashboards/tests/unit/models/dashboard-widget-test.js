@@ -51,6 +51,7 @@ moduleForModel('dashboard-widget', 'Unit | Model | dashboard widget', {
     'serializer:bard-request/request',
     'serializer:bard-request/fragments/logical-table',
     'serializer:bard-request/fragments/interval',
+    'serializer:bard-request/fragments/metric',
     'serializer:visualization',
     'serializer:goal-gauge',
     'serializer:bard-metadata',
