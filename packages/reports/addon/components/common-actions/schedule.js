@@ -12,8 +12,10 @@
 
 import Ember from 'ember';
 import layout from '../../templates/components/common-actions/schedule';
+import config from 'ember-get-config';
 
 const { A:arr, computed, get, set, setProperties } = Ember;
+const defaultFrequencies = ['day', 'week', 'month', 'quarter', 'year'];
 
 export default Ember.Component.extend({
   layout,
@@ -45,7 +47,9 @@ export default Ember.Component.extend({
   /**
    * @property {Array} frequencies
    */
-  frequencies: arr([ 'day', 'week', 'month', 'quarter', 'year' ]),
+  frequencies: computed(function() {
+    return arr(get(config, 'navi.schedule.frequencies') || defaultFrequencies);
+  }),
 
   /**
    * @property {Array} formats
