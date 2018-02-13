@@ -331,11 +331,33 @@ test('onDelete action', function(assert) {
 });
 
 test('config frequencies', function(assert) {
-  assert.expect(1);
+  assert.expect(2);
+
+  this.set('model', TestModel);
+  this.render(hbs`
+        {{common-actions/schedule
+            model=model
+            onSave=(action onSaveAction)
+            onRevert=(action onRevertAction)
+            onDelete=(action onDeleteAction)
+            disabled=isDisabled
+        }}
+    `);
+
+  Ember.run(() => {
+    this.$('.schedule-action__button').click();
+  });
+
+  Ember.run(() => {
+    clickTrigger('.schedule-modal__dropdown--frequency');
+    assert.deepEqual($('.ember-power-select-option').map((i, el) => $(el).text().trim()).toArray(),
+      ['Day', 'Week', 'Month', 'Quarter', 'Year'],
+      'Schedule frequency should have correct default options'
+    )
+  });
 
   let originalSchedule = config.navi.schedule;
   config.navi.schedule = {frequencies : ['day', 'week', 'month']};
-  this.set('model', TestModel);
 
   this.render(hbs`
         {{common-actions/schedule
