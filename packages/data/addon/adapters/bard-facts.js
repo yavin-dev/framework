@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Description: The adapter for the bard-facts model.
@@ -7,6 +7,7 @@
 
 import Ember from 'ember';
 import config from 'ember-get-config';
+import { canonicalizeMetric } from '../utils/metric';
 
 const { A:array, assign, get, getWithDefault } = Ember;
 
@@ -70,7 +71,7 @@ export default Ember.Object.extend({
    * @return {String} metrics param value
    */
   _buildMetricsParam(request) {
-    return array(get(request, 'metrics')).mapBy('metric').join(',');
+    return array(get(request, 'metrics')).map(canonicalizeMetric).join(',');
   },
 
   /**

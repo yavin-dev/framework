@@ -7,6 +7,7 @@ import DS from 'ember-data';
 import MF from 'model-fragments';
 import { validator, buildValidations } from 'ember-cp-validations';
 import { computed, get } from '@ember/object';
+import { canonicalizeMetric } from 'navi-data/utils/metric';
 
 const { Fragment } = MF;
 
@@ -29,11 +30,9 @@ export default Fragment.extend(Validations, {
     const metric = get(this, 'metric.name'),
           parameters = get(this, 'parameters') || {};
 
-    const serializeParams = (obj) => {
-      let paramArray = Object.entries(obj);
-      paramArray.sort(([keyA, ], [keyB, ]) => keyA.localeCompare(keyB));
-      return paramArray.map(([key, value]) => `${key}=${value}`).join(',');
-    };
-    return Object.keys(parameters).length > 0 ? `${metric}(${serializeParams(parameters)})` : metric;
+    return canonicalizeMetric({
+      metric,
+      parameters
+    });
   })
 });

@@ -13,7 +13,8 @@ const TestRequest = {
         },
         metrics: [
           { metric: 'm1' },
-          { metric: 'm2' }
+          { metric: 'm2' },
+          { metric: 'r', parameters: { p: '123'} }
         ],
         dimensions: [
           { dimension: 'd1' },
@@ -340,7 +341,7 @@ test('_buildQuery', function(assert) {
     {
       dateTime: '2015-01-03/2015-01-04',
       filters:  'd3|id-in[v1,v2],d4|id-in[v3,v4],d5|id-notnull[""]',
-      metrics:  'm1,m2',
+      metrics:  'm1,m2,r(p=123)',
       having:   'm1-gt[0]',
       format:   'json'
     },
@@ -350,7 +351,7 @@ test('_buildQuery', function(assert) {
   assert.deepEqual(Adapter._buildQuery(noFiltersAndNoHavings),
     {
       dateTime: '2015-01-03/2015-01-04',
-      metrics:  'm1,m2',
+      metrics:  'm1,m2,r(p=123)',
       format:   'json'
     },
     '_buildQuery correctly built the query object for a request with no filters and no having');
@@ -359,7 +360,7 @@ test('_buildQuery', function(assert) {
     {
       dateTime: '2015-01-03/2015-01-04',
       filters:  'd3|id-in[v1,v2],d4|id-in[v3,v4],d5|id-notnull[""]',
-      metrics:  'm1,m2',
+      metrics:  'm1,m2,r(p=123)',
       having:   'm1-gt[0]',
       format:   'jsonApi'
     },
@@ -371,7 +372,7 @@ test('_buildQuery', function(assert) {
       dateTime: '2015-01-03/2015-01-04',
       filters:  'd3|id-in[v1,v2],d4|id-in[v3,v4],d5|id-notnull[""]',
       format:   'json',
-      metrics:  'm1,m2',
+      metrics:  'm1,m2,r(p=123)',
       having:   'm1-gt[0]',
       sort:     'm1|desc'
     },
@@ -381,7 +382,7 @@ test('_buildQuery', function(assert) {
     {
       dateTime: '2015-01-03/2015-01-04',
       filters:  'd3|id-in[v1,v2],d4|id-in[v3,v4],d5|id-notnull[""]',
-      metrics:  'm1,m2',
+      metrics:  'm1,m2,r(p=123)',
       having:   'm1-gt[0]',
       format:   'json',
       _cache:   false
@@ -405,7 +406,7 @@ test('_buildQuery with catchAll Query Params', function(assert) {
     {
       dateTime: '2015-01-03/2015-01-04',
       filters:  'd3|id-in[v1,v2],d4|id-in[v3,v4],d5|id-notnull[""]',
-      metrics:  'm1,m2',
+      metrics:  'm1,m2,r(p=123)',
       having:   'm1-gt[0]',
       format:   'json',
       page:     1,
@@ -422,7 +423,7 @@ test('_buildQuery with pagination', function(assert) {
     {
       dateTime: '2015-01-03/2015-01-04',
       filters:  'd3|id-in[v1,v2],d4|id-in[v3,v4],d5|id-notnull[""]',
-      metrics:  'm1,m2',
+      metrics:  'm1,m2,r(p=123)',
       having:   'm1-gt[0]',
       format:   'json'
     },
@@ -433,7 +434,7 @@ test('_buildQuery with pagination', function(assert) {
     {
       dateTime: '2015-01-03/2015-01-04',
       filters:  'd3|id-in[v1,v2],d4|id-in[v3,v4],d5|id-notnull[""]',
-      metrics:  'm1,m2',
+      metrics:  'm1,m2,r(p=123)',
       having:   'm1-gt[0]',
       format:   'json'
     },
@@ -444,7 +445,7 @@ test('_buildQuery with pagination', function(assert) {
     {
       dateTime: '2015-01-03/2015-01-04',
       filters:  'd3|id-in[v1,v2],d4|id-in[v3,v4],d5|id-notnull[""]',
-      metrics:  'm1,m2',
+      metrics:  'm1,m2,r(p=123)',
       having:   'm1-gt[0]',
       format:   'json',
       page:     1,
@@ -456,7 +457,7 @@ test('_buildQuery with pagination', function(assert) {
     {
       dateTime: '2015-01-03/2015-01-04',
       filters:  'd3|id-in[v1,v2],d4|id-in[v3,v4],d5|id-notnull[""]',
-      metrics:  'm1,m2',
+      metrics:  'm1,m2,r(p=123)',
       having:   'm1-gt[0]',
       format:   'csv'
     },
@@ -468,20 +469,20 @@ test('urlForFindQuery', function(assert) {
 
   assert.equal(decodeURIComponent(Adapter.urlForFindQuery(TestRequest)),
     HOST+'/v1/data/table1/grain1/d1/d2/?dateTime=2015-01-03/2015-01-04&' +
-      'metrics=m1,m2&filters=d3|id-in[v1,v2],d4|id-in[v3,v4],d5|id-notin[""]&having=m1-gt[0]&' +
+      'metrics=m1,m2,r(p=123)&filters=d3|id-in[v1,v2],d4|id-in[v3,v4],d5|id-notin[""]&having=m1-gt[0]&' +
       'format=json',
     'urlForFindQuery correctly built the URL for the provided request');
 
   assert.equal(decodeURIComponent(Adapter.urlForFindQuery(TestRequest, {format: 'csv'})),
     HOST  + '/v1/data/table1/grain1/d1/d2/?dateTime=2015-01-03/2015-01-04&' +
-      'metrics=m1,m2&filters=d3|id-in[v1,v2],d4|id-in[v3,v4],d5|id-notin[""]&having=m1-gt[0]&' +
+      'metrics=m1,m2,r(p=123)&filters=d3|id-in[v1,v2],d4|id-in[v3,v4],d5|id-notin[""]&having=m1-gt[0]&' +
       'format=csv',
     'urlForFindQuery correctly built the URL for the provided request with the format option');
 
   let noFiltersNoHavings = Ember.$.extend({}, TestRequest, {filters: null, having: null });
   assert.equal(decodeURIComponent(Adapter.urlForFindQuery(noFiltersNoHavings)),
     HOST  + '/v1/data/table1/grain1/d1/d2/?dateTime=2015-01-03/2015-01-04&' +
-      'metrics=m1,m2&format=json',
+      'metrics=m1,m2,r(p=123)&format=json',
     'urlForFindQuery correctly built the URL for a request with no filters');
 
   let requestWithSort = Ember.$.extend({}, TestRequest, {
@@ -491,12 +492,12 @@ test('urlForFindQuery', function(assert) {
   });
   assert.equal(decodeURIComponent(Adapter.urlForFindQuery(requestWithSort)),
     HOST  + '/v1/data/table1/grain1/d1/d2/?dateTime=2015-01-03/2015-01-04&' +
-      'metrics=m1,m2&sort=m1|desc,m2|desc&format=json',
+      'metrics=m1,m2,r(p=123)&sort=m1|desc,m2|desc&format=json',
     'urlForFindQuery correctly built the URL for a request with sort');
 
   assert.equal(decodeURIComponent(Adapter.urlForFindQuery(TestRequest, {cache: false})),
     HOST  + '/v1/data/table1/grain1/d1/d2/?dateTime=2015-01-03/2015-01-04&' +
-      'metrics=m1,m2&filters=d3|id-in[v1,v2],d4|id-in[v3,v4],d5|id-notin[""]&having=m1-gt[0]&' +
+      'metrics=m1,m2,r(p=123)&filters=d3|id-in[v1,v2],d4|id-in[v3,v4],d5|id-notin[""]&having=m1-gt[0]&' +
       'format=json&_cache=false',
     'urlForFindQuery correctly built the URL for the provided request with the cache option');
 });
