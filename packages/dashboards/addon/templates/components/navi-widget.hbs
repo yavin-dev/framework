@@ -12,7 +12,7 @@
           classNames='navi-widget__action navi-widget__explore-btn'
       }}
         {{navi-icon 'pencil' class='navi-icon__edit' }}
-        {{tooltip-on-component text='Explore'}}
+        {{tooltip-on-component text='Explore' enableLazyRendering=true}}
       {{/link-to}}
       {{#if canEdit}}
         {{#common-actions/delete
@@ -21,7 +21,7 @@
            deleteAction=(route-action "deleteWidget")
          }}
          {{navi-icon 'trash-o' class='navi-icon__delete'}}
-         {{tooltip-on-component text='Delete'}}
+         {{tooltip-on-component text='Delete' enableLazyRendering=true}}
         {{/common-actions/delete}}
       {{/if}}
     </div>
