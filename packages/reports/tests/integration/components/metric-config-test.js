@@ -1,7 +1,7 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
-import { set } from '@ember/object';
+import { get, set } from '@ember/object';
 import wait from 'ember-test-helpers/wait';
 import { run } from '@ember/runloop'
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
@@ -39,11 +39,16 @@ moduleForComponent('metric-config', 'Integration | Component | metric config', {
       }]
     };
 
+    set(this, 'addMetricParameter', () => {});
+    set(this, 'removeMetricParameter', () => {});
+
     return MetadataService.loadMetadata().then(() => {
       this.render(hbs`
         {{metric-config
           metric=metric
           request=request
+          addMetricParameter=(action addMetricParameter)
+          removeMetricParameter=(action removeMetricParameter)
         }}`
       );
 
@@ -115,5 +120,38 @@ test('show selected', function(assert) {
 
     assert.notOk($('.checkbox-selector__checkbox').toArray().map(el => $(el)[0]['checked']).includes(false),
       'The selected items are checked');
+  });
+});
+
+test('add/remove param', function(assert) {
+  assert.expect(4);
+
+  set(this, 'addMetricParameter', (metric, param) => {
+    assert.deepEqual(metric,
+      MockMetric,
+      'The mock metric is passed to the action');
+
+    assert.equal(get(param, 'name'),
+      'Drams',
+      'The selected param is also passed to the action');
+  });
+
+  set(this, 'removeMetricParameter', (metric, param) => {
+    assert.deepEqual(metric,
+      MockMetric,
+      'The mock metric is passed to the action');
+
+    assert.equal(get(param, 'name'),
+      'Dollars',
+      'The selected param is also passed to the action');
+  });
+
+  run(() => clickTrigger('.metric-config__dropdown-trigger'));
+  return wait().then(() => {
+    //add Param `Drams`
+    $('.grouped-list__item:contains(Drams) .grouped-list__item-label').click();
+
+    //remove Param `Dollars(USD)`
+    $('.grouped-list__item:contains(USD) .grouped-list__item-label').click();
   });
 });

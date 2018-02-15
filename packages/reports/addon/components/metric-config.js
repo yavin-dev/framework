@@ -6,6 +6,8 @@
  *   {{metric-config
  *      metric=metric
  *      request=request
+ *      addMetricParameter=(action 'addMetricParameter')
+ *      removeMetricParameter=(action 'removeMetricParameter')
  *   }}
  */
 import Component from '@ember/component';
@@ -129,5 +131,17 @@ export default Component.extend({
       list[get(param, 'id')] = true;
       return list;
     }, {});
-  })
+  }),
+
+  actions: {
+    /*
+     * @action paramToggled
+     * @param {Object} metric
+     * @param {Object} param
+     */
+    paramToggled(metric, param) {
+      let action = get(this, 'parametersChecked')[get(param, 'id')]? 'remove' : 'add';
+      this.sendAction(`${action}MetricParameter`, metric, param);
+    }
+  }
 });
