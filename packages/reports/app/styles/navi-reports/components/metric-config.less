@@ -15,14 +15,14 @@
     max-width: 280px;
 
     &:before, &:after {
-      right: 100%;
-      top: 50%;
       border: solid transparent;
       content: " ";
       height: 0;
-      width: 0;
       position: absolute;
       pointer-events: none;
+      right: 100%;
+      top: 50%;
+      width: 0;
     }
 
     &:before {
@@ -48,6 +48,28 @@
       text-overflow: ellipsis;
       white-space: nowrap;
     }
+
+    .navi-loader__container {
+      height: 280px;
+      margin: 0;
+      width: 256px;
+    }
+
+    .navi-loader__spinner {
+      background: @navi-white;
+    }
+  }
+
+  &__error-msg {
+    align-items: center;
+    background-color: @navi-gray-100;
+    color: @navi-red-400;
+    display: flex;
+    font-size: @font-size-mid-base;
+    height: 280px;
+    justify-content: center;
+    margin: 5px 0;
+    text-align: center;
   }
 
   &__footer {

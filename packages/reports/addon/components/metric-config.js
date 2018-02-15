@@ -71,7 +71,7 @@ export default Component.extend({
       promises[param.dimensionName] = get(this, 'parameterService').fetchAllValues(param);
     });
 
-    hash(promises).then(res => {
+    let promiseHash = hash(promises).then(res => {
       //add property param to every element in each array
       forIn(res, (values, key) => {
         let valArray = values.toArray();
@@ -89,6 +89,8 @@ export default Component.extend({
       set(this, 'allParametersMap', allParametersMap);
       set(this, 'allParameters', allParamValues);
     });
+
+    set(this, 'parametersPromise', promiseHash)
   }),
 
   /**

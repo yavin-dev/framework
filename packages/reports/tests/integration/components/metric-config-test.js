@@ -6,6 +6,7 @@ import wait from 'ember-test-helpers/wait';
 import { run } from '@ember/runloop'
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
 import { getOwner } from '@ember/application';
+import { defer, reject } from 'rsvp';
 import { isEmpty } from '@ember/utils';
 
 let MockRequest, MockMetric, MetadataService;
@@ -61,6 +62,7 @@ moduleForComponent('metric-config', 'Integration | Component | metric config', {
           addMetricParameter=(action addMetricParameter)
           removeMetricParameter=(action removeMetricParameter)
           toggleMetricParamFilter=(action toggleMetricParamFilter)
+          parametersPromise=parametersPromise
         }}`
       );
 
@@ -84,19 +86,19 @@ test('it renders', function(assert) {
 
   run(() => clickTrigger('.metric-config__dropdown-trigger'));
 
-  assert.ok($('.metric-config__dropdown-container').is(':visible'),
-    'the trigger opens a dropdown on click');
-
-  assert.ok($('.metric-config__footer .metric-config__done-btn'),
-    'the done button is rendered in the footer of the component');
-
-  run(() => $('.metric-config__done-btn').click());
-
-  assert.notOk($('.metric-config__dropdown-container').is(':visible'),
-    'the done button closes the dropdown on click');
-
   //wait for all promises to be resolved
-  return wait();
+  return wait().then(() => {
+    assert.ok($('.metric-config__dropdown-container').is(':visible'),
+      'the trigger opens a dropdown on click');
+
+    assert.ok($('.metric-config__footer .metric-config__done-btn'),
+      'the done button is rendered in the footer of the component');
+
+    run(() => $('.metric-config__done-btn').click());
+
+    assert.notOk($('.metric-config__dropdown-container').is(':visible'),
+      'the done button closes the dropdown on click');
+  });
 });
 
 test('grouped list', function(assert) {
@@ -104,11 +106,11 @@ test('grouped list', function(assert) {
 
   run(() => clickTrigger('.metric-config__dropdown-trigger'));
 
-  assert.equal($('.metric-config__dropdown-container .navi-list-selector__title').text().trim(),
-    'metric1',
-    'the metric name is included in the header');
-
   return wait().then(() => {
+    assert.equal($('.metric-config__dropdown-container .navi-list-selector__title').text().trim(),
+      'metric1',
+      'the metric name is included in the header');
+
     assert.deepEqual($('.grouped-list__group-header').toArray().map((el) => $(el).text().trim()),
       [ 'currency (14)', 'property (4)'],
       'The group headers reflect the two parameters in the metric');
@@ -193,5 +195,30 @@ test('filter icon', function(assert) {
     run(() => {
       $('.grouped-list__item:contains(Drams) .checkbox-selector__filter').click();
     });
+  });
+});
+
+
+test('loader', function(assert) {
+  assert.expect(1);
+
+  set(this, 'parametersPromise', defer().promise);
+
+  run(() => clickTrigger('.metric-config__dropdown-trigger'));
+  assert.ok($('.navi-loader__container').is(':visible'),
+    'The loader is displayed while the promise is pending');
+  return wait();
+});
+
+test('error message', function(assert) {
+  assert.expect(1);
+
+  set(this, 'parametersPromise', reject());
+
+  run(() => clickTrigger('.metric-config__dropdown-trigger'));
+  return wait().then(() => {
+    assert.equal($('.metric-config__error-msg').text().trim(),
+      'OOPS! Something went wrong. Please try refreshing the page.',
+      'The error message is displayed when the promise is rejected')
   });
 });

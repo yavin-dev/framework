@@ -8,13 +8,18 @@
   {{/dd.trigger}}
 
   {{#dd.content class='metric-config__dropdown-container'}}
-    {{#navi-list-selector
-       items=allParameters
-       searchField='name'
-       selected=selectedParams
-       title=metric.name
-       as | params areParamsFiltered |
-    }}
+    {{#if (is-pending parametersPromise)}}
+      {{navi-loader}}
+    {{else if (is-rejected parametersPromise)}}
+      <div class='metric-config__error-msg'>OOPS! Something went wrong. Please try refreshing the page.</div>
+    {{else}}
+      {{#navi-list-selector
+         items=allParameters
+         searchField='name'
+         selected=selectedParams
+         title=metric.name
+         as | params areParamsFiltered |
+      }}
         {{#grouped-list
             items=params
             shouldOpenAllGroups=true
@@ -38,9 +43,10 @@
                 click=(action 'paramFilterToggled' metric param)
             }}
         {{/grouped-list}}
-    {{/navi-list-selector}}
-    <div class='metric-config__footer'>
-      <div class='metric-config__done-btn btn btn-primary' onclick={{action dd.actions.close}}>Done</div>
-    </div>
+      {{/navi-list-selector}}
+      <div class='metric-config__footer'>
+        <div class='metric-config__done-btn btn btn-primary' onclick={{action dd.actions.close}}>Done</div>
+      </div>
+    {{/if}}
   {{/dd.content}}
 {{/basic-dropdown}}
