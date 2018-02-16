@@ -62,16 +62,23 @@
                 {{#if model.isNew}}
                     Save Report
                 {{else}}
-                    Save Changes
+                    Save
                 {{/if}}
             </button>
+        {{/if}}
+        {{#if (not model.isNew)}}
+            {{#if (and model.isOwner model.hasDirtyAttributes)}}
+                {{report-actions/save-as
+                      model=model
+                }}
+            {{/if}}
         {{/if}}
         {{#if (and model.hasDirtyAttributes (not model.isNew))}}
             <button
                 class='btn btn-secondary navi-report__revert-btn'
                 onclick={{route-action 'revertChanges' model}}
             >
-                Revert Changes
+                Revert
             </button>
         {{/if}}
     </footer>

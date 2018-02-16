@@ -223,6 +223,157 @@ test('Revert and Save report', function(assert) {
     assert.notOk(find('.navi-info-message.navi-report-error__info-message.ember-view').attr('id'),
       'Error message is not displayed when reverting and running');
   });
+
+});
+
+test('Cancel Save As report', function(assert) {
+  assert.expect(6);
+
+  visit('/reports');
+  visit('/reports/new');
+  let container = Application.__container__;
+
+  //Add a metrics and save the report
+  click('.checkbox-selector--metric .grouped-list__item:contains(Additive Page Views) .grouped-list__item-label');
+  click('.navi-report__save-btn');
+
+  // Change the Dim
+  click('.checkbox-selector--dimension .grouped-list__item:contains(Week) .grouped-list__item-label');
+
+  // And click Save AS the report
+  click('.save-as__save-as-btn');
+
+  // The Modal with buttons is Visible
+  andThen(() => {
+    assert.ok(find('.save-as__cancel-modal-btn').is(':visible'),
+      'Save As Modal is visible with cancel key');
+  });
+
+  // Press the Modal X button
+  click('.navi-modal__close');
+
+  andThen(() => {
+    // Changes were not reverted, but they were not saved
+    assert.ok($('.filter-builder__subject:contains(Week)').is(':visible'),
+      'On cancel the dirty state of the report still remains.');
+
+    let emberId = find('.report-view.ember-view').attr('id'),
+        component = container.lookup('-view-registry:main')[emberId];
+    assert.equal(component.get('report.visualization.type'),
+      'table',
+      'Report has a valid visualization type after closing Save-As Modal.');
+  });
+
+  // And click Save AS the report
+  click('.save-as__save-as-btn');
+
+  // The Modal with buttons is Visible
+  andThen(() => {
+    assert.ok(find('.save-as__cancel-modal-btn').is(':visible'),
+      'Save As Modal is visible with cancel key');
+  });
+
+  // Press the Modal cancel button
+  click('.save-as__cancel-modal-btn');
+
+  andThen(() => {
+    // Changes were not reverted, but they were not saved
+    assert.ok($('.filter-builder__subject:contains(Week)').is(':visible'),
+      'On cancel the dirty state of the report still remains.');
+
+    let emberId = find('.report-view.ember-view').attr('id'),
+        component = container.lookup('-view-registry:main')[emberId];
+    assert.equal(component.get('report.visualization.type'),
+      'table',
+      'Report has a valid visualization type after canceling Save-As.');
+  });
+});
+
+
+test('Save As report', function(assert) {
+  assert.expect(6);
+
+  visit('/reports/1');
+  let container = Application.__container__;
+
+  // Change the Dim
+  click('.checkbox-selector--dimension .grouped-list__item:contains(Week) .grouped-list__item-label');
+
+  // And click Save AS the report
+  click('.save-as__save-as-btn');
+
+  // The Modal with buttons is Visible
+  andThen(() => {
+    assert.ok(find('.save-as__save-as-modal-btn').is(':visible'),
+      'Save As Modal is visible with save as key');
+  });
+
+  // Press the save as
+  click('.save-as__save-as-modal-btn');
+
+  andThen(() => {
+    assert.ok($('.filter-builder__subject:contains(Week)').is(':visible'),
+      'The new Dim is shown in the new report.');
+
+    // New Report is run
+    let emberId = find('.report-view.ember-view').attr('id'),
+        component = container.lookup('-view-registry:main')[emberId];
+    assert.equal(component.get('report.visualization.type'),
+      'table',
+      'Report has a valid visualization type after running then reverting.');
+
+    assert.equal($('.navi-report__title').text().trim(),
+      '(New Copy) Hyrule News',
+      'New Saved Report is being viewed');
+  });
+
+  visit('/reports/1');
+
+  andThen(() => {
+    assert.ok($('.filter-builder__subject:contains(Day)').is(':visible'),
+      'Old unsaved report have the old DIM.');
+
+    assert.equal($('.navi-report__title').text().trim(),
+      'Hyrule News',
+      'Old Report with unchanged title is being viewed.');
+  });
+});
+
+test('Save As on failure', function(assert) {
+  assert.expect(3);
+
+  server.urlPrefix = `${config.navi.appPersistence.uri}`;
+  server.post('/reports', () => {
+    return new Mirage.Response(500);
+  });
+
+  visit('/reports/1');
+
+  // Change the Dim
+  click('.checkbox-selector--dimension .grouped-list__item:contains(Week) .grouped-list__item-label');
+
+  // And click Save AS the report
+  click('.save-as__save-as-btn');
+
+  // Press the save as
+  click('.save-as__save-as-modal-btn');
+
+  // An error will occur and it will go back to old report dirty state
+  andThen(() => {
+    // Check URL
+    assert.equal(currentURL(),
+      '/reports/1/view',
+      'The url shows report 1');
+
+    // Old Report
+    assert.equal($('.navi-report__title').text().trim(),
+      'Hyrule News',
+      'Old Report with unchanged title is being viewed.');
+
+    // Dirty state of old
+    assert.ok($('.filter-builder__subject:contains(Week)').is(':visible'),
+      'Old unsaved report have the old DIM.');
+  });
 });
 
 test('Save report', function(assert) {
