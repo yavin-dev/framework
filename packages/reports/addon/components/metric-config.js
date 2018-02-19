@@ -8,6 +8,7 @@
  *      request=request
  *      addMetricParameter=(action 'addMetricParameter')
  *      removeMetricParameter=(action 'removeMetricParameter')
+ *      toggleMetricParamFilter=(action 'toggleMetricParamFilter')
  *   }}
  */
 import Component from '@ember/component';
@@ -76,7 +77,7 @@ export default Component.extend({
         let valArray = values.toArray();
 
         valArray.forEach(val => {
-          val['param'] = key;
+          set(val, 'param', key);
 
           //add object to map
           allParametersMap[`${key}|${val.id}`] = val;
@@ -107,7 +108,7 @@ export default Component.extend({
   /**
    * @property {Array} selectedParams - selected param objects
    */
-  selectedParams: computed('request.metrics', 'metric', 'allParameters.content', function() {
+  selectedParams: computed('request.metrics', 'metric', 'allParametersMap', function() {
     let selectedMetrics = arr(get(this, 'request.metrics')).filterBy('metric', get(this, 'metric.name')),
         selectedMetricParams = arr(selectedMetrics).mapBy('parameters'),
         allParametersMap = get(this, 'allParametersMap') || {};
@@ -128,9 +129,28 @@ export default Component.extend({
    */
   parametersChecked: computed('selectedParams', function() {
     return get(this, 'selectedParams').reduce((list, param) => {
-      list[get(param, 'id')] = true;
+      list[`${get(param, 'param')}|${get(param, 'id')}`] = true;
       return list;
     }, {});
+  }),
+
+  /*
+   * @property {Object} paramsFiltered - having -> boolean mapping denoting presence of metric param
+   *                                         in request havings
+   */
+  paramsFiltered: computed('request.having.[]', 'metric', function() {
+    return arr(get(this, 'request.having'))
+      .filterBy('metric.metric.name', get(this, 'metric.name'))
+      .reduce((list, having) => {
+        let paramArray = Object.entries(get(having, 'metric.parameters'))
+          .filter(([key, ]) => key.toLowerCase() !== 'as');
+
+        paramArray.forEach(([key, val]) => {
+          list[`${key}|${val}`] = true;
+        });
+
+        return list;
+      }, {});
   }),
 
   actions: {
@@ -140,8 +160,17 @@ export default Component.extend({
      * @param {Object} param
      */
     paramToggled(metric, param) {
-      let action = get(this, 'parametersChecked')[get(param, 'id')]? 'remove' : 'add';
+      let action = get(this, 'parametersChecked')[`${get(param, 'param')}|${get(param, 'id')}`]? 'remove' : 'add';
       this.sendAction(`${action}MetricParameter`, metric, param);
+    },
+
+    /*
+     * @action paramFilterToggled
+     * @param {Object} metric
+     * @param {Object} param
+     */
+    paramFilterToggled(metric, param) {
+      this.sendAction('toggleMetricParamFilter', metric, { [get(param, 'param')]: get(param, 'id') });
     }
   }
 });

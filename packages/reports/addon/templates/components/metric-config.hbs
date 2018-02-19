@@ -23,14 +23,19 @@
             as | param |
         }}
             <label class='grouped-list__item-label'>
-                <input class='checkbox-selector__checkbox' type='checkbox' onchange={{action 'paramToggled' metric param}} checked={{get parametersChecked param.id}}/>
+                <input
+                  class='checkbox-selector__checkbox'
+                  type='checkbox' onchange={{action 'paramToggled' metric param}}
+                  checked={{get parametersChecked (concat param.param '|' param.id)}}/>
                 {{param.name}} ({{param.id}})
             </label>
 
-            {{!-- TODO check if param is filtered --}}
             {{navi-icon
                 'filter'
-                class=(concat 'metric-config__filter-icon ' 'checkbox-selector__filter')
+                class=(concat
+                  (if (get paramsFiltered (concat param.param '|' param.id)) 'checkbox-selector__filter--active ')
+                  'metric-config__filter-icon ' 'checkbox-selector__filter')
+                click=(action 'paramFilterToggled' metric param)
             }}
         {{/grouped-list}}
     {{/navi-list-selector}}

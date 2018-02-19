@@ -6,6 +6,7 @@ import wait from 'ember-test-helpers/wait';
 import { run } from '@ember/runloop'
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
 import { getOwner } from '@ember/application';
+import { isEmpty } from '@ember/utils';
 
 let MockRequest, MockMetric, MetadataService;
 
@@ -21,6 +22,15 @@ moduleForComponent('metric-config', 'Integration | Component | metric config', {
         parameters: {
           as: 'currencyUSD',
           currency: 'USD'
+        }
+      }],
+      having: [{
+        metric: {
+          metric: { name: 'metric1' },
+          parameters: {
+            as: 'currencyUSD',
+            currency: 'USD'
+          }
         }
       }]
     };
@@ -41,6 +51,7 @@ moduleForComponent('metric-config', 'Integration | Component | metric config', {
 
     set(this, 'addMetricParameter', () => {});
     set(this, 'removeMetricParameter', () => {});
+    set(this, 'toggleMetricParamFilter', () => {});
 
     return MetadataService.loadMetadata().then(() => {
       this.render(hbs`
@@ -49,6 +60,7 @@ moduleForComponent('metric-config', 'Integration | Component | metric config', {
           request=request
           addMetricParameter=(action addMetricParameter)
           removeMetricParameter=(action removeMetricParameter)
+          toggleMetricParamFilter=(action toggleMetricParamFilter)
         }}`
       );
 
@@ -153,5 +165,33 @@ test('add/remove param', function(assert) {
 
     //remove Param `Dollars(USD)`
     $('.grouped-list__item:contains(USD) .grouped-list__item-label').click();
+  });
+});
+
+test('filter icon', function(assert) {
+  assert.expect(4);
+
+  this.set('toggleMetricParamFilter', (metric, param) => {
+    assert.deepEqual(metric,
+      MockMetric,
+      'The mock metric is passed to the action');
+
+    assert.deepEqual(param,
+      { currency: 'AMD' },
+      'The selected param is also passed to the action');
+  });
+
+  run(() => clickTrigger('.metric-config__dropdown-trigger'));
+
+  return wait().then(() => {
+    assert.notOk(isEmpty($('.grouped-list__item:contains(USD) .checkbox-selector__filter--active')),
+      'The filter icon with the `USD` param has the active class');
+
+    assert.ok(isEmpty($('.grouped-list__item:contains(Drams) .checkbox-selector__filter--active')),
+      'The filter icon with the `Drams` param does not have the active class');
+
+    run(() => {
+      $('.grouped-list__item:contains(Drams) .checkbox-selector__filter').click();
+    });
   });
 });
