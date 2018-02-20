@@ -44,7 +44,7 @@
     "ember-lodash": "^4.17.5",
     "ember-resolver": "^4.0.0",
     "ember-source": "~2.16.0",
-    "navi-core": "^9.0.68",
+    "navi-core": "^0.0.0",
     "loader.js": "^4.2.3"
   },
   "engines": {
