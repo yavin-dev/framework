@@ -1,4 +1,5 @@
-import { canonicalizeMetric, hasParameters, serializeParameters } from 'navi-data/utils/metric';
+import { canonicalizeMetric, hasParameters, serializeParameters,
+  getAliasedMetrics, canonicalizeAlias } from 'navi-data/utils/metric';
 import { module, test } from 'qunit';
 
 module('Unit - Utils - Metrics Utils', {
@@ -65,4 +66,43 @@ test('serialize parameters check', function(assert){
   assert.equal(serializeParameters({currency: 'USD'}),
     'currency=USD',
     'metric with single parameters');
+});
+
+test('alias map generator check', function(assert){
+  assert.expect(3);
+  let metrics = [
+    {metric: 'foo'},
+    {metric: 'bar', parameters: {pos: 1, as: 'm1'}},
+    {metric: 'ham', parameters: {pos: 3, as: 'm2'}}
+  ];
+  assert.deepEqual(getAliasedMetrics(metrics),
+    {
+      m1: 'bar(pos=1)',
+      m2: 'ham(pos=3)'
+    },
+    'generates map correctly');
+
+  assert.deepEqual(getAliasedMetrics([]),
+    {},
+    'empty metrics get empty alias map');
+
+  assert.deepEqual(getAliasedMetrics([
+    {metric: 'foo'},
+    {metric: 'bar', parameters: {pos: 12}}
+  ]),
+  {},
+  'metrics with no aliases return empty object');
+});
+
+test('get canonicalized metric from alias', function(assert) {
+  assert.expect(4);
+  let aliasMap = {
+    m1: 'bar(pos=1)',
+    m2: 'ham(pos=3)'
+  };
+
+  assert.equal(canonicalizeAlias('m1', aliasMap), 'bar(pos=1)', 'gets canonicalized metric from alias');
+  assert.equal(canonicalizeAlias('m3', aliasMap), 'm3', 'returns what\'s passed if not in alias map');
+  assert.equal(canonicalizeAlias('m1'), 'm1', 'returns alias without alias map');
+  assert.equal(canonicalizeAlias('m1', {}), 'm1', 'returns alias with empty alias map');
 });
