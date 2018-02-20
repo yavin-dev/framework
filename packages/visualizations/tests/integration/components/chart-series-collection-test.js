@@ -247,7 +247,7 @@ test('Deleting only available series allows you to select it', function(assert) 
 
   $('.add-series .btn-add').click();
 
-  let body = $('.table-body .table-cell').toArray().map((el) =>  {
+  let body = $('.table-body .table-cell:not(.table-cell--icon)').toArray().map((el) =>  {
     return $(el).text().trim();
   });
 
