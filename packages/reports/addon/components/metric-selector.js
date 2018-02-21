@@ -14,6 +14,7 @@
  */
 
 import Ember from 'ember';
+import uniqBy from 'lodash/uniqBy';
 import layout from '../templates/components/metric-selector';
 
 const { computed, get } = Ember;
@@ -34,7 +35,12 @@ export default Ember.Component.extend({
   /*
    * @property {Array} selectedMetrics - selected metrics in the request
    */
-  selectedMetrics: computed.mapBy('request.metrics', 'metric'),
+  selectedMetrics: computed('request.metrics.[]', function() {
+    let metrics = get(this, 'request.metrics').toArray(),
+        selectedBaseMetrics = uniqBy(metrics, (metric) => get(metric, 'metric.name'));
+
+    return Ember.A(selectedBaseMetrics).mapBy('metric');
+  }),
 
   /*
    * @property {Object} metricsChecked - object with metric -> boolean mapping to denote

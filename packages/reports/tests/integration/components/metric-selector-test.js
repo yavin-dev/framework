@@ -8,11 +8,12 @@ import {
   assertTooltipContent
 } from '../../helpers/ember-tooltips';
 
-const { getOwner, set } = Ember;
+const { get, getOwner, set } = Ember;
 
 let Store,
     MetadataService,
-    AdClicks;
+    AdClicks,
+    PageViews;
 
 moduleForComponent('metric-selector', 'Integration | Component | metric selector', {
   integration: true,
@@ -28,6 +29,7 @@ moduleForComponent('metric-selector', 'Integration | Component | metric selector
 
     return MetadataService.loadMetadata().then(() => {
       AdClicks = MetadataService.getById('metric', 'adClicks');
+      PageViews = MetadataService.getById('metric', 'pageViews');
       //set report object
       this.set('request',
         Store.createFragment('bard-request/request', {
@@ -35,7 +37,20 @@ moduleForComponent('metric-selector', 'Integration | Component | metric selector
             table: MetadataService.getById('table', 'tableA'),
             timeGrainName: 'day'
           }),
-          metrics: [{ metric: AdClicks }],
+          metrics: [
+            {
+              metric: AdClicks ,
+              parameters: {
+                adType: 'BannerAds'
+              }
+            },
+            {
+              metric: AdClicks ,
+              parameters: {
+                adType: 'VideoAds'
+              }
+            }
+          ],
           having: Ember.A([{ metric: AdClicks }]),
           responseFormat: 'csv'
         }));
@@ -68,10 +83,14 @@ test('it renders', function(assert) {
 });
 
 test('show selected', function(assert) {
-  assert.expect(3);
+  assert.expect(9);
 
   assert.ok(this.$('.grouped-list__item').length > this.get('request.metrics.length'),
     'Initially all the metrics are shown in the metric selector');
+
+  assert.equal(this.$('.navi-list-selector__show-link').text().trim(),
+    'Show Selected (1)',
+    'The Show Selected link has the correct number of selected base metrics shown');
 
   Ember.run(() => {
     this.$('.navi-list-selector__show-link').click();
@@ -79,10 +98,47 @@ test('show selected', function(assert) {
 
   assert.deepEqual(this.$('.grouped-list__item').toArray().map(el => $(el).text().trim()),
     [ 'Ad Clicks' ],
-    'When show selected is clicked only the selected adClicks metric is shown');
+    'When show selected is clicked only the selected adClicks base metric is shown');
 
   assert.notOk(this.$('.checkbox-selector__checkbox').toArray().map(el => $(el)[0]['checked']).includes(false),
     'The selected items are checked');
+
+  let metrics = get(this, 'request.metrics');
+  metrics.removeFragment(metrics.toArray()[0]);
+
+  assert.deepEqual(this.$('.grouped-list__item').toArray().map(el => $(el).text().trim()),
+    [ 'Ad Clicks' ],
+    'Removing one metric while another metric with the same base is still selected does not change \'Show Selected\'');
+
+  Ember.run(() => {
+    this.$('.navi-list-selector__show-link').click();
+  });
+
+  assert.equal(this.$('.navi-list-selector__show-link').text().trim(),
+    'Show Selected (1)',
+    'The Show Selected link still has the correct number of selected base metrics shown');
+
+  Ember.run(() => {
+    metrics.createFragment({
+      metric: PageViews,
+      parameters: 'Param1'
+    });
+  });
+
+  assert.equal(this.$('.navi-list-selector__show-link').text().trim(),
+    'Show Selected (2)',
+    'The Show Selected link increases the count when a metric with a different base is added');
+
+  Ember.run(() => {
+    this.$('.navi-list-selector__show-link').click();
+  });
+
+  assert.deepEqual(this.$('.grouped-list__item').toArray().map(el => $(el).text().trim()),
+    [ 'Ad Clicks', 'Page Views' ],
+    'Adding a new metric will show its base metric as selected');
+
+  assert.notOk(this.$('.checkbox-selector__checkbox').toArray().map(el => $(el)[0]['checked']).includes(false),
+    'All selected items are checked');
 });
 
 test('add and remove metric actions', function(assert) {
