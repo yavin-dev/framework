@@ -4,6 +4,8 @@ node_js:
   # Using the same minimum supported node version as Ember CLI & Lerna
   - '6'
 
+sudo: true  
+
 addons:
   chrome: stable  
 
