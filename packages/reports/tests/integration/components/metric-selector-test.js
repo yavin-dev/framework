@@ -16,6 +16,7 @@ let Store,
 
 moduleForComponent('metric-selector', 'Integration | Component | metric selector', {
   integration: true,
+
   beforeEach() {
     Store = getOwner(this).lookup('service:store');
     MetadataService = getOwner(this).lookup('service:bard-metadata');
@@ -47,6 +48,7 @@ moduleForComponent('metric-selector', 'Integration | Component | metric selector
           }}`);
     });
   },
+
   afterEach() {
     teardownMock();
   }
@@ -146,4 +148,14 @@ test('tooltip', function(assert) {
   assertTooltipContent(assert, {
     contentString: 'foo',
   });
+});
+
+test('metric config for metric with parameters', function(assert) {
+  assert.expect(2);
+
+  assert.ok(Ember.isEmpty(this.$('.grouped-list__item:contains(Ad Clicks) .metric-config')),
+    'The metric config trigger icon is not present for a metric without parameters');
+
+  assert.notOk(Ember.isEmpty(this.$('.grouped-list__item:contains(Revenue) .metric-config')),
+    'The metric config trigger icon is present for a metric with parameters');
 });

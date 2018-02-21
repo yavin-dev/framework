@@ -63,7 +63,8 @@ export default Component.extend({
    */
   _fetchAllParams: observer('metric', function() {
     let promises = {},
-        parameters = arr(get(this, 'metric.parameters')).filterBy('type', 'dimension'),
+        parameterObj = get(this, 'metric.parameters') || {},
+        parameters = arr(Object.values(parameterObj)).filterBy('type', 'dimension'),
         allParametersMap = {},
         allParamValues = [];
 

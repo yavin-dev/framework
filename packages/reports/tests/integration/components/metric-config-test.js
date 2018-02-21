@@ -38,16 +38,20 @@ moduleForComponent('metric-config', 'Integration | Component | metric config', {
 
     MockMetric = {
       name: 'metric1',
-      parameters: [{
-        type: 'dimension',
-        dimensionName: 'currency'
-      },{
-        type: 'dimension',
-        dimensionName: 'property'
-      },{
-        type: 'invalid',
-        name: 'invalid'
-      }]
+      parameters: {
+        currency: {
+          type: 'dimension',
+          dimensionName: 'currency'
+        },
+        property: {
+          type: 'dimension',
+          dimensionName: 'property'
+        },
+        invalid: {
+          type: 'invalid',
+          name: 'invalid'
+        }
+      }
     };
 
     set(this, 'addMetricParameter', () => {});

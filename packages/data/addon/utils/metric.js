@@ -15,10 +15,13 @@ export function canonicalizeMetric(metric) {
 }
 
 /**
+ * @function hasParameters
+ *
  * Returns if metric has parameters
  * @param {Object} obj
  * @param {String} obj.metric - metric name
  * @param {Object} obj.parameters (optional) - a key: value object of parameters
+ * @returns {Boolean} true if metric has parameters
  */
 export function hasParameters(obj = {}) {
   return obj.hasOwnProperty('parameters') &&
