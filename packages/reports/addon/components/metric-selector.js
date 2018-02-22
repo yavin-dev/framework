@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -16,6 +16,8 @@
 import Ember from 'ember';
 import uniqBy from 'lodash/uniqBy';
 import layout from '../templates/components/metric-selector';
+import $ from 'jquery';
+import { run } from '@ember/runloop';
 
 const { computed, get } = Ember;
 
@@ -72,6 +74,20 @@ export default Ember.Component.extend({
     metricClicked(metric) {
       let action = get(this, 'metricsChecked')[get(metric, 'name')]? 'remove' : 'add';
       this.sendAction(`${action}Metric`, metric);
+
+      //On add, trigger metric-config mousedown event when metric has parameters
+      if(action === 'add' && get(metric, 'hasParameters')) {
+        let longName = get(metric, 'longName');
+
+        //create mousedown event using document.createEvent as supported by all browsers
+        let mouseEvent = document.createEvent("MouseEvent");
+        mouseEvent.initEvent( "mousedown", true, true );
+
+        run(this, () =>
+          $(`.report-builder__metric-selector .grouped-list__item:contains(${longName}) .metric-config__dropdown-trigger`)
+            .get(0).dispatchEvent(mouseEvent)
+        );
+      }
     }
   }
 });

@@ -202,7 +202,6 @@ test('filter icon', function(assert) {
   });
 });
 
-
 test('loader', function(assert) {
   assert.expect(1);
 
