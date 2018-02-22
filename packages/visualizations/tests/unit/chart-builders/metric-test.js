@@ -293,6 +293,6 @@ test('buildTooltip', function(assert) {
     'Tooltip uses metric tooltip template');
 
   assert.deepEqual(get(tooltip, 'rowData'),
-    DATA[3],
+    [DATA[3]],
     'The correct response row is given to the tooltip');
 });

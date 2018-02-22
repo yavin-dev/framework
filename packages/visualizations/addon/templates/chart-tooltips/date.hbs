@@ -7,7 +7,7 @@
       <svg class='series-indicator'>
           <circle cx='50%' cy='50%' r='40%' class='chart-series-{{series.seriesIndex}}'/>
       </svg>
-      <span>{{tooltip-value-formatter series.value seriesConfig.metric rowData}}</span>
+      <span>{{tooltip-value-formatter series.value seriesConfig.metric (object-at series.seriesIndex rowData)}}</span>
     </li>
   {{/each}}
 </ol>

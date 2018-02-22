@@ -20,9 +20,8 @@ test('print dashboards view', function (assert) {
   visit('/print/dashboards/1/view');
 
   andThen(function () {
-    assert.equal(find('.page-title').text().trim(),
-      'Tumblr Goals Dashboard',
-      'Should show dashboard title');
+    assert.notOk(find('.page-title').is(':visible'),
+      'Title should not be visible');
 
     assert.notOk(find('.editable-label__icon').is(':visible'),
       'Title edit icon should not be visible');

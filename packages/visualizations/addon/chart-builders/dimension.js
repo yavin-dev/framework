@@ -46,7 +46,7 @@ export default Ember.Object.extend({
   getSeriesName: (row, config/*, request */) => {
     let dimensionOrder =  config.dimensionOrder;
 
-    return dimensionOrder.map(dim => get(row, `${dim}|desc`)).join(',');
+    return dimensionOrder.map(dim => get(row, `${dim}|id`)).join(',');
   },
 
   /**
@@ -148,7 +148,7 @@ export default Ember.Object.extend({
       rowData: Ember.computed('x', 'tooltipData', function() {
         return get(this, 'tooltipData').map(series => {
           // Get the full data for this combination of x + series
-          let dataForSeries = byXSeries.getDataForKey(get(this, 'x') + series.name) || [];
+          let dataForSeries = byXSeries.getDataForKey(get(this, 'x') + series.id) || [];
 
           return dataForSeries[0];
         });

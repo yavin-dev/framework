@@ -29,7 +29,7 @@
         {{navi-icon 'code' class='navi-report__action-icon'}}
         Copy API Query
         {{#tooltip-on-component enableLazyRendering=true}}
-            {{if model.request.validations.isTruelyValid 'Copy API Query of the report' 'Validate report to enable Copy API Query'}}
+            {{if model.request.validations.isTruelyValid 'Copy API Query of the report' 'Run a valid report to enable Copy API Query'}}
         {{/tooltip-on-component}}
     {{/common-actions/get-api}}
 </li>
@@ -62,7 +62,7 @@
         {{navi-icon 'download' class='navi-report__action-icon'}}
         Export
         {{#tooltip-on-component enableLazyRendering=true}}
-            {{if model.request.validations.isTruelyValid 'Export the report' 'Validate report to enable export'}}
+            {{if model.request.validations.isTruelyValid 'Export the report' 'Run a valid report to enable export'}}
         {{/tooltip-on-component}}
     {{/component}}
 </li>

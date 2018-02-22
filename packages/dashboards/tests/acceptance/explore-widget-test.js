@@ -1,6 +1,8 @@
 import { module, test } from 'qunit';
 import startApp from '../helpers/start-app';
 import Ember from 'ember';
+import config from 'ember-get-config';
+import Mirage from 'ember-cli-mirage';
 
 let Application;
 
@@ -157,13 +159,20 @@ test('Revert changes', function(assert) {
 });
 
 test('Export action', function(assert) {
-  assert.expect(2);
+  assert.expect(3);
+
+  let originalFeatureFlag = config.navi.FEATURES.enableMultipleExport;
+
+  // Turn flag off
+  config.navi.FEATURES.enableMultipleExport = false;
 
   visit('/dashboards/1/widgets/2/view');
 
   andThen(() => {
     assert.notOk($('.navi-report-widget__action-link:contains(Export)').is('.navi-report-widget__action-link--is-disabled'),
       'Export action is enabled for a valid request');
+    assert.ok(find('.navi-report-widget__action-link:contains(Export)').attr('href').includes('metrics=adClicks%2CnavClicks'),
+      'Have correct metric in export url');
   });
 
   // Remove all metrics to create an invalid request
@@ -173,6 +182,19 @@ test('Export action', function(assert) {
   andThen(() => {
     assert.ok($('.navi-report-widget__action-link:contains(Export)').is('.navi-report-widget__action-link--is-disabled'),
       'Export action is disabled when request is not valid');
+
+    config.navi.FEATURES.enableMultipleExport = originalFeatureFlag;
+  });
+});
+
+test('Multi export action', function (assert) {
+  assert.expect(1);
+
+  visit('/dashboards/1/widgets/2/view');
+  clickDropdown('.multiple-format-export');
+  andThen(() => {
+    assert.ok(find('.multiple-format-export__dropdown a:contains(PDF)').attr('href').includes('export?reportModel='),
+      'Export url contains serialized report');
   });
 });
 
@@ -293,5 +315,34 @@ test('Clone a widget', function(assert) {
 
     assert.ok(find('.navi-report__body .report-view__visualization-main').is(':visible'),
       'Report body has a visualization on the view route');
+  });
+});
+
+test('Error data request', function (assert) {
+  assert.expect(1);
+
+  server.get(`${config.navi.dataSources[0].uri}/v1/data/*path`, () => {
+    return new Mirage.Response(
+      500,
+      {},
+      { description: 'Cannot merge mismatched time grains month and day' }
+    );
+  });
+
+  //suppress errors and exceptions for this test
+  let originalLoggerError = Ember.Logger.error,
+      originalException = Ember.Test.adapter.exception;
+
+  Ember.Logger.error = function () { };
+  Ember.Test.adapter.exception = function () { };
+
+  visit('/dashboards/2/widgets/4/view');
+  andThen(() => {
+    assert.equal($('.navi-report-error__info-message').text().replace(/\s+/g, " ").trim(),
+      'Oops! There was an error with your request. Cannot merge mismatched time grains month and day',
+      'An error message is displayed for an invalid request');
+
+    Ember.Logger.error = originalLoggerError;
+    Ember.Test.adapter.exception = originalException;
   });
 });

@@ -13,10 +13,16 @@
     flex: unset;
     max-width: none;
     width: 11.0in - (2 * @print-margin);
+    height: 8.0in - (2 * @print-margin);
     page-break-after: always;
   }
 
-  .table-body {
-    min-height: 8.0in - (2 * @print-margin);
+  .grid-stack-item-content {
+    border: none;
+    height: 100%;
+  }
+
+  .goal-gauge-widget {
+    height: 5in;
   }
 }

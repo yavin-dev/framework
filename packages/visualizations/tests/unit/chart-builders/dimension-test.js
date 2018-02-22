@@ -303,7 +303,7 @@ test('groupDataBySeries all granularity - many dimensions of same type', functio
       'Under 13': 3669828357
     }
   ],
-  'A series has the properly formmatted displayValue');
+  'A series has the properly formatted displayValue');
 });
 
 test('groupDataBySeries hour granularity - many dimensions of same type', function(assert) {
@@ -558,6 +558,7 @@ test('buildTooltip', function(assert) {
       x = '2016-05-31 00:00:00.000',
       tooltipData = [{
         x,
+        id: -3,
         name: 'All Other',
         value: 4088487125
       }];

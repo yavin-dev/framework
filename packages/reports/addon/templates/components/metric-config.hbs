@@ -1,0 +1,52 @@
+{{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{#basic-dropdown
+  calculatePosition=calculatePosition
+  as |dd|
+}}
+  {{#dd.trigger class='metric-config__dropdown-trigger'}}
+    {{navi-icon 'cog' class='metric-config__trigger-icon'}}
+  {{/dd.trigger}}
+
+  {{#dd.content class='metric-config__dropdown-container'}}
+    {{#if (is-pending parametersPromise)}}
+      {{navi-loader}}
+    {{else if (is-rejected parametersPromise)}}
+      <div class='metric-config__error-msg'>OOPS! Something went wrong. Please try refreshing the page.</div>
+    {{else}}
+      {{#navi-list-selector
+         items=allParameters
+         searchField='name'
+         selected=selectedParams
+         title=metric.name
+         as | params areParamsFiltered |
+      }}
+        {{#grouped-list
+            items=params
+            shouldOpenAllGroups=true
+            groupByField='param'
+            sortByField='name'
+            as | param |
+        }}
+            <label class='grouped-list__item-label'>
+                <input
+                  class='checkbox-selector__checkbox'
+                  type='checkbox' onchange={{action 'paramToggled' metric param}}
+                  checked={{get parametersChecked (concat param.param '|' param.id)}}/>
+                {{param.name}} ({{param.id}})
+            </label>
+
+            {{navi-icon
+                'filter'
+                class=(concat
+                  (if (get paramsFiltered (concat param.param '|' param.id)) 'checkbox-selector__filter--active ')
+                  'metric-config__filter-icon ' 'checkbox-selector__filter')
+                click=(action 'paramFilterToggled' metric param)
+            }}
+        {{/grouped-list}}
+      {{/navi-list-selector}}
+      <div class='metric-config__footer'>
+        <div class='metric-config__done-btn btn btn-primary' onclick={{action dd.actions.close}}>Done</div>
+      </div>
+    {{/if}}
+  {{/dd.content}}
+{{/basic-dropdown}}

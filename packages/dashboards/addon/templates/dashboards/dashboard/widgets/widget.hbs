@@ -1,4 +1,4 @@
-{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class='navi-report-widget'>
     {{!-- Breadcrumb --}}
     <div class='navi-report-widget__breadcrumb'>
@@ -36,25 +36,26 @@
               }}
                 {{navi-icon 'code' class='navi-report-widget__icon'}}
                 Copy API Query
-                {{#tooltip-on-component}}
-                    Copy API Query
+                {{#tooltip-on-component enableLazyRendering=true}}
+                  {{if model.request.validations.isTruelyValid 'Copy API Query' 'Run a valid report to copy'}}
                 {{/tooltip-on-component}}
               {{/common-actions/get-api}}
             </li>
             <li class='navi-report-widget__action'>
               {{!-- Export action is only enabled when request is valid --}}
-              {{#report-actions/export
-                report=model
+              {{#component
+                (concat 'report-actions/' (if (feature-flag 'enableMultipleExport') 'multiple-format-export' 'export'))
+                report=(reportlize model)
                 classNames='navi-report-widget__action-link'
-                disabled=(not model.request.validations.isTruelyValid)
-                classNameBindings='model.request.validations.isTruelyValid::navi-report-widget__action-link--is-disabled'
+                disabled=(not model.validations.isTruelyValid)
+                classNameBindings='model.validations.isTruelyValid::navi-report-widget__action-link--is-disabled'
               }}
                 {{navi-icon 'download' class='navi-report-widget__icon'}}
                 Export
-                {{#tooltip-on-component}}
-                    Export
+                {{#tooltip-on-component enableLazyRendering=true}}
+                    {{if model.validations.isTruelyValid 'Export the report' 'Run a valid report to enable export'}}
                 {{/tooltip-on-component}}
-              {{/report-actions/export}}
+              {{/component}}
             </li>
             <li class='navi-report-widget__action'>
               {{#link-to 'dashboards.dashboard.widgets.widget.clone-to-report' classNames='navi-report-widget__action-link'}}
@@ -71,8 +72,8 @@
                 }}
                   {{navi-icon 'share' class='navi-report-widget__icon'}}
                   Share
-                  {{#tooltip-on-component}}
-                      Share
+                  {{#tooltip-on-component enableLazyRendering=true}}
+                    {{if model.request.validations.isTruelyValid 'Share' 'Run a valid report to share'}}
                   {{/tooltip-on-component}}
                 {{/common-actions/share}}
               </li>

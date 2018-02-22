@@ -117,7 +117,7 @@ export default Ember.Component.extend({
             rowData: Ember.computed('x', 'requiredToolTipData', function() {
               // Get the full data for this combination of x + series
               let series = get(this, 'requiredToolTipData'),
-                  dataForSeries = byXSeries.getDataForKey(get(this, 'x') + series.name) || [];
+                  dataForSeries = byXSeries.getDataForKey(get(this, 'x') + series.id) || [];
 
               return dataForSeries[0];
             })

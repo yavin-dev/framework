@@ -208,6 +208,7 @@ test('tooltipComponent', function(assert) {
       x = '2015-12-14 00:00:00.000',
       requiredToolTipData = {
         x,
+        id: 2,
         name: '13 - 25'
       };
 

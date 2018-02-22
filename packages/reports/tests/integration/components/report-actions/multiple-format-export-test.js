@@ -67,6 +67,19 @@ test('export links', function(assert) {
   });
 });
 
+test('filename', function(assert) {
+  assert.expect(1);
+
+  this.render(TEMPLATE);
+
+  clickTrigger();
+  return wait().then(() => {
+    assert.equal(this.$('.multiple-format-export__dropdown a:contains("CSV")').attr('download'),
+      'hyrule-news',
+      'The download attribute is set to the dasherized report name');
+  });
+});
+
 test('close on click', function(assert) {
   assert.expect(3);
 
@@ -100,7 +113,7 @@ test('disabled dropdown', function(assert) {
     assert.notOk($('.ember-basic-dropdown-content-placeholder').is(':visible'),
       'Dropdown should not be visible');
   });
-})
+});
 
 test('notifications', function(assert) {
   assert.expect(1);

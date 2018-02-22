@@ -11,9 +11,17 @@
  */
 
 import { computed, get } from '@ember/object';
+import { dasherize } from '@ember/string';
 import ExportAction from 'navi-reports/components/report-actions/export';
+import { inject as service } from '@ember/service';
 
 export default ExportAction.extend({
+
+  /**
+   * @property {Service} naviNotifications
+   */
+  naviNotifications: service(),
+
   /**
    * @property {String} href - API link for the report
    */
@@ -24,5 +32,23 @@ export default ExportAction.extend({
     }
 
     return `/export?dashboardId=${get(this, 'dashboard.id')}`;
-  })
+  }),
+
+  /**
+   * @property {String} download - suggested filename
+   */
+  download: computed('dashboard', function() {
+    return dasherize(get(this, 'dashboard.title')) + '-dashboard';
+  }),
+
+  /**
+   * @method click
+   */
+  click() {
+    get(this, 'naviNotifications').add({
+      message: `The download should begin soon.`,
+      type: 'info',
+      timeout: 'medium'
+    });
+  }
 });

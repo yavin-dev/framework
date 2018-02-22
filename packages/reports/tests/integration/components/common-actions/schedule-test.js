@@ -4,6 +4,7 @@ import hbs from 'htmlbars-inline-precompile';
 import { hbsWithModal } from '../../../helpers/hbs-with-modal';
 import wait from 'ember-test-helpers/wait';
 import { clickTrigger, nativeMouseUp } from '../../../helpers/ember-power-select';
+import config from 'ember-get-config';
 
 const { getOwner } = Ember;
 
@@ -326,5 +327,58 @@ test('onDelete action', function(assert) {
 
   return wait().then(() => {
     $('.btn-container button:contains(Confirm)').click();
+  });
+});
+
+test('config frequencies', function(assert) {
+  assert.expect(2);
+
+  this.set('model', TestModel);
+  this.render(hbs`
+        {{common-actions/schedule
+            model=model
+            onSave=(action onSaveAction)
+            onRevert=(action onRevertAction)
+            onDelete=(action onDeleteAction)
+            disabled=isDisabled
+        }}
+    `);
+
+  Ember.run(() => {
+    this.$('.schedule-action__button').click();
+  });
+
+  Ember.run(() => {
+    clickTrigger('.schedule-modal__dropdown--frequency');
+    assert.deepEqual($('.ember-power-select-option').map((i, el) => $(el).text().trim()).toArray(),
+      ['Day', 'Week', 'Month', 'Quarter', 'Year'],
+      'Schedule frequency should have correct default options'
+    )
+  });
+
+  let originalSchedule = config.navi.schedule;
+  config.navi.schedule = {frequencies : ['day', 'week', 'month']};
+
+  this.render(hbs`
+        {{common-actions/schedule
+            model=model
+            onSave=(action onSaveAction)
+            onRevert=(action onRevertAction)
+            onDelete=(action onDeleteAction)
+            disabled=isDisabled
+        }}
+    `);
+
+  Ember.run(() => {
+    this.$('.schedule-action__button').click();
+  });
+
+  Ember.run(() => {
+    clickTrigger('.schedule-modal__dropdown--frequency');
+    assert.deepEqual($('.ember-power-select-option').map((i, el) => $(el).text().trim()).toArray(),
+      ['Day', 'Week', 'Month'],
+      'Schedule frequency should have correct options'
+    )
+    config.navi.schedule = originalSchedule;
   });
 });

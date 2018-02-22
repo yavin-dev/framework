@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Description: The adapter for the bard-facts model.
@@ -7,6 +7,7 @@
 
 import Ember from 'ember';
 import config from 'ember-get-config';
+import { canonicalizeMetric, getAliasedMetrics, canonicalizeAlias } from '../utils/metric';
 
 const { A:array, assign, get, getWithDefault } = Ember;
 
@@ -70,7 +71,7 @@ export default Ember.Object.extend({
    * @return {String} metrics param value
    */
   _buildMetricsParam(request) {
-    return array(get(request, 'metrics')).mapBy('metric').join(',');
+    return array(get(request, 'metrics')).map(canonicalizeMetric).join(',');
   },
 
   /**
@@ -103,14 +104,15 @@ export default Ember.Object.extend({
    * @method _buildSortParam
    * @private
    * @param {Object} request
+   * @param {function} aliasFunction function that returns metrics from aliases
    * @return {String} sort param value
    */
-  _buildSortParam(request) {
+  _buildSortParam(request, aliasFunction = (a) => a) {
     let sort = get(request, 'sort');
 
     if(sort && sort.length) {
       return sort.map(sortMetric => {
-        let metric     = get(sortMetric, 'metric'),
+        let metric     = aliasFunction(get(sortMetric, 'metric')),
             direction  = getWithDefault(sortMetric, 'direction', 'desc');
 
         Ember.assert(`'${direction}' is not a valid sort direction (${SORT_DIRECTIONS.join()})`,
@@ -129,9 +131,10 @@ export default Ember.Object.extend({
    * @method _buildHavingParam
    * @private
    * @param {Object} request
+   * @param {function} aliasFunction function that returns metrics from aliases
    * @return {String} having param value
    */
-  _buildHavingParam(request) {
+  _buildHavingParam(request, aliasFunction = (a) => a) {
     let having = get(request, 'having');
 
     if(having && having.length) {
@@ -142,7 +145,7 @@ export default Ember.Object.extend({
           until: '4.0.0'
         });
 
-        let metric = get(having, 'metric'),
+        let metric = aliasFunction(get(having, 'metric')),
             operator  = get(having, 'operator'),
             value     = array([get(having, 'value')]), //value is deprecated
             values    = array(get(having, 'values')),
@@ -190,9 +193,11 @@ export default Ember.Object.extend({
    */
   _buildQuery(request, options) {
     let query   = {},
+        aliasMap = getAliasedMetrics(request.metrics),
+        aliasFunction = (alias) => canonicalizeAlias(alias, aliasMap),
         filters = this._buildFiltersParam(request),
-        having = this._buildHavingParam(request),
-        sort = this._buildSortParam(request);
+        having = this._buildHavingParam(request, aliasFunction),
+        sort = this._buildSortParam(request, aliasFunction);
 
     query.dateTime  = this._buildDateTimeParam(request);
     query.metrics   = this._buildMetricsParam(request);

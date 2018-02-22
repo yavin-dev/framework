@@ -91,9 +91,11 @@ export default Ember.Object.extend({
        * @property {Object[]} rowData - maps a response row to each series in a tooltip
        */
       rowData: Ember.computed('x', 'tooltipData', function() {
-        // Get the full data for this combination of x + series
-        let dataForSeries = byXSeries.getDataForKey(get(this, 'x')) || [];
-        return dataForSeries[0];
+        return get(this, 'tooltipData').map(() => {
+          // Get the full data for this combination of x + series
+          let dataForSeries = byXSeries.getDataForKey(get(this, 'x')) || [];
+          return dataForSeries[0];
+        });
       })
     });
   }

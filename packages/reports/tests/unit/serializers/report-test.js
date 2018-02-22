@@ -1,7 +1,6 @@
 import Ember from 'ember';
 import { moduleForModel, test } from 'ember-qunit';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
-import wait from 'ember-test-helpers/wait';
 
 const { getOwner } = Ember;
 
@@ -30,6 +29,7 @@ moduleForModel('report', 'Unit | Serializer | Report', {
     'model:bard-request/fragments/sort',
     'serializer:bard-request/fragments/logical-table',
     'serializer:bard-request/fragments/interval',
+    'serializer:bard-request/fragments/metric',
     'validator:length',
     'validator:belongs-to',
     'validator:has-many',
@@ -39,6 +39,7 @@ moduleForModel('report', 'Unit | Serializer | Report', {
     'validator:request-metrics',
     'validator:request-metric-exist',
     'validator:request-dimension-order',
+    'validator:request-time-grain',
     'service:bard-metadata',
     'adapter:bard-metadata',
     'serializer:report',
@@ -56,6 +57,7 @@ moduleForModel('report', 'Unit | Serializer | Report', {
     'service:bard-dimensions',
     'adapter:dimensions/bard',
     'serializer:visualization',
+    'model:table',
     'model:line-chart',
     'model:delivery-rule',
     'adapter:delivery-rule',
@@ -65,7 +67,7 @@ moduleForModel('report', 'Unit | Serializer | Report', {
   beforeEach() {
     setupMock();
     Store = this.store();
-    getOwner(this).lookup('service:bard-metadata').loadMetadata();
+    return getOwner(this).lookup('service:bard-metadata').loadMetadata();
   },
 
   afterEach() {
@@ -144,20 +146,110 @@ test('Serializing record', function(assert) {
     }
   };
 
-  return wait().then(() => {
-    return Ember.run(() => {
-      return Store.findRecord('report', 1).then(report => {
+  return Ember.run(() => {
+    return Store.findRecord('report', 1).then(report => {
 
-        assert.ok(report.get('createdOn'),
-          'Report model contains "createdOn" attribute');
+      assert.ok(report.get('createdOn'),
+        'Report model contains "createdOn" attribute');
 
-        assert.ok(report.get('updatedOn'),
-          'Report model contains "updatedOn" attribute');
+      assert.ok(report.get('updatedOn'),
+        'Report model contains "updatedOn" attribute');
 
-        assert.deepEqual(report.serialize(),
-          expectedResult,
-          'Serialize method does not serialize createdOn and updatedOn attributes as expected');
-      });
+      assert.deepEqual(report.serialize(),
+        expectedResult,
+        'Serialize method does not serialize createdOn and updatedOn attributes as expected');
+    });
+  });
+});
+
+test('Serializing multi param request', function(assert) {
+  assert.expect(1);
+
+  let expectedResult = {
+    data: {
+      attributes: {
+        title: 'Revenue report 2',
+        request: {
+          logicalTable: {
+            table: 'tableA',
+            timeGrain: 'day'
+          },
+          metrics: [
+            {
+              metric: 'revenue',
+              parameters: {
+                currency: 'USD'
+              }
+            },
+            {
+              metric: 'revenue',
+              parameters: {
+                currency: 'EUR'
+              }
+            }
+          ],
+          dimensions: [
+            {dimension: 'property'}
+          ],
+          filters: [],
+          having: [],
+          sort: [],
+          intervals: [
+            {
+              end: '2018-02-16 00:00:00.000',
+              start: '2018-02-09 00:00:00.000'
+            }
+          ],
+          bardVersion: 'v1',
+          requestVersion: 'v1'
+        },
+        visualization: {
+          type: 'table',
+          version: 1,
+          metadata: {
+            columns: [
+              {
+                field: 'dateTime',
+                type: 'dateTime',
+                displayName: 'Date'
+              },
+              {
+                field: 'property',
+                type: 'dimension',
+                displayName: 'Property'
+              },
+              {
+                field: 'revenue(currency=USD)',
+                type: 'metric',
+                displayName: 'Revenue (USD)'
+              },
+              {
+                field: 'revenue(currency-EUR)',
+                type: 'metric',
+                displayName: 'Revenue (EUR)'
+              }
+            ]
+          }
+        },
+      },
+      relationships: {
+        author: {
+          data: {
+            type: 'users',
+            id: 'navi_user'
+          }
+        }
+      },
+      type: 'reports'
+    }
+  };
+
+
+  return Ember.run(() => {
+    return Store.findRecord('report', 8).then(report => {
+      assert.deepEqual(report.serialize(),
+        expectedResult,
+        'Serialize report with parameterized metric serializes as expected');
     });
   });
 });

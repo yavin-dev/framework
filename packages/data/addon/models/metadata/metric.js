@@ -1,9 +1,11 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Ember from 'ember';
 import ExtendedMetadataMixin from 'navi-data/mixins/extended-metadata';
+import { computed, get } from '@ember/object';
+import { isEmpty } from '@ember/utils';
 
 let Model = Ember.Object.extend(ExtendedMetadataMixin, {
   /**
@@ -29,7 +31,41 @@ let Model = Ember.Object.extend(ExtendedMetadataMixin, {
   /**
    * @property {String} type of the value
    */
-  valueType: undefined
+  valueType: undefined,
+
+  /**
+   * @property {Object} parameters - parameters for the metric
+   */
+  parameters: undefined,
+
+  /**
+   * @property {Boolean} hasParameters
+   */
+  hasParameters: computed('paramNames', function() {
+    return !isEmpty(get(this, 'paramNames'));
+  }),
+
+  /**
+   * @property {Array} paramNames - paramNames for the metric
+   */
+  paramNames: computed('parameters', function() {
+    return Object.keys(get(this, 'parameters')||{});
+  }),
+
+  /**
+   * @method {Object} getParameter
+   * retrieves the queried parameter object from metadata
+   *
+   * @param {String} name
+   * @returns {Object}
+   */
+  getParameter(name) {
+    if(!get(this, 'hasParameters')){
+      return;
+    }
+
+    return get(this, `parameters.${name}`);
+  }
 });
 
 //factory level properties
