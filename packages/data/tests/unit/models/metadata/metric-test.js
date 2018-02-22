@@ -149,5 +149,4 @@ test('getDefaultParameters', function(assert) {
   assert.deepEqual(metric.getDefaultParameters(),
     { currency: 'USD', country: 'US' },
     'The method returns all the defaults for all the parameters of the metric');
-
 })

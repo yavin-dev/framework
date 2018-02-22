@@ -1,4 +1,4 @@
-{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{#navi-list-selector
    items=allMetrics
    searchField='longName'
@@ -33,6 +33,8 @@
             {{metric-config
               metric=metric
               request=request
+              addParameterizedMetric=(report-action 'ADD_METRIC_WITH_PARAM')
+              removeParameterizedMetric=(report-action 'REMOVE_METRIC_WITH_PARAM')
             }}
           {{/if}}
           {{navi-icon

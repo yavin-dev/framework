@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -92,25 +92,28 @@ export default Fragment.extend(Validations, {
    * Adds a metric fragment to the metrics array if not already present
    *
    * @method addMetric
-   * @param {Object} metricObj
+   * @param {Object} requestMetric
    * @returns {Void}
    */
-  addMetric(metricObj) {
+  addMetric(requestMetric) {
     let metrics = get(this, 'metrics'),
-        newMetric = get(metricObj, 'metric'),
-        metricDoesntExist = isEmpty(metrics.findBy('metric', newMetric));
+        metricMetadata = get(requestMetric, 'metric'),
+        metricDoesntExist = isEmpty(metrics.findBy('metric', metricMetadata));
 
-    if(newMetric && get(newMetric, 'hasParameters')){
-      let parameters = get(metricObj, 'parameters'),
-          existingMetrics = metrics.filterBy('metric', newMetric);
+    //check if metric with parameter exists when metric hasParameters
+    if(metricMetadata && get(metricMetadata, 'hasParameters')){
+      let parameters = get(requestMetric, 'parameters'),
+          //filter all metrics of type `metricMetadata`
+          existingMetrics = metrics.filterBy('metric', metricMetadata);
 
+      //check if parameters in requestMetric in in the filtered metrics
       metricDoesntExist = isEmpty(existingMetrics.filter(
         metric => isEqual(get(metric, 'parameters'), parameters)
       ));
     }
 
     if(metricDoesntExist) {
-      metrics.createFragment(metricObj);
+      metrics.createFragment(requestMetric);
     }
   },
 
@@ -138,13 +141,11 @@ export default Fragment.extend(Validations, {
    * @param {Object} [parameters] - parameters [optional]
    */
   addRequestMetricWithParam(metricModel, parameters) {
-    if(!parameters) {
-      parameters = metricModel.getDefaultParameters();
-    }
+    let requestParameters = Object.assign({}, metricModel.getDefaultParameters(), parameters);
 
     this.addMetric({
       metric: metricModel,
-      parameters
+      parameters: requestParameters
     });
   },
 
@@ -152,27 +153,26 @@ export default Fragment.extend(Validations, {
    * Removes a metric fragment from the array
    *
    * @method removeRequestMetric
-   * @param {DS.ModelFragment} metricObj
+   * @param {DS.ModelFragment} requestMetric
    * @returns {DS.ModelFragment} removed metric fragment
    */
-  removeRequestMetric(metricObj) {
-    return get(this, 'metrics').removeFragment(metricObj);
+  removeRequestMetric(requestMetric) {
+    return get(this, 'metrics').removeFragment(requestMetric);
   },
 
   /**
-   * Removes a metric fragment using the metric model
+   * Removes all metric fragment of the specified metric model
    *
    * @method removeRequestMetricByModel
    * @param {DS.Model} metricModel
-   * @returns removed metric fragment
    */
   removeRequestMetricByModel(metricModel) {
     let metrics = get(this, 'metrics').filterBy('metric', metricModel);
-    metrics.forEach(metricObj => this.removeRequestMetric(metricObj));
+    metrics.forEach(requestMetric => this.removeRequestMetric(requestMetric));
   },
 
   /**
-   * Removes a metric fragment using the metric model
+   * Removes a metric fragment with specified param using the metric model
    *
    * @method removeRequestMetricWithParam
    * @param {DS.Model} metricModel
@@ -181,9 +181,9 @@ export default Fragment.extend(Validations, {
    */
   removeRequestMetricWithParam(metricModel, parameters) {
     let metrics = get(this, 'metrics').filterBy('metric', metricModel);
-    metrics.forEach(metricObj => {
-      if(isEqual(get(metricObj, 'parameters'), parameters)) {
-        this.removeRequestMetric(metricObj);
+    metrics.forEach(requestMetric => {
+      if(isEqual(get(requestMetric, 'parameters'), parameters)) {
+        this.removeRequestMetric(requestMetric);
       }
     });
   },

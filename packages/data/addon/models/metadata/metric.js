@@ -71,7 +71,7 @@ let Model = Ember.Object.extend(ExtendedMetadataMixin, {
   /**
    * @method {Object} getDefaultParameters
    * retrieves all the default values for all the parameters
-   * @returns {Object}
+   * @returns {Object|undefined}
    */
   getDefaultParameters() {
     if(!get(this, 'hasParameters')){

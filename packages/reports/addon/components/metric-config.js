@@ -6,9 +6,9 @@
  *   {{metric-config
  *      metric=metric
  *      request=request
- *      addMetricParameter=(action 'addMetricParameter')
- *      removeMetricParameter=(action 'removeMetricParameter')
- *      toggleMetricParamFilter=(action 'toggleMetricParamFilter')
+ *      addParameterizedMetric=(action 'addParameterizedMetric')
+ *      removeParameterizedMetric=(action 'removeParameterizedMetric')
+ *      toggleParameterizedMetricFilter=(action 'toggleParameterizedMetricFilter')
  *   }}
  */
 import Component from '@ember/component';
@@ -111,8 +111,8 @@ export default Component.extend({
   /**
    * @property {Array} selectedParams - selected param objects
    */
-  selectedParams: computed('request.metrics', 'metric', 'allParametersMap', function() {
-    let selectedMetrics = arr(get(this, 'request.metrics')).filterBy('metric', get(this, 'metric.name')),
+  selectedParams: computed('request.metrics.[]', 'metric', 'allParametersMap', function() {
+    let selectedMetrics = arr(get(this, 'request.metrics')).filterBy('metric', get(this, 'metric')),
         selectedMetricParams = arr(selectedMetrics).mapBy('parameters'),
         allParametersMap = get(this, 'allParametersMap') || {};
 
@@ -164,7 +164,7 @@ export default Component.extend({
      */
     paramToggled(metric, param) {
       let action = get(this, 'parametersChecked')[`${get(param, 'param')}|${get(param, 'id')}`]? 'remove' : 'add';
-      this.sendAction(`${action}MetricParameter`, metric, param);
+      this.sendAction(`${action}ParameterizedMetric`, metric, { [get(param, 'param')]: get(param, 'id') });
     },
 
     /*
@@ -173,7 +173,7 @@ export default Component.extend({
      * @param {Object} param
      */
     paramFilterToggled(metric, param) {
-      this.sendAction('toggleMetricParamFilter', metric, { [get(param, 'param')]: get(param, 'id') });
+      this.sendAction('toggleParameterizedMetricFilter', metric, { [get(param, 'param')]: get(param, 'id') });
     }
   }
 });

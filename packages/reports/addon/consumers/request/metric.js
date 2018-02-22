@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import ActionConsumer from 'navi-core/consumers/action-consumer';
@@ -31,6 +31,26 @@ export default ActionConsumer.extend({
      */
     [RequestActions.REMOVE_METRIC]({ currentModel }, metric) {
       get(currentModel, 'request').removeRequestMetricByModel(metric);
+    },
+
+    /**
+     * @action ADD_METRIC_WITH_PARAM
+     * @param {Object} route - route that has a model that contains a request property
+     * @param {Object} metric - metadata model of metric to add
+     * @param {Object} parameter - selected metric parameter
+     */
+    [RequestActions.ADD_METRIC_WITH_PARAM]({ currentModel }, metric, parameter) {
+      get(currentModel, 'request').addRequestMetricWithParam(metric, parameter);
+    },
+
+    /**
+     * @action REMOVE_METRIC_WITH_PARAM
+     * @param {Object} route - route that has a model that contains a request property
+     * @param {Object} metric - metadata model of metric to add
+     * @param {Object} parameter - selected metric parameter
+     */
+    [RequestActions.REMOVE_METRIC_WITH_PARAM]({ currentModel }, metric, parameter) {
+      get(currentModel, 'request').removeRequestMetricWithParam(metric, parameter);
     },
 
     /**

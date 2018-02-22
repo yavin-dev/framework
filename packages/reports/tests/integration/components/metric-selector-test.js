@@ -23,6 +23,8 @@ moduleForComponent('metric-selector', 'Integration | Component | metric selector
     MetadataService = getOwner(this).lookup('service:bard-metadata');
     setupMock();
 
+    this.register('helper:report-action', Ember.Helper.helper(() => {}), { instantiate: false });
+
     this.set('addMetric', () => {});
     this.set('removeMetric', () => {});
     this.set('addMetricFilter', () => {});

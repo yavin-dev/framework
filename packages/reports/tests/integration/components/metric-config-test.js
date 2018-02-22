@@ -1,7 +1,7 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
-import { get, set } from '@ember/object';
+import { set } from '@ember/object';
 import wait from 'ember-test-helpers/wait';
 import { run } from '@ember/runloop'
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
@@ -16,25 +16,6 @@ moduleForComponent('metric-config', 'Integration | Component | metric config', {
   beforeEach() {
     MetadataService = getOwner(this).lookup('service:bard-metadata');
     setupMock();
-
-    MockRequest = {
-      metrics: [{
-        metric: 'metric1',
-        parameters: {
-          as: 'currencyUSD',
-          currency: 'USD'
-        }
-      }],
-      having: [{
-        metric: {
-          metric: { name: 'metric1' },
-          parameters: {
-            as: 'currencyUSD',
-            currency: 'USD'
-          }
-        }
-      }]
-    };
 
     MockMetric = {
       name: 'metric1',
@@ -54,18 +35,37 @@ moduleForComponent('metric-config', 'Integration | Component | metric config', {
       }
     };
 
-    set(this, 'addMetricParameter', () => {});
-    set(this, 'removeMetricParameter', () => {});
-    set(this, 'toggleMetricParamFilter', () => {});
+    MockRequest = {
+      metrics: [{
+        metric: MockMetric,
+        parameters: {
+          as: 'currencyUSD',
+          currency: 'USD'
+        }
+      }],
+      having: [{
+        metric: {
+          metric: MockMetric,
+          parameters: {
+            as: 'currencyUSD',
+            currency: 'USD'
+          }
+        }
+      }]
+    };
+
+    set(this, 'addParameterizedMetric', () => {});
+    set(this, 'removeParameterizedMetric', () => {});
+    set(this, 'toggleParameterizedMetricFilter', () => {});
 
     return MetadataService.loadMetadata().then(() => {
       this.render(hbs`
         {{metric-config
           metric=metric
           request=request
-          addMetricParameter=(action addMetricParameter)
-          removeMetricParameter=(action removeMetricParameter)
-          toggleMetricParamFilter=(action toggleMetricParamFilter)
+          addParameterizedMetric=(action addParameterizedMetric)
+          removeParameterizedMetric=(action removeParameterizedMetric)
+          toggleParameterizedMetricFilter=(action toggleParameterizedMetricFilter)
           parametersPromise=parametersPromise
         }}`
       );
@@ -144,23 +144,23 @@ test('show selected', function(assert) {
 test('add/remove param', function(assert) {
   assert.expect(4);
 
-  set(this, 'addMetricParameter', (metric, param) => {
+  set(this, 'addParameterizedMetric', (metric, param) => {
     assert.deepEqual(metric,
       MockMetric,
       'The mock metric is passed to the action');
 
-    assert.equal(get(param, 'name'),
-      'Drams',
+    assert.deepEqual(param,
+      { currency: 'AMD' },
       'The selected param is also passed to the action');
   });
 
-  set(this, 'removeMetricParameter', (metric, param) => {
+  set(this, 'removeParameterizedMetric', (metric, param) => {
     assert.deepEqual(metric,
       MockMetric,
       'The mock metric is passed to the action');
 
-    assert.equal(get(param, 'name'),
-      'Dollars',
+    assert.deepEqual(param,
+      { currency: 'USD' },
       'The selected param is also passed to the action');
   });
 
@@ -177,7 +177,7 @@ test('add/remove param', function(assert) {
 test('filter icon', function(assert) {
   assert.expect(4);
 
-  this.set('toggleMetricParamFilter', (metric, param) => {
+  this.set('toggleParameterizedMetricFilter', (metric, param) => {
     assert.deepEqual(metric,
       MockMetric,
       'The mock metric is passed to the action');

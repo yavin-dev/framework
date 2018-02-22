@@ -504,7 +504,7 @@ test('removeRequestMetricByModel - multiple metrics', function(assert) {
 });
 
 test('removeRequestMetricWithParam', function(assert) {
-  assert.expect(2);
+  assert.expect(4);
 
   return wait().then(() => {
     let mockModel = Store.peekRecord('fragments-mock', 1),
@@ -512,17 +512,28 @@ test('removeRequestMetricWithParam', function(assert) {
         parameter = { currency: 'AUD' },
         request = mockModel.get('request');
 
+    request.addRequestMetricWithParam(revenueMetric);
     request.addRequestMetricWithParam(revenueMetric, parameter);
 
     assert.equal(request.get('metrics.length'),
-      2,
-      'There is one metric in the model fragment');
+      3,
+      'There are three metrics in the model fragment');
 
     request.removeRequestMetricWithParam(revenueMetric, parameter);
 
     assert.equal(request.get('metrics.length'),
-      1,
-      'There are no metrics in the model fragment');
+      2,
+      'There is now two metrics in the model fragment');
+
+    let selectedRevenueMetric = request.get('metrics').objectAt(1);
+
+    assert.equal(get(selectedRevenueMetric, 'metric.name'),
+      'revenue',
+      'One revenue metric is part of the selected metric list');
+
+    assert.deepEqual(get(selectedRevenueMetric, 'parameters'),
+      { currency: 'USD' },
+      'the selected revenue metric has the right parameter');
   });
 });
 
