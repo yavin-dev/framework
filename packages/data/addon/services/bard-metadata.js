@@ -7,7 +7,7 @@
 
 import Ember from 'ember';
 
-const { assign, get, getOwner, setOwner } = Ember;
+const { assign, get, getOwner, setOwner, getWithDefault } = Ember;
 
 export default Ember.Service.extend({
   /**
@@ -150,5 +150,21 @@ export default Ember.Service.extend({
       until: '4.0.0'
     });
     return this.getById(...arguments);
+  },
+
+  /**
+   * Convenience method to get a meta data field
+   * @param {String} type
+   * @param {String} id
+   * @param {String} field
+   * @param {*} defaultIfNone - (optional) default if meta data or field isn't found
+   * @returns {*}
+   */
+  getMetaField(type, id, field, defaultIfNone = null) {
+    let meta = this.getById(type, id);
+    if(!meta) {
+      return defaultIfNone;
+    }
+    return getWithDefault(meta, field, defaultIfNone);
   }
 });
