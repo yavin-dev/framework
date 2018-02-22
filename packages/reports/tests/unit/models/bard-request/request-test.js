@@ -480,6 +480,52 @@ test('removeRequestMetricByModel', function(assert) {
   });
 });
 
+test('removeRequestMetricByModel - multiple metrics', function(assert) {
+  assert.expect(2);
+
+  return wait().then(() => {
+    let mockModel = Store.peekRecord('fragments-mock', 1),
+        revenueMetric = MetadataService.getById('metric', 'revenue'),
+        request = mockModel.get('request');
+
+    request.addRequestMetricWithParam(revenueMetric);
+    request.addRequestMetricWithParam(revenueMetric, { currency: 'AUD' });
+
+    assert.equal(request.get('metrics.length'),
+      3,
+      'There is one metric in the model fragment');
+
+    request.removeRequestMetricByModel(revenueMetric);
+
+    assert.equal(request.get('metrics.length'),
+      1,
+      'There are no metrics in the model fragment');
+  });
+});
+
+test('removeRequestMetricWithParam', function(assert) {
+  assert.expect(2);
+
+  return wait().then(() => {
+    let mockModel = Store.peekRecord('fragments-mock', 1),
+        revenueMetric = MetadataService.getById('metric', 'revenue'),
+        parameter = { currency: 'AUD' },
+        request = mockModel.get('request');
+
+    request.addRequestMetricWithParam(revenueMetric, parameter);
+
+    assert.equal(request.get('metrics.length'),
+      2,
+      'There is one metric in the model fragment');
+
+    request.removeRequestMetricWithParam(revenueMetric, parameter);
+
+    assert.equal(request.get('metrics.length'),
+      1,
+      'There are no metrics in the model fragment');
+  });
+});
+
 test('clearMetrics', function(assert){
   assert.expect(2);
 

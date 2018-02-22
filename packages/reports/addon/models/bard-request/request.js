@@ -167,8 +167,25 @@ export default Fragment.extend(Validations, {
    * @returns removed metric fragment
    */
   removeRequestMetricByModel(metricModel) {
-    let metricObj = get(this, 'metrics').findBy('metric', metricModel);
-    return this.removeRequestMetric(metricObj);
+    let metrics = get(this, 'metrics').filterBy('metric', metricModel);
+    metrics.forEach(metricObj => this.removeRequestMetric(metricObj));
+  },
+
+  /**
+   * Removes a metric fragment using the metric model
+   *
+   * @method removeRequestMetricWithParam
+   * @param {DS.Model} metricModel
+   * @param {Object} parameters
+   * @returns removed metric fragment
+   */
+  removeRequestMetricWithParam(metricModel, parameters) {
+    let metrics = get(this, 'metrics').filterBy('metric', metricModel);
+    metrics.forEach(metricObj => {
+      if(isEqual(get(metricObj, 'parameters'), parameters)) {
+        this.removeRequestMetric(metricObj);
+      }
+    });
   },
 
   /**
