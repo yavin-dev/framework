@@ -9,6 +9,7 @@ import MF from 'model-fragments';
 import isEqual from 'lodash/isEqual';
 import { validator, buildValidations } from 'ember-cp-validations';
 import Interval from 'navi-core/utils/classes/interval';
+import { isEmpty } from '@ember/utils';
 
 const { Fragment, fragment, fragmentArray } = MF;
 
@@ -97,9 +98,18 @@ export default Fragment.extend(Validations, {
   addMetric(metricObj) {
     let metrics = get(this, 'metrics'),
         newMetric = get(metricObj, 'metric'),
-        existingMetric = metrics.findBy('metric', newMetric);
+        metricDoesntExist = isEmpty(metrics.findBy('metric', newMetric));
 
-    if(!existingMetric) {
+    if(newMetric && get(newMetric, 'hasParameters')){
+      let parameters = get(metricObj, 'parameters'),
+          existingMetrics = metrics.filterBy('metric', newMetric);
+
+      metricDoesntExist = isEmpty(existingMetrics.filter(
+        metric => isEqual(get(metric, 'parameters'), parameters)
+      ));
+    }
+
+    if(metricDoesntExist) {
       metrics.createFragment(metricObj);
     }
   },
@@ -111,8 +121,30 @@ export default Fragment.extend(Validations, {
    * @param {DS.Model} metricModel
    */
   addRequestMetricByModel(metricModel) {
+    if(get(metricModel, 'hasParameters')) {
+      this.addRequestMetricWithParam(metricModel);
+    } else {
+      this.addMetric({
+        metric: metricModel
+      });
+    }
+  },
+
+  /**
+   * Adds a metric model to the metrics array with parameter
+   *
+   * @method addRequestMetricWithParam
+   * @param {DS.Model} metricModel
+   * @param {Object} [parameters] - parameters [optional]
+   */
+  addRequestMetricWithParam(metricModel, parameters) {
+    if(!parameters) {
+      parameters = metricModel.getDefaultParameters();
+    }
+
     this.addMetric({
-      metric: metricModel
+      metric: metricModel,
+      parameters
     });
   },
 

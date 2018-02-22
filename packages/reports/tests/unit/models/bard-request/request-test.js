@@ -356,7 +356,7 @@ test('addMetric', function(assert) {
 });
 
 test('addRequestMetricByModel', function(assert) {
-  assert.expect(3);
+  assert.expect(6);
 
   return wait().then(() => {
     let mockModel = Store.peekRecord('fragments-mock', 1),
@@ -376,6 +376,70 @@ test('addRequestMetricByModel', function(assert) {
     assert.equal(request.get('metrics').objectAt(1).get('metric'),
       MetadataService.getById('metric', 'pageViews'),
       'The new metric has been added to the model fragment');
+
+    let revenueMetric = MetadataService.getById('metric', 'revenue');
+
+    request.addRequestMetricByModel(revenueMetric);
+
+    assert.equal(request.get('metrics.length'),
+      3,
+      'There are now three metrics in the model fragment');
+
+    assert.equal(request.get('metrics').objectAt(2).get('metric'),
+      MetadataService.getById('metric', 'revenue'),
+      'The new metric has been added to the model fragment');
+
+    assert.deepEqual(request.get('metrics').objectAt(2).get('parameters'),
+      { currency: 'USD' },
+      'The new metric with the default parameter has been added to the model fragment');
+  });
+});
+
+test('addRequestMetricWithParam', function(assert) {
+  assert.expect(8);
+
+  return wait().then(() => {
+    let mockModel = Store.peekRecord('fragments-mock', 1),
+        newMetric = MetadataService.getById('metric', 'revenue'),
+        request = mockModel.get('request');
+
+    assert.equal(request.get('metrics.length'),
+      1,
+      'There is one metric in the model fragment');
+
+    request.addRequestMetricWithParam(newMetric);
+
+    assert.equal(request.get('metrics.length'),
+      2,
+      'There are now two metrics in the model fragment');
+
+    assert.equal(request.get('metrics').objectAt(1).get('metric'),
+      MetadataService.getById('metric', 'revenue'),
+      'The new metric has been added to the model fragment');
+
+    assert.deepEqual(request.get('metrics').objectAt(1).get('parameters'),
+      { currency: 'USD' },
+      'The new metric with the default parameter has been added to the model fragment');
+
+    request.addRequestMetricWithParam(newMetric, { currency: 'AUD' });
+
+    assert.equal(request.get('metrics.length'),
+      3,
+      'There are now three metrics in the model fragment');
+
+    assert.equal(request.get('metrics').objectAt(2).get('metric'),
+      MetadataService.getById('metric', 'revenue'),
+      'The new metric has been added to the model fragment');
+
+    assert.deepEqual(request.get('metrics').objectAt(2).get('parameters'),
+      { currency: 'AUD' },
+      'The new metric with the specified parameter has been added to the model fragment');
+
+    request.addRequestMetricWithParam(newMetric, { currency: 'USD' });
+
+    assert.equal(request.get('metrics.length'),
+      3,
+      'The final metric is not added since it already exists in the request');
   });
 });
 
