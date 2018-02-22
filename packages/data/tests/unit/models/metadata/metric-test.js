@@ -82,7 +82,7 @@ test('Non Parameterized Metric', function(assert) {
         longName: 'Page Views (Daily Avg)',
         category: 'Page Views',
         valueType: 'number',
-        parameters: []
+        parameters: {}
       },
       metric = MetricMetadataModel.create(payload);
 
@@ -108,3 +108,46 @@ test('Non Parameterized Metric', function(assert) {
   assert.notOk(get(metric, 'hasParameters'),
     'hasParamters property is false since the metric has no parameters');
 });
+
+test('getDefaultParameters', function(assert) {
+  assert.expect(3);
+
+  assert.deepEqual(Metric.getDefaultParameters(),
+    { testParamDim: 'testValue' },
+    'The default values of the metric parameters are returned as a key value pair');
+
+  let payload = {
+        name: 'dayAvgPageViews',
+        longName: 'Page Views (Daily Avg)',
+        category: 'Page Views',
+        valueType: 'number',
+        parameters: {}
+      },
+      metric = MetricMetadataModel.create(payload);
+
+  assert.deepEqual(metric.getDefaultParameters(),
+    undefined,
+    'The method returns undefined when trying to fetch defaults from a metric without parameters');
+
+  payload = {
+    name: 'revenue',
+    longName: 'revenue',
+    category: 'Revenue',
+    parameters: {
+      currency: {
+        dimensionName: 'currency',
+        defaultValue: 'USD'
+      },
+      country: {
+        dimensionName: 'country',
+        defaultValue: 'US'
+      }
+    }
+  },
+  metric = MetricMetadataModel.create(payload);
+
+  assert.deepEqual(metric.getDefaultParameters(),
+    { currency: 'USD', country: 'US' },
+    'The method returns all the defaults for all the parameters of the metric');
+
+})

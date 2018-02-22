@@ -6,6 +6,7 @@ import Ember from 'ember';
 import ExtendedMetadataMixin from 'navi-data/mixins/extended-metadata';
 import { computed, get } from '@ember/object';
 import { isEmpty } from '@ember/utils';
+import forIn from 'lodash/forIn';
 
 let Model = Ember.Object.extend(ExtendedMetadataMixin, {
   /**
@@ -65,6 +66,24 @@ let Model = Ember.Object.extend(ExtendedMetadataMixin, {
     }
 
     return get(this, `parameters.${name}`);
+  },
+
+  /**
+   * @method {Object} getDefaultParameters
+   * retrieves all the default values for all the parameters
+   * @returns {Object}
+   */
+  getDefaultParameters() {
+    if(!get(this, 'hasParameters')){
+      return;
+    }
+
+    let defaultParameters = {};
+    forIn(get(this, 'parameters'), (value) => {
+      defaultParameters[get(value, 'dimensionName')] = get(value, 'defaultValue');
+    });
+
+    return defaultParameters;
   }
 });
 
