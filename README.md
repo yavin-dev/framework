@@ -2,6 +2,8 @@
 
 Navi is a production quality analytics reporting UI with _out of the box_ support for [Fili](https://github.com/yahoo/fili).
 
+![navi-build-status](https://travis-ci.org/yahoo/navi.svg?branch=master)
+
 ## Requirements
 
 * node >= 4
