@@ -4,13 +4,15 @@ import { setupMock, teardownMock } from '../../../../helpers/mirage-helper';
 import wait from 'ember-test-helpers/wait';
 
 var Store,
-    MetadataService;
+    MetadataService,
+    RevenueMetric;
 
 const { getOwner } = Ember;
 
 moduleForModel('fragments-mock', 'Unit | Model Fragment | BardRequest - Having', {
   needs: [
     'transform:fragment-array',
+    'transform:fragment',
     'transform:metric',
     'model:bard-request/fragments/metric',
     'model:bard-request/fragments/having',
@@ -37,7 +39,9 @@ moduleForModel('fragments-mock', 'Unit | Model Fragment | BardRequest - Having',
 
     MetadataService = getOwner(this).lookup('service:bard-metadata');
 
-    MetadataService.loadMetadata().then(() => {
+    return MetadataService.loadMetadata().then(() => {
+      RevenueMetric = MetadataService.getById('metric', 'revenue');
+
       //Add instances to the store
       return Ember.run(() => {
         Store.pushPayload('fragments-mock', {
@@ -46,7 +50,7 @@ moduleForModel('fragments-mock', 'Unit | Model Fragment | BardRequest - Having',
             type: 'fragments-mock',
             attributes: {
               having: [{
-                metric: 'uniqueIdentifier',
+                metric: { metric: 'revenue', parameters: { currency: 'USD' } },
                 operator: 'gt',
                 values: [100]
               }]
@@ -62,45 +66,50 @@ moduleForModel('fragments-mock', 'Unit | Model Fragment | BardRequest - Having',
 });
 
 test('Model using the Having Fragment', function(assert) {
-  assert.expect(7);
+  assert.expect(8);
 
-  return wait().then(() => {
-    let mockModel = Store.peekRecord('fragments-mock', 1);
-    assert.ok(mockModel, 'mockModel is fetched from the store');
+  let mockModel = Store.peekRecord('fragments-mock', 1),
+      pageViewMetric = MetadataService.getById('metric', 'pageViews');
 
-    Ember.run(() => {
-      /* == Getter Method == */
-      assert.equal(mockModel.get('having').objectAt(0).get('metric.longName'),
-        'Unique Identifiers',
-        'The property metric is deserialized to the longName `Unique Identifiers`');
+  assert.ok(mockModel, 'mockModel is fetched from the store');
 
-      assert.equal(mockModel.get('having').objectAt(0).get('operator'),
-        'gt',
-        'The property operator has the value `gt`');
+  Ember.run(() => {
 
-      assert.deepEqual(mockModel.get('having').objectAt(0).get('values'),
-        [100],
-        'The property values has the value `100`');
+    assert.deepEqual(mockModel.get('having').objectAt(0).get('metric.metric'),
+      RevenueMetric,
+      'The property metric is deserialized to the `Revenue` metric metadata object');
 
-      /* == Setter Method == */
-      mockModel.get('having').objectAt(0).set('metric', MetadataService.getById('metric', 'pageViews'));
-      mockModel.get('having').objectAt(0).set('operator', 'gte');
-      mockModel.get('having').objectAt(0).set('values', [350]);
-    });
-
-    assert.equal(mockModel.get('having').objectAt(0).get('metric.longName'),
-      'Page Views',
-      'The property having has the metric with value `Page Views` set using setter');
+    assert.deepEqual(mockModel.get('having').objectAt(0).get('metric.parameters'),
+      { currency: 'USD' },
+      'The property metric has the correct parameters object');
 
     assert.equal(mockModel.get('having').objectAt(0).get('operator'),
-      'gte',
-      'The property having has the operator `gte` set using setter');
+      'gt',
+      'The property operator has the value `gt`');
 
     assert.deepEqual(mockModel.get('having').objectAt(0).get('values'),
-      [350],
-      'The property values has the value `[350]` set using setter');
+      [100],
+      'The property values has the value `100`');
 
+    /* == Setter Method == */
+    mockModel.get('having').objectAt(0).set('metric', Store.createFragment('bard-request/fragments/metric', {
+      metric: pageViewMetric
+    }));
+    mockModel.get('having').objectAt(0).set('operator', 'gte');
+    mockModel.get('having').objectAt(0).set('values', [350]);
   });
+
+  assert.deepEqual(mockModel.get('having').objectAt(0).get('metric.metric'),
+    pageViewMetric,
+    'The property having has the metric with metadata for `Page Views` set using setter');
+
+  assert.equal(mockModel.get('having').objectAt(0).get('operator'),
+    'gte',
+    'The property having has the operator `gte` set using setter');
+
+  assert.deepEqual(mockModel.get('having').objectAt(0).get('values'),
+    [ 350 ],
+    'The property values has the value `[350]` set using setter');
 });
 
 test('Computed values', function(assert) {
@@ -140,7 +149,7 @@ test('Validations', function(assert) {
       assert.equal(validations.get('messages').length, 0, 'There are no validation errors');
     });
 
-    having.set('metric', undefined);
+    having.set('metric', null);
     having.validate().then(({ validations }) => {
       assert.ok(!validations.get('isValid'), 'Having is invalid');
 

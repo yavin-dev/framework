@@ -153,7 +153,7 @@ moduleForModel('fragments-mock', 'Unit | Model Fragment | BardRequest - Request'
                   }
                 ],
                 having: [{
-                  metric: 'uniqueIdentifier',
+                  metric: { metric: 'uniqueIdentifier' },
                   operator: 'gt',
                   values: [ 0 ]
                 }],
@@ -251,7 +251,7 @@ test('Request Model Fragment', function(assert) {
 });
 
 test('Clone Request', function(assert) {
-  assert.expect(10);
+  assert.expect(11);
 
   return wait().then(() => {
     let mockModel = Store.peekRecord('fragments-mock', MODEL_TO_CLONE),
@@ -300,9 +300,13 @@ test('Clone Request', function(assert) {
       MetadataService.getById('metric', 'navClicks'),
       'The property sort is set with correct metadata');
 
-    assert.equal(request.get('having.firstObject.metric'),
-      MetadataService.getById('metric', 'uniqueIdentifier'),
+    assert.deepEqual(request.get('having.firstObject.metric.metric'),
+      mockModel.get('request.having.firstObject.metric.metric'),
       'The property having is set with correct metadata');
+
+    assert.deepEqual(request.get('having.firstObject.metric.parameters'),
+      mockModel.get('request.having.firstObject.metric.parameters'),
+      'The property having is set with correct parameters');
   });
 });
 
@@ -888,7 +892,9 @@ test('addHaving', function(assert) {
   return wait().then(() => {
     let mockModel = Store.peekRecord('fragments-mock', 1),
         newHaving = {
-          metric: MetadataService.getById('metric', 'pageViews'),
+          metric: {
+            metric: MetadataService.getById('metric', 'pageViews')
+          },
           operator: 'gt',
           value: 100
         },
@@ -900,7 +906,7 @@ test('addHaving', function(assert) {
       1,
       'There is now one having in the model fragment');
 
-    assert.equal(request.get('having').objectAt(0).get('metric'),
+    assert.equal(request.get('having').objectAt(0).get('metric.metric'),
       MetadataService.getById('metric', 'pageViews'),
       'The new having has been added to the model fragment');
 
@@ -909,7 +915,10 @@ test('addHaving', function(assert) {
 
     assert.deepEqual(request.get('having').map(m => m.serialize()),
       [{
-        metric: get(newHaving, 'metric.name'),
+        metric: {
+          metric: get(newHaving, 'metric.metric.name'),
+          parameters: {}
+        },
         operator: get(newHaving, 'operator'),
         values: [ get(newHaving, 'value') ]
       }],
@@ -924,7 +933,9 @@ test('removeRequestHaving', function(assert) {
   return wait().then(() => {
     let mockModel = Store.peekRecord('fragments-mock', 1),
         newHaving = {
-          metric: MetadataService.getById('metric', 'pageViews'),
+          metric: {
+            metric: MetadataService.getById('metric', 'pageViews')
+          },
           operator: 'gt',
           value: 100
         },
@@ -948,7 +959,9 @@ test('removeRequestHavingByMetric', function(assert) {
   return wait().then(() => {
     let mockModel = Store.peekRecord('fragments-mock', 1),
         newHaving = {
-          metric: MetadataService.getById('metric', 'pageViews'),
+          metric: {
+            metric: MetadataService.getById('metric', 'pageViews')
+          },
           operator: 'gt',
           value: 100
         },
@@ -972,7 +985,9 @@ test('updateHaving', function(assert) {
   return wait().then(() => {
     let mockModel = Store.peekRecord('fragments-mock', 1),
         having = {
-          metric: MetadataService.getById('metric', 'pageViews'),
+          metric: {
+            metric: MetadataService.getById('metric', 'pageViews')
+          },
           operator: 'gt',
           value: 100
         },
@@ -992,7 +1007,7 @@ test('updateHaving', function(assert) {
       100,
       'The having value is correct');
 
-    request.updateHavingForMetric(having.metric, {
+    request.updateHavingForMetric(having.metric.metric, {
       operator: 'gte',
       value: 200
     });
@@ -1369,7 +1384,9 @@ test('having has-many validation', function(assert) {
   return wait().then(() => {
     let mockModel = Store.peekRecord('fragments-mock', 1),
         newHaving = {
-          metric: MetadataService.getById('metric', 'pageViews')
+          metric: {
+            metric: MetadataService.getById('metric', 'pageViews')
+          }
         },
         request = mockModel.get('request');
 

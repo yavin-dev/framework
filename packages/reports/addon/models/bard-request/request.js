@@ -509,7 +509,10 @@ export default Fragment.extend(Validations, {
       //clone having
       having: makeArray(clonedRequest.having).map(having =>
         store.createFragment('bard-request/fragments/having', {
-          metric: metadataService.getById('metric', having.metric),
+          metric: store.createFragment('bard-request/fragments/metric', {
+            metric: metadataService.getById('metric', having.metric.metric),
+            parameters: having.metric.parameters
+          }),
           operator: having.operator,
           values: having.values
         })
@@ -582,7 +585,7 @@ export default Fragment.extend(Validations, {
    */
   removeRequestHavingByMetric(metricModel) {
     let having = get(this, 'having'),
-        havingObj = having.findBy('metric', metricModel);
+        havingObj = having.findBy('metric.metric', metricModel);
     return this.removeRequestHaving(havingObj);
   },
 
@@ -595,7 +598,7 @@ export default Fragment.extend(Validations, {
    * @returns {Void}
    */
   updateHavingForMetric(metric, props){
-    let having = get(this, 'having').findBy('metric', metric);
+    let having = get(this, 'having').findBy('metric.metric', metric);
 
     Ember.assert(`${metric.modelName} as a having does not exist`, having);
 

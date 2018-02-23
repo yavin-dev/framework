@@ -53,7 +53,7 @@ moduleForComponent('metric-selector', 'Integration | Component | metric selector
               }
             }
           ],
-          having: Ember.A([{ metric: AdClicks }]),
+          having: Ember.A([{ metric: {metric: AdClicks} }]),
           responseFormat: 'csv'
         }));
 

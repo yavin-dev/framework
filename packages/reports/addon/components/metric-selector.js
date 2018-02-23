@@ -58,7 +58,7 @@ export default Ember.Component.extend({
    *                                         in request havings
    */
   metricsFiltered: computed('request.having.[]', function() {
-    return Ember.A(get(this, 'request.having')).mapBy('metric.name').reduce((list, metric) => {
+    return Ember.A(get(this, 'request.having')).mapBy('metric.metric.name').reduce((list, metric) => {
       list[metric] = true;
       return list;
     }, {});
