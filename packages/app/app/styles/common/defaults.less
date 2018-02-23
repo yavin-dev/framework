@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -23,8 +23,26 @@ a:link {
 //TODO make btn a component and move styles there
 .btn {
     border: none;
+    border-radius: 2px;
+    font-size: 14px;
 }
 
 .btn-primary {
     background: linear-gradient(to right,#3697F2,#3570F4);
+    min-width: 120px;
+
+    &:hover {
+        background: linear-gradient(to right, #3570F4, #3448F7);
+    }
+}
+
+.btn-secondary {
+    background: transparent;
+    box-shadow: 0 0 0 1px #3697F2 inset;
+    color: #3697F2;
+    min-width: 120px;
+
+    &:hover {
+        background-color: #D1DEF7
+    }
 }
