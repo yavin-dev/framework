@@ -178,3 +178,20 @@ test('fetchById', function(assert){
       'Service fetchById should load correct data');
   });
 });
+
+test('getMetaField', function(assert) {
+  assert.expect(3);
+  return Service.loadMetadata().then(() => {
+    assert.equal(Service.getMetaField('metric', 'metricOne', 'longName'),
+      'Metric One',
+      'gets field from requested');
+
+    assert.equal(Service.getMetaField('metric', 'metricOne', 'shortName', 'someDefault'),
+      'someDefault',
+      'returns default when field is not found');
+
+    assert.equal(Service.getMetaField('metric', 'InvalidMetric', 'shortName', 'someDefault'),
+      'someDefault',
+      'returns default when metric is not found');
+  });
+});
