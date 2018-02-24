@@ -62,7 +62,7 @@ export default ActionConsumer.extend({
      */
     [RequestActions.ADD_METRIC_FILTER]: ({ currentModel }, metric) => {
       get(currentModel, 'request').addHaving(
-        assign({ metric }, DEFAULT_METRIC_FILTER)
+        assign({ metric: { metric } }, DEFAULT_METRIC_FILTER)
       );
     },
 
@@ -73,7 +73,7 @@ export default ActionConsumer.extend({
      */
     [RequestActions.TOGGLE_METRIC_FILTER]: function(route, metric) {
       let filteredMetrics = get(route, 'currentModel.request.having'),
-          having = filteredMetrics.findBy('metric', metric);
+          having = filteredMetrics.findBy('metric.metric', metric);
 
       if(!having){
         get(this, 'requestActionDispatcher').dispatch(RequestActions.ADD_METRIC_FILTER, route, metric);
@@ -89,7 +89,7 @@ export default ActionConsumer.extend({
      */
     [RequestActions.REMOVE_METRIC](route, metric) {
       // Find and remove any `havings` attached to the metric
-      let having = get(route, 'currentModel.request.having').findBy('metric', metric);
+      let having = get(route, 'currentModel.request.having').findBy('metric.metric', metric);
       get(this, 'requestActionDispatcher').dispatch(RequestActions.REMOVE_FILTER, route, having);
     },
 

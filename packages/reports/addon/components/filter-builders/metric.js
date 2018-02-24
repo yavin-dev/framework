@@ -43,7 +43,7 @@ export default Base.extend({
           operator = Ember.A(get(this, 'supportedOperators')).findBy('id', operatorId);
 
     return {
-      subject: get(metricFragment, 'metric'),
+      subject: get(metricFragment, 'metric.metric'),
       operator,
       values: get(metricFragment, 'values'),
       validations: get(metricFragment, 'validations')

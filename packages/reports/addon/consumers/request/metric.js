@@ -27,7 +27,7 @@ export default ActionConsumer.extend({
     /**
      * @action REMOVE_METRIC
      * @param {Object} route - route that has a model that contains a request property
-     * @param {Object} metric - metadata model of metric to add
+     * @param {Object} metric - metadata model of metric to remove
      */
     [RequestActions.REMOVE_METRIC]({ currentModel }, metric) {
       get(currentModel, 'request').removeRequestMetricByModel(metric);

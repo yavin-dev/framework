@@ -9,7 +9,7 @@ test('filter property', function(assert) {
   assert.expect(3);
 
   const mockHavingFragment = {
-    metric: { longName: 'Page Views'},
+    metric: { metric: { longName: 'Page Views'} },
     operator: 'gt',
     values: [1000]
   };
@@ -17,7 +17,7 @@ test('filter property', function(assert) {
   let metricBuilder = this.subject({ requestFragment: mockHavingFragment });
 
   assert.deepEqual(metricBuilder.get('filter.subject'),
-    mockHavingFragment.metric,
+    mockHavingFragment.metric.metric,
     'Filter subject matches the metric from the request fragment');
 
   assert.deepEqual(metricBuilder.get('filter.operator'),

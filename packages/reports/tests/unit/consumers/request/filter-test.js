@@ -134,7 +134,7 @@ test('ADD_METRIC_FILTER', function(assert) {
 
   let addHaving = (filterObj) => {
         assert.deepEqual(filterObj,{
-          metric: 'mockMetric',
+          metric: { metric: 'mockMetric' },
           operator: 'gt',
           values: 0
         }, 'the filterObj passed to the request to addHaving is well formed');
@@ -162,19 +162,19 @@ test('REMOVE_METRIC', function(assert) {
   consumer.send(RequestActions.TOGGLE_METRIC_FILTER, { currentModel }, AdClicks);
   consumer.send(RequestActions.TOGGLE_METRIC_FILTER, { currentModel }, PageViews);
 
-  assert.deepEqual(get(currentModel, 'request.having').mapBy('metric'),
+  assert.deepEqual(get(currentModel, 'request.having').mapBy('metric.metric'),
     [ AdClicks, PageViews ],
     'Havings starts with two metric filters');
 
   /* == Remove a metric that isn't a having == */
   consumer.send(RequestActions.REMOVE_METRIC, { currentModel }, TimeSpent);
-  assert.deepEqual(get(currentModel, 'request.having').mapBy('metric'),
+  assert.deepEqual(get(currentModel, 'request.having').mapBy('metric.metric'),
     [ AdClicks, PageViews ],
     'When removing a metric that is not filtered on, the having array is unchanged');
 
   /* == Remove a metric that is also a having == */
   consumer.send(RequestActions.REMOVE_METRIC, { currentModel }, AdClicks);
-  assert.deepEqual(get(currentModel, 'request.having').mapBy('metric'),
+  assert.deepEqual(get(currentModel, 'request.having').mapBy('metric.metric'),
     [ PageViews ],
     'When removing a metric that is filtered on, the corresponding having is removed');
 });
