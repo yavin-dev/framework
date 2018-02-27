@@ -144,39 +144,89 @@ test('ADD_METRIC_FILTER', function(assert) {
   this.subject().send(RequestActions.ADD_METRIC_FILTER, { currentModel }, 'mockMetric');
 });
 
+test('ADD_METRIC_FILTER - with parameters', function(assert) {
+  assert.expect(1);
+
+  let parameters = { foo: 'bar' },
+      addHaving = (filterObj) => {
+        assert.deepEqual(filterObj,{
+          metric: { metric: 'mockMetric', parameters },
+          operator: 'gt',
+          values: 0
+        }, 'the filterObj passed to the request to addHaving is well formed');
+      },
+      currentModel = { request: { having: Ember.A(), addHaving } };
+
+  this.subject().send(RequestActions.ADD_METRIC_FILTER, { currentModel }, 'mockMetric', parameters);
+});
+
 test('REMOVE_METRIC', function(assert) {
   assert.expect(3);
 
-  const AdClicks = { name: 'adClicks' },
-        PageViews = { name: 'pageViews' },
-        TimeSpent = { name: 'timeSpent' };
+  const AdClicks = { name: 'adClicks', getDefaultParameters: () => ({}) },
+        PageViews = { name: 'pageViews', getDefaultParameters: () => ({}) },
+        TimeSpent = { name: 'timeSpent', getDefaultParameters: () => ({}) };
 
   let currentModel = { request: {
         intervals: Ember.A(),
         filters: Ember.A(),
         having: Ember.A(),
-        addHaving(having) { this.having.pushObject(having); }
+        addHaving(having) {
+          let metric = having.metric;
+          metric.canonicalName = metric.name;
+          this.having.pushObject(having);
+        }
       }},
       consumer = this.subject();
 
   consumer.send(RequestActions.TOGGLE_METRIC_FILTER, { currentModel }, AdClicks);
   consumer.send(RequestActions.TOGGLE_METRIC_FILTER, { currentModel }, PageViews);
 
-  assert.deepEqual(get(currentModel, 'request.having').mapBy('metric.metric'),
-    [ AdClicks, PageViews ],
+  assert.deepEqual(get(currentModel, 'request.having').mapBy('metric.metric.name'),
+    [ 'adClicks', 'pageViews' ],
     'Havings starts with two metric filters');
 
   /* == Remove a metric that isn't a having == */
   consumer.send(RequestActions.REMOVE_METRIC, { currentModel }, TimeSpent);
-  assert.deepEqual(get(currentModel, 'request.having').mapBy('metric.metric'),
-    [ AdClicks, PageViews ],
+  assert.deepEqual(get(currentModel, 'request.having').mapBy('metric.metric.name'),
+    [ 'adClicks', 'pageViews' ],
     'When removing a metric that is not filtered on, the having array is unchanged');
 
   /* == Remove a metric that is also a having == */
   consumer.send(RequestActions.REMOVE_METRIC, { currentModel }, AdClicks);
-  assert.deepEqual(get(currentModel, 'request.having').mapBy('metric.metric'),
-    [ PageViews ],
+  assert.deepEqual(get(currentModel, 'request.having').mapBy('metric.metric.name'),
+    [ 'pageViews' ],
     'When removing a metric that is filtered on, the corresponding having is removed');
+});
+
+test('REMOVE_METRIC - multiple of same base metric', function(assert) {
+  assert.expect(2);
+
+  const AdClicks = { name: 'adClicks', getDefaultParameters: () => ({}) };
+
+  let currentModel = { request: {
+        intervals: Ember.A(),
+        filters: Ember.A(),
+        having: Ember.A(),
+        addHaving(having) {
+          let metric = having.metric;
+          metric.canonicalName = metric.parameters.foo;
+          this.having.pushObject(having);
+        }
+      }},
+      consumer = this.subject();
+
+  consumer.send(RequestActions.TOGGLE_PARAMETERIZED_METRIC_FILTER, { currentModel }, AdClicks, { foo: 'bar' });
+  consumer.send(RequestActions.TOGGLE_PARAMETERIZED_METRIC_FILTER, { currentModel }, AdClicks, { foo: 'baz' });
+
+  assert.deepEqual(get(currentModel, 'request.having').mapBy('metric.canonicalName'),
+    [ 'bar', 'baz' ],
+    'Havings starts with two metric filters with the same base, but different parameter set');
+
+  /* == Remove a metric that is also a having == */
+  consumer.send(RequestActions.REMOVE_METRIC, { currentModel }, AdClicks);
+  assert.ok(get(currentModel, 'request.having').length === 0,
+    'When removing a metric, all havings for that metric is removed');
 });
 
 test('DID_UPDATE_TIME_GRAIN', function(assert) {
@@ -208,4 +258,62 @@ test('DID_UPDATE_TIME_GRAIN', function(assert) {
   assert.deepEqual(currentModel.request.filters.toArray(),
     [{ dimension: Age }],
     'Filter based on dimension that is not in new time grain is removed');
+});
+
+test('TOGGLE_PARAMETERIZED_METRIC_FILTER - add metric', function(assert) {
+  assert.expect(3);
+
+  let parameters = { foo: 'bar' };
+
+  const MockDispatcher = {
+    dispatch(action, route, metric, params) {
+      assert.equal(action,
+        RequestActions.ADD_METRIC_FILTER,
+        'ADD_METRIC_FILTER is sent as part of TOGGLE_METRIC_FILTER');
+
+      assert.equal(metric,
+        'mockMetric',
+        'the filter metric is passed on to ADD_METRIC_FILTER');
+
+      assert.deepEqual(params,
+        parameters,
+        'the filter metric parameters are passed on to ADD_METRIC_FILTER');
+    }
+  };
+
+  let consumer = this.subject({ requestActionDispatcher: MockDispatcher }),
+      currentModel = { request: { having: Ember.A() } };
+
+  consumer.send(RequestActions.TOGGLE_PARAMETERIZED_METRIC_FILTER, { currentModel }, 'mockMetric', parameters);
+});
+
+test('TOGGLE_PARAMETERIZED_METRIC_FILTER - remove metric', function(assert) {
+  assert.expect(3);
+
+  let parameters = { foo: 'bar' },
+      metricWParam = { name: 'metric-with-param' },
+      havings = [{
+        metric: { metric: metricWParam, canonicalName: 'metric-with-param(foo=bar)', parameters }
+      }];
+
+  const MockDispatcher = {
+    dispatch(action, route, having) {
+      assert.equal(action,
+        RequestActions.REMOVE_FILTER,
+        'REMOVE_FILTER is sent as part of TOGGLE_METRIC_FILTER');
+
+      assert.deepEqual(having.metric.metric,
+        metricWParam,
+        'the filter metric is passed on to ADD_METRIC_FILTER');
+
+      assert.deepEqual(having.metric.parameters,
+        parameters,
+        'the filter metric parameters are passed on to ADD_METRIC_FILTER');
+    }
+  };
+
+  let consumer = this.subject({ requestActionDispatcher: MockDispatcher }),
+      currentModel = { request: { having: Ember.A(havings) } };
+
+  consumer.send(RequestActions.TOGGLE_PARAMETERIZED_METRIC_FILTER, { currentModel }, metricWParam, parameters);
 });

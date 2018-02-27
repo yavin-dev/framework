@@ -23,6 +23,7 @@ export const RequestActions = {
 
   TOGGLE_DIM_FILTER: 'toggleDimensionFilter',
   TOGGLE_METRIC_FILTER: 'toggleMetricFilter',
+  TOGGLE_PARAMETERIZED_METRIC_FILTER: 'toggleParameterizedMetricFilter',
 
   UPDATE_FILTER: 'updateFilter',
   UPDATE_TABLE: 'updateTable',
