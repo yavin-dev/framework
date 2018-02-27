@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -9,14 +9,24 @@
  */
 import Ember from 'ember';
 import Base from './base';
+import { computed } from '@ember/object';
+import { metricFormat } from 'navi-data/helpers/metric-format';
 
-const { computed, get } = Ember;
+const { get } = Ember;
 
 export default Base.extend({
   /**
    * @property {Object} requestFragment - having fragment from request model
    */
   requestFragment: undefined,
+
+  /**
+   * @property {String} displayName - display name for the filter with metric and parameters
+   */
+  displayName: computed('filter.subject', function() {
+    let metric = get(this, 'filter.subject');
+    return metricFormat(metric, get(metric, 'metric.longName'));
+  }),
 
   /**
    * @property {Array} supportedOperators
@@ -43,7 +53,7 @@ export default Base.extend({
           operator = Ember.A(get(this, 'supportedOperators')).findBy('id', operatorId);
 
     return {
-      subject: get(metricFragment, 'metric.metric'),
+      subject: get(metricFragment, 'metric'),
       operator,
       values: get(metricFragment, 'values'),
       validations: get(metricFragment, 'validations')

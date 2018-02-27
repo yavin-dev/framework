@@ -1,11 +1,12 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Base class for filter builders.
  */
 import Ember from 'ember';
 import layout from 'navi-reports/templates/components/filter-builders/base';
+import { readOnly } from '@ember/object/computed';
 
 const { get } = Ember;
 
@@ -27,6 +28,11 @@ export default Ember.Component.extend({
    * @property {Array} filter.values
    */
   filter: undefined,
+
+  /**
+   * @property {String} displayName - display name for the filter
+   */
+  displayName: readOnly('filter.subject.longName'),
 
   /**
    * @property {Array} supportedOperators - list of valid values for filter.operator

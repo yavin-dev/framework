@@ -49,5 +49,5 @@ function _formatParameters(obj) {
  */
 export function metricFormat(metric, longName = '--') {
   return isPresent(metric) && hasParameters(metric) ?
-    `${longName} (${_formatParameters(metric.parameters)})` : longName;
+    `${longName} (${_formatParameters(get(metric, 'parameters'))})` : longName;
 }

@@ -3,7 +3,7 @@ import hbs from 'htmlbars-inline-precompile';
 import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 import { set } from '@ember/object';
 import wait from 'ember-test-helpers/wait';
-import { run } from '@ember/runloop'
+import { run } from '@ember/runloop';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
 import { getOwner } from '@ember/application';
 import { defer, reject } from 'rsvp';

@@ -17,7 +17,7 @@ test('filter property', function(assert) {
   let metricBuilder = this.subject({ requestFragment: mockHavingFragment });
 
   assert.deepEqual(metricBuilder.get('filter.subject'),
-    mockHavingFragment.metric.metric,
+    mockHavingFragment.metric,
     'Filter subject matches the metric from the request fragment');
 
   assert.deepEqual(metricBuilder.get('filter.operator'),

@@ -18,12 +18,12 @@ const MockFilterFragment1 = {
         interval: new Interval(new Duration('P7D'), 'current')
       },
       MockMetricFragment1 = {
-        metric: { longName: 'Page Views'},
+        metric: { metric: { longName: 'Page Views'}, parameters: {} },
         operator: 'gt',
         values: ['1000']
       },
       MockMetricFragment2 = {
-        metric: { longName: 'Page Views'},
+        metric: { metric: { longName: 'Page Views'}, parameters: {} },
         operator: 'bet',
         values: ['1000', '2000']
       },
