@@ -64,19 +64,20 @@ export default Component.extend({
   _fetchAllParams: observer('metric', function() {
     let promises = {},
         parameterObj = get(this, 'metric.parameters') || {},
-        parameters = arr(Object.values(parameterObj)).filterBy('type', 'dimension'),
+        parameters = arr(Object.entries(parameterObj)).filter(
+          ([ , paramMeta ]) => get(paramMeta, 'type') === 'dimension'
+        ),
         allParametersMap = {},
         allParamValues = [];
 
-    parameters.forEach(param => {
-      promises[param.dimensionName] = get(this, 'parameterService').fetchAllValues(param);
+    parameters.forEach(([ paramType, paramMeta]) => {
+      promises[paramType] = get(this, 'parameterService').fetchAllValues(paramMeta);
     });
 
     let promiseHash = hash(promises).then(res => {
       //add property param to every element in each array
       forIn(res, (values, key) => {
         let valArray = values.toArray();
-
         valArray.forEach(val => {
           set(val, 'param', key);
 

@@ -113,7 +113,7 @@ test('getDefaultParameters', function(assert) {
   assert.expect(3);
 
   assert.deepEqual(Metric.getDefaultParameters(),
-    { testParamDim: 'testValue' },
+    { testParam: 'testValue' },
     'The default values of the metric parameters are returned as a key value pair');
 
   let payload = {

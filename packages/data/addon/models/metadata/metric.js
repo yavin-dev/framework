@@ -79,8 +79,8 @@ let Model = Ember.Object.extend(ExtendedMetadataMixin, {
     }
 
     let defaultParameters = {};
-    forIn(get(this, 'parameters'), (value) => {
-      defaultParameters[get(value, 'dimensionName')] = get(value, 'defaultValue');
+    forIn(get(this, 'parameters'), (value, key) => {
+      defaultParameters[key] = get(value, 'defaultValue');
     });
 
     return defaultParameters;
