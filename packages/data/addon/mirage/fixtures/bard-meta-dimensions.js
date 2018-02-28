@@ -27,6 +27,12 @@ export default {
       category: 'test',
       storageStrategy: 'loaded'
     },{
+      name: 'displayCurrency',
+      longName: 'Display Currency',
+      cardinality: 54,
+      category: 'test',
+      storageStrategy: 'loaded'
+    },{
       name: 'gender',
       longName: 'Gender',
       cardinality: 100,

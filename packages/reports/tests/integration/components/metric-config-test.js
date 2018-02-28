@@ -22,7 +22,7 @@ moduleForComponent('metric-config', 'Integration | Component | metric config', {
       parameters: {
         currency: {
           type: 'dimension',
-          dimensionName: 'currency'
+          dimensionName: 'displayCurrency'
         },
         property: {
           type: 'dimension',

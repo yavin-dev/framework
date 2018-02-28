@@ -92,7 +92,7 @@ export default {
       parameters: {
         currency: {
           'type': 'dimension',
-          'dimensionName': 'currency',
+          'dimensionName': 'displayCurrency',
           'defaultValue': 'USD'
         }
       }
