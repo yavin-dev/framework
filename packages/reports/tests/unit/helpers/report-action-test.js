@@ -20,7 +20,7 @@ test('report-action helper calls the correct route action', function(assert) {
   assert.expect(4);
 
   createMockRoute((actionType, helperParam, invocationParam) => {
-    assert.step('report-action called the correct route-action');
+    assert.ok(true, 'report-action called the correct route-action');
 
     assert.equal(actionType,
       ReportActions.UPDATE_TABLE,
