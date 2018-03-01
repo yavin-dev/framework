@@ -134,6 +134,16 @@ export default ActionConsumer.extend({
     },
 
     /**
+     * @action UPDATE_FILTER_PARAM
+     * @param {Object} route - route that has a model that contains a request property
+     * @param {Object} originalFilter - object to update
+     */
+    [RequestActions.UPDATE_FILTER_PARAM]: (route, originalFilter, metric, param) => {
+      console.log(param);
+      debugger;
+    },
+
+    /**
      * @action REMOVE_FILTER
      * @param {Object} route - route that has a model that contains a request property
      * @param {Object} filter - object to remove from request

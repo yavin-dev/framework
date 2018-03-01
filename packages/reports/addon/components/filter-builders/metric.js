@@ -11,10 +11,13 @@ import Ember from 'ember';
 import Base from './base';
 import { computed } from '@ember/object';
 import { metricFormat } from 'navi-data/helpers/metric-format';
+import layout from 'navi-reports/templates/components/filter-builders/metric';
 
 const { get } = Ember;
 
 export default Base.extend({
+  layout,
+
   /**
    * @property {Object} requestFragment - having fragment from request model
    */

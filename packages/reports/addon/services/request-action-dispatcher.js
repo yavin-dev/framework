@@ -26,6 +26,7 @@ export const RequestActions = {
   TOGGLE_PARAMETERIZED_METRIC_FILTER: 'toggleParameterizedMetricFilter',
 
   UPDATE_FILTER: 'updateFilter',
+  UPDATE_FILTER_PARAM: 'updateFilterParam',
   UPDATE_TABLE: 'updateTable',
   UPSERT_SORT: 'upsertSort'
 };
