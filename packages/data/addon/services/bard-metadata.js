@@ -136,7 +136,16 @@ export default Ember.Service.extend({
   fetchById(type, id) {
     Ember.assert('Type must be table, metric or dimension', Ember.A(['table', 'dimension', 'metric']).includes(type));
 
-    return get(this, '_adapter').fetchMetadata(type, id);
+    //Get entity if already present in the keg
+    if(get(this, '_keg').getById(`metadata/${type}`, id)) {
+      return this.getById(type, id);
+    }
+
+    return get(this, '_adapter').fetchMetadata(type, id).then(meta => {
+      //load into keg if not already present
+      this._loadMetadataForType(type, [ meta ]);
+      return meta;
+    });
   },
 
   /**
