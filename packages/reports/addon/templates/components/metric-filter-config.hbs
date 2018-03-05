@@ -1,0 +1,18 @@
+{{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{#basic-dropdown
+  calculatePosition=calculatePosition
+  as |dd|
+}}
+  {{#dd.trigger class='metric-filter-config__dropdown-trigger'}}
+    {{navi-icon 'cog' class='metric-filter-config__trigger-icon'}}
+  {{/dd.trigger}}
+
+  {{#dd.content class='metric-filter-config__dropdown-container'}}
+    <div class='metric-filter-config__header'>{{parameter}} ({{otherParams.length}})</div>
+    <div class='metric-filter-config__items'>
+      {{#each otherParams as | param |}}
+        <div class='metric-filter-config__item' onclick={{action this.attrs.paramClicked param}}>{{param}}</div>
+      {{/each}}
+    </div>
+  {{/dd.content}}
+{{/basic-dropdown}}
