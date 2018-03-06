@@ -19,6 +19,7 @@ moduleForComponent('metric-config', 'Integration | Component | metric config', {
 
     MockMetric = {
       name: 'metric1',
+      longName: 'Metric 1',
       parameters: {
         currency: {
           type: 'dimension',
@@ -112,8 +113,8 @@ test('grouped list', function(assert) {
 
   return wait().then(() => {
     assert.equal($('.metric-config__dropdown-container .navi-list-selector__title').text().trim(),
-      'metric1',
-      'the metric name is included in the header');
+      'Metric 1',
+      'the metric longName is included in the header');
 
     assert.deepEqual($('.grouped-list__group-header').toArray().map((el) => $(el).text().trim()),
       [ 'currency (14)', 'property (4)'],
