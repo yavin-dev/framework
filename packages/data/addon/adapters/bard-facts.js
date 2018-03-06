@@ -194,8 +194,7 @@ export default Ember.Object.extend({
   _buildQuery(request, options) {
     let query   = {},
         aliasMap = getAliasedMetrics(request.metrics),
-        //TODO remove 'alias.metric || alias' -> alias when full serializer is in place
-        aliasFunction = (alias) => canonicalizeAlias(alias.metric || alias, aliasMap),
+        aliasFunction = (alias) => canonicalizeAlias(alias, aliasMap),
         filters = this._buildFiltersParam(request),
         having = this._buildHavingParam(request, aliasFunction),
         sort = this._buildSortParam(request, aliasFunction);

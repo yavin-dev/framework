@@ -32,6 +32,7 @@ export default DS.JSONSerializer.extend({
 
     // transform sorts to have appropriate aliases, removes parameter map
     request.sort = this._removeParameters(this._toggleAlias(request.sort, canonToAlias));
+    request.having = this._removeParameters(this._toggleAlias(request.having, canonToAlias));
     return request;
   },
 
@@ -51,6 +52,7 @@ export default DS.JSONSerializer.extend({
         [canonicalizeMetric(metric)]: metric
       }), {});
 
+    request.having = this._toggleAlias(request.having, aliasToCanon, canonToMetric);
     request.sort = this._toggleAlias(request.sort, aliasToCanon, canonToMetric);
 
     //remove AS from metric parameters
