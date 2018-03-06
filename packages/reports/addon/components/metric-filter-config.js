@@ -16,7 +16,7 @@
 import Component from '@ember/component';
 import layout from '../templates/components/metric-filter-config';
 import { computed, get } from '@ember/object';
-import Ember from 'ember';
+import { A as arr } from '@ember/array'
 
 export default Component.extend({
   layout,
@@ -31,25 +31,20 @@ export default Component.extend({
    */
   otherParams: computed('request', 'metric', function() {
     let selectedMetrics = get(this, 'request.metrics').filterBy('metric.name', get(this, 'metric.metric.name')),
-        otherMetrics = Ember.A(selectedMetrics).rejectBy('canonicalName', get(this, 'metric.canonicalName')),
-        otherParameters = Ember.A(otherMetrics).mapBy('parameters'),
-        result = Ember.A([]);
+        otherMetrics = arr(selectedMetrics).rejectBy('canonicalName', get(this, 'metric.canonicalName')),
+        otherParameters = arr(otherMetrics).mapBy('parameters');
 
-    otherParameters.forEach(metricParam => {
-      let entries = Ember.A(Object.entries(metricParam)).reject(([key,]) => key === 'as');
-      entries.forEach(([, value]) => {
-        result.push( value );
-      });
+    return otherParameters.map(metricParam => {
+      let entries = arr(Object.entries(metricParam)).reject(([key,]) => key === 'as');
+      return entries.map(([, value]) => value);
     });
-
-    return result;
   }),
 
   /**
    * @property {String} parameter - parameter to configure
    */
   parameter: computed('metric', function() {
-    return Ember.A(Object.keys(get(this, 'metric.parameters'))).reject(key => key === 'as')[0];
+    return arr(Object.keys(get(this, 'metric.parameters'))).reject(key => key === 'as')[0];
   }),
 
   /**

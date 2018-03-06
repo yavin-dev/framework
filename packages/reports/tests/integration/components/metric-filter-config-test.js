@@ -9,6 +9,8 @@ let Metric, Request;
 moduleForComponent('metric-filter-config', 'Integration | Component | metric filter config', {
   integration: true,
   beforeEach() {
+    this.register('helper:report-action', Ember.Helper.helper(() => {}), { instantiate: false });
+
     Metric = {
       metric: { name: 'testMetric', longName: 'Test Metric' },
       parameters: {
@@ -73,13 +75,16 @@ test('it renders', function(assert) {
 });
 
 test('click action', function(assert) {
-  assert.expect(1);
+  assert.expect(2);
 
   this.set('metric', Metric);
   this.set('request', Request);
-  this.set('paramClicked', (param) => {
-
+  this.set('paramClicked', (param, paramValue) => {
     assert.equal(param,
+      'param',
+      'The type of parameter is passed to the action');
+
+    assert.equal(paramValue,
       'bar',
       'The clicked param is passed to the action');
   });

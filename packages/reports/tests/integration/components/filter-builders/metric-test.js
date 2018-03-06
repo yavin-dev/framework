@@ -1,11 +1,14 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import Component from '@ember/component';
+import Helper from '@ember/component/helper';
 
 moduleForComponent('filter-builders/metric', 'Integration | Component | filter-builders/metric', {
   integration: true,
 
   beforeEach() {
+    this.register('helper:report-action', Helper.helper(() => {}), { instantiate: false });
+
     this.register('component:mock/values-component', Component.extend({
       classNames: 'mock-value-component'
     }));

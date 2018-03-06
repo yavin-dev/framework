@@ -33,6 +33,25 @@ test('UPDATE_FILTER', function(assert) {
     'Properties in changeSet are added to filter');
 });
 
+test('UPDATE_FILTER_PARAM', function(assert) {
+  assert.expect(1);
+
+  let subject = { metric: 'foo', parameters: { param: 'bar' } },
+      filter = { subject, operator: 'in', values: [1,2,3] },
+      parameter = 'param',
+      parameterValue = 'baz';
+
+  this.subject().send(RequestActions.UPDATE_FILTER_PARAM, { currentModel: null }, filter, parameter, parameterValue);
+
+  assert.deepEqual(filter,
+    {
+      subject: { metric: 'foo', parameters: { param: 'baz' }},
+      operator: 'in',
+      values: [1, 2, 3]
+    },
+    'the parameter is updated and the rest of the filter remains unchanged');
+});
+
 test('REMOVE_FILTER', function(assert) {
   assert.expect(3);
 

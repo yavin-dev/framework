@@ -11,7 +11,7 @@
     <div class='metric-filter-config__header'>{{parameter}} ({{otherParams.length}})</div>
     <div class='metric-filter-config__items'>
       {{#each otherParams as | param |}}
-        <div class='metric-filter-config__item' onclick={{action this.attrs.paramClicked param}}>{{param}}</div>
+        <div class='metric-filter-config__item' onclick={{action (queue (action this.attrs.paramClicked parameter param) (action dd.actions.close))}}>{{param}}</div>
       {{/each}}
     </div>
   {{/dd.content}}

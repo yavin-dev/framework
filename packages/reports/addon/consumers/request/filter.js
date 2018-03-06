@@ -138,9 +138,10 @@ export default ActionConsumer.extend({
      * @param {Object} route - route that has a model that contains a request property
      * @param {Object} originalFilter - object to update
      */
-    [RequestActions.UPDATE_FILTER_PARAM]: (route, originalFilter, metric, param) => {
-      console.log(param);
-      debugger;
+    [RequestActions.UPDATE_FILTER_PARAM]: (route, originalFilter, key, value) => {
+      set(originalFilter, 'subject.parameters', {
+        [key]: value
+      });
     },
 
     /**
