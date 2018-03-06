@@ -17,7 +17,6 @@ moduleForModel('report', 'Unit | Serializer | Report', {
     'transform:dimension',
     'transform:fragment',
     'transform:metric',
-    'transform:sort',
     'transform:moment',
     'transform:table',
     'model:bard-request/request',

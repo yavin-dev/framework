@@ -24,7 +24,7 @@ export default ActionConsumer.extend({
     [RequestActions.UPSERT_SORT]({ currentModel }, metricName, direction) {
       let request = get(currentModel, 'request'),
           requestSorts = get(request, 'sort'),
-          requestSort = requestSorts.findBy('metric.name', metricName);
+          requestSort = requestSorts.findBy('metric.canonicalName', metricName);
 
       if (requestSort) {
         requestSort.set('direction', direction);

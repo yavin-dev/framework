@@ -12,9 +12,9 @@ moduleForModel('fragments-mock', 'Unit | Model | Fragment | BardRequest - Sort',
   // Specify the other units that are required for this test.
   needs: [
     'transform:fragment-array',
-    'transform:sort',
     'transform:table',
     'transform:fragment',
+    'transform:metric',
     'model:bard-request/fragments/metric',
     'model:bard-request/fragments/sort',
     'validator:presence',
@@ -46,10 +46,10 @@ moduleForModel('fragments-mock', 'Unit | Model | Fragment | BardRequest - Sort',
           type: 'fragments-mock',
           attributes: {
             sorts: [{
-              metric: 'dayAvgUniqueIdentifier'
+              metric: {metric: 'dayAvgUniqueIdentifier'}
             },
             {
-              metric: 'timeSpent',
+              metric: {metric: 'timeSpent'},
               direction: 'desc'
             }]
           }
@@ -70,7 +70,7 @@ test('Model using the Sort Fragment', function(assert) {
     assert.ok(mockModel, 'mockModel is fetched from the store');
 
     /* == Getter Method == */
-    assert.equal(mockModel.get('sorts').objectAt(0).get('metric.longName'),
+    assert.equal(mockModel.get('sorts').objectAt(0).get('metric.metric.longName'),
       'Unique Identifiers (Daily Avg)',
       'The property metric `ui` was deserialized to the metric object with longName `Unique Identifiers (Daily Avg)`');
 
@@ -79,10 +79,10 @@ test('Model using the Sort Fragment', function(assert) {
       'The property direction has the default value `desc`');
 
     /* == Setter Method == */
-    mockModel.get('sorts').objectAt(0).set('metric', MetadataService.getById('metric', 'pageViews'));
+    mockModel.get('sorts').objectAt(0).set('metric', {metric: MetadataService.getById('metric', 'pageViews')});
     mockModel.get('sorts').objectAt(0).set('direction', 'asc');
 
-    assert.equal(mockModel.get('sorts').objectAt(0).get('metric.longName'),
+    assert.equal(mockModel.get('sorts').objectAt(0).get('metric.metric.longName'),
       'Page Views',
       'The property sort has the metric with value  `Page Views` using the setter');
 
@@ -93,11 +93,11 @@ test('Model using the Sort Fragment', function(assert) {
     /* == Serialize == */
     assert.deepEqual(mockModel.serialize().data.attributes.sorts,
       [{
-        metric: 'pageViews',
+        metric: {metric: 'pageViews', parameters: {}},
         direction: 'asc'
       },
       {
-        metric: 'timeSpent',
+        metric: {metric: 'timeSpent', parameters: {}},
         direction: 'desc'
       }],
       'The model object was serialized correctly');
@@ -119,7 +119,7 @@ test('Validations', function(assert) {
         'There are no validation errors');
     });
 
-    sort.set('metric', undefined);
+    sort.set('metric', null);
     sort.validate().then(({ validations }) => {
       assert.ok(!validations.get('isValid'), 'Sort is invalid');
 

@@ -40,7 +40,7 @@ test('UPSERT_SORT', function(assert) {
   consumer.send(RequestActions.UPSERT_SORT, { currentModel }, 'dateTime', 'desc');
   consumer.send(RequestActions.UPSERT_SORT, { currentModel }, 'click', 'desc');
 
-  currentModel.request.sort = Ember.A([Ember.Object.create({ metric: { name: 'dateTime' } })]);
+  currentModel.request.sort = Ember.A([Ember.Object.create({metric: {metric: {name: 'dateTime'}, canonicalName: 'dateTime'}})]);
   consumer.send(RequestActions.UPSERT_SORT, { currentModel }, 'dateTime', 'desc');
   assert.equal(currentModel.request.sort[0].direction,
     'desc',

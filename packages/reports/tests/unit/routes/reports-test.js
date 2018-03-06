@@ -21,7 +21,6 @@ moduleFor('route:reports', 'Unit | Route | reports', {
     'transform:dimension',
     'transform:fragment',
     'transform:metric',
-    'transform:sort',
     'transform:moment',
     'transform:table',
     'model:line-chart',

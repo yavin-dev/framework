@@ -36,8 +36,7 @@ const ExpectedRequest = {
           }
         ],
         bardVersion:    'v1',
-        requestVersion: 'v1',
-        responseFormat: 'json'
+        requestVersion: 'v1'
       },
       ExpectedReport = {
         data: {
@@ -92,7 +91,6 @@ moduleForModel('report', 'Unit | Model | report', {
     'transform:dimension',
     'transform:fragment',
     'transform:metric',
-    'transform:sort',
     'transform:moment',
     'transform:table',
     'model:bard-request/request',
@@ -124,6 +122,7 @@ moduleForModel('report', 'Unit | Model | report', {
     'serializer:bard-request/fragments/logical-table',
     'serializer:bard-request/fragments/interval',
     'serializer:bard-request/fragments/metric',
+    'serializer:bard-request/request',
     'serializer:visualization',
     'serializer:report',
     'serializer:user',

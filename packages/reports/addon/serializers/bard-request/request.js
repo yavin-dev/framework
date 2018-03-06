@@ -4,7 +4,7 @@
  */
 
 import DS from 'ember-data';
-import { hasParameters } from 'navi-data/utils/metric';
+import { hasParameters, getAliasedMetrics, canonicalizeMetric } from 'navi-data/utils/metric';
 
 export default DS.JSONSerializer.extend({
   /**
@@ -25,6 +25,13 @@ export default DS.JSONSerializer.extend({
   serialize(/*snapshot, options*/) {
     let request = this._super(...arguments);
     request.metrics = this._addAliases(request.metrics);
+
+    // Flip the alias map so it's an object of canonName -> aliases
+    const canonToAlias = Object.entries(getAliasedMetrics(request.metrics))
+      .reduce((obj, [val, key]) => Object.assign({}, obj, {[key]: val}), {}); // flip flip flipadelphia
+
+    // transform sorts to have appropriate aliases, removes parameter map
+    request.sort = this._removeParameters(this._toggleAlias(request.sort, canonToAlias));
     return request;
   },
 
@@ -35,6 +42,17 @@ export default DS.JSONSerializer.extend({
    * @return {Object} normalized payload
    */
   normalize(type, request) {
+    // get alias -> canonName map
+    const aliasToCanon = getAliasedMetrics(request.metrics);
+
+    // build canonName -> metric map
+    const canonToMetric = request.metrics.reduce((obj, metric) =>
+      Object.assign({}, obj, {
+        [canonicalizeMetric(metric)]: metric
+      }), {});
+
+    request.sort = this._toggleAlias(request.sort, aliasToCanon, canonToMetric);
+
     //remove AS from metric parameters
     request.metrics = request.metrics.map((metric) => {
       if(hasParameters(metric)) {
@@ -43,6 +61,19 @@ export default DS.JSONSerializer.extend({
       return metric;
     });
     return this._super(type, request);
+  },
+
+  /**
+   * Used to remove parameters from having/sorts for serialization
+   * @param {Array} arr - Array of objects
+   * @return {Array} Array of objects without parameter
+   * @private
+   */
+  _removeParameters(arr) {
+    return arr.map(value => {
+      delete value.parameters;
+      return value;
+    })
   },
 
   /**
@@ -59,5 +90,29 @@ export default DS.JSONSerializer.extend({
       }
       return metric;
     })
+  },
+
+  /**
+   * Input a list of objects, replace with alias or canonicalized metric,
+   * if provided will replace serialized metric.
+   *
+   * This works on both ends of serialization and deserialization
+   *
+   * @param {array} field - property off the request object to transform
+   * @param aliasMap {object} - Either a map of of aliases to canon name (for deserialization) or canon name to alias (for serialization)
+   * @param canonMap {object} - Map of canon name to metric object {metric, parameters}
+   * @return {array} - copy of the field object transformed with aliases, or alias to metric object
+   * @private
+   */
+  _toggleAlias(field, aliasMap, canonMap = {}) {
+    if(!field) {
+      return;
+    }
+    return field.map(obj => {
+      let metricName = canonicalizeMetric(obj.metric) || obj.metric;
+      obj.metric = aliasMap[metricName] || metricName;
+      obj.metric = canonMap[obj.metric] || obj.metric;
+      return obj;
+    });
   }
 });

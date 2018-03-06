@@ -54,7 +54,6 @@ moduleFor('route:reports/new', 'Unit | Route | reports/new', {
     'transform:dimension',
     'transform:fragment',
     'transform:metric',
-    'transform:sort',
     'transform:moment',
     'transform:table',
     'transform:dimension',
