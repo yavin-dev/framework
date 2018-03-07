@@ -27,6 +27,11 @@ export default Component.extend({
   classNames: [ 'metric-filter-config' ],
 
   /**
+   * @property {Array} classNameBindings
+   */
+  classNameBindings: [ 'otherParams.length::metric-filter-config__hide' ],
+
+  /**
    * @property {Array} otherParams - other selected params for the same metric
    */
   otherParams: computed('request', 'metric', function() {
