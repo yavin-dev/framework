@@ -1,40 +1,38 @@
----
 language: node_js
 node_js:
-  # Using the same minimum supported node version as Ember CLI & Lerna
-  - '6'
-
-sudo: true  
-
+- '6'
+sudo: true
 addons:
-  chrome: stable  
-
+  chrome: stable
 cache:
   directories:
-    - $HOME/.npm
-    - $HOME/packages/*/.npm
-    - $HOME/packages/*/.cache # includes bowers cache
-
+  - "$HOME/.npm"
+  - "$HOME/packages/*/.npm"
+  - "$HOME/packages/*/.cache"
 env:
   matrix:
-    - PACKAGE=navi-app
-    - PACKAGE=navi-core
-    - PACKAGE=navi-dashboards
-    - PACKAGE=navi-data
-    - PACKAGE=navi-reports
-    - PACKAGE=navi-visualizations
-
+  - PACKAGE=navi-app
+  - PACKAGE=navi-core
+  - PACKAGE=navi-dashboards
+  - PACKAGE=navi-data
+  - PACKAGE=navi-reports
+  - PACKAGE=navi-visualizations
+  global:
+    secure: E181PUYlzg9nuI30m6tcUAVJRgC2HO2xFfC59BhmAx+DuaeaTAeRnmxq0sJVBBjqtqnVocKuyoQwU0z+9kqE4rWPX7Iao9TsplDstXJbksnXT/Z/4K7zWrbijMuNBS2hhSQigGMRKPbbt7fYxMOylJ/MHtZxGwOtcGXeq8UpokBvgd4KqKzxgHuy8KmCFk3oObc41lWxDtgDOoe6mXOl9fKtaixvOyISre1lVrgEt8X9tptQ5GsxB7IueG9CiidawPH1+yW3wDyJn2f5vXTnbywHURvRZ6yHGnBABrc+8tzaxbxxXsgkBYrkDksIUrr/T05VuKIsxOQy3a56bJ4fCrg1PgcVRLlNBNaP8C5S867fKlJ6k58x2mXRqQ4FZm2z8FU202e1M3LX9gSIBDekpZ8cwPQRSPL8GWH3DK4IPXHaSQ7bYxITPoLHdY7vcPTOQNvN82XcVhbeMjMGsYLEiBPns+1bG6KEWDz7kLv+kQUKUkxnslQaAJn/WYyCaxmpNnVqrKbjSUzJzQiFQNFhTvDmSCGk+RBWZf2XD3IR2gcfN5G0RQcEiv2e+yxXOSY4KuWL9V8j1epnclHe4QxgTrXxotyk6cNMcbDIpBhP/iwNvmmV0uQUulAyr5QyLMWjLOrqV/K5CAn8pNMiTT8iO3tnoCDWWxtyFdf+lofhlj4=
 matrix:
   fast_finish: true
-
 before_install:
-  - npm config set spin false
-  - npm --version
-  - npm install -g bower
-  - bower --version
-
+- npm config set spin false
+- npm --version
+- npm install -g bower
+- bower --version
 install:
-  - travis_wait npm install
-
+- travis_wait npm install
 script:
-  - travis_wait lerna run test --scope $PACKAGE
+- travis_wait lerna run test --scope $PACKAGE
+jobs:
+  include:
+  - stage: Publish
+    if: branch = master AND repo = yahoo/navi AND type = push
+    node_js: '6'
+    script: bash ./scripts/ci-publish.sh
