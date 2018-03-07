@@ -188,7 +188,7 @@ test('Validations', function(assert) {
         'value should have some value assigned');
     });
 
-    having.set('metric', { longName: 'Ad Clicks' });
+    having.set('metric', {metric: { longName: 'Ad Clicks' }, parameters: {}});
     having.set('values', ['foo']);
     having.validate().then(({ validations }) => {
       assert.ok(!validations.get('isValid'), 'Having is invalid');
