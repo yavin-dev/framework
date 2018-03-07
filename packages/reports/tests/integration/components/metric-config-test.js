@@ -8,6 +8,7 @@ import { setupMock, teardownMock } from '../../helpers/mirage-helper';
 import { getOwner } from '@ember/application';
 import { defer, reject } from 'rsvp';
 import { isEmpty } from '@ember/utils';
+import { A as arr } from '@ember/array';
 
 let MockRequest, MockMetric, MetadataService;
 
@@ -37,14 +38,14 @@ moduleForComponent('metric-config', 'Integration | Component | metric config', {
     };
 
     MockRequest = {
-      metrics: [{
+      metrics: arr([{
         metric: MockMetric,
         parameters: {
           as: 'currencyUSD',
           currency: 'USD'
         }
-      }],
-      having: [{
+      }]),
+      having: arr([{
         metric: {
           metric: MockMetric,
           parameters: {
@@ -52,7 +53,7 @@ moduleForComponent('metric-config', 'Integration | Component | metric config', {
             currency: 'USD'
           }
         }
-      }]
+      }])
     };
 
     set(this, 'addParameterizedMetric', () => {});

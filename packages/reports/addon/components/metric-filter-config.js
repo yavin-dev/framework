@@ -16,7 +16,7 @@
 import Component from '@ember/component';
 import layout from '../templates/components/metric-filter-config';
 import { computed, get } from '@ember/object';
-import { A as arr } from '@ember/array'
+import { A as arr } from '@ember/array';
 
 export default Component.extend({
   layout,
@@ -34,9 +34,12 @@ export default Component.extend({
   /**
    * @property {Array} otherParams - other selected params for the same metric
    */
-  otherParams: computed('request', 'metric', function() {
-    let selectedMetrics = get(this, 'request.metrics').filterBy('metric.name', get(this, 'metric.metric.name')),
-        otherMetrics = arr(selectedMetrics).rejectBy('canonicalName', get(this, 'metric.canonicalName')),
+  otherParams: computed('request.metrics.[]', 'request.having.[]', 'metric', function() {
+    let requestMetrics = get(this, 'request.metrics').filterBy('metric.name', get(this, 'metric.metric.name')),
+        requestFilters = get(this, 'request.having').filterBy('metric.metric.name', get(this, 'metric.metric.name')),
+        filteredMetrics = arr(requestFilters).mapBy('metric.canonicalName'),
+        selectedMetrics = arr([ ...filteredMetrics, get(this, 'metric.canonicalName') ]),
+        otherMetrics = arr(requestMetrics).reject(metric => selectedMetrics.contains(get(metric, 'canonicalName'))),
         otherParameters = arr(otherMetrics).mapBy('parameters');
 
     return otherParameters.map(metricParam => {
