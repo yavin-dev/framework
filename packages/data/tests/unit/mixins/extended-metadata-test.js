@@ -16,7 +16,8 @@ moduleFor('mixin:extended-metadata', 'Unit | Mixin | extended metadata', {
     'adapter:bard-metadata',
     'service:bard-metadata',
     'service:keg',
-    'service:ajax'
+    'service:ajax',
+    'model:metadata/metric'
   ],
 
   beforeEach(){

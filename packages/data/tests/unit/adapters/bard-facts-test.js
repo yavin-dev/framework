@@ -36,7 +36,7 @@ const TestRequest = {
           }],
         having: [
           {
-            metric: 'm1',
+            metric: {metric: 'm1'},
             operator: 'gt',
             values: [0]
           }

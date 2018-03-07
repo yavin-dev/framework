@@ -6,6 +6,7 @@ import ActionConsumer from 'navi-core/consumers/action-consumer';
 import Ember from 'ember';
 import { RequestActions } from 'navi-reports/services/request-action-dispatcher';
 import DefaultIntervals from 'navi-reports/utils/enums/default-intervals';
+import { canonicalizeMetric } from 'navi-data/utils/metric';
 
 const { assign, inject, get, set, setProperties } = Ember;
 
@@ -59,10 +60,17 @@ export default ActionConsumer.extend({
      * @action ADD_METRIC_FILTER
      * @param {Object} route - route that has a model that contains a request property
      * @param {Object} metric - metric to filter
+     * @param {Object} [parameters] - metric parameters to filter [optional]
      */
-    [RequestActions.ADD_METRIC_FILTER]: ({ currentModel }, metric) => {
+    [RequestActions.ADD_METRIC_FILTER]: ({ currentModel }, metric, parameters) => {
+      let newHavingMetric = { metric };
+
+      if(parameters) {
+        newHavingMetric = assign(newHavingMetric, { parameters })
+      }
+
       get(currentModel, 'request').addHaving(
-        assign({ metric }, DEFAULT_METRIC_FILTER)
+        assign({ metric: newHavingMetric }, DEFAULT_METRIC_FILTER)
       );
     },
 
@@ -73,10 +81,30 @@ export default ActionConsumer.extend({
      */
     [RequestActions.TOGGLE_METRIC_FILTER]: function(route, metric) {
       let filteredMetrics = get(route, 'currentModel.request.having'),
-          having = filteredMetrics.findBy('metric', metric);
+          having = filteredMetrics.findBy('metric.metric', metric);
 
       if(!having){
         get(this, 'requestActionDispatcher').dispatch(RequestActions.ADD_METRIC_FILTER, route, metric);
+      } else {
+        get(this, 'requestActionDispatcher').dispatch(RequestActions.REMOVE_FILTER, route, having);
+      }
+    },
+
+    /**
+     * @action TOGGLE_PARAMETERIZED_METRIC_FILTER
+     * @param {Object} route - route that has a model that contains a request property
+     * @param {Object} metric - metric to filter
+     * @param {Object} parameters - metric parameter to filter
+     */
+    [RequestActions.TOGGLE_PARAMETERIZED_METRIC_FILTER]: function(route, metric, parameters) {
+      let filteredMetrics = get(route, 'currentModel.request.having'),
+          //find if having for metric and parameters exists in request using the canonicalName
+          having = filteredMetrics.find(
+            having => get(having, 'metric.canonicalName') === canonicalizeMetric({ metric: get(metric, 'name'), parameters })
+          );
+
+      if(!having){
+        get(this, 'requestActionDispatcher').dispatch(RequestActions.ADD_METRIC_FILTER, route, metric, parameters);
       } else {
         get(this, 'requestActionDispatcher').dispatch(RequestActions.REMOVE_FILTER, route, having);
       }
@@ -88,9 +116,11 @@ export default ActionConsumer.extend({
      * @param {Object} metric - metadata model of metric to add
      */
     [RequestActions.REMOVE_METRIC](route, metric) {
-      // Find and remove any `havings` attached to the metric
-      let having = get(route, 'currentModel.request.having').findBy('metric', metric);
-      get(this, 'requestActionDispatcher').dispatch(RequestActions.REMOVE_FILTER, route, having);
+      // Find and remove all `havings` attached to the metric
+      let filteredMetrics = get(route, 'currentModel.request.having'),
+          havings = filteredMetrics.filterBy('metric.metric', metric);
+
+      havings.forEach(having => get(this, 'requestActionDispatcher').dispatch(RequestActions.REMOVE_FILTER, route, having));
     },
 
     /**

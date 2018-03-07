@@ -46,6 +46,7 @@ module.exports = {
                 this.route('view');" + EOL + "\
                 this.route('edit');" + EOL + "\
                 this.route('clone');" + EOL + "\
+                this.route('save-as');" + EOL + "\
                 this.route('unauthorized');" + EOL + "\
             });" + EOL + "\
         });" + EOL;

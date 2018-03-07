@@ -153,7 +153,7 @@ moduleForModel('fragments-mock', 'Unit | Model Fragment | BardRequest - Request'
                   }
                 ],
                 having: [{
-                  metric: 'uniqueIdentifier',
+                  metric: { metric: 'uniqueIdentifier' },
                   operator: 'gt',
                   values: [ 0 ]
                 }],
@@ -251,7 +251,7 @@ test('Request Model Fragment', function(assert) {
 });
 
 test('Clone Request', function(assert) {
-  assert.expect(10);
+  assert.expect(11);
 
   return wait().then(() => {
     let mockModel = Store.peekRecord('fragments-mock', MODEL_TO_CLONE),
@@ -300,9 +300,13 @@ test('Clone Request', function(assert) {
       MetadataService.getById('metric', 'navClicks'),
       'The property sort is set with correct metadata');
 
-    assert.equal(request.get('having.firstObject.metric'),
-      MetadataService.getById('metric', 'uniqueIdentifier'),
+    assert.deepEqual(request.get('having.firstObject.metric.metric'),
+      mockModel.get('request.having.firstObject.metric.metric'),
       'The property having is set with correct metadata');
+
+    assert.deepEqual(request.get('having.firstObject.metric.parameters'),
+      mockModel.get('request.having.firstObject.metric.parameters'),
+      'The property having is set with correct parameters');
   });
 });
 
@@ -356,7 +360,7 @@ test('addMetric', function(assert) {
 });
 
 test('addRequestMetricByModel', function(assert) {
-  assert.expect(3);
+  assert.expect(6);
 
   return wait().then(() => {
     let mockModel = Store.peekRecord('fragments-mock', 1),
@@ -376,6 +380,70 @@ test('addRequestMetricByModel', function(assert) {
     assert.equal(request.get('metrics').objectAt(1).get('metric'),
       MetadataService.getById('metric', 'pageViews'),
       'The new metric has been added to the model fragment');
+
+    let revenueMetric = MetadataService.getById('metric', 'revenue');
+
+    request.addRequestMetricByModel(revenueMetric);
+
+    assert.equal(request.get('metrics.length'),
+      3,
+      'There are now three metrics in the model fragment');
+
+    assert.equal(request.get('metrics').objectAt(2).get('metric'),
+      MetadataService.getById('metric', 'revenue'),
+      'The new metric has been added to the model fragment');
+
+    assert.deepEqual(request.get('metrics').objectAt(2).get('parameters'),
+      { currency: 'USD' },
+      'The new metric with the default parameter has been added to the model fragment');
+  });
+});
+
+test('addRequestMetricWithParam', function(assert) {
+  assert.expect(8);
+
+  return wait().then(() => {
+    let mockModel = Store.peekRecord('fragments-mock', 1),
+        newMetric = MetadataService.getById('metric', 'revenue'),
+        request = mockModel.get('request');
+
+    assert.equal(request.get('metrics.length'),
+      1,
+      'There is one metric in the model fragment');
+
+    request.addRequestMetricWithParam(newMetric);
+
+    assert.equal(request.get('metrics.length'),
+      2,
+      'There are now two metrics in the model fragment');
+
+    assert.equal(request.get('metrics').objectAt(1).get('metric'),
+      MetadataService.getById('metric', 'revenue'),
+      'The new metric has been added to the model fragment');
+
+    assert.deepEqual(request.get('metrics').objectAt(1).get('parameters'),
+      { currency: 'USD' },
+      'The new metric with the default parameter has been added to the model fragment');
+
+    request.addRequestMetricWithParam(newMetric, { currency: 'AUD' });
+
+    assert.equal(request.get('metrics.length'),
+      3,
+      'There are now three metrics in the model fragment');
+
+    assert.equal(request.get('metrics').objectAt(2).get('metric'),
+      MetadataService.getById('metric', 'revenue'),
+      'The new metric has been added to the model fragment');
+
+    assert.deepEqual(request.get('metrics').objectAt(2).get('parameters'),
+      { currency: 'AUD' },
+      'The new metric with the specified parameter has been added to the model fragment');
+
+    request.addRequestMetricWithParam(newMetric, { currency: 'USD' });
+
+    assert.equal(request.get('metrics.length'),
+      3,
+      'The final metric is not added since it already exists in the request');
   });
 });
 
@@ -413,6 +481,63 @@ test('removeRequestMetricByModel', function(assert) {
     assert.equal(request.get('metrics.length'),
       0,
       'There are no metrics in the model fragment');
+  });
+});
+
+test('removeRequestMetricByModel - multiple metrics', function(assert) {
+  assert.expect(2);
+
+  return wait().then(() => {
+    let mockModel = Store.peekRecord('fragments-mock', 1),
+        revenueMetric = MetadataService.getById('metric', 'revenue'),
+        request = mockModel.get('request');
+
+    request.addRequestMetricWithParam(revenueMetric);
+    request.addRequestMetricWithParam(revenueMetric, { currency: 'AUD' });
+
+    assert.equal(request.get('metrics.length'),
+      3,
+      'There is one metric in the model fragment');
+
+    request.removeRequestMetricByModel(revenueMetric);
+
+    assert.equal(request.get('metrics.length'),
+      1,
+      'There are no metrics in the model fragment');
+  });
+});
+
+test('removeRequestMetricWithParam', function(assert) {
+  assert.expect(4);
+
+  return wait().then(() => {
+    let mockModel = Store.peekRecord('fragments-mock', 1),
+        revenueMetric = MetadataService.getById('metric', 'revenue'),
+        parameter = { currency: 'AUD' },
+        request = mockModel.get('request');
+
+    request.addRequestMetricWithParam(revenueMetric);
+    request.addRequestMetricWithParam(revenueMetric, parameter);
+
+    assert.equal(request.get('metrics.length'),
+      3,
+      'There are three metrics in the model fragment');
+
+    request.removeRequestMetricWithParam(revenueMetric, parameter);
+
+    assert.equal(request.get('metrics.length'),
+      2,
+      'There is now two metrics in the model fragment');
+
+    let selectedRevenueMetric = request.get('metrics').objectAt(1);
+
+    assert.equal(get(selectedRevenueMetric, 'metric.name'),
+      'revenue',
+      'One revenue metric is part of the selected metric list');
+
+    assert.deepEqual(get(selectedRevenueMetric, 'parameters'),
+      { currency: 'USD' },
+      'the selected revenue metric has the right parameter');
   });
 });
 
@@ -767,7 +892,9 @@ test('addHaving', function(assert) {
   return wait().then(() => {
     let mockModel = Store.peekRecord('fragments-mock', 1),
         newHaving = {
-          metric: MetadataService.getById('metric', 'pageViews'),
+          metric: {
+            metric: MetadataService.getById('metric', 'pageViews')
+          },
           operator: 'gt',
           value: 100
         },
@@ -779,7 +906,7 @@ test('addHaving', function(assert) {
       1,
       'There is now one having in the model fragment');
 
-    assert.equal(request.get('having').objectAt(0).get('metric'),
+    assert.equal(request.get('having').objectAt(0).get('metric.metric'),
       MetadataService.getById('metric', 'pageViews'),
       'The new having has been added to the model fragment');
 
@@ -788,7 +915,10 @@ test('addHaving', function(assert) {
 
     assert.deepEqual(request.get('having').map(m => m.serialize()),
       [{
-        metric: get(newHaving, 'metric.name'),
+        metric: {
+          metric: get(newHaving, 'metric.metric.name'),
+          parameters: {}
+        },
         operator: get(newHaving, 'operator'),
         values: [ get(newHaving, 'value') ]
       }],
@@ -803,7 +933,9 @@ test('removeRequestHaving', function(assert) {
   return wait().then(() => {
     let mockModel = Store.peekRecord('fragments-mock', 1),
         newHaving = {
-          metric: MetadataService.getById('metric', 'pageViews'),
+          metric: {
+            metric: MetadataService.getById('metric', 'pageViews')
+          },
           operator: 'gt',
           value: 100
         },
@@ -827,7 +959,9 @@ test('removeRequestHavingByMetric', function(assert) {
   return wait().then(() => {
     let mockModel = Store.peekRecord('fragments-mock', 1),
         newHaving = {
-          metric: MetadataService.getById('metric', 'pageViews'),
+          metric: {
+            metric: MetadataService.getById('metric', 'pageViews')
+          },
           operator: 'gt',
           value: 100
         },
@@ -851,7 +985,9 @@ test('updateHaving', function(assert) {
   return wait().then(() => {
     let mockModel = Store.peekRecord('fragments-mock', 1),
         having = {
-          metric: MetadataService.getById('metric', 'pageViews'),
+          metric: {
+            metric: MetadataService.getById('metric', 'pageViews')
+          },
           operator: 'gt',
           value: 100
         },
@@ -871,7 +1007,7 @@ test('updateHaving', function(assert) {
       100,
       'The having value is correct');
 
-    request.updateHavingForMetric(having.metric, {
+    request.updateHavingForMetric(having.metric.metric, {
       operator: 'gte',
       value: 200
     });
@@ -1248,7 +1384,9 @@ test('having has-many validation', function(assert) {
   return wait().then(() => {
     let mockModel = Store.peekRecord('fragments-mock', 1),
         newHaving = {
-          metric: MetadataService.getById('metric', 'pageViews')
+          metric: {
+            metric: MetadataService.getById('metric', 'pageViews')
+          }
         },
         request = mockModel.get('request');
 

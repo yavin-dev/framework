@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -9,6 +9,7 @@ import MF from 'model-fragments';
 import isEqual from 'lodash/isEqual';
 import { validator, buildValidations } from 'ember-cp-validations';
 import Interval from 'navi-core/utils/classes/interval';
+import { isEmpty } from '@ember/utils';
 
 const { Fragment, fragment, fragmentArray } = MF;
 
@@ -91,16 +92,28 @@ export default Fragment.extend(Validations, {
    * Adds a metric fragment to the metrics array if not already present
    *
    * @method addMetric
-   * @param {Object} metricObj
+   * @param {Object} requestMetric
    * @returns {Void}
    */
-  addMetric(metricObj) {
+  addMetric(requestMetric) {
     let metrics = get(this, 'metrics'),
-        newMetric = get(metricObj, 'metric'),
-        existingMetric = metrics.findBy('metric', newMetric);
+        metricMetadata = get(requestMetric, 'metric'),
+        metricDoesntExist = isEmpty(metrics.findBy('metric', metricMetadata));
 
-    if(!existingMetric) {
-      metrics.createFragment(metricObj);
+    //check if metric with parameter exists when metric hasParameters
+    if(metricMetadata && get(metricMetadata, 'hasParameters')){
+      let parameters = get(requestMetric, 'parameters'),
+          //filter all metrics of type `metricMetadata`
+          existingMetrics = metrics.filterBy('metric', metricMetadata);
+
+      //check if parameters in requestMetric in in the filtered metrics
+      metricDoesntExist = isEmpty(existingMetrics.filter(
+        metric => isEqual(get(metric, 'parameters'), parameters)
+      ));
+    }
+
+    if(metricDoesntExist) {
+      metrics.createFragment(requestMetric);
     }
   },
 
@@ -111,8 +124,28 @@ export default Fragment.extend(Validations, {
    * @param {DS.Model} metricModel
    */
   addRequestMetricByModel(metricModel) {
+    if(get(metricModel, 'hasParameters')) {
+      this.addRequestMetricWithParam(metricModel);
+    } else {
+      this.addMetric({
+        metric: metricModel
+      });
+    }
+  },
+
+  /**
+   * Adds a metric model to the metrics array with parameter
+   *
+   * @method addRequestMetricWithParam
+   * @param {DS.Model} metricModel
+   * @param {Object} [parameters] - parameters [optional]
+   */
+  addRequestMetricWithParam(metricModel, parameters) {
+    let requestParameters = Object.assign({}, metricModel.getDefaultParameters(), parameters);
+
     this.addMetric({
-      metric: metricModel
+      metric: metricModel,
+      parameters: requestParameters
     });
   },
 
@@ -120,23 +153,39 @@ export default Fragment.extend(Validations, {
    * Removes a metric fragment from the array
    *
    * @method removeRequestMetric
-   * @param {DS.ModelFragment} metricObj
+   * @param {DS.ModelFragment} requestMetric
    * @returns {DS.ModelFragment} removed metric fragment
    */
-  removeRequestMetric(metricObj) {
-    return get(this, 'metrics').removeFragment(metricObj);
+  removeRequestMetric(requestMetric) {
+    return get(this, 'metrics').removeFragment(requestMetric);
   },
 
   /**
-   * Removes a metric fragment using the metric model
+   * Removes all metric fragment of the specified metric model
    *
    * @method removeRequestMetricByModel
    * @param {DS.Model} metricModel
-   * @returns removed metric fragment
    */
   removeRequestMetricByModel(metricModel) {
-    let metricObj = get(this, 'metrics').findBy('metric', metricModel);
-    return this.removeRequestMetric(metricObj);
+    let metrics = get(this, 'metrics').filterBy('metric', metricModel);
+    metrics.forEach(requestMetric => this.removeRequestMetric(requestMetric));
+  },
+
+  /**
+   * Removes a metric fragment with specified param using the metric model
+   *
+   * @method removeRequestMetricWithParam
+   * @param {DS.Model} metricModel
+   * @param {Object} parameters
+   * @returns removed metric fragment
+   */
+  removeRequestMetricWithParam(metricModel, parameters) {
+    let metrics = get(this, 'metrics').filterBy('metric', metricModel);
+    metrics.forEach(requestMetric => {
+      if(isEqual(get(requestMetric, 'parameters'), parameters)) {
+        this.removeRequestMetric(requestMetric);
+      }
+    });
   },
 
   /**
@@ -460,7 +509,10 @@ export default Fragment.extend(Validations, {
       //clone having
       having: makeArray(clonedRequest.having).map(having =>
         store.createFragment('bard-request/fragments/having', {
-          metric: metadataService.getById('metric', having.metric),
+          metric: store.createFragment('bard-request/fragments/metric', {
+            metric: metadataService.getById('metric', having.metric.metric),
+            parameters: having.metric.parameters
+          }),
           operator: having.operator,
           values: having.values
         })
@@ -533,7 +585,7 @@ export default Fragment.extend(Validations, {
    */
   removeRequestHavingByMetric(metricModel) {
     let having = get(this, 'having'),
-        havingObj = having.findBy('metric', metricModel);
+        havingObj = having.findBy('metric.metric', metricModel);
     return this.removeRequestHaving(havingObj);
   },
 
@@ -546,7 +598,7 @@ export default Fragment.extend(Validations, {
    * @returns {Void}
    */
   updateHavingForMetric(metric, props){
-    let having = get(this, 'having').findBy('metric', metric);
+    let having = get(this, 'having').findBy('metric.metric', metric);
 
     Ember.assert(`${metric.modelName} as a having does not exist`, having);
 

@@ -105,7 +105,8 @@ moduleFor('route:reports/new', 'Unit | Route | reports/new', {
     'validator:has-many',
     'validator:interval',
     'validator:presence',
-    'validator:recipients'
+    'validator:recipients',
+    'validator:request-time-grain'
   ],
 
   beforeEach() {

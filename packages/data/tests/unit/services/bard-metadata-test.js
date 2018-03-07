@@ -170,11 +170,42 @@ test('getById', function(assert){
 });
 
 test('fetchById', function(assert){
-  assert.expect(1);
+  assert.expect(3);
 
   Service.fetchById('metric', 'metricOne').then((data) => {
     assert.deepEqual(data,
       MetricOne,
       'Service fetchById should load correct data');
+
+    let keg = Service.get('_keg');
+
+    assert.deepEqual(keg.all('metadata/metric').mapBy('name'),
+      [ 'metricOne' ],
+      'Fetched entity has been added to the keg');
+  });
+
+  Service.fetchById('metric', 'metricOne').then(() => {
+    let keg = Service.get('_keg');
+
+    assert.deepEqual(keg.all('metadata/metric').mapBy('name'),
+      [ 'metricOne' ],
+      'Fetching an entity already present in the keg doesn`t add another copy into the keg');
+  });
+});
+
+test('getMetaField', function(assert) {
+  assert.expect(3);
+  return Service.loadMetadata().then(() => {
+    assert.equal(Service.getMetaField('metric', 'metricOne', 'longName'),
+      'Metric One',
+      'gets field from requested');
+
+    assert.equal(Service.getMetaField('metric', 'metricOne', 'shortName', 'someDefault'),
+      'someDefault',
+      'returns default when field is not found');
+
+    assert.equal(Service.getMetaField('metric', 'InvalidMetric', 'shortName', 'someDefault'),
+      'someDefault',
+      'returns default when metric is not found');
   });
 });

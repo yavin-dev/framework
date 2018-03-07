@@ -3,6 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { isEmpty } from '@ember/utils';
+import { get } from '@ember/object';
 
 /**
  * Returns canonicalized name of a paramterized metric
@@ -15,15 +16,17 @@ export function canonicalizeMetric(metric) {
 }
 
 /**
+ * @function hasParameters
+ *
  * Returns if metric has parameters
  * @param {Object} obj
  * @param {String} obj.metric - metric name
  * @param {Object} obj.parameters (optional) - a key: value object of parameters
+ * @returns {Boolean} true if metric has parameters
  */
 export function hasParameters(obj = {}) {
-  return obj.hasOwnProperty('parameters') &&
-    !isEmpty(obj.parameters) &&
-    Object.keys(obj.parameters).length > 0
+  let parameters = get(obj, 'parameters');
+  return !isEmpty(parameters) && Object.keys(parameters).length > 0;
 }
 
 /**

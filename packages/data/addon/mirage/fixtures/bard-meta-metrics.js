@@ -87,8 +87,15 @@ export default {
     {
       category: 'Revenue',
       name: 'revenue',
-      longName: "Revenue",
-      type: 'money'
+      longName: 'Revenue',
+      type: 'money',
+      parameters: {
+        currency: {
+          'type': 'dimension',
+          'dimensionName': 'displayCurrency',
+          'defaultValue': 'USD'
+        }
+      }
     }
   ],
 

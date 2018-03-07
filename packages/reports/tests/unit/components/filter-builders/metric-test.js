@@ -9,7 +9,7 @@ test('filter property', function(assert) {
   assert.expect(3);
 
   const mockHavingFragment = {
-    metric: { longName: 'Page Views'},
+    metric: { metric: { longName: 'Page Views'} },
     operator: 'gt',
     values: [1000]
   };

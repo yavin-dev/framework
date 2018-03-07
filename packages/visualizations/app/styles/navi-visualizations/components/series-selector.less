@@ -37,6 +37,13 @@
         line-height: 1.5;
     }
 
+    .table-cell--icon {
+      align-items: center;
+      box-sizing: content-box;
+      max-width: 20px;
+      visibility: hidden;
+    }
+
     .table-header {
         color: @navi-light-gray-1;
         text-transform: uppercase;
@@ -54,7 +61,8 @@
 
         .table-row:hover {
             background-color: @navi-purple-dark;
-            &:after {
+
+            .table-cell--icon {
                 visibility: visible;
             }
         }
@@ -63,15 +71,6 @@
     .table-row {
         display: flex;
         vertical-align: middle;
-        &:after {
-            display: flex;
-            align-items: center;
-            font-family: icons-ads-data !important;
-            content: '\f12e';
-            margin-right: 12px;
-            visibility: hidden;
-            font-size: @font-size-base-large;
-        }
     }
 
     .table-cell {

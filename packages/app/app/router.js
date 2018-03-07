@@ -43,6 +43,7 @@ Router.map(function() {
       this.route('invalid');
       this.route('view');
       this.route('clone');
+      this.route('save-as');
     });
   });
 

@@ -74,7 +74,7 @@ test('It renders correctly', function(assert) {
 
   $('.add-series .btn-add').click();
 
-  let header = $('.table-header .table-cell').toArray().map((el) =>  {
+  let header = $('.table-header .table-cell:not(.table-cell--icon)').toArray().map((el) =>  {
     return $(el).text().trim();
   });
 
@@ -83,7 +83,7 @@ test('It renders correctly', function(assert) {
     "Browser"
   ], 'table header is correctly displayed based on seriesDimensions');
 
-  let body = $('.table-body .table-cell').toArray().map((el) =>  {
+  let body = $('.table-body .table-cell:not(.table-cell--icon)').toArray().map((el) =>  {
     return $(el).text().trim();
   });
 
@@ -164,7 +164,7 @@ test('Searching', function(assert) {
     this.$('.search input').val('30').trigger('input').change();
   });
 
-  let body = $('.table-body .table-cell').toArray().map((el) =>  {
+  let body = $('.table-body .table-cell:not(.table-cell--icon)').toArray().map((el) =>  {
     return $(el).text().trim();
   });
 

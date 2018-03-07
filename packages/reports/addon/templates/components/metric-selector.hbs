@@ -1,4 +1,4 @@
-{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{#navi-list-selector
    items=allMetrics
    searchField='longName'
@@ -29,6 +29,15 @@
         {{/navi-icon}}
 
         <div class='metric-selector__icon-set'>
+          {{#if (get metric 'hasParameters')}}
+            {{metric-config
+              metric=metric
+              request=request
+              addParameterizedMetric=(report-action 'ADD_METRIC_WITH_PARAM')
+              removeParameterizedMetric=(report-action 'REMOVE_METRIC_WITH_PARAM')
+              toggleParameterizedMetricFilter=(report-action 'TOGGLE_PARAMETERIZED_METRIC_FILTER')
+            }}
+          {{/if}}
           {{navi-icon
               'filter'
               class=(concat (if (get metricsFiltered metric.name) 'checkbox-selector__filter--active ') 'checkbox-selector__filter metric-selector__filter')

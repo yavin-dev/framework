@@ -8,7 +8,7 @@ import MF from 'model-fragments';
 import Ember from 'ember';
 import { validator, buildValidations } from 'ember-cp-validations';
 
-const { Fragment } = MF;
+const { Fragment, fragment } = MF;
 
 const { A:array, computed, get, set } = Ember,
       Validations = buildValidations({
@@ -35,9 +35,9 @@ const { A:array, computed, get, set } = Ember,
       });
 
 export default Fragment.extend(Validations, {
-  metric:         DS.attr('metric'),
-  operator:       DS.attr('string', { defaultValue: 'gt' }),
-  values:         DS.attr({ defaultValue: () => Ember.A([]) }),
+  metric:   fragment('bard-request/fragments/metric', { defaultValue: () => { return {}; } }),
+  operator: DS.attr('string', { defaultValue: 'gt' }),
+  values:   DS.attr({ defaultValue: () => Ember.A([]) }),
 
   value: computed('values', {
     get() {

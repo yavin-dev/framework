@@ -178,13 +178,15 @@ test('Serializing multi param request', function(assert) {
             {
               metric: 'revenue',
               parameters: {
-                currency: 'USD'
+                currency: 'USD',
+                as: 'm1'
               }
             },
             {
               metric: 'revenue',
               parameters: {
-                currency: 'EUR'
+                currency: 'EUR',
+                as: 'm2'
               }
             }
           ],

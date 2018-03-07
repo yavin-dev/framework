@@ -76,7 +76,7 @@ export default Ember.Route.extend({
      * @param {DS.Model} report - object to delete
      */
     deleteReport(report) {
-      let reportName = get(this, 'reportName');
+      let reportName = get(report, 'title');
 
       report.deleteRecord();
 
