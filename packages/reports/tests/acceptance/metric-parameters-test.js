@@ -90,3 +90,58 @@ test('auto open metric config', function(assert) {
       'The metric config dropdown container remains closed when the metric is removed');
   });
 });
+
+test('metric config - filter parameter', function(assert) {
+  assert.expect(2);
+
+  visit('/reports/1/view');
+  click('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .grouped-list__item-label');
+  click('.metric-config__dropdown-container .grouped-list__item:contains(EUR) .metric-config__filter-icon');
+  click('.metric-config__dropdown-container .navi-list-selector__show-link');
+
+  andThen(() => {
+    assert.deepEqual(find('.metric-config__dropdown-container .grouped-list__item').toArray().map(el => el.textContent.trim()),
+      [ 'Dollars (USD)', 'Euro (EUR)' ],
+      'The filtered parameter is also selected');
+
+    assert.ok(find('.filter-builder__subject:contains(EUR)').length,
+      'The parameterized metric is added as a filter');
+  });
+});
+
+test('metric filter config', function(assert) {
+  assert.expect(4);
+
+  visit('/reports/1/view');
+  click('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .grouped-list__item-label');
+  click('.metric-config__dropdown-container .grouped-list__item:contains(AUD) .grouped-list__item-label');
+  click('.metric-config__dropdown-container .grouped-list__item:contains(CAD) .grouped-list__item-label');
+  click('.metric-config__dropdown-container .grouped-list__item:contains(EUR) .metric-config__filter-icon');
+  click('.metric-config__dropdown-container .navi-list-selector__show-link');
+
+  andThen(() => {
+    assert.ok(find('.filter-builder__subject:contains(EUR) .metric-filter-config__trigger-icon').length,
+      'The metric config trigger icon is rendered next to the parameterized filter');
+  });
+
+  click('.filter-builder__subject:contains(EUR) .metric-filter-config__trigger-icon');
+  andThen(() => {
+    assert.deepEqual(find('.metric-filter-config__item').toArray().map(el => el.textContent.trim()),
+      [ 'USD', 'AUD', 'CAD' ],
+      'Only the non filtered parameters from the list of selected metrics are shown in the filter config list');
+  });
+
+  click('.metric-filter-config__item:contains(USD)');
+  andThen(() => {
+    assert.deepEqual(find('.filter-builder__subject:contains(Revenue)').toArray().map(el => el.textContent.trim()),
+      [ 'Revenue (USD)' ],
+      'The Euro parameter is updated to USD');
+  });
+
+  click('.filter-builder__subject:contains(USD) .metric-filter-config__trigger-icon');
+  andThen(() => {
+    assert.deepEqual(find('.metric-filter-config__item').toArray().map(el => el.textContent.trim()),
+      [ 'AUD', 'CAD', 'EUR' ],
+      'the parameter list in the metric filter config is updated to hold the unfiltered parameters');
+  });
+});

@@ -26,7 +26,7 @@ export default Base.extend({
   /**
    * @property {String} displayName - display name for the filter with metric and parameters
    */
-  displayName: computed('filter.subject', function() {
+  displayName: computed('filter.subject.metric', 'filter.subject.parameters', function() {
     let metric = get(this, 'filter.subject');
     return metricFormat(metric, get(metric, 'metric.longName'));
   }),
