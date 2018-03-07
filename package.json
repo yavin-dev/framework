@@ -12,7 +12,8 @@
   "scripts": {
     "start": "lerna exec --scope navi-app npm start",
     "postinstall": "lerna bootstrap --concurrency 2",
-    "test": "lerna run test"
+    "test": "lerna run test",
+    "lerna-publish": "lerna publish --force-publish=* --yes"
   },
   "devDependencies": {
     "lerna": "^2.8.0"
