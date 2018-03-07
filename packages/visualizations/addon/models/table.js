@@ -6,6 +6,7 @@ import Ember from 'ember';
 import DS from 'ember-data';
 import VisualizationBase from './visualization';
 import { validator, buildValidations } from 'ember-cp-validations';
+import { metricFormat } from 'navi-data/helpers/metric-format';
 
 const {
   A:arr,
@@ -70,12 +71,13 @@ export default VisualizationBase.extend(Validations, {
       // Trend metrics should render using threshold coloring
       let category = get(metric, 'metric.category'),
           isTrend = ~(category.toLowerCase().indexOf('trend')),
-          type = isTrend ? 'threshold' : 'metric';
+          type = isTrend ? 'threshold' : 'metric',
+          longName = get(metric, 'metric.longName');
 
       return {
-        field: get(metric, 'metric.name'),
+        field: get(metric, 'canonicalName'),
         type,
-        displayName: get(metric, 'metric.longName')
+        displayName: metricFormat(metric, longName)
       };
     });
 
