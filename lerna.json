@@ -3,5 +3,14 @@
   "packages": [
     "packages/*"
   ],
+  "command": {
+    "publish": {
+      "allowBranch": "master",
+      "cdVersion": "prerelease",
+      "preid": "dev",
+      "message": "publish %s",
+      "npmTag": "next"
+    }
+  },
   "version": "0.0.0"
 }
