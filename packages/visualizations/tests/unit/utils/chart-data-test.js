@@ -132,7 +132,7 @@ test('getRequestMetrics', function(assert) {
 
   let request = {
     metrics: [
-      { metric: { name: 'totalPageViews' } }
+      { metric: { name: 'totalPageViews' }, canonicalName: 'totalPageViews' }
     ],
     dimensions: [
       { dimension: { name: 'age' } },

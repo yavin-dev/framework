@@ -11,8 +11,8 @@ test('validate request-metrics', function(assert) {
   let Validator = this.subject(),
       request = {
         metrics: Ember.A([
-          { metric: { name: 'm1' } },
-          { metric: { name: 'm2' } }
+          { metric: { name: 'm1' }, canonicalName: 'm1' },
+          { metric: { name: 'm2' }, canonicalName: 'm2' }
         ])
       };
 
