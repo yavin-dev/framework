@@ -34,7 +34,7 @@ before_install:
   - bower --version
 
 install:
-  - npm install
+  - travis_wait npm install
 
 script:
-  - lerna run test --scope $PACKAGE
+  - travis_wait lerna run test --scope $PACKAGE
