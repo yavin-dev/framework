@@ -50,10 +50,12 @@
                   {{else}}
                     Remove all
                   {{/if}}
-                {{#if (get metricsFiltered metric.name)}}
-                    Remove Filter
                 {{else}}
-                    Add Filter
+                  {{#if (get metricsFiltered metric.name)}}
+                      Remove Filter
+                  {{else}}
+                      Add Filter
+                  {{/if}}
                 {{/if}}
             {{/tooltip-on-component}}
           {{/navi-icon}}
