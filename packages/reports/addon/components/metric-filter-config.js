@@ -17,6 +17,7 @@ import Component from '@ember/component';
 import layout from '../templates/components/metric-filter-config';
 import { computed, get } from '@ember/object';
 import { A as arr } from '@ember/array';
+import { getUnfilteredMetricsOfBase } from 'navi-reports/utils/request-metric';
 
 export default Component.extend({
   layout,
@@ -35,12 +36,8 @@ export default Component.extend({
    * @property {Array} otherParams - other selected params for the same metric
    */
   otherParams: computed('request.metrics.[]', 'request.having.[]', 'metric.metric', 'metric.parameters', function() {
-    let requestMetrics = arr(get(this, 'request.metrics')).filterBy('metric.name', get(this, 'metric.metric.name')),
-        requestFilters = arr(get(this, 'request.having')).filterBy('metric.metric.name', get(this, 'metric.metric.name')),
-        filteredMetrics = arr(requestFilters).mapBy('metric.canonicalName'),
-        selectedMetrics = arr([ ...filteredMetrics, get(this, 'metric.canonicalName') ]),
-        otherMetrics = arr(requestMetrics).reject(metric => selectedMetrics.contains(get(metric, 'canonicalName'))),
-        otherParameters = arr(otherMetrics).mapBy('parameters');
+    let unFilteredMetrics = getUnfilteredMetricsOfBase(get(this, 'metric.metric'), get(this, 'request')),
+        otherParameters = arr(unFilteredMetrics).mapBy('parameters');
 
     return otherParameters.map(metricParam => {
       let entries = arr(Object.entries(metricParam)).reject(([key,]) => key === 'as');

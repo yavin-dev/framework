@@ -39,6 +39,6 @@ export function getUnfilteredMetricsOfBase(metricMeta, request) {
       filteredMetricNames = arr(filtered).mapBy('metric.canonicalName');
 
   return arr(selected).reject(
-    metric => arr(filteredMetricNames).contains(get(metric, 'canonicalName'))
+    metric => arr(filteredMetricNames).includes(get(metric, 'canonicalName'))
   );
 }

@@ -39,7 +39,13 @@ moduleForComponent('metric-filter-config', 'Integration | Component | metric fil
         parameters: { param: 'fooz' },
         canonicalName: 'testMetric1(fooz)'
       }]),
-      having: arr([])
+      having: arr([{
+        metric: {
+          metric: { name: 'testMetric' },
+          parameters: { param: 'foo' },
+          canonicalName: 'testMetric(foo)'
+        }
+      }])
     };
 
     this.set('metric', Metric);
@@ -99,6 +105,8 @@ test('metric parameters already in filter', function(assert) {
   assert.expect(1);
 
   set(Request, 'having', arr([{
+    metric: { metric: { name: 'testMetric' }, canonicalName: 'testMetric(foo)' }
+  },{
     metric: { metric: { name: 'testMetric' }, canonicalName: 'testMetric(bar)' }
   }]));
 
@@ -114,6 +122,8 @@ test('no other metric parameters', function(assert) {
 
   set(Request, 'having', arr([
     {
+      metric: { metric: { name: 'testMetric' }, canonicalName: 'testMetric(foo)' }
+    },{
       metric: { metric: { name: 'testMetric' }, canonicalName: 'testMetric(bar)' }
     },{
       metric: { metric: { name: 'testMetric' }, canonicalName: 'testMetric(baz)' }
