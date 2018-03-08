@@ -44,6 +44,12 @@
               click=(action this.attrs.toggleMetricFilter metric)
           }}
             {{#tooltip-on-component enableLazyRendering=true side='right'}}
+                {{#if (has-parameters metric)}}
+                  {{#if (has-unfiltered-parameters metric request)}}
+                    Add next filter
+                  {{else}}
+                    Remove all
+                  {{/if}}
                 {{#if (get metricsFiltered metric.name)}}
                     Remove Filter
                 {{else}}
