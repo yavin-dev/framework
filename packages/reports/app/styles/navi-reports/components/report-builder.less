@@ -57,6 +57,7 @@
 
      &__dimension-selector {
         display: flex;
+        flex-basis: 0; // firefox flexbug
         margin-bottom: 0;
         min-height: 0;
         overflow: hidden;
@@ -72,6 +73,7 @@
 
      &__metric-selector {
          display: flex;
+         flex-basis: 0;  // firefox flexbug
          margin-top: 0;
          margin-bottom: 0;
          min-height: 0;
