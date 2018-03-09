@@ -145,3 +145,37 @@ test('metric filter config', function(assert) {
       'the parameter list in the metric filter config is updated to hold the unfiltered parameters');
   });
 });
+
+test('metric selector filter action for parameterized metrics', function(assert) {
+  assert.expect(4);
+
+  visit('/reports/1/view');
+  click('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .grouped-list__item-label');
+  click('.metric-config__dropdown-container .grouped-list__item:contains(AUD) .grouped-list__item-label');
+  click('.metric-config__dropdown-container .metric-config__done-btn');
+
+  click('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .metric-selector__filter');
+  andThen(() => {
+    assert.equal(find('.filter-builder__subject:contains(Revenue)').length,
+      1,
+      'The metric filter adds a single filter of type revenue');
+  });
+
+  click('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .metric-selector__filter');
+  andThen(() => {
+    assert.equal(find('.filter-builder__subject:contains(Revenue)').length,
+      2,
+      'Clicking on the filter adds a another filter of type revenue');
+
+    assert.deepEqual(find('.filter-builder__subject:contains(Revenue)').toArray().map(el => el.textContent.trim()),
+      [ 'Revenue (AUD)', 'Revenue (USD)' ],
+      'Both the selected metrics have been added as filters');
+  });
+
+  click('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .metric-selector__filter');
+  andThen(() => {
+    assert.equal(find('.filter-builder__subject:contains(Revenue)').length,
+      0,
+      'After adding all the request parameters for a metric, clicking an additional time removes all filters for the metric');
+  });
+});
