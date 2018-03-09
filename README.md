@@ -4,6 +4,10 @@ Navi is a production quality analytics reporting UI with _out of the box_ suppor
 
 [![Build Status](https://travis-ci.org/yahoo/navi.svg?branch=master)](https://travis-ci.org/yahoo/navi)
 
+## Try it
+
+Start exploring our sample data with the [demo app](https://yahoo.github.io/navi).
+
 ## Requirements
 
 * node >= 4
