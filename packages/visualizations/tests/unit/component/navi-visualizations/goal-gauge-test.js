@@ -1,14 +1,22 @@
 import { test, moduleForComponent } from 'ember-qunit';
-import Ember from 'ember';
-const { get } = Ember;
+import Service from '@ember/service';
+import { A as arr } from '@ember/array';
+import { get } from '@ember/object';
+import { classify } from '@ember/string';
 
 let Component;
 
 moduleForComponent('navi-visualizations/goal-gauge', 'Unit | Component | Goal Gauge', {
   unit: 'true',
   beforeEach() {
+    this.register('service:bard-metadata', Service.extend({
+      getMetaField(type, field) {
+        return classify(field);
+      }
+    }));
     Component = this.subject({
       actualValue: 75,
+      model: arr([{request: {metrics: [{metric: 'm1'}]}}]),
       options: {
         goalValue: 100,
         baselineValue: 50,
@@ -97,6 +105,6 @@ test('metricTitle', function(assert) {
   Component.set('options', { metric: 'm1' });
 
   assert.equal(get(Component, 'metricTitle'),
-    'm1',
+    'M1',
     'metricTitle is the value of options.metric if if options.metricTitle is not provided');
 });

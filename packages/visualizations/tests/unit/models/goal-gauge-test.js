@@ -1,8 +1,7 @@
 import { moduleForModel, test } from 'ember-qunit';
-import Ember from 'ember';
+import { set } from '@ember/object';
+import { run } from '@ember/runloop';
 import { buildTestRequest } from '../../helpers/request';
-
-const { run, set } = Ember;
 
 moduleForModel('all-the-fragments', 'Unit | Model | Gauge Visualization Fragment', {
   needs: [
@@ -44,14 +43,17 @@ test('isValidForRequest', function(assert) {
 });
 
 test('rebuildConfig', function(assert) {
-  assert.expect(5);
+  assert.expect(6);
 
   let request = buildTestRequest(['rupees'], []),
+      requestWithParams = buildTestRequest([{metric: 'revenue', parameters: {currency: 'HYR'}}], []),
       response = { rows: [ { rupees: 10 } ] },
+      responseWithParams = { rows: [ {'revenue(currency=HYR)': 10} ]},
       gauge = run(() => this.subject().get('goalGauge')),
       orginalConfig = gauge.toJSON(),
       blankConfig = run(() => gauge.rebuildConfig().toJSON()),
       newConfig = run(() => gauge.rebuildConfig(request, response).toJSON()),
+      paramConfig = run(() => gauge.rebuildConfig(requestWithParams, responseWithParams).toJSON()),
       expectedConfig = {
         metadata: {
           baselineValue: 9,
@@ -87,6 +89,15 @@ test('rebuildConfig', function(assert) {
         },
         type: 'goal-gauge',
         version: 1
+      },
+      expectedParamConfig = {
+        metadata: {
+          baselineValue: 9,
+          goalValue: 11,
+          metric: 'revenue(currency=HYR)'
+        },
+        type: 'goal-gauge',
+        version: 1
       };
 
   // positive integer
@@ -96,6 +107,9 @@ test('rebuildConfig', function(assert) {
   assert.deepEqual(newConfig,
     expectedConfig,
     'rebuilds config based on request');
+  assert.deepEqual(paramConfig,
+    expectedParamConfig,
+    'rebuilds config based on request with parameterized metrics correctly');
 
   // decimal
   response = { rows: [ { rupees: 1 } ] };
