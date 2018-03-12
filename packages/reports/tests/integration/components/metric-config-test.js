@@ -218,9 +218,8 @@ test('loader', function(assert) {
 test('error message', function(assert) {
   assert.expect(1);
 
-  set(this, 'parametersPromise', reject());
-
   run(() => clickTrigger('.metric-config__dropdown-trigger'));
+  set(this, 'parametersPromise', reject());
   return wait().then(() => {
     assert.equal($('.metric-config__error-msg').text().trim(),
       'OOPS! Something went wrong. Please try refreshing the page.',

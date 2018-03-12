@@ -33,15 +33,6 @@ export default Component.extend({
   parameterService: service('metric-parameter'),
 
   /**
-   * @method init
-   * @override
-   */
-  init() {
-    this._super(...arguments);
-    this._fetchAllParams();
-  },
-
-  /**
    * @method calculatePosition
    * @returns {Object} - positioning info used by ember-basic-dropdown
    */
@@ -158,6 +149,14 @@ export default Component.extend({
   }),
 
   actions: {
+    /*
+     * @action triggerFetch
+     * trigger parameter value fetch
+     */
+    triggerFetch() {
+      this._fetchAllParams();
+    },
+
     /*
      * @action paramToggled
      * @param {Object} metric
