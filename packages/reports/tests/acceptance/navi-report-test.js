@@ -1445,7 +1445,6 @@ test('filtering on a dimension with a storage strategy of \'none\'', function(as
   });
 });
 
-
 test('filter - add and remove using filter icon', function(assert) {
   assert.expect(4);
 
@@ -1476,5 +1475,50 @@ test('filter - add and remove using filter icon', function(assert) {
   andThen(() => {
     assert.notOk(find('.filter-builder__subject:contains(Ad Clicks)').is(':visible'),
       'The Ad Clicks metric filter is removed when filter icon is clicked again');
+  });
+});
+
+test('Show selected dimensions and filters', function(assert) {
+  assert.expect(4);
+
+  visit('/reports/1');
+
+  // Add Dimension
+  click('.grouped-list__item:contains(Operating System) .grouped-list__item-label');
+  click('.report-builder__dimension-selector .navi-list-selector__show-link');
+  andThen(() => {
+    assert.deepEqual($('.report-builder__dimension-selector .grouped-list__item').toArray().map(el => el.textContent.trim()),
+      [ 'Day', 'Property', 'Operating System' ],
+      'Initially selected items include selected dimensions, filters and timegrains');
+  });
+
+  // Add selected dimension as filter
+  click('.report-builder__dimension-selector .navi-list-selector__show-link');
+  click('.grouped-list__item:contains(Operating System) .checkbox-selector__filter');
+  click('.report-builder__dimension-selector .navi-list-selector__show-link');
+  andThen(() => {
+    assert.deepEqual($('.report-builder__dimension-selector .grouped-list__item').toArray().map(el => el.textContent.trim()),
+      [ 'Day', 'Property', 'Operating System' ],
+      'Adding a selected dimension as filter does not change the selected items');
+  });
+
+  // Remove the dimension filter
+  click('.report-builder__dimension-selector .navi-list-selector__show-link');
+  click('.grouped-list__item:contains(Operating System) .checkbox-selector__filter');
+  click('.report-builder__dimension-selector .navi-list-selector__show-link');
+  andThen(() => {
+    assert.deepEqual($('.report-builder__dimension-selector .grouped-list__item').toArray().map(el => el.textContent.trim()),
+      [ 'Day', 'Property', 'Operating System'  ],
+      'Removing a filter of a dimension already selected does not change selected items');
+  });
+
+  // // Remove Dimension
+  click('.report-builder__dimension-selector .navi-list-selector__show-link');
+  click('.grouped-list__item:contains(Operating System) .grouped-list__item-label');
+  click('.report-builder__dimension-selector .navi-list-selector__show-link');
+  andThen(() => {
+    assert.deepEqual($('.report-builder__dimension-selector .grouped-list__item').toArray().map(el => el.textContent.trim()),
+      [ 'Day', 'Property' ],
+      'Removing a dimension as a filter and dimension changes the selected items');
   });
 });
