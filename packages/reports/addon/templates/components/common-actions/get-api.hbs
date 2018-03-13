@@ -8,6 +8,7 @@
 
 {{#navi-modal
     isShown=showModal
+    onClose=(action 'resetNotifications')
 }}
     <div class='get-api-modal-container'>
         <div class='navi-modal__header'>
@@ -46,7 +47,7 @@
                 Copy Link
             {{/copy-button}}
             <a class='btn btn-secondary' href={{requestUrl}} target='_blank' rel='noopener noreferrer'>Run API Query in New Tab</a>
-            <button class='btn btn-secondary' onclick={{toggle 'showModal' this}}>Cancel</button>
+            <button class='btn btn-secondary' onclick={{pipe (toggle 'showModal' this) (action 'resetNotifications')}}>Cancel</button>
         </div>
     </div>
 {{/navi-modal}}
