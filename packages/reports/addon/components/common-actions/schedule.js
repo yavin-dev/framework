@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * {{common-actions/schedule
@@ -13,6 +13,8 @@
 import Ember from 'ember';
 import layout from '../../templates/components/common-actions/schedule';
 import config from 'ember-get-config';
+import { getApiErrMsg } from 'navi-core/utils/persistence-error';
+
 
 const { A:arr, computed, get, set, setProperties } = Ember;
 const defaultFrequencies = ['day', 'week', 'month', 'quarter', 'year'];
@@ -93,9 +95,23 @@ export default Ember.Component.extend({
         });
 
         set(this, 'attemptedSave', false);
-        this.attrs.onSave(deliveryRule).then(() => {
-          this.send('closeModal');
-        });
+        this.attrs.onSave(deliveryRule)
+          .then(() => {
+            set(this, 'notification', {
+              text: 'Report delivery schedule successfully saved!',
+              classNames: 'alert success'
+            });
+          })
+          .catch(({errors}) => {
+            set(this, 'notification', {
+              text: getApiErrMsg(errors[0], 'Oops! There was an error updating your delivery settings'),
+              classNames: 'alert failure'
+            });
+          })
+          .finally(() => {
+            set(this, 'isSaving', false);
+            set(this, 'attemptedSave', true);
+          });
       } else {
         set(this, 'isSaving', false);
         set(this, 'attemptedSave', true);
@@ -123,6 +139,13 @@ export default Ember.Component.extend({
         set(this, 'showModal', false);
         set(this, 'attemptedSave', false);
       }
+    },
+
+    /**
+     * @action closeNotification
+     */
+    closeNotification() {
+      set(this, 'notification', null);
     }
   }
 });

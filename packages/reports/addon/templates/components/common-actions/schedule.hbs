@@ -1,4 +1,4 @@
-{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 
 {{!-- Check if in need of disabling the button when the action should be disabled --}}
 <button class='schedule-action__button btn' disabled={{disabled}}  onclick={{toggle 'showModal' this}}>
@@ -20,7 +20,14 @@
                 <div class='notification-text'>Oops! An error occurred while fetching the schedule for this report.</div>
             </div>
         {{else}}
-            <h5 class='schedule-modal__header--secondary secondary-header'>Please provide delivery rules for your report</h5>
+            {{#if notification}}
+                <div class='schedule-modal__notification modal-notification {{notification.classNames}}'>
+                    <div class='schedule-modal__notification-text notification-text '>{{notification.text}}</div>
+                    {{navi-icon 'times' class='notification-remove-icon clickable' click=(action 'closeNotification')}}
+                </div>
+            {{else}}
+                <h5 class='schedule-modal__header--secondary secondary-header'>Please provide delivery rules for your report</h5>
+            {{/if}}
         {{/if}}
     </div>
     {{#if model.deliveryRuleForUser.isPending}}

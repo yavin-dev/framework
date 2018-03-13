@@ -57,14 +57,10 @@ test('schedule modal save new schedule', function(assert) {
   click('.schedule-modal__save-btn');
 
   andThen(() => {
-    assert.notOk(find('.schedule-modal__header .primary-header').is(':visible'),
-      'Schedule modal closes after clicking the save button');
-    $('.navi-collection__row:first-of-type').trigger('mouseenter');
-  });
-  // Reopen the first schedule
-  click('.navi-collection__row:first-of-type .schedule .btn');
+    assert.equal(find('.success .notification-text').text(),
+      'Report delivery schedule successfully saved!',
+      'Successful notification is shown after clicking save');
 
-  andThen(() => {
     // Check that all fields match the delivery rule we just saved
     assert.ok(find('.schedule-modal__delete-btn').is(':visible'),
       'The delete button is present after a delivery rule has been saved');
@@ -103,14 +99,10 @@ test('schedule modal save changes to existing schedule', function(assert) {
   click('.schedule-modal__save-btn');
 
   andThen(() => {
-    assert.notOk(find('.schedule-modal__header .primary-header').is(':visible'),
-      'Schedule modal closes after clicking the save changes button');
-    $('.navi-collection__row:first-of-type').trigger('mouseenter');
-  });
-  // Reopen the first schedule
-  click('.navi-collection__row:nth-of-type(3) .schedule .btn');
+    assert.equal(find('.notification-text ').text(),
+      'Report delivery schedule successfully saved!',
+      'Successful notification is shown after clicking save');
 
-  andThen(() => {
     // Check that all fields match the delivery rule we just saved
     assert.ok(find('.schedule-modal__delete-btn').is(':visible'),
       'The delete button is present after a schedule has been modified and saved');
@@ -341,15 +333,10 @@ test('schedule modal validations', function(assert) {
   click('.schedule-modal__save-btn');
 
   andThen(() => {
-    assert.notOk(find('.schedule-modal__header .primary-header').is(':visible'),
-      'Schedule modal has successfully closed after clicking save and the schedule is valid');
-  });
+    assert.equal(find('.notification-text ').text(),
+      'Report delivery schedule successfully saved!',
+      'Successful notification is shown after clicking save and the schedule is valid');
 
-  // Reopen original schedule modal
-  andThen(() => $('.navi-collection__row:first-of-type').trigger('mouseenter'));
-  click('.navi-collection__row:first-of-type .schedule .btn');
-
-  andThen(() => {
     assert.equal(find('.schedule-modal__input--recipients').val(),
       'navi_user@navi.io,test@email.com',
       'The valid recipients were saved successfully');
@@ -400,4 +387,55 @@ test('schedule modal error when fetching existing schedule', function(assert) {
     Ember.Logger.error = originalLoggerError;
     Ember.Test.adapter.exception = originalException;
   });
+});
+
+test('schedule modal error when saving schedule', function (assert) {
+  assert.expect(2);
+
+  //suppress errors and exceptions for this test because 500 response will throw an error
+  let originalLoggerError = Ember.Logger.error,
+      originalException = Ember.Test.adapter.exception;
+
+  Ember.Logger.error = () => {};
+  Ember.Test.adapter.exception = () => {};
+
+  server.post('/deliveryRules', () => {
+    return new Mirage.Response(
+      400,
+      {},
+      { errors: ['InvalidValueException: Invalid value: Invalid Email: must be a valid oath.com or yahoo-inc.com email'] }
+    );
+  });
+
+  andThen(() => $('.navi-collection__row:first-of-type').trigger('mouseenter'));
+  click('.navi-collection__row:first-of-type .schedule .btn');
+
+  fillIn('.schedule-modal__input--recipients', 'navi_user@navi.io,test_user@navi.io');
+  triggerEvent('.schedule-modal__input--recipients', 'keyup');
+
+  //Save the schedule
+  click('.schedule-modal__save-btn');
+
+  andThen(() => {
+    assert.equal(find('.failure .notification-text').text(),
+      'Must be a valid oath.com or yahoo-inc.com email',
+      'failing notification is shown if server returns 400');
+
+    server.post('/deliveryRules', () => {
+      return new Mirage.Response(500);
+    });
+  
+    //Save the schedule
+    click('.schedule-modal__save-btn');
+
+    andThen(() => {
+      assert.equal(find('.failure .notification-text').text(),
+        'Oops! There was an error updating your delivery settings',
+        'failing notification is shown if server returns 500');
+  
+      Ember.Logger.error = originalLoggerError;
+      Ember.Test.adapter.exception = originalException;
+    });
+  });
+
 });
