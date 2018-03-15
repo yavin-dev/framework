@@ -65,3 +65,41 @@ export function getAliasedMetrics(metrics = []) {
 export function canonicalizeAlias(alias, aliasMap = {}) {
   return aliasMap[alias] || alias;
 }
+
+/**
+ * Returns a metric object given a canonical name
+ * @param {String} str - the metric's canonical name
+ * @returns {Object} - object with base metric and parameters
+ */
+export function parseMetricName(str) {
+  let hasParameters = str.endsWith(')') && str.includes('('),
+      metric = hasParameters ? str.slice(0, str.indexOf('(')) : str,
+      parameters = {};
+
+  if(hasParameters) {
+    let paramRe = /\((.*)\)$/,
+        results = paramRe.exec(str),
+        paramStr = results.length >= 2 ? results[1] : '';
+
+    if(!paramStr.includes('=')) {
+      throw new Error('Metric Parameter Parser: Error, invalid parameter list');
+    }
+
+    parameters = paramStr.split(',').map(paramEntry => paramEntry.split('='))
+      .reduce((obj, [key, val]) => Object.assign({}, obj, {[key]: val}), {});
+  }
+
+  // validation
+  if(isEmpty(metric)) {
+    throw new Error('Metric Name Parser: Error, empty metric name');
+  }
+
+  if(metric.includes(')') || metric.includes('(')) {
+    throw new Error('Metric Name Parser: Error, could not parse name');
+  }
+
+  return {
+    metric,
+    parameters
+  };
+}
