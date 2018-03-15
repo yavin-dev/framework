@@ -14,6 +14,7 @@ import Ember from 'ember';
 import layout from '../../templates/components/navi-visualizations/table';
 import { formatItemDimension } from '../../helpers/mixed-height-layout';
 import groupBy from 'lodash/groupBy';
+import { canonicalizeMetric } from 'navi-data/utils/metric';
 
 const { $, A:arr, computed, get, set, typeOf } = Ember;
 
@@ -164,14 +165,42 @@ export default Ember.Component.extend({
   }),
 
   /**
+   * @method _mapAlias
+   *
+   * Maps the alias in sort to canonical metric name
+   * @param {Object} request - serialized request object
+   * @returns {Array} sorts with canonical names as metric
+   */
+  _mapAlias(request) {
+    if(!request) {
+      return arr([]);
+    }
+
+    let requestSorts = arr(get(request, 'sort')),
+        requestMetricsAliasMap = arr(get(request, 'metrics')).reduce((map, metric) => {
+          let alias = get(metric, 'parameters.as');
+          if(alias){
+            map[alias] = metric;
+          }
+          return map;
+        }, {});
+
+    return requestSorts.map((sort) => {
+      let metric = requestMetricsAliasMap[get(sort, 'metric')];
+      sort.metric = metric ? canonicalizeMetric(metric) : sort.metric;
+      return sort;
+    });
+  },
+
+  /**
    * @property {Object} columns
    */
   columns: computed('options.columns', 'request.sort', function() {
-    let sorts = arr(get(this, 'request.sort')),
+    let sorts = this._mapAlias(get(this, 'request')),
         columns = $.extend(true, [], get(this, 'options.columns'));
 
     return columns.map( column => {
-      let sort =  sorts.findBy('metric', column.field) || {};
+      let sort =  arr(sorts).findBy('metric', column.field) || {};
       let sortDirection;
 
       if(column.type === 'dateTime'){
