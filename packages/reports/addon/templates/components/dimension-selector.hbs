@@ -10,7 +10,7 @@
         items=items
         shouldOpenAllGroups=areItemsFiltered
         groupByField='category'
-        sortByField='longName'
+        sortByField=(unless areItemsFiltered 'longName')
         as | item |
     }}
         <label class='grouped-list__item-label'>

@@ -10,7 +10,7 @@
         items=metrics
         shouldOpenAllGroups=areMetricsFiltered
         groupByField='category'
-        sortByField='longName'
+        sortByField=(unless areMetricsFiltered 'longName')
         as | metric |
     }}
         <label class='grouped-list__item-label'>

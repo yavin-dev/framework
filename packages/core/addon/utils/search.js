@@ -113,7 +113,7 @@ export function searchDimensionRecords(records, query, resultLimit, page) {
         idMatchWeight = getExactMatchWeight(get(record, 'id').toLowerCase(), query.toLowerCase()),
         relevance = descriptionMatchWeight || idMatchWeight;
 
-        // If both id and description match the query, take the most relevant
+    // If both id and description match the query, take the most relevant
     if (descriptionMatchWeight && idMatchWeight) {
       relevance = Math.min(descriptionMatchWeight, idMatchWeight);
     }

@@ -191,3 +191,18 @@ test('tooltip', function(assert) {
     contentString: 'foo',
   });
 });
+
+test('ranked search', function(assert) {
+  assert.expect(2);
+
+  assert.deepEqual(this.$('.grouped-list__item:contains(Country)').toArray().map(el => el.textContent.trim()),
+    [ 'Property Country', 'User Country' ],
+    'Initially the country dimensions are ordered alphabetically');
+
+  this.$('.navi-list-selector__search-input').val('count');
+  this.$('.navi-list-selector__search-input').trigger('focusout');
+
+  assert.deepEqual(this.$('.grouped-list__item').toArray().map(el => el.textContent.trim()),
+    [ 'User Country', 'Property Country' ],
+    'The search results are ranked based on relevance');
+});
