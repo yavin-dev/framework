@@ -344,7 +344,7 @@ test('schedule modal validations', function(assert) {
 });
 
 test('schedule modal error when fetching existing schedule', function(assert) {
-  assert.expect(7);
+  assert.expect(6);
 
   //suppress errors and exceptions for this test because 500 response will throw an error
   let originalLoggerError = Ember.Logger.error,
@@ -371,9 +371,6 @@ test('schedule modal error when fetching existing schedule', function(assert) {
 
     assert.ok(find('.schedule-modal__dropdown--frequency>.ember-basic-dropdown>.ember-power-select-trigger').attr('aria-disabled'),
       'The frequency field is disabled when there is an error fetching the schedule');
-
-    assert.ok(find('.schedule-modal__dropdown--format>.ember-basic-dropdown>.ember-power-select-trigger').attr('aria-disabled'),
-      'The format field is disabled when there is an error fetching the schedule');
 
     assert.notOk(find('.schedule-modal__save-btn').is(':visible'),
       'The save button is not available when there is an error fetching the schedule');

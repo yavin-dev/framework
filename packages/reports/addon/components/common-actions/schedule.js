@@ -18,6 +18,7 @@ import { getApiErrMsg } from 'navi-core/utils/persistence-error';
 
 const { A:arr, computed, get, set, setProperties } = Ember;
 const defaultFrequencies = ['day', 'week', 'month', 'quarter', 'year'];
+const defaultFormats = ['csv'];
 
 export default Ember.Component.extend({
   layout,
@@ -56,7 +57,18 @@ export default Ember.Component.extend({
   /**
    * @property {Array} formats
    */
-  formats: arr([ 'csv' ]),
+  formats: computed(function () {
+    let formats = get(config, 'navi.schedule.formats');
+
+    if (!formats) {
+      formats = defaultFormats.slice();
+      if (get(config, 'navi.FEATURES.enableMultipleExport')) {
+        formats.push('pdf');
+      }
+    }
+
+    return arr(formats);
+  }),
 
   /**
    * @property {Boolean} isRuleValid

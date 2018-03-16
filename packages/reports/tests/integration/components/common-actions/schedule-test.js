@@ -10,7 +10,7 @@ const { getOwner } = Ember;
 
 const DeliveryRule = {
   frequency: 'Week',
-  format: '.csv',
+  format: { type: 'csv' },
   recipients: [ 'test@oath.com', 'rule@oath.com' ]
 };
 const TestModel = {
@@ -28,7 +28,7 @@ const unscheduledModel = {
   }
 };
 
-moduleForComponent('common-actions/schedule', 'Integration | Component | common actions/schedule ', {
+moduleForComponent('common-actions/schedule', 'Integration | Component | common actions/schedule', {
   integration: true,
   beforeEach() {
     this.set('onSaveAction', () => {});
@@ -105,7 +105,7 @@ test('it renders', function(assert) {
 });
 
 test('schedule modal', function(assert) {
-  assert.expect(10);
+  assert.expect(9);
 
   this.set('model', unscheduledModel);
 
@@ -149,9 +149,6 @@ test('schedule modal', function(assert) {
   assert.equal($('.schedule-modal__dropdown--format').text().trim(),
     'csv',
     '`.csv` is the default format value');
-
-  assert.ok($('.schedule-modal__dropdown--format .ember-power-select-trigger').attr('aria-disabled'),
-    'The formats dropdown is disabled by default');
 
   assert.notOk($('.schedule-modal__rejected').is(':visible'),
     'rejected error does not show');
@@ -330,8 +327,8 @@ test('onDelete action', function(assert) {
   });
 });
 
-test('config frequencies', function(assert) {
-  assert.expect(2);
+test('frequency options - default', function(assert) {
+  assert.expect(1);
 
   this.set('model', TestModel);
   this.render(hbs`
@@ -353,12 +350,17 @@ test('config frequencies', function(assert) {
     assert.deepEqual($('.ember-power-select-option').map((i, el) => $(el).text().trim()).toArray(),
       ['Day', 'Week', 'Month', 'Quarter', 'Year'],
       'Schedule frequency should have correct default options'
-    )
+    );
   });
+});
+
+test('frequency options - config schedule', function (assert) {
+  assert.expect(1);
 
   let originalSchedule = config.navi.schedule;
-  config.navi.schedule = {frequencies : ['day', 'week', 'month']};
+  config.navi.schedule = { frequencies: ['day', 'week', 'month'] };
 
+  this.set('model', TestModel);
   this.render(hbs`
         {{common-actions/schedule
             model=model
@@ -378,7 +380,95 @@ test('config frequencies', function(assert) {
     assert.deepEqual($('.ember-power-select-option').map((i, el) => $(el).text().trim()).toArray(),
       ['Day', 'Week', 'Month'],
       'Schedule frequency should have correct options'
-    )
+    );
     config.navi.schedule = originalSchedule;
+  });
+});
+
+test('format options - config formats', function (assert) {
+  assert.expect(1);
+
+  let originalSchedule = config.navi.schedule;
+  config.navi.schedule = { formats: ['csv', 'test'] };
+
+  this.set('model', TestModel);
+  this.render(hbs`
+        {{common-actions/schedule
+            model=model
+            onSave=(action onSaveAction)
+            onRevert=(action onRevertAction)
+            onDelete=(action onDeleteAction)
+            disabled=isDisabled
+        }}
+    `);
+
+  Ember.run(() => {
+    this.$('.schedule-action__button').click();
+  });
+
+  Ember.run(() => {
+    clickTrigger('.schedule-modal__dropdown--format');
+    assert.deepEqual($('.ember-power-select-option').map((i, el) => $(el).text().trim()).toArray(),
+      ['csv', 'test'],
+      'Schedule format should have correct options'
+    );
+    config.navi.schedule = originalSchedule;
+  });
+});
+
+test('format options - config enableMultipleExport', function (assert) {
+  assert.expect(3);
+
+  let originalFeatureFlag = config.navi.FEATURES.enableMultipleExport;
+  config.navi.FEATURES.enableMultipleExport = true;
+
+  this.set('model', TestModel);
+  this.render(hbs`
+        {{common-actions/schedule
+            model=model
+            onSave=(action onSaveAction)
+            onRevert=(action onRevertAction)
+            onDelete=(action onDeleteAction)
+            disabled=isDisabled
+        }}
+    `);
+
+  Ember.run(() => {
+    this.$('.schedule-action__button').click();
+  });
+
+  Ember.run(() => {
+    clickTrigger('.schedule-modal__dropdown--format');
+    assert.deepEqual($('.ember-power-select-option').map((i, el) => $(el).text().trim()).toArray(),
+      ['csv', 'pdf'],
+      'Schedule format should have correct options'
+    );
+  });
+
+  config.navi.FEATURES.enableMultipleExport = false;
+
+  this.render(hbs`
+        {{common-actions/schedule
+            model=model
+            onSave=(action onSaveAction)
+            onRevert=(action onRevertAction)
+            onDelete=(action onDeleteAction)
+            disabled=isDisabled
+        }}
+    `);
+
+  Ember.run(() => {
+    this.$('.schedule-action__button').click();
+  });
+
+  Ember.run(() => {
+    assert.ok($('.schedule-modal__dropdown--format .ember-power-select-trigger').attr('aria-disabled'),
+      'The formats dropdown is disabled by default');
+    assert.deepEqual($('.schedule-modal__dropdown--format .ember-power-select-selected-item').text().trim(),
+      'csv',
+      'Schedule format should have correct default option'
+    );
+
+    config.navi.FEATURES.enableMultipleExport = originalFeatureFlag;
   });
 });

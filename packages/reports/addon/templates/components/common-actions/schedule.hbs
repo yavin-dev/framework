@@ -68,7 +68,7 @@
                     <div class='schedule-modal__label'>Format</div>
                     {{#power-select
                         class='schedule-modal__dropdown schedule-modal__dropdown--format'
-                        disabled=true
+                        disabled=(lt formats.length 2)
                         options=formats
                         renderInPlace=true
                         selected=localDeliveryRule.format.type
