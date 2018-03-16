@@ -3,7 +3,7 @@
     <span title={{description}}>{{description}}</span>
 {{else}}
     {{#with (get data (concat column.field '|id' )) as |id|}}
-        {{id}}
+        <span title={{id}}>{{id}}</span>
     {{else}}
         --
     {{/with}}
