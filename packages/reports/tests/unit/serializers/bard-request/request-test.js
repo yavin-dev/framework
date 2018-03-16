@@ -192,7 +192,7 @@ test('having and sort serialization', function(assert) {
 
 
 test('having and sort deserialization', function(assert) {
-  assert.expect(10);
+  assert.expect(12);
   let baseReport = {
     data: {
       type: 'report',
@@ -232,6 +232,10 @@ test('having and sort deserialization', function(assert) {
           ],
           sort: [
             {
+              metric: 'dateTime',
+              direction: 'desc'
+            },
+            {
               metric: 'm2',
               direction: 'asc'
             },
@@ -251,6 +255,8 @@ test('having and sort deserialization', function(assert) {
     let request = get(report, 'request');
     let having = get(request, 'having');
     let sort = get(request, 'sort');
+
+    //havings
     assert.equal(get(having.objectAt(0), 'metric.metric.name'),
       'revenue',
       'base metric in metric.name in parameterized having');
@@ -268,20 +274,29 @@ test('having and sort deserialization', function(assert) {
       'gt',
       'operator is preserved for simple having metrics');
 
+    //dateTime sort
     assert.equal(get(sort.objectAt(0), 'metric.metric.name'),
+      'dateTime',
+      'dateTime sort is deserialized properly');
+    assert.equal(get(sort.objectAt(0), 'direction'),
+      'desc',
+      'dateTime sort direction is preserved');
+
+    //other sorts
+    assert.equal(get(sort.objectAt(1), 'metric.metric.name'),
       'revenue',
       'base metric in metric.name in parameterized sort');
-    assert.equal(get(sort.objectAt(0), 'direction'),
+    assert.equal(get(sort.objectAt(1), 'direction'),
       'asc',
       'sort direction is preserved');
-    assert.equal(get(sort.objectAt(0), 'metric.parameters.currency'),
+    assert.equal(get(sort.objectAt(1), 'metric.parameters.currency'),
       'CAD',
       'parameters are pulled out into their own property');
 
-    assert.equal(get(sort.objectAt(1), 'metric.metric.name'),
+    assert.equal(get(sort.objectAt(2), 'metric.metric.name'),
       'adClicks',
       'Simple metrics are handled correctly in sort');
-    assert.equal(get(sort.objectAt(1), 'direction'),
+    assert.equal(get(sort.objectAt(2), 'direction'),
       'desc',
       'operator is preserved for simple sort metrics');
   });

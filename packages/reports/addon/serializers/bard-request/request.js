@@ -52,6 +52,9 @@ export default DS.JSONSerializer.extend({
         [canonicalizeMetric(metric)]: metric
       }), {});
 
+    //add dateTime to cannonicalName -> metric map
+    canonToMetric['dateTime'] = { metric: 'dateTime' };
+
     request.having = this._toggleAlias(request.having, aliasToCanon, canonToMetric);
     request.sort = this._toggleAlias(request.sort, aliasToCanon, canonToMetric);
 
@@ -62,6 +65,7 @@ export default DS.JSONSerializer.extend({
       }
       return metric;
     });
+
     return this._super(type, request);
   },
 
