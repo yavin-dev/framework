@@ -132,13 +132,10 @@ export default Ember.Component.extend({
 
     /**
      * @action updateRecipients
-     * @param {String} recipients - String of recipients from modal text area
+     * @param {Array} recipients - list of email strings
      */
     updateRecipients(recipients) {
-      let array = recipients.split(',').map(
-        r => r.trim()
-      );
-      set(this, 'localDeliveryRule.recipients', array);
+      set(this, 'localDeliveryRule.recipients', recipients);
     },
 
     /**

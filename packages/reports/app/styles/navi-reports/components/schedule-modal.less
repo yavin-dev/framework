@@ -76,6 +76,13 @@
         vertical-align: top;
     }
 
+    &__input--recipients {
+      // Override styles included with ember-tag-input
+      .emberTagInput {
+        border: none;
+      }
+    }
+
     &__input--recipients[disabled] {
         background-color: @navi-disabled-element-background-color;
         cursor: not-allowed;

@@ -4,6 +4,7 @@ import hbs from 'htmlbars-inline-precompile';
 import { hbsWithModal } from '../../../helpers/hbs-with-modal';
 import wait from 'ember-test-helpers/wait';
 import { clickTrigger, nativeMouseUp } from '../../../helpers/ember-power-select';
+import { typeInInput } from '../../../helpers/ember-tag-input';
 import config from 'ember-get-config';
 
 const { getOwner } = Ember;
@@ -171,9 +172,9 @@ test('schedule modal - delivery rule passed in', function(assert) {
     this.$('.schedule-action__button').click();
   });
 
-  assert.equal($('.schedule-modal__input--recipients').val(),
-    'test@oath.com,rule@oath.com',
-    'The recipients is fetched from the delivery rule');
+  assert.deepEqual($('.schedule-modal__input--recipients .navi-email-tag').toArray().map(e => e.textContent.trim()),
+    ['test@oath.com', 'rule@oath.com'],
+    'The recipients are fetched from the delivery rule');
 
   assert.equal($('.schedule-modal__dropdown--frequency').text().trim(),
     'Week',
@@ -208,8 +209,8 @@ test('onSave Action', function(assert) {
     'The delete button is not available when model does not have a delivery rule for the current user');
 
   Ember.run(() => {
-    $('.schedule-modal__input--recipients').val('test1@navi.io, test2@navi.io');
-    $('.schedule-modal__input--recipients').trigger('keyup');
+    typeInInput('.js-ember-tag-input-new', 'test1@navi.io');
+    $('.js-ember-tag-input-new').blur();
 
     clickTrigger('.schedule-modal__dropdown--frequency');
     nativeMouseUp($('.ember-power-select-option:contains(Month)')[0]);
@@ -221,7 +222,7 @@ test('onSave Action', function(assert) {
       'Selected frequency is updated in the delivery rule');
 
     assert.deepEqual(rule.get('recipients'),
-      [ 'test1@navi.io', 'test2@navi.io' ],
+      [ 'test1@navi.io' ],
       'Recipients entered in the text area is set in the delivery rule');
 
     assert.ok(true,
