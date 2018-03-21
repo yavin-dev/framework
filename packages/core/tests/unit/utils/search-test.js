@@ -4,7 +4,7 @@ import { module, test } from 'qunit';
 module('Unit | Utils | Search Utils');
 
 test('getPartialMatchWeight', function(assert){
-  assert.expect(4);
+  assert.expect(6);
 
   assert.equal(getPartialMatchWeight('heavy green character', 'kart weight'),
     undefined,
@@ -18,7 +18,15 @@ test('getPartialMatchWeight', function(assert){
     7,
     'Match is found despite word order');
 
-  var weight1 = getPartialMatchWeight('heavy green character', 'character'),
+  assert.equal(getPartialMatchWeight('great green character', 'great grea'),
+    undefined,
+    'Match not found when previous token is already accounted for');
+
+  assert.equal(getPartialMatchWeight('great green character', 'great gree'),
+    12,
+    'Match not found when previous token is already accounted for');
+
+  let weight1 = getPartialMatchWeight('heavy green character', 'character'),
       weight2 = getPartialMatchWeight('heavy green character', 'heavy character');
   assert.ok(weight1 > weight2, 'Closer match has smaller match weight');
 });
@@ -33,7 +41,7 @@ test('getExactMatchWeight', function(assert){
     3,
     'Match is found when string includes query');
 
-  var weight1 = getExactMatchWeight('15897', '158'),
+  let weight1 = getExactMatchWeight('15897', '158'),
       weight2 = getExactMatchWeight('158', '158');
   assert.ok(weight1 > weight2, 'Closer match has smaller match weight');
 });
@@ -41,7 +49,7 @@ test('getExactMatchWeight', function(assert){
 test('searchRecords', function(assert) {
   assert.expect(2);
 
-  var records = [
+  let records = [
     {
       id: 'bike',
       description: 'All Bikes'
@@ -90,7 +98,7 @@ test('searchRecords', function(assert) {
 test('searchDimensionRecords', function(assert){
   assert.expect(8);
 
-  var records = [
+  let records = [
     {
       id: 'bike',
       description: 'All Bikes'
@@ -109,7 +117,7 @@ test('searchDimensionRecords', function(assert){
     }
   ];
 
-  var results = searchDimensionRecords(records, 'Bike', 100);
+  let results = searchDimensionRecords(records, 'Bike', 100);
   assert.equal(results[0].record.description,
     'All Bikes',
     'First result is most relevant dimension');
@@ -142,7 +150,7 @@ test('searchDimensionRecords', function(assert){
     '1234567'],
   'Results are sorted in relevance order');
 
-  var expectedResults = [
+  let expectedResults = [
     {
       record: records[3],
       relevance: 1
