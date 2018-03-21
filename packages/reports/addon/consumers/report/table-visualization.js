@@ -5,6 +5,7 @@
 import Ember from 'ember';
 import ActionConsumer from 'navi-core/consumers/action-consumer';
 import { ReportActions } from 'navi-reports/services/report-action-dispatcher';
+import keyBy from 'lodash/keyBy';
 
 const { assign, get, set } = Ember;
 
@@ -18,10 +19,18 @@ export default ActionConsumer.extend({
      */
     [ReportActions.UPDATE_TABLE_COLUMN_ORDER]({ currentModel:report }, newColumnOrder) {
       Ember.assert('Visualization must be a table', get(report, 'visualization.type') === 'table');
-      let metadata = get(report, 'visualization.metadata');
+      let visualizationMetadata = get(report, 'visualization.metadata'),
+          metrics = get(report, 'request.metrics'),
+          metricIndex = keyBy(metrics.toArray(), metric => get(metric, 'canonicalName')),
+          reorderedMetrics = newColumnOrder
+            .filter(column => column.type === 'metric')
+            .map(column => metricIndex[column.field]);
+
       set(report, 'visualization.metadata',
-        assign({}, metadata, { columns: newColumnOrder})
+        assign({}, visualizationMetadata, { columns: newColumnOrder})
       );
+
+      set(report, 'request.metrics', reorderedMetrics);
     }
   }
 });
