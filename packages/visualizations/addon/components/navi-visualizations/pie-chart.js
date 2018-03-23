@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -9,16 +9,19 @@
  * }}
  */
 
-import Ember from 'ember';
+import Component from '@ember/component';
+import { inject as service } from '@ember/service';
+import { get, computed } from '@ember/object';
+import { getOwner } from '@ember/application';
+import { run } from '@ember/runloop';
+import { guidFor } from '@ember/object/internals';
 import layout from '../../templates/components/navi-visualizations/pie-chart';
 import tooltipLayout from '../../templates/chart-tooltips/pie-chart';
 import $ from 'jquery';
 import { smartFormatNumber } from 'navi-core/helpers/smart-format-number';
 import DimensionBuilder from 'navi-visualizations/chart-builders/dimension';
 
-const { computed, get, getOwner } = Ember;
-
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   /**
@@ -26,12 +29,16 @@ export default Ember.Component.extend({
    */
   tagName: '',
 
+  /**
+   * @property {Service} metricName
+   */
+  metricName: service(),
 
   /**
    * @property {String} chartId - return pie-chart-widget with its ember id appended to it
    */
   chartId: computed(function() {
-    return `pie-chart-widget-${Ember.guidFor(this)}`;
+    return `pie-chart-widget-${guidFor(this)}`;
   }),
 
   /**
@@ -74,6 +81,15 @@ export default Ember.Component.extend({
   }),
 
   /**
+   * @property {String} metricDisplayName - display name for metric
+   */
+  metricDisplayName: computed('options', function() {
+    let metricName = get(this, 'seriesConfig.metric');
+
+    return get(this, 'metricName').getDisplayName(metricName);
+  }),
+
+  /**
    * @property {Object} chart data config
    */
   dataConfig: computed('model.firstObject', 'seriesConfig', function() {
@@ -103,18 +119,18 @@ export default Ember.Component.extend({
   }),
 
   /**
-   * @property {Ember.Component} tooltipComponent - component used for rendering HTMLBars templates
+   * @property {Component} tooltipComponent - component used for rendering HTMLBars templates
    */
   tooltipComponent: computed(function() {
     let owner = getOwner(this),
         byXSeries = get(this, 'builder.byXSeries'),
-        tooltipComponent = Ember.Component.extend(
+        tooltipComponent = Component.extend(
           owner.ownerInjection(),
 
           {
             layout: tooltipLayout,
 
-            rowData: Ember.computed('x', 'requiredToolTipData', function() {
+            rowData: computed('x', 'requiredToolTipData', function() {
               // Get the full data for this combination of x + series
               let series = get(this, 'requiredToolTipData'),
                   dataForSeries = byXSeries.getDataForKey(get(this, 'x') + series.id) || [];
@@ -145,7 +161,7 @@ export default Ember.Component.extend({
               metricName
             });
 
-        Ember.run(() => {
+        run(() => {
           let element = document.createElement('div');
           tooltip.appendTo(element);
         });
@@ -192,7 +208,7 @@ export default Ember.Component.extend({
          */
         xTranslate  = d3.transform(chartElm.attr('transform')).translate[0] - (chartElm.node().getBBox().width / 2) - 50,
         yTranslate  = svgElm.style('height').replace('px', '') / 2, //vertically center the label in the svg
-        metricTitle = get(this, 'seriesConfig.metric');
+        metricTitle = get(this, 'metricDisplayName');
 
     titleElm.insert('tspan')
       .attr('class', 'pie-metric-label')
