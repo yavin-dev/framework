@@ -5,6 +5,11 @@ import {
   clickTrigger as toggleSelector,
   nativeMouseUp as toggleOption
 } from '../../../../helpers/ember-power-select';
+import { setupMock, teardownMock } from '../../../../helpers/mirage-helper';
+
+let MetadataService;
+
+const { getOwner } = Ember;
 
 let Template = hbs`{{visualization-config/chart-type/dimension
                     seriesConfig=seriesConfig
@@ -18,6 +23,7 @@ const ROWS = [
     'metric1': 1707077,
     'dateTime': '2015-11-09 00:00:00.000',
     'metric2': 2707077,
+    'revenue(currency=USD)': 3707077,
     'foo|id': '1',
     'foo|desc': 'Foo1'
   },
@@ -25,6 +31,7 @@ const ROWS = [
     'metric1': 1659538,
     'dateTime': '2015-11-09 00:00:00.000',
     'metric2': 2959538,
+    'revenue(currency=USD)': 3959538,
     'foo|id': '2',
     'foo|desc': 'Foo2'
   },
@@ -32,6 +39,7 @@ const ROWS = [
     'metric1': 1977070,
     'dateTime': '2015-11-11 00:00:00.000',
     'metric2': 2977070,
+    'revenue(currency=USD)': 3977070,
     'foo|id': '1',
     'foo|desc': 'Foo1'
   },
@@ -39,6 +47,7 @@ const ROWS = [
     'metric1': 1755382,
     'dateTime': '2015-11-12 00:00:00.000',
     'metric2': 2755382,
+    'revenue(currency=USD)': 3755382,
     'foo|id': '1',
     'foo|desc': 'Foo1'
   },
@@ -46,6 +55,7 @@ const ROWS = [
     'metric1': 1348750,
     'dateTime': '2015-11-13 00:00:00.000',
     'metric2': 2348750,
+    'revenue(currency=USD)': 3348750,
     'foo|id': '3',
     'foo|desc': 'Foo3'
   }
@@ -54,6 +64,8 @@ const ROWS = [
 moduleForComponent('visualization-config/chart-type/dimension', 'Integration | Component | visualization config/line chart type/dimension', {
   integration: true,
   beforeEach() {
+    setupMock();
+
     this.set('seriesConfig', {
       dimensionOrder: [ 'foo' ],
       metric: 'metric1',
@@ -73,14 +85,21 @@ moduleForComponent('visualization-config/chart-type/dimension', 'Integration | C
       request: {
         dimensions: [ { dimension: { name: 'foo' } } ],
         metrics: [
-          { metric: { name: 'metric1', longName: 'Metric 1' } },
-          { metric: { name: 'metric2', longName: 'Metric 2' } }
+          { metric: 'metric1', parameters: {}, canonicalName: 'metric1', serialize() { return this; } },
+          { metric: 'metric2', parameters: {}, canonicalName: 'metric2', serialize() { return this; } },
+          { metric: 'revenue', parameters: { currency: 'USD' }, canonicalName: 'revenue(currency=USD)', serialize() { return this; } }
         ]
       },
       response: ROWS,
       onUpdateChartConfig: () => null
     });
 
+    MetadataService = getOwner(this).lookup('service:bard-metadata');
+    return MetadataService.loadMetadata();
+  },
+
+  afterEach() {
+    teardownMock();
   }
 });
 
@@ -100,7 +119,7 @@ test('component renders', function(assert) {
 });
 
 test('on metric change', function(assert) {
-  assert.expect(1);
+  assert.expect(2);
 
   this.render(Template);
 
@@ -111,7 +130,12 @@ test('on metric change', function(assert) {
   });
 
   toggleSelector('.dimension-line-chart-config__metric-selector');
-  toggleOption($('.dimension-line-chart-config__metric-selector .ember-power-select-option:contains(Metric 2)')[0]);
+
+  assert.equal(this.$('.dimension-line-chart-config__metric-selector .ember-power-select-option:contains(Revenue)').text().trim(),
+    'Revenue (USD)',
+    'Parameterized metric is displayed correctly in the dimension visualization config');
+
+  toggleOption($('.dimension-line-chart-config__metric-selector .ember-power-select-option:contains(metric2)')[0]);
 });
 
 test('on add series', function(assert) {

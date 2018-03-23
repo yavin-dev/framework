@@ -123,9 +123,9 @@ test('Changing and saving a widget', function(assert) {
 
     assert.deepEqual(legends,
       [
-        'adClicks',
-        'navClicks',
-        'totalClicks'
+        'Ad Clicks',
+        'Nav Link Clicks',
+        'Total Clicks'
       ],
       'Added metric appears in dashboard view after saving widget');
   });

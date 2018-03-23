@@ -15,7 +15,10 @@ import { isPresent } from '@ember/utils';
 import Helper from '@ember/component/helper';
 
 export default Helper.extend({
-  metricMeta: service('bard-metadata'),
+  /**
+   * @property {Service} metricName
+   */
+  metricName: service(),
 
   /**
    * returns formatted metric
@@ -30,7 +33,7 @@ export default Helper.extend({
 
     let metricId = get(metric, 'metric');
     if(isPresent(metricId)) {
-      longName = get(this, 'metricMeta').getMetaField('metric', metricId, 'longName', metricId);
+      longName = get(this, 'metricName').getLongName(metricId);
     }
     return metricFormat(metric, longName);
   }

@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * {{visualization-config/chart-type/dimension
@@ -30,9 +30,7 @@ export default Ember.Component.extend({
   /**
    * @property {Array} metrics
    */
-  metrics: computed('request', function() {
-    return Ember.A(get(this, 'request.metrics')).mapBy('metric');
-  }),
+  metrics: computed.alias('request.metrics'),
 
   /**
    * @property {Array} dimensions
@@ -46,7 +44,7 @@ export default Ember.Component.extend({
    */
   selectedMetric: computed('seriesConfig', function() {
     let metric = get(this, 'seriesConfig.metric');
-    return Ember.A(get(this, 'metrics')).filterBy('name', metric)[0];
+    return Ember.A(get(this, 'metrics')).findBy('canonicalName', metric);
   }),
 
   /**
@@ -144,7 +142,7 @@ export default Ember.Component.extend({
      */
     onUpdateChartMetric(metric) {
       let newSeriesConfig = copy(get(this, 'seriesConfig'));
-      set(newSeriesConfig, 'metric', metric.name);
+      set(newSeriesConfig, 'metric', get(metric, 'canonicalName'));
       this.sendAction('onUpdateConfig', newSeriesConfig);
     },
 

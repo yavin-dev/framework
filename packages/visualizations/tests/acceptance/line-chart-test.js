@@ -14,20 +14,20 @@ test('tooltip updates', function(assert) {
 
     //check text of the tooltip container
     assert.equal(find('.sub-title').text(),
-      'clicks',
-      'The tooltip contains the default metric name.');
+      'Ad Clicks',
+      'The tooltip contains the metric\'s display name.');
   });
 
   //Select a different metric
-  selectChoose('.dimension-line-chart-config__metric-selector', 'Unique Identifier');
+  selectChoose('.dimension-line-chart-config__metric-selector', 'Revenue (USD)');
 
   andThen(function() {
     showTooltip(container);
 
     //check text of the tooltip container
     assert.equal(find('.sub-title').text(),
-      'uniqueIdentifier',
-      'The tooltip contains the correct metric name after a new metric is selected');
+      'Revenue (USD)',
+      'The tooltip contains the correct metric display name after a new parameterized metric is selected');
   });
 });
 

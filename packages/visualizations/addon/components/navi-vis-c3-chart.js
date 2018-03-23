@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Extend c3 to listen to incoming resize events
@@ -18,12 +18,18 @@
  */
 import Ember from 'ember';
 import C3Chart from 'ember-c3/components/c3-chart';
+import { inject as service } from '@ember/service';
 import $ from'jquery';
 
 const { computed, get, getProperties, set } = Ember;
 
 /* globals c3: true */
 export default C3Chart.extend({
+  /**
+   * @property {Service} metricName
+   */
+  metricName: service(),
+
   /**
    * @property {Array} classNames
    */
@@ -49,7 +55,8 @@ export default C3Chart.extend({
     let dataSelection = get(this, 'dataSelection');
     if (dataSelection) {
       dataSelection.then((insightsData) => {
-        let metrics = get(this, 'axis.y.series.config.metrics'),
+        let metricName = get(this, 'metricName'),
+            metrics = get(this, 'axis.y.series.config.metrics').map(metric => metricName.getDisplayName(metric)),
             dataSelectionIndices = insightsData.mapBy('index');
         get(this, 'chart').select(metrics, dataSelectionIndices);
       });
