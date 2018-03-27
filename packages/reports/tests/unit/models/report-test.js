@@ -113,6 +113,7 @@ moduleForModel('report', 'Unit | Model | report', {
     'validator:request-metric-exist',
     'validator:request-dimension-order',
     'validator:request-time-grain',
+    'validator:request-filters',
     'validator:length',
     'validator:belongs-to',
     'validator:has-many',

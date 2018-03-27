@@ -47,9 +47,15 @@ function _getDates(grain, start, end) {
  * @param {String} name - dimension to get values for
  * @returns {Array} list of object with id + description
  */
-function _getDimensionValues(name) {
+function _getDimensionValues(name, filterValues) {
   // Return cached values, or fake new ones
-  return DIMENSION_VALUE_MAP[name] || (DIMENSION_VALUE_MAP[name] = _fakeDimensionValues(name, faker.random.number({min: 3, max: 5})));
+  let values = DIMENSION_VALUE_MAP[name] || (DIMENSION_VALUE_MAP[name] = _fakeDimensionValues(name, faker.random.number({min: 3, max: 5})));
+  return filterValues ? values.reduce((arr, value) => {
+    if(filterValues.includes(value.id)){
+      arr.push(value);
+    }
+    return arr;
+  }, []) : values;
 }
 
 /**
@@ -104,6 +110,22 @@ export default function(
 
     // Get date range from query params + grain
     let dates = _getDates(grain, ...request.queryParams.dateTime.split('/'));
+    let filters = {};
+    if(request.queryParams.filters){
+      filters = request.queryParams.filters.split(']').reduce((filterObj, currFilter) => {
+        if(currFilter.length > 0){
+
+          if(currFilter[0] === ',') currFilter = currFilter.substring(1);
+
+          let dimension = currFilter.split('|')[0],
+              values = currFilter.split('[')[1].split(',');
+
+          filterObj[dimension] = values;
+        }
+
+        return filterObj;
+      }, filters);
+    }
 
     // Convert each date into a row of data
     let rows = dates.map(date => {
@@ -116,7 +138,7 @@ export default function(
     dimensions.forEach(dimension => {
       if (dimension.length > 0) {
         rows = rows.reduce((newRows, currentRow) => {
-          let dimensionValues = _getDimensionValues(dimension);
+          let dimensionValues = _getDimensionValues(dimension, filters[dimension]);
 
           return newRows.concat(dimensionValues.map(value =>
             // TODO figure out why Object.assign refuses to work in Phantom even with Babel polyfill

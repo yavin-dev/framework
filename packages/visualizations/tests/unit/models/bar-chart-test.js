@@ -12,6 +12,7 @@ moduleForModel('all-the-fragments', 'Unit | Model | Bar Chart Visualization Frag
     'validator:request-metric-exist',
     'validator:request-dimension-order',
     'validator:request-time-grain',
+    'validator:request-filters',
     'model:bar-chart'
   ]
 });
@@ -24,4 +25,3 @@ test('Bar chart type', function(assert) {
     'bar-chart',
     'bar chart config has correct chart type');
 });
-
