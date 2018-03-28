@@ -31,6 +31,19 @@ test('tooltip updates', function(assert) {
   });
 });
 
+test('custom chart builders', function(assert) {
+  assert.expect(1);
+
+  visit('/lineChart');
+
+  andThen(() => {
+    let customChartBuilderSeries = find('.custom-chart-builder .c3-legend-item').toArray().map(e => e.textContent);
+    assert.deepEqual(customChartBuilderSeries,
+      ['custom', 'series', 'grouping'],
+      'A custom chart builder can be supplied for unique series grouping logic');
+  });
+});
+
 /**
  * @function showTooltip
  * @param {Object} container - app container

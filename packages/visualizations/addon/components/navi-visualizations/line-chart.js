@@ -18,7 +18,7 @@ import config from 'ember-get-config';
 import { inject as service } from '@ember/service';
 import $ from 'jquery';
 
-const { computed, get, getOwner, isPresent } = Ember;
+const { computed, get, getOwner } = Ember;
 
 const DEFAULT_OPTIONS = {
   axis: {
@@ -85,8 +85,8 @@ export default Ember.Component.extend({
    * @param {Object} chartBuilders - map of chart type to builder
    */
   chartBuilders: computed(function() {
-    // Find all chart builders registered in requirejs under the namespace "navi-visualizations/chart-builders"
-    let builderRegExp = new RegExp(`^(?:${config.modulePrefix}/)?navi-visualizations/chart-builders/(.*)`),
+    // Find all chart builders registered in requirejs under the namespace "chart-builders"
+    let builderRegExp = new RegExp(`^${config.modulePrefix}/chart-builders/(.*)`),
         chartBuilderEntries = Object.keys(requirejs.entries).filter((key) => builderRegExp.test(key)),
         owner = getOwner(this),
         builderMap = chartBuilderEntries.reduce((map, builderName) => {
@@ -148,10 +148,9 @@ export default Ember.Component.extend({
    */
   metricDisplayName: computed('options', function() {
     let seriesConfig = get(this, 'seriesConfig'),
-        chartType = get(seriesConfig, 'type'),
         metricName = get(seriesConfig, 'config.metric');
 
-    if(isPresent(chartType) && chartType !== 'metric'){
+    if(metricName) {
       return get(this, 'metricName').getDisplayName(metricName);
     }
   }),

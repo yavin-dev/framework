@@ -113,6 +113,16 @@ export default Ember.Controller.extend({
     }
   },
 
+  customOptions: {
+    axis: {
+      y: {
+        series: {
+          type: 'customType',
+        }
+      }
+    }
+  },
+
   dimensionModel: Ember.A([
     {
       request: {
