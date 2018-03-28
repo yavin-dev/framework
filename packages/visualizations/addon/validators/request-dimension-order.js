@@ -12,7 +12,10 @@ const { get } = Ember;
 
 export default BaseValidator.extend({
   validate(value, options/*, model, attribute*/) {
-    let requestDimensions = getRequestDimensions(get(options, 'request'));
-    return isEqual(value, requestDimensions);
+    let request = get(options, 'request');
+    if(request){
+      let requestDimensions = getRequestDimensions(request);
+      return isEqual(value, requestDimensions);
+    }
   }
 });
