@@ -57,7 +57,7 @@ const ROWS = [
     'metric2': 2348750,
     'revenue(currency=USD)': 3348750,
     'foo|id': '3',
-    'foo|desc': 'Foo3'
+    'foo|desc': ''
   }
 ];
 
@@ -152,7 +152,7 @@ test('on add series', function(assert) {
         values: { foo: '2' }
       },
       {
-        name: 'Foo3',
+        name: '3',
         values: { foo: '3' }
       }
     ], 'The new series selected is added to the config and passed on to the onUpdateChartConfig action');

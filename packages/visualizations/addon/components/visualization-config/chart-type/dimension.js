@@ -75,7 +75,7 @@ export default Ember.Component.extend({
       let searchKey = '',
           seriesDims = [],
           values = {},
-          descriptions = [];
+          dimensionLabels = [];
 
       for(let dimIndex = 0; dimIndex < dimensions.length; dimIndex++) {
         // Pull dimension id + description from response data
@@ -93,7 +93,7 @@ export default Ember.Component.extend({
           }
         });
 
-        descriptions.push(description);
+        dimensionLabels.push(description || id);
         Ember.assign(values, { [get(dimension, 'name')] : id });
       }
 
@@ -101,7 +101,7 @@ export default Ember.Component.extend({
         searchKey: searchKey.trim(),
         dimensions: seriesDims,
         config: {
-          name: descriptions.join(','),
+          name: dimensionLabels.join(','),
           values
         }
       };

@@ -86,7 +86,7 @@ export default Component.extend({
   metricDisplayName: computed('options', function() {
     let metricName = get(this, 'seriesConfig.metric');
 
-    return get(this, 'metricName').getDisplayName(metricName);
+    return get(this, 'metricName') && get(this, 'metricName').getDisplayName(metricName);
   }),
 
   /**
