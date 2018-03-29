@@ -12,7 +12,6 @@ moduleFor('service:model-compression', 'Unit | Service | model compression', {
     'transform:dimension',
     'transform:fragment',
     'transform:metric',
-    'transform:sort',
     'transform:moment',
     'transform:table',
     'model:bard-request/request',

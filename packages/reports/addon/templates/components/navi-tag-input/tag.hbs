@@ -1,0 +1,5 @@
+{{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.--}}
+{{#if isRemovable}}
+    <span role='button' class='emberTagInput-remove' {{action this.attrs.onRemoveTag}}></span>
+{{/if}}
+{{yield}}

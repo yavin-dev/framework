@@ -39,8 +39,8 @@ export default ActionConsumer.extend({
      * @param {Object} metric - metadata model of metric to add
      * @param {Object} parameter - selected metric parameter
      */
-    [RequestActions.ADD_METRIC_WITH_PARAM]({ currentModel }, metric, parameter) {
-      get(currentModel, 'request').addRequestMetricWithParam(metric, parameter);
+    [RequestActions.ADD_METRIC_WITH_PARAM]({ currentModel }, metric, parameters) {
+      get(currentModel, 'request').addRequestMetricWithParam(metric, parameters);
     },
 
     /**
@@ -49,18 +49,22 @@ export default ActionConsumer.extend({
      * @param {Object} metric - metadata model of metric to add
      * @param {Object} parameter - selected metric parameter
      */
-    [RequestActions.REMOVE_METRIC_WITH_PARAM]({ currentModel }, metric, parameter) {
-      get(currentModel, 'request').removeRequestMetricWithParam(metric, parameter);
+    [RequestActions.REMOVE_METRIC_WITH_PARAM]({ currentModel }, metric, parameters) {
+      get(currentModel, 'request').removeRequestMetricWithParam(metric, parameters);
     },
 
     /**
-     * @action TOGGLE_METRIC_FILTER
+     * @action ADD_METRIC_FILTER
      * @param {Object} route - route that has a model that contains a request property
      * @param {Object} metric - metric to filter
      */
-    [RequestActions.ADD_METRIC_FILTER](route, metric) {
+    [RequestActions.ADD_METRIC_FILTER](route, metric, parameters) {
       // Metric filter can't exist without the metric present in the request
-      get(this, 'requestActionDispatcher').dispatch(RequestActions.ADD_METRIC, route, metric);
+      if(parameters){
+        get(this, 'requestActionDispatcher').dispatch(RequestActions.ADD_METRIC_WITH_PARAM, route, metric, parameters);
+      } else {
+        get(this, 'requestActionDispatcher').dispatch(RequestActions.ADD_METRIC, route, metric);
+      }
     },
 
     /**

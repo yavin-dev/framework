@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -11,12 +11,13 @@
 
 /* globals d3 */
 
-import Ember from 'ember';
+import Component from '@ember/component';
+import { computed, get, getWithDefault } from '@ember/object';
+import { guidFor } from '@ember/object/internals';
+import { inject as service } from '@ember/service';
 import numeral from 'numeral';
 import layout from '../../templates/components/navi-visualizations/goal-gauge';
-import $ from 'jquery';
-
-const { computed, get, getWithDefault } = Ember;
+import { metricFormat } from 'navi-data/helpers/metric-format';
 
 const DEFAULT_OPTIONS = {
   baselineValue: 0,
@@ -29,8 +30,10 @@ const DEFAULT_OPTIONS = {
   thresholdPercentages: [ 75, 85, 100 ]
 };
 
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
+
+  bardMetadata: service(),
 
   tagName: '',
 
@@ -38,7 +41,7 @@ export default Ember.Component.extend({
    * @property {Array} - List of class names added to the gauge component
    */
   widgetClassNames: computed(function() {
-    return ['goal-gauge-widget', `${Ember.guidFor(this)}-goal-gauge-widget`];
+    return ['goal-gauge-widget', `${guidFor(this)}-goal-gauge-widget`];
   }),
 
   /**
@@ -48,6 +51,11 @@ export default Ember.Component.extend({
     let metric = get(this, 'config.metric');
     return get(this, `model.firstObject.response.rows.0.${metric}`);
   }),
+
+  /**
+   * @property {object} - target metric model pulled from serialized request
+   */
+  metricModel: computed.alias('model.firstObject.request.metrics.0'),
 
   /**
    * @property {Number} - starting value to measure progress towards the gaol
@@ -60,10 +68,21 @@ export default Ember.Component.extend({
   goalValue: computed.alias('config.goalValue'),
 
   /**
+   * @property {String} formatted default metric
+   */
+  defaultMetricTitle: computed('metricModel', function() {
+    let metricModel = get(this, 'metricModel'),
+        baseMetric = get(metricModel, 'metric'),
+        longName = get(this, 'bardMetadata').getMetaField('metric', baseMetric, 'longName');
+
+    return metricFormat(metricModel, longName);
+  }),
+
+  /**
    * @property {String} - The title for the goal metric
    */
   metricTitle: computed('config.{metricTitle,metric}', function() {
-    return get(this, 'config.metricTitle') || get(this, 'metric');
+    return get(this, 'config.metricTitle') || get(this, 'defaultMetricTitle');
   }),
 
   /**
@@ -97,8 +116,7 @@ export default Ember.Component.extend({
    * @property {Object} config - config options for the chart
    */
   config: computed('options', function(){
-    //deep merge DEFAULT_OPTIONS and custom options
-    return $.extend(true, {}, DEFAULT_OPTIONS, get(this, 'options'));
+    return Object.assign({}, DEFAULT_OPTIONS, get(this, 'options'));
   }),
 
   /**
@@ -194,7 +212,7 @@ export default Ember.Component.extend({
    * @private
    */
   _removeTitle() {
-    let tspans = d3.selectAll(`.${Ember.guidFor(this)}-goal-gauge-widget text.c3-chart-arcs-title > tspan`);
+    let tspans = d3.selectAll(`.${guidFor(this)}-goal-gauge-widget text.c3-chart-arcs-title > tspan`);
     tspans.remove();
   },
 
@@ -205,7 +223,7 @@ export default Ember.Component.extend({
    */
   _drawTitle() {
 
-    let titleElm    = d3.select(`.${Ember.guidFor(this)}-goal-gauge-widget text.c3-chart-arcs-title`),
+    let titleElm    = d3.select(`.${guidFor(this)}-goal-gauge-widget text.c3-chart-arcs-title`),
         metricTitle = get(this, 'metricTitle'),
         goalValue   = get(this, 'goalValue'),
         actualValue = get(this, 'actualValue'),
@@ -237,7 +255,7 @@ export default Ember.Component.extend({
       .attr('x', 0);
   },
 
-  /*
+  /**
    * Formats numbers for display
    * @method _formatNumber
    * @private

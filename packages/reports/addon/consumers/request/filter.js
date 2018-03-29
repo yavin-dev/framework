@@ -7,6 +7,8 @@ import Ember from 'ember';
 import { RequestActions } from 'navi-reports/services/request-action-dispatcher';
 import DefaultIntervals from 'navi-reports/utils/enums/default-intervals';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
+import { getSelectedMetricsOfBase, getUnfilteredMetricsOfBase } from 'navi-reports/utils/request-metric';
+import { isEmpty } from '@ember/utils';
 
 const { assign, inject, get, set, setProperties } = Ember;
 
@@ -26,6 +28,27 @@ export default ActionConsumer.extend({
    * @property {Ember.Service} requestActionDispatcher
    */
   requestActionDispatcher: inject.service(),
+
+  /**
+   * @method _getNextParameterForMetric
+   *
+   * @private
+   * @param metricMeta - metadata object of metric
+   * @param request - request fragment
+   * @returns {Object|undefined} next parameters object
+   */
+  _getNextParameterForMetric(metricMeta, request) {
+    if(!get(metricMeta, 'hasParameters')) {
+      return;
+    }
+
+    if(isEmpty(getSelectedMetricsOfBase(metricMeta, request))){
+      return metricMeta.getDefaultParameters();
+    }
+
+    let nextMetric = getUnfilteredMetricsOfBase(metricMeta, request)[0];
+    return nextMetric && get(nextMetric, 'parameters');
+  },
 
   actions: {
     /**
@@ -81,12 +104,16 @@ export default ActionConsumer.extend({
      */
     [RequestActions.TOGGLE_METRIC_FILTER]: function(route, metric) {
       let filteredMetrics = get(route, 'currentModel.request.having'),
-          having = filteredMetrics.findBy('metric.metric', metric);
+          havingsForMetric = filteredMetrics.filterBy('metric.metric.name', get(metric, 'name')),
+          nextParameter = this._getNextParameterForMetric(metric, get(route, 'currentModel.request')),
+          shouldAdd = (!!nextParameter || isEmpty(havingsForMetric));
 
-      if(!having){
-        get(this, 'requestActionDispatcher').dispatch(RequestActions.ADD_METRIC_FILTER, route, metric);
+      if(shouldAdd){
+        get(this, 'requestActionDispatcher').dispatch(RequestActions.ADD_METRIC_FILTER, route, metric, nextParameter);
       } else {
-        get(this, 'requestActionDispatcher').dispatch(RequestActions.REMOVE_FILTER, route, having);
+        havingsForMetric.forEach(having => {
+          get(this, 'requestActionDispatcher').dispatch(RequestActions.REMOVE_FILTER, route, having);
+        });
       }
     },
 
@@ -131,6 +158,17 @@ export default ActionConsumer.extend({
      */
     [RequestActions.UPDATE_FILTER]: (route, originalFilter, changeSet) => {
       setProperties(originalFilter, changeSet);
+    },
+
+    /**
+     * @action UPDATE_FILTER_PARAM
+     * @param {Object} route - route that has a model that contains a request property
+     * @param {Object} originalFilter - object to update
+     */
+    [RequestActions.UPDATE_FILTER_PARAM]: (route, originalFilter, key, value) => {
+      set(originalFilter, 'subject.parameters', {
+        [key]: value
+      });
     },
 
     /**

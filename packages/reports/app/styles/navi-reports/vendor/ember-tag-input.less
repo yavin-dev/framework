@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * These styles exist only to override the default styles that are included
@@ -9,9 +9,14 @@
 .navi-tag-input {
     padding: 0;
 
+    &__tag {
+      .navi-pill;
+
+      margin: 0 3px;
+    }
+
     .emberTagInput {
         padding: 0;
-        border: 1px solid @navi-gray-400;
 
         &-remove {
             opacity: 0.5;
@@ -22,13 +27,7 @@
         &-tag,
         &-input {
             font: @font-size-mid-base @font-family-thin;
-            margin: 0;
             padding: 0 4px;
-        }
-
-        &-tag {
-            .navi-pill;
-            margin-left: 0;
         }
 
         &-tag--remove {

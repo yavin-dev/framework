@@ -1,11 +1,20 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import Component from '@ember/component';
+import Helper from '@ember/component/helper';
+import { A as arr } from '@ember/array';
+
+let Request = {
+  metrics: arr([]),
+  having: arr([])
+};
 
 moduleForComponent('filter-builders/metric', 'Integration | Component | filter-builders/metric', {
   integration: true,
 
   beforeEach() {
+    this.register('helper:report-action', Helper.helper(() => {}), { instantiate: false });
+
     this.register('component:mock/values-component', Component.extend({
       classNames: 'mock-value-component'
     }));
@@ -33,12 +42,12 @@ test('displayName', function(assert) {
   };
 
   this.set('filter', filter);
-  this.render(hbs`{{filter-builders/metric filter=filter}}`);
+  this.set('request', Request);
+  this.render(hbs`{{filter-builders/metric filter=filter request=request}}`);
 
   assert.equal(this.$('.filter-builder__subject').text().trim(),
     'metric-with-params (bar,baz)',
     'Subject\'s long name displayed in filter builder includes the metric long name and the parameters');
-
 
   //check display name for metric without params
   filter = {

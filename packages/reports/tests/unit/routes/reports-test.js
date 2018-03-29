@@ -21,7 +21,6 @@ moduleFor('route:reports', 'Unit | Route | reports', {
     'transform:dimension',
     'transform:fragment',
     'transform:metric',
-    'transform:sort',
     'transform:moment',
     'transform:table',
     'model:line-chart',
@@ -59,7 +58,8 @@ moduleFor('route:reports', 'Unit | Route | reports', {
     'validator:chart-type',
     'validator:request-metrics',
     'validator:request-metric-exist',
-    'validator:request-dimension-order'
+    'validator:request-dimension-order',
+    'validator:request-time-grain'
   ],
   beforeEach() {
     setupMock();
@@ -141,17 +141,9 @@ test('delete report - failure', function(assert) {
 });
 
 test('save schedule - success', function(assert) {
-  assert.expect(3);
+  assert.expect(2);
 
-  let route = this.subject({
-    naviNotifications: {
-      add({ message }) {
-        assert.equal(message,
-          'Report delivery schedule successfully saved!',
-          'A notification is sent when a report is successfully scheduled');
-      }
-    }
-  });
+  let route = this.subject();
 
   return Ember.run(() => {
     return route.store.findRecord('report', 1).then(report => {
@@ -172,46 +164,6 @@ test('save schedule - success', function(assert) {
           assert.notOk(get(newRule, 'hasDirtyAttributes'),
             '`saveDeliveryRule` action saves the dirty delivery rule')
         });
-      });
-    });
-  });
-});
-
-test('save schedule - failure', function(assert) {
-  assert.expect(3);
-
-  //Mock Server Endpoint
-  server.post('/deliveryRules/', () => {
-    return new Mirage.Response(500);
-  });
-
-  let route = this.subject({
-    naviNotifications: {
-      add({ message }) {
-        assert.equal(message,
-          'OOPS! An error occurred while scheduling your report',
-          'A notification is sent when a report is unable to be scheduled');
-      }
-    }
-  });
-  return Ember.run(() => {
-    return route.store.findRecord('report', 1).then(report => {
-      let owner = get(report, 'author'),
-          newRule = route.store.createRecord('delivery-rule', {
-            deliveryType: 'report',
-            format: { type: 'csv' },
-            deliveredItem: report,
-            owner: owner
-          });
-
-      assert.notOk(route.store.hasRecordForId('deliveryRule',3),
-        'Delivery Rule 3 is not available in the store');
-
-      route.send('saveDeliveryRule', newRule);
-
-      return wait().then(() => {
-        assert.notOk(route.store.hasRecordForId('deliveryRule',3),
-          'Delivery Rule 3 is not available in the store after a failed save');
       });
     });
   });

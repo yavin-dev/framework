@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import VisualizationBase from './visualization';
@@ -7,6 +7,7 @@ import MetricLabelConfig from '../components/visualization-config/metric-label';
 import { buildValidations, validator } from 'ember-cp-validations';
 import Ember from 'ember';
 import DS from 'ember-data';
+import { metricFormat } from 'navi-data/helpers/metric-format';
 
 const { computed, set, get } = Ember;
 
@@ -40,8 +41,8 @@ export default VisualizationBase.extend(Validations, {
    */
   rebuildConfig(request /*response*/) {
     let metrics = Ember.A( get(request, 'metrics') ),
-        metric =  get(metrics, 'firstObject.metric.name'),
-        description =  get(metrics, 'firstObject.metric.longName'),
+        metric =  get(metrics, 'firstObject.canonicalName'),
+        description =  metricFormat(get(metrics, 'firstObject'), get(metrics, 'firstObject.metric.longName')),
         allFormats = get(MetricLabelConfig.proto(), 'predefinedFormats'),
         format = get(this, 'metadata.format') || get(allFormats[0], 'format');
 

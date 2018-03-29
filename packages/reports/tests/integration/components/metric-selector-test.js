@@ -217,3 +217,18 @@ test('metric config for metric with parameters', function(assert) {
   assert.notOk(Ember.isEmpty(this.$('.grouped-list__item:contains(Revenue) .metric-config')),
     'The metric config trigger icon is present for a metric with parameters');
 });
+
+test('ranked search', function(assert) {
+  assert.expect(2);
+
+  assert.deepEqual(this.$('.grouped-list__item:contains(Page)').toArray().map(el => el.textContent.trim()),
+    [ 'Additive Page Views', 'Page Views', 'Total Page Views' ],
+    'Initially the page view metrics are ordered alphabetically');
+
+  this.$('.navi-list-selector__search-input').val('page');
+  this.$('.navi-list-selector__search-input').trigger('focusout');
+
+  assert.deepEqual(this.$('.grouped-list__item').toArray().map(el => el.textContent.trim()),
+    [ 'Page Views', 'Total Page Views', 'Additive Page Views' ],
+    'The search results are ranked based on relevance');
+});

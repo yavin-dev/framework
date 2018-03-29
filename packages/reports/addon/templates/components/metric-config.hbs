@@ -3,7 +3,7 @@
   calculatePosition=calculatePosition
   as |dd|
 }}
-  {{#dd.trigger class='metric-config__dropdown-trigger'}}
+  {{#dd.trigger class='metric-config__dropdown-trigger' onMouseDown=(action 'triggerFetch')}}
     {{navi-icon 'cog' class='metric-config__trigger-icon'}}
   {{/dd.trigger}}
 
@@ -17,7 +17,7 @@
          items=allParameters
          searchField='name'
          selected=selectedParams
-         title=metric.name
+         title=metric.longName
          as | params areParamsFiltered |
       }}
         {{#grouped-list

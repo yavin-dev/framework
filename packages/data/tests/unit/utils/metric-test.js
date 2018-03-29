@@ -1,5 +1,5 @@
 import { canonicalizeMetric, hasParameters, serializeParameters,
-  getAliasedMetrics, canonicalizeAlias } from 'navi-data/utils/metric';
+  getAliasedMetrics, canonicalizeAlias, parseMetricName } from 'navi-data/utils/metric';
 import { module, test } from 'qunit';
 
 module('Unit - Utils - Metrics Utils', {
@@ -105,4 +105,39 @@ test('get canonicalized metric from alias', function(assert) {
   assert.equal(canonicalizeAlias('m3', aliasMap), 'm3', 'returns what\'s passed if not in alias map');
   assert.equal(canonicalizeAlias('m1'), 'm1', 'returns alias without alias map');
   assert.equal(canonicalizeAlias('m1', {}), 'm1', 'returns alias with empty alias map');
+});
+
+test('parse metric name into object', function(assert) {
+  assert.expect(6);
+
+  let metricString = 'base(param=paramVal)';
+
+  assert.deepEqual(parseMetricName(metricString),
+    {metric: 'base', parameters: { param: 'paramVal'}},
+    'Parser correctly constructs a metric object with one parameter');
+
+  metricString = 'base';
+  assert.deepEqual(parseMetricName(metricString),
+    {metric: 'base', parameters: {}},
+    'Parser correctly constructs a metric object with no parameters');
+
+  metricString = 'base(param1=paramVal1,param2=paramVal2)';
+  assert.deepEqual(parseMetricName(metricString),
+    {metric: 'base', parameters: { param1: 'paramVal1', param2: 'paramVal2'}},
+    'Parser correctly constructs a metric object with no parameters');
+
+  metricString = '';
+  assert.throws(() => parseMetricName(metricString),
+    new Error('Metric Name Parser: Error, empty metric name'),
+    'Parser throws an error for an empty metric name');
+
+  metricString = 'base(value)';
+  assert.throws(() => parseMetricName(metricString),
+    new Error('Metric Parameter Parser: Error, invalid parameter list'),
+    'Parser throws an error for bad parameter list');
+
+  metricString = 'base(value';
+  assert.throws(() => parseMetricName(metricString),
+    new Error('Metric Name Parser: Error, could not parse name'),
+    'Parser throws an error for corrupted metric');
 });

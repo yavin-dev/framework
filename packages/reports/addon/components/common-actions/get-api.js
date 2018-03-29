@@ -14,7 +14,7 @@
 import Ember from 'ember';
 import layout from '../../templates/components/common-actions/get-api';
 
-const { get } = Ember;
+const { get, set } = Ember;
 
 export default Ember.Component.extend({
   layout,
@@ -32,5 +32,15 @@ export default Ember.Component.extend({
   requestUrl: Ember.computed('request', 'showModal', function() { // Observe 'showModal' to recompute each time the modal opens
     let request = get(this, 'request').serialize();
     return get(this, 'facts').getURL(request);
-  })
+  }),
+
+  actions: {
+    /**
+     * Sets the notifications to false, used when modal is closed to clean it up.
+     */
+    resetNotifications() {
+      set(this, 'successNotification', false);
+      set(this, 'errorNotification', false);
+    }
+  }
 });

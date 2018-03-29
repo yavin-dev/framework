@@ -18,7 +18,6 @@ moduleFor('route:report-collections/collection', 'Unit | Route | report collecti
     'transform:dimension',
     'transform:fragment',
     'transform:metric',
-    'transform:sort',
     'transform:moment',
     'transform:table',
     'validator:chart-type',

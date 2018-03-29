@@ -11,10 +11,13 @@ import Ember from 'ember';
 import Base from './base';
 import { computed } from '@ember/object';
 import { metricFormat } from 'navi-data/helpers/metric-format';
+import layout from 'navi-reports/templates/components/filter-builders/metric';
 
 const { get } = Ember;
 
 export default Base.extend({
+  layout,
+
   /**
    * @property {Object} requestFragment - having fragment from request model
    */
@@ -23,7 +26,7 @@ export default Base.extend({
   /**
    * @property {String} displayName - display name for the filter with metric and parameters
    */
-  displayName: computed('filter.subject', function() {
+  displayName: computed('filter.subject.metric', 'filter.subject.parameters', function() {
     let metric = get(this, 'filter.subject');
     return metricFormat(metric, get(metric, 'metric.longName'));
   }),

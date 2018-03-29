@@ -20,7 +20,8 @@ const Validations = buildValidations({
 
 export default Fragment.extend(Validations, {
   metric: DS.attr('metric'),
-  parameters: DS.attr({ defaultValue: {}}),
+  parameters: DS.attr({ defaultValue: () => ({})}),
+
   /**
    * returns a canonical name containing parameters if the metric is parameterized.
    * ex: revenue(currency=USD)
@@ -34,5 +35,16 @@ export default Fragment.extend(Validations, {
       metric,
       parameters
     });
-  })
+  }),
+
+  /**
+   * Overrides Ember.Copyable implemented in Fragment.copy
+   * @returns {MF.Fragment} - Copied Fragment from this fragment
+   */
+  copy() {
+    return this.store.createFragment('bard-request/fragments/metric', {
+      metric: get(this, 'metric'),
+      parameters: Object.assign({}, get(this, 'parameters'))
+    });
+  }
 });

@@ -48,3 +48,20 @@ test('serialize and deserialize', function(assert) {
       'Metric is deserialized to the right object');
   });
 });
+
+test('datetime test', function(assert) {
+  assert.expect(2);
+
+  return wait().then(() => {
+    let transform = this.subject(),
+        metric = {name: 'dateTime'};
+
+    assert.equal(transform.serialize(metric),
+      'dateTime',
+      'dateTime is serialized to the name');
+
+    assert.deepEqual(transform.deserialize('dateTime'),
+      {name: 'dateTime'},
+      'dateTime is deserialized to the right object');
+  });
+});

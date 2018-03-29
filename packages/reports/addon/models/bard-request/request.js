@@ -10,6 +10,7 @@ import isEqual from 'lodash/isEqual';
 import { validator, buildValidations } from 'ember-cp-validations';
 import Interval from 'navi-core/utils/classes/interval';
 import { isEmpty } from '@ember/utils';
+import { copy } from '@ember/object/internals';
 
 const { Fragment, fragment, fragmentArray } = MF;
 
@@ -367,7 +368,7 @@ export default Fragment.extend(Validations, {
   addDateTimeSort(direction) {
     let sort = get(this, 'sort'),
         dateTimeSort = this.store.createFragment('bard-request/fragments/sort', {
-          metric: { name: 'dateTime' },
+          metric: this.store.createFragment('bard-request/fragments/metric', {metric: { name: 'dateTime' }}),
           direction
         });
 
@@ -382,7 +383,7 @@ export default Fragment.extend(Validations, {
    * @returns {Void}
    */
   updateDateTimeSort(props){
-    let sort = get(this, 'sort').findBy('metric.name', 'dateTime');
+    let sort = get(this, 'sort').findBy('metric.canonicalName', 'dateTime');
 
     Ember.assert(`dateTime as a sort does not exist`, sort);
 
@@ -398,14 +399,13 @@ export default Fragment.extend(Validations, {
    */
   addSort({metric, direction}) {
     let sort = get(this, 'sort'),
-        newSort = {metric, direction},
-        metricName = get(metric, 'name'),
-        existingSort = sort.find(sort => isEqual(get(sort, 'metric'), get(newSort, 'metric')));
+        metricName = get(metric, 'canonicalName'),
+        existingSort = sort.findBy('metric.canonicalName', metricName);
 
     assert(`Metric: ${metricName} cannot have multiple sorts on it`, !existingSort);
 
     sort.createFragment({
-      metric,
+      metric: copy(metric),
       direction
     });
   },
@@ -420,13 +420,13 @@ export default Fragment.extend(Validations, {
    */
   addSortByMetricName(metricName, direction='asc') {
     let metrics = get(this, 'metrics'),
-        metric = metrics.findBy('metric.name', metricName);
+        metric = metrics.findBy('canonicalName', metricName);
 
     Ember.assert(`Metric with name "${metricName}" was not found in the request`, metric);
 
     this.addSort({
       direction,
-      metric: metric.get('metric')
+      metric
     });
   },
 
@@ -450,7 +450,7 @@ export default Fragment.extend(Validations, {
    */
   removeSortByMetricName(metricName) {
     let sort = get(this, 'sort'),
-        sortObj = sort.findBy('metric.name', metricName);
+        sortObj = sort.findBy('metric.canonicalName', metricName);
     return this.removeSort(sortObj);
   },
 
@@ -463,9 +463,10 @@ export default Fragment.extend(Validations, {
    * @returns {Void}
    */
   updateSortForMetric(metric, props){
-    let sort = get(this, 'sort').findBy('metric', metric);
+    let metricName = get(metric, 'canonicalName'),
+        sort = get(this, 'sort').findBy('metric.canonicalName', metricName);
 
-    Ember.assert(`${metric.modelName} as a sort does not exist`, sort);
+    Ember.assert(`${metricName} as a sort does not exist`, sort);
 
     sort.setProperties(props);
   },
@@ -524,10 +525,11 @@ export default Fragment.extend(Validations, {
        */
       sort: makeArray(clonedRequest.sort).map(sort => {
         let metric;
-        if(sort.metric === 'dateTime'){
-          metric = { name: 'dateTime' };
+        if(sort.metric.metric === 'dateTime'){
+          metric = store.createFragment('bard-request/fragments/metric', {metric: { name: 'dateTime' }});
         } else {
-          metric = metadataService.getById('metric', sort.metric);
+          metric = store.createFragment('bard-request/fragments/metric',
+            {metric: metadataService.getById('metric', sort.metric.metric), parameters: sort.metric.parameters});
         }
 
         return store.createFragment('bard-request/fragments/sort', {

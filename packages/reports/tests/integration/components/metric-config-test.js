@@ -8,6 +8,7 @@ import { setupMock, teardownMock } from '../../helpers/mirage-helper';
 import { getOwner } from '@ember/application';
 import { defer, reject } from 'rsvp';
 import { isEmpty } from '@ember/utils';
+import { A as arr } from '@ember/array';
 
 let MockRequest, MockMetric, MetadataService;
 
@@ -19,6 +20,7 @@ moduleForComponent('metric-config', 'Integration | Component | metric config', {
 
     MockMetric = {
       name: 'metric1',
+      longName: 'Metric 1',
       parameters: {
         currency: {
           type: 'dimension',
@@ -36,14 +38,14 @@ moduleForComponent('metric-config', 'Integration | Component | metric config', {
     };
 
     MockRequest = {
-      metrics: [{
+      metrics: arr([{
         metric: MockMetric,
         parameters: {
           as: 'currencyUSD',
           currency: 'USD'
         }
-      }],
-      having: [{
+      }]),
+      having: arr([{
         metric: {
           metric: MockMetric,
           parameters: {
@@ -51,7 +53,7 @@ moduleForComponent('metric-config', 'Integration | Component | metric config', {
             currency: 'USD'
           }
         }
-      }]
+      }])
     };
 
     set(this, 'addParameterizedMetric', () => {});
@@ -112,8 +114,8 @@ test('grouped list', function(assert) {
 
   return wait().then(() => {
     assert.equal($('.metric-config__dropdown-container .navi-list-selector__title').text().trim(),
-      'metric1',
-      'the metric name is included in the header');
+      'Metric 1',
+      'the metric longName is included in the header');
 
     assert.deepEqual($('.grouped-list__group-header').toArray().map((el) => $(el).text().trim()),
       [ 'currency (14)', 'property (4)'],
@@ -216,9 +218,8 @@ test('loader', function(assert) {
 test('error message', function(assert) {
   assert.expect(1);
 
-  set(this, 'parametersPromise', reject());
-
   run(() => clickTrigger('.metric-config__dropdown-trigger'));
+  set(this, 'parametersPromise', reject());
   return wait().then(() => {
     assert.equal($('.metric-config__error-msg').text().trim(),
       'OOPS! Something went wrong. Please try refreshing the page.',

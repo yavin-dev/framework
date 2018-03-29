@@ -16,7 +16,6 @@
 import Ember from 'ember';
 import uniqBy from 'lodash/uniqBy';
 import layout from '../templates/components/metric-selector';
-import $ from 'jquery';
 import { run } from '@ember/runloop';
 
 const { computed, get } = Ember;
@@ -66,6 +65,33 @@ export default Ember.Component.extend({
     }, {});
   }),
 
+  /*
+   * @method _openConfig
+   * @private
+   *
+   * Opens the config for the given metric
+   * @param metric -
+   */
+  _openConfig(metricMeta) {
+    let longName = get(metricMeta, 'longName');
+
+    //create mousedown event using document.createEvent as supported by all browsers
+    let mouseEvent = document.createEvent("MouseEvent");
+    mouseEvent.initEvent( "mousedown", true, true );
+
+    run(this, () => {
+      //find the right config trigger by matching metric longNames
+      let metricSelector = document.querySelector('.report-builder__metric-selector'),
+          groupedListItems = Array.from(metricSelector.getElementsByClassName('grouped-list__item'));
+
+      groupedListItems.filter(item => {
+        if(item.textContent.trim() === longName){
+          item.querySelector('.metric-config__trigger-icon').dispatchEvent(mouseEvent);
+        }
+      })
+    });
+  },
+
   actions: {
     /*
      * @action metricClicked
@@ -77,16 +103,7 @@ export default Ember.Component.extend({
 
       //On add, trigger metric-config mousedown event when metric has parameters
       if(action === 'add' && get(metric, 'hasParameters')) {
-        let longName = get(metric, 'longName');
-
-        //create mousedown event using document.createEvent as supported by all browsers
-        let mouseEvent = document.createEvent("MouseEvent");
-        mouseEvent.initEvent( "mousedown", true, true );
-
-        run(this, () =>
-          $(`.report-builder__metric-selector .grouped-list__item:contains(${longName}) .metric-config__dropdown-trigger`)
-            .get(0).dispatchEvent(mouseEvent)
-        );
+        this._openConfig(metric);
       }
     }
   }

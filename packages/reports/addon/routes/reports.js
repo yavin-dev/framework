@@ -18,19 +18,7 @@ export default Ember.Route.extend({
      * @param {DS.Model} rule - object to save
      */
     saveDeliveryRule(rule) {
-      return rule.save().then(() => {
-        get(this, 'naviNotifications').add({
-          message: 'Report delivery schedule successfully saved!',
-          type: 'success',
-          timeout: 'short'
-        });
-      }).catch(() => {
-        get(this, 'naviNotifications').add({
-          message: 'OOPS! An error occurred while scheduling your report',
-          type: 'danger',
-          timeout: 'medium'
-        });
-      });
+      return rule.save();
     },
 
     /**

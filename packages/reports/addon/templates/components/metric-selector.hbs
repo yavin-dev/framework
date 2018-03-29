@@ -10,7 +10,7 @@
         items=metrics
         shouldOpenAllGroups=areMetricsFiltered
         groupByField='category'
-        sortByField='longName'
+        sortByField=(unless areMetricsFiltered 'longName')
         as | metric |
     }}
         <label class='grouped-list__item-label'>
@@ -38,11 +38,27 @@
               toggleParameterizedMetricFilter=(report-action 'TOGGLE_PARAMETERIZED_METRIC_FILTER')
             }}
           {{/if}}
-          {{navi-icon
+          {{#navi-icon
               'filter'
               class=(concat (if (get metricsFiltered metric.name) 'checkbox-selector__filter--active ') 'checkbox-selector__filter metric-selector__filter')
               click=(action this.attrs.toggleMetricFilter metric)
           }}
+            {{#tooltip-on-component enableLazyRendering=true side='right'}}
+                {{#if (has-parameters metric)}}
+                  {{#if (has-unfiltered-parameters metric request)}}
+                    Add next filter
+                  {{else}}
+                    Remove all
+                  {{/if}}
+                {{else}}
+                  {{#if (get metricsFiltered metric.name)}}
+                      Remove Filter
+                  {{else}}
+                      Add Filter
+                  {{/if}}
+                {{/if}}
+            {{/tooltip-on-component}}
+          {{/navi-icon}}
         </div>
     {{/grouped-list}}
 {{/navi-list-selector}}

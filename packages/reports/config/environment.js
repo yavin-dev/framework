@@ -29,6 +29,7 @@ module.exports = function(/* environment, appConfig */) {
         medium: 10000
       },
       schedule: {
+        formats: null,
         frequencies: null
       },
       FEATURES: {

@@ -1,6 +1,7 @@
 import { test } from 'qunit';
 import moduleForAcceptance from '../../tests/helpers/module-for-acceptance';
 import { teardownModal } from '../helpers/teardown-modal';
+import { typeInInput } from '../helpers/ember-tag-input';
 import Mirage from 'ember-cli-mirage';
 import Ember from 'ember';
 
@@ -46,8 +47,10 @@ test('schedule modal save new schedule', function(assert) {
   });
 
   // Set recipients to a new value
-  fillIn('.schedule-modal__input--recipients', 'navi_user@navi.io,test_user@navi.io');
-  triggerEvent('.schedule-modal__input--recipients', 'keyup');
+  andThen(() => {
+    typeInInput('.js-ember-tag-input-new', 'navi_user@navi.io');
+    $('.js-ember-tag-input-new').blur();
+  });
 
   // Set frequency to Day
   click('.schedule-modal__dropdown--frequency .ember-power-select-trigger');
@@ -57,14 +60,10 @@ test('schedule modal save new schedule', function(assert) {
   click('.schedule-modal__save-btn');
 
   andThen(() => {
-    assert.notOk(find('.schedule-modal__header .primary-header').is(':visible'),
-      'Schedule modal closes after clicking the save button');
-    $('.navi-collection__row:first-of-type').trigger('mouseenter');
-  });
-  // Reopen the first schedule
-  click('.navi-collection__row:first-of-type .schedule .btn');
+    assert.equal(find('.success .notification-text').text(),
+      'Report delivery schedule successfully saved!',
+      'Successful notification is shown after clicking save');
 
-  andThen(() => {
     // Check that all fields match the delivery rule we just saved
     assert.ok(find('.schedule-modal__delete-btn').is(':visible'),
       'The delete button is present after a delivery rule has been saved');
@@ -77,8 +76,8 @@ test('schedule modal save new schedule', function(assert) {
       'Day',
       'Frequency field is set by the saved delivery rule');
 
-    assert.equal(find('.schedule-modal__input--recipients').val(),
-      'navi_user@navi.io,test_user@navi.io',
+    assert.equal(find('.schedule-modal__input--recipients .navi-email-tag').text().trim(),
+      'navi_user@navi.io',
       'Recipients field is set by the saved delivery rule');
   });
 });
@@ -91,9 +90,11 @@ test('schedule modal save changes to existing schedule', function(assert) {
   // Open an existing schedule
   click('.navi-collection__row:nth-of-type(3) .schedule .btn');
 
-  // Set recipients to a new value
-  fillIn('.schedule-modal__input--recipients', 'navi_user@navi.io,test_user@navi.io');
-  triggerEvent('.schedule-modal__input--recipients', 'keyup');
+  // Add a new recipient
+  andThen(() => {
+    typeInInput('.js-ember-tag-input-new', 'navi_user@navi.io');
+    $('.js-ember-tag-input-new').blur();
+  });
 
   // Set frequency to Day
   click('.schedule-modal__dropdown--frequency .ember-power-select-trigger');
@@ -103,14 +104,10 @@ test('schedule modal save changes to existing schedule', function(assert) {
   click('.schedule-modal__save-btn');
 
   andThen(() => {
-    assert.notOk(find('.schedule-modal__header .primary-header').is(':visible'),
-      'Schedule modal closes after clicking the save changes button');
-    $('.navi-collection__row:first-of-type').trigger('mouseenter');
-  });
-  // Reopen the first schedule
-  click('.navi-collection__row:nth-of-type(3) .schedule .btn');
+    assert.equal(find('.notification-text ').text(),
+      'Report delivery schedule successfully saved!',
+      'Successful notification is shown after clicking save');
 
-  andThen(() => {
     // Check that all fields match the delivery rule we just saved
     assert.ok(find('.schedule-modal__delete-btn').is(':visible'),
       'The delete button is present after a schedule has been modified and saved');
@@ -123,8 +120,8 @@ test('schedule modal save changes to existing schedule', function(assert) {
       'Day',
       'Changes made to the frequency field are kept after clicking save changes');
 
-    assert.equal(find('.schedule-modal__input--recipients').val(),
-      'navi_user@navi.io,test_user@navi.io',
+    assert.deepEqual(find('.schedule-modal__input--recipients .navi-email-tag').toArray().map(e => e.textContent.trim()),
+      [ 'user-or-list1@navi.io', 'user-or-list2@navi.io', 'navi_user@navi.io' ],
       'Changes made to the recipients field are kept after clicking save changes');
   });
 });
@@ -148,8 +145,8 @@ test('schedule modal delete action', function(assert) {
       'Month',
       'Frequency field is populated by existing delivery rule');
 
-    assert.equal(find('.schedule-modal__input--recipients').val(),
-      'user-or-list1@navi.io,user-or-list2@navi.io',
+    assert.deepEqual(find('.schedule-modal__input--recipients .navi-email-tag').toArray().map(e => e.textContent.trim()),
+      [ 'user-or-list1@navi.io', 'user-or-list2@navi.io' ],
       'Recipients field is populated by existing delivery rule');
 
     assert.equal(find('.schedule-modal__dropdown--format .ember-power-select-selected-item').get(0).innerText,
@@ -206,8 +203,12 @@ test('schedule modal cancel existing schedule', function(assert) {
   click('.navi-collection__row:nth-of-type(3) .schedule .btn');
 
   // Set recipients to a new value
-  fillIn('.schedule-modal__input--recipients', 'navi_user@navi.io,test_user@navi.io');
-  triggerEvent('.schedule-modal__input--recipients', 'keyup');
+  andThen(() => {
+    typeInInput('.js-ember-tag-input-new', 'navi_user@navi.io');
+    $('.js-ember-tag-input-new').blur();
+    typeInInput('.js-ember-tag-input-new', 'test_user@navi.io');
+    $('.js-ember-tag-input-new').blur();
+  });
 
   // Set frequency to Day
   click('.schedule-modal__dropdown--frequency .ember-power-select-trigger');
@@ -229,8 +230,8 @@ test('schedule modal cancel existing schedule', function(assert) {
       'Month',
       'Frequency field changes to an existing schedule are discarded after clicking cancel');
 
-    assert.equal(find('.schedule-modal__input--recipients').val(),
-      'user-or-list1@navi.io,user-or-list2@navi.io',
+    assert.deepEqual(find('.schedule-modal__input--recipients .navi-email-tag').toArray().map(e => e.textContent.trim()),
+      [ 'user-or-list1@navi.io', 'user-or-list2@navi.io' ],
       'Recipients field changes to an existing schedule are discarded after clicking cancel');
   });
 });
@@ -243,8 +244,10 @@ test('schedule modal cancel new schedule', function(assert) {
   click('.navi-collection__row:first-of-type .schedule .btn');
 
   // Set recipients to a new value
-  fillIn('.schedule-modal__input--recipients', 'navi_user@navi.io,test_user@navi.io');
-  triggerEvent('.schedule-modal__input--recipients', 'keyup');
+  andThen(() => {
+    typeInInput('.js-ember-tag-input-new', 'navi_user@navi.io');
+    $('.js-ember-tag-input-new').blur();
+  });
 
   // Set frequency to Day
   click('.schedule-modal__dropdown--frequency .ember-power-select-trigger');
@@ -262,8 +265,8 @@ test('schedule modal cancel new schedule', function(assert) {
       'Day',
       'Frequency field changes to a new schedule are kept but not saved to the store');
 
-    assert.equal(find('.schedule-modal__input--recipients').val(),
-      'navi_user@navi.io,test_user@navi.io',
+    assert.deepEqual(find('.schedule-modal__input--recipients .navi-email-tag').toArray().map(e => e.textContent.trim()),
+      [ 'navi_user@navi.io' ],
       'Recipients field changes to a new schedule kept but not saved to the store');
 
     assert.equal(find('.schedule-modal__save-btn').text().trim(),
@@ -317,8 +320,10 @@ test('schedule modal validations', function(assert) {
   });
 
   // Set recipients to an invalid value
-  fillIn('.schedule-modal__recipients--invalid>.schedule-modal__input--recipients', 'navi_user@n,test_user');
-  triggerEvent('.schedule-modal__recipients--invalid>.schedule-modal__input--recipients', 'keyup');
+  andThen(() => {
+    typeInInput('.js-ember-tag-input-new', 'test_user');
+    $('.js-ember-tag-input-new').blur();
+  });
 
   andThen(() => {
     assert.ok(find('.schedule-modal__recipients--invalid>.schedule-modal__helper-recipients').is(':visible'),
@@ -329,8 +334,11 @@ test('schedule modal validations', function(assert) {
   });
 
   // Set recipients to a valid value
-  fillIn('.schedule-modal__recipients--invalid>.schedule-modal__input--recipients', 'navi_user@navi.io,test@email.com');
-  triggerEvent('.schedule-modal__recipients--invalid>.schedule-modal__input--recipients', 'keyup');
+  click('.emberTagInput-remove');
+  andThen(() => {
+    typeInInput('.js-ember-tag-input-new', 'navi_user@navi.io ');
+    $('.js-ember-tag-input-new').blur();
+  });
 
   andThen(() => {
     assert.notOk(find('.schedule-modal__recipients--invalid').is(':visible'),
@@ -341,23 +349,18 @@ test('schedule modal validations', function(assert) {
   click('.schedule-modal__save-btn');
 
   andThen(() => {
-    assert.notOk(find('.schedule-modal__header .primary-header').is(':visible'),
-      'Schedule modal has successfully closed after clicking save and the schedule is valid');
-  });
+    assert.equal(find('.notification-text ').text(),
+      'Report delivery schedule successfully saved!',
+      'Successful notification is shown after clicking save and the schedule is valid');
 
-  // Reopen original schedule modal
-  andThen(() => $('.navi-collection__row:first-of-type').trigger('mouseenter'));
-  click('.navi-collection__row:first-of-type .schedule .btn');
-
-  andThen(() => {
-    assert.equal(find('.schedule-modal__input--recipients').val(),
-      'navi_user@navi.io,test@email.com',
+    assert.deepEqual(find('.schedule-modal__input--recipients .navi-email-tag').toArray().map(e => e.textContent.trim()),
+      [ 'navi_user@navi.io' ],
       'The valid recipients were saved successfully');
   });
 });
 
 test('schedule modal error when fetching existing schedule', function(assert) {
-  assert.expect(7);
+  assert.expect(6);
 
   //suppress errors and exceptions for this test because 500 response will throw an error
   let originalLoggerError = Ember.Logger.error,
@@ -379,14 +382,11 @@ test('schedule modal error when fetching existing schedule', function(assert) {
       'Oops! An error occurred while fetching the schedule for this report.',
       'Error message is displayed when the server returns an error while fetching a schedule');
 
-    assert.ok(find('.schedule-modal__input--recipients').is(':disabled'),
+    assert.ok(find('.schedule-modal__input--recipients .emberTagInput').is('.emberTagInput--readOnly'),
       'The recipients input field is disabled when there is an error fetching the schedule');
 
     assert.ok(find('.schedule-modal__dropdown--frequency>.ember-basic-dropdown>.ember-power-select-trigger').attr('aria-disabled'),
       'The frequency field is disabled when there is an error fetching the schedule');
-
-    assert.ok(find('.schedule-modal__dropdown--format>.ember-basic-dropdown>.ember-power-select-trigger').attr('aria-disabled'),
-      'The format field is disabled when there is an error fetching the schedule');
 
     assert.notOk(find('.schedule-modal__save-btn').is(':visible'),
       'The save button is not available when there is an error fetching the schedule');
@@ -400,4 +400,57 @@ test('schedule modal error when fetching existing schedule', function(assert) {
     Ember.Logger.error = originalLoggerError;
     Ember.Test.adapter.exception = originalException;
   });
+});
+
+test('schedule modal error when saving schedule', function (assert) {
+  assert.expect(2);
+
+  //suppress errors and exceptions for this test because 500 response will throw an error
+  let originalLoggerError = Ember.Logger.error,
+      originalException = Ember.Test.adapter.exception;
+
+  Ember.Logger.error = () => {};
+  Ember.Test.adapter.exception = () => {};
+
+  server.post('/deliveryRules', () => {
+    return new Mirage.Response(
+      400,
+      {},
+      { errors: ['InvalidValueException: Invalid value: Invalid Email: must be a valid oath.com or yahoo-inc.com email'] }
+    );
+  });
+
+  andThen(() => $('.navi-collection__row:first-of-type').trigger('mouseenter'));
+  click('.navi-collection__row:first-of-type .schedule .btn');
+
+  andThen(() => {
+    typeInInput('.js-ember-tag-input-new', 'navi_user@navi.io');
+    $('.js-ember-tag-input-new').blur();
+  });
+
+  //Save the schedule
+  click('.schedule-modal__save-btn');
+
+  andThen(() => {
+    assert.equal(find('.failure .notification-text').text(),
+      'Must be a valid oath.com or yahoo-inc.com email',
+      'failing notification is shown if server returns 400');
+
+    server.post('/deliveryRules', () => {
+      return new Mirage.Response(500);
+    });
+
+    //Save the schedule
+    click('.schedule-modal__save-btn');
+
+    andThen(() => {
+      assert.equal(find('.failure .notification-text').text(),
+        'Oops! There was an error updating your delivery settings',
+        'failing notification is shown if server returns 500');
+
+      Ember.Logger.error = originalLoggerError;
+      Ember.Test.adapter.exception = originalException;
+    });
+  });
+
 });

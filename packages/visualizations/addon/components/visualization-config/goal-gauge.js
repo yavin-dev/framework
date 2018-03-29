@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -9,10 +9,11 @@
  *    options=options
  *  }}
  */
-import Ember from 'ember';
+import Component from '@ember/component';
 import layout from '../../templates/components/visualization-config/goal-gauge';
+import { computed } from '@ember/object';
 
-export default Ember.Component.extend({
+export default Component.extend({
   /**
    * @property {Object} layout
    */
@@ -22,6 +23,11 @@ export default Ember.Component.extend({
    * @property {Array} classNames
    */
   classNames: ['goal-gauge-config'],
+
+  /**
+   * @property {object} metric fragment
+   */
+  metricModel: computed.alias('request.metrics.firstObject'),
 
   actions: {
     /**

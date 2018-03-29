@@ -1,7 +1,8 @@
 import { moduleForModel, test } from 'ember-qunit';
+import { canonicalizeMetric } from 'navi-data/utils/metric';
 import Ember from 'ember';
 
-const { set, run, String: { classify } } = Ember;
+const { get, set, isPresent, run, String: { classify } } = Ember;
 
 moduleForModel('all-the-fragments', 'Unit | Model | Table Visualization Fragment', {
   needs: [
@@ -13,7 +14,7 @@ moduleForModel('all-the-fragments', 'Unit | Model | Table Visualization Fragment
 test('default value', function(assert) {
   assert.expect(1);
 
-  let metricsAndDims = [ ['d1', 'd2'], ['m1', 'm2'] ],
+  let metricsAndDims = [ ['d1', 'd2'], [{metric: 'm1'}, {metric: 'm2'}] ],
       table = run(() => this.subject().get('table'));
 
   assert.ok(!table.isValidForRequest(
@@ -24,7 +25,7 @@ test('default value', function(assert) {
 test('valid and invalid table fragment', function(assert) {
   assert.expect(4);
 
-  let dimsMetricsAndThresholds = [ ['d1', 'd2'], ['m1', 'm2'], [ 't1' ] ],
+  let dimsMetricsAndThresholds = [ ['d1', 'd2'], [{metric: 'm1'}, {metric: 'm2'}], [{metric: 't1'}] ],
       request = buildTestRequest(...dimsMetricsAndThresholds),
       model = this.subject();
 
@@ -36,21 +37,21 @@ test('valid and invalid table fragment', function(assert) {
     'a table fragment with the same metrics and dimensions as the request is valid');
 
   run(() => {
-    set(model, 'table', buildTestConfig(['d1', 'foo'], ['m1', 'm2']));
+    set(model, 'table', buildTestConfig(['d1', 'foo'], [{metric: 'm1'}, {metric: 'm2'}]));
   });
 
   assert.ok(!model.get('table').isValidForRequest(request),
     'a table fragment with mis-match dimensions is invalid');
 
   run(() => {
-    set(model, 'table', buildTestConfig(['d1', 'd2'], ['m1', 'foo']));
+    set(model, 'table', buildTestConfig(['d1', 'd2'], [{metric: 'm1'}, {metric: 'foo'}]));
   });
 
   assert.ok(!model.get('table').isValidForRequest(request),
     'a table fragment with mis-match metrics is invalid');
 
   run(() => {
-    set(model, 'table', buildTestConfig(['d1', 'd2'], ['m1', 'm2', 'm3'],  ['t1']));
+    set(model, 'table', buildTestConfig(['d1', 'd2'], [{metric: 'm1'}, {metric: 'm2'}, {metric: 'm3'}],  ['t1']));
   });
 
   assert.ok(!model.get('table').isValidForRequest(request),
@@ -62,7 +63,7 @@ test('rebuildConfig', function(assert) {
   assert.expect(3);
 
   let table    = run(() => this.subject().get('table')),
-      request1 = buildTestRequest(['d1', 'd2'],['m1', 'm2']),
+      request1 = buildTestRequest(['d1', 'd2'],[{metric: 'm1'}, {metric: 'm2'}]),
       config1  = run(() => table.rebuildConfig(request1).toJSON());
 
   assert.deepEqual(config1, {
@@ -79,7 +80,7 @@ test('rebuildConfig', function(assert) {
     }
   }, 'Date, dimensions, and metrics from request are serialized into columns');
 
-  let request2 = buildTestRequest([], ['m1', 'm2']),
+  let request2 = buildTestRequest([], [{metric: 'm1'}, {metric: 'm2'}]),
       config2  = run(() => table.rebuildConfig(request2).toJSON());
 
   assert.deepEqual(config2, {
@@ -94,7 +95,7 @@ test('rebuildConfig', function(assert) {
     }
   },'Dimension column is not required');
 
-  let request3 = buildTestRequest([], ['m1', 'm2']);
+  let request3 = buildTestRequest([], [{metric: 'm1'}, {metric: 'm2'}]);
   request3.metrics[0].metric.category = 'Clicks,Trend';
 
   let config3 = run(() => table.rebuildConfig(request3).toJSON());
@@ -112,6 +113,33 @@ test('rebuildConfig', function(assert) {
   }, 'Trend metrics use threshold column');
 });
 
+test('rebuildConfig with parameterized metrics', function(assert) {
+  assert.expect(1);
+  let table    = run(() => this.subject().get('table')),
+      request4 = buildTestRequest([], [
+        {
+          metric: 'm1',
+          parameters: {
+            param1: 'paramVal1'
+          }
+        },
+        { metric: 'm2' }
+      ]),
+      config4 = run(() => table.rebuildConfig(request4).toJSON());
+
+  assert.deepEqual(config4, {
+    'type': 'table',
+    'version': 1,
+    'metadata': {
+      'columns': [
+        { 'displayName': 'Date', 'field': 'dateTime', 'type': 'dateTime' },
+        { 'displayName': 'M1 (paramVal1)', 'field': 'm1(param1=paramVal1)', 'type': 'metric' },
+        { 'displayName': 'M2', 'field': 'm2', 'type': 'metric' }
+      ]
+    }
+  },'Columns with parameterized metrics are formatted correctly');
+});
+
 /**
  * @function buildTestConfig
  * @param {Array} dimensions - array of dimensions
@@ -123,10 +151,14 @@ function buildTestConfig(dimensions=[], metrics=[], thresholds=[]) {
   let columns = [
     { field: 'dateTime', type: 'dateTime' },
     ...metrics.map(m => {
-      return { field: m, type: 'metric', valueType: 'number' };
+      let metricName = get(m, 'metric'),
+          parameters = get(m, 'parameters'),
+          valueType = isPresent(parameters) && get(parameters, 'currency') ?  'money' : 'number';
+      return { field: metricName, type: 'metric', valueType, parameters };
     }),
     ...thresholds.map(t => {
-      return { field: t, type: 'threshold' };
+      let metricName = get(t, 'metric');
+      return { field: metricName, type: 'threshold' };
     }),
     ...dimensions.map(d => {
       return { field: d, type: 'dimension' };
@@ -149,7 +181,20 @@ function buildTestConfig(dimensions=[], metrics=[], thresholds=[]) {
 function buildTestRequest(dimensions=[], metrics=[], thresholds=[]) {
   return {
     metrics: [ ...metrics, ...thresholds].map( m => {
-      return { metric: { name: m, longName: classify(m), category: 'category', valueType: 'number'} };
+      let metricName = get(m, 'metric'),
+          parameters = get(m, 'parameters'),
+          canonicalName = canonicalizeMetric({ metric: metricName, parameters});
+
+      return {
+        metric: {
+          name: metricName,
+          longName: classify(metricName),
+          category: 'category',
+          valueType: 'number'
+        },
+        parameters,
+        canonicalName
+      };
     }),
     dimensions: dimensions.map(d => {
       return { dimension: { name: d, longName: classify(d) } };

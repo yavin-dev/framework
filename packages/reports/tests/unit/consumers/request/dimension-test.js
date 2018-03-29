@@ -20,7 +20,6 @@ moduleFor('consumer:request/dimension', 'Unit | Consumer | request dimension', {
     'transform:dimension',
     'transform:fragment',
     'transform:metric',
-    'transform:sort',
     'transform:moment',
     'transform:table',
     'model:dimension-age',

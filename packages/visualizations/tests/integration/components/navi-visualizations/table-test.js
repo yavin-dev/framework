@@ -74,7 +74,12 @@ const Model = Ember.A([{
     dimensions: [ {dimension:'os'} ],
     metrics: [
       {metric: 'uniqueIdentifier'},
-      {metric: 'totalPageViews'}
+      {metric: 'totalPageViews'},
+      {metric: 'platformRevenue', parameters: {currency: 'USD', as: 'm1'}}
+    ],
+    sort: [
+      {metric: 'm1', direction: 'desc'},
+      {metric: 'uniqueIdentifier', direction: 'asc'}
     ],
     logicalTable: {
       table: 'network',
@@ -109,6 +114,11 @@ const Options = {
       field: 'totalPageViews',
       type: 'metric',
       displayName: 'Total Page Views'
+    },
+    {
+      field: 'platformRevenue(currency=USD)',
+      type: 'metric',
+      displayName: 'Platform Revenue (USD)'
     }
   ]
 };
@@ -144,7 +154,8 @@ test('it renders', function(assert) {
     'Date',
     'Operating System',
     'Unique Identifiers',
-    'Total Page Views'
+    'Total Page Views',
+    "Platform Revenue (USD)"
   ], 'The table renders the headers correctly based on the request');
 
   let body = this.$('.table-body .table-row' ).toArray().map((row) =>
@@ -152,14 +163,14 @@ test('it renders', function(assert) {
       this.$(cell).text().trim()));
 
   assert.deepEqual(body, [
-    ['05/30/2016','All Other','172,933,788','3,669,828,357'],
-    ['06/10/2016','All Other','172,933,788','3,669,828,357'],
-    ['05/30/2016','Android','183,206,656','4,088,487,125'],
-    ['05/30/2016','BlackBerry OS','183,380,921','4,024,700,302'],
-    ['05/30/2016','Chrome OS','180,559,793','3,950,276,031'],
-    ['05/30/2016','Firefox OS','172,724,594','3,697,156,058'],
-    ['05/30/2016','Apple Mac OS X','152,298,735','3,008,425,744'],
-    ['05/30/2016','Unknown','155,191,081','3,072,620,639']
+    ['05/30/2016','All Other','172,933,788','3,669,828,357', '--'],
+    ['06/10/2016','All Other','172,933,788','3,669,828,357', '--'],
+    ['05/30/2016','Android','183,206,656','4,088,487,125', '--'],
+    ['05/30/2016','BlackBerry OS','183,380,921','4,024,700,302', '--'],
+    ['05/30/2016','Chrome OS','180,559,793','3,950,276,031', '--'],
+    ['05/30/2016','Firefox OS','172,724,594','3,697,156,058', '--'],
+    ['05/30/2016','Apple Mac OS X','152,298,735','3,008,425,744', '--'],
+    ['05/30/2016','Unknown','155,191,081','3,072,620,639', '--']
   ], 'The table renders the response dataset correctly');
 });
 
@@ -267,7 +278,7 @@ test('grand total in table', function(assert) {
     this.$(cell).text().trim());
 
   assert.deepEqual(totalRow, [
-    'Grand Total', '--', '1,373,229,356', '29,181,322,613'
+    'Grand Total', '--', '1,373,229,356', '29,181,322,613', '0.00'
   ], 'The table renders the grand total row correctly');
 
   //Turn off the flag
@@ -291,19 +302,19 @@ test('subtotals in table', function(assert) {
   this.render(TEMPLATE);
 
   assert.deepEqual(this.$('.table-row__total-row').toArray().map(el => $(el).text().replace(/\s+/g, ' ').trim()),[
-    'Subtotal All Other 345,867,576 7,339,656,714',
-    'Subtotal Android 183,206,656 4,088,487,125',
-    'Subtotal BlackBerry OS 183,380,921 4,024,700,302'
+    'Subtotal All Other 345,867,576 7,339,656,714 0.00',
+    'Subtotal Android 183,206,656 4,088,487,125 0.00',
+    'Subtotal BlackBerry OS 183,380,921 4,024,700,302 0.00'
   ],'The subtotal rows are visible for each group of the specified subtotal in the options');
 
   let newOptions = Ember.$.extend(true, {}, options, { showTotals: { grandTotal: true }});
   this.set('options', newOptions);
 
   assert.deepEqual(this.$('.table-row__total-row').toArray().map(el => $(el).text().replace(/\s+/g, ' ').trim()),[
-    'Grand Total -- 1,424,910,306 30,905,688,282',
-    'Subtotal BlackBerry OS 183,380,921 4,024,700,302',
-    'Subtotal Android 183,206,656 4,088,487,125',
-    'Subtotal All Other 345,867,576 7,339,656,714'
+    'Grand Total -- 1,424,910,306 30,905,688,282 0.00',
+    'Subtotal BlackBerry OS 183,380,921 4,024,700,302 0.00',
+    'Subtotal Android 183,206,656 4,088,487,125 0.00',
+    'Subtotal All Other 345,867,576 7,339,656,714 0.00'
   ],'The total rows including grandTotal are visible along with the subtotals');
 });
 
@@ -319,8 +330,8 @@ test('subtotals by date in table', function(assert) {
   this.render(TEMPLATE);
 
   assert.deepEqual(this.$('.table-row__total-row').toArray().map(el => $(el).text().replace(/\s+/g, ' ').trim()),[
-    'Subtotal -- 539,521,365 11,783,015,784',
-    'Subtotal -- 172,933,788 3,669,828,357'
+    'Subtotal -- 539,521,365 11,783,015,784 0.00',
+    'Subtotal -- 172,933,788 3,669,828,357 0.00'
   ],'The subtotal rows are visible for each group of the specified subtotal in the options');
 });
 
@@ -361,9 +372,22 @@ test('totals and subtotals for partial data', function(assert) {
   this.render(TEMPLATE);
 
   assert.deepEqual(this.$('.table-row__total-row').toArray().map(el => $(el).text().replace(/\s+/g, ' ').trim()),[
-    'Subtotal All Other -- --',
-    'Subtotal Android -- --',
-    'Subtotal BlackBerry OS -- --',
-    'Grand Total -- -- --'
+    'Subtotal All Other -- -- --',
+    'Subtotal Android -- -- --',
+    'Subtotal BlackBerry OS -- -- --',
+    'Grand Total -- -- -- --'
   ],'The metric totals are not calculated when only partial data is displayed in table');
+});
+
+test('sort icon for a parameterized metric', function(assert) {
+  assert.expect(2);
+
+  this.set('model', Model);
+  this.render(TEMPLATE);
+
+  assert.ok(this.$('.table-header-cell:contains(Platform Revenue) .navi-table-sort-icon--desc').is(':visible'),
+    'The right sort metric is recognized from the alias');
+
+  assert.ok(this.$('.table-header-cell:contains(Unique Identifiers) .navi-table-sort-icon--asc').is(':visible'),
+    'Even if not an alias, the correct sort metric is recognized');
 });

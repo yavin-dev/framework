@@ -1,14 +1,13 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import Ember from 'ember';
+import { computed, get, set} from '@ember/object';
+import { A as arr } from '@ember/array';
 import DS from 'ember-data';
 import VisualizationBase from './visualization';
 import { buildValidations, validator } from 'ember-cp-validations';
-
-const { A, computed, get, set } = Ember;
 
 /**
  * @constant {Object} Validations - Validation object
@@ -48,9 +47,9 @@ export default VisualizationBase.extend(Validations, {
   rebuildConfig(request, response) {
 
     if (request && response) {
-      let metrics = A( get(request, 'metrics') ),
-          metric =  get(metrics, 'firstObject.metric.name'),
-          actualValue =  get(A(response.rows), `firstObject.${metric}`),
+      let metrics = arr( get(request, 'metrics') ),
+          metric =  get(metrics, 'firstObject.canonicalName'),
+          actualValue =  get(arr(response.rows), `firstObject.${metric}`),
           above = actualValue * 1.1,
           below = actualValue * 0.9,
           baselineValue =  actualValue > 0 ? below : above,

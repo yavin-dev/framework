@@ -7,6 +7,7 @@ import DS from 'ember-data';
 import MF from 'model-fragments';
 import Ember from 'ember';
 import { validator, buildValidations } from 'ember-cp-validations';
+import { metricFormat } from 'navi-data/helpers/metric-format';
 
 const { Fragment, fragment } = MF;
 
@@ -27,8 +28,8 @@ const { A:array, computed, get, set } = Ember,
           }),
           validator('array-number', {
             message() {
-              let metricName = get(this, 'model.metric.longName');
-              return `${metricName} filter must be a number`;
+              let metricName = get(this, 'model.metric.metric.longName');
+              return `${metricFormat(get(this, 'model.metric'), metricName)} filter must be a number`;
             }
           })
         ]

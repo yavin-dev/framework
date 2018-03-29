@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Ember from 'ember';
@@ -46,5 +46,6 @@ export function _getErrorText(error = {}) {
     //Bard error messages are present in the description field
     return get(detail, 'description');
   }
+
   return null;
 }

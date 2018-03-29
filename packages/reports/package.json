@@ -81,6 +81,7 @@
     "ember-tooltips": "^2.9.2",
     "ember-truth-helpers": "^2.0.0",
     "ember-uuid": "^1.0.0",
+    "ember-validators": "^1.1.1",
     "loader.js": "^4.2.3",
     "navi-core": "^0.0.0",
     "navi-data": "^0.0.0",

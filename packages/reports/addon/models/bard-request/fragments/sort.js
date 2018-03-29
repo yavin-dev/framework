@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -7,7 +7,7 @@ import DS from 'ember-data';
 import MF from 'model-fragments';
 import { validator, buildValidations } from 'ember-cp-validations';
 
-const { Fragment } = MF;
+const { Fragment, fragment } = MF;
 
 const Validations = buildValidations({
   metric: validator('presence', {
@@ -21,6 +21,6 @@ const Validations = buildValidations({
 });
 
 export default Fragment.extend(Validations, {
-  metric:         DS.attr('sort'),
+  metric:         fragment('bard-request/fragments/metric', { defaultValue: () => ({}) }),
   direction:      DS.attr('string', { defaultValue: 'desc'})
 });

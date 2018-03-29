@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -10,5 +10,19 @@ export default BaseMetadataTransform.extend({
    * @property {String} type - type of metadata
    * @override
    */
-  type: 'metric'
+  type: 'metric',
+
+  /**
+   * @method deserialize
+   * @override
+   */
+  deserialize(serialized) {
+    //This is used for special case of dateTime in sorting
+    if(serialized === 'dateTime'){
+      return { name: 'dateTime' };
+    }
+
+    //for metric
+    return this._super(...arguments);
+  }
 });

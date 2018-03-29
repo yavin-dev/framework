@@ -7,7 +7,7 @@ import moment from 'moment';
 import Interval from 'navi-core/utils/classes/interval';
 import Duration from 'navi-core/utils/classes/duration';
 
-const { get, getOwner } = Ember;
+const { get, getOwner, set } = Ember;
 
 const UNDEFINED_SORT_MODEL = 2,
       MODEL_TO_CLONE = 3;
@@ -22,7 +22,6 @@ moduleForModel('fragments-mock', 'Unit | Model Fragment | BardRequest - Request'
     'transform:dimension',
     'transform:fragment',
     'transform:metric',
-    'transform:sort',
     'transform:moment',
     'transform:table',
     'model:dimension-age',
@@ -159,11 +158,11 @@ moduleForModel('fragments-mock', 'Unit | Model Fragment | BardRequest - Request'
                 }],
                 sort: [
                   {
-                    metric: 'dateTime',
+                    metric: {metric: 'dateTime'},
                     direction: 'desc'
                   },
                   {
-                    metric: 'navClicks',
+                    metric: {metric: 'navClicks'},
                     direction: 'asc'
                   }
                 ]
@@ -181,6 +180,18 @@ moduleForModel('fragments-mock', 'Unit | Model Fragment | BardRequest - Request'
                 metrics: [
                   {
                     metric: 'uniqueIdentifier'
+                  },
+                  {
+                    metric: 'revenue',
+                    parameters: {
+                      currency: 'USD'
+                    }
+                  },
+                  {
+                    metric: 'revenue',
+                    parameters: {
+                      currency: 'CAD'
+                    }
                   }
                 ],
                 intervals: [
@@ -292,11 +303,11 @@ test('Clone Request', function(assert) {
      * 'Filter values should be cloned');
      */
 
-    assert.deepEqual(request.get('sort.firstObject.metric'),
+    assert.deepEqual(request.get('sort.firstObject.metric.metric'),
       { name: 'dateTime' },
       'The dateTime property in sort is set with correct metadata');
 
-    assert.equal(request.get('sort').toArray()[1].get('metric'),
+    assert.equal(request.get('sort').toArray()[1].get('metric.metric'),
       MetadataService.getById('metric', 'navClicks'),
       'The property sort is set with correct metadata');
 
@@ -1030,7 +1041,7 @@ test('dateTime Sort', function(assert) {
   return wait().then(() => {
     let mockModel = Store.peekRecord('fragments-mock', 1),
         newSort = {
-          metric: MetadataService.getById('metric', 'pageViews'),
+          metric: {metric: MetadataService.getById('metric', 'pageViews')},
           direction: 'desc'
         },
         request = mockModel.get('request');
@@ -1042,13 +1053,13 @@ test('dateTime Sort', function(assert) {
       2,
       'There is now one sort in the model fragment');
 
-    assert.deepEqual(request.get('sort').objectAt(0).get('metric'),
+    assert.deepEqual(request.get('sort').objectAt(0).get('metric.metric'),
       { name: 'dateTime' },
       'The new dateTime sort has been added to the model fragment as the first object');
 
     request.updateDateTimeSort({ direction: 'asc' });
     assert.deepEqual(request.get('sort').objectAt(0).serialize(), {
-      metric: 'dateTime',
+      metric: {metric:'dateTime', parameters: {}},
       direction: 'asc'
     }, 'The new dateTime sort direction has been updated');
   });
@@ -1060,7 +1071,7 @@ test('addSorts', function(assert) {
   return wait().then(() => {
     let mockModel = Store.peekRecord('fragments-mock', 1),
         newSort = {
-          metric: MetadataService.getById('metric', 'pageViews'),
+          metric: Store.createFragment('bard-request/fragments/metric', {metric: MetadataService.getById('metric', 'pageViews')}),
           direction: 'desc'
         },
         request = mockModel.get('request');
@@ -1071,31 +1082,155 @@ test('addSorts', function(assert) {
       1,
       'There is now one sort in the model fragment');
 
-    assert.equal(request.get('sort').objectAt(0).get('metric'),
+    assert.equal(request.get('sort').objectAt(0).get('metric.metric'),
       MetadataService.getById('metric', 'pageViews'),
       'The new sort has been added to the model fragment');
 
     /* == Test adding existing sort == */
-    assert.throws(function() {request.addSort(newSort);},
-      /^Error.*Metric: pageViews cannot have multiple sorts on it$/,
-      'Sort Fragment throws an error when adding multiple sorts to a single metric');
+    assert.throws(function() {request.addSort({
+      metric: Store.createFragment('bard-request/fragments/metric', {metric: MetadataService.getById('metric', 'pageViews')}),
+      direction: 'desc'
+    })},
+    /^Error.*Metric: pageViews cannot have multiple sorts on it$/,
+    'Sort Fragment throws an error when adding multiple sorts to a single metric');
 
     assert.deepEqual(request.get('sort').map(m => m.serialize()),
       [{
-        metric: get(newSort, 'metric.name'),
+        metric: {metric: get(newSort, 'metric.metric.name'), parameters: {}},
         direction: get(newSort, 'direction')
       }],
       'Adding a sort already present in the request does not result in duplicate sorts');
   });
 });
 
-test('removeSort', function(assert) {
-  assert.expect(2);
+test('add Parameterized Sort', function(assert){
+  assert.expect(5);
+  return wait().then(() => {
+    let mockModel = Store.peekRecord('fragments-mock', UNDEFINED_SORT_MODEL),
+        newSort = {
+          metric: Store.createFragment('bard-request/fragments/metric', {
+            metric: MetadataService.getById('metric', 'revenue'),
+            parameters: {currency: 'USD'}
+          }),
+          direction: 'desc'
+        },
+        request = mockModel.get('request');
+
+    request.addSort(newSort);
+
+    assert.equal(request.get('sort.length'),
+      1,
+      'There is now one sort in the model fragment');
+
+    assert.equal(request.get('sort').objectAt(0).get('metric.metric'),
+      MetadataService.getById('metric', 'revenue'),
+      'The new sort has been added to the model fragment');
+
+    /* == Test adding existing sort == */
+    assert.expectAssertion(function () {
+      request.addSort({
+        metric: Store.createFragment('bard-request/fragments/metric',
+          {metric: MetadataService.getById('metric', 'revenue'), parameters: {currency: 'USD'}}),
+        direction: 'desc'
+      })},
+    'Assertion Failed: Metric: revenue(currency=USD) cannot have multiple sorts on it',
+    'Sort Fragment throws an error when adding multiple sorts to a single metric');
+
+    assert.deepEqual(request.get('sort').map(m => m.serialize()),
+      [{
+        metric: {metric: get(newSort, 'metric.metric.name'), parameters: {currency: 'USD'}},
+        direction: get(newSort, 'direction')
+      }],
+      'Adding a sort already present in the request does not result in duplicate sorts');
+
+    set(newSort, 'metric.parameters', {currency: 'CAD'});
+
+    request.addSort(newSort, 'desc');
+
+    let latestSort = request.get('sort').objectAt(1);
+
+    assert.deepEqual(latestSort.serialize(),
+      {
+        metric: {metric: get(newSort, 'metric.metric.name'), parameters: {currency: 'CAD'}},
+        direction: 'desc'
+      },
+      'Adding a sort with a different parameter loads correctly');
+  });
+});
+
+test('addSort By Metric Name', function(assert) {
+  assert.expect(11);
 
   return wait().then(() => {
-    let mockModel = Store.peekRecord('fragments-mock', 1),
+    let mockModel = Store.peekRecord('fragments-mock', UNDEFINED_SORT_MODEL),
+        request = mockModel.get('request');
+
+    request.addSortByMetricName('uniqueIdentifier', 'desc');
+
+    assert.equal(request.get('sort.length'),
+      1,
+      'There is now one sort in the model fragment');
+
+    let theSort = request.get('sort').objectAt(0);
+
+    assert.equal(get(theSort, 'metric.metric.name'),
+      'uniqueIdentifier',
+      'Copied the right metric');
+
+    assert.equal(get(theSort, 'direction'),
+      'desc',
+      'Goes the right direction');
+
+    assert.expectAssertion(function() {
+      request.addSortByMetricName('revenue')
+    },
+    /Metric with name "revenue" was not found in the request/,
+    'ambiguous adding of parameterized sorts throws error');
+
+    request.addSortByMetricName('revenue(currency=CAD)');
+    request.addSortByMetricName('revenue(currency=USD)', 'desc');
+
+    assert.equal(request.get('sort.length'),
+      3,
+      'Adding parameterized metrics should add each metric');
+
+    theSort = request.get('sort').objectAt(1);
+
+    assert.equal(get(theSort, 'metric.metric.name'),
+      'revenue',
+      'Copied the right parameterized CAD metric');
+
+    assert.equal(get(theSort, 'metric.parameters.currency'),
+      'CAD',
+      'Copied the right parameterized CAD metric');
+
+    assert.equal(get(theSort, 'direction'),
+      'asc',
+      'parameterized CAD metric Goes the right direction');
+
+    theSort = request.get('sort').objectAt(2);
+
+    assert.equal(get(theSort, 'metric.metric.name'),
+      'revenue',
+      'Copied the right parameterized USD metric');
+
+    assert.equal(get(theSort, 'metric.parameters.currency'),
+      'USD',
+      'Copied the right parameterized USD metric');
+
+    assert.equal(get(theSort, 'direction'),
+      'desc',
+      'parameterized USD metric Goes the right direction');
+  });
+});
+
+test('removeSort', function(assert) {
+  assert.expect(4);
+
+  return wait().then(() => {
+    let mockModel = Store.peekRecord('fragments-mock', UNDEFINED_SORT_MODEL),
         newSort = {
-          metric: MetadataService.getById('metric', 'pageViews'),
+          metric: {metric: MetadataService.getById('metric', 'pageViews')},
           direction: 'desc'
         },
         request = mockModel.get('request');
@@ -1109,16 +1244,44 @@ test('removeSort', function(assert) {
     assert.equal(request.get('sort.length'),
       0,
       'There is no sort in the model fragment');
+
+    let parameterizedSortUSD = {
+      metric: {
+        metric: MetadataService.getById('metric', 'revenue'),
+        parameters: {currency: 'USD'}
+      },
+      direction:  'asc'
+    };
+
+    let parameterizedSortCAD = {
+      metric: {
+        metric: MetadataService.getById('metric', 'revenue'),
+        parameters: {currency: 'CAD'}
+      },
+      direction:  'asc'
+    };
+
+    request.addSort(parameterizedSortUSD);
+    request.addSort(parameterizedSortCAD);
+
+    assert.equal(request.get('sort.length'),
+      2,
+      'There are two paramterized sort in the model fragment');
+
+    request.removeSort(request.get('sort').objectAt(0));
+    assert.equal(request.get('sort.length'),
+      1,
+      'There is one parameterized sort in the model fragment');
   });
 });
 
 test('removeSortByMetricName', function(assert) {
-  assert.expect(2);
+  assert.expect(4);
 
   return wait().then(() => {
     let mockModel = Store.peekRecord('fragments-mock', 1),
         newSort = {
-          metric: MetadataService.getById('metric', 'pageViews'),
+          metric: {metric: MetadataService.getById('metric', 'pageViews')},
           direction: 'desc'
         },
         request = mockModel.get('request');
@@ -1132,16 +1295,45 @@ test('removeSortByMetricName', function(assert) {
     assert.equal(request.get('sort.length'),
       0,
       'There are no sort in the model fragment');
+
+    let parameterizedSortUSD = {
+      metric: {
+        metric: MetadataService.getById('metric', 'revenue'),
+        parameters: {currency: 'USD'}
+      },
+      direction:  'asc'
+    };
+
+    let parameterizedSortCAD = {
+      metric: {
+        metric: MetadataService.getById('metric', 'revenue'),
+        parameters: {currency: 'CAD'}
+      },
+      direction:  'asc'
+    };
+
+    request.addSort(parameterizedSortUSD);
+    request.addSort(parameterizedSortCAD);
+
+    assert.equal(request.get('sort.length'),
+      2,
+      'There are two paramterized sort in the model fragment');
+
+    request.removeSortByMetricName('revenue(currency=CAD)');
+    assert.equal(request.get('sort.length'),
+      1,
+      'There is one parameterized sort in the model fragment');
   });
 });
 
 test('updateSort', function(assert) {
-  assert.expect(3);
+  assert.expect(5);
 
   return wait().then(() => {
     let mockModel = Store.peekRecord('fragments-mock', 1),
         sort = {
-          metric: MetadataService.getById('metric', 'pageViews'),
+          metric: Store.createFragment('bard-request/fragments/metric',
+            {metric: MetadataService.getById('metric', 'pageViews')}),
           direction: 'asc'
         },
         request = mockModel.get('request');
@@ -1163,6 +1355,37 @@ test('updateSort', function(assert) {
     assert.equal(request.get('sort').objectAt(0).get('direction'),
       'desc',
       'The sort direction has been updated successfully in the model fragment');
+
+    let parameterizedSortUSD = {
+      metric: Store.createFragment('bard-request/fragments/metric',{
+        metric: MetadataService.getById('metric', 'revenue'),
+        parameters: {currency: 'USD'}
+      }),
+      direction:  'asc'
+    };
+
+    let parameterizedSortCAD = {
+      metric: Store.createFragment('bard-request/fragments/metric',{
+        metric: MetadataService.getById('metric', 'revenue'),
+        parameters: {currency: 'CAD'}
+      }),
+      direction:  'asc'
+    };
+
+    request.addSort(parameterizedSortUSD);
+    request.addSort(parameterizedSortCAD);
+
+    request.updateSortForMetric(parameterizedSortUSD.metric, {
+      direction: 'desc'
+    });
+
+    assert.equal(request.get('sort').objectAt(1).get('direction'),
+      'desc',
+      'The sort direction has been updated successfully in the right paramterized model fragment');
+
+    assert.equal(request.get('sort').objectAt(2).get('direction'),
+      'asc',
+      'The sort direction is preserved for unmatching canonicalized metric');
   });
 });
 
@@ -1359,7 +1582,7 @@ test('sort has-many validation', function(assert) {
   return wait().then(() => {
     let mockModel = Store.peekRecord('fragments-mock', 1),
         newSort = {
-          metric: MetadataService.getById('metric', 'pageViews'),
+          metric: {metric: MetadataService.getById('metric', 'pageViews')},
         },
         request = mockModel.get('request');
 

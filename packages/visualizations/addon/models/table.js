@@ -1,11 +1,12 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Ember from 'ember';
 import DS from 'ember-data';
 import VisualizationBase from './visualization';
 import { validator, buildValidations } from 'ember-cp-validations';
+import { metricFormat } from 'navi-data/helpers/metric-format';
 
 const {
   A:arr,
@@ -20,7 +21,6 @@ const {
 const Validations = buildValidations({
   'metadata.columns': validator(function(columns, options) {
     let request = get(options, 'request');
-
     return request && hasAllColumns(request, arr(columns));
   }, {
     dependentKeys: [
@@ -70,12 +70,13 @@ export default VisualizationBase.extend(Validations, {
       // Trend metrics should render using threshold coloring
       let category = get(metric, 'metric.category'),
           isTrend = ~(category.toLowerCase().indexOf('trend')),
-          type = isTrend ? 'threshold' : 'metric';
+          type = isTrend ? 'threshold' : 'metric',
+          longName = get(metric, 'metric.longName');
 
       return {
-        field: get(metric, 'metric.name'),
+        field: get(metric, 'canonicalName'),
         type,
-        displayName: get(metric, 'metric.longName')
+        displayName: metricFormat(metric, longName)
       };
     });
 
@@ -103,8 +104,8 @@ export default VisualizationBase.extend(Validations, {
 function hasAllColumns(request, columns) {
   //retrieve everything but dateTime from metadata.columns
   let columnFields  = arr(arr(columns).rejectBy('field', 'dateTime')).mapBy('field'),
-      dimensions    = arr(get(request, 'dimensions')).mapBy(`dimension.name`),
-      metrics       = arr(get(request, 'metrics')).mapBy(`metric.name`),
+      dimensions    = arr(get(request, 'dimensions')).mapBy('dimension.name'),
+      metrics       = arr(get(request, 'metrics')).mapBy('canonicalName'),
       requestFields = [ ...dimensions, ...metrics ];
 
   return requestFields.length === columnFields.length &&

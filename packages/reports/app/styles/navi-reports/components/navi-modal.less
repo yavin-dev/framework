@@ -35,6 +35,7 @@
         font-size: @font-size-mid-base;
         color: @navi-gray;
         margin-top: 0;
+        margin-bottom: 0;
     }
 
     .btn-container {
@@ -71,7 +72,7 @@
 
     &__header,
     .navi-modal-header {
-        margin-bottom: 20px;
+        margin-bottom: 10px;
     }
 
     .btn {
@@ -94,7 +95,6 @@
 }
 
 .modal-notification {
-    margin-bottom: 10px;
     margin-left: -20px;
     padding-left: 20px;
 
@@ -106,7 +106,6 @@
         .clickable;
         font-size: @font-size-xsmall;
         float: right;
-        display: inline-block;
         padding-right: 10px;
         padding-top: 3px;
         position: initial;
@@ -116,7 +115,7 @@
 .modal-notification.alert {
     color: @navi-white;
     transition: all .3s linear;
-    width: 100%;
+    width: @modal-width;
 
     &.success {
         background-color: @navi-notification-success-background-color;

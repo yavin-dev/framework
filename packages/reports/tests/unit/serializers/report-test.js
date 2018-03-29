@@ -17,7 +17,6 @@ moduleForModel('report', 'Unit | Serializer | Report', {
     'transform:dimension',
     'transform:fragment',
     'transform:metric',
-    'transform:sort',
     'transform:moment',
     'transform:table',
     'model:bard-request/request',
@@ -27,6 +26,7 @@ moduleForModel('report', 'Unit | Serializer | Report', {
     'model:bard-request/fragments/logicalTable',
     'model:bard-request/fragments/metric',
     'model:bard-request/fragments/sort',
+    'model:bard-request/fragments/having',
     'serializer:bard-request/fragments/logical-table',
     'serializer:bard-request/fragments/interval',
     'serializer:bard-request/fragments/metric',
@@ -40,6 +40,7 @@ moduleForModel('report', 'Unit | Serializer | Report', {
     'validator:request-metric-exist',
     'validator:request-dimension-order',
     'validator:request-time-grain',
+    'validator:array-number',
     'service:bard-metadata',
     'adapter:bard-metadata',
     'serializer:report',
@@ -255,3 +256,4 @@ test('Serializing multi param request', function(assert) {
     });
   });
 });
+

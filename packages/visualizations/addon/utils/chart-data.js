@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Ember from 'ember';
@@ -97,7 +97,7 @@ export function chartTypeForRequest(request) {
  * @returns {Array} - list of metric names
  */
 export function getRequestMetrics(request) {
-  return arr(get(request, 'metrics')).mapBy('metric.name');
+  return arr(get(request, 'metrics')).mapBy('canonicalName');
 }
 
 /**
