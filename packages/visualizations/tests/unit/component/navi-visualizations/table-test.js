@@ -199,7 +199,7 @@ test('table data changes with options', function(assert) {
       '__meta__': {
         'isTotalRow': true
       },
-      'uniqueIdentifier': 712280888
+      'uniqueIdentifier': 356140444
     }
   ], 'table data has the subtotal row appended after every group of data');
 });
@@ -209,14 +209,6 @@ test('computeTotal and computeSubtotals', function(assert) {
 
   let options = $.extend(true, {}, OPTIONS, { showTotals: { subtotal: 'dimension' }}),
       component = this.subject({ options, model: Ember.A([{ response: { rows: ROWS } }]) });
-
-  assert.deepEqual(component._computeTotal(ROWS, 'grandTotal'), {
-    dateTime: 'Grand Total',
-    "__meta__": {
-      "isTotalRow": true
-    },
-    uniqueIdentifier: 356140444
-  }, 'compute total returns a total row object for the rows passed in');
 
   assert.deepEqual(component._computeSubtotals(), [{
     'dateTime': '2016-05-30 00:00:00.000',
@@ -242,4 +234,12 @@ test('computeTotal and computeSubtotals', function(assert) {
     },
     'uniqueIdentifier': 183206656
   }], 'compute subtotal returns a array of rows grouped and summed based on the specified subtotal dimension in the options');
+
+  assert.deepEqual(component._computeTotal(ROWS, 'grandTotal'), {
+    dateTime: 'Grand Total',
+    "__meta__": {
+      "isTotalRow": true
+    },
+    uniqueIdentifier: 356140444
+  }, 'compute total returns a total row object for the rows passed in');
 });
