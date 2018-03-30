@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -64,7 +64,9 @@ export default Fragment.extend(Validations, {
     },
 
     set(type, value) {
-      if (get(this, 'operator') === 'contains') {
+
+      // some operators don't need to be mapped, as values don't always have id fields and mapping by ID will cause errors
+      if (['contains', 'null', 'notnull'].includes(get(this, 'operator'))) {
         set(this, 'rawValues', value);
       } else {
         set(this, 'rawValues', Ember.A(value).mapBy('id'));
