@@ -644,6 +644,38 @@ test('Share report', function(assert) {
   });
 });
 
+test('Share report notifications reset', function(assert) {
+  assert.expect(4);
+
+  /* == Saved report == */
+  visit('/reports/1/view');
+  click('.navi-report__action:contains(Share) button');
+
+  andThen(() => {
+    assert.equal($('.navi-modal .primary-header').text(),
+      'Share "Hyrule News"',
+      'Clicking share action brings up share modal');
+
+    assert.notOk($('.navi-modal .modal-notification').is(':visible'),
+      'Notification banner is not shown');
+  });
+
+  click('.navi-modal .copy-btn');
+
+  andThen(() => {
+    assert.ok($('.navi-modal .modal-notification').is(':visible'),
+      'Notification banner is shown');
+  });
+
+  click('.navi-modal .btn:contains(Cancel)');
+  click('.navi-report__action:contains(Share) button');
+
+  andThen(() => {
+    assert.notOk($('.navi-modal .modal-notification').is(':visible'),
+      'Notification banner is not shown after close and reopen');
+  })
+});
+
 test('Delete report on success', function(assert) {
   assert.expect(5);
 
