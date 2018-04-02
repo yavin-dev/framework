@@ -11,6 +11,7 @@ import { validator, buildValidations } from 'ember-cp-validations';
 import Interval from 'navi-core/utils/classes/interval';
 import { isEmpty } from '@ember/utils';
 import { copy } from '@ember/object/internals';
+import { canonicalizeMetric } from 'navi-data/utils/metric';
 
 const { Fragment, fragment, fragmentArray } = MF;
 
@@ -181,9 +182,13 @@ export default Fragment.extend(Validations, {
    * @returns removed metric fragment
    */
   removeRequestMetricWithParam(metricModel, parameters) {
-    let metrics = get(this, 'metrics').filterBy('metric', metricModel);
+    let metrics = get(this, 'metrics').filterBy('metric', metricModel),
+        canonicalizedMetric = canonicalizeMetric({
+          metric: get(metricModel, 'name'),
+          parameters
+        });
     metrics.forEach(requestMetric => {
-      if(isEqual(get(requestMetric, 'parameters'), parameters)) {
+      if(get(requestMetric, 'canonicalName') === canonicalizedMetric) {
         this.removeRequestMetric(requestMetric);
       }
     });
