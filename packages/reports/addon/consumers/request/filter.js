@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import ActionConsumer from 'navi-core/consumers/action-consumer';
@@ -193,8 +193,12 @@ export default ActionConsumer.extend({
      */
     [RequestActions.DID_UPDATE_TIME_GRAIN](route, timeGrain) {
       // Set interval to default for time grain
-      let request = get(route, 'currentModel.request');
-      set(request, 'intervals.firstObject.interval', DefaultIntervals.getDefault(get(timeGrain, 'name')));
+      let request = get(route, 'currentModel.request'),
+          interval = get(request, 'intervals.firstObject.interval'),
+          timeGrainName = get(timeGrain, 'name'),
+          newInterval = interval ? interval.asIntervalForTimePeriod(timeGrainName) : DefaultIntervals.getDefault(timeGrainName);
+
+      set(request, 'intervals.firstObject.interval', newInterval);
 
       // Remove any dimension filter if the dim is not present in new time grain
       let timeGrainDimensions = get(timeGrain, 'dimensions');

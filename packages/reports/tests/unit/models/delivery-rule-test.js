@@ -28,6 +28,7 @@ const ExpectedDeliveryRule = {
 moduleForModel('delivery-rule', 'Unit | Model | delivery rule', {
   // Specify the other units that are required for this test.
   needs: [
+    'model:deliverable-item',
     'model:delivery-rule',
     'model:report',
     'adapter:report',

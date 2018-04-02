@@ -140,6 +140,36 @@ test('asMomentsForTimePeriod with current and next for time period', function(as
   assert.ok(moments.end.isSame(expected),'Setting end to next will be computed correctly');
 });
 
+test('asIntervalForTimePeriod', function(assert) {
+  assert.expect(2);
+
+  let start = moment('2014-10-10', FORMAT),
+      end = moment('2015-10-10', FORMAT),
+      newInterval = new Interval(start, end).asIntervalForTimePeriod('week').asMoments();
+
+  assert.ok(newInterval.start.isSame(start.startOf('isoweek')),
+    'Start moment is at start of isoweek');
+
+  assert.ok(newInterval.end.isSame(end.startOf('isoweek')),
+    'End moment is at start of isoweek');
+});
+
+test('asIntervalForTimePeriod - same start and end date', function(assert) {
+  assert.expect(2);
+
+  let start = moment('2017-10-10', FORMAT),
+      end = moment('2017-10-10', FORMAT),
+      newInterval = new Interval(start, end).asIntervalForTimePeriod('week').asMoments();
+
+  assert.equal(newInterval.start.format(FORMAT),
+    '2017-10-09',
+    'Start moment is at start of isoweek');
+
+  assert.equal(newInterval.end.format(FORMAT),
+    '2017-10-16',
+    'End moment is at start of isoweek');
+});
+
 test('asStrings', function(assert) {
   assert.expect(3);
 

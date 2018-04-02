@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -80,7 +80,6 @@ export default class Interval {
    * @returns {Object} object with start and end properties
    */
   asMoments() {
-
     let start = this._start,
         end = this._end;
 
@@ -143,7 +142,22 @@ export default class Interval {
     moments.start.startOf(DateUtils.getIsoDateTimePeriod(timePeriod));
     moments.end.startOf(DateUtils.getIsoDateTimePeriod(timePeriod));
 
+    if(moments.start.isSame(moments.end)){
+      moments.end.startOf(DateUtils.getIsoDateTimePeriod(timePeriod)).add(1, timePeriod);
+    }
+
     return moments;
+  }
+
+  /**
+   * Converts interval into another interval with moments that are aligned to the given time period
+   * @method asIntervalForTimePeriod
+   * @param {String} timePeriod - period to align to
+   * @returns {Object} object with start and end properties
+   */
+  asIntervalForTimePeriod(timePeriod) {
+    let { start, end } = this.asMomentsForTimePeriod(timePeriod);
+    return new Interval(start, end);
   }
 
   /**
