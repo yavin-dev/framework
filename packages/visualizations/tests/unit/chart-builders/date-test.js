@@ -330,6 +330,37 @@ test('seconds by minute', function(assert) {
     'Data point contains values for second of each minute');
 });
 
+test('Zero in chart data', function(assert) {
+  assert.expect(1);
+
+  let request = {
+        logicalTable: {
+          timeGrain: 'day'
+        }
+      },
+      config = {
+        timeGrain: 'month',
+        metric: 'pageViews'
+      },
+      response = [
+        {
+          dateTime: "2016-01-01 00:00:00.000",
+          pageViews: 0
+        }
+      ],
+      data = DateChartBuilder.buildData(response, config, request);
+
+  assert.deepEqual(data[0],
+    {
+      x: {
+        rawValue: 1,
+        displayValue: 'Day 1'
+      },
+      'Jan 2016': 0
+    },
+    'Zero values are not considered gaps in data');
+});
+
 test('buildTooltip', function(assert) {
   assert.expect(2);
 

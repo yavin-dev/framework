@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Logic for grouping chart data by time
@@ -17,8 +17,7 @@ import Ember from 'ember';
 import moment from 'moment';
 import tooltipLayout from '../templates/chart-tooltips/date';
 import DataGroup from 'navi-core/utils/classes/data-group';
-
-const { get, set } = Ember;
+import { get, set, getWithDefault } from '@ember/object';
 
 const API_DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss.SSS';
 
@@ -153,7 +152,7 @@ const _buildDataRows = (seriesMap, grouper) => {
 
     // Add each series to the row
     Object.keys(seriesMap).forEach(
-      series => row[series] = seriesMap[series][x] || null // c3 wants `null` for empty data points
+      series => row[series] = getWithDefault(seriesMap[series], x.toString(), null) // c3 wants `null` for empty data points
     );
 
     return row;

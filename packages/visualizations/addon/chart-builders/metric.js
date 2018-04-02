@@ -20,8 +20,7 @@ import DataGroup from 'navi-core/utils/classes/data-group';
 import Interval from 'navi-core/utils/classes/interval';
 import DateUtils from 'navi-core/utils/date';
 import { inject as service } from '@ember/service';
-
-const { get, set } = Ember;
+import { get, set, getWithDefault } from '@ember/object';
 
 export default Ember.Object.extend({
   /**
@@ -80,7 +79,7 @@ export default Ember.Object.extend({
       return Object.assign({ x }, ...metrics.map(metric => {
         let metricDisplayName = get(this, 'metricName').getDisplayName(metric);
 
-        return {[metricDisplayName]: get(row, metric) || null};  // c3 wants `null` for empty data points
+        return {[metricDisplayName]: getWithDefault(row, metric, null)}; // c3 wants `null` for empty data points
       }));
     });
   },

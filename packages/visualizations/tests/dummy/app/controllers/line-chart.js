@@ -214,7 +214,7 @@ export default Ember.Controller.extend({
           { "dateTime": "2017-02-10 02:00:00.000", "adClicks": 130757 },
           { "dateTime": "2017-02-10 03:00:00.000", "adClicks": 115753 },
           { "dateTime": "2017-02-10 04:00:00.000", "adClicks": 93722 },
-          { "dateTime": "2017-02-10 05:00:00.000", "adClicks": 61043 },
+          { "dateTime": "2017-02-10 05:00:00.000", "adClicks": 0 },
           { "dateTime": "2017-02-10 06:00:00.000", "adClicks": 42930 },
           { "dateTime": "2017-02-10 07:00:00.000", "adClicks": 38197 },
           { "dateTime": "2017-02-10 08:00:00.000", "adClicks": 35524 },

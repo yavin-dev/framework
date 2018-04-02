@@ -298,6 +298,41 @@ test('groupDataBySeries - month granularity series', function(assert) {
     'A series has the properly formmatted displayValue');
 });
 
+test('Zero in chart data', function(assert) {
+  assert.expect(1);
+
+  let request = {
+        logicalTable: {
+          timeGrain: 'day'
+        },
+        intervals: [
+          {
+            start: '2016-06-02 00:00:00.000',
+            end: '2016-06-03 00:00:00.000'
+          }
+        ]
+      },
+      data = [
+        {
+          'dateTime': '2016-06-02 00:00:00.000',
+          'totalPageViews': 0
+        }
+      ];
+
+  assert.deepEqual(MetricChartBuilder.buildData(data, { metrics: ['totalPageViews', 'uniqueIdentifier']}, request),
+    [
+      {
+        x: {
+          rawValue: '2016-06-02 00:00:00.000',
+          displayValue: 'Jun 2'
+        },
+        'Total Page Views': 0,
+        'Unique Identifiers': null,
+      }
+    ],
+    'Zero values are not considered gaps in data');
+});
+
 test('buildTooltip', function(assert) {
   assert.expect(2);
 
