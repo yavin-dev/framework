@@ -3,6 +3,7 @@ import { moduleForModel, test } from 'ember-qunit';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
 import config from 'ember-get-config';
 import Mirage from 'ember-cli-mirage';
+import DeliverableItem from 'navi-reports/models/deliverable-item';
 
 const { get, getOwner } = Ember;
 
@@ -102,6 +103,7 @@ moduleForModel('report', 'Unit | Model | report', {
     'model:bard-request/fragments/metric',
     'model:bard-request/fragments/sort',
     'model:delivery-rule',
+    'model:deliverable-item',
     'model:metadata/table',
     'model:metadata/dimension',
     'model:metadata/metric',
@@ -150,12 +152,13 @@ moduleForModel('report', 'Unit | Model | report', {
 });
 
 test('Retrieving records', function(assert) {
-  assert.expect(2);
+  assert.expect(3);
 
   return Ember.run(() => {
     return Store.findRecord('report', 1).then(report => {
 
       assert.ok(report, 'Found report with id 1');
+      assert.ok(report instanceof DeliverableItem, 'Report should be instance of DeliverableItem');
 
       assert.deepEqual(report.serialize(),
         ExpectedReport,

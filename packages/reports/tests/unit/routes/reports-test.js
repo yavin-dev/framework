@@ -16,6 +16,7 @@ moduleFor('route:reports', 'Unit | Route | reports', {
     'model:report',
     'model:user',
     'model:delivery-rule',
+    'model:deliverable-item',
     'transform:array',
     'transform:fragment-array',
     'transform:dimension',
