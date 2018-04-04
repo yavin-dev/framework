@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -15,6 +15,7 @@ import Ember from 'ember';
 import layout from '../../templates/components/navi-visualizations/line-chart';
 import numeral from 'numeral';
 import config from 'ember-get-config';
+import { inject as service } from '@ember/service';
 import $ from 'jquery';
 
 const { computed, get, getOwner } = Ember;
@@ -60,6 +61,11 @@ export default Ember.Component.extend({
   layout,
 
   /**
+   * @property {Service} metricName
+   */
+  metricName: service(),
+
+  /**
    * @property {String} chartType - the type of c3 chart
    */
   chartType: 'line',
@@ -79,14 +85,14 @@ export default Ember.Component.extend({
    * @param {Object} chartBuilders - map of chart type to builder
    */
   chartBuilders: computed(function() {
-    // Find all chart builders registered in requirejs under the namespace "navi-visualizations/chart-builders"
-    let builderRegExp = new RegExp(`^(?:${config.modulePrefix}/)?navi-visualizations/chart-builders/(.*)`),
+    // Find all chart builders registered in requirejs under the namespace "chart-builders"
+    let builderRegExp = new RegExp(`^${config.modulePrefix}/chart-builders/(.*)`),
         chartBuilderEntries = Object.keys(requirejs.entries).filter((key) => builderRegExp.test(key)),
-        builderMap = chartBuilderEntries.reduce((map, requirejsKey) => {
-          let builder = requirejs(requirejsKey).default,
-              builderKey = Ember.String.camelize(builderRegExp.exec(requirejsKey)[1]);
+        owner = getOwner(this),
+        builderMap = chartBuilderEntries.reduce((map, builderName) => {
+          let builderKey = Ember.String.camelize(builderRegExp.exec(builderName)[1]);
 
-          map[builderKey] = builder.create();
+          map[builderKey] = owner.lookup(`chart-builder:${builderKey}`);
           return map;
         }, {});
 
@@ -126,21 +132,27 @@ export default Ember.Component.extend({
    * @property {Object} yAxisLabelConfig - y axis label config options for the chart
    */
   yAxisLabelConfig: computed('options', function() {
-    let chartType = get(this, 'options.axis.y.series.type'),
-        labelOptions = {};
-
-    if(chartType !== 'metric') {
-      labelOptions = {
-        axis: {
-          y: {
-            label: {
-              text: get(this, 'options.axis.y.series.config.metric')
-            }
+    return {
+      axis: {
+        y: {
+          label: {
+            text: get(this, 'metricDisplayName')
           }
         }
-      };
+      }
+    };
+  }),
+
+  /**
+   * @property {String} metricDisplayName - display name for the current metric in a non-metric chart
+   */
+  metricDisplayName: computed('options', function() {
+    let seriesConfig = get(this, 'seriesConfig'),
+        metricName = get(seriesConfig, 'config.metric');
+
+    if(metricName) {
+      return get(this, 'metricName').getDisplayName(metricName);
     }
-    return labelOptions;
   }),
 
   /**
@@ -219,7 +231,9 @@ export default Ember.Component.extend({
     let rawData = get(this, 'dataConfig.data.json'),
         tooltipComponent = get(this, 'tooltipComponent'),
         request = get(this, 'model.firstObject.request'),
-        seriesConfig = get(this, 'seriesConfig.config');
+        seriesConfig = get(this, 'seriesConfig.config'),
+        metricName = get(this, 'metricName'),
+        metricDisplayName = get(this, 'metricDisplayName');
 
     return {
       contents(tooltipData) {
@@ -228,11 +242,17 @@ export default Ember.Component.extend({
          * to the raw x value for better formatting
          */
         let x = rawData[tooltipData[0].x].x.rawValue,
+            metricDisplayMap = seriesConfig.metrics ? seriesConfig.metrics.reduce((acc,metric) => {
+              acc[metricName.getDisplayName(metric)] = metric;
+              return acc;
+            } , {}) : undefined,
             tooltip = tooltipComponent.create({
               tooltipData,
               x,
               request,
-              seriesConfig
+              seriesConfig,
+              metricDisplayName,
+              metricDisplayMap
             });
 
         Ember.run(() => {

@@ -1,10 +1,13 @@
 import Ember from 'ember';
-import { test, module } from 'ember-qunit';
+import { test, moduleFor } from 'ember-qunit';
 import BuilderClass from 'navi-visualizations/chart-builders/metric';
 import TooltipTemplate from '../../../../navi-visualizations/templates/chart-tooltips/metric';
+import { setupMock, teardownMock } from '../../helpers/mirage-helper';
 
 const MetricChartBuilder = BuilderClass.create();
-const { get } = Ember;
+const { get, getOwner, setOwner } = Ember;
+
+let MetadataService;
 
 const DATA = [
         {
@@ -45,7 +48,34 @@ const DATA = [
         ]
       };
 
-module('Unit | Utils | Chart Builder Metric');
+moduleFor('chart-builder:metric', 'Unit | Utils | Chart Builder Metric', {
+  needs: [
+    'helper:metric-format',
+    'model:metadata/table',
+    'model:metadata/time-grain',
+    'model:metadata/dimension',
+    'model:metadata/metric',
+    'service:bard-metadata',
+    'service:keg',
+    'service:metric-name',
+    'adapter:bard-metadata',
+    'serializer:bard-metadata',
+    'service:ajax',
+    'service:bard-facts',
+    'service:bard-dimensions',
+    'adapter:dimensions/bard'
+  ],
+
+  beforeEach() {
+    setOwner(MetricChartBuilder, getOwner(this));
+    setupMock();
+    MetadataService = getOwner(this).lookup('service:bard-metadata');
+    return MetadataService.loadMetadata();
+  },
+  afterEach(){
+    teardownMock();
+  }
+});
 
 test('buildData - no metrics', function(assert) {
   assert.expect(1);
@@ -96,40 +126,40 @@ test('groupDataBySeries - many metrics', function(assert) {
           rawValue: '2016-05-30 00:00:00.000',
           displayValue: 'May 30'
         },
-        totalPageViews: 3669828357,
-        uniqueIdentifier: 172933788,
+        'Total Page Views': 3669828357,
+        'Unique Identifiers': 172933788,
       },
       {
         x: {
           rawValue: '2016-05-31 00:00:00.000',
           displayValue: 'May 31'
         },
-        totalPageViews: 4088487125,
-        uniqueIdentifier: 183206656,
+        'Total Page Views': 4088487125,
+        'Unique Identifiers': 183206656,
       },
       {
         x: {
           rawValue: '2016-06-01 00:00:00.000',
           displayValue: 'Jun 1'
         },
-        totalPageViews: 4024700302,
-        uniqueIdentifier: 183380921,
+        'Total Page Views': 4024700302,
+        'Unique Identifiers': 183380921,
       },
       {
         x: {
           rawValue: '2016-06-02 00:00:00.000',
           displayValue: 'Jun 2'
         },
-        totalPageViews: 3950276031,
-        uniqueIdentifier: 180559793,
+        'Total Page Views': 3950276031,
+        'Unique Identifiers': 180559793,
       },
       {
         x: {
           rawValue: '2016-06-03 00:00:00.000',
           displayValue: 'Jun 3'
         },
-        totalPageViews: 3697156058,
-        uniqueIdentifier: 172724594
+        'Total Page Views': 3697156058,
+        'Unique Identifiers': 172724594
       }
     ],
     'A series is made for each requested metric');
@@ -163,16 +193,16 @@ test('groupDataBySeries - gaps in data', function(assert) {
           rawValue: '2016-06-01 00:00:00.000',
           displayValue: 'Jun 1'
         },
-        totalPageViews: null,
-        uniqueIdentifier: null,
+        'Total Page Views': null,
+        'Unique Identifiers': null,
       },
       {
         x: {
           rawValue: '2016-06-02 00:00:00.000',
           displayValue: 'Jun 2'
         },
-        totalPageViews: 3669828357,
-        uniqueIdentifier: null,
+        'Total Page Views': 3669828357,
+        'Unique Identifiers': null,
       }
     ],
     'Missing data points are filled with null values');
@@ -210,14 +240,14 @@ test('groupDataBySeries - hour granularity series', function(assert) {
           rawValue: '2016-05-31 00:00:00.000',
           displayValue: '00:00'
         },
-        totalPageViews: 3669828357,
+        'Total Page Views': 3669828357,
       },
       {
         x: {
           rawValue: '2016-05-31 01:00:00.000',
           displayValue: '01:00'
         },
-        totalPageViews: 4088487125,
+        'Total Page Views': 4088487125,
       }
     ],
     'A series has the properly formmatted displayValue');
@@ -255,17 +285,52 @@ test('groupDataBySeries - month granularity series', function(assert) {
           rawValue: '2016-12-01 00:00:00.000',
           displayValue: 'Dec 2016'
         },
-        totalPageViews: 3669828357,
+        'Total Page Views': 3669828357,
       },
       {
         x: {
           rawValue: '2017-01-01 00:00:00.000',
           displayValue: 'Jan 2017'
         },
-        totalPageViews: 4088487125,
+        'Total Page Views': 4088487125,
       }
     ],
     'A series has the properly formmatted displayValue');
+});
+
+test('Zero in chart data', function(assert) {
+  assert.expect(1);
+
+  let request = {
+        logicalTable: {
+          timeGrain: 'day'
+        },
+        intervals: [
+          {
+            start: '2016-06-02 00:00:00.000',
+            end: '2016-06-03 00:00:00.000'
+          }
+        ]
+      },
+      data = [
+        {
+          'dateTime': '2016-06-02 00:00:00.000',
+          'totalPageViews': 0
+        }
+      ];
+
+  assert.deepEqual(MetricChartBuilder.buildData(data, { metrics: ['totalPageViews', 'uniqueIdentifier']}, request),
+    [
+      {
+        x: {
+          rawValue: '2016-06-02 00:00:00.000',
+          displayValue: 'Jun 2'
+        },
+        'Total Page Views': 0,
+        'Unique Identifiers': null,
+      }
+    ],
+    'Zero values are not considered gaps in data');
 });
 
 test('buildTooltip', function(assert) {
@@ -277,7 +342,7 @@ test('buildTooltip', function(assert) {
       x = '2016-06-02 00:00:00.000',
       tooltipData = [{
         x,
-        name: 'uniqueIdentifier',
+        name: 'Unique Identifiers',
         value: 180559793
       }];
 

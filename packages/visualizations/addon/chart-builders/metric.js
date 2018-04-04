@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Logic for grouping chart data by many metrics
@@ -19,10 +19,15 @@ import ChartAxisDateTimeFormats from 'navi-visualizations/utils/chart-axis-date-
 import DataGroup from 'navi-core/utils/classes/data-group';
 import Interval from 'navi-core/utils/classes/interval';
 import DateUtils from 'navi-core/utils/date';
-
-const { get, set } = Ember;
+import { inject as service } from '@ember/service';
+import { get, set, getWithDefault } from '@ember/object';
 
 export default Ember.Object.extend({
+  /**
+   * @property {Service} metricName
+   */
+  metricName: service(),
+
   /**
    * @method getXValue
    * @param {Object} row - single row of fact data
@@ -72,7 +77,9 @@ export default Ember.Object.extend({
 
       // Build an object consisting of x value and requested metrics
       return Object.assign({ x }, ...metrics.map(metric => {
-        return {[metric]: get(row, metric) || null};  // c3 wants `null` for empty data points
+        let metricDisplayName = get(this, 'metricName').getDisplayName(metric);
+
+        return {[metricDisplayName]: getWithDefault(row, metric, null)}; // c3 wants `null` for empty data points
       }));
     });
   },

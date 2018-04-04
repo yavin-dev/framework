@@ -84,6 +84,7 @@ export default Route.extend({
     }).catch(() => {
       // Throws falure and sends user back to old report dirty state
       this._onSaveAsFailure();
+      this.replaceWith('reports.report.view');
     });
   },
 
@@ -104,5 +105,4 @@ export default Route.extend({
     });
     return clonedReportModel;
   }
-  
 });

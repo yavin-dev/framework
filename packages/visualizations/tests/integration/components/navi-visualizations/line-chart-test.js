@@ -4,6 +4,11 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize as injectC3Enhancements} from 'navi-visualizations/initializers/inject-c3-enhancements';
 import DateUtils from 'navi-core/utils/date';
+import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
+
+let MetadataService;
+
+const { getOwner } = Ember;
 
 const TEMPLATE = hbs`
   {{navi-visualizations/line-chart
@@ -14,7 +19,7 @@ const TEMPLATE = hbs`
 const Model = Ember.A([{
   request: {
     metrics: [
-      'uniqueIdentifier', 'totalPageViews'
+      'uniqueIdentifier', 'totalPageViews', 'revenue(currency=USD)'
     ],
     intervals: [
       {
@@ -31,27 +36,32 @@ const Model = Ember.A([{
       {
         "dateTime": "2016-05-30 00:00:00.000",
         "uniqueIdentifier": 172933788,
-        "totalPageViews": 3669828357
+        "totalPageViews": 3669828357,
+        'revenue(currency=USD)': 2000323439.23
       },
       {
         "dateTime": "2016-05-31 00:00:00.000",
         "uniqueIdentifier": 183206656,
-        "totalPageViews": 4088487125
+        "totalPageViews": 4088487125,
+        'revenue(currency=USD)': 1999243823.74
       },
       {
         "dateTime": "2016-06-01 00:00:00.000",
         "uniqueIdentifier": 183380921,
-        "totalPageViews": 4024700302
+        "totalPageViews": 4024700302,
+        'revenue(currency=USD)': 1400324934.92
       },
       {
         "dateTime": "2016-06-02 00:00:00.000",
         "uniqueIdentifier": 180559793,
-        "totalPageViews": 3950276031
+        "totalPageViews": 3950276031,
+        'revenue(currency=USD)': 923843934.11
       },
       {
         "dateTime": "2016-06-03 00:00:00.000",
         "uniqueIdentifier": 172724594,
-        "totalPageViews": 3697156058
+        "totalPageViews": 3697156058,
+        'revenue(currency=USD)': 1623430236.42
       }
     ]
   }
@@ -60,6 +70,7 @@ const Model = Ember.A([{
 moduleForComponent('navi-visualizations/line-chart', 'Integration | Component | line chart', {
   integration: true,
   beforeEach() {
+    setupMock();
     injectC3Enhancements();
     this.set('model', Model);
     this.set('options', {
@@ -75,7 +86,12 @@ moduleForComponent('navi-visualizations/line-chart', 'Integration | Component | 
       }
     });
 
-    injectC3Enhancements();
+    MetadataService = getOwner(this).lookup('service:bard-metadata');
+    return MetadataService.loadMetadata();
+  },
+
+  afterEach() {
+    teardownMock();
   }
 });
 
@@ -211,7 +227,7 @@ test('multiple series', function(assert) {
         series: {
           type: 'metric',
           config: {
-            metrics: [ 'uniqueIdentifier', 'totalPageViews' ]
+            metrics: [ 'uniqueIdentifier', 'totalPageViews', 'revenue(currency=USD)' ]
           }
         }
       }
@@ -222,12 +238,12 @@ test('multiple series', function(assert) {
   this.render(TEMPLATE);
 
   assert.equal(this.$('.c3-chart-line').length,
-    2,
-    'Two chart lines are present in the chart based on the metrics in the request');
+    3,
+    'Three chart lines are present in the chart based on the metrics in the request');
 });
 
 test('y axis label', function(assert) {
-  assert.expect(2);
+  assert.expect(3);
 
   this.set('options', {
     axis: {
@@ -269,8 +285,49 @@ test('y axis label', function(assert) {
   this.render(TEMPLATE);
 
   assert.equal(this.$('.c3-axis-y-label').text(),
-    'totalPageViews',
+    'Total Page Views',
     'The metric name is displayed in the y axis label correctly for a dimension chart');
+
+
+  this.set('options', {
+    axis: {
+      y: {
+        series: {
+          type: 'dimension',
+          config: {
+            metric: 'revenue(currency=USD)',
+            dimensionOrder: ['age'],
+            dimensions: [
+              {
+                name: 'All Other',
+                values: {age: '-3'}
+              },
+              {
+                name: 'under 13',
+                values: {age: '1'}
+              },
+              {
+                name: '13 - 25',
+                values: {age: '2'}
+              },
+              {
+                name: '25 - 35',
+                values: {age: '3'}
+              },
+              {
+                name: '35 - 45',
+                values: {age: '4'}
+              }
+            ]
+          }
+        }
+      }
+    }
+  });
+
+  assert.equal(this.$('.c3-axis-y-label').text(),
+    'Revenue (USD)',
+    'Parameterized metrics are displayed correctly in the y axis label');
 
   //set chart type to metric
   this.set('options', {
@@ -385,7 +442,7 @@ test('Highlight data points', function(assert) {
 
   assert.equal(this.$('.c3-selected-circles circle').length,
     3,
-    'Three data points are hightlighted in chart');
+    'Three data points are highlighted in chart');
 });
 
 
@@ -445,4 +502,32 @@ test('dateTime model', function (assert) {
       '2018'
     ],
     'Three years time series are displayed on y-axis');
+});
+
+test('Metric series legend', function(assert) {
+  assert.expect(1);
+
+  this.set('options', {
+    axis: {
+      y: {
+        series: {
+          type: 'metric',
+          config: {
+            metrics: [ 'uniqueIdentifier', 'totalPageViews', 'revenue(currency=USD)' ]
+          }
+        }
+      }
+    }
+  });
+
+  this.set('model', Model);
+  this.render(TEMPLATE);
+
+  assert.deepEqual(this.$('.c3-legend-item').map(function () { return $(this).text(); }).get(),
+    [
+      'Unique Identifiers',
+      'Total Page Views',
+      'Revenue (USD)'
+    ],
+    'Metric display names are used properly for parameterized and non-parameterized metrics in the legend');
 });

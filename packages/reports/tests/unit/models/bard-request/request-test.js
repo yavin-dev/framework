@@ -524,17 +524,16 @@ test('removeRequestMetricWithParam', function(assert) {
   return wait().then(() => {
     let mockModel = Store.peekRecord('fragments-mock', 1),
         revenueMetric = MetadataService.getById('metric', 'revenue'),
-        parameter = { currency: 'AUD' },
         request = mockModel.get('request');
 
     request.addRequestMetricWithParam(revenueMetric);
-    request.addRequestMetricWithParam(revenueMetric, parameter);
+    request.addRequestMetricWithParam(revenueMetric, { currency: 'AUD', as: 'm1' });
 
     assert.equal(request.get('metrics.length'),
       3,
       'There are three metrics in the model fragment');
 
-    request.removeRequestMetricWithParam(revenueMetric, parameter);
+    request.removeRequestMetricWithParam(revenueMetric, { currency: 'AUD' });
 
     assert.equal(request.get('metrics.length'),
       2,

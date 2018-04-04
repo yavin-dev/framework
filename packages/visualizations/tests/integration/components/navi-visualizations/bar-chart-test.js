@@ -2,7 +2,11 @@ import Ember from 'ember';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize as injectC3Enhancements } from 'navi-visualizations/initializers/inject-c3-enhancements';
+import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
 
+let MetadataService;
+
+const { getOwner } = Ember;
 
 const TEMPLATE = hbs`
   {{navi-visualizations/bar-chart
@@ -370,6 +374,7 @@ const DimensionModel = Ember.A([
 moduleForComponent('navi-visualizations/bar-chart', 'Integration | Component | bar chart', {
   integration: true,
   beforeEach() {
+    setupMock();
     injectC3Enhancements();
 
     this.set('model', Model);
@@ -385,6 +390,13 @@ moduleForComponent('navi-visualizations/bar-chart', 'Integration | Component | b
         }
       }
     });
+
+    MetadataService = getOwner(this).lookup('service:bard-metadata');
+    return MetadataService.loadMetadata();
+  },
+
+  afterEach() {
+    teardownMock();
   }
 });
 

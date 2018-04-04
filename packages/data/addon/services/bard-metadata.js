@@ -6,6 +6,7 @@
  */
 
 import Ember from 'ember';
+import { resolve } from 'rsvp';
 
 const { assign, get, getOwner, setOwner, getWithDefault } = Ember;
 
@@ -138,7 +139,7 @@ export default Ember.Service.extend({
 
     //Get entity if already present in the keg
     if(get(this, '_keg').getById(`metadata/${type}`, id)) {
-      return this.getById(type, id);
+      return resolve(this.getById(type, id));
     }
 
     return get(this, '_adapter').fetchMetadata(type, id).then(meta => {

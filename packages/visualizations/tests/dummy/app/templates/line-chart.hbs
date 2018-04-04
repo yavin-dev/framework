@@ -51,8 +51,16 @@
     options=dimensionOptions
   }}
 </div>
+
 <h3>Highlight Anomalies</h3>
 {{navi-visualizations/line-chart
   model=anomalousDataModel
   options=amomalousOptions
+}}
+
+<h3>Custom Chart Builder</h3>
+{{navi-visualizations/line-chart
+  classNames='custom-chart-builder'
+  model=model
+  options=customOptions
 }}

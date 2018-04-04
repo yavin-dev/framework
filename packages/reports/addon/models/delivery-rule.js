@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -38,6 +38,6 @@ export default DS.Model.extend(Validations, {
   recipients:      DS.attr({ defaultValue: () => [] }),
   version:         DS.attr('number', {defaultValue: '1'}),
 
-  deliveredItem:   DS.belongsTo('report', {async: true, inverse: 'deliveryRules'}),
+  deliveredItem:   DS.belongsTo('deliverableItem', { async: true, inverse: 'deliveryRules', polymorphic: true}),
   owner:           DS.belongsTo('user', {async: true, inverse: 'deliveryRules'})
 });

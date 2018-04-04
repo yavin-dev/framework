@@ -16,7 +16,7 @@ import { formatItemDimension } from '../../helpers/mixed-height-layout';
 import groupBy from 'lodash/groupBy';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 
-const { $, A:arr, computed, get, set, typeOf } = Ember;
+const { $, A:arr, computed, get, set } = Ember;
 
 const NEXT_SORT_DIRECTION = {
   'none': 'desc',
@@ -74,7 +74,7 @@ export default Ember.Component.extend({
   _computeTotal(data, type) {
     let columns = get(this, 'columns');
 
-    let totalRow = columns.reduce((totRow, column) => {
+    return columns.reduce((totRow, column) => {
       //if dateTime set type
       if(column.type === 'dateTime'){
         set(totRow, column.field, HEADER_TITLE[type]);
@@ -101,8 +101,9 @@ export default Ember.Component.extend({
       //if metric find sum
       if(column.type === 'metric'){
         totRow[column.field] = data.reduce((sum, row) => {
-          if(typeOf(row[column.field]) === 'number'){
-            return sum + row[column.field];
+          let number = Number(row[column.field]);
+          if(!Number.isNaN(number)) {
+            return sum + number;
           }
           return sum;
         }, 0);
@@ -110,8 +111,6 @@ export default Ember.Component.extend({
 
       return totRow;
     }, {});
-
-    return totalRow;
   },
 
   /**
@@ -155,13 +154,14 @@ export default Ember.Component.extend({
    * @property {Object} tableData
    */
   tableData: computed('rawData', 'columns', 'options.showTotals.{grandTotal,subtotal}', function() {
-    let tableData = this._computeSubtotals();
+    let tableData = this._computeSubtotals(),
+        rawData = get(this, 'rawData');
 
     if(!get(this, 'options.showTotals.grandTotal')){
       return tableData;
     }
 
-    return [ ...tableData, this._computeTotal(tableData, 'grandTotal') ];
+    return [ ...tableData, this._computeTotal(rawData, 'grandTotal') ];
   }),
 
   /**

@@ -1,11 +1,44 @@
 import Ember from 'ember';
 import { moduleForComponent, test } from 'ember-qunit';
 import moment from 'moment';
+import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
 import $ from 'jquery';
+
+const { getOwner } = Ember;
+
+let MetadataService;
 
 moduleForComponent('navi-visualizations/line-chart', 'Unit | Component | line chart', {
   unit: 'true',
-  needs: ['helper:format-chart-tooltip-date']
+  needs: [
+    'helper:format-chart-tooltip-date',
+    'helper:metric-format',
+    'model:metadata/table',
+    'model:metadata/time-grain',
+    'model:metadata/dimension',
+    'model:metadata/metric',
+    'model:line-chart',
+    'service:bard-metadata',
+    'service:keg',
+    'adapter:bard-metadata',
+    'serializer:bard-metadata',
+    'service:ajax',
+    'service:bard-facts',
+    'service:bard-dimensions',
+    'service:metric-name',
+    'adapter:dimensions/bard',
+    'chart-builder:metric',
+    'chart-builder:dimension',
+    'chart-builder:dateTime'
+  ],
+  beforeEach() {
+    setupMock();
+    MetadataService = getOwner(this).lookup('service:bard-metadata');
+    return MetadataService.loadMetadata();
+  },
+  afterEach(){
+    teardownMock();
+  }
 });
 
 test('dataConfig', function(assert) {
@@ -75,7 +108,7 @@ test('dataConfig', function(assert) {
         rawValue: row.dateTime,
         displayValue: moment(row.dateTime).format('MMM D')
       },
-      totalPageViews: row.totalPageViews
+      'Total Page Views': row.totalPageViews
     };
   });
 
@@ -107,8 +140,8 @@ test('dataConfig', function(assert) {
         rawValue: row.dateTime,
         displayValue: moment(row.dateTime).format('MMM D')
       },
-      uniqueIdentifier: row.uniqueIdentifier,
-      totalPageViews: row.totalPageViews
+      'Unique Identifiers': row.uniqueIdentifier,
+      'Total Page Views': row.totalPageViews
     };
   });
 
@@ -225,7 +258,7 @@ test('config', function(assert){
     axis: {
       y: {
         label: {
-          text: 'totalPageViews',
+          text: 'Total Page Views',
           position: 'outer-middle'
         }
       }

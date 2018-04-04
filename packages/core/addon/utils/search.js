@@ -1,12 +1,12 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import Ember from 'ember';
+import { get } from '@ember/object';
+import { w as words } from '@ember/string';
+import { A as arr } from '@ember/array';
 import { getPaginatedRecords } from 'navi-core/utils/pagination';
-
-const { get } = Ember;
 
 /**
  * Computes how closely two strings match, ignoring word order.
@@ -21,20 +21,26 @@ const { get } = Ember;
  */
 export function getPartialMatchWeight(string, query) {
   // Split search query into individual words
-  var searchTokens = Ember.String.w(query.trim()),
+  let searchTokens = words(query.trim()),
+      origString = string,
+      stringTokens = arr(words(string)),
       allTokensFound = true;
 
+
   // Check that all words in the search query can be found in the given string
-  for (var i = 0; i < searchTokens.length; i++) {
+  for (let i = 0; i < searchTokens.length; i++) {
     if (string.indexOf(searchTokens[i]) === -1) {
       allTokensFound = false;
       break;
+    //Remove matched tokens from string as they have already matched
+    } else if(stringTokens.includes(searchTokens[i])) {
+      string = string.replace(searchTokens[i], '');
     }
   }
 
   if (allTokensFound) {
     // Compute match weight
-    return string.length - query.trim().length + 1;
+    return origString.length - query.trim().length + 1;
   }
 
   // Undefined weight if no match at all
@@ -72,8 +78,8 @@ export function getExactMatchWeight(string, query) {
  * @returns {Array} array of matching records
  */
 export function searchRecords(records, query, searchField) {
-  let results = Ember.A();
-  records = Ember.A(records);
+  let results = arr();
+  records = arr(records);
   query = query.toLowerCase();
 
   for(let i = 0; i<records.length; i++) {
@@ -101,8 +107,8 @@ export function searchRecords(records, query, searchField) {
  *          relevance - distance between record and search query
  */
 export function searchDimensionRecords(records, query, resultLimit, page) {
-  let results = Ember.A([]);
-  records = Ember.A(records);
+  let results = arr([]);
+  records = arr(records);
 
   // Filter, map, and sort records based on how close each record is to the search query
   for (let i = 0; i < get(records, 'length'); i++ ) {
@@ -129,5 +135,5 @@ export function searchDimensionRecords(records, query, resultLimit, page) {
 
   results = results.sortBy('relevance');
 
-  return Ember.A(getPaginatedRecords(results, resultLimit, page));
+  return arr(getPaginatedRecords(results, resultLimit, page));
 }

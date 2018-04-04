@@ -2,6 +2,7 @@ import Ember from 'ember';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize as injectC3Enhancements} from 'navi-visualizations/initializers/inject-c3-enhancements';
+import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
 
 const TEMPLATE = hbs`
     {{navi-visualizations/pie-chart
@@ -50,45 +51,58 @@ const Model = Ember.A([{
         "age|id": "-3",
         "age|desc": "All Other",
         "uniqueIdentifier": 155191081,
-        "totalPageViews": 3072620639
+        "totalPageViews": 3072620639,
+        "revenue(currency=USD)": 200
       },
       {
         "dateTime": "2015-12-14 00:00:00.000",
         "age|id": "1",
         "age|desc": "under 13",
         "uniqueIdentifier": 55191081,
-        "totalPageViews": 2072620639
+        "totalPageViews": 2072620639,
+        "revenue(currency=USD)": 300
       },
       {
         "dateTime": "2015-12-14 00:00:00.000",
         "age|id": "2",
         "age|desc": "13 - 25",
         "uniqueIdentifier": 55191081,
-        "totalPageViews": 2620639
+        "totalPageViews": 2620639,
+        "revenue(currency=USD)": 400
       },
       {
         "dateTime": "2015-12-14 00:00:00.000",
         "age|id": "3",
         "age|desc": "25 - 35",
         "uniqueIdentifier": 55191081,
-        "totalPageViews": 72620639
+        "totalPageViews": 72620639,
+        "revenue(currency=USD)": 500
       },
       {
         "dateTime": "2015-12-14 00:00:00.000",
         "age|id": "4",
         "age|desc": "35 - 45",
         "uniqueIdentifier": 55191081,
-        "totalPageViews": 72620639
+        "totalPageViews": 72620639,
+        "revenue(currency=USD)": 600
       }
     ]
   }
 }]);
+
+let MetadataService;
 
 moduleForComponent('navi-visualizations/pie-chart', 'Integration | Component | pie chart', {
   integration: true,
   beforeEach() {
     injectC3Enhancements();
     this.set('model', Model);
+    setupMock();
+    MetadataService = Ember.getOwner(this).lookup('service:bard-metadata');
+    return MetadataService.loadMetadata();
+  },
+  afterEach() {
+    teardownMock();
   }
 });
 
@@ -158,7 +172,7 @@ test('metric label', function(assert) {
   this.render(TEMPLATE);
 
   assert.equal(this.$('.c3-title').text(),
-    'totalPageViews',
+    'Total Page Views',
     'The metric name is displayed in the metric label correctly');
 
   //Calulate where the metric label should be relative to the pie chart
@@ -207,7 +221,7 @@ test('metric label', function(assert) {
   yTranslate = this.$('svg').css('height').replace('px', '') / 2;
 
   assert.equal(this.$('.c3-title').text(),
-    'uniqueIdentifier',
+    'Unique Identifiers',
     'The metric label is updated after the metric is changed');
 
   assert.equal(Math.round(d3.transform(this.$('.c3-title').attr('transform')).translate[0]),
@@ -217,4 +231,51 @@ test('metric label', function(assert) {
   assert.equal(Math.round(d3.transform(this.$('.c3-title').attr('transform')).translate[1]),
     Math.round(yTranslate),
     'The metric name is in the correct Y position after the pie chart moves');
+});
+
+test('parameterized metric renders correctly', function(assert) {
+  assert.expect(5);
+
+  this.set('options', {
+    series: {
+      config: {
+        type: 'dimension',
+        metric: 'revenue(currency=USD)',
+        dimensionOrder: ['age'],
+        dimensions: [
+          {
+            name: 'All Other',
+            values: {age: '-3'}
+          },
+          {
+            name: 'Under 13',
+            values: {age: '1'}
+          }
+        ]
+      }
+    }
+  });
+
+  this.render(TEMPLATE);
+
+  assert.equal(this.$('.c3-title').text(),
+    'Revenue (USD)',
+    'The metric name is displayed in the metric label correctly');
+
+  assert.ok(this.$('.navi-vis-c3-chart').is(':visible'),
+    'The pie chart widget component is visible');
+
+  assert.equal(this.$('.c3-chart-arc').length,
+    2,
+    'Two pie slices are present on the chart');
+
+  assert.equal(this.$('.c3-target-All-Other text').text().trim(),
+    '40.00%',
+    'Percentage label shown on slice is formatted properly for `All Other`');
+
+  assert.equal(this.$('.c3-target-Under-13 text').text().trim(),
+    '60.00%',
+    'Percentage label shown on slice is formatted properly for `Under 13`');
+
+
 });

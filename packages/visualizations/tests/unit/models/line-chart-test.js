@@ -13,6 +13,7 @@ moduleForModel('all-the-fragments', 'Unit | Model | Line Chart Visualization Fra
     'validator:request-metric-exist',
     'validator:request-dimension-order',
     'validator:request-time-grain',
+    'validator:request-filters',
     'model:line-chart'
   ]
 });
@@ -53,7 +54,13 @@ test('chart type', function(assert) {
     type: 'dimension',
     config: {
       metric: 'm1',
-      dimensionOrder: ['d1']
+      dimensionOrder: ['d1'],
+      dimensions: [
+        {
+          name: 'Foo',
+          values: { d1: 'foo' }
+        }
+      ]
     }
   });
 
@@ -96,7 +103,13 @@ test('dimension series - metric', function(assert) {
     type: 'dimension',
     config: {
       metric: 'm1',
-      dimensionOrder: ['d1']
+      dimensionOrder: ['d1'],
+      dimensions: [
+        {
+          name: 'Foo',
+          values: { d1: 'foo' }
+        }
+      ]
     }
   });
 
@@ -118,7 +131,16 @@ test('dimension series - dimensionOrder', function(assert) {
     type: 'dimension',
     config: {
       metric: 'm1',
-      dimensionOrder: ['d1', 'd2']
+      dimensionOrder: ['d1', 'd2'],
+      dimensions: [
+        {
+          name: 'Foo2,Bar2',
+          values: { d1: 'foo2', d2: 'bar2' }
+        }, {
+          name: 'Foo1,Bar1',
+          values: { d1: 'foo1', d2: 'bar1' }
+        }
+      ]
     }
   });
 

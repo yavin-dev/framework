@@ -15,12 +15,14 @@
 
     &__doc-link {
         color: @link-blue;
+        font-family: @font-family-strong;
     }
 
     &__advanced-calendar-toggle {
-        font-size: @font-size-mid;
         color: @link-blue;
         cursor: pointer;
+        font-size: @font-size-mid;
+        font-family: @font-family-strong;
     }
 
     &__start-input, &__end-input {
@@ -39,8 +41,9 @@
 
     &__date-label {
         color: @navi-light-gray-1;
-        margin: 0 2px;
         font-size: @font-size-small;
+        font-family: @font-family-strong;
+        margin: 0 2px;
     }
 
     &__reset-btn {
@@ -120,14 +123,15 @@
             flex-wrap: wrap;
 
             .date-picker-label {
-                color: @navi-light-gray-1;
-                width: 50%;
-                text-align: center;
-                font-size: @font-size-small;
                 background-color: @navi-purple-dark;
                 border: solid 1px @navi-border-gray;
                 border-bottom-width: 0;
+                color: @navi-light-gray-1;
+                font-size: @font-size-small;
+                font-family: @font-family-strong;
                 padding: 5px;
+                text-align: center;
+                width: 50%;
             }
         }
     }

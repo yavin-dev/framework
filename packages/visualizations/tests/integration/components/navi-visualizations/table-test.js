@@ -311,7 +311,7 @@ test('subtotals in table', function(assert) {
   this.set('options', newOptions);
 
   assert.deepEqual(this.$('.table-row__total-row').toArray().map(el => $(el).text().replace(/\s+/g, ' ').trim()),[
-    'Grand Total -- 1,424,910,306 30,905,688,282 0.00',
+    'Grand Total -- 712,455,153 15,452,844,141 0.00',
     'Subtotal BlackBerry OS 183,380,921 4,024,700,302 0.00',
     'Subtotal Android 183,206,656 4,088,487,125 0.00',
     'Subtotal All Other 345,867,576 7,339,656,714 0.00'

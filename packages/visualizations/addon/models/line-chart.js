@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -52,13 +52,20 @@ const Validations = buildValidations({
   }),
 
   //Dimension Series Validations
-  [`${CONFIG_PATH}.dimensions`]: validator('length', { min: 1 }, {
-    disabled: computed('chartType', function() {
-      return get(this, 'chartType') !== DIMENSION_SERIES;
+  [`${CONFIG_PATH}.dimensions`]: [
+    validator('length', { min: 1 }, {
+      disabled: computed('chartType', function() {
+        return get(this, 'chartType') !== DIMENSION_SERIES;
+      }),
+      dependentKeys: [ 'model._request.dimensions.[]' ]
     }),
-    dependentKeys: [ 'model._request.dimensions.[]' ]
-  })
-}, {
+    validator('request-filters', {
+      disabled: computed('chartType', function() {
+        return get(this, 'chartType') !== DIMENSION_SERIES;
+      }),
+      dependentKeys: [ 'model._request.filters.@each.rawValues' ]
+    })
+  ]}, {
   //Global Validation Options
   chartType: computed('model._request.dimensions.[]', 'model._request.metrics.[]', 'model._request.intervals.firstObject.interval', function() {
     let request = get(this, 'request');

@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -8,12 +8,11 @@
  *      buildUrl=(action 'optionalCodeForGeneratingUrlToShare')
  *   }}
  */
-import Ember from 'ember';
+import Component from '@ember/component';
+import { get, set, computed } from '@ember/object';
 import layout from '../../templates/components/common-actions/share';
 
-const { get, computed } = Ember;
-
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   /**
@@ -24,7 +23,7 @@ export default Ember.Component.extend({
   /**
    * @property {String} currentUrl
    */
-  currentUrl: computed(function() {
+  currentUrl: computed('showModal', function() {
     // Allow custom url logic for sharing something other than current page
     let buildUrl = get(this, 'buildUrl');
     if (buildUrl) {
@@ -32,5 +31,15 @@ export default Ember.Component.extend({
     }
 
     return document.location.href;
-  }).volatile()
+  }),
+
+  actions: {
+    /**
+     * Sets the notifications to false, used when modal is closed to clean it up.
+     */
+    resetNotifications() {
+      set(this, 'successNotification', false);
+      set(this, 'errorNotification', false);
+    }
+  }
 });

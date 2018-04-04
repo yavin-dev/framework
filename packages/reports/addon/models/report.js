@@ -1,11 +1,12 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
 import Ember from 'ember';
 import DS from 'ember-data';
 import MF from 'model-fragments';
+import DeliverableItem from 'navi-reports/models/deliverable-item';
 import { v1 } from 'ember-uuid';
 import hasVisualization from 'navi-reports/mixins/models/has-visualization';
 import { validator, buildValidations } from 'ember-cp-validations';
@@ -27,7 +28,7 @@ const Validations = buildValidations({
   ]
 });
 
-export default DS.Model.extend(hasVisualization, Validations, {
+export default DeliverableItem.extend(hasVisualization, Validations, {
 
   /* == Attributes == */
   title:          DS.attr('string', { defaultValue: 'Untitled Report' }),
@@ -35,7 +36,6 @@ export default DS.Model.extend(hasVisualization, Validations, {
   updatedOn:      DS.attr('moment'),
   author:         DS.belongsTo('user', {async: true}),
   request:        MF.fragment('bard-request/request', { defaultValue: {} }),
-  deliveryRules:  DS.hasMany('deliveryRule', { async: true, inverse: 'deliveredItem' }),
 
   /**
    * @property {String} tempId - uuid for unsaved records

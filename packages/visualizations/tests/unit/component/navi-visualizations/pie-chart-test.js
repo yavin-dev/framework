@@ -5,7 +5,12 @@ const { get } = Ember;
 
 moduleForComponent('navi-visualizations/pie-chart', 'Unit | Component | pie chart', {
   unit: 'true',
-  needs: ['helper:format-chart-tooltip-date', 'helper:smart-format-number', 'helper:format-number']
+  needs: [
+    'helper:format-chart-tooltip-date',
+    'helper:smart-format-number',
+    'helper:format-number',
+    'service:metric-name'
+  ]
 });
 
 const REQUEST = {
