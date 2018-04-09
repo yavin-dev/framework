@@ -157,6 +157,8 @@ out the provided form.
 If your pull-request addresses an issue then please add the corresponding
 issue's number to the description of your pull-request.
 
+Please follow the [eslint](https://github.com/conventional-changelog-archived-repos/conventional-changelog-eslint/blob/master/convention.md) changelog convention for your commit messages.
+
 Here are some things that will increase the chance that your pull-request will
 get accepted:
  - Did you locally merge (or rebase) the upstream branch into your topic branch?
