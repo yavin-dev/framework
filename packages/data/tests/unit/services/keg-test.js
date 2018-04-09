@@ -80,6 +80,23 @@ test('reset clears all state of the keg', function(assert) {
     'reset resets idIndexes');
 });
 
+test('reset by type clears one model type from the keg', function(assert) {
+  assert.expect(2);
+
+  set(Keg, 'recordKegs', {foo: 'bar', ham: 'spam'});
+  set(Keg, 'idIndexes', {foo: 'bar', ham: 'spam'});
+
+  Keg.resetByType('foo');
+
+  assert.deepEqual(get(Keg, 'recordKegs'),
+    {foo: [], ham: 'spam'},
+    'resets foo type, but leaves ham alone in recordKegs');
+
+  assert.deepEqual(get(Keg, 'idIndexes'),
+    {foo: {}, ham: 'spam'},
+    'resets foo type, but leaves ham alone in idIndexes');
+});
+
 test('push inserts a record into the keg', function(assert) {
   assert.expect(7);
 

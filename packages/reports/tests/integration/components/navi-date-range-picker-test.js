@@ -604,16 +604,30 @@ test('Default interval for `All` timegrain', function(assert) {
         }}
     `);
 
-  assert.ok(Ember.isEmpty(this.$('.predefined-range')),
-    'All date time period has no prdefined look backs');
-
   assert.equal(this.$('li').length,
-    1,
+    9,
     'Only one option is available to select for All time grain');
 
-  assert.equal(this.$('li:eq(0) > div:eq(0)').text().trim(),
-    ['Custom range'],
-    'Custom Range is the only option in All time grain');
+  let ranges = this.$('.predefined-range').map(function() {
+    return $(this).text().trim();
+  }).get();
+
+  assert.deepEqual(ranges,
+    [
+      'Last Day',
+      'Last 7 Days',
+      'Last 14 Days',
+      'Last 30 Days',
+      'Last 60 Days',
+      'Last 90 Days',
+      'Last 180 Days',
+      'Last 400 Days'
+    ],
+    'All time grain ');
+
+  assert.equal(this.$('li:last-of-type > div:eq(0)').text().trim(),
+    'Custom range',
+    'Last option is "Custom range"');
 
   // Click the Custom range and click apply
   Ember.run(() => {

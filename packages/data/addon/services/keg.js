@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Ember service that can store and fetch records
@@ -34,6 +34,23 @@ export default Ember.Service.extend({
   reset() {
     set(this, 'recordKegs', {});
     set(this, 'idIndexes', {});
+  },
+
+  /**
+   * resets internal data structure by type
+   *
+   * @method resetByType
+   * @param {String} type - model type to reset
+   */
+  resetByType(type) {
+    let recordKegs = get(this, 'recordKegs'),
+        idIndexes  = get(this, 'idIndexes');
+
+    idIndexes[type] = {};
+    recordKegs[type] = Ember.A();
+
+    set(this, 'recordKegs', recordKegs);
+    set(this, 'idIndexes', idIndexes);
   },
 
   /**

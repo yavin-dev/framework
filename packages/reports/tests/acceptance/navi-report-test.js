@@ -1400,6 +1400,7 @@ test('Running a report against unauthorized table shows unauthorized route', fun
 
   selectChoose('.navi-table-select__dropdown', 'Network');
   click('.navi-report__run-btn');
+  click('.report-view__visualization-option:contains(Table)');
   andThen(() => {
     assert.equal(currentURL(),
       '/reports/1/view',
@@ -1410,7 +1411,6 @@ test('Running a report against unauthorized table shows unauthorized route', fun
 
     assert.ok(!!find('.table-widget').length,
       'Data table visualization loads');
-
   });
 });
 
@@ -1588,5 +1588,41 @@ test('Test filter "Is Not Empty" is accepted', function(assert) {
     assert.notEqual(find('.navi-info-message__error-list-item').text().trim(),
       'A filter cannot have any empty values',
       'Should not show empty values error');
+  });
+});
+
+test('Date Picker doesn`t change date when moving to time grain where dates are valid', function(assert) {
+  assert.expect(3);
+
+  visit('/reports/1');
+  click('.grouped-list__item-label:contains(Month)');
+  andThen(() => {
+    // Select the month Jan
+    click('.custom-range-form .pick-value');
+    click('.datepicker:eq(0) .month:contains(Jan)');
+    click('.datepicker:eq(1) .month:contains(Jan)');
+    click('.navi-date-range-picker__apply-btn');
+    click('.navi-report__run-btn');
+    andThen(() => {
+      assert.equal(find('.date-range__select-trigger').text().trim(),
+        'Jan 2015',
+        'Month is changed to Jan 2015');
+    });
+
+    click('.grouped-list__item-label:contains(Day)');
+    click('.navi-report__run-btn');
+    andThen(() => {
+      assert.equal(find('.date-range__select-trigger').text().trim(),
+        'Jan 01, 2015 - Jan 31, 2015',
+        'Switching to day preserves the day casts the dates to match the time period');
+    });
+
+    click('.grouped-list__item-label:contains(Week)');
+    click('.navi-report__run-btn');
+    andThen(() => {
+      assert.equal(find('.date-range__select-trigger').text().trim(),
+        'Dec 29, 2014 - Jan 25, 2015',
+        'Switching to week casts the dates to match the start and end of the date time period');
+    });
   });
 });
