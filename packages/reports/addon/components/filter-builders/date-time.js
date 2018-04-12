@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -33,8 +33,8 @@ export default Base.extend({
    */
   filter: computed('requestFragment.interval', 'request.logicalTable.timeGrain', function() {
     let interval = get(this, 'requestFragment.interval'),
-        timeGrain = get(this, 'request.logicalTable.timeGrain'),
-        longName = `Date Time (${timeGrain.longName})`,
+        timeGrainName = get(this, 'request.logicalTable.timeGrain.longName'),
+        longName = `Date Time (${timeGrainName})`,
         operator = get(this, 'supportedOperators')[0]; // Only 1 operator allowed
 
     return {

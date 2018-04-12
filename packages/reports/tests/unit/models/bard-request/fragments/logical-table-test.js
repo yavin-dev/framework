@@ -160,7 +160,7 @@ test('Validations', function(assert) {
         'There is one validation error');
 
       assert.equal(validations.get('messages').objectAt(0),
-        'Please select a table',
+        'Table is invalid or unavailable',
         'Table cannot be empty is a part of the error messages');
     });
 

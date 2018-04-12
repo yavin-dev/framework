@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Ember from 'ember';
@@ -21,6 +21,15 @@ export default Ember.Component.extend({
    * @property {Object} request
    */
   request: computed.readOnly('report.request'),
+
+  /**
+   * @property {boolean} -- whether report has valid table
+   */
+  hasValidLogicalTable: computed('report.request.logicalTable.table', function() {
+    const allTables = get(this, 'allTables');
+    const tableName = get(this, 'report.request.logicalTable.table.name');
+    return allTables.filterBy('name', tableName).length > 0;
+  }),
 
   /**
    * @property {Array} allTables - All metadata table records

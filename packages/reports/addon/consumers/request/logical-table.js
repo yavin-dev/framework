@@ -22,7 +22,7 @@ export default ActionConsumer.extend({
      */
     [RequestActions.UPDATE_TABLE](route, table) {
       let currentModel = get(route, 'currentModel'),
-          oldTimeGrain = get(currentModel, 'request.logicalTable.timeGrain');
+          oldTimeGrain = get(currentModel, 'request.logicalTable.timeGrain') || {name: ''}; // allow findBy to work when switching from an invalid table so switching to valid a table works
 
       set(currentModel, 'request.logicalTable.table', table);
 

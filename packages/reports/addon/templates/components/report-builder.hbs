@@ -1,6 +1,6 @@
 {{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class='report-builder__side'>
-    {{#if (gt allTables.length 1) }}
+    {{#if (or (gt allTables.length 1) (not hasValidLogicalTable))}}
       {{navi-table-select
           classNames='report-builder__container report-builder__container--table'
           options=allTables
@@ -9,6 +9,7 @@
       }}
     {{/if}}
     <div class='report-builder__container--builder'>
+        {{#if hasValidLogicalTable}}
         {{dimension-selector
             class='report-builder__container report-builder__dimension-selector'
             request=request
@@ -25,22 +26,26 @@
             removeMetric=(report-action 'REMOVE_METRIC')
             toggleMetricFilter=(report-action 'TOGGLE_METRIC_FILTER')
         }}
+        {{/if}}
     </div>
 </div>
 <div class='report-builder__main'>
-    <div class='report-builder__container report-builder__container--filters'>
-        <span class='report-builder__container-header'>
-            FILTERS
-        </span>
-        {{#filter-collection
-            class='report-builder__filter-collection'
-            request=request
-            onUpdateFilter=(report-action 'UPDATE_FILTER')
-            onRemoveFilter=(report-action 'REMOVE_FILTER')
-        }}
-            Click the icon {{navi-icon 'filter' class='filter-collection__message--icon'}} next to a dimension/metric to add a filter.
-        {{/filter-collection}}
-    </div>
+    {{#if hasValidLogicalTable}}
+      <div class='report-builder__container report-builder__container--filters'>
+          <span class='report-builder__container-header'>
+              FILTERS
+          </span>
+
+            {{#filter-collection
+                class='report-builder__filter-collection'
+                request=request
+                onUpdateFilter=(report-action 'UPDATE_FILTER')
+                onRemoveFilter=(report-action 'REMOVE_FILTER')
+            }}
+                Click the icon {{navi-icon 'filter' class='filter-collection__message--icon'}} next to a dimension/metric to add a filter.
+            {{/filter-collection}}
+      </div>
+    {{/if}}
     <div class='report-builder__container report-builder__container--result'>
         {{yield}}
     </div>

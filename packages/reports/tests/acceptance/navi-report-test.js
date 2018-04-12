@@ -1626,3 +1626,14 @@ test('Date Picker doesn`t change date when moving to time grain where dates are 
     });
   });
 });
+
+test('Report with an unknown table doesn\'t crash', function(assert) {
+  assert.expect(1);
+  visit('/reports/9');
+
+  andThen(() => {
+    assert.equal(find('.navi-info-message__error-list-item').text().trim(),
+      'Table is invalid or unavailable',
+      'Should show aan error message when table cannot be found in metadata');
+  });
+});

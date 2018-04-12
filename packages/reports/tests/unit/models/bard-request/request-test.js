@@ -1469,8 +1469,8 @@ test('logicalTable belongs-to validation', function(assert) {
         2,
         'Two Fields are invalid in the request model');
       assert.equal(validations.get('messages').objectAt(0),
-        'Please select a table',
-        'Please select a table is a part of the messages');
+        'Table is invalid or unavailable',
+        'Table is invalid or unavailable is a part of the messages');
       assert.equal(validations.get('messages').objectAt(1),
         'The timeGrainName field cannot be empty',
         'Time Grain Name cannot be empty is a part of the messages');
