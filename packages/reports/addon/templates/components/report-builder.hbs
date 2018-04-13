@@ -8,7 +8,7 @@
           onChange=(report-action 'UPDATE_TABLE')
       }}
     {{/if}}
-    <div class='report-builder__container--builder'>
+    <div class='report-builder__container--builder {{if (not hasValidLogicalTable) 'report-builder__container--builder-skel'}}'>
         {{#if hasValidLogicalTable}}
         {{dimension-selector
             class='report-builder__container report-builder__dimension-selector'
