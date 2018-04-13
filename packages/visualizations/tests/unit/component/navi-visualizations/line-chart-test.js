@@ -95,7 +95,7 @@ test('dataConfig', function(assert) {
         series: {
           type: 'metric',
           config: {
-            metrics: [ 'totalPageViews' ]
+            metrics: [ {metric: 'totalPageViews', parameters: {}, canonicalName: 'totalPageViews'} ]
           }
         }
       }
@@ -123,8 +123,8 @@ test('dataConfig', function(assert) {
           type: 'metric',
           config: {
             metrics: [
-              'totalPageViews',
-              'uniqueIdentifier'
+              {metric: 'totalPageViews', parameters: {}, canonicalName: 'totalPageViews'},
+              {metric: 'uniqueIdentifier', parameters: {}, canonicalName: 'uniqueIdentifier'}
             ]
           }
         }
@@ -244,7 +244,7 @@ test('config', function(assert){
         series: {
           type: 'dimension',
           config: {
-            metric: 'totalPageViews'
+            metric: {metric: 'totalPageViews', parameters: {}, canonicalName: 'totalPageViews'}
           }
         }
       }
@@ -319,7 +319,7 @@ test('single data point', function(assert) {
               series: {
                 type: 'metric',
                 config: {
-                  metrics: [ 'foo' ]
+                  metrics: [ {metric: 'foo', parameters: {}, canonicalName: 'foo'} ]
                 }
               }
             }

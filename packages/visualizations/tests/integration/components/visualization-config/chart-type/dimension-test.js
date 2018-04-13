@@ -9,7 +9,7 @@ import { setupMock, teardownMock } from '../../../../helpers/mirage-helper';
 
 let MetadataService;
 
-const { getOwner } = Ember;
+const { get, getOwner } = Ember;
 
 let Template = hbs`{{visualization-config/chart-type/dimension
                     seriesConfig=seriesConfig
@@ -68,7 +68,7 @@ moduleForComponent('visualization-config/chart-type/dimension', 'Integration | C
 
     this.set('seriesConfig', {
       dimensionOrder: [ 'foo' ],
-      metric: 'metric1',
+      metric: { metric: 'metric1', parameters: {}, canonicalName: 'metric1', toJSON() { return this; } },
       dimensions: [
         {
           name: 'Foo1',
@@ -85,9 +85,9 @@ moduleForComponent('visualization-config/chart-type/dimension', 'Integration | C
       request: {
         dimensions: [ { dimension: { name: 'foo' } } ],
         metrics: [
-          { metric: 'metric1', parameters: {}, canonicalName: 'metric1', serialize() { return this; } },
-          { metric: 'metric2', parameters: {}, canonicalName: 'metric2', serialize() { return this; } },
-          { metric: 'revenue', parameters: { currency: 'USD' }, canonicalName: 'revenue(currency=USD)', serialize() { return this; } }
+          { metric: 'metric1', parameters: {}, canonicalName: 'metric1', toJSON() { return this; } },
+          { metric: 'metric2', parameters: {}, canonicalName: 'metric2', toJSON() { return this; } },
+          { metric: 'revenue', parameters: { currency: 'USD' }, canonicalName: 'revenue(currency=USD)', toJSON() { return this; } }
         ]
       },
       response: ROWS,
@@ -124,7 +124,7 @@ test('on metric change', function(assert) {
   this.render(Template);
 
   this.set('onUpdateChartConfig', config => {
-    assert.deepEqual(config.metric,
+    assert.deepEqual(get(config, 'metric.canonicalName'),
       'metric2',
       'Metric 2 is selected and passed on to the onUpdateChartConfig action');
   });

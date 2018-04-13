@@ -11,16 +11,16 @@ test('validate request-metric-exist', function(assert) {
   let Validator = this.subject(),
       request = {
         metrics: Ember.A([
-          { metric: { name: 'm1' }, canonicalName: 'm1' },
-          { metric: { name: 'm2' }, canonicalName: 'm2' }
+          { metric: { name: 'm1' }, canonicalName: 'm1',toJSON() { return { metric: this.metric, canonicalName: this.canonicalName }; } },
+          { metric: { name: 'm2' }, canonicalName: 'm2',toJSON() { return { metric: this.metric, canonicalName: this.canonicalName }; } }
         ])
       };
 
-  assert.equal(Validator.validate('m1', { request }),
+  assert.equal(Validator.validate({ metric: { name: 'm1' }, canonicalName: 'm1' }, { request }),
     true,
     'request-metric-exist returns `true` when metric exists in request');
 
-  assert.equal(Validator.validate('m3', { request }),
+  assert.equal(Validator.validate({ metric: { name: 'm3' }, canonicalName: 'm3' }, { request }),
     false,
     'request-metric-exist returns `false` when metric does not exists in request');
 });

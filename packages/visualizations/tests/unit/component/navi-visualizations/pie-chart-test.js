@@ -88,7 +88,11 @@ const RESPONSE = {
 const OPTIONS = {
   series: {
     config: {
-      metric: 'totalPageViews',
+      metric: {
+        metric: 'totalPageViews',
+        parameters: {},
+        canonicalName: 'totalPageViews'
+      },
       dimensionOrder: ['age'],
       dimensions: [
         {
@@ -158,7 +162,11 @@ test('dataConfig', function(assert) {
   let updatedOptions = {
     series: {
       config: {
-        metric: 'uniqueIdentifier',
+        metric: {
+          metric: 'uniqueIdentifier',
+          parameters: {},
+          canonicalName: 'uniqueIdentifier'
+        },
         dimensionOrder: ['age'],
         dimensions: [
           {

@@ -79,7 +79,13 @@ moduleForComponent('navi-visualizations/line-chart', 'Integration | Component | 
           series: {
             type: 'metric',
             config: {
-              metrics: [ 'uniqueIdentifier' ]
+              metrics: [
+                {
+                  metric: 'uniqueIdentifier',
+                  canonicalName: 'uniqueIdentifier',
+                  toJSON() { return this; }
+                }
+              ]
             }
           }
         }
@@ -160,7 +166,11 @@ test('missing data - dimensions', function(assert) {
         series: {
           type: 'dimension',
           config: {
-            metric: 'uniqueIdentifier',
+            metric: {
+              metric: 'uniqueIdentifier',
+              canonicalName: 'uniqueIdentifier',
+              toJSON() { return this; }
+            },
             dimensionOrder: ['age'],
             dimensions: [
               {
@@ -227,7 +237,26 @@ test('multiple series', function(assert) {
         series: {
           type: 'metric',
           config: {
-            metrics: [ 'uniqueIdentifier', 'totalPageViews', 'revenue(currency=USD)' ]
+            metrics: [
+              {
+                metric: 'uniqueIdentifier',
+                canonicalName: 'uniqueIdentifier',
+                toJSON() { return this; }
+              },
+              {
+                metric: 'totalPageViews',
+                canonicalName: 'totalPageViews',
+                toJSON() { return this; }
+              },
+              {
+                metric: 'revenue',
+                parameters: {
+                  currency: 'USD'
+                },
+                canonicalName: 'revenue(currency=USD)',
+                toJSON() { return this; }
+              }
+            ]
           }
         }
       }
@@ -251,7 +280,11 @@ test('y axis label', function(assert) {
         series: {
           type: 'dimension',
           config: {
-            metric: 'totalPageViews',
+            metric: {
+              metric: 'totalPageViews',
+              canonicalName: 'totalPageViews',
+              toJSON() { return this; }
+            },
             dimensionOrder: ['age'],
             dimensions: [
               {
@@ -295,7 +328,14 @@ test('y axis label', function(assert) {
         series: {
           type: 'dimension',
           config: {
-            metric: 'revenue(currency=USD)',
+            metric: {
+              metric: 'revenue',
+              parameters: {
+                currency: 'USD'
+              },
+              canonicalName: 'revenue(currency=USD)',
+              toJSON() { return this; }
+            },
             dimensionOrder: ['age'],
             dimensions: [
               {
@@ -336,7 +376,18 @@ test('y axis label', function(assert) {
         series: {
           type: 'metric',
           config: {
-            metrics: [ 'uniqueIdentifier', 'totalPageViews' ]
+            metrics: [
+              {
+                metric: 'uniqueIdentifier',
+                canonicalName: 'uniqueIdentifier',
+                toJSON() { return this; }
+              },
+              {
+                metric: 'totalPageViews',
+                canonicalName: 'totalPageViews',
+                toJSON() { return this; }
+              }
+            ]
           }
         }
       }
@@ -432,7 +483,13 @@ test('Highlight data points', function(assert) {
         series: {
           type: 'metric',
           config: {
-            metrics: ['uniqueIdentifier']
+            metrics: [
+              {
+                metric: 'uniqueIdentifier',
+                canonicalName: 'uniqueIdentifier',
+                toJSON() { return this; }
+              }
+            ]
           }
         }
       }
@@ -485,7 +542,11 @@ test('dateTime model', function (assert) {
         series: {
           type: 'dateTime',
           config: {
-            metric: 'uniqueIdentifier',
+            metric: {
+              metric: 'uniqueIdentifier',
+              canonicalName: 'uniqueIdentifier',
+              toJSON() { return this; }
+            },
             timeGrain: 'year'
           }
         }
@@ -513,7 +574,26 @@ test('Metric series legend', function(assert) {
         series: {
           type: 'metric',
           config: {
-            metrics: [ 'uniqueIdentifier', 'totalPageViews', 'revenue(currency=USD)' ]
+            metrics: [
+              {
+                metric: 'uniqueIdentifier',
+                canonicalName: 'uniqueIdentifier',
+                toJSON() { return this; }
+              },
+              {
+                metric: 'totalPageViews',
+                canonicalName: 'totalPageViews',
+                toJSON() { return this; }
+              },
+              {
+                metric: 'revenue',
+                parameters: {
+                  currency: 'USD'
+                },
+                canonicalName: 'revenue(currency=USD)',
+                toJSON() { return this; }
+              }
+            ]
           }
         }
       }

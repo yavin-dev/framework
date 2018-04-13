@@ -132,7 +132,16 @@ test('getRequestMetrics', function(assert) {
 
   let request = {
     metrics: [
-      { metric: { name: 'totalPageViews' }, canonicalName: 'totalPageViews' }
+      {
+        metric: { name: 'totalPageViews' },
+        canonicalName: 'totalPageViews',
+        toJSON() {
+          return {
+            metric: this.metric,
+            canonicalName: this.canonicalName
+          }
+        }
+      }
     ],
     dimensions: [
       { dimension: { name: 'age' } },
@@ -141,8 +150,8 @@ test('getRequestMetrics', function(assert) {
   };
 
   assert.deepEqual(getRequestMetrics(request),
-    ['totalPageViews'],
-    'getRequestMetrics retuns expected metric name');
+    [{ metric: { name: 'totalPageViews' }, canonicalName: 'totalPageViews' }],
+    'getRequestMetrics returns expected metric object');
 });
 
 test('getRequestDimensions', function(assert) {

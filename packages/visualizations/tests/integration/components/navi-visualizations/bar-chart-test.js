@@ -17,7 +17,7 @@ const TEMPLATE = hbs`
 const Model = Ember.A([{
   request: {
     metrics: [
-      'uniqueIdentifier'
+      {metric: 'uniqueIdentifier', parameters: {}, canonicalName: 'uniqueIdentifier', toJSON() { return this; }}
     ],
     intervals: [
       {
@@ -384,7 +384,13 @@ moduleForComponent('navi-visualizations/bar-chart', 'Integration | Component | b
           series: {
             type: 'metric',
             config: {
-              metrics: [ 'uniqueIdentifier' ]
+              metrics: [
+                {
+                  metric: 'adClicks',
+                  canonicalName: 'adClicks',
+                  toJSON() { return this; }
+                }
+              ]
             }
           }
         }
@@ -422,7 +428,18 @@ test('multiple metric series', function(assert) {
         series: {
           type: 'metric',
           config: {
-            metrics: [ 'uniqueIdentifier', 'totalPageViews' ]
+            metrics: [
+              {
+                metric: 'adClicks',
+                canonicalName: 'adClicks',
+                toJSON() { return this; }
+              },
+              {
+                metric: 'totalPageViews',
+                canonicalName: 'totalPageViews',
+                toJSON() { return this; }
+              }
+            ]
           }
         }
       }
@@ -446,7 +463,11 @@ test('multiple dimension series', function(assert) {
         series: {
           type: 'dimension',
           config: {
-            metric: 'totalPageViews',
+            metric: {
+              metric: 'totalPageViews',
+              canonicalName: 'totalPageViews',
+              toJSON() { return this; }
+            },
             dimensionOrder: ['age'],
             dimensions: [
               {

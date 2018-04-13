@@ -18,7 +18,10 @@ moduleForModel('all-the-fragments', 'Unit | Model | Pie Chart Visualization Frag
 test('default value', function(assert) {
   assert.expect(1);
 
-  let metricsAndDims = [ ['m1', 'm2'], ['d1', 'd2'] ],
+  let metricsAndDims = [
+        ['m1', 'm2'],
+        ['d1', 'd2']
+      ],
       chart = run(() => this.subject().get('pieChart'));
 
   assert.ok(!chart.isValidForRequest(
@@ -34,7 +37,10 @@ test('chart type', function(assert) {
   set(chart, 'metadata.series', {
     type: 'dimension',
     config: {
-      metric: 'm1',
+      metric: {
+        metric: 'm1',
+        parameters: {}
+      },
       dimensionOrder: ['d1']
     }
   });
@@ -56,18 +62,19 @@ test('dimension series - metric', function(assert) {
   set(chart, 'metadata.series', {
     type: 'dimension',
     config: {
-      metric: 'm1',
+      metric: {
+        metric: 'm1',
+        parameters: {}
+      },
       dimensionOrder: ['d1']
     }
   });
 
-  assert.ok(chart.isValidForRequest(
-    buildTestRequest(['m1', 'm2'], ['d1'])
-  ), 'pie-chart is valid when it has a metric in the request metrics');
+  assert.ok(chart.isValidForRequest(buildTestRequest(['m1', 'm2'],['d1'])),
+    'pie-chart is valid when it has a metric in the request metrics');
 
-  assert.ok(!chart.isValidForRequest(
-    buildTestRequest(['m3'], ['d1'])
-  ), 'pie-chart is invalid when it does not have a metric in the request metrics');
+  assert.notOk(chart.isValidForRequest(buildTestRequest(['m3'], ['d1'])),
+    'pie-chart is invalid when it does not have a metric in the request metrics');
 });
 
 test('dimension series - dimensionOrder', function(assert) {
@@ -78,18 +85,19 @@ test('dimension series - dimensionOrder', function(assert) {
   set(chart, 'metadata.series', {
     type: 'dimension',
     config: {
-      metric: 'm1',
+      metric: {
+        metric: 'm1',
+        parameters: {}
+      },
       dimensionOrder: ['d1', 'd2']
     }
   });
 
-  assert.ok(chart.isValidForRequest(
-    buildTestRequest(['m1'], ['d1', 'd2'])
-  ), 'pie-chart is valid when it\'s dimensions match the request metrics');
+  assert.ok(chart.isValidForRequest(buildTestRequest(['m1'], ['d1', 'd2'])),
+    'pie-chart is valid when it\'s dimensions match the request metrics');
 
-  assert.ok(!chart.isValidForRequest(
-    buildTestRequest(['m1'], ['d1', 'd2', 'd3'])
-  ), 'pie-chart is invalid when it\'s dimensions do not match the request metrics');
+  assert.notOk(chart.isValidForRequest(buildTestRequest(['m1'], ['d1', 'd2', 'd3'])),
+    'pie-chart is invalid when it\'s dimensions do not match the request metrics');
 });
 
 test('rebuildConfig - dimension series - less than max series', function(assert) {
@@ -110,7 +118,10 @@ test('rebuildConfig - dimension series - less than max series', function(assert)
       series: {
         type: 'dimension',
         config: {
-          metric: 'm1',
+          metric: {
+            metric: 'm1',
+            parameters: {}
+          },
           dimensionOrder: [ 'd1', 'd2' ],
           dimensions: [
             {
@@ -153,7 +164,10 @@ test('rebuildConfig - dimension series - greater than maxSeries', function(asser
       series: {
         type: 'dimension',
         config: {
-          metric: 'm1',
+          metric: {
+            metric: 'm1',
+            parameters: {}
+          },
           dimensionOrder: [ 'd1', 'd2' ],
           dimensions: [
             {
@@ -203,7 +217,10 @@ test('rebuildConfig - dimension series - only metric', function(assert) {
   set(chart, 'metadata.series', {
     type: 'dimension',
     config: {
-      metric: 'configMetric',
+      metric: {
+        metric: 'configMetric',
+        parameters: {}
+      },
       dimensionOrder: [ 'd1', 'd2' ],
       dimensions: [
         {
@@ -224,7 +241,10 @@ test('rebuildConfig - dimension series - only metric', function(assert) {
       series: {
         type: 'dimension',
         config: {
-          metric: 'requestMetric',
+          metric: {
+            metric: 'requestMetric',
+            parameters: {}
+          },
           dimensionOrder: [ 'd1', 'd2' ],
           dimensions: [
             {
@@ -247,7 +267,10 @@ test('rebuildConfig - dimension series - dimension order', function(assert) {
   set(chart, 'metadata.series', {
     type: 'dimension',
     config: {
-      metric: 'requestMetric',
+      metric: {
+        metric: 'requestMetric',
+        parameters: {}
+      },
       dimensionOrder: [ 'configDim1', 'configDim2' ],
       dimensions: [
         {
@@ -268,7 +291,10 @@ test('rebuildConfig - dimension series - dimension order', function(assert) {
       series: {
         type: 'dimension',
         config: {
-          metric: 'requestMetric',
+          metric: {
+            metric: 'requestMetric',
+            parameters: {}
+          },
           dimensionOrder: [ 'requestDim' ],
           dimensions: [
             {
@@ -291,7 +317,10 @@ test('rebuildConfig - dimension series - zero dimension series', function(assert
   set(chart, 'metadata.series', {
     type: 'dimension',
     config: {
-      metric: 'm1',
+      metric: {
+        metric: 'm1',
+        parameters: {}
+      },
       dimensionOrder: [ 'd1', 'd2' ],
       dimensions: []
     }
@@ -307,7 +336,10 @@ test('rebuildConfig - dimension series - zero dimension series', function(assert
       series: {
         type: 'dimension',
         config: {
-          metric: 'm1',
+          metric: {
+            metric: 'm1',
+            parameters: {}
+          },
           dimensionOrder: [ 'd1', 'd2' ],
           dimensions: [
             {
@@ -340,7 +372,10 @@ test('rebuildConfig - dimension series - missing dimension value description', f
       series: {
         type: 'dimension',
         config: {
-          metric: 'm1',
+          metric: {
+            metric: 'm1',
+            parameters: {}
+          },
           dimensionOrder: [ 'd1', 'd2' ],
           dimensions: [
             {

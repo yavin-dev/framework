@@ -18,7 +18,7 @@ test('weeks by year uses isoWeekYear', function(assert) {
       },
       config = {
         timeGrain: 'year',
-        metric: 'pageViews'
+        metric: { metric: 'pageViews', parameters: {}, canonicalName: 'pageViews' }
       },
       response = [
         {
@@ -58,7 +58,7 @@ test('days by month', function(assert) {
       },
       config = {
         timeGrain: 'month',
-        metric: 'pageViews'
+        metric: { metric: 'pageViews', parameters: {}, canonicalName: 'pageViews' }
       },
       response = [
         {
@@ -108,7 +108,7 @@ test('days by year', function(assert) {
       },
       config = {
         timeGrain: 'year',
-        metric: 'pageViews'
+        metric: { metric: 'pageViews', parameters: {}, canonicalName: 'pageViews' }
       },
       response = [
         {
@@ -156,7 +156,7 @@ test('months by year', function(assert) {
       },
       config = {
         timeGrain: 'year',
-        metric: 'pageViews'
+        metric: { metric: 'pageViews', parameters: {}, canonicalName: 'pageViews' }
       },
       response = [
         {
@@ -205,7 +205,7 @@ test('hours by day', function(assert) {
       },
       config = {
         timeGrain: 'day',
-        metric: 'pageViews'
+        metric: { metric: 'pageViews', parameters: {}, canonicalName: 'pageViews' }
       },
       response = [
         {
@@ -250,7 +250,7 @@ test('minutes by hour', function(assert) {
       },
       config = {
         timeGrain: 'hour',
-        metric: 'pageViews'
+        metric: { metric: 'pageViews', parameters: {}, canonicalName: 'pageViews' }
       },
       response = [
         {
@@ -295,7 +295,7 @@ test('seconds by minute', function(assert) {
       },
       config = {
         timeGrain: 'minute',
-        metric: 'pageViews'
+        metric: { metric: 'pageViews', parameters: {}, canonicalName: 'pageViews' }
       },
       response = [
         {
@@ -340,7 +340,7 @@ test('Zero in chart data', function(assert) {
       },
       config = {
         timeGrain: 'month',
-        metric: 'pageViews'
+        metric: { metric: 'pageViews', parameters: {}, canonicalName: 'pageViews' }
       },
       response = [
         {
@@ -371,7 +371,7 @@ test('buildTooltip', function(assert) {
       },
       config = {
         timeGrain: 'month',
-        metric: 'pageViews'
+        metric: {metric: 'pageViews', parameters: {}, canonicalName: 'pageViews'}
       },
       response = [
         {

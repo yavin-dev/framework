@@ -119,50 +119,61 @@ test('buildData - no metrics', function(assert) {
 test('groupDataBySeries - many metrics', function(assert) {
   assert.expect(1);
 
-  assert.deepEqual(MetricChartBuilder.buildData(DATA, { metrics: ['totalPageViews', 'uniqueIdentifier']}, REQUEST),
-    [
-      {
-        x: {
-          rawValue: '2016-05-30 00:00:00.000',
-          displayValue: 'May 30'
-        },
-        'Total Page Views': 3669828357,
-        'Unique Identifiers': 172933788,
+  assert.deepEqual(MetricChartBuilder.buildData(DATA, { metrics: [
+    {
+      metric: 'totalPageViews',
+      parameters: {},
+      canonicalName: 'totalPageViews'
+    },
+    {
+      metric: 'uniqueIdentifier',
+      parameters: {},
+      canonicalName: 'uniqueIdentifier'
+    }
+  ]}, REQUEST),
+  [
+    {
+      x: {
+        rawValue: '2016-05-30 00:00:00.000',
+        displayValue: 'May 30'
       },
-      {
-        x: {
-          rawValue: '2016-05-31 00:00:00.000',
-          displayValue: 'May 31'
-        },
-        'Total Page Views': 4088487125,
-        'Unique Identifiers': 183206656,
+      'Total Page Views': 3669828357,
+      'Unique Identifiers': 172933788,
+    },
+    {
+      x: {
+        rawValue: '2016-05-31 00:00:00.000',
+        displayValue: 'May 31'
       },
-      {
-        x: {
-          rawValue: '2016-06-01 00:00:00.000',
-          displayValue: 'Jun 1'
-        },
-        'Total Page Views': 4024700302,
-        'Unique Identifiers': 183380921,
+      'Total Page Views': 4088487125,
+      'Unique Identifiers': 183206656,
+    },
+    {
+      x: {
+        rawValue: '2016-06-01 00:00:00.000',
+        displayValue: 'Jun 1'
       },
-      {
-        x: {
-          rawValue: '2016-06-02 00:00:00.000',
-          displayValue: 'Jun 2'
-        },
-        'Total Page Views': 3950276031,
-        'Unique Identifiers': 180559793,
+      'Total Page Views': 4024700302,
+      'Unique Identifiers': 183380921,
+    },
+    {
+      x: {
+        rawValue: '2016-06-02 00:00:00.000',
+        displayValue: 'Jun 2'
       },
-      {
-        x: {
-          rawValue: '2016-06-03 00:00:00.000',
-          displayValue: 'Jun 3'
-        },
-        'Total Page Views': 3697156058,
-        'Unique Identifiers': 172724594
-      }
-    ],
-    'A series is made for each requested metric');
+      'Total Page Views': 3950276031,
+      'Unique Identifiers': 180559793,
+    },
+    {
+      x: {
+        rawValue: '2016-06-03 00:00:00.000',
+        displayValue: 'Jun 3'
+      },
+      'Total Page Views': 3697156058,
+      'Unique Identifiers': 172724594
+    }
+  ],
+  'A series is made for each requested metric');
 });
 
 test('groupDataBySeries - gaps in data', function(assert) {
@@ -186,7 +197,7 @@ test('groupDataBySeries - gaps in data', function(assert) {
         }
       ];
 
-  assert.deepEqual(MetricChartBuilder.buildData(data, { metrics: ['totalPageViews', 'uniqueIdentifier']}, request),
+  assert.deepEqual(MetricChartBuilder.buildData(data, { metrics: [{ metric: 'totalPageViews', parameters: {}, canonicalName: 'totalPageViews' }, {metric: 'uniqueIdentifier', parameters: {}, canonicalName: 'uniqueIdentifier'}]}, request),
     [
       {
         x: {
@@ -233,7 +244,7 @@ test('groupDataBySeries - hour granularity series', function(assert) {
         },
       ];
 
-  assert.deepEqual(MetricChartBuilder.buildData(data, { metrics: ['totalPageViews']}, request),
+  assert.deepEqual(MetricChartBuilder.buildData(data, { metrics: [{ metric: 'totalPageViews', parameters: {}, canonicalName: 'totalPageViews' }]}, request),
     [
       {
         x: {
@@ -278,7 +289,7 @@ test('groupDataBySeries - month granularity series', function(assert) {
         },
       ];
 
-  assert.deepEqual(MetricChartBuilder.buildData(data, { metrics: ['totalPageViews']}, request),
+  assert.deepEqual(MetricChartBuilder.buildData(data, { metrics: [{ metric: 'totalPageViews', parameters: {}, canonicalName: 'totalPageViews' }]}, request),
     [
       {
         x: {
@@ -319,25 +330,33 @@ test('Zero in chart data', function(assert) {
         }
       ];
 
-  assert.deepEqual(MetricChartBuilder.buildData(data, { metrics: ['totalPageViews', 'uniqueIdentifier']}, request),
-    [
-      {
-        x: {
-          rawValue: '2016-06-02 00:00:00.000',
-          displayValue: 'Jun 2'
-        },
-        'Total Page Views': 0,
-        'Unique Identifiers': null,
-      }
-    ],
-    'Zero values are not considered gaps in data');
+  assert.deepEqual(MetricChartBuilder.buildData(data, {
+    metrics: [
+      {metric: 'totalPageViews', canonicalName: 'totalPageViews'},
+      {metric: 'uniqueIdentifier', canonicalName: 'uniqueIdentifier'}
+    ]
+  }, request),
+  [
+    {
+      x: {
+        rawValue: '2016-06-02 00:00:00.000',
+        displayValue: 'Jun 2'
+      },
+      'Total Page Views': 0,
+      'Unique Identifiers': null,
+    }
+  ],
+  'Zero values are not considered gaps in data');
 });
 
 test('buildTooltip', function(assert) {
   assert.expect(2);
 
   let config = {
-        metrics: ['totalPageViews', 'uniqueIdentifier']
+        metrics: [
+          { metric: 'totalPageViews', parameters: {}, canonicalName: 'totalPageViews' },
+          { metric: 'uniqueIdentifier', parameters: {}, canonicalName: 'uniqueIdentifier'}
+        ]
       },
       x = '2016-06-02 00:00:00.000',
       tooltipData = [{
