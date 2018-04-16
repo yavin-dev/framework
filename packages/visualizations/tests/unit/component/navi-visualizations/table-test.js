@@ -36,7 +36,7 @@ const ROWS = [
 
 const MODEL = Ember.A([{
   request: {
-    metrics: [ { metric: 'uniqueIdentifier' } ],
+    metrics: [ { metric: 'uniqueIdentifier' , parameters: {}, toJSON() { return { metric: 'uniqueIdentifier', parameters: {}};} } ],
     logicalTable: { table: 'network', timeGrain: 'day' },
     sort: [ { metric: 'dateTime', direction: 'desc' } ]
   },
@@ -47,9 +47,9 @@ const MODEL = Ember.A([{
 
 const OPTIONS = {
   columns: [
-    { field: 'dateTime', type: 'dateTime', displayName: 'Date' },
-    { field: 'uniqueIdentifier', type: 'metric', displayName: 'Unique Identifiers' },
-    { field: 'totalPageViewsWoW', type: 'threshold', displayName: 'Total Page Views WoW' }
+    { field: {dateTime: 'dateTime'}, type: 'dateTime', displayName: 'Date' },
+    { field: {metric: 'uniqueIdentifier', parameters: {}}, type: 'metric', displayName: 'Unique Identifiers' },
+    { field: {metric: 'totalPageViewsWoW', parameters: {}}, type: 'threshold', displayName: 'Total Page Views WoW' }
   ]
 };
 

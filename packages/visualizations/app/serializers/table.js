@@ -1,1 +1,1 @@
-export { default } from 'navi-visualizations/serializers/visualization';
+export { default } from 'navi-visualizations/serializers/table';

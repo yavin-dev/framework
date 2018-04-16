@@ -73,8 +73,8 @@ const Model = Ember.A([{
   request: {
     dimensions: [ {dimension:'os'} ],
     metrics: [
-      {metric: 'uniqueIdentifier'},
-      {metric: 'totalPageViews'},
+      {metric: 'uniqueIdentifier', parameters: {}},
+      {metric: 'totalPageViews', parameters: {}},
       {metric: 'platformRevenue', parameters: {currency: 'USD', as: 'm1'}}
     ],
     sort: [
@@ -96,27 +96,27 @@ const Model = Ember.A([{
 const Options = {
   columns: [
     {
-      field: 'dateTime',
+      field: {dateTime: 'dateTime'},
       type: 'dateTime',
       displayName: 'Date'
     },
     {
-      field: 'os',
+      field: {dimension: 'os'},
       type: 'dimension',
       displayName: 'Operating System'
     },
     {
-      field: 'uniqueIdentifier',
+      field: {metric: 'uniqueIdentifier', parameters: {}},
       type: 'metric',
       displayName: 'Unique Identifiers'
     },
     {
-      field: 'totalPageViews',
+      field: {metric: 'totalPageViews', parameters: {}},
       type: 'metric',
       displayName: 'Total Page Views'
     },
     {
-      field: 'platformRevenue(currency=USD)',
+      field: {metric: 'platformRevenue', parameters: { currency: 'USD'}},
       type: 'metric',
       displayName: 'Platform Revenue (USD)'
     }
@@ -178,31 +178,37 @@ test('onUpdateReport', function(assert) {
   assert.expect(9);
 
   this.set('options',
-    Ember.$.extend(true, {}, Options, { columns: [{
-      field: 'dateTime',
-      type: 'dateTime',
-      displayName: 'Date'
-    },
-    {
-      field: 'os',
-      type: 'dimension',
-      displayName: 'Operating System'
-    },
-    {
-      field: 'uniqueIdentifier',
-      type: 'metric',
-      displayName: 'Unique Identifiers'
-    },
-    {
-      field: 'totalPageViews',
-      type: 'metric',
-      displayName: 'Total Page Views'
-    },
-    {
-      field: 'totalPageViewsWoW',
-      type: 'threshold',
-      displayName: 'Total Page Views WoW'
-    }]}
+    Ember.$.extend(true, {}, Options, { columns: [
+      {
+        field: 'dateTime',
+        type: 'dateTime',
+        displayName: 'Date'
+      },
+      {
+        field: {dimension: 'os'},
+        type: 'dimension',
+        displayName: 'Operating System'
+      },
+      {
+        field: {metric: 'uniqueIdentifier', parameters: {}},
+        type: 'metric',
+        displayName: 'Unique Identifiers'
+      },
+      {
+        field: {metric: 'totalPageViews', parameters: {}},
+        type: 'metric',
+        displayName: 'Total Page Views'
+      },
+      {
+        field: {metric: 'platformRevenue', parameters: { currency: 'USD'}},
+        type: 'metric',
+        displayName: 'Platform Revenue (USD)'
+      },
+      {
+        field: {metric: 'totalPageViewsWoW', parameters: {}},
+        type: 'threshold',
+        displayName: 'Total Page Views WoW'
+      }]}
     )
   );
 
@@ -235,8 +241,8 @@ test('onUpdateReport', function(assert) {
       'upsertSort',
       'the action type is `upsertSort`');
 
-    assert.equal(metricName,
-      'totalPageViews',
+    assert.deepEqual(metricName,
+      {metric: 'totalPageViews', parameters: {}},
       'The totalPageViews metric is passed along when the dateTime header is clicked');
 
     assert.equal(direction,
@@ -244,15 +250,15 @@ test('onUpdateReport', function(assert) {
       'The desc direction is passed along when the dateTime header is clicked');
   });
 
-  this.$('.table-header-cell.totalPageViews').click();
+  this.$('.table-header-cell.metric:contains(Total Page Views)').click();
 
   this.set('onUpdateReport', (actionType, metricName, direction) => {
     assert.equal(actionType,
       'upsertSort',
       'the action type is `upsertSort`');
 
-    assert.equal(metricName,
-      'totalPageViewsWoW',
+    assert.deepEqual(metricName,
+      {metric: 'totalPageViewsWoW', parameters: {}},
       'The totalPageViewsWoW metric is passed along when the dateTime header is clicked');
 
     assert.equal(direction,
@@ -260,7 +266,7 @@ test('onUpdateReport', function(assert) {
       'The desc direction is passed along when the dateTime header is clicked');
   });
 
-  this.$('.table-header-cell.totalPageViewsWoW').click();
+  this.$('.table-header-cell.threshold:contains(Total Page Views WoW)').click();
 });
 
 test('grand total in table', function(assert) {

@@ -7,7 +7,7 @@ moduleForComponent('table-cell-renderer', 'Integration | Component | table cell 
 
 test('it renders the correct cell renderer', function(assert) {
   this.set('column', {
-    field: 'foo',
+    field: {metric: 'foo', parameters: {}},
     type: 'metric'
   });
 
@@ -29,7 +29,7 @@ test('it renders the correct cell renderer', function(assert) {
   assert.ok(this.$('.table-cell-content').hasClass('metric'), 'renders metric cell-formatter');
 
   this.set('column', {
-    field: 'foo',
+    field: {dimension: 'foo'},
     type: 'dimension'
   });
 
@@ -62,7 +62,7 @@ test('it renders the correct cell renderer', function(assert) {
   assert.ok(this.$('.table-cell-content').hasClass('date-time'), 'renders using date-time cell-formatter');
 
   this.set('column', {
-    field: 'foo',
+    field: {metric: 'foo', parameters: {}},
     type: 'threshold'
   });
 
