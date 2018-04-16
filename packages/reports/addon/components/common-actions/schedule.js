@@ -76,6 +76,17 @@ export default Ember.Component.extend({
   isRuleValid: computed.alias('localDeliveryRule.validations.isValid'),
 
   /**
+   * @property {Boolean} disableSave
+   */
+  disableSave: computed('localDeliveryRule.hasDirtyAttributes', 'isRuleValid', 'isSaving', function() {
+    if (get(this, 'isSaving')) {
+      return true;
+    }
+
+    return !(get(this, 'localDeliveryRule.hasDirtyAttributes') && get(this, 'isRuleValid'))
+  }),
+
+  /**
    * @property {Boolean} attemptedSave
    */
   attemptedSave: false,
@@ -147,6 +158,7 @@ export default Ember.Component.extend({
         set(this, 'isSaving', false);
         set(this, 'showModal', false);
         set(this, 'attemptedSave', false);
+        set(this, 'notification', null);
       }
     },
 

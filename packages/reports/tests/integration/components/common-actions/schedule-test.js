@@ -182,7 +182,7 @@ test('schedule modal - delivery rule passed in', function(assert) {
 });
 
 test('onSave Action', function(assert) {
-  assert.expect(5);
+  assert.expect(9);
 
   this.set('model', unscheduledModel);
 
@@ -204,6 +204,13 @@ test('onSave Action', function(assert) {
     'Save',
     'The save button says `Save` when model does not have a delivery rule for the current user');
 
+  assert.ok($('.schedule-modal__save-btn').attr('disabled'),
+    'The save button should be disabled initially');
+
+  assert.equal($('.schedule-modal__cancel-btn').text().trim(),
+    'Cancel',
+    'Show cancel button before save a delivery rule');
+
   assert.equal($('.schedule-modal__delete-btn').length,
     0,
     'The delete button is not available when model does not have a delivery rule for the current user');
@@ -215,6 +222,9 @@ test('onSave Action', function(assert) {
     clickTrigger('.schedule-modal__dropdown--frequency');
     nativeMouseUp($('.ember-power-select-option:contains(Month)')[0]);
   });
+
+  assert.notOk($('.schedule-modal__save-btn').attr('disabled'),
+    'The save button should be enabled after making valid changes');
 
   this.set('onSaveAction', (rule) => {
     assert.equal(rule.get('frequency'),
@@ -228,6 +238,8 @@ test('onSave Action', function(assert) {
     assert.ok(true,
       'OnSave action is called');
 
+    rule.rollbackAttributes();
+
     return Ember.RSVP.resolve();
   });
 
@@ -235,29 +247,10 @@ test('onSave Action', function(assert) {
   Ember.run(() => {
     $('.schedule-modal__save-btn').click();
   });
-});
 
-test('schedule modal - new deliveryRule', function(assert) {
-  assert.expect(1);
-
-  this.set('model', TestModel);
-
-  this.render(hbs`
-        {{common-actions/schedule
-            model=model
-            onSave=(action onSaveAction)
-            onRevert=(action onRevertAction)
-            onDelete=(action onDeleteAction)
-        }}
-    `);
-
-  Ember.run(() => {
-    this.$('.schedule-action__button').click();
-  });
-
-  assert.equal($('.schedule-modal__save-btn').text().trim(),
-    'Save Changes',
-    'The save button says `Save Changes` when deliveryRule is present for current user');
+  assert.equal($('.schedule-modal__cancel-btn').text().trim(),
+    'Close',
+    'Show close button after save a delivery rule');
 });
 
 test('onRevert Action', function(assert) {

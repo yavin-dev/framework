@@ -34,7 +34,7 @@
         {{navi-loader}}
     {{else}}
         <form class='schedule-modal__body navi-modal-body'>
-            <fieldset class='{{if (and attemptedSave (not isRuleValid)) 'schedule-modal__recipients--invalid'}} schedule-modal__section'>
+            <fieldset class='{{if (not isRuleValid) 'schedule-modal__recipients--invalid'}} schedule-modal__section'>
                 <div class='schedule-modal__label'>Recipients</div>
                 {{navi-email-input
                      class='schedule-modal__input--recipients text-input'
@@ -93,7 +93,7 @@
                     <button
                         class='schedule-modal__save-btn btn btn-primary'
                         onclick={{action (pipe (toggle 'isSaving' this) (action 'onSave'))}}
-                        disabled={{isSaving}}
+                        disabled={{disableSave}}
                         type='button'
                     >
                         {{#if isSaving}}
@@ -109,7 +109,13 @@
                         onclick={{pipe (action 'closeModal') (action this.attrs.onRevert localDeliveryRule)}}
                         disabled={{isSaving}}
                         type='button'
-                    > Cancel </button>
+                    >
+                        {{#if localDeliveryRule.hasDirtyAttributes}}
+                            Cancel
+                        {{else}}
+                            Close
+                        {{/if}}
+                    </button>
                 {{/if}}
                 </div>
                 <div class='button-group'>
