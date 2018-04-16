@@ -18,7 +18,7 @@ import Ember from 'ember';
 import { A as arr } from '@ember/array';
 import layout from '../templates/components/dimension-selector';
 
-const { $, computed, get, set } = Ember;
+const { $, computed, get, set, getWithDefault } = Ember;
 
 export default Ember.Component.extend({
   layout,
@@ -60,8 +60,8 @@ export default Ember.Component.extend({
    */
   listItems: computed('allTimeGrains', 'allDimensions', function() {
     return [
-      ...get(this, 'allTimeGrains'),
-      ...get(this, 'allDimensions')
+      ...getWithDefault(this, 'allTimeGrains', []),
+      ...getWithDefault(this, 'allDimensions', [])
     ];
   }),
 

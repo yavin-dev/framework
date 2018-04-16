@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -13,7 +13,7 @@ const { Fragment } = MF;
 const Validations = buildValidations({
   table: validator('presence', {
     presence: true,
-    message: 'Please select a table'
+    message: 'Table is invalid or unavailable'
   }),
   timeGrainName: validator('presence', {
     presence: true,

@@ -403,5 +403,55 @@ export default [
       bardVersion: 'v1',
       requestVersion: 'v1'
     }
+  },
+  {
+    id: 9,
+    title: 'Report with unknown table',
+    createdOn: '2015-01-01 00:00:00',
+    updatedOn: '2015-01-01 00:00:00',
+    author: 'navi_user',
+    deliveryRules: [],
+    visualization:  {
+      type: 'table',
+      version: 1,
+      metadata: {
+        columns: [
+          {
+            field: 'dateTime',
+            type: 'dateTime',
+            displayName: 'Date'
+          },
+          {
+            field: 'revenue(currency=USD)',
+            type: 'metric',
+            displayName: 'Revenue (USD)'
+          }
+        ]
+      }
+    },
+    request: {
+      logicalTable: {
+        table: 'oak',
+        timeGrain: 'day'
+      },
+      metrics: [
+        {
+          metric: 'revenue',
+          parameters: {
+            currency: 'USD'
+          }
+        }
+      ],
+      dimensions: [],
+      filters: [],
+      intervals: [
+        {
+          end: '2018-02-16 00:00:00.000',
+          start: '2018-02-09 00:00:00.000'
+        }
+      ],
+      bardVersion: 'v1',
+      requestVersion: 'v1'
+    }
   }
 ];
