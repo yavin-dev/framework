@@ -1634,6 +1634,6 @@ test('Report with an unknown table doesn\'t crash', function(assert) {
   andThen(() => {
     assert.equal(find('.navi-info-message__error-list-item').text().trim(),
       'Table is invalid or unavailable',
-      'Should show aan error message when table cannot be found in metadata');
+      'Should show an error message when table cannot be found in metadata');
   });
 });
