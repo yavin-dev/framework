@@ -21,12 +21,7 @@ export default VisualizationSerializer.extend({
           seriesType = get(visualization, 'metadata.axis.y.series.type');
 
       let metrics = get(config, 'metrics') || [get(config, 'metric')],
-          metricObjects = metrics.map(metric => {
-            if(typeof metric === 'string') {
-              return parseMetricName(metric);
-            }
-            return metric;
-          });
+          metricObjects = metrics.map(metric => parseMetricName(metric));
 
       if(seriesType === 'metric') {
         visualization.metadata.axis.y.series.config.metrics = metricObjects;

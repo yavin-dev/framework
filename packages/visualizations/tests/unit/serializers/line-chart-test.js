@@ -29,32 +29,7 @@ moduleFor('serializer:line-chart', 'Unit | Serializer | line chart', {
 test('normalize', function(assert) {
   assert.expect(2);
 
-  assert.deepEqual(Serializer.normalize(),
-    {data: null},
-    'null is returned for an undefined response');
-
-  assert.deepEqual(Serializer.normalize(Model, {
-    type: 'line-chart',
-    version: 1,
-    metadata: {
-      axis: {
-        y: {
-          series: {
-            type: 'metric',
-            config: {
-              metrics: ['m1']
-            }
-          }
-        }
-      }
-    }
-  }),
-  {
-    data: {
-      id: null,
-      relationships: {},
-      type: 'line-chart',
-      attributes: {
+  let initialMetaData = {
         type: 'line-chart',
         version: 1,
         metadata: {
@@ -63,14 +38,42 @@ test('normalize', function(assert) {
               series: {
                 type: 'metric',
                 config: {
-                  metrics: [{metric: 'm1', parameters: {}}]
+                  metrics: ['m1']
                 }
               }
             }
           }
         }
-      }
-    }
-  },
-  'Config with a metric name stored is successfully converted to an object for a non-parameterized metric');
+      },
+      expectedPayload = {
+        data: {
+          id: null,
+          relationships: {},
+          type: 'line-chart',
+          attributes: {
+            type: 'line-chart',
+            version: 1,
+            metadata: {
+              axis: {
+                y: {
+                  series: {
+                    type: 'metric',
+                    config: {
+                      metrics: [{metric: 'm1', parameters: {}}]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      };
+
+  assert.deepEqual(Serializer.normalize(),
+    {data: null},
+    'null is returned for an undefined response');
+
+  assert.deepEqual(Serializer.normalize(Model, initialMetaData),
+    expectedPayload,
+    'Config with a metric name stored is successfully converted to an object for a non-parameterized metric');
 });

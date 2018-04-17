@@ -13,7 +13,7 @@
 
 import Ember from 'ember';
 import { dataByDimensions } from 'navi-visualizations/utils/data';
-import { getRequestMetrics } from 'navi-visualizations/utils/chart-data'
+import { getRequestMetrics } from 'navi-visualizations/utils/chart-data';
 import layout from '../../../templates/components/visualization-config/chart-type/dimension';
 import _ from 'lodash';
 

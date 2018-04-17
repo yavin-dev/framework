@@ -4,7 +4,6 @@
  */
 import VisualizationSerializer from 'navi-visualizations/serializers/visualization';
 import { parseMetricName } from 'navi-data/utils/metric';
-import { isPresent } from '@ember/utils';
 import { get } from '@ember/object';
 
 export default VisualizationSerializer.extend({
@@ -18,15 +17,8 @@ export default VisualizationSerializer.extend({
    */
   normalize(type, visualization) {
     if(visualization) {
-      let config = get(visualization, 'metadata.series.config');
-
-      if(isPresent(config)) {
-        let metric = get(config, 'metric');
-
-        if(typeof metric === 'string') {
-          visualization.metadata.series.config.metric = parseMetricName(metric);
-        }
-      }
+      let metric = get(visualization, 'metadata.series.config.metric');
+      visualization.metadata.series.config.metric = parseMetricName(metric);
     }
 
     return this._super(type, visualization);

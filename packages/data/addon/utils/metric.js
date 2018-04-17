@@ -78,6 +78,9 @@ export function canonicalizeAlias(alias, aliasMap = {}) {
  * @returns {Object} - object with base metric and parameters
  */
 export function parseMetricName(str) {
+  if(typeof str !== 'string') {
+    return str;
+  }
   let hasParameters = str.endsWith(')') && str.includes('('),
       metric = str,
       parameters = {};
