@@ -83,7 +83,7 @@ moduleForComponent('report-view', 'Integration | Component | report view', {
                 series: {
                   type: 'metric',
                   config: {
-                    metrics: [ 'adClicks' ]
+                    metrics: [ {metric: 'adClicks', parameters: {}, canonicalName: 'adClicks'} ]
                   }
                 }
               }
