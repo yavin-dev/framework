@@ -1,0 +1,76 @@
+import Ember from 'ember';
+import { moduleFor, test } from 'ember-qunit';
+import { setupMock, teardownMock } from '../../helpers/mirage-helper';
+
+const { getOwner } = Ember;
+
+let Serializer, Model;
+
+moduleFor('serializer:line-chart', 'Unit | Serializer | line chart', {
+  needs: [
+    'model:line-chart',
+    'validator:chart-type',
+    'validator:request-metrics',
+    'validator:request-metric-exist',
+    'validator:request-time-grain',
+    'validator:request-dimension-order',
+    'validator:length'
+  ],
+  beforeEach() {
+    setupMock();
+    Serializer = this.subject();
+    Model = getOwner(this).factoryFor('model:line-chart').class;
+  },
+  afterEach() {
+    teardownMock();
+  }
+});
+
+test('normalize', function(assert) {
+  assert.expect(2);
+
+  assert.deepEqual(Serializer.normalize(),
+    {data: null},
+    'null is returned for an undefined response');
+
+  assert.deepEqual(Serializer.normalize(Model, {
+    type: 'line-chart',
+    version: 1,
+    metadata: {
+      axis: {
+        y: {
+          series: {
+            type: 'metric',
+            config: {
+              metrics: ['m1']
+            }
+          }
+        }
+      }
+    }
+  }),
+  {
+    data: {
+      id: null,
+      relationships: {},
+      type: 'line-chart',
+      attributes: {
+        type: 'line-chart',
+        version: 1,
+        metadata: {
+          axis: {
+            y: {
+              series: {
+                type: 'metric',
+                config: {
+                  metrics: [{metric: 'm1', parameters: {}}]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  'Config with a metric name stored is successfully converted to an object for a non-parameterized metric');
+});

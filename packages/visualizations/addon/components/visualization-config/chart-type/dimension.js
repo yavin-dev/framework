@@ -13,7 +13,7 @@
 
 import Ember from 'ember';
 import { dataByDimensions } from 'navi-visualizations/utils/data';
-
+import { getRequestMetrics } from 'navi-visualizations/utils/chart-data'
 import layout from '../../../templates/components/visualization-config/chart-type/dimension';
 import _ from 'lodash';
 
@@ -30,7 +30,9 @@ export default Ember.Component.extend({
   /**
    * @property {Array} metrics
    */
-  metrics: computed.alias('request.metrics'),
+  metrics: computed('request', function() {
+    return getRequestMetrics(get(this, 'request'));
+  }),
 
   /**
    * @property {Array} dimensions
@@ -43,8 +45,7 @@ export default Ember.Component.extend({
    * @property {Object} selectedMetric
    */
   selectedMetric: computed('seriesConfig', function() {
-    let metric = get(this, 'seriesConfig.metric');
-    return Ember.A(get(this, 'metrics')).findBy('canonicalName', metric);
+    return get(this, 'seriesConfig.metric');
   }),
 
   /**
@@ -142,7 +143,7 @@ export default Ember.Component.extend({
      */
     onUpdateChartMetric(metric) {
       let newSeriesConfig = copy(get(this, 'seriesConfig'));
-      set(newSeriesConfig, 'metric', get(metric, 'canonicalName'));
+      set(newSeriesConfig, 'metric', metric);
       this.sendAction('onUpdateConfig', newSeriesConfig);
     },
 

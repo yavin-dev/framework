@@ -4,7 +4,6 @@
  */
 import Service from '@ember/service';
 import { inject as service } from '@ember/service';
-import { parseMetricName } from 'navi-data/utils/metric';
 import { metricFormat } from 'navi-data/helpers/metric-format';
 import { get } from '@ember/object';
 
@@ -25,12 +24,11 @@ export default Service.extend({
 
   /**
    * @method getDisplayName
-   * @param {String} canonicalName - metric's canonical name
+   * @param {Object} metricObject - object with metric and parameter properties
    * @returns {String} formatted metric display name
    */
-  getDisplayName(canonicalName) {
-    let metricObject = parseMetricName(canonicalName),
-        metricId = get(metricObject, 'metric'),
+  getDisplayName(metricObject) {
+    let metricId = get(metricObject, 'metric'),
         longName = this.getLongName(metricId);
 
     return metricFormat(metricObject, longName);
