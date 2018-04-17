@@ -25,7 +25,7 @@ export default VisualizationSerializer.extend({
 
       if(seriesType === 'metric') {
         visualization.metadata.axis.y.series.config.metrics = metricObjects;
-      }else {
+      } else {
         visualization.metadata.axis.y.series.config.metric = metricObjects[0];
       }
     }

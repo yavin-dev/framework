@@ -1,4 +1,3 @@
-import Ember from 'ember';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import {
@@ -6,10 +5,11 @@ import {
   nativeMouseUp as toggleOption
 } from '../../../../helpers/ember-power-select';
 import { setupMock, teardownMock } from '../../../../helpers/mirage-helper';
+import { get } from '@ember/object';
+import { getOwner } from '@ember/application';
+import { run } from '@ember/runloop';
 
 let MetadataService;
-
-const { get, getOwner } = Ember;
 
 let Template = hbs`{{visualization-config/chart-type/dimension
                     seriesConfig=seriesConfig
@@ -179,7 +179,7 @@ test('on remove series', function(assert) {
 
   this.render(Template);
 
-  return Ember.run(() => {
+  return run(() => {
     // Delete first series
     this.$('.navi-icon__delete').first().click();
   });

@@ -1,8 +1,6 @@
-import Ember from 'ember';
 import { moduleFor, test } from 'ember-qunit';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
-
-const { getOwner } = Ember;
+import { getOwner } from '@ember/application';
 
 let Serializer, Model;
 
