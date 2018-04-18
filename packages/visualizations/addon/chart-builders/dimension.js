@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Logic for grouping chart data by many dimensions
@@ -24,13 +24,13 @@
  */
 import Ember from 'ember';
 import moment from 'moment';
-import $ from 'jquery';
 import DataGroup from 'navi-core/utils/classes/data-group';
 import Interval from 'navi-core/utils/classes/interval';
 import DateUtils from 'navi-core/utils/date';
 import tooltipLayout from '../templates/chart-tooltips/dimension';
 import ChartAxisDateTimeFormats from 'navi-visualizations/utils/chart-axis-date-time-formats';
 import { groupDataByDimensions, buildSeriesKey, getSeriesName } from 'navi-visualizations/utils/chart-data';
+import { canonicalizeMetric } from 'navi-data/utils/metric';
 
 const { get, set } = Ember;
 
@@ -109,11 +109,11 @@ export default Ember.Object.extend({
         //Handling the case when some of the data group does not exist
         if (byDim.getDataForKey(s) && byDim.getDataForKey(s).length) {
           // Extending the data for date with the grouped dimension and metric value
-          $.extend(dataForDate, { [seriesName[index]]: byDim.getDataForKey(s)[0][metric] });
+          Object.assign(dataForDate, { [seriesName[index]]: byDim.getDataForKey(s)[0][canonicalizeMetric(metric)] });
         }
         else {
           // Returning null for the chart to show missing data
-          $.extend(dataForDate, { [seriesName[index]]: null });
+          Object.assign(dataForDate, { [seriesName[index]]: null });
         }
       });
 

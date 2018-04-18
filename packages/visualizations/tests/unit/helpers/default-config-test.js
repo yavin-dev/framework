@@ -15,7 +15,7 @@ test('default config', function(assert) {
       rows = [
         { rupees: 999, hp: 0 }
       ],
-      request = buildTestRequest(['rupees', 'hp'], []),
+      request = buildTestRequest([{metric: 'rupees', parameters: {}}, {metric: 'hp', parameters: {}}], []),
       generatedConfig = Ember.run(
         () => helper.compute(['metric-label', request, { rows }])
       );

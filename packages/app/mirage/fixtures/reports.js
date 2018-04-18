@@ -16,7 +16,8 @@ export default [
         axis: {
           y: {
             series: {
-              type: 'dimension'
+              type: 'dimension',
+              config: {}
             }
           }
         }
@@ -64,7 +65,8 @@ export default [
         axis: {
           y: {
             series: {
-              type: 'dimension'
+              type: 'dimension',
+              config: {}
             }
           }
         }
@@ -105,7 +107,8 @@ export default [
         axis: {
           y: {
             series: {
-              type: 'dimension'
+              type: 'dimension',
+              config: {}
             }
           }
         }

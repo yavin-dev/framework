@@ -1,9 +1,10 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Ember from 'ember';
 import { topN, maxDataByDimensions } from 'navi-visualizations/utils/data';
+import { canonicalizeMetric } from 'navi-data/utils/metric';
 import {
   METRIC_SERIES,
   DIMENSION_SERIES,
@@ -58,9 +59,10 @@ export default Ember.Mixin.create({
 
     let metric = isMetricValid ? get(this, metricPath) : getRequestMetrics(request)[0],
         dimensionOrder = isDimensionOrderValid ? get(this, dimensionOrderPath) : getRequestDimensions(request),
+        canonicalName = canonicalizeMetric(metric),
         responseRows = topN(
-          maxDataByDimensions(get(response, 'rows'), dimensionOrder, metric),
-          metric, 10),
+          maxDataByDimensions(get(response, 'rows'), dimensionOrder, canonicalName),
+          canonicalName, 10),
         dimensions = isDimensionOrderValid && areDimensionsValid ? get(this, dimensionsPath) : buildDimensionSeriesValues(request, responseRows);
 
     return {

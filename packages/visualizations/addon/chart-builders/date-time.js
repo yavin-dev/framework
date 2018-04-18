@@ -18,6 +18,7 @@ import moment from 'moment';
 import tooltipLayout from '../templates/chart-tooltips/date';
 import DataGroup from 'navi-core/utils/classes/data-group';
 import { get, set, getWithDefault } from '@ember/object';
+import { canonicalizeMetric } from 'navi-data/utils/metric';
 
 const API_DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss.SSS';
 
@@ -113,7 +114,7 @@ export const GROUP = {
  *
  * @function _groupDataBySeries
  * @param {Array} data - rows of chart data to group
- * @param {String} metric - name of metric to pull from data
+ * @param {String} metric - metric name
  * @param {Object} grouper - series grouping logic
  * @returns {Object} metric value grouped by series and x value
  */
@@ -228,9 +229,10 @@ export default Ember.Object.extend({
 
     let { timeGrain: seriesTimeGrain, metric } = config,
         requestTimeGrain = get(request, 'logicalTable.timeGrain'),
-        grouper = GROUP[requestTimeGrain].by[seriesTimeGrain];
+        grouper = GROUP[requestTimeGrain].by[seriesTimeGrain],
+        canonicalName = canonicalizeMetric(metric);
 
-    let seriesMap = _groupDataBySeries(data, metric, grouper);
+    let seriesMap = _groupDataBySeries(data, canonicalName, grouper);
     return _buildDataRows(seriesMap, grouper);
   },
 

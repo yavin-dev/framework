@@ -16,12 +16,12 @@ export default Ember.Controller.extend({
       {
         metric: 'adClicks',
         canonicalName: 'adClicks',
-        serialize() { return this; }
+        toJSON() { return this; }
       },
       {
         metric: 'uniqueIdentifier',
         canonicalName: 'uniqueIdentifier',
-        serialize() { return this; }
+        toJSON() { return this; }
       },
       {
         metric: 'revenue',
@@ -29,7 +29,7 @@ export default Ember.Controller.extend({
           currency: 'USD'
         },
         canonicalName: 'revenue(currency=USD)',
-        serialize() { return this; }
+        toJSON() { return this; }
       }
     ]
   },
@@ -44,7 +44,25 @@ export default Ember.Controller.extend({
         series: {
           type: 'metric',
           config: {
-            metrics: ['uniqueIdentifier', 'totalPageViews', 'revenue(currency=USD)']
+            metrics: [
+              {
+                metric: 'uniqueIdentifier',
+                parameters: {},
+                canonicalName: 'uniqueIdentifier'
+              },
+              {
+                metric: 'totalPageViews',
+                parameters: {},
+                canonicalName: 'totalPageViews'
+              },
+              {
+                metric: 'revenue',
+                parameters: {
+                  currency: 'USD'
+                },
+                canonicalName: 'revenue(currency=USD)'
+              }
+            ]
           }
         }
       }
@@ -57,7 +75,12 @@ export default Ember.Controller.extend({
         series: {
           type: 'dimension',
           config: {
-            metric: 'adClicks',
+            metric: {
+              metric: 'adClicks',
+              parameters: {},
+              canonicalName: 'adClicks',
+              toJSON() { return this; }
+            },
             dimensionOrder: ['age'],
             dimensions: [
               {
@@ -105,7 +128,7 @@ export default Ember.Controller.extend({
         series: {
           type: 'dateTime',
           config: {
-            metric: 'totalPageViews',
+            metric: { metric: 'totalPageViews', parameters: {}, canonicalName: 'totalPageViews' },
             timeGrain: 'year'
           }
         }
@@ -127,9 +150,24 @@ export default Ember.Controller.extend({
     {
       request: {
         metrics: [
-          "adClicks",
-          "uniqueIdentifier",
-          "revenue(currency=USD)"
+          {
+            metric: 'adClicks',
+            canonicalName: 'adClicks',
+            toJSON() { return this; }
+          },
+          {
+            metric: 'uniqueIdentifier',
+            canonicalName: 'uniqueIdentifier',
+            toJSON() { return this; }
+          },
+          {
+            metric: 'revenue',
+            parameters: {
+              currency: 'USD'
+            },
+            canonicalName: 'revenue(currency=USD)',
+            toJSON() { return this; }
+          }
         ],
         logicalTable: {
           timeGrain: "day"
@@ -177,7 +215,11 @@ export default Ember.Controller.extend({
     {
       request: {
         metrics: [
-          "adClicks"
+          {
+            metric: 'adClicks',
+            canonicalName: 'adClicks',
+            toJSON() { return this; }
+          }
         ],
         logicalTable: {
           timeGrain: "hour"
@@ -244,7 +286,7 @@ export default Ember.Controller.extend({
         series: {
           type: 'dateTime',
           config: {
-            metric: 'adClicks',
+            metric: { metric: 'adClicks', parameters: {}, canonicalName: 'adClicks', toJSON() { return this; } },
             timeGrain: 'day'
           }
         }
@@ -256,7 +298,7 @@ export default Ember.Controller.extend({
     {
       request: {
         metrics: [
-          "adClicks"
+          { metric: 'adClicks', parameters: {}, canonicalName: 'adClicks', toJSON() { return this; } }
         ],
         logicalTable: {
           timeGrain: "minute"
@@ -308,7 +350,7 @@ export default Ember.Controller.extend({
         series: {
           type: 'dateTime',
           config: {
-            metric: 'adClicks',
+            metric: { metric: 'adClicks', parameters: {}, canonicalName: 'adClicks', toJSON() { return this; } },
             timeGrain: 'hour'
           }
         }
@@ -320,7 +362,11 @@ export default Ember.Controller.extend({
     {
       request: {
         metrics: [
-          "adClicks"
+          {
+            metric: 'adClicks',
+            canonicalName: 'adClicks',
+            toJSON() { return this; }
+          }
         ],
         logicalTable: {
           timeGrain: "second"
@@ -372,7 +418,7 @@ export default Ember.Controller.extend({
         series: {
           type: 'dateTime',
           config: {
-            metric: 'adClicks',
+            metric: { metric: 'adClicks', parameters: {}, canonicalName: 'adClicks', toJSON() { return this; } },
             timeGrain: 'minute'
           }
         }
@@ -384,7 +430,11 @@ export default Ember.Controller.extend({
     {
       request: {
         metrics: [
-          "uniqueIdentifier"
+          {
+            metric: 'uniqueIdentifier',
+            canonicalName: 'uniqueIdentifier',
+            toJSON() { return this; }
+          }
         ],
         logicalTable: {
           timeGrain: "day"
@@ -459,7 +509,7 @@ export default Ember.Controller.extend({
         series: {
           type: 'metric',
           config: {
-            metrics: ['uniqueIdentifier']
+            metrics: [{ metric: 'uniqueIdentifier', parameters: {}, canonicalName: 'uniqueIdentifier', toJSON() { return this; } }]
           }
         }
       }

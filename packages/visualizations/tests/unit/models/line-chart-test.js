@@ -21,7 +21,7 @@ moduleForModel('all-the-fragments', 'Unit | Model | Line Chart Visualization Fra
 test('default value', function(assert) {
   assert.expect(1);
 
-  let metricsAndDims = [ ['m1', 'm2'], ['d1', 'd2'] ],
+  let metricsAndDims = [ [{metric: 'm1', parameters: {}}, {metric: 'm2', parameters: {}}], ['d1', 'd2'] ],
       chart = run(() => this.subject().get('lineChart'));
 
   assert.ok(!chart.isValidForRequest(
@@ -37,23 +37,23 @@ test('chart type', function(assert) {
   set(chart, 'metadata.axis.y.series', {
     type: 'metric',
     config: {
-      metrics: ['m1']
+      metrics: [{metric: {name: 'm1', category: 'category', longName: 'M1'}, parameters: {}, canonicalName: 'm1'}]
     }
   });
 
   assert.ok(chart.isValidForRequest(
-    buildTestRequest(['m1'], [])
+    buildTestRequest([{metric: 'm1', parameters: {}}], [])
   ), 'metric line-chart is valid when request has no dimensions');
 
   assert.ok(!chart.isValidForRequest(
-    buildTestRequest(['m1'], ['d1'])
+    buildTestRequest([{metric: 'm1', parameters: {}}], ['d1'])
   ), 'metric line-chart is invalid when request has dimensions');
 
 
   set(chart, 'metadata.axis.y.series', {
     type: 'dimension',
     config: {
-      metric: 'm1',
+      metric: {metric: {name: 'm1', category: 'category', longName: 'M1'}, parameters: {}, canonicalName: 'm1'},
       dimensionOrder: ['d1'],
       dimensions: [
         {
@@ -65,11 +65,11 @@ test('chart type', function(assert) {
   });
 
   assert.ok(chart.isValidForRequest(
-    buildTestRequest(['m1'], ['d1'])
+    buildTestRequest([{metric: 'm1', parameters: {}}], ['d1'])
   ), 'dimension line-chart is valid when request has at least one dimension');
 
   assert.ok(!chart.isValidForRequest(
-    buildTestRequest(['m1'], [])
+    buildTestRequest([{metric: 'm1', parameters: {}}], [])
   ), 'dimension line-chart is invalid when request has no dimensions');
 });
 
@@ -81,16 +81,19 @@ test('metric series - metrics', function(assert) {
   set(chart, 'metadata.axis.y.series', {
     type: 'metric',
     config: {
-      metrics: ['m1', 'm2']
+      metrics: [
+        {metric: {name: 'm1', category: 'category', longName: 'M1'}, parameters: {}, canonicalName: 'm1'},
+        {metric: {name: 'm2', category: 'category', longName: 'M2'}, parameters: {}, canonicalName: 'm2'}
+      ]
     }
   });
 
   assert.ok(chart.isValidForRequest(
-    buildTestRequest(['m1', 'm2'], [])
+    buildTestRequest([{metric: 'm1', parameters: {}}, {metric: 'm2', parameters: {}}], [])
   ), 'metric line-chart is valid when it matches the request metrics');
 
   assert.ok(!chart.isValidForRequest(
-    buildTestRequest(['m1', 'm2', 'm3'], [])
+    buildTestRequest([{metric: 'm1', parameters: {}}, {metric: 'm2', parameters: {}}, {metric: 'm3', parameters: {}}], [])
   ), 'metric line-chart is invalid when it does not match the request metrics');
 });
 
@@ -102,7 +105,7 @@ test('dimension series - metric', function(assert) {
   set(chart, 'metadata.axis.y.series', {
     type: 'dimension',
     config: {
-      metric: 'm1',
+      metric: {metric: {name: 'm1', category: 'category', longName: 'M1'}, parameters: {}, canonicalName: 'm1'},
       dimensionOrder: ['d1'],
       dimensions: [
         {
@@ -114,11 +117,11 @@ test('dimension series - metric', function(assert) {
   });
 
   assert.ok(chart.isValidForRequest(
-    buildTestRequest(['m1', 'm2'], ['d1'])
+    buildTestRequest([{metric: 'm1', parameters: {}}, {metric: 'm2', parameters: {}}], ['d1'])
   ), 'dimension line-chart is valid when it has a metric in the request metrics');
 
   assert.ok(!chart.isValidForRequest(
-    buildTestRequest(['m3'], ['d1'])
+    buildTestRequest([{metric: 'm3', parameters: {}}], ['d1'])
   ), 'dimension line-chart is invalid when it does not have a metric in the request metrics');
 });
 
@@ -130,7 +133,7 @@ test('dimension series - dimensionOrder', function(assert) {
   set(chart, 'metadata.axis.y.series', {
     type: 'dimension',
     config: {
-      metric: 'm1',
+      metric: {metric: {name: 'm1', category: 'category', longName: 'M1'}, parameters: {}, canonicalName: 'm1'},
       dimensionOrder: ['d1', 'd2'],
       dimensions: [
         {
@@ -145,17 +148,17 @@ test('dimension series - dimensionOrder', function(assert) {
   });
 
   assert.ok(chart.isValidForRequest(
-    buildTestRequest(['m1'], ['d1', 'd2'])
+    buildTestRequest([{metric: 'm1', parameters: {}}], ['d1', 'd2'])
   ), 'dimension line-chart is valid when it\'s dimensions match the request metrics');
 
   assert.ok(!chart.isValidForRequest(
-    buildTestRequest(['m1'], ['d1', 'd2', 'd3'])
+    buildTestRequest([{metric: 'm1', parameters: {}}], ['d1', 'd2', 'd3'])
   ), 'dimension line-chart is invalid when it\'s dimensions do not match the request metrics');
 });
 
 test('rebuildConfig - metric', function(assert) {
   let chart   = run(() => this.subject().get('lineChart')),
-      request = buildTestRequest(['m1', 'm2'], []),
+      request = buildTestRequest([{metric: 'm1', parameters: {}}, {metric: 'm2', parameters: {}}], []),
       config  = run(() => chart.rebuildConfig(request).toJSON());
 
   assert.deepEqual(config, {
@@ -167,7 +170,7 @@ test('rebuildConfig - metric', function(assert) {
           series: {
             type: 'metric',
             config: {
-              metrics: ['m1', 'm2']
+              metrics: [{metric: {name: 'm1', category: 'category', longName: 'M1'}, parameters: {}, canonicalName: 'm1'}, {metric: {name: 'm2', category: 'category', longName: 'M2'}, parameters: {}, canonicalName: 'm2'}]
             }
           }
         }
@@ -196,7 +199,7 @@ test('rebuildConfig - dimension series - less than max series', function(assert)
           series: {
             type: 'dimension',
             config: {
-              metric: 'm1',
+              metric: {metric: 'm1', parameters: {}},
               dimensionOrder: [ 'd1', 'd2' ],
               dimensions: [
                 {
@@ -243,7 +246,7 @@ test('rebuildConfig - dimension series - greater than maxSeries', function(asser
           series: {
             type: 'dimension',
             config: {
-              metric: 'm1',
+              metric: {metric: 'm1', parameters: {}},
               dimensionOrder: [ 'd1', 'd2' ],
               dimensions: [
                 {
@@ -295,7 +298,7 @@ test('rebuildConfig - dimension series - only metric', function(assert) {
   set(chart, 'metadata.axis.y.series', {
     type: 'dimension',
     config: {
-      metric: 'configMetric',
+      metric: {metric: 'configMetric', parameters: {}},
       dimensionOrder: [ 'd1', 'd2' ],
       dimensions: [
         {
@@ -318,7 +321,7 @@ test('rebuildConfig - dimension series - only metric', function(assert) {
           series: {
             type: 'dimension',
             config: {
-              metric: 'requestMetric',
+              metric: {metric: 'requestMetric', parameters: {}},
               dimensionOrder: [ 'd1', 'd2' ],
               dimensions: [
                 {
@@ -343,7 +346,7 @@ test('rebuildConfig - dimension series - dimension order', function(assert) {
   set(chart, 'metadata.axis.y.series', {
     type: 'dimension',
     config: {
-      metric: 'requestMetric',
+      metric: {metric: 'configMetric', parameters: {}},
       dimensionOrder: [ 'configDim1', 'configDim2' ],
       dimensions: [
         {
@@ -366,7 +369,7 @@ test('rebuildConfig - dimension series - dimension order', function(assert) {
           series: {
             type: 'dimension',
             config: {
-              metric: 'requestMetric',
+              metric: {metric: 'requestMetric', parameters: {}},
               dimensionOrder: [ 'requestDim' ],
               dimensions: [
                 {
@@ -391,7 +394,7 @@ test('rebuildConfig - dimension series - zero dimension series', function(assert
   set(chart, 'metadata.axis.y.series', {
     type: 'dimension',
     config: {
-      metric: 'm1',
+      metric: {metric: 'm1', parameters: {}},
       dimensionOrder: [ 'd1', 'd2' ],
       dimensions: []
     }
@@ -409,7 +412,7 @@ test('rebuildConfig - dimension series - zero dimension series', function(assert
           series: {
             type: 'dimension',
             config: {
-              metric: 'm1',
+              metric: {metric: 'm1', parameters: {}},
               dimensionOrder: [ 'd1', 'd2' ],
               dimensions: [
                 {
@@ -446,7 +449,7 @@ test('rebuildConfig - dimension series - missing dimension value description', f
           series: {
             type: 'dimension',
             config: {
-              metric: 'm1',
+              metric: {metric:'m1', parameters: {}},
               dimensionOrder: [ 'd1', 'd2' ],
               dimensions: [
                 {

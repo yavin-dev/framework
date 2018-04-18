@@ -74,12 +74,16 @@ export function canonicalizeAlias(alias, aliasMap = {}) {
 /**
  * Returns a metric object given a canonical name
  * @function parseMetricName
- * @param {String} str - the metric's canonical name
+ * @param {String} canonicalName - the metric's canonical name
  * @returns {Object} - object with base metric and parameters
  */
-export function parseMetricName(str) {
-  let hasParameters = str.endsWith(')') && str.includes('('),
-      metric = str,
+export function parseMetricName(canonicalName) {
+  if(typeof canonicalName !== 'string') {
+    return canonicalName;
+  }
+
+  let hasParameters = canonicalName.endsWith(')') && canonicalName.includes('('),
+      metric = canonicalName,
       parameters = {};
 
   if(hasParameters) {
@@ -88,14 +92,14 @@ export function parseMetricName(str) {
      * `baseName(parameter string)` => extracts `parameter string`
      */
     let paramRegex = /\((.*)\)$/,
-        results = paramRegex.exec(str),
+        results = paramRegex.exec(canonicalName),
         paramStr = results.length >= 2 ? results[1] : ''; // checks if capture group exists, and uses it if it does
 
     if(!paramStr.includes('=')) {
       throw new Error('Metric Parameter Parser: Error, invalid parameter list');
     }
 
-    metric = str.slice(0, str.indexOf('('));
+    metric = canonicalName.slice(0, canonicalName.indexOf('('));
     parameters = paramStr.split(',').map(paramEntry => paramEntry.split('='))
       .reduce((obj, [key, val]) => Object.assign({}, obj, {[key]: val}), {});
   }

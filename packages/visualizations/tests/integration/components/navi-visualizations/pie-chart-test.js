@@ -113,7 +113,11 @@ test('it renders', function(assert) {
     series: {
       config: {
         type: 'dimension',
-        metric: 'totalPageViews',
+        metric: {
+          metric: 'totalPageViews',
+          parameters: {},
+          canonicalName: 'totalPageViews'
+        },
         dimensionOrder: ['age'],
         dimensions: [
           {
@@ -153,7 +157,11 @@ test('metric label', function(assert) {
     series: {
       config: {
         type: 'dimension',
-        metric: 'totalPageViews',
+        metric: {
+          metric: 'totalPageViews',
+          parameters: {},
+          canonicalName: 'totalPageViews'
+        },
         dimensionOrder: ['age'],
         dimensions: [
           {
@@ -199,7 +207,11 @@ test('metric label', function(assert) {
     series: {
       config: {
         type: 'dimension',
-        metric: 'uniqueIdentifier',
+        metric: {
+          metric: 'uniqueIdentifier',
+          parameters: {},
+          canonicalName: 'uniqueIdentifier'
+        },
         dimensionOrder: ['age'],
         dimensions: [
           {
@@ -240,7 +252,13 @@ test('parameterized metric renders correctly', function(assert) {
     series: {
       config: {
         type: 'dimension',
-        metric: 'revenue(currency=USD)',
+        metric: {
+          metric: 'revenue',
+          parameters: {
+            currency: 'USD'
+          },
+          canonicalName: 'revenue(currency=USD)'
+        },
         dimensionOrder: ['age'],
         dimensions: [
           {

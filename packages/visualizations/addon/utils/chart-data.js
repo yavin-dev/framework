@@ -94,10 +94,10 @@ export function chartTypeForRequest(request) {
  *
  * @function getRequestMetrics
  * @param {Object} request - request object
- * @returns {Array} - list of metric names
+ * @returns {Array} - list of metric JSON objects
  */
 export function getRequestMetrics(request) {
-  return arr(get(request, 'metrics')).mapBy('canonicalName');
+  return get(request, 'metrics').map(metric => metric.toJSON());
 }
 
 /**

@@ -172,7 +172,7 @@ test('buildData - no dimensions', function(assert) {
   assert.expect(1);
 
   assert.deepEqual(DimensionChartBuilder.buildData(DATA, {
-    metric: 'totalPageViews',
+    metric: { metric: 'totalPageViews', parameters: {}, canonicalName: 'totalPageViews' },
     dimensionOrder: ['age'],
     dimensions: []
   },
@@ -205,7 +205,7 @@ test('groupDataBySeries - many dimensions of same type', function(assert) {
   assert.expect(1);
 
   assert.deepEqual(DimensionChartBuilder.buildData(DATA, {
-    metric: 'totalPageViews',
+    metric: { metric: 'totalPageViews', parameters: {}, canonicalName: 'totalPageViews' },
     dimensionOrder: ['age'],
     dimensions: [
       {
@@ -278,7 +278,7 @@ test('groupDataBySeries all granularity - many dimensions of same type', functio
       ];
 
   assert.deepEqual(DimensionChartBuilder.buildData(data, {
-    metric: 'totalPageViews',
+    metric: { metric: 'totalPageViews', parameters: {}, canonicalName: 'totalPageViews' },
     dimensionOrder: ['age'],
     dimensions: [
       {
@@ -348,7 +348,7 @@ test('groupDataBySeries hour granularity - many dimensions of same type', functi
       ];
 
   assert.deepEqual(DimensionChartBuilder.buildData(data, {
-    metric: 'totalPageViews',
+    metric: { metric: 'totalPageViews', parameters: {}, canonicalName: 'totalPageViews' },
     dimensionOrder: ['age'],
     dimensions: [
       {
@@ -425,7 +425,7 @@ test('groupDataBySeries month granularity - many dimensions of same type', funct
       ];
 
   assert.deepEqual(DimensionChartBuilder.buildData(data, {
-    metric: 'totalPageViews',
+    metric: { metric: 'totalPageViews', parameters: {}, canonicalName: 'totalPageViews' },
     dimensionOrder: ['age'],
     dimensions: [
       {
@@ -464,7 +464,7 @@ test('groupDataBySeries - many dimensions of different type', function(assert) {
   assert.expect(1);
 
   assert.deepEqual(DimensionChartBuilder.buildData(DATA2, {
-    metric: 'totalPageViews',
+    metric: { metric: 'totalPageViews', parameters: {}, canonicalName: 'totalPageViews' },
     dimensionOrder: ['age', 'gender'],
     dimensions: [
       {
@@ -503,7 +503,7 @@ test('groupDataBySeries - many dimensions of different type with some that are n
   assert.expect(1);
 
   assert.deepEqual(DimensionChartBuilder.buildData(DATA2, {
-    metric: 'totalPageViews',
+    metric: { metric: 'totalPageViews', parameters: {}, canonicalName: 'totalPageViews' },
     dimensionOrder: ['age', 'gender'],
     dimensions: [
       {
@@ -542,7 +542,7 @@ test('buildTooltip', function(assert) {
   assert.expect(2);
 
   let config = {
-        metric: 'totalPageViews',
+        metric: { metric: 'totalPageViews', parameters: {}, canonicalName: 'totalPageViews' },
         dimensionOrder: ['age'],
         dimensions: [
           {

@@ -14,10 +14,10 @@ moduleForModel('all-the-fragments', 'Unit | Model | Metric Label Visualization F
 test('isValidForRequest', function(assert) {
   assert.expect(2);
 
-  let request = buildTestRequest(['rupees'], []),
+  let request = buildTestRequest([{metric: 'rupees', parameters: {}}], []),
       metricLabel = run(() => this.subject().get('metricLabel'));
 
-  run(() => set(metricLabel, 'metadata', { format: '0a', metric: 'rupees' }));
+  run(() => set(metricLabel, 'metadata', { format: '0a', metric: {metric: {name: 'rupees', longName: 'Rupees', category: 'category'}, parameters: {}, canonicalName: 'rupees'} }));
   assert.ok(metricLabel.isValidForRequest(request),
     'config for metric label is valid when metric in config exists in request');
 
@@ -32,7 +32,7 @@ test('is Valid for Parameterized Metric Request', function(assert) {
   let request = buildTestRequest([{metric: 'revenue', parameters: {currency: 'HYR'}}], []),
       metricLabel = run(() => this.subject().get('metricLabel'));
 
-  run(() => set(metricLabel, 'metadata', { format: '0a', metric: 'revenue(currency=HYR)' }));
+  run(() => set(metricLabel, 'metadata', { format: '0a', metric: {metric: {name: 'revenue', longName: 'Revenue', category: 'category'}, parameters: {currency: 'HYR'}, canonicalName: 'revenue(currency=HYR)'} }));
   assert.ok(metricLabel.isValidForRequest(request),
     'config for metric label is valid when metric in config exists in request');
 
@@ -48,7 +48,7 @@ test('rebuildConfig', function(assert) {
 
   let metricLabel = run(() => this.subject().get('metricLabel'));
 
-  let request = buildTestRequest(['rupees', 'hp'], []),
+  let request = buildTestRequest([{metric: 'rupees', parameters: {}}, {metric: 'hp', parameters: {}}], []),
       config = run(() => metricLabel.rebuildConfig(request, { rows }).toJSON());
 
   assert.deepEqual(config, {
@@ -61,4 +61,3 @@ test('rebuildConfig', function(assert) {
     version: 1
   }, 'config regenerated with metric updated');
 });
-
