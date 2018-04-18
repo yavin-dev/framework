@@ -1,4 +1,4 @@
-{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{#with item as | dashboard |}}
 
   {{!-- Clone action enabled at all times --}}
@@ -44,6 +44,21 @@
 
   {{!-- Delete action visible when user owns the Dashboard --}}
   {{#if dashboard.isUserOwner}}
+    {{!-- Schedule only enabled for an owned dashboard and if it valid--}}
+    {{#if (feature-flag 'enableScheduleDashboards')}}
+        {{#dashboard-actions/schedule
+            model=dashboard
+            classNames='action schedule'
+            disabled=(not item.validations.isTruelyValid)
+            onSave=(route-action 'saveDeliveryRule')
+            onRevert=(route-action 'revertDeliveryRule')
+            onDelete=(route-action 'deleteDeliveryRule')
+        }}
+            {{#tooltip-on-component}}
+                {{if item.validations.isTruelyValid 'Schedule the dashboard' 'Validate dashboard to enable scheduling'}}
+            {{/tooltip-on-component}}
+        {{/dashboard-actions/schedule}}
+    {{/if}}
     {{#common-actions/delete
       tagName='li'
       classNames='action delete'

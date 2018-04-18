@@ -6,6 +6,7 @@
 import Ember from 'ember';
 import DS from 'ember-data';
 import MF from 'model-fragments';
+import DeliverableItem from 'navi-reports/models/deliverable-item';
 import config from 'ember-get-config';
 import { validator, buildValidations } from 'ember-cp-validations';
 
@@ -21,7 +22,7 @@ const Validations = buildValidations({
   ]
 });
 
-export default DS.Model.extend(Validations, {
+export default DeliverableItem.extend(Validations, {
   author:       DS.belongsTo('user', {async: true}),
   title:        DS.attr('string'),
   createdOn:    DS.attr('moment'),

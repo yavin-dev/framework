@@ -5,6 +5,7 @@ export default [
     authorId: 'navi_user',
     createdOn: '2016-01-01 00:00:00',
     updatedOn: '2016-01-01 00:00:00',
+    deliveryRules: [],
     presentation: {
       version: 1,
       layout: [
@@ -21,6 +22,7 @@ export default [
     authorId: 'navi_user',
     createdOn: '2016-01-01 00:00:00',
     updatedOn: '2016-01-01 00:00:00',
+    deliveryRules: [],
     presentation: {
       version: 1,
       layout: [
@@ -36,6 +38,7 @@ export default [
     authorId: 'ciela',
     createdOn: '2016-01-01 00:00:00',
     updatedOn: '2016-01-01 00:00:00',
+    deliveryRules: [],
     presentation: {
       version: 1,
       layout: [
@@ -50,6 +53,7 @@ export default [
     authorId: 'ciela',
     createdOn: '2016-01-01 00:00:00',
     updatedOn: '2016-01-01 00:00:00',
+    deliveryRules: [],
     presentation: {
       version: 1,
       layout: [], //TODO
@@ -62,6 +66,7 @@ export default [
     authorId: 'navi_user',
     createdOn: '2016-01-01 00:00:00',
     updatedOn: '2016-01-01 00:00:00',
+    deliveryRules: [],
     presentation: {
       version: 1,
       layout: [],

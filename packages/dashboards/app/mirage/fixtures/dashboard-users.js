@@ -12,6 +12,7 @@ let naviUsers = Ember.A(users),
     };
 
 naviUsers.forEach(user => {
+  user.deliveryRules = [];
   user.dashboards = dashboards[user.id];
   user.favoriteDashboards = favoriteDashboards[user.id];
 });

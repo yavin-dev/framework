@@ -5,6 +5,8 @@ import usersAndReports from './routes/user-and-report';
 import dashboard from './routes/dashboard';
 import dashboardCollection from './routes/dashboard-collection';
 import dashboardWidget from './routes/dashboard-widget';
+import deliveryRules from './routes/delivery-rules';
+import dashboardDeliveryRules from './routes/dashboard-delivery-rules';
 
 export default function() {
 
@@ -21,6 +23,8 @@ export default function() {
   dashboard.call(this);
   dashboardCollection.call(this);
   dashboardWidget.call(this);
+  deliveryRules.call(this);
+  dashboardDeliveryRules.call(this);
   usersAndReports.call(this).withUserRelationship({
     property: 'dashboards',
     type: 'dashboards',
