@@ -1,4 +1,5 @@
-import Ember from  'ember';
+import EmberObject, { get } from '@ember/object';
+import { getOwner, setOwner } from '@ember/application';
 import { moduleFor, test } from 'ember-qunit';
 import Pretender from "pretender";
 import metadataRoutes, {
@@ -11,9 +12,6 @@ import metadataRoutes, {
   MetricTwo,
   Host
 } from '../../helpers/metadata-routes';
-
-
-const { getOwner, setOwner } = Ember;
 
 let Service,
     Server;
@@ -85,7 +83,7 @@ test('loadMetadata after data loaded', function(assert) {
 test('_loadMetadataForType', function(assert) {
   assert.expect(1);
 
-  getOwner(this).register('model:metadata/record', Ember.Object.extend());
+  getOwner(this).register('model:metadata/record', EmberObject.extend());
 
   let keg = getOwner(this).lookup('service:keg'),
       testRecord = {id: 'foo', description: 'foo'};
@@ -170,7 +168,7 @@ test('getById', function(assert){
 });
 
 test('fetchById', function(assert){
-  assert.expect(3);
+  assert.expect(4);
 
   Service.fetchById('metric', 'metricOne').then((data) => {
     assert.deepEqual(data,
@@ -185,11 +183,40 @@ test('fetchById', function(assert){
   });
 
   Service.fetchById('metric', 'metricOne').then(() => {
+    assert.equal(Server.handledRequests.length,
+      2,
+      "Fetched entity from service every call");
     let keg = Service.get('_keg');
 
     assert.deepEqual(keg.all('metadata/metric').mapBy('name'),
       [ 'metricOne' ],
       'Fetching an entity already present in the keg doesn`t add another copy into the keg');
+  });
+});
+
+test('findById', function(assert){
+  assert.expect(4);
+  Service.set('metadataLoaded', true);
+  return Service.findById('metric', 'metricOne').then((data) => {
+    assert.deepEqual(data,
+      MetricOne,
+      'Service findById should load correct data');
+
+    let keg = Service.get('_keg');
+
+    assert.deepEqual(keg.all('metadata/metric').mapBy('name'),
+      [ 'metricOne' ],
+      'Fetched entity has been added to the keg');
+
+    return Service.findById('metric', 'metricOne');
+  }).then((data) => {
+    assert.deepEqual(get(data, 'name'),
+      MetricOne.name,
+      'Service findById should return correct data');
+
+    assert.equal(Server.handledRequests.length,
+      1,
+      'Meta data endpoint only called once');
   });
 });
 
