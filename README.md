@@ -1,6 +1,6 @@
 ![navi-banner](assets/navi-banner.png)
 
-Navi is a production quality analytics reporting UI with _out of the box_ support for [Fili](https://github.com/yahoo/fili).
+Navi is a production quality analytics reporting UI with _out of the box_ support for [Fili](http://fili.io/).
 
 [![Build Status](https://travis-ci.org/yahoo/navi.svg?branch=master)](https://travis-ci.org/yahoo/navi)
 
