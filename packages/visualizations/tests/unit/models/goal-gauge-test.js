@@ -14,30 +14,75 @@ moduleForModel('all-the-fragments', 'Unit | Model | Gauge Visualization Fragment
 test('isValidForRequest', function(assert) {
   assert.expect(6);
 
-  let request = buildTestRequest(['rupees'], []),
+  let request = buildTestRequest([{metric: 'rupees', parameters: {}}], []),
       goalGauge = run(() => this.subject().get('goalGauge'));
 
-  run(() => set(goalGauge, 'metadata', { metric: 'rupees'}));
+  run(() => set(goalGauge, 'metadata', {
+    metric: {
+      metric: {
+        category: 'category',
+        longName: 'Rupees',
+        name: 'rupees'
+      },
+      parameters: {},
+      canonicalName: 'rupees'
+    }
+  }));
   assert.notOk(goalGauge.isValidForRequest(request),
     'config for goal gauge is invalid when metric in config but baseline and goal do not exists config');
 
-  run(() => set(goalGauge, 'metadata', { metric: 'rupees', baselineValue: 34, goalValue: 50 }));
+  run(() => set(goalGauge, 'metadata', { metric: {
+    metric: {
+      category: 'category',
+      longName: 'Rupees',
+      name: 'rupees'
+    },
+    parameters: {},
+    canonicalName: 'rupees'
+  }, baselineValue: 34, goalValue: 50 }));
   assert.ok(goalGauge.isValidForRequest(request),
     'config for goal gauge is valid when baseline and goal exist in the config and the metric exists in the request');
 
-  run(() => set(goalGauge, 'metadata', { metric: 'rupees', baselineValue: '34', goalValue: '50' }));
+  run(() => set(goalGauge, 'metadata', {
+    metric: {
+      metric: {
+        category: 'category',
+        longName: 'Rupees',
+        name: 'rupees'
+      },
+      parameters: {},
+      canonicalName: 'rupees'
+    },
+    baselineValue: '34', goalValue: '50'
+  }));
   assert.ok(goalGauge.isValidForRequest(request),
     'in order to support web service response, config values can contain string representations of numbers');
 
-  run(() => set(goalGauge, 'metadata', { metric: 'rupees', baselineValue: 'e', goalValue: 50 }));
+  run(() => set(goalGauge, 'metadata', { metric: {
+    metric: {
+      category: 'category',
+      longName: 'Rupees',
+      name: 'rupees'
+    },
+    parameters: {},
+    canonicalName: 'rupees'
+  }, baselineValue: 'e', goalValue: 50 }));
   assert.notOk(goalGauge.isValidForRequest(request),
     'config for goal gauge is invalid when baseline is not a number');
 
-  run(() => set(goalGauge, 'metadata', { metric: 'rupees', baselineValue: 34, goalValue: 'abc' }));
+  run(() => set(goalGauge, 'metadata', { metric: {
+    metric: {
+      category: 'category',
+      longName: 'Rupees',
+      name: 'rupees'
+    },
+    parameters: {},
+    canonicalName: 'rupees'
+  }, baselineValue: 34, goalValue: 'abc' }));
   assert.notOk(goalGauge.isValidForRequest(request),
     'config for goal gauge is invalid when goal is not a number');
 
-  request = buildTestRequest(['swords', 'hp'], []);
+  request = buildTestRequest([{metric: 'swords', parameters: {}, canonicalName: 'swords'}, {metric: 'hp', parameters: {}, canonicalName: 'hp'}], []);
   assert.notOk(goalGauge.isValidForRequest(request),
     'config for goal gauge is invalid when metric in config does not exist in request');
 });
@@ -45,7 +90,7 @@ test('isValidForRequest', function(assert) {
 test('rebuildConfig', function(assert) {
   assert.expect(6);
 
-  let request = buildTestRequest(['rupees'], []),
+  let request = buildTestRequest([{metric: 'rupees', parameters:{}}], []),
       requestWithParams = buildTestRequest([{metric: 'revenue', parameters: {currency: 'HYR'}}], []),
       response = { rows: [ { rupees: 10 } ] },
       responseWithParams = { rows: [ {'revenue(currency=HYR)': 10} ]},

@@ -81,7 +81,7 @@ moduleForComponent('print-report-view', 'Integration | Component | print report 
                 series: {
                   type: 'metric',
                   config: {
-                    metrics: [ 'adClicks' ]
+                    metrics: [ {metric: 'adClicks', parameters: {}, canonicalName: 'adClicks'} ]
                   }
                 }
               }

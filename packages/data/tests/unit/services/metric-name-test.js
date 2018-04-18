@@ -44,11 +44,11 @@ test('getLongName', function(assert) {
 test('getDisplayName', function(assert) {
   let service = this.subject();
 
-  assert.equal(service.getDisplayName('adClicks'),
+  assert.equal(service.getDisplayName({metric: 'adClicks', parameters: {}}),
     'Ad Clicks',
     'Service returns the long name for a non parameterized metric');
 
-  assert.equal(service.getDisplayName('revenue(currency=USD)'),
+  assert.equal(service.getDisplayName({metric: 'revenue', parameters: {currency: 'USD'}, canonicalName: 'revenue(currency=USD)'}),
     'Revenue (USD)',
     'Service returns a correctly formatted metric name for a parameterized metric');
 });

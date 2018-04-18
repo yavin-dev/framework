@@ -19,6 +19,7 @@ import ChartAxisDateTimeFormats from 'navi-visualizations/utils/chart-axis-date-
 import DataGroup from 'navi-core/utils/classes/data-group';
 import Interval from 'navi-core/utils/classes/interval';
 import DateUtils from 'navi-core/utils/date';
+import { canonicalizeMetric } from 'navi-data/utils/metric';
 import { inject as service } from '@ember/service';
 import { get, set, getWithDefault } from '@ember/object';
 
@@ -77,9 +78,10 @@ export default Ember.Object.extend({
 
       // Build an object consisting of x value and requested metrics
       return Object.assign({ x }, ...metrics.map(metric => {
-        let metricDisplayName = get(this, 'metricName').getDisplayName(metric);
+        let metricDisplayName = get(this, 'metricName').getDisplayName(metric),
+            canonicalName = canonicalizeMetric(metric);
 
-        return {[metricDisplayName]: getWithDefault(row, metric, null)}; // c3 wants `null` for empty data points
+        return {[metricDisplayName]: getWithDefault(row, canonicalName, null)};  // c3 wants `null` for empty data points
       }));
     });
   },

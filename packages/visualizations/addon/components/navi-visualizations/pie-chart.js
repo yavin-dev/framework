@@ -84,9 +84,9 @@ export default Component.extend({
    * @property {String} metricDisplayName - display name for metric
    */
   metricDisplayName: computed('options', function() {
-    let metricName = get(this, 'seriesConfig.metric');
+    let metric = get(this, 'seriesConfig.metric');
 
-    return get(this, 'metricName') && get(this, 'metricName').getDisplayName(metricName);
+    return get(this, 'metricName') && get(this, 'metricName').getDisplayName(metric);
   }),
 
   /**
