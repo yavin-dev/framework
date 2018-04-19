@@ -147,8 +147,8 @@ test('index route actions', function(assert) {
 
     andThen(() => {
       assert.equal(find('.navi-collection__row:first-of-type td:eq(1) .action').length,
-        4,
-        'The second column contains four actions');
+        5,
+        'The second column contains five actions');
       assert.equal(find('.primary-header').text().trim(),
         'Share "Tumblr Goals Dashboard"',
         'Share modal pops up when action is clicked');

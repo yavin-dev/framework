@@ -17,7 +17,7 @@
         {{#if deliveryRule.isRejected}}
             <div class='schedule-modal__notification modal-notification alert failure'>
                 {{navi-icon 'exclamation-circle'}}
-                <div class='notification-text'>Oops! An error occurred while fetching the schedule for this report.</div>
+                <div class='notification-text'>Oops! An error occurred while fetching the schedule for this {{localDeliveryRule.deliveryType}}.</div>
             </div>
         {{else}}
             {{#if notification}}
@@ -26,7 +26,7 @@
                     {{navi-icon 'times' class='notification-remove-icon clickable' click=(action 'closeNotification')}}
                 </div>
             {{else}}
-                <h5 class='schedule-modal__header--secondary secondary-header'>Please provide delivery rules for your report</h5>
+                <h5 class='schedule-modal__header--secondary secondary-header'>Please provide delivery rules for your {{localDeliveryRule.deliveryType}}</h5>
             {{/if}}
         {{/if}}
     </div>
@@ -126,7 +126,7 @@
                         model=deliveryRule
                         modelName='schedule'
                         headerMsg=(concat 'Delete schedule for "' model.title '"')
-                        warnMsg='Are you sure you want to delete the schedule for this report?'
+                        warnMsg=(concat 'Are you sure you want to delete the schedule for this' localDeliveryRule.deliveryType)
                         deleteAction=(pipe (action this.attrs.onDelete localDeliveryRule) (action 'closeModal'))
                     }}Delete
                     {{/common-actions/delete}}

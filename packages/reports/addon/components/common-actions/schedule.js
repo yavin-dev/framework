@@ -14,6 +14,7 @@ import Ember from 'ember';
 import layout from '../../templates/components/common-actions/schedule';
 import config from 'ember-get-config';
 import { getApiErrMsg } from 'navi-core/utils/persistence-error';
+import capitalize from 'lodash/capitalize';
 
 
 const { A:arr, computed, get, set, setProperties } = Ember;
@@ -98,8 +99,8 @@ export default Ember.Component.extend({
    */
   _createNewDeliveryRule() {
     return get(this, 'store').createRecord('delivery-rule', {
-      deliveryType: 'report',
-      format: { type: 'csv' },
+      deliveryType: get(this, 'model').constructor.modelName,
+      format: { type: get(this, 'formats.firstObject') },
     });
   },
 
@@ -121,7 +122,7 @@ export default Ember.Component.extend({
         this.attrs.onSave(deliveryRule)
           .then(() => {
             set(this, 'notification', {
-              text: 'Report delivery schedule successfully saved!',
+              text: `${capitalize(get(deliveryRule, 'deliveryType'))} delivery schedule successfully saved!`,
               classNames: 'alert success'
             });
           })

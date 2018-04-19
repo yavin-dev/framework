@@ -68,6 +68,7 @@
     "ember-route-action-helper": "^2.0.6",
     "ember-sortable": "^1.10.0",
     "ember-source": "~2.16.0",
+    "ember-tag-input": "^1.2.1",
     "ember-tether": "^0.4.1",
     "ember-toggle": "5.2.1",
     "ember-tooltips": "^2.9.2",

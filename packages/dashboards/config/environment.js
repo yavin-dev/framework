@@ -9,7 +9,8 @@ module.exports = function(/* environment, appConfig */) {
     navi: {
       FEATURES: {
         dashboards: true,
-        enableDashboardExport: false
+        enableDashboardExport: false,
+        enableScheduleDashboards: false
       }
     },
     'ember-gridstack': {
