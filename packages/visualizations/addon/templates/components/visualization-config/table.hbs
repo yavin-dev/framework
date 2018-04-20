@@ -1,4 +1,16 @@
-{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{#if (check-config 'environment' 'development')}}
+  <div class='table-config__totals-toggle-section'>
+    <span class='table-config__totals-toggle-label'>Edit Header</span>
+    {{x-toggle
+      class='table-config__total-toggle-button'
+      value=(readonly options.editing)
+      size='small'
+      onToggle=(action 'onToggleEditing')
+    }}
+  </div>
+{{/if}}
+
 {{#if (feature-flag 'enableTotals')}}
   <span class='table-config__header'>
     Totals
@@ -47,7 +59,6 @@
         {{/power-select}}
       {{/if}}
     {{/if}}
-
   </div>
 {{else}}
   <div class='visualization-config__warn-msg'>

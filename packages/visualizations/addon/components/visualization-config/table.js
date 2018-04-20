@@ -69,6 +69,15 @@ export default Ember.Component.extend({
     },
 
     /**
+     * @action onToggleEditing
+     * @param {Boolean} editing
+     * toggles flag in the visualization config
+     */
+    onToggleEditing(editing) {
+      this.attrs.onUpdateConfig({  editing  });
+    },
+
+    /**
      * @action onToggleSubtotal
      * @param {Boolean} val
      * sets the first dimension in request as subtotal in options when toggled on or

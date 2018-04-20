@@ -48,6 +48,11 @@ export default Ember.Component.extend({
   selectedSubtotal: computed.readOnly('options.showTotals.subtotal'),
 
   /**
+   * @property {String} editing
+   */
+  editing: computed.readOnly('options.editing'),
+
+  /**
    * @property {Array} rawData - data from the WS
    */
   rawData: computed.readOnly('model.firstObject.response.rows'),
@@ -293,6 +298,16 @@ export default Ember.Component.extend({
         'updateColumnOrder',
         newColumnOrder
       );
-    }
+    },
+
+    /**
+     * @action updateHeaderDisplayName
+     */
+    updateHeaderDisplayName(column) {
+      this.attrs.onUpdateReport(
+        'updateColumn',
+        column
+      );
+    },
   }
 });

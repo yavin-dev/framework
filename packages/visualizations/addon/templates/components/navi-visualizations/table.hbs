@@ -5,36 +5,49 @@
 </div>
 <div class="table-widget__horizontal-scroll-container">
   <div class= 'table-widget-container'>
-      {{#sortable-group class='table-header-row' direction='x' onChange='updateColumnOrder' as | group |}}
-        {{#each columns as |column|}}
+      {{#if editing}}
+        <div class='table-header-row'>
+          {{#each columns as |column|}}
+            <div class='table-header-cell {{column.type}}'>
+              {{input
+                class='table-header-cell__input'
+                value=column.displayName
+                focus-out=(action 'updateHeaderDisplayName' column)
+              }}
+            </div>
+          {{/each}}
+        </div>
+      {{else}}
+        {{#sortable-group class='table-header-row' direction='x' onChange='updateColumnOrder' as | group |}}
+          {{#each columns as |column|}}
+            {{#sortable-item
+              class='table-header-cell'
+              classNameBindings='column.type column.field'
+              model=(readonly column)
+              group=group
+              click=(action 'headerClicked' column)
+            }}
+                <span class='table-header-cell__title' title='Drag column header to reorder'>{{column.displayName}}</span>
 
-          {{#sortable-item
-            class='table-header-cell'
-            classNameBindings='column.type column.field'
-            model=(readonly column)
-            group=group
-            click=(action 'headerClicked' column)
-          }}
-              <span class='table-header-cell__title' title='Drag column header to reorder'>{{column.displayName}}</span>
+                {{#if column.sortDirection}}
+                  {{navi-table-sort-icon
+                    class='table-header-cell__icon'
+                    direction=(readonly column.sortDirection)
+                  }}
+                {{else}}
+                  {{tooltip-on-element
+                    text='Column cannot be sorted.'
+                    showOn="click"
+                    hideOn="mousedown mouseleave"
+                    duration=2000
+                    enableLazyRendering=true
+                  }}
+                {{/if}}
+            {{/sortable-item}}
 
-              {{#if column.sortDirection}}
-                {{navi-table-sort-icon
-                  class='table-header-cell__icon'
-                  direction=(readonly column.sortDirection)
-                }}
-              {{else}}
-                {{tooltip-on-element
-                  text='Column cannot be sorted.'
-                  showOn="click"
-                  hideOn="mousedown mouseleave"
-                  duration=2000
-                  enableLazyRendering=true
-                }}
-              {{/if}}
-          {{/sortable-item}}
-
-        {{/each}}
-      {{/sortable-group}}
+          {{/each}}
+        {{/sortable-group}}
+      {{/if}}
 
     <div class='table-body'>
       <div class='scroll-container'>
