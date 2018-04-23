@@ -37,7 +37,7 @@ test('chart type', function(assert) {
   set(chart, 'metadata.axis.y.series', {
     type: 'metric',
     config: {
-      metrics: [{metric: {name: 'm1', category: 'category', longName: 'M1'}, parameters: {}, canonicalName: 'm1'}]
+      metrics: [{metric: 'm1', parameters: {}}]
     }
   });
 
@@ -82,8 +82,8 @@ test('metric series - metrics', function(assert) {
     type: 'metric',
     config: {
       metrics: [
-        {metric: {name: 'm1', category: 'category', longName: 'M1'}, parameters: {}, canonicalName: 'm1'},
-        {metric: {name: 'm2', category: 'category', longName: 'M2'}, parameters: {}, canonicalName: 'm2'}
+        {metric: 'm1', parameters: {}},
+        {metric: 'm2', parameters: {}}
       ]
     }
   });
@@ -170,7 +170,7 @@ test('rebuildConfig - metric', function(assert) {
           series: {
             type: 'metric',
             config: {
-              metrics: [{metric: {name: 'm1', category: 'category', longName: 'M1'}, parameters: {}, canonicalName: 'm1'}, {metric: {name: 'm2', category: 'category', longName: 'M2'}, parameters: {}, canonicalName: 'm2'}]
+              metrics: [{metric: 'm1', parameters: {}}, {metric: 'm2', parameters: {}}]
             }
           }
         }
