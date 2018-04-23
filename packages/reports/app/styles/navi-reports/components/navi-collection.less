@@ -4,12 +4,50 @@
  */
 
 .navi-collection {
+    display: flex;
+    margin-top: 15px;
+
+    &__sidebar {
+      min-width: 15%;
+      margin: 10px 15px 10px 0;
+    }
+
+    &__sidebar-row {
+      align-items: center;
+      justify-content: center;
+      display: flex;
+      padding: 15px;
+      color: @navi-gray-400;
+      cursor: pointer;
+
+      &:hover {
+        background-color: @navi-gray-200;
+        color: @navi-gray-500;
+      }
+    }
+
+    &__sidebar-row--selected {
+      background-color: @navi-gray-100;
+      border: 1px solid @navi-gray-300;
+      border-left: 3px solid #3570F4;
+      color: #3570F4;
+
+      &:hover {
+        background-color: @navi-gray-200;
+        color: #3570F4;
+      }
+    }
+
+    &__sidebar-label {
+      flex: 1;
+    }
+
     .is-loading td {
         padding: 0;
     }
 
     .table {
-        width: 100%;
+        width: 85%;
         font-size: @font-size-base;
 
         thead th {

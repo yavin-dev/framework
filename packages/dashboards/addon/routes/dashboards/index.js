@@ -19,7 +19,7 @@ const _DashboardObject = Ember.Object.extend({
   /**
    * @property {DS.PromiseArray} - Returns a combined dashboard list while listening to store changes
    */
-  dashboards: computed('userDashboards.[]', 'favoriteDashboards.[]', function() {
+  dashboards: computed('dashboards.[]', 'favorites.[]', function() {
     return DS.PromiseArray.create({
       promise: Ember.RSVP.hash({
         userDashboards:     get(this, 'userDashboards'),
@@ -51,14 +51,15 @@ export default Ember.Route.extend({
    * @returns {Object} - with an array of dashboard models
    */
   model(){
-    return get(this, 'user').findOrRegister().then(userModel => {
-      return Ember.RSVP.hash({
-        userDashboards:     get(userModel, 'dashboards'),
-        favoriteDashboards: get(userModel, 'favoriteDashboards')
-      }).then(({ userDashboards, favoriteDashboards }) => {
-        return _DashboardObject.create({ userDashboards, favoriteDashboards });
-      });
-    });
+    return get(this, 'user').findOrRegister().then(
+      userModel => Ember.RSVP.hash({
+        collections: get(this, 'store').findAll('dashboardCollection'),
+        dashboards: get(userModel, 'dashboards'),
+        favorites: get(userModel, 'favoriteDashboards')
+      }).then(({ collections, dashboards, favorites }) => {
+        return _DashboardObject.create({ collections, dashboards, favorites });
+      })
+    );
   },
 
   actions: {

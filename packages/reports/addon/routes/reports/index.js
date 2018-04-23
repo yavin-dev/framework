@@ -18,11 +18,11 @@ const _ReportObject = Ember.Object.extend({
   /**
    * @property {DS.PromiseArray} - Returns a combined report list while listening to store changes
    */
-  reports: computed('userReports.[]', 'favoriteReports.[]', function() {
+  reports: computed('reports.[]', 'favorites.[]', function() {
     return DS.PromiseArray.create({
       promise: Ember.RSVP.hash({
-        userReports:     get(this, 'userReports'),
-        favoriteReports: get(this, 'favoriteReports')
+        userReports:     get(this, 'reports'),
+        favoriteReports: get(this, 'favorites')
       }).then(({ userReports, favoriteReports }) => {
         return Ember.A()
           .pushObjects(userReports.toArray())
@@ -53,12 +53,20 @@ export default Ember.Route.extend({
    * @returns {Object} contains an array of report models
    */
   model() {
-    return get(this, 'user').findOrRegister().then(userModel => {
-      return _ReportObject.create({
-        userReports: get(userModel, 'reports'),
-        favoriteReports: get(userModel, 'favoriteReports')
-      });
-    });
+    return get(this, 'user').findOrRegister().then(
+      userModel => get(this, 'store').findAll('reportCollection').then(
+        collections => _ReportObject.create({
+          collections,
+          reports: get(userModel, 'reports'),
+          favorites: get(userModel, 'favoriteReports'),
+          delivered: get(userModel, 'reports').filter(
+            report => get(report, 'deliveryRules').then(
+              rules => !Ember.isEmpty(rules)
+            )
+          )
+        })
+      )
+    );
   },
 
   actions: {

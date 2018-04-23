@@ -1,18 +1,20 @@
 {{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{#if config.filterable}}
-    {{pick-single
-        selection=filter
-        options=filterOptions
-        updateSelection=(action (mut filter))
-        idField='filterKey'
-        displayField='name'
-    }}
-{{/if}}
+<div class='navi-collection__sidebar'>
+  {{#each filters as | filter |}}
+    <div
+      class='navi-collection__sidebar-row {{if (eq filter selectedFilter) 'navi-collection__sidebar-row--selected'}}'
+      {{action (mut selectedFilter) filter}}
+    >
+      <div class='navi-collection__sidebar-label'>{{capitalize filter}}</div>
+      {{navi-icon 'angle-right' class='navi-collection__sidebar-icon'}}
+    </div>
+  {{/each}}
+</div>
 <table class='table'>
     <thead>
         <tr>
             <th class='align left'>Name</th>
-            {{#if config.actions}}
+            {{#if (and config.actions (not-eq selectedFilter 'collections'))}}
                 <th class='align left navi-collection__actions'></th>
             {{/if}}
             <th class='align left'>Author</th>
@@ -20,59 +22,51 @@
         </tr>
     </thead>
     <tbody>
-        {{#unless hasTableLoaded}}
-            <tr class='is-loading'>
-                <td colspan='4'>
-                    {{navi-loader}}
-                </td>
-            </tr>
-        {{else}}
-            {{#each filteredItems as |item index|}}
-                <tr class='navi-collection__row {{concat 'navi-collection__row' index}}'>
-                    <td class='align left'>
-                        {{#if item.tempId}}
-                            {{#link-to itemRoute item.tempId}}
-                                {{item.title}}
-                            {{/link-to}}
-                            <span class='navi-collection__unsaved-label'>Unsaved</span>
-                        {{else}}
-                            {{#link-to itemRoute item.id}}
-                                {{item.title}}
-                            {{/link-to}}
-                        {{/if}}
-                        {{#if item.isFavorite}}
-                            {{navi-icon 'star' class='favorite-item--active'}}
-                        {{/if}}
-                    </td>
-                    {{#if config.actions}}
-                        <td class='align left navi-collection__actions'>
-                            {{#lazy-render target=(concat '.navi-collection__row' index)}}
-                                {{component config.actions
-                                    item=item
-                                }}
-                            {{/lazy-render}}
-                        </td>
-                    {{/if}}
-                    <td class='align left'>{{item.author.id}}</td>
-                    <td class='align left'>
-                        {{moment-format
-                            item.updatedOn
-                            'MM/DD/YYYY - hh:mm:ss a z'
-                            timeZone=(guess-timezone)
-                        }}
-                    </td>
-                </tr>
-            {{else}}
-                <tr class='no-results'>
-                    <td colspan='4'>
-                        {{#if config.emptyMsg}}
-                            {{config.emptyMsg}}
-                        {{else}}
-                            You don't have any {{itemType}} yet. Go ahead and {{#link-to itemNewRoute}}create one{{/link-to}} now?
-                        {{/if}}
-                    </td>
-                </tr>
-            {{/each}}
-        {{/unless}}
+      {{#each filteredItems as |item index|}}
+          <tr class='navi-collection__row {{concat 'navi-collection__row' index}}'>
+              <td class='align left'>
+                  {{#if item.tempId}}
+                      {{#link-to itemRoute item.tempId}}
+                          {{item.title}}
+                      {{/link-to}}
+                      <span class='navi-collection__unsaved-label'>Unsaved</span>
+                  {{else}}
+                      {{#link-to itemRoute item.id}}
+                          {{item.title}}
+                      {{/link-to}}
+                  {{/if}}
+                  {{#if item.isFavorite}}
+                      {{navi-icon 'star' class='favorite-item--active'}}
+                  {{/if}}
+              </td>
+              {{#if (and config.actions (not-eq selectedFilter 'collections'))}}
+                  <td class='align left navi-collection__actions'>
+                      {{#lazy-render target=(concat '.navi-collection__row' index)}}
+                          {{component config.actions
+                              item=item
+                          }}
+                      {{/lazy-render}}
+                  </td>
+              {{/if}}
+              <td class='align left'>{{item.author.id}}</td>
+              <td class='align left'>
+                  {{moment-format
+                      item.updatedOn
+                      'MM/DD/YYYY - hh:mm:ss a z'
+                      timeZone=(guess-timezone)
+                  }}
+              </td>
+          </tr>
+      {{else}}
+          <tr class='no-results'>
+              <td colspan='4'>
+                  {{#if config.emptyMsg}}
+                      {{config.emptyMsg}}
+                  {{else}}
+                      You don't have any {{itemType}} yet. {{#if itemNewRoute}} Go ahead and {{#link-to itemNewRoute}}create one{{/link-to}} now? {{/if}}
+                  {{/if}}
+              </td>
+          </tr>
+      {{/each}}
     </tbody>
 </table>
