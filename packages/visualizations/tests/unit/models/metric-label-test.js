@@ -53,7 +53,10 @@ test('rebuildConfig', function(assert) {
 
   assert.deepEqual(config, {
     metadata: {
-      metric: 'rupees',
+      metric: {
+        metric: 'rupees',
+        parameters: {}
+      },
       format: '0,0.00',
       description: 'Rupees'
     },

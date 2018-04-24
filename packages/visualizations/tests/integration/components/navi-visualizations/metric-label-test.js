@@ -1,5 +1,6 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
+import { set } from '@ember/object';
 import Ember from 'ember';
 
 moduleForComponent('navi-visualizations/metric-label', 'Integration | Component | navi-visualization/metric-label', {
@@ -8,6 +9,7 @@ moduleForComponent('navi-visualizations/metric-label', 'Integration | Component 
 
 test('metric label renders correctly', function(assert) {
   assert.expect(2);
+  set(this, 'metric', {metric: 'magic', parameters: {}});
 
   _setModel(this, {'magic': 30});
   this.render(hbs`
@@ -15,7 +17,7 @@ test('metric label renders correctly', function(assert) {
         model=model
         options=(hash
             description='Magic Points (MP)'
-            metric='magic'
+            metric=metric
         )
       }}
     `);
@@ -31,6 +33,7 @@ test('metric label renders correctly', function(assert) {
 
 test('metric label renders correctly when model has multiple metrics', function(assert) {
   assert.expect(2);
+  set(this, 'metric', {metric: 'magic', parameters: {}});
 
   _setModel(this, {magic: 30, hp: 40});
   this.render(hbs`
@@ -38,7 +41,7 @@ test('metric label renders correctly when model has multiple metrics', function(
         model=model
         options=(hash
             description='Magic Points (MP)'
-            metric='magic'
+            metric=metric
         )
       }}
     `);
@@ -55,13 +58,14 @@ test('metric label renders correctly when model has multiple metrics', function(
 test('metric label renders formatted string when format not null', function(assert) {
   assert.expect(1);
 
+  set(this, 'metric', {metric: 'rupees', parameters: {}});
   _setModel(this, {rupees: 1000000});
   this.render(hbs`
     {{navi-visualizations/metric-label
             model=model
             options=(hash
                 description='Rupees'
-                metric='rupees'
+                metric=metric
                 format='$ 0,0[.]00'
             )
       }}
