@@ -22,7 +22,10 @@ test('default config', function(assert) {
 
   assert.deepEqual(generatedConfig,
     {
-      metric: 'rupees',
+      metric: {
+        metric: 'rupees',
+        parameters: {}
+      },
       format: '0,0.00',
       description: 'Rupees'
     },

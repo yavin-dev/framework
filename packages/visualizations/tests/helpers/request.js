@@ -33,9 +33,8 @@ export function buildTestRequest(metrics=[], dimensions=[], intervals = [{ end: 
           parameters: m.parameters,
           toJSON() {
             return {
-              metric: this.metric,
-              canonicalName: this.canonicalName,
-              parameters: this.parameters
+              metric: m.metric,
+              parameters: m.parameters
             };
           }
         };

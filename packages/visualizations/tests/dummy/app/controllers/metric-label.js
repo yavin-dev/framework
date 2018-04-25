@@ -10,7 +10,7 @@ export default Ember.Controller.extend({
 
   metricLabelOptions: {
     description: 'Glass Bottles of the ranch\'s finest pasteurized whole milk!!!!!!!',
-    metric: 'bottles',
+    metric: {metric: 'bottles', parameters: {}},
     format: '$0,0[.]00'
   },
 

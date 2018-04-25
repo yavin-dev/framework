@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Ember service that helps retrieve metadata from WS
@@ -137,16 +137,28 @@ export default Ember.Service.extend({
   fetchById(type, id) {
     Ember.assert('Type must be table, metric or dimension', Ember.A(['table', 'dimension', 'metric']).includes(type));
 
-    //Get entity if already present in the keg
-    if(get(this, '_keg').getById(`metadata/${type}`, id)) {
-      return resolve(this.getById(type, id));
-    }
-
     return get(this, '_adapter').fetchMetadata(type, id).then(meta => {
       //load into keg if not already present
       this._loadMetadataForType(type, [ meta ]);
       return meta;
     });
+  },
+
+  /**
+   * @method findById
+   * gets Metadata or fetches it if necessary
+   * 
+   * @param {String} type
+   * @param {String} id
+   * @returns {Promise}
+   */
+  findById(type, id) {
+    //Get entity if already present in the keg
+    if(get(this, '_keg').getById(`metadata/${type}`, id)) {
+      return resolve(this.getById(type, id));
+    }
+
+    return this.fetchById(type, id);
   },
 
   /**

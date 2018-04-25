@@ -41,7 +41,7 @@ export default VisualizationBase.extend(Validations, {
    */
   rebuildConfig(request /*response*/) {
     let metrics = Ember.A( get(request, 'metrics') ),
-        metric =  get(metrics, 'firstObject.canonicalName'),
+        metric =  get(metrics, 'firstObject').toJSON(),
         description =  metricFormat(get(metrics, 'firstObject'), get(metrics, 'firstObject.metric.longName')),
         allFormats = get(MetricLabelConfig.proto(), 'predefinedFormats'),
         format = get(this, 'metadata.format') || get(allFormats[0], 'format');

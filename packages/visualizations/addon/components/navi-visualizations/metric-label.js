@@ -11,8 +11,8 @@
 import Ember from 'ember';
 import numeral from 'numeral';
 import layout from '../../templates/components/navi-visualizations/metric-label';
-
-const { computed, get } = Ember;
+import { canonicalizeMetric } from 'navi-data/utils/metric';
+import { get, computed } from '@ember/object';
 
 export default Ember.Component.extend({
   /**
@@ -46,7 +46,7 @@ export default Ember.Component.extend({
     if (get(this, 'model')) {
       let options = get(this, 'options') || {},
           firstRow = get(this, 'model.firstObject.response.rows.0'),
-          value = firstRow[get(this, 'options.metric')];
+          value = firstRow[canonicalizeMetric(get(this, 'options.metric'))];
 
       return options.format ? numeral(value).format(options.format) : String(value);
     }
