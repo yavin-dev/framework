@@ -11,7 +11,7 @@
             <div class='table-header-cell {{column.type}}'>
               {{input
                 class='table-header-cell__input'
-                value=column.displayName
+                value=(readonly column.displayName)
                 focus-out=(action 'updateHeaderDisplayName' column)
               }}
             </div>

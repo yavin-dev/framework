@@ -68,6 +68,10 @@ export default Ember.Controller.extend({
   },
 
   actions: {
+    onToggleEditing(editing) {
+      this.send('onUpdateConfig', { editing });
+    },
+
     onUpdateReport(actionType, options) {
       this[actionType](options);
     },
