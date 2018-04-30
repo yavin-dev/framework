@@ -72,19 +72,6 @@ export default DeliverableItem.extend(hasVisualization, Validations, {
   }).volatile(),
 
   /**
-   * @property {DS.Model} deliveryRuleForUser - delivery rule model
-   */
-  deliveryRuleForUser: computed('user', 'deliveryRules.[]', function() {
-    let userId = get(get(this, 'user').getUser(), 'id');
-
-    return DS.PromiseObject.create({
-      promise: get(this, 'deliveryRules').then(rules =>
-        arr(rules.filter( rule => rule.get('owner.id') === userId )).get('firstObject')
-      )
-    });
-  }),
-
-  /**
    * Clones the model
    *
    * @method clone
