@@ -1,3 +1,1 @@
-import DeliveryRules from 'navi-reports/mirage/fixtures/delivery-rules';
-
-export default DeliveryRules;
+export { default } from 'navi-reports/mirage/fixtures/delivery-rules';

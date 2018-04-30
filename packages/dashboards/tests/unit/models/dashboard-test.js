@@ -10,19 +10,24 @@ moduleForModel('dashboard', 'Unit | Model | dashboard', {
   needs: [
     'adapter:dashboard',
     'adapter:dashboard-widget',
+    'adapter:delivery-rule',
     'adapter:user',
     'config:environment',
     'model:dashboard-widget',
+    'model:deliverable-item',
     'model:delivery-rule',
     'model:fragments/presentation',
     'model:report',
     'model:user',
     'serializer:dashboard',
     'serializer:dashboard-widget',
+    'serializer:delivery-rule',
     'serializer:user',
     'service:user',
     'transform:moment',
-    'transform:fragment'
+    'transform:fragment',
+    'validator:presence',
+    'validator:recipients',
   ],
   beforeEach(){
     extendUserModel();
@@ -125,6 +130,26 @@ test('Cloning Dashboards', function(assert) {
       assert.deepEqual(clonedModel,
         expectedModel,
         'The cloned dashboard model has the same attrs as original model');
+    });
+  });
+});
+
+test('deliveryRuleForUser', function (assert) {
+  assert.expect(1);
+
+  return Ember.run(() => {
+    return Store.findRecord('user', 'navi_user').then(() => {
+      return Store.findRecord('dashboard', 2).then(dashboardModel => {
+        dashboardModel.user = {
+          getUser: () => Store.peekRecord('user', 'navi_user')
+        };
+
+        return dashboardModel.get('deliveryRuleForUser').then(rule => {
+          assert.deepEqual(rule,
+            Store.peekRecord('deliveryRule', 1),
+            'deliveryRule is fetched for current user');
+        });
+      });
     });
   });
 });
