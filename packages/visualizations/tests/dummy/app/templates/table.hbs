@@ -3,15 +3,16 @@
   <span class='table-config__totals-toggle-label'>Edit Header</span>
   {{x-toggle
     class='table-config__total-toggle-button'
-    value=(readonly options.editing)
+    value=(readonly isEditing)
     size='small'
-    onToggle=(action 'onToggleEditing')
+    onToggle=(toggle-action "isEditing" this)
   }}
 </div>
 
 <div class="table-example">
   {{navi-visualizations/table
     model=model
+    isEditing=isEditing
     options=options
     onUpdateReport=(action 'onUpdateReport')
   }}

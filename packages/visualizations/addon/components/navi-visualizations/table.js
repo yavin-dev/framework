@@ -5,6 +5,7 @@
  * Usage:
  * {{navi-visualizations/table
  *   model=model
+ *   isEditing=isEditing
  *   options=options
  *   onUpdateReport=(action 'onUpdateReport')
  * }}
@@ -46,11 +47,6 @@ export default Ember.Component.extend({
    * @property {String} selectedSubtotal
    */
   selectedSubtotal: computed.readOnly('options.showTotals.subtotal'),
-
-  /**
-   * @property {String} editing
-   */
-  editing: computed.readOnly('options.editing'),
 
   /**
    * @property {Array} rawData - data from the WS

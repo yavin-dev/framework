@@ -5,7 +5,7 @@
 </div>
 <div class="table-widget__horizontal-scroll-container">
   <div class= 'table-widget-container'>
-      {{#if editing}}
+      {{#if isEditing}}
         <div class='table-header-row'>
           {{#each columns as |column|}}
             <div class='table-header-cell {{column.type}}'>
