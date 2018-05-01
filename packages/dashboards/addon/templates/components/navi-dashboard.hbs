@@ -60,6 +60,20 @@
 
     {{!-- Delete visible when user owns the Dashboard --}}
     {{#if dashboard.isUserOwner}}
+      {{!-- Schedule only enabled for an owned dashboard and if it valid--}}
+      {{#if (feature-flag 'enableScheduleDashboards')}}
+          {{#dashboard-actions/schedule
+              model=dashboard
+              classNames='action schedule'
+              disabled=(not dashboard.validations.isTruelyValid)
+              onSave=(route-action 'saveDeliveryRule')
+              onRevert=(route-action 'revertDeliveryRule')
+              onDelete=(route-action 'deleteDeliveryRule')
+          }}
+            Schedule
+          {{/dashboard-actions/schedule}}
+      {{/if}}
+
       {{#common-actions/delete
         classNames='action delete'
         model=dashboard

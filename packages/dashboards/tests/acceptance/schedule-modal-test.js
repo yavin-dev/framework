@@ -4,9 +4,6 @@ import { teardownModal } from '../helpers/teardown-modal';
 import { typeInInput } from '../helpers/ember-tag-input';
 
 moduleForAcceptance('Acceptances | Navi Dashboard Schedule Modal', {
-  beforeEach() {
-    return visit('/dashboards');
-  },
   afterEach() {
     teardownModal();
   }
@@ -14,6 +11,7 @@ moduleForAcceptance('Acceptances | Navi Dashboard Schedule Modal', {
 
 test('schedule modal save new schedule', function (assert) {
   assert.expect(11);
+  visit('/dashboards');
 
   // TriggerEvent does not work here, need to use jquery trigger mouseenter
   andThen(() => $('.navi-collection__row:first-of-type').trigger('mouseenter'));
@@ -77,5 +75,20 @@ test('schedule modal save new schedule', function (assert) {
     assert.equal(find('.schedule-modal__input--recipients .navi-email-tag').text().trim(),
       'navi_user@navi.io',
       'Recipients field is set by the saved delivery rule');
+  });
+});
+
+test('open schedule modal in dashboard view', function (assert) {
+  assert.expect(1);
+  visit('/dashboards/2/view');
+
+  // TriggerEvent does not work here, need to use jquery trigger mouseenter
+  andThen(() => $('.navi-collection__row:first-of-type').trigger('mouseenter'));
+  // Click "Schedule"
+  click('.schedule-action__button');
+
+  andThen(() => {
+    assert.ok(find('.schedule-modal__header').is(':visible'),
+      'Schedule modal pops up when action is clicked');
   });
 });
