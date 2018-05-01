@@ -18,12 +18,13 @@ import { inject as service } from '@ember/service';
 import numeral from 'numeral';
 import layout from '../../templates/components/navi-visualizations/goal-gauge';
 import { metricFormat } from 'navi-data/helpers/metric-format';
+import { canonicalizeMetric } from 'navi-data/utils/metric';
 
 const DEFAULT_OPTIONS = {
   baselineValue: 0,
   goalValue: 0,
   metricTitle: '',
-  metric: '',
+  metric: {metric: '', parameters: {}},
   prefix: '',
   unit: '',
   thresholdColors: [ '#f05050', '#ffc831', '#44b876' ],
@@ -48,7 +49,7 @@ export default Component.extend({
    * @property {Number} - value to be rendered on gauge
    */
   actualValue: computed(function() {
-    let metric = get(this, 'config.metric');
+    let metric = canonicalizeMetric(get(this, 'config.metric'));
     return get(this, `model.firstObject.response.rows.0.${metric}`);
   }),
 

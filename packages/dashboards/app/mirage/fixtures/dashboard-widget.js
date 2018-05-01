@@ -10,7 +10,7 @@ export default [
       metadata: {
         baselineValue: 200,
         goalValue: 1000,
-        metric: 'adClicks'
+        metric: {metric: 'adClicks', parameters: {}}
       }
     },
     requests: [

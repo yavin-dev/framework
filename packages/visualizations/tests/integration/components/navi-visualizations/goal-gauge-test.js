@@ -1,5 +1,6 @@
 import { A as arr } from '@ember/array';
 import { getOwner } from '@ember/application';
+import { set } from '@ember/object';
 import { moduleForComponent, test } from 'ember-qunit';
 import { initialize as injectC3Enhancements} from 'navi-visualizations/initializers/inject-c3-enhancements';
 import hbs from 'htmlbars-inline-precompile';
@@ -23,13 +24,14 @@ test('goal-gauge renders correctly', function(assert) {
   assert.expect(6);
 
   _setModel(this, 'pageViews', 3030000000);
+  set(this, 'metric', {metric: 'pageViews', paramters: {}});
   this.render(hbs`
   {{navi-visualizations/goal-gauge
       model=model
       options=(hash
         baselineValue=290000000
         goalValue=310000000
-        metric='pageViews'
+        metric=metric
       )
     }}
   `);
@@ -62,6 +64,7 @@ test('goal-gauge renders correctly with unit', function(assert) {
   assert.expect(6);
 
   _setModel(this, 'pageViews', 75);
+  set(this, 'metric', {metric: 'pageViews', paramters: {}});
   this.render(hbs`
     {{navi-visualizations/goal-gauge
       model=model
@@ -69,7 +72,7 @@ test('goal-gauge renders correctly with unit', function(assert) {
         baselineValue=50
         goalValue=100
         unit='%'
-        metric='pageViews'
+        metric=metric
       )
     }}
   `);
@@ -102,6 +105,7 @@ test('goal-gauge renders correctly with prefix', function(assert) {
   assert.expect(6);
 
   _setModel(this, 'pageViews', 75);
+  set(this, 'metric', {metric: 'pageViews', paramters: {}});
   this.render(hbs`
     {{navi-visualizations/goal-gauge
       model=model
@@ -109,7 +113,7 @@ test('goal-gauge renders correctly with prefix', function(assert) {
         baselineValue=50
         goalValue=100
         prefix='$'
-        metric='pageViews'
+        metric=metric
       )
     }}
   `);
@@ -142,13 +146,14 @@ test('goal-gauge title class is based on actualValue vs baselineValue', function
   assert.expect(3);
 
   _setModel(this, 'm1', 150);
+  set(this, 'metric', {metric: 'm1', paramters: {}});
   this.render(hbs`
     {{navi-visualizations/goal-gauge
       model=model
       options=(hash
         baselineValue=100
         goalValue=200
-        metric='m1'
+        metric=metric
       )
     }}
   `);
@@ -162,7 +167,7 @@ test('goal-gauge title class is based on actualValue vs baselineValue', function
       options=(hash
         baselineValue=100
         goalValue=200
-        metric='m1'
+        metric=metric
       )
     }}
   `);
@@ -176,7 +181,7 @@ test('goal-gauge title class is based on actualValue vs baselineValue', function
       options=(hash
         baselineValue=100
         goalValue=200
-        metric='m1'
+        metric=metric
       )
     }}
   `);
@@ -190,7 +195,7 @@ test('goal-guage with parameterized metric', function(assert) {
       response: {
         rows: [
           {
-            'revenue(currency=USD)': "300"
+            'revenue(currency=USD)': '300'
           }
         ]
       },
@@ -209,7 +214,7 @@ test('goal-guage with parameterized metric', function(assert) {
   this.set('options', {
     baselineValue: 200,
     goalValue: 500,
-    metric: 'revenue(currency=USD)'
+    metric: {metric: 'revenue', parameters: {currency: 'USD'}}
   });
 
   this.render(hbs`
@@ -246,7 +251,7 @@ test('goal-gauge value & min/max precision', function(assert) {
   this.set('options', {
     baselineValue: 1234567,
     goalValue:    1234567,
-    metric:       'm1'
+    metric:       {metric: 'm1', parameters: {}}
   });
 
   this.render(hbs`
@@ -272,7 +277,7 @@ test('goal-gauge value & min/max precision', function(assert) {
   this.set('options', {
     baselineValue: 9123456789,
     goalValue:    9123456789,
-    metric:       'm1'
+    metric:       {metric: 'm1', parameters: {}}
   });
 
   this.render(hbs`
@@ -299,8 +304,8 @@ test('goal-gauge renders custom metric title', function(assert) {
   assert.expect(1);
 
   _setModel(this, 'm1', 75);
-
-  this.set('metricTitle', 'A real good metric');
+  set(this, 'metric', {metric: 'm1', paramters: {}});
+  set(this, 'metricTitle', 'A real good metric');
 
   this.render(hbs`
     {{navi-visualizations/goal-gauge
@@ -308,7 +313,7 @@ test('goal-gauge renders custom metric title', function(assert) {
       options=(hash
         baselineValue=50
         goalValue=100
-        metric='m1'
+        metric=metric
         metricTitle=metricTitle
       )
     }}
@@ -323,6 +328,7 @@ test('cleanup', function(assert) {
   assert.expect(2);
 
   _setModel(this, 'm1', 75);
+  set(this, 'metric', {metric: 'm1', paramters: {}});
 
   this.set('metricTitle', 'A real good metric');
 
@@ -332,7 +338,7 @@ test('cleanup', function(assert) {
       options=(hash
         baselineValue=50
         goalValue=100
-        metric='m1'
+        metric=metric
         metricTitle=metricTitle
       )
     }}
