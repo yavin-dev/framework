@@ -22,11 +22,11 @@ test('visiting /table', function(assert) {
     return reorder(
       'mouse',
       '.table-header-cell',
-      '.os',
+      '.dimension:contains(Operating System)',
       '.dateTime',
-      '.uniqueIdentifier',
-      '.totalPageViews',
-      '.totalPageViewsWoW'
+      '.metric:contains(Unique Identifiers)',
+      '.metric:contains(Total Page Views)',
+      '.threshold:contains(Total Page Views WoW)'
     );
   });
 
