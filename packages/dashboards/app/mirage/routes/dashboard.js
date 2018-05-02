@@ -8,12 +8,20 @@ const assignWidgets = (dashboard, widgets) => {
   dashboard.widgets = widgets.where({dashboardId: dashboard.id});
 }
 
+const assignDeliveryRules = (dashboard, deliveryRules) => {
+  if(deliveryRules) {
+    dashboard.associationKeys.push('deliveryRules');
+    dashboard.deliveryRules = deliveryRules.where({ deliveredItemId: dashboard.id });
+  }
+}
+
 export default function() {
-  this.get('dashboards/:id', ({ dashboards, dashboardWidgets }, request) => {
+  this.get('dashboards/:id', ({ dashboards, dashboardWidgets, deliveryRules }, request) => {
     let id = request.params.id,
         dashboard = dashboards.find(id);
 
     assignWidgets(dashboard, dashboardWidgets);
+    assignDeliveryRules(dashboard, deliveryRules)
     return dashboard;
   });
 
@@ -38,7 +46,7 @@ export default function() {
     dashboard.destroy();
   });
 
-  this.get('/dashboards', ({ dashboards, dashboardWidgets }, request) => {
+  this.get('/dashboards', ({ dashboards, dashboardWidgets, deliveryRules }, request) => {
     let idFilter = request.queryParams['filter[dashboards.id]'];
 
     // Allow filtering
@@ -50,6 +58,7 @@ export default function() {
     }
 
     dashboards.models.forEach(dashboard => assignWidgets(dashboard, dashboardWidgets));
+    dashboards.models.forEach(dashboard => assignDeliveryRules(dashboard, deliveryRules));
     return dashboards;
   });
 

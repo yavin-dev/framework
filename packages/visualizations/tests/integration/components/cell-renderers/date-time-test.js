@@ -17,7 +17,7 @@ const data = {
 };
 
 const column = {
-  field: 'dateTime',
+  field: {dateTime: 'dateTime'},
   type: 'dateTime',
   displayName: 'Date'
 };

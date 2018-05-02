@@ -17,7 +17,7 @@ const data = {
 };
 
 const column = {
-  field: 'totalPageViewsWoW',
+  field: {metric: 'totalPageViewsWoW', parameters: {}},
   type: 'threshold',
   displayName: 'Total Page Views WoW'
 };

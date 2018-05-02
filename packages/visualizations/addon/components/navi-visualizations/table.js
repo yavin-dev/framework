@@ -11,13 +11,14 @@
  * }}
  */
 
-import Ember from 'ember';
 import layout from '../../templates/components/navi-visualizations/table';
 import { formatItemDimension } from '../../helpers/mixed-height-layout';
 import groupBy from 'lodash/groupBy';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
-
-const { $, A:arr, computed, get, set } = Ember;
+import { computed, get, set, setProperties } from '@ember/object';
+import { A as arr } from '@ember/array';
+import $ from 'jquery';
+import Component from '@ember/component';
 
 const NEXT_SORT_DIRECTION = {
   'none': 'desc',
@@ -30,7 +31,7 @@ const HEADER_TITLE = {
   'subtotal': 'Subtotal'
 };
 
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   /**
@@ -78,13 +79,13 @@ export default Ember.Component.extend({
     return columns.reduce((totRow, column) => {
       //if dateTime set type
       if(column.type === 'dateTime'){
-        set(totRow, column.field, HEADER_TITLE[type]);
+        set(totRow, column.field.dateTime, HEADER_TITLE[type]);
       }
 
       //set subtotal dimension if subtotal row
-      if(column.field === get(this, 'selectedSubtotal') && type === 'subtotal'){
-        let idField = `${column.field}|id`,
-            descField = `${column.field}|desc`;
+      if(column.field.dimension === get(this, 'selectedSubtotal') && type === 'subtotal'){
+        let idField = `${column.field.dimension}|id`,
+            descField = `${column.field.dimension}|desc`;
 
         set(totRow, idField, data[0][idField]);
         set(totRow, descField, data[0][descField]);
@@ -101,8 +102,9 @@ export default Ember.Component.extend({
 
       //if metric find sum
       if(column.type === 'metric'){
-        totRow[column.field] = data.reduce((sum, row) => {
-          let number = Number(row[column.field]);
+        let metricName = canonicalizeMetric(column.field);
+        totRow[metricName] = data.reduce((sum, row) => {
+          let number = Number(row[metricName]);
           if(!Number.isNaN(number)) {
             return sum + number;
           }
@@ -201,7 +203,7 @@ export default Ember.Component.extend({
         columns = $.extend(true, [], get(this, 'options.columns'));
 
     return columns.map( column => {
-      let sort =  arr(sorts).findBy('metric', column.field) || {};
+      let sort =  arr(sorts).findBy('metric', canonicalizeMetric(column.field)) || {};
       let sortDirection;
 
       if(column.type === 'dateTime'){
@@ -210,13 +212,12 @@ export default Ember.Component.extend({
         sortDirection =  get(sort, 'direction') || 'none';
       }
 
-      Ember.setProperties(column, {
+      setProperties(column, {
         sortDirection
       });
 
       return column;
     });
-
   }),
 
   /**

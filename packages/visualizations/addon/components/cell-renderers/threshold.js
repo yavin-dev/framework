@@ -12,6 +12,7 @@
 
 import Ember from 'ember';
 import layout from '../../templates/components/cell-renderers/threshold';
+import { canonicalizeMetric } from 'navi-data/utils/metric';
 
 const { computed, get, isEmpty } = Ember;
 
@@ -37,7 +38,7 @@ export default Ember.Component.extend({
    * @property {Number} - value to be rendered on the cell
    */
   metricValue: computed('data', 'metric', function() {
-    let metric = get(this, 'metric'),
+    let metric = canonicalizeMetric(get(this, 'metric')),
         metricValue = get(this, `data.${metric}`);
 
     return (isEmpty(metricValue)) ? '--' : metricValue;

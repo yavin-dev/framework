@@ -22,7 +22,7 @@
           {{#each columns as |column|}}
             {{#sortable-item
               class='table-header-cell'
-              classNameBindings='column.type column.field'
+              classNameBindings='column.type'
               model=(readonly column)
               group=group
               click=(action 'headerClicked' column)
@@ -44,7 +44,6 @@
                   }}
                 {{/if}}
             {{/sortable-item}}
-
           {{/each}}
         {{/sortable-group}}
       {{/if}}

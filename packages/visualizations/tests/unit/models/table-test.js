@@ -71,11 +71,11 @@ test('rebuildConfig', function(assert) {
     'version': 1,
     'metadata': {
       'columns': [
-        { 'displayName': 'Date', 'field': 'dateTime', 'type': 'dateTime' },
-        { 'displayName': 'D1', 'field': 'd1', 'type': 'dimension' },
-        { 'displayName': 'D2', 'field': 'd2', 'type': 'dimension' },
-        { 'displayName': 'M1', 'field': 'm1', 'type': 'metric' },
-        { 'displayName': 'M2', 'field': 'm2', 'type': 'metric' }
+        { 'displayName': 'Date', 'field': { dateTime: 'dateTime' }, 'type': 'dateTime' },
+        { 'displayName': 'D1', 'field': {dimension: 'd1'}, 'type': 'dimension' },
+        { 'displayName': 'D2', 'field': {dimension: 'd2'}, 'type': 'dimension' },
+        { 'displayName': 'M1', 'field': {metric: 'm1', parameters: {}}, 'type': 'metric' },
+        { 'displayName': 'M2', 'field': {metric: 'm2', parameters: {}}, 'type': 'metric' }
       ]
     }
   }, 'Date, dimensions, and metrics from request are serialized into columns');
@@ -88,9 +88,9 @@ test('rebuildConfig', function(assert) {
     'version': 1,
     'metadata': {
       'columns': [
-        { 'displayName': 'Date', 'field': 'dateTime', 'type': 'dateTime' },
-        { 'displayName': 'M1', 'field': 'm1', 'type': 'metric' },
-        { 'displayName': 'M2', 'field': 'm2', 'type': 'metric' }
+        { 'displayName': 'Date', 'field': { dateTime: 'dateTime' }, 'type': 'dateTime' },
+        { 'displayName': 'M1', 'field': {metric: 'm1', parameters: {}}, 'type': 'metric' },
+        { 'displayName': 'M2', 'field': {metric: 'm2', parameters: {}}, 'type': 'metric' }
       ]
     }
   },'Dimension column is not required');
@@ -105,9 +105,9 @@ test('rebuildConfig', function(assert) {
     'version': 1,
     'metadata': {
       'columns': [
-        { 'displayName': 'Date', 'field': 'dateTime', 'type': 'dateTime' },
-        { 'displayName': 'M1', 'field': 'm1', 'type': 'threshold' },
-        { 'displayName': 'M2', 'field': 'm2', 'type': 'metric' }
+        { 'displayName': 'Date', 'field': { dateTime: 'dateTime' }, 'type': 'dateTime' },
+        { 'displayName': 'M1', 'field': {metric: 'm1', parameters: {}}, 'type': 'threshold' },
+        { 'displayName': 'M2', 'field': {metric: 'm2', parameters: {}}, 'type': 'metric' }
       ]
     }
   }, 'Trend metrics use threshold column');
@@ -132,9 +132,9 @@ test('rebuildConfig with parameterized metrics', function(assert) {
     'version': 1,
     'metadata': {
       'columns': [
-        { 'displayName': 'Date', 'field': 'dateTime', 'type': 'dateTime' },
-        { 'displayName': 'M1 (paramVal1)', 'field': 'm1(param1=paramVal1)', 'type': 'metric' },
-        { 'displayName': 'M2', 'field': 'm2', 'type': 'metric' }
+        { 'displayName': 'Date', 'field': { dateTime: 'dateTime' }, 'type': 'dateTime' },
+        { 'displayName': 'M1 (paramVal1)', 'field': {metric: 'm1', parameters: {param1: 'paramVal1'}}, 'type': 'metric' },
+        { 'displayName': 'M2', 'field': {metric: 'm2', parameters: {}}, 'type': 'metric' }
       ]
     }
   },'Columns with parameterized metrics are formatted correctly');
@@ -149,19 +149,20 @@ test('rebuildConfig with parameterized metrics', function(assert) {
  */
 function buildTestConfig(dimensions=[], metrics=[], thresholds=[]) {
   let columns = [
-    { field: 'dateTime', type: 'dateTime' },
+    { field: {dateTime: 'dateTime'}, type: 'dateTime' },
     ...metrics.map(m => {
       let metricName = get(m, 'metric'),
-          parameters = get(m, 'parameters'),
+          parameters = get(m, 'parameters') || {},
           valueType = isPresent(parameters) && get(parameters, 'currency') ?  'money' : 'number';
-      return { field: metricName, type: 'metric', valueType, parameters };
+      return { field: {metric: metricName, parameters}, type: 'metric', valueType };
     }),
     ...thresholds.map(t => {
-      let metricName = get(t, 'metric');
-      return { field: metricName, type: 'threshold' };
+      let metricName = get(t, 'metric'),
+          parameters = get(t, 'parameters') || {};
+      return { field: {metric: metricName, parameters}, type: 'threshold' };
     }),
     ...dimensions.map(d => {
-      return { field: d, type: 'dimension' };
+      return { field: {dimension: d}, type: 'dimension' };
     }),
   ];
   return  {
@@ -182,7 +183,7 @@ function buildTestRequest(dimensions=[], metrics=[], thresholds=[]) {
   return {
     metrics: [ ...metrics, ...thresholds].map( m => {
       let metricName = get(m, 'metric'),
-          parameters = get(m, 'parameters'),
+          parameters = get(m, 'parameters') || {},
           canonicalName = canonicalizeMetric({ metric: metricName, parameters});
 
       return {
@@ -193,7 +194,13 @@ function buildTestRequest(dimensions=[], metrics=[], thresholds=[]) {
           valueType: 'number'
         },
         parameters,
-        canonicalName
+        canonicalName,
+        toJSON() {
+          return {
+            metric: metricName,
+            parameters
+          };
+        }
       };
     }),
     dimensions: dimensions.map(d => {

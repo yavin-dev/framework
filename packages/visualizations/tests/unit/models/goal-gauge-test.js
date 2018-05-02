@@ -103,7 +103,7 @@ test('rebuildConfig', function(assert) {
         metadata: {
           baselineValue: 9,
           goalValue: 11,
-          metric: 'rupees'
+          metric: {metric: 'rupees', parameters: {}}
         },
         type: 'goal-gauge',
         version: 1
@@ -112,7 +112,7 @@ test('rebuildConfig', function(assert) {
         metadata: {
           baselineValue: 0.9,
           goalValue: 1.1,
-          metric: 'rupees'
+          metric: {metric: 'rupees', parameters: {}}
         },
         type: 'goal-gauge',
         version: 1
@@ -121,7 +121,7 @@ test('rebuildConfig', function(assert) {
         metadata: {
           baselineValue: -11,
           goalValue: -9,
-          metric: 'rupees'
+          metric: {metric: 'rupees', parameters: {}}
         },
         type: 'goal-gauge',
         version: 1
@@ -130,7 +130,7 @@ test('rebuildConfig', function(assert) {
         metadata: {
           baselineValue: 0,
           goalValue: 1,
-          metric: 'rupees'
+          metric: {metric: 'rupees', parameters: {}}
         },
         type: 'goal-gauge',
         version: 1
@@ -139,7 +139,7 @@ test('rebuildConfig', function(assert) {
         metadata: {
           baselineValue: 9,
           goalValue: 11,
-          metric: 'revenue(currency=HYR)'
+          metric: {metric: 'revenue', parameters: {currency: 'HYR'}}
         },
         type: 'goal-gauge',
         version: 1

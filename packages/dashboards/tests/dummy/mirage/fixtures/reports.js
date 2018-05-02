@@ -1,3 +1,1 @@
-import Reports from 'navi-reports/mirage/fixtures/reports';
-
-export default Reports;
+export { default } from 'navi-reports/mirage/fixtures/reports';

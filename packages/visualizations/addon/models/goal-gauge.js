@@ -8,6 +8,7 @@ import { A as arr } from '@ember/array';
 import DS from 'ember-data';
 import VisualizationBase from './visualization';
 import { buildValidations, validator } from 'ember-cp-validations';
+import { canonicalizeMetric } from 'navi-data/utils/metric';
 
 /**
  * @constant {Object} Validations - Validation object
@@ -48,8 +49,9 @@ export default VisualizationBase.extend(Validations, {
 
     if (request && response) {
       let metrics = arr( get(request, 'metrics') ),
-          metric =  get(metrics, 'firstObject.canonicalName'),
-          actualValue =  get(arr(response.rows), `firstObject.${metric}`),
+          metric =  get(metrics, 'firstObject').toJSON(),
+          canonicalName = canonicalizeMetric(metric),
+          actualValue =  get(arr(response.rows), `firstObject.${canonicalName}`),
           above = actualValue * 1.1,
           below = actualValue * 0.9,
           baselineValue =  actualValue > 0 ? below : above,

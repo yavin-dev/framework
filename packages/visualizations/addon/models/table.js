@@ -5,6 +5,7 @@
 import Ember from 'ember';
 import DS from 'ember-data';
 import VisualizationBase from './visualization';
+import { canonicalizeMetric } from 'navi-data/utils/metric';
 import { validator, buildValidations } from 'ember-cp-validations';
 import { metricFormat } from 'navi-data/helpers/metric-format';
 
@@ -53,14 +54,14 @@ export default VisualizationBase.extend(Validations, {
         metrics = get(request, 'metrics') || [];
 
     let dateColumn = {
-      field: 'dateTime',
+      field: {dateTime: 'dateTime'},
       type: 'dateTime',
       displayName: 'Date'
     };
 
     let dimensionColumns = dimensions.map(dimension => {
       return {
-        field: get(dimension, 'dimension.name'),
+        field: {dimension: get(dimension, 'dimension.name')},
         type: 'dimension',
         displayName: get(dimension, 'dimension.longName')
       };
@@ -74,7 +75,7 @@ export default VisualizationBase.extend(Validations, {
           longName = get(metric, 'metric.longName');
 
       return {
-        field: get(metric, 'canonicalName'),
+        field: metric.toJSON(),
         type,
         displayName: metricFormat(metric, longName)
       };
@@ -103,7 +104,7 @@ export default VisualizationBase.extend(Validations, {
  */
 function hasAllColumns(request, columns) {
   //retrieve everything but dateTime from metadata.columns
-  let columnFields  = arr(arr(columns).rejectBy('field', 'dateTime')).mapBy('field'),
+  let columnFields  = arr(arr(columns).rejectBy('type','dateTime')).map(column => get(column, 'field.dimension') || canonicalizeMetric(get(column, 'field'))),
       dimensions    = arr(get(request, 'dimensions')).mapBy('dimension.name'),
       metrics       = arr(get(request, 'metrics')).mapBy('canonicalName'),
       requestFields = [ ...dimensions, ...metrics ];

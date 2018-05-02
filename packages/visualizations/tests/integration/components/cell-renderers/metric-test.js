@@ -17,7 +17,7 @@ let data = {
 };
 
 let column = {
-  field: 'uniqueIdentifier',
+  field: {metric: 'uniqueIdentifier', parameters: {}},
   type: 'metric',
   displayName: 'Unique Identifiers'
 };

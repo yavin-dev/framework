@@ -9,7 +9,7 @@ export default Ember.Controller.extend({
   }),
 
   goalGaugeOptions: {
-    metric: 'DAU',
+    metric: {metric: 'DAU', parameters: {}},
     baselineValue: '2900000000',
     goalValue: '3100000000'
   },

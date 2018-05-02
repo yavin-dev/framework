@@ -56,22 +56,22 @@ const Model = Ember.A([{
 const Options = {
   columns: [
     {
-      field: 'dateTime',
+      field: {dateTime: 'dateTime'},
       type: 'dateTime',
       displayName: 'Date'
     },
     {
-      field: 'os',
+      field: {dimension: 'os'},
       type: 'dimension',
       displayName: 'Operating System'
     },
     {
-      field: 'uniqueIdentifier',
+      field: {metric: 'uniqueIdentifier', parameters: {}},
       type: 'metric',
       displayName: 'Unique Identifiers'
     },
     {
-      field: 'totalPageViews',
+      field: {metric: 'totalPageViews', parameters: {}},
       type: 'metric',
       displayName: 'Total Page Views'
     }

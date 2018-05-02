@@ -5,27 +5,17 @@
 
 .metric-label-config {
   .config-container();
+
+  .number-format-selector__section-header {
+    .metric-label-config__section-header;
+  }
 }
 
-.metric-label-config__format-list {
-    display: flex;
-    flex-direction: column;
-}
-
-.metric-label-config__description,
-.metric-label-config__format {
+.metric-label-config__description {
     height: @report-form-height;
 }
 
 .metric-label-config__description-input {
-    font-size: @font-size-base-large;
-}
-
-.metric-label-config__doc-link {
-  font-size: 15px;
-}
-
-.metric-label-config__format-input {
     font-size: @font-size-base-large;
 }
 

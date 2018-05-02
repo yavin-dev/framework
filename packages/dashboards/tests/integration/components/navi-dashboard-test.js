@@ -15,10 +15,11 @@ moduleForComponent('navi-dashboard', 'Integration | Component | navi dashboard',
     extendUserModel();
     setupMock();
 
-    this.register('helper:route-action', Ember.Helper.helper(() => { }), { instantiate: false });
+    this.register('helper:route-action', Ember.Helper.helper(() => ()=>{}), { instantiate: false });
 
     let dashboardModel = {
       title: 'Test Dashboard',
+      isUserOwner: true,
       widgets: [1, 2],
       presentation: {
         version: 1,
@@ -102,8 +103,8 @@ test('dashboard export', function(assert) {
   let originalFeatureFlag = config.navi.FEATURES.enableDashboardExport;
 
   return wait().then(() => {
-    this.render(hbs`{{navi-dashboard dashboard=dashboardModel}}`);
     config.navi.FEATURES.enableDashboardExport = true;
+    this.render(hbs`{{navi-dashboard dashboard=dashboardModel}}`);
     
     assert.ok($('.action.export').is(':visible'),
       'Dashboard export button should be visible');
@@ -115,4 +116,36 @@ test('dashboard export', function(assert) {
 
     config.navi.FEATURES.enableDashboardExport = originalFeatureFlag;
   });
-})
+});
+
+test('dashboard schedule - config', function (assert) {
+  assert.expect(2);
+  let originalFeatureFlag = config.navi.FEATURES.enableScheduleDashboards;
+
+  return wait().then(() => {
+    config.navi.FEATURES.enableScheduleDashboards = true;
+    this.render(hbs`{{navi-dashboard dashboard=dashboardModel}}`);
+
+    assert.ok($('.action.schedule').is(':visible'),
+      'Dashboard schedule button should be visible');
+
+    config.navi.FEATURES.enableScheduleDashboards = false;
+    this.render(hbs`{{navi-dashboard dashboard=dashboardModel}}`);
+    assert.notOk($('.action.schedule').is(':visible'),
+      'Dashboard schedule button should not be visible');
+
+    config.navi.FEATURES.enableScheduleDashboards = originalFeatureFlag;
+  });
+});
+
+test('dashboard schedule - isUserOwner', function (assert) {
+  assert.expect(1);
+
+  return wait().then(() => {
+    this.set('dashboardModel.isUserOwner', false)
+
+    this.render(hbs`{{navi-dashboard dashboard=dashboardModel}}`);
+    assert.notOk($('.action.schedule').is(':visible'),
+      'Dashboard schedule button should not be visible');
+  });
+});
