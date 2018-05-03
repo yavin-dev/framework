@@ -41,7 +41,6 @@ test('visiting /table', function(assert) {
   });
 });
 
-
 test('toggle table editing', function (assert) {
   assert.expect(2);
 
