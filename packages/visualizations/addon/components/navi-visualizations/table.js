@@ -5,6 +5,7 @@
  * Usage:
  * {{navi-visualizations/table
  *   model=model
+ *   isEditing=isEditing
  *   options=options
  *   onUpdateReport=(action 'onUpdateReport')
  * }}
@@ -294,6 +295,16 @@ export default Component.extend({
         'updateColumnOrder',
         newColumnOrder
       );
-    }
+    },
+
+    /**
+     * @action updateHeaderDisplayName
+     */
+    updateHeaderDisplayName(column) {
+      this.attrs.onUpdateReport(
+        'updateColumn',
+        column
+      );
+    },
   }
 });

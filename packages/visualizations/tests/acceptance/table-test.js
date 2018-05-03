@@ -40,3 +40,19 @@ test('visiting /table', function(assert) {
     ], 'The headers are reordered as specified by the reorder');
   });
 });
+
+test('toggle table editing', function (assert) {
+  assert.expect(2);
+
+  visit('/table');
+  andThen(function () {
+    assert.notOk(find('.table-header-cell__input').is(':visible'),
+      'Table header edit field should not be visible');
+  });
+
+  click('.table-config__total-toggle-button .x-toggle-btn');
+  andThen(function () {
+    assert.ok(find('.table-header-cell__input').is(':visible'),
+      'Table header edit field should be visible');
+  });
+});
