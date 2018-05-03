@@ -21,19 +21,22 @@ export default Ember.Controller.extend({
         metric: {
           name: 'totalPageViews',
           longName: 'Total Page Views'
-        }
+        },
+        toJSON() { return {metric: this.metric.name, parameters: {}}; }
       },
       {
         metric: {
           name: 'uniqueIdentifier',
           longName: 'Unique Identifier'
-        }
+        },
+        toJSON() { return {metric: this.metric.name, parameters: {}}; }
       },
       {
         metric: {
           name: 'revenue',
           longName: 'Revenue'
-        }
+        },
+        toJSON() { return {metric: this.metric.name, parameters: {}}; }
       }
     ]
   },
@@ -182,19 +185,22 @@ export default Ember.Controller.extend({
         metric: {
           name: 'totalPageViews',
           longName: 'Total Page Views'
-        }
+        },
+        toJSON() { return {metric: this.metric.name, parameters: {}}; }
       },
       {
         metric: {
           name: 'uniqueIdentifier',
           longName: 'Unique Identifier'
-        }
+        },
+        toJSON() { return {metric: this.metric.name, parameters: {}}; }
       },
       {
         metric: {
           name: 'revenue',
           longName: 'Revenue'
-        }
+        },
+        toJSON() { return {metric: this.metric.name, parameters: {}}; }
       }
     ],
     logicalTable: {

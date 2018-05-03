@@ -231,9 +231,7 @@ export default Ember.Component.extend({
     let rawData = get(this, 'dataConfig.data.json'),
         tooltipComponent = get(this, 'tooltipComponent'),
         request = get(this, 'model.firstObject.request'),
-        seriesConfig = get(this, 'seriesConfig.config'),
-        metricName = get(this, 'metricName'),
-        metricDisplayName = get(this, 'metricDisplayName');
+        seriesConfig = get(this, 'seriesConfig.config');
 
     return {
       contents(tooltipData) {
@@ -242,17 +240,11 @@ export default Ember.Component.extend({
          * to the raw x value for better formatting
          */
         let x = rawData[tooltipData[0].x].x.rawValue,
-            metricDisplayMap = seriesConfig.metrics ? seriesConfig.metrics.reduce((acc,metric) => {
-              acc[metricName.getDisplayName(metric)] = metric;
-              return acc;
-            } , {}) : undefined,
             tooltip = tooltipComponent.create({
               tooltipData,
               x,
               request,
-              seriesConfig,
-              metricDisplayName,
-              metricDisplayMap
+              seriesConfig
             });
 
         Ember.run(() => {
