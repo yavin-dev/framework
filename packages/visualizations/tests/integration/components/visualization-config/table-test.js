@@ -25,7 +25,7 @@ test('it renders', function(assert) {
   this.render(hbs`{{visualization-config/table}}`);
 
   assert.equal(this.$('.table-config').text().trim(),
-    'No configuration options available.',
+    'You can access more configuration in each of the column headers',
     'Table Configuration Component displays the warning message');
 });
 
