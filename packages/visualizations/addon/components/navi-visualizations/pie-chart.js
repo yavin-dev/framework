@@ -150,7 +150,7 @@ export default Component.extend({
   chartTooltip: computed('seriesConfig.metric', function() {
     let tooltipComponent = get(this, 'tooltipComponent'),
         rawData = get(this, 'dataConfig.data.json'),
-        metricName = get(this, 'seriesConfig.metric');
+        metric = get(this, 'seriesConfig.metric');
 
     return {
       contents(tooltipData) {
@@ -158,7 +158,7 @@ export default Component.extend({
             tooltip = tooltipComponent.create({
               x,
               requiredToolTipData: tooltipData[0],
-              metricName
+              metric
             });
 
         run(() => {

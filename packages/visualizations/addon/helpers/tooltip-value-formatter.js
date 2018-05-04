@@ -11,11 +11,11 @@ import { smartFormatNumber } from 'navi-core/helpers/smart-format-number';
  *
  * @method tooltipValueFormatter
  * @param {Number|String} value
- * @param {String} metricName
+ * @param {Object} metric - Metric JSON Object
  * @param {Object} row - response row for the current value and metric
  * @return {String} Formatted string for the provided number
  */
-export function tooltipValueFormatter([ value /*, metricName, rowData*/ ]) {
+export function tooltipValueFormatter([ value /*, metric, rowData*/ ]) {
   return smartFormatNumber([value]);
 }
 
