@@ -453,5 +453,49 @@ export default [
       bardVersion: 'v1',
       requestVersion: 'v1'
     }
+  },
+  {
+    id: 10,
+    title: 'Report with missing intervals',
+    createdOn: '2018-01-01 00:00:00',
+    updatedOn: '2018-01-01 00:00:00',
+    author: 'navi_user',
+    deliveryRules: [],
+    visualization:  {
+      type: 'line-chart',
+      version: 1,
+      metadata: {
+        axis: {
+          y: {
+            series: {
+              type: 'metric',
+              config: {
+                metrics: ['uniqueIdentifier']
+              }
+            }
+          }
+        }
+      }
+    },
+    request: {
+      logicalTable: {
+        table: 'network',
+        timeGrain: 'day'
+      },
+      metrics: [
+        { metric: 'uniqueIdentifier' }
+      ],
+      dimensions: [],
+      filters: [],
+      sort: [],
+      intervals: [
+        {
+          end: '2018-11-18 00:00:00.000',
+          start: '2018-11-11 00:00:00.000'
+        }
+      ],
+      bardVersion:    'v1',
+      requestVersion: 'v1'
+    }
   }
 ];

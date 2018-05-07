@@ -1,0 +1,76 @@
+/**
+ * Copyright 2018, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
+
+.missing-intervals-warning {
+  background-color: @navi-white;
+  bottom: 0;
+  width: 100%;
+  z-index: 1000;
+
+  &__arrow-icon {
+    margin-right: 10px;
+    padding-top: 3px;
+  }
+
+  &__contents {
+    border-bottom: 1px solid @navi-gray-300;
+    border-top: 3px solid @navi-yellow;
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    font-size: @font-size-mid-base;
+    padding: 10px;
+    width: 100%;
+  }
+
+  &__dates {
+    margin: 10px 0;
+    padding-left: 20px;
+    font-size: @font-size-mid-base;
+  }
+
+  &__details-content {
+    max-height: 115px;
+    overflow-y: scroll;
+    padding: 10px;
+    width: 100%;
+  }
+
+  &__details-desc {
+    color: @navi-blue;
+  }
+
+  &__details-help-text {
+    font-family: @font-family-sans-serif;
+    font-size: @font-size-mid-base;
+  }
+
+  &__details-trigger {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  &__disclaimer {
+    color: @navi-gray-500;
+    font-size: @font-size-mid;
+  }
+
+  &__message-text {
+    font-family: @font-family-strong;
+    margin-right: 5px;
+    white-space: nowrap;
+  }
+
+  &__warning-icon {
+    color: @navi-yellow;
+    margin: 0 5px;
+    padding-top: 3px;
+  }
+
+  &__x-icon {
+    color: @navi-red;
+  }
+}

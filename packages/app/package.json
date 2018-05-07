@@ -78,6 +78,7 @@
     "ember-tooltips": "^2.9.2",
     "ember-truth-helpers": "^2.0.0",
     "ember-uuid": "1.0.0",
+    "liquid-fire": "^0.29.2",
     "loader.js": "^4.2.3",
     "navi-core": "^0.0.0",
     "navi-dashboards": "^0.0.0",

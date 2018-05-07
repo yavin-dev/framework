@@ -36,7 +36,8 @@ module.exports = {
         { name: 'ember-tether',                     target: '0.4.1' },
         { name: 'ember-tooltips',                   target: '2.9.2' },
         { name: 'ember-truth-helpers',              target: '2.0.0' },
-        { name: 'ember-uuid',                       target: '^1.0.0' }
+        { name: 'ember-uuid',                       target: '^1.0.0' },
+        { name: 'liquid-fire',                      target: '^0.29.2'}
       ]
     }).then(function() {
         /*jshint multistr: true */
