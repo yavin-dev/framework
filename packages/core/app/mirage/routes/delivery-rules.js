@@ -1,5 +1,6 @@
 import moment from 'moment';
 import Mirage from 'ember-cli-mirage';
+import { pluralize } from 'ember-inflector';
 
 const TIMESTAMP_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 
@@ -37,7 +38,7 @@ export default function() {
     let attrs = this.normalizedRequestAttrs(),
 
         deliveryRule = deliveryRules.create(attrs),
-        deliveredItem = db.reports.find(deliveryRule.deliveredItemId),
+        deliveredItem = db[pluralize(deliveryRule.attrs.deliveryType)].find(deliveryRule.deliveredItemId),
         owner = db.users.find(deliveryRule.ownerId);
 
     // Update user with new deliveryRule
@@ -46,7 +47,7 @@ export default function() {
     });
 
     // Update report with new deliveryRule
-    db.reports.update(deliveryRule.deliveredItemId, {
+    db[pluralize(deliveryRule.attrs.deliveryType)].update(deliveryRule.deliveredItemId, {
       deliveryRules: deliveredItem.deliveryRules.concat([Number(deliveryRule.id)])
     });
 
@@ -77,7 +78,7 @@ export default function() {
     let id = request.params.id,
         deliveryRule = deliveryRules.find(id),
         owner = db.users.find(deliveryRule.ownerId),
-        deliveredItem = db.reports.find(deliveryRule.deliveredItemId);
+        deliveredItem = db[pluralize(deliveryRule.attrs.deliveryType)].find(deliveryRule.deliveredItemId);
 
         // Delete deliveryRule from user
     db.users.update(deliveryRule.ownerId, {
@@ -85,7 +86,7 @@ export default function() {
     });
 
     // Delete deliveryRule from report
-    db.reports.update(deliveryRule.deliveredItemId, {
+    db[pluralize(deliveryRule.attrs.deliveryType)].update(deliveryRule.deliveredItemId, {
       deliveryRules: deliveredItem.deliveryRules.filter((id) => id.toString() !== deliveryRule.id)
     });
 
