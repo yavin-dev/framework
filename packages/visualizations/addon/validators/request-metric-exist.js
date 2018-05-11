@@ -12,7 +12,7 @@ import { A as arr } from '@ember/array';
 export default BaseValidator.extend({
   validate(value, options/*, model, attribute*/) {
     if(value) {
-      let requestMetrics = getRequestMetrics(getWithDefault(options, 'request', {})).map(metric => get(metric, 'canonicalName') || canonicalizeMetric(metric)),
+      let requestMetrics = getRequestMetrics(getWithDefault(options, 'request', {metrics: []})).map(metric => get(metric, 'canonicalName') || canonicalizeMetric(metric)),
           valueCanonicalName = get(value, 'canonicalName') || canonicalizeMetric(value);
 
       return arr(requestMetrics).includes(valueCanonicalName);
