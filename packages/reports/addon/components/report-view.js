@@ -11,6 +11,7 @@
 
 import Ember from 'ember';
 import layout from '../templates/components/report-view';
+import { DETAILS_DURATION } from '../transitions';
 
 const VISUALIZATION_RESIZE_EVENT = 'resizestop';
 
@@ -18,6 +19,11 @@ const { computed, get, set } = Ember;
 
 export default Ember.Component.extend({
   layout,
+
+  /**
+   * @property {Number} warningAnimationDuration - amount of time in ms for missing intervals warning to expand
+   */
+  warningAnimationDuration: DETAILS_DURATION,
 
   /**
    * @property {Array} classNames
@@ -111,6 +117,13 @@ export default Ember.Component.extend({
     toggleEditVisualization() {
       this.toggleProperty('isEditingVisualization');
       Ember.run.scheduleOnce('afterRender', this, 'resizeVisualization');
+    },
+
+    /**
+     * @action resizeVisualization
+     */
+    resizeVisualization(delay) {
+      Ember.run.later(this, 'resizeVisualization', delay);
     }
   }
 });

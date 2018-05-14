@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -10,7 +10,11 @@ import moment from 'moment';
 import $ from 'jquery';
 
 const API_DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss.SSS',
-      DIMENSION_VALUE_MAP = {};
+      DIMENSION_VALUE_MAP = {},
+      MISSING_INTERVALS = [
+        '2018-11-12 00:00:00.000/2018-11-14 00:00:00.000',
+        '2018-11-15 00:00:00.000/2018-11-16 00:00:00.000'
+      ];
 
 /**
  * @method _getDates
@@ -156,6 +160,8 @@ export default function(
       request.queryParams.metrics.split(',').forEach(metric => metricBuilder(metric, row));
     });
 
+    let missingIntervals = request.queryParams.metrics.includes('uniqueIdentifier') ? MISSING_INTERVALS : undefined;
+
     return {
       rows,
       meta: {
@@ -163,7 +169,8 @@ export default function(
           currentPage: 1,
           rowsPerPage: 10000,
           numberOfResults: rows.length
-        }
+        },
+        missingIntervals
       }
     };
   });
