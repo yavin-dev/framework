@@ -593,7 +593,7 @@ test('Default interval for timegrains', function(assert) {
 });
 
 test('Default interval for `All` timegrain', function(assert) {
-  assert.expect(4);
+  assert.expect(3);
 
   this.dateTimePeriod = 'all';
 
@@ -605,25 +605,8 @@ test('Default interval for `All` timegrain', function(assert) {
     `);
 
   assert.equal(this.$('li').length,
-    9,
+    1,
     'Only one option is available to select for All time grain');
-
-  let ranges = this.$('.predefined-range').map(function() {
-    return $(this).text().trim();
-  }).get();
-
-  assert.deepEqual(ranges,
-    [
-      'Last Day',
-      'Last 7 Days',
-      'Last 14 Days',
-      'Last 30 Days',
-      'Last 60 Days',
-      'Last 90 Days',
-      'Last 180 Days',
-      'Last 400 Days'
-    ],
-    'All time grain ');
 
   assert.equal(this.$('li:last-of-type > div:eq(0)').text().trim(),
     'Custom range',
