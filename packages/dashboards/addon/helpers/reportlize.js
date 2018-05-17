@@ -4,10 +4,19 @@
  */
 import Helper from '@ember/component/helper';
 import { inject as service } from '@ember/service';
-import { get } from '@ember/object';
+import { get, observer, set } from '@ember/object';
+
 
 export default Helper.extend({
   store: service(),
+
+  /*
+   * @observer onModelChange
+   * Forces recompute when model request or visualization change
+   */
+  onModelChange: observer('model.request', 'model.visualization', function() {
+    this.recompute();
+  }),
 
   /**
    * @method compute
@@ -15,6 +24,8 @@ export default Helper.extend({
    * @returns {DS.Model} report model
    */
   compute([model]) {
+    set(this, 'model', model);
+
     let clonedModel = model.toJSON(),
         store = get(this, 'store');
 
