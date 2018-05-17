@@ -32,3 +32,55 @@ test('filter changes line chart series', function(assert) {
     });
   });
 });
+
+test('Table column sort', function(assert) {
+  assert.expect(11);
+
+  visit('/reports/2/view');
+  andThen(() => {
+    assert.notOk(find('.table-header-cell.metric:first .navi-table-sort-icon').hasClass('navi-table-sort-icon--desc'),
+      'Metric is not desc sorted');
+    assert.notOk(find('.table-header-cell.metric:first .navi-table-sort-icon').hasClass('navi-table-sort-icon--asc'),
+      'Metric is not asc sorted');
+    click('.table-header-cell.metric:first .navi-table-sort-icon');
+  });
+
+  andThen(() => {
+    assert.ok(find('.table-header-cell.metric:first .navi-table-sort-icon').hasClass('navi-table-sort-icon--desc'),
+      'Metric is sorted desc on first sort click');
+    assert.notOk(find('.table-header-cell.metric:first .navi-table-sort-icon').hasClass('navi-table-sort-icon--asc'),
+      'Metric is not sorted asc on first sort click');
+    click('.table-header-cell.metric:first .navi-table-sort-icon');  
+  });
+
+  andThen(() => {
+    assert.ok(find('.table-header-cell.metric:first .navi-table-sort-icon').hasClass('navi-table-sort-icon--asc'),
+      'Metric is sorted asc on second sort click');
+    assert.notOk(find('.table-header-cell.metric:first .navi-table-sort-icon').hasClass('navi-table-sort-icon--desc'),
+      'Metric is not sorted desc on second sort click');
+    click('.table-header-cell.metric:first .navi-table-sort-icon');  
+  });
+
+  andThen(() => {
+    assert.notOk(find('.table-header-cell.metric:first .navi-table-sort-icon').hasClass('navi-table-sort-icon--desc'),
+      'Metric is not sorted desc after third sort click');
+    assert.notOk(find('.table-header-cell.metric:first .navi-table-sort-icon').hasClass('navi-table-sort-icon--asc'),
+      'Metric is not sorted asc after third sort click');
+
+    assert.ok(find('.table-header-cell.dateTime:first .navi-table-sort-icon').hasClass('navi-table-sort-icon--desc'),
+      'Datetime is sorted desc by default');
+    click('.table-header-cell.dateTime:first .navi-table-sort-icon');  
+  });
+
+  andThen(() => {
+    assert.ok(find('.table-header-cell.dateTime:first .navi-table-sort-icon').hasClass('navi-table-sort-icon--asc'),
+      'Datetime is sorted asc after first sort click');
+    click('.table-header-cell.dateTime:first .navi-table-sort-icon');  
+  });
+
+  andThen(() => {
+    assert.ok(find('.table-header-cell.dateTime:first .navi-table-sort-icon').hasClass('navi-table-sort-icon--desc'),
+      'Datetime is sorted desc after second sort click');
+    click('.table-header-cell.dateTime:first .navi-table-sort-icon');  
+  });
+});

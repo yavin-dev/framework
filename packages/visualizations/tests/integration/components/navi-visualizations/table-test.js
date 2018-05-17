@@ -242,7 +242,7 @@ test('onUpdateReport', function(assert) {
       'the action type is `upsertSort`');
 
     assert.deepEqual(metricName,
-      {metric: 'totalPageViews', parameters: {}},
+      'totalPageViews',
       'The totalPageViews metric is passed along when the dateTime header is clicked');
 
     assert.equal(direction,
@@ -258,7 +258,7 @@ test('onUpdateReport', function(assert) {
       'the action type is `upsertSort`');
 
     assert.deepEqual(metricName,
-      {metric: 'totalPageViewsWoW', parameters: {}},
+      'totalPageViewsWoW',
       'The totalPageViewsWoW metric is passed along when the dateTime header is clicked');
 
     assert.equal(direction,
