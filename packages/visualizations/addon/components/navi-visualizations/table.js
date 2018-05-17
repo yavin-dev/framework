@@ -203,12 +203,14 @@ export default Component.extend({
         columns = $.extend(true, [], get(this, 'options.columns'));
 
     return columns.map( column => {
-      let sort =  arr(sorts).findBy('metric', canonicalizeMetric(column.field)) || {};
-      let sortDirection;
+      let {field, type} = column,
+          fieldName = type === 'dateTime' ? type : canonicalizeMetric(field),
+          sort =  arr(sorts).findBy('metric', fieldName) || {},
+          sortDirection;
 
       if(column.type === 'dateTime'){
         sortDirection =  get(sort, 'direction') || 'desc';
-      } else if (/^metric|threshold$/.test(column.type)) {
+      } else if (/^metric|threshold$/.test(type)) {
         sortDirection =  get(sort, 'direction') || 'none';
       }
 
@@ -281,9 +283,10 @@ export default Component.extend({
       if(/^threshold|dateTime|metric$/.test(type)) {
         let direction = this._getNextSortDirection(type, sortDirection),
             //TODO Fetch from report action dispatcher service
-            actionType = direction === 'none' ? 'removeSort' : 'upsertSort';
+            actionType = direction === 'none' ? 'removeSort' : 'upsertSort',
+            fieldName = type === 'dateTime' ? type : canonicalizeMetric(field);
 
-        this.attrs.onUpdateReport(actionType, field, direction);
+        this.attrs.onUpdateReport(actionType, fieldName, direction);
       }
     },
 
