@@ -166,7 +166,7 @@ test('visualization is chosen based on report', function(assert) {
             displayName: 'Date'
           },
           {
-            field: 'adClicks',
+            field: {metric: 'adClicks'},
             type: 'metric',
             displayName: 'Ad Clicks'
           }

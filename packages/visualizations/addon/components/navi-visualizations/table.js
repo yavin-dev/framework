@@ -16,6 +16,7 @@ import { formatItemDimension } from '../../helpers/mixed-height-layout';
 import groupBy from 'lodash/groupBy';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 import { computed, get, set, setProperties } from '@ember/object';
+import { assign } from '@ember/polyfills';
 import { A as arr } from '@ember/array';
 import $ from 'jquery';
 import Component from '@ember/component';
@@ -301,13 +302,12 @@ export default Component.extend({
     },
 
     /**
-     * @action updateHeaderDisplayName
+     * @action updateColumnDisplayName
      */
-    updateHeaderDisplayName(column) {
-      this.attrs.onUpdateReport(
-        'updateColumn',
-        column
-      );
-    },
+    updateColumnDisplayName(column, displayName) {
+      this.attrs.onUpdateReport('updateColumn', assign({}, column, {
+        displayName
+      }));
+    }
   }
 });

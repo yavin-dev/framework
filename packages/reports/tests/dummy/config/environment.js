@@ -44,7 +44,8 @@ module.exports = function(environment) {
       FEATURES: {
         enableScheduleReports: true,
         enableMultipleExport: true,
-        enableContains: true
+        enableContains: true,
+        enableTableEditing: true
       }
     }
   };

@@ -25,7 +25,8 @@ module.exports = function(environment) {
 
     navi: {
       FEATURES: {
-        enableTotals: false
+        enableTotals: false,
+        enableTableEditing: true
       }
     }
   };

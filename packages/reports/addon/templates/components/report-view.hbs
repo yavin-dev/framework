@@ -24,6 +24,7 @@
             response=response
             container=this
             annotationData=annotationData
+            isEditing=isEditingVisualization
             onUpdateReport=(pipe
                 (route-action 'onUpdateReport')
                 (route-action 'validate' report)
