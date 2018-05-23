@@ -20,7 +20,7 @@ const widgetModel = {
   }
 }
 
-moduleForComponent('helper:reportlize', 'Integration | Helper | reportlize', {
+moduleForComponent('helper:reportify', 'Integration | Helper | reportify', {
   integration: true,
 });
 
@@ -28,7 +28,7 @@ test('onModelChange', function (assert) {
   assert.expect(2);
 
   this.set('model', widgetModel);
-  this.render(hbs`{{get (reportlize model) 'request.test'}}`)
+  this.render(hbs`{{get (reportify model) 'request.test'}}`)
 
   assert.equal(this.$().text().trim(),
     'foo',
