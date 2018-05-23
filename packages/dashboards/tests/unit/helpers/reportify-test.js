@@ -20,7 +20,7 @@ const widgetModel = {
   }
 }
 
-moduleFor('helper:reportlize', 'Unit | Helper | reportlize', {
+moduleFor('helper:reportify', 'Unit | Helper | reportify', {
   needs: [
     'model:bard-request/fragments/logical-table',
     'model:bard-request/request',
@@ -50,14 +50,14 @@ moduleFor('helper:reportlize', 'Unit | Helper | reportlize', {
   ]
 });
 
-test('reportlize returns report', function (assert) {
+test('reportify returns report', function (assert) {
   assert.expect(2);
 
-  let reportlize = this.subject();
+  let reportify = this.subject();
 
   return wait().then(() => {
     return Ember.run(() => {
-      let report = reportlize.compute([widgetModel]),
+      let report = reportify.compute([widgetModel]),
           reportObject = report.toJSON();
 
       assert.deepEqual(reportObject.title,

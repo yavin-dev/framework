@@ -45,7 +45,7 @@
               {{!-- Export action is only enabled when request is valid --}}
               {{#component
                 (concat 'report-actions/' (if (feature-flag 'enableMultipleExport') 'multiple-format-export' 'export'))
-                report=(reportlize model)
+                report=(reportify model)
                 classNames='navi-report-widget__action-link'
                 disabled=(not model.validations.isTruelyValid)
                 classNameBindings='model.validations.isTruelyValid::navi-report-widget__action-link--is-disabled'
