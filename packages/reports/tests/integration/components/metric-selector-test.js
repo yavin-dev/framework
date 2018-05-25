@@ -222,13 +222,13 @@ test('ranked search', function(assert) {
   assert.expect(2);
 
   assert.deepEqual(this.$('.grouped-list__item:contains(Page)').toArray().map(el => el.textContent.trim()),
-    [ 'Additive Page Views', 'Page Views', 'Total Page Views' ],
+    ['Additive Page Views', 'Page Views', 'Total Page Views', 'Total Page Views WoW' ],
     'Initially the page view metrics are ordered alphabetically');
 
   this.$('.navi-list-selector__search-input').val('page');
   this.$('.navi-list-selector__search-input').trigger('focusout');
 
   assert.deepEqual(this.$('.grouped-list__item').toArray().map(el => el.textContent.trim()),
-    [ 'Page Views', 'Total Page Views', 'Additive Page Views' ],
+    ['Page Views', 'Total Page Views', 'Additive Page Views', 'Total Page Views WoW' ],
     'The search results are ranked based on relevance');
 });

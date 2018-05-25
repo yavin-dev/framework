@@ -397,3 +397,35 @@ test('sort icon for a parameterized metric', function(assert) {
   assert.ok(this.$('.table-header-cell:contains(Unique Identifiers) .navi-table-sort-icon--asc').is(':visible'),
     'Even if not an alias, the correct sort metric is recognized');
 });
+
+test('table header cell display name', function (assert) {
+  assert.expect(2);
+
+  this.set('options',
+    Ember.$.extend(true, {}, Options, {
+      columns: [
+        {
+          field: 'dateTime',
+          type: 'dateTime',
+          displayName: 'Customize Date'
+        }]
+    })
+  );
+  this.render(TEMPLATE);
+  assert.ok(this.$('.table-header-cell:contains(Customize Date)').is(':visible'),
+    'Customize Date should be shown as title in dateTime field');
+
+  this.set('options',
+    Ember.$.extend(true, {}, Options, {
+      columns: [
+        {
+          field: 'dateTime',
+          type: 'dateTime',
+          displayName: ''
+        }]
+    })
+  );
+  assert.ok(this.$('.table-header-cell:contains(Date)').is(':visible'),
+    'Date should be shown as title in dateTime field');
+});
+

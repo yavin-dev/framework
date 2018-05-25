@@ -81,7 +81,7 @@ moduleForComponent('print-report-view', 'Integration | Component | print report 
                 series: {
                   type: 'metric',
                   config: {
-                    metrics: [ {metric: 'adClicks', parameters: {}, canonicalName: 'adClicks'} ]
+                    metrics: [{ metric: 'adClicks', parameters: {}, canonicalName: 'adClicks', longName: 'Ad Clicks' } ]
                   }
                 }
               }
@@ -122,7 +122,7 @@ test('visualization is chosen based on report', function(assert) {
             displayName: 'Date'
           },
           {
-            field: 'adClicks',
+            field: { metric: 'adClicks' },
             type: 'metric',
             displayName: 'Ad Clicks'
           }

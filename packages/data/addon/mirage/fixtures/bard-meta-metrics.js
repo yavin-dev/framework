@@ -85,9 +85,28 @@ export default {
       type: 'number'
     },
     {
+      category: 'Trend',
+      name: 'totalPageViewsWoW',
+      longName: 'Total Page Views WoW',
+      type: 'number'
+    },
+    {
       category: 'Revenue',
       name: 'revenue',
       longName: 'Revenue',
+      type: 'money',
+      parameters: {
+        currency: {
+          'type': 'dimension',
+          'dimensionName': 'displayCurrency',
+          'defaultValue': 'USD'
+        }
+      }
+    },
+    {
+      category: 'Revenue',
+      name: 'platformRevenue',
+      longName: 'Platform Revenue',
       type: 'money',
       parameters: {
         currency: {

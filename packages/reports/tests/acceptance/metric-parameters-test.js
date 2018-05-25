@@ -134,7 +134,7 @@ test('metric filter config', function(assert) {
   click('.metric-filter-config__item:contains(USD)');
   andThen(() => {
     assert.deepEqual(find('.filter-builder__subject:contains(Revenue)').toArray().map(el => el.textContent.trim()),
-      [ 'Revenue (USD)' ],
+      [ 'Platform Revenue (USD)' ],
       'The Euro parameter is updated to USD');
   });
 
@@ -168,7 +168,7 @@ test('metric selector filter action for parameterized metrics', function(assert)
       'Clicking on the filter adds a another filter of type revenue');
 
     assert.deepEqual(find('.filter-builder__subject:contains(Revenue)').toArray().map(el => el.textContent.trim()),
-      [ 'Revenue (AUD)', 'Revenue (USD)' ],
+      [ 'Platform Revenue (AUD)', 'Platform Revenue (USD)' ],
       'Both the selected metrics have been added as filters');
   });
 

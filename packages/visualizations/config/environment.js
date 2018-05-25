@@ -5,7 +5,8 @@ module.exports = function(/* environment, appConfig */) {
   return {
     navi: {
       FEATURES: {
-        enableTotals: true
+        enableTotals: true,
+        enableTableEditing: false
       }
     }
   };

@@ -72,12 +72,13 @@ export default VisualizationBase.extend(Validations, {
       let category = get(metric, 'metric.category'),
           isTrend = ~(category.toLowerCase().indexOf('trend')),
           type = isTrend ? 'threshold' : 'metric',
-          longName = get(metric, 'metric.longName');
+          longName = get(metric, 'metric.longName'),
+          displayName = metricFormat(metric, longName);
 
       return {
-        field: metric.toJSON(),
         type,
-        displayName: metricFormat(metric, longName)
+        displayName,
+        field: metric.toJSON()
       };
     });
 
