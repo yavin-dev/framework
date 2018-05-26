@@ -31,7 +31,7 @@ export default ExportAction.extend({
       return 'javascript:void(0);';
     }
 
-    return `/export?dashboardId=${get(this, 'dashboard.id')}`;
+    return `/export?dashboard=${get(this, 'dashboard.id')}`;
   }),
 
   /**
