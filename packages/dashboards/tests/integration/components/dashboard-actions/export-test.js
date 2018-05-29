@@ -16,7 +16,7 @@ test('export href', function(assert) {
   `);
 
   assert.equal(this.$('a').attr('href'),
-    '/export?dashboardId=123',
+    '/export?dashboard=123',
     'Export actions links to export service and gives the dashboard id');
 });
 
