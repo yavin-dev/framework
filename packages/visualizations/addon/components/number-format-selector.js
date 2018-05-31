@@ -39,22 +39,5 @@ export default Component.extend({
         currentFormat = get(this, 'format'),
         match = predefinedFormats.findBy('format', currentFormat);
     return match ? '' : currentFormat;
-  }),
-
-  actions: {
-    /**
-     * @action updateFormat
-     */
-    updateFormat(format) {
-      this.attrs.onUpdateFormat({ format });
-    },
-
-    /**
-     * @action clearFormat
-     * format is cleared after selecting the custom format type
-     */
-    clearFormat() {
-      this.attrs.onUpdateFormat({ format: '' });
-    }
-  }
+  })
 });

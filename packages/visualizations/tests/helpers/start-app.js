@@ -6,7 +6,9 @@ import { run } from '@ember/runloop';
 //import ember-sortable helpers
 import './ember-sortable/test-helpers';
 
+import registerBasicDropdownHelpers from 'ember-basic-dropdown/test-support/helpers';
 import registerPowerSelectHelpers from '../../tests/helpers/ember-power-select';
+registerBasicDropdownHelpers();
 registerPowerSelectHelpers();
 
 export default function startApp(attrs) {

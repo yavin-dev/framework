@@ -15,6 +15,9 @@
                 placeholder=(default-column-name column)
                 focus-out=(action 'updateColumnDisplayName' column)
               }}
+              {{#if (or (eq column.type 'metric') (eq column.type 'threshold'))}}
+                {{number-format-dropdown class="table-header-cell__number-format-dropdown" column=column onUpdateReport=(action onUpdateReport)}}
+              {{/if}}
             </div>
           {{/each}}
         </div>

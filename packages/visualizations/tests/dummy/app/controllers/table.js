@@ -1,6 +1,7 @@
 import Ember from 'ember';
+import isEqual from 'lodash/isEqual';
 
-const { A:arr, computed, get, set, setProperties } = Ember;
+const { A: arr, computed, get, set, setProperties } = Ember;
 
 export default Ember.Controller.extend({
   request: {
@@ -9,7 +10,7 @@ export default Ember.Controller.extend({
     ]
   },
 
-  visualization: computed('options', function() {
+  visualization: computed('options', function () {
     return {
       type: 'table',
       version: 1,
@@ -21,27 +22,27 @@ export default Ember.Controller.extend({
   options: {
     columns: [
       {
-        field: {dateTime: 'dateTime'},
+        field: { dateTime: 'dateTime' },
         type: 'dateTime',
         displayName: 'Date'
       },
       {
-        field: {dimension: 'os'},
+        field: { dimension: 'os' },
         type: 'dimension',
         displayName: 'Operating System'
       },
       {
-        field: {metric: 'uniqueIdentifier', parameters: {}},
+        field: { metric: 'uniqueIdentifier', parameters: {} },
         type: 'metric',
         displayName: 'Unique Identifiers'
       },
       {
-        field: {metric: 'totalPageViews', parameters: {}},
+        field: { metric: 'totalPageViews', parameters: {} },
         type: 'metric',
         displayName: 'Total Page Views'
       },
       {
-        field: {metric: 'totalPageViewsWoW', parameters: {}},
+        field: { metric: 'totalPageViewsWoW', parameters: {} },
         type: 'threshold',
         displayName: 'Total Page Views WoW'
       }
@@ -61,6 +62,17 @@ export default Ember.Controller.extend({
   removeSort() {
     let request = arr(get(this, 'model.firstObject.request'));
     setProperties(request, { sort: [] });
+  },
+
+  updateColumn(column) {
+    const newColumns = get(this, 'options.columns').map(col => {
+      if (isEqual(col.field, column.field)) {
+        return column;
+      }
+
+      return col;
+    });
+    set(this, 'options.columns', newColumns);
   },
 
   updateColumnOrder(newColumnOrder) {

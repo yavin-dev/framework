@@ -14,5 +14,5 @@
             placeholder='No Label'
         }}
     </div>
-    {{number-format-selector format=options.format onUpdateFormat=onUpdateConfig}}
+    {{number-format-selector format=options.format onUpdateFormat=(action 'updateFormat')}}
 </div>

@@ -30,6 +30,13 @@ export default Component.extend({
      */
     updateLabel(description) {
       this.sendAction('onUpdateConfig', { description });
+    },
+
+    /**
+     * @action updateFormat
+     */
+    updateFormat(format) {
+      this.sendAction('onUpdateConfig', { format });
     }
   }
 });
