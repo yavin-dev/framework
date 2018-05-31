@@ -60,14 +60,7 @@ test('threshold renders weak class correctly', function(assert) {
   assert.expect(2);
 
   this.set('data', {'totalPageViewsWoW': -8.3});
-
-  this.render(hbs`
-    {{cell-renderers/threshold
-      data=data
-      column=column
-      request=request
-    }}
-  `);
+  this.render(TEMPLATE);
 
   assert.equal($('.table-cell-content').text().trim(),
     '-8.3',
@@ -80,14 +73,7 @@ test('threshold renders neutral class correctly', function(assert) {
   assert.expect(2);
 
   this.set('data', {'totalPageViewsWoW': 0.00});
-
-  this.render(hbs`
-    {{cell-renderers/threshold
-      data=data
-      column=column
-      request=request
-    }}
-  `);
+  this.render(TEMPLATE);
 
   assert.equal($('.table-cell-content').text().trim(),
     '0',
@@ -100,16 +86,20 @@ test('threshold renders null value correctly', function(assert) {
   assert.expect(1);
 
   this.set('data', {'totalPageViewsWoW': null});
-
-  this.render(hbs`
-    {{cell-renderers/threshold
-      data=data
-      column=column
-      request=request
-    }}
-  `);
+  this.render(TEMPLATE);
 
   assert.equal($('.table-cell-content').text().trim(),
     '--',
     'The threshold cell renders the null value with -- correctly');
+});
+
+test('render value based on column format', function (assert) {
+  assert.expect(1);
+
+  this.set('column', Object.assign({}, column, { format: '$0,0[.]00' }));
+  this.render(TEMPLATE);
+
+  assert.equal($('.table-cell-content').text().trim(),
+    '$2.30',
+    'The threshold cell renders the value with format correctly');
 });

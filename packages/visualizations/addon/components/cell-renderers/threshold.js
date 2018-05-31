@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -13,8 +13,8 @@
 import Ember from 'ember';
 import layout from '../../templates/components/cell-renderers/threshold';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
-
-const { computed, get, isEmpty } = Ember;
+import { computed, get } from '@ember/object';
+import { oneWay } from '@ember/object/computed';
 
 export default Ember.Component.extend({
   layout,
@@ -32,16 +32,20 @@ export default Ember.Component.extend({
   /**
    * @property {String} metric - metric name used to fetch the value for
    */
-  metric: computed.alias('column.field'),
+  metric: oneWay('column.field'),
+
+  /**
+   * @property {String} format - format the number should be rendered
+   */
+  format: oneWay('column.format'),
 
   /**
    * @property {Number} - value to be rendered on the cell
    */
   metricValue: computed('data', 'metric', function() {
-    let metric = canonicalizeMetric(get(this, 'metric')),
-        metricValue = get(this, `data.${metric}`);
+    let metric = canonicalizeMetric(get(this, 'metric'));
 
-    return (isEmpty(metricValue)) ? '--' : metricValue;
+    return get(this, `data.${metric}`);
   }),
 
   /**

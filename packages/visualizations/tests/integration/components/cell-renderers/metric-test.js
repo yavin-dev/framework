@@ -58,14 +58,7 @@ test('metric renders zero value correctly', function(assert) {
   assert.expect(1);
 
   this.set('data', {"uniqueIdentifier": 0});
-
-  this.render(hbs`
-    {{cell-renderers/metric
-      data=data
-      column=column
-      request=request
-    }}
-  `);
+  this.render(TEMPLATE);
 
   assert.equal($('.table-cell-content').text().trim(),
     "0.00",
@@ -76,14 +69,7 @@ test('metric renders values > 100 correctly', function(assert) {
   assert.expect(1);
 
   this.set('data', {"uniqueIdentifier": 12345678});
-
-  this.render(hbs`
-    {{cell-renderers/metric
-      data=data
-      column=column
-      request=request
-    }}
-  `);
+  this.render(TEMPLATE);
 
   assert.equal($('.table-cell-content').text().trim(),
     "12,345,678",
@@ -94,14 +80,7 @@ test('metric renders decimal value between 1 and 100 correctly', function(assert
   assert.expect(1);
 
   this.set('data', {"uniqueIdentifier": 99});
-
-  this.render(hbs`
-    {{cell-renderers/metric
-      data=data
-      column=column
-      request=request
-    }}
-  `);
+  this.render(TEMPLATE);
 
   assert.equal($('.table-cell-content').text().trim(),
     "99.00",
@@ -110,15 +89,9 @@ test('metric renders decimal value between 1 and 100 correctly', function(assert
 
 test('metric renders decimal value between 0.0001 and 1 correctly', function(assert) {
   assert.expect(1);
-  this.set('data', {"uniqueIdentifier": 0.001234});
 
-  this.render(hbs`
-    {{cell-renderers/metric
-      data=data
-      column=column
-      request=request
-    }}
-  `);
+  this.set('data', {"uniqueIdentifier": 0.001234});
+  this.render(TEMPLATE);
 
   assert.equal($('.table-cell-content').text().trim(),
     "0.0012",
@@ -127,15 +100,9 @@ test('metric renders decimal value between 0.0001 and 1 correctly', function(ass
 
 test('metric renders decimal value less than 0.0001 correctly', function(assert) {
   assert.expect(1);
-  this.set('data', {"uniqueIdentifier": 0.00001234});
 
-  this.render(hbs`
-    {{cell-renderers/metric
-      data=data
-      column=column
-      request=request
-    }}
-  `);
+  this.set('data', {"uniqueIdentifier": 0.00001234});
+  this.render(TEMPLATE);
 
   assert.equal($('.table-cell-content').text().trim(),
     "1.2340e-5",
@@ -146,16 +113,20 @@ test('metric renders null value correctly', function(assert) {
   assert.expect(1);
 
   this.set('data', {"uniqueIdentifier": null});
-
-  this.render(hbs`
-    {{cell-renderers/metric
-      data=data
-      column=column
-      request=request
-    }}
-  `);
+  this.render(TEMPLATE);
 
   assert.equal($('.table-cell-content').text().trim(),
     "--",
     'The metric cell renders the null value with -- correctly');
+});
+
+test('render value based on column format', function (assert) {
+  assert.expect(1);
+
+  this.set('column', Object.assign({}, column, { format: '$0,0[.]00' }));
+  this.render(TEMPLATE);
+
+  assert.equal($('.table-cell-content').text().trim(),
+    "$172,933,788",
+    'The metric cell renders the value with format correctly');
 });
