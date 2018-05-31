@@ -1,5 +1,6 @@
 import { test } from 'qunit';
 import moduleForAcceptance from '../../tests/helpers/module-for-acceptance';
+import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 
 moduleForAcceptance('Acceptance | table');
 
@@ -42,7 +43,7 @@ test('visiting /table', function(assert) {
 });
 
 test('toggle table editing', function (assert) {
-  assert.expect(2);
+  assert.expect(6);
 
   visit('/table');
   andThen(function () {
@@ -54,5 +55,21 @@ test('toggle table editing', function (assert) {
   andThen(function () {
     assert.ok(find('.table-header-cell__input').is(':visible'),
       'Table header edit field should be visible');
+
+    assert.notOk(find('.dateTime .number-format-dropdown__trigger').is(':visible'),
+      'Datetime field should not have format dropdown trigger');
+
+    assert.notOk(find('.dimension .number-format-dropdown__trigger').is(':visible'),
+      'Dimension field should not have format dropdown trigger');
+
+    assert.ok(find('.metric .number-format-dropdown__trigger').is(':visible'),
+      'Metric field should have format dropdown trigger');
+
+    clickTrigger();
+    andThen(function () {
+      assert.ok($('.number-format-dropdown__container').is(':visible'),
+        'Table format dropdown should be visible');
+    });
   });
+
 });

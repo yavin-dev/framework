@@ -21,7 +21,7 @@ test('updateFormat from radio button', function (assert) {
   assert.expect(1);
 
   this.set('onUpdateFormat', result => {
-    assert.equal(result.format,
+    assert.equal(result,
       '0,0.00',
       'onUpdateFormat action is called by radio button');
   });
@@ -37,7 +37,7 @@ test('clearFormat', function (assert) {
   assert.expect(1);
 
   this.set('onUpdateFormat', result => {
-    assert.equal(result.format,
+    assert.equal(result,
       '',
       'onUpdateFormat action is called by custom format radio button');
   });
