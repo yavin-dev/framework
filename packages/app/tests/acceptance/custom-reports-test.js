@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import { isPresent } from '@ember/utils';
 import { test } from 'qunit';
 import moduleForAcceptance from 'navi-app/tests/helpers/module-for-acceptance';
 
@@ -10,7 +10,7 @@ test('Viewing saved reports', function(assert) {
   visit('/reports');
   andThen(() => {
 
-    assert.ok(Ember.isPresent(find('.navi-reports-index .navi-collection table')),
+    assert.ok(isPresent(find('.navi-reports-index .navi-collection table')),
       'Table containing list of custom reports is visible');
 
     let firstReport = '.navi-collection tbody td:first a',
@@ -40,7 +40,7 @@ test('Accessing Report Builder', function(assert) {
       assert.ok(currentURL().match(/^\/reports\/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\/new/),
         'Clicking "New Report" button brings the user to the report builder');
 
-      assert.ok(Ember.isPresent(find('.report-builder')),
+      assert.ok(isPresent(find('.report-builder')),
         'Custom report builder is visible');
     });
   });

@@ -2,20 +2,22 @@
  * Copyright 2017, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import Ember from 'ember';
+import { hash } from 'rsvp';
 
-const { get } = Ember;
+import { inject as service } from '@ember/service';
+import Route from '@ember/routing/route';
+import { get } from '@ember/object';
 
-export default Ember.Route.extend({
+export default Route.extend({
   /**
    * @property {Ember.Service}
    */
-  bardMetadata: Ember.inject.service(),
+  bardMetadata: service(),
 
   /**
    * @property {Ember.Service}
    */
-  user: Ember.inject.service(),
+  user: service(),
 
   /**
    * @method model
@@ -23,7 +25,7 @@ export default Ember.Route.extend({
    * @returns {Ember.RSVP.Promise}
    */
   model() {
-    return Ember.RSVP.hash({
+    return hash({
       user: get(this, 'user').findOrRegister(),
       metadata: get(this, 'bardMetadata').loadMetadata()
     }).then(() => {
