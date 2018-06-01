@@ -1,55 +1,56 @@
-import { moduleFor, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupTest } from 'ember-qunit';
 
-moduleFor('service:navi-notifications', 'Unit | Service | navi notifications', {
-  needs: ['service:flash-messages']
-});
+module('Unit | Service | navi notifications', function(hooks) {
+  setupTest(hooks);
 
-test('clearMessages', function(assert) {
-  assert.expect(2);
+  test('clearMessages', function(assert) {
+    assert.expect(2);
 
-  let service = this.subject(),
-      message = 'Some message',
-      flashMessagesService = service.get('notificationService');
+    let service = this.owner.lookup('service:navi-notifications'),
+        message = 'Some message',
+        flashMessagesService = service.get('notificationService');
 
-  flashMessagesService.add({
-    message
+    flashMessagesService.add({
+      message
+    });
+
+    assert.deepEqual(flashMessagesService.get('queue').mapBy('message'),
+      [message],
+      'Notification queue contains a message initially');
+
+    service.clearMessages();
+
+    assert.deepEqual(flashMessagesService.get('queue').mapBy('message'),
+      [],
+      'clearMessages clears messages in the notification queue');
   });
 
-  assert.deepEqual(flashMessagesService.get('queue').mapBy('message'),
-    [message],
-    'Notification queue contains a message initially');
+  test('add', function(assert) {
+    assert.expect(3);
 
-  service.clearMessages();
+    let service = this.owner.lookup('service:navi-notifications'),
+        message = 'Some message',
+        flashMessagesService = service.get('notificationService');
 
-  assert.deepEqual(flashMessagesService.get('queue').mapBy('message'),
-    [],
-    'clearMessages clears messages in the notification queue');
-});
+    assert.deepEqual(flashMessagesService.get('queue').mapBy('message'),
+      [],
+      'Notification queue contains no messages initially');
 
-test('add', function(assert) {
-  assert.expect(3);
+    service.add({
+      message
+    });
 
-  let service = this.subject(),
-      message = 'Some message',
-      flashMessagesService = service.get('notificationService');
+    assert.deepEqual(flashMessagesService.get('queue').mapBy('message'),
+      [message],
+      'add method adds a message in the notification queue');
 
-  assert.deepEqual(flashMessagesService.get('queue').mapBy('message'),
-    [],
-    'Notification queue contains no messages initially');
+    service.add({
+      message
+    });
 
-  service.add({
-    message
+    assert.deepEqual(flashMessagesService.get('queue').mapBy('message'),
+      [message],
+      'add method does not add duplicate messages');
   });
-
-  assert.deepEqual(flashMessagesService.get('queue').mapBy('message'),
-    [message],
-    'add method adds a message in the notification queue');
-
-  service.add({
-    message
-  });
-
-  assert.deepEqual(flashMessagesService.get('queue').mapBy('message'),
-    [message],
-    'add method does not add duplicate messages');
 });
