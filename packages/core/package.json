@@ -48,7 +48,8 @@
     "ember-resolver": "^4.0.0",
     "ember-source": "~2.16.0",
     "ember-truth-helpers": "^2.0.0",
-    "loader.js": "^4.2.3"
+    "loader.js": "^4.2.3",
+    "navi-data": "^0.0.0"
   },
   "keywords": [
     "ember-addon"

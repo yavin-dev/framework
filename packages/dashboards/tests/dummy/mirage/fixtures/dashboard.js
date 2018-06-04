@@ -1,1 +1,1 @@
-export { default } from 'navi-dashboards/mirage/fixtures/dashboard';
+export { default } from 'navi-core/mirage/fixtures/dashboard';
