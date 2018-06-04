@@ -8,6 +8,7 @@ import VisualizationBase from './visualization';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 import { validator, buildValidations } from 'ember-cp-validations';
 import { metricFormat } from 'navi-data/helpers/metric-format';
+import keyBy from 'lodash/keyBy';
 
 const {
   A:arr,
@@ -51,7 +52,16 @@ export default VisualizationBase.extend(Validations, {
    */
   rebuildConfig(request /*, response */) {
     let dimensions = get(request, 'dimensions') || [],
-        metrics = get(request, 'metrics') || [];
+        metrics = get(request, 'metrics') || [],
+        columns = get(this, 'metadata.columns'),
+        // index column based on metricId or dimensionId
+        columnIndex = keyBy(columns, ({ field, type }) => {
+          if (type === 'threshold') {
+            type = 'metric';
+          }
+
+          return field[type]
+        });
 
     let dateColumn = {
       field: {dateTime: 'dateTime'},
@@ -60,10 +70,12 @@ export default VisualizationBase.extend(Validations, {
     };
 
     let dimensionColumns = dimensions.map(dimension => {
+      let column = columnIndex[get(dimension, 'dimension.name')];
+
       return {
         field: {dimension: get(dimension, 'dimension.name')},
         type: 'dimension',
-        displayName: get(dimension, 'dimension.longName')
+        displayName: column ? column.displayName : get(dimension, 'dimension.longName')
       };
     });
 
@@ -72,13 +84,17 @@ export default VisualizationBase.extend(Validations, {
       let category = get(metric, 'metric.category'),
           isTrend = ~(category.toLowerCase().indexOf('trend')),
           type = isTrend ? 'threshold' : 'metric',
+          field = metric.toJSON(),
+          column = columnIndex[field.metric],
           longName = get(metric, 'metric.longName'),
-          displayName = metricFormat(metric, longName);
+          displayName = column ? column.displayName : metricFormat(metric, longName),
+          format = column ? column.format : '';
 
       return {
         type,
         displayName,
-        field: metric.toJSON()
+        field,
+        format
       };
     });
 

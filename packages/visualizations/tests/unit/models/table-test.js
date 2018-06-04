@@ -60,7 +60,7 @@ test('valid and invalid table fragment', function(assert) {
 
 
 test('rebuildConfig', function(assert) {
-  assert.expect(3);
+  assert.expect(4);
 
   let table    = run(() => this.subject().get('table')),
       request1 = buildTestRequest(['d1', 'd2'],[{metric: 'm1'}, {metric: 'm2'}]),
@@ -74,8 +74,8 @@ test('rebuildConfig', function(assert) {
         { 'displayName': 'Date', 'field': { dateTime: 'dateTime' }, 'type': 'dateTime' },
         { 'displayName': 'D1', 'field': {dimension: 'd1'}, 'type': 'dimension' },
         { 'displayName': 'D2', 'field': {dimension: 'd2'}, 'type': 'dimension' },
-        { 'displayName': 'M1', 'field': {metric: 'm1', parameters: {}}, 'type': 'metric' },
-        { 'displayName': 'M2', 'field': {metric: 'm2', parameters: {}}, 'type': 'metric' }
+        { 'displayName': 'M1', 'field': { metric: 'm1', parameters: {} }, 'type': 'metric', format: '' },
+        { 'displayName': 'M2', 'field': { metric: 'm2', parameters: {} }, 'type': 'metric', format: '' }
       ]
     }
   }, 'Date, dimensions, and metrics from request are serialized into columns');
@@ -89,8 +89,8 @@ test('rebuildConfig', function(assert) {
     'metadata': {
       'columns': [
         { 'displayName': 'Date', 'field': { dateTime: 'dateTime' }, 'type': 'dateTime' },
-        { 'displayName': 'M1', 'field': {metric: 'm1', parameters: {}}, 'type': 'metric' },
-        { 'displayName': 'M2', 'field': {metric: 'm2', parameters: {}}, 'type': 'metric' }
+        { 'displayName': 'M1', 'field': { metric: 'm1', parameters: {} }, 'type': 'metric', format: '' },
+        { 'displayName': 'M2', 'field': { metric: 'm2', parameters: {} }, 'type': 'metric', format: '' }
       ]
     }
   },'Dimension column is not required');
@@ -106,11 +106,27 @@ test('rebuildConfig', function(assert) {
     'metadata': {
       'columns': [
         { 'displayName': 'Date', 'field': { dateTime: 'dateTime' }, 'type': 'dateTime' },
-        { 'displayName': 'M1', 'field': {metric: 'm1', parameters: {}}, 'type': 'threshold' },
-        { 'displayName': 'M2', 'field': {metric: 'm2', parameters: {}}, 'type': 'metric' }
+        { 'displayName': 'M1', 'field': { metric: 'm1', parameters: {} }, 'type': 'threshold', format: '' },
+        { 'displayName': 'M2', 'field': { metric: 'm2', parameters: {} }, 'type': 'metric', format: '' }
       ]
     }
   }, 'Trend metrics use threshold column');
+
+  config3.metadata.columns[1].displayName = 'M4';
+  config3.metadata.columns[2].format = 'number';
+  let config4 = run(() => table.rebuildConfig(request3).toJSON());
+
+  assert.deepEqual(config4, {
+    'type': 'table',
+    'version': 1,
+    'metadata': {
+      'columns': [
+        { 'displayName': 'Date', 'field': { dateTime: 'dateTime' }, 'type': 'dateTime' },
+        { 'displayName': 'M4', 'field': { metric: 'm1', parameters: {} }, 'type': 'threshold', format: '' },
+        { 'displayName': 'M2', 'field': { metric: 'm2', parameters: {} }, 'type': 'metric', format: 'number' }
+      ]
+    }
+  }, 'Columns config should be persistent');
 });
 
 test('rebuildConfig with parameterized metrics', function(assert) {
@@ -133,8 +149,8 @@ test('rebuildConfig with parameterized metrics', function(assert) {
     'metadata': {
       'columns': [
         { 'displayName': 'Date', 'field': { dateTime: 'dateTime' }, 'type': 'dateTime' },
-        { 'displayName': 'M1 (paramVal1)', 'field': {metric: 'm1', parameters: {param1: 'paramVal1'}}, 'type': 'metric' },
-        { 'displayName': 'M2', 'field': {metric: 'm2', parameters: {}}, 'type': 'metric' }
+        { 'displayName': 'M1 (paramVal1)', 'field': { metric: 'm1', parameters: { param1: 'paramVal1' } }, 'type': 'metric', format: '' },
+        { 'displayName': 'M2', 'field': { metric: 'm2', parameters: {} }, 'type': 'metric', format: '' }
       ]
     }
   },'Columns with parameterized metrics are formatted correctly');
