@@ -14,7 +14,7 @@ module('Acceptance | custom reports', function(hooks) {
     assert.ok(isPresent(find('.navi-reports-index .navi-collection table')),
       'Table containing list of custom reports is visible');
 
-    let firstReport = '.navi-collection tbody td:first a',
+    let firstReport = '.navi-collection tbody td:first-of-type a',
         reportTitle =  find(firstReport).textContent.trim();
 
     await click(firstReport);
