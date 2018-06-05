@@ -181,11 +181,13 @@ export default function(
 
     // Handle value filters
     if ('filters' in request.queryParams) {
-      // Assume filters to dimension endpoint are in the form "dimension|id-in[...]"
-      let [/* full match */, idString] = request.queryParams.filters.match(/\[(.*)\]/),
-          ids = idString.split(',');
+      let [/* full match */, queryString] = request.queryParams.filters.match(/\[(.*)\]/),
+          values = queryString.split(','),
+          isIdSearch = /\|id/.test(request.queryParams.filters);
 
-      rows = rows.filter(row => ids.includes(row.id));
+      rows = isIdSearch ? 
+        rows.filter(row => values.includes(row.id)) :
+        rows.filter(row => values.some(value => row.description.toLowerCase().includes(value.toLowerCase())));
     }
 
     return { rows };

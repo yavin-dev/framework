@@ -6,7 +6,11 @@
  */
 import Ember from 'ember';
 
-export default Ember.Object.extend().reopenClass({
+export default Ember.Object.extend({
+  isEqual(other) {
+    return this.id === other.id;
+  }
+}).reopenClass({
 
   /**
    * @property {String} identifierField - name of the dimension identifier field
