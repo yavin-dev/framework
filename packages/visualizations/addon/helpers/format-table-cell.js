@@ -6,7 +6,6 @@
 import { helper } from '@ember/component/helper';
 import { isEmpty } from '@ember/utils';
 import numeral from 'numeral';
-import { smartFormatNumber } from 'navi-core/helpers/smart-format-number';
 
 /**
  * @method formatTableCell
@@ -17,7 +16,7 @@ import { smartFormatNumber } from 'navi-core/helpers/smart-format-number';
  * @param {Boolean} shouldSmartFormat
  * @returns {String}
  */
-export function formatTableCell([value, format, shouldSmartFormat]) {
+export function formatTableCell([value, format]) {
   if (isEmpty(value)) {
     return '--';
   }
@@ -26,7 +25,7 @@ export function formatTableCell([value, format, shouldSmartFormat]) {
     return numeral(value).format(format);
   }
 
-  return shouldSmartFormat ? smartFormatNumber([value]) : value;
+  return value;
 }
 
 export default helper(formatTableCell);

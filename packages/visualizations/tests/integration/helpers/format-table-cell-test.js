@@ -22,12 +22,3 @@ test('format value', function (assert) {
     '$2.30',
     'format value should be rendered correctly');
 });
-
-test('smart format', function (assert) {
-  assert.expect(1);
-
-  this.render(hbs`{{format-table-cell 172933788 '' true}}`);
-  assert.equal(this.$().text().trim(),
-    '172,933,788',
-    'smart format value should be rendered correctly');
-});

@@ -117,8 +117,8 @@ test('it renders', function(assert) {
       this.$(cell).text().trim()));
 
   assert.deepEqual(body, [
-    ['05/30/2016','All Other','172,933,788','3,669,828,357'],
-    ['05/30/2016','Android','183,206,656','4,088,487,125'],
-    ['05/30/2016','BlackBerry OS','183,380,921','4,024,700,302']
+    ['05/30/2016','All Other','172933788','3669828357'],
+    ['05/30/2016','Android','183206656','4088487125'],
+    ['05/30/2016','BlackBerry OS','183380921','4024700302']
   ], 'The table renders the response dataset correctly');
 });
