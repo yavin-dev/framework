@@ -1,3 +1,3 @@
-import ReportCollections from 'navi-reports/mirage/fixtures/report-collections';
+import ReportCollections from 'navi-core/mirage/fixtures/report-collections';
 
 export default ReportCollections;

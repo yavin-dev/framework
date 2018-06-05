@@ -1,1 +1,1 @@
-export { default } from 'navi-reports/mirage/fixtures/reports';
+export { default } from 'navi-core/mirage/fixtures/reports';
