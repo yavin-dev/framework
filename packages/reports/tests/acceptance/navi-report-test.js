@@ -1674,3 +1674,39 @@ test('Filter with large cardinality dimensions value selection works', function(
       'The value is selected after a search is done');
   });
 });
+
+test("adding metrics to reordered table keeps order", function(assert) {
+  assert.expect(2);
+  visit('/reports/2');
+
+  andThen(() => {
+    return reorder('mouse',
+      '.table-header-cell',
+      '.metric:contains(Nav Clicks)',
+      '.dimension:contains(Property)',
+      '.metric:contains(Ad Clicks)',
+      '.dateTime');
+  });
+
+  andThen(() => {
+    assert.deepEqual(find('.table-header-cell__title').toArray().map(el => $(el).text().trim()),[
+      'Nav Clicks',
+      'Property',
+      'Ad Clicks',
+      'Date'
+    ], 'The headers are reordered as specified by the reorder');
+    
+    click('.grouped-list__item-label:contains(Total Clicks)');
+    click('.navi-report__run-btn');
+  });
+
+  andThen(() => { 
+    assert.deepEqual(find('.table-header-cell__title').toArray().map(el => $(el).text().trim()),[
+      'Nav Clicks',
+      'Property',
+      'Ad Clicks',
+      'Date',
+      'Total Clicks'
+    ], 'The headers are reordered as specified by the reorder');
+  });
+});

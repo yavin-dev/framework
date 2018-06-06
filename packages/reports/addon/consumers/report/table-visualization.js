@@ -7,6 +7,7 @@ import isEqual from 'lodash/isEqual'
 import ActionConsumer from 'navi-core/consumers/action-consumer';
 import { ReportActions } from 'navi-reports/services/report-action-dispatcher';
 import keyBy from 'lodash/keyBy';
+import { canonicalizeMetric } from 'navi-data/utils/metric';
 
 const { assign, get, set } = Ember;
 
@@ -25,7 +26,7 @@ export default ActionConsumer.extend({
           metricIndex = keyBy(metrics.toArray(), metric => get(metric, 'canonicalName')),
           reorderedMetrics = newColumnOrder
             .filter(column => column.type === 'metric' || column.type === 'threshold')
-            .map(column => metricIndex[column.field]);
+            .map(column => metricIndex[canonicalizeMetric(column.field)]);
 
       set(report, 'visualization.metadata',
         assign({}, visualizationMetadata, { columns: newColumnOrder})

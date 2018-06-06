@@ -63,46 +63,82 @@ export default VisualizationBase.extend(Validations, {
       displayName: 'Date'
     };
 
-    let dimensionColumns = dimensions.map(dimension => {
-      let column = columnIndex[get(dimension, 'dimension.name')];
-
-      return {
-        field: {dimension: get(dimension, 'dimension.name')},
-        type: 'dimension',
-        displayName: column ? column.displayName : get(dimension, 'dimension.longName')
-      };
-    });
-
-    let metricColumns = metrics.map(metric => {
-      // Trend metrics should render using threshold coloring
-      let category = get(metric, 'metric.category'),
-          isTrend = ~(category.toLowerCase().indexOf('trend')),
-          type = isTrend ? 'threshold' : 'metric',
-          field = metric.toJSON(),
-          column = columnIndex[canonicalizeMetric(field)],
-          longName = get(metric, 'metric.longName'),
-          displayName = column ? column.displayName : metricFormat(metric, longName),
-          format = column ? column.format : '';
-
-      return {
-        type,
-        displayName,
-        field,
-        format
-      };
-    });
+    let newColumns = [
+      dateColumn,
+      ...buildDimensionColumns(dimensions, columnIndex),
+      ...buildMetricColumns(metrics, columnIndex)
+    ];
 
     set(this, 'metadata', {
-      columns: [
-        dateColumn,
-        ...dimensionColumns,
-        ...metricColumns
-      ]
+      columns: columnTransform(newColumns, columns)
     });
 
     return this;
   }
 });
+
+/**
+ * builds dimension columns for new visualization builds
+ * @param {Array} dimensions - dimensions from request
+ * @param {Object} columnIndex - column lookup table indexed by dimension/metric name
+ * @returns {Array} - list of dimensions columns
+ */
+function buildDimensionColumns(dimensions, columnIndex) {
+  return dimensions.map(dimension => {
+    let column = columnIndex[get(dimension, 'dimension.name')];
+
+    return {
+      field: {dimension: get(dimension, 'dimension.name')},
+      type: 'dimension',
+      displayName: column ? column.displayName : get(dimension, 'dimension.longName')
+    };
+  });
+}
+
+/**
+ * builds metric columns for new visualization builds
+ * @param {Array} metrics - metrics from request
+ * @param {Object} columnIndex - column lookup table indexed by dimension/metric name
+ * @returns {Array} - list of metric columns
+ */
+function buildMetricColumns(metrics, columnIndex) {
+  return metrics.map(metric => {
+    // Trend metrics should render using threshold coloring
+    let category = get(metric, 'metric.category'),
+        isTrend = ~(category.toLowerCase().indexOf('trend')),
+        type = isTrend ? 'threshold' : 'metric',
+        field = metric.toJSON(),
+        column = columnIndex[canonicalizeMetric(field)],
+        longName = get(metric, 'metric.longName'),
+        displayName = column ? column.displayName : metricFormat(metric, longName),
+        format = column ? column.format : '';
+
+    return {
+      type,
+      displayName,
+      field,
+      format
+    };
+  });
+}
+
+/**
+ * transforms columns based on old column configuration (at this time it just sorts)
+ * @param {Array} newColumns - new columns to be applied to visualization
+ * @param {Array} oldColumns - columns form last time visualization was configured
+ */
+function columnTransform(newColumns, oldColumns) {
+  if(oldColumns.length) {
+    const isSameColumn = (a,b) => a.displayName === b.displayName;
+    newColumns.sort((a,b) => {
+      let foundA = oldColumns.findIndex(item => isSameColumn(item, a)),
+          foundB = oldColumns.findIndex(item => isSameColumn(item, b));
+      return foundA > -1 && foundB > -1 ? foundA - foundB : 0;
+    });
+  }
+
+  return newColumns;
+}
 
 /**
  * Determines if the columns has all dimensions
