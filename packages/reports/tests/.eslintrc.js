@@ -5,6 +5,7 @@ module.exports = {
   globals: {
     $: true,
     selectChoose: true,
+    selectSearch: true,
     clickDropdown: true,
     server: true,
     wait: true

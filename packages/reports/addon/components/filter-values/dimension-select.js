@@ -49,7 +49,7 @@ export default Ember.Component.extend({
         dimensionName = get(this, 'dimensionName'),
         dimensionService = get(this, '_dimensionService');
 
-        // Only fetch dimensions if filter has values
+    // Only fetch dimensions if filter has values
     if (get(dimensionIds, 'length')) {
       return dimensionService.find(dimensionName, {field: 'id', values: dimensionIds.join(',')});
     } else {
