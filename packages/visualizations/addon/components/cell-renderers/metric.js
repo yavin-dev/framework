@@ -15,6 +15,8 @@ import layout from '../../templates/components/cell-renderers/metric';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 import { computed, get } from '@ember/object';
 import { oneWay } from '@ember/object/computed';
+import { isEmpty } from '@ember/utils';
+import numeral from 'numeral';
 
 export default Ember.Component.extend({
   layout,
@@ -37,9 +39,19 @@ export default Ember.Component.extend({
   /**
    * @property {Number} - value to be rendered on the cell
    */
-  metricValue: computed('data', 'metric', function() {
-    let canonicalName = canonicalizeMetric(get(this, 'metric'));
+  metricValue: computed('data', 'metric', 'format', function() {
+    let format = get(this, 'format'),
+        canonicalName = canonicalizeMetric(get(this, 'metric')),
+        metricValue = get(this, `data.${canonicalName}`)
 
-    return get(this, `data.${canonicalName}`)
+    if (isEmpty(metricValue)) {
+      return '--';
+    }
+
+    if (format) {
+      return numeral(metricValue).format(format);
+    }
+
+    return metricValue;
   }),
 });
