@@ -24,7 +24,7 @@ test('it renders the correct cell renderer', function(assert) {
    }}`);
 
   assert.equal(this.$('.table-cell-content').text().trim(),
-    '12.00',
+    '12',
     'renders metric value');
   assert.ok(this.$('.table-cell-content').hasClass('metric'), 'renders metric cell-formatter');
 

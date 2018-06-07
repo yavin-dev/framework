@@ -12,10 +12,11 @@
 
 import Ember from 'ember';
 import layout from '../../templates/components/cell-renderers/metric';
-import { smartFormatNumber } from 'navi-core/helpers/smart-format-number';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
-
-const { computed, get, isEmpty } = Ember;
+import { computed, get } from '@ember/object';
+import { oneWay } from '@ember/object/computed';
+import { isEmpty } from '@ember/utils';
+import numeral from 'numeral';
 
 export default Ember.Component.extend({
   layout,
@@ -28,16 +29,29 @@ export default Ember.Component.extend({
   /**
    * @property {String} metric - metric name used to fetch the value for
    */
-  metric: computed.alias('column.field'),
+  metric: oneWay('column.field'),
+
+  /**
+   * @property {String} format - format the number should be rendered
+   */
+  format: oneWay('column.format'),
 
   /**
    * @property {Number} - value to be rendered on the cell
    */
-  metricValue: computed('data', 'metric', function() {
-    let metric = get(this, 'metric'),
-        canonicalName = canonicalizeMetric(metric),
-        metricValue = get(this, `data.${canonicalName}`);
+  metricValue: computed('data', 'metric', 'format', function() {
+    let format = get(this, 'format'),
+        canonicalName = canonicalizeMetric(get(this, 'metric')),
+        metricValue = get(this, `data.${canonicalName}`)
 
-    return (isEmpty(metricValue)) ? '--' : smartFormatNumber([metricValue]);
+    if (isEmpty(metricValue)) {
+      return '--';
+    }
+
+    if (format) {
+      return numeral(metricValue).format(format);
+    }
+
+    return metricValue;
   }),
 });
