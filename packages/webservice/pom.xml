@@ -17,11 +17,26 @@
     <dependency>
       <groupId>com.yahoo.elide</groupId>
       <artifactId>elide-standalone</artifactId>
-      <version>3.2.0</version>
+      <version>3.2.2</version>
     </dependency>
   </dependencies>
   <modules>
     <module>models</module>
     <module>app</module>
   </modules>
+  <build>
+    <pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.3.2</version>
+                <configuration>
+                    <skip>true</skip>
+                    <mainClass>none</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </pluginManagement>
+</build>
 </project>
