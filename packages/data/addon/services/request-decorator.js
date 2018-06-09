@@ -2,10 +2,10 @@
  * Copyright 2017, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import Ember from 'ember';
+import Service from '@ember/service';
 import ReplaceNull from 'navi-data/request-decorators/replace-null';
 
-export default Ember.Service.extend({
+export default Service.extend({
 
   /**
    * @method applyGlobalDecorators

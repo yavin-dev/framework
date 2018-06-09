@@ -1,4 +1,5 @@
-import { moduleFor, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupTest } from 'ember-qunit';
 
 const Payload = {
         tables: [
@@ -185,24 +186,26 @@ const Payload = {
 
 let Serializer;
 
-moduleFor('serializer:bard-metadata', 'Unit | Bard Metadata Serializer', {
-  beforeEach() {
-    Serializer = this.subject();
-  }
-});
+module('Unit | Bard Metadata Serializer', function(hooks) {
+  setupTest(hooks);
 
-test('normalize', function(assert) {
-  assert.expect(3);
+  hooks.beforeEach(function() {
+    Serializer = this.owner.lookup('serializer:bard-metadata');
+  });
 
-  assert.deepEqual(Serializer.normalize(Payload).metrics,
-    Metrics,
-    'Correctly parsed metric objects from payload');
+  test('normalize', function(assert) {
+    assert.expect(3);
 
-  assert.deepEqual(Serializer.normalize(Payload).dimensions,
-    Dimensions,
-    'Correctly parsed dimension objects from payload');
+    assert.deepEqual(Serializer.normalize(Payload).metrics,
+      Metrics,
+      'Correctly parsed metric objects from payload');
 
-  assert.deepEqual(Serializer.normalize(Payload).tables,
-    Tables,
-    'Correctly parsed table objects from payload');
+    assert.deepEqual(Serializer.normalize(Payload).dimensions,
+      Dimensions,
+      'Correctly parsed dimension objects from payload');
+
+    assert.deepEqual(Serializer.normalize(Payload).tables,
+      Tables,
+      'Correctly parsed table objects from payload');
+  });
 });

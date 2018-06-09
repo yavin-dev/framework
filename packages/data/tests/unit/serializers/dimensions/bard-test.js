@@ -1,27 +1,30 @@
-import { moduleFor, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupTest } from 'ember-qunit';
 
 let Serializer;
 
-moduleFor('serializer:dimensions/bard', 'Unit | Serializer | Dimensions | Bard', {
-  beforeEach() {
-    Serializer = this.subject();
-  }
-});
+module('Unit | Serializer | Dimensions | Bard', function(hooks) {
+  setupTest(hooks);
 
-test('normalize', function(assert) {
-  assert.expect(2);
+  hooks.beforeEach(function() {
+    Serializer = this.owner.lookup('serializer:dimensions/bard');
+  });
 
-  assert.deepEqual(Serializer.normalize(),
-    undefined,
-    '`undefined` is returned for an undefined response');
+  test('normalize', function(assert) {
+    assert.expect(2);
 
-  let rawPayload = {
-    rows: [
-      { id: 1, desc:'foo' }
-    ],
-    meta: { foo: 'bar' }
-  };
-  assert.equal(Serializer.normalize('dimensionOne', rawPayload),
-    rawPayload.rows,
-    'normalize returns the `rows` prop of the raw payload');
+    assert.deepEqual(Serializer.normalize(),
+      undefined,
+      '`undefined` is returned for an undefined response');
+
+    let rawPayload = {
+      rows: [
+        { id: 1, desc:'foo' }
+      ],
+      meta: { foo: 'bar' }
+    };
+    assert.equal(Serializer.normalize('dimensionOne', rawPayload),
+      rawPayload.rows,
+      'normalize returns the `rows` prop of the raw payload');
+  });
 });

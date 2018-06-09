@@ -2,15 +2,18 @@
  * Copyright 2017, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import Ember from 'ember';
+import { inject as service } from '@ember/service';
 
-const { computed, get, inject } = Ember;
+import PromiseProxyMixin from '@ember/object/promise-proxy-mixin';
+import ObjectProxy from '@ember/object/proxy';
+import Mixin from '@ember/object/mixin';
+import { get, computed } from '@ember/object';
 
-export default Ember.Mixin.create({
+export default Mixin.create({
   /**
    * @property {Ember.Service} metadata
    */
-  metadata: inject.service('bard-metadata'),
+  metadata: service('bard-metadata'),
 
   /**
    * @property {Promise} extended
@@ -20,7 +23,7 @@ export default Ember.Mixin.create({
         type = get(this, 'type'),
         name = get(this, 'name');
 
-    return Ember.ObjectProxy.extend(Ember.PromiseProxyMixin).create({
+    return ObjectProxy.extend(PromiseProxyMixin).create({
       promise: metadata.fetchById(type, name)
     });
   })

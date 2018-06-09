@@ -5,9 +5,9 @@
  * Description: A serializer for the bard dimensions
  */
 
-import Ember from 'ember';
+import EmberObject from '@ember/object';
 
-export default Ember.Object.extend({
+export default EmberObject.extend({
 
   /**
    * @method normalize - normalizes the JSON response

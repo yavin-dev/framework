@@ -5,9 +5,11 @@
  * Description: A serializer for the bard metadata
  */
 
-import Ember from 'ember';
+import { A } from '@ember/array';
 
-export default Ember.Object.extend({
+import EmberObject from '@ember/object';
+
+export default EmberObject.extend({
 
   /**
    * @method _normalizeTable - normalizes the table object
@@ -40,8 +42,8 @@ export default Ember.Object.extend({
               longName: timegrain.longName,
               description: timegrain.description,
               retention: timegrain.retention,
-              metricIds: Ember.A(timegrain.metrics).mapBy('name'),
-              dimensionIds: Ember.A(timegrain.dimensions).mapBy('name')
+              metricIds: A(timegrain.metrics).mapBy('name'),
+              dimensionIds: A(timegrain.dimensions).mapBy('name')
             };
 
           });

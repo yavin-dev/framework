@@ -5,12 +5,17 @@
  * Ember service that helps retrieve metadata from WS
  */
 
-import Ember from 'ember';
+import { deprecate } from '@ember/application/deprecations';
+
+import { A } from '@ember/array';
+import { assert } from '@ember/debug';
+import Service, { inject as service } from '@ember/service';
+import { assign } from '@ember/polyfills';
+import { setOwner, getOwner } from '@ember/application';
+import { getWithDefault, get } from '@ember/object';
 import { resolve } from 'rsvp';
 
-const { assign, get, getOwner, setOwner, getWithDefault } = Ember;
-
-export default Ember.Service.extend({
+export default Service.extend({
   /**
    * @private
    * @property {Object} adapter - the adapter object
@@ -27,7 +32,7 @@ export default Ember.Service.extend({
    * @private
    * @property {Ember.Service} _keg - keg service
    */
-  _keg: Ember.inject.service('keg'),
+  _keg: service('keg'),
 
   /**
    * @property {Boolean} metadataLoaded
@@ -75,7 +80,7 @@ export default Ember.Service.extend({
         }
       });
     }
-    return Ember.RSVP.resolve();
+    return resolve();
   },
 
   /**
@@ -105,8 +110,8 @@ export default Ember.Service.extend({
    * @returns {Promise} - array of all table metadata
    */
   all(type) {
-    Ember.assert('Type must be table, metric or dimension', Ember.A(['table', 'dimension', 'metric']).includes(type));
-    Ember.assert('Metadata must be loaded before the operation can be performed', get(this, 'metadataLoaded'));
+    assert('Type must be table, metric or dimension', A(['table', 'dimension', 'metric']).includes(type));
+    assert('Metadata must be loaded before the operation can be performed', get(this, 'metadataLoaded'));
 
     return get(this, '_keg').all(`metadata/${type}`);
   },
@@ -120,8 +125,8 @@ export default Ember.Service.extend({
    * @returns {Object} metadata model object
    */
   getById(type, id) {
-    Ember.assert('Type must be table, metric or dimension', Ember.A(['table', 'dimension', 'metric']).includes(type));
-    Ember.assert('Metadata must be loaded before the operation can be performed', get(this, 'metadataLoaded'));
+    assert('Type must be table, metric or dimension', A(['table', 'dimension', 'metric']).includes(type));
+    assert('Metadata must be loaded before the operation can be performed', get(this, 'metadataLoaded'));
 
     return get(this, '_keg').getById(`metadata/${type}`, id);
   },
@@ -135,7 +140,7 @@ export default Ember.Service.extend({
    * @returns {Promise}
    */
   fetchById(type, id) {
-    Ember.assert('Type must be table, metric or dimension', Ember.A(['table', 'dimension', 'metric']).includes(type));
+    assert('Type must be table, metric or dimension', A(['table', 'dimension', 'metric']).includes(type));
 
     return get(this, '_adapter').fetchMetadata(type, id).then(meta => {
       //load into keg if not already present
@@ -167,7 +172,7 @@ export default Ember.Service.extend({
    *
    */
   getMetadataById() {
-    Ember.deprecate('Method getMetadataById has been replaced with getById method', false, {
+    deprecate('Method getMetadataById has been replaced with getById method', false, {
       id: 'navi-data.getMetadataById',
       until: '4.0.0'
     });

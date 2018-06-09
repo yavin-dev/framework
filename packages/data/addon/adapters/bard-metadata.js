@@ -3,13 +3,15 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import Ember from 'ember';
+import { inject as service } from '@ember/service';
+
+import EmberObject from '@ember/object';
 import config from 'ember-get-config';
 import { pluralize } from 'ember-inflector';
 
 const FACT_HOST = config.navi.dataSources[0].uri;
 
-export default Ember.Object.extend({
+export default EmberObject.extend({
 
   /**
    * @property namespace
@@ -19,7 +21,7 @@ export default Ember.Object.extend({
   /**
    * @property {Service} ajax
    */
-  ajax: Ember.inject.service(),
+  ajax: service(),
 
   /**
    * Builds a URL path for a metadata query

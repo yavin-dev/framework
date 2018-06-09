@@ -1,14 +1,12 @@
-import Ember from  'ember';
+import { get } from '@ember/object';
 import { module, test } from 'qunit';
 import BardFactsModel from 'navi-data/models/bard-facts';
-
-const { get } = Ember;
 
 let BardResponse,
     Payload;
 
-module('Unit | Bard Facts Model', {
-  beforeEach() {
+module('Unit | Bard Facts Model', function(hooks) {
+  hooks.beforeEach(function() {
     Payload = {
       request: {
         request: 'object'
@@ -44,79 +42,75 @@ module('Unit | Bard Facts Model', {
     BardResponse = BardFactsModel.create(Payload);
 
     //Mocking facts service
-    BardResponse.reopen({
-      _factsService: {
-        fetch(request, options){
-          return {
-            request,
-            options
-          };
-        }
-      }
+    BardResponse.set('_factsService', {
+      fetch: (request, options) => ({
+        request,
+        options
+      })
     });
-  }
-});
+  });
 
-test('it properly hydrates properties', function(assert) {
-  assert.expect(2);
+  test('it properly hydrates properties', function(assert) {
+    assert.expect(2);
 
-  assert.deepEqual(get(BardResponse, 'rows'),
-    Payload.rows,
-    'rows property was properly hydrated');
+    assert.deepEqual(get(BardResponse, 'rows'),
+      Payload.rows,
+      'rows property was properly hydrated');
 
-  assert.equal(get(BardResponse, 'request'),
-    Payload.request,
-    'request property was properly hydrated');
-});
+    assert.equal(get(BardResponse, 'request'),
+      Payload.request,
+      'request property was properly hydrated');
+  });
 
-test('pagination methods', function(assert){
-  assert.expect(6);
+  test('pagination methods', function(assert){
+    assert.expect(6);
 
-  assert.deepEqual(BardResponse.next(),
-    {
-      request: {
-        request: 'object'
+    assert.deepEqual(BardResponse.next(),
+      {
+        request: {
+          request: 'object'
+        },
+        options: {
+          page: 4,
+          perPage: 10
+        }
       },
-      options: {
-        page: 4,
-        perPage: 10
-      }
-    },
-    'Next method request the data for the page next to the current page');
+      'Next method request the data for the page next to the current page');
 
-  Payload.response.meta.pagination.currentPage = 4;
+    Payload.response.meta.pagination.currentPage = 4;
 
-  assert.deepEqual(BardResponse.next(),
-    null,
-    'Next method returns null when total pages is exceeded');
+    assert.deepEqual(BardResponse.next(),
+      null,
+      'Next method returns null when total pages is exceeded');
 
-  Payload.response.meta.pagination.currentPage = 2;
+    Payload.response.meta.pagination.currentPage = 2;
 
-  assert.deepEqual(BardResponse.previous(),
-    {
-      request: {
-        request: 'object'
+    assert.deepEqual(BardResponse.previous(),
+      {
+        request: {
+          request: 'object'
+        },
+        options: {
+          page: 1,
+          perPage: 10
+        }
       },
-      options: {
-        page: 1,
-        perPage: 10
-      }
-    },
-    'Previous method requests the data for the page previous to the current page');
+      'Previous method requests the data for the page previous to the current page');
 
-  Payload.response.meta.pagination.currentPage = 1;
+    Payload.response.meta.pagination.currentPage = 1;
 
-  assert.deepEqual(BardResponse.previous(),
-    null,
-    'Previous method returns null trying previous from first page');
+    assert.deepEqual(BardResponse.previous(),
+      null,
+      'Previous method returns null trying previous from first page');
 
-  delete Payload.response.meta.pagination;
+    delete Payload.response.meta.pagination;
 
-  assert.deepEqual(BardResponse.previous(),
-    null,
-    'Previous method returns null when there is no pagination options');
+    assert.deepEqual(BardResponse.previous(),
+      null,
+      'Previous method returns null when there is no pagination options');
 
-  assert.deepEqual(BardResponse.next(),
-    null,
-    'Next method returns null when there is no pagination options');
+    assert.deepEqual(BardResponse.next(),
+      null,
+      'Next method returns null when there is no pagination options');
+  });
 });

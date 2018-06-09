@@ -4,39 +4,52 @@
  *
  * Helper object for building request object used by fact service
  */
-import Ember from 'ember';
+import EmberObject from '@ember/object';
+import { computed } from '@ember/object';
+import { A as arr } from '@ember/array';
 
-export default Ember.Object.extend({
-
+export default EmberObject.extend({
   /**
    * @property {Object} logicalTable - default value
    */
-  logicalTable: {},
+  logicalTable: computed(function() {
+    return {};
+  }),
 
   /**
    * @property {Array} dimensions - default value
    */
-  dimensions: [],
+  dimensions: computed(function() {
+    return arr([]);
+  }),
 
   /**
    * @property {Array} metrics - default value
    */
-  metrics: [],
+  metrics: computed(function() {
+    return [];
+  }),
 
   /**
    * @property {Array} intervals - default value
    */
-  intervals: [],
+  intervals: computed(function() {
+    return [];
+  }),
 
   /**
    * @property {Array} filters - default value
    */
-  filters: [],
+  filters: computed(function() {
+    return [];
+  }),
 
   /**
    * @property {Array} having - list of having clause objects
    */
-  having: [],
+  having: computed(function() {
+    return [];
+  }),
 
   /**
    * @method copy
@@ -44,7 +57,7 @@ export default Ember.Object.extend({
    * @returns {Object} copy of request
    */
   copy() {
-    return this.constructor.create(this, ...arguments);
+    return this.constructor.create(this);
   },
 
   /**
@@ -56,8 +69,25 @@ export default Ember.Object.extend({
    * @param {Array} values - new values
    * @returns {Object} copy of request with new values added
    */
-  _push(property, values) {
-    return this.copy({[property]: this[property].concat(values)});
+  _immutablePush(property, values) {
+    let requestCopy = this.copy();
+    requestCopy.set(property, this.get(property).concat(values));
+    return requestCopy;
+  },
+
+  /**
+   * Sets a request property in an immutable way
+   *
+   * @method push
+   * @private
+   * @param {String} property - key of array property to push to
+   * @param {Array|Object} value - new value
+   * @returns {Object} copy of request with the new value added
+   */
+  _immutableSet(property, value) {
+    let requestCopy = this.copy();
+    requestCopy.set(property, value);
+    return requestCopy;
   },
 
   /**
@@ -85,7 +115,7 @@ export default Ember.Object.extend({
    * @returns {Object} copy of request with property updated
    */
   setLogicalTable(table, timeGrain) {
-    return this.copy({logicalTable: {table, timeGrain}});
+    return this._immutableSet('logicalTable', { table, timeGrain });
   },
 
   /**
@@ -94,7 +124,7 @@ export default Ember.Object.extend({
    * @returns {Object} copy of request with property updated
    */
   addDimensions(...dimensions) {
-    return this._push('dimensions', this._wrap('dimension', dimensions));
+    return this._immutablePush('dimensions', this._wrap('dimension', dimensions));
   },
 
   /**
@@ -103,7 +133,7 @@ export default Ember.Object.extend({
    * @returns {Object} copy of request with property updated
    */
   setDimensions(...dimensions) {
-    return this.copy({dimensions: this._wrap('dimension', dimensions)});
+    return this._immutableSet('dimensions', this._wrap('dimension', dimensions));
   },
 
   /**
@@ -112,7 +142,7 @@ export default Ember.Object.extend({
    * @returns {Object} copy of request with property updated
    */
   addMetrics(...metrics) {
-    return this._push('metrics', metrics);
+    return this._immutablePush('metrics', metrics);
   },
 
   /**
@@ -121,7 +151,7 @@ export default Ember.Object.extend({
    * @returns {Object} copy of request with property updated
    */
   setMetrics(...metrics) {
-    return this.copy({ metrics });
+    return this._immutableSet('metrics', metrics);
   },
 
   /**
@@ -130,7 +160,7 @@ export default Ember.Object.extend({
    * @returns {Object} copy of request with property updated
    */
   setMetricsByName(...metrics) {
-    return this.copy({metrics: this._wrap('metric', metrics)});
+    return this._immutableSet('metrics', this._wrap('metric', metrics));
   },
 
   /**
@@ -140,7 +170,7 @@ export default Ember.Object.extend({
    * @returns {Object} copy of request with property updated
    */
   addInterval(start, end) {
-    return this._push('intervals', [{start, end}]);
+    return this._immutablePush('intervals', [{start, end}]);
   },
 
   /**
@@ -149,7 +179,7 @@ export default Ember.Object.extend({
    * @returns {Object} copy of request with property updated
    */
   addIntervals(...intervals) {
-    return this._push('intervals', intervals);
+    return this._immutablePush('intervals', intervals);
   },
 
   /**
@@ -158,7 +188,7 @@ export default Ember.Object.extend({
    * @returns {Object} copy of request with property updated
    */
   setIntervals(...intervals) {
-    return this.copy({intervals});
+    return this._immutableSet('intervals', intervals);
   },
 
   /**
@@ -169,7 +199,7 @@ export default Ember.Object.extend({
    * @returns {Object} copy of request with property updated
    */
   addFilter(dimension, operator, values) {
-    return this._push('filters', [{dimension, operator, values}]);
+    return this._immutablePush('filters', [{dimension, operator, values}]);
   },
 
   /**
@@ -178,7 +208,7 @@ export default Ember.Object.extend({
    * @returns {Object} copy of request with property updated
    */
   addFilters(...filters) {
-    return this._push('filters', filters);
+    return this._immutablePush('filters', filters);
   },
 
   /**
@@ -187,7 +217,7 @@ export default Ember.Object.extend({
    * @returns {Object} copy of request with property updated
    */
   setFilters(...filters) {
-    return this.copy({filters});
+    return this._immutableSet('filters', filters);
   },
 
   /**
@@ -198,7 +228,7 @@ export default Ember.Object.extend({
    * @returns {Object} copy of request with property updated
    */
   addHaving(metric, operator, value) {
-    return this._push('having', [{metric, operator, values: [value]}]);
+    return this._immutablePush('having', [{metric, operator, values: [value]}]);
   },
 
   /**
@@ -207,7 +237,7 @@ export default Ember.Object.extend({
    * @returns {Object} copy of request with property updated
    */
   addHavings(...having) {
-    return this._push('having', having);
+    return this._immutablePush('having', having);
   },
 
   /**
@@ -216,7 +246,7 @@ export default Ember.Object.extend({
    * @returns {Object} copy of request with property updated
    */
   setHavings(...having) {
-    return this.copy({having});
+    return this._immutableSet('having', having);
   }
 
 });

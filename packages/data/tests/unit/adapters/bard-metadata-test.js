@@ -1,4 +1,5 @@
-import { moduleFor, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupTest } from 'ember-qunit';
 import Pretender from "pretender";
 import metadataRoutes, {
   Host,
@@ -8,43 +9,42 @@ import metadataRoutes, {
 let Adapter,
     Server;
 
-moduleFor('adapter:bard-metadata', 'Unit | Bard Metadata Adapter', {
-  needs: [
-    'service:ajax'
-  ],
+module('Unit | Bard Metadata Adapter', function(hooks) {
+  setupTest(hooks);
 
-  beforeEach(){
-    Adapter = this.subject();
+  hooks.beforeEach(function() {
+    Adapter = this.owner.lookup('adapter:bard-metadata');
 
     //setup Pretender
     Server = new Pretender(metadataRoutes);
-  },
-  afterEach(){
+  });
+
+  hooks.afterEach(function() {
     //shutdown pretender
     Server.shutdown();
-  }
-});
+  });
 
-/*
- * Test whether the url path is built correctly
- */
-test('_buildURLPath', function(assert) {
-  assert.expect(1);
+  /*
+   * Test whether the url path is built correctly
+   */
+  test('_buildURLPath', function(assert) {
+    assert.expect(1);
 
-  assert.equal(Adapter._buildURLPath('table', ''),
-    `${Host}/v1/tables/`,
-    '_buildURLPath correctly built the URL path');
-});
+    assert.equal(Adapter._buildURLPath('table', ''),
+      `${Host}/v1/tables/`,
+      '_buildURLPath correctly built the URL path');
+  });
 
-/**
- * Test whether the adapter returns the response it gets
- */
-test('fetchMetadata', function(assert) {
-  assert.expect(1);
+  /**
+   * Test whether the adapter returns the response it gets
+   */
+  test('fetchMetadata', function(assert) {
+    assert.expect(1);
 
-  return Adapter.fetchAll('table').then(function(result){
-    return assert.deepEqual(result,
-      { tables: Tables },
-      'fetchMetadata correctly requested metadata');
+    return Adapter.fetchAll('table').then(function(result){
+      return assert.deepEqual(result,
+        { tables: Tables },
+        'fetchMetadata correctly requested metadata');
+    });
   });
 });

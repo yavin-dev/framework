@@ -5,13 +5,13 @@
  * Description: Bard facts service that executes and delivers the results
  */
 
-import Ember from 'ember';
+import Service from '@ember/service';
+
+import { getOwner } from '@ember/application';
 import BardFactsModel from 'navi-data/models/bard-facts';
 import RequestBuilder from 'navi-data/builder/request';
 
-const { getOwner } = Ember;
-
-export default Ember.Service.extend({
+export default Service.extend({
   /**
    * @private
    * @property {Object} adapter - the adapter object

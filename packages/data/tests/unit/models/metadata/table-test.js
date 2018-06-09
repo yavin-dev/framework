@@ -1,7 +1,9 @@
-import Ember from 'ember';
-import { moduleFor, test } from 'ember-qunit';
+import { assign } from '@ember/polyfills';
+import { get } from '@ember/object';
+import { module, test } from 'qunit';
+import { setupTest } from 'ember-qunit';
 
-const { assign, get, getOwner } = Ember;
+import { run } from '@ember/runloop';
 
 let Payload,
     Model,
@@ -9,19 +11,15 @@ let Payload,
     Keg,
     TableFactory;
 
-moduleFor('model:metadata/table', 'Unit | Metadata Model | Table', {
-  needs: [
-    'service:keg',
-    'model:metadata/dimension',
-    'model:metadata/metric',
-    'model:metadata/time-grain'
-  ],
+module('Unit | Metadata Model | Table', function(hooks) {
+  setupTest(hooks);
 
-  beforeEach() {
+  hooks.beforeEach(function() {
     let timeGrain = {
       name: 'day',
       longName: 'Day',
       description: 'Day',
+      dimensionIds: [],
       metricIds: [ 'pv' ],
       keg: Keg
     };
@@ -34,10 +32,10 @@ moduleFor('model:metadata/table', 'Unit | Metadata Model | Table', {
       category: 'table',
     };
 
-    Model = this.subject(Payload);
+    Model = run(() => this.owner.factoryFor('model:metadata/table').create(Payload));
 
     //Looking up and injecting keg into the model
-    Keg = getOwner(Model).lookup('service:keg');
+    Keg = this.owner.lookup('service:keg');
 
     Keg.push('metadata/metric', {
       id: 'pv',
@@ -47,47 +45,47 @@ moduleFor('model:metadata/table', 'Unit | Metadata Model | Table', {
     });
 
     let timeGrainPayload = assign({}, timeGrain);
-    TimeGrain = getOwner(this).factoryFor('model:metadata/time-grain').create(timeGrainPayload);
-    TableFactory = getOwner(this).factoryFor('model:metadata/table').class;
-  }
-});
+    TimeGrain = this.owner.factoryFor('model:metadata/time-grain').create(timeGrainPayload);
+    TableFactory = this.owner.factoryFor('model:metadata/table').class;
+  });
 
-test('factory has identifierField defined', function(assert) {
-  assert.expect(1);
+  test('factory has identifierField defined', function(assert) {
+    assert.expect(1);
 
-  assert.equal(get(TableFactory, 'identifierField'),
-    'name',
-    'identifierField property is set to `name`');
-});
+    assert.equal(get(TableFactory, 'identifierField'),
+      'name',
+      'identifierField property is set to `name`');
+  });
 
-test('it properly hydrates properties', function(assert) {
-  assert.expect(5);
+  test('it properly hydrates properties', function(assert) {
+    assert.expect(5);
 
-  assert.deepEqual(get(Model, 'name'),
-    Payload.name,
-    'name property is hydrated properly');
+    assert.deepEqual(get(Model, 'name'),
+      Payload.name,
+      'name property is hydrated properly');
 
-  assert.equal(get(Model, 'longName'),
-    Payload.longName,
-    'longName property was properly hydrated');
+    assert.equal(get(Model, 'longName'),
+      Payload.longName,
+      'longName property was properly hydrated');
 
-  assert.equal(get(Model, 'description'),
-    Payload.description,
-    'description property was properly hydrated');
+    assert.equal(get(Model, 'description'),
+      Payload.description,
+      'description property was properly hydrated');
 
-  assert.equal(get(Model, 'category'),
-    Payload.category,
-    'category property was properly hydrated');
+    assert.equal(get(Model, 'category'),
+      Payload.category,
+      'category property was properly hydrated');
 
-  assert.deepEqual(get(Model, 'timeGrains'),
-    [ TimeGrain ],
-    'timeGrains property was properly hydrated');
-});
+    assert.deepEqual(get(Model, 'timeGrains'),
+      [ TimeGrain ],
+      'timeGrains property was properly hydrated');
+  });
 
-test('Metric in Time Grain', function(assert) {
-  assert.expect(1);
+  test('Metric in Time Grain', function(assert) {
+    assert.expect(1);
 
-  assert.deepEqual(get(Model, 'timeGrains.firstObject.metrics.firstObject'),
-    Keg.getById('metadata/metric', 'pv'),
-    'The Page view metric is properly hydrated');
+    assert.deepEqual(get(Model, 'timeGrains.firstObject.metrics.firstObject'),
+      Keg.getById('metadata/metric', 'pv'),
+      'The Page view metric is properly hydrated');
+  });
 });
