@@ -64,7 +64,7 @@ test('reorder metrics', function (assert) {
     type: 'metric',
     field: 'b'
   }, {
-    type: 'metric',
+    type: 'threshold',
     field: 'a'
   }]
 
