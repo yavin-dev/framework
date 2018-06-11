@@ -12,10 +12,11 @@
 
 import Ember from 'ember';
 import layout from '../../templates/components/cell-renderers/metric';
-import { canonicalizeMetric } from 'navi-data/utils/metric';
 import { computed, get } from '@ember/object';
 import { oneWay } from '@ember/object/computed';
 import { isEmpty } from '@ember/utils';
+import { canonicalizeMetric } from 'navi-data/utils/metric';
+import { smartFormatNumber } from 'navi-core/helpers/smart-format-number';
 import numeral from 'numeral';
 
 export default Ember.Component.extend({
@@ -41,6 +42,7 @@ export default Ember.Component.extend({
    */
   metricValue: computed('data', 'metric', 'format', function() {
     let format = get(this, 'format'),
+        type = get(this, 'column.type'),
         canonicalName = canonicalizeMetric(get(this, 'metric')),
         metricValue = get(this, `data.${canonicalName}`)
 
@@ -52,6 +54,6 @@ export default Ember.Component.extend({
       return numeral(metricValue).format(format);
     }
 
-    return metricValue;
+    return type === 'metric' ? smartFormatNumber([metricValue]) : metricValue;
   }),
 });
