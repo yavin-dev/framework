@@ -4,6 +4,22 @@
  */
 
 .number-format-dropdown {
+  align-self: center;
+
+  &__trigger {
+    border-radius: 2px;
+    margin-left: 2px;
+    padding: 4px 8px;
+  }
+
+  &__trigger:hover {
+    background-color: @navi-gray-300;
+  }
+
+  .ember-basic-dropdown-trigger--below {
+    background-color: @navi-gray-300;
+  }
+
   &__container {
     border: 1px solid @navi-gray-300;
     box-shadow: 0 3px 8px fade(@navi-black, 38%);
