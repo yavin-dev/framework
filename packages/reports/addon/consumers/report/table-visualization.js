@@ -24,7 +24,7 @@ export default ActionConsumer.extend({
           metrics = get(report, 'request.metrics'),
           metricIndex = keyBy(metrics.toArray(), metric => get(metric, 'canonicalName')),
           reorderedMetrics = newColumnOrder
-            .filter(column => column.type === 'metric')
+            .filter(column => column.type === 'metric' || column.type === 'threshold')
             .map(column => metricIndex[column.field]);
 
       set(report, 'visualization.metadata',
