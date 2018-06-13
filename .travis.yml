@@ -15,6 +15,7 @@ env:
   - PACKAGE=navi-core
   - PACKAGE=navi-dashboards
   - PACKAGE=navi-data
+  - PACKAGE=navi-directory
   - PACKAGE=navi-reports
   - PACKAGE=navi-visualizations
   global:
