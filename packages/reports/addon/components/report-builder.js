@@ -36,6 +36,6 @@ export default Ember.Component.extend({
    */
   allTables: computed(function() {
     let metadataService = get(this, 'metadataService');
-    return metadataService.all('table');
+    return metadataService.all('table').sortBy('longName');
   })
 });

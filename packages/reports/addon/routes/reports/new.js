@@ -130,7 +130,7 @@ export default Ember.Route.extend({
     let table = get(this, 'metadataService').all('table').findBy('name', get(config, 'navi.defaultDataTable'));
 
     if (!table) {
-      let dataSourceTables = get(this, 'metadataService').all('table').sortBy('name');
+      let dataSourceTables = get(this, 'metadataService').all('table').sortBy('longName');
       table = get(dataSourceTables, 'firstObject');
     }
 
