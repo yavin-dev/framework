@@ -1,6 +1,7 @@
 import { moduleForModel, test } from 'ember-qunit';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 import Ember from 'ember';
+import { indexColumnById } from 'navi-visualizations/models/table';
 
 const { get, set, isPresent, run, String: { classify } } = Ember;
 
@@ -154,6 +155,33 @@ test('rebuildConfig with parameterized metrics', function(assert) {
       ]
     }
   },'Columns with parameterized metrics are formatted correctly');
+});
+
+test('index column by id', function(assert) {
+  assert.expect(1);
+
+  let columnA = {
+        type: 'metric',
+        field: {
+          metric: 'A'
+        }
+      },
+      columnB = {
+        type: 'threshold',
+        field: {
+          metric: 'B'
+        }
+      },
+      rows = [columnA, columnB];
+
+  assert.deepEqual(
+    indexColumnById(rows),
+    {
+      A: columnA,
+      B: columnB
+    },
+    'Should return object having metricId as key column as value'
+  );
 });
 
 /**

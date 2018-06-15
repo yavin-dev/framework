@@ -55,13 +55,7 @@ export default VisualizationBase.extend(Validations, {
         metrics = get(request, 'metrics') || [],
         columns = get(this, 'metadata.columns'),
         // index column based on metricId or dimensionId
-        columnIndex = keyBy(columns, ({ field, type }) => {
-          if (type === 'threshold') {
-            type = 'metric';
-          }
-
-          return field[type]
-        });
+        columnIndex = indexColumnById(columns);
 
     let dateColumn = {
       field: {dateTime: 'dateTime'},
@@ -128,4 +122,14 @@ function hasAllColumns(request, columns) {
 
   return requestFields.length === columnFields.length &&
     requestFields.every(field => columnFields.includes(field));
+}
+
+export function indexColumnById(columns) {
+  return keyBy(columns, ({ field, type }) => {
+    if (type === 'threshold') {
+      type = 'metric';
+    }
+
+    return field[type];
+  });
 }

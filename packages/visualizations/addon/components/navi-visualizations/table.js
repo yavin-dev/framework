@@ -13,13 +13,15 @@
 
 import layout from '../../templates/components/navi-visualizations/table';
 import { formatItemDimension } from '../../helpers/mixed-height-layout';
-import groupBy from 'lodash/groupBy';
-import { canonicalizeMetric } from 'navi-data/utils/metric';
-import { computed, get, set, setProperties } from '@ember/object';
+import { computed, get, set } from '@ember/object';
+import { inject as service } from '@ember/service';
 import { assign } from '@ember/polyfills';
 import { A as arr } from '@ember/array';
-import $ from 'jquery';
 import Component from '@ember/component';
+import cloneDeep from 'lodash/cloneDeep';
+import groupBy from 'lodash/groupBy';
+import { canonicalizeMetric } from 'navi-data/utils/metric';
+import { getColumnDefaultName } from 'navi-visualizations/helpers/default-column-name';
 
 const NEXT_SORT_DIRECTION = {
   'none': 'desc',
@@ -38,7 +40,12 @@ export default Component.extend({
   /**
    * @property {Array} classNames - list of component class names
    */
-  classNames: [ 'table-widget' ],
+  classNames: ['table-widget'],
+
+  /**
+   * @property {Service} bardMetadata
+   */
+  bardMetadata: service(),
 
   /*
    * @property {Boolean} occlusion - whether or not to incremental render
@@ -79,12 +86,12 @@ export default Component.extend({
 
     return columns.reduce((totRow, column) => {
       //if dateTime set type
-      if(column.type === 'dateTime'){
+      if (column.type === 'dateTime') {
         set(totRow, column.field.dateTime, HEADER_TITLE[type]);
       }
 
       //set subtotal dimension if subtotal row
-      if(column.field.dimension === get(this, 'selectedSubtotal') && type === 'subtotal'){
+      if (column.field.dimension === get(this, 'selectedSubtotal') && type === 'subtotal') {
         let idField = `${column.field.dimension}|id`,
             descField = `${column.field.dimension}|desc`;
 
@@ -96,17 +103,17 @@ export default Component.extend({
       set(totRow, '__meta__', { isTotalRow: true });
 
       //if partial data do not compute metric totals
-      if(get(this, 'totalRows') > get(this, 'rowsInResponse')){
+      if (get(this, 'totalRows') > get(this, 'rowsInResponse')) {
         set(totRow, '__meta__.hasPartialData', true);
         return totRow;
       }
 
       //if metric find sum
-      if(column.type === 'metric'){
+      if (column.type === 'metric') {
         let metricName = canonicalizeMetric(column.field);
         totRow[metricName] = data.reduce((sum, row) => {
           let number = Number(row[metricName]);
-          if(!Number.isNaN(number)) {
+          if (!Number.isNaN(number)) {
             return sum + number;
           }
           return sum;
@@ -127,12 +134,12 @@ export default Component.extend({
   _computeSubtotals() {
     let groupingColumn = get(this, 'selectedSubtotal');
 
-    if(!groupingColumn) { return get(this, 'rawData'); }
+    if (!groupingColumn) { return get(this, 'rawData'); }
 
     let groupedData = get(this, 'groupedData'),
         dataWithSubtotals = Object.keys(groupedData).reduce((arr, group) => {
           let subTotalRow = this._computeTotal(groupedData[group], 'subtotal');
-          return [ ...arr, ...groupedData[group], subTotalRow ];
+          return [...arr, ...groupedData[group], subTotalRow];
         }, []);
 
     return dataWithSubtotals;
@@ -141,11 +148,11 @@ export default Component.extend({
   /**
    * @property {Object} groupedData - data grouped by grouping column specified in selectedSubtotal
    */
-  groupedData: computed('selectedSubtotal', 'rawData', function() {
+  groupedData: computed('selectedSubtotal', 'rawData', function () {
     let groupingColumn = get(this, 'selectedSubtotal'),
         rawData = get(this, 'rawData');
 
-    if(groupingColumn !== 'dateTime'){
+    if (groupingColumn !== 'dateTime') {
       groupingColumn = `${groupingColumn}|id`;
     }
 
@@ -157,15 +164,15 @@ export default Component.extend({
   /**
    * @property {Object} tableData
    */
-  tableData: computed('rawData', 'columns', 'options.showTotals.{grandTotal,subtotal}', function() {
+  tableData: computed('rawData', 'columns', 'options.showTotals.{grandTotal,subtotal}', function () {
     let tableData = this._computeSubtotals(),
         rawData = get(this, 'rawData');
 
-    if(!get(this, 'options.showTotals.grandTotal')){
+    if (!get(this, 'options.showTotals.grandTotal')) {
       return tableData;
     }
 
-    return [ ...tableData, this._computeTotal(rawData, 'grandTotal') ];
+    return [...tableData, this._computeTotal(rawData, 'grandTotal')];
   }),
 
   /**
@@ -176,14 +183,14 @@ export default Component.extend({
    * @returns {Array} sorts with canonical names as metric
    */
   _mapAlias(request) {
-    if(!request) {
+    if (!request) {
       return arr([]);
     }
 
     let requestSorts = arr(get(request, 'sort')),
         requestMetricsAliasMap = arr(get(request, 'metrics')).reduce((map, metric) => {
           let alias = get(metric, 'parameters.as');
-          if(alias){
+          if (alias) {
             map[alias] = metric;
           }
           return map;
@@ -199,27 +206,27 @@ export default Component.extend({
   /**
    * @property {Object} columns
    */
-  columns: computed('options.columns', 'request.sort', function() {
+  columns: computed('options.columns', 'request.sort', function () {
     let sorts = this._mapAlias(get(this, 'request')),
-        columns = $.extend(true, [], get(this, 'options.columns'));
+        columns = cloneDeep(get(this, 'options.columns') || []);
 
-    return columns.map( column => {
-      let {field, type} = column,
+    return columns.map(column => {
+      let { field, type } = column,
           fieldName = type === 'dateTime' ? type : canonicalizeMetric(field),
-          sort =  arr(sorts).findBy('metric', fieldName) || {},
+          sort = arr(sorts).findBy('metric', fieldName) || {},
+          hasCustomDisplayName = column.displayName !== getColumnDefaultName(column, get(this, 'bardMetadata')),
           sortDirection;
 
-      if(column.type === 'dateTime'){
-        sortDirection =  get(sort, 'direction') || 'desc';
+      if (column.type === 'dateTime') {
+        sortDirection = get(sort, 'direction') || 'desc';
       } else if (/^metric|threshold$/.test(type)) {
-        sortDirection =  get(sort, 'direction') || 'none';
+        sortDirection = get(sort, 'direction') || 'none';
       }
 
-      setProperties(column, {
+      return assign({}, column, {
+        hasCustomDisplayName,
         sortDirection
       });
-
-      return column;
     });
   }),
 
@@ -241,12 +248,12 @@ export default Component.extend({
   /**
    * @property {Array} rowDimensions - indicates the dimensions for each row of data
    */
-  rowDimensions: computed('tableData', 'expandedIdx', function() {
+  rowDimensions: computed('tableData', 'expandedIdx', function () {
     let rowDimension = formatItemDimension(get(this, 'rowHeight'));
 
     //Create a set of row dimensions for each row of data
-    let rowDimensions =  new Array(get(this, 'tableData.length'));
-    for(let i = 0; i < rowDimensions.length ; i++) {
+    let rowDimensions = new Array(get(this, 'tableData.length'));
+    for (let i = 0; i < rowDimensions.length; i++) {
       rowDimensions[i] = rowDimension;
     }
 
@@ -281,7 +288,7 @@ export default Component.extend({
      * @param {Object} column object
      */
     headerClicked({ field, type, sortDirection }) {
-      if(/^threshold|dateTime|metric$/.test(type)) {
+      if (/^threshold|dateTime|metric$/.test(type)) {
         let direction = this._getNextSortDirection(type, sortDirection),
             //TODO Fetch from report action dispatcher service
             actionType = direction === 'none' ? 'removeSort' : 'upsertSort',

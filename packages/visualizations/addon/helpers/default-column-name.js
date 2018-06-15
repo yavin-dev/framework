@@ -8,25 +8,36 @@ import { get } from '@ember/object';
 import { inject as service } from '@ember/service';
 import { metricFormat } from 'navi-data/helpers/metric-format';
 
+/**
+ * Get column default display name
+ *
+ * @method chartToolTipFormat
+ * @param {Object} column - table column object
+ * @param {Object} bardMetadata - bard metadata service
+ * @return {String} - default display name
+ */
+export function getColumnDefaultName({ type, field }, bardMetadata) {
+  if (type === 'dateTime') {
+    return 'Date';
+  }
+
+  if (type === 'threshold') {
+    type = 'metric';
+  }
+
+  let model = bardMetadata.getById(type, field[type]);
+
+  if (type === 'metric') {
+    return metricFormat(model, model.longName);
+  }
+
+  return model.longName;
+}
+
 export default Helper.extend({
   bardMetadata: service(),
 
-  compute([{ type, field }]) {
-    if (type === 'dateTime') {
-      return 'Date';
-    }
-
-    if (type === 'threshold') {
-      type = 'metric';
-    }
-
-    let metadata = get(this, 'bardMetadata'),
-        model = metadata.getById(type, field[type]);
-
-    if (type === 'metric') {
-      return metricFormat(model, model.longName);
-    }
-
-    return model.longName;
+  compute([column]) {
+    return getColumnDefaultName(column, get(this, 'bardMetadata'));
   }
 });

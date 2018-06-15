@@ -1,9 +1,15 @@
 import Ember from 'ember';
 import { moduleForComponent, test } from 'ember-qunit';
+import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
+
+const { getOwner } = Ember;
 
 moduleForComponent('navi-visualizations/table', 'Unit | Component | table', {
   unit: 'true',
   needs: [
+    'adapter:bard-metadata',
+    'adapter:dimensions/bard',
+    'helper:eq',
     'helper:mixed-height-layout',
     'helper:format-date-for-granularity',
     'component:ember-collection',
@@ -11,7 +17,16 @@ moduleForComponent('navi-visualizations/table', 'Unit | Component | table', {
     'component:cell-renderers/dateTime',
     'component:cell-renderers/metric',
     'component:cell-renderers/threshold',
-    'helper:eq',
+    'model:metadata/table',
+    'model:metadata/time-grain',
+    'model:metadata/dimension',
+    'model:metadata/metric',
+    'service:ajax',
+    'service:bard-facts',
+    'service:bard-dimensions',
+    'service:bard-metadata',
+    'service:keg',
+    'serializer:bard-metadata'
   ],
   beforeEach() {
     this.register('component:navi-table-sort-icon', Ember.Component.extend(), {instantiate: false});
@@ -26,6 +41,13 @@ moduleForComponent('navi-visualizations/table', 'Unit | Component | table', {
     this.register('helper:not-eq', Ember.Helper.helper(()=>{}), {instantiate: false});
     this.register('helper:is-valid-moment', Ember.Helper.helper(()=>{}), {instantiate: false});
     this.register('helper:format-number', Ember.Helper.helper(()=>{}), {instantiate: false});
+
+    setupMock()
+    return getOwner(this).lookup('service:bard-metadata').loadMetadata();
+  },
+
+  afterEach() {
+    teardownMock();
   }
 });
 
@@ -237,8 +259,8 @@ test('computeTotal and computeSubtotals', function(assert) {
 
   assert.deepEqual(component._computeTotal(ROWS, 'grandTotal'), {
     dateTime: 'Grand Total',
-    "__meta__": {
-      "isTotalRow": true
+    '__meta__': {
+      'isTotalRow': true
     },
     uniqueIdentifier: 356140444
   }, 'compute total returns a total row object for the rows passed in');
