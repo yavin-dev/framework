@@ -20,11 +20,11 @@ moduleFor('route:dashboards', 'Unit | Route | dashboards', {
     'service:user'
   ],
 
-  beforeEach(){
+  beforeEach() {
     setupMock();
   },
 
-  afterEach(){
+  afterEach() {
     teardownMock();
   }
 });
@@ -35,24 +35,30 @@ test('delete dashboard - success', function(assert) {
   let route = this.subject({
     naviNotifications: {
       add({ message }) {
-        assert.equal(message,
+        assert.equal(
+          message,
           'Dashboard "Tumblr Goals Dashboard" deleted successfully!',
-          'A notification is sent containing the dashboard title');
+          'A notification is sent containing the dashboard title'
+        );
       }
     },
     transitionTo: Ember.K
   });
 
   return Ember.run(() => {
-    return route.store.findRecord('dashboard', 1).then((dashboard) => {
-      assert.ok(route.store.hasRecordForId('dashboard',1),
-        'Dashboard 1 is available in the store');
+    return route.store.findRecord('dashboard', 1).then(dashboard => {
+      assert.ok(
+        route.store.hasRecordForId('dashboard', 1),
+        'Dashboard 1 is available in the store'
+      );
 
       route.send('deleteDashboard', dashboard);
 
       return wait().then(() => {
-        assert.notOk(route.store.hasRecordForId('dashboard',1),
-          'Dashboard 1 is deleted from the store');
+        assert.notOk(
+          route.store.hasRecordForId('dashboard', 1),
+          'Dashboard 1 is deleted from the store'
+        );
       });
     });
   });
@@ -69,23 +75,29 @@ test('delete dashboard - failure', function(assert) {
   let route = this.subject({
     naviNotifications: {
       add({ message }) {
-        assert.equal(message,
+        assert.equal(
+          message,
           'OOPS! An error occurred while deleting dashboard "Tumblr Goals Dashboard"',
-          'A notification is sent containing the widget title');
+          'A notification is sent containing the widget title'
+        );
       }
     }
   });
 
   return Ember.run(() => {
-    return route.store.findRecord('dashboard', 1).then((dashboard) => {
-      assert.ok(route.store.hasRecordForId('dashboard',1),
-        'Dashboard 1 is available in the store');
+    return route.store.findRecord('dashboard', 1).then(dashboard => {
+      assert.ok(
+        route.store.hasRecordForId('dashboard', 1),
+        'Dashboard 1 is available in the store'
+      );
 
       route.send('deleteDashboard', dashboard);
 
       return wait().then(() => {
-        assert.ok(route.store.hasRecordForId('dashboard',1),
-          'Dashboard 1 is still available after failed delete operation from the store');
+        assert.ok(
+          route.store.hasRecordForId('dashboard', 1),
+          'Dashboard 1 is still available after failed delete operation from the store'
+        );
       });
     });
   });

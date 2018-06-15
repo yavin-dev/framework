@@ -8,6 +8,6 @@ import MF from 'model-fragments';
 
 export default MF.Fragment.extend({
   columns: DS.attr('number', { defaultValue: 12 }),
-  layout:  DS.attr({ defaultValue: () => [] }),
-  version: DS.attr('number', { defaultValue: '1' }),
+  layout: DS.attr({ defaultValue: () => [] }),
+  version: DS.attr('number', { defaultValue: '1' })
 });

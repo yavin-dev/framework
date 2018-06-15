@@ -1,8 +1,12 @@
 import { moduleForComponent, test } from 'ember-qunit';
 
-moduleForComponent('dashboard-actions/export', 'Integration | Component | dashboard actions/export', {
-  integration: true
-});
+moduleForComponent(
+  'dashboard-actions/export',
+  'Integration | Component | dashboard actions/export',
+  {
+    integration: true
+  }
+);
 
 test('export href', function(assert) {
   assert.expect(1);
@@ -15,9 +19,11 @@ test('export href', function(assert) {
     }}
   `);
 
-  assert.equal(this.$('a').attr('href'),
+  assert.equal(
+    this.$('a').attr('href'),
     '/export?dashboard=123',
-    'Export actions links to export service and gives the dashboard id');
+    'Export actions links to export service and gives the dashboard id'
+  );
 });
 
 test('export filename', function(assert) {
@@ -31,9 +37,11 @@ test('export filename', function(assert) {
     }}
   `);
 
-  assert.equal(this.$('a').attr('download'),
+  assert.equal(
+    this.$('a').attr('download'),
     'akkala-tech-lab-weekly-reports-dashboard',
-    'Download attribute is set to the dasherized dashboard name, appended with -dashboard');
+    'Download attribute is set to the dasherized dashboard name, appended with -dashboard'
+  );
 });
 
 test('disabled', function(assert) {
@@ -48,9 +56,11 @@ test('disabled', function(assert) {
     }}
   `);
 
-  assert.equal(this.$('a').attr('href'),
+  assert.equal(
+    this.$('a').attr('href'),
     'unsafe:javascript:void(0);',
-    'When disabled, the export action href has no effect');
+    'When disabled, the export action href has no effect'
+  );
 });
 
 test('notifications', function(assert) {
@@ -60,9 +70,11 @@ test('notifications', function(assert) {
 
   this.mockNotifications = {
     add({ message }) {
-      assert.equal(message,
+      assert.equal(
+        message,
         'The download should begin soon.',
-        'A notification is added when export is clicked.');
+        'A notification is added when export is clicked.'
+      );
     }
   };
 

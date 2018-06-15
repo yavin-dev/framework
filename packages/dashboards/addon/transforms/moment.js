@@ -9,7 +9,6 @@ import moment from 'moment';
 const API_DATE_FORMAT_STRING = 'YYYY-MM-DD HH:mm:ss.SSS';
 
 export default DS.Transform.extend({
-
   /**
    * Deserializes date string into a moment object
    *

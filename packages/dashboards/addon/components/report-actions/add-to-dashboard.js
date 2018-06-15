@@ -33,7 +33,7 @@ export default Ember.Component.extend({
   /**
    * @property {Array} groupedDashboards
    */
-  groupedDashboards: computed('dashboards', function(){
+  groupedDashboards: computed('dashboards', function() {
     return Ember.A([
       {
         groupName: 'My Dashboards',

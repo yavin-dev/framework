@@ -69,18 +69,23 @@ test('Linking Dashboards to Users', function(assert) {
       author: user
     });
 
-    assert.equal(user.get('dashboards.length'),
+    assert.equal(
+      user.get('dashboards.length'),
       1,
-      'One dashboard is linked to the user');
+      'One dashboard is linked to the user'
+    );
 
-    assert.deepEqual(user.get('dashboards').mapBy('title'),
-      [ 'Time and Courage' ],
-      'The linked dashboards are fetched via the relationship');
+    assert.deepEqual(
+      user.get('dashboards').mapBy('title'),
+      ['Time and Courage'],
+      'The linked dashboards are fetched via the relationship'
+    );
 
-    assert.ok(user.get('reports'),
-      'Reports relationship is part of the model');
+    assert.ok(user.get('reports'), 'Reports relationship is part of the model');
 
-    assert.ok(user.get('favoriteReports'),
-      'Reports relationship is part of the model');
+    assert.ok(
+      user.get('favoriteReports'),
+      'Reports relationship is part of the model'
+    );
   });
 });

@@ -8,7 +8,6 @@ import Ember from 'ember';
 const { get, set } = Ember;
 
 export default Ember.Route.extend({
-
   /**
    * @property {Service} naviNotifications
    */
@@ -21,33 +20,45 @@ export default Ember.Route.extend({
    * @override
    */
   model(params) {
-    let id        = params.unsavedWidgetId,
-        dashboard = this.modelFor('dashboards.dashboard');
+    let id = params.unsavedWidgetId,
+      dashboard = this.modelFor('dashboards.dashboard');
 
-    if(id) {
+    if (id) {
       let widget = this.store.peekAll('dashboard-widget').findBy('tempId', id);
 
-      if(widget) {
+      if (widget) {
         widget.set('dashboard', dashboard);
 
         return widget.save().then(({ id }) => {
-          let layout    = get(dashboard, 'presentation.layout'),
-              newLayout = this._addToLayout(layout, Number(id));
+          let layout = get(dashboard, 'presentation.layout'),
+            newLayout = this._addToLayout(layout, Number(id));
 
           set(dashboard, 'presentation.layout', newLayout);
 
-          return dashboard.save().then(() => {
-            get(this, 'naviNotifications').add({
-              message: `Widget '${get(widget, 'title')}' has been added to this dashboard successfully.`,
-              type: 'success',
-              timeout: 'short'
-            });
-          }).catch(() => {
-            // Remove from layout if there is an error
-            set(dashboard, 'presentation.layout', Ember.A(layout).rejectBy('widgetId', id));
+          return dashboard
+            .save()
+            .then(() => {
+              get(this, 'naviNotifications').add({
+                message: `Widget '${get(
+                  widget,
+                  'title'
+                )}' has been added to this dashboard successfully.`,
+                type: 'success',
+                timeout: 'short'
+              });
+            })
+            .catch(() => {
+              // Remove from layout if there is an error
+              set(
+                dashboard,
+                'presentation.layout',
+                Ember.A(layout).rejectBy('widgetId', id)
+              );
 
-            return Ember.RSVP.reject('Error saving dashboard after creating widget');
-          });
+              return Ember.RSVP.reject(
+                'Error saving dashboard after creating widget'
+              );
+            });
         });
       } else {
         return Ember.RSVP.reject('Unable to find unsaved widget');
@@ -102,7 +113,7 @@ export default Ember.Route.extend({
     let nextRow = 0;
     layout.forEach(widget => {
       let { row, height } = widget;
-      if(row + height > nextRow) {
+      if (row + height > nextRow) {
         nextRow = row + height;
       }
     });

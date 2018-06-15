@@ -8,7 +8,6 @@ import Ember from 'ember';
 const { computed, get, makeArray, run, set, setProperties } = Ember;
 
 export default Ember.Route.extend({
-
   /**
    * @property {Service} user
    */
@@ -50,16 +49,15 @@ export default Ember.Route.extend({
    * @return {Void}
    */
   _updateLayout(updatedWidgets) {
-
     let dashboard = get(this, 'currentDashboard'),
-        layout = Ember.A(get(dashboard, 'presentation.layout'));
+      layout = Ember.A(get(dashboard, 'presentation.layout'));
 
     makeArray(updatedWidgets).forEach(updatedWidget => {
       let modelWidget = layout.findBy('widgetId', Number(updatedWidget.id));
 
       //Make sure the widget is still a member of the dashboard
-      if(modelWidget) {
-        let { y:row, x:column, height, width } = updatedWidget;
+      if (modelWidget) {
+        let { y: row, x: column, height, width } = updatedWidget;
         setProperties(modelWidget, { column, row, height, width });
       }
     });
@@ -106,10 +104,10 @@ export default Ember.Route.extend({
      * @param {Array} [widgets] - Array of widgets that updated
      */
     didUpdateLayout(event, widgets) {
-      if(widgets && get(widgets, 'length')) {
+      if (widgets && get(widgets, 'length')) {
         this._updateLayout(widgets);
         let dashboard = get(this, 'currentDashboard');
-        if(get(dashboard, 'canUserEdit')) {
+        if (get(dashboard, 'canUserEdit')) {
           this.send('saveDashboard');
         }
       }
@@ -128,34 +126,41 @@ export default Ember.Route.extend({
      */
     deleteWidget(widgetModel) {
       let widgetName = get(widgetModel, 'title'),
-          id = get(widgetModel, 'id');
+        id = get(widgetModel, 'id');
 
       widgetModel.deleteRecord();
 
-      return widgetModel.save().then(() => {
-        //Make sure record is cleaned up locally
-        widgetModel.unloadRecord();
+      return widgetModel
+        .save()
+        .then(() => {
+          //Make sure record is cleaned up locally
+          widgetModel.unloadRecord();
 
-        // Remove layout reference
-        let presentation = get(this, 'currentDashboard.presentation'),
-            newLayout = Ember.A(get(presentation, 'layout')).rejectBy('widgetId', Number(id));
-        set(presentation, 'layout', newLayout);
-        this.send('saveDashboard');
+          // Remove layout reference
+          let presentation = get(this, 'currentDashboard.presentation'),
+            newLayout = Ember.A(get(presentation, 'layout')).rejectBy(
+              'widgetId',
+              Number(id)
+            );
+          set(presentation, 'layout', newLayout);
+          this.send('saveDashboard');
 
-        get(this, 'naviNotifications').add({
-          message: `Widget "${widgetName}" deleted successfully!`,
-          type: 'success',
-          timeout: 'short'
+          get(this, 'naviNotifications').add({
+            message: `Widget "${widgetName}" deleted successfully!`,
+            type: 'success',
+            timeout: 'short'
+          });
+
+          // Leave any child routes after deleting a widget, since they may no longer be valid
+          this.transitionTo(this.routeName, get(this, 'currentDashboard.id'));
+        })
+        .catch(() => {
+          //rollback delete action
+          widgetModel.rollbackAttributes();
+          this.showErrorNotification(
+            `OOPS! An error occurred while deleting widget "${widgetName}"`
+          );
         });
-
-        // Leave any child routes after deleting a widget, since they may no longer be valid
-        this.transitionTo(this.routeName, get(this, 'currentDashboard.id'));
-
-      }).catch(() => {
-        //rollback delete action
-        widgetModel.rollbackAttributes();
-        this.showErrorNotification(`OOPS! An error occurred while deleting widget "${widgetName}"`);
-      });
     },
 
     /**
@@ -163,15 +168,17 @@ export default Ember.Route.extend({
      */
     toggleFavorite(dashboard) {
       let user = get(this, 'user').getUser(),
-          isFavorite = get(dashboard, 'isFavorite'),
-          updateOperation = isFavorite ? 'removeObject' : 'addObject',
-          rollbackOperation = isFavorite ? 'addObject' : 'removeObject';
+        isFavorite = get(dashboard, 'isFavorite'),
+        updateOperation = isFavorite ? 'removeObject' : 'addObject',
+        rollbackOperation = isFavorite ? 'addObject' : 'removeObject';
 
       get(user, 'favoriteDashboards')[updateOperation](dashboard);
       user.save().catch(() => {
         //manually rollback - fix once ember-data has a way to rollback relationships
         get(user, 'favoriteDashboards')[rollbackOperation](dashboard);
-        this.showErrorNotification('OOPS! An error occurred while updating favorite dashboards');
+        this.showErrorNotification(
+          'OOPS! An error occurred while updating favorite dashboards'
+        );
       });
     },
 
@@ -182,7 +189,7 @@ export default Ember.Route.extend({
      * @param {String} title
      */
     updateTitle(title) {
-      if(!Ember.isEmpty(title)) {
+      if (!Ember.isEmpty(title)) {
         let dashboard = get(this, 'currentDashboard');
         set(dashboard, 'title', title);
         this.send('saveDashboard');

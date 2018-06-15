@@ -76,7 +76,7 @@ moduleFor('route:dashboards/dashboard', 'Unit | Route | dashboards/dashboard', {
     'service:user',
     'service:bard-dimensions'
   ],
-  beforeEach(){
+  beforeEach() {
     setupMock();
 
     // Load metadata needed for request fragment
@@ -85,41 +85,44 @@ moduleFor('route:dashboards/dashboard', 'Unit | Route | dashboards/dashboard', {
 
     Route = this.subject();
   },
-  afterEach(){
+  afterEach() {
     teardownMock();
   }
 });
 
 test('it exists', function(assert) {
   assert.expect(1);
-  assert.ok(Route,
-    'Route Exists');
+  assert.ok(Route, 'Route Exists');
 });
 
 test('model', function(assert) {
   assert.expect(4);
 
   return Ember.run(() => {
-    let params = { dashboardId: "1" },
-        modelPromise = Route.model(params);
+    let params = { dashboardId: '1' },
+      modelPromise = Route.model(params);
 
-    assert.ok(modelPromise.then,
-      'Route returns a promise in the model hook');
+    assert.ok(modelPromise.then, 'Route returns a promise in the model hook');
 
     return modelPromise.then(dashboard => {
-
-      assert.equal(dashboard.id,
+      assert.equal(
+        dashboard.id,
         params.dashboardId,
-        'The requested dashboard is retrieved');
+        'The requested dashboard is retrieved'
+      );
 
-      assert.equal(dashboard.get('title'),
+      assert.equal(
+        dashboard.get('title'),
         'Tumblr Goals Dashboard',
-        'The requested dashboard is retrieved');
+        'The requested dashboard is retrieved'
+      );
 
       return dashboard.get('widgets').then(res => {
-        assert.deepEqual(res.mapBy('id'),
+        assert.deepEqual(
+          res.mapBy('id'),
           ['1', '2', '3'],
-          'The requested dashboard is retrieved with the three widgets');
+          'The requested dashboard is retrieved with the three widgets'
+        );
       });
     });
   });
@@ -131,16 +134,18 @@ test('currentDashboard', function(assert) {
   let model = {};
   Route.reopen(mockModelFor(model));
 
-  assert.equal(get(Route, 'currentDashboard'),
+  assert.equal(
+    get(Route, 'currentDashboard'),
     model,
-    'currentDashboard returns the dashboard in the current model object');
+    'currentDashboard returns the dashboard in the current model object'
+  );
 });
 
 test('_updateLayout', function(assert) {
   assert.expect(2);
 
   let dashboard = {
-    presentation : {
+    presentation: {
       layout: [
         { widgetId: 1, column: 0, row: 0, height: 4, width: 4 },
         { widgetId: 2, column: 0, row: 4, height: 3, width: 3 },
@@ -163,27 +168,34 @@ test('_updateLayout', function(assert) {
 
   let actualLayout = get(Route, 'currentDashboard.presentation.layout');
 
-  assert.deepEqual(actualLayout,
+  assert.deepEqual(
+    actualLayout,
     expectedLayout,
-    '_updateLayout successfully updated the dashboard layout');
+    '_updateLayout successfully updated the dashboard layout'
+  );
 
   Route._updateLayout();
 
-  assert.deepEqual(actualLayout,
+  assert.deepEqual(
+    actualLayout,
     expectedLayout,
-    '_updateLayout does not update the dashboard layout when not passed arguments');
+    '_updateLayout does not update the dashboard layout when not passed arguments'
+  );
 });
 
 test('_saveDashboardFn', function(assert) {
   assert.expect(1);
 
   let dashboard = {
-    save: ()=> Ember.RSVP.resolve()
+    save: () => Ember.RSVP.resolve()
   };
 
   Route.reopen(mockModelFor(dashboard));
   return Route._saveDashboardFn().then(() => {
-    assert.ok(true, '_saveDashboardFn saves dashboard model when user can edit');
+    assert.ok(
+      true,
+      '_saveDashboardFn saves dashboard model when user can edit'
+    );
   });
 });
 
@@ -191,7 +203,7 @@ test('didUpdateLayout - user can edit', function(assert) {
   assert.expect(1);
 
   Route.reopen({
-    _updateLayout(){
+    _updateLayout() {
       return;
     },
     currentDashboard: {
@@ -199,12 +211,11 @@ test('didUpdateLayout - user can edit', function(assert) {
       save: () => Ember.RSVP.resolve()
     },
     _saveDashboardFn() {
-      assert.ok(true,
-        '_saveDashboardFn method is called when user can edit');
+      assert.ok(true, '_saveDashboardFn method is called when user can edit');
     }
   });
 
-  Route.send('didUpdateLayout', undefined, [1,2]);
+  Route.send('didUpdateLayout', undefined, [1, 2]);
   return wait();
 });
 
@@ -212,21 +223,19 @@ test('didUpdateLayout - user cannot edit', function(assert) {
   assert.expect(1);
 
   Route.reopen({
-    _updateLayout(){
+    _updateLayout() {
       return;
     },
     currentDashboard: {
       canUserEdit: false
     },
     _saveDashboardFn() {
-      assert.ok(false,
-        'Error: _saveDashboardFn method when user cannot edit');
+      assert.ok(false, 'Error: _saveDashboardFn method when user cannot edit');
     }
   });
 
-  Route.send('didUpdateLayout', undefined, [1,2]);
-  assert.ok(true,
-    '_saveDashboardFn method is not called');
+  Route.send('didUpdateLayout', undefined, [1, 2]);
+  assert.ok(true, '_saveDashboardFn method is not called');
   return wait();
 });
 
@@ -234,43 +243,50 @@ test('delete widget - success', function(assert) {
   assert.expect(5);
 
   return Ember.run(() => {
-    return Route.store.findRecord('dashboard', 1).then((dashboard) => {
-      Route.reopen(
-        mockModelFor(dashboard),
-        {
-          naviNotifications: {
-            add({ message }) {
-              assert.equal(message,
-                'Widget "Mobile DAU Graph" deleted successfully!',
-                'A notification is sent containing the widget title');
-            }
-          },
-          _saveDashboardFn() {
-            assert.ok(true,
-              'Dashboard is saved after layout update');
-          },
-          transitionTo(route) {
-            assert.equal(route,
-              this.routeName,
-              'After deleting a widget, user is transitioned out of any child route');
+    return Route.store.findRecord('dashboard', 1).then(dashboard => {
+      Route.reopen(mockModelFor(dashboard), {
+        naviNotifications: {
+          add({ message }) {
+            assert.equal(
+              message,
+              'Widget "Mobile DAU Graph" deleted successfully!',
+              'A notification is sent containing the widget title'
+            );
           }
+        },
+        _saveDashboardFn() {
+          assert.ok(true, 'Dashboard is saved after layout update');
+        },
+        transitionTo(route) {
+          assert.equal(
+            route,
+            this.routeName,
+            'After deleting a widget, user is transitioned out of any child route'
+          );
         }
-      );
+      });
 
       // Make sure necessary widget is prefetched
       return dashboard.get('widgets').then(() => {
         let originalWidgetCount = dashboard.get('widgets.length');
 
-        Route.send('deleteWidget', Route.store.peekRecord('dashboard-widget', 2));
+        Route.send(
+          'deleteWidget',
+          Route.store.peekRecord('dashboard-widget', 2)
+        );
 
         return wait().then(() => {
-          assert.equal(dashboard.get('widgets.length'),
+          assert.equal(
+            dashboard.get('widgets.length'),
             originalWidgetCount - 1,
-            'Dashboard has one less widget after a delete');
+            'Dashboard has one less widget after a delete'
+          );
 
-          assert.equal(Ember.A(dashboard.get('presentation.layout')).findBy('widgetId', 2),
+          assert.equal(
+            Ember.A(dashboard.get('presentation.layout')).findBy('widgetId', 2),
             undefined,
-            'Dashboard layout no longer has reference to deleted widget');
+            'Dashboard layout no longer has reference to deleted widget'
+          );
         });
       });
     });
@@ -286,34 +302,40 @@ test('delete widget - failure', function(assert) {
   });
 
   return Ember.run(() => {
-    return Route.store.findRecord('dashboard', 1).then((dashboard) => {
-      Route.reopen(
-        mockModelFor(dashboard),
-        {
-          naviNotifications: {
-            add({ message }) {
-              assert.equal(message,
-                'OOPS! An error occurred while deleting widget "Mobile DAU Graph"',
-                'A notification is sent containing the widget title');
-            }
+    return Route.store.findRecord('dashboard', 1).then(dashboard => {
+      Route.reopen(mockModelFor(dashboard), {
+        naviNotifications: {
+          add({ message }) {
+            assert.equal(
+              message,
+              'OOPS! An error occurred while deleting widget "Mobile DAU Graph"',
+              'A notification is sent containing the widget title'
+            );
           }
         }
-      );
+      });
 
       // Make sure necessary widget is prefetched
       return dashboard.get('widgets').then(() => {
         let originalWidgetCount = dashboard.get('widgets.length');
 
-        Route.send('deleteWidget', Route.store.peekRecord('dashboard-widget', 2));
+        Route.send(
+          'deleteWidget',
+          Route.store.peekRecord('dashboard-widget', 2)
+        );
 
         return wait().then(() => {
-          assert.equal(dashboard.get('widgets.length'),
+          assert.equal(
+            dashboard.get('widgets.length'),
             originalWidgetCount,
-            'Dashboard still has all widgets after a failed delete');
+            'Dashboard still has all widgets after a failed delete'
+          );
 
-          assert.notEqual(Ember.A(dashboard.get('presentation.layout')).findBy('widgetId', 2),
+          assert.notEqual(
+            Ember.A(dashboard.get('presentation.layout')).findBy('widgetId', 2),
             undefined,
-            'Dashboard layout still has reference to widget after a failed delete');
+            'Dashboard layout still has reference to widget after a failed delete'
+          );
         });
       });
     });
