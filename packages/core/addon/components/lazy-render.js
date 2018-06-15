@@ -57,7 +57,7 @@ export default Ember.Component.extend({
     this._super(...arguments);
 
     let $target = get(this, '$target'),
-        on = get(this, 'on');
+      on = get(this, 'on');
 
     $target.on(`${on}.lazy-render`, () => {
       $target.off(`${on}.lazy-render`);
@@ -73,7 +73,7 @@ export default Ember.Component.extend({
     this._super(...arguments);
 
     const $target = get(this, '$target'),
-          on = get(this, 'on');
+      on = get(this, 'on');
 
     $target.off(`${on}.lazy-render`);
   }

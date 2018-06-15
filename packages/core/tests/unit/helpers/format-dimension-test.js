@@ -8,25 +8,33 @@ test('Formatted id', function(assert) {
 
   let testDim = {
     id: 'rainbow_road',
-    description: 'Rainbow Road',
+    description: 'Rainbow Road'
   };
 
-  assert.equal(formatDimension([testDim]),
+  assert.equal(
+    formatDimension([testDim]),
     'Rainbow Road (rainbow_road)',
-    'Id was formatted with ()');
+    'Id was formatted with ()'
+  );
 
   testDim.description = undefined;
-  assert.equal(formatDimension([testDim]),
+  assert.equal(
+    formatDimension([testDim]),
     'rainbow_road',
-    'Undefined description formats to just the Id');
+    'Undefined description formats to just the Id'
+  );
 
   testDim.id = undefined;
   testDim.description = undefined;
-  assert.equal(formatDimension([testDim]),
+  assert.equal(
+    formatDimension([testDim]),
     '',
-    'Undefined Id and Description formats to just blank string');
+    'Undefined Id and Description formats to just blank string'
+  );
 
-  assert.equal(formatDimension([]),
+  assert.equal(
+    formatDimension([]),
     '',
-    'Undefined dimension formats to blank string');
+    'Undefined dimension formats to blank string'
+  );
 });

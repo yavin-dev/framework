@@ -22,11 +22,11 @@ export default [
               type: 'dimension',
               config: {
                 metric: 'adClicks',
-                dimensionOrder: [ 'property' ],
+                dimensionOrder: ['property'],
                 dimensions: [
-                  {  name: 'Property 1', values: {  property: '114' } },
-                  {  name: 'Property 2', values: {  property: '100001' } },
-                  {  name: 'Property 3', values: {  property: '100002' } }
+                  { name: 'Property 1', values: { property: '114' } },
+                  { name: 'Property 2', values: { property: '100001' } },
+                  { name: 'Property 3', values: { property: '100002' } }
                 ]
               }
             }
@@ -39,13 +39,8 @@ export default [
         table: 'network',
         timeGrain: 'day'
       },
-      metrics: [
-        { metric: 'adClicks' },
-        { metric: 'navClicks' }
-      ],
-      dimensions: [
-        { dimension: 'property' }
-      ],
+      metrics: [{ metric: 'adClicks' }, { metric: 'navClicks' }],
+      dimensions: [{ dimension: 'property' }],
       filters: [],
       sort: [
         {
@@ -59,7 +54,7 @@ export default [
           start: '2015-11-09 00:00:00.000'
         }
       ],
-      bardVersion:    'v1',
+      bardVersion: 'v1',
       requestVersion: 'v1'
     }
   },
@@ -103,10 +98,7 @@ export default [
         table: 'network',
         timeGrain: 'day'
       },
-      metrics: [
-        { metric: 'adClicks' },
-        { metric: 'navClicks' }
-      ],
+      metrics: [{ metric: 'adClicks' }, { metric: 'navClicks' }],
       dimensions: [
         {
           dimension: 'property'
@@ -117,7 +109,7 @@ export default [
           dimension: 'property',
           operator: 'in',
           field: 'id',
-          values: [ '114', '100001' ]
+          values: ['114', '100001']
         }
       ],
       intervals: [
@@ -126,10 +118,8 @@ export default [
           start: '2015-11-09 00:00:00.000'
         }
       ],
-      having: [
-        { metric: 'adClicks', operator: 'gt', values: [1000] }
-      ],
-      bardVersion:    'v1',
+      having: [{ metric: 'adClicks', operator: 'gt', values: [1000] }],
+      bardVersion: 'v1',
       requestVersion: 'v1'
     }
   },
@@ -139,7 +129,7 @@ export default [
     createdOn: '2015-01-01 00:00:00',
     updatedOn: '2015-01-01 00:00:00',
     author: 'ciela',
-    deliveryRules: [ 1 ],
+    deliveryRules: [1],
     visualization: {
       type: 'table',
       version: 1,
@@ -163,10 +153,7 @@ export default [
         table: 'network',
         timeGrain: 'day'
       },
-      metrics: [
-        { metric: 'adClicks' },
-        { metric: 'navClicks' }
-      ],
+      metrics: [{ metric: 'adClicks' }, { metric: 'navClicks' }],
       dimensions: [],
       filters: [],
       sort: [],
@@ -176,7 +163,7 @@ export default [
           start: '2015-11-09 00:00:00.000'
         }
       ],
-      bardVersion:    'v1',
+      bardVersion: 'v1',
       requestVersion: 'v1'
     }
   },
@@ -186,7 +173,7 @@ export default [
     createdOn: '2015-01-01 00:00:00',
     updatedOn: '2015-01-01 00:00:00',
     author: 'navi_user',
-    deliveryRules: [ 2 ],
+    deliveryRules: [2],
     visualization: {
       type: 'line-chart',
       version: 1,
@@ -196,7 +183,7 @@ export default [
             series: {
               type: 'metric',
               config: {
-                metrics: [ 'adClicks', 'navClicks' ]
+                metrics: ['adClicks', 'navClicks']
               }
             }
           }
@@ -208,10 +195,7 @@ export default [
         table: 'network',
         timeGrain: 'day'
       },
-      metrics: [
-        { metric: 'adClicks' },
-        { metric: 'navClicks' }
-      ],
+      metrics: [{ metric: 'adClicks' }, { metric: 'navClicks' }],
       dimensions: [],
       filters: [],
       sort: [],
@@ -221,7 +205,7 @@ export default [
           start: '2015-11-09 00:00:00.000'
         }
       ],
-      bardVersion:    'v1',
+      bardVersion: 'v1',
       requestVersion: 'v1'
     }
   },
@@ -238,10 +222,7 @@ export default [
         table: 'network',
         timeGrain: 'day'
       },
-      metrics: [
-        { metric: 'adClicks' },
-        { metric: 'navClicks' }
-      ],
+      metrics: [{ metric: 'adClicks' }, { metric: 'navClicks' }],
       dimensions: [],
       filters: [],
       sort: [],
@@ -251,7 +232,7 @@ export default [
           start: '2015-11-09 00:00:00.000'
         }
       ],
-      bardVersion:    'v1',
+      bardVersion: 'v1',
       requestVersion: 'v1'
     }
   },
@@ -277,9 +258,7 @@ export default [
           start: '2015-11-09 00:00:00.000'
         }
       ],
-      having: [
-        { metric: 'adClicks', operator: 'gt', values: [] }
-      ],
+      having: [{ metric: 'adClicks', operator: 'gt', values: [] }],
       bardVersion: 'v1',
       requestVersion: 'v1'
     }
@@ -291,7 +270,7 @@ export default [
     updatedOn: '2015-01-01 00:00:00',
     author: 'navi_user',
     deliveryRules: [],
-    visualization:  {
+    visualization: {
       type: 'table',
       version: 1,
       metadata: {
@@ -341,7 +320,7 @@ export default [
     updatedOn: '2015-01-01 00:00:00',
     author: 'navi_user',
     deliveryRules: [],
-    visualization:  {
+    visualization: {
       type: 'table',
       version: 1,
       metadata: {
@@ -411,7 +390,7 @@ export default [
     updatedOn: '2015-01-01 00:00:00',
     author: 'navi_user',
     deliveryRules: [],
-    visualization:  {
+    visualization: {
       type: 'table',
       version: 1,
       metadata: {
@@ -461,7 +440,7 @@ export default [
     updatedOn: '2018-01-01 00:00:00',
     author: 'navi_user',
     deliveryRules: [],
-    visualization:  {
+    visualization: {
       type: 'line-chart',
       version: 1,
       metadata: {
@@ -482,9 +461,7 @@ export default [
         table: 'network',
         timeGrain: 'day'
       },
-      metrics: [
-        { metric: 'uniqueIdentifier' }
-      ],
+      metrics: [{ metric: 'uniqueIdentifier' }],
       dimensions: [],
       filters: [],
       sort: [],
@@ -494,7 +471,7 @@ export default [
           start: '2018-11-11 00:00:00.000'
         }
       ],
-      bardVersion:    'v1',
+      bardVersion: 'v1',
       requestVersion: 'v1'
     }
   }
