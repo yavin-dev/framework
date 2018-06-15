@@ -7,16 +7,19 @@
 
 import Ember from 'ember';
 import config from 'ember-get-config';
-import { canonicalizeMetric, getAliasedMetrics, canonicalizeAlias } from '../utils/metric';
+import {
+  canonicalizeMetric,
+  getAliasedMetrics,
+  canonicalizeAlias
+} from '../utils/metric';
 
-const { A:array, assign, get, getWithDefault } = Ember;
+const { A: array, assign, get, getWithDefault } = Ember;
 
 const SORT_DIRECTIONS = ['desc', 'asc'];
 
 const FACT_HOST = config.navi.dataSources[0].uri;
 
 export default Ember.Object.extend({
-
   /**
    * @property namespace
    */
@@ -38,7 +41,7 @@ export default Ember.Object.extend({
   _buildDimensionsPath(request) {
     let dimensions = array(get(request, 'dimensions'));
 
-    if(dimensions.length) {
+    if (dimensions.length) {
       return `/${dimensions.mapBy('dimension').join('/')}`;
     } else {
       return '';
@@ -56,10 +59,11 @@ export default Ember.Object.extend({
   _buildDateTimeParam(request) {
     let intervals = get(request, 'intervals');
 
-    return intervals.map(interval => {
-      return `${get(interval, 'start')}/${get(interval, 'end')}`;
-    }).join(',');
-
+    return intervals
+      .map(interval => {
+        return `${get(interval, 'start')}/${get(interval, 'end')}`;
+      })
+      .join(',');
   },
 
   /**
@@ -71,7 +75,9 @@ export default Ember.Object.extend({
    * @return {String} metrics param value
    */
   _buildMetricsParam(request) {
-    return array(get(request, 'metrics')).map(canonicalizeMetric).join(',');
+    return array(get(request, 'metrics'))
+      .map(canonicalizeMetric)
+      .join(',');
   },
 
   /**
@@ -85,14 +91,16 @@ export default Ember.Object.extend({
   _buildFiltersParam(request) {
     let filters = get(request, 'filters');
 
-    if(filters && filters.length) {
-      return filters.map(filter => {
-        let dimension = get(filter, 'dimension'),
-            operator  = get(filter, 'operator'),
-            values    = get(filter, 'values').join(','),
-            field     = get(filter, 'field') || 'id';
-        return `${dimension}|${field}-${operator}[${values}]`;
-      }).join(',');
+    if (filters && filters.length) {
+      return filters
+        .map(filter => {
+          let dimension = get(filter, 'dimension'),
+            operator = get(filter, 'operator'),
+            values = get(filter, 'values').join(','),
+            field = get(filter, 'field') || 'id';
+          return `${dimension}|${field}-${operator}[${values}]`;
+        })
+        .join(',');
     } else {
       return undefined;
     }
@@ -107,19 +115,23 @@ export default Ember.Object.extend({
    * @param {function} aliasFunction function that returns metrics from aliases
    * @return {String} sort param value
    */
-  _buildSortParam(request, aliasFunction = (a) => a) {
+  _buildSortParam(request, aliasFunction = a => a) {
     let sort = get(request, 'sort');
 
-    if(sort && sort.length) {
-      return sort.map(sortMetric => {
-        let metric     = aliasFunction(get(sortMetric, 'metric')),
-            direction  = getWithDefault(sortMetric, 'direction', 'desc');
+    if (sort && sort.length) {
+      return sort
+        .map(sortMetric => {
+          let metric = aliasFunction(get(sortMetric, 'metric')),
+            direction = getWithDefault(sortMetric, 'direction', 'desc');
 
-        Ember.assert(`'${direction}' is not a valid sort direction (${SORT_DIRECTIONS.join()})`,
-          SORT_DIRECTIONS.indexOf(direction) !== -1);
+          Ember.assert(
+            `'${direction}' is not a valid sort direction (${SORT_DIRECTIONS.join()})`,
+            SORT_DIRECTIONS.indexOf(direction) !== -1
+          );
 
-        return `${metric}|${direction}`;
-      }).join(',');
+          return `${metric}|${direction}`;
+        })
+        .join(',');
     } else {
       return undefined;
     }
@@ -134,25 +146,32 @@ export default Ember.Object.extend({
    * @param {function} aliasFunction function that returns metrics from aliases
    * @return {String} having param value
    */
-  _buildHavingParam(request, aliasFunction = (a) => a) {
+  _buildHavingParam(request, aliasFunction = a => a) {
     let having = get(request, 'having');
 
-    if(having && having.length) {
-      return having.map(having => {
+    if (having && having.length) {
+      return having
+        .map(having => {
+          Ember.deprecate(
+            'Please use the property `values` instead of `value` in a `having` object',
+            !having.value,
+            {
+              id: 'navi-data._buildHavingParam',
+              until: '4.0.0'
+            }
+          );
 
-        Ember.deprecate('Please use the property `values` instead of `value` in a `having` object', !having.value, {
-          id: 'navi-data._buildHavingParam',
-          until: '4.0.0'
-        });
+          let metric = aliasFunction(get(having, 'metric')),
+            operator = get(having, 'operator'),
+            value = array([get(having, 'value')]), //value is deprecated
+            values = array(get(having, 'values')),
+            valuesStr = array(values.concat(value))
+              .compact()
+              .join(',');
 
-        let metric = aliasFunction(get(having, 'metric')),
-            operator  = get(having, 'operator'),
-            value     = array([get(having, 'value')]), //value is deprecated
-            values    = array(get(having, 'values')),
-            valuesStr = array(values.concat(value)).compact().join(',');
-
-        return `${metric}-${operator}[${valuesStr}]`;
-      }).join(',');
+          return `${metric}-${operator}[${valuesStr}]`;
+        })
+        .join(',');
     } else {
       return undefined;
     }
@@ -167,11 +186,11 @@ export default Ember.Object.extend({
    * @return {String} URL Path
    */
   _buildURLPath(request) {
-    let host       = FACT_HOST,
-        namespace  = get(this, 'namespace'),
-        table      = get(request, 'logicalTable.table'),
-        timeGrain  = get(request, 'logicalTable.timeGrain'),
-        dimensions = this._buildDimensionsPath(request);
+    let host = FACT_HOST,
+      namespace = get(this, 'namespace'),
+      table = get(request, 'logicalTable.table'),
+      timeGrain = get(request, 'logicalTable.timeGrain'),
+      dimensions = this._buildDimensionsPath(request);
 
     return `${host}/${namespace}/${table}/${timeGrain}${dimensions}/`;
   },
@@ -192,17 +211,17 @@ export default Ember.Object.extend({
    * @return {Object} query object
    */
   _buildQuery(request, options) {
-    let query   = {},
-        aliasMap = getAliasedMetrics(request.metrics),
-        aliasFunction = (alias) => canonicalizeAlias(alias, aliasMap),
-        filters = this._buildFiltersParam(request),
-        having = this._buildHavingParam(request, aliasFunction),
-        sort = this._buildSortParam(request, aliasFunction);
+    let query = {},
+      aliasMap = getAliasedMetrics(request.metrics),
+      aliasFunction = alias => canonicalizeAlias(alias, aliasMap),
+      filters = this._buildFiltersParam(request),
+      having = this._buildHavingParam(request, aliasFunction),
+      sort = this._buildSortParam(request, aliasFunction);
 
-    query.dateTime  = this._buildDateTimeParam(request);
-    query.metrics   = this._buildMetricsParam(request);
+    query.dateTime = this._buildDateTimeParam(request);
+    query.metrics = this._buildMetricsParam(request);
 
-    if(filters) {
+    if (filters) {
       query.filters = filters;
     }
 
@@ -217,22 +236,22 @@ export default Ember.Object.extend({
     //default format
     query.format = 'json';
 
-    if(options) {
-      if(options.page && options.perPage) {
+    if (options) {
+      if (options.page && options.perPage) {
         query.page = options.page;
         query.perPage = options.perPage;
       }
 
-      if(options.format) {
+      if (options.format) {
         query.format = options.format;
       }
 
-      if(options.cache === false) {
+      if (options.cache === false) {
         query._cache = false;
       }
 
       //catch all query param and add to the query
-      if(options.queryParams){
+      if (options.queryParams) {
         assign(query, options.queryParams);
       }
     }
@@ -249,12 +268,11 @@ export default Ember.Object.extend({
    * @return {String} url
    */
   urlForFindQuery(request, options) {
-
     // Decorate and translate the request
-    let decoratedRequest  = this._decorate(request),
-        path              = this._buildURLPath(decoratedRequest),
-        query             = this._buildQuery(decoratedRequest, options),
-        queryStr          = Ember.$.param(query);
+    let decoratedRequest = this._decorate(request),
+      path = this._buildURLPath(decoratedRequest),
+      query = this._buildQuery(decoratedRequest, options),
+      queryStr = Ember.$.param(query);
 
     return `${path}?${queryStr}`;
   },
@@ -274,7 +292,6 @@ export default Ember.Object.extend({
     return decorator.applyGlobalDecorators(request);
   },
 
-
   /**
    * @method fetchDataForRequest - Uses the url generated using the adapter to make an ajax request
    * @param {Object} request - request object
@@ -287,15 +304,14 @@ export default Ember.Object.extend({
    *      }
    * @returns {Promise} - Promise with the response
    */
-  fetchDataForRequest(request, options){
-
+  fetchDataForRequest(request, options) {
     // Decorate and translate the request
-    let decoratedRequest  = this._decorate(request),
-        url               = this._buildURLPath(decoratedRequest),
-        query             = this._buildQuery(decoratedRequest, options),
-        clientId          = 'UI',
-        customHeaders     = {},
-        timeout           = 300000;
+    let decoratedRequest = this._decorate(request),
+      url = this._buildURLPath(decoratedRequest),
+      query = this._buildQuery(decoratedRequest, options),
+      clientId = 'UI',
+      customHeaders = {},
+      timeout = 300000;
 
     // Support custom clientid header
     if (options && options.clientId) {
@@ -318,7 +334,9 @@ export default Ember.Object.extend({
       },
       beforeSend(xhr) {
         xhr.setRequestHeader('clientid', clientId);
-        Object.keys(customHeaders).forEach(name => xhr.setRequestHeader(name, customHeaders[name]));
+        Object.keys(customHeaders).forEach(name =>
+          xhr.setRequestHeader(name, customHeaders[name])
+        );
       },
       crossDomain: true,
       data: query,

@@ -19,20 +19,18 @@ const NULL_STRING_VALUE = '""';
 export function replaceNullFilter(request) {
   // only decorate if the request and the filters array are defined
   if (request && request.filters) {
-    let updatedFilters = request.filters.map((filter) => {
-
+    let updatedFilters = request.filters.map(filter => {
       // Update any filter that matches the given dimension
       if (filter.operator === 'null' || filter.operator === 'notnull') {
-
         // Build new value array and replace id with newIds
         let newValues = [NULL_STRING_VALUE],
-            newOperator = filter.operator === 'null' ? 'in' : 'notin';
-        return assign({}, filter, {values: newValues, operator: newOperator});
+          newOperator = filter.operator === 'null' ? 'in' : 'notin';
+        return assign({}, filter, { values: newValues, operator: newOperator });
       }
       return filter;
     });
 
-    return assign({}, request, {filters: updatedFilters});
+    return assign({}, request, { filters: updatedFilters });
   }
   return request;
 }

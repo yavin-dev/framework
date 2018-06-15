@@ -8,14 +8,13 @@
 import Ember from 'ember';
 
 export default Ember.Object.extend({
-
   /**
    * @method normalize - normalizes the JSON response
    * @param dimensionName {String} - name of the dimension
    * @param payload {Object} - JSON payload
    * @returns {Object} - normalized JSON object
    */
-  normalize(dimensionName, payload={}) {
+  normalize(dimensionName, payload = {}) {
     return payload.rows;
   }
 });

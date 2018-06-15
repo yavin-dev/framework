@@ -25,7 +25,10 @@ export default Service.extend({
    * @returns {Promise} response with dimension values
    */
   fetchAllValues({ type, dimensionName }) {
-    assert(`Fetching values of type: '${type}' is not supported`, type === 'dimension');
+    assert(
+      `Fetching values of type: '${type}' is not supported`,
+      type === 'dimension'
+    );
 
     return get(this, '_dimensionService').all(dimensionName);
   }

@@ -19,9 +19,7 @@ const URL_FIELD_NAMES = {
   description: 'desc'
 };
 
-
 export default Ember.Object.extend({
-
   /**
    * @property namespace
    */
@@ -63,7 +61,7 @@ export default Ember.Object.extend({
    */
   _buildUrl(dimension) {
     let host = FACT_HOST,
-        namespace = get(this, 'namespace');
+      namespace = get(this, 'namespace');
 
     return `${host}/${namespace}/dimensions/${dimension}/values/`;
   },
@@ -91,13 +89,12 @@ export default Ember.Object.extend({
     query = assign({}, defaultQueryOptions, query);
 
     let queryField = get(query, 'field'),
-        field =  URL_FIELD_NAMES[queryField] || queryField,
-        operator = get(query, 'operator'),
-
-        // Build the filters as expected by bard api
-        filters = Ember.makeArray(get(query, 'values')).map(value =>
-          `${dimension}|${field}-${operator}[${value}]`
-        );
+      field = URL_FIELD_NAMES[queryField] || queryField,
+      operator = get(query, 'operator'),
+      // Build the filters as expected by bard api
+      filters = Ember.makeArray(get(query, 'values')).map(
+        value => `${dimension}|${field}-${operator}[${value}]`
+      );
 
     return {
       filters: filters.join(',')
@@ -128,7 +125,7 @@ export default Ember.Object.extend({
    * @returns {Promise} - Promise with the response
    */
   findById(dimension, value, options) {
-    return this.find(dimension, {values: value}, options);
+    return this.find(dimension, { values: value }, options);
   },
 
   /**
@@ -145,14 +142,13 @@ export default Ember.Object.extend({
    * @returns {Promise} - Promise with the response
    */
   find(dimension, query, options) {
-
     let url = this._buildUrl(dimension),
-        filterQuery = {},
-        clientId = 'UI',
-        timeout = 30000;
+      filterQuery = {},
+      clientId = 'UI',
+      timeout = 30000;
 
-        // If filter query is present, build query having the filter
-    if(query){
+    // If filter query is present, build query having the filter
+    if (query) {
       filterQuery = this._buildFilterQuery(dimension, query);
     }
 
@@ -168,7 +164,7 @@ export default Ember.Object.extend({
       }
 
       // pagination
-      if(options.page && options.perPage) {
+      if (options.page && options.perPage) {
         filterQuery.page = options.page;
         filterQuery.perPage = options.perPage;
       }

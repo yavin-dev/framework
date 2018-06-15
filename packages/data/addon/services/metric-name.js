@@ -19,7 +19,12 @@ export default Service.extend({
    * @returns {String} - long name for the metric from the metadata
    */
   getLongName(metricId) {
-    return get(this, 'metricMeta').getMetaField('metric', metricId, 'longName', metricId);
+    return get(this, 'metricMeta').getMetaField(
+      'metric',
+      metricId,
+      'longName',
+      metricId
+    );
   },
 
   /**
@@ -29,7 +34,7 @@ export default Service.extend({
    */
   getDisplayName(metricObject) {
     let metricId = get(metricObject, 'metric'),
-        longName = this.getLongName(metricId);
+      longName = this.getLongName(metricId);
 
     return metricFormat(metricObject, longName);
   }

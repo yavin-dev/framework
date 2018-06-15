@@ -11,7 +11,6 @@ const { assign, get, getOwner } = Ember;
 const KEG_NAMESPACE = 'dimension';
 
 export default Ember.Object.extend({
-
   /**
    * @property {Service} keg
    */
@@ -63,30 +62,29 @@ export default Ember.Object.extend({
    * @returns {Object} - The response object.
    */
   _buildResponse(records, options = {}) {
-
     if (records && records.length) {
-      if(options.page && options.perPage) {
+      if (options.page && options.perPage) {
         /*
          * Computing begining and numberOfRecords to be used in Array.slice() method.
          */
-        let begin = (options.perPage * options.page) - options.perPage,
-            numberOfRecords = options.page * options.perPage;
+        let begin = options.perPage * options.page - options.perPage,
+          numberOfRecords = options.page * options.perPage;
 
         // Fail if boundary conditions are wrong
         Ember.assert(
           `'${begin}' is not a valid pagination value, can be fixed by passing correct values for page & per page`,
-          (begin >= 0)
+          begin >= 0
         );
 
         Ember.assert(
           `'${numberOfRecords}' is not a valid pagination value, can be fixed by passing correct values for page & per page`,
-          (numberOfRecords <= records.length)
+          numberOfRecords <= records.length
         );
 
         let slicedRecords = records.slice(begin, numberOfRecords),
-            newRows = Ember.A();
+          newRows = Ember.A();
 
-        for(let i = 0; i < slicedRecords.length; i++) {
+        for (let i = 0; i < slicedRecords.length; i++) {
           newRows.pushObject(slicedRecords[i]);
         }
 
@@ -124,10 +122,7 @@ export default Ember.Object.extend({
     let keg = get(this, 'keg');
 
     return Ember.RSVP.Promise.resolve(
-      this._buildResponse(
-        keg.all(`${KEG_NAMESPACE}/${dimension}`),
-        options
-      )
+      this._buildResponse(keg.all(`${KEG_NAMESPACE}/${dimension}`), options)
     );
   },
 
@@ -141,10 +136,7 @@ export default Ember.Object.extend({
     let keg = get(this, 'keg');
 
     return Ember.RSVP.Promise.resolve(
-      keg.getById(
-        `${KEG_NAMESPACE}/${dimension}`,
-        value
-      )
+      keg.getById(`${KEG_NAMESPACE}/${dimension}`, value)
     );
   },
 
@@ -161,10 +153,16 @@ export default Ember.Object.extend({
    */
   find(dimension, query, options) {
     // defaults to 'in' operation if operator is not specified
-    Ember.assert("Only 'in' operation is currently supported in Keg", query.operator ? query.operator  === 'in' : true);
+    Ember.assert(
+      "Only 'in' operation is currently supported in Keg",
+      query.operator ? query.operator === 'in' : true
+    );
 
     // TODO: might need to redfine or investigate the find interface, string of comma seperated values or array of values
-    Ember.assert("Only 'string' query values is currently supported in Keg", typeof query.values === 'string');
+    Ember.assert(
+      "Only 'string' query values is currently supported in Keg",
+      typeof query.values === 'string'
+    );
 
     let keg = get(this, 'keg');
 
@@ -182,10 +180,7 @@ export default Ember.Object.extend({
 
     return Ember.RSVP.Promise.resolve(
       this._buildResponse(
-        keg.getBy(
-          `${KEG_NAMESPACE}/${dimension}`,
-          query
-        ),
+        keg.getBy(`${KEG_NAMESPACE}/${dimension}`, query),
         options
       )
     );
@@ -201,12 +196,17 @@ export default Ember.Object.extend({
    * @returns {Array} records that were pushed to the keg
    */
   pushMany(dimension, payload, options) {
-
     let modelFactory = get(this, 'bardDimensions').getFactoryFor(dimension);
 
-    return get(this, 'keg')
-      .pushMany(`${KEG_NAMESPACE}/${dimension}`, payload, assign({
-        modelFactory
-      }, options));
+    return get(this, 'keg').pushMany(
+      `${KEG_NAMESPACE}/${dimension}`,
+      payload,
+      assign(
+        {
+          modelFactory
+        },
+        options
+      )
+    );
   }
 });
