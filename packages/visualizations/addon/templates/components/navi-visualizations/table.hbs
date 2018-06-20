@@ -6,7 +6,7 @@
 <div class="table-widget__horizontal-scroll-container">
   <div class= 'table-widget-container'>
       {{#if (and (feature-flag 'enableTableEditing') isEditing)}}
-        <div class='table-header-row'>
+        <div class='table-header-row table-header-row--edit'>
           {{#each columns as |column|}}
             <div class='table-header-cell {{column.type}}'>
               {{input
@@ -25,13 +25,17 @@
         {{#sortable-group class='table-header-row' direction='x' onChange='updateColumnOrder' as | group |}}
           {{#each columns as |column|}}
             {{#sortable-item
-              class=(concat 'table-header-cell ' column.type) 
-              classNameBindings='column.hasCustomDisplayName:custom-name'
+              class=(concat 'table-header-cell ' column.type)
               model=(readonly column)
               group=group
               click=(action 'headerClicked' column)
             }}
-                <span class='table-header-cell__title' title='Drag column header to reorder'>{{or column.displayName (default-column-name column)}}</span>
+                <span 
+                  class='table-header-cell__title {{if column.hasCustomDisplayName 'table-header-cell__title--custom-name'}}' 
+                  title='Drag column header to reorder'
+                >
+                    {{or column.displayName (default-column-name column)}}
+                </span>
                 {{#if column.sortDirection}}
                   {{navi-table-sort-icon
                     class='table-header-cell__icon'
