@@ -129,7 +129,8 @@ moduleForModel('fragments-mock', 'Unit | Model Fragment | BardRequest - Request'
                 },
                 metrics: [
                   {
-                    metric: 'uniqueIdentifier'
+                    metric: 'uniqueIdentifier',
+                    parameters: {param: "foo", as: "m1"}
                   }
                 ],
                 intervals: [
@@ -262,7 +263,7 @@ test('Request Model Fragment', function(assert) {
 });
 
 test('Clone Request', function(assert) {
-  assert.expect(11);
+  assert.expect(12);
 
   return wait().then(() => {
     let mockModel = Store.peekRecord('fragments-mock', MODEL_TO_CLONE),
@@ -275,6 +276,10 @@ test('Clone Request', function(assert) {
     assert.equal(request.get('metrics').objectAt(0).get('metric'),
       MetadataService.getById('metric', 'uniqueIdentifier'),
       'The property Metric is set correctly in the request model fragment');
+
+    assert.deepEqual(request.get('metrics').objectAt(0).get('parameters'),
+      {param: "foo", as: "m1"},
+      'The cloned metric has the right parameters set in the request model fragment');
 
     assert.ok(request.get('intervals.firstObject.interval').isEqual(
       new Interval(new Duration('P7D'), 'current')),
