@@ -33,7 +33,8 @@ module.exports = function(environment) {
 
     navi: {
       FEATURES: {
-        enableMultipleExport: false
+        enableMultipleExport: false,
+        enableTableEditing: true
       }
     }
   };
