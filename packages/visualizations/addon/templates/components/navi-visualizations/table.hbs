@@ -1,7 +1,14 @@
 {{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<div class='table-widget__row-info'>
-  <span class='table-widget__row-info--number'>{{format-number rowsInResponse fallback='0'}}</span> out of
-  <span class='table-widget__row-info--number'>{{format-number totalRows fallback='0'}}</span> rows
+<div class="table-widget__info-header">
+  <div class='table-widget__row-info'>
+    <span class='table-widget__row-info-number'>{{format-number rowsInResponse fallback='0'}}</span> out of
+    <span class='table-widget__row-info-number'>{{format-number totalRows fallback='0'}}</span> rows
+  </div>
+  {{#if (and (feature-flag 'enableTableEditing') isEditing)}}
+    <div class='table-widget__edit-col-msg'>
+      {{navi-icon 'pencil'}} <span>Enter custom column names</span>
+    </div>
+  {{/if}}
 </div>
 <div class="table-widget__horizontal-scroll-container">
   <div class= 'table-widget-container'>

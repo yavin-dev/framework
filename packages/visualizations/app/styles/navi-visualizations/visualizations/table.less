@@ -18,17 +18,19 @@
   overflow-y: auto;
   overflow-x: hidden;
 
-  &__row-info {
+  &__info-header {
+    align-items: center;
     display: flex;
     font-size: @font-size-mid;
-    justify-content: flex-end;
-    padding: 3px 0;
-    margin-right: 12px;
+    flex-flow: row-reverse;
+    justify-content: space-between;
+    margin: @row-margin;
+    padding: 6px 0 0;
+  }
 
-    &--number {
-      font-weight: bold;
-      padding: 0 5px;
-    }
+  &__row-info-number {
+    font-weight: bold;
+    padding: 0 5px;
   }
 
   .table-widget-container {
@@ -57,6 +59,15 @@
     /** Update word-break to break-all, this will cause very long name
         to be broken when used as titled to column. **/
     word-break: break-all;
+
+    &--edit {
+      & > div:first-of-type {
+        padding-left: 0;
+      }
+      & > div:last-of-type {
+        padding-right: 0;
+      }
+    }
   }
 
   .table-header-cell {
