@@ -500,7 +500,8 @@ export default Fragment.extend(Validations, {
 
       metrics: clonedRequest.metrics.map(metric =>
         store.createFragment('bard-request/fragments/metric', {
-          metric: metadataService.getById('metric', metric.metric)
+          metric: metadataService.getById('metric', metric.metric),
+          parameters: metric.parameters
         })
       ),
 
