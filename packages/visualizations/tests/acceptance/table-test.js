@@ -81,3 +81,24 @@ test('edit table field', function(assert) {
       'DateTime field should have custom name class after editing');
   });
 });
+
+test('edit table field - empty title', function(assert) {
+  assert.expect(2);
+
+  visit('/table');
+
+  click('.table-config__total-toggle-button .x-toggle-btn');
+  fillIn('.dateTime > .table-header-cell__input', null);
+  click('.table-config__total-toggle-button .x-toggle-btn');
+
+  andThen(function() {
+    assert.equal(find('.dateTime > .table-header-cell__title').text().trim(),
+      'Date',
+      'DateTime field should have the default name "Date"');
+  });
+
+  andThen(function() {
+    assert.notOk(find('.dateTime').hasClass('custom-name'),
+      'DateTime field should not have custom name class after removing title');
+  });
+});

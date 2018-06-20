@@ -18,6 +18,7 @@ import { inject as service } from '@ember/service';
 import { assign } from '@ember/polyfills';
 import { A as arr } from '@ember/array';
 import Component from '@ember/component';
+import { isBlank } from '@ember/utils';
 import cloneDeep from 'lodash/cloneDeep';
 import groupBy from 'lodash/groupBy';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
@@ -146,6 +147,22 @@ export default Component.extend({
   },
 
   /**
+   * @method _hasCustomDisplayName
+   * Determines if column has a custom display name
+   *
+   * @private
+   * @returns {Boolean}
+   */
+  _hasCustomDisplayName(column) {
+    if(isBlank(column.displayName)) {
+      return false;
+    }
+
+    let defaultName = getColumnDefaultName(column, get(this, 'bardMetadata'));
+    return column.displayName !== defaultName;
+  },
+
+  /**
    * @property {Object} groupedData - data grouped by grouping column specified in selectedSubtotal
    */
   groupedData: computed('selectedSubtotal', 'rawData', function () {
@@ -214,7 +231,7 @@ export default Component.extend({
       let { field, type } = column,
           fieldName = type === 'dateTime' ? type : canonicalizeMetric(field),
           sort = arr(sorts).findBy('metric', fieldName) || {},
-          hasCustomDisplayName = column.displayName !== getColumnDefaultName(column, get(this, 'bardMetadata')),
+          hasCustomDisplayName = this._hasCustomDisplayName(column),
           sortDirection;
 
       if (column.type === 'dateTime') {
