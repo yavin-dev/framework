@@ -33,7 +33,7 @@
    <version>1.3.2</version>  
      <configuration>
       <skip>false</skip>  
-      <mainClass>com.yahoo.navi.ws.app.App</mainClass>
+      <mainClass>com.yahoo.navi.ws.app.MainKt</mainClass>
      </configuration> 
   </plugin>  
  </plugins>

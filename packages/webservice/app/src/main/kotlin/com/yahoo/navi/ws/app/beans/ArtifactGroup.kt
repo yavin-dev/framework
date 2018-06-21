@@ -7,7 +7,7 @@ import javax.persistence.Id;
 
 @Include(rootLevel = true)
 @Entity
-public class ArtifactGroup {
-    @Id
-    public String name = "";
+class ArtifactGroup {
+    @get:Id
+    var name: String = "";
 }
