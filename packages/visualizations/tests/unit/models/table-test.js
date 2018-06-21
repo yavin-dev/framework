@@ -131,13 +131,19 @@ test('rebuildConfig', function(assert) {
 });
 
 test('rebuildConfig with parameterized metrics', function(assert) {
-  assert.expect(1);
+  assert.expect(2);
   let table    = run(() => this.subject().get('table')),
       request4 = buildTestRequest([], [
         {
           metric: 'm1',
           parameters: {
             param1: 'paramVal1'
+          }
+        },
+        {
+          metric: 'm1',
+          parameters: {
+            param1: 'paramVal2'
           }
         },
         { metric: 'm2' }
@@ -151,10 +157,25 @@ test('rebuildConfig with parameterized metrics', function(assert) {
       'columns': [
         { 'displayName': 'Date', 'field': { dateTime: 'dateTime' }, 'type': 'dateTime' },
         { 'displayName': 'M1 (paramVal1)', 'field': { metric: 'm1', parameters: { param1: 'paramVal1' } }, 'type': 'metric', format: '' },
+        { 'displayName': 'M1 (paramVal2)', 'field': { metric: 'm1', parameters: { param1: 'paramVal2' } }, 'type': 'metric', format: '' },
         { 'displayName': 'M2', 'field': { metric: 'm2', parameters: {} }, 'type': 'metric', format: '' }
       ]
     }
   },'Columns with parameterized metrics are formatted correctly');
+
+  let config5 = run(() => table.rebuildConfig(request4).toJSON());
+  assert.deepEqual(config5, {
+    'type': 'table',
+    'version': 1,
+    'metadata': {
+      'columns': [
+        { 'displayName': 'Date', 'field': { dateTime: 'dateTime' }, 'type': 'dateTime' },
+        { 'displayName': 'M1 (paramVal1)', 'field': { metric: 'm1', parameters: { param1: 'paramVal1' } }, 'type': 'metric', format: '' },
+        { 'displayName': 'M1 (paramVal2)', 'field': { metric: 'm1', parameters: { param1: 'paramVal2' } }, 'type': 'metric', format: '' },
+        { 'displayName': 'M2', 'field': { metric: 'm2', parameters: {} }, 'type': 'metric', format: '' }
+      ]
+    }
+  },'Rebuilding again provides consistent results');
 });
 
 test('index column by id', function(assert) {
