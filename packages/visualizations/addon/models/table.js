@@ -79,7 +79,7 @@ export default VisualizationBase.extend(Validations, {
           isTrend = ~(category.toLowerCase().indexOf('trend')),
           type = isTrend ? 'threshold' : 'metric',
           field = metric.toJSON(),
-          column = columnIndex[field.metric],
+          column = columnIndex[canonicalizeMetric(field)],
           longName = get(metric, 'metric.longName'),
           displayName = column ? column.displayName : metricFormat(metric, longName),
           format = column ? column.format : '';
@@ -130,6 +130,6 @@ export function indexColumnById(columns) {
       type = 'metric';
     }
 
-    return field[type];
+    return type === 'metric' ? canonicalizeMetric(field) : field[type];
   });
 }
