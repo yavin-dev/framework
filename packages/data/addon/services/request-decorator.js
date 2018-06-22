@@ -6,7 +6,6 @@ import Ember from 'ember';
 import ReplaceNull from 'navi-data/request-decorators/replace-null';
 
 export default Ember.Service.extend({
-
   /**
    * @method applyGlobalDecorators
    * @param {Object} request - object to modify

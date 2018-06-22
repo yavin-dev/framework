@@ -10,11 +10,11 @@ import moment from 'moment';
 import $ from 'jquery';
 
 const API_DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss.SSS',
-      DIMENSION_VALUE_MAP = {},
-      MISSING_INTERVALS = [
-        '2018-11-12 00:00:00.000/2018-11-14 00:00:00.000',
-        '2018-11-15 00:00:00.000/2018-11-16 00:00:00.000'
-      ];
+  DIMENSION_VALUE_MAP = {},
+  MISSING_INTERVALS = [
+    '2018-11-12 00:00:00.000/2018-11-14 00:00:00.000',
+    '2018-11-15 00:00:00.000/2018-11-16 00:00:00.000'
+  ];
 
 /**
  * @method _getDates
@@ -24,18 +24,19 @@ const API_DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss.SSS',
  * @returns {Array} list of moments in requested time range
  */
 function _getDates(grain, start, end) {
-
-
-  let endDate = (end === 'current') ?
-        // need to use isoweek, which is what real ws uses
-        moment().startOf(grain === 'week' ? 'isoweek' : grain) :
-        moment(end, API_DATE_FORMAT),
-      startDate = start.startsWith('P') ? endDate.clone().subtract(moment.duration(start)) : moment(start, API_DATE_FORMAT),
-      currentDate = startDate,
-      dates = [];
+  let endDate =
+      end === 'current'
+        ? // need to use isoweek, which is what real ws uses
+          moment().startOf(grain === 'week' ? 'isoweek' : grain)
+        : moment(end, API_DATE_FORMAT),
+    startDate = start.startsWith('P')
+      ? endDate.clone().subtract(moment.duration(start))
+      : moment(start, API_DATE_FORMAT),
+    currentDate = startDate,
+    dates = [];
 
   // handle "all" time grain
-  if(grain === 'all') {
+  if (grain === 'all') {
     return [moment(startDate, API_DATE_FORMAT)];
   }
 
@@ -53,13 +54,20 @@ function _getDates(grain, start, end) {
  */
 function _getDimensionValues(name, filterValues) {
   // Return cached values, or fake new ones
-  let values = DIMENSION_VALUE_MAP[name] || (DIMENSION_VALUE_MAP[name] = _fakeDimensionValues(name, faker.random.number({min: 3, max: 5})));
-  return filterValues ? values.reduce((arr, value) => {
-    if(filterValues.includes(value.id)){
-      arr.push(value);
-    }
-    return arr;
-  }, []) : values;
+  let values =
+    DIMENSION_VALUE_MAP[name] ||
+    (DIMENSION_VALUE_MAP[name] = _fakeDimensionValues(
+      name,
+      faker.random.number({ min: 3, max: 5 })
+    ));
+  return filterValues
+    ? values.reduce((arr, value) => {
+        if (filterValues.includes(value.id)) {
+          arr.push(value);
+        }
+        return arr;
+      }, [])
+    : values;
 }
 
 /**
@@ -90,9 +98,12 @@ function _fakeDimensionValues(name, count) {
  */
 function _loadPredefinedDimensions() {
   let dimensionFixturesRegExp = new RegExp(`mirage/bard-lite/dimensions/(.*)`),
-      fixtureEntries = Object.keys(requirejs.entries).filter(
-        key => !key.endsWith('.jshint') && !key.endsWith('.lint-test') && dimensionFixturesRegExp.test(key)
-      );
+    fixtureEntries = Object.keys(requirejs.entries).filter(
+      key =>
+        !key.endsWith('.jshint') &&
+        !key.endsWith('.lint-test') &&
+        dimensionFixturesRegExp.test(key)
+    );
 
   fixtureEntries.forEach(requirejsKey => {
     let dimensionKey = dimensionFixturesRegExp.exec(requirejsKey)[1];
@@ -101,7 +112,9 @@ function _loadPredefinedDimensions() {
 }
 
 export default function(
-  metricBuilder = (metric, row) => {row[metric] = faker.finance.amount();}
+  metricBuilder = (metric, row) => {
+    row[metric] = faker.finance.amount();
+  }
 ) {
   _loadPredefinedDimensions();
 
@@ -109,26 +122,31 @@ export default function(
     let [table, grain, ...dimensions] = request.params.path.split('/');
 
     if (table === 'protected') {
-      return new Response(403, {}, {'error': 'user not allowed to query this table'});
+      return new Response(
+        403,
+        {},
+        { error: 'user not allowed to query this table' }
+      );
     }
 
     // Get date range from query params + grain
     let dates = _getDates(grain, ...request.queryParams.dateTime.split('/'));
     let filters = {};
-    if(request.queryParams.filters){
-      filters = request.queryParams.filters.split(']').reduce((filterObj, currFilter) => {
-        if(currFilter.length > 0){
+    if (request.queryParams.filters) {
+      filters = request.queryParams.filters
+        .split(']')
+        .reduce((filterObj, currFilter) => {
+          if (currFilter.length > 0) {
+            if (currFilter[0] === ',') currFilter = currFilter.substring(1);
 
-          if(currFilter[0] === ',') currFilter = currFilter.substring(1);
-
-          let dimension = currFilter.split('|')[0],
+            let dimension = currFilter.split('|')[0],
               values = currFilter.split('[')[1].split(',');
 
-          filterObj[dimension] = values;
-        }
+            filterObj[dimension] = values;
+          }
 
-        return filterObj;
-      }, filters);
+          return filterObj;
+        }, filters);
     }
 
     // Convert each date into a row of data
@@ -142,25 +160,36 @@ export default function(
     dimensions.forEach(dimension => {
       if (dimension.length > 0) {
         rows = rows.reduce((newRows, currentRow) => {
-          let dimensionValues = _getDimensionValues(dimension, filters[dimension]);
+          let dimensionValues = _getDimensionValues(
+            dimension,
+            filters[dimension]
+          );
 
-          return newRows.concat(dimensionValues.map(value =>
-            // TODO figure out why Object.assign refuses to work in Phantom even with Babel polyfill
-            $.extend({}, currentRow, {
-              [`${dimension}|id`]: value.id,
-              [`${dimension}|desc`]: value.description
-            })
-          ));
+          return newRows.concat(
+            dimensionValues.map(value =>
+              // TODO figure out why Object.assign refuses to work in Phantom even with Babel polyfill
+              $.extend({}, currentRow, {
+                [`${dimension}|id`]: value.id,
+                [`${dimension}|desc`]: value.description
+              })
+            )
+          );
         }, []);
       }
     });
 
     // Add each metric
     rows.forEach(row => {
-      request.queryParams.metrics.split(',').forEach(metric => metricBuilder(metric, row));
+      request.queryParams.metrics
+        .split(',')
+        .forEach(metric => metricBuilder(metric, row));
     });
 
-    let missingIntervals = request.queryParams.metrics.includes('uniqueIdentifier') ? MISSING_INTERVALS : undefined;
+    let missingIntervals = request.queryParams.metrics.includes(
+      'uniqueIdentifier'
+    )
+      ? MISSING_INTERVALS
+      : undefined;
 
     return {
       rows,
@@ -177,17 +206,23 @@ export default function(
 
   this.get('/dimensions/:dimension/values', function(db, request) {
     let dimension = request.params.dimension,
-        rows = _getDimensionValues(dimension);
+      rows = _getDimensionValues(dimension);
 
     // Handle value filters
     if ('filters' in request.queryParams) {
-      let [/* full match */, queryString] = request.queryParams.filters.match(/\[(.*)\]/),
-          values = queryString.split(','),
-          isIdSearch = /\|id/.test(request.queryParams.filters);
+      let [, /* full match */ queryString] = request.queryParams.filters.match(
+          /\[(.*)\]/
+        ),
+        values = queryString.split(','),
+        isIdSearch = /\|id/.test(request.queryParams.filters);
 
-      rows = isIdSearch ? 
-        rows.filter(row => values.includes(row.id)) :
-        rows.filter(row => values.some(value => row.description.toLowerCase().includes(value.toLowerCase())));
+      rows = isIdSearch
+        ? rows.filter(row => values.includes(row.id))
+        : rows.filter(row =>
+            values.some(value =>
+              row.description.toLowerCase().includes(value.toLowerCase())
+            )
+          );
     }
 
     return { rows };

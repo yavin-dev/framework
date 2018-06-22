@@ -17,8 +17,8 @@ export default Ember.Mixin.create({
    */
   extended: computed(function() {
     let metadata = get(this, 'metadata'),
-        type = get(this, 'type'),
-        name = get(this, 'name');
+      type = get(this, 'type'),
+      name = get(this, 'name');
 
     return Ember.ObjectProxy.extend(Ember.PromiseProxyMixin).create({
       promise: metadata.fetchById(type, name)

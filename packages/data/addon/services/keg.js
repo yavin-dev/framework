@@ -9,7 +9,6 @@ import Ember from 'ember';
 const { get, getOwner, set, setProperties } = Ember;
 
 export default Ember.Service.extend({
-
   /**
    * @property {String} identifierField - field name of the id field
    */
@@ -44,7 +43,7 @@ export default Ember.Service.extend({
    */
   resetByType(type) {
     let recordKegs = get(this, 'recordKegs'),
-        idIndexes  = get(this, 'idIndexes');
+      idIndexes = get(this, 'idIndexes');
 
     idIndexes[type] = {};
     recordKegs[type] = Ember.A();
@@ -77,19 +76,20 @@ export default Ember.Service.extend({
    * @param {String} [options.modelFactory] - name of explicit modelFactory to store
    * @returns {Array} records that were pushed to the keg
    */
-  pushMany(type, rawRecords, options={}) {
-    let factory   = this._getFactoryForType(options.modelFactory || type),
-        recordKeg = this._getRecordKegForType(type),
-        idIndex   = this._getIdIndexForType(type),
-        identifierField = get(factory, 'identifierField') || get(this, 'identifierField');
+  pushMany(type, rawRecords, options = {}) {
+    let factory = this._getFactoryForType(options.modelFactory || type),
+      recordKeg = this._getRecordKegForType(type),
+      idIndex = this._getIdIndexForType(type),
+      identifierField =
+        get(factory, 'identifierField') || get(this, 'identifierField');
 
     let returnedRecords = Ember.A();
 
-    for(let i = 0; i < rawRecords.length; i++) {
+    for (let i = 0; i < rawRecords.length; i++) {
       let id = get(rawRecords[i], identifierField),
-          existingRecord = this.getById(type, id);
+        existingRecord = this.getById(type, id);
 
-      if(existingRecord) {
+      if (existingRecord) {
         setProperties(existingRecord, rawRecords[i]);
         returnedRecords.pushObject(existingRecord);
       } else {
@@ -126,21 +126,22 @@ export default Ember.Service.extend({
    */
   getBy(type, clause) {
     let recordKeg = this._getRecordKegForType(type),
-        foundRecords;
+      foundRecords;
 
-    if(typeof clause === 'object') {
+    if (typeof clause === 'object') {
       let fields = Object.keys(clause);
 
       foundRecords = recordKeg;
 
       fields.forEach(field => {
-        foundRecords = Ember.A(foundRecords.filter(item => {
-          let values = Ember.makeArray(clause[field]);
-          return values.indexOf(item[field]) > -1;
-        }));
+        foundRecords = Ember.A(
+          foundRecords.filter(item => {
+            let values = Ember.makeArray(clause[field]);
+            return values.indexOf(item[field]) > -1;
+          })
+        );
       });
-
-    } else if(typeof clause === 'function') {
+    } else if (typeof clause === 'function') {
       foundRecords = Ember.A(recordKeg.filter(clause));
     }
     return foundRecords;
@@ -166,7 +167,7 @@ export default Ember.Service.extend({
    * @returns {Object} - model factory
    */
   _getFactoryForType(type) {
-    if(Ember.typeOf(type) === 'string') {
+    if (Ember.typeOf(type) === 'string') {
       return getOwner(this).factoryFor(`model:${type}`).class;
     } else {
       return type;

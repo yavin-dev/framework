@@ -7,7 +7,6 @@
 import Ember from 'ember';
 
 export default Ember.Object.extend({
-
   /**
    * @property {Object} logicalTable - default value
    */
@@ -57,7 +56,7 @@ export default Ember.Object.extend({
    * @returns {Object} copy of request with new values added
    */
   _push(property, values) {
-    return this.copy({[property]: this[property].concat(values)});
+    return this.copy({ [property]: this[property].concat(values) });
   },
 
   /**
@@ -71,7 +70,7 @@ export default Ember.Object.extend({
    * @returns {Array} values mapped into array of objects
    */
   _wrap(key, values) {
-    return values.map((value) => {
+    return values.map(value => {
       return {
         [key]: value
       };
@@ -85,7 +84,7 @@ export default Ember.Object.extend({
    * @returns {Object} copy of request with property updated
    */
   setLogicalTable(table, timeGrain) {
-    return this.copy({logicalTable: {table, timeGrain}});
+    return this.copy({ logicalTable: { table, timeGrain } });
   },
 
   /**
@@ -103,7 +102,7 @@ export default Ember.Object.extend({
    * @returns {Object} copy of request with property updated
    */
   setDimensions(...dimensions) {
-    return this.copy({dimensions: this._wrap('dimension', dimensions)});
+    return this.copy({ dimensions: this._wrap('dimension', dimensions) });
   },
 
   /**
@@ -130,7 +129,7 @@ export default Ember.Object.extend({
    * @returns {Object} copy of request with property updated
    */
   setMetricsByName(...metrics) {
-    return this.copy({metrics: this._wrap('metric', metrics)});
+    return this.copy({ metrics: this._wrap('metric', metrics) });
   },
 
   /**
@@ -140,7 +139,7 @@ export default Ember.Object.extend({
    * @returns {Object} copy of request with property updated
    */
   addInterval(start, end) {
-    return this._push('intervals', [{start, end}]);
+    return this._push('intervals', [{ start, end }]);
   },
 
   /**
@@ -158,7 +157,7 @@ export default Ember.Object.extend({
    * @returns {Object} copy of request with property updated
    */
   setIntervals(...intervals) {
-    return this.copy({intervals});
+    return this.copy({ intervals });
   },
 
   /**
@@ -169,7 +168,7 @@ export default Ember.Object.extend({
    * @returns {Object} copy of request with property updated
    */
   addFilter(dimension, operator, values) {
-    return this._push('filters', [{dimension, operator, values}]);
+    return this._push('filters', [{ dimension, operator, values }]);
   },
 
   /**
@@ -187,7 +186,7 @@ export default Ember.Object.extend({
    * @returns {Object} copy of request with property updated
    */
   setFilters(...filters) {
-    return this.copy({filters});
+    return this.copy({ filters });
   },
 
   /**
@@ -198,7 +197,7 @@ export default Ember.Object.extend({
    * @returns {Object} copy of request with property updated
    */
   addHaving(metric, operator, value) {
-    return this._push('having', [{metric, operator, values: [value]}]);
+    return this._push('having', [{ metric, operator, values: [value] }]);
   },
 
   /**
@@ -216,7 +215,6 @@ export default Ember.Object.extend({
    * @returns {Object} copy of request with property updated
    */
   setHavings(...having) {
-    return this.copy({having});
+    return this.copy({ having });
   }
-
 });

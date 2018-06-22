@@ -1,11 +1,10 @@
-import Ember from  'ember';
+import Ember from 'ember';
 import { module, test } from 'qunit';
 import BardDimensionArray from 'navi-data/models/bard-dimensions';
 
 const { get } = Ember;
 
-let Response,
-    Payload;
+let Response, Payload;
 
 module('Unit | Model | Bard Dimension Array', {
   beforeEach() {

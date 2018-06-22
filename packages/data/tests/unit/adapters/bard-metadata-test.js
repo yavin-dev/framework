@@ -1,25 +1,19 @@
 import { moduleFor, test } from 'ember-qunit';
-import Pretender from "pretender";
-import metadataRoutes, {
-  Host,
-  Tables
-} from '../../helpers/metadata-routes';
+import Pretender from 'pretender';
+import metadataRoutes, { Host, Tables } from '../../helpers/metadata-routes';
 
-let Adapter,
-    Server;
+let Adapter, Server;
 
 moduleFor('adapter:bard-metadata', 'Unit | Bard Metadata Adapter', {
-  needs: [
-    'service:ajax'
-  ],
+  needs: ['service:ajax'],
 
-  beforeEach(){
+  beforeEach() {
     Adapter = this.subject();
 
     //setup Pretender
     Server = new Pretender(metadataRoutes);
   },
-  afterEach(){
+  afterEach() {
     //shutdown pretender
     Server.shutdown();
   }
@@ -31,9 +25,11 @@ moduleFor('adapter:bard-metadata', 'Unit | Bard Metadata Adapter', {
 test('_buildURLPath', function(assert) {
   assert.expect(1);
 
-  assert.equal(Adapter._buildURLPath('table', ''),
+  assert.equal(
+    Adapter._buildURLPath('table', ''),
     `${Host}/v1/tables/`,
-    '_buildURLPath correctly built the URL path');
+    '_buildURLPath correctly built the URL path'
+  );
 });
 
 /**
@@ -42,9 +38,11 @@ test('_buildURLPath', function(assert) {
 test('fetchMetadata', function(assert) {
   assert.expect(1);
 
-  return Adapter.fetchAll('table').then(function(result){
-    return assert.deepEqual(result,
+  return Adapter.fetchAll('table').then(function(result) {
+    return assert.deepEqual(
+      result,
       { tables: Tables },
-      'fetchMetadata correctly requested metadata');
+      'fetchMetadata correctly requested metadata'
+    );
   });
 });

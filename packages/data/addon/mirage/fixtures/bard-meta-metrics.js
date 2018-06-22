@@ -97,9 +97,9 @@ export default {
       type: 'money',
       parameters: {
         currency: {
-          'type': 'dimension',
-          'dimensionName': 'displayCurrency',
-          'defaultValue': 'USD'
+          type: 'dimension',
+          dimensionName: 'displayCurrency',
+          defaultValue: 'USD'
         }
       }
     },
@@ -110,9 +110,9 @@ export default {
       type: 'money',
       parameters: {
         currency: {
-          'type': 'dimension',
-          'dimensionName': 'displayCurrency',
-          'defaultValue': 'USD'
+          type: 'dimension',
+          dimensionName: 'displayCurrency',
+          defaultValue: 'USD'
         }
       }
     }
@@ -253,7 +253,8 @@ export default {
     {
       category: 'Ratios',
       name: 'dayAvgUniqueIdentifiersPerTotalUniqueIdentifiers',
-      longName: 'Unique Identifiers (Daily Avg) per Total Unique Identifiers (Percentage)',
+      longName:
+        'Unique Identifiers (Daily Avg) per Total Unique Identifiers (Percentage)',
       type: 'number'
     }
   ]

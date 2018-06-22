@@ -1,11 +1,9 @@
 import Ember from 'ember';
 import ExtendedMetadataMixin from 'navi-data/mixins/extended-metadata';
 import { moduleFor, test } from 'ember-qunit';
-import Pretender from "pretender";
+import Pretender from 'pretender';
 
-import metadataRoutes, {
-  MetricOne
-} from '../../helpers/metadata-routes';
+import metadataRoutes, { MetricOne } from '../../helpers/metadata-routes';
 
 const { get, getOwner, setOwner } = Ember;
 
@@ -20,11 +18,11 @@ moduleFor('mixin:extended-metadata', 'Unit | Mixin | extended metadata', {
     'model:metadata/metric'
   ],
 
-  beforeEach(){
+  beforeEach() {
     //setup Pretender
     Server = new Pretender(metadataRoutes);
   },
-  afterEach(){
+  afterEach() {
     //shutdown pretender
     Server.shutdown();
   }
@@ -41,8 +39,10 @@ test('load extended metadata correctly', function(assert) {
   setOwner(subject, getOwner(this));
 
   return get(subject, 'extended').then(() => {
-    assert.deepEqual(get(subject, 'extended.content'),
+    assert.deepEqual(
+      get(subject, 'extended.content'),
       MetricOne,
-      'extended property should load correct data');
+      'extended property should load correct data'
+    );
   });
 });

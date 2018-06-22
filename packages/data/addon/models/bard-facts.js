@@ -31,17 +31,17 @@ export default Ember.Object.extend({
    *                      or null when trying to go past last page
    */
   next() {
-    if(get(this, 'response.meta.pagination')){
-      let perPage =       get(this, 'response.meta.pagination.rowsPerPage'),
-          totalResults =  get(this, 'response.meta.pagination.numberOfResults'),
-          currPage =      get(this, 'response.meta.pagination.currentPage'),
-          totalPages =    (totalResults/perPage);
-      if(currPage < totalPages){
+    if (get(this, 'response.meta.pagination')) {
+      let perPage = get(this, 'response.meta.pagination.rowsPerPage'),
+        totalResults = get(this, 'response.meta.pagination.numberOfResults'),
+        currPage = get(this, 'response.meta.pagination.currentPage'),
+        totalPages = totalResults / perPage;
+      if (currPage < totalPages) {
         let request = get(this, 'request'),
-            options = {
-              page:     currPage + 1,
-              perPage:  perPage
-            };
+          options = {
+            page: currPage + 1,
+            perPage: perPage
+          };
         return get(this, '_factsService').fetch(request, options);
       }
     }
@@ -54,13 +54,13 @@ export default Ember.Object.extend({
    *                      or null when trying to access pages less than the first page
    */
   previous() {
-    if(get(this, 'response.meta.pagination')){
-      if(get(this, 'response.meta.pagination.currentPage') > 1) {
+    if (get(this, 'response.meta.pagination')) {
+      if (get(this, 'response.meta.pagination.currentPage') > 1) {
         let request = get(this, 'request'),
-            options = {
-              page: get(this, 'response.meta.pagination.currentPage') - 1,
-              perPage: get(this, 'response.meta.pagination.rowsPerPage')
-            };
+          options = {
+            page: get(this, 'response.meta.pagination.currentPage') - 1,
+            perPage: get(this, 'response.meta.pagination.rowsPerPage')
+          };
         return get(this, '_factsService').fetch(request, options);
       }
     }
