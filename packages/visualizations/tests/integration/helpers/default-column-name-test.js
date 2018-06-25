@@ -47,3 +47,14 @@ test('metric column', function (assert) {
     'Total Page Views',
     'The default column name for totalPageViews metric is Total Page Views');
 });
+
+test('metric column with parameters', function (assert) {
+  const column = { type: 'metric', field: { metric: 'revenue', parameters: {currency: 'USD'} } };
+  this.set('column', column);
+
+  this.render(hbs`{{default-column-name column}}`);
+
+  assert.equal(this.$().text().trim(),
+    'Revenue (USD)',
+    'The default column name for revenue metric with currency param of USD is Revenue (USD)');
+});

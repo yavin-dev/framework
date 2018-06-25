@@ -1710,3 +1710,15 @@ test("adding metrics to reordered table keeps order", function(assert) {
     ], 'The headers are reordered as specified by the reorder');
   });
 });
+
+test('Paramaterized metrics with default displayname are not considered custom', function(assert) {
+  assert.expect(2);
+  visit('/reports/8');
+
+  andThen(() => {
+    assert.ok(find('.table-header-cell.metric > .table-header-cell__title').length,
+      'renders metric columns');
+    assert.notOk(find('.table-header-cell.metric > .table-header-cell__title').is('.table-header-cell__title--custom-name'),
+      'Parameterized metrics with default display name should not be considered custom');
+  });
+});
