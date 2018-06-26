@@ -121,14 +121,15 @@
                 <div class='button-group'>
                 {{#unless localDeliveryRule.isNew}}
                     {{#common-actions/delete
-                        classNames='schedule-modal__delete-btn btn-secondary'
+                        classNames='schedule-modal__delete-btn'
                         disabled=isSaving
                         model=deliveryRule
                         modelName='schedule'
                         headerMsg=(concat 'Delete schedule for "' model.title '"')
                         warnMsg=(concat 'Are you sure you want to delete the schedule for this' localDeliveryRule.deliveryType)
                         deleteAction=(pipe (action this.attrs.onDelete localDeliveryRule) (action 'closeModal'))
-                    }}Delete
+                    }}
+                      Delete
                     {{/common-actions/delete}}
                 {{/unless}}
                 </div>
