@@ -151,6 +151,14 @@ export default Ember.Component.extend({
     },
 
     /**
+     * @action updateFormat
+     * @param {String} type - format type
+     */
+    updateFormat(type) {
+      set(this, 'localDeliveryRule.format', { type });
+    },
+
+    /**
      * @action closeModal
      */
     closeModal() {

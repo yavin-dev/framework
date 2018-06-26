@@ -73,7 +73,7 @@
                         selected=localDeliveryRule.format.type
                         searchEnabled=false
                         tagName='div'
-                        onchange=(action (mut localDeliveryRule.format.type))
+                        onchange=(action 'updateFormat')
                         as | format |
                     }}
                         {{format}}
