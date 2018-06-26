@@ -62,10 +62,10 @@ test('reorder metrics', function (assert) {
 
   let newColumns = [{
     type: 'metric',
-    field: 'b'
+    field: { metric: 'b' }
   }, {
     type: 'threshold',
-    field: 'a'
+    field: { metric: 'a' }
   }]
 
 
