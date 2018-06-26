@@ -155,7 +155,7 @@ test('index route actions', function(assert) {
 
       // Cancel modal and click "Delete"
       click('.btn:contains(Cancel)');
-      click('.navi-collection__row:first-of-type .delete .btn');
+      click('.navi-collection__row:first-of-type .delete button');
 
       andThen(() => {
         assert.equal(find('.primary-header').text().trim(),
