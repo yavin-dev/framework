@@ -77,9 +77,28 @@
     }
 
     &__input--recipients {
+      &.text-input{
+          padding: 10px;
+      }
+
       // Override styles included with ember-tag-input
       .emberTagInput {
         border: none;
+      }
+
+      .navi-tag-input {
+        &__tag {
+          margin-right: 5px;
+        }
+
+        .emberTagInput-tag, .emberTagInput-input {
+          margin: 2px;
+          padding: 3px;
+        }
+
+        .emberTagInput-new {
+          padding: 0;
+        }
       }
     }
 
