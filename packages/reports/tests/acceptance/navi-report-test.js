@@ -916,7 +916,7 @@ test('reports route actions -- delete', function(assert) {
   // TriggerEvent does not work here, need to use jquery trigger mouseenter
   andThen(() => $('.navi-collection__row:first-of-type').trigger('mouseenter'));
   // Click "Delete"
-  click('.navi-collection__row:first-of-type .delete .btn');
+  click('.navi-collection__row:first-of-type .delete button');
 
   andThen(() => {
     assert.equal(find('.primary-header').text().trim(),

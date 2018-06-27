@@ -48,11 +48,21 @@
         text-align: center;
     }
 
+    &__actions {
+      margin-right: 10px;
+    }
+
     &__action {
-        font-size: @font-size-base;
+        border-radius: 3px;
         color: @body-font-gray;
         display: inline-block;
+        font-size: @font-size-base;
         margin: 4px 0 0 5px;
+        padding: 3px;
+
+        &:hover {
+          background-color: @navi-gray-200;
+        }
     }
 
     &__action-icon {
