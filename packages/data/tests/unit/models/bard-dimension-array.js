@@ -1,14 +1,12 @@
-import Ember from  'ember';
+import { get } from '@ember/object';
 import { module, test } from 'qunit';
 import BardDimensionArray from 'navi-data/models/bard-dimensions';
-
-const { get } = Ember;
 
 let Response,
     Payload;
 
-module('Unit | Model | Bard Dimension Array', {
-  beforeEach() {
+module('Unit | Model | Bard Dimension Array', function(hooks) {
+  hooks.beforeEach(function() {
     Payload = {
       rows: [
         {
@@ -36,90 +34,93 @@ module('Unit | Model | Bard Dimension Array', {
 
     //Mocking dimension service
     Response.reopen({
-      _dimensionsService: {
-        all(dimension, options) {
-          return {
-            dimension,
-            options
-          };
-        }
+      init() {
+        this._super(...arguments);
+        this.set('_dimensionsService', {
+          all(dimension, options) {
+            return {
+              dimension,
+              options
+            };
+          }
+        });
       }
     });
-  }
-});
+  });
 
-test('it properly hydrates properties', function(assert) {
-  assert.expect(2);
+  test('it properly hydrates properties', function(assert) {
+    assert.expect(2);
 
-  assert.deepEqual(
-    get(Response, 'content'),
-    Payload.rows,
-    '`content` was properly hydrated'
-  );
+    assert.deepEqual(
+      get(Response, 'content'),
+      Payload.rows,
+      '`content` was properly hydrated'
+    );
 
-  assert.equal(
-    get(Response, 'dimension'),
-    'd1',
-    '`dimension` property was properly hydrated'
-  );
-});
+    assert.equal(
+      get(Response, 'dimension'),
+      'd1',
+      '`dimension` property was properly hydrated'
+    );
+  });
 
-test('pagination methods', function(assert) {
-  assert.expect(6);
+  test('pagination methods', function(assert) {
+    assert.expect(6);
 
-  assert.deepEqual(
-    Response.next(),
-    {
-      dimension: 'd1',
-      options: {
-        page: 4,
-        perPage: 10
-      }
-    },
-    'Next method request the dimension values for the page next to the current page'
-  );
+    assert.deepEqual(
+      Response.next(),
+      {
+        dimension: 'd1',
+        options: {
+          page: 4,
+          perPage: 10
+        }
+      },
+      'Next method request the dimension values for the page next to the current page'
+    );
 
-  Payload.meta.pagination.currentPage = 4;
+    Payload.meta.pagination.currentPage = 4;
 
-  assert.deepEqual(
-    Response.next(),
-    null,
-    'Next method returns null when total pages is exceeded'
-  );
+    assert.deepEqual(
+      Response.next(),
+      null,
+      'Next method returns null when total pages is exceeded'
+    );
 
-  Payload.meta.pagination.currentPage = 2;
+    Payload.meta.pagination.currentPage = 2;
 
-  assert.deepEqual(
-    Response.previous(),
-    {
-      dimension: 'd1',
-      options: {
-        page: 1,
-        perPage: 10
-      }
-    },
-    'Previous method requests the data for the page previous to the current page'
-  );
+    assert.deepEqual(
+      Response.previous(),
+      {
+        dimension: 'd1',
+        options: {
+          page: 1,
+          perPage: 10
+        }
+      },
+      'Previous method requests the data for the page previous to the current page'
+    );
 
-  Payload.response.meta.pagination.currentPage = 1;
+    Payload.response.meta.pagination.currentPage = 1;
 
-  assert.deepEqual(
-    Response.previous(),
-    null,
-    'Previous method returns null trying previous from first page'
-  );
+    assert.deepEqual(
+      Response.previous(),
+      null,
+      'Previous method returns null trying previous from first page'
+    );
 
-  delete Payload.response.meta.pagination;
+    delete Payload.response.meta.pagination;
 
-  assert.deepEqual(
-    BardDimensionArray.previous(),
-    null,
-    'Previous method returns null when there is no pagination options'
-  );
+    assert.deepEqual(
+      BardDimensionArray.previous(),
+      null,
+      'Previous method returns null when there is no pagination options'
+    );
 
-  assert.deepEqual(
-    BardDimensionArray.next(),
-    null,
-    'Next method returns null when there is no pagination options'
-  );
+    assert.deepEqual(
+      BardDimensionArray.next(),
+      null,
+      'Next method returns null when there is no pagination options'
+    );
+  });
 });

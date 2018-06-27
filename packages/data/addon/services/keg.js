@@ -4,11 +4,14 @@
  *
  * Ember service that can store and fetch records
  */
-import Ember from 'ember';
+import { typeOf } from '@ember/utils';
 
-const { get, getOwner, set, setProperties } = Ember;
+import { A, makeArray } from '@ember/array';
+import Service from '@ember/service';
+import { getOwner } from '@ember/application';
+import { setProperties, set, get } from '@ember/object';
 
-export default Ember.Service.extend({
+export default Service.extend({
 
   /**
    * @property {String} identifierField - field name of the id field
@@ -22,6 +25,7 @@ export default Ember.Service.extend({
    * @returns {undefined}
    */
   init() {
+    this._super(...arguments);
     this.reset();
   },
 
@@ -47,7 +51,7 @@ export default Ember.Service.extend({
         idIndexes  = get(this, 'idIndexes');
 
     idIndexes[type] = {};
-    recordKegs[type] = Ember.A();
+    recordKegs[type] = A();
 
     set(this, 'recordKegs', recordKegs);
     set(this, 'idIndexes', idIndexes);
@@ -83,7 +87,7 @@ export default Ember.Service.extend({
         idIndex   = this._getIdIndexForType(type),
         identifierField = get(factory, 'identifierField') || get(this, 'identifierField');
 
-    let returnedRecords = Ember.A();
+    let returnedRecords = A();
 
     for(let i = 0; i < rawRecords.length; i++) {
       let id = get(rawRecords[i], identifierField),
@@ -134,14 +138,14 @@ export default Ember.Service.extend({
       foundRecords = recordKeg;
 
       fields.forEach(field => {
-        foundRecords = Ember.A(foundRecords.filter(item => {
-          let values = Ember.makeArray(clause[field]);
+        foundRecords = A(foundRecords.filter(item => {
+          let values = makeArray(clause[field]);
           return values.indexOf(item[field]) > -1;
         }));
       });
 
     } else if(typeof clause === 'function') {
-      foundRecords = Ember.A(recordKeg.filter(clause));
+      foundRecords = A(recordKeg.filter(clause));
     }
     return foundRecords;
   },
@@ -166,7 +170,7 @@ export default Ember.Service.extend({
    * @returns {Object} - model factory
    */
   _getFactoryForType(type) {
-    if(Ember.typeOf(type) === 'string') {
+    if(typeOf(type) === 'string') {
       return getOwner(this).factoryFor(`model:${type}`).class;
     } else {
       return type;
@@ -184,7 +188,7 @@ export default Ember.Service.extend({
   _getRecordKegForType(type) {
     let recordKegs = get(this, 'recordKegs');
 
-    recordKegs[type] = recordKegs[type] || Ember.A();
+    recordKegs[type] = recordKegs[type] || A();
     return recordKegs[type];
   },
 

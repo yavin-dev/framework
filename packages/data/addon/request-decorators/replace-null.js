@@ -3,9 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import Ember from 'ember';
-
-const { assign } = Ember;
+import { assign } from '@ember/polyfills';
 
 const NULL_STRING_VALUE = '""';
 

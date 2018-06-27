@@ -5,11 +5,9 @@
  * Description: A model that holds the response from a Bard query.
  */
 
-import Ember from 'ember';
+import EmberObject, { get } from '@ember/object';
 
-const { get } = Ember;
-
-export default Ember.Object.extend({
+export default EmberObject.extend({
   /**
    * @property {Object} request - the request object
    */

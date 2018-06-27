@@ -5,12 +5,17 @@
  * Description: The adapter for the Bard dimension model.
  */
 
-import Ember from 'ember';
+import { assert } from '@ember/debug';
+
+import { makeArray } from '@ember/array';
+import { inject as service } from '@ember/service';
+import { assign } from '@ember/polyfills';
+import EmberObject, { get } from '@ember/object';
 import config from 'ember-get-config';
 
 const FACT_HOST = config.navi.dataSources[0].uri;
 
-const { assign, get } = Ember;
+const SUPPORTED_FILTER_OPERATORS = ['in', 'notin', 'startswith', 'contains'];
 
 /**
  * @enum {String} - mapping of dimension field names to URL dimension field names
@@ -20,7 +25,7 @@ const URL_FIELD_NAMES = {
 };
 
 
-export default Ember.Object.extend({
+export default EmberObject.extend({
 
   /**
    * @property namespace
@@ -30,17 +35,17 @@ export default Ember.Object.extend({
   /**
    * @property {Service} ajax
    */
-  ajax: Ember.inject.service(),
+  ajax: service(),
 
   /**
    * @property {Service} bard metadata
    */
-  bardMetadata: Ember.inject.service(),
+  bardMetadata: service(),
 
   /**
    * @property {Array} supportedFilterOperators - List of supported filter operations
    */
-  supportedFilterOperators: ['in', 'notin', 'startswith', 'contains'],
+  supportedFilterOperators: SUPPORTED_FILTER_OPERATORS,
 
   /**
    * Returns metadata for dimensionName
@@ -95,7 +100,7 @@ export default Ember.Object.extend({
         operator = get(query, 'operator'),
 
         // Build the filters as expected by bard api
-        filters = Ember.makeArray(get(query, 'values')).map(value =>
+        filters = makeArray(get(query, 'values')).map(value =>
           `${dimension}|${field}-${operator}[${value}]`
         );
 
@@ -197,6 +202,6 @@ export default Ember.Object.extend({
    * @returns {Array} records that were pushed to the web service
    */
   pushMany(/* dimension, payload, options */) {
-    Ember.assert('Operation not supported');
+    assert('Operation not supported');
   }
 });

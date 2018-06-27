@@ -1,14 +1,9 @@
-/**
- * Copyright 2018, Yahoo Holdings Inc.
- * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
- */
-import Ember from 'ember';
 import ExtendedMetadataMixin from 'navi-data/mixins/extended-metadata';
-import { computed, get } from '@ember/object';
+import EmberObject, { computed, get } from '@ember/object';
 import { isEmpty } from '@ember/utils';
 import forIn from 'lodash/forIn';
 
-let Model = Ember.Object.extend(ExtendedMetadataMixin, {
+let Model = EmberObject.extend(ExtendedMetadataMixin, {
   /**
    * @property {String} type
    */

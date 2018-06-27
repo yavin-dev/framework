@@ -2,12 +2,12 @@
  * Copyright 2017, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import Ember from 'ember';
+import { A as array } from '@ember/array';
+
+import EmberObject, { computed, get } from '@ember/object';
 import ExtendedMetadataMixin from 'navi-data/mixins/extended-metadata';
 
-const { A:array, get, computed } = Ember;
-
-let Model = Ember.Object.extend(ExtendedMetadataMixin, {
+let Model = EmberObject.extend(ExtendedMetadataMixin, {
   /**
    * @property {String} type
    */

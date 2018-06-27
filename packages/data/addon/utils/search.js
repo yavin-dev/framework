@@ -3,10 +3,11 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import Ember from 'ember';
-import PaginationUtils from './pagination';
+import { A } from '@ember/array';
 
-const { get, getWithDefault } = Ember;
+import { w } from '@ember/string';
+import { getWithDefault, get } from '@ember/object';
+import PaginationUtils from './pagination';
 
 export default {
 
@@ -23,7 +24,7 @@ export default {
    */
   getPartialMatchWeight(string, query) {
     // Split search query into individual words
-    var searchTokens = Ember.String.w(query.trim()),
+    var searchTokens = w(query.trim()),
         allTokensFound = true;
 
         // Check that all words in the search query can be found in the given string
@@ -103,7 +104,7 @@ export default {
       }
     }
 
-    results = Ember.A(results).sortBy('relevance');
+    results = A(results).sortBy('relevance');
 
     return PaginationUtils.getPaginatedRecords(results, resultLimit, page);
   }

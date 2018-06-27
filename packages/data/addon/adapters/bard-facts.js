@@ -5,17 +5,26 @@
  * Description: The adapter for the bard-facts model.
  */
 
-import Ember from 'ember';
-import config from 'ember-get-config';
-import { canonicalizeMetric, getAliasedMetrics, canonicalizeAlias } from '../utils/metric';
+import $ from 'jquery';
 
-const { A:array, assign, get, getWithDefault } = Ember;
+import { deprecate } from '@ember/application/deprecations';
+import { assert } from '@ember/debug';
+import { inject as service } from '@ember/service';
+import { A as array } from '@ember/array';
+import { assign } from '@ember/polyfills';
+import EmberObject, { getWithDefault, get } from '@ember/object';
+import config from 'ember-get-config';
+import {
+  canonicalizeMetric,
+  getAliasedMetrics,
+  canonicalizeAlias
+} from '../utils/metric';
 
 const SORT_DIRECTIONS = ['desc', 'asc'];
 
 const FACT_HOST = config.navi.dataSources[0].uri;
 
-export default Ember.Object.extend({
+export default EmberObject.extend({
 
   /**
    * @property namespace
@@ -25,7 +34,7 @@ export default Ember.Object.extend({
   /**
    * @property {Service} ajax
    */
-  ajax: Ember.inject.service(),
+  ajax: service(),
 
   /**
    * Builds the dimensions path for a request
@@ -115,7 +124,7 @@ export default Ember.Object.extend({
         let metric     = aliasFunction(get(sortMetric, 'metric')),
             direction  = getWithDefault(sortMetric, 'direction', 'desc');
 
-        Ember.assert(`'${direction}' is not a valid sort direction (${SORT_DIRECTIONS.join()})`,
+        assert(`'${direction}' is not a valid sort direction (${SORT_DIRECTIONS.join()})`,
           SORT_DIRECTIONS.indexOf(direction) !== -1);
 
         return `${metric}|${direction}`;
@@ -140,7 +149,7 @@ export default Ember.Object.extend({
     if(having && having.length) {
       return having.map(having => {
 
-        Ember.deprecate('Please use the property `values` instead of `value` in a `having` object', !having.value, {
+        deprecate('Please use the property `values` instead of `value` in a `having` object', !having.value, {
           id: 'navi-data._buildHavingParam',
           until: '4.0.0'
         });
@@ -254,14 +263,14 @@ export default Ember.Object.extend({
     let decoratedRequest  = this._decorate(request),
         path              = this._buildURLPath(decoratedRequest),
         query             = this._buildQuery(decoratedRequest, options),
-        queryStr          = Ember.$.param(query);
+        queryStr          = $.param(query);
 
     return `${path}?${queryStr}`;
   },
   /**
    * @property {Ember.Service} requestDecorator
    */
-  requestDecorator: Ember.inject.service(),
+  requestDecorator: service(),
 
   /**
    * @method _decorate

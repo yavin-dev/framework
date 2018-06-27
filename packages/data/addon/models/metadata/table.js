@@ -2,11 +2,12 @@
  * Copyright 2017, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import Ember from 'ember';
+import EmberObject from '@ember/object';
 
-const { assign, getOwner } = Ember;
+import { assign } from '@ember/polyfills';
+import { getOwner } from '@ember/application';
 
-let Model = Ember.Object.extend({
+let Model = EmberObject.extend({
   /**
    * @property {String} name
    */

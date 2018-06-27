@@ -1,9 +1,9 @@
-import Ember from 'ember';
-import { moduleFor, test } from 'ember-qunit';
+import EmberObject from '@ember/object';
+import { assign } from '@ember/polyfills';
+import { module, test } from 'qunit';
+import { setupTest } from 'ember-qunit';
 import metadataRoutes from '../../../helpers/metadata-routes';
 import Pretender from 'pretender';
-
-const { assign, getOwner } = Ember;
 
 const Response1 = {
   rows: [
@@ -32,97 +32,87 @@ const Record1 = { id: 1, description: 'foo', meta: 'ember' },
 
 let Adapter, Keg, Server;
 
-moduleFor('adapter:dimensions/keg', 'Unit | Adapters | Dimensions | Keg', {
-  needs: [
-    'adapter:bard-metadata',
-    'model:bard-dimension',
-    'model:metadata/dimension',
-    'model:metadata/metric',
-    'model:metadata/table',
-    'model:metadata/time-grain',
-    'serializer:bard-metadata',
-    'service:ajax',
-    'service:bard-dimensions',
-    'service:bard-metadata',
-    'service:keg',
-  ],
-  beforeEach() {
-    getOwner(this).register('model:dimension/dimensionOne', Ember.Object.extend({name: 'dimensionOne'}));
+module('Unit | Adapters | Dimensions | Keg', function(hooks) {
+  setupTest(hooks);
 
-    Adapter = this.subject();
+  hooks.beforeEach(function() {
+    this.owner.register('model:dimension/dimensionOne', EmberObject.extend({name: 'dimensionOne'}));
+
+    Adapter = this.owner.lookup('adapter:dimensions/keg');
 
     Keg = Adapter.get('keg');
     Keg.pushMany('dimension/dimensionOne', Records);
 
     //Load metadata
     Server = new Pretender(metadataRoutes);
-    return this.container.lookup('service:bard-metadata').loadMetadata();
-  },
-  afterEach() {
+    return this.owner.lookup('service:bard-metadata').loadMetadata();
+  });
+
+  hooks.afterEach(function() {
     Server.shutdown();
-  }
-});
-
-test('_buildResponse', function(assert) {
-  assert.expect(2);
-
-  assert.deepEqual(Adapter._buildResponse(Records),
-    Response1,
-    '_buildResponse correctly built the response for the provided records');
-
-  assert.deepEqual(Adapter._buildResponse(Records, { page:1, perPage: 3 }),
-    Response2,
-    '_buildResponse correctly built the response with pagination options for the provided records');
-});
-
-test('all', function(assert) {
-  assert.expect(1);
-
-  return Adapter.all('dimensionOne').then(result => {
-    assert.deepEqual(result.rows.mapBy('id'),
-      [1, 2, 3],
-      'all() contains the expected response object for Test dimension without any filters');
   });
-});
 
-test('find', function(assert) {
-  assert.expect(2);
+  test('_buildResponse', function(assert) {
+    assert.expect(2);
 
-  assert.throws(() => { Adapter.find('dimensionOne', {operator: 'contains'}); },
-    /Only 'in' operation is currently supported in Keg/,
-    'throws error when doing a contains search, which is not supported yet');
+    assert.deepEqual(Adapter._buildResponse(Records),
+      Response1,
+      '_buildResponse correctly built the response for the provided records');
 
-  return Adapter.find('dimensionOne', {field: 'description', values: "bar,gar"}).then(result => {
-    assert.deepEqual(result.rows.mapBy('id'),
-      [2, 3],
-      'find() returns expected response using navi-data query object interface.');
+    assert.deepEqual(Adapter._buildResponse(Records, { page:1, perPage: 3 }),
+      Response2,
+      '_buildResponse correctly built the response with pagination options for the provided records');
   });
-});
 
-test('findById', function(assert) {
-  assert.expect(1);
+  test('all', function(assert) {
+    assert.expect(1);
 
-  return Adapter.findById('dimensionOne', '1').then(result => {
-    assert.deepEqual(result.get('id'),
-      1,
-      'findById() returns the expected response object for Test dimension, identifierField and query');
+    return Adapter.all('dimensionOne').then(result => {
+      assert.deepEqual(result.rows.mapBy('id'),
+        [1, 2, 3],
+        'all() contains the expected response object for Test dimension without any filters');
+    });
   });
-});
 
-test('pushMany', function(assert) {
-  assert.expect(2);
-  Adapter.pushMany('dimensionOne', [
-    { id: 22, foo: 'bar'},
-    { id: 44, foo: 'baz'}
-  ]);
+  test('find', function(assert) {
+    assert.expect(2);
 
-  let { foo:bar } = Keg.getById('dimension/dimensionOne', 22);
-  assert.deepEqual(bar,
-    'bar',
-    'pushMany stores records into the keg');
+    assert.throws(() => { Adapter.find('dimensionOne', {operator: 'contains'}); },
+      /Only 'in' operation is currently supported in Keg/,
+      'throws error when doing a contains search, which is not supported yet');
 
-  let { foo:baz } = Keg.getById('dimension/dimensionOne', 44);
-  assert.deepEqual(baz,
-    'baz',
-    'pushMany stores records into the keg');
+    return Adapter.find('dimensionOne', {field: 'description', values: "bar,gar"}).then(result => {
+      assert.deepEqual(result.rows.mapBy('id'),
+        [2, 3],
+        'find() returns expected response using navi-data query object interface.');
+    });
+  });
+
+  test('findById', function(assert) {
+    assert.expect(1);
+
+    return Adapter.findById('dimensionOne', '1').then(result => {
+      assert.deepEqual(result.get('id'),
+        1,
+        'findById() returns the expected response object for Test dimension, identifierField and query');
+    });
+  });
+
+  test('pushMany', function(assert) {
+    assert.expect(2);
+    Adapter.pushMany('dimensionOne', [
+      { id: 22, foo: 'bar'},
+      { id: 44, foo: 'baz'}
+    ]);
+
+    let { foo:bar } = Keg.getById('dimension/dimensionOne', 22);
+    assert.deepEqual(bar,
+      'bar',
+      'pushMany stores records into the keg');
+
+    let { foo:baz } = Keg.getById('dimension/dimensionOne', 44);
+    assert.deepEqual(baz,
+      'baz',
+      'pushMany stores records into the keg');
+  });
 });

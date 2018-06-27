@@ -5,11 +5,10 @@
  * Description: A model that holds an array of dimension values.
  */
 
-import Ember from 'ember';
+import ArrayProxy from '@ember/array/proxy';
+import { get } from '@ember/object';
 
-const { get } = Ember;
-
-export default Ember.ArrayProxy.extend({
+export default ArrayProxy.extend({
   /**
    * @property {Object} dimension - the dimension object
    */

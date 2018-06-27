@@ -5,13 +5,18 @@
  * Description: Bard dimensions service that fetches dimension values
  */
 
-import Ember from 'ember';
+import { hashSettled, resolve } from 'rsvp';
+
+import { A } from '@ember/array';
+import Service, { inject as service } from '@ember/service';
+import { assert } from '@ember/debug';
+import { getOwner } from '@ember/application';
+import { set, getWithDefault, get } from '@ember/object';
+import { isEmpty } from '@ember/utils';
 import BardDimensionArray from 'navi-data/models/bard-dimension-array';
 import SearchUtils from 'navi-data/utils/search';
 import config from 'ember-get-config';
 import _ from 'lodash';
-
-const { assert, get, getOwner, getWithDefault, set, isEmpty} = Ember;
 
 const LOAD_CARDINALITY = config.navi.searchThresholds.contains;
 
@@ -23,7 +28,7 @@ const MAX_SEARCH_RESULT_COUNT = 500;
 
 const MODEL_FACTORY_CACHE = {};
 
-export default Ember.Service.extend({
+export default Service.extend({
 
   /**
    * @private
@@ -63,7 +68,7 @@ export default Ember.Service.extend({
   /**
    * @property metadataService
    */
-  metadataService: Ember.inject.service('bard-metadata'),
+  metadataService: service('bard-metadata'),
 
   /**
    * @method init
@@ -211,7 +216,7 @@ export default Ember.Service.extend({
     if(!isEmpty(rawPayload)){
       return BardDimensionArray.create({
         dimension,
-        content: Ember.A(serializedRecords),
+        content: A(serializedRecords),
         meta: get(rawPayload, 'meta'),
         _dimensionsService: this
       });
@@ -229,7 +234,7 @@ export default Ember.Service.extend({
   _getSearchOperator(dimension) {
     assert('dimension must be defined', dimension);
 
-    let searchOperator = Ember.A(_.intersection(
+    let searchOperator = A(_.intersection(
       SEARCH_OPERATOR_PRIORITY,
       get(this, '_bardAdapter').supportedFilterOperators
     )).objectAt(0);
@@ -295,9 +300,9 @@ export default Ember.Service.extend({
 
     if (get(metadataService.getById('dimension', dimension), 'cardinality') <= LOAD_CARDINALITY) {
       promise =  this.all(dimension).then(dimValues => {
-        dimensionRecords = Ember.A(dimValues);
+        dimensionRecords = A(dimValues);
 
-        return Ember.A(SearchUtils.searchDimensionRecords(dimensionRecords,
+        return A(SearchUtils.searchDimensionRecords(dimensionRecords,
           query,
           options.limit || MAX_SEARCH_RESULT_COUNT,
           options.page
@@ -309,18 +314,18 @@ export default Ember.Service.extend({
         searchByDescription: this.searchValueField(dimension, 'description', query)
       };
 
-      promise = Ember.RSVP.hashSettled(promises).then(({ searchById, searchByDescription }) => {
-        dimensionRecords = Ember.A().addObjects(getWithDefault(searchById, 'value.rows', []))
+      promise = hashSettled(promises).then(({ searchById, searchByDescription }) => {
+        dimensionRecords = A().addObjects(getWithDefault(searchById, 'value.rows', []))
           .addObjects(getWithDefault(searchByDescription, 'value.rows', []));
 
-        return Ember.A(SearchUtils.searchDimensionRecords(dimensionRecords,
+        return A(SearchUtils.searchDimensionRecords(dimensionRecords,
           query,
           MAX_SEARCH_RESULT_COUNT
         )).mapBy('record');
       });
     }
 
-    return new Ember.RSVP.resolve(promise);
+    return new resolve(promise);
   },
 
   /**

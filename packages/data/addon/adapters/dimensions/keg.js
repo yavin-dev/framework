@@ -4,13 +4,18 @@
  *
  * Description: The adapter for Keg.
  */
-import Ember from 'ember';
+import { Promise } from 'rsvp';
 
-const { assign, get, getOwner } = Ember;
+import { A } from '@ember/array';
+import { assert } from '@ember/debug';
+import { inject as service } from '@ember/service';
+import { assign } from '@ember/polyfills';
+import EmberObject, { get } from '@ember/object';
+import { getOwner } from '@ember/application';
 
 const KEG_NAMESPACE = 'dimension';
 
-export default Ember.Object.extend({
+export default EmberObject.extend({
 
   /**
    * @property {Service} keg
@@ -20,12 +25,12 @@ export default Ember.Object.extend({
   /**
    * @property {Service} bard metadata
    */
-  bardMetadata: Ember.inject.service(),
+  bardMetadata: service(),
 
   /**
    * @property {Service} bard dimensions
    */
-  bardDimensions: Ember.inject.service(),
+  bardDimensions: service(),
 
   /**
    * Returns metadata for dimensionName
@@ -73,18 +78,18 @@ export default Ember.Object.extend({
             numberOfRecords = options.page * options.perPage;
 
         // Fail if boundary conditions are wrong
-        Ember.assert(
+        assert(
           `'${begin}' is not a valid pagination value, can be fixed by passing correct values for page & per page`,
           (begin >= 0)
         );
 
-        Ember.assert(
+        assert(
           `'${numberOfRecords}' is not a valid pagination value, can be fixed by passing correct values for page & per page`,
           (numberOfRecords <= records.length)
         );
 
         let slicedRecords = records.slice(begin, numberOfRecords),
-            newRows = Ember.A();
+            newRows = A();
 
         for(let i = 0; i < slicedRecords.length; i++) {
           newRows.pushObject(slicedRecords[i]);
@@ -123,7 +128,7 @@ export default Ember.Object.extend({
   all(dimension, options) {
     let keg = get(this, 'keg');
 
-    return Ember.RSVP.Promise.resolve(
+    return Promise.resolve(
       this._buildResponse(
         keg.all(`${KEG_NAMESPACE}/${dimension}`),
         options
@@ -140,7 +145,7 @@ export default Ember.Object.extend({
   findById(dimension, value) {
     let keg = get(this, 'keg');
 
-    return Ember.RSVP.Promise.resolve(
+    return Promise.resolve(
       keg.getById(
         `${KEG_NAMESPACE}/${dimension}`,
         value
@@ -161,10 +166,10 @@ export default Ember.Object.extend({
    */
   find(dimension, query, options) {
     // defaults to 'in' operation if operator is not specified
-    Ember.assert("Only 'in' operation is currently supported in Keg", query.operator ? query.operator  === 'in' : true);
+    assert("Only 'in' operation is currently supported in Keg", query.operator ? query.operator  === 'in' : true);
 
     // TODO: might need to redfine or investigate the find interface, string of comma seperated values or array of values
-    Ember.assert("Only 'string' query values is currently supported in Keg", typeof query.values === 'string');
+    assert("Only 'string' query values is currently supported in Keg", typeof query.values === 'string');
 
     let keg = get(this, 'keg');
 
@@ -180,7 +185,7 @@ export default Ember.Object.extend({
     //convert navi-data query object interface to keg query object interface
     query = { [query.field]: query.values };
 
-    return Ember.RSVP.Promise.resolve(
+    return Promise.resolve(
       this._buildResponse(
         keg.getBy(
           `${KEG_NAMESPACE}/${dimension}`,
