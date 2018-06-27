@@ -227,7 +227,7 @@ test('Serializing multi param request', function(assert) {
                 displayName: 'Revenue (USD)'
               },
               {
-                field: 'revenue(currency-EUR)',
+                field: 'revenue(currency=EUR)',
                 type: 'metric',
                 displayName: 'Revenue (EUR)'
               }
