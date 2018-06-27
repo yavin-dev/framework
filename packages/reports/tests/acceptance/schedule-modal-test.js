@@ -154,7 +154,7 @@ test('schedule modal delete action', function(assert) {
       'Format field is populated by existing delivery rule');
   });
 
-  click('.schedule-modal__delete-btn .btn');
+  click('.schedule-modal__delete-btn button');
   andThen(() => {
     assert.equal(find('.ember-modal-wrapper:nth-of-type(2) .primary-header').text().trim(),
       'Delete schedule for "Report 12"',
