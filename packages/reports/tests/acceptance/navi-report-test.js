@@ -1711,7 +1711,7 @@ test("adding metrics to reordered table keeps order", function(assert) {
   });
 });
 
-test('Paramaterized metrics with default displayname are not considered custom', function(assert) {
+test('Parameterized metrics with default displayname are not considered custom', function(assert) {
   assert.expect(2);
   visit('/reports/8');
 
