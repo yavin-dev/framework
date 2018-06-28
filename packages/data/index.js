@@ -1,5 +1,9 @@
 'use strict';
 
 module.exports = {
-  name: 'navi-data'
+  name: 'navi-data',
+
+  isDevelopingAddon: function() {
+    return true;
+  }
 };
