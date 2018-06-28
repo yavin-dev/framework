@@ -362,7 +362,7 @@ export default [
             displayName: 'Revenue (USD)'
           },
           {
-            field: 'revenue(currency-EUR)',
+            field: 'revenue(currency=EUR)',
             type: 'metric',
             displayName: 'Revenue (EUR)'
           }

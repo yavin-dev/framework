@@ -28,7 +28,7 @@ export function getColumnDefaultName({ type, field }, bardMetadata) {
   let model = bardMetadata.getById(type, field[type]);
 
   if (type === 'metric') {
-    return metricFormat(model, model.longName);
+    return metricFormat(field, model.longName);
   }
 
   return model.longName;
