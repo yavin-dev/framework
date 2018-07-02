@@ -2,35 +2,28 @@
  * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-
-//TODO replace with actual styles once components are in place
 .directory {
-  display: flex;
-  padding-left: 15px;
+  display: grid;
+  grid-template-areas: "new-button  search"
+                       "sidebar     table";
+  grid-template-columns: 300px 1fr;
+  grid-template-rows: 70px 1fr;
 
-  &__left-nav {
-    display: flex;
-    flex-flow: column;
-    width: 20%;
-    margin-right: 10px;
-  }
+  margin: 50px 20px;
 
   &__new-button {
-    background: @navi-gray-200;
-    height: 50px;
-    width: 150px;
-    margin: 10px 0 20px 0;
-    text-align: center;
+    grid-area: new-button;
   }
 
   &__sidebar {
-    height: 300px;
+    grid-area: sidebar;
+  }
+
+  &__search {
+    grid-area: search;
   }
 
   &__table {
-    background: @navi-gray-100;
-    text-align: center;
-    width: 80%;
-    margin-top: 80px;
+    grid-area: table;
   }
 }

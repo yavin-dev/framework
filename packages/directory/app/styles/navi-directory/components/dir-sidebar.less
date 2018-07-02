@@ -16,8 +16,7 @@
 .dir-sidebar {
   background: @navi-gray-100;
   color: @navi-blue-300;
-  display: flex;
-  flex-flow: column;
+  display: grid;
   height: 100%;
 
   &__groups {
@@ -26,8 +25,8 @@
 
   &__group {
     cursor: pointer;
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr 20px;
     padding: 15px 0 15px 20px;
 
     &--icon {
@@ -53,8 +52,8 @@
 
   &__filter {
     cursor: pointer;
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr 20px;
     padding: 15px 0 15px 20px;
 
     &--icon {
