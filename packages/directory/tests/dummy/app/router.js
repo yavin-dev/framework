@@ -1,3 +1,4 @@
+/* eslint ember/routes-segments-snake-case: "off" */
 import EmberRouter from '@ember/routing/router';
 import config from './config/environment';
 
@@ -8,6 +9,21 @@ const Router = EmberRouter.extend({
 
 Router.map(function() {
   this.route('directory', {path: '/'});
+
+  this.route('reports', function() {
+    this.route('new');
+    this.route('report', { path: '/:reportId'}, function() {
+      this.route('new');
+    });
+  });
+
+  this.route('dashboards', function() {
+    this.route('new');
+    this.route('dashboard', { path: '/:dashboardId'}, function() {
+      this.route('view');
+      this.route('clone');
+    });
+  });
 });
 
 export default Router;
