@@ -1,0 +1,12 @@
+{{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{#basic-dropdown as |dd|}}
+  {{#dd.trigger classNames='dir-new-button__trigger button__blue button__blue--primary'}}New{{/dd.trigger}}
+  {{#dd.content class='dir-new-button__content dropdown-arrow'}}
+    {{#each documentTypes as |type|}}
+      {{#link-to (get type 'linkRoute') classNames='dir-new-button__dropdown-option' tagName='div'}}
+        {{navi-icon (get type 'iconClass') class=(concat 'dir-new-button__option-icon--' (get type 'name'))}}
+        <span class='dir-new-button__option-text'>{{capitalize (get type 'name')}}</span>
+      {{/link-to}}
+    {{/each}}
+  {{/dd.content}}
+{{/basic-dropdown}}

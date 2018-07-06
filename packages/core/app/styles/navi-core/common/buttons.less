@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -35,4 +35,19 @@
 .btn:disabled {
     cursor: not-allowed;
     opacity: 0.7;
+}
+
+.button__blue {
+  border: none;
+  border-radius: 2px;
+  font-size: 14px;
+}
+
+.button__blue--primary {
+  background: linear-gradient(to right,#3697F2,#3570F4);
+  min-width: 120px;
+
+  &:hover {
+      background: linear-gradient(to right, #3570F4, #3448F7);
+  }
 }
