@@ -4,7 +4,7 @@ import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 
-module('dir-new-button', 'Integration | Component | dir new button', function(hooks) {
+module('Integration | Component | dir new button', function(hooks) {
   setupRenderingTest(hooks);
 
   test('dir new button', async function(assert) {

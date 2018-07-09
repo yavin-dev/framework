@@ -8,7 +8,9 @@ const Router = EmberRouter.extend({
 });
 
 Router.map(function() {
-  this.route('directory', {path: '/'});
+  this.route('directory', function() {
+    this.route('my-directory');
+  });
 
   this.route('reports', function() {
     this.route('new');

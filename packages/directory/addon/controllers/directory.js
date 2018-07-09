@@ -8,7 +8,7 @@ export default Controller.extend({
   /**
    * @property {Array} queryParams - array of allowed query params
    */
-  queryParams: [ 'filter', 'type' ],
+  queryParams: [ 'filter', 'type', 'sortBy' ],
 
   /**
    * @property {String} filter - query param for filter
@@ -20,5 +20,11 @@ export default Controller.extend({
    * @property {String} type - query param for type
    * allowed types - reports, dashboards
    */
-  type: null
+  type: null,
+
+  /**
+   * @property {String} sortBy - query param for sortBy
+   * allowed sortBy's - updatedOn
+   */
+  sortBy: 'updatedOn'
 });

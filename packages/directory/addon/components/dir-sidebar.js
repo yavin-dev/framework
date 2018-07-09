@@ -5,12 +5,10 @@
  * Usage:
  * {{dir-sidebar}}
  */
-import { oneWay } from '@ember/object/computed';
-
 import Component from '@ember/component';
 import layout from '../templates/components/dir-sidebar';
 import Directories from '../utils/enums/directories';
-import { computed } from '@ember/object';
+import { oneWay } from '@ember/object/computed';
 
 export default Component.extend({
   layout,

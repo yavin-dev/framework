@@ -16,5 +16,13 @@ export default Route.extend({
       user: get(this, 'user').findOrRegister(),
       metadata: get(this, 'bardMetadata').loadMetadata()
     }).then(() => undefined);
+  },
+
+  /**
+   * @method afterModel
+   * @override
+   */
+  afterModel() {
+    this.transitionTo('directory.my-directory');
   }
 });
