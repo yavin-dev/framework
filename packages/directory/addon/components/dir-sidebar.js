@@ -5,6 +5,8 @@
  * Usage:
  * {{dir-sidebar}}
  */
+import { oneWay } from '@ember/object/computed';
+
 import Component from '@ember/component';
 import layout from '../templates/components/dir-sidebar';
 import Directories from '../utils/enums/directories';
@@ -23,10 +25,10 @@ export default Component.extend({
   /**
    * @property {Object} selectedDirectory
    */
-  selectedDirectory: computed.oneWay('directories.0'),
+  selectedDirectory: oneWay('directories.0'),
 
   /**
    * @property {Object} selectedFilter
    */
-  selectedFilter: computed.oneWay('selectedDirectory.filters.0')
+  selectedFilter: oneWay('selectedDirectory.filters.0')
 });
