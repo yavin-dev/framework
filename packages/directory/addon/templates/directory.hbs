@@ -3,9 +3,8 @@
   <div class='directory__new-button'>
     {{dir-new-button}}
   </div>
+  {{dir-search-bar class='directory__search' searchFor=(action 'searchFor')}}
   {{dir-sidebar class='directory__sidebar'}}
-  <section class='directory__search'>
-  </section>
   <section class='directory__table'>
     {{outlet}}
   </section>
