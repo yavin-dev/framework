@@ -14,12 +14,12 @@
  }
 
 .dir-sidebar {
-  background: @navi-gray-100;
   color: @navi-blue-300;
   display: grid;
   height: 100%;
 
   &__groups {
+    background: @navi-gray-100;
     border-bottom: 1px solid @navi-blue-300;
   }
 
@@ -50,6 +50,12 @@
     }
   }
 
+  &__filters {
+    background: @navi-gray-100;
+    box-shadow: 2px 2px @navi-gray-200;
+    margin: 0 4px;
+  }
+
   &__filter {
     cursor: pointer;
     display: grid;
@@ -66,7 +72,7 @@
       display: none;
     }
 
-    &--selected {
+    &.active {
       background: @navi-white;
       border-left: 4px solid @navi-blue-300;
       color: @navi-gray-700;

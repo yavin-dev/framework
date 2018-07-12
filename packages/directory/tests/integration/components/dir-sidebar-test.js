@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find, findAll } from '@ember/test-helpers';
+import { find, findAll, render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 module('Integration | Component | dir sidebar', function(hooks) {
@@ -11,7 +11,7 @@ module('Integration | Component | dir sidebar', function(hooks) {
   });
 
   test('it renders', function(assert) {
-    assert.expect(4);
+    assert.expect(3);
 
     assert.ok(find('.dir-sidebar'),
       'The sidebar component is rendered');
@@ -21,11 +21,7 @@ module('Integration | Component | dir sidebar', function(hooks) {
       'The sidebar component has the right groups');
 
     assert.deepEqual(findAll('.dir-sidebar__filter').map(el => el.textContent.trim()),
-      [ 'All', 'Favorites' ],
+      [ 'Favorites', 'Recently Updated' ],
       `The selected group's filters are shown in the filter section`);
-
-    assert.equal(find('.dir-sidebar__filter--selected').textContent.trim(),
-      'All',
-      'The first filter for the group is initially selected');
   });
 });

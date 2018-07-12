@@ -31,13 +31,5 @@ export default Route.extend({
    */
   model() {
     return get(this, 'user').findOrRegister();
-  },
-
-  /**
-   * @method afterModel
-   * @override
-   */
-  afterModel() {
-    this.transitionTo('directory.my-directory');
   }
 });
