@@ -8,6 +8,7 @@ import { get, set } from '@ember/object';
 import { A as arr } from '@ember/array';
 import { run } from '@ember/runloop';
 import { searchRecords } from 'navi-core/utils/search';
+import { isPresent } from '@ember/utils';
 
 export default Route.extend({
   /**
@@ -16,10 +17,15 @@ export default Route.extend({
   user: inject(),
 
   /**
+   * @property {Boolean} isSearching - flag on whether there is a search query or not
+   */
+  isSearching: false,
+
+  /**
    * @method _searchItems
    * @private
    * Search and rank through items when a search query is available
-   * @param {Array} items 
+   * @param {Array} items
    * @param {String} queryString - search query
    */
   _searchItems(items, queryString) {
@@ -34,7 +40,7 @@ export default Route.extend({
   /**
    * @method _fetchFromUser
    * @private
-   * @param {Object} user 
+   * @param {Object} user
    * @param {String} entity - entity to fetch from user
    */
   async _fetchFromUser(user, entity) {
@@ -42,7 +48,7 @@ export default Route.extend({
     let cache = get(this, '_cache') || {};
 
     //fetch from cache if present
-    if(cache[entity]) 
+    if(cache[entity])
       return cache[entity];
 
     //else fetch from user and set local cache
@@ -55,25 +61,27 @@ export default Route.extend({
   /**
    * @method _fetchItems
    * @private
-   * @param {Object} user 
-   * @param {Object} queryParams - all directory query params 
+   * @param {Object} user
+   * @param {Object} queryParams - all directory query params
    */
   async _fetchItems(user, { type, filter, sortBy, q }){
     let reports,
         dashboards,
         items = arr();
 
+    this.set('isSearching', isPresent(q));
+
     if(type === null || type === 'reports'){
-      reports = filter === 'favorites' ? 
-        await this._fetchFromUser(user, 'favoriteReports') : 
+      reports = filter === 'favorites' ?
+        await this._fetchFromUser(user, 'favoriteReports') :
         await this._fetchFromUser(user, 'reports');
 
       run(() => items.push(...reports.toArray()));
     }
     if(type === null || type === 'dashboards'){
       await run(async () => {
-        dashboards = filter === 'favorites' ? 
-          await this._fetchFromUser(user, 'favoriteDashboards') : 
+        dashboards = filter === 'favorites' ?
+          await this._fetchFromUser(user, 'favoriteDashboards') :
           await this._fetchFromUser(user, 'dashboards');
 
         items.push(...dashboards.toArray())
@@ -89,10 +97,13 @@ export default Route.extend({
    * @method model
    * @override
    */
-  model() {
+  async model() {
     let user = get(this, 'user').getUser(),
         directoryParams = this.paramsFor('directory');
 
-    return this._fetchItems(user, directoryParams);
+    return {
+      items: await this._fetchItems(user, directoryParams),
+      isSearching: get(this, 'isSearching')
+    };
   }
 });
