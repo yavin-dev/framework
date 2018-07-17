@@ -13,10 +13,31 @@ export default Route.extend({
   user: inject(),
 
   /**
+   * @property {Object} queryParams
+   * @override
+   */
+  queryParams: {
+    filter: {
+      refreshModel: true
+    },
+    type: {
+      refreshModel: true
+    }
+  },
+
+  /**
    * @method model
    * @override
    */
   model() {
     return get(this, 'user').findOrRegister();
+  },
+
+  /**
+   * @method afterModel
+   * @override
+   */
+  afterModel() {
+    this.transitionTo('directory.my-directory');
   }
 });
