@@ -25,9 +25,7 @@ export default Ember.Mixin.create({
 
     return get(this, 'store').createRecord('dashboard-widget', {
       title,
-      requests: [
-        get(this, 'currentReport.request').clone()
-      ],
+      requests: [get(this, 'currentReport.request').clone()],
       visualization
     });
   },

@@ -48,7 +48,10 @@ export default Ember.Route.extend({
       title: `Copy of ${clonedWidget.title}`.substring(0, 150),
       author: get(this, 'user').getUser(),
       request: get(widget, 'request').clone(),
-      visualization: this.store.createFragment(clonedWidget.visualization.type, clonedWidget.visualization)
+      visualization: this.store.createFragment(
+        clonedWidget.visualization.type,
+        clonedWidget.visualization
+      )
     });
   }
 });

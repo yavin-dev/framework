@@ -21,7 +21,7 @@ export default Ember.Component.extend({
   /**
    * @property {String} tagName - don't add a wrapper tag for this component
    */
-  tagName:'',
+  tagName: '',
 
   /**
    * @property {String} visualizationPrefix - prefix for all visualizations types
@@ -48,11 +48,11 @@ export default Ember.Component.extend({
    */
   options: Ember.computed('layoutOptions', function() {
     let layout = get(this, 'layoutOptions'),
-        id     = get(this, 'model.id');
+      id = get(this, 'model.id');
 
     if (layout) {
       // Map layout to gridstack options
-      let {column: x, row: y, height, width} = layout;
+      let { column: x, row: y, height, width } = layout;
       return { id, x, y, height, width };
     }
   })

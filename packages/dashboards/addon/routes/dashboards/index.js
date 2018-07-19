@@ -8,7 +8,6 @@ import DS from 'ember-data';
 
 const { computed, get } = Ember;
 
-
 /**
  * Object that computes a combined dashboard list
  * @class DashboardObject
@@ -19,19 +18,23 @@ const _DashboardObject = Ember.Object.extend({
   /**
    * @property {DS.PromiseArray} - Returns a combined dashboard list while listening to store changes
    */
-  dashboards: computed('userDashboards.[]', 'favoriteDashboards.[]', function() {
-    return DS.PromiseArray.create({
-      promise: Ember.RSVP.hash({
-        userDashboards:     get(this, 'userDashboards'),
-        favoriteDashboards: get(this, 'favoriteDashboards')
-      }).then(({ userDashboards, favoriteDashboards }) => {
-        return Ember.A()
-          .pushObjects(userDashboards.toArray())
-          .pushObjects(favoriteDashboards.toArray())
-          .uniq();
-      })
-    });
-  })
+  dashboards: computed(
+    'userDashboards.[]',
+    'favoriteDashboards.[]',
+    function() {
+      return DS.PromiseArray.create({
+        promise: Ember.RSVP.hash({
+          userDashboards: get(this, 'userDashboards'),
+          favoriteDashboards: get(this, 'favoriteDashboards')
+        }).then(({ userDashboards, favoriteDashboards }) => {
+          return Ember.A()
+            .pushObjects(userDashboards.toArray())
+            .pushObjects(favoriteDashboards.toArray())
+            .uniq();
+        })
+      });
+    }
+  )
 });
 
 export default Ember.Route.extend({
@@ -50,15 +53,20 @@ export default Ember.Route.extend({
    * @override
    * @returns {Object} - with an array of dashboard models
    */
-  model(){
-    return get(this, 'user').findOrRegister().then(userModel => {
-      return Ember.RSVP.hash({
-        userDashboards:     get(userModel, 'dashboards'),
-        favoriteDashboards: get(userModel, 'favoriteDashboards')
-      }).then(({ userDashboards, favoriteDashboards }) => {
-        return _DashboardObject.create({ userDashboards, favoriteDashboards });
+  model() {
+    return get(this, 'user')
+      .findOrRegister()
+      .then(userModel => {
+        return Ember.RSVP.hash({
+          userDashboards: get(userModel, 'dashboards'),
+          favoriteDashboards: get(userModel, 'favoriteDashboards')
+        }).then(({ userDashboards, favoriteDashboards }) => {
+          return _DashboardObject.create({
+            userDashboards,
+            favoriteDashboards
+          });
+        });
       });
-    });
   },
 
   actions: {
@@ -67,7 +75,8 @@ export default Ember.Route.extend({
      * action to handle errors in route
      */
     error() {
-      let message = 'OOPS! An error occurred while retrieving user settings. Some functionality may be limited.';
+      let message =
+        'OOPS! An error occurred while retrieving user settings. Some functionality may be limited.';
       get(this, 'naviNotifications').add({
         message: message,
         type: 'danger',
@@ -82,8 +91,11 @@ export default Ember.Route.extend({
      */
     buildDashboardUrl(dashboard) {
       let dashboardId = get(dashboard, 'id'),
-          baseUrl = document.location.origin,
-          dashboardUrl = get(this, 'router').generate('dashboards.dashboard', dashboardId);
+        baseUrl = document.location.origin,
+        dashboardUrl = get(this, 'router').generate(
+          'dashboards.dashboard',
+          dashboardId
+        );
 
       return baseUrl + dashboardUrl;
     }

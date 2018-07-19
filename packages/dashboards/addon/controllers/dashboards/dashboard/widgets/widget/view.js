@@ -5,9 +5,10 @@
 import Ember from 'ember';
 
 export default Ember.Controller.extend({
-
   /*
    * @property {Controller} reportController
    */
-  reportController: Ember.inject.controller('dashboards.dashboard.widgets.widget')
+  reportController: Ember.inject.controller(
+    'dashboards.dashboard.widgets.widget'
+  )
 });

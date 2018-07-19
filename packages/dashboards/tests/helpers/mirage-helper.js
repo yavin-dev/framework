@@ -1,10 +1,10 @@
 import mirage from '../../initializers/ember-cli-mirage';
 
-export function setupMock(){
+export function setupMock() {
   mirage.initialize();
 }
 
-export function teardownMock(){
+export function teardownMock() {
   server.shutdown();
 }
 

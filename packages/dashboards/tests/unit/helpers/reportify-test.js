@@ -1,4 +1,3 @@
-
 import Ember from 'ember';
 import { moduleFor, test } from 'ember-qunit';
 import wait from 'ember-test-helpers/wait';
@@ -7,7 +6,7 @@ const widgetModel = {
   author: 'navi',
   request: {
     clone() {
-      return {}
+      return {};
     }
   },
   toJSON() {
@@ -15,10 +14,10 @@ const widgetModel = {
       title: 'test',
       visualization: {
         type: 'line-chart'
-      },
-    }
+      }
+    };
   }
-}
+};
 
 moduleFor('helper:reportify', 'Unit | Helper | reportify', {
   needs: [
@@ -46,11 +45,11 @@ moduleFor('helper:reportify', 'Unit | Helper | reportify', {
     'validator:request-dimension-order',
     'validator:request-metrics',
     'validator:request-metric-exist',
-    'validator:request-time-grain',
+    'validator:request-time-grain'
   ]
 });
 
-test('reportify returns report', function (assert) {
+test('reportify returns report', function(assert) {
   assert.expect(2);
 
   let reportify = this.subject();
@@ -58,14 +57,18 @@ test('reportify returns report', function (assert) {
   return wait().then(() => {
     return Ember.run(() => {
       let report = reportify.compute([widgetModel]),
-          reportObject = report.toJSON();
+        reportObject = report.toJSON();
 
-      assert.deepEqual(reportObject.title,
+      assert.deepEqual(
+        reportObject.title,
         'test',
-        'Report should have correct title');
-      assert.deepEqual(reportObject.visualization.type,
+        'Report should have correct title'
+      );
+      assert.deepEqual(
+        reportObject.visualization.type,
         'line-chart',
-        'Report should have correct visualization type');
+        'Report should have correct visualization type'
+      );
     });
   });
 });

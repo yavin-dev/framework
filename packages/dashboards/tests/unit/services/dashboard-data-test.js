@@ -66,14 +66,14 @@ moduleFor('service:dashboard-data', 'Unit | Service | dashboard data', {
     'service:user',
     'service:bard-dimensions'
   ],
-  beforeEach(){
+  beforeEach() {
     setupMock();
 
     // Load metadata needed for request fragment
     let metadataService = this.container.lookup('service:bard-metadata');
     return metadataService.loadMetadata();
   },
-  afterEach(){
+  afterEach() {
     teardownMock();
   }
 });
@@ -83,8 +83,10 @@ test('fetch data for dashboard', function(assert) {
 
   let mockDashboard = {
     id: 1,
-    widgets: Ember.RSVP.resolve([ 1, 2, 3 ]),
-    get(prop) { return this[prop]; }
+    widgets: Ember.RSVP.resolve([1, 2, 3]),
+    get(prop) {
+      return this[prop];
+    }
   };
 
   let service = this.subject({
@@ -92,19 +94,23 @@ test('fetch data for dashboard', function(assert) {
     fetchDataForWidgets: (id, widgets, decorators, options) => {
       //removing custom headers
       delete options.customHeaders;
-      assert.deepEqual(options,
+      assert.deepEqual(
+        options,
         { page: 1, perPage: 10000 },
-        'Default pagination options are passed through for widget data fetch');
+        'Default pagination options are passed through for widget data fetch'
+      );
 
       return widgets;
     }
   });
 
   return Ember.run(() => {
-    return service.fetchDataForDashboard(mockDashboard).then((dataForWidget) => {
-      assert.deepEqual(dataForWidget,
+    return service.fetchDataForDashboard(mockDashboard).then(dataForWidget => {
+      assert.deepEqual(
+        dataForWidget,
         [1, 2, 3],
-        'widgetData is returned by `fetchDataForWidgets` method');
+        'widgetData is returned by `fetchDataForWidgets` method'
+      );
     });
   });
 });
@@ -119,41 +125,48 @@ test('fetch data for widget', function(assert) {
     }
   });
 
-  assert.deepEqual(service.fetchDataForWidgets(1, []),
+  assert.deepEqual(
+    service.fetchDataForWidgets(1, []),
     {},
-    'no widgets returns empty data object');
+    'no widgets returns empty data object'
+  );
 
-  const makeRequest = (data) => {
+  const makeRequest = data => {
     return {
       serialize: () => data
     };
   };
 
   let widgets = [
-        {id: 1, requests: [makeRequest(1), makeRequest(2), makeRequest(3)]},
-        {id: 2, requests: [makeRequest(4)]},
-        {id: 3, requests: []}
-      ],
-      data = service.fetchDataForWidgets(1, widgets);
+      { id: 1, requests: [makeRequest(1), makeRequest(2), makeRequest(3)] },
+      { id: 2, requests: [makeRequest(4)] },
+      { id: 3, requests: [] }
+    ],
+    data = service.fetchDataForWidgets(1, widgets);
 
-  assert.deepEqual(Object.keys(data),
+  assert.deepEqual(
+    Object.keys(data),
     ['1', '2', '3'],
-    'data is keyed by widget id');
+    'data is keyed by widget id'
+  );
 
-  assert.ok(get(data, '1.isPending'),
-    'data uses a promise proxy');
+  assert.ok(get(data, '1.isPending'), 'data uses a promise proxy');
 
   return wait().then(() => {
-    assert.deepEqual(get(data, '1').toArray(),
+    assert.deepEqual(
+      get(data, '1').toArray(),
       [1, 2, 3],
-      'data for widget is an array of request responses');
+      'data for widget is an array of request responses'
+    );
 
     /* == Decorators == */
     data = service.fetchDataForWidgets(1, widgets, [number => number + 1]);
     return wait().then(() => {
-      assert.deepEqual(get(data, '1').toArray(),
+      assert.deepEqual(
+        get(data, '1').toArray(),
         [2, 3, 4],
-        'each response is modified by the decorators');
+        'each response is modified by the decorators'
+      );
 
       /* == Options == */
       let optionsObject = {
@@ -162,24 +175,37 @@ test('fetch data for widget', function(assert) {
 
       service.set('dashboardId', 1);
       service.set('_fetch', (request, options) => {
-        assert.equal(options,
+        assert.equal(
+          options,
           optionsObject,
-          'options object is passed on to data fetch method');
+          'options object is passed on to data fetch method'
+        );
 
         let uiViewHeaderElems = options.customHeaders.uiView.split('.');
 
-        assert.equal(uiViewHeaderElems[1],
+        assert.equal(
+          uiViewHeaderElems[1],
           1,
-          'uiView header has the dashboard id');
+          'uiView header has the dashboard id'
+        );
 
-        assert.equal(uiViewHeaderElems[3],
+        assert.equal(
+          uiViewHeaderElems[3],
           2,
-          'uiView header has the widget id');
+          'uiView header has the widget id'
+        );
 
-        assert.ok(uiViewHeaderElems[2],
-          'uiView header has a random uuid attached to the end');
+        assert.ok(
+          uiViewHeaderElems[2],
+          'uiView header has a random uuid attached to the end'
+        );
       });
-      service.fetchDataForWidgets(1, [{id: 2, requests: [makeRequest(4)]}], [], optionsObject);
+      service.fetchDataForWidgets(
+        1,
+        [{ id: 2, requests: [makeRequest(4)] }],
+        [],
+        optionsObject
+      );
     });
   });
 });
@@ -188,38 +214,36 @@ test('_fetch', function(assert) {
   assert.expect(1);
 
   let service = this.subject(),
-      request = {
-        logicalTable: {
-          table: 'network',
-          timeGrain: 'day'
-        },
-        metrics: [
-          { metric: 'adClicks' }
-        ],
-        dimensions: [],
-        filters: [],
-        intervals: [
-          {
-            end: 'current',
-            start: 'P7D'
-          }
-        ],
-        bardVersion:    'v1',
-        requestVersion: 'v1'
+    request = {
+      logicalTable: {
+        table: 'network',
+        timeGrain: 'day'
       },
-      response = {
-        rows: [
-          {
-            'adClicks': 30
-          },
-          {
-            'adClicks': 1000
-          },
-          {
-            'adClicks': 200
-          }
-        ]
-      };
+      metrics: [{ metric: 'adClicks' }],
+      dimensions: [],
+      filters: [],
+      intervals: [
+        {
+          end: 'current',
+          start: 'P7D'
+        }
+      ],
+      bardVersion: 'v1',
+      requestVersion: 'v1'
+    },
+    response = {
+      rows: [
+        {
+          adClicks: 30
+        },
+        {
+          adClicks: 1000
+        },
+        {
+          adClicks: 200
+        }
+      ]
+    };
 
   server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
   server.get('data/network/day/', () => {
@@ -227,25 +251,30 @@ test('_fetch', function(assert) {
   });
 
   return service._fetch(request).then(fetchResponse => {
-    assert.deepEqual(fetchResponse.get('response.rows'),
+    assert.deepEqual(
+      fetchResponse.get('response.rows'),
       response.rows,
-      'fetch gets response from web service');
+      'fetch gets response from web service'
+    );
   });
-
 });
 
 test('_decorate', function(assert) {
   assert.expect(2);
 
   let service = this.subject(),
-      add = number => number + 5,
-      subtract = number => number - 3;
+    add = number => number + 5,
+    subtract = number => number - 3;
 
-  assert.equal(service._decorate([add, subtract], 1),
+  assert.equal(
+    service._decorate([add, subtract], 1),
     3,
-    'decorate calls each decorator function and passes the result to the next decorator');
+    'decorate calls each decorator function and passes the result to the next decorator'
+  );
 
-  assert.equal(service._decorate([], 1),
+  assert.equal(
+    service._decorate([], 1),
     1,
-    'empty array of decorators has no effect');
+    'empty array of decorators has no effect'
+  );
 });

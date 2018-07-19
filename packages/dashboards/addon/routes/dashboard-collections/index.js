@@ -10,7 +10,7 @@ export default Ember.Route.extend({
    * @override
    * @returns {Object} - with an array of dashboard Collection models
    */
-  model(){
+  model() {
     return this.store.findAll('dashboardCollection');
   }
 });

@@ -20,7 +20,10 @@ export default ReportsNewRoute.extend({
    * @override
    */
   afterModel(widget) {
-    return this.replaceWith('dashboards.dashboard.widgets.widget.new', get(widget, 'tempId'));
+    return this.replaceWith(
+      'dashboards.dashboard.widgets.widget.new',
+      get(widget, 'tempId')
+    );
   },
 
   /**
@@ -33,33 +36,36 @@ export default ReportsNewRoute.extend({
   _newModel() {
     let dashboard = this.modelFor('dashboards.dashboard');
 
-    return get(this, 'user').findOrRegister().then( author => {
-
-      // Default to first data source + time grain
-      let table = this._getDefaultTable(),
+    return get(this, 'user')
+      .findOrRegister()
+      .then(author => {
+        // Default to first data source + time grain
+        let table = this._getDefaultTable(),
           tableTimeGrains = Ember.A(get(table, 'timeGrains')),
           timeGrainName = get(tableTimeGrains, 'firstObject.name');
 
-      let widget = this.store.createRecord('dashboard-widget', {
-        author,
-        dashboard,
-        requests: Ember.A([{
-          logicalTable: {
-            table,
-            timeGrainName
-          }
-        }]),
-        visualization: { type: 'line-chart' }
-      });
+        let widget = this.store.createRecord('dashboard-widget', {
+          author,
+          dashboard,
+          requests: Ember.A([
+            {
+              logicalTable: {
+                table,
+                timeGrainName
+              }
+            }
+          ]),
+          visualization: { type: 'line-chart' }
+        });
 
-      get(widget, 'request.intervals').createFragment({
-        interval: new Interval(
-          new Duration(DefaultIntervals[timeGrainName]),
-          'current'
-        )
-      });
+        get(widget, 'request.intervals').createFragment({
+          interval: new Interval(
+            new Duration(DefaultIntervals[timeGrainName]),
+            'current'
+          )
+        });
 
-      return widget;
-    });
+        return widget;
+      });
   }
 });

@@ -10,6 +10,7 @@
     "url": "https://github.com/yahoo/navi"
   },
   "scripts": {
+    "precommit": "precise-commits",
     "commitmsg": "validate-commit-msg -p eslint",
     "start": "lerna exec --scope navi-app npm start",
     "postinstall": "lerna bootstrap --concurrency 2",
@@ -20,5 +21,9 @@
     "husky": "^0.14.3",
     "lerna": "^2.8.0",
     "validate-commit": "^3.4.0"
+  },
+  "dependencies": {
+    "precise-commits": "^1.0.2",
+    "prettier": "^1.13.5"
   }
 }

@@ -21,9 +21,11 @@ test('urlForCreateRecord', function(assert) {
     }
   });
 
-  assert.equal(url,
+  assert.equal(
+    url,
     'https://persistence.naviapp.io/dashboards/22/widgets/',
-    'urlForCreateRecord gave the correct url based on the dashboard id');
+    'urlForCreateRecord gave the correct url based on the dashboard id'
+  );
 });
 
 test('urlForUpdateRecord', function(assert) {
@@ -36,7 +38,9 @@ test('urlForUpdateRecord', function(assert) {
     }
   });
 
-  assert.equal(url,
+  assert.equal(
+    url,
     'https://persistence.naviapp.io/dashboards/22/widgets/11',
-    'urlForUpdateRecord gave the correct url based on the dashboard & widget id');
+    'urlForUpdateRecord gave the correct url based on the dashboard & widget id'
+  );
 });
