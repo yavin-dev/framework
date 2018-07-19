@@ -8,15 +8,14 @@ import Ember from 'ember';
 const { camelize, dasherize, pluralize, singularize } = Ember.String;
 
 export default DS.JSONAPISerializer.extend({
-
   /**
    * @overide
    * @property {Object} attrs - model attribute config while serialization
    */
   attrs: {
     // Prevent sending below attributes in request payload
-    createdOn: {serialize: false},
-    updatedOn: {serialize: false}
+    createdOn: { serialize: false },
+    updatedOn: { serialize: false }
   },
 
   /**
@@ -63,6 +62,5 @@ export default DS.JSONAPISerializer.extend({
    * @param {String} modelname modelName from the record
    * @return {String} payloadType
    */
-  payloadKeyFromModelName: (modelName) => camelize(pluralize(modelName))
-
+  payloadKeyFromModelName: modelName => camelize(pluralize(modelName))
 });

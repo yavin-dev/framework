@@ -8,31 +8,43 @@ test('route helpers', function(assert) {
 
   visit('/helpers');
   andThen(function() {
-    assert.equal(find('#parent').text(),
+    assert.equal(
+      find('#parent').text(),
       'helpers',
-      'parent-route helper return parent route name');
+      'parent-route helper return parent route name'
+    );
 
-    assert.equal(find('#current').text(),
+    assert.equal(
+      find('#current').text(),
       'helpers.index',
-      'current-route helper return current route name');
+      'current-route helper return current route name'
+    );
 
-    assert.equal(find('#sibling').text(),
+    assert.equal(
+      find('#sibling').text(),
       'helpers.sibling',
-      'sibling-route helper return a generated name based on parent and given sibling name');
+      'sibling-route helper return a generated name based on parent and given sibling name'
+    );
   });
 
   click('#link-to-child');
   andThen(function() {
-    assert.equal(find('#parent').text(),
+    assert.equal(
+      find('#parent').text(),
       'helpers.child1',
-      'parent-route updates with route transition');
+      'parent-route updates with route transition'
+    );
 
-    assert.equal(find('#current').text(),
+    assert.equal(
+      find('#current').text(),
       'helpers.child1.child2',
-      'current-route updates with route transition');
+      'current-route updates with route transition'
+    );
 
-    assert.equal(find('#sibling').text(),
+    assert.equal(
+      find('#sibling').text(),
       'helpers.child1.sibling',
-      'sibling-route updates with route transition');
+      'sibling-route updates with route transition'
+    );
   });
 });

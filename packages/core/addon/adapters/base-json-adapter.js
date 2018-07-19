@@ -8,7 +8,6 @@ import DS from 'ember-data';
 import config from 'ember-get-config';
 
 export default DS.JSONAPIAdapter.extend({
-
   /**
    * @property {String} host - persistence WS host
    */
@@ -52,10 +51,12 @@ export default DS.JSONAPIAdapter.extend({
   findMany(store, type, ids, snapshots) {
     // Match our API's format for filters since it differs from Ember Data default
     let url = this.buildURL(type.modelName, ids, snapshots, 'findMany'),
-        filterRoot = Ember.Inflector.inflector.pluralize(type.modelName),
-        filterId = `${filterRoot}.id`;
+      filterRoot = Ember.Inflector.inflector.pluralize(type.modelName),
+      filterId = `${filterRoot}.id`;
 
-    return this.ajax(url, 'GET', { data: { filter: { [filterId]: ids.join(',') } } });
+    return this.ajax(url, 'GET', {
+      data: { filter: { [filterId]: ids.join(',') } }
+    });
   },
 
   /**

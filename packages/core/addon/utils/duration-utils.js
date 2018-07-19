@@ -12,10 +12,10 @@ import DateUtils from './date';
  * Map of durations equivalent to a year for different time units
  */
 const YEAR_MAP = {
-  day:    'P365D',
-  week:   'P52W',
-  month:  'P12M',
-  year:   'P1Y'
+  day: 'P365D',
+  week: 'P52W',
+  month: 'P12M',
+  year: 'P1Y'
 };
 
 /**
@@ -24,11 +24,13 @@ const YEAR_MAP = {
  * @param {Duration} duration
  */
 function validateDurationArgument(duration) {
-  Ember.assert('Duration should be a duration object', Duration.isDuration(duration));
+  Ember.assert(
+    'Duration should be a duration object',
+    Duration.isDuration(duration)
+  );
 }
 
 export default {
-
   /**
    * Subtracts a given duration from a given date
    *
@@ -37,7 +39,7 @@ export default {
    * @param {Duration} duration - duration to subtract from given date
    * @returns {Moment} - resultant date of the subtraction
    */
-  subtractDurationFromDate: function(date, duration){
+  subtractDurationFromDate: function(date, duration) {
     Ember.assert('Date should be a moment object', moment.isMoment(date));
     validateDurationArgument(duration);
     // Moment subtract mutates original date object hence the clone
@@ -53,17 +55,22 @@ export default {
    * @param {String} dateTimePeriod - string representing dateTimePeriod
    * @returns {Moment} - start date of interval
    */
-  computeStartOfInterval: function(endDate, duration, dateTimePeriod){
+  computeStartOfInterval: function(endDate, duration, dateTimePeriod) {
     validateDurationArgument(duration);
     Ember.assert('Date should be a moment object', moment.isMoment(endDate));
 
-    let epochDate = moment(DateUtils.getFirstDayEpochIsoDateTimePeriod(dateTimePeriod));
+    let epochDate = moment(
+      DateUtils.getFirstDayEpochIsoDateTimePeriod(dateTimePeriod)
+    );
     if (Duration.isAll(duration)) {
       return epochDate;
     }
 
     // Add one to match the duration range i.e. 60 Days = 59 days + current day
-    let startDate = this.subtractDurationFromDate(endDate, duration).add(1, dateTimePeriod);
+    let startDate = this.subtractDurationFromDate(endDate, duration).add(
+      1,
+      dateTimePeriod
+    );
 
     return moment.max(startDate, epochDate);
   },

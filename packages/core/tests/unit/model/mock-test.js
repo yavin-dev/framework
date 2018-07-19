@@ -4,7 +4,7 @@ import config from 'ember-get-config';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
 
 moduleForModel('mock', 'Unit | Adapter | base json adapter', {
-  needs: [ 'adapter:mock' ],
+  needs: ['adapter:mock'],
   beforeEach() {
     setupMock();
   },
@@ -18,11 +18,13 @@ test('Coalescing find requests', function(assert) {
   /*global server:true*/
   server.urlPrefix = config.navi.appPersistence.uri;
   server.get('/mocks', (schema, request) => {
-    assert.equal(request.queryParams['filter[mocks.id]'],
+    assert.equal(
+      request.queryParams['filter[mocks.id]'],
       '1,2,4',
-      'Multiple find requests are grouped using filter query param');
+      'Multiple find requests are grouped using filter query param'
+    );
 
-    return [200, { "Content-Type": "application/json" }, JSON.stringify({})];
+    return [200, { 'Content-Type': 'application/json' }, JSON.stringify({})];
   });
 
   return Ember.run(() => {

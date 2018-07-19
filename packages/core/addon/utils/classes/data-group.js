@@ -11,19 +11,23 @@ import Ember from 'ember';
  * @class
  */
 export default class DataGroup {
-
   /**
    * @param {Array} rows - data to group
    * @param {Function} groupingFn - function that takes a data row and returns the key to group it by
    */
   constructor(rows, groupingFn) {
     Ember.assert('Data rows must be defined', rows);
-    Ember.assert('Grouping function must be defined', typeof groupingFn === 'function');
+    Ember.assert(
+      'Grouping function must be defined',
+      typeof groupingFn === 'function'
+    );
 
     let map = {},
-        i, key, row;
+      i,
+      key,
+      row;
 
-        // Build a map of keys to data rows
+    // Build a map of keys to data rows
     for (i = 0; i < rows.length; i++) {
       row = rows[i];
       key = groupingFn(row);

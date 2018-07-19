@@ -9,8 +9,8 @@ module.exports = {
     browser: true
   },
   rules: {
-    indent: [2, 2, { "VariableDeclarator": { "var": 2, "let": 2, "const": 3 } }],
-    "multiline-comment-style": ["error", "starred-block"]
+    indent: [2, 2],
+    'multiline-comment-style': ['error', 'starred-block']
   },
   globals: {
     c3: true,

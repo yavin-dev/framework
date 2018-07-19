@@ -6,7 +6,7 @@ import Ember from 'ember';
 
 const { get } = Ember;
 
-const  UNKNOWN_ERROR = 'Server Error';
+const UNKNOWN_ERROR = 'Server Error';
 
 const MESSAGE_OVERRIDES = {
   'The adapter operation timed out': 'Data Timeout',
@@ -22,7 +22,7 @@ const MESSAGE_OVERRIDES = {
 export function getApiErrMsg(error) {
   let errorText = _getErrorText(error) || UNKNOWN_ERROR;
 
-  if(MESSAGE_OVERRIDES[errorText]) {
+  if (MESSAGE_OVERRIDES[errorText]) {
     errorText = MESSAGE_OVERRIDES[errorText];
   }
 
@@ -38,9 +38,9 @@ export function getApiErrMsg(error) {
  */
 export function _getErrorText(error = {}) {
   let detail = get(error, 'detail'),
-      type   = Ember.typeOf(detail);
+    type = Ember.typeOf(detail);
 
-  if(type === 'string') {
+  if (type === 'string') {
     return detail;
   } else if (type === 'object') {
     //Bard error messages are present in the description field

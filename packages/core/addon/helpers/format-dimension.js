@@ -13,13 +13,13 @@ import Ember from 'ember';
  *                  'id' if no description
  *                  '' empty string if dimension is undefined
  */
-export function formatDimension ([dimension]) {
+export function formatDimension([dimension]) {
   if (!dimension) {
     return '';
   }
 
   let desc = Ember.get(dimension, 'description'),
-      id = Ember.get(dimension, 'id');
+    id = Ember.get(dimension, 'id');
 
   if (!id && !desc) {
     return '';

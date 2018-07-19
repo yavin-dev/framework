@@ -15,9 +15,13 @@ test('render icon', function(assert) {
       }}
   `);
 
-  assert.ok(this.$('.fa-credit-card'),
-    'An fa icon element is rendered with the `fa-credit-card` class');
+  assert.ok(
+    this.$('.fa-credit-card'),
+    'An fa icon element is rendered with the `fa-credit-card` class'
+  );
 
-  assert.ok(this.$('.fa-credit-card.test-icon'),
-    'An fa icon element with the given class name is rendered');
+  assert.ok(
+    this.$('.fa-credit-card.test-icon'),
+    'An fa icon element with the given class name is rendered'
+  );
 });

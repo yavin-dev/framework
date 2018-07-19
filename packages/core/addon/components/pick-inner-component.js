@@ -36,7 +36,9 @@ export default Ember.Component.extend({
     let targetContainer = this.nearestWithProperty('pickActionHandler');
 
     Ember.assert(
-      `${this.get('componentName')} component can only be used from within a pick-container`,
+      `${this.get(
+        'componentName'
+      )} component can only be used from within a pick-container`,
       targetContainer
     );
 

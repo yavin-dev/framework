@@ -24,14 +24,19 @@ const MACROS = Ember.A([CURRENT, NEXT]);
  * @class
  */
 export default class Interval {
-
   /**
    * @param {Duration|moment|String} start - inclusive interval boundary
    * @param {Duration|moment|String} end - exclusive interval boundary
    */
   constructor(start, end) {
-    Ember.assert('Interval start must be: Duration, moment, or macro', this._isAcceptedType(start));
-    Ember.assert('Interval end must be: moment, or macro', this._isAcceptedType(end) && !Duration.isDuration(end));
+    Ember.assert(
+      'Interval start must be: Duration, moment, or macro',
+      this._isAcceptedType(start)
+    );
+    Ember.assert(
+      'Interval end must be: moment, or macro',
+      this._isAcceptedType(end) && !Duration.isDuration(end)
+    );
 
     this._start = start;
     this._end = end;
@@ -50,10 +55,12 @@ export default class Interval {
 
     // Simplify equals check by doing string comparison on start/end
     let thisStrings = this.asStrings(),
-        intervalStrings = interval.asStrings();
+      intervalStrings = interval.asStrings();
 
-    return thisStrings.start === intervalStrings.start &&
-               thisStrings.end === intervalStrings.end;
+    return (
+      thisStrings.start === intervalStrings.start &&
+      thisStrings.end === intervalStrings.end
+    );
   }
 
   /**
@@ -65,10 +72,9 @@ export default class Interval {
      * Handle the Case when we are doing 'current/next'
      * Value needs to be defined
      */
-    if ((this._start === CURRENT) && (this._end === NEXT)) {
+    if (this._start === CURRENT && this._end === NEXT) {
       return true;
-    }
-    else {
+    } else {
       let moments = this.asMoments();
       return moments.start.isBefore(moments.end);
     }
@@ -81,9 +87,9 @@ export default class Interval {
    */
   asMoments() {
     let start = this._start,
-        end = this._end;
+      end = this._end;
 
-        // Copy moments
+    // Copy moments
     if (moment.isMoment(start)) {
       start = start.clone();
     }
@@ -142,8 +148,10 @@ export default class Interval {
     moments.start.startOf(DateUtils.getIsoDateTimePeriod(timePeriod));
     moments.end.startOf(DateUtils.getIsoDateTimePeriod(timePeriod));
 
-    if(moments.start.isSame(moments.end)){
-      moments.end.startOf(DateUtils.getIsoDateTimePeriod(timePeriod)).add(1, timePeriod);
+    if (moments.start.isSame(moments.end)) {
+      moments.end
+        .startOf(DateUtils.getIsoDateTimePeriod(timePeriod))
+        .add(1, timePeriod);
     }
 
     return moments;
@@ -168,8 +176,8 @@ export default class Interval {
    */
   asStrings(momentFormat) {
     return {
-      start:  Interval._stringFromProperty(this._start, momentFormat),
-      end:    Interval._stringFromProperty(this._end, momentFormat)
+      start: Interval._stringFromProperty(this._start, momentFormat),
+      end: Interval._stringFromProperty(this._end, momentFormat)
     };
   }
 
@@ -181,7 +189,9 @@ export default class Interval {
    */
   diffForTimePeriod(timePeriod) {
     let moments = this.asMomentsForTimePeriod(timePeriod);
-    return timePeriod === 'all' ? 1 : moments.end.diff(moments.start, timePeriod + 's');
+    return timePeriod === 'all'
+      ? 1
+      : moments.end.diff(moments.start, timePeriod + 's');
   }
 
   /**
@@ -191,7 +201,11 @@ export default class Interval {
    * @returns {Boolean} whether or not the given object is an accepted type by Interval
    */
   _isAcceptedType(property) {
-    return moment.isMoment(property) || Duration.isDuration(property) || MACROS.includes(property);
+    return (
+      moment.isMoment(property) ||
+      Duration.isDuration(property) ||
+      MACROS.includes(property)
+    );
   }
 
   /**
@@ -211,10 +225,7 @@ export default class Interval {
    * @returns {Interval} object parsed from given strings
    */
   static parseFromStrings(start, end) {
-    return new Interval(
-      Interval.fromString(start),
-      Interval.fromString(end)
-    );
+    return new Interval(Interval.fromString(start), Interval.fromString(end));
   }
 
   /**
@@ -227,7 +238,7 @@ export default class Interval {
   static fromString(property, format = DateUtils.API_DATE_FORMAT_STRING) {
     Ember.assert('Argument must be a string', typeof property === 'string');
 
-    if(MACROS.includes(property)) {
+    if (MACROS.includes(property)) {
       return property;
     } else if (isIsoDurationString(property)) {
       return new Duration(property);
@@ -251,7 +262,10 @@ export default class Interval {
    * @param {String} [format] optional format for date strings
    * @returns {String} string representation of given property
    */
-  static _stringFromProperty(property, format = DateUtils.API_DATE_FORMAT_STRING) {
+  static _stringFromProperty(
+    property,
+    format = DateUtils.API_DATE_FORMAT_STRING
+  ) {
     if (moment.isMoment(property)) {
       return property.format(format);
     } else if (Duration.isDuration(property)) {
