@@ -1,7 +1,7 @@
 {{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <section class='dir-sidebar__groups'>
   {{#each directories as | directory |}}
-    {{#link-to directory.routeLink
+    {{#link-to directory.routeLink (query-params filter=null sortBy='title')
       classNames='dir-sidebar__group'
       click=(pipe (action (mut selectedDirectory) directory) (action (mut selectedFilter) (object-at 0 directory.filters)))
     }}
@@ -15,12 +15,15 @@
 </section>
 <section class='dir-sidebar__filters'>
   {{#each selectedDirectory.filters as | filter |}}
-    <div class='dir-sidebar__filter {{if (eq selectedFilter filter) 'dir-sidebar__filter--selected'}}' onclick={{action (mut selectedFilter) filter}}>
+    {{#link-to (query-params filter=filter.queryParam.filter sortBy=filter.queryParam.sortBy)
+      classNames='dir-sidebar__filter'
+      click=(action (mut selectedFilter) filter)
+    }}
       <div>
         <span class='dir-sidebar__filter--icon'>{{navi-icon filter.icon}}</span>
         <span class='dir-sidebar__filter--name'>{{filter.name}}</span>
       </div>
       <div class='dir-sidebar__filter--arrow-icon'>{{navi-icon 'chevron-right'}}</div>
-    </div>
+    {{/link-to}}
   {{/each}}
 </section>

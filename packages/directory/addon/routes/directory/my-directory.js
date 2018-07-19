@@ -14,18 +14,18 @@ export default Route.extend({
    */
   user: inject(),
 
-  async _fetchItems(user, { type, sortBy }){
+  async _fetchItems(user, { type, filter, sortBy }){
     let reports,
         dashboards,
         items = arr();
 
     if(type === null || type === 'reports'){
-      reports = await get(user, 'reports');
+      reports = filter === 'favorites' ? await get(user, 'favoriteReports') : await get(user, 'reports');
       run(() => items.push(...reports.toArray()));
     }
     if(type === null || type === 'dashboards'){
       await run(async () => {
-        dashboards = await get(user, 'dashboards');
+        dashboards = filter === 'favorites' ? await get(user, 'favoriteDashboards') : await get(user, 'dashboards');
         items.push(...dashboards.toArray())
       });
     }

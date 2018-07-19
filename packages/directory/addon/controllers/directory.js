@@ -24,7 +24,6 @@ export default Controller.extend({
 
   /**
    * @property {String} sortBy - query param for sortBy
-   * allowed sortBy's - updatedOn
    */
-  sortBy: 'updatedOn'
+  sortBy: 'title'
 });
