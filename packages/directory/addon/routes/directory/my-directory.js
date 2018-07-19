@@ -4,7 +4,7 @@
  */
 import Route from '@ember/routing/route';
 import { inject } from '@ember/service';
-import { get } from '@ember/object';
+import { get, set } from '@ember/object';
 import { A as arr } from '@ember/array';
 import { run } from '@ember/runloop';
 import { searchRecords } from 'navi-core/utils/search';
@@ -27,6 +27,32 @@ export default Route.extend({
   },
 
   /**
+   * @property {Object} _cache - local cache
+   */
+  _cache: undefined,
+
+  /**
+   * @method _fetchFromUser
+   * @private
+   * @param {Object} user 
+   * @param {String} entity - entity to fetch from user
+   */
+  async _fetchFromUser(user, entity) {
+    //local cache
+    let cache = get(this, '_cache') || {};
+
+    //fetch from cache if present
+    if(cache[entity]) 
+      return cache[entity];
+
+    //else fetch from user and set local cache
+    let results = await get(user, entity);
+    cache[entity] = results;
+    set(this, '_cache', cache);
+    return results;
+  },
+
+  /**
    * @method _fetchItems
    * @private
    * @param {Object} user 
@@ -38,12 +64,18 @@ export default Route.extend({
         items = arr();
 
     if(type === null || type === 'reports'){
-      reports = filter === 'favorites' ? await get(user, 'favoriteReports') : await get(user, 'reports');
+      reports = filter === 'favorites' ? 
+        await this._fetchFromUser(user, 'favoriteReports') : 
+        await this._fetchFromUser(user, 'reports');
+
       run(() => items.push(...reports.toArray()));
     }
     if(type === null || type === 'dashboards'){
       await run(async () => {
-        dashboards = filter === 'favorites' ? await get(user, 'favoriteDashboards') : await get(user, 'dashboards');
+        dashboards = filter === 'favorites' ? 
+          await this._fetchFromUser(user, 'favoriteDashboards') : 
+          await this._fetchFromUser(user, 'dashboards');
+
         items.push(...dashboards.toArray())
       });
     }
