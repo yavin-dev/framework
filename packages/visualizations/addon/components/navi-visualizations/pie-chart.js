@@ -17,7 +17,7 @@ import { run } from '@ember/runloop';
 import { guidFor } from '@ember/object/internals';
 import layout from '../../templates/components/navi-visualizations/pie-chart';
 import tooltipLayout from '../../templates/chart-tooltips/pie-chart';
-import $ from 'jquery';
+import merge from 'lodash/merge';
 import { smartFormatNumber } from 'navi-core/helpers/smart-format-number';
 import DimensionBuilder from 'navi-visualizations/chart-builders/dimension';
 
@@ -110,7 +110,7 @@ export default Component.extend({
    * @property {Object} config - config options for the chart
    */
   config: computed('options', 'dataConfig', function() {
-    return $.extend(true, {},
+    return merge({},
       get(this, 'pieConfig'),
       get(this, 'options'),
       get(this, 'dataConfig'),

@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import merge from 'lodash/merge';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { startMirage } from 'dummy/initializers/ember-cli-mirage';
@@ -178,7 +179,7 @@ test('onUpdateReport', function(assert) {
   assert.expect(9);
 
   this.set('options',
-    Ember.$.extend(true, {}, Options, { columns: [
+    merge({}, Options, { columns: [
       {
         field: 'dateTime',
         type: 'dateTime',
@@ -272,7 +273,7 @@ test('onUpdateReport', function(assert) {
 test('grand total in table', function(assert) {
   assert.expect(3);
 
-  let options = Ember.$.extend(true, {}, Options, { showTotals: { grandTotal: true }});
+  let options = merge({}, Options, { showTotals: { grandTotal: true }});
   this.set('options', options);
 
   this.render(TEMPLATE);
@@ -299,7 +300,7 @@ test('grand total in table', function(assert) {
 test('subtotals in table', function(assert) {
   assert.expect(2);
 
-  let options = Ember.$.extend(true, {}, Options, { showTotals: { subtotal: 'os' }});
+  let options = merge({}, Options, { showTotals: { subtotal: 'os' }});
 
   Model[0].response.rows = ROWS.slice(0,4);
   this.set('model', Model);
@@ -313,7 +314,7 @@ test('subtotals in table', function(assert) {
     'Subtotal BlackBerry OS 183,380,921 4,024,700,302 0.00'
   ],'The subtotal rows are visible for each group of the specified subtotal in the options');
 
-  let newOptions = Ember.$.extend(true, {}, options, { showTotals: { grandTotal: true }});
+  let newOptions = merge({}, options, { showTotals: { grandTotal: true }});
   this.set('options', newOptions);
 
   assert.deepEqual(this.$('.table-row__total-row').toArray().map(el => $(el).text().replace(/\s+/g, ' ').trim()),[
@@ -327,7 +328,7 @@ test('subtotals in table', function(assert) {
 test('subtotals by date in table', function(assert) {
   assert.expect(1);
 
-  let options = Ember.$.extend(true, {}, Options, { showTotals: { subtotal: 'dateTime' }});
+  let options = merge({}, Options, { showTotals: { subtotal: 'dateTime' }});
 
   Model[0].response.rows = ROWS.slice(0,4);
   this.set('model', Model);
@@ -344,7 +345,7 @@ test('subtotals by date in table', function(assert) {
 test('table row info', function(assert) {
   assert.expect(1);
 
-  let model = Ember.$.extend(true, {}, Model, [{ response: {
+  let model = merge({}, Model, [{ response: {
     meta: {
       pagination: {
         numberOfResults: 10
@@ -364,14 +365,14 @@ test('totals and subtotals for partial data', function(assert) {
   assert.expect(1);
 
   Model[0].response.rows = ROWS.slice(0,4);
-  let model = Ember.$.extend(true, {}, Model, [{ response: {
+  let model = merge({}, Model, [{ response: {
         meta: {
           pagination: {
             numberOfResults: 10
           }
         }
       }}]),
-      options = Ember.$.extend(true, {}, Options, { showTotals: { grandTotal: true, subtotal: 'os' }});
+      options = merge({}, Options, { showTotals: { grandTotal: true, subtotal: 'os' }});
 
   this.set('model', model);
   this.set('options', options);
@@ -402,7 +403,7 @@ test('table header cell display name', function (assert) {
   assert.expect(2);
 
   this.set('options',
-    Ember.$.extend(true, {}, Options, {
+    merge({}, Options, {
       columns: [
         {
           field: 'dateTime',
@@ -416,7 +417,7 @@ test('table header cell display name', function (assert) {
     'Customize Date should be shown as title in dateTime field');
 
   this.set('options',
-    Ember.$.extend(true, {}, Options, {
+    merge({}, Options, {
       columns: [
         {
           field: 'dateTime',

@@ -2,7 +2,7 @@ import Ember from 'ember';
 import { moduleForComponent, test } from 'ember-qunit';
 import moment from 'moment';
 import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
-import $ from 'jquery';
+import merge from 'lodash/merge';
 
 const { getOwner } = Ember;
 
@@ -167,10 +167,10 @@ test('dataSelectionConfig', function(assert) {
 
   component.set('model', Ember.A([ {}, insightsDataPromise ]));
 
-  assert.ok(component.get('dataSelectionConfig').then,
+  assert.ok(component.get('dataSelectionConfig.dataSelection').then,
     'Data selection config returns a promise as expected');
 
-  component.get('dataSelectionConfig').then((insightsData) => {
+  component.get('dataSelectionConfig.dataSelection').then((insightsData) => {
     assert.deepEqual(insightsData.mapBy('index'),
       [1],
       'dataSelectionConfig promise resovles to an array of indices to highlight data points');
@@ -234,7 +234,7 @@ test('config', function(assert){
   });
 
   assert.deepEqual(component.get('config'),
-    $.extend(true, {}, defaultConfig, { grid: newGrid, tooltip: component.get('chartTooltip') }),
+    merge({}, defaultConfig, { grid: newGrid, tooltip: component.get('chartTooltip') }),
     'Component merges the defined options with the default config');
 
   /* == Test Y Axis Label on Non-metric charts == */
@@ -266,7 +266,7 @@ test('config', function(assert){
   };
 
   assert.deepEqual(component.get('config'),
-    $.extend(true, {}, defaultConfig, dimensionChartType, yAxislabelOptions, { tooltip: component.get('chartTooltip') }),
+    merge({}, defaultConfig, dimensionChartType, yAxislabelOptions, { tooltip: component.get('chartTooltip') }),
     'Component displays y-axis label for a non-metric chart');
 
   //set the chart type to be metric

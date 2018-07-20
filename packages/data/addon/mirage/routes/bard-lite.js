@@ -7,7 +7,7 @@
 
 import { faker, Response } from 'ember-cli-mirage';
 import moment from 'moment';
-import $ from 'jquery';
+import { assign } from '@ember/polyfills';
 
 const API_DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss.SSS',
       DIMENSION_VALUE_MAP = {},
@@ -146,7 +146,7 @@ export default function(
 
           return newRows.concat(dimensionValues.map(value =>
             // TODO figure out why Object.assign refuses to work in Phantom even with Babel polyfill
-            $.extend({}, currentRow, {
+            assign({}, currentRow, {
               [`${dimension}|id`]: value.id,
               [`${dimension}|desc`]: value.description
             })

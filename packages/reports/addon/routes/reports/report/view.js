@@ -3,8 +3,8 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Ember from 'ember';
-import $ from 'jquery';
 import isEqual from 'lodash/isEqual';
+import merge from 'lodash/merge';
 import { isForbiddenError } from 'ember-ajax/errors';
 
 const { get, set } = Ember;
@@ -44,7 +44,7 @@ export default Ember.Route.extend({
     let report = get(this, 'parentModel'),
         request = get(report, 'request'),
         serializedRequest = request.serialize(),
-        requestOptions = $.extend(true, get(this, 'requestOptions'), {
+        requestOptions = merge({}, get(this, 'requestOptions'), {
           customHeaders: {
             uiView: `report.spv.${get(report, 'id')}`
           }

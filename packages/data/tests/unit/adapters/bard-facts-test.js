@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import Pretender from "pretender";
 import config from 'ember-get-config';
-import $ from 'jquery';
+import { assign } from '@ember/polyfills';
 
 const HOST = config.navi.dataSources[0].uri;
 
@@ -73,7 +73,7 @@ module('Unit | Bard facts Adapter', function(hooks) {
     Server = new Pretender(function(){
       this.get(`${HOST}/v1/data/table1/grain1/d1/d2/`, function (request){
         if(request.queryParams.page && request.queryParams.perPage){
-          let paginatedResponse = $.extend({}, Response);
+          let paginatedResponse = assign({}, Response);
           paginatedResponse.meta.pagination = { page: request.queryParams.page, perPage: request.queryParams.perPage };
           return [
             200,
@@ -386,7 +386,7 @@ module('Unit | Bard facts Adapter', function(hooks) {
       },
       '_buildQuery correctly built the query object for the provided request');
 
-    let noFiltersAndNoHavings = $.extend({}, TestRequest, {filters: [], having: []});
+    let noFiltersAndNoHavings = assign({}, TestRequest, {filters: [], having: []});
     assert.deepEqual(Adapter._buildQuery(noFiltersAndNoHavings),
       {
         dateTime: '2015-01-03/2015-01-04',
@@ -405,7 +405,7 @@ module('Unit | Bard facts Adapter', function(hooks) {
       },
       '_buildQuery sets non default format if format is set in the options object');
 
-    let sortRequest = $.extend({}, TestRequest, {sort: [{metric: 'm1'}]});
+    let sortRequest = assign({}, TestRequest, {sort: [{metric: 'm1'}]});
     assert.deepEqual(Adapter._buildQuery(sortRequest),
       {
         dateTime: '2015-01-03/2015-01-04',
@@ -417,7 +417,7 @@ module('Unit | Bard facts Adapter', function(hooks) {
       },
       '_buildQuery correctly built the query object for a request with sort');
 
-    sortRequest = $.extend({}, TestRequest, {sort: [{metric: 'a'}]});
+    sortRequest = assign({}, TestRequest, {sort: [{metric: 'a'}]});
     assert.deepEqual(Adapter._buildQuery(sortRequest),
       {
         dateTime: '2015-01-03/2015-01-04',
@@ -429,7 +429,7 @@ module('Unit | Bard facts Adapter', function(hooks) {
       },
       '_buildQuery correctly built the query object for an aliased with sort');
 
-    let havingRequest = $.extend({}, TestRequest, {having: [{metric: 'a', operator: 'lt', values: [50]}]});
+    let havingRequest = assign({}, TestRequest, {having: [{metric: 'a', operator: 'lt', values: [50]}]});
     assert.deepEqual(Adapter._buildQuery(havingRequest),
       {
         dateTime: '2015-01-03/2015-01-04',
@@ -541,13 +541,13 @@ module('Unit | Bard facts Adapter', function(hooks) {
         'format=csv',
       'urlForFindQuery correctly built the URL for the provided request with the format option');
 
-    let noFiltersNoHavings = $.extend({}, TestRequest, {filters: null, having: null });
+    let noFiltersNoHavings = assign({}, TestRequest, {filters: null, having: null });
     assert.equal(decodeURIComponent(Adapter.urlForFindQuery(noFiltersNoHavings)),
       HOST  + '/v1/data/table1/grain1/d1/d2/?dateTime=2015-01-03/2015-01-04&' +
         'metrics=m1,m2,r(p=123)&format=json',
       'urlForFindQuery correctly built the URL for a request with no filters');
 
-    let requestWithSort = $.extend({}, TestRequest, {
+    let requestWithSort = assign({}, TestRequest, {
       filters: null,
       having:  null,
       sort: [{metric: 'm1'}, {metric: 'm2'}]

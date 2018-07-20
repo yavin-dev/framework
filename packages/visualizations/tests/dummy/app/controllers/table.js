@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import isEqual from 'lodash/isEqual';
+import merge from 'lodash/merge';
 
 const { A: arr, computed, get, set, setProperties } = Ember;
 
@@ -86,7 +87,7 @@ export default Ember.Controller.extend({
 
     onUpdateConfig(configUpdate) {
       set(this, 'options',
-        $.extend(true, {}, get(this, 'options'), configUpdate));
+        merge({}, get(this, 'options'), configUpdate));
     }
   }
 });

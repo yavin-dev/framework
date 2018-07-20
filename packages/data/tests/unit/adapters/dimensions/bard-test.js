@@ -4,7 +4,7 @@ import { setupTest } from 'ember-qunit';
 import Pretender from "pretender";
 import config from 'ember-get-config';
 import metadataRoutes from '../../../helpers/metadata-routes';
-import $ from 'jquery';
+import { assign } from '@ember/polyfills';
 
 const HOST = config.navi.dataSources[0].uri;
 
@@ -47,7 +47,7 @@ module('Unit | Adapter | Dimensions | Bard', function(hooks) {
     Server = new Pretender(function() {
       this.get(`${HOST}/v1/dimensions/dimensionOne/values/`, function (request) {
         if(request.queryParams.page && request.queryParams.perPage) {
-          let paginatedResponse = $.extend({}, Response);
+          let paginatedResponse = assign({}, Response);
 
           paginatedResponse.meta.pagination = {
             page: request.queryParams.page,

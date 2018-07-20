@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import merge from 'lodash/merge';
 const { get, set } = Ember;
 
 export default Ember.Controller.extend({
@@ -280,13 +281,13 @@ export default Ember.Controller.extend({
     onUpdateConfigOneDimension(configUpdates) {
       let options = get(this,'options');
       set(this, 'options',
-        Ember.$.extend(true, {}, options, configUpdates)
+        merge({}, options, configUpdates)
       );
     },
     onUpdateConfigMultipleDimension(configUpdates) {
       let multiDimensionOptions = get(this,'multiDimensionOptions');
       set(this, 'multiDimensionOptions',
-        Ember.$.extend(true, {}, multiDimensionOptions, configUpdates)
+        merge({}, multiDimensionOptions, configUpdates)
       );
     }
   }

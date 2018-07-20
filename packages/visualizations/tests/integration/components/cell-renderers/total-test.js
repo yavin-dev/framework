@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import merge from 'lodash/merge';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 
@@ -45,7 +45,7 @@ test('it renders', function(assert) {
   assert.notOk(this.$('.table-cell__info-message').is(':visible'),
     'the info message and icon are not visible ');
 
-  this.set('data', Ember.$.extend(true, {}, data, {
+  this.set('data', merge({}, data, {
     __meta__: {
       hasPartialData: true
     }
