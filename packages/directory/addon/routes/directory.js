@@ -22,6 +22,9 @@ export default Route.extend({
     },
     type: {
       refreshModel: true
+    },
+    q: {
+      refreshModel: true
     }
   },
 

@@ -91,7 +91,7 @@ export function searchRecords(records, query, searchField) {
     }
   }
 
-  return results.sortBy('relevance').mapBy('record');
+  return arr(results.sortBy('relevance')).mapBy('record');
 }
 
 /**
