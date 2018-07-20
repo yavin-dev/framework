@@ -1,47 +1,42 @@
-import Ember from 'ember';
-import { test } from 'qunit';
-import moduleForAcceptance from 'navi-app/tests/helpers/module-for-acceptance';
+import { click, currentURL, find, visit } from '@ember/test-helpers';
+import { isPresent } from '@ember/utils';
+import { module, test } from 'qunit';
+import { setupApplicationTest } from 'ember-qunit';
 
-moduleForAcceptance('Acceptance | custom reports');
+module('Acceptance | custom reports', function(hooks) {
+  setupApplicationTest(hooks);
 
-test('Viewing saved reports', function(assert) {
-  assert.expect(3);
+  test('Viewing saved reports', async function(assert) {
+    assert.expect(3);
 
-  visit('/reports');
-  andThen(() => {
+    await visit('/reports');
 
-    assert.ok(Ember.isPresent(find('.navi-reports-index .navi-collection table')),
+    assert.ok(isPresent(find('.navi-reports-index .navi-collection table')),
       'Table containing list of custom reports is visible');
 
-    let firstReport = '.navi-collection tbody td:first a',
-        reportTitle =  find(firstReport).text().trim();
+    let firstReport = '.navi-collection tbody td:first-of-type a',
+        reportTitle =  find(firstReport).textContent.trim();
 
-    click(firstReport);
-    andThen(() => {
+    await click(firstReport);
 
-      assert.ok(currentURL().match(/^\/reports\/\d+\/view$/),
-        `On clicking the "${reportTitle}" link, user is brought to the appropriate report view`);
+    assert.ok(currentURL().match(/^\/reports\/\d+\/view$/),
+      `On clicking the "${reportTitle}" link, user is brought to the appropriate report view`);
 
-      assert.equal(find('.navi-report__title').text().trim(),
-        reportTitle,
-        `Report title contains text "${reportTitle}" as expected`);
-    });
+    assert.equal(find('.navi-report__title').textContent.trim(),
+      reportTitle,
+      `Report title contains text "${reportTitle}" as expected`);
   });
-});
 
-test('Accessing Report Builder', function(assert) {
-  assert.expect(2);
+  test('Accessing Report Builder', async function(assert) {
+    assert.expect(2);
 
-  visit('/reports');
-  andThen(() => {
+    await visit('/reports');
 
-    click('a:contains("New Report")');
-    andThen(() => {
-      assert.ok(currentURL().match(/^\/reports\/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\/new/),
-        'Clicking "New Report" button brings the user to the report builder');
+    await click('a:contains("New Report")');
+    assert.ok(currentURL().match(/^\/reports\/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\/new/),
+      'Clicking "New Report" button brings the user to the report builder');
 
-      assert.ok(Ember.isPresent(find('.report-builder')),
-        'Custom report builder is visible');
-    });
+    assert.ok(isPresent(find('.report-builder')),
+      'Custom report builder is visible');
   });
 });
