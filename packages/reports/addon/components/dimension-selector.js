@@ -18,7 +18,7 @@ import Ember from 'ember';
 import { A as arr } from '@ember/array';
 import layout from '../templates/components/dimension-selector';
 
-const { $, computed, get, set, getWithDefault } = Ember;
+const { computed, get, set, getWithDefault } = Ember;
 
 export default Ember.Component.extend({
   layout,
@@ -36,9 +36,7 @@ export default Ember.Component.extend({
   /*
    * @property {Array} timeGrains - copy of all time grains for the logical table selected
    */
-  timeGrains: computed('request.logicalTable.table.timeGrains', function() {
-    return $.extend(true, [], get(this, 'request.logicalTable.table.timeGrains'));
-  }),
+  timeGrains: computed.readOnly('request.logicalTable.table.timeGrains'),
 
   /*
    * @property {Array} allTimeGrains - all time grains for the logical table selected

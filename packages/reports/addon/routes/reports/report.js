@@ -3,6 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Ember from 'ember';
+import merge from 'lodash/merge';
 
 const { computed, get, set } = Ember;
 
@@ -200,7 +201,7 @@ export default Ember.Route.extend({
       let metadata = get(this, 'currentModel.visualization.metadata');
 
       set(this.currentModel, 'visualization.metadata',
-        Ember.$.extend(true, {}, metadata, metadataUpdates)
+        merge({}, metadata, metadataUpdates)
       );
     },
 

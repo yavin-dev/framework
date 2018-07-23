@@ -16,7 +16,7 @@ import layout from '../../templates/components/navi-visualizations/line-chart';
 import numeral from 'numeral';
 import config from 'ember-get-config';
 import { inject as service } from '@ember/service';
-import $ from 'jquery';
+import merge from 'lodash/merge';
 
 const { computed, get, getOwner } = Ember;
 
@@ -115,11 +115,11 @@ export default Ember.Component.extend({
   config: computed('options', 'dataConfig', function() {
     let point = get(this, 'pointConfig');
     //deep merge DEFAULT_OPTIONS, custom options, and data
-    return $.extend(true, {},
+    return merge({},
       DEFAULT_OPTIONS,
       get(this, 'options'),
       get(this, 'dataConfig'),
-      { dataSelection: get(this, 'dataSelectionConfig') },
+      get(this, 'dataSelectionConfig'),
       { tooltip: get(this, 'chartTooltip') },
       { point },
       { axis: { x: { type: 'category' } } }, // Override old 'timeseries' config saved in db
@@ -132,7 +132,8 @@ export default Ember.Component.extend({
    * @property {Object} yAxisLabelConfig - y axis label config options for the chart
    */
   yAxisLabelConfig: computed('options', function() {
-    return {
+    let metricDisplayName = get(this, 'metricDisplayName');
+    return metricDisplayName ? {
       axis: {
         y: {
           label: {
@@ -140,7 +141,7 @@ export default Ember.Component.extend({
           }
         }
       }
-    };
+    } : {};
   }),
 
   /**
@@ -159,7 +160,7 @@ export default Ember.Component.extend({
    * @property {Object} seriesConfig - options for determining chart series
    */
   seriesConfig: computed('options', function() {
-    let optionsWithDefault = $.extend(true, {}, DEFAULT_OPTIONS, get(this, 'options'));
+    let optionsWithDefault = merge({}, DEFAULT_OPTIONS, get(this, 'options'));
 
     return get(optionsWithDefault, 'axis.y.series');
   }),
@@ -204,7 +205,8 @@ export default Ember.Component.extend({
    */
   dataSelectionConfig: computed('model.[]', function() {
     // model is an array, and object at index 1 is insights data promise
-    return get(this, 'model').objectAt(1);
+    let insights =  get(this, 'model').objectAt(1);
+    return insights ? { dataSelection: insights } : {};
   }),
 
   /**

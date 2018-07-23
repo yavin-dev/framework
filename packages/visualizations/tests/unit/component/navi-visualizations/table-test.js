@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import { moduleForComponent, test } from 'ember-qunit';
 import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
+import merge from 'lodash/merge';
 
 const { getOwner } = Ember;
 
@@ -229,7 +230,7 @@ test('table data changes with options', function(assert) {
 test('computeTotal and computeSubtotals', function(assert) {
   assert.expect(2);
 
-  let options = $.extend(true, {}, OPTIONS, { showTotals: { subtotal: 'dimension' }}),
+  let options = merge({}, OPTIONS, { showTotals: { subtotal: 'dimension' }}),
       component = this.subject({ options, model: Ember.A([{ response: { rows: ROWS } }]) });
 
   assert.deepEqual(component._computeSubtotals(), [{

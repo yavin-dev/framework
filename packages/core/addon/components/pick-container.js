@@ -77,7 +77,7 @@ export default Ember.Component.extend({
         //If type is object or ember object instance
     if(Ember.typeOf(selection) === 'object' || Ember.typeOf(selection) === 'instance'){
       //deep copy object
-      copy = Ember.$.extend({}, selection);
+      copy = Ember.assign({}, selection);
     } else {
       copy = Ember.copy(selection);
     }
