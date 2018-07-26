@@ -7,30 +7,12 @@ import { inject } from '@ember/service';
 import { get, set } from '@ember/object';
 import { A as arr } from '@ember/array';
 import { run } from '@ember/runloop';
-import { searchRecords } from 'navi-core/utils/search';
-import { isPresent } from '@ember/utils';
 
 export default Route.extend({
   /**
    * @property { Service } user
    */
   user: inject(),
-
-  /**
-   * @property {Boolean} isSearching - flag on whether there is a search query or not
-   */
-  isSearching: false,
-
-  /**
-   * @method _searchItems
-   * @private
-   * Search and rank through items when a search query is available
-   * @param {Array} items
-   * @param {String} queryString - search query
-   */
-  _searchItems(items, queryString) {
-    return queryString.length ? searchRecords(items, queryString, 'title') : items;
-  },
 
   /**
    * @property {Object} _cache - local cache
@@ -64,12 +46,10 @@ export default Route.extend({
    * @param {Object} user
    * @param {Object} queryParams - all directory query params
    */
-  async _fetchItems(user, { type, filter, sortBy, q }){
+  async _fetchItems(user, { type, filter, sortBy }){
     let reports,
         dashboards,
         items = arr();
-
-    this.set('isSearching', isPresent(q));
 
     if(type === null || type === 'reports'){
       reports = filter === 'favorites' ?
@@ -88,8 +68,6 @@ export default Route.extend({
       });
     }
 
-    items = this._searchItems(items, q);
-
     return arr(items).sortBy(sortBy);
   },
 
@@ -97,13 +75,10 @@ export default Route.extend({
    * @method model
    * @override
    */
-  async model() {
+  model() {
     let user = get(this, 'user').getUser(),
         directoryParams = this.paramsFor('directory');
 
-    return {
-      items: await this._fetchItems(user, directoryParams),
-      isSearching: get(this, 'isSearching')
-    };
+    return this._fetchItems(user, directoryParams);
   }
 });

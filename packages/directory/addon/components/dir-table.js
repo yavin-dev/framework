@@ -13,6 +13,7 @@ import { computed, get, getWithDefault } from '@ember/object';
 import layout from '../templates/components/dir-table';
 import Table from 'ember-light-table';
 import Moment from 'moment';
+import { isEmpty } from '@ember/utils';
 
 export default Component.extend({
   layout,
@@ -21,6 +22,14 @@ export default Component.extend({
    * @property {String} tagName
    */
   tagName: '',
+
+  //TODO replace with `is-empty` helper from ember-truth-helpers once that is released
+  /**
+   * @property {Boolean} isSearching
+   */
+  isSearching: computed('searchQuery', function() {
+    return !isEmpty(get(this, 'searchQuery'));
+  }),
 
   /**
    * @property {Array} model - Used by ember-light-table to create rows
