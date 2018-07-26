@@ -8,7 +8,7 @@
 import Component from '@ember/component';
 import layout from '../templates/components/dir-new-button';
 import { get } from '@ember/object';
-import fileTypes from 'navi-directory/utils/enums/file-types';
+import FileTypes from 'navi-directory/utils/enums/file-types';
 
 export default Component.extend({
   layout,
@@ -34,10 +34,10 @@ export default Component.extend({
   /**
    * @property {Array} fileTypeNames - Names of file types in directory
    */
-  fileTypeNames: fileTypes.getTypesList(),
+  fileTypeNames: FileTypes.getTypes(),
 
   /**
    * @property {Object} fileTypes - Object containing file types icon class and route-link with the type name as keys
    */
-  fileTypes: get(fileTypes, 'definitions')
+  fileTypes: get(FileTypes, 'definitions')
 });

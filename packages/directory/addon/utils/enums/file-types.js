@@ -12,7 +12,7 @@ export default {
    * @method getTypesList
    * @returns {Array} ordered list of defined file type names
    */
-  getTypesList: function() {
+  getTypes() {
     return Object.keys(this.definitions);
   }
 }
