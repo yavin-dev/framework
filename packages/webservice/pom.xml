@@ -43,6 +43,21 @@
             <groupId>org.jetbrains.kotlin</groupId>
             <version>${kotlin.version}</version>
 
+            <configuration>
+                <compilerPlugins>
+                    <plugin>jpa</plugin>
+                </compilerPlugins>
+                <jvmTarget>1.8</jvmTarget>
+            </configuration>
+
+            <dependencies>
+                <dependency>
+                    <groupId>org.jetbrains.kotlin</groupId>
+                    <artifactId>kotlin-maven-noarg</artifactId>
+                    <version>${kotlin.version}</version>
+                </dependency>
+            </dependencies>
+
             <executions>
                 <execution>
                     <id>compile</id>
