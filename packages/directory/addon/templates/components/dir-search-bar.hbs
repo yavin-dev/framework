@@ -6,3 +6,7 @@
     key-up=(action this.attrs.searchFor)
 }}
 {{navi-icon 'search' class='dir-search-bar__search-icon'}}
+{{navi-icon 'times' 
+    class=(concat 'dir-search-bar__clear-icon' (if (not-eq query.length 0) ' dir-search-bar__clear-icon--show'))
+    click=(action (mut query) '')
+}}

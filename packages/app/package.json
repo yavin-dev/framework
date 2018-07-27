@@ -83,6 +83,7 @@
     "navi-core": "^0.0.0",
     "navi-dashboards": "^0.0.0",
     "navi-data": "^0.0.0",
+    "navi-directory": "^0.0.0",
     "navi-reports": "^0.0.0",
     "navi-visualizations": "^0.0.0"
   },
