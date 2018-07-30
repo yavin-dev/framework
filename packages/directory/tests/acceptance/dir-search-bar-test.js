@@ -1,12 +1,12 @@
 import { module, test } from 'qunit';
-import { currentURL, fillIn, triggerEvent, visit } from '@ember/test-helpers';
+import { click, currentURL, fillIn, triggerEvent, visit } from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
 
 module('Acceptance | dir search bar', function(hooks) {
   setupApplicationTest(hooks);
 
   test('query param changes as search query is entered', async function(assert) {
-    assert.expect(2);
+    assert.expect(3);
 
     let fillInText = 'testString';
     
@@ -20,5 +20,10 @@ module('Acceptance | dir search bar', function(hooks) {
     assert.equal(currentURL(),
       '/directory/my-directory?q=testString',
       'The url has the updated queryparam `q` when the search query is entered in the search bar');
+
+    await click('.dir-search-bar__clear-icon');
+    assert.equal(currentURL(), 
+      '/directory/my-directory',
+      'The query param `q` is cleared when the clear search icon is clicked');
   });
 });

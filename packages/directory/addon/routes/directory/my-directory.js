@@ -7,24 +7,12 @@ import { inject } from '@ember/service';
 import { get, set } from '@ember/object';
 import { A as arr } from '@ember/array';
 import { run } from '@ember/runloop';
-import { searchRecords } from 'navi-core/utils/search';
 
 export default Route.extend({
   /**
    * @property { Service } user
    */
   user: inject(),
-
-  /**
-   * @method _searchItems
-   * @private
-   * Search and rank through items when a search query is available
-   * @param {Array} items 
-   * @param {String} queryString - search query
-   */
-  _searchItems(items, queryString) {
-    return queryString.length ? searchRecords(items, queryString, 'title') : items;
-  },
 
   /**
    * @property {Object} _cache - local cache
@@ -34,7 +22,7 @@ export default Route.extend({
   /**
    * @method _fetchFromUser
    * @private
-   * @param {Object} user 
+   * @param {Object} user
    * @param {String} entity - entity to fetch from user
    */
   async _fetchFromUser(user, entity) {
@@ -42,7 +30,7 @@ export default Route.extend({
     let cache = get(this, '_cache') || {};
 
     //fetch from cache if present
-    if(cache[entity]) 
+    if(cache[entity])
       return cache[entity];
 
     //else fetch from user and set local cache
@@ -55,32 +43,30 @@ export default Route.extend({
   /**
    * @method _fetchItems
    * @private
-   * @param {Object} user 
-   * @param {Object} queryParams - all directory query params 
+   * @param {Object} user
+   * @param {Object} queryParams - all directory query params
    */
-  async _fetchItems(user, { type, filter, sortBy, q }){
+  async _fetchItems(user, { type, filter, sortBy }){
     let reports,
         dashboards,
         items = arr();
 
     if(type === null || type === 'reports'){
-      reports = filter === 'favorites' ? 
-        await this._fetchFromUser(user, 'favoriteReports') : 
+      reports = filter === 'favorites' ?
+        await this._fetchFromUser(user, 'favoriteReports') :
         await this._fetchFromUser(user, 'reports');
 
       run(() => items.push(...reports.toArray()));
     }
     if(type === null || type === 'dashboards'){
       await run(async () => {
-        dashboards = filter === 'favorites' ? 
-          await this._fetchFromUser(user, 'favoriteDashboards') : 
+        dashboards = filter === 'favorites' ?
+          await this._fetchFromUser(user, 'favoriteDashboards') :
           await this._fetchFromUser(user, 'dashboards');
 
         items.push(...dashboards.toArray())
       });
     }
-
-    items = this._searchItems(items, q);
 
     return arr(items).sortBy(sortBy);
   },

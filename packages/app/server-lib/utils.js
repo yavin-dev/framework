@@ -27,7 +27,7 @@ function loadEnvironmentSettings(hostname, configFile) {
  * @returns {string} current user
  */
 function getUser() {
-  return 'navi-user';
+  return 'navi_user';
 }
 
 exports.loadEnvironmentSettings = loadEnvironmentSettings;

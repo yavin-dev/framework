@@ -2,11 +2,13 @@
 {{#basic-dropdown as |dd|}}
   {{#dd.trigger classNames='dir-new-button__trigger button__blue button__blue--primary'}}New{{/dd.trigger}}
   {{#dd.content class='dir-new-button__content dropdown-arrow'}}
-    {{#each documentTypes as |type|}}
-      {{#link-to (get type 'linkRoute') classNames='dir-new-button__dropdown-option' tagName='div'}}
-        {{navi-icon (get type 'iconClass') class=(concat 'dir-new-button__option-icon--' (get type 'name'))}}
-        <span class='dir-new-button__option-text'>{{capitalize (get type 'name')}}</span>
-      {{/link-to}}
+    {{#each fileTypeNames as |typeName|}}
+      {{#with (get fileTypes typeName) as |typeObject|}}
+        {{#link-to (get typeObject 'linkRoute') classNames='dir-new-button__dropdown-option'}}
+          {{navi-icon (get typeObject 'iconClass') classNames=(concat 'dir-icon__' typeName)}}
+          <span class='dir-new-button__option-text'>{{capitalize typeName}}</span>
+        {{/link-to}}
+      {{/with}}
     {{/each}}
   {{/dd.content}}
 {{/basic-dropdown}}

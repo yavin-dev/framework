@@ -22,9 +22,6 @@ export default Route.extend({
     },
     type: {
       refreshModel: true
-    },
-    q: {
-      refreshModel: true
     }
   },
 
@@ -33,6 +30,6 @@ export default Route.extend({
    * @override
    */
   model() {
-    return get(this, 'user').findOrRegister();
+    return get(this, 'user').getUser();
   }
 });

@@ -1,5 +1,5 @@
 {{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-My Directory<br/>
-{{#each model as | item |}}
-  {{capitalize item._internalModel.modelName}} : {{item.title}}<br/>
-{{/each}}
+{{dir-table
+  items=searchResults
+  searchQuery=directory.q
+}}
