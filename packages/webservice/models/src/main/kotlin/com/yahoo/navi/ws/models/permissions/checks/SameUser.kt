@@ -23,9 +23,9 @@ object SameUser {
     private fun check(record: User, requestScope: RequestScope, changeSpec: Optional<ChangeSpec>): Boolean {
         val user = requestScope.user.opaqueUser as Principal
         val recordId = record.id
-        val bouncerId = user.name
+        val userId = user.name
 
-        return recordId == bouncerId
+        return recordId == userId
     }
 
     /**
