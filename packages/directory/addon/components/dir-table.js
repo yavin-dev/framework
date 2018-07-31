@@ -14,6 +14,7 @@ import layout from '../templates/components/dir-table';
 import Table from 'ember-light-table';
 import Moment from 'moment';
 import { isEmpty } from '@ember/utils';
+import FileTypes from 'navi-directory/utils/enums/file-types';
 
 export default Component.extend({
   layout,
@@ -29,6 +30,22 @@ export default Component.extend({
    */
   isSearching: computed('searchQuery', function() {
     return !isEmpty(get(this, 'searchQuery'));
+  }),
+  
+  /**
+   * @property {Array} fileTypes
+   */
+  fileTypes: computed(function() {
+    let types = FileTypes.getTypes();
+    return [ 'all', ...types ];
+  }),
+
+  /**
+   * @property {String} selectedFileType
+   */
+  selectedFileType: computed('typeFilter', function() {
+    let selected = get(this, 'typeFilter');
+    return isEmpty(selected) ? 'all' : selected;
   }),
 
   /**
@@ -54,16 +71,13 @@ export default Component.extend({
   columns: computed(function() {
     return [{
       label: 'NAME',
-      valuePath: 'name',
-      width: '300px',
+      valuePath: 'name'
     }, {
       label: 'AUTHOR',
-      valuePath: 'author',
-      width: '250px'
+      valuePath: 'author'
     }, {
       label: 'LAST UPDATED DATE',
-      valuePath: 'lastUpdatedDate',
-      width: '450px'
+      valuePath: 'lastUpdatedDate'
     }];
   }),
 
@@ -72,5 +86,28 @@ export default Component.extend({
    */
   table: computed('model', function() {
     return new Table(this.get('columns'), this.get('model'));
-  })
+  }),
+
+  actions: {
+    /**
+     * @action close
+     * @param {Object} dropdown
+     */
+    close(dropdown) {
+      dropdown.actions.close();
+    },
+
+    /**
+     * @action filterByType
+     * @param {String} type - query param value for type
+     */
+    filterByType(type) {
+      let queryParam = type;
+      if(type === 'all') {
+        queryParam  = null;
+      }
+
+      this.get('updateQueryParams')({ type: queryParam });
+    }
+  }
 });
