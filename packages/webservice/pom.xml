@@ -29,6 +29,11 @@
         <artifactId>kotlin-stdlib</artifactId>
         <version>${kotlin.version}</version>
     </dependency>
+    <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>1.7.25</version>
+    </dependency>
   </dependencies>
   <modules>
     <module>models</module>
@@ -70,19 +75,15 @@
                 </execution>
             </executions>
         </plugin>
+         <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.3.2</version>
+             <configuration>
+                 <skip>true</skip>
+                 <mainClass>none</mainClass>
+             </configuration>
+         </plugin>
     </plugins>
-    <pluginManagement>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.3.2</version>
-                <configuration>
-                    <skip>true</skip>
-                    <mainClass>none</mainClass>
-                </configuration>
-            </plugin>
-        </plugins>
-    </pluginManagement>
 </build>
 </project>
