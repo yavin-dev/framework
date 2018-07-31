@@ -1,25 +1,25 @@
-package com.yahoo.navi.ws.models.beans;
+package com.yahoo.navi.ws.models.beans
 
-import com.yahoo.elide.annotation.Include;
-import com.yahoo.elide.annotation.SharePermission;
-import com.yahoo.elide.annotation.DeletePermission;
-import com.yahoo.elide.annotation.CreatePermission;
-import com.yahoo.elide.annotation.UpdatePermission;
-import com.yahoo.elide.annotation.ReadPermission;
-import com.yahoo.elide.annotation.ComputedAttribute;
-import com.yahoo.navi.ws.models.utils.FormatDate;
+import com.yahoo.elide.annotation.Include
+import com.yahoo.elide.annotation.SharePermission
+import com.yahoo.elide.annotation.DeletePermission
+import com.yahoo.elide.annotation.CreatePermission
+import com.yahoo.elide.annotation.UpdatePermission
+import com.yahoo.elide.annotation.ReadPermission
+import com.yahoo.elide.annotation.ComputedAttribute
+import com.yahoo.navi.ws.models.utils.FormatDate
 
-import org.hibernate.annotations.Generated;
-import org.hibernate.annotations.GenerationTime;
-import java.util.Date;
+import org.hibernate.annotations.Generated
+import org.hibernate.annotations.GenerationTime
+import java.util.Date
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Id;
-import javax.persistence.Column;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
+import javax.persistence.Entity
+import javax.persistence.Table
+import javax.persistence.Id
+import javax.persistence.Column
+import javax.persistence.Temporal
+import javax.persistence.TemporalType
+import javax.persistence.Transient
 
 @Entity
 @Table(name="navi_users")
