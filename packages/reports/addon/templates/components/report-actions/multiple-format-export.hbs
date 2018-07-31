@@ -14,7 +14,6 @@
                       <a
                         download={{dasherize report.title}}
                         href={{await exportFormat.href}}
-                        target='_blank'
                         onclick={{pipe (action 'notify' exportFormat.type) (action 'close' dd)}}
                       >
                         {{exportFormat.type}}
