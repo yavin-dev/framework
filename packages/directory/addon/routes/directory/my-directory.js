@@ -7,6 +7,7 @@ import { inject } from '@ember/service';
 import { get, set } from '@ember/object';
 import { A as arr } from '@ember/array';
 import { run } from '@ember/runloop';
+import reverse from 'lodash/reverse';
 
 export default Route.extend({
   /**
@@ -41,6 +42,17 @@ export default Route.extend({
   },
 
   /**
+   * @method _sortItems
+   * @private
+   * @param {Array} items
+   * @param {String} sortBy 
+   */
+  _sortItems(items, sortBy) {
+    let sortedItems = arr(items).sortBy(sortBy);
+    return sortBy === 'updatedOn' ? reverse(sortedItems) : sortedItems;
+  },
+
+  /**
    * @method _fetchItems
    * @private
    * @param {Object} user
@@ -68,7 +80,7 @@ export default Route.extend({
       });
     }
 
-    return arr(items).sortBy(sortBy);
+    return this._sortItems(items, sortBy);
   },
 
   /**
