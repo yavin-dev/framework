@@ -31,7 +31,7 @@ export default Component.extend({
   isSearching: computed('searchQuery', function() {
     return !isEmpty(get(this, 'searchQuery'));
   }),
-  
+
   /**
    * @property {Array} fileTypes
    */
@@ -53,14 +53,10 @@ export default Component.extend({
    */
   model: computed('items', function() {
     return getWithDefault(this, 'items', []).map(item => {
-      let type = get(item.serialize().data, 'type');
 
       return {
-        type,
-        id: get(item, 'id'),
-        name: get(item, 'title'),
-        lastUpdatedDate: Moment(get(item, 'updatedOn')).format('MM/DD/YYYY -  hh:mm:ss a z'),
-        author: get(item, 'author.id')
+        model: item,
+        lastUpdatedDate: Moment(get(item, 'updatedOn')).format('MM/DD/YYYY -  hh:mm:ss a')
       };
     });
   }),
@@ -71,13 +67,21 @@ export default Component.extend({
   columns: computed(function() {
     return [{
       label: 'NAME',
-      valuePath: 'name'
+      valuePath: 'model',
+      cellComponent: 'dir-item-name-cell',
+      cellClassNames: 'dir-table__cell dir-table__cell--name'
     }, {
       label: 'AUTHOR',
-      valuePath: 'author'
+      valuePath: 'model.author.id',
+      width: '165px',
+      cellClassNames: 'dir-table__cell dir-table__cell--author',
+      breakpoints: ['desktop', 'jumbo']
     }, {
       label: 'LAST UPDATED DATE',
-      valuePath: 'lastUpdatedDate'
+      valuePath: 'lastUpdatedDate',
+      width: '200px',
+      cellClassNames: 'dir-table__cell dir-table__cell--lastUpdatedDate',
+      breakpoints: ['desktop', 'jumbo']
     }];
   }),
 
@@ -85,7 +89,11 @@ export default Component.extend({
    * @property {Object} table - Used by ember-light-table to create the table
    */
   table: computed('model', function() {
-    return new Table(this.get('columns'), this.get('model'));
+    return new Table(this.get('columns'), this.get('model'), {
+      rowOptions: {
+        classNames: 'dir-table__row'
+      }
+    });
   }),
 
   actions: {
