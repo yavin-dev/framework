@@ -5,7 +5,6 @@
 .dir-table {
   min-height: 45vh;
   overflow-x: auto;
-  margin: 10px 0 0 10px;
 
   thead {
     th {
@@ -18,14 +17,17 @@
     }
   }
 
-  tbody {
-    tr {
-      border-bottom: 1px @navi-gray-300 solid;
-      margin: 5px 0;
-    }
+  &__row {
+    border-bottom: 1px @navi-gray-300 solid;
+    margin: 5px 0;
+    padding-left: 5px;
+  }
 
-    td {
-      padding: 10px 0;
+  &__cell {
+    padding: 10px 0;
+
+    &--name {
+      padding-left: 10px;
     }
   }
 }

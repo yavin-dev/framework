@@ -18,6 +18,7 @@
  */
 import Ember from 'ember';
 import C3Chart from 'ember-c3/components/c3-chart';
+import { A } from '@ember/array';
 import { inject as service } from '@ember/service';
 import $ from'jquery';
 
@@ -34,6 +35,74 @@ export default C3Chart.extend({
    * @property {Array} classNames
    */
   classNames: ['navi-vis-c3-chart'],
+
+  /**
+   * @property {Object} config
+   * @private
+   * @override https://github.com/Glavin001/ember-c3/blob/v0.1.7/addon/components/c3-chart.js
+   */
+  _config: computed(
+    'data',
+    'axis',
+    'regions',
+    'bar',
+    'pie',
+    'donut',
+    'gauge',
+    'grid',
+    'legend',
+    'tooltip',
+    'subchart',
+    'zoom',
+    'point',
+    'line',
+    'area',
+    'size',
+    'padding',
+    'color',
+    'transition',
+    function() {
+      var self = this;
+      var c = self.getProperties([
+        'data',
+        'axis',
+        'regions',
+        'bar',
+        'pie',
+        'donut',
+        'gauge',
+        'grid',
+        'legend',
+        'tooltip',
+        'subchart',
+        'zoom',
+        'point',
+        'line',
+        'area',
+        'size',
+        'padding',
+        'color',
+        'transition'
+      ]);
+
+      A([
+        'oninit',
+        'onrendered',
+        'onmouseover',
+        'onmouseout',
+        'onresize',
+        'onresized'
+      ]).forEach(function(eventname) {
+        c[eventname] = function() {
+          if(!self.get('isDestroyed') && !self.get('isDestroying')){
+            self.sendAction(eventname, this);
+          }
+        };
+      });
+
+      c.bindto = self.$().get(0);
+      return c;
+    }),
 
   /**
    * Fires when the `data` property updates

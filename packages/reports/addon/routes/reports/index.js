@@ -86,6 +86,6 @@ export default Ember.Route.extend({
           reportUrl = get(this, 'router').generate('reports.report', reportId);
 
       return baseUrl + reportUrl;
-    },
+    }
   }
 });

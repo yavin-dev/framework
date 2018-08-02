@@ -5,13 +5,20 @@
 .dir-icon {
   &__reports {
     .reports-icon;
-    font-size: @font-size-large;
+    bottom: 2px;
+    font-size: @font-size-base-large;
+    position: relative;
+
   }
 
   &__dashboards {
     .dashboards-icon;
-    font-size: @font-size-large;
+    font-size: @font-size-base-large;
     position: relative;
-    top: 1px;
+  }
+
+  &__favorites {
+    color: @navi-yellow;
+    font-size: @font-size-base;
   }
 }

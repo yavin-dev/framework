@@ -215,6 +215,8 @@ export default Ember.Component.extend({
   tooltipComponent: computed(function() {
     let request = get(this, 'model.firstObject.request'),
         seriesConfig = get(this, 'seriesConfig.config'),
+        seriesType = get(this, 'seriesConfig.type'),
+        registryEntry = `component:line-chart-${seriesType}-tooltip`,
         builder = get(this, 'builder'),
         owner = getOwner(this),
         tooltipComponent = Ember.Component.extend(
@@ -222,8 +224,15 @@ export default Ember.Component.extend({
           builder.buildTooltip(seriesConfig, request),
           { renderer: owner.lookup('renderer:-dom') }
         );
+    if(!owner.lookup(registryEntry)) {
+      owner.register(registryEntry, tooltipComponent);
+    }
 
-    return tooltipComponent;
+    /*
+     * Ember 3.x requires components to be registered with the container before they are instantiated.
+     * Use the factory that has been registered instead of an anonymous component.
+     */
+    return owner.factoryFor(registryEntry);
   }),
 
   /**
