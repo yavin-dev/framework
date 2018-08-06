@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { setupMock, teardownMock }from '../../helpers/mirage-helper';
-import { render } from '@ember/test-helpers';
+import { render, find } from '@ember/test-helpers';
 import { run } from '@ember/runloop';
 import { set } from '@ember/object';
 import hbs from 'htmlbars-inline-precompile';
@@ -69,7 +69,7 @@ module('Integration | Component | dir table', function(hooks) {
     }}`);
 
     assert.equal(this.element.querySelector('.lt-body').innerText.trim(),
-      'No stuff found.',
+      'Nothing to see here.',
       'Gives the correct message when no items are present and there\'s no search query');
 
     set(this, 'searchQuery', 'this won\'t return anything');
@@ -82,5 +82,29 @@ module('Integration | Component | dir table', function(hooks) {
     assert.equal(this.element.querySelector('.lt-body').innerText.trim(),
       'No search results.',
       'Gives the correct message when no items are present and there is a search query');
+  });
+
+  test('table loader', async function(assert) {
+    assert.expect(2);
+
+    set(this, 'isLoading', true);
+
+    await render(hbs`{{dir-table
+      items=items
+      isLoading=isLoading
+    }}`);
+
+    assert.ok(find('.navi-loader__spinner'),
+      'The loader is rendered when `isLoading` property is true');
+
+    set(this, 'isLoading', false);
+
+    await render(hbs`{{dir-table
+      items=items
+      isLoading=isLoading
+    }}`);
+
+    assert.notOk(find('.navi-loader__spinner'),
+      'The loader is not rendered when `isLoading` property is false');  
   });
 });
