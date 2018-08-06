@@ -1,32 +1,18 @@
 {{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{#basic-dropdown classNames='dir-table-filter' as |dd|}}
-  {{#dd.trigger class='dir-table-filter__trigger'}}
-    {{capitalize selectedFileType}}
-    {{navi-icon 'caret-down' class='dir-table-filter__dropdown-icon'}}
-  {{/dd.trigger}}
-
-  {{#dd.content class='dir-table-filter__dropdown-options dropdown-arrow'}}
-    {{#each fileTypes as | type |}}
-      <div
-        class={{concat 'dir-table-filter__dropdown-option' (if (eq type selectedFileType) ' dir-table-filter__dropdown-option--selected')}}
-        onclick={{pipe (action 'filterByType' type) (action 'close' dd)}}
-      >
-        {{capitalize type}}
-      </div>
-    {{/each}}
-  {{/dd.content}}
-{{/basic-dropdown}}
-
 {{#light-table table
   classNames='dir-table'
   responsive=true
   as |t|
 }}
   {{t.head
+    is-sortable=false
     fixed=true
   }}
 
-  {{#t.body as |body|}}
+  {{#t.body 
+    canSelect=false
+    as |body|
+  }}
     {{#if isLoading}}
       {{#body.loader}}
         Loading...

@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 .dir-table {
-  min-height: 45vh;
+  height: 80vh;
   overflow-x: auto;
 
   thead {
@@ -24,7 +24,16 @@
   }
 
   &__cell {
+    cursor: default;
     padding: 10px 0;
+
+    &--name {
+      padding-left: 10px;
+    }
+  }
+
+  &__header-cell{
+    cursor: default !important;
 
     &--name {
       padding-left: 10px;

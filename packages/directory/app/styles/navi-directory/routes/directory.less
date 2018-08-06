@@ -4,7 +4,7 @@
  */
 .directory {
   display: grid;
-  grid-template-areas: "new-button  search"
+  grid-template-areas: "new-button  controls"
                        "sidebar     table";
   grid-template-columns: 300px 1fr;
   grid-template-rows: 70px 1fr;
@@ -12,6 +12,8 @@
   margin: 50px 20px;
 
   &__new-button {
+    align-items: center;
+    display: flex;
     grid-area: new-button;
   }
 
@@ -19,12 +21,15 @@
     grid-area: sidebar;
   }
 
-  &__search {
-    grid-area: search;
+  &__controls {
+    align-items: center;
+    display: grid;
+    grid-area: controls;
+    grid-template-columns: 1fr 150px;
   }
 
   &__table {
     grid-area: table;
-    margin-left: 25px;
+    margin: 15px 0 0 20px;
   }
 }
