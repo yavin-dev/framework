@@ -15,16 +15,20 @@
   }}
     {{#if isLoading}}
       {{#body.loader}}
-        Loading...
+        {{navi-loader}}
       {{/body.loader}}
     {{/if}}
 
     {{#if table.isEmpty}}
       {{#body.no-data}}
         {{#if isSearching}}
-          No search results.
+          {{#navi-info-message}}
+            No search results.
+          {{/navi-info-message}}
         {{else}}
-          No stuff found.
+          {{#navi-info-message}}
+            Nothing to see here.
+          {{/navi-info-message}}
         {{/if}}
       {{/body.no-data}}
     {{/if}}
