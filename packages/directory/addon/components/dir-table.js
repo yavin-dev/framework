@@ -14,7 +14,6 @@ import layout from '../templates/components/dir-table';
 import Table from 'ember-light-table';
 import Moment from 'moment';
 import { isEmpty } from '@ember/utils';
-import FileTypes from 'navi-directory/utils/enums/file-types';
 
 export default Component.extend({
   layout,
@@ -30,22 +29,6 @@ export default Component.extend({
    */
   isSearching: computed('searchQuery', function() {
     return !isEmpty(get(this, 'searchQuery'));
-  }),
-
-  /**
-   * @property {Array} fileTypes
-   */
-  fileTypes: computed(function() {
-    let types = FileTypes.getTypes();
-    return [ 'all', ...types ];
-  }),
-
-  /**
-   * @property {String} selectedFileType
-   */
-  selectedFileType: computed('typeFilter', function() {
-    let selected = get(this, 'typeFilter');
-    return isEmpty(selected) ? 'all' : selected;
   }),
 
   /**
@@ -68,18 +51,30 @@ export default Component.extend({
     return [{
       label: 'NAME',
       valuePath: 'model',
+      sortable: false,
+      hideable: false,
+      draggable: false,
+      classNames: 'dir-table__header-cell dir-table__header-cell--name',
       cellComponent: 'dir-item-name-cell',
       cellClassNames: 'dir-table__cell dir-table__cell--name'
     }, {
       label: 'AUTHOR',
       valuePath: 'model.author.id',
+      sortable: false,
+      hideable: false,
+      draggable: false,
       width: '165px',
+      classNames: 'dir-table__header-cell',
       cellClassNames: 'dir-table__cell dir-table__cell--author',
       breakpoints: ['desktop', 'jumbo']
     }, {
       label: 'LAST UPDATED DATE',
       valuePath: 'lastUpdatedDate',
+      sortable: false,
+      hideable: false,
+      draggable: false,
       width: '200px',
+      classNames: 'dir-table__header-cell',
       cellClassNames: 'dir-table__cell dir-table__cell--lastUpdatedDate',
       breakpoints: ['desktop', 'jumbo']
     }];
@@ -94,28 +89,5 @@ export default Component.extend({
         classNames: 'dir-table__row'
       }
     });
-  }),
-
-  actions: {
-    /**
-     * @action close
-     * @param {Object} dropdown
-     */
-    close(dropdown) {
-      dropdown.actions.close();
-    },
-
-    /**
-     * @action filterByType
-     * @param {String} type - query param value for type
-     */
-    filterByType(type) {
-      let queryParam = type;
-      if(type === 'all') {
-        queryParam  = null;
-      }
-
-      this.get('updateQueryParams')({ type: queryParam });
-    }
-  }
+  })
 });
