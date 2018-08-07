@@ -1,6 +1,7 @@
 coverage/
 artifacts/
 node_modules/
+packages/
 .nyc_output/
 **/npm-debug.log
 tmp/
