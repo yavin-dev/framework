@@ -15,7 +15,7 @@ export default Mixin.create({
     directory: controller(),
 
     /**
-     * @property searchResults - Search and rank through items in model when a search query is available
+     * @property {Promise} searchResults - Search and rank through items in model when a search query is available
      */
     searchResults: computed('directory.q', 'model.items', function() {
         let queryString = get(this, 'directory.q');
