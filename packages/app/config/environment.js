@@ -61,7 +61,9 @@ module.exports = function(environment) {
   }
 
   if (environment === 'production') {
-    // keep this for later
+    ENV['ember-cli-mirage'] = {
+      enabled: false //set to true for gh-pages
+    };
   }
 
   return ENV;
