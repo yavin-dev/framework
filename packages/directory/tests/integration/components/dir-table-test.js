@@ -72,7 +72,7 @@ module('Integration | Component | dir table', function(hooks) {
       'Nothing to see here.',
       'Gives the correct message when no items are present and there\'s no search query');
 
-    set(this, 'searchQuery', 'this won\'t return anything');
+    set(this, 'searchQuery', 'invalidQuery');
 
     await render(hbs`{{dir-table
       items=items
@@ -80,7 +80,7 @@ module('Integration | Component | dir table', function(hooks) {
     }}`);
 
     assert.equal(this.element.querySelector('.lt-body').innerText.trim(),
-      'No search results.',
+      'None of your files or folders match invalidQuery.\nPlease try a different search.',
       'Gives the correct message when no items are present and there is a search query');
   });
 

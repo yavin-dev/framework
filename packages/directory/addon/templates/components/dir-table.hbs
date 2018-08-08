@@ -17,20 +17,32 @@
       {{#body.loader}}
         {{navi-loader}}
       {{/body.loader}}
-    {{/if}}
 
-    {{#if table.isEmpty}}
-      {{#body.no-data}}
-        {{#if isSearching}}
-          {{#navi-info-message}}
-            No search results.
-          {{/navi-info-message}}
-        {{else}}
-          {{#navi-info-message}}
-            Nothing to see here.
-          {{/navi-info-message}}
-        {{/if}}
-      {{/body.no-data}}
+    {{else}}
+      
+      {{#if table.isEmpty}}
+        {{#body.no-data}}
+          
+          {{#if isSearching}}
+            
+            {{#navi-info-message}}
+              <div class='dir-table__info-message--text'>
+                None of your files or folders match <span class='dir-table__info-message--query'>{{searchQuery}}</span>.
+              </div>
+              <div class='dir-table__info-message--subtext'>Please try a different search.</div>
+            {{/navi-info-message}}
+         
+          {{else}}
+          
+            {{#navi-info-message}}
+              Nothing to see here.
+            {{/navi-info-message}}
+          
+          {{/if}}
+        {{/body.no-data}}
+      {{/if}}  
+
     {{/if}}
+    
   {{/t.body}}
 {{/light-table}}

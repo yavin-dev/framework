@@ -91,6 +91,9 @@ export default Route.extend({
     let user = get(this, 'user').getUser(),
         directoryParams = this.paramsFor('directory');
 
-    return this._fetchItems(user, directoryParams);
+    //returning an object so that the table can handle the promise
+    return {
+      items: this._fetchItems(user, directoryParams)
+    };
   }
 });
