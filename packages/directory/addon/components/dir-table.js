@@ -9,7 +9,7 @@
  * }}
  */
 import Component from '@ember/component';
-import { computed, get, getWithDefault } from '@ember/object';
+import { computed, get } from '@ember/object';
 import layout from '../templates/components/dir-table';
 import Table from 'ember-light-table';
 import Moment from 'moment';
@@ -35,13 +35,11 @@ export default Component.extend({
    * @property {Array} model - Used by ember-light-table to create rows
    */
   model: computed('items', function() {
-    return getWithDefault(this, 'items', []).map(item => {
-
-      return {
-        model: item,
-        lastUpdatedDate: Moment(get(item, 'updatedOn')).format('MM/DD/YYYY -  hh:mm:ss a')
-      };
-    });
+    let items = get(this, 'items') || [];
+    return items.map(item => ({
+      model: item,
+      lastUpdatedDate: Moment(get(item, 'updatedOn')).format('MM/DD/YYYY -  hh:mm:ss a')
+    }));
   }),
 
   /**

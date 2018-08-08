@@ -17,10 +17,10 @@ export default Mixin.create({
     /**
      * @property searchResults - Search and rank through items in model when a search query is available
      */
-    searchResults: computed('directory.q', 'model', function() {
-        let items = get(this, 'model'),
-            queryString = get(this, 'directory.q');
-
-        return isEmpty(queryString) ? items : searchRecords(items, queryString, 'title');
+    searchResults: computed('directory.q', 'model.items', function() {
+        let queryString = get(this, 'directory.q');
+        return get(this, 'model.items').then(
+            items => isEmpty(queryString) ? items : searchRecords(items, queryString, 'title')
+        );
     })
 });
