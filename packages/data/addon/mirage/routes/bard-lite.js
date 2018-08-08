@@ -72,10 +72,15 @@ function _fakeDimensionValues(name, count) {
   let fakeValues = [];
 
   for (let i = 0; i < count; i++) {
-    fakeValues.push({
+    let key = null;
+    // used to generate alternative primary keys for dimensions that don't use `id` as their primaryKey (in this case uses `key` instead)
+    if(name === 'multiSystemId') {
+      key = `k${i + 1}`;
+    }
+    fakeValues.push(Object.assign({
       id: `${i + 1}`,
-      description: faker.commerce.productName()
-    });
+      description: faker.commerce.productName(),
+    }, key ? {key} : null));
   }
 
   return fakeValues;
@@ -183,10 +188,10 @@ export default function(
     if ('filters' in request.queryParams) {
       let [/* full match */, queryString] = request.queryParams.filters.match(/\[(.*)\]/),
           values = queryString.split(','),
-          isIdSearch = /\|id/.test(request.queryParams.filters);
+          fieldMatch = request.queryParams.filters.match(/\|(id|key)/);
 
-      rows = isIdSearch ? 
-        rows.filter(row => values.includes(row.id)) :
+      rows = fieldMatch && fieldMatch.length > 0 ? 
+        rows.filter(row => values.includes(row[fieldMatch[1]])) :
         rows.filter(row => values.some(value => row.description.toLowerCase().includes(value.toLowerCase())));
     }
 

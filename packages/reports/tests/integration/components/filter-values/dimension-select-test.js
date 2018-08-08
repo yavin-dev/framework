@@ -10,7 +10,8 @@ import config from 'ember-get-config';
 const MockFilter = {
   subject: {
     name: 'age',
-    storageStrategy: 'loaded'
+    storageStrategy: 'loaded',
+    primaryKeyFieldName: 'id'
   },
   values: ['1', '2', '3'],
   validations: {}
@@ -120,4 +121,31 @@ test('error state', function(assert) {
   this.set('filter.validations', { attrs: { rawValues: { isInvalid: true } } });
   assert.ok(this.$('.filter-values--dimension-select--error').is(':visible'),
     'The input should have error state');
+});
+
+test('alternative primary key', function(assert) {
+  assert.expect(1);
+  this.filter = {
+    subject: {
+      name: 'multiSystemId',
+      storageStrategy: 'loaded',
+      primaryKeyFieldName: 'key'
+    },
+    values: ['k1', 'k3'],
+    validations: {}
+  };
+
+  this.render(hbs`{{filter-values/dimension-select filter=filter}}`);
+
+  return wait().then(() => {
+
+    let selectedValueText = this.$('.ember-power-select-multiple-option span:nth-of-type(2)').toArray().map(el => {
+      let text = $(el).text().trim();
+      return text.substr(text.lastIndexOf('('));
+    });
+
+    assert.deepEqual(selectedValueText, 
+      ['(1)', '(3)'],
+      'Select values by key instead of id');
+  });
 });
