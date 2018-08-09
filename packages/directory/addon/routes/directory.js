@@ -22,6 +22,12 @@ export default Route.extend({
     },
     type: {
       refreshModel: true
+    },
+    sortBy: {
+      refreshModel: true
+    },
+    q: {
+      refreshModel: true
     }
   },
 
@@ -31,6 +37,15 @@ export default Route.extend({
    */
   model() {
     return get(this, 'user').getUser();
+  },
+
+  afterModel(model, transition) {
+    this._super(...arguments);
+    
+    //Transition to `my-directory` when target is `directory`
+    if(get(transition, 'targetName') === 'directory'){
+      this.transitionTo('directory.my-directory');
+    }
   },
 
   actions: {
