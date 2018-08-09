@@ -9,6 +9,7 @@ import Component from '@ember/component';
 import layout from '../templates/components/dir-sidebar';
 import Directories from '../utils/enums/directories';
 import { oneWay } from '@ember/object/computed';
+import { computed } from '@ember/object';
 
 export default Component.extend({
   layout,
@@ -26,7 +27,17 @@ export default Component.extend({
   selectedDirectory: oneWay('directories.0'),
 
   /**
-   * @property {Object} selectedFilter
+   * @property {Array} filters
    */
-  selectedFilter: oneWay('selectedDirectory.filters.0')
+  filters: computed(function() {
+    return [{
+      name: 'Favorites',
+      icon: 'star-o',
+      queryParams: { filter: 'favorites', sortBy: 'title' }
+    },{
+      name: 'Recently Updated',
+      icon: 'cloud-upload',
+      queryParams: { filter: null, sortBy: 'updatedOn' }
+    }];
+  })
 });
