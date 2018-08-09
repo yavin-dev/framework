@@ -14,10 +14,9 @@
   {{/each}}
 </section>
 <section class='dir-sidebar__filters'>
-  {{#each selectedDirectory.filters as | filter |}}
-    {{#link-to (query-params filter=filter.queryParam.filter sortBy=filter.queryParam.sortBy)
+  {{#each filters as | filter |}}
+    {{#link-to (query-params filter=filter.queryParams.filter sortBy=filter.queryParams.sortBy)
       classNames='dir-sidebar__filter'
-      click=(action (mut selectedFilter) filter)
     }}
       <div>
         <span class='dir-sidebar__filter--icon'>{{navi-icon filter.icon}}</span>
