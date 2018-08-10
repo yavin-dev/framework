@@ -23,6 +23,7 @@ export default function() {
   dashboardCollection.call(this);
   reportCollection.call(this);
   dashboardWidget.call(this);
+
   usersAndReports.call(this).withUserRelationship({
     property: 'dashboards',
     type: 'dashboards',
