@@ -22,12 +22,6 @@ export default Route.extend({
     },
     type: {
       refreshModel: true
-    },
-    sortBy: {
-      refreshModel: true
-    },
-    q: {
-      refreshModel: true
     }
   },
 

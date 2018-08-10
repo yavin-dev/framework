@@ -17,9 +17,9 @@ export default Mixin.create({
     /**
      * @property {Promise} searchResults - Search and rank through items in model when a search query is available
      */
-    searchResults: computed('directory.q', 'model.items', function() {
+    searchResults: computed('directory.q', 'sortedItems', function() {
         let queryString = get(this, 'directory.q');
-        return get(this, 'model.items').then(
+        return get(this, 'sortedItems').then(
             items => isEmpty(queryString) ? items : searchRecords(items, queryString, 'title')
         );
     })
