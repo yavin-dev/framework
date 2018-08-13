@@ -171,6 +171,18 @@ export default {
       cardinality: 0,
       category: 'test',
       storageStrategy: 'none'
+    },
+    {
+      name: 'multiSystemId',
+      longName: 'Multi System Id',
+      cardinality: 9999999,
+      category: 'test',
+      storageStrategy: 'loaded',
+      fields: [
+        {name: 'id', tags: []},
+        {name: 'desc', tags: ['description']},
+        {name: 'key', tags: ['primaryKey']}
+      ]
     }
   ],
 

@@ -32,6 +32,11 @@ export default Ember.Component.extend({
   dimensionName: computed.readOnly('filter.subject.name'),
 
   /**
+   * @property {String} primaryKey - primary key for this dimension
+   */
+  primaryKey: computed.readOnly('filter.subject.primaryKeyFieldName'),
+
+  /**
    * @property {BardDimensionArray} dimensionOptions - list of all dimension values
    */
   dimensionOptions: computed('filter.subject', function() {
@@ -47,11 +52,12 @@ export default Ember.Component.extend({
   selectedDimensions: computed('filter.values', function() {
     let dimensionIds = get(this, 'filter.values'),
         dimensionName = get(this, 'dimensionName'),
+        primaryKey = get(this, 'primaryKey'),
         dimensionService = get(this, '_dimensionService');
 
     // Only fetch dimensions if filter has values
     if (get(dimensionIds, 'length')) {
-      return dimensionService.find(dimensionName, {field: 'id', values: dimensionIds.join(',')});
+      return dimensionService.find(dimensionName, {field: primaryKey, values: dimensionIds.join(',')});
     } else {
       return Ember.RSVP.resolve(Ember.A());
     }
@@ -79,8 +85,9 @@ export default Ember.Component.extend({
      * @param {Array} values
      */
     setValues(values) {
+      let primaryKey = get(this, 'primaryKey');
       this.attrs.onUpdateFilter({
-        rawValues: Ember.A(values).mapBy('id')
+        rawValues: Ember.A(values).mapBy(primaryKey)
       });
     },
 

@@ -116,7 +116,7 @@ test('ADD_DIM_FILTER', function(assert) {
 
   let addFilter = (filterObj) => {
         assert.deepEqual(filterObj,{
-          dimension: 'mockDim',
+          dimension:  {dimension: 'mockDim', primaryKeyFieldName: 'id'},
           field: 'id',
           operator: 'in',
           values: []
@@ -124,7 +124,23 @@ test('ADD_DIM_FILTER', function(assert) {
       },
       currentModel = { request: { filters: Ember.A(), addFilter } };
 
-  this.subject().send(RequestActions.ADD_DIM_FILTER, { currentModel }, 'mockDim');
+  this.subject().send(RequestActions.ADD_DIM_FILTER, { currentModel }, {dimension: 'mockDim', primaryKeyFieldName: 'id'});
+});
+
+test('ADD_DIM_FILTER - alternative primary key', function(assert) {
+  assert.expect(1);
+
+  let addFilter = (filterObj) => {
+        assert.deepEqual(filterObj,{
+          dimension: {dimension: 'mockDim', primaryKeyFieldName: 'key'},
+          field: 'key',
+          operator: 'in',
+          values: []
+        }, 'the filterObj passed to the request has the right field');
+      },
+      currentModel = { request: { filters: Ember.A(), addFilter } };
+
+  this.subject().send(RequestActions.ADD_DIM_FILTER, { currentModel }, {dimension: 'mockDim', primaryKeyFieldName: 'key'});
 });
 
 test('TOGGLE_METRIC_FILTER', function(assert) {
