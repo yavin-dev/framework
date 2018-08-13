@@ -10,13 +10,7 @@ import { canonicalizeMetric } from 'navi-data/utils/metric';
 import { getSelectedMetricsOfBase, getUnfilteredMetricsOfBase } from 'navi-reports/utils/request-metric';
 import { isEmpty } from '@ember/utils';
 
-const { assign, inject, get, set, setProperties } = Ember;
-
-const DEFAULT_DIM_FILTER = {
-  operator: 'in',
-  field: 'id',
-  values: []
-};
+const { assign, inject, get, set, setProperties, assert } = Ember;
 
 const DEFAULT_METRIC_FILTER = {
   operator: 'gt',
@@ -74,8 +68,9 @@ export default ActionConsumer.extend({
      * @param {Object} dimension - dimension to filter
      */
     [RequestActions.ADD_DIM_FILTER]: ({ currentModel }, dimension) => {
+      assert("Dimension model has correct primaryKeyFieldName", typeof get(dimension, 'primaryKeyFieldName') === 'string');
       get(currentModel, 'request').addFilter(
-        assign({ dimension }, DEFAULT_DIM_FILTER)
+        { dimension, operator: 'in', field: get(dimension, 'primaryKeyFieldName'), values: [] }
       );
     },
 

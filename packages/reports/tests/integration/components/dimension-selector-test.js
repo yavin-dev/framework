@@ -83,7 +83,7 @@ test('groups', function(assert) {
 
   assert.deepEqual(groups, [
     'Time Grain (5)',
-    'test (23)',
+    'test (24)',
     'Asset (4)'
   ], 'The groups rendered by the component include dimension groups and Time Grain');
 });
