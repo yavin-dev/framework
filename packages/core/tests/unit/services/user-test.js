@@ -3,6 +3,8 @@ import { moduleFor, test } from 'ember-qunit';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
 import config from 'ember-get-config';
 import Mirage from 'ember-cli-mirage';
+import DS from 'ember-data';
+import UserAdapter from 'navi-core/adapters/base-json-adapter';
 
 const { getOwner } = Ember;
 
@@ -10,21 +12,14 @@ let Store,
     NaviUser;
 
 moduleFor('service:user', 'Unit | Service | user', {
-  needs: [
-    'adapter:user',
-    'adapter:report',
-    'model:user',
-    'model:report',
-    'serializer:user',
-    'serializer:report',
-    'model:delivery-rule',
-    'adapter:delivery-rule',
-    'serializer:delivery-rule'
-  ],
-
   beforeEach() {
     NaviUser = config.navi.user;
     setupMock();
+    // Mock fact service
+    this.register('model:user', DS.Model.extend({
+      reports: DS.attr()
+    }));
+    this.register('adapter:user', UserAdapter);
     Store  = getOwner(this).lookup('service:store');
   },
 
@@ -44,7 +39,7 @@ test('getUser - invoked without userId param', function(assert) {
     'getUser returns null for non registered');
 
   Ember.run(() => {
-    let userModel = Store.createRecord('user', {id: NaviUser});
+    let userModel = Store.createRecord('user', { id: NaviUser });
 
     assert.equal(service.getUser(),
       userModel,
