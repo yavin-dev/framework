@@ -12,13 +12,11 @@ module('Unit | Mixin | search-filter', function() {
     let SearchFilterObject = EmberObject.extend(SearchFilterMixin);
     let subject = SearchFilterObject.create();
     set(subject, 'directory', { q: 'test' });
-    set(subject, 'model', {
-      items: resolve([
-        { id: 1, title: 'test1' },
-        { id: 2, title: 'second' },
-        { id: 3, title: 'test3' },
-      ])
-    });
+    set(subject, 'sortedItems', resolve([
+      { id: 1, title: 'test1' },
+      { id: 2, title: 'second' },
+      { id: 3, title: 'test3' },
+    ]));
 
     subject.get('searchResults').then(results => {
       assert.deepEqual(arr(results).mapBy('id'),
