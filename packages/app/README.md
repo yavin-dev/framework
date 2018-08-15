@@ -41,8 +41,9 @@ If you have an existing Ember.JS app and would like to add Navi functionality to
  - [Navi Core](https://npmjs.com/package/navi-core)
  - [Navi Reports](https://npmjs.com/package/navi-reports)
  - [Navi Dashboards](https://npmjs.com/package/navi-dashboards)
- - [Navi Visualizations](https://npmjs.com/package/navi-visualizations)
- - [Nav Data](https://npmjs.com/package/navi-data)
+ - [Navi Visualizations](https://npmjs.com/package/navi-visualizations) (DEPRECATED)
+ - [Navi Data](https://npmjs.com/package/navi-data)
+ - [Navi Directory](https://npmjs.com/package/navi-data)
 
 ## Local Development
 

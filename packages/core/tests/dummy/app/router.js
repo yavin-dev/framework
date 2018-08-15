@@ -12,6 +12,13 @@ Router.map(function() {
       this.route('child2');
     });
   });
+
+  this.route('lineChart');
+  this.route('barChart');
+  this.route('goalGauge');
+  this.route('table');
+  this.route('metricLabel');
+  this.route('pieChart');
 });
 
 export default Router;
