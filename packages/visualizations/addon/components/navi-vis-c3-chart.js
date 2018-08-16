@@ -113,9 +113,12 @@ export default C3Chart.extend({
   dataDidChange() {
     // Add custom classes to each data series for easier reference and coloring
     let { data, dataClasses } = getProperties(this, 'data', 'dataClasses'),
-        dataWithClasses = Ember.assign({}, { classes: dataClasses }, data);
+        dataWithClasses = Ember.assign({}, { classes: dataClasses }, data),
+        dataWithClasses2 = Ember.assign({}, dataWithClasses);
 
-    get(this, 'chart').load(dataWithClasses);
+    //creating a new class for the predicted data line styling
+    dataWithClasses2["classes"]["predicted"] = "chart-series-1 c3-predicted";
+    get(this, 'chart').load(dataWithClasses2);
 
     /*
      * select data points (if any)
@@ -126,8 +129,14 @@ export default C3Chart.extend({
       dataSelection.then((insightsData) => {
         let metricName = get(this, 'metricName'),
             metrics = get(this, 'axis.y.series.config.metrics').map(metric => metricName.getDisplayName(metric)),
-            dataSelectionIndices = insightsData.mapBy('index');
+            dataSelectionIndices = insightsData.anomalies.mapBy('index');
+            //assign the predicted data values to the predicted data dashed line
+            for(let i=0; i<dataWithClasses2.json.length; i++) {
+              dataWithClasses2.json[i]["predicted"] = insightsData.forecastWithSD[i]["predicted"];
+            }
         get(this, 'chart').select(metrics, dataSelectionIndices);
+        //loading chart a second time
+        get(this, 'chart').load(dataWithClasses2);
       });
     } else {
       /*
