@@ -11,7 +11,7 @@ let Metric, Request;
 moduleForComponent('metric-filter-config', 'Integration | Component | metric filter config', {
   integration: true,
   beforeEach() {
-    this.register('helper:report-action', Ember.Helper.helper(() => {}), { instantiate: false });
+    this.register('helper:update-report-action', Ember.Helper.helper(() => {}), { instantiate: false });
 
     Metric = {
       metric: { name: 'testMetric', longName: 'Test Metric' },

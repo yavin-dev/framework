@@ -19,7 +19,7 @@ moduleForComponent('report-builder', 'Integration | Component | report builder',
 
     this.container
       .registry
-      .registrations['helper:report-action'] = helper(() => () => {});
+      .registrations['helper:update-report-action'] = helper(() => () => {});
 
     return MetadataService.loadMetadata().then(() => {
       this.set('report', Store.createRecord('report', {

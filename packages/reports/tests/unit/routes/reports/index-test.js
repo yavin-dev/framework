@@ -5,8 +5,6 @@ import wait from 'ember-test-helpers/wait';
 
 const { getOwner } = Ember;
 
-let Route;
-
 moduleFor('route:reports/index', 'Unit | Route | reports/index', {
   needs: [
     'adapter:report',
@@ -62,7 +60,6 @@ moduleFor('route:reports/index', 'Unit | Route | reports/index', {
 
   beforeEach() {
     setupMock();
-    Route = this.subject();
     return getOwner(this).lookup('service:bard-metadata').loadMetadata();
   },
 
@@ -91,17 +88,4 @@ test('reports model', function(assert) {
       });
     });
   });
-});
-
-test('buildReportUrl', function(assert) {
-  assert.expect(1);
-
-  // Mock router
-  Route.set('router', {
-    generate: (route, id) => `/reports/${id}`
-  });
-
-  assert.equal(Route.send('buildReportUrl', {id: 2}),
-    document.location.origin + '/reports/2',
-    'Action builds url based on router and given report id');
 });
