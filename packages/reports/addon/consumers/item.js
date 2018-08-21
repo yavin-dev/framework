@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import ActionConsumer from 'navi-core/consumers/action-consumer';
-import { ReportActions } from 'navi-reports/services/report-action-dispatcher';
+import { ItemActions } from 'navi-reports/services/item-action-dispatcher';
 import { get } from '@ember/object';
 import { inject as service } from '@ember/service';
 
@@ -20,30 +20,33 @@ export default ActionConsumer.extend({
 
   actions: {
     /**
-     * @action DELETE_REPORT
-     * @param {Object} report - report that should be deleted
+     * @action DELETE_ITEM
+     * @param {DS.Model} item - report or dashboard that should be deleted
      */
-    [ReportActions.DELETE_REPORT](report) {
-      let reportName = get(report, 'title');
-      report.deleteRecord();
+    [ItemActions.DELETE_ITEM](item) {
+      let itemName = get(item, 'title'),
+          itemType = get(item, 'constructor.modelName'),
+          transitionRoute = itemType + 's';
 
-      return report.save().then(() => {
+      item.deleteRecord();
+
+      return item.save().then(() => {
         // Make sure record is cleaned up locally
-        report.unloadRecord();
+        item.unloadRecord();
 
         get(this, 'naviNotifications').add({
-          message: `Report "${reportName}" deleted successfully!`,
+          message: `Report "${itemName}" deleted successfully!`,
           type: 'success',
           timeout: 'short'
         });
 
-        get(this, 'router').transitionTo('reports');
+        get(this, 'router').transitionTo(transitionRoute);
       }).catch(() => {
         // Rollback delete action
-        report.rollbackAttributes();
+        item.rollbackAttributes();
 
         get(this, 'naviNotifications').add({
-          message: `OOPS! An error occurred while deleting report "${reportName}"`,
+          message: `OOPS! An error occurred while deleting ${itemType} "${itemName}"`,
           type: 'danger',
           timeout: 'short'
         });

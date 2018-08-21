@@ -50,16 +50,3 @@ test('model', function(assert) {
     });
   });
 });
-
-test('buildDashboardUrl', function(assert) {
-  assert.expect(1);
-
-  // Mock router
-  Route.set('router', {
-    generate: (route, id) => `/dashboards/${id}`
-  });
-
-  assert.equal(Route.send('buildDashboardUrl', {id: 3}),
-    document.location.origin + '/dashboards/3',
-    'Action builds url based on router and given dashboard id');
-});

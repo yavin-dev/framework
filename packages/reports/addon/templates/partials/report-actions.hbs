@@ -104,7 +104,7 @@
     <li class='navi-report__action'>
         {{#common-actions/delete
             model=model
-            deleteAction=(report-action 'DELETE_REPORT' model)
+            deleteAction=(item-action 'DELETE_ITEM' model)
         }}
             {{navi-icon 'trash-o' class='navi-report__action-icon'}}
             {{tooltip-on-component text='Delete the report' enableLazyRendering=true}}

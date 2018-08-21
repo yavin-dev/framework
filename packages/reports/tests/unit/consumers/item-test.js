@@ -1,5 +1,5 @@
 import { moduleFor, test } from 'ember-qunit';
-import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
+import { setupMock, teardownMock } from '../../helpers/mirage-helper';
 import { run } from '@ember/runloop';
 import { getOwner } from '@ember/application';
 import Response from 'ember-cli-mirage/response';
@@ -10,7 +10,7 @@ let Store,
     MetadataService,
     Server;
 
-moduleFor('consumer:report/report', 'Unit | Consumer | report', {
+moduleFor('consumer:item', 'Unit | Consumer | item', {
   needs: [
     'adapter:bard-metadata',
     'adapter:dimensions/bard',
@@ -84,7 +84,7 @@ moduleFor('consumer:report/report', 'Unit | Consumer | report', {
   }
 });
 
-test('delete report - success', function(assert) {
+test('delete item - success', function(assert) {
   assert.expect(3);
 
   let Consumer = this.subject({
@@ -92,7 +92,7 @@ test('delete report - success', function(assert) {
       add({ message }) {
         assert.equal(message,
           'Report "Hyrule News" deleted successfully!',
-          'A notification is sent containing the report title');
+          'A notification is sent containing the item title');
       }
     },
     router: {
@@ -105,7 +105,7 @@ test('delete report - success', function(assert) {
       assert.ok(Store.hasRecordForId('report', 1),
         'Report 1 is available in the store');
 
-      Consumer.send('deleteReport', report);
+      Consumer.send('deleteItem', report);
 
       return wait().then(() => {
         assert.notOk(Store.hasRecordForId('report', 1),
@@ -115,7 +115,7 @@ test('delete report - success', function(assert) {
   });
 });
 
-test('delete report - failure', function(assert) {
+test('delete item - failure', function(assert) {
   assert.expect(3);
 
   //Mock Server Endpoint
@@ -141,7 +141,7 @@ test('delete report - failure', function(assert) {
       assert.ok(Store.hasRecordForId('report',1),
         'Report 1 is available in the store');
 
-      Consumer.send('deleteReport', report);
+      Consumer.send('deleteItem', report);
 
       return wait().then(() => {
         assert.ok(Store.hasRecordForId('report',1),
