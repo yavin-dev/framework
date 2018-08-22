@@ -1,13 +1,14 @@
-import Ember from 'ember';
 import { moduleForModel, test } from 'ember-qunit';
 import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
 import wait from 'ember-test-helpers/wait';
 
+import { getOwner } from '@ember/application';
+import { get, set } from '@ember/object';
+import { run } from '@ember/runloop';
 import moment from 'moment';
 import Interval from 'navi-core/utils/classes/interval';
 import Duration from 'navi-core/utils/classes/duration';
 
-const { get, getOwner, set } = Ember;
 
 const UNDEFINED_SORT_MODEL = 2,
       MODEL_TO_CLONE = 3;
@@ -65,7 +66,7 @@ moduleForModel('fragments-mock', 'Unit | Model Fragment | BardRequest - Request'
     MetadataService =  getOwner(this).lookup('service:bard-metadata');
 
     MetadataService.loadMetadata().then(() => {
-      Ember.run(() => {
+      run(() => {
         Store.pushPayload({
           data: [{
             "id": 1,
@@ -1270,7 +1271,7 @@ test('removeSort', function(assert) {
 
     assert.equal(request.get('sort.length'),
       2,
-      'There are two paramterized sort in the model fragment');
+      'There are two parameterized sorts in the model fragment');
 
     request.removeSort(request.get('sort').objectAt(0));
     assert.equal(request.get('sort.length'),
@@ -1321,12 +1322,111 @@ test('removeSortByMetricName', function(assert) {
 
     assert.equal(request.get('sort.length'),
       2,
-      'There are two paramterized sort in the model fragment');
+      'There are two parameterized sorts in the model fragment');
 
     request.removeSortByMetricName('revenue(currency=CAD)');
     assert.equal(request.get('sort.length'),
       1,
       'There is one parameterized sort in the model fragment');
+  });
+});
+
+test('removeSortMetricWithParam', function(assert) {
+  assert.expect(3);
+
+  return wait().then(() => {
+    let mockModel = Store.peekRecord('fragments-mock', 1),
+        revenueMetric = MetadataService.getById('metric', 'revenue'),
+        request = mockModel.get('request');
+
+    let parameterizedSortUSD = {
+      metric: {
+        metric: revenueMetric,
+        parameters: {currency: 'USD'},
+        canonicalName: 'revenue(currency=USD)'
+      },
+      direction:  'asc'
+    };
+
+    let parameterizedSortCAD = {
+      metric: {
+        metric: revenueMetric,
+        parameters: {currency: 'CAD'},
+        canonicalName: 'revenue(currency=CAD)'
+      },
+      direction:  'asc'
+    };
+
+    request.addSort(parameterizedSortUSD);
+    request.addSort(parameterizedSortCAD);
+
+    assert.equal(request.get('sort.length'),
+      2,
+      'There are two parameterized sorts in the model fragment');
+
+    request.removeSortMetricWithParam(revenueMetric, {currency: 'USD'});
+
+    assert.equal(request.get('sort.length'),
+      1,
+      'There is one parameterized sort in the model fragment');
+
+    assert.deepEqual(request.get('sort').objectAt(0).get('metric.parameters'),
+      { currency: 'CAD' },
+      'Revenue metric with parametrer currency=CAD is not removed from the sort in the model fragment');
+  });
+});
+
+test('removeSortMetricByModel', function(assert) {
+  assert.expect(3);
+
+  return wait().then(() => {
+    let mockModel = Store.peekRecord('fragments-mock', 1),
+        revenueMetric = MetadataService.getById('metric', 'revenue'),
+        request = mockModel.get('request');
+
+    let pageViewsSort = {
+      metric: {metric: MetadataService.getById('metric', 'pageViews')},
+      direction: 'desc'
+    };
+
+    // add a non-parameterized metric to the sort
+    request.addSort(pageViewsSort);
+
+    let parameterizedSortUSD = {
+      metric: {
+        metric: revenueMetric,
+        parameters: {currency: 'USD'},
+        canonicalName: 'revenue(currency=USD)'
+      },
+      direction:  'asc'
+    };
+
+    let parameterizedSortCAD = {
+      metric: {
+        metric: revenueMetric,
+        parameters: {currency: 'CAD'},
+        canonicalName: 'revenue(currency=CAD)'
+      },
+      direction:  'asc'
+    };
+
+    // add two parameterized metrics to the sort
+    request.addSort(parameterizedSortUSD);
+    request.addSort(parameterizedSortCAD);
+
+    assert.equal(request.get('sort.length'),
+      3,
+      'There are three sorts in the model fragment');
+
+    request.removeSortMetricByModel(revenueMetric);
+
+    assert.equal(request.get('sort.length'),
+      1,
+      'There is one sort in the model fragment');
+
+    assert.equal(request.get('sort').objectAt(0).get('metric.metric.name'),
+      'pageViews',
+      'pageViews metric is not removed from the sort in the model fragment');
   });
 });
 
