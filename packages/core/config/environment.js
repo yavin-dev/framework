@@ -28,7 +28,10 @@ module.exports = function(/* environment, appConfig */) {
         short: 3000,
         medium: 10000
       },
-      FEATURES: {}
+      FEATURES: {
+        enableTotals: true,
+        enableTableEditing: false
+      }
     }
   };
 };

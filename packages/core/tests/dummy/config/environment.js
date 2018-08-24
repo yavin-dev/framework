@@ -48,7 +48,10 @@ module.exports = function(environment) {
         short: 3000,
         medium: 10000
       },
-      FEATURES: {}
+      FEATURES: {
+        enableTotals: false,
+        enableTableEditing: true
+      }
     }
   };
 
@@ -70,10 +73,6 @@ module.exports = function(environment) {
     ENV.APP.LOG_VIEW_LOOKUPS = false;
 
     ENV.APP.rootElement = '#ember-testing';
-
-    ENV['ember-cli-mirage'] = {
-      enabled: false
-    };
   }
 
   if (environment === 'production') {

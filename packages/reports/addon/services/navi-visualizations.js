@@ -48,7 +48,7 @@ export default Ember.Service.extend({
    */
   all() {
     // Find all visualizations registered in requirejs under the namespace "components/navi-visualizations"
-    let visualizationRegExp = new RegExp(`^(?:${config.modulePrefix}/)?navi-visualizations/manifests/([a-z-]*)$`),
+    let visualizationRegExp = new RegExp(`^(?:${config.modulePrefix}/)?manifests/([a-z-]*)$`),
         visualizationComponents = Object.keys(requirejs.entries).filter((key) => visualizationRegExp.test(key)),
         visualizationArray = visualizationComponents.map(key => this.getManifest(visualizationRegExp.exec(key)[1]));
 

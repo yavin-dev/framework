@@ -46,3 +46,42 @@
     text-transform: capitalize;
     padding-bottom: 18px;
 }
+
+.display-flex {
+    display: flex;            /* NEW, Spec - Opera 12.1, Firefox 20+ */
+    display: -webkit-flex;    /* NEW - Chrome */
+}
+
+.flex-1 {
+    flex: 1;
+    -webkit-box-flex: 1;
+}
+
+.flex-flow-column {
+    flex-flow: column;
+    -webkit-flex-flow: column;
+}
+
+.align-right{
+    justify-content: flex-end;
+    text-align: right;
+}
+
+.config-container {
+    background-color: @navi-gray-100;
+    font-family: @font-family-thin;
+    margin: 5px;
+    padding: 10px;
+    text-align: left;
+}
+
+.config-section {
+    background-color: @navi-white;
+    box-sizing: border-box;
+    border-bottom: 1px solid #B9BDC5;
+    margin-bottom: 20px;
+    padding: 10px @report-selector-padding-left;
+    resize: none;
+    width: 100%;
+}
+
