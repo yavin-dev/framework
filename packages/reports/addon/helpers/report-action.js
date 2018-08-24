@@ -6,7 +6,7 @@ import Helper from '@ember/component/helper';
 import { inject as service } from '@ember/service';
 import { get } from '@ember/object';
 import { assert } from '@ember/debug';
-import { run } from '@ember/runloop';
+import { join } from '@ember/runloop';
 import { ReportActions } from 'navi-reports/services/report-action-dispatcher';
 import Ember from 'ember';
 
@@ -30,9 +30,10 @@ export default Helper.extend({
   compute([action, ...params]) {
     let actionName = ReportActions[action];
     assert(`The action name "${action}" is not a valid report action`, actionName);
-    let reportAction = (() => run(() => get(this, 'reportActionDispatcher').dispatch(actionName, ...params))),
+    let reportAction = (() => join(() => get(this, 'reportActionDispatcher').dispatch(actionName, ...params))),
         ACTION = ClosureActionModule.ACTION;
 
+    //Make the report action a "real" action
     reportAction[ACTION] = true;
     
     return reportAction;
