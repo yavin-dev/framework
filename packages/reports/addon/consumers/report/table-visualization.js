@@ -5,7 +5,7 @@
 import Ember from 'ember';
 import isEqual from 'lodash/isEqual'
 import ActionConsumer from 'navi-core/consumers/action-consumer';
-import { ReportActions } from 'navi-reports/services/report-action-dispatcher';
+import { UpdateReportActions } from 'navi-reports/services/update-report-action-dispatcher';
 import keyBy from 'lodash/keyBy';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 
@@ -19,7 +19,7 @@ export default ActionConsumer.extend({
      * @param {Object} route - report route
      * @param {Object} newColumnOrder - new column order to replace old
      */
-    [ReportActions.UPDATE_TABLE_COLUMN_ORDER]({ currentModel:report }, newColumnOrder) {
+    [UpdateReportActions.UPDATE_TABLE_COLUMN_ORDER]({ currentModel:report }, newColumnOrder) {
       Ember.assert('Visualization must be a table', get(report, 'visualization.type') === 'table');
       let visualizationMetadata = get(report, 'visualization.metadata'),
           metrics = get(report, 'request.metrics'),
@@ -40,7 +40,7 @@ export default ActionConsumer.extend({
      * @param {Object} route - report route
      * @param {Object} updatedColumn - updated column object
      */
-    [ReportActions.UPDATE_TABLE_COLUMN]({ currentModel: report }, updatedColumn) {
+    [UpdateReportActions.UPDATE_TABLE_COLUMN]({ currentModel: report }, updatedColumn) {
       Ember.assert('Visualization must be a table', get(report, 'visualization.type') === 'table');
       let visualizationMetadata = get(report, 'visualization.metadata'),
           newColumns = get(visualizationMetadata, 'columns').map(col =>

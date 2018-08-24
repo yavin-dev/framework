@@ -6,7 +6,13 @@ import Helper from '@ember/component/helper';
 import { inject as service } from '@ember/service';
 import { get } from '@ember/object';
 import { assert } from '@ember/debug';
+import { run } from '@ember/runloop';
 import { ReportActions } from 'navi-reports/services/report-action-dispatcher';
+import Ember from 'ember';
+
+const ClosureActionModule = 'ember-glimmer/helpers/action' in Ember.__loader.registry ?
+  Ember.__loader.require('ember-glimmer/helpers/action') :
+  { };
 
 export default Helper.extend({
   /**
@@ -24,6 +30,11 @@ export default Helper.extend({
   compute([action, ...params]) {
     let actionName = ReportActions[action];
     assert(`The action name "${action}" is not a valid report action`, actionName);
-    return (() => get(this, 'reportActionDispatcher').dispatch(actionName, ...params));
+    let reportAction = (() => run(() => get(this, 'reportActionDispatcher').dispatch(actionName, ...params))),
+        ACTION = ClosureActionModule.ACTION;
+
+    reportAction[ACTION] = true;
+    
+    return reportAction;
   }
 });

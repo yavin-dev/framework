@@ -2,22 +2,18 @@
  * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import RequestActionDispatcher from './request-action-dispatcher';
-import { RequestActions } from './request-action-dispatcher';
+import ActionDispatcher from 'navi-core/services/action-dispatcher';
 
-export const ReportActions = Object.assign({} , RequestActions, {
-  UPDATE_TABLE_COLUMN_ORDER: 'updateColumnOrder',
-  UPDATE_TABLE_COLUMN: 'updateColumn',
+export const ReportActions = Object.assign({} , {
   DELETE_REPORT: 'deleteReport'
 });
 
-export default RequestActionDispatcher.extend({
+export default ActionDispatcher.extend({
 
   /**
-   * @property {Array} consumers - concatenate consumers in request
+   * @property {Array} consumers
    */
   consumers: [
-    'report/table-visualization',
     'report/report'
   ]
 });

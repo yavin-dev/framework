@@ -1,14 +1,13 @@
 import { moduleFor, test } from 'ember-qunit';
-import { ReportActions } from 'navi-reports/services/report-action-dispatcher';
-import Ember from 'ember';
-
-const { getOwner } = Ember;
+import { UpdateReportActions } from 'navi-reports/services/update-report-action-dispatcher';
+import Route from '@ember/routing/route';
+import { getOwner } from '@ember/application';
 
 let Container;
 moduleFor('helper:update-report-action', 'Unit | Helper | update report action', {
   needs: [
     'helper:route-action',
-    'service:report-action-dispatcher'
+    'service:update-report-action-dispatcher'
   ],
 
   beforeEach() {
@@ -23,7 +22,7 @@ test('update-report-action helper calls the correct route action', function(asse
     assert.ok(true, 'update-report-action called the correct route-action');
 
     assert.equal(actionType,
-      ReportActions.UPDATE_TABLE,
+      UpdateReportActions.UPDATE_TABLE,
       'update-report-action called with the correct report action name');
 
     assert.equal(helperParam,
@@ -49,7 +48,7 @@ function createMockRoute(onUpdateReport) {
   Container.register('router:main', {
     router: {
       currentHandlerInfos: [{
-        handler: Ember.Route.extend({
+        handler: Route.extend({
           actions: { onUpdateReport }
         }).create()
       }]

@@ -1,8 +1,8 @@
-import Ember from 'ember';
 import { moduleFor, test } from 'ember-qunit';
-import { ReportActions } from 'navi-reports/services/report-action-dispatcher';
-
-const { get, A:arr } = Ember;
+import { UpdateReportActions } from 'navi-reports/services/update-report-action-dispatcher';
+import { get } from '@ember/object';
+import { A as arr } from '@ember/array';
+import { run } from '@ember/runloop';
 
 moduleFor('consumer:report/table-visualization', 'Unit | Consumer | report table visualization', {
   needs: [ 'consumer:action-consumer' ]
@@ -21,8 +21,8 @@ test('UPDATE_TABLE_COLUMN_ORDER', function(assert) {
     }
   };
 
-  Ember.run(() => {
-    this.subject().send(ReportActions.UPDATE_TABLE_COLUMN_ORDER, { currentModel }, [{ type: 'test' }]);
+  run(() => {
+    this.subject().send(UpdateReportActions.UPDATE_TABLE_COLUMN_ORDER, { currentModel }, [{ type: 'test' }]);
   });
 
   assert.deepEqual(get(currentModel, 'visualization.metadata.columns'),
@@ -35,7 +35,7 @@ test('UPDATE_TABLE_COLUMN_ORDER', function(assert) {
     }
   };
 
-  assert.throws(() => this.subject().send(ReportActions.UPDATE_TABLE_COLUMN_ORDER, { currentModel: invalidVisModel }, 'new'),
+  assert.throws(() => this.subject().send(UpdateReportActions.UPDATE_TABLE_COLUMN_ORDER, { currentModel: invalidVisModel }, 'new'),
     /Visualization must be a table/,
     'Trying to update column order on a non-table visualization throws an error');
 });
@@ -69,8 +69,8 @@ test('reorder metrics', function (assert) {
   }]
 
 
-  Ember.run(() => {
-    this.subject().send(ReportActions.UPDATE_TABLE_COLUMN_ORDER, { currentModel }, newColumns);
+  run(() => {
+    this.subject().send(UpdateReportActions.UPDATE_TABLE_COLUMN_ORDER, { currentModel }, newColumns);
   });
 
   assert.deepEqual(get(currentModel, 'request.metrics').map(metric => get(metric, 'canonicalName')),
@@ -88,8 +88,8 @@ test('UPDATE_TABLE_COLUMN', function (assert) {
     }
   };
 
-  Ember.run(() => {
-    this.subject().send(ReportActions.UPDATE_TABLE_COLUMN, { currentModel }, { field: { metric: 'b' }, value: 3 });
+  run(() => {
+    this.subject().send(UpdateReportActions.UPDATE_TABLE_COLUMN, { currentModel }, { field: { metric: 'b' }, value: 3 });
   });
 
   assert.deepEqual(get(currentModel, 'visualization.metadata.columns'),

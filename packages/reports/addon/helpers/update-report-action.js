@@ -4,7 +4,7 @@
  */
 import Ember from 'ember';
 import RouteAction from 'ember-route-action-helper/helpers/route-action';
-import { ReportActions } from 'navi-reports/services/report-action-dispatcher';
+import { UpdateReportActions } from 'navi-reports/services/update-report-action-dispatcher';
 
 const ROUTE_ACTION = 'onUpdateReport';
 
@@ -19,8 +19,8 @@ export default RouteAction.extend({
    * @returns {Function} - Closure action
    */
   compute([reportAction, ...params]) {
-    let actionName = ReportActions[reportAction];
-    Ember.assert(`The action name "${actionName}" is not a valid report action`, actionName);
+    let actionName = UpdateReportActions[reportAction];
+    Ember.assert(`The action name "${actionName}" is not a valid update report action`, actionName);
     return this._super([ROUTE_ACTION, actionName, ...params]);
   }
 });
