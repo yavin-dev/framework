@@ -75,7 +75,7 @@
     "ember-source": "~2.16.0",
     "ember-tether": "^0.4.1",
     "ember-toggle": "^5.2.1",
-    "ember-tooltips": "^2.9.2",
+    "ember-tooltips": "^2.10.0",
     "ember-truth-helpers": "^2.0.0",
     "ember-uuid": "1.0.0",
     "liquid-fire": "^0.29.2",
