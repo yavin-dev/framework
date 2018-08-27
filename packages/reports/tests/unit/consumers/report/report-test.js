@@ -96,7 +96,7 @@ test('delete report - success', function(assert) {
       }
     },
     router: {
-      transitionTo() { }
+      transitionTo: () => {}
     }
   });
 
@@ -134,7 +134,7 @@ test('delete report - failure', function(assert) {
           }
         },
         router: {
-          transitionTo() { }
+          transitionTo: () => {}
         }
       });
 

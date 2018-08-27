@@ -10,7 +10,8 @@ import { join } from '@ember/runloop';
 import { ReportActions } from 'navi-reports/services/report-action-dispatcher';
 import Ember from 'ember';
 
-const ClosureActionModule = 'ember-glimmer/helpers/action' in Ember.__loader.registry ?
+//Used to mark the returned action as an instance of a closure action
+const CLOSURE_ACTION_MODULE = 'ember-glimmer/helpers/action' in Ember.__loader.registry ?
   Ember.__loader.require('ember-glimmer/helpers/action') :
   { };
 
@@ -31,10 +32,10 @@ export default Helper.extend({
     let actionName = ReportActions[action];
     assert(`The action name "${action}" is not a valid report action`, actionName);
     let reportAction = (() => join(() => get(this, 'reportActionDispatcher').dispatch(actionName, ...params))),
-        ACTION = ClosureActionModule.ACTION;
+        actionId = CLOSURE_ACTION_MODULE.ACTION;
 
     //Make the report action a "real" action
-    reportAction[ACTION] = true;
+    reportAction[actionId] = true;
     
     return reportAction;
   }
