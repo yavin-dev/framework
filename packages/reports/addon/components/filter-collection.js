@@ -1,12 +1,12 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
  *   {{filter-collection
  *       request=report.request
- *       onUpdateFilter=(report-action 'UPDATE_FILTER')
- *       onRemoveFilter=(report-action 'REMOVE_FILTER')
+ *       onUpdateFilter=(update-report-action 'UPDATE_FILTER')
+ *       onRemoveFilter=(update-report-action 'REMOVE_FILTER')
  *   }}
  */
 import Ember from 'ember';

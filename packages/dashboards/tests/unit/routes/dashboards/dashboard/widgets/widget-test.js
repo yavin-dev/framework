@@ -7,7 +7,7 @@ moduleFor('route:dashboards/dashboard/widgets/widget', 'Unit | Route | dashboard
   needs: [
     'service:navi-notifications',
     'service:navi-visualizations',
-    'service:report-action-dispatcher',
+    'service:update-report-action-dispatcher',
     'service:user'
   ]
 });

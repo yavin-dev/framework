@@ -33,9 +33,9 @@
             {{metric-config
               metric=metric
               request=request
-              addParameterizedMetric=(report-action 'ADD_METRIC_WITH_PARAM')
-              removeParameterizedMetric=(report-action 'REMOVE_METRIC_WITH_PARAM')
-              toggleParameterizedMetricFilter=(report-action 'TOGGLE_PARAMETERIZED_METRIC_FILTER')
+              addParameterizedMetric=(update-report-action 'ADD_METRIC_WITH_PARAM')
+              removeParameterizedMetric=(update-report-action 'REMOVE_METRIC_WITH_PARAM')
+              toggleParameterizedMetricFilter=(update-report-action 'TOGGLE_PARAMETERIZED_METRIC_FILTER')
             }}
           {{/if}}
           {{#navi-icon

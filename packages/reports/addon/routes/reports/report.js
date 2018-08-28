@@ -2,31 +2,34 @@
  * Copyright 2017, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import Ember from 'ember';
 import merge from 'lodash/merge';
+import { get, set, computed } from '@ember/object';
+import Route from '@ember/routing/route';
+import { inject as service } from '@ember/service';
+import { A as arr } from '@ember/array';
+import { isEmpty } from '@ember/utils';
+import RSVP from 'rsvp';
 
-const { computed, get, set } = Ember;
-
-export default Ember.Route.extend({
+export default Route.extend({
   /**
    * @property {Service} naviNotifications
    */
-  naviNotifications: Ember.inject.service(),
+  naviNotifications: service(),
 
   /**
    * @property {Service} user
    */
-  user: Ember.inject.service(),
+  user: service(),
 
   /**
    * @property {Service} naviVisualizations
    */
-  naviVisualizations: Ember.inject.service(),
+  naviVisualizations: service(),
 
   /**
-   * @property {Ember.Service} reportActionDispatcher
+   * @property {Service} updateReportActionDispatcher
    */
-  reportActionDispatcher: Ember.inject.service(),
+  updateReportActionDispatcher: service(),
 
   /**
    * @property {String} defaultVisualizationType - visualization type if not
@@ -71,7 +74,7 @@ export default Ember.Route.extend({
    *
    */
   _findByTempId(id) {
-    return Ember.A(this.store.peekAll('report')).findBy('tempId', id);
+    return arr(this.store.peekAll('report')).findBy('tempId', id);
   },
 
   /**
@@ -124,11 +127,11 @@ export default Ember.Route.extend({
           return this.transitionTo(
             `${this.routeName}.invalid`,
             get(report, 'tempId') || get(report, 'id'))
-            .then(() => Ember.RSVP.reject()
+            .then(() => RSVP.reject()
             );
         }
 
-        return Ember.RSVP.resolve();
+        return RSVP.resolve();
       });
     },
 
@@ -170,7 +173,7 @@ export default Ember.Route.extend({
      * @param {String} title
      */
     updateTitle(title) {
-      if(!Ember.isEmpty(title)) {
+      if(!isEmpty(title)) {
         set(this.currentModel, 'title', title);
       }
     },
@@ -220,7 +223,7 @@ export default Ember.Route.extend({
        *TODO validate actionType is a valid report action
        */
       if(actionType){
-        get(this, 'reportActionDispatcher').dispatch(actionType, this, ...args);
+        get(this, 'updateReportActionDispatcher').dispatch(actionType, this, ...args);
       }
     },
 

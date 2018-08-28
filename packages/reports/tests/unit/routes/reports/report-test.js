@@ -6,7 +6,7 @@ const { get } = Ember;
 moduleFor('route:reports/report', 'Unit | Route | reports/report', {
   needs: [
     'service:navi-notifications',
-    'service:report-action-dispatcher',
+    'service:update-report-action-dispatcher',
     'service:user',
     'service:navi-visualizations'
   ]

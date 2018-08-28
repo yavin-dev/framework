@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -73,19 +73,6 @@ export default Ember.Route.extend({
         type: 'danger',
         timeout: 'short'
       });
-    },
-
-    /**
-     * @action buildReportUrl
-     * @param {Object} report - model with id
-     * @returns {String} url for given report
-     */
-    buildReportUrl(report) {
-      let reportId = get(report, 'id'),
-          baseUrl = document.location.origin,
-          reportUrl = get(this, 'router').generate('reports.report', reportId);
-
-      return baseUrl + reportUrl;
     }
   }
 });

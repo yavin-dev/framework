@@ -13,7 +13,7 @@ moduleForComponent('filter-builders/metric', 'Integration | Component | filter-b
   integration: true,
 
   beforeEach() {
-    this.register('helper:report-action', Helper.helper(() => {}), { instantiate: false });
+    this.register('helper:update-report-action', Helper.helper(() => {}), { instantiate: false });
 
     this.register('component:mock/values-component', Component.extend({
       classNames: 'mock-value-component'
