@@ -1,8 +1,8 @@
-import Ember from 'ember';
+import { getOwner } from '@ember/application';
+import { A as arr } from '@ember/array';
+import EmberObject from '@ember/object';
 import { moduleFor, test } from 'ember-qunit';
 import { RequestActions } from 'navi-reports/services/request-action-dispatcher';
-
-const { get, getOwner } = Ember;
 
 moduleFor('consumer:request/sort', 'Unit | Consumer | request sort', {
   needs: [ 'consumer:action-consumer', 'service:request-action-dispatcher' ],
@@ -31,7 +31,7 @@ test('UPSERT_SORT', function(assert) {
   };
 
   let currentModel = { request: {
-        sort: Ember.A([]),
+        sort: arr([]),
         addDateTimeSort,
         addSortByMetricName
       }},
@@ -40,7 +40,9 @@ test('UPSERT_SORT', function(assert) {
   consumer.send(RequestActions.UPSERT_SORT, { currentModel }, 'dateTime', 'desc');
   consumer.send(RequestActions.UPSERT_SORT, { currentModel }, 'click', 'desc');
 
-  currentModel.request.sort = Ember.A([Ember.Object.create({metric: {metric: {name: 'dateTime'}, canonicalName: 'dateTime'}})]);
+  currentModel.request.sort = arr([EmberObject.create({
+    metric: { metric: { name: 'dateTime' }, canonicalName: 'dateTime' }
+  })]);
   consumer.send(RequestActions.UPSERT_SORT, { currentModel }, 'dateTime', 'desc');
   assert.equal(currentModel.request.sort[0].direction,
     'desc',
@@ -50,52 +52,92 @@ test('UPSERT_SORT', function(assert) {
 test('REMOVE_SORT', function(assert) {
   assert.expect(1);
 
-  const removeSortByMetricName = (metric) => {
-    assert.equal(metric,
+  const removeSortByMetricName = (metricName) => {
+    assert.equal(metricName,
       'click',
-      'metricSort is removed from the request');
+      'removeSortByMetricName is called with correct metric name');
   };
 
-  let currentModel = { request: {
-        removeSortByMetricName
-      }},
+  let currentModel = { request: { removeSortByMetricName } },
       consumer = this.subject();
 
-  consumer.send(RequestActions.REMOVE_SORT, { currentModel }, 'click', 'desc');
+  consumer.send(RequestActions.REMOVE_SORT, { currentModel }, 'click');
+});
+
+test('REMOVE_SORT_WITH_PARAM', function(assert) {
+  assert.expect(2);
+
+  let parameters = { currency: 'USD' },
+      revenueUSD = { metric: { name: 'revenue' } };
+
+  const removeSortMetricWithParam = (metric, parameters) => {
+    assert.deepEqual(metric,
+      revenueUSD,
+      'removeSortMetricWithParam is called with correct metric');
+    assert.deepEqual(parameters,
+      { currency: 'USD' },
+      'removeSortMetricWithParam is called with correct parameters');
+  };
+
+  let currentModel = { request: { removeSortMetricWithParam } },
+      consumer = this.subject();
+
+  consumer.send(RequestActions.REMOVE_SORT_WITH_PARAM, { currentModel }, revenueUSD, parameters);
+});
+
+test('REMOVE_SORT_BY_METRIC_MODEL', function(assert) {
+  assert.expect(1);
+
+  let adClicks = { name: 'adClicks' };
+
+  const removeSortMetricByModel = (metric) => {
+    assert.deepEqual(metric,
+      adClicks,
+      'removeSortMetricByModel is called with correct metric');
+  };
+
+  let currentModel = { request: { removeSortMetricByModel } },
+      consumer = this.subject();
+
+  consumer.send(RequestActions.REMOVE_SORT_BY_METRIC_MODEL, { currentModel }, adClicks);
 });
 
 test('REMOVE_METRIC', function(assert) {
-  assert.expect(3);
+  assert.expect(1);
 
-  const AdClicks = { name: 'adClicks' },
-        TimeSpent = { name: 'timeSpent' },
+  const adClicks = { name: 'adClicks' },
         consumer = this.subject();
 
-  let currentModel = { request: {
-    sort: Ember.A(),
-    addSortByMetricName(metric) { this.sort.pushObject({ metric: { name: metric }, direction: 'desc' }); },
-    removeSortByMetricName(metricName) {
-      let sortObj = this.sort.findBy('metric.name', metricName);
-      this.sort.removeObject(sortObj);
-    }
-  }};
+  const removeSortMetricByModel = (metric) => {
+    assert.deepEqual(metric,
+      adClicks,
+      'REMOVE_SORT_BY_METRIC_MODEL is dispatched with correct metric');
+  };
 
-  /* == Add sort for testing == */
-  consumer.send(RequestActions.UPSERT_SORT, { currentModel }, 'adClicks', 'desc');
+  let currentModel = { request: { removeSortMetricByModel } };
 
-  assert.deepEqual(get(currentModel, 'request.sort').mapBy('metric.name'),
-    [ 'adClicks' ],
-    'Request initially contains one metric sort');
+  /* == Remove a metric == */
+  consumer.send(RequestActions.REMOVE_METRIC, { currentModel }, adClicks);
+});
 
-  /* == Remove a metric that isn't sorted == */
-  consumer.send(RequestActions.REMOVE_METRIC, { currentModel }, TimeSpent);
-  assert.deepEqual(get(currentModel, 'request.sort').mapBy('metric.name'),
-    [ 'adClicks' ],
-    'When removing a metric that is not sorted, the sort array is unchanged');
+test('REMOVE_METRIC_WITH_PARAM', function(assert) {
+  assert.expect(2);
 
-  /* == Remove a metric that is sorted == */
-  consumer.send(RequestActions.REMOVE_METRIC, { currentModel }, AdClicks);
-  assert.equal(get(currentModel, 'request.sort.length'),
-    0,
-    'When removing a metric that is already sorted, the corresponding sort is removed');
+  const parameters = { currency: 'USD' },
+        revenueUSD = { metric: { name: 'revenue' } },
+        consumer = this.subject();
+
+  const removeSortMetricWithParam = (metric, parameters) => {
+    assert.deepEqual(metric,
+      revenueUSD,
+      'REMOVE_SORT_WITH_PARAM is dispatched with correct metric');
+    assert.deepEqual(parameters,
+      { currency: 'USD' },
+      'REMOVE_SORT_WITH_PARAM is dispatched with correct parameters');
+  };
+
+  let currentModel = { request: { removeSortMetricWithParam } };
+
+  /* == Remove a parameterized metric == */
+  consumer.send(RequestActions.REMOVE_METRIC_WITH_PARAM, { currentModel }, revenueUSD, parameters);
 });

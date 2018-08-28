@@ -2,20 +2,20 @@
  * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-
-import Ember from 'ember';
 import DS from 'ember-data';
 import MF from 'model-fragments';
 import isEqual from 'lodash/isEqual';
 import { validator, buildValidations } from 'ember-cp-validations';
 import Interval from 'navi-core/utils/classes/interval';
+import { A as arr, makeArray } from '@ember/array';
+import { assert } from '@ember/debug';
+import { get } from '@ember/object';
 import { isEmpty } from '@ember/utils';
+import { inject as service } from '@ember/service';
 import { copy } from '@ember/object/internals';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 
 const { Fragment, fragment, fragmentArray } = MF;
-
-const { get, makeArray, assert } = Ember;
 
 const Validations = buildValidations({
   logicalTable: [
@@ -86,7 +86,7 @@ export default Fragment.extend(Validations, {
   /**
    * @property {Service} metadataService - Bard Metadata Service
    */
-  metadataService: Ember.inject.service('bard-metadata'),
+  metadataService: service('bard-metadata'),
 
   /* == Metric == */
 
@@ -94,7 +94,7 @@ export default Fragment.extend(Validations, {
    * Adds a metric fragment to the metrics array if not already present
    *
    * @method addMetric
-   * @param {Object} requestMetric
+   * @param {Object} requestMetric - metric metadata model
    * @returns {Void}
    */
   addMetric(requestMetric) {
@@ -123,7 +123,7 @@ export default Fragment.extend(Validations, {
    * Adds a metric model to the metrics array
    *
    * @method addRequestMetricByModel
-   * @param {DS.Model} metricModel
+   * @param {Object} metricModel - metric metadata model
    */
   addRequestMetricByModel(metricModel) {
     if(get(metricModel, 'hasParameters')) {
@@ -139,7 +139,7 @@ export default Fragment.extend(Validations, {
    * Adds a metric model to the metrics array with parameter
    *
    * @method addRequestMetricWithParam
-   * @param {DS.Model} metricModel
+   * @param {Object} metricModel - metric metadata model
    * @param {Object} [parameters] - parameters [optional]
    */
   addRequestMetricWithParam(metricModel, parameters) {
@@ -166,7 +166,7 @@ export default Fragment.extend(Validations, {
    * Removes all metric fragment of the specified metric model
    *
    * @method removeRequestMetricByModel
-   * @param {DS.Model} metricModel
+   * @param {Object} metricModel - metric metadata model
    */
   removeRequestMetricByModel(metricModel) {
     let metrics = get(this, 'metrics').filterBy('metric', metricModel);
@@ -177,7 +177,7 @@ export default Fragment.extend(Validations, {
    * Removes a metric fragment with specified param using the metric model
    *
    * @method removeRequestMetricWithParam
-   * @param {DS.Model} metricModel
+   * @param {Object} metricModel - metric metadata model
    * @param {Object} parameters
    * @returns removed metric fragment
    */
@@ -187,6 +187,7 @@ export default Fragment.extend(Validations, {
           metric: get(metricModel, 'name'),
           parameters
         });
+
     metrics.forEach(requestMetric => {
       if(get(requestMetric, 'canonicalName') === canonicalizedMetric) {
         this.removeRequestMetric(requestMetric);
@@ -311,7 +312,7 @@ export default Fragment.extend(Validations, {
           dimension: get(filterObj, 'dimension'),
           operator: get(filterObj, 'operator'),
           field: get(filterObj, 'field'),
-          values: Ember.A(get(filterObj, 'values'))
+          values: arr(get(filterObj, 'values'))
         }),
         filters = get(this, 'filters'),
         existingFilter = filters.find(filter => isEqual(filter.serialize(), newFilter.serialize()));
@@ -356,7 +357,7 @@ export default Fragment.extend(Validations, {
   updateFilterForDimension(dimension, props){
     let filter = get(this, 'filters').findBy('dimension', dimension);
 
-    Ember.assert(`${dimension.modelName} as a filter does not exist`, filter);
+    assert(`${dimension.modelName} as a filter does not exist`, filter);
 
     filter.setProperties(props);
   },
@@ -390,7 +391,7 @@ export default Fragment.extend(Validations, {
   updateDateTimeSort(props){
     let sort = get(this, 'sort').findBy('metric.canonicalName', 'dateTime');
 
-    Ember.assert(`dateTime as a sort does not exist`, sort);
+    assert(`dateTime as a sort does not exist`, sort);
 
     sort.setProperties(props);
   },
@@ -427,7 +428,7 @@ export default Fragment.extend(Validations, {
     let metrics = get(this, 'metrics'),
         metric = metrics.findBy('canonicalName', metricName);
 
-    Ember.assert(`Metric with name "${metricName}" was not found in the request`, metric);
+    assert(`Metric with name "${metricName}" was not found in the request`, metric);
 
     this.addSort({
       direction,
@@ -460,6 +461,35 @@ export default Fragment.extend(Validations, {
   },
 
   /**
+   * Removes the sort from the sort array using the metric model
+   *
+   * @method removeSortMetricByModel
+   * @param {Object} metricModel - metric metadata model
+   * @returns {Void}
+   */
+  removeSortMetricByModel(metricModel) {
+    let sorts = get(this, 'sort').filterBy('metric.metric', metricModel);
+    sorts.forEach(sortMetric => this.removeSort(sortMetric));
+  },
+
+  /**
+   * Removes the sort from the sort array using the metric model and parameters
+   *
+   * @method removeSortMetricWithParam
+   * @param {Object} metricModel - metric metadata model
+   * @param {Object} parameters - parameters
+   * @returns {DS.ModelFragment} removed sort fragment
+   */
+  removeSortMetricWithParam(metricModel, parameters) {
+    let canonicalizedMetric = canonicalizeMetric({
+      metric: get(metricModel, 'name'),
+      parameters
+    });
+
+    return this.removeSortByMetricName(canonicalizedMetric);
+  },
+
+  /**
    * Updates the sort direction for the same metric
    *
    * @method updateSortForMetric
@@ -471,7 +501,7 @@ export default Fragment.extend(Validations, {
     let metricName = get(metric, 'canonicalName'),
         sort = get(this, 'sort').findBy('metric.canonicalName', metricName);
 
-    Ember.assert(`${metricName} as a sort does not exist`, sort);
+    assert(`${metricName} as a sort does not exist`, sort);
 
     sort.setProperties(props);
   },
@@ -608,7 +638,7 @@ export default Fragment.extend(Validations, {
   updateHavingForMetric(metric, props){
     let having = get(this, 'having').findBy('metric.metric', metric);
 
-    Ember.assert(`${metric.modelName} as a having does not exist`, having);
+    assert(`${metric.modelName} as a having does not exist`, having);
 
     having.setProperties(props);
   }
