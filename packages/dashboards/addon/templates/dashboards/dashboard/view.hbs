@@ -3,5 +3,5 @@
     dashboard=model.dashboard
     dataForWidget=model.dataForWidget
     saveAction=(route-action 'saveDashboard')
-    deleteAction=(route-action 'deleteDashboard')
+    deleteAction=(item-action 'DELETE_ITEM' model.dashboard)
 }}

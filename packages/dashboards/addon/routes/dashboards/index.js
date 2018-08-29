@@ -73,19 +73,6 @@ export default Ember.Route.extend({
         type: 'danger',
         timeout: 'short'
       });
-    },
-
-    /**
-     * @action buildDashboardUrl
-     * @param {Object} dashboard - model with id
-     * @returns {String} url for given dashboard
-     */
-    buildDashboardUrl(dashboard) {
-      let dashboardId = get(dashboard, 'id'),
-          baseUrl = document.location.origin,
-          dashboardUrl = get(this, 'router').generate('dashboards.dashboard', dashboardId);
-
-      return baseUrl + dashboardUrl;
     }
   }
 });

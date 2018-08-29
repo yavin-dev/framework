@@ -4,8 +4,8 @@
  */
 import ActionDispatcher from 'navi-core/services/action-dispatcher';
 
-export const ReportActions = Object.assign({} , {
-  DELETE_REPORT: 'deleteReport'
+export const ItemActions = Object.assign({} , {
+  DELETE_ITEM: 'deleteItem'
 });
 
 export default ActionDispatcher.extend({
@@ -14,6 +14,6 @@ export default ActionDispatcher.extend({
    * @property {Array} consumers
    */
   consumers: [
-    'report/report'
+    'item'
   ]
 });

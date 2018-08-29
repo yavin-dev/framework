@@ -7,7 +7,7 @@ import { inject as service } from '@ember/service';
 import { get } from '@ember/object';
 import { assert } from '@ember/debug';
 import { join } from '@ember/runloop';
-import { ReportActions } from 'navi-reports/services/report-action-dispatcher';
+import { ItemActions } from 'navi-reports/services/item-action-dispatcher';
 import Ember from 'ember';
 
 //Used to mark the returned action as an instance of a closure action
@@ -17,26 +17,26 @@ const CLOSURE_ACTION_MODULE = 'ember-glimmer/helpers/action' in Ember.__loader.r
 
 export default Helper.extend({
   /**
-   * @property {Service} reportActionDispatcher
+   * @property {Service} itemActionDispatcher
    */
-  reportActionDispatcher: service(),
+  itemActionDispatcher: service(),
 
   /**
    * Validates a report action and then dispatches it via the report action dispatcher
    *
-   * @method reportAction
+   * @method itemAction
    * @param {Array} array with the name of the action to dispatch
    * @returns {Function} Closure action
    */
   compute([action, ...params]) {
-    let actionName = ReportActions[action];
-    assert(`The action name "${action}" is not a valid report action`, actionName);
-    let reportAction = (() => join(() => get(this, 'reportActionDispatcher').dispatch(actionName, ...params))),
+    let actionName = ItemActions[action];
+    assert(`The action name "${action}" is not a valid item action`, actionName);
+    let itemAction = (() => join(() => get(this, 'itemActionDispatcher').dispatch(actionName, ...params))),
         actionId = CLOSURE_ACTION_MODULE.ACTION;
 
     //Make the report action a "real" action
-    reportAction[actionId] = true;
+    itemAction[actionId] = true;
     
-    return reportAction;
+    return itemAction;
   }
 });
