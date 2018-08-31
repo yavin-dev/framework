@@ -18,14 +18,24 @@ import com.yahoo.navi.ws.models.beans.fragments.request.Sort
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @TypeDef(typeClass = JsonType::class, name = "json")
 data class Request(
-    var intervals: Array<Interval>,
-    var filters: Array<Filter>,
-    var dimensions: Array<Dimension>,
-    var metrics: Array<Metric>,
+    var intervals: Array<Interval> = arrayOf(),
+    var filters: Array<Filter> = arrayOf(),
+    var dimensions: Array<Dimension> = arrayOf(),
+    var metrics: Array<Metric> = arrayOf(),
     var logicalTable: LogicalTable,
-    var sorts: Array<Sort>,
-    var having: Array<Having>,
+    var sort: Array<Sort> = arrayOf(),
+    var having: Array<Having> = arrayOf(),
 
     var bardVersion: String,
     var requestVersion: String
-)
+) {
+    constructor() : this(
+        arrayOf<Interval>(),
+        arrayOf<Filter>(),
+        arrayOf<Dimension>(),
+        arrayOf<Metric>(),
+        LogicalTable("",""),
+        arrayOf<Sort>(),
+        arrayOf<Having>(), "v1", "v1"
+    )
+}

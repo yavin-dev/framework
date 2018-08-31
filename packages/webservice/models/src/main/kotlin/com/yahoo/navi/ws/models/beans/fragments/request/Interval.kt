@@ -7,4 +7,6 @@ package com.yahoo.navi.ws.models.beans.fragments.request
 data class Interval(
     var start: String,
     var end: String
-)
+) {
+    constructor(): this("", "")
+}

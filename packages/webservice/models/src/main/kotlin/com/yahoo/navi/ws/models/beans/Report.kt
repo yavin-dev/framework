@@ -8,6 +8,7 @@ import com.yahoo.elide.annotation.ReadPermission
 import com.yahoo.elide.annotation.SharePermission
 import com.yahoo.elide.annotation.UpdatePermission
 import com.yahoo.navi.ws.models.beans.fragments.Request
+import com.yahoo.navi.ws.models.beans.fragments.Visualization
 import com.yahoo.navi.ws.models.utils.FormatDate
 import org.hibernate.annotations.Generated
 import org.hibernate.annotations.GenerationTime
@@ -75,6 +76,11 @@ class Report : HasAuthor {
 
     @get:Column(name = "request", columnDefinition = "MEDIUMTEXT")
     @get:Type(type = "com.yahoo.navi.ws.models.types.JsonType", parameters =
-        arrayOf(Parameter(name = "class", value = "com.yahoo.uad.ui.persistence.models.fragments.Request")))
+        arrayOf(Parameter(name = "class", value = "com.yahoo.navi.ws.models.beans.fragments.Request")))
     var request: Request? = null
+
+    @get:Column(name="visualization", columnDefinition = "MEDIUMTEXT")
+    @get:Type(type = "com.yahoo.navi.ws.models.types.JsonType", parameters =
+        arrayOf(Parameter(name = "class", value = "com.yahoo.navi.ws.models.beans.fragments.Visualization")))
+    var visualization: Visualization? = null
 }

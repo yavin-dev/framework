@@ -21,7 +21,7 @@ object SameUser {
      * @return true if given record id matches user's id
      */
     private fun check(record: User, requestScope: RequestScope, changeSpec: Optional<ChangeSpec>): Boolean {
-        val user = requestScope.user.opaqueUser as Principal
+        val user = requestScope.user!!.opaqueUser as Principal
         val recordId = record.id
         val userId = user.name
 

@@ -12,4 +12,6 @@ data class Metric(
     @get:Type(type = "com.yahoo.navi.ws.models.types.JsonType", parameters = [
         Parameter(name = "class", value = "kotlin.collections.HashMap")
     ]) var parameters: Map<String, String>
-)
+) {
+    constructor(): this("", emptyMap())
+}

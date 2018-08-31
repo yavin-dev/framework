@@ -8,4 +8,6 @@ data class Filter(
     var operator: String,
     var values: Array<String>,
     var field: String
-)
+) {
+    constructor(): this("", "", arrayOf<String>(), "")
+}

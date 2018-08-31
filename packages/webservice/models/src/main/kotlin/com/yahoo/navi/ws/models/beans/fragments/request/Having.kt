@@ -7,4 +7,6 @@ data class Having(
     var metric: String,
     var operator: String,
     var values: Array<Double>
-)
+) {
+    constructor(): this("", "", arrayOf<Double>())
+}

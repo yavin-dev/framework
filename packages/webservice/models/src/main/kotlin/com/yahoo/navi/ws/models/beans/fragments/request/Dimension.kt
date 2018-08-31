@@ -5,4 +5,6 @@ package com.yahoo.navi.ws.models.beans.fragments.request
  */
 data class Dimension(
     var dimension: String
-)
+) {
+    constructor(): this("")
+}

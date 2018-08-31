@@ -6,4 +6,6 @@ package com.yahoo.navi.ws.models.beans.fragments.request
 data class LogicalTable(
     var table: String,
     var timeGrain: String
-)
+) {
+    constructor(): this("", "")
+}

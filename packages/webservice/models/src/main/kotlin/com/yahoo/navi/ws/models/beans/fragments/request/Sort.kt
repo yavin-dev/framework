@@ -6,4 +6,6 @@ package com.yahoo.navi.ws.models.beans.fragments.request
 data class Sort(
     var metric: String,
     var direction: String
-)
+) {
+    constructor(): this("", "")
+}
