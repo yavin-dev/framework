@@ -22,7 +22,6 @@ moduleFor('consumer:request/metric', 'Unit | Consumer | request metric', {
     'transform:metric',
     'transform:moment',
     'transform:table',
-    'model:dimension-age',
     'model:bard-request/request',
     'model:bard-request/fragments/metric',
     'model:bard-request/fragments/having',

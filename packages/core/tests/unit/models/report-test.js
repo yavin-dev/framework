@@ -3,7 +3,7 @@ import { moduleForModel, test } from 'ember-qunit';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
 import config from 'ember-get-config';
 import Mirage from 'ember-cli-mirage';
-import DeliverableItem from 'navi-reports/models/deliverable-item';
+import DeliverableItem from 'navi-core/models/deliverable-item';
 
 const { get, getOwner } = Ember;
 

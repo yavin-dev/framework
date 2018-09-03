@@ -6,9 +6,9 @@
 import Ember from 'ember';
 import DS from 'ember-data';
 import MF from 'model-fragments';
-import DeliverableItem from 'navi-reports/models/deliverable-item';
+import DeliverableItem from 'navi-core/models/deliverable-item';
 import { v1 } from 'ember-uuid';
-import hasVisualization from 'navi-reports/mixins/models/has-visualization';
+import hasVisualization from 'navi-core/mixins/models/has-visualization';
 import { validator, buildValidations } from 'ember-cp-validations';
 
 const { A:arr, get, computed } = Ember;

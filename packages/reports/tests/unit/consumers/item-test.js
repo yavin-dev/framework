@@ -21,7 +21,6 @@ moduleFor('consumer:item', 'Unit | Consumer | item', {
     'model:report',
     'model:user',
     'model:delivery-rule',
-    'model:dimension-age',
     'model:deliverable-item',
     'model:bard-request/request',
     'model:bard-request/fragments/metric',

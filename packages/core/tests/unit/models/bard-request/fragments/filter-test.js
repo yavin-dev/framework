@@ -2,7 +2,7 @@ import { moduleForModel, test } from 'ember-qunit';
 import { startMirage } from '../../../../../initializers/ember-cli-mirage';
 import wait from 'ember-test-helpers/wait';
 import config from 'ember-get-config';
-import { A } from '@ember/array';
+import { A as arr } from '@ember/array';
 import { get } from '@ember/object';
 import { getOwner } from '@ember/application';
 import { run } from '@ember/runloop';
@@ -10,14 +10,14 @@ import { run } from '@ember/runloop';
 var Store,
     MetadataService;
 
-const TextInput = A([
+const TextInput = arr([
   'mirror',
   'shield',
   'deku',
   'tree'
 ]);
 
-const AgeResponse = A([
+const AgeResponse = arr([
   {
     "id": "1",
     "description": "under 13"

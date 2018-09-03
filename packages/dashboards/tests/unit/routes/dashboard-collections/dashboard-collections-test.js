@@ -10,6 +10,8 @@ moduleFor('route:dashboard-collections/collection', 'Unit | Route | dashboard co
     'transform:moment',
     'model:dashboard',
     'model:user',
+    'model:delivery-rule',
+    'model:deliverable-item',
     'transform:fragment',
     'model:fragments/presentation',
     'adapter:dashboard',
@@ -18,7 +20,8 @@ moduleFor('route:dashboard-collections/collection', 'Unit | Route | dashboard co
     'adapter:dashboard-widget',
     'serializer:dashboard-widget',
     'config:environment',
-    'service:user'
+    'service:user',
+    'validator:presence'
   ],
   beforeEach(){
     setupMock();

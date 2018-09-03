@@ -6,7 +6,9 @@ moduleFor('helper:get-widget', 'Unit | Helper | get widget', {
     'model:dashboard-widget',
     'transform:moment',
     'serializer:dashboard-widget',
-    'adapter:dashboard-widget'
+    'adapter:dashboard-widget',
+    'validator:belongs-to',
+    'validator:presence'
   ],
 });
 
