@@ -123,11 +123,11 @@
                     {{#common-actions/delete
                         classNames='schedule-modal__delete-btn btn btn-secondary'
                         disabled=isSaving
-                        model=deliveryRule
+                        model=localDeliveryRule
                         modelName='schedule'
                         headerMsg=(concat 'Delete schedule for "' model.title '"')
                         warnMsg=(concat 'Are you sure you want to delete the schedule for this' localDeliveryRule.deliveryType)
-                        deleteAction=(pipe (action this.attrs.onDelete localDeliveryRule) (action 'closeModal'))
+                        deleteAction=(pipe (action 'onDelete') (action 'closeModal'))
                     }}
                       Delete
                     {{/common-actions/delete}}

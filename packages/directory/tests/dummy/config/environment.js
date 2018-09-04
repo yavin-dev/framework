@@ -23,7 +23,8 @@ module.exports = function(environment) {
       FEATURES: {
         enableDirectory: true,
         exploreWidget: true,
-        enableScheduleReports: true
+        enableScheduleReports: true,
+        enableScheduleDashboards: true
       }
     }
   };
