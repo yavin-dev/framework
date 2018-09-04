@@ -47,6 +47,7 @@ moduleFor('helper:reportify', 'Unit | Helper | reportify', {
     'validator:request-metrics',
     'validator:request-metric-exist',
     'validator:request-time-grain',
+    'validator:request-filters'
   ]
 });
 

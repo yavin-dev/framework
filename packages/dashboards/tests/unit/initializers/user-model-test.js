@@ -5,7 +5,7 @@ import { initialize as extendUserModel } from 'navi-dashboards/initializers/user
 
 let Store;
 
-moduleForModel('user', 'Unit | Model | user', {
+moduleForModel('user', 'Unit | Initializer | user', {
   needs: [
     'model:report',
     'model:delivery-rule',
@@ -44,7 +44,8 @@ moduleForModel('user', 'Unit | Model | user', {
     'adapter:dimensions/bard',
     'model:dashboard',
     'model:dashboard-collection',
-    'model:dashboard-widget'
+    'model:dashboard-widget',
+    'validator:presence'
   ],
 
   beforeEach() {

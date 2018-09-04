@@ -7,7 +7,7 @@ import Ember from 'ember';
 import DS from 'ember-data';
 import MF from 'model-fragments';
 import { v1 } from "ember-uuid";
-import hasVisualization from 'navi-reports/mixins/models/has-visualization';
+import hasVisualization from 'navi-core/mixins/models/has-visualization';
 import { validator, buildValidations } from 'ember-cp-validations';
 
 const { computed, get } = Ember;

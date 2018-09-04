@@ -22,7 +22,7 @@ export default [
     authorId: 'navi_user',
     createdOn: '2016-01-01 00:00:00',
     updatedOn: '2016-01-01 00:00:00',
-    deliveryRules: [1],
+    deliveryRules: [3],
     presentation: {
       version: 1,
       layout: [
