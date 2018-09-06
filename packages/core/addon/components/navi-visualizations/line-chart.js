@@ -224,9 +224,10 @@ export default Ember.Component.extend({
           builder.buildTooltip(seriesConfig, request),
           { renderer: owner.lookup('renderer:-dom') }
         );
-    if(!owner.lookup(registryEntry)) {
-      owner.register(registryEntry, tooltipComponent);
+    if(owner.lookup(registryEntry)) {
+      owner.unregister(registryEntry);
     }
+    owner.register(registryEntry, tooltipComponent);
 
     /*
      * Ember 3.x requires components to be registered with the container before they are instantiated.
