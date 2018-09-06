@@ -3,10 +3,8 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import Ember from 'ember';
 import BaseAdapter from 'navi-core/adapters/base-json-adapter';
-
-const { get } = Ember;
+import { get } from '@ember/object';
 
 export default BaseAdapter.extend({
 

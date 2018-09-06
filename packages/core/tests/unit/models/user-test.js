@@ -12,6 +12,7 @@ moduleForModel('user', 'Unit | Model | user', {
   needs: [
     'model:report',
     'model:delivery-rule',
+    'model:dashboard',
     'adapter:user',
     'adapter:report',
     'adapter:delivery-rule',
@@ -35,6 +36,8 @@ moduleForModel('user', 'Unit | Model | user', {
     'model:bard-request/fragments/logicalTable',
     'model:bard-request/fragments/metric',
     'model:bard-request/fragments/sort',
+    'model:fragments/presentation',
+    'model:deliverable-item',
     'model:metadata/table',
     'model:metadata/dimension',
     'model:metadata/metric',
@@ -56,7 +59,16 @@ moduleForModel('user', 'Unit | Model | user', {
     'validator:belongs-to',
     'validator:presence',
     'validator:interval',
-    'validator:has-many'
+    'validator:has-many',
+    'validator:chart-type',
+    'validator:request-metrics',
+    'validator:request-metric-exist',
+    'validator:request-time-grain',
+    'validator:request-dimension-order',
+    'validator:request-filters',
+    'validator:array-empty-value',
+    'validator:array-number',
+    'validator:recipients'
   ],
 
   beforeEach() {

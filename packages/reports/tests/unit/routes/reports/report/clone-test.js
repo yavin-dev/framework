@@ -8,6 +8,7 @@ moduleFor('route:reports/report/clone', 'Unit | Route | reports/report/clone', {
     'model:user',
     'model:report',
     'model:delivery-rule',
+    'model:dashboard',
     'service:navi-notifications'
   ]
 });

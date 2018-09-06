@@ -102,6 +102,8 @@ moduleForModel('report', 'Unit | Model | report', {
     'model:bard-request/fragments/logicalTable',
     'model:bard-request/fragments/metric',
     'model:bard-request/fragments/sort',
+    'model:fragments/presentation',
+    'model:dashboard',
     'model:delivery-rule',
     'model:deliverable-item',
     'model:metadata/table',

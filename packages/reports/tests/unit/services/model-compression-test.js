@@ -7,6 +7,7 @@ moduleFor('service:model-compression', 'Unit | Service | model compression', {
     'model:report',
     'model:user',
     'model:delivery-rule',
+    'model:dashboard',
     'transform:array',
     'transform:fragment-array',
     'transform:dimension',
