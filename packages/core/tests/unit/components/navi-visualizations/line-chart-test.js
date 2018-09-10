@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import { moduleForComponent, test } from 'ember-qunit';
+import { run } from '@ember/runloop';
 import moment from 'moment';
 import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
 import merge from 'lodash/merge';
@@ -455,7 +456,7 @@ test('tooltips', function(assert){
     seriesConfig: (component.get('seriesConfig')),
     request
   });
-  Ember.run(() => {
+  run(() => {
     let element = document.createElement('div');
     tooltip.appendTo(element);
   });
@@ -505,7 +506,7 @@ test('tooltips', function(assert){
     seriesConfig: (component.get('seriesConfig')),
     request
   });
-  Ember.run(() => {
+  run(() => {
     let element = document.createElement('div');
     tooltip.appendTo(element);
   });
