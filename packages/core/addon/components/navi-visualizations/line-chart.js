@@ -16,6 +16,7 @@ import layout from '../../templates/components/navi-visualizations/line-chart';
 import numeral from 'numeral';
 import config from 'ember-get-config';
 import { inject as service } from '@ember/service';
+import { guidFor } from '@ember/object/internals';
 import merge from 'lodash/merge';
 
 const { computed, get, getOwner } = Ember;
@@ -212,11 +213,12 @@ export default Ember.Component.extend({
   /**
    * @property {Ember.Component} tooltipComponent - component used for rendering HTMLBars templates
    */
-  tooltipComponent: computed(function() {
+  tooltipComponent: computed('dataConfig', function() {
     let request = get(this, 'model.firstObject.request'),
         seriesConfig = get(this, 'seriesConfig.config'),
         seriesType = get(this, 'seriesConfig.type'),
-        registryEntry = `component:line-chart-${seriesType}-tooltip`,
+        elementId = guidFor(this),
+        registryEntry = `component:line-chart-${seriesType}-tooltip-${elementId}`,
         builder = get(this, 'builder'),
         owner = getOwner(this),
         tooltipComponent = Ember.Component.extend(
@@ -224,11 +226,10 @@ export default Ember.Component.extend({
           builder.buildTooltip(seriesConfig, request),
           { renderer: owner.lookup('renderer:-dom') }
         );
-    if(owner.lookup(registryEntry)) {
-      owner.unregister(registryEntry);
+    if(!owner.lookup(registryEntry)) {
+      owner.register(registryEntry, tooltipComponent);
     }
-    owner.register(registryEntry, tooltipComponent);
-
+    
     /*
      * Ember 3.x requires components to be registered with the container before they are instantiated.
      * Use the factory that has been registered instead of an anonymous component.

@@ -13,6 +13,8 @@ moduleForComponent('navi-visualizations/line-chart', 'Unit | Component | line ch
   needs: [
     'helper:format-chart-tooltip-date',
     'helper:metric-format',
+    'helper:tooltip-value-formatter',
+    'helper:object-at',
     'model:metadata/table',
     'model:metadata/time-grain',
     'model:metadata/dimension',
@@ -268,7 +270,7 @@ test('config', function(assert){
   assert.deepEqual(component.get('config'),
     merge({}, defaultConfig, dimensionChartType, yAxislabelOptions, { tooltip: component.get('chartTooltip') }),
     'Component displays y-axis label for a non-metric chart');
-
+  
   //set the chart type to be metric
   component.set('options', {
     axis: {
@@ -375,4 +377,139 @@ test('single data point', function(assert) {
       }
     },
     'the point radius is 0 for a multiple data points');
+});
+
+test('tooltips', function(assert){
+  let response = {
+        rows: [
+          {
+            'dateTime': '2016-05-30 00:00:00.000',
+            'uniqueIdentifier': 172933788,
+            'totalPageViews': 3669828357
+          },
+          {
+            'dateTime': '2016-05-31 00:00:00.000',
+            'uniqueIdentifier': 183206656,
+            'totalPageViews': 4088487125
+          },
+          {
+            'dateTime': '2016-06-01 00:00:00.000',
+            'uniqueIdentifier': 183380921,
+            'totalPageViews': 4024700302
+          },
+          {
+            'dateTime': '2016-06-02 00:00:00.000',
+            'uniqueIdentifier': 180559793,
+            'totalPageViews': 3950276031
+          },
+          {
+            'dateTime': '2016-06-03 00:00:00.000',
+            'uniqueIdentifier': 172724594,
+            'totalPageViews': 3697156058
+          }
+        ]
+      },
+      request = {
+        logicalTable: {
+          timeGrain: 'day'
+        },
+        intervals: [
+          {
+            start: '2016-05-30 00:00:00.000',
+            end: '2016-06-04 00:00:00.000'
+          }
+        ]
+      };
+
+  let component = this.subject(),
+      model = { request, response };
+
+  component.set('model', Ember.A([ model ]));
+  component.set('options', {
+    axis: {
+      y: {
+        series: {
+          type: 'metric',
+          config: {
+            metrics: [ {metric: 'totalPageViews', parameters: {}, canonicalName: 'totalPageViews'} ]
+          }
+        }
+      }
+    }
+  });
+
+  component.get('dataConfig');
+
+  // get tooltip and see if it has the right rowData
+  let tooltipComp = component.get('tooltipComponent');
+  let tooltip = tooltipComp.create({
+    tooltipData: [{
+      name: 'Unique Identifiers',
+      id: 'Unique Identifiers',
+      index: 5,
+      seriesIndex: 0,
+      value: 172933788,
+      x: '2016-06-03 00:00:00.000'
+    }],
+    x: '2016-06-03 00:00:00.000',
+    seriesConfig: (component.get('seriesConfig')),
+    request
+  });
+  Ember.run(() => {
+    let element = document.createElement('div');
+    tooltip.appendTo(element);
+  });
+  assert.ok(tooltip.get('rowData.firstObject').hasOwnProperty('uniqueIdentifier'), 
+    'Initial tooltip render has the right rowData');
+
+  //new data
+  let response2 = {
+    rows: [
+      {
+        'dateTime': '2016-05-30 00:00:00.000',
+        'navClicks': 172933788,
+      },
+      {
+        'dateTime': '2016-05-31 00:00:00.000',
+        'navClicks': 4088487125
+      },
+      {
+        'dateTime': '2016-06-01 00:00:00.000',
+        'navClicks': 183380921,
+      },
+      {
+        'dateTime': '2016-06-02 00:00:00.000',
+        'navClicks': 3950276031
+      },
+      {
+        'dateTime': '2016-06-03 00:00:00.000',
+        'navClicks': 172724594,
+      }
+    ]
+  };
+
+  component.set('model', Ember.A([{request, response: response2}]));
+
+  component.get('dataConfig');
+  tooltipComp = component.get('tooltipComponent');
+  tooltip = tooltipComp.create({
+    tooltipData: [{
+      name: 'Nav Clicks',
+      id: 'Nav Clicks',
+      index: 5,
+      seriesIndex: 0,
+      value: 172933788,
+      x: '2016-06-03 00:00:00.000'
+    }],
+    x: '2016-06-03 00:00:00.000',
+    seriesConfig: (component.get('seriesConfig')),
+    request
+  });
+  Ember.run(() => {
+    let element = document.createElement('div');
+    tooltip.appendTo(element);
+  });
+  assert.ok(tooltip.get('rowData.firstObject').hasOwnProperty('navClicks'), 
+    'New response has tooltip render has the right rowData');
+
 });
