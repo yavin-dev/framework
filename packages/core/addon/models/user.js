@@ -8,5 +8,7 @@ import DS from 'ember-data';
 export default DS.Model.extend({
   reports:            DS.hasMany('report', {async: true, inverse: 'author'}),
   favoriteReports:    DS.hasMany('report', {async: true, inverse: null}),
-  deliveryRules:      DS.hasMany('deliveryRule', {async: true, inverse: 'owner'})
+  deliveryRules:      DS.hasMany('deliveryRule', {async: true, inverse: 'owner'}),
+  dashboards:         DS.hasMany('dashboard', {async: true, inverse: 'author'}),
+  favoriteDashboards: DS.hasMany('dashboard', {async: true, inverse: null})
 });

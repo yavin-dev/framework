@@ -47,6 +47,8 @@ moduleForModel('dashboard-widget', 'Unit | Model | dashboard widget', {
     'validator:chart-type',
     'validator:request-metrics',
     'validator:request-dimension-order',
+    'validator:request-time-grain',
+    'validator:request-filters',
     'service:bard-metadata',
     'serializer:bard-request/request',
     'serializer:bard-request/fragments/logical-table',

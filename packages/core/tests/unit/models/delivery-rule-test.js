@@ -31,6 +31,7 @@ moduleForModel('delivery-rule', 'Unit | Model | delivery rule', {
     'model:deliverable-item',
     'model:delivery-rule',
     'model:report',
+    'model:dashboard',
     'adapter:report',
     'adapter:user',
     'adapter:delivery-rule',
