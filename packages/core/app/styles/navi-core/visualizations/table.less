@@ -56,9 +56,9 @@
     padding: 0 0 5px;
     margin: @row-margin;
     text-transform: capitalize;
-    /** Update word-break to break-all, this will cause very long name
-        to be broken when used as titled to column. **/
-    word-break: break-all;
+    /** Break long column titles to prevent overflow. Single words may be broken at arbitrary
+        points only if there are no otherwise acceptable break points in the line. **/
+    word-break: break-word;
 
     &--edit {
       & > div:first-of-type {
