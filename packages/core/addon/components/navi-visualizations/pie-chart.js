@@ -122,7 +122,8 @@ export default Component.extend({
    * @property {Component} tooltipComponent - component used for rendering HTMLBars templates
    */
   tooltipComponent: computed(function() {
-    const registryEntry = 'component:pie-chart-tooltip';
+    const elementId = guidFor(this);
+    const registryEntry = `component:pie-chart-tooltip-${elementId}`;
     let owner = getOwner(this),
         byXSeries = get(this, 'builder.byXSeries'),
         tooltipComponent = Component.extend(
@@ -144,7 +145,7 @@ export default Component.extend({
     if(!owner.lookup(registryEntry)) {
       owner.register(registryEntry, tooltipComponent);
     }
-
+    
     /*
      * Ember 3.x requires components to be registered with the container before they are instantiated.
      * Use the factory that has been registered instead of an anonymous component.
