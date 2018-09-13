@@ -119,12 +119,20 @@ export default Component.extend({
   }),
 
   /**
+   * @property {String} tooltipComponentName - name of the tooltip component
+   */
+  tooltipComponentName: computed(function() {
+    const guid = guidFor(this);
+    return `pie-chart-tooltip-${guid}`;
+  }),
+
+  /**
    * @property {Component} tooltipComponent - component used for rendering HTMLBars templates
    */
   tooltipComponent: computed(function() {
-    const elementId = guidFor(this);
-    const registryEntry = `component:pie-chart-tooltip-${elementId}`;
     let owner = getOwner(this),
+        tooltipComponentName = get(this, 'tooltipComponentName'),
+        registryEntry = `component:${tooltipComponentName}`,
         byXSeries = get(this, 'builder.byXSeries'),
         tooltipComponent = Component.extend(
           owner.ownerInjection(),
@@ -145,7 +153,7 @@ export default Component.extend({
     if(!owner.lookup(registryEntry)) {
       owner.register(registryEntry, tooltipComponent);
     }
-    
+
     /*
      * Ember 3.x requires components to be registered with the container before they are instantiated.
      * Use the factory that has been registered instead of an anonymous component.
@@ -188,7 +196,19 @@ export default Component.extend({
    * @override
    */
   willDestroy() {
+    this._super(...arguments)
     this._removeMetricLabel();
+    this._removeTooltipFromRegistry();
+  },
+
+  /**
+   * Removes tooltip component from registry
+   * @method _removeTooltipFromRegistry
+   * @private
+   */
+  _removeTooltipFromRegistry() {
+    const tooltipComponentName = get(this, 'tooltipComponentName');
+    getOwner(this).unregister(`component:${tooltipComponentName}`);
   },
 
   /**
