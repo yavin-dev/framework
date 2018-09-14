@@ -35,9 +35,9 @@ import javax.persistence.OneToMany
 @Table(name="custom_dashboards")
 @Include(rootLevel = true, type = "dashboards")
 @SharePermission(expression = "everybody")
+@CreatePermission(expression = "is an author")
+@UpdatePermission(expression = "is an author now OR is an editor now")
 @DeletePermission(expression = "is an author now")
-@CreatePermission(expression = "is an author now OR is an editor now")
-@UpdatePermission(expression = "is an author now")
 class Dashboard : HasAuthor, HasEditors {
     @get:Id
     @get:GeneratedValue(strategy = GenerationType.IDENTITY)
