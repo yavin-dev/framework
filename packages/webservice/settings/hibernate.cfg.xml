@@ -14,5 +14,7 @@
         <property name="current_session_context_class">thread</property>
         <mapping class="com.yahoo.navi.ws.models.beans.User" />
         <mapping class="com.yahoo.navi.ws.models.beans.Report" />
+        <mapping class="com.yahoo.navi.ws.models.beans.Dashboard" />
+        <mapping class="com.yahoo.navi.ws.models.beans.DashboardWidget" />
     </session-factory>
 </hibernate-configuration>

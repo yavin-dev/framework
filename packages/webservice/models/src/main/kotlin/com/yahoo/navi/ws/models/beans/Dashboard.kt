@@ -7,11 +7,15 @@ import com.yahoo.elide.annotation.CreatePermission
 import com.yahoo.elide.annotation.UpdatePermission
 import com.yahoo.elide.annotation.ReadPermission
 import com.yahoo.elide.annotation.ComputedAttribute
+import com.yahoo.navi.ws.models.beans.fragments.DashboardPresentation
 import com.yahoo.navi.ws.models.utils.FormatDate
 
 import org.hibernate.annotations.Generated
 import org.hibernate.annotations.GenerationTime
+import org.hibernate.annotations.Parameter
+import org.hibernate.annotations.Type
 import java.util.Date
+import javax.persistence.CascadeType
 
 import javax.persistence.Entity
 import javax.persistence.Table
@@ -25,10 +29,11 @@ import javax.persistence.GenerationType
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
 import javax.persistence.ManyToMany
+import javax.persistence.OneToMany
 
 @Entity
 @Table(name="custom_dashboards")
-@Include(rootLevel = true, type = "users")
+@Include(rootLevel = true, type = "dashboards")
 @SharePermission(expression = "everybody")
 @DeletePermission(expression = "is an author now")
 @CreatePermission(expression = "is an author now OR is an editor now")
@@ -71,12 +76,12 @@ class Dashboard : HasAuthor, HasEditors {
         @ComputedAttribute
         get() = FormatDate.format(updateDate)
 
-    /*@get:Column(name = "presentation", columnDefinition = "MEDIUMTEXT")
-    @get:Type(type = "com.yahoo.uad.ui.persistence.types.JsonType", parameters = {
-        @Parameter(name = "class", value = "com.yahoo.navi.ws.models.beans.fragments.DashboardPresentation")
-    })
-    var presentation: DashboardPresentation*/
+    @get:Column(name = "presentation", columnDefinition = "MEDIUMTEXT")
+    @get:Type(type = "com.yahoo.navi.ws.models.types.JsonType", parameters = arrayOf(
+            Parameter(name = "class", value = "com.yahoo.navi.ws.models.beans.fragments.DashboardPresentation")
+    ))
+    var presentation: DashboardPresentation? = null
 
-    /*@get:OneToMany(mappedBy = "dashboard", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    var widgets: Collection<DashboardWidget>*/
+    @get:OneToMany(mappedBy = "dashboard", cascade = arrayOf(CascadeType.REMOVE), orphanRemoval = true)
+    var widgets: Collection<DashboardWidget> = emptyList()
 }

@@ -88,7 +88,7 @@ class JsonType : UserType, ParameterizedType {
         try {
             this.objectClass = Class.forName(properties!!.getProperty("class"))
         } catch (e: ClassNotFoundException) {
-            throw RuntimeException("Unable set the `class` parameter for serialization/deserialization")
+            throw RuntimeException("Unable set the `class` parameter for serialization/deserialization: " + properties!!.getProperty("class"), e)
         }
     }
 }

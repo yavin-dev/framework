@@ -17,6 +17,10 @@ import javax.persistence.Entity
 import javax.persistence.Table
 import javax.persistence.Id
 import javax.persistence.Column
+import javax.persistence.JoinColumn
+import javax.persistence.JoinTable
+import javax.persistence.ManyToMany
+import javax.persistence.OneToMany
 import javax.persistence.Temporal
 import javax.persistence.TemporalType
 import javax.persistence.Transient
@@ -43,4 +47,34 @@ class User {
         @Transient
         @ComputedAttribute
         get() = FormatDate.format(createDate)
+
+    @get:OneToMany(mappedBy = "author")
+    var reports: Collection<Report> = arrayListOf()
+
+    @get:ManyToMany
+    @get:JoinTable(
+        name = "map_user_to_fav_reports",
+        joinColumns = arrayOf(JoinColumn( name = "user_id", referencedColumnName = "id")),
+        inverseJoinColumns = arrayOf(JoinColumn( name = "report_id", referencedColumnName = "id"))
+    )
+    var favoriteReports: Collection<Report> = arrayListOf()
+
+    @get:OneToMany(mappedBy = "author")
+    var dashboards: Collection<Dashboard> = arrayListOf()
+
+    @get:UpdatePermission(expression = "is an author")
+    @get:ManyToMany
+    @get:JoinTable(
+        name = "map_editor_to_dashboard_collections",
+        joinColumns=arrayOf(JoinColumn(name = "user_id", referencedColumnName = "id")),
+        inverseJoinColumns = arrayOf(JoinColumn(name = "dashboard_collection_id", referencedColumnName = "id")))
+    var editingDashboards: Collection<Dashboard> = arrayListOf()
+
+    @get:ManyToMany
+    @JoinTable(
+        name = "map_user_to_fav_dashboards",
+        joinColumns = arrayOf(JoinColumn( name = "user_id", referencedColumnName = "id")),
+        inverseJoinColumns = arrayOf(JoinColumn(name = "dashboard_id", referencedColumnName = "id"))
+    )
+    var favoriteDashboards: Collection<Dashboard> = arrayListOf()
 }
