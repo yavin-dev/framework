@@ -3,6 +3,7 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize as injectC3Enhancements} from 'navi-core/initializers/inject-c3-enhancements';
 import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
+import { getOwner } from '@ember/application';
 
 const TEMPLATE = hbs`
     {{navi-visualizations/pie-chart
@@ -98,7 +99,7 @@ moduleForComponent('navi-visualizations/pie-chart', 'Integration | Component | p
     injectC3Enhancements();
     this.set('model', Model);
     setupMock();
-    MetadataService = Ember.getOwner(this).lookup('service:bard-metadata');
+    MetadataService = getOwner(this).lookup('service:bard-metadata');
     return MetadataService.loadMetadata();
   },
   afterEach() {
@@ -294,6 +295,46 @@ test('parameterized metric renders correctly', function(assert) {
   assert.equal(this.$('.c3-target-Under-13 text').text().trim(),
     '60.00%',
     'Percentage label shown on slice is formatted properly for `Under 13`');
+});
 
+test('cleanup tooltip', function(assert) {
+  assert.expect(2);
 
+  const template = hbs`
+  {{#if shouldRender}}
+    {{navi-visualizations/pie-chart
+      model=model
+      options=options
+    }}
+  {{/if}}`;
+
+  this.set('options', {
+    series: {
+      config: {
+        type: 'dimension',
+        metric: { metric: 'revenue', parameters: { currency: 'USD' }, canonicalName: 'revenue(currency=USD)'
+        },
+        dimensionOrder: ['age'],
+        dimensions: [
+          { name: 'All Other', values: {age: '-3'} },
+          { name: 'Under 13', values: {age: '1'} }
+        ]
+      }
+    }
+  });
+
+  const findTooltipComponent = () => Object.keys(getOwner(this).__registry__.registrations).
+    find(r => r.startsWith('component:pie-chart-tooltip-'));
+
+  this.set('model', Model);
+  this.set('shouldRender', true);
+  this.render(template);
+
+  assert.ok(findTooltipComponent(),
+    'tooltip component is registered when chart is created');
+
+  this.set('shouldRender', false);
+
+  assert.notOk(findTooltipComponent(),
+    'tooltip component is unregistered when chart is destroyed');
 });

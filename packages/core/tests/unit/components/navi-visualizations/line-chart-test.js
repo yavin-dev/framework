@@ -4,8 +4,8 @@ import { run } from '@ember/runloop';
 import moment from 'moment';
 import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
 import merge from 'lodash/merge';
+import { getOwner } from '@ember/application';
 
-const { getOwner } = Ember;
 
 let MetadataService;
 
@@ -271,7 +271,7 @@ test('config', function(assert){
   assert.deepEqual(component.get('config'),
     merge({}, defaultConfig, dimensionChartType, yAxislabelOptions, { tooltip: component.get('chartTooltip') }),
     'Component displays y-axis label for a non-metric chart');
-  
+
   //set the chart type to be metric
   component.set('options', {
     axis: {
@@ -460,7 +460,7 @@ test('tooltips', function(assert){
     let element = document.createElement('div');
     tooltip.appendTo(element);
   });
-  assert.ok(tooltip.get('rowData.firstObject').hasOwnProperty('uniqueIdentifier'), 
+  assert.ok(tooltip.get('rowData.firstObject').hasOwnProperty('uniqueIdentifier'),
     'Initial tooltip render has the right rowData');
 
   //new data
@@ -510,7 +510,7 @@ test('tooltips', function(assert){
     let element = document.createElement('div');
     tooltip.appendTo(element);
   });
-  assert.ok(tooltip.get('rowData.firstObject').hasOwnProperty('navClicks'), 
+  assert.ok(tooltip.get('rowData.firstObject').hasOwnProperty('navClicks'),
     'New response has tooltip render has the right rowData');
 
 });
