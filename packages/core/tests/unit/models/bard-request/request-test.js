@@ -149,6 +149,12 @@ moduleForModel('fragments-mock', 'Unit | Model Fragment | BardRequest - Request'
                     dimension: 'property',
                     operator: 'in',
                     values: [ '644700' ]
+                  },
+                  {
+                    dimension: 'multiSystemId',
+                    operator: 'in',
+                    field: 'key',
+                    values: ['12345']
                   }
                 ],
                 having: [{
@@ -262,7 +268,7 @@ test('Request Model Fragment', function(assert) {
 });
 
 test('Clone Request', function(assert) {
-  assert.expect(12);
+  assert.expect(13);
 
   return wait().then(() => {
     let mockModel = Store.peekRecord('fragments-mock', MODEL_TO_CLONE),
@@ -307,6 +313,10 @@ test('Clone Request', function(assert) {
      * 'Filter values should be cloned');
      */
 
+    assert.equal(request.get('filters').objectAt(1).get('field'), 
+      'key',
+      'clone field when it is present');
+  
     assert.deepEqual(request.get('sort.firstObject.metric.metric'),
       { name: 'dateTime' },
       'The dateTime property in sort is set with correct metadata');
