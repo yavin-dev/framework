@@ -1,7 +1,6 @@
 import Ember from 'ember';
 import { moduleForModel, test } from 'ember-qunit';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
-import { initialize as extendUserModel } from 'navi-dashboards/initializers/user-model';
 
 let Store;
 
@@ -30,7 +29,6 @@ moduleForModel('dashboard', 'Unit | Model | dashboard', {
     'validator:recipients',
   ],
   beforeEach(){
-    extendUserModel();
     Store = this.store();
     setupMock();
     return this.container.lookup('service:user').findUser();

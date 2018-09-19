@@ -242,7 +242,7 @@ export default Ember.Object.extend({
    * @returns {Object} object with tooltip template and rendering context
    */
   buildTooltip() {
-    let byXSeries = get(this, 'byXSeries');
+    let builder = this;
 
     return Ember.Mixin.create({
       layout: tooltipLayout,
@@ -253,7 +253,7 @@ export default Ember.Object.extend({
       rowData: Ember.computed('x', 'tooltipData', function() {
         return get(this, 'tooltipData').map(series => {
           // Get the full data for this combination of x + series
-          let dataForSeries = byXSeries.getDataForKey(get(this, 'x') + series.name) || [];
+          let dataForSeries = get(builder, 'byXSeries').getDataForKey(get(this, 'x') + series.name) || [];
 
           return dataForSeries[0];
         });

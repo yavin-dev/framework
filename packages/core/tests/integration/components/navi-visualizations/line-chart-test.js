@@ -5,10 +5,9 @@ import hbs from 'htmlbars-inline-precompile';
 import { initialize as injectC3Enhancements} from 'navi-core/initializers/inject-c3-enhancements';
 import DateUtils from 'navi-core/utils/date';
 import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
+import { getOwner } from '@ember/application';
 
 let MetadataService;
-
-const { getOwner } = Ember;
 
 const TEMPLATE = hbs`
   {{navi-visualizations/line-chart
@@ -610,4 +609,48 @@ test('Metric series legend', function(assert) {
       'Revenue (USD)'
     ],
     'Metric display names are used properly for parameterized and non-parameterized metrics in the legend');
+});
+
+test('cleanup tooltip', function(assert) {
+  assert.expect(2);
+
+  const template = hbs`
+  {{#if shouldRender}}
+    {{navi-visualizations/line-chart
+      model=model
+      options=options
+    }}
+  {{/if}}`;
+
+  this.set('options', {
+    axis: {
+      y: {
+        series: {
+          type: 'metric',
+          config: {
+            metrics: [{
+              metric: 'uniqueIdentifier',
+              canonicalName: 'uniqueIdentifier',
+              toJSON() { return this; }
+            }]
+          }
+        }
+      }
+    }
+  });
+
+  const findTooltipComponent = () => Object.keys(getOwner(this).__registry__.registrations).
+    find(r => r.startsWith('component:line-chart-metric-tooltip-'));
+
+  this.set('model', Model);
+  this.set('shouldRender', true);
+  this.render(template);
+
+  assert.ok(findTooltipComponent(),
+    'tooltip component is registered when chart is created');
+
+  this.set('shouldRender', false);
+
+  assert.notOk(findTooltipComponent(),
+    'tooltip component is unregistered when chart is destroyed');
 });

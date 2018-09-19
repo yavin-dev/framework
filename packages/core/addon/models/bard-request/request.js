@@ -538,6 +538,7 @@ export default Fragment.extend(Validations, {
       filters: clonedRequest.filters.map(filter =>
         store.createFragment('bard-request/fragments/filter', {
           dimension: metadataService.getById('dimension', filter.dimension),
+          field: filter.field,
           operator: filter.operator,
           rawValues: filter.values
         })
