@@ -2,7 +2,11 @@
 <div class='navi-report-widget'>
     {{!-- Breadcrumb --}}
     <div class='navi-report-widget__breadcrumb'>
-        {{#link-to 'dashboards' class='navi-report-widget__breadcrumb-link'}}Dashboards{{/link-to}}
+        {{#if (feature-flag 'enableDirectory')}}
+            {{#link-to 'directory.my-directory' class='navi-report-widget__breadcrumb-link'}}Directory{{/link-to}}
+        {{else}}
+            {{#link-to 'dashboards' class='navi-report-widget__breadcrumb-link'}}Dashboards{{/link-to}}
+        {{/if}}
         {{navi-icon 'angle-right'}}
         {{#with (model-for 'dashboards.dashboard') as |parentDashboard|}}
           {{#link-to 'dashboards.dashboard' parentDashboard.id class='navi-report-widget__breadcrumb-link'}}

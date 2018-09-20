@@ -19,6 +19,10 @@ Router.map(function() {
     });
   });
 
+  this.route('directory', function() {
+    this.route('my-directory');
+  });
+
   this.route('reportCollections', function() {
     this.route('collection', {path: '/:collectionId'});
   });

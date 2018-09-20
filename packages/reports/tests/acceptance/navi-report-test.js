@@ -952,7 +952,7 @@ test('Visiting Reports Route From Breadcrumb', function(assert) {
 
   andThen(() => {
     assert.ok(currentURL().endsWith('/reports'),
-      'When "Reports" clicked on the Breadcrumb link, it lands to "/reports" index page' );
+      'When "Directory" clicked on the Breadcrumb link, it lands to "my-directory" page' );
   });
 });
 
@@ -971,7 +971,7 @@ test('Revert report changes when exiting from route', function(assert) {
   click('.navi-report__breadcrumb-link');
 
   //Navigate back to `Report 12`
-  click('.navi-collection a:contains(Report 12)');
+  visit('/reports/4/view');
 
   andThen(() => {
     assert.ok($('.filter-builder__subject:contains(Day)').is(':visible'),

@@ -66,11 +66,11 @@ test('Breadcrumb', function(assert) {
         secondBreadcrumbItem = find('.navi-report-widget__breadcrumb-link:eq(1)');
 
     assert.equal(firstBreadcrumbItem.text().trim(),
-      'Dashboards',
-      'Breadcrumb begins with "Dashboards" link');
+      'Directory',
+      'Breadcrumb begins with "Directory" link');
 
-    assert.ok(firstBreadcrumbItem.attr('href').endsWith('/dashboards'),
-      'First breadcrumb item links to dashboards route');
+    assert.ok(firstBreadcrumbItem.attr('href').endsWith('/directory/my-directory'),
+      'First breadcrumb item links to my-directory route');
 
     assert.equal(secondBreadcrumbItem.text().trim(),
       'Tumblr Goals Dashboard',
