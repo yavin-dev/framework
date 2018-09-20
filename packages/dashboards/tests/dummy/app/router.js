@@ -7,6 +7,10 @@ const Router = EmberRouter.extend({
 });
 
 Router.map(function() {
+  this.route('directory', function() {
+    this.route('my-directory');
+  });
+
   this.route('dashboardCollections', function() {
     this.route('collection', { path: '/:collectionId' });
   });

@@ -7,6 +7,7 @@ import { inject } from '@ember/service';
 import { get, set } from '@ember/object';
 import { A as arr } from '@ember/array';
 import { run } from '@ember/runloop';
+import { isPresent } from '@ember/utils';
 
 export default Route.extend({
   /**
@@ -56,7 +57,9 @@ export default Route.extend({
         await this._fetchFromUser(user, 'favoriteReports') :
         await this._fetchFromUser(user, 'reports');
 
-      run(() => items.push(...reports.toArray()));
+      if(isPresent(reports)) {
+        run(() => items.push(...reports.toArray()));
+      }
     }
     if(type === null || type === 'dashboards'){
       await run(async () => {
@@ -64,7 +67,9 @@ export default Route.extend({
           await this._fetchFromUser(user, 'favoriteDashboards') :
           await this._fetchFromUser(user, 'dashboards');
 
-        items.push(...dashboards.toArray())
+        if(isPresent(dashboards)) {
+          items.push(...dashboards.toArray());
+        }
       });
     }
 
