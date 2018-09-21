@@ -82,6 +82,7 @@
     "ember-truth-helpers": "^2.0.0",
     "ember-uuid": "^1.0.0",
     "ember-validators": "^1.1.1",
+    "eslint-config-prettier": "^3.0.1",
     "liquid-fire": "^0.29.2",
     "loader.js": "^4.2.3",
     "navi-core": "^0.0.0",
