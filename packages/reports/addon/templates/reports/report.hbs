@@ -2,7 +2,7 @@
 <div class='navi-report'>
     <div class='navi-report__breadcrumb'>
         {{#if (feature-flag 'enableDirectory')}}
-            {{#link-to 'directory.my-directory' class='navi-report__breadcrumb-link'}}Directory{{/link-to}}
+            {{#link-to 'directory.my-data' class='navi-report__breadcrumb-link'}}Directory{{/link-to}}
         {{else}}
             {{#link-to 'reports' class='navi-report__breadcrumb-link'}}Reports{{/link-to}}
         {{/if}}

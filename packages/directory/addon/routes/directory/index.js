@@ -10,6 +10,6 @@ export default Route.extend({
      * @overrride
      */
     redirect() {
-        this.transitionTo('directory.my-directory');
+        this.transitionTo('directory.my-data');
     }
 });

@@ -9,7 +9,7 @@ module('Acceptance | directory', function(hooks) {
     assert.expect(1);
     
     await visit('/directory');
-    assert.equal(currentURL(), '/directory/my-directory', 
-      'Directory route redirects to `my-directory` automatically');
+    assert.equal(currentURL(), '/directory/my-data', 
+      'Directory route redirects to `my-data` automatically');
   });
 });

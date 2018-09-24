@@ -1,7 +1,7 @@
 {{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class='navi-dashboard__breadcrumb'>
         {{#if (feature-flag 'enableDirectory')}}
-            {{#link-to 'directory.my-directory' class='navi-dashboard__breadcrumb-link'}}Directory{{/link-to}}
+            {{#link-to 'directory.my-data' class='navi-dashboard__breadcrumb-link'}}Directory{{/link-to}}
         {{else}}
             {{#link-to 'dashboards' class='navi-dashboard__breadcrumb-link'}}Dashboards{{/link-to}}
         {{/if}}

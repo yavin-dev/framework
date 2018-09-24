@@ -3,7 +3,7 @@
     {{!-- Breadcrumb --}}
     <div class='navi-report-widget__breadcrumb'>
         {{#if (feature-flag 'enableDirectory')}}
-            {{#link-to 'directory.my-directory' class='navi-report-widget__breadcrumb-link'}}Directory{{/link-to}}
+            {{#link-to 'directory.my-data' class='navi-report-widget__breadcrumb-link'}}Directory{{/link-to}}
         {{else}}
             {{#link-to 'dashboards' class='navi-report-widget__breadcrumb-link'}}Dashboards{{/link-to}}
         {{/if}}
