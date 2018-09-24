@@ -13,6 +13,7 @@ import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
+import javax.persistence.OneToOne
 import javax.persistence.Table
 
 
@@ -23,7 +24,7 @@ import javax.persistence.Table
 @Entity(name = "Report")
 @Include(rootLevel = true, type = "reports")
 @Table(name = "custom_reports")
-@SharePermission(expression = "everybody")
+@SharePermission
 @CreatePermission(expression = "is an author")
 @UpdatePermission(expression = "is an author now")
 @DeletePermission(expression = "is an author now")

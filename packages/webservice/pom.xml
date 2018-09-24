@@ -22,7 +22,7 @@
     <dependency>
       <groupId>com.yahoo.elide</groupId>
       <artifactId>elide-standalone</artifactId>
-      <version>3.2.2</version>
+      <version>4.2.7</version>
     </dependency>
     <dependency>
         <groupId>org.jetbrains.kotlin</groupId>

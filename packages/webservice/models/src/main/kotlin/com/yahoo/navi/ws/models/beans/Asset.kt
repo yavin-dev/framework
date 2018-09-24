@@ -16,6 +16,9 @@ import javax.persistence.Inheritance
 import javax.persistence.InheritanceType
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
+import javax.persistence.OneToMany
+import javax.persistence.OneToOne
+import javax.persistence.PrimaryKeyJoinColumn
 import javax.persistence.Temporal
 import javax.persistence.TemporalType
 import javax.persistence.Transient
@@ -55,4 +58,7 @@ abstract class Asset {
         @Transient
         @ComputedAttribute
         get() = FormatDate.format(updateDate)
+
+    @get:OneToMany(mappedBy = "deliveredItem")
+    var deliveryRules: Collection<DeliveryRule> = arrayListOf()
 }

@@ -28,7 +28,7 @@ import javax.persistence.Transient
 @Entity
 @Table(name="navi_users")
 @Include(rootLevel = true, type = "users")
-@SharePermission(expression = "everybody")
+@SharePermission
 @DeletePermission(expression = "nobody")
 @CreatePermission(expression = "is the same user")
 @UpdatePermission(expression = "is the same user now")

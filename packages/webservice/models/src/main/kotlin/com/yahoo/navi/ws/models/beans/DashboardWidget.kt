@@ -35,7 +35,7 @@ import javax.persistence.Transient
 @Entity
 @Include(type = "dashboardWidgets")
 @Table(name = "dashboard_widgets")
-@SharePermission(expression = "everybody")
+@SharePermission
 @CreatePermission(expression = "is an author OR is an editor")
 @UpdatePermission(expression = "is an author now OR is an editor now")
 @DeletePermission(expression = "is an author now OR is an editor now")

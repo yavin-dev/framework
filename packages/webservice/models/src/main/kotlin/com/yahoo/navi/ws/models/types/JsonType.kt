@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.hibernate.HibernateException
 import org.hibernate.engine.spi.SessionImplementor
+import org.hibernate.engine.spi.SharedSessionContractImplementor
 import org.hibernate.usertype.ParameterizedType
 import org.hibernate.usertype.UserType
 import java.io.IOException
@@ -37,7 +38,7 @@ class JsonType : UserType, ParameterizedType {
         return Objects.hashCode(obj)
     }
 
-    override fun nullSafeGet(resultSet: ResultSet?, names: Array<out String>?, session: SessionImplementor, obj: Any?): Any? {
+    override fun nullSafeGet(resultSet: ResultSet?, names: Array<out String>?, session: SharedSessionContractImplementor, obj: Any?): Any? {
         if(resultSet!!.getString(names!![0]) != null) {
             val rawJson = resultSet.getString(names[0])
             try {
@@ -50,7 +51,7 @@ class JsonType : UserType, ParameterizedType {
         return null
     }
 
-    override fun nullSafeSet(stmt: PreparedStatement?, value: Any?, index: Int, session: SessionImplementor?) {
+    override fun nullSafeSet(stmt: PreparedStatement?, value: Any?, index: Int, session: SharedSessionContractImplementor?) {
         if(value == null) {
             stmt!!.setNull(index, Types.NULL)
         } else {

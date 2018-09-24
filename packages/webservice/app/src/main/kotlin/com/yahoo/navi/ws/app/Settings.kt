@@ -8,7 +8,7 @@ import com.yahoo.navi.ws.models.permissions.PermissionExpressions
 
 class Settings : ElideStandaloneSettings {
     override fun getCheckMappings(): MutableMap<String, Class<out Check<out Any>>> {
-        return PermissionExpressions.expressions;
+        return PermissionExpressions.expressions
     }
 
     override fun getFilters(): MutableList<Class<out Any>> {

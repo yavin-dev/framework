@@ -22,7 +22,7 @@ import javax.persistence.OneToMany
 @Entity(name = "Dashboard")
 @Table(name="custom_dashboards")
 @Include(rootLevel = true, type = "dashboards")
-@SharePermission(expression = "everybody")
+@SharePermission
 @CreatePermission(expression = "is an author")
 @UpdatePermission(expression = "is an author now OR is an editor now")
 @DeletePermission(expression = "is an author now")

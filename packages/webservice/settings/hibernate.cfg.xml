@@ -16,5 +16,6 @@
         <mapping class="com.yahoo.navi.ws.models.beans.Report" />
         <mapping class="com.yahoo.navi.ws.models.beans.Dashboard" />
         <mapping class="com.yahoo.navi.ws.models.beans.DashboardWidget" />
+        <mapping class="com.yahoo.navi.ws.models.beans.DeliveryRule" />
     </session-factory>
 </hibernate-configuration>

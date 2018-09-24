@@ -60,17 +60,19 @@ object Author {
                 return check(record, requestScope)
             }
 
-            val original: Any = changeSpec.get().original
+            val original: Any? = changeSpec.get().original
             val modified: Any? = changeSpec.get().modified
 
             val user = requestScope.user!!.opaqueUser as Principal
 
-            if(original is Collection<*> && modified is Collection<*>) {
+            if(original is Collection<*> && modified is Collection<*>
+                && original.all { orig -> orig is HasAuthor} && modified.all { mod -> mod is HasAuthor}) {
                 val records: List<HasAuthor> = modified.subtract(original).map{ it -> it as HasAuthor}
                 return records.all { it -> it.author!!.id == user.name }
             } else {
-                if(modified != null) {
-                    return check(modified as HasAuthor, requestScope);
+                val resource: Any? = changeSpec.get().resource?.`object`
+                if(resource != null) {
+                    return check(resource as HasAuthor, requestScope)
                 }
             }
             return true
