@@ -3,39 +3,35 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
- .icon {
-   color: @navi-blue-300;
-   margin-right: 10px;
- }
+.icon {
+  color: @navi-blue-300;
+  margin-right: 10px;
+}
 
- .arrow-icon {
-   position: relative;
-   top: 3px;
- }
+.arrow-icon {
+  position: relative;
+  top: 3px;
+}
 
 .dir-sidebar {
   color: @navi-blue-300;
   display: grid;
   height: fit-content;
 
-  &__groups {
-    background: @navi-gray-100;
-    border-bottom: 1px solid @navi-blue-300;
-  }
-
   &__group {
     cursor: pointer;
     display: grid;
     grid-template-columns: 1fr 20px;
     padding: 15px 0 15px 20px;
+    border-left: 4px solid transparent;
 
     &--icon {
       .icon;
     }
 
     &.active {
-      background: @navi-white;
-      border-left: 4px solid @navi-blue-300;
+      background: @navi-gray-100;
+      border-left-color: @navi-blue-300;
       color: @navi-gray-700;
 
       .dir-sidebar__group--arrow-icon {
@@ -50,13 +46,8 @@
     }
   }
 
-  &__filters {
-    background: @navi-gray-100;
-    box-shadow: 2px 2px @navi-gray-200;
-    margin: 0 4px;
-  }
-
   &__filter {
+    border-left: 4px solid transparent;
     cursor: pointer;
     display: grid;
     grid-template-columns: 1fr 20px;
@@ -73,8 +64,8 @@
     }
 
     &.active {
-      background: @navi-white;
-      border-left: 4px solid @navi-blue-300;
+      background: @navi-gray-100;
+      border-left-color: @navi-blue-300;
       color: @navi-gray-700;
 
       .dir-sidebar__filter--arrow-icon {
