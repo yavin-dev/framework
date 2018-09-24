@@ -17,7 +17,7 @@ module('Integration | Component | dir sidebar', function(hooks) {
       'The sidebar component is rendered');
 
     assert.deepEqual(findAll('.dir-sidebar__group').map(el => el.textContent.trim()),
-      [ 'My Directory' ],
+      [ 'My Data' ],
       'The sidebar component has the right groups');
 
     assert.deepEqual(findAll('.dir-sidebar__filter').map(el => el.textContent.trim()),

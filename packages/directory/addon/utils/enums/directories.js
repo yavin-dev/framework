@@ -3,8 +3,8 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 export default [{
-  name: 'My Directory',
-  routeLink: 'directory.my-directory',
+  name: 'My Data',
+  routeLink: 'directory.my-data',
   filters: [{
       name: 'Favorites',
       icon: 'star-o',

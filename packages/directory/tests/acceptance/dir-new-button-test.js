@@ -8,7 +8,7 @@ module('Acceptance | dir new button', function(hooks) {
   skip('transitions on clicking new button', async function(assert) {
     assert.expect(1);
     
-    await visit('/directory/my-directory');
+    await visit('/directory/my-data');
     await click('.dir-new-button__trigger');
     let dashboardLink = findAll('.dir-new-button__dropdown-option')
       .find(option => option.textContent.trim() === 'Dashboards');
@@ -20,7 +20,7 @@ module('Acceptance | dir new button', function(hooks) {
       'Clicking the dashboards option creates a new dashboard and redirects there');
     
     
-    await visit('/directory/my-directory');
+    await visit('/directory/my-data');
     await click('.dir-new-button__trigger');
     let reportLink = findAll('.dir-new-button__dropdown-option')
       .find(option => option.textContent.trim() === 'Reports');

@@ -20,7 +20,7 @@ Router.map(function() {
   });
 
   this.route('directory', function() {
-    this.route('my-directory');
+    this.route('my-data');
   });
 
   this.route('reportCollections', function() {

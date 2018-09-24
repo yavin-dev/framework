@@ -8,13 +8,13 @@ module('Acceptance | dir table', function(hooks) {
   test('dir-table is populated with items from the route', async function(assert) {
     assert.expect(2);
 
-    await visit('/directory/my-directory');
+    await visit('/directory/my-data');
 
     assert.equal(findAll('tbody>tr').length,
       5,
-      'All items for a user are listed by default in my-directory');
+      'All items for a user are listed by default in my-data');
 
-    await visit('/directory/my-directory?filter=favorites');
+    await visit('/directory/my-data?filter=favorites');
 
     assert.equal(findAll('tbody>tr').length,
       2,
@@ -24,7 +24,7 @@ module('Acceptance | dir table', function(hooks) {
   test('dir-table-filter', async function(assert) {
     assert.expect(4);
 
-    await visit('/directory/my-directory');
+    await visit('/directory/my-data');
 
     assert.equal(find('.dir-table-filter__trigger').textContent.trim(),
       'All',
@@ -37,10 +37,10 @@ module('Acceptance | dir table', function(hooks) {
       'Reports',
       'On click the selected option is set');
     assert.equal(currentURL(),
-      '/directory/my-directory?type=reports',
+      '/directory/my-data?type=reports',
       'The selected type is set as a query param');
 
-    await visit('/directory/my-directory?type=dashboards');
+    await visit('/directory/my-data?type=dashboards');
     assert.equal(find('.dir-table-filter__trigger').textContent.trim(),
       'Dashboards',
       'The selected type is set based on the query param in the url');

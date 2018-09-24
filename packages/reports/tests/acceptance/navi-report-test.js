@@ -952,7 +952,7 @@ test('Visiting Reports Route From Breadcrumb', function(assert) {
 
   andThen(() => {
     assert.ok(currentURL().endsWith('/reports'),
-      'When "Directory" clicked on the Breadcrumb link, it lands to "my-directory" page' );
+      'When "Directory" clicked on the Breadcrumb link, it lands to "my-data" page' );
   });
 });
 

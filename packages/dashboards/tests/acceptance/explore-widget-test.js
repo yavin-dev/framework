@@ -69,8 +69,8 @@ test('Breadcrumb', function(assert) {
       'Directory',
       'Breadcrumb begins with "Directory" link');
 
-    assert.ok(firstBreadcrumbItem.attr('href').endsWith('/directory/my-directory'),
-      'First breadcrumb item links to my-directory route');
+    assert.ok(firstBreadcrumbItem.attr('href').endsWith('/directory/my-data'),
+      'First breadcrumb item links to my-data route');
 
     assert.equal(secondBreadcrumbItem.text().trim(),
       'Tumblr Goals Dashboard',

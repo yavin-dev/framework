@@ -14,7 +14,7 @@ Router.map(function() {
   this.route('landing', {path:'/'});
 
   this.route('directory', function() {
-    this.route('my-directory');
+    this.route('my-data');
   });
 
   this.route('dashboardCollections', function() {
