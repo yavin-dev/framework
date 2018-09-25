@@ -3,131 +3,131 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
- @report-form-width:                       600px;
- @report-form-height:                      52px;
- @report-selector-padding-left:            15px;
- @report-form-padding-left:                5px;
- @report-form-padding-right:               5px;
- @report-table-height:                     835px;
- @report-form-max-width:                   600px;
- @report-form-min-width:                   400px;
- // form split's min width are used as a breakpoint for the flex component to wrap
- @report-form-split-1-3-min-width:         200px;
- @report-form-split-2-3-min-width:         250px;
+@report-form-width: 600px;
+@report-form-height: 52px;
+@report-selector-padding-left: 15px;
+@report-form-padding-left: 5px;
+@report-form-padding-right: 5px;
+@report-table-height: 835px;
+@report-form-max-width: 600px;
+@report-form-min-width: 400px;
+// form split's min width are used as a breakpoint for the flex component to wrap
+@report-form-split-1-3-min-width: 200px;
+@report-form-split-2-3-min-width: 250px;
 
 .form-element {
-    display: flex;
-    flex-wrap: wrap;
-    .builder-max-width;
+  display: flex;
+  flex-wrap: wrap;
+  .builder-max-width;
 
-    &.split {
-        align-items: center;
-        .split-2-3 {
-              min-width: @report-form-split-2-3-min-width;
-              flex: 2;
-        }
-        .split-1-3 {
-              min-width: @report-form-split-1-3-min-width;
-              flex: 1;
-        }
+  &.split {
+    align-items: center;
+    .split-2-3 {
+      min-width: @report-form-split-2-3-min-width;
+      flex: 2;
     }
+    .split-1-3 {
+      min-width: @report-form-split-1-3-min-width;
+      flex: 1;
+    }
+  }
 }
 
 .last-of-group-form-element {
-    border-bottom: 1px solid @navi-bottom-border-gray;
+  border-bottom: 1px solid @navi-bottom-border-gray;
 }
 
 .bordered-form-element {
-    border: 1px solid @navi-lightest-gray;
+  border: 1px solid @navi-lightest-gray;
 }
 
 .focused-form-element {
-    border-color: @navi-purple-lightest;
-    border-bottom-color: @navi-bottom-border-gray;
-    background-color: @navi-purple-lightest;
+  border-color: @navi-purple-lightest;
+  border-bottom-color: @navi-bottom-border-gray;
+  background-color: @navi-purple-lightest;
 }
 
 .form-dropdown {
-    z-index: 100;
-    position: absolute;
-    background-color: @gray-10;
-    width: 100%;
+  z-index: 100;
+  position: absolute;
+  background-color: @gray-10;
+  width: 100%;
 }
 
 .form-selector-error {
-    background-color: @navi-form-error-red;
-    border-bottom-color: @navi-form-error-border;
+  background-color: @navi-form-error-red;
+  border-bottom-color: @navi-form-error-border;
 }
 
 .form-select-single {
-    .pick-container {
-        .clickable;
-        position: relative;
-        .pick-value {
-            .bordered-form-element;
-            line-height: @report-form-height;
-            font-size: @font-size-form;
-            height: @report-form-height;
-            position: relative;
+  .pick-container {
+    .clickable;
+    position: relative;
+    .pick-value {
+      .bordered-form-element;
+      line-height: @report-form-height;
+      font-size: @font-size-form;
+      height: @report-form-height;
+      position: relative;
 
-            span {
-                padding-left: 20px;
-            }
+      span {
+        padding-left: 20px;
+      }
 
-            i {
-                position: absolute;
-                right: 20px;
-                line-height: @report-form-height;
-            }
+      i {
+        position: absolute;
+        right: 20px;
+        line-height: @report-form-height;
+      }
 
-            &.has-focus {
-                .focused-form-element;
-            }
-        }
-
-        .pick-form {
-            .form-dropdown;
-            padding: 0;
-            font-size: @font-size-base;
-            li {
-                color: @navi-white;
-                padding: 5px;
-
-                &:hover {
-                    background: @navi-purple-light;
-                    font-family: @font-family-strong;
-                }
-
-                &.active {
-                    background: @navi-purple-dark;
-                    font-family: @font-family-strong;
-                }
-            }
-        }
+      &.has-focus {
+        .focused-form-element;
+      }
     }
+
+    .pick-form {
+      .form-dropdown;
+      padding: 0;
+      font-size: @font-size-base;
+      li {
+        color: @navi-white;
+        padding: 5px;
+
+        &:hover {
+          background: @navi-purple-light;
+          font-family: @font-family-strong;
+        }
+
+        &.active {
+          background: @navi-purple-dark;
+          font-family: @font-family-strong;
+        }
+      }
+    }
+  }
 }
 
 .navi-form__select-multiple {
-    .bordered-form-element;
-    .last-of-group-form-element;
+  .bordered-form-element;
+  .last-of-group-form-element;
 
+  border-radius: 0;
+  font-size: @font-size-base;
+  max-width: @report-form-max-width;
+
+  .ember-power-select-group-name {
+    padding-left: 8px;
+  }
+
+  .ember-power-select-trigger {
+    border: none;
+    padding: 10px 15px;
+    min-height: 52px;
     border-radius: 0;
-    font-size: @font-size-base;
-    max-width: @report-form-max-width;
+    background-color: transparent;
 
-    .ember-power-select-group-name {
-        padding-left: 8px;
+    &[aria-expanded='true'] {
+      .focused-form-element;
     }
-
-    .ember-power-select-trigger {
-        border: none;
-        padding: 10px 15px;
-        min-height: 52px;
-        border-radius: 0;
-        background-color: transparent;
-
-        &[aria-expanded=true] {
-            .focused-form-element;
-        }
-    }
+  }
 }

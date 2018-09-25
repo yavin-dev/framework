@@ -9,7 +9,7 @@ moduleForComponent('paginated-scroll-list', 'Unit | Component | Paginated Scroll
   unit: true
 });
 
-test('_appendPaginatedResults', function(assert){
+test('_appendPaginatedResults', function(assert) {
   assert.expect(6);
 
   let component = this.subject({
@@ -19,31 +19,27 @@ test('_appendPaginatedResults', function(assert){
     _setItemsExceedMaxHt: Ember.K //Suppress hook
   });
 
-  assert.equal(get(component, '_page'),
-    0,
-    'page number is 0 initially');
+  assert.equal(get(component, '_page'), 0, 'page number is 0 initially');
 
-  assert.deepEqual(get(component, '_itemsToRender'),
-    [1, 2, 3],
-    '_itemsToRender array has 3 records initially');
+  assert.deepEqual(get(component, '_itemsToRender'), [1, 2, 3], '_itemsToRender array has 3 records initially');
 
   component._appendPaginatedResults();
 
-  assert.equal(get(component, '_page'),
-    1,
-    '_appendPaginatedResults increments page number to 1 as expected');
+  assert.equal(get(component, '_page'), 1, '_appendPaginatedResults increments page number to 1 as expected');
 
-  assert.deepEqual(get(component, '_itemsToRender'),
+  assert.deepEqual(
+    get(component, '_itemsToRender'),
     [1, 2, 3, 4, 5, 6],
-    '_appendPaginatedResults appends page 1 content to _itemsToRender array as expected');
+    '_appendPaginatedResults appends page 1 content to _itemsToRender array as expected'
+  );
 
   component._appendPaginatedResults();
 
-  assert.equal(get(component, '_page'),
-    2,
-    '_appendPaginatedResults increments page number to 2 as expected');
+  assert.equal(get(component, '_page'), 2, '_appendPaginatedResults increments page number to 2 as expected');
 
-  assert.deepEqual(get(component, '_itemsToRender'),
+  assert.deepEqual(
+    get(component, '_itemsToRender'),
     ITEMS,
-    '_appendPaginatedResults appends page 2 content to _itemsToRender array as expected');
+    '_appendPaginatedResults appends page 2 content to _itemsToRender array as expected'
+  );
 });

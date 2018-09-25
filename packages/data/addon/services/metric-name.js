@@ -19,12 +19,7 @@ export default Service.extend({
    * @returns {String} - long name for the metric from the metadata
    */
   getLongName(metricId) {
-    return get(this, 'metricMeta').getMetaField(
-      'metric',
-      metricId,
-      'longName',
-      metricId
-    );
+    return get(this, 'metricMeta').getMetaField('metric', metricId, 'longName', metricId);
   },
 
   /**

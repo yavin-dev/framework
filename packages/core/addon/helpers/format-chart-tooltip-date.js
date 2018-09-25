@@ -8,14 +8,14 @@ import moment from 'moment';
 const { get } = Ember;
 
 const TOOLTIP_DATE_TIME_FORMAT = {
-  second:  'MMM D HH:mm:ss',
-  minute:  'MMM D HH:mm:00',
-  hour:    'MMM D HH:00',
-  day:     'MMMM D, YYYY',
-  week:    'MMMM D, YYYY',
-  month:   'MMM YYYY',
+  second: 'MMM D HH:mm:ss',
+  minute: 'MMM D HH:mm:00',
+  hour: 'MMM D HH:00',
+  day: 'MMMM D, YYYY',
+  week: 'MMMM D, YYYY',
+  month: 'MMM YYYY',
   quarter: '[Q]Q YYYY',
-  year:    'YYYY'
+  year: 'YYYY'
 };
 
 /**
@@ -33,4 +33,4 @@ export function formatChartTooltipDate(request, value) {
   }
 }
 
-export default Ember.Helper.helper( args => formatChartTooltipDate(...args) );
+export default Ember.Helper.helper(args => formatChartTooltipDate(...args));

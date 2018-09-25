@@ -2,9 +2,9 @@ export default [
   {
     id: 'navi_user',
     createdOn: '01-01-2015 00:00:00',
-    reports: [ 1, 2, 4 ],
-    favoriteReports: [ 2 ],
-    deliveryRules: [ 1, 2, 3 ]
+    reports: [1, 2, 4],
+    favoriteReports: [2],
+    deliveryRules: [1, 2, 3]
   },
   {
     id: 'ciela',
@@ -19,5 +19,5 @@ export default [
     reports: [],
     favoriteReports: [],
     deliveryRules: []
-  },
+  }
 ];

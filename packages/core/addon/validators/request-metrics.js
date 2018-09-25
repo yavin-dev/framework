@@ -11,7 +11,7 @@ import { getRequestMetrics } from 'navi-core/utils/chart-data';
 const { get } = Ember;
 
 export default BaseValidator.extend({
-  validate(value, options/*, model, attribute*/) {
+  validate(value, options /*, model, attribute*/) {
     let requestMetrics = getRequestMetrics(get(options, 'request'));
     return isEqual(value, requestMetrics);
   }

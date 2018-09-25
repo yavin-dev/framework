@@ -19,8 +19,10 @@ test('report share link', function(assert) {
   click('.navi-collection__row:first-of-type .share .btn');
 
   andThen(() => {
-    assert.equal(find('.modal-input-box')[0].value,
+    assert.equal(
+      find('.modal-input-box')[0].value,
       `${baseUrl}/reports/1`,
-      'The share link is built correctly by buildReportUrl');
+      'The share link is built correctly by buildReportUrl'
+    );
   });
 });

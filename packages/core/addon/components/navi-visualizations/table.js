@@ -66,9 +66,7 @@ export default Component.extend({
   /**
    * @property {Number} totalRows - total rows for the request
    */
-  totalRows: computed.readOnly(
-    'model.firstObject.response.meta.pagination.numberOfResults'
-  ),
+  totalRows: computed.readOnly('model.firstObject.response.meta.pagination.numberOfResults'),
 
   /**
    * @property {Number} rowsInResponse - rows in response
@@ -114,10 +112,7 @@ export default Component.extend({
       }
 
       //set subtotal dimension if subtotal row
-      if (
-        column.field.dimension === get(this, 'selectedSubtotal') &&
-        type === 'subtotal'
-      ) {
+      if (column.field.dimension === get(this, 'selectedSubtotal') && type === 'subtotal') {
         let idField = `${column.field.dimension}|id`,
           descField = `${column.field.dimension}|desc`;
 
@@ -128,24 +123,14 @@ export default Component.extend({
       //if metric and not partial data compute totals
       if (column.type === 'metric' && !hasPartialData) {
         let metricName = canonicalizeMetric(column.field);
-        totRow[metricName] = this.computeColumnTotal(
-          data,
-          metricName,
-          totRow,
-          column,
-          type
-        );
+        totRow[metricName] = this.computeColumnTotal(data, metricName, totRow, column, type);
       }
 
       return totRow;
     }, {});
 
     //add totalRow indication to meta
-    set(
-      totalRow,
-      '__meta__',
-      Object.assign({}, get(totalRow, '__meta__'), { isTotalRow: true })
-    );
+    set(totalRow, '__meta__', Object.assign({}, get(totalRow, '__meta__'), { isTotalRow: true }));
 
     //if partial data add indication to meta
     if (hasPartialData) {
@@ -211,21 +196,16 @@ export default Component.extend({
   /**
    * @property {Object} tableData
    */
-  tableData: computed(
-    'rawData',
-    'columns',
-    'options.showTotals.{grandTotal,subtotal}',
-    function() {
-      let tableData = this._computeSubtotals(),
-        rawData = get(this, 'rawData');
+  tableData: computed('rawData', 'columns', 'options.showTotals.{grandTotal,subtotal}', function() {
+    let tableData = this._computeSubtotals(),
+      rawData = get(this, 'rawData');
 
-      if (!get(this, 'options.showTotals.grandTotal')) {
-        return tableData;
-      }
-
-      return [...tableData, this._computeTotal(rawData, 'grandTotal')];
+    if (!get(this, 'options.showTotals.grandTotal')) {
+      return tableData;
     }
-  ),
+
+    return [...tableData, this._computeTotal(rawData, 'grandTotal')];
+  }),
 
   /**
    * @method _mapAlias
@@ -240,16 +220,13 @@ export default Component.extend({
     }
 
     let requestSorts = arr(get(request, 'sort')),
-      requestMetricsAliasMap = arr(get(request, 'metrics')).reduce(
-        (map, metric) => {
-          let alias = get(metric, 'parameters.as');
-          if (alias) {
-            map[alias] = metric;
-          }
-          return map;
-        },
-        {}
-      );
+      requestMetricsAliasMap = arr(get(request, 'metrics')).reduce((map, metric) => {
+        let alias = get(metric, 'parameters.as');
+        if (alias) {
+          map[alias] = metric;
+        }
+        return map;
+      }, {});
 
     return requestSorts.map(sort => {
       let metric = requestMetricsAliasMap[get(sort, 'metric')];

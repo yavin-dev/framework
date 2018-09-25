@@ -3,24 +3,24 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
- .checkbox-selector {
-    &__checkbox {
-        margin: 3px 5px 0 0;
+.checkbox-selector {
+  &__checkbox {
+    margin: 3px 5px 0 0;
+  }
+
+  &__filter {
+    .clickable;
+    color: @navi-gray-300;
+    font-size: 14px;
+    margin-left: auto;
+    margin-right: 15px;
+
+    &:hover {
+      color: @navi-blue;
     }
 
-    &__filter {
-        .clickable;
-        color: @navi-gray-300;
-        font-size: 14px;
-        margin-left: auto;
-        margin-right: 15px;
-
-        &:hover {
-            color: @navi-blue;
-        }
-
-        &--active {
-            color: @navi-blue;
-        }
+    &--active {
+      color: @navi-blue;
     }
- }
+  }
+}

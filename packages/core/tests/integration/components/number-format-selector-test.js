@@ -17,13 +17,11 @@ moduleForComponent('number-format-selector', 'Integration | Component | number f
   }
 });
 
-test('updateFormat from radio button', function (assert) {
+test('updateFormat from radio button', function(assert) {
   assert.expect(1);
 
   this.set('onUpdateFormat', result => {
-    assert.equal(result,
-      '0,0.00',
-      'onUpdateFormat action is called by radio button');
+    assert.equal(result, '0,0.00', 'onUpdateFormat action is called by radio button');
   });
 
   this.render(Template);
@@ -33,13 +31,11 @@ test('updateFormat from radio button', function (assert) {
   });
 });
 
-test('clearFormat', function (assert) {
+test('clearFormat', function(assert) {
   assert.expect(1);
 
   this.set('onUpdateFormat', result => {
-    assert.equal(result,
-      '',
-      'onUpdateFormat action is called by custom format radio button');
+    assert.equal(result, '', 'onUpdateFormat action is called by custom format radio button');
   });
 
   this.render(Template);
@@ -49,7 +45,7 @@ test('clearFormat', function (assert) {
   });
 });
 
-test('highlight correct format when customFormat is changed', function (assert) {
+test('highlight correct format when customFormat is changed', function(assert) {
   assert.expect(2);
 
   this.render(Template);
@@ -60,8 +56,10 @@ test('highlight correct format when customFormat is changed', function (assert) 
   });
 
   return wait().then(() => {
-    assert.ok($('.number-format-selector__radio-custom input').prop('checked'),
-      'custom format correctly highlighted when user enters custom format');
+    assert.ok(
+      $('.number-format-selector__radio-custom input').prop('checked'),
+      'custom format correctly highlighted when user enters custom format'
+    );
 
     run(() => {
       $('.number-format-selector__format-input').val('0,0.00');
@@ -69,8 +67,10 @@ test('highlight correct format when customFormat is changed', function (assert) 
     });
 
     return wait().then(() => {
-      assert.ok($('.number-format-selector__radio-number input').prop('checked'),
-        'number format correctly highlighted when user enters number format');
+      assert.ok(
+        $('.number-format-selector__radio-number input').prop('checked'),
+        'number format correctly highlighted when user enters number format'
+      );
     });
   });
 });

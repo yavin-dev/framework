@@ -27,7 +27,7 @@ export default Ember.Component.extend({
    */
   fontSize: computed('value', function() {
     let value = get(this, 'value'),
-        length = value ? value.length : 0;
+      length = value ? value.length : 0;
 
     if (length > 11) {
       return 'metric-label-vis__font--small';
@@ -45,8 +45,8 @@ export default Ember.Component.extend({
   value: computed('options.{metric,value,format}', 'model.[]', function() {
     if (get(this, 'model')) {
       let options = get(this, 'options') || {},
-          firstRow = get(this, 'model.firstObject.response.rows.0'),
-          value = firstRow[canonicalizeMetric(get(this, 'options.metric'))];
+        firstRow = get(this, 'model.firstObject.response.rows.0'),
+        value = firstRow[canonicalizeMetric(get(this, 'options.metric'))];
 
       return options.format ? numeral(value).format(options.format) : String(value);
     }

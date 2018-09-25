@@ -5,7 +5,7 @@ export default [
     authorId: 'navi_user',
     createdOn: '2016-01-01 00:00:00',
     updatedOn: '2016-01-01 00:00:00',
-    dashboardIds: [ 1, 3 ]
+    dashboardIds: [1, 3]
   },
   {
     id: 2,
@@ -13,6 +13,6 @@ export default [
     authorId: 'ciela',
     createdOn: '2016-01-01 00:00:00',
     updatedOn: '2016-01-01 00:00:00',
-    dashboardIds: [ 2, 4 ]
+    dashboardIds: [2, 4]
   }
 ];

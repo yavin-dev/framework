@@ -7,7 +7,6 @@ import Ember from 'ember';
 const { get } = Ember;
 
 export default Ember.Route.extend({
-
   /**
    * @property {Service} naviNotifications
    */
@@ -39,25 +38,28 @@ export default Ember.Route.extend({
     deleteDeliveryRule(rule) {
       rule.deleteRecord();
 
-      return rule.save().then(() => {
-        // Make sure record is cleaned up locally
-        rule.unloadRecord();
+      return rule
+        .save()
+        .then(() => {
+          // Make sure record is cleaned up locally
+          rule.unloadRecord();
 
-        get(this, 'naviNotifications').add({
-          message: `Dashboard delivery schedule successfully removed!`,
-          type: 'success',
-          timeout: 'short'
-        });
-      }).catch(() => {
-        // Rollback delete action
-        rule.rollbackAttributes();
+          get(this, 'naviNotifications').add({
+            message: `Dashboard delivery schedule successfully removed!`,
+            type: 'success',
+            timeout: 'short'
+          });
+        })
+        .catch(() => {
+          // Rollback delete action
+          rule.rollbackAttributes();
 
-        get(this, 'naviNotifications').add({
-          message: `OOPS! An error occurred while removing the dashboard delivery schedule.`,
-          type: 'danger',
-          timeout: 'short'
+          get(this, 'naviNotifications').add({
+            message: `OOPS! An error occurred while removing the dashboard delivery schedule.`,
+            type: 'danger',
+            timeout: 'short'
+          });
         });
-      });
     }
   }
 });

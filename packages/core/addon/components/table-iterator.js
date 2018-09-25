@@ -22,5 +22,5 @@ export default Component.extend({
   /**
    * @property {Boolean} occlusion - whether or not to incremental render
    */
-  occlusion: false,
+  occlusion: false
 });

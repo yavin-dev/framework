@@ -15,9 +15,10 @@
     min-width: 150px;
     max-width: 175px;
 
-    &:before, &:after {
+    &:before,
+    &:after {
       border: solid transparent;
-      content: " ";
+      content: ' ';
       height: 0;
       position: absolute;
       pointer-events: none;
@@ -60,9 +61,9 @@
     margin: 0;
 
     &:hover {
-        background-color: @navi-blue;
-        color: @navi-white;
-        cursor: pointer;
+      background-color: @navi-blue;
+      color: @navi-white;
+      cursor: pointer;
     }
   }
 
@@ -70,7 +71,8 @@
     .clickable;
     font-size: @font-size-base;
 
-    &:hover, &:focus {
+    &:hover,
+    &:focus {
       color: @navi-blue;
     }
   }

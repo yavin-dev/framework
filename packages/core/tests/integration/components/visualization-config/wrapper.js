@@ -14,7 +14,16 @@ moduleForComponent('visualization-config/wrapper', 'Integration | Component | vi
   integration: true,
   beforeEach() {
     //mocking viz-config component
-    this.register('component:visualization-config/mock', Ember.Component.extend({classNames: [ 'mock' ], click(){ this.sendAction('onUpdateConfig', 'foo'); }}), {instantiate: false});
+    this.register(
+      'component:visualization-config/mock',
+      Ember.Component.extend({
+        classNames: ['mock'],
+        click() {
+          this.sendAction('onUpdateConfig', 'foo');
+        }
+      }),
+      { instantiate: false }
+    );
 
     this.set('visualization', {
       type: 'mock',
@@ -28,21 +37,25 @@ test('component renders', function(assert) {
 
   this.render(Template);
 
-  assert.ok(this.$('.visualization-config--body .mock').is(':visible'),
-    'The Mock component is correctly rendered based on visualization type');
+  assert.ok(
+    this.$('.visualization-config--body .mock').is(':visible'),
+    'The Mock component is correctly rendered based on visualization type'
+  );
 
-  assert.equal(this.$('.visualization-config--header').text().trim(),
+  assert.equal(
+    this.$('.visualization-config--header')
+      .text()
+      .trim(),
     'Mock',
-    'the header displays the type of the visualization config component rendered');
+    'the header displays the type of the visualization config component rendered'
+  );
 });
 
 test('onUpdateConfig', function(assert) {
   assert.expect(1);
 
   this.set('onUpdateConfig', result => {
-    assert.equal(result,
-      'foo',
-      'onUpdateConfig action is called by the mock component');
+    assert.equal(result, 'foo', 'onUpdateConfig action is called by the mock component');
   });
 
   this.render(Template);

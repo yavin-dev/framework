@@ -48,12 +48,11 @@ export default Ember.Component.extend({
   /**
    * @property {Boolean} download - Boolean to check if request is valid and set download
    */
-  download:computed('disabled', function() {
+  download: computed('disabled', function() {
     // No Download for disabled action
     if (get(this, 'disabled')) {
       return null;
-    }
-    else {
+    } else {
       return true;
     }
   }),
@@ -61,12 +60,11 @@ export default Ember.Component.extend({
   /**
    * @property {Boolean} download - Boolean to check if request is valid and set target
    */
-  target:computed('disabled', function() {
+  target: computed('disabled', function() {
     // No target for disabled action
     if (get(this, 'disabled')) {
       return null;
-    }
-    else {
+    } else {
       return '_blank';
     }
   }),
@@ -74,8 +72,11 @@ export default Ember.Component.extend({
   /**
    * @property {String} href - API link for the report
    */
-  href:computed('report.request', 'disabled', 'report.request.validations.isTruelyValid', function() { // Observe 'report.request.validations.isTruelyValid' to recompute with any request change
-    // Void the href on a should disabled
+  href: computed('report.request', 'disabled', 'report.request.validations.isTruelyValid', function() {
+    /*
+     * Observe 'report.request.validations.isTruelyValid' to recompute with any request change
+     * Void the href on a should disabled
+     */
     if (get(this, 'disabled')) {
       return 'javascript:void(0);';
     }

@@ -39,8 +39,8 @@ export function hasParameters(obj = {}) {
 export function serializeParameters(obj = {}) {
   let paramArray = Object.entries(obj);
   // TODO remove this line when aliases are natively supported in the fact web service
-  paramArray = paramArray.filter(([key, ]) => key.toLowerCase() !== 'as');
-  paramArray.sort(([keyA, ], [keyB, ]) => keyA.localeCompare(keyB));
+  paramArray = paramArray.filter(([key]) => key.toLowerCase() !== 'as');
+  paramArray.sort(([keyA], [keyB]) => keyA.localeCompare(keyB));
   return paramArray.map(([key, value]) => `${key}=${value}`).join(',');
 }
 
@@ -52,11 +52,13 @@ export function serializeParameters(obj = {}) {
  */
 export function getAliasedMetrics(metrics = []) {
   return metrics.reduce((obj, metric) => {
-    if(hasParameters(metric) && 'as' in metric.parameters) {
-      return Object.assign({}, obj, {[metric.parameters.as]: canonicalizeMetric(metric)});
+    if (hasParameters(metric) && 'as' in metric.parameters) {
+      return Object.assign({}, obj, {
+        [metric.parameters.as]: canonicalizeMetric(metric)
+      });
     }
     return obj;
-  },{});
+  }, {});
 }
 
 /**
@@ -78,38 +80,40 @@ export function canonicalizeAlias(alias, aliasMap = {}) {
  * @returns {Object} - object with base metric and parameters
  */
 export function parseMetricName(canonicalName) {
-  if(typeof canonicalName !== 'string') {
+  if (typeof canonicalName !== 'string') {
     return canonicalName;
   }
 
   let hasParameters = canonicalName.endsWith(')') && canonicalName.includes('('),
-      metric = canonicalName,
-      parameters = {};
+    metric = canonicalName,
+    parameters = {};
 
-  if(hasParameters) {
+  if (hasParameters) {
     /*
      * extracts the parameter string from the metric that's between parenthesis
      * `baseName(parameter string)` => extracts `parameter string`
      */
     let paramRegex = /\((.*)\)$/,
-        results = paramRegex.exec(canonicalName),
-        paramStr = results.length >= 2 ? results[1] : ''; // checks if capture group exists, and uses it if it does
+      results = paramRegex.exec(canonicalName),
+      paramStr = results.length >= 2 ? results[1] : ''; // checks if capture group exists, and uses it if it does
 
-    if(!paramStr.includes('=')) {
+    if (!paramStr.includes('=')) {
       throw new Error('Metric Parameter Parser: Error, invalid parameter list');
     }
 
     metric = canonicalName.slice(0, canonicalName.indexOf('('));
-    parameters = paramStr.split(',').map(paramEntry => paramEntry.split('='))
-      .reduce((obj, [key, val]) => Object.assign({}, obj, {[key]: val}), {});
+    parameters = paramStr
+      .split(',')
+      .map(paramEntry => paramEntry.split('='))
+      .reduce((obj, [key, val]) => Object.assign({}, obj, { [key]: val }), {});
   }
 
   // validation
-  if(isEmpty(metric)) {
+  if (isEmpty(metric)) {
     throw new Error('Metric Name Parser: Error, empty metric name');
   }
 
-  if(metric.includes(')') || metric.includes('(')) {
+  if (metric.includes(')') || metric.includes('(')) {
     throw new Error('Metric Name Parser: Error, could not parse name');
   }
 

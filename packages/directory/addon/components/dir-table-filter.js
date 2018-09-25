@@ -22,7 +22,7 @@ export default Component.extend({
    */
   fileTypes: computed(function() {
     let types = FileTypes.getTypes();
-    return [ 'all', ...types ];
+    return ['all', ...types];
   }),
 
   /**
@@ -48,12 +48,11 @@ export default Component.extend({
      */
     filterByType(type) {
       let queryParam = type;
-      if(type === 'all') {
-        queryParam  = null;
+      if (type === 'all') {
+        queryParam = null;
       }
 
       this.get('updateQueryParams')({ type: queryParam });
     }
   }
-
 });

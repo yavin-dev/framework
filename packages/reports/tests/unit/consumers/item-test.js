@@ -5,10 +5,7 @@ import { getOwner } from '@ember/application';
 import Response from 'ember-cli-mirage/response';
 import wait from 'ember-test-helpers/wait';
 
-let Store,
-    Container,
-    MetadataService,
-    Server;
+let Store, Container, MetadataService, Server;
 
 moduleFor('consumer:item', 'Unit | Consumer | item', {
   needs: [
@@ -67,7 +64,7 @@ moduleFor('consumer:item', 'Unit | Consumer | item', {
     'validator:request-time-grain',
     'validator:request-filters',
     'validator:number',
-    'validator:array-number',
+    'validator:array-number'
   ],
 
   beforeEach() {
@@ -89,9 +86,11 @@ test('delete item - success', function(assert) {
   let Consumer = this.subject({
     naviNotifications: {
       add({ message }) {
-        assert.equal(message,
+        assert.equal(
+          message,
           'Report "Hyrule News" deleted successfully!',
-          'A notification is sent containing the item title');
+          'A notification is sent containing the item title'
+        );
       }
     },
     router: {
@@ -101,14 +100,12 @@ test('delete item - success', function(assert) {
 
   return run(() => {
     return Store.findRecord('report', 1).then(report => {
-      assert.ok(Store.hasRecordForId('report', 1),
-        'Report 1 is available in the store');
+      assert.ok(Store.hasRecordForId('report', 1), 'Report 1 is available in the store');
 
       Consumer.send('deleteItem', report);
 
       return wait().then(() => {
-        assert.notOk(Store.hasRecordForId('report', 1),
-          'Report 1 is deleted from the store');
+        assert.notOk(Store.hasRecordForId('report', 1), 'Report 1 is deleted from the store');
       });
     });
   });
@@ -127,9 +124,11 @@ test('delete item - failure', function(assert) {
       let Consumer = this.subject({
         naviNotifications: {
           add({ message }) {
-            assert.equal(message,
+            assert.equal(
+              message,
               'OOPS! An error occurred while deleting report "Hyrule News"',
-              'A notification is sent containing the widget title');
+              'A notification is sent containing the widget title'
+            );
           }
         },
         router: {
@@ -137,16 +136,16 @@ test('delete item - failure', function(assert) {
         }
       });
 
-      assert.ok(Store.hasRecordForId('report',1),
-        'Report 1 is available in the store');
+      assert.ok(Store.hasRecordForId('report', 1), 'Report 1 is available in the store');
 
       Consumer.send('deleteItem', report);
 
       return wait().then(() => {
-        assert.ok(Store.hasRecordForId('report',1),
-          'Report 1 is still available after failed delete operation from the store');
+        assert.ok(
+          Store.hasRecordForId('report', 1),
+          'Report 1 is still available after failed delete operation from the store'
+        );
       });
     });
-
   });
 });

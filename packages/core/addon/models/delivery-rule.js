@@ -29,15 +29,19 @@ const Validations = buildValidations({
 
 export default DS.Model.extend(Validations, {
   /* == Attributes == */
-  createdOn:       DS.attr('moment'),
-  updatedOn:       DS.attr('moment'),
-  deliveryType:    DS.attr('string', { defaultValue: 'report' }),
-  frequency:       DS.attr('string', { defaultValue: 'week'}),
+  createdOn: DS.attr('moment'),
+  updatedOn: DS.attr('moment'),
+  deliveryType: DS.attr('string', { defaultValue: 'report' }),
+  frequency: DS.attr('string', { defaultValue: 'week' }),
   schedulingRules: DS.attr({ defaultValue: () => {} }),
-  format:          DS.attr({ defaultValue: () => {} }),
-  recipients:      DS.attr({ defaultValue: () => [] }),
-  version:         DS.attr('number', {defaultValue: '1'}),
+  format: DS.attr({ defaultValue: () => {} }),
+  recipients: DS.attr({ defaultValue: () => [] }),
+  version: DS.attr('number', { defaultValue: '1' }),
 
-  deliveredItem:   DS.belongsTo('deliverableItem', { async: true, inverse: 'deliveryRules', polymorphic: true}),
-  owner:           DS.belongsTo('user', {async: true, inverse: 'deliveryRules'})
+  deliveredItem: DS.belongsTo('deliverableItem', {
+    async: true,
+    inverse: 'deliveryRules',
+    polymorphic: true
+  }),
+  owner: DS.belongsTo('user', { async: true, inverse: 'deliveryRules' })
 });

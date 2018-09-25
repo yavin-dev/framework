@@ -12,7 +12,6 @@ import { pluralize } from 'ember-inflector';
 const FACT_HOST = config.navi.dataSources[0].uri;
 
 export default EmberObject.extend({
-
   /**
    * @property namespace
    */
@@ -33,8 +32,8 @@ export default EmberObject.extend({
    * @return {String} URL Path
    */
   _buildURLPath(type, id) {
-    let host       = FACT_HOST,
-        namespace  = this.get('namespace');
+    let host = FACT_HOST,
+      namespace = this.get('namespace');
     return `${host}/${namespace}/${pluralize(type)}/${id}`;
   },
 
@@ -61,11 +60,11 @@ export default EmberObject.extend({
    * @param {Object} options
    * @return {Promise} metadata promise object
    */
-  fetchMetadata(type, id, options={}) {
-    let url      = this._buildURLPath(type, id),
-        query    = options.query || {},
-        clientId = options.clientId || 'UI',
-        timeout  = options.timeout || 300000;
+  fetchMetadata(type, id, options = {}) {
+    let url = this._buildURLPath(type, id),
+      query = options.query || {},
+      clientId = options.clientId || 'UI',
+      timeout = options.timeout || 300000;
 
     return this.get('ajax').request(url, {
       xhrFields: {

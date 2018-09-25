@@ -3,8 +3,7 @@ import { moduleFor, test } from 'ember-qunit';
 import Interval from 'navi-core/utils/classes/interval';
 import Duration from 'navi-core/utils/classes/duration';
 
-var Validator,
-    TestInterval;
+var Validator, TestInterval;
 
 moduleFor('validator:interval', 'Unit | Validator | interval', {
   needs: ['validator:messages'],
@@ -17,42 +16,46 @@ moduleFor('validator:interval', 'Unit | Validator | interval', {
 test('no options', function(assert) {
   assert.expect(1);
 
-  assert.equal(Validator.validate(TestInterval),
-    true,
-    'validate returns true when options are empty');
+  assert.equal(Validator.validate(TestInterval), true, 'validate returns true when options are empty');
 });
 
 test('ascending', function(assert) {
   assert.expect(4);
 
   let descendingInterval = new Interval(moment('2015', 'YYYY'), moment('1990', 'YYYY')),
-      ascendingInterval = TestInterval,
-      message = () => 'This field date should be before end date';
+    ascendingInterval = TestInterval,
+    message = () => 'This field date should be before end date';
 
-  assert.equal(Validator.validate(descendingInterval, { message }),
+  assert.equal(
+    Validator.validate(descendingInterval, { message }),
     true,
-    'descending interval is valid when no `ascending` property is set');
+    'descending interval is valid when no `ascending` property is set'
+  );
 
-  assert.equal(Validator.validate(descendingInterval, { ascending: true, message }),
+  assert.equal(
+    Validator.validate(descendingInterval, { ascending: true, message }),
     'This field date should be before end date',
-    'descending interval has correct error when `ascending` is set');
+    'descending interval has correct error when `ascending` is set'
+  );
 
-  assert.equal(Validator.validate(null, { ascending: true, message }),
+  assert.equal(
+    Validator.validate(null, { ascending: true, message }),
     'This field date should be before end date',
-    'null value is not considered ascending');
+    'null value is not considered ascending'
+  );
 
-  assert.equal(Validator.validate(ascendingInterval, { ascending: true, message }),
+  assert.equal(
+    Validator.validate(ascendingInterval, { ascending: true, message }),
     true,
-    'ascending interval is valid');
+    'ascending interval is valid'
+  );
 });
 
 test('next', function(assert) {
   assert.expect(1);
 
   let currentnextInterval = new Interval('current', 'next'),
-      message = () => 'date should be before end date';
+    message = () => 'date should be before end date';
 
-  assert.equal(Validator.validate(currentnextInterval, { message }),
-    true,
-    'next after current is a valid interval');
+  assert.equal(Validator.validate(currentnextInterval, { message }), true, 'next after current is a valid interval');
 });

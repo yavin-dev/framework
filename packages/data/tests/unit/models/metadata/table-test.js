@@ -5,11 +5,7 @@ import { setupTest } from 'ember-qunit';
 
 import { run } from '@ember/runloop';
 
-let Payload,
-    Model,
-    TimeGrain,
-    Keg,
-    TableFactory;
+let Payload, Model, TimeGrain, Keg, TableFactory;
 
 module('Unit | Metadata Model | Table', function(hooks) {
   setupTest(hooks);
@@ -20,7 +16,7 @@ module('Unit | Metadata Model | Table', function(hooks) {
       longName: 'Day',
       description: 'Day',
       dimensionIds: [],
-      metricIds: [ 'pv' ],
+      metricIds: ['pv'],
       keg: Keg
     };
 
@@ -28,8 +24,8 @@ module('Unit | Metadata Model | Table', function(hooks) {
       name: 'tableA',
       description: 'Table A',
       longName: 'Table A',
-      timeGrains: [ timeGrain ],
-      category: 'table',
+      timeGrains: [timeGrain],
+      category: 'table'
     };
 
     Model = run(() => this.owner.factoryFor('model:metadata/table').create(Payload));
@@ -52,40 +48,30 @@ module('Unit | Metadata Model | Table', function(hooks) {
   test('factory has identifierField defined', function(assert) {
     assert.expect(1);
 
-    assert.equal(get(TableFactory, 'identifierField'),
-      'name',
-      'identifierField property is set to `name`');
+    assert.equal(get(TableFactory, 'identifierField'), 'name', 'identifierField property is set to `name`');
   });
 
   test('it properly hydrates properties', function(assert) {
     assert.expect(5);
 
-    assert.deepEqual(get(Model, 'name'),
-      Payload.name,
-      'name property is hydrated properly');
+    assert.deepEqual(get(Model, 'name'), Payload.name, 'name property is hydrated properly');
 
-    assert.equal(get(Model, 'longName'),
-      Payload.longName,
-      'longName property was properly hydrated');
+    assert.equal(get(Model, 'longName'), Payload.longName, 'longName property was properly hydrated');
 
-    assert.equal(get(Model, 'description'),
-      Payload.description,
-      'description property was properly hydrated');
+    assert.equal(get(Model, 'description'), Payload.description, 'description property was properly hydrated');
 
-    assert.equal(get(Model, 'category'),
-      Payload.category,
-      'category property was properly hydrated');
+    assert.equal(get(Model, 'category'), Payload.category, 'category property was properly hydrated');
 
-    assert.deepEqual(get(Model, 'timeGrains'),
-      [ TimeGrain ],
-      'timeGrains property was properly hydrated');
+    assert.deepEqual(get(Model, 'timeGrains'), [TimeGrain], 'timeGrains property was properly hydrated');
   });
 
   test('Metric in Time Grain', function(assert) {
     assert.expect(1);
 
-    assert.deepEqual(get(Model, 'timeGrains.firstObject.metrics.firstObject'),
+    assert.deepEqual(
+      get(Model, 'timeGrains.firstObject.metrics.firstObject'),
       Keg.getById('metadata/metric', 'pv'),
-      'The Page view metric is properly hydrated');
+      'The Page view metric is properly hydrated'
+    );
   });
 });

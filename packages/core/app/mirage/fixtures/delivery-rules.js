@@ -21,7 +21,7 @@ export default [
     format: {
       type: 'csv'
     },
-    recipients: [ 'user-or-list1@navi.io', 'user-or-list2@navi.io' ],
+    recipients: ['user-or-list1@navi.io', 'user-or-list2@navi.io'],
     version: 1
   },
   {
@@ -39,7 +39,7 @@ export default [
     format: {
       type: 'csv'
     },
-    recipients: [ 'user-or-list1@navi.io', 'user-or-list2@navi.io' ],
+    recipients: ['user-or-list1@navi.io', 'user-or-list2@navi.io'],
     version: 1
   }
 ];

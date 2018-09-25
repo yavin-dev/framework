@@ -3,103 +3,103 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
- @filter-collection-column-margin: 3px;
- @filter-collection-row-height: 26px;
- @filter-collection-font-size: @font-size-mid;
+@filter-collection-column-margin: 3px;
+@filter-collection-row-height: 26px;
+@filter-collection-font-size: @font-size-mid;
 
- .filter-collection {
-     font-size: @filter-collection-font-size;
+.filter-collection {
+  font-size: @filter-collection-font-size;
 
-     &__builder {
-         display: flex;
-         flex: 1;
-     }
+  &__builder {
+    display: flex;
+    flex: 1;
+  }
 
-     .ember-power-select-trigger {
-         border-radius: 0;
-         min-height: @filter-collection-row-height;
-     }
+  .ember-power-select-trigger {
+    border-radius: 0;
+    min-height: @filter-collection-row-height;
+  }
 
-     .ember-power-select-trigger-multiple-input {
-         padding: 4px 4px 4px 3px;
-     }
+  .ember-power-select-trigger-multiple-input {
+    padding: 4px 4px 4px 3px;
+  }
 
-     .date-range {
-         &__placeholder {
-             color: @navi-placeholder-gray;
-         }
-
-         &__select-trigger {
-             border: 1px solid @navi-gray-400;
-             height: @filter-collection-row-height;
-             line-height: @filter-collection-row-height;
-             padding-left: 8px;
-         }
-     }
-
-     .filter-builder {
-         &__operator {
-             flex: 1;
-             margin: @filter-collection-column-margin;
-         }
-
-         &__select-trigger {
-             height: @filter-collection-row-height;
-             line-height: @filter-collection-row-height - 2; // Vertically center, accounting for 2px taken by border
-         }
-
-         &__subject {
-             color: @navi-gray-700;
-             flex: 1;
-             font-family: @font-family-strong;
-             line-height: @filter-collection-row-height;
-             margin: @filter-collection-column-margin;
-         }
-
-         &__values {
-             flex: 3;
-             margin: @filter-collection-column-margin;
-             min-height: @filter-collection-row-height;
-         }
-     }
-
-     .filter-values--range-input__input,
-     .filter-values--value-input {
-         font-size: inherit;
-         height: @filter-collection-row-height;
-         padding-left: 8px;
-     }
-
-    .filter-values--multi-value-input {
-        min-height: @filter-collection-row-height;
-        line-height: @navi-ideal-line-height;
+  .date-range {
+    &__placeholder {
+      color: @navi-placeholder-gray;
     }
 
-     &__remove {
-         .clickable;
+    &__select-trigger {
+      border: 1px solid @navi-gray-400;
+      height: @filter-collection-row-height;
+      line-height: @filter-collection-row-height;
+      padding-left: 8px;
+    }
+  }
 
-         color: @navi-gray-600;
-         font-size: @font-size-mid;
-         line-height: @filter-collection-row-height;
-         margin: @filter-collection-column-margin;
-         text-align: center;
+  .filter-builder {
+    &__operator {
+      flex: 1;
+      margin: @filter-collection-column-margin;
+    }
 
-         &--disabled {
-             visibility: hidden;
-         }
-     }
+    &__select-trigger {
+      height: @filter-collection-row-height;
+      line-height: @filter-collection-row-height - 2; // Vertically center, accounting for 2px taken by border
+    }
 
-     &__row {
-         display: flex;
-         min-height: @filter-collection-row-height;
-     }
+    &__subject {
+      color: @navi-gray-700;
+      flex: 1;
+      font-family: @font-family-strong;
+      line-height: @filter-collection-row-height;
+      margin: @filter-collection-column-margin;
+    }
 
-     &__message {
-         // Offset the remove icon
-         margin-left: @font-size-mid + 2 * @filter-collection-column-margin;
+    &__values {
+      flex: 3;
+      margin: @filter-collection-column-margin;
+      min-height: @filter-collection-row-height;
+    }
+  }
 
-         &--icon {
-            color: @navi-gray-600;
-         }
-     }
- }
+  .filter-values--range-input__input,
+  .filter-values--value-input {
+    font-size: inherit;
+    height: @filter-collection-row-height;
+    padding-left: 8px;
+  }
+
+  .filter-values--multi-value-input {
+    min-height: @filter-collection-row-height;
+    line-height: @navi-ideal-line-height;
+  }
+
+  &__remove {
+    .clickable;
+
+    color: @navi-gray-600;
+    font-size: @font-size-mid;
+    line-height: @filter-collection-row-height;
+    margin: @filter-collection-column-margin;
+    text-align: center;
+
+    &--disabled {
+      visibility: hidden;
+    }
+  }
+
+  &__row {
+    display: flex;
+    min-height: @filter-collection-row-height;
+  }
+
+  &__message {
+    // Offset the remove icon
+    margin-left: @font-size-mid + 2 * @filter-collection-column-margin;
+
+    &--icon {
+      color: @navi-gray-600;
+    }
+  }
+}

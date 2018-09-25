@@ -5,12 +5,11 @@
 import Controller from '@ember/controller';
 import { set } from '@ember/object';
 
-
 export default Controller.extend({
   /**
    * @property {Array} queryParams - array of allowed query params
    */
-  queryParams: [ 'filter', 'type', 'sortBy', 'q' ],
+  queryParams: ['filter', 'type', 'sortBy', 'q'],
 
   /**
    * @property {String} filter - query param for filter
@@ -38,7 +37,7 @@ export default Controller.extend({
     /**
      * @action searchFor
      * Sets the query param for search
-     * @param {String} query 
+     * @param {String} query
      */
     searchFor(query) {
       set(this, 'q', query);

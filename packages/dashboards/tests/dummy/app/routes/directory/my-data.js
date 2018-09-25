@@ -4,4 +4,4 @@ export default Route.extend({
   beforeModel() {
     this.transitionTo('dashboards');
   }
-})
+});

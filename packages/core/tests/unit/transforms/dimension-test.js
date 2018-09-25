@@ -7,7 +7,7 @@ const { getOwner } = Ember;
 
 let MetadataService;
 
-moduleFor('transform:dimension', 'Unit | Transform | Dimension',{
+moduleFor('transform:dimension', 'Unit | Transform | Dimension', {
   needs: [
     'model:metadata/table',
     'model:metadata/time-grain',
@@ -37,15 +37,11 @@ test('serialize and deserialize', function(assert) {
 
   return wait().then(() => {
     let transform = this.subject(),
-        dim = MetadataService.getById('dimension', 'os');
+      dim = MetadataService.getById('dimension', 'os');
 
-    assert.equal(transform.serialize(dim),
-      'os',
-      'Dimension is serialized to the name');
+    assert.equal(transform.serialize(dim), 'os', 'Dimension is serialized to the name');
 
-    assert.equal(transform.deserialize('os'),
-      dim,
-      'Dimension is deserialized to the right object');
+    assert.equal(transform.deserialize('os'), dim, 'Dimension is deserialized to the right object');
   });
 });
 
@@ -53,7 +49,5 @@ test('Do not cause crash when metadata is not available', function(assert) {
   assert.expect(1);
 
   let transform = this.subject();
-  assert.equal(transform.serialize(undefined),
-    null,
-    'Dimension properly return null without crashing.');
+  assert.equal(transform.serialize(undefined), null, 'Dimension properly return null without crashing.');
 });

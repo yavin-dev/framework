@@ -8,7 +8,6 @@ import DS from 'ember-data';
 
 const { computed, get } = Ember;
 
-
 /**
  * Object that computes a combined dashboard list
  * @class DashboardObject
@@ -22,7 +21,7 @@ const _DashboardObject = Ember.Object.extend({
   dashboards: computed('userDashboards.[]', 'favoriteDashboards.[]', function() {
     return DS.PromiseArray.create({
       promise: Ember.RSVP.hash({
-        userDashboards:     get(this, 'userDashboards'),
+        userDashboards: get(this, 'userDashboards'),
         favoriteDashboards: get(this, 'favoriteDashboards')
       }).then(({ userDashboards, favoriteDashboards }) => {
         return Ember.A()
@@ -50,15 +49,20 @@ export default Ember.Route.extend({
    * @override
    * @returns {Object} - with an array of dashboard models
    */
-  model(){
-    return get(this, 'user').findOrRegister().then(userModel => {
-      return Ember.RSVP.hash({
-        userDashboards:     get(userModel, 'dashboards'),
-        favoriteDashboards: get(userModel, 'favoriteDashboards')
-      }).then(({ userDashboards, favoriteDashboards }) => {
-        return _DashboardObject.create({ userDashboards, favoriteDashboards });
+  model() {
+    return get(this, 'user')
+      .findOrRegister()
+      .then(userModel => {
+        return Ember.RSVP.hash({
+          userDashboards: get(userModel, 'dashboards'),
+          favoriteDashboards: get(userModel, 'favoriteDashboards')
+        }).then(({ userDashboards, favoriteDashboards }) => {
+          return _DashboardObject.create({
+            userDashboards,
+            favoriteDashboards
+          });
+        });
       });
-    });
   },
 
   actions: {

@@ -18,14 +18,21 @@ test('Component renders', function(assert) {
         {{/chart-series-item}}
     `);
 
-  assert.ok(this.$('.chart-series-item').is(':visible'),
-    'Chart Series component is rendered');
+  assert.ok(this.$('.chart-series-item').is(':visible'), 'Chart Series component is rendered');
 
-  assert.equal(this.$('.chart-series-item .series-header').text().trim(),
+  assert.equal(
+    this.$('.chart-series-item .series-header')
+      .text()
+      .trim(),
     'Series 1',
-    'Chart series has header as "Series 1"');
+    'Chart series has header as "Series 1"'
+  );
 
-  assert.equal(this.$('.chart-series-item .list').text().trim(),
+  assert.equal(
+    this.$('.chart-series-item .list')
+      .text()
+      .trim(),
     'Foo',
-    'The element in the yield block is rendered');
+    'The element in the yield block is rendered'
+  );
 });

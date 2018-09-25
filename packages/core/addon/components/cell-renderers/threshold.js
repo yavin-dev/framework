@@ -27,12 +27,16 @@ export default MetricRender.extend({
   /**
    * @property {String} - classname binding to render the actual metric value
    */
-  valueIndicator: computed('metricValue', function () {
+  valueIndicator: computed('metricValue', function() {
     let metricValue = get(this, 'metricValue'),
-        indicator = 'neutral';
+      indicator = 'neutral';
 
-    if(metricValue > 0) { indicator='strong'; }
-    if(metricValue < 0) { indicator='weak'; }
+    if (metricValue > 0) {
+      indicator = 'strong';
+    }
+    if (metricValue < 0) {
+      indicator = 'weak';
+    }
 
     return indicator;
   })

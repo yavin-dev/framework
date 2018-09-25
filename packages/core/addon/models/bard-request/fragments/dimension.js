@@ -17,5 +17,5 @@ const Validations = buildValidations({
 });
 
 export default Fragment.extend(Validations, {
-  dimension:  DS.attr('dimension')
+  dimension: DS.attr('dimension')
 });

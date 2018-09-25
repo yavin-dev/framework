@@ -20,15 +20,15 @@ export default Ember.Component.extend({
   /**
    * @property {Array} classNames
    */
-  classNames: [ 'report-visualization' ],
+  classNames: ['report-visualization'],
 
   /**
    * Object representing the metadata required by the visualization
    * @property {Object} visualizationHash
    */
-  visualizationHash: computed('report.request', 'response', function(){
+  visualizationHash: computed('report.request', 'response', function() {
     let request = get(this, 'report.request').serialize(), // Visualization wants serialized request
-        response = get(this, 'response');
+      response = get(this, 'response');
 
     return {
       request,
@@ -41,9 +41,9 @@ export default Ember.Component.extend({
    */
   visualizationComponent: computed('report.visualization.type', 'print', function() {
     let componentName = `navi-visualizations/${get(this, 'report.visualization.type')}`;
-    if(get(this, 'print')) {
+    if (get(this, 'print')) {
       let printComponent = `${componentName}-print`;
-      if(getOwner(this).factoryFor(`component:${printComponent}`)) {
+      if (getOwner(this).factoryFor(`component:${printComponent}`)) {
         componentName = printComponent;
       }
     }

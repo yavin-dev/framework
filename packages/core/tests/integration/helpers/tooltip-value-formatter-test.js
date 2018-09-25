@@ -14,25 +14,41 @@ test('makes a call to smart-format-number by default', function(assert) {
 
   this.render(hbs`{{tooltip-value-formatter inputValue metricName row}}`);
 
-  assert.equal(this.$().text().trim(),
+  assert.equal(
+    this.$()
+      .text()
+      .trim(),
     '1,234',
-    'Formatted number is returned');
+    'Formatted number is returned'
+  );
 
   this.set('inputValue', null);
 
-  assert.equal(this.$().text().trim(),
+  assert.equal(
+    this.$()
+      .text()
+      .trim(),
     '',
-    'null returns empty string');
+    'null returns empty string'
+  );
 
   this.set('inputValue', undefined);
 
-  assert.equal(this.$().text().trim(),
+  assert.equal(
+    this.$()
+      .text()
+      .trim(),
     '',
-    'undefined returns empty string');
+    'undefined returns empty string'
+  );
 
   this.set('inputValue', '');
 
-  assert.equal(this.$().text().trim(),
+  assert.equal(
+    this.$()
+      .text()
+      .trim(),
     '',
-    'empty string returns empty string');
+    'empty string returns empty string'
+  );
 });

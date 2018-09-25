@@ -25,22 +25,22 @@ export default Component.extend({
   /**
    * @property {Array} classNames
    */
-  classNames: [ 'metric-filter-config' ],
+  classNames: ['metric-filter-config'],
 
   /**
    * @property {Array} classNameBindings
    */
-  classNameBindings: [ 'otherParams.length::metric-filter-config__hide' ],
+  classNameBindings: ['otherParams.length::metric-filter-config__hide'],
 
   /**
    * @property {Array} otherParams - other selected params for the same metric
    */
   otherParams: computed('request.metrics.[]', 'request.having.[]', 'metric.metric', 'metric.parameters', function() {
     let unFilteredMetrics = getUnfilteredMetricsOfBase(get(this, 'metric.metric'), get(this, 'request')),
-        otherParameters = arr(unFilteredMetrics).mapBy('parameters');
+      otherParameters = arr(unFilteredMetrics).mapBy('parameters');
 
     return otherParameters.map(metricParam => {
-      let entries = arr(Object.entries(metricParam)).reject(([key,]) => key === 'as');
+      let entries = arr(Object.entries(metricParam)).reject(([key]) => key === 'as');
       return entries.map(([, value]) => value);
     });
   }),
@@ -58,12 +58,12 @@ export default Component.extend({
    */
   calculatePosition(trigger) {
     let { top, left, width, height } = trigger.getBoundingClientRect(),
-        marginLeft = 25,
-        marginTop = 22,
-        style = {
-          left: left + width + marginLeft,
-          top: top +  window.pageYOffset + (height / 2) - marginTop
-        };
+      marginLeft = 25,
+      marginTop = 22,
+      style = {
+        left: left + width + marginLeft,
+        top: top + window.pageYOffset + height / 2 - marginTop
+      };
 
     return { style };
   }

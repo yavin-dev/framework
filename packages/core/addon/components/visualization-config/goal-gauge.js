@@ -35,6 +35,6 @@ export default Component.extend({
      */
     updateConfig(type, value) {
       this.sendAction('onUpdateConfig', { [type]: value });
-    },
+    }
   }
 });

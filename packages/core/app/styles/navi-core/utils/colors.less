@@ -16,32 +16,32 @@
  */
 
 //Graph Stroke Colors
-@graph-stroke-0:             @navi-orange;
-@graph-stroke-1:             @navi-blue;
-@graph-stroke-2:             @navi-purple;
-@graph-stroke-3:             @navi-pink;
-@graph-stroke-4:             @navi-green;
-@graph-stroke-5:             @navi-yellow;
-@graph-stroke-6:             @navi-blue-900;
-@graph-stroke-7:             @navi-red;
-@graph-stroke-8:             @navi-gray-800;
-@graph-stroke-9:             @navi-magenta;
-@graph-stroke-10:            @navi-teal;
+@graph-stroke-0: @navi-orange;
+@graph-stroke-1: @navi-blue;
+@graph-stroke-2: @navi-purple;
+@graph-stroke-3: @navi-pink;
+@graph-stroke-4: @navi-green;
+@graph-stroke-5: @navi-yellow;
+@graph-stroke-6: @navi-blue-900;
+@graph-stroke-7: @navi-red;
+@graph-stroke-8: @navi-gray-800;
+@graph-stroke-9: @navi-magenta;
+@graph-stroke-10: @navi-teal;
 
-@chart-max-series:           10;
+@chart-max-series: 10;
 
 .generate-chart-colors-for(@property) {
-    .chart-color-loop(@chart-max-series);
+  .chart-color-loop(@chart-max-series);
 }
 
 .chart-color-loop(@n, @i:0) when(@i < @n) {
-    @stroke: "graph-stroke-@{i}";
+  @stroke: 'graph-stroke-@{i}';
 
-    &.chart-series-@{i} {
-      @{property}: @@stroke;
-    }
+  &.chart-series-@{i} {
+    @{property}: @@stroke;
+  }
 
-    .chart-color-loop(@n,(@i+1));
+  .chart-color-loop(@n, (@i+1));
 }
 
 @navi-light-gray-2: #999;

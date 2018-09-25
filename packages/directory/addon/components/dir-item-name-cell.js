@@ -28,7 +28,7 @@ export default Component.extend({
    */
   itemLink: computed('type', function() {
     let type = get(this, 'type'),
-        singularType = type.slice(0, -1);
+      singularType = type.slice(0, -1);
 
     return `${type}.${singularType}`;
   }),

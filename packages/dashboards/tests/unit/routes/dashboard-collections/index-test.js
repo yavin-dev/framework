@@ -33,14 +33,17 @@ test('model', function(assert) {
 
   return Ember.run(() => {
     return Route.model().then(collections => {
-      assert.deepEqual(collections.mapBy('id'),
-        ['1','2'],
-        'Routes model returns the `navi_user`s dashboard collections');
+      assert.deepEqual(
+        collections.mapBy('id'),
+        ['1', '2'],
+        'Routes model returns the `navi_user`s dashboard collections'
+      );
 
-      assert.deepEqual(collections.mapBy('title'),[
-        'Collection 1',
-        'Collection 2'
-      ],'the actual models of the dashboard collections can be retrieved through the model');
+      assert.deepEqual(
+        collections.mapBy('title'),
+        ['Collection 1', 'Collection 2'],
+        'the actual models of the dashboard collections can be retrieved through the model'
+      );
     });
   });
 });

@@ -11,7 +11,7 @@
  */
 
 import Component from '@ember/component';
-import { computed, get } from '@ember/object'
+import { computed, get } from '@ember/object';
 import layout from '../../templates/components/cell-renderers/dimension';
 
 export default Component.extend({
@@ -41,14 +41,14 @@ export default Component.extend({
    */
   title: computed('descField', 'idField', 'data', function() {
     let descField = get(this, 'descField'),
-        idField = get(this, 'idField'),
-        data = get(this, 'data');
+      idField = get(this, 'idField'),
+      data = get(this, 'data');
 
-    if(data[idField] && data[descField]) {
-      return `${data[descField]} (${data[idField]})`
-    } else if(data[idField]) {
+    if (data[idField] && data[descField]) {
+      return `${data[descField]} (${data[idField]})`;
+    } else if (data[idField]) {
       return data[idField];
-    } else if(data[descField]) {
+    } else if (data[descField]) {
       return data[descField];
     }
 
@@ -60,15 +60,15 @@ export default Component.extend({
    */
   value: computed('descField', 'idField', 'data', function() {
     let descField = get(this, 'descField'),
-        idField = get(this, 'idField'),
-        data = get(this, 'data');
+      idField = get(this, 'idField'),
+      data = get(this, 'data');
 
-    if(data[descField]) {
+    if (data[descField]) {
       return data[descField];
-    } else if(data[idField]) {
+    } else if (data[idField]) {
       return data[idField];
     }
-    
+
     return '--';
   })
 });

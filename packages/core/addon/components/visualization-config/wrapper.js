@@ -16,5 +16,5 @@ import layout from '../../templates/components/visualization-config/wrapper';
 export default Ember.Component.extend({
   layout,
 
-  classNames: [ 'visualization-config' ]
+  classNames: ['visualization-config']
 });

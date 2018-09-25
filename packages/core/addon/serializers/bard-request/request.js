@@ -13,7 +13,7 @@ export default DS.JSONSerializer.extend({
    */
   attrs: {
     // Prevent sending below attributes in request payload
-    responseFormat: {serialize: false}
+    responseFormat: { serialize: false }
   },
 
   /**
@@ -27,8 +27,10 @@ export default DS.JSONSerializer.extend({
     request.metrics = this._addAliases(request.metrics);
 
     // Flip the alias map so it's an object of canonName -> aliases
-    const canonToAlias = Object.entries(getAliasedMetrics(request.metrics))
-      .reduce((obj, [val, key]) => Object.assign({}, obj, {[key]: val}), {}); // flip flip flipadelphia
+    const canonToAlias = Object.entries(getAliasedMetrics(request.metrics)).reduce(
+      (obj, [val, key]) => Object.assign({}, obj, { [key]: val }),
+      {}
+    ); // flip flip flipadelphia
 
     // transform sorts to have appropriate aliases, removes parameter map
     request.sort = this._removeParameters(this._toggleAlias(request.sort, canonToAlias));
@@ -47,10 +49,13 @@ export default DS.JSONSerializer.extend({
     const aliasToCanon = getAliasedMetrics(request.metrics);
 
     // build canonName -> metric map
-    const canonToMetric = request.metrics.reduce((obj, metric) =>
-      Object.assign({}, obj, {
-        [canonicalizeMetric(metric)]: metric
-      }), {});
+    const canonToMetric = request.metrics.reduce(
+      (obj, metric) =>
+        Object.assign({}, obj, {
+          [canonicalizeMetric(metric)]: metric
+        }),
+      {}
+    );
 
     //add dateTime to cannonicalName -> metric map
     canonToMetric['dateTime'] = { metric: 'dateTime' };
@@ -59,8 +64,8 @@ export default DS.JSONSerializer.extend({
     request.sort = this._toggleAlias(request.sort, aliasToCanon, canonToMetric);
 
     //remove AS from metric parameters
-    request.metrics = request.metrics.map((metric) => {
-      if(hasParameters(metric)) {
+    request.metrics = request.metrics.map(metric => {
+      if (hasParameters(metric)) {
         delete metric.parameters.as;
       }
       return metric;
@@ -79,7 +84,7 @@ export default DS.JSONSerializer.extend({
     return arr.map(value => {
       delete value.parameters;
       return value;
-    })
+    });
   },
 
   /**
@@ -91,11 +96,11 @@ export default DS.JSONSerializer.extend({
   _addAliases(metrics) {
     let inc = 0;
     return metrics.map(metric => {
-      if(hasParameters(metric)) {
-        metric.parameters.as = 'm' + (++inc);
+      if (hasParameters(metric)) {
+        metric.parameters.as = 'm' + ++inc;
       }
       return metric;
-    })
+    });
   },
 
   /**
@@ -111,7 +116,7 @@ export default DS.JSONSerializer.extend({
    * @private
    */
   _toggleAlias(field, aliasMap, canonMap = {}) {
-    if(!field) {
+    if (!field) {
       return;
     }
     return field.map(obj => {

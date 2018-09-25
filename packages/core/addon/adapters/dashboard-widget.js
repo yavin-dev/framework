@@ -7,7 +7,6 @@ import BaseAdapter from 'navi-core/adapters/base-json-adapter';
 import { get } from '@ember/object';
 
 export default BaseAdapter.extend({
-
   /**
    * @method urlForUpdateRecord
    * @override
@@ -53,10 +52,10 @@ export default BaseAdapter.extend({
    * @return {String} url
    */
   _urlWithDashboardId(modelName, snapshot) {
-    let host        = get(this, 'host'),
-        prefix      = this.urlPrefix(),
-        dashboardId = snapshot.belongsTo('dashboard').id,
-        widgetId    = get(snapshot, 'id') || '';
+    let host = get(this, 'host'),
+      prefix = this.urlPrefix(),
+      dashboardId = snapshot.belongsTo('dashboard').id,
+      widgetId = get(snapshot, 'id') || '';
 
     let url = `${prefix}/dashboards/${dashboardId}/widgets/${widgetId}`;
 

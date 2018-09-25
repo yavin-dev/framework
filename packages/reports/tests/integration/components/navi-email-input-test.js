@@ -17,9 +17,13 @@ test('render emails', function(assert) {
 
   this.render(hbs`{{navi-email-input emails=emails}}`);
 
-  assert.deepEqual(this.$('.navi-email-input .navi-email-tag').toArray().map(e => e.textContent.trim()),
+  assert.deepEqual(
+    this.$('.navi-email-input .navi-email-tag')
+      .toArray()
+      .map(e => e.textContent.trim()),
     EMAILS,
-    'An email tag is rendered for each given email');
+    'An email tag is rendered for each given email'
+  );
 });
 
 test('add email', function(assert) {
@@ -28,10 +32,12 @@ test('add email', function(assert) {
   const newEmail = 'wolflinkamibo@naviapp.io';
 
   this.onUpdateEmails = emails => {
-    assert.deepEqual(emails,
+    assert.deepEqual(
+      emails,
       [...EMAILS, newEmail],
-      'onUpdateEmails action is called with newly typed email added to the end');
-  }
+      'onUpdateEmails action is called with newly typed email added to the end'
+    );
+  };
 
   this.render(hbs`{{navi-email-input emails=emails onUpdateEmails=(action onUpdateEmails)}}`);
 
@@ -43,10 +49,8 @@ test('remove email', function(assert) {
   assert.expect(1);
 
   this.onUpdateEmails = emails => {
-    assert.deepEqual(emails,
-      EMAILS.slice(1),
-      'onUpdateEmails action is called with removed email excluded');
-  }
+    assert.deepEqual(emails, EMAILS.slice(1), 'onUpdateEmails action is called with removed email excluded');
+  };
 
   this.render(hbs`{{navi-email-input emails=emails onUpdateEmails=(action onUpdateEmails)}}`);
 

@@ -60,7 +60,7 @@ export default ActionConsumer.extend({
      */
     [RequestActions.ADD_METRIC_FILTER](route, metric, parameters) {
       // Metric filter can't exist without the metric present in the request
-      if(parameters){
+      if (parameters) {
         get(this, 'requestActionDispatcher').dispatch(RequestActions.ADD_METRIC_WITH_PARAM, route, metric, parameters);
       } else {
         get(this, 'requestActionDispatcher').dispatch(RequestActions.ADD_METRIC, route, metric);
@@ -74,17 +74,15 @@ export default ActionConsumer.extend({
      */
     [RequestActions.DID_UPDATE_TIME_GRAIN](route, timeGrain) {
       let request = get(route, 'currentModel.request'),
-          timeGrainMetrics = get(timeGrain, 'metrics');
+        timeGrainMetrics = get(timeGrain, 'metrics');
 
-      get(request, 'metrics').mapBy('metric').forEach((metric) => {
-        if(!timeGrainMetrics.includes(metric)){
-          get(this, 'requestActionDispatcher').dispatch(
-            RequestActions.REMOVE_METRIC,
-            route,
-            metric
-          );
-        }
-      });
+      get(request, 'metrics')
+        .mapBy('metric')
+        .forEach(metric => {
+          if (!timeGrainMetrics.includes(metric)) {
+            get(this, 'requestActionDispatcher').dispatch(RequestActions.REMOVE_METRIC, route, metric);
+          }
+        });
     }
   }
 });

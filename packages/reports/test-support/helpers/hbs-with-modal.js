@@ -12,9 +12,10 @@
  * @returns {String} - template necessary for ember-modal-dialog
  */
 export function hbsWithModal(template, testContainer) {
-
   //Necessary for modal popup
-  testContainer.register('config:modals-container-id', 'modal-overlays', {instantiate: false});
+  testContainer.register('config:modals-container-id', 'modal-overlays', {
+    instantiate: false
+  });
   testContainer.inject('component:modal-dialog', 'destinationElementId', 'config:modals-container-id');
 
   return `<div id="modal-overlays"></div>${template}`;

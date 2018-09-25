@@ -90,14 +90,14 @@ export default Component.extend({
   chartBuilders: computed(function() {
     // Find all chart builders registered in requirejs under the namespace "chart-builders"
     let builderRegExp = new RegExp(`^${config.modulePrefix}/chart-builders/(.*)`),
-        chartBuilderEntries = Object.keys(requirejs.entries).filter((key) => builderRegExp.test(key)),
-        owner = getOwner(this),
-        builderMap = chartBuilderEntries.reduce((map, builderName) => {
-          let builderKey = camelize(builderRegExp.exec(builderName)[1]);
+      chartBuilderEntries = Object.keys(requirejs.entries).filter(key => builderRegExp.test(key)),
+      owner = getOwner(this),
+      builderMap = chartBuilderEntries.reduce((map, builderName) => {
+        let builderKey = camelize(builderRegExp.exec(builderName)[1]);
 
-          map[builderKey] = owner.lookup(`chart-builder:${builderKey}`);
-          return map;
-        }, {});
+        map[builderKey] = owner.lookup(`chart-builder:${builderKey}`);
+        return map;
+      }, {});
 
     return builderMap;
   }),
@@ -107,7 +107,7 @@ export default Component.extend({
    */
   builder: computed('seriesConfig.type', function() {
     let type = get(this, 'seriesConfig.type'),
-        builders = get(this, 'chartBuilders');
+      builders = get(this, 'chartBuilders');
 
     return builders[type];
   }),
@@ -118,7 +118,8 @@ export default Component.extend({
   config: computed('options', 'dataConfig', function() {
     let point = get(this, 'pointConfig');
     //deep merge DEFAULT_OPTIONS, custom options, and data
-    return merge({},
+    return merge(
+      {},
       DEFAULT_OPTIONS,
       get(this, 'options'),
       get(this, 'dataConfig'),
@@ -136,15 +137,17 @@ export default Component.extend({
    */
   yAxisLabelConfig: computed('options', function() {
     let metricDisplayName = get(this, 'metricDisplayName');
-    return metricDisplayName ? {
-      axis: {
-        y: {
-          label: {
-            text: get(this, 'metricDisplayName')
+    return metricDisplayName
+      ? {
+          axis: {
+            y: {
+              label: {
+                text: get(this, 'metricDisplayName')
+              }
+            }
           }
         }
-      }
-    } : {};
+      : {};
   }),
 
   /**
@@ -152,9 +155,9 @@ export default Component.extend({
    */
   metricDisplayName: computed('options', function() {
     let seriesConfig = get(this, 'seriesConfig'),
-        metricName = get(seriesConfig, 'config.metric');
+      metricName = get(seriesConfig, 'config.metric');
 
-    if(metricName) {
+    if (metricName) {
       return get(this, 'metricName').getDisplayName(metricName);
     }
   }),
@@ -175,7 +178,7 @@ export default Component.extend({
     let pointCount = get(this, 'model.firstObject.response.rows.length');
 
     //set point radius higher for single data
-    if(pointCount === 1) {
+    if (pointCount === 1) {
       return { r: 2 };
     }
 
@@ -187,10 +190,10 @@ export default Component.extend({
    */
   dataConfig: computed('model.firstObject', 'seriesConfig', function() {
     let response = get(this, 'model.firstObject.response'),
-        request = get(this, 'model.firstObject.request'),
-        builder = get(this, 'builder'),
-        seriesConfig = get(this, 'seriesConfig.config'),
-        seriesData = builder.buildData(get(response, 'rows'), seriesConfig, request);
+      request = get(this, 'model.firstObject.request'),
+      builder = get(this, 'builder'),
+      seriesConfig = get(this, 'seriesConfig.config'),
+      seriesData = builder.buildData(get(response, 'rows'), seriesConfig, request);
 
     return {
       data: {
@@ -208,7 +211,7 @@ export default Component.extend({
    */
   dataSelectionConfig: computed('model.[]', function() {
     // model is an array, and object at index 1 is insights data promise
-    let insights =  get(this, 'model').objectAt(1);
+    let insights = get(this, 'model').objectAt(1);
     return insights ? { dataSelection: insights } : {};
   }),
 
@@ -216,9 +219,9 @@ export default Component.extend({
    * @property {String} tooltipComponentName - name of the tooltip component
    */
   tooltipComponentName: computed(function() {
-    const guid       = guidFor(this);
+    const guid = guidFor(this);
     const seriesType = get(this, 'seriesConfig.type');
-    const chartType  = get(this, 'chartType');
+    const chartType = get(this, 'chartType');
     return `${chartType}-chart-${seriesType}-tooltip-${guid}`;
   }),
 
@@ -227,17 +230,15 @@ export default Component.extend({
    */
   tooltipComponent: computed('dataConfig', function() {
     let request = get(this, 'model.firstObject.request'),
-        seriesConfig = get(this, 'seriesConfig.config'),
-        tooltipComponentName = get(this, 'tooltipComponentName'),
-        registryEntry = `component:${tooltipComponentName}`,
-        builder = get(this, 'builder'),
-        owner = getOwner(this),
-        tooltipComponent = Component.extend(
-          owner.ownerInjection(),
-          builder.buildTooltip(seriesConfig, request),
-          { renderer: owner.lookup('renderer:-dom') }
-        );
-    if(!owner.lookup(registryEntry)) {
+      seriesConfig = get(this, 'seriesConfig.config'),
+      tooltipComponentName = get(this, 'tooltipComponentName'),
+      registryEntry = `component:${tooltipComponentName}`,
+      builder = get(this, 'builder'),
+      owner = getOwner(this),
+      tooltipComponent = Component.extend(owner.ownerInjection(), builder.buildTooltip(seriesConfig, request), {
+        renderer: owner.lookup('renderer:-dom')
+      });
+    if (!owner.lookup(registryEntry)) {
       owner.register(registryEntry, tooltipComponent);
     }
 
@@ -251,19 +252,24 @@ export default Component.extend({
   /**
    * @property {Object} chartTooltip - configuration for tooltip
    */
-  chartTooltip: computed('seriesConfig.config', 'dataConfig.data.json', 'tooltipComponent', 'model.firstObject.request', function() {
-    let rawData = get(this, 'dataConfig.data.json'),
+  chartTooltip: computed(
+    'seriesConfig.config',
+    'dataConfig.data.json',
+    'tooltipComponent',
+    'model.firstObject.request',
+    function() {
+      let rawData = get(this, 'dataConfig.data.json'),
         tooltipComponent = get(this, 'tooltipComponent'),
         request = get(this, 'model.firstObject.request'),
         seriesConfig = get(this, 'seriesConfig.config');
 
-    return {
-      contents(tooltipData) {
-        /*
-         * Since tooltipData.x only contains the index value, map it
-         * to the raw x value for better formatting
-         */
-        let x = rawData[tooltipData[0].x].x.rawValue,
+      return {
+        contents(tooltipData) {
+          /*
+           * Since tooltipData.x only contains the index value, map it
+           * to the raw x value for better formatting
+           */
+          let x = rawData[tooltipData[0].x].x.rawValue,
             tooltip = tooltipComponent.create({
               tooltipData,
               x,
@@ -271,17 +277,18 @@ export default Component.extend({
               seriesConfig
             });
 
-        run(() => {
-          let element = document.createElement('div');
-          tooltip.appendTo(element);
-        });
+          run(() => {
+            let element = document.createElement('div');
+            tooltip.appendTo(element);
+          });
 
-        let innerHTML = tooltip.element.innerHTML;
-        tooltip.destroy();
-        return innerHTML;
-      }
-    };
-  }),
+          let innerHTML = tooltip.element.innerHTML;
+          tooltip.destroy();
+          return innerHTML;
+        }
+      };
+    }
+  ),
 
   /**
    * @property {Function} formattingFunction
@@ -313,7 +320,7 @@ export default Component.extend({
    * @override
    */
   willDestroy() {
-    this._super(...arguments)
+    this._super(...arguments);
     this._removeTooltipFromRegistry();
   },
 

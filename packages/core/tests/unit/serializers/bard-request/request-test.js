@@ -59,7 +59,9 @@ moduleForModel('bard-request/request', 'Unit | Serializer | Request', {
   beforeEach() {
     setupMock();
     Store = this.store();
-    return getOwner(this).lookup('service:bard-metadata').loadMetadata();
+    return getOwner(this)
+      .lookup('service:bard-metadata')
+      .loadMetadata();
   },
 
   afterEach() {
@@ -102,93 +104,115 @@ test('having and sort serialization', function(assert) {
     let report = Store.peekRecord('report', '99');
     set(report, 'request.having', [
       {
-        metric: {metric: {name: 'revenue'}, parameters: {currency: 'USD'}},
+        metric: {
+          metric: { name: 'revenue' },
+          parameters: { currency: 'USD' }
+        },
         operator: 'lt',
         values: [2]
       },
       {
-        metric: {metric: {name: 'adClicks'}},
+        metric: { metric: { name: 'adClicks' } },
         operator: 'gt',
         values: [1]
       }
     ]);
 
     let serializedReport = report.serialize();
-    assert.deepEqual(serializedReport.data.attributes.request.having, [
-      {
-        metric: 'm1',
-        operator: 'lt',
-        values: [2]
-      },
-      {
-        metric: 'adClicks',
-        operator: 'gt',
-        values: [1]
-      }
-    ],
-    'serializes havings correctly');
+    assert.deepEqual(
+      serializedReport.data.attributes.request.having,
+      [
+        {
+          metric: 'm1',
+          operator: 'lt',
+          values: [2]
+        },
+        {
+          metric: 'adClicks',
+          operator: 'gt',
+          values: [1]
+        }
+      ],
+      'serializes havings correctly'
+    );
     set(report, 'request.having', [
       {
-        metric: {metric: {name: 'revenue'}, parameters: {currency: 'JPY'}},
-        parameters: {currency: 'JPY'},
+        metric: {
+          metric: { name: 'revenue' },
+          parameters: { currency: 'JPY' }
+        },
+        parameters: { currency: 'JPY' },
         operator: 'eq',
         values: [12]
       }
     ]);
 
     serializedReport = report.serialize();
-    assert.deepEqual(serializedReport.data.attributes.request.having, [
-      {
-        metric: 'revenue(currency=JPY)',
-        operator: 'eq',
-        values: [12]
-      }
-    ],
-    'Uses canonicalized name when can\'t find alias');
-
-    set(report, 'request.sort', [
-      {
-        metric: {metric: {name: 'revenue'}, parameters: {currency: 'CAD'}},
-        direction: 'asc'
-      },
-      {
-        metric: {metric: {name: 'adClicks'}},
-        direction: 'desc'
-      }
-    ]
+    assert.deepEqual(
+      serializedReport.data.attributes.request.having,
+      [
+        {
+          metric: 'revenue(currency=JPY)',
+          operator: 'eq',
+          values: [12]
+        }
+      ],
+      "Uses canonicalized name when can't find alias"
     );
 
-    serializedReport = report.serialize();
-    assert.deepEqual(serializedReport.data.attributes.request.sort, [
+    set(report, 'request.sort', [
       {
-        metric: 'm2',
+        metric: {
+          metric: { name: 'revenue' },
+          parameters: { currency: 'CAD' }
+        },
         direction: 'asc'
       },
       {
-        metric: 'adClicks',
+        metric: { metric: { name: 'adClicks' } },
         direction: 'desc'
       }
-    ],
-    'Sort serializes parameterized metrics correctly');
+    ]);
+
+    serializedReport = report.serialize();
+    assert.deepEqual(
+      serializedReport.data.attributes.request.sort,
+      [
+        {
+          metric: 'm2',
+          direction: 'asc'
+        },
+        {
+          metric: 'adClicks',
+          direction: 'desc'
+        }
+      ],
+      'Sort serializes parameterized metrics correctly'
+    );
 
     set(report, 'request.sort', [
       {
-        metric: {metric: {name: 'revenue'}, parameters: {currency: 'JPY'}},
+        metric: {
+          metric: { name: 'revenue' },
+          parameters: { currency: 'JPY' }
+        },
         direction: 'asc'
       }
     ]);
 
     serializedReport = report.serialize();
-    assert.deepEqual(serializedReport.data.attributes.request.sort, [
-      {
-        metric: 'revenue(currency=JPY)',
-        direction: 'asc'
-      }
-    ],
-    'Sort serializes to canon name when alias is not found');
+    assert.deepEqual(
+      serializedReport.data.attributes.request.sort,
+      [
+        {
+          metric: 'revenue(currency=JPY)',
+          direction: 'asc'
+        }
+      ],
+      'Sort serializes to canon name when alias is not found'
+    );
   });
 });
-
 
 test('having and sort deserialization', function(assert) {
   assert.expect(12);
@@ -256,47 +280,47 @@ test('having and sort deserialization', function(assert) {
     let sort = get(request, 'sort');
 
     //havings
-    assert.equal(get(having.objectAt(0), 'metric.metric.name'),
+    assert.equal(
+      get(having.objectAt(0), 'metric.metric.name'),
       'revenue',
-      'base metric in metric.name in parameterized having');
-    assert.equal(get(having.objectAt(0), 'operator'),
-      'lt',
-      'having operator is preserved');
-    assert.equal(get(having.objectAt(0), 'metric.parameters.currency'),
+      'base metric in metric.name in parameterized having'
+    );
+    assert.equal(get(having.objectAt(0), 'operator'), 'lt', 'having operator is preserved');
+    assert.equal(
+      get(having.objectAt(0), 'metric.parameters.currency'),
       'USD',
-      'parameters are pulled out into their own property');
+      'parameters are pulled out into their own property'
+    );
 
-    assert.equal(get(having.objectAt(1), 'metric.metric.name'),
+    assert.equal(
+      get(having.objectAt(1), 'metric.metric.name'),
       'adClicks',
-      'Simple metrics are handled correctly in having');
-    assert.equal(get(having.objectAt(1), 'operator'),
-      'gt',
-      'operator is preserved for simple having metrics');
+      'Simple metrics are handled correctly in having'
+    );
+    assert.equal(get(having.objectAt(1), 'operator'), 'gt', 'operator is preserved for simple having metrics');
 
     //dateTime sort
-    assert.equal(get(sort.objectAt(0), 'metric.metric.name'),
-      'dateTime',
-      'dateTime sort is deserialized properly');
-    assert.equal(get(sort.objectAt(0), 'direction'),
-      'desc',
-      'dateTime sort direction is preserved');
+    assert.equal(get(sort.objectAt(0), 'metric.metric.name'), 'dateTime', 'dateTime sort is deserialized properly');
+    assert.equal(get(sort.objectAt(0), 'direction'), 'desc', 'dateTime sort direction is preserved');
 
     //other sorts
-    assert.equal(get(sort.objectAt(1), 'metric.metric.name'),
+    assert.equal(
+      get(sort.objectAt(1), 'metric.metric.name'),
       'revenue',
-      'base metric in metric.name in parameterized sort');
-    assert.equal(get(sort.objectAt(1), 'direction'),
-      'asc',
-      'sort direction is preserved');
-    assert.equal(get(sort.objectAt(1), 'metric.parameters.currency'),
+      'base metric in metric.name in parameterized sort'
+    );
+    assert.equal(get(sort.objectAt(1), 'direction'), 'asc', 'sort direction is preserved');
+    assert.equal(
+      get(sort.objectAt(1), 'metric.parameters.currency'),
       'CAD',
-      'parameters are pulled out into their own property');
+      'parameters are pulled out into their own property'
+    );
 
-    assert.equal(get(sort.objectAt(2), 'metric.metric.name'),
+    assert.equal(
+      get(sort.objectAt(2), 'metric.metric.name'),
       'adClicks',
-      'Simple metrics are handled correctly in sort');
-    assert.equal(get(sort.objectAt(2), 'direction'),
-      'desc',
-      'operator is preserved for simple sort metrics');
+      'Simple metrics are handled correctly in sort'
+    );
+    assert.equal(get(sort.objectAt(2), 'direction'), 'desc', 'operator is preserved for simple sort metrics');
   });
 });

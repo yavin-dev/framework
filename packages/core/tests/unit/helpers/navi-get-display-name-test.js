@@ -19,15 +19,13 @@ test('display name is returned', function(assert) {
 
   let getDisplayName = this.subject();
 
-  assert.equal(getDisplayName.compute(['metric', 'pageViews']),
-    'Page Views',
-    'The helper returns the metric longName');
+  assert.equal(getDisplayName.compute(['metric', 'pageViews']), 'Page Views', 'The helper returns the metric longName');
 
-  assert.equal(getDisplayName.compute(['metric', undefined]),
-    undefined,
-    'Undefined is returned when id is not given');
+  assert.equal(getDisplayName.compute(['metric', undefined]), undefined, 'Undefined is returned when id is not given');
 
-  assert.throws(() => getDisplayName.compute(['metric', 'notAMetric']),
+  assert.throws(
+    () => getDisplayName.compute(['metric', 'notAMetric']),
     /No metric found for id: notAMetric/,
-    'An error is given when the id is not found');
+    'An error is given when the id is not found'
+  );
 });

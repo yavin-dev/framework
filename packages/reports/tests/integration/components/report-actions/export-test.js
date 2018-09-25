@@ -33,34 +33,32 @@ test('Component Renders', function(assert) {
   assert.expect(4);
 
   let factService = getOwner(this).lookup('service:bard-facts'),
-      reportPromise = getOwner(this).lookup('service:bard-metadata').loadMetadata().then(() => {
+    reportPromise = getOwner(this)
+      .lookup('service:bard-metadata')
+      .loadMetadata()
+      .then(() => {
         return Store.findRecord('report', 1);
       });
 
-  reportPromise.then(report => { this.set('report', report); });
+  reportPromise.then(report => {
+    this.set('report', report);
+  });
 
   return reportPromise.then(report => {
-
     this.render(TEMPLATE);
 
     let component = $('a.report-control').get(0);
 
-    assert.equal(component.text.trim(),
-      'Export',
-      'Component yields content as expected');
+    assert.equal(component.text.trim(), 'Export', 'Component yields content as expected');
 
-    assert.equal(component.getAttribute('target'),
-      '_blank',
-      'Component has target attribute as _blank');
+    assert.equal(component.getAttribute('target'), '_blank', 'Component has target attribute as _blank');
 
-    assert.equal(component.getAttribute('download'),
-      'true',
-      'Component has download attribute as true');
+    assert.equal(component.getAttribute('download'), 'true', 'Component has download attribute as true');
 
-    let expectedHref = factService.getURL(report.get('request').serialize(), {format: 'csv'});
-    assert.equal(component.getAttribute('href'),
-      expectedHref,
-      'Component has appropriate link to API');
+    let expectedHref = factService.getURL(report.get('request').serialize(), {
+      format: 'csv'
+    });
+    assert.equal(component.getAttribute('href'), expectedHref, 'Component has appropriate link to API');
   });
 });
 
@@ -75,18 +73,14 @@ test('Component is not disabled for unsaved reports', function(assert) {
       },
       intervals: [
         Store.createFragment('bard-request/fragments/interval', {
-          interval: new Interval(
-            moment('10-02-2015', 'MM-DD-YYYY'),
-            moment('10-14-2015', 'MM-DD-YYYY')
-          )
-        }
-        )]
+          interval: new Interval(moment('10-02-2015', 'MM-DD-YYYY'), moment('10-14-2015', 'MM-DD-YYYY'))
+        })
+      ]
     };
-    this.set('report', Store.createRecord('report', {title: 'New Report', request}));
+    this.set('report', Store.createRecord('report', { title: 'New Report', request }));
   });
 
   this.render(TEMPLATE);
 
-  assert.notOk(!!$('a.report-control.disabled').length,
-    'Component is not disabled for unsaved reports');
+  assert.notOk(!!$('a.report-control.disabled').length, 'Component is not disabled for unsaved reports');
 });

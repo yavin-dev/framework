@@ -16,7 +16,7 @@ export default VisualizationSerializer.extend({
    * @return {Object} normalized payload
    */
   normalize(type, visualization) {
-    if(visualization) {
+    if (visualization) {
       let metric = get(visualization, 'metadata.metric');
       visualization.metadata.metric = parseMetricName(metric);
     }

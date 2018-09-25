@@ -131,18 +131,9 @@ test('columns', function(assert) {
       model: MODEL,
       options: OPTIONS
     }),
-    dateTimeColumn = Ember.A(component.get('columns')).filterBy(
-      'type',
-      'dateTime'
-    )[0],
-    metricColumn = Ember.A(component.get('columns')).filterBy(
-      'type',
-      'metric'
-    )[0],
-    thresholdColumn = Ember.A(component.get('columns')).filterBy(
-      'type',
-      'threshold'
-    )[0];
+    dateTimeColumn = Ember.A(component.get('columns')).filterBy('type', 'dateTime')[0],
+    metricColumn = Ember.A(component.get('columns')).filterBy('type', 'metric')[0],
+    thresholdColumn = Ember.A(component.get('columns')).filterBy('type', 'threshold')[0];
 
   assert.equal(
     dateTimeColumn.sortDirection,
@@ -150,17 +141,9 @@ test('columns', function(assert) {
     'sort direction is fetched from the request and updated in the columns property'
   );
 
-  assert.equal(
-    metricColumn.sortDirection,
-    'none',
-    'sort direction is set to none as default for metric column'
-  );
+  assert.equal(metricColumn.sortDirection, 'none', 'sort direction is set to none as default for metric column');
 
-  assert.equal(
-    thresholdColumn.sortDirection,
-    'none',
-    'sort direction is set to none as default for threshold column'
-  );
+  assert.equal(thresholdColumn.sortDirection, 'none', 'sort direction is set to none as default for threshold column');
 });
 
 test('datetime _getNextSortDirection', function(assert) {
@@ -192,23 +175,11 @@ test('metric _getNextSortDirection', function(assert) {
     options: OPTIONS
   });
 
-  assert.equal(
-    component._getNextSortDirection('metric', 'none'),
-    'desc',
-    'next sort direction for metric none is asc'
-  );
+  assert.equal(component._getNextSortDirection('metric', 'none'), 'desc', 'next sort direction for metric none is asc');
 
-  assert.equal(
-    component._getNextSortDirection('metric', 'desc'),
-    'asc',
-    'next sort direction for metric desc is none'
-  );
+  assert.equal(component._getNextSortDirection('metric', 'desc'), 'asc', 'next sort direction for metric desc is none');
 
-  assert.equal(
-    component._getNextSortDirection('metric', 'asc'),
-    'none',
-    'next sort direction for metric asc is desc'
-  );
+  assert.equal(component._getNextSortDirection('metric', 'asc'), 'none', 'next sort direction for metric asc is desc');
 });
 
 test('table data changes with options', function(assert) {

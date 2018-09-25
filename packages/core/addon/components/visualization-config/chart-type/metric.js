@@ -22,7 +22,7 @@ export default Ember.Component.extend({
   /**
    * @property {Array} classNames
    */
-  classNames: [ 'metric-line-chart-config' ],
+  classNames: ['metric-line-chart-config'],
 
   /**
    * @property {String} chartSeriesClass - chart series class name to be applied to the dropdown
@@ -61,7 +61,7 @@ export default Ember.Component.extend({
      */
     onUpdateMetrics(selectedMetrics) {
       let metrics = Ember.A(selectedMetrics).mapBy('name'),
-          newConfig = copy(get(this, 'seriesConfig'));
+        newConfig = copy(get(this, 'seriesConfig'));
       set(newConfig, 'metrics', metrics);
       this.sendAction('onUpdateConfig', newConfig);
     },
@@ -72,8 +72,8 @@ export default Ember.Component.extend({
      */
     onRemoveSeries(metric) {
       let selectedMetrics = Ember.A(get(this, 'selectedMetrics')),
-          updatedMetrics = Ember.A(selectedMetrics.mapBy('name')).removeObject(metric.name),
-          newConfig = copy(get(this, 'seriesConfig'));
+        updatedMetrics = Ember.A(selectedMetrics.mapBy('name')).removeObject(metric.name),
+        newConfig = copy(get(this, 'seriesConfig'));
 
       set(newConfig, 'metrics', updatedMetrics);
       this.sendAction('onUpdateConfig', newConfig);

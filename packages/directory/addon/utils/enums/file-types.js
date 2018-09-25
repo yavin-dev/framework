@@ -5,7 +5,7 @@
 export default {
   definitions: {
     reports: { iconClass: 'file-text', linkRoute: 'reports.new' },
-    dashboards: { iconClass: 'th-large', linkRoute: 'dashboards.new'}
+    dashboards: { iconClass: 'th-large', linkRoute: 'dashboards.new' }
   },
 
   /**
@@ -15,4 +15,4 @@ export default {
   getTypes() {
     return Object.keys(this.definitions);
   }
-}
+};

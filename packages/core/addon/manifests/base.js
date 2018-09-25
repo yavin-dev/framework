@@ -10,7 +10,6 @@ import Ember from 'ember';
 
 const { get } = Ember;
 export default Ember.Object.extend({
-
   /**
    * @property name
    */
@@ -42,7 +41,7 @@ export default Ember.Object.extend({
    */
   hasSingleTimeBucket(request) {
     let timeGrain = get(request, 'logicalTable.timeGrain.name'),
-        numTimeBuckets = get(request, 'intervals.firstObject.interval').diffForTimePeriod(timeGrain);
+      numTimeBuckets = get(request, 'intervals.firstObject.interval').diffForTimePeriod(timeGrain);
 
     return numTimeBuckets === 1;
   },

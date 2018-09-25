@@ -6,18 +6,14 @@
 import Ember from 'ember';
 import DS from 'ember-data';
 import MF from 'model-fragments';
-import { v1 } from "ember-uuid";
+import { v1 } from 'ember-uuid';
 import hasVisualization from 'navi-core/mixins/models/has-visualization';
 import { validator, buildValidations } from 'ember-cp-validations';
 
 const { computed, get } = Ember;
 const Validations = buildValidations({
-  visualization: [
-    validator('belongs-to')
-  ],
-  request: [
-    validator('belongs-to')
-  ],
+  visualization: [validator('belongs-to')],
+  request: [validator('belongs-to')],
   title: [
     validator('presence', {
       presence: true,
@@ -28,11 +24,13 @@ const Validations = buildValidations({
 });
 
 export default DS.Model.extend(hasVisualization, Validations, {
-  dashboard:     DS.belongsTo('dashboard'),
-  title:         DS.attr('string', { defaultValue: 'Untitled Widget' }),
-  createdOn:     DS.attr('moment'),
-  updatedOn:     DS.attr('moment'),
-  requests:      MF.fragmentArray('bard-request/request', { defaultValue: () => [] }),
+  dashboard: DS.belongsTo('dashboard'),
+  title: DS.attr('string', { defaultValue: 'Untitled Widget' }),
+  createdOn: DS.attr('moment'),
+  updatedOn: DS.attr('moment'),
+  requests: MF.fragmentArray('bard-request/request', {
+    defaultValue: () => []
+  }),
 
   /**
    * Author retrived from dashboard
@@ -53,7 +51,7 @@ export default DS.Model.extend(hasVisualization, Validations, {
    * @property {String} tempId - uuid for unsaved records
    */
   tempId: computed('id', function() {
-    if(get(this, 'id')) {
+    if (get(this, 'id')) {
       return null;
     } else {
       return v1();

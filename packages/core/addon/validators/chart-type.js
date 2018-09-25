@@ -10,7 +10,7 @@ import { METRIC_SERIES, DIMENSION_SERIES, DATE_TIME_SERIES } from 'navi-core/uti
 const CHART_TYPES = Ember.A([METRIC_SERIES, DIMENSION_SERIES, DATE_TIME_SERIES]);
 
 export default BaseValidator.extend({
-  validate(value/*, options, model, attribute*/) {
+  validate(value /*, options, model, attribute*/) {
     return CHART_TYPES.includes(value);
   }
 });

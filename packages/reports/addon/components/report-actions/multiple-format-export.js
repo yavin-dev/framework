@@ -46,7 +46,7 @@ export default Ember.Component.extend({
   /**
    * @property {String} csvHref - CSV download link for the report
    */
-  csvHref: Ember.computed('report.request', 'report.validations.isTruelyValid', function () {
+  csvHref: Ember.computed('report.request', 'report.validations.isTruelyValid', function() {
     let request = get(this, 'report.request').serialize();
     return get(this, 'facts').getURL(request, { format: 'csv' });
   }),
@@ -54,10 +54,9 @@ export default Ember.Component.extend({
   /**
    * @property {Promise} pdfHref - Promise resolving to pdf download link
    */
-  pdfHref: Ember.computed('report.request', 'report.visualization', 'report.validations.isTruelyValid', function () {
+  pdfHref: Ember.computed('report.request', 'report.visualization', 'report.validations.isTruelyValid', function() {
     let { report, modelCompression, store } = getProperties(this, 'report', 'modelCompression', 'store'),
-        modelWithId = report;
-
+      modelWithId = report;
 
     /*
      * Model compression requires an id, so if the report doesn't have one,
@@ -68,9 +67,7 @@ export default Ember.Component.extend({
       modelWithId.set('id', get(modelWithId, 'tempId'));
     }
 
-    return modelCompression.compress(modelWithId).then(serializedModel =>
-      `/export?reportModel=${serializedModel}`
-    );
+    return modelCompression.compress(modelWithId).then(serializedModel => `/export?reportModel=${serializedModel}`);
   }),
 
   /**

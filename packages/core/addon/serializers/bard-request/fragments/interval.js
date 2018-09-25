@@ -6,7 +6,6 @@ import DS from 'ember-data';
 import Interval from 'navi-core/utils/classes/interval';
 
 export default DS.JSONSerializer.extend({
-
   /**
    * Converts object with start/end properties into interval
    *

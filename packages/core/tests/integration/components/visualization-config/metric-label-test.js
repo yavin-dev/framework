@@ -14,7 +14,7 @@ moduleForComponent('visualization-config/metric-label', 'Integration | Component
   integration: true,
   beforeEach() {
     this.set('options', {
-      description: 'Glass Bottles of the ranch\'s finest pasteurized whole milk!!!!!!!',
+      description: "Glass Bottles of the ranch's finest pasteurized whole milk!!!!!!!",
       metric: 'bottles',
       format: '$0,0[.]00'
     });
@@ -27,22 +27,28 @@ test('component renders', function(assert) {
 
   this.render(Template);
 
-  assert.equal(this.$('.metric-label-config__description-input').val().trim(),
-    'Glass Bottles of the ranch\'s finest pasteurized whole milk!!!!!!!',
-    'Component correctly displays initial description');
+  assert.equal(
+    this.$('.metric-label-config__description-input')
+      .val()
+      .trim(),
+    "Glass Bottles of the ranch's finest pasteurized whole milk!!!!!!!",
+    'Component correctly displays initial description'
+  );
 
-  assert.equal(this.$('.number-format-selector__format-input').val().trim(),
+  assert.equal(
+    this.$('.number-format-selector__format-input')
+      .val()
+      .trim(),
     '$0,0[.]00',
-    'Component correctly displays initial format');
+    'Component correctly displays initial format'
+  );
 });
 
 test('onUpdateConfig format input', function(assert) {
   assert.expect(1);
 
   this.set('onUpdateConfig', result => {
-    assert.equal(result.format,
-      'foo',
-      'onUpdateConfig action is called by format input');
+    assert.equal(result.format, 'foo', 'onUpdateConfig action is called by format input');
   });
 
   this.render(Template);
@@ -57,9 +63,7 @@ test('onUpdateConfig description input', function(assert) {
   assert.expect(1);
 
   this.set('onUpdateConfig', result => {
-    assert.equal(result.description,
-      'foo',
-      'onUpdateConfig action is called by description input');
+    assert.equal(result.description, 'foo', 'onUpdateConfig action is called by description input');
   });
 
   this.render(Template);

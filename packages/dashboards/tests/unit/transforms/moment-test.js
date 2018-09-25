@@ -10,16 +10,13 @@ test('deserialize', function(assert) {
 
   let transform = this.subject();
 
-  let date           = '2015-04-10 00:00:00.000',
-      expectedMoment = moment.utc(date, API_DATE_FORMAT_STRING),
-      actualMoment   = transform.deserialize(date);
+  let date = '2015-04-10 00:00:00.000',
+    expectedMoment = moment.utc(date, API_DATE_FORMAT_STRING),
+    actualMoment = transform.deserialize(date);
 
-  assert.ok(actualMoment.isSame(expectedMoment),
-    'transform correctly deserialized a string to a moment object');
+  assert.ok(actualMoment.isSame(expectedMoment), 'transform correctly deserialized a string to a moment object');
 
-  assert.equal(transform.deserialize(undefined),
-    null,
-    'transform deserializes non dates to null');
+  assert.equal(transform.deserialize(undefined), null, 'transform deserializes non dates to null');
 });
 
 test('serialize', function(assert) {
@@ -28,14 +25,10 @@ test('serialize', function(assert) {
   let transform = this.subject();
 
   let expectedDate = '2015-04-10 00:00:00.000',
-      testMoment   = moment.utc(expectedDate, API_DATE_FORMAT_STRING),
-      actualDate   = transform.serialize(testMoment);
+    testMoment = moment.utc(expectedDate, API_DATE_FORMAT_STRING),
+    actualDate = transform.serialize(testMoment);
 
-  assert.equal(actualDate,
-    expectedDate,
-    'transform correctly serialized a moment into a date string');
+  assert.equal(actualDate, expectedDate, 'transform correctly serialized a moment into a date string');
 
-  assert.equal(transform.serialize(undefined),
-    null,
-    'transform serializes non moment objects to null');
+  assert.equal(transform.serialize(undefined), null, 'transform serializes non moment objects to null');
 });

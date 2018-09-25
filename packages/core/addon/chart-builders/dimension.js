@@ -35,7 +35,6 @@ import { canonicalizeMetric } from 'navi-data/utils/metric';
 const { get, set } = Ember;
 
 export default Ember.Object.extend({
-
   /**
    * @method getSeriesName
    * @param {Object} row - single row of fact data
@@ -43,8 +42,8 @@ export default Ember.Object.extend({
    * @param {Object} request - request used to query fact data
    * @returns {String} name of series given row belongs to
    */
-  getSeriesName: (row, config/*, request */) => {
-    let dimensionOrder =  config.dimensionOrder;
+  getSeriesName: (row, config /*, request */) => {
+    let dimensionOrder = config.dimensionOrder;
 
     return dimensionOrder.map(dim => get(row, `${dim}|id`)).join(',');
   },
@@ -54,7 +53,7 @@ export default Ember.Object.extend({
    * @param {Object} row - single row of fact data
    * @returns {String} name of x value given row belongs to
    */
-  getXValue: (row) => moment(row.dateTime).format(DateUtils.API_DATE_FORMAT_STRING),
+  getXValue: row => moment(row.dateTime).format(DateUtils.API_DATE_FORMAT_STRING),
 
   /**
    * @function buildData
@@ -66,34 +65,34 @@ export default Ember.Object.extend({
    */
   buildData(data, config, request) {
     // Group data by x axis value + series name in order to lookup trends when building tooltip
-    set(this, 'byXSeries', new DataGroup(data, row => {
-      let seriesName = this.getSeriesName(row, config, request),
+    set(
+      this,
+      'byXSeries',
+      new DataGroup(data, row => {
+        let seriesName = this.getSeriesName(row, config, request),
           x = this.getXValue(row);
 
-      return x + seriesName;
-    }));
+        return x + seriesName;
+      })
+    );
 
     // Support different `dateTime` formats by mapping them to a standard
     const buildDateKey = dateTime => moment(dateTime).format(DateUtils.API_DATE_FORMAT_STRING);
 
     let metric = config.metric, // Metric used for the series
-        seriesKey = buildSeriesKey(config), // Build the series required
-        seriesName = getSeriesName(config), // Get all the series names
-        byDate = new DataGroup(data, row => buildDateKey(row.dateTime)), // Group by dates for easier lookup
-        grain = get(request, 'logicalTable.timeGrain.name') || get(request, 'logicalTable.timeGrain'),
-        requestInterval = Interval.parseFromStrings(
-          get(request, 'intervals.0.start'),
-          get(request, 'intervals.0.end')
-        );
+      seriesKey = buildSeriesKey(config), // Build the series required
+      seriesName = getSeriesName(config), // Get all the series names
+      byDate = new DataGroup(data, row => buildDateKey(row.dateTime)), // Group by dates for easier lookup
+      grain = get(request, 'logicalTable.timeGrain.name') || get(request, 'logicalTable.timeGrain'),
+      requestInterval = Interval.parseFromStrings(get(request, 'intervals.0.start'), get(request, 'intervals.0.end'));
 
     // For each unique date, build the series
     return DateUtils.getDatesForInterval(requestInterval, grain).map(date => {
-
       let key = buildDateKey(date),
-          x = {
-            rawValue: key,
-            displayValue: moment(date).format(ChartAxisDateTimeFormats[grain])
-          };
+        x = {
+          rawValue: key,
+          displayValue: moment(date).format(ChartAxisDateTimeFormats[grain])
+        };
 
       // Pulling the specific data rows for the date
       let dateRows = byDate.getDataForKey(key) || [];
@@ -109,9 +108,10 @@ export default Ember.Object.extend({
         //Handling the case when some of the data group does not exist
         if (byDim.getDataForKey(s) && byDim.getDataForKey(s).length) {
           // Extending the data for date with the grouped dimension and metric value
-          Object.assign(dataForDate, { [seriesName[index]]: byDim.getDataForKey(s)[0][canonicalizeMetric(metric)] });
-        }
-        else {
+          Object.assign(dataForDate, {
+            [seriesName[index]]: byDim.getDataForKey(s)[0][canonicalizeMetric(metric)]
+          });
+        } else {
           // Returning null for the chart to show missing data
           Object.assign(dataForDate, { [seriesName[index]]: null });
         }

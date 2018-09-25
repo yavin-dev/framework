@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import merge from 'lodash/merge';
 
-const { get, set} = Ember;
+const { get, set } = Ember;
 export default Ember.Controller.extend({
   request: {},
 
@@ -10,7 +10,7 @@ export default Ember.Controller.extend({
   }),
 
   goalGaugeOptions: {
-    metric: {metric: 'DAU', parameters: {}},
+    metric: { metric: 'DAU', parameters: {} },
     baselineValue: '2900000000',
     goalValue: '3100000000'
   },
@@ -24,15 +24,12 @@ export default Ember.Controller.extend({
   }),
 
   actions: {
-
     /**
      * @action - onUpdateConfig merges config into the metricLabelOptions
      */
     onUpdateConfig(configUpdates) {
-      let config = get(this,'goalGaugeOptions');
-      set(this, 'goalGaugeOptions',
-        merge({}, config, configUpdates)
-      );
+      let config = get(this, 'goalGaugeOptions');
+      set(this, 'goalGaugeOptions', merge({}, config, configUpdates));
     }
   }
 });

@@ -2,18 +2,18 @@ import Ember from 'ember';
 import users from './users';
 
 let naviUsers = Ember.A(users),
-    dashboards = {
-      'navi_user': [ 1, 2 ],
-      'ciela': [ 3, 4 ]
-    },
-    deliveryRules = {
-      'navi_user': [1],
-      'ciela': []
-    },
-    favoriteDashboards = {
-      'navi_user': [ 1 ],
-      'ciela': []
-    };
+  dashboards = {
+    navi_user: [1, 2],
+    ciela: [3, 4]
+  },
+  deliveryRules = {
+    navi_user: [1],
+    ciela: []
+  },
+  favoriteDashboards = {
+    navi_user: [1],
+    ciela: []
+  };
 
 naviUsers.forEach(user => {
   user.deliveryRules = [];

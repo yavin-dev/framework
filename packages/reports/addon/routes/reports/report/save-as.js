@@ -8,7 +8,6 @@ import { get, setProperties } from '@ember/object';
 import { inject as service } from '@ember/service';
 
 export default Route.extend({
-
   /**
    * @property {Service} user
    */
@@ -24,10 +23,9 @@ export default Route.extend({
    * @param {String} title - Title of newly created report
    * @returns {DS.Model} new copy of report with different title
    */
-  model({title}) {
+  model({ title }) {
     // Return new report with new title
-    return this.store.createRecord('report',
-      this._saveAsReport(this.modelFor('reports.report'), title));
+    return this.store.createRecord('report', this._saveAsReport(this.modelFor('reports.report'), title));
   },
 
   /**
@@ -75,17 +73,20 @@ export default Route.extend({
     // get Old Report
     let oldReport = this.modelFor('reports.report');
     // Save report
-    report.save().then(() => {
-      this._onSaveAsSuccess();
-      // Roll back old report to revert any changes applied to original report
-      oldReport.rollbackAttributes();
-      // Switch to the newly created report
-      return this.replaceWith('reports.report.view', get(report, 'id'));
-    }).catch(() => {
-      // Throws falure and sends user back to old report dirty state
-      this._onSaveAsFailure();
-      this.replaceWith('reports.report.view');
-    });
+    report
+      .save()
+      .then(() => {
+        this._onSaveAsSuccess();
+        // Roll back old report to revert any changes applied to original report
+        oldReport.rollbackAttributes();
+        // Switch to the newly created report
+        return this.replaceWith('reports.report.view', get(report, 'id'));
+      })
+      .catch(() => {
+        // Throws falure and sends user back to old report dirty state
+        this._onSaveAsFailure();
+        this.replaceWith('reports.report.view');
+      });
   },
 
   /**
@@ -96,7 +97,7 @@ export default Route.extend({
    */
   _saveAsReport(report, title) {
     let author = get(this, 'user').getUser(),
-        clonedReportModel = report.clone();
+      clonedReportModel = report.clone();
 
     // Setting the title and author of report
     setProperties(clonedReportModel, {

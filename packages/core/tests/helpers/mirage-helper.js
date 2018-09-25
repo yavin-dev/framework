@@ -2,12 +2,12 @@ import { startMirage } from '../../initializers/ember-cli-mirage';
 
 let Server;
 
-export function setupMock(){
+export function setupMock() {
   Server = startMirage();
   return Server;
 }
 
-export function teardownMock(){
+export function teardownMock() {
   Server.shutdown();
 }
 

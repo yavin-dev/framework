@@ -7,7 +7,7 @@
  */
 
 import Ember from 'ember';
-import {formatPercentageStyle} from 'ember-collection/utils/style-generators';
+import { formatPercentageStyle } from 'ember-collection/utils/style-generators';
 import ShelfFirst from 'layout-bin-packer/shelf-first';
 
 /**
@@ -21,7 +21,7 @@ class MixedHeightLayout {
     this.bin = new ShelfFirst(dimensions, MOCK_WIDTH);
   }
 
-  contentSize(clientWidth/*, clientHeight*/) {
+  contentSize(clientWidth /*, clientHeight*/) {
     let size = {
       width: clientWidth,
       height: this.bin.height(MOCK_WIDTH)
@@ -48,7 +48,7 @@ class MixedHeightLayout {
   formatItemStyle(itemIndex, clientWidth, clientHeight) {
     let pos = this.positionAt(itemIndex, MOCK_WIDTH, clientHeight);
     let height = this.heightAt(itemIndex, MOCK_WIDTH, clientHeight);
-    return formatPercentageStyle({ x:0, y:pos.y }, 100, height);
+    return formatPercentageStyle({ x: 0, y: pos.y }, 100, height);
   }
 }
 
@@ -66,6 +66,6 @@ export function formatItemDimension(height) {
   };
 }
 
-export default Ember.Helper.helper(function (params /*, hash */) {
+export default Ember.Helper.helper(function(params /*, hash */) {
   return new MixedHeightLayout(params[0]);
 });

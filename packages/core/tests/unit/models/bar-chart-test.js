@@ -21,7 +21,5 @@ test('Bar chart type', function(assert) {
   assert.expect(1);
 
   let chart = run(() => this.subject().get('barChart'));
-  assert.equal(get(chart, 'type'),
-    'bar-chart',
-    'bar chart config has correct chart type');
+  assert.equal(get(chart, 'type'), 'bar-chart', 'bar chart config has correct chart type');
 });

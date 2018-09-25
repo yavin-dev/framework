@@ -13,14 +13,14 @@ import { assert } from '@ember/debug';
  * @param params {object} - object that has a serialize signature;
  * @returns {*} - serialized object
  */
-export function serialize([ model ]/*, hash*/) {
-  if(model === null || model === undefined) {
+export function serialize([model] /*, hash*/) {
+  if (model === null || model === undefined) {
     return model;
   }
-  if(typeof model === 'object' && 'serialize' in model && typeof model.serialize === 'function') {
+  if (typeof model === 'object' && 'serialize' in model && typeof model.serialize === 'function') {
     return model.serialize();
   }
-  assert("Cannot serialize " + typeof model);
+  assert('Cannot serialize ' + typeof model);
 }
 
 export default helper(serialize);

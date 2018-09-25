@@ -38,14 +38,13 @@ test('model', function(assert) {
   return Ember.run(() => {
     return Route.model().then(model => {
       return model.get('dashboards').then(dashboards => {
-        assert.deepEqual(dashboards.mapBy('id'),
-          ['1','2'],
-          'Routes model returns the `navi_user`s dashboards');
+        assert.deepEqual(dashboards.mapBy('id'), ['1', '2'], 'Routes model returns the `navi_user`s dashboards');
 
-        assert.deepEqual(dashboards.mapBy('title'),[
-          'Tumblr Goals Dashboard',
-          'Dashboard 2'
-        ],'the actual models of the dashboards can be retrieved through the model');
+        assert.deepEqual(
+          dashboards.mapBy('title'),
+          ['Tumblr Goals Dashboard', 'Dashboard 2'],
+          'the actual models of the dashboards can be retrieved through the model'
+        );
       });
     });
   });

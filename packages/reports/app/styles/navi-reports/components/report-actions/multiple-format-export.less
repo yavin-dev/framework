@@ -4,29 +4,29 @@
  */
 
 .multiple-format-export {
-    .navi-report__action & {
-      padding: 1px 5px 1px 5px;
+  .navi-report__action & {
+    padding: 1px 5px 1px 5px;
+  }
+
+  &:hover {
+    background-color: @navi-gray-300;
+  }
+
+  &__dropdown {
+    .dropdown-list;
+    .dropdown-list .list;
+
+    & a {
+      color: inherit;
     }
 
-    &:hover {
-        background-color: @navi-gray-300;
+    & li {
+      padding-left: 5px;
+      padding-right: 5px;
     }
 
-    &__dropdown {
-        .dropdown-list;
-        .dropdown-list .list;
-
-        & a {
-            color: inherit;
-        }
-
-        & li {
-            padding-left: 5px;
-            padding-right: 5px;
-        }
-
-        left: -5px;
-        margin-top: 0px;
-        min-width: 69px;
-    }
+    left: -5px;
+    margin-top: 0px;
+    min-width: 69px;
+  }
 }

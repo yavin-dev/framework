@@ -23,12 +23,16 @@ const Validations = buildValidations({
 });
 
 export default DeliverableItem.extend(Validations, {
-  author:       DS.belongsTo('user', {async: true}),
-  title:        DS.attr('string'),
-  createdOn:    DS.attr('moment'),
-  updatedOn:    DS.attr('moment'),
-  widgets:      DS.hasMany('dashboard-widget', { async: true }),
-  presentation: MF.fragment('fragments/presentation', { defaultValue: () => { return {}; } }),
+  author: DS.belongsTo('user', { async: true }),
+  title: DS.attr('string'),
+  createdOn: DS.attr('moment'),
+  updatedOn: DS.attr('moment'),
+  widgets: DS.hasMany('dashboard-widget', { async: true }),
+  presentation: MF.fragment('fragments/presentation', {
+    defaultValue: () => {
+      return {};
+    }
+  }),
 
   /**
    * @property {Service} user
@@ -57,7 +61,7 @@ export default DeliverableItem.extend(Validations, {
    */
   isFavorite: computed(function() {
     let user = get(this, 'user').getUser(),
-        favoriteDashboards = user.hasMany('favoriteDashboards').ids();
+      favoriteDashboards = user.hasMany('favoriteDashboards').ids();
 
     return Ember.A(favoriteDashboards).includes(get(this, 'id'));
   }).volatile(),
@@ -70,12 +74,12 @@ export default DeliverableItem.extend(Validations, {
    */
   clone() {
     let user = get(this, 'user').getUser(),
-        clonedDashboard = Object.assign(this.toJSON(), {
-          author: user,
-          widgets: [],
-          createdOn: null,
-          updatedOn: null
-        });
+      clonedDashboard = Object.assign(this.toJSON(), {
+        author: user,
+        widgets: [],
+        createdOn: null,
+        updatedOn: null
+      });
 
     return this.store.createRecord('dashboard', clonedDashboard);
   }

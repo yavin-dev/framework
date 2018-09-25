@@ -6,7 +6,7 @@ import Ember from 'ember';
 import DataGroup from 'navi-core/utils/classes/data-group';
 import objectValues from 'lodash/values';
 
-const { A:arr, get } = Ember;
+const { A: arr, get } = Ember;
 
 export const METRIC_SERIES = 'metric';
 export const DIMENSION_SERIES = 'dimension';
@@ -22,9 +22,7 @@ export const DATE_TIME_SERIES = 'dateTime';
  */
 export function groupDataByDimensions(rows, config) {
   let dimensionOrder = config.dimensionOrder,
-      byDimensions = new DataGroup(rows,
-        row => dimensionOrder.map(
-          dimension => row[`${dimension}|id`]).join('|'));
+    byDimensions = new DataGroup(rows, row => dimensionOrder.map(dimension => row[`${dimension}|id`]).join('|'));
 
   return byDimensions;
 }
@@ -38,11 +36,9 @@ export function groupDataByDimensions(rows, config) {
  */
 export function buildSeriesKey(config) {
   let dimensionOrder = config.dimensionOrder,
-      series = config.dimensions;
+    series = config.dimensions;
 
-  return series.map(
-    s => dimensionOrder.map(
-      dimension => s.values[dimension]).join('|'));
+  return series.map(s => dimensionOrder.map(dimension => s.values[dimension]).join('|'));
 }
 
 /**
@@ -56,7 +52,7 @@ export function getSeriesName(config) {
   let series = config.dimensions;
 
   // Return the series name in an array
-  return series.map( s => s.name);
+  return series.map(s => s.name);
 }
 
 /**
@@ -74,15 +70,12 @@ export function chartTypeForRequest(request) {
   }
 
   let metricCount = get(request, 'metrics.length'),
-      timeGrain = get(request, 'logicalTable.timeGrain.name'),
-      interval = get(request, 'intervals.firstObject.interval'),
-      monthPeriod = interval.diffForTimePeriod('month'),
-      applicableTimeGrain = ['day', 'week', 'month'].includes(timeGrain);
+    timeGrain = get(request, 'logicalTable.timeGrain.name'),
+    interval = get(request, 'intervals.firstObject.interval'),
+    monthPeriod = interval.diffForTimePeriod('month'),
+    applicableTimeGrain = ['day', 'week', 'month'].includes(timeGrain);
 
-  if (metricCount === 1 &&
-      monthPeriod > 12 &&
-      applicableTimeGrain
-  ) {
+  if (metricCount === 1 && monthPeriod > 12 && applicableTimeGrain) {
     return DATE_TIME_SERIES;
   }
 
@@ -124,12 +117,11 @@ export function buildDimensionSeriesValues(request, rows) {
 
   let requestDimensions = getRequestDimensions(request);
   rows.forEach(row => {
-
     let values = {},
-        dimensionLabels = [];
+      dimensionLabels = [];
     requestDimensions.forEach(dimension => {
       let id = get(row, `${dimension}|id`),
-          desc = get(row, `${dimension}|desc`);
+        desc = get(row, `${dimension}|desc`);
 
       values[dimension] = id;
       dimensionLabels.push(desc || id);

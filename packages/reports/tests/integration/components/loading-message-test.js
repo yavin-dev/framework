@@ -6,7 +6,12 @@ moduleForComponent('loading-message', 'Integration | Component | loading message
 });
 
 test('it renders', function(assert) {
-  assert.equal(this.$().text().trim(), '');
+  assert.equal(
+    this.$()
+      .text()
+      .trim(),
+    ''
+  );
 
   // Template block usage:
   this.render(hbs`
@@ -15,10 +20,13 @@ test('it renders', function(assert) {
         {{/loading-message}}
     `);
 
-  assert.ok(this.$('.navi-loader'),
-    'the navi-loader component is rendered');
+  assert.ok(this.$('.navi-loader'), 'the navi-loader component is rendered');
 
-  assert.equal(this.$('.loading-message').text().trim(),
+  assert.equal(
+    this.$('.loading-message')
+      .text()
+      .trim(),
     'Loading',
-    'The text inside the block is rendered as specified');
+    'The text inside the block is rendered as specified'
+  );
 });

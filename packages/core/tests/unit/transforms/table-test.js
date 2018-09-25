@@ -7,7 +7,7 @@ const { getOwner } = Ember;
 
 var MetadataService;
 
-moduleFor('transform:table', 'Unit | Transform | Table',{
+moduleFor('transform:table', 'Unit | Transform | Table', {
   needs: [
     'model:metadata/table',
     'model:metadata/time-grain',
@@ -37,14 +37,10 @@ test('serialize and deserialize', function(assert) {
 
   return wait().then(() => {
     let transform = this.subject(),
-        table = MetadataService.getById('table', 'network');
+      table = MetadataService.getById('table', 'network');
 
-    assert.equal(transform.serialize(table),
-      'network',
-      'Table is serialized to the name');
+    assert.equal(transform.serialize(table), 'network', 'Table is serialized to the name');
 
-    assert.equal(transform.deserialize('network'),
-      table,
-      'Table is deserialized to the right object');
+    assert.equal(transform.deserialize('network'), table, 'Table is deserialized to the right object');
   });
 });

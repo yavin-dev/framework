@@ -14,11 +14,11 @@ import config from 'ember-get-config';
 const { getOwner } = Ember;
 
 export default Ember.Service.extend({
-/**
- * @method defaultVisualization
- * @param request
- * @returns {String} visualization shown by default
- */
+  /**
+   * @method defaultVisualization
+   * @param request
+   * @returns {String} visualization shown by default
+   */
   defaultVisualization(/*request*/) {
     // TODO: add logic that decides the default visualization based on the request
     return 'table';
@@ -30,7 +30,7 @@ export default Ember.Service.extend({
    * @returns {Array} visualizations that are valid for request
    */
   validVisualizations(request) {
-    return this.all().filter((vis) => vis.typeIsValid(request));
+    return this.all().filter(vis => vis.typeIsValid(request));
   },
 
   /**
@@ -49,11 +49,10 @@ export default Ember.Service.extend({
   all() {
     // Find all visualizations registered in requirejs under the namespace "components/navi-visualizations"
     let visualizationRegExp = new RegExp(`^(?:${config.modulePrefix}/)?manifests/([a-z-]*)$`),
-        visualizationComponents = Object.keys(requirejs.entries).filter((key) => visualizationRegExp.test(key)),
-        visualizationArray = visualizationComponents.map(key => this.getManifest(visualizationRegExp.exec(key)[1]));
+      visualizationComponents = Object.keys(requirejs.entries).filter(key => visualizationRegExp.test(key)),
+      visualizationArray = visualizationComponents.map(key => this.getManifest(visualizationRegExp.exec(key)[1]));
 
-        // visualization must have a name
-    return visualizationArray.filter((visualization) => visualization.name);
+    // visualization must have a name
+    return visualizationArray.filter(visualization => visualization.name);
   }
 });
-

@@ -18,7 +18,8 @@ test('top n values', function(assert) {
     }
   ];
 
-  assert.deepEqual(topN(rows, 'a', 2),
+  assert.deepEqual(
+    topN(rows, 'a', 2),
     [
       {
         a: '600'
@@ -27,15 +28,12 @@ test('top n values', function(assert) {
         a: '400'
       }
     ],
-    'Top 2 rows for given field are returned');
+    'Top 2 rows for given field are returned'
+  );
 
-  assert.deepEqual(topN(rows, 'a', 20),
-    rows,
-    'All rows are returned when n > rows.length');
+  assert.deepEqual(topN(rows, 'a', 20), rows, 'All rows are returned when n > rows.length');
 
-  assert.deepEqual(topN([], 'a', 20),
-    [],
-    'No rows are returned when rows.length = 0');
+  assert.deepEqual(topN([], 'a', 20), [], 'No rows are returned when rows.length = 0');
 });
 
 test('top n with undefined fields', function(assert) {
@@ -53,16 +51,18 @@ test('top n with undefined fields', function(assert) {
     }
   ];
 
-  assert.deepEqual(topN(rows, 'a', 2),
+  assert.deepEqual(
+    topN(rows, 'a', 2),
     [
       {
-        a: '400',
+        a: '400'
       },
       {
-        a: '20',
+        a: '20'
       }
     ],
-    'Undefined field values are skipped');
+    'Undefined field values are skipped'
+  );
 });
 
 test('most recent data', function(assert) {
@@ -95,7 +95,8 @@ test('most recent data', function(assert) {
     }
   ];
 
-  assert.deepEqual(mostRecentData(rows),
+  assert.deepEqual(
+    mostRecentData(rows),
     [
       {
         dateTime: '2017',
@@ -106,7 +107,8 @@ test('most recent data', function(assert) {
         metric: 200
       }
     ],
-    'All data rows with latest dateTime are returned');
+    'All data rows with latest dateTime are returned'
+  );
 });
 
 test('data by dimensions', function(assert) {
@@ -133,7 +135,8 @@ test('data by dimensions', function(assert) {
 
   const data = dataByDimensions(rows, ['dimension']);
 
-  assert.deepEqual(data.getDataForKey('a'),
+  assert.deepEqual(
+    data.getDataForKey('a'),
     [
       {
         'dimension|id': 'a',
@@ -144,9 +147,9 @@ test('data by dimensions', function(assert) {
         metric: 200
       }
     ],
-    'All data rows for dimension a are returned');
+    'All data rows for dimension a are returned'
+  );
 });
-
 
 test('max data by dimensions', function(assert) {
   assert.expect(1);
@@ -170,7 +173,8 @@ test('max data by dimensions', function(assert) {
     }
   ];
 
-  assert.deepEqual(maxDataByDimensions(rows, ['dimension'], 'metric'),
+  assert.deepEqual(
+    maxDataByDimensions(rows, ['dimension'], 'metric'),
     [
       {
         'dimension|id': 'a',
@@ -181,5 +185,6 @@ test('max data by dimensions', function(assert) {
         metric: 300
       }
     ],
-    'All data rows for max value based on dimensions are returned');
+    'All data rows for max value based on dimensions are returned'
+  );
 });

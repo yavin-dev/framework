@@ -46,9 +46,7 @@ export default Component.extend({
     removeEmailAtIndex(index) {
       let emails = get(this, 'emails');
 
-      this.attrs.onUpdateEmails(
-        emails.filter((email, i) => i != index)
-      );
+      this.attrs.onUpdateEmails(emails.filter((email, i) => i != index));
     }
   }
 });

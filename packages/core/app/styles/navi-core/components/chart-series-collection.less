@@ -4,26 +4,26 @@
  */
 
 .chart-series-collection {
-    min-height: 0;
+  min-height: 0;
+  display: flex;
+  flex-flow: column;
+
+  .series-collection {
     display: flex;
-    flex-flow: column;
+    flex-direction: column-reverse;
+  }
 
-    .series-collection {
-        display: flex;
-        flex-direction: column-reverse;
+  .scrollable {
+    overflow-y: auto;
+  }
+
+  .navi-icon__delete {
+    float: right;
+    color: @navi-gray;
+    .clickable;
+
+    &:hover {
+      color: inherit;
     }
-
-    .scrollable {
-        overflow-y: auto;
-    }
-
-    .navi-icon__delete {
-        float: right;
-        color: @navi-gray;
-        .clickable;
-
-        &:hover {
-            color: inherit;
-        }
-    }
+  }
 }

@@ -18,5 +18,5 @@ export default Ember.Component.extend({
   /**
    * @property {Array} classNames
    */
-  classNames: ['date-time-line-chart-config'],
+  classNames: ['date-time-line-chart-config']
 });

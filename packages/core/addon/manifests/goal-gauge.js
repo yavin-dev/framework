@@ -8,7 +8,6 @@
 import ManifestBase from './base';
 
 export default ManifestBase.extend({
-
   /**
    * @property name
    */
@@ -32,8 +31,6 @@ export default ManifestBase.extend({
    * @return {Boolean} - visualization type is valid
    */
   typeIsValid(request) {
-    return this.hasNoGroupBy(request) &&
-           this.hasSingleTimeBucket(request) &&
-           this.hasSingleMetric(request);
+    return this.hasNoGroupBy(request) && this.hasSingleTimeBucket(request) && this.hasSingleMetric(request);
   }
 });

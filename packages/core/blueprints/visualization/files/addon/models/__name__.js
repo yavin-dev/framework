@@ -12,20 +12,25 @@ const { computed, set } = Ember;
 /**
  * @constant {Object} Validations - Validation object
  */
-const Validations = buildValidations({
-  //TODO define whether metadata is valid based on request
-}, {
-  //Global Validation Options
-  request: computed.readOnly('model._request')
-});
+const Validations = buildValidations(
+  {
+    //TODO define whether metadata is valid based on request
+  },
+  {
+    //Global Validation Options
+    request: computed.readOnly('model._request')
+  }
+);
 
 export default VisualizationBase.extend(Validations, {
-  type:     DS.attr('string', { defaultValue: '<%= dasherizedModuleName %>'}),
-  version:  DS.attr('number', { defaultValue: 1 }),
-  metadata: DS.attr({ defaultValue: () => {
-    // TODO define default visualization config settings
-    return { };
-  }}),
+  type: DS.attr('string', { defaultValue: '<%= dasherizedModuleName %>' }),
+  version: DS.attr('number', { defaultValue: 1 }),
+  metadata: DS.attr({
+    defaultValue: () => {
+      // TODO define default visualization config settings
+      return {};
+    }
+  }),
 
   /**
    * Rebuild config based on request and response
@@ -37,7 +42,7 @@ export default VisualizationBase.extend(Validations, {
    */
   rebuildConfig(/*request , response */) {
     // TODO build a valid config based on request + response
-    set(this, 'metadata', { });
+    set(this, 'metadata', {});
 
     return this;
   }

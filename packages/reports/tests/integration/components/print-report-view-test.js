@@ -1,5 +1,5 @@
 import { moduleForComponent, test } from 'ember-qunit';
-import { setupMock, teardownMock }from '../../helpers/mirage-helper';
+import { setupMock, teardownMock } from '../../helpers/mirage-helper';
 import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
@@ -10,40 +10,40 @@ const { getOwner } = Ember;
 const RESPONSE = {
   rows: [
     {
-      'adClicks': 1707077,
-      'dateTime': '2015-11-09 00:00:00.000'
+      adClicks: 1707077,
+      dateTime: '2015-11-09 00:00:00.000'
     },
     {
-      'adClicks': 1659538,
-      'dateTime': '2015-11-09 00:00:00.000'
+      adClicks: 1659538,
+      dateTime: '2015-11-09 00:00:00.000'
     },
     {
-      'adClicks': 1977070,
-      'dateTime': '2015-11-11 00:00:00.000'
+      adClicks: 1977070,
+      dateTime: '2015-11-11 00:00:00.000'
     },
     {
-      'adClicks': 1755382,
-      'dateTime': '2015-11-12 00:00:00.000',
+      adClicks: 1755382,
+      dateTime: '2015-11-12 00:00:00.000'
     },
     {
-      'adClicks': 1348750,
-      'dateTime': '2015-11-13 00:00:00.000',
+      adClicks: 1348750,
+      dateTime: '2015-11-13 00:00:00.000'
     },
     {
-      'adClicks': 856732,
-      'dateTime': '2015-11-14 00:00:00.000',
+      adClicks: 856732,
+      dateTime: '2015-11-14 00:00:00.000'
     },
     {
-      'adClicks': 716731,
-      'dateTime': '2015-11-14 00:00:00.000',
+      adClicks: 716731,
+      dateTime: '2015-11-14 00:00:00.000'
     },
     {
-      'adClicks': 399790,
-      'dateTime': '2015-11-14 00:00:00.000',
+      adClicks: 399790,
+      dateTime: '2015-11-14 00:00:00.000'
     },
     {
-      'adClicks': 699490,
-      'dateTime': '2015-11-14 00:00:00.000',
+      adClicks: 699490,
+      dateTime: '2015-11-14 00:00:00.000'
     }
   ]
 };
@@ -55,40 +55,48 @@ moduleForComponent('print-report-view', 'Integration | Component | print report 
     setupMock();
 
     let metadataService = getOwner(this).lookup('service:bard-metadata'),
-        store = getOwner(this).lookup('service:store');
+      store = getOwner(this).lookup('service:store');
 
     metadataService.loadMetadata().then(() => {
       this.set('response', RESPONSE);
 
       //set report object
-      this.set('report', store.createRecord('report', {
-        request: store.createFragment('bard-request/request', {
-          logicalTable: store.createFragment('bard-request/fragments/logicalTable', {
-            table: metadataService.getById('table', 'spaceId'),
-            timeGrainName: 'day'
+      this.set(
+        'report',
+        store.createRecord('report', {
+          request: store.createFragment('bard-request/request', {
+            logicalTable: store.createFragment('bard-request/fragments/logicalTable', {
+              table: metadataService.getById('table', 'spaceId'),
+              timeGrainName: 'day'
+            }),
+            responseFormat: 'csv',
+            intervals: Ember.A([{ interval: new Interval('current', 'next') }])
           }),
-          responseFormat: 'csv',
-          intervals: Ember.A([
-            { interval: new Interval('current', 'next') }
-          ])
-        }),
-        visualization: {
-          type: 'line-chart',
-          version: 1,
-          metadata: {
-            axis: {
-              y: {
-                series: {
-                  type: 'metric',
-                  config: {
-                    metrics: [{ metric: 'adClicks', parameters: {}, canonicalName: 'adClicks', longName: 'Ad Clicks' } ]
+          visualization: {
+            type: 'line-chart',
+            version: 1,
+            metadata: {
+              axis: {
+                y: {
+                  series: {
+                    type: 'metric',
+                    config: {
+                      metrics: [
+                        {
+                          metric: 'adClicks',
+                          parameters: {},
+                          canonicalName: 'adClicks',
+                          longName: 'Ad Clicks'
+                        }
+                      ]
+                    }
                   }
                 }
               }
             }
           }
-        }
-      }));
+        })
+      );
     });
   },
 
@@ -108,8 +116,10 @@ test('visualization is chosen based on report', function(assert) {
             }}
         `);
 
-    assert.ok(this.$('.line-chart-widget').is(':visible'),
-      'Visualization is rendered based on the report visualization type');
+    assert.ok(
+      this.$('.line-chart-widget').is(':visible'),
+      'Visualization is rendered based on the report visualization type'
+    );
 
     this.set('report.visualization', {
       type: 'table',
@@ -130,11 +140,9 @@ test('visualization is chosen based on report', function(assert) {
       }
     });
 
-    assert.ok(this.$('.table-widget').is(':visible'),
-      'Rendered visualization updates with report');
+    assert.ok(this.$('.table-widget').is(':visible'), 'Rendered visualization updates with report');
 
-    assert.notOk(this.$('.line-chart-widget').is(':visible'),
-      'Old visualization is removed');
+    assert.notOk(this.$('.line-chart-widget').is(':visible'), 'Old visualization is removed');
   });
 });
 
@@ -160,8 +168,12 @@ test('no data', function(assert) {
             }}
         `);
 
-    assert.equal(this.$('.print-report-view__visualization-no-results').text().trim(),
+    assert.equal(
+      this.$('.print-report-view__visualization-no-results')
+        .text()
+        .trim(),
       'No results available.',
-      'A message is displayed when the response has no data');
+      'A message is displayed when the response has no data'
+    );
   });
 });

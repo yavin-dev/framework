@@ -5,12 +5,11 @@
 import Ember from 'ember';
 import DS from 'ember-data';
 import _ from 'lodash';
-import { v1 } from "ember-uuid";
+import { v1 } from 'ember-uuid';
 
 const { get } = Ember;
 
 export default Ember.Service.extend({
-
   /**
    * @property {Ember.Service} bardFacts
    */
@@ -35,9 +34,9 @@ export default Ember.Service.extend({
    * @returns {Promise} - Promise that resolves to a dashboard object with widget data
    */
   fetchDataForDashboard(dashboard) {
-    return dashboard.get('widgets').then(
-      widgets => this.fetchDataForWidgets(dashboard.id, widgets, [], get(this, 'widgetOptions'))
-    );
+    return dashboard
+      .get('widgets')
+      .then(widgets => this.fetchDataForWidgets(dashboard.id, widgets, [], get(this, 'widgetOptions')));
   },
 
   /**
@@ -49,21 +48,21 @@ export default Ember.Service.extend({
    */
   fetchDataForWidgets(dashboardId, widgets = [], decorators = [], options = {}) {
     let result = {},
-        uuid = v1();
+      uuid = v1();
 
     // Construct hash of widget id to data
     widgets.forEach(widget => {
       let widgetId = get(widget, 'id'),
-          widgetDataPromises = get(widget, 'requests').map(request => {
-            //construct custom header for each widget with uuid
-            options.customHeaders = {
-              uiView: `dashboard.${dashboardId}.${uuid}.${widgetId}`
-            };
+        widgetDataPromises = get(widget, 'requests').map(request => {
+          //construct custom header for each widget with uuid
+          options.customHeaders = {
+            uiView: `dashboard.${dashboardId}.${uuid}.${widgetId}`
+          };
 
-            request = this._decorate(decorators, request.serialize());
+          request = this._decorate(decorators, request.serialize());
 
-            return this._fetch(request, options);
-          });
+          return this._fetch(request, options);
+        });
 
       result[get(widget, 'id')] = DS.PromiseArray.create({
         promise: Ember.RSVP.all(widgetDataPromises).then(Ember.A) // PromiseArray expects an Ember array returned

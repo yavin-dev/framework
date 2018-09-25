@@ -10,37 +10,37 @@ import { validator, buildValidations } from 'ember-cp-validations';
 import { metricFormat } from 'navi-data/helpers/metric-format';
 import keyBy from 'lodash/keyBy';
 
-const {
-  A:arr,
-  computed,
-  get,
-  set
-} = Ember;
+const { A: arr, computed, get, set } = Ember;
 
 /**
  * @constant {Object} Validations - Validation object
  */
-const Validations = buildValidations({
-  'metadata.columns': validator(function(columns, options) {
-    let request = get(options, 'request');
-    return request && hasAllColumns(request, arr(columns));
-  }, {
-    dependentKeys: [
-      'model._request.dimensions.[]',
-      'model._request.metrics.[]'
-    ]
-  }),
-}, {
-  //Global Validation Options
-  request: computed.readOnly('model._request')
-});
+const Validations = buildValidations(
+  {
+    'metadata.columns': validator(
+      function(columns, options) {
+        let request = get(options, 'request');
+        return request && hasAllColumns(request, arr(columns));
+      },
+      {
+        dependentKeys: ['model._request.dimensions.[]', 'model._request.metrics.[]']
+      }
+    )
+  },
+  {
+    //Global Validation Options
+    request: computed.readOnly('model._request')
+  }
+);
 
 export default VisualizationBase.extend(Validations, {
-  type:     DS.attr('string', { defaultValue: 'table'}),
-  version:  DS.attr('number', { defaultValue: 1 }),
-  metadata: DS.attr({ defaultValue: () => {
-    return { columns: [] };
-  }}),
+  type: DS.attr('string', { defaultValue: 'table' }),
+  version: DS.attr('number', { defaultValue: 1 }),
+  metadata: DS.attr({
+    defaultValue: () => {
+      return { columns: [] };
+    }
+  }),
 
   /**
    * Rebuild config based on request and response
@@ -52,13 +52,13 @@ export default VisualizationBase.extend(Validations, {
    */
   rebuildConfig(request /*, response */) {
     let dimensions = get(request, 'dimensions') || [],
-        metrics = get(request, 'metrics') || [],
-        columns = get(this, 'metadata.columns'),
-        // index column based on metricId or dimensionId
-        columnIndex = indexColumnById(columns);
+      metrics = get(request, 'metrics') || [],
+      columns = get(this, 'metadata.columns'),
+      // index column based on metricId or dimensionId
+      columnIndex = indexColumnById(columns);
 
     let dateColumn = {
-      field: {dateTime: 'dateTime'},
+      field: { dateTime: 'dateTime' },
       type: 'dateTime',
       displayName: 'Date'
     };
@@ -88,7 +88,7 @@ function buildDimensionColumns(dimensions, columnIndex) {
     let column = columnIndex[get(dimension, 'dimension.name')];
 
     return {
-      field: {dimension: get(dimension, 'dimension.name')},
+      field: { dimension: get(dimension, 'dimension.name') },
       type: 'dimension',
       displayName: column ? column.displayName : get(dimension, 'dimension.longName')
     };
@@ -105,13 +105,13 @@ function buildMetricColumns(metrics, columnIndex) {
   return metrics.map(metric => {
     // Trend metrics should render using threshold coloring
     let category = get(metric, 'metric.category'),
-        isTrend = ~(category.toLowerCase().indexOf('trend')),
-        type = isTrend ? 'threshold' : 'metric',
-        field = metric.toJSON(),
-        column = columnIndex[canonicalizeMetric(field)],
-        longName = get(metric, 'metric.longName'),
-        displayName = column ? column.displayName : metricFormat(metric, longName),
-        format = column ? column.format : '';
+      isTrend = ~category.toLowerCase().indexOf('trend'),
+      type = isTrend ? 'threshold' : 'metric',
+      field = metric.toJSON(),
+      column = columnIndex[canonicalizeMetric(field)],
+      longName = get(metric, 'metric.longName'),
+      displayName = column ? column.displayName : metricFormat(metric, longName),
+      format = column ? column.format : '';
 
     return {
       type,
@@ -128,11 +128,11 @@ function buildMetricColumns(metrics, columnIndex) {
  * @param {Array} oldColumns - columns form last time visualization was configured
  */
 function columnTransform(newColumns, oldColumns) {
-  if(oldColumns.length) {
-    const isSameColumn = (a,b) => a.displayName === b.displayName;
-    newColumns.sort((a,b) => {
+  if (oldColumns.length) {
+    const isSameColumn = (a, b) => a.displayName === b.displayName;
+    newColumns.sort((a, b) => {
       let foundA = oldColumns.findIndex(item => isSameColumn(item, a)),
-          foundB = oldColumns.findIndex(item => isSameColumn(item, b));
+        foundB = oldColumns.findIndex(item => isSameColumn(item, b));
       return foundA > -1 && foundB > -1 ? foundA - foundB : 0;
     });
   }
@@ -151,13 +151,14 @@ function columnTransform(newColumns, oldColumns) {
  */
 function hasAllColumns(request, columns) {
   //retrieve everything but dateTime from metadata.columns
-  let columnFields  = arr(arr(columns).rejectBy('type','dateTime')).map(column => get(column, 'field.dimension') || canonicalizeMetric(get(column, 'field'))),
-      dimensions    = arr(get(request, 'dimensions')).mapBy('dimension.name'),
-      metrics       = arr(get(request, 'metrics')).mapBy('canonicalName'),
-      requestFields = [ ...dimensions, ...metrics ];
+  let columnFields = arr(arr(columns).rejectBy('type', 'dateTime')).map(
+      column => get(column, 'field.dimension') || canonicalizeMetric(get(column, 'field'))
+    ),
+    dimensions = arr(get(request, 'dimensions')).mapBy('dimension.name'),
+    metrics = arr(get(request, 'metrics')).mapBy('canonicalName'),
+    requestFields = [...dimensions, ...metrics];
 
-  return requestFields.length === columnFields.length &&
-    requestFields.every(field => columnFields.includes(field));
+  return requestFields.length === columnFields.length && requestFields.every(field => columnFields.includes(field));
 }
 
 export function indexColumnById(columns) {

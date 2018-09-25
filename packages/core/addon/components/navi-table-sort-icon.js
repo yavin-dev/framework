@@ -14,9 +14,9 @@ import layout from '../templates/components/navi-table-sort-icon';
 const { computed, get } = Ember;
 
 const SORT_ICONS = {
-  'asc'  : 'navi-table-sort-icon--asc',
-  'desc' : 'navi-table-sort-icon--desc',
-  'none' : 'navi-table-sort-icon--none',
+  asc: 'navi-table-sort-icon--asc',
+  desc: 'navi-table-sort-icon--desc',
+  none: 'navi-table-sort-icon--none'
 };
 
 export default Ember.Component.extend({
@@ -30,12 +30,12 @@ export default Ember.Component.extend({
   /**
    * @property {Array} classNames
    */
-  classNames: [ 'navi-table-sort-icon' ],
+  classNames: ['navi-table-sort-icon'],
 
   /**
    * @property {Array} classNameBindings
    */
-  classNameBindings: [ 'sortClass' ],
+  classNameBindings: ['sortClass'],
 
   /**
    * @property {String} sortClass

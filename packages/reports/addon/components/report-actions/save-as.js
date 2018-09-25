@@ -10,9 +10,9 @@
  *   {{/report-actions/save-as}}
  */
 
-import Component from '@ember/component'
+import Component from '@ember/component';
 import layout from '../../templates/components/report-actions/save-as';
-import { get, set, computed  } from '@ember/object'
+import { get, set, computed } from '@ember/object';
 
 export default Component.extend({
   layout,
@@ -35,10 +35,9 @@ export default Component.extend({
      */
     closeModal() {
       // Avoid `calling set on destroyed object` error
-      if(!get(this, 'isDestroyed') && !get(this, 'isDestroying')) {
+      if (!get(this, 'isDestroyed') && !get(this, 'isDestroying')) {
         set(this, 'showModal', false);
       }
     }
-
   }
 });

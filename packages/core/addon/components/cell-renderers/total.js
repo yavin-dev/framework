@@ -12,5 +12,5 @@ export default Ember.Component.extend({
   /**
    * @property {Array} classNames
    */
-  classNames: [ 'table-cell--total', 'table-cell-content' ]
+  classNames: ['table-cell--total', 'table-cell-content']
 });

@@ -6,7 +6,7 @@
 import BaseValidator from 'ember-cp-validations/validators/base';
 
 export default BaseValidator.extend({
-  validate(value/*, model, attribute*/) {
+  validate(value /*, model, attribute*/) {
     return ['year'].includes(value);
   }
 });

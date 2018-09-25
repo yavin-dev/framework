@@ -34,10 +34,10 @@ export default Component.extend({
    * returns empty string if the current format
    * is one of the predefined formats
    */
-  customFormat: computed('format', function () {
+  customFormat: computed('format', function() {
     let predefinedFormats = A(get(this, 'predefinedFormats')),
-        currentFormat = get(this, 'format'),
-        match = predefinedFormats.findBy('format', currentFormat);
+      currentFormat = get(this, 'format'),
+      match = predefinedFormats.findBy('format', currentFormat);
     return match ? '' : currentFormat;
   })
 });

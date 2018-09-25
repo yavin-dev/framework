@@ -30,17 +30,17 @@ export default ArrayProxy.extend({
    *                      or null when trying to go past last page
    */
   next() {
-    if(get(this, 'meta.pagination')){
-      let perPage =       get(this, 'meta.pagination.rowsPerPage'),
-          totalResults =  get(this, 'meta.pagination.numberOfResults'),
-          currPage =      get(this, 'meta.pagination.currentPage'),
-          totalPages =    (totalResults/perPage);
-      if(currPage < totalPages){
+    if (get(this, 'meta.pagination')) {
+      let perPage = get(this, 'meta.pagination.rowsPerPage'),
+        totalResults = get(this, 'meta.pagination.numberOfResults'),
+        currPage = get(this, 'meta.pagination.currentPage'),
+        totalPages = totalResults / perPage;
+      if (currPage < totalPages) {
         let dimension = get(this, 'dimension'),
-            options = {
-              page:     currPage + 1,
-              perPage:  perPage
-            };
+          options = {
+            page: currPage + 1,
+            perPage: perPage
+          };
         return get(this, '_dimensionsService').fetchAll(dimension, options);
       }
     }
@@ -53,13 +53,13 @@ export default ArrayProxy.extend({
    *                      or null when trying to access pages less than the first page
    */
   previous() {
-    if(get(this, 'meta.pagination')){
-      if(get(this, 'meta.pagination.currentPage') > 1) {
+    if (get(this, 'meta.pagination')) {
+      if (get(this, 'meta.pagination.currentPage') > 1) {
         let dimension = get(this, 'dimension'),
-            options = {
-              page: get(this, 'meta.pagination.currentPage') - 1,
-              perPage: get(this, 'meta.pagination.rowsPerPage')
-            };
+          options = {
+            page: get(this, 'meta.pagination.currentPage') - 1,
+            perPage: get(this, 'meta.pagination.rowsPerPage')
+          };
         return get(this, '_dimensionsService').fetchAll(dimension, options);
       }
     }

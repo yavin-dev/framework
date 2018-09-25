@@ -16,15 +16,23 @@ test('it renders', function(assert) {
         {{/lazy-render}}
     `);
 
-  assert.equal(this.$().text().trim(),
+  assert.equal(
+    this.$()
+      .text()
+      .trim(),
     '',
-    'Nothing should be rendered initially');
+    'Nothing should be rendered initially'
+  );
 
-  Ember.run(()=>{
+  Ember.run(() => {
     $('body').trigger('mouseenter');
   });
 
-  assert.equal(this.$().text().trim(),
+  assert.equal(
+    this.$()
+      .text()
+      .trim(),
     'lazy render',
-    'inner content is rendered after triggering event');
+    'inner content is rendered after triggering event'
+  );
 });

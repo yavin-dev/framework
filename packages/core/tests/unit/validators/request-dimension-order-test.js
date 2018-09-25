@@ -9,18 +9,19 @@ test('validate request-dimension-order', function(assert) {
   assert.expect(2);
 
   let Validator = this.subject(),
-      request = {
-        dimensions: Ember.A([
-          { dimension: { name: 'd1' } },
-          { dimension: { name: 'd2' } }
-        ])
-      };
+    request = {
+      dimensions: Ember.A([{ dimension: { name: 'd1' } }, { dimension: { name: 'd2' } }])
+    };
 
-  assert.equal(Validator.validate(Ember.A(['d1', 'd2']), { request }),
+  assert.equal(
+    Validator.validate(Ember.A(['d1', 'd2']), { request }),
     true,
-    'request-dimension-order returns `true` when dimension order matches request dimension order');
+    'request-dimension-order returns `true` when dimension order matches request dimension order'
+  );
 
-  assert.equal(Validator.validate(Ember.A(['d2', 'd1']), { request }),
+  assert.equal(
+    Validator.validate(Ember.A(['d2', 'd1']), { request }),
     false,
-    'request-dimension-order returns `false` when dimension order does not match request dimension order');
+    'request-dimension-order returns `false` when dimension order does not match request dimension order'
+  );
 });

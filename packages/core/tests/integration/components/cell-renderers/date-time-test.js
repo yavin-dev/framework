@@ -9,25 +9,22 @@ const TEMPLATE = hbs`
   }}`;
 
 const data = {
-  'dateTime': '2016-06-03 11:12:13.000',
+  dateTime: '2016-06-03 11:12:13.000',
   'os|id': 'All Other',
   'os|desc': 'All Other',
-  'uniqueIdentifier': 172933788,
-  'totalPageViews': 3669828357
+  uniqueIdentifier: 172933788,
+  totalPageViews: 3669828357
 };
 
 const column = {
-  field: {dateTime: 'dateTime'},
+  field: { dateTime: 'dateTime' },
   type: 'dateTime',
   displayName: 'Date'
 };
 
 const request = {
-  dimensions: [ {dimension:'os'} ],
-  metrics: [
-    {metric: 'uniqueIdentifier'},
-    {metric: 'totalPageViews'}
-  ],
+  dimensions: [{ dimension: 'os' }],
+  metrics: [{ metric: 'uniqueIdentifier' }, { metric: 'totalPageViews' }],
   logicalTable: {
     table: 'network',
     timeGrain: {
@@ -49,12 +46,15 @@ test('date-time renders day format correctly', function(assert) {
   assert.expect(2);
   this.render(TEMPLATE);
 
-  assert.ok($('.table-cell-content').is(':visible'),
-    'The date-time cell renderer is visible');
+  assert.ok($('.table-cell-content').is(':visible'), 'The date-time cell renderer is visible');
 
-  assert.equal($('.table-cell-content').text().trim(),
+  assert.equal(
+    $('.table-cell-content')
+      .text()
+      .trim(),
     '06/03/2016',
-    'The date-time cell renders the day value correctly');
+    'The date-time cell renders the day value correctly'
+  );
 });
 
 test('date-time renders week format correctly', function(assert) {
@@ -70,16 +70,20 @@ test('date-time renders week format correctly', function(assert) {
     }}
   `);
 
-  assert.equal($('.table-cell-content').text().trim(),
+  assert.equal(
+    $('.table-cell-content')
+      .text()
+      .trim(),
     '06/03 - 06/09/2016',
-    'The date-time cell renders a week range with the same years correctly');
+    'The date-time cell renders a week range with the same years correctly'
+  );
 });
 
 test('date-time renders week format with different years correctly', function(assert) {
   assert.expect(1);
 
   _setRequestForTimeGrain(this, 'week');
-  this.set('data', {'dateTime': '2015-12-30 00:00:00.000'});
+  this.set('data', { dateTime: '2015-12-30 00:00:00.000' });
 
   this.render(hbs`
     {{cell-renderers/date-time
@@ -89,9 +93,13 @@ test('date-time renders week format with different years correctly', function(as
     }}
   `);
 
-  assert.equal($('.table-cell-content').text().trim(),
+  assert.equal(
+    $('.table-cell-content')
+      .text()
+      .trim(),
     '12/30/2015 - 01/05/2016',
-    'The date-time cell renders a week range with different years correctly');
+    'The date-time cell renders a week range with different years correctly'
+  );
 });
 
 test('date-time renders month format correctly', function(assert) {
@@ -107,9 +115,13 @@ test('date-time renders month format correctly', function(assert) {
     }}
   `);
 
-  assert.equal($('.table-cell-content').text().trim(),
+  assert.equal(
+    $('.table-cell-content')
+      .text()
+      .trim(),
     'Jun 2016',
-    'The date-time cell renders the month value correctly');
+    'The date-time cell renders the month value correctly'
+  );
 });
 
 test('date-time renders quarter format correctly', function(assert) {
@@ -125,9 +137,13 @@ test('date-time renders quarter format correctly', function(assert) {
     }}
   `);
 
-  assert.equal($('.table-cell-content').text().trim(),
+  assert.equal(
+    $('.table-cell-content')
+      .text()
+      .trim(),
     'Q2 2016',
-    'The date-time cell renders the quarter value correctly');
+    'The date-time cell renders the quarter value correctly'
+  );
 });
 
 test('date-time renders year format correctly', function(assert) {
@@ -143,9 +159,13 @@ test('date-time renders year format correctly', function(assert) {
     }}
   `);
 
-  assert.equal($('.table-cell-content').text().trim(),
+  assert.equal(
+    $('.table-cell-content')
+      .text()
+      .trim(),
     '2016',
-    'The date-time cell renders the year value correctly');
+    'The date-time cell renders the year value correctly'
+  );
 });
 
 test('date-time renders hour format correctly', function(assert) {
@@ -161,9 +181,13 @@ test('date-time renders hour format correctly', function(assert) {
     }}
   `);
 
-  assert.equal($('.table-cell-content').text().trim(),
+  assert.equal(
+    $('.table-cell-content')
+      .text()
+      .trim(),
     '06/03/2016 11:00:00',
-    'The date-time cell renders the hour value correctly');
+    'The date-time cell renders the hour value correctly'
+  );
 });
 
 test('date-time renders minute format correctly', function(assert) {
@@ -179,9 +203,13 @@ test('date-time renders minute format correctly', function(assert) {
     }}
   `);
 
-  assert.equal($('.table-cell-content').text().trim(),
+  assert.equal(
+    $('.table-cell-content')
+      .text()
+      .trim(),
     '06/03/2016 11:12:00',
-    'The date-time cell renders the minute value correctly');
+    'The date-time cell renders the minute value correctly'
+  );
 });
 
 test('date-time renders second format correctly', function(assert) {
@@ -197,9 +225,13 @@ test('date-time renders second format correctly', function(assert) {
     }}
   `);
 
-  assert.equal($('.table-cell-content').text().trim(),
+  assert.equal(
+    $('.table-cell-content')
+      .text()
+      .trim(),
     '06/03/2016 11:12:13',
-    'The date-time cell renders the second value correctly');
+    'The date-time cell renders the second value correctly'
+  );
 });
 
 /**

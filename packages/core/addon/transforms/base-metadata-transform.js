@@ -30,7 +30,7 @@ export default DS.Transform.extend({
   deserialize(serialized) {
     let metadataService = get(this, 'metadataService');
 
-    if(isArray(serialized)) {
+    if (isArray(serialized)) {
       return serialized.map(dimension => metadataService.getById(get(this, 'type'), dimension));
     }
 
@@ -46,7 +46,7 @@ export default DS.Transform.extend({
    * @returns {String|Array|Null} - name | array of names
    */
   serialize(deserialized = {}) {
-    if(isArray(deserialized)) {
+    if (isArray(deserialized)) {
       return deserialized.map(item => get(item, 'name') || null);
     }
 

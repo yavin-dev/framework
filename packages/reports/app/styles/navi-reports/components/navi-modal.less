@@ -2,161 +2,160 @@
  * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
- @modal-width: 620px;
+@modal-width: 620px;
 
 .navi-modal {
-    width: @modal-width;
-    background-color: @navi-modal-gray;
+  width: @modal-width;
+  background-color: @navi-modal-gray;
+  padding: 20px;
+
+  //Making sure the Modal component is displayed ontop of the modal overlay.
+  z-index: 502;
+
+  &__close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    cursor: pointer;
+  }
+
+  &__header--primary,
+  .primary-header {
+    font-size: @font-size-secondary-header;
+    font-family: inherit;
+    color: @navi-dark-gray;
+    margin-top: 0;
+    margin-bottom: 5px;
+    font-weight: 200;
+  }
+
+  &__header-secondary,
+  .secondary-header {
+    font-family: inherit;
+    font-size: @font-size-mid-base;
+    color: @navi-gray;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  .btn-container {
+    margin-top: 20px;
+  }
+
+  .text-input {
+    width: 100%;
+    resize: none;
     padding: 20px;
+    border: 1px solid @navi-gray-400;
+    background-color: @navi-white;
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+  }
 
-    //Making sure the Modal component is displayed ontop of the modal overlay.
-    z-index: 502;
+  .loading-message {
+    .text-input;
+    background-color: @navi-white;
 
-    &__close {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        cursor: pointer;
+    .loader-container {
+      display: inline-block;
+      margin-right: 65px;
+
+      .loader {
+        margin: 0;
+        width: 0;
+      }
     }
+  }
 
-    &__header--primary,
-    .primary-header {
-        font-size: @font-size-secondary-header;
-        font-family: inherit;
-        color: @navi-dark-gray;
-        margin-top: 0;
-        margin-bottom: 5px;
-        font-weight: 200;
-    }
+  &__header,
+  .navi-modal-header {
+    margin-bottom: 10px;
+  }
 
-    &__header-secondary,
-    .secondary-header {
-        font-family: inherit;
-        font-size: @font-size-mid-base;
-        color: @navi-gray;
-        margin-top: 0;
-        margin-bottom: 0;
-    }
+  .btn {
+    margin-right: 10px;
+  }
 
-    .btn-container {
-        margin-top: 20px;
-    }
+  a {
+    font-family: @font-family-sans-serif;
+  }
 
-    .text-input {
-        width: 100%;
-        resize: none;
-        padding: 20px;
-        border: 1px solid @navi-gray-400;
-        background-color: @navi-white;
-        box-sizing: border-box;
-        font-family: inherit;
-        font-size: inherit;
-        line-height: inherit;
-
-    }
-
-    .loading-message {
-        .text-input;
-        background-color: @navi-white;
-
-        .loader-container {
-            display: inline-block;
-            margin-right: 65px;
-
-            .loader {
-                margin: 0;
-                width: 0;
-            }
-        }
-    }
-
-    &__header,
-    .navi-modal-header {
-        margin-bottom: 10px;
-    }
-
-    .btn {
-        margin-right: 10px;
-    }
-
-    a {
-        font-family: @font-family-sans-serif;
-    }
-
-    &__input,
-    .modal-input-box {
-        background-color: @navi-white;
-        font-size: @font-size-mid-base;
-        font-family: @font-family-monospace;
-        margin-bottom: 20px;
-        width: 580px;
-        padding: 8px 6px;
-    }
+  &__input,
+  .modal-input-box {
+    background-color: @navi-white;
+    font-size: @font-size-mid-base;
+    font-family: @font-family-monospace;
+    margin-bottom: 20px;
+    width: 580px;
+    padding: 8px 6px;
+  }
 }
 
 .modal-notification {
-    margin-left: -20px;
-    padding-left: 20px;
+  margin-left: -20px;
+  padding-left: 20px;
 
-    .notification-text {
-        display:inline-block;
-        font-size: @font-size-mid-base;
-    }
-    .notification-remove-icon {
-        .clickable;
-        font-size: @font-size-xsmall;
-        float: right;
-        padding-right: 10px;
-        padding-top: 3px;
-        position: initial;
-    }
+  .notification-text {
+    display: inline-block;
+    font-size: @font-size-mid-base;
+  }
+  .notification-remove-icon {
+    .clickable;
+    font-size: @font-size-xsmall;
+    float: right;
+    padding-right: 10px;
+    padding-top: 3px;
+    position: initial;
+  }
 }
 
 .modal-notification.alert {
-    color: @navi-white;
-    transition: all .3s linear;
-    width: @modal-width;
+  color: @navi-white;
+  transition: all 0.3s linear;
+  width: @modal-width;
 
-    &.success {
-        background-color: @navi-notification-success-background-color;
-    }
+  &.success {
+    background-color: @navi-notification-success-background-color;
+  }
 
-    &.info {
-        background-color: @navi-notification-info-background-color;
-    }
+  &.info {
+    background-color: @navi-notification-info-background-color;
+  }
 
-    &.failure {
-        background-color: @navi-notification-failure-background-color;
-    }
+  &.failure {
+    background-color: @navi-notification-failure-background-color;
+  }
 
-    // TODO don't label 'none' and 'clear' states as notifications
-    &.none {
-        color: @navi-modal-font-gray;
-    }
+  // TODO don't label 'none' and 'clear' states as notifications
+  &.none {
+    color: @navi-modal-font-gray;
+  }
 
-    &.clear {
-        margin-bottom: 0;
-    }
+  &.clear {
+    margin-bottom: 0;
+  }
 }
 
 .modal-notification.success,
 .modal-notification.failure,
 .modal-notification.info {
-    box-shadow: none;
-    padding: 10px;
-    padding-left: 20px;
+  box-shadow: none;
+  padding: 10px;
+  padding-left: 20px;
 }
 
 .modal-header {
-    font-size: @font-size-xlarge;
-    padding: 0;
-    border-bottom: none;
+  font-size: @font-size-xlarge;
+  padding: 0;
+  border-bottom: none;
 
-    .icon-remove {
-        font-size: @font-size-base-large;
-        top: 20px;
-        right: 20px;
-        position:absolute;
-        cursor: pointer;
-    }
+  .icon-remove {
+    font-size: @font-size-base-large;
+    top: 20px;
+    right: 20px;
+    position: absolute;
+    cursor: pointer;
+  }
 }

@@ -12,7 +12,7 @@ export default Ember.Component.extend({
   /**
    * @property {Array} classNames
    */
-  classNames: [ 'btn', 'btn-add', 'add-series-trigger' ],
+  classNames: ['btn', 'btn-add', 'add-series-trigger'],
 
   /**
    * @property {String} tagName

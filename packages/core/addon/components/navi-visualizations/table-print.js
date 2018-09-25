@@ -9,13 +9,13 @@
  *   onUpdateReport=(action 'onUpdateReport')
  * }}
  */
-import Table from './table'
+import Table from './table';
 
 export default Table.extend({
   /**
    * @property {Array} classNames - list of component class names
    */
-  classNames: [ 'table-widget', 'table-widget--print' ],
+  classNames: ['table-widget', 'table-widget--print'],
 
   /*
    * @property {Boolean} occlusion - whether or not to incremental render

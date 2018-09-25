@@ -14,5 +14,5 @@ import layout from '../templates/components/dir-search-bar';
 export default Component.extend({
   layout,
 
-  classNames: [ 'dir-search-bar' ]
+  classNames: ['dir-search-bar']
 });

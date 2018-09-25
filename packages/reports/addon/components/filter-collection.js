@@ -48,10 +48,6 @@ export default Ember.Component.extend({
       };
     });
 
-    return [
-      ...dateFilters,
-      ...dimFilters,
-      ...metricFilters
-    ];
+    return [...dateFilters, ...dimFilters, ...metricFilters];
   })
 });

@@ -24,8 +24,8 @@ const Validations = buildValidations({
 const { computed, get, set } = Ember;
 
 export default Fragment.extend(Validations, {
-  table:              DS.attr('table'),
-  timeGrainName:      DS.attr('string'),
+  table: DS.attr('table'),
+  timeGrainName: DS.attr('string'),
 
   /**
    * @property {Object} timeGrain - gets the timeGrain object from the timeGrainName or returns the first object

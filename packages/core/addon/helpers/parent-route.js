@@ -14,9 +14,9 @@ export default CurrentRoute.extend({
    */
   compute() {
     let current = this._super(),
-        pathElements = current.split('.');
+      pathElements = current.split('.');
 
-        // Remove the leaf route
+    // Remove the leaf route
     pathElements.pop();
 
     return pathElements.join('.');

@@ -6,7 +6,6 @@ import ReportCollectionsWS from './routes/report-collections';
 import DeliveryRulesWS from './routes/delivery-rules';
 
 export default function() {
-
   // https://github.com/kategengler/ember-cli-code-coverage#create-a-passthrough-when-intercepting-all-ajax-requests-in-tests
   this.passthrough('/write-coverage');
 

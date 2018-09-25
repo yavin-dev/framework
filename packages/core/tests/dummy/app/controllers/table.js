@@ -6,12 +6,10 @@ const { A: arr, computed, get, set, setProperties } = Ember;
 
 export default Ember.Controller.extend({
   request: {
-    dimensions: [
-      { dimension: { name: 'os', longName: 'Operating System' } }
-    ]
+    dimensions: [{ dimension: { name: 'os', longName: 'Operating System' } }]
   },
 
-  visualization: computed('options', function () {
+  visualization: computed('options', function() {
     return {
       type: 'table',
       version: 1,
@@ -53,10 +51,12 @@ export default Ember.Controller.extend({
   upsertSort(options) {
     let request = arr(get(this, 'model.firstObject.request'));
     setProperties(request, {
-      sort: [{
-        metric: options.metric,
-        direction: options.direction
-      }]
+      sort: [
+        {
+          metric: options.metric,
+          direction: options.direction
+        }
+      ]
     });
   },
 
@@ -86,8 +86,7 @@ export default Ember.Controller.extend({
     },
 
     onUpdateConfig(configUpdate) {
-      set(this, 'options',
-        merge({}, get(this, 'options'), configUpdate));
+      set(this, 'options', merge({}, get(this, 'options'), configUpdate));
     }
   }
 });
