@@ -25,14 +25,14 @@ import { canonicalizeMetric } from 'navi-data/utils/metric';
 import { getColumnDefaultName } from 'navi-core/helpers/default-column-name';
 
 const NEXT_SORT_DIRECTION = {
-  'none': 'desc',
-  'desc': 'asc',
-  'asc': 'none',
+  none: 'desc',
+  desc: 'asc',
+  asc: 'none'
 };
 
 const HEADER_TITLE = {
-  'grandTotal': 'Grand Total',
-  'subtotal': 'Subtotal'
+  grandTotal: 'Grand Total',
+  subtotal: 'Subtotal'
 };
 
 export default Component.extend({
@@ -66,7 +66,9 @@ export default Component.extend({
   /**
    * @property {Number} totalRows - total rows for the request
    */
-  totalRows: computed.readOnly('model.firstObject.response.meta.pagination.numberOfResults'),
+  totalRows: computed.readOnly(
+    'model.firstObject.response.meta.pagination.numberOfResults'
+  ),
 
   /**
    * @property {Number} rowsInResponse - rows in response
@@ -74,55 +76,83 @@ export default Component.extend({
   rowsInResponse: computed.alias('model.firstObject.response.rows.length'),
 
   /**
+   * @method computeColumnTotal
+   * Compute total for a metric column
+   * Returns sum of values, may be overriden with your own logic
+   *
+   * @param {Array} data
+   * @param {String} metricName
+   * @param {Object} totalRow
+   * @param {Object} column
+   * @param {String} type - `grandTotal` || `subtotal`
+   * @returns {*} sum
+   */
+  computeColumnTotal(data, metricName /*, totalRow, column, type*/) {
+    return data.reduce((sum, row) => {
+      let number = Number(row[metricName]);
+      return Number.isNaN(number) ? sum : sum + number;
+    }, 0);
+  },
+
+  /**
    * @method _computeTotal
    * Compute total for all metrics in the data
    *
    * @private
    * @param {Array} data
-   * @param {String} type
+   * @param {String} type - `grandTotal` || `subtotal`
    * @returns {Object} totalRow
    */
   _computeTotal(data, type) {
-    let columns = get(this, 'columns');
+    let columns = get(this, 'columns'),
+      hasPartialData = get(this, 'totalRows') > get(this, 'rowsInResponse');
 
-    return columns.reduce((totRow, column) => {
+    let totalRow = columns.reduce((totRow, column) => {
       //if dateTime set type
       if (column.type === 'dateTime') {
         set(totRow, column.field.dateTime, HEADER_TITLE[type]);
       }
 
       //set subtotal dimension if subtotal row
-      if (column.field.dimension === get(this, 'selectedSubtotal') && type === 'subtotal') {
+      if (
+        column.field.dimension === get(this, 'selectedSubtotal') &&
+        type === 'subtotal'
+      ) {
         let idField = `${column.field.dimension}|id`,
-            descField = `${column.field.dimension}|desc`;
+          descField = `${column.field.dimension}|desc`;
 
         set(totRow, idField, data[0][idField]);
         set(totRow, descField, data[0][descField]);
       }
 
-      //add meta to indicate totalRow
-      set(totRow, '__meta__', { isTotalRow: true });
-
-      //if partial data do not compute metric totals
-      if (get(this, 'totalRows') > get(this, 'rowsInResponse')) {
-        set(totRow, '__meta__.hasPartialData', true);
-        return totRow;
-      }
-
-      //if metric find sum
-      if (column.type === 'metric') {
+      //if metric and not partial data compute totals
+      if (column.type === 'metric' && !hasPartialData) {
         let metricName = canonicalizeMetric(column.field);
-        totRow[metricName] = data.reduce((sum, row) => {
-          let number = Number(row[metricName]);
-          if (!Number.isNaN(number)) {
-            return sum + number;
-          }
-          return sum;
-        }, 0);
+        totRow[metricName] = this.computeColumnTotal(
+          data,
+          metricName,
+          totRow,
+          column,
+          type
+        );
       }
 
       return totRow;
     }, {});
+
+    //add totalRow indication to meta
+    set(
+      totalRow,
+      '__meta__',
+      Object.assign({}, get(totalRow, '__meta__'), { isTotalRow: true })
+    );
+
+    //if partial data add indication to meta
+    if (hasPartialData) {
+      set(totalRow, '__meta__.hasPartialData', true);
+    }
+
+    return totalRow;
   },
 
   /**
@@ -135,13 +165,15 @@ export default Component.extend({
   _computeSubtotals() {
     let groupingColumn = get(this, 'selectedSubtotal');
 
-    if (!groupingColumn) { return get(this, 'rawData'); }
+    if (!groupingColumn) {
+      return get(this, 'rawData');
+    }
 
     let groupedData = get(this, 'groupedData'),
-        dataWithSubtotals = Object.keys(groupedData).reduce((arr, group) => {
-          let subTotalRow = this._computeTotal(groupedData[group], 'subtotal');
-          return [...arr, ...groupedData[group], subTotalRow];
-        }, []);
+      dataWithSubtotals = Object.keys(groupedData).reduce((arr, group) => {
+        let subTotalRow = this._computeTotal(groupedData[group], 'subtotal');
+        return [...arr, ...groupedData[group], subTotalRow];
+      }, []);
 
     return dataWithSubtotals;
   },
@@ -154,7 +186,7 @@ export default Component.extend({
    * @returns {Boolean}
    */
   _hasCustomDisplayName(column) {
-    if(isBlank(column.displayName)) {
+    if (isBlank(column.displayName)) {
       return false;
     }
 
@@ -165,32 +197,35 @@ export default Component.extend({
   /**
    * @property {Object} groupedData - data grouped by grouping column specified in selectedSubtotal
    */
-  groupedData: computed('selectedSubtotal', 'rawData', function () {
+  groupedData: computed('selectedSubtotal', 'rawData', function() {
     let groupingColumn = get(this, 'selectedSubtotal'),
-        rawData = get(this, 'rawData');
+      rawData = get(this, 'rawData');
 
     if (groupingColumn !== 'dateTime') {
       groupingColumn = `${groupingColumn}|id`;
     }
 
-    return groupBy(rawData,
-      row => get(row, groupingColumn)
-    );
+    return groupBy(rawData, row => get(row, groupingColumn));
   }),
 
   /**
    * @property {Object} tableData
    */
-  tableData: computed('rawData', 'columns', 'options.showTotals.{grandTotal,subtotal}', function () {
-    let tableData = this._computeSubtotals(),
+  tableData: computed(
+    'rawData',
+    'columns',
+    'options.showTotals.{grandTotal,subtotal}',
+    function() {
+      let tableData = this._computeSubtotals(),
         rawData = get(this, 'rawData');
 
-    if (!get(this, 'options.showTotals.grandTotal')) {
-      return tableData;
-    }
+      if (!get(this, 'options.showTotals.grandTotal')) {
+        return tableData;
+      }
 
-    return [...tableData, this._computeTotal(rawData, 'grandTotal')];
-  }),
+      return [...tableData, this._computeTotal(rawData, 'grandTotal')];
+    }
+  ),
 
   /**
    * @method _mapAlias
@@ -205,15 +240,18 @@ export default Component.extend({
     }
 
     let requestSorts = arr(get(request, 'sort')),
-        requestMetricsAliasMap = arr(get(request, 'metrics')).reduce((map, metric) => {
+      requestMetricsAliasMap = arr(get(request, 'metrics')).reduce(
+        (map, metric) => {
           let alias = get(metric, 'parameters.as');
           if (alias) {
             map[alias] = metric;
           }
           return map;
-        }, {});
+        },
+        {}
+      );
 
-    return requestSorts.map((sort) => {
+    return requestSorts.map(sort => {
       let metric = requestMetricsAliasMap[get(sort, 'metric')];
       sort.metric = metric ? canonicalizeMetric(metric) : sort.metric;
       return sort;
@@ -223,16 +261,16 @@ export default Component.extend({
   /**
    * @property {Object} columns
    */
-  columns: computed('options.columns', 'request.sort', function () {
+  columns: computed('options.columns', 'request.sort', function() {
     let sorts = this._mapAlias(get(this, 'request')),
-        columns = cloneDeep(get(this, 'options.columns') || []);
+      columns = cloneDeep(get(this, 'options.columns') || []);
 
     return columns.map(column => {
       let { field, type } = column,
-          fieldName = type === 'dateTime' ? type : canonicalizeMetric(field),
-          sort = arr(sorts).findBy('metric', fieldName) || {},
-          hasCustomDisplayName = this._hasCustomDisplayName(column),
-          sortDirection;
+        fieldName = type === 'dateTime' ? type : canonicalizeMetric(field),
+        sort = arr(sorts).findBy('metric', fieldName) || {},
+        hasCustomDisplayName = this._hasCustomDisplayName(column),
+        sortDirection;
 
       if (column.type === 'dateTime') {
         sortDirection = get(sort, 'direction') || 'desc';
@@ -265,7 +303,7 @@ export default Component.extend({
   /**
    * @property {Array} rowDimensions - indicates the dimensions for each row of data
    */
-  rowDimensions: computed('tableData', 'expandedIdx', function () {
+  rowDimensions: computed('tableData', 'expandedIdx', function() {
     let rowDimension = formatItemDimension(get(this, 'rowHeight'));
 
     //Create a set of row dimensions for each row of data
@@ -298,7 +336,6 @@ export default Component.extend({
   },
 
   actions: {
-
     /**
      * @action headerClicked
      * sends sort action when dateTime header is clicked
@@ -307,9 +344,9 @@ export default Component.extend({
     headerClicked({ field, type, sortDirection }) {
       if (/^threshold|dateTime|metric$/.test(type)) {
         let direction = this._getNextSortDirection(type, sortDirection),
-            //TODO Fetch from report action dispatcher service
-            actionType = direction === 'none' ? 'removeSort' : 'upsertSort',
-            fieldName = type === 'dateTime' ? type : canonicalizeMetric(field);
+          //TODO Fetch from report action dispatcher service
+          actionType = direction === 'none' ? 'removeSort' : 'upsertSort',
+          fieldName = type === 'dateTime' ? type : canonicalizeMetric(field);
 
         this.attrs.onUpdateReport(actionType, fieldName, direction);
       }
@@ -319,19 +356,19 @@ export default Component.extend({
      * @action updateColumnOrder
      */
     updateColumnOrder(newColumnOrder) {
-      this.attrs.onUpdateReport(
-        'updateColumnOrder',
-        newColumnOrder
-      );
+      this.attrs.onUpdateReport('updateColumnOrder', newColumnOrder);
     },
 
     /**
      * @action updateColumnDisplayName
      */
     updateColumnDisplayName(column, displayName) {
-      this.attrs.onUpdateReport('updateColumn', assign({}, column, {
-        displayName
-      }));
+      this.attrs.onUpdateReport(
+        'updateColumn',
+        assign({}, column, {
+          displayName
+        })
+      );
     }
   }
 });
