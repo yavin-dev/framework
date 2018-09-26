@@ -20,8 +20,8 @@ module('Integration | Component | dir new button', function(hooks) {
       [...this.element.parentElement.querySelectorAll('.dir-new-button__dropdown-option')].map(elm =>
         elm.innerText.trim()
       ),
-      ['Reports', 'Dashboards'],
-      'Reports and Dashboards are the options for creating a new document'
+      ['Report', 'Dashboard'],
+      'Report and Dashboard are the options for creating a new document'
     );
   });
 });
