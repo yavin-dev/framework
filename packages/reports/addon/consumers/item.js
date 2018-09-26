@@ -6,6 +6,7 @@ import ActionConsumer from 'navi-core/consumers/action-consumer';
 import { ItemActions } from 'navi-reports/services/item-action-dispatcher';
 import { get } from '@ember/object';
 import { inject as service } from '@ember/service';
+import { featureFlag } from 'navi-core/helpers/feature-flag';
 
 export default ActionConsumer.extend({
   /**
@@ -26,7 +27,9 @@ export default ActionConsumer.extend({
     [ItemActions.DELETE_ITEM](item) {
       let itemName = get(item, 'title'),
         itemType = get(item, 'constructor.modelName'),
-        transitionRoute = itemType + 's';
+        transitionRoute = featureFlag('enableDirectory')
+          ? 'directory.my-data'
+          : itemType + 's';
 
       item.deleteRecord();
 
