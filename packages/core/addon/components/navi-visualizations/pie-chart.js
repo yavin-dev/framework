@@ -94,9 +94,9 @@ export default Component.extend({
    */
   dataConfig: computed('model.firstObject', 'seriesConfig', function() {
     let response = get(this, 'model.firstObject.response'),
-        request = get(this, 'request'),
-        seriesConfig = get(this, 'seriesConfig'),
-        seriesData = get(this, 'builder').buildData(get(response, 'rows'), seriesConfig, request);
+      request = get(this, 'request'),
+      seriesConfig = get(this, 'seriesConfig'),
+      seriesData = get(this, 'builder').buildData(get(response, 'rows'), seriesConfig, request);
 
     return {
       data: {
@@ -110,12 +110,9 @@ export default Component.extend({
    * @property {Object} config - config options for the chart
    */
   config: computed('options', 'dataConfig', function() {
-    return merge({},
-      get(this, 'pieConfig'),
-      get(this, 'options'),
-      get(this, 'dataConfig'),
-      { tooltip: get(this, 'chartTooltip') }
-    );
+    return merge({}, get(this, 'pieConfig'), get(this, 'options'), get(this, 'dataConfig'), {
+      tooltip: get(this, 'chartTooltip')
+    });
   }),
 
   /**
@@ -131,26 +128,26 @@ export default Component.extend({
    */
   tooltipComponent: computed(function() {
     let owner = getOwner(this),
-        tooltipComponentName = get(this, 'tooltipComponentName'),
-        registryEntry = `component:${tooltipComponentName}`,
-        byXSeries = get(this, 'builder.byXSeries'),
-        tooltipComponent = Component.extend(
-          owner.ownerInjection(),
+      tooltipComponentName = get(this, 'tooltipComponentName'),
+      registryEntry = `component:${tooltipComponentName}`,
+      byXSeries = get(this, 'builder.byXSeries'),
+      tooltipComponent = Component.extend(
+        owner.ownerInjection(),
 
-          {
-            layout: tooltipLayout,
+        {
+          layout: tooltipLayout,
 
-            rowData: computed('x', 'requiredToolTipData', function() {
-              // Get the full data for this combination of x + series
-              let series = get(this, 'requiredToolTipData'),
-                  dataForSeries = byXSeries.getDataForKey(get(this, 'x') + series.id) || [];
+          rowData: computed('x', 'requiredToolTipData', function() {
+            // Get the full data for this combination of x + series
+            let series = get(this, 'requiredToolTipData'),
+              dataForSeries = byXSeries.getDataForKey(get(this, 'x') + series.id) || [];
 
-              return dataForSeries[0];
-            })
-          },
-          { renderer: owner.lookup('renderer:-dom') }
-        );
-    if(!owner.lookup(registryEntry)) {
+            return dataForSeries[0];
+          })
+        },
+        { renderer: owner.lookup('renderer:-dom') }
+      );
+    if (!owner.lookup(registryEntry)) {
       owner.register(registryEntry, tooltipComponent);
     }
 
@@ -166,17 +163,17 @@ export default Component.extend({
    */
   chartTooltip: computed('seriesConfig.metric', function() {
     let tooltipComponent = get(this, 'tooltipComponent'),
-        rawData = get(this, 'dataConfig.data.json'),
-        metric = get(this, 'seriesConfig.metric');
+      rawData = get(this, 'dataConfig.data.json'),
+      metric = get(this, 'seriesConfig.metric');
 
     return {
       contents(tooltipData) {
         let x = rawData[0].x.rawValue,
-            tooltip = tooltipComponent.create({
-              x,
-              requiredToolTipData: tooltipData[0],
-              metric
-            });
+          tooltip = tooltipComponent.create({
+            x,
+            requiredToolTipData: tooltipData[0],
+            metric
+          });
 
         run(() => {
           let element = document.createElement('div');
@@ -196,7 +193,7 @@ export default Component.extend({
    * @override
    */
   willDestroy() {
-    this._super(...arguments)
+    this._super(...arguments);
     this._removeMetricLabel();
     this._removeTooltipFromRegistry();
   },
@@ -227,27 +224,26 @@ export default Component.extend({
    * @private
    */
   _drawMetricLabel() {
-    let titleElm    = d3.select(`.${this.get('chartId')} text.c3-title`),
-        svgElm      = d3.select(`.${this.get('chartId')} svg`),
-        chartElm    = d3.select(`.${this.get('chartId')} .c3-chart-arcs`),
+    let titleElm = d3.select(`.${this.get('chartId')} text.c3-title`),
+      svgElm = d3.select(`.${this.get('chartId')} svg`),
+      chartElm = d3.select(`.${this.get('chartId')} .c3-chart-arcs`),
+      /*
+       * We want the metric label to be just to the left of the pie chart
+       * Find the x translation of the pie chart element and subtract half the chart's width and 50 more pixels
+       */
+      xTranslate = d3.transform(chartElm.attr('transform')).translate[0] - chartElm.node().getBBox().width / 2 - 50,
+      yTranslate = svgElm.style('height').replace('px', '') / 2, //vertically center the label in the svg
+      metricTitle = get(this, 'metricDisplayName');
 
-        /*
-         * We want the metric label to be just to the left of the pie chart
-         * Find the x translation of the pie chart element and subtract half the chart's width and 50 more pixels
-         */
-        xTranslate  = d3.transform(chartElm.attr('transform')).translate[0] - (chartElm.node().getBBox().width / 2) - 50,
-        yTranslate  = svgElm.style('height').replace('px', '') / 2, //vertically center the label in the svg
-        metricTitle = get(this, 'metricDisplayName');
-
-    titleElm.insert('tspan')
+    titleElm
+      .insert('tspan')
       .attr('class', 'pie-metric-label')
       .attr('y', 0)
       .attr('x', 0)
       .text(metricTitle);
 
     //rotate the label to be vertical and place it just left of the pie chart
-    titleElm.attr('text-anchor', 'middle')
-      .attr('transform', `translate(${xTranslate}, ${yTranslate}) rotate(-90)`);
+    titleElm.attr('text-anchor', 'middle').attr('transform', `translate(${xTranslate}, ${yTranslate}) rotate(-90)`);
   },
 
   /**
@@ -260,7 +256,7 @@ export default Component.extend({
      * @private
      */
     redrawMetricLabel() {
-      if(!get(this, 'isDestroyed') && !get(this, 'isDestroying')){
+      if (!get(this, 'isDestroyed') && !get(this, 'isDestroying')) {
         this._removeMetricLabel();
         this._drawMetricLabel();
       }

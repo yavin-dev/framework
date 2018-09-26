@@ -23,5 +23,5 @@ const Validations = buildValidations({
 });
 
 export default Fragment.extend(Validations, {
-  interval:   DS.attr()
+  interval: DS.attr()
 });

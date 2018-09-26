@@ -92,7 +92,10 @@ export const GROUP = {
       year: {
         xValueCount: 53,
         getXValue: dateTime => dateTime.isoWeek(),
-        getXDisplay: x => moment().isoWeek(x).format('MMM'),
+        getXDisplay: x =>
+          moment()
+            .isoWeek(x)
+            .format('MMM'),
         getSeries: dateTime => dateTime.format('GGGG')
       }
     }
@@ -102,7 +105,10 @@ export const GROUP = {
       year: {
         xValueCount: 12,
         getXValue: dateTime => dateTime.month() + 1,
-        getXDisplay: x => moment().month(x - 1).format('MMM'),
+        getXDisplay: x =>
+          moment()
+            .month(x - 1)
+            .format('MMM'),
         getSeries: dateTime => dateTime.format('YYYY')
       }
     }
@@ -121,8 +127,8 @@ export const GROUP = {
 const _groupDataBySeries = (data, metric, grouper) => {
   return data.reduce((map, row) => {
     let dateTime = moment(get(row, 'dateTime'), API_DATE_FORMAT),
-        series = grouper.getSeries(dateTime),
-        x = grouper.getXValue(dateTime);
+      series = grouper.getSeries(dateTime),
+      x = grouper.getXValue(dateTime);
 
     if (!map[series]) {
       map[series] = {};
@@ -143,7 +149,7 @@ const _groupDataBySeries = (data, metric, grouper) => {
  * @returns {Array} array of c3 data with x values
  */
 const _buildDataRows = (seriesMap, grouper) => {
-  let _buildRow = (x) => {
+  let _buildRow = x => {
     let row = {
       x: {
         rawValue: x,
@@ -153,7 +159,7 @@ const _buildDataRows = (seriesMap, grouper) => {
 
     // Add each series to the row
     Object.keys(seriesMap).forEach(
-      series => row[series] = getWithDefault(seriesMap[series], x.toString(), null) // c3 wants `null` for empty data points
+      series => (row[series] = getWithDefault(seriesMap[series], x.toString(), null)) // c3 wants `null` for empty data points
     );
 
     return row;
@@ -177,10 +183,10 @@ const _buildDataRows = (seriesMap, grouper) => {
  */
 const _getGrouper = (request, config) => {
   let timeGrain = get(request, 'logicalTable.timeGrain'),
-      seriesTimeGrain = get(config, 'timeGrain');
+    seriesTimeGrain = get(config, 'timeGrain');
 
   return GROUP[timeGrain].by[seriesTimeGrain];
-}
+};
 
 export default Ember.Object.extend({
   /**
@@ -220,17 +226,21 @@ export default Ember.Object.extend({
    */
   buildData(data, config, request) {
     // Group data by x axis value + series name in order to lookup metric attributes when building tooltip
-    set(this, 'byXSeries', new DataGroup(data, row => {
-      let seriesName = this.getSeriesName(row, config, request),
+    set(
+      this,
+      'byXSeries',
+      new DataGroup(data, row => {
+        let seriesName = this.getSeriesName(row, config, request),
           x = this.getXValue(row, config, request);
 
-      return x + seriesName;
-    }));
+        return x + seriesName;
+      })
+    );
 
     let { timeGrain: seriesTimeGrain, metric } = config,
-        requestTimeGrain = get(request, 'logicalTable.timeGrain'),
-        grouper = GROUP[requestTimeGrain].by[seriesTimeGrain],
-        canonicalName = canonicalizeMetric(metric);
+      requestTimeGrain = get(request, 'logicalTable.timeGrain'),
+      grouper = GROUP[requestTimeGrain].by[seriesTimeGrain],
+      canonicalName = canonicalizeMetric(metric);
 
     let seriesMap = _groupDataBySeries(data, canonicalName, grouper);
     return _buildDataRows(seriesMap, grouper);

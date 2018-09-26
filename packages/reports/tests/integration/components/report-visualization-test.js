@@ -4,11 +4,8 @@ import hbs from 'htmlbars-inline-precompile';
 const Request = {
   serialize() {
     return {
-      dimensions: [ {dimension:'os'} ],
-      metrics: [
-        {metric: 'uniqueIdentifier'},
-        {metric: 'totalPageViews'}
-      ],
+      dimensions: [{ dimension: 'os' }],
+      metrics: [{ metric: 'uniqueIdentifier' }, { metric: 'totalPageViews' }],
       intervals: [
         {
           start: '2016-05-30 00:00:00.000',
@@ -17,11 +14,11 @@ const Request = {
       ],
       logicalTable: {
         table: 'network',
-        timeGrain:{
+        timeGrain: {
           name: 'day'
         }
       }
-    }
+    };
   }
 };
 
@@ -44,11 +41,12 @@ test('it renders the specified visualization', function(assert) {
     }}
   `);
 
-  assert.ok(!!this.$('.table-widget').length,
-    'report-visualization renders the correct visualization')
+  assert.ok(!!this.$('.table-widget').length, 'report-visualization renders the correct visualization');
 
-  assert.notOk(!!this.$('.table-widget--print').length,
-    'report-visualization renders the correct screen visualization')
+  assert.notOk(
+    !!this.$('.table-widget--print').length,
+    'report-visualization renders the correct screen visualization'
+  );
 });
 
 test('it renders the specified print visualization', function(assert) {
@@ -66,8 +64,7 @@ test('it renders the specified print visualization', function(assert) {
     }}
   `);
 
-  assert.ok(!!this.$('.table-widget--print').length,
-    'report-visualization renders the correct print visualization')
+  assert.ok(!!this.$('.table-widget--print').length, 'report-visualization renders the correct print visualization');
 });
 
 test('it renders the specified fallback print visualization', function(assert) {
@@ -77,7 +74,7 @@ test('it renders the specified fallback print visualization', function(assert) {
     request: Request,
     visualization: { type: 'line-chart' }
   });
-  this.set('response', { rows: [] } );
+  this.set('response', { rows: [] });
 
   this.render(hbs`
     {{report-visualization
@@ -87,9 +84,13 @@ test('it renders the specified fallback print visualization', function(assert) {
     }}
   `);
 
-  assert.ok(!!this.$('.line-chart-widget').length,
-    'report-visualization falls back to non print visualization when print version is not available')
+  assert.ok(
+    !!this.$('.line-chart-widget').length,
+    'report-visualization falls back to non print visualization when print version is not available'
+  );
 
-  assert.notOk(!!this.$('.line-chart-widget--print').length,
-    'report-visualization falls back to non print visualization when print version is not available')
+  assert.notOk(
+    !!this.$('.line-chart-widget--print').length,
+    'report-visualization falls back to non print visualization when print version is not available'
+  );
 });

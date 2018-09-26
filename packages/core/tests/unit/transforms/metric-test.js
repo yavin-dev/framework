@@ -7,7 +7,7 @@ const { getOwner } = Ember;
 
 var MetadataService;
 
-moduleFor('transform:metric', 'Unit | Transform | Metric',{
+moduleFor('transform:metric', 'Unit | Transform | Metric', {
   needs: [
     'model:metadata/table',
     'model:metadata/time-grain',
@@ -37,15 +37,11 @@ test('serialize and deserialize', function(assert) {
 
   return wait().then(() => {
     let transform = this.subject(),
-        metric = MetadataService.getById('metric', 'pageViews');
+      metric = MetadataService.getById('metric', 'pageViews');
 
-    assert.equal(transform.serialize(metric),
-      'pageViews',
-      'Metric is serialized to the name');
+    assert.equal(transform.serialize(metric), 'pageViews', 'Metric is serialized to the name');
 
-    assert.equal(transform.deserialize('pageViews'),
-      metric,
-      'Metric is deserialized to the right object');
+    assert.equal(transform.deserialize('pageViews'), metric, 'Metric is deserialized to the right object');
   });
 });
 
@@ -54,14 +50,14 @@ test('datetime test', function(assert) {
 
   return wait().then(() => {
     let transform = this.subject(),
-        metric = {name: 'dateTime'};
+      metric = { name: 'dateTime' };
 
-    assert.equal(transform.serialize(metric),
-      'dateTime',
-      'dateTime is serialized to the name');
+    assert.equal(transform.serialize(metric), 'dateTime', 'dateTime is serialized to the name');
 
-    assert.deepEqual(transform.deserialize('dateTime'),
-      {name: 'dateTime'},
-      'dateTime is deserialized to the right object');
+    assert.deepEqual(
+      transform.deserialize('dateTime'),
+      { name: 'dateTime' },
+      'dateTime is deserialized to the right object'
+    );
   });
 });

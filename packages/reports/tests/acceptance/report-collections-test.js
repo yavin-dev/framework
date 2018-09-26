@@ -4,9 +4,7 @@ import startApp from '../helpers/start-app';
 import { teardownModal } from '../helpers/teardown-modal';
 import Mirage from 'ember-cli-mirage';
 
-let Application,
-    OriginalLoggerError,
-    OriginalTestAdapterException;
+let Application, OriginalLoggerError, OriginalTestAdapterException;
 
 module('Acceptance | Report Collections', {
   beforeEach: function() {
@@ -26,11 +24,12 @@ test('report-collection success', function(assert) {
 
   visit('/reportCollections/1');
   andThen(function() {
-    assert.notOk(!!find('.error').length,
-      'Error message not present when route is successfully loaded');
+    assert.notOk(!!find('.error').length, 'Error message not present when route is successfully loaded');
 
-    assert.ok(!!find('.navi-collection').length,
-      'the report collection component is rendered when route is successfully loaded');
+    assert.ok(
+      !!find('.navi-collection').length,
+      'the report collection component is rendered when route is successfully loaded'
+    );
   });
 });
 
@@ -49,12 +48,9 @@ test('report-collection error', function(assert) {
 
   visit('/reportCollections/1');
   andThen(function() {
+    assert.ok(!!find('.error').length, 'Error message is present when route encounters an error');
 
-    assert.ok(!!find('.error').length,
-      'Error message is present when route encounters an error');
-
-    assert.notOk(!!find('.navi-collection').length,
-      'Navi report collection component is not rendered');
+    assert.notOk(!!find('.navi-collection').length, 'Navi report collection component is not rendered');
 
     Ember.Logger.error = OriginalLoggerError;
     Ember.Test.adapter.exception = OriginalTestAdapterException;
@@ -68,8 +64,7 @@ test('report-collection link', function(assert) {
     click('.navi-collection table > tbody > tr > td > a');
     andThen(function() {
       const urlRe = /\/reports\/\d+\/view/;
-      assert.ok(urlRe.test(currentURL()),
-        'Navigate to the report when link is clicked');
+      assert.ok(urlRe.test(currentURL()), 'Navigate to the report when link is clicked');
     });
   });
 });
@@ -80,7 +75,6 @@ test('report-collection loading', function(assert) {
   visit('/reportCollections/loading');
 
   andThen(function() {
-    assert.ok(!!find('.navi-loader__container').length,
-      'Loader is present when visiting loading route');
+    assert.ok(!!find('.navi-loader__container').length, 'Loader is present when visiting loading route');
   });
 });

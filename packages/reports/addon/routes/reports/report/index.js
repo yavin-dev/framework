@@ -12,5 +12,5 @@ export default Ember.Route.extend({
    */
   redirect(model) {
     this.replaceWith('reports.report.view', Ember.get(model, 'id'));
-  },
+  }
 });

@@ -10,7 +10,7 @@ test('display name is returned', function(assert) {
   const MockMeta = {
     pageViews: { longName: 'Page Views' },
     adClicks: { longName: 'Ad Clicks' },
-    timeSpent: { longName: 'Time Spent' },
+    timeSpent: { longName: 'Time Spent' }
   };
   const MockService = Ember.Service.extend({
     getById(type, id) {
@@ -21,15 +21,21 @@ test('display name is returned', function(assert) {
 
   let getDisplayList = this.subject();
 
-  assert.equal(getDisplayList.compute(['metric', ['pageViews', 'adClicks', 'timeSpent']]),
+  assert.equal(
+    getDisplayList.compute(['metric', ['pageViews', 'adClicks', 'timeSpent']]),
     'Page Views, Ad Clicks, Time Spent',
-    'The helper returns comma seperated list of longNames');
+    'The helper returns comma seperated list of longNames'
+  );
 
-  assert.equal(getDisplayList.compute(['metric', undefined]),
+  assert.equal(
+    getDisplayList.compute(['metric', undefined]),
     undefined,
-    'Undefined is returned when ids are not given');
+    'Undefined is returned when ids are not given'
+  );
 
-  assert.throws(() => getDisplayList.compute(['metric', ['pageViews', 'notAMetric', 'timeSpent']]),
+  assert.throws(
+    () => getDisplayList.compute(['metric', ['pageViews', 'notAMetric', 'timeSpent']]),
     /No metric found for id: notAMetric/,
-    'An error is given when the id is not found');
+    'An error is given when the id is not found'
+  );
 });

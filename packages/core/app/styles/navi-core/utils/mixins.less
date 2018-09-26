@@ -3,85 +3,90 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
- .align {
-     &.middle { text-align: center; }
-     &.right  { text-align: right;  }
-     &.left   { text-align: left;   }
- }
+.align {
+  &.middle {
+    text-align: center;
+  }
+  &.right {
+    text-align: right;
+  }
+  &.left {
+    text-align: left;
+  }
+}
 
 .builder-max-width {
-    max-width: @report-form-max-width;
-    padding-left: @report-form-padding-left;
-    padding-right: @report-form-padding-right;
+  max-width: @report-form-max-width;
+  padding-left: @report-form-padding-left;
+  padding-right: @report-form-padding-right;
 }
 
 .clickable {
-    -webkit-touch-callout: none;
-    cursor: pointer;
-    user-select: none;
+  -webkit-touch-callout: none;
+  cursor: pointer;
+  user-select: none;
 }
 
 .ellipsis {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .navi-3d-border-mixin() {
-    border: 1px solid @navi-lighter-gray;
-    border-bottom: 1px solid @navi-bottom-border-gray;
+  border: 1px solid @navi-lighter-gray;
+  border-bottom: 1px solid @navi-bottom-border-gray;
 }
 
 .navi-link {
-    color: @link-blue;
+  color: @link-blue;
 }
 
 .navi-page-title {
-    background-color: @navi-white;
-    flex:none;
-    min-width: 0;
-    font-family: @font-family-thin;
-    font-size: @top-level-view-title;
-    margin-top: 5px;
-    text-transform: capitalize;
-    padding-bottom: 18px;
+  background-color: @navi-white;
+  flex: none;
+  min-width: 0;
+  font-family: @font-family-thin;
+  font-size: @top-level-view-title;
+  margin-top: 5px;
+  text-transform: capitalize;
+  padding-bottom: 18px;
 }
 
 .display-flex {
-    display: flex;            /* NEW, Spec - Opera 12.1, Firefox 20+ */
-    display: -webkit-flex;    /* NEW - Chrome */
+  display: flex; /* NEW, Spec - Opera 12.1, Firefox 20+ */
+  display: -webkit-flex; /* NEW - Chrome */
 }
 
 .flex-1 {
-    flex: 1;
-    -webkit-box-flex: 1;
+  flex: 1;
+  -webkit-box-flex: 1;
 }
 
 .flex-flow-column {
-    flex-flow: column;
-    -webkit-flex-flow: column;
+  flex-flow: column;
+  -webkit-flex-flow: column;
 }
 
-.align-right{
-    justify-content: flex-end;
-    text-align: right;
+.align-right {
+  justify-content: flex-end;
+  text-align: right;
 }
 
 .config-container {
-    background-color: @navi-gray-100;
-    font-family: @font-family-thin;
-    margin: 5px;
-    padding: 10px;
-    text-align: left;
+  background-color: @navi-gray-100;
+  font-family: @font-family-thin;
+  margin: 5px;
+  padding: 10px;
+  text-align: left;
 }
 
 .config-section {
-    background-color: @navi-white;
-    box-sizing: border-box;
-    border-bottom: 1px solid #B9BDC5;
-    margin-bottom: 20px;
-    padding: 10px @report-selector-padding-left;
-    resize: none;
-    width: 100%;
+  background-color: @navi-white;
+  box-sizing: border-box;
+  border-bottom: 1px solid #b9bdc5;
+  margin-bottom: 20px;
+  padding: 10px @report-selector-padding-left;
+  resize: none;
+  width: 100%;
 }
-

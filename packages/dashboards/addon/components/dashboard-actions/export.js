@@ -16,7 +16,6 @@ import ExportAction from 'navi-reports/components/report-actions/export';
 import { inject as service } from '@ember/service';
 
 export default ExportAction.extend({
-
   /**
    * @property {Service} naviNotifications
    */
@@ -25,7 +24,7 @@ export default ExportAction.extend({
   /**
    * @property {String} href - API link for the report
    */
-  href: computed('dashboard', 'disabled', function () {
+  href: computed('dashboard', 'disabled', function() {
     // Void the href on a should disabled
     if (get(this, 'disabled')) {
       return 'javascript:void(0);';

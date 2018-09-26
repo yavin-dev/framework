@@ -11,7 +11,7 @@ import _ from 'lodash';
  */
 export function jsonApiToJson(jsonApiObject, relationshipMap) {
   let json = {},
-      id = jsonApiObject.data.id;
+    id = jsonApiObject.data.id;
 
   if (id) {
     json.id = id;
@@ -35,7 +35,6 @@ export function jsonApiToJson(jsonApiObject, relationshipMap) {
  * @returns {Object} - Object containing properties and their associated values
  */
 export function extractRelationships(jsonApiRels, relationshipMap) {
-
   let properties = {};
 
   // Ignore JSON-API relationships not specified in relationship map
@@ -43,7 +42,7 @@ export function extractRelationships(jsonApiRels, relationshipMap) {
     let property = relationship.property;
     if (jsonApiRels[property]) {
       let relationshipData = jsonApiRels[property].data,
-          propertyVal;
+        propertyVal;
 
       if (Ember.isArray(relationshipData)) {
         Ember.assert('data array should have hasMany relationship', relationship.relation === 'hasMany');
@@ -69,16 +68,15 @@ export function extractRelationships(jsonApiRels, relationshipMap) {
  * @returns {Object} - JSON-Api body Object
  */
 export function buildJsonApiDataObj(jsonObject, type, relationshipMap) {
-
   let attributes = Object.assign({}, jsonObject),
-      relationships;
+    relationships;
   delete attributes.id; // removing id attr from JSON-API attributes
 
   if (relationshipMap) {
     relationships = mapRelations(attributes, relationshipMap);
 
     // remove relationship properties from attributes
-    relationshipMap.mapBy('property').forEach((property) => {
+    relationshipMap.mapBy('property').forEach(property => {
       delete attributes[property];
     });
   }
@@ -90,7 +88,7 @@ export function buildJsonApiDataObj(jsonObject, type, relationshipMap) {
     attributes
   };
 
-  if(relationships) {
+  if (relationships) {
     jsonApiData.relationships = relationships;
   }
 
@@ -122,7 +120,6 @@ export function buildJsonApiIncludedArray(includeObj, relationshipMap) {
  * @returns {Object} - JSON-Api Object
  */
 export function jsonToJsonApi(jsonObject, type, relationshipMap, includeObj) {
-
   //Build JSON API structure
   let jsonApiBody;
   if (Ember.isArray(jsonObject)) {
@@ -151,20 +148,19 @@ export function jsonToJsonApi(jsonObject, type, relationshipMap, includeObj) {
  * @returns {Object} - JSON-API relationship object
  */
 export function mapRelations(jsonObject, relationshipMap) {
-
   let relationships = {};
 
   relationshipMap.forEach(relationship => {
     let jsonProperty = relationship.property,
-        relIDs = Ember.makeArray(jsonObject[jsonProperty]),
-        relData = relIDs.map((id) => {
-          return {
-            id,
-            type: relationship.type
-          };
-        });
+      relIDs = Ember.makeArray(jsonObject[jsonProperty]),
+      relData = relIDs.map(id => {
+        return {
+          id,
+          type: relationship.type
+        };
+      });
 
-        // valid relations is hasOne, hasMany. Default: hasMany
+    // valid relations is hasOne, hasMany. Default: hasMany
     if (relationship.relation === 'hasOne') {
       relData = relData[0];
     }

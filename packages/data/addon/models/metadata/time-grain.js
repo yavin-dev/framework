@@ -27,7 +27,7 @@ export default EmberObject.extend({
   /**
    * @property {String} retention
    */
-  retention:  undefined,
+  retention: undefined,
 
   /**
    * @property {Array} metricIds - array of metric ids
@@ -42,18 +42,22 @@ export default EmberObject.extend({
   /**
    * @property {Array} metrics - array of metric models
    */
-  metrics: computed(function(){
-    return this.get('metricIds').map((metricId) => {
-      return getOwner(this).lookup('service:keg').getById('metadata/metric', metricId);
+  metrics: computed(function() {
+    return this.get('metricIds').map(metricId => {
+      return getOwner(this)
+        .lookup('service:keg')
+        .getById('metadata/metric', metricId);
     });
   }),
 
   /**
    * @property {Array} dimensions - array of dimension models
    */
-  dimensions: computed(function(){
-    return this.get('dimensionIds').map((dimensionId) => {
-      return getOwner(this).lookup('service:keg').getById('metadata/dimension', dimensionId);
+  dimensions: computed(function() {
+    return this.get('dimensionIds').map(dimensionId => {
+      return getOwner(this)
+        .lookup('service:keg')
+        .getById('metadata/dimension', dimensionId);
     });
   })
 });

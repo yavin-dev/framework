@@ -42,9 +42,9 @@ export default Ember.Component.extend({
    */
   metricValue: computed('data', 'metric', 'format', function() {
     let format = get(this, 'format'),
-        type = get(this, 'column.type'),
-        canonicalName = canonicalizeMetric(get(this, 'metric')),
-        metricValue = get(this, `data.${canonicalName}`)
+      type = get(this, 'column.type'),
+      canonicalName = canonicalizeMetric(get(this, 'metric')),
+      metricValue = get(this, `data.${canonicalName}`);
 
     if (isEmpty(metricValue)) {
       return '--';
@@ -55,5 +55,5 @@ export default Ember.Component.extend({
     }
 
     return type === 'metric' ? smartFormatNumber([metricValue]) : metricValue;
-  }),
+  })
 });

@@ -6,15 +6,15 @@ import Ember from 'ember';
 import moment from 'moment';
 
 export const DATE_TIME_FORMATS = {
-  second:  'MM/DD/YYYY HH:mm:ss',
-  minute:  'MM/DD/YYYY HH:mm:00',
-  hour:    'MM/DD/YYYY HH:00:00',
-  day:     'MM/DD/YYYY',
-  all:     'MM/DD/YYYY',
-  week:    'MM/DD',
-  month:   'MMM YYYY',
+  second: 'MM/DD/YYYY HH:mm:ss',
+  minute: 'MM/DD/YYYY HH:mm:00',
+  hour: 'MM/DD/YYYY HH:00:00',
+  day: 'MM/DD/YYYY',
+  all: 'MM/DD/YYYY',
+  week: 'MM/DD',
+  month: 'MMM YYYY',
   quarter: '[Q]Q YYYY',
-  year:    'YYYY'
+  year: 'YYYY'
 };
 
 /**
@@ -41,12 +41,12 @@ export function formatDateForGranularity(date, granularity) {
  * @returns {String} 'startDate - endDate' of a week
  */
 function _formatWeek(startDate) {
-  let startDateOfWeek =  moment(startDate),
-      endDateOfWeek   =  moment(startDate).add(6, 'days'),
-      endDateOfWeekFormatted = endDateOfWeek.format(DATE_TIME_FORMATS['day']);
+  let startDateOfWeek = moment(startDate),
+    endDateOfWeek = moment(startDate).add(6, 'days'),
+    endDateOfWeekFormatted = endDateOfWeek.format(DATE_TIME_FORMATS['day']);
 
   let endFormat = startDateOfWeek.isSame(endDateOfWeek, 'year') ? 'week' : 'day',
-      startDateOfWeekFormatted = startDateOfWeek.format(DATE_TIME_FORMATS[endFormat]);
+    startDateOfWeekFormatted = startDateOfWeek.format(DATE_TIME_FORMATS[endFormat]);
 
   return `${startDateOfWeekFormatted} - ${endDateOfWeekFormatted}`;
 }

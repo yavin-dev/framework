@@ -7,10 +7,10 @@ import { parseMetricName } from 'navi-data/utils/metric';
 import { get } from '@ember/object';
 
 const TRANSFORMS = {
-  metric:    (column) => Object.assign(column, { field: parseMetricName(column.field) }),
-  threshold: (column) => Object.assign(column, { field: parseMetricName(column.field) }),
-  dimension: (column) => Object.assign(column, { field: { dimension: column.field } }),
-  dateTime:  (column) => Object.assign(column, { field: { dateTime: column.field } })
+  metric: column => Object.assign(column, { field: parseMetricName(column.field) }),
+  threshold: column => Object.assign(column, { field: parseMetricName(column.field) }),
+  dimension: column => Object.assign(column, { field: { dimension: column.field } }),
+  dateTime: column => Object.assign(column, { field: { dateTime: column.field } })
 };
 
 export default VisualizationSerializer.extend({
@@ -21,9 +21,9 @@ export default VisualizationSerializer.extend({
    * @return {Object} normalized payload
    */
   normalize(type, visualization) {
-    if(visualization) {
+    if (visualization) {
       let columns = get(visualization, 'metadata.columns').map(column => {
-        if(typeof get(column, 'field') === 'string') {
+        if (typeof get(column, 'field') === 'string') {
           let type = get(column, 'type');
 
           return TRANSFORMS[type](column);

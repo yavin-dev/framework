@@ -19,29 +19,35 @@ moduleFor('helper:item-action', 'Unit | Helper | item action', {
 test('item action', function(assert) {
   assert.expect(4);
 
-  Container.register('consumer:item', ActionConsumer.extend({
-    send(actionType, ...params) {
-      assert.equal(actionType,
-        'deleteItem',
-        'consumer receives the correct action from the item-action helper');
+  Container.register(
+    'consumer:item',
+    ActionConsumer.extend({
+      send(actionType, ...params) {
+        assert.equal(actionType, 'deleteItem', 'consumer receives the correct action from the item-action helper');
 
-      assert.deepEqual(params,
-        [{ title: 'Report' }],
-        'consumer receives the correct params from the item-action helper');
+        assert.deepEqual(
+          params,
+          [{ title: 'Report' }],
+          'consumer receives the correct params from the item-action helper'
+        );
+      }
+    })
+  );
+
+  let action = this.subject().compute([
+    'DELETE_ITEM',
+    {
+      title: 'Report'
     }
-  }));
+  ]);
 
-  let action = this.subject().compute(['DELETE_ITEM', {
-    title: 'Report'
-  }]);
-
-  assert.equal(typeof action,
-    'function',
-    'The helper returns a function that dispatches the desired action');
+  assert.equal(typeof action, 'function', 'The helper returns a function that dispatches the desired action');
 
   action();
 
-  assert.throws(() => this.subject().compute(['Invalid']),
+  assert.throws(
+    () => this.subject().compute(['Invalid']),
     /The action name "Invalid" is not a valid item action/,
-    'An invalid action name throws an exception');
+    'An invalid action name throws an exception'
+  );
 });

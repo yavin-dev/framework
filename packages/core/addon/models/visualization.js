@@ -10,10 +10,9 @@ import MF from 'model-fragments';
 const { get, set } = Ember;
 
 export default MF.Fragment.extend({
-  type:     DS.attr('string'),
-  version:  DS.attr('number'),
+  type: DS.attr('string'),
+  version: DS.attr('number'),
   metadata: DS.attr(),
-
 
   /**
    * @property {Object} - temporary request object used for validation

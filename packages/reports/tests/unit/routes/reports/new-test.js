@@ -4,38 +4,40 @@ import wait from 'ember-test-helpers/wait';
 import config from 'ember-get-config';
 import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
 
-
 const { getOwner, get, set } = Ember;
 
-const SERIALIZED_MODEL = 'EQbwOsAmCGAu0QFzmAS0kiBGCAaCcsATqgEYCusApgM5IoBuqN50ANqgF5yoD2AdvQiwAngAcqmYB35UAtAGMAFtCKw8EBlSI0-g4Iiz5gAWyrwY8IcGgAPZtZHWa21LWuiJUyKjP9dAhrACgIAZqgA5tZmxKgKUtCQAMIcCgDWdMDGPn4B_ADyRJDaSADaEGJEvBJqTsAAutm-VP56mYilKPzQZlIAClU1ogAEOFma7OTuBiiV1dqiUlhYACwQAL7ruF09kgYQA_O1wwBMQQyT08gVgwt1iNgADM-PY5vbEN29-8CHQyLDADM50u7Vmt1qSxejzOwE29U2iK2wlQsDYewewAAEiIiOR0cMAHJUADumWMRCoAEcpjR1DMIGxeBE4uwACrQUjojyc7k_WSwEm8IhpIKwZoAcSI0FQ-kxMDqyNM5hICnanQgMVVCWSqQyGw-yti8X50AYKTi-rhjQgORaeXVKDtrUCPzm_w2NuA4TY1B0ZS9KiY_CiBlKXpowvpHRQWriUm65r15NtqEpCnFrsx0BoJvWXtlfoubEdEDpqmjEBOrwArHJlnJHgBOYbPRBt54AOheQRaGB-1awdYbWAAbK3Hu3J12e9bjKRVJAAGraPJSBhjCnU2mwFc6PTrt5KylsHgCGhKVBiMEEShKYXWSwIBnATwYiDkFz-8ZofuYxOoAA-p-JRwu8wjiO-wCUmIUaZJswBAAA';
+const SERIALIZED_MODEL =
+  'EQbwOsAmCGAu0QFzmAS0kiBGCAaCcsATqgEYCusApgM5IoBuqN50ANqgF5yoD2AdvQiwAngAcqmYB35UAtAGMAFtCKw8EBlSI0-g4Iiz5gAWyrwY8IcGgAPZtZHWa21LWuiJUyKjP9dAhrACgIAZqgA5tZmxKgKUtCQAMIcCgDWdMDGPn4B_ADyRJDaSADaEGJEvBJqTsAAutm-VP56mYilKPzQZlIAClU1ogAEOFma7OTuBiiV1dqiUlhYACwQAL7ruF09kgYQA_O1wwBMQQyT08gVgwt1iNgADM-PY5vbEN29-8CHQyLDADM50u7Vmt1qSxejzOwE29U2iK2wlQsDYewewAAEiIiOR0cMAHJUADumWMRCoAEcpjR1DMIGxeBE4uwACrQUjojyc7k_WSwEm8IhpIKwZoAcSI0FQ-kxMDqyNM5hICnanQgMVVCWSqQyGw-yti8X50AYKTi-rhjQgORaeXVKDtrUCPzm_w2NuA4TY1B0ZS9KiY_CiBlKXpowvpHRQWriUm65r15NtqEpCnFrsx0BoJvWXtlfoubEdEDpqmjEBOrwArHJlnJHgBOYbPRBt54AOheQRaGB-1awdYbWAAbK3Hu3J12e9bjKRVJAAGraPJSBhjCnU2mwFc6PTrt5KylsHgCGhKVBiMEEShKYXWSwIBnATwYiDkFz-8ZofuYxOoAA-p-JRwu8wjiO-wCUmIUaZJswBAAA';
 
 const NEW_MODEL = {
-  author: "navi_user",
+  author: 'navi_user',
   createdOn: null,
   request: {
-    bardVersion: "v1",
+    bardVersion: 'v1',
     dimensions: [],
     filters: [],
     having: [],
-    intervals: [{
-      "end": "current",
-      "start": "P1D"
-    }],
+    intervals: [
+      {
+        end: 'current',
+        start: 'P1D'
+      }
+    ],
     logicalTable: {
-      table: "network",
-      timeGrain: "day"
+      table: 'network',
+      timeGrain: 'day'
     },
     metrics: [],
-    requestVersion: "v1",
+    requestVersion: 'v1',
     sort: []
   },
-  title: "Untitled Report",
+  title: 'Untitled Report',
   updatedOn: null,
   visualization: {
     metadata: {
       columns: []
     },
-    type: "table",
+    type: 'table',
     version: 1
   }
 };
@@ -116,11 +118,16 @@ moduleFor('route:reports/new', 'Unit | Route | reports/new', {
     let metadataService = getOwner(this).lookup('service:bard-metadata');
     metadataService.loadMetadata();
 
-    let mockAuthor = getOwner(this).lookup('service:store').createRecord('user', {id: 'navi_user'});
+    let mockAuthor = getOwner(this)
+      .lookup('service:store')
+      .createRecord('user', { id: 'navi_user' });
 
-    this.register('service:user', Ember.Service.extend({
-      getUser: () => mockAuthor
-    }));
+    this.register(
+      'service:user',
+      Ember.Service.extend({
+        getUser: () => mockAuthor
+      })
+    );
   },
 
   afterEach() {
@@ -134,9 +141,7 @@ test('model', function(assert) {
   return wait().then(() => {
     let model = this.subject().model(null, { queryParams: {} });
 
-    assert.deepEqual(model.toJSON(),
-      NEW_MODEL,
-      'A new report model is returned');
+    assert.deepEqual(model.toJSON(), NEW_MODEL, 'A new report model is returned');
   });
 });
 
@@ -145,9 +150,7 @@ test('_newModel', function(assert) {
 
   return wait().then(() => {
     let model = this.subject()._newModel();
-    assert.deepEqual(model.toJSON(),
-      NEW_MODEL,
-      'A new report model is returned');
+    assert.deepEqual(model.toJSON(), NEW_MODEL, 'A new report model is returned');
   });
 });
 
@@ -155,17 +158,19 @@ test('_deserializeUrlModel', function(assert) {
   assert.expect(3);
 
   return wait().then(() => {
-    return this.subject()._deserializeUrlModel(SERIALIZED_MODEL).then(newModel => {
-      assert.ok(newModel.get('isNew'),
-        'A new ember data model is returned');
+    return this.subject()
+      ._deserializeUrlModel(SERIALIZED_MODEL)
+      .then(newModel => {
+        assert.ok(newModel.get('isNew'), 'A new ember data model is returned');
 
-      assert.ok(get(newModel, 'tempId'),
-        'A tempId is present');
+        assert.ok(get(newModel, 'tempId'), 'A tempId is present');
 
-      assert.equal(get(newModel, 'title'),
-        'Hyrule News',
-        'The new model inherits the properties of the given serialized model');
-    });
+        assert.equal(
+          get(newModel, 'title'),
+          'Hyrule News',
+          'The new model inherits the properties of the given serialized model'
+        );
+      });
   });
 });
 
@@ -173,11 +178,15 @@ test('_deserializeUrlModel - error', function(assert) {
   assert.expect(1);
 
   return wait().then(() => {
-    return this.subject()._deserializeUrlModel('not actually a model').catch(error =>
-      assert.equal(error.message,
-        'Could not parse model query param',
-        'When modelString fails to deserialize, a rejected promise is returned')
-    );
+    return this.subject()
+      ._deserializeUrlModel('not actually a model')
+      .catch(error =>
+        assert.equal(
+          error.message,
+          'Could not parse model query param',
+          'When modelString fails to deserialize, a rejected promise is returned'
+        )
+      );
   });
 });
 
@@ -186,47 +195,45 @@ test('_getDefaultTable', function(assert) {
 
   return wait().then(() => {
     let table = this.subject()._getDefaultTable();
-    assert.deepEqual(table.name,
-      'network',
-      'Return table based on alphabetical order if default config not specified');
+    assert.deepEqual(table.name, 'network', 'Return table based on alphabetical order if default config not specified');
 
-    let defaultDataTable =  get(config, 'navi.defaultDataTable');
+    let defaultDataTable = get(config, 'navi.defaultDataTable');
 
     set(config, 'navi.defaultDataTable', 'tableA');
     table = this.subject()._getDefaultTable();
-    assert.deepEqual(table.name,
-      'tableA',
-      'Return default table');
+    assert.deepEqual(table.name, 'tableA', 'Return default table');
 
     set(config, 'navi.defaultDataTable', defaultDataTable);
   });
 });
 
-test('_getDefaultTimeGrainName', function (assert) {
+test('_getDefaultTimeGrainName', function(assert) {
   assert.expect(3);
 
   return wait().then(() => {
     let table = this.subject()._getDefaultTable(),
-        tableTimeGrains = Ember.A(get(table, 'timeGrains')),
-        timeGrainName = this.subject()._getDefaultTimeGrainName(table);
+      tableTimeGrains = Ember.A(get(table, 'timeGrains')),
+      timeGrainName = this.subject()._getDefaultTimeGrainName(table);
 
-    assert.deepEqual(timeGrainName,
+    assert.deepEqual(
+      timeGrainName,
       get(tableTimeGrains, 'firstObject.name'),
-      'Return the first time grain in the table');
+      'Return the first time grain in the table'
+    );
 
     let defaultTimeGrain = get(config, 'navi.defaultTimeGrain');
 
     set(config, 'navi.defaultTimeGrain', 'year');
     timeGrainName = this.subject()._getDefaultTimeGrainName(table);
-    assert.deepEqual(timeGrainName,
-      'year',
-      'Return default time grain');
+    assert.deepEqual(timeGrainName, 'year', 'Return default time grain');
 
     set(config, 'navi.defaultTimeGrain', 'no');
     timeGrainName = this.subject()._getDefaultTimeGrainName(table);
-    assert.deepEqual(timeGrainName,
+    assert.deepEqual(
+      timeGrainName,
       get(tableTimeGrains, 'firstObject.name'),
-      'Return the first time grain in the table when default is not found');
+      'Return the first time grain in the table when default is not found'
+    );
 
     set(config, 'navi.defaultTimeGrain', defaultTimeGrain);
   });

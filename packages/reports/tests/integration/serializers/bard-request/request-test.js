@@ -1,10 +1,10 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import Ember from 'ember';
-import {setupMock, teardownMock } from '../../../helpers/mirage-helper'
+import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
 
 let store,
-    metaService,
-    { getOwner, run, get } = Ember;
+  metaService,
+  { getOwner, run, get } = Ember;
 
 moduleForComponent('serializer:bard-request/request', 'Integration | Serializer | Request Fragment', {
   integration: true,
@@ -19,22 +19,22 @@ moduleForComponent('serializer:bard-request/request', 'Integration | Serializer 
   }
 });
 
-test("Adds aliases to reports when serialized", function(assert) {
+test('Adds aliases to reports when serialized', function(assert) {
   assert.expect(1);
-  return run(() =>  {
-    let record = store.createFragment('bard-request/request',{
+  return run(() => {
+    let record = store.createFragment('bard-request/request', {
       metrics: [
         {
-          metric: {name: 'navClicks'}
+          metric: { name: 'navClicks' }
         },
         {
-          metric: {name: 'revenue'},
+          metric: { name: 'revenue' },
           parameters: {
             currency: 'USD'
           }
         },
         {
-          metric: {name: 'revenue'},
+          metric: { name: 'revenue' },
           parameters: {
             currency: 'CAD',
             as: 'preExistingAlias'
@@ -44,7 +44,8 @@ test("Adds aliases to reports when serialized", function(assert) {
     });
     let serialized = record.serialize();
 
-    assert.deepEqual(serialized.metrics,
+    assert.deepEqual(
+      serialized.metrics,
       [
         {
           metric: 'navClicks'
@@ -64,7 +65,8 @@ test("Adds aliases to reports when serialized", function(assert) {
           }
         }
       ],
-      "Adds aliases to the correct metrics");
+      'Adds aliases to the correct metrics'
+    );
   });
 });
 
@@ -92,7 +94,7 @@ test('Removes aliases during normalization', function(assert) {
     ]
   };
   run(() => {
-    store.pushPayload('report',{
+    store.pushPayload('report', {
       data: {
         type: 'report',
         id: 999,
@@ -103,14 +105,16 @@ test('Removes aliases during normalization', function(assert) {
     });
     let record = store.peekRecord('report', 999);
     let parameters = get(record, 'request.metrics').map(metric => get(metric, 'parameters'));
-    assert.deepEqual(parameters.objectAt(0),
-      {},
-      'empty parameters in non parameterized metrics');
-    assert.deepEqual(parameters.objectAt(1),
-      {currency: 'USD'},
-      "no `as` parameter in parameterized metrics, other params preserved");
-    assert.deepEqual(parameters.objectAt(2),
-      {currency: 'CAD'},
-      "no `as` parameter in parameterized metrics, other params preserved");
+    assert.deepEqual(parameters.objectAt(0), {}, 'empty parameters in non parameterized metrics');
+    assert.deepEqual(
+      parameters.objectAt(1),
+      { currency: 'USD' },
+      'no `as` parameter in parameterized metrics, other params preserved'
+    );
+    assert.deepEqual(
+      parameters.objectAt(2),
+      { currency: 'CAD' },
+      'no `as` parameter in parameterized metrics, other params preserved'
+    );
   });
 });

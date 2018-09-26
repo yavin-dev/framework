@@ -22,8 +22,8 @@ export default ActionConsumer.extend({
      */
     [RequestActions.UPSERT_SORT]({ currentModel }, metricName, direction) {
       let request = get(currentModel, 'request'),
-          requestSorts = get(request, 'sort'),
-          requestSort = requestSorts.findBy('metric.canonicalName', metricName);
+        requestSorts = get(request, 'sort'),
+        requestSort = requestSorts.findBy('metric.canonicalName', metricName);
 
       if (requestSort) {
         requestSort.set('direction', direction);
@@ -89,6 +89,6 @@ export default ActionConsumer.extend({
     [RequestActions.REMOVE_METRIC_WITH_PARAM](route, metric, parameters) {
       // Find and remove any `sorts` attached to the metric and parameters
       get(this, 'requestActionDispatcher').dispatch(RequestActions.REMOVE_SORT_WITH_PARAM, route, metric, parameters);
-    },
+    }
   }
 });

@@ -3,44 +3,44 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
- .filter-values {
-     &--dimension-select__dropdown {
-         .ember-power-select-option {
-             padding-left: 8px;
-             .item-row {
-                 font-size: @font-size-mid-base;
-             }
-         }
-     }
-
-     &--dimension-select__trigger {
-         .ember-power-select-multiple-option {
-             font-size: @font-size-mid-base;
-             padding: 0 4px;
-         }
-     }
-
-    &--range-input {
-        display: flex;
-
-        &__separator {
-            padding: 5px;
-        }
+.filter-values {
+  &--dimension-select__dropdown {
+    .ember-power-select-option {
+      padding-left: 8px;
+      .item-row {
+        font-size: @font-size-mid-base;
+      }
     }
+  }
 
-    &--range-input__input,
-    &--multi-value-input,
-    &--value-input {
-        border: 1px solid @navi-gray-400;
-        font-family: @font-family-thin;
-        width: 100%;
+  &--dimension-select__trigger {
+    .ember-power-select-multiple-option {
+      font-size: @font-size-mid-base;
+      padding: 0 4px;
     }
+  }
 
-    &--range-input__input--error,
-    &--value-input--error,
-    &--multi-value-input--error,
-    &--dimension-select--error &--dimension-select__trigger {
-        background-color: @navi-form-error-red;
-        border-bottom-color: @navi-error-color;
+  &--range-input {
+    display: flex;
+
+    &__separator {
+      padding: 5px;
     }
- }
+  }
+
+  &--range-input__input,
+  &--multi-value-input,
+  &--value-input {
+    border: 1px solid @navi-gray-400;
+    font-family: @font-family-thin;
+    width: 100%;
+  }
+
+  &--range-input__input--error,
+  &--value-input--error,
+  &--multi-value-input--error,
+  &--dimension-select--error &--dimension-select__trigger {
+    background-color: @navi-form-error-red;
+    border-bottom-color: @navi-error-color;
+  }
+}

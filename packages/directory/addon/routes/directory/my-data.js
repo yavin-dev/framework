@@ -31,8 +31,7 @@ export default Route.extend({
     let cache = get(this, '_cache') || {};
 
     //fetch from cache if present
-    if(cache[entity])
-      return cache[entity];
+    if (cache[entity]) return cache[entity];
 
     //else fetch from user and set local cache
     let results = await get(user, entity);
@@ -47,27 +46,29 @@ export default Route.extend({
    * @param {Object} user
    * @param {Object} queryParams - all directory query params
    */
-  async _fetchItems(user, { type, filter }){
+  async _fetchItems(user, { type, filter }) {
     let reports,
-        dashboards,
-        items = arr();
+      dashboards,
+      items = arr();
 
-    if(type === null || type === 'reports'){
-      reports = filter === 'favorites' ?
-        await this._fetchFromUser(user, 'favoriteReports') :
-        await this._fetchFromUser(user, 'reports');
+    if (type === null || type === 'reports') {
+      reports =
+        filter === 'favorites'
+          ? await this._fetchFromUser(user, 'favoriteReports')
+          : await this._fetchFromUser(user, 'reports');
 
-      if(isPresent(reports)) {
+      if (isPresent(reports)) {
         run(() => items.push(...reports.toArray()));
       }
     }
-    if(type === null || type === 'dashboards'){
+    if (type === null || type === 'dashboards') {
       await run(async () => {
-        dashboards = filter === 'favorites' ?
-          await this._fetchFromUser(user, 'favoriteDashboards') :
-          await this._fetchFromUser(user, 'dashboards');
+        dashboards =
+          filter === 'favorites'
+            ? await this._fetchFromUser(user, 'favoriteDashboards')
+            : await this._fetchFromUser(user, 'dashboards');
 
-        if(isPresent(dashboards)) {
+        if (isPresent(dashboards)) {
           items.push(...dashboards.toArray());
         }
       });
@@ -82,7 +83,7 @@ export default Route.extend({
    */
   model() {
     let user = get(this, 'user').getUser(),
-        directoryParams = this.paramsFor('directory');
+      directoryParams = this.paramsFor('directory');
 
     //returning an object so that the table can handle the promise
     return {

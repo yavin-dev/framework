@@ -17,9 +17,7 @@ import { maxBy } from 'lodash';
  * @returns {Array} - n (or less) rows sorted by metric
  */
 export function topN(rows, metric, n) {
-  let sortedRows = rows.sort((a, b) =>
-    Number(Ember.get(b, metric)) - Number(Ember.get(a, metric))
-  );
+  let sortedRows = rows.sort((a, b) => Number(Ember.get(b, metric)) - Number(Ember.get(a, metric)));
 
   return sortedRows.slice(0, n);
 }
@@ -34,8 +32,8 @@ export function topN(rows, metric, n) {
  */
 export function mostRecentData(rows) {
   let byDate = new DataGroup(rows, row => row.dateTime),
-      sortedDates = byDate.getKeys().sort(),
-      mostRecentDate = sortedDates[sortedDates.length - 1];
+    sortedDates = byDate.getKeys().sort(),
+    mostRecentDate = sortedDates[sortedDates.length - 1];
 
   return byDate.getDataForKey(mostRecentDate);
 }
@@ -49,11 +47,7 @@ export function mostRecentData(rows) {
  * @returns {DataGroup}
  */
 export function dataByDimensions(rows, dimensionOrder) {
-  return new DataGroup(rows,
-    row => dimensionOrder.map(
-      dimension => row[`${dimension}|id`]).join('|'
-    )
-  );
+  return new DataGroup(rows, row => dimensionOrder.map(dimension => row[`${dimension}|id`]).join('|'));
 }
 
 /**
@@ -66,10 +60,8 @@ export function dataByDimensions(rows, dimensionOrder) {
  * @returns {Array} all data rows for max value based on dimensions
  */
 export function maxDataByDimensions(rows, dimensionOrder, metric) {
-  let data =  dataByDimensions(rows, dimensionOrder),
-      keys = data.getKeys();
+  let data = dataByDimensions(rows, dimensionOrder),
+    keys = data.getKeys();
 
-  return keys.map(key =>
-    maxBy(data.getDataForKey(key), row => Number(row[metric]))
-  );
+  return keys.map(key => maxBy(data.getDataForKey(key), row => Number(row[metric])));
 }

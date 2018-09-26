@@ -13,9 +13,7 @@ test('tooltip updates', function(assert) {
     showTooltip(container);
 
     //check text of the tooltip container
-    assert.equal(find('.sub-title').text(),
-      'Ad Clicks',
-      'The tooltip contains the metric\'s display name.');
+    assert.equal(find('.sub-title').text(), 'Ad Clicks', "The tooltip contains the metric's display name.");
   });
 
   //Select a different metric
@@ -25,9 +23,11 @@ test('tooltip updates', function(assert) {
     showTooltip(container);
 
     //check text of the tooltip container
-    assert.equal(find('.sub-title').text(),
+    assert.equal(
+      find('.sub-title').text(),
       'Revenue (USD)',
-      'The tooltip contains the correct metric display name after a new parameterized metric is selected');
+      'The tooltip contains the correct metric display name after a new parameterized metric is selected'
+    );
   });
 });
 
@@ -37,10 +37,14 @@ test('custom chart builders', function(assert) {
   visit('/lineChart');
 
   andThen(() => {
-    let customChartBuilderSeries = find('.custom-chart-builder .c3-legend-item').toArray().map(e => e.textContent);
-    assert.deepEqual(customChartBuilderSeries,
+    let customChartBuilderSeries = find('.custom-chart-builder .c3-legend-item')
+      .toArray()
+      .map(e => e.textContent);
+    assert.deepEqual(
+      customChartBuilderSeries,
       ['custom', 'series', 'grouping'],
-      'A custom chart builder can be supplied for unique series grouping logic');
+      'A custom chart builder can be supplied for unique series grouping logic'
+    );
   });
 });
 
@@ -51,7 +55,7 @@ test('custom chart builders', function(assert) {
  */
 function showTooltip(container) {
   let emberId = find('.chart-container .navi-vis-c3-chart:eq(1)').attr('id'),
-      component = container.lookup('-view-registry:main')[emberId],
-      c3 = component.get('chart');
-  c3.tooltip.show({x:1});
+    component = container.lookup('-view-registry:main')[emberId],
+    c3 = component.get('chart');
+  c3.tooltip.show({ x: 1 });
 }

@@ -12,7 +12,9 @@ export default Ember.Route.extend({
    * @param collectionId
    * @returns {*|Promise|Promise.<TResult>}
    */
-  model({collectionId}) {
-    return Ember.get(this, 'user').findOrRegister().then(() => this.get('store').findRecord('reportCollection', collectionId));
+  model({ collectionId }) {
+    return Ember.get(this, 'user')
+      .findOrRegister()
+      .then(() => this.get('store').findRecord('reportCollection', collectionId));
   }
 });

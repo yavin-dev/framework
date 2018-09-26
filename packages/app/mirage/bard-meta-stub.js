@@ -13,29 +13,19 @@ import metricModels from './fixtures/metadata-metrics';
  * Method to configure metadata endpoints
  */
 export default function() {
-
   /**
    * /tables endpoint
    */
   this.get('/tables', (db, req) => {
     let tables = tableModels;
 
-    if(req.queryParams.format === 'fullview'){
+    if (req.queryParams.format === 'fullview') {
       tables = tables.map(table => {
         let timeGrains = timeGrainModels.map(timeGrain => {
-          return Object.assign(
-            {},
-            timeGrain,
-            { metrics: metricModels },
-            { dimensions: dimModels }
-          );
+          return Object.assign({}, timeGrain, { metrics: metricModels }, { dimensions: dimModels });
         });
 
-        return Object.assign(
-          {},
-          table,
-          { timeGrains }
-        );
+        return Object.assign({}, table, { timeGrains });
       });
     }
     return { tables };

@@ -88,14 +88,12 @@ test('save schedule - success', function(assert) {
           owner: owner
         });
 
-        assert.ok(get(newRule, 'hasDirtyAttributes'),
-          'Delivery rule is not saved');
+        assert.ok(get(newRule, 'hasDirtyAttributes'), 'Delivery rule is not saved');
 
         route.send('saveDeliveryRule', newRule);
 
         return wait().then(() => {
-          assert.notOk(get(newRule, 'hasDirtyAttributes'),
-            '`saveDeliveryRule` action saves the dirty delivery rule')
+          assert.notOk(get(newRule, 'hasDirtyAttributes'), '`saveDeliveryRule` action saves the dirty delivery rule');
         });
       });
     });
@@ -109,23 +107,23 @@ test('delete delivery rule - success', function(assert) {
     const route = this.subject({
       naviNotifications: {
         add({ message }) {
-          assert.equal(message,
+          assert.equal(
+            message,
             'Report delivery schedule successfully removed!',
-            'A notification is sent when a delivery rule is removed');
+            'A notification is sent when a delivery rule is removed'
+          );
         }
       }
     });
 
     return Ember.run(() => {
-      return route.store.findRecord('deliveryRule', 1).then((rule) => {
-        assert.ok(route.store.hasRecordForId('deliveryRule',1),
-          'Delivery Rule 1 is available in the store');
+      return route.store.findRecord('deliveryRule', 1).then(rule => {
+        assert.ok(route.store.hasRecordForId('deliveryRule', 1), 'Delivery Rule 1 is available in the store');
 
         route.send('deleteDeliveryRule', rule);
 
         return wait().then(() => {
-          assert.notOk(route.store.hasRecordForId('deliveryRule',1),
-            'Delivery Rule 1 is deleted from the store');
+          assert.notOk(route.store.hasRecordForId('deliveryRule', 1), 'Delivery Rule 1 is deleted from the store');
         });
       });
     });
@@ -143,23 +141,26 @@ test('delete delivery rule - failure', function(assert) {
   let route = this.subject({
     naviNotifications: {
       add({ message }) {
-        assert.equal(message,
+        assert.equal(
+          message,
           'OOPS! An error occurred while removing the report delivery schedule.',
-          'A notification is sent when failing to delete a delivery rule');
+          'A notification is sent when failing to delete a delivery rule'
+        );
       }
     }
   });
 
   return Ember.run(() => {
-    return route.store.findRecord('deliveryRule', 1).then((rule) => {
-      assert.ok(route.store.hasRecordForId('deliveryRule',1),
-        'DeliveryRule 1 is available in the store');
+    return route.store.findRecord('deliveryRule', 1).then(rule => {
+      assert.ok(route.store.hasRecordForId('deliveryRule', 1), 'DeliveryRule 1 is available in the store');
 
       route.send('deleteDeliveryRule', rule);
 
       return wait().then(() => {
-        assert.ok(route.store.hasRecordForId('deliveryRule',1),
-          'DeliveryRule 1 is still available after failed delete operation from the store');
+        assert.ok(
+          route.store.hasRecordForId('deliveryRule', 1),
+          'DeliveryRule 1 is still available after failed delete operation from the store'
+        );
       });
     });
   });

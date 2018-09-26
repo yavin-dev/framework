@@ -10,10 +10,10 @@ moduleForComponent('navi-date-picker', 'Integration | Component | Navi Date Pick
   integration: true
 });
 
-test('Select date', function(assert){
+test('Select date', function(assert) {
   assert.expect(5);
 
-  this.set('selectedDate',  moment('2015-07-14', TEST_FORMAT));
+  this.set('selectedDate', moment('2015-07-14', TEST_FORMAT));
 
   this.render(hbs`
         {{navi-date-picker
@@ -21,45 +21,43 @@ test('Select date', function(assert){
         }}
     `);
 
-  assert.equal(this.$('.day.active').text(),
-    '14',
-    'The active day is based on the given date');
+  assert.equal(this.$('.day.active').text(), '14', 'The active day is based on the given date');
 
-  assert.equal(this.$('.datepicker-days .datepicker-switch').text(),
+  assert.equal(
+    this.$('.datepicker-days .datepicker-switch').text(),
     'July 2015',
-    'The active month is based on the given date');
+    'The active month is based on the given date'
+  );
 
   /* == Update selectedDate after creation == */
   Ember.run(() => {
     this.set('selectedDate', moment('2015-06-17', TEST_FORMAT));
   });
 
-  assert.equal(this.$('.day.active').text(),
-    '17',
-    'The active day is based on the new given date');
+  assert.equal(this.$('.day.active').text(), '17', 'The active day is based on the new given date');
 
-  assert.equal(this.$('.datepicker-days .datepicker-switch').text(),
+  assert.equal(
+    this.$('.datepicker-days .datepicker-switch').text(),
     'June 2015',
-    'The active month is based on the new given date');
+    'The active month is based on the new given date'
+  );
 
   /* == Date outside of range == */
   Ember.run(() => {
     this.set('selectedDate', moment('2050-06-17', TEST_FORMAT));
   });
 
-  assert.equal(this.$('.day.active').length,
-    1,
-    'No date, even a future date is out of range');
+  assert.equal(this.$('.day.active').length, 1, 'No date, even a future date is out of range');
 });
 
-test('Change date through calendar, then through attr', function(assert){
+test('Change date through calendar, then through attr', function(assert) {
   assert.expect(3);
 
   let originalDate = moment('2015-07-14', TEST_FORMAT),
-      clickDate = moment('2015-07-18', TEST_FORMAT),
-      boundDate = moment('2015-07-12', TEST_FORMAT);
+    clickDate = moment('2015-07-18', TEST_FORMAT),
+    boundDate = moment('2015-07-12', TEST_FORMAT);
 
-  this.set('selectedDate',  originalDate);
+  this.set('selectedDate', originalDate);
 
   this.render(hbs`
         {{navi-date-picker
@@ -73,20 +71,20 @@ test('Change date through calendar, then through attr', function(assert){
   assert.ok(isDayActive(this, clickDate), 'Clicked date is visibly selected');
 
   // Change date back through binding
-  this.set('selectedDate',  boundDate);
+  this.set('selectedDate', boundDate);
 
   assert.ok(isDayActive(this, boundDate), 'Bound date is visibly selected');
   assert.ok(!isDayActive(this, clickDate), 'Clicked date is no longer selected');
 });
 
-test('Change date action', function(assert){
+test('Change date action', function(assert) {
   assert.expect(4);
 
   let originalDate = moment('2015-07-14', TEST_FORMAT),
-      newDate = moment('2015-07-18', TEST_FORMAT);
+    newDate = moment('2015-07-18', TEST_FORMAT);
 
   this.set('date', originalDate);
-  this.on('dateSelected', (date) => assert.ok(date.isSame(newDate), 'dateSelected action was called with new date'));
+  this.on('dateSelected', date => assert.ok(date.isSame(newDate), 'dateSelected action was called with new date'));
   this.render(hbs`
         {{navi-date-picker
             selectedDate=date
@@ -105,20 +103,24 @@ test('Change date action', function(assert){
    * Check that changing `selectedDate` to the date suggested by the action does not
    * trigger the action again, causing a cycle
    */
-  this.on('dateSelected', () => { throw new Error('Action was incorrectly called'); });
+  this.on('dateSelected', () => {
+    throw new Error('Action was incorrectly called');
+  });
   this.set('date', newDate);
 
   // Check that clicking on already selected date does not trigger action again
   findDayElement(this, newDate).click();
 });
 
-test('Change date action always gives start of time period', function(assert){
+test('Change date action always gives start of time period', function(assert) {
   assert.expect(1);
 
   let originalDate = moment('2015-07-14', TEST_FORMAT);
 
   this.set('date', originalDate);
-  this.on('dateSelected', (date) => assert.ok(date.isSame(originalDate.startOf('isoweek')), 'dateSelected action was called with start of week'));
+  this.on('dateSelected', date =>
+    assert.ok(date.isSame(originalDate.startOf('isoweek')), 'dateSelected action was called with start of week')
+  );
   this.render(hbs`
         {{navi-date-picker
             selectedDate=date
@@ -131,7 +133,7 @@ test('Change date action always gives start of time period', function(assert){
   findDayElement(this, originalDate.subtract(1, 'day')).click();
 });
 
-test('Selection view changes with time period', function(assert){
+test('Selection view changes with time period', function(assert) {
   assert.expect(2);
 
   this.set('date', moment('2015-07-14', TEST_FORMAT));
@@ -145,11 +147,11 @@ test('Selection view changes with time period', function(assert){
 
   // Test helper functions
   let isMonthSelection = () => {
-        return this.$('.datepicker-months').is(':visible') && this.$('.datepicker-days').is(':not(:visible)');
-      },
-      isDaySelection = () => {
-        return this.$('.datepicker-days').is(':visible') && this.$('.datepicker-months').is(':not(:visible)');
-      };
+      return this.$('.datepicker-months').is(':visible') && this.$('.datepicker-days').is(':not(:visible)');
+    },
+    isDaySelection = () => {
+      return this.$('.datepicker-days').is(':visible') && this.$('.datepicker-months').is(':not(:visible)');
+    };
 
   assert.ok(isMonthSelection(), '"dateTimePeriod: month" uses month selection view');
 
@@ -157,11 +159,11 @@ test('Selection view changes with time period', function(assert){
   assert.ok(isDaySelection(), '"dateTimePeriod: week" uses day selection view');
 });
 
-test('Selection changes with time period', function(assert){
+test('Selection changes with time period', function(assert) {
   assert.expect(11);
 
   let startDate = moment('2015-06-14', TEST_FORMAT),
-      clickDate = moment('2015-06-03', TEST_FORMAT);
+    clickDate = moment('2015-06-03', TEST_FORMAT);
 
   this.set('date', startDate);
   this.set('dateTimePeriod', 'day');
@@ -174,7 +176,10 @@ test('Selection changes with time period', function(assert){
 
   /* == Day Selection == */
   assert.ok(isDayActive(this, startDate), 'Day Selection - Chosen day is selected');
-  assert.ok(!isDayActive(this, startDate.clone().subtract(1, 'day')), 'Day Selection - Other day in week is not selected');
+  assert.ok(
+    !isDayActive(this, startDate.clone().subtract(1, 'day')),
+    'Day Selection - Other day in week is not selected'
+  );
 
   /* == Week Selection == */
   this.set('dateTimePeriod', 'week');
@@ -204,27 +209,31 @@ test('Selection changes with time period', function(assert){
   /* == Month to Quarter Selection == */
   this.set('dateTimePeriod', 'quarter');
   Ember.run.next(() => {
-    assert.deepEqual(this.$('.active-month').toArray().map(el => $(el).text()), [
-      'Apr',
-      'May',
-      'Jun'
-    ], 'Month to Quarter - Previously selected month is converted to its quarter');
+    assert.deepEqual(
+      this.$('.active-month')
+        .toArray()
+        .map(el => $(el).text()),
+      ['Apr', 'May', 'Jun'],
+      'Month to Quarter - Previously selected month is converted to its quarter'
+    );
   });
 
   /* == Quarter to Year Selection == */
   this.set('dateTimePeriod', 'year');
   Ember.run.next(() => {
-    assert.ok(this.$('.year:contains(2015)').is('.active'),
-      'Month to Quarter Selection - Previously selected quarter is converted to its year');
+    assert.ok(
+      this.$('.year:contains(2015)').is('.active'),
+      'Month to Quarter Selection - Previously selected quarter is converted to its year'
+    );
   });
 });
 
-test('Click same date twice', function(assert){
+test('Click same date twice', function(assert) {
   assert.expect(2);
 
   let clickDate = moment('2015-07-15', TEST_FORMAT);
 
-  this.set('date',  moment('2015-07-14', TEST_FORMAT));
+  this.set('date', moment('2015-07-14', TEST_FORMAT));
   this.set('dateTimePeriod', 'week');
   this.render(hbs`
         {{navi-date-picker
@@ -240,16 +249,16 @@ test('Click same date twice', function(assert){
   assert.ok(isWeekActive(this, clickDate), 'Newly clicked week is still selected after clicking twice');
 });
 
-test('Start date', function(assert){
+test('Start date', function(assert) {
   assert.expect(4);
 
   let originalEpoch = config.navi.dataEpoch,
-      testEpoch = '2013-05-14';
+    testEpoch = '2013-05-14';
 
   config.navi.dataEpoch = testEpoch;
 
-  this.set('date',  moment('2013-05-29', TEST_FORMAT));
-  this.set('dateTimePeriod',  'day');
+  this.set('date', moment('2013-05-29', TEST_FORMAT));
+  this.set('dateTimePeriod', 'day');
   this.render(hbs`
         {{navi-date-picker
             selectedDate=date
@@ -258,18 +267,25 @@ test('Start date', function(assert){
     `);
 
   let epochDay = moment(testEpoch, TEST_FORMAT),
-      dayBeforeEpoch = epochDay.clone().subtract(1, 'day');
+    dayBeforeEpoch = epochDay.clone().subtract(1, 'day');
 
   assert.ok(isDayDisabled(this, dayBeforeEpoch), 'Day Selection - Day before epoch date is not selectable');
   assert.ok(isDayEnabled(this, epochDay), 'Day Selection - Epoch date is selectable');
 
   /* == Week Selection == */
-  this.set('dateTimePeriod',  'week');
+  this.set('dateTimePeriod', 'week');
 
-  let startOfFirstFullWeek = epochDay.clone().add(1, 'week').subtract(1, 'day').startOf('isoweek'),
-      dayBeforeFirstWeek = startOfFirstFullWeek.clone().subtract(1, 'day');
+  let startOfFirstFullWeek = epochDay
+      .clone()
+      .add(1, 'week')
+      .subtract(1, 'day')
+      .startOf('isoweek'),
+    dayBeforeFirstWeek = startOfFirstFullWeek.clone().subtract(1, 'day');
 
-  assert.ok(isDayDisabled(this, dayBeforeFirstWeek), 'Week Selection - Week containing days before epoch is not selectable');
+  assert.ok(
+    isDayDisabled(this, dayBeforeFirstWeek),
+    'Week Selection - Week containing days before epoch is not selectable'
+  );
   assert.ok(isDayEnabled(this, startOfFirstFullWeek), 'Week Selection - First full week after epoch is selectable');
 
   // Set back to original values to avoid affecting other tests
@@ -318,7 +334,7 @@ function isDayActive(test, date) {
  */
 function isWeekActive(test, date) {
   let dayElement = findDayElement(test, date),
-      weekElement = dayElement.parent('tr');
+    weekElement = dayElement.parent('tr');
 
   return weekElement.is('.active');
 }
@@ -332,9 +348,9 @@ function isWeekActive(test, date) {
  */
 function findDayElement(test, date) {
   let dayString = date.format('D'),
-      calendarMonthString = test.$('.datepicker-days .datepicker-switch').text(),
-      calendarMonth = moment(calendarMonthString, 'MMM YYYY'),
-      selector = null;
+    calendarMonthString = test.$('.datepicker-days .datepicker-switch').text(),
+    calendarMonth = moment(calendarMonthString, 'MMM YYYY'),
+    selector = null;
 
   // Determine day selector based on currently visible calendar month
   if (date.isSame(calendarMonth, 'month')) {

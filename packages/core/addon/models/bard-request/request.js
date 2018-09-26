@@ -29,9 +29,7 @@ const Validations = buildValidations({
     presence: true,
     message: 'Please select a response format'
   }),
-  dimensions: [
-    validator('has-many')
-  ],
+  dimensions: [validator('has-many')],
   filters: [
     validator('has-many'),
     validator('length', {
@@ -70,17 +68,22 @@ const Validations = buildValidations({
 });
 
 export default Fragment.extend(Validations, {
-
   /* == Attributes == */
-  logicalTable:   fragment('bard-request/fragments/logical-table', { defaultValue: {} }),
-  metrics:        fragmentArray('bard-request/fragments/metric', { defaultValue: [] }),
-  dimensions:     fragmentArray('bard-request/fragments/dimension', { defaultValue: [] }),
-  filters:        fragmentArray('bard-request/fragments/filter', { defaultValue: [] }),
-  having:         fragmentArray('bard-request/fragments/having', { defaultValue: [] }),
-  sort:           fragmentArray('bard-request/fragments/sort', { defaultValue: [] }),
-  intervals:      fragmentArray('bard-request/fragments/interval', { defaultValue: [] }),
+  logicalTable: fragment('bard-request/fragments/logical-table', {
+    defaultValue: {}
+  }),
+  metrics: fragmentArray('bard-request/fragments/metric', { defaultValue: [] }),
+  dimensions: fragmentArray('bard-request/fragments/dimension', {
+    defaultValue: []
+  }),
+  filters: fragmentArray('bard-request/fragments/filter', { defaultValue: [] }),
+  having: fragmentArray('bard-request/fragments/having', { defaultValue: [] }),
+  sort: fragmentArray('bard-request/fragments/sort', { defaultValue: [] }),
+  intervals: fragmentArray('bard-request/fragments/interval', {
+    defaultValue: []
+  }),
   responseFormat: DS.attr('string', { defaultValue: 'json' }),
-  bardVersion:    DS.attr('string', { defaultValue: 'v1' }),
+  bardVersion: DS.attr('string', { defaultValue: 'v1' }),
   requestVersion: DS.attr('string', { defaultValue: 'v1' }),
 
   /**
@@ -99,22 +102,20 @@ export default Fragment.extend(Validations, {
    */
   addMetric(requestMetric) {
     let metrics = get(this, 'metrics'),
-        metricMetadata = get(requestMetric, 'metric'),
-        metricDoesntExist = isEmpty(metrics.findBy('metric', metricMetadata));
+      metricMetadata = get(requestMetric, 'metric'),
+      metricDoesntExist = isEmpty(metrics.findBy('metric', metricMetadata));
 
     //check if metric with parameter exists when metric hasParameters
-    if(metricMetadata && get(metricMetadata, 'hasParameters')){
+    if (metricMetadata && get(metricMetadata, 'hasParameters')) {
       let parameters = get(requestMetric, 'parameters'),
-          //filter all metrics of type `metricMetadata`
-          existingMetrics = metrics.filterBy('metric', metricMetadata);
+        //filter all metrics of type `metricMetadata`
+        existingMetrics = metrics.filterBy('metric', metricMetadata);
 
       //check if parameters in requestMetric in in the filtered metrics
-      metricDoesntExist = isEmpty(existingMetrics.filter(
-        metric => isEqual(get(metric, 'parameters'), parameters)
-      ));
+      metricDoesntExist = isEmpty(existingMetrics.filter(metric => isEqual(get(metric, 'parameters'), parameters)));
     }
 
-    if(metricDoesntExist) {
+    if (metricDoesntExist) {
       metrics.createFragment(requestMetric);
     }
   },
@@ -126,7 +127,7 @@ export default Fragment.extend(Validations, {
    * @param {Object} metricModel - metric metadata model
    */
   addRequestMetricByModel(metricModel) {
-    if(get(metricModel, 'hasParameters')) {
+    if (get(metricModel, 'hasParameters')) {
       this.addRequestMetricWithParam(metricModel);
     } else {
       this.addMetric({
@@ -183,13 +184,13 @@ export default Fragment.extend(Validations, {
    */
   removeRequestMetricWithParam(metricModel, parameters) {
     let metrics = get(this, 'metrics').filterBy('metric', metricModel),
-        canonicalizedMetric = canonicalizeMetric({
-          metric: get(metricModel, 'name'),
-          parameters
-        });
+      canonicalizedMetric = canonicalizeMetric({
+        metric: get(metricModel, 'name'),
+        parameters
+      });
 
     metrics.forEach(requestMetric => {
-      if(get(requestMetric, 'canonicalName') === canonicalizedMetric) {
+      if (get(requestMetric, 'canonicalName') === canonicalizedMetric) {
         this.removeRequestMetric(requestMetric);
       }
     });
@@ -214,9 +215,9 @@ export default Fragment.extend(Validations, {
    * @returns {Void}
    */
   addInterval(intervalObj) {
-    let intervals = get( this, 'intervals' ),
-        existingInterval = intervals.find(((interval) => intervalObj.isEqual(interval.get('interval'))));
-    if(!existingInterval) {
+    let intervals = get(this, 'intervals'),
+      existingInterval = intervals.find(interval => intervalObj.isEqual(interval.get('interval')));
+    if (!existingInterval) {
       intervals.createFragment({
         interval: intervalObj
       });
@@ -245,10 +246,10 @@ export default Fragment.extend(Validations, {
    */
   addDimension(dimensionObj) {
     let dimensions = get(this, 'dimensions'),
-        newDimension = get(dimensionObj, 'dimension'),
-        existingDimension = dimensions.findBy('dimension', newDimension);
+      newDimension = get(dimensionObj, 'dimension'),
+      existingDimension = dimensions.findBy('dimension', newDimension);
 
-    if(!existingDimension) {
+    if (!existingDimension) {
       dimensions.createFragment(dimensionObj);
     }
   },
@@ -285,7 +286,7 @@ export default Fragment.extend(Validations, {
    */
   removeRequestDimensionByModel(dimensionModel) {
     let dimensions = get(this, 'dimensions'),
-        dimensionObj = dimensions.findBy('dimension', dimensionModel);
+      dimensionObj = dimensions.findBy('dimension', dimensionModel);
     return this.removeRequestDimension(dimensionObj);
   },
 
@@ -309,15 +310,15 @@ export default Fragment.extend(Validations, {
    */
   addFilter(filterObj) {
     let newFilter = this.store.createFragment('bard-request/fragments/filter', {
-          dimension: get(filterObj, 'dimension'),
-          operator: get(filterObj, 'operator'),
-          field: get(filterObj, 'field'),
-          values: arr(get(filterObj, 'values'))
-        }),
-        filters = get(this, 'filters'),
-        existingFilter = filters.find(filter => isEqual(filter.serialize(), newFilter.serialize()));
+        dimension: get(filterObj, 'dimension'),
+        operator: get(filterObj, 'operator'),
+        field: get(filterObj, 'field'),
+        values: arr(get(filterObj, 'values'))
+      }),
+      filters = get(this, 'filters'),
+      existingFilter = filters.find(filter => isEqual(filter.serialize(), newFilter.serialize()));
 
-    if(!existingFilter) {
+    if (!existingFilter) {
       filters.unshiftObject(newFilter);
     }
   },
@@ -342,7 +343,7 @@ export default Fragment.extend(Validations, {
    */
   removeRequestFilterByDimension(dimensionModel) {
     let filters = get(this, 'filters'),
-        filterObj = filters.findBy('dimension', dimensionModel);
+      filterObj = filters.findBy('dimension', dimensionModel);
     return this.removeRequestFilter(filterObj);
   },
 
@@ -354,7 +355,7 @@ export default Fragment.extend(Validations, {
    * @param {Object} props
    * @returns {Void}
    */
-  updateFilterForDimension(dimension, props){
+  updateFilterForDimension(dimension, props) {
     let filter = get(this, 'filters').findBy('dimension', dimension);
 
     assert(`${dimension.modelName} as a filter does not exist`, filter);
@@ -373,10 +374,12 @@ export default Fragment.extend(Validations, {
    */
   addDateTimeSort(direction) {
     let sort = get(this, 'sort'),
-        dateTimeSort = this.store.createFragment('bard-request/fragments/sort', {
-          metric: this.store.createFragment('bard-request/fragments/metric', {metric: { name: 'dateTime' }}),
-          direction
-        });
+      dateTimeSort = this.store.createFragment('bard-request/fragments/sort', {
+        metric: this.store.createFragment('bard-request/fragments/metric', {
+          metric: { name: 'dateTime' }
+        }),
+        direction
+      });
 
     sort.unshiftObject(dateTimeSort);
   },
@@ -388,7 +391,7 @@ export default Fragment.extend(Validations, {
    * @param {Object} props - contains direction property to be updated
    * @returns {Void}
    */
-  updateDateTimeSort(props){
+  updateDateTimeSort(props) {
     let sort = get(this, 'sort').findBy('metric.canonicalName', 'dateTime');
 
     assert(`dateTime as a sort does not exist`, sort);
@@ -403,10 +406,10 @@ export default Fragment.extend(Validations, {
    * @param {Object} sortObj
    * @returns {Void}
    */
-  addSort({metric, direction}) {
+  addSort({ metric, direction }) {
     let sort = get(this, 'sort'),
-        metricName = get(metric, 'canonicalName'),
-        existingSort = sort.findBy('metric.canonicalName', metricName);
+      metricName = get(metric, 'canonicalName'),
+      existingSort = sort.findBy('metric.canonicalName', metricName);
 
     assert(`Metric: ${metricName} cannot have multiple sorts on it`, !existingSort);
 
@@ -424,9 +427,9 @@ export default Fragment.extend(Validations, {
    * @param {String} direction
    * @returns {Void}
    */
-  addSortByMetricName(metricName, direction='asc') {
+  addSortByMetricName(metricName, direction = 'asc') {
     let metrics = get(this, 'metrics'),
-        metric = metrics.findBy('canonicalName', metricName);
+      metric = metrics.findBy('canonicalName', metricName);
 
     assert(`Metric with name "${metricName}" was not found in the request`, metric);
 
@@ -456,7 +459,7 @@ export default Fragment.extend(Validations, {
    */
   removeSortByMetricName(metricName) {
     let sort = get(this, 'sort'),
-        sortObj = sort.findBy('metric.canonicalName', metricName);
+      sortObj = sort.findBy('metric.canonicalName', metricName);
     return this.removeSort(sortObj);
   },
 
@@ -497,9 +500,9 @@ export default Fragment.extend(Validations, {
    * @param {Object} props - contains direction property to be updated
    * @returns {Void}
    */
-  updateSortForMetric(metric, props){
+  updateSortForMetric(metric, props) {
     let metricName = get(metric, 'canonicalName'),
-        sort = get(this, 'sort').findBy('metric.canonicalName', metricName);
+      sort = get(this, 'sort').findBy('metric.canonicalName', metricName);
 
     assert(`${metricName} as a sort does not exist`, sort);
 
@@ -512,11 +515,10 @@ export default Fragment.extend(Validations, {
    */
   clone() {
     let clonedRequest = this.toJSON(),
-        store = this.store,
-        metadataService = get(this, 'metadataService');
+      store = this.store,
+      metadataService = get(this, 'metadataService');
 
     return store.createFragment('bard-request/request', {
-
       logicalTable: store.createFragment('bard-request/fragments/logicalTable', {
         table: metadataService.getById('table', clonedRequest.logicalTable.table),
         timeGrainName: clonedRequest.logicalTable.timeGrain
@@ -562,11 +564,15 @@ export default Fragment.extend(Validations, {
        */
       sort: makeArray(clonedRequest.sort).map(sort => {
         let metric;
-        if(sort.metric.metric === 'dateTime'){
-          metric = store.createFragment('bard-request/fragments/metric', {metric: { name: 'dateTime' }});
+        if (sort.metric.metric === 'dateTime') {
+          metric = store.createFragment('bard-request/fragments/metric', {
+            metric: { name: 'dateTime' }
+          });
         } else {
-          metric = store.createFragment('bard-request/fragments/metric',
-            {metric: metadataService.getById('metric', sort.metric.metric), parameters: sort.metric.parameters});
+          metric = store.createFragment('bard-request/fragments/metric', {
+            metric: metadataService.getById('metric', sort.metric.metric),
+            parameters: sort.metric.parameters
+          });
         }
 
         return store.createFragment('bard-request/fragments/sort', {
@@ -596,10 +602,10 @@ export default Fragment.extend(Validations, {
    */
   addHaving(havingObj) {
     let havings = get(this, 'having'),
-        newHaving = this.store.createFragment('bard-request/fragments/having', havingObj),
-        existingHaving = havings.find(having => isEqual(having.serialize(), newHaving.serialize()));
+      newHaving = this.store.createFragment('bard-request/fragments/having', havingObj),
+      existingHaving = havings.find(having => isEqual(having.serialize(), newHaving.serialize()));
 
-    if(!existingHaving) {
+    if (!existingHaving) {
       havings.unshiftObject(newHaving);
     }
   },
@@ -624,7 +630,7 @@ export default Fragment.extend(Validations, {
    */
   removeRequestHavingByMetric(metricModel) {
     let having = get(this, 'having'),
-        havingObj = having.findBy('metric.metric', metricModel);
+      havingObj = having.findBy('metric.metric', metricModel);
     return this.removeRequestHaving(havingObj);
   },
 
@@ -636,7 +642,7 @@ export default Fragment.extend(Validations, {
    * @param {Object} props
    * @returns {Void}
    */
-  updateHavingForMetric(metric, props){
+  updateHavingForMetric(metric, props) {
     let having = get(this, 'having').findBy('metric.metric', metric);
 
     assert(`${metric.modelName} as a having does not exist`, having);

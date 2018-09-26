@@ -20,7 +20,7 @@ const Validations = buildValidations({
 
 export default Fragment.extend(Validations, {
   metric: DS.attr('metric'),
-  parameters: DS.attr({ defaultValue: () => ({})}),
+  parameters: DS.attr({ defaultValue: () => ({}) }),
 
   /**
    * returns a canonical name containing parameters if the metric is parameterized.
@@ -29,7 +29,7 @@ export default Fragment.extend(Validations, {
    */
   canonicalName: computed('metric', 'parameters', function() {
     const metric = get(this, 'metric.name'),
-          parameters = get(this, 'parameters') || {};
+      parameters = get(this, 'parameters') || {};
 
     return canonicalizeMetric({
       metric,

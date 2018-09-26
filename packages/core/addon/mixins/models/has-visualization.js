@@ -9,7 +9,7 @@ import MF from 'model-fragments';
 const { get, set } = Ember;
 
 export default Ember.Mixin.create({
-  visualization:  MF.fragment('visualization', { polymorphic: true }),
+  visualization: MF.fragment('visualization', { polymorphic: true }),
 
   /**
    * Caches the persisted visualization type
@@ -33,7 +33,7 @@ export default Ember.Mixin.create({
      *set the persisted visualization, then rollback
      */
     let persistedVisualization = get(this, '_persistedVisualization');
-    if(persistedVisualization) {
+    if (persistedVisualization) {
       set(this, 'visualization', persistedVisualization);
     }
 

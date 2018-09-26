@@ -28,13 +28,8 @@ export default [
         table: 'mario',
         timeGrain: 'day'
       },
-      metrics: [
-        { metric: 'wins' },
-        { metric: 'timeSpent' }
-      ],
-      dimensions: [
-        { dimension: 'character' }
-      ],
+      metrics: [{ metric: 'wins' }, { metric: 'timeSpent' }],
+      dimensions: [{ dimension: 'character' }],
       filters: [],
       sort: [
         {
@@ -48,7 +43,7 @@ export default [
           start: 'P7D'
         }
       ],
-      bardVersion:    'v1',
+      bardVersion: 'v1',
       requestVersion: 'v1'
     }
   },
@@ -77,12 +72,8 @@ export default [
         table: 'mario',
         timeGrain: 'day'
       },
-      metrics: [
-        { metric: 'timeSpent' }
-      ],
-      dimensions: [
-        { dimension: 'game' }
-      ],
+      metrics: [{ metric: 'timeSpent' }],
+      dimensions: [{ dimension: 'game' }],
       filters: [],
       intervals: [
         {
@@ -90,7 +81,7 @@ export default [
           start: 'P7D'
         }
       ],
-      bardVersion:    'v1',
+      bardVersion: 'v1',
       requestVersion: 'v1'
     }
   },
@@ -119,13 +110,8 @@ export default [
         table: 'mario',
         timeGrain: 'day'
       },
-      metrics: [
-        { metric: 'coins' }
-      ],
-      dimensions: [
-        { dimension: 'platform' },
-        { dimension: 'game' }
-      ],
+      metrics: [{ metric: 'coins' }],
+      dimensions: [{ dimension: 'platform' }, { dimension: 'game' }],
       filters: [],
       intervals: [
         {
@@ -133,7 +119,7 @@ export default [
           start: 'P30D'
         }
       ],
-      bardVersion:    'v1',
+      bardVersion: 'v1',
       requestVersion: 'v1'
     }
   }

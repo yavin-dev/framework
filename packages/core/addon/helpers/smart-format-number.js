@@ -17,14 +17,13 @@ import numeral from 'numeral';
  * @param {Number|String} value
  * @return {String} Formatted string for the provided number
  */
-export function smartFormatNumber([ value ]) {
-
+export function smartFormatNumber([value]) {
   // type safe check
-  if (typeof value !== "number") {
+  if (typeof value !== 'number') {
     value = parseFloat(value);
   }
 
-  if(isNaN(value)) {
+  if (isNaN(value)) {
     return '';
   }
 

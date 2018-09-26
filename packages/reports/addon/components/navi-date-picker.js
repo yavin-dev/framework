@@ -13,10 +13,7 @@ import Ember from 'ember';
 import layout from '../templates/components/navi-date-picker';
 import $ from 'jquery';
 import moment from 'moment';
-import {
-  getFirstDayEpochIsoDateTimePeriod,
-  getIsoDateTimePeriod
-} from 'navi-core/utils/date';
+import { getFirstDayEpochIsoDateTimePeriod, getIsoDateTimePeriod } from 'navi-core/utils/date';
 
 const { computed, get, set } = Ember;
 
@@ -34,7 +31,7 @@ const VIEW_MODE_FROM_PERIOD = {
   week: 0,
   month: 1,
   quarter: 1,
-  year: 2,
+  year: 2
 };
 
 export default Ember.Component.extend({
@@ -58,10 +55,7 @@ export default Ember.Component.extend({
    * @property {String} minDate - minimum selectable date
    */
   minDate: computed('dateTimePeriod', function() {
-    return getFirstDayEpochIsoDateTimePeriod(
-      get(this, 'dateTimePeriod'),
-      DATE_FORMAT
-    );
+    return getFirstDayEpochIsoDateTimePeriod(get(this, 'dateTimePeriod'), DATE_FORMAT);
   }),
 
   /**
@@ -95,11 +89,11 @@ export default Ember.Component.extend({
     this._super(...arguments);
 
     let selectedDate = get(this, 'selectedDate'),
-        previousDate = get(this, 'previousDate');
+      previousDate = get(this, 'previousDate');
 
-    if(selectedDate !== previousDate) {
+    if (selectedDate !== previousDate) {
       let selectedDate = get(this, 'selectedDate'),
-          date = selectedDate ? selectedDate.toDate() : undefined;
+        date = selectedDate ? selectedDate.toDate() : undefined;
       set(this, 'selectedDateObj', date);
     }
 
@@ -124,7 +118,9 @@ export default Ember.Component.extend({
   _updateViewMode(newViewMode) {
     Ember.run.scheduleOnce('afterRender', () => {
       // Change `minViewMode` option after initial creation
-      get(this, '_datePickerReference').data('datepicker')._process_options({minViewMode: newViewMode});
+      get(this, '_datePickerReference')
+        .data('datepicker')
+        ._process_options({ minViewMode: newViewMode });
 
       /*
        * Set view mode to the minimum value
@@ -150,17 +146,20 @@ export default Ember.Component.extend({
      * For day and month, the underlying component handles highlighting for us
      */
     if (get(this, 'dateTimePeriod') === 'week') {
-      get(this, '_datePickerReference').find('.active.day').parent('tr').addClass('active');
+      get(this, '_datePickerReference')
+        .find('.active.day')
+        .parent('tr')
+        .addClass('active');
     }
 
     if (get(this, 'dateTimePeriod') === 'quarter') {
       //Add active-month class in next tick, since months will be re-rendered
       Ember.run.next(() => {
         let months = this.$('.month'),
-            activeIndex = months.index(this.$('.month.active')),
-            quarter = Math.ceil((activeIndex + 1)/3);
+          activeIndex = months.index(this.$('.month.active')),
+          quarter = Math.ceil((activeIndex + 1) / 3);
 
-        let startIndex = (quarter -1) * 3;
+        let startIndex = (quarter - 1) * 3;
         $(months[startIndex + 0]).addClass('active-month');
         $(months[startIndex + 1]).addClass('active-month');
         $(months[startIndex + 2]).addClass('active-month');

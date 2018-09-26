@@ -18,18 +18,18 @@ moduleForComponent('filter-values/value-input', 'Integration | Component | filte
 test('it renders', function(assert) {
   assert.expect(1);
 
-  assert.equal(this.$('.filter-values--value-input').val(),
+  assert.equal(
+    this.$('.filter-values--value-input').val(),
     this.filter.values[0],
-    'The value select contains an input with the first filter value as the text');
+    'The value select contains an input with the first filter value as the text'
+  );
 });
 
 test('changing values', function(assert) {
   assert.expect(1);
 
-  this.set('onUpdateFilter', (changeSet) => {
-    assert.deepEqual(changeSet,
-      { values: ['aaa'] },
-      'User inputted number is given to update action');
+  this.set('onUpdateFilter', changeSet => {
+    assert.deepEqual(changeSet, { values: ['aaa'] }, 'User inputted number is given to update action');
   });
 
   this.$('.filter-values--value-input').val('aaa');
@@ -39,10 +39,10 @@ test('changing values', function(assert) {
 test('error state', function(assert) {
   assert.expect(2);
 
-  assert.notOk(this.$('.filter-values--value-input--error').is(':visible'),
-    'The input should not have error state');
+  assert.notOk(this.$('.filter-values--value-input--error').is(':visible'), 'The input should not have error state');
 
-  this.set('filter', { validations: { attrs: { values: { isInvalid: true } } } });
-  assert.ok(this.$('.filter-values--value-input--error').is(':visible'),
-    'The input should have error state');
+  this.set('filter', {
+    validations: { attrs: { values: { isInvalid: true } } }
+  });
+  assert.ok(this.$('.filter-values--value-input--error').is(':visible'), 'The input should have error state');
 });

@@ -2,7 +2,7 @@ import { A as arr } from '@ember/array';
 import { getOwner } from '@ember/application';
 import { set } from '@ember/object';
 import { moduleForComponent, test } from 'ember-qunit';
-import { initialize as injectC3Enhancements} from 'navi-core/initializers/inject-c3-enhancements';
+import { initialize as injectC3Enhancements } from 'navi-core/initializers/inject-c3-enhancements';
 import hbs from 'htmlbars-inline-precompile';
 import { startMirage } from 'dummy/initializers/ember-cli-mirage';
 
@@ -12,7 +12,9 @@ moduleForComponent('goal-gauge', 'Integration | Component | goal gauge ', {
   beforeEach() {
     injectC3Enhancements();
     this.server = startMirage();
-    return getOwner(this).lookup('service:bard-metadata').loadMetadata();
+    return getOwner(this)
+      .lookup('service:bard-metadata')
+      .loadMetadata();
   },
 
   afterEach() {
@@ -24,7 +26,7 @@ test('goal-gauge renders correctly', function(assert) {
   assert.expect(6);
 
   _setModel(this, 'pageViews', 3030000000);
-  set(this, 'metric', {metric: 'pageViews', paramters: {}});
+  set(this, 'metric', { metric: 'pageViews', paramters: {} });
   this.render(hbs`
   {{navi-visualizations/goal-gauge
       model=model
@@ -36,35 +38,30 @@ test('goal-gauge renders correctly', function(assert) {
     }}
   `);
 
-  assert.ok(!!this.$('.c3-chart-component c3 svg'),
-    'gauge component renders');
+  assert.ok(!!this.$('.c3-chart-component c3 svg'), 'gauge component renders');
 
-  assert.equal(this.$('.value-title').text(),
-    '3.03B',
-    'value title is correctly displayed');
+  assert.equal(this.$('.value-title').text(), '3.03B', 'value title is correctly displayed');
 
-  assert.equal(this.$('.metric-title').text(),
-    'Page Views',
-    'the default metric title is correctly displayed');
+  assert.equal(this.$('.metric-title').text(), 'Page Views', 'the default metric title is correctly displayed');
 
-  assert.equal(this.$('.c3-chart-arcs-gauge-min').text(),
-    '290M',
-    'min gauge label is correctly displayed');
+  assert.equal(this.$('.c3-chart-arcs-gauge-min').text(), '290M', 'min gauge label is correctly displayed');
 
-  assert.equal(this.$('.c3-chart-arcs-gauge-max').text(),
-    '310M',
-    'max gauge label is correctly displayed');
+  assert.equal(this.$('.c3-chart-arcs-gauge-max').text(), '310M', 'max gauge label is correctly displayed');
 
-  assert.equal(this.$('.goal-title').text().trim(),
+  assert.equal(
+    this.$('.goal-title')
+      .text()
+      .trim(),
     '310M Goal',
-    'goal title is correctly displayed');
+    'goal title is correctly displayed'
+  );
 });
 
 test('goal-gauge renders correctly with unit', function(assert) {
   assert.expect(6);
 
   _setModel(this, 'pageViews', 75);
-  set(this, 'metric', {metric: 'pageViews', paramters: {}});
+  set(this, 'metric', { metric: 'pageViews', paramters: {} });
   this.render(hbs`
     {{navi-visualizations/goal-gauge
       model=model
@@ -77,35 +74,30 @@ test('goal-gauge renders correctly with unit', function(assert) {
     }}
   `);
 
-  assert.ok(!!this.$('.c3-chart-component c3 svg'),
-    'gauge component renders');
+  assert.ok(!!this.$('.c3-chart-component c3 svg'), 'gauge component renders');
 
-  assert.equal(this.$('.value-title').text(),
-    '75%',
-    'value title is correctly displayed');
+  assert.equal(this.$('.value-title').text(), '75%', 'value title is correctly displayed');
 
-  assert.equal(this.$('.metric-title').text(),
-    'Page Views',
-    'metric title is correctly displayed');
+  assert.equal(this.$('.metric-title').text(), 'Page Views', 'metric title is correctly displayed');
 
-  assert.equal(this.$('.c3-chart-arcs-gauge-min').text(),
-    '50%',
-    'min gauge label is correctly displayed');
+  assert.equal(this.$('.c3-chart-arcs-gauge-min').text(), '50%', 'min gauge label is correctly displayed');
 
-  assert.equal(this.$('.c3-chart-arcs-gauge-max').text(),
-    '100%',
-    'max gauge label is correctly displayed');
+  assert.equal(this.$('.c3-chart-arcs-gauge-max').text(), '100%', 'max gauge label is correctly displayed');
 
-  assert.equal(this.$('.goal-title').text().trim(),
+  assert.equal(
+    this.$('.goal-title')
+      .text()
+      .trim(),
     '100% Goal',
-    'goal title is correctly displayed');
+    'goal title is correctly displayed'
+  );
 });
 
 test('goal-gauge renders correctly with prefix', function(assert) {
   assert.expect(6);
 
   _setModel(this, 'pageViews', 75);
-  set(this, 'metric', {metric: 'pageViews', paramters: {}});
+  set(this, 'metric', { metric: 'pageViews', paramters: {} });
   this.render(hbs`
     {{navi-visualizations/goal-gauge
       model=model
@@ -118,35 +110,30 @@ test('goal-gauge renders correctly with prefix', function(assert) {
     }}
   `);
 
-  assert.ok(!!this.$('.c3-chart-component c3 svg'),
-    'gauge component renders');
+  assert.ok(!!this.$('.c3-chart-component c3 svg'), 'gauge component renders');
 
-  assert.equal(this.$('.value-title').text(),
-    '$75',
-    'value title is correctly displayed');
+  assert.equal(this.$('.value-title').text(), '$75', 'value title is correctly displayed');
 
-  assert.equal(this.$('.metric-title').text(),
-    'Page Views',
-    'metric title is correctly displayed');
+  assert.equal(this.$('.metric-title').text(), 'Page Views', 'metric title is correctly displayed');
 
-  assert.equal(this.$('.c3-chart-arcs-gauge-min').text(),
-    '$50',
-    'min gauge label is correctly displayed with prefix');
+  assert.equal(this.$('.c3-chart-arcs-gauge-min').text(), '$50', 'min gauge label is correctly displayed with prefix');
 
-  assert.equal(this.$('.c3-chart-arcs-gauge-max').text(),
-    '$100',
-    'max gauge label is correctly displayed with prefix');
+  assert.equal(this.$('.c3-chart-arcs-gauge-max').text(), '$100', 'max gauge label is correctly displayed with prefix');
 
-  assert.equal(this.$('.goal-title').text().trim(),
+  assert.equal(
+    this.$('.goal-title')
+      .text()
+      .trim(),
     '$100 Goal',
-    'goal title is correctly displayed');
+    'goal title is correctly displayed'
+  );
 });
 
 test('goal-gauge title class is based on actualValue vs baselineValue', function(assert) {
   assert.expect(3);
 
   _setModel(this, 'm1', 150);
-  set(this, 'metric', {metric: 'm1', paramters: {}});
+  set(this, 'metric', { metric: 'm1', paramters: {} });
   this.render(hbs`
     {{navi-visualizations/goal-gauge
       model=model
@@ -157,8 +144,7 @@ test('goal-gauge title class is based on actualValue vs baselineValue', function
       )
     }}
   `);
-  assert.ok(!!this.$('.value-title.pos').length,
-    'pos class is added when actualValue is above baselineValue');
+  assert.ok(!!this.$('.value-title.pos').length, 'pos class is added when actualValue is above baselineValue');
 
   _setModel(this, 'm1', 50);
   this.render(hbs`
@@ -171,8 +157,7 @@ test('goal-gauge title class is based on actualValue vs baselineValue', function
       )
     }}
   `);
-  assert.ok(!!this.$('.value-title.neg').length,
-    'neg class is added when actualValue is below baselineValue');
+  assert.ok(!!this.$('.value-title.neg').length, 'neg class is added when actualValue is below baselineValue');
 
   _setModel(this, 'm1', 100);
   this.render(hbs`
@@ -185,36 +170,38 @@ test('goal-gauge title class is based on actualValue vs baselineValue', function
       )
     }}
   `);
-  assert.ok(!!this.$('.value-title.neg').length,
-    'neg class is added when actualValue equals baselineValue');
+  assert.ok(!!this.$('.value-title.neg').length, 'neg class is added when actualValue equals baselineValue');
 });
 
 test('goal-guage with parameterized metric', function(assert) {
-  this.set('model', arr([
-    {
-      response: {
-        rows: [
-          {
-            'revenue(currency=USD)': '300'
-          }
-        ]
-      },
-      request: {
-        metrics: [
-          {
-            metric: 'revenue',
-            parameters: {
-              currency: 'USD'
+  this.set(
+    'model',
+    arr([
+      {
+        response: {
+          rows: [
+            {
+              'revenue(currency=USD)': '300'
             }
-          }
-        ]
+          ]
+        },
+        request: {
+          metrics: [
+            {
+              metric: 'revenue',
+              parameters: {
+                currency: 'USD'
+              }
+            }
+          ]
+        }
       }
-    }
-  ]));
+    ])
+  );
   this.set('options', {
     baselineValue: 200,
     goalValue: 500,
-    metric: {metric: 'revenue', parameters: {currency: 'USD'}}
+    metric: { metric: 'revenue', parameters: { currency: 'USD' } }
   });
 
   this.render(hbs`
@@ -224,24 +211,15 @@ test('goal-guage with parameterized metric', function(assert) {
     }}
   `);
 
-  assert.ok(!!this.$('.c3-chart-component c3 svg'),
-    'gauge component renders');
+  assert.ok(!!this.$('.c3-chart-component c3 svg'), 'gauge component renders');
 
-  assert.equal(this.$('.value-title').text(),
-    '300',
-    'value title is correctly displayed');
+  assert.equal(this.$('.value-title').text(), '300', 'value title is correctly displayed');
 
-  assert.equal(this.$('.c3-chart-arcs-gauge-min').text(),
-    '200',
-    'min gauge label is correctly displayed');
+  assert.equal(this.$('.c3-chart-arcs-gauge-min').text(), '200', 'min gauge label is correctly displayed');
 
-  assert.equal(this.$('.c3-chart-arcs-gauge-max').text(),
-    '500',
-    'max gauge label is correctly displayed');
+  assert.equal(this.$('.c3-chart-arcs-gauge-max').text(), '500', 'max gauge label is correctly displayed');
 
-  assert.equal(this.$('.metric-title').text(),
-    'Revenue (USD)',
-    'parameterized metric title is correctly displayed');
+  assert.equal(this.$('.metric-title').text(), 'Revenue (USD)', 'parameterized metric title is correctly displayed');
 });
 
 test('goal-gauge value & min/max precision', function(assert) {
@@ -250,8 +228,8 @@ test('goal-gauge value & min/max precision', function(assert) {
   _setModel(this, 'm1', 1234567);
   this.set('options', {
     baselineValue: 1234567,
-    goalValue:    1234567,
-    metric:       {metric: 'm1', parameters: {}}
+    goalValue: 1234567,
+    metric: { metric: 'm1', parameters: {} }
   });
 
   this.render(hbs`
@@ -261,23 +239,25 @@ test('goal-gauge value & min/max precision', function(assert) {
     }}
   `);
 
-  assert.equal(this.$('.value-title').text(),
-    '1.23M',
-    'value title has a precision of 2 when under 1B');
+  assert.equal(this.$('.value-title').text(), '1.23M', 'value title has a precision of 2 when under 1B');
 
-  assert.equal(this.$('.c3-chart-arcs-gauge-min').text(),
+  assert.equal(
+    this.$('.c3-chart-arcs-gauge-min').text(),
     '1.23M',
-    'min gauge label has a precision of 2 when under 1B');
+    'min gauge label has a precision of 2 when under 1B'
+  );
 
-  assert.equal(this.$('.c3-chart-arcs-gauge-max').text(),
+  assert.equal(
+    this.$('.c3-chart-arcs-gauge-max').text(),
     '1.23M',
-    'max gauge label has a precision of 2 when under 1B');
+    'max gauge label has a precision of 2 when under 1B'
+  );
 
   _setModel(this, 'm1', 9123456789);
   this.set('options', {
     baselineValue: 9123456789,
-    goalValue:    9123456789,
-    metric:       {metric: 'm1', parameters: {}}
+    goalValue: 9123456789,
+    metric: { metric: 'm1', parameters: {} }
   });
 
   this.render(hbs`
@@ -287,24 +267,26 @@ test('goal-gauge value & min/max precision', function(assert) {
     }}
   `);
 
-  assert.equal(this.$('.value-title').text(),
-    '9.123B',
-    'value title has a precision of 3 when over 1B');
+  assert.equal(this.$('.value-title').text(), '9.123B', 'value title has a precision of 3 when over 1B');
 
-  assert.equal(this.$('.c3-chart-arcs-gauge-min').text(),
+  assert.equal(
+    this.$('.c3-chart-arcs-gauge-min').text(),
     '9.123B',
-    'min gauge label has a precision of 3 when over 1B');
+    'min gauge label has a precision of 3 when over 1B'
+  );
 
-  assert.equal(this.$('.c3-chart-arcs-gauge-max').text(),
+  assert.equal(
+    this.$('.c3-chart-arcs-gauge-max').text(),
     '9.123B',
-    'max gauge label has a precision of 3 when over 1B');
+    'max gauge label has a precision of 3 when over 1B'
+  );
 });
 
 test('goal-gauge renders custom metric title', function(assert) {
   assert.expect(1);
 
   _setModel(this, 'm1', 75);
-  set(this, 'metric', {metric: 'm1', paramters: {}});
+  set(this, 'metric', { metric: 'm1', paramters: {} });
   set(this, 'metricTitle', 'A real good metric');
 
   this.render(hbs`
@@ -319,16 +301,14 @@ test('goal-gauge renders custom metric title', function(assert) {
     }}
   `);
 
-  assert.equal(this.$('.metric-title').text(),
-    this.get('metricTitle'),
-    'custom metric title is correctly displayed');
+  assert.equal(this.$('.metric-title').text(), this.get('metricTitle'), 'custom metric title is correctly displayed');
 });
 
 test('cleanup', function(assert) {
   assert.expect(2);
 
   _setModel(this, 'm1', 75);
-  set(this, 'metric', {metric: 'm1', paramters: {}});
+  set(this, 'metric', { metric: 'm1', paramters: {} });
 
   this.set('metricTitle', 'A real good metric');
 
@@ -344,15 +324,11 @@ test('cleanup', function(assert) {
     }}
   `);
 
-  assert.equal(this.$('text.c3-chart-arcs-title > tspan').length,
-    3,
-    'on initial render, 3 title tspans are present');
+  assert.equal(this.$('text.c3-chart-arcs-title > tspan').length, 3, 'on initial render, 3 title tspans are present');
 
   this.set('metricTitle', 'A real great metric');
 
-  assert.equal(this.$('text.c3-chart-arcs-title > tspan').length,
-    3,
-    'on rerender render, 3 title tspans are present');
+  assert.equal(this.$('text.c3-chart-arcs-title > tspan').length, 3, 'on rerender render, 3 title tspans are present');
 });
 
 /**
@@ -364,7 +340,13 @@ test('cleanup', function(assert) {
  * @return {Void}
  */
 function _setModel(context, metric, value) {
-  context.set('model', arr([
-    { response: { rows: [ { [metric]: value } ] }, request: { metrics: [{metric}]} }
-  ]));
+  context.set(
+    'model',
+    arr([
+      {
+        response: { rows: [{ [metric]: value }] },
+        request: { metrics: [{ metric }] }
+      }
+    ])
+  );
 }

@@ -13,9 +13,11 @@ import moment from 'moment';
  * @returns {Boolean}
  */
 export function isValidMoment(value) {
-  if(!value) { return false; }
+  if (!value) {
+    return false;
+  }
 
   return moment(value).isValid();
 }
 
-export default Ember.Helper.helper((args) => isValidMoment(...args));
+export default Ember.Helper.helper(args => isValidMoment(...args));

@@ -2,8 +2,7 @@ import Ember from 'ember';
 import { moduleForModel, test } from 'ember-qunit';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
 
-let Store,
-    Model;
+let Store, Model;
 
 moduleForModel('dashboard-collection', 'Unit | Model | dashboard collection', {
   // Specify the other units that are required for this test.
@@ -31,8 +30,7 @@ moduleForModel('dashboard-collection', 'Unit | Model | dashboard collection', {
 test('it exists', function(assert) {
   assert.expect(1);
 
-  assert.ok(!!Model,
-    'Dashboard Collection model exists');
+  assert.ok(!!Model, 'Dashboard Collection model exists');
 });
 
 test('Retrieving Records', function(assert) {
@@ -40,7 +38,8 @@ test('Retrieving Records', function(assert) {
 
   return Ember.run(() => {
     return Store.findRecord('dashboard-collection', 1).then(rec => {
-      assert.deepEqual(rec.toJSON(),
+      assert.deepEqual(
+        rec.toJSON(),
         {
           title: 'Collection 1',
           author: 'navi_user',
@@ -48,7 +47,8 @@ test('Retrieving Records', function(assert) {
           createdOn: '2016-01-01 00:00:00.000',
           updatedOn: '2016-01-01 00:00:00.000'
         },
-        'dashboard collection record with id 1 is found in the store');
+        'dashboard collection record with id 1 is found in the store'
+      );
     });
   });
 });

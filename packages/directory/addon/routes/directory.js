@@ -36,7 +36,7 @@ export default Route.extend({
   actions: {
     /**
      * @action updateQueryParams - update to the new query params
-     * @param {Object} queryParams 
+     * @param {Object} queryParams
      */
     updateQueryParams(queryParams) {
       this.transitionTo({ queryParams });

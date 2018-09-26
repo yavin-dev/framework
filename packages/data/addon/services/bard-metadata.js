@@ -47,7 +47,7 @@ export default Service.extend({
 
     //Instantiating the bard metadata adapter & serializer
     let owner = getOwner(this),
-        adapter = owner.lookup('adapter:bard-metadata');
+      adapter = owner.lookup('adapter:bard-metadata');
 
     this.set('_adapter', adapter);
     this.set('_serializer', owner.lookup('serializer:bard-metadata'));
@@ -62,23 +62,31 @@ export default Service.extend({
    */
   loadMetadata(options) {
     //fetch metadata from WS if metadata not yet loaded
-    if(!get(this, 'metadataLoaded')){
-      return get(this, '_adapter').fetchAll('table', assign({
-        query: {format: 'fullview'}
-      }, options)).then((payload) => {
-        //normalize payload
-        let metadata =  get(this, '_serializer').normalize(payload);
+    if (!get(this, 'metadataLoaded')) {
+      return get(this, '_adapter')
+        .fetchAll(
+          'table',
+          assign(
+            {
+              query: { format: 'fullview' }
+            },
+            options
+          )
+        )
+        .then(payload => {
+          //normalize payload
+          let metadata = get(this, '_serializer').normalize(payload);
 
-        //set metadataLoaded property
-        if ( !(get(this, 'isDestroyed') || get(this, 'isDestroying')) ) {
-          //create metadata model objects and load into keg
-          this._loadMetadataForType('table', metadata.tables);
-          this._loadMetadataForType('dimension', metadata.dimensions);
-          this._loadMetadataForType('metric', metadata.metrics);
+          //set metadataLoaded property
+          if (!(get(this, 'isDestroyed') || get(this, 'isDestroying'))) {
+            //create metadata model objects and load into keg
+            this._loadMetadataForType('table', metadata.tables);
+            this._loadMetadataForType('dimension', metadata.dimensions);
+            this._loadMetadataForType('metric', metadata.metrics);
 
-          this.set('metadataLoaded', true);
-        }
-      });
+            this.set('metadataLoaded', true);
+          }
+        });
     }
     return resolve();
   },
@@ -92,9 +100,9 @@ export default Service.extend({
    * @param {Array} metadataObjects - array of metadata objects
    */
   _loadMetadataForType(type, metadataObjects) {
-    let metadata = metadataObjects.map((data) => {
+    let metadata = metadataObjects.map(data => {
       let payload = assign({}, data),
-          owner = getOwner(this);
+        owner = getOwner(this);
       setOwner(payload, owner);
       return owner.factoryFor(`model:metadata/${type}`).create(payload);
     });
@@ -142,24 +150,26 @@ export default Service.extend({
   fetchById(type, id) {
     assert('Type must be table, metric or dimension', A(['table', 'dimension', 'metric']).includes(type));
 
-    return get(this, '_adapter').fetchMetadata(type, id).then(meta => {
-      //load into keg if not already present
-      this._loadMetadataForType(type, [ meta ]);
-      return meta;
-    });
+    return get(this, '_adapter')
+      .fetchMetadata(type, id)
+      .then(meta => {
+        //load into keg if not already present
+        this._loadMetadataForType(type, [meta]);
+        return meta;
+      });
   },
 
   /**
    * @method findById
    * gets Metadata or fetches it if necessary
-   * 
+   *
    * @param {String} type
    * @param {String} id
    * @returns {Promise}
    */
   findById(type, id) {
     //Get entity if already present in the keg
-    if(get(this, '_keg').getById(`metadata/${type}`, id)) {
+    if (get(this, '_keg').getById(`metadata/${type}`, id)) {
       return resolve(this.getById(type, id));
     }
 
@@ -189,7 +199,7 @@ export default Service.extend({
    */
   getMetaField(type, id, field, defaultIfNone = null) {
     let meta = this.getById(type, id);
-    if(!meta) {
+    if (!meta) {
       return defaultIfNone;
     }
     return getWithDefault(meta, field, defaultIfNone);

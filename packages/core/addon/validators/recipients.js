@@ -11,9 +11,11 @@ const { isArray, isPresent } = Ember;
 
 export default BaseValidator.extend({
   validate(value, options) {
-    if((value.length < 1) || (value[0] === '')) {
+    if (value.length < 1 || value[0] === '') {
       return options.noRecipientsMsg;
-    } else if (!(isArray(value) && value.every(isPresent) && value.every(index => index.match(regularExpressions.email)))) {
+    } else if (
+      !(isArray(value) && value.every(isPresent) && value.every(index => index.match(regularExpressions.email)))
+    ) {
       return options.invalidEmailMsg;
     }
     return true;

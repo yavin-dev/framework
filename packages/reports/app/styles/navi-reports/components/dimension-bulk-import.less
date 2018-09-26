@@ -3,59 +3,59 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-@row-height:  30px;
+@row-height: 30px;
 
 .dimension-bulk-import {
-    .valid-id-count {
-        color: @navi-purple-dark;
-    }
+  .valid-id-count {
+    color: @navi-purple-dark;
+  }
 
-    .invalid-id-count {
-        color: @navi-red;
-    }
+  .invalid-id-count {
+    color: @navi-red;
+  }
 
-    .id-container {
-        padding: 5px;
-        margin-bottom: 10px;
-        background-color: @navi-white;
-        font-family: inherit;
-        font-size: inherit;
-        line-height: inherit;
-        .last-of-group-form-element;
+  .id-container {
+    padding: 5px;
+    margin-bottom: 10px;
+    background-color: @navi-white;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    .last-of-group-form-element;
 
-        .item {
-            font-size: @font-size-form;
-            background: @navi-purple-lighter;
-            color: @navi-light-gray;
-            margin: 3px 5px 0 0;
-            padding: 2px 6px;
-            display: inline-block;
-            border-radius: 3px;
-            list-style: none;
+    .item {
+      font-size: @font-size-form;
+      background: @navi-purple-lighter;
+      color: @navi-light-gray;
+      margin: 3px 5px 0 0;
+      padding: 2px 6px;
+      display: inline-block;
+      border-radius: 3px;
+      list-style: none;
 
-            .remove-pill {
-                font-size: @font-size-mid-base;
-                margin: 0 0 0 5px;
-                color: @navi-light-gray;
-                background-color: transparent;
-                padding: 0;
-            }
-        }
-    }
-
-    .invalid-ids .item {
-        background: @navi-gray;
+      .remove-pill {
+        font-size: @font-size-mid-base;
+        margin: 0 0 0 5px;
         color: @navi-light-gray;
+        background-color: transparent;
+        padding: 0;
+      }
     }
+  }
 
-    .paginated-scroll-list {
-        .trimmed {
-            max-height: 3 * @row-height;
-            overflow: hidden;
-        }
-        .show-all {
-            max-height: 6.5 * @row-height;
-            overflow: auto;
-        }
+  .invalid-ids .item {
+    background: @navi-gray;
+    color: @navi-light-gray;
+  }
+
+  .paginated-scroll-list {
+    .trimmed {
+      max-height: 3 * @row-height;
+      overflow: hidden;
     }
+    .show-all {
+      max-height: 6.5 * @row-height;
+      overflow: auto;
+    }
+  }
 }

@@ -8,7 +8,6 @@ import moment from 'moment';
 import DateUtils from 'navi-core/utils/date';
 
 export default DS.Transform.extend({
-
   /**
    * Deserializes date string into a moment object
    *

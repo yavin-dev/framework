@@ -5,7 +5,7 @@ import { moduleFor, test } from 'ember-qunit';
 import { RequestActions } from 'navi-reports/services/request-action-dispatcher';
 
 moduleFor('consumer:request/sort', 'Unit | Consumer | request sort', {
-  needs: [ 'consumer:action-consumer', 'service:request-action-dispatcher' ],
+  needs: ['consumer:action-consumer', 'service:request-action-dispatcher'],
 
   beforeEach() {
     // Isolate test to focus on only this consumer
@@ -18,48 +18,44 @@ moduleFor('consumer:request/sort', 'Unit | Consumer | request sort', {
 test('UPSERT_SORT', function(assert) {
   assert.expect(3);
 
-  const addDateTimeSort = (direction) => {
-    assert.equal(direction,
-      'desc',
-      'dateTimeSort is added when not present in the request');
+  const addDateTimeSort = direction => {
+    assert.equal(direction, 'desc', 'dateTimeSort is added when not present in the request');
   };
 
   const addSortByMetricName = (metricName, direction) => {
-    assert.deepEqual([metricName, direction],
-      ['click', 'desc'],
-      'metricSort is added when not present in the request');
+    assert.deepEqual([metricName, direction], ['click', 'desc'], 'metricSort is added when not present in the request');
   };
 
-  let currentModel = { request: {
+  let currentModel = {
+      request: {
         sort: arr([]),
         addDateTimeSort,
         addSortByMetricName
-      }},
-      consumer = this.subject();
+      }
+    },
+    consumer = this.subject();
 
   consumer.send(RequestActions.UPSERT_SORT, { currentModel }, 'dateTime', 'desc');
   consumer.send(RequestActions.UPSERT_SORT, { currentModel }, 'click', 'desc');
 
-  currentModel.request.sort = arr([EmberObject.create({
-    metric: { metric: { name: 'dateTime' }, canonicalName: 'dateTime' }
-  })]);
+  currentModel.request.sort = arr([
+    EmberObject.create({
+      metric: { metric: { name: 'dateTime' }, canonicalName: 'dateTime' }
+    })
+  ]);
   consumer.send(RequestActions.UPSERT_SORT, { currentModel }, 'dateTime', 'desc');
-  assert.equal(currentModel.request.sort[0].direction,
-    'desc',
-    'sort direction is updated');
+  assert.equal(currentModel.request.sort[0].direction, 'desc', 'sort direction is updated');
 });
 
 test('REMOVE_SORT', function(assert) {
   assert.expect(1);
 
-  const removeSortByMetricName = (metricName) => {
-    assert.equal(metricName,
-      'click',
-      'removeSortByMetricName is called with correct metric name');
+  const removeSortByMetricName = metricName => {
+    assert.equal(metricName, 'click', 'removeSortByMetricName is called with correct metric name');
   };
 
   let currentModel = { request: { removeSortByMetricName } },
-      consumer = this.subject();
+    consumer = this.subject();
 
   consumer.send(RequestActions.REMOVE_SORT, { currentModel }, 'click');
 });
@@ -68,19 +64,15 @@ test('REMOVE_SORT_WITH_PARAM', function(assert) {
   assert.expect(2);
 
   let parameters = { currency: 'USD' },
-      revenueUSD = { metric: { name: 'revenue' } };
+    revenueUSD = { metric: { name: 'revenue' } };
 
   const removeSortMetricWithParam = (metric, parameters) => {
-    assert.deepEqual(metric,
-      revenueUSD,
-      'removeSortMetricWithParam is called with correct metric');
-    assert.deepEqual(parameters,
-      { currency: 'USD' },
-      'removeSortMetricWithParam is called with correct parameters');
+    assert.deepEqual(metric, revenueUSD, 'removeSortMetricWithParam is called with correct metric');
+    assert.deepEqual(parameters, { currency: 'USD' }, 'removeSortMetricWithParam is called with correct parameters');
   };
 
   let currentModel = { request: { removeSortMetricWithParam } },
-      consumer = this.subject();
+    consumer = this.subject();
 
   consumer.send(RequestActions.REMOVE_SORT_WITH_PARAM, { currentModel }, revenueUSD, parameters);
 });
@@ -90,14 +82,12 @@ test('REMOVE_SORT_BY_METRIC_MODEL', function(assert) {
 
   let adClicks = { name: 'adClicks' };
 
-  const removeSortMetricByModel = (metric) => {
-    assert.deepEqual(metric,
-      adClicks,
-      'removeSortMetricByModel is called with correct metric');
+  const removeSortMetricByModel = metric => {
+    assert.deepEqual(metric, adClicks, 'removeSortMetricByModel is called with correct metric');
   };
 
   let currentModel = { request: { removeSortMetricByModel } },
-      consumer = this.subject();
+    consumer = this.subject();
 
   consumer.send(RequestActions.REMOVE_SORT_BY_METRIC_MODEL, { currentModel }, adClicks);
 });
@@ -106,12 +96,10 @@ test('REMOVE_METRIC', function(assert) {
   assert.expect(1);
 
   const adClicks = { name: 'adClicks' },
-        consumer = this.subject();
+    consumer = this.subject();
 
-  const removeSortMetricByModel = (metric) => {
-    assert.deepEqual(metric,
-      adClicks,
-      'REMOVE_SORT_BY_METRIC_MODEL is dispatched with correct metric');
+  const removeSortMetricByModel = metric => {
+    assert.deepEqual(metric, adClicks, 'REMOVE_SORT_BY_METRIC_MODEL is dispatched with correct metric');
   };
 
   let currentModel = { request: { removeSortMetricByModel } };
@@ -124,16 +112,12 @@ test('REMOVE_METRIC_WITH_PARAM', function(assert) {
   assert.expect(2);
 
   const parameters = { currency: 'USD' },
-        revenueUSD = { metric: { name: 'revenue' } },
-        consumer = this.subject();
+    revenueUSD = { metric: { name: 'revenue' } },
+    consumer = this.subject();
 
   const removeSortMetricWithParam = (metric, parameters) => {
-    assert.deepEqual(metric,
-      revenueUSD,
-      'REMOVE_SORT_WITH_PARAM is dispatched with correct metric');
-    assert.deepEqual(parameters,
-      { currency: 'USD' },
-      'REMOVE_SORT_WITH_PARAM is dispatched with correct parameters');
+    assert.deepEqual(metric, revenueUSD, 'REMOVE_SORT_WITH_PARAM is dispatched with correct metric');
+    assert.deepEqual(parameters, { currency: 'USD' }, 'REMOVE_SORT_WITH_PARAM is dispatched with correct parameters');
   };
 
   let currentModel = { request: { removeSortMetricWithParam } };

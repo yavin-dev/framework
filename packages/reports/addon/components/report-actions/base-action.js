@@ -33,10 +33,9 @@ export default Ember.Component.extend({
    */
   init() {
     this._super(...arguments);
-    warn('report should be of type report',
-      get(this, 'report.constructor.modelName') === 'report',
-      { id: 'navi-report-actions.base-action' }
-    );
+    warn('report should be of type report', get(this, 'report.constructor.modelName') === 'report', {
+      id: 'navi-report-actions.base-action'
+    });
   },
 
   /**
@@ -47,7 +46,7 @@ export default Ember.Component.extend({
       return true;
     }
 
-    if(get(this, 'checkPermission')) {
+    if (get(this, 'checkPermission')) {
       return !get(this, 'report.isOwner');
     }
 

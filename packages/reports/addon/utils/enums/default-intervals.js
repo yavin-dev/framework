@@ -7,15 +7,15 @@ import Duration from 'navi-core/utils/classes/duration';
 import moment from 'moment';
 
 export default {
-  'second' : 'P1D',
-  'minute' : 'P1D',
-  'hour'   : 'P1D',
-  'day'    : 'P1D',
-  'week'   : 'P1W',
-  'month'  : 'P1M',
-  'quarter': 'P3M',
-  'year'   : 'P1Y',
-  'all'    : 'P7D',
+  second: 'P1D',
+  minute: 'P1D',
+  hour: 'P1D',
+  day: 'P1D',
+  week: 'P1W',
+  month: 'P1M',
+  quarter: 'P3M',
+  year: 'P1Y',
+  all: 'P7D',
 
   /**
    * @method getDefault
@@ -29,9 +29,6 @@ export default {
       intervalEnd = moment().startOf('day');
     }
 
-    return new Interval(
-      new Duration(this[timeGrain]),
-      intervalEnd
-    );
+    return new Interval(new Duration(this[timeGrain]), intervalEnd);
   }
 };

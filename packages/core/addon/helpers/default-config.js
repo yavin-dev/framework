@@ -13,7 +13,6 @@
 import Ember from 'ember';
 
 export default Ember.Helper.extend({
-
   /**
    * @property {Ember.Service} store
    */
@@ -37,7 +36,7 @@ export default Ember.Helper.extend({
 
     // Use the visualization model fragment to build a valid config
     let store = this.get('store'),
-        visualizationFragment = store.createFragment(visualizationName).rebuildConfig(request, response);
+      visualizationFragment = store.createFragment(visualizationName).rebuildConfig(request, response);
 
     return visualizationFragment.get('metadata');
   }

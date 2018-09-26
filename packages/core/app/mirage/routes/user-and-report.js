@@ -59,7 +59,7 @@ const RELATIONSHIP_BUILDER = {
   }
 };
 
-const RESPONSE_CODES  = {
+const RESPONSE_CODES = {
   NOT_FOUND: 404,
   CREATED: 201,
   LOCKED: 423,
@@ -72,23 +72,18 @@ export default function() {
    * users/:id - GET endpoint to fetch user by id
    */
   this.get('/users/:id', ({ db }, request) => {
-
     let id = request.params.id,
-        user = db.users.find(id);
+      user = db.users.find(id);
 
     if (!user) {
-      return new Mirage.Response(
-        RESPONSE_CODES.NOT_FOUND,
-        {},
-        {errors:[`Unknown identifier '${id}'`]}
-      );
+      return new Mirage.Response(RESPONSE_CODES.NOT_FOUND, {}, { errors: [`Unknown identifier '${id}'`] });
     }
 
     let include = request.queryParams.include,
-        includeObj;
-    if(include) {
+      includeObj;
+    if (include) {
       includeObj = {
-        data: db[include].where({author: id}),
+        data: db[include].where({ author: id }),
         type: include
       };
     }
@@ -100,11 +95,10 @@ export default function() {
    * users/ - GET endpoint to fetch many users
    */
   this.get('/users', ({ db }, request) => {
-
     let idFilter = request.queryParams['filter[users.id]'],
-        users = db.users;
+      users = db.users;
 
-        // Allow filtering
+    // Allow filtering
     if (idFilter) {
       let ids = idFilter.split(',');
       users = db.users.find(ids);
@@ -117,17 +111,17 @@ export default function() {
    * users/ -  POST endpoint to add a new user
    */
   this.post('/users', ({ db }, request) => {
-
     let postData = JSON.parse(request.requestBody),
-        userId = postData.data.id;
+      userId = postData.data.id;
 
-        // Add user only if it does not exists
+    // Add user only if it does not exists
     if (db.users.find(userId)) {
       return new Mirage.Response(RESPONSE_CODES.LOCKED);
     } else {
       let user = jsonApiToJson(postData);
 
-      Object.assign(user,
+      Object.assign(
+        user,
         { createdOn: moment.utc().format(TIMESTAMP_FORMAT) },
         ...RELATIONSHIP_MAP.users.map(relationship => {
           return { [relationship.property]: [] };
@@ -143,17 +137,12 @@ export default function() {
    * users/:id -  PATCH endpoint for an existing user
    */
   this.patch('/users/:id', ({ db }, request) => {
-
     let patchData = JSON.parse(request.requestBody),
-        userId = patchData.data.id;
+      userId = patchData.data.id;
 
-        // Update only if user exists
+    // Update only if user exists
     if (!db.users.find(userId)) {
-      return new Mirage.Response(
-        RESPONSE_CODES.NOT_FOUND,
-        {},
-        {errors:[`Unknown identifier '${userId}'`]}
-      );
+      return new Mirage.Response(RESPONSE_CODES.NOT_FOUND, {}, { errors: [`Unknown identifier '${userId}'`] });
     }
 
     let user = jsonApiToJson(patchData, RELATIONSHIP_MAP.users);
@@ -167,11 +156,10 @@ export default function() {
    * reports/ - GET endpoint to fetch many reports
    */
   this.get('/reports', ({ db }, request) => {
-
     let idFilter = request.queryParams['filter[reports.id]'],
-        reports = db.reports;
+      reports = db.reports;
 
-        // Allow filtering
+    // Allow filtering
     if (idFilter) {
       let ids = idFilter.split(',');
 
@@ -186,14 +174,10 @@ export default function() {
    */
   this.get('/reports/:id', ({ db }, request) => {
     let id = request.params.id,
-        report = db.reports.find(id);
+      report = db.reports.find(id);
 
     if (!report) {
-      return new Mirage.Response(
-        RESPONSE_CODES.NOT_FOUND,
-        {},
-        {errors:[`Unknown identifier '${id}'`]}
-      );
+      return new Mirage.Response(RESPONSE_CODES.NOT_FOUND, {}, { errors: [`Unknown identifier '${id}'`] });
     }
 
     return jsonToJsonApi(report, 'reports', RELATIONSHIP_MAP.reports);
@@ -203,18 +187,13 @@ export default function() {
    * reports/ -  POST endpoint to add a new report
    */
   this.post('/reports', ({ db }, request) => {
-
     let postData = JSON.parse(request.requestBody),
-        userId = postData.data.relationships.author.data.id,
-        user = db.users.find(userId);
+      userId = postData.data.relationships.author.data.id,
+      user = db.users.find(userId);
 
-        // Add report only if user exists
+    // Add report only if user exists
     if (!user) {
-      return new Mirage.Response(
-        RESPONSE_CODES.NOT_FOUND,
-        {},
-        {errors:[`Unknown identifier '${userId}'`]}
-      );
+      return new Mirage.Response(RESPONSE_CODES.NOT_FOUND, {}, { errors: [`Unknown identifier '${userId}'`] });
     }
 
     let report = jsonApiToJson(postData, RELATIONSHIP_MAP.reports);
@@ -228,29 +207,28 @@ export default function() {
     delete user.id;
     db.users.update(userId, user);
 
-    return new Mirage.Response(RESPONSE_CODES.CREATED, {}, jsonToJsonApi(createdReport, 'reports', RELATIONSHIP_MAP.reports));
+    return new Mirage.Response(
+      RESPONSE_CODES.CREATED,
+      {},
+      jsonToJsonApi(createdReport, 'reports', RELATIONSHIP_MAP.reports)
+    );
   });
 
   /**
    * reports/:id -  PATCH endpoint to an existing report
    */
   this.patch('/reports/:id', ({ db }, request) => {
-
     let postData = JSON.parse(request.requestBody),
-        userId = postData.data.relationships.author.data.id,
-        user = db.users.find(userId);
+      userId = postData.data.relationships.author.data.id,
+      user = db.users.find(userId);
 
-        // Add report only if user exists
+    // Add report only if user exists
     if (!user) {
-      return new Mirage.Response(
-        RESPONSE_CODES.NOT_FOUND,
-        {},
-        {errors:[`Unknown identifier '${userId}'`]}
-      );
+      return new Mirage.Response(RESPONSE_CODES.NOT_FOUND, {}, { errors: [`Unknown identifier '${userId}'`] });
     }
 
     let report = jsonApiToJson(postData, RELATIONSHIP_MAP.reports),
-        reportId = Number(report.id);
+      reportId = Number(report.id);
 
     report.updatedOn = moment.utc().format(TIMESTAMP_FORMAT);
     delete report.id;
@@ -264,14 +242,10 @@ export default function() {
    */
   this.delete('/reports/:id', ({ db }, request) => {
     let id = request.params.id,
-        report = db.reports.find(id);
+      report = db.reports.find(id);
 
     if (!report) {
-      return new Mirage.Response(
-        RESPONSE_CODES.NOT_FOUND,
-        {},
-        {errors:[`Unknown identifier '${id}'`]}
-      );
+      return new Mirage.Response(RESPONSE_CODES.NOT_FOUND, {}, { errors: [`Unknown identifier '${id}'`] });
     }
 
     deleteRecord(db, 'reports', id);
@@ -290,24 +264,26 @@ export default function() {
  * @param {String/Number} id - id of record to be deleted
  * @returns {Void}
  */
-function deleteRecord(db, type, id){
+function deleteRecord(db, type, id) {
   // delete record
   db[type].remove(id);
 
   // delete reference of record
   RELATIONSHIP_MAP[type].forEach(relationship => {
     let relType = relationship.type,
-        alias = relationship.alias;
+      alias = relationship.alias;
 
     db[relType].forEach(record => {
       let typeIds = record[alias] || record[type],
-          updatedIds = typeIds;
+        updatedIds = typeIds;
 
-      if (Ember.isArray(typeIds)) {//handle case when typeIds is an array
+      if (Ember.isArray(typeIds)) {
+        //handle case when typeIds is an array
         updatedIds = typeIds.filter(typeId => {
           return typeId.toString() !== id;
         });
-      } else if (typeIds.toString() === id) { //handle case when typeIds is number/string
+      } else if (typeIds.toString() === id) {
+        //handle case when typeIds is number/string
         updatedIds = undefined;
       }
 

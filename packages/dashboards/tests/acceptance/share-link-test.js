@@ -19,8 +19,10 @@ test('dashboard share link', function(assert) {
   click('.navi-collection__row:first-of-type .share .btn');
 
   andThen(() => {
-    assert.equal(find('.modal-input-box')[0].value,
+    assert.equal(
+      find('.modal-input-box')[0].value,
       `${baseUrl}/dashboards/1`,
-      'The share link is built correctly by buildDashboardUrl');
+      'The share link is built correctly by buildDashboardUrl'
+    );
   });
 });

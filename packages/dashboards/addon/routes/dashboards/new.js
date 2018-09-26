@@ -8,7 +8,6 @@ import Ember from 'ember';
 const { get } = Ember;
 
 export default Ember.Route.extend({
-
   /**
    * @property {Service} naviNotifications
    */
@@ -57,12 +56,16 @@ export default Ember.Route.extend({
    * @returns {DS.Model} route model
    */
   _newModel(title = 'Untitled Dashboard') {
-    return get(this, 'user').findOrRegister().then( author =>
-      this.store.createRecord('dashboard', {
-        author,
-        title
-      }).save()
-    );
+    return get(this, 'user')
+      .findOrRegister()
+      .then(author =>
+        this.store
+          .createRecord('dashboard', {
+            author,
+            title
+          })
+          .save()
+      );
   },
 
   actions: {

@@ -11,21 +11,20 @@ module('Integration | Component | dir search bar', function(hooks) {
 
     let fillInText = 'testString';
 
-    this.set('searchFor', (val) => {
-      assert.equal(val,
-        fillInText,
-        'The entered text is passed on to the action on `key-up`');
+    this.set('searchFor', val => {
+      assert.equal(val, fillInText, 'The entered text is passed on to the action on `key-up`');
     });
-    
+
     await render(hbs`{{dir-search-bar
       searchFor=(action searchFor)
     }}`);
 
-    assert.ok(find('.dir-search-bar__input'), 
-      'The search bar input is visible when the component is rendered');
-    
-    assert.ok(find('.dir-search-bar__search-icon'), 
-      'The search bar search icon is visible when the component is rendered');
+    assert.ok(find('.dir-search-bar__input'), 'The search bar input is visible when the component is rendered');
+
+    assert.ok(
+      find('.dir-search-bar__search-icon'),
+      'The search bar search icon is visible when the component is rendered'
+    );
 
     await fillIn('.dir-search-bar__input', fillInText);
     await triggerEvent('.dir-search-bar__input', 'keyup');

@@ -83,7 +83,8 @@
       margin-top: 5px;
     }
 
-    .hover-metrics, .hover-dimension {
+    .hover-metrics,
+    .hover-dimension {
       margin: 5px 0 0 15px;
       padding: 0;
     }
@@ -112,13 +113,13 @@
 }
 
 .generate-legend-color(@n, @i:0) when (@i < @n) {
-   @j: @i+1;
-   @series-color: "graph-stroke-@{i}";
+  @j: @i+1;
+  @series-color: 'graph-stroke-@{i}';
 
-   .c3-legend-item:nth-of-type(@{j}) .c3-legend-item-tile {
-       fill: @@series-color !important;
-       stroke: @@series-color !important;
-   }
+  .c3-legend-item:nth-of-type(@{j}) .c3-legend-item-tile {
+    fill: @@series-color !important;
+    stroke: @@series-color !important;
+  }
 
-   .generate-legend-color(@n, (@i+1));
+  .generate-legend-color(@n, (@i+1));
 }

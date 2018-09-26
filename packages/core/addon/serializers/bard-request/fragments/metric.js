@@ -13,7 +13,7 @@ export default DS.JSONSerializer.extend({
      * removes the 'parameters' key if the key is empty for the serialization
      * `isEmpty` returns true on `{}` so we need the other test
      */
-    if(isEmpty(json.parameters) || Object.entries(json.parameters).length === 0) {
+    if (isEmpty(json.parameters) || Object.entries(json.parameters).length === 0) {
       delete json.parameters;
     }
     return json;

@@ -9,9 +9,9 @@ moduleForComponent('navi-visualizations/metric-label', 'Integration | Component 
 
 test('metric label renders correctly', function(assert) {
   assert.expect(2);
-  set(this, 'metric', {metric: 'magic', parameters: {}});
+  set(this, 'metric', { metric: 'magic', parameters: {} });
 
-  _setModel(this, {'magic': 30});
+  _setModel(this, { magic: 30 });
   this.render(hbs`
     {{navi-visualizations/metric-label
         model=model
@@ -22,20 +22,20 @@ test('metric label renders correctly', function(assert) {
       }}
     `);
 
-  assert.equal(this.$('.metric-label-vis__description').text(),
+  assert.equal(
+    this.$('.metric-label-vis__description').text(),
     'Magic Points (MP)',
-    'metric description is correctly displayed');
+    'metric description is correctly displayed'
+  );
 
-  assert.equal(this.$('.metric-label-vis__value').text(),
-    '30',
-    'metric value is correctly displayed');
+  assert.equal(this.$('.metric-label-vis__value').text(), '30', 'metric value is correctly displayed');
 });
 
 test('metric label renders correctly when model has multiple metrics', function(assert) {
   assert.expect(2);
-  set(this, 'metric', {metric: 'magic', parameters: {}});
+  set(this, 'metric', { metric: 'magic', parameters: {} });
 
-  _setModel(this, {magic: 30, hp: 40});
+  _setModel(this, { magic: 30, hp: 40 });
   this.render(hbs`
     {{navi-visualizations/metric-label
         model=model
@@ -46,20 +46,20 @@ test('metric label renders correctly when model has multiple metrics', function(
       }}
     `);
 
-  assert.equal(this.$('.metric-label-vis__description').text(),
+  assert.equal(
+    this.$('.metric-label-vis__description').text(),
     'Magic Points (MP)',
-    'metric description is correctly displayed');
+    'metric description is correctly displayed'
+  );
 
-  assert.equal(this.$('.metric-label-vis__value').text(),
-    '30',
-    'metric value is correctly displayed');
+  assert.equal(this.$('.metric-label-vis__value').text(), '30', 'metric value is correctly displayed');
 });
 
 test('metric label renders formatted string when format not null', function(assert) {
   assert.expect(1);
 
-  set(this, 'metric', {metric: 'rupees', parameters: {}});
-  _setModel(this, {rupees: 1000000});
+  set(this, 'metric', { metric: 'rupees', parameters: {} });
+  _setModel(this, { rupees: 1000000 });
   this.render(hbs`
     {{navi-visualizations/metric-label
             model=model
@@ -70,9 +70,7 @@ test('metric label renders formatted string when format not null', function(asse
             )
       }}
     `);
-  assert.equal(this.$('.metric-label-vis__value').text(),
-    '$ 1,000,000',
-    'metric value is formatted correctly');
+  assert.equal(this.$('.metric-label-vis__value').text(), '$ 1,000,000', 'metric value is formatted correctly');
 });
 
 /**
@@ -83,7 +81,5 @@ test('metric label renders formatted string when format not null', function(asse
  * @return {Void}
  */
 function _setModel(context, row) {
-  context.set('model', Ember.A([
-    { response: { rows: [ row ] } }
-  ]));
+  context.set('model', Ember.A([{ response: { rows: [row] } }]));
 }

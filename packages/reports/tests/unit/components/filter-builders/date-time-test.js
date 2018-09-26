@@ -22,15 +22,21 @@ test('filter property', function(assert) {
     }
   });
 
-  assert.equal(dateBuilder.get('filter.subject.longName'),
+  assert.equal(
+    dateBuilder.get('filter.subject.longName'),
     'Date Time (Day)',
-    'Filter subject has a display name of "Date Time" plus the time grain');
+    'Filter subject has a display name of "Date Time" plus the time grain'
+  );
 
-  assert.deepEqual(dateBuilder.get('filter.operator'),
+  assert.deepEqual(
+    dateBuilder.get('filter.operator'),
     dateBuilder.get('supportedOperators')[0],
-    'Filter operator is the first and only supported operator');
+    'Filter operator is the first and only supported operator'
+  );
 
-  assert.deepEqual(dateBuilder.get('filter.values'),
+  assert.deepEqual(
+    dateBuilder.get('filter.values'),
     [mockFilterFragment.interval],
-    'Filter values is a single element array containing the interval from the request fragment');
+    'Filter values is a single element array containing the interval from the request fragment'
+  );
 });

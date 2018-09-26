@@ -12,7 +12,6 @@ import { getOwner } from '@ember/application';
 import { setProperties, set, get } from '@ember/object';
 
 export default Service.extend({
-
   /**
    * @property {String} identifierField - field name of the id field
    */
@@ -48,7 +47,7 @@ export default Service.extend({
    */
   resetByType(type) {
     let recordKegs = get(this, 'recordKegs'),
-        idIndexes  = get(this, 'idIndexes');
+      idIndexes = get(this, 'idIndexes');
 
     idIndexes[type] = {};
     recordKegs[type] = A();
@@ -81,19 +80,19 @@ export default Service.extend({
    * @param {String} [options.modelFactory] - name of explicit modelFactory to store
    * @returns {Array} records that were pushed to the keg
    */
-  pushMany(type, rawRecords, options={}) {
-    let factory   = this._getFactoryForType(options.modelFactory || type),
-        recordKeg = this._getRecordKegForType(type),
-        idIndex   = this._getIdIndexForType(type),
-        identifierField = get(factory, 'identifierField') || get(this, 'identifierField');
+  pushMany(type, rawRecords, options = {}) {
+    let factory = this._getFactoryForType(options.modelFactory || type),
+      recordKeg = this._getRecordKegForType(type),
+      idIndex = this._getIdIndexForType(type),
+      identifierField = get(factory, 'identifierField') || get(this, 'identifierField');
 
     let returnedRecords = A();
 
-    for(let i = 0; i < rawRecords.length; i++) {
+    for (let i = 0; i < rawRecords.length; i++) {
       let id = get(rawRecords[i], identifierField),
-          existingRecord = this.getById(type, id);
+        existingRecord = this.getById(type, id);
 
-      if(existingRecord) {
+      if (existingRecord) {
         setProperties(existingRecord, rawRecords[i]);
         returnedRecords.pushObject(existingRecord);
       } else {
@@ -130,21 +129,22 @@ export default Service.extend({
    */
   getBy(type, clause) {
     let recordKeg = this._getRecordKegForType(type),
-        foundRecords;
+      foundRecords;
 
-    if(typeof clause === 'object') {
+    if (typeof clause === 'object') {
       let fields = Object.keys(clause);
 
       foundRecords = recordKeg;
 
       fields.forEach(field => {
-        foundRecords = A(foundRecords.filter(item => {
-          let values = makeArray(clause[field]);
-          return values.indexOf(item[field]) > -1;
-        }));
+        foundRecords = A(
+          foundRecords.filter(item => {
+            let values = makeArray(clause[field]);
+            return values.indexOf(item[field]) > -1;
+          })
+        );
       });
-
-    } else if(typeof clause === 'function') {
+    } else if (typeof clause === 'function') {
       foundRecords = A(recordKeg.filter(clause));
     }
     return foundRecords;
@@ -170,7 +170,7 @@ export default Service.extend({
    * @returns {Object} - model factory
    */
   _getFactoryForType(type) {
-    if(typeOf(type) === 'string') {
+    if (typeOf(type) === 'string') {
       return getOwner(this).factoryFor(`model:${type}`).class;
     } else {
       return type;

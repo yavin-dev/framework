@@ -11,9 +11,10 @@ import { ItemActions } from 'navi-reports/services/item-action-dispatcher';
 import Ember from 'ember';
 
 //Used to mark the returned action as an instance of a closure action
-const CLOSURE_ACTION_MODULE = 'ember-glimmer/helpers/action' in Ember.__loader.registry ?
-  Ember.__loader.require('ember-glimmer/helpers/action') :
-  { };
+const CLOSURE_ACTION_MODULE =
+  'ember-glimmer/helpers/action' in Ember.__loader.registry
+    ? Ember.__loader.require('ember-glimmer/helpers/action')
+    : {};
 
 export default Helper.extend({
   /**
@@ -31,12 +32,12 @@ export default Helper.extend({
   compute([action, ...params]) {
     let actionName = ItemActions[action];
     assert(`The action name "${action}" is not a valid item action`, actionName);
-    let itemAction = (() => join(() => get(this, 'itemActionDispatcher').dispatch(actionName, ...params))),
-        actionId = CLOSURE_ACTION_MODULE.ACTION;
+    let itemAction = () => join(() => get(this, 'itemActionDispatcher').dispatch(actionName, ...params)),
+      actionId = CLOSURE_ACTION_MODULE.ACTION;
 
     //Make the report action a "real" action
     itemAction[actionId] = true;
-    
+
     return itemAction;
   }
 });

@@ -9,18 +9,18 @@ import { searchRecords } from 'navi-core/utils/search';
 import { isEmpty } from '@ember/utils';
 
 export default Mixin.create({
-    /**
-     * @property directory - directory controller
-     */
-    directory: controller(),
+  /**
+   * @property directory - directory controller
+   */
+  directory: controller(),
 
-    /**
-     * @property {Promise} searchResults - Search and rank through items in model when a search query is available
-     */
-    searchResults: computed('directory.q', 'sortedItems', function() {
-        let queryString = get(this, 'directory.q');
-        return get(this, 'sortedItems').then(
-            items => isEmpty(queryString) ? items : searchRecords(items, queryString, 'title')
-        );
-    })
+  /**
+   * @property {Promise} searchResults - Search and rank through items in model when a search query is available
+   */
+  searchResults: computed('directory.q', 'sortedItems', function() {
+    let queryString = get(this, 'directory.q');
+    return get(this, 'sortedItems').then(
+      items => (isEmpty(queryString) ? items : searchRecords(items, queryString, 'title'))
+    );
+  })
 });

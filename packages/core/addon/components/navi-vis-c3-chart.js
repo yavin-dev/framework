@@ -20,7 +20,7 @@ import Ember from 'ember';
 import C3Chart from 'ember-c3/components/c3-chart';
 import { A } from '@ember/array';
 import { inject as service } from '@ember/service';
-import $ from'jquery';
+import $ from 'jquery';
 
 const { computed, get, getProperties, set } = Ember;
 
@@ -85,16 +85,9 @@ export default C3Chart.extend({
         'transition'
       ]);
 
-      A([
-        'oninit',
-        'onrendered',
-        'onmouseover',
-        'onmouseout',
-        'onresize',
-        'onresized'
-      ]).forEach(function(eventname) {
+      A(['oninit', 'onrendered', 'onmouseover', 'onmouseout', 'onresize', 'onresized']).forEach(function(eventname) {
         c[eventname] = function() {
-          if(!self.get('isDestroyed') && !self.get('isDestroying')){
+          if (!self.get('isDestroyed') && !self.get('isDestroying')) {
             self.sendAction(eventname, this);
           }
         };
@@ -102,7 +95,8 @@ export default C3Chart.extend({
 
       c.bindto = self.$().get(0);
       return c;
-    }),
+    }
+  ),
 
   /**
    * Fires when the `data` property updates
@@ -113,7 +107,7 @@ export default C3Chart.extend({
   dataDidChange() {
     // Add custom classes to each data series for easier reference and coloring
     let { data, dataClasses } = getProperties(this, 'data', 'dataClasses'),
-        dataWithClasses = Ember.assign({}, { classes: dataClasses }, data);
+      dataWithClasses = Ember.assign({}, { classes: dataClasses }, data);
 
     get(this, 'chart').load(dataWithClasses);
 
@@ -123,10 +117,10 @@ export default C3Chart.extend({
      */
     let dataSelection = get(this, 'dataSelection');
     if (dataSelection) {
-      dataSelection.then((insightsData) => {
+      dataSelection.then(insightsData => {
         let metricName = get(this, 'metricName'),
-            metrics = get(this, 'axis.y.series.config.metrics').map(metric => metricName.getDisplayName(metric)),
-            dataSelectionIndices = insightsData.mapBy('index');
+          metrics = get(this, 'axis.y.series.config.metrics').map(metric => metricName.getDisplayName(metric)),
+          dataSelectionIndices = insightsData.mapBy('index');
         get(this, 'chart').select(metrics, dataSelectionIndices);
       });
     } else {
@@ -198,7 +192,7 @@ export default C3Chart.extend({
    */
   _resizeFunc() {
     // Fill the parent container
-    if(!get(this, 'isDestroyed') && !get(this, 'isDestroying')) {
+    if (!get(this, 'isDestroyed') && !get(this, 'isDestroying')) {
       this.$().css('max-height', '100%');
       this.$().css('min-height', '100%');
 
@@ -207,7 +201,6 @@ export default C3Chart.extend({
   },
 
   didInsertElement() {
-
     //load data
     this.dataDidChange();
 

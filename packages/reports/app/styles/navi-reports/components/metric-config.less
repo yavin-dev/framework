@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
- @metric-config--content-height: 200px;
+@metric-config--content-height: 200px;
 
 .metric-config {
   &__done-btn {
@@ -17,9 +17,10 @@
     padding: 5px 10px;
     max-width: 280px;
 
-    &:before, &:after {
+    &:before,
+    &:after {
       border: solid transparent;
-      content: " ";
+      content: ' ';
       height: 0;
       position: absolute;
       pointer-events: none;
@@ -89,7 +90,8 @@
     .clickable;
     font-size: @font-size-base;
 
-    &:hover, &:focus {
+    &:hover,
+    &:focus {
       color: @navi-blue;
     }
   }

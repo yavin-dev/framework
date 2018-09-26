@@ -16,14 +16,14 @@ export default VisualizationSerializer.extend({
    * @return {Object} normalized payload
    */
   normalize(type, visualization) {
-    if(visualization) {
+    if (visualization) {
       let config = get(visualization, 'metadata.axis.y.series.config'),
-          seriesType = get(visualization, 'metadata.axis.y.series.type');
+        seriesType = get(visualization, 'metadata.axis.y.series.type');
 
       let metrics = get(config, 'metrics') || [get(config, 'metric')],
-          metricObjects = metrics.map(metric => parseMetricName(metric));
+        metricObjects = metrics.map(metric => parseMetricName(metric));
 
-      if(seriesType === 'metric') {
+      if (seriesType === 'metric') {
         visualization.metadata.axis.y.series.config.metrics = metricObjects;
       } else {
         visualization.metadata.axis.y.series.config.metric = metricObjects[0];

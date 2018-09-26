@@ -10,7 +10,6 @@ const { isEmpty } = Ember;
 
 export default BaseValidator.extend({
   validate(value, options) {
-
     if (!options || isEmpty(Object.keys(options))) {
       return true;
     }

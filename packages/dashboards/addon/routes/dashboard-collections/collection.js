@@ -12,7 +12,7 @@ export default Ember.Route.extend({
    *
    * Makes an ajax request to retrieve relevant dashbords in the collection
    */
-  model({ collectionId }){
+  model({ collectionId }) {
     return this.store.find('dashboard-collection', collectionId);
   }
 });

@@ -9,32 +9,43 @@ test('validate request-filters', function(assert) {
   assert.expect(2);
 
   let Validator = this.subject(),
-      request = {
-        filters: arr([
-          { dimension: { name: 'dim1' }, rawValues: ['d1'] },
-          { dimension: { name: 'dim2' }, rawValues: ['d2'] }
-        ])
-      };
+    request = {
+      filters: arr([
+        { dimension: { name: 'dim1' }, rawValues: ['d1'] },
+        { dimension: { name: 'dim2' }, rawValues: ['d2'] }
+      ])
+    };
 
-  let series = arr([{
-    values: { dim1: 'd1' }
-  },{
-    values: { dim2: 'd2' }
-  }]);
+  let series = arr([
+    {
+      values: { dim1: 'd1' }
+    },
+    {
+      values: { dim2: 'd2' }
+    }
+  ]);
 
-  assert.equal(Validator.validate(series, { request }),
+  assert.equal(
+    Validator.validate(series, { request }),
     true,
-    'request-filters returns `true` when dimensions in series match filters in request');
+    'request-filters returns `true` when dimensions in series match filters in request'
+  );
 
-  series = arr([{
-    values: { dim1: 'd1' }
-  },{
-    values: { dim1: 'd' }
-  },{
-    values: { dim2: 'd2' }
-  }]);
+  series = arr([
+    {
+      values: { dim1: 'd1' }
+    },
+    {
+      values: { dim1: 'd' }
+    },
+    {
+      values: { dim2: 'd2' }
+    }
+  ]);
 
-  assert.equal(Validator.validate(series, { request }),
+  assert.equal(
+    Validator.validate(series, { request }),
     false,
-    'request-filters returns `false` when dimensions in series are not in request filters');
+    'request-filters returns `false` when dimensions in series are not in request filters'
+  );
 });

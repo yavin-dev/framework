@@ -17,7 +17,9 @@ moduleForComponent('visualization-config/table', 'Unit | Component | table confi
   ],
   beforeEach() {
     this.server = startMirage();
-    Ember.getOwner(this).lookup('service:bard-metadata').loadMetadata();
+    Ember.getOwner(this)
+      .lookup('service:bard-metadata')
+      .loadMetadata();
   },
   afterEach() {
     this.server.shutdown();
@@ -29,12 +31,14 @@ test('dimensions', function(assert) {
 
   let request = {
     dimensions: [
-      { dimension: { name: 'os',  longName: 'Operating System' }},
-      { dimension: { name: 'age', longName: 'Age' }}
+      { dimension: { name: 'os', longName: 'Operating System' } },
+      { dimension: { name: 'age', longName: 'Age' } }
     ]
   };
 
-  assert.deepEqual(Ember.A(this.subject({request}).get('dimensions')).mapBy('longName'),
-    [ 'Operating System', 'Age' ],
-    'The metadata for each of the dimensions in the request is fetched using the metadata service');
+  assert.deepEqual(
+    Ember.A(this.subject({ request }).get('dimensions')).mapBy('longName'),
+    ['Operating System', 'Age'],
+    'The metadata for each of the dimensions in the request is fetched using the metadata service'
+  );
 });

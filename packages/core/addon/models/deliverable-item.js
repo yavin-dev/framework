@@ -4,16 +4,19 @@
  */
 
 import DS from 'ember-data';
-import { A as arr } from '@ember/array'
-import { computed, get } from '@ember/object'
+import { A as arr } from '@ember/array';
+import { computed, get } from '@ember/object';
 
 export default DS.Model.extend({
-  deliveryRules: DS.hasMany('deliveryRule', { async: true, inverse: 'deliveredItem' }),
+  deliveryRules: DS.hasMany('deliveryRule', {
+    async: true,
+    inverse: 'deliveredItem'
+  }),
 
   /**
    * @property {DS.Model} deliveryRuleForUser - delivery rule model
    */
-  deliveryRuleForUser: computed('user', 'deliveryRules.[]', function () {
+  deliveryRuleForUser: computed('user', 'deliveryRules.[]', function() {
     let userId = get(get(this, 'user').getUser(), 'id');
 
     return DS.PromiseObject.create({

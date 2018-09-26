@@ -25,14 +25,14 @@ export default Helper.extend({
    * @param metric - serialized bard-request metric fragment
    * @returns {string} - formatted metric
    */
-  compute([metric, /*...rest*/]) {
+  compute([metric /*...rest*/]) {
     let longName = '--';
-    if(!metric) {
+    if (!metric) {
       return longName;
     }
 
     let metricId = get(metric, 'metric');
-    if(isPresent(metricId)) {
+    if (isPresent(metricId)) {
       longName = get(this, 'metricName').getLongName(metricId);
     }
     return metricFormat(metric, longName);
@@ -40,8 +40,10 @@ export default Helper.extend({
 });
 
 function _formatParameters(obj) {
-  return Object.entries(obj).filter(([key, ]) => key !== 'as')
-    .map(([, val]) => val).join(',');
+  return Object.entries(obj)
+    .filter(([key]) => key !== 'as')
+    .map(([, val]) => val)
+    .join(',');
 }
 
 /**
@@ -51,6 +53,7 @@ function _formatParameters(obj) {
  * @returns {string} - formatted string
  */
 export function metricFormat(metric, longName = '--') {
-  return isPresent(metric) && hasParameters(metric) ?
-    `${longName} (${_formatParameters(get(metric, 'parameters'))})` : longName;
+  return isPresent(metric) && hasParameters(metric)
+    ? `${longName} (${_formatParameters(get(metric, 'parameters'))})`
+    : longName;
 }

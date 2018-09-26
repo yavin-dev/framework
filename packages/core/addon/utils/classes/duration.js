@@ -23,18 +23,14 @@ const DATE_UNITS = {
 const TIME_UNITS = {
   H: 'hour',
   M: 'minute',
-  S: 'second',
+  S: 'second'
 };
 
 // Regex for parsing iso date duration strings
-const VALID_ISO_DATE_DURATION = new RegExp(
-  `^P([1-9]\\d*)([${Object.keys(DATE_UNITS).join('')}]$)`
-);
+const VALID_ISO_DATE_DURATION = new RegExp(`^P([1-9]\\d*)([${Object.keys(DATE_UNITS).join('')}]$)`);
 
 // Regex for parsing iso time duration strings
-const VALID_ISO_TIME_DURATION = new RegExp(
-  `^PT([1-9]\\d*)([${Object.keys(TIME_UNITS).join('')}]$)`
-);
+const VALID_ISO_TIME_DURATION = new RegExp(`^PT([1-9]\\d*)([${Object.keys(TIME_UNITS).join('')}]$)`);
 
 // Designator for all duration
 const ALL = '__ALL__';
@@ -46,20 +42,19 @@ const ALL = '__ALL__';
  * @param {String} duration
  * @returns {Array|null} - [value, unit]
  */
-export function parseDuration (duration) {
-
+export function parseDuration(duration) {
   if (duration === ALL) {
     // All Duration with value as all-designator and unit as undefined
     return [duration, undefined];
   }
 
   let time = VALID_ISO_TIME_DURATION.exec(duration);
-  if(time) {
+  if (time) {
     return [Number(time[1]), TIME_UNITS[time[2]]];
   }
 
   let date = VALID_ISO_DATE_DURATION.exec(duration);
-  if(date) {
+  if (date) {
     return [Number(date[1]), DATE_UNITS[date[2]]];
   }
 
@@ -80,14 +75,12 @@ export function isIsoDurationString(duration) {
  * @class
  */
 let DurationClass = class Duration {
-
   /**
    * Duration constructor
    *
    * @param {String} isoDuration
    */
-  constructor (isoDuration) {
-
+  constructor(isoDuration) {
     let duration = parseDuration(isoDuration);
     Ember.assert(`${isoDuration} is an Invalid ISO duration`, duration);
 
@@ -154,7 +147,7 @@ let DurationClass = class Duration {
     // unit should be plural if value is greater than one
     let unit = Ember.String.capitalize(this._unit);
     if (value > 1) {
-      unit+='s';
+      unit += 's';
     }
     return `${value} ${unit}`;
   }
@@ -167,11 +160,10 @@ let DurationClass = class Duration {
    * @returns {number} - 0 for equality, -1 for less than, 1 for greater than
    */
   compare(durationString) {
-
     let [value, unit] = parseDuration(durationString),
-        instanceValue = this._value;
+      instanceValue = this._value;
 
-    if(value === ALL || Duration.isAll(this)) {
+    if (value === ALL || Duration.isAll(this)) {
       // Treating all duration as infinity for numerical comparison
       value = value === ALL ? Infinity : value;
       instanceValue = this._value === ALL ? Infinity : this._value;
@@ -182,9 +174,9 @@ let DurationClass = class Duration {
 
     //Considering default case as equals
     let result = 0;
-    if(instanceValue < value) {
+    if (instanceValue < value) {
       result = -1;
-    } else if(instanceValue > value) {
+    } else if (instanceValue > value) {
       result = 1;
     }
 
@@ -200,8 +192,8 @@ let DurationClass = class Duration {
    * @returns {Boolean} - true if duration is all duration else false
    */
   static isAll(duration) {
-    if(Duration.isDuration(duration)) {
-      return (duration.getValue() === ALL) && (duration.getUnit() === undefined);
+    if (Duration.isDuration(duration)) {
+      return duration.getValue() === ALL && duration.getUnit() === undefined;
     }
     return false;
   }

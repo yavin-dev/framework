@@ -11,14 +11,10 @@ import { v1 } from 'ember-uuid';
 import hasVisualization from 'navi-core/mixins/models/has-visualization';
 import { validator, buildValidations } from 'ember-cp-validations';
 
-const { A:arr, get, computed } = Ember;
+const { A: arr, get, computed } = Ember;
 const Validations = buildValidations({
-  visualization: [
-    validator('belongs-to')
-  ],
-  request: [
-    validator('belongs-to')
-  ],
+  visualization: [validator('belongs-to')],
+  request: [validator('belongs-to')],
   title: [
     validator('presence', {
       presence: true,
@@ -29,19 +25,18 @@ const Validations = buildValidations({
 });
 
 export default DeliverableItem.extend(hasVisualization, Validations, {
-
   /* == Attributes == */
-  title:          DS.attr('string', { defaultValue: 'Untitled Report' }),
-  createdOn:      DS.attr('moment'),
-  updatedOn:      DS.attr('moment'),
-  author:         DS.belongsTo('user', {async: true}),
-  request:        MF.fragment('bard-request/request', { defaultValue: {} }),
+  title: DS.attr('string', { defaultValue: 'Untitled Report' }),
+  createdOn: DS.attr('moment'),
+  updatedOn: DS.attr('moment'),
+  author: DS.belongsTo('user', { async: true }),
+  request: MF.fragment('bard-request/request', { defaultValue: {} }),
 
   /**
    * @property {String} tempId - uuid for unsaved records
    */
   tempId: computed('id', function() {
-    if(get(this, 'id')) {
+    if (get(this, 'id')) {
       return null;
     } else {
       return v1();
@@ -66,7 +61,7 @@ export default DeliverableItem.extend(hasVisualization, Validations, {
    */
   isFavorite: computed(function() {
     let user = get(this, 'user').getUser(),
-        favoriteReports = user.hasMany('favoriteReports').ids();
+      favoriteReports = user.hasMany('favoriteReports').ids();
 
     return arr(favoriteReports).includes(get(this, 'id'));
   }).volatile(),

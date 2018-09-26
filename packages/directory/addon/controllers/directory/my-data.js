@@ -18,5 +18,5 @@ export default Controller.extend(SearchFilterMixin, {
 
     let sortedItems = arr(items).sortBy(sortBy);
     return sortBy === 'updatedOn' ? reverse(sortedItems) : sortedItems;
-  }),
+  })
 });

@@ -20,9 +20,9 @@ export default Mixin.create({
      */
     buildUrl(model) {
       let modelId = get(model, 'id'),
-          modelType = get(model, 'constructor.modelName'),
-          baseUrl = document.location.origin,
-          modelUrl = get(this, 'router').urlFor(`${modelType}s.${modelType}`, modelId);
+        modelType = get(model, 'constructor.modelName'),
+        baseUrl = document.location.origin,
+        modelUrl = get(this, 'router').urlFor(`${modelType}s.${modelType}`, modelId);
 
       return baseUrl + modelUrl;
     }

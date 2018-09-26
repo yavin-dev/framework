@@ -13,7 +13,7 @@ import FileTypes from 'navi-directory/utils/enums/file-types';
 export default Component.extend({
   layout,
 
-  classNames: [ 'dir-new-button' ],
+  classNames: ['dir-new-button'],
 
   /**
    * @method calculatePosition
@@ -21,12 +21,12 @@ export default Component.extend({
    */
   calculatePosition(trigger, content) {
     let { top, left, width, height } = trigger.getBoundingClientRect(),
-        { width: contentWidth } = content.getBoundingClientRect(),
-        marginFromTopBar = 15,
-        style = {
-          left: left - contentWidth + width,
-          top: top + height + marginFromTopBar
-        };
+      { width: contentWidth } = content.getBoundingClientRect(),
+      marginFromTopBar = 15,
+      style = {
+        left: left - contentWidth + width,
+        top: top + height + marginFromTopBar
+      };
 
     return { style };
   },

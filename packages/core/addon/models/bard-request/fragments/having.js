@@ -11,34 +11,38 @@ import { metricFormat } from 'navi-data/helpers/metric-format';
 
 const { Fragment, fragment } = MF;
 
-const { A:array, computed, get, set } = Ember,
-      Validations = buildValidations({
-        metric: validator('presence', {
-          presence: true,
-          message: 'The metric field in the having cannot be empty'
-        }),
-        operator: validator('presence', {
-          presence: true,
-          message: 'The operator field in the having cannot be empty'
-        }),
-        values: [
-          validator('length', {
-            min: 1,
-            message: 'The values field in the having cannot be empty'
-          }),
-          validator('array-number', {
-            message() {
-              let metricName = get(this, 'model.metric.metric.longName');
-              return `${metricFormat(get(this, 'model.metric'), metricName)} filter must be a number`;
-            }
-          })
-        ]
-      });
+const { A: array, computed, get, set } = Ember,
+  Validations = buildValidations({
+    metric: validator('presence', {
+      presence: true,
+      message: 'The metric field in the having cannot be empty'
+    }),
+    operator: validator('presence', {
+      presence: true,
+      message: 'The operator field in the having cannot be empty'
+    }),
+    values: [
+      validator('length', {
+        min: 1,
+        message: 'The values field in the having cannot be empty'
+      }),
+      validator('array-number', {
+        message() {
+          let metricName = get(this, 'model.metric.metric.longName');
+          return `${metricFormat(get(this, 'model.metric'), metricName)} filter must be a number`;
+        }
+      })
+    ]
+  });
 
 export default Fragment.extend(Validations, {
-  metric:   fragment('bard-request/fragments/metric', { defaultValue: () => { return {}; } }),
+  metric: fragment('bard-request/fragments/metric', {
+    defaultValue: () => {
+      return {};
+    }
+  }),
   operator: DS.attr('string', { defaultValue: 'gt' }),
-  values:   DS.attr({ defaultValue: () => Ember.A([]) }),
+  values: DS.attr({ defaultValue: () => Ember.A([]) }),
 
   value: computed('values', {
     get() {

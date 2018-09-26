@@ -23,10 +23,10 @@ moduleFor('route:dashboard-collections/collection', 'Unit | Route | dashboard co
     'service:user',
     'validator:presence'
   ],
-  beforeEach(){
+  beforeEach() {
     setupMock();
   },
-  afterEach(){
+  afterEach() {
     teardownMock();
   }
 });
@@ -36,25 +36,18 @@ test('model', function(assert) {
 
   return Ember.run(() => {
     let params = { collectionId: 1 },
-        route = this.subject(),
-        modelPromise = route.model(params);
+      route = this.subject(),
+      modelPromise = route.model(params);
 
-    assert.ok(modelPromise.then,
-      'Route returns a promise in the model hook');
+    assert.ok(modelPromise.then, 'Route returns a promise in the model hook');
 
     return modelPromise.then(model => {
-      assert.equal(model.id,
-        params.collectionId,
-        'The requested collection is retrieved');
+      assert.equal(model.id, params.collectionId, 'The requested collection is retrieved');
 
-      assert.equal(model.get('title'),
-        `Collection ${params.collectionId}`,
-        'The requested collection is retrieved');
+      assert.equal(model.get('title'), `Collection ${params.collectionId}`, 'The requested collection is retrieved');
 
-      return model.get('dashboards').then((dashboards) => {
-        assert.equal(dashboards.length,
-          2,
-          'The requested collection is retrieved with the two dashboards');
+      return model.get('dashboards').then(dashboards => {
+        assert.equal(dashboards.length, 2, 'The requested collection is retrieved with the two dashboards');
       });
     });
   });

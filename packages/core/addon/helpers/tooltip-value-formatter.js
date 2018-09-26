@@ -15,7 +15,7 @@ import { smartFormatNumber } from 'navi-core/helpers/smart-format-number';
  * @param {Object} row - response row for the current value and metric
  * @return {String} Formatted string for the provided number
  */
-export function tooltipValueFormatter([ value /*, metric, rowData*/ ]) {
+export function tooltipValueFormatter([value /*, metric, rowData*/]) {
   return smartFormatNumber([value]);
 }
 

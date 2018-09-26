@@ -56,21 +56,18 @@ export default Ember.Component.extend(DebouncedPropertiesMixin, {
    */
   filteredSeriesData: computed('debouncedSearchTerm', 'availableSeriesData', function() {
     let query = get(this, 'debouncedSearchTerm'),
-        searchBy = 'searchKey',
-        items = get(this, 'availableSeriesData');
+      searchBy = 'searchKey',
+      items = get(this, 'availableSeriesData');
 
-        // Empty query returns all items
+    // Empty query returns all items
     if (Ember.isBlank(query)) {
       return items;
     }
 
     // Filter items based on whether "searchBy" property matches search term
-    return items.filter((item) => {
+    return items.filter(item => {
       // Ignore word order and text case when searching
-      return Search.getPartialMatchWeight(
-        get(item, searchBy).toLowerCase(),
-        query.toLowerCase()
-      );
+      return Search.getPartialMatchWeight(get(item, searchBy).toLowerCase(), query.toLowerCase());
     });
   }),
 
@@ -127,8 +124,10 @@ export default Ember.Component.extend(DebouncedPropertiesMixin, {
     let scrollableContainer = this.$(`.${get(this, 'scrollableContainerClass')}`);
 
     scrollableContainer.on(SCROLL_EVENT, this, () => {
-      if(scrollableContainer.scrollTop() + scrollableContainer.innerHeight() >=
-                scrollableContainer[0].scrollHeight * (1 - (SCROLL_BUFFER/100))) {
+      if (
+        scrollableContainer.scrollTop() + scrollableContainer.innerHeight() >=
+        scrollableContainer[0].scrollHeight * (1 - SCROLL_BUFFER / 100)
+      ) {
         this._paginate();
       }
     });
@@ -158,14 +157,14 @@ export default Ember.Component.extend(DebouncedPropertiesMixin, {
    * @returns {Void}
    */
   _paginate() {
-    let filteredData  = get(this, 'filteredSeriesData'),
-        paginatedData = get(this, 'paginatedSeriesData'),
-        currentPage   = get(this, 'currentPage'),
-        pageSize      = get(this, 'pageSize');
+    let filteredData = get(this, 'filteredSeriesData'),
+      paginatedData = get(this, 'paginatedSeriesData'),
+      currentPage = get(this, 'currentPage'),
+      pageSize = get(this, 'pageSize');
 
-    if(pageSize * currentPage < get(filteredData, 'length')) {
+    if (pageSize * currentPage < get(filteredData, 'length')) {
       let newPage = this.incrementProperty('currentPage'),
-          offset  = newPage * pageSize;
+        offset = newPage * pageSize;
       paginatedData.pushObjects(filteredData.slice(offset, offset + pageSize));
     }
   },

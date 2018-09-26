@@ -60,29 +60,29 @@ export default Ember.Component.extend({
    */
   seriesByDimensions: computed('dataByDimensions', function() {
     let dataByDimensions = get(this, 'dataByDimensions'),
-        dimensions = get(this, 'dimensions'),
-        keys = dataByDimensions.getKeys(),
-        series = {};
+      dimensions = get(this, 'dimensions'),
+      keys = dataByDimensions.getKeys(),
+      series = {};
 
     // Build a series object for each series key
     for (let i = 0; i < keys.length; i++) {
       let key = keys[i],
-          data = dataByDimensions.getDataForKey(key);
+        data = dataByDimensions.getDataForKey(key);
 
-          /*
-           * Build a search key by adding all dimension ids + descriptions
-           * along with a collection of dimensions used by series
-           */
+      /*
+       * Build a search key by adding all dimension ids + descriptions
+       * along with a collection of dimensions used by series
+       */
       let searchKey = '',
-          seriesDims = [],
-          values = {},
-          dimensionLabels = [];
+        seriesDims = [],
+        values = {},
+        dimensionLabels = [];
 
-      for(let dimIndex = 0; dimIndex < dimensions.length; dimIndex++) {
+      for (let dimIndex = 0; dimIndex < dimensions.length; dimIndex++) {
         // Pull dimension id + description from response data
         let dimension = dimensions[dimIndex],
-            id = get(data, `0.${dimension.name}|id`),
-            description = get(data, `0.${dimension.name}|desc`);
+          id = get(data, `0.${dimension.name}|id`),
+          description = get(data, `0.${dimension.name}|desc`);
 
         searchKey += `${id} ${description} `;
 
@@ -95,7 +95,7 @@ export default Ember.Component.extend({
         });
 
         dimensionLabels.push(description || id);
-        Ember.assign(values, { [get(dimension, 'name')] : id });
+        Ember.assign(values, { [get(dimension, 'name')]: id });
       }
 
       series[key] = {
@@ -125,11 +125,11 @@ export default Ember.Component.extend({
    */
   selectedSeriesData: computed('seriesConfig', function() {
     let dimensionOrder = get(this, 'seriesConfig.dimensionOrder'),
-        selectedDimensions = get(this, 'seriesConfig.dimensions');
+      selectedDimensions = get(this, 'seriesConfig.dimensions');
 
-    let keys = Ember.A(selectedDimensions).mapBy('values').map(
-      value => dimensionOrder.map(dimension => value[dimension]).join('|')
-    );
+    let keys = Ember.A(selectedDimensions)
+      .mapBy('values')
+      .map(value => dimensionOrder.map(dimension => value[dimension]).join('|'));
     return keys.map(key => get(this, 'seriesByDimensions')[key]);
   }),
 
@@ -163,12 +163,10 @@ export default Ember.Component.extend({
      */
     onRemoveSeries(series) {
       let seriesInConfig = get(this, 'seriesConfig.dimensions'),
-          newSeriesConfig = copy(get(this, 'seriesConfig'));
+        newSeriesConfig = copy(get(this, 'seriesConfig'));
 
-          //remove series from config
-      set(newSeriesConfig, 'dimensions',
-        _.reject(seriesInConfig, series.config)
-      );
+      //remove series from config
+      set(newSeriesConfig, 'dimensions', _.reject(seriesInConfig, series.config));
       this.sendAction('onUpdateConfig', newSeriesConfig);
     }
   }

@@ -2,7 +2,7 @@ import Ember from 'ember';
 import moment from 'moment';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import { initialize as injectC3Enhancements} from 'navi-core/initializers/inject-c3-enhancements';
+import { initialize as injectC3Enhancements } from 'navi-core/initializers/inject-c3-enhancements';
 import DateUtils from 'navi-core/utils/date';
 import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
 import { getOwner } from '@ember/application';
@@ -15,56 +15,56 @@ const TEMPLATE = hbs`
     options=options
   }}`;
 
-const Model = Ember.A([{
-  request: {
-    metrics: [
-      'uniqueIdentifier', 'totalPageViews', 'revenue(currency=USD)'
-    ],
-    intervals: [
-      {
-        start: '2016-05-30 00:00:00.000',
-        end: '2016-06-04 00:00:00.000'
+const Model = Ember.A([
+  {
+    request: {
+      metrics: ['uniqueIdentifier', 'totalPageViews', 'revenue(currency=USD)'],
+      intervals: [
+        {
+          start: '2016-05-30 00:00:00.000',
+          end: '2016-06-04 00:00:00.000'
+        }
+      ],
+      logicalTable: {
+        timeGrain: 'day'
       }
-    ],
-    logicalTable: {
-      timeGrain: 'day'
+    },
+    response: {
+      rows: [
+        {
+          dateTime: '2016-05-30 00:00:00.000',
+          uniqueIdentifier: 172933788,
+          totalPageViews: 3669828357,
+          'revenue(currency=USD)': 2000323439.23
+        },
+        {
+          dateTime: '2016-05-31 00:00:00.000',
+          uniqueIdentifier: 183206656,
+          totalPageViews: 4088487125,
+          'revenue(currency=USD)': 1999243823.74
+        },
+        {
+          dateTime: '2016-06-01 00:00:00.000',
+          uniqueIdentifier: 183380921,
+          totalPageViews: 4024700302,
+          'revenue(currency=USD)': 1400324934.92
+        },
+        {
+          dateTime: '2016-06-02 00:00:00.000',
+          uniqueIdentifier: 180559793,
+          totalPageViews: 3950276031,
+          'revenue(currency=USD)': 923843934.11
+        },
+        {
+          dateTime: '2016-06-03 00:00:00.000',
+          uniqueIdentifier: 172724594,
+          totalPageViews: 3697156058,
+          'revenue(currency=USD)': 1623430236.42
+        }
+      ]
     }
-  },
-  response: {
-    rows: [
-      {
-        "dateTime": "2016-05-30 00:00:00.000",
-        "uniqueIdentifier": 172933788,
-        "totalPageViews": 3669828357,
-        'revenue(currency=USD)': 2000323439.23
-      },
-      {
-        "dateTime": "2016-05-31 00:00:00.000",
-        "uniqueIdentifier": 183206656,
-        "totalPageViews": 4088487125,
-        'revenue(currency=USD)': 1999243823.74
-      },
-      {
-        "dateTime": "2016-06-01 00:00:00.000",
-        "uniqueIdentifier": 183380921,
-        "totalPageViews": 4024700302,
-        'revenue(currency=USD)': 1400324934.92
-      },
-      {
-        "dateTime": "2016-06-02 00:00:00.000",
-        "uniqueIdentifier": 180559793,
-        "totalPageViews": 3950276031,
-        'revenue(currency=USD)': 923843934.11
-      },
-      {
-        "dateTime": "2016-06-03 00:00:00.000",
-        "uniqueIdentifier": 172724594,
-        "totalPageViews": 3697156058,
-        'revenue(currency=USD)': 1623430236.42
-      }
-    ]
   }
-}]);
+]);
 
 moduleForComponent('navi-visualizations/line-chart', 'Integration | Component | line chart', {
   integration: true,
@@ -82,7 +82,9 @@ moduleForComponent('navi-visualizations/line-chart', 'Integration | Component | 
                 {
                   metric: 'uniqueIdentifier',
                   canonicalName: 'uniqueIdentifier',
-                  toJSON() { return this; }
+                  toJSON() {
+                    return this;
+                  }
                 }
               ]
             }
@@ -105,55 +107,57 @@ test('it renders', function(assert) {
 
   this.render(TEMPLATE);
 
-  assert.ok(this.$('.navi-vis-c3-chart').is(':visible'),
-    'The line chart widget component is visible');
+  assert.ok(this.$('.navi-vis-c3-chart').is(':visible'), 'The line chart widget component is visible');
 
-  assert.equal(this.$('.c3-chart-line').length,
-    1,
-    'One chart line is present on the chart');
+  assert.equal(this.$('.c3-chart-line').length, 1, 'One chart line is present on the chart');
 });
 
 test('missing data - metrics', function(assert) {
   assert.expect(1);
 
-  this.set('model', Ember.A([{
-    request: {
-      metrics: [
-        'uniqueIdentifier'
-      ],
-      intervals: [
-        {
-          start: '2016-05-30 00:00:00.000',
-          end: '2016-06-02 00:00:00.000'
-        }
-      ],
-      logicalTable: {
-        timeGrain: 'day'
-      }
-    },
-    response: {
-      rows: [
-        {
-          "dateTime": "2016-05-30 00:00:00.000",
-          "uniqueIdentifier": 172933788
+  this.set(
+    'model',
+    Ember.A([
+      {
+        request: {
+          metrics: ['uniqueIdentifier'],
+          intervals: [
+            {
+              start: '2016-05-30 00:00:00.000',
+              end: '2016-06-02 00:00:00.000'
+            }
+          ],
+          logicalTable: {
+            timeGrain: 'day'
+          }
         },
-        {
-          "dateTime": "2016-06-01 00:00:00.000",
-          "uniqueIdentifier": 183380921
+        response: {
+          rows: [
+            {
+              dateTime: '2016-05-30 00:00:00.000',
+              uniqueIdentifier: 172933788
+            },
+            {
+              dateTime: '2016-06-01 00:00:00.000',
+              uniqueIdentifier: 183380921
+            }
+          ]
         }
-      ]
-    }
-  }]));
+      }
+    ])
+  );
 
   this.render(TEMPLATE);
 
-  assert.deepEqual(this.$('.c3-circle').map(function() { return $(this).css('opacity'); }).get(),
-    [
-      '1',
-      '0',
-      '1'
-    ],
-    'Missing data points are hidden by the chart');
+  assert.deepEqual(
+    this.$('.c3-circle')
+      .map(function() {
+        return $(this).css('opacity');
+      })
+      .get(),
+    ['1', '0', '1'],
+    'Missing data points are hidden by the chart'
+  );
 });
 
 test('missing data - dimensions', function(assert) {
@@ -168,13 +172,15 @@ test('missing data - dimensions', function(assert) {
             metric: {
               metric: 'uniqueIdentifier',
               canonicalName: 'uniqueIdentifier',
-              toJSON() { return this; }
+              toJSON() {
+                return this;
+              }
             },
             dimensionOrder: ['age'],
             dimensions: [
               {
                 name: 'All Other',
-                values: {age: '-3'}
+                values: { age: '-3' }
               }
             ]
           }
@@ -183,48 +189,53 @@ test('missing data - dimensions', function(assert) {
     }
   });
 
-  this.set('model', Ember.A([{
-    request: {
-      metrics: [
-        'uniqueIdentifier'
-      ],
-      intervals: [
-        {
-          start: '2016-05-30 00:00:00.000',
-          end: '2016-06-02 00:00:00.000'
-        }
-      ],
-      logicalTable: {
-        timeGrain: 'day'
-      }
-    },
-    response: {
-      rows: [
-        {
-          "dateTime": "2016-05-30 00:00:00.000",
-          "age|id": "-3",
-          "age|desc": "All Other",
-          "uniqueIdentifier": 172933788
+  this.set(
+    'model',
+    Ember.A([
+      {
+        request: {
+          metrics: ['uniqueIdentifier'],
+          intervals: [
+            {
+              start: '2016-05-30 00:00:00.000',
+              end: '2016-06-02 00:00:00.000'
+            }
+          ],
+          logicalTable: {
+            timeGrain: 'day'
+          }
         },
-        {
-          "dateTime": "2016-06-01 00:00:00.000",
-          "age|id": "-3",
-          "age|desc": "All Other",
-          "uniqueIdentifier": 183380921
+        response: {
+          rows: [
+            {
+              dateTime: '2016-05-30 00:00:00.000',
+              'age|id': '-3',
+              'age|desc': 'All Other',
+              uniqueIdentifier: 172933788
+            },
+            {
+              dateTime: '2016-06-01 00:00:00.000',
+              'age|id': '-3',
+              'age|desc': 'All Other',
+              uniqueIdentifier: 183380921
+            }
+          ]
         }
-      ]
-    }
-  }]));
+      }
+    ])
+  );
 
   this.render(TEMPLATE);
 
-  assert.deepEqual(this.$('.c3-circle').map(function() { return $(this).css('opacity'); }).get(),
-    [
-      '1',
-      '0',
-      '1'
-    ],
-    'Missing data points are hidden by the chart');
+  assert.deepEqual(
+    this.$('.c3-circle')
+      .map(function() {
+        return $(this).css('opacity');
+      })
+      .get(),
+    ['1', '0', '1'],
+    'Missing data points are hidden by the chart'
+  );
 });
 
 test('multiple series', function(assert) {
@@ -240,12 +251,16 @@ test('multiple series', function(assert) {
               {
                 metric: 'uniqueIdentifier',
                 canonicalName: 'uniqueIdentifier',
-                toJSON() { return this; }
+                toJSON() {
+                  return this;
+                }
               },
               {
                 metric: 'totalPageViews',
                 canonicalName: 'totalPageViews',
-                toJSON() { return this; }
+                toJSON() {
+                  return this;
+                }
               },
               {
                 metric: 'revenue',
@@ -253,7 +268,9 @@ test('multiple series', function(assert) {
                   currency: 'USD'
                 },
                 canonicalName: 'revenue(currency=USD)',
-                toJSON() { return this; }
+                toJSON() {
+                  return this;
+                }
               }
             ]
           }
@@ -265,9 +282,11 @@ test('multiple series', function(assert) {
   this.set('model', Model);
   this.render(TEMPLATE);
 
-  assert.equal(this.$('.c3-chart-line').length,
+  assert.equal(
+    this.$('.c3-chart-line').length,
     3,
-    'Three chart lines are present in the chart based on the metrics in the request');
+    'Three chart lines are present in the chart based on the metrics in the request'
+  );
 });
 
 test('y axis label', function(assert) {
@@ -282,29 +301,31 @@ test('y axis label', function(assert) {
             metric: {
               metric: 'totalPageViews',
               canonicalName: 'totalPageViews',
-              toJSON() { return this; }
+              toJSON() {
+                return this;
+              }
             },
             dimensionOrder: ['age'],
             dimensions: [
               {
                 name: 'All Other',
-                values: {age: '-3'}
+                values: { age: '-3' }
               },
               {
                 name: 'under 13',
-                values: {age: '1'}
+                values: { age: '1' }
               },
               {
                 name: '13 - 25',
-                values: {age: '2'}
+                values: { age: '2' }
               },
               {
                 name: '25 - 35',
-                values: {age: '3'}
+                values: { age: '3' }
               },
               {
                 name: '35 - 45',
-                values: {age: '4'}
+                values: { age: '4' }
               }
             ]
           }
@@ -316,10 +337,11 @@ test('y axis label', function(assert) {
   this.set('model', Model);
   this.render(TEMPLATE);
 
-  assert.equal(this.$('.c3-axis-y-label').text(),
+  assert.equal(
+    this.$('.c3-axis-y-label').text(),
     'Total Page Views',
-    'The metric name is displayed in the y axis label correctly for a dimension chart');
-
+    'The metric name is displayed in the y axis label correctly for a dimension chart'
+  );
 
   this.set('options', {
     axis: {
@@ -333,29 +355,31 @@ test('y axis label', function(assert) {
                 currency: 'USD'
               },
               canonicalName: 'revenue(currency=USD)',
-              toJSON() { return this; }
+              toJSON() {
+                return this;
+              }
             },
             dimensionOrder: ['age'],
             dimensions: [
               {
                 name: 'All Other',
-                values: {age: '-3'}
+                values: { age: '-3' }
               },
               {
                 name: 'under 13',
-                values: {age: '1'}
+                values: { age: '1' }
               },
               {
                 name: '13 - 25',
-                values: {age: '2'}
+                values: { age: '2' }
               },
               {
                 name: '25 - 35',
-                values: {age: '3'}
+                values: { age: '3' }
               },
               {
                 name: '35 - 45',
-                values: {age: '4'}
+                values: { age: '4' }
               }
             ]
           }
@@ -364,9 +388,11 @@ test('y axis label', function(assert) {
     }
   });
 
-  assert.equal(this.$('.c3-axis-y-label').text(),
+  assert.equal(
+    this.$('.c3-axis-y-label').text(),
     'Revenue (USD)',
-    'Parameterized metrics are displayed correctly in the y axis label');
+    'Parameterized metrics are displayed correctly in the y axis label'
+  );
 
   //set chart type to metric
   this.set('options', {
@@ -379,12 +405,16 @@ test('y axis label', function(assert) {
               {
                 metric: 'uniqueIdentifier',
                 canonicalName: 'uniqueIdentifier',
-                toJSON() { return this; }
+                toJSON() {
+                  return this;
+                }
               },
               {
                 metric: 'totalPageViews',
                 canonicalName: 'totalPageViews',
-                toJSON() { return this; }
+                toJSON() {
+                  return this;
+                }
               }
             ]
           }
@@ -393,11 +423,8 @@ test('y axis label', function(assert) {
     }
   });
 
-  assert.equal(this.$('.c3-axis-y-label').text(),
-    '',
-    'The y axis label is not displayed for a metric chart.');
+  assert.equal(this.$('.c3-axis-y-label').text(), '', 'The y axis label is not displayed for a metric chart.');
 });
-
 
 test('Highlight data points', function(assert) {
   // assert.expect(1);
@@ -405,73 +432,73 @@ test('Highlight data points', function(assert) {
   let anomalousDataModel = Ember.A([
     {
       request: {
-        metrics: [
-          "uniqueIdentifier"
-        ],
+        metrics: ['uniqueIdentifier'],
         logicalTable: {
-          timeGrain: "day"
+          timeGrain: 'day'
         },
         intervals: [
           {
-            start: "2017-09-01 00:00:00.000",
-            end: "2017-09-07 00:00:00.000"
+            start: '2017-09-01 00:00:00.000',
+            end: '2017-09-07 00:00:00.000'
           }
         ]
       },
       response: {
-        "rows": [
+        rows: [
           {
-            "dateTime": "2017-09-01 00:00:00.000",
-            "uniqueIdentifier": 155191081
+            dateTime: '2017-09-01 00:00:00.000',
+            uniqueIdentifier: 155191081
           },
           {
-            "dateTime": "2017-09-02 00:00:00.000",
-            "uniqueIdentifier": 172724594
+            dateTime: '2017-09-02 00:00:00.000',
+            uniqueIdentifier: 172724594
           },
           {
-            "dateTime": "2017-09-03 00:00:00.000",
-            "uniqueIdentifier": 183380921
+            dateTime: '2017-09-03 00:00:00.000',
+            uniqueIdentifier: 183380921
           },
           {
-            "dateTime": "2017-09-04 00:00:00.000",
-            "uniqueIdentifier": 172933788
+            dateTime: '2017-09-04 00:00:00.000',
+            uniqueIdentifier: 172933788
           },
           {
-            "dateTime": "2017-09-05 00:00:00.000",
-            "uniqueIdentifier": 183206656
+            dateTime: '2017-09-05 00:00:00.000',
+            uniqueIdentifier: 183206656
           },
           {
-            "dateTime": "2017-09-06 00:00:00.000",
-            "uniqueIdentifier": 183380921
+            dateTime: '2017-09-06 00:00:00.000',
+            uniqueIdentifier: 183380921
           },
           {
-            "dateTime": "2017-09-07 00:00:00.000",
-            "uniqueIdentifier": 180559793
+            dateTime: '2017-09-07 00:00:00.000',
+            uniqueIdentifier: 180559793
           }
         ]
       }
     },
-    new Ember.RSVP.Promise((resolve) => {
-      resolve(Ember.A([
-        {
-          index: 1,
-          actual: 12,
-          predicted: 172724594.12345,
-          standardDeviation: 123.123456
-        },
-        {
-          index: 3,
-          actual: 10,
-          predicted: 172933788.12345,
-          standardDeviation: 123.123456
-        },
-        {
-          index: 5,
-          actual: 14,
-          predicted: 183380921.12345,
-          standardDeviation: 123.123456
-        }
-      ]));
+    new Ember.RSVP.Promise(resolve => {
+      resolve(
+        Ember.A([
+          {
+            index: 1,
+            actual: 12,
+            predicted: 172724594.12345,
+            standardDeviation: 123.123456
+          },
+          {
+            index: 3,
+            actual: 10,
+            predicted: 172933788.12345,
+            standardDeviation: 123.123456
+          },
+          {
+            index: 5,
+            actual: 14,
+            predicted: 183380921.12345,
+            standardDeviation: 123.123456
+          }
+        ])
+      );
     })
   ]);
 
@@ -486,7 +513,9 @@ test('Highlight data points', function(assert) {
               {
                 metric: 'uniqueIdentifier',
                 canonicalName: 'uniqueIdentifier',
-                toJSON() { return this; }
+                toJSON() {
+                  return this;
+                }
               }
             ]
           }
@@ -496,18 +525,15 @@ test('Highlight data points', function(assert) {
   });
   this.render(TEMPLATE);
 
-  assert.equal(this.$('.c3-selected-circles circle').length,
-    3,
-    'Three data points are highlighted in chart');
+  assert.equal(this.$('.c3-selected-circles circle').length, 3, 'Three data points are highlighted in chart');
 });
 
-
-test('dateTime model', function (assert) {
+test('dateTime model', function(assert) {
   assert.expect(1);
   let start = moment('2016-05-01 00:00:00.000'),
-      end = moment('2018-07-01 00:00:00.000'),
-      current = start.clone(),
-      rows = [];
+    end = moment('2018-07-01 00:00:00.000'),
+    current = start.clone(),
+    rows = [];
 
   while (current.isBefore(end)) {
     rows.push({
@@ -518,23 +544,26 @@ test('dateTime model', function (assert) {
     current.add(1, 'month');
   }
 
-  this.set('model', Ember.A([{
-    request: {
-      metrics: [
-        'uniqueIdentifier'
-      ],
-      intervals: [
-        {
-          start: start.format(DateUtils.API_DATE_FORMAT_STRING),
-          end: end.format(DateUtils.API_DATE_FORMAT_STRING)
-        }
-      ],
-      logicalTable: {
-        timeGrain: 'month'
+  this.set(
+    'model',
+    Ember.A([
+      {
+        request: {
+          metrics: ['uniqueIdentifier'],
+          intervals: [
+            {
+              start: start.format(DateUtils.API_DATE_FORMAT_STRING),
+              end: end.format(DateUtils.API_DATE_FORMAT_STRING)
+            }
+          ],
+          logicalTable: {
+            timeGrain: 'month'
+          }
+        },
+        response: { rows }
       }
-    },
-    response: { rows }
-  }]));
+    ])
+  );
   this.set('options', {
     axis: {
       y: {
@@ -544,7 +573,9 @@ test('dateTime model', function (assert) {
             metric: {
               metric: 'uniqueIdentifier',
               canonicalName: 'uniqueIdentifier',
-              toJSON() { return this; }
+              toJSON() {
+                return this;
+              }
             },
             timeGrain: 'year'
           }
@@ -555,13 +586,15 @@ test('dateTime model', function (assert) {
 
   this.render(TEMPLATE);
 
-  assert.deepEqual(this.$('.c3-legend-item').map(function () { return $(this).text(); }).get(),
-    [
-      '2016',
-      '2017',
-      '2018'
-    ],
-    'Three years time series are displayed on y-axis');
+  assert.deepEqual(
+    this.$('.c3-legend-item')
+      .map(function() {
+        return $(this).text();
+      })
+      .get(),
+    ['2016', '2017', '2018'],
+    'Three years time series are displayed on y-axis'
+  );
 });
 
 test('Metric series legend', function(assert) {
@@ -577,12 +610,16 @@ test('Metric series legend', function(assert) {
               {
                 metric: 'uniqueIdentifier',
                 canonicalName: 'uniqueIdentifier',
-                toJSON() { return this; }
+                toJSON() {
+                  return this;
+                }
               },
               {
                 metric: 'totalPageViews',
                 canonicalName: 'totalPageViews',
-                toJSON() { return this; }
+                toJSON() {
+                  return this;
+                }
               },
               {
                 metric: 'revenue',
@@ -590,7 +627,9 @@ test('Metric series legend', function(assert) {
                   currency: 'USD'
                 },
                 canonicalName: 'revenue(currency=USD)',
-                toJSON() { return this; }
+                toJSON() {
+                  return this;
+                }
               }
             ]
           }
@@ -602,13 +641,15 @@ test('Metric series legend', function(assert) {
   this.set('model', Model);
   this.render(TEMPLATE);
 
-  assert.deepEqual(this.$('.c3-legend-item').map(function () { return $(this).text(); }).get(),
-    [
-      'Unique Identifiers',
-      'Total Page Views',
-      'Revenue (USD)'
-    ],
-    'Metric display names are used properly for parameterized and non-parameterized metrics in the legend');
+  assert.deepEqual(
+    this.$('.c3-legend-item')
+      .map(function() {
+        return $(this).text();
+      })
+      .get(),
+    ['Unique Identifiers', 'Total Page Views', 'Revenue (USD)'],
+    'Metric display names are used properly for parameterized and non-parameterized metrics in the legend'
+  );
 });
 
 test('cleanup tooltip', function(assert) {
@@ -628,29 +669,33 @@ test('cleanup tooltip', function(assert) {
         series: {
           type: 'metric',
           config: {
-            metrics: [{
-              metric: 'uniqueIdentifier',
-              canonicalName: 'uniqueIdentifier',
-              toJSON() { return this; }
-            }]
+            metrics: [
+              {
+                metric: 'uniqueIdentifier',
+                canonicalName: 'uniqueIdentifier',
+                toJSON() {
+                  return this;
+                }
+              }
+            ]
           }
         }
       }
     }
   });
 
-  const findTooltipComponent = () => Object.keys(getOwner(this).__registry__.registrations).
-    find(r => r.startsWith('component:line-chart-metric-tooltip-'));
+  const findTooltipComponent = () =>
+    Object.keys(getOwner(this).__registry__.registrations).find(r =>
+      r.startsWith('component:line-chart-metric-tooltip-')
+    );
 
   this.set('model', Model);
   this.set('shouldRender', true);
   this.render(template);
 
-  assert.ok(findTooltipComponent(),
-    'tooltip component is registered when chart is created');
+  assert.ok(findTooltipComponent(), 'tooltip component is registered when chart is created');
 
   this.set('shouldRender', false);
 
-  assert.notOk(findTooltipComponent(),
-    'tooltip component is unregistered when chart is destroyed');
+  assert.notOk(findTooltipComponent(), 'tooltip component is unregistered when chart is destroyed');
 });

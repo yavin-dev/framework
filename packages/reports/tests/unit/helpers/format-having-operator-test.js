@@ -12,11 +12,15 @@ test('Helper exists', function(assert) {
 test('Returns expected format for operator', function(assert) {
   assert.expect(2);
 
-  assert.equal(formatHavingOperator(['eq']),
+  assert.equal(
+    formatHavingOperator(['eq']),
     'equals (=)',
-    'Helper returns `equals (=)` as expected when operator is `eq`');
+    'Helper returns `equals (=)` as expected when operator is `eq`'
+  );
 
-  assert.equal(formatHavingOperator(['gte']),
+  assert.equal(
+    formatHavingOperator(['gte']),
     'greater than or equals (>=)',
-    'Helper returns `greater than or equals (>=)` as expected when operator is `gte`');
+    'Helper returns `greater than or equals (>=)` as expected when operator is `gte`'
+  );
 });

@@ -21,21 +21,15 @@ test('modelFor', function(assert) {
 
   set(Route, 'controller.model', 'foo');
   this.render(hbs`<span>{{model-for 'mock-route'}}</span>`);
-  assert.equal(this.$('span').text(),
-    'foo',
-    'model-for helper returned the route\'s model');
+  assert.equal(this.$('span').text(), 'foo', "model-for helper returned the route's model");
 
   Ember.run(() => set(Route, 'controller.model', 'bar'));
-  assert.equal(this.$('span').text(),
-    'bar',
-    'model-for helper recomputes when the route\'s model changes');
+  assert.equal(this.$('span').text(), 'bar', "model-for helper recomputes when the route's model changes");
 });
 
 test('modelFor - missing route', function(assert) {
   assert.expect(1);
 
   this.render(hbs`<span>{{model-for 'missing-route'}}</span>`);
-  assert.equal(this.$('span').text(),
-    "",
-    'model-for helper returns undefined when route does not exist');
+  assert.equal(this.$('span').text(), '', 'model-for helper returns undefined when route does not exist');
 });

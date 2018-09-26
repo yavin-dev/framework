@@ -6,7 +6,6 @@
 import DS from 'ember-data';
 
 export default DS.JSONSerializer.extend({
-
   /**
    * @property {Object} attrs - deserialized to serialized name transforms & vise versa
    */

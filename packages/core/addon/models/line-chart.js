@@ -18,77 +18,92 @@ const CONFIG_PATH = `${SERIES_PATH}.config`;
 /**
  * @constant {Object} Validations - Validation object
  */
-const Validations = buildValidations({
-  //Global Validation
-  [`${SERIES_PATH}.type`]: validator('chart-type'),
+const Validations = buildValidations(
+  {
+    //Global Validation
+    [`${SERIES_PATH}.type`]: validator('chart-type'),
 
-  //Metric Series Validation
-  [`${CONFIG_PATH}.metrics`]: validator('request-metrics', {
-    disabled: computed('chartType', function() {
-      return get(this, 'chartType') !== METRIC_SERIES;
+    //Metric Series Validation
+    [`${CONFIG_PATH}.metrics`]: validator('request-metrics', {
+      disabled: computed('chartType', function() {
+        return get(this, 'chartType') !== METRIC_SERIES;
+      }),
+      dependentKeys: ['model._request.metrics.[]']
     }),
-    dependentKeys: [ 'model._request.metrics.[]' ]
-  }),
 
-  [`${CONFIG_PATH}.metric`]: validator('request-metric-exist', {
-    disabled: computed('chartType', function() {
-      return get(this, 'chartType') !== DIMENSION_SERIES && get(this, 'chartType') !== DATE_TIME_SERIES;
+    [`${CONFIG_PATH}.metric`]: validator('request-metric-exist', {
+      disabled: computed('chartType', function() {
+        return get(this, 'chartType') !== DIMENSION_SERIES && get(this, 'chartType') !== DATE_TIME_SERIES;
+      }),
+      dependentKeys: ['model._request.metrics.[]']
     }),
-    dependentKeys: [ 'model._request.metrics.[]' ]
-  }),
 
-  [`${CONFIG_PATH}.timeGrain`]: validator('request-time-grain', {
-    disabled: computed('chartType', function () {
-      return get(this, 'chartType') !== DATE_TIME_SERIES;
+    [`${CONFIG_PATH}.timeGrain`]: validator('request-time-grain', {
+      disabled: computed('chartType', function() {
+        return get(this, 'chartType') !== DATE_TIME_SERIES;
+      }),
+      dependentKeys: ['model._request.intervals.[]']
     }),
-    dependentKeys: ['model._request.intervals.[]']
-  }),
 
-  [`${CONFIG_PATH}.dimensionOrder`]: validator('request-dimension-order', {
-    disabled: computed('chartType', function() {
-      return get(this, 'chartType') !== DIMENSION_SERIES;
-    }),
-    dependentKeys: [ 'model._request.dimensions.[]' ]
-  }),
-
-  //Dimension Series Validations
-  [`${CONFIG_PATH}.dimensions`]: [
-    validator('length', { min: 1 }, {
+    [`${CONFIG_PATH}.dimensionOrder`]: validator('request-dimension-order', {
       disabled: computed('chartType', function() {
         return get(this, 'chartType') !== DIMENSION_SERIES;
       }),
-      dependentKeys: [ 'model._request.dimensions.[]' ]
+      dependentKeys: ['model._request.dimensions.[]']
     }),
-    validator('request-filters', {
-      disabled: computed('chartType', function() {
-        return get(this, 'chartType') !== DIMENSION_SERIES;
-      }),
-      dependentKeys: [ 'model._request.filters.@each.rawValues' ]
-    })
-  ]}, {
-  //Global Validation Options
-  chartType: computed('model._request.dimensions.[]', 'model._request.metrics.[]', 'model._request.intervals.firstObject.interval', function() {
-    let request = get(this, 'request');
-    return request && chartTypeForRequest(request);
-  }),
-  request: computed.readOnly('model._request')
-});
+
+    //Dimension Series Validations
+    [`${CONFIG_PATH}.dimensions`]: [
+      validator(
+        'length',
+        { min: 1 },
+        {
+          disabled: computed('chartType', function() {
+            return get(this, 'chartType') !== DIMENSION_SERIES;
+          }),
+          dependentKeys: ['model._request.dimensions.[]']
+        }
+      ),
+      validator('request-filters', {
+        disabled: computed('chartType', function() {
+          return get(this, 'chartType') !== DIMENSION_SERIES;
+        }),
+        dependentKeys: ['model._request.filters.@each.rawValues']
+      })
+    ]
+  },
+  {
+    //Global Validation Options
+    chartType: computed(
+      'model._request.dimensions.[]',
+      'model._request.metrics.[]',
+      'model._request.intervals.firstObject.interval',
+      function() {
+        let request = get(this, 'request');
+        return request && chartTypeForRequest(request);
+      }
+    ),
+    request: computed.readOnly('model._request')
+  }
+);
 
 export default VisualizationBase.extend(Validations, ChartVisualization, {
-  type:     DS.attr('string', { defaultValue: 'line-chart'}),
-  version:  DS.attr('number', { defaultValue: 1 }),
-  metadata: DS.attr({ defaultValue: () => {
-    return {
-      axis: {
-        y: {
-          series: {
-            type: null,
-            config: {}
+  type: DS.attr('string', { defaultValue: 'line-chart' }),
+  version: DS.attr('number', { defaultValue: 1 }),
+  metadata: DS.attr({
+    defaultValue: () => {
+      return {
+        axis: {
+          y: {
+            series: {
+              type: null,
+              config: {}
+            }
           }
         }
-      }
-    };
-  }}),
+      };
+    }
+  }),
 
   /**
    * Rebuild config based on request and response
@@ -102,7 +117,7 @@ export default VisualizationBase.extend(Validations, ChartVisualization, {
     this.isValidForRequest(request);
 
     let chartType = chartTypeForRequest(request),
-        series = this.getSeriesBuilder(chartType).call(this, CONFIG_PATH, get(this,'validations'), request, response);
+      series = this.getSeriesBuilder(chartType).call(this, CONFIG_PATH, get(this, 'validations'), request, response);
 
     set(this, 'metadata', {
       axis: {

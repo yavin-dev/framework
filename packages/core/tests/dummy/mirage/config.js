@@ -9,7 +9,6 @@ import dashboardWidget from './routes/dashboard-widget';
 import deliveryRules from './routes/delivery-rules';
 
 export default function() {
-
   // https://github.com/kategengler/ember-cli-code-coverage#create-a-passthrough-when-intercepting-all-ajax-requests-in-tests
   this.passthrough('/write-coverage');
 
@@ -26,13 +25,16 @@ export default function() {
   dashboardWidget.call(this);
   deliveryRules.call(this);
 
-  usersAndReports.call(this).withUserRelationship({
-    property: 'dashboards',
-    type: 'dashboards',
-    relation: 'hasMany'
-  }).withUserRelationship({
-    property: 'favoriteDashboards',
-    type: 'dashboards',
-    relation: 'hasMany'
-  });
+  usersAndReports
+    .call(this)
+    .withUserRelationship({
+      property: 'dashboards',
+      type: 'dashboards',
+      relation: 'hasMany'
+    })
+    .withUserRelationship({
+      property: 'favoriteDashboards',
+      type: 'dashboards',
+      relation: 'hasMany'
+    });
 }

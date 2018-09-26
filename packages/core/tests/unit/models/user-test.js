@@ -5,8 +5,7 @@ import config from 'ember-get-config';
 
 const { getOwner } = Ember;
 
-let Store,
-    MetadataService;
+let Store, MetadataService;
 
 moduleForModel('user', 'Unit | Model | user', {
   needs: [
@@ -98,12 +97,14 @@ test('Saving records', function(assert) {
 
   return Ember.run(() => {
     let newUser = 'new_user';
-    return Store.createRecord('user', { id: newUser}).save().then(() => {
-      Store.unloadAll('user'); // flush cache/store
-      return Store.findRecord('user', newUser).then(() => {
-        assert.ok(true, 'Newly created user is successfully persisted');
+    return Store.createRecord('user', { id: newUser })
+      .save()
+      .then(() => {
+        Store.unloadAll('user'); // flush cache/store
+        return Store.findRecord('user', newUser).then(() => {
+          assert.ok(true, 'Newly created user is successfully persisted');
+        });
       });
-    });
   });
 });
 
@@ -123,20 +124,21 @@ test('Linking Reports to Users', function(assert) {
       author: user
     });
 
-    assert.equal(user.get('reports.length'),
-      2,
-      'Two reports are linked to the user');
+    assert.equal(user.get('reports.length'), 2, 'Two reports are linked to the user');
 
-    assert.deepEqual(user.get('reports').map(report => { return report.get('title'); }),
-      [
-        'How I died! By Jon Snow',
-        'You know nothing, Jon Snow'
-      ],
-      'The user is linked to the report, and the reports can be fetched via the relationship');
+    assert.deepEqual(
+      user.get('reports').map(report => {
+        return report.get('title');
+      }),
+      ['How I died! By Jon Snow', 'You know nothing, Jon Snow'],
+      'The user is linked to the report, and the reports can be fetched via the relationship'
+    );
 
-    assert.equal(user.get('favoriteReports.length'),
+    assert.equal(
+      user.get('favoriteReports.length'),
       0,
-      'Creating reports under a user does not impact their favorite reports');
+      'Creating reports under a user does not impact their favorite reports'
+    );
   });
 });
 
@@ -157,24 +159,29 @@ test('Favoriting reports', function(assert) {
           user.get('favoriteReports').pushObject(report);
 
           return user.save().then(() => {
-            assert.equal(user.get('favoriteReports.lastObject.title'),
+            assert.equal(
+              user.get('favoriteReports.lastObject.title'),
               'Hyrule News',
-              'Favorite reports contains full report object');
+              'Favorite reports contains full report object'
+            );
 
             // flush cache/Store
             Store.unloadAll();
 
             return Store.findRecord('user', naviUser).then(savedUser => {
-
-              assert.deepEqual(savedUser.get('favoriteReports').mapBy('id'),
-                [ "2", "1" ],
-                'Reports can be added to user favorites');
+              assert.deepEqual(
+                savedUser.get('favoriteReports').mapBy('id'),
+                ['2', '1'],
+                'Reports can be added to user favorites'
+              );
 
               // Trigger async request and wait
               return savedUser.get('favoriteReports').then(() => {
-                assert.equal(savedUser.get('favoriteReports.lastObject.title'),
+                assert.equal(
+                  savedUser.get('favoriteReports.lastObject.title'),
                   'Hyrule News',
-                  'Accessing favoriteReports relationship returns full report object');
+                  'Accessing favoriteReports relationship returns full report object'
+                );
               });
             });
           });
@@ -191,9 +198,11 @@ test('delivery rules relationship', function(assert) {
     return Store.findRecord('deliveryRule', 1).then(deliveryRule => {
       return Store.findRecord('user', 'navi_user').then(userModel => {
         return userModel.get('deliveryRules').then(rules => {
-          assert.equal(rules.get('firstObject'),
+          assert.equal(
+            rules.get('firstObject'),
             deliveryRule,
-            'user deliveryRule property contains deliveryRule model');
+            'user deliveryRule property contains deliveryRule model'
+          );
         });
       });
     });

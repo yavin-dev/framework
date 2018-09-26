@@ -7,7 +7,6 @@ import Ember from 'ember';
 const { get, set, setProperties } = Ember;
 
 export default Ember.Route.extend({
-
   /**
    * @property {Service} user
    */
@@ -42,9 +41,9 @@ export default Ember.Route.extend({
    */
   _cloneReport(report) {
     let author = get(this, 'user').getUser(),
-        clonedReportModel = report.clone();
+      clonedReportModel = report.clone();
 
-        // Over-riding the cloned model to the default responseFormat of csv
+    // Over-riding the cloned model to the default responseFormat of csv
     set(clonedReportModel, 'request.responseFormat', 'csv');
     // Making sure the title does not exceed the 150 char limit
     setProperties(clonedReportModel, {
@@ -53,5 +52,5 @@ export default Ember.Route.extend({
     });
 
     return clonedReportModel;
-  },
+  }
 });

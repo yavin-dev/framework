@@ -15,22 +15,23 @@ let Template = hbs`
   }}`;
 
 test('it renders', function(assert) {
-
   this.render(hbs`{{visualization-config/goal-gauge}}`);
 
-  let headers = this.$('.goal-gauge-config__section-header').toArray().map((value) => this.$(value).text().trim());
-  assert.deepEqual(headers,
-    ['Label', 'Baseline', 'Goal'],
-    'headers are displayed for goal gauge config');
+  let headers = this.$('.goal-gauge-config__section-header')
+    .toArray()
+    .map(value =>
+      this.$(value)
+        .text()
+        .trim()
+    );
+  assert.deepEqual(headers, ['Label', 'Baseline', 'Goal'], 'headers are displayed for goal gauge config');
 });
 
 test('onUpdateConfig baselineValue input', function(assert) {
   assert.expect(1);
 
   this.set('onUpdateConfig', result => {
-    assert.equal(result.baselineValue,
-      1,
-      'onUpdateConfig action is called by baseline input');
+    assert.equal(result.baselineValue, 1, 'onUpdateConfig action is called by baseline input');
   });
 
   this.render(Template);
@@ -45,9 +46,7 @@ test('onUpdateConfig goalValue input', function(assert) {
   assert.expect(1);
 
   this.set('onUpdateConfig', result => {
-    assert.equal(result.goalValue,
-      10,
-      'onUpdateConfig action is called by goal input');
+    assert.equal(result.goalValue, 10, 'onUpdateConfig action is called by goal input');
   });
 
   this.render(Template);
@@ -62,9 +61,7 @@ test('onUpdateConfig goal gauge label input', function(assert) {
   assert.expect(1);
 
   this.set('onUpdateConfig', result => {
-    assert.equal(result.metricTitle,
-      'bottles',
-      'onUpdateConfig action is called by label input');
+    assert.equal(result.metricTitle, 'bottles', 'onUpdateConfig action is called by label input');
   });
 
   this.render(Template);

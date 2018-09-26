@@ -9,42 +9,50 @@ let Template = hbs`{{visualization-config/chart-type/metric
                 }}`;
 
 const Request = {
-        metrics: [
-          { metric: { name: 'totalPageViews', longName: 'Total Page Views' } },
-          { metric: { name: 'uniqueIdentifier', longName: 'Unique Identifier' } }
-        ]
-      },
-      Options = {
-        axis: {
-          y: {
-            series: {
-              type: 'metric',
-              config: {
-                metrics: [ 'totalPageViews' ]
-              }
-            }
+    metrics: [
+      { metric: { name: 'totalPageViews', longName: 'Total Page Views' } },
+      { metric: { name: 'uniqueIdentifier', longName: 'Unique Identifier' } }
+    ]
+  },
+  Options = {
+    axis: {
+      y: {
+        series: {
+          type: 'metric',
+          config: {
+            metrics: ['totalPageViews']
           }
         }
-      };
+      }
+    }
+  };
 
-moduleForComponent('visualization-config/chart-type/metric', 'Integration | Component | visualization config/line chart type/metric', {
-  integration: true,
+moduleForComponent(
+  'visualization-config/chart-type/metric',
+  'Integration | Component | visualization config/line chart type/metric',
+  {
+    integration: true,
 
-  beforeEach() {
-    this.setProperties({
-      request: Request,
-      options: Options,
-      onUpdateConfig: () => null
-    });
+    beforeEach() {
+      this.setProperties({
+        request: Request,
+        options: Options,
+        onUpdateConfig: () => null
+      });
+    }
   }
-});
+);
 
 test('it renders', function(assert) {
   assert.expect(1);
 
   this.render(Template);
 
-  assert.equal(this.$('.metric-line-chart-config').text().trim(),
+  assert.equal(
+    this.$('.metric-line-chart-config')
+      .text()
+      .trim(),
     'No configuration options available.',
-    'Table Configuration Component displays the warning message');
+    'Table Configuration Component displays the warning message'
+  );
 });

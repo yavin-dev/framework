@@ -45,7 +45,7 @@ let Model = EmberObject.extend(ExtendedMetadataMixin, {
    * @property {Array} paramNames - paramNames for the metric
    */
   paramNames: computed('parameters', function() {
-    return Object.keys(get(this, 'parameters')||{});
+    return Object.keys(get(this, 'parameters') || {});
   }),
 
   /**
@@ -56,7 +56,7 @@ let Model = EmberObject.extend(ExtendedMetadataMixin, {
    * @returns {Object}
    */
   getParameter(name) {
-    if(!get(this, 'hasParameters')){
+    if (!get(this, 'hasParameters')) {
       return;
     }
 
@@ -69,7 +69,7 @@ let Model = EmberObject.extend(ExtendedMetadataMixin, {
    * @returns {Object|undefined}
    */
   getDefaultParameters() {
-    if(!get(this, 'hasParameters')){
+    if (!get(this, 'hasParameters')) {
       return;
     }
 

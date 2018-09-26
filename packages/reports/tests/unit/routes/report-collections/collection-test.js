@@ -58,11 +58,13 @@ moduleFor('route:report-collections/collection', 'Unit | Route | report collecti
     'adapter:dimensions/bard',
     'model:delivery-rule'
   ],
-  beforeEach(){
+  beforeEach() {
     setupMock();
-    return getOwner(this).lookup('service:bard-metadata').loadMetadata();
+    return getOwner(this)
+      .lookup('service:bard-metadata')
+      .loadMetadata();
   },
-  afterEach(){
+  afterEach() {
     teardownMock();
   }
 });
@@ -72,25 +74,22 @@ test('model', function(assert) {
 
   return Ember.run(() => {
     let params = { collectionId: 1 },
-        route = this.subject(),
-        modelPromise = route.model(params);
+      route = this.subject(),
+      modelPromise = route.model(params);
 
-    assert.ok(modelPromise.then,
-      'Route returns a promise in the model hook');
+    assert.ok(modelPromise.then, 'Route returns a promise in the model hook');
 
     return modelPromise.then(model => {
-      assert.equal(model.id,
-        params.collectionId,
-        'The requested collection is retrieved');
+      assert.equal(model.id, params.collectionId, 'The requested collection is retrieved');
 
-      assert.equal(model.get('title'),
+      assert.equal(
+        model.get('title'),
         `Report Collection ${params.collectionId}`,
-        'The requested collection is retrieved');
+        'The requested collection is retrieved'
+      );
 
-      return model.get('reports').then((reports) => {
-        assert.equal(reports.length,
-          2,
-          'The requested collection is retrieved with the two reports');
+      return model.get('reports').then(reports => {
+        assert.equal(reports.length, 2, 'The requested collection is retrieved with the two reports');
       });
     });
   });

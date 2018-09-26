@@ -34,7 +34,7 @@ export default Ember.Object.extend({
    * @param {Object} row - single row of fact data
    * @returns {String} name of x value given row belongs to
    */
-  getXValue: (row) => moment(row.dateTime).format(DateUtils.API_DATE_FORMAT_STRING),
+  getXValue: row => moment(row.dateTime).format(DateUtils.API_DATE_FORMAT_STRING),
 
   /**
    * @function buildData
@@ -52,24 +52,21 @@ export default Ember.Object.extend({
     const buildDateKey = dateTime => moment(dateTime).format(DateUtils.API_DATE_FORMAT_STRING);
 
     let metrics = config.metrics,
-        grain = get(request, 'logicalTable.timeGrain.name') || get(request, 'logicalTable.timeGrain'),
-        requestInterval = Interval.parseFromStrings(
-          get(request, 'intervals.0.start'),
-          get(request, 'intervals.0.end')
-        );
+      grain = get(request, 'logicalTable.timeGrain.name') || get(request, 'logicalTable.timeGrain'),
+      requestInterval = Interval.parseFromStrings(get(request, 'intervals.0.start'), get(request, 'intervals.0.end'));
 
     /*
      * Get all date buckets spanned by the data,
      * and group data by date for easier lookup
      */
     let dates = DateUtils.getDatesForInterval(requestInterval, grain),
-        byDate = new DataGroup(data, row => buildDateKey(row.dateTime));
+      byDate = new DataGroup(data, row => buildDateKey(row.dateTime));
 
     // Make a data point for each date in the request, so c3 can correctly show gaps in the chart
     return dates.map(date => {
       let key = buildDateKey(date),
-          rowsForDate = byDate.getDataForKey(key) || [],
-          row = rowsForDate[0] || {}; // Metric series expects only one data row for each date
+        rowsForDate = byDate.getDataForKey(key) || [],
+        row = rowsForDate[0] || {}; // Metric series expects only one data row for each date
 
       let x = {
         rawValue: key,
@@ -77,12 +74,17 @@ export default Ember.Object.extend({
       };
 
       // Build an object consisting of x value and requested metrics
-      return Object.assign({ x }, ...metrics.map(metric => {
-        let metricDisplayName = get(this, 'metricName').getDisplayName(metric),
+      return Object.assign(
+        { x },
+        ...metrics.map(metric => {
+          let metricDisplayName = get(this, 'metricName').getDisplayName(metric),
             canonicalName = canonicalizeMetric(metric);
 
-        return {[metricDisplayName]: getWithDefault(row, canonicalName, null)};  // c3 wants `null` for empty data points
-      }));
+          return {
+            [metricDisplayName]: getWithDefault(row, canonicalName, null)
+          }; // c3 wants `null` for empty data points
+        })
+      );
     });
   },
 

@@ -34,52 +34,52 @@
     }
 
     .sub-title {
-        text-transform: capitalize;
-        font-size: @font-size-xsmall;
-        color: @navi-gray;
-        margin-top: 5px;
+      text-transform: capitalize;
+      font-size: @font-size-xsmall;
+      color: @navi-gray;
+      margin-top: 5px;
     }
 
     .pie-chart-tooltip__hover-dimension {
-        margin: 5px 0 0 5px;
-        padding: 0;
+      margin: 5px 0 0 5px;
+      padding: 0;
     }
 
     .pie-chart-tooltip__metric-val {
-        .display-flex;
-        align-items: center;
-        justify-content: flex-start;
+      .display-flex;
+      align-items: center;
+      justify-content: flex-start;
 
-        span {
-            margin-left: 10px;
-        }
+      span {
+        margin-left: 10px;
+      }
     }
 
     .pie-chart-tooltip__series-indicator {
-        height: 8px;
-        width: 8px;
+      height: 8px;
+      width: 8px;
 
-        circle {
-            .generate-chart-colors-for(stroke);
-            fill: transparent;
-        }
+      circle {
+        .generate-chart-colors-for(stroke);
+        fill: transparent;
+      }
     }
   }
 }
 
 //mixin
 .generate-chart-series-color(@n, @i:0) when (@i < @n) {
-   @j: @i+1;
-   @series-color: "graph-stroke-@{i}";
+  @j: @i+1;
+  @series-color: 'graph-stroke-@{i}';
 
-   .c3-chart-arc.c3-target:nth-of-type(@{j}) path.c3-arc {
-       stroke: @@series-color !important;
-       fill: @@series-color !important;
-   }
-   .c3-legend-item:nth-of-type(@{j}) .c3-legend-item-tile {
-       fill: @@series-color !important;
-       stroke: @@series-color !important;
-   }
+  .c3-chart-arc.c3-target:nth-of-type(@{j}) path.c3-arc {
+    stroke: @@series-color !important;
+    fill: @@series-color !important;
+  }
+  .c3-legend-item:nth-of-type(@{j}) .c3-legend-item-tile {
+    fill: @@series-color !important;
+    stroke: @@series-color !important;
+  }
 
-   .generate-chart-series-color(@n, (@i+1));
+  .generate-chart-series-color(@n, (@i+1));
 }

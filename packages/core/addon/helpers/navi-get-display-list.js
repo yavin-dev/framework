@@ -30,12 +30,12 @@ export default Ember.Helper.extend({
     }
 
     let metadataService = get(this, 'metadata'),
-        lookupMetadata = id => metadataService.getById(type, id),
-        metadataDisplayNames = ids.map(id => {
-          let metadataModel = lookupMetadata(id);
-          Ember.assert(`No ${type} found for id: ${id}`, metadataModel);
-          return get(metadataModel, 'longName');
-        });
+      lookupMetadata = id => metadataService.getById(type, id),
+      metadataDisplayNames = ids.map(id => {
+        let metadataModel = lookupMetadata(id);
+        Ember.assert(`No ${type} found for id: ${id}`, metadataModel);
+        return get(metadataModel, 'longName');
+      });
 
     return metadataDisplayNames.join(', ');
   }

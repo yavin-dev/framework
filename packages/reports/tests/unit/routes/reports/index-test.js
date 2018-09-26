@@ -60,7 +60,9 @@ moduleFor('route:reports/index', 'Unit | Route | reports/index', {
 
   beforeEach() {
     setupMock();
-    return getOwner(this).lookup('service:bard-metadata').loadMetadata();
+    return getOwner(this)
+      .lookup('service:bard-metadata')
+      .loadMetadata();
   },
 
   afterEach() {
@@ -75,15 +77,15 @@ test('reports model', function(assert) {
     let route = this.subject();
 
     return Ember.run(() => {
-      return route.model().then( model => {
-        return model.get('reports').then( reports => {
-          assert.deepEqual(reports.mapBy('id'),
-            ['1','2','4'],
-            'Routes model returns the reports');
+      return route.model().then(model => {
+        return model.get('reports').then(reports => {
+          assert.deepEqual(reports.mapBy('id'), ['1', '2', '4'], 'Routes model returns the reports');
 
-          assert.deepEqual(reports.mapBy('title'),
+          assert.deepEqual(
+            reports.mapBy('title'),
             ['Hyrule News', 'Hyrule Ad&Nav Clicks', 'Report 12'],
-            'Model contains user reports and favorite reports');
+            'Model contains user reports and favorite reports'
+          );
         });
       });
     });

@@ -14,7 +14,7 @@ import { computed } from '@ember/object';
 export default Component.extend({
   layout,
 
-  classNames: [ 'dir-sidebar' ],
+  classNames: ['dir-sidebar'],
 
   /**
    * @property {Array} directories
@@ -30,14 +30,17 @@ export default Component.extend({
    * @property {Array} filters
    */
   filters: computed(function() {
-    return [{
-      name: 'Favorites',
-      icon: 'star-o',
-      queryParams: { filter: 'favorites', sortBy: 'title' }
-    },{
-      name: 'Recently Updated',
-      icon: 'cloud-upload',
-      queryParams: { filter: null, sortBy: 'updatedOn' }
-    }];
+    return [
+      {
+        name: 'Favorites',
+        icon: 'star-o',
+        queryParams: { filter: 'favorites', sortBy: 'title' }
+      },
+      {
+        name: 'Recently Updated',
+        icon: 'cloud-upload',
+        queryParams: { filter: null, sortBy: 'updatedOn' }
+      }
+    ];
   })
 });

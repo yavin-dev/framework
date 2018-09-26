@@ -7,5 +7,5 @@ import DS from 'ember-data';
 import LineChart from './line-chart';
 
 export default LineChart.extend({
-  type:  DS.attr('string', { defaultValue: 'bar-chart'})
+  type: DS.attr('string', { defaultValue: 'bar-chart' })
 });

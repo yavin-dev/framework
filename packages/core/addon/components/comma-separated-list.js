@@ -30,5 +30,5 @@ export default Ember.Component.extend({
    */
   _commaItems: computed('list.[]', function() {
     return get(this, 'list').slice(0, -1);
-  }),
+  })
 });

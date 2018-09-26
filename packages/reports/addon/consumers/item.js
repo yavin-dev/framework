@@ -25,32 +25,35 @@ export default ActionConsumer.extend({
      */
     [ItemActions.DELETE_ITEM](item) {
       let itemName = get(item, 'title'),
-          itemType = get(item, 'constructor.modelName'),
-          transitionRoute = itemType + 's';
+        itemType = get(item, 'constructor.modelName'),
+        transitionRoute = itemType + 's';
 
       item.deleteRecord();
 
-      return item.save().then(() => {
-        // Make sure record is cleaned up locally
-        item.unloadRecord();
+      return item
+        .save()
+        .then(() => {
+          // Make sure record is cleaned up locally
+          item.unloadRecord();
 
-        get(this, 'naviNotifications').add({
-          message: `Report "${itemName}" deleted successfully!`,
-          type: 'success',
-          timeout: 'short'
+          get(this, 'naviNotifications').add({
+            message: `Report "${itemName}" deleted successfully!`,
+            type: 'success',
+            timeout: 'short'
+          });
+
+          get(this, 'router').transitionTo(transitionRoute);
+        })
+        .catch(() => {
+          // Rollback delete action
+          item.rollbackAttributes();
+
+          get(this, 'naviNotifications').add({
+            message: `OOPS! An error occurred while deleting ${itemType} "${itemName}"`,
+            type: 'danger',
+            timeout: 'short'
+          });
         });
-
-        get(this, 'router').transitionTo(transitionRoute);
-      }).catch(() => {
-        // Rollback delete action
-        item.rollbackAttributes();
-
-        get(this, 'naviNotifications').add({
-          message: `OOPS! An error occurred while deleting ${itemType} "${itemName}"`,
-          type: 'danger',
-          timeout: 'short'
-        });
-      });
     }
   }
 });

@@ -59,7 +59,9 @@ moduleFor('service:model-compression', 'Unit | Service | model compression', {
 
   beforeEach() {
     this.server = startMirage();
-    return Ember.getOwner(this).lookup('service:bard-metadata').loadMetadata();
+    return Ember.getOwner(this)
+      .lookup('service:bard-metadata')
+      .loadMetadata();
   },
 
   afterEach() {
@@ -74,31 +76,38 @@ test('compress and decompress', function(assert) {
 
   return Ember.run(async function() {
     let store = service.get('store'),
-        user = store.createRecord('user', {id: 'midna'}),
-        request = store.createFragment('bard-request/request'),
-        report = store.createRecord('report', {id: '1234', title: 'Hello World', author: user, request}),
-        compressedString = await service.compress(report);
+      user = store.createRecord('user', { id: 'midna' }),
+      request = store.createFragment('bard-request/request'),
+      report = store.createRecord('report', {
+        id: '1234',
+        title: 'Hello World',
+        author: user,
+        request
+      }),
+      compressedString = await service.compress(report);
 
-    assert.equal(compressedString,
+    assert.equal(
+      compressedString,
       encodeURIComponent(compressedString),
-      'The model compresses to a string safe for use in a URL');
+      'The model compresses to a string safe for use in a URL'
+    );
 
-    assert.ok(compressedString.length < 1000,
-      'The model compresses to a string significantly shorter than the URL limit');
+    assert.ok(
+      compressedString.length < 1000,
+      'The model compresses to a string significantly shorter than the URL limit'
+    );
 
     let decompressedModel = await service.decompress(compressedString);
-    assert.deepEqual(decompressedModel.getProperties('id', 'title'),
-      {id: '1234', title: 'Hello World'},
-      'The decompressed model contains the same properties as the original');
+    assert.deepEqual(
+      decompressedModel.getProperties('id', 'title'),
+      { id: '1234', title: 'Hello World' },
+      'The decompressed model contains the same properties as the original'
+    );
 
     let decompressedUser = await decompressedModel.get('author');
-    assert.equal(decompressedUser,
-      user,
-      'The decompressed model maintains the original relationships');
+    assert.equal(decompressedUser, user, 'The decompressed model maintains the original relationships');
 
-    assert.equal(decompressedModel.get('request'),
-      request,
-      'The decompressed model maintains the original fragments');
+    assert.equal(decompressedModel.get('request'), request, 'The decompressed model maintains the original fragments');
   });
 });
 
@@ -107,12 +116,14 @@ test('id is required', function(assert) {
 
   Ember.run(() => {
     let service = this.subject(),
-        store = service.get('store'),
-        report = store.createRecord('report', {title: 'Hello World'});
+      store = service.get('store'),
+      report = store.createRecord('report', { title: 'Hello World' });
 
-    assert.throws(() => service.compress(report),
+    assert.throws(
+      () => service.compress(report),
       /A model given to `compress` must have an id/,
-      'An error is thrown if the model does not have an id set');
+      'An error is thrown if the model does not have an id set'
+    );
   });
 });
 
@@ -121,22 +132,17 @@ test('_pushPayload', function(assert) {
 
   Ember.run(() => {
     let service = this.subject(),
-        store = service.get('store'),
-        report = store.createRecord('report', {title: 'Hello World'}),
-        jsonPayload = report.serialize();
+      store = service.get('store'),
+      report = store.createRecord('report', { title: 'Hello World' }),
+      jsonPayload = report.serialize();
 
     jsonPayload.data.id = 1234;
 
-    assert.equal(store.peekRecord('report', 1234),
-      null,
-      'Model from payload is not initally in the store');
+    assert.equal(store.peekRecord('report', 1234), null, 'Model from payload is not initally in the store');
 
     let model = service._pushPayload(jsonPayload);
-    assert.equal(model.get('title'),
-      'Hello World',
-      '_pushPayload returns a model with attributes from payload');
+    assert.equal(model.get('title'), 'Hello World', '_pushPayload returns a model with attributes from payload');
 
-    assert.ok(store.peekRecord('report', 1234),
-      'Model from payload exists in store after _pushPayload');
+    assert.ok(store.peekRecord('report', 1234), 'Model from payload exists in store after _pushPayload');
   });
 });

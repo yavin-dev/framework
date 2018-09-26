@@ -46,9 +46,10 @@ export default Route.extend({
    * @returns {DS.Model|Promise} model for requested report
    */
   model({ reportId }) {
-    return get(this, 'user').findOrRegister().then(() =>
-      this._findByTempId(reportId) || this.store.findRecord('report', reportId)
-    ).then(this._defaultVisualization.bind(this));
+    return get(this, 'user')
+      .findOrRegister()
+      .then(() => this._findByTempId(reportId) || this.store.findRecord('report', reportId))
+      .then(this._defaultVisualization.bind(this));
   },
 
   /**
@@ -87,9 +88,8 @@ export default Route.extend({
    *
    */
   _defaultVisualization(report) {
-    if(!get(report, 'visualization.type')) {
-      set(report, 'visualization',
-        this.store.createFragment(get(this, 'defaultVisualizationType'), {}));
+    if (!get(report, 'visualization.type')) {
+      set(report, 'visualization', this.store.createFragment(get(this, 'defaultVisualizationType'), {}));
     }
     return report;
   },
@@ -101,7 +101,7 @@ export default Route.extend({
    */
   deactivate() {
     let model = this.currentModel;
-    if(!get(model, 'isNew') && get(model, 'hasDirtyAttributes')){
+    if (!get(model, 'isNew') && get(model, 'hasDirtyAttributes')) {
       this.send('revertChanges', model);
     }
   },
@@ -121,18 +121,18 @@ export default Route.extend({
      * @returns {Promise} promise that resolves or rejects based on validation status
      */
     validate(report) {
-      return get(report, 'request').validate().then(({ validations }) => {
-        if (get(validations, 'isInvalid')) {
-          // Transition to invalid route to show user validation errors
-          return this.transitionTo(
-            `${this.routeName}.invalid`,
-            get(report, 'tempId') || get(report, 'id'))
-            .then(() => RSVP.reject()
+      return get(report, 'request')
+        .validate()
+        .then(({ validations }) => {
+          if (get(validations, 'isInvalid')) {
+            // Transition to invalid route to show user validation errors
+            return this.transitionTo(`${this.routeName}.invalid`, get(report, 'tempId') || get(report, 'id')).then(() =>
+              RSVP.reject()
             );
-        }
+          }
 
-        return RSVP.resolve();
-      });
+          return RSVP.resolve();
+        });
     },
 
     /**
@@ -148,22 +148,25 @@ export default Route.extend({
      * @param {DS.Model} report - object to save
      */
     saveReport(report) {
-      report.save().then(() => {
-        get(this, 'naviNotifications').add({
-          message: 'Report was successfully saved!',
-          type: 'success',
-          timeout: 'short'
-        });
+      report
+        .save()
+        .then(() => {
+          get(this, 'naviNotifications').add({
+            message: 'Report was successfully saved!',
+            type: 'success',
+            timeout: 'short'
+          });
 
-        // Switch from temp id to permanent id
-        this.replaceWith('reports.report.view', get(report, 'id'));
-      }).catch(() => {
-        get(this, 'naviNotifications').add({
-          message: 'OOPS! An error occurred while saving the report',
-          type: 'danger',
-          timeout: 'medium'
+          // Switch from temp id to permanent id
+          this.replaceWith('reports.report.view', get(report, 'id'));
+        })
+        .catch(() => {
+          get(this, 'naviNotifications').add({
+            message: 'OOPS! An error occurred while saving the report',
+            type: 'danger',
+            timeout: 'medium'
+          });
         });
-      });
     },
 
     /**
@@ -173,7 +176,7 @@ export default Route.extend({
      * @param {String} title
      */
     updateTitle(title) {
-      if(!isEmpty(title)) {
+      if (!isEmpty(title)) {
         set(this.currentModel, 'title', title);
       }
     },
@@ -203,9 +206,7 @@ export default Route.extend({
     onUpdateVisualizationConfig(metadataUpdates) {
       let metadata = get(this, 'currentModel.visualization.metadata');
 
-      set(this.currentModel, 'visualization.metadata',
-        merge({}, metadata, metadataUpdates)
-      );
+      set(this.currentModel, 'visualization.metadata', merge({}, metadata, metadataUpdates));
     },
 
     /**
@@ -222,7 +223,7 @@ export default Route.extend({
        *dispatch action if arguments are passed through
        *TODO validate actionType is a valid report action
        */
-      if(actionType){
+      if (actionType) {
         get(this, 'updateReportActionDispatcher').dispatch(actionType, this, ...args);
       }
     },
@@ -232,9 +233,9 @@ export default Route.extend({
      */
     toggleFavorite(report) {
       let user = get(this, 'user').getUser(),
-          isFavorite = get(report, 'isFavorite'),
-          updateOperation = isFavorite ? 'removeObject' : 'addObject',
-          rollbackOperation = isFavorite ? 'addObject' : 'removeObject';
+        isFavorite = get(report, 'isFavorite'),
+        updateOperation = isFavorite ? 'removeObject' : 'addObject',
+        rollbackOperation = isFavorite ? 'addObject' : 'removeObject';
 
       get(user, 'favoriteReports')[updateOperation](report);
       user.save().catch(() => {

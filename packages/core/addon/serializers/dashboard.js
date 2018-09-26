@@ -15,7 +15,7 @@ export default BaseSerializer.extend({
   normalizeFindManyResponse(store, type, payload) {
     const dashboards = payload.data;
 
-    dashboards.forEach((dashboard) => {
+    dashboards.forEach(dashboard => {
       this._addLinks(dashboard, 'widgets');
     });
 

@@ -38,12 +38,12 @@ export default Component.extend({
    */
   calculatePosition(trigger, content) {
     let { top, left, width, height } = trigger.getBoundingClientRect(),
-        { height: contentHeight } = content.getBoundingClientRect(),
-        margin = 15,
-        style = {
-          left: left + width + margin,
-          top: top +  window.pageYOffset + (height / 2) - contentHeight + margin
-        };
+      { height: contentHeight } = content.getBoundingClientRect(),
+      margin = 15,
+      style = {
+        left: left + width + margin,
+        top: top + window.pageYOffset + height / 2 - contentHeight + margin
+      };
 
     return { style };
   },
@@ -54,14 +54,12 @@ export default Component.extend({
    */
   _fetchAllParams: observer('metric', function() {
     let promises = {},
-        parameterObj = get(this, 'metric.parameters') || {},
-        parameters = arr(Object.entries(parameterObj)).filter(
-          ([ , paramMeta ]) => get(paramMeta, 'type') === 'dimension'
-        ),
-        allParametersMap = {},
-        allParamValues = [];
+      parameterObj = get(this, 'metric.parameters') || {},
+      parameters = arr(Object.entries(parameterObj)).filter(([, paramMeta]) => get(paramMeta, 'type') === 'dimension'),
+      allParametersMap = {},
+      allParamValues = [];
 
-    parameters.forEach(([ paramType, paramMeta]) => {
+    parameters.forEach(([paramType, paramMeta]) => {
       promises[paramType] = get(this, 'parameterService').fetchAllValues(paramMeta);
     });
 
@@ -83,7 +81,7 @@ export default Component.extend({
       set(this, 'allParameters', allParamValues);
     });
 
-    set(this, 'parametersPromise', promiseHash)
+    set(this, 'parametersPromise', promiseHash);
   }),
 
   /**
@@ -105,8 +103,8 @@ export default Component.extend({
    */
   selectedParams: computed('request.metrics.[]', 'metric', 'allParametersMap', function() {
     let selectedMetrics = arr(get(this, 'request.metrics')).filterBy('metric', get(this, 'metric')),
-        selectedMetricParams = arr(selectedMetrics).mapBy('parameters'),
-        allParametersMap = get(this, 'allParametersMap') || {};
+      selectedMetricParams = arr(selectedMetrics).mapBy('parameters'),
+      allParametersMap = get(this, 'allParametersMap') || {};
 
     return selectedMetricParams.map(param => {
       //delete alias key in copy
@@ -116,7 +114,7 @@ export default Component.extend({
       //fetch from map
       let [key, value] = Object.entries(paramCopy)[0];
       return allParametersMap[`${key}|${value}`];
-    })
+    });
   }),
 
   /**
@@ -137,8 +135,7 @@ export default Component.extend({
     return arr(get(this, 'request.having'))
       .filterBy('metric.metric.name', get(this, 'metric.name'))
       .reduce((list, having) => {
-        let paramArray = Object.entries(get(having, 'metric.parameters'))
-          .filter(([key, ]) => key.toLowerCase() !== 'as');
+        let paramArray = Object.entries(get(having, 'metric.parameters')).filter(([key]) => key.toLowerCase() !== 'as');
 
         paramArray.forEach(([key, val]) => {
           list[`${key}|${val}`] = true;
@@ -163,8 +160,10 @@ export default Component.extend({
      * @param {Object} param
      */
     paramToggled(metric, param) {
-      let action = get(this, 'parametersChecked')[`${get(param, 'param')}|${get(param, 'id')}`]? 'remove' : 'add';
-      this.sendAction(`${action}ParameterizedMetric`, metric, { [get(param, 'param')]: get(param, 'id') });
+      let action = get(this, 'parametersChecked')[`${get(param, 'param')}|${get(param, 'id')}`] ? 'remove' : 'add';
+      this.sendAction(`${action}ParameterizedMetric`, metric, {
+        [get(param, 'param')]: get(param, 'id')
+      });
     },
 
     /*
@@ -173,7 +172,9 @@ export default Component.extend({
      * @param {Object} param
      */
     paramFilterToggled(metric, param) {
-      this.sendAction('toggleParameterizedMetricFilter', metric, { [get(param, 'param')]: get(param, 'id') });
+      this.sendAction('toggleParameterizedMetricFilter', metric, {
+        [get(param, 'param')]: get(param, 'id')
+      });
     }
   }
 });

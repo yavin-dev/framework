@@ -17,7 +17,6 @@ import {
 const { get } = Ember;
 
 export default Ember.Mixin.create({
-
   /**
    * Get a series builder based on type of chart
    *
@@ -47,23 +46,23 @@ export default Ember.Mixin.create({
    * @returns {Object} series config object
    */
   buildDimensionSeries(config, validations, request, response) {
-
     let metricPath = `${config}.metric`,
-        dimensionOrderPath = `${config}.dimensionOrder`,
-        dimensionsPath =  `${config}.dimensions`,
-        validationAttrs = get(validations, 'attrs');
+      dimensionOrderPath = `${config}.dimensionOrder`,
+      dimensionsPath = `${config}.dimensions`,
+      validationAttrs = get(validations, 'attrs');
 
     let isMetricValid = get(validationAttrs, `${metricPath}.isValid`),
-        isDimensionOrderValid = get(validationAttrs, `${dimensionOrderPath}.isValid`),
-        areDimensionsValid = get(validationAttrs, `${dimensionsPath}.isValid`);
+      isDimensionOrderValid = get(validationAttrs, `${dimensionOrderPath}.isValid`),
+      areDimensionsValid = get(validationAttrs, `${dimensionsPath}.isValid`);
 
     let metric = isMetricValid ? get(this, metricPath) : getRequestMetrics(request)[0],
-        dimensionOrder = isDimensionOrderValid ? get(this, dimensionOrderPath) : getRequestDimensions(request),
-        canonicalName = canonicalizeMetric(metric),
-        responseRows = topN(
-          maxDataByDimensions(get(response, 'rows'), dimensionOrder, canonicalName),
-          canonicalName, 10),
-        dimensions = isDimensionOrderValid && areDimensionsValid ? get(this, dimensionsPath) : buildDimensionSeriesValues(request, responseRows);
+      dimensionOrder = isDimensionOrderValid ? get(this, dimensionOrderPath) : getRequestDimensions(request),
+      canonicalName = canonicalizeMetric(metric),
+      responseRows = topN(maxDataByDimensions(get(response, 'rows'), dimensionOrder, canonicalName), canonicalName, 10),
+      dimensions =
+        isDimensionOrderValid && areDimensionsValid
+          ? get(this, dimensionsPath)
+          : buildDimensionSeriesValues(request, responseRows);
 
     return {
       type: DIMENSION_SERIES,

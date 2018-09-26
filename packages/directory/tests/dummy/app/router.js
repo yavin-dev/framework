@@ -14,12 +14,12 @@ Router.map(function() {
 
   this.route('reports', function() {
     this.route('new');
-    this.route('report', { path: '/:reportId'});
+    this.route('report', { path: '/:reportId' });
   });
 
   this.route('dashboards', function() {
     this.route('new');
-    this.route('dashboard', { path: '/:dashboardId'});
+    this.route('dashboard', { path: '/:dashboardId' });
   });
 });
 

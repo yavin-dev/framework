@@ -24,11 +24,11 @@ const DEFAULT_OPTIONS = {
   baselineValue: 0,
   goalValue: 0,
   metricTitle: '',
-  metric: {metric: '', parameters: {}},
+  metric: { metric: '', parameters: {} },
   prefix: '',
   unit: '',
-  thresholdColors: [ '#f05050', '#ffc831', '#44b876' ],
-  thresholdPercentages: [ 75, 85, 100 ]
+  thresholdColors: ['#f05050', '#ffc831', '#44b876'],
+  thresholdPercentages: [75, 85, 100]
 };
 
 export default Component.extend({
@@ -73,8 +73,8 @@ export default Component.extend({
    */
   defaultMetricTitle: computed('metricModel', function() {
     let metricModel = get(this, 'metricModel'),
-        baseMetric = get(metricModel, 'metric'),
-        longName = get(this, 'bardMetadata').getMetaField('metric', baseMetric, 'longName');
+      baseMetric = get(metricModel, 'metric'),
+      longName = get(this, 'bardMetadata').getMetaField('metric', baseMetric, 'longName');
 
     return metricFormat(metricModel, longName);
   }),
@@ -116,7 +116,7 @@ export default Component.extend({
   /**
    * @property {Object} config - config options for the chart
    */
-  config: computed('options', function(){
+  config: computed('options', function() {
     return Object.assign({}, DEFAULT_OPTIONS, get(this, 'options'));
   }),
 
@@ -125,25 +125,23 @@ export default Component.extend({
    */
   data: computed(function() {
     return {
-      columns: [
-        ['data', get(this, 'actualValue')],
-      ],
-      type: 'gauge',
+      columns: [['data', get(this, 'actualValue')]],
+      type: 'gauge'
     };
   }),
 
   /**
    * @property {Object} - general gauge configuration
    */
-  gauge: computed('options.{baselineValue,goalValue}', 'prefix', 'unit',  function() {
+  gauge: computed('options.{baselineValue,goalValue}', 'prefix', 'unit', function() {
     return {
       width: 20,
       max: get(this, 'goalValue'),
       min: get(this, 'baselineValue'),
-      minmaxformat: (value) => {
+      minmaxformat: value => {
         let number = this._formatNumber(value),
-            prefix = get(this, 'prefix'),
-            unit   = get(this, 'unit');
+          prefix = get(this, 'prefix'),
+          unit = get(this, 'unit');
         return `${prefix}${number}${unit}`;
       }
     };
@@ -165,18 +163,17 @@ export default Component.extend({
    */
   thresholdValues: computed('options.{baselineValue,goalValue}', function() {
     let percentages = get(this, 'thresholdPercentages'),
-        goal        = get(this, 'goalValue'),
-        baseline    = get(this, 'baselineValue'),
-        diff        = goal - baseline;
+      goal = get(this, 'goalValue'),
+      baseline = get(this, 'baselineValue'),
+      diff = goal - baseline;
 
-    return percentages.map( p => Number(baseline) + (diff * p/100) );
+    return percentages.map(p => Number(baseline) + (diff * p) / 100);
   }),
 
   /**
    * @property {Object} - color gauge configuration
    */
   color: computed('thresholdValues', 'goalValue', function() {
-
     return {
       pattern: get(this, 'thresholdColors'),
       threshold: {
@@ -223,33 +220,35 @@ export default Component.extend({
    * @private
    */
   _drawTitle() {
+    let titleElm = d3.select(`.${guidFor(this)}-goal-gauge-widget text.c3-chart-arcs-title`),
+      metricTitle = get(this, 'metricTitle'),
+      goalValue = get(this, 'goalValue'),
+      actualValue = get(this, 'actualValue'),
+      baseline = get(this, 'baselineValue'),
+      number = this._formatNumber(actualValue),
+      goal = this._formatNumber(goalValue),
+      prefix = getWithDefault(this, 'prefix', ''),
+      unit = getWithDefault(this, 'unit', '');
 
-    let titleElm    = d3.select(`.${guidFor(this)}-goal-gauge-widget text.c3-chart-arcs-title`),
-        metricTitle = get(this, 'metricTitle'),
-        goalValue   = get(this, 'goalValue'),
-        actualValue = get(this, 'actualValue'),
-        baseline    = get(this, 'baselineValue'),
-        number      = this._formatNumber(actualValue),
-        goal        = this._formatNumber(goalValue),
-        prefix      = getWithDefault(this, 'prefix', ''),
-        unit        = getWithDefault(this, 'unit', '');
-
-    let valueClass = (actualValue > baseline) ? 'pos': 'neg';
+    let valueClass = actualValue > baseline ? 'pos' : 'neg';
 
     //Add titles
-    titleElm.insert('tspan')
+    titleElm
+      .insert('tspan')
       .attr('class', `value-title ${valueClass}`)
       .text(`${prefix}${number}${unit}`)
       .attr('dy', -26)
       .attr('x', 0);
 
-    titleElm.insert('tspan')
+    titleElm
+      .insert('tspan')
       .attr('class', 'metric-title')
       .text(metricTitle)
       .attr('dy', 26)
       .attr('x', 0);
 
-    titleElm.insert('tspan')
+    titleElm
+      .insert('tspan')
       .attr('class', 'goal-title')
       .text(`${prefix}${goal}${unit} Goal`)
       .attr('dy', 40)
@@ -264,7 +263,9 @@ export default Component.extend({
    * @returns {String} formatted number
    */
   _formatNumber(value) {
-    let formatStr = (value >= 1000000000) ? '0.[000]a' : '0.[00]a';
-    return numeral(value).format(formatStr).toUpperCase();
+    let formatStr = value >= 1000000000 ? '0.[000]a' : '0.[00]a';
+    return numeral(value)
+      .format(formatStr)
+      .toUpperCase();
   }
 });

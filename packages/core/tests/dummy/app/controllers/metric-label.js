@@ -10,8 +10,8 @@ export default Ember.Controller.extend({
   }),
 
   metricLabelOptions: {
-    description: 'Glass Bottles of the ranch\'s finest pasteurized whole milk!!!!!!!',
-    metric: {metric: 'bottles', parameters: {}},
+    description: "Glass Bottles of the ranch's finest pasteurized whole milk!!!!!!!",
+    metric: { metric: 'bottles', parameters: {} },
     format: '$0,0[.]00'
   },
 
@@ -24,15 +24,12 @@ export default Ember.Controller.extend({
   }),
 
   actions: {
-
     /**
      * @action - onUpdateConfig merges config into the metricLabelOptions
      */
     onUpdateConfig(configUpdates) {
-      let config = get(this,'metricLabelOptions');
-      set(this, 'metricLabelOptions',
-        merge({}, config, configUpdates)
-      );
+      let config = get(this, 'metricLabelOptions');
+      set(this, 'metricLabelOptions', merge({}, config, configUpdates));
     }
   }
 });

@@ -3,9 +3,7 @@ import { module, test } from 'qunit';
 import startApp from '../helpers/start-app';
 import Mirage from 'ember-cli-mirage';
 
-let Application,
-    OriginalLoggerError,
-    OriginalTestAdapterException;
+let Application, OriginalLoggerError, OriginalTestAdapterException;
 
 module('Acceptance | Dashboard Collections', {
   beforeEach: function() {
@@ -24,11 +22,12 @@ test('dashobard-collection success', function(assert) {
 
   visit('/dashboardCollections/1');
   andThen(function() {
-    assert.notOk(!!find('.error').length,
-      'Error message not present when route is successfully loaded');
+    assert.notOk(!!find('.error').length, 'Error message not present when route is successfully loaded');
 
-    assert.ok(!!find('.navi-collection').length,
-      'the dashboard collection component is rendered when route is successfully loaded');
+    assert.ok(
+      !!find('.navi-collection').length,
+      'the dashboard collection component is rendered when route is successfully loaded'
+    );
   });
 });
 
@@ -47,11 +46,9 @@ test('dashboard-collection error', function(assert) {
 
   visit('/dashboardCollections/1');
   andThen(function() {
-    assert.ok(!!find('.error').length,
-      'Error message is present when route encounters an error');
+    assert.ok(!!find('.error').length, 'Error message is present when route encounters an error');
 
-    assert.notOk(!!find('.navi-collection').length,
-      'Navi dashboard collection component is not rendered');
+    assert.notOk(!!find('.navi-collection').length, 'Navi dashboard collection component is not rendered');
 
     Ember.Logger.error = OriginalLoggerError;
     Ember.Test.adapter.exception = OriginalTestAdapterException;
@@ -64,7 +61,6 @@ test('dashboard-collection loading', function(assert) {
   visit('/dashboardCollections/loading');
 
   andThen(function() {
-    assert.ok(!!find('.loader-container').length,
-      'Loader is present when visiting loading route');
+    assert.ok(!!find('.loader-container').length, 'Loader is present when visiting loading route');
   });
 });

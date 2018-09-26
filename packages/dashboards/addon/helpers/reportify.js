@@ -6,7 +6,6 @@ import Helper from '@ember/component/helper';
 import { inject as service } from '@ember/service';
 import { get, observer, set } from '@ember/object';
 
-
 export default Helper.extend({
   store: service(),
 
@@ -27,7 +26,7 @@ export default Helper.extend({
     set(this, 'model', model);
 
     let clonedModel = model.toJSON(),
-        store = get(this, 'store');
+      store = get(this, 'store');
 
     return store.createRecord('report', {
       title: clonedModel.title,
@@ -37,4 +36,3 @@ export default Helper.extend({
     });
   }
 });
-

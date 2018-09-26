@@ -22,18 +22,17 @@ import { getPaginatedRecords } from 'navi-core/utils/pagination';
 export function getPartialMatchWeight(string, query) {
   // Split search query into individual words
   let searchTokens = words(query.trim()),
-      origString = string,
-      stringTokens = arr(words(string)),
-      allTokensFound = true;
-
+    origString = string,
+    stringTokens = arr(words(string)),
+    allTokensFound = true;
 
   // Check that all words in the search query can be found in the given string
   for (let i = 0; i < searchTokens.length; i++) {
     if (string.indexOf(searchTokens[i]) === -1) {
       allTokensFound = false;
       break;
-    //Remove matched tokens from string as they have already matched
-    } else if(stringTokens.includes(searchTokens[i])) {
+      //Remove matched tokens from string as they have already matched
+    } else if (stringTokens.includes(searchTokens[i])) {
       string = string.replace(searchTokens[i], '');
     }
   }
@@ -82,11 +81,11 @@ export function searchRecords(records, query, searchField) {
   records = arr(records);
   query = query.toLowerCase();
 
-  for(let i = 0; i<records.length; i++) {
+  for (let i = 0; i < records.length; i++) {
     let record = records.objectAt(i),
-        relevance = getPartialMatchWeight(get(record, searchField).toLowerCase(), query);
+      relevance = getPartialMatchWeight(get(record, searchField).toLowerCase(), query);
 
-    if(relevance) {
+    if (relevance) {
       results.push({ relevance, record });
     }
   }
@@ -111,13 +110,13 @@ export function searchDimensionRecords(records, query, resultLimit, page) {
   records = arr(records);
 
   // Filter, map, and sort records based on how close each record is to the search query
-  for (let i = 0; i < get(records, 'length'); i++ ) {
+  for (let i = 0; i < get(records, 'length'); i++) {
     let record = records.objectAt(i);
 
     // Determine relevance based on string match weight
     let descriptionMatchWeight = getPartialMatchWeight(get(record, 'description').toLowerCase(), query.toLowerCase()),
-        idMatchWeight = getExactMatchWeight(get(record, 'id').toLowerCase(), query.toLowerCase()),
-        relevance = descriptionMatchWeight || idMatchWeight;
+      idMatchWeight = getExactMatchWeight(get(record, 'id').toLowerCase(), query.toLowerCase()),
+      relevance = descriptionMatchWeight || idMatchWeight;
 
     // If both id and description match the query, take the most relevant
     if (descriptionMatchWeight && idMatchWeight) {

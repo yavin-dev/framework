@@ -18,7 +18,5 @@ module('Unit | Initializer | inject c3 enhancements', {
 test('function overrides', function(assert) {
   initialize(this.application);
 
-  assert.equal(c3.chart.internal.fn.getGaugeLabelHeight(),
-    100,
-    'c3 function overrides are present');
+  assert.equal(c3.chart.internal.fn.getGaugeLabelHeight(), 100, 'c3 function overrides are present');
 });

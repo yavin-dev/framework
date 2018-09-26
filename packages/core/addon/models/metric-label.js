@@ -14,22 +14,25 @@ const { computed, set, get } = Ember;
 /**
  * @constant {Object} Validations - Validation object
  */
-const Validations = buildValidations({
-
-  //Selected metric list is the same as request metric list
-  'metadata.metric': validator('request-metric-exist')
-
-}, {
-  //Global Validation Options
-  request: computed.readOnly('model._request')
-});
+const Validations = buildValidations(
+  {
+    //Selected metric list is the same as request metric list
+    'metadata.metric': validator('request-metric-exist')
+  },
+  {
+    //Global Validation Options
+    request: computed.readOnly('model._request')
+  }
+);
 
 export default VisualizationBase.extend(Validations, {
-  type:     DS.attr('string', { defaultValue: 'metric-label'}),
-  version:  DS.attr('number', { defaultValue: 1 }),
-  metadata: DS.attr({ defaultValue: () => {
-    return { };
-  }}),
+  type: DS.attr('string', { defaultValue: 'metric-label' }),
+  version: DS.attr('number', { defaultValue: 1 }),
+  metadata: DS.attr({
+    defaultValue: () => {
+      return {};
+    }
+  }),
 
   /**
    * Rebuild config based on request and response
@@ -40,11 +43,11 @@ export default VisualizationBase.extend(Validations, {
    * @return {Object} this object
    */
   rebuildConfig(request /*response*/) {
-    let metrics = Ember.A( get(request, 'metrics') ),
-        metric =  get(metrics, 'firstObject').toJSON(),
-        description =  metricFormat(get(metrics, 'firstObject'), get(metrics, 'firstObject.metric.longName')),
-        allFormats = NumberFormats,
-        format = get(this, 'metadata.format') || get(allFormats[0], 'format');
+    let metrics = Ember.A(get(request, 'metrics')),
+      metric = get(metrics, 'firstObject').toJSON(),
+      description = metricFormat(get(metrics, 'firstObject'), get(metrics, 'firstObject.metric.longName')),
+      allFormats = NumberFormats,
+      format = get(this, 'metadata.format') || get(allFormats[0], 'format');
 
     set(this, 'metadata', { metric, description, format });
     return this;

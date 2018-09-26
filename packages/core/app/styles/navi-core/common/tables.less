@@ -4,34 +4,36 @@
  */
 
 .table {
-    td, th {
-        padding: 8px;
-    }
+  td,
+  th {
+    padding: 8px;
+  }
 
+  th {
+    color: @table-header-gray;
+  }
+
+  thead tr {
     th {
-        color: @table-header-gray;
+      border-bottom: 1px solid @gray-table-top-bottom;
     }
+  }
 
-    thead tr {
-        th {
-            border-bottom: 1px solid @gray-table-top-bottom;
-        }
-    }
-
-    tbody tr td {
-        border: none;
-        user-select: all;
-    }
+  tbody tr td {
+    border: none;
+    user-select: all;
+  }
 }
 
 .table-striped > tbody {
-    > tr{
-        &:nth-child(odd) {
-            background-color: @navi-smoke-white;
-        }
-        >td, >th {
-          border-bottom: 1px solid @navi-lightest-gray;
-          border-top: 1px solid @navi-lightest-gray;
-        }
+  > tr {
+    &:nth-child(odd) {
+      background-color: @navi-smoke-white;
     }
+    > td,
+    > th {
+      border-bottom: 1px solid @navi-lightest-gray;
+      border-top: 1px solid @navi-lightest-gray;
+    }
+  }
 }

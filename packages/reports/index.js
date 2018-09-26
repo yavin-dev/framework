@@ -16,7 +16,7 @@ module.exports = {
   included: function(app, parentAddon) {
     this._super.included.apply(this, arguments);
 
-    var target = (parentAddon || app);
+    var target = parentAddon || app;
     target.import('vendor/loader.css');
   },
 

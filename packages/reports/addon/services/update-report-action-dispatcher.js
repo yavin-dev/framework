@@ -5,17 +5,14 @@
 import RequestActionDispatcher from './request-action-dispatcher';
 import { RequestActions } from './request-action-dispatcher';
 
-export const UpdateReportActions = Object.assign({} , RequestActions, {
+export const UpdateReportActions = Object.assign({}, RequestActions, {
   UPDATE_TABLE_COLUMN_ORDER: 'updateColumnOrder',
   UPDATE_TABLE_COLUMN: 'updateColumn'
 });
 
 export default RequestActionDispatcher.extend({
-
   /**
    * @property {Array} consumers - concatenate consumers in request
    */
-  consumers: [
-    'report/table-visualization'
-  ]
+  consumers: ['report/table-visualization']
 });

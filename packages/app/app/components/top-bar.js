@@ -9,7 +9,6 @@ import config from 'ember-get-config';
 const { computed } = Ember;
 
 export default Ember.Component.extend({
-
   /**
    * @property {Array} classNames
    */

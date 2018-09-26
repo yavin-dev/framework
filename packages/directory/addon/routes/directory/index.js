@@ -5,11 +5,11 @@
 import Route from '@ember/routing/route';
 
 export default Route.extend({
-    /**
-     * @method redirect
-     * @overrride
-     */
-    redirect() {
-        this.transitionTo('directory.my-data');
-    }
+  /**
+   * @method redirect
+   * @overrride
+   */
+  redirect() {
+    this.transitionTo('directory.my-data');
+  }
 });

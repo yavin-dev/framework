@@ -24,19 +24,31 @@ export default Base.extend({
    */
   supportedOperators: computed('requestFragment.dimension', function() {
     let storageStrategy = get(this, 'requestFragment.dimension.storageStrategy'),
-        inputComponent = 'filter-values/dimension-select';
+      inputComponent = 'filter-values/dimension-select';
 
-        //Allow free form input of dimension values when dimension's storageStrategy is 'none'
-    if(storageStrategy === 'none') {
+    //Allow free form input of dimension values when dimension's storageStrategy is 'none'
+    if (storageStrategy === 'none') {
       inputComponent = 'filter-values/multi-value-input';
     }
 
     return [
-      { id: 'in',           longName: 'Includes',      valuesComponent: inputComponent },
-      { id: 'notin',        longName: 'Excludes',      valuesComponent: inputComponent },
-      { id: 'null',         longName: 'Is Empty',      valuesComponent: 'filter-values/null-input' },
-      { id: 'notnull',      longName: 'Is Not Empty',  valuesComponent: 'filter-values/null-input' },
-      { id: 'contains',     longName: 'Contains',      valuesComponent: 'filter-values/multi-value-input' }
+      { id: 'in', longName: 'Includes', valuesComponent: inputComponent },
+      { id: 'notin', longName: 'Excludes', valuesComponent: inputComponent },
+      {
+        id: 'null',
+        longName: 'Is Empty',
+        valuesComponent: 'filter-values/null-input'
+      },
+      {
+        id: 'notnull',
+        longName: 'Is Not Empty',
+        valuesComponent: 'filter-values/null-input'
+      },
+      {
+        id: 'contains',
+        longName: 'Contains',
+        valuesComponent: 'filter-values/multi-value-input'
+      }
     ];
   }),
 
@@ -46,8 +58,8 @@ export default Base.extend({
    */
   filter: computed('requestFragment.{operator,dimension,rawValues.[]}', function() {
     let dimensionFragment = get(this, 'requestFragment'),
-        operatorId = get(dimensionFragment, 'operator'),
-        operator = Ember.A(get(this, 'supportedOperators')).findBy('id', operatorId);
+      operatorId = get(dimensionFragment, 'operator'),
+      operator = Ember.A(get(this, 'supportedOperators')).findBy('id', operatorId);
 
     return {
       subject: get(dimensionFragment, 'dimension'),

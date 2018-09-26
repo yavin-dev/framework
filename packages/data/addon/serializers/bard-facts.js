@@ -13,8 +13,8 @@ export default EmberObject.extend({
    * @param response {Object} - JSON response object
    * @returns {Object} - normalized JSON object
    */
-  normalize(payload){
-    if(payload){
+  normalize(payload) {
+    if (payload) {
       return {
         rows: payload.rows,
         meta: payload.meta || {}

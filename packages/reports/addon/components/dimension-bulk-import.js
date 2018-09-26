@@ -22,7 +22,7 @@ export default Ember.Component.extend({
   /**
    * @property {Array} classNames - list of class names to be applied to the component
    */
-  classNames: [ 'dimension-bulk-import' ],
+  classNames: ['dimension-bulk-import'],
 
   /**
    * @property {Object} - dimension - dimension metadata containing name and longName properties
@@ -58,11 +58,11 @@ export default Ember.Component.extend({
    */
   _invalidDimValueIds: computed('_trimmedQueryIds', '_validDimValues', function() {
     let validDimVals = get(this, '_validDimValues');
-    return Ember.A(get(this, '_trimmedQueryIds').reject(
-      queryId => validDimVals.any(
-        validDimVal => get(validDimVal, 'id') === queryId
+    return Ember.A(
+      get(this, '_trimmedQueryIds').reject(queryId =>
+        validDimVals.any(validDimVal => get(validDimVal, 'id') === queryId)
       )
-    ));
+    );
   }),
 
   /**
@@ -99,14 +99,16 @@ export default Ember.Component.extend({
       return;
     }
 
-    let promise = get(this, '_dimensionService').find(get(this, 'dimension.name'), {
-      values: get(this, '_trimmedQueryIds').join(',')
-    }).then(dimValues => {
-      set(this, '_validDimValues', dimValues.toArray());
-    });
+    let promise = get(this, '_dimensionService')
+      .find(get(this, 'dimension.name'), {
+        values: get(this, '_trimmedQueryIds').join(',')
+      })
+      .then(dimValues => {
+        set(this, '_validDimValues', dimValues.toArray());
+      });
 
-        //set loading promise
-    set(this, '_loadingPromise', DS.PromiseObject.create({promise}));
+    //set loading promise
+    set(this, '_loadingPromise', DS.PromiseObject.create({ promise }));
   },
 
   actions: {

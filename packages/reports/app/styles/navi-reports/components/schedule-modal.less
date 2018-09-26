@@ -5,127 +5,129 @@
 
 @font-size-helper-text: 12px;
 
- .schedule-action {
-     &__icon, &__icon-label {
-         .clickable;
-         display: inline-block;
-     }
- }
+.schedule-action {
+  &__icon,
+  &__icon-label {
+    .clickable;
+    display: inline-block;
+  }
+}
 
- .schedule-modal {
-    &__btn-container {
-        display: flex;
-        justify-content: space-between;
+.schedule-modal {
+  &__btn-container {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__dropdown {
+    width: 200px;
+
+    .ember-power-select-status-icon {
+      display: inherit;
+      margin-right: 3px;
     }
 
-    &__dropdown {
-        width: 200px;
-
-        .ember-power-select-status-icon {
-            display: inherit;
-            margin-right: 3px;
-        }
-
-        .ember-power-select-trigger {
-            border-radius: 0;
-        }
-
-        .ember-power-select-trigger[aria-disabled] {
-            cursor: not-allowed;
-        }
+    .ember-power-select-trigger {
+      border-radius: 0;
     }
 
-    &__label {
-        color: @navi-gray;
-        font-family: inherit;
-        font-size: @font-size-base;
-        margin: 10px 0;
+    .ember-power-select-trigger[aria-disabled] {
+      cursor: not-allowed;
+    }
+  }
+
+  &__label {
+    color: @navi-gray;
+    font-family: inherit;
+    font-size: @font-size-base;
+    margin: 10px 0;
+  }
+
+  &__save-btn {
+    .loading-message {
+      background-color: #6e52a2;
+      border: 0;
+      padding: 3px;
     }
 
-    &__save-btn {
-        .loading-message {
-            background-color: #6e52a2;
-            border: 0;
-            padding: 3px;
-        }
+    .spinner > div {
+      height: 7px;
+      margin: 0;
+      width: 7px;
+    }
+  }
 
-        .spinner > div {
-            height: 7px;
-            margin: 0;
-            width: 7px;
-        }
+  &__section {
+    flex: 1;
+  }
+
+  &__section-group {
+    display: flex;
+  }
+
+  &__delete-btn {
+    margin-right: 0px;
+
+    button {
+      font-size: 14px;
+      padding: 0;
+    }
+  }
+
+  &__helper-text {
+    font-size: @font-size-helper-text;
+    margin-bottom: 1em;
+    vertical-align: top;
+  }
+
+  &__input--recipients {
+    &.text-input {
+      padding: 10px;
     }
 
-    &__section {
-        flex: 1;
+    // Override styles included with ember-tag-input
+    .emberTagInput {
+      border: none;
     }
 
-    &__section-group {
-        display: flex;
-    }
-
-    &__delete-btn {
-        margin-right: 0px;
-
-        button {
-          font-size: 14px;
-          padding: 0;
-        }
-    }
-
-    &__helper-text {
-        font-size: @font-size-helper-text;
-        margin-bottom: 1em;
-        vertical-align: top;
-    }
-
-    &__input--recipients {
-      &.text-input{
-          padding: 10px;
+    .navi-tag-input {
+      &__tag {
+        margin-right: 5px;
       }
 
-      // Override styles included with ember-tag-input
-      .emberTagInput {
-        border: none;
+      .emberTagInput-tag,
+      .emberTagInput-input {
+        margin: 2px;
+        padding: 3px;
       }
 
-      .navi-tag-input {
-        &__tag {
-          margin-right: 5px;
-        }
-
-        .emberTagInput-tag, .emberTagInput-input {
-          margin: 2px;
-          padding: 3px;
-        }
-
-        .emberTagInput-new {
-          padding: 0;
-        }
+      .emberTagInput-new {
+        padding: 0;
       }
     }
+  }
 
-    &__input--recipients[disabled] {
-        background-color: @navi-disabled-element-background-color;
-        cursor: not-allowed;
+  &__input--recipients[disabled] {
+    background-color: @navi-disabled-element-background-color;
+    cursor: not-allowed;
+  }
+
+  &__notification.modal-notification {
+    margin-bottom: 0;
+  }
+
+  &__recipients--invalid {
+    .schedule-modal__input--recipients.text-input {
+      background-color: @navi-form-error-red;
+      border-bottom: 1px solid @navi-error-color;
     }
 
-    &__notification.modal-notification {
-        margin-bottom: 0;
+    .schedule-modal__helper-recipients {
+      color: @navi-red;
     }
+  }
 
-    &__recipients--invalid {
-        .schedule-modal__input--recipients.text-input {
-            background-color: @navi-form-error-red;
-            border-bottom: 1px solid @navi-error-color;
-        }
-
-        .schedule-modal__helper-recipients {
-            color: @navi-red;
-        }
-    }
-
-    &__helper-recipients {
-        color: @navi-gray;
-    }
- }
+  &__helper-recipients {
+    color: @navi-gray;
+  }
+}

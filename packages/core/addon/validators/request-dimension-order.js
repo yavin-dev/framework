@@ -11,9 +11,9 @@ import { getRequestDimensions } from 'navi-core/utils/chart-data';
 const { get } = Ember;
 
 export default BaseValidator.extend({
-  validate(value, options/*, model, attribute*/) {
+  validate(value, options /*, model, attribute*/) {
     let request = get(options, 'request');
-    if(request){
+    if (request) {
       let requestDimensions = getRequestDimensions(request);
       return isEqual(value, requestDimensions);
     }

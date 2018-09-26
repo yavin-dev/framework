@@ -7,7 +7,5 @@ module('Unit | Helper | guess timezone');
 test('guess timezone', function(assert) {
   assert.expect(1);
 
-  assert.equal(guessTimezone(),
-    moment.tz.guess(),
-    'The helper returns the timezone guessed by moment');
+  assert.equal(guessTimezone(), moment.tz.guess(), 'The helper returns the timezone guessed by moment');
 });

@@ -20,15 +20,17 @@ test('App settings', function(assert) {
 
   initialize(registry, application);
 
-  assert.deepEqual(config.navi.user,
-    window.NAVI_APP.appSettings.user,
-    'Navi user has been configured');
+  assert.deepEqual(config.navi.user, window.NAVI_APP.appSettings.user, 'Navi user has been configured');
 
-  assert.deepEqual(config.navi.dataSources[0].uri,
+  assert.deepEqual(
+    config.navi.dataSources[0].uri,
     window.NAVI_APP.appSettings.factApiHost,
-    'Navi api host has been configured');
+    'Navi api host has been configured'
+  );
 
-  assert.deepEqual(config.navi.appPersistence.uri,
+  assert.deepEqual(
+    config.navi.appPersistence.uri,
     window.NAVI_APP.appSettings.persistenceApiHost,
-    'Navi persistence api host has been configured');
+    'Navi persistence api host has been configured'
+  );
 });

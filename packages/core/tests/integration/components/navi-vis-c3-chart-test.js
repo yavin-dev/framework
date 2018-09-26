@@ -11,7 +11,6 @@ moduleForComponent('navi-vis-c3-chart', 'Integration | Component | navi vis c3 c
 });
 
 test('resize', function(assert) {
-
   let testContainer = Ember.Component.extend({
     classNames: ['test-container'],
     layout: hbs`{{yield this}}`
@@ -21,9 +20,7 @@ test('resize', function(assert) {
 
   // Dummy data so chart won't complain
   this.set('data', {
-    columns: [
-      ['data1', 30, 200, 100, 400, 150, 250]
-    ]
+    columns: [['data1', 30, 200, 100, 400, 150, 250]]
   });
 
   //Mock addObserver, that is used by ember-c3
@@ -40,11 +37,8 @@ test('resize', function(assert) {
     {{/test-container}}
   `);
 
-
   Ember.run.next(() => {
-    assert.equal(this.$('svg').css('height'),
-      '100px',
-      'chart fills height of container on initial render');
+    assert.equal(this.$('svg').css('height'), '100px', 'chart fills height of container on initial render');
 
     this.$('.container').css('height', '200px');
 
@@ -52,9 +46,7 @@ test('resize', function(assert) {
       this.$('.test-container').trigger('resizestop');
     });
 
-    assert.equal(this.$('svg').css('height'),
-      '200px',
-      'chart height updates to match container after resize action');
+    assert.equal(this.$('svg').css('height'), '200px', 'chart height updates to match container after resize action');
   });
 });
 
@@ -62,10 +54,7 @@ test('series classes', function(assert) {
   assert.expect(2);
 
   this.set('data', {
-    columns: [
-      ['series0', 30, 200, 100, 400, 150, 250],
-      ['series1', 30, 200, 100, 400, 150, 250]
-    ]
+    columns: [['series0', 30, 200, 100, 400, 150, 250], ['series1', 30, 200, 100, 400, 150, 250]]
   });
 
   this.render(hbs`
@@ -76,10 +65,14 @@ test('series classes', function(assert) {
   `);
 
   Ember.run.next(() => {
-    assert.ok(this.$('.c3-chart-line:eq(0)').is('.chart-series-0'),
-      'Each chart series has a corresponding class applied');
+    assert.ok(
+      this.$('.c3-chart-line:eq(0)').is('.chart-series-0'),
+      'Each chart series has a corresponding class applied'
+    );
 
-    assert.ok(this.$('.c3-chart-line:eq(1)').is('.chart-series-1'),
-      'Each chart series has a corresponding class applied');
+    assert.ok(
+      this.$('.c3-chart-line:eq(1)').is('.chart-series-1'),
+      'Each chart series has a corresponding class applied'
+    );
   });
 });

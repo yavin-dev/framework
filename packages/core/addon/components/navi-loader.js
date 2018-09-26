@@ -17,5 +17,5 @@ export default Ember.Component.extend({
   /**
    * @property containerClass - additional class for navi-loader__container
    */
-  containerClass: undefined,
+  containerClass: undefined
 });

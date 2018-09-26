@@ -8,7 +8,6 @@ import Ember from 'ember';
 const { get, set } = Ember;
 
 export default Ember.Route.extend({
-
   /**
    * @property {Service} user
    */
@@ -26,7 +25,7 @@ export default Ember.Route.extend({
    * @override
    * @returns {DS.Model} dashboard model
    */
-  model(){
+  model() {
     let dashboard = this.modelFor('dashboards.dashboard');
     return this._cloneDashboard(dashboard);
   },
@@ -51,12 +50,12 @@ export default Ember.Route.extend({
    * @returns {DS.Promise} dashboard promise
    */
   _cloneDashboard(dashboardModel) {
-    let cloneDashboard =  dashboardModel.clone();
+    let cloneDashboard = dashboardModel.clone();
     set(cloneDashboard, 'title', `Copy of ${get(cloneDashboard, 'title')}`.substring(0, 150));
 
-    return cloneDashboard.save().then(
-      cloneDashboardModel => this._cloneWidgets(dashboardModel, cloneDashboardModel).then(
-        widgetPromiseArray => Ember.RSVP.all(widgetPromiseArray).then(newWidgets => {
+    return cloneDashboard.save().then(cloneDashboardModel =>
+      this._cloneWidgets(dashboardModel, cloneDashboardModel).then(widgetPromiseArray =>
+        Ember.RSVP.all(widgetPromiseArray).then(newWidgets => {
           let layout = cloneDashboardModel.get('presentation.layout');
 
           //Replace original widget IDs with newly cloned widget IDs
@@ -79,13 +78,13 @@ export default Ember.Route.extend({
    * @returns {DS.PromiseArray} - Array of widget promises ordered to match dashboard layout array
    */
   _cloneWidgets(dashboardModel, cloneDashboardModel) {
-    return dashboardModel.get('widgets').then((widgets) => {
+    return dashboardModel.get('widgets').then(widgets => {
       let widgetsById = [];
-      widgets.forEach((rec) => widgetsById[rec.id] = rec );
+      widgets.forEach(rec => (widgetsById[rec.id] = rec));
 
-      return cloneDashboardModel.get('presentation.layout').map((item) => {
+      return cloneDashboardModel.get('presentation.layout').map(item => {
         let widget = widgetsById[item.widgetId],
-            cloneWidget = widget.clone();
+          cloneWidget = widget.clone();
 
         cloneWidget.set('dashboard', cloneDashboardModel);
         return cloneWidget.save();

@@ -9,7 +9,6 @@
 import ManifestBase from './base';
 
 export default ManifestBase.extend({
-
   /**
    * @property name
    */

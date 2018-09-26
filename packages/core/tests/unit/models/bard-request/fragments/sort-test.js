@@ -4,8 +4,7 @@ import wait from 'ember-test-helpers/wait';
 import { getOwner } from '@ember/application';
 import { run } from '@ember/runloop';
 
-var Store,
-    MetadataService;
+var Store, MetadataService;
 
 moduleForModel('fragments-mock', 'Unit | Model | Fragment | BardRequest - Sort', {
   // Specify the other units that are required for this test.
@@ -44,13 +43,15 @@ moduleForModel('fragments-mock', 'Unit | Model | Fragment | BardRequest - Sort',
           id: 1,
           type: 'fragments-mock',
           attributes: {
-            sorts: [{
-              metric: {metric: 'dayAvgUniqueIdentifier'}
-            },
-            {
-              metric: {metric: 'timeSpent'},
-              direction: 'desc'
-            }]
+            sorts: [
+              {
+                metric: { metric: 'dayAvgUniqueIdentifier' }
+              },
+              {
+                metric: { metric: 'timeSpent' },
+                direction: 'desc'
+              }
+            ]
           }
         }
       });
@@ -69,37 +70,69 @@ test('Model using the Sort Fragment', function(assert) {
     assert.ok(mockModel, 'mockModel is fetched from the store');
 
     /* == Getter Method == */
-    assert.equal(mockModel.get('sorts').objectAt(0).get('metric.metric.longName'),
+    assert.equal(
+      mockModel
+        .get('sorts')
+        .objectAt(0)
+        .get('metric.metric.longName'),
       'Unique Identifiers (Daily Avg)',
-      'The property metric `ui` was deserialized to the metric object with longName `Unique Identifiers (Daily Avg)`');
+      'The property metric `ui` was deserialized to the metric object with longName `Unique Identifiers (Daily Avg)`'
+    );
 
-    assert.equal(mockModel.get('sorts').objectAt(0).get('direction'),
+    assert.equal(
+      mockModel
+        .get('sorts')
+        .objectAt(0)
+        .get('direction'),
       'desc',
-      'The property direction has the default value `desc`');
+      'The property direction has the default value `desc`'
+    );
 
     /* == Setter Method == */
-    mockModel.get('sorts').objectAt(0).set('metric', {metric: MetadataService.getById('metric', 'pageViews')});
-    mockModel.get('sorts').objectAt(0).set('direction', 'asc');
+    mockModel
+      .get('sorts')
+      .objectAt(0)
+      .set('metric', {
+        metric: MetadataService.getById('metric', 'pageViews')
+      });
+    mockModel
+      .get('sorts')
+      .objectAt(0)
+      .set('direction', 'asc');
 
-    assert.equal(mockModel.get('sorts').objectAt(0).get('metric.metric.longName'),
+    assert.equal(
+      mockModel
+        .get('sorts')
+        .objectAt(0)
+        .get('metric.metric.longName'),
       'Page Views',
-      'The property sort has the metric with value  `Page Views` using the setter');
+      'The property sort has the metric with value  `Page Views` using the setter'
+    );
 
-    assert.equal(mockModel.get('sorts').objectAt(0).get('direction'),
+    assert.equal(
+      mockModel
+        .get('sorts')
+        .objectAt(0)
+        .get('direction'),
       'asc',
-      'The property sort has the direction `asc` set using setter');
+      'The property sort has the direction `asc` set using setter'
+    );
 
     /* == Serialize == */
-    assert.deepEqual(mockModel.serialize().data.attributes.sorts,
-      [{
-        metric: {metric: 'pageViews', parameters: {}},
-        direction: 'asc'
-      },
-      {
-        metric: {metric: 'timeSpent', parameters: {}},
-        direction: 'desc'
-      }],
-      'The model object was serialized correctly');
+    assert.deepEqual(
+      mockModel.serialize().data.attributes.sorts,
+      [
+        {
+          metric: { metric: 'pageViews', parameters: {} },
+          direction: 'asc'
+        },
+        {
+          metric: { metric: 'timeSpent', parameters: {} },
+          direction: 'desc'
+        }
+      ],
+      'The model object was serialized correctly'
+    );
   });
 });
 
@@ -107,41 +140,41 @@ test('Validations', function(assert) {
   assert.expect(8);
 
   return wait().then(() => {
-    let sort = run(function () {
-      return Store.peekRecord('fragments-mock', 1).get('sorts').objectAt(0);
+    let sort = run(function() {
+      return Store.peekRecord('fragments-mock', 1)
+        .get('sorts')
+        .objectAt(0);
     });
 
     sort.validate().then(({ validations }) => {
       assert.ok(validations.get('isValid'), 'Sort is valid');
-      assert.equal(validations.get('messages').length,
-        0,
-        'There are no validation errors');
+      assert.equal(validations.get('messages').length, 0, 'There are no validation errors');
     });
 
     sort.set('metric', null);
     sort.validate().then(({ validations }) => {
       assert.ok(!validations.get('isValid'), 'Sort is invalid');
 
-      assert.equal(validations.get('messages').length,
-        1,
-        'There is one validation errors');
+      assert.equal(validations.get('messages').length, 1, 'There is one validation errors');
 
-      assert.equal(validations.get('messages').objectAt(0),
+      assert.equal(
+        validations.get('messages').objectAt(0),
         'The metric field in sort cannot be empty',
-        'Metric cannot be empty is a part of the error messages');
+        'Metric cannot be empty is a part of the error messages'
+      );
     });
 
     sort.set('direction', undefined);
     sort.validate().then(({ validations }) => {
       assert.ok(!validations.get('isValid'), 'Sort is invalid');
 
-      assert.equal(validations.get('messages').length,
-        2,
-        'There are two validation errors');
+      assert.equal(validations.get('messages').length, 2, 'There are two validation errors');
 
-      assert.equal(validations.get('messages').objectAt(1),
+      assert.equal(
+        validations.get('messages').objectAt(1),
         'The direction field in sort cannot be empty',
-        'Direction cannot be empty is a part of the error messages');
+        'Direction cannot be empty is a part of the error messages'
+      );
     });
   });
 });

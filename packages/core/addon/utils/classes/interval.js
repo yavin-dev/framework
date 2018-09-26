@@ -24,7 +24,6 @@ const MACROS = Ember.A([CURRENT, NEXT]);
  * @class
  */
 export default class Interval {
-
   /**
    * @param {Duration|moment|String} start - inclusive interval boundary
    * @param {Duration|moment|String} end - exclusive interval boundary
@@ -50,10 +49,9 @@ export default class Interval {
 
     // Simplify equals check by doing string comparison on start/end
     let thisStrings = this.asStrings(),
-        intervalStrings = interval.asStrings();
+      intervalStrings = interval.asStrings();
 
-    return thisStrings.start === intervalStrings.start &&
-               thisStrings.end === intervalStrings.end;
+    return thisStrings.start === intervalStrings.start && thisStrings.end === intervalStrings.end;
   }
 
   /**
@@ -65,10 +63,9 @@ export default class Interval {
      * Handle the Case when we are doing 'current/next'
      * Value needs to be defined
      */
-    if ((this._start === CURRENT) && (this._end === NEXT)) {
+    if (this._start === CURRENT && this._end === NEXT) {
       return true;
-    }
-    else {
+    } else {
       let moments = this.asMoments();
       return moments.start.isBefore(moments.end);
     }
@@ -81,9 +78,9 @@ export default class Interval {
    */
   asMoments() {
     let start = this._start,
-        end = this._end;
+      end = this._end;
 
-        // Copy moments
+    // Copy moments
     if (moment.isMoment(start)) {
       start = start.clone();
     }
@@ -142,7 +139,7 @@ export default class Interval {
     moments.start.startOf(DateUtils.getIsoDateTimePeriod(timePeriod));
     moments.end.startOf(DateUtils.getIsoDateTimePeriod(timePeriod));
 
-    if(moments.start.isSame(moments.end)){
+    if (moments.start.isSame(moments.end)) {
       moments.end.startOf(DateUtils.getIsoDateTimePeriod(timePeriod)).add(1, timePeriod);
     }
 
@@ -168,8 +165,8 @@ export default class Interval {
    */
   asStrings(momentFormat) {
     return {
-      start:  Interval._stringFromProperty(this._start, momentFormat),
-      end:    Interval._stringFromProperty(this._end, momentFormat)
+      start: Interval._stringFromProperty(this._start, momentFormat),
+      end: Interval._stringFromProperty(this._end, momentFormat)
     };
   }
 
@@ -211,10 +208,7 @@ export default class Interval {
    * @returns {Interval} object parsed from given strings
    */
   static parseFromStrings(start, end) {
-    return new Interval(
-      Interval.fromString(start),
-      Interval.fromString(end)
-    );
+    return new Interval(Interval.fromString(start), Interval.fromString(end));
   }
 
   /**
@@ -227,7 +221,7 @@ export default class Interval {
   static fromString(property, format = DateUtils.API_DATE_FORMAT_STRING) {
     Ember.assert('Argument must be a string', typeof property === 'string');
 
-    if(MACROS.includes(property)) {
+    if (MACROS.includes(property)) {
       return property;
     } else if (isIsoDurationString(property)) {
       return new Duration(property);

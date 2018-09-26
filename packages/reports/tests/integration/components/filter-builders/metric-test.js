@@ -13,11 +13,16 @@ moduleForComponent('filter-builders/metric', 'Integration | Component | filter-b
   integration: true,
 
   beforeEach() {
-    this.register('helper:update-report-action', Helper.helper(() => {}), { instantiate: false });
+    this.register('helper:update-report-action', Helper.helper(() => {}), {
+      instantiate: false
+    });
 
-    this.register('component:mock/values-component', Component.extend({
-      classNames: 'mock-value-component'
-    }));
+    this.register(
+      'component:mock/values-component',
+      Component.extend({
+        classNames: 'mock-value-component'
+      })
+    );
   }
 });
 
@@ -45,9 +50,13 @@ test('displayName', function(assert) {
   this.set('request', Request);
   this.render(hbs`{{filter-builders/metric filter=filter request=request}}`);
 
-  assert.equal(this.$('.filter-builder__subject').text().trim(),
+  assert.equal(
+    this.$('.filter-builder__subject')
+      .text()
+      .trim(),
     'metric-with-params (bar,baz)',
-    'Subject\'s long name displayed in filter builder includes the metric long name and the parameters');
+    "Subject's long name displayed in filter builder includes the metric long name and the parameters"
+  );
 
   //check display name for metric without params
   filter = {
@@ -65,7 +74,11 @@ test('displayName', function(assert) {
 
   this.set('filter', filter);
 
-  assert.equal(this.$('.filter-builder__subject').text().trim(),
+  assert.equal(
+    this.$('.filter-builder__subject')
+      .text()
+      .trim(),
     'metric-without-params',
-    'Only the subject\'s long name is displayed when the metric has no parameters');
+    "Only the subject's long name is displayed when the metric has no parameters"
+  );
 });

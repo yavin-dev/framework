@@ -72,10 +72,10 @@ export default Ember.Component.extend({
    */
   copySelection: Ember.observer('selection', function() {
     let selection = this.get('selection'),
-        copy;
+      copy;
 
-        //If type is object or ember object instance
-    if(Ember.typeOf(selection) === 'object' || Ember.typeOf(selection) === 'instance'){
+    //If type is object or ember object instance
+    if (Ember.typeOf(selection) === 'object' || Ember.typeOf(selection) === 'instance') {
       //deep copy object
       copy = Ember.assign({}, selection);
     } else {
@@ -99,7 +99,7 @@ export default Ember.Component.extend({
     this.set('_registered', {});
 
     // Setup "click off container" event
-    Ember.$(document).on(this.get('_clickEventName'), (event) => {
+    Ember.$(document).on(this.get('_clickEventName'), event => {
       /*
        * Since jQuery can't find the closest parent of stale elements,
        * ignore click events if the element was removed by another

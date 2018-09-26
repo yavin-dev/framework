@@ -6,29 +6,33 @@ import { setupMock, teardownMock } from '../../../../../helpers/mirage-helper';
 
 const { get, set } = Ember;
 
-const defaultDataTable =  get(config, 'navi.defaultDataTable');
+const defaultDataTable = get(config, 'navi.defaultDataTable');
 const NEW_MODEL = {
-  "createdOn": null,
-  "requests": [{
-    "bardVersion": "v1",
-    "dimensions": [],
-    "filters": [],
-    "intervals": [{
-      "end": "current",
-      "start": "P1D"
-    }],
-    "logicalTable": {
-      "table": 'tableA',
-      "timeGrain": "day"
-    },
-    "metrics": [],
-    "having": [],
-    "sort": [],
-    "requestVersion": "v1",
-    "responseFormat": "json"
-  }],
-  "title": "Untitled Widget",
-  "updatedOn": null,
+  createdOn: null,
+  requests: [
+    {
+      bardVersion: 'v1',
+      dimensions: [],
+      filters: [],
+      intervals: [
+        {
+          end: 'current',
+          start: 'P1D'
+        }
+      ],
+      logicalTable: {
+        table: 'tableA',
+        timeGrain: 'day'
+      },
+      metrics: [],
+      having: [],
+      sort: [],
+      requestVersion: 'v1',
+      responseFormat: 'json'
+    }
+  ],
+  title: 'Untitled Widget',
+  updatedOn: null,
   visualization: {
     type: 'line-chart',
     version: 1,
@@ -43,13 +47,14 @@ const NEW_MODEL = {
       }
     }
   },
-  dashboard: "dashboard1"
+  dashboard: 'dashboard1'
 };
 
 let Store, Route;
 
 moduleFor('route:dashboards/dashboard/widgets/new', 'Unit | Route | dashboards/dashboard/widgets/new', {
-  needs: ['adapter:report',
+  needs: [
+    'adapter:report',
     'adapter:user',
     'model:dashboard-widget',
     'model:dashboard',
@@ -101,7 +106,6 @@ moduleFor('route:dashboards/dashboard/widgets/new', 'Unit | Route | dashboards/d
     'service:navi-notifications',
     'service:navi-visualizations',
     'service:model-compression'
-
   ],
   beforeEach() {
     setupMock();
@@ -109,9 +113,12 @@ moduleFor('route:dashboards/dashboard/widgets/new', 'Unit | Route | dashboards/d
     Store = this.container.lookup('service:store');
 
     Route = this.subject({
-      modelFor: () => Store.createRecord('dashboard', { id: 'dashboard1', author: 'navi_user' })
+      modelFor: () =>
+        Store.createRecord('dashboard', {
+          id: 'dashboard1',
+          author: 'navi_user'
+        })
     });
-
 
     set(config, 'navi.defaultDataTable', 'tableA');
 
@@ -128,14 +135,14 @@ test('model', function(assert) {
   assert.expect(2);
 
   return wait().then(() => {
-    return Route.model(null, { queryParams: {} }).then( model => {
-      assert.deepEqual(model.toJSON(),
-        NEW_MODEL,
-        'A new widget model is returned');
+    return Route.model(null, { queryParams: {} }).then(model => {
+      assert.deepEqual(model.toJSON(), NEW_MODEL, 'A new widget model is returned');
 
-      assert.equal(model.get('author.id'),
+      assert.equal(
+        model.get('author.id'),
         'navi_user',
-        'the author of the widget is set using the author from the dashboard');
+        'the author of the widget is set using the author from the dashboard'
+      );
     });
   });
 });
@@ -145,13 +152,13 @@ test('_newModel', function(assert) {
 
   return wait().then(() => {
     return Route._newModel().then(model => {
-      assert.deepEqual(model.toJSON(),
-        NEW_MODEL,
-        'A new widget model is returned');
+      assert.deepEqual(model.toJSON(), NEW_MODEL, 'A new widget model is returned');
 
-      assert.equal(model.get('author.id'),
+      assert.equal(
+        model.get('author.id'),
         'navi_user',
-        'the author of the widget is set using the author from the dashboard');
+        'the author of the widget is set using the author from the dashboard'
+      );
     });
   });
 });

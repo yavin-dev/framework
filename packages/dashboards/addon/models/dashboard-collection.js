@@ -6,9 +6,9 @@
 import DS from 'ember-data';
 
 export default DS.Model.extend({
-  author:     DS.belongsTo('user', {async: true}),
-  title:      DS.attr('string'),
-  createdOn:  DS.attr('moment'),
-  updatedOn:  DS.attr('moment'),
+  author: DS.belongsTo('user', { async: true }),
+  title: DS.attr('string'),
+  createdOn: DS.attr('moment'),
+  updatedOn: DS.attr('moment'),
   dashboards: DS.hasMany('dashboard', { async: true })
 });

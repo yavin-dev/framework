@@ -3,7 +3,7 @@ import { module, test } from 'qunit';
 
 module('Unit | Helpers | Format Chart Tooltip Date');
 
-test('formatChartTooltipDate', function(assert){
+test('formatChartTooltipDate', function(assert) {
   assert.expect(8);
 
   let request = {
@@ -12,9 +12,11 @@ test('formatChartTooltipDate', function(assert){
     }
   };
 
-  assert.equal(formatChartTooltipDate(request, '2017-02-09 00:00:00'),
+  assert.equal(
+    formatChartTooltipDate(request, '2017-02-09 00:00:00'),
     '2017',
-    'formatChartTooltipDate formats correctly for year timeGrain');
+    'formatChartTooltipDate formats correctly for year timeGrain'
+  );
 
   request = {
     logicalTable: {
@@ -22,9 +24,11 @@ test('formatChartTooltipDate', function(assert){
     }
   };
 
-  assert.equal(formatChartTooltipDate(request, '2017-02-09 00:00:00'),
+  assert.equal(
+    formatChartTooltipDate(request, '2017-02-09 00:00:00'),
     'Q1 2017',
-    'formatChartTooltipDate formats correctly for quarter timeGrain');
+    'formatChartTooltipDate formats correctly for quarter timeGrain'
+  );
 
   request = {
     logicalTable: {
@@ -32,9 +36,11 @@ test('formatChartTooltipDate', function(assert){
     }
   };
 
-  assert.equal(formatChartTooltipDate(request, '2017-02-09 00:00:00'),
+  assert.equal(
+    formatChartTooltipDate(request, '2017-02-09 00:00:00'),
     'Feb 2017',
-    'formatChartTooltipDate formats correctly for month timeGrain');
+    'formatChartTooltipDate formats correctly for month timeGrain'
+  );
 
   request = {
     logicalTable: {
@@ -42,9 +48,11 @@ test('formatChartTooltipDate', function(assert){
     }
   };
 
-  assert.equal(formatChartTooltipDate(request, '2017-02-09 00:00:00'),
+  assert.equal(
+    formatChartTooltipDate(request, '2017-02-09 00:00:00'),
     'February 9, 2017',
-    'formatChartTooltipDate formats correctly for week timeGrain');
+    'formatChartTooltipDate formats correctly for week timeGrain'
+  );
 
   request = {
     logicalTable: {
@@ -52,9 +60,11 @@ test('formatChartTooltipDate', function(assert){
     }
   };
 
-  assert.equal(formatChartTooltipDate(request, '2017-02-09 00:00:00'),
+  assert.equal(
+    formatChartTooltipDate(request, '2017-02-09 00:00:00'),
     'February 9, 2017',
-    'formatChartTooltipDate formats correctly for day timeGrain');
+    'formatChartTooltipDate formats correctly for day timeGrain'
+  );
 
   request = {
     logicalTable: {
@@ -62,9 +72,11 @@ test('formatChartTooltipDate', function(assert){
     }
   };
 
-  assert.equal(formatChartTooltipDate(request, '2017-02-09 15:00:00'),
+  assert.equal(
+    formatChartTooltipDate(request, '2017-02-09 15:00:00'),
     'Feb 9 15:00',
-    'formatChartTooltipDate formats correctly for hour timeGrain');
+    'formatChartTooltipDate formats correctly for hour timeGrain'
+  );
 
   request = {
     logicalTable: {
@@ -72,9 +84,11 @@ test('formatChartTooltipDate', function(assert){
     }
   };
 
-  assert.equal(formatChartTooltipDate(request, '2017-02-09 15:25:00'),
+  assert.equal(
+    formatChartTooltipDate(request, '2017-02-09 15:25:00'),
     'Feb 9 15:25:00',
-    'formatChartTooltipDate formats correctly for minute timeGrain');
+    'formatChartTooltipDate formats correctly for minute timeGrain'
+  );
 
   request = {
     logicalTable: {
@@ -82,7 +96,9 @@ test('formatChartTooltipDate', function(assert){
     }
   };
 
-  assert.equal(formatChartTooltipDate(request, '2017-02-09 15:25:35'),
+  assert.equal(
+    formatChartTooltipDate(request, '2017-02-09 15:25:35'),
     'Feb 9 15:25:35',
-    'formatChartTooltipDate formats correctly for second timeGrain');
+    'formatChartTooltipDate formats correctly for second timeGrain'
+  );
 });

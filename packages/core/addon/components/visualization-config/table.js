@@ -13,7 +13,7 @@
 import Ember from 'ember';
 import layout from '../../templates/components/visualization-config/table';
 
-const { A:arr, computed, copy, get, inject } = Ember;
+const { A: arr, computed, copy, get, inject } = Ember;
 
 export default Ember.Component.extend({
   layout,
@@ -37,10 +37,7 @@ export default Ember.Component.extend({
    * @property {Array} subtotalDimensions - dimensions used to subtotal including dateTime
    */
   subtotalDimensions: computed('dimensions', function() {
-    return [
-      { name: 'dateTime', longName: 'Date Time' },
-      ...get(this, 'dimensions')
-    ];
+    return [{ name: 'dateTime', longName: 'Date Time' }, ...get(this, 'dimensions')];
   }),
 
   /**
@@ -53,7 +50,7 @@ export default Ember.Component.extend({
    */
   selectedSubtotal: computed('options.showTotals.subtotal', function() {
     let subtotals = get(this, 'options.showTotals.subtotal');
-    if(subtotals){
+    if (subtotals) {
       return arr(get(this, 'subtotalDimensions')).findBy('name', subtotals);
     }
   }),
@@ -65,7 +62,7 @@ export default Ember.Component.extend({
      * toggles flag in the visualization config
      */
     onToggleGrandTotal(grandTotal) {
-      this.attrs.onUpdateConfig({ showTotals: { grandTotal }});
+      this.attrs.onUpdateConfig({ showTotals: { grandTotal } });
     },
 
     /**
@@ -75,11 +72,12 @@ export default Ember.Component.extend({
      * deletes the subtotal property from the config when subtotal is toggled off
      */
     onToggleSubtotal(val) {
-      if(val) {
+      if (val) {
         let firstDim = get(this, 'subtotalDimensions')[0];
-        this.attrs.onUpdateConfig({ showTotals: { subtotal: get(firstDim, 'name') }});
-      }
-      else if(get(this, 'options.showTotals.subtotal')) {
+        this.attrs.onUpdateConfig({
+          showTotals: { subtotal: get(firstDim, 'name') }
+        });
+      } else if (get(this, 'options.showTotals.subtotal')) {
         let newOptions = copy(get(this, 'options'));
         delete newOptions.showTotals.subtotal;
         this.attrs.onUpdateConfig(newOptions);
@@ -92,7 +90,7 @@ export default Ember.Component.extend({
      * set the dimension name as a subtotal in the table config
      */
     updateSubtotal(dimension) {
-      this.attrs.onUpdateConfig({ showTotals: { subtotal: dimension.name }});
+      this.attrs.onUpdateConfig({ showTotals: { subtotal: dimension.name } });
     }
   }
 });

@@ -39,9 +39,9 @@ export default ActionConsumer.extend({
      */
     [RequestActions.REMOVE_TIME_GRAIN](route) {
       let model = route.currentModel,
-          allTimeGrain = get(model, 'request.logicalTable.table.timeGrains').filterBy('name', 'all')[0];
+        allTimeGrain = get(model, 'request.logicalTable.table.timeGrains').filterBy('name', 'all')[0];
 
-      if(allTimeGrain) {
+      if (allTimeGrain) {
         set(model, 'request.logicalTable.timeGrain', allTimeGrain);
         get(this, 'requestActionDispatcher').dispatch(RequestActions.DID_UPDATE_TIME_GRAIN, route, allTimeGrain);
       }

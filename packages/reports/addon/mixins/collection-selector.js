@@ -26,19 +26,22 @@ export default Ember.Mixin.create({
    * @observer validate
    * Validates selectedItem and item on init
    */
-  validate: Ember.on('init', Ember.observer('selectedItem', 'items.[]', function() {
-    let selectedItem = get(this, 'selectedItem.0') || get(this, 'selectedItem'),
+  validate: Ember.on(
+    'init',
+    Ember.observer('selectedItem', 'items.[]', function() {
+      let selectedItem = get(this, 'selectedItem.0') || get(this, 'selectedItem'),
         items = get(this, 'items');
 
-        // Checks if items array is defined and not empty
-    assert('Items array should not be empty', !Ember.isEmpty(items));
+      // Checks if items array is defined and not empty
+      assert('Items array should not be empty', !Ember.isEmpty(items));
 
-    // Check if items array is unique
-    assert('Items array should be unique', get(Ember.A(items).uniq(), 'length') === get(items, 'length'));
+      // Check if items array is unique
+      assert('Items array should be unique', get(Ember.A(items).uniq(), 'length') === get(items, 'length'));
 
-    //Check if selectedItem is present in items array
-    if (selectedItem && !Ember.A(items).includes(selectedItem)) {
-      assert(`Selected item ${selectedItem} is not present in items array`, Ember.A(items).includes(selectedItem));
-    }
-  }))
+      //Check if selectedItem is present in items array
+      if (selectedItem && !Ember.A(items).includes(selectedItem)) {
+        assert(`Selected item ${selectedItem} is not present in items array`, Ember.A(items).includes(selectedItem));
+      }
+    })
+  )
 });

@@ -37,8 +37,8 @@ export default Component.extend({
     return rawIntervals.map(interval => {
       //Make both dates in the interval inclusive
       let dates = interval.split('/'),
-          start = new Moment(dates[0]).format(DATE_FORMAT),
-          end   = new Moment(dates[1]).subtract(1, 'second').format(DATE_FORMAT);
+        start = new Moment(dates[0]).format(DATE_FORMAT),
+        end = new Moment(dates[1]).subtract(1, 'second').format(DATE_FORMAT);
 
       //If the interval only covers one day, return just that date
       return start === end ? start : `${start} - ${end}`;

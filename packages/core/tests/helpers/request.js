@@ -2,7 +2,10 @@ import Ember from 'ember';
 import Interval from 'navi-core/utils/classes/interval';
 import { canonicalizeMetric, parseMetricName } from 'navi-data/utils/metric';
 
-const { String: { classify }, A } = Ember;
+const {
+  String: { classify },
+  A
+} = Ember;
 
 /**
  * @function buildTestRequest
@@ -12,11 +15,16 @@ const { String: { classify }, A } = Ember;
  * @param {string} timeGrain - (optional) timegrain
  * @returns {Object} request object
  */
-export function buildTestRequest(metrics=[], dimensions=[], intervals = [{ end: 'current', start: 'P7D' }], timeGrain='day') {
+export function buildTestRequest(
+  metrics = [],
+  dimensions = [],
+  intervals = [{ end: 'current', start: 'P7D' }],
+  timeGrain = 'day'
+) {
   return {
-    logicalTable: { timeGrain: { name: timeGrain} },
-    metrics: metrics.map( m => {
-      if(typeof m === 'string') {
+    logicalTable: { timeGrain: { name: timeGrain } },
+    metrics: metrics.map(m => {
+      if (typeof m === 'string') {
         let metricObj = parseMetricName(m);
 
         metricObj.toJSON = () => {
@@ -27,8 +35,13 @@ export function buildTestRequest(metrics=[], dimensions=[], intervals = [{ end: 
         };
 
         return metricObj;
-      } else if(typeof m === 'object' && m.metric && m.parameters) {
-        return { metric: { name: m.metric, longName: classify(m.metric), category: 'category'},
+      } else if (typeof m === 'object' && m.metric && m.parameters) {
+        return {
+          metric: {
+            name: m.metric,
+            longName: classify(m.metric),
+            category: 'category'
+          },
           canonicalName: canonicalizeMetric(m),
           parameters: m.parameters,
           toJSON() {
@@ -43,8 +56,10 @@ export function buildTestRequest(metrics=[], dimensions=[], intervals = [{ end: 
     dimensions: dimensions.map(d => {
       return { dimension: { name: d, longName: classify(d) } };
     }),
-    intervals: A(intervals.map(interval => (
-      { interval: Interval.parseFromStrings(interval.start, interval.end) }
-    )))
+    intervals: A(
+      intervals.map(interval => ({
+        interval: Interval.parseFromStrings(interval.start, interval.end)
+      }))
+    )
   };
 }

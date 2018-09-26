@@ -8,11 +8,11 @@ moduleForComponent('unauthorized-table', 'Integration | Component | unauthorized
 test('it renders', function(assert) {
   assert.expect(2);
 
-  const model  = {
+  const model = {
     request: {
       logicalTable: {
         table: {
-          longName: "Protected Table"
+          longName: 'Protected Table'
         }
       }
     }
@@ -24,9 +24,12 @@ test('it renders', function(assert) {
     {{unauthorized-table report=model}}
   `);
 
-  assert.ok(this.$('.fa-lock').is(':visible'),
-    "Lock icon is visible");
+  assert.ok(this.$('.fa-lock').is(':visible'), 'Lock icon is visible');
 
-  assert.ok(this.$().text().includes('Protected Table'),
-    "Displays table name they don't have access to");
+  assert.ok(
+    this.$()
+      .text()
+      .includes('Protected Table'),
+    "Displays table name they don't have access to"
+  );
 });

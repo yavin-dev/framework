@@ -10,13 +10,17 @@ test('visiting /table', function(assert) {
   visit('/table');
 
   andThen(function() {
-    assert.deepEqual(find('.table-header-cell__title').toArray().map(el => $(el).text().trim()),[
-      'Date',
-      'Operating System',
-      'Unique Identifiers',
-      'Total Page Views',
-      'Total Page Views WoW'
-    ], 'The headers for the table are as specified');
+    assert.deepEqual(
+      find('.table-header-cell__title')
+        .toArray()
+        .map(el =>
+          $(el)
+            .text()
+            .trim()
+        ),
+      ['Date', 'Operating System', 'Unique Identifiers', 'Total Page Views', 'Total Page Views WoW'],
+      'The headers for the table are as specified'
+    );
   });
 
   andThen(() => {
@@ -32,13 +36,17 @@ test('visiting /table', function(assert) {
   });
 
   andThen(() => {
-    assert.deepEqual(find('.table-header-cell__title').toArray().map(el => $(el).text().trim()),[
-      'Operating System',
-      'Date',
-      'Unique Identifiers',
-      'Total Page Views',
-      'Total Page Views WoW'
-    ], 'The headers are reordered as specified by the reorder');
+    assert.deepEqual(
+      find('.table-header-cell__title')
+        .toArray()
+        .map(el =>
+          $(el)
+            .text()
+            .trim()
+        ),
+      ['Operating System', 'Date', 'Unique Identifiers', 'Total Page Views', 'Total Page Views WoW'],
+      'The headers are reordered as specified by the reorder'
+    );
   });
 });
 
@@ -54,11 +62,20 @@ test('toggle table editing', function(assert) {
   andThen(function() {
     assert.ok(find('.table-header-cell__input').is(':visible'), 'Table header edit field should be visible');
 
-    assert.notOk(find('.dateTime .number-format-dropdown__trigger').is(':visible'), 'Datetime field should not have format dropdown trigger');
+    assert.notOk(
+      find('.dateTime .number-format-dropdown__trigger').is(':visible'),
+      'Datetime field should not have format dropdown trigger'
+    );
 
-    assert.notOk(find('.dimension .number-format-dropdown__trigger').is(':visible'), 'Dimension field should not have format dropdown trigger');
+    assert.notOk(
+      find('.dimension .number-format-dropdown__trigger').is(':visible'),
+      'Dimension field should not have format dropdown trigger'
+    );
 
-    assert.ok(find('.metric .number-format-dropdown__trigger').is(':visible'), 'Metric field should have format dropdown trigger');
+    assert.ok(
+      find('.metric .number-format-dropdown__trigger').is(':visible'),
+      'Metric field should have format dropdown trigger'
+    );
 
     clickTrigger();
     andThen(function() {
@@ -77,14 +94,20 @@ test('edit table field', function(assert) {
   click('.table-config__total-toggle-button .x-toggle-btn');
 
   andThen(function() {
-    assert.equal(find('.dateTime > .table-header-cell__title').text().trim(),
+    assert.equal(
+      find('.dateTime > .table-header-cell__title')
+        .text()
+        .trim(),
       'test',
-      'DateTime field should have custom name "test"');
+      'DateTime field should have custom name "test"'
+    );
   });
 
   andThen(function() {
-    assert.ok(find('.dateTime > .table-header-cell__title').hasClass('table-header-cell__title--custom-name'),
-      'DateTime field should have custom name class after editing');
+    assert.ok(
+      find('.dateTime > .table-header-cell__title').hasClass('table-header-cell__title--custom-name'),
+      'DateTime field should have custom name class after editing'
+    );
   });
 });
 
@@ -98,13 +121,19 @@ test('edit table field - empty title', function(assert) {
   click('.table-config__total-toggle-button .x-toggle-btn');
 
   andThen(function() {
-    assert.equal(find('.dateTime > .table-header-cell__title').text().trim(),
+    assert.equal(
+      find('.dateTime > .table-header-cell__title')
+        .text()
+        .trim(),
       'Date',
-      'DateTime field should have the default name "Date"');
+      'DateTime field should have the default name "Date"'
+    );
   });
 
   andThen(function() {
-    assert.notOk(find('.dateTime').hasClass('custom-name'),
-      'DateTime field should not have custom name class after removing title');
+    assert.notOk(
+      find('.dateTime').hasClass('custom-name'),
+      'DateTime field should not have custom name class after removing title'
+    );
   });
 });
