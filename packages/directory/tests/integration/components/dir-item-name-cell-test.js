@@ -53,4 +53,40 @@ module('Integration | Component | dir-item-name-cell', function(hooks) {
       'The favorite icon is not shown for a item that is not a favorite'
     );
   });
+
+  test('unsaved report label', async function(assert) {
+    assert.expect(2);
+
+    let report = {
+      title: 'Untitled Report',
+      id: null,
+      tempId: 'd8828a30-c2ab-11e8-9028-e546f1b5f84f',
+      isFavorite: false,
+      serialize() {
+        return {
+          data: {
+            type: 'reports'
+          }
+        };
+      }
+    };
+
+    set(this, 'item', report);
+    await render(hbs`{{dir-item-name-cell value=item}}`);
+
+    assert.ok(
+      this.element.querySelector('.dir-item-name-cell__unsaved-label'),
+      'The unsaved label is shown for an unsaved item'
+    );
+
+    set(report, 'id', 2);
+    set(report, 'tempId', undefined);
+
+    await render(hbs`{{dir-item-name-cell value=item}}`);
+
+    assert.notOk(
+      this.element.querySelector('.dir-item-name-cell__unsaved-label'),
+      'The unsaved label is not shown for a saved item'
+    );
+  });
 });
