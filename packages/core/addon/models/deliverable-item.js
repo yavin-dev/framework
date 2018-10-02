@@ -14,6 +14,13 @@ export default DS.Model.extend({
   }),
 
   /**
+   * @property {String} modelId - id or tempId of model
+   */
+  modelId: computed('id', 'tempId', function() {
+    return get(this, 'id') || get(this, 'tempId');
+  }),
+
+  /**
    * @property {DS.Model} deliveryRuleForUser - delivery rule model
    */
   deliveryRuleForUser: computed('user', 'deliveryRules.[]', function() {
