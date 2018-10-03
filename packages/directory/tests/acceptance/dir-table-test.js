@@ -10,12 +10,12 @@ module('Acceptance | dir table', function(hooks) {
 
     await visit('/directory/my-data');
 
-    assert.equal(findAll('tbody>tr').length, 5, 'All items for a user are listed by default in my-data');
+    assert.equal(findAll('tbody tr').length, 5, 'All items for a user are listed by default in my-data');
 
     await visit('/directory/my-data?filter=favorites');
 
     assert.equal(
-      findAll('tbody>tr').length,
+      findAll('tbody tr').length,
       2,
       'Only the favorite items are shown in the table when the favorites filter is applied'
     );
