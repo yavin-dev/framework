@@ -16,11 +16,14 @@
   max-width: 720px;
 
   &__input {
-    color: @navi-gray-400;
+    color: @navi-gray-700;
     cursor: text;
     font-size: @font-size-large;
     grid-area: search-input;
     height: 50px;
+    &::placeholder {
+      color: @navi-gray-400;
+    }
   }
 
   &__search-icon {
