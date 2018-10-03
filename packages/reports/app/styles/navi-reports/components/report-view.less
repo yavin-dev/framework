@@ -3,11 +3,16 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
+@edit-width: 320px;
+@edit-header-height: 42px;
+
 .report-view {
     display: flex;
     flex: 1;
+    justify-content: flex-end;
     min-height: 0; // Firefox fix
     min-width: 0; // Firefox fix
+    overflow: hidden;
     position: relative;
     width: 100%;
 
@@ -31,15 +36,26 @@
 
     &__visualization-config {
         border: none;
-        padding-top: 0;
+        padding: 0px 15px 10px 10px;
+        background-color: @navi-modal-gray;
+        border-left: 1px solid @navi-lighter-gray;
     }
 
     &__visualization-edit {
-        background-color: @navi-modal-gray;
-        border-left: 1px solid @navi-lighter-gray;
+        align-items: flex-end;
+        bottom: 0;
         display: flex;
-        flex-flow: column;
-        width: 300px;
+        flex-direction: column;
+        left: 0;
+        position: absolute;
+        right: 0;
+        top: @edit-header-height;
+        overflow: overlay;
+    }
+
+    &__visualization-edit-inner {
+        min-height: 100%;
+        width: @edit-width;
     }
 
     &__visualization-edit-btn {
@@ -48,7 +64,14 @@
     }
 
     &__visualization-edit-header {
-        margin: 14px 11px;
+        background-color: @navi-modal-gray;
+        border-left: 1px solid @navi-lighter-gray;
+        padding: 14px 20px;
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: @edit-width;
+        height: @edit-header-height;
     }
 
     &__visualization-header {
@@ -63,6 +86,15 @@
         flex-flow: column;
         flex: 1;
         min-width: 0;
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+
+        &--editor-open {
+            right: @edit-width;
+        }
     }
 
     &__visualization-no-results {

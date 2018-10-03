@@ -1,5 +1,5 @@
 {{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<div class='report-view__visualization-main'>
+<div class='report-view__visualization-main {{if isEditingVisualization 'report-view__visualization-main--editor-open'}}'>
     {{#if hasNoData}}
         <div class='report-view__visualization-no-results'>
             No results available.
@@ -39,18 +39,20 @@
     {{/if}}
 </div>
 {{#if (and isEditingVisualization hasReportRun)}}
-    <div class='report-view__visualization-edit'>
-        <div class='report-view__visualization-edit-header'>
-            <div class='clickable report-view__visualization-edit-btn' onclick={{action 'toggleEditVisualization' this}}> Edit {{visualizationTypeLabel}}
-                {{navi-icon 'times'}}
-            </div>
+    <div class='report-view__visualization-edit-header'>
+        <div class='clickable report-view__visualization-edit-btn' onclick={{action 'toggleEditVisualization' this}}> Edit {{visualizationTypeLabel}}
+            {{navi-icon 'times'}}
         </div>
-        {{visualization-config/wrapper
-            request=report.request
-            response=response.rows
-            classNames='report-view__visualization-config'
-            visualization=report.visualization
-            onUpdateConfig=(route-action 'onUpdateVisualizationConfig')
-         }}
+    </div>
+    <div class='report-view__visualization-edit'>
+        <div class='report-view__visualization-edit-inner'>
+            {{visualization-config/wrapper
+                request=report.request
+                response=response.rows
+                classNames='report-view__visualization-config'
+                visualization=report.visualization
+                onUpdateConfig=(route-action 'onUpdateVisualizationConfig')
+            }}
+        </div>
     </div>
 {{/if}}
