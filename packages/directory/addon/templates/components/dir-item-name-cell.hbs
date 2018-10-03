@@ -1,7 +1,10 @@
 {{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{#link-to itemLink itemId classNames='dir-item-name-cell'}}
-  {{navi-icon iconClass classNames=(concat 'dir-item-name-cell__icon dir-icon__' type)}}
+  {{dir-icon iconClass}}
   {{get value 'title'}}
+  {{#if (get value 'isFavorite')}}
+    {{dir-icon 'star'}}
+  {{/if}}
 {{/link-to}}
 
 {{#if (get value 'tempId')}}

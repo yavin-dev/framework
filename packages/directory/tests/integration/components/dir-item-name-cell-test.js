@@ -37,19 +37,19 @@ module('Integration | Component | dir-item-name-cell', function(hooks) {
     set(this, 'item', report);
     await render(hbs`{{dir-item-name-cell value=item}}`);
 
-    assert.ok(this.element.querySelector('.dir-icon__reports'), 'The correct icon is used for a report');
+    assert.ok(this.element.querySelector('.fa-file-text'), 'The correct icon is used for a report');
 
     assert.equal(this.element.textContent.trim(), 'Report 1', "The item's title is displayed in the component");
 
-    assert.ok(this.element.querySelector('.dir-icon__favorites'), 'The favorite icon is shown for a favorited item');
+    assert.ok(this.element.querySelector('.fa-star'), 'The favorite icon is shown for a favorited item');
 
     set(this, 'item', dashboard);
     await render(hbs`{{dir-item-name-cell value=item}}`);
 
-    assert.ok(this.element.querySelector('.dir-icon__dashboards'), 'The correct icon is used for a dashboard');
+    assert.ok(this.element.querySelector('.fa-th-large'), 'The correct icon is used for a dashboard');
 
     assert.notOk(
-      this.element.querySelector('.dir-icon__favorites'),
+      this.element.querySelector('.fa-star'),
       'The favorite icon is not shown for a item that is not a favorite'
     );
   });
