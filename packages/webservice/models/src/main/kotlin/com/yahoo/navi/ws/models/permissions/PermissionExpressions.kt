@@ -4,6 +4,7 @@ import com.yahoo.elide.security.checks.Check
 import com.yahoo.elide.security.checks.prefab.Role
 import com.yahoo.navi.ws.models.permissions.checks.SameUser
 import com.yahoo.navi.ws.models.permissions.checks.Author
+import com.yahoo.navi.ws.models.permissions.checks.DeliveryRuleHasSameUser
 import com.yahoo.navi.ws.models.permissions.checks.Editors
 
 object PermissionExpressions {
@@ -14,6 +15,8 @@ object PermissionExpressions {
         "is an author now" to Author.AtOperation::class.java,
         "is an editor" to Editors.AtCommit::class.java,
         "is an editor now" to Editors.AtOperation::class.java,
+        "delivery rule owned by same user" to DeliveryRuleHasSameUser.AtCommit::class.java,
+        "delivery rule owned by same user now" to DeliveryRuleHasSameUser.AtOperation::class.java,
         "everybody" to Role.ALL::class.java,
         "nobody" to Role.NONE::class.java
     )

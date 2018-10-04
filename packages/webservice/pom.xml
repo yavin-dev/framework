@@ -34,7 +34,13 @@
         <artifactId>slf4j-api</artifactId>
         <version>1.7.25</version>
     </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-validator</artifactId>
+      <version>4.0.2.GA</version>
+    </dependency>
   </dependencies>
+
   <modules>
     <module>models</module>
     <module>app</module>
