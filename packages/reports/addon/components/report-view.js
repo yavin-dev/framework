@@ -110,6 +110,10 @@ export default Ember.Component.extend({
     Ember.run.scheduleOnce('afterRender', this, 'resizeVisualization');
   }),
 
+  hasReportRunDidChange: Ember.observer('hasReportRun', function() {
+    Ember.run.scheduleOnce('afterRender', this, 'resizeVisualization');
+  }),
+
   actions: {
     /**
      * @action toggleEditVisualization
