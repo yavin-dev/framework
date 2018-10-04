@@ -37,7 +37,8 @@
                   {{!-- header for icon column --}}
                 </div>
             </div>
-            <div class='table-body {{scrollableContainerClass}}'>
+            {{!-- <div class='table-body {{scrollableContainerClass}}'> --}}
+            {{#scrollbar-wrapper classNames="table-body"}}
                 {{#if availableSeriesData}}
                     {{#each paginatedSeriesData as |series|}}
                         <div class='table-row' {{action 'applyChanges' series target=container}}>
@@ -58,7 +59,8 @@
                         No Other Series Available
                     </div>
                 {{/if}}
-            </div>
+            {{/scrollbar-wrapper}}
+            {{!-- </div> --}}
         </div>
     {{/pick-form}}
 {{/pick-container}}
