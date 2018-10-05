@@ -37,7 +37,7 @@
                   {{!-- header for icon column --}}
                 </div>
             </div>
-            {{#scrollbar-wrapper classNames="table-body"}}
+            {{#scrollbar-wrapper classNames=(array "table-body" scrollableContainerClass)}}
                 {{#if availableSeriesData}}
                     {{#each paginatedSeriesData as |series|}}
                         <div class='table-row' {{action 'applyChanges' series target=container}}>

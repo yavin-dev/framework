@@ -3,9 +3,10 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
- *  {{scrollbar-wrapper
- *    options=(hash of options)
- *  }}
+ *  {{#scrollbar-wrapper options=(hash of options)}}
+ *    Content to scroll over.
+ *  {{/scrollbar-wrapper}}
+ *
  */
 
 import Component from '@ember/component';
