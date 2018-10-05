@@ -101,7 +101,7 @@ export default EmberObject.extend({
    * @returns {Array} values mapped into array of objects
    */
   _wrap(key, values) {
-    return values.map((value) => {
+    return values.map(value => {
       return {
         [key]: value
       };
@@ -170,7 +170,7 @@ export default EmberObject.extend({
    * @returns {Object} copy of request with property updated
    */
   addInterval(start, end) {
-    return this._immutablePush('intervals', [{start, end}]);
+    return this._immutablePush('intervals', [{ start, end }]);
   },
 
   /**
@@ -199,7 +199,7 @@ export default EmberObject.extend({
    * @returns {Object} copy of request with property updated
    */
   addFilter(dimension, operator, values) {
-    return this._immutablePush('filters', [{dimension, operator, values}]);
+    return this._immutablePush('filters', [{ dimension, operator, values }]);
   },
 
   /**
@@ -228,7 +228,7 @@ export default EmberObject.extend({
    * @returns {Object} copy of request with property updated
    */
   addHaving(metric, operator, value) {
-    return this._immutablePush('having', [{metric, operator, values: [value]}]);
+    return this._immutablePush('having', [{ metric, operator, values: [value] }]);
   },
 
   /**
@@ -248,5 +248,4 @@ export default EmberObject.extend({
   setHavings(...having) {
     return this._immutableSet('having', having);
   }
-
 });

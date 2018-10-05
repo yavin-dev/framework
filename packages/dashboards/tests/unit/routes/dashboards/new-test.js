@@ -4,18 +4,22 @@ import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
 
 let Route;
 
-const NEW_MODEL= {
-        "author": "navi_user",
-        "createdOn": null,
-        "presentation": {
-          "columns": 12,
-          "layout": [],
-          "version": 1
-        },
-        "updatedOn": null
-      },
-      NEW_MODEL_WITH_DEFAULT_TITLE = Object.assign({}, NEW_MODEL, {title: 'Untitled Dashboard'}),
-      NEW_MODEL_WITH_GIVEN_TITLE = Object.assign({}, NEW_MODEL, {title: 'Dashing Dashboard'});
+const NEW_MODEL = {
+    author: 'navi_user',
+    createdOn: null,
+    presentation: {
+      columns: 12,
+      layout: [],
+      version: 1
+    },
+    updatedOn: null
+  },
+  NEW_MODEL_WITH_DEFAULT_TITLE = Object.assign({}, NEW_MODEL, {
+    title: 'Untitled Dashboard'
+  }),
+  NEW_MODEL_WITH_GIVEN_TITLE = Object.assign({}, NEW_MODEL, {
+    title: 'Dashing Dashboard'
+  });
 
 moduleFor('route:dashboards/new', 'Unit | Route | dashboards/new', {
   needs: [
@@ -50,10 +54,12 @@ test('model - new with default title', function(assert) {
   return Ember.run(() => {
     let modelPromise = Route.model(null, {});
 
-    return modelPromise.then( routeModel => {
-      assert.deepEqual(routeModel.toJSON(),
+    return modelPromise.then(routeModel => {
+      assert.deepEqual(
+        routeModel.toJSON(),
         NEW_MODEL_WITH_DEFAULT_TITLE,
-        'The model hook returns a new model when the title query param is not defined');
+        'The model hook returns a new model when the title query param is not defined'
+      );
     });
   });
 });
@@ -63,12 +69,14 @@ test('model - new with given title', function(assert) {
 
   return Ember.run(() => {
     let queryParams = { title: 'Dashing Dashboard' },
-        modelPromise = Route.model(null, { queryParams });
+      modelPromise = Route.model(null, { queryParams });
 
-    return modelPromise.then( routeModel => {
-      assert.deepEqual(routeModel.toJSON(),
+    return modelPromise.then(routeModel => {
+      assert.deepEqual(
+        routeModel.toJSON(),
         NEW_MODEL_WITH_GIVEN_TITLE,
-        'The model hook returns a new model when the title query param is defined');
+        'The model hook returns a new model when the title query param is defined'
+      );
     });
   });
 });
@@ -77,22 +85,26 @@ test('afterModel', function(assert) {
   assert.expect(2);
 
   let dashboard = { id: 3 },
-      queryParams = {};
+    queryParams = {};
 
   /* == Without unsavedWidgetId == */
-  Route.replaceWith = (destinationRoute) => {
-    assert.equal(destinationRoute,
+  Route.replaceWith = destinationRoute => {
+    assert.equal(
+      destinationRoute,
       'dashboards.dashboard',
-      'Route redirects to dashboard/:id route when unsavedWidgetId is not given');
+      'Route redirects to dashboard/:id route when unsavedWidgetId is not given'
+    );
   };
   Route.afterModel(dashboard, { queryParams });
 
   /* == With unsavedWidgetId == */
   queryParams.unsavedWidgetId = 10;
-  Route.replaceWith = (destinationRoute) => {
-    assert.equal(destinationRoute,
+  Route.replaceWith = destinationRoute => {
+    assert.equal(
+      destinationRoute,
       'dashboards.dashboard.widgets.add',
-      'Route redirects to dashboard/:id/widgets/new route when unsavedWidgetId is given');
+      'Route redirects to dashboard/:id/widgets/new route when unsavedWidgetId is given'
+    );
   };
   Route.afterModel(dashboard, { queryParams });
 });

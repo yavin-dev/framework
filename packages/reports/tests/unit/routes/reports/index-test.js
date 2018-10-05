@@ -5,8 +5,6 @@ import wait from 'ember-test-helpers/wait';
 
 const { getOwner } = Ember;
 
-let Route;
-
 moduleFor('route:reports/index', 'Unit | Route | reports/index', {
   needs: [
     'adapter:report',
@@ -62,8 +60,9 @@ moduleFor('route:reports/index', 'Unit | Route | reports/index', {
 
   beforeEach() {
     setupMock();
-    Route = this.subject();
-    return getOwner(this).lookup('service:bard-metadata').loadMetadata();
+    return getOwner(this)
+      .lookup('service:bard-metadata')
+      .loadMetadata();
   },
 
   afterEach() {
@@ -78,30 +77,17 @@ test('reports model', function(assert) {
     let route = this.subject();
 
     return Ember.run(() => {
-      return route.model().then( model => {
-        return model.get('reports').then( reports => {
-          assert.deepEqual(reports.mapBy('id'),
-            ['1','2','4'],
-            'Routes model returns the reports');
+      return route.model().then(model => {
+        return model.get('reports').then(reports => {
+          assert.deepEqual(reports.mapBy('id'), ['1', '2', '4'], 'Routes model returns the reports');
 
-          assert.deepEqual(reports.mapBy('title'),
+          assert.deepEqual(
+            reports.mapBy('title'),
             ['Hyrule News', 'Hyrule Ad&Nav Clicks', 'Report 12'],
-            'Model contains user reports and favorite reports');
+            'Model contains user reports and favorite reports'
+          );
         });
       });
     });
   });
-});
-
-test('buildReportUrl', function(assert) {
-  assert.expect(1);
-
-  // Mock router
-  Route.set('router', {
-    generate: (route, id) => `/reports/${id}`
-  });
-
-  assert.equal(Route.send('buildReportUrl', {id: 2}),
-    document.location.origin + '/reports/2',
-    'Action builds url based on router and given report id');
 });

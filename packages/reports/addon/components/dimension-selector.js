@@ -26,7 +26,7 @@ export default Ember.Component.extend({
   /*
    * @property {Array} classNames
    */
-  classNames: [ 'checkbox-selector', 'checkbox-selector--dimension' ],
+  classNames: ['checkbox-selector', 'checkbox-selector--dimension'],
 
   /*
    * @property {Array} allDimensions
@@ -57,10 +57,7 @@ export default Ember.Component.extend({
    *                               combination of timegrains and dimensions
    */
   listItems: computed('allTimeGrains', 'allDimensions', function() {
-    return [
-      ...getWithDefault(this, 'allTimeGrains', []),
-      ...getWithDefault(this, 'allDimensions', [])
-    ];
+    return [...getWithDefault(this, 'allTimeGrains', []), ...getWithDefault(this, 'allDimensions', [])];
   }),
 
   /*
@@ -84,23 +81,17 @@ export default Ember.Component.extend({
    * @property {Object} selectedColumnsAndFilters - combination of selectedColumns and SelectedFilters
    */
   selectedColumnsAndFilters: computed('selectedColumns', 'selectedFilters', function() {
-    return arr([
-      ...get(this, 'selectedColumns'),
-      ...get(this, 'selectedFilters')
-    ]).uniq();
+    return arr([...get(this, 'selectedColumns'), ...get(this, 'selectedFilters')]).uniq();
   }),
 
   /*
    * @property {Object} selectedColumns - unique selectedDimensions
    */
   selectedColumns: computed('selectedTimeGrain', 'selectedDimensions', function() {
-    if(get(this, 'selectedTimeGrain.name') === 'all'){
+    if (get(this, 'selectedTimeGrain.name') === 'all') {
       return get(this, 'selectedDimensions');
     } else {
-      return arr([
-        get(this, 'selectedTimeGrain'),
-        ...get(this, 'selectedDimensions')
-      ]).uniq();
+      return arr([get(this, 'selectedTimeGrain'), ...get(this, 'selectedDimensions')]).uniq();
     }
   }),
 
@@ -119,10 +110,12 @@ export default Ember.Component.extend({
    *                                         in request filters
    */
   dimensionsFiltered: computed('request.filters.[]', function() {
-    return get(this, 'request.filters').mapBy('dimension.name').reduce((list, dimension) => {
-      list[dimension] = true;
-      return list;
-    }, {});
+    return get(this, 'request.filters')
+      .mapBy('dimension.name')
+      .reduce((list, dimension) => {
+        list[dimension] = true;
+        return list;
+      }, {});
   }),
 
   actions: {
@@ -131,8 +124,8 @@ export default Ember.Component.extend({
      * @param {Object} item
      */
     itemClicked(item) {
-      let type = get(item, 'category') === 'Time Grain'? 'TimeGrain' : 'Dimension',
-          action = get(this, 'itemsChecked')[get(item, 'name')]? 'remove' : 'add';
+      let type = get(item, 'category') === 'Time Grain' ? 'TimeGrain' : 'Dimension',
+        action = get(this, 'itemsChecked')[get(item, 'name')] ? 'remove' : 'add';
       this.sendAction(`${action}${type}`, item);
     }
   }

@@ -68,7 +68,9 @@ moduleForModel('report', 'Unit | Serializer | Report', {
   beforeEach() {
     setupMock();
     Store = this.store();
-    return getOwner(this).lookup('service:bard-metadata').loadMetadata();
+    return getOwner(this)
+      .lookup('service:bard-metadata')
+      .loadMetadata();
   },
 
   afterEach() {
@@ -88,19 +90,14 @@ test('Serializing record', function(assert) {
             table: 'network',
             timeGrain: 'day'
           },
-          metrics: [
-            { metric: 'adClicks' },
-            { metric: 'navClicks' }
-          ],
-          dimensions: [
-            { dimension: 'property' }
-          ],
+          metrics: [{ metric: 'adClicks' }, { metric: 'navClicks' }],
+          dimensions: [{ dimension: 'property' }],
           filters: [],
           having: [],
           sort: [
             {
-              metric: "navClicks",
-              direction: "asc"
+              metric: 'navClicks',
+              direction: 'asc'
             }
           ],
           intervals: [
@@ -109,7 +106,7 @@ test('Serializing record', function(assert) {
               start: '2015-11-09 00:00:00.000'
             }
           ],
-          bardVersion:    'v1',
+          bardVersion: 'v1',
           requestVersion: 'v1'
         },
         visualization: {
@@ -122,11 +119,11 @@ test('Serializing record', function(assert) {
                   type: 'dimension',
                   config: {
                     metric: 'adClicks',
-                    dimensionOrder: [ 'property' ],
+                    dimensionOrder: ['property'],
                     dimensions: [
-                      {  name: 'Property 1', values: {  property: '114' } },
-                      {  name: 'Property 2', values: {  property: '100001' } },
-                      {  name: 'Property 3', values: {  property: '100002' } }
+                      { name: 'Property 1', values: { property: '114' } },
+                      { name: 'Property 2', values: { property: '100001' } },
+                      { name: 'Property 3', values: { property: '100002' } }
                     ]
                   }
                 }
@@ -149,16 +146,15 @@ test('Serializing record', function(assert) {
 
   return Ember.run(() => {
     return Store.findRecord('report', 1).then(report => {
+      assert.ok(report.get('createdOn'), 'Report model contains "createdOn" attribute');
 
-      assert.ok(report.get('createdOn'),
-        'Report model contains "createdOn" attribute');
+      assert.ok(report.get('updatedOn'), 'Report model contains "updatedOn" attribute');
 
-      assert.ok(report.get('updatedOn'),
-        'Report model contains "updatedOn" attribute');
-
-      assert.deepEqual(report.serialize(),
+      assert.deepEqual(
+        report.serialize(),
         expectedResult,
-        'Serialize method does not serialize createdOn and updatedOn attributes as expected');
+        'Serialize method does not serialize createdOn and updatedOn attributes as expected'
+      );
     });
   });
 });
@@ -191,9 +187,7 @@ test('Serializing multi param request', function(assert) {
               }
             }
           ],
-          dimensions: [
-            {dimension: 'property'}
-          ],
+          dimensions: [{ dimension: 'property' }],
           filters: [],
           having: [],
           sort: [],
@@ -233,7 +227,7 @@ test('Serializing multi param request', function(assert) {
               }
             ]
           }
-        },
+        }
       },
       relationships: {
         author: {
@@ -247,13 +241,13 @@ test('Serializing multi param request', function(assert) {
     }
   };
 
-
   return Ember.run(() => {
     return Store.findRecord('report', 8).then(report => {
-      assert.deepEqual(report.serialize(),
+      assert.deepEqual(
+        report.serialize(),
         expectedResult,
-        'Serialize report with parameterized metric serializes as expected');
+        'Serialize report with parameterized metric serializes as expected'
+      );
     });
   });
 });
-

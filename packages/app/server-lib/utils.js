@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 /* eslint-env node */
-const path  = require('path');
+const path = require('path');
 const merge = require('merge');
 
 /*
@@ -11,11 +11,10 @@ const merge = require('merge');
  * settings. If the hostname is not found it will return default values.
  */
 function loadEnvironmentSettings(hostname, configFile) {
-
   const configuration = require(path.resolve(configFile)),
-        normalizedHost = ( /^127.0.0.1:\d+/.test(hostname) || /^localhost:\d+/.test(hostname) ) ? 'localhost' : hostname,
-        defaultSettings = configuration['default'],
-        settings = configuration[normalizedHost] || {};
+    normalizedHost = /^127.0.0.1:\d+/.test(hostname) || /^localhost:\d+/.test(hostname) ? 'localhost' : hostname,
+    defaultSettings = configuration['default'],
+    settings = configuration[normalizedHost] || {};
 
   return merge.recursive(true, defaultSettings, settings);
 }

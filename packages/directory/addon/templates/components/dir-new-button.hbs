@@ -5,8 +5,8 @@
     {{#each fileTypeNames as |typeName|}}
       {{#with (get fileTypes typeName) as |typeObject|}}
         {{#link-to (get typeObject 'linkRoute') classNames='dir-new-button__dropdown-option'}}
-          {{navi-icon (get typeObject 'iconClass') classNames=(concat 'dir-icon__' typeName)}}
-          <span class='dir-new-button__option-text'>{{capitalize typeName}}</span>
+          {{dir-icon (get typeObject 'iconClass')}}
+          <span class='dir-new-button__option-text'>{{capitalize (singularize typeName) }}</span>
         {{/link-to}}
       {{/with}}
     {{/each}}

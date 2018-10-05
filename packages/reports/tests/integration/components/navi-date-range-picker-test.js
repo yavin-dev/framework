@@ -14,9 +14,13 @@ moduleForComponent('navi-date-range-picker', 'Integration | Component | Navi Dat
 test('dateTimePeriod must be defined', function(assert) {
   assert.expect(1);
 
-  assert.expectAssertion(() => { this.render('{{navi-date-range-picker}}'); },
+  assert.expectAssertion(
+    () => {
+      this.render('{{navi-date-range-picker}}');
+    },
     /Assertion Failed: dateTimePeriod must be defined in order to use navi-date-range-picker/,
-    'Error is thrown when using component without a time period');
+    'Error is thrown when using component without a time period'
+  );
 });
 
 test('Each look back is a predefined interval', function(assert) {
@@ -30,11 +34,16 @@ test('Each look back is a predefined interval', function(assert) {
         }}
     `);
 
-  let ranges = this.$('.predefined-range').map(function() {
-    return $(this).text().trim();
-  }).get();
+  let ranges = this.$('.predefined-range')
+    .map(function() {
+      return $(this)
+        .text()
+        .trim();
+    })
+    .get();
 
-  assert.deepEqual(ranges,
+  assert.deepEqual(
+    ranges,
     [
       'Current Week',
       'Last Week',
@@ -46,17 +55,23 @@ test('Each look back is a predefined interval', function(assert) {
       'Last 78 Weeks',
       'Last 104 Weeks'
     ],
-    'Each date time period look back is a predefined interval');
+    'Each date time period look back is a predefined interval'
+  );
 
   Ember.run(() => {
     Ember.set(this, 'dateTimePeriod', 'day');
   });
 
-  ranges = this.$('.predefined-range').map(function() {
-    return $(this).text().trim();
-  }).get();
+  ranges = this.$('.predefined-range')
+    .map(function() {
+      return $(this)
+        .text()
+        .trim();
+    })
+    .get();
 
-  assert.deepEqual(ranges,
+  assert.deepEqual(
+    ranges,
     [
       'Last Day',
       'Last 7 Days',
@@ -67,17 +82,23 @@ test('Each look back is a predefined interval', function(assert) {
       'Last 180 Days',
       'Last 400 Days'
     ],
-    'Predefined intervals update with date time period');
+    'Predefined intervals update with date time period'
+  );
 
   Ember.run(() => {
     Ember.set(this, 'dateTimePeriod', 'month');
   });
 
-  ranges = this.$('.predefined-range').map(function() {
-    return $(this).text().trim();
-  }).get();
+  ranges = this.$('.predefined-range')
+    .map(function() {
+      return $(this)
+        .text()
+        .trim();
+    })
+    .get();
 
-  assert.deepEqual(ranges,
+  assert.deepEqual(
+    ranges,
     [
       'Current Month',
       'Last Month',
@@ -87,17 +108,17 @@ test('Each look back is a predefined interval', function(assert) {
       'Last 18 Months',
       'Last 24 Months'
     ],
-    'Predefined intervals for month time grain are as specified');
+    'Predefined intervals for month time grain are as specified'
+  );
 });
 
 test('Selecting a predefined interval', function(assert) {
   assert.expect(1);
 
-  this.set('setInterval', (interval) => {
-    let expectedInterval = new Interval(new Duration("P4W"), "current");
+  this.set('setInterval', interval => {
+    let expectedInterval = new Interval(new Duration('P4W'), 'current');
 
-    assert.ok(interval.isEqual(expectedInterval),
-      'Interval starts "duration" weeks ago and ends on "current"');
+    assert.ok(interval.isEqual(expectedInterval), 'Interval starts "duration" weeks ago and ends on "current"');
   });
 
   this.render(`
@@ -123,15 +144,19 @@ test('intervalSet class', function(assert) {
         }}
     `);
 
-  assert.ok(this.$('.navi-date-range-picker').not('.interval-set'),
-    'interval-set class is not present when the interval attr is not provided');
+  assert.ok(
+    this.$('.navi-date-range-picker').not('.interval-set'),
+    'interval-set class is not present when the interval attr is not provided'
+  );
 
   Ember.run(() => {
     this.$('li:eq(2)').click();
   });
 
-  assert.ok(this.$('.navi-date-range-picker').is('.interval-set'),
-    'interval-set class is present when the interval attr is provided');
+  assert.ok(
+    this.$('.navi-date-range-picker').is('.interval-set'),
+    'interval-set class is present when the interval attr is provided'
+  );
 });
 
 test('Selected interval is marked active', function(assert) {
@@ -146,18 +171,14 @@ test('Selected interval is marked active', function(assert) {
         }}
     `);
 
-  assert.equal(this.$('li.active').length,
-    0,
-    'When there is no selection, no intervals are active');
+  assert.equal(this.$('li.active').length, 0, 'When there is no selection, no intervals are active');
 
   Ember.run(() => {
     this.set('interval', new Interval(new Duration('P4W'), 'current'));
   });
 
   assert.ok(this.$('li:eq(2)').is('.active'), 'Selected interval is marked active');
-  assert.equal(this.$('li.active').length,
-    1,
-    'Only one interval is marked active');
+  assert.equal(this.$('li.active').length, 1, 'Only one interval is marked active');
 });
 
 test('Placeholder text', function(assert) {
@@ -172,27 +193,34 @@ test('Placeholder text', function(assert) {
         }}
     `);
 
-  assert.equal(this.$('.pick-value.selection-box').text().trim(),
+  assert.equal(
+    this.$('.pick-value.selection-box')
+      .text()
+      .trim(),
     'Date Range',
-    'Placeholder text is displayed when no interval is selected');
+    'Placeholder text is displayed when no interval is selected'
+  );
 
   Ember.run(() => {
-    this.set('interval',
-      new Interval(
-        moment('09-08-2014', 'MM-DD-YYYY'),
-        moment('10-13-2014', 'MM-DD-YYYY')
-      )
-    );
+    this.set('interval', new Interval(moment('09-08-2014', 'MM-DD-YYYY'), moment('10-13-2014', 'MM-DD-YYYY')));
   });
 
-  assert.equal(this.$('.pick-value label').text().trim(),
+  assert.equal(
+    this.$('.pick-value label')
+      .text()
+      .trim(),
     'Select date range',
-    'Label text is displayed when an interval is selected');
+    'Label text is displayed when an interval is selected'
+  );
 
   //Date Picker displays one timePeriod less than the selectionInterval
-  assert.equal(this.$('.pick-value .value').text().trim(),
+  assert.equal(
+    this.$('.pick-value .value')
+      .text()
+      .trim(),
     'Sep 08, 2014 - Oct 12, 2014',
-    'Interval range is displayed when an interval is selected');
+    'Interval range is displayed when an interval is selected'
+  );
 });
 
 test('Custom value template', function(assert) {
@@ -210,15 +238,17 @@ test('Custom value template', function(assert) {
         {{/navi-date-range-picker}}
     `);
 
-  assert.ok(this.$('.custom-template').is(':visible'),
-    'When used in block form, a custom template is allowed');
+  assert.ok(this.$('.custom-template').is(':visible'), 'When used in block form, a custom template is allowed');
 
-  assert.equal(this.$('.custom-template').text().trim(),
+  assert.equal(
+    this.$('.custom-template')
+      .text()
+      .trim(),
     'Last 7 Days',
-    'The selected interval is yielded to the custom template');
+    'The selected interval is yielded to the custom template'
+  );
 
-  assert.notOk(this.$('.placeholder').is(':visible'),
-    'The default placeholder template is not visible');
+  assert.notOk(this.$('.placeholder').is(':visible'), 'The default placeholder template is not visible');
 });
 
 test('Fixed range is last option', function(assert) {
@@ -230,9 +260,13 @@ test('Fixed range is last option', function(assert) {
         }}
     `);
 
-  assert.equal(this.$('li:last-of-type > div:eq(0)').text().trim(),
+  assert.equal(
+    this.$('li:last-of-type > div:eq(0)')
+      .text()
+      .trim(),
     'Custom range',
-    'Last option is "Custom range"');
+    'Last option is "Custom range"'
+  );
 });
 
 test('Open custom interval form', function(assert) {
@@ -273,49 +307,43 @@ test('Custom range form shows selected interval', function(assert) {
   });
 
   Ember.run(() => {
-    this.set('interval',
-      new Interval(
-        moment('09-14-2014', 'MM-DD-YYYY'),
-        moment('10-15-2014', 'MM-DD-YYYY')
-      )
-    );
+    this.set('interval', new Interval(moment('09-14-2014', 'MM-DD-YYYY'), moment('10-15-2014', 'MM-DD-YYYY')));
   });
 
-  assert.equal(this.$('.datepicker:eq(0) .active').text(),
-    '14Sep2014',
-    'First date picker has start day selected');
+  assert.equal(this.$('.datepicker:eq(0) .active').text(), '14Sep2014', 'First date picker has start day selected');
 
-  assert.equal(this.$('.datepicker:eq(1) .active').text(),
-    '14Oct2014',
-    'Second date picker has end day selected');
+  assert.equal(this.$('.datepicker:eq(1) .active').text(), '14Oct2014', 'Second date picker has end day selected');
 
   //toggle advanced calendar
   Ember.run(() => openAdvancedCalendar(this));
 
-  assert.equal(this.$('.navi-date-input')[0].value,
+  assert.equal(
+    this.$('.navi-date-input')[0].value,
     '2014-09-14',
-    'From text input displays start day selected in `YYYY-MM-DD` format');
+    'From text input displays start day selected in `YYYY-MM-DD` format'
+  );
 
-  assert.equal(this.$('.navi-date-input')[1].value,
+  assert.equal(
+    this.$('.navi-date-input')[1].value,
     '2014-10-15',
-    'To text input displays end day selected in `YYYY-MM-DD` format');
+    'To text input displays end day selected in `YYYY-MM-DD` format'
+  );
 
   Ember.run(() => {
-    this.set('interval',
-      new Interval(
-        new Duration("P5D"),
-        moment('10-15-2014', 'MM-DD-YYYY')
-      )
-    );
+    this.set('interval', new Interval(new Duration('P5D'), moment('10-15-2014', 'MM-DD-YYYY')));
   });
 
-  assert.equal(this.$('.datepicker:eq(0) .active').text(),
+  assert.equal(
+    this.$('.datepicker:eq(0) .active').text(),
     '10Oct2014',
-    'First date picker has correct day selected when using a duration in the interval');
+    'First date picker has correct day selected when using a duration in the interval'
+  );
 
-  assert.equal(this.$('.navi-date-input')[0].value,
+  assert.equal(
+    this.$('.navi-date-input')[0].value,
     'P5D',
-    'From text input displays the duration when using a duration in the interval');
+    'From text input displays the duration when using a duration in the interval'
+  );
 });
 
 test('Custom range is active when selection does not match another interval', function(assert) {
@@ -330,12 +358,12 @@ test('Custom range is active when selection does not match another interval', fu
         }}
     `);
 
-  assert.ok(this.$('.custom-range-form').is('.active'),
-    'Custom range is active when selection does not match another interval');
+  assert.ok(
+    this.$('.custom-range-form').is('.active'),
+    'Custom range is active when selection does not match another interval'
+  );
 
-  assert.equal(this.$('li.active').length,
-    1,
-    'Only one interval is marked active');
+  assert.equal(this.$('li.active').length, 1, 'Only one interval is marked active');
 });
 
 test('Custom range reset button', function(assert) {
@@ -354,35 +382,43 @@ test('Custom range reset button', function(assert) {
   this.$('.datepicker:eq(0) .day:contains(20)').click();
   this.$('.datepicker:eq(1) .day:contains(21)').click();
 
-  assert.equal(this.$('.datepicker:eq(0) .active').text(),
+  assert.equal(
+    this.$('.datepicker:eq(0) .active').text(),
     '20Sep2014',
-    'First date picker has newly selected start date');
+    'First date picker has newly selected start date'
+  );
 
-  assert.equal(this.$('.datepicker:eq(1) .active').text(),
+  assert.equal(
+    this.$('.datepicker:eq(1) .active').text(),
     '21Oct2014',
-    'Second date picker has newly selected end date');
+    'Second date picker has newly selected end date'
+  );
 
   //toggle advanced calendar
   Ember.run(() => openAdvancedCalendar(this));
 
-  assert.equal(this.$('.navi-date-input')[0].value,
+  assert.equal(
+    this.$('.navi-date-input')[0].value,
     '2014-09-20',
-    'From text input displays the changed start day in `YYYY-MM-DD` format');
+    'From text input displays the changed start day in `YYYY-MM-DD` format'
+  );
 
-  assert.equal(this.$('.navi-date-input')[1].value,
+  assert.equal(
+    this.$('.navi-date-input')[1].value,
     '2014-10-22',
-    'To text input displays the changed end day in `YYYY-MM-DD` format');
+    'To text input displays the changed end day in `YYYY-MM-DD` format'
+  );
 
   // Click reset
   this.$('.btn.btn-secondary').click();
 
-  assert.equal(this.$('.datepicker:eq(0) .active').text(),
+  assert.equal(
+    this.$('.datepicker:eq(0) .active').text(),
     '14Sep2014',
-    'Clicking reset reverts to original start date');
+    'Clicking reset reverts to original start date'
+  );
 
-  assert.equal(this.$('.datepicker:eq(1) .active').text(),
-    '14Oct2014',
-    'Clicking reset reverts to original end date');
+  assert.equal(this.$('.datepicker:eq(1) .active').text(), '14Oct2014', 'Clicking reset reverts to original end date');
 });
 
 test('Select custom interval', function(assert) {
@@ -398,18 +434,18 @@ test('Select custom interval', function(assert) {
         }}
     `);
 
-
   // Select a new date
   this.$('.datepicker:eq(0) .day:contains(15)').click();
   this.$('.datepicker:eq(1) .day:contains(16)').click();
 
-  this.set('setInterval', (interval) => {
+  this.set('setInterval', interval => {
     let selectedStart = moment('09-15-2014', 'MM-DD-YYYY'),
-        selectedEnd = moment('10-16-2014', 'MM-DD-YYYY');
+      selectedEnd = moment('10-16-2014', 'MM-DD-YYYY');
 
-    assert.ok(interval.isEqual(
-      new Interval(selectedStart, selectedEnd.add(1, 'day'))
-    ), 'Interval comes from date picker and end date is one more than selected');
+    assert.ok(
+      interval.isEqual(new Interval(selectedStart, selectedEnd.add(1, 'day'))),
+      'Interval comes from date picker and end date is one more than selected'
+    );
   });
 
   // Click apply
@@ -421,15 +457,9 @@ test('Select custom interval', function(assert) {
 test('Custom Range Date doesn`t increment on apply', function(assert) {
   assert.expect(2);
 
-  this.interval = new Interval(
-    moment('09-14-2014', 'MM-DD-YYYY'),
-    moment('10-15-2014', 'MM-DD-YYYY')
-  );
+  this.interval = new Interval(moment('09-14-2014', 'MM-DD-YYYY'), moment('10-15-2014', 'MM-DD-YYYY'));
 
-  let expectedInterval = new Interval(
-    moment('09-15-2014', 'MM-DD-YYYY'),
-    moment('10-17-2014', 'MM-DD-YYYY')
-  );
+  let expectedInterval = new Interval(moment('09-15-2014', 'MM-DD-YYYY'), moment('10-17-2014', 'MM-DD-YYYY'));
 
   this.render(`
         {{navi-date-range-picker
@@ -443,7 +473,7 @@ test('Custom Range Date doesn`t increment on apply', function(assert) {
   this.$('.datepicker:eq(0) .day:contains(15)').click();
   this.$('.datepicker:eq(1) .day:contains(16)').click();
 
-  this.set('setInterval', (interval) => {
+  this.set('setInterval', interval => {
     this.set('interval', interval);
     assert.ok(interval.isEqual(expectedInterval), 'Interval comes from first datepicker');
   });
@@ -475,13 +505,14 @@ test('Editing custom interval - string', function(assert) {
   this.$('.navi-date-range-picker__end-input').val('2014-10-25');
   this.$('.navi-date-range-picker__end-input').blur();
 
-  this.set('setInterval', (interval) => {
+  this.set('setInterval', interval => {
     let selectedStart = moment('10-15-2014', 'MM-DD-YYYY'),
-        selectedEnd = moment('10-25-2014', 'MM-DD-YYYY');
+      selectedEnd = moment('10-25-2014', 'MM-DD-YYYY');
 
-    assert.ok(interval.isEqual(
-      new Interval(selectedStart, selectedEnd.add(1, 'day'))
-    ), 'Interval comes from date inputs and end date is one more than date entered');
+    assert.ok(
+      interval.isEqual(new Interval(selectedStart, selectedEnd.add(1, 'day'))),
+      'Interval comes from date inputs and end date is one more than date entered'
+    );
   });
 
   // Click apply
@@ -511,14 +542,14 @@ test('Editing custom interval - macros', function(assert) {
   this.$('.navi-date-range-picker__end-input').val('current');
   this.$('.navi-date-range-picker__end-input').blur();
 
-  this.set('setInterval', (interval) => {
-    assert.equal(interval._start.toString(),
+  this.set('setInterval', interval => {
+    assert.equal(
+      interval._start.toString(),
       'P7D',
-      'Interval start is a duration object with the duration entered in the input');
+      'Interval start is a duration object with the duration entered in the input'
+    );
 
-    assert.equal(interval._end.toString(),
-      'current',
-      'Interval end is the macro `next` as enterd in the input');
+    assert.equal(interval._end.toString(), 'current', 'Interval end is the macro `next` as enterd in the input');
   });
 
   // Click apply
@@ -544,10 +575,9 @@ test('Default interval for timegrains', function(assert) {
     openCustomRange(this);
   });
 
-  this.set('setInterval', (interval) => {
-    let expectedInterval = new Interval(new Duration("P1D"), "current");
-    assert.ok(interval.isEqual(expectedInterval),
-      'Day timegrain defaults to last one day');
+  this.set('setInterval', interval => {
+    let expectedInterval = new Interval(new Duration('P1D'), 'current');
+    assert.ok(interval.isEqual(expectedInterval), 'Day timegrain defaults to last one day');
   });
 
   this.$('.btn.btn-primary').click();
@@ -557,10 +587,9 @@ test('Default interval for timegrains', function(assert) {
     Ember.set(this, 'dateTimePeriod', 'week');
   });
 
-  this.set('setInterval', (interval) => {
-    let expectedInterval = new Interval(new Duration("P1W"), "current");
-    assert.ok(interval.isEqual(expectedInterval),
-      'Week timegrain defaults to last one week');
+  this.set('setInterval', interval => {
+    let expectedInterval = new Interval(new Duration('P1W'), 'current');
+    assert.ok(interval.isEqual(expectedInterval), 'Week timegrain defaults to last one week');
   });
 
   this.$('.btn.btn-primary').click();
@@ -570,10 +599,9 @@ test('Default interval for timegrains', function(assert) {
     Ember.set(this, 'dateTimePeriod', 'month');
   });
 
-  this.set('setInterval', (interval) => {
-    let expectedInterval = new Interval(new Duration("P1M"), "current");
-    assert.ok(interval.isEqual(expectedInterval),
-      'Month timegrain defaults to last one month');
+  this.set('setInterval', interval => {
+    let expectedInterval = new Interval(new Duration('P1M'), 'current');
+    assert.ok(interval.isEqual(expectedInterval), 'Month timegrain defaults to last one month');
   });
 
   this.$('.btn.btn-primary').click();
@@ -583,10 +611,9 @@ test('Default interval for timegrains', function(assert) {
     Ember.set(this, 'dateTimePeriod', 'quarter');
   });
 
-  this.set('setInterval', (interval) => {
-    let expectedInterval = new Interval(new Duration("P3M"), "current");
-    assert.ok(interval.isEqual(expectedInterval),
-      'Quarter timegrain defaults to last three month');
+  this.set('setInterval', interval => {
+    let expectedInterval = new Interval(new Duration('P3M'), 'current');
+    assert.ok(interval.isEqual(expectedInterval), 'Quarter timegrain defaults to last three month');
   });
 
   this.$('.btn.btn-primary').click();
@@ -604,13 +631,15 @@ test('Default interval for `All` timegrain', function(assert) {
         }}
     `);
 
-  assert.equal(this.$('li').length,
-    1,
-    'Only one option is available to select for All time grain');
+  assert.equal(this.$('li').length, 1, 'Only one option is available to select for All time grain');
 
-  assert.equal(this.$('li:last-of-type > div:eq(0)').text().trim(),
+  assert.equal(
+    this.$('li:last-of-type > div:eq(0)')
+      .text()
+      .trim(),
     'Custom range',
-    'Last option is "Custom range"');
+    'Last option is "Custom range"'
+  );
 
   // Click the Custom range and click apply
   Ember.run(() => {
@@ -618,11 +647,10 @@ test('Default interval for `All` timegrain', function(assert) {
     openCustomRange(this);
   });
 
-  this.set('setInterval', (interval) => {
-    let expectedInterval = new Interval(new Duration("P7D"), "current");
+  this.set('setInterval', interval => {
+    let expectedInterval = new Interval(new Duration('P7D'), 'current');
 
-    assert.ok(interval.isEqual(expectedInterval),
-      'All timegrain defaults to last seven days');
+    assert.ok(interval.isEqual(expectedInterval), 'All timegrain defaults to last seven days');
   });
 
   this.$('.btn.btn-primary').click();

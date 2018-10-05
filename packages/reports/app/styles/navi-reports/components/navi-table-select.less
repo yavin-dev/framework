@@ -3,30 +3,32 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 .navi-table-select {
-    &__header {
-        font-size: @font-size-mid-base;
-        font-family: @font-family-strong;
-        height: 17px;
-        margin-top: 3px;
-        margin-bottom: 3px;
-        text-transform: uppercase;
-    }
+  &__header {
+    font-size: @font-size-mid-base;
+    font-family: @font-family-strong;
+    height: 17px;
+    margin-top: 3px;
+    margin-bottom: 3px;
+    text-transform: uppercase;
+  }
 
-    &__dropdown {
-         flex: 1;
-         padding-left: 14px;
+  &__dropdown {
+    flex: 1;
+    padding-left: 14px;
 
-         .ember-power-select-trigger, .ember-power-select-trigger:focus {
-             border: 0;
-             font-size: 14px;
-         }
-
-         .ember-power-select-selected-item, .ember-power-select-placeholder {
-           margin-left: 18px;
-         }
-    }
-
-    &__dropdown-list {
+    .ember-power-select-trigger,
+    .ember-power-select-trigger:focus {
+      border: 0;
       font-size: 14px;
     }
+
+    .ember-power-select-selected-item,
+    .ember-power-select-placeholder {
+      margin-left: 18px;
+    }
+  }
+
+  &__dropdown-list {
+    font-size: 14px;
+  }
 }

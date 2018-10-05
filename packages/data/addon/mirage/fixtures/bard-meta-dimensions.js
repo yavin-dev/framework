@@ -20,19 +20,22 @@ export default {
       cardinality: 100,
       category: 'test',
       storageStrategy: 'loaded'
-    },{
+    },
+    {
       name: 'currency',
       longName: 'Currency',
       cardinality: 500,
       category: 'test',
       storageStrategy: 'loaded'
-    },{
+    },
+    {
       name: 'displayCurrency',
       longName: 'Display Currency',
       cardinality: 54,
       category: 'test',
       storageStrategy: 'loaded'
-    },{
+    },
+    {
       name: 'gender',
       longName: 'Gender',
       cardinality: 100,
@@ -178,11 +181,7 @@ export default {
       cardinality: 9999999,
       category: 'test',
       storageStrategy: 'loaded',
-      fields: [
-        {name: 'id', tags: []},
-        {name: 'desc', tags: ['description']},
-        {name: 'key', tags: ['primaryKey']}
-      ]
+      fields: [{ name: 'id', tags: [] }, { name: 'desc', tags: ['description'] }, { name: 'key', tags: ['primaryKey'] }]
     }
   ],
 

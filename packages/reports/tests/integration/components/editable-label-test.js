@@ -17,27 +17,21 @@ test('edit label triggers action', function(assert) {
   assert.expect(3);
 
   this.set('value', 'Default Value');
-  this.set('onChange', (value) => {
-    assert.equal(value,
-      'Edited Value',
-      '`onChange` action sent an updated value');
+  this.set('onChange', value => {
+    assert.equal(value, 'Edited Value', '`onChange` action sent an updated value');
   });
 
   this.render(TEMPLATE);
 
   this.$('.editable-label__icon').click();
 
-  assert.equal(this.$('.editable-label__input').val(),
-    'Default Value',
-    'Label contains the default value');
+  assert.equal(this.$('.editable-label__input').val(), 'Default Value', 'Label contains the default value');
 
   fillInSync('.editable-label__input', 'Edited Value');
 
   this.$('.editable-label__input').focusout();
 
-  assert.equal(this.get('value'),
-    'Default Value',
-    'Editing the label does not mutate the provided `value` attribute');
+  assert.equal(this.get('value'), 'Default Value', 'Editing the label does not mutate the provided `value` attribute');
 });
 
 test('no change in value', function(assert) {
@@ -45,8 +39,7 @@ test('no change in value', function(assert) {
 
   this.set('value', 'Default Value');
   this.set('onChange', () => {
-    assert.notOk(true,
-      '`onChange` is not invoked if `value` is not updated');
+    assert.notOk(true, '`onChange` is not invoked if `value` is not updated');
   });
 
   this.render(TEMPLATE);
@@ -55,9 +48,7 @@ test('no change in value', function(assert) {
 
   this.$('.editable-label__input').focusout();
 
-  assert.equal(this.get('value'),
-    'Default Value',
-    'Editing the label does not mutate the provided `value` attribute');
+  assert.equal(this.get('value'), 'Default Value', 'Editing the label does not mutate the provided `value` attribute');
 });
 
 test('_inputSize', function(assert) {
@@ -70,20 +61,20 @@ test('_inputSize', function(assert) {
 
   this.$('.editable-label__icon').click();
 
-  assert.equal(this.$('.editable-label__input').attr('size'),
-    1,
-    'Size of the input is greater or equal to 1');
+  assert.equal(this.$('.editable-label__input').attr('size'), 1, 'Size of the input is greater or equal to 1');
 
   fillInSync('.editable-label__input', 'Default Value');
-  assert.equal(this.$('.editable-label__input').attr('size'),
+  assert.equal(
+    this.$('.editable-label__input').attr('size'),
     this.$('.editable-label__input').val().length + 1,
-    'Size of the input is the string length plus 1');
+    'Size of the input is the string length plus 1'
+  );
 
-  let longValue = Array(100).fill(1).join('');
+  let longValue = Array(100)
+    .fill(1)
+    .join('');
   fillInSync('.editable-label__input', longValue);
-  assert.equal(this.$('.editable-label__input').attr('size'),
-    50,
-    'Size of the input is less than or equal to 50');
+  assert.equal(this.$('.editable-label__input').attr('size'), 50, 'Size of the input is less than or equal to 50');
 });
 
 test('value is reset when editing', function(assert) {
@@ -95,20 +86,22 @@ test('value is reset when editing', function(assert) {
   this.render(TEMPLATE);
   this.$('.editable-label__icon').click();
 
-  assert.equal(this.$('.editable-label__input').val(),
+  assert.equal(
+    this.$('.editable-label__input').val(),
     'Initial value',
-    'Input starts with text equal to given value property');
+    'Input starts with text equal to given value property'
+  );
 
   fillInSync('.editable-label__input', 'Something else');
 
-  assert.equal(this.$('.editable-label__input').val(),
-    'Something else',
-    'Input text changes with user input');
+  assert.equal(this.$('.editable-label__input').val(), 'Something else', 'Input text changes with user input');
 
   this.$('.editable-label__input').focusout();
   this.$('.editable-label__icon').click();
 
-  assert.equal(this.$('.editable-label__input').val(),
+  assert.equal(
+    this.$('.editable-label__input').val(),
     'Initial value',
-    'When focusing in and out, input text is reset to given value property');
+    'When focusing in and out, input text is reset to given value property'
+  );
 });

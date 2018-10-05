@@ -1,7 +1,9 @@
 import Ember from 'ember';
 import { JSONAPISerializer } from 'ember-cli-mirage';
 
-const { String: { camelize } } = Ember;
+const {
+  String: { camelize }
+} = Ember;
 
 export default JSONAPISerializer.extend({
   keyForAttribute: attr => camelize(attr),

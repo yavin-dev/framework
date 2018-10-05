@@ -57,7 +57,7 @@ let Model = EmberObject.extend(ExtendedMetadataMixin, {
    */
   getTagsForField(fieldName) {
     let fields = array(get(this, 'fields')),
-        field  = fields.findBy('name', fieldName) || {};
+      field = fields.findBy('name', fieldName) || {};
 
     return get(field, 'tags') || [];
   },
@@ -82,8 +82,8 @@ let Model = EmberObject.extend(ExtendedMetadataMixin, {
    * @property {String} primaryKeyFieldName
    */
   primaryKeyFieldName: computed(function() {
-    let tag   = get(this, 'primaryKeyTag'),
-        field = this.getFieldsForTag(tag)[0] || {};
+    let tag = get(this, 'primaryKeyTag'),
+      field = this.getFieldsForTag(tag)[0] || {};
     return get(field, 'name') || 'id';
   }),
 
@@ -91,8 +91,8 @@ let Model = EmberObject.extend(ExtendedMetadataMixin, {
    * @property {String} descriptionFieldName
    */
   descriptionFieldName: computed(function() {
-    let tag   = get(this, 'descriptionTag'),
-        field = this.getFieldsForTag(tag)[0] || {};
+    let tag = get(this, 'descriptionTag'),
+      field = this.getFieldsForTag(tag)[0] || {};
     return get(field, 'name') || 'desc';
   })
 });

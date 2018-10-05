@@ -58,19 +58,17 @@ export default Ember.Component.extend({
    * @property {Array} predefinedRanges - list of ranges based on time grain supported look backs
    */
   predefinedRanges: computed('dateTimePeriod', function() {
-    let dateTimePeriod    = get(this, 'dateTimePeriod'),
-        predefinedRanges  = get(config, `navi.predefinedIntervalRanges.${dateTimePeriod}`) || Ember.A();
+    let dateTimePeriod = get(this, 'dateTimePeriod'),
+      predefinedRanges = get(config, `navi.predefinedIntervalRanges.${dateTimePeriod}`) || Ember.A();
 
-    return predefinedRanges.map((lookBack) => {
-
+    return predefinedRanges.map(lookBack => {
       // If lookback = current/next, then we are checking for the current freq
       if (lookBack === 'current/next') {
         return {
           isActive: false,
           interval: new Interval('current', 'next')
         };
-      }
-      else {
+      } else {
         let duration = new Duration(lookBack);
         // Construct a range object used by the picker
         return {
@@ -86,7 +84,7 @@ export default Ember.Component.extend({
    */
   ranges: Ember.computed('dateTimePeriod', 'interval', 'predefinedRanges', function() {
     let ranges = this.get('predefinedRanges');
-    ranges.forEach((range) => {
+    ranges.forEach(range => {
       Ember.set(range, 'isActive', this.isActiveInterval(range.interval));
     });
     return ranges;

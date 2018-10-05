@@ -5,29 +5,31 @@ const TIMESTAMP_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 
 const assignWidgets = (dashboard, widgets) => {
   dashboard.associationKeys.push('widgets');
-  dashboard.widgets = widgets.where({dashboardId: dashboard.id});
-}
+  dashboard.widgets = widgets.where({ dashboardId: dashboard.id });
+};
 
 const assignDeliveryRules = (dashboard, deliveryRules) => {
-  if(deliveryRules) {
+  if (deliveryRules) {
     dashboard.associationKeys.push('deliveryRules');
-    dashboard.deliveryRules = deliveryRules.where({ deliveredItemId: dashboard.id });
+    dashboard.deliveryRules = deliveryRules.where({
+      deliveredItemId: dashboard.id
+    });
   }
-}
+};
 
 export default function() {
   this.get('dashboards/:id', ({ dashboards, dashboardWidgets, deliveryRules }, request) => {
     let id = request.params.id,
-        dashboard = dashboards.find(id);
+      dashboard = dashboards.find(id);
 
     assignWidgets(dashboard, dashboardWidgets);
-    assignDeliveryRules(dashboard, deliveryRules)
+    assignDeliveryRules(dashboard, deliveryRules);
     return dashboard;
   });
 
   this.patch('dashboards/:id', function({ dashboards }, request) {
     let { id } = request.params,
-        attrs = this.normalizedRequestAttrs();
+      attrs = this.normalizedRequestAttrs();
 
     dashboards.find(id).update(attrs);
     return new Mirage.Response(204);
@@ -35,12 +37,12 @@ export default function() {
 
   this.del('/dashboards/:id', ({ dashboards, db }, request) => {
     let { id } = request.params,
-        dashboard = dashboards.find(id),
-        user = db.users.find(dashboard.authorId);
+      dashboard = dashboards.find(id),
+      user = db.users.find(dashboard.authorId);
 
     // Delete dashboard from user
     db.users.update(dashboard.authorId, {
-      dashboards: user.dashboards.filter((id) => id.toString() !== dashboard.id)
+      dashboards: user.dashboards.filter(id => id.toString() !== dashboard.id)
     });
 
     dashboard.destroy();
@@ -64,7 +66,7 @@ export default function() {
 
   this.post('/dashboards', function({ dashboards, db }) {
     let attrs = this.normalizedRequestAttrs(),
-        dashboard = dashboards.create(attrs);
+      dashboard = dashboards.create(attrs);
 
     // Update user with new dashboard
     db.users.update(dashboard.authorId, {

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 import { module, test } from 'qunit';
 import DataGroup from 'navi-core/utils/classes/data-group';
@@ -32,34 +32,52 @@ module('Unit | Utils | DataGroup Class');
 test('Construction', function(assert) {
   assert.expect(2);
 
-  assert.throws(function () { new DataGroup(); },
+  assert.throws(
+    function() {
+      new DataGroup();
+    },
     /Data rows must be defined/,
-    'error is thrown while constructing with undefined rows');
+    'error is thrown while constructing with undefined rows'
+  );
 
-  assert.throws(function () { new DataGroup(DATA); },
+  assert.throws(
+    function() {
+      new DataGroup(DATA);
+    },
     /Grouping function must be defined/,
-    'error is thrown while constructing with undefined groupingFn');
+    'error is thrown while constructing with undefined groupingFn'
+  );
 
   // Test for no error on valid construction
-  new DataGroup(DATA, (row) => { return row.dateTime; });
+  new DataGroup(DATA, row => {
+    return row.dateTime;
+  });
 });
 
 test('getDataForKey', function(assert) {
   assert.expect(1);
 
-  let dataGroup = new DataGroup(DATA, (row) => { return row.dateTime; });
+  let dataGroup = new DataGroup(DATA, row => {
+    return row.dateTime;
+  });
 
-  assert.deepEqual(dataGroup.getDataForKey('2012-02'),
-    DATA.slice(1,3),
-    'Data is grouped by key returned from grouping function');
+  assert.deepEqual(
+    dataGroup.getDataForKey('2012-02'),
+    DATA.slice(1, 3),
+    'Data is grouped by key returned from grouping function'
+  );
 });
 
 test('getKeys', function(assert) {
   assert.expect(1);
 
-  let dataGroup = new DataGroup(DATA, (row) => { return row.dateTime; });
+  let dataGroup = new DataGroup(DATA, row => {
+    return row.dateTime;
+  });
 
-  assert.deepEqual(dataGroup.getKeys(),
+  assert.deepEqual(
+    dataGroup.getKeys(),
     ['2012-01', '2012-02', '2012-03', '2012-04'],
-    'All keys found in data are returned');
+    'All keys found in data are returned'
+  );
 });

@@ -11,10 +11,7 @@ moduleForComponent('pick-range-container', 'Integration | Component | Pick Range
 test('setStart Action', function(assert) {
   assert.expect(1);
 
-  this.set('selection', new Interval(
-    moment('2015-01-18', 'YYYY-MM-DD'),
-    moment('2015-01-20', 'YYYY-MM-DD')
-  ));
+  this.set('selection', new Interval(moment('2015-01-18', 'YYYY-MM-DD'), moment('2015-01-20', 'YYYY-MM-DD')));
 
   this.render(hbs`
         {{#pick-range-container
@@ -29,18 +26,13 @@ test('setStart Action', function(assert) {
 
   this.$('#set-start').click();
 
-  assert.equal(this.$('#start').text(),
-    'P7D',
-    'Selection start value was set by action');
+  assert.equal(this.$('#start').text(), 'P7D', 'Selection start value was set by action');
 });
 
 test('setEnd Action', function(assert) {
   assert.expect(1);
 
-  this.set('selection', new Interval(
-    moment('2015-01-18', 'YYYY-MM-DD'),
-    moment('2015-01-20', 'YYYY-MM-DD')
-  ));
+  this.set('selection', new Interval(moment('2015-01-18', 'YYYY-MM-DD'), moment('2015-01-20', 'YYYY-MM-DD')));
 
   this.render(hbs`
         {{#pick-range-container
@@ -55,18 +47,13 @@ test('setEnd Action', function(assert) {
 
   this.$('#set-end').click();
 
-  assert.equal(this.$('#end').text(),
-    'current',
-    'Selection end value was set by action');
+  assert.equal(this.$('#end').text(), 'current', 'Selection end value was set by action');
 });
 
 test('dateMoments', function(assert) {
   assert.expect(2);
 
-  this.set('selection', new Interval(
-    new Duration('P1D'),
-    moment('2015-01-20', 'YYYY-MM-DD')
-  ));
+  this.set('selection', new Interval(new Duration('P1D'), moment('2015-01-20', 'YYYY-MM-DD')));
 
   this.render(hbs`
         {{#pick-range-container
@@ -79,22 +66,15 @@ test('dateMoments', function(assert) {
         {{/pick-range-container}}
     `);
 
-  assert.equal(this.$('#start').text(),
-    '2015-01-19',
-    'The start duration is converted to the right moment object');
+  assert.equal(this.$('#start').text(), '2015-01-19', 'The start duration is converted to the right moment object');
 
-  assert.equal(this.$('#end').text(),
-    '2015-01-19',
-    'The end moment object is returned as a moment');
+  assert.equal(this.$('#end').text(), '2015-01-19', 'The end moment object is returned as a moment');
 });
 
 test('dateStrings', function(assert) {
   assert.expect(2);
 
-  this.set('selection', new Interval(
-    new Duration('P1D'),
-    moment('2015-01-20', 'YYYY-MM-DD')
-  ));
+  this.set('selection', new Interval(new Duration('P1D'), moment('2015-01-20', 'YYYY-MM-DD')));
 
   this.render(hbs`
         {{#pick-range-container
@@ -107,11 +87,7 @@ test('dateStrings', function(assert) {
         {{/pick-range-container}}
     `);
 
-  assert.equal(this.$('#start').text(),
-    'P1D',
-    'The start duration is converted to a string representing the duration');
+  assert.equal(this.$('#start').text(), 'P1D', 'The start duration is converted to a string representing the duration');
 
-  assert.equal(this.$('#end').text(),
-    '2015-01-20',
-    'The end moment object is converted to a formatted date string');
+  assert.equal(this.$('#end').text(), '2015-01-20', 'The end moment object is converted to a formatted date string');
 });

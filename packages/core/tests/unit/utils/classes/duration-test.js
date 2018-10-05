@@ -9,19 +9,19 @@ module('Unit | Utils | Duration Class');
 test('Construction of duration objects', function(assert) {
   assert.expect(14);
 
-  assert.throws(function () {
+  assert.throws(function() {
     buildDuration();
   }, 'error is thrown while constructing a duration object with an undefined ISO duration');
 
-  assert.throws(function () {
+  assert.throws(function() {
     buildDuration('invalid');
   }, 'error is thrown while constructing a duration object with an invalid ISO duration');
 
-  assert.throws(function () {
+  assert.throws(function() {
     buildDuration('P0W');
   }, 'error is thrown while constructing a duration object with zero ISO duration');
 
-  assert.throws(function () {
+  assert.throws(function() {
     buildDuration('PT1J');
   }, 'error is thrown while constructing a duration object with an invalid ISO duration');
 
@@ -42,7 +42,7 @@ test('Construction of duration objects', function(assert) {
   assert.equal(duration.getUnit(), 'month', 'duration object has unit as month');
 
   duration = buildDuration(ALL);
-  assert.equal(duration.getValue(), ALL, 'duration object has value as '+ ALL);
+  assert.equal(duration.getValue(), ALL, 'duration object has value as ' + ALL);
   assert.equal(duration.getUnit(), undefined, 'duration object has unit as undefined');
 });
 
@@ -84,11 +84,11 @@ test('compare', function(assert) {
 
   assert.equal(duration.compare(ALL), -1, 'compare returns -1 when we compare all duration to P7D');
 
-  assert.throws(function () {
+  assert.throws(function() {
     duration.compare('P1W');
   }, 'compare throws error while comparing durations having different units');
 
-  assert.throws(function () {
+  assert.throws(function() {
     duration.isEqual('invalid');
   }, 'compare throws error while comparing P7D to an invalid duration');
 
@@ -101,7 +101,7 @@ test('isEqual', function(assert) {
 
   let duration = buildDuration('P12W');
 
-  assert.throws(function () {
+  assert.throws(function() {
     duration.isEqual('invalid');
   }, 'isEqual throws an error for invalid ISO duration argument');
 
@@ -123,7 +123,11 @@ test('isAll', function(assert) {
   assert.equal(Duration.isAll(duration), true, 'isAll returns true for all duration');
 
   duration = Duration.all();
-  assert.equal(Duration.isAll(duration), true, 'isAll returns true for all duration instance obtained from all static method');
+  assert.equal(
+    Duration.isAll(duration),
+    true,
+    'isAll returns true for all duration instance obtained from all static method'
+  );
 
   assert.equal(Duration.isAll(), false, 'isAll returns false for null duration');
 });
@@ -161,21 +165,17 @@ test('parseDuration', function(assert) {
   assert.expect(18);
 
   /* == Invalid Cases == */
-  assert.equal(parseDuration(),
-    null,
-    'parseDuration returns null while parsing an undefined ISO duration');
+  assert.equal(parseDuration(), null, 'parseDuration returns null while parsing an undefined ISO duration');
 
-  assert.equal(parseDuration('invalid'),
-    null,
-    'parseDuration returns null while parsing an invalid ISO duration');
+  assert.equal(parseDuration('invalid'), null, 'parseDuration returns null while parsing an invalid ISO duration');
 
-  assert.equal(parseDuration('P0W'),
-    null,
-    'parseDuration returns null while parsing a zero ISO duration');
+  assert.equal(parseDuration('P0W'), null, 'parseDuration returns null while parsing a zero ISO duration');
 
-  assert.equal(parseDuration('D1W'),
+  assert.equal(
+    parseDuration('D1W'),
     null,
-    'parseDuration returns null while parsing a ISO duration with an invalid period designator');
+    'parseDuration returns null while parsing a ISO duration with an invalid period designator'
+  );
 
   /* == Valid Cases == */
   let [value, unit] = parseDuration('PT1S');

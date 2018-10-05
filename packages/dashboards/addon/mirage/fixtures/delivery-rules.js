@@ -7,7 +7,7 @@
 
 export default [
   {
-    id: 1,
+    id: 3,
     createdOn: '2017-01-01 00:00:00',
     updatedOn: '2017-01-01 00:00:00',
     ownerId: 'navi_user',
@@ -21,7 +21,7 @@ export default [
     format: {
       type: 'pdf'
     },
-    recipients: [ 'user-or-list1@navi.io', 'user-or-list2@navi.io' ],
+    recipients: ['user-or-list1@navi.io', 'user-or-list2@navi.io'],
     version: 1
   }
 ];

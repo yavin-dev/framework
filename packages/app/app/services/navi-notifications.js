@@ -9,13 +9,12 @@ import Ember from 'ember';
 const { get } = Ember;
 
 const TIMEOUTS = {
-  'short': 3000,
-  'medium': 10000,
-  'long': 50000
+  short: 3000,
+  medium: 10000,
+  long: 50000
 };
 
 export default Ember.Service.extend({
-
   /**
    * {Ember.Service} notificationService
    */
@@ -38,12 +37,16 @@ export default Ember.Service.extend({
     let notificationService = get(this, 'notificationService');
 
     //Check if message already is present
-    if(notificationService && get(notificationService, 'queue').mapBy('message').includes(options.message)) {
+    if (
+      notificationService &&
+      get(notificationService, 'queue')
+        .mapBy('message')
+        .includes(options.message)
+    ) {
       return notificationService;
     }
     options.timeout = TIMEOUTS[options.timeout];
     return notificationService.add(options);
-
   },
 
   /**

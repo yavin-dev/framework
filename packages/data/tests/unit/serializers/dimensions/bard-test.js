@@ -13,18 +13,16 @@ module('Unit | Serializer | Dimensions | Bard', function(hooks) {
   test('normalize', function(assert) {
     assert.expect(2);
 
-    assert.deepEqual(Serializer.normalize(),
-      undefined,
-      '`undefined` is returned for an undefined response');
+    assert.deepEqual(Serializer.normalize(), undefined, '`undefined` is returned for an undefined response');
 
     let rawPayload = {
-      rows: [
-        { id: 1, desc:'foo' }
-      ],
+      rows: [{ id: 1, desc: 'foo' }],
       meta: { foo: 'bar' }
     };
-    assert.equal(Serializer.normalize('dimensionOne', rawPayload),
+    assert.equal(
+      Serializer.normalize('dimensionOne', rawPayload),
       rawPayload.rows,
-      'normalize returns the `rows` prop of the raw payload');
+      'normalize returns the `rows` prop of the raw payload'
+    );
   });
 });

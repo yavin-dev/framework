@@ -26,7 +26,7 @@ export default Ember.Component.extend({
   /*
    * @property {Array} classNames
    */
-  classNames: [ 'navi-list-selector' ],
+  classNames: ['navi-list-selector'],
 
   /*
    * @property {Boolean} showSelected
@@ -37,9 +37,9 @@ export default Ember.Component.extend({
    * @property {String} errorMessage
    */
   errorMessage: computed('query', 'showSelected', 'title', function() {
-    if(get(this, 'query.length') > 0) {
+    if (get(this, 'query.length') > 0) {
       return `No ${get(this, 'title').toLowerCase()} found`;
-    } else if(get(this, 'showSelected')) {
+    } else if (get(this, 'showSelected')) {
       return `No ${get(this, 'title').toLowerCase()} selected`;
     }
   }),
@@ -49,12 +49,12 @@ export default Ember.Component.extend({
    */
   filteredItems: computed('items', 'query', 'searchField', 'selected', 'showSelected', function() {
     let query = get(this, 'query'),
-        items;
+      items;
 
     set(this, 'areItemsFiltered', false);
 
     //set items to selected or all items based on showSelected
-    if(get(this, 'showSelected')){
+    if (get(this, 'showSelected')) {
       set(this, 'areItemsFiltered', true);
       items = get(this, 'selected');
     } else {
@@ -62,7 +62,7 @@ export default Ember.Component.extend({
     }
 
     //filter items by searchQuery
-    if(query){
+    if (query) {
       set(this, 'areItemsFiltered', true);
       return searchRecords(items, query, get(this, 'searchField'));
     }

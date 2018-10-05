@@ -50,7 +50,7 @@ export default Ember.Component.extend({
    * @property {String} warnMsg - Warning message before deleting
    */
   warnMsg: computed('modelName', function() {
-    return  `Are you sure you want to delete this ${dasherizeName(get(this, 'modelName'))}?` ;
+    return `Are you sure you want to delete this ${dasherizeName(get(this, 'modelName'))}?`;
   }),
 
   actions: {
@@ -59,7 +59,7 @@ export default Ember.Component.extend({
      */
     closeModal() {
       // Avoid `calling set on destroyed object` error
-      if(!get(this, 'isDestroyed') && !get(this, 'isDestroying')) {
+      if (!get(this, 'isDestroyed') && !get(this, 'isDestroying')) {
         set(this, 'showModal', false);
       }
     }

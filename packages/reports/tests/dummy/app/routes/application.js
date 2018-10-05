@@ -1,6 +1,11 @@
 import Ember from 'ember';
+import { inject } from '@ember/service';
+import { get } from '@ember/object';
+import { hash } from 'rsvp';
 
 export default Ember.Route.extend({
+  user: inject(),
+
   /**
    * @property {Ember.Service}
    */
@@ -12,6 +17,9 @@ export default Ember.Route.extend({
    * @returns {Ember.RSVP.Promise}
    */
   model() {
-    return this.get('bardMetadata').loadMetadata();
+    return hash({
+      user: get(this, 'user').findOrRegister(),
+      metadata: get(this, 'bardMetadata').loadMetadata()
+    }).then(() => undefined);
   }
 });

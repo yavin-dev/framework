@@ -23,18 +23,17 @@ const { computed, get, isBlank } = Ember;
 export default Ember.Component.extend({
   layout,
 
-  classNames: [ 'grouped-list' ],
+  classNames: ['grouped-list'],
 
   /*
    * @property {Object} groupedItems - object with keys as group names and the values as items in the group
    */
   groupedItems: computed('items', 'groupByField', 'sortByField', function() {
     let items = get(this, 'items'),
-        groupByField = get(this, 'groupByField'),
-        sortByField = get(this, 'sortByField');
+      groupByField = get(this, 'groupByField'),
+      sortByField = get(this, 'sortByField');
 
-    let grouped = groupBy(items,
-      (row) => row[groupByField].split(',')[0]);
+    let grouped = groupBy(items, row => row[groupByField].split(',')[0]);
 
     if (!isBlank(sortByField)) {
       Object.entries(grouped).forEach(([key, value]) => {

@@ -23,6 +23,6 @@ export default Route.extend({
    * @override
    */
   afterModel() {
-    this.transitionTo('directory.my-directory');
+    this.transitionTo('directory.my-data');
   }
 });

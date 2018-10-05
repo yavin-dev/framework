@@ -1,13 +1,9 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import Pretender from "pretender";
-import metadataRoutes, {
-  Host,
-  Tables
-} from '../../helpers/metadata-routes';
+import Pretender from 'pretender';
+import metadataRoutes, { Host, Tables } from '../../helpers/metadata-routes';
 
-let Adapter,
-    Server;
+let Adapter, Server;
 
 module('Unit | Bard Metadata Adapter', function(hooks) {
   setupTest(hooks);
@@ -30,9 +26,11 @@ module('Unit | Bard Metadata Adapter', function(hooks) {
   test('_buildURLPath', function(assert) {
     assert.expect(1);
 
-    assert.equal(Adapter._buildURLPath('table', ''),
+    assert.equal(
+      Adapter._buildURLPath('table', ''),
       `${Host}/v1/tables/`,
-      '_buildURLPath correctly built the URL path');
+      '_buildURLPath correctly built the URL path'
+    );
   });
 
   /**
@@ -41,10 +39,8 @@ module('Unit | Bard Metadata Adapter', function(hooks) {
   test('fetchMetadata', function(assert) {
     assert.expect(1);
 
-    return Adapter.fetchAll('table').then(function(result){
-      return assert.deepEqual(result,
-        { tables: Tables },
-        'fetchMetadata correctly requested metadata');
+    return Adapter.fetchAll('table').then(function(result) {
+      return assert.deepEqual(result, { tables: Tables }, 'fetchMetadata correctly requested metadata');
     });
   });
 });

@@ -44,7 +44,7 @@ moduleForComponent('navi-collection', 'Integration | Component | navi collection
 
   beforeEach() {
     // suppress report-actions/export component inside integration tests, since we are not testing it here
-    this.register('component:report-actions/export', Ember.Component.extend(), {instantiate: false});
+    this.register('component:report-actions/export', Ember.Component.extend(), { instantiate: false });
   }
 });
 
@@ -58,25 +58,35 @@ test('Table filtering', function(assert) {
   // Click "Favorites" filter option
   Ember.run(() => this.$('.pick-form li:contains(All)').click());
 
-  let listedReports = this.$('tbody tr td:first-of-type').toArray().map(el => this.$(el).text().trim());
+  let listedReports = this.$('tbody tr td:first-of-type')
+    .toArray()
+    .map(el =>
+      this.$(el)
+        .text()
+        .trim()
+    );
 
-  assert.deepEqual(listedReports,[
-    'Hyrule News',
-    'Hyrule Ad&Nav Clicks',
-    'Unsaved report',
-    'No Data Report'
-  ],'By default, all reports with an id are listed');
+  assert.deepEqual(
+    listedReports,
+    ['Hyrule News', 'Hyrule Ad&Nav Clicks', 'Unsaved report', 'No Data Report'],
+    'By default, all reports with an id are listed'
+  );
 
   // Click "Favorites" filter option
   Ember.run(() => this.$('.pick-form li:contains(Favorites)').click());
-  listedReports = this.$('tbody tr td:first-of-type').toArray().map(el => this.$(el).text().trim());
+  listedReports = this.$('tbody tr td:first-of-type')
+    .toArray()
+    .map(el =>
+      this.$(el)
+        .text()
+        .trim()
+    );
 
-  assert.deepEqual(listedReports,
-    [
-      'Hyrule Ad&Nav Clicks',
-      'No Data Report'
-    ],
-    'After selecting favorite filter, only favorite reports are shown');
+  assert.deepEqual(
+    listedReports,
+    ['Hyrule Ad&Nav Clicks', 'No Data Report'],
+    'After selecting favorite filter, only favorite reports are shown'
+  );
 });
 
 test('Favorite icon', function(assert) {
@@ -89,11 +99,15 @@ test('Favorite icon', function(assert) {
   //Reset to all filter
   Ember.run(() => this.$('.pick-form li:contains(All)').click());
 
-  assert.notOk(this.$('tbody tr:eq(0) td:first-of-type i').is('.favorite-item--active'),
-    'Report that is not a favorite does not have favorite icon');
+  assert.notOk(
+    this.$('tbody tr:eq(0) td:first-of-type i').is('.favorite-item--active'),
+    'Report that is not a favorite does not have favorite icon'
+  );
 
-  assert.ok(this.$('tbody tr:eq(1) td:first-of-type i').is('.favorite-item--active'),
-    'Report that is a favorite has favorite icon');
+  assert.ok(
+    this.$('tbody tr:eq(1) td:first-of-type i').is('.favorite-item--active'),
+    'Report that is a favorite has favorite icon'
+  );
 });
 
 test('Filterable Table', function(assert) {
@@ -107,8 +121,10 @@ test('Filterable Table', function(assert) {
         }}
     `);
 
-  assert.notOk(this.$('.navi-collection .pick-container').is(':visible'),
-    'Filter dropdown is not shown when `filterable` flag is not set to true in collection config');
+  assert.notOk(
+    this.$('.navi-collection .pick-container').is(':visible'),
+    'Filter dropdown is not shown when `filterable` flag is not set to true in collection config'
+  );
 
   this.render(hbs`
         {{navi-collection
@@ -119,8 +135,10 @@ test('Filterable Table', function(assert) {
         }}
     `);
 
-  assert.ok(this.$('.navi-collection .pick-container').is(':visible'),
-    'Filter dropdown is shown when `filterable` flag is set to true in collection config');
+  assert.ok(
+    this.$('.navi-collection .pick-container').is(':visible'),
+    'Filter dropdown is shown when `filterable` flag is set to true in collection config'
+  );
 });
 
 test('Actions in Table', function(assert) {
@@ -134,10 +152,14 @@ test('Actions in Table', function(assert) {
         }}
     `);
 
-  assert.notOk(this.$('.navi-collection .navi-collection__actions').is(':visible'),
-    'Actions column is not shown when `actions` component is missing from collection config');
+  assert.notOk(
+    this.$('.navi-collection .navi-collection__actions').is(':visible'),
+    'Actions column is not shown when `actions` component is missing from collection config'
+  );
 
-  this.register('component:mock-actions-component', Ember.Component.extend(), {instantiate: false});
+  this.register('component:mock-actions-component', Ember.Component.extend(), {
+    instantiate: false
+  });
 
   this.render(hbs`
         {{navi-collection
@@ -148,17 +170,22 @@ test('Actions in Table', function(assert) {
         }}
     `);
 
-  assert.ok(this.$('.navi-collection .navi-collection__actions').is(':visible'),
-    'Actions column is shown when `actions` component is in the collection config');
+  assert.ok(
+    this.$('.navi-collection .navi-collection__actions').is(':visible'),
+    'Actions column is shown when `actions` component is in the collection config'
+  );
 });
 
 test('Error Message - default', function(assert) {
   assert.expect(2);
 
-  this.set('items', Ember.ArrayProxy.create({
-    isSettled: true,
-    content: Ember.A()
-  }));
+  this.set(
+    'items',
+    Ember.ArrayProxy.create({
+      isSettled: true,
+      content: Ember.A()
+    })
+  );
 
   this.render(hbs`
         {{navi-collection
@@ -168,21 +195,30 @@ test('Error Message - default', function(assert) {
         }}
     `);
 
-  assert.deepEqual(this.$('.navi-collection .no-results').text().trim(),
+  assert.deepEqual(
+    this.$('.navi-collection .no-results')
+      .text()
+      .trim(),
     `You don't have any reports yet. Go ahead and create one now?`,
-    'Default message is shown when no items are rendered');
+    'Default message is shown when no items are rendered'
+  );
 
-  assert.ok(this.$('.navi-collection .no-results a').is(':visible'),
-    'Default message is shown when no items are rendered with a link');
+  assert.ok(
+    this.$('.navi-collection .no-results a').is(':visible'),
+    'Default message is shown when no items are rendered with a link'
+  );
 });
 
 test('Error Message - custom', function(assert) {
   assert.expect(1);
 
-  this.set('items', Ember.ArrayProxy.create({
-    isSettled: true,
-    content: Ember.A()
-  }));
+  this.set(
+    'items',
+    Ember.ArrayProxy.create({
+      isSettled: true,
+      content: Ember.A()
+    })
+  );
 
   this.render(hbs`
         {{navi-collection
@@ -193,7 +229,11 @@ test('Error Message - custom', function(assert) {
         }}
     `);
 
-  assert.deepEqual(this.$('.navi-collection .no-results').text().trim(),
+  assert.deepEqual(
+    this.$('.navi-collection .no-results')
+      .text()
+      .trim(),
     'You have no custom reports. Create one now.',
-    'Custom message is shown when no items are rendered');
+    'Custom message is shown when no items are rendered'
+  );
 });

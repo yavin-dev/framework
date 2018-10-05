@@ -1,24 +1,17 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import Pretender from "pretender";
+import Pretender from 'pretender';
 import config from 'ember-get-config';
 
-let Service,
-    Server;
+let Service, Server;
 
 const TestRequest = {
   logicalTable: {
     table: 'table1',
     timeGrain: 'grain1'
   },
-  metrics: [
-    { metric: 'm1' },
-    { metric: 'm2' }
-  ],
-  dimensions: [
-    { dimension: 'd1' },
-    { dimension: 'd2' }
-  ],
+  metrics: [{ metric: 'm1' }, { metric: 'm2' }],
+  dimensions: [{ dimension: 'd1' }, { dimension: 'd2' }],
   filters: [
     { dimension: 'd3', operator: 'in', values: ['v1', 'v2'] },
     {
@@ -38,7 +31,8 @@ const TestRequest = {
     {
       start: '2015-01-03',
       end: '2015-01-04'
-    }]
+    }
+  ]
 };
 
 const Response = {
@@ -59,16 +53,15 @@ module('Unit | Service | Bard Facts', function(hooks) {
   setupTest(hooks);
 
   hooks.beforeEach(function() {
-
     Service = this.owner.lookup('service:bard-facts');
 
     //setup Pretender
-    Server = new Pretender(function(){
-      this.get(`${HOST}/v1/data/table1/grain1/d1/d2/`, function(request){
-        if(request.queryParams.page && request.queryParams.perPage){
+    Server = new Pretender(function() {
+      this.get(`${HOST}/v1/data/table1/grain1/d1/d2/`, function(request) {
+        if (request.queryParams.page && request.queryParams.perPage) {
           return [
             200,
-            {"Content-Type": "application/json"},
+            { 'Content-Type': 'application/json' },
             JSON.stringify({
               rows: {},
               meta: {
@@ -79,13 +72,8 @@ module('Unit | Service | Bard Facts', function(hooks) {
               }
             })
           ];
-        }
-        else {
-          return [
-            200,
-            {"Content-Type": "application/json"},
-            JSON.stringify(Response)
-          ];
+        } else {
+          return [200, { 'Content-Type': 'application/json' }, JSON.stringify(Response)];
         }
       });
     });
@@ -103,64 +91,68 @@ module('Unit | Service | Bard Facts', function(hooks) {
   test('getURL', function(assert) {
     assert.expect(2);
 
-    assert.deepEqual(Service.getURL(TestRequest),
+    assert.deepEqual(
+      Service.getURL(TestRequest),
       `${HOST}/v1/data/table1/grain1/d1/d2/?` +
-      'dateTime=2015-01-03%2F2015-01-04&metrics=m1%2Cm2&' +
-      'filters=d3%7Cid-in%5Bv1%2Cv2%5D%2Cd4%7Cid-in%5Bv3%2Cv4%5D&having=m1-gt%5B0%5D&' +
-      'format=json',
-      'Service returns the url when requested');
+        'dateTime=2015-01-03%2F2015-01-04&metrics=m1%2Cm2&' +
+        'filters=d3%7Cid-in%5Bv1%2Cv2%5D%2Cd4%7Cid-in%5Bv3%2Cv4%5D&having=m1-gt%5B0%5D&' +
+        'format=json',
+      'Service returns the url when requested'
+    );
 
-    assert.deepEqual(Service.getURL(TestRequest, {format: 'jsonApi'}),
+    assert.deepEqual(
+      Service.getURL(TestRequest, { format: 'jsonApi' }),
       `${HOST}/v1/data/table1/grain1/d1/d2/?` +
-      'dateTime=2015-01-03%2F2015-01-04&metrics=m1%2Cm2&' +
-      'filters=d3%7Cid-in%5Bv1%2Cv2%5D%2Cd4%7Cid-in%5Bv3%2Cv4%5D&having=m1-gt%5B0%5D&' +
-      'format=jsonApi',
-      'Service returns the url when requested with format');
+        'dateTime=2015-01-03%2F2015-01-04&metrics=m1%2Cm2&' +
+        'filters=d3%7Cid-in%5Bv1%2Cv2%5D%2Cd4%7Cid-in%5Bv3%2Cv4%5D&having=m1-gt%5B0%5D&' +
+        'format=jsonApi',
+      'Service returns the url when requested with format'
+    );
   });
 
   test('fetch', function(assert) {
     assert.expect(3);
 
     return Service.fetch(TestRequest).then(function(model) {
-      assert.deepEqual(model.response,
-        Response,
-        'Fetch returns a bardResponse model object for TestRequest');
+      assert.deepEqual(model.response, Response, 'Fetch returns a bardResponse model object for TestRequest');
 
-      assert.deepEqual(model.request,
-        TestRequest,
-        'Fetch returns a bardResponse model object with the TestRequest');
+      assert.deepEqual(model.request, TestRequest, 'Fetch returns a bardResponse model object with the TestRequest');
 
-      assert.deepEqual(model._factsService,
+      assert.deepEqual(
+        model._factsService,
         Service,
-        'Fetch returns a bardResponse model object with the service instance');
+        'Fetch returns a bardResponse model object with the service instance'
+      );
     });
   });
 
-  test('fetch with pagination', function(assert){
+  test('fetch with pagination', function(assert) {
     assert.expect(1);
-    return Service.fetch(TestRequest, {page: 2, perPage: 10}).then(function(model) {
-      assert.deepEqual(model.response,
+    return Service.fetch(TestRequest, { page: 2, perPage: 10 }).then(function(model) {
+      assert.deepEqual(
+        model.response,
         {
           rows: {},
           meta: {
             paginated: {
-              page: "2",
-              perPage: "10"
+              page: '2',
+              perPage: '10'
             }
           }
         },
-        'Fetch returns a bardResponse model object for the paginated request');
+        'Fetch returns a bardResponse model object for the paginated request'
+      );
     });
   });
 
-  test('fetch and catch error', function(assert){
+  test('fetch and catch error', function(assert) {
     assert.expect(2);
 
     // Return an error
     Server.get(`${HOST}/v1/data/table1/grain1/d1/d2/`, () => {
       return [
         507,
-        {"Content-Type": "application/json"},
+        { 'Content-Type': 'application/json' },
         JSON.stringify({
           reason: 'Result set too large.  Try reducing interval or dimensions.',
           description: 'Result set too large: 1541214 > 100000'
@@ -168,30 +160,35 @@ module('Unit | Service | Bard Facts', function(hooks) {
       ];
     });
 
-    return Service.fetch(TestRequest).catch((response) => {
+    return Service.fetch(TestRequest).catch(response => {
       assert.ok(true, 'A request error falls into the promise catch block');
 
-      assert.equal(response.payload.reason,
+      assert.equal(
+        response.payload.reason,
         'Result set too large.  Try reducing interval or dimensions.',
-        'Bard error is passed to catch block');
+        'Bard error is passed to catch block'
+      );
     });
   });
 
-  test('request builder', function(assert){
+  test('request builder', function(assert) {
     assert.expect(2);
 
     let requestBuilder = Service.request({
-      metrics: [{
-        metric: 'pageViews',
-        parameters: {
-          type: 'dimension'
+      metrics: [
+        {
+          metric: 'pageViews',
+          parameters: {
+            type: 'dimension'
+          }
         }
-      }]
+      ]
     });
 
     let newRequest = requestBuilder.addMetrics({ metric: 'adClicks' });
 
-    assert.deepEqual(newRequest.metrics,
+    assert.deepEqual(
+      newRequest.metrics,
       [
         {
           metric: 'pageViews',
@@ -203,10 +200,9 @@ module('Unit | Service | Bard Facts', function(hooks) {
           metric: 'adClicks'
         }
       ],
-      'Request returns a builder interface that allows extension');
+      'Request returns a builder interface that allows extension'
+    );
 
-    assert.notEqual(Service.request(newRequest),
-      newRequest,
-      'Each call to request returns a new builder instance');
+    assert.notEqual(Service.request(newRequest), newRequest, 'Each call to request returns a new builder instance');
   });
 });

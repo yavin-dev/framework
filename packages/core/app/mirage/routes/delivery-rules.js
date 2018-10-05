@@ -10,7 +10,7 @@ export default function() {
    */
   this.get('/deliveryRules/:id', ({ deliveryRules }, request) => {
     let id = request.params.id,
-        deliveryRule = deliveryRules.find(id);
+      deliveryRule = deliveryRules.find(id);
 
     return deliveryRule;
   });
@@ -36,10 +36,9 @@ export default function() {
    */
   this.post('/deliveryRules', function({ deliveryRules, db }) {
     let attrs = this.normalizedRequestAttrs(),
-
-        deliveryRule = deliveryRules.create(attrs),
-        deliveredItem = db[pluralize(deliveryRule.attrs.deliveryType)].find(deliveryRule.deliveredItemId),
-        owner = db.users.find(deliveryRule.ownerId);
+      deliveryRule = deliveryRules.create(attrs),
+      deliveredItem = db[pluralize(deliveryRule.attrs.deliveryType)].find(deliveryRule.deliveredItemId),
+      owner = db.users.find(deliveryRule.ownerId);
 
     // Update user with new deliveryRule
     db.users.update(deliveryRule.ownerId, {
@@ -65,7 +64,7 @@ export default function() {
    */
   this.patch('/deliveryRules/:id', function({ deliveryRules }, request) {
     let id = request.params.id,
-        attrs = this.normalizedRequestAttrs();
+      attrs = this.normalizedRequestAttrs();
 
     deliveryRules.find(id).update(attrs);
     return new Mirage.Response(204);
@@ -76,18 +75,18 @@ export default function() {
    */
   this.del('/deliveryRules/:id', ({ deliveryRules, db }, request) => {
     let id = request.params.id,
-        deliveryRule = deliveryRules.find(id),
-        owner = db.users.find(deliveryRule.ownerId),
-        deliveredItem = db[pluralize(deliveryRule.attrs.deliveryType)].find(deliveryRule.deliveredItemId);
+      deliveryRule = deliveryRules.find(id),
+      owner = db.users.find(deliveryRule.ownerId),
+      deliveredItem = db[pluralize(deliveryRule.attrs.deliveryType)].find(deliveryRule.deliveredItemId);
 
-        // Delete deliveryRule from user
+    // Delete deliveryRule from user
     db.users.update(deliveryRule.ownerId, {
-      deliveryRules: owner.deliveryRules.filter((id) => id.toString() !== deliveryRule.id)
+      deliveryRules: owner.deliveryRules.filter(id => id.toString() !== deliveryRule.id)
     });
 
     // Delete deliveryRule from report
     db[pluralize(deliveryRule.attrs.deliveryType)].update(deliveryRule.deliveredItemId, {
-      deliveryRules: deliveredItem.deliveryRules.filter((id) => id.toString() !== deliveryRule.id)
+      deliveryRules: deliveredItem.deliveryRules.filter(id => id.toString() !== deliveryRule.id)
     });
 
     deliveryRule.destroy();

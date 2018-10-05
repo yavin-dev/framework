@@ -9,8 +9,8 @@ export default [
     presentation: {
       version: 1,
       layout: [
-        { column: 0, row: 0, height: 4, width: 6,  widgetId: 1 },
-        { column: 6, row: 0, height: 4, width: 6,  widgetId: 2 },
+        { column: 0, row: 0, height: 4, width: 6, widgetId: 1 },
+        { column: 6, row: 0, height: 4, width: 6, widgetId: 2 },
         { column: 0, row: 4, height: 4, width: 12, widgetId: 3 }
       ],
       columns: 12
@@ -22,7 +22,7 @@ export default [
     authorId: 'navi_user',
     createdOn: '2016-01-01 00:00:00',
     updatedOn: '2016-01-01 00:00:00',
-    deliveryRules: [1],
+    deliveryRules: [3],
     presentation: {
       version: 1,
       layout: [
@@ -41,9 +41,7 @@ export default [
     deliveryRules: [],
     presentation: {
       version: 1,
-      layout: [
-        { column: 0, row: 0, height: 6, width: 9, widgetId: 4 }
-      ],
+      layout: [{ column: 0, row: 0, height: 6, width: 9, widgetId: 4 }],
       columns: 40
     }
   },

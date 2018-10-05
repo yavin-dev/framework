@@ -11,7 +11,6 @@ export default EmberObject.extend({
     return this.id === other.id;
   }
 }).reopenClass({
-
   /**
    * @property {String} identifierField - name of the dimension identifier field
    */

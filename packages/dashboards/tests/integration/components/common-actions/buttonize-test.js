@@ -19,7 +19,11 @@ test('buttonize component renders', function(assert) {
 
   this.render(Template);
 
-  assert.equal(this.$('.action').text().trim(),
+  assert.equal(
+    this.$('.action')
+      .text()
+      .trim(),
     'Buttonize component',
-    'Buttonize component is yielded');
+    'Buttonize component is yielded'
+  );
 });

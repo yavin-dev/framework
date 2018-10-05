@@ -1,7 +1,11 @@
 {{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class='navi-report'>
     <div class='navi-report__breadcrumb'>
-        {{#link-to 'reports' class='navi-report__breadcrumb-link'}}Reports{{/link-to}}
+        {{#if (feature-flag 'enableDirectory')}}
+            {{#link-to 'directory.my-data' class='navi-report__breadcrumb-link'}}Directory{{/link-to}}
+        {{else}}
+            {{#link-to 'reports' class='navi-report__breadcrumb-link'}}Reports{{/link-to}}
+        {{/if}}
         {{navi-icon 'angle-right'}}
     </div>
     <header class='navi-report__header'>

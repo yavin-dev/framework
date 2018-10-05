@@ -12,7 +12,6 @@ import DashboardWidget from 'navi-app/mirage/routes/dashboard-widget';
 import DashboardCollection from 'navi-app/mirage/routes/dashboard-collection';
 
 export default function() {
-
   // https://github.com/kategengler/ember-cli-code-coverage#create-a-passthrough-when-intercepting-all-ajax-requests-in-tests
   this.passthrough('/write-coverage');
 
@@ -23,15 +22,17 @@ export default function() {
 
   // Mock persistence
   this.urlPrefix = config.navi.appPersistence.uri;
-  Reports.call(this).withUserRelationship({
-    property: 'dashboards',
-    type: 'dashboards',
-    relation: 'hasMany'
-  }).withUserRelationship({
-    property: 'favoriteDashboards',
-    type: 'dashboards',
-    relation: 'hasMany'
-  });
+  Reports.call(this)
+    .withUserRelationship({
+      property: 'dashboards',
+      type: 'dashboards',
+      relation: 'hasMany'
+    })
+    .withUserRelationship({
+      property: 'favoriteDashboards',
+      type: 'dashboards',
+      relation: 'hasMany'
+    });
   Dashboard.call(this);
   DashboardWidget.call(this);
   DashboardCollection.call(this);

@@ -2,8 +2,7 @@ import Ember from 'ember';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 
-let Options,
-    Template;
+let Options, Template;
 
 moduleForComponent('pick-single', 'Integration | Component | Pick Single', {
   integration: true,
@@ -19,13 +18,16 @@ moduleForComponent('pick-single', 'Integration | Component | Pick Single', {
                 label=label
             }}`;
 
-    Options = [{
-      id: '1',
-      name: 'foo'
-    },{
-      id: '2',
-      name: 'bar'
-    }];
+    Options = [
+      {
+        id: '1',
+        name: 'foo'
+      },
+      {
+        id: '2',
+        name: 'bar'
+      }
+    ];
 
     this.set('options', Options);
     this.set('selection', Options[0]);
@@ -38,24 +40,37 @@ test('it renders', function(assert) {
 
   this.render(Template);
 
-  assert.notOk(Ember.isEmpty(this.$('.pick-container')),
-    'pick-single component is rendered');
+  assert.notOk(Ember.isEmpty(this.$('.pick-container')), 'pick-single component is rendered');
 
-  assert.equal(this.$('.pick-single .pick-value').text().trim(),
+  assert.equal(
+    this.$('.pick-single .pick-value')
+      .text()
+      .trim(),
     Options[0].id,
-    'The Id of the selected options object is displayed by default');
+    'The Id of the selected options object is displayed by default'
+  );
 
-  let formValues = this.$('.pick-single .pick-form li').toArray().map(function(li) {
-    return $(li).text().trim();
-  });
+  let formValues = this.$('.pick-single .pick-form li')
+    .toArray()
+    .map(function(li) {
+      return $(li)
+        .text()
+        .trim();
+    });
 
-  assert.deepEqual(formValues,
+  assert.deepEqual(
+    formValues,
     Ember.A(Options).mapBy('id'),
-    'The pick-form contains the ids from options using the displayField `id`');
+    'The pick-form contains the ids from options using the displayField `id`'
+  );
 
-  assert.equal(this.$('.pick-single .pick-form .active').text().trim(),
+  assert.equal(
+    this.$('.pick-single .pick-form .active')
+      .text()
+      .trim(),
     this.get('selection.id'),
-    'The active class is set for the selected value');
+    'The active class is set for the selected value'
+  );
 });
 
 test('switching display field', function(assert) {
@@ -69,30 +84,42 @@ test('switching display field', function(assert) {
 
   this.render(Template);
 
-  assert.equal(this.$('.pick-single .pick-value').text().trim(),
+  assert.equal(
+    this.$('.pick-single .pick-value')
+      .text()
+      .trim(),
     Ember.get(Options[0], displayField),
-    'The displayField of the selected options object is displayed');
+    'The displayField of the selected options object is displayed'
+  );
 
-  let formValues = this.$('.pick-single .pick-form li').toArray().map(function(li) {
-    return $(li).text().trim();
-  });
+  let formValues = this.$('.pick-single .pick-form li')
+    .toArray()
+    .map(function(li) {
+      return $(li)
+        .text()
+        .trim();
+    });
 
-  assert.deepEqual(formValues,
+  assert.deepEqual(
+    formValues,
     Ember.A(Options).mapBy(displayField),
-    'The pick-form contains the ids from options based on displayField set');
+    'The pick-form contains the ids from options based on displayField set'
+  );
 
-  assert.equal(this.$('.pick-single .pick-form .active').text().trim(),
+  assert.equal(
+    this.$('.pick-single .pick-form .active')
+      .text()
+      .trim(),
     this.get(`selection.${displayField}`),
-    'The active class is set for the selected value');
+    'The active class is set for the selected value'
+  );
 });
 
 test('update selection action', function(assert) {
   assert.expect(2);
-  this.on('updateSelection', (selection) => {
+  this.on('updateSelection', selection => {
     assert.ok(true, 'updateSelection method is called');
-    assert.equal(selection,
-      Options[1],
-      'the clicked option is passed in as the selection param');
+    assert.equal(selection, Options[1], 'the clicked option is passed in as the selection param');
   });
 
   this.render(Template);
@@ -104,15 +131,18 @@ test('label', function(assert) {
 
   this.render(Template);
 
-  assert.ok(Ember.isEmpty(this.$('.pick-value label')),
-    'No label is present when not defined');
+  assert.ok(Ember.isEmpty(this.$('.pick-value label')), 'No label is present when not defined');
 
   Ember.run(() => {
     this.set('label', 'Hello');
   });
 
   this.render(Template);
-  assert.equal(this.$('.pick-value label').text().trim(),
+  assert.equal(
+    this.$('.pick-value label')
+      .text()
+      .trim(),
     'Hello',
-    'the label defined is present');
+    'the label defined is present'
+  );
 });

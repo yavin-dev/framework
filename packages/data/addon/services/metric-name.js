@@ -29,7 +29,7 @@ export default Service.extend({
    */
   getDisplayName(metricObject) {
     let metricId = get(metricObject, 'metric'),
-        longName = this.getLongName(metricId);
+      longName = this.getLongName(metricId);
 
     return metricFormat(metricObject, longName);
   }

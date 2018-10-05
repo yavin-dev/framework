@@ -9,7 +9,7 @@ moduleForComponent('filter-values/date-range', 'Integration | Component | filter
 
   beforeEach: function() {
     this.filter = { values: [] };
-    this.request = { logicalTable: { timeGrain: { name: 'day' }}};
+    this.request = { logicalTable: { timeGrain: { name: 'day' } } };
     this.onUpdateFilter = () => null;
 
     this.render(hbs`{{filter-values/date-range
@@ -23,11 +23,22 @@ moduleForComponent('filter-values/date-range', 'Integration | Component | filter
 test('it renders', function(assert) {
   assert.expect(3);
 
-  assert.equal(this.$('.date-range__select-trigger').text().trim(),
+  assert.equal(
+    this.$('.date-range__select-trigger')
+      .text()
+      .trim(),
     'Select date range',
-    'Placeholder text is present when no date range is selected');
+    'Placeholder text is present when no date range is selected'
+  );
 
-  assert.deepEqual(this.$('.predefined-range').map(function() { return $(this).text().trim(); }).get(),
+  assert.deepEqual(
+    this.$('.predefined-range')
+      .map(function() {
+        return $(this)
+          .text()
+          .trim();
+      })
+      .get(),
     [
       'Last Day',
       'Last 7 Days',
@@ -38,25 +49,29 @@ test('it renders', function(assert) {
       'Last 180 Days',
       'Last 400 Days'
     ],
-    'Predefined ranges are set based on the request time grain');
+    'Predefined ranges are set based on the request time grain'
+  );
 
   Ember.run(() => {
     let selectedInterval = new Interval(new Duration('P7D'), 'current');
     this.set('filter', { values: Ember.A([selectedInterval]) });
   });
 
-  assert.equal(this.$('.date-range__select-trigger').text().trim(),
+  assert.equal(
+    this.$('.date-range__select-trigger')
+      .text()
+      .trim(),
     'Last 7 Days',
-    'Trigger text is updated with selected interval');
+    'Trigger text is updated with selected interval'
+  );
 });
 
 test('changing values', function(assert) {
   assert.expect(1);
 
-  this.set('onUpdateFilter', (changeSet) => {
+  this.set('onUpdateFilter', changeSet => {
     let expectedInterval = new Interval(new Duration('P7D'), 'current');
-    assert.ok(changeSet.interval.isEqual(expectedInterval),
-      'Selected interval is given to update action');
+    assert.ok(changeSet.interval.isEqual(expectedInterval), 'Selected interval is given to update action');
   });
 
   this.$('.predefined-range:contains(Last 7 Days)').click();

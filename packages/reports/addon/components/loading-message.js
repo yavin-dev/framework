@@ -13,5 +13,5 @@ import layout from '../templates/components/loading-message';
 export default Ember.Component.extend({
   layout,
 
-  classNames: [ 'loading-message' ]
+  classNames: ['loading-message']
 });

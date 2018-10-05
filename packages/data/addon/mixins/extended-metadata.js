@@ -20,8 +20,8 @@ export default Mixin.create({
    */
   extended: computed(function() {
     let metadata = get(this, 'metadata'),
-        type = get(this, 'type'),
-        name = get(this, 'name');
+      type = get(this, 'type'),
+      name = get(this, 'name');
 
     return ObjectProxy.extend(PromiseProxyMixin).create({
       promise: metadata.fetchById(type, name)

@@ -26,7 +26,7 @@ export default Ember.Route.extend({
      * @param {DS.Model} rule - object to revert
      */
     revertDeliveryRule(rule) {
-      if(rule && !get(rule, 'isNew')){
+      if (rule && !get(rule, 'isNew')) {
         rule.rollbackAttributes();
       }
     },
@@ -38,25 +38,28 @@ export default Ember.Route.extend({
     deleteDeliveryRule(rule) {
       rule.deleteRecord();
 
-      return rule.save().then(() => {
-        // Make sure record is cleaned up locally
-        rule.unloadRecord();
+      return rule
+        .save()
+        .then(() => {
+          // Make sure record is cleaned up locally
+          rule.unloadRecord();
 
-        get(this, 'naviNotifications').add({
-          message: `Report delivery schedule successfully removed!`,
-          type: 'success',
-          timeout: 'short'
-        });
-      }).catch(() => {
-        // Rollback delete action
-        rule.rollbackAttributes();
+          get(this, 'naviNotifications').add({
+            message: `Report delivery schedule successfully removed!`,
+            type: 'success',
+            timeout: 'short'
+          });
+        })
+        .catch(() => {
+          // Rollback delete action
+          rule.rollbackAttributes();
 
-        get(this, 'naviNotifications').add({
-          message: `OOPS! An error occurred while removing the report delivery schedule.`,
-          type: 'danger',
-          timeout: 'short'
+          get(this, 'naviNotifications').add({
+            message: `OOPS! An error occurred while removing the report delivery schedule.`,
+            type: 'danger',
+            timeout: 'short'
+          });
         });
-      });
     },
 
     /**
@@ -68,28 +71,30 @@ export default Ember.Route.extend({
 
       report.deleteRecord();
 
-      return report.save().then(() => {
-        // Make sure record is cleaned up locally
-        report.unloadRecord();
+      return report
+        .save()
+        .then(() => {
+          // Make sure record is cleaned up locally
+          report.unloadRecord();
 
-        get(this, 'naviNotifications').add({
-          message: `Report "${reportName}" deleted successfully!`,
-          type: 'success',
-          timeout: 'short'
+          get(this, 'naviNotifications').add({
+            message: `Report "${reportName}" deleted successfully!`,
+            type: 'success',
+            timeout: 'short'
+          });
+
+          this.transitionTo('reports');
+        })
+        .catch(() => {
+          // Rollback delete action
+          report.rollbackAttributes();
+
+          get(this, 'naviNotifications').add({
+            message: `OOPS! An error occurred while deleting report "${reportName}"`,
+            type: 'danger',
+            timeout: 'short'
+          });
         });
-
-        this.transitionTo('reports');
-      }).catch(() => {
-
-        // Rollback delete action
-        report.rollbackAttributes();
-
-        get(this, 'naviNotifications').add({
-          message: `OOPS! An error occurred while deleting report "${reportName}"`,
-          type: 'danger',
-          timeout: 'short'
-        });
-      });
-    },
+    }
   }
 });

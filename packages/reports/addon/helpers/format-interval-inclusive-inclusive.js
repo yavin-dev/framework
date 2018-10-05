@@ -16,13 +16,12 @@ import DateUtils from 'navi-core/utils/date';
  * @returns {String} formatted string representation of interval
  */
 export function formatInterval([interval, timePeriod]) {
-
   if (!interval || !timePeriod) {
     return '';
   }
 
   // to Date detection
-  if ((interval._end === 'next') && (interval._start === 'current')){
+  if (interval._end === 'next' && interval._start === 'current') {
     return `Current ${Ember.String.capitalize(timePeriod)}`;
   }
 
@@ -52,7 +51,6 @@ export function formatInterval([interval, timePeriod]) {
  * @returns {String} formatted string
  */
 export function formatDurationFromCurrent(duration, timePeriod) {
-
   if (!duration) {
     return '';
   }
@@ -63,12 +61,12 @@ export function formatDurationFromCurrent(duration, timePeriod) {
   }
 
   let durationValue = duration.getValue(),
-      durationUnit  = duration.getUnit();
+    durationUnit = duration.getUnit();
 
-  if(timePeriod === 'quarter') {
+  if (timePeriod === 'quarter') {
     Ember.assert('Formatting a quarter with a duration must be in terms on months', durationUnit === 'month');
     durationValue = durationValue / 3;
-    durationUnit  = 'quarter' ;
+    durationUnit = 'quarter';
   }
 
   // Singular
@@ -93,16 +91,16 @@ export function formatDateRange(start, end, timePeriod) {
   Ember.assert('Start & End dates and time period  must be defined', start && end && timePeriod);
 
   let formats = {
-    month:   'MMM YYYY',
+    month: 'MMM YYYY',
     quarter: '[Q]Q YYYY',
-    year:    'YYYY'
+    year: 'YYYY'
   };
 
   let format = formats[timePeriod] || 'MMM DD, YYYY',
-      startString = start.format(format),
-      endString = end.endOf(DateUtils.getIsoDateTimePeriod(timePeriod)).format(format);
+    startString = start.format(format),
+    endString = end.endOf(DateUtils.getIsoDateTimePeriod(timePeriod)).format(format);
 
-  if(startString === endString) {
+  if (startString === endString) {
     return startString;
   }
 

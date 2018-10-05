@@ -33,7 +33,7 @@ export default Ember.Component.extend({
    */
   favoriteItems: computed('itemType', function() {
     let itemType = get(this, 'itemType'),
-        pluralizedType = Ember.String.capitalize(Ember.Inflector.inflector.pluralize(itemType));
+      pluralizedType = Ember.String.capitalize(Ember.Inflector.inflector.pluralize(itemType));
 
     return get(this, `user.favorite${pluralizedType}`);
   }),

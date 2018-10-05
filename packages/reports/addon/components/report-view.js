@@ -28,7 +28,7 @@ export default Ember.Component.extend({
   /**
    * @property {Array} classNames
    */
-  classNames: [ 'report-view' ],
+  classNames: ['report-view'],
 
   /**
    * Property representing any data useful for providing additional functionality to a visualization and request
@@ -51,7 +51,7 @@ export default Ember.Component.extend({
    * @property {Array} visualizations - array of available visualizations
    * annotated with a field corresponding to whether the visualization type is valid based on the request
    */
-  validVisualizations: computed('response.rows', function () {
+  validVisualizations: computed('response.rows', function() {
     return get(this, 'naviVisualizations').validVisualizations(get(this, 'report.request'));
   }),
 
@@ -60,7 +60,9 @@ export default Ember.Component.extend({
    */
   visualizationTypeLabel: computed('report.visualization.type', function() {
     return get(this, 'report.visualization.type')
-      .split('-').map(Ember.String.capitalize).join(' ');
+      .split('-')
+      .map(Ember.String.capitalize)
+      .join(' ');
   }),
 
   /**

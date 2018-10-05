@@ -16,7 +16,7 @@ export default ReportRoute.extend({
    */
   model({ widgetId }) {
     let widgets = this.modelFor('dashboards.dashboard.widgets'),
-        widgetModel = widgets.findBy('id', widgetId) || this._findTempWidget(widgetId);
+      widgetModel = widgets.findBy('id', widgetId) || this._findTempWidget(widgetId);
 
     if (widgetModel) {
       return widgetModel;
@@ -50,24 +50,28 @@ export default ReportRoute.extend({
             unsavedWidgetId: tempId
           }
         });
-
       } else {
-        widget.save().then(() => {
-          get(this, 'naviNotifications').add({
-            message: 'Widget was successfully saved!',
-            type: 'success',
-            timeout: 'short'
-          });
+        widget
+          .save()
+          .then(() => {
+            get(this, 'naviNotifications').add({
+              message: 'Widget was successfully saved!',
+              type: 'success',
+              timeout: 'short'
+            });
 
-          // Refresh the parent route to have the latest widget changes
-          getOwner(this).lookup('route:dashboards/dashboard').refresh();
-        }).catch(() => {
-          get(this, 'naviNotifications').add({
-            message: 'OOPS! An error occurred while saving',
-            type: 'danger',
-            timeout: 'medium'
+            // Refresh the parent route to have the latest widget changes
+            getOwner(this)
+              .lookup('route:dashboards/dashboard')
+              .refresh();
+          })
+          .catch(() => {
+            get(this, 'naviNotifications').add({
+              message: 'OOPS! An error occurred while saving',
+              type: 'danger',
+              timeout: 'medium'
+            });
           });
-        });
       }
     }
   }

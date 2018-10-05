@@ -7,7 +7,7 @@ module.exports = function(app) {
   const { loadEnvironmentSettings, getUser } = require('./utils.js');
   const packageJson = require('../package.json');
 
-  app.use('/assets/server-generated-config.js', function (req, res, /*next*/) {
+  app.use('/assets/server-generated-config.js', function(req, res /*next*/) {
     res.header('Content-Type', 'application/javascript');
     res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
     res.header('Expires', '-1');
@@ -21,7 +21,7 @@ module.exports = function(app) {
     const NAVI_APP = {};
 
     const features = settings.FEATURES;
-    delete(settings.FEATURES);
+    delete settings.FEATURES;
 
     NAVI_APP.version = packageJson.version;
     NAVI_APP.appSettings = settings || {};

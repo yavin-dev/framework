@@ -16,8 +16,7 @@ import config from 'ember-get-config';
 import { getApiErrMsg } from 'navi-core/utils/persistence-error';
 import capitalize from 'lodash/capitalize';
 
-
-const { A:arr, computed, get, set, setProperties } = Ember;
+const { A: arr, computed, get, set, setProperties } = Ember;
 const defaultFrequencies = ['day', 'week', 'month', 'quarter', 'year'];
 const defaultFormats = ['csv'];
 
@@ -58,7 +57,7 @@ export default Ember.Component.extend({
   /**
    * @property {Array} formats
    */
-  formats: computed(function () {
+  formats: computed(function() {
     let formats = get(config, 'navi.schedule.formats');
 
     if (!formats) {
@@ -84,7 +83,7 @@ export default Ember.Component.extend({
       return true;
     }
 
-    return !(get(this, 'localDeliveryRule.hasDirtyAttributes') && get(this, 'isRuleValid'))
+    return !(get(this, 'localDeliveryRule.hasDirtyAttributes') && get(this, 'isRuleValid'));
   }),
 
   /**
@@ -100,7 +99,7 @@ export default Ember.Component.extend({
   _createNewDeliveryRule() {
     return get(this, 'store').createRecord('delivery-rule', {
       deliveryType: get(this, 'model').constructor.modelName,
-      format: { type: get(this, 'formats.firstObject') },
+      format: { type: get(this, 'formats.firstObject') }
     });
   },
 
@@ -111,7 +110,7 @@ export default Ember.Component.extend({
     onSave() {
       let deliveryRule = get(this, 'localDeliveryRule');
 
-      if(get(this, 'isRuleValid')) {
+      if (get(this, 'isRuleValid')) {
         // Only add relationships to the new delivery rule if the fields are valid
         setProperties(deliveryRule, {
           deliveredItem: get(this, 'model'),
@@ -119,14 +118,15 @@ export default Ember.Component.extend({
         });
 
         set(this, 'attemptedSave', false);
-        this.attrs.onSave(deliveryRule)
+        this.attrs
+          .onSave(deliveryRule)
           .then(() => {
             set(this, 'notification', {
               text: `${capitalize(get(deliveryRule, 'deliveryType'))} delivery schedule successfully saved!`,
               classNames: 'alert success'
             });
           })
-          .catch(({errors}) => {
+          .catch(({ errors }) => {
             set(this, 'notification', {
               text: getApiErrMsg(errors[0], 'Oops! There was an error updating your delivery settings'),
               classNames: 'alert failure'
@@ -163,7 +163,7 @@ export default Ember.Component.extend({
      */
     closeModal() {
       // Avoid `calling set on destroyed object` error
-      if(!get(this, 'isDestroyed') && !get(this, 'isDestroying')) {
+      if (!get(this, 'isDestroyed') && !get(this, 'isDestroying')) {
         set(this, 'isSaving', false);
         set(this, 'showModal', false);
         set(this, 'attemptedSave', false);

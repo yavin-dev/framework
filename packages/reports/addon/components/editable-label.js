@@ -48,7 +48,7 @@ export default Ember.Component.extend({
      */
     editComplete(value) {
       set(this, 'isEditingValue', false);
-      if(get(this, 'value') !== value) {
+      if (get(this, 'value') !== value) {
         run.debounce(this.attrs, 'onChange', value, 10);
       }
     },

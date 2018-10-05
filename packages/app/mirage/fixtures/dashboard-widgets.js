@@ -17,8 +17,8 @@ export default [
               type: 'dimension',
               config: {
                 metric: 'wins',
-                dimensionOrder:[ 'character' ],
-                dimensions:[
+                dimensionOrder: ['character'],
+                dimensions: [
                   {
                     name: 'Dry Bowser',
                     values: { character: '7' }
@@ -38,27 +38,20 @@ export default [
         }
       }
     },
-    requests:[ {
-      logicalTable: {
-        table: 'mario',
-        timeGrain: 'day'
-      },
-      metrics: [
-        { metric: 'wins' },
-        { metric: 'timeSpent' }
-      ],
-      dimensions: [
-        { dimension: 'character' }
-      ],
-      filters: [],
-      sort: [
-        { metric: 'wins', direction: 'asc' }
-      ],
-      intervals: [
-        { end: 'current', start: 'P7D' }
-      ],
-      bardVersion:    'v1',
-      requestVersion: 'v1'
-    }]
+    requests: [
+      {
+        logicalTable: {
+          table: 'mario',
+          timeGrain: 'day'
+        },
+        metrics: [{ metric: 'wins' }, { metric: 'timeSpent' }],
+        dimensions: [{ dimension: 'character' }],
+        filters: [],
+        sort: [{ metric: 'wins', direction: 'asc' }],
+        intervals: [{ end: 'current', start: 'P7D' }],
+        bardVersion: 'v1',
+        requestVersion: 'v1'
+      }
+    ]
   }
 ];

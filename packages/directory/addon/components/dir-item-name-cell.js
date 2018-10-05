@@ -28,10 +28,15 @@ export default Component.extend({
    */
   itemLink: computed('type', function() {
     let type = get(this, 'type'),
-        singularType = type.slice(0, -1);
+      singularType = type.slice(0, -1);
 
     return `${type}.${singularType}`;
   }),
+
+  /**
+   * @property {String} itemId - the id of the model or the tempId of an unsaved model
+   */
+  itemId: computed.oneWay('value.modelId'),
 
   /**
    * @property {String} type - the type of the item

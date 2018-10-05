@@ -26,8 +26,8 @@ export const CAL_DISPLAY_DATE_FORMAT_STRING = 'M/D/YYYY';
  */
 export function getDatesForInterval(interval, grain) {
   let range = interval.asMomentsForTimePeriod(grain),
-      currentDate = range.start,
-      dates = [];
+    currentDate = range.start,
+    dates = [];
 
   if (grain === 'all') {
     return [currentDate.clone()];
@@ -52,10 +52,14 @@ export function getDatesForInterval(interval, grain) {
  */
 export function getFirstDayEpochIsoDateTimePeriod(dateTimePeriod, dateFormat) {
   let isoDateTimePeriod = getIsoDateTimePeriod(dateTimePeriod),
-      format = dateFormat || API_DATE_FORMAT_STRING,
-      epochDate = moment(config.navi.dataEpoch, EPOCH_FORMAT_STRING);
+    format = dateFormat || API_DATE_FORMAT_STRING,
+    epochDate = moment(config.navi.dataEpoch, EPOCH_FORMAT_STRING);
 
-  return epochDate.add(1, dateTimePeriod).subtract(1, 'day').startOf(isoDateTimePeriod).format(format);
+  return epochDate
+    .add(1, dateTimePeriod)
+    .subtract(1, 'day')
+    .startOf(isoDateTimePeriod)
+    .format(format);
 }
 
 /**
@@ -68,8 +72,11 @@ export function getFirstDayEpochIsoDateTimePeriod(dateTimePeriod, dateFormat) {
  */
 export function getFirstDayOfPrevIsoDateTimePeriod(dateTimePeriod, dateFormat) {
   let format = dateFormat || API_DATE_FORMAT_STRING,
-      isoDateTimePeriod = getIsoDateTimePeriod(dateTimePeriod);
-  return moment().subtract(1, dateTimePeriod).startOf(isoDateTimePeriod).format(format);
+    isoDateTimePeriod = getIsoDateTimePeriod(dateTimePeriod);
+  return moment()
+    .subtract(1, dateTimePeriod)
+    .startOf(isoDateTimePeriod)
+    .format(format);
 }
 
 /**
@@ -83,7 +90,10 @@ export function getFirstDayOfPrevIsoDateTimePeriod(dateTimePeriod, dateFormat) {
 export function getLastDayOfPrevIsoDateTimePeriod(dateTimePeriod, dateFormat) {
   let format = dateFormat || API_DATE_FORMAT_STRING;
   let isoDateTimePeriod = getIsoDateTimePeriod(dateTimePeriod);
-  return moment().startOf(isoDateTimePeriod).subtract(1, 'day').format(format);
+  return moment()
+    .startOf(isoDateTimePeriod)
+    .subtract(1, 'day')
+    .format(format);
 }
 
 /**
@@ -96,10 +106,12 @@ export function getLastDayOfPrevIsoDateTimePeriod(dateTimePeriod, dateFormat) {
  * @return {Object} moment date Object
  */
 export function getLastDayOfIsoDateTimePeriod(date, dateTimePeriod, dateFormat) {
-  if(date && dateTimePeriod) {
+  if (date && dateTimePeriod) {
     let format = dateFormat || API_DATE_FORMAT_STRING;
     let isoDateTimePeriod = getIsoDateTimePeriod(dateTimePeriod);
-    return moment(date).endOf(isoDateTimePeriod).format(format);
+    return moment(date)
+      .endOf(isoDateTimePeriod)
+      .format(format);
   } else {
     throw new Error('getLastDayOfIsoDateTimePeriod : Required Date/DateTimePeriod is missing');
   }
@@ -115,10 +127,12 @@ export function getLastDayOfIsoDateTimePeriod(date, dateTimePeriod, dateFormat) 
  * @return {Object} moment date Object
  */
 export function getFirstDayOfIsoDateTimePeriod(date, dateTimePeriod, dateFormat) {
-  if(date && dateTimePeriod) {
+  if (date && dateTimePeriod) {
     let format = dateFormat || API_DATE_FORMAT_STRING;
     let isoDateTimePeriod = getIsoDateTimePeriod(dateTimePeriod);
-    return moment(date).startOf(isoDateTimePeriod).format(format);
+    return moment(date)
+      .startOf(isoDateTimePeriod)
+      .format(format);
   } else {
     throw new Error('getFirstDayOfIsoDateTimePeriod : Required Date/DateTimePeriod is missing');
   }
@@ -132,9 +146,9 @@ export function getFirstDayOfIsoDateTimePeriod(date, dateTimePeriod, dateFormat)
  * @return {String} ISO equivalent dateTimePeriod
  */
 export function getIsoDateTimePeriod(dateTimePeriod) {
-  if(dateTimePeriod) {
+  if (dateTimePeriod) {
     let timePeriod = dateTimePeriod;
-    if(dateTimePeriod.toLowerCase() === 'week'){
+    if (dateTimePeriod.toLowerCase() === 'week') {
       timePeriod = 'isoweek';
     }
     return timePeriod;

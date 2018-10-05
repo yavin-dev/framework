@@ -10,7 +10,6 @@ import { A } from '@ember/array';
 import EmberObject from '@ember/object';
 
 export default EmberObject.extend({
-
   /**
    * @method _normalizeTable - normalizes the table object
    * @param rawTables {Array} - array of table objects
@@ -19,44 +18,43 @@ export default EmberObject.extend({
   _normalizeTable: function(rawTables) {
     // build dimension and metric arrays
     let dimensions = [],
-        metrics = [],
-        tables = rawTables.map((table) => {
+      metrics = [],
+      tables = rawTables.map(table => {
+        let timeGrains = table.timeGrains.map(timegrain => {
+          dimensions = dimensions.concat(timegrain.dimensions);
 
-          let timeGrains = table.timeGrains.map((timegrain) => {
+          /*
+           * since in fili, the metric valueTypes come under key `type`, remap it to `valuetype` and set `type` to what
+           * it's supposed to be so it doesn't override the model
+           */
+          metrics = metrics.concat(
+            timegrain.metrics.map(metric =>
+              Object.assign({ valueType: metric.type }, metric, {
+                type: 'metric'
+              })
+            )
+          );
 
-            dimensions = dimensions.concat(timegrain.dimensions);
-
-            /*
-             * since in fili, the metric valueTypes come under key `type`, remap it to `valuetype` and set `type` to what
-             * it's supposed to be so it doesn't override the model
-             */
-            metrics = metrics.concat(timegrain.metrics.map(metric => Object.assign(
-              {valueType: metric.type},
-              metric,
-              {type: 'metric'}
-            )));
-
-            // build time-grain object
-            return {
-              name: timegrain.name,
-              longName: timegrain.longName,
-              description: timegrain.description,
-              retention: timegrain.retention,
-              metricIds: A(timegrain.metrics).mapBy('name'),
-              dimensionIds: A(timegrain.dimensions).mapBy('name')
-            };
-
-          });
-
-          // build table object
+          // build time-grain object
           return {
-            name: table.name,
-            longName: table.longName,
-            description: table.description,
-            category: table.category,
-            timeGrains: timeGrains
+            name: timegrain.name,
+            longName: timegrain.longName,
+            description: timegrain.description,
+            retention: timegrain.retention,
+            metricIds: A(timegrain.metrics).mapBy('name'),
+            dimensionIds: A(timegrain.dimensions).mapBy('name')
           };
         });
+
+        // build table object
+        return {
+          name: table.name,
+          longName: table.longName,
+          description: table.description,
+          category: table.category,
+          timeGrains: timeGrains
+        };
+      });
 
     return {
       tables: tables,
@@ -70,7 +68,7 @@ export default EmberObject.extend({
    * @param response {Object} - JSON response object
    * @returns {Object} - normalized JSON object
    */
-  normalize(payload){
+  normalize(payload) {
     if (payload && payload.tables) {
       return this._normalizeTable(payload.tables);
     }

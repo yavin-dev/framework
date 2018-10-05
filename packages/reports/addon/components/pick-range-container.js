@@ -45,7 +45,7 @@ export default PickObjectContainer.extend({
    * @property {Object} dateMoments - start and end dates/durations as moments
    */
   dateMoments: computed('_editableSelection._start', '_editableSelection._end', function() {
-    let {_start, _end} = this.getStagedSelection();
+    let { _start, _end } = this.getStagedSelection();
     return this._momentsForCustomRange(new Interval(_start, _end));
   }),
 
@@ -53,7 +53,7 @@ export default PickObjectContainer.extend({
    * @property {Object} dateStrings - start and end dates/durations as strings
    */
   dateStrings: computed('_editableSelection._start', '_editableSelection._end', function() {
-    let {_start, _end} = this.getStagedSelection();
+    let { _start, _end } = this.getStagedSelection();
     return new Interval(_start, _end).asStrings(DateUtils.PARAM_DATE_FORMAT_STRING);
   }),
 
@@ -65,12 +65,12 @@ export default PickObjectContainer.extend({
    */
   _momentsForCustomRange(interval) {
     let dateTimePeriod = get(this, 'dateTimePeriod'),
-        moments        = interval.asMomentsForTimePeriod(dateTimePeriod);
+      moments = interval.asMomentsForTimePeriod(dateTimePeriod);
 
-        /*
-         * Convert from interval's [inclusive - exclusive] range to a [inclusive - inclusive]
-         * range for the custom range picker
-         */
+    /*
+     * Convert from interval's [inclusive - exclusive] range to a [inclusive - inclusive]
+     * range for the custom range picker
+     */
     moments.end.subtract(1, dateTimePeriod);
 
     return moments;
@@ -84,7 +84,7 @@ export default PickObjectContainer.extend({
    * @returns {Duration|moment|string} - object most closely represented by the string
    */
   parseDate(date) {
-    if(typeof date === 'string') {
+    if (typeof date === 'string') {
       return Interval.fromString(date);
     }
     return date;
@@ -110,7 +110,7 @@ export default PickObjectContainer.extend({
        *If moment object, add one time period to end date to match exclusive interval
        *Do not increment when date is the same as the old value
        */
-      if(moment.isMoment(end) && !end.isSame(get(this, 'prevEndDate'))){
+      if (moment.isMoment(end) && !end.isSame(get(this, 'prevEndDate'))) {
         end = end.clone().add(1, this.get('dateTimePeriod'));
       }
       set(this, 'prevEndDate', end);

@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -21,7 +21,7 @@ const _ReportObject = Ember.Object.extend({
   reports: computed('userReports.[]', 'favoriteReports.[]', function() {
     return DS.PromiseArray.create({
       promise: Ember.RSVP.hash({
-        userReports:     get(this, 'userReports'),
+        userReports: get(this, 'userReports'),
         favoriteReports: get(this, 'favoriteReports')
       }).then(({ userReports, favoriteReports }) => {
         return Ember.A()
@@ -34,7 +34,6 @@ const _ReportObject = Ember.Object.extend({
 });
 
 export default Ember.Route.extend({
-
   /**
    * @property {Service} naviNotifications
    */
@@ -53,12 +52,14 @@ export default Ember.Route.extend({
    * @returns {Object} contains an array of report models
    */
   model() {
-    return get(this, 'user').findOrRegister().then(userModel => {
-      return _ReportObject.create({
-        userReports: get(userModel, 'reports'),
-        favoriteReports: get(userModel, 'favoriteReports')
+    return get(this, 'user')
+      .findOrRegister()
+      .then(userModel => {
+        return _ReportObject.create({
+          userReports: get(userModel, 'reports'),
+          favoriteReports: get(userModel, 'favoriteReports')
+        });
       });
-    });
   },
 
   actions: {
@@ -73,19 +74,6 @@ export default Ember.Route.extend({
         type: 'danger',
         timeout: 'short'
       });
-    },
-
-    /**
-     * @action buildReportUrl
-     * @param {Object} report - model with id
-     * @returns {String} url for given report
-     */
-    buildReportUrl(report) {
-      let reportId = get(report, 'id'),
-          baseUrl = document.location.origin,
-          reportUrl = get(this, 'router').generate('reports.report', reportId);
-
-      return baseUrl + reportUrl;
     }
   }
 });

@@ -33,7 +33,7 @@
     tagName='li'
     classNames='action share'
     pageTitle=dashboard.title
-    buildUrl=(route-action 'buildDashboardUrl' dashboard)
+    buildUrl=(action 'buildUrl' dashboard)
     disabled=(not item.validations.isTruelyValid)
   }}
     {{navi-icon 'share' class='navi-icon__share'}}
@@ -65,7 +65,7 @@
       classNames='action delete'
       model=dashboard
       warnMsg='Are you sure you want to delete this dashboard and all of its widgets?'
-      deleteAction=(route-action 'deleteDashboard' dashboard)
+      deleteAction=(item-action 'DELETE_ITEM' dashboard)
     }}
       {{navi-icon 'trash-o' class='navi-icon__delete'}}
       {{tooltip-on-component text='Delete' enableLazyRendering=true}}

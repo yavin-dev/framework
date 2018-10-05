@@ -44,16 +44,19 @@ test('it returns serialization of model', function(assert) {
 
     this.render(hbs`{{get (serialize model) 'data.attributes.something'}}`);
 
-    assert.equal(this.$().text().trim(),
+    assert.equal(
+      this.$()
+        .text()
+        .trim(),
       '#####',
-      'Serializes model with transforms and everything!');
+      'Serializes model with transforms and everything!'
+    );
   });
-
 });
 
-test('it throws an assertion if it\'s not serializable model', function(assert) {
+test("it throws an assertion if it's not serializable model", function(assert) {
   assert.expectAssertion(() => {
-    this.set('model', {some: 'object', will: 'fail'});
+    this.set('model', { some: 'object', will: 'fail' });
     this.render(hbs`{{serialize model}}`);
   });
 });
@@ -63,14 +66,21 @@ test('it returns with undefined or null', function(assert) {
   this.set('model', null);
   this.render(hbs`{{serialize model}}`);
 
-  assert.equal(this.$().text().trim(),
+  assert.equal(
+    this.$()
+      .text()
+      .trim(),
     '',
-    'renders nothing if null is passed');
+    'renders nothing if null is passed'
+  );
 
   this.set('model', undefined);
 
-  assert.equal(this.$().text().trim(),
+  assert.equal(
+    this.$()
+      .text()
+      .trim(),
     '',
-    'renders nothing if undefined is passed');
+    'renders nothing if undefined is passed'
+  );
 });
-

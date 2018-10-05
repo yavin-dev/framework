@@ -14,9 +14,7 @@ test('default tag component', function(assert) {
   this.set('tags', DIVINE_BEASTS);
 
   this.set('removeTagAtIndex', index => {
-    assert.equal(index,
-      2,
-      'Clicking remove icon on calls removeTagAtIndex with the clicked tag index')
+    assert.equal(index, 2, 'Clicking remove icon on calls removeTagAtIndex with the clicked tag index');
   });
 
   this.render(hbs`
@@ -29,9 +27,13 @@ test('default tag component', function(assert) {
     {{/navi-tag-input}}
   `);
 
-  assert.deepEqual(this.$('.emberTagInput-tag').toArray().map(e => e.textContent.trim()),
+  assert.deepEqual(
+    this.$('.emberTagInput-tag')
+      .toArray()
+      .map(e => e.textContent.trim()),
     DIVINE_BEASTS,
-    'Default tag component provides ember tag input class and yields');
+    'Default tag component provides ember tag input class and yields'
+  );
 
   // Test tag removal
   this.$('.emberTagInput-remove:eq(2)').click();
@@ -40,9 +42,12 @@ test('default tag component', function(assert) {
 test('custom tag component', function(assert) {
   assert.expect(2);
 
-  this.register('component:my-wacky-tag', Component.extend({
-    classNames: 'my-wacky-tag'
-  }));
+  this.register(
+    'component:my-wacky-tag',
+    Component.extend({
+      classNames: 'my-wacky-tag'
+    })
+  );
 
   this.set('tags', DIVINE_BEASTS);
 
@@ -56,11 +61,17 @@ test('custom tag component', function(assert) {
     {{/navi-tag-input}}
   `);
 
-  assert.deepEqual(this.$('.my-wacky-tag').toArray().map(e => e.textContent.trim()),
+  assert.deepEqual(
+    this.$('.my-wacky-tag')
+      .toArray()
+      .map(e => e.textContent.trim()),
     DIVINE_BEASTS,
-    'Custom tag component can be given to add new behavior');
+    'Custom tag component can be given to add new behavior'
+  );
 
-  assert.equal(this.$('.emberTagInput-remove').length,
+  assert.equal(
+    this.$('.emberTagInput-remove').length,
     0,
-    'Elements from the default component are not required in a custom tag');
+    'Elements from the default component are not required in a custom tag'
+  );
 });

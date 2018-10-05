@@ -29,7 +29,8 @@ export default Ember.Component.extend({
   /**
    * @property {String} requestUrl - API link
    */
-  requestUrl: Ember.computed('request', 'showModal', function() { // Observe 'showModal' to recompute each time the modal opens
+  requestUrl: Ember.computed('request', 'showModal', function() {
+    // Observe 'showModal' to recompute each time the modal opens
     let request = get(this, 'request').serialize();
     return get(this, 'facts').getURL(request);
   }),

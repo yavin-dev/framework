@@ -12,17 +12,16 @@ module('Integration | Component | dir new button', function(hooks) {
 
     await render(hbs`{{dir-new-button}}`);
 
-    assert.equal(this.element.innerText.trim(),
-      'New',
-      'The New button is labeled correctly');
+    assert.equal(this.element.innerText.trim(), 'New', 'The New button is labeled correctly');
 
     await clickTrigger('.dir-new-button__trigger');
 
-    assert.deepEqual([...this.element.parentElement.querySelectorAll('.dir-new-button__dropdown-option')].map(elm => elm.innerText.trim()),
-      [
-        'Reports',
-        'Dashboards'
-      ],
-      'Reports and Dashboards are the options for creating a new document');
+    assert.deepEqual(
+      [...this.element.parentElement.querySelectorAll('.dir-new-button__dropdown-option')].map(elm =>
+        elm.innerText.trim()
+      ),
+      ['Report', 'Dashboard'],
+      'Report and Dashboard are the options for creating a new document'
+    );
   });
 });

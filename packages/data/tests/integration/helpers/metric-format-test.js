@@ -21,27 +21,33 @@ module('helper:metric-format', function(hooks) {
 
   test('it renders with serialized metric object', async function(assert) {
     assert.expect(7);
-    this.set('metric', {metric: 'revenue', parameters: {currency: 'USD', as: 'revenueUSD'}});
+    this.set('metric', {
+      metric: 'revenue',
+      parameters: { currency: 'USD', as: 'revenueUSD' }
+    });
 
     await render(hbs`{{metric-format metric}}`);
     assert.equal(find('*').textContent.trim(), 'Revenue (USD)');
 
-    this.set('metric', {metric: 'revenue', parameters: {currency: 'CAD', as: 'revenueUSD'}});
+    this.set('metric', {
+      metric: 'revenue',
+      parameters: { currency: 'CAD', as: 'revenueUSD' }
+    });
     assert.equal(find('*').textContent.trim(), 'Revenue (CAD)');
 
-    this.set('metric', {metric: 'revenue'});
+    this.set('metric', { metric: 'revenue' });
     assert.equal(find('*').textContent.trim(), 'Revenue');
 
-    this.set('metric', {metric: null});
+    this.set('metric', { metric: null });
     assert.equal(find('*').textContent.trim(), '--');
 
     this.set('metric', null);
     assert.equal(find('*').textContent.trim(), '--');
 
-    this.set('metric', {metric: ''});
+    this.set('metric', { metric: '' });
     assert.equal(find('*').textContent.trim(), '--');
 
-    this.set('metric', {metric: 'foo'});
+    this.set('metric', { metric: 'foo' });
     assert.equal(find('*').textContent.trim(), 'foo');
   });
 });

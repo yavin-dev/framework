@@ -36,14 +36,46 @@ export default Base.extend({
    * @override
    */
   supportedOperators: [
-    { id: 'gt',     longName: 'Greater than (>)',            valuesComponent: 'filter-values/value-input' },
-    { id: 'gte',    longName: 'Greater than or equals (>=)', valuesComponent: 'filter-values/value-input' },
-    { id: 'lt',     longName: 'Less than (<)',               valuesComponent: 'filter-values/value-input' },
-    { id: 'lte',    longName: 'Less than or equals (<=)',    valuesComponent: 'filter-values/value-input' },
-    { id: 'eq',     longName: 'Equals (=)',                  valuesComponent: 'filter-values/value-input' },
-    { id: 'neq',    longName: 'Not equals (!=)',             valuesComponent: 'filter-values/value-input' },
-    { id: 'bet',    longName: 'Between (<=>)',               valuesComponent: 'filter-values/range-input' },
-    { id: 'nbet',   longName: 'Not between (!<=>)',          valuesComponent: 'filter-values/range-input' }
+    {
+      id: 'gt',
+      longName: 'Greater than (>)',
+      valuesComponent: 'filter-values/value-input'
+    },
+    {
+      id: 'gte',
+      longName: 'Greater than or equals (>=)',
+      valuesComponent: 'filter-values/value-input'
+    },
+    {
+      id: 'lt',
+      longName: 'Less than (<)',
+      valuesComponent: 'filter-values/value-input'
+    },
+    {
+      id: 'lte',
+      longName: 'Less than or equals (<=)',
+      valuesComponent: 'filter-values/value-input'
+    },
+    {
+      id: 'eq',
+      longName: 'Equals (=)',
+      valuesComponent: 'filter-values/value-input'
+    },
+    {
+      id: 'neq',
+      longName: 'Not equals (!=)',
+      valuesComponent: 'filter-values/value-input'
+    },
+    {
+      id: 'bet',
+      longName: 'Between (<=>)',
+      valuesComponent: 'filter-values/range-input'
+    },
+    {
+      id: 'nbet',
+      longName: 'Not between (!<=>)',
+      valuesComponent: 'filter-values/range-input'
+    }
   ],
 
   /**
@@ -52,8 +84,8 @@ export default Base.extend({
    */
   filter: computed('requestFragment.{operator,metric,values.[]}', function() {
     const metricFragment = get(this, 'requestFragment'),
-          operatorId = get(metricFragment, 'operator'),
-          operator = Ember.A(get(this, 'supportedOperators')).findBy('id', operatorId);
+      operatorId = get(metricFragment, 'operator'),
+      operator = Ember.A(get(this, 'supportedOperators')).findBy('id', operatorId);
 
     return {
       subject: get(metricFragment, 'metric'),

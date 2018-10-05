@@ -3,11 +3,9 @@ import { setOwner } from '@ember/application';
 import ExtendedMetadataMixin from 'navi-data/mixins/extended-metadata';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import Pretender from "pretender";
+import Pretender from 'pretender';
 
-import metadataRoutes, {
-  MetricOne
-} from '../../helpers/metadata-routes';
+import metadataRoutes, { MetricOne } from '../../helpers/metadata-routes';
 
 let Server;
 
@@ -35,9 +33,7 @@ module('Unit | Mixin | extended metadata', function(hooks) {
     setOwner(subject, this.owner);
 
     return get(subject, 'extended').then(() => {
-      assert.deepEqual(get(subject, 'extended.content'),
-        MetricOne,
-        'extended property should load correct data');
+      assert.deepEqual(get(subject, 'extended.content'), MetricOne, 'extended property should load correct data');
     });
   });
 });

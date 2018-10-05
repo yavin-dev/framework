@@ -10,7 +10,6 @@ const { get, inject } = Ember;
 const NOT_FOUND = '404';
 
 export default Ember.Service.extend({
-
   /**
    * @property {Ember.Service} store
    */
@@ -46,7 +45,7 @@ export default Ember.Service.extend({
    */
   register() {
     let userId = config.navi.user,
-        userModel = get(this, 'store').createRecord('user', {id: userId});
+      userModel = get(this, 'store').createRecord('user', { id: userId });
 
     return userModel.save();
   },

@@ -4,7 +4,7 @@ moduleForComponent('report-actions/base-action', 'Unit | Component | Report Acti
   unit: true
 });
 
-test('actionDisabled', function(assert){
+test('actionDisabled', function(assert) {
   assert.expect(5);
   let component = this.subject({
     report: {
@@ -15,39 +15,49 @@ test('actionDisabled', function(assert){
     checkPermission: false
   });
 
-  assert.equal(component.get('actionDisabled'),
+  assert.equal(
+    component.get('actionDisabled'),
     false,
-    'actionDisabled is false when report has id, checkPermission is false and user author of the report');
+    'actionDisabled is false when report has id, checkPermission is false and user author of the report'
+  );
 
   component.set('report', {
     isOwner: false,
     isNew: false
   });
 
-  assert.equal(component.get('actionDisabled'),
+  assert.equal(
+    component.get('actionDisabled'),
     false,
-    'actionDisabled is false when report has id, checkPermission is false and user is not author of the report');
+    'actionDisabled is false when report has id, checkPermission is false and user is not author of the report'
+  );
 
   component.set('checkPermission', true);
 
-  assert.equal(component.get('actionDisabled'),
+  assert.equal(
+    component.get('actionDisabled'),
     true,
-    'actionDisabled is false when report has id, checkPermission is true and user is not author of the report');
+    'actionDisabled is false when report has id, checkPermission is true and user is not author of the report'
+  );
 
   component.set('report', {
     isOwner: true,
     isNew: false
   });
 
-  assert.equal(component.get('actionDisabled'),
+  assert.equal(
+    component.get('actionDisabled'),
     false,
-    'actionDisabled is false when report has id, checkPermission is true and user is author of the report');
+    'actionDisabled is false when report has id, checkPermission is true and user is author of the report'
+  );
 
   component.set('report', {
     isOwner: true,
     isNew: true
   });
-  assert.equal(component.get('actionDisabled'),
+  assert.equal(
+    component.get('actionDisabled'),
     true,
-    'actionDisabled is false when report has no id, checkPermission is true and user is author of the report');
+    'actionDisabled is false when report has no id, checkPermission is true and user is author of the report'
+  );
 });

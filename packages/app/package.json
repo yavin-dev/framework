@@ -75,17 +75,17 @@
     "ember-source": "~2.16.0",
     "ember-tether": "^0.4.1",
     "ember-toggle": "^5.2.1",
-    "ember-tooltips": "^2.9.2",
+    "ember-tooltips": "^2.10.0",
     "ember-truth-helpers": "^2.0.0",
     "ember-uuid": "1.0.0",
+    "eslint-config-prettier": "^3.0.1",
     "liquid-fire": "^0.29.2",
     "loader.js": "^4.2.3",
     "navi-core": "^0.0.0",
     "navi-dashboards": "^0.0.0",
     "navi-data": "^0.0.0",
     "navi-directory": "^0.0.0",
-    "navi-reports": "^0.0.0",
-    "navi-visualizations": "^0.0.0"
+    "navi-reports": "^0.0.0"
   },
   "engines": {
     "node": "^4.5 || 6.* || >= 7.*"

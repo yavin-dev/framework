@@ -8,10 +8,10 @@ export default function() {
   this.transition(
     this.hasClass('missing-intervals-warning'),
     this.onInitialRender(),
-    this.use('toUp', {duration: 1000})
+    this.use('toUp', { duration: 1000 })
   );
   this.transition(
     this.hasClass('missing-intervals-warning__details-content'),
-    this.use('toUp', {duration: DETAILS_DURATION})
+    this.use('toUp', { duration: DETAILS_DURATION })
   );
 }

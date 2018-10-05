@@ -1,0 +1,8 @@
+{
+  "name": "navi-core",
+  "dependencies": {
+    "d3": "3.5.17",
+    "c3": "0.4.20",
+    "numeral": "^1.5.3"
+  }
+}

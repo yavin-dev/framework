@@ -5,11 +5,11 @@
 /* eslint-env node */
 /*jslint nomen: true, node:true */
 const express = require('express'),
-      useConfigMiddleware           = require('./server-lib/use-config-middleware'),
-      useCompressionMiddleware      = require('./server-lib/use-compression-middleware'),
-      useCacheMiddleware            = require('./server-lib/use-cache-middleware'),
-      useStaticAssetMiddleware      = require('./server-lib/use-static-asset-middleware'),
-      useFallbackResourceMiddleware = require('./server-lib/use-fallback-resource-middleware');
+  useConfigMiddleware = require('./server-lib/use-config-middleware'),
+  useCompressionMiddleware = require('./server-lib/use-compression-middleware'),
+  useCacheMiddleware = require('./server-lib/use-cache-middleware'),
+  useStaticAssetMiddleware = require('./server-lib/use-static-asset-middleware'),
+  useFallbackResourceMiddleware = require('./server-lib/use-fallback-resource-middleware');
 
 process.chdir(__dirname);
 

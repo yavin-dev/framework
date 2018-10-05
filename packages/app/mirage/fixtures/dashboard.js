@@ -11,9 +11,7 @@ export default [
     updatedOn: '2016-01-01 00:00:00',
     presentation: {
       version: 1,
-      layout: [
-        { "column": 0, "row": 0, "height": 4, "width": 12, "widgetId": 1 }
-      ],
+      layout: [{ column: 0, row: 0, height: 4, width: 12, widgetId: 1 }],
       columns: 12
     }
   },
@@ -27,6 +25,6 @@ export default [
       version: 1,
       layout: [],
       columns: 12
-    },
+    }
   }
 ];

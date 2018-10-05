@@ -3,15 +3,16 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import Ember from 'ember';
+import Component from '@ember/component';
+import BuildUrl from 'navi-reports/mixins/build-url';
 import layout from '../templates/components/navi-action-list';
 
-export default Ember.Component.extend({
+export default Component.extend(BuildUrl, {
   layout,
 
   /**
    * @property {String} tagName
    * @override
    */
-  tagName: 'ul',
+  tagName: 'ul'
 });
