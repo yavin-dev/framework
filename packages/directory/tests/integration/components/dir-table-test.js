@@ -90,7 +90,7 @@ module('Integration | Component | dir table', function(hooks) {
 
     assert.equal(
       this.element.querySelector('.lt-body').innerText.trim(),
-      'Nothing to see here.',
+      'Welcome to Navi, get started by creating a new report',
       "Gives the correct message when no items are present and there's no search query"
     );
 
