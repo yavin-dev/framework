@@ -1,12 +1,12 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 
-moduleForComponent('scrollbar-wrapper', 'Integration | Component | scrollbar wrapper', {
+moduleForComponent('perfect-scrollbar', 'Integration | Component | perfect scrollbar', {
   integration: true
 });
 
 test('it renders', function(assert) {
-  this.render(hbs`{{scrollbar-wrapper}}`);
+  this.render(hbs`{{perfect-scrollbar}}`);
 
   assert.equal(
     this.$()
@@ -16,9 +16,9 @@ test('it renders', function(assert) {
   );
 
   this.render(hbs`
-    {{#scrollbar-wrapper}}
+    {{#perfect-scrollbar}}
       template block text
-    {{/scrollbar-wrapper}}
+    {{/perfect-scrollbar}}
   `);
 
   assert.equal(

@@ -3,15 +3,15 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
- *  {{#scrollbar-wrapper options=(hash of options)}}
+ *  {{#perfect-scrollbar options=(hash of options)}}
  *    Content to scroll over.
- *  {{/scrollbar-wrapper}}
+ *  {{/perfect-scrollbar}}
  *
  */
 
 import Component from '@ember/component';
-import layout from '../templates/components/scrollbar-wrapper';
-import { PerfectScrollbarMixin } from 'ember-perfect-scrollbar';
+import layout from '../templates/components/perfect-scrollbar';
+import PerfectScrollbarMixin from 'navi-core/mixins/perfect-scrollbar';
 import { computed } from '@ember/object';
 
 export default Component.extend(PerfectScrollbarMixin, {

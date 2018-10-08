@@ -44,7 +44,7 @@
             {{navi-icon 'times'}}
         </div>
     </div>
-    {{#scrollbar-wrapper options=(hash suppressScrollX=true) classNames='report-view__visualization-edit'}}
+    {{#perfect-scrollbar options=(hash suppressScrollX=true) classNames='report-view__visualization-edit'}}
         <div class='report-view__visualization-edit-inner'>
             {{visualization-config/wrapper
                 request=report.request
@@ -54,5 +54,5 @@
                 onUpdateConfig=(route-action 'onUpdateVisualizationConfig')
             }}
         </div>
-    {{/scrollbar-wrapper}}
+    {{/perfect-scrollbar}}
 {{/if}}

@@ -24,7 +24,6 @@
     "ember-cli-babel": "^6.11.0",
     "ember-cli-htmlbars": "^2.0.3",
     "ember-cli-node-assets": "0.2.2",
-    "ember-perfect-scrollbar": "0.0.6",
     "json-url": "^2.3.4"
   },
   "devDependencies": {
