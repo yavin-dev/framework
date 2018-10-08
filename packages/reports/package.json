@@ -24,6 +24,7 @@
     "ember-cli-babel": "^6.11.0",
     "ember-cli-htmlbars": "^2.0.3",
     "ember-cli-node-assets": "0.2.2",
+    "ember-tether": "^1.0.0",
     "json-url": "^2.3.4"
   },
   "devDependencies": {
@@ -76,7 +77,6 @@
     "ember-sortable": "^1.10.0",
     "ember-source": "~2.16.0",
     "ember-tag-input": "1.2.1",
-    "ember-tether": "^0.4.1",
     "ember-toggle": "5.2.1",
     "ember-tooltips": "^2.10.0",
     "ember-truth-helpers": "^2.0.0",

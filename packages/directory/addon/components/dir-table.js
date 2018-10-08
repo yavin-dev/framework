@@ -58,6 +58,16 @@ export default Component.extend({
         cellClassNames: 'dir-table__cell dir-table__cell--name'
       },
       {
+        label: '',
+        valuePath: 'model',
+        sortable: false,
+        hideable: false,
+        draggable: false,
+        classNames: 'dir-table__header-cell dir-table__header-cell--actions',
+        cellComponent: 'dir-asset-row-actions',
+        cellClassNames: 'dir-table__cell dir-table__cell--actions'
+      },
+      {
         label: 'AUTHOR',
         valuePath: 'model.author.id',
         sortable: false,
