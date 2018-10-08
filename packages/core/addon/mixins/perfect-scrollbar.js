@@ -36,6 +36,8 @@ export default Mixin.create({
       resizeService.off('debouncedDidResize', this, '_resizePerfectScrollbar');
     }
 
-    get('perfectScrollbar').destroy();
+    const perfectScrollbar = get(this, 'perfectScrollbar');
+
+    perfectScrollbar && perfectScrollbar.destroy();
   }
 });
