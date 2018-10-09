@@ -16,5 +16,19 @@ import { computed } from '@ember/object';
 
 export default Component.extend(PerfectScrollbarMixin, {
   layout,
-  perfectScrollbarOptions: computed.reads('options')
+
+  /**
+   * perfect scrollbar options hash.
+   *
+   * @property {Object} options
+   */
+  options: undefined,
+
+  /**
+   * Used by the perfect scrollbar mixin.
+   *
+   * @property {Object} perfectScrollbarOptions
+   * @private
+   */
+  perfectScrollbarOptions: computed.reads('options').readOnly()
 });
