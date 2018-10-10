@@ -48,14 +48,16 @@
     display: flex;
     flex-direction: column;
     left: 0;
+    overflow: visible;
+    pointer-events: none;
     position: absolute;
     right: 0;
     top: @edit-header-height;
-    overflow: visible;
   }
 
   &__visualization-edit-inner {
     height: 100%;
+    pointer-events: initial;
     width: @edit-width;
   }
 
@@ -136,5 +138,12 @@
   &__visualization-toggle {
     display: flex;
     justify-content: flex-end;
+  }
+
+  .ps__rail {
+    &-x,
+    &-y {
+      pointer-events: initial;
+    }
   }
 }
