@@ -14,7 +14,7 @@
   margin: 50px 20px;
 
   &__new-button {
-    align-items: center;
+    align-items: start;
     display: flex;
     grid-area: new-button;
   }
@@ -24,7 +24,7 @@
   }
 
   &__controls {
-    align-items: center;
+    align-items: start;
     display: grid;
     grid-area: controls;
     grid-template-columns: 1fr 150px;
@@ -32,6 +32,9 @@
 
   &__table {
     grid-area: table;
-    margin: 15px 0 0 20px;
+    margin-left: 20px;
+    h1 {
+      margin-top: 0;
+    }
   }
 }
