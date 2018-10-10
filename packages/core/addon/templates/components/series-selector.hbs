@@ -38,7 +38,7 @@
                   {{!-- header for icon column --}}
                 </div>
             </div>
-            {{#perfect-scrollbar classNames=(array "table-body" scrollableContainerClass)}}
+            {{#perfect-scrollbar options=(hash suppressScrollX=true) classNames=(array "table-body" scrollableContainerClass)}}
                 {{#if availableSeriesData}}
                     {{#each paginatedSeriesData as |series|}}
                         <div class='table-row' {{action 'applyChanges' series target=container}}>
