@@ -14,24 +14,16 @@ module('Integration | Component | dir-item-name-cell', function(hooks) {
         title: 'Report 1',
         id: 1,
         isFavorite: true,
-        serialize() {
-          return {
-            data: {
-              type: 'reports'
-            }
-          };
+        constructor: {
+          modelName: 'report'
         }
       },
       dashboard = {
         title: 'Dashboard 1',
         id: 2,
         isFavorite: false,
-        serialize() {
-          return {
-            data: {
-              type: 'dashboards'
-            }
-          };
+        constructor: {
+          modelName: 'dashboard'
         }
       };
     set(this, 'item', report);
@@ -62,12 +54,8 @@ module('Integration | Component | dir-item-name-cell', function(hooks) {
       id: null,
       tempId: 'd8828a30-c2ab-11e8-9028-e546f1b5f84f',
       isFavorite: false,
-      serialize() {
-        return {
-          data: {
-            type: 'reports'
-          }
-        };
+      constructor: {
+        modelName: 'report'
       }
     };
 
