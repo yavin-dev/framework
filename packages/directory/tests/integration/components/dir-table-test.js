@@ -61,7 +61,7 @@ module('Integration | Component | dir table', function(hooks) {
 
     assert.deepEqual(
       [...this.element.querySelectorAll('th')].map(elm => elm.innerText.trim()),
-      ['NAME', 'AUTHOR', 'LAST UPDATED DATE'],
+      ['NAME', '', 'AUTHOR', 'LAST UPDATED DATE'],
       'The correct columns are generated for the table'
     );
 

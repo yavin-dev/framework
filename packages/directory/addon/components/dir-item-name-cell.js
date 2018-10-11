@@ -14,6 +14,7 @@ import Component from '@ember/component';
 import layout from '../templates/components/dir-item-name-cell';
 import fileTypes from 'navi-directory/utils/enums/file-types';
 import { get, computed } from '@ember/object';
+import { pluralize } from 'ember-inflector';
 
 export default Component.extend({
   layout,
@@ -28,9 +29,9 @@ export default Component.extend({
    */
   itemLink: computed('type', function() {
     let type = get(this, 'type'),
-      singularType = type.slice(0, -1);
+      pluralType = pluralize(type);
 
-    return `${type}.${singularType}`;
+    return `${pluralType}.${type}`;
   }),
 
   /**
@@ -42,14 +43,16 @@ export default Component.extend({
    * @property {String} type - the type of the item
    */
   type: computed('value', function() {
-    return get(this, 'value').serialize().data.type;
+    let value = get(this, 'value') || {};
+
+    return get(value, 'constructor.modelName');
   }),
 
   /**
    * @property {String} iconClass - the icon class that is passed to navi-icon
    */
   iconClass: computed('type', function() {
-    let type = get(this, 'type');
+    let type = pluralize(get(this, 'type'));
 
     return get(fileTypes, `definitions.${type}.iconClass`);
   })

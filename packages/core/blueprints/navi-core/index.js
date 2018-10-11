@@ -27,7 +27,7 @@ module.exports = {
         { name: 'ember-radio-button', target: '1.2.1' },
         { name: 'ember-sortable', target: '1.10.0' },
         { name: 'ember-cli-string-helpers', target: '1.8.1' },
-        { name: 'ember-tether', target: '0.4.1' },
+        { name: 'ember-tether', target: '1.0.0' },
         { name: 'ember-toggle', target: '5.2.1' },
         { name: 'ember-tooltips', target: '2.9.2' },
         { name: 'ember-truth-helpers', target: '2.0.0' }
