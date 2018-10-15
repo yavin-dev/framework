@@ -20,7 +20,7 @@ export default ReportsNewRoute.extend({
    * @override
    */
   afterModel(widget) {
-    return this.replaceWith('dashboards.dashboard.widgets.widget.new', get(widget, 'tempId'));
+    return this.replaceWith('dashboards.dashboard.widgets.widget.edit', get(widget, 'tempId'));
   },
 
   /**
