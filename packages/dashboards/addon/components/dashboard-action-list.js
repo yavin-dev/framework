@@ -17,5 +17,5 @@ export default Component.extend(BuildUrl, {
   /**
    * @property {Array} classNames
    */
-  classNames: ['dashboard-action-list', 'actions']
+  classNames: ['actions']
 });

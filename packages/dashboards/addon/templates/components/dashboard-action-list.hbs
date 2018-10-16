@@ -2,26 +2,30 @@
 {{#with item as | dashboard |}}
 
   {{!-- Clone action enabled at all times --}}
-  <li class='action'>
-    {{#link-to 'dashboards.dashboard.clone' dashboard.id
-      classNames='clone'
+  {{#common-actions/buttonize
+    tagName='li'
+    classNames='clone'
+  }}
+    {{#link-to
+      'dashboards.dashboard.clone' dashboard.id
     }}
-        {{navi-icon 'copy' class='navi-icon__copy'}}
-        {{tooltip-on-component text='Clone' enableLazyRendering=true}}
+      {{navi-icon 'copy' class='navi-icon__copy'}}
+      {{tooltip-on-component text='Clone' enableLazyRendering=true}}
     {{/link-to}}
-  </li>
+  {{/common-actions/buttonize}}
 
   {{#if (feature-flag 'enableDashboardExport')}}
-    {{!-- Export action enabled if the dashboard is valid --}}
-    {{#dashboard-actions/export
-      classNames='action export btn'
-      dashboard=dashboard
-      disabled=(not item.validations.isTruelyValid)
-      tagName='li'
-    }}
-      {{navi-icon 'download' class='navi-icon__download'}}
-      {{tooltip-on-component text='PDF Export' enableLazyRendering=true}}
-    {{/dashboard-actions/export}}
+    <li>
+      {{!-- Export action enabled if the dashboard is valid --}}
+      {{#dashboard-actions/export
+        classNames='action export btn'
+        dashboard=dashboard
+        disabled=(not item.validations.isTruelyValid)
+      }}
+        {{navi-icon 'download' class='navi-icon__download'}}
+        {{tooltip-on-component text='PDF Export' enableLazyRendering=true}}
+      {{/dashboard-actions/export}}
+    </li>
   {{/if}}
 
   {{!-- Share action enabled if the dashboard is valid --}}
@@ -41,7 +45,7 @@
   {{!-- Delete action visible when user owns the Dashboard --}}
   {{#if dashboard.isUserOwner}}
     {{!-- Schedule only enabled for an owned dashboard and if it valid--}}
-    {{#if (and (feature-flag 'enableScheduleDashboards') (not (feature-flag 'enableDirectory')) )}}
+    {{#if (feature-flag 'enableScheduleDashboards')}}
         {{#dashboard-actions/schedule
             model=dashboard
             classNames='action schedule'
@@ -50,7 +54,7 @@
             onRevert=(route-action 'revertDeliveryRule')
             onDelete=(route-action 'deleteDeliveryRule')
         }}
-            {{#tooltip-on-component enableLazyRendering=true}}
+            {{#tooltip-on-component}}
                 {{if item.validations.isTruelyValid 'Schedule the dashboard' 'Validate dashboard to enable scheduling'}}
             {{/tooltip-on-component}}
         {{/dashboard-actions/schedule}}
@@ -64,7 +68,7 @@
       deleteAction=(item-action 'DELETE_ITEM' dashboard)
     }}
       {{navi-icon 'trash-o' class='navi-icon__delete'}}
-      {{tooltip-on-component text='Delete the dashboard' enableLazyRendering=true}}
+      {{tooltip-on-component text='Delete' enableLazyRendering=true}}
     {{/common-actions/delete}}
   {{/if}}
 {{/with}}
