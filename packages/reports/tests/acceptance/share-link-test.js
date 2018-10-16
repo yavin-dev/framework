@@ -8,6 +8,7 @@ moduleForAcceptance('Acceptance | share link', {
   },
   afterEach() {
     teardownModal();
+    server.shutdown();
   }
 });
 

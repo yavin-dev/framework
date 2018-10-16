@@ -1,5 +1,5 @@
 import { moduleForComponent, test } from 'ember-qunit';
-import { clickTrigger, nativeMouseUp } from '../../../helpers/ember-power-select';
+import { clickTrigger, nativeMouseUp } from 'ember-power-select/test-support/helpers';
 import hbs from 'htmlbars-inline-precompile';
 import Ember from 'ember';
 

@@ -3,9 +3,9 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import BaseSerializer from 'navi-core/serializers/base-json-serializer';
+import AssetSerializer from 'navi-core/serializers/asset';
 
-export default BaseSerializer.extend({
+export default AssetSerializer.extend({
   /**
    * @method normalizeFindRecordResponse
    * @override

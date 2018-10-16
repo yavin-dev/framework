@@ -1,1 +1,1 @@
-export { default } from 'navi-core/serializers/report';
+export { default } from 'navi-core/serializers/asset';
