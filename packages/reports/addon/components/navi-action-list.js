@@ -14,10 +14,5 @@ export default Component.extend(BuildUrl, {
    * @property {String} tagName
    * @override
    */
-  tagName: 'ul',
-
-  /**
-   * @property {Array} classNames
-   */
-  classNames: ['navi-action-list', 'actions']
+  tagName: 'ul'
 });

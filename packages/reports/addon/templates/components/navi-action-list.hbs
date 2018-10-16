@@ -4,16 +4,14 @@
     {{!-- Clone only enabled on a saved report --}}
     {{#if report.isNew}}
         {{#link-to 'reports.report.clone' report.id disabled
-            classNames='navi-reports-index__report-control action clone navi-report__action-link--force-disabled'
-            tagName='li'
+            classNames='navi-reports-index__report-control clone navi-report__action-link--force-disabled'
         }}
             {{navi-icon 'copy'}}
             {{tooltip-on-component text='Save report to enable clone'}}
         {{/link-to}}
     {{else}}
         {{#link-to 'reports.report.clone' report.id
-            classNames='navi-reports-index__report-control action clone'
-            tagName='li'
+            classNames='navi-reports-index__report-control clone'
         }}
             {{navi-icon 'copy'}}
             {{tooltip-on-component text='Clone the report'}}
@@ -25,9 +23,8 @@
         (concat 'report-actions/' (if (feature-flag 'enableMultipleExport') 'multiple-format-export' 'export'))
         report=report
         disabled=(not item.request.validations.isTruelyValid)
-        classNames='navi-reports-index__report-control action export'
+        classNames='navi-reports-index__report-control export'
         classNameBindings='item.request.validations.isTruelyValid::navi-report__action-link--force-disabled'
-        tagName='li'
     }}
         {{navi-icon 'download'}}
         {{#tooltip-on-component}}
@@ -37,11 +34,10 @@
 
     {{!-- Share only enabled on a saved report --}}
     {{#common-actions/share
-        tagName='li'
         pageTitle=report.title
         buildUrl=(action 'buildUrl' report)
         disabled=item.isNew
-        classNames='navi-reports-index__report-control action share'
+        classNames='navi-reports-index__report-control share'
         classNameBindings='item.isNew:navi-report__action--is-disabled'
     }}
         {{navi-icon 'share'}}
@@ -53,11 +49,10 @@
     {{!-- Check if user is the owner of the report --}}
     {{#if report.isOwner}}
         {{!-- Schedule only enabled for an owned report and if it valid--}}
-        {{#if (and (feature-flag 'enableScheduleReports') (not (feature-flag 'enableDirectory')) )}}
+        {{#if (feature-flag 'enableScheduleReports')}}
             {{#common-actions/schedule
                 model=report
-                tagName='li'
-                classNames='navi-reports-index__report-control action schedule'
+                classNames='navi-reports-index__report-control schedule'
                 disabled=(not item.request.validations.isTruelyValid)
                 onSave=(route-action 'saveDeliveryRule')
                 onRevert=(route-action 'revertDeliveryRule')
@@ -71,8 +66,7 @@
         {{/if}}
         {{!-- Delete Action enabled on an owned report --}}
         {{#common-actions/delete
-            tagName='li'
-            classNames='action delete'
+            classNames='navi-reports-index__report-control delete'
             model=report
             warnMsg=(if report.deliveryRuleForUser
                         'Are you sure you want to delete this report and the associated schedule?'
@@ -80,9 +74,8 @@
             deleteAction=(item-action 'DELETE_ITEM' report)
         }}
             {{navi-icon 'trash-o'}}
-            {{tooltip-on-component text='Delete the report' enableLazyRendering=true}}
+            {{tooltip-on-component text='Delete the report'}}
         {{/common-actions/delete}}
 
     {{/if}}
 {{/with}}
-

@@ -23,7 +23,7 @@ module.exports = {
         { name: 'ember-moment', target: '7.5.0' },
         { name: 'ember-power-select', target: '1.10.4' },
         { name: 'ember-route-action-helper', target: '^2.0.6' },
-        { name: 'ember-tether', target: '1.0.0' },
+        { name: 'ember-tether', target: '0.4.1' },
         { name: 'ember-tooltips', target: '2.9.2' },
         { name: 'ember-truth-helpers', target: '2.0.0' },
         { name: 'ember-uuid', target: '^1.0.0' }

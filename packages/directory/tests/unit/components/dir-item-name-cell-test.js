@@ -11,8 +11,8 @@ module('Unit | Component | dir-item-name-cell', function(hooks) {
 
     let unsavedReportComponent = subject.create({
       value: {
-        constructor: {
-          modelName: 'report'
+        serialize() {
+          return { data: { type: 'reports' } };
         },
         modelId: '12345'
       }

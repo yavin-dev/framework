@@ -27,7 +27,9 @@ export default ActionConsumer.extend({
     [ItemActions.DELETE_ITEM](item) {
       let itemName = get(item, 'title'),
         itemType = get(item, 'constructor.modelName'),
-        transitionRoute = featureFlag('enableDirectory') ? 'directory' : itemType + 's';
+        transitionRoute = featureFlag('enableDirectory')
+          ? 'directory.my-data'
+          : itemType + 's';
 
       item.deleteRecord();
 
