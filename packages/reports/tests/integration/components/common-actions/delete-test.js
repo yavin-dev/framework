@@ -30,7 +30,7 @@ moduleForComponent('common-actions/delete', 'Integration | Component | common ac
       constructor: { modelName: 'testWidget' }
     });
 
-    set(this, 'deleteWidget', Ember.K);
+    set(this, 'deleteWidget', () => {});
   }
 });
 

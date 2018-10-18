@@ -3,7 +3,7 @@ import config from '../../config/environment';
 import { merge } from '@ember/polyfills';
 import { run } from '@ember/runloop';
 
-import registerPowerSelectHelpers from '../../tests/helpers/ember-power-select';
+import registerPowerSelectHelpers from 'ember-power-select/test-support/helpers';
 import registerBasicDropdownHelpers from 'ember-basic-dropdown/test-support/helpers';
 import './ember-sortable/test-helpers';
 registerPowerSelectHelpers();

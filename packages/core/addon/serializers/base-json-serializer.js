@@ -9,16 +9,6 @@ const { camelize, dasherize, pluralize, singularize } = Ember.String;
 
 export default DS.JSONAPISerializer.extend({
   /**
-   * @overide
-   * @property {Object} attrs - model attribute config while serialization
-   */
-  attrs: {
-    // Prevent sending below attributes in request payload
-    createdOn: { serialize: false },
-    updatedOn: { serialize: false }
-  },
-
-  /**
    * Normalize attribute key
    *
    * @override

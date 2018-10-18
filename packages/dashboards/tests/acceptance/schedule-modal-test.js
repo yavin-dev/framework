@@ -6,6 +6,7 @@ import { typeInInput } from '../helpers/ember-tag-input';
 moduleForAcceptance('Acceptances | Navi Dashboard Schedule Modal', {
   afterEach() {
     teardownModal();
+    server.shutdown();
   }
 });
 
@@ -38,7 +39,9 @@ test('schedule modal save new schedule', function(assert) {
     );
 
     assert.equal(
-      find('.schedule-modal__dropdown--frequency .ember-power-select-selected-item').get(0).innerText,
+      find('.schedule-modal__dropdown--frequency .ember-power-select-selected-item')
+        .get(0)
+        .innerText.trim(),
       'Week',
       'Frequency field is set to the default value when creating a new schedule'
     );
@@ -50,7 +53,9 @@ test('schedule modal save new schedule', function(assert) {
     );
 
     assert.equal(
-      find('.schedule-modal__dropdown--format .ember-power-select-selected-item').get(0).innerText,
+      find('.schedule-modal__dropdown--format .ember-power-select-selected-item')
+        .get(0)
+        .innerText.trim(),
       'pdf',
       'Format field is set to the default value when creating a new schedule'
     );
@@ -91,7 +96,9 @@ test('schedule modal save new schedule', function(assert) {
     );
 
     assert.equal(
-      find('.schedule-modal__dropdown--frequency .ember-power-select-selected-item').get(0).innerText,
+      find('.schedule-modal__dropdown--frequency .ember-power-select-selected-item')
+        .get(0)
+        .innerText.trim(),
       'Day',
       'Frequency field is set by the saved delivery rule'
     );

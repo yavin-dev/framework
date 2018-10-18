@@ -5,6 +5,7 @@ import moduleForAcceptance from '../../tests/helpers/module-for-acceptance';
 moduleForAcceptance('Acceptance | share link', {
   afterEach() {
     teardownModal();
+    server.shutdown();
   }
 });
 
