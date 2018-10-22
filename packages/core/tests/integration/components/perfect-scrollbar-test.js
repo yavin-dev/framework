@@ -27,4 +27,6 @@ test('it renders', function(assert) {
       .trim(),
     'template block text'
   );
+
+  assert.equal(this.$('.ps').length, 1, 'perfect scrollbar is rendered');
 });
