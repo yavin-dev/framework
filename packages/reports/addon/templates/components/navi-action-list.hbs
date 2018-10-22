@@ -53,15 +53,15 @@
     {{!-- Check if user is the owner of the report --}}
     {{#if report.isOwner}}
         {{!-- Schedule only enabled for an owned report and if it valid--}}
-        {{#if (and (feature-flag 'enableScheduleReports') (not (feature-flag 'enableDirectory')) )}}
+        {{#if (feature-flag 'enableScheduleReports')}}
             {{#common-actions/schedule
                 model=report
                 tagName='li'
                 classNames='navi-reports-index__report-control action schedule'
                 disabled=(not item.request.validations.isTruelyValid)
-                onSave=(route-action 'saveDeliveryRule')
-                onRevert=(route-action 'revertDeliveryRule')
-                onDelete=(route-action 'deleteDeliveryRule')
+                onSave=(delivery-rule-action 'SAVE_DELIVERY_RULE')
+                onRevert=(delivery-rule-action 'REVERT_DELIVERY_RULE')
+                onDelete=(delivery-rule-action 'DELETE_DELIVERY_RULE')
                 classNameBindings='item.request.validations.isTruelyValid::navi-report__action--is-disabled'
             }}
                 {{#tooltip-on-component}}
