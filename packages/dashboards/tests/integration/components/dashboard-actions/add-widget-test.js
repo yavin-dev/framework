@@ -3,7 +3,7 @@ import { moduleForComponent, test } from 'ember-qunit';
 import { hbsWithModal } from '../../../helpers/hbs-with-modal';
 import wait from 'ember-test-helpers/wait';
 import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
-import { clickTrigger as toggleSelector } from '../../../helpers/ember-power-select';
+import { clickTrigger as toggleSelector } from 'ember-power-select/test-support/helpers';
 
 const DASHBOARD_ID = 12;
 

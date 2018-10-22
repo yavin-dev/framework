@@ -16,7 +16,7 @@ test('_appendPaginatedResults', function(assert) {
     perPage: 3,
     trim: false,
     items: ITEMS,
-    _setItemsExceedMaxHt: Ember.K //Suppress hook
+    _setItemsExceedMaxHt: () => {} //Suppress hook
   });
 
   assert.equal(get(component, '_page'), 0, 'page number is 0 initially');
