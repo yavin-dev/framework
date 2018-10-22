@@ -1,12 +1,16 @@
+/**
+ * Copyright 2018, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
+
 import Mixin from '@ember/object/mixin';
+import computed from '@ember/object/computed';
 import { get, set } from '@ember/object';
 import { isPresent } from '@ember/utils';
 
 const { PerfectScrollbar } = window;
 
 export default Mixin.create({
-  perfectScrollbarOptions: {},
-
   init(...args) {
     this._super(...args);
 
@@ -15,10 +19,6 @@ export default Mixin.create({
     if (isPresent(resizeService)) {
       resizeService.on('debouncedDidResize', this, '_resizePerfectScrollbar');
     }
-  },
-
-  _resizePerfectScrollbar() {
-    get(this, 'perfectScrollbar').update();
   },
 
   didInsertElement(...args) {
@@ -39,5 +39,23 @@ export default Mixin.create({
     const perfectScrollbar = get(this, 'perfectScrollbar');
 
     perfectScrollbar && perfectScrollbar.destroy();
+  },
+
+  /**
+   * @property {Object} perfectScrollbarOptions
+   *
+   * The options object for perfect scrollbar.
+   * @see {@link https://github.com/utatti/perfect-scrollbar#options|perfect-scrollbar options}
+   */
+  perfectScrollbarOptions: computed(() => ({})),
+
+  /**
+   * @method _resizePerfectScrollbar
+   * @private
+   *
+   * resize the associated perfect scrollbar instance.
+   */
+  _resizePerfectScrollbar() {
+    get(this, 'perfectScrollbar').update();
   }
 });

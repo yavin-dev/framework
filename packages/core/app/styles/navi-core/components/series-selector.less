@@ -13,9 +13,9 @@
   }
 
   .btn {
-    display: block;
     background-color: @button-blue;
     color: @navi-white;
+    display: block;
     margin-bottom: 2px;
     width: 100%;
 
@@ -25,31 +25,31 @@
   }
 
   .series-select {
-    position: relative;
+    align-items: flex-end;
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
+    position: relative;
   }
 
   .table {
+    background-color: @gray-10;
+    color: @navi-white;
     display: flex;
     flex-flow: column;
     justify-content: space-between;
-    color: @navi-white;
-    background-color: @gray-10;
     line-height: 1.5;
   }
 
   .table-header {
-    color: @navi-light-gray-1;
-    text-transform: uppercase;
     border-bottom: 1px solid @navi-black;
+    color: @navi-light-gray-1;
     font-size: @font-size-mid;
+    text-transform: uppercase;
   }
 
   .table-body {
-    position: relative;
     max-height: 250px;
+    position: relative;
 
     .table-cell {
       font-size: 14px;
