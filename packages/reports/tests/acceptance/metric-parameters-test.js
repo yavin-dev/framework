@@ -1,7 +1,11 @@
 import { test } from 'qunit';
 import moduleForAcceptance from '../../tests/helpers/module-for-acceptance';
 
-moduleForAcceptance('Acceptance | navi-report - metric parameters');
+moduleForAcceptance('Acceptance | navi-report - metric parameters', {
+  afterEach() {
+    server.shutdown();
+  }
+});
 
 test('adding and removing metrics', function(assert) {
   assert.expect(6);

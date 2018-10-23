@@ -10,28 +10,36 @@
  * }}
  */
 
-import Ember from 'ember';
+import Component from '@ember/component';
+import { inject as service } from '@ember/service';
 import layout from '../../templates/components/common-actions/schedule';
 import config from 'ember-get-config';
 import { getApiErrMsg } from 'navi-core/utils/persistence-error';
+import { A as arr } from '@ember/array';
+import { get, set, computed, setProperties } from '@ember/object';
+import RSVP from 'rsvp';
 import capitalize from 'lodash/capitalize';
 
-const { A: arr, computed, get, set, setProperties } = Ember;
 const defaultFrequencies = ['day', 'week', 'month', 'quarter', 'year'];
 const defaultFormats = ['csv'];
 
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   /**
-   * @property {Ember.Service} store
+   * @property {Service} store
    */
-  store: Ember.inject.service(),
+  store: service(),
 
   /**
-   * @property {Ember.Service} user
+   * @property {Service} user
    */
-  user: Ember.inject.service(),
+  user: service(),
+
+  /**
+   * @property {Service} naviNotifications
+   */
+  naviNotifications: service(),
 
   /**
    * @property {DS.Model} deliveryRule - deliveryRule for the current user
@@ -98,7 +106,7 @@ export default Ember.Component.extend({
    */
   _createNewDeliveryRule() {
     return get(this, 'store').createRecord('delivery-rule', {
-      deliveryType: get(this, 'model').constructor.modelName,
+      deliveryType: get(this, 'model.constructor.modelName'),
       format: { type: get(this, 'formats.firstObject') }
     });
   },
@@ -118,8 +126,11 @@ export default Ember.Component.extend({
         });
 
         set(this, 'attemptedSave', false);
-        this.attrs
-          .onSave(deliveryRule)
+        let savePromise = new RSVP.Promise((resolve, reject) => {
+          this.attrs.onSave(deliveryRule, { resolve, reject });
+        });
+
+        return savePromise
           .then(() => {
             set(this, 'notification', {
               text: `${capitalize(get(deliveryRule, 'deliveryType'))} delivery schedule successfully saved!`,
@@ -140,6 +151,34 @@ export default Ember.Component.extend({
         set(this, 'isSaving', false);
         set(this, 'attemptedSave', true);
       }
+    },
+
+    /**
+     * @action onDelete
+     */
+    onDelete() {
+      let deliveryRule = get(this, 'localDeliveryRule'),
+        deletePromise = new RSVP.Promise((resolve, reject) => {
+          this.attrs.onDelete(deliveryRule, { resolve, reject });
+        });
+
+      return deletePromise
+        .then(() => {
+          //Add Page notification
+          get(this, 'naviNotifications').add({
+            message: `Delivery schedule successfully removed!`,
+            type: 'success',
+            timeout: 'short'
+          });
+        })
+        .catch(() => {
+          //Add Page notification
+          get(this, 'naviNotifications').add({
+            message: `OOPS! An error occurred while removing the delivery schedule.`,
+            type: 'danger',
+            timeout: 'short'
+          });
+        });
     },
 
     /**

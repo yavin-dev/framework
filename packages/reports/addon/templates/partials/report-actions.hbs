@@ -90,9 +90,9 @@
                 model=model
                 disabled=(not model.request.validations.isTruelyValid)
                 request=model.request
-                onRevert=(route-action 'revertDeliveryRule')
-                onDelete=(route-action 'deleteDeliveryRule')
-                onSave=(route-action 'saveDeliveryRule')
+                onRevert=(delivery-rule-action 'REVERT_DELIVERY_RULE')
+                onDelete=(delivery-rule-action 'DELETE_DELIVERY_RULE')
+                onSave=(delivery-rule-action 'SAVE_DELIVERY_RULE')
             }}
                 {{tooltip-on-component text='Schedule a report run' enableLazyRendering=true}}
                 Schedule

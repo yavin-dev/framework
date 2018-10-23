@@ -11,6 +11,7 @@ moduleForAcceptance('Acceptances | Navi Report Schedule Modal', {
   },
   afterEach() {
     teardownModal();
+    server.shutdown();
   }
 });
 
@@ -42,7 +43,9 @@ test('schedule modal save new schedule', function(assert) {
     );
 
     assert.equal(
-      find('.schedule-modal__dropdown--frequency .ember-power-select-selected-item').get(0).innerText,
+      find('.schedule-modal__dropdown--frequency .ember-power-select-selected-item')
+        .get(0)
+        .innerText.trim(),
       'Week',
       'Frequency field is set to the default value when creating a new schedule'
     );
@@ -54,7 +57,9 @@ test('schedule modal save new schedule', function(assert) {
     );
 
     assert.equal(
-      find('.schedule-modal__dropdown--format .ember-power-select-selected-item').get(0).innerText,
+      find('.schedule-modal__dropdown--format .ember-power-select-selected-item')
+        .get(0)
+        .innerText.trim(),
       'csv',
       'Format field is set to the default value when creating a new schedule'
     );
@@ -75,7 +80,9 @@ test('schedule modal save new schedule', function(assert) {
 
   andThen(() => {
     assert.equal(
-      find('.success .notification-text').text(),
+      find('.success .notification-text')
+        .text()
+        .trim(),
       'Report delivery schedule successfully saved!',
       'Successful notification is shown after clicking save'
     );
@@ -95,7 +102,9 @@ test('schedule modal save new schedule', function(assert) {
     );
 
     assert.equal(
-      find('.schedule-modal__dropdown--frequency .ember-power-select-selected-item').get(0).innerText,
+      find('.schedule-modal__dropdown--frequency .ember-power-select-selected-item')
+        .get(0)
+        .innerText.trim(),
       'Day',
       'Frequency field is set by the saved delivery rule'
     );
@@ -133,7 +142,9 @@ test('schedule modal save changes to existing schedule', function(assert) {
 
   andThen(() => {
     assert.equal(
-      find('.notification-text ').text(),
+      find('.notification-text ')
+        .text()
+        .trim(),
       'Report delivery schedule successfully saved!',
       'Successful notification is shown after clicking save'
     );
@@ -153,7 +164,9 @@ test('schedule modal save changes to existing schedule', function(assert) {
     );
 
     assert.equal(
-      find('.schedule-modal__dropdown--frequency .ember-power-select-selected-item').get(0).innerText,
+      find('.schedule-modal__dropdown--frequency .ember-power-select-selected-item')
+        .get(0)
+        .innerText.trim(),
       'Day',
       'Changes made to the frequency field are kept after clicking save changes'
     );
@@ -190,7 +203,9 @@ test('schedule modal delete action', function(assert) {
     );
 
     assert.equal(
-      find('.schedule-modal__dropdown--frequency .ember-power-select-selected-item').get(0).innerText,
+      find('.schedule-modal__dropdown--frequency .ember-power-select-selected-item')
+        .get(0)
+        .innerText.trim(),
       'Month',
       'Frequency field is populated by existing delivery rule'
     );
@@ -204,7 +219,9 @@ test('schedule modal delete action', function(assert) {
     );
 
     assert.equal(
-      find('.schedule-modal__dropdown--format .ember-power-select-selected-item').get(0).innerText,
+      find('.schedule-modal__dropdown--format .ember-power-select-selected-item')
+        .get(0)
+        .innerText.trim(),
       'csv',
       'Format field is populated by existing delivery rule'
     );
@@ -249,7 +266,9 @@ test('schedule modal delete action', function(assert) {
     );
 
     assert.equal(
-      find('.schedule-modal__dropdown--frequency .ember-power-select-selected-item').get(0).innerText,
+      find('.schedule-modal__dropdown--frequency .ember-power-select-selected-item')
+        .get(0)
+        .innerText.trim(),
       'Week',
       'Frequency field is set to the default value after the schedule has been deleted'
     );
@@ -261,7 +280,9 @@ test('schedule modal delete action', function(assert) {
     );
 
     assert.equal(
-      find('.schedule-modal__dropdown--format .ember-power-select-selected-item').get(0).innerText,
+      find('.schedule-modal__dropdown--format .ember-power-select-selected-item')
+        .get(0)
+        .innerText.trim(),
       'csv',
       'Format field is set to the default value after the schedule has been deleted'
     );
@@ -303,7 +324,9 @@ test('schedule modal cancel existing schedule', function(assert) {
 
   andThen(() => {
     assert.equal(
-      find('.schedule-modal__dropdown--frequency .ember-power-select-selected-item').get(0).innerText,
+      find('.schedule-modal__dropdown--frequency .ember-power-select-selected-item')
+        .get(0)
+        .innerText.trim(),
       'Month',
       'Frequency field changes to an existing schedule are discarded after clicking cancel'
     );
@@ -344,7 +367,9 @@ test('schedule modal cancel new schedule', function(assert) {
 
   andThen(() => {
     assert.equal(
-      find('.schedule-modal__dropdown--frequency .ember-power-select-selected-item').get(0).innerText,
+      find('.schedule-modal__dropdown--frequency .ember-power-select-selected-item')
+        .get(0)
+        .innerText.trim(),
       'Day',
       'Frequency field changes to a new schedule are kept but not saved to the store'
     );
@@ -462,7 +487,9 @@ test('schedule modal validations', function(assert) {
 
   andThen(() => {
     assert.equal(
-      find('.notification-text ').text(),
+      find('.notification-text ')
+        .text()
+        .trim(),
       'Report delivery schedule successfully saved!',
       'Successful notification is shown after clicking save and the schedule is valid'
     );
@@ -569,7 +596,9 @@ test('schedule modal error when saving schedule', function(assert) {
 
   andThen(() => {
     assert.equal(
-      find('.failure .notification-text').text(),
+      find('.failure .notification-text')
+        .text()
+        .trim(),
       'Must be a valid oath.com or yahoo-inc.com email',
       'failing notification is shown if server returns 400'
     );
@@ -583,7 +612,9 @@ test('schedule modal error when saving schedule', function(assert) {
 
     andThen(() => {
       assert.equal(
-        find('.failure .notification-text').text(),
+        find('.failure .notification-text')
+          .text()
+          .trim(),
         'Oops! There was an error updating your delivery settings',
         'failing notification is shown if server returns 500'
       );

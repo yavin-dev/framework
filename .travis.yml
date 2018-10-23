@@ -1,40 +1,40 @@
 language: node_js
 node_js:
-- '6'
+  - '8'
 sudo: true
 addons:
   chrome: stable
 cache:
   directories:
-  - "$HOME/.npm"
-  - "$HOME/packages/*/.npm"
-  - "$HOME/packages/*/.cache"
+    - '$HOME/.npm'
+    - '$HOME/packages/*/.npm'
+    - '$HOME/packages/*/.cache'
 env:
   matrix:
-  - PACKAGE=navi-app
-  - PACKAGE=navi-core
-  - PACKAGE=navi-dashboards
-  - PACKAGE=navi-data
-  - PACKAGE=navi-directory
-  - PACKAGE=navi-reports
+    - PACKAGE=navi-app
+    - PACKAGE=navi-core
+    - PACKAGE=navi-dashboards
+    - PACKAGE=navi-data
+    - PACKAGE=navi-directory
+    - PACKAGE=navi-reports
 # safelist
 branches:
   only:
-  - master
+    - master
 matrix:
   fast_finish: true
 before_install:
-- npm config set spin false
-- npm --version
-- npm install -g bower
-- bower --version
+  - npm config set spin false
+  - npm --version
+  - npm install -g bower
+  - bower --version
 install:
-- travis_wait npm install
+  - travis_wait npm install
 script:
-- travis_wait lerna run test --scope $PACKAGE
+  - travis_wait lerna run test --scope $PACKAGE
 jobs:
   include:
-  - stage: Publish
-    if: branch = master AND repo = yahoo/navi AND type = push
-    node_js: '6'
-    script: bash ./scripts/ci-publish.sh
+    - stage: Publish
+      if: branch = master AND repo = yahoo/navi AND type = push
+      node_js: '8'
+      script: bash ./scripts/ci-publish.sh
