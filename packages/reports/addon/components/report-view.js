@@ -112,6 +112,12 @@ export default Ember.Component.extend({
     Ember.run.scheduleOnce('afterRender', this, 'resizeVisualization');
   }),
 
+  /**
+   * Recomputes visualization so it stays in sync after updating
+   * metrics/dimensions when editing pane is open.
+   *
+   * @method hasReportRunDidChange
+   */
   hasReportRunDidChange: Ember.observer('hasReportRun', function() {
     Ember.run.scheduleOnce('afterRender', this, 'resizeVisualization');
   }),
