@@ -72,7 +72,7 @@ test('saveWidget action', function(assert) {
     mockNotificationService = {},
     route = this.subject({
       naviNotifications: mockNotificationService,
-      replaceWith: Ember.K // Functionality covered in acceptance test
+      replaceWith: () => {} // Functionality covered in acceptance test
     });
 
   return Ember.run(() => {

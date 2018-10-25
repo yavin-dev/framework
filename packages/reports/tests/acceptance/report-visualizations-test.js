@@ -1,7 +1,11 @@
 import { test } from 'qunit';
 import moduleForAcceptance from '../../tests/helpers/module-for-acceptance';
 
-moduleForAcceptance('Acceptance | navi-report - report visualizations');
+moduleForAcceptance('Acceptance | navi-report - report visualizations', {
+  afterEach() {
+    server.shutdown();
+  }
+});
 
 test('filter changes line chart series', function(assert) {
   assert.expect(2);

@@ -3,7 +3,7 @@ import { moduleForComponent, test } from 'ember-qunit';
 import { hbsWithModal } from '../../../helpers/hbs-with-modal';
 import wait from 'ember-test-helpers/wait';
 import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
-import { clickTrigger as toggleSelector, nativeMouseUp as toggleOption } from '../../../helpers/ember-power-select';
+import { clickTrigger as toggleSelector, nativeMouseUp as toggleOption } from 'ember-power-select/test-support/helpers';
 
 const { set } = Ember;
 
@@ -50,8 +50,8 @@ moduleForComponent('report-actions/add-to-dashboard', 'Integration | Component |
       ])
     );
 
-    set(this, 'addToDashboard', Ember.K);
-    set(this, 'addToNewDashboard', Ember.K);
+    set(this, 'addToDashboard', () => {});
+    set(this, 'addToNewDashboard', () => {});
   },
   afterEach() {
     teardownMock();

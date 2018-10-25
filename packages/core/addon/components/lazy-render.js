@@ -7,7 +7,7 @@
  * Usage:
  *   {{#lazy-render
  *      on='mouseenter'
- *      target='targe'
+ *      target='.my-selector'
  *   }}
  *      {{component}}
  *   {{/lazy-render}}

@@ -17,9 +17,15 @@ module.exports = function(environment) {
       }
     },
 
-    APP: {
-      // Here you can pass flags/options to your application instance
-      // when it is created
+    APP: {},
+
+    navi: {
+      FEATURES: {
+        enableDirectory: true,
+        exploreWidget: true,
+        enableScheduleReports: true,
+        enableScheduleDashboards: true
+      }
     }
   };
 

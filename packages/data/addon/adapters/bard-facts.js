@@ -39,7 +39,7 @@ export default EmberObject.extend({
    * @param {Object} request
    * @return {String} dimensions path
    */
-  _buildDimensionsPath(request) {
+  _buildDimensionsPath(request /*options*/) {
     let dimensions = array(get(request, 'dimensions'));
 
     if (dimensions.length) {
@@ -182,12 +182,12 @@ export default EmberObject.extend({
    * @param {Object} request
    * @return {String} URL Path
    */
-  _buildURLPath(request) {
+  _buildURLPath(request, options) {
     let host = FACT_HOST,
       namespace = get(this, 'namespace'),
       table = get(request, 'logicalTable.table'),
       timeGrain = get(request, 'logicalTable.timeGrain'),
-      dimensions = this._buildDimensionsPath(request);
+      dimensions = this._buildDimensionsPath(request, options);
 
     return `${host}/${namespace}/${table}/${timeGrain}${dimensions}/`;
   },
@@ -267,7 +267,7 @@ export default EmberObject.extend({
   urlForFindQuery(request, options) {
     // Decorate and translate the request
     let decoratedRequest = this._decorate(request),
-      path = this._buildURLPath(decoratedRequest),
+      path = this._buildURLPath(decoratedRequest, options),
       query = this._buildQuery(decoratedRequest, options),
       queryStr = $.param(query);
 
@@ -304,7 +304,7 @@ export default EmberObject.extend({
   fetchDataForRequest(request, options) {
     // Decorate and translate the request
     let decoratedRequest = this._decorate(request),
-      url = this._buildURLPath(decoratedRequest),
+      url = this._buildURLPath(decoratedRequest, options),
       query = this._buildQuery(decoratedRequest, options),
       clientId = 'UI',
       customHeaders = {},

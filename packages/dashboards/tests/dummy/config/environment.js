@@ -25,7 +25,7 @@ module.exports = function(environment) {
 
     navi: {
       FEATURES: {
-        enableDirectory: true,
+        enableDirectory: false,
         enableDashboardExport: true,
         enableMultipleExport: true,
         enableScheduleDashboards: true

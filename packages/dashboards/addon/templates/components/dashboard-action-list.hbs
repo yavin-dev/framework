@@ -2,30 +2,26 @@
 {{#with item as | dashboard |}}
 
   {{!-- Clone action enabled at all times --}}
-  {{#common-actions/buttonize
-    tagName='li'
-    classNames='clone'
-  }}
-    {{#link-to
-      'dashboards.dashboard.clone' dashboard.id
+  <li class='action'>
+    {{#link-to 'dashboards.dashboard.clone' dashboard.id
+      classNames='clone'
     }}
-      {{navi-icon 'copy' class='navi-icon__copy'}}
-      {{tooltip-on-component text='Clone' enableLazyRendering=true}}
+        {{navi-icon 'copy' class='navi-icon__copy'}}
+        {{tooltip-on-component text='Clone' enableLazyRendering=true}}
     {{/link-to}}
-  {{/common-actions/buttonize}}
+  </li>
 
   {{#if (feature-flag 'enableDashboardExport')}}
-    <li>
-      {{!-- Export action enabled if the dashboard is valid --}}
-      {{#dashboard-actions/export
-        classNames='action export btn'
-        dashboard=dashboard
-        disabled=(not item.validations.isTruelyValid)
-      }}
-        {{navi-icon 'download' class='navi-icon__download'}}
-        {{tooltip-on-component text='PDF Export' enableLazyRendering=true}}
-      {{/dashboard-actions/export}}
-    </li>
+    {{!-- Export action enabled if the dashboard is valid --}}
+    {{#dashboard-actions/export
+      classNames='action export btn'
+      dashboard=dashboard
+      disabled=(not item.validations.isTruelyValid)
+      tagName='li'
+    }}
+      {{navi-icon 'download' class='navi-icon__download'}}
+      {{tooltip-on-component text='PDF Export' enableLazyRendering=true}}
+    {{/dashboard-actions/export}}
   {{/if}}
 
   {{!-- Share action enabled if the dashboard is valid --}}
@@ -47,14 +43,15 @@
     {{!-- Schedule only enabled for an owned dashboard and if it valid--}}
     {{#if (feature-flag 'enableScheduleDashboards')}}
         {{#dashboard-actions/schedule
+            tagName='li'
             model=dashboard
             classNames='action schedule'
             disabled=(not item.validations.isTruelyValid)
-            onSave=(route-action 'saveDeliveryRule')
-            onRevert=(route-action 'revertDeliveryRule')
-            onDelete=(route-action 'deleteDeliveryRule')
+            onSave=(delivery-rule-action 'SAVE_DELIVERY_RULE')
+            onRevert=(delivery-rule-action 'REVERT_DELIVERY_RULE')
+            onDelete=(delivery-rule-action 'DELETE_DELIVERY_RULE')
         }}
-            {{#tooltip-on-component}}
+            {{#tooltip-on-component enableLazyRendering=true}}
                 {{if item.validations.isTruelyValid 'Schedule the dashboard' 'Validate dashboard to enable scheduling'}}
             {{/tooltip-on-component}}
         {{/dashboard-actions/schedule}}
@@ -68,7 +65,7 @@
       deleteAction=(item-action 'DELETE_ITEM' dashboard)
     }}
       {{navi-icon 'trash-o' class='navi-icon__delete'}}
-      {{tooltip-on-component text='Delete' enableLazyRendering=true}}
+      {{tooltip-on-component text='Delete the dashboard' enableLazyRendering=true}}
     {{/common-actions/delete}}
   {{/if}}
 {{/with}}

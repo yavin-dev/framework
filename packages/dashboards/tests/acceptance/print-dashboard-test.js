@@ -1,7 +1,11 @@
 import { test } from 'qunit';
 import moduleForAcceptance from '../../tests/helpers/module-for-acceptance';
 
-moduleForAcceptance('Acceptance | print dashboard');
+moduleForAcceptance('Acceptance | print dashboard', {
+  afterEach() {
+    server.shutdown();
+  }
+});
 
 test('print dashboards index', function(assert) {
   assert.expect(1);

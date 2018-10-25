@@ -1,6 +1,6 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import { clickTrigger as toggleSelector, nativeMouseUp as toggleOption } from '../../../../helpers/ember-power-select';
+import { clickTrigger as toggleSelector, nativeMouseUp as toggleOption } from 'ember-power-select/test-support/helpers';
 import { setupMock, teardownMock } from '../../../../helpers/mirage-helper';
 import { get } from '@ember/object';
 import { getOwner } from '@ember/application';

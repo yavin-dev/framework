@@ -3,7 +3,7 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { hbsWithModal } from '../../../helpers/hbs-with-modal';
 import wait from 'ember-test-helpers/wait';
-import { clickTrigger, nativeMouseUp } from '../../../helpers/ember-power-select';
+import { clickTrigger, nativeMouseUp } from 'ember-power-select/test-support/helpers';
 import { typeInInput } from '../../../helpers/ember-tag-input';
 import config from 'ember-get-config';
 

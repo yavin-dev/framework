@@ -63,6 +63,9 @@ test('Editing widget title', function(assert) {
 
 test('Breadcrumb', function(assert) {
   assert.expect(4);
+  let originalFeatureFlag = config.navi.FEATURES.enableDirectory;
+
+  config.navi.FEATURES.enableDirectory = true;
 
   visit('/dashboards/1/widgets/1');
 
@@ -87,6 +90,7 @@ test('Breadcrumb', function(assert) {
       secondBreadcrumbItem.attr('href').endsWith('/dashboards/1'),
       'Second breadcrumb item links to parent dashboard'
     );
+    config.navi.FEATURES.enableDirectory = originalFeatureFlag;
   });
 });
 

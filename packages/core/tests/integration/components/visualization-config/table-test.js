@@ -3,7 +3,7 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import config from 'ember-get-config';
 import { startMirage } from 'dummy/initializers/ember-cli-mirage';
-import { clickTrigger as toggleSelector, nativeMouseUp as toggleOption } from '../../../helpers/ember-power-select';
+import { clickTrigger as toggleSelector, nativeMouseUp as toggleOption } from 'ember-power-select/test-support/helpers';
 
 moduleForComponent('visualization-config/table', 'Integration | Component | visualization config/table', {
   integration: true,

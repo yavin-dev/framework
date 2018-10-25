@@ -1,1 +1,1 @@
-export { default } from 'navi-core/serializers/delivery-rule';
+export { default } from 'navi-core/serializers/asset';

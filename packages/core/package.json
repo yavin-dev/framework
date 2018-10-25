@@ -20,7 +20,8 @@
   "dependencies": {
     "ember-cli-babel": "^6.11.0",
     "ember-cli-htmlbars": "^2.0.3",
-    "perfect-scrollbar": "^1.4.0"
+    "perfect-scrollbar": "^1.4.0",
+    "ember-tether": "^1.0.0"
   },
   "devDependencies": {
     "broccoli-asset-rev": "^2.4.5",
@@ -43,7 +44,7 @@
     "ember-cli-sri": "^2.1.0",
     "ember-cli-string-helpers": "^1.8.1",
     "ember-cli-uglify": "^2.0.0",
-    "ember-collection": "1.0.0-alpha.7",
+    "ember-collection": "1.0.0-alpha.9",
     "ember-composable-helpers": "^2.1.0",
     "ember-cp-validations": "^3.5.3",
     "ember-data": "~2.12.2",
@@ -64,7 +65,6 @@
     "ember-resolver": "^4.0.0",
     "ember-sortable": "^1.10.0",
     "ember-source": "~2.16.0",
-    "ember-tether": "^0.4.1",
     "ember-toggle": "^5.2.1",
     "ember-tooltips": "^2.10.0",
     "ember-truth-helpers": "^2.0.0",
