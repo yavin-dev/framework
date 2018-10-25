@@ -12,10 +12,5 @@
         <property name="hibernate.connection.url">jdbc:h2:mem:db1;DB_CLOSE_DELAY=-1;MVCC=TRUE</property>   
         <property name="hibernate.hbm2ddl.auto">create</property>   
         <property name="current_session_context_class">thread</property>
-        <mapping class="com.yahoo.navi.ws.models.beans.User" />
-        <mapping class="com.yahoo.navi.ws.models.beans.Report" />
-        <mapping class="com.yahoo.navi.ws.models.beans.Dashboard" />
-        <mapping class="com.yahoo.navi.ws.models.beans.DashboardWidget" />
-        <mapping class="com.yahoo.navi.ws.models.beans.DeliveryRule" />
     </session-factory>
 </hibernate-configuration>
