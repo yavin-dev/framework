@@ -58,7 +58,7 @@ export default Trigger.extend({
       // Get pasted data via clipboard API
       let clipboardData = pasteEvent.clipboardData || window.clipboardData,
         pastedData = clipboardData.getData('Text'),
-        queryIds = pastedData.split(BULK_IMPORT_DELIMETER),
+        queryIds = pastedData.split(BULK_IMPORT_DELIMETER).map(s => s.trim()),
         isBulkImportRequest = queryIds.length > 1;
 
       if (isBulkImportRequest) {

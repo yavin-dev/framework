@@ -181,7 +181,11 @@ export default {
       cardinality: 9999999,
       category: 'test',
       storageStrategy: 'loaded',
-      fields: [{ name: 'id', tags: [] }, { name: 'desc', tags: ['description'] }, { name: 'key', tags: ['primaryKey'] }]
+      fields: [
+        { name: 'id', tags: ['id'] },
+        { name: 'desc', tags: ['description'] },
+        { name: 'key', tags: ['primaryKey'] }
+      ]
     }
   ],
 

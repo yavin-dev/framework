@@ -341,8 +341,8 @@ module('Unit | Service | Dimensions', function(hooks) {
     });
   });
 
-  test('searchValueField: contains search', function(assert) {
-    assert.expect(6);
+  test('searchValueField: contains search', async function(assert) {
+    assert.expect(7);
 
     let response3 = {
       rows: [{ id: 'v1', desc: 'value1' }, { id: 'v2', desc: 'value2' }],
@@ -350,42 +350,50 @@ module('Unit | Service | Dimensions', function(hooks) {
     };
 
     Server.get(`${HOST}/v1/dimensions/dimensionThree/values/`, req => {
-      let [, field, operator, values] = req.queryParams.filters.match(QUERY_PARAM_REGEX),
-        rows = A(response3.rows).filterBy(field, values);
+      try {
+        let [, field, operator, values] = req.queryParams.filters.match(QUERY_PARAM_REGEX),
+          rows = A(response3.rows).filterBy(field, values);
 
-      assert.equal(operator, 'contains', 'Search is done using `contains`');
+        assert.equal(operator, 'contains', 'Search is done using `contains`');
 
-      return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ rows })];
+        return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ rows })];
+      } catch (e) {
+        assert.notOk(true, 'Query params should be parseable by the regex.');
+      }
     });
 
-    return settled().then(() => {
-      /* == search for string in id == */
-      return Service.searchValueField('dimensionThree', 'id', 'v1').then(res => {
-        assert.deepEqual(
-          A(res.rows).mapBy('desc'),
-          ['value1'],
-          'searchValueField returns expected dimension values when searched for "v1" on id field'
-        );
+    await settled();
+    /* == search for string in id == */
+    let res = await Service.searchValueField('dimensionThree', 'id', 'v1');
 
-        /* == search for string in description == */
-        return Service.searchValueField('dimensionThree', 'description', 'value1').then(res => {
-          assert.deepEqual(
-            A(res.rows).mapBy('desc'),
-            ['value1'],
-            'searchValueField returns expected dimension values when searched for `value1` on description field'
-          );
+    assert.deepEqual(
+      A(res.rows).mapBy('desc'),
+      ['value1'],
+      'searchValueField returns expected dimension values when searched for "v1" on id field'
+    );
 
-          /* == no results == */
-          return Service.searchValueField('dimensionThree', 'id', 'foo').then(res => {
-            assert.deepEqual(
-              A(res.rows).mapBy('id'),
-              [],
-              'searchValueField returns no dimension values as expected when searched for foo on id field'
-            );
-          });
-        });
-      });
-    });
+    /* == search for string in description == */
+    res = await Service.searchValueField('dimensionThree', 'description', 'value1');
+
+    assert.deepEqual(
+      A(res.rows).mapBy('desc'),
+      ['value1'],
+      'searchValueField returns expected dimension values when searched for `value1` on description field'
+    );
+
+    /* == no results == */
+    res = await Service.searchValueField('dimensionThree', 'id', 'foo');
+
+    assert.deepEqual(
+      A(res.rows).mapBy('id'),
+      [],
+      'searchValueField returns no dimension values as expected when searched for foo on id field'
+    );
+
+    res = await Service.searchValueField('dimensionThree', 'description', 'value1, value2');
+    A(res.rows).mapBy('id'),
+      ['value1', 'value2'],
+      'searchValueField returns dimensions when comma separated spaced value';
   });
 
   test('searchValueField: point lookup', function(assert) {
