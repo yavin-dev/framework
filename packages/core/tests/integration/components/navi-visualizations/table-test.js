@@ -298,7 +298,7 @@ test('grand total in table', function(assert) {
 
   assert.deepEqual(
     totalRow,
-    ['Grand Total', '--', '1,373,229,356', '29,181,322,613', '0.00'],
+    ['Grand Total', '--', '1,373,229,356', '29,181,322,613', '0'],
     'The table renders the grand total row correctly'
   );
 
@@ -334,9 +334,9 @@ test('subtotals in table', function(assert) {
           .trim()
       ),
     [
-      'Subtotal All Other 345,867,576 7,339,656,714 0.00',
-      'Subtotal Android 183,206,656 4,088,487,125 0.00',
-      'Subtotal BlackBerry OS 183,380,921 4,024,700,302 0.00'
+      'Subtotal All Other 345,867,576 7,339,656,714 0',
+      'Subtotal Android 183,206,656 4,088,487,125 0',
+      'Subtotal BlackBerry OS 183,380,921 4,024,700,302 0'
     ],
     'The subtotal rows are visible for each group of the specified subtotal in the options'
   );
@@ -354,10 +354,10 @@ test('subtotals in table', function(assert) {
           .trim()
       ),
     [
-      'Grand Total -- 712,455,153 15,452,844,141 0.00',
-      'Subtotal BlackBerry OS 183,380,921 4,024,700,302 0.00',
-      'Subtotal Android 183,206,656 4,088,487,125 0.00',
-      'Subtotal All Other 345,867,576 7,339,656,714 0.00'
+      'Grand Total -- 712,455,153 15,452,844,141 0',
+      'Subtotal BlackBerry OS 183,380,921 4,024,700,302 0',
+      'Subtotal Android 183,206,656 4,088,487,125 0',
+      'Subtotal All Other 345,867,576 7,339,656,714 0'
     ],
     'The total rows including grandTotal are visible along with the subtotals'
   );
@@ -383,7 +383,7 @@ test('subtotals by date in table', function(assert) {
           .replace(/\s+/g, ' ')
           .trim()
       ),
-    ['Subtotal -- 539,521,365 11,783,015,784 0.00', 'Subtotal -- 172,933,788 3,669,828,357 0.00'],
+    ['Subtotal -- 539,521,365 11,783,015,784 0', 'Subtotal -- 172,933,788 3,669,828,357 0'],
     'The subtotal rows are visible for each group of the specified subtotal in the options'
   );
 });
