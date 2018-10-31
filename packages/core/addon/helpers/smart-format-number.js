@@ -19,6 +19,7 @@ import numeral from 'numeral';
  */
 export function smartFormatNumber([value]) {
   // type safe check
+  let hasPoint = value !== undefined && JSON.stringify(value).indexOf('.') !== -1;
   if (typeof value !== 'number') {
     value = parseFloat(value);
   }
@@ -30,7 +31,7 @@ export function smartFormatNumber([value]) {
   let absValue = Math.abs(value);
 
   if (absValue === 0 || (absValue >= 1 && absValue < 100)) {
-    return numeral(value).format('0,0.00');
+    return numeral(value).format(hasPoint ? '0,0.00' : '0,0[.]00');
   } else if (absValue >= 0.0001 && absValue < 1) {
     return numeral(value).format('0.0000');
   } else if (absValue < 0.0001) {
