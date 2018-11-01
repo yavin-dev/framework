@@ -4,13 +4,27 @@ import { module, test } from 'qunit';
 module('Unit | Helpers | Smart Format Number');
 
 test('smartFormatNumber', function(assert) {
-  assert.expect(12);
+  assert.expect(17);
 
   assert.equal(smartFormatNumber([100000]), '100,000', 'Numbers > 100 are formatted properly');
 
-  assert.equal(smartFormatNumber([0]), '0.00', '0 is formatted properly');
+  assert.equal(smartFormatNumber([0]), '0', '0 is formatted properly');
 
-  assert.equal(smartFormatNumber([50]), '50.00', 'Numbers between 1 and 100 are formatted properly');
+  assert.equal(smartFormatNumber(['0.0000']), '0.00', '0 with decimals is formatted properly');
+
+  assert.equal(smartFormatNumber([50]), '50', 'Numbers between 1 and 100 are formatted properly');
+
+  assert.equal(
+    smartFormatNumber(['50.0000']),
+    '50.00',
+    'Numbers between 1 and 100 given with decimals are formatted properly'
+  );
+
+  assert.equal(
+    smartFormatNumber([50.635]),
+    '50.64',
+    'Numbers between 1 and 100 given with decimals are formatted properly'
+  );
 
   assert.equal(smartFormatNumber([0.156123]), '0.1561', 'Numbers between 0.0001 and 1 are formatted properly');
 
@@ -30,8 +44,20 @@ test('smartFormatNumber', function(assert) {
 
   assert.equal(
     smartFormatNumber([-50]),
-    '-50.00',
+    '-50',
     'Negative Numbers having absolute value between 1 and 100 are formatted properly'
+  );
+
+  assert.equal(
+    smartFormatNumber(['-50.00']),
+    '-50.00',
+    'Negative Numbers having absolute value between 1 and 100 with decimals are formatted properly'
+  );
+
+  assert.equal(
+    smartFormatNumber(['-50.236']),
+    '-50.24',
+    'Negative Numbers having absolute value between 1 and 100 with decimals are formatted properly'
   );
 
   assert.equal(

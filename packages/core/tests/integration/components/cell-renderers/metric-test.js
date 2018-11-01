@@ -65,7 +65,7 @@ test('metric renders zero value correctly', function(assert) {
     $('.table-cell-content')
       .text()
       .trim(),
-    '0.00',
+    '0',
     'The metric cell renders the zero value correctly'
   );
 });
@@ -97,7 +97,7 @@ test('metric renders decimal value between 1 and 100 correctly', function(assert
     $('.table-cell-content')
       .text()
       .trim(),
-    '99.00',
+    '99',
     'The metric cell renders the decimal value between 1 and 100 correctly'
   );
 });
