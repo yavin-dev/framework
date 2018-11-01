@@ -49,6 +49,11 @@ let Model = EmberObject.extend(ExtendedMetadataMixin, {
   descriptionTag: 'description',
 
   /**
+   * @property {String} idTag - name of the searchable id tag
+   */
+  idTag: 'id',
+
+  /**
    * Fetches tags for a given field name
    *
    * @method getTagsForField
@@ -94,6 +99,15 @@ let Model = EmberObject.extend(ExtendedMetadataMixin, {
     let tag = get(this, 'descriptionTag'),
       field = this.getFieldsForTag(tag)[0] || {};
     return get(field, 'name') || 'desc';
+  }),
+
+  /**
+   * @property {String} idFieldName
+   */
+  idFieldName: computed(function() {
+    let tag = get(this, 'idTag'),
+      field = this.getFieldsForTag(tag)[0] || {};
+    return get(field, 'name') || get(this, 'primaryKeyFieldName');
   })
 });
 

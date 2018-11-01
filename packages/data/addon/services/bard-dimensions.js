@@ -274,7 +274,13 @@ export default Service.extend({
     return get(this, '_bardAdapter').find(dimension, {
       field,
       operator,
-      values: operator === 'contains' ? query.split(/\s+/) : [query]
+      values:
+        operator === 'contains'
+          ? query
+              .split(/,\s+|\s+/)
+              .map(s => s.trim())
+              .filter(_ => _)
+          : [query]
     });
   },
 

@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find } from '@ember/test-helpers';
+import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
 
@@ -27,27 +27,27 @@ module('helper:metric-format', function(hooks) {
     });
 
     await render(hbs`{{metric-format metric}}`);
-    assert.equal(find('*').textContent.trim(), 'Revenue (USD)');
+    assert.dom('*').hasText('Revenue (USD)');
 
     this.set('metric', {
       metric: 'revenue',
       parameters: { currency: 'CAD', as: 'revenueUSD' }
     });
-    assert.equal(find('*').textContent.trim(), 'Revenue (CAD)');
+    assert.dom('*').hasText('Revenue (CAD)');
 
     this.set('metric', { metric: 'revenue' });
-    assert.equal(find('*').textContent.trim(), 'Revenue');
+    assert.dom('*').hasText('Revenue');
 
     this.set('metric', { metric: null });
-    assert.equal(find('*').textContent.trim(), '--');
+    assert.dom('*').hasText('--');
 
     this.set('metric', null);
-    assert.equal(find('*').textContent.trim(), '--');
+    assert.dom('*').hasText('--');
 
     this.set('metric', { metric: '' });
-    assert.equal(find('*').textContent.trim(), '--');
+    assert.dom('*').hasText('--');
 
     this.set('metric', { metric: 'foo' });
-    assert.equal(find('*').textContent.trim(), 'foo');
+    assert.dom('*').hasText('foo');
   });
 });
