@@ -50,6 +50,29 @@ moduleForComponent('dimension-bulk-import', 'Integration | Component | Dimension
           return [200, { 'Content-Type': 'application/json' }, JSON.stringify(PROPERTY_MOCK_DATA)];
         }
       });
+
+      this.get(`${HOST}/v1/dimensions/multiSystemId/values/`, request => {
+        if (request.queryParams.filters === 'multiSystemId|id-in[6,7]') {
+          return [
+            200,
+            { 'Content-Type': 'application/json' },
+            JSON.stringify({
+              rows: [
+                {
+                  id: '6',
+                  key: 'k6',
+                  description: 'System ID 1'
+                },
+                {
+                  id: '7',
+                  key: 'k7',
+                  description: 'System ID 2'
+                }
+              ]
+            })
+          ];
+        }
+      });
     });
 
     let dimension = {
@@ -290,6 +313,31 @@ test('behaviour of headers', function(assert) {
         .trim(),
       'Search Results.',
       'Secondary header has expected result text after searching'
+    );
+  });
+});
+
+test('Search dimension with smart key', function(assert) {
+  assert.expect(1);
+  this.setProperties({
+    dimension: { name: 'multiSystemId', longName: 'Multi System Id' },
+    onSelectValues: () => {},
+    onCancel: () => {},
+    queryIds: ['6', '7']
+  });
+
+  this.render(COMMON_TEMPLATE);
+
+  return wait().then(() => {
+    let validPills = this.$('.id-container:first .item');
+    assert.deepEqual(
+      validPills
+        .map(function() {
+          return this.childNodes[0].wholeText.trim();
+        })
+        .get(),
+      ['System ID 1 (6)', 'System ID 2 (7)'],
+      'Search returns valid IDs as expected'
     );
   });
 });
