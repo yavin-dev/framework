@@ -9,6 +9,7 @@ import DefaultIntervals from 'navi-reports/utils/enums/default-intervals';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 import { getSelectedMetricsOfBase, getUnfilteredMetricsOfBase } from 'navi-reports/utils/request-metric';
 import { isEmpty } from '@ember/utils';
+import { featureFlag } from 'navi-core/helpers/feature-flag';
 
 const { assign, inject, get, set, setProperties, assert } = Ember;
 
@@ -72,9 +73,11 @@ export default ActionConsumer.extend({
         'Dimension model has correct primaryKeyFieldName',
         typeof get(dimension, 'primaryKeyFieldName') === 'string'
       );
+      let defaultOperator = featureFlag('dateDimensionFilter') && get(dimension, 'datatype') === 'date' ? 'gte' : 'in';
+
       get(currentModel, 'request').addFilter({
         dimension,
-        operator: 'in',
+        operator: defaultOperator,
         field: get(dimension, 'primaryKeyFieldName'),
         values: []
       });

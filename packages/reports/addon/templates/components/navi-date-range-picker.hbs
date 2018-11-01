@@ -2,13 +2,13 @@
 {{#pick-container updateSelection=this.attrs.setInterval as |selection container|}}
     {{#pick-value classNames='selection-box' classNameBindings='container.isFormOpen:open'}}
         {{#if hasBlock}}
-            {{yield interval}}
+            {{yield intervalInstance}}
         {{else}}
-            {{#if interval}}
+            {{#if intervalInstance}}
                 <label>Select date range</label>
                 <div class='value'>
                     {{navi-icon 'calendar'}}
-                    {{format-interval-inclusive-inclusive interval dateTimePeriod}}
+                    {{format-interval-inclusive-inclusive intervalInstance dateTimePeriod}}
                 </div>
             {{else}}
                 <span class='placeholder'>{{navi-icon 'calendar'}}Date Range</span>

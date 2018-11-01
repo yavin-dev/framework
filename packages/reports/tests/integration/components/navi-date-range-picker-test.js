@@ -656,6 +656,35 @@ test('Default interval for `All` timegrain', function(assert) {
   this.$('.btn.btn-primary').click();
 });
 
+test('interval accepts interval or string', function(assert) {
+  assert.expect(2);
+  const expectedInterval = Interval.parseFromStrings('2018-10-31', '2018-11-01');
+
+  this.set('interval', '2018-10-31/2018-11-01');
+  this.set('setInterval', interval => {
+    assert.ok(interval.isEqual(expectedInterval), 'Interval string is turned into an interval class instance');
+  });
+
+  this.render(`
+    {{navi-date-range-picker
+        dateTimePeriod='day'
+        setInterval=(action setInterval)
+        interval=interval
+    }}
+  `);
+
+  this.$('.custom-range-form').click();
+  this.$('.navi-date-range-picker__apply-btn').click();
+
+  this.set('interval', Interval.parseFromStrings('2018-10-31', '2018-11-01'));
+  this.set('setInterval', interval => {
+    assert.ok(interval.isEqual(expectedInterval), 'Interval class instance is passed through');
+  });
+
+  this.$('.custom-range-form').click();
+  this.$('.navi-date-range-picker__apply-btn').click();
+});
+
 function openRangePicker(test) {
   test.$('.navi-date-range-picker > .pick-container > .pick-value').click();
 }

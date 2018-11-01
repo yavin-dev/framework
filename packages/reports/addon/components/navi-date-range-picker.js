@@ -29,7 +29,7 @@ export default Ember.Component.extend({
   /**
    * @property {Array} list of class name bindings
    */
-  classNameBindings: ['interval:interval-set'],
+  classNameBindings: ['intervalInstance:interval-set'],
 
   /**
    * @property {String} dateTimePeriod - time grain being used for calendar selection
@@ -44,7 +44,23 @@ export default Ember.Component.extend({
   /**
    * @property {Object} customRange - custom range interval, or default interval
    */
-  customRange: computed.or('interval', 'defaultInterval'),
+  customRange: computed.or('intervalInstance', 'defaultInterval'),
+
+  /**
+   * @property {Object} intervalInstance - Interval Object that is either passed in as an attribute or built from a string
+   */
+  intervalInstance: computed('interval', function() {
+    let interval = get(this, 'interval');
+
+    if (typeof interval === 'string') {
+      //Expects format of Date/Date e.g. '2018-31-10/2018-05-11' for an interval between October 31 and November 5
+      let intervalStrs = interval.split('/');
+
+      return Interval.parseFromStrings(intervalStrs[0], intervalStrs[1]);
+    }
+
+    return interval;
+  }),
 
   /**
    * @property {Object} defaultInterval - get a default interval based on the dateTime period
@@ -82,7 +98,7 @@ export default Ember.Component.extend({
   /**
    * @property (Array} ranges - list of ranges with `isActive` flag
    */
-  ranges: Ember.computed('dateTimePeriod', 'interval', 'predefinedRanges', function() {
+  ranges: Ember.computed('dateTimePeriod', 'intervalInstance', 'predefinedRanges', function() {
     let ranges = this.get('predefinedRanges');
     ranges.forEach(range => {
       Ember.set(range, 'isActive', this.isActiveInterval(range.interval));
@@ -93,9 +109,9 @@ export default Ember.Component.extend({
   /**
    * @property {Boolean} isCustomRangeActive - whether or not selected interval is a custom range
    */
-  isCustomRangeActive: computed('interval', 'ranges', function() {
+  isCustomRangeActive: computed('intervalInstance', 'ranges', function() {
     // Custom range is considered active when the selected interval does not match any existing range
-    return get(this, 'interval') && !Ember.A(get(this, 'ranges')).isAny('isActive');
+    return get(this, 'intervalInstance') && !Ember.A(get(this, 'ranges')).isAny('isActive');
   }),
 
   /**
@@ -119,6 +135,6 @@ export default Ember.Component.extend({
       return false;
     }
 
-    return this.get('interval').isEqual(interval);
+    return this.get('intervalInstance').isEqual(interval);
   }
 });
