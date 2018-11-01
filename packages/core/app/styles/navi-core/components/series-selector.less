@@ -9,7 +9,15 @@
   }
 
   .add-series {
+    align-items: flex-end;
+    display: flex;
+    flex-direction: column;
     margin: 5px 0 10px 0;
+    position: relative;
+  }
+
+  .pick-value {
+    width: 100%;
   }
 
   .btn {
@@ -22,13 +30,6 @@
     &[disabled] {
       opacity: 0.4;
     }
-  }
-
-  .series-select {
-    align-items: flex-end;
-    display: flex;
-    flex-direction: column;
-    position: relative;
   }
 
   .table {
