@@ -6,7 +6,6 @@
  *  {{#perfect-scrollbar options=(hash of options)}}
  *    Content to scroll over.
  *  {{/perfect-scrollbar}}
- *
  */
 
 import Component from '@ember/component';
@@ -19,6 +18,7 @@ export default Component.extend(PerfectScrollbarMixin, {
 
   /**
    * perfect scrollbar options hash.
+   * @see {@link https://github.com/utatti/perfect-scrollbar#options|perfect-scrollbar options}
    *
    * @property {Object} options
    */
@@ -29,6 +29,7 @@ export default Component.extend(PerfectScrollbarMixin, {
    *
    * @property {Object} perfectScrollbarOptions
    * @private
+   * @override
    */
   perfectScrollbarOptions: computed.reads('options').readOnly()
 });
