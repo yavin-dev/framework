@@ -5,9 +5,11 @@ import { module, test } from 'qunit';
 
 module('Unit | Mixin | perfect scrollbar');
 
-test('it works', function(assert) {
+test('destroy works', function(assert) {
   let PerfectScrollbarObject = EmberObject.extend(PerfectScrollbarMixin);
   let subject = PerfectScrollbarObject.create();
-  assert.ok(subject);
+
+  assert.ok(subject, 'subject is created');
+
   run(() => subject.destroy());
 });

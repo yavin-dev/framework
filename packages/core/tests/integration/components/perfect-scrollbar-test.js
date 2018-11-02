@@ -6,14 +6,7 @@ moduleForComponent('perfect-scrollbar', 'Integration | Component | perfect scrol
 });
 
 test('it renders', function(assert) {
-  this.render(hbs`{{perfect-scrollbar}}`);
-
-  assert.equal(
-    this.$()
-      .text()
-      .trim(),
-    ''
-  );
+  assert.expect(2);
 
   this.render(hbs`
     {{#perfect-scrollbar}}
