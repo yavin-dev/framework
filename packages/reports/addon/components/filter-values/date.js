@@ -23,18 +23,14 @@ export default Component.extend({
   classNames: ['date'],
 
   /**
-   * @property {Moment} selectedDate
+   * @property {Moment} selectedDate - local moment set by date picker
    */
   selectedDate: null,
 
   /**
-   * @property {String} displayedDate
+   * @property {String} savedDate - the date that's saved in the filter
    */
-  displayedDate: computed('filter.values', function() {
-    let filterDate = get(this, 'filter.values.firstObject');
-
-    return filterDate ? Moment(filterDate).format('MMM DD, YYYY') : 'Select date';
-  }),
+  savedDate: computed.oneWay('filter.values.firstObject'),
 
   actions: {
     /**
@@ -55,14 +51,6 @@ export default Component.extend({
         savedDate = filterVal ? Moment(filterVal) : filterVal;
 
       this.set('selectedDate', savedDate);
-    },
-
-    /**
-     * @action closeDropdown
-     * @param {Object} dropdown - the ember-basic-dropdown object
-     */
-    closeDropdown(dropdown) {
-      dropdown.actions.close();
     }
   }
 });
