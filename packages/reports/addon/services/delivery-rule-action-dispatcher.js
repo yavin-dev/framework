@@ -4,18 +4,18 @@
  */
 import ActionDispatcher from 'navi-core/services/action-dispatcher';
 
-export const DeliveryRuleActions = Object.assign(
-  {},
-  {
-    DELETE_DELIVERY_RULE: 'deleteDeliveryRule',
-    REVERT_DELIVERY_RULE: 'revertDeliveryRule',
-    SAVE_DELIVERY_RULE: 'saveDeliveryRule'
-  }
-);
+export const DeliveryRuleActions = Object.assign({} , {
+  DELETE_DELIVERY_RULE: 'deleteDeliveryRule',
+  REVERT_DELIVERY_RULE: 'revertDeliveryRule',
+  SAVE_DELIVERY_RULE: 'saveDeliveryRule'
+});
 
 export default ActionDispatcher.extend({
+
   /**
    * @property {Array} consumers
    */
-  consumers: ['delivery-rule']
+  consumers: [
+    'delivery-rule'
+  ]
 });
