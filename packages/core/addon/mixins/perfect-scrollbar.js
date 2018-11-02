@@ -11,6 +11,11 @@ import { isPresent } from '@ember/utils';
 const { PerfectScrollbar } = window;
 
 export default Mixin.create({
+  /**
+   * Register resize handler.
+   *
+   * @override
+   */
   init(...args) {
     this._super(...args);
 
@@ -21,12 +26,22 @@ export default Mixin.create({
     }
   },
 
+  /**
+   * Initialize ps
+   *
+   * @override
+   */
   didInsertElement(...args) {
     this._super(...args);
 
     set(this, 'perfectScrollbar', new PerfectScrollbar(this.element, get(this, 'perfectScrollbarOptions')));
   },
 
+  /**
+   * Tear down ps
+   *
+   * @override
+   */
   willDestroyElement(...args) {
     this._super(...args);
 
