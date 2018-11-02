@@ -20,6 +20,49 @@
     }
   }
 
+  &--date-dimension-select__dropdown {
+    border: 1px solid @navi-lightest-gray;
+
+    .date-dimension-select {
+      &__apply {
+        border-radius: 5px;
+        border-width: 0 0 3px 0;
+        font-size: @font-size-mid;
+        padding: 2px 13px;
+      }
+
+      &__reset {
+        background: none;
+        border: none;
+        font-size: @font-size-mid;
+        vertical-align: inherit;
+      }
+
+      &__controls {
+        background-color: @navi-lightest-gray;
+        border: 1px solid @gray-date-picker;
+        display: flex;
+        justify-content: flex-end;
+        padding: 5px 10px;
+        width: 100%;
+      }
+
+      &__reset {
+        margin-right: 10px;
+      }
+    }
+
+    .ember-power-calendar-nav {
+      background-color: @navi-form-purple;
+      color: @navi-white;
+      padding: 10px 5px;
+
+      button {
+        color: white;
+      }
+    }
+  }
+
   &--range-input {
     display: flex;
 
