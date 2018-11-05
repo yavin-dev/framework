@@ -11,6 +11,7 @@
  */
 import Ember from 'ember';
 import layout from '../../templates/components/filter-values/date-range';
+import { get } from '@ember/object';
 
 export default Ember.Component.extend({
   layout,
@@ -26,9 +27,19 @@ export default Ember.Component.extend({
      * @param {Interval} interval - new interval to set in filter
      */
     setInterval(interval) {
-      this.attrs.onUpdateFilter({
-        interval
-      });
+      if (get(this, 'filter.operator.id') === 'bet') {
+        //Set the date range in a filter on a dimension with date values
+        let intervalStr = interval.asStrings('YYYY-MM-DD');
+
+        this.attrs.onUpdateFilter({
+          values: [`${get(intervalStr, 'start')}/${get(intervalStr, 'end')}`]
+        });
+      } else {
+        //Set the date range for the datetime filter
+        this.attrs.onUpdateFilter({
+          interval
+        });
+      }
     }
   }
 });
