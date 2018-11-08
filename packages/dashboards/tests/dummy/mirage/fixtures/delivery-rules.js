@@ -1,1 +1,1 @@
-export { default } from 'navi-dashboards/mirage/fixtures/delivery-rules';
+export { default } from 'navi-core/mirage/fixtures/delivery-rules';

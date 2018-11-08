@@ -98,10 +98,10 @@ test('isFavorite', function(assert) {
     // Make sure user is loaded into store
     return Store.findRecord('user', 'navi_user').then(() => {
       return Store.findRecord('dashboard', 2).then(model => {
-        assert.notOk(model.get('isFavorite'), 'isFavorite returns false when report is not in favorite list');
+        assert.notOk(model.get('isFavorite'), 'isFavorite returns false when dashboard is not in favorite list');
 
         return Store.findRecord('dashboard', 1).then(model => {
-          assert.ok(model.get('isFavorite'), 'isFavorite returns true when report is in favorite list');
+          assert.ok(model.get('isFavorite'), 'isFavorite returns true when dashboard is in favorite list');
         });
       });
     });

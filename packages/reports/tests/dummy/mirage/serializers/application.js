@@ -6,6 +6,8 @@ const {
 } = Ember;
 
 export default JSONAPISerializer.extend({
+  alwaysIncludeLinkageData: true,
+
   keyForAttribute: attr => camelize(attr),
 
   keyForModel: attr => camelize(attr),

@@ -11,9 +11,7 @@ const assignWidgets = (dashboard, widgets) => {
 const assignDeliveryRules = (dashboard, deliveryRules) => {
   if (deliveryRules) {
     dashboard.associationKeys.push('deliveryRules');
-    dashboard.deliveryRules = deliveryRules.where({
-      deliveredItemId: dashboard.id
-    });
+    dashboard.deliveryRules = deliveryRules.find(dashboard.deliveryRuleIds);
   }
 };
 
@@ -22,8 +20,9 @@ export default function() {
     let id = request.params.id,
       dashboard = dashboards.find(id);
 
-    assignWidgets(dashboard, dashboardWidgets);
-    assignDeliveryRules(dashboard, deliveryRules);
+    // assignWidgets(dashboard, dashboardWidgets);
+    // assignDeliveryRules(dashboard, deliveryRules);
+    // debugger;
     return dashboard;
   });
 
@@ -65,6 +64,7 @@ export default function() {
   });
 
   this.post('/dashboards', function({ dashboards, db }) {
+    debugger;
     let attrs = this.normalizedRequestAttrs(),
       dashboard = dashboards.create(attrs);
 
