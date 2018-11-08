@@ -53,6 +53,7 @@
     flex-direction: column;
     left: 0;
     pointer-events: none;
+    touch-action: none;
     position: absolute;
     right: 0;
     top: @edit-header-height;
@@ -60,7 +61,6 @@
 
   &__visualization-edit-inner {
     height: 100%;
-    pointer-events: initial;
     width: @edit-width;
   }
 
@@ -147,6 +147,7 @@
     &-x,
     &-y {
       pointer-events: initial;
+      touch-action: initial;
     }
   }
 }

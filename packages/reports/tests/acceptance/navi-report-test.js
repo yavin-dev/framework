@@ -1954,7 +1954,7 @@ test('adding metrics to reordered table keeps order', function(assert) {
             .text()
             .trim()
         ),
-      ['Nav Clicks', 'Property', 'Ad Clicks', 'Date'],
+      ['Nav Clicks', 'Property', 'Date', 'Ad Clicks'],
       'The headers are reordered as specified by the reorder'
     );
 
