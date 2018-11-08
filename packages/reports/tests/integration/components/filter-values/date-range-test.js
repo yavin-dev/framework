@@ -76,22 +76,3 @@ test('changing values', function(assert) {
 
   this.$('.predefined-range:contains(Last 7 Days)').click();
 });
-
-test('dimenion date range changing values', function(assert) {
-  assert.expect(1);
-
-  this.set('filter.operator', {
-    id: 'bet'
-  });
-
-  this.set('onUpdateFilter', changeSet => {
-    let expectedInterval = 'P7D/current';
-    assert.equal(
-      changeSet.values[0],
-      expectedInterval,
-      'Selected interval is given to update action through the values property'
-    );
-  });
-
-  this.$('.predefined-range:contains(Last 7 Days)').click();
-});

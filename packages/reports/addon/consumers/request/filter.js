@@ -159,7 +159,14 @@ export default ActionConsumer.extend({
      * @param {Object} changeSet - object of properties and new values
      */
     [RequestActions.UPDATE_FILTER]: (route, originalFilter, changeSet) => {
-      setProperties(originalFilter, changeSet);
+      let changeSetUpdates = {};
+
+      //If the interval is set in a dimension filter (rather than datetime filter), set values instead of the interval property
+      if (get(changeSet, 'interval') && get(originalFilter, 'operator') === 'bet') {
+        changeSetUpdates = { values: [get(changeSet, 'interval')] };
+        delete changeSet.interval;
+      }
+      setProperties(originalFilter, Object.assign({}, changeSet, changeSetUpdates));
     },
 
     /**

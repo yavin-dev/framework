@@ -17,7 +17,7 @@ moduleFor('consumer:request/filter', 'Unit | Consumer | request filter', {
 });
 
 test('UPDATE_FILTER', function(assert) {
-  assert.expect(1);
+  assert.expect(2);
 
   let filter = { dimension: 'age', operator: 'in', values: [] },
     changeSet = { operator: 'notin', values: [1, 2, 3] };
@@ -32,6 +32,21 @@ test('UPDATE_FILTER', function(assert) {
       values: [1, 2, 3]
     },
     'Properties in changeSet are added to filter'
+  );
+
+  filter = { dimension: 'dateDimension', operator: 'bet', values: [] };
+  changeSet = { interval: '2018-10-31/2018-11-10' };
+
+  this.subject().send(RequestActions.UPDATE_FILTER, { currentModel: null }, filter, changeSet);
+
+  assert.deepEqual(
+    filter,
+    {
+      dimension: 'dateDimension',
+      operator: 'bet',
+      values: ['2018-10-31/2018-11-10']
+    },
+    'The interval is set in the values array when the between operator is being used and the interval property is not set'
   );
 });
 
