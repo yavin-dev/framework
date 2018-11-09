@@ -19,7 +19,7 @@ moduleForComponent('filter-values/date', 'Integration | Component | filter value
         filter=filter
         request=request
         onUpdateFilter=(action onUpdateFilter)
-        selectedDate=selectedDate
+        _selectedDate=selectedDate
       }}`);
   }
 });

@@ -20,17 +20,39 @@ export default Component.extend({
   /**
    * @property {Array} classNames
    */
-  classNames: ['date'],
+  classNames: ['filter-values--date'],
 
   /**
-   * @property {Moment} selectedDate - local moment set by date picker
+   * @property {Moment} _selectedDate - local moment set by date picker
+   * @private
    */
-  selectedDate: null,
+  _selectedDate: null,
 
   /**
    * @property {String} savedDate - the date that's saved in the filter
+   * @private
    */
-  savedDate: computed.oneWay('filter.values.firstObject'),
+  _savedDate: computed.oneWay('filter.values.firstObject'),
+
+  /**
+   * @method init
+   * @override
+   */
+  init() {
+    this._super(...arguments);
+
+    this.loadSavedDate();
+  },
+
+  /**
+   * @method loadSavedDate
+   */
+  loadSavedDate() {
+    let filterVal = get(this, '_savedDate'),
+      savedDate = filterVal ? Moment(filterVal) : filterVal;
+
+    this.set('_selectedDate', savedDate);
+  },
 
   actions: {
     /**
@@ -47,10 +69,7 @@ export default Component.extend({
      * @action resetDate - reset selectedDate to the saved value
      */
     resetDate() {
-      let filterVal = get(this, 'filter.values.firstObject'),
-        savedDate = filterVal ? Moment(filterVal) : filterVal;
-
-      this.set('selectedDate', savedDate);
+      this.loadSavedDate();
     }
   }
 });

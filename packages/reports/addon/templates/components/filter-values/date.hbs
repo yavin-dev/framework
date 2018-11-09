@@ -1,8 +1,8 @@
 {{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{#basic-dropdown as |dd| }}
   {{#dd.trigger class='filter-values--date-dimension-select__trigger'}}
-    {{#if savedDate}}
-      {{moment-format savedDate 'MMM DD, YYYY'}}
+    {{#if _savedDate}}
+      {{moment-format _savedDate 'MMM DD, YYYY'}}
     {{else}}
       <span class='date__placeholder'>Select date</span>
     {{/if}}
@@ -10,16 +10,16 @@
 
   {{#dd.content class='filter-values--date-dimension-select__dropdown'}}
     {{navi-date-picker
-      selectedDate=selectedDate
+      selectedDate=_selectedDate
       dateTimePeriod='day'
-      dateSelected=(action (mut selectedDate))
+      dateSelected=(action (mut _selectedDate))
     }}
 
     <div class='date-dimension-select__controls'>
       <button class='date-dimension-select__reset btn btn-secondary' onclick={{action 'resetDate'}}>
         Reset
       </button>
-      <button class='date-dimension-select__apply btn btn-primary' onclick={{pipe (action 'setDate' selectedDate) (action dd.actions.close)}}>
+      <button class='date-dimension-select__apply btn btn-primary' onclick={{pipe (action 'setDate' _selectedDate) (action dd.actions.close)}}>
         Apply
       </button>
     </div>
