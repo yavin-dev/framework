@@ -22,9 +22,9 @@
     "test": "export COVERAGE=true; ember test --test-port 0"
   },
   "dependencies": {
-    "ember-ajax": "^3.1.0",
     "ember-cli-babel": "^6.16.0",
     "ember-cli-htmlbars": "^3.0.0",
+    "ember-fetch": "^6.1.0",
     "ember-get-config": "0.2.4",
     "ember-lodash": "^4.17.5"
   },

@@ -113,7 +113,7 @@ module('Unit | Adapter | Dimensions | Bard', function(hooks) {
     assert.expect(1);
 
     return Adapter.all('dimensionOne').then(result => {
-      assert.deepEqual(result, Response, 'Ajax GET returns the response object for Test dimension without any filters');
+      assert.deepEqual(result, Response, 'FETCH returns the response object for Test dimension without any filters');
     });
   });
 
@@ -121,7 +121,7 @@ module('Unit | Adapter | Dimensions | Bard', function(hooks) {
     assert.expect(1);
 
     return Adapter.find('dimensionOne', { values: 'v1' }).then(function(result) {
-      return assert.deepEqual(result, Response2, 'Ajax GET returns the response object for Test dimension and filters');
+      return assert.deepEqual(result, Response2, 'FETCH returns the response object for Test dimension and filters');
     });
   });
 
@@ -129,7 +129,7 @@ module('Unit | Adapter | Dimensions | Bard', function(hooks) {
     assert.expect(1);
 
     return Adapter.findById('dimensionOne', 'v1').then(function(result) {
-      return assert.deepEqual(result, Response2, 'Ajax GET returns the response object for Test dimension and filters');
+      return assert.deepEqual(result, Response2, 'FETCH returns the response object for Test dimension and filters');
     });
   });
 

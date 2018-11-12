@@ -651,7 +651,7 @@ module('Unit | Bard facts Adapter', function(hooks) {
     assert.expect(1);
 
     return Adapter.fetchDataForRequest(TestRequest).then(function(result) {
-      return assert.deepEqual(result, Response, 'Ajax GET returns the response object for TEST Request');
+      return assert.deepEqual(result, Response, 'Fetch GET returns the response object for TEST Request');
     });
   });
 
@@ -678,7 +678,7 @@ module('Unit | Bard facts Adapter', function(hooks) {
             test: true
           }
         },
-        'Ajax GET returns the response object for TEST Request'
+        'FETCH returns the response object for TEST Request'
       );
     });
   });
