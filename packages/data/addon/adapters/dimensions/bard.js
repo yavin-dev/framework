@@ -6,12 +6,13 @@
  */
 
 import { assert } from '@ember/debug';
-
 import { makeArray } from '@ember/array';
 import { inject as service } from '@ember/service';
 import { assign } from '@ember/polyfills';
 import EmberObject, { get } from '@ember/object';
 import config from 'ember-get-config';
+import fetch from 'fetch';
+import { handleErrors } from 'navi-data/utils/errors';
 
 const FACT_HOST = config.navi.dataSources[0].uri;
 
@@ -29,11 +30,6 @@ export default EmberObject.extend({
    * @property namespace
    */
   namespace: 'v1',
-
-  /**
-   * @property {Service} ajax
-   */
-  ajax: service(),
 
   /**
    * @property {Service} bard metadata
@@ -132,7 +128,7 @@ export default EmberObject.extend({
   },
 
   /**
-   * @method find - Uses the url generated using the adapter to make an ajax request
+   * @method find - Uses the url generated using the adapter to make a fetch request
    * @param {String} dimension - dimension name
    * @param {Object} [query] - the filter query object
    * @param {Object} [options] - options object
@@ -145,7 +141,7 @@ export default EmberObject.extend({
    * @returns {Promise} - Promise with the response
    */
   find(dimension, query, options) {
-    let url = this._buildUrl(dimension),
+    let url = new URL(this._buildUrl(dimension)),
       filterQuery = {},
       clientId = 'UI',
       timeout = 30000;
@@ -173,17 +169,17 @@ export default EmberObject.extend({
       }
     }
 
-    return get(this, 'ajax').request(url, {
-      xhrFields: {
-        withCredentials: true
+    Object.entries(filterQuery).forEach(pair => url.searchParams.append(...pair));
+
+    return fetch(url, {
+      credentials: 'include',
+      headers: {
+        clientid: clientId
       },
-      beforeSend: function(xhr) {
-        xhr.setRequestHeader('clientid', clientId);
-      },
-      crossDomain: true,
-      data: filterQuery,
-      timeout: timeout
-    });
+      timeout
+    })
+      .then(handleErrors)
+      .then(res => res.json());
   },
 
   /**

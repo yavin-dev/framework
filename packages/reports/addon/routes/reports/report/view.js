@@ -7,7 +7,6 @@ import { get, set, computed } from '@ember/object';
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
 import merge from 'lodash/merge';
-import { isForbiddenError } from 'ember-ajax/errors';
 import { reject } from 'rsvp';
 
 export default Route.extend({
@@ -61,11 +60,12 @@ export default Route.extend({
 
         return response.response;
       })
-      .catch(response => {
-        if (isForbiddenError(response)) {
+      .catch(error => {
+        if (error.status === 403) {
+          //if forbidden
           this.transitionTo('reports.report.unauthorized', get(report, 'id'));
         } else {
-          return reject(response);
+          return reject(error);
         }
       });
   },
