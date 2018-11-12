@@ -6,7 +6,6 @@
  */
 
 import $ from 'jquery';
-
 import { deprecate } from '@ember/application/deprecations';
 import { assert } from '@ember/debug';
 import { inject as service } from '@ember/service';
@@ -15,6 +14,8 @@ import { assign } from '@ember/polyfills';
 import EmberObject, { getWithDefault, get } from '@ember/object';
 import config from 'ember-get-config';
 import { canonicalizeMetric, getAliasedMetrics, canonicalizeAlias } from '../utils/metric';
+import fetch from 'fetch';
+import { handleErrors } from 'navi-data/utils/errors';
 
 const SORT_DIRECTIONS = ['desc', 'asc'];
 
@@ -27,9 +28,9 @@ export default EmberObject.extend({
   namespace: 'v1/data',
 
   /**
-   * @property {Service} ajax
+   * @property {Ember.Service} requestDecorator
    */
-  ajax: service(),
+  requestDecorator: service(),
 
   /**
    * Builds the dimensions path for a request
@@ -273,10 +274,6 @@ export default EmberObject.extend({
 
     return `${path}?${queryStr}`;
   },
-  /**
-   * @property {Ember.Service} requestDecorator
-   */
-  requestDecorator: service(),
 
   /**
    * @method _decorate
@@ -290,7 +287,7 @@ export default EmberObject.extend({
   },
 
   /**
-   * @method fetchDataForRequest - Uses the url generated using the adapter to make an ajax request
+   * @method fetchDataForRequest - Uses the url generated using the adapter to make a fetch request
    * @param {Object} request - request object
    * @param {Object} [options] - options object
    *      Ex: {
@@ -304,7 +301,7 @@ export default EmberObject.extend({
   fetchDataForRequest(request, options) {
     // Decorate and translate the request
     let decoratedRequest = this._decorate(request),
-      url = this._buildURLPath(decoratedRequest, options),
+      url = new URL(this._buildURLPath(decoratedRequest, options)),
       query = this._buildQuery(decoratedRequest, options),
       clientId = 'UI',
       customHeaders = {},
@@ -325,17 +322,16 @@ export default EmberObject.extend({
       customHeaders = options.customHeaders;
     }
 
-    return get(this, 'ajax').request(url, {
-      xhrFields: {
-        withCredentials: true
-      },
-      beforeSend(xhr) {
-        xhr.setRequestHeader('clientid', clientId);
-        Object.keys(customHeaders).forEach(name => xhr.setRequestHeader(name, customHeaders[name]));
-      },
-      crossDomain: true,
-      data: query,
-      timeout: timeout
-    });
+    Object.entries(query).forEach(pair => url.searchParams.append(...pair));
+
+    let headers = Object.assign(customHeaders, { clientid: clientId });
+
+    return fetch(url, {
+      credentials: 'include',
+      headers,
+      timeout
+    })
+      .then(handleErrors)
+      .then(res => res.json());
   }
 });

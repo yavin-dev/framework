@@ -311,7 +311,7 @@ module('Unit | Service | Dimensions', function(hooks) {
     return Service.all(TestDimension).catch(response => {
       assert.ok(true, 'A request error falls into the promise catch block');
       assert.equal(
-        response.payload,
+        response.message,
         'Row limit exceeded for dimension dimensionOne: Cardinality = 4000000 exceeds maximum number of rows = 10000 allowed without filters',
         'Bard error is passed to catch block'
       );

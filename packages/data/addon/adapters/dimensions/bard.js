@@ -6,12 +6,13 @@
  */
 
 import { assert } from '@ember/debug';
-
 import { makeArray } from '@ember/array';
 import { inject as service } from '@ember/service';
 import { assign } from '@ember/polyfills';
 import EmberObject, { get } from '@ember/object';
 import config from 'ember-get-config';
+import fetch from 'fetch';
+import { handleErrors } from 'navi-data/utils/errors';
 
 const FACT_HOST = config.navi.dataSources[0].uri;
 
@@ -33,11 +34,6 @@ export default EmberObject.extend({
    * @property namespace
    */
   namespace: 'v1',
-
-  /**
-   * @property {Service} ajax
-   */
-  ajax: service(),
 
   /**
    * @property {Service} bard metadata
@@ -209,7 +205,7 @@ export default EmberObject.extend({
   },
 
   /**
-   * @method find - makes a request to /values api to find dimensions by query term
+   * @method find - Uses the url generated using the adapter to make a fetch request
    * @param {String} dimension - dimension name
    * @param {Object} [query] - the filter query object
    * @param {Object} [options] - options object

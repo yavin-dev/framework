@@ -164,7 +164,7 @@ module('Unit | Service | Bard Facts', function(hooks) {
       assert.ok(true, 'A request error falls into the promise catch block');
 
       assert.equal(
-        response.payload.reason,
+        response.message,
         'Result set too large.  Try reducing interval or dimensions.',
         'Bard error is passed to catch block'
       );
