@@ -10,14 +10,5 @@ export default JSONAPISerializer.extend({
 
   keyForRelationship: attr => camelize(attr),
 
-  serializeIds: 'always',
-
-  serialize(response, request) {
-    let json = JSONAPISerializer.prototype.serialize.apply(this, arguments);
-
-    console.log('response: ', response);
-    console.log('request: ', request);
-    // debugger;
-    return json;
-  }
+  serializeIds: 'always'
 });

@@ -28,6 +28,7 @@ moduleFor('route:reports/index', 'Unit | Route | reports/index', {
     'model:bard-request/fragments/sort',
     'model:line-chart',
     'model:table',
+    'model:dashboard',
     'serializer:bard-request/fragments/logical-table',
     'serializer:bard-request/fragments/interval',
     'validator:length',

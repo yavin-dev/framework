@@ -56,7 +56,8 @@ moduleFor('route:report-collections/collection', 'Unit | Route | report collecti
     'service:bard-dimensions',
     'service:user',
     'adapter:dimensions/bard',
-    'model:delivery-rule'
+    'model:delivery-rule',
+    'model:dashboard'
   ],
   beforeEach() {
     setupMock();

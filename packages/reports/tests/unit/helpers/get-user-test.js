@@ -9,7 +9,15 @@ const { getOwner } = Ember;
 let Store;
 
 moduleFor('helper:get-user', 'Unit | Helper | get user', {
-  needs: ['service:user', 'model:user', 'adapter:user', 'model:report', 'serializer:user', 'model:delivery-rule'],
+  needs: [
+    'service:user',
+    'model:user',
+    'adapter:user',
+    'model:report',
+    'serializer:user',
+    'model:delivery-rule',
+    'model:dashboard'
+  ],
   beforeEach() {
     setupMock();
     Store = getOwner(this).lookup('service:store');

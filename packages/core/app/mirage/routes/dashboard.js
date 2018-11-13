@@ -1,28 +1,18 @@
 import moment from 'moment';
 import Mirage from 'ember-cli-mirage';
+import RESPONSE_CODES from '../enums/response-codes';
 
 const TIMESTAMP_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 
-const assignWidgets = (dashboard, widgets) => {
-  dashboard.associationKeys.push('widgets');
-  dashboard.widgets = widgets.where({ dashboardId: dashboard.id });
-};
-
-const assignDeliveryRules = (dashboard, deliveryRules) => {
-  if (deliveryRules) {
-    dashboard.associationKeys.push('deliveryRules');
-    dashboard.deliveryRules = deliveryRules.find(dashboard.deliveryRuleIds);
-  }
-};
-
 export default function() {
-  this.get('dashboards/:id', ({ dashboards, dashboardWidgets, deliveryRules }, request) => {
+  this.get('dashboards/:id', ({ dashboards }, request) => {
     let id = request.params.id,
       dashboard = dashboards.find(id);
 
-    // assignWidgets(dashboard, dashboardWidgets);
-    // assignDeliveryRules(dashboard, deliveryRules);
-    // debugger;
+    if (!dashboard) {
+      return new Mirage.Response(RESPONSE_CODES.NOT_FOUND, {}, { errors: [`Unknown identifier '${id}'`] });
+    }
+
     return dashboard;
   });
 
@@ -31,7 +21,7 @@ export default function() {
       attrs = this.normalizedRequestAttrs();
 
     dashboards.find(id).update(attrs);
-    return new Mirage.Response(204);
+    return new Mirage.Response(RESPONSE_CODES.NO_CONTENT);
   });
 
   this.del('/dashboards/:id', ({ dashboards, db }, request) => {
@@ -47,7 +37,7 @@ export default function() {
     dashboard.destroy();
   });
 
-  this.get('/dashboards', ({ dashboards, dashboardWidgets, deliveryRules }, request) => {
+  this.get('/dashboards', ({ dashboards }, request) => {
     let idFilter = request.queryParams['filter[dashboards.id]'];
 
     // Allow filtering
@@ -58,13 +48,10 @@ export default function() {
       dashboards = dashboards.all();
     }
 
-    dashboards.models.forEach(dashboard => assignWidgets(dashboard, dashboardWidgets));
-    dashboards.models.forEach(dashboard => assignDeliveryRules(dashboard, deliveryRules));
     return dashboards;
   });
 
   this.post('/dashboards', function({ dashboards, db }) {
-    debugger;
     let attrs = this.normalizedRequestAttrs(),
       dashboard = dashboards.create(attrs);
 

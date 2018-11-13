@@ -47,7 +47,6 @@ export default AssetSerializer.extend({
   _addLinks(dashboard, type) {
     delete dashboard.relationships[type].data;
 
-    // debugger;
     dashboard.relationships[type].links = {
       related: `/dashboards/${dashboard.id}/${type}`
     };

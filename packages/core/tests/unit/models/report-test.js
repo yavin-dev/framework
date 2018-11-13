@@ -154,7 +154,6 @@ test('Retrieving records', function(assert) {
     return Store.findRecord('report', 1).then(report => {
       assert.ok(report, 'Found report with id 1');
       assert.ok(report instanceof DeliverableItem, 'Report should be instance of DeliverableItem');
-      debugger;
 
       assert.deepEqual(report.serialize(), ExpectedReport, 'Fetched report has all attributes as expected');
     });
