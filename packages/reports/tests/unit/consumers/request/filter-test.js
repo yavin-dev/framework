@@ -1,6 +1,8 @@
 import Ember from 'ember';
 import { moduleFor, test } from 'ember-qunit';
 import { RequestActions } from 'navi-reports/services/request-action-dispatcher';
+import Interval from 'navi-core/utils/classes/interval';
+import Moment from 'moment';
 import DefaultIntervals from 'navi-reports/utils/enums/default-intervals';
 
 const { get, getOwner } = Ember;
@@ -35,7 +37,7 @@ test('UPDATE_FILTER', function(assert) {
   );
 
   filter = { dimension: 'dateDimension', operator: 'bet', values: [] };
-  changeSet = { interval: '2018-10-31/2018-11-10' };
+  changeSet = { interval: new Interval(new Moment('2018-10-31'), new Moment('2018-11-10')) };
 
   this.subject().send(RequestActions.UPDATE_FILTER, { currentModel: null }, filter, changeSet);
 

@@ -162,8 +162,9 @@ export default ActionConsumer.extend({
       let changeSetUpdates = {};
 
       //If the interval is set in a dimension filter (rather than datetime filter), set values instead of the interval property
-      if (get(changeSet, 'interval') && get(originalFilter, 'operator') === 'bet') {
-        changeSetUpdates = { values: [get(changeSet, 'interval')] };
+      if (get(changeSet, 'interval') && !(originalFilter instanceof IntervalFragment)) {
+        let intervalAsStrings = get(changeSet, 'interval').asStrings('YYYY-MM-DD');
+        changeSetUpdates = { values: [`${intervalAsStrings.start}/${intervalAsStrings.end}`] };
         delete changeSet.interval;
       }
       setProperties(originalFilter, Object.assign({}, changeSet, changeSetUpdates));
