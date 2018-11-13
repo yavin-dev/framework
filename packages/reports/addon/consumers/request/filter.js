@@ -9,6 +9,7 @@ import DefaultIntervals from 'navi-reports/utils/enums/default-intervals';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 import { getSelectedMetricsOfBase, getUnfilteredMetricsOfBase } from 'navi-reports/utils/request-metric';
 import { isEmpty } from '@ember/utils';
+import IntervalFragment from 'navi-core/models/bard-request/fragments/interval';
 
 const { assign, inject, get, set, setProperties, assert } = Ember;
 
