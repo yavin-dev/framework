@@ -18,7 +18,7 @@ export default Ember.Component.extend({
   /**
    * @property {Array} classNames
    */
-  classNames: ['date-range'],
+  classNames: ['filter-values--date-range'],
 
   actions: {
     /**
