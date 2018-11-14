@@ -9,6 +9,7 @@ import DefaultIntervals from 'navi-reports/utils/enums/default-intervals';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 import { getSelectedMetricsOfBase, getUnfilteredMetricsOfBase } from 'navi-reports/utils/request-metric';
 import { isEmpty } from '@ember/utils';
+import IntervalFragment from 'navi-core/models/bard-request/fragments/interval';
 
 const { assign, inject, get, set, setProperties, assert } = Ember;
 
@@ -159,7 +160,15 @@ export default ActionConsumer.extend({
      * @param {Object} changeSet - object of properties and new values
      */
     [RequestActions.UPDATE_FILTER]: (route, originalFilter, changeSet) => {
-      setProperties(originalFilter, changeSet);
+      let changeSetUpdates = {};
+
+      //If the interval is set in a dimension filter (rather than datetime filter), set values instead of the interval property
+      if (get(changeSet, 'interval') && !(originalFilter instanceof IntervalFragment)) {
+        let intervalAsStrings = get(changeSet, 'interval').asStrings('YYYY-MM-DD');
+        changeSetUpdates = { values: [`${intervalAsStrings.start}/${intervalAsStrings.end}`] };
+        delete changeSet.interval;
+      }
+      setProperties(originalFilter, Object.assign({}, changeSet, changeSetUpdates));
     },
 
     /**

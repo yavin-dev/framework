@@ -6,7 +6,7 @@
  *   {{navi-date-picker
  *      selectedDate=initialDate
  *      dateTimePeriod='month'
- *      dateSelection='actionWhenDateChanges'
+ *      dateSelected='actionWhenDateChanges'
  *   }}
  */
 import Ember from 'ember';
