@@ -61,10 +61,28 @@ export default function() {
   /**
    * deliveryrules/ - DELETE endpoint to delete a deliveryrule by id
    */
-  this.del('/deliveryRules/:id', function({ deliveryRules }, request) {
+  this.del('/deliveryRules/:id', function({ deliveryRules, users, reports, dashboards }, request) {
     let id = request.params.id,
-      deliveryRule = deliveryRules.find(id);
+      deliveryRule = deliveryRules.find(id),
+      deliveryType = deliveryRule.deliveryType,
+      deliveredItems = { reports, dashboards },
+      deliveredItem = deliveredItems[`${deliveryType}s`].find(deliveryRule.deliveredItemId.id),
+      user = users.find(deliveryRule.ownerId);
+
+    if (!deliveryRule) {
+      return new Mirage.Response(RESPONSE_CODES.NOT_FOUND, {}, { errors: [`Unknown identifier '${id}'`] });
+    }
+
+    // Delete delivery rule from deliveredItem
+    deliveredItem.update({
+      deliveryRules: deliveredItem.deliveryRules.filter(id => id.toString() !== deliveryRule.id)
+    });
+    // Delete delivery rule from user
+    user.update({
+      deliveryRules: user.deliveryRules.filter(id => id.toString() !== deliveryRule.id)
+    });
 
     deliveryRule.destroy();
+    return new Mirage.Response(RESPONSE_CODES.NO_CONTENT);
   });
 }

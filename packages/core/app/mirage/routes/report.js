@@ -69,15 +69,15 @@ export default function() {
     let { id } = request.params,
       report = reports.find(id),
       user = users.find(report.authorId);
+
     if (!report) {
       return new Mirage.Response(RESPONSE_CODES.NOT_FOUND, {}, { errors: [`Unknown identifier '${id}'`] });
     }
 
     // Delete report from user
-    users.update(report.authorId, {
+    user.update({
       reports: user.reports.filter(id => id.toString() !== report.id)
     });
-
     report.destroy();
 
     return new Mirage.Response(RESPONSE_CODES.NO_CONTENT);

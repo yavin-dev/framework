@@ -24,17 +24,22 @@ export default function() {
     return new Mirage.Response(RESPONSE_CODES.NO_CONTENT);
   });
 
-  this.del('/dashboards/:id', ({ dashboards, db }, request) => {
+  this.del('/dashboards/:id', ({ dashboards, users }, request) => {
     let { id } = request.params,
       dashboard = dashboards.find(id),
-      user = db.users.find(dashboard.authorId);
+      user = users.find(dashboard.authorId);
+
+    if (!dashboard) {
+      return new Mirage.Response(RESPONSE_CODES.NOT_FOUND, {}, { errors: [`Unknown identifier '${id}'`] });
+    }
 
     // Delete dashboard from user
-    db.users.update(dashboard.authorId, {
+    user.update({
       dashboards: user.dashboards.filter(id => id.toString() !== dashboard.id)
     });
 
     dashboard.destroy();
+    return new Mirage.Response(RESPONSE_CODES.NO_CONTENT);
   });
 
   this.get('/dashboards', ({ dashboards }, request) => {
@@ -51,17 +56,17 @@ export default function() {
     return dashboards;
   });
 
-  this.post('/dashboards', function({ dashboards, db }) {
+  this.post('/dashboards', function({ dashboards, users }) {
     let attrs = this.normalizedRequestAttrs(),
       dashboard = dashboards.create(attrs);
 
     // Update user with new dashboard
-    db.users.update(dashboard.authorId, {
+    users.update(dashboard.authorId, {
       dashboards: dashboard.author.dashboards.concat([Number(dashboard.id)])
     });
 
     // Init properties
-    db.dashboards.update(dashboard.id, {
+    dashboards.update(dashboard.id, {
       widgetIds: [],
       createdOn: moment.utc().format(TIMESTAMP_FORMAT),
       updatedOn: moment.utc().format(TIMESTAMP_FORMAT)

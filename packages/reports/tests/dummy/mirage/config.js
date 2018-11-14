@@ -1,7 +1,6 @@
 import config from 'dummy/config/environment';
 import BardLite from 'navi-data/mirage/routes/bard-lite';
 import BardMeta from 'navi-data/mirage/routes/bard-meta';
-// import PersistenceWS from './routes/user-and-report';
 import ReportWS from './routes/report';
 import UserWS from './routes/user';
 import ReportCollectionsWS from './routes/report-collections';
