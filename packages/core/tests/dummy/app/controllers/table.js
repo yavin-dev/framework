@@ -45,7 +45,11 @@ export default Ember.Controller.extend({
         type: 'threshold',
         displayName: 'Total Page Views WoW'
       }
-    ]
+    ],
+    showTotals: {
+      grandTotal: true,
+      subtotal: true
+    }
   },
 
   upsertSort(options) {

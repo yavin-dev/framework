@@ -3,9 +3,11 @@ import config from '../../config/environment';
 import { merge } from '@ember/polyfills';
 import { run } from '@ember/runloop';
 
+import registerWaiter from 'ember-raf-scheduler/test-support/register-waiter';
 import registerPowerSelectHelpers from 'ember-power-select/test-support/helpers';
 import registerBasicDropdownHelpers from 'ember-basic-dropdown/test-support/helpers';
 import './ember-sortable/test-helpers';
+registerWaiter();
 registerPowerSelectHelpers();
 registerBasicDropdownHelpers();
 
