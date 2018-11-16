@@ -1,14 +1,73 @@
 import { moduleFor, test } from 'ember-qunit';
 
-moduleFor('controller:reports/report', 'Unit | Controller | reports/report', {
-  /*
-   * Specify the other units that are required for this test.
-   * needs: ['controller:foo']
-   */
+moduleFor('controller:reports/report', 'Unit | Controller | reports/report');
+
+test('it exists', function(assert) {
+  const controller = this.subject();
+  assert.ok(controller);
 });
 
-// Replace this with your real tests.
-test('it exists', function(assert) {
-  let controller = this.subject();
-  assert.ok(controller);
+test('reportState', function(assert) {
+  const controller = this.subject();
+
+  const getProps = () =>
+    controller.getProperties('isEditingReport', 'isRunningReport', 'didReportComplete', 'didReportFail');
+
+  controller.set('reportState', 'editing');
+  assert.deepEqual(
+    getProps(),
+    {
+      isEditingReport: true,
+      isRunningReport: false,
+      didReportComplete: false,
+      didReportFail: false
+    },
+    'Setting reportState to `editing` updates computed properties correctly'
+  );
+
+  controller.set('reportState', 'running');
+  assert.deepEqual(
+    getProps(),
+    {
+      isEditingReport: false,
+      isRunningReport: true,
+      didReportComplete: false,
+      didReportFail: false
+    },
+    'Setting reportState to `running` updates computed properties correctly'
+  );
+
+  controller.set('reportState', 'completed');
+  assert.deepEqual(
+    getProps(),
+    {
+      isEditingReport: false,
+      isRunningReport: false,
+      didReportComplete: true,
+      didReportFail: false
+    },
+    'Setting reportState to `completed` updates computed properties correctly'
+  );
+
+  controller.set('reportState', 'failed');
+  assert.deepEqual(
+    getProps(),
+    {
+      isEditingReport: false,
+      isRunningReport: false,
+      didReportComplete: false,
+      didReportFail: true
+    },
+    'Setting reportState to `completed` updates computed properties correctly'
+  );
+});
+
+test('Invalid reportState', function(assert) {
+  const controller = this.subject();
+
+  assert.throws(
+    () => controller.set('reportState', 'badState'),
+    /Invalid reportState: `badState`. Must be one of the following: running,editing,completed,failed/,
+    'Setting a bad report state throws an error'
+  );
 });

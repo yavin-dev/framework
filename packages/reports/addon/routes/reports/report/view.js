@@ -133,11 +133,27 @@ export default Ember.Route.extend({
     },
 
     /**
+     * @action loading
+     */
+    loading(transition) {
+      transition.send('setReportState', 'running');
+      return true; // allows the loading template to be shown
+    },
+
+    /**
+     * @action error
+     */
+    error(error, transition) {
+      transition.send('setReportState', 'failed');
+      return true; // allows the error template to be shown
+    },
+
+    /**
      * @action didTransition
      */
     didTransition() {
-      this.send('setMode', 'view');
-      this.send('setHasReportRun', 'true');
+      this.send('setReportState', 'completed');
+      return true;
     },
 
     /**

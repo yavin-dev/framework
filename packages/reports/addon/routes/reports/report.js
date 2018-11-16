@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import merge from 'lodash/merge';
@@ -117,6 +117,14 @@ export default Route.extend({
     },
 
     /**
+     * @action cancelReport
+     * transition to edit subroute
+     */
+    cancelReport(report) {
+      this.transitionTo(`${this.routeName}.edit`, get(report, 'tempId') || get(report, 'id'));
+    },
+
+    /**
      * @action validate
      * @param {Object} request - object to validate
      * @returns {Promise} promise that resolves or rejects based on validation status
@@ -182,20 +190,13 @@ export default Route.extend({
       }
     },
 
-    /**
-     * @action setMode
-     * @param {Boolean} mode - view/edit mode of report
-     */
-    setMode(mode) {
-      this.controller.set('mode', mode);
-    },
-
     /*
-     * @action setHasReportRun
-     * @param {Boolean} value
+     * @action setReportState
+     * @param {String} state
      */
-    setHasReportRun(value) {
-      this.controller.set('hasReportRun', value);
+    setReportState(state) {
+      const controller = this.controllerFor(this.routeName);
+      controller.set('reportState', state);
     },
 
     /**
@@ -218,7 +219,7 @@ export default Route.extend({
        * Whenever the request updates, disable the add to dashboard button until the user runs the request
        * This prevents the user from adding an invalid report/visualization to a dashboard
        */
-      this.send('setHasReportRun', false);
+      this.send('setReportState', 'editing');
 
       /*
        *dispatch action if arguments are passed through

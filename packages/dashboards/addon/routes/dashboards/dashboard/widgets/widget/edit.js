@@ -2,6 +2,6 @@
  * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import ReportController from 'navi-reports/controllers/reports/report';
+import ReportEdit from 'navi-reports/routes/reports/report/edit';
 
-export default ReportController.extend({});
+export default ReportEdit.extend({});
