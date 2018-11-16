@@ -9,7 +9,7 @@ import { validator, buildValidations } from 'ember-cp-validations';
 import { computed, get, set } from '@ember/object';
 import { inject as service } from '@ember/service';
 import { A as arr } from '@ember/array';
-import RSVP from 'rsvp';
+import { resolve } from 'rsvp';
 
 const { Fragment } = MF,
   Validations = buildValidations({
@@ -50,7 +50,7 @@ export default Fragment.extend(Validations, {
     get() {
       if (get(this, 'operator') === 'contains') {
         let rawValues = get(this, 'rawValues'),
-          promise = new RSVP.resolve(rawValues);
+          promise = new resolve(rawValues);
 
         return DS.PromiseArray.create({ promise });
       } else {
