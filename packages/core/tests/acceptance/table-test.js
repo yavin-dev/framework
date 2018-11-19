@@ -1,8 +1,16 @@
 import { test } from 'qunit';
+import config from 'ember-get-config';
 import moduleForAcceptance from '../../tests/helpers/module-for-acceptance';
 import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 
-moduleForAcceptance('Acceptance | table');
+moduleForAcceptance('Acceptance | table', {
+  beforeEach() {
+    config.navi.FEATURES.enableVerticalCollectionTableIterator = true;
+  },
+  afterEach() {
+    config.navi.FEATURES.enableVerticalCollectionTableIterator = false;
+  }
+});
 
 test('visiting /table', function(assert) {
   assert.expect(2);
@@ -11,7 +19,7 @@ test('visiting /table', function(assert) {
 
   andThen(function() {
     assert.deepEqual(
-      find('.table-header-cell__title')
+      find('.table-header-row-vc--view .table-header-cell__title')
         .toArray()
         .map(el =>
           $(el)
@@ -37,7 +45,7 @@ test('visiting /table', function(assert) {
 
   andThen(() => {
     assert.deepEqual(
-      find('.table-header-cell__title')
+      find('.table-header-row-vc--view .table-header-cell__title')
         .toArray()
         .map(el =>
           $(el)
@@ -91,11 +99,12 @@ test('edit table field', function(assert) {
 
   click('.table-config__total-toggle-button .x-toggle-btn');
   fillIn('.dateTime > .table-header-cell__input', 'test');
+  triggerEvent('.dateTime > .table-header-cell__input', 'blur');
   click('.table-config__total-toggle-button .x-toggle-btn');
 
   andThen(function() {
     assert.equal(
-      find('.dateTime > .table-header-cell__title')
+      find('.table-header-row-vc--view .dateTime > .table-header-cell__title')
         .text()
         .trim(),
       'test',
@@ -105,7 +114,9 @@ test('edit table field', function(assert) {
 
   andThen(function() {
     assert.ok(
-      find('.dateTime > .table-header-cell__title').hasClass('table-header-cell__title--custom-name'),
+      find('.table-header-row-vc--view .dateTime > .table-header-cell__title').hasClass(
+        'table-header-cell__title--custom-name'
+      ),
       'DateTime field should have custom name class after editing'
     );
   });
@@ -118,11 +129,12 @@ test('edit table field - empty title', function(assert) {
 
   click('.table-config__total-toggle-button .x-toggle-btn');
   fillIn('.dateTime > .table-header-cell__input', null);
+  triggerEvent('.dateTime > .table-header-cell__input', 'blur');
   click('.table-config__total-toggle-button .x-toggle-btn');
 
   andThen(function() {
     assert.equal(
-      find('.dateTime > .table-header-cell__title')
+      find('.table-header-row-vc--view .dateTime > .table-header-cell__title')
         .text()
         .trim(),
       'Date',
@@ -132,7 +144,7 @@ test('edit table field - empty title', function(assert) {
 
   andThen(function() {
     assert.notOk(
-      find('.dateTime').hasClass('custom-name'),
+      find('.table-header-row-vc--view .dateTime').hasClass('custom-name'),
       'DateTime field should not have custom name class after removing title'
     );
   });

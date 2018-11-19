@@ -1,10 +1,11 @@
 import Ember from 'ember';
+import config from 'ember-get-config';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { startMirage } from 'dummy/initializers/ember-cli-mirage';
 
 const TEMPLATE = hbs`
-  {{navi-visualizations/table
+  {{navi-visualizations/table-print
     model=model
     options=options
     onUpdateReport=(action onUpdateReport)
@@ -80,6 +81,7 @@ const Options = {
 moduleForComponent('navi-visualizations/table-print', 'Integration | Component | navi visualizations/table print', {
   integration: true,
   beforeEach() {
+    config.navi.FEATURES.enableVerticalCollectionTableIterator = true;
     this.server = startMirage();
 
     this.set('model', Model);
@@ -91,6 +93,7 @@ moduleForComponent('navi-visualizations/table-print', 'Integration | Component |
       .loadMetadata();
   },
   afterEach() {
+    config.navi.FEATURES.enableVerticalCollectionTableIterator = false;
     this.server.shutdown();
   }
 });
@@ -102,7 +105,7 @@ test('it renders', function(assert) {
 
   assert.ok(this.$('.table-widget').is(':visible'), 'The table widget component is visible');
 
-  let headers = this.$('.table-header-cell')
+  let headers = this.$('div.table-header-row-vc .table-header-cell')
     .toArray()
     .map(el =>
       this.$(el)
@@ -116,11 +119,11 @@ test('it renders', function(assert) {
     'The table renders the headers correctly based on the request'
   );
 
-  let body = this.$('.table-body .table-row')
+  let body = this.$('tbody tr')
     .toArray()
     .map(row =>
       this.$(row)
-        .find('.table-cell-content')
+        .find('.table-cell')
         .toArray()
         .map(cell =>
           this.$(cell)

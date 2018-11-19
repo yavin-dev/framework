@@ -55,83 +55,105 @@ test('Table column sort', function(assert) {
   //table is not sorted
   andThen(() => {
     assert.notOk(
-      find('.table-header-cell.metric:first .navi-table-sort-icon').hasClass('navi-table-sort-icon--desc'),
+      find('div.table-header-row .table-header-cell.metric:first .navi-table-sort-icon').hasClass(
+        'navi-table-sort-icon--desc'
+      ),
       'Metric is not desc sorted'
     );
 
     assert.notOk(
-      find('.table-header-cell.metric:first .navi-table-sort-icon').hasClass('navi-table-sort-icon--asc'),
+      find('div.table-header-row .table-header-cell.metric:first .navi-table-sort-icon').hasClass(
+        'navi-table-sort-icon--asc'
+      ),
       'Metric is not asc sorted'
     );
   });
 
   //sort by first metric desc
-  click('.table-header-cell.metric:first .navi-table-sort-icon');
+  click('div.table-header-row .table-header-cell.metric:first .navi-table-sort-icon');
   andThen(() => {
     assert.ok(
-      find('.table-header-cell.metric:first .navi-table-sort-icon').hasClass('navi-table-sort-icon--desc'),
+      find('div.table-header-row .table-header-cell.metric:first .navi-table-sort-icon').hasClass(
+        'navi-table-sort-icon--desc'
+      ),
       'Metric is sorted desc on first sort click'
     );
 
     assert.notOk(
-      find('.table-header-cell.metric:first .navi-table-sort-icon').hasClass('navi-table-sort-icon--asc'),
+      find('div.table-header-row .table-header-cell.metric:first .navi-table-sort-icon').hasClass(
+        'navi-table-sort-icon--asc'
+      ),
       'Metric is not sorted asc on first sort click'
     );
   });
 
   //sort by first metric asc
-  click('.table-header-cell.metric:first .navi-table-sort-icon');
+  click('div.table-header-row .table-header-cell.metric:first .navi-table-sort-icon');
   andThen(() => {
     assert.ok(
-      find('.table-header-cell.metric:first .navi-table-sort-icon').hasClass('navi-table-sort-icon--asc'),
+      find('div.table-header-row .table-header-cell.metric:first .navi-table-sort-icon').hasClass(
+        'navi-table-sort-icon--asc'
+      ),
       'Metric is sorted asc on second sort click'
     );
 
     assert.notOk(
-      find('.table-header-cell.metric:first .navi-table-sort-icon').hasClass('navi-table-sort-icon--desc'),
+      find('div.table-header-row .table-header-cell.metric:first .navi-table-sort-icon').hasClass(
+        'navi-table-sort-icon--desc'
+      ),
       'Metric is not sorted desc on second sort click'
     );
   });
 
   //remove sort by first metric
-  click('.table-header-cell.metric:first .navi-table-sort-icon');
+  click('div.table-header-row .table-header-cell.metric:first .navi-table-sort-icon');
   andThen(() => {
     assert.notOk(
-      find('.table-header-cell.metric:first .navi-table-sort-icon').hasClass('navi-table-sort-icon--desc'),
+      find('div.table-header-row .table-header-cell.metric:first .navi-table-sort-icon').hasClass(
+        'navi-table-sort-icon--desc'
+      ),
       'Metric is not sorted desc after third sort click'
     );
 
     assert.notOk(
-      find('.table-header-cell.metric:first .navi-table-sort-icon').hasClass('navi-table-sort-icon--asc'),
+      find('div.table-header-row .table-header-cell.metric:first .navi-table-sort-icon').hasClass(
+        'navi-table-sort-icon--asc'
+      ),
       'Metric is not sorted asc after third sort click'
     );
 
     assert.ok(
-      find('.table-header-cell.dateTime:first .navi-table-sort-icon').hasClass('navi-table-sort-icon--desc'),
+      find('div.table-header-row .table-header-cell.dateTime:first .navi-table-sort-icon').hasClass(
+        'navi-table-sort-icon--desc'
+      ),
       'Datetime is sorted desc by default'
     );
   });
 
   //sort by dateTime desc
-  click('.table-header-cell.dateTime:first .navi-table-sort-icon');
+  click('div.table-header-row .table-header-cell.dateTime:first .navi-table-sort-icon');
   andThen(() => {
     assert.ok(
-      find('.table-header-cell.dateTime:first .navi-table-sort-icon').hasClass('navi-table-sort-icon--asc'),
+      find('div.table-header-row .table-header-cell.dateTime:first .navi-table-sort-icon').hasClass(
+        'navi-table-sort-icon--asc'
+      ),
       'Datetime is sorted asc after first sort click'
     );
   });
 
   //sort by dateTime asc
-  click('.table-header-cell.dateTime:first .navi-table-sort-icon');
+  click('div.table-header-row .table-header-cell.dateTime:first .navi-table-sort-icon');
   andThen(() => {
     assert.ok(
-      find('.table-header-cell.dateTime:first .navi-table-sort-icon').hasClass('navi-table-sort-icon--desc'),
+      find('div.table-header-row .table-header-cell.dateTime:first .navi-table-sort-icon').hasClass(
+        'navi-table-sort-icon--desc'
+      ),
       'Datetime is sorted desc after second sort click'
     );
   });
 
   //remove sort by dateTime
-  click('.table-header-cell.dateTime:first .navi-table-sort-icon');
+  click('div.table-header-row .table-header-cell.dateTime:first .navi-table-sort-icon');
 
   //add a parameterized metric with a couple of parameters and run the report
   click('.report-builder__metric-selector .grouped-list__item:contains(Platform Revenue) .grouped-list__item-label');
@@ -142,65 +164,65 @@ test('Table column sort', function(assert) {
   andThen(() => {
     //first parameter
     assert.notOk(
-      find('.table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon').hasClass(
-        'navi-table-sort-icon--desc'
-      ),
+      find(
+        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon'
+      ).hasClass('navi-table-sort-icon--desc'),
       'Metric with first parameter is not sorted desc'
     );
 
     assert.notOk(
-      find('.table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon').hasClass(
-        'navi-table-sort-icon--asc'
-      ),
+      find(
+        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon'
+      ).hasClass('navi-table-sort-icon--asc'),
       'Metric with first parameter is not sorted asc'
     );
 
     //second parameter
     assert.notOk(
-      find('.table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon').hasClass(
-        'navi-table-sort-icon--desc'
-      ),
+      find(
+        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon'
+      ).hasClass('navi-table-sort-icon--desc'),
       'Metric with second parameter is not sorted desc'
     );
 
     assert.notOk(
-      find('.table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon').hasClass(
-        'navi-table-sort-icon--asc'
-      ),
+      find(
+        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon'
+      ).hasClass('navi-table-sort-icon--asc'),
       'Metric with second parameter is not sorted asc'
     );
   });
 
   //sort by first parameter desc
-  click('.table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon');
+  click('div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon');
   andThen(() => {
     //first parameter
     assert.ok(
-      find('.table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon').hasClass(
-        'navi-table-sort-icon--desc'
-      ),
+      find(
+        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon'
+      ).hasClass('navi-table-sort-icon--desc'),
       'Metric with first parameter is sorted desc after first sort click'
     );
 
     assert.notOk(
-      find('.table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon').hasClass(
-        'navi-table-sort-icon--asc'
-      ),
+      find(
+        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon'
+      ).hasClass('navi-table-sort-icon--asc'),
       'Metric with first parameter is not sorted asc after first sort click'
     );
 
     //second parameter
     assert.notOk(
-      find('.table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon').hasClass(
-        'navi-table-sort-icon--desc'
-      ),
+      find(
+        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon'
+      ).hasClass('navi-table-sort-icon--desc'),
       'Metric with second parameter is not sorted desc after first sort click'
     );
 
     assert.notOk(
-      find('.table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon').hasClass(
-        'navi-table-sort-icon--asc'
-      ),
+      find(
+        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon'
+      ).hasClass('navi-table-sort-icon--asc'),
       'Metric with second parameter is not sorted asc after first sort click'
     );
   });
@@ -225,35 +247,35 @@ test('Table column sort', function(assert) {
   click('.navi-modal__close');
 
   //sort by first parameter asc
-  click('.table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon');
+  click('div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon');
   andThen(() => {
     //first parameter
     assert.notOk(
-      find('.table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon').hasClass(
-        'navi-table-sort-icon--desc'
-      ),
+      find(
+        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon'
+      ).hasClass('navi-table-sort-icon--desc'),
       'Metric with first parameter is not sorted desc after second sort click'
     );
 
     assert.ok(
-      find('.table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon').hasClass(
-        'navi-table-sort-icon--asc'
-      ),
+      find(
+        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon'
+      ).hasClass('navi-table-sort-icon--asc'),
       'Metric with first parameter is sorted asc after second sort click'
     );
 
     //second parameter
     assert.notOk(
-      find('.table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon').hasClass(
-        'navi-table-sort-icon--desc'
-      ),
+      find(
+        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon'
+      ).hasClass('navi-table-sort-icon--desc'),
       'Metric with second parameter is not sorted desc after second sort click'
     );
 
     assert.notOk(
-      find('.table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon').hasClass(
-        'navi-table-sort-icon--asc'
-      ),
+      find(
+        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon'
+      ).hasClass('navi-table-sort-icon--asc'),
       'Metric with second parameter is not sorted asc after second sort click'
     );
   });
@@ -278,35 +300,35 @@ test('Table column sort', function(assert) {
   click('.navi-modal__close');
 
   //remove sort by first parameter
-  click('.table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon');
+  click('div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon');
   andThen(() => {
     //first parameter
     assert.notOk(
-      find('.table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon').hasClass(
-        'navi-table-sort-icon--desc'
-      ),
+      find(
+        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon'
+      ).hasClass('navi-table-sort-icon--desc'),
       'Metric with first parameter is not sorted desc after third sort click'
     );
 
     assert.notOk(
-      find('.table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon').hasClass(
-        'navi-table-sort-icon--asc'
-      ),
+      find(
+        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon'
+      ).hasClass('navi-table-sort-icon--asc'),
       'Metric with first parameter is not sorted asc after third sort click'
     );
 
     //second parameter
     assert.notOk(
-      find('.table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon').hasClass(
-        'navi-table-sort-icon--desc'
-      ),
+      find(
+        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon'
+      ).hasClass('navi-table-sort-icon--desc'),
       'Metric with second parameter is not sorted desc after third sort click'
     );
 
     assert.notOk(
-      find('.table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon').hasClass(
-        'navi-table-sort-icon--asc'
-      ),
+      find(
+        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon'
+      ).hasClass('navi-table-sort-icon--asc'),
       'Metric with second parameter is not sorted asc after third sort click'
     );
   });
@@ -331,22 +353,22 @@ test('Table column sort', function(assert) {
   click('.navi-modal__close');
 
   //sort by both parameters
-  click('.table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon');
-  click('.table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon');
+  click('div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon');
+  click('div.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon');
   andThen(() => {
     //first parameter
     assert.ok(
-      find('.table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon').hasClass(
-        'navi-table-sort-icon--desc'
-      ),
+      find(
+        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon'
+      ).hasClass('navi-table-sort-icon--desc'),
       'Metric with first parameter is sorted desc after sorting by both parameters'
     );
 
     //second parameter
     assert.ok(
-      find('.table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon').hasClass(
-        'navi-table-sort-icon--desc'
-      ),
+      find(
+        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon'
+      ).hasClass('navi-table-sort-icon--desc'),
       'Metric with first parameter is sorted desc after sorting by both parameters'
     );
   });
