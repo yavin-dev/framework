@@ -27,6 +27,7 @@ moduleForComponent('navi-visualizations/table', 'Unit | Component | table', {
     'service:bard-dimensions',
     'service:bard-metadata',
     'service:keg',
+    'service:resize',
     'serializer:bard-metadata'
   ],
   beforeEach() {

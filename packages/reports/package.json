@@ -21,6 +21,7 @@
     "test": "export COVERAGE=true; ember test --test-port 0"
   },
   "dependencies": {
+    "@html-next/vertical-collection": "^1.0.0-beta.12",
     "ember-cli-babel": "^6.11.0",
     "ember-cli-clipboard": "^0.8.1",
     "ember-cli-htmlbars": "^2.0.3",

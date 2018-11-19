@@ -28,11 +28,15 @@ module('Acceptances | Navi Report', {
       Ember.Component.extend({ classNames: 'add-to-dashboard' }),
       { instantiate: false }
     );
+
+    config.navi.FEATURES.enableVerticalCollectionTableIterator = true;
   },
   afterEach() {
     teardownModal();
     server.shutdown();
     Ember.run(Application, 'destroy');
+
+    config.navi.FEATURES.enableVerticalCollectionTableIterator = false;
   }
 });
 
@@ -119,7 +123,10 @@ test('New report', function(assert) {
 
     assert.ok(!!find('.table-widget').length, 'Data table visualization is shown by default');
 
-    assert.ok(!!find('.table-header-cell:contains(Ad Clicks)').length, 'Ad Clicks column is displayed');
+    assert.ok(
+      !!find('.table-header-row-vc--view .table-header-cell:contains(Ad Clicks)').length,
+      'Ad Clicks column is displayed'
+    );
   });
 });
 
@@ -1556,14 +1563,20 @@ test('running report after reverting changes', function(assert) {
   click('.checkbox-selector--metric .grouped-list__item:contains(Time Spent) .grouped-list__item-label');
   click('.navi-report__run-btn');
   andThen(() => {
-    assert.ok($('.table-header-cell:contains(Time Spent)').is(':visible'), 'Time Spent column is displayed');
+    assert.ok(
+      $('.table-header-row-vc--view .table-header-cell:contains(Time Spent)').is(':visible'),
+      'Time Spent column is displayed'
+    );
   });
 
   /* == Revert report to its original state == */
   click('.checkbox-selector--metric .grouped-list__item:contains(Time Spent) .grouped-list__item-label');
   click('.navi-report__run-btn');
   andThen(() => {
-    assert.notOk($('.table-header-cell:contains(Time Spent)').is(':visible'), 'Time Spent column is not displayed');
+    assert.notOk(
+      $('.table-header-row-vc--view .table-header-cell:contains(Time Spent)').is(':visible'),
+      'Time Spent column is not displayed'
+    );
   });
 });
 
@@ -1937,17 +1950,17 @@ test('adding metrics to reordered table keeps order', function(assert) {
   andThen(() => {
     return reorder(
       'mouse',
-      '.table-header-cell',
-      '.metric:contains(Nav Clicks)',
-      '.dimension:contains(Property)',
-      '.metric:contains(Ad Clicks)',
-      '.dateTime'
+      '.table-header-row-vc--view .table-header-cell',
+      '.table-header-row-vc--view .metric:contains(Nav Clicks)',
+      '.table-header-row-vc--view .dimension:contains(Property)',
+      '.table-header-row-vc--view .metric:contains(Ad Clicks)',
+      '.table-header-row-vc--view .dateTime'
     );
   });
 
   andThen(() => {
     assert.deepEqual(
-      find('.table-header-cell__title')
+      find('.table-header-row-vc--view .table-header-cell__title')
         .toArray()
         .map(el =>
           $(el)
@@ -1964,7 +1977,7 @@ test('adding metrics to reordered table keeps order', function(assert) {
 
   andThen(() => {
     assert.deepEqual(
-      find('.table-header-cell__title')
+      find('.table-header-row-vc--view .table-header-cell__title')
         .toArray()
         .map(el =>
           $(el)
@@ -1982,9 +1995,14 @@ test('Parameterized metrics with default displayname are not considered custom',
   visit('/reports/8');
 
   andThen(() => {
-    assert.ok(find('.table-header-cell.metric > .table-header-cell__title').length, 'renders metric columns');
+    assert.ok(
+      find('.table-header-row-vc--view .table-header-cell.metric > .table-header-cell__title').length,
+      'renders metric columns'
+    );
     assert.notOk(
-      find('.table-header-cell.metric > .table-header-cell__title').is('.table-header-cell__title--custom-name'),
+      find('.table-header-row-vc--view .table-header-cell.metric > .table-header-cell__title').is(
+        '.table-header-cell__title--custom-name'
+      ),
       'Parameterized metrics with default display name should not be considered custom'
     );
   });

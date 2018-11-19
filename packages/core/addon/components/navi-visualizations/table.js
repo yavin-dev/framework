@@ -10,11 +10,10 @@
  *   onUpdateReport=(action 'onUpdateReport')
  * }}
  */
-
 import layout from '../../templates/components/navi-visualizations/table';
-import { formatItemDimension } from '../../helpers/mixed-height-layout';
 import { computed, get, set } from '@ember/object';
 import { inject as service } from '@ember/service';
+import { run } from '@ember/runloop';
 import { assign } from '@ember/polyfills';
 import { A as arr } from '@ember/array';
 import Component from '@ember/component';
@@ -23,6 +22,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import groupBy from 'lodash/groupBy';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 import { getColumnDefaultName } from 'navi-core/helpers/default-column-name';
+import { featureFlag } from 'navi-core/helpers/feature-flag';
 
 const NEXT_SORT_DIRECTION = {
   none: 'desc',
@@ -263,6 +263,27 @@ export default Component.extend({
   }),
 
   /**
+   * @property {Boolean} isEditingMode
+   */
+  isEditingMode: computed('isEditing', function() {
+    return featureFlag('enableTableEditing') && get(this, 'isEditing');
+  }),
+
+  /**
+   * @property {Boolean} isVerticalCollectionEnabled
+   */
+  isVerticalCollectionEnabled: computed(function() {
+    return featureFlag('enableVerticalCollectionTableIterator');
+  }),
+
+  /**
+   * @property {String} tableRenderer
+   */
+  tableRenderer: computed('isVerticalCollectionEnabled', function() {
+    return `table-renderer${get(this, 'isVerticalCollectionEnabled') ? '-vertical-collection' : ''}`;
+  }),
+
+  /**
    * @property {Object} request
    */
   request: computed.alias('model.firstObject.request'),
@@ -273,24 +294,16 @@ export default Component.extend({
   cellRendererPrefix: 'cell-renderers/',
 
   /**
-   * @property {Number} rowHeight - height in px of a single item
+   * @property {Number} estimateHeight - estimated height in px of a single row
    */
-  rowHeight: 30,
+  estimateHeight: computed('isVerticalCollectionEnabled', function() {
+    return get(this, 'isVerticalCollectionEnabled') ? 32 : 30;
+  }),
 
   /**
-   * @property {Array} rowDimensions - indicates the dimensions for each row of data
+   * @property {Number} bufferSize - size of the buffer before and after the collection
    */
-  rowDimensions: computed('tableData', 'expandedIdx', function() {
-    let rowDimension = formatItemDimension(get(this, 'rowHeight'));
-
-    //Create a set of row dimensions for each row of data
-    let rowDimensions = new Array(get(this, 'tableData.length'));
-    for (let i = 0; i < rowDimensions.length; i++) {
-      rowDimensions[i] = rowDimension;
-    }
-
-    return rowDimensions;
-  }),
+  bufferSize: 10,
 
   /**
    * Get next direction based on column type and current direction
@@ -340,12 +353,14 @@ export default Component.extend({
      * @action updateColumnDisplayName
      */
     updateColumnDisplayName(column, displayName) {
-      this.attrs.onUpdateReport(
-        'updateColumn',
-        assign({}, column, {
-          displayName
-        })
-      );
+      run.scheduleOnce('afterRender', () => {
+        this.attrs.onUpdateReport(
+          'updateColumn',
+          assign({}, column, {
+            displayName
+          })
+        );
+      });
     }
   }
 });
