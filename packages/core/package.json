@@ -33,7 +33,7 @@
     "ember-moment": "7.5.0",
     "ember-power-select": "^1.10.4",
     "ember-radio-button": "^1.2.1",
-    "ember-sortable": "^1.10.0",
+    "ember-sortable": "^1.12.1",
     "ember-tether": "^1.0.0",
     "ember-toggle": "^5.2.1",
     "ember-tooltips": "^2.10.0",

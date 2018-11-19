@@ -81,7 +81,7 @@
     "ember-qunit-assert-helpers": "^0.2.0",
     "ember-resize": "0.0.17",
     "ember-resolver": "^4.0.0",
-    "ember-sortable": "^1.10.0",
+    "ember-sortable": "^1.12.1",
     "ember-source": "~2.16.0",
     "eslint-config-prettier": "^3.0.1",
     "loader.js": "^4.2.3",
