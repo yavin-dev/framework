@@ -50,7 +50,7 @@ export default Fragment.extend(Validations, {
     get() {
       if (get(this, 'operator') === 'contains') {
         let rawValues = get(this, 'rawValues'),
-          promise = new resolve(rawValues);
+          promise = resolve(rawValues);
 
         return DS.PromiseArray.create({ promise });
       } else {
