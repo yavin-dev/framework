@@ -5,12 +5,13 @@
 
 import DS from 'ember-data';
 import MF from 'model-fragments';
-import Ember from 'ember';
 import { validator, buildValidations } from 'ember-cp-validations';
+import { computed, get, set } from '@ember/object';
+import { inject as service } from '@ember/service';
+import { A as arr } from '@ember/array';
+import { resolve } from 'rsvp';
 
-const { Fragment } = MF;
-
-const { computed, get, set } = Ember,
+const { Fragment } = MF,
   Validations = buildValidations({
     dimension: validator('presence', {
       presence: true,
@@ -24,7 +25,7 @@ const { computed, get, set } = Ember,
       validator('length', {
         min: 1,
         message() {
-          let dimensionName = Ember.get(this, 'model.dimension.longName');
+          let dimensionName = get(this, 'model.dimension.longName');
           return `${dimensionName} filter needs at least one value`;
         }
       }),
@@ -37,10 +38,10 @@ const { computed, get, set } = Ember,
 export default Fragment.extend(Validations, {
   dimension: DS.attr('dimension'),
   operator: DS.attr('string', { defaultValue: 'in' }),
-  rawValues: DS.attr({ defaultValue: () => Ember.A([]) }),
+  rawValues: DS.attr({ defaultValue: () => arr([]) }),
   field: DS.attr('string', { defaultValue: 'id' }),
 
-  dimensionService: Ember.inject.service('bard-dimensions'),
+  dimensionService: service('bard-dimensions'),
 
   /**
    * @property {DS.PromiseArray} values - dimension model objects computed from rawValues
@@ -49,26 +50,26 @@ export default Fragment.extend(Validations, {
     get() {
       if (get(this, 'operator') === 'contains') {
         let rawValues = get(this, 'rawValues'),
-          promise = new Ember.RSVP.resolve(rawValues);
+          promise = resolve(rawValues);
 
         return DS.PromiseArray.create({ promise });
       } else {
         let dimensionName = get(this, 'dimension.name'),
-          values = Ember.A(get(this, 'rawValues')).join(','),
+          values = arr(get(this, 'rawValues')).join(','),
           dimensionService = get(this, 'dimensionService');
 
         return DS.PromiseArray.create({
-          promise: dimensionService.find(dimensionName, { values }).then(values => Ember.A(values))
+          promise: dimensionService.find(dimensionName, { values }).then(values => arr(values))
         });
       }
     },
 
     set(type, value) {
       // some operators don't need to be mapped, as values don't always have id fields and mapping by ID will cause errors
-      if (['contains', 'null', 'notnull'].includes(get(this, 'operator'))) {
+      if (['contains', 'null', 'notnull', 'gte', 'lt', 'bet'].includes(get(this, 'operator'))) {
         set(this, 'rawValues', value);
       } else {
-        set(this, 'rawValues', Ember.A(value).mapBy('id'));
+        set(this, 'rawValues', arr(value).mapBy('id'));
       }
       return value;
     }

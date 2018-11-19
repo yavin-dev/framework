@@ -44,7 +44,8 @@ module.exports = function(environment) {
         enableScheduleReports: true,
         enableMultipleExport: true,
         enableContains: true,
-        enableTableEditing: true
+        enableTableEditing: true,
+        dateDimensionFilter: true
       }
     }
   };

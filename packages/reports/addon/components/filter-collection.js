@@ -9,12 +9,12 @@
  *       onRemoveFilter=(update-report-action 'REMOVE_FILTER')
  *   }}
  */
-import Ember from 'ember';
 import layout from '../templates/components/filter-collection';
+import { computed, get } from '@ember/object';
+import { featureFlag } from 'navi-core/helpers/feature-flag';
+import Component from '@ember/component';
 
-const { computed, get } = Ember;
-
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   /**
@@ -35,8 +35,11 @@ export default Ember.Component.extend({
     });
 
     let dimFilters = get(this, 'request.filters').map(filter => {
+      let dimensionDataType = get(filter, 'dimension.datatype'),
+        type = featureFlag('dateDimensionFilter') && dimensionDataType === 'date' ? 'date-dimension' : 'dimension';
+
       return {
-        type: 'dimension',
+        type,
         requestFragment: filter
       };
     });
