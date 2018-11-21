@@ -37,7 +37,7 @@ const RESIZE_EVENT = 'didResize';
 export default Component.extend({
   layout,
 
-  classNames: ['table-widget-container'],
+  classNames: ['table-widget-container', 'table-widget-container--vc'],
 
   /**
    * @property {Service} resize - Resize service to respond to view resize events
