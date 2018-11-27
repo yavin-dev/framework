@@ -1,11 +1,12 @@
+/**
+ * Copyright 2018, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
 package com.yahoo.navi.ws.app.security
 
 import java.security.Principal
 import javax.ws.rs.core.SecurityContext
 
-/**
- * Copyright (c) 2018, Yahoo Inc.
- */
 class ApplicationSecurityContext(val _isSecure : Boolean, isLoggedIn: Boolean, userName: String) : SecurityContext {
     val principal : AccountPrincipal = AccountPrincipal(userName, isLoggedIn)
 

@@ -1,3 +1,7 @@
+/**
+ * Copyright 2018, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
 package com.yahoo.navi.ws.models.types
 
 import com.fasterxml.jackson.core.JsonParseException
@@ -16,9 +20,6 @@ import java.sql.Types
 import java.util.Objects
 import java.util.Properties
 
-/**
- * Copyright (c) 2018, Yahoo Inc.
- */
 class JsonType : UserType, ParameterizedType {
     private var objectClass: Class<*>? = null
 

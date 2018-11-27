@@ -1,12 +1,13 @@
+/**
+ * Copyright 2018, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
 package com.yahoo.navi.ws.app.filters
 
 import javax.ws.rs.container.ContainerRequestContext
 import javax.ws.rs.container.ContainerResponseContext
 import javax.ws.rs.container.ContainerResponseFilter
 
-/**
- * Copyright (c) 2018, Yahoo Inc.
- */
 class CorsFilter : ContainerResponseFilter {
     override fun filter(requestContext: ContainerRequestContext?, responseContext: ContainerResponseContext?) {
         requestContext?.let { req ->
