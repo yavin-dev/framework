@@ -32,18 +32,20 @@
 <div class='report-builder__main'>
     {{#if hasValidLogicalTable}}
       <div class='report-builder__container report-builder__container--filters'>
-          <span class='report-builder__container-header'>
-              FILTERS
-          </span>
+            <span class='report-builder__container-header'>
+                <span class='report-builder__container-header__title'>FILTERS</span>
+                <span class='report-builder__container-header__message'>
+                    Click the icon {{navi-icon 'filter' class='report-builder__container-header__message--icon'}} next to a dimension/metric to add a filter.
+                </span>
+            </span>
 
-            {{#filter-collection
+            {{filter-collection
                 class='report-builder__filter-collection'
                 request=request
                 onUpdateFilter=(update-report-action 'UPDATE_FILTER')
                 onRemoveFilter=(update-report-action 'REMOVE_FILTER')
             }}
-                Click the icon {{navi-icon 'filter' class='filter-collection__message--icon'}} next to a dimension/metric to add a filter.
-            {{/filter-collection}}
+
       </div>
     {{/if}}
     <div class='report-builder__container report-builder__container--result'>
