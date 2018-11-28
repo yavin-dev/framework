@@ -13,9 +13,18 @@
 
   &__spinner {
     .spinner;
+    flex: 1;
   }
 
   &__bounce {
     margin: 0 3px;
+  }
+}
+
+//firefox fix for loader height
+//if loader is in a tbody, flex isn't appropriate
+tbody {
+  .navi-loader__spinner {
+    flex: none;
   }
 }
