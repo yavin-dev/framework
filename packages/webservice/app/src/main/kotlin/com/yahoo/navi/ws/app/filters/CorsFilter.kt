@@ -14,11 +14,13 @@ class CorsFilter : ContainerResponseFilter {
             responseContext?.let { res ->
                 val headers = res.headers
                 val requestedHeaders = req.getHeaderString("Access-Control-Request-Headers")
+                val origin = req.getHeaderString("Origin")
 
                 headers.putSingle("Vary", "Origin")
-                headers.putSingle("Access-Control-Allow-Methods", "GET,POST,PATCH,DELETE")
+                headers.putSingle("Access-Control-Allow-Methods", "OPTIONS,GET,POST,PATCH,DELETE")
                 headers.putSingle("Access-Control-Allow-Headers", requestedHeaders ?: "")
-                headers.putSingle("Access-Control-Allow-Origin", "*")
+                headers.putSingle("Access-Control-Allow-Origin", origin ?: "*")
+                headers.putSingle("Access-Control-Allow-Credentials", "true")
             }
         }
     }

@@ -10,7 +10,7 @@ import com.yahoo.navi.ws.app.filters.CorsFilter
 import com.yahoo.navi.ws.app.filters.UserAuthFilter
 import com.yahoo.navi.ws.models.permissions.PermissionExpressions
 
-class Settings : ElideStandaloneSettings {
+open class Settings : ElideStandaloneSettings {
     override fun getCheckMappings(): MutableMap<String, Class<out Check<out Any>>> {
         return PermissionExpressions.expressions
     }
