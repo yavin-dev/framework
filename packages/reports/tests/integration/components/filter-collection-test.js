@@ -104,25 +104,3 @@ test('removing date filter', function(assert) {
     'The first filter has remove disabled'
   );
 });
-
-test('collection message', function(assert) {
-  assert.expect(1);
-
-  this.render(hbs`
-        {{#filter-collection
-            request=request
-            onUpdateFilter=(action onUpdateFilter)
-            onRemoveFilter=(action onRemoveFilter)
-        }}
-            Click icon to add filter.
-        {{/filter-collection}}
-    `);
-
-  assert.equal(
-    this.$('.filter-collection__message')
-      .text()
-      .trim(),
-    'Click icon to add filter.',
-    'Collection message should be shown'
-  );
-});
