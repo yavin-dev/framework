@@ -20,7 +20,6 @@ abstract class IntegrationTest: RestAssuredSupport {
         @BeforeClass
         @JvmStatic
         fun beforeTests() {
-            System.out.println("before test")
             setupRestAssured()
             setupServer()
         }
@@ -57,8 +56,6 @@ abstract class IntegrationTest: RestAssuredSupport {
                     return "../settings/hibernate.cfg.xml"
                 }
             })
-
-            System.out.println("hello")
 
             App.start(false)
         }
