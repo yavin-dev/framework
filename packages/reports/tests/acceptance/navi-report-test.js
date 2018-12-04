@@ -663,7 +663,7 @@ test('Multi export action - pdf href', function(assert) {
   });
 
   /* == Change to table == */
-  click('.report-view__visualization-option:contains(Data Table)');
+  click('.visualization-toggle__option:contains(Data Table)');
   click('.navi-report__run-btn');
   clickDropdown('.multiple-format-export');
   andThen(() => {
@@ -944,7 +944,7 @@ test('Switch Visualization Type', function(assert) {
     assert.equal(find('.c3-legend-item').length, 3, 'Line chart visualization has 3 series as configured');
   });
 
-  click('.report-view__visualization-option:contains(Data Table)');
+  click('.visualization-toggle__option:contains(Data Table)');
   andThen(() => {
     assert.ok(!!find('.table-widget').length, 'table visualization is shown when selected');
 
@@ -957,7 +957,7 @@ test('Switch Visualization Type', function(assert) {
     );
   });
 
-  click('.report-view__visualization-option:contains(Line Chart)');
+  click('.visualization-toggle__option:contains(Line Chart)');
   andThen(() => {
     assert.ok(!!find('.line-chart-widget').length, 'line-chart visualization is shown when selected');
 
@@ -1147,7 +1147,7 @@ test('Revert Visualization Type - Back to Original Type', function(assert) {
   });
 
   /* == Switch to table == */
-  click('.report-view__visualization-option:contains(Data Table)');
+  click('.visualization-toggle__option:contains(Data Table)');
   andThen(() => {
     assert.ok(!!find('.table-widget').length, 'table visualization is shown when selected');
   });
@@ -1169,7 +1169,7 @@ test('Revert Visualization Type - Updated Report', function(assert) {
   });
 
   /* == Switch to table == */
-  click('.report-view__visualization-option:contains(Data Table)');
+  click('.visualization-toggle__option:contains(Data Table)');
   andThen(() => {
     assert.ok(!!find('.table-widget').length, 'table visualization is shown when selected');
   });
@@ -1181,7 +1181,7 @@ test('Revert Visualization Type - Updated Report', function(assert) {
   });
 
   /* == Switch to chart == */
-  click('.report-view__visualization-option:contains(Line Chart)');
+  click('.visualization-toggle__option:contains(Line Chart)');
   andThen(() => {
     assert.ok(!!find('.line-chart-widget').length, 'line-chart visualization is shown when selected');
   });
@@ -1212,7 +1212,7 @@ test('Revert Visualization Type - New Report', function(assert) {
   });
 
   /* == Switch to metric label == */
-  click('.report-view__visualization-option:contains(Metric Label)');
+  click('.visualization-toggle__option:contains(Metric Label)');
   andThen(() => {
     assert.ok(!!find('.metric-label-vis').length, 'Metric label visualization is shown when selected');
   });
@@ -1559,7 +1559,7 @@ test('running report after reverting changes', function(assert) {
 
   /* == Modify report by adding a metric == */
   visit('/reports/1/view');
-  click('.report-view__visualization-option:contains(Data Table)');
+  click('.visualization-toggle__option:contains(Data Table)');
   click('.checkbox-selector--metric .grouped-list__item:contains(Time Spent) .grouped-list__item-label');
   click('.navi-report__run-btn');
   andThen(() => {
@@ -1595,7 +1595,7 @@ test('Running a report against unauthorized table shows unauthorized route', fun
 
   selectChoose('.navi-table-select__dropdown', 'Network');
   click('.navi-report__run-btn');
-  click('.report-view__visualization-option:contains(Table)');
+  click('.visualization-toggle__option:contains(Table)');
   andThen(() => {
     assert.equal(currentURL(), '/reports/1/view', 'check to seee if we are on the view route');
 

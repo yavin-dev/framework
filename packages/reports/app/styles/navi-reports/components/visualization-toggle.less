@@ -1,0 +1,34 @@
+/**
+ * Copyright 2018, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
+
+.visualization-toggle {
+  display: flex;
+  justify-content: flex-end;
+
+  &__option {
+    border: 1px solid @navi-lighter-gray;
+    padding: 4px 10px;
+    font-size: @font-size-mid;
+    margin-right: -1px;
+    cursor: pointer;
+
+    &--is-active {
+      background-color: @navi-purple-lightest;
+      pointer-events: none;
+    }
+
+    &:hover {
+      background-color: @navi-purple-lightest;
+    }
+  }
+
+  &__option:nth-of-type(1) {
+    border-radius: 3px 0 0 3px;
+  }
+
+  &__option:nth-last-of-type(1) {
+    border-radius: 0 3px 3px 0;
+  }
+}
