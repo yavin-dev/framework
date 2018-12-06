@@ -36,7 +36,8 @@ moduleFor('route:dashboards/new', 'Unit | Route | dashboards/new', {
     'model:fragments/presentation',
     'model:dashboard-widget',
     'model:delivery-rule',
-    'service:navi-notifications'
+    'service:navi-notifications',
+    'validator:presence'
   ],
 
   beforeEach() {

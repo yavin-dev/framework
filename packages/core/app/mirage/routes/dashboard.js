@@ -58,18 +58,17 @@ export default function() {
 
   this.post('/dashboards', function({ dashboards, users }) {
     let attrs = this.normalizedRequestAttrs(),
-      dashboard = dashboards.create(attrs);
+      dashboard = dashboards.create(attrs),
+      author = users.find(dashboard.authorId);
 
     // Update user with new dashboard
-    users.update(dashboard.authorId, {
-      dashboards: dashboard.author.dashboards.concat([Number(dashboard.id)])
-    });
+    author.update(dashboards, author.dashboards.add(dashboard));
 
     // Init properties
-    dashboards.update(dashboard.id, {
+    dashboard.update({
       widgetIds: [],
-      createdOn: moment.utc().format(TIMESTAMP_FORMAT),
-      updatedOn: moment.utc().format(TIMESTAMP_FORMAT)
+      createdOn: null,
+      updatedOn: null
     });
 
     return dashboard;

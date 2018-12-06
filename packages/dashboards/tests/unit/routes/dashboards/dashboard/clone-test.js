@@ -90,6 +90,7 @@ moduleFor('route:dashboards/dashboard/clone', 'Unit | Route | dashboards/dashboa
     'validator:chart-type',
     'validator:request-metrics',
     'validator:request-dimension-order',
+    'validator:request-filters',
     'validator:request-time-grain',
     'validator:number',
     'service:bard-metadata',

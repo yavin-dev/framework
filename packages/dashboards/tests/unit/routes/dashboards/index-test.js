@@ -11,6 +11,7 @@ moduleFor('route:dashboards/index', 'Unit | Route | dashboards/index', {
     'adapter:user',
     'model:dashboard',
     'model:dashboard-widget',
+    'model:deliverable-item',
     'model:delivery-rule',
     'model:fragments/presentation',
     'model:report',
@@ -20,7 +21,8 @@ moduleFor('route:dashboards/index', 'Unit | Route | dashboards/index', {
     'service:user',
     'serializer:user',
     'transform:fragment',
-    'transform:moment'
+    'transform:moment',
+    'validator:presence'
   ],
   beforeEach() {
     setupMock();
@@ -38,11 +40,11 @@ test('model', function(assert) {
   return Ember.run(() => {
     return Route.model().then(model => {
       return model.get('dashboards').then(dashboards => {
-        assert.deepEqual(dashboards.mapBy('id'), ['1', '2'], 'Routes model returns the `navi_user`s dashboards');
+        assert.deepEqual(dashboards.mapBy('id'), ['1', '2', '5'], 'Routes model returns the `navi_user`s dashboards');
 
         assert.deepEqual(
           dashboards.mapBy('title'),
-          ['Tumblr Goals Dashboard', 'Dashboard 2'],
+          ['Tumblr Goals Dashboard', 'Dashboard 2', 'Empty Dashboard'],
           'the actual models of the dashboards can be retrieved through the model'
         );
       });
