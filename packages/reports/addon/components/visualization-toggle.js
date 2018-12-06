@@ -13,5 +13,15 @@ import Component from '@ember/component';
 import layout from '../templates/components/visualization-toggle';
 
 export default Component.extend({
+  /**
+   * @property classNames
+   */
+  classNames: ['visualization-toggle'],
+
+  /**
+   * @property tagName
+   */
+  tagName: 'span',
+
   layout
 });
