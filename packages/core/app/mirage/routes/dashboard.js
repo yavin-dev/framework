@@ -1,8 +1,5 @@
-import moment from 'moment';
 import Mirage from 'ember-cli-mirage';
 import RESPONSE_CODES from '../enums/response-codes';
-
-const TIMESTAMP_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 
 export default function() {
   this.get('dashboards/:id', ({ dashboards }, request) => {
