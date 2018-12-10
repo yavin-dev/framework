@@ -195,7 +195,7 @@ export default Component.extend({
   _headerWheelSync(event) {
     let table = get(this, 'tableWrapperDomElement');
 
-    table.scrollTo(table.scrollLeft + event.deltaX, table.scrollTop);
+    table.scrollLeft += event.deltaX;
     event.preventDefault(); // Prevents the page navigation gesture in Mac OSX
     return false;
   },
