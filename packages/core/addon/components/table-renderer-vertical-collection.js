@@ -197,7 +197,6 @@ export default Component.extend({
 
     table.scrollLeft += event.deltaX;
     event.preventDefault(); // Prevents the page navigation gesture in Mac OSX
-    return false;
   },
 
   /**
