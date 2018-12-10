@@ -190,7 +190,7 @@ export default Component.extend({
    * Works for mouse wheels and vertical scrolling via mousepad gestures.
    * @param {Event} event - wheel event
    * @private
-   * @returns {Boolean} false
+   * @returns {void}
    */
   _headerWheelSync(event) {
     let table = get(this, 'tableWrapperDomElement');
