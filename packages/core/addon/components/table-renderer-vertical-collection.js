@@ -34,6 +34,11 @@ const SCROLL_EVENT = 'scroll';
  */
 const RESIZE_EVENT = 'didResize';
 
+/**
+ * @constant {String} WHEEL_EVENT - event for mouse and trackpad gestures
+ */
+const WHEEL_EVENT = 'wheel';
+
 export default Component.extend({
   layout,
 
@@ -93,6 +98,8 @@ export default Component.extend({
     [get(this, 'tableWrapperDomElement'), get(this, 'tableHeadersDomElement')].forEach(elm =>
       elm.addEventListener(SCROLL_EVENT, () => this._syncScroll())
     );
+
+    get(this, 'tableHeadersDomElement').addEventListener(WHEEL_EVENT, e => this._headerWheelSync(e));
   },
 
   /**
@@ -179,6 +186,20 @@ export default Component.extend({
   },
 
   /**
+   * Event handler for wheel events in header to scroll the table body vertically.
+   * Works for mouse wheels and vertical scrolling via mousepad gestures.
+   * @param {Event} event - wheel event
+   * @private
+   * @returns {void}
+   */
+  _headerWheelSync(event) {
+    let table = get(this, 'tableWrapperDomElement');
+
+    table.scrollLeft += event.deltaX;
+    event.preventDefault(); // Prevents the page navigation gesture in Mac OSX
+  },
+
+  /**
    * attach scroll and view resize event listeners when first rendered
    *
    * @method didInsertElement
@@ -221,6 +242,8 @@ export default Component.extend({
     [get(this, 'tableWrapperDomElement'), get(this, 'tableHeadersDomElement')].forEach(elm =>
       elm.removeEventListener(SCROLL_EVENT, () => this._syncScroll())
     );
+
+    get(this, 'tableHeadersDomElement').removeEventListener(WHEEL_EVENT, e => this._headerWheelSync(e));
 
     //turn off view resize listener
     get(this, 'resize').off(RESIZE_EVENT);
