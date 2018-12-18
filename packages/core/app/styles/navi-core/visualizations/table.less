@@ -3,6 +3,9 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
+@navi-table-max-wrap: 3;
+@navi-header-line-height: 1.3em;
+
 .table-widget {
   @row-margin: 0 13px;
   @cell-padding: 7px;
@@ -124,6 +127,19 @@
 
         &__title {
           flex: 1;
+          overflow: hidden;
+          /* autoprefixer: off */
+          display: -webkit-box;
+          -webkit-line-clamp: @navi-table-max-wrap;
+          -webkit-box-orient: vertical;
+          /* autoprefixer: on */
+
+          &:hover {
+            /* autoprefixer: off */
+            -webkit-line-clamp: 40;
+            /* autoprefixer: on */
+          }
+
           &--custom-name {
             text-decoration: underline;
             text-decoration-style: dotted;
@@ -324,5 +340,15 @@
 .table-cell__info-message--tooltip {
   &.ember-tooltip {
     font-size: @font-size-xsmall;
+  }
+}
+
+@supports not (-moz-line-clamp: @navi-table-max-wrap) {
+  .table-header-cell__title {
+    line-height: @navi-header-line-height;
+    max-height: @navi-header-line-height * @navi-table-max-wrap;
+    &:hover {
+      max-height: @navi-header-line-height * 40;
+    }
   }
 }
