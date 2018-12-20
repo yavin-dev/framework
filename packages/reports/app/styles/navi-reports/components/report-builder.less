@@ -53,11 +53,28 @@
     flex: 0 1 auto;
     margin-top: 5px;
     max-height: 35%;
+    padding: 5px 10px;
   }
 
   &__container-header {
-    font-size: @font-size-base;
-    font-family: @font-family-strong;
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    &__message {
+      font-family: @font-family-thin;
+      font-size: @font-size-mid;
+
+      &--icon {
+        color: @navi-gray-600;
+      }
+    }
+
+    &__title {
+      font-family: @font-family-strong;
+      font-size: @font-size-base;
+    }
   }
 
   &__dimension-selector {
@@ -72,7 +89,6 @@
     flex: 1;
     flex-flow: column;
     min-height: 0;
-    margin: 5px 0;
     overflow: auto;
   }
 

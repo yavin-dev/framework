@@ -28,11 +28,15 @@ module('Acceptances | Navi Report', {
       Ember.Component.extend({ classNames: 'add-to-dashboard' }),
       { instantiate: false }
     );
+
+    config.navi.FEATURES.enableVerticalCollectionTableIterator = true;
   },
   afterEach() {
     teardownModal();
     server.shutdown();
     Ember.run(Application, 'destroy');
+
+    config.navi.FEATURES.enableVerticalCollectionTableIterator = false;
   }
 });
 
@@ -119,7 +123,10 @@ test('New report', function(assert) {
 
     assert.ok(!!find('.table-widget').length, 'Data table visualization is shown by default');
 
-    assert.ok(!!find('.table-header-cell:contains(Ad Clicks)').length, 'Ad Clicks column is displayed');
+    assert.ok(
+      !!find('.table-header-row-vc--view .table-header-cell:contains(Ad Clicks)').length,
+      'Ad Clicks column is displayed'
+    );
   });
 });
 
@@ -656,7 +663,7 @@ test('Multi export action - pdf href', function(assert) {
   });
 
   /* == Change to table == */
-  click('.report-view__visualization-option:contains(Data Table)');
+  click('.visualization-toggle__option:contains(Data Table)');
   click('.navi-report__run-btn');
   clickDropdown('.multiple-format-export');
   andThen(() => {
@@ -937,7 +944,7 @@ test('Switch Visualization Type', function(assert) {
     assert.equal(find('.c3-legend-item').length, 3, 'Line chart visualization has 3 series as configured');
   });
 
-  click('.report-view__visualization-option:contains(Data Table)');
+  click('.visualization-toggle__option:contains(Data Table)');
   andThen(() => {
     assert.ok(!!find('.table-widget').length, 'table visualization is shown when selected');
 
@@ -950,7 +957,7 @@ test('Switch Visualization Type', function(assert) {
     );
   });
 
-  click('.report-view__visualization-option:contains(Line Chart)');
+  click('.visualization-toggle__option:contains(Line Chart)');
   andThen(() => {
     assert.ok(!!find('.line-chart-widget').length, 'line-chart visualization is shown when selected');
 
@@ -1140,7 +1147,7 @@ test('Revert Visualization Type - Back to Original Type', function(assert) {
   });
 
   /* == Switch to table == */
-  click('.report-view__visualization-option:contains(Data Table)');
+  click('.visualization-toggle__option:contains(Data Table)');
   andThen(() => {
     assert.ok(!!find('.table-widget').length, 'table visualization is shown when selected');
   });
@@ -1162,7 +1169,7 @@ test('Revert Visualization Type - Updated Report', function(assert) {
   });
 
   /* == Switch to table == */
-  click('.report-view__visualization-option:contains(Data Table)');
+  click('.visualization-toggle__option:contains(Data Table)');
   andThen(() => {
     assert.ok(!!find('.table-widget').length, 'table visualization is shown when selected');
   });
@@ -1174,7 +1181,7 @@ test('Revert Visualization Type - Updated Report', function(assert) {
   });
 
   /* == Switch to chart == */
-  click('.report-view__visualization-option:contains(Line Chart)');
+  click('.visualization-toggle__option:contains(Line Chart)');
   andThen(() => {
     assert.ok(!!find('.line-chart-widget').length, 'line-chart visualization is shown when selected');
   });
@@ -1205,7 +1212,7 @@ test('Revert Visualization Type - New Report', function(assert) {
   });
 
   /* == Switch to metric label == */
-  click('.report-view__visualization-option:contains(Metric Label)');
+  click('.visualization-toggle__option:contains(Metric Label)');
   andThen(() => {
     assert.ok(!!find('.metric-label-vis').length, 'Metric label visualization is shown when selected');
   });
@@ -1552,18 +1559,24 @@ test('running report after reverting changes', function(assert) {
 
   /* == Modify report by adding a metric == */
   visit('/reports/1/view');
-  click('.report-view__visualization-option:contains(Data Table)');
+  click('.visualization-toggle__option:contains(Data Table)');
   click('.checkbox-selector--metric .grouped-list__item:contains(Time Spent) .grouped-list__item-label');
   click('.navi-report__run-btn');
   andThen(() => {
-    assert.ok($('.table-header-cell:contains(Time Spent)').is(':visible'), 'Time Spent column is displayed');
+    assert.ok(
+      $('.table-header-row-vc--view .table-header-cell:contains(Time Spent)').is(':visible'),
+      'Time Spent column is displayed'
+    );
   });
 
   /* == Revert report to its original state == */
   click('.checkbox-selector--metric .grouped-list__item:contains(Time Spent) .grouped-list__item-label');
   click('.navi-report__run-btn');
   andThen(() => {
-    assert.notOk($('.table-header-cell:contains(Time Spent)').is(':visible'), 'Time Spent column is not displayed');
+    assert.notOk(
+      $('.table-header-row-vc--view .table-header-cell:contains(Time Spent)').is(':visible'),
+      'Time Spent column is not displayed'
+    );
   });
 });
 
@@ -1582,7 +1595,7 @@ test('Running a report against unauthorized table shows unauthorized route', fun
 
   selectChoose('.navi-table-select__dropdown', 'Network');
   click('.navi-report__run-btn');
-  click('.report-view__visualization-option:contains(Table)');
+  click('.visualization-toggle__option:contains(Table)');
   andThen(() => {
     assert.equal(currentURL(), '/reports/1/view', 'check to seee if we are on the view route');
 
@@ -1937,17 +1950,17 @@ test('adding metrics to reordered table keeps order', function(assert) {
   andThen(() => {
     return reorder(
       'mouse',
-      '.table-header-cell',
-      '.metric:contains(Nav Clicks)',
-      '.dimension:contains(Property)',
-      '.metric:contains(Ad Clicks)',
-      '.dateTime'
+      '.table-header-row-vc--view .table-header-cell',
+      '.table-header-row-vc--view .metric:contains(Nav Clicks)',
+      '.table-header-row-vc--view .dimension:contains(Property)',
+      '.table-header-row-vc--view .metric:contains(Ad Clicks)',
+      '.table-header-row-vc--view .dateTime'
     );
   });
 
   andThen(() => {
     assert.deepEqual(
-      find('.table-header-cell__title')
+      find('.table-header-row-vc--view .table-header-cell__title')
         .toArray()
         .map(el =>
           $(el)
@@ -1964,7 +1977,7 @@ test('adding metrics to reordered table keeps order', function(assert) {
 
   andThen(() => {
     assert.deepEqual(
-      find('.table-header-cell__title')
+      find('.table-header-row-vc--view .table-header-cell__title')
         .toArray()
         .map(el =>
           $(el)
@@ -1982,9 +1995,14 @@ test('Parameterized metrics with default displayname are not considered custom',
   visit('/reports/8');
 
   andThen(() => {
-    assert.ok(find('.table-header-cell.metric > .table-header-cell__title').length, 'renders metric columns');
+    assert.ok(
+      find('.table-header-row-vc--view .table-header-cell.metric > .table-header-cell__title').length,
+      'renders metric columns'
+    );
     assert.notOk(
-      find('.table-header-cell.metric > .table-header-cell__title').is('.table-header-cell__title--custom-name'),
+      find('.table-header-row-vc--view .table-header-cell.metric > .table-header-cell__title').is(
+        '.table-header-cell__title--custom-name'
+      ),
       'Parameterized metrics with default display name should not be considered custom'
     );
   });

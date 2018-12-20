@@ -34,6 +34,11 @@ let Model = EmberObject.extend(ExtendedMetadataMixin, {
   cardinality: undefined,
 
   /**
+   * @property {String} datatype
+   */
+  datatype: undefined,
+
+  /**
    * @property {Array} Array of field objects
    */
   fields: undefined,

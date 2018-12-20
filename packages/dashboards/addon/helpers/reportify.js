@@ -30,7 +30,6 @@ export default Helper.extend({
 
     return store.createRecord('report', {
       title: clonedModel.title,
-      author: get(model, 'author'),
       request: get(model, 'request').clone(),
       visualization: store.createFragment(clonedModel.visualization.type, clonedModel.visualization)
     });

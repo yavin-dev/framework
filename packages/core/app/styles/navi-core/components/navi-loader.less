@@ -8,13 +8,23 @@
     display: flex;
     flex-flow: column;
     margin: 10px;
+    width: 100%;
   }
 
   &__spinner {
     .spinner;
+    flex: 1;
   }
 
   &__bounce {
     margin: 0 3px;
+  }
+}
+
+//firefox fix for loader height
+//if loader is in a tbody, flex isn't appropriate
+tbody {
+  .navi-loader__spinner {
+    flex: none;
   }
 }

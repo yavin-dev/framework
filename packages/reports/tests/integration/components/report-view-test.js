@@ -54,9 +54,15 @@ moduleForComponent('report-view', 'Integration | Component | report view', {
   beforeEach() {
     setupMock();
 
-    this.register('helper:route-action', Ember.Helper.helper(() => {}), {
-      instantiate: false
-    });
+    this.register(
+      'helper:route-action',
+      Ember.Helper.helper(() => {
+        return () => {};
+      }),
+      {
+        instantiate: false
+      }
+    );
 
     let metadataService = getOwner(this).lookup('service:bard-metadata'),
       store = getOwner(this).lookup('service:store');
@@ -138,13 +144,10 @@ test('metric label visualization selector is available on single metric, single 
             }}
         `);
 
-    assert.ok(
-      this.$('.report-view__visualization-option:contains(Data Table)').is(':visible'),
-      'Table Selector is visible'
-    );
+    assert.ok(this.$('.visualization-toggle__option:contains(Data Table)').is(':visible'), 'Table Selector is visible');
 
     assert.ok(
-      this.$('.report-view__visualization-option:contains(Metric Label)').is(':visible'),
+      this.$('.visualization-toggle__option:contains(Metric Label)').is(':visible'),
       'Metric Label Selector is visible'
     );
   });

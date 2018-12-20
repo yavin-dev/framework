@@ -6,7 +6,11 @@
         </div>
     {{else}}
         <div class='report-view__visualization-header'>
-            {{partial 'partials/visualization-toggle'}}
+            {{visualization-toggle
+                report=report
+                validVisualizations=validVisualizations
+                onVisualizationTypeUpdate=(route-action 'onVisualizationTypeUpdate')
+            }}
             {{#if hasReportRun}}
                 {{#unless isEditingVisualization}}
                     <div class='clickable report-view__visualization-edit-btn' onclick={{action 'toggleEditVisualization' this}}>
