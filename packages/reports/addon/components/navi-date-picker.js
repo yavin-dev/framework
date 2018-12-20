@@ -174,9 +174,9 @@ export default Ember.Component.extend({
    * @returns {boolean} true if date is the same
    */
   _isNewDateValue(newDate) {
-    let lastTime = get(this, '_lastTimeDate');
+    let lastTime = get(this, 'lastTimeDate');
 
-    set(this, '_lastTimeDate', newDate);
+    set(this, 'lastTimeDate', newDate);
 
     if (!lastTime) {
       return false;

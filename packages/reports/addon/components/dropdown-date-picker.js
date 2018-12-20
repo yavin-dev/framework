@@ -15,11 +15,14 @@ export default Component.extend({
   layout,
 
   /**
-   * @property {Moment} _selectedDate - local moment set by date picker
-   * @private
+   * @property {Moment} selectedDate - local moment set by date picker
    */
-  _selectedDate: null,
+  selectedDate: null,
 
+  /**
+   * @method init
+   * @override
+   */
   init() {
     this._super(...arguments);
 
@@ -30,7 +33,7 @@ export default Component.extend({
    * @method loadSavedDate
    */
   loadSavedDate() {
-    this.set('_selectedDate', this.get('savedDate'));
+    this.set('selectedDate', this.get('savedDate'));
   },
 
   actions: {
