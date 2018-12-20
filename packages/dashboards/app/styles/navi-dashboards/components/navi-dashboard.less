@@ -4,6 +4,14 @@
  */
 
 .navi-dashboard {
+  &__breadcrumb {
+    font-size: @font-size-base;
+    padding-left: 10px;
+  }
+
+  &__breadcrumb-link {
+    color: @navi-blue;
+  }
 
   .display-flex;
   .flex-1;
@@ -20,6 +28,10 @@
     margin: 3px 10px;
   }
 
+  &__widgets {
+    margin-bottom: 20px;
+  }
+
   .page-header {
     align-items: center;
     .display-flex;
@@ -34,11 +46,19 @@
   }
 
   .dashboard-actions {
+    button,
     .btn {
+      cursor: pointer;
       font-family: @font-family-sans-serif;
+      margin-right: 15px;
+
       a {
-        color: @navi-black;
+        color: @navi-gray-800;
       }
+    }
+
+    .navi-icon__download {
+      margin: 3px 5px 0 0;
     }
   }
 }

@@ -1,14 +1,9 @@
-/**
- * Copyright 2018, Yahoo Holdings Inc.
- * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
- */
-import Ember from 'ember';
 import ExtendedMetadataMixin from 'navi-data/mixins/extended-metadata';
-import { computed, get } from '@ember/object';
+import EmberObject, { computed, get } from '@ember/object';
 import { isEmpty } from '@ember/utils';
 import forIn from 'lodash/forIn';
 
-let Model = Ember.Object.extend(ExtendedMetadataMixin, {
+let Model = EmberObject.extend(ExtendedMetadataMixin, {
   /**
    * @property {String} type
    */
@@ -50,7 +45,7 @@ let Model = Ember.Object.extend(ExtendedMetadataMixin, {
    * @property {Array} paramNames - paramNames for the metric
    */
   paramNames: computed('parameters', function() {
-    return Object.keys(get(this, 'parameters')||{});
+    return Object.keys(get(this, 'parameters') || {});
   }),
 
   /**
@@ -61,7 +56,7 @@ let Model = Ember.Object.extend(ExtendedMetadataMixin, {
    * @returns {Object}
    */
   getParameter(name) {
-    if(!get(this, 'hasParameters')){
+    if (!get(this, 'hasParameters')) {
       return;
     }
 
@@ -74,7 +69,7 @@ let Model = Ember.Object.extend(ExtendedMetadataMixin, {
    * @returns {Object|undefined}
    */
   getDefaultParameters() {
-    if(!get(this, 'hasParameters')){
+    if (!get(this, 'hasParameters')) {
       return;
     }
 

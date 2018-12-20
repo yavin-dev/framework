@@ -1,59 +1,97 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-.dropdown-list {
-    background-color: @navi-white;
-    border: 1px solid @navi-light-gray;
-    color: @navi-black;
-    font-size: @font-size-base;
+.dropdown-arrow {
+  background: @navi-white;
+  border-radius: 2px;
+  border: 1px solid @navi-gray-300;
+  box-shadow: 0 3px 8px fade(@navi-black, 38%);
+
+  &:before,
+  &:after {
+    /*
+     * Add left and right values for a top or bottom arrow or top and bottom values for a left or right arrow
+     * e.g. for an arrow on the left side of the top or bottom:
+     * right: 70%;
+     * left: 0;
+    */
+    border: solid transparent;
+    content: ' ';
+    height: 0;
+    margin: 0 auto;
     position: absolute;
-    text-align: left;
+    pointer-events: none;
+    width: 0;
+  }
 
-    .search {
-        border-bottom: 1px solid @navi-border-gray;
-        display: flex;
-        padding: 2px 10px;
+  &:before {
+    // Add -24px to the side the arrow should be on. e.g. top: -24px for a top arrow
+    border-bottom-color: @navi-gray-300;
+    border-width: 12px;
+  }
 
-        i {
-            padding-top: 2px;
-            opacity: 0.7;
-        }
+  &:after {
+    // Add -19px to the side the arrow should be on. e.g. top: -19px for a top arrow
+    border-bottom-color: @navi-white;
+    border-width: 10px;
+  }
+}
 
-        input {
-            font-size: @font-size-base;
-            min-height: 26px;
-            padding: 0 5px 0 10px;
-            width: 100%;
-        }
+.dropdown-list {
+  background-color: @navi-white;
+  border: 1px solid @navi-light-gray;
+  color: @navi-black;
+  font-size: @font-size-base;
+  position: absolute;
+  text-align: left;
+
+  .search {
+    border-bottom: 1px solid @navi-border-gray;
+    display: flex;
+    padding: 2px 10px;
+
+    i {
+      padding-top: 2px;
+      opacity: 0.7;
     }
 
-    .no-match {
-        padding: 11px;
+    input {
+      font-size: @font-size-base;
+      min-height: 26px;
+      padding: 0 5px 0 10px;
+      width: 100%;
     }
+  }
 
-    ol, ul, .list {
-        margin-top: 4px;
-        max-height: 200px;
-        overflow-y: auto;
+  .no-match {
+    padding: 11px;
+  }
 
-        li {
-            padding: 3px 7px 4px 26px;
+  ol,
+  ul,
+  .list {
+    margin-top: 4px;
+    max-height: 200px;
+    overflow-y: auto;
 
-            &.group-header {
-                font-weight: bold;
-                padding-left: 11px;
-            }
+    li {
+      padding: 3px 7px 4px 26px;
 
-            &:not(.group-header) {
-                .clickable;
+      &.group-header {
+        font-weight: bold;
+        padding-left: 11px;
+      }
 
-                &:hover {
-                    background-color: @navi-form-purple;
-                    color: @navi-white;
-                }
-            }
+      &:not(.group-header) {
+        .clickable;
+
+        &:hover {
+          background-color: @navi-form-purple;
+          color: @navi-white;
         }
+      }
     }
+  }
 }

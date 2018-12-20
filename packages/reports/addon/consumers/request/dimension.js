@@ -40,17 +40,15 @@ export default ActionConsumer.extend({
      */
     [RequestActions.DID_UPDATE_TIME_GRAIN](route, timeGrain) {
       let request = get(route, 'currentModel.request'),
-          timeGrainDimensions = get(timeGrain, 'dimensions');
+        timeGrainDimensions = get(timeGrain, 'dimensions');
 
-      get(request, 'dimensions').mapBy('dimension').forEach((dimension) => {
-        if(!timeGrainDimensions.includes(dimension)){
-          get(this, 'requestActionDispatcher').dispatch(
-            RequestActions.REMOVE_DIMENSION,
-            route,
-            dimension
-          );
-        }
-      });
+      get(request, 'dimensions')
+        .mapBy('dimension')
+        .forEach(dimension => {
+          if (!timeGrainDimensions.includes(dimension)) {
+            get(this, 'requestActionDispatcher').dispatch(RequestActions.REMOVE_DIMENSION, route, dimension);
+          }
+        });
     }
   }
 });

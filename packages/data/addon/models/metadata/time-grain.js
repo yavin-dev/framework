@@ -4,11 +4,11 @@
  *
  * Time Grain Fragment Object
  */
-import Ember from 'ember';
+import EmberObject, { computed } from '@ember/object';
 
-const { getOwner } = Ember;
+import { getOwner } from '@ember/application';
 
-export default Ember.Object.extend({
+export default EmberObject.extend({
   /**
    * @property {String} name
    */
@@ -27,7 +27,7 @@ export default Ember.Object.extend({
   /**
    * @property {String} retention
    */
-  retention:  undefined,
+  retention: undefined,
 
   /**
    * @property {Array} metricIds - array of metric ids
@@ -42,18 +42,22 @@ export default Ember.Object.extend({
   /**
    * @property {Array} metrics - array of metric models
    */
-  metrics: Ember.computed(function(){
-    return this.get('metricIds').map((metricId) => {
-      return getOwner(this).lookup('service:keg').getById('metadata/metric', metricId);
+  metrics: computed(function() {
+    return this.get('metricIds').map(metricId => {
+      return getOwner(this)
+        .lookup('service:keg')
+        .getById('metadata/metric', metricId);
     });
   }),
 
   /**
    * @property {Array} dimensions - array of dimension models
    */
-  dimensions: Ember.computed(function(){
-    return this.get('dimensionIds').map((dimensionId) => {
-      return getOwner(this).lookup('service:keg').getById('metadata/dimension', dimensionId);
+  dimensions: computed(function() {
+    return this.get('dimensionIds').map(dimensionId => {
+      return getOwner(this)
+        .lookup('service:keg')
+        .getById('metadata/dimension', dimensionId);
     });
   })
 });

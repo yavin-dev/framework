@@ -43,9 +43,6 @@ export default Ember.Component.extend({
     this.set('target', targetContainer);
 
     // Register with target
-    targetContainer.register(
-      Ember.String.camelize(this.get('componentName')),
-      this
-    );
+    targetContainer.register(Ember.String.camelize(this.get('componentName')), this);
   }
 });

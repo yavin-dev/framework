@@ -3,32 +3,32 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 .grouped-list {
-    color: @navi-gray-500;
-    font-size: @font-size-mid-base;
+  color: @navi-gray-500;
+  font-size: @font-size-mid-base;
 
-    &__group-header {
-        text-transform: capitalize;
-        margin: 2px 0;
+  &__group-header {
+    text-transform: capitalize;
+    margin: 2px 0;
+  }
+
+  &__item {
+    display: flex;
+    margin-left: 15px;
+    font-size: @font-size-mid;
+
+    &-label {
+      .clickable;
     }
 
-    &__item {
-        display: flex;
-        margin-left: 15px;
-        font-size: @font-size-mid;
-
-        &-label {
-            .clickable;
-        }
-
-        &-info {
-            align-self: center;
-            cursor: help;
-            display: none;
-            margin-left: 5px;
-        }
-
-        &:hover &-info{
-            display: initial;
-        }
+    &-info {
+      align-self: center;
+      cursor: help;
+      display: none;
+      margin-left: 5px;
     }
+
+    &:hover &-info {
+      display: initial;
+    }
+  }
 }

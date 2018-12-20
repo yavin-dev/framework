@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -10,19 +10,21 @@
  *      onCancel= (action cancel) - {String} name of action to trigger on cancel
  *   }}
  */
-import Ember from 'ember';
+import Component from '@ember/component';
+import { get, set, computed } from '@ember/object';
+import { A as arr } from '@ember/array';
+import { isEmpty } from '@ember/utils';
+import { inject as service } from '@ember/service';
 import layout from '../templates/components/dimension-bulk-import';
 import DS from 'ember-data';
 
-const { computed, set, get } = Ember;
-
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   /**
    * @property {Array} classNames - list of class names to be applied to the component
    */
-  classNames: [ 'dimension-bulk-import' ],
+  classNames: ['dimension-bulk-import'],
 
   /**
    * @property {Object} - dimension - dimension metadata containing name and longName properties
@@ -37,7 +39,7 @@ export default Ember.Component.extend({
     let queryIds = get(this, 'queryIds') || [];
 
     //Remove preceding and trailing white spaces, empty strings and duplicates
-    return Ember.A(queryIds.map(key => key.trim()).filter(Boolean)).uniq();
+    return arr(queryIds.map(key => key.trim()).filter(Boolean)).uniq();
   }),
 
   /**
@@ -58,11 +60,11 @@ export default Ember.Component.extend({
    */
   _invalidDimValueIds: computed('_trimmedQueryIds', '_validDimValues', function() {
     let validDimVals = get(this, '_validDimValues');
-    return Ember.A(get(this, '_trimmedQueryIds').reject(
-      queryId => validDimVals.any(
-        validDimVal => get(validDimVal, 'id') === queryId
+    return arr(
+      get(this, '_trimmedQueryIds').reject(queryId =>
+        validDimVals.any(validDimVal => get(validDimVal, 'id') === queryId)
       )
-    ));
+    );
   }),
 
   /**
@@ -75,7 +77,13 @@ export default Ember.Component.extend({
    * @private
    * @property {Ember.Service} dimensionService
    */
-  _dimensionService: Ember.inject.service('bard-dimensions'),
+  _dimensionService: service('bard-dimensions'),
+
+  /**
+   * @private
+   * @property {Ember.Service} bardMetadata
+   */
+  _bardMetadata: service('bard-metadata'),
 
   /**
    * @method didInsertElement
@@ -94,20 +102,31 @@ export default Ember.Component.extend({
    */
   _search() {
     // Nothing to search for
-    if (Ember.isEmpty(get(this, '_trimmedQueryIds'))) {
+    if (isEmpty(get(this, '_trimmedQueryIds'))) {
       this.attrs.onCancel();
       return;
     }
 
-    let promise = get(this, '_dimensionService').find(get(this, 'dimension.name'), {
-      values: get(this, '_trimmedQueryIds').join(',')
-    }).then(dimValues => {
-      set(this, '_validDimValues', dimValues.toArray());
-    });
+    let promise = get(this, '_dimensionService')
+      .find(get(this, 'dimension.name'), {
+        values: get(this, '_trimmedQueryIds').join(','),
+        field: get(this, 'searchableIdField')
+      })
+      .then(dimValues => {
+        set(this, '_validDimValues', dimValues.toArray());
+      });
 
-        //set loading promise
-    set(this, '_loadingPromise', DS.PromiseObject.create({promise}));
+    //set loading promise
+    set(this, '_loadingPromise', DS.PromiseObject.create({ promise }));
   },
+
+  /**
+   * @property {String} - which id field that we would want to search values against
+   */
+  searchableIdField: computed('dimension.name', function() {
+    const meta = get(this, '_bardMetadata').getById('dimension', get(this, 'dimension.name'));
+    return get(meta, 'idFieldName');
+  }),
 
   actions: {
     /**

@@ -33,7 +33,9 @@ module.exports = function(environment) {
 
     navi: {
       FEATURES: {
-        enableMultipleExport: false
+        enableDirectory: true,
+        enableMultipleExport: false,
+        enableTableEditing: true
       }
     }
   };
@@ -60,7 +62,9 @@ module.exports = function(environment) {
   }
 
   if (environment === 'production') {
-    // keep this for later
+    ENV['ember-cli-mirage'] = {
+      enabled: false //set to true for gh-pages
+    };
   }
 
   return ENV;

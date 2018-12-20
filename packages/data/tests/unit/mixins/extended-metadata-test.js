@@ -1,48 +1,39 @@
-import Ember from 'ember';
+import EmberObject, { get } from '@ember/object';
+import { setOwner } from '@ember/application';
 import ExtendedMetadataMixin from 'navi-data/mixins/extended-metadata';
-import { moduleFor, test } from 'ember-qunit';
-import Pretender from "pretender";
+import { module, test } from 'qunit';
+import { setupTest } from 'ember-qunit';
+import Pretender from 'pretender';
 
-import metadataRoutes, {
-  MetricOne
-} from '../../helpers/metadata-routes';
-
-const { get, getOwner, setOwner } = Ember;
+import metadataRoutes, { MetricOne } from '../../helpers/metadata-routes';
 
 let Server;
 
-moduleFor('mixin:extended-metadata', 'Unit | Mixin | extended metadata', {
-  needs: [
-    'adapter:bard-metadata',
-    'service:bard-metadata',
-    'service:keg',
-    'service:ajax',
-    'model:metadata/metric'
-  ],
+module('Unit | Mixin | extended metadata', function(hooks) {
+  setupTest(hooks);
 
-  beforeEach(){
+  hooks.beforeEach(function() {
     //setup Pretender
     Server = new Pretender(metadataRoutes);
-  },
-  afterEach(){
+  });
+
+  hooks.afterEach(function() {
     //shutdown pretender
     Server.shutdown();
-  }
-});
-
-test('load extended metadata correctly', function(assert) {
-  assert.expect(1);
-
-  let ExtendedMetadataObject = Ember.Object.extend(ExtendedMetadataMixin, {
-    type: 'metric',
-    name: 'metricOne'
   });
-  let subject = ExtendedMetadataObject.create();
-  setOwner(subject, getOwner(this));
 
-  return get(subject, 'extended').then(() => {
-    assert.deepEqual(get(subject, 'extended.content'),
-      MetricOne,
-      'extended property should load correct data');
+  test('load extended metadata correctly', function(assert) {
+    assert.expect(1);
+
+    let ExtendedMetadataObject = EmberObject.extend(ExtendedMetadataMixin, {
+      type: 'metric',
+      name: 'metricOne'
+    });
+    let subject = ExtendedMetadataObject.create();
+    setOwner(subject, this.owner);
+
+    return get(subject, 'extended').then(() => {
+      assert.deepEqual(get(subject, 'extended.content'), MetricOne, 'extended property should load correct data');
+    });
   });
 });

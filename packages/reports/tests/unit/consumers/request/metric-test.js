@@ -3,12 +3,7 @@ import { moduleFor, test } from 'ember-qunit';
 import { RequestActions } from 'navi-reports/services/request-action-dispatcher';
 import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
 
-let Store,
-    MetadataService,
-    AdClicks,
-    PageViews,
-    CurrentModel,
-    Consumer;
+let Store, MetadataService, AdClicks, PageViews, CurrentModel, Consumer;
 
 const { get, getOwner } = Ember;
 
@@ -22,7 +17,6 @@ moduleFor('consumer:request/metric', 'Unit | Consumer | request metric', {
     'transform:metric',
     'transform:moment',
     'transform:table',
-    'model:dimension-age',
     'model:bard-request/request',
     'model:bard-request/fragments/metric',
     'model:bard-request/fragments/having',
@@ -51,10 +45,12 @@ moduleFor('consumer:request/metric', 'Unit | Consumer | request metric', {
     setupMock();
     Store = getOwner(this).lookup('service:store');
 
-    MetadataService =  getOwner(this).lookup('service:bard-metadata');
+    MetadataService = getOwner(this).lookup('service:bard-metadata');
 
     Consumer = this.subject();
-    CurrentModel = { request: Store.createFragment('bard-request/request', { metrics: [] })};
+    CurrentModel = {
+      request: Store.createFragment('bard-request/request', { metrics: [] })
+    };
 
     // Isolate test to focus on only this consumer
     let requestActionDispatcher = getOwner(this).lookup('service:request-action-dispatcher');
@@ -78,9 +74,11 @@ test('ADD_METRIC', function(assert) {
     Consumer.send(RequestActions.ADD_METRIC, { currentModel: CurrentModel }, AdClicks);
   });
 
-  assert.deepEqual(get(CurrentModel, 'request.metrics').mapBy('metric')[0],
+  assert.deepEqual(
+    get(CurrentModel, 'request.metrics').mapBy('metric')[0],
     AdClicks,
-    'addMetric adds the given metric to the request');
+    'addMetric adds the given metric to the request'
+  );
 });
 
 test('REMOVE_METRIC', function(assert) {
@@ -91,24 +89,23 @@ test('REMOVE_METRIC', function(assert) {
     Consumer.send(RequestActions.REMOVE_METRIC, { currentModel: CurrentModel }, AdClicks);
   });
 
-  assert.ok(get(CurrentModel, 'request.metrics.length') === 0,
-    'The given metric is removed from the request');
+  assert.ok(get(CurrentModel, 'request.metrics.length') === 0, 'The given metric is removed from the request');
 });
 
 test('ADD_METRIC_FILTER', function(assert) {
   assert.expect(2);
 
-  assert.equal(get(CurrentModel, 'request.metrics.length'),
-    0,
-    'The request starts with no metrics');
+  assert.equal(get(CurrentModel, 'request.metrics.length'), 0, 'The request starts with no metrics');
 
   Ember.run(() => {
     Consumer.send(RequestActions.ADD_METRIC_FILTER, { currentModel: CurrentModel }, AdClicks);
   });
 
-  assert.deepEqual(get(CurrentModel, 'request.metrics').mapBy('metric'),
+  assert.deepEqual(
+    get(CurrentModel, 'request.metrics').mapBy('metric'),
     [AdClicks],
-    'When a metric filter is added, the metric is added too');
+    'When a metric filter is added, the metric is added too'
+  );
 });
 
 test('DID_UPDATE_TIME_GRAIN', function(assert) {
@@ -119,15 +116,23 @@ test('DID_UPDATE_TIME_GRAIN', function(assert) {
     Consumer.send(RequestActions.ADD_METRIC, { currentModel: CurrentModel }, PageViews);
   });
 
-  assert.deepEqual(get(CurrentModel, 'request.metrics').mapBy('metric'),
+  assert.deepEqual(
+    get(CurrentModel, 'request.metrics').mapBy('metric'),
     [AdClicks, PageViews],
-    'Both given metrics are added to request');
+    'Both given metrics are added to request'
+  );
 
-  Consumer.send(RequestActions.DID_UPDATE_TIME_GRAIN, { currentModel: CurrentModel }, {
-    metrics: [AdClicks] // Time grain with no page views
-  });
+  Consumer.send(
+    RequestActions.DID_UPDATE_TIME_GRAIN,
+    { currentModel: CurrentModel },
+    {
+      metrics: [AdClicks] // Time grain with no page views
+    }
+  );
 
-  assert.deepEqual(get(CurrentModel, 'request.metrics').mapBy('metric'),
+  assert.deepEqual(
+    get(CurrentModel, 'request.metrics').mapBy('metric'),
     [AdClicks],
-    'Page views metric is removed since it was not found in the new time grain');
+    'Page views metric is removed since it was not found in the new time grain'
+  );
 });

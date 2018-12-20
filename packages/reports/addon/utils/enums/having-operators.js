@@ -31,5 +31,5 @@ export default Ember.A([
   {
     id: 'neq',
     name: 'not equals (!=)'
-  },
+  }
 ]);

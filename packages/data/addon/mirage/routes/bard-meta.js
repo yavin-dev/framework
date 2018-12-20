@@ -15,40 +15,29 @@ import metricModels from '../fixtures/bard-meta-metrics';
  * Method to configure metadata endpoints
  */
 export default function() {
-
   /**
    * /tables endpoint
    */
   this.get('/tables', (db, req) => {
     let tables = tableModels;
 
-    if(req.queryParams.format === 'fullview'){
+    if (req.queryParams.format === 'fullview') {
       tables = tables.map(table => {
         let timeGrains = timeGrainModels.map(timeGrain => {
           let tableDimModels = dimModels.defaultDims;
 
-          if (table.name !== 'network'){
+          if (table.name !== 'network') {
             tableDimModels = tableDimModels.concat(dimModels.highCardinalityDims);
           }
 
-          if(timeGrain.name === 'day'){
+          if (timeGrain.name === 'day') {
             let defaultMetricModels = metricModels.defaultMetrics;
 
-            return Object.assign(
-              {},
-              timeGrain,
-              { metrics: defaultMetricModels },
-              { dimensions: tableDimModels }
-            );
+            return Object.assign({}, timeGrain, { metrics: defaultMetricModels }, { dimensions: tableDimModels });
           } else {
             let metricsWithDayAvg = metricModels.defaultMetrics.concat(metricModels.dayAvgMetrics);
 
-            return Object.assign(
-              {},
-              timeGrain,
-              { metrics: metricsWithDayAvg },
-              { dimensions: tableDimModels }
-            );
+            return Object.assign({}, timeGrain, { metrics: metricsWithDayAvg }, { dimensions: tableDimModels });
           }
         });
 
@@ -57,11 +46,7 @@ export default function() {
           timeGrains.shift();
         }
 
-        return Object.assign(
-          {},
-          table,
-          { timeGrains }
-        );
+        return Object.assign({}, table, { timeGrains });
       });
     }
     return { tables };
@@ -69,8 +54,9 @@ export default function() {
 
   this.get('/dimensions/:dimension', function(db, request) {
     let dimensionName = request.params.dimension,
-        dimension = dimModels.defaultDims.concat(dimModels.highCardinalityDims)
-          .find(dimModel => dimModel.name === dimensionName);
+      dimension = dimModels.defaultDims
+        .concat(dimModels.highCardinalityDims)
+        .find(dimModel => dimModel.name === dimensionName);
 
     dimension.description = faker.lorem.sentence();
     return dimension;
@@ -78,8 +64,9 @@ export default function() {
 
   this.get('/metrics/:metric', function(db, request) {
     let metricName = request.params.metric,
-        metric = metricModels.defaultMetrics.concat(metricModels.dayAvgMetrics)
-          .find(metricModel => metricModel.name === metricName);
+      metric = metricModels.defaultMetrics
+        .concat(metricModels.dayAvgMetrics)
+        .find(metricModel => metricModel.name === metricName);
 
     metric.description = faker.lorem.sentence();
     return metric;

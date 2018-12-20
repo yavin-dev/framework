@@ -3,44 +3,77 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
- .filter-values {
-     &--dimension-select__dropdown {
-         .ember-power-select-option {
-             padding-left: 8px;
-             .item-row {
-                 font-size: @font-size-mid-base;
-             }
-         }
-     }
+.filter-values {
+  &--dimension-select__dropdown {
+    .ember-power-select-option {
+      padding-left: 8px;
+      .item-row {
+        font-size: @font-size-mid-base;
+      }
+    }
+  }
 
-     &--dimension-select__trigger {
-         .ember-power-select-multiple-option {
-             font-size: @font-size-mid-base;
-             padding: 0 4px;
-         }
-     }
+  &--dimension-select__trigger {
+    .ember-power-select-multiple-option {
+      font-size: @font-size-mid-base;
+      padding: 0 4px;
+    }
+  }
 
-    &--range-input {
+  &--date-dimension-select__dropdown {
+    border: 1px solid @navi-lightest-gray;
+
+    .date-dimension-select {
+      &__apply {
+        border-radius: 5px;
+        border-width: 0 0 3px 0;
+        font-size: @font-size-mid;
+        padding: 2px 13px;
+      }
+
+      &__reset {
+        background: none;
+        border: none;
+        font-size: @font-size-mid;
+        vertical-align: inherit;
+      }
+
+      &__controls {
+        background-color: @navi-lightest-gray;
+        border: 1px solid @gray-date-picker;
         display: flex;
-
-        &__separator {
-            padding: 5px;
-        }
-    }
-
-    &--range-input__input,
-    &--multi-value-input,
-    &--value-input {
-        border: 1px solid @navi-gray-400;
-        font-family: @font-family-thin;
+        justify-content: flex-end;
+        padding: 5px 10px;
         width: 100%;
-    }
+      }
 
-    &--range-input__input--error,
-    &--value-input--error,
-    &--multi-value-input--error,
-    &--dimension-select--error &--dimension-select__trigger {
-        background-color: @navi-form-error-red;
-        border-bottom-color: @navi-error-color;
+      &__reset {
+        margin-right: 10px;
+      }
     }
- }
+  }
+
+  &--range-input {
+    display: flex;
+
+    &__separator {
+      padding: 5px;
+    }
+  }
+
+  &--range-input__input,
+  &--multi-value-input,
+  &--value-input {
+    border: 1px solid @navi-gray-400;
+    font-family: @font-family-thin;
+    width: 100%;
+  }
+
+  &--range-input__input--error,
+  &--value-input--error,
+  &--multi-value-input--error,
+  &--dimension-select--error &--dimension-select__trigger {
+    background-color: @navi-form-error-red;
+    border-bottom-color: @navi-error-color;
+  }
+}

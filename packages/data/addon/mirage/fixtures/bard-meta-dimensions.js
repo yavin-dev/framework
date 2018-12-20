@@ -5,6 +5,7 @@ export default {
       longName: 'Operating System',
       cardinality: 100,
       category: 'test',
+      datatype: 'text',
       storageStrategy: 'loaded'
     },
     {
@@ -12,6 +13,7 @@ export default {
       longName: 'User Device Type',
       cardinality: 100,
       category: 'test',
+      datatype: 'text',
       storageStrategy: 'loaded'
     },
     {
@@ -19,24 +21,31 @@ export default {
       longName: 'Age',
       cardinality: 100,
       category: 'test',
+      datatype: 'text',
       storageStrategy: 'loaded'
-    },{
+    },
+    {
       name: 'currency',
       longName: 'Currency',
       cardinality: 500,
       category: 'test',
+      datatype: 'text',
       storageStrategy: 'loaded'
-    },{
+    },
+    {
       name: 'displayCurrency',
       longName: 'Display Currency',
       cardinality: 54,
       category: 'test',
+      datatype: 'text',
       storageStrategy: 'loaded'
-    },{
+    },
+    {
       name: 'gender',
       longName: 'Gender',
       cardinality: 100,
       category: 'test',
+      datatype: 'text',
       storageStrategy: 'loaded'
     },
     {
@@ -44,6 +53,7 @@ export default {
       longName: 'Property Country',
       cardinality: 100,
       category: 'test',
+      datatype: 'text',
       storageStrategy: 'loaded'
     },
     {
@@ -51,6 +61,7 @@ export default {
       longName: 'Logged-in State',
       cardinality: 100,
       category: 'test',
+      datatype: 'text',
       storageStrategy: 'loaded'
     },
     {
@@ -58,6 +69,7 @@ export default {
       longName: 'Platform',
       cardinality: 100,
       category: 'test',
+      datatype: 'text',
       storageStrategy: 'loaded'
     },
     {
@@ -65,6 +77,7 @@ export default {
       longName: 'User Device Type V3',
       cardinality: 100,
       category: 'test',
+      datatype: 'text',
       storageStrategy: 'loaded'
     },
     {
@@ -72,6 +85,7 @@ export default {
       longName: 'Product Family',
       cardinality: 100,
       category: 'Asset',
+      datatype: 'text',
       storageStrategy: 'loaded'
     },
     {
@@ -79,6 +93,7 @@ export default {
       longName: 'Property',
       cardinality: 5000,
       category: 'Asset',
+      datatype: 'text',
       storageStrategy: 'loaded'
     },
     {
@@ -86,6 +101,7 @@ export default {
       longName: 'Browser',
       cardinality: 100,
       category: 'test',
+      datatype: 'text',
       storageStrategy: 'loaded'
     },
     {
@@ -93,6 +109,7 @@ export default {
       longName: 'Browser Version',
       cardinality: 100,
       category: 'test',
+      datatype: 'text',
       storageStrategy: 'loaded'
     },
     {
@@ -100,6 +117,7 @@ export default {
       longName: 'Product Region',
       cardinality: 100,
       category: 'test',
+      datatype: 'text',
       storageStrategy: 'loaded'
     },
     {
@@ -107,6 +125,7 @@ export default {
       longName: 'Platform Version',
       cardinality: 100,
       category: 'test',
+      datatype: 'text',
       storageStrategy: 'loaded'
     },
     {
@@ -114,6 +133,7 @@ export default {
       longName: 'Screen Type',
       cardinality: 100,
       category: 'test',
+      datatype: 'text',
       storageStrategy: 'loaded'
     },
     {
@@ -121,6 +141,7 @@ export default {
       longName: 'Language',
       cardinality: 100,
       category: 'test',
+      datatype: 'text',
       storageStrategy: 'loaded'
     },
     {
@@ -128,6 +149,7 @@ export default {
       longName: 'User Country',
       cardinality: 100,
       category: 'test',
+      datatype: 'text',
       storageStrategy: 'loaded'
     },
     {
@@ -135,6 +157,7 @@ export default {
       longName: 'User Region',
       cardinality: 100,
       category: 'test',
+      datatype: 'text',
       storageStrategy: 'loaded'
     },
     {
@@ -142,6 +165,7 @@ export default {
       longName: 'User Sub Region',
       cardinality: 100,
       category: 'test',
+      datatype: 'text',
       storageStrategy: 'loaded'
     },
     {
@@ -149,6 +173,7 @@ export default {
       longName: 'Product Sub Region',
       cardinality: 100,
       category: 'test',
+      datatype: 'text',
       storageStrategy: 'loaded'
     },
     {
@@ -156,6 +181,7 @@ export default {
       longName: 'Outflow Channel',
       cardinality: 100,
       category: 'test',
+      datatype: 'text',
       storageStrategy: 'loaded'
     },
     {
@@ -163,6 +189,7 @@ export default {
       longName: 'Outflow Site',
       cardinality: 100,
       category: 'test',
+      datatype: 'text',
       storageStrategy: 'loaded'
     },
     {
@@ -170,7 +197,29 @@ export default {
       longName: 'Context Id',
       cardinality: 0,
       category: 'test',
+      datatype: 'text',
       storageStrategy: 'none'
+    },
+    {
+      name: 'multiSystemId',
+      longName: 'Multi System Id',
+      cardinality: 9999999,
+      category: 'test',
+      datatype: 'text',
+      storageStrategy: 'loaded',
+      fields: [
+        { name: 'id', tags: ['id'] },
+        { name: 'desc', tags: ['description'] },
+        { name: 'key', tags: ['primaryKey'] }
+      ]
+    },
+    {
+      name: 'userSignupDate',
+      longName: 'User Signup Date',
+      cardinality: 39896,
+      category: 'test',
+      datatype: 'date',
+      storageStrategy: 'loaded'
     }
   ],
 
@@ -180,6 +229,7 @@ export default {
       longName: 'EventId',
       cardinality: 9999999,
       category: 'Asset',
+      datatype: 'text',
       storageStrategy: 'loaded'
     },
     {
@@ -187,6 +237,7 @@ export default {
       longName: 'Parent Event Id',
       cardinality: 9999999,
       category: 'Asset',
+      datatype: 'text',
       storageStrategy: 'loaded'
     }
   ]

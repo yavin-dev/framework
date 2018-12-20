@@ -1,0 +1,125 @@
+/**
+ * Copyright 2017, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
+
+.line-chart-widget {
+  .generate-legend-color(@chart-max-series);
+
+  .flex-1;
+  min-height: 0;
+  min-width: 0;
+
+  .c3-axis {
+    .tick {
+      line {
+        display: none;
+      }
+      text tspan {
+        text-transform: uppercase;
+      }
+    }
+    path {
+      stroke: none;
+    }
+  }
+
+  .c3-axis-y-label {
+    text-transform: capitalize;
+  }
+
+  .c3-grid line {
+    stroke: @navi-gray-200;
+  }
+
+  .c3-legend-item text {
+    text-transform: capitalize;
+  }
+
+  .c3-line {
+    stroke-width: 2px;
+  }
+
+  // Series coloring
+  .c3-target {
+    .generate-chart-colors-for(fill);
+    .generate-chart-colors-for(stroke);
+
+    circle {
+      fill: inherit !important;
+      stroke: inherit !important;
+    }
+
+    path {
+      stroke: inherit !important;
+    }
+  }
+
+  // highlighted data point coloring
+  circle.c3-selected-circle {
+    fill: @navi-white !important;
+    stroke: @navi-red !important;
+    r: 6;
+  }
+
+  // Tooltip
+  .c3-tooltip-container {
+    background-color: @navi-container-gray;
+    padding: 10px;
+    border-bottom: 1px solid @navi-bottom-border-gray;
+    min-width: 150px;
+    font-size: @font-size-mid;
+    font-color: @navi-body-font-gray;
+    line-height: 1.42857143;
+
+    .title {
+      text-transform: capitalize;
+    }
+
+    .sub-title {
+      text-transform: capitalize;
+      font-size: @font-size-xsmall;
+      color: @navi-gray;
+      margin-top: 5px;
+    }
+
+    .hover-metrics,
+    .hover-dimension {
+      margin: 5px 0 0 15px;
+      padding: 0;
+    }
+
+    .metric-val {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .series-indicator {
+      height: 8px;
+      width: 8px;
+
+      circle {
+        .generate-chart-colors-for(stroke);
+        fill: transparent;
+      }
+    }
+  }
+
+  .c3-xgrid,
+  .c3-ygrid {
+    stroke-dasharray: 0;
+  }
+}
+
+.generate-legend-color(@n, @i:0) when (@i < @n) {
+  @j: @i+1;
+  @series-color: 'graph-stroke-@{i}';
+
+  .c3-legend-item:nth-of-type(@{j}) .c3-legend-item-tile {
+    fill: @@series-color !important;
+    stroke: @@series-color !important;
+  }
+
+  .generate-legend-color(@n, (@i+1));
+}

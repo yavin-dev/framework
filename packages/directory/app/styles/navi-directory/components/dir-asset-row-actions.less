@@ -1,0 +1,48 @@
+/**
+ * Copyright 2018, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
+.dir-asset-row-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 20px;
+
+  .actions {
+    display: flex;
+    flex-direction: row;
+    margin-right: 10px;
+    text-align: left;
+
+    .action {
+      margin-right: 15px;
+      visibility: hidden;
+    }
+
+    i {
+      font-size: @font-size-base;
+      position: relative;
+      top: -1px;
+    }
+
+    &.primary {
+      // Primary action needs extra space since it's a full button
+      margin-left: 10px;
+    }
+  }
+
+  .edit,
+  .clone,
+  .export,
+  .share,
+  .delete,
+  .schedule,
+  button {
+    color: @navi-gray-500;
+    line-height: 17px;
+    padding: 0;
+    vertical-align: bottom;
+    &:hover {
+      color: @navi-black;
+    }
+  }
+}

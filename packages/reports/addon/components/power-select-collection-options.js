@@ -12,7 +12,6 @@ import _ from 'lodash';
 const { computed, get, setProperties } = Ember;
 
 export default Options.extend({
-
   layout,
 
   /**
@@ -34,12 +33,12 @@ export default Options.extend({
    * @property {Number} _height - height of selector
    */
   _height: computed('items.length', 'maxDisplayedItems', 'itemHeight', function() {
-    let length            = get(this, 'items.length'),
-        itemHeight        = get(this, 'itemHeight'),
-        maxDisplayedItems = get(this, 'maxDisplayedItems');
+    let length = get(this, 'items.length'),
+      itemHeight = get(this, 'itemHeight'),
+      maxDisplayedItems = get(this, 'maxDisplayedItems');
 
-    let height    = length * itemHeight,
-        maxHeight = maxDisplayedItems * itemHeight;
+    let height = length * itemHeight,
+      maxHeight = maxDisplayedItems * itemHeight;
 
     return Math.min(maxHeight, height);
   }),
@@ -65,7 +64,7 @@ export default Options.extend({
   items: computed('options', 'groupKey', function() {
     let groupKey = get(this, 'groupKey');
 
-    if(groupKey) {
+    if (groupKey) {
       return get(this, 'grouped');
     } else {
       return get(this, 'ungrouped');
@@ -77,9 +76,9 @@ export default Options.extend({
    */
   indexedOptions: computed('options', function() {
     let options = get(this, 'options');
-    options.forEach(
-      (opt, idx) => { setProperties(opt, { idx }); }
-    );
+    options.forEach((opt, idx) => {
+      setProperties(opt, { idx });
+    });
     return options;
   }),
 
@@ -96,18 +95,20 @@ export default Options.extend({
    * @property {Array} grouped - array of grouped options
    */
   grouped: computed('indexedOptions', function() {
-    let options  = get(this, 'indexedOptions'),
-        groupKey = get(this, 'groupKey');
+    let options = get(this, 'indexedOptions'),
+      groupKey = get(this, 'groupKey');
 
     let grouped = _.groupBy(options, groupKey);
 
-    return Object.keys(grouped).sort().reduce((previous, groupName) => {
-      return [
-        ...previous,
-        { groupName, groupSize: grouped[groupName].length },
-        ...this._sortOptions(grouped[groupName])
-      ];
-    }, []);
+    return Object.keys(grouped)
+      .sort()
+      .reduce((previous, groupName) => {
+        return [
+          ...previous,
+          { groupName, groupSize: grouped[groupName].length },
+          ...this._sortOptions(grouped[groupName])
+        ];
+      }, []);
   }),
 
   /**
@@ -117,9 +118,9 @@ export default Options.extend({
    * @returns {Arrray} array of sorted options if sortKey provided
    */
   _sortOptions(options) {
-    let sortKey  = get(this, 'sortKey');
+    let sortKey = get(this, 'sortKey');
 
-    if(sortKey) {
+    if (sortKey) {
       return Ember.A(options).sortBy(sortKey);
     } else {
       return options;

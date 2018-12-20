@@ -39,10 +39,10 @@ export default Ember.Component.extend({
    */
   reportsWithCreate: computed('reports', function() {
     let newReport = {
-          id: 'new',
-          title: 'Create new...'
-        },
-        reports = get(this, 'reports');
+        id: 'new',
+        title: 'Create new...'
+      },
+      reports = get(this, 'reports');
 
     return Ember.A([
       newReport,
@@ -56,7 +56,7 @@ export default Ember.Component.extend({
   /**
    * @action click
    */
-  click(){
+  click() {
     set(this, 'showModal', true);
   }
 });

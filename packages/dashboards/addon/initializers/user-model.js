@@ -4,12 +4,12 @@
  */
 
 import DS from 'ember-data';
-import User from 'navi-reports/models/user';
+import User from 'navi-core/models/user';
 
 export function initialize(/* application */) {
   User.reopen({
-    dashboards:         DS.hasMany('dashboard', {async: true, inverse: 'author'}),
-    favoriteDashboards: DS.hasMany('dashboard', {async: true, inverse: null})
+    dashboards: DS.hasMany('dashboard', { async: true, inverse: 'author' }),
+    favoriteDashboards: DS.hasMany('dashboard', { async: true, inverse: null })
   });
 }
 

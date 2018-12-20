@@ -3,14 +3,15 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import Ember from 'ember';
+import { inject as service } from '@ember/service';
+
+import EmberObject from '@ember/object';
 import config from 'ember-get-config';
 import { pluralize } from 'ember-inflector';
 
 const FACT_HOST = config.navi.dataSources[0].uri;
 
-export default Ember.Object.extend({
-
+export default EmberObject.extend({
   /**
    * @property namespace
    */
@@ -19,7 +20,7 @@ export default Ember.Object.extend({
   /**
    * @property {Service} ajax
    */
-  ajax: Ember.inject.service(),
+  ajax: service(),
 
   /**
    * Builds a URL path for a metadata query
@@ -31,8 +32,8 @@ export default Ember.Object.extend({
    * @return {String} URL Path
    */
   _buildURLPath(type, id) {
-    let host       = FACT_HOST,
-        namespace  = this.get('namespace');
+    let host = FACT_HOST,
+      namespace = this.get('namespace');
     return `${host}/${namespace}/${pluralize(type)}/${id}`;
   },
 
@@ -59,11 +60,11 @@ export default Ember.Object.extend({
    * @param {Object} options
    * @return {Promise} metadata promise object
    */
-  fetchMetadata(type, id, options={}) {
-    let url      = this._buildURLPath(type, id),
-        query    = options.query || {},
-        clientId = options.clientId || 'UI',
-        timeout  = options.timeout || 300000;
+  fetchMetadata(type, id, options = {}) {
+    let url = this._buildURLPath(type, id),
+      query = options.query || {},
+      clientId = options.clientId || 'UI',
+      timeout = options.timeout || 300000;
 
     return this.get('ajax').request(url, {
       xhrFields: {

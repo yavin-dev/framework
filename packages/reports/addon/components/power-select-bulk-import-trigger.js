@@ -43,7 +43,7 @@ export default Trigger.extend({
      */
     importValues(values) {
       let oldSelection = get(this, 'select.selected'),
-          newSelection = Ember.A([...oldSelection, ...values]).uniq();
+        newSelection = Ember.A([...oldSelection, ...values]).uniq();
 
       get(this, 'select.actions').select(newSelection);
     },
@@ -57,9 +57,9 @@ export default Trigger.extend({
     onPaste(pasteEvent) {
       // Get pasted data via clipboard API
       let clipboardData = pasteEvent.clipboardData || window.clipboardData,
-          pastedData = clipboardData.getData('Text'),
-          queryIds = pastedData.split(BULK_IMPORT_DELIMETER),
-          isBulkImportRequest = queryIds.length > 1;
+        pastedData = clipboardData.getData('Text'),
+        queryIds = pastedData.split(BULK_IMPORT_DELIMETER).map(s => s.trim()),
+        isBulkImportRequest = queryIds.length > 1;
 
       if (isBulkImportRequest) {
         setProperties(this, {

@@ -1,6 +1,6 @@
 {{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{#navi-date-range-picker
-    interval=filter.values.firstObject
+    interval=(as-interval filter.values.firstObject)
     dateTimePeriod=request.logicalTable.timeGrain.name
     setInterval=(action 'setInterval')
     as |interval|

@@ -9,14 +9,10 @@ import DefaultIntervals from 'navi-reports/utils/enums/default-intervals';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 import { getSelectedMetricsOfBase, getUnfilteredMetricsOfBase } from 'navi-reports/utils/request-metric';
 import { isEmpty } from '@ember/utils';
+import IntervalFragment from 'navi-core/models/bard-request/fragments/interval';
+import { featureFlag } from 'navi-core/helpers/feature-flag';
 
-const { assign, inject, get, set, setProperties } = Ember;
-
-const DEFAULT_DIM_FILTER = {
-  operator: 'in',
-  field: 'id',
-  values: []
-};
+const { assign, inject, get, set, setProperties, assert } = Ember;
 
 const DEFAULT_METRIC_FILTER = {
   operator: 'gt',
@@ -38,11 +34,11 @@ export default ActionConsumer.extend({
    * @returns {Object|undefined} next parameters object
    */
   _getNextParameterForMetric(metricMeta, request) {
-    if(!get(metricMeta, 'hasParameters')) {
+    if (!get(metricMeta, 'hasParameters')) {
       return;
     }
 
-    if(isEmpty(getSelectedMetricsOfBase(metricMeta, request))){
+    if (isEmpty(getSelectedMetricsOfBase(metricMeta, request))) {
       return metricMeta.getDefaultParameters();
     }
 
@@ -58,10 +54,10 @@ export default ActionConsumer.extend({
      */
     [RequestActions.TOGGLE_DIM_FILTER]: function(route, dimension) {
       let filteredDimensions = get(route, 'currentModel.request.filters'),
-          filter = filteredDimensions.findBy('dimension', dimension);
+        filter = filteredDimensions.findBy('dimension', dimension);
 
       //do not add filter if it already exists
-      if(!filter){
+      if (!filter) {
         get(this, 'requestActionDispatcher').dispatch(RequestActions.ADD_DIM_FILTER, route, dimension);
       } else {
         get(this, 'requestActionDispatcher').dispatch(RequestActions.REMOVE_FILTER, route, filter);
@@ -74,9 +70,18 @@ export default ActionConsumer.extend({
      * @param {Object} dimension - dimension to filter
      */
     [RequestActions.ADD_DIM_FILTER]: ({ currentModel }, dimension) => {
-      get(currentModel, 'request').addFilter(
-        assign({ dimension }, DEFAULT_DIM_FILTER)
+      assert(
+        'Dimension model has correct primaryKeyFieldName',
+        typeof get(dimension, 'primaryKeyFieldName') === 'string'
       );
+      let defaultOperator = featureFlag('dateDimensionFilter') && get(dimension, 'datatype') === 'date' ? 'gte' : 'in';
+
+      get(currentModel, 'request').addFilter({
+        dimension,
+        operator: defaultOperator,
+        field: get(dimension, 'primaryKeyFieldName'),
+        values: []
+      });
     },
 
     /**
@@ -88,13 +93,11 @@ export default ActionConsumer.extend({
     [RequestActions.ADD_METRIC_FILTER]: ({ currentModel }, metric, parameters) => {
       let newHavingMetric = { metric };
 
-      if(parameters) {
-        newHavingMetric = assign(newHavingMetric, { parameters })
+      if (parameters) {
+        newHavingMetric = assign(newHavingMetric, { parameters });
       }
 
-      get(currentModel, 'request').addHaving(
-        assign({ metric: newHavingMetric }, DEFAULT_METRIC_FILTER)
-      );
+      get(currentModel, 'request').addHaving(assign({ metric: newHavingMetric }, DEFAULT_METRIC_FILTER));
     },
 
     /**
@@ -104,11 +107,11 @@ export default ActionConsumer.extend({
      */
     [RequestActions.TOGGLE_METRIC_FILTER]: function(route, metric) {
       let filteredMetrics = get(route, 'currentModel.request.having'),
-          havingsForMetric = filteredMetrics.filterBy('metric.metric.name', get(metric, 'name')),
-          nextParameter = this._getNextParameterForMetric(metric, get(route, 'currentModel.request')),
-          shouldAdd = (!!nextParameter || isEmpty(havingsForMetric));
+        havingsForMetric = filteredMetrics.filterBy('metric.metric.name', get(metric, 'name')),
+        nextParameter = this._getNextParameterForMetric(metric, get(route, 'currentModel.request')),
+        shouldAdd = !!nextParameter || isEmpty(havingsForMetric);
 
-      if(shouldAdd){
+      if (shouldAdd) {
         get(this, 'requestActionDispatcher').dispatch(RequestActions.ADD_METRIC_FILTER, route, metric, nextParameter);
       } else {
         havingsForMetric.forEach(having => {
@@ -125,12 +128,13 @@ export default ActionConsumer.extend({
      */
     [RequestActions.TOGGLE_PARAMETERIZED_METRIC_FILTER]: function(route, metric, parameters) {
       let filteredMetrics = get(route, 'currentModel.request.having'),
-          //find if having for metric and parameters exists in request using the canonicalName
-          having = filteredMetrics.find(
-            having => get(having, 'metric.canonicalName') === canonicalizeMetric({ metric: get(metric, 'name'), parameters })
-          );
+        //find if having for metric and parameters exists in request using the canonicalName
+        having = filteredMetrics.find(
+          having =>
+            get(having, 'metric.canonicalName') === canonicalizeMetric({ metric: get(metric, 'name'), parameters })
+        );
 
-      if(!having){
+      if (!having) {
         get(this, 'requestActionDispatcher').dispatch(RequestActions.ADD_METRIC_FILTER, route, metric, parameters);
       } else {
         get(this, 'requestActionDispatcher').dispatch(RequestActions.REMOVE_FILTER, route, having);
@@ -145,9 +149,11 @@ export default ActionConsumer.extend({
     [RequestActions.REMOVE_METRIC](route, metric) {
       // Find and remove all `havings` attached to the metric
       let filteredMetrics = get(route, 'currentModel.request.having'),
-          havings = filteredMetrics.filterBy('metric.metric', metric);
+        havings = filteredMetrics.filterBy('metric.metric', metric);
 
-      havings.forEach(having => get(this, 'requestActionDispatcher').dispatch(RequestActions.REMOVE_FILTER, route, having));
+      havings.forEach(having =>
+        get(this, 'requestActionDispatcher').dispatch(RequestActions.REMOVE_FILTER, route, having)
+      );
     },
 
     /**
@@ -157,7 +163,15 @@ export default ActionConsumer.extend({
      * @param {Object} changeSet - object of properties and new values
      */
     [RequestActions.UPDATE_FILTER]: (route, originalFilter, changeSet) => {
-      setProperties(originalFilter, changeSet);
+      let changeSetUpdates = {};
+
+      //If the interval is set in a dimension filter (rather than datetime filter), set values instead of the interval property
+      if (get(changeSet, 'interval') && !(originalFilter instanceof IntervalFragment)) {
+        let intervalAsStrings = get(changeSet, 'interval').asStrings('YYYY-MM-DD');
+        changeSetUpdates = { values: [`${intervalAsStrings.start}/${intervalAsStrings.end}`] };
+        delete changeSet.interval;
+      }
+      setProperties(originalFilter, Object.assign({}, changeSet, changeSetUpdates));
     },
 
     /**
@@ -194,9 +208,11 @@ export default ActionConsumer.extend({
     [RequestActions.DID_UPDATE_TIME_GRAIN](route, timeGrain) {
       // Set interval to default for time grain
       let request = get(route, 'currentModel.request'),
-          interval = get(request, 'intervals.firstObject.interval'),
-          timeGrainName = get(timeGrain, 'name'),
-          newInterval = interval ? interval.asIntervalForTimePeriod(timeGrainName) : DefaultIntervals.getDefault(timeGrainName);
+        interval = get(request, 'intervals.firstObject.interval'),
+        timeGrainName = get(timeGrain, 'name'),
+        newInterval = interval
+          ? interval.asIntervalForTimePeriod(timeGrainName)
+          : DefaultIntervals.getDefault(timeGrainName);
 
       set(request, 'intervals.firstObject.interval', newInterval);
 
@@ -207,17 +223,15 @@ export default ActionConsumer.extend({
        * .toArray() is used to clone the array, otherwise removing a filter while
        * iterating over `request.filters` causes problems
        */
-      get(request, 'filters').toArray().forEach((dimensionFilter) => {
-        let dimension = get(dimensionFilter, 'dimension');
+      get(request, 'filters')
+        .toArray()
+        .forEach(dimensionFilter => {
+          let dimension = get(dimensionFilter, 'dimension');
 
-        if(!timeGrainDimensions.includes(dimension)) {
-          get(this, 'requestActionDispatcher').dispatch(
-            RequestActions.REMOVE_FILTER,
-            route,
-            dimensionFilter
-          );
-        }
-      });
+          if (!timeGrainDimensions.includes(dimension)) {
+            get(this, 'requestActionDispatcher').dispatch(RequestActions.REMOVE_FILTER, route, dimensionFilter);
+          }
+        });
 
       /*
        * Having filters are already taken care of:

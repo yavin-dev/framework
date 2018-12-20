@@ -9,38 +9,43 @@
     width: 100%;
     border-collapse: collapse;
 
-    tbody {
-      tr {
-        td {
-          font-size: 14px;
-          padding: 8px;
-          border-bottom: 1px solid #f1f1f1;
-          text-align: left;
-          .btn {
-            margin: 0 10px 0 0;
-            padding: 0;
-            i {
-               color: @navi-gray;
-               font-size: @font-size-base;
+    tr {
+      td {
+        font-size: 14px;
+        padding: 8px;
+        border-bottom: 1px solid #f1f1f1;
+        text-align: left;
 
-               &:hover {
-                 color: @navi-dark-gray;
-               }
+        button,
+        .btn,
+        a {
+          padding: 0;
+
+          i {
+            color: @navi-gray;
+            font-size: @font-size-base;
+
+            &:hover {
+              color: @navi-dark-gray;
             }
           }
         }
 
-        a {
-          color: #0A80E3;
-          text-decoration: none;
+        .action {
+          margin-right: 15px;
         }
+      }
+
+      a {
+        color: #0a80e3;
+        text-decoration: none;
       }
     }
 
     thead {
       th {
         font-weight: normal;
-        color: #7E817D;
+        color: #7e817d;
         border-bottom: 1px solid #c8c8c9;
         font-size: 14px;
         padding: 8px;

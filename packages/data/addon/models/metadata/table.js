@@ -2,11 +2,12 @@
  * Copyright 2017, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import Ember from 'ember';
+import EmberObject from '@ember/object';
 
-const { assign, getOwner } = Ember;
+import { assign } from '@ember/polyfills';
+import { getOwner } from '@ember/application';
 
-let Model = Ember.Object.extend({
+let Model = EmberObject.extend({
   /**
    * @property {String} name
    */
@@ -38,12 +39,15 @@ let Model = Ember.Object.extend({
    */
   init() {
     let timeGrains = this.get('timeGrains');
-    if(timeGrains) {
-      this.set('timeGrains', timeGrains.map(timeGrain => {
-        let timeGrainPayload = assign({}, timeGrain),
+    if (timeGrains) {
+      this.set(
+        'timeGrains',
+        timeGrains.map(timeGrain => {
+          let timeGrainPayload = assign({}, timeGrain),
             owner = getOwner(this);
-        return owner.factoryFor('model:metadata/time-grain').create(timeGrainPayload);
-      }));
+          return owner.factoryFor('model:metadata/time-grain').create(timeGrainPayload);
+        })
+      );
     }
   }
 });

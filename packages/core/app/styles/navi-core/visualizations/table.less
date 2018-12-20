@@ -1,0 +1,328 @@
+/**
+ * Copyright 2017, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
+
+.table-widget {
+  @row-margin: 0 13px;
+  @cell-padding: 7px;
+
+  .display-flex;
+  .flex-1;
+
+  background-color: @navi-white;
+  color: @navi-black;
+  flex-flow: column;
+  height: 100%;
+  line-height: 1.5;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  &__info-header {
+    .display-flex;
+    flex: 0 1 auto;
+    align-items: center;
+    font-size: @font-size-mid;
+    flex-flow: row-reverse;
+    justify-content: space-between;
+    margin: @row-margin;
+    padding: 6px 0 0;
+  }
+
+  &__row-info-number {
+    font-weight: bold;
+    padding: 0 5px;
+  }
+
+  .table-widget-container {
+    .display-flex;
+    .flex-1;
+    .flex-flow-column;
+
+    &--vc {
+      overflow-y: auto;
+    }
+  }
+
+  .table-widget__horizontal-scroll-container {
+    .display-flex;
+    flex-flow: row;
+    .flex-1;
+    overflow-x: auto;
+  }
+
+  &__table-headers {
+    margin: @row-margin;
+    overflow-x: hidden;
+  }
+
+  &__table-wrapper {
+    .flex-1;
+    margin: @row-margin;
+    min-height: 0;
+    overflow-x: auto;
+    overflow-y: scroll;
+    position: relative;
+
+    @media print {
+      overflow-y: initial;
+    }
+  }
+
+  &__table {
+    min-width: 100%;
+  }
+
+  .table-header-row {
+    .display-flex;
+    margin: @row-margin;
+    /** Break long column titles to prevent overflow. Single words may be broken at arbitrary
+        points only if there are no otherwise acceptable break points in the line. **/
+    word-break: break-word;
+
+    &--edit {
+      & > div:first-of-type {
+        padding-left: 0;
+      }
+
+      & > div:last-of-type {
+        padding-right: 0;
+      }
+    }
+
+    .table-header-cell {
+      .flex-1;
+      min-width: 125px;
+
+      &__icon {
+        padding: 3px 5px;
+      }
+    }
+
+    &,
+    &-vc {
+      background: @navi-white;
+      border-bottom: 2px @navi-lighter-gray solid;
+      color: @navi-light-gray-2;
+      font-size: @font-size-base;
+      font-family: @font-family-sans-serif-bold;
+      padding: 0 0 5px;
+      text-transform: capitalize;
+
+      .table-header-cell {
+        .display-flex;
+        cursor: pointer;
+        padding: @cell-padding;
+
+        &.sortable-item.is-dragging {
+          border: 1px solid @navi-lighter-gray;
+          box-shadow: 0 5px 10px 3px;
+          background-color: @navi-white;
+          z-index: 2;
+          cursor: grabbing;
+        }
+
+        &__title {
+          flex: 1;
+          &--custom-name {
+            text-decoration: underline;
+            text-decoration-style: dotted;
+          }
+        }
+
+        &__input {
+          border: 1px solid @navi-gray-400;
+          padding: 5px;
+        }
+      }
+    }
+
+    &-vc {
+      font-weight: normal;
+
+      th {
+        font-weight: inherit;
+        min-width: 125px;
+        padding: 0;
+        position: sticky;
+        text-align: inherit;
+        top: 0;
+      }
+
+      &--view {
+        .display-flex;
+        align-items: flex-end;
+      }
+
+      &--edit {
+        th:first-of-type > div {
+          padding-left: 0;
+        }
+
+        th:last-of-type > div {
+          padding-right: 0;
+        }
+
+        .table-header-cell {
+          background-color: @navi-white;
+          border-bottom: 2px @navi-lighter-gray solid;
+
+          &__input {
+            border: 1px solid @navi-gray-400;
+            padding: 5px;
+          }
+        }
+      }
+
+      .table-header-cell {
+        align-items: flex-end;
+
+        &__icon {
+          padding: 3px 5px 17px;
+        }
+      }
+
+      &:not(.table-header-row-vc--edit) th .table-header-cell {
+        height: 0;
+        overflow-y: hidden;
+        padding-top: 0;
+        padding-bottom: 0;
+      }
+    }
+  }
+
+  .table-widget__table {
+    .table-header-row-vc {
+      border: 0;
+    }
+  }
+
+  .table-header-cell {
+    .display-flex;
+    .flex-1;
+    min-width: 125px;
+    cursor: pointer;
+    padding: @cell-padding;
+
+    &__icon {
+      padding: 3px 5px;
+    }
+
+    &__title {
+      flex: 1;
+      &--custom-name {
+        text-decoration: underline;
+        text-decoration-style: dotted;
+      }
+    }
+
+    &__input {
+      border: 1px solid @navi-gray-400;
+      padding: 5px;
+    }
+  }
+
+  .scroll-container {
+    flex: 1;
+    position: relative;
+    overflow-y: auto;
+    overflow-x: hidden;
+    // targets inner div of ember-collection holding the row divs
+    & > div > div {
+      // horizontal scrollbar not needed here
+      // I don't like the obvious overflow hidden solution due to too many bad practices
+      // so using a solution that gives the right width when vertical scrollbar is present
+      width: ~'calc(100% + 2px)';
+    }
+  }
+
+  .table-body {
+    .display-flex;
+    .flex-flow-column;
+    .flex-1;
+    min-height: 0;
+  }
+
+  .table-row {
+    .display-flex;
+    margin: @row-margin;
+    white-space: nowrap;
+
+    .table-cell {
+      .display-flex;
+      .flex-1;
+      min-width: 125px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+
+      .table-cell-content {
+        margin: auto 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 100%;
+      }
+    }
+
+    &,
+    &-vc {
+      height: 30px;
+      vertical-align: middle;
+
+      &.table-row__total-row {
+        background-color: @navi-gray-100;
+        font-weight: 600;
+      }
+
+      &.table-row__total-row.table-row__last-row {
+        background-color: @navi-lightest-gray;
+      }
+
+      .table-cell {
+        border-bottom: 1px @navi-lighter-gray solid;
+        font-size: @font-size-mid;
+        font-family: @font-family-strong;
+        padding: @cell-padding;
+
+        &--total {
+          display: flex;
+        }
+
+        &__info-message {
+          margin-left: 5px;
+
+          &--icon {
+            color: @navi-light-gray-2;
+          }
+        }
+      }
+    }
+
+    &:hover {
+      background-color: @navi-lighter-gray;
+    }
+  }
+
+  .metric {
+    .align-right;
+  }
+
+  .threshold {
+    .align-right;
+    &.strong {
+      color: @navi-green;
+    }
+    &.weak {
+      color: @navi-red;
+    }
+    &.neutral {
+      color: @navi-gray;
+    }
+  }
+}
+
+.table-cell__info-message--tooltip {
+  &.ember-tooltip {
+    font-size: @font-size-xsmall;
+  }
+}

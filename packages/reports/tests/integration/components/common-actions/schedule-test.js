@@ -3,7 +3,7 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { hbsWithModal } from '../../../helpers/hbs-with-modal';
 import wait from 'ember-test-helpers/wait';
-import { clickTrigger, nativeMouseUp } from '../../../helpers/ember-power-select';
+import { clickTrigger, nativeMouseUp } from 'ember-power-select/test-support/helpers';
 import { typeInInput } from '../../../helpers/ember-tag-input';
 import config from 'ember-get-config';
 
@@ -12,7 +12,7 @@ const { getOwner } = Ember;
 const DeliveryRule = {
   frequency: 'Week',
   format: { type: 'csv' },
-  recipients: [ 'test@oath.com', 'rule@oath.com' ]
+  recipients: ['test@oath.com', 'rule@oath.com']
 };
 const TestModel = {
   title: 'Test Test',
@@ -54,8 +54,10 @@ test('schedule modal - test disabled', function(assert) {
 
   this.set('isDisabled', false);
 
-  assert.notOk(this.$('.schedule-action__button').is(":disabled"),
-    'Scedule is enabled when the disabled is set to false');
+  assert.notOk(
+    this.$('.schedule-action__button').is(':disabled'),
+    'Scedule is enabled when the disabled is set to false'
+  );
 });
 
 test('schedule modal - test enabled', function(assert) {
@@ -74,20 +76,22 @@ test('schedule modal - test enabled', function(assert) {
 
   this.set('isDisabled', true);
 
-  assert.ok(this.$('.schedule-action__button').is(":disabled"),
-    'Schedule is enabled when the disabled is set to false');
+  assert.ok(
+    this.$('.schedule-action__button').is(':disabled'),
+    'Schedule is enabled when the disabled is set to false'
+  );
 });
 
 test('it renders', function(assert) {
   assert.expect(3);
 
-  this.render(hbs`{{common-actions/schedule onSave=(action onSaveAction) onRevert=(action onRevertAction) onDelete=(action onDeleteAction)}}`);
+  this.render(
+    hbs`{{common-actions/schedule onSave=(action onSaveAction) onRevert=(action onRevertAction) onDelete=(action onDeleteAction)}}`
+  );
 
-  assert.ok(this.$('.schedule-action__button').is(':visible'),
-    'Schedule Modal component is rendered');
+  assert.ok(this.$('.schedule-action__button').is(':visible'), 'Schedule Modal component is rendered');
 
-  assert.ok(this.$('.schedule-action__icon').is(':visible'),
-    'A schedule icon is rendered in the component');
+  assert.ok(this.$('.schedule-action__icon').is(':visible'), 'A schedule icon is rendered in the component');
 
   // Template block usage:
   this.render(hbs`
@@ -100,9 +104,13 @@ test('it renders', function(assert) {
     {{/common-actions/schedule}}
     `);
 
-  assert.equal(this.$('.schedule-action__icon-label').text().trim(),
+  assert.equal(
+    this.$('.schedule-action__icon-label')
+      .text()
+      .trim(),
     'Schedule',
-    'When used in block mode, the text `Schedule` is displayed');
+    'When used in block mode, the text `Schedule` is displayed'
+  );
 });
 
 test('schedule modal', function(assert) {
@@ -123,36 +131,60 @@ test('schedule modal', function(assert) {
     this.$('.schedule-action__button').click();
   });
 
-  assert.ok($('.navi-modal').is(':visible'),
-    'Schedule Modal component is rendered when the button is clicked');
+  assert.ok($('.navi-modal').is(':visible'), 'Schedule Modal component is rendered when the button is clicked');
 
-  assert.equal($('.primary-header').text().trim(),
+  assert.equal(
+    $('.primary-header')
+      .text()
+      .trim(),
     'Schedule "Test Test"',
-    'The primary header makes use of the modelName appropriately');
+    'The primary header makes use of the modelName appropriately'
+  );
 
-  assert.deepEqual($('.schedule-modal__label').toArray().map((el) => $(el).text().trim()), [
-    'Recipients', 'Frequency', 'Format'
-  ], 'Schedule Modal has all the expected sections');
+  assert.deepEqual(
+    $('.schedule-modal__label')
+      .toArray()
+      .map(el =>
+        $(el)
+          .text()
+          .trim()
+      ),
+    ['Recipients', 'Frequency', 'Format'],
+    'Schedule Modal has all the expected sections'
+  );
 
-  assert.ok($('.schedule-modal__input--recipients').is(':visible'),
-    'Schedule Modal component renders an text area for recipients');
+  assert.ok(
+    $('.schedule-modal__input--recipients').is(':visible'),
+    'Schedule Modal component renders an text area for recipients'
+  );
 
-  assert.ok($('.schedule-modal__dropdown--frequency').is(':visible'),
-    'Schedule Modal component renders an dropdown for frequencies');
+  assert.ok(
+    $('.schedule-modal__dropdown--frequency').is(':visible'),
+    'Schedule Modal component renders an dropdown for frequencies'
+  );
 
-  assert.ok($('.schedule-modal__dropdown--format').is(':visible'),
-    'Schedule Modal component renders an dropdown for formats');
+  assert.ok(
+    $('.schedule-modal__dropdown--format').is(':visible'),
+    'Schedule Modal component renders an dropdown for formats'
+  );
 
-  assert.equal($('.schedule-modal__dropdown--frequency').text().trim(),
+  assert.equal(
+    $('.schedule-modal__dropdown--frequency')
+      .text()
+      .trim(),
     'Week',
-    'Week is the default frequency value');
+    'Week is the default frequency value'
+  );
 
-  assert.equal($('.schedule-modal__dropdown--format').text().trim(),
+  assert.equal(
+    $('.schedule-modal__dropdown--format')
+      .text()
+      .trim(),
     'csv',
-    '`.csv` is the default format value');
+    '`.csv` is the default format value'
+  );
 
-  assert.notOk($('.schedule-modal__rejected').is(':visible'),
-    'rejected error does not show');
+  assert.notOk($('.schedule-modal__rejected').is(':visible'), 'rejected error does not show');
 });
 
 test('schedule modal - delivery rule passed in', function(assert) {
@@ -172,13 +204,21 @@ test('schedule modal - delivery rule passed in', function(assert) {
     this.$('.schedule-action__button').click();
   });
 
-  assert.deepEqual($('.schedule-modal__input--recipients .navi-email-tag').toArray().map(e => e.textContent.trim()),
+  assert.deepEqual(
+    $('.schedule-modal__input--recipients .navi-email-tag')
+      .toArray()
+      .map(e => e.textContent.trim()),
     ['test@oath.com', 'rule@oath.com'],
-    'The recipients are fetched from the delivery rule');
+    'The recipients are fetched from the delivery rule'
+  );
 
-  assert.equal($('.schedule-modal__dropdown--frequency').text().trim(),
+  assert.equal(
+    $('.schedule-modal__dropdown--frequency')
+      .text()
+      .trim(),
     'Week',
-    'The frequency is fetched from the delivery rule');
+    'The frequency is fetched from the delivery rule'
+  );
 });
 
 test('onSave Action', function(assert) {
@@ -200,20 +240,29 @@ test('onSave Action', function(assert) {
     this.$('.schedule-action__button').click();
   });
 
-  assert.equal($('.schedule-modal__save-btn').text().trim(),
+  assert.equal(
+    $('.schedule-modal__save-btn')
+      .text()
+      .trim(),
     'Save',
-    'The save button says `Save` when model does not have a delivery rule for the current user');
+    'The save button says `Save` when model does not have a delivery rule for the current user'
+  );
 
-  assert.ok($('.schedule-modal__save-btn').attr('disabled'),
-    'The save button should be disabled initially');
+  assert.ok($('.schedule-modal__save-btn').attr('disabled'), 'The save button should be disabled initially');
 
-  assert.equal($('.schedule-modal__cancel-btn').text().trim(),
+  assert.equal(
+    $('.schedule-modal__cancel-btn')
+      .text()
+      .trim(),
     'Cancel',
-    'Show cancel button before save a delivery rule');
+    'Show cancel button before save a delivery rule'
+  );
 
-  assert.equal($('.schedule-modal__delete-btn').length,
+  assert.equal(
+    $('.schedule-modal__delete-btn').length,
     0,
-    'The delete button is not available when model does not have a delivery rule for the current user');
+    'The delete button is not available when model does not have a delivery rule for the current user'
+  );
 
   Ember.run(() => {
     typeInInput('.js-ember-tag-input-new', 'test1@navi.io');
@@ -223,20 +272,21 @@ test('onSave Action', function(assert) {
     nativeMouseUp($('.ember-power-select-option:contains(Month)')[0]);
   });
 
-  assert.notOk($('.schedule-modal__save-btn').attr('disabled'),
-    'The save button should be enabled after making valid changes');
+  assert.notOk(
+    $('.schedule-modal__save-btn').attr('disabled'),
+    'The save button should be enabled after making valid changes'
+  );
 
-  this.set('onSaveAction', (rule) => {
-    assert.equal(rule.get('frequency'),
-      'month',
-      'Selected frequency is updated in the delivery rule');
+  this.set('onSaveAction', rule => {
+    assert.equal(rule.get('frequency'), 'month', 'Selected frequency is updated in the delivery rule');
 
-    assert.deepEqual(rule.get('recipients'),
-      [ 'test1@navi.io' ],
-      'Recipients entered in the text area is set in the delivery rule');
+    assert.deepEqual(
+      rule.get('recipients'),
+      ['test1@navi.io'],
+      'Recipients entered in the text area is set in the delivery rule'
+    );
 
-    assert.ok(true,
-      'OnSave action is called');
+    assert.ok(true, 'OnSave action is called');
 
     rule.rollbackAttributes();
 
@@ -248,9 +298,13 @@ test('onSave Action', function(assert) {
     $('.schedule-modal__save-btn').click();
   });
 
-  assert.equal($('.schedule-modal__cancel-btn').text().trim(),
+  assert.equal(
+    $('.schedule-modal__cancel-btn')
+      .text()
+      .trim(),
     'Close',
-    'Show close button after save a delivery rule');
+    'Show close button after save a delivery rule'
+  );
 });
 
 test('onRevert Action', function(assert) {
@@ -273,8 +327,7 @@ test('onRevert Action', function(assert) {
   });
 
   this.set('onRevertAction', () => {
-    assert.ok(true,
-      'OnRevert action is called');
+    assert.ok(true, 'OnRevert action is called');
   });
 
   //Click cancel after modal is open
@@ -291,26 +344,32 @@ test('onDelete action', function(assert) {
   this.set('model', TestModel);
 
   this.set('onDeleteAction', () => {
-    assert.ok(true,
-      'OnDelete action is called');
+    assert.ok(true, 'OnDelete action is called');
   });
 
-  this.render(hbsWithModal(`
+  this.render(
+    hbsWithModal(
+      `
         {{common-actions/schedule
             model=model
             onSave=(action onSaveAction)
             onRevert=(action onRevertAction)
             onDelete=(action onDeleteAction)
         }}
-    `, getOwner(this)));
+    `,
+      getOwner(this)
+    )
+  );
 
   Ember.run(() => {
     this.$('.schedule-action__button').click();
   });
 
-  assert.equal($('.schedule-modal__delete-btn').length,
+  assert.equal(
+    $('.schedule-modal__delete-btn').length,
     1,
-    'Delete button is shown when deliveryRule is present for current user');
+    'Delete button is shown when deliveryRule is present for current user'
+  );
 
   Ember.run(() => {
     $('.btn-container button:contains(Delete)').click();
@@ -341,14 +400,21 @@ test('frequency options - default', function(assert) {
 
   Ember.run(() => {
     clickTrigger('.schedule-modal__dropdown--frequency');
-    assert.deepEqual($('.ember-power-select-option').map((i, el) => $(el).text().trim()).toArray(),
+    assert.deepEqual(
+      $('.ember-power-select-option')
+        .map((i, el) =>
+          $(el)
+            .text()
+            .trim()
+        )
+        .toArray(),
       ['Day', 'Week', 'Month', 'Quarter', 'Year'],
       'Schedule frequency should have correct default options'
     );
   });
 });
 
-test('frequency options - config schedule', function (assert) {
+test('frequency options - config schedule', function(assert) {
   assert.expect(1);
 
   let originalSchedule = config.navi.schedule;
@@ -371,7 +437,14 @@ test('frequency options - config schedule', function (assert) {
 
   Ember.run(() => {
     clickTrigger('.schedule-modal__dropdown--frequency');
-    assert.deepEqual($('.ember-power-select-option').map((i, el) => $(el).text().trim()).toArray(),
+    assert.deepEqual(
+      $('.ember-power-select-option')
+        .map((i, el) =>
+          $(el)
+            .text()
+            .trim()
+        )
+        .toArray(),
       ['Day', 'Week', 'Month'],
       'Schedule frequency should have correct options'
     );
@@ -379,7 +452,7 @@ test('frequency options - config schedule', function (assert) {
   });
 });
 
-test('format options - config formats', function (assert) {
+test('format options - config formats', function(assert) {
   assert.expect(1);
 
   let originalSchedule = config.navi.schedule;
@@ -402,7 +475,14 @@ test('format options - config formats', function (assert) {
 
   Ember.run(() => {
     clickTrigger('.schedule-modal__dropdown--format');
-    assert.deepEqual($('.ember-power-select-option').map((i, el) => $(el).text().trim()).toArray(),
+    assert.deepEqual(
+      $('.ember-power-select-option')
+        .map((i, el) =>
+          $(el)
+            .text()
+            .trim()
+        )
+        .toArray(),
       ['csv', 'test'],
       'Schedule format should have correct options'
     );
@@ -410,7 +490,7 @@ test('format options - config formats', function (assert) {
   });
 });
 
-test('format options - config enableMultipleExport', function (assert) {
+test('format options - config enableMultipleExport', function(assert) {
   assert.expect(3);
 
   let originalFeatureFlag = config.navi.FEATURES.enableMultipleExport;
@@ -433,7 +513,14 @@ test('format options - config enableMultipleExport', function (assert) {
 
   Ember.run(() => {
     clickTrigger('.schedule-modal__dropdown--format');
-    assert.deepEqual($('.ember-power-select-option').map((i, el) => $(el).text().trim()).toArray(),
+    assert.deepEqual(
+      $('.ember-power-select-option')
+        .map((i, el) =>
+          $(el)
+            .text()
+            .trim()
+        )
+        .toArray(),
       ['csv', 'pdf'],
       'Schedule format should have correct options'
     );
@@ -456,9 +543,14 @@ test('format options - config enableMultipleExport', function (assert) {
   });
 
   Ember.run(() => {
-    assert.ok($('.schedule-modal__dropdown--format .ember-power-select-trigger').attr('aria-disabled'),
-      'The formats dropdown is disabled by default');
-    assert.deepEqual($('.schedule-modal__dropdown--format .ember-power-select-selected-item').text().trim(),
+    assert.ok(
+      $('.schedule-modal__dropdown--format .ember-power-select-trigger').attr('aria-disabled'),
+      'The formats dropdown is disabled by default'
+    );
+    assert.deepEqual(
+      $('.schedule-modal__dropdown--format .ember-power-select-selected-item')
+        .text()
+        .trim(),
       'csv',
       'Schedule format should have correct default option'
     );

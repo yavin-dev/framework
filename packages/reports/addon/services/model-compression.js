@@ -9,7 +9,6 @@ import Ember from 'ember';
 const { assert, computed, get, inject, run } = Ember;
 
 export default Ember.Service.extend({
-
   /**
    * @property {Ember.Service} store
    */
@@ -43,9 +42,9 @@ export default Ember.Service.extend({
    * @return {Promise} promise that resolvs to a new ember data model
    */
   decompress(string) {
-    return get(this, 'codec').decompress(string).then(modelPayload => run(() =>
-      this._pushPayload(JSON.parse(modelPayload))
-    ));
+    return get(this, 'codec')
+      .decompress(string)
+      .then(modelPayload => run(() => this._pushPayload(JSON.parse(modelPayload))));
   },
 
   /**
@@ -61,8 +60,8 @@ export default Ember.Service.extend({
      * or when [store.push is overhauled](https://github.com/emberjs/rfcs/pull/161)
      */
     let store = get(this, 'store'),
-        defaultSerializer = store.serializerFor('application'),
-        normalizedPayload = defaultSerializer._normalizeDocumentHelper(payload);
+      defaultSerializer = store.serializerFor('application'),
+      normalizedPayload = defaultSerializer._normalizeDocumentHelper(payload);
 
     return store.push(normalizedPayload);
   }

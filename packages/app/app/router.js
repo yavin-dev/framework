@@ -11,10 +11,14 @@ const Router = Ember.Router.extend({
 });
 
 Router.map(function() {
-  this.route('landing', {path:'/'});
+  this.route('landing', { path: '/' });
+
+  this.route('directory', function() {
+    this.route('my-data');
+  });
 
   this.route('dashboardCollections', function() {
-    this.route('collection', {path:'/:collectionId'});
+    this.route('collection', { path: '/:collectionId' });
   });
 
   this.route('dashboards', function() {
@@ -26,7 +30,7 @@ Router.map(function() {
       this.route('widgets', function() {
         this.route('add');
         this.route('new');
-        this.route('widget', { path: '/:widgetId'}, function() {
+        this.route('widget', { path: '/:widgetId' }, function() {
           this.route('new');
           this.route('invalid');
           this.route('view');
@@ -38,7 +42,7 @@ Router.map(function() {
 
   this.route('reports', function() {
     this.route('new');
-    this.route('report', { path: '/:reportId'}, function() {
+    this.route('report', { path: '/:reportId' }, function() {
       this.route('new');
       this.route('invalid');
       this.route('view');

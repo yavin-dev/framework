@@ -10,7 +10,8 @@ let Template;
 moduleForComponent('common-actions/delete', 'Integration | Component | common actions/delete', {
   integration: true,
   beforeEach() {
-    Template = hbsWithModal(`
+    Template = hbsWithModal(
+      `
       {{#common-actions/delete
         model=widget
         warnMsg='Are you sure you want to delete the widget?'
@@ -19,15 +20,17 @@ moduleForComponent('common-actions/delete', 'Integration | Component | common ac
       }}
         Delete
       {{/common-actions/delete}}
-    `, getOwner(this));
+    `,
+      getOwner(this)
+    );
 
     set(this, 'widget', {
       id: 10,
       title: 'The Wind Waker',
-      constructor: { modelName : 'testWidget'}
+      constructor: { modelName: 'testWidget' }
     });
 
-    set(this, 'deleteWidget', Ember.K);
+    set(this, 'deleteWidget', () => {});
   }
 });
 
@@ -36,39 +39,42 @@ test('confirm modal', function(assert) {
 
   this.render(Template);
 
-  assert.notOk(!!$('.ember-modal-dialog').length,
-    'Modal is not visible at the start');
+  assert.notOk(!!$('.ember-modal-dialog').length, 'Modal is not visible at the start');
 
   Ember.run(() => {
     this.$('.delete > button').click();
   });
 
-  assert.ok(!!$('.ember-modal-dialog').length,
-    'Modal is visible after clicking the delete action');
+  assert.ok(!!$('.ember-modal-dialog').length, 'Modal is visible after clicking the delete action');
 
-  assert.equal($('.primary-header').text().trim(),
+  assert.equal(
+    $('.primary-header')
+      .text()
+      .trim(),
     'Delete "The Wind Waker"',
-    'Widget title is included in modal header');
+    'Widget title is included in modal header'
+  );
 
-  assert.equal($('.secondary-header').text().trim(),
+  assert.equal(
+    $('.secondary-header')
+      .text()
+      .trim(),
     'Are you sure you want to delete the widget?',
-    'Warning message is included in the widget modal');
+    'Warning message is included in the widget modal'
+  );
 
   Ember.run(() => {
     $('button:contains(Cancel)').click();
   });
 
-  assert.notOk(!!$('.ember-modal-dialog').length,
-    'Modal is closed after clicking cancel button');
+  assert.notOk(!!$('.ember-modal-dialog').length, 'Modal is closed after clicking cancel button');
 });
 
 test('delete action', function(assert) {
   assert.expect(1);
 
-  this.set('deleteWidget', (widget) => {
-    assert.equal(widget,
-      get(this, 'widget'),
-      'the selected widget is passed to the action');
+  this.set('deleteWidget', widget => {
+    assert.equal(widget, get(this, 'widget'), 'the selected widget is passed to the action');
   });
 
   this.render(Template);
@@ -85,7 +91,9 @@ test('delete action', function(assert) {
 test('default warning message', function(assert) {
   assert.expect(1);
 
-  this.render(hbsWithModal(`
+  this.render(
+    hbsWithModal(
+      `
     {{#common-actions/delete
         model=widget
         deleteAction=(action deleteWidget)
@@ -93,13 +101,20 @@ test('default warning message', function(assert) {
     }}
         Delete
     {{/common-actions/delete}}
-   `, getOwner(this)));
+   `,
+      getOwner(this)
+    )
+  );
 
   Ember.run(() => {
     this.$('.delete > button').click();
   });
 
-  assert.equal($('.secondary-header').text().trim(),
+  assert.equal(
+    $('.secondary-header')
+      .text()
+      .trim(),
     'Are you sure you want to delete this test-widget?',
-    'Default warning message is included in widget modal');
+    'Default warning message is included in widget modal'
+  );
 });

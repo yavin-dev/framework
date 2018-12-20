@@ -10,7 +10,8 @@ moduleForComponent('common-actions/share', 'Integration | Component | common act
   integration: true,
 
   beforeEach() {
-    Template = hbsWithModal(`
+    Template = hbsWithModal(
+      `
       {{#common-actions/share
         pageTitle=pageTitle
         buildUrl=buildUrl
@@ -19,7 +20,9 @@ moduleForComponent('common-actions/share', 'Integration | Component | common act
       }}
         Share Report
       {{/common-actions/share}}
-    `, getOwner(this));
+    `,
+      getOwner(this)
+    );
   }
 });
 
@@ -28,9 +31,13 @@ test('Component renders', function(assert) {
 
   this.render(Template);
 
-  assert.equal(this.$('.share').text().trim(),
+  assert.equal(
+    this.$('.share')
+      .text()
+      .trim(),
     'Share Report',
-    'Component yields given text');
+    'Component yields given text'
+  );
 });
 
 test('Component is enabled / disabled', function(assert) {
@@ -40,13 +47,14 @@ test('Component is enabled / disabled', function(assert) {
 
   this.render(Template);
 
-  assert.ok(this.$('button:contains("Share")').prop("disabled"),
-    'Share is disabled when the disabled is set to true');
+  assert.ok(this.$('button:contains("Share")').prop('disabled'), 'Share is disabled when the disabled is set to true');
 
   this.set('isDisabled', false);
 
-  assert.notOk(this.$('button:contains("Share")').prop("disabled"),
-    'Share is enabled when the disabled is set to false');
+  assert.notOk(
+    this.$('button:contains("Share")').prop('disabled'),
+    'Share is enabled when the disabled is set to false'
+  );
 });
 
 test('Modal', function(assert) {
@@ -57,32 +65,42 @@ test('Modal', function(assert) {
 
   this.render(Template);
 
-  assert.notOk($('.ember-modal-dialog').is(':visible'),
-    'Share modal is not visible before clicking the component');
+  assert.notOk($('.ember-modal-dialog').is(':visible'), 'Share modal is not visible before clicking the component');
 
   Ember.run(() => {
     this.$('.share > button').click();
   });
 
-  assert.ok($('.ember-modal-dialog').is(':visible'),
-    'Share modal dialog pops up on clicking the component');
+  assert.ok($('.ember-modal-dialog').is(':visible'), 'Share modal dialog pops up on clicking the component');
 
-  assert.equal($('.primary-header').text().trim(),
+  assert.equal(
+    $('.primary-header')
+      .text()
+      .trim(),
     `Share "${pageTitle}"`,
-    'Given page title appears in modal header');
+    'Given page title appears in modal header'
+  );
 
-  assert.equal($('.secondary-header').text().trim(),
+  assert.equal(
+    $('.secondary-header')
+      .text()
+      .trim(),
     'Select the Copy button to copy to clipboard.',
-    'Secondary header is visible with instructions');
+    'Secondary header is visible with instructions'
+  );
 
-  assert.equal($('.modal-input-box').val(),
-    document.location.href,
-    'Modal input box has link to the current page');
+  assert.equal($('.modal-input-box').val(), document.location.href, 'Modal input box has link to the current page');
 
   let buttons = $('.btn-container .btn');
-  assert.deepEqual(buttons.map(function() { return this.textContent.trim(); }).get(),
+  assert.deepEqual(
+    buttons
+      .map(function() {
+        return this.textContent.trim();
+      })
+      .get(),
     ['Copy Link', 'Cancel'],
-    'Copy and Cancel buttons are rendered');
+    'Copy and Cancel buttons are rendered'
+  );
 });
 
 test('Copy Link Notification', function(assert) {
@@ -94,16 +112,14 @@ test('Copy Link Notification', function(assert) {
     this.$('.share > button').click();
   });
 
-  assert.notOk($('.modal-notification').is(':visible'),
-    'Copy notification is not visible before clicking copy button');
+  assert.notOk($('.modal-notification').is(':visible'), 'Copy notification is not visible before clicking copy button');
 
   // Click Copy Link
   Ember.run(() => {
     $('.btn-container button:contains(Copy Link)').click();
   });
 
-  assert.ok($('.modal-notification').is(':visible'),
-    'Copy notification message is shown after clicking copy button');
+  assert.ok($('.modal-notification').is(':visible'), 'Copy notification message is shown after clicking copy button');
 });
 
 test('Cancel button', function(assert) {
@@ -111,24 +127,21 @@ test('Cancel button', function(assert) {
 
   this.render(Template);
 
-  assert.notOk($('.ember-modal-dialog').is(':visible'),
-    'Share modal is not visible before clicking the component');
+  assert.notOk($('.ember-modal-dialog').is(':visible'), 'Share modal is not visible before clicking the component');
 
   // Click component
   Ember.run(() => {
     this.$('.share > button').click();
   });
 
-  assert.ok($('.ember-modal-dialog').is(':visible'),
-    'Share modal dialog pops up on clicking the component');
+  assert.ok($('.ember-modal-dialog').is(':visible'), 'Share modal dialog pops up on clicking the component');
 
   // Click Cancel
   Ember.run(() => {
     $('.btn-container button:contains(Cancel)').click();
   });
 
-  assert.notOk($('.ember-modal-dialog').is(':visible'),
-    'Share modal is closed after clicking cancel button');
+  assert.notOk($('.ember-modal-dialog').is(':visible'), 'Share modal is closed after clicking cancel button');
 });
 
 test('buildUrl option', function(assert) {
@@ -143,7 +156,5 @@ test('buildUrl option', function(assert) {
     this.$('.share > button').click();
   });
 
-  assert.equal($('.modal-input-box').val(),
-    'www.navi.com/customUrlToShare',
-    'buildUrl option allows custom url logic');
+  assert.equal($('.modal-input-box').val(), 'www.navi.com/customUrlToShare', 'buildUrl option allows custom url logic');
 });

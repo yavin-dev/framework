@@ -1,11 +1,11 @@
-import Ember from 'ember';
 import { moduleFor, test } from 'ember-qunit';
-import { ReportActions } from 'navi-reports/services/report-action-dispatcher';
-
-const { get, A:arr } = Ember;
+import { UpdateReportActions } from 'navi-reports/services/update-report-action-dispatcher';
+import { get } from '@ember/object';
+import { A as arr } from '@ember/array';
+import { run } from '@ember/runloop';
 
 moduleFor('consumer:report/table-visualization', 'Unit | Consumer | report table visualization', {
-  needs: [ 'consumer:action-consumer' ]
+  needs: ['consumer:action-consumer']
 });
 
 test('UPDATE_TABLE_COLUMN_ORDER', function(assert) {
@@ -21,13 +21,15 @@ test('UPDATE_TABLE_COLUMN_ORDER', function(assert) {
     }
   };
 
-  Ember.run(() => {
-    this.subject().send(ReportActions.UPDATE_TABLE_COLUMN_ORDER, { currentModel }, [{ type: 'test' }]);
+  run(() => {
+    this.subject().send(UpdateReportActions.UPDATE_TABLE_COLUMN_ORDER, { currentModel }, [{ type: 'test' }]);
   });
 
-  assert.deepEqual(get(currentModel, 'visualization.metadata.columns'),
+  assert.deepEqual(
+    get(currentModel, 'visualization.metadata.columns'),
     [{ type: 'test' }],
-    'updateColumnOrder updates the columns in the visualization metadata');
+    'updateColumnOrder updates the columns in the visualization metadata'
+  );
 
   let invalidVisModel = {
     visualization: {
@@ -35,12 +37,14 @@ test('UPDATE_TABLE_COLUMN_ORDER', function(assert) {
     }
   };
 
-  assert.throws(() => this.subject().send(ReportActions.UPDATE_TABLE_COLUMN_ORDER, { currentModel: invalidVisModel }, 'new'),
+  assert.throws(
+    () => this.subject().send(UpdateReportActions.UPDATE_TABLE_COLUMN_ORDER, { currentModel: invalidVisModel }, 'new'),
     /Visualization must be a table/,
-    'Trying to update column order on a non-table visualization throws an error');
+    'Trying to update column order on a non-table visualization throws an error'
+  );
 });
 
-test('reorder metrics', function (assert) {
+test('reorder metrics', function(assert) {
   assert.expect(1);
 
   let currentModel = {
@@ -60,39 +64,51 @@ test('reorder metrics', function (assert) {
     }
   };
 
-  let newColumns = [{
-    type: 'metric',
-    field: 'b'
-  }, {
-    type: 'metric',
-    field: 'a'
-  }]
+  let newColumns = [
+    {
+      type: 'metric',
+      field: { metric: 'b' }
+    },
+    {
+      type: 'threshold',
+      field: { metric: 'a' }
+    }
+  ];
 
-
-  Ember.run(() => {
-    this.subject().send(ReportActions.UPDATE_TABLE_COLUMN_ORDER, { currentModel }, newColumns);
+  run(() => {
+    this.subject().send(UpdateReportActions.UPDATE_TABLE_COLUMN_ORDER, { currentModel }, newColumns);
   });
 
-  assert.deepEqual(get(currentModel, 'request.metrics').map(metric => get(metric, 'canonicalName')),
+  assert.deepEqual(
+    get(currentModel, 'request.metrics').map(metric => get(metric, 'canonicalName')),
     ['b', 'a'],
-    'updateColumnOrder updates the order of the metrics in the request metrics');
+    'updateColumnOrder updates the order of the metrics in the request metrics'
+  );
 });
 
-test('UPDATE_TABLE_COLUMN', function (assert) {
+test('UPDATE_TABLE_COLUMN', function(assert) {
   assert.expect(1);
 
   let currentModel = {
     visualization: {
       type: 'table',
-      metadata: { columns: [{ field: { metric: 'a'}, value: 1 }, { field: { metric: 'b' }, value: 2 }] }
+      metadata: {
+        columns: [{ field: { metric: 'a' }, value: 1 }, { field: { metric: 'b' }, value: 2 }]
+      }
     }
   };
 
-  Ember.run(() => {
-    this.subject().send(ReportActions.UPDATE_TABLE_COLUMN, { currentModel }, { field: { metric: 'b' }, value: 3 });
+  run(() => {
+    this.subject().send(
+      UpdateReportActions.UPDATE_TABLE_COLUMN,
+      { currentModel },
+      { field: { metric: 'b' }, value: 3 }
+    );
   });
 
-  assert.deepEqual(get(currentModel, 'visualization.metadata.columns'),
-    [{ field: { metric: 'a'}, value: 1 }, { field: { metric: 'b' }, value: 3 }],
-    'updateColumn updates the column in the visualization metadata');
+  assert.deepEqual(
+    get(currentModel, 'visualization.metadata.columns'),
+    [{ field: { metric: 'a' }, value: 1 }, { field: { metric: 'b' }, value: 3 }],
+    'updateColumn updates the column in the visualization metadata'
+  );
 });

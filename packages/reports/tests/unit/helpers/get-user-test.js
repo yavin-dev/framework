@@ -1,4 +1,3 @@
-
 import Ember from 'ember';
 import { moduleFor, test } from 'ember-qunit';
 import config from 'ember-get-config';
@@ -10,14 +9,7 @@ const { getOwner } = Ember;
 let Store;
 
 moduleFor('helper:get-user', 'Unit | Helper | get user', {
-  needs: [
-    'service:user',
-    'model:user',
-    'adapter:user',
-    'model:report',
-    'serializer:user',
-    'model:delivery-rule'
-  ],
+  needs: ['service:user', 'model:user', 'adapter:user', 'model:report', 'serializer:user', 'model:delivery-rule'],
   beforeEach() {
     setupMock();
     Store = getOwner(this).lookup('service:store');
@@ -36,10 +28,8 @@ test('getUser returns user', function(assert) {
   return wait().then(() => {
     return Ember.run(() => {
       let userFromStore = Store.peekRecord('user', config.navi.user),
-          user = getUser.compute();
-      assert.deepEqual(user,
-        userFromStore,
-        'the user model retrieved using the helper is the current user');
+        user = getUser.compute();
+      assert.deepEqual(user, userFromStore, 'the user model retrieved using the helper is the current user');
     });
   });
 });

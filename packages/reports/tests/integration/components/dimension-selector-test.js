@@ -1,21 +1,12 @@
 import Ember from 'ember';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import {
-  setupMock,
-  teardownMock
-} from '../../helpers/mirage-helper';
-import {
-  assertTooltipRendered,
-  assertTooltipNotRendered,
-  assertTooltipContent
-} from '../../helpers/ember-tooltips';
+import { setupMock, teardownMock } from '../../helpers/mirage-helper';
+import { assertTooltipRendered, assertTooltipNotRendered, assertTooltipContent } from '../../helpers/ember-tooltips';
 
 const { getOwner, set } = Ember;
 
-let Store,
-    MetadataService,
-    Age;
+let Store, MetadataService, Age;
 
 moduleForComponent('dimension-selector', 'Integration | Component | dimension selector', {
   integration: true,
@@ -34,7 +25,8 @@ moduleForComponent('dimension-selector', 'Integration | Component | dimension se
       Age = MetadataService.getById('dimension', 'age');
 
       //set report object
-      this.set('request',
+      this.set(
+        'request',
         Store.createFragment('bard-request/request', {
           logicalTable: Store.createFragment('bard-request/fragments/logicalTable', {
             table: MetadataService.getById('table', 'tableA'),
@@ -43,7 +35,8 @@ moduleForComponent('dimension-selector', 'Integration | Component | dimension se
           dimensions: [{ dimension: Age }],
           filters: [{ dimension: Age }],
           responseFormat: 'csv'
-        }));
+        })
+      );
 
       this.render(hbs`{{dimension-selector
             request=request
@@ -63,62 +56,81 @@ moduleForComponent('dimension-selector', 'Integration | Component | dimension se
 test('it renders', function(assert) {
   assert.expect(3);
 
-  assert.ok(this.$('.checkbox-selector--dimension').is(':visible'),
-    'The dimension selector component is rendered');
+  assert.ok(this.$('.checkbox-selector--dimension').is(':visible'), 'The dimension selector component is rendered');
 
-  assert.ok(this.$('.navi-list-selector').is(':visible'),
-    'a navi-list-selector component is rendered as part of the dimension selector');
+  assert.ok(
+    this.$('.navi-list-selector').is(':visible'),
+    'a navi-list-selector component is rendered as part of the dimension selector'
+  );
 
-  assert.ok(this.$('.grouped-list').is(':visible'),
-    'a grouped-list component is rendered as part of the dimension selector');
+  assert.ok(
+    this.$('.grouped-list').is(':visible'),
+    'a grouped-list component is rendered as part of the dimension selector'
+  );
 });
 
 test('groups', function(assert) {
   assert.expect(2);
 
-  let groups = this.$('.grouped-list__group-header').toArray().map(el => $(el).text().trim());
+  let groups = this.$('.grouped-list__group-header')
+    .toArray()
+    .map(el =>
+      $(el)
+        .text()
+        .trim()
+    );
 
-  assert.ok(groups[0].includes('Time Grain'),
-    'Time Grains are included as the first group in the dimension selector');
+  assert.ok(groups[0].includes('Time Grain'), 'Time Grains are included as the first group in the dimension selector');
 
-  assert.deepEqual(groups, [
-    'Time Grain (5)',
-    'test (23)',
-    'Asset (4)'
-  ], 'The groups rendered by the component include dimension groups and Time Grain');
+  assert.deepEqual(
+    groups,
+    ['Time Grain (5)', 'test (25)', 'Asset (4)'],
+    'The groups rendered by the component include dimension groups and Time Grain'
+  );
 });
 
 test('show selected', function(assert) {
   assert.expect(3);
 
-  assert.ok(this.$('.grouped-list__item').length > this.get('request.dimensions.length') + 1/*for timegrain*/,
-    'Initially all the dimensions are shown in the dimension-selector');
+  assert.ok(
+    this.$('.grouped-list__item').length > this.get('request.dimensions.length') + 1 /*for timegrain*/,
+    'Initially all the dimensions are shown in the dimension-selector'
+  );
 
   Ember.run(() => {
     this.$('.navi-list-selector__show-link').click();
   });
 
-  assert.deepEqual(this.$('.grouped-list__item').toArray().map(el => $(el).text().trim()),
-    [ 'Day', 'Age' ],
-    'When show selected is clicked only the selected age dimension and the selected timegrain are shown');
+  assert.deepEqual(
+    this.$('.grouped-list__item')
+      .toArray()
+      .map(el =>
+        $(el)
+          .text()
+          .trim()
+      ),
+    ['Day', 'Age'],
+    'When show selected is clicked only the selected age dimension and the selected timegrain are shown'
+  );
 
-  assert.notOk(this.$('.checkbox-selector__checkbox').toArray().map(el => $(el)[0]['checked']).includes(false),
-    'The selected items are checked');
+  assert.notOk(
+    this.$('.checkbox-selector__checkbox')
+      .toArray()
+      .map(el => $(el)[0]['checked'])
+      .includes(false),
+    'The selected items are checked'
+  );
 });
 
 test('actions', function(assert) {
   assert.expect(4);
 
-  this.set('addTimeGrain', (item) => {
-    assert.equal(item.get('name'),
-      'week',
-      'the week time grain item is passed as a param to the action');
+  this.set('addTimeGrain', item => {
+    assert.equal(item.get('name'), 'week', 'the week time grain item is passed as a param to the action');
   });
 
-  this.set('removeTimeGrain', (item) => {
-    assert.equal(item.get('name'),
-      'day',
-      'the day time grain item is passed as a param to the action');
+  this.set('removeTimeGrain', item => {
+    assert.equal(item.get('name'), 'day', 'the day time grain item is passed as a param to the action');
   });
 
   //select first time grain
@@ -130,16 +142,16 @@ test('actions', function(assert) {
     this.$('.grouped-list__item:contains(Day) .grouped-list__item-label').click();
   });
 
-  this.set('addDimension', (item) => {
-    assert.equal(item.get('longName') ,
+  this.set('addDimension', item => {
+    assert.equal(
+      item.get('longName'),
       'Gender',
-      'the gender dimension item is passed as a param to the action for addition');
+      'the gender dimension item is passed as a param to the action for addition'
+    );
   });
 
-  this.set('removeDimension', (item) => {
-    assert.equal(item.get('longName') ,
-      'Age',
-      'the Age dimension item is passed as a param to the action for removal');
+  this.set('removeDimension', item => {
+    assert.equal(item.get('longName'), 'Age', 'the Age dimension item is passed as a param to the action for removal');
   });
 
   //select a random dimension
@@ -155,16 +167,18 @@ test('actions', function(assert) {
 test('filter icon', function(assert) {
   assert.expect(3);
 
-  assert.notOk(Ember.isEmpty(this.$('.grouped-list__item:contains(Age) .checkbox-selector__filter--active')),
-    'The filter icon with the age dimension has the active class');
+  assert.notOk(
+    Ember.isEmpty(this.$('.grouped-list__item:contains(Age) .checkbox-selector__filter--active')),
+    'The filter icon with the age dimension has the active class'
+  );
 
-  assert.ok(Ember.isEmpty(this.$('.grouped-list__item:contains(Gender) .checkbox-selector__filter--active')),
-    'The filter icon with the gender dimension does not have the active class');
+  assert.ok(
+    Ember.isEmpty(this.$('.grouped-list__item:contains(Gender) .checkbox-selector__filter--active')),
+    'The filter icon with the gender dimension does not have the active class'
+  );
 
   this.set('addDimFilter', dimension => {
-    assert.deepEqual(dimension,
-      Age,
-      'The age dimension is passed to the action when filter icon is clicked');
+    assert.deepEqual(dimension, Age, 'The age dimension is passed to the action when filter icon is clicked');
   });
 
   Ember.run(() => {
@@ -188,21 +202,29 @@ test('tooltip', function(assert) {
 
   assertTooltipRendered(assert);
   assertTooltipContent(assert, {
-    contentString: 'foo',
+    contentString: 'foo'
   });
 });
 
 test('ranked search', function(assert) {
   assert.expect(2);
 
-  assert.deepEqual(this.$('.grouped-list__item:contains(Country)').toArray().map(el => el.textContent.trim()),
-    [ 'Property Country', 'User Country' ],
-    'Initially the country dimensions are ordered alphabetically');
+  assert.deepEqual(
+    this.$('.grouped-list__item:contains(Country)')
+      .toArray()
+      .map(el => el.textContent.trim()),
+    ['Property Country', 'User Country'],
+    'Initially the country dimensions are ordered alphabetically'
+  );
 
   this.$('.navi-list-selector__search-input').val('count');
   this.$('.navi-list-selector__search-input').trigger('focusout');
 
-  assert.deepEqual(this.$('.grouped-list__item').toArray().map(el => el.textContent.trim()),
-    [ 'User Country', 'Property Country' ],
-    'The search results are ranked based on relevance');
+  assert.deepEqual(
+    this.$('.grouped-list__item')
+      .toArray()
+      .map(el => el.textContent.trim()),
+    ['User Country', 'Property Country'],
+    'The search results are ranked based on relevance'
+  );
 });

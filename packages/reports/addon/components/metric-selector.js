@@ -26,7 +26,7 @@ export default Ember.Component.extend({
   /*
    * @property {Array} classNames
    */
-  classNames: [ 'checkbox-selector', 'checkbox-selector--metric' ],
+  classNames: ['checkbox-selector', 'checkbox-selector--metric'],
 
   /*
    * @property {Array} allMetrics
@@ -38,7 +38,7 @@ export default Ember.Component.extend({
    */
   selectedMetrics: computed('request.metrics.[]', function() {
     let metrics = get(this, 'request.metrics').toArray(),
-        selectedBaseMetrics = uniqBy(metrics, (metric) => get(metric, 'metric.name'));
+      selectedBaseMetrics = uniqBy(metrics, metric => get(metric, 'metric.name'));
 
     return Ember.A(selectedBaseMetrics).mapBy('metric');
   }),
@@ -59,10 +59,12 @@ export default Ember.Component.extend({
    *                                         in request havings
    */
   metricsFiltered: computed('request.having.[]', function() {
-    return Ember.A(get(this, 'request.having')).mapBy('metric.metric.name').reduce((list, metric) => {
-      list[metric] = true;
-      return list;
-    }, {});
+    return Ember.A(get(this, 'request.having'))
+      .mapBy('metric.metric.name')
+      .reduce((list, metric) => {
+        list[metric] = true;
+        return list;
+      }, {});
   }),
 
   /*
@@ -76,19 +78,19 @@ export default Ember.Component.extend({
     let longName = get(metricMeta, 'longName');
 
     //create mousedown event using document.createEvent as supported by all browsers
-    let mouseEvent = document.createEvent("MouseEvent");
-    mouseEvent.initEvent( "mousedown", true, true );
+    let mouseEvent = document.createEvent('MouseEvent');
+    mouseEvent.initEvent('mousedown', true, true);
 
     run(this, () => {
       //find the right config trigger by matching metric longNames
       let metricSelector = document.querySelector('.report-builder__metric-selector'),
-          groupedListItems = Array.from(metricSelector.getElementsByClassName('grouped-list__item'));
+        groupedListItems = Array.from(metricSelector.getElementsByClassName('grouped-list__item'));
 
       groupedListItems.filter(item => {
-        if(item.textContent.trim() === longName){
+        if (item.textContent.trim() === longName) {
           item.querySelector('.metric-config__trigger-icon').dispatchEvent(mouseEvent);
         }
-      })
+      });
     });
   },
 
@@ -98,11 +100,11 @@ export default Ember.Component.extend({
      * @param {Object} metric
      */
     metricClicked(metric) {
-      let action = get(this, 'metricsChecked')[get(metric, 'name')]? 'remove' : 'add';
+      let action = get(this, 'metricsChecked')[get(metric, 'name')] ? 'remove' : 'add';
       this.sendAction(`${action}Metric`, metric);
 
       //On add, trigger metric-config mousedown event when metric has parameters
-      if(action === 'add' && get(metric, 'hasParameters')) {
+      if (action === 'add' && get(metric, 'hasParameters')) {
         this._openConfig(metric);
       }
     }

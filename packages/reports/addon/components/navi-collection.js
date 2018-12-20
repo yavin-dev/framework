@@ -43,7 +43,7 @@ export default Ember.Component.extend({
    * @property {Array} filteredReports -  array of reports filtered by user selected filter
    */
   filteredItems: computed('items.[]', 'filter', function() {
-    let {items, filter} = this.getProperties('items', 'filter');
+    let { items, filter } = this.getProperties('items', 'filter');
 
     return isEmpty(items) ? undefined : filter.filterFn(items);
   }),
@@ -52,9 +52,8 @@ export default Ember.Component.extend({
    * @property {String} itemRoute - routes to ${itemType}.${item} by default
    */
   itemRoute: computed('config.itemRoute', function() {
-    let itemType  = get(this, 'itemType'),
-        itemRoute = get(this, 'config.itemRoute') ||
-                        `${itemType}s.${itemType}`;
+    let itemType = get(this, 'itemType'),
+      itemRoute = get(this, 'config.itemRoute') || `${itemType}s.${itemType}`;
 
     return itemRoute;
   }),
@@ -63,9 +62,8 @@ export default Ember.Component.extend({
    * @property {String} itemNewRoute - routes to ${itemType}.new by default
    */
   itemNewRoute: computed('config.itemNewRoute', function() {
-    let itemType        = get(this, 'itemType'),
-        itemNewRoute    = get(this, 'config.itemNewRoute') ||
-                              `${itemType}s.new`;
+    let itemType = get(this, 'itemType'),
+      itemNewRoute = get(this, 'config.itemNewRoute') || `${itemType}s.new`;
 
     return itemNewRoute;
   }),
@@ -76,11 +74,11 @@ export default Ember.Component.extend({
   filterOptions: Ember.A([
     {
       filterFn: item => item,
-      name:      'All'
+      name: 'All'
     },
     {
       filterFn: items => items.filterBy('isFavorite'),
-      name:      'Favorites'
+      name: 'Favorites'
     }
   ]),
 

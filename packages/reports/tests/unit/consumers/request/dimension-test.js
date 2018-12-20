@@ -3,12 +3,7 @@ import { moduleFor, test } from 'ember-qunit';
 import { RequestActions } from 'navi-reports/services/request-action-dispatcher';
 import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
 
-let Store,
-    MetadataService,
-    Age,
-    EventId,
-    CurrentModel,
-    Consumer;
+let Store, MetadataService, Age, EventId, CurrentModel, Consumer;
 
 const { get, getOwner } = Ember;
 
@@ -22,7 +17,6 @@ moduleFor('consumer:request/dimension', 'Unit | Consumer | request dimension', {
     'transform:metric',
     'transform:moment',
     'transform:table',
-    'model:dimension-age',
     'model:bard-request/request',
     'model:bard-request/fragments/dimension',
     'validator:length',
@@ -50,10 +44,12 @@ moduleFor('consumer:request/dimension', 'Unit | Consumer | request dimension', {
     setupMock();
     Store = getOwner(this).lookup('service:store');
 
-    MetadataService =  getOwner(this).lookup('service:bard-metadata');
+    MetadataService = getOwner(this).lookup('service:bard-metadata');
 
     Consumer = this.subject();
-    CurrentModel = { request: Store.createFragment('bard-request/request', { dimensions: [] })};
+    CurrentModel = {
+      request: Store.createFragment('bard-request/request', { dimensions: [] })
+    };
 
     // Isolate test to focus on only this consumer
     let requestActionDispatcher = getOwner(this).lookup('service:request-action-dispatcher');
@@ -77,9 +73,11 @@ test('ADD_DIMENSION', function(assert) {
     Consumer.send(RequestActions.ADD_DIMENSION, { currentModel: CurrentModel }, Age);
   });
 
-  assert.deepEqual(get(CurrentModel, 'request.dimensions').mapBy('dimension')[0],
+  assert.deepEqual(
+    get(CurrentModel, 'request.dimensions').mapBy('dimension')[0],
     Age,
-    'addDimension adds the given dimension to the request');
+    'addDimension adds the given dimension to the request'
+  );
 });
 
 test('REMOVE_DIMENSION', function(assert) {
@@ -90,8 +88,7 @@ test('REMOVE_DIMENSION', function(assert) {
     Consumer.send(RequestActions.REMOVE_DIMENSION, { currentModel: CurrentModel }, Age);
   });
 
-  assert.ok(get(CurrentModel, 'request.dimensions.length') === 0,
-    'The given dimension is removed from the request');
+  assert.ok(get(CurrentModel, 'request.dimensions.length') === 0, 'The given dimension is removed from the request');
 });
 
 test('DID_UPDATE_TIME_GRAIN', function(assert) {
@@ -102,15 +99,23 @@ test('DID_UPDATE_TIME_GRAIN', function(assert) {
     Consumer.send(RequestActions.ADD_DIMENSION, { currentModel: CurrentModel }, EventId);
   });
 
-  assert.deepEqual(get(CurrentModel, 'request.dimensions').mapBy('dimension'),
+  assert.deepEqual(
+    get(CurrentModel, 'request.dimensions').mapBy('dimension'),
     [Age, EventId],
-    'Both given dimensions are added to request');
+    'Both given dimensions are added to request'
+  );
 
-  Consumer.send(RequestActions.DID_UPDATE_TIME_GRAIN, { currentModel: CurrentModel }, {
-    dimensions: [Age] // Time grain with no event id
-  });
+  Consumer.send(
+    RequestActions.DID_UPDATE_TIME_GRAIN,
+    { currentModel: CurrentModel },
+    {
+      dimensions: [Age] // Time grain with no event id
+    }
+  );
 
-  assert.deepEqual(get(CurrentModel, 'request.dimensions').mapBy('dimension'),
+  assert.deepEqual(
+    get(CurrentModel, 'request.dimensions').mapBy('dimension'),
     [Age],
-    'EventId dimension is removed since it was not found in the new time grain');
+    'EventId dimension is removed since it was not found in the new time grain'
+  );
 });

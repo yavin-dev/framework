@@ -2,12 +2,12 @@
  * Copyright 2017, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import Ember from 'ember';
+import { A as array } from '@ember/array';
+
+import EmberObject, { computed, get } from '@ember/object';
 import ExtendedMetadataMixin from 'navi-data/mixins/extended-metadata';
 
-const { A:array, get, computed } = Ember;
-
-let Model = Ember.Object.extend(ExtendedMetadataMixin, {
+let Model = EmberObject.extend(ExtendedMetadataMixin, {
   /**
    * @property {String} type
    */
@@ -34,6 +34,11 @@ let Model = Ember.Object.extend(ExtendedMetadataMixin, {
   cardinality: undefined,
 
   /**
+   * @property {String} datatype
+   */
+  datatype: undefined,
+
+  /**
    * @property {Array} Array of field objects
    */
   fields: undefined,
@@ -49,6 +54,11 @@ let Model = Ember.Object.extend(ExtendedMetadataMixin, {
   descriptionTag: 'description',
 
   /**
+   * @property {String} idTag - name of the searchable id tag
+   */
+  idTag: 'id',
+
+  /**
    * Fetches tags for a given field name
    *
    * @method getTagsForField
@@ -57,7 +67,7 @@ let Model = Ember.Object.extend(ExtendedMetadataMixin, {
    */
   getTagsForField(fieldName) {
     let fields = array(get(this, 'fields')),
-        field  = fields.findBy('name', fieldName) || {};
+      field = fields.findBy('name', fieldName) || {};
 
     return get(field, 'tags') || [];
   },
@@ -82,8 +92,8 @@ let Model = Ember.Object.extend(ExtendedMetadataMixin, {
    * @property {String} primaryKeyFieldName
    */
   primaryKeyFieldName: computed(function() {
-    let tag   = get(this, 'primaryKeyTag'),
-        field = this.getFieldsForTag(tag)[0] || {};
+    let tag = get(this, 'primaryKeyTag'),
+      field = this.getFieldsForTag(tag)[0] || {};
     return get(field, 'name') || 'id';
   }),
 
@@ -91,9 +101,18 @@ let Model = Ember.Object.extend(ExtendedMetadataMixin, {
    * @property {String} descriptionFieldName
    */
   descriptionFieldName: computed(function() {
-    let tag   = get(this, 'descriptionTag'),
-        field = this.getFieldsForTag(tag)[0] || {};
+    let tag = get(this, 'descriptionTag'),
+      field = this.getFieldsForTag(tag)[0] || {};
     return get(field, 'name') || 'desc';
+  }),
+
+  /**
+   * @property {String} idFieldName
+   */
+  idFieldName: computed(function() {
+    let tag = get(this, 'idTag'),
+      field = this.getFieldsForTag(tag)[0] || {};
+    return get(field, 'name') || get(this, 'primaryKeyFieldName');
   })
 });
 

@@ -4,14 +4,13 @@
  *
  * Description: A model that holds a dimension value response.
  */
-import Ember from 'ember';
+import EmberObject from '@ember/object';
 
-export default Ember.Object.extend({
+export default EmberObject.extend({
   isEqual(other) {
     return this.id === other.id;
   }
 }).reopenClass({
-
   /**
    * @property {String} identifierField - name of the dimension identifier field
    */

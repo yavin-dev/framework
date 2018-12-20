@@ -5,11 +5,7 @@ moduleForComponent('power-select-collection-options', 'Integration | Component |
   integration: true,
 
   beforeEach() {
-    this.set('options', [
-      { id: 1, name: 'foo' },
-      { id: 2, name: 'bar' },
-      { id: 3, name: 'baz' }
-    ]);
+    this.set('options', [{ id: 1, name: 'foo' }, { id: 2, name: 'bar' }, { id: 3, name: 'baz' }]);
 
     this.set('select', {
       actions: {
@@ -33,9 +29,17 @@ test('it renders - with clear selection', function(assert) {
         {{/power-select-collection-options}}
     `);
 
-  assert.deepEqual(this.$('.ember-power-select-option').toArray().map(el => $(el).text().trim()),
-    [ 'Clear Selection', ...this.get('options').map(o => o.name) ],
-    'it renders a list of options with clear selection');
+  assert.deepEqual(
+    this.$('.ember-power-select-option')
+      .toArray()
+      .map(el =>
+        $(el)
+          .text()
+          .trim()
+      ),
+    ['Clear Selection', ...this.get('options').map(o => o.name)],
+    'it renders a list of options with clear selection'
+  );
 });
 
 test('it renders - without clear selection', function(assert) {
@@ -50,7 +54,15 @@ test('it renders - without clear selection', function(assert) {
         {{/power-select-collection-options}}
     `);
 
-  assert.deepEqual(this.$('.ember-power-select-option').toArray().map(el => $(el).text().trim()),
+  assert.deepEqual(
+    this.$('.ember-power-select-option')
+      .toArray()
+      .map(el =>
+        $(el)
+          .text()
+          .trim()
+      ),
     this.get('options').map(o => o.name),
-    'it renders a list of options without clear selection');
+    'it renders a list of options without clear selection'
+  );
 });

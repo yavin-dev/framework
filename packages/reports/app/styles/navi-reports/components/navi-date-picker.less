@@ -3,127 +3,130 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-@date-picker-width:     225px;
-@date-picker-height:    192px;
+@date-picker-width: 225px;
+@date-picker-height: 192px;
 
 .secondary-background {
-    background-color: @navi-purple-dark;
+  background-color: @navi-purple-dark;
 }
 
 .datepicker {
-    border: solid 1px @navi-border-gray;
+  border: solid 1px @navi-border-gray;
+  border-radius: 0;
+  padding: 0;
+  font-size: 13px;
+  height: @date-picker-height;
+  border-top-width: 0;
+  color: @body-font-gray;
+
+  th {
     border-radius: 0;
-    padding: 0;
-    font-size: 13px;
-    height: @date-picker-height;
-    border-top-width: 0;
-    color: @body-font-gray;
+    color: @navi-white;
+  }
 
-    th {
-        border-radius: 0;
-        color: @navi-white;
+  .dow {
+    background-color: @navi-white;
+    color: @gray-6;
+  }
+
+  .datepicker-switch,
+  .prev,
+  .next {
+    font-family: @font-family-strong;
+    font-weight: normal;
+    font-size: 18px;
+    .secondary-background;
+  }
+
+  // Removing any hover color change effect from date, next, prev
+  .datepicker-switch:hover,
+  .prev:hover,
+  .next:hover {
+    background-color: transparent;
+  }
+
+  thead {
+    .secondary-background;
+  }
+
+  thead > tr:nth-child(2) .dow {
+    color: @gray-6;
+  }
+
+  thead tr:first-child {
+    background-color: transparent;
+    th,
+    th:hover {
+      background-color: transparent;
+      padding: 10px 5px;
     }
+  }
 
-    .dow {
-        background-color: @navi-white;
-        color: @gray-6;
+  .active-month {
+    margin: 1% 0;
+    width: 25%;
+  }
+
+  .active-month,
+  .month.active.active-month,
+  table tr td.active.active,
+  table tr td.active.active:hover,
+  table tr td span.active.active,
+  table tr td span.active.active:hover,
+  table tr.active.active,
+  table tr.active.active:hover {
+    .secondary-background;
+    border: 0;
+    border-radius: 0;
+    background-image: none;
+    color: @navi-white;
+    font-family: @font-family-strong;
+    text-shadow: none;
+  }
+
+  table tr td span {
+    height: 45px;
+    line-height: 45px;
+    &.active.active,
+    &.active.active:hover {
+      border-radius: 4px;
     }
+  }
 
-    .datepicker-switch,
-    .prev,
-    .next {
-        font-family: @font-family-strong;
-        font-weight: normal;
-        font-size: 18px;
-        .secondary-background;
+  table tr td:hover {
+    border-radius: 0;
+  }
+
+  thead tr th,
+  tfoot tr th,
+  thead tr td,
+  tbody tr td,
+  tfoot tr td {
+    padding: 2px;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .table-condensed {
+    .secondary-background;
+    tbody {
+      background-color: @navi-white;
     }
-
-    // Removing any hover color change effect from date, next, prev
-    .datepicker-switch:hover,
-    .prev:hover,
-    .next:hover {
-        background-color: transparent;
-    }
-
-    thead {
-        .secondary-background;
-    }
-
-    thead > tr:nth-child(2) .dow {
-        color: @gray-6;
-    }
-
-    thead tr:first-child {
-        background-color: transparent;
-        th, th:hover {
-            background-color: transparent;
-            padding: 0 5px 10px;
-        }
-    }
-
-    .active-month {
-        margin: 1% 0;
-        width: 25%;
-    }
-
-    .active-month,
-    .month.active.active-month,
-    table tr td.active.active,
-    table tr td.active.active:hover,
-    table tr td span.active.active,
-    table tr td span.active.active:hover,
-    table tr.active.active,
-    table tr.active.active:hover{
-        .secondary-background;
-        border: 0;
-        border-radius: 0;
-        background-image: none;
-        color: @navi-white;
-        font-family: @font-family-strong;
-        text-shadow: none;
-    }
-
-    table tr td span {
-        height: 45px;
-        line-height: 45px;
-        &.active.active, &.active.active:hover{
-            border-radius: 4px;
-        }
-    }
-
-    table tr td:hover {
-        border-radius: 0;
-    }
-
-    thead tr th,
-    tfoot tr th,
-    thead tr td,
-    tbody tr td,
-    tfoot tr td {
-        padding: 2px;
-        border: 0;
-        border-radius: 0;
-    }
-
-    .table-condensed {
-        .secondary-background;
-        tbody {
-            background-color: @navi-white;
-        }
-    }
-
+  }
 }
 .datepicker-inline {
-    width: @date-picker-width;
+  width: @date-picker-width;
 }
 
-.datepicker-months, .datepicker-years, .datepicker-days {
-    .table-condensed {
-        width: 100%;
-    }
+.datepicker-months,
+.datepicker-years,
+.datepicker-days {
+  .table-condensed {
+    width: 100%;
+  }
 }
 
 .week .datepicker .datepicker-days tbody tr:hover {
-    background-color: @navi-lightest-gray;
-    border: 0;
+  background-color: @navi-lightest-gray;
+  border: 0;
 }

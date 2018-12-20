@@ -1,280 +1,308 @@
-import RequestBuilder from  'navi-data/builder/request';
+import RequestBuilder from 'navi-data/builder/request';
 import { module, test } from 'qunit';
 
 const Request = RequestBuilder.create();
 
-module('Unit | Builder | Request');
+module('Unit | Builder | Request', function() {
+  test('logical table', function(assert) {
+    assert.expect(3);
 
-test('logical table', function(assert) {
-  assert.expect(3);
+    assert.deepEqual(Request.get('logicalTable'), {}, 'logicalTable is initially an empty object');
 
-  assert.deepEqual(Request.logicalTable,
-    {},
-    'logicalTable is initially an empty object');
+    let updatedRequest = Request.setLogicalTable('network', 'day');
 
-  let updatedRequest = Request.setLogicalTable('network', 'day');
-
-  assert.deepEqual(updatedRequest.logicalTable,
-    {
-      table: 'network',
-      timeGrain: 'day'
-    },
-    'logicalTable can be updated with set function');
-
-  assert.notEqual(Request,
-    updatedRequest,
-    'original request was not modified');
-});
-
-test('dimensions', function(assert) {
-  assert.expect(4);
-
-  assert.deepEqual(Request.dimensions,
-    [],
-    'dimensions is initially an empty array');
-
-  let updatedRequest = Request.addDimensions('age', 'gender');
-
-  assert.deepEqual(updatedRequest.dimensions,
-    [
+    assert.deepEqual(
+      updatedRequest.get('logicalTable'),
       {
-        dimension: 'age'
+        table: 'network',
+        timeGrain: 'day'
       },
-      {
-        dimension: 'gender'
-      }
-    ],
-    'dimensions can be updated with add function');
+      'logicalTable can be updated with set function'
+    );
 
-  updatedRequest = updatedRequest.setDimensions('property', 'browser');
-  assert.deepEqual(updatedRequest.dimensions,
-    [
-      {
-        dimension: 'property'
-      },
-      {
-        dimension: 'browser'
-      }
-    ],
-    'dimensions can be replaced with set function');
+    assert.notEqual(Request, updatedRequest, 'original request was not modified');
+  });
 
-  assert.notEqual(Request,
-    updatedRequest,
-    'original request was not modified');
-});
+  test('dimensions', function(assert) {
+    assert.expect(4);
 
-test('metrics', function(assert) {
-  assert.expect(5);
+    assert.equal(Request.get('dimensions.length'), 0, 'dimensions is initially an empty array');
 
-  assert.deepEqual(Request.metrics,
-    [],
-    'metrics is initially an empty array');
+    let updatedRequest = Request.addDimensions('age', 'gender');
 
-  let updatedRequest = Request.addMetrics({metric: 'pageViews'}, {metric: 'adClicks', parameters: {type: 'dimension'}});
-
-  assert.deepEqual(updatedRequest.metrics,
-    [
-      {
-        metric: 'pageViews'
-      },
-      {
-        metric: 'adClicks',
-        parameters: {
-          type: 'dimension'
+    assert.deepEqual(
+      updatedRequest.get('dimensions'),
+      [
+        {
+          dimension: 'age'
+        },
+        {
+          dimension: 'gender'
         }
-      }
-    ],
-    'metrics can be updated with add function');
+      ],
+      'dimensions can be updated with add function'
+    );
 
-  updatedRequest = updatedRequest.setMetrics({metric: 'navClicks'}, {metric: 'navClicksWoW'});
-  assert.deepEqual(updatedRequest.metrics,
-    [
-      {
-        metric: 'navClicks'
-      },
-      {
-        metric: 'navClicksWoW'
-      }
-    ],
-    'metrics can be replaced with set function');
+    updatedRequest = updatedRequest.setDimensions('property', 'browser');
+    assert.deepEqual(
+      updatedRequest.get('dimensions'),
+      [
+        {
+          dimension: 'property'
+        },
+        {
+          dimension: 'browser'
+        }
+      ],
+      'dimensions can be replaced with set function'
+    );
 
-  updatedRequest = updatedRequest.setMetricsByName('adClicks', 'adClicksDoD');
-  assert.deepEqual(updatedRequest.metrics,
-    [
-      {
-        metric: 'adClicks'
-      },
-      {
-        metric: 'adClicksDoD'
-      }
-    ],
-    'metrics can be set with only the metric name');
+    assert.notEqual(Request, updatedRequest, 'original request was not modified');
+  });
 
-  assert.notEqual(Request,
-    updatedRequest,
-    'original request was not modified');
-});
+  test('metrics', function(assert) {
+    assert.expect(5);
 
-test('intervals', function(assert) {
-  assert.expect(5);
+    assert.deepEqual(Request.get('metrics'), [], 'metrics is initially an empty array');
 
-  assert.deepEqual(Request.intervals,
-    [],
-    'intervals is initially an empty array');
+    let updatedRequest = Request.addMetrics(
+      { metric: 'pageViews' },
+      { metric: 'adClicks', parameters: { type: 'dimension' } }
+    );
 
-  /* == Add Interval Shorthand == */
-  let updatedRequest = Request.addInterval('P7D', 'current');
+    assert.deepEqual(
+      updatedRequest.get('metrics'),
+      [
+        {
+          metric: 'pageViews'
+        },
+        {
+          metric: 'adClicks',
+          parameters: {
+            type: 'dimension'
+          }
+        }
+      ],
+      'metrics can be updated with add function'
+    );
 
-  assert.deepEqual(updatedRequest.intervals,
-    [
-      {
-        start: 'P7D',
-        end:   'current'
-      }
-    ],
-    'intervals can be updated with shorthand add function');
+    updatedRequest = updatedRequest.setMetrics({ metric: 'navClicks' }, { metric: 'navClicksWoW' });
+    assert.deepEqual(
+      updatedRequest.get('metrics'),
+      [
+        {
+          metric: 'navClicks'
+        },
+        {
+          metric: 'navClicksWoW'
+        }
+      ],
+      'metrics can be replaced with set function'
+    );
 
-  /* == Add Intervals == */
-  updatedRequest = updatedRequest.addIntervals({start: 'P14D', end: 'current'});
+    updatedRequest = updatedRequest.setMetricsByName('adClicks', 'adClicksDoD');
+    assert.deepEqual(
+      updatedRequest.get('metrics'),
+      [
+        {
+          metric: 'adClicks'
+        },
+        {
+          metric: 'adClicksDoD'
+        }
+      ],
+      'metrics can be set with only the metric name'
+    );
 
-  assert.deepEqual(updatedRequest.intervals,
-    [
-      {
-        start: 'P7D',
-        end:   'current'
-      },
-      {
-        start: 'P14D',
-        end:   'current'
-      }
-    ],
-    'intervals can be updated with add function');
+    assert.notEqual(Request, updatedRequest, 'original request was not modified');
+  });
 
-  /* == Set Interval == */
-  updatedRequest = updatedRequest.setIntervals({start: 'P4W', end: 'prev'});
+  test('intervals', function(assert) {
+    assert.expect(5);
 
-  assert.deepEqual(updatedRequest.intervals,
-    [
-      {
-        start: 'P4W',
-        end:   'prev'
-      }
-    ],
-    'intervals can be replaced with set function');
+    assert.deepEqual(Request.get('intervals'), [], 'intervals is initially an empty array');
 
-  assert.notEqual(Request,
-    updatedRequest,
-    'original request was not modified');
-});
+    /* == Add Interval Shorthand == */
+    let updatedRequest = Request.addInterval('P7D', 'current');
 
-test('filters', function(assert) {
-  assert.expect(5);
+    assert.deepEqual(
+      updatedRequest.get('intervals'),
+      [
+        {
+          start: 'P7D',
+          end: 'current'
+        }
+      ],
+      'intervals can be updated with shorthand add function'
+    );
 
-  assert.deepEqual(Request.filters,
-    [],
-    'filters is initially an empty array');
+    /* == Add Intervals == */
+    updatedRequest = updatedRequest.addIntervals({
+      start: 'P14D',
+      end: 'current'
+    });
 
-  /* == Add Filter Shorthand == */
-  let updatedRequest = Request.addFilter('gender', 'notin', ['m', 'f']);
+    assert.deepEqual(
+      updatedRequest.get('intervals'),
+      [
+        {
+          start: 'P7D',
+          end: 'current'
+        },
+        {
+          start: 'P14D',
+          end: 'current'
+        }
+      ],
+      'intervals can be updated with add function'
+    );
 
-  assert.deepEqual(updatedRequest.filters,
-    [
-      {
-        dimension: 'gender',
-        operator: 'notin',
-        values: ['m', 'f']
-      }
-    ],
-    'filters can be updated with shorthand add function');
+    /* == Set Interval == */
+    updatedRequest = updatedRequest.setIntervals({ start: 'P4W', end: 'prev' });
 
-  /* == Add Filters == */
-  updatedRequest = updatedRequest.addFilters({dimension: 'browser', operator: 'in', values: ['firefox']});
+    assert.deepEqual(
+      updatedRequest.get('intervals'),
+      [
+        {
+          start: 'P4W',
+          end: 'prev'
+        }
+      ],
+      'intervals can be replaced with set function'
+    );
 
-  assert.deepEqual(updatedRequest.filters,
-    [
-      {
-        dimension: 'gender',
-        operator: 'notin',
-        values: ['m', 'f']
-      },
-      {
-        dimension: 'browser',
-        operator: 'in',
-        values: ['firefox']
-      }
-    ],
-    'filters can be updated with add function');
+    assert.notEqual(Request, updatedRequest, 'original request was not modified');
+  });
 
-  /* == Set Filters == */
-  updatedRequest = updatedRequest.setFilters({dimension: 'browser', operator: 'in', values: ['chrome']});
+  test('filters', function(assert) {
+    assert.expect(5);
 
-  assert.deepEqual(updatedRequest.filters,
-    [
-      {
-        dimension: 'browser',
-        operator: 'in',
-        values: ['chrome']
-      }
-    ],
-    'filters can be updated with setfunction');
+    assert.deepEqual(Request.get('filters'), [], 'filters is initially an empty array');
 
-  assert.notEqual(Request,
-    updatedRequest,
-    'original request was not modified');
-});
+    /* == Add Filter Shorthand == */
+    let updatedRequest = Request.addFilter('gender', 'notin', ['m', 'f']);
 
-test('having', function(assert) {
-  assert.expect(5);
+    assert.deepEqual(
+      updatedRequest.get('filters'),
+      [
+        {
+          dimension: 'gender',
+          operator: 'notin',
+          values: ['m', 'f']
+        }
+      ],
+      'filters can be updated with shorthand add function'
+    );
 
-  assert.deepEqual(Request.having,
-    [],
-    'having is initially an empty array');
+    /* == Add Filters == */
+    updatedRequest = updatedRequest.addFilters({
+      dimension: 'browser',
+      operator: 'in',
+      values: ['firefox']
+    });
 
-  /* == Add Having Shorthand == */
-  let updatedRequest = Request.addHaving('pageViews', 'gt', 1000);
+    assert.deepEqual(
+      updatedRequest.get('filters'),
+      [
+        {
+          dimension: 'gender',
+          operator: 'notin',
+          values: ['m', 'f']
+        },
+        {
+          dimension: 'browser',
+          operator: 'in',
+          values: ['firefox']
+        }
+      ],
+      'filters can be updated with add function'
+    );
 
-  assert.deepEqual(updatedRequest.having,
-    [
-      {
-        metric: 'pageViews',
-        operator: 'gt',
-        values: [1000]
-      }
-    ],
-    'having can be updated with shorthand add function');
+    /* == Set Filters == */
+    updatedRequest = updatedRequest.setFilters({
+      dimension: 'browser',
+      operator: 'in',
+      values: ['chrome']
+    });
 
-  /* == Add Having == */
-  updatedRequest = updatedRequest.addHavings({metric: 'adClicks', operator: 'gt', values: [500]});
+    assert.deepEqual(
+      updatedRequest.get('filters'),
+      [
+        {
+          dimension: 'browser',
+          operator: 'in',
+          values: ['chrome']
+        }
+      ],
+      'filters can be updated with setfunction'
+    );
 
-  assert.deepEqual(updatedRequest.having,
-    [
-      {
-        metric: 'pageViews',
-        operator: 'gt',
-        values: [1000]
-      },
-      {
-        metric: 'adClicks',
-        operator: 'gt',
-        values: [500]
-      }
-    ],
-    'having can be updated with add function');
+    assert.notEqual(Request, updatedRequest, 'original request was not modified');
+  });
 
-  /* == Set Having == */
-  updatedRequest = updatedRequest.setHavings({metric: 'navClicks', operator: 'gt', values: [10]});
+  test('having', function(assert) {
+    assert.expect(5);
 
-  assert.deepEqual(updatedRequest.having,
-    [
-      {
-        metric: 'navClicks',
-        operator: 'gt',
-        values: [10]
-      }
-    ],
-    'having can be replaced with set function');
+    assert.deepEqual(Request.get('having'), [], 'having is initially an empty array');
 
-  assert.notEqual(Request,
-    updatedRequest,
-    'original request was not modified');
+    /* == Add Having Shorthand == */
+    let updatedRequest = Request.addHaving('pageViews', 'gt', 1000);
+
+    assert.deepEqual(
+      updatedRequest.get('having'),
+      [
+        {
+          metric: 'pageViews',
+          operator: 'gt',
+          values: [1000]
+        }
+      ],
+      'having can be updated with shorthand add function'
+    );
+
+    /* == Add Having == */
+    updatedRequest = updatedRequest.addHavings({
+      metric: 'adClicks',
+      operator: 'gt',
+      values: [500]
+    });
+
+    assert.deepEqual(
+      updatedRequest.get('having'),
+      [
+        {
+          metric: 'pageViews',
+          operator: 'gt',
+          values: [1000]
+        },
+        {
+          metric: 'adClicks',
+          operator: 'gt',
+          values: [500]
+        }
+      ],
+      'having can be updated with add function'
+    );
+
+    /* == Set Having == */
+    updatedRequest = updatedRequest.setHavings({
+      metric: 'navClicks',
+      operator: 'gt',
+      values: [10]
+    });
+
+    assert.deepEqual(
+      updatedRequest.get('having'),
+      [
+        {
+          metric: 'navClicks',
+          operator: 'gt',
+          values: [10]
+        }
+      ],
+      'having can be replaced with set function'
+    );
+
+    assert.notEqual(Request, updatedRequest, 'original request was not modified');
+  });
 });

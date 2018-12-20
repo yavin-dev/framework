@@ -5,16 +5,16 @@
  * Description: A serializer for the bard response
  */
 
-import Ember from 'ember';
+import EmberObject from '@ember/object';
 
-export default Ember.Object.extend({
+export default EmberObject.extend({
   /**
    * @method normalize - normalizes the JSON response
    * @param response {Object} - JSON response object
    * @returns {Object} - normalized JSON object
    */
-  normalize(payload){
-    if(payload){
+  normalize(payload) {
+    if (payload) {
       return {
         rows: payload.rows,
         meta: payload.meta || {}

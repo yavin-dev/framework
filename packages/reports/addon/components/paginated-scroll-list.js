@@ -34,11 +34,10 @@
 import Ember from 'ember';
 import layout from '../templates/components/paginated-scroll-list';
 
-const
-      { computed, get, set, run } = Ember,
-      DEFAULT_ITEMS_TO_RENDER = 20,
-      DEFAULT_PER_PAGE = 250,
-      DEFAULT_SCROLL_PADDING = 250;
+const { computed, get, set, run } = Ember,
+  DEFAULT_ITEMS_TO_RENDER = 20,
+  DEFAULT_PER_PAGE = 250,
+  DEFAULT_SCROLL_PADDING = 250;
 
 export default Ember.Component.extend({
   layout,
@@ -157,8 +156,8 @@ export default Ember.Component.extend({
    */
   _setItemsExceedMaxHt() {
     let containerSelector = `.${get(this, '_containerClass')}`,
-        itemsCollectionSelector = `.${get(this, '_collectionClass')}`,
-        itemsExceedMaxHt = this.$(itemsCollectionSelector).outerHeight() > this.$(containerSelector).innerHeight();
+      itemsCollectionSelector = `.${get(this, '_collectionClass')}`,
+      itemsExceedMaxHt = this.$(itemsCollectionSelector).outerHeight() > this.$(containerSelector).innerHeight();
 
     set(this, '_itemsExceedMaxHt', itemsExceedMaxHt);
   },
@@ -188,8 +187,10 @@ export default Ember.Component.extend({
    */
   onScroll() {
     let containerSelector = `.${get(this, '_containerClass')}`,
-        // detect scroll to bottom
-        scrolledToBottom = (this.$(containerSelector).scrollTop() + this.$(containerSelector).innerHeight()) >= (this.$(containerSelector)[0].scrollHeight - this.get('scrollPadding'));
+      // detect scroll to bottom
+      scrolledToBottom =
+        this.$(containerSelector).scrollTop() + this.$(containerSelector).innerHeight() >=
+        this.$(containerSelector)[0].scrollHeight - this.get('scrollPadding');
 
     if (scrolledToBottom && get(this, '_hasMoreItems')) {
       this._appendPaginatedResults();
@@ -207,15 +208,14 @@ export default Ember.Component.extend({
     this.incrementProperty('_page');
 
     let perPage = get(this, 'perPage'),
-        startIndex = get(this, '_page') * perPage,
-        endIndex = startIndex + perPage,
-        recordsToAppend = get(this, 'items').slice(startIndex, endIndex);
+      startIndex = get(this, '_page') * perPage,
+      endIndex = startIndex + perPage,
+      recordsToAppend = get(this, 'items').slice(startIndex, endIndex);
 
     Ember.A(get(this, '_itemsToRender')).pushObjects(recordsToAppend);
   },
 
   actions: {
-
     /**
      * @action onShowMore - action triggered when show more link is clicked
      */

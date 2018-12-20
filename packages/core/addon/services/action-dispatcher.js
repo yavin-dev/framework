@@ -29,8 +29,7 @@ export default Ember.Service.extend({
   init() {
     this._super(...arguments);
     set(this, '_registeredConsumers', []);
-    getWithDefault(this, 'consumers', []).forEach(consumer =>
-      this.registerConsumer(consumer));
+    getWithDefault(this, 'consumers', []).forEach(consumer => this.registerConsumer(consumer));
   },
 
   /**
@@ -41,8 +40,7 @@ export default Ember.Service.extend({
    * @returns {Void}
    */
   registerConsumer(consumer) {
-    get(this, '_registeredConsumers').push(
-      getOwner(this).lookup(`consumer:${consumer}`));
+    get(this, '_registeredConsumers').push(getOwner(this).lookup(`consumer:${consumer}`));
   },
 
   /**
@@ -54,7 +52,6 @@ export default Ember.Service.extend({
    * @returns {Void}
    */
   dispatch(actionType, ...params) {
-    get(this, '_registeredConsumers').forEach(consumer =>
-      consumer.send(actionType, ...params));
+    get(this, '_registeredConsumers').forEach(consumer => consumer.send(actionType, ...params));
   }
 });

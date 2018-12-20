@@ -46,7 +46,7 @@ export default Ember.Component.extend({
     let filter = get(this, 'filter');
     assert('filter must be defined', filter);
 
-    set(this, 'values', [].concat(get(filter, 'values').toArray()));// Shallow copy of filter values array
+    set(this, 'values', [].concat(get(filter, 'values').toArray())); // Shallow copy of filter values array
   },
 
   actions: {

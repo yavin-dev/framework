@@ -3,35 +3,51 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
- @top-bar-color: #1A2D48;
+@top-bar-color: #1a2d48;
 
 .top-bar {
-    background: @top-bar-color;
+  align-items: center;
+  background: @top-bar-color;
+  color: @white-900;
+  display: grid;
+  font-family: @font-family-sans-serif;
+  font-size: @font-size-mid-base;
+  grid-template-columns: 1fr 100px;
+  padding: 10px 20px;
 
-    color: @white-900;
+  &__right,
+  &__left {
     display: flex;
+    align-items: center;
+  }
+
+  &__graph-logo {
+    width: 65px;
+  }
+
+  &__logo {
+    display: grid;
+    align-items: center;
+
     font-family: @font-family-sans-serif;
-    font-size: @font-size-mid-base;
-    justify-content: space-between;
-    padding: 10px 20px;
+    font-size: @top-level-view-title;
+  }
 
-    &__right, &__left {
-        display: flex;
-    }
+  &__logo-title {
+    font-size: 32px;
+    margin: 0 0 5px 15px;
+  }
 
-    &__logo {
-        display: flex;
-        flex-flow: column;
-        justify-content: center;
+  &__user {
+    align-items: center;
+    display: flex;
+    font-size: @font-size-large;
+    padding: 5px;
+  }
 
-        font-family: @font-family-sans-serif;
-        font-size: @top-level-view-title;
-    }
-
-    &__user {
-        align-items: center;
-        display: flex;
-        font-size: @font-size-base-large;
-        padding: 5px;
-    }
+  &__user-icon {
+    font-size: 18px;
+    opacity: 0.8;
+    margin-right: 3px;
+  }
 }

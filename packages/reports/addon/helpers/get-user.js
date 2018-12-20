@@ -14,7 +14,7 @@ export default Ember.Helper.extend({
    * @method compute
    * @override
    */
-  compute(){
+  compute() {
     return Ember.get(this, 'userService').getUser();
   }
 });

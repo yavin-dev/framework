@@ -17,21 +17,21 @@ import numeral from 'numeral';
  * @param {Number|String} value
  * @return {String} Formatted string for the provided number
  */
-export function smartFormatNumber([ value ]) {
-
+export function smartFormatNumber([value]) {
   // type safe check
-  if (typeof value !== "number") {
+  let hasPoint = value !== undefined && JSON.stringify(value).indexOf('.') !== -1;
+  if (typeof value !== 'number') {
     value = parseFloat(value);
   }
 
-  if(isNaN(value)) {
+  if (isNaN(value)) {
     return '';
   }
 
   let absValue = Math.abs(value);
 
   if (absValue === 0 || (absValue >= 1 && absValue < 100)) {
-    return numeral(value).format('0,0.00');
+    return numeral(value).format(hasPoint ? '0,0.00' : '0,0[.]00');
   } else if (absValue >= 0.0001 && absValue < 1) {
     return numeral(value).format('0.0000');
   } else if (absValue < 0.0001) {

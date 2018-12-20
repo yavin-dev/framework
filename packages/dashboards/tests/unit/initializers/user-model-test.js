@@ -5,7 +5,7 @@ import { initialize as extendUserModel } from 'navi-dashboards/initializers/user
 
 let Store;
 
-moduleForModel('user', 'Unit | Model | user', {
+moduleForModel('user', 'Unit | Initializer | user', {
   needs: [
     'model:report',
     'model:delivery-rule',
@@ -44,7 +44,8 @@ moduleForModel('user', 'Unit | Model | user', {
     'adapter:dimensions/bard',
     'model:dashboard',
     'model:dashboard-collection',
-    'model:dashboard-widget'
+    'model:dashboard-widget',
+    'validator:presence'
   ],
 
   beforeEach() {
@@ -69,18 +70,16 @@ test('Linking Dashboards to Users', function(assert) {
       author: user
     });
 
-    assert.equal(user.get('dashboards.length'),
-      1,
-      'One dashboard is linked to the user');
+    assert.equal(user.get('dashboards.length'), 1, 'One dashboard is linked to the user');
 
-    assert.deepEqual(user.get('dashboards').mapBy('title'),
-      [ 'Time and Courage' ],
-      'The linked dashboards are fetched via the relationship');
+    assert.deepEqual(
+      user.get('dashboards').mapBy('title'),
+      ['Time and Courage'],
+      'The linked dashboards are fetched via the relationship'
+    );
 
-    assert.ok(user.get('reports'),
-      'Reports relationship is part of the model');
+    assert.ok(user.get('reports'), 'Reports relationship is part of the model');
 
-    assert.ok(user.get('favoriteReports'),
-      'Reports relationship is part of the model');
+    assert.ok(user.get('favoriteReports'), 'Reports relationship is part of the model');
   });
 });

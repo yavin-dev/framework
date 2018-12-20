@@ -5,13 +5,13 @@
  * Description: Bard facts service that executes and delivers the results
  */
 
-import Ember from 'ember';
+import Service from '@ember/service';
+
+import { getOwner } from '@ember/application';
 import BardFactsModel from 'navi-data/models/bard-facts';
 import RequestBuilder from 'navi-data/builder/request';
 
-const { getOwner } = Ember;
-
-export default Ember.Service.extend({
+export default Service.extend({
   /**
    * @private
    * @property {Object} adapter - the adapter object
@@ -54,8 +54,8 @@ export default Ember.Service.extend({
    * @param {Object} [options] - options object
    * @returns {String} - url for the request
    */
-  getURL(request, options){
-    let adapter  = this.get('_adapter');
+  getURL(request, options) {
+    let adapter = this.get('_adapter');
     return adapter.urlForFindQuery(request, options);
   },
 
@@ -69,9 +69,9 @@ export default Ember.Service.extend({
    * @returns {Promise} - Promise with the bard response model object
    */
   fetch(request, options) {
-    let adapter  = this.get('_adapter'),
-        serializer  = this.get('_serializer');
-    return adapter.fetchDataForRequest(request, options).then((payload) => {
+    let adapter = this.get('_adapter'),
+      serializer = this.get('_serializer');
+    return adapter.fetchDataForRequest(request, options).then(payload => {
       return BardFactsModel.create({
         request: request,
         response: serializer.normalize(payload),

@@ -26,15 +26,14 @@ export default Ember.Component.extend({
   isShown: false,
 
   actions: {
-
     /**
      * Set the isShown to false in order to close the modal.
      */
     closeModal() {
       set(this, 'isShown', false);
-      if(this.get('onClose')) {
+      if (this.get('onClose')) {
         this.sendAction('onClose');
       }
-    },
+    }
   }
 });

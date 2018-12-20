@@ -1,5 +1,5 @@
 import { moduleForComponent, test } from 'ember-qunit';
-import { clickTrigger, nativeMouseUp } from '../../../helpers/ember-power-select';
+import { clickTrigger, nativeMouseUp } from 'ember-power-select/test-support/helpers';
 import hbs from 'htmlbars-inline-precompile';
 import Ember from 'ember';
 
@@ -17,8 +17,16 @@ const filter = {
 
 const supportedOperators = [
   { id: 'in', longName: 'Includes', valuesComponent: 'mock/values-component' },
-  { id: 'notin', longName: 'Excludes', valuesComponent: 'mock/values-component' },
-  { id: 'null', longName: 'Is Empty', valuesComponent: 'mock/another-values-component' },
+  {
+    id: 'notin',
+    longName: 'Excludes',
+    valuesComponent: 'mock/values-component'
+  },
+  {
+    id: 'null',
+    longName: 'Is Empty',
+    valuesComponent: 'mock/another-values-component'
+  }
 ];
 
 moduleForComponent('filter-builders/base', 'Integration | Component | filter-builders/base', {
@@ -30,11 +38,15 @@ moduleForComponent('filter-builders/base', 'Integration | Component | filter-bui
      * but to simplify testing we pass it in
      */
     this.setProperties({
-      filter, supportedOperators
+      filter,
+      supportedOperators
     });
-    this.register('component:mock/values-component', Ember.Component.extend({
-      classNames: 'mock-value-component'
-    }));
+    this.register(
+      'component:mock/values-component',
+      Ember.Component.extend({
+        classNames: 'mock-value-component'
+      })
+    );
     this.register('component:mock/another-values-component', Ember.Component.extend());
   }
 });
@@ -44,46 +56,64 @@ test('it renders', function(assert) {
 
   this.render(hbs`{{filter-builders/base filter=filter supportedOperators=supportedOperators }}`);
 
-  assert.equal(this.$('.filter-builder__subject').text().trim(),
+  assert.equal(
+    this.$('.filter-builder__subject')
+      .text()
+      .trim(),
     filter.subject.longName,
-    'Subject\'s long name is display in filter builder');
+    "Subject's long name is display in filter builder"
+  );
 
-  assert.equal(this.$('.filter-builder__operator .ember-power-select-selected-item').text().trim(),
+  assert.equal(
+    this.$('.filter-builder__operator .ember-power-select-selected-item')
+      .text()
+      .trim(),
     filter.operator.longName,
-    'The filter current operator is selected by default');
+    'The filter current operator is selected by default'
+  );
 
   clickTrigger();
-  assert.deepEqual($('.ember-power-select-option').map(function() { return $(this).text().trim(); }).get(),
+  assert.deepEqual(
+    $('.ember-power-select-option')
+      .map(function() {
+        return $(this)
+          .text()
+          .trim();
+      })
+      .get(),
     Ember.A(supportedOperators).mapBy('longName'),
-    'All supported operators show up as options in the operator selector');
+    'All supported operators show up as options in the operator selector'
+  );
 
-  assert.ok(this.$('.mock-value-component').is(':visible'),
-    'The component specified by the filter operator is rendered');
+  assert.ok(
+    this.$('.mock-value-component').is(':visible'),
+    'The component specified by the filter operator is rendered'
+  );
 });
 
 test('changing operator', function(assert) {
   assert.expect(3);
 
-  this.set('onUpdateFilter', (changeSet) => {
-    assert.equal(changeSet.operator,
-      'notin',
-      'Selected operator is given to action');
+  this.set('onUpdateFilter', changeSet => {
+    assert.equal(changeSet.operator, 'notin', 'Selected operator is given to action');
 
-    assert.notOk('values' in changeSet,
-      'Values is not reset when changing between operator with the same valuesComponent');
+    assert.notOk(
+      'values' in changeSet,
+      'Values is not reset when changing between operator with the same valuesComponent'
+    );
   });
 
-  this.render(hbs`{{filter-builders/base filter=filter supportedOperators=supportedOperators onUpdateFilter=(action onUpdateFilter)}}`);
+  this.render(
+    hbs`{{filter-builders/base filter=filter supportedOperators=supportedOperators onUpdateFilter=(action onUpdateFilter)}}`
+  );
 
   /* == Operator with same valuesComponent == */
   clickTrigger();
   nativeMouseUp($('.ember-power-select-option:contains(Excludes)')[0]);
 
   /* == Operator with different valuesComponent == */
-  this.set('onUpdateFilter', (changeSet) => {
-    assert.deepEqual(changeSet.values,
-      [],
-      'Values is reset when changing between operators to avoid conflicts');
+  this.set('onUpdateFilter', changeSet => {
+    assert.deepEqual(changeSet.values, [], 'Values is reset when changing between operators to avoid conflicts');
   });
   clickTrigger();
   nativeMouseUp($('.ember-power-select-option:contains(Is Empty)')[0]);

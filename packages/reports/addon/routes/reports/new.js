@@ -13,7 +13,6 @@ import config from 'ember-get-config';
 const { get } = Ember;
 
 export default Ember.Route.extend({
-
   /**
    * @property {Service} naviNotifications
    */
@@ -71,15 +70,16 @@ export default Ember.Route.extend({
    * @returns {Promise} promise that resolves to new model
    */
   _deserializeUrlModel(modelString) {
-    return get(this, 'modelCompression').decompress(modelString).then(model => {
-      // Always return a new model
-      model._internalModel.currentState = DS.RootState.loaded.created;
-      model.set('id', null);
+    return get(this, 'modelCompression')
+      .decompress(modelString)
+      .then(model => {
+        // Always return a new model
+        model._internalModel.currentState = DS.RootState.loaded.created;
+        model.set('id', null);
 
-      return model;
-    }).catch(() =>
-      Ember.RSVP.reject(new Error('Could not parse model query param'))
-    );
+        return model;
+      })
+      .catch(() => Ember.RSVP.reject(new Error('Could not parse model query param')));
   },
 
   /**
@@ -94,8 +94,8 @@ export default Ember.Route.extend({
 
     // Default to first data source + time grain
     let defaultVisualization = get(this, 'naviVisualizations').defaultVisualization(),
-        table = this._getDefaultTable(),
-        timeGrainName = this._getDefaultTimeGrainName(table);
+      table = this._getDefaultTable(),
+      timeGrainName = this._getDefaultTimeGrainName(table);
 
     let report = this.store.createRecord('report', {
       author,
@@ -110,10 +110,7 @@ export default Ember.Route.extend({
     });
 
     get(report, 'request.intervals').createFragment({
-      interval: new Interval(
-        new Duration(DefaultIntervals[timeGrainName]),
-        'current'
-      )
+      interval: new Interval(new Duration(DefaultIntervals[timeGrainName]), 'current')
     });
 
     return report;
@@ -127,10 +124,14 @@ export default Ember.Route.extend({
    * @returns {Object} table model
    */
   _getDefaultTable() {
-    let table = get(this, 'metadataService').all('table').findBy('name', get(config, 'navi.defaultDataTable'));
+    let table = get(this, 'metadataService')
+      .all('table')
+      .findBy('name', get(config, 'navi.defaultDataTable'));
 
     if (!table) {
-      let dataSourceTables = get(this, 'metadataService').all('table').sortBy('name');
+      let dataSourceTables = get(this, 'metadataService')
+        .all('table')
+        .sortBy('longName');
       table = get(dataSourceTables, 'firstObject');
     }
 
@@ -146,8 +147,8 @@ export default Ember.Route.extend({
    */
   _getDefaultTimeGrainName(table) {
     let timeGrainName = get(config, 'navi.defaultTimeGrain'),
-        tableTimeGrains = Ember.A(get(table, 'timeGrains')),
-        timeGrainExist = tableTimeGrains.findBy('name', timeGrainName);
+      tableTimeGrains = Ember.A(get(table, 'timeGrains')),
+      timeGrainExist = tableTimeGrains.findBy('name', timeGrainName);
 
     if (!timeGrainExist) {
       timeGrainName = get(tableTimeGrains, 'firstObject.name');

@@ -3,13 +3,13 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import Ember from 'ember';
+import { A } from '@ember/array';
+
+import { w } from '@ember/string';
+import { getWithDefault, get } from '@ember/object';
 import PaginationUtils from './pagination';
 
-const { get, getWithDefault } = Ember;
-
 export default {
-
   /**
    * Computes how closely two strings match, ignoring word order.
    * The higher the weight, the farther apart the two strings are.
@@ -23,10 +23,10 @@ export default {
    */
   getPartialMatchWeight(string, query) {
     // Split search query into individual words
-    var searchTokens = Ember.String.w(query.trim()),
-        allTokensFound = true;
+    var searchTokens = w(query.trim()),
+      allTokensFound = true;
 
-        // Check that all words in the search query can be found in the given string
+    // Check that all words in the search query can be found in the given string
     for (var i = 0; i < searchTokens.length; i++) {
       if (string.indexOf(searchTokens[i]) === -1) {
         allTokensFound = false;
@@ -78,16 +78,19 @@ export default {
    */
   searchDimensionRecords: function(records, query, resultLimit, page) {
     let results = [],
-        record;
+      record;
 
-        // Filter, map, and sort records based on how close each record is to the search query
-    for (let i = 0; i < get(records, 'length'); i++ ) {
+    // Filter, map, and sort records based on how close each record is to the search query
+    for (let i = 0; i < get(records, 'length'); i++) {
       record = records.objectAt(i);
 
       // Determine relevance based on string match weight
-      let descriptionMatchWeight = this.getPartialMatchWeight(getWithDefault(record, 'description', '').toLowerCase(), query.toLowerCase()),
-          idMatchWeight = this.getExactMatchWeight(getWithDefault(record, 'id', '').toLowerCase(), query.toLowerCase()),
-          relevance = descriptionMatchWeight || idMatchWeight;
+      let descriptionMatchWeight = this.getPartialMatchWeight(
+          getWithDefault(record, 'description', '').toLowerCase(),
+          query.toLowerCase()
+        ),
+        idMatchWeight = this.getExactMatchWeight(getWithDefault(record, 'id', '').toLowerCase(), query.toLowerCase()),
+        relevance = descriptionMatchWeight || idMatchWeight;
 
       // If both id and description match the query, take the most relevant
       if (descriptionMatchWeight && idMatchWeight) {
@@ -103,7 +106,7 @@ export default {
       }
     }
 
-    results = Ember.A(results).sortBy('relevance');
+    results = A(results).sortBy('relevance');
 
     return PaginationUtils.getPaginatedRecords(results, resultLimit, page);
   }

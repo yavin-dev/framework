@@ -24,7 +24,11 @@ export default Base.extend({
    * @override
    */
   supportedOperators: [
-    { id: 'in', longName: 'In Range', valuesComponent: 'filter-values/date-range' }
+    {
+      id: 'in',
+      longName: 'In Range',
+      valuesComponent: 'filter-values/date-range'
+    }
   ],
 
   /**
@@ -33,9 +37,9 @@ export default Base.extend({
    */
   filter: computed('requestFragment.interval', 'request.logicalTable.timeGrain', function() {
     let interval = get(this, 'requestFragment.interval'),
-        timeGrainName = get(this, 'request.logicalTable.timeGrain.longName'),
-        longName = `Date Time (${timeGrainName})`,
-        operator = get(this, 'supportedOperators')[0]; // Only 1 operator allowed
+      timeGrainName = get(this, 'request.logicalTable.timeGrain.longName'),
+      longName = `Date Time (${timeGrainName})`,
+      operator = get(this, 'supportedOperators')[0]; // Only 1 operator allowed
 
     return {
       subject: { longName },

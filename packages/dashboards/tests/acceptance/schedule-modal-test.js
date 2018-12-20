@@ -6,10 +6,11 @@ import { typeInInput } from '../helpers/ember-tag-input';
 moduleForAcceptance('Acceptances | Navi Dashboard Schedule Modal', {
   afterEach() {
     teardownModal();
+    server.shutdown();
   }
 });
 
-test('schedule modal save new schedule', function (assert) {
+test('schedule modal save new schedule', function(assert) {
   assert.expect(11);
   visit('/dashboards');
 
@@ -19,27 +20,45 @@ test('schedule modal save new schedule', function (assert) {
   click('.navi-collection__row:first-of-type .schedule .btn');
 
   andThen(() => {
-    assert.ok(find('.schedule-modal__header .primary-header').is(':visible'),
-      'Schedule modal pops up when action is clicked');
+    assert.ok(
+      find('.schedule-modal__header .primary-header').is(':visible'),
+      'Schedule modal pops up when action is clicked'
+    );
 
-    assert.notOk(find('.schedule-modal__delete-btn').is(':visible'),
-      'The delete button is not present when creating a new schedule');
+    assert.notOk(
+      find('.schedule-modal__delete-btn').is(':visible'),
+      'The delete button is not present when creating a new schedule'
+    );
 
-    assert.equal(find('.schedule-modal__save-btn').text().trim(),
+    assert.equal(
+      find('.schedule-modal__save-btn')
+        .text()
+        .trim(),
       'Save',
-      'The save button says "Save" and not "Save Changes" when creating a new schedule');
+      'The save button says "Save" and not "Save Changes" when creating a new schedule'
+    );
 
-    assert.equal(find('.schedule-modal__dropdown--frequency .ember-power-select-selected-item').get(0).innerText,
+    assert.equal(
+      find('.schedule-modal__dropdown--frequency .ember-power-select-selected-item')
+        .get(0)
+        .innerText.trim(),
       'Week',
-      'Frequency field is set to the default value when creating a new schedule');
+      'Frequency field is set to the default value when creating a new schedule'
+    );
 
-    assert.equal(find('.schedule-modal__input--recipients').val(),
+    assert.equal(
+      find('.schedule-modal__input--recipients').val(),
       '',
-      'Recipients field is empty when creating a new schedule');
+      'Recipients field is empty when creating a new schedule'
+    );
 
-    assert.equal(find('.schedule-modal__dropdown--format .ember-power-select-selected-item').get(0).innerText,
+    assert.equal(
+      find('.schedule-modal__dropdown--format .ember-power-select-selected-item')
+        .get(0)
+        .innerText.trim(),
       'pdf',
-      'Format field is set to the default value when creating a new schedule');
+      'Format field is set to the default value when creating a new schedule'
+    );
   });
 
   // Set recipients to a new value
@@ -56,29 +75,45 @@ test('schedule modal save new schedule', function (assert) {
   click('.schedule-modal__save-btn');
 
   andThen(() => {
-    assert.equal(find('.success .notification-text').text(),
+    assert.equal(
+      find('.success .notification-text').text(),
       'Dashboard delivery schedule successfully saved!',
-      'Successful notification is shown after clicking save');
+      'Successful notification is shown after clicking save'
+    );
 
     // Check that all fields match the delivery rule we just saved
-    assert.ok(find('.schedule-modal__delete-btn').is(':visible'),
-      'The delete button is present after a delivery rule has been saved');
+    assert.ok(
+      find('.schedule-modal__delete-btn').is(':visible'),
+      'The delete button is present after a delivery rule has been saved'
+    );
 
-    assert.equal(find('.schedule-modal__save-btn').text().trim(),
+    assert.equal(
+      find('.schedule-modal__save-btn')
+        .text()
+        .trim(),
       'Save Changes',
-      'The save button says "Save Changes" and not "Save" after a delivery rule has been saved');
+      'The save button says "Save Changes" and not "Save" after a delivery rule has been saved'
+    );
 
-    assert.equal(find('.schedule-modal__dropdown--frequency .ember-power-select-selected-item').get(0).innerText,
+    assert.equal(
+      find('.schedule-modal__dropdown--frequency .ember-power-select-selected-item')
+        .get(0)
+        .innerText.trim(),
       'Day',
-      'Frequency field is set by the saved delivery rule');
+      'Frequency field is set by the saved delivery rule'
+    );
 
-    assert.equal(find('.schedule-modal__input--recipients .navi-email-tag').text().trim(),
+    assert.equal(
+      find('.schedule-modal__input--recipients .navi-email-tag')
+        .text()
+        .trim(),
       'navi_user@navi.io',
-      'Recipients field is set by the saved delivery rule');
+      'Recipients field is set by the saved delivery rule'
+    );
   });
 });
 
-test('open schedule modal in dashboard view', function (assert) {
+test('open schedule modal in dashboard view', function(assert) {
   assert.expect(1);
   visit('/dashboards/2/view');
 
@@ -88,7 +123,6 @@ test('open schedule modal in dashboard view', function (assert) {
   click('.schedule-action__button');
 
   andThen(() => {
-    assert.ok(find('.schedule-modal__header').is(':visible'),
-      'Schedule modal pops up when action is clicked');
+    assert.ok(find('.schedule-modal__header').is(':visible'), 'Schedule modal pops up when action is clicked');
   });
 });

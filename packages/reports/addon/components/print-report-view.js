@@ -20,12 +20,12 @@ export default Ember.Component.extend({
   /**
    * @property {Array} classNames
    */
-  classNames: [ 'print-report-view' ],
+  classNames: ['print-report-view'],
 
   /**
    * @property {Boolean} hasNoData - whether or not there is data to display
    */
   hasNoData: computed('response.meta.pagination.numberOfResults', function() {
     return get(this, 'response.meta.pagination.numberOfResults') === 0;
-  }),
+  })
 });

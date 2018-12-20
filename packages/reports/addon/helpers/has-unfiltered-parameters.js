@@ -19,7 +19,7 @@ export default Helper.extend({
     set(this, 'request', request);
 
     let hasMetric = !!getSelectedMetricsOfBase(metricMeta, request).length,
-        hasUnfilteredMetrics = !!getUnfilteredMetricsOfBase(metricMeta, request).length;
+      hasUnfilteredMetrics = !!getUnfilteredMetricsOfBase(metricMeta, request).length;
 
     return !hasMetric || hasUnfilteredMetrics;
   }

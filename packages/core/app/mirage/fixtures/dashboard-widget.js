@@ -10,7 +10,7 @@ export default [
       metadata: {
         baselineValue: 200,
         goalValue: 1000,
-        metric: {metric: 'adClicks', parameters: {}}
+        metric: { metric: 'adClicks', parameters: {} }
       }
     },
     requests: [
@@ -19,10 +19,7 @@ export default [
           table: 'network',
           timeGrain: 'day'
         },
-        metrics: [
-          { metric: 'adClicks' },
-          { metric: 'navClicks' }
-        ],
+        metrics: [{ metric: 'adClicks' }, { metric: 'navClicks' }],
         dimensions: [],
         filters: [],
         intervals: [
@@ -31,7 +28,7 @@ export default [
             start: 'P1D'
           }
         ],
-        bardVersion:    'v1',
+        bardVersion: 'v1',
         requestVersion: 'v1'
       }
     ],
@@ -49,10 +46,10 @@ export default [
       metadata: {
         axis: {
           y: {
-            "series": {
-              "type": "metric",
-              "config": {
-                "metrics": [ "adClicks", "navClicks" ]
+            series: {
+              type: 'metric',
+              config: {
+                metrics: ['adClicks', 'navClicks']
               }
             }
           }
@@ -65,10 +62,7 @@ export default [
           table: 'network',
           timeGrain: 'day'
         },
-        metrics: [
-          { metric: 'adClicks' },
-          { metric: 'navClicks' }
-        ],
+        metrics: [{ metric: 'adClicks' }, { metric: 'navClicks' }],
         dimensions: [],
         filters: [],
         intervals: [
@@ -77,7 +71,7 @@ export default [
             start: 'P7D'
           }
         ],
-        bardVersion:    'v1',
+        bardVersion: 'v1',
         requestVersion: 'v1'
       }
     ],
@@ -123,13 +117,8 @@ export default [
           table: 'network',
           timeGrain: 'day'
         },
-        metrics: [
-          { metric: 'uniqueIdentifier' },
-          { metric: 'totalPageViews' }
-        ],
-        dimensions: [
-          {dimension: 'os'}
-        ],
+        metrics: [{ metric: 'uniqueIdentifier' }, { metric: 'totalPageViews' }],
+        dimensions: [{ dimension: 'os' }],
         filters: [],
         intervals: [
           {
@@ -137,7 +126,7 @@ export default [
             start: 'P7D'
           }
         ],
-        bardVersion:    'v1',
+        bardVersion: 'v1',
         requestVersion: 'v1'
       }
     ],
@@ -155,10 +144,10 @@ export default [
       metadata: {
         axis: {
           y: {
-            "series": {
-              "type": "metric",
-              "config": {
-                "metrics": [ "adClicks", "navClicks" ]
+            series: {
+              type: 'metric',
+              config: {
+                metrics: ['adClicks', 'navClicks']
               }
             }
           }
@@ -171,10 +160,7 @@ export default [
           table: 'network',
           timeGrain: 'day'
         },
-        metrics: [
-          { metric: 'adClicks' },
-          { metric: 'navClicks' }
-        ],
+        metrics: [{ metric: 'adClicks' }, { metric: 'navClicks' }],
         dimensions: [],
         filters: [],
         intervals: [
@@ -183,7 +169,7 @@ export default [
             start: 'P7D'
           }
         ],
-        bardVersion:    'v1',
+        bardVersion: 'v1',
         requestVersion: 'v1'
       }
     ],
@@ -229,13 +215,8 @@ export default [
           table: 'network',
           timeGrain: 'day'
         },
-        metrics: [
-          { metric: 'uniqueIdentifier' },
-          { metric: 'totalPageViews' }
-        ],
-        dimensions: [
-          {dimension: 'os'}
-        ],
+        metrics: [{ metric: 'uniqueIdentifier' }, { metric: 'totalPageViews' }],
+        dimensions: [{ dimension: 'os' }],
         filters: [],
         intervals: [
           {
@@ -243,7 +224,7 @@ export default [
             start: 'P7D'
           }
         ],
-        bardVersion:    'v1',
+        bardVersion: 'v1',
         requestVersion: 'v1'
       }
     ],

@@ -3,8 +3,8 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Ember from 'ember';
-import $ from 'jquery';
 import isEqual from 'lodash/isEqual';
+import merge from 'lodash/merge';
 import { isForbiddenError } from 'ember-ajax/errors';
 
 const { get, set } = Ember;
@@ -42,23 +42,25 @@ export default Ember.Route.extend({
    */
   model() {
     let report = get(this, 'parentModel'),
-        request = get(report, 'request'),
-        serializedRequest = request.serialize(),
-        requestOptions = $.extend(true, get(this, 'requestOptions'), {
-          customHeaders: {
-            uiView: `report.spv.${get(report, 'id')}`
-          }
-        });
+      request = get(report, 'request'),
+      serializedRequest = request.serialize(),
+      requestOptions = merge({}, get(this, 'requestOptions'), {
+        customHeaders: {
+          uiView: `report.spv.${get(report, 'id')}`
+        }
+      });
 
-        // Wrap the response in a promise object so we can manually handle loading spinners
-    return get(this, 'facts').fetch(serializedRequest, requestOptions)
+    // Wrap the response in a promise object so we can manually handle loading spinners
+    return get(this, 'facts')
+      .fetch(serializedRequest, requestOptions)
       .then(response => {
         set(this, 'previousRequest', serializedRequest);
         this._setValidVisualizationType(request, report);
         this._setValidVisualizationConfig(request, report, response.response);
 
         return response.response;
-      }).catch(response => {
+      })
+      .catch(response => {
         if (isForbiddenError(response)) {
           this.transitionTo('reports.report.unauthorized', get(report, 'id'));
         } else {
@@ -77,10 +79,10 @@ export default Ember.Route.extend({
    */
   _setValidVisualizationType(request, report) {
     let visualizationModel = get(report, 'visualization'),
-        visualizationService = get(this, 'naviVisualizations'),
-        visualizationManifest = visualizationService.getManifest(get(visualizationModel, 'type'));
+      visualizationService = get(this, 'naviVisualizations'),
+      visualizationManifest = visualizationService.getManifest(get(visualizationModel, 'type'));
 
-        // If the current type is already valid, don't bother setting a new type
+    // If the current type is already valid, don't bother setting a new type
     if (!visualizationManifest.typeIsValid(request)) {
       visualizationModel = this.store.createFragment(visualizationService.defaultVisualization());
       set(report, 'visualization', visualizationModel);
@@ -111,8 +113,8 @@ export default Ember.Route.extend({
      */
     runReport() {
       let report = get(this, 'parentModel'),
-          request = get(report, 'request').serialize(),
-          previousRequest = get(this, 'previousRequest');
+        request = get(report, 'request').serialize(),
+        previousRequest = get(this, 'previousRequest');
 
       // Run the report only if there are request changes
       if (!isEqual(request, previousRequest)) {
@@ -143,9 +145,9 @@ export default Ember.Route.extend({
      * @param {String} type
      */
     onVisualizationTypeUpdate(type) {
-      let report   = get(this, 'parentModel'),
-          request  = get(report, 'request'),
-          response = this.currentModel;
+      let report = get(this, 'parentModel'),
+        request = get(report, 'request'),
+        response = this.currentModel;
 
       let newVisualization = this.store.createFragment(type, {
         _request: request //Provide request for validation

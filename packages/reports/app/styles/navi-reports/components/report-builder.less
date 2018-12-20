@@ -2,100 +2,116 @@
  * Copyright 2017, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
- .report-builder {
-     font-family: @font-family-thin;
-     background-color: @nv-color-background-secondary;
-     display: flex;
-     flex: 1;
-     padding: 5px;
-     min-height: 0;
+.report-builder {
+  font-family: @font-family-thin;
+  background-color: @nv-color-background-secondary;
+  display: flex;
+  flex: 1;
+  padding: 5px;
+  min-height: 0;
 
-     .ember-power-select-status-icon {
-         display: inline-block;
-     }
+  .ember-power-select-status-icon {
+    display: inline-block;
+  }
 
-     &__container {
-         background-color: @nv-color-background-primary;
-         border: 1px solid @nv-color-border;
-         display: flex;
-         flex: 1;
-         margin: 5px;
-         padding: 5px 10px;
-     }
+  &__container {
+    background-color: @nv-color-background-primary;
+    border: 1px solid @nv-color-border;
+    display: flex;
+    flex: 1;
+    margin: 5px;
+    padding: 5px 10px;
+  }
 
-     &__container--builder {
-         display: flex;
-         flex: 1;
-         flex-flow: column;
-         margin-bottom: 5px;
-         min-height: 0;
-         &-skel {
-             border: 1px solid @nv-color-border;
-             background-color: @nv-color-background-primary;
-             margin: 5px;
-         }
-     }
+  &__container--builder {
+    display: flex;
+    flex: 1;
+    flex-flow: column;
+    margin-bottom: 5px;
+    min-height: 0;
+    &-skel {
+      border: 1px solid @nv-color-border;
+      background-color: @nv-color-background-primary;
+      margin: 5px;
+    }
+  }
 
-     &__container--result {
-         padding: 0;
-     }
+  &__container--result {
+    padding: 0;
+  }
 
-     &__container--table {
-         // 40px -> vertical padding + header height
-         flex: 0 0 33px;
-         font-size: @font-size-mid-base;
-         display: flex;
-     }
+  &__container--table {
+    // 40px -> vertical padding + header height
+    flex: 0 0 33px;
+    font-size: @font-size-mid-base;
+    display: flex;
+  }
 
-     &__container--filters {
-        display: flex;
-        flex-flow: column;
-        flex: 0 1 auto;
-        margin-top: 5px;
-        max-height: 35%;
-     }
+  &__container--filters {
+    display: flex;
+    flex-flow: column;
+    flex: 0 1 auto;
+    margin-top: 5px;
+    max-height: 35%;
+    padding: 5px 10px;
+  }
 
-     &__container-header {
-         font-size: @font-size-base;
-         font-family: @font-family-strong;
-     }
+  &__container-header {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 
-     &__dimension-selector {
-        display: flex;
-        flex-basis: 0; // firefox flexbug
-        margin-bottom: 0;
-        min-height: 0;
-        overflow: hidden;
-     }
+    &__message {
+      font-family: @font-family-thin;
+      font-size: @font-size-mid;
 
-     &__filter-collection {
-        flex: 1;
-        flex-flow: column;
-        min-height: 0;
-        margin: 5px 0;
-        overflow: auto;
-     }
+      &--icon {
+        color: @navi-gray-600;
+      }
+    }
 
-     &__metric-selector {
-         display: flex;
-         flex-basis: 0;  // firefox flexbug
-         margin-top: 0;
-         margin-bottom: 0;
-         min-height: 0;
-         overflow: hidden;
-     }
+    &__title {
+      font-family: @font-family-strong;
+      font-size: @font-size-base;
+    }
+  }
 
-     &__main {
-         display: flex;
-         flex: 1;
-         flex-flow: column;
-         min-width: 0;
-     }
+  &__dimension-selector {
+    display: flex;
+    flex-basis: 0; // firefox flexbug
+    margin-bottom: 0;
+    min-height: 0;
+    overflow: hidden;
+  }
 
-     &__side {
-         display: flex;
-         flex-flow: column;
-         width: 350px;
-         min-width: 300px;
-     }
- }
+  &__filter-collection {
+    flex: 1;
+    flex-flow: column;
+    min-height: 0;
+    overflow: auto;
+  }
+
+  &__metric-selector {
+    display: flex;
+    flex-basis: 0; // firefox flexbug
+    margin-top: 0;
+    margin-bottom: 0;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  &__main {
+    display: flex;
+    flex: 1;
+    flex-flow: column;
+    min-width: 0;
+  }
+
+  &__side {
+    display: flex;
+    flex-flow: column;
+    width: 350px;
+    min-width: 300px;
+  }
+}

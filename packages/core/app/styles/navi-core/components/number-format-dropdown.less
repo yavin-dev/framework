@@ -1,0 +1,85 @@
+/**
+ * Copyright 2018, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
+
+.number-format-dropdown {
+  align-self: center;
+
+  &__trigger {
+    border-radius: 2px;
+    margin-left: 2px;
+    padding: 4px 8px;
+  }
+
+  &__trigger:hover {
+    background-color: @navi-gray-300;
+  }
+
+  .ember-basic-dropdown-trigger--below {
+    background-color: @navi-gray-300;
+  }
+
+  &__container {
+    border: 1px solid @navi-gray-300;
+    box-shadow: 0 3px 8px fade(@navi-black, 38%);
+    font-size: @font-size-base;
+    margin-top: 10px;
+    padding: 10px;
+    max-width: 280px;
+
+    &:before,
+    &:after {
+      border: solid transparent;
+      content: ' ';
+      height: 0;
+      position: absolute;
+      pointer-events: none;
+      right: 5px;
+      top: -20px;
+      width: 0;
+    }
+
+    &:before {
+      border-bottom-color: @navi-gray-300;
+      border-width: 10px;
+    }
+
+    &:after {
+      border-bottom-color: @navi-white;
+      border-width: 11px;
+    }
+
+    .number-format-selector {
+      text-align: left;
+      width: 128px;
+    }
+
+    .number-format-selector__section-header {
+      font-family: @font-family-strong;
+      margin-bottom: 5px;
+    }
+
+    .number-format-selector__section {
+      border-bottom: 0;
+      margin-bottom: 10px;
+      padding: 0;
+    }
+
+    .number-format-selector__format-list {
+      color: @navi-gray;
+    }
+
+    .number-format-selector__format-input {
+      font-size: @font-size-base;
+      background-color: @navi-blue-100;
+      padding: 0 5px;
+      width: 100%;
+    }
+
+    .number-format-selector__doc-link {
+      color: @navi-blue;
+      font-size: @font-size-small;
+    }
+  }
+}

@@ -1,4 +1,3 @@
-/* eslint-env node */
 'use strict';
 
 module.exports = function(environment) {
@@ -28,9 +27,7 @@ module.exports = function(environment) {
     },
 
     navi: {
-      dataSources: [
-        { name: 'dummy', uri: 'https://data.naviapp.io' }
-      ],
+      dataSources: [{ name: 'dummy', uri: 'https://data.naviapp.io' }],
       searchThresholds: {
         contains: 600,
         in: 50000
@@ -59,6 +56,7 @@ module.exports = function(environment) {
     ENV.APP.LOG_VIEW_LOOKUPS = false;
 
     ENV.APP.rootElement = '#ember-testing';
+    ENV.APP.autoboot = false;
   }
 
   if (environment === 'production') {

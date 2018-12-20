@@ -1,4 +1,4 @@
-{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 
 {{!-- Add to Dashboard visible if a report has been run--}}
 {{#if (and (feature-flag 'dashboards') model.request.validations.isTruelyValid)}}
@@ -12,8 +12,8 @@
             onAddToNewDashboard=(route-action 'addToNewDashboard')
         }}
             {{navi-icon 'th-large' class='navi-report__action-icon'}}
-            {{tooltip-on-component text='Add visualization to Dashboard' enableLazyRendering=true}}
             Add to Dashboard
+            {{tooltip-on-component text='Add visualization to Dashboard' enableLazyRendering=true}}
         {{/report-actions/add-to-dashboard}}
     </li>
 {{/if}}
@@ -43,10 +43,10 @@
         classNameBindings='model.isNew:navi-report__action-link--force-disabled'
     }}
         {{navi-icon 'copy' class='navi-report__action-icon'}}
+        Clone
         {{#tooltip-on-component enableLazyRendering=true}}
             {{if model.isNew 'Save report to enable clone' 'Clone the report'}}
         {{/tooltip-on-component}}
-        Clone
     {{/link-to}}
 </li>
 
@@ -90,12 +90,12 @@
                 model=model
                 disabled=(not model.request.validations.isTruelyValid)
                 request=model.request
-                onRevert=(route-action 'revertDeliveryRule')
-                onDelete=(route-action 'deleteDeliveryRule')
-                onSave=(route-action 'saveDeliveryRule')
+                onRevert=(delivery-rule-action 'REVERT_DELIVERY_RULE')
+                onDelete=(delivery-rule-action 'DELETE_DELIVERY_RULE')
+                onSave=(delivery-rule-action 'SAVE_DELIVERY_RULE')
             }}
-                {{tooltip-on-component text='Schedule a report run' enableLazyRendering=true}}
                 Schedule
+                {{tooltip-on-component text='Schedule a report run' enableLazyRendering=true}}
             {{/common-actions/schedule}}
         </li>
     {{/if}}
@@ -104,11 +104,11 @@
     <li class='navi-report__action'>
         {{#common-actions/delete
             model=model
-            deleteAction=(route-action 'deleteReport')
+            deleteAction=(item-action 'DELETE_ITEM' model)
         }}
             {{navi-icon 'trash-o' class='navi-report__action-icon'}}
-            {{tooltip-on-component text='Delete the report' enableLazyRendering=true}}
             Delete
+            {{tooltip-on-component text='Delete the report' enableLazyRendering=true}}
         {{/common-actions/delete}}
     </li>
 {{/if}}
