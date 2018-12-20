@@ -1,7 +1,7 @@
 import { moduleFor, test } from 'ember-qunit';
 
 moduleFor('service:navi-notifications', 'Unit | Service | navi notifications', {
-  needs: ['service:flash-messages']
+  needs: ['service:flash-messages', 'config:environment']
 });
 
 test('clearMessages', function(assert) {
