@@ -1,0 +1,24 @@
+{{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{#basic-dropdown as |dd| }}
+  {{#dd.trigger class='dropdown-date-picker__trigger'}}
+    {{yield}}
+  {{/dd.trigger}}
+
+  {{#dd.content class='dropdown-date-picker__dropdown'}}
+    {{navi-date-picker
+      selectedDate=_selectedDate
+      dateTimePeriod='day'
+      dateSelected=(action (mut _selectedDate))
+      _lastTimeDate=(readonly savedDate)
+    }}
+
+    <div class='dropdown-date-picker__controls'>
+      <button class='dropdown-date-picker__reset btn btn-secondary' onclick={{action 'resetDate'}}>
+        Reset
+      </button>
+      <button class='dropdown-date-picker__apply btn btn-primary' onclick={{pipe (action this.attrs.onApply _selectedDate) (action dd.actions.close)}}>
+        Apply
+      </button>
+    </div>
+  {{/dd.content}}
+{{/basic-dropdown}}

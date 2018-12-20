@@ -12,7 +12,7 @@
 import Component from '@ember/component';
 import Moment from 'moment';
 import layout from '../../templates/components/filter-values/date';
-import { computed, get } from '@ember/object';
+import { computed } from '@ember/object';
 
 export default Component.extend({
   layout,
@@ -23,36 +23,9 @@ export default Component.extend({
   classNames: ['filter-values--date'],
 
   /**
-   * @property {Moment} _selectedDate - local moment set by date picker
-   * @private
-   */
-  _selectedDate: null,
-
-  /**
    * @property {String} savedDate - the date that's saved in the filter
-   * @private
    */
-  _savedDate: computed.oneWay('filter.values.firstObject'),
-
-  /**
-   * @method init
-   * @override
-   */
-  init() {
-    this._super(...arguments);
-
-    this.loadSavedDate();
-  },
-
-  /**
-   * @method loadSavedDate
-   */
-  loadSavedDate() {
-    let filterVal = get(this, '_savedDate'),
-      savedDate = filterVal ? Moment(filterVal) : filterVal;
-
-    this.set('_selectedDate', savedDate);
-  },
+  savedDate: computed.oneWay('filter.values.firstObject'),
 
   actions: {
     /**
@@ -63,13 +36,6 @@ export default Component.extend({
       this.attrs.onUpdateFilter({
         values: [Moment(date).format('YYYY-MM-DD')]
       });
-    },
-
-    /**
-     * @action resetDate - reset selectedDate to the saved value
-     */
-    resetDate() {
-      this.loadSavedDate();
     }
   }
 });
