@@ -6,17 +6,16 @@
 
   {{#dd.content class='dropdown-date-picker__dropdown'}}
     {{navi-date-picker
-      selectedDate=selectedDate
+      date=_selectedDate
       dateTimePeriod='day'
-      dateSelected=(action (mut selectedDate))
-      lastTimeDate=(readonly savedDate)
+      onUpdate=(action (mut _selectedDate))
     }}
 
     <div class='dropdown-date-picker__controls'>
       <button class='dropdown-date-picker__reset btn btn-secondary' onclick={{action 'resetDate'}}>
         Reset
       </button>
-      <button class='dropdown-date-picker__apply btn btn-primary' onclick={{pipe (action this.attrs.onApply selectedDate) (action dd.actions.close)}}>
+      <button class='dropdown-date-picker__apply btn btn-primary' onclick={{pipe (action this.attrs.onUpdate _selectedDate) (action dd.actions.close)}}>
         Apply
       </button>
     </div>

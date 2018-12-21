@@ -13,11 +13,11 @@ moduleForComponent('navi-date-picker', 'Integration | Component | Navi Date Pick
 test('Select date', function(assert) {
   assert.expect(5);
 
-  this.set('selectedDate', moment('2015-07-14', TEST_FORMAT));
+  this.set('date', moment('2015-07-14', TEST_FORMAT));
 
   this.render(hbs`
         {{navi-date-picker
-            selectedDate=selectedDate
+            date=date
         }}
     `);
 
@@ -29,9 +29,9 @@ test('Select date', function(assert) {
     'The active month is based on the given date'
   );
 
-  /* == Update selectedDate after creation == */
+  /* == Update date after creation == */
   Ember.run(() => {
-    this.set('selectedDate', moment('2015-06-17', TEST_FORMAT));
+    this.set('date', moment('2015-06-17', TEST_FORMAT));
   });
 
   assert.equal(this.$('.day.active').text(), '17', 'The active day is based on the new given date');
@@ -44,7 +44,7 @@ test('Select date', function(assert) {
 
   /* == Date outside of range == */
   Ember.run(() => {
-    this.set('selectedDate', moment('2050-06-17', TEST_FORMAT));
+    this.set('date', moment('2050-06-17', TEST_FORMAT));
   });
 
   assert.equal(this.$('.day.active').length, 1, 'No date, even a future date is out of range');
@@ -57,11 +57,11 @@ test('Change date through calendar, then through attr', function(assert) {
     clickDate = moment('2015-07-18', TEST_FORMAT),
     boundDate = moment('2015-07-12', TEST_FORMAT);
 
-  this.set('selectedDate', originalDate);
+  this.set('date', originalDate);
 
   this.render(hbs`
         {{navi-date-picker
-            selectedDate=selectedDate
+            date=date
         }}
     `);
 
@@ -71,7 +71,7 @@ test('Change date through calendar, then through attr', function(assert) {
   assert.ok(isDayActive(this, clickDate), 'Clicked date is visibly selected');
 
   // Change date back through binding
-  this.set('selectedDate', boundDate);
+  this.set('date', boundDate);
 
   assert.ok(isDayActive(this, boundDate), 'Bound date is visibly selected');
   assert.ok(!isDayActive(this, clickDate), 'Clicked date is no longer selected');
@@ -84,26 +84,26 @@ test('Change date action', function(assert) {
     newDate = moment('2015-07-18', TEST_FORMAT);
 
   this.set('date', originalDate);
-  this.on('dateSelected', date => assert.ok(date.isSame(newDate), 'dateSelected action was called with new date'));
+  this.on('onUpdate', date => assert.ok(date.isSame(newDate), 'onUpdate action was called with new date'));
   this.render(hbs`
         {{navi-date-picker
-            selectedDate=date
-            dateSelected="dateSelected"
+            date=date
+            onUpdate="onUpdate"
         }}
     `);
 
   // Test clicking on a different date
   findDayElement(this, newDate).click();
 
-  assert.ok(originalDate.isSame(moment('2015-07-14', TEST_FORMAT)), 'selectedDate is a one way binding');
+  assert.ok(originalDate.isSame(moment('2015-07-14', TEST_FORMAT)), 'date is a one way binding');
   assert.ok(isDayActive(this, newDate), 'New date is visibly selected regardless of action being handled');
   assert.ok(!isDayActive(this, originalDate), 'Original date is no longer selected');
 
   /*
-   * Check that changing `selectedDate` to the date suggested by the action does not
+   * Check that changing `date` to the date suggested by the action does not
    * trigger the action again, causing a cycle
    */
-  this.on('dateSelected', () => {
+  this.on('onUpdate', () => {
     throw new Error('Action was incorrectly called');
   });
   this.set('date', newDate);
@@ -112,25 +112,24 @@ test('Change date action', function(assert) {
   findDayElement(this, newDate).click();
 });
 
-test('Change date action always gives start of time period', function(assert) {
+test('Change date action always gives start of time period', async function(assert) {
   assert.expect(1);
 
   let originalDate = moment('2015-07-14', TEST_FORMAT);
 
   this.set('date', originalDate);
-  this.on('dateSelected', date =>
-    assert.ok(date.isSame(originalDate.startOf('isoweek')), 'dateSelected action was called with start of week')
+  this.on('onUpdate', date =>
+    assert.ok(date.isSame(originalDate.startOf('isoweek')), 'onUpdate action was called with start of week')
   );
   this.render(hbs`
         {{navi-date-picker
-            selectedDate=date
+            date=date
             dateTimePeriod="week"
-            dateSelected="dateSelected"
+            onUpdate="onUpdate"
         }}
     `);
-
   // Click in the middle of the week
-  findDayElement(this, originalDate.subtract(1, 'day')).click();
+  await findDayElement(this, originalDate.clone().subtract(1, 'day')).click();
 });
 
 test('Selection view changes with time period', function(assert) {
@@ -140,7 +139,7 @@ test('Selection view changes with time period', function(assert) {
   this.set('dateTimePeriod', 'month');
   this.render(hbs`
         {{navi-date-picker
-            selectedDate=date
+            date=date
             dateTimePeriod=dateTimePeriod
         }}
     `);
@@ -169,7 +168,7 @@ test('Selection changes with time period', function(assert) {
   this.set('dateTimePeriod', 'day');
   this.render(hbs`
         {{navi-date-picker
-            selectedDate=date
+            date=date
             dateTimePeriod=dateTimePeriod
         }}
     `);
@@ -237,7 +236,7 @@ test('Click same date twice', function(assert) {
   this.set('dateTimePeriod', 'week');
   this.render(hbs`
         {{navi-date-picker
-            selectedDate=date
+            date=date
             dateTimePeriod=dateTimePeriod
         }}
     `);
@@ -261,7 +260,7 @@ test('Start date', function(assert) {
   this.set('dateTimePeriod', 'day');
   this.render(hbs`
         {{navi-date-picker
-            selectedDate=date
+            date=date
             dateTimePeriod=dateTimePeriod
         }}
     `);

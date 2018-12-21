@@ -4,8 +4,8 @@
  *
  * Usage:
  *   {{dropdown-date-picker
- *       onApply=(action 'onApply')
- *       savedDate=(moment savedDate)
+ *       onUpdate=(action 'onUpdate')
+ *       date=(moment savedDate)
  *   }}
  */
 import Component from '@ember/component';
@@ -15,9 +15,10 @@ export default Component.extend({
   layout,
 
   /**
-   * @property {Moment} selectedDate - local moment set by date picker
+   * @private
+   * @property {Object} selectedDate - local moment set by date picker
    */
-  selectedDate: null,
+  _selectedDate: null,
 
   /**
    * @method init
@@ -33,7 +34,7 @@ export default Component.extend({
    * @method loadSavedDate
    */
   loadSavedDate() {
-    this.set('selectedDate', this.get('savedDate'));
+    this.set('_selectedDate', this.get('date'));
   },
 
   actions: {

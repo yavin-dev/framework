@@ -12,19 +12,19 @@ test('dropdown-date-picker', function(assert) {
 
   this.set('savedDate', '2018-12-25');
   this.set('actions', {
-    onApply(date) {
+    onUpdate(date) {
       assert.equal(
         Moment(date).format('YYYY-MM-DD'),
         '2018-12-24',
-        'The current selected date is sent to the onApply action'
+        'The current selected date is sent to the onUpdate action'
       );
     }
   });
 
   this.render(hbs`
     {{#dropdown-date-picker
-      savedDate=(moment savedDate)
-      onApply=(action 'onApply')
+      date=(moment savedDate)
+      onUpdate=(action 'onUpdate')
     }}
       Dropdown Trigger
     {{/dropdown-date-picker}}
