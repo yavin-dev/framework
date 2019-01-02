@@ -13,7 +13,7 @@ Router.map(function() {
       this.route('clone');
       this.route('save-as');
       this.route('invalid');
-      this.route('new');
+      this.route('edit');
       this.route('view');
       this.route('unauthorized');
     });

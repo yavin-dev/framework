@@ -26,7 +26,7 @@ Router.map(function() {
         this.route('new');
         this.route('widget', { path: '/:widgetId' }, function() {
           this.route('clone-to-report');
-          this.route('new');
+          this.route('edit');
           this.route('view');
           this.route('invalid');
         });

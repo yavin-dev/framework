@@ -31,7 +31,7 @@ Router.map(function() {
         this.route('add');
         this.route('new');
         this.route('widget', { path: '/:widgetId' }, function() {
-          this.route('new');
+          this.route('edit');
           this.route('invalid');
           this.route('view');
           this.route('clone-to-report');
@@ -43,7 +43,7 @@ Router.map(function() {
   this.route('reports', function() {
     this.route('new');
     this.route('report', { path: '/:reportId' }, function() {
-      this.route('new');
+      this.route('edit');
       this.route('invalid');
       this.route('view');
       this.route('clone');

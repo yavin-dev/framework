@@ -11,7 +11,13 @@
 </div>
 <div class='navi-list-selector__search'>
     {{navi-icon 'search' class='navi-list-selector__search-icon'}}
-    {{input placeholder=(concat 'Search ' (capitalize title)) value=query class='navi-list-selector__search-input'}}
+    {{input
+      placeholder=(concat 'Search ' (capitalize title)) 
+      value=query 
+      autocomplete=false 
+      spellcheck=false 
+      class='navi-list-selector__search-input'
+    }}
     {{navi-icon 'times-circle' class='navi-list-selector__search-input-clear' click=(action (mut query) undefined)}}
 </div>
 <div class='navi-list-selector__content'>

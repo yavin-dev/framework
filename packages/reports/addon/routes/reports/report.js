@@ -59,7 +59,7 @@ export default Route.extend({
    */
   afterModel(report) {
     if (get(report, 'isNew') && get(report, 'request.validations.isInvalid')) {
-      return this.replaceWith(`${this.routeName}.new`, get(report, 'tempId'));
+      return this.replaceWith(`${this.routeName}.edit`, get(report, 'tempId'));
     }
 
     if (get(report, 'request.validations.isInvalid')) {
@@ -189,7 +189,7 @@ export default Route.extend({
       this.controller.set('mode', mode);
     },
 
-    /**
+    /*
      * @action setHasReportRun
      * @param {Boolean} value
      */

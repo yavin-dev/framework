@@ -60,7 +60,7 @@ export default Ember.Route.extend({
    * @override
    */
   afterModel(report) {
-    return this.replaceWith('reports.report.new', get(report, 'tempId'));
+    return this.replaceWith('reports.report.edit', get(report, 'tempId'));
   },
 
   /**
