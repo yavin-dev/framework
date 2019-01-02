@@ -46,7 +46,7 @@ test('Accessing Report Builder', function(assert) {
     andThen(() => {
       assert.ok(
         currentURL().match(
-          /^\/reports\/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\/new/
+          /^\/reports\/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\/edit/
         ),
         'Clicking "New Report" button brings the user to the report builder'
       );

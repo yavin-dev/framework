@@ -97,7 +97,7 @@ test('Clone invalid report', function(assert) {
   click('.navi-report__action-link:contains(Clone)');
 
   andThen(() => {
-    assert.ok(currentURL().endsWith('new'), 'An invalid new report transitions to the reports/new route');
+    assert.ok(currentURL().endsWith('edit'), 'An invalid new report transitions to the reports/new route');
   });
 });
 
