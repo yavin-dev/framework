@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Reports Mock Data
@@ -469,6 +469,63 @@ export default [
         {
           end: '2018-11-18 00:00:00.000',
           start: '2018-11-11 00:00:00.000'
+        }
+      ],
+      bardVersion: 'v1',
+      requestVersion: 'v1'
+    }
+  },
+  {
+    id: 11,
+    title: 'old report without params',
+    createdOn: '2015-01-01 00:00:00',
+    updatedOn: '2015-01-01 00:00:00',
+    author: 'navi_user',
+    deliveryRules: [],
+    visualization: {
+      type: 'table',
+      version: 1,
+      metadata: {
+        columns: [
+          {
+            field: 'dateTime',
+            type: 'dateTime',
+            displayName: 'Date'
+          },
+          {
+            field: 'property',
+            type: 'dimension',
+            displayName: 'Property'
+          },
+          {
+            field: { metric: 'revenue', parameters: {} },
+            type: 'metric',
+            displayName: 'Revenue'
+          }
+        ]
+      }
+    },
+    request: {
+      logicalTable: {
+        table: 'tableA',
+        timeGrain: 'day'
+      },
+      metrics: [
+        {
+          metric: 'revenue',
+          parameters: {}
+        }
+      ],
+      dimensions: [
+        {
+          dimension: 'property'
+        }
+      ],
+      filters: [],
+      intervals: [
+        {
+          end: '2018-02-16 00:00:00.000',
+          start: '2018-02-09 00:00:00.000'
         }
       ],
       bardVersion: 'v1',
