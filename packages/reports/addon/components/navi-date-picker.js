@@ -42,7 +42,7 @@ export default Ember.Component.extend({
   classNameBindings: ['dateTimePeriod'],
 
   /**
-   * @property {Moment} date - date should be after `minDate`
+   * @property {Object} date - date should be after `minDate`
    */
   date: undefined,
 
