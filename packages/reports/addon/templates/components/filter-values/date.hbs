@@ -1,11 +1,11 @@
 {{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{#dropdown-date-picker
-  date=(moment savedDate)
+  date=(moment date)
   onUpdate=(action 'setDate')
 }}
   <div class='filter-values--date-dimension-select__trigger'>  
-    {{#if savedDate}}
-      {{moment-format savedDate 'MMM DD, YYYY'}}
+    {{#if date}}
+      {{moment-format date 'MMM DD, YYYY'}}
     {{else}}
       <span class='date__placeholder'>Select date</span>
     {{/if}}

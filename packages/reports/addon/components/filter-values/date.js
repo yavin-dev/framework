@@ -23,9 +23,9 @@ export default Component.extend({
   classNames: ['filter-values--date'],
 
   /**
-   * @property {String} savedDate - the date that's saved in the filter
+   * @property {String} date - the date that's saved in the filter
    */
-  savedDate: computed.oneWay('filter.values.firstObject'),
+  date: computed.oneWay('filter.values.firstObject'),
 
   actions: {
     /**
