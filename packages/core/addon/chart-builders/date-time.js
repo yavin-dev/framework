@@ -21,6 +21,7 @@ import { get, set, getWithDefault } from '@ember/object';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 
 const API_DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss.SSS';
+const YEAR_WITH_53_ISOWEEKS = '2015-01-01';
 
 /**
  * @constant {Object} logic for grouping one time grain by another
@@ -93,7 +94,7 @@ export const GROUP = {
         xValueCount: 53,
         getXValue: dateTime => dateTime.isoWeek(),
         getXDisplay: x =>
-          moment()
+          moment(YEAR_WITH_53_ISOWEEKS)
             .isoWeek(x)
             .format('MMM'),
         getSeries: dateTime => dateTime.format('GGGG')

@@ -6,7 +6,7 @@ import TooltipTemplate from '../../../../navi-core/templates/chart-tooltips/date
 const DateChartBuilder = BuilderClass.create();
 const { get } = Ember;
 
-module('Unit | Utils | Chart Builder Date Time');
+module('Unit | Chart Builders | Chart Builder Date Time');
 
 test('weeks by year uses isoWeekYear', function(assert) {
   assert.expect(2);
@@ -30,7 +30,7 @@ test('weeks by year uses isoWeekYear', function(assert) {
         pageViews: 2
       },
       {
-        dateTime: '2016-01-01 00:00:00.000', // Week 52, 2015
+        dateTime: '2016-01-01 00:00:00.000', // Week 53, 2015
         pageViews: 1
       }
     ],
