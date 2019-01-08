@@ -166,7 +166,7 @@ const DATA2 = [
     ]
   };
 
-module('Unit | Utils | Chart Builder Dimension');
+module('Unit | Chart Builders | Dimension');
 
 test('buildData - no dimensions', function(assert) {
   assert.expect(1);

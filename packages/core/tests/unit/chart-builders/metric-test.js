@@ -48,7 +48,7 @@ const DATA = [
     ]
   };
 
-moduleFor('chart-builder:metric', 'Unit | Utils | Chart Builder Metric', {
+moduleFor('chart-builder:metric', 'Unit | Chart Builders | Metric', {
   needs: [
     'helper:metric-format',
     'model:metadata/table',
