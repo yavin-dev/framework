@@ -250,14 +250,3 @@ test('metric selector filter action for parameterized metrics', function(assert)
     );
   });
 });
-
-test('old reports still allow you to choose parameters', async function(assert) {
-  assert.expect(1);
-  await visit('/reports/11/view');
-
-  await click('.report-builder__metric-selector .navi-list-selector__show-link');
-  await click('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .metric-config > div');
-
-  const options = find('.metric-config__dropdown-container .grouped-list__item').toArray();
-  assert.ok(options.length > 0, 'Metric options should render');
-});

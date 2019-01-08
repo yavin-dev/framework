@@ -1,5 +1,5 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -106,23 +106,15 @@ export default Component.extend({
       selectedMetricParams = arr(selectedMetrics).mapBy('parameters'),
       allParametersMap = get(this, 'allParametersMap') || {};
 
-    return selectedMetricParams
-      .map(param => {
-        //delete alias key in copy
-        let paramCopy = Object.assign({}, param);
-        delete paramCopy.as;
-        const paramEntries = Object.entries(paramCopy);
+    return selectedMetricParams.map(param => {
+      //delete alias key in copy
+      let paramCopy = Object.assign({}, param);
+      delete paramCopy.as;
 
-        //see if they have parameters at all
-        if (paramEntries.length === 0) {
-          return false;
-        }
-
-        //fetch from map
-        let [key, value] = paramEntries[0];
-        return allParametersMap[`${key}|${value}`];
-      })
-      .filter(e => !!e); //filter out bad or outdated parameters
+      //fetch from map
+      let [key, value] = Object.entries(paramCopy)[0];
+      return allParametersMap[`${key}|${value}`];
+    });
   }),
 
   /**
