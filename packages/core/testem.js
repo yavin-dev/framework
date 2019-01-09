@@ -7,7 +7,7 @@ module.exports = {
   browser_args: {
     Chrome: {
       mode: 'ci',
-      args: ['--disable-gpu', '--headless', '--remote-debugging-port=9222', '--window-size=1440,900']
+      args: ['--disable-gpu', '--no-sandbox', '--headless', '--remote-debugging-port=9222', '--window-size=1440,900']
     }
   }
 };
