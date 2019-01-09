@@ -71,7 +71,7 @@
     "ember-resize": "0.0.17",
     "ember-resolver": "^4.0.0",
     "ember-route-action-helper": "^2.0.6",
-    "ember-sortable": "^1.12.1",
+    "ember-sortable": "1.12.3",
     "ember-source": "~2.16.0",
     "ember-tether": "^1.0.0",
     "ember-toggle": "^5.2.1",
