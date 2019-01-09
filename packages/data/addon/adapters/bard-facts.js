@@ -287,7 +287,7 @@ export default EmberObject.extend({
   },
 
   /**
-   * @method fetchDataForRequest - Uses the url generated using the adapter to make an fetch request
+   * @method fetchDataForRequest - Uses the url generated using the adapter to make a fetch request
    * @param {Object} request - request object
    * @param {Object} [options] - options object
    *      Ex: {
@@ -322,7 +322,7 @@ export default EmberObject.extend({
       customHeaders = options.customHeaders;
     }
 
-    Object.keys(query).forEach(key => url.searchParams.append(key, query[key]));
+    Object.entries(query).forEach(pair => url.searchParams.append(...pair));
 
     let headers = Object.assign(customHeaders, { clientid: clientId });
 

@@ -5,7 +5,6 @@
 import Ember from 'ember';
 import isEqual from 'lodash/isEqual';
 import merge from 'lodash/merge';
-import { isForbiddenError } from 'ember-ajax/errors';
 
 const { get, set } = Ember;
 
@@ -60,11 +59,12 @@ export default Ember.Route.extend({
 
         return response.response;
       })
-      .catch(response => {
-        if (isForbiddenError(response)) {
+      .catch(error => {
+        if (error.status === 403) {
+          //if forbidden
           this.transitionTo('reports.report.unauthorized', get(report, 'id'));
         } else {
-          return Ember.RSVP.reject(response);
+          return Ember.RSVP.reject(error);
         }
       });
   },

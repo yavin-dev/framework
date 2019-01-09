@@ -100,18 +100,20 @@ test('bulk import Component renders', function(assert) {
 
   this.render(COMMON_TEMPLATE);
 
-  assert.ok(this.$('.dimension-bulk-import').is(':visible'), 'Component renders');
+  return wait().then(() => {
+    assert.ok(this.$('.dimension-bulk-import').is(':visible'), 'Component renders');
 
-  let buttons = $('.btn-container button');
-  assert.deepEqual(
-    buttons
-      .map(function() {
-        return this.textContent.trim();
-      })
-      .get(),
-    ['Include Valid IDs', 'Cancel'],
-    'Include and Cancel buttons are rendered in input mode as expected'
-  );
+    let buttons = $('.btn-container button');
+    assert.deepEqual(
+      buttons
+        .map(function() {
+          return this.textContent.trim();
+        })
+        .get(),
+      ['Include Valid IDs', 'Cancel'],
+      'Include and Cancel buttons are rendered in input mode as expected'
+    );
+  });
 });
 
 test('search dimension IDs', function(assert) {

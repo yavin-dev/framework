@@ -61,7 +61,7 @@ export default EmberObject.extend({
       clientId = options.clientId || 'UI',
       timeout = options.timeout || 300000;
 
-    Object.keys(query).forEach(key => url.searchParams.append(key, query[key]));
+    Object.entries(query).forEach(pair => url.searchParams.append(...pair));
 
     return fetch(url, {
       credentials: 'include',

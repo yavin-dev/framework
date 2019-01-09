@@ -14,21 +14,23 @@
 
 export function handleErrors(response) {
   if (!response.ok) {
-    const { _bodyText: error } = response;
-    const errorMsg = IsJsonString(error) ? JSON.parse(error).reason : error;
+    // const { _bodyText: error } = response;
+    // const errorMsg = isJsonString(error) ? JSON.parse(error).reason : error;
 
-    throw new Error(errorMsg);
+    // throw new Error(errorMsg);
+    throw response;
   }
+
   return response;
 }
 
 /**
- * @function IsJsonString
+ * @function isJsonString
  *
  * @param {String} str
  * @returns {Boolean}
  */
-function IsJsonString(str) {
+function isJsonString(str) {
   try {
     JSON.parse(str);
   } catch (e) {

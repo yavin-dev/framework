@@ -1630,26 +1630,31 @@ test('running report after reverting changes', function(assert) {
 
 test('Running a report against unauthorized table shows unauthorized route', function(assert) {
   assert.expect(5);
+
   visit('/reports/1/view');
-
-  selectChoose('.navi-table-select__dropdown', 'Protected Table');
-
-  click('.navi-report__run-btn');
   andThen(() => {
-    assert.equal(currentURL(), '/reports/1/unauthorized', 'check to seee if we are on the unauthorized route');
+    selectChoose('.navi-table-select__dropdown', 'Protected Table');
 
-    assert.ok(!!find('.navi-report-invalid__info-message .fa-lock').length, 'unauthorized component is loaded');
-  });
+    click('.navi-report__run-btn');
+    andThen(() => {
+      assert.equal(currentURL(), '/reports/1/unauthorized', 'check to seee if we are on the unauthorized route');
 
-  selectChoose('.navi-table-select__dropdown', 'Network');
-  click('.navi-report__run-btn');
-  click('.visualization-toggle__option:contains(Table)');
-  andThen(() => {
-    assert.equal(currentURL(), '/reports/1/view', 'check to seee if we are on the view route');
+      assert.ok(!!find('.navi-report-invalid__info-message .fa-lock').length, 'unauthorized component is loaded');
+    });
 
-    assert.notOk(!!find('.navi-report-invalid__info-message .fa-lock').length, 'unauthorized component is not loaded');
+    selectChoose('.navi-table-select__dropdown', 'Network');
+    click('.navi-report__run-btn');
+    click('.visualization-toggle__option:contains(Table)');
+    andThen(() => {
+      assert.equal(currentURL(), '/reports/1/view', 'check to seee if we are on the view route');
 
-    assert.ok(!!find('.table-widget').length, 'Data table visualization loads');
+      assert.notOk(
+        !!find('.navi-report-invalid__info-message .fa-lock').length,
+        'unauthorized component is not loaded'
+      );
+
+      assert.ok(!!find('.table-widget').length, 'Data table visualization loads');
+    });
   });
 });
 

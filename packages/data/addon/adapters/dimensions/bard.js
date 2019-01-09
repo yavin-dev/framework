@@ -128,7 +128,7 @@ export default EmberObject.extend({
   },
 
   /**
-   * @method find - Uses the url generated using the adapter to make an fetch request
+   * @method find - Uses the url generated using the adapter to make a fetch request
    * @param {String} dimension - dimension name
    * @param {Object} [query] - the filter query object
    * @param {Object} [options] - options object
@@ -169,7 +169,7 @@ export default EmberObject.extend({
       }
     }
 
-    Object.keys(filterQuery).forEach(key => url.searchParams.append(key, filterQuery[key]));
+    Object.entries(filterQuery).forEach(pair => url.searchParams.append(...pair));
 
     return fetch(url, {
       credentials: 'include',

@@ -140,7 +140,7 @@ moduleForModel('report', 'Unit | Model | report', {
     setupMock();
     Store = this.store();
     MetadataService = getOwner(this).lookup('service:bard-metadata');
-    MetadataService.loadMetadata();
+    return MetadataService.loadMetadata();
   },
   afterEach() {
     teardownMock();

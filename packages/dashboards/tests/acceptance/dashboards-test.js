@@ -565,7 +565,7 @@ test('Unauthorized widget', function(assert) {
 
   server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
   server.get('/data/network/day/os', function() {
-    return new Mirage.Response(403);
+    return new Mirage.Response(403, {}, { error: 'unauthorized widget' });
   });
 
   visit('/dashboards/2/view');
