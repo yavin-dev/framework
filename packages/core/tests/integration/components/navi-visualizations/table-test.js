@@ -6,7 +6,7 @@ import merge from 'lodash/merge';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
-import { startMirage } from 'dummy/initializers/ember-cli-mirage';
+import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
 
 const TEMPLATE = hbs`
   <div style="width: 800px; height: 800px; display: flex;">
@@ -134,7 +134,7 @@ moduleForComponent('navi-visualizations/table', 'Integration | Component | table
   integration: true,
   beforeEach() {
     config.navi.FEATURES.enableVerticalCollectionTableIterator = true;
-    this.server = startMirage();
+    setupMock();
 
     this.set('model', Model);
     this.set('options', Options);
@@ -146,7 +146,7 @@ moduleForComponent('navi-visualizations/table', 'Integration | Component | table
   },
   afterEach() {
     config.navi.FEATURES.enableVerticalCollectionTableIterator = false;
-    this.server.shutdown();
+    teardownMock();
   }
 });
 

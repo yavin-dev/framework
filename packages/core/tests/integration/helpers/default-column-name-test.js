@@ -1,19 +1,19 @@
 import Ember from 'ember';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import { startMirage } from 'dummy/initializers/ember-cli-mirage';
+import { setupMock, teardownMock } from '../../helpers/mirage-helper';
 
 moduleForComponent('default-column-name', 'helper:default-column-name', {
   integration: true,
   beforeEach() {
-    this.server = startMirage();
+    setupMock();
 
     return Ember.getOwner(this)
       .lookup('service:bard-metadata')
       .loadMetadata();
   },
   afterEach() {
-    this.server.shutdown();
+    teardownMock();
   }
 });
 

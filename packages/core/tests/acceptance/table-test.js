@@ -12,50 +12,44 @@ moduleForAcceptance('Acceptance | table', {
   }
 });
 
-test('visiting /table', function(assert) {
+test('visiting /table', async function(assert) {
   assert.expect(2);
 
-  visit('/table');
+  await visit('/table');
 
-  andThen(function() {
-    assert.deepEqual(
-      find('.table-header-row-vc--view .table-header-cell__title')
-        .toArray()
-        .map(el =>
-          $(el)
-            .text()
-            .trim()
-        ),
-      ['Date', 'Operating System', 'Unique Identifiers', 'Total Page Views', 'Total Page Views WoW'],
-      'The headers for the table are as specified'
-    );
-  });
+  assert.deepEqual(
+    find('.table-header-row-vc--view .table-header-cell__title')
+      .toArray()
+      .map(el =>
+        $(el)
+          .text()
+          .trim()
+      ),
+    ['Date', 'Operating System', 'Unique Identifiers', 'Total Page Views', 'Total Page Views WoW'],
+    'The headers for the table are as specified'
+  );
 
-  andThen(() => {
-    return reorder(
-      'mouse',
-      '.table-header-cell',
-      '.dimension:contains(Operating System)',
-      '.dateTime',
-      '.metric:contains(Unique Identifiers)',
-      '.metric:contains(Total Page Views)',
-      '.threshold:contains(Total Page Views WoW)'
-    );
-  });
+  await reorder(
+    'mouse',
+    '.table-header-cell',
+    '.dimension:contains(Operating System)',
+    '.dateTime',
+    '.metric:contains(Unique Identifiers)',
+    '.metric:contains(Total Page Views)',
+    '.threshold:contains(Total Page Views WoW)'
+  );
 
-  andThen(() => {
-    assert.deepEqual(
-      find('.table-header-row-vc--view .table-header-cell__title')
-        .toArray()
-        .map(el =>
-          $(el)
-            .text()
-            .trim()
-        ),
-      ['Operating System', 'Date', 'Unique Identifiers', 'Total Page Views', 'Total Page Views WoW'],
-      'The headers are reordered as specified by the reorder'
-    );
-  });
+  assert.deepEqual(
+    find('.table-header-row-vc--view .table-header-cell__title')
+      .toArray()
+      .map(el =>
+        $(el)
+          .text()
+          .trim()
+      ),
+    ['Operating System', 'Date', 'Unique Identifiers', 'Total Page Views', 'Total Page Views WoW'],
+    'The headers are reordered as specified by the reorder'
+  );
 });
 
 test('toggle table editing', function(assert) {

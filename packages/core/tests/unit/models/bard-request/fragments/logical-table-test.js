@@ -1,5 +1,5 @@
 import { moduleForModel, test } from 'ember-qunit';
-import { startMirage } from '../../../../../initializers/ember-cli-mirage';
+import { setupMock, teardownMock } from '../../../../helpers/mirage-helper';
 import wait from 'ember-test-helpers/wait';
 import { getOwner } from '@ember/application';
 import { run } from '@ember/runloop';
@@ -26,12 +26,12 @@ moduleForModel('fragments-mock', 'Unit | Model Fragment | BardRequest - Logical 
     'adapter:dimensions/bard'
   ],
 
-  beforeEach() {
-    this.server = startMirage();
+  async beforeEach() {
+    setupMock();
     Store = getOwner(this).lookup('service:store');
     MetadataService = getOwner(this).lookup('service:bard-metadata');
 
-    MetadataService.loadMetadata().then(() => {
+    await MetadataService.loadMetadata().then(() => {
       //Add instances to the store
       return run(() => {
         Store.pushPayload({
@@ -50,43 +50,41 @@ moduleForModel('fragments-mock', 'Unit | Model Fragment | BardRequest - Logical 
     });
   },
   afterEach() {
-    this.server.shutdown();
+    teardownMock();
   }
 });
 
 test('Model using the Logical Table Fragment', function(assert) {
   assert.expect(5);
 
-  return wait().then(() => {
-    let mockModel = Store.peekRecord('fragments-mock', 1);
-    assert.ok(mockModel, 'mockModel is fetched from the store');
+  let mockModel = Store.peekRecord('fragments-mock', 1);
+  assert.ok(mockModel, 'mockModel is fetched from the store');
 
-    return run(() => {
-      /* == Getter Method == */
-      assert.equal(
-        mockModel.get('table.table.description'),
-        'Network, Product, and Property level data',
-        'The property `table` has the description `Network table`'
-      );
+  return run(() => {
+    /* == Getter Method == */
+    assert.equal(
+      mockModel.get('table.table.description'),
+      'Network, Product, and Property level data',
+      'The property `table` has the description `Network table`'
+    );
 
-      assert.equal(mockModel.get('table.timeGrainName'), 'day', 'The property `table` has the time grain `day`');
+    assert.equal(mockModel.get('table.timeGrainName'), 'day', 'The property `table` has the time grain `day`');
 
-      /* == Setter Method == */
-      mockModel.set('table.table', MetadataService.getById('table', 'tableA'));
-      mockModel.set('table.timeGrainName', 'week');
+    /* == Setter Method == */
+    mockModel.set('table.table', MetadataService.getById('table', 'tableA'));
+    mockModel.set('table.timeGrainName', 'week');
 
-      assert.equal(
-        mockModel.get('table.table.description'),
-        'Table A',
-        'The property `table` has been updated with the description `Table A`'
-      );
+    assert.equal(
+      mockModel.get('table.table.description'),
+      'Table A',
+      'The property `table` has been updated with the description `Table A`'
+    );
 
-      assert.equal(
-        mockModel.get('table.timeGrainName'),
-        'week',
-        'The property `table` has been updated with the time grain `week`'
-      );
-    });
+    assert.equal(
+      mockModel.get('table.timeGrainName'),
+      'week',
+      'The property `table` has been updated with the time grain `week`'
+    );
   });
 });
 

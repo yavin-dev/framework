@@ -1,5 +1,5 @@
 import { moduleForModel, test } from 'ember-qunit';
-import { startMirage } from '../../../../../initializers/ember-cli-mirage';
+import { setupMock, teardownMock } from '../../../../helpers/mirage-helper';
 import wait from 'ember-test-helpers/wait';
 import config from 'ember-get-config';
 import { A as arr } from '@ember/array';
@@ -7,7 +7,7 @@ import { get } from '@ember/object';
 import { getOwner } from '@ember/application';
 import { run } from '@ember/runloop';
 
-var Store, MetadataService;
+let Store, MetadataService, Server;
 
 const TextInput = arr(['mirror', 'shield', 'deku', 'tree']);
 
@@ -54,11 +54,11 @@ moduleForModel('fragments-mock', 'Unit | Model Fragment | BardRequest - Filter',
   ],
 
   beforeEach() {
-    this.server = startMirage();
+    Server = setupMock();
     Store = getOwner(this).lookup('service:store');
 
-    this.server.urlPrefix = config.navi.dataSources[0].uri;
-    this.server.get(`/v1/dimensions/age/values/`, () => {
+    Server.urlPrefix = config.navi.dataSources[0].uri;
+    Server.get(`/v1/dimensions/age/values/`, () => {
       return {
         rows: AgeResponse.slice(0, 2)
       };
@@ -88,7 +88,7 @@ moduleForModel('fragments-mock', 'Unit | Model Fragment | BardRequest - Filter',
     });
   },
   afterEach() {
-    this.server.shutdown();
+    teardownMock();
   }
 });
 

@@ -4,21 +4,21 @@ import { set } from '@ember/object';
 import { moduleForComponent, test } from 'ember-qunit';
 import { initialize as injectC3Enhancements } from 'navi-core/initializers/inject-c3-enhancements';
 import hbs from 'htmlbars-inline-precompile';
-import { startMirage } from 'dummy/initializers/ember-cli-mirage';
+import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
 
 moduleForComponent('goal-gauge', 'Integration | Component | goal gauge ', {
   integration: true,
 
   beforeEach() {
     injectC3Enhancements();
-    this.server = startMirage();
+    setupMock();
     return getOwner(this)
       .lookup('service:bard-metadata')
       .loadMetadata();
   },
 
   afterEach() {
-    return this.server.shutdown();
+    return teardownMock();
   }
 });
 

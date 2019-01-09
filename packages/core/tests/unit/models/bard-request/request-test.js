@@ -1,5 +1,5 @@
 import { moduleForModel, test } from 'ember-qunit';
-import { startMirage } from '../../../../initializers/ember-cli-mirage';
+import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
 import wait from 'ember-test-helpers/wait';
 import { getOwner } from '@ember/application';
 import { get, set } from '@ember/object';
@@ -56,7 +56,7 @@ moduleForModel('fragments-mock', 'Unit | Model Fragment | BardRequest - Request'
   ],
 
   beforeEach() {
-    this.server = startMirage();
+    setupMock();
     Store = getOwner(this).lookup('service:store');
 
     MetadataService = getOwner(this).lookup('service:bard-metadata');
@@ -224,7 +224,7 @@ moduleForModel('fragments-mock', 'Unit | Model Fragment | BardRequest - Request'
     });
   },
   afterEach() {
-    this.server.shutdown();
+    teardownMock();
   }
 });
 
