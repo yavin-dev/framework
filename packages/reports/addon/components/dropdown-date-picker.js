@@ -16,7 +16,7 @@ export default Component.extend({
 
   /**
    * @private
-   * @property {Object} selectedDate - local moment set by date picker
+   * @property {Object} _selectedDate - local moment set by date picker
    */
   _selectedDate: null,
 
