@@ -3,7 +3,7 @@ import moment from 'moment';
 import DateUtils from 'navi-core/utils/date';
 import Interval from 'navi-core/utils/classes/interval';
 import Duration from 'navi-core/utils/classes/duration';
-import { startMirage } from '../../../../../initializers/ember-cli-mirage';
+import { setupMock, teardownMock } from '../../../../helpers/mirage-helper';
 import { getOwner } from '@ember/application';
 import { run } from '@ember/runloop';
 
@@ -29,7 +29,7 @@ moduleForModel('fragments-mock', 'Unit | Model Fragment | BardRequest - Interval
       end: '2015-08-20 00:00:00.000'
     };
 
-    this.server = startMirage();
+    setupMock();
     Store = getOwner(this).lookup('service:store');
 
     //Add instances to the store
@@ -46,7 +46,7 @@ moduleForModel('fragments-mock', 'Unit | Model Fragment | BardRequest - Interval
     });
   },
   afterEach() {
-    this.server.shutdown();
+    teardownMock();
   }
 });
 

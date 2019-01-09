@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import { moduleForComponent, test } from 'ember-qunit';
-import { startMirage } from 'dummy/initializers/ember-cli-mirage';
+import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
 
 moduleForComponent('visualization-config/table', 'Unit | Component | table config', {
   unit: 'true',
@@ -16,13 +16,13 @@ moduleForComponent('visualization-config/table', 'Unit | Component | table confi
     'service:ajax'
   ],
   beforeEach() {
-    this.server = startMirage();
+    setupMock();
     Ember.getOwner(this)
       .lookup('service:bard-metadata')
       .loadMetadata();
   },
   afterEach() {
-    this.server.shutdown();
+    teardownMock();
   }
 });
 

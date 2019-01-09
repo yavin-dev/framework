@@ -1,12 +1,12 @@
 import { test, module } from 'ember-qunit';
-import Ember from 'ember';
+import { get } from '@ember/object';
+import Object from '@ember/object';
 import BuilderClass from 'navi-core/chart-builders/date-time';
 import TooltipTemplate from '../../../../navi-core/templates/chart-tooltips/date';
 
 const DateChartBuilder = BuilderClass.create();
-const { get } = Ember;
 
-module('Unit | Utils | Chart Builder Date Time');
+module('Unit | Chart Builders | Date Time');
 
 test('weeks by year uses isoWeekYear', function(assert) {
   assert.expect(2);
@@ -30,7 +30,7 @@ test('weeks by year uses isoWeekYear', function(assert) {
         pageViews: 2
       },
       {
-        dateTime: '2016-01-01 00:00:00.000', // Week 52, 2015
+        dateTime: '2016-01-01 00:00:00.000', // Week 53, 2015
         pageViews: 1
       }
     ],
@@ -435,7 +435,7 @@ test('buildTooltip', function(assert) {
     ],
     data = DateChartBuilder.buildData(response, config, request),
     mixin = DateChartBuilder.buildTooltip(data, config, request),
-    tooltipClass = Ember.Object.extend(mixin, {}),
+    tooltipClass = Object.extend(mixin, {}),
     tooltip = tooltipClass.create({ config, request, tooltipData, x });
 
   assert.equal(get(tooltip, 'layout'), TooltipTemplate, 'Tooltip uses date template');

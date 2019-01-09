@@ -2,7 +2,7 @@ import Ember from 'ember';
 import config from 'ember-get-config';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import { startMirage } from 'dummy/initializers/ember-cli-mirage';
+import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
 
 const TEMPLATE = hbs`
   {{navi-visualizations/table-print
@@ -82,7 +82,7 @@ moduleForComponent('navi-visualizations/table-print', 'Integration | Component |
   integration: true,
   beforeEach() {
     config.navi.FEATURES.enableVerticalCollectionTableIterator = true;
-    this.server = startMirage();
+    setupMock();
 
     this.set('model', Model);
     this.set('options', Options);
@@ -94,7 +94,7 @@ moduleForComponent('navi-visualizations/table-print', 'Integration | Component |
   },
   afterEach() {
     config.navi.FEATURES.enableVerticalCollectionTableIterator = false;
-    this.server.shutdown();
+    teardownMock();
   }
 });
 
