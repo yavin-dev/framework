@@ -4,9 +4,9 @@
  *
  * Usage:
  *   {{navi-date-picker
- *      selectedDate=initialDate
+ *      date=initialDate
  *      dateTimePeriod='month'
- *      dateSelected='actionWhenDateChanges'
+ *      onUpdate='actionWhenDateChanges'
  *   }}
  */
 import Ember from 'ember';
@@ -42,9 +42,9 @@ export default Ember.Component.extend({
   classNameBindings: ['dateTimePeriod'],
 
   /**
-   * @property {Moment} selectedDate - selectedDate should be after `minDate`
+   * @property {Object} date - date should be after `minDate`
    */
-  selectedDate: undefined,
+  date: undefined,
 
   /**
    * @property {String} dateTimePeriod - unit of time being selected ('day', 'week', or 'month')
@@ -88,17 +88,18 @@ export default Ember.Component.extend({
   didReceiveAttrs() {
     this._super(...arguments);
 
-    let selectedDate = get(this, 'selectedDate'),
+    let selectedDate = get(this, 'date'),
       previousDate = get(this, 'previousDate');
 
     if (selectedDate !== previousDate) {
-      let selectedDate = get(this, 'selectedDate'),
-        date = selectedDate ? selectedDate.toDate() : undefined;
+      let date = selectedDate ? selectedDate.toDate() : undefined;
+
       set(this, 'selectedDateObj', date);
     }
 
     //Store old date for rerender logic above
     set(this, 'previousDate', selectedDate);
+    set(this, '_lastTimeDate', selectedDate);
 
     // Make sure selection is highlighted
     Ember.run.scheduleOnce('afterRender', this, this._highlightSelection);
@@ -204,7 +205,7 @@ export default Ember.Component.extend({
 
       // Convert date to start of time period
       let dateTimePeriod = getIsoDateTimePeriod(get(this, 'dateTimePeriod'));
-      this.sendAction('dateSelected', moment(newDate).startOf(dateTimePeriod));
+      this.sendAction('onUpdate', moment(newDate).startOf(dateTimePeriod));
     }
   }
 });

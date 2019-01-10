@@ -45,15 +45,15 @@
                         <div class='date-picker-label'>Start Date</div>
                         <div class='date-picker-label'>End Date</div>
                         {{navi-date-picker
-                            selectedDate=dateMoments.start
+                            date=dateMoments.start
                             dateTimePeriod=dateTimePeriod
-                            dateSelected='setStart'
+                            onUpdate='setStart'
                             targetObject=container
                         }}
                         {{navi-date-picker
-                            selectedDate=dateMoments.end
+                            date=dateMoments.end
                             dateTimePeriod=dateTimePeriod
-                            dateSelected='setEnd'
+                            onUpdate='setEnd'
                             targetObject=container
                         }}
                         {{#unless showAdvancedCalendar}}
