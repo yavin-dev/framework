@@ -36,7 +36,7 @@ export default Base.extend({
     {
       id: 'bet',
       longName: 'Between (<=>)',
-      valuesComponent: 'filter-values/date-range'
+      valuesComponent: 'filter-values/dimension-date-range'
     }
   ],
 
@@ -52,7 +52,7 @@ export default Base.extend({
     return {
       subject: get(requestFragment, 'dimension'),
       operator,
-      values: arr([get(requestFragment, 'values')[0]])
+      values: arr(get(requestFragment, 'values'))
     };
   })
 });
