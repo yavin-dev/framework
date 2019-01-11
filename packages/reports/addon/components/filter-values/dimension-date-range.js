@@ -1,3 +1,13 @@
+/**
+ * Copyright 2019, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ *
+ * Usage:
+ *   {{filter-values/dimension-date-range
+ *       filter=filter
+ *       onUpdateFilter=(action 'update')
+ *   }}
+ */
 import Component from '@ember/component';
 import { computed, get } from '@ember/object';
 import layout from '../../templates/components/filter-values/dimension-date-range';
@@ -10,8 +20,14 @@ export default Component.extend({
    */
   classNames: ['filter-values--dimension-date-range-input'],
 
+  /**
+   * @property {Object} startDate - moment of beginning of interval
+   */
   startDate: computed.oneWay('filter.values.firstObject'),
 
+  /**
+   * @property {Object} endDate - moment of end of interval
+   */
   endDate: computed.oneWay('filter.values.lastObject'),
 
   /**
