@@ -11,6 +11,7 @@
 import Component from '@ember/component';
 import { computed, get } from '@ember/object';
 import layout from '../../templates/components/filter-values/dimension-date-range';
+import Moment from 'moment';
 
 export default Component.extend({
   layout,
@@ -21,12 +22,12 @@ export default Component.extend({
   classNames: ['filter-values--dimension-date-range-input'],
 
   /**
-   * @property {Object} startDate - moment of beginning of interval
+   * @property {String} startDate - date (YYYY-MM-DD) of beginning of interval
    */
   startDate: computed.oneWay('filter.values.firstObject'),
 
   /**
-   * @property {Object} endDate - moment of end of interval
+   * @property {String} endDate - date (YYYY-MM-DD) of end of interval
    */
   endDate: computed.oneWay('filter.values.lastObject'),
 
@@ -47,7 +48,7 @@ export default Component.extend({
      */
     setLowValue(value) {
       this.attrs.onUpdateFilter({
-        values: [value, get(this, 'filter.values.lastObject')]
+        values: [Moment(value).format('YYYY-MM-DD'), get(this, 'filter.values.lastObject')]
       });
     },
 
@@ -57,7 +58,7 @@ export default Component.extend({
      */
     setHighValue(value) {
       this.attrs.onUpdateFilter({
-        values: [get(this, 'filter.values.firstObject'), value]
+        values: [get(this, 'filter.values.firstObject'), Moment(value).format('YYYY-MM-DD')]
       });
     }
   }
