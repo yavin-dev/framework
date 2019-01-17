@@ -154,6 +154,54 @@ test('New report - copy api', function(assert) {
   });
 });
 
+test('Revert changes when exiting report - existing report', function(assert) {
+  assert.expect(5);
+
+  // visit report 1
+  visit('/reports/1/view');
+  andThen(() => {
+    assert.ok(
+      $('.checkbox-selector--dimension .grouped-list__item:contains(Day) .grouped-list__item-label input').is(
+        ':checked'
+      ),
+      'Day timegrain is checked by default'
+    );
+  });
+
+  // uncheck the day timegrain
+  click('.checkbox-selector--dimension .grouped-list__item:contains(Day) .grouped-list__item-label');
+  andThen(() => {
+    assert.notOk(
+      $('.checkbox-selector--dimension .grouped-list__item:contains(Day) .grouped-list__item-label input').is(
+        ':checked'
+      ),
+      'Day timegrain is unchecked after clicking on it'
+    );
+    assert.ok(
+      $('.navi-report__revert-btn').is(':visible'),
+      'Revert changes button is visible once a change has been made'
+    );
+  });
+
+  // leave the route
+  visit('/reports');
+
+  // enter the route again
+  click("a[href$='/reports/1/view']");
+  andThen(() => {
+    assert.notOk(
+      $('.navi-report__revert-btn').is(':visible'),
+      'After navigating away and back to the route, the Revert button disappears'
+    );
+    assert.ok(
+      $('.checkbox-selector--dimension .grouped-list__item:contains(Day) .grouped-list__item-label input').is(
+        ':checked'
+      ),
+      'After navigating away and back to the route, changes are reverted'
+    );
+  });
+});
+
 test('Revert changes - existing report', function(assert) {
   assert.expect(4);
 
@@ -161,7 +209,7 @@ test('Revert changes - existing report', function(assert) {
   andThen(() => {
     assert.ok(
       $('.filter-builder__subject:contains(Day)').is(':visible'),
-      'After navigating out of the route, the report model is rolled back'
+      'After navigating to a route, the Timegrain "Day" option is visible'
     );
   });
 

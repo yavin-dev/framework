@@ -101,7 +101,8 @@ export default Route.extend({
    */
   deactivate() {
     let model = this.currentModel;
-    if (!get(model, 'isNew') && get(model, 'hasDirtyAttributes')) {
+    // https://github.com/emberjs/ember.js/issues/16820
+    if (!this.isDestroying && !get(model, 'isNew') && get(model, 'hasDirtyAttributes')) {
       this.send('revertChanges', model);
     }
   },
