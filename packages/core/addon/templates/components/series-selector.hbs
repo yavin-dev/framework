@@ -7,8 +7,8 @@
 }}
 {{#pick-container
     classNames='add-series'
-    updateSelection=(action this.attrs.addSeries)
-    formToggled='formToggled'
+    onUpdateSelection=(action this.attrs.addSeries)
+    onFormToggle=(action 'formToggled')
     as |selection container|
 }}
     {{#pick-value

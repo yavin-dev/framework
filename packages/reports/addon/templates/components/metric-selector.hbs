@@ -33,15 +33,15 @@
             {{metric-config
               metric=metric
               request=request
-              addParameterizedMetric=(update-report-action 'ADD_METRIC_WITH_PARAM')
-              removeParameterizedMetric=(update-report-action 'REMOVE_METRIC_WITH_PARAM')
-              toggleParameterizedMetricFilter=(update-report-action 'TOGGLE_PARAMETERIZED_METRIC_FILTER')
+              onAddParameterizedMetric=(update-report-action 'ADD_METRIC_WITH_PARAM')
+              onRemoveParameterizedMetric=(update-report-action 'REMOVE_METRIC_WITH_PARAM')
+              onToggleParameterizedMetricFilter=(update-report-action 'TOGGLE_PARAMETERIZED_METRIC_FILTER')
             }}
           {{/if}}
           {{#navi-icon
               'filter'
               class=(concat (if (get metricsFiltered metric.name) 'checkbox-selector__filter--active ') 'checkbox-selector__filter metric-selector__filter')
-              click=(action this.attrs.toggleMetricFilter metric)
+              click=(action this.attrs.onToggleMetricFilter metric)
           }}
             {{#tooltip-on-component enableLazyRendering=true side='right'}}
                 {{#if (has-parameters metric)}}

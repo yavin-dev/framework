@@ -49,23 +49,24 @@ test('Passing selection', function(assert) {
   );
 });
 
-test('Action - formToggled', function(assert) {
+test('Action - onFormToggled', function(assert) {
   assert.expect(2);
 
+  this.set('formToggled', isFormOpen => {
+    assert.ok(isFormOpen, 'Clicking pick-value calls formToggled action with form open');
+  });
+
   this.render(hbs`
-        {{#pick-container isFormOpen=false formToggled='formToggled'}}
+        {{#pick-container isFormOpen=false onFormToggled=(action formToggled)}}
             {{#pick-value}}
                 <div id='click-me'></div>
             {{/pick-value}}
         {{/pick-container}}
     `);
 
-  this.on('formToggled', isFormOpen => {
-    assert.ok(isFormOpen, 'Clicking pick-value calls formToggled action with form open');
-  });
   this.$('#click-me').click();
 
-  this.on('formToggled', isFormOpen => {
+  this.set('formToggled', isFormOpen => {
     assert.notOk(isFormOpen, 'Clicking pick-value again calls formToggled action with form closed');
   });
   this.$('#click-me').click();
@@ -78,21 +79,26 @@ test('Action - applyChanges', function(assert) {
 
   this.set('testSelection', originalSelection);
 
-  this.render(hbs`
-        {{#pick-container selection=testSelection isFormOpen=true updateSelection='updateSelection' as |selection container|}}
-            {{#pick-form}}
-                <div id='click-me' {{action 'applyChanges' 2 target=container}}></div>
-            {{/pick-form}}
-        {{/pick-container}}
-    `);
-
-  this.on('updateSelection', selection => {
+  this.set('handleUpdateSelection', selection => {
     assert.equal(
       selection,
       2,
-      'Calling applyChanges action results in container sending updateSelection action with new selection'
+      'Calling applyChanges action results in container calling onUpdateSelection handler with new selection'
     );
   });
+
+  this.render(hbs`
+      {{#pick-container 
+          selection=testSelection 
+          isFormOpen=true 
+          onUpdateSelection=handleUpdateSelection 
+          as |selection container|
+      }}
+          {{#pick-form}}
+              <div id='click-me' {{action 'applyChanges' 2 target=container}}></div>
+          {{/pick-form}}
+      {{/pick-container}}
+  `);
 
   this.$('#click-me').click();
 
@@ -102,8 +108,16 @@ test('Action - applyChanges', function(assert) {
 test('Action - stageChanges', function(assert) {
   assert.expect(2);
 
+  this.set('handleUpdateSelection', selection => {
+    assert.equal(selection, 4, 'applyChanges is called once with most recent change');
+  });
+
   this.render(hbs`
-        {{#pick-container isFormOpen=true updateSelection='updateSelection' as |selection container|}}
+        {{#pick-container 
+            isFormOpen=true 
+            onUpdateSelection=handleUpdateSelection 
+            as |selection container|
+        }}
             <div id='current-selection'>{{selection}}</div>
             {{#pick-form}}
                 <div id='1' {{action 'stageChanges' 1 target=container}}></div>
@@ -114,10 +128,6 @@ test('Action - stageChanges', function(assert) {
             {{/pick-form}}
         {{/pick-container}}
     `);
-
-  this.on('updateSelection', selection => {
-    assert.equal(selection, 4, 'applyChanges is called once with most recent change');
-  });
 
   this.$('#1').click();
   this.$('#2').click();
@@ -135,8 +145,17 @@ test('Action - discardChanges', function(assert) {
   let originalSelection = 0;
   this.set('testSelection', originalSelection);
 
+  this.set('handleUpdateSelection', selection => {
+    assert.equal(selection, originalSelection, 'applyChanges ignores discarded changes');
+  });
+
   this.render(hbs`
-        {{#pick-container selection=testSelection isFormOpen=true updateSelection='updateSelection' as |selection container|}}
+        {{#pick-container 
+            selection=testSelection 
+            isFormOpen=true
+            onUpdateSelection=handleUpdateSelection
+            as |selection container|
+        }}
             <div id='current-selection'>{{selection}}</div>
             {{#pick-form}}
                 <div id='1' {{action 'stageChanges' 1 target=container}}></div>
@@ -146,10 +165,6 @@ test('Action - discardChanges', function(assert) {
             {{/pick-form}}
         {{/pick-container}}
     `);
-
-  this.on('updateSelection', selection => {
-    assert.equal(selection, originalSelection, 'applyChanges ignores discarded changes');
-  });
 
   this.$('#1').click();
   this.$('#2').click();

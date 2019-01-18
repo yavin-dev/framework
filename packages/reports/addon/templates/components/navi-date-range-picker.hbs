@@ -47,13 +47,13 @@
                         {{navi-date-picker
                             date=dateMoments.start
                             dateTimePeriod=dateTimePeriod
-                            onUpdate='setStart'
+                            onUpdate=(action 'setStart')
                             targetObject=container
                         }}
                         {{navi-date-picker
                             date=dateMoments.end
                             dateTimePeriod=dateTimePeriod
-                            onUpdate='setEnd'
+                            onUpdate=(action 'setEnd')
                             targetObject=container
                         }}
                         {{#unless showAdvancedCalendar}}

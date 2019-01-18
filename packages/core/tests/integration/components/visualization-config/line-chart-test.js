@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
+import { get } from '@ember/object';
 
 let Template = hbs`
   {{visualization-config/line-chart
@@ -28,7 +29,9 @@ moduleForComponent('visualization-config/line-chart', 'Integration | Component |
       Ember.Component.extend({
         classNames: ['mock'],
         click() {
-          this.sendAction('onUpdateConfig', chartOptions);
+          const handleUpdateConfig = get(this, 'onUpdateConfig');
+
+          if (handleUpdateConfig) handleUpdateConfig(chartOptions);
         }
       }),
       { instantiate: false }

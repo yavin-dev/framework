@@ -30,7 +30,6 @@ export default PickContainer.extend({
       let selection = this.getStagedSelection() || {};
 
       Ember.set(selection, key, value);
-
       this.send('stageChanges', selection);
     }
   }

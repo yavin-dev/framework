@@ -40,10 +40,10 @@ moduleForComponent('dimension-selector', 'Integration | Component | dimension se
 
       this.render(hbs`{{dimension-selector
             request=request
-            addTimeGrain=(action addTimeGrain)
-            removeTimeGrain=(action removeTimeGrain)
-            addDimension=(action addDimension)
-            removeDimension=(action removeDimension)
+            onAddTimeGrain=(action addTimeGrain)
+            onRemoveTimeGrain=(action removeTimeGrain)
+            onAddDimension=(action addDimension)
+            onRemoveDimension=(action removeDimension)
             toggleDimFilter=(action addDimFilter)
           }}`);
     });

@@ -60,10 +60,12 @@ export default Ember.Component.extend({
      * @param {Array} selectedMetrics
      */
     onUpdateMetrics(selectedMetrics) {
-      let metrics = Ember.A(selectedMetrics).mapBy('name'),
-        newConfig = copy(get(this, 'seriesConfig'));
+      const metrics = Ember.A(selectedMetrics).mapBy('name');
+      const newConfig = copy(get(this, 'seriesConfig'));
+      const handleUpdateConfig = get(this, 'onUpdateConfig');
+
       set(newConfig, 'metrics', metrics);
-      this.sendAction('onUpdateConfig', newConfig);
+      if (handleUpdateConfig) handleUpdateConfig(newConfig);
     },
 
     /**
@@ -71,12 +73,13 @@ export default Ember.Component.extend({
      * @param {Object} metric
      */
     onRemoveSeries(metric) {
-      let selectedMetrics = Ember.A(get(this, 'selectedMetrics')),
-        updatedMetrics = Ember.A(selectedMetrics.mapBy('name')).removeObject(metric.name),
-        newConfig = copy(get(this, 'seriesConfig'));
+      const selectedMetrics = Ember.A(get(this, 'selectedMetrics'));
+      const updatedMetrics = Ember.A(selectedMetrics.mapBy('name')).removeObject(metric.name);
+      const newConfig = copy(get(this, 'seriesConfig'));
+      const handleUpdateConfig = get(this, 'onUpdateConfig');
 
       set(newConfig, 'metrics', updatedMetrics);
-      this.sendAction('onUpdateConfig', newConfig);
+      if (handleUpdateConfig) handleUpdateConfig(newConfig);
     }
   }
 });

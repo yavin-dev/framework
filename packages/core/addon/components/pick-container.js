@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
- *   {{#pick-container selection=selectedValue as |selection container|}}
+ *   {{#pick-container selection=selectedValue as |selection actions|}}
  *      {{#pick-value}}
  *      {{/pick-value}}
  *      {{#pick-form}}
@@ -12,6 +12,8 @@
  */
 import Ember from 'ember';
 import Layout from '../templates/components/pick-container';
+
+const { get, computed } = Ember;
 
 export default Ember.Component.extend({
   layout: Layout,
@@ -55,7 +57,7 @@ export default Ember.Component.extend({
    *                                      component's auto-generated id
    * @private
    */
-  _clickEventName: Ember.computed('elementId', function() {
+  _clickEventName: computed('elementId', function() {
     return 'click.' + this.get('elementId');
   }),
 
@@ -151,14 +153,15 @@ export default Ember.Component.extend({
 
   /**
    * @method toggleForm - toggles pick-form between open and closed states
-   * Sends `formToggled` action with state to parents
+   * Calls onFormToggled handler.
    */
   toggleForm() {
     this.toggleProperty('isFormOpen');
     this._updateFormVisibility();
+    const handleFormToggled = get(this, 'onFormToggled');
 
     // Notify parents that the form has been toggled
-    this.sendAction('formToggled', this.get('isFormOpen'));
+    if (handleFormToggled) handleFormToggled(get(this, 'isFormOpen'));
   },
 
   /**
@@ -198,17 +201,16 @@ export default Ember.Component.extend({
     },
 
     /**
-     * @action applyChanges - send an action outside the component with any selection changes
+     * @action applyChanges - Calls `onUpdateSelection` handler.
      * @param {Object} newSelection - if provided, this will become the selection value,
      *                                otherwise, the current internal selection will be used
      */
     applyChanges(newSelection) {
-      let selection = newSelection || this.get('_editableSelection');
-      this.sendAction('updateSelection', selection);
+      const selection = newSelection || get(this, '_editableSelection');
+      const handleUpdateSelection = get(this, 'onUpdateSelection');
 
-      if (this.get('autoClose')) {
-        this.toggleForm();
-      }
+      if (handleUpdateSelection) handleUpdateSelection(selection);
+      if (get(this, 'autoClose')) this.toggleForm();
     },
 
     /**

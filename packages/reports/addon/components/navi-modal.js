@@ -14,6 +14,7 @@
 
 import Ember from 'ember';
 import layout from '../templates/components/navi-modal';
+import { get } from '@ember/object';
 
 const { set } = Ember;
 
@@ -31,8 +32,10 @@ export default Ember.Component.extend({
      */
     closeModal() {
       set(this, 'isShown', false);
-      if (this.get('onClose')) {
-        this.sendAction('onClose');
+      const handleClose = get('onClose');
+
+      if (this.get('onClose') && handleClose) {
+        handleClose();
       }
     }
   }

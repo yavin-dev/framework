@@ -84,11 +84,11 @@ test('Change date action', function(assert) {
     newDate = moment('2015-07-18', TEST_FORMAT);
 
   this.set('date', originalDate);
-  this.on('onUpdate', date => assert.ok(date.isSame(newDate), 'onUpdate action was called with new date'));
+  this.set('onUpdate', date => assert.ok(date.isSame(newDate), 'onUpdate action was called with new date'));
   this.render(hbs`
         {{navi-date-picker
             date=date
-            onUpdate="onUpdate"
+            onUpdate=(action "onUpdate")
         }}
     `);
 
@@ -118,14 +118,14 @@ test('Change date action always gives start of time period', async function(asse
   let originalDate = moment('2015-07-14', TEST_FORMAT);
 
   this.set('date', originalDate);
-  this.on('onUpdate', date =>
+  this.set('onUpdate', date =>
     assert.ok(date.isSame(originalDate.startOf('isoweek')), 'onUpdate action was called with start of week')
   );
   this.render(hbs`
         {{navi-date-picker
             date=date
             dateTimePeriod="week"
-            onUpdate="onUpdate"
+            onUpdate=(action "onUpdate")
         }}
     `);
   // Click in the middle of the week

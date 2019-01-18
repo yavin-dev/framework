@@ -5,10 +5,10 @@
  * Usage:
  *   {{metric-config
  *      metric=metric
- *      request=request
- *      addParameterizedMetric=(action 'addParameterizedMetric')
- *      removeParameterizedMetric=(action 'removeParameterizedMetric')
- *      toggleParameterizedMetricFilter=(action 'toggleParameterizedMetricFilter')
+ *      onRequest=request
+ *      onAddParameterizedMetric=(action 'addParameterizedMetric')
+ *      onRemoveParameterizedMetric=(action 'removeParameterizedMetric')
+ *      onToggleParameterizedMetricFilter=(action 'toggleParameterizedMetricFilter')
  *   }}
  */
 import Component from '@ember/component';
@@ -168,10 +168,10 @@ export default Component.extend({
      * @param {Object} param
      */
     paramToggled(metric, param) {
-      let action = get(this, 'parametersChecked')[`${get(param, 'param')}|${get(param, 'id')}`] ? 'remove' : 'add';
-      this.sendAction(`${action}ParameterizedMetric`, metric, {
-        [get(param, 'param')]: get(param, 'id')
-      });
+      const action = get(this, 'parametersChecked')[`${get(param, 'param')}|${get(param, 'id')}`] ? 'Remove' : 'Add';
+      const handler = get(this, `on${action}ParameterizedMetric`);
+
+      if (handler) handler(metric, { [get(param, 'param')]: get(param, 'id') });
     },
 
     /*
@@ -180,9 +180,9 @@ export default Component.extend({
      * @param {Object} param
      */
     paramFilterToggled(metric, param) {
-      this.sendAction('toggleParameterizedMetricFilter', metric, {
-        [get(param, 'param')]: get(param, 'id')
-      });
+      const handler = get(this, 'onToggleParameterizedMetricFilter');
+
+      if (handler) handler(metric, { [get(param, 'param')]: get(param, 'id') });
     }
   }
 });
