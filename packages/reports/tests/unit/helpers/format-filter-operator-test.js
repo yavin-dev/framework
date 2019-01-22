@@ -28,12 +28,12 @@ test('Invalid and No operator', function(assert) {
 test('Valid operator', function(assert) {
   assert.expect(4);
 
-  assert.equal(formatFilterOperator(['in']), 'Includes', 'Helper returns `Includes` as expected when operator is `in`');
+  assert.equal(formatFilterOperator(['in']), 'Equals', 'Helper returns `Equals` as expected when operator is `in`');
 
   assert.equal(
     formatFilterOperator(['notin']),
-    'Excludes',
-    'Helper returns `Excludes` as expected when operator is `notin`'
+    'Not Equals',
+    'Helper returns `Not Equals` as expected when operator is `notin`'
   );
 
   assert.equal(

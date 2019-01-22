@@ -32,8 +32,8 @@ export default Base.extend({
     }
 
     return [
-      { id: 'in', longName: 'Includes', valuesComponent: inputComponent },
-      { id: 'notin', longName: 'Excludes', valuesComponent: inputComponent },
+      { id: 'in', longName: 'Equals', valuesComponent: inputComponent },
+      { id: 'notin', longName: 'Not Equals', valuesComponent: inputComponent },
       {
         id: 'null',
         longName: 'Is Empty',

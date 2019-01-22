@@ -40,7 +40,7 @@ test('displayName', function(assert) {
     },
     operator: {
       id: 'in',
-      longName: 'Includes',
+      longName: 'Equals',
       valuesComponent: 'mock/values-component'
     },
     values: [1, 2, 3]
@@ -66,7 +66,7 @@ test('displayName', function(assert) {
     },
     operator: {
       id: 'in',
-      longName: 'Includes',
+      longName: 'Equals',
       valuesComponent: 'mock/values-component'
     },
     values: [1, 2, 3]

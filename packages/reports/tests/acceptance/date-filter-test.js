@@ -21,7 +21,7 @@ test('date filter builder', function(assert) {
 
     andThen(function() {
       assert.ok(
-        find('.filter-builder__operator:contains(Includes)'),
+        find('.filter-builder__operator:contains(Equals)'),
         'The normal dimension filter builder is used for a dimension with non-date values'
       );
     });
