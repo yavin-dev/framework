@@ -1,9 +1,17 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
+ * `pick-container` no longer sends up onUpdteSelection or onFormToggled actions.  Instead they
+ * must be handled explicetly via passing handlers.
+ *
  * Usage:
- *   {{#pick-container selection=selectedValue as |selection actions|}}
+ *   {{#pick-container
+ *      selection=selectedValue
+ *      onUpdateSelection=(action handleUpdateSelection)
+ *      onFormToggled=(action handleFormToggled)
+ *      as |selection actions|
+ *   }}
  *      {{#pick-value}}
  *      {{/pick-value}}
  *      {{#pick-form}}
