@@ -10,6 +10,7 @@ const Router = EmberRouter.extend({
 Router.map(function() {
   this.route('directory', function() {
     this.route('my-data');
+    this.route('other-data');
   });
 
   this.route('dashboards', function() {

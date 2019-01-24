@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -13,6 +13,7 @@
 import Component from '@ember/component';
 import { computed, get } from '@ember/object';
 import layout from '../../templates/components/cell-renderers/dimension';
+import { isEmpty } from '@ember/utils';
 
 export default Component.extend({
   layout,
@@ -37,18 +38,33 @@ export default Component.extend({
   }),
 
   /**
+   * @property {Object} dimensionField - field to find dimension field
+   */
+  dimensionField: computed('column.field.dimension', 'column.field.field', function() {
+    if (!get(this, 'column.field.field')) {
+      return null;
+    }
+
+    return `${get(this, 'column.field.dimension')}|${get(this, 'column.field.field')}`;
+  }),
+
+  /**
    * @property {String} title - value that should be used in hoverover title
    */
-  title: computed('descField', 'idField', 'data', function() {
+  title: computed('dimensionField', 'descField', 'idField', 'data', function() {
+    if (get(this, 'dimensionField')) {
+      return '';
+    }
+
     let descField = get(this, 'descField'),
       idField = get(this, 'idField'),
       data = get(this, 'data');
 
-    if (data[idField] && data[descField]) {
+    if (!isEmpty(data[idField]) && !isEmpty(data[descField])) {
       return `${data[descField]} (${data[idField]})`;
-    } else if (data[idField]) {
+    } else if (!isEmpty(data[idField])) {
       return data[idField];
-    } else if (data[descField]) {
+    } else if (!isEmpty(data[descField])) {
       return data[descField];
     }
 
@@ -58,14 +74,19 @@ export default Component.extend({
   /**
    * @property {String} value - value that should be displayed in table cell
    */
-  value: computed('descField', 'idField', 'data', function() {
-    let descField = get(this, 'descField'),
+  value: computed('dimensionField', 'descField', 'idField', 'data', function() {
+    let dimensionField = get(this, 'dimensionField'),
+      descField = get(this, 'descField'),
       idField = get(this, 'idField'),
       data = get(this, 'data');
 
-    if (data[descField]) {
+    if (dimensionField) {
+      if (!isEmpty(data[dimensionField])) {
+        return data[dimensionField];
+      }
+    } else if (!isEmpty(data[descField])) {
       return data[descField];
-    } else if (data[idField]) {
+    } else if (!isEmpty(data[idField])) {
       return data[idField];
     }
 
