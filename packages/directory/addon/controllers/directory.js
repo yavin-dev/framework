@@ -1,20 +1,20 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Controller from '@ember/controller';
-import { getProperties, set, computed } from '@ember/object';
+import { getProperties, get, set, computed } from '@ember/object';
 import dirInfo from '../utils/enums/directories';
 
 export default Controller.extend({
   /**
    * @property {Array} queryParams - array of allowed query params
    */
-  queryParams: ['filter', 'type', 'sortBy', 'q'],
+  queryParams: ['filter', 'type', 'sortBy', 'sortDir', 'q'],
 
   /**
    * @property {String} filter - query param for filter
-   * allowed filters - favorites, recentlyUpdated
+   * allowed filters - favorites
    */
   filter: null,
 
@@ -30,6 +30,20 @@ export default Controller.extend({
   sortBy: 'title',
 
   /**
+   * @property {String} sortKey - sort key (computed by sortBy query param)
+   */
+  sortKey: computed('sortBy', function() {
+    let sortBy = get(this, 'sortBy');
+
+    return sortBy === 'author' ? 'author.id' : sortBy;
+  }),
+
+  /**
+   * @property {String} sortDir - query param for sort direction
+   */
+  sortDir: 'asc',
+
+  /**
    * @property {String} q - query param for the search query
    */
   q: '',
@@ -37,9 +51,9 @@ export default Controller.extend({
   /**
    * @property {String} title - Title for the table
    */
-  title: computed('filter', 'sortBy', function() {
+  title: computed('filter', function() {
     let title = dirInfo[0].name,
-      queryParams = getProperties(this, ['filter', 'sortBy']),
+      queryParams = getProperties(this, ['filter']),
       match = dirInfo[0].filters.filter(filter => JSON.stringify(filter.queryParam) === JSON.stringify(queryParams));
 
     if (match.length === 1) {

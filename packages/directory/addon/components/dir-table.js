@@ -1,11 +1,15 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
  * {{dir-table
  *   items=items
- *   isSearching=isSearching
+ *   isLoading=isLoading
+ *   searchQuery=searchQuery
+ *   sortBy=sortBy
+ *   sortDir=sortDir
+ *   onColumnClick=(action 'onColumnClick')
  * }}
  */
 import Component from '@ember/component';
@@ -50,7 +54,7 @@ export default Component.extend({
       {
         label: 'NAME',
         valuePath: 'model',
-        sortable: false,
+        sortByKey: 'title',
         hideable: false,
         draggable: false,
         classNames: 'dir-table__header-cell dir-table__header-cell--name',
@@ -70,7 +74,7 @@ export default Component.extend({
       {
         label: 'AUTHOR',
         valuePath: 'model.author.id',
-        sortable: false,
+        sortByKey: 'author',
         hideable: false,
         draggable: false,
         width: '165px',
@@ -81,7 +85,7 @@ export default Component.extend({
       {
         label: 'LAST UPDATED DATE',
         valuePath: 'lastUpdatedDate',
-        sortable: false,
+        sortByKey: 'updatedOn',
         hideable: false,
         draggable: false,
         width: '200px',
@@ -96,10 +100,36 @@ export default Component.extend({
    * @property {Object} table - Used by ember-light-table to create the table
    */
   table: computed('model', function() {
-    return new Table(this.get('columns'), this.get('model'), {
+    let table = new Table(this.get('columns'), this.get('model'), {
       rowOptions: {
         classNames: 'dir-table__row'
       }
     });
-  })
+
+    let sortColumn = table.get('allColumns').findBy('sortByKey', this.get('sortBy'));
+
+    if (sortColumn) {
+      sortColumn.setProperties({
+        sorted: true,
+        ascending: this.get('sortDir') !== 'desc'
+      });
+    }
+
+    return table;
+  }),
+
+  actions: {
+    /**
+     * @action onColumnClick
+     * @param {Object} column
+     */
+    onColumnClick(column) {
+      if (column.sorted) {
+        let sortBy = get(column, 'sortByKey'),
+          sortDir = get(column, 'ascending') ? 'asc' : 'desc';
+
+        this.get('onColumnClick')({ sortBy, sortDir });
+      }
+    }
+  }
 });

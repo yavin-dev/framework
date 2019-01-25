@@ -1,7 +1,7 @@
-{{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <section class='dir-sidebar__groups'>
   {{#each directories as | directory |}}
-    {{#link-to directory.routeLink (query-params filter=null sortBy='title')
+    {{#link-to directory.routeLink (query-params filter=null)
       classNames='dir-sidebar__group'
       click=(pipe (action (mut selectedDirectory) directory) (action (mut selectedFilter) (object-at 0 directory.filters)))
     }}
@@ -14,7 +14,7 @@
 </section>
 <section class='dir-sidebar__filters'>
   {{#each filters as | filter |}}
-    {{#link-to 'directory.my-data' (query-params filter=filter.queryParams.filter sortBy=filter.queryParams.sortBy)
+    {{#link-to 'directory.my-data' (query-params filter=filter.queryParams.filter)
       classNames='dir-sidebar__filter'
     }}
       <div>

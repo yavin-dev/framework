@@ -77,6 +77,105 @@ module('Integration | Component | dir table', function(hooks) {
     );
   });
 
+  test('table is sorted correctly', async function(assert) {
+    assert.expect(2);
+
+    set(this, 'items', []);
+    set(this, 'searchQuery', '');
+    set(this, 'sortBy', 'updatedOn');
+    set(this, 'sortDir', 'desc');
+
+    await render(hbs`{{dir-table
+      items=items
+      searchQuery=searchQuery
+      sortBy=sortBy
+      sortDir=sortDir
+    }}`);
+
+    let th = [...this.element.querySelectorAll('th')];
+
+    assert.deepEqual(
+      th.map(elm => elm.className.includes('is-sortable')),
+      [true, false, true, true],
+      'Only title, author and last update columns are sortable'
+    );
+
+    assert.deepEqual(
+      th.map(elm => {
+        let i = elm.querySelector('i');
+        return i ? i.className.includes('desc') : false;
+      }),
+      [false, false, false, true],
+      'Last update column is sorted'
+    );
+  });
+
+  test('onColumnClick action is called on column click', async function(assert) {
+    assert.expect(3);
+
+    set(this, 'items', []);
+    set(this, 'searchQuery', '');
+    set(this, 'sortBy', 'author');
+    set(this, 'onColumnClick', sort => {
+      assert.deepEqual(
+        sort,
+        { sortBy: 'author', sortDir: 'desc' },
+        'onColumnClick is called with desc when clicking an ascending-sorted column'
+      );
+    });
+
+    await render(hbs`{{dir-table
+      items=items
+      searchQuery=searchQuery
+      sortBy=sortBy
+      onColumnClick=onColumnClick
+    }}`);
+
+    run(() => {
+      this.element.querySelector('th:nth-child(3)').click();
+    });
+
+    set(this, 'onColumnClick', sort => {
+      assert.deepEqual(
+        sort,
+        { sortBy: 'updatedOn', sortDir: 'asc' },
+        'onColumnClick is called with asc when clicking an unsorted column'
+      );
+    });
+
+    await render(hbs`{{dir-table
+      items=items
+      searchQuery=searchQuery
+      sortBy=sortBy
+      onColumnClick=onColumnClick
+    }}`);
+
+    run(() => {
+      this.element.querySelector('th:nth-child(4)').click();
+    });
+
+    set(this, 'sortDir', 'desc');
+    set(this, 'onColumnClick', sort => {
+      assert.deepEqual(
+        sort,
+        { sortBy: 'author', sortDir: 'asc' },
+        'onColumnClick is called with asc when clicking a descending-sorted column'
+      );
+    });
+
+    await render(hbs`{{dir-table
+      items=items
+      searchQuery=searchQuery
+      sortBy=sortBy
+      sortDir=sortDir
+      onColumnClick=onColumnClick
+    }}`);
+
+    run(() => {
+      this.element.querySelector('th:nth-child(3)').click();
+    });
+  });
+
   test('search results messaging', async function(assert) {
     assert.expect(2);
 
