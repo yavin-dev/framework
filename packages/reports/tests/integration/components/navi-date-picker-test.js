@@ -88,7 +88,7 @@ test('Change date action', function(assert) {
   this.render(hbs`
         {{navi-date-picker
             date=date
-            onUpdate=(action "onUpdate")
+            onUpdate=(action onUpdate)
         }}
     `);
 
@@ -125,7 +125,7 @@ test('Change date action always gives start of time period', async function(asse
         {{navi-date-picker
             date=date
             dateTimePeriod="week"
-            onUpdate=(action "onUpdate")
+            onUpdate=(action onUpdate)
         }}
     `);
   // Click in the middle of the week

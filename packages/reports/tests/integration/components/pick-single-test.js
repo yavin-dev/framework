@@ -13,7 +13,7 @@ moduleForComponent('pick-single', 'Integration | Component | Pick Single', {
                 classNames='pick-single'
                 selection=selection
                 options=options
-                onUpdateSelection=(action 'updateSelection')
+                onUpdateSelection=(action updateSelection)
                 displayField=displayField
                 label=label
             }}`;

@@ -9,7 +9,7 @@
  *   {{#pick-range-container
  *      selection=range
  *      dateTimePeriod='week'
- *      updateSelection='updateRange'
+ *      onUpdateSelection=(action 'updateSelection')
  *      as |selection container datesAsMoments datesAsStrings|
  *   }}
  *      {{#pick-form}}

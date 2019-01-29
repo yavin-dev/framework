@@ -44,7 +44,7 @@ moduleForComponent('dimension-selector', 'Integration | Component | dimension se
             onRemoveTimeGrain=(action removeTimeGrain)
             onAddDimension=(action addDimension)
             onRemoveDimension=(action removeDimension)
-            toggleDimFilter=(action addDimFilter)
+            onToggleDimFilter=(action addDimFilter)
           }}`);
     });
   },
