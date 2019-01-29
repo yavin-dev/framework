@@ -21,5 +21,13 @@ export default [
     createdOn: '2017-01-01 00:00:00',
     updatedOn: '2017-01-01 00:00:00',
     reportIds: [2, 4]
+  },
+  {
+    id: 3,
+    title: 'Report Collection 3',
+    authorId: 'navi_user',
+    createdOn: '2019-01-01 00:00:00',
+    updatedOn: '2019-01-01 00:00:00',
+    reportIds: [1]
   }
 ];
