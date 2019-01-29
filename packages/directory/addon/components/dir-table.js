@@ -125,10 +125,14 @@ export default Component.extend({
      */
     onColumnClick(column) {
       if (column.sorted) {
+        let onColumnClick = this.get('onColumnClick');
+
+        if (typeof onColumnClick !== 'function') return;
+
         let sortBy = get(column, 'sortByKey'),
           sortDir = get(column, 'ascending') ? 'asc' : 'desc';
 
-        this.get('onColumnClick')({ sortBy, sortDir });
+        onColumnClick({ sortBy, sortDir });
       }
     }
   }
