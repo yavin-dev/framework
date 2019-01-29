@@ -60,11 +60,11 @@ module('Acceptance | dir table', function(hooks) {
 
     await visit('/directory/my-data?filter=favorites');
 
-    await click(findAll('th')[3]);
+    await click(findAll('th')[2]);
 
     assert.equal(
       currentURL(),
-      '/directory/my-data?filter=favorites&sortBy=updatedOn',
+      '/directory/my-data?filter=favorites&sortBy=author',
       'The sortBy is set as a query param'
     );
   });

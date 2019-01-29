@@ -111,10 +111,13 @@ module('Integration | Component | dir table', function(hooks) {
   });
 
   test('onColumnClick action is called on column click', async function(assert) {
-    assert.expect(3);
+    assert.expect(4);
 
     set(this, 'items', []);
     set(this, 'searchQuery', '');
+
+    // sorting an ascending column
+
     set(this, 'sortBy', 'author');
     set(this, 'onColumnClick', sort => {
       assert.deepEqual(
@@ -135,24 +138,7 @@ module('Integration | Component | dir table', function(hooks) {
       this.element.querySelector('th:nth-child(3)').click();
     });
 
-    set(this, 'onColumnClick', sort => {
-      assert.deepEqual(
-        sort,
-        { sortBy: 'updatedOn', sortDir: 'asc' },
-        'onColumnClick is called with asc when clicking an unsorted column'
-      );
-    });
-
-    await render(hbs`{{dir-table
-      items=items
-      searchQuery=searchQuery
-      sortBy=sortBy
-      onColumnClick=onColumnClick
-    }}`);
-
-    run(() => {
-      this.element.querySelector('th:nth-child(4)').click();
-    });
+    // sorting a descending column
 
     set(this, 'sortDir', 'desc');
     set(this, 'onColumnClick', sort => {
@@ -173,6 +159,49 @@ module('Integration | Component | dir table', function(hooks) {
 
     run(() => {
       this.element.querySelector('th:nth-child(3)').click();
+    });
+
+    // sorting an unsorted column with sortDescFirst=undefined
+
+    set(this, 'sortBy', 'title');
+    set(this, 'onColumnClick', sort => {
+      assert.deepEqual(
+        sort,
+        { sortBy: 'author', sortDir: 'asc' },
+        'onColumnClick is called with asc when clicking an unsorted column with sortDescFirst=undefined'
+      );
+    });
+
+    await render(hbs`{{dir-table
+      items=items
+      searchQuery=searchQuery
+      sortBy=sortBy
+      onColumnClick=onColumnClick
+    }}`);
+
+    run(() => {
+      this.element.querySelector('th:nth-child(3)').click();
+    });
+
+    // sorting an unsorted column with sortDescFirst=true
+
+    set(this, 'onColumnClick', sort => {
+      assert.deepEqual(
+        sort,
+        { sortBy: 'updatedOn', sortDir: 'desc' },
+        'onColumnClick is called with desc when clicking an unsorted column with sortDescFirst=true'
+      );
+    });
+
+    await render(hbs`{{dir-table
+      items=items
+      searchQuery=searchQuery
+      sortBy=sortBy
+      onColumnClick=onColumnClick
+    }}`);
+
+    run(() => {
+      this.element.querySelector('th:nth-child(4)').click();
     });
   });
 

@@ -86,6 +86,7 @@ export default Component.extend({
         label: 'LAST UPDATED DATE',
         valuePath: 'lastUpdatedDate',
         sortByKey: 'updatedOn',
+        sortDescFirst: true,
         hideable: false,
         draggable: false,
         width: '200px',
@@ -100,23 +101,40 @@ export default Component.extend({
    * @property {Object} table - Used by ember-light-table to create the table
    */
   table: computed('model', function() {
-    let table = new Table(this.get('columns'), this.get('model'), {
+    let table = new Table(get(this, 'columns'), get(this, 'model'), {
       rowOptions: {
         classNames: 'dir-table__row'
       }
     });
 
-    let sortColumn = table.get('allColumns').findBy('sortByKey', this.get('sortBy'));
+    let sortColumn = table.get('allColumns').findBy('sortByKey', get(this, 'sortBy'));
 
     if (sortColumn) {
       sortColumn.setProperties({
         sorted: true,
-        ascending: this.get('sortDir') !== 'desc'
+        ascending: get(this, 'sortDir') !== 'desc'
       });
     }
 
     return table;
   }),
+
+  _getNextSort(column) {
+    let sortBy = get(this, 'sortBy'),
+      nextSortBy = get(column, 'sortByKey'),
+      nextSortDir;
+
+    if (sortBy === nextSortBy) {
+      nextSortDir = get(column, 'ascending') ? 'asc' : 'desc';
+    } else {
+      nextSortDir = get(column, 'sortDescFirst') ? 'desc' : 'asc';
+    }
+
+    return {
+      sortBy: nextSortBy,
+      sortDir: nextSortDir
+    };
+  },
 
   actions: {
     /**
@@ -125,14 +143,13 @@ export default Component.extend({
      */
     onColumnClick(column) {
       if (column.sorted) {
-        let onColumnClick = this.get('onColumnClick');
+        let onColumnClick = get(this, 'onColumnClick');
 
-        if (typeof onColumnClick !== 'function') return;
+        if (typeof onColumnClick !== 'function') {
+          return;
+        }
 
-        let sortBy = get(column, 'sortByKey'),
-          sortDir = get(column, 'ascending') ? 'asc' : 'desc';
-
-        onColumnClick({ sortBy, sortDir });
+        onColumnClick(this._getNextSort(column));
       }
     }
   }
