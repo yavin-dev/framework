@@ -1,6 +1,7 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import Ember from 'ember';
+import { set } from '@ember/object';
 
 moduleForComponent('pick-container', 'Integration | Component | pick container', {
   integration: true
@@ -75,24 +76,24 @@ test('Action - applyChanges', function(assert) {
   assert.expect(2);
 
   let originalSelection = 1;
-
-  this.set('testSelection', originalSelection);
+  set(this, 'container.actions', {
+    applyChanges: selection => {
+      assert.equal(
+        selection,
+        2,
+        'Calling applyChanges action results in container sending updateSelection action with new selection'
+      );
+    }
+  });
+  set(this, 'testSelection', originalSelection);
 
   this.render(hbs`
-        {{#pick-container selection=testSelection isFormOpen=true updateSelection='updateSelection' as |selection container|}}
+        {{#pick-container selection=testSelection isFormOpen=true updateSelection=(action 'applyChanges' target=container) as |selection container|}}
             {{#pick-form}}
                 <div id='click-me' {{action 'applyChanges' 2 target=container}}></div>
             {{/pick-form}}
         {{/pick-container}}
     `);
-
-  this.on('updateSelection', selection => {
-    assert.equal(
-      selection,
-      2,
-      'Calling applyChanges action results in container sending updateSelection action with new selection'
-    );
-  });
 
   this.$('#click-me').click();
 
@@ -102,8 +103,13 @@ test('Action - applyChanges', function(assert) {
 test('Action - stageChanges', function(assert) {
   assert.expect(2);
 
+  set(this, 'container.actions', {
+    applyChanges: selection => {
+      assert.equal(selection, 4, 'applyChanges is called once with most recent change');
+    }
+  });
   this.render(hbs`
-        {{#pick-container isFormOpen=true updateSelection='updateSelection' as |selection container|}}
+        {{#pick-container selection=testSelection isFormOpen=true updateSelection=(action 'applyChanges' target=container) as |selection container|}}
             <div id='current-selection'>{{selection}}</div>
             {{#pick-form}}
                 <div id='1' {{action 'stageChanges' 1 target=container}}></div>
@@ -114,10 +120,6 @@ test('Action - stageChanges', function(assert) {
             {{/pick-form}}
         {{/pick-container}}
     `);
-
-  this.on('updateSelection', selection => {
-    assert.equal(selection, 4, 'applyChanges is called once with most recent change');
-  });
 
   this.$('#1').click();
   this.$('#2').click();
@@ -133,10 +135,15 @@ test('Action - discardChanges', function(assert) {
   assert.expect(2);
 
   let originalSelection = 0;
-  this.set('testSelection', originalSelection);
+  set(this, 'testSelection', originalSelection);
+  set(this, 'container.actions', {
+    applyChanges: selection => {
+      assert.equal(selection, originalSelection, 'applyChanges ignores discarded changes');
+    }
+  });
 
   this.render(hbs`
-        {{#pick-container selection=testSelection isFormOpen=true updateSelection='updateSelection' as |selection container|}}
+        {{#pick-container selection=testSelection isFormOpen=true updateSelection=(action 'applyChanges' target=container) as |selection container|}}
             <div id='current-selection'>{{selection}}</div>
             {{#pick-form}}
                 <div id='1' {{action 'stageChanges' 1 target=container}}></div>
@@ -146,10 +153,6 @@ test('Action - discardChanges', function(assert) {
             {{/pick-form}}
         {{/pick-container}}
     `);
-
-  this.on('updateSelection', selection => {
-    assert.equal(selection, originalSelection, 'applyChanges ignores discarded changes');
-  });
 
   this.$('#1').click();
   this.$('#2').click();

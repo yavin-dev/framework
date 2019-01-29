@@ -33,8 +33,7 @@
                 tagName='li'
                 selection=(readonly customRange)
                 dateTimePeriod=dateTimePeriod
-                updateSelection='applyChanges'
-                targetObject=container
+                updateSelection=(action 'applyChanges' target=container)
                 as |selection container dateMoments dateStrings|}}
 
                     {{#pick-value}}
