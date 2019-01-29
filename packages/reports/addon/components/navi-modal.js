@@ -32,7 +32,7 @@ export default Ember.Component.extend({
      */
     closeModal() {
       set(this, 'isShown', false);
-      const handleClose = get('onClose');
+      const handleClose = get(this, 'onClose');
 
       if (this.get('onClose') && handleClose) {
         handleClose();

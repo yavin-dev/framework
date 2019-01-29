@@ -106,7 +106,7 @@ export default Ember.Component.extend({
       if (handler) handler(metric);
 
       //On add, trigger metric-config mousedown event when metric has parameters
-      if (action === 'add' && get(metric, 'hasParameters')) {
+      if (action === 'Add' && get(metric, 'hasParameters')) {
         this._openConfig(metric);
       }
     }
