@@ -1,16 +1,16 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import Ember from 'ember';
+import { get, set, computed } from '@ember/object';
+import { A as arr } from '@ember/array';
 import DS from 'ember-data';
 import VisualizationBase from './visualization';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 import { validator, buildValidations } from 'ember-cp-validations';
 import { metricFormat } from 'navi-data/helpers/metric-format';
+import { canonicalizeDimension, formatDimensionName } from 'navi-data/utils/dimension';
 import keyBy from 'lodash/keyBy';
-
-const { A: arr, computed, get, set } = Ember;
 
 /**
  * @constant {Object} Validations - Validation object
@@ -78,21 +78,52 @@ export default VisualizationBase.extend(Validations, {
 });
 
 /**
+ * returns default dimension fields (show clause)
+ * @param {Object} dimension - dimension from request
+ * @returns {Object} - list of field names
+ */
+function getDefaultDimensionFields(dimension) {
+  return get(dimension, 'dimension')
+    .getFieldsForTag('show')
+    .map(field => field.name);
+}
+
+/**
+ * builds a single dimension column
+ * @param {Object} dimension
+ * @param {Object} columnIndex
+ * @param {String} field
+ * @returns {Object} - dimension column
+ */
+function buildDimensionColumn(dimension, columnIndex, field) {
+  let dimensionName = get(dimension, 'dimension.name'),
+    column = columnIndex[dimensionName],
+    defaultName = formatDimensionName({ dimension: get(dimension, 'dimension.longName'), field });
+
+  return {
+    type: 'dimension',
+    field: Object.assign({}, { dimension: get(dimension, 'dimension.name') }, field ? { field } : {}),
+    displayName: column ? column.displayName : defaultName
+  };
+}
+
+/**
  * builds dimension columns for new visualization builds
  * @param {Array} dimensions - dimensions from request
  * @param {Object} columnIndex - column lookup table indexed by dimension/metric name
  * @returns {Array} - list of dimensions columns
  */
 function buildDimensionColumns(dimensions, columnIndex) {
-  return dimensions.map(dimension => {
-    let column = columnIndex[get(dimension, 'dimension.name')];
+  let dimensionColumns = dimensions.map(dimension => {
+    let defaultFields = getDefaultDimensionFields(dimension);
 
-    return {
-      field: { dimension: get(dimension, 'dimension.name') },
-      type: 'dimension',
-      displayName: column ? column.displayName : get(dimension, 'dimension.longName')
-    };
+    return defaultFields.length
+      ? defaultFields.map(field => buildDimensionColumn(dimension, columnIndex, field))
+      : buildDimensionColumn(dimension, columnIndex);
   });
+
+  //flatten the array in case it's nested
+  return [].concat(...dimensionColumns);
 }
 
 /**
@@ -141,20 +172,30 @@ function columnTransform(newColumns, oldColumns) {
 }
 
 /**
- * Determines if the columns has all dimensions
- * and metrics from request
+ * Determines if the columns include all dimensions
+ * and metrics from the request
  *
- * @function hasSameValues
+ * @function hasAllColumns
  * @param {Object} request - request object
  * @param {Object} columns - config column array
  * @returns {Boolean} whether or not
  */
 function hasAllColumns(request, columns) {
   //retrieve everything but dateTime from metadata.columns
-  let columnFields = arr(arr(columns).rejectBy('type', 'dateTime')).map(
-      column => get(column, 'field.dimension') || canonicalizeMetric(get(column, 'field'))
+  let columnFields = arr(columns)
+      .rejectBy('type', 'dateTime')
+      .map(column =>
+        (get(column, 'type') === 'dimension' ? canonicalizeDimension : canonicalizeMetric)(get(column, 'field'))
+      ),
+    dimensions = [].concat(
+      ...get(request, 'dimensions').map(dimension => {
+        let dimensionName = get(dimension, 'dimension.name'),
+          defaultFields = getDefaultDimensionFields(dimension);
+        return !defaultFields.length
+          ? dimensionName
+          : defaultFields.map(field => canonicalizeDimension({ dimension: dimensionName, field }));
+      })
     ),
-    dimensions = arr(get(request, 'dimensions')).mapBy('dimension.name'),
     metrics = arr(get(request, 'metrics')).mapBy('canonicalName'),
     requestFields = [...dimensions, ...metrics];
 
@@ -167,6 +208,12 @@ export function indexColumnById(columns) {
       type = 'metric';
     }
 
-    return type === 'metric' ? canonicalizeMetric(field) : field[type];
+    if (type === 'metric') {
+      return canonicalizeMetric(field);
+    } else if (type === 'dimension' && field.field) {
+      return canonicalizeDimension(field);
+    } else {
+      return field[type];
+    }
   });
 }

@@ -18,7 +18,7 @@ moduleForModel('all-the-fragments', 'Unit | Model | Table Visualization Fragment
 test('default value', function(assert) {
   assert.expect(1);
 
-  let metricsAndDims = [['d1', 'd2'], [{ metric: 'm1' }, { metric: 'm2' }]],
+  let metricsAndDims = [[{ dimension: 'd1' }, { dimension: 'd2' }], [{ metric: 'm1' }, { metric: 'm2' }]],
     table = run(() => this.subject().get('table'));
 
   assert.ok(
@@ -28,14 +28,32 @@ test('default value', function(assert) {
 });
 
 test('valid and invalid table fragment', function(assert) {
-  assert.expect(4);
+  assert.expect(9);
 
-  let dimsMetricsAndThresholds = [['d1', 'd2'], [{ metric: 'm1' }, { metric: 'm2' }], [{ metric: 't1' }]],
+  let dimsMetricsAndThresholds = [
+      [
+        { dimension: 'd1' },
+        {
+          dimension: 'd2',
+          fields: ['id', 'desc']
+        }
+      ],
+      [{ metric: 'm1' }, { metric: 'm2' }],
+      [{ metric: 't1' }]
+    ],
     request = buildTestRequest(...dimsMetricsAndThresholds),
     model = this.subject();
 
   run(() => {
-    set(model, 'table', buildTestConfig(...dimsMetricsAndThresholds));
+    set(
+      model,
+      'table',
+      buildTestConfig(
+        [{ dimension: 'd1' }, { dimension: 'd2', field: 'id' }, { dimension: 'd2', field: 'desc' }],
+        [{ metric: 'm1' }, { metric: 'm2' }],
+        [{ metric: 't1' }]
+      )
+    );
   });
 
   assert.ok(
@@ -44,19 +62,119 @@ test('valid and invalid table fragment', function(assert) {
   );
 
   run(() => {
-    set(model, 'table', buildTestConfig(['d1', 'foo'], [{ metric: 'm1' }, { metric: 'm2' }]));
+    set(
+      model,
+      'table',
+      buildTestConfig(
+        [{ dimension: 'd1' }, { dimension: 'foo' }],
+        [{ metric: 'm1' }, { metric: 'm2' }],
+        [{ metric: 't1' }]
+      )
+    );
   });
 
   assert.ok(!model.get('table').isValidForRequest(request), 'a table fragment with mis-match dimensions is invalid');
 
   run(() => {
-    set(model, 'table', buildTestConfig(['d1', 'd2'], [{ metric: 'm1' }, { metric: 'foo' }]));
+    set(
+      model,
+      'table',
+      buildTestConfig(
+        [{ dimension: 'd2', field: 'id' }, { dimension: 'd2', field: 'desc' }],
+        [{ metric: 'm1' }, { metric: 'm2' }],
+        [{ metric: 't1' }]
+      )
+    );
+  });
+
+  assert.ok(!model.get('table').isValidForRequest(request), 'a table fragment with a missing dimension is invalid');
+
+  run(() => {
+    set(
+      model,
+      'table',
+      buildTestConfig(
+        [{ dimension: 'd1' }, { dimension: 'd2' }],
+        [{ metric: 'm1' }, { metric: 'm2' }],
+        [{ metric: 't1' }]
+      )
+    );
+  });
+
+  assert.ok(!model.get('table').isValidForRequest(request), 'a table fragment with no dimension fields is invalid');
+
+  run(() => {
+    set(
+      model,
+      'table',
+      buildTestConfig(
+        [{ dimension: 'd1' }, { dimension: 'd2', field: 'id' }],
+        [{ metric: 'm1' }, { metric: 'm2' }],
+        [{ metric: 't1' }]
+      )
+    );
+  });
+
+  assert.ok(
+    !model.get('table').isValidForRequest(request),
+    'a table fragment with missing dimension fields is invalid'
+  );
+
+  run(() => {
+    set(
+      model,
+      'table',
+      buildTestConfig(
+        [{ dimension: 'd1' }, { dimension: 'd2', field: 'id' }, { dimension: 'd2', field: 'foo' }],
+        [{ metric: 'm1' }, { metric: 'm2' }],
+        [{ metric: 't1' }]
+      )
+    );
+  });
+
+  assert.ok(
+    !model.get('table').isValidForRequest(request),
+    'a table fragment with mis-match dimension fields is invalid'
+  );
+
+  run(() => {
+    set(
+      model,
+      'table',
+      buildTestConfig(
+        [{ dimension: 'd1' }, { dimension: 'd2', field: 'id' }, { dimension: 'd2', field: 'desc' }],
+        [{ metric: 'm1' }],
+        [{ metric: 't1' }]
+      )
+    );
+  });
+
+  assert.ok(!model.get('table').isValidForRequest(request), 'a table fragment with missing metrics is invalid');
+
+  run(() => {
+    set(
+      model,
+      'table',
+      buildTestConfig(
+        [{ dimension: 'd1' }, { dimension: 'd2', field: 'id' }, { dimension: 'd2', field: 'foo' }],
+        [{ metric: 'm1' }, { metric: 'foo' }],
+        [{ metric: 't1' }]
+      )
+    );
   });
 
   assert.ok(!model.get('table').isValidForRequest(request), 'a table fragment with mis-match metrics is invalid');
 
   run(() => {
-    set(model, 'table', buildTestConfig(['d1', 'd2'], [{ metric: 'm1' }, { metric: 'm2' }, { metric: 'm3' }], ['t1']));
+    set(
+      model,
+      'table',
+      buildTestConfig(
+        [{ dimension: 'd1' }, { dimension: 'd2', field: 'id' }, { dimension: 'd2', field: 'foo' }],
+        [{ metric: 'm1' }, { metric: 'm2' }, { metric: 'm3' }],
+        [{ metric: 't1' }]
+      )
+    );
   });
 
   assert.ok(
@@ -69,7 +187,16 @@ test('rebuildConfig', function(assert) {
   assert.expect(4);
 
   let table = run(() => this.subject().get('table')),
-    request1 = buildTestRequest(['d1', 'd2'], [{ metric: 'm1' }, { metric: 'm2' }]),
+    request1 = buildTestRequest(
+      [
+        { dimension: 'd1' },
+        {
+          dimension: 'd2',
+          fields: ['id', 'desc']
+        }
+      ],
+      [{ metric: 'm1' }, { metric: 'm2' }]
+    ),
     config1 = run(() => table.rebuildConfig(request1).toJSON());
 
   assert.deepEqual(
@@ -85,7 +212,8 @@ test('rebuildConfig', function(assert) {
             type: 'dateTime'
           },
           { displayName: 'D1', field: { dimension: 'd1' }, type: 'dimension' },
-          { displayName: 'D2', field: { dimension: 'd2' }, type: 'dimension' },
+          { displayName: 'D2 (id)', field: { dimension: 'd2', field: 'id' }, type: 'dimension' },
+          { displayName: 'D2 (desc)', field: { dimension: 'd2', field: 'desc' }, type: 'dimension' },
           {
             displayName: 'M1',
             field: { metric: 'm1', parameters: {} },
@@ -307,27 +435,42 @@ test('rebuildConfig with parameterized metrics', function(assert) {
 test('index column by id', function(assert) {
   assert.expect(1);
 
-  let columnA = {
+  let dimensionColumn = {
+      type: 'dimension',
+      field: {
+        dimension: 'D1'
+      }
+    },
+    dimensionColumnWithField = {
+      type: 'dimension',
+      field: {
+        dimension: 'D2',
+        field: 'desc'
+      }
+    },
+    metricColumn = {
       type: 'metric',
       field: {
-        metric: 'A'
+        metric: 'M'
       }
     },
-    columnB = {
+    thresholdColumn = {
       type: 'threshold',
       field: {
-        metric: 'B'
+        metric: 'T'
       }
     },
-    rows = [columnA, columnB];
+    rows = [dimensionColumn, dimensionColumnWithField, metricColumn, thresholdColumn];
 
   assert.deepEqual(
     indexColumnById(rows),
     {
-      A: columnA,
-      B: columnB
+      D1: dimensionColumn,
+      'D2(desc)': dimensionColumnWithField,
+      M: metricColumn,
+      T: thresholdColumn
     },
-    'Should return object having metricId as key column as value'
+    'Should return object having canonical ids as keys, columns as values'
   );
 });
 
@@ -356,9 +499,10 @@ function buildTestConfig(dimensions = [], metrics = [], thresholds = []) {
         parameters = get(t, 'parameters') || {};
       return { field: { metric: metricName, parameters }, type: 'threshold' };
     }),
-    ...dimensions.map(d => {
-      return { field: { dimension: d }, type: 'dimension' };
-    })
+    ...dimensions.map(({ dimension, field }) => ({
+      field: { dimension, field },
+      type: 'dimension'
+    }))
   ];
   return {
     metadata: {
@@ -398,8 +542,13 @@ function buildTestRequest(dimensions = [], metrics = [], thresholds = []) {
         }
       };
     }),
-    dimensions: dimensions.map(d => {
-      return { dimension: { name: d, longName: classify(d) } };
-    })
+    dimensions: dimensions.map(({ dimension, fields }) => ({
+      dimension: {
+        name: dimension,
+        longName: classify(dimension),
+        fields,
+        getFieldsForTag: () => (fields ? fields.map(name => ({ name })) : [])
+      }
+    }))
   };
 }
