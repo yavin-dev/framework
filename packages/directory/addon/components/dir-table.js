@@ -119,6 +119,14 @@ export default Component.extend({
     return table;
   }),
 
+  /**
+   * @method _getNextSort
+   * Get next sort based on column and current sortBy
+   *
+   * @private
+   * @param {Object} column
+   * @returns {Object} sort column key and direction
+   */
   _getNextSort(column) {
     let sortBy = get(this, 'sortBy'),
       nextSortBy = get(column, 'sortByKey'),
@@ -145,11 +153,9 @@ export default Component.extend({
       if (column.sorted) {
         let onColumnClick = get(this, 'onColumnClick');
 
-        if (typeof onColumnClick !== 'function') {
-          return;
+        if (typeof onColumnClick === 'function') {
+          onColumnClick(this._getNextSort(column));
         }
-
-        onColumnClick(this._getNextSort(column));
       }
     }
   }
