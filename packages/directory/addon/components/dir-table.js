@@ -107,13 +107,16 @@ export default Component.extend({
       }
     });
 
-    let sortColumn = table.get('allColumns').findBy('sortByKey', get(this, 'sortBy'));
+    let sortBy = get(this, 'sortBy');
+    if (!isEmpty(sortBy)) {
+      let sortColumn = table.get('allColumns').findBy('sortByKey', sortBy);
 
-    if (sortColumn) {
-      sortColumn.setProperties({
-        sorted: true,
-        ascending: get(this, 'sortDir') !== 'desc'
-      });
+      if (sortColumn) {
+        sortColumn.setProperties({
+          sorted: true,
+          ascending: get(this, 'sortDir') !== 'desc'
+        });
+      }
     }
 
     return table;

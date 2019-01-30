@@ -78,7 +78,7 @@ module('Integration | Component | dir table', function(hooks) {
   });
 
   test('table is sorted correctly', async function(assert) {
-    assert.expect(2);
+    assert.expect(3);
 
     set(this, 'items', []);
     set(this, 'searchQuery', '');
@@ -107,6 +107,22 @@ module('Integration | Component | dir table', function(hooks) {
       }),
       [false, false, false, true],
       'Last update column is sorted'
+    );
+
+    set(this, 'sortBy', null);
+    await render(hbs`{{dir-table
+      items=items
+      searchQuery=searchQuery
+      sortBy=sortBy
+    }}`);
+
+    assert.equal(
+      [...this.element.querySelectorAll('th')].filter(elm => {
+        let i = elm.querySelector('i');
+        return i ? i.className.includes('is-sorted') : false;
+      }).length,
+      0,
+      'No column is sorted if sortBy is null'
     );
   });
 
