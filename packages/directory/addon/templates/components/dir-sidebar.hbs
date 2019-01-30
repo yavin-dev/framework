@@ -14,7 +14,7 @@
 </section>
 <section class='dir-sidebar__filters'>
   {{#each filters as | filter |}}
-    {{#link-to (query-params filter=filter.queryParams.filter sortBy=filter.queryParams.sortBy)
+    {{#link-to 'directory.my-data' (query-params filter=filter.queryParams.filter sortBy=filter.queryParams.sortBy)
       classNames='dir-sidebar__filter'
     }}
       <div>

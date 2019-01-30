@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -8,7 +8,17 @@ export default [
     name: 'platform',
     longName: 'Platform',
     cardinality: 5000,
-    category: 'Other'
+    category: 'Other',
+    fields: [
+      {
+        name: 'id',
+        tags: ['show', 'id']
+      },
+      {
+        name: 'desc',
+        tags: ['show', 'desc']
+      }
+    ]
   },
   {
     name: 'game',

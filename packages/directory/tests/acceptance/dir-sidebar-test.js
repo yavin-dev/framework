@@ -6,7 +6,7 @@ module('Acceptance | dir sidebar', function(hooks) {
   setupApplicationTest(hooks);
 
   test('transitions for sidebar link-tos', async function(assert) {
-    assert.expect(5);
+    assert.expect(7);
 
     await visit('/directory');
     assert.equal(currentURL(), '/directory/my-data', 'Directory route redirects to `my-data` child route');
@@ -23,17 +23,23 @@ module('Acceptance | dir sidebar', function(hooks) {
       'The active sidebar filter link corresponds to the active route and the active filter query param'
     );
 
+    await click('.dir-sidebar__group:nth-of-type(2)');
+    assert.equal(currentURL(), '/directory/other-data', 'Currently on a different directory subroute than my-data');
+
     let favoriteFilter = findAll('.dir-sidebar__filter').find(el => el.textContent.trim() === 'Favorites');
     await click(favoriteFilter);
     assert.equal(
       currentURL(),
       '/directory/my-data?filter=favorites',
-      '`favorites` is set as the query param when the favorites filter is clicked on'
+      '`favorites` is set as the query param and applied to the my-data route when the favorites filter is clicked on'
     );
     assert.equal(
       find('.dir-sidebar .active').textContent.trim(),
       'Favorites',
       'The active sidebar filter link now corresponds to `favorites` filter query param'
     );
+
+    await click('.dir-sidebar__group:nth-of-type(2)');
+    assert.equal(currentURL(), '/directory/other-data', 'Clicking another directory removes the favorites filter');
   });
 });

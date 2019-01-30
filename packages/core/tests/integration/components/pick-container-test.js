@@ -1,6 +1,7 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import Ember from 'ember';
+import { set } from '@ember/object';
 
 moduleForComponent('pick-container', 'Integration | Component | pick container', {
   integration: true
@@ -76,8 +77,7 @@ test('Action - applyChanges', function(assert) {
   assert.expect(2);
 
   let originalSelection = 1;
-
-  this.set('testSelection', originalSelection);
+  set(this, 'testSelection', originalSelection);
 
   this.set('handleUpdateSelection', selection => {
     assert.equal(
@@ -143,7 +143,7 @@ test('Action - discardChanges', function(assert) {
   assert.expect(2);
 
   let originalSelection = 0;
-  this.set('testSelection', originalSelection);
+  set(this, 'testSelection', originalSelection);
 
   this.set('handleUpdateSelection', selection => {
     assert.equal(selection, originalSelection, 'applyChanges ignores discarded changes');

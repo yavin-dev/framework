@@ -58,7 +58,7 @@ export default Ember.Service.extend({
    */
   findOrRegister() {
     return this.findUser().catch(serverError => {
-      if (serverError.errors[0].status === NOT_FOUND) {
+      if (get(serverError, 'errors.0.status') === NOT_FOUND) {
         return this.register();
       }
 
