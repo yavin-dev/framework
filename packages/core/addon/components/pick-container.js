@@ -20,8 +20,7 @@
  */
 import Ember from 'ember';
 import Layout from '../templates/components/pick-container';
-
-const { get, computed } = Ember;
+import { get, computed } from '@ember/object';
 
 export default Ember.Component.extend({
   layout: Layout,
