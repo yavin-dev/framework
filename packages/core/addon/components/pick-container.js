@@ -12,6 +12,7 @@
  */
 import Ember from 'ember';
 import Layout from '../templates/components/pick-container';
+import { get } from '@ember/object';
 
 export default Ember.Component.extend({
   layout: Layout,
@@ -204,7 +205,8 @@ export default Ember.Component.extend({
      */
     applyChanges(newSelection) {
       let selection = newSelection || this.get('_editableSelection');
-      this.sendAction('updateSelection', selection);
+      const updateSelection = get(this, 'updateSelection') || (() => {});
+      updateSelection(selection);
 
       if (this.get('autoClose')) {
         this.toggleForm();

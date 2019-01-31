@@ -9,17 +9,17 @@ const filter = {
   },
   operator: {
     id: 'in',
-    longName: 'Includes',
+    longName: 'Equals',
     valuesComponent: 'mock/values-component'
   },
   values: [1, 2, 3]
 };
 
 const supportedOperators = [
-  { id: 'in', longName: 'Includes', valuesComponent: 'mock/values-component' },
+  { id: 'in', longName: 'Equals', valuesComponent: 'mock/values-component' },
   {
     id: 'notin',
-    longName: 'Excludes',
+    longName: 'Not Equals',
     valuesComponent: 'mock/values-component'
   },
   {
@@ -109,7 +109,7 @@ test('changing operator', function(assert) {
 
   /* == Operator with same valuesComponent == */
   clickTrigger();
-  nativeMouseUp($('.ember-power-select-option:contains(Excludes)')[0]);
+  nativeMouseUp($('.ember-power-select-option:contains(Not Equals)')[0]);
 
   /* == Operator with different valuesComponent == */
   this.set('onUpdateFilter', changeSet => {

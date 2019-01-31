@@ -25,6 +25,7 @@
     "ember-cli-string-helpers": "^1.8.1",
     "ember-collection": "1.0.0-alpha.9",
     "ember-composable-helpers": "^2.1.0",
+    "ember-copy": "^1.0.0",
     "ember-cp-validations": "^3.5.3",
     "ember-data-model-fragments": "~2.11.5",
     "ember-debounced-properties": "0.0.5",

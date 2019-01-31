@@ -8,6 +8,7 @@ import MF from 'model-fragments';
 import { validator, buildValidations } from 'ember-cp-validations';
 import { computed, get } from '@ember/object';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
+import { Copyable } from 'ember-copy';
 
 const { Fragment } = MF;
 
@@ -18,7 +19,7 @@ const Validations = buildValidations({
   })
 });
 
-export default Fragment.extend(Validations, {
+export default Fragment.extend(Copyable, Validations, {
   metric: DS.attr('metric'),
   parameters: DS.attr({ defaultValue: () => ({}) }),
 

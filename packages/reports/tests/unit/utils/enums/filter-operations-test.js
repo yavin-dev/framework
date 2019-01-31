@@ -10,12 +10,12 @@ test('all', function(assert) {
     expectedOperations = [
       {
         id: 'in',
-        name: 'Includes',
+        name: 'Equals',
         valuesComponent: 'filter-form/select-input'
       },
       {
         id: 'notin',
-        name: 'Excludes',
+        name: 'Not Equals',
         valuesComponent: 'filter-form/select-input'
       },
       {

@@ -12,7 +12,7 @@ import { assert } from '@ember/debug';
 import { get } from '@ember/object';
 import { isEmpty } from '@ember/utils';
 import { inject as service } from '@ember/service';
-import { copy } from '@ember/object/internals';
+import { copy } from 'ember-copy';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 
 const { Fragment, fragment, fragmentArray } = MF;
