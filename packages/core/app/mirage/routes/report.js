@@ -24,16 +24,7 @@ export default function() {
   /**
    * reports/:id - GET endpoint to fetch a report by id
    */
-  this.get('/reports/:id', function({ reports }, request) {
-    let id = request.params.id,
-      report = reports.find(id);
-
-    if (!report) {
-      return new Mirage.Response(RESPONSE_CODES.NOT_FOUND, {}, { errors: [`Unknown identifier '${id}'`] });
-    }
-
-    return report;
-  });
+  this.get('/reports/:id');
 
   /**
    * reports/ -  POST endpoint to add a new report

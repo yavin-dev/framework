@@ -480,8 +480,8 @@ export default [
     title: 'old report without params',
     createdOn: '2015-01-01 00:00:00',
     updatedOn: '2015-01-01 00:00:00',
-    author: 'navi_user',
-    deliveryRules: [],
+    authorId: 'navi_user',
+    deliveryRuleIds: [],
     visualization: {
       type: 'table',
       version: 1,

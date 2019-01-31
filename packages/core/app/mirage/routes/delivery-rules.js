@@ -64,9 +64,9 @@ export default function() {
   this.del('/deliveryRules/:id', function({ deliveryRules, users, reports, dashboards }, request) {
     let id = request.params.id,
       deliveryRule = deliveryRules.find(id),
-      deliveryType = deliveryRule.deliveryType,
+      deliveredItemType = deliveryRule.deliveryType,
       deliveredItems = { reports, dashboards },
-      deliveredItem = deliveredItems[`${deliveryType}s`].find(deliveryRule.deliveredItemId.id),
+      deliveredItem = deliveredItems[`${deliveredItemType}s`].find(deliveryRule.deliveredItemId.id),
       user = users.find(deliveryRule.ownerId);
 
     if (!deliveryRule) {
