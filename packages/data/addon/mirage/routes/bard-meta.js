@@ -18,7 +18,7 @@ export default function() {
   /**
    * /tables endpoint
    */
-  this.get('/tables', (db, req) => {
+  this.get('/tables', function(db, req) {
     let tables = tableModels;
 
     if (req.queryParams.format === 'fullview') {

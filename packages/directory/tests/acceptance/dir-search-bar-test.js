@@ -1,9 +1,11 @@
 import { module, test } from 'qunit';
 import { click, currentURL, fillIn, triggerEvent, visit } from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 module('Acceptance | dir search bar', function(hooks) {
   setupApplicationTest(hooks);
+  setupMirage(hooks);
 
   test('query param changes as search query is entered', async function(assert) {
     assert.expect(3);
