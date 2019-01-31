@@ -6,6 +6,6 @@ terms. --}}
   {{/dd.trigger}}
 
   {{#dd.content class='number-format-dropdown__container'}}
-    {{number-format-selector format=format onUpdateFormat=(mut format)}}
+    {{number-format-selector format=format onUpdateFormat=(action (mut format))}}
   {{/dd.content}}
 {{/basic-dropdown}}

@@ -127,7 +127,7 @@ export default Component.extend({
 
         set(this, 'attemptedSave', false);
         let savePromise = new RSVP.Promise((resolve, reject) => {
-          this.attrs.onSave(deliveryRule, { resolve, reject });
+          this.onSave(deliveryRule, { resolve, reject });
         });
 
         return savePromise
@@ -159,7 +159,7 @@ export default Component.extend({
     onDelete() {
       let deliveryRule = get(this, 'localDeliveryRule'),
         deletePromise = new RSVP.Promise((resolve, reject) => {
-          this.attrs.onDelete(deliveryRule, { resolve, reject });
+          this.onDelete(deliveryRule, { resolve, reject });
         });
 
       return deletePromise

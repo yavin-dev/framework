@@ -20,7 +20,7 @@
       }}
       <a class='dashboard-action-text' onclick={{action (toggle 'shouldCreateDashboard' this)}}>Select from my dashboards</a>
       <div class='btn-container'>
-        <button class="btn btn-primary add-to-dashboard" onclick={{action this.attrs.onAddToNewDashboard newDashboardTitle reportName}} disabled={{disableAdd}}>Add To Dashboard</button>
+        <button class="btn btn-primary add-to-dashboard" onclick={{action onAddToNewDashboard newDashboardTitle reportName}} disabled={{disableAdd}}>Add To Dashboard</button>
         <button class="btn btn-secondary" onclick={{action (toggle 'showModal' this)}}>Cancel</button>
       </div>
     {{else}}
@@ -40,7 +40,7 @@
       {{/power-select}}
       <a class='dashboard-action-text' onclick={{action (toggle 'shouldCreateDashboard' this)}}>Create new dashboard</a>
       <div class='btn-container'>
-        <button class="btn btn-primary add-to-dashboard" onclick={{action this.attrs.onAddToDashboard selectedDashboard.id reportName}} disabled={{disableAdd}}>Add To Dashboard</button>
+        <button class="btn btn-primary add-to-dashboard" onclick={{action onAddToDashboard selectedDashboard.id reportName}} disabled={{disableAdd}}>Add To Dashboard</button>
         <button class="btn btn-secondary" onclick={{action (toggle 'showModal' this)}}>Cancel</button>
       </div>
     {{/if}}

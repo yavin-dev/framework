@@ -26,7 +26,7 @@ export default Ember.Component.extend({
      * @param {String} value - single value to be set in filter
      */
     setValue(value) {
-      this.attrs.onUpdateFilter({
+      this.onUpdateFilter({
         values: [value]
       });
     }

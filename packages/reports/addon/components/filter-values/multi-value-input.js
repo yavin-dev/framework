@@ -40,7 +40,7 @@ export default Ember.Component.extend({
       let tags = get(this, 'tags');
       tags.push(tag);
 
-      this.attrs.onUpdateFilter({
+      this.onUpdateFilter({
         rawValues: tags.slice()
       });
     },
@@ -53,7 +53,7 @@ export default Ember.Component.extend({
       let tags = get(this, 'tags');
       tags.splice(index, 1);
 
-      this.attrs.onUpdateFilter({
+      this.onUpdateFilter({
         rawValues: tags.slice()
       });
     }

@@ -33,7 +33,7 @@ export default Ember.Component.extend({
     onUpdateConfig(seriesConfig) {
       let newOptions = copy(get(this, 'options'));
       set(newOptions, 'series.config', seriesConfig);
-      this.attrs.onUpdateConfig(newOptions);
+      this.onUpdateConfig(newOptions);
     }
   }
 });

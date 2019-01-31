@@ -40,7 +40,7 @@ export default Ember.Component.extend({
      * @param {String} value - first value to be set in filter
      */
     setLowValue(value) {
-      this.attrs.onUpdateFilter({
+      this.onUpdateFilter({
         values: [value, get(this, 'filter.values.lastObject')]
       });
     },
@@ -50,7 +50,7 @@ export default Ember.Component.extend({
      * @param {String} value - last value to be set in filter
      */
     setHighValue(value) {
-      this.attrs.onUpdateFilter({
+      this.onUpdateFilter({
         values: [get(this, 'filter.values.firstObject'), value]
       });
     }

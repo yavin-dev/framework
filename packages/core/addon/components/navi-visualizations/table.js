@@ -338,7 +338,7 @@ export default Component.extend({
           actionType = direction === 'none' ? 'removeSort' : 'upsertSort',
           fieldName = type === 'dateTime' ? type : canonicalizeMetric(field);
 
-        this.attrs.onUpdateReport(actionType, fieldName, direction);
+        this.onUpdateReport(actionType, fieldName, direction);
       }
     },
 
@@ -346,7 +346,7 @@ export default Component.extend({
      * @action updateColumnOrder
      */
     updateColumnOrder(newColumnOrder) {
-      this.attrs.onUpdateReport('updateColumnOrder', newColumnOrder);
+      this.onUpdateReport('updateColumnOrder', newColumnOrder);
     },
 
     /**
@@ -354,7 +354,7 @@ export default Component.extend({
      */
     updateColumnDisplayName(column, displayName) {
       run.scheduleOnce('afterRender', () => {
-        this.attrs.onUpdateReport(
+        this.onUpdateReport(
           'updateColumn',
           assign({}, column, {
             displayName
