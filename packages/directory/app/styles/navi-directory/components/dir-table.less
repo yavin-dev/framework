@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 .dir-table {
@@ -14,6 +14,17 @@
       font-size: @font-size-mid-base;
       font-weight: normal;
       padding-bottom: 5px;
+    }
+
+    .lt-sort-icon {
+      color: @navi-gray-300;
+      margin-right: 15px;
+      margin-top: 3px;
+
+      &.fa-sort-desc,
+      &.fa-sort-asc {
+        color: @navi-gray;
+      }
     }
   }
 
@@ -42,8 +53,6 @@
   }
 
   &__header-cell {
-    cursor: default !important;
-
     &--name {
       padding-left: 10px;
     }

@@ -61,8 +61,8 @@ export default [
   {
     id: 2,
     title: 'Hyrule Ad&Nav Clicks',
-    createdOn: '2015-01-01 00:00:00',
-    updatedOn: '2015-01-01 00:00:00',
+    createdOn: '2015-01-01 11:00:00',
+    updatedOn: '2015-01-01 11:00:00',
     author: 'navi_user',
     deliveryRules: [],
     visualization: {
@@ -126,8 +126,8 @@ export default [
   {
     id: 3,
     title: 'Report 123',
-    createdOn: '2015-01-01 00:00:00',
-    updatedOn: '2015-01-01 00:00:00',
+    createdOn: '2015-01-01 02:00:00',
+    updatedOn: '2015-01-01 02:00:00',
     author: 'ciela',
     deliveryRules: [1],
     visualization: {
@@ -170,8 +170,8 @@ export default [
   {
     id: 4,
     title: 'Report 12',
-    createdOn: '2015-01-01 00:00:00',
-    updatedOn: '2015-01-01 00:00:00',
+    createdOn: '2015-01-03 00:00:00',
+    updatedOn: '2015-01-03 00:00:00',
     author: 'navi_user',
     deliveryRules: [2],
     visualization: {
@@ -212,8 +212,8 @@ export default [
   {
     id: 5,
     title: 'Null Visualization',
-    createdOn: '2015-01-01 00:00:00',
-    updatedOn: '2015-01-01 00:00:00',
+    createdOn: '2015-07-01 00:00:00',
+    updatedOn: '2015-07-01 00:00:00',
     author: 'navi_user',
     deliveryRules: [],
     visualization: null,
@@ -239,8 +239,8 @@ export default [
   {
     id: 6,
     title: 'Invalid report',
-    createdOn: '2015-01-01 00:00:00',
-    updatedOn: '2015-01-01 00:00:00',
+    createdOn: '2015-04-01 00:00:00',
+    updatedOn: '2015-04-01 00:00:00',
     author: 'navi_user',
     deliveryRules: [],
     visualization: null,
@@ -316,8 +316,8 @@ export default [
   {
     id: 8,
     title: 'Revenue report 2',
-    createdOn: '2015-01-01 00:00:00',
-    updatedOn: '2015-01-01 00:00:00',
+    createdOn: '2015-03-01 00:00:00',
+    updatedOn: '2015-03-01 00:00:00',
     author: 'navi_user',
     deliveryRules: [],
     visualization: {
@@ -386,8 +386,8 @@ export default [
   {
     id: 9,
     title: 'Report with unknown table',
-    createdOn: '2015-01-01 00:00:00',
-    updatedOn: '2015-01-01 00:00:00',
+    createdOn: '2015-02-01 00:00:00',
+    updatedOn: '2015-02-01 00:00:00',
     author: 'navi_user',
     deliveryRules: [],
     visualization: {

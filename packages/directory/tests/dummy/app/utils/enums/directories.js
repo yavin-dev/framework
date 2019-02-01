@@ -10,12 +10,7 @@ export default [
       {
         name: 'Favorites',
         icon: 'star-o',
-        queryParam: { filter: 'favorites', sortBy: 'title' }
-      },
-      {
-        name: 'Recently Updated',
-        icon: 'cloud-upload',
-        queryParam: { filter: null, sortBy: 'updatedOn' }
+        queryParam: { filter: 'favorites' }
       }
     ]
   },

@@ -1,18 +1,21 @@
-{{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{!-- TODO: Reenable occlusion once the feature is out of beta. It currently causes issues with custom cell components --}}
 {{#light-table table
   classNames='dir-table'
   responsive=true
-  occlusion=false 
+  occlusion=false
   estimatedRowHeight=40
   as |t|
 }}
   {{t.head
-    is-sortable=false
+    onColumnClick=(action 'onColumnClick')
+    iconSortable='fa fa-sort'
+    iconAscending='fa fa-sort-asc'
+    iconDescending='fa fa-sort-desc'
     fixed=true
   }}
 
-  {{#t.body 
+  {{#t.body
     canSelect=false
     as |body|
   }}
@@ -22,28 +25,28 @@
       {{/body.loader}}
 
     {{else}}
-      
+
       {{#if table.isEmpty}}
         {{#body.no-data}}
-          
+
           {{#if isSearching}}
-            
+
             {{#navi-info-message}}
               <div class='dir-table__info-message--text'>
                 None of your files or folders match <span class='dir-table__info-message--query'>{{searchQuery}}</span>.
               </div>
               <div class='dir-table__info-message--subtext'>Please try a different search.</div>
             {{/navi-info-message}}
-         
+
           {{else}}
-          
+
             {{dir-empty}}
-          
+
           {{/if}}
         {{/body.no-data}}
-      {{/if}}  
+      {{/if}}
 
     {{/if}}
-    
+
   {{/t.body}}
 {{/light-table}}

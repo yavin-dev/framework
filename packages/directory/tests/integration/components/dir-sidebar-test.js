@@ -23,7 +23,7 @@ module('Integration | Component | dir sidebar', function(hooks) {
 
     assert.deepEqual(
       findAll('.dir-sidebar__filter').map(el => el.textContent.trim()),
-      ['Favorites', 'Recently Updated'],
+      ['Favorites'],
       `The selected group's filters are shown in the filter section`
     );
   });
