@@ -46,13 +46,15 @@ export default Base.extend({
    */
   filter: computed('requestFragment.{operator,dimension,values.[]}', function() {
     const requestFragment = get(this, 'requestFragment'),
+      serializedFilter =
+        typeof requestFragment.serialize === 'function' ? requestFragment.serialize() : requestFragment,
       operatorId = get(requestFragment, 'operator'),
       operator = arr(get(this, 'supportedOperators')).findBy('id', operatorId);
 
     return {
       subject: get(requestFragment, 'dimension'),
       operator,
-      values: arr(get(requestFragment, 'values'))
+      values: arr(get(serializedFilter, 'values'))
     };
   })
 });
