@@ -1,11 +1,15 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
  * {{dir-table
  *   items=items
- *   isSearching=isSearching
+ *   isLoading=isLoading
+ *   searchQuery=searchQuery
+ *   sortBy=sortBy
+ *   sortDir=sortDir
+ *   onColumnClick=(action 'onColumnClick')
  * }}
  */
 import Component from '@ember/component';
@@ -50,7 +54,7 @@ export default Component.extend({
       {
         label: 'NAME',
         valuePath: 'model',
-        sortable: false,
+        sortByKey: 'title',
         hideable: false,
         draggable: false,
         classNames: 'dir-table__header-cell dir-table__header-cell--name',
@@ -70,7 +74,7 @@ export default Component.extend({
       {
         label: 'AUTHOR',
         valuePath: 'model.author.id',
-        sortable: false,
+        sortByKey: 'author',
         hideable: false,
         draggable: false,
         width: '165px',
@@ -81,7 +85,8 @@ export default Component.extend({
       {
         label: 'LAST UPDATED DATE',
         valuePath: 'lastUpdatedDate',
-        sortable: false,
+        sortByKey: 'updatedOn',
+        sortDescFirst: true,
         hideable: false,
         draggable: false,
         width: '200px',
@@ -96,10 +101,65 @@ export default Component.extend({
    * @property {Object} table - Used by ember-light-table to create the table
    */
   table: computed('model', function() {
-    return new Table(this.get('columns'), this.get('model'), {
+    let table = new Table(get(this, 'columns'), get(this, 'model'), {
       rowOptions: {
         classNames: 'dir-table__row'
       }
     });
-  })
+
+    let sortBy = get(this, 'sortBy');
+    if (!isEmpty(sortBy)) {
+      let sortColumn = table.get('allColumns').findBy('sortByKey', sortBy);
+
+      if (sortColumn) {
+        sortColumn.setProperties({
+          sorted: true,
+          ascending: get(this, 'sortDir') !== 'desc'
+        });
+      }
+    }
+
+    return table;
+  }),
+
+  /**
+   * @method _getNextSort
+   * Get next sort based on column and current sortBy
+   *
+   * @private
+   * @param {Object} column
+   * @returns {Object} sort column key and direction
+   */
+  _getNextSort(column) {
+    let sortBy = get(this, 'sortBy'),
+      nextSortBy = get(column, 'sortByKey'),
+      nextSortDir;
+
+    if (sortBy === nextSortBy) {
+      nextSortDir = get(column, 'ascending') ? 'asc' : 'desc';
+    } else {
+      nextSortDir = get(column, 'sortDescFirst') ? 'desc' : 'asc';
+    }
+
+    return {
+      sortBy: nextSortBy,
+      sortDir: nextSortDir
+    };
+  },
+
+  actions: {
+    /**
+     * @action onColumnClick
+     * @param {Object} column
+     */
+    onColumnClick(column) {
+      if (column.sorted) {
+        let onColumnClick = get(this, 'onColumnClick');
+
+        if (typeof onColumnClick === 'function') {
+          onColumnClick(this._getNextSort(column));
+        }
+      }
+    }
+  }
 });

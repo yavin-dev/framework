@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -34,12 +34,7 @@ export default Component.extend({
       {
         name: 'Favorites',
         icon: 'star-o',
-        queryParams: { filter: 'favorites', sortBy: 'title' }
-      },
-      {
-        name: 'Recently Updated',
-        icon: 'cloud-upload',
-        queryParams: { filter: null, sortBy: 'updatedOn' }
+        queryParams: { filter: 'favorites' }
       }
     ];
   })
