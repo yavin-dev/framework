@@ -27,3 +27,39 @@ test('date filter builder', function(assert) {
     });
   });
 });
+
+test('dimension date range filter keeps values after save', async function(assert) {
+  assert.expect(5);
+
+  await visit('/reports/1/view');
+  await click('.grouped-list__group-header:contains(test)');
+  await click('.grouped-list__item:contains(User Signup Date)>.checkbox-selector__filter');
+  await click('.filter-builder__operator:contains(Since)>.filter-builder__select-trigger');
+  await click('li.ember-power-select-option:contains(Between)');
+
+  assert.ok(find('.filter-builder__operator:contains(Between)'), 'Between is the selected operator');
+
+  //Set low value
+  await clickDropdown('.filter-values--dimension-date-range-input__low-value>.dropdown-date-picker__trigger');
+  await click('td.day:contains(4):first-of-type');
+  await click('.dropdown-date-picker__apply');
+
+  //Set high value
+  await clickDropdown('.filter-values--dimension-date-range-input__high-value>.dropdown-date-picker__trigger');
+  await click('td.day:contains(5):first-of-type');
+  await click('.dropdown-date-picker__apply');
+
+  assert.ok(find('.filter-values--dimension-date-range-input__low-value:contains(4)'), 'The low value is set');
+  assert.ok(find('.filter-values--dimension-date-range-input__high-value:contains(9)'), 'The high value is set');
+
+  await click('.navi-report__save-btn');
+
+  assert.ok(
+    find('.filter-values--dimension-date-range-input__low-value:contains(4)'),
+    'The low value is still set after the report is saved'
+  );
+  assert.ok(
+    find('.filter-values--dimension-date-range-input__high-value:contains(9)'),
+    'The high value is still set after the report is saved'
+  );
+});
