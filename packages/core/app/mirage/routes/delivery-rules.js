@@ -1,5 +1,5 @@
 import moment from 'moment';
-import Mirage from 'ember-cli-mirage';
+import Response from 'ember-cli-mirage/response';
 import RESPONSE_CODES from '../enums/response-codes';
 
 const TIMESTAMP_FORMAT = 'YYYY-MM-DD HH:mm:ss';
@@ -55,7 +55,7 @@ export default function() {
       attrs = this.normalizedRequestAttrs();
 
     deliveryRules.find(id).update(attrs);
-    return new Mirage.Response(RESPONSE_CODES.NO_CONTENT);
+    return new Response(RESPONSE_CODES.NO_CONTENT);
   });
 
   /**
@@ -70,7 +70,7 @@ export default function() {
       user = users.find(deliveryRule.ownerId);
 
     if (!deliveryRule) {
-      return new Mirage.Response(RESPONSE_CODES.NOT_FOUND, {}, { errors: [`Unknown identifier '${id}'`] });
+      return new Response(RESPONSE_CODES.NOT_FOUND, {}, { errors: [`Unknown identifier '${id}'`] });
     }
 
     // Delete delivery rule from deliveredItem
@@ -83,6 +83,6 @@ export default function() {
     });
 
     deliveryRule.destroy();
-    return new Mirage.Response(RESPONSE_CODES.NO_CONTENT);
+    return new Response(RESPONSE_CODES.NO_CONTENT);
   });
 }

@@ -1,4 +1,4 @@
-import Mirage from 'ember-cli-mirage';
+import Response from 'ember-cli-mirage/response';
 import RESPONSE_CODES from '../enums/response-codes';
 
 export default function() {
@@ -7,7 +7,7 @@ export default function() {
       dashboard = dashboards.find(id);
 
     if (!dashboard) {
-      return new Mirage.Response(RESPONSE_CODES.NOT_FOUND, {}, { errors: [`Unknown identifier '${id}'`] });
+      return new Response(RESPONSE_CODES.NOT_FOUND, {}, { errors: [`Unknown identifier '${id}'`] });
     }
 
     return dashboard;
@@ -18,7 +18,7 @@ export default function() {
       attrs = this.normalizedRequestAttrs();
 
     dashboards.find(id).update(attrs);
-    return new Mirage.Response(RESPONSE_CODES.NO_CONTENT);
+    return new Response(RESPONSE_CODES.NO_CONTENT);
   });
 
   this.del('/dashboards/:id', ({ dashboards, users }, request) => {
@@ -27,7 +27,7 @@ export default function() {
       user = users.find(dashboard.authorId);
 
     if (!dashboard) {
-      return new Mirage.Response(RESPONSE_CODES.NOT_FOUND, {}, { errors: [`Unknown identifier '${id}'`] });
+      return new Response(RESPONSE_CODES.NOT_FOUND, {}, { errors: [`Unknown identifier '${id}'`] });
     }
 
     // Delete dashboard from user
@@ -36,7 +36,7 @@ export default function() {
     });
 
     dashboard.destroy();
-    return new Mirage.Response(RESPONSE_CODES.NO_CONTENT);
+    return new Response(RESPONSE_CODES.NO_CONTENT);
   });
 
   this.get('/dashboards', ({ dashboards }, request) => {
