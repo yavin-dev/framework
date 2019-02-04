@@ -42,6 +42,9 @@ test('displayed dates and update actions', function(assert) {
   $('td.day:contains(12)').click();
   $('.dropdown-date-picker__apply').click();
 
+  //Set a high value so that the calendar opens to January 2019 instead of the month that this test is run
+  this.set('filter', { values: arr(['2019-01-05', '2019-01-12']) });
+
   //Check that setting high value sends the new date value to the action
   this.set('onUpdateFilter', filter => {
     assert.deepEqual(get(filter, 'values'), ['2019-01-05', '2019-01-15'], 'Selecting the low date updates the filter');
