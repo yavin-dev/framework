@@ -19,6 +19,7 @@ dependencies {
 java {
     sourceSets {
         getByName("main").java.setSrcDirs(arrayListOf("src/main/kotlin"))
+        getByName("main").resources.srcDir("src/main/resources")
         getByName("test").java.setSrcDirs(arrayListOf("src/test/kotlin"))
     }
 }
