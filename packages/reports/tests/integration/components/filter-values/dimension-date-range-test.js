@@ -47,7 +47,7 @@ test('displayed dates and update actions', function(assert) {
 
   //Check that setting high value sends the new date value to the action
   this.set('onUpdateFilter', filter => {
-    assert.deepEqual(get(filter, 'values'), ['2019-01-05', '2019-01-15'], 'Selecting the low date updates the filter');
+    assert.deepEqual(get(filter, 'values'), ['2019-01-05', '2019-01-15'], 'Selecting the high date updates the filter');
   });
   clickTrigger('.filter-values--dimension-date-range-input__high-value>.dropdown-date-picker__trigger');
   $('td.day:contains(15)').click();
