@@ -1,4 +1,4 @@
-{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{tooltip-on-component
     text='Max number of series reached'
     event='none'
@@ -7,8 +7,8 @@
 }}
 {{#pick-container
     classNames='add-series'
-    updateSelection=(action addSeries)
-    formToggled='formToggled'
+    onUpdateSelection=(action addSeries)
+    onFormToggle=(action 'formToggled')
     as |selection container|
 }}
     {{#pick-value

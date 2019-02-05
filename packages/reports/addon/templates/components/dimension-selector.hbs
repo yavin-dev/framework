@@ -1,4 +1,4 @@
-{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{#navi-list-selector
    items=listItems
    searchField='longName'
@@ -31,7 +31,7 @@
             {{navi-icon
                 'filter'
                 class=(concat (if (get dimensionsFiltered item.name) 'checkbox-selector__filter--active ') 'checkbox-selector__filter')
-                click=(action toggleDimFilter item)
+                click=(action onToggleDimFilter item)
             }}
         {{/unless}}
     {{/grouped-list}}

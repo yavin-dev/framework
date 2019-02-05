@@ -69,9 +69,9 @@ moduleForComponent('metric-config', 'Integration | Component | metric config', {
         {{metric-config
           metric=metric
           request=request
-          addParameterizedMetric=(action addParameterizedMetric)
-          removeParameterizedMetric=(action removeParameterizedMetric)
-          toggleParameterizedMetricFilter=(action toggleParameterizedMetricFilter)
+          onAddParameterizedMetric=(action addParameterizedMetric)
+          onRemoveParameterizedMetric=(action removeParameterizedMetric)
+          onToggleParameterizedMetricFilter=(action toggleParameterizedMetricFilter)
           parametersPromise=parametersPromise
         }}`);
 

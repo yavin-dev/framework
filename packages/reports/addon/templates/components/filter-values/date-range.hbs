@@ -2,7 +2,7 @@
 {{#navi-date-range-picker
     interval=(as-interval filter.values.firstObject)
     dateTimePeriod=request.logicalTable.timeGrain.name
-    setInterval=(action 'setInterval')
+    onSetInterval=(action 'setInterval')
     as |interval|
 }}
     <div class='date-range__select-trigger'>

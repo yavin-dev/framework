@@ -40,11 +40,11 @@ moduleForComponent('dimension-selector', 'Integration | Component | dimension se
 
       this.render(hbs`{{dimension-selector
             request=request
-            addTimeGrain=(action addTimeGrain)
-            removeTimeGrain=(action removeTimeGrain)
-            addDimension=(action addDimension)
-            removeDimension=(action removeDimension)
-            toggleDimFilter=(action addDimFilter)
+            onAddTimeGrain=(action addTimeGrain)
+            onRemoveTimeGrain=(action removeTimeGrain)
+            onAddDimension=(action addDimension)
+            onRemoveDimension=(action removeDimension)
+            onToggleDimFilter=(action addDimFilter)
           }}`);
     });
   },

@@ -124,7 +124,7 @@ test('Selecting a predefined interval', function(assert) {
   this.render(`
         {{navi-date-range-picker
             dateTimePeriod='week'
-            setInterval=(action setInterval)
+            onSetInterval=(action setInterval)
         }}
     `);
 
@@ -139,7 +139,7 @@ test('intervalSet class', function(assert) {
   this.render(`
         {{navi-date-range-picker
             dateTimePeriod='week'
-            setInterval=(action (mut testInterval))
+            onSetInterval=(action (mut testInterval))
             interval=testInterval
         }}
     `);
@@ -275,7 +275,7 @@ test('Open custom interval form', function(assert) {
   this.render(`
         {{navi-date-range-picker
             dateTimePeriod='week'
-            setInterval=(action setInterval)
+            onSetInterval=(action setInterval)
         }}
     `);
 
@@ -430,7 +430,7 @@ test('Select custom interval', function(assert) {
         {{navi-date-range-picker
             dateTimePeriod='day'
             interval=interval
-            setInterval=(action setInterval)
+            onSetInterval=(action setInterval)
         }}
     `);
 
@@ -465,7 +465,7 @@ test('Custom Range Date doesn`t increment on apply', function(assert) {
         {{navi-date-range-picker
             interval=interval
             dateTimePeriod='day'
-            setInterval=(action setInterval)
+            onSetInterval=(action setInterval)
         }}
     `);
 
@@ -491,7 +491,7 @@ test('Editing custom interval - string', function(assert) {
         {{navi-date-range-picker
             dateTimePeriod='day'
             interval=interval
-            setInterval=(action setInterval)
+            onSetInterval=(action setInterval)
         }}
     `);
 
@@ -528,7 +528,7 @@ test('Editing custom interval - macros', function(assert) {
         {{navi-date-range-picker
             dateTimePeriod='day'
             interval=interval
-            setInterval=(action setInterval)
+            onSetInterval=(action setInterval)
         }}
     `);
 
@@ -565,7 +565,7 @@ test('Default interval for timegrains', function(assert) {
   this.render(`
         {{navi-date-range-picker
             dateTimePeriod=dateTimePeriod
-            setInterval=(action setInterval)
+            onSetInterval=(action setInterval)
         }}
     `);
 
@@ -627,7 +627,7 @@ test('Default interval for `All` timegrain', function(assert) {
   this.render(`
         {{navi-date-range-picker
             dateTimePeriod=dateTimePeriod
-            setInterval=(action setInterval)
+            onSetInterval=(action setInterval)
         }}
     `);
 

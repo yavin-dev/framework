@@ -1,11 +1,11 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * {{pick-single
  *  selection=selection
  *  options=options
- *  updateSelection='updateSelection'
+ *  onUpdateSelection=(action 'updateSelection')
  *  [idField] #needed if different from `id`
  *  [displayField] #needed if different from `id`
  *  [label] #optional
@@ -14,6 +14,7 @@
 
 import Ember from 'ember';
 import layout from '../templates/components/pick-single';
+import { get } from '@ember/object';
 
 export default Ember.Component.extend({
   layout: layout,
@@ -34,7 +35,9 @@ export default Ember.Component.extend({
      * @param selection
      */
     updateSelection(selection) {
-      this.sendAction('updateSelection', selection);
+      const handler = get(this, 'onUpdateSelection');
+
+      if (handler) handler(selection);
     }
   }
 });

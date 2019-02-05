@@ -13,7 +13,7 @@ moduleForComponent('pick-single', 'Integration | Component | Pick Single', {
                 classNames='pick-single'
                 selection=selection
                 options=options
-                updateSelection='updateSelection'
+                onUpdateSelection=(action updateSelection)
                 displayField=displayField
                 label=label
             }}`;
@@ -32,6 +32,7 @@ moduleForComponent('pick-single', 'Integration | Component | Pick Single', {
     this.set('options', Options);
     this.set('selection', Options[0]);
     this.set('displayField', 'id');
+    this.set('updateSelection', () => null);
   }
 });
 
@@ -117,7 +118,7 @@ test('switching display field', function(assert) {
 
 test('update selection action', function(assert) {
   assert.expect(2);
-  this.on('updateSelection', selection => {
+  this.set('updateSelection', selection => {
     assert.ok(true, 'updateSelection method is called');
     assert.equal(selection, Options[1], 'the clicked option is passed in as the selection param');
   });

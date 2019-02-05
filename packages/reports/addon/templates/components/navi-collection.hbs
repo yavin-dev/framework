@@ -1,9 +1,9 @@
-{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{#if config.filterable}}
     {{pick-single
         selection=filter
         options=filterOptions
-        updateSelection=(action (mut filter))
+        onUpdateSelection=(action (mut filter))
         idField='filterKey'
         displayField='name'
     }}

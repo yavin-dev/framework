@@ -1,13 +1,13 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
  *   {{#metric-selector
  *      request=request
- *      addMetric=(action 'add')
- *      removeMetric=(action 'remove')
- *      addMetricFilter=(action 'addFilter')
+ *      onAddMetric=(action 'add')
+ *      onRemoveMetric=(action 'remove')
+ *      onToggleMetricFilter=(action 'addFilter')
  *   }}
  *      {{navi-list-selector}}
  *   {{/metric-selector}}
@@ -100,11 +100,13 @@ export default Ember.Component.extend({
      * @param {Object} metric
      */
     metricClicked(metric) {
-      let action = get(this, 'metricsChecked')[get(metric, 'name')] ? 'remove' : 'add';
-      this.sendAction(`${action}Metric`, metric);
+      const action = get(this, 'metricsChecked')[get(metric, 'name')] ? 'Remove' : 'Add';
+      const handler = get(this, `on${action}Metric`);
+
+      if (handler) handler(metric);
 
       //On add, trigger metric-config mousedown event when metric has parameters
-      if (action === 'add' && get(metric, 'hasParameters')) {
+      if (action === 'Add' && get(metric, 'hasParameters')) {
         this._openConfig(metric);
       }
     }

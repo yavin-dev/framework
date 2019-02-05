@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * {{visualization-config/chart-type/dimension
@@ -142,9 +142,11 @@ export default Ember.Component.extend({
      * @param {Object} metric
      */
     onUpdateChartMetric(metric) {
-      let newSeriesConfig = copy(get(this, 'seriesConfig'));
+      const newSeriesConfig = copy(get(this, 'seriesConfig'));
+      const handleUpdateConfig = get(this, 'onUpdateConfig');
+
       set(newSeriesConfig, 'metric', metric);
-      this.sendAction('onUpdateConfig', newSeriesConfig);
+      if (handleUpdateConfig) handleUpdateConfig(newSeriesConfig);
     },
 
     /**
@@ -152,9 +154,11 @@ export default Ember.Component.extend({
      * @param {Object} series
      */
     onAddSeries(series) {
-      let newSeriesConfig = copy(get(this, 'seriesConfig'));
+      const newSeriesConfig = copy(get(this, 'seriesConfig'));
+      const handleUpdateConfig = get(this, 'onUpdateConfig');
+
       Ember.A(newSeriesConfig.dimensions).pushObject(series.config);
-      this.sendAction('onUpdateConfig', newSeriesConfig);
+      if (handleUpdateConfig) handleUpdateConfig(newSeriesConfig);
     },
 
     /**
@@ -162,12 +166,13 @@ export default Ember.Component.extend({
      * @param {Object} series
      */
     onRemoveSeries(series) {
-      let seriesInConfig = get(this, 'seriesConfig.dimensions'),
-        newSeriesConfig = copy(get(this, 'seriesConfig'));
+      const seriesInConfig = get(this, 'seriesConfig.dimensions');
+      const newSeriesConfig = copy(get(this, 'seriesConfig'));
+      const handleUpdateConfig = get(this, 'onUpdateConfig');
 
       //remove series from config
       set(newSeriesConfig, 'dimensions', _.reject(seriesInConfig, series.config));
-      this.sendAction('onUpdateConfig', newSeriesConfig);
+      if (handleUpdateConfig) handleUpdateConfig(newSeriesConfig);
     }
   }
 });

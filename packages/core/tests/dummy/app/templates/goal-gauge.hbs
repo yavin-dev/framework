@@ -1,8 +1,9 @@
-{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 
 {{navi-visualizations/goal-gauge
-  model=model
-  options=goalGaugeOptions
+    model=model
+    options=goalGaugeOptions
+    onUpdateConfig=(action 'onUpdateConfig')
 }}
 {{visualization-config/wrapper
     request=request

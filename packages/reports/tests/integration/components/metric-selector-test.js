@@ -54,9 +54,9 @@ moduleForComponent('metric-selector', 'Integration | Component | metric selector
 
       this.render(hbs`{{metric-selector
             request=request
-            addMetric=(action addMetric)
-            removeMetric=(action removeMetric)
-            toggleMetricFilter=(action addMetricFilter)
+            onAddMetric=(action addMetric)
+            onRemoveMetric=(action removeMetric)
+            onToggleMetricFilter=(action addMetricFilter)
           }}`);
     });
   },

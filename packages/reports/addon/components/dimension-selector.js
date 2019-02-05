@@ -1,14 +1,14 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
  *   {{#dimension-selector
  *      request=request
- *      addDimension=(action 'addDimension')
- *      removeDimension=(action 'removeDimension')
- *      addTimeGrain=(action 'addTimeGrain')
- *      removeTimeGrain=(action 'removeTimeGrain')
+ *      onAddDimension=(action 'addDimension')
+ *      onRemoveDimension=(action 'removeDimension')
+ *      onAddTimeGrain=(action 'addTimeGrain')
+ *      onRemoveTimeGrain=(action 'removeTimeGrain')
  *   }}
  *      {{navi-list-selector}}
  *   {{/dimension-selector}}
@@ -124,9 +124,11 @@ export default Ember.Component.extend({
      * @param {Object} item
      */
     itemClicked(item) {
-      let type = get(item, 'category') === 'Time Grain' ? 'TimeGrain' : 'Dimension',
-        action = get(this, 'itemsChecked')[get(item, 'name')] ? 'remove' : 'add';
-      this.sendAction(`${action}${type}`, item);
+      const type = get(item, 'category') === 'Time Grain' ? 'TimeGrain' : 'Dimension';
+      const action = get(this, 'itemsChecked')[get(item, 'name')] ? 'Remove' : 'Add';
+      const handler = get(this, `on${action}${type}`);
+
+      if (handler) handler(item);
     }
   }
 });

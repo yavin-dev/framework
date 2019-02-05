@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -11,7 +11,7 @@
  */
 import Component from '@ember/component';
 import layout from '../../templates/components/visualization-config/goal-gauge';
-import { computed } from '@ember/object';
+import { computed, get } from '@ember/object';
 
 export default Component.extend({
   /**
@@ -34,7 +34,9 @@ export default Component.extend({
      * @action updateConfig
      */
     updateConfig(type, value) {
-      this.sendAction('onUpdateConfig', { [type]: value });
+      const handleUpdateConfig = get(this, 'onUpdateConfig');
+
+      if (handleUpdateConfig) handleUpdateConfig({ [type]: value });
     }
   }
 });

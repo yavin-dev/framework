@@ -1,12 +1,12 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
  *   {{navi-date-picker
  *      date=initialDate
  *      dateTimePeriod='month'
- *      onUpdate='actionWhenDateChanges'
+ *      onUpdate=(action handleUpdate)
  *   }}
  */
 import Ember from 'ember';
@@ -197,6 +197,7 @@ export default Ember.Component.extend({
      */
     changeDate(newDate) {
       this._highlightSelection();
+      const handleUpdate = get(this, 'onUpdate');
 
       // Don't do anything if the date is the same as the last time action was called
       if (this._isNewDateValue(newDate)) {
@@ -205,7 +206,7 @@ export default Ember.Component.extend({
 
       // Convert date to start of time period
       let dateTimePeriod = getIsoDateTimePeriod(get(this, 'dateTimePeriod'));
-      this.sendAction('onUpdate', moment(newDate).startOf(dateTimePeriod));
+      if (handleUpdate) handleUpdate(moment(newDate).startOf(dateTimePeriod));
     }
   }
 });

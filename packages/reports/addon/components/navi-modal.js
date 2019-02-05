@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Description: Navi Modal Component
@@ -14,6 +14,7 @@
 
 import Ember from 'ember';
 import layout from '../templates/components/navi-modal';
+import { get } from '@ember/object';
 
 const { set } = Ember;
 
@@ -31,8 +32,10 @@ export default Ember.Component.extend({
      */
     closeModal() {
       set(this, 'isShown', false);
-      if (this.get('onClose')) {
-        this.sendAction('onClose');
+      const handleClose = get(this, 'onClose');
+
+      if (this.get('onClose') && handleClose) {
+        handleClose();
       }
     }
   }

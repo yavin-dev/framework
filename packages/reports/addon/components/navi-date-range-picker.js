@@ -6,7 +6,7 @@
  *   {{navi-date-range-picker
  *      interval=selectedInterval
  *      dateTimePeriod='month'
- *      setInterval=(action 'updateInterval')
+ *      onSetInterval=(action 'updateInterval')
  *   }}
  */
 import Ember from 'ember';

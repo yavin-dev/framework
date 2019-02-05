@@ -1,4 +1,4 @@
-{{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class='report-builder__side'>
     {{#if (or (gt allTables.length 1) (not hasValidLogicalTable))}}
       {{navi-table-select
@@ -13,18 +13,18 @@
         {{dimension-selector
             class='report-builder__container report-builder__dimension-selector'
             request=request
-            addTimeGrain=(update-report-action 'ADD_TIME_GRAIN')
-            addDimension=(update-report-action 'ADD_DIMENSION')
-            removeTimeGrain=(update-report-action 'REMOVE_TIME_GRAIN')
-            removeDimension=(update-report-action 'REMOVE_DIMENSION')
-            toggleDimFilter=(update-report-action 'TOGGLE_DIM_FILTER')
+            onAddTimeGrain=(update-report-action 'ADD_TIME_GRAIN')
+            onAddDimension=(update-report-action 'ADD_DIMENSION')
+            onRemoveTimeGrain=(update-report-action 'REMOVE_TIME_GRAIN')
+            onRemoveDimension=(update-report-action 'REMOVE_DIMENSION')
+            onToggleDimFilter=(update-report-action 'TOGGLE_DIM_FILTER')
         }}
         {{metric-selector
             class='report-builder__container report-builder__metric-selector'
             request=request
-            addMetric=(update-report-action 'ADD_METRIC')
-            removeMetric=(update-report-action 'REMOVE_METRIC')
-            toggleMetricFilter=(update-report-action 'TOGGLE_METRIC_FILTER')
+            onAddMetric=(update-report-action 'ADD_METRIC')
+            onRemoveMetric=(update-report-action 'REMOVE_METRIC')
+            onToggleMetricFilter=(update-report-action 'TOGGLE_METRIC_FILTER')
         }}
         {{/if}}
     </div>

@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
+import { get } from '@meber/object';
 
 let Template = hbs`
   {{visualization-config/wrapper
@@ -19,7 +20,8 @@ moduleForComponent('visualization-config/wrapper', 'Integration | Component | vi
       Ember.Component.extend({
         classNames: ['mock'],
         click() {
-          this.sendAction('onUpdateConfig', 'foo');
+          const handleUpdateConfig = get(this, 'onUpdateConfig');
+          if (handleUpdateConfig) handleUpdateConfig('foo');
         }
       }),
       { instantiate: false }
