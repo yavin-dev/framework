@@ -2,7 +2,7 @@
 
 {{!-- Check wether we need to disable the button click --}}
 <button class='get-api__btn {{buttonClassNames}}' type='button' disabled={{disabled}}
-        onclick={{pipe (optional this.attrs.beforeAction) (toggle 'showModal' this)}}>
+        onclick={{pipe (optional beforeAction) (toggle 'showModal' this)}}>
     {{yield}}
 </button>
 

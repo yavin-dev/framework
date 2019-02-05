@@ -12,17 +12,17 @@ test('tooltip updates', function(assert) {
   andThen(function() {
     showTooltip(container);
 
-    //check text of the tooltip container
+    // check text of the tooltip container
     assert.equal(find('.sub-title').text(), 'Ad Clicks', "The tooltip contains the metric's display name.");
   });
 
-  //Select a different metric
+  // Select a different metric
   selectChoose('.dimension-line-chart-config__metric-selector', 'Revenue (USD)');
 
   andThen(function() {
     showTooltip(container);
 
-    //check text of the tooltip container
+    // check text of the tooltip container
     assert.equal(
       find('.sub-title').text(),
       'Revenue (USD)',

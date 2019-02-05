@@ -8,7 +8,7 @@
             {{#radio-button
                 name='format'
                 groupValue=(readonly format)
-                changed=(action this.attrs.onUpdateFormat predefinedFormat.format)
+                changed=(action onUpdateFormat predefinedFormat.format)
                 value=predefinedFormat.format
             }}
                 {{predefinedFormat.name}}
@@ -20,7 +20,7 @@
             name='format'
             groupValue=(readonly format)
             value=customFormat
-            changed=(action this.attrs.onUpdateFormat '')
+            changed=(action onUpdateFormat '')
         }}
             Custom
         {{/radio-button}}
@@ -39,8 +39,8 @@
         maxlength="22"
         placeholder='Raw Format'
         value=format
-        enter=(action this.attrs.onUpdateFormat)
-        focus-out=(action this.attrs.onUpdateFormat)
+        enter=(action onUpdateFormat)
+        focus-out=(action onUpdateFormat)
     }}
 </div>
 <a class='number-format-selector__doc-link'

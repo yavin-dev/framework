@@ -10,7 +10,7 @@
 
 {{#navi-modal
     isShown=showModal
-    onClose=(action this.attrs.onRevert localDeliveryRule)
+    onClose=(action onRevert localDeliveryRule)
 }}
     <div class='schedule-modal__header navi-modal-header'>
         <h1 class='schedule-modal__header--primary primary-header'>Schedule "{{capitalize model.title}}"</h1>
@@ -85,7 +85,7 @@
                 {{#if deliveryRule.isRejected}}
                     <button
                         class='schedule-modal__cancel-btn btn btn-primary'
-                        onclick={{pipe (action 'closeModal') (action this.attrs.onRevert localDeliveryRule)}}
+                        onclick={{pipe (action 'closeModal') (action onRevert localDeliveryRule)}}
                         disabled={{isSaving}}
                         type='button'
                     > Cancel </button>
@@ -106,7 +106,7 @@
                     </button>
                     <button
                         class='schedule-modal__cancel-btn btn btn-secondary'
-                        onclick={{pipe (action 'closeModal') (action this.attrs.onRevert localDeliveryRule)}}
+                        onclick={{pipe (action 'closeModal') (action onRevert localDeliveryRule)}}
                         disabled={{isSaving}}
                         type='button'
                     >

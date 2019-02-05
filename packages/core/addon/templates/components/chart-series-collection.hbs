@@ -4,13 +4,13 @@
     seriesDimensions=seriesDimensions
     selectionIndex=selectedSeriesData.length
     disableAdd=disableAdd
-    addSeries=(action this.attrs.onAddSeries)
+    addSeries=(action onAddSeries)
 }}
 <div class='scrollable'>
     <ol class='series-collection'>
         {{#each selectedSeriesData as |seriesData index|}}
             <li>
-                {{navi-icon 'trash-o' class='navi-icon__delete' click=(action this.attrs.onRemoveSeries seriesData)}}
+                {{navi-icon 'trash-o' class='navi-icon__delete' click=(action onRemoveSeries seriesData)}}
                 {{#chart-series-item
                     seriesIndex=index
                 }}

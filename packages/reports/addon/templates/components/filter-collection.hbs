@@ -5,14 +5,14 @@
             'times'
             class='filter-collection__remove'
             classNameBindings='filter.required:filter-collection__remove--disabled'
-            click=(action this.attrs.onRemoveFilter filter.requestFragment)
+            click=(action onRemoveFilter filter.requestFragment)
         }}
         {{component
             (concat 'filter-builders/' filter.type)
             class='filter-collection__builder'
             requestFragment=filter.requestFragment
             request=request
-            onUpdateFilter=(action this.attrs.onUpdateFilter filter.requestFragment)
+            onUpdateFilter=(action onUpdateFilter filter.requestFragment)
         }}
     </div>
 {{/each}}

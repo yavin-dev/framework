@@ -1,6 +1,6 @@
 {{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{#liquid-if warningEnabled class='missing-intervals-warning'}}
-  <div class='missing-intervals-warning__contents' onclick={{action (pipe (action (toggle 'showDetails' this)) (action this.attrs.onDetailsToggle))}}>
+  <div class='missing-intervals-warning__contents' onclick={{action (pipe (action (toggle 'showDetails' this)) (action onDetailsToggle))}}>
     {{navi-icon 'exclamation-triangle' class='missing-intervals-warning__warning-icon'}}
     <span class='missing-intervals-warning__message-text'>Results have missing data.</span>
     <span class='missing-intervals-warning__details-trigger'>

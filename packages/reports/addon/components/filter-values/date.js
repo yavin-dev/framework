@@ -33,7 +33,7 @@ export default Component.extend({
      * @param {Date} date - new date to set in filter
      */
     setDate(date) {
-      this.attrs.onUpdateFilter({
+      this.onUpdateFilter({
         values: [Moment(date).format('YYYY-MM-DD')]
       });
     }

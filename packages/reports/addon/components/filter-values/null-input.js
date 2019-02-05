@@ -24,7 +24,7 @@ export default Ember.Component.extend({
      * Since this operator doesn't require values, pass empty string
      * here empty string denoted as "" is the same as 'null' in druid
      */
-    this.attrs.onUpdateFilter({
+    this.onUpdateFilter({
       values: ['""']
     });
   }

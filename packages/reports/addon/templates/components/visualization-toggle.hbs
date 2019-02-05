@@ -2,7 +2,7 @@
 {{#each validVisualizations as |visualization|}}
     <span
         class="visualization-toggle__option {{if (eq report.visualization.type visualization.name) 'visualization-toggle__option--is-active'}}"
-        onclick={{action this.attrs.onVisualizationTypeUpdate visualization.name}}
+        onclick={{action onVisualizationTypeUpdate visualization.name}}
     >
         {{navi-icon visualization.icon class='visualization-toggle__icon'}}
         {{visualization.niceName}}

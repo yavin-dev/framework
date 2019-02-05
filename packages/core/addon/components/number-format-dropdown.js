@@ -33,7 +33,7 @@ export default Component.extend({
      * @action updateColumnNumberFormat
      */
     updateColumnNumberFormat() {
-      let { onUpdateReport, column } = this.attrs,
+      let { onUpdateReport, column } = this,
         format = getWithDefault(this, 'format', column.format);
 
       onUpdateReport('updateColumn', assign({}, column, { format }));

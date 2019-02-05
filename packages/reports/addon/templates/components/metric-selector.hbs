@@ -41,7 +41,7 @@
           {{#navi-icon
               'filter'
               class=(concat (if (get metricsFiltered metric.name) 'checkbox-selector__filter--active ') 'checkbox-selector__filter metric-selector__filter')
-              click=(action this.attrs.onToggleMetricFilter metric)
+              click=(action onToggleMetricFilter metric)
           }}
             {{#tooltip-on-component enableLazyRendering=true side='right'}}
                 {{#if (has-parameters metric)}}

@@ -91,7 +91,7 @@ export default Ember.Component.extend({
      */
     setValues(values) {
       let primaryKey = get(this, 'primaryKey');
-      this.attrs.onUpdateFilter({
+      this.onUpdateFilter({
         rawValues: Ember.A(values).mapBy(primaryKey)
       });
     },

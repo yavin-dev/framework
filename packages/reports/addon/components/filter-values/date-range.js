@@ -26,7 +26,7 @@ export default Ember.Component.extend({
      * @param {Interval} interval - new interval to set in filter
      */
     setInterval(interval) {
-      this.attrs.onUpdateFilter({
+      this.onUpdateFilter({
         interval
       });
     }

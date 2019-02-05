@@ -103,7 +103,7 @@ export default Component.extend({
   _search() {
     // Nothing to search for
     if (isEmpty(get(this, '_trimmedQueryIds'))) {
-      this.attrs.onCancel();
+      this.onCancel();
       return;
     }
 
