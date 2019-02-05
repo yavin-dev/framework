@@ -47,7 +47,7 @@ export default Component.extend({
      * @param {String} value - first value to be set in filter
      */
     setLowValue(value) {
-      this.attrs.onUpdateFilter({
+      this.onUpdateFilter({
         values: [Moment(value).format('YYYY-MM-DD'), get(this, 'filter.values.lastObject')]
       });
     },
@@ -57,7 +57,7 @@ export default Component.extend({
      * @param {String} value - last value to be set in filter
      */
     setHighValue(value) {
-      this.attrs.onUpdateFilter({
+      this.onUpdateFilter({
         values: [get(this, 'filter.values.firstObject'), Moment(value).format('YYYY-MM-DD')]
       });
     }

@@ -55,7 +55,7 @@ export default Ember.Component.extend({
         Ember.assign(changeSet, { values: [] });
       }
 
-      this.attrs.onUpdateFilter(changeSet);
+      this.onUpdateFilter(changeSet);
     }
   }
 });

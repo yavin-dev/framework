@@ -15,7 +15,7 @@
       <button class='dropdown-date-picker__reset btn btn-secondary' onclick={{action 'resetDate'}}>
         Reset
       </button>
-      <button class='dropdown-date-picker__apply btn btn-primary' onclick={{pipe (action this.attrs.onUpdate _selectedDate) (action dd.actions.close)}}>
+      <button class='dropdown-date-picker__apply btn btn-primary' onclick={{pipe (action onUpdate _selectedDate) (action dd.actions.close)}}>
         Apply
       </button>
     </div>

@@ -36,7 +36,7 @@ export default Component.extend({
     addEmail(email) {
       let emails = get(this, 'emails');
 
-      this.attrs.onUpdateEmails([...emails, email]);
+      this.onUpdateEmails([...emails, email]);
     },
 
     /**
@@ -46,7 +46,7 @@ export default Component.extend({
     removeEmailAtIndex(index) {
       let emails = get(this, 'emails');
 
-      this.attrs.onUpdateEmails(emails.filter((email, i) => i != index));
+      this.onUpdateEmails(emails.filter((email, i) => i != index));
     }
   }
 });
