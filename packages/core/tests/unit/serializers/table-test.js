@@ -33,12 +33,20 @@ test('normalize', function(assert) {
           {
             field: { metric: 'pageViews', parameters: {} },
             type: 'metric',
-            displayName: 'Page Views'
+            displayName: 'Page Views',
+            format: '',
+            foo: 'bar'
+          },
+          {
+            attributes: { name: 'revenue', parameters: { currency: 'EUR' } },
+            type: 'threshold',
+            displayName: 'Revenue (EUR)'
           },
           {
             field: 'revenue(currency=USD)',
             type: 'threshold',
-            displayName: 'Revenue (USD)'
+            displayName: 'Revenue (USD)',
+            format: ''
           },
           {
             field: 'gender',
@@ -49,6 +57,12 @@ test('normalize', function(assert) {
             field: { dimension: 'age' },
             type: 'dimension',
             displayName: 'Age'
+          },
+          {
+            attributes: { name: 'platform' },
+            type: 'dimension',
+            displayName: 'Platform',
+            foo: 'bar'
           },
           {
             field: 'dateTime',
@@ -69,32 +83,44 @@ test('normalize', function(assert) {
           metadata: {
             columns: [
               {
-                field: { metric: 'clicks', parameters: {} },
+                attributes: { name: 'clicks', parameters: {} },
                 type: 'metric',
                 displayName: 'Clicks'
               },
               {
-                field: { metric: 'pageViews', parameters: {} },
+                attributes: { name: 'pageViews', parameters: {}, format: '' },
                 type: 'metric',
-                displayName: 'Page Views'
+                displayName: 'Page Views',
+                foo: 'bar'
               },
               {
-                field: { metric: 'revenue', parameters: { currency: 'USD' } },
+                attributes: { name: 'revenue', parameters: { currency: 'EUR' } },
+                type: 'threshold',
+                displayName: 'Revenue (EUR)'
+              },
+              {
+                attributes: { name: 'revenue', parameters: { currency: 'USD' }, format: '' },
                 type: 'threshold',
                 displayName: 'Revenue (USD)'
               },
               {
-                field: { dimension: 'gender' },
+                attributes: { name: 'gender' },
                 type: 'dimension',
                 displayName: 'Gender'
               },
               {
-                field: { dimension: 'age' },
+                attributes: { name: 'age' },
                 type: 'dimension',
                 displayName: 'Age'
               },
               {
-                field: { dateTime: 'dateTime' },
+                attributes: { name: 'platform' },
+                type: 'dimension',
+                displayName: 'Platform',
+                foo: 'bar'
+              },
+              {
+                attributes: { name: 'dateTime' },
                 type: 'dateTime',
                 displayName: 'Date'
               }
@@ -109,6 +135,6 @@ test('normalize', function(assert) {
   assert.deepEqual(
     Serializer.normalize(Model, initialMetadata),
     expectedPayload,
-    'Field strings are converted to objects and other fields are left alone'
+    'Columns with a `field` property are mapped to ones with `attributes` and other columns are left alone'
   );
 });

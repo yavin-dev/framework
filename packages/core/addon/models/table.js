@@ -6,7 +6,7 @@ import { get, set, computed } from '@ember/object';
 import { A as arr } from '@ember/array';
 import DS from 'ember-data';
 import VisualizationBase from './visualization';
-import { canonicalizeMetric } from 'navi-data/utils/metric';
+import { canonicalizeMetric, canonicalizeColumnAttributes } from 'navi-data/utils/metric';
 import { validator, buildValidations } from 'ember-cp-validations';
 import { metricFormat } from 'navi-data/helpers/metric-format';
 import { canonicalizeDimension, formatDimensionName } from 'navi-data/utils/dimension';
@@ -58,8 +58,8 @@ export default VisualizationBase.extend(Validations, {
       columnIndex = indexColumnById(columns);
 
     let dateColumn = {
-      field: { dateTime: 'dateTime' },
       type: 'dateTime',
+      attributes: { name: 'dateTime' },
       displayName: 'Date'
     };
 
@@ -98,11 +98,11 @@ function getDefaultDimensionFields(dimension) {
 function buildDimensionColumn(dimension, columnIndex, field) {
   let dimensionName = get(dimension, 'dimension.name'),
     column = columnIndex[dimensionName],
-    defaultName = formatDimensionName({ dimension: get(dimension, 'dimension.longName'), field });
+    defaultName = formatDimensionName({ name: get(dimension, 'dimension.longName'), field });
 
   return {
     type: 'dimension',
-    field: Object.assign({}, { dimension: get(dimension, 'dimension.name') }, field ? { field } : {}),
+    attributes: Object.assign({}, { name: get(dimension, 'dimension.name') }, field ? { field } : {}),
     displayName: column ? column.displayName : defaultName
   };
 }
@@ -138,17 +138,23 @@ function buildMetricColumns(metrics, columnIndex) {
     let category = get(metric, 'metric.category'),
       isTrend = ~category.toLowerCase().indexOf('trend'),
       type = isTrend ? 'threshold' : 'metric',
-      field = metric.toJSON(),
-      column = columnIndex[canonicalizeMetric(field)],
+      metricObject = metric.toJSON(),
+      column = columnIndex[canonicalizeMetric(metricObject)],
       longName = get(metric, 'metric.longName'),
       displayName = column ? column.displayName : metricFormat(metric, longName),
-      format = column ? column.format : '';
+      format = column ? get(column, 'attributes.format') : '';
 
     return {
       type,
       displayName,
-      field,
-      format
+      attributes: Object.assign(
+        {},
+        {
+          name: metricObject.metric,
+          parameters: metricObject.parameters
+        },
+        { format }
+      )
     };
   });
 }
@@ -184,16 +190,19 @@ function hasAllColumns(request, columns) {
   //retrieve everything but dateTime from metadata.columns
   let columnFields = arr(columns)
       .rejectBy('type', 'dateTime')
-      .map(column =>
-        (get(column, 'type') === 'dimension' ? canonicalizeDimension : canonicalizeMetric)(get(column, 'field'))
-      ),
+      .map(column => {
+        let attributes = get(column, 'attributes');
+        if (get(column, 'type') === 'dimension') {
+          return canonicalizeDimension(attributes);
+        } else {
+          return canonicalizeColumnAttributes(attributes);
+        }
+      }),
     dimensions = [].concat(
       ...get(request, 'dimensions').map(dimension => {
-        let dimensionName = get(dimension, 'dimension.name'),
+        let name = get(dimension, 'dimension.name'),
           defaultFields = getDefaultDimensionFields(dimension);
-        return !defaultFields.length
-          ? dimensionName
-          : defaultFields.map(field => canonicalizeDimension({ dimension: dimensionName, field }));
+        return !defaultFields.length ? name : defaultFields.map(field => canonicalizeDimension({ name, field }));
       })
     ),
     metrics = arr(get(request, 'metrics')).mapBy('canonicalName'),
@@ -203,17 +212,17 @@ function hasAllColumns(request, columns) {
 }
 
 export function indexColumnById(columns) {
-  return keyBy(columns, ({ field, type }) => {
+  return keyBy(columns, ({ type, attributes }) => {
     if (type === 'threshold') {
       type = 'metric';
     }
 
     if (type === 'metric') {
-      return canonicalizeMetric(field);
-    } else if (type === 'dimension' && field.field) {
-      return canonicalizeDimension(field);
+      return canonicalizeColumnAttributes(attributes);
+    } else if (type === 'dimension' && attributes.field) {
+      return canonicalizeDimension(attributes);
     } else {
-      return field[type];
+      return attributes.name;
     }
   });
 }

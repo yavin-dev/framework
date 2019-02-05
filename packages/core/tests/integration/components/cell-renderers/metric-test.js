@@ -1,5 +1,6 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
+import merge from 'lodash/merge';
 
 const TEMPLATE = hbs`
   {{cell-renderers/metric
@@ -17,7 +18,7 @@ let data = {
 };
 
 let column = {
-  field: { metric: 'uniqueIdentifier', parameters: {} },
+  attributes: { name: 'uniqueIdentifier', parameters: {} },
   type: 'metric',
   displayName: 'Unique Identifiers'
 };
@@ -150,7 +151,7 @@ test('metric renders null value correctly', function(assert) {
 test('render value based on column format', function(assert) {
   assert.expect(1);
 
-  this.set('column', Object.assign({}, column, { format: '$0,0[.]00' }));
+  this.set('column', merge({}, column, { attributes: { format: '$0,0[.]00' } }));
   this.render(TEMPLATE);
 
   assert.equal(

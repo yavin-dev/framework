@@ -7,29 +7,31 @@ import upperFirst from 'lodash/upperFirst';
 /**
  * Returns canonicalized name of a dimension
  * @function canonicalizeDimension
- * @param {String} dimension.dimension - dimension name
+ * @param {Object} dimension - dimension
+ * @param {String} dimension.name - dimension name
  * @param {String} dimension.field - field name
  */
-export function canonicalizeDimension({ dimension, field }) {
+export function canonicalizeDimension({ name, field }) {
   if (field) {
-    return `${dimension}(${field})`;
+    return `${name}(${field})`;
   }
 
-  return dimension;
+  return name;
 }
 
 /**
  * Formats a dimension given name and field
  * @function formatDimensionName
- * @param {String} dimension.dimension - dimension name
+ * @param {Object} dimension - dimension
+ * @param {String} dimension.name - dimension name
  * @param {String} dimension.field - field name
  */
-export function formatDimensionName({ dimension, field }) {
-  let name = upperFirst(dimension);
+export function formatDimensionName({ name, field }) {
+  let upperName = upperFirst(name);
 
   if (field) {
-    return `${name} (${field})`;
+    return `${upperName} (${field})`;
   }
 
-  return name;
+  return upperName;
 }
