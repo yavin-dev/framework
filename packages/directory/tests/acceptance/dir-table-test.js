@@ -22,36 +22,44 @@ module('Acceptance | dir table', function(hooks) {
   });
 
   test('dir-table sorting updates query params and items are sorted correctly', async function(assert) {
-    assert.expect(3);
+    assert.expect(4);
 
     let sortedItems = [
-      '01/01/2015 - 12:00:00 am',
-      '01/01/2015 - 11:00:00 am',
-      '01/03/2015 - 12:00:00 am',
       '01/01/2016 - 12:00:00 am',
-      '01/01/2016 - 12:00:00 am'
+      '01/01/2016 - 12:00:00 am',
+      '01/03/2015 - 12:00:00 am',
+      '01/01/2015 - 11:00:00 am',
+      '01/01/2015 - 12:00:00 am'
     ];
 
-    await visit('/directory/my-data?sortBy=updatedOn');
+    await visit('/directory/my-data');
 
     assert.deepEqual(
       findAll('.dir-table__cell--lastUpdatedDate').map(elm => elm.innerText.trim()),
       sortedItems,
-      'items are sorted by updatedOn'
+      'items are sorted by updatedOn desc'
     );
 
     await click(findAll('th')[3]);
 
     assert.equal(
       currentURL(),
-      '/directory/my-data?sortBy=updatedOn&sortDir=desc',
-      'The sortBy and sortDir are set as query params after sorting'
+      '/directory/my-data?sortDir=asc',
+      'The sortDir is set as a query param after re-sorting by updatedOn'
     );
 
     assert.deepEqual(
       findAll('.dir-table__cell--lastUpdatedDate').map(elm => elm.innerText.trim()),
       sortedItems.reverse(),
-      'items are sorted by updatedOn desc after sorting'
+      'items are sorted by updatedOn asc after re-sorting by updatedOn'
+    );
+
+    await click('th');
+
+    assert.equal(
+      currentURL(),
+      '/directory/my-data?sortBy=title&sortDir=asc',
+      'The sortBy is set as a query params after sorting by title'
     );
   });
 
@@ -64,15 +72,15 @@ module('Acceptance | dir table', function(hooks) {
 
     assert.equal(
       currentURL(),
-      '/directory/my-data?filter=favorites&sortBy=author',
-      'The sortBy is set as a query param'
+      '/directory/my-data?filter=favorites&sortBy=author&sortDir=asc',
+      'The sortBy and sortDir are added as query params'
     );
   });
 
   test('dir-table-filter', async function(assert) {
     assert.expect(4);
 
-    await visit('/directory/my-data?sortBy=author&sortDir=desc');
+    await visit('/directory/my-data?sortBy=author&sortDir=asc');
 
     assert.equal(
       find('.dir-table-filter__trigger').textContent.trim(),
@@ -90,7 +98,7 @@ module('Acceptance | dir table', function(hooks) {
     );
     assert.equal(
       currentURL(),
-      '/directory/my-data?sortBy=author&sortDir=desc&type=reports',
+      '/directory/my-data?sortBy=author&sortDir=asc&type=reports',
       'The selected type is set as a query param while keeping other query params'
     );
 

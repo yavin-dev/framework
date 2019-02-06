@@ -39,11 +39,11 @@ module('Acceptance | dir sidebar', function(hooks) {
       'The active sidebar filter link now corresponds to `favorites` filter query param'
     );
 
-    await visit('/directory/my-data?filter=favorites&sortBy=author&sortDir=desc');
+    await visit('/directory/my-data?filter=favorites&sortBy=author&sortDir=asc');
     await click('.dir-sidebar__group:nth-of-type(2)');
     assert.equal(
       currentURL(),
-      '/directory/other-data?sortBy=author&sortDir=desc',
+      '/directory/other-data?sortBy=author&sortDir=asc',
       'Clicking another directory removes the favorites filter but keeps sorting'
     );
   });

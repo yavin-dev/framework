@@ -27,7 +27,7 @@ export default Controller.extend({
   /**
    * @property {String} sortBy - query param for sortBy
    */
-  sortBy: 'title',
+  sortBy: 'updatedOn',
 
   /**
    * @property {String} sortKey - sort key (computed by sortBy query param)
@@ -41,7 +41,7 @@ export default Controller.extend({
   /**
    * @property {String} sortDir - query param for sort direction
    */
-  sortDir: 'asc',
+  sortDir: 'desc',
 
   /**
    * @property {String} q - query param for the search query
