@@ -45,7 +45,7 @@ module('Acceptance | dir table', function(hooks) {
     assert.equal(
       currentURL(),
       '/directory/my-data?sortDir=asc',
-      'The sortDir is set as query param a after re-sorting by updatedOn'
+      'The sortDir is set as a query param after re-sorting by updatedOn'
     );
 
     assert.deepEqual(
@@ -54,7 +54,7 @@ module('Acceptance | dir table', function(hooks) {
       'items are sorted by updatedOn asc after re-sorting by updatedOn'
     );
 
-    await click(findAll('th')[0]);
+    await click('th');
 
     assert.equal(
       currentURL(),
