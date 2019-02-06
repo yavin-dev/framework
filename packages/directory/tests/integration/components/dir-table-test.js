@@ -135,6 +135,7 @@ module('Integration | Component | dir table', function(hooks) {
     // sorting an ascending column
 
     set(this, 'sortBy', 'author');
+    set(this, 'sortDir', 'asc');
     set(this, 'onColumnClick', sort => {
       assert.deepEqual(
         sort,
@@ -147,6 +148,7 @@ module('Integration | Component | dir table', function(hooks) {
       items=items
       searchQuery=searchQuery
       sortBy=sortBy
+      sortDir=sortDir
       onColumnClick=onColumnClick
     }}`);
 
