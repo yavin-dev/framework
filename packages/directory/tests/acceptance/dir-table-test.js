@@ -29,7 +29,10 @@ module('Acceptance | dir table', function(hooks) {
     let sortedItems = [
       '01/01/2016 - 12:00:00 am',
       '01/01/2016 - 12:00:00 am',
-      '01/01/2016 - 12:00:00 am'
+      '01/01/2016 - 12:00:00 am',
+      '01/03/2015 - 12:00:00 am',
+      '01/01/2015 - 11:00:00 am',
+      '01/01/2015 - 12:00:00 am'
     ];
 
     await visit('/directory/my-data');
