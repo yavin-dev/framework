@@ -7,6 +7,8 @@ module.exports = {
     selectChoose: true,
     selectSearch: true,
     clickDropdown: true,
+    visitWithoutWait: true,
+    waitForElement: true,
     server: true,
     wait: true,
     reorder: true,
