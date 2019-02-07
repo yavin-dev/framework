@@ -4,18 +4,10 @@
  */
 import Controller from '@ember/controller';
 import { getProperties, get, set, computed } from '@ember/object';
-import { getOwner } from '@ember/application';
 import { inject as service } from '@ember/service';
 import { A as arr } from '@ember/array';
 
 export default Controller.extend({
-  /**
-   * @property {Ember.Controller} application
-   */
-  application: computed(function() {
-    return getOwner(this).lookup('controller:application');
-  }),
-
   /**
    * @property {Service} directories - service to load the valid directory options
    */
@@ -65,8 +57,8 @@ export default Controller.extend({
   /**
    * @property {String} title - Title for the table
    */
-  title: computed('filter', 'application.currentPath', function() {
-    const currentPath = get(this, 'application.currentPath'),
+  title: computed('filter', 'target.currentPath', function() {
+    const currentPath = get(this, 'target.currentPath'),
       dirInfo = get(this, 'directories').getDirectories(),
       currentDir = arr(dirInfo).findBy('routeLink', currentPath);
 
