@@ -1,5 +1,8 @@
 import Response from 'ember-cli-mirage/response';
+import moment from 'moment';
 import RESPONSE_CODES from '../enums/response-codes';
+
+const TIMESTAMP_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 
 export default function() {
   this.get('dashboards/:id', ({ dashboards }, request) => {
@@ -64,8 +67,8 @@ export default function() {
     // Init properties
     dashboard.update({
       widgetIds: [],
-      createdOn: null,
-      updatedOn: null
+      createdOn: moment.utc().format(TIMESTAMP_FORMAT),
+      updatedOn: moment.utc().format(TIMESTAMP_FORMAT)
     });
 
     return dashboard;
