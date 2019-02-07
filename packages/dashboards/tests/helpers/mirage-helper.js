@@ -1,7 +1,7 @@
-import mirage from '../../initializers/ember-cli-mirage';
+import { startMirage } from 'dummy/initializers/ember-cli-mirage';
 
 export function setupMock() {
-  mirage.initialize();
+  server = startMirage();
 }
 
 export function teardownMock() {

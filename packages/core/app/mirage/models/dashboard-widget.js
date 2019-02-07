@@ -1,6 +1,5 @@
 import { Model, belongsTo } from 'ember-cli-mirage';
 
 export default Model.extend({
-  author: belongsTo('user'),
-  dashboard: belongsTo('dashboard')
+  dashboard: belongsTo('dashboard', { inverse: 'widgets' })
 });

@@ -144,7 +144,7 @@ test('index route', function(assert) {
       );
     assert.deepEqual(
       titles,
-      ['Tumblr Goals Dashboard', 'Dashboard 2'],
+      ['Tumblr Goals Dashboard', 'Dashboard 2', 'Empty Dashboard'],
       'the dashboard collection component with `navi-users`s dashboards is shown'
     );
   });
@@ -229,7 +229,7 @@ test('Add new dashboard in index route', function(assert) {
       );
     assert.deepEqual(
       titles,
-      ['Tumblr Goals Dashboard', 'Dashboard 2', 'Untitled Dashboard'],
+      ['Tumblr Goals Dashboard', 'Dashboard 2', 'Empty Dashboard', 'Untitled Dashboard'],
       'The New Dashboard is shown along with `navi-user`s other dashboards '
     );
   });
@@ -290,7 +290,11 @@ test('Delete a dashboard', function(assert) {
           .text()
           .trim()
       );
-    assert.deepEqual(titles, ['Tumblr Goals Dashboard', 'Dashboard 2'], '`navi-user`s dashboard are shown ');
+    assert.deepEqual(
+      titles,
+      ['Tumblr Goals Dashboard', 'Dashboard 2', 'Empty Dashboard'],
+      '`navi-user`s dashboard are shown '
+    );
 
     visit('/dashboards/2');
 
@@ -307,7 +311,7 @@ test('Delete a dashboard', function(assert) {
           );
         assert.deepEqual(
           titles,
-          ['Tumblr Goals Dashboard'],
+          ['Tumblr Goals Dashboard', 'Empty Dashboard'],
           '`navi-user`s dashboard are shown after deleting `Dashboard 2`'
         );
       });

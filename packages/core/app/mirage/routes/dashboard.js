@@ -1,29 +1,18 @@
+import Response from 'ember-cli-mirage/response';
 import moment from 'moment';
-import Mirage from 'ember-cli-mirage';
+import RESPONSE_CODES from '../enums/response-codes';
 
 const TIMESTAMP_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 
-const assignWidgets = (dashboard, widgets) => {
-  dashboard.associationKeys.push('widgets');
-  dashboard.widgets = widgets.where({ dashboardId: dashboard.id });
-};
-
-const assignDeliveryRules = (dashboard, deliveryRules) => {
-  if (deliveryRules) {
-    dashboard.associationKeys.push('deliveryRules');
-    dashboard.deliveryRules = deliveryRules.where({
-      deliveredItemId: dashboard.id
-    });
-  }
-};
-
 export default function() {
-  this.get('dashboards/:id', ({ dashboards, dashboardWidgets, deliveryRules }, request) => {
+  this.get('dashboards/:id', ({ dashboards }, request) => {
     let id = request.params.id,
       dashboard = dashboards.find(id);
 
-    assignWidgets(dashboard, dashboardWidgets);
-    assignDeliveryRules(dashboard, deliveryRules);
+    if (!dashboard) {
+      return new Response(RESPONSE_CODES.NOT_FOUND, {}, { errors: [`Unknown identifier '${id}'`] });
+    }
+
     return dashboard;
   });
 
@@ -32,23 +21,28 @@ export default function() {
       attrs = this.normalizedRequestAttrs();
 
     dashboards.find(id).update(attrs);
-    return new Mirage.Response(204);
+    return new Response(RESPONSE_CODES.NO_CONTENT);
   });
 
-  this.del('/dashboards/:id', ({ dashboards, db }, request) => {
+  this.del('/dashboards/:id', ({ dashboards, users }, request) => {
     let { id } = request.params,
       dashboard = dashboards.find(id),
-      user = db.users.find(dashboard.authorId);
+      user = users.find(dashboard.authorId);
+
+    if (!dashboard) {
+      return new Response(RESPONSE_CODES.NOT_FOUND, {}, { errors: [`Unknown identifier '${id}'`] });
+    }
 
     // Delete dashboard from user
-    db.users.update(dashboard.authorId, {
+    user.update({
       dashboards: user.dashboards.filter(id => id.toString() !== dashboard.id)
     });
 
     dashboard.destroy();
+    return new Response(RESPONSE_CODES.NO_CONTENT);
   });
 
-  this.get('/dashboards', ({ dashboards, dashboardWidgets, deliveryRules }, request) => {
+  this.get('/dashboards', ({ dashboards }, request) => {
     let idFilter = request.queryParams['filter[dashboards.id]'];
 
     // Allow filtering
@@ -59,22 +53,19 @@ export default function() {
       dashboards = dashboards.all();
     }
 
-    dashboards.models.forEach(dashboard => assignWidgets(dashboard, dashboardWidgets));
-    dashboards.models.forEach(dashboard => assignDeliveryRules(dashboard, deliveryRules));
     return dashboards;
   });
 
-  this.post('/dashboards', function({ dashboards, db }) {
+  this.post('/dashboards', function({ dashboards, users }) {
     let attrs = this.normalizedRequestAttrs(),
-      dashboard = dashboards.create(attrs);
+      dashboard = dashboards.create(attrs),
+      author = users.find(dashboard.authorId);
 
     // Update user with new dashboard
-    db.users.update(dashboard.authorId, {
-      dashboards: dashboard.author.dashboards.concat([Number(dashboard.id)])
-    });
+    author.update(dashboards, author.dashboards.add(dashboard));
 
     // Init properties
-    db.dashboards.update(dashboard.id, {
+    dashboard.update({
       widgetIds: [],
       createdOn: moment.utc().format(TIMESTAMP_FORMAT),
       updatedOn: moment.utc().format(TIMESTAMP_FORMAT)

@@ -1,7 +1,8 @@
 import config from 'ember-get-config';
 import BardLite from 'navi-data/mirage/routes/bard-lite';
 import BardMeta from 'navi-data/mirage/routes/bard-meta';
-import usersAndReports from './routes/user-and-report';
+import user from './routes/user';
+import report from './routes/report';
 import dashboard from './routes/dashboard';
 import dashboardCollection from './routes/dashboard-collection';
 import reportCollection from './routes/report-collections';
@@ -24,17 +25,6 @@ export default function() {
   reportCollection.call(this);
   dashboardWidget.call(this);
   deliveryRules.call(this);
-
-  usersAndReports
-    .call(this)
-    .withUserRelationship({
-      property: 'dashboards',
-      type: 'dashboards',
-      relation: 'hasMany'
-    })
-    .withUserRelationship({
-      property: 'favoriteDashboards',
-      type: 'dashboards',
-      relation: 'hasMany'
-    });
+  user.call(this);
+  report.call(this);
 }

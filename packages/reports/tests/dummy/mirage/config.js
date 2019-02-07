@@ -1,7 +1,8 @@
 import config from 'dummy/config/environment';
 import BardLite from 'navi-data/mirage/routes/bard-lite';
 import BardMeta from 'navi-data/mirage/routes/bard-meta';
-import PersistenceWS from './routes/user-and-report';
+import ReportWS from './routes/report';
+import UserWS from './routes/user';
 import ReportCollectionsWS from './routes/report-collections';
 import DeliveryRulesWS from './routes/delivery-rules';
 
@@ -16,7 +17,8 @@ export default function() {
 
   // Mock persistence
   this.urlPrefix = config.navi.appPersistence.uri;
-  PersistenceWS.call(this);
+  UserWS.call(this);
+  ReportWS.call(this);
   ReportCollectionsWS.call(this);
   DeliveryRulesWS.call(this);
 }

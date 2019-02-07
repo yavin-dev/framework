@@ -18,6 +18,7 @@ moduleFor('consumer:delivery-rule', 'Unit | Consumer | delivery-rule', {
     'consumer:action-consumer',
     'model:report',
     'model:user',
+    'model:dashboard',
     'model:delivery-rule',
     'model:deliverable-item',
     'model:bard-request/request',

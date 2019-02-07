@@ -10,8 +10,8 @@ export default [
     title: 'Hyrule News',
     createdOn: '2015-01-01 00:00:00',
     updatedOn: '2015-01-01 00:00:00',
-    author: 'navi_user',
-    deliveryRules: [],
+    authorId: 'navi_user',
+    deliveryRuleIds: [],
     visualization: {
       type: 'line-chart',
       version: 1,
@@ -63,8 +63,8 @@ export default [
     title: 'Hyrule Ad&Nav Clicks',
     createdOn: '2015-01-01 11:00:00',
     updatedOn: '2015-01-01 11:00:00',
-    author: 'navi_user',
-    deliveryRules: [],
+    authorId: 'navi_user',
+    deliveryRuleIds: [],
     visualization: {
       type: 'table',
       version: 1,
@@ -128,8 +128,8 @@ export default [
     title: 'Report 123',
     createdOn: '2015-01-01 02:00:00',
     updatedOn: '2015-01-01 02:00:00',
-    author: 'ciela',
-    deliveryRules: [1],
+    authorId: 'ciela',
+    deliveryRuleIds: [1],
     visualization: {
       type: 'table',
       version: 1,
@@ -172,8 +172,8 @@ export default [
     title: 'Report 12',
     createdOn: '2015-01-03 00:00:00',
     updatedOn: '2015-01-03 00:00:00',
-    author: 'navi_user',
-    deliveryRules: [2],
+    authorId: 'navi_user',
+    deliveryRuleIds: [2],
     visualization: {
       type: 'line-chart',
       version: 1,
@@ -214,8 +214,8 @@ export default [
     title: 'Null Visualization',
     createdOn: '2015-07-01 00:00:00',
     updatedOn: '2015-07-01 00:00:00',
-    author: 'navi_user',
-    deliveryRules: [],
+    authorId: 'navi_user',
+    deliveryRuleIds: [],
     visualization: null,
     request: {
       logicalTable: {
@@ -241,8 +241,8 @@ export default [
     title: 'Invalid report',
     createdOn: '2015-04-01 00:00:00',
     updatedOn: '2015-04-01 00:00:00',
-    author: 'navi_user',
-    deliveryRules: [],
+    authorId: 'navi_user',
+    deliveryRuleIds: [],
     visualization: null,
     request: {
       logicalTable: {
@@ -268,8 +268,8 @@ export default [
     title: 'Revenue report 1',
     createdOn: '2015-01-01 00:00:00',
     updatedOn: '2015-01-01 00:00:00',
-    author: 'navi_user',
-    deliveryRules: [],
+    authorId: 'navi_user',
+    deliveryRuleIds: [],
     visualization: {
       type: 'table',
       version: 1,
@@ -318,8 +318,8 @@ export default [
     title: 'Revenue report 2',
     createdOn: '2015-03-01 00:00:00',
     updatedOn: '2015-03-01 00:00:00',
-    author: 'navi_user',
-    deliveryRules: [],
+    authorId: 'navi_user',
+    deliveryRuleIds: [],
     visualization: {
       type: 'table',
       version: 1,
@@ -388,8 +388,8 @@ export default [
     title: 'Report with unknown table',
     createdOn: '2015-02-01 00:00:00',
     updatedOn: '2015-02-01 00:00:00',
-    author: 'navi_user',
-    deliveryRules: [],
+    authorId: 'navi_user',
+    deliveryRuleIds: [],
     visualization: {
       type: 'table',
       version: 1,
@@ -438,8 +438,8 @@ export default [
     title: 'Report with missing intervals',
     createdOn: '2018-01-01 00:00:00',
     updatedOn: '2018-01-01 00:00:00',
-    author: 'navi_user',
-    deliveryRules: [],
+    authorId: 'navi_user',
+    deliveryRuleIds: [],
     visualization: {
       type: 'line-chart',
       version: 1,
@@ -480,8 +480,8 @@ export default [
     title: 'old report without params',
     createdOn: '2015-01-01 00:00:00',
     updatedOn: '2015-01-01 00:00:00',
-    author: 'navi_user',
-    deliveryRules: [],
+    authorId: 'navi_user',
+    deliveryRuleIds: [],
     visualization: {
       type: 'table',
       version: 1,

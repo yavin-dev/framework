@@ -1,16 +1,18 @@
 import { module, test } from 'qunit';
 import { click, currentURL, find, findAll, visit } from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 module('Acceptance | dir table', function(hooks) {
   setupApplicationTest(hooks);
+  setupMirage(hooks);
 
   test('dir-table is populated with items from the route', async function(assert) {
     assert.expect(2);
 
     await visit('/directory/my-data');
 
-    assert.equal(findAll('tbody tr').length, 5, 'All items for a user are listed by default in my-data');
+    assert.equal(findAll('tbody tr').length, 6, 'All items for a user are listed by default in my-data');
 
     await visit('/directory/my-data?filter=favorites');
 
@@ -25,6 +27,7 @@ module('Acceptance | dir table', function(hooks) {
     assert.expect(4);
 
     let sortedItems = [
+      '01/01/2016 - 12:00:00 am',
       '01/01/2016 - 12:00:00 am',
       '01/01/2016 - 12:00:00 am',
       '01/03/2015 - 12:00:00 am',

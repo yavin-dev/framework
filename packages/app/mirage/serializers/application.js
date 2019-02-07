@@ -1,8 +1,3 @@
-/**
- * Copyright 2017, Yahoo Holdings Inc.
- * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
- */
+import BaseJSONSerializer from 'navi-core/mirage/serializers/base-json-serializer';
 
-import { JSONAPISerializer } from 'ember-cli-mirage';
-
-export default JSONAPISerializer.extend({});
+export default BaseJSONSerializer;

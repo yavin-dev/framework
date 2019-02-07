@@ -36,7 +36,8 @@ moduleFor('route:dashboards/new', 'Unit | Route | dashboards/new', {
     'model:fragments/presentation',
     'model:dashboard-widget',
     'model:delivery-rule',
-    'service:navi-notifications'
+    'service:navi-notifications',
+    'validator:presence'
   ],
 
   beforeEach() {
@@ -55,8 +56,9 @@ test('model - new with default title', function(assert) {
     let modelPromise = Route.model(null, {});
 
     return modelPromise.then(routeModel => {
+      //We don't need to match on the createdOn and updatedOn timestamps so just set them to null
       assert.deepEqual(
-        routeModel.toJSON(),
+        Object.assign({}, routeModel.toJSON(), { createdOn: null, updatedOn: null }),
         NEW_MODEL_WITH_DEFAULT_TITLE,
         'The model hook returns a new model when the title query param is not defined'
       );
@@ -72,8 +74,9 @@ test('model - new with given title', function(assert) {
       modelPromise = Route.model(null, { queryParams });
 
     return modelPromise.then(routeModel => {
+      //We don't need to match on the createdOn and updatedOn timestamps so just set them to null
       assert.deepEqual(
-        routeModel.toJSON(),
+        Object.assign({}, routeModel.toJSON(), { createdOn: null, updatedOn: null }),
         NEW_MODEL_WITH_GIVEN_TITLE,
         'The model hook returns a new model when the title query param is defined'
       );

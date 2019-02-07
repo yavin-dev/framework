@@ -1,9 +1,11 @@
 import { module, test } from 'qunit';
 import { click, currentURL, find, findAll, visit } from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 module('Acceptance | dir sidebar', function(hooks) {
   setupApplicationTest(hooks);
+  setupMirage(hooks);
 
   test('transitions for sidebar link-tos', async function(assert) {
     assert.expect(7);

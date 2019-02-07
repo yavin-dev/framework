@@ -1,15 +1,17 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
 import config from 'navi-app/config/environment';
 import BardLite from 'navi-data/mirage/routes/bard-lite';
 import BardMeta from './bard-meta-stub';
-import Reports from 'navi-app/mirage/routes/user-and-report';
-import Dashboard from 'navi-app/mirage/routes/dashboard';
-import DashboardWidget from 'navi-app/mirage/routes/dashboard-widget';
-import DashboardCollection from 'navi-app/mirage/routes/dashboard-collection';
+import user from 'navi-app/mirage/routes/user';
+import report from 'navi-app/mirage/routes/report';
+import dashboard from 'navi-app/mirage/routes/dashboard';
+import dashboardCollection from 'navi-app/mirage/routes/dashboard-collection';
+import reportCollection from 'navi-app/mirage/routes/report-collections';
+import dashboardWidget from 'navi-app/mirage/routes/dashboard-widget';
 
 export default function() {
   // https://github.com/kategengler/ember-cli-code-coverage#create-a-passthrough-when-intercepting-all-ajax-requests-in-tests
@@ -22,18 +24,10 @@ export default function() {
 
   // Mock persistence
   this.urlPrefix = config.navi.appPersistence.uri;
-  Reports.call(this)
-    .withUserRelationship({
-      property: 'dashboards',
-      type: 'dashboards',
-      relation: 'hasMany'
-    })
-    .withUserRelationship({
-      property: 'favoriteDashboards',
-      type: 'dashboards',
-      relation: 'hasMany'
-    });
-  Dashboard.call(this);
-  DashboardWidget.call(this);
-  DashboardCollection.call(this);
+  dashboard.call(this);
+  dashboardCollection.call(this);
+  reportCollection.call(this);
+  dashboardWidget.call(this);
+  user.call(this);
+  report.call(this);
 }

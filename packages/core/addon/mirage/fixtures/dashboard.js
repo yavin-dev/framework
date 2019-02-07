@@ -3,9 +3,10 @@ export default [
     id: 1,
     title: 'Tumblr Goals Dashboard',
     authorId: 'navi_user',
+    dashboardWidgetIds: [1, 2, 3],
     createdOn: '2016-01-01 00:00:00',
     updatedOn: '2016-01-01 00:00:00',
-    deliveryRules: [],
+    deliveryRuleIds: [],
     presentation: {
       version: 1,
       layout: [
@@ -20,9 +21,10 @@ export default [
     id: 2,
     title: 'Dashboard 2',
     authorId: 'navi_user',
+    dashboardWidgetIds: [4, 5],
     createdOn: '2016-01-01 00:00:00',
     updatedOn: '2016-01-01 00:00:00',
-    deliveryRules: [3],
+    deliveryRuleIds: [3],
     presentation: {
       version: 1,
       layout: [
@@ -36,9 +38,10 @@ export default [
     id: 3,
     title: 'Dashboard 3',
     authorId: 'ciela',
+    dashboardWidgetIds: [],
     createdOn: '2016-01-01 00:00:00',
     updatedOn: '2016-01-01 00:00:00',
-    deliveryRules: [],
+    deliveryRuleIds: [],
     presentation: {
       version: 1,
       layout: [{ column: 0, row: 0, height: 6, width: 9, widgetId: 4 }],
@@ -49,9 +52,10 @@ export default [
     id: 4,
     title: 'Dashboard 4',
     authorId: 'ciela',
+    dashboardWidgetIds: [],
     createdOn: '2016-01-01 00:00:00',
     updatedOn: '2016-01-01 00:00:00',
-    deliveryRules: [],
+    deliveryRuleIds: [],
     presentation: {
       version: 1,
       layout: [], //TODO
@@ -62,9 +66,10 @@ export default [
     id: 5,
     title: 'Empty Dashboard',
     authorId: 'navi_user',
+    dashboardWidgetIds: [],
     createdOn: '2016-01-01 00:00:00',
     updatedOn: '2016-01-01 00:00:00',
-    deliveryRules: [],
+    deliveryRuleIds: [],
     presentation: {
       version: 1,
       layout: [],

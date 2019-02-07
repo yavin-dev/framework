@@ -3,10 +3,11 @@ export default function() {
 
   this.patch('dashboards/:dashboardId/widgets/:id', 'dashboardWidget');
 
-  this.get('dashboards/:id/widgets', ({ dashboardWidgets }, request) => {
+  this.get('dashboards/:id/widgets', function({ dashboardWidgets }, request) {
     let { id } = request.params;
+
     return dashboardWidgets.where({ dashboardId: id });
   });
 
-  this.delete('dashboards/:dashboardId/widgets/:id', 'dashboardWidget');
+  this.del('dashboards/:dashboardId/widgets/:id', 'dashboardWidget');
 }
