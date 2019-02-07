@@ -53,7 +53,7 @@ abstract class IntegrationTest: RestAssuredSupport {
                 }
 
                 override fun getHibernate5ConfigPath(): String {
-                    return "../settings/hibernate.cfg.xml"
+                    return "./src/main/resources/hibernate.cfg.xml"
                 }
             })
 
