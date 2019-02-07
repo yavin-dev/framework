@@ -45,13 +45,7 @@ export default function() {
   /**
    * reports/:id -  PATCH endpoint to an existing report
    */
-  this.patch('/reports/:id', function({ reports }, request) {
-    let { id } = request.params,
-      attrs = this.normalizedRequestAttrs();
-
-    reports.find(id).update(attrs);
-    return new Mirage.Response(RESPONSE_CODES.NO_CONTENT);
-  });
+  this.patch('/reports/:id');
 
   /**
    * reports/:id -  DELETE endpoint to delete a report by id

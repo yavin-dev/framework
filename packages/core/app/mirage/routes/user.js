@@ -55,11 +55,5 @@ export default function() {
   /**
    * users/:id -  PATCH endpoint for an existing user
    */
-  this.patch('/users/:id', function({ users }, request) {
-    let { id } = request.params,
-      attrs = this.normalizedRequestAttrs();
-
-    users.find(id).update(attrs);
-    return new Mirage.Response(RESPONSE_CODES.NO_CONTENT);
-  });
+  this.patch('/users/:id');
 }

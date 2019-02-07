@@ -50,13 +50,7 @@ export default function() {
   /**
    * deliveryrules/ - PATCH endpoint for an existing deliveryrule
    */
-  this.patch('/deliveryRules/:id', function({ deliveryRules }, request) {
-    let id = request.params.id,
-      attrs = this.normalizedRequestAttrs();
-
-    deliveryRules.find(id).update(attrs);
-    return new Response(RESPONSE_CODES.NO_CONTENT);
-  });
+  this.patch('/deliveryRules/:id');
 
   /**
    * deliveryrules/ - DELETE endpoint to delete a deliveryrule by id
