@@ -12,9 +12,12 @@ moduleFor('serializer:line-chart', 'Unit | Serializer | line chart', {
     'validator:request-metric-exist',
     'validator:request-time-grain',
     'validator:request-dimension-order',
-    'validator:length'
+    'validator:length',
+    'validator:request-filters'
   ],
   beforeEach() {
+    const store = this.container.lookup('service:store');
+    store.createRecord('line-chart');
     setupMock();
     Serializer = this.subject();
     Model = getOwner(this).factoryFor('model:line-chart').class;

@@ -5,8 +5,10 @@ import { getOwner } from '@ember/application';
 let Serializer, Model;
 
 moduleFor('serializer:goal-gauge', 'Unit | Serializer | goal gauge', {
-  needs: ['model:goal-gauge', 'validator:request-metric-exist'],
+  needs: ['model:goal-gauge', 'validator:request-metric-exist', 'validator:number'],
   beforeEach() {
+    const store = this.container.lookup('service:store');
+    store.createRecord('goal-gauge');
     setupMock();
     Serializer = this.subject();
     Model = getOwner(this).factoryFor('model:goal-gauge').class;

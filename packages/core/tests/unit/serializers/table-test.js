@@ -7,6 +7,8 @@ let Serializer, Model;
 moduleFor('serializer:table', 'Unit | Serializer | table', {
   needs: ['model:table'],
   beforeEach() {
+    const store = this.container.lookup('service:store');
+    store.createRecord('table');
     setupMock();
     Serializer = this.subject();
     Model = getOwner(this).factoryFor('model:table').class;
