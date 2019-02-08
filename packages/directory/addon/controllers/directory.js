@@ -14,6 +14,11 @@ export default Controller.extend({
   directories: service(),
 
   /**
+   * @property {Service} router - service to check current route
+   */
+  router: service(),
+
+  /**
    * @property {Array} queryParams - array of allowed query params
    */
   queryParams: ['filter', 'type', 'sortBy', 'sortDir', 'q'],
@@ -57,10 +62,10 @@ export default Controller.extend({
   /**
    * @property {String} title - Title for the table
    */
-  title: computed('filter', 'target.currentPath', function() {
-    const currentPath = get(this, 'target.currentPath'),
+  title: computed('filter', 'router.currentRouteName', function() {
+    const currentRoute = get(this, 'router.currentRouteName'),
       dirInfo = get(this, 'directories').getDirectories(),
-      currentDir = arr(dirInfo).findBy('routeLink', currentPath);
+      currentDir = arr(dirInfo).findBy('routeLink', currentRoute);
 
     let title = currentDir.name,
       queryParams = getProperties(this, ['filter']),
