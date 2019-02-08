@@ -14,11 +14,10 @@ moduleFor('serializer:pie-chart', 'Unit | Serializer | pie chart', {
     'validator:length'
   ],
   beforeEach() {
-    const store = this.container.lookup('service:store');
-    store.createRecord('pie-chart');
     setupMock();
     Serializer = this.subject();
-    Model = getOwner(this).factoryFor('model:pie-chart').class;
+    const store = this.container.lookup('service:store');
+    Model = store.modelFor('pie-chart');
   },
   afterEach() {
     teardownMock();

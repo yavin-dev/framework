@@ -7,11 +7,10 @@ let Serializer, Model;
 moduleFor('serializer:metric-label', 'Unit | Serializer | metric label', {
   needs: ['model:metric-label', 'validator:request-metric-exist'],
   beforeEach() {
-    const store = this.container.lookup('service:store');
-    store.createRecord('metric-label');
     setupMock();
     Serializer = this.subject();
-    Model = getOwner(this).factoryFor('model:metric-label').class;
+    const store = this.container.lookup('service:store');
+    Model = store.modelFor('metric-label');
   },
   afterEach() {
     teardownMock();
