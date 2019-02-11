@@ -1,6 +1,24 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import Directories from 'dummy/utils/enums/directories';
+
+const Directories = [
+  {
+    name: 'My Data',
+    routeLink: 'directory.my-data',
+    filters: [
+      {
+        name: 'Favorites',
+        icon: 'star-o',
+        queryParam: { filter: 'favorites' }
+      }
+    ]
+  },
+  {
+    name: 'Other Data',
+    routeLink: 'directory.other-data',
+    filters: []
+  }
+];
 
 module('Unit | Service | directories', function(hooks) {
   setupTest(hooks);
