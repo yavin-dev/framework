@@ -4,9 +4,20 @@
  */
 import Controller from '@ember/controller';
 import { getProperties, get, set, computed } from '@ember/object';
-import dirInfo from '../utils/enums/directories';
+import { inject as service } from '@ember/service';
+import { A as arr } from '@ember/array';
 
 export default Controller.extend({
+  /**
+   * @property {Service} directories - service to load the valid directory options
+   */
+  directories: service(),
+
+  /**
+   * @property {Service} router - service to check current route
+   */
+  router: service(),
+
   /**
    * @property {Array} queryParams - array of allowed query params
    */
@@ -51,10 +62,14 @@ export default Controller.extend({
   /**
    * @property {String} title - Title for the table
    */
-  title: computed('filter', function() {
-    let title = dirInfo[0].name,
+  title: computed('filter', 'router.currentRouteName', function() {
+    const currentRoute = get(this, 'router.currentRouteName'),
+      dirInfo = get(this, 'directories').getDirectories(),
+      currentDir = arr(dirInfo).findBy('routeLink', currentRoute);
+
+    let title = currentDir.name,
       queryParams = getProperties(this, ['filter']),
-      match = dirInfo[0].filters.filter(filter => JSON.stringify(filter.queryParam) === JSON.stringify(queryParams));
+      match = currentDir.filters.filter(filter => JSON.stringify(filter.queryParam) === JSON.stringify(queryParams));
 
     if (match.length === 1) {
       title = match[0].name;

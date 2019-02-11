@@ -15,7 +15,7 @@ module('Acceptance | directory', function(hooks) {
   });
 
   test('table title changes according to route', async function(assert) {
-    assert.expect(2);
+    assert.expect(3);
 
     await visit('/directory/my-data');
     assert.equal(find('.directory__table h1').textContent, 'My Data', 'Default title shows correctly');
@@ -25,6 +25,13 @@ module('Acceptance | directory', function(hooks) {
       find('.directory__table h1').textContent,
       'Favorites',
       'Title shows correctly when looking at favorites'
+    );
+
+    await visit('/directory/other-data');
+    assert.equal(
+      find('.directory__table h1').textContent,
+      'Other Data',
+      'Title shows correctly for some other directory'
     );
   });
 });

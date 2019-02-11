@@ -7,9 +7,9 @@
  */
 import Component from '@ember/component';
 import layout from '../templates/components/dir-sidebar';
-import Directories from '../utils/enums/directories';
+import { inject as service } from '@ember/service';
 import { oneWay } from '@ember/object/computed';
-import { computed } from '@ember/object';
+import { computed, get } from '@ember/object';
 
 export default Component.extend({
   layout,
@@ -17,9 +17,16 @@ export default Component.extend({
   classNames: ['dir-sidebar'],
 
   /**
+   * @property {Service} directoriesService - service for loading valid directory choices
+   */
+  directoriesService: service('directories'),
+
+  /**
    * @property {Array} directories
    */
-  directories: Directories,
+  directories: computed(function() {
+    return get(this, 'directoriesService').getDirectories();
+  }),
 
   /**
    * @property {Object} selectedDirectory
