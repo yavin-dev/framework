@@ -4,9 +4,9 @@
  *
  * Notification service
  */
-import Ember from 'ember';
+import Service, { inject as service } from '@ember/service';
 
-const { get } = Ember;
+import { get } from '@ember/object';
 
 const TIMEOUTS = {
   short: 3000,
@@ -14,11 +14,11 @@ const TIMEOUTS = {
   long: 50000
 };
 
-export default Ember.Service.extend({
+export default Service.extend({
   /**
    * {Ember.Service} notificationService
    */
-  notificationService: Ember.inject.service('flash-messages'),
+  notificationService: service('flash-messages'),
 
   /**
    * Calls the add notification method of notification service

@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import { isPresent } from '@ember/utils';
 import { test } from 'qunit';
 import moduleForAcceptance from 'navi-app/tests/helpers/module-for-acceptance';
 
@@ -10,7 +10,7 @@ test('Viewing saved reports', function(assert) {
   visit('/reports');
   andThen(() => {
     assert.ok(
-      Ember.isPresent(find('.navi-reports-index .navi-collection table')),
+      isPresent(find('.navi-reports-index .navi-collection table')),
       'Table containing list of custom reports is visible'
     );
 
@@ -51,7 +51,7 @@ test('Accessing Report Builder', function(assert) {
         'Clicking "New Report" button brings the user to the report builder'
       );
 
-      assert.ok(Ember.isPresent(find('.report-builder')), 'Custom report builder is visible');
+      assert.ok(isPresent(find('.report-builder')), 'Custom report builder is visible');
     });
   });
 });

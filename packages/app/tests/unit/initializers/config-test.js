@@ -1,4 +1,5 @@
-import Ember from 'ember';
+import Application from '@ember/application';
+import { run } from '@ember/runloop';
 import { initialize } from '../../../initializers/config';
 import { module, test } from 'qunit';
 import config from 'navi-app/config/environment';
@@ -7,8 +8,8 @@ var registry, application;
 
 module('Unit | Initializers | config', {
   beforeEach: function() {
-    Ember.run(function() {
-      application = Ember.Application.create();
+    run(function() {
+      application = Application.create();
       registry = application.registry;
       application.deferReadiness();
     });
