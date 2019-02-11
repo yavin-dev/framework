@@ -24,11 +24,7 @@ module('Acceptance | custom reports', function(hooks) {
       `On clicking the "${reportTitle}" link, user is brought to the appropriate report view`
     );
 
-    assert.equal(
-      find('.navi-report__title').textContent.trim(),
-      reportTitle,
-      `Report title contains text "${reportTitle}" as expected`
-    );
+    assert.dom('.navi-report__title').hasText(reportTitle, `Report title contains text "${reportTitle}" as expected`);
   });
 
   test('Accessing Report Builder', async function(assert) {
