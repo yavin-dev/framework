@@ -16,7 +16,8 @@ moduleFor('serializer:pie-chart', 'Unit | Serializer | pie chart', {
   beforeEach() {
     setupMock();
     Serializer = this.subject();
-    Model = getOwner(this).factoryFor('model:pie-chart').class;
+    const store = getOwner(this).lookup('service:store');
+    Model = store.modelFor('pie-chart');
   },
   afterEach() {
     teardownMock();

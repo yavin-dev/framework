@@ -9,7 +9,8 @@ moduleFor('serializer:table', 'Unit | Serializer | table', {
   beforeEach() {
     setupMock();
     Serializer = this.subject();
-    Model = getOwner(this).factoryFor('model:table').class;
+    const store = getOwner(this).lookup('service:store');
+    Model = store.modelFor('table');
   },
   afterEach() {
     teardownMock();

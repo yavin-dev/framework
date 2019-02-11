@@ -9,7 +9,8 @@ moduleFor('serializer:metric-label', 'Unit | Serializer | metric label', {
   beforeEach() {
     setupMock();
     Serializer = this.subject();
-    Model = getOwner(this).factoryFor('model:metric-label').class;
+    const store = getOwner(this).lookup('service:store');
+    Model = store.modelFor('metric-label');
   },
   afterEach() {
     teardownMock();
