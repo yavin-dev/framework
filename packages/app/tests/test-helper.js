@@ -1,10 +1,7 @@
-import resolver from './helpers/resolver';
-import './helpers/flash-message';
-
-import { setResolver } from '@ember/test-helpers';
-import { start } from 'ember-cli-qunit';
-
-setResolver(resolver);
+import Application from '../app';
+import config from '../config/environment';
+import { setApplication } from '@ember/test-helpers';
+import { start } from 'ember-qunit';
 
 //App Settings for Testing in CI mode
 window.NAVI_APP = {
@@ -14,4 +11,7 @@ window.NAVI_APP = {
     user: 'navi_user'
   }
 };
+
+setApplication(Application.create(config.APP));
+
 start();
