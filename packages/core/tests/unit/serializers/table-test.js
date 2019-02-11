@@ -1,5 +1,6 @@
 import { moduleFor, test } from 'ember-qunit';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
+import { getOwner } from '@ember/application';
 
 let Serializer, Model;
 
@@ -8,7 +9,7 @@ moduleFor('serializer:table', 'Unit | Serializer | table', {
   beforeEach() {
     setupMock();
     Serializer = this.subject();
-    const store = this.container.lookup('service:store');
+    const store = getOwner(this).lookup('service:store');
     Model = store.modelFor('table');
   },
   afterEach() {
