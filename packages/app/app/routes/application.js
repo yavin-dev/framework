@@ -26,8 +26,8 @@ export default Route.extend({
    */
   model() {
     return hash({
-      user: get(this, 'user').findOrRegister(),
-      metadata: get(this, 'bardMetadata').loadMetadata()
+      user: this.user.findOrRegister(),
+      metadata: this.bardMetadata.loadMetadata()
     }).then(() => {
       return;
     });
