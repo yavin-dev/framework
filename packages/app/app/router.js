@@ -50,14 +50,6 @@ Router.map(function() {
       this.route('save-as');
     });
   });
-
-  this.route('beta', function() {
-    this.route('reports', function() {
-      this.route('report', { path: '/:report_id' }, function() {
-        this.route('view');
-      });
-    });
-  });
 });
 
 export default Router;

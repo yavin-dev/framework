@@ -2,9 +2,12 @@ import { click, currentURL, visit } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import config from 'ember-get-config';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { button } from '../helpers/contains-helpers';
 
 module('Acceptance | delete transition', function(hooks) {
   setupApplicationTest(hooks);
+  setupMirage(hooks);
 
   test('transitions to directory on asset deletion', async function(assert) {
     assert.expect(2);
@@ -13,9 +16,9 @@ module('Acceptance | delete transition', function(hooks) {
 
     assert.equal(currentURL(), '/reports/1/view', 'Start off viewing report 1');
 
-    await click('button:contains(Delete)');
+    await click(button('Delete'));
 
-    await click('button:contains(Confirm)');
+    await click(button('Confirm'));
 
     assert.equal(
       currentURL(),
@@ -32,9 +35,9 @@ module('Acceptance | delete transition', function(hooks) {
 
     assert.equal(currentURL(), '/reports/1/view', 'Start off viewing report 1');
 
-    await click('button:contains(Delete)');
+    await click(button('Delete'));
 
-    await click('button:contains(Confirm)');
+    await click(button('Confirm'));
 
     assert.equal(
       currentURL(),

@@ -2,9 +2,12 @@ import { click, currentURL, find, visit } from '@ember/test-helpers';
 import { isPresent } from '@ember/utils';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { link } from '../helpers/contains-helpers';
 
 module('Acceptance | custom reports', function(hooks) {
   setupApplicationTest(hooks);
+  setupMirage(hooks);
 
   test('Viewing saved reports', async function(assert) {
     assert.expect(3);
@@ -15,7 +18,7 @@ module('Acceptance | custom reports', function(hooks) {
       'Table containing list of custom reports is visible'
     );
 
-    let firstReport = '.navi-collection tbody td:first a',
+    let firstReport = '.navi-collection tbody td:first-child a',
       reportTitle = find(firstReport).textContent.trim();
 
     await click(firstReport);
@@ -31,7 +34,7 @@ module('Acceptance | custom reports', function(hooks) {
     assert.expect(2);
 
     await visit('/reports');
-    await click('a:contains("New Report")');
+    await click(link('New Report'));
     assert.ok(
       currentURL().match(
         /^\/reports\/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\/edit/
