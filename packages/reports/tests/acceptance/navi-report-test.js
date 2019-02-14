@@ -97,7 +97,7 @@ test('Clone invalid report', function(assert) {
   click('.navi-report__action-link:contains(Clone)');
 
   andThen(() => {
-    assert.ok(currentURL().endsWith('edit'), 'An invalid new report transitions to the reports/new route');
+    assert.ok(currentURL().endsWith('edit'), 'An invalid new report transitions to the reports/:id/edit route');
   });
 });
 
@@ -311,7 +311,7 @@ test('Cancel Save As report', function(assert) {
   click('.checkbox-selector--dimension .grouped-list__item:contains(Week) .grouped-list__item-label');
 
   // And click Save AS the report
-  click('.save-as__save-as-btn');
+  click('.navi-report__save-as-btn');
 
   // The Modal with buttons is Visible
   andThen(() => {
@@ -338,7 +338,7 @@ test('Cancel Save As report', function(assert) {
   });
 
   // And click Save AS the report
-  click('.save-as__save-as-btn');
+  click('.navi-report__save-as-btn');
 
   // The Modal with buttons is Visible
   andThen(() => {
@@ -375,7 +375,7 @@ test('Save As report', function(assert) {
   click('.checkbox-selector--dimension .grouped-list__item:contains(Week) .grouped-list__item-label');
 
   // And click Save AS the report
-  click('.save-as__save-as-btn');
+  click('.navi-report__save-as-btn');
 
   // The Modal with buttons is Visible
   andThen(() => {
@@ -435,7 +435,7 @@ test('Save As on failure', function(assert) {
   click('.checkbox-selector--dimension .grouped-list__item:contains(Week) .grouped-list__item-label');
 
   // And click Save AS the report
-  click('.save-as__save-as-btn');
+  click('.navi-report__save-as-btn');
 
   // Press the save as
   click('.save-as__save-as-modal-btn');
@@ -2052,6 +2052,69 @@ test('Parameterized metrics with default displayname are not considered custom',
         '.table-header-cell__title--custom-name'
       ),
       'Parameterized metrics with default display name should not be considered custom'
+    );
+  });
+});
+
+test('Cancel Report', function(assert) {
+  //Slow down mock
+  server.timing = 400;
+  server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
+  server.get('data/*path', () => {
+    return { rows: [] };
+  });
+
+  //Load the report
+  visitWithoutWait('/reports/1');
+  waitForElement('.navi-report__cancel-btn').then(() => {
+    assert.equal(currentPath(), 'reports.report.loading', 'Report is loading');
+
+    assert.deepEqual(
+      find('.navi-report__footer .btn')
+        .toArray()
+        .map(e =>
+          $(e)
+            .text()
+            .trim()
+        ),
+      ['Cancel'],
+      'When report is loading, the only footer button is `Cancel`'
+    );
+  });
+
+  //Cancel the report
+  click('.navi-report__cancel-btn');
+  andThen(function() {
+    assert.equal(currentPath(), 'reports.report.edit', 'Clicking `Cancel` brings the user to the edit route');
+
+    assert.deepEqual(
+      find('.navi-report__footer .btn')
+        .toArray()
+        .map(e =>
+          $(e)
+            .text()
+            .trim()
+        ),
+      ['Run'],
+      'When not loading a report, the standard footer buttons are available'
+    );
+  });
+
+  //Run the widget
+  click('.navi-report__run-btn');
+  andThen(function() {
+    assert.equal(currentPath(), 'reports.report.view', 'Running the report brings the user to the view route');
+
+    assert.deepEqual(
+      find('.navi-report__footer .btn')
+        .toArray()
+        .map(e =>
+          $(e)
+            .text()
+            .trim()
+        ),
+      ['Run'],
+      'When not loading a report, the standard footer buttons are available'
     );
   });
 });
