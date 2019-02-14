@@ -6,6 +6,8 @@ import { run } from '@ember/runloop';
 import registerPowerSelectHelpers from 'ember-power-select/test-support/helpers';
 import registerBasicDropdownHelpers from 'ember-basic-dropdown/test-support/helpers';
 import './ember-sortable/test-helpers';
+import '../helpers/visit-without-wait';
+import '../helpers/wait-for-element';
 registerPowerSelectHelpers();
 registerBasicDropdownHelpers();
 

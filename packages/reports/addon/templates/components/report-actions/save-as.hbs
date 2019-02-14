@@ -1,18 +1,5 @@
-{{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 
-{{!-- Validate, Run Report, Set has report Run. Have it ready to be Saved As --}}
-<button class='btn btn-secondary save-as__save-as-btn' type='button'
-        onclick={{pipe
-            (route-action 'validate' model)
-            (route-action 'runReport' model)
-            (route-action 'setHasReportRun' true)
-            (toggle 'showModal' this)
-}}>
-    Save As ...
-    {{yield}}
-</button>
-
-{{!-- Confirmation Modal and change name --}}
 {{#navi-modal
     isShown=showModal
 }}

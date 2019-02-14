@@ -399,3 +399,74 @@ test('Error data request', function(assert) {
     Ember.Test.adapter.exception = originalException;
   });
 });
+
+test('Cancel Widget', function(assert) {
+  //Slow down mock
+  server.timing = 400;
+  server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
+  server.get('data/*path', () => {
+    return { rows: [] };
+  });
+
+  //Load the widget
+  visitWithoutWait('/dashboards/1/widgets/1/view');
+  waitForElement('.navi-report-widget__cancel-btn').then(() => {
+    assert.equal(currentPath(), 'dashboards.dashboard.widgets.widget.loading', 'Widget is loading');
+
+    assert.deepEqual(
+      find('.navi-report-widget__footer .btn')
+        .toArray()
+        .map(e =>
+          $(e)
+            .text()
+            .trim()
+        ),
+      ['Cancel'],
+      'When widget is loading, the only footer button is `Cancel`'
+    );
+  });
+
+  //Cancel the widget
+  click('.navi-report-widget__cancel-btn');
+  andThen(function() {
+    assert.equal(
+      currentPath(),
+      'dashboards.dashboard.widgets.widget.edit',
+      'Clicking `Cancel` brings the user to the edit route'
+    );
+
+    assert.deepEqual(
+      find('.navi-report-widget__footer .btn')
+        .toArray()
+        .map(e =>
+          $(e)
+            .text()
+            .trim()
+        ),
+      ['Run', 'Save Changes', 'Revert Changes'],
+      'When not loading a widget, the standard footer buttons are available'
+    );
+  });
+
+  //Run the widget
+  click('.navi-report-widget__run-btn');
+  andThen(function() {
+    assert.equal(
+      currentPath(),
+      'dashboards.dashboard.widgets.widget.view',
+      'Running the widget brings the user to the view route'
+    );
+
+    assert.deepEqual(
+      find('.navi-report-widget__footer .btn')
+        .toArray()
+        .map(e =>
+          $(e)
+            .text()
+            .trim()
+        ),
+      ['Run', 'Save Changes', 'Revert Changes'],
+      'When not loading a widget, the standard footer buttons are available'
+    );
+  });
+});
