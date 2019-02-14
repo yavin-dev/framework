@@ -22,4 +22,8 @@ open class Settings : ElideStandaloneSettings {
     override fun getModelPackageName(): String {
         return "com.yahoo.navi.ws.models.beans"
     }
+
+    override fun getHibernate5ConfigPath(): String {
+        return "./src/main/resources/hibernate.cfg.xml"
+    }
 }
