@@ -111,14 +111,14 @@ const MODEL = Ember.A([
 
 const OPTIONS = {
   columns: [
-    { field: { dateTime: 'dateTime' }, type: 'dateTime', displayName: 'Date' },
+    { attributes: { name: 'dateTime' }, type: 'dateTime', displayName: 'Date' },
     {
-      field: { metric: 'uniqueIdentifier', parameters: {} },
+      attributes: { name: 'uniqueIdentifier', parameters: {} },
       type: 'metric',
       displayName: 'Unique Identifiers'
     },
     {
-      field: { metric: 'totalPageViewsWoW', parameters: {} },
+      attributes: { name: 'totalPageViewsWoW', parameters: {} },
       type: 'threshold',
       displayName: 'Total Page Views WoW'
     }

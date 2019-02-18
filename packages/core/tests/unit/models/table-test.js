@@ -208,23 +208,21 @@ test('rebuildConfig', function(assert) {
         columns: [
           {
             displayName: 'Date',
-            field: { dateTime: 'dateTime' },
+            attributes: { name: 'dateTime' },
             type: 'dateTime'
           },
-          { displayName: 'D1', field: { dimension: 'd1' }, type: 'dimension' },
-          { displayName: 'D2 (id)', field: { dimension: 'd2', field: 'id' }, type: 'dimension' },
-          { displayName: 'D2 (desc)', field: { dimension: 'd2', field: 'desc' }, type: 'dimension' },
+          { displayName: 'D1', attributes: { name: 'd1' }, type: 'dimension' },
+          { displayName: 'D2 (id)', attributes: { name: 'd2', field: 'id' }, type: 'dimension' },
+          { displayName: 'D2 (desc)', attributes: { name: 'd2', field: 'desc' }, type: 'dimension' },
           {
             displayName: 'M1',
-            field: { metric: 'm1', parameters: {} },
-            type: 'metric',
-            format: ''
+            attributes: { name: 'm1', parameters: {}, format: '' },
+            type: 'metric'
           },
           {
             displayName: 'M2',
-            field: { metric: 'm2', parameters: {} },
-            type: 'metric',
-            format: ''
+            attributes: { name: 'm2', parameters: {}, format: '' },
+            type: 'metric'
           }
         ]
       }
@@ -244,20 +242,18 @@ test('rebuildConfig', function(assert) {
         columns: [
           {
             displayName: 'Date',
-            field: { dateTime: 'dateTime' },
+            attributes: { name: 'dateTime' },
             type: 'dateTime'
           },
           {
             displayName: 'M1',
-            field: { metric: 'm1', parameters: {} },
-            type: 'metric',
-            format: ''
+            attributes: { name: 'm1', parameters: {}, format: '' },
+            type: 'metric'
           },
           {
             displayName: 'M2',
-            field: { metric: 'm2', parameters: {} },
-            type: 'metric',
-            format: ''
+            attributes: { name: 'm2', parameters: {}, format: '' },
+            type: 'metric'
           }
         ]
       }
@@ -279,20 +275,18 @@ test('rebuildConfig', function(assert) {
         columns: [
           {
             displayName: 'Date',
-            field: { dateTime: 'dateTime' },
+            attributes: { name: 'dateTime' },
             type: 'dateTime'
           },
           {
             displayName: 'M1',
-            field: { metric: 'm1', parameters: {} },
-            type: 'threshold',
-            format: ''
+            attributes: { name: 'm1', parameters: {}, format: '' },
+            type: 'threshold'
           },
           {
             displayName: 'M2',
-            field: { metric: 'm2', parameters: {} },
-            type: 'metric',
-            format: ''
+            attributes: { name: 'm2', parameters: {}, format: '' },
+            type: 'metric'
           }
         ]
       }
@@ -313,20 +307,18 @@ test('rebuildConfig', function(assert) {
         columns: [
           {
             displayName: 'Date',
-            field: { dateTime: 'dateTime' },
+            attributes: { name: 'dateTime' },
             type: 'dateTime'
           },
           {
             displayName: 'M4',
-            field: { metric: 'm1', parameters: {} },
-            type: 'threshold',
-            format: ''
+            attributes: { name: 'm1', parameters: {}, format: '' },
+            type: 'threshold'
           },
           {
             displayName: 'M2',
-            field: { metric: 'm2', parameters: {} },
-            type: 'metric',
-            format: 'number'
+            attributes: { name: 'm2', parameters: {}, format: '' },
+            type: 'metric'
           }
         ]
       }
@@ -367,26 +359,23 @@ test('rebuildConfig with parameterized metrics', function(assert) {
         columns: [
           {
             displayName: 'Date',
-            field: { dateTime: 'dateTime' },
+            attributes: { name: 'dateTime' },
             type: 'dateTime'
           },
           {
             displayName: 'M1 (paramVal1)',
-            field: { metric: 'm1', parameters: { param1: 'paramVal1' } },
-            type: 'metric',
-            format: ''
+            attributes: { name: 'm1', parameters: { param1: 'paramVal1' }, format: '' },
+            type: 'metric'
           },
           {
             displayName: 'M1 (paramVal2)',
-            field: { metric: 'm1', parameters: { param1: 'paramVal2' } },
-            type: 'metric',
-            format: ''
+            attributes: { name: 'm1', parameters: { param1: 'paramVal2' }, format: '' },
+            type: 'metric'
           },
           {
             displayName: 'M2',
-            field: { metric: 'm2', parameters: {} },
-            type: 'metric',
-            format: ''
+            attributes: { name: 'm2', parameters: {}, format: '' },
+            type: 'metric'
           }
         ]
       }
@@ -404,26 +393,23 @@ test('rebuildConfig with parameterized metrics', function(assert) {
         columns: [
           {
             displayName: 'Date',
-            field: { dateTime: 'dateTime' },
+            attributes: { name: 'dateTime' },
             type: 'dateTime'
           },
           {
             displayName: 'M1 (paramVal1)',
-            field: { metric: 'm1', parameters: { param1: 'paramVal1' } },
-            type: 'metric',
-            format: ''
+            attributes: { name: 'm1', parameters: { param1: 'paramVal1' }, format: '' },
+            type: 'metric'
           },
           {
             displayName: 'M1 (paramVal2)',
-            field: { metric: 'm1', parameters: { param1: 'paramVal2' } },
-            type: 'metric',
-            format: ''
+            attributes: { name: 'm1', parameters: { param1: 'paramVal2' }, format: '' },
+            type: 'metric'
           },
           {
             displayName: 'M2',
-            field: { metric: 'm2', parameters: {} },
-            type: 'metric',
-            format: ''
+            attributes: { name: 'm2', parameters: {}, format: '' },
+            type: 'metric'
           }
         ]
       }
@@ -437,27 +423,27 @@ test('index column by id', function(assert) {
 
   let dimensionColumn = {
       type: 'dimension',
-      field: {
-        dimension: 'D1'
+      attributes: {
+        name: 'D1'
       }
     },
     dimensionColumnWithField = {
       type: 'dimension',
-      field: {
-        dimension: 'D2',
+      attributes: {
+        name: 'D2',
         field: 'desc'
       }
     },
     metricColumn = {
       type: 'metric',
-      field: {
-        metric: 'M'
+      attributes: {
+        name: 'M'
       }
     },
     thresholdColumn = {
       type: 'threshold',
-      field: {
-        metric: 'T'
+      attributes: {
+        name: 'T'
       }
     },
     rows = [dimensionColumn, dimensionColumnWithField, metricColumn, thresholdColumn];
@@ -483,24 +469,24 @@ test('index column by id', function(assert) {
  */
 function buildTestConfig(dimensions = [], metrics = [], thresholds = []) {
   let columns = [
-    { field: { dateTime: 'dateTime' }, type: 'dateTime' },
+    { attributes: { name: 'dateTime' }, type: 'dateTime' },
     ...metrics.map(m => {
-      let metricName = get(m, 'metric'),
+      let name = get(m, 'metric'),
         parameters = get(m, 'parameters') || {},
         valueType = isPresent(parameters) && get(parameters, 'currency') ? 'money' : 'number';
       return {
-        field: { metric: metricName, parameters },
+        attributes: { name, parameters },
         type: 'metric',
         valueType
       };
     }),
     ...thresholds.map(t => {
-      let metricName = get(t, 'metric'),
+      let name = get(t, 'metric'),
         parameters = get(t, 'parameters') || {};
-      return { field: { metric: metricName, parameters }, type: 'threshold' };
+      return { attributes: { name, parameters }, type: 'threshold' };
     }),
     ...dimensions.map(({ dimension, field }) => ({
-      field: { dimension, field },
+      attributes: { name: dimension, field },
       type: 'dimension'
     }))
   ];

@@ -127,12 +127,12 @@ test('visualization is chosen based on report', function(assert) {
       metadata: {
         columns: [
           {
-            field: 'dateTime',
+            attributes: { name: 'dateTime' },
             type: 'dateTime',
             displayName: 'Date'
           },
           {
-            field: { metric: 'adClicks' },
+            attributes: { name: 'adClicks' },
             type: 'metric',
             displayName: 'Ad Clicks'
           }

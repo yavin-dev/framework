@@ -11,9 +11,9 @@
 
 import Component from '@ember/component';
 import layout from '../templates/components/number-format-dropdown';
-import { assign } from '@ember/polyfills';
 import { oneWay } from '@ember/object/computed';
-import { getWithDefault } from '@ember/object';
+import { get, getWithDefault } from '@ember/object';
+import merge from 'lodash/merge';
 
 export default Component.extend({
   layout,
@@ -26,7 +26,7 @@ export default Component.extend({
   /**
    * @property {String} format
    */
-  format: oneWay('column.format'),
+  format: oneWay('column.attributes.format'),
 
   actions: {
     /**
@@ -34,9 +34,10 @@ export default Component.extend({
      */
     updateColumnNumberFormat() {
       let { onUpdateReport, column } = this,
-        format = getWithDefault(this, 'format', column.format);
+        format = getWithDefault(this, 'format', get(column, 'attributes.format')),
+        updatedColumn = merge({}, column, { attributes: { format } });
 
-      onUpdateReport('updateColumn', assign({}, column, { format }));
+      onUpdateReport('updateColumn', updatedColumn);
     }
   }
 });

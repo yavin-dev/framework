@@ -7,6 +7,7 @@ import Helper from '@ember/component/helper';
 import { get } from '@ember/object';
 import { inject as service } from '@ember/service';
 import { metricFormat } from 'navi-data/helpers/metric-format';
+import { mapColumnAttributes } from 'navi-data/utils/metric';
 import { formatDimensionName } from 'navi-data/utils/dimension';
 
 /**
@@ -17,7 +18,7 @@ import { formatDimensionName } from 'navi-data/utils/dimension';
  * @param {Object} bardMetadata - bard metadata service
  * @return {String} - default display name
  */
-export function getColumnDefaultName({ type, field }, bardMetadata) {
+export function getColumnDefaultName({ type, attributes }, bardMetadata) {
   if (type === 'dateTime') {
     return 'Date';
   }
@@ -26,16 +27,17 @@ export function getColumnDefaultName({ type, field }, bardMetadata) {
     type = 'metric';
   }
 
-  let model = bardMetadata.getById(type, field[type]);
+  let { name, field } = attributes,
+    model = bardMetadata.getById(type, name);
 
   if (type === 'metric') {
-    return metricFormat(field, model.longName);
+    return metricFormat(mapColumnAttributes(attributes), model.longName);
   }
 
-  if (type === 'dimension' && field.field) {
+  if (type === 'dimension' && field) {
     return formatDimensionName({
-      dimension: model.longName,
-      field: field.field
+      name: model.longName,
+      field
     });
   }
 

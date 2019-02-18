@@ -17,6 +17,17 @@ export function canonicalizeMetric(metric) {
 }
 
 /**
+ * Returns canonicalized name given metric column attributes
+ * @function canonicalizeColumnAttributes
+ * @param {Object} attributes
+ * @param {String} attributes.name - metric name
+ * @param {Object} attributes.parameters - a key: value object of parameters
+ */
+export function canonicalizeColumnAttributes(attributes) {
+  return canonicalizeMetric(mapColumnAttributes(attributes));
+}
+
+/**
  * @function hasParameters
  *
  * Returns if metric has parameters
@@ -121,4 +132,23 @@ export function parseMetricName(canonicalName) {
     metric,
     parameters
   };
+}
+
+/**
+ * Returns a metric object given column attributes
+ * @function mapColumnAttributes
+ * @param {Object} attributes - column attributes
+ * @param {String} attributes.name - metric name
+ * @param {Object} attributes.parameters - metric parameters
+ * @returns {Object} - object with metric name and parameters
+ */
+export function mapColumnAttributes(attributes) {
+  let metric = get(attributes, 'name'),
+    parameters = get(attributes, 'parameters') || {};
+
+  if (isEmpty(metric)) {
+    throw new Error('Metric Column Attributes Mapper: Error, empty metric name');
+  }
+
+  return { metric, parameters };
 }

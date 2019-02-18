@@ -17,7 +17,7 @@ const data = {
 };
 
 const column = {
-  field: { dimension: 'os' },
+  attributes: { name: 'os' },
   type: 'dimension',
   displayName: 'Operating System'
 };

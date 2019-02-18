@@ -4,7 +4,9 @@ import {
   serializeParameters,
   getAliasedMetrics,
   canonicalizeAlias,
-  parseMetricName
+  parseMetricName,
+  mapColumnAttributes,
+  canonicalizeColumnAttributes
 } from 'navi-data/utils/metric';
 import { module, test } from 'qunit';
 
@@ -123,7 +125,7 @@ module('Unit - Utils - Metrics Utils', function() {
         metric: 'base',
         parameters: { param1: 'paramVal1', param2: 'paramVal2' }
       },
-      'Parser correctly constructs a metric object with no parameters'
+      'Parser correctly constructs a metric object with multiple parameters'
     );
 
     metricString = '';
@@ -145,6 +147,78 @@ module('Unit - Utils - Metrics Utils', function() {
       () => parseMetricName(metricString),
       new Error('Metric Name Parser: Error, could not parse name'),
       'Parser throws an error for corrupted metric'
+    );
+  });
+
+  test('map column attributes to object', function(assert) {
+    assert.expect(6);
+
+    assert.deepEqual(
+      mapColumnAttributes({ name: 'base' }),
+      { metric: 'base', parameters: {} },
+      'Mapper correctly constructs a metric object given no `parameters` property'
+    );
+
+    assert.deepEqual(
+      mapColumnAttributes({ name: 'base', parameters: {} }),
+      { metric: 'base', parameters: {} },
+      'Mapper correctly constructs a metric object given an empty `parameters` object'
+    );
+
+    assert.deepEqual(
+      mapColumnAttributes({ name: 'base', parameters: { param1: 'paramVal1' } }),
+      { metric: 'base', parameters: { param1: 'paramVal1' } },
+      'Mapper correctly constructs a metric object given one parameter'
+    );
+
+    assert.deepEqual(
+      mapColumnAttributes({ name: 'base', parameters: { param1: 'paramVal1', param2: 'paramVal2' } }),
+      {
+        metric: 'base',
+        parameters: { param1: 'paramVal1', param2: 'paramVal2' }
+      },
+      'Mapper correctly constructs a metric object given multiple parameters'
+    );
+
+    assert.throws(
+      () => mapColumnAttributes({ name: '' }),
+      new Error('Metric Column Attributes Mapper: Error, empty metric name'),
+      'Mapper throws an error given an empty metric name'
+    );
+
+    assert.throws(
+      () => mapColumnAttributes({}),
+      new Error('Metric Column Attributes Mapper: Error, empty metric name'),
+      'Mapper throws an error given a missing `name` property'
+    );
+  });
+
+  test('canonicalize column attributes', function(assert) {
+    assert.expect(5);
+    assert.equal(canonicalizeColumnAttributes({ name: 'foo' }), 'foo', 'correctly serializes metric with no params');
+
+    assert.equal(
+      canonicalizeColumnAttributes({ name: 'foo', parameters: {} }),
+      'foo',
+      'correctly serializes metric with empty object params'
+    );
+
+    assert.equal(
+      canonicalizeColumnAttributes({ name: 'foo', parameters: null }),
+      'foo',
+      'correctly serializes metric with null object params'
+    );
+
+    assert.equal(
+      canonicalizeColumnAttributes({ name: 'foo', parameters: { p1: '100' } }),
+      'foo(p1=100)',
+      'correctly serializes metric with one param'
+    );
+
+    assert.equal(
+      canonicalizeColumnAttributes({ name: 'foo', parameters: { p1: '100', a: '12' } }),
+      'foo(a=12,p1=100)',
+      'correctly serializes metric with multiple params'
     );
   });
 });
