@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import isEqual from 'lodash/isEqual';
 import merge from 'lodash/merge';
+import omit from 'lodash/omit';
 
 const { A: arr, computed, get, set, setProperties } = Ember;
 
@@ -21,27 +22,27 @@ export default Ember.Controller.extend({
   options: {
     columns: [
       {
-        field: { dateTime: 'dateTime' },
+        attributes: { name: 'dateTime' },
         type: 'dateTime',
         displayName: 'Date'
       },
       {
-        field: { dimension: 'os' },
+        attributes: { name: 'os' },
         type: 'dimension',
         displayName: 'Operating System'
       },
       {
-        field: { metric: 'uniqueIdentifier', parameters: {} },
+        attributes: { name: 'uniqueIdentifier', parameters: {} },
         type: 'metric',
         displayName: 'Unique Identifiers'
       },
       {
-        field: { metric: 'totalPageViews', parameters: {} },
+        attributes: { name: 'totalPageViews', parameters: {} },
         type: 'metric',
         displayName: 'Total Page Views'
       },
       {
-        field: { metric: 'totalPageViewsWoW', parameters: {} },
+        attributes: { name: 'totalPageViewsWoW', parameters: {} },
         type: 'threshold',
         displayName: 'Total Page Views WoW'
       }
@@ -71,7 +72,9 @@ export default Ember.Controller.extend({
 
   updateColumn(column) {
     const newColumns = get(this, 'options.columns').map(col => {
-      if (isEqual(col.field, column.field)) {
+      let propsToOmit = ['format'];
+
+      if (isEqual(omit(col.attributes, propsToOmit), omit(column.attributes, propsToOmit))) {
         return column;
       }
 

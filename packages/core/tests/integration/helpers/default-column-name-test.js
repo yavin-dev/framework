@@ -33,7 +33,7 @@ test('dateTime column', function(assert) {
 });
 
 test('dimension column', function(assert) {
-  const column = { type: 'dimension', field: { dimension: 'os' } };
+  const column = { type: 'dimension', attributes: { name: 'os' } };
   this.set('column', column);
 
   this.render(hbs`{{default-column-name column}}`);
@@ -48,7 +48,7 @@ test('dimension column', function(assert) {
 });
 
 test('metric column', function(assert) {
-  const column = { type: 'metric', field: { metric: 'totalPageViews' } };
+  const column = { type: 'metric', attributes: { name: 'totalPageViews' } };
   this.set('column', column);
 
   this.render(hbs`{{default-column-name column}}`);
@@ -65,7 +65,7 @@ test('metric column', function(assert) {
 test('metric column with parameters', function(assert) {
   const column = {
     type: 'metric',
-    field: { metric: 'revenue', parameters: { currency: 'USD' } }
+    attributes: { name: 'revenue', parameters: { currency: 'USD' } }
   };
   this.set('column', column);
 

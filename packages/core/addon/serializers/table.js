@@ -5,13 +5,40 @@
 import VisualizationSerializer from 'navi-core/serializers/visualization';
 import { parseMetricName } from 'navi-data/utils/metric';
 import { get } from '@ember/object';
+import { isPresent, isNone } from '@ember/utils';
+import omit from 'lodash/omit';
 
-const TRANSFORMS = {
-  metric: column => Object.assign(column, { field: parseMetricName(column.field) }),
-  threshold: column => Object.assign(column, { field: parseMetricName(column.field) }),
-  dimension: column => Object.assign(column, { field: { dimension: column.field } }),
-  dateTime: column => Object.assign(column, { field: { dateTime: column.field } })
-};
+/**
+ * Returns metric column attributes given a canonical name
+ *
+ * @method parseStringField
+ * @param {String} field - the metric's canonical name
+ * @return {Object} - parsed metric name and parameters column attributes
+ */
+function parseStringField(field) {
+  let { metric, parameters } = parseMetricName(field);
+
+  return {
+    name: metric,
+    parameters
+  };
+}
+
+/**
+ * Maps a column `field` property to `attributes`
+ *
+ * @method transformFieldToAttributes
+ * @param {String} type - the column type
+ * @param {String|Object} - the column field
+ * @return {Object} - attributes object
+ */
+function transformFieldToAttributes(type, field) {
+  if (typeof field === 'string') {
+    return ['metric', 'threshold'].includes(type) ? parseStringField(field) : { name: field };
+  }
+
+  return Object.assign({}, { name: field[type === 'threshold' ? 'metric' : type] }, omit(field, [type, 'metric']));
+}
 
 export default VisualizationSerializer.extend({
   /**
@@ -23,12 +50,16 @@ export default VisualizationSerializer.extend({
   normalize(type, visualization) {
     if (visualization) {
       let columns = get(visualization, 'metadata.columns').map(column => {
-        if (typeof get(column, 'field') === 'string') {
-          let type = get(column, 'type');
+        let { type, field, format, attributes } = column;
 
-          return TRANSFORMS[type](column);
+        if (isPresent(field)) {
+          attributes = transformFieldToAttributes(type, field);
+          if (!isNone(format)) {
+            attributes.format = format;
+          }
         }
-        return column;
+
+        return Object.assign({}, { attributes }, omit(column, ['field', 'format']));
       });
       Object.assign(visualization.metadata, { columns });
     }

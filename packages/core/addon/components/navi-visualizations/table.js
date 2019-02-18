@@ -20,7 +20,7 @@ import Component from '@ember/component';
 import { isBlank } from '@ember/utils';
 import cloneDeep from 'lodash/cloneDeep';
 import groupBy from 'lodash/groupBy';
-import { canonicalizeMetric } from 'navi-data/utils/metric';
+import { canonicalizeMetric, canonicalizeColumnAttributes } from 'navi-data/utils/metric';
 import { getColumnDefaultName } from 'navi-core/helpers/default-column-name';
 import { featureFlag } from 'navi-core/helpers/feature-flag';
 
@@ -106,15 +106,17 @@ export default Component.extend({
       hasPartialData = get(this, 'totalRows') > get(this, 'rowsInResponse');
 
     let totalRow = columns.reduce((totRow, column) => {
+      let { name } = column.attributes;
+
       //if dateTime set type
       if (column.type === 'dateTime') {
-        set(totRow, column.field.dateTime, HEADER_TITLE[type]);
+        set(totRow, name, HEADER_TITLE[type]);
       }
 
       //set subtotal dimension if subtotal row
-      if (column.field.dimension === get(this, 'selectedSubtotal') && type === 'subtotal') {
-        let idField = `${column.field.dimension}|id`,
-          descField = `${column.field.dimension}|desc`;
+      if (name === get(this, 'selectedSubtotal') && type === 'subtotal') {
+        let idField = `${name}|id`,
+          descField = `${name}|desc`;
 
         set(totRow, idField, data[0][idField]);
         set(totRow, descField, data[0][descField]);
@@ -122,7 +124,7 @@ export default Component.extend({
 
       //if metric and not partial data compute totals
       if (column.type === 'metric' && !hasPartialData) {
-        let metricName = canonicalizeMetric(column.field);
+        let metricName = canonicalizeColumnAttributes(column.attributes);
         totRow[metricName] = this.computeColumnTotal(data, metricName, totRow, column, type);
       }
 
@@ -243,9 +245,9 @@ export default Component.extend({
       columns = cloneDeep(get(this, 'options.columns') || []);
 
     return columns.map(column => {
-      let { field, type } = column,
-        fieldName = type === 'dateTime' ? type : canonicalizeMetric(field),
-        sort = arr(sorts).findBy('metric', fieldName) || {},
+      let { attributes, type } = column,
+        canonicalName = type === 'dateTime' ? type : canonicalizeColumnAttributes(attributes),
+        sort = arr(sorts).findBy('metric', canonicalName) || {},
         hasCustomDisplayName = this._hasCustomDisplayName(column),
         sortDirection;
 
@@ -331,14 +333,14 @@ export default Component.extend({
      * sends sort action when dateTime header is clicked
      * @param {Object} column object
      */
-    headerClicked({ field, type, sortDirection }) {
+    headerClicked({ attributes, type, sortDirection }) {
       if (/^threshold|dateTime|metric$/.test(type)) {
         let direction = this._getNextSortDirection(type, sortDirection),
           //TODO Fetch from report action dispatcher service
           actionType = direction === 'none' ? 'removeSort' : 'upsertSort',
-          fieldName = type === 'dateTime' ? type : canonicalizeMetric(field);
+          canonicalName = type === 'dateTime' ? type : canonicalizeColumnAttributes(attributes);
 
-        this.onUpdateReport(actionType, fieldName, direction);
+        this.onUpdateReport(actionType, canonicalName, direction);
       }
     },
 

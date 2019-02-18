@@ -103,27 +103,27 @@ const Model = arr([
 const Options = {
   columns: [
     {
-      field: { dateTime: 'dateTime' },
+      attributes: { name: 'dateTime' },
       type: 'dateTime',
       displayName: 'Date'
     },
     {
-      field: { dimension: 'os' },
+      attributes: { name: 'os' },
       type: 'dimension',
       displayName: 'Operating System'
     },
     {
-      field: { metric: 'uniqueIdentifier', parameters: {} },
+      attributes: { name: 'uniqueIdentifier', parameters: {} },
       type: 'metric',
       displayName: 'Unique Identifiers'
     },
     {
-      field: { metric: 'totalPageViews', parameters: {} },
+      attributes: { name: 'totalPageViews', parameters: {} },
       type: 'metric',
       displayName: 'Total Page Views'
     },
     {
-      field: { metric: 'platformRevenue', parameters: { currency: 'USD' } },
+      attributes: { name: 'platformRevenue', parameters: { currency: 'USD' } },
       type: 'metric',
       displayName: 'Platform Revenue (USD)'
     }
@@ -209,32 +209,32 @@ test('onUpdateReport', function(assert) {
     merge({}, Options, {
       columns: [
         {
-          field: 'dateTime',
+          attributes: { name: 'dateTime' },
           type: 'dateTime',
           displayName: 'Date'
         },
         {
-          field: { dimension: 'os' },
+          attributes: { name: 'os' },
           type: 'dimension',
           displayName: 'Operating System'
         },
         {
-          field: { metric: 'uniqueIdentifier', parameters: {} },
+          attributes: { name: 'uniqueIdentifier', parameters: {} },
           type: 'metric',
           displayName: 'Unique Identifiers'
         },
         {
-          field: { metric: 'totalPageViews', parameters: {} },
+          attributes: { name: 'totalPageViews', parameters: {} },
           type: 'metric',
           displayName: 'Total Page Views'
         },
         {
-          field: { metric: 'platformRevenue', parameters: { currency: 'USD' } },
+          attributes: { name: 'platformRevenue', parameters: { currency: 'USD' } },
           type: 'metric',
           displayName: 'Platform Revenue (USD)'
         },
         {
-          field: { metric: 'totalPageViewsWoW', parameters: {} },
+          attributes: { name: 'totalPageViewsWoW', parameters: {} },
           type: 'threshold',
           displayName: 'Total Page Views WoW'
         }

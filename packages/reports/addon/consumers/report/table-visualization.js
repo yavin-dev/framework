@@ -7,7 +7,8 @@ import isEqual from 'lodash/isEqual';
 import ActionConsumer from 'navi-core/consumers/action-consumer';
 import { UpdateReportActions } from 'navi-reports/services/update-report-action-dispatcher';
 import keyBy from 'lodash/keyBy';
-import { canonicalizeMetric } from 'navi-data/utils/metric';
+import omit from 'lodash/omit';
+import { canonicalizeColumnAttributes } from 'navi-data/utils/metric';
 
 const { assign, get, set } = Ember;
 
@@ -25,7 +26,7 @@ export default ActionConsumer.extend({
         metricIndex = keyBy(metrics.toArray(), metric => get(metric, 'canonicalName')),
         reorderedMetrics = newColumnOrder
           .filter(column => column.type === 'metric' || column.type === 'threshold')
-          .map(column => metricIndex[canonicalizeMetric(column.field)]);
+          .map(column => metricIndex[canonicalizeColumnAttributes(column.attributes)]);
 
       set(report, 'visualization.metadata', assign({}, visualizationMetadata, { columns: newColumnOrder }));
 
@@ -40,9 +41,13 @@ export default ActionConsumer.extend({
     [UpdateReportActions.UPDATE_TABLE_COLUMN]({ currentModel: report }, updatedColumn) {
       Ember.assert('Visualization must be a table', get(report, 'visualization.type') === 'table');
       let visualizationMetadata = get(report, 'visualization.metadata'),
-        newColumns = get(visualizationMetadata, 'columns').map(
-          col => (isEqual(updatedColumn.field, col.field) ? updatedColumn : col)
-        );
+        newColumns = get(visualizationMetadata, 'columns').map(col => {
+          let propsToOmit = ['format'];
+
+          return isEqual(omit(updatedColumn.attributes, propsToOmit), omit(col.attributes, propsToOmit))
+            ? updatedColumn
+            : col;
+        });
 
       set(report, 'visualization.metadata', assign({}, visualizationMetadata, { columns: newColumns }));
     }
