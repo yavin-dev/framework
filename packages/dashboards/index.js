@@ -10,9 +10,5 @@ module.exports = {
     var target = parentAddon || app;
 
     target.import('vendor/loader.css');
-  },
-
-  isDevelopingAddon: function() {
-    return true;
   }
 };
