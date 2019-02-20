@@ -50,6 +50,7 @@ moduleFor('route:dashboards/dashboard', 'Unit | Route | dashboards/dashboard', {
     'model:bard-request/fragments/logicalTable',
     'model:bard-request/fragments/metric',
     'model:bard-request/fragments/sort',
+    'model:delivery-rule',
     'model:metadata/table',
     'model:metadata/dimension',
     'model:metadata/metric',
@@ -63,6 +64,9 @@ moduleFor('route:dashboards/dashboard', 'Unit | Route | dashboards/dashboard', {
     'validator:chart-type',
     'validator:request-metrics',
     'validator:request-dimension-order',
+    'validator:number',
+    'validator:request-time-grain',
+    'validator:request-filters',
     'service:bard-metadata',
     'serializer:bard-request/fragments/logical-table',
     'serializer:bard-request/fragments/interval',
@@ -99,13 +103,13 @@ test('model', function(assert) {
   assert.expect(4);
 
   return Ember.run(() => {
-    let params = { dashboardId: '1' },
+    let params = { dashboard_id: '1' },
       modelPromise = Route.model(params);
 
     assert.ok(modelPromise.then, 'Route returns a promise in the model hook');
 
     return modelPromise.then(dashboard => {
-      assert.equal(dashboard.id, params.dashboardId, 'The requested dashboard is retrieved');
+      assert.equal(dashboard.id, params.dashboard_id, 'The requested dashboard is retrieved');
 
       assert.equal(dashboard.get('title'), 'Tumblr Goals Dashboard', 'The requested dashboard is retrieved');
 
@@ -272,7 +276,7 @@ test('delete widget - failure', function(assert) {
   assert.expect(3);
 
   //Mock Server Endpoint
-  server.delete('/dashboards/:id/widgets/:widgetId', () => {
+  server.delete('/dashboards/:id/widgets/:widget_id', () => {
     return new Mirage.Response(500);
   });
 

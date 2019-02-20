@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Ember from 'ember';
@@ -14,15 +14,15 @@ export default ReportRoute.extend({
    * @param {String} params.widgetId - persisted id or temp id of widget to fetch
    * @returns {DS.Model} model for requested widget
    */
-  model({ widgetId }) {
+  model({ widget_id }) {
     let widgets = this.modelFor('dashboards.dashboard.widgets'),
-      widgetModel = widgets.findBy('id', widgetId) || this._findTempWidget(widgetId);
+      widgetModel = widgets.findBy('id', widget_id) || this._findTempWidget(widget_id);
 
     if (widgetModel) {
       return widgetModel;
     }
 
-    throw new Error(`Widget ${widgetId} could not be found`);
+    throw new Error(`Widget ${widget_id} could not be found`);
   },
 
   /**

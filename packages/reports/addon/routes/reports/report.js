@@ -45,10 +45,10 @@ export default Route.extend({
    * @param {String} params.reportId - persisted id or temp id of report to fetch
    * @returns {DS.Model|Promise} model for requested report
    */
-  model({ reportId }) {
+  model({ report_id }) {
     return get(this, 'user')
       .findOrRegister()
-      .then(() => this._findByTempId(reportId) || this.store.findRecord('report', reportId))
+      .then(() => this._findByTempId(report_id) || this.store.findRecord('report', report_id))
       .then(this._defaultVisualization.bind(this));
   },
 

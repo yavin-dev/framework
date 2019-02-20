@@ -38,10 +38,10 @@ test('model hook', function(assert) {
     _defaultVisualization: report => report
   });
 
-  return route.model({ reportId: 1 }).then(model => {
+  return route.model({ report_id: 1 }).then(model => {
     assert.equal(model.id, 1, 'Route model looks up report based on id');
 
-    return route.model({ reportId: '123-456' }).then(model => {
+    return route.model({ report_id: '123-456' }).then(model => {
       assert.equal(model.tempId, '123-456', 'Route can find reports based on temp id');
     });
   });
