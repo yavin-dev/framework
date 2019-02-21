@@ -1,61 +1,50 @@
-import { getOwner } from '@ember/application';
-import { moduleFor, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupTest } from 'ember-qunit';
+import { settled } from '@ember/test-helpers';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
-import wait from 'ember-test-helpers/wait';
 
 var MetadataService;
 
-moduleFor('transform:metric', 'Unit | Transform | Metric', {
-  needs: [
-    'model:metadata/table',
-    'model:metadata/time-grain',
-    'model:metadata/dimension',
-    'model:metadata/metric',
-    'service:bard-metadata',
-    'service:keg',
-    'adapter:bard-metadata',
-    'serializer:bard-metadata',
-    'service:ajax',
-    'service:bard-facts',
-    'service:bard-dimensions',
-    'adapter:dimensions/bard'
-  ],
-  beforeEach() {
+module('Unit | Transform | Metric', function(hooks) {
+  setupTest(hooks);
+
+  hooks.beforeEach(function() {
     setupMock();
-    MetadataService = getOwner(this).lookup('service:bard-metadata');
+    MetadataService = this.owner.lookup('service:bard-metadata');
     MetadataService.loadMetadata();
-  },
-  afterEach() {
-    teardownMock();
-  }
-});
-
-test('serialize and deserialize', function(assert) {
-  assert.expect(2);
-
-  return wait().then(() => {
-    let transform = this.subject(),
-      metric = MetadataService.getById('metric', 'pageViews');
-
-    assert.equal(transform.serialize(metric), 'pageViews', 'Metric is serialized to the name');
-
-    assert.equal(transform.deserialize('pageViews'), metric, 'Metric is deserialized to the right object');
   });
-});
 
-test('datetime test', function(assert) {
-  assert.expect(2);
+  hooks.afterEach(function() {
+    teardownMock();
+  });
 
-  return wait().then(() => {
-    let transform = this.subject(),
-      metric = { name: 'dateTime' };
+  test('serialize and deserialize', function(assert) {
+    assert.expect(2);
 
-    assert.equal(transform.serialize(metric), 'dateTime', 'dateTime is serialized to the name');
+    return settled().then(() => {
+      let transform = this.owner.lookup('transform:metric'),
+        metric = MetadataService.getById('metric', 'pageViews');
 
-    assert.deepEqual(
-      transform.deserialize('dateTime'),
-      { name: 'dateTime' },
-      'dateTime is deserialized to the right object'
-    );
+      assert.equal(transform.serialize(metric), 'pageViews', 'Metric is serialized to the name');
+
+      assert.equal(transform.deserialize('pageViews'), metric, 'Metric is deserialized to the right object');
+    });
+  });
+
+  test('datetime test', function(assert) {
+    assert.expect(2);
+
+    return settled().then(() => {
+      let transform = this.owner.lookup('transform:metric'),
+        metric = { name: 'dateTime' };
+
+      assert.equal(transform.serialize(metric), 'dateTime', 'dateTime is serialized to the name');
+
+      assert.deepEqual(
+        transform.deserialize('dateTime'),
+        { name: 'dateTime' },
+        'dateTime is deserialized to the right object'
+      );
+    });
   });
 });

@@ -1,86 +1,70 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render, find } from '@ember/test-helpers';
 import DS from 'ember-data';
 import hbs from 'htmlbars-inline-precompile';
 import { run } from '@ember/runloop';
 
-moduleForComponent('serialize', 'helper:serialize', {
-  integration: true
-});
+module('helper:serialize', function(hooks) {
+  setupRenderingTest(hooks);
 
-test('it returns serialization of model', function(assert) {
-  assert.expect(1);
-  const modelClass = DS.Model.extend({
-    something: DS.attr('weird')
-  });
+  test('it returns serialization of model', function(assert) {
+    assert.expect(1);
+    const modelClass = DS.Model.extend({
+      something: DS.attr('weird')
+    });
 
-  const weirdTransform = DS.Transform.extend({
-    serialize(input) {
-      return input.replace(/./g, '#');
-    },
-    deserialize(input) {
-      return input;
-    }
-  });
-
-  this.registry.register('model:weirdo', modelClass);
-  this.registry.register('transform:weird', weirdTransform);
-
-  run(() => {
-    let store = this.container.lookup('service:store');
-
-    store.pushPayload({
-      data: {
-        id: '1',
-        type: 'weirdo',
-        attributes: {
-          something: 'hello'
-        }
+    const weirdTransform = DS.Transform.extend({
+      serialize(input) {
+        return input.replace(/./g, '#');
+      },
+      deserialize(input) {
+        return input;
       }
     });
 
-    let model = store.peekRecord('weirdo', '1');
+    this.owner.register('model:weirdo', modelClass);
+    this.owner.register('transform:weird', weirdTransform);
 
-    this.set('model', model);
+    run(async () => {
+      let store = this.owner.lookup('service:store');
 
-    this.render(hbs`{{get (serialize model) 'data.attributes.something'}}`);
+      store.pushPayload({
+        data: {
+          id: '1',
+          type: 'weirdo',
+          attributes: {
+            something: 'hello'
+          }
+        }
+      });
 
-    assert.equal(
-      this.$()
-        .text()
-        .trim(),
-      '#####',
-      'Serializes model with transforms and everything!'
-    );
+      let model = store.peekRecord('weirdo', '1');
+
+      this.set('model', model);
+
+      await render(hbs`{{get (serialize model) 'data.attributes.something'}}`);
+
+      assert.dom('*').hasText('#####', 'Serializes model with transforms and everything!');
+    });
   });
-});
 
-test("it throws an assertion if it's not serializable model", function(assert) {
-  assert.expectAssertion(() => {
-    this.set('model', { some: 'object', will: 'fail' });
-    this.render(hbs`{{serialize model}}`);
+  test("it throws an assertion if it's not serializable model", function(assert) {
+    assert.expectAssertion(async () => {
+      this.set('model', { some: 'object', will: 'fail' });
+      await render(hbs`{{serialize model}}`);
+    });
   });
-});
 
-test('it returns with undefined or null', function(assert) {
-  assert.expect(2);
-  this.set('model', null);
-  this.render(hbs`{{serialize model}}`);
+  test('it returns with undefined or null', async function(assert) {
+    assert.expect(2);
+    this.set('model', null);
+    await render(hbs`{{serialize model}}`);
 
-  assert.equal(
-    this.$()
-      .text()
-      .trim(),
-    '',
-    'renders nothing if null is passed'
-  );
+    assert.dom('*').hasText('', 'renders nothing if null is passed');
 
-  this.set('model', undefined);
+    this.set('model', undefined);
 
-  assert.equal(
-    this.$()
-      .text()
-      .trim(),
-    '',
-    'renders nothing if undefined is passed'
-  );
+    assert.dom('*').hasText('', 'renders nothing if undefined is passed');
+  });
 });

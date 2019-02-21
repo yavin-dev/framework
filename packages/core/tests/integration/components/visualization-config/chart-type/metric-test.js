@@ -1,4 +1,6 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render, find } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 let Template = hbs`{{visualization-config/chart-type/metric
@@ -27,32 +29,24 @@ const Request = {
     }
   };
 
-moduleForComponent(
-  'visualization-config/chart-type/metric',
-  'Integration | Component | visualization config/line chart type/metric',
-  {
-    integration: true,
+module('Integration | Component | visualization config/line chart type/metric', function(hooks) {
+  setupRenderingTest(hooks);
 
-    beforeEach() {
-      this.setProperties({
-        request: Request,
-        options: Options,
-        onUpdateConfig: () => null
-      });
-    }
-  }
-);
+  hooks.beforeEach(function() {
+    this.setProperties({
+      request: Request,
+      options: Options,
+      onUpdateConfig: () => null
+    });
+  });
 
-test('it renders', function(assert) {
-  assert.expect(1);
+  test('it renders', async function(assert) {
+    assert.expect(1);
 
-  this.render(Template);
+    await render(Template);
 
-  assert.equal(
-    this.$('.metric-line-chart-config')
-      .text()
-      .trim(),
-    'No configuration options available.',
-    'Table Configuration Component displays the warning message'
-  );
+    assert
+      .dom('.metric-line-chart-config')
+      .hasText('No configuration options available.', 'Table Configuration Component displays the warning message');
+  });
 });

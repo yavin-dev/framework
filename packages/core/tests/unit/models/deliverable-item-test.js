@@ -1,21 +1,26 @@
-import { moduleForModel, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupTest } from 'ember-qunit';
 
-moduleForModel('deliverable-item', 'Unit | Model | deliverable item', {
-  needs: ['model:delivery-rule']
-});
+import { run } from '@ember/runloop';
 
-test('deliverable item model id', function(assert) {
-  assert.expect(2);
+module('Unit | Model | deliverable item', function(hooks) {
+  setupTest(hooks);
 
-  const id = 999;
-  const tempId = 'abc1234';
-  const model = this.subject({
-    tempId
+  test('deliverable item model id', function(assert) {
+    assert.expect(2);
+
+    const id = 999;
+    const tempId = 'abc1234';
+    const model = run(() =>
+      this.owner.lookup('service:store').createRecord('deliverable-item', {
+        tempId
+      })
+    );
+
+    assert.equal(model.get('modelId'), tempId, 'getId returns the tempId of the model when id is absent');
+
+    model.set('id', id);
+
+    assert.equal(model.get('modelId'), id, 'getId returns the id when present');
   });
-
-  assert.equal(model.get('modelId'), tempId, 'getId returns the tempId of the model when id is absent');
-
-  model.set('id', id);
-
-  assert.equal(model.get('modelId'), id, 'getId returns the id when present');
 });

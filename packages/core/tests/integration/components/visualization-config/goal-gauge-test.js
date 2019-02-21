@@ -1,73 +1,75 @@
 import { run } from '@ember/runloop';
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render, fillIn, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
-moduleForComponent('visualization-config/goal-gauge', 'Integration | Component | visualization config/goal gauge', {
-  integration: true
-});
+module('Integration | Component | visualization config/goal gauge', function(hooks) {
+  setupRenderingTest(hooks);
 
-let Template = hbs`
-  {{visualization-config/goal-gauge
-    response=response
-    request=request
-    options=options
-    onUpdateConfig=(action onUpdateConfig)
-  }}`;
+  let Template = hbs`
+    {{visualization-config/goal-gauge
+      response=response
+      request=request
+      options=options
+      onUpdateConfig=(action onUpdateConfig)
+    }}`;
 
-test('it renders', function(assert) {
-  this.render(hbs`{{visualization-config/goal-gauge}}`);
+  test('it renders', async function(assert) {
+    await render(hbs`{{visualization-config/goal-gauge}}`);
 
-  let headers = this.$('.goal-gauge-config__section-header')
-    .toArray()
-    .map(value =>
-      this.$(value)
-        .text()
-        .trim()
-    );
-  assert.deepEqual(headers, ['Label', 'Baseline', 'Goal'], 'headers are displayed for goal gauge config');
-});
-
-test('onUpdateConfig baselineValue input', function(assert) {
-  assert.expect(1);
-
-  this.set('onUpdateConfig', result => {
-    assert.equal(result.baselineValue, 1, 'onUpdateConfig action is called by baseline input');
+    let headers = this.$('.goal-gauge-config__section-header')
+      .toArray()
+      .map(value =>
+        this.$(value)
+          .text()
+          .trim()
+      );
+    assert.deepEqual(headers, ['Label', 'Baseline', 'Goal'], 'headers are displayed for goal gauge config');
   });
 
-  this.render(Template);
+  test('onUpdateConfig baselineValue input', async function(assert) {
+    assert.expect(1);
 
-  run(() => {
-    this.$('.goal-gauge-config__baseline-input').val(1);
-    this.$('.goal-gauge-config__baseline-input').focusout();
-  });
-});
+    this.set('onUpdateConfig', result => {
+      assert.equal(result.baselineValue, 1, 'onUpdateConfig action is called by baseline input');
+    });
 
-test('onUpdateConfig goalValue input', function(assert) {
-  assert.expect(1);
+    await render(Template);
 
-  this.set('onUpdateConfig', result => {
-    assert.equal(result.goalValue, 10, 'onUpdateConfig action is called by goal input');
-  });
-
-  this.render(Template);
-
-  run(() => {
-    this.$('.goal-gauge-config__goal-input').val(10);
-    this.$('.goal-gauge-config__goal-input').focusout();
-  });
-});
-
-test('onUpdateConfig goal gauge label input', function(assert) {
-  assert.expect(1);
-
-  this.set('onUpdateConfig', result => {
-    assert.equal(result.metricTitle, 'bottles', 'onUpdateConfig action is called by label input');
+    run(async () => {
+      await fillIn('.goal-gauge-config__baseline-input', 1);
+      await triggerEvent('.goal-gauge-config__baseline-input', 'focusout');
+    });
   });
 
-  this.render(Template);
+  test('onUpdateConfig goalValue input', async function(assert) {
+    assert.expect(1);
 
-  run(() => {
-    this.$('.goal-gauge-config__label-input').val('bottles');
-    this.$('.goal-gauge-config__label-input').focusout();
+    this.set('onUpdateConfig', result => {
+      assert.equal(result.goalValue, 10, 'onUpdateConfig action is called by goal input');
+    });
+
+    await render(Template);
+
+    run(async () => {
+      await fillIn('.goal-gauge-config__goal-input', 10);
+      await triggerEvent('.goal-gauge-config__goal-input', 'focusout');
+    });
+  });
+
+  test('onUpdateConfig goal gauge label input', async function(assert) {
+    assert.expect(1);
+
+    this.set('onUpdateConfig', result => {
+      assert.equal(result.metricTitle, 'bottles', 'onUpdateConfig action is called by label input');
+    });
+
+    await render(Template);
+
+    run(async () => {
+      await fillIn('.goal-gauge-config__label-input', 'bottles');
+      await triggerEvent('.goal-gauge-config__label-input', 'focusout');
+    });
   });
 });

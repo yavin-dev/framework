@@ -1,7 +1,8 @@
 import { A } from '@ember/array';
 import { copy } from '@ember/object/internals';
 import { set } from '@ember/object';
-import { moduleFor, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupTest } from 'ember-qunit';
 import Interval from 'navi-core/utils/classes/interval';
 import moment from 'moment';
 
@@ -24,32 +25,34 @@ const VALID_REQUEST = {
   requestVersion: 'v1'
 };
 
-moduleFor('manifest:goal-gauge', 'Unit | Manifests | goal gauge');
+module('Unit | Manifests | goal gauge', function(hooks) {
+  setupTest(hooks);
 
-test('goal gauge visualization type is valid', function(assert) {
-  assert.expect(4);
+  test('goal gauge visualization type is valid', function(assert) {
+    assert.expect(4);
 
-  // valid
-  let validRequest = copy(VALID_REQUEST),
-    manifest = this.subject(),
-    request = copy(validRequest);
-  assert.ok(manifest.typeIsValid(request), 'goal gauge is valid for single time bucket, single row, single metric');
+    // valid
+    let validRequest = copy(VALID_REQUEST),
+      manifest = this.owner.lookup('manifest:goal-gauge'),
+      request = copy(validRequest);
+    assert.ok(manifest.typeIsValid(request), 'goal gauge is valid for single time bucket, single row, single metric');
 
-  // multiple rows
-  set(request, 'dimensions', [{ dimension: 'property' }]);
-  assert.notOk(manifest.typeIsValid(request), 'goal gauge is invalid due to multiple rows');
+    // multiple rows
+    set(request, 'dimensions', [{ dimension: 'property' }]);
+    assert.notOk(manifest.typeIsValid(request), 'goal gauge is invalid due to multiple rows');
 
-  // multiple metrics
-  set(request, 'metrics', [{ metric: 'adClicks' }, { metric: 'navClicks' }]);
-  assert.notOk(manifest.typeIsValid(request), 'goal gauge is invalid due to multiple metrics');
+    // multiple metrics
+    set(request, 'metrics', [{ metric: 'adClicks' }, { metric: 'navClicks' }]);
+    assert.notOk(manifest.typeIsValid(request), 'goal gauge is invalid due to multiple metrics');
 
-  // multiple time buckets
-  request = copy(VALID_REQUEST);
-  let intervals = A([
-    {
-      interval: new Interval(moment('2015-11-09 00:00:00.000'), moment('2015-11-16 00:00:00.000'))
-    }
-  ]);
-  set(request, 'intervals', intervals);
-  assert.notOk(manifest.typeIsValid(request), 'goal gauge is invalid due to multiple time buckets');
+    // multiple time buckets
+    request = copy(VALID_REQUEST);
+    let intervals = A([
+      {
+        interval: new Interval(moment('2015-11-09 00:00:00.000'), moment('2015-11-16 00:00:00.000'))
+      }
+    ]);
+    set(request, 'intervals', intervals);
+    assert.notOk(manifest.typeIsValid(request), 'goal gauge is invalid due to multiple time buckets');
+  });
 });

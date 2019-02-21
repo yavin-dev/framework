@@ -1,6 +1,8 @@
 import { run } from '@ember/runloop';
 import { A } from '@ember/array';
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import $ from 'jquery';
 
@@ -59,155 +61,159 @@ const AVAILABLE_SERIES_DATA = A([
 
 const SERIES_DIMENSIONS = A(AVAILABLE_SERIES_DATA[0].dimensions).mapBy('dimension');
 
-moduleForComponent('series-selector', 'Integration | Component | series selector', {
-  integration: true,
+module('Integration | Component | series selector', function(hooks) {
+  setupRenderingTest(hooks);
 
-  beforeEach() {
+  hooks.beforeEach(function() {
     this.setProperties({
       availableSeriesData: AVAILABLE_SERIES_DATA,
       seriesDimensions: SERIES_DIMENSIONS,
       addSeries: () => null
     });
-  }
-});
-
-test('It renders correctly', function(assert) {
-  assert.expect(2);
-
-  this.render(TEMPLATE);
-
-  $('.add-series .btn-add').click();
-
-  let header = $('.table-header .table-cell:not(.table-cell--icon)')
-    .toArray()
-    .map(el => {
-      return $(el)
-        .text()
-        .trim();
-    });
-
-  assert.deepEqual(header, ['Age', 'Browser'], 'table header is correctly displayed based on seriesDimensions');
-
-  let body = $('.table-body .table-cell:not(.table-cell--icon)')
-    .toArray()
-    .map(el => {
-      return $(el)
-        .text()
-        .trim();
-    });
-
-  assert.deepEqual(
-    body,
-    [
-      '10 - 20 (10)',
-      'Safari Mobile (safari_mobile)',
-      '20 - 30 (20)',
-      'Chrome (chrome)',
-      '20 - 30 (20)',
-      'Firefox (firefox)'
-    ],
-    'table body is correctly displayed based on availableSeriesData'
-  );
-});
-
-test('No available series', function(assert) {
-  assert.expect(1);
-
-  this.set('availableSeriesData', []);
-
-  this.set('addSeries', () => {
-    assert.ok(false, 'clicking on the message should not trigger the action');
   });
 
-  this.render(TEMPLATE);
+  test('It renders correctly', async function(assert) {
+    assert.expect(2);
 
-  $('.add-series .btn-add').click();
+    await render(TEMPLATE);
 
-  let body = $('.table-body .table-cell')
-    .toArray()
-    .map(el => {
-      return $(el)
-        .text()
-        .trim();
+    $('.add-series .btn-add').click();
+
+    let header = $('.table-header .table-cell:not(.table-cell--icon)')
+      .toArray()
+      .map(el => {
+        return $(el)
+          .text()
+          .trim();
+      });
+
+    assert.deepEqual(header, ['Age', 'Browser'], 'table header is correctly displayed based on seriesDimensions');
+
+    let body = $('.table-body .table-cell:not(.table-cell--icon)')
+      .toArray()
+      .map(el => {
+        return $(el)
+          .text()
+          .trim();
+      });
+
+    assert.deepEqual(
+      body,
+      [
+        '10 - 20 (10)',
+        'Safari Mobile (safari_mobile)',
+        '20 - 30 (20)',
+        'Chrome (chrome)',
+        '20 - 30 (20)',
+        'Firefox (firefox)'
+      ],
+      'table body is correctly displayed based on availableSeriesData'
+    );
+  });
+
+  test('No available series', async function(assert) {
+    assert.expect(1);
+
+    this.set('availableSeriesData', []);
+
+    this.set('addSeries', () => {
+      assert.ok(false, 'clicking on the message should not trigger the action');
     });
 
-  assert.deepEqual(body, ['No Other Series Available'], 'table body displays messages that no series are available');
+    await render(TEMPLATE);
 
-  //Try to click msg
-  this.$('.table-body .table-row:first').click();
-});
+    $('.add-series .btn-add').click();
 
-test('disableAdd', function(assert) {
-  assert.expect(2);
+    let body = $('.table-body .table-cell')
+      .toArray()
+      .map(el => {
+        return $(el)
+          .text()
+          .trim();
+      });
 
-  this.render(TEMPLATE);
+    assert.deepEqual(body, ['No Other Series Available'], 'table body displays messages that no series are available');
 
-  assert.notOk(
-    $('.add-series .pick-value').hasClass('disableClick'),
-    'when enabled "Add Series" button is not disabled"'
-  );
-
-  this.set('disableAdd', true);
-
-  assert.ok($('.add-series .pick-value').hasClass('disableClick'), 'when disabled "Add Series" button is disabled"');
-});
-
-test('addSeries Action', function(assert) {
-  assert.expect(1);
-
-  this.set('addSeries', series => {
-    assert.deepEqual(series, AVAILABLE_SERIES_DATA[0], 'clicking on a table body row sends the selected series');
+    //Try to click msg
+    this.$('.table-body .table-row:first').click();
   });
 
-  this.render(TEMPLATE);
+  test('disableAdd', async function(assert) {
+    assert.expect(2);
 
-  $('.add-series .btn-add').click();
-  this.$('.table-body .table-row:first').click();
-});
+    await render(TEMPLATE);
 
-test('Searching', function(assert) {
-  assert.expect(4);
+    assert.notOk(
+      $('.add-series .pick-value').hasClass('disableClick'),
+      'when enabled "Add Series" button is not disabled"'
+    );
 
-  this.render(TEMPLATE);
+    this.set('disableAdd', true);
 
-  $('.add-series .btn-add').click();
-
-  assert.ok(
-    this.$('.search.chart-series-14').is(':visible'),
-    'search bar is visible and has correct chart-series class'
-  );
-
-  /* == Search "30" == */
-  run(() => {
-    this.$('.search input')
-      .val('30')
-      .trigger('input')
-      .change();
+    assert.ok($('.add-series .pick-value').hasClass('disableClick'), 'when disabled "Add Series" button is disabled"');
   });
 
-  let body = $('.table-body .table-cell:not(.table-cell--icon)')
-    .toArray()
-    .map(el => {
-      return $(el)
-        .text()
-        .trim();
+  test('addSeries Action', async function(assert) {
+    assert.expect(1);
+
+    this.set('addSeries', series => {
+      assert.deepEqual(series, AVAILABLE_SERIES_DATA[0], 'clicking on a table body row sends the selected series');
     });
 
-  assert.deepEqual(
-    body,
-    ['20 - 30 (20)', 'Chrome (chrome)', '20 - 30 (20)', 'Firefox (firefox)'],
-    'table body only shows rows that match search term'
-  );
+    await render(TEMPLATE);
 
-  /* == Search "Safari" == */
-  run(() => {
-    this.$('.search input')
-      .val('Opera')
-      .trigger('input')
-      .change();
+    $('.add-series .btn-add').click();
+    this.$('.table-body .table-row:first').click();
   });
 
-  assert.equal(this.$('.table-body .table-cell').length, 0, 'table body is empty when search has no matching results');
+  test('Searching', async function(assert) {
+    assert.expect(4);
 
-  assert.ok(this.$('.no-match').is(':visible'), 'no match message is displayed when search has no matching results');
+    await render(TEMPLATE);
+
+    $('.add-series .btn-add').click();
+
+    assert.ok(
+      this.$('.search.chart-series-14').is(':visible'),
+      'search bar is visible and has correct chart-series class'
+    );
+
+    /* == Search "30" == */
+    run(() => {
+      this.$('.search input')
+        .val('30')
+        .trigger('input')
+        .change();
+    });
+
+    let body = $('.table-body .table-cell:not(.table-cell--icon)')
+      .toArray()
+      .map(el => {
+        return $(el)
+          .text()
+          .trim();
+      });
+
+    assert.deepEqual(
+      body,
+      ['20 - 30 (20)', 'Chrome (chrome)', '20 - 30 (20)', 'Firefox (firefox)'],
+      'table body only shows rows that match search term'
+    );
+
+    /* == Search "Safari" == */
+    run(() => {
+      this.$('.search input')
+        .val('Opera')
+        .trigger('input')
+        .change();
+    });
+
+    assert.equal(
+      this.$('.table-body .table-cell').length,
+      0,
+      'table body is empty when search has no matching results'
+    );
+
+    assert.ok(this.$('.no-match').is(':visible'), 'no match message is displayed when search has no matching results');
+  });
 });

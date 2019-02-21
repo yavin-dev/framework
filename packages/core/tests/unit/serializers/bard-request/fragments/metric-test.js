@@ -1,100 +1,101 @@
 import { run } from '@ember/runloop';
-import { moduleForModel, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupTest } from 'ember-qunit';
 
-moduleForModel('bard-request/fragments/metric', 'Unit | Serializer | Metric Fragment', {
-  needs: ['serializer:bard-request/fragments/metric', 'transform:metric', 'service:bard-metadata']
-});
+module('Unit | Serializer | Metric Fragment', function(hooks) {
+  setupTest(hooks);
 
-test('serializing record', function(assert) {
-  assert.expect(4);
+  test('serializing record', function(assert) {
+    assert.expect(4);
 
-  let record = run(() => {
-    return this.store().createFragment('bard-request/fragments/metric', {
-      metric: {
-        name: 'test',
-        longName: 'Test',
-        type: 'number'
+    let record = run(() => {
+      return this.owner.lookup('service:store').createFragment('bard-request/fragments/metric', {
+        metric: {
+          name: 'test',
+          longName: 'Test',
+          type: 'number'
+        },
+        parameters: {}
+      });
+    });
+
+    let serializedRecord = record.serialize();
+
+    assert.deepEqual(
+      serializedRecord,
+      {
+        metric: 'test'
       },
-      parameters: {}
+      'the serializer transforms metric without params with empty parameter key'
+    );
+
+    record = run(() => {
+      return this.owner.lookup('service:store').createFragment('bard-request/fragments/metric', {
+        metric: {
+          name: 'test',
+          longName: 'Test',
+          type: 'number'
+        },
+        parameters: null
+      });
     });
-  });
 
-  let serializedRecord = record.serialize();
+    serializedRecord = record.serialize();
 
-  assert.deepEqual(
-    serializedRecord,
-    {
-      metric: 'test'
-    },
-    'the serializer transforms metric without params with empty parameter key'
-  );
-
-  record = run(() => {
-    return this.store().createFragment('bard-request/fragments/metric', {
-      metric: {
-        name: 'test',
-        longName: 'Test',
-        type: 'number'
+    assert.deepEqual(
+      serializedRecord,
+      {
+        metric: 'test'
       },
-      parameters: null
+      'the serializer transforms metric without params with null parameter key'
+    );
+
+    record = run(() => {
+      return this.owner.lookup('service:store').createFragment('bard-request/fragments/metric', {
+        metric: {
+          name: 'test',
+          longName: 'Test',
+          type: 'number'
+        }
+      });
     });
-  });
 
-  serializedRecord = record.serialize();
+    serializedRecord = record.serialize();
 
-  assert.deepEqual(
-    serializedRecord,
-    {
-      metric: 'test'
-    },
-    'the serializer transforms metric without params with null parameter key'
-  );
-
-  record = run(() => {
-    return this.store().createFragment('bard-request/fragments/metric', {
-      metric: {
-        name: 'test',
-        longName: 'Test',
-        type: 'number'
-      }
-    });
-  });
-
-  serializedRecord = record.serialize();
-
-  assert.deepEqual(
-    serializedRecord,
-    {
-      metric: 'test'
-    },
-    'the serializer transforms metric without params with no parameter key'
-  );
-
-  record = run(() => {
-    return this.store().createFragment('bard-request/fragments/metric', {
-      metric: {
-        name: 'test',
-        longName: 'Test',
-        type: 'number'
+    assert.deepEqual(
+      serializedRecord,
+      {
+        metric: 'test'
       },
-      parameters: {
-        currency: 'USD',
-        agg: 'YoY'
-      }
+      'the serializer transforms metric without params with no parameter key'
+    );
+
+    record = run(() => {
+      return this.owner.lookup('service:store').createFragment('bard-request/fragments/metric', {
+        metric: {
+          name: 'test',
+          longName: 'Test',
+          type: 'number'
+        },
+        parameters: {
+          currency: 'USD',
+          agg: 'YoY'
+        }
+      });
     });
+
+    serializedRecord = record.serialize();
+
+    assert.deepEqual(
+      serializedRecord,
+      {
+        metric: 'test',
+        parameters: {
+          agg: 'YoY',
+          currency: 'USD'
+        }
+      },
+      'the serializer transforms metric with parameters'
+    );
   });
-
-  serializedRecord = record.serialize();
-
-  assert.deepEqual(
-    serializedRecord,
-    {
-      metric: 'test',
-      parameters: {
-        agg: 'YoY',
-        currency: 'USD'
-      }
-    },
-    'the serializer transforms metric with parameters'
-  );
 });

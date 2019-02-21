@@ -1,318 +1,290 @@
 import $ from 'jquery';
 import { run } from '@ember/runloop';
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render, click, find } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { set } from '@ember/object';
 
-moduleForComponent('pick-container', 'Integration | Component | pick container', {
-  integration: true
-});
+module('Integration | Component | pick container', function(hooks) {
+  setupRenderingTest(hooks);
 
-test('Yields inner template', function(assert) {
-  assert.expect(1);
+  test('Yields inner template', async function(assert) {
+    assert.expect(1);
 
-  this.render(hbs`
-        {{#pick-container}}
-            <div id='should-be-found'>My div</div>
-        {{/pick-container}}
-    `);
+    await render(hbs`
+          {{#pick-container}}
+              <div id='should-be-found'>My div</div>
+          {{/pick-container}}
+      `);
 
-  assert.equal(this.$('#should-be-found').text(), 'My div', 'Inner template renders');
-});
-
-test('Passing selection', function(assert) {
-  assert.expect(2);
-
-  this.set('testSelection', 1);
-
-  this.render(hbs`
-        {{#pick-container selection=testSelection as |selection|}}
-            {{#pick-value}}
-                {{selection}}
-            {{/pick-value}}
-        {{/pick-container}}
-    `);
-
-  assert.equal(
-    this.$('.pick-value')
-      .text()
-      .trim(),
-    '1',
-    'Container passes selection to inner components'
-  );
-
-  this.set('testSelection', 2);
-  assert.equal(
-    this.$('.pick-value')
-      .text()
-      .trim(),
-    '2',
-    'Updating selection updates component'
-  );
-});
-
-test('Action - onFormToggled', function(assert) {
-  assert.expect(2);
-
-  this.set('formToggled', isFormOpen => {
-    assert.ok(isFormOpen, 'Clicking pick-value calls formToggled action with form open');
+    assert.dom('#should-be-found').hasText('My div', 'Inner template renders');
   });
 
-  this.render(hbs`
-        {{#pick-container isFormOpen=false onFormToggled=(action formToggled)}}
-            {{#pick-value}}
-                <div id='click-me'></div>
-            {{/pick-value}}
-        {{/pick-container}}
-    `);
+  test('Passing selection', async function(assert) {
+    assert.expect(2);
 
-  this.$('#click-me').click();
+    this.set('testSelection', 1);
 
-  this.set('formToggled', isFormOpen => {
-    assert.notOk(isFormOpen, 'Clicking pick-value again calls formToggled action with form closed');
-  });
-  this.$('#click-me').click();
-});
+    await render(hbs`
+          {{#pick-container selection=testSelection as |selection|}}
+              {{#pick-value}}
+                  {{selection}}
+              {{/pick-value}}
+          {{/pick-container}}
+      `);
 
-test('Action - applyChanges', function(assert) {
-  assert.expect(2);
+    assert.dom('.pick-value').hasText('1', 'Container passes selection to inner components');
 
-  let originalSelection = 1;
-  set(this, 'testSelection', originalSelection);
-
-  this.set('handleUpdateSelection', selection => {
-    assert.equal(
-      selection,
-      2,
-      'Calling applyChanges action results in container calling onUpdateSelection handler with new selection'
-    );
+    this.set('testSelection', 2);
+    assert.dom('.pick-value').hasText('2', 'Updating selection updates component');
   });
 
-  this.render(hbs`
-      {{#pick-container 
-          selection=testSelection 
-          isFormOpen=true 
-          onUpdateSelection=handleUpdateSelection 
-          as |selection container|
-      }}
-          {{#pick-form}}
-              <div id='click-me' {{action 'applyChanges' 2 target=container}}></div>
-          {{/pick-form}}
-      {{/pick-container}}
-  `);
+  test('Action - onFormToggled', async function(assert) {
+    assert.expect(2);
 
-  this.$('#click-me').click();
+    this.set('formToggled', isFormOpen => {
+      assert.ok(isFormOpen, 'Clicking pick-value calls formToggled action with form open');
+    });
 
-  assert.equal(this.get('testSelection'), originalSelection, 'Passed selection object is unaffected by changes');
-});
+    await render(hbs`
+          {{#pick-container isFormOpen=false onFormToggled=(action formToggled)}}
+              {{#pick-value}}
+                  <div id='click-me'></div>
+              {{/pick-value}}
+          {{/pick-container}}
+      `);
 
-test('Action - stageChanges', function(assert) {
-  assert.expect(2);
+    await click('#click-me');
 
-  this.set('handleUpdateSelection', selection => {
-    assert.equal(selection, 4, 'applyChanges is called once with most recent change');
+    this.set('formToggled', isFormOpen => {
+      assert.notOk(isFormOpen, 'Clicking pick-value again calls formToggled action with form closed');
+    });
+    await click('#click-me');
   });
 
-  this.render(hbs`
+  test('Action - applyChanges', async function(assert) {
+    assert.expect(2);
+
+    let originalSelection = 1;
+    set(this, 'testSelection', originalSelection);
+
+    this.set('handleUpdateSelection', selection => {
+      assert.equal(
+        selection,
+        2,
+        'Calling applyChanges action results in container calling onUpdateSelection handler with new selection'
+      );
+    });
+
+    await render(hbs`
         {{#pick-container 
+            selection=testSelection 
             isFormOpen=true 
             onUpdateSelection=handleUpdateSelection 
             as |selection container|
         }}
-            <div id='current-selection'>{{selection}}</div>
             {{#pick-form}}
-                <div id='1' {{action 'stageChanges' 1 target=container}}></div>
-                <div id='2' {{action 'stageChanges' 2 target=container}}></div>
-                <div id='3' {{action 'stageChanges' 3 target=container}}></div>
-                <div id='4' {{action 'stageChanges' 4 target=container}}></div>
-                <div id='apply' {{action 'applyChanges' target=container}}></div>
+                <div id='click-me' {{action 'applyChanges' 2 target=container}}></div>
             {{/pick-form}}
         {{/pick-container}}
     `);
 
-  this.$('#1').click();
-  this.$('#2').click();
+    await click('#click-me');
 
-  assert.equal(this.$('#current-selection').text(), '2', 'Internal selection value updates with staged changes');
-
-  this.$('#3').click();
-  this.$('#4').click();
-  this.$('#apply').click();
-});
-
-test('Action - discardChanges', function(assert) {
-  assert.expect(2);
-
-  let originalSelection = 0;
-  set(this, 'testSelection', originalSelection);
-
-  this.set('handleUpdateSelection', selection => {
-    assert.equal(selection, originalSelection, 'applyChanges ignores discarded changes');
+    assert.equal(this.get('testSelection'), originalSelection, 'Passed selection object is unaffected by changes');
   });
 
-  this.render(hbs`
-        {{#pick-container 
-            selection=testSelection 
-            isFormOpen=true
-            onUpdateSelection=handleUpdateSelection
-            as |selection container|
-        }}
-            <div id='current-selection'>{{selection}}</div>
-            {{#pick-form}}
-                <div id='1' {{action 'stageChanges' 1 target=container}}></div>
-                <div id='2' {{action 'stageChanges' 2 target=container}}></div>
-                <div id='discard' {{action 'discardChanges' target=container}}></div>
-                <div id='apply' {{action 'applyChanges' target=container}}></div>
-            {{/pick-form}}
-        {{/pick-container}}
-    `);
+  test('Action - stageChanges', async function(assert) {
+    assert.expect(2);
 
-  this.$('#1').click();
-  this.$('#2').click();
-  this.$('#discard').click();
+    this.set('handleUpdateSelection', selection => {
+      assert.equal(selection, 4, 'applyChanges is called once with most recent change');
+    });
 
-  assert.equal(this.$('#current-selection').text(), originalSelection, 'Internal selection resets to original value');
+    await render(hbs`
+          {{#pick-container 
+              isFormOpen=true 
+              onUpdateSelection=handleUpdateSelection 
+              as |selection container|
+          }}
+              <div id='current-selection'>{{selection}}</div>
+              {{#pick-form}}
+                  <div id='1' {{action 'stageChanges' 1 target=container}}></div>
+                  <div id='2' {{action 'stageChanges' 2 target=container}}></div>
+                  <div id='3' {{action 'stageChanges' 3 target=container}}></div>
+                  <div id='4' {{action 'stageChanges' 4 target=container}}></div>
+                  <div id='apply' {{action 'applyChanges' target=container}}></div>
+              {{/pick-form}}
+          {{/pick-container}}
+      `);
 
-  this.$('#apply').click();
-});
+    await click('#1');
+    await click('#2');
 
-test('Form opened and closed by clicking value', function(assert) {
-  assert.expect(3);
+    assert.dom('#current-selection').hasText('2', 'Internal selection value updates with staged changes');
 
-  this.render(hbs`
-        {{#pick-container}}
-            {{#pick-value}}
-            {{/pick-value}}
-            {{#pick-form}}
-            {{/pick-form}}
-        {{/pick-container}}
-    `);
-
-  assert.notOk(this.$('.pick-form').is(':visible'), 'Form is closed by default');
-
-  this.$('.pick-value').click();
-  assert.ok(this.$('.pick-form').is(':visible'), 'Form is open after clicking pick-value');
-
-  this.$('.pick-value').click();
-  assert.notOk(this.$('.pick-form').is(':visible'), 'Form is closed after clicking pick-value again');
-});
-
-test('Clicking outside open form will close it', function(assert) {
-  assert.expect(4);
-
-  this.render(hbs`
-        {{#pick-container isFormOpen=true}}
-            {{#pick-value}}
-            {{/pick-value}}
-            {{#pick-form}}
-                <div id='inside-form'></div>
-            {{/pick-form}}
-        {{/pick-container}}
-    `);
-
-  assert.ok(this.$('.pick-form').is(':visible'), 'Form is open when isFormOpen=true is set');
-
-  /* == Click inside form == */
-  this.$('#inside-form').click();
-  assert.ok(this.$('.pick-form').is(':visible'), 'Form is still open when clicking inside the form');
-
-  /* == Click stale element inside form == */
-  this.$('#inside-form').on('click', () => {
-    this.$('#inside-form').remove();
+    await click('#3');
+    await click('#4');
+    await click('#apply');
   });
 
-  run(() => {
-    this.$('#inside-form').click();
+  test('Action - discardChanges', async function(assert) {
+    assert.expect(2);
+
+    let originalSelection = 0;
+    set(this, 'testSelection', originalSelection);
+
+    this.set('handleUpdateSelection', selection => {
+      assert.equal(selection, originalSelection, 'applyChanges ignores discarded changes');
+    });
+
+    await render(hbs`
+          {{#pick-container 
+              selection=testSelection 
+              isFormOpen=true
+              onUpdateSelection=handleUpdateSelection
+              as |selection container|
+          }}
+              <div id='current-selection'>{{selection}}</div>
+              {{#pick-form}}
+                  <div id='1' {{action 'stageChanges' 1 target=container}}></div>
+                  <div id='2' {{action 'stageChanges' 2 target=container}}></div>
+                  <div id='discard' {{action 'discardChanges' target=container}}></div>
+                  <div id='apply' {{action 'applyChanges' target=container}}></div>
+              {{/pick-form}}
+          {{/pick-container}}
+      `);
+
+    await click('#1');
+    await click('#2');
+    await click('#discard');
+
+    assert.dom('#current-selection').hasText(originalSelection, 'Internal selection resets to original value');
+
+    await click('#apply');
   });
 
-  assert.ok(this.$('.pick-form').is(':visible'), 'Form is still open after clicking stale element');
+  test('Form opened and closed by clicking value', async function(assert) {
+    assert.expect(3);
 
-  /* == Click outside form == */
-  run(() => {
-    $('body').click();
+    await render(hbs`
+          {{#pick-container}}
+              {{#pick-value}}
+              {{/pick-value}}
+              {{#pick-form}}
+              {{/pick-form}}
+          {{/pick-container}}
+      `);
+
+    assert.notOk(this.$('.pick-form').is(':visible'), 'Form is closed by default');
+
+    await click('.pick-value');
+    assert.ok(this.$('.pick-form').is(':visible'), 'Form is open after clicking pick-value');
+
+    await click('.pick-value');
+    assert.notOk(this.$('.pick-form').is(':visible'), 'Form is closed after clicking pick-value again');
   });
-  assert.notOk(this.$('.pick-form').is(':visible'), 'Form is closed after clicking off the form');
-});
 
-test('Closes form automatically discards changes', function(assert) {
-  assert.expect(3);
+  test('Clicking outside open form will close it', async function(assert) {
+    assert.expect(4);
 
-  this.render(hbs`
-        {{#pick-container selection=1 isFormOpen=true as |selection container|}}
-            {{#pick-value}}
-                {{selection}}
-            {{/pick-value}}
-            {{#pick-form}}
-                <div id='2' {{action 'stageChanges' 2 target=container}}></div>
-            {{/pick-form}}
-        {{/pick-container}}
-    `);
+    await render(hbs`
+          {{#pick-container isFormOpen=true}}
+              {{#pick-value}}
+              {{/pick-value}}
+              {{#pick-form}}
+                  <div id='inside-form'></div>
+              {{/pick-form}}
+          {{/pick-container}}
+      `);
 
-  assert.equal(
-    this.$('.pick-value')
-      .text()
-      .trim(),
-    '1',
-    'Value shows initial selection'
-  );
+    assert.ok(this.$('.pick-form').is(':visible'), 'Form is open when isFormOpen=true is set');
 
-  this.$('#2').click();
+    /* == Click inside form == */
+    await click('#inside-form');
+    assert.ok(this.$('.pick-form').is(':visible'), 'Form is still open when clicking inside the form');
 
-  assert.equal(
-    this.$('.pick-value')
-      .text()
-      .trim(),
-    '2',
-    'Value shows staged changes after update'
-  );
+    /* == Click stale element inside form == */
+    this.$('#inside-form').on('click', () => {
+      this.$('#inside-form').remove();
+    });
 
-  // Close and reopen
-  this.$('.pick-value').click();
-  this.$('.pick-value').click();
+    run(async () => {
+      await click('#inside-form');
+    });
 
-  assert.equal(
-    this.$('.pick-value')
-      .text()
-      .trim(),
-    '1',
-    'Staged changes are discarded after opening and closing the form'
-  );
-});
+    assert.ok(this.$('.pick-form').is(':visible'), 'Form is still open after clicking stale element');
 
-test('Auto close after apply ', function(assert) {
-  assert.expect(4);
+    /* == Click outside form == */
+    run(() => {
+      $('body').click();
+    });
+    assert.notOk(this.$('.pick-form').is(':visible'), 'Form is closed after clicking off the form');
+  });
 
-  /* == autoClose = true == */
-  this.render(hbs`
-        {{#pick-container autoClose=true as |selection container|}}
-            {{#pick-value}}
-            {{/pick-value}}
-            {{#pick-form}}
-                <div id='apply' {{action 'applyChanges' target=container}}></div>
-            {{/pick-form}}
-        {{/pick-container}}
-    `);
+  test('Closes form automatically discards changes', async function(assert) {
+    assert.expect(3);
 
-  this.$('.pick-value').click();
-  assert.ok(this.$('.pick-form').is(':visible'), 'Form is open after clicking pick-value');
+    await render(hbs`
+          {{#pick-container selection=1 isFormOpen=true as |selection container|}}
+              {{#pick-value}}
+                  {{selection}}
+              {{/pick-value}}
+              {{#pick-form}}
+                  <div id='2' {{action 'stageChanges' 2 target=container}}></div>
+              {{/pick-form}}
+          {{/pick-container}}
+      `);
 
-  this.$('#apply').click();
-  assert.notOk(this.$('.pick-form').is(':visible'), 'When autoClose = true, form is closed after applying');
+    assert.dom('.pick-value').hasText('1', 'Value shows initial selection');
 
-  /* == autoClose = false == */
-  this.render(hbs`
-        {{#pick-container autoClose=false as |selection container|}}
-            {{#pick-value}}
-            {{/pick-value}}
-            {{#pick-form}}
-                <div id='apply' {{action 'applyChanges' target=container}}></div>
-            {{/pick-form}}
-        {{/pick-container}}
-    `);
+    await click('#2');
 
-  this.$('.pick-value').click();
-  assert.ok(this.$('.pick-form').is(':visible'), 'Form is open after clicking pick-value');
+    assert.dom('.pick-value').hasText('2', 'Value shows staged changes after update');
 
-  this.$('#apply').click();
-  assert.ok(this.$('.pick-form').is(':visible'), 'When autoClose = false, form is still open after applying');
+    // Close and reopen
+    await click('.pick-value');
+    await click('.pick-value');
+
+    assert.dom('.pick-value').hasText('1', 'Staged changes are discarded after opening and closing the form');
+  });
+
+  test('Auto close after apply ', async function(assert) {
+    assert.expect(4);
+
+    /* == autoClose = true == */
+    await render(hbs`
+          {{#pick-container autoClose=true as |selection container|}}
+              {{#pick-value}}
+              {{/pick-value}}
+              {{#pick-form}}
+                  <div id='apply' {{action 'applyChanges' target=container}}></div>
+              {{/pick-form}}
+          {{/pick-container}}
+      `);
+
+    await click('.pick-value');
+    assert.ok(this.$('.pick-form').is(':visible'), 'Form is open after clicking pick-value');
+
+    await click('#apply');
+    assert.notOk(this.$('.pick-form').is(':visible'), 'When autoClose = true, form is closed after applying');
+
+    /* == autoClose = false == */
+    await render(hbs`
+          {{#pick-container autoClose=false as |selection container|}}
+              {{#pick-value}}
+              {{/pick-value}}
+              {{#pick-form}}
+                  <div id='apply' {{action 'applyChanges' target=container}}></div>
+              {{/pick-form}}
+          {{/pick-container}}
+      `);
+
+    await click('.pick-value');
+    assert.ok(this.$('.pick-form').is(':visible'), 'Form is open after clicking pick-value');
+
+    await click('#apply');
+    assert.ok(this.$('.pick-form').is(':visible'), 'When autoClose = false, form is still open after applying');
+  });
 });

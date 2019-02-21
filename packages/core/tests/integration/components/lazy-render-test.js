@@ -1,38 +1,28 @@
 import { run } from '@ember/runloop';
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render, find } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import $ from 'jquery';
 
-moduleForComponent('lazy-render', 'Integration | Component | lazy render', {
-  integration: true
-});
+module('Integration | Component | lazy render', function(hooks) {
+  setupRenderingTest(hooks);
 
-test('it renders', function(assert) {
-  assert.expect(2);
+  test('it renders', async function(assert) {
+    assert.expect(2);
 
-  this.render(hbs`
-        {{#lazy-render target='body'}}
-        lazy render
-        {{/lazy-render}}
-    `);
+    await render(hbs`
+          {{#lazy-render target='body'}}
+          lazy render
+          {{/lazy-render}}
+      `);
 
-  assert.equal(
-    this.$()
-      .text()
-      .trim(),
-    '',
-    'Nothing should be rendered initially'
-  );
+    assert.dom('*').hasText('', 'Nothing should be rendered initially');
 
-  run(() => {
-    $('body').trigger('mouseenter');
+    run(() => {
+      $('body').trigger('mouseenter');
+    });
+
+    assert.dom('*').hasText('lazy render', 'inner content is rendered after triggering event');
   });
-
-  assert.equal(
-    this.$()
-      .text()
-      .trim(),
-    'lazy render',
-    'inner content is rendered after triggering event'
-  );
 });

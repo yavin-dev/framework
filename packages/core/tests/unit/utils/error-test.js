@@ -1,81 +1,79 @@
 import { getApiErrMsg, _getErrorText } from 'navi-core/utils/error';
 import { module, test } from 'qunit';
 
-module('Unit | Utils | Error', {
-  unit: true
-});
+module('Unit | Utils | Error', function() {
+  test('data timeout message - unit test', function(assert) {
+    assert.expect(1);
 
-test('data timeout message - unit test', function(assert) {
-  assert.expect(1);
+    let status = null,
+      detail = 'The adapter operation timed out';
 
-  let status = null,
-    detail = 'The adapter operation timed out';
+    assert.equal(
+      getApiErrMsg({ status, detail }),
+      'Data Timeout',
+      'The correct message is returned when the ajax request times out'
+    );
+  });
 
-  assert.equal(
-    getApiErrMsg({ status, detail }),
-    'Data Timeout',
-    'The correct message is returned when the ajax request times out'
-  );
-});
+  test('bard message', function(assert) {
+    assert.expect(1);
 
-test('bard message', function(assert) {
-  assert.expect(1);
+    let status = 400,
+      detail = { description: 'Metric(s) "[foo]" do not exist.' };
 
-  let status = 400,
-    detail = { description: 'Metric(s) "[foo]" do not exist.' };
+    assert.equal(
+      getApiErrMsg({ status, detail }),
+      `${detail.description}`,
+      'The error message displayed is based on the bard response'
+    );
+  });
 
-  assert.equal(
-    getApiErrMsg({ status, detail }),
-    `${detail.description}`,
-    'The error message displayed is based on the bard response'
-  );
-});
+  test('no message', function(assert) {
+    assert.expect(3);
 
-test('no message', function(assert) {
-  assert.expect(3);
+    let status = 500,
+      detail = null;
 
-  let status = 500,
+    assert.equal(
+      getApiErrMsg({ status, detail }),
+      'Server Error',
+      'The default error msg is displayed when error.detail is falsey'
+    );
+
+    detail = {};
+    assert.equal(
+      getApiErrMsg({ status, detail }),
+      'Server Error',
+      'The default error msg is displayed when error.detail is an object without a description'
+    );
+
+    assert.equal(getApiErrMsg(), 'Server Error', 'The default error msg is displayed when error is falsey');
+  });
+
+  test('_getErrorText', function(assert) {
+    assert.expect(5);
+
+    let detail = 'String Details';
+
+    assert.equal(_getErrorText({ detail }), detail, '_getErrorText returns the detail property if it is a string');
+
+    detail = { description: 'Object  Details' };
+    assert.equal(
+      _getErrorText({ detail }),
+      detail.description,
+      '_getErrorText returns the detail.description property if detail is an object'
+    );
+
+    detail = {};
+    assert.equal(
+      _getErrorText({ detail }),
+      undefined,
+      '_getErrorText returns undefined if detail is an object without a description property'
+    );
+
     detail = null;
+    assert.equal(_getErrorText({ detail }), null, '_getErrorText returns null if detail is falsey');
 
-  assert.equal(
-    getApiErrMsg({ status, detail }),
-    'Server Error',
-    'The default error msg is displayed when error.detail is falsey'
-  );
-
-  detail = {};
-  assert.equal(
-    getApiErrMsg({ status, detail }),
-    'Server Error',
-    'The default error msg is displayed when error.detail is an object without a description'
-  );
-
-  assert.equal(getApiErrMsg(), 'Server Error', 'The default error msg is displayed when error is falsey');
-});
-
-test('_getErrorText', function(assert) {
-  assert.expect(5);
-
-  let detail = 'String Details';
-
-  assert.equal(_getErrorText({ detail }), detail, '_getErrorText returns the detail property if it is a string');
-
-  detail = { description: 'Object  Details' };
-  assert.equal(
-    _getErrorText({ detail }),
-    detail.description,
-    '_getErrorText returns the detail.description property if detail is an object'
-  );
-
-  detail = {};
-  assert.equal(
-    _getErrorText({ detail }),
-    undefined,
-    '_getErrorText returns undefined if detail is an object without a description property'
-  );
-
-  detail = null;
-  assert.equal(_getErrorText({ detail }), null, '_getErrorText returns null if detail is falsey');
-
-  assert.equal(_getErrorText(), null, '_getErrorText returns null if error is falsey');
+    assert.equal(_getErrorText(), null, '_getErrorText returns null if error is falsey');
+  });
 });

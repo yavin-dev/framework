@@ -20,12 +20,13 @@
  */
 import { assert } from '@ember/debug';
 
-import $ from 'jquery';
 import { assign } from '@ember/polyfills';
+import { copy } from '@ember/object/internals';
+import { get, computed, observer } from '@ember/object';
 import { typeOf } from '@ember/utils';
+import $ from 'jquery';
 import Component from '@ember/component';
 import Layout from '../templates/components/pick-container';
-import { get, computed, observer } from '@ember/object';
 
 export default Component.extend({
   layout: Layout,
@@ -86,17 +87,17 @@ export default Component.extend({
    */
   copySelection: observer('selection', function() {
     let selection = this.get('selection'),
-      copy;
+      copied;
 
     //If type is object or ember object instance
     if (typeOf(selection) === 'object' || typeOf(selection) === 'instance') {
       //deep copy object
-      copy = assign({}, selection);
+      copied = assign({}, selection);
     } else {
-      copy = copy(selection);
+      copied = copy(selection);
     }
 
-    this.set('_editableSelection', copy);
+    this.set('_editableSelection', copied);
   }),
 
   /**

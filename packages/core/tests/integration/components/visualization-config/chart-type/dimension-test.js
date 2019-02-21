@@ -1,9 +1,10 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { clickTrigger as toggleSelector, nativeMouseUp as toggleOption } from 'ember-power-select/test-support/helpers';
 import { setupMock, teardownMock } from '../../../../helpers/mirage-helper';
 import { get } from '@ember/object';
-import { getOwner } from '@ember/application';
 import { run } from '@ember/runloop';
 
 let MetadataService;
@@ -58,131 +59,23 @@ const ROWS = [
   }
 ];
 
-moduleForComponent(
-  'visualization-config/chart-type/dimension',
-  'Integration | Component | visualization config/line chart type/dimension',
-  {
-    integration: true,
-    beforeEach() {
-      setupMock();
+module('Integration | Component | visualization config/line chart type/dimension', function(hooks) {
+  setupRenderingTest(hooks);
 
-      this.set('seriesConfig', {
-        dimensionOrder: ['foo'],
-        metric: {
-          metric: 'metric1',
-          parameters: {},
-          canonicalName: 'metric1',
-          toJSON() {
-            return this;
-          }
-        },
-        dimensions: [
-          {
-            name: 'Foo1',
-            values: { foo: '1' }
-          },
-          {
-            name: 'Foo2',
-            values: { foo: '2' }
-          }
-        ]
-      });
+  hooks.beforeEach(function() {
+    setupMock();
 
-      this.setProperties({
-        request: {
-          dimensions: [{ dimension: { name: 'foo' } }],
-          metrics: [
-            {
-              metric: 'metric1',
-              parameters: {},
-              canonicalName: 'metric1',
-              toJSON() {
-                return this;
-              }
-            },
-            {
-              metric: 'metric2',
-              parameters: {},
-              canonicalName: 'metric2',
-              toJSON() {
-                return this;
-              }
-            },
-            {
-              metric: 'revenue',
-              parameters: { currency: 'USD' },
-              canonicalName: 'revenue(currency=USD)',
-              toJSON() {
-                return this;
-              }
-            }
-          ]
-        },
-        response: ROWS,
-        onUpdateChartConfig: () => null
-      });
-
-      MetadataService = getOwner(this).lookup('service:bard-metadata');
-      return MetadataService.loadMetadata();
-    },
-
-    afterEach() {
-      teardownMock();
-    }
-  }
-);
-
-test('component renders', function(assert) {
-  assert.expect(3);
-
-  this.render(Template);
-
-  assert.ok(this.$('.dimension-line-chart-config').is(':visible'), 'The line chart config component renders');
-
-  assert.ok(
-    this.$('.dimension-line-chart-config .dimension-line-chart-config__metric-selector').is(':visible'),
-    'The metric selector component is displayed in the line chart config'
-  );
-
-  assert.ok(
-    this.$('.dimension-line-chart-config .chart-series-collection').is(':visible'),
-    'The chart series selection component is displayed in the line chart config'
-  );
-});
-
-test('on metric change', function(assert) {
-  assert.expect(2);
-
-  this.render(Template);
-
-  this.set('onUpdateChartConfig', config => {
-    assert.deepEqual(
-      get(config, 'metric.canonicalName'),
-      'metric2',
-      'Metric 2 is selected and passed on to the onUpdateChartConfig action'
-    );
-  });
-
-  toggleSelector('.dimension-line-chart-config__metric-selector');
-
-  assert.equal(
-    this.$('.dimension-line-chart-config__metric-selector .ember-power-select-option:contains(Revenue)')
-      .text()
-      .trim(),
-    'Revenue (USD)',
-    'Parameterized metric is displayed correctly in the dimension visualization config'
-  );
-
-  toggleOption($('.dimension-line-chart-config__metric-selector .ember-power-select-option:contains(metric2)')[0]);
-});
-
-test('on add series', function(assert) {
-  assert.expect(1);
-
-  this.set('onUpdateChartConfig', config => {
-    assert.deepEqual(
-      config.dimensions,
-      [
+    this.set('seriesConfig', {
+      dimensionOrder: ['foo'],
+      metric: {
+        metric: 'metric1',
+        parameters: {},
+        canonicalName: 'metric1',
+        toJSON() {
+          return this;
+        }
+      },
+      dimensions: [
         {
           name: 'Foo1',
           values: { foo: '1' }
@@ -190,45 +83,150 @@ test('on add series', function(assert) {
         {
           name: 'Foo2',
           values: { foo: '2' }
-        },
-        {
-          name: '3',
-          values: { foo: '3' }
         }
-      ],
-      'The new series selected is added to the config and passed on to the onUpdateChartConfig action'
+      ]
+    });
+
+    this.setProperties({
+      request: {
+        dimensions: [{ dimension: { name: 'foo' } }],
+        metrics: [
+          {
+            metric: 'metric1',
+            parameters: {},
+            canonicalName: 'metric1',
+            toJSON() {
+              return this;
+            }
+          },
+          {
+            metric: 'metric2',
+            parameters: {},
+            canonicalName: 'metric2',
+            toJSON() {
+              return this;
+            }
+          },
+          {
+            metric: 'revenue',
+            parameters: { currency: 'USD' },
+            canonicalName: 'revenue(currency=USD)',
+            toJSON() {
+              return this;
+            }
+          }
+        ]
+      },
+      response: ROWS,
+      onUpdateChartConfig: () => null
+    });
+
+    MetadataService = this.owner.lookup('service:bard-metadata');
+    return MetadataService.loadMetadata();
+  });
+
+  hooks.afterEach(function() {
+    teardownMock();
+  });
+
+  test('component renders', async function(assert) {
+    assert.expect(3);
+
+    await render(Template);
+
+    assert.ok(this.$('.dimension-line-chart-config').is(':visible'), 'The line chart config component renders');
+
+    assert.ok(
+      this.$('.dimension-line-chart-config .dimension-line-chart-config__metric-selector').is(':visible'),
+      'The metric selector component is displayed in the line chart config'
+    );
+
+    assert.ok(
+      this.$('.dimension-line-chart-config .chart-series-collection').is(':visible'),
+      'The chart series selection component is displayed in the line chart config'
     );
   });
 
-  this.render(Template);
+  test('on metric change', async function(assert) {
+    assert.expect(2);
 
-  //Add first series in dropdown
-  $('.add-series .btn-add').click();
-  this.$('.add-series .table-row:first-of-type').click();
-});
+    await render(Template);
 
-test('on remove series', function(assert) {
-  assert.expect(1);
+    this.set('onUpdateChartConfig', config => {
+      assert.deepEqual(
+        get(config, 'metric.canonicalName'),
+        'metric2',
+        'Metric 2 is selected and passed on to the onUpdateChartConfig action'
+      );
+    });
 
-  this.set('onUpdateChartConfig', config => {
-    assert.deepEqual(
-      config.dimensions,
-      [
-        {
-          name: 'Foo2',
-          values: { foo: '2' }
-        }
-      ],
-      'The deleted series is removed to the config and passed on to the onUpdateChartConfig action'
+    toggleSelector('.dimension-line-chart-config__metric-selector');
+
+    assert.equal(
+      this.$('.dimension-line-chart-config__metric-selector .ember-power-select-option:contains(Revenue)')
+        .text()
+        .trim(),
+      'Revenue (USD)',
+      'Parameterized metric is displayed correctly in the dimension visualization config'
     );
+
+    toggleOption($('.dimension-line-chart-config__metric-selector .ember-power-select-option:contains(metric2)')[0]);
   });
 
-  this.render(Template);
+  test('on add series', async function(assert) {
+    assert.expect(1);
 
-  return run(() => {
-    // Delete first series
-    this.$('.navi-icon__delete')
-      .first()
-      .click();
+    this.set('onUpdateChartConfig', config => {
+      assert.deepEqual(
+        config.dimensions,
+        [
+          {
+            name: 'Foo1',
+            values: { foo: '1' }
+          },
+          {
+            name: 'Foo2',
+            values: { foo: '2' }
+          },
+          {
+            name: '3',
+            values: { foo: '3' }
+          }
+        ],
+        'The new series selected is added to the config and passed on to the onUpdateChartConfig action'
+      );
+    });
+
+    await render(Template);
+
+    //Add first series in dropdown
+    $('.add-series .btn-add').click();
+    this.$('.add-series .table-row:first-of-type').click();
+  });
+
+  test('on remove series', async function(assert) {
+    assert.expect(1);
+
+    this.set('onUpdateChartConfig', config => {
+      assert.deepEqual(
+        config.dimensions,
+        [
+          {
+            name: 'Foo2',
+            values: { foo: '2' }
+          }
+        ],
+        'The deleted series is removed to the config and passed on to the onUpdateChartConfig action'
+      );
+    });
+
+    await render(Template);
+
+    return run(() => {
+      // Delete first series
+      this.$('.navi-icon__delete')
+        .first()
+        .click();
+    });
   });
 });

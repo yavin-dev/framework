@@ -1,6 +1,7 @@
 import { A } from '@ember/array';
-import { getOwner } from '@ember/application';
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize as injectC3Enhancements } from 'navi-core/initializers/inject-c3-enhancements';
 import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
@@ -376,9 +377,10 @@ const DimensionModel = A([
   }
 ]);
 
-moduleForComponent('navi-visualizations/bar-chart', 'Integration | Component | bar chart', {
-  integration: true,
-  beforeEach() {
+module('Integration | Component | bar chart', function(hooks) {
+  setupRenderingTest(hooks);
+
+  hooks.beforeEach(function() {
     setupMock();
     injectC3Enhancements();
 
@@ -404,119 +406,115 @@ moduleForComponent('navi-visualizations/bar-chart', 'Integration | Component | b
       }
     });
 
-    MetadataService = getOwner(this).lookup('service:bard-metadata');
+    MetadataService = this.owner.lookup('service:bard-metadata');
     return MetadataService.loadMetadata();
-  },
+  });
 
-  afterEach() {
+  hooks.afterEach(function() {
     teardownMock();
-  }
-});
+  });
 
-test('it renders', function(assert) {
-  assert.expect(2);
+  test('it renders', async function(assert) {
+    assert.expect(2);
 
-  this.render(TEMPLATE);
+    await render(TEMPLATE);
 
-  assert.ok(this.$('.navi-vis-c3-chart').is(':visible'), 'The bar chart widget component is visible');
+    assert.ok(this.$('.navi-vis-c3-chart').is(':visible'), 'The bar chart widget component is visible');
 
-  assert.equal(this.$('.c3-bar').length, 5, '5 bars are present on the chart');
-});
+    assert.dom('.c3-bar').exists({ count: 5 }, '5 bars are present on the chart');
+  });
 
-test('multiple metric series', function(assert) {
-  assert.expect(1);
+  test('multiple metric series', async function(assert) {
+    assert.expect(1);
 
-  this.set('options', {
-    axis: {
-      y: {
-        series: {
-          type: 'metric',
-          config: {
-            metrics: [
-              {
-                metric: 'adClicks',
-                canonicalName: 'adClicks',
-                toJSON() {
-                  return this;
+    this.set('options', {
+      axis: {
+        y: {
+          series: {
+            type: 'metric',
+            config: {
+              metrics: [
+                {
+                  metric: 'adClicks',
+                  canonicalName: 'adClicks',
+                  toJSON() {
+                    return this;
+                  }
+                },
+                {
+                  metric: 'totalPageViews',
+                  canonicalName: 'totalPageViews',
+                  toJSON() {
+                    return this;
+                  }
                 }
-              },
-              {
+              ]
+            }
+          }
+        }
+      }
+    });
+
+    this.set('model', Model);
+    await render(TEMPLATE);
+
+    assert.dom('.c3-bar').exists({ count: 10 }, 'Ten bars are present in the bar based on the metrics in the request');
+  });
+
+  test('multiple dimension series', async function(assert) {
+    assert.expect(2);
+
+    this.set('options', {
+      axis: {
+        y: {
+          series: {
+            type: 'dimension',
+            config: {
+              metric: {
                 metric: 'totalPageViews',
                 canonicalName: 'totalPageViews',
                 toJSON() {
                   return this;
                 }
-              }
-            ]
+              },
+              dimensionOrder: ['age'],
+              dimensions: [
+                {
+                  name: 'All Other',
+                  values: { age: '-3' }
+                },
+                {
+                  name: 'under 13',
+                  values: { age: '1' }
+                },
+                {
+                  name: '13 - 25',
+                  values: { age: '2' }
+                },
+                {
+                  name: '25 - 35',
+                  values: { age: '3' }
+                },
+                {
+                  name: '35 - 45',
+                  values: { age: '4' }
+                }
+              ]
+            }
           }
         }
       }
-    }
+    });
+
+    this.set('model', DimensionModel);
+
+    await render(TEMPLATE);
+    assert
+      .dom('.c3-bars')
+      .exists({ count: 5 }, 'Five series are present in the bar chart based on the dimension series in the request');
+
+    assert
+      .dom('.c3-bar')
+      .exists({ count: 50 }, 'Fifty bars are present in the bar chart based on the dimension series in the request');
   });
-
-  this.set('model', Model);
-  this.render(TEMPLATE);
-
-  assert.equal(this.$('.c3-bar').length, 10, 'Ten bars are present in the bar based on the metrics in the request');
-});
-
-test('multiple dimension series', function(assert) {
-  assert.expect(2);
-
-  this.set('options', {
-    axis: {
-      y: {
-        series: {
-          type: 'dimension',
-          config: {
-            metric: {
-              metric: 'totalPageViews',
-              canonicalName: 'totalPageViews',
-              toJSON() {
-                return this;
-              }
-            },
-            dimensionOrder: ['age'],
-            dimensions: [
-              {
-                name: 'All Other',
-                values: { age: '-3' }
-              },
-              {
-                name: 'under 13',
-                values: { age: '1' }
-              },
-              {
-                name: '13 - 25',
-                values: { age: '2' }
-              },
-              {
-                name: '25 - 35',
-                values: { age: '3' }
-              },
-              {
-                name: '35 - 45',
-                values: { age: '4' }
-              }
-            ]
-          }
-        }
-      }
-    }
-  });
-
-  this.set('model', DimensionModel);
-
-  this.render(TEMPLATE);
-  assert.equal(
-    this.$('.c3-bars').length,
-    5,
-    'Five series are present in the bar chart based on the dimension series in the request'
-  );
-
-  assert.equal(
-    this.$('.c3-bar').length,
-    50,
-    'Fifty bars are present in the bar chart based on the dimension series in the request'
-  );
 });
