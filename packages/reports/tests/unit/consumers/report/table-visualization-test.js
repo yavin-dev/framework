@@ -67,11 +67,11 @@ test('reorder metrics', function(assert) {
   let newColumns = [
     {
       type: 'metric',
-      field: { metric: 'b' }
+      attributes: { name: 'b' }
     },
     {
       type: 'threshold',
-      field: { metric: 'a' }
+      attributes: { name: 'a' }
     }
   ];
 
@@ -93,7 +93,7 @@ test('UPDATE_TABLE_COLUMN', function(assert) {
     visualization: {
       type: 'table',
       metadata: {
-        columns: [{ field: { metric: 'a' }, value: 1 }, { field: { metric: 'b' }, value: 2 }]
+        columns: [{ attributes: { name: 'a' }, value: 1 }, { attributes: { name: 'b', format: 'foo' }, value: 2 }]
       }
     }
   };
@@ -102,13 +102,13 @@ test('UPDATE_TABLE_COLUMN', function(assert) {
     this.subject().send(
       UpdateReportActions.UPDATE_TABLE_COLUMN,
       { currentModel },
-      { field: { metric: 'b' }, value: 3 }
+      { attributes: { name: 'b', format: 'bar' }, value: 3 }
     );
   });
 
   assert.deepEqual(
     get(currentModel, 'visualization.metadata.columns'),
-    [{ field: { metric: 'a' }, value: 1 }, { field: { metric: 'b' }, value: 3 }],
+    [{ attributes: { name: 'a' }, value: 1 }, { attributes: { name: 'b', format: 'bar' }, value: 3 }],
     'updateColumn updates the column in the visualization metadata'
   );
 });

@@ -1,7 +1,7 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import Controller from '@ember/controller';
+import ReportController from 'navi-reports/controllers/reports/report';
 
-export default Controller.extend({});
+export default ReportController.extend({});

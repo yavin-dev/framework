@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Ember from 'ember';
@@ -12,9 +12,9 @@ export default Ember.Route.extend({
    * @param collectionId
    * @returns {*|Promise|Promise.<TResult>}
    */
-  model({ collectionId }) {
+  model({ collection_id }) {
     return Ember.get(this, 'user')
       .findOrRegister()
-      .then(() => this.get('store').findRecord('reportCollection', collectionId));
+      .then(() => this.get('store').findRecord('reportCollection', collection_id));
   }
 });

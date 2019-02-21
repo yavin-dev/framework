@@ -12,6 +12,7 @@
 
 import Component from '@ember/component';
 import { computed, get } from '@ember/object';
+import { readOnly } from '@ember/object/computed';
 import layout from '../../templates/components/cell-renderers/dimension';
 import { isEmpty } from '@ember/utils';
 
@@ -24,28 +25,30 @@ export default Component.extend({
   classNames: ['table-cell-content', 'dimension'],
 
   /**
+   * @property {String} name - dimension name
+   */
+  name: readOnly('column.attributes.name'),
+
+  /**
    * @property {String} descField - field to find the description
    */
-  descField: computed('column.field.dimension', function() {
-    return get(this, 'column.field.dimension') + '|desc';
+  descField: computed('name', function() {
+    return get(this, 'name') + '|desc';
   }),
 
   /**
    * @property {String} idField - field to find id
    */
-  idField: computed('column.field.dimension', function() {
-    return get(this, 'column.field.dimension') + '|id';
+  idField: computed('name', function() {
+    return get(this, 'name') + '|id';
   }),
 
   /**
    * @property {Object} dimensionField - field to find dimension field
    */
-  dimensionField: computed('column.field.dimension', 'column.field.field', function() {
-    if (!get(this, 'column.field.field')) {
-      return null;
-    }
-
-    return `${get(this, 'column.field.dimension')}|${get(this, 'column.field.field')}`;
+  dimensionField: computed('name', 'column.attributes.field', function() {
+    let field = get(this, 'column.attributes.field');
+    return field ? `${get(this, 'name')}|${field}` : null;
   }),
 
   /**

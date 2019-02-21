@@ -1,5 +1,6 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
+import merge from 'lodash/merge';
 
 const TEMPLATE = hbs`
   {{cell-renderers/threshold
@@ -17,7 +18,7 @@ const data = {
 };
 
 const column = {
-  field: { metric: 'totalPageViewsWoW', parameters: {} },
+  attributes: { name: 'totalPageViewsWoW', parameters: {} },
   type: 'threshold',
   displayName: 'Total Page Views WoW'
 };
@@ -114,7 +115,7 @@ test('threshold renders null value correctly', function(assert) {
 test('render value based on column format', function(assert) {
   assert.expect(1);
 
-  this.set('column', Object.assign({}, column, { format: '$0,0[.]00' }));
+  this.set('column', merge({}, column, { attributes: { format: '$0,0[.]00' } }));
   this.render(TEMPLATE);
 
   assert.equal(

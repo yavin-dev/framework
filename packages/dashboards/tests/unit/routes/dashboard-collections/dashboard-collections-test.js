@@ -35,16 +35,16 @@ test('model', function(assert) {
   assert.expect(4);
 
   return Ember.run(() => {
-    let params = { collectionId: 1 },
+    let params = { collection_id: 1 },
       route = this.subject(),
       modelPromise = route.model(params);
 
     assert.ok(modelPromise.then, 'Route returns a promise in the model hook');
 
     return modelPromise.then(model => {
-      assert.equal(model.id, params.collectionId, 'The requested collection is retrieved');
+      assert.equal(model.id, params.collection_id, 'The requested collection is retrieved');
 
-      assert.equal(model.get('title'), `Collection ${params.collectionId}`, 'The requested collection is retrieved');
+      assert.equal(model.get('title'), `Collection ${params.collection_id}`, 'The requested collection is retrieved');
 
       return model.get('dashboards').then(dashboards => {
         assert.equal(dashboards.length, 2, 'The requested collection is retrieved with the two dashboards');
