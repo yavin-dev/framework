@@ -6,7 +6,7 @@ moduleForAcceptance('Acceptance | line chart');
 test('tooltip updates', function(assert) {
   assert.expect(2);
 
-  visit('/lineChart');
+  visit('/line-chart');
   let container = this.application.__container__;
 
   andThen(function() {
@@ -34,7 +34,7 @@ test('tooltip updates', function(assert) {
 test('custom chart builders', function(assert) {
   assert.expect(1);
 
-  visit('/lineChart');
+  visit('/line-chart');
 
   andThen(() => {
     let customChartBuilderSeries = find('.custom-chart-builder .c3-legend-item')

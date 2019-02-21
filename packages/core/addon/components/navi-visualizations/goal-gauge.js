@@ -113,7 +113,7 @@ export default Component.extend({
   /**
    * @property {Object} - gauge tooltip configuration
    */
-  tooltip: { show: false },
+  tooltip: computed(() => ({ show: false })),
 
   /**
    * @property {Object} config - config options for the chart

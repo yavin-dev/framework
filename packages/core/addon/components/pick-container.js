@@ -21,7 +21,6 @@
 import { assert } from '@ember/debug';
 
 import $ from 'jquery';
-import { copy } from '@ember/object/internals';
 import { assign } from '@ember/polyfills';
 import { typeOf } from '@ember/utils';
 import Component from '@ember/component';

@@ -3,7 +3,6 @@ import { A } from '@ember/array';
 import Controller from '@ember/controller';
 import { set, get, computed } from '@ember/object';
 import merge from 'lodash/merge';
-import { readOnly } from '@ember/object/computed';
 
 export default Controller.extend({
   chartType: 'line-chart',

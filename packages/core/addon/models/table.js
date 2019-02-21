@@ -4,7 +4,7 @@
  */
 import { readOnly } from '@ember/object/computed';
 
-import { get, set, computed } from '@ember/object';
+import { get, set } from '@ember/object';
 import { A as arr } from '@ember/array';
 import DS from 'ember-data';
 import VisualizationBase from './visualization';

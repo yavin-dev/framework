@@ -42,7 +42,7 @@ export default Component.extend(DebouncedPropertiesMixin, {
   /**
    * @property {Array} debouncedProperties - list of properties to debounce
    */
-  debouncedProperties: ['searchTerm'],
+  debouncedProperties: computed(() => ['searchTerm']),
 
   /**
    * @property {Number} searchTermDelay - number of milliseconds to wait for user to stop typing search term
