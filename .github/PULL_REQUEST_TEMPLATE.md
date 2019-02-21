@@ -4,6 +4,4 @@ Resolves #
 
 ## Proposed Changes
 
-## -
-
 -
