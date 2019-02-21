@@ -308,7 +308,7 @@ export default EmberObject.extend({
       query = this._buildQuery(decoratedRequest, options),
       clientId = 'UI',
       customHeaders = {},
-      timeout = 300000;
+      timeout = 600000;
 
     // Support custom clientid header
     if (options && options.clientId) {
