@@ -1,7 +1,7 @@
 import { A } from '@ember/array';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find, findAll } from '@ember/test-helpers';
+import { render, find } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize as injectC3Enhancements } from 'navi-core/initializers/inject-c3-enhancements';
 import { setupMock, teardownMock } from '../../../helpers/mirage-helper';

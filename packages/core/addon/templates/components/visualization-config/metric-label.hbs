@@ -9,8 +9,8 @@
             name="metric-description-input"
             type="text"
             value=(readonly options.description)
-            enter="updateLabel"
-            focus-out="updateLabel"
+            enter=(action "updateLabel")
+            focus-out=(actions "updateLabel")
             placeholder="No Label"
         }}
     </div>

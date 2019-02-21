@@ -3,7 +3,7 @@ import { A } from '@ember/array';
 import moment from 'moment';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, findAll, find } from '@ember/test-helpers';
+import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize as injectC3Enhancements } from 'navi-core/initializers/inject-c3-enhancements';
 import DateUtils from 'navi-core/utils/date';
