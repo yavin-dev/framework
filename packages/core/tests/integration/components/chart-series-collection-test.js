@@ -1,6 +1,6 @@
+import { A } from '@ember/array';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import Ember from 'ember';
 
 const TEMPLATE = hbs`
     {{chart-series-collection
@@ -189,7 +189,7 @@ test('Component renders list of selected series', function(assert) {
 
   let chartSeries = this.$('.chart-series-item').get(),
     expectedDims = SELECTED_SERIES_DATA.map(seriesData => {
-      return Ember.A(seriesData.dimensions).mapBy('dimension.longName');
+      return A(seriesData.dimensions).mapBy('dimension.longName');
     }),
     seriesDimensions = [];
 

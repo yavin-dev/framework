@@ -1,12 +1,11 @@
-import Ember from 'ember';
+import { run } from '@ember/runloop';
+import { getOwner } from '@ember/application';
 import { moduleFor, test } from 'ember-qunit';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
 import config from 'ember-get-config';
 import Mirage from 'ember-cli-mirage';
 import DS from 'ember-data';
 import UserAdapter from 'navi-core/adapters/base-json-adapter';
-
-const { getOwner } = Ember;
 
 let Store, NaviUser;
 
@@ -38,7 +37,7 @@ test('getUser - invoked without userId param', function(assert) {
 
   assert.equal(service.getUser(), null, 'getUser returns null for non registered');
 
-  Ember.run(() => {
+  run(() => {
     let userModel = Store.createRecord('user', { id: NaviUser });
 
     assert.equal(service.getUser(), userModel, `getUser return model for registered logged-in "${NaviUser}" user`);
@@ -53,7 +52,7 @@ test('getUser - invoked with userId param', function(assert) {
 
   assert.equal(service.getUser(naviUser), null, 'getUser returns null for non registered');
 
-  Ember.run(() => {
+  run(() => {
     let userModel = Store.createRecord('user', { id: naviUser });
 
     assert.equal(service.getUser(naviUser), userModel, `getUser return model for registered "${naviUser}" user`);
@@ -65,7 +64,7 @@ test('findUser - invoked without userId param', function(assert) {
 
   let service = this.subject();
 
-  return Ember.run(() => {
+  return run(() => {
     return service.findUser().then(user => {
       let userModel = Store.peekRecord('user', NaviUser);
 
@@ -85,7 +84,7 @@ test('findUser - invoked with userId param', function(assert) {
   let service = this.subject(),
     userId = 'ciela';
 
-  return Ember.run(() => {
+  return run(() => {
     return service.findUser(userId).then(user => {
       let userModel = Store.peekRecord('user', userId);
 
@@ -107,7 +106,7 @@ test('register - unregistered logged-in user', function(assert) {
   let service = this.subject(),
     naviUser = (config.navi.user = 'unregistered_user');
 
-  return Ember.run(() => {
+  return run(() => {
     assert.notOk(Store.peekRecord('user', naviUser), `"${naviUser}" user is initially not present in the store`);
 
     return service.register().then(user => {
@@ -131,7 +130,7 @@ test('register - handle server error', function(assert) {
     return new Mirage.Response(500);
   });
 
-  return Ember.run(() => {
+  return run(() => {
     return service.register().catch(() => {
       assert.ok(true, 'register return an error promise when server throws an error');
     });
@@ -144,7 +143,7 @@ test('findOrRegister - unregistered user', function(assert) {
   let service = this.subject(),
     naviUser = (config.navi.user = 'unregistered_user');
 
-  return Ember.run(() => {
+  return run(() => {
     assert.notOk(Store.peekRecord('user', naviUser), `"${naviUser}" user is initially not present in the store`);
 
     return service.findOrRegister().then(user => {
@@ -160,7 +159,7 @@ test('findOrRegister - registered user not present in store', function(assert) {
 
   let service = this.subject();
 
-  return Ember.run(() => {
+  return run(() => {
     assert.equal(Store.peekRecord('user', NaviUser), null, `"${NaviUser}" user is initially not present in the store`);
 
     return service.findOrRegister().then(user => {
@@ -184,7 +183,7 @@ test('findOrRegister - handle server errors', function(assert) {
     return new Mirage.Response(500);
   });
 
-  return Ember.run(() => {
+  return run(() => {
     return service.register().catch(() => {
       assert.ok(true, 'register return an error promise when server throws an error');
     });

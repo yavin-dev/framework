@@ -1,8 +1,7 @@
-import Ember from 'ember';
+import { run } from '@ember/runloop';
+import { get } from '@ember/object';
 import { moduleForModel, test } from 'ember-qunit';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
-
-const { get } = Ember;
 
 let Store;
 
@@ -88,7 +87,7 @@ moduleForModel('dashboard-widget', 'Unit | Model | dashboard widget', {
 test('tempId', function(assert) {
   assert.expect(3);
 
-  return Ember.run(() => {
+  return run(() => {
     return Store.findRecord('dashboard', 1).then(dashboard => {
       let widget = Store.createRecord('dashboard-widget', {
         dashboard
@@ -108,7 +107,7 @@ test('tempId', function(assert) {
 test('Retrieving Records', function(assert) {
   assert.expect(1);
 
-  return Ember.run(() => {
+  return run(() => {
     return Store.findRecord('dashboard', 1).then(dashboard => {
       return dashboard.get('widgets').then(widgets => {
         let rec = widgets.objectAt(0);
@@ -161,7 +160,7 @@ test('Retrieving Records', function(assert) {
 test('Request property', function(assert) {
   assert.expect(1);
 
-  return Ember.run(() => {
+  return run(() => {
     return Store.findRecord('dashboard', 1).then(dashboard => {
       return dashboard.get('widgets').then(widgets => {
         let widget = widgets.objectAt(0);
@@ -179,7 +178,7 @@ test('Request property', function(assert) {
 test('Cloning Dashboard Widgets', function(assert) {
   assert.expect(1);
 
-  return Ember.run(() => {
+  return run(() => {
     return Store.findRecord('dashboard', 1).then(dashboard => {
       return dashboard.get('widgets').then(widgets => {
         let widgetModel = widgets.objectAt(0),

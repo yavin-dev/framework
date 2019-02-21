@@ -1,7 +1,6 @@
+import { get } from '@ember/object';
+import { run } from '@ember/runloop';
 import { moduleForModel, test } from 'ember-qunit';
-import Ember from 'ember';
-
-const { get, run } = Ember;
 
 moduleForModel('all-the-fragments', 'Unit | Model | Bar Chart Visualization Fragment', {
   needs: [

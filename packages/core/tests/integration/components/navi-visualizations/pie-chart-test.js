@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import { A } from '@ember/array';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize as injectC3Enhancements } from 'navi-core/initializers/inject-c3-enhancements';
@@ -11,7 +11,7 @@ const TEMPLATE = hbs`
         options=options
     }}`;
 
-const Model = Ember.A([
+const Model = A([
   {
     request: {
       logicalTable: {

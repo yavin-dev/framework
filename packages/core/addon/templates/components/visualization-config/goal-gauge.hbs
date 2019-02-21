@@ -6,12 +6,12 @@
     <div class="goal-gauge-config__description goal-gauge-config__section">
         {{input
             autofocus=false
-            class='goal-gauge-config__text-input goal-gauge-config__label-input'
-            name='metric-description-input'
-            type='text'
+            class="goal-gauge-config__text-input goal-gauge-config__label-input"
+            name="metric-description-input"
+            type="text"
             value=(readonly options.metricTitle)
-            focus-out=(action 'updateConfig' 'metricTitle')
-            key-up=(action 'updateConfig' 'metricTitle')
+            focus-out=(action "updateConfig" "metricTitle")
+            key-up=(action "updateConfig" "metricTitle")
             placeholder=(metric-format (serialize metricModel))
         }}
     </div>
@@ -21,14 +21,14 @@
     <div class="goal-gauge-config__format goal-gauge-config__section">
         {{input
             autofocus=false
-            class='goal-gauge-config__baseline-input goal-gauge-config__text-input'
-            name='baseline-input'
-            type='number'
+            class="goal-gauge-config__baseline-input goal-gauge-config__text-input"
+            name="baseline-input"
+            type="number"
             maxlength="22"
-            placeholder='Baseline Value'
+            placeholder="Baseline Value"
             value=(readonly options.baselineValue)
-            focus-out=(action 'updateConfig' 'baselineValue')
-            key-up=(action 'updateConfig' 'baselineValue')
+            focus-out=(action "updateConfig" "baselineValue")
+            key-up=(action "updateConfig" "baselineValue")
         }}
     </div>
     <div class="goal-gauge-config__section-header">
@@ -37,14 +37,14 @@
     <div class="goal-gauge-config__format goal-gauge-config__section">
         {{input
             autofocus=false
-            class='goal-gauge-config__goal-input goal-gauge-config__text-input'
-            name='goal-input'
-            type='number'
+            class="goal-gauge-config__goal-input goal-gauge-config__text-input"
+            name="goal-input"
+            type="number"
             maxlength="22"
-            placeholder='Goal Value'
+            placeholder="Goal Value"
             value=(readonly options.goalValue)
-            focus-out=(action 'updateConfig' 'goalValue')
-            key-up=(action 'updateConfig' 'goalValue')
+            focus-out=(action "updateConfig" "goalValue")
+            key-up=(action "updateConfig" "goalValue")
         }}
     </div>
 </div>

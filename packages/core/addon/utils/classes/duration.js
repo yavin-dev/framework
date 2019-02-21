@@ -3,7 +3,9 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import Ember from 'ember';
+import { capitalize } from '@ember/string';
+
+import { assert } from '@ember/debug';
 
 /**
  * Enum for supported date units
@@ -82,7 +84,7 @@ let DurationClass = class Duration {
    */
   constructor(isoDuration) {
     let duration = parseDuration(isoDuration);
-    Ember.assert(`${isoDuration} is an Invalid ISO duration`, duration);
+    assert(`${isoDuration} is an Invalid ISO duration`, duration);
 
     let [value, unit] = duration;
     this._value = value;
@@ -145,7 +147,7 @@ let DurationClass = class Duration {
     }
 
     // unit should be plural if value is greater than one
-    let unit = Ember.String.capitalize(this._unit);
+    let unit = capitalize(this._unit);
     if (value > 1) {
       unit += 's';
     }
@@ -169,7 +171,7 @@ let DurationClass = class Duration {
       instanceValue = this._value === ALL ? Infinity : this._value;
     } else {
       // Check for same time units
-      Ember.assert('Duration units need to match', this._unit === unit);
+      assert('Duration units need to match', this._unit === unit);
     }
 
     //Considering default case as equals

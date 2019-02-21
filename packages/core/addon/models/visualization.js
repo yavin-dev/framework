@@ -3,11 +3,10 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import Ember from 'ember';
+import { set, get } from '@ember/object';
+
 import DS from 'ember-data';
 import MF from 'model-fragments';
-
-const { get, set } = Ember;
 
 export default MF.Fragment.extend({
   type: DS.attr('string'),

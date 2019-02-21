@@ -1,7 +1,5 @@
-import Ember from 'ember';
+import { get } from '@ember/object';
 import { moduleForComponent, test } from 'ember-qunit';
-
-const { get } = Ember;
 
 let Component;
 

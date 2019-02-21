@@ -16,7 +16,7 @@
  *      {{/pick-form}}
  *   {{/pick-object-container}}
  */
-import Ember from 'ember';
+import { set } from '@ember/object';
 import PickContainer from './pick-container';
 
 export default PickContainer.extend({
@@ -29,7 +29,7 @@ export default PickContainer.extend({
     stagePropertyChange(key, value) {
       let selection = this.getStagedSelection() || {};
 
-      Ember.set(selection, key, value);
+      set(selection, key, value);
 
       this.send('stageChanges', selection);
     }

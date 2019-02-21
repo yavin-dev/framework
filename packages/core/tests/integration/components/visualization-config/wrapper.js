@@ -1,4 +1,5 @@
-import Ember from 'ember';
+import { run } from '@ember/runloop';
+import Component from '@ember/component';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { get } from '@meber/object';
@@ -17,7 +18,7 @@ moduleForComponent('visualization-config/wrapper', 'Integration | Component | vi
     //mocking viz-config component
     this.register(
       'component:visualization-config/mock',
-      Ember.Component.extend({
+      Component.extend({
         classNames: ['mock'],
         click() {
           const handleUpdateConfig = get(this, 'onUpdateConfig');
@@ -62,7 +63,7 @@ test('onUpdateConfig', function(assert) {
 
   this.render(Template);
 
-  Ember.run(() => {
+  run(() => {
     this.$('.visualization-config--body .mock').click();
   });
 });

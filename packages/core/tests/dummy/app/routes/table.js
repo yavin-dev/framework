@@ -1,4 +1,6 @@
-import Ember from 'ember';
+import { resolve } from 'rsvp';
+import { A } from '@ember/array';
+import Route from '@ember/routing/route';
 import _ from 'lodash';
 
 const MOCK_ROWS = [
@@ -45,9 +47,9 @@ const MOCK_ROWS = [
   }
 ];
 
-export default Ember.Route.extend({
+export default Route.extend({
   model() {
-    let rows = Ember.A();
+    let rows = A();
 
     //20k rows
     for (let i = 0; i < 4000; i++) {
@@ -60,8 +62,8 @@ export default Ember.Route.extend({
       }
     };
 
-    return Ember.RSVP.resolve(
-      Ember.A([
+    return resolve(
+      A([
         {
           request: {
             dimensions: [{ dimension: 'os' }],

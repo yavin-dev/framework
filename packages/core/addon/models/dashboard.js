@@ -3,14 +3,16 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import Ember from 'ember';
+import { or } from '@ember/object/computed';
+
+import { A } from '@ember/array';
+import { inject as service } from '@ember/service';
+import { computed, get } from '@ember/object';
 import DS from 'ember-data';
 import MF from 'model-fragments';
 import DeliverableItem from 'navi-core/models/deliverable-item';
 import config from 'ember-get-config';
 import { validator, buildValidations } from 'ember-cp-validations';
-
-const { get, computed } = Ember;
 
 const Validations = buildValidations({
   title: [
@@ -37,7 +39,7 @@ export default DeliverableItem.extend(Validations, {
   /**
    * @property {Service} user
    */
-  user: Ember.inject.service(),
+  user: service(),
 
   /**
    * @property {Boolean} isUserOwner - user is the dashboard owner
@@ -54,7 +56,7 @@ export default DeliverableItem.extend(Validations, {
   /**
    * @property {Boolean} canUserEdit - user has edit permissions for dashboard
    */
-  canUserEdit: computed.or('isUserOwner', 'isUserEditor'),
+  canUserEdit: or('isUserOwner', 'isUserEditor'),
 
   /**
    * @property {Boolean} isFavorite - is favorite of author
@@ -63,7 +65,7 @@ export default DeliverableItem.extend(Validations, {
     let user = get(this, 'user').getUser(),
       favoriteDashboards = user.hasMany('favoriteDashboards').ids();
 
-    return Ember.A(favoriteDashboards).includes(get(this, 'id'));
+    return A(favoriteDashboards).includes(get(this, 'id'));
   }).volatile(),
 
   /**

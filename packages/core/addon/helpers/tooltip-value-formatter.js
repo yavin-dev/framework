@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import Ember from 'ember';
+import { helper as buildHelper } from '@ember/component/helper';
 import { smartFormatNumber } from 'navi-core/helpers/smart-format-number';
 
 /**
@@ -19,4 +19,4 @@ export function tooltipValueFormatter([value /*, metric, rowData*/]) {
   return smartFormatNumber([value]);
 }
 
-export default Ember.Helper.helper(tooltipValueFormatter);
+export default buildHelper(tooltipValueFormatter);

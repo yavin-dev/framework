@@ -3,9 +3,9 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import Ember from 'ember';
+import { computed } from '@ember/object';
 
-const { computed, makeArray } = Ember;
+import { makeArray } from '@ember/array';
 
 /**
  * Computed property to get the set difference of two array properties.

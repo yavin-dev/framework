@@ -2,10 +2,12 @@
  * Copyright 2017, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
+import { dasherize, camelize } from '@ember/string';
+
 import DS from 'ember-data';
 import Ember from 'ember';
 
-const { camelize, dasherize, pluralize, singularize } = Ember.String;
+const { pluralize, singularize } = Ember.String;
 
 export default DS.JSONAPISerializer.extend({
   /**

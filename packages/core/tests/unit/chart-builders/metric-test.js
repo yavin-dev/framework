@@ -1,11 +1,11 @@
-import Ember from 'ember';
+import EmberObject, { get } from '@ember/object';
+import { setOwner, getOwner } from '@ember/application';
 import { test, moduleFor } from 'ember-qunit';
 import BuilderClass from 'navi-core/chart-builders/metric';
 import TooltipTemplate from '../../../../navi-core/templates/chart-tooltips/metric';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
 
 const MetricChartBuilder = BuilderClass.create();
-const { get, getOwner, setOwner } = Ember;
 
 let MetadataService;
 
@@ -442,7 +442,7 @@ test('buildTooltip', function(assert) {
   MetricChartBuilder.buildData(DATA, config, REQUEST);
 
   let mixin = MetricChartBuilder.buildTooltip(DATA, config, REQUEST),
-    tooltipClass = Ember.Object.extend(mixin, {}),
+    tooltipClass = EmberObject.extend(mixin, {}),
     tooltip = tooltipClass.create({ config, REQUEST, tooltipData, x });
 
   assert.equal(get(tooltip, 'layout'), TooltipTemplate, 'Tooltip uses metric tooltip template');

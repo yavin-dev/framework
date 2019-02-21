@@ -1,10 +1,9 @@
-import Ember from 'ember';
+import { run } from '@ember/runloop';
+import { getOwner } from '@ember/application';
 import { moduleForModel, test } from 'ember-qunit';
 import moment from 'moment';
 import Interval from 'navi-core/utils/classes/interval';
 import Duration from 'navi-core/utils/classes/duration';
-
-const { getOwner } = Ember;
 
 let Serializer, Model;
 
@@ -20,7 +19,7 @@ moduleForModel('bard-request/fragments/interval', 'Unit | Serializer | Interval 
 test('serializing record', function(assert) {
   assert.expect(3);
 
-  Ember.run(() => {
+  run(() => {
     let record = this.store().createFragment('bard-request/fragments/interval', {
       interval: new Interval(moment('11-09-2015', 'MM-DD-YYYY'), moment('11-16-2015', 'MM-DD-YYYY'))
     });

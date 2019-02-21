@@ -2,7 +2,7 @@
 
 <h3>By Metric</h3>
 
-<div class='chart-container'>
+<div class="chart-container">
   {{visualization-config/wrapper
     request=request
     response=response
@@ -22,12 +22,12 @@
 }}
 
 <h3>By Dimension</h3>
-<div class='chart-container'>
+<div class="chart-container">
     {{visualization-config/wrapper
       request=request
       response=response
       visualization=dimVisualization
-      onUpdateConfig=(action 'onUpdateConfig')
+      onUpdateConfig=(action "onUpdateConfig")
     }}
     {{navi-visualizations/bar-chart
       model=model

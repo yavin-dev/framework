@@ -1,8 +1,7 @@
-import Ember from 'ember';
+import { run } from '@ember/runloop';
+import { getOwner } from '@ember/application';
 import { moduleForModel, test } from 'ember-qunit';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
-
-const { getOwner } = Ember;
 
 let Store, MetadataService;
 
@@ -100,7 +99,7 @@ moduleForModel('delivery-rule', 'Unit | Model | delivery rule', {
 test('Retrieving records', function(assert) {
   assert.expect(2);
 
-  return Ember.run(() => {
+  return run(() => {
     return Store.findRecord('deliveryRule', 1).then(deliveryRule => {
       assert.ok(deliveryRule, 'Found deliveryRule with id 1');
 
@@ -116,7 +115,7 @@ test('Retrieving records', function(assert) {
 test('user relationship', function(assert) {
   assert.expect(1);
 
-  return Ember.run(() => {
+  return run(() => {
     return Store.findRecord('user', 'navi_user').then(userModel => {
       return Store.findRecord('deliveryRule', 1).then(deliveryRule => {
         return deliveryRule.get('owner').then(owner => {
@@ -130,7 +129,7 @@ test('user relationship', function(assert) {
 test('delivered item relationship', function(assert) {
   assert.expect(1);
 
-  return Ember.run(() => {
+  return run(() => {
     return Store.findRecord('report', 3).then(reportModel => {
       return Store.findRecord('deliveryRule', 1).then(deliveryRule => {
         return deliveryRule.get('deliveredItem').then(item => {
@@ -144,7 +143,7 @@ test('delivered item relationship', function(assert) {
 test('Validations', function(assert) {
   assert.expect(14);
 
-  return Ember.run(() => {
+  return run(() => {
     return Store.findRecord('deliveryRule', 1).then(deliveryRule => {
       return deliveryRule.get('deliveredItem').then(() => {
         deliveryRule.validate().then(({ validations }) => {

@@ -2,7 +2,9 @@
  * Copyright 2017, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import Ember from 'ember';
+import { set } from '@ember/object';
+
+import { A } from '@ember/array';
 
 /**
  * Override c3 functions with customized logic
@@ -117,10 +119,10 @@ export function initialize() {
    */
   const addNameSuper = c3infn.addName;
   c3infn.addName = function(data) {
-    let seriesIds = Ember.A(this.data.targets).mapBy('id'),
+    let seriesIds = A(this.data.targets).mapBy('id'),
       seriesIndex = seriesIds.indexOf(data.id);
 
-    Ember.set(data, 'seriesIndex', seriesIndex);
+    set(data, 'seriesIndex', seriesIndex);
 
     return addNameSuper.call(this, data);
   };

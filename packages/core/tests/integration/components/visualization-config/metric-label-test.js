@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import { run } from '@ember/runloop';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 
@@ -53,7 +53,7 @@ test('onUpdateConfig format input', function(assert) {
 
   this.render(Template);
 
-  Ember.run(() => {
+  run(() => {
     $('.number-format-selector__format-input').val('foo');
     $('.number-format-selector__format-input').focusout();
   });
@@ -68,7 +68,7 @@ test('onUpdateConfig description input', function(assert) {
 
   this.render(Template);
 
-  Ember.run(() => {
+  run(() => {
     $('.metric-label-config__description-input').val('foo');
     $('.metric-label-config__description-input').focusout();
   });

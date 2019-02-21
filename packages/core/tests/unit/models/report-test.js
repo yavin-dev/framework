@@ -1,11 +1,12 @@
-import Ember from 'ember';
+import { all } from 'rsvp';
+import { run } from '@ember/runloop';
+import { get } from '@ember/object';
+import { getOwner } from '@ember/application';
 import { moduleForModel, test } from 'ember-qunit';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
 import config from 'ember-get-config';
 import Mirage from 'ember-cli-mirage';
 import DeliverableItem from 'navi-core/models/deliverable-item';
-
-const { get, getOwner } = Ember;
 
 let Store, MetadataService;
 
@@ -150,7 +151,7 @@ moduleForModel('report', 'Unit | Model | report', {
 test('Retrieving records', function(assert) {
   assert.expect(3);
 
-  return Ember.run(() => {
+  return run(() => {
     return Store.findRecord('report', 1).then(report => {
       assert.ok(report, 'Found report with id 1');
       assert.ok(report instanceof DeliverableItem, 'Report should be instance of DeliverableItem');
@@ -175,8 +176,8 @@ test('Coalescing find requests', function(assert) {
     return new Mirage.Response(204);
   });
 
-  return Ember.run(() => {
-    return Ember.RSVP.all([
+  return run(() => {
+    return all([
       this.store().findRecord('report', 1),
       this.store().findRecord('report', 2),
       this.store().findRecord('report', 4)
@@ -187,7 +188,7 @@ test('Coalescing find requests', function(assert) {
 test('Saving records', function(assert) {
   assert.expect(1);
 
-  return Ember.run(() => {
+  return run(() => {
     return Store.findRecord('user', 'navi_user').then(user => {
       let report = {
         title: 'New Report',
@@ -213,7 +214,7 @@ test('Saving records', function(assert) {
 test('Cloning Reports', function(assert) {
   assert.expect(2);
 
-  return Ember.run(() => {
+  return run(() => {
     return Store.findRecord('report', 1).then(model => {
       let clonedModel = model.clone(Store),
         expectedTitle = model.toJSON().title;
@@ -232,7 +233,7 @@ test('Cloning Reports', function(assert) {
 test('isOwner', function(assert) {
   assert.expect(2);
 
-  return Ember.run(() => {
+  return run(() => {
     // Make sure user is loaded into store
     return Store.findRecord('user', 'navi_user').then(() => {
       return Store.findRecord('report', 3).then(model => {
@@ -249,7 +250,7 @@ test('isOwner', function(assert) {
 test('isFavorite', function(assert) {
   assert.expect(2);
 
-  return Ember.run(() => {
+  return run(() => {
     // Make sure user is loaded into store
     return Store.findRecord('user', 'navi_user').then(() => {
       return Store.findRecord('report', 1).then(model => {
@@ -266,7 +267,7 @@ test('isFavorite', function(assert) {
 test('tempId', function(assert) {
   assert.expect(3);
 
-  return Ember.run(() => {
+  return run(() => {
     return Store.findRecord('user', 'navi_user').then(author => {
       let report = Store.createRecord('report', {
         author,
@@ -287,7 +288,7 @@ test('tempId', function(assert) {
 test('delivery rules relationship', function(assert) {
   assert.expect(1);
 
-  return Ember.run(() => {
+  return run(() => {
     return Store.findRecord('report', 3).then(reportModel => {
       return reportModel.get('deliveryRules').then(rules => {
         assert.equal(
@@ -303,7 +304,7 @@ test('delivery rules relationship', function(assert) {
 test('Validations', function(assert) {
   assert.expect(5);
 
-  return Ember.run(() => {
+  return run(() => {
     return Store.findRecord('report', 1).then(reportModel => {
       return reportModel.validate().then(({ validations }) => {
         assert.ok(validations.get('isValid'), 'report is valid');
@@ -322,7 +323,7 @@ test('Validations', function(assert) {
 test('deliveryRuleForUser', function(assert) {
   assert.expect(1);
 
-  return Ember.run(() => {
+  return run(() => {
     return Store.findRecord('user', 'navi_user').then(() => {
       return Store.findRecord('report', 3).then(reportModel => {
         reportModel.user = {

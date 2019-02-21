@@ -1,4 +1,5 @@
-import Ember from 'ember';
+import { Promise } from 'rsvp';
+import { A } from '@ember/array';
 import { moduleForComponent, test } from 'ember-qunit';
 import { run } from '@ember/runloop';
 import moment from 'moment';
@@ -90,7 +91,7 @@ test('dataConfig', function(assert) {
   let component = this.subject(),
     model = { request, response };
 
-  component.set('model', Ember.A([model]));
+  component.set('model', A([model]));
   component.set('options', {
     axis: {
       y: {
@@ -170,9 +171,9 @@ test('dataSelectionConfig', function(assert) {
   assert.expect(2);
 
   let component = this.subject(),
-    insightsDataPromise = new Ember.RSVP.Promise(resolve => {
+    insightsDataPromise = new Promise(resolve => {
       resolve(
-        Ember.A([
+        A([
           {
             index: 1,
             actual: 12,
@@ -183,7 +184,7 @@ test('dataSelectionConfig', function(assert) {
       );
     });
 
-  component.set('model', Ember.A([{}, insightsDataPromise]));
+  component.set('model', A([{}, insightsDataPromise]));
 
   assert.ok(
     component.get('dataSelectionConfig.dataSelection').then,
@@ -204,7 +205,7 @@ test('config', function(assert) {
 
   let component = this.subject({
       dataConfig: {}, // dataConfig has a seperate test
-      model: Ember.A([{ response: { rows: [] } }])
+      model: A([{ response: { rows: [] } }])
     }),
     defaultConfig = {
       axis: {
@@ -323,7 +324,7 @@ test('config', function(assert) {
 test('single data point', function(assert) {
   assert.expect(2);
 
-  let model = Ember.A([
+  let model = A([
       {
         request: {
           metrics: ['uniqueIdentifier'],
@@ -378,7 +379,7 @@ test('single data point', function(assert) {
 
   component.set(
     'model',
-    Ember.A([
+    A([
       {
         request: {
           metrics: ['uniqueIdentifier'],
@@ -467,7 +468,7 @@ test('tooltips', function(assert) {
   let component = this.subject(),
     model = { request, response };
 
-  component.set('model', Ember.A([model]));
+  component.set('model', A([model]));
   component.set('options', {
     axis: {
       y: {
@@ -541,7 +542,7 @@ test('tooltips', function(assert) {
     ]
   };
 
-  component.set('model', Ember.A([{ request, response: response2 }]));
+  component.set('model', A([{ request, response: response2 }]));
 
   component.get('dataConfig');
   tooltipComp = component.get('tooltipComponent');

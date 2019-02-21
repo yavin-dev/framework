@@ -1,15 +1,10 @@
+import { set, get } from '@ember/object';
+import { isPresent } from '@ember/utils';
+import { run } from '@ember/runloop';
+import { classify } from '@ember/string';
 import { moduleForModel, test } from 'ember-qunit';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
-import Ember from 'ember';
 import { indexColumnById } from 'navi-core/models/table';
-
-const {
-  get,
-  set,
-  isPresent,
-  run,
-  String: { classify }
-} = Ember;
 
 moduleForModel('all-the-fragments', 'Unit | Model | Table Visualization Fragment', {
   needs: ['transform:fragment', 'model:table']

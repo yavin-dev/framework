@@ -1,6 +1,6 @@
+import { run } from '@ember/runloop';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import Ember from 'ember';
 import $ from 'jquery';
 
 moduleForComponent('lazy-render', 'Integration | Component | lazy render', {
@@ -24,7 +24,7 @@ test('it renders', function(assert) {
     'Nothing should be rendered initially'
   );
 
-  Ember.run(() => {
+  run(() => {
     $('body').trigger('mouseenter');
   });
 

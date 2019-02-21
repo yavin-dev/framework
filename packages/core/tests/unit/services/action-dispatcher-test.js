@@ -1,9 +1,7 @@
+import { getOwner } from '@ember/application';
 import { moduleFor, test } from 'ember-qunit';
-import Ember from 'ember';
 
 import consumer from 'navi-core/consumers/action-consumer';
-
-const { getOwner } = Ember;
 
 let Container, ServiceFactory;
 

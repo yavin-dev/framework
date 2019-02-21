@@ -1,7 +1,6 @@
-import Ember from 'ember';
+import { A } from '@ember/array';
+import { get } from '@ember/object';
 import { moduleForComponent, test } from 'ember-qunit';
-
-const { get } = Ember;
 
 moduleForComponent('navi-visualizations/pie-chart', 'Unit | Component | pie chart', {
   unit: 'true',
@@ -136,7 +135,7 @@ test('dataConfig', function(assert) {
   let component = this.subject(),
     model = { request: REQUEST, response: RESPONSE };
 
-  component.set('model', Ember.A([model]));
+  component.set('model', A([model]));
   component.set('options', OPTIONS);
 
   assert.equal(component.get('dataConfig.data.type'), 'pie', 'Data config contains the type property as `pie`');
@@ -227,7 +226,7 @@ test('tooltipComponent', function(assert) {
       name: '13 - 25'
     };
 
-  component.set('model', Ember.A([model]));
+  component.set('model', A([model]));
   component.set('options', OPTIONS);
   component.get('dataConfig');
 

@@ -10,12 +10,16 @@
  * }}
  */
 
-import Ember from 'ember';
+import { inject as service } from '@ember/service';
+
+import { mapBy, bool } from '@ember/object/computed';
+import Component from '@ember/component';
+import { A as arr } from '@ember/array';
+import { copy } from '@ember/object/internals';
+import { get, computed } from '@ember/object';
 import layout from '../../templates/components/visualization-config/table';
 
-const { A: arr, computed, copy, get, inject } = Ember;
-
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   /**
@@ -26,12 +30,12 @@ export default Ember.Component.extend({
   /**
    * @property {Service} metadataService
    */
-  metadataService: inject.service('bard-metadata'),
+  metadataService: service('bard-metadata'),
 
   /**
    * @property {Array} dimensions - dimension object metadata
    */
-  dimensions: computed.mapBy('request.dimensions', 'dimension'),
+  dimensions: mapBy('request.dimensions', 'dimension'),
 
   /**
    * @property {Array} subtotalDimensions - dimensions used to subtotal including dateTime
@@ -43,7 +47,7 @@ export default Ember.Component.extend({
   /**
    * @property {Boolean} showDropdown - initial value to show subtotal dropdown
    */
-  showSubtotalDropdown: computed.bool('options.showTotals.subtotal'),
+  showSubtotalDropdown: bool('options.showTotals.subtotal'),
 
   /**
    * @property {Object} selectedSubtotal - selected subtotal

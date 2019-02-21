@@ -3,7 +3,9 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import Ember from 'ember';
+import { A } from '@ember/array';
+
+import { set, get, computed } from '@ember/object';
 import MF from 'model-fragments';
 import DS from 'ember-data';
 import { validator, buildValidations } from 'ember-cp-validations';
@@ -21,8 +23,6 @@ const Validations = buildValidations({
   })
 });
 
-const { computed, get, set } = Ember;
-
 export default Fragment.extend(Validations, {
   table: DS.attr('table'),
   timeGrainName: DS.attr('string'),
@@ -33,7 +33,7 @@ export default Fragment.extend(Validations, {
    */
   timeGrain: computed('table', 'timeGrainName', {
     get() {
-      let timeGrains = Ember.A(get(this, 'table.timeGrains'));
+      let timeGrains = A(get(this, 'table.timeGrains'));
       return timeGrains.findBy('name', get(this, 'timeGrainName'));
     },
 

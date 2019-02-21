@@ -8,13 +8,13 @@
  *   options=options
  * }}
  */
-import Ember from 'ember';
+import Component from '@ember/component';
 import numeral from 'numeral';
 import layout from '../../templates/components/navi-visualizations/metric-label';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 import { get, computed } from '@ember/object';
 
-export default Ember.Component.extend({
+export default Component.extend({
   /**
    * @property {Object} layout
    */

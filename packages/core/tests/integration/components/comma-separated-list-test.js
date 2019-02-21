@@ -1,4 +1,5 @@
-import Ember from 'ember';
+import { run } from '@ember/runloop';
+import { A } from '@ember/array';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 
@@ -9,7 +10,7 @@ moduleForComponent('comma-separated-list', 'Integration | Component | comma sepa
 test('comma separated list', function(assert) {
   assert.expect(5);
 
-  let list = Ember.A([]);
+  let list = A([]);
   this.set('list', list);
   this.render(hbs`
         {{~#comma-separated-list list=list as |item| ~}}
@@ -25,7 +26,7 @@ test('comma separated list', function(assert) {
     'An empty array returns an empty element'
   );
 
-  Ember.run(() => list.pushObject('one'));
+  run(() => list.pushObject('one'));
   assert.equal(
     this.$()
       .text()
@@ -34,7 +35,7 @@ test('comma separated list', function(assert) {
     'A single string is returned'
   );
 
-  Ember.run(() => list.pushObject('two'));
+  run(() => list.pushObject('two'));
   assert.equal(
     this.$()
       .text()
@@ -43,7 +44,7 @@ test('comma separated list', function(assert) {
     'Two strings are returned with an "and" between, and no ","'
   );
 
-  Ember.run(() => list.pushObject('three'));
+  run(() => list.pushObject('three'));
   assert.equal(
     this.$()
       .text()

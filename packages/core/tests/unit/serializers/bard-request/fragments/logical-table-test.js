@@ -1,7 +1,6 @@
-import Ember from 'ember';
+import { run } from '@ember/runloop';
+import { getOwner } from '@ember/application';
 import { moduleForModel, test } from 'ember-qunit';
-
-const { getOwner } = Ember;
 
 let Serializer, Model;
 
@@ -15,7 +14,7 @@ moduleForModel('bard-request/fragments/logical-table', 'Unit | Serializer | Logi
 });
 
 test('serializing record', function(assert) {
-  let record = Ember.run(() => {
+  let record = run(() => {
     return this.store().createFragment('bard-request/fragments/logical-table', {
       table: { name: 'network' },
       timeGrainName: 'day'

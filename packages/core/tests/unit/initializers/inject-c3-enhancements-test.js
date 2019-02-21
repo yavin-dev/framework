@@ -1,12 +1,13 @@
-import Ember from 'ember';
+import Application from '@ember/application';
+import { run } from '@ember/runloop';
 import { initialize } from 'dummy/initializers/inject-c3-enhancements';
 import { module, test } from 'ember-qunit';
 import destroyApp from '../../helpers/destroy-app';
 
 module('Unit | Initializer | inject c3 enhancements', {
   beforeEach() {
-    Ember.run(() => {
-      this.application = Ember.Application.create();
+    run(() => {
+      this.application = Application.create();
       this.application.deferReadiness();
     });
   },

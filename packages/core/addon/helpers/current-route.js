@@ -4,11 +4,13 @@
  *
  * Returns the name of the currently visited route
  */
-import Ember from 'ember';
+import { readOnly } from '@ember/object/computed';
 
-const { get, getOwner, computed, observer } = Ember;
+import Helper from '@ember/component/helper';
+import { getOwner } from '@ember/application';
+import { observer, computed, get } from '@ember/object';
 
-export default Ember.Helper.extend({
+export default Helper.extend({
   /**
    * @property {Ember.Controller} application
    */
@@ -19,7 +21,7 @@ export default Ember.Helper.extend({
   /**
    * @property {String} currentPath - name of currently visited route
    */
-  currentPath: computed.readOnly('application.currentPath'),
+  currentPath: readOnly('application.currentPath'),
 
   /**
    * @method compute

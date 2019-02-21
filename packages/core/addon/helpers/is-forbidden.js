@@ -4,11 +4,11 @@
  *
  * Util for testing if a RSVP Promise was rejected because of an ajax forbidden(403) response
  */
-import Ember from 'ember';
+import { helper as buildHelper } from '@ember/component/helper';
 import { isForbiddenError } from 'ember-ajax/errors';
 
 export function isForbidden(reason) {
   return isForbiddenError(reason);
 }
 
-export default Ember.Helper.helper(([reason]) => isForbidden(reason));
+export default buildHelper(([reason]) => isForbidden(reason));

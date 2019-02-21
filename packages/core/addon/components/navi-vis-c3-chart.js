@@ -16,13 +16,14 @@
  *   containerComponent=container
  *  }}
  */
-import Ember from 'ember';
+import { next, scheduleOnce } from '@ember/runloop';
+
+import { assign } from '@ember/polyfills';
+import { set, getProperties, get, computed } from '@ember/object';
 import C3Chart from 'ember-c3/components/c3-chart';
 import { A } from '@ember/array';
 import { inject as service } from '@ember/service';
 import $ from 'jquery';
-
-const { computed, get, getProperties, set } = Ember;
 
 /* globals c3: true */
 export default C3Chart.extend({
@@ -107,7 +108,7 @@ export default C3Chart.extend({
   dataDidChange() {
     // Add custom classes to each data series for easier reference and coloring
     let { data, dataClasses } = getProperties(this, 'data', 'dataClasses'),
-      dataWithClasses = Ember.assign({}, { classes: dataClasses }, data);
+      dataWithClasses = assign({}, { classes: dataClasses }, data);
 
     get(this, 'chart').load(dataWithClasses);
 
@@ -149,7 +150,7 @@ export default C3Chart.extend({
    * @property {Object} map of series id to series class name
    */
   dataClasses: computed('data', function() {
-    let seriesIds = Ember.A(get(this, 'chart').data()).mapBy('id');
+    let seriesIds = A(get(this, 'chart').data()).mapBy('id');
 
     // Give each series a unique class
     return seriesIds.reduce((seriesToClassMap, seriesId, seriesIndex) => {
@@ -205,13 +206,13 @@ export default C3Chart.extend({
     this.dataDidChange();
 
     // Call resize on initial render
-    Ember.run.next(this, '_resizeFunc');
+    next(this, '_resizeFunc');
 
     // Call resize on resize event
     let container = $(get(this, 'containerComponent.element'));
     if (container.length) {
       container.on('resizestop.navi-vis-c3-chart', () => {
-        Ember.run.scheduleOnce('afterRender', this, '_resizeFunc');
+        scheduleOnce('afterRender', this, '_resizeFunc');
       });
     }
   },

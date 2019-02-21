@@ -1,4 +1,5 @@
-import Ember from 'ember';
+import { A } from '@ember/array';
+import { getOwner } from '@ember/application';
 import { moduleForComponent, test } from 'ember-qunit';
 import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
 
@@ -17,7 +18,7 @@ moduleForComponent('visualization-config/table', 'Unit | Component | table confi
   ],
   beforeEach() {
     setupMock();
-    Ember.getOwner(this)
+    getOwner(this)
       .lookup('service:bard-metadata')
       .loadMetadata();
   },
@@ -37,7 +38,7 @@ test('dimensions', function(assert) {
   };
 
   assert.deepEqual(
-    Ember.A(this.subject({ request }).get('dimensions')).mapBy('longName'),
+    A(this.subject({ request }).get('dimensions')).mapBy('longName'),
     ['Operating System', 'Age'],
     'The metadata for each of the dimensions in the request is fetched using the metadata service'
   );

@@ -1,11 +1,11 @@
-import Ember from 'ember';
+import Controller from '@ember/controller';
+import { set, get, computed } from '@ember/object';
 import merge from 'lodash/merge';
 
-const { get, set } = Ember;
-export default Ember.Controller.extend({
+export default Controller.extend({
   request: {},
 
-  response: Ember.computed('model', function() {
+  response: computed('model', function() {
     return this.get('model.0.response.rows');
   }),
 
@@ -15,7 +15,7 @@ export default Ember.Controller.extend({
     format: '$0,0[.]00'
   },
 
-  metricVisualization: Ember.computed('metricLabelOptions', function() {
+  metricVisualization: computed('metricLabelOptions', function() {
     return {
       type: 'metric-label',
       version: 1,

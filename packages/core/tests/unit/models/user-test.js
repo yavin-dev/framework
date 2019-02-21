@@ -1,9 +1,8 @@
-import Ember from 'ember';
+import { run } from '@ember/runloop';
+import { getOwner } from '@ember/application';
 import { moduleForModel, test } from 'ember-qunit';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
 import config from 'ember-get-config';
-
-const { getOwner } = Ember;
 
 let Store, MetadataService;
 
@@ -85,7 +84,7 @@ moduleForModel('user', 'Unit | Model | user', {
 test('Retrieving records', function(assert) {
   assert.expect(1);
 
-  return Ember.run(() => {
+  return run(() => {
     return Store.findRecord('user', 'navi_user').then(() => {
       assert.ok(true, 'Found navi user');
     });
@@ -95,7 +94,7 @@ test('Retrieving records', function(assert) {
 test('Saving records', function(assert) {
   assert.expect(1);
 
-  return Ember.run(() => {
+  return run(() => {
     let newUser = 'new_user';
     return Store.createRecord('user', { id: newUser })
       .save()
@@ -111,7 +110,7 @@ test('Saving records', function(assert) {
 test('Linking Reports to Users', function(assert) {
   assert.expect(3);
 
-  return Ember.run(() => {
+  return run(() => {
     let user = Store.createRecord('user', { id: 'jon_snow' });
 
     Store.createRecord('report', {
@@ -147,7 +146,7 @@ test('Favoriting reports', function(assert) {
 
   let naviUser = config.navi.user;
 
-  return Ember.run(() => {
+  return run(() => {
     return Store.findRecord('user', naviUser).then(user => {
       /*
        * Fetch all reports favorited by test user or else Ember Data throws error when calling `unloadAll`
@@ -194,7 +193,7 @@ test('Favoriting reports', function(assert) {
 test('delivery rules relationship', function(assert) {
   assert.expect(1);
 
-  return Ember.run(() => {
+  return run(() => {
     return Store.findRecord('deliveryRule', 1).then(deliveryRule => {
       return Store.findRecord('user', 'navi_user').then(userModel => {
         return userModel.get('deliveryRules').then(rules => {

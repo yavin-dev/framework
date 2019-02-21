@@ -10,13 +10,15 @@
  * }}
  */
 
-import Ember from 'ember';
+import { A } from '@ember/array';
+
+import Component from '@ember/component';
+import { set, get, computed } from '@ember/object';
+import { copy } from '@ember/object/internals';
 import layout from '../../../templates/components/visualization-config/chart-type/metric';
 import { computedSetDiff } from 'navi-core/utils/custom-computed-properties';
 
-const { computed, get, set, copy } = Ember;
-
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   /**
@@ -35,7 +37,7 @@ export default Ember.Component.extend({
    * @property {Array} metrics - request metric
    */
   metrics: computed('request', function() {
-    return Ember.A(get(this, 'request.metrics')).mapBy('metric');
+    return A(get(this, 'request.metrics')).mapBy('metric');
   }),
 
   /**
@@ -44,8 +46,8 @@ export default Ember.Component.extend({
   selectedMetrics: computed('seriesConfig', function() {
     let selectedMetrics = get(this, 'seriesConfig.metrics');
 
-    return Ember.A(get(this, 'metrics')).filter(metric => {
-      return Ember.A(selectedMetrics).includes(metric.name);
+    return A(get(this, 'metrics')).filter(metric => {
+      return A(selectedMetrics).includes(metric.name);
     });
   }),
 
@@ -60,7 +62,7 @@ export default Ember.Component.extend({
      * @param {Array} selectedMetrics
      */
     onUpdateMetrics(selectedMetrics) {
-      const metrics = Ember.A(selectedMetrics).mapBy('name');
+      const metrics = A(selectedMetrics).mapBy('name');
       const newConfig = copy(get(this, 'seriesConfig'));
       const handleUpdateConfig = get(this, 'onUpdateConfig');
 
@@ -73,8 +75,8 @@ export default Ember.Component.extend({
      * @param {Object} metric
      */
     onRemoveSeries(metric) {
-      const selectedMetrics = Ember.A(get(this, 'selectedMetrics'));
-      const updatedMetrics = Ember.A(selectedMetrics.mapBy('name')).removeObject(metric.name);
+      const selectedMetrics = A(get(this, 'selectedMetrics'));
+      const updatedMetrics = A(selectedMetrics.mapBy('name')).removeObject(metric.name);
       const newConfig = copy(get(this, 'seriesConfig'));
       const handleUpdateConfig = get(this, 'onUpdateConfig');
 

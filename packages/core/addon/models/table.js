@@ -2,6 +2,8 @@
  * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
+import { readOnly } from '@ember/object/computed';
+
 import { get, set, computed } from '@ember/object';
 import { A as arr } from '@ember/array';
 import DS from 'ember-data';
@@ -29,7 +31,7 @@ const Validations = buildValidations(
   },
   {
     //Global Validation Options
-    request: computed.readOnly('model._request')
+    request: readOnly('model._request')
   }
 );
 

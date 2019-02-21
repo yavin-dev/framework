@@ -5,11 +5,12 @@
  * This service is used to dispatch an action to one or more registered consumers
  */
 
-import Ember from 'ember';
+import Service from '@ember/service';
 
-const { get, getOwner, getWithDefault, set } = Ember;
+import { getOwner } from '@ember/application';
+import { set, getWithDefault, get } from '@ember/object';
 
-export default Ember.Service.extend({
+export default Service.extend({
   /**
    * @property {Array} consumers - list of consumers to be registered on init
    */

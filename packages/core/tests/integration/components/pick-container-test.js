@@ -1,6 +1,7 @@
+import $ from 'jquery';
+import { run } from '@ember/runloop';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import Ember from 'ember';
 import { set } from '@ember/object';
 
 moduleForComponent('pick-container', 'Integration | Component | pick container', {
@@ -220,15 +221,15 @@ test('Clicking outside open form will close it', function(assert) {
     this.$('#inside-form').remove();
   });
 
-  Ember.run(() => {
+  run(() => {
     this.$('#inside-form').click();
   });
 
   assert.ok(this.$('.pick-form').is(':visible'), 'Form is still open after clicking stale element');
 
   /* == Click outside form == */
-  Ember.run(() => {
-    Ember.$('body').click();
+  run(() => {
+    $('body').click();
   });
   assert.notOk(this.$('.pick-form').is(':visible'), 'Form is closed after clicking off the form');
 });

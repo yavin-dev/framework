@@ -1,7 +1,8 @@
+import { run } from '@ember/runloop';
+import { A } from '@ember/array';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import $ from 'jquery';
-import Ember from 'ember';
 
 const TEMPLATE = hbs`
         {{series-selector
@@ -14,7 +15,7 @@ const TEMPLATE = hbs`
         }}
     `;
 
-const AVAILABLE_SERIES_DATA = Ember.A([
+const AVAILABLE_SERIES_DATA = A([
   {
     searchKey: '10 10 - 20 safari_mobile Safari Mobile',
     dimensions: [
@@ -56,7 +57,7 @@ const AVAILABLE_SERIES_DATA = Ember.A([
   }
 ]);
 
-const SERIES_DIMENSIONS = Ember.A(AVAILABLE_SERIES_DATA[0].dimensions).mapBy('dimension');
+const SERIES_DIMENSIONS = A(AVAILABLE_SERIES_DATA[0].dimensions).mapBy('dimension');
 
 moduleForComponent('series-selector', 'Integration | Component | series selector', {
   integration: true,
@@ -177,7 +178,7 @@ test('Searching', function(assert) {
   );
 
   /* == Search "30" == */
-  Ember.run(() => {
+  run(() => {
     this.$('.search input')
       .val('30')
       .trigger('input')
@@ -199,7 +200,7 @@ test('Searching', function(assert) {
   );
 
   /* == Search "Safari" == */
-  Ember.run(() => {
+  run(() => {
     this.$('.search input')
       .val('Opera')
       .trigger('input')

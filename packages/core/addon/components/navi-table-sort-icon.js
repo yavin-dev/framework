@@ -8,10 +8,10 @@
  * }}
  */
 
-import Ember from 'ember';
-import layout from '../templates/components/navi-table-sort-icon';
+import Component from '@ember/component';
 
-const { computed, get } = Ember;
+import { get, computed } from '@ember/object';
+import layout from '../templates/components/navi-table-sort-icon';
 
 const SORT_ICONS = {
   asc: 'navi-table-sort-icon--asc',
@@ -19,7 +19,7 @@ const SORT_ICONS = {
   none: 'navi-table-sort-icon--none'
 };
 
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   /**

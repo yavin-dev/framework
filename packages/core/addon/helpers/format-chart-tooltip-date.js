@@ -2,10 +2,10 @@
  * Copyright 2017, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import Ember from 'ember';
-import moment from 'moment';
+import { helper as buildHelper } from '@ember/component/helper';
 
-const { get } = Ember;
+import { get } from '@ember/object';
+import moment from 'moment';
 
 const TOOLTIP_DATE_TIME_FORMAT = {
   second: 'MMM D HH:mm:ss',
@@ -33,4 +33,4 @@ export function formatChartTooltipDate(request, value) {
   }
 }
 
-export default Ember.Helper.helper(args => formatChartTooltipDate(...args));
+export default buildHelper(args => formatChartTooltipDate(...args));

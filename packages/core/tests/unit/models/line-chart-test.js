@@ -1,8 +1,7 @@
+import { set } from '@ember/object';
+import { run } from '@ember/runloop';
 import { moduleForModel, test } from 'ember-qunit';
 import { buildTestRequest } from '../../helpers/request';
-import Ember from 'ember';
-
-const { set, run } = Ember;
 
 moduleForModel('all-the-fragments', 'Unit | Model | Line Chart Visualization Fragment', {
   needs: [

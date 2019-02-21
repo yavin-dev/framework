@@ -1,5 +1,5 @@
+import { run } from '@ember/runloop';
 import { moduleForComponent, test } from 'ember-qunit';
-import Ember from 'ember';
 
 moduleForComponent('pick-container', 'Unit | Component | pick container', {
   unit: true
@@ -44,7 +44,7 @@ test('One way selection binding', function(assert) {
     '_editableSelection can be set without changing selection'
   );
 
-  Ember.run(() => {
+  run(() => {
     component.set('selection', 3);
   });
   assert.equal(component.get('_editableSelection'), 3, 'Changing selection updates _editableSelection');
@@ -75,7 +75,7 @@ test('Selection change overwrites staged change', function(assert) {
   component.send('stageChanges', 2);
   assert.equal(component.get('_editableSelection'), 2, 'Staged changes are visible when selection remains the same');
 
-  Ember.run(() => {
+  run(() => {
     component.set('selection', 3);
   });
   assert.equal(component.get('_editableSelection'), 3, 'Setting selection overwrites staged changes');

@@ -2,11 +2,10 @@
  * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import Ember from 'ember';
+import { get } from '@ember/object';
+
 import capitalize from 'lodash/capitalize';
 import last from 'lodash/last';
-
-const { get } = Ember;
 
 /**
  * Returns formatted message based on error object

@@ -5,14 +5,14 @@
     </div>
     <div class="metric-label-config__description metric-label-config__section">
         {{input
-            class='metric-label-config__text-input metric-label-config__description-input'
-            name='metric-description-input'
-            type='text'
+            class="metric-label-config__text-input metric-label-config__description-input"
+            name="metric-description-input"
+            type="text"
             value=(readonly options.description)
-            enter='updateLabel'
-            focus-out='updateLabel'
-            placeholder='No Label'
+            enter="updateLabel"
+            focus-out="updateLabel"
+            placeholder="No Label"
         }}
     </div>
-    {{number-format-selector format=options.format onUpdateFormat=(action 'updateFormat')}}
+    {{number-format-selector format=options.format onUpdateFormat=(action "updateFormat")}}
 </div>

@@ -1,5 +1,5 @@
+import { A } from '@ember/array';
 import { moduleFor, test } from 'ember-qunit';
-import Ember from 'ember';
 
 moduleFor('validator:recipients', 'Unit | Validator | recipients', {
   needs: ['validator:messages']
@@ -9,9 +9,9 @@ test('validate recipients', function(assert) {
   assert.expect(4);
 
   let Validator = this.subject(),
-    badArray0 = Ember.A(['']),
-    badArray1 = Ember.A(['name@domain', 'test@123.con']),
-    emptyArr = Ember.A([]),
+    badArray0 = A(['']),
+    badArray1 = A(['name@domain', 'test@123.con']),
+    emptyArr = A([]),
     badEmails = 'Array contents are not valid email addresses',
     emptyText = 'There must be at least one valid email address';
 
@@ -42,7 +42,7 @@ test('validate recipients', function(assert) {
     'Array has values that are almost valid email addresses'
   );
 
-  let regArray = Ember.A(['user@navi.io', 'link@hyrule.com']),
+  let regArray = A(['user@navi.io', 'link@hyrule.com']),
     messageText = 'All array contents are valid email addresses';
 
   assert.equal(

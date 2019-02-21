@@ -1,6 +1,6 @@
+import { run } from '@ember/runloop';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import Ember from 'ember';
 
 moduleForComponent('visualization-config/goal-gauge', 'Integration | Component | visualization config/goal gauge', {
   integration: true
@@ -36,7 +36,7 @@ test('onUpdateConfig baselineValue input', function(assert) {
 
   this.render(Template);
 
-  Ember.run(() => {
+  run(() => {
     this.$('.goal-gauge-config__baseline-input').val(1);
     this.$('.goal-gauge-config__baseline-input').focusout();
   });
@@ -51,7 +51,7 @@ test('onUpdateConfig goalValue input', function(assert) {
 
   this.render(Template);
 
-  Ember.run(() => {
+  run(() => {
     this.$('.goal-gauge-config__goal-input').val(10);
     this.$('.goal-gauge-config__goal-input').focusout();
   });
@@ -66,7 +66,7 @@ test('onUpdateConfig goal gauge label input', function(assert) {
 
   this.render(Template);
 
-  Ember.run(() => {
+  run(() => {
     this.$('.goal-gauge-config__label-input').val('bottles');
     this.$('.goal-gauge-config__label-input').focusout();
   });

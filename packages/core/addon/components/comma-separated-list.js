@@ -10,12 +10,12 @@
  *      <span class='custom-element'>{{item}}</span>
  *   {{~/comma-separated-list~}}
  */
-import Ember from 'ember';
+import Component from '@ember/component';
+
+import { get, computed } from '@ember/object';
 import layout from '../templates/components/comma-separated-list';
 
-const { computed, get } = Ember;
-
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   /**

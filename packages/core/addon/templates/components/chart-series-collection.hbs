@@ -6,20 +6,20 @@
     disableAdd=disableAdd
     addSeries=(action onAddSeries)
 }}
-<div class='scrollable'>
-    <ol class='series-collection'>
+<div class="scrollable">
+    <ol class="series-collection">
         {{#each selectedSeriesData as |seriesData index|}}
             <li>
-                {{navi-icon 'trash-o' class='navi-icon__delete' click=(action onRemoveSeries seriesData)}}
+                {{navi-icon "trash-o" class="navi-icon__delete" click=(action onRemoveSeries seriesData)}}
                 {{#chart-series-item
                     seriesIndex=index
                 }}
                     {{#each seriesData.dimensions as |dimension|}}
-                        <li class='dimension'>
-                            <div class='dim-type'>
+                        <li class="dimension">
+                            <div class="dim-type">
                                 {{dimension.dimension.longName}}
                             </div>
-                            <div class='dim-value has-tooltip selection-item pill'>
+                            <div class="dim-value has-tooltip selection-item pill">
                                 {{#with (format-dimension dimension.value) as |dimensionValue|}}
                                     {{tooltip-on-element
                                       text=dimensionValue

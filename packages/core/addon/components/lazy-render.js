@@ -13,13 +13,14 @@
  *   {{/lazy-render}}
  */
 
-import Ember from 'ember';
+import { assert } from '@ember/debug';
+
+import Component from '@ember/component';
+import { computed, set, get } from '@ember/object';
 import $ from 'jquery';
 import layout from '../templates/components/lazy-render';
 
-const { get, set, computed } = Ember;
-
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   tagName: '',
@@ -45,7 +46,7 @@ export default Ember.Component.extend({
   $target: computed('target', function() {
     let target = get(this, 'target');
 
-    Ember.assert('target property is required', target);
+    assert('target property is required', target);
     return $(target);
   }),
 

@@ -10,13 +10,17 @@
  *    options=(default-config 'bar-chart' model.request model.response)
  *  }}
  */
-import Ember from 'ember';
+import { getOwner } from '@ember/application';
 
-export default Ember.Helper.extend({
+import { assert } from '@ember/debug';
+import { inject as service } from '@ember/service';
+import Helper from '@ember/component/helper';
+
+export default Helper.extend({
   /**
    * @property {Ember.Service} store
    */
-  store: Ember.inject.service(),
+  store: service(),
 
   /**
    * @method compute
@@ -29,9 +33,9 @@ export default Ember.Helper.extend({
    */
   compute([visualizationName, request, response]) {
     // Make sure there is a model for the given visualizationName
-    Ember.assert(
+    assert(
       `Default config can not be made since model:${visualizationName} was not found`,
-      Ember.getOwner(this).hasRegistration(`model:${visualizationName}`)
+      getOwner(this).hasRegistration(`model:${visualizationName}`)
     );
 
     // Use the visualization model fragment to build a valid config

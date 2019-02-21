@@ -2,7 +2,7 @@
  * Copyright 2017, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import Ember from 'ember';
+import { assert } from '@ember/debug';
 
 /**
  * DataGroup
@@ -16,8 +16,8 @@ export default class DataGroup {
    * @param {Function} groupingFn - function that takes a data row and returns the key to group it by
    */
   constructor(rows, groupingFn) {
-    Ember.assert('Data rows must be defined', rows);
-    Ember.assert('Grouping function must be defined', typeof groupingFn === 'function');
+    assert('Data rows must be defined', rows);
+    assert('Grouping function must be defined', typeof groupingFn === 'function');
 
     let map = {},
       i,

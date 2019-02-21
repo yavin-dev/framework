@@ -1,5 +1,5 @@
+import { A } from '@ember/array';
 import { moduleFor, test } from 'ember-qunit';
-import Ember from 'ember';
 
 moduleFor('validator:request-metrics', 'Unit | Validator | request-metrics', {
   needs: ['validator:messages']
@@ -39,7 +39,7 @@ test('validate request-metrics', function(assert) {
 
   assert.equal(
     Validator.validate(
-      Ember.A([
+      A([
         {
           metric: { name: 'm1' },
           canonicalName: 'm1',

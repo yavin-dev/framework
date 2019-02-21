@@ -1,9 +1,7 @@
-import Ember from 'ember';
+import { getOwner } from '@ember/application';
 import { moduleFor, test } from 'ember-qunit';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
 import wait from 'ember-test-helpers/wait';
-
-const { getOwner } = Ember;
 
 let MetadataService;
 

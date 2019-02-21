@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import { run } from '@ember/runloop';
 import { moduleForModel, test } from 'ember-qunit';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
 
@@ -41,7 +41,7 @@ moduleForModel('dashboard', 'Unit | Model | dashboard', {
 test('Retrieving Records', function(assert) {
   assert.expect(2);
 
-  return Ember.run(() => {
+  return run(() => {
     return Store.findRecord('dashboard', 2).then(rec => {
       assert.deepEqual(
         JSON.parse(JSON.stringify(rec.toJSON())), //to remove undefined props
@@ -74,7 +74,7 @@ test('Retrieving Records', function(assert) {
 test('user relationship', function(assert) {
   assert.expect(4);
 
-  return Ember.run(() => {
+  return run(() => {
     return Store.findRecord('user', 'navi_user').then(userModel => {
       return Store.findRecord('dashboard', 2).then(dashboard => {
         return dashboard.get('author').then(author => {
@@ -94,7 +94,7 @@ test('user relationship', function(assert) {
 test('isFavorite', function(assert) {
   assert.expect(2);
 
-  return Ember.run(() => {
+  return run(() => {
     // Make sure user is loaded into store
     return Store.findRecord('user', 'navi_user').then(() => {
       return Store.findRecord('dashboard', 2).then(model => {
@@ -111,7 +111,7 @@ test('isFavorite', function(assert) {
 test('Cloning Dashboards', function(assert) {
   assert.expect(1);
 
-  return Ember.run(() => {
+  return run(() => {
     return Store.findRecord('dashboard', 3).then(model => {
       let clonedModel = model.clone().toJSON(),
         expectedModel = model.toJSON();

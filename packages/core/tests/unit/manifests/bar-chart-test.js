@@ -1,27 +1,28 @@
-import Ember from 'ember';
+import { A } from '@ember/array';
+import { copy } from '@ember/object/internals';
+import { set } from '@ember/object';
 import { moduleFor, test } from 'ember-qunit';
 import Interval from 'navi-core/utils/classes/interval';
 import moment from 'moment';
 
-const { copy, set } = Ember,
-  VALID_REQUEST = {
-    logicalTable: {
-      table: 'network',
-      timeGrain: { name: 'day' }
-    },
-    metrics: [{ metric: 'adClicks' }],
-    dimensions: [],
-    filters: [],
-    sort: [
-      {
-        metric: 'navClicks',
-        direction: 'asc'
-      }
-    ],
-    intervals: Ember.A([{ interval: new Interval('current', 'next') }]),
-    bardVersion: 'v1',
-    requestVersion: 'v1'
-  };
+const VALID_REQUEST = {
+  logicalTable: {
+    table: 'network',
+    timeGrain: { name: 'day' }
+  },
+  metrics: [{ metric: 'adClicks' }],
+  dimensions: [],
+  filters: [],
+  sort: [
+    {
+      metric: 'navClicks',
+      direction: 'asc'
+    }
+  ],
+  intervals: A([{ interval: new Interval('current', 'next') }]),
+  bardVersion: 'v1',
+  requestVersion: 'v1'
+};
 
 moduleFor('manifest:bar-chart', 'Unit | Manifests | bar chart');
 
@@ -38,7 +39,7 @@ test('bar chart visualization type is valid', function(assert) {
   assert.ok(manifest.typeIsValid(request), 'bar chart type is valid for single time bucket with dimension');
 
   // valid for multiple time buckets with dimension
-  let intervals = Ember.A([
+  let intervals = A([
     {
       interval: new Interval(moment('2015-11-09 00:00:00.000'), moment('2015-11-16 00:00:00.000'))
     }

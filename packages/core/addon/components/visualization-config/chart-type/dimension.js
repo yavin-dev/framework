@@ -11,15 +11,18 @@
  * }}
  */
 
-import Ember from 'ember';
+import { assign } from '@ember/polyfills';
+
+import { A } from '@ember/array';
+import Component from '@ember/component';
+import { set, get, computed } from '@ember/object';
+import { copy } from '@ember/object/internals';
 import { dataByDimensions } from 'navi-core/utils/data';
 import { getRequestMetrics } from 'navi-core/utils/chart-data';
 import layout from '../../../templates/components/visualization-config/chart-type/dimension';
 import _ from 'lodash';
 
-const { computed, get, set, copy } = Ember;
-
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   /**
@@ -38,7 +41,7 @@ export default Ember.Component.extend({
    * @property {Array} dimensions
    */
   dimensions: computed('request', function() {
-    return Ember.A(get(this, 'request.dimensions')).mapBy('dimension');
+    return A(get(this, 'request.dimensions')).mapBy('dimension');
   }),
 
   /**
@@ -95,7 +98,7 @@ export default Ember.Component.extend({
         });
 
         dimensionLabels.push(description || id);
-        Ember.assign(values, { [get(dimension, 'name')]: id });
+        assign(values, { [get(dimension, 'name')]: id });
       }
 
       series[key] = {
@@ -127,7 +130,7 @@ export default Ember.Component.extend({
     let dimensionOrder = get(this, 'seriesConfig.dimensionOrder'),
       selectedDimensions = get(this, 'seriesConfig.dimensions');
 
-    let keys = Ember.A(selectedDimensions)
+    let keys = A(selectedDimensions)
       .mapBy('values')
       .map(value => dimensionOrder.map(dimension => value[dimension]).join('|'));
     return keys.map(key => get(this, 'seriesByDimensions')[key]);
@@ -157,7 +160,7 @@ export default Ember.Component.extend({
       const newSeriesConfig = copy(get(this, 'seriesConfig'));
       const handleUpdateConfig = get(this, 'onUpdateConfig');
 
-      Ember.A(newSeriesConfig.dimensions).pushObject(series.config);
+      A(newSeriesConfig.dimensions).pushObject(series.config);
       if (handleUpdateConfig) handleUpdateConfig(newSeriesConfig);
     },
 

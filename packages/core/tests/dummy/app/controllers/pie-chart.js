@@ -1,9 +1,10 @@
-import Ember from 'ember';
+import { A } from '@ember/array';
+import Controller from '@ember/controller';
+import { set, get, computed } from '@ember/object';
 import merge from 'lodash/merge';
-const { get, set } = Ember;
 
-export default Ember.Controller.extend({
-  request: {
+export default Controller.extend({
+  request: computed(() => ({
     dimensions: [
       {
         dimension: {
@@ -47,14 +48,14 @@ export default Ember.Controller.extend({
         }
       }
     ]
-  },
+  })),
 
-  response: Ember.computed('model', function() {
+  response: computed('model', function() {
     return this.get('model.0.response.rows');
   }),
 
   //options passed through to the pie-chart component
-  options: {
+  options: computed(() => ({
     series: {
       type: 'dimension',
       config: {
@@ -84,17 +85,17 @@ export default Ember.Controller.extend({
         ]
       }
     }
-  },
+  })),
 
-  visualizationOptions: Ember.computed('options', function() {
+  visualizationOptions: computed('options', function() {
     return {
       type: 'pie-chart',
       version: 1,
-      metadata: Ember.get(this, 'options')
+      metadata: get(this, 'options')
     };
   }),
 
-  multiDimensionModel: Ember.A([
+  multiDimensionModel: A([
     {
       request: {
         metrics: ['uniqueIdentifier', 'totalPageViews', 'revenue'],
@@ -183,7 +184,7 @@ export default Ember.Controller.extend({
     }
   ]),
 
-  multiDimensionRequest: {
+  multiDimensionRequest: computed(() => ({
     metrics: [
       {
         metric: {
@@ -236,13 +237,13 @@ export default Ember.Controller.extend({
         }
       }
     ]
-  },
+  })),
 
-  multiDimensionResponse: Ember.computed('multiDimensionModel', function() {
+  multiDimensionResponse: computed('multiDimensionModel', function() {
     return this.get('multiDimensionModel.0.response.rows');
   }),
 
-  multiDimensionOptions: {
+  multiDimensionOptions: computed(() => ({
     series: {
       type: 'dimension',
       config: {
@@ -276,13 +277,13 @@ export default Ember.Controller.extend({
         ]
       }
     }
-  },
+  })),
 
-  visualizationOptionsMultiDimension: Ember.computed('multiDimensionOptions', function() {
+  visualizationOptionsMultiDimension: computed('multiDimensionOptions', function() {
     return {
       type: 'pie-chart',
       version: 1,
-      metadata: Ember.get(this, 'multiDimensionOptions')
+      metadata: get(this, 'multiDimensionOptions')
     };
   }),
 

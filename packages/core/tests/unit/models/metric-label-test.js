@@ -1,8 +1,7 @@
+import { run } from '@ember/runloop';
+import { set } from '@ember/object';
 import { moduleForModel, test } from 'ember-qunit';
-import Ember from 'ember';
 import { buildTestRequest } from '../../helpers/request';
-
-const { run, set } = Ember;
 
 moduleForModel('all-the-fragments', 'Unit | Model | Metric Label Visualization Fragment', {
   needs: ['model:metric-label', 'validator:request-metric-exist']

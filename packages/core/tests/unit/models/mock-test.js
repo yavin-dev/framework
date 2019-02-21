@@ -1,4 +1,5 @@
-import Ember from 'ember';
+import { all } from 'rsvp';
+import { run } from '@ember/runloop';
 import { moduleForModel, test } from 'ember-qunit';
 import config from 'ember-get-config';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
@@ -27,8 +28,8 @@ test('Coalescing find requests', function(assert) {
     return [200, { 'Content-Type': 'application/json' }, JSON.stringify({})];
   });
 
-  return Ember.run(() => {
-    Ember.RSVP.all([
+  return run(() => {
+    all([
       this.store().findRecord('mock', 1),
       this.store().findRecord('mock', 2),
       this.store().findRecord('mock', 4)

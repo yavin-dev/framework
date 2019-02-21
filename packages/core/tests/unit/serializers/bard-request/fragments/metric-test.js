@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import { run } from '@ember/runloop';
 import { moduleForModel, test } from 'ember-qunit';
 
 moduleForModel('bard-request/fragments/metric', 'Unit | Serializer | Metric Fragment', {
@@ -8,7 +8,7 @@ moduleForModel('bard-request/fragments/metric', 'Unit | Serializer | Metric Frag
 test('serializing record', function(assert) {
   assert.expect(4);
 
-  let record = Ember.run(() => {
+  let record = run(() => {
     return this.store().createFragment('bard-request/fragments/metric', {
       metric: {
         name: 'test',
@@ -29,7 +29,7 @@ test('serializing record', function(assert) {
     'the serializer transforms metric without params with empty parameter key'
   );
 
-  record = Ember.run(() => {
+  record = run(() => {
     return this.store().createFragment('bard-request/fragments/metric', {
       metric: {
         name: 'test',
@@ -50,7 +50,7 @@ test('serializing record', function(assert) {
     'the serializer transforms metric without params with null parameter key'
   );
 
-  record = Ember.run(() => {
+  record = run(() => {
     return this.store().createFragment('bard-request/fragments/metric', {
       metric: {
         name: 'test',
@@ -70,7 +70,7 @@ test('serializing record', function(assert) {
     'the serializer transforms metric without params with no parameter key'
   );
 
-  record = Ember.run(() => {
+  record = run(() => {
     return this.store().createFragment('bard-request/fragments/metric', {
       metric: {
         name: 'test',

@@ -1,4 +1,5 @@
-import Ember from 'ember';
+import { Promise } from 'rsvp';
+import { A } from '@ember/array';
 import moment from 'moment';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
@@ -15,7 +16,7 @@ const TEMPLATE = hbs`
     options=options
   }}`;
 
-const Model = Ember.A([
+const Model = A([
   {
     request: {
       metrics: ['uniqueIdentifier', 'totalPageViews', 'revenue(currency=USD)'],
@@ -117,7 +118,7 @@ test('missing data - metrics', function(assert) {
 
   this.set(
     'model',
-    Ember.A([
+    A([
       {
         request: {
           metrics: ['uniqueIdentifier'],
@@ -191,7 +192,7 @@ test('missing data - dimensions', function(assert) {
 
   this.set(
     'model',
-    Ember.A([
+    A([
       {
         request: {
           metrics: ['uniqueIdentifier'],
@@ -429,7 +430,7 @@ test('y axis label', function(assert) {
 test('Highlight data points', function(assert) {
   // assert.expect(1);
 
-  let anomalousDataModel = Ember.A([
+  let anomalousDataModel = A([
     {
       request: {
         metrics: ['uniqueIdentifier'],
@@ -476,9 +477,9 @@ test('Highlight data points', function(assert) {
         ]
       }
     },
-    new Ember.RSVP.Promise(resolve => {
+    new Promise(resolve => {
       resolve(
-        Ember.A([
+        A([
           {
             index: 1,
             actual: 12,
@@ -546,7 +547,7 @@ test('dateTime model', function(assert) {
 
   this.set(
     'model',
-    Ember.A([
+    A([
       {
         request: {
           metrics: ['uniqueIdentifier'],

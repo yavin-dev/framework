@@ -1,15 +1,13 @@
-import Ember from 'ember';
+import EmberObject, { set, get } from '@ember/object';
 import { module, test } from 'qunit';
 import { computedSetDiff } from 'navi-core/utils/custom-computed-properties';
-
-const { get, set } = Ember;
 
 module('Unit | Utils | Custom Computed Properties Utils');
 
 test('computedSetDiff', function(assert) {
   assert.expect(11);
 
-  let testClass = Ember.Object.extend({
+  let testClass = EmberObject.extend({
       setDiffProp: computedSetDiff('setAProperty', 'setBProperty')
     }),
     testInstance = testClass.create({

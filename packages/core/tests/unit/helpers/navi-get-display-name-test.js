@@ -1,5 +1,5 @@
+import Service from '@ember/service';
 import { moduleFor, test } from 'ember-qunit';
-import Ember from 'ember';
 
 moduleFor('helper:navi-get-display-name', 'Unit | Helper | navi get display name');
 
@@ -10,7 +10,7 @@ test('display name is returned', function(assert) {
   const MockMeta = {
     pageViews: { longName: 'Page Views' }
   };
-  const MockService = Ember.Service.extend({
+  const MockService = Service.extend({
     getById(type, id) {
       return MockMeta[id];
     }

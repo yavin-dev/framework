@@ -3,14 +3,14 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import Ember from 'ember';
+import { readOnly } from '@ember/object/computed';
+
+import { set, get } from '@ember/object';
 import DS from 'ember-data';
 import VisualizationBase from './visualization';
 import ChartVisualization from 'navi-core/mixins/models/chart-visualization';
 import { validator, buildValidations } from 'ember-cp-validations';
 import { DIMENSION_SERIES } from 'navi-core/utils/chart-data';
-
-const { computed, get, set } = Ember;
 
 const SERIES_PATH = 'metadata.series';
 const CONFIG_PATH = `${SERIES_PATH}.config`;
@@ -37,7 +37,7 @@ const Validations = buildValidations(
   {
     //Global Validation Options
     chartType: DIMENSION_SERIES,
-    request: computed.readOnly('model._request')
+    request: readOnly('model._request')
   }
 );
 
