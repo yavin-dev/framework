@@ -9,7 +9,7 @@ const Router = EmberRouter.extend({
 Router.map(function() {
   this.route('reports', function() {
     this.route('new');
-    this.route('report', { path: '/:reportId' }, function() {
+    this.route('report', { path: '/:report_id' }, function() {
       this.route('clone');
       this.route('save-as');
       this.route('invalid');
@@ -24,13 +24,13 @@ Router.map(function() {
   });
 
   this.route('reportCollections', function() {
-    this.route('collection', { path: '/:collectionId' });
+    this.route('collection', { path: '/:collection_id' });
   });
 
   this.route('print', function() {
     this.route('reports', function() {
       this.route('new');
-      this.route('report', { path: '/:reportId' }, function() {
+      this.route('report', { path: '/:report_id' }, function() {
         this.route('view');
         this.route('invalid');
       });

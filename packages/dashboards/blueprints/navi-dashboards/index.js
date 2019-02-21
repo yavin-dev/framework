@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -18,7 +18,7 @@ module.exports = {
       "\tthis.route('dashboardCollections', function() { " +
       EOL +
       "\
-  this.route('collection', {path:'/:collectionId'}); " +
+  this.route('collection', {path:'/:collection_id'}); " +
       EOL +
       '\
 });' +
@@ -30,7 +30,7 @@ this.route('print', function() { " +
   this.route('dashboards', function() { " +
       EOL +
       "\
-    this.route('dashboard', { path: '/:dashboardId' }, function() {" +
+    this.route('dashboard', { path: '/:dashboard_id' }, function() {" +
       EOL +
       "\
       this.route('view'); " +
@@ -51,7 +51,7 @@ this.route('dashboards', function() { " +
   this.route('new'); " +
       EOL +
       "\
-  this.route('dashboard', { path: '/:dashboardId' }, function() {" +
+  this.route('dashboard', { path: '/:dashboard_id' }, function() {" +
       EOL +
       "\
     this.route('clone'); " +
@@ -69,7 +69,7 @@ this.route('dashboards', function() { " +
       this.route('new'); " +
       EOL +
       "\
-      this.route('widget', { path: '/:widgetId'}, function() { " +
+      this.route('widget', { path: '/:widget_id'}, function() { " +
       EOL +
       "\
         this.route('edit'); " +
