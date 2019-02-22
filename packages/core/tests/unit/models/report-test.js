@@ -8,7 +8,7 @@ import config from 'ember-get-config';
 import Mirage from 'ember-cli-mirage';
 import DeliverableItem from 'navi-core/models/deliverable-item';
 
-let Store, MetadataService;
+let Store, MetadataService, server;
 
 const ExpectedRequest = {
     logicalTable: {
@@ -78,7 +78,7 @@ module('Unit | Model | report', function(hooks) {
   setupTest(hooks);
 
   hooks.beforeEach(function() {
-    setupMock();
+    server = setupMock();
     Store = this.owner.lookup('service:store');
     MetadataService = this.owner.lookup('service:bard-metadata');
     MetadataService.loadMetadata();

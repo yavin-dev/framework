@@ -3,6 +3,7 @@ import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import config from 'ember-get-config';
 import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
+import reorder from 'ember-sortable/helpers/reorder';
 
 module('Acceptance | table', function(hooks) {
   setupApplicationTest(hooks);

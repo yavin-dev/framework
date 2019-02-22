@@ -1,6 +1,7 @@
 import { findAll, find, visit } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
+import { selectChoose } from 'ember-power-select/test-support';
 
 module('Acceptance | line chart', function(hooks) {
   setupApplicationTest(hooks);

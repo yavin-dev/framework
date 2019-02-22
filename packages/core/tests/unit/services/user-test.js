@@ -7,14 +7,14 @@ import Mirage from 'ember-cli-mirage';
 import DS from 'ember-data';
 import UserAdapter from 'navi-core/adapters/base-json-adapter';
 
-let Store, NaviUser;
+let Store, NaviUser, server;
 
 module('Unit | Service | user', function(hooks) {
   setupTest(hooks);
 
   hooks.beforeEach(function() {
     NaviUser = config.navi.user;
-    setupMock();
+    server = setupMock();
     // Mock fact service
     this.owner.register(
       'model:user',
