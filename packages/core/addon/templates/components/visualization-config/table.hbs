@@ -7,7 +7,7 @@
   </span>
   <div class="table-config__totals-toggle-container">
 
-    <!-- Toggle for grand total -->
+    {{!-- Toggle for grand total --}}
     <div class="table-config__totals-toggle-section">
       <span class="table-config__totals-toggle-label">Grand Total</span>
       {{x-toggle
@@ -18,7 +18,7 @@
       }}
     </div>
 
-    <!-- Toggle for subtotal -->
+    {{!-- Toggle for subtotal --}}
     {{#if request.dimensions.length}}
       <div class="table-config__totals-toggle-section">
         <span class="table-config__totals-toggle-label">Subtotal</span>
@@ -30,7 +30,7 @@
         }}
       </div>
 
-      <!-- Dimension dropdown for subtotal -->
+      {{!-- Dimension dropdown for subtotal --}}
       {{#if showSubtotalDropdown}}
         {{#power-select
           class="table-config__subtotal-dimension-select"

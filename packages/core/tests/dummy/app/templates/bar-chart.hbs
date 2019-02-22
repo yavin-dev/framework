@@ -23,14 +23,14 @@
 
 <h3>By Dimension</h3>
 <div class="chart-container">
-    {{visualization-config/wrapper
-      request=request
-      response=response
-      visualization=dimVisualization
-      onUpdateConfig=(action "onUpdateConfig")
-    }}
-    {{navi-visualizations/bar-chart
-      model=model
-      options=dimensionOptions
-    }}
+  {{visualization-config/wrapper
+    request=request
+    response=response
+    visualization=dimVisualization
+    onUpdateConfig=(action "onUpdateConfig")
+  }}
+  {{navi-visualizations/bar-chart
+    model=model
+    options=dimensionOptions
+  }}
 </div>

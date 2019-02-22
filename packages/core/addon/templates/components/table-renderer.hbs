@@ -25,26 +25,26 @@
           group=group
           click=(action headerClicked column)
         }}
-            <span
-              class="table-header-cell__title {{if column.hasCustomDisplayName "table-header-cell__title--custom-name"}}"
-              title="Drag column header to reorder"
-            >
-                {{or column.displayName (default-column-name column)}}
-            </span>
-            {{#if column.sortDirection}}
-              {{navi-table-sort-icon
-                class="table-header-cell__icon"
-                direction=(readonly column.sortDirection)
-              }}
-            {{else}}
-              {{tooltip-on-element
-                text="Column cannot be sorted."
-                showOn="click"
-                hideOn="mousedown mouseleave"
-                duration=2000
-                enableLazyRendering=true
-              }}
-            {{/if}}
+          <span
+            class="table-header-cell__title {{if column.hasCustomDisplayName "table-header-cell__title--custom-name"}}"
+            title="Drag column header to reorder"
+          >
+            {{or column.displayName (default-column-name column)}}
+          </span>
+          {{#if column.sortDirection}}
+            {{navi-table-sort-icon
+              class="table-header-cell__icon"
+              direction=(readonly column.sortDirection)
+            }}
+          {{else}}
+            {{tooltip-on-element
+              text="Column cannot be sorted."
+              showOn="click"
+              hideOn="mousedown mouseleave"
+              duration=2000
+              enableLazyRendering=true
+            }}
+          {{/if}}
         {{/sortable-item}}
       {{/each}}
     {{/sortable-group}}
@@ -71,9 +71,9 @@
                 }}
               {{else}}
                 {{table-cell-renderer
-                    data=row
-                    column=column
-                    request=request
+                  data=row
+                  column=column
+                  request=request
                 }}
               {{/if}}
             </div>
