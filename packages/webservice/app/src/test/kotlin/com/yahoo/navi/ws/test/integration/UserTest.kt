@@ -29,11 +29,11 @@ class UserTest: IntegrationTest() {
                     }
                 """.trimIndent()
             )
-            .When()
-                .post("/users")
-            .then()
-                .assertThat()
-                .statusCode(HttpStatus.SC_CREATED)
+        .When()
+            .post("/users")
+        .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_CREATED)
     }
 
     @Test
@@ -44,13 +44,13 @@ class UserTest: IntegrationTest() {
          */
         given()
             .cookie("User", naviUser1)
-            .When()
-                .get("/users")
-            .then()
-                .assertThat()
-                .statusCode(HttpStatus.SC_OK)
-                .and()
-                .body("data", empty<Any>())
+        .When()
+            .get("/users")
+        .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_OK)
+            .and()
+            .body("data", empty<Any>())
 
         /*
          * New user can be added
@@ -62,11 +62,11 @@ class UserTest: IntegrationTest() {
          */
         given()
             .cookie("User", naviUser1)
-            .When()
-                .get("/users")
-            .then()
-                .assertThat()
-                .body("data.id", hasItems<String>(naviUser1))
+        .When()
+            .get("/users")
+        .then()
+            .assertThat()
+            .body("data.id", hasItems<String>(naviUser1))
     }
 
     @Test
@@ -87,11 +87,11 @@ class UserTest: IntegrationTest() {
                     }
                 """.trimIndent()
             )
-            .When()
-                .post("/users")
-            .then()
-                .assertThat()
-                .statusCode(HttpStatus.SC_FORBIDDEN)
+        .When()
+            .post("/users")
+        .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_FORBIDDEN)
 
         /*
          * Registering User1
@@ -113,14 +113,14 @@ class UserTest: IntegrationTest() {
          */
         given()
             .cookie("User", user1)
-            .When()
-                .get("/users/$user1")
-            .then()
-                .assertThat()
-                .body("data.attributes.createDate", nullValue())
-            .and()
-                .body("data.attributes.createdOn",
-                    RegexMatcher.matchesRegex("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}")) // YYYY-MM-DD HH:MM:ss
+        .When()
+            .get("/users/$user1")
+        .then()
+            .assertThat()
+            .body("data.attributes.createDate", nullValue())
+        .and()
+            .body("data.attributes.createdOn",
+                RegexMatcher.matchesRegex("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}")) // YYYY-MM-DD HH:MM:ss
 
 
         given()
@@ -139,10 +139,10 @@ class UserTest: IntegrationTest() {
                 }
                 """.trimIndent()
             )
-            .When()
-                .patch("/users/$user1")
-            .then()
-                .assertThat()
-                .statusCode(HttpStatus.SC_FORBIDDEN)
+        .When()
+            .patch("/users/$user1")
+        .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_FORBIDDEN)
     }
 }

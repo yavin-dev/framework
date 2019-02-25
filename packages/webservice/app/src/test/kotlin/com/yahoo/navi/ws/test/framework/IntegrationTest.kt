@@ -40,7 +40,7 @@ abstract class IntegrationTest: RestAssuredSupport {
         fun assuredPort(): Int {
             // Grab port assigned from pom.xml plugin
             val restassuredPort = System.getProperty("restassured.port", System.getenv("restassured.port"))
-            return Integer.parseInt(if (restassuredPort != null && !restassuredPort!!.isEmpty()) restassuredPort else "9999")
+            return Integer.parseInt(if (restassuredPort != null && !restassuredPort.isEmpty()) restassuredPort else "9999")
         }
 
         /**
