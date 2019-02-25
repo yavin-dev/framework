@@ -1,5 +1,4 @@
 import { click, currentURL, find, visit } from '@ember/test-helpers';
-import { isPresent } from '@ember/utils';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
@@ -13,10 +12,7 @@ module('Acceptance | custom reports', function(hooks) {
     assert.expect(3);
 
     await visit('/reports');
-    assert.ok(
-      isPresent(find('.navi-reports-index .navi-collection table')),
-      'Table containing list of custom reports is visible'
-    );
+    assert.dom('.navi-reports-index .navi-collection table').exists();
 
     let firstReport = '.navi-collection tbody td:first-child a',
       reportTitle = find(firstReport).textContent.trim();
@@ -42,6 +38,6 @@ module('Acceptance | custom reports', function(hooks) {
       'Clicking "New Report" button brings the user to the report builder'
     );
 
-    assert.ok(isPresent(find('.report-builder')), 'Custom report builder is visible');
+    assert.dom('.report-builder').exists();
   });
 });
