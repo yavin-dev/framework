@@ -2,7 +2,7 @@ import { click, currentURL, find, visit } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
-import { link } from '../helpers/contains-helpers';
+import { linkContains } from '../helpers/contains-helpers';
 
 module('Acceptance | custom reports', function(hooks) {
   setupApplicationTest(hooks);
@@ -30,7 +30,7 @@ module('Acceptance | custom reports', function(hooks) {
     assert.expect(2);
 
     await visit('/reports');
-    await click(link('New Report'));
+    await click(linkContains('New Report'));
     assert.ok(
       currentURL().match(
         /^\/reports\/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\/edit/

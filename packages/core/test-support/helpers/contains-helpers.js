@@ -7,7 +7,7 @@ import { findAll } from '@ember/test-helpers';
  * @returns {Element} - first matching dom element
  */
 export default function findByContains(selector, text) {
-  return findAll(selector).filter(el => el.innerText.includes(text))[0];
+  return findAll(selector).filter(el => el.innerText.includes(text))[0] || null;
 }
 
 /**
@@ -15,7 +15,7 @@ export default function findByContains(selector, text) {
  * @param {String} text - text to search for
  * @returns {Element} - first matching dom element
  */
-export function button(text) {
+export function buttonContains(text) {
   return findByContains('button', text);
 }
 
@@ -24,6 +24,6 @@ export function button(text) {
  * @param {String} text - text to search for
  * @returns {Element} - first matching dom element
  */
-export function link(text) {
+export function linkContains(text) {
   return findByContains('a', text);
 }
