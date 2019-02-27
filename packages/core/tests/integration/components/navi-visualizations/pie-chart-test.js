@@ -5,7 +5,7 @@ import { render, find } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize as injectC3Enhancements } from 'navi-core/initializers/inject-c3-enhancements';
 import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
-import { getOwner } from '@ember/application';
+import { next } from '@ember/runloop';
 
 const TEMPLATE = hbs`
     {{navi-visualizations/pie-chart
@@ -187,31 +187,30 @@ module('Integration | Component | pie chart', function(hooks) {
     assert.dom('.c3-title').hasText('Total Page Views', 'The metric name is displayed in the metric label correctly');
 
     //Calulate where the metric label should be relative to the pie chart
-    let chartElm = this.$('.c3-chart-arcs'),
+    let chartElm = find('.c3-chart-arcs'),
       xTranslate =
-        d3.transform(chartElm.attr('transform')).translate[0] - chartElm[0].getBoundingClientRect().width / 2 - 50,
-      yTranslate =
-        this.$('svg')
-          .css('height')
-          .replace('px', '') / 2;
+        d3.transform(chartElm.getAttribute('transform')).translate[0] - chartElm.getBoundingClientRect().width / 2 - 50,
+      yTranslate = find('svg').getAttribute('height') / 2;
 
-    assert.equal(
-      Math.round(d3.transform(find('.c3-title').getAttribute('transform')).translate[0]),
-      Math.round(xTranslate),
-      'The metric name is in the correct X position on initial render'
-    );
+    next(() => {
+      assert.equal(
+        Math.round(d3.transform(find('.c3-title').getAttribute('transform')).translate[0]),
+        Math.round(xTranslate),
+        'The metric name is in the correct X position on initial render'
+      );
 
-    assert.equal(
-      Math.round(d3.transform(find('.c3-title').getAttribute('transform')).translate[1]),
-      Math.round(yTranslate),
-      'The metric name is in the correct Y position on initial render'
-    );
+      assert.equal(
+        Math.round(d3.transform(find('.c3-title').getAttribute('transform')).translate[1]),
+        Math.round(yTranslate),
+        'The metric name is in the correct Y position on initial render'
+      );
+    });
 
     /*
      * Resize the parent element of the SVG that the pie chart is drawn in
      * This effectively moves the pie chart to the left
      */
-    this.$('.pie-chart-widget').css('max-width', '1000px');
+    find('.pie-chart-widget').style.maxWidth = '1000px';
 
     //Rerender with a new metric and new chart position
     this.set('options', {
@@ -239,9 +238,9 @@ module('Integration | Component | pie chart', function(hooks) {
     });
 
     //Recalculate these after the chart is rerendered
-    chartElm = this.$('.c3-chart-arcs');
+    chartElm = find('.c3-chart-arcs');
     xTranslate =
-      d3.transform(chartElm.attr('transform')).translate[0] - chartElm[0].getBoundingClientRect().width / 2 - 50;
+      d3.transform(chartElm.getAttribute('transform')).translate[0] - chartElm.getBoundingClientRect().width / 2 - 50;
     yTranslate =
       this.$('svg')
         .css('height')
@@ -335,7 +334,7 @@ module('Integration | Component | pie chart', function(hooks) {
     });
 
     const findTooltipComponent = () =>
-      Object.keys(getOwner(this).__registry__.registrations).find(r => r.startsWith('component:pie-chart-tooltip-'));
+      Object.keys(this.owner.__registry__.registrations).find(r => r.startsWith('component:pie-chart-tooltip-'));
 
     this.set('model', Model);
     this.set('shouldRender', true);

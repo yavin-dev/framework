@@ -3,12 +3,11 @@ import { A } from '@ember/array';
 import moment from 'moment';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render } from '@ember/test-helpers';
+import { render, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize as injectC3Enhancements } from 'navi-core/initializers/inject-c3-enhancements';
 import DateUtils from 'navi-core/utils/date';
 import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
-import { getOwner } from '@ember/application';
 
 let MetadataService;
 
@@ -153,11 +152,7 @@ module('Integration | Component | line chart', function(hooks) {
     await render(TEMPLATE);
 
     assert.deepEqual(
-      this.$('.c3-circle')
-        .map(function() {
-          return $(this).css('opacity');
-        })
-        .get(),
+      findAll('.c3-circle').map(el => el.style.opacity),
       ['1', '0', '1'],
       'Missing data points are hidden by the chart'
     );
@@ -231,11 +226,7 @@ module('Integration | Component | line chart', function(hooks) {
     await render(TEMPLATE);
 
     assert.deepEqual(
-      this.$('.c3-circle')
-        .map(function() {
-          return $(this).css('opacity');
-        })
-        .get(),
+      findAll('.c3-circle').map(el => el.style.opacity),
       ['1', '0', '1'],
       'Missing data points are hidden by the chart'
     );
@@ -584,11 +575,7 @@ module('Integration | Component | line chart', function(hooks) {
     await render(TEMPLATE);
 
     assert.deepEqual(
-      this.$('.c3-legend-item')
-        .map(function() {
-          return $(this).text();
-        })
-        .get(),
+      findAll('.c3-legend-item').map(el => el.textContent),
       ['2016', '2017', '2018'],
       'Three years time series are displayed on y-axis'
     );
@@ -639,11 +626,7 @@ module('Integration | Component | line chart', function(hooks) {
     await render(TEMPLATE);
 
     assert.deepEqual(
-      this.$('.c3-legend-item')
-        .map(function() {
-          return $(this).text();
-        })
-        .get(),
+      findAll('.c3-legend-item').map(el => el.textContent),
       ['Unique Identifiers', 'Total Page Views', 'Revenue (USD)'],
       'Metric display names are used properly for parameterized and non-parameterized metrics in the legend'
     );
@@ -682,7 +665,7 @@ module('Integration | Component | line chart', function(hooks) {
     });
 
     const findTooltipComponent = () =>
-      Object.keys(getOwner(this).__registry__.registrations).find(r =>
+      Object.keys(this.owner.__registry__.registrations).find(r =>
         r.startsWith('component:line-chart-metric-tooltip-')
       );
 

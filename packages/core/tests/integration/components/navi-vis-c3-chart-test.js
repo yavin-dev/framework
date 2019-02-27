@@ -2,7 +2,7 @@ import { next, run } from '@ember/runloop';
 import Component from '@ember/component';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, triggerEvent } from '@ember/test-helpers';
+import { render, triggerEvent, find } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize as injectC3Enhancements } from 'navi-core/initializers/inject-c3-enhancements';
 
@@ -40,16 +40,20 @@ module('Integration | Component | navi vis c3 chart', function(hooks) {
       {{/test-container}}
     `);
 
-    next(() => {
-      assert.equal(this.$('svg').css('height'), '100px', 'chart fills height of container on initial render');
+    run(() => {
+      assert.equal(find('svg').getAttribute('height'), '100', 'chart fills height of container on initial render');
 
-      this.$('.container').css('height', '200px');
+      find('.container').style.height = '200px';
+    });
 
-      run(async () => {
-        await triggerEvent('.test-container', 'resizestop');
-      });
+    run(async () => {
+      await triggerEvent('.test-container', 'resizestop');
 
-      assert.equal(this.$('svg').css('height'), '200px', 'chart height updates to match container after resize action');
+      assert.equal(
+        find('svg').getAttribute('height'),
+        '200',
+        'chart height updates to match container after resize action'
+      );
     });
   });
 

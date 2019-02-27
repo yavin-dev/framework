@@ -1,9 +1,11 @@
 import { click, visit } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 module('Acceptance | route helpers', function(hooks) {
   setupApplicationTest(hooks);
+  setupMirage(hooks);
 
   test('route helpers', async function(assert) {
     assert.expect(6);

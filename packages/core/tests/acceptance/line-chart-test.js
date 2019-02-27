@@ -2,15 +2,17 @@ import { findAll, find, visit } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 module('Acceptance | line chart', function(hooks) {
   setupApplicationTest(hooks);
+  setupMirage(hooks);
 
   test('tooltip updates', async function(assert) {
     assert.expect(2);
 
     await visit('/line-chart');
-    let container = this.application.__container__;
+    let container = this.owner.__container__;
 
     showTooltip(container);
 
@@ -36,9 +38,7 @@ module('Acceptance | line chart', function(hooks) {
 
     await visit('/line-chart');
 
-    let customChartBuilderSeries = find('.custom-chart-builder .c3-legend-item')
-      .toArray()
-      .map(e => e.textContent);
+    let customChartBuilderSeries = findAll('.custom-chart-builder .c3-legend-item').map(e => e.textContent);
     assert.deepEqual(
       customChartBuilderSeries,
       ['custom', 'series', 'grouping'],

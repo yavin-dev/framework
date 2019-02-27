@@ -59,7 +59,9 @@ export default Controller.extend({
     series: {
       type: 'dimension',
       config: {
-        metric: 'totalPageViews',
+        metric: {
+          metric: 'totalPageViews'
+        },
         dimensionOrder: ['age'],
         dimensions: [
           {
@@ -95,94 +97,96 @@ export default Controller.extend({
     };
   }),
 
-  multiDimensionModel: A([
-    {
-      request: {
-        metrics: ['uniqueIdentifier', 'totalPageViews', 'revenue'],
-        logicalTable: {
-          timeGrain: 'day'
+  multiDimensionModel: computed(() =>
+    A([
+      {
+        request: {
+          metrics: ['uniqueIdentifier', 'totalPageViews', 'revenue'],
+          logicalTable: {
+            timeGrain: 'day'
+          },
+          intervals: [
+            {
+              start: '2015-12-14 00:00:00.000',
+              end: '2015-12-15 00:00:00.000'
+            }
+          ],
+          dimensions: [
+            {
+              dimension: 'age'
+            },
+            {
+              dimension: 'browser'
+            }
+          ]
         },
-        intervals: [
-          {
-            start: '2015-12-14 00:00:00.000',
-            end: '2015-12-15 00:00:00.000'
-          }
-        ],
-        dimensions: [
-          {
-            dimension: 'age'
-          },
-          {
-            dimension: 'browser'
-          }
-        ]
-      },
-      response: {
-        rows: [
-          {
-            dateTime: '2015-12-14 00:00:00.000',
-            'age|id': '-3',
-            'age|desc': 'All Other',
-            'browser|id': 'firefox',
-            'browser|desc': 'Mozilla Firefox',
-            uniqueIdentifier: 72620639,
-            totalPageViews: 3072620639,
-            revenue: 23435193.77284
-          },
-          {
-            dateTime: '2015-12-14 00:00:00.000',
-            'age|id': '1',
-            'age|desc': 'under 13',
-            'browser|id': 'Chrome',
-            'browser|desc': 'Google Chrome',
-            uniqueIdentifier: 55191081,
-            totalPageViews: 155191081,
-            revenue: 12498623.29348
-          },
-          {
-            dateTime: '2015-12-14 00:00:00.000',
-            'age|id': '2',
-            'age|desc': '13 - 25',
-            'browser|id': 'IE',
-            'browser|desc': 'Microsoft Internet Explorer',
-            uniqueIdentifier: 55191081,
-            totalPageViews: 3072620639,
-            revenue: 77348273.24588
-          },
-          {
-            dateTime: '2015-12-14 00:00:00.000',
-            'age|id': '3',
-            'age|desc': '25 - 35',
-            'browser|id': 'firefox',
-            'browser|desc': 'Mozilla Firefox',
-            uniqueIdentifier: 72620639,
-            totalPageViews: 72620639,
-            revenue: 98350255.98241
-          },
-          {
-            dateTime: '2015-12-14 00:00:00.000',
-            'age|id': '4',
-            'age|desc': '35 - 45',
-            'browser|id': 'Chrome',
-            'browser|desc': 'Google Chrome',
-            uniqueIdentifier: 72620639,
-            totalPageViews: 72620639,
-            revenue: 63491243.7692
-          },
-          {
-            dateTime: '2015-12-14 00:00:00.000',
-            'age|id': '4',
-            'age|desc': '35 - 45',
-            'browser|id': 'firefox',
-            'browser|desc': 'Mozilla Firefox',
-            uniqueIdentifier: 72620639,
-            totalPageViews: 72620639,
-            revenue: 35353239.99923
-          }
-        ]
+        response: {
+          rows: [
+            {
+              dateTime: '2015-12-14 00:00:00.000',
+              'age|id': '-3',
+              'age|desc': 'All Other',
+              'browser|id': 'firefox',
+              'browser|desc': 'Mozilla Firefox',
+              uniqueIdentifier: 72620639,
+              totalPageViews: 3072620639,
+              revenue: 23435193.77284
+            },
+            {
+              dateTime: '2015-12-14 00:00:00.000',
+              'age|id': '1',
+              'age|desc': 'under 13',
+              'browser|id': 'Chrome',
+              'browser|desc': 'Google Chrome',
+              uniqueIdentifier: 55191081,
+              totalPageViews: 155191081,
+              revenue: 12498623.29348
+            },
+            {
+              dateTime: '2015-12-14 00:00:00.000',
+              'age|id': '2',
+              'age|desc': '13 - 25',
+              'browser|id': 'IE',
+              'browser|desc': 'Microsoft Internet Explorer',
+              uniqueIdentifier: 55191081,
+              totalPageViews: 3072620639,
+              revenue: 77348273.24588
+            },
+            {
+              dateTime: '2015-12-14 00:00:00.000',
+              'age|id': '3',
+              'age|desc': '25 - 35',
+              'browser|id': 'firefox',
+              'browser|desc': 'Mozilla Firefox',
+              uniqueIdentifier: 72620639,
+              totalPageViews: 72620639,
+              revenue: 98350255.98241
+            },
+            {
+              dateTime: '2015-12-14 00:00:00.000',
+              'age|id': '4',
+              'age|desc': '35 - 45',
+              'browser|id': 'Chrome',
+              'browser|desc': 'Google Chrome',
+              uniqueIdentifier: 72620639,
+              totalPageViews: 72620639,
+              revenue: 63491243.7692
+            },
+            {
+              dateTime: '2015-12-14 00:00:00.000',
+              'age|id': '4',
+              'age|desc': '35 - 45',
+              'browser|id': 'firefox',
+              'browser|desc': 'Mozilla Firefox',
+              uniqueIdentifier: 72620639,
+              totalPageViews: 72620639,
+              revenue: 35353239.99923
+            }
+          ]
+        }
       }
-    }
-  ]),
+    ])
+  ),
 
   multiDimensionRequest: computed(() => ({
     metrics: [
@@ -247,7 +251,9 @@ export default Controller.extend({
     series: {
       type: 'dimension',
       config: {
-        metric: 'totalPageViews',
+        metric: {
+          metric: 'totalPageViews'
+        },
         dimensionOrder: ['age', 'browser'],
         dimensions: [
           {

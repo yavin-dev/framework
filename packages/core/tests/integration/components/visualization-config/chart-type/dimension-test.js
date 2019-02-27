@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render } from '@ember/test-helpers';
+import { render, find } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { clickTrigger as toggleSelector, nativeMouseUp as toggleOption } from 'ember-power-select/test-support/helpers';
 import { setupMock, teardownMock } from '../../../../helpers/mirage-helper';
@@ -163,14 +163,14 @@ module('Integration | Component | visualization config/line chart type/dimension
     toggleSelector('.dimension-line-chart-config__metric-selector');
 
     assert.equal(
-      this.$('.dimension-line-chart-config__metric-selector .ember-power-select-option:contains(Revenue)')
-        .text()
-        .trim(),
+      find(
+        '.dimension-line-chart-config__metric-selector .ember-power-select-option:contains(Revenue)'
+      ).textContent.trim(),
       'Revenue (USD)',
       'Parameterized metric is displayed correctly in the dimension visualization config'
     );
 
-    toggleOption($('.dimension-line-chart-config__metric-selector .ember-power-select-option:contains(metric2)')[0]);
+    toggleOption(find('.dimension-line-chart-config__metric-selector .ember-power-select-option:contains(metric2)'));
   });
 
   test('on add series', async function(assert) {
@@ -200,7 +200,7 @@ module('Integration | Component | visualization config/line chart type/dimension
     await render(Template);
 
     //Add first series in dropdown
-    $('.add-series .btn-add').click();
+    this.$('.add-series .btn-add').click();
     this.$('.add-series .table-row:first-of-type').click();
   });
 

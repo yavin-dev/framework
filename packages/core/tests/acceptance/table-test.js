@@ -1,12 +1,12 @@
-import { click, fillIn, find, blur, visit } from '@ember/test-helpers';
+import { click, fillIn, findAll, blur, visit } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import config from 'ember-get-config';
-import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
-import reorder from 'ember-sortable/helpers/reorder';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 module('Acceptance | table', function(hooks) {
   setupApplicationTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
     config.navi.FEATURES.enableVerticalCollectionTableIterator = true;
@@ -22,18 +22,12 @@ module('Acceptance | table', function(hooks) {
     await visit('/table');
 
     assert.deepEqual(
-      find('.table-header-row-vc--view .table-header-cell__title')
-        .toArray()
-        .map(el =>
-          $(el)
-            .text()
-            .trim()
-        ),
+      findAll('.table-header-row-vc--view .table-header-cell__title').map(el => el.textContent.trim()),
       ['Date', 'Operating System', 'Unique Identifiers', 'Total Page Views', 'Total Page Views WoW'],
       'The headers for the table are as specified'
     );
 
-    await reorder(
+    await this.owner.base.testHelpers.reorder(
       'mouse',
       '.table-header-cell',
       '.dimension:contains(Operating System)',
@@ -44,13 +38,7 @@ module('Acceptance | table', function(hooks) {
     );
 
     assert.deepEqual(
-      find('.table-header-row-vc--view .table-header-cell__title')
-        .toArray()
-        .map(el =>
-          $(el)
-            .text()
-            .trim()
-        ),
+      findAll('.table-header-row-vc--view .table-header-cell__title').map(el => el.textContent.trim()),
       ['Operating System', 'Date', 'Unique Identifiers', 'Total Page Views', 'Total Page Views WoW'],
       'The headers are reordered as specified by the reorder'
     );
@@ -60,28 +48,25 @@ module('Acceptance | table', function(hooks) {
     assert.expect(6);
 
     await visit('/table');
-    assert.notOk(find('.table-header-cell__input').is(':visible'), 'Table header edit field should not be visible');
+    assert.dom('.table-header-cell__input').isNotVisible('Table header edit field should not be visible');
 
     await click('.table-config__total-toggle-button .x-toggle-btn');
-    assert.ok(find('.table-header-cell__input').is(':visible'), 'Table header edit field should be visible');
+    assert.dom('.table-header-cell__input').isVisible('Table header edit field should be visible');
 
-    assert.notOk(
-      find('.dateTime .number-format-dropdown__trigger').is(':visible'),
-      'Datetime field should not have format dropdown trigger'
-    );
+    assert
+      .dom('.dateTime .number-format-dropdown__trigger')
+      .isNotVisible('Datetime field should not have format dropdown trigger');
 
-    assert.notOk(
-      find('.dimension .number-format-dropdown__trigger').is(':visible'),
-      'Dimension field should not have format dropdown trigger'
-    );
+    assert
+      .dom('.dimension .number-format-dropdown__trigger')
+      .isNotVisible('Dimension field should not have format dropdown trigger');
 
-    assert.ok(
-      find('.metric .number-format-dropdown__trigger').is(':visible'),
-      'Metric field should have format dropdown trigger'
-    );
+    assert
+      .dom('.metric .number-format-dropdown__trigger')
+      .isVisible('Metric field should have format dropdown trigger');
 
-    await clickTrigger();
-    assert.ok($('.number-format-dropdown__container').is(':visible'), 'Table format dropdown should be visible');
+    await click('.ember-basic-dropdown-trigger');
+    assert.dom('.number-format-dropdown__container').isVisible('Table format dropdown should be visible');
   });
 
   test('edit table field', async function(assert) {
@@ -91,7 +76,7 @@ module('Acceptance | table', function(hooks) {
 
     await click('.table-config__total-toggle-button .x-toggle-btn');
     await fillIn('.dateTime > .table-header-cell__input', 'test');
-    await await blur('.dateTime > .table-header-cell__input');
+    await blur('.dateTime > .table-header-cell__input');
     await click('.table-config__total-toggle-button .x-toggle-btn');
 
     assert
@@ -109,8 +94,8 @@ module('Acceptance | table', function(hooks) {
     await visit('/table');
 
     await click('.table-config__total-toggle-button .x-toggle-btn');
-    await fillIn('.dateTime > .table-header-cell__input', null);
-    await await blur('.dateTime > .table-header-cell__input');
+    await fillIn('.dateTime > .table-header-cell__input', '');
+    await blur('.dateTime > .table-header-cell__input');
     await click('.table-config__total-toggle-button .x-toggle-btn');
 
     assert
