@@ -46,21 +46,19 @@ module('Integration | Component | cell renderers/dimension', function(hooks) {
     assert.expect(3);
     await render(TEMPLATE);
 
-    assert.ok($('.table-cell-content').is(':visible'), 'The dimension cell renderer is visible');
+    assert.dom('.table-cell-content').isVisible('The dimension cell renderer is visible');
 
-    assert.equal(
-      $('.table-cell-content')
-        .text()
-        .trim(),
-      'BlackBerry OS',
-      'The dimension cell renders correctly when present description field is present'
-    );
+    assert
+      .dom('.table-cell-content')
+      .hasText('BlackBerry OS', 'The dimension cell renders correctly when present description field is present');
 
-    assert.equal(
-      $('.table-cell-content span').attr('title'),
-      'BlackBerry OS (BlackBerry)',
-      'The dimension cell title renders correctly when present description and id field is present'
-    );
+    assert
+      .dom('.table-cell-content span')
+      .hasAttribute(
+        'title',
+        'BlackBerry OS (BlackBerry)',
+        'The dimension cell title renders correctly when present description and id field is present'
+      );
   });
 
   test('dimension renders id value when description is empty', async function(assert) {
@@ -76,19 +74,13 @@ module('Integration | Component | cell renderers/dimension', function(hooks) {
     this.set('data', data2);
     await render(TEMPLATE);
 
-    assert.equal(
-      $('.table-cell-content')
-        .text()
-        .trim(),
-      'BlackBerry',
-      'The dimension cell renders id correctly when description empty'
-    );
+    assert
+      .dom('.table-cell-content')
+      .hasText('BlackBerry', 'The dimension cell renders id correctly when description empty');
 
-    assert.equal(
-      $('.table-cell-content span').attr('title'),
-      'BlackBerry',
-      'The dimension cell renders id correctly in title when description empty'
-    );
+    assert
+      .dom('.table-cell-content span')
+      .hasAttribute('title', 'BlackBerry', 'The dimension cell renders id correctly in title when description empty');
   });
 
   test('dimension renders desc value when id is empty', async function(assert) {
@@ -103,19 +95,13 @@ module('Integration | Component | cell renderers/dimension', function(hooks) {
     this.set('data', data2);
     await render(TEMPLATE);
 
-    assert.equal(
-      $('.table-cell-content')
-        .text()
-        .trim(),
-      'BlackBerry OS',
-      'The dimension cell renders desc correctly when id empty'
-    );
+    assert
+      .dom('.table-cell-content')
+      .hasText('BlackBerry OS', 'The dimension cell renders desc correctly when id empty');
 
-    assert.equal(
-      $('.table-cell-content span').attr('title'),
-      'BlackBerry OS',
-      'The dimension cell renders desc correctly in title when id empty'
-    );
+    assert
+      .dom('.table-cell-content span')
+      .hasAttribute('title', 'BlackBerry OS', 'The dimension cell renders desc correctly in title when id empty');
   });
 
   test('dimension renders no value with dashes correctly', async function(assert) {
@@ -131,18 +117,16 @@ module('Integration | Component | cell renderers/dimension', function(hooks) {
       }}
     `);
 
-    assert.equal(
-      $('.table-cell-content')
-        .text()
-        .trim(),
-      '--',
-      'The dimension cell renders correctly when present description field is not present'
-    );
+    assert
+      .dom('.table-cell-content')
+      .hasText('--', 'The dimension cell renders correctly when present description field is not present');
 
-    assert.equal(
-      $('.table-cell-content span').attr('title'),
-      '',
-      'The dimension cell renders title correctly when present description field is not present'
-    );
+    assert
+      .dom('.table-cell-content span')
+      .hasAttribute(
+        'title',
+        '',
+        'The dimension cell renders title correctly when present description field is not present'
+      );
   });
 });

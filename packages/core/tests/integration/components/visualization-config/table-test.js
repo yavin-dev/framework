@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click, find } from '@ember/test-helpers';
+import { render, click, find, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import config from 'ember-get-config';
 import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
@@ -21,6 +21,9 @@ module('Integration | Component | visualization config/table', function(hooks) {
   test('it renders', async function(assert) {
     assert.expect(1);
 
+    let originalFlag = config.navi.FEATURES.enableTotals;
+    config.navi.FEATURES.enableTotals = false;
+
     await render(hbs`{{visualization-config/table}}`);
 
     assert
@@ -29,6 +32,8 @@ module('Integration | Component | visualization config/table', function(hooks) {
         'You can access more configuration in each of the column headers',
         'Table Configuration Component displays the warning message'
       );
+
+    config.navi.FEATURES.enableTotals = originalFlag;
   });
 
   test('table config - feature flag set', async function(assert) {
@@ -49,13 +54,7 @@ module('Integration | Component | visualization config/table', function(hooks) {
     assert.dom('.table-config__header').hasText('Totals', 'The header text is displayed correctly');
 
     assert.deepEqual(
-      this.$('.table-config__totals-toggle-label')
-        .toArray()
-        .map(el =>
-          $(el)
-            .text()
-            .trim()
-        ),
+      findAll('.table-config__totals-toggle-label').map(el => el.textContent.trim()),
       ['Grand Total', 'Subtotal'],
       'The totals toggle is displayed when the feature flag is set'
     );
@@ -64,19 +63,15 @@ module('Integration | Component | visualization config/table', function(hooks) {
       .dom('.table-config__total-toggle-button.x-toggle-component')
       .exists({ count: 2 }, 'Two toggle buttons are displayed next to the labels');
 
-    assert.notOk(
-      this.$('.table-config__total-toggle-button--grand-total.x-toggle-component .x-toggle-container-checked').is(
-        ':visible'
-      ),
-      'The toggle buttons are unchecked by default'
-    );
-
-    this.set('onUpdateConfig', result => {
-      assert.ok(
-        result.showTotals.grandTotal,
-        'Clicking the button toggles and sends the flag `showGrandTotal` to `onUpdateConfig`'
-      );
-    });
+    assert
+      .dom('.table-config__total-toggle-button--grand-total.x-toggle-component .x-toggle-container-checked')
+      .isNotVisible('The toggle buttons are unchecked by default'),
+      this.set('onUpdateConfig', result => {
+        assert.ok(
+          result.showTotals.grandTotal,
+          'Clicking the button toggles and sends the flag `showGrandTotal` to `onUpdateConfig`'
+        );
+      });
     await click('.table-config__total-toggle-button--grand-total .x-toggle-btn');
 
     config.navi.FEATURES.enableTotals = originalFlag;
@@ -94,12 +89,9 @@ module('Integration | Component | visualization config/table', function(hooks) {
 
     this.set('options', { showTotals: { grandTotal: true } });
 
-    assert.ok(
-      this.$('.table-config__total-toggle-button--grand-total.x-toggle-component .x-toggle-container-checked').is(
-        ':visible'
-      ),
-      'The grand total toggle button is checked when the flag in options is set'
-    );
+    assert
+      .dom('.table-config__total-toggle-button--grand-total.x-toggle-component .x-toggle-container-checked')
+      .isVisible('The grand total toggle button is checked when the flag in options is set');
 
     config.navi.FEATURES.enableTotals = originalFlag;
   });
@@ -120,10 +112,9 @@ module('Integration | Component | visualization config/table', function(hooks) {
       onUpdateConfig=(action onUpdateConfig)
     }}`);
 
-    assert.notOk(
-      this.$('.table-config__total-toggle-button--subtotal').is(':visible'),
-      'The subtotal toggle is not visible when there are no dimension groupbys'
-    );
+    assert
+      .dom('.table-config__total-toggle-button--subtotal')
+      .isNotVisible('The subtotal toggle is not visible when there are no dimension groupbys');
 
     this.set('request', {
       dimensions: [
@@ -143,29 +134,26 @@ module('Integration | Component | visualization config/table', function(hooks) {
     //click the subtotal toggle
     await click('.table-config__total-toggle-button--subtotal .x-toggle-btn');
 
-    assert.ok(
-      this.$('.table-config__subtotal-dimension-select').is(':visible'),
-      'The dimension dropdown is visible when subtotal is toggled on'
-    );
-
-    this.set('onUpdateConfig', result => {
-      assert.equal(
-        result.showTotals.subtotal,
-        'age',
-        'Choosing another option in the dimension select updates the subtotal in the config'
-      );
-    });
+    assert
+      .dom('.table-config__subtotal-dimension-select')
+      .isVisible('The dimension dropdown is visible when subtotal is toggled on'),
+      this.set('onUpdateConfig', result => {
+        assert.equal(
+          result.showTotals.subtotal,
+          'age',
+          'Choosing another option in the dimension select updates the subtotal in the config'
+        );
+      });
 
     toggleSelector('.table-config__subtotal-dimension-select');
-    toggleOption($('.subtotal-dimension-select__options .ember-power-select-option:contains(Age)')[0]);
+    toggleOption(find('.subtotal-dimension-select__options .ember-power-select-option[data-option-index="2"]'));
 
     //toggle off subtotal
     await click('.table-config__total-toggle-button--subtotal .x-toggle-btn');
 
-    assert.notOk(
-      this.$('.table-config__subtotal-dimension-select').is(':visible'),
-      'The dimension dropdown is hidden when subtotal is toggled off'
-    );
+    assert
+      .dom('.table-config__subtotal-dimension-select')
+      .isNotVisible('The dimension dropdown is hidden when subtotal is toggled off');
 
     config.navi.FEATURES.enableTotals = originalFlag;
   });
@@ -192,12 +180,9 @@ module('Integration | Component | visualization config/table', function(hooks) {
 
     this.set('options', { showTotals: { subtotal: 'os' } });
 
-    assert.ok(
-      this.$('.table-config__total-toggle-button--subtotal.x-toggle-component .x-toggle-container-checked').is(
-        ':visible'
-      ),
-      'The subtotal toggle button is checked when the flag in options has a value'
-    );
+    assert
+      .dom('.table-config__total-toggle-button--subtotal.x-toggle-component .x-toggle-container-checked')
+      .isVisible('The subtotal toggle button is checked when the flag in options has a value');
 
     assert.equal(
       find('.table-config__subtotal-dimension-select')

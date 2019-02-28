@@ -7,6 +7,5 @@ import 'ember-sortable/helpers/reorder';
 
 const application = Application.create(config.APP);
 
-application.injectTestHelpers();
 setApplication(application);
 start();

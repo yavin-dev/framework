@@ -1,7 +1,7 @@
 import { A } from '@ember/array';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, findAll } from '@ember/test-helpers';
+import { render, findAll, find, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 const TEMPLATE = hbs`
@@ -179,28 +179,19 @@ module('Integration | Component | chart series collection', function(hooks) {
 
     await render(TEMPLATE);
 
-    assert.ok(!!this.$('.chart-series-collection'), 'Chart Series Collection component renders');
+    assert.ok(!!find('.chart-series-collection'), 'Chart Series Collection component renders');
 
-    let seriesHeaders = this.$('.series-header')
-      .map(function() {
-        return this.textContent.trim();
-      })
-      .get();
+    let seriesHeaders = findAll('.series-header').map(el => el.textContent.trim());
     assert.deepEqual(seriesHeaders, ['Series 1', 'Series 2'], 'Collection contains series with appropriate headers');
 
-    let chartSeries = findAll('.chart-series-item')[0],
+    let chartSeries = findAll('.chart-series-item'),
       expectedDims = SELECTED_SERIES_DATA.map(seriesData => {
         return A(seriesData.dimensions).mapBy('dimension.longName');
       }),
       seriesDimensions = [];
 
     chartSeries.forEach(series => {
-      let dims = $(series)
-        .find('.dim-type')
-        .map(function() {
-          return this.textContent.trim();
-        })
-        .get();
+      let dims = [...series.querySelectorAll('.dim-type')].map(el => el.textContent.trim());
       seriesDimensions.push(dims);
     });
 
@@ -214,12 +205,7 @@ module('Integration | Component | chart series collection', function(hooks) {
       dimensionValues = [];
 
     chartSeries.forEach(series => {
-      let dims = $(series)
-        .find('.dim-value')
-        .map(function() {
-          return this.textContent.trim();
-        })
-        .get();
+      let dims = [...series.querySelectorAll('.dim-value')].map(el => el.textContent.trim());
       dimensionValues.push(dims);
     });
 
@@ -242,9 +228,7 @@ module('Integration | Component | chart series collection', function(hooks) {
     });
 
     // Delete first series
-    this.$('.navi-icon__delete')
-      .first()
-      .click();
+    await click(find('.navi-icon__delete'));
   });
 
   test('Deleting only available series allows you to select it', async function(assert) {
@@ -263,19 +247,10 @@ module('Integration | Component | chart series collection', function(hooks) {
     });
 
     // Delete series
-    this.$('.navi-icon__delete')
-      .first()
-      .click();
+    await click(find('.navi-icon__delete'));
+    await click('.add-series .btn-add');
 
-    $('.add-series .btn-add').click();
-
-    let body = $('.table-body .table-cell:not(.table-cell--icon)')
-      .toArray()
-      .map(el => {
-        return $(el)
-          .text()
-          .trim();
-      });
+    let body = findAll('.table-body .table-cell:not(.table-cell--icon)').map(el => el.textContent.trim());
 
     assert.deepEqual(
       body,

@@ -1,10 +1,8 @@
-import { run } from '@ember/runloop';
 import { A } from '@ember/array';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render } from '@ember/test-helpers';
+import { render, click, findAll, fillIn } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import $ from 'jquery';
 
 const TEMPLATE = hbs`
         {{series-selector
@@ -76,26 +74,13 @@ module('Integration | Component | series selector', function(hooks) {
     assert.expect(2);
 
     await render(TEMPLATE);
+    await click('.add-series .btn-add');
 
-    $('.add-series .btn-add').click();
-
-    let header = $('.table-header .table-cell:not(.table-cell--icon)')
-      .toArray()
-      .map(el => {
-        return $(el)
-          .text()
-          .trim();
-      });
+    let header = findAll('.table-header .table-cell:not(.table-cell--icon)').map(el => el.textContent.trim());
 
     assert.deepEqual(header, ['Age', 'Browser'], 'table header is correctly displayed based on seriesDimensions');
 
-    let body = $('.table-body .table-cell:not(.table-cell--icon)')
-      .toArray()
-      .map(el => {
-        return $(el)
-          .text()
-          .trim();
-      });
+    let body = findAll('.table-body .table-cell:not(.table-cell--icon)').map(el => el.textContent.trim());
 
     assert.deepEqual(
       body,
@@ -121,21 +106,14 @@ module('Integration | Component | series selector', function(hooks) {
     });
 
     await render(TEMPLATE);
+    await click('.add-series .btn-add');
 
-    $('.add-series .btn-add').click();
-
-    let body = $('.table-body .table-cell')
-      .toArray()
-      .map(el => {
-        return $(el)
-          .text()
-          .trim();
-      });
+    let body = findAll('.table-body .table-cell').map(el => el.textContent.trim());
 
     assert.deepEqual(body, ['No Other Series Available'], 'table body displays messages that no series are available');
 
-    //Try to click msg
-    this.$('.table-body .table-row:first').click();
+    // Try to click msg
+    await click('.table-body .table-cell');
   });
 
   test('disableAdd', async function(assert) {
@@ -143,14 +121,13 @@ module('Integration | Component | series selector', function(hooks) {
 
     await render(TEMPLATE);
 
-    assert.notOk(
-      $('.add-series .pick-value').hasClass('disableClick'),
-      'when enabled "Add Series" button is not disabled"'
-    );
+    assert
+      .dom('.add-series .pick-value')
+      .doesNotHaveClass('disableClick', 'when enabled "Add Series" button is not disabled"');
 
     this.set('disableAdd', true);
 
-    assert.ok($('.add-series .pick-value').hasClass('disableClick'), 'when disabled "Add Series" button is disabled"');
+    assert.dom('.add-series .pick-value').hasClass('disableClick', 'when disabled "Add Series" button is disabled"');
   });
 
   test('addSeries Action', async function(assert) {
@@ -161,38 +138,22 @@ module('Integration | Component | series selector', function(hooks) {
     });
 
     await render(TEMPLATE);
-
-    $('.add-series .btn-add').click();
-    this.$('.table-body .table-row:first').click();
+    await click('.add-series .btn-add');
+    await click('.table-body .table-row');
   });
 
   test('Searching', async function(assert) {
     assert.expect(4);
 
     await render(TEMPLATE);
+    await click('.add-series .btn-add');
 
-    $('.add-series .btn-add').click();
-
-    assert.ok(
-      this.$('.search.chart-series-14').is(':visible'),
-      'search bar is visible and has correct chart-series class'
-    );
+    assert.dom('.search.chart-series-14').isVisible('search bar is visible and has correct chart-series class');
 
     /* == Search "30" == */
-    run(() => {
-      this.$('.search input')
-        .val('30')
-        .trigger('input')
-        .change();
-    });
+    await fillIn('.search input', '30');
 
-    let body = $('.table-body .table-cell:not(.table-cell--icon)')
-      .toArray()
-      .map(el => {
-        return $(el)
-          .text()
-          .trim();
-      });
+    let body = findAll('.table-body .table-cell:not(.table-cell--icon)').map(el => el.textContent.trim());
 
     assert.deepEqual(
       body,
@@ -200,20 +161,11 @@ module('Integration | Component | series selector', function(hooks) {
       'table body only shows rows that match search term'
     );
 
-    /* == Search "Safari" == */
-    run(() => {
-      this.$('.search input')
-        .val('Opera')
-        .trigger('input')
-        .change();
-    });
+    /* == Search "Opera" == */
+    await fillIn('.search input', 'Opera');
 
-    assert.equal(
-      this.$('.table-body .table-cell').length,
-      0,
-      'table body is empty when search has no matching results'
-    );
+    assert.dom('.table-body .table-cell').doesNotExist('table body is empty when search has no matching results');
 
-    assert.ok(this.$('.no-match').is(':visible'), 'no match message is displayed when search has no matching results');
+    assert.dom('.no-match').isVisible('no match message is displayed when search has no matching results');
   });
 });

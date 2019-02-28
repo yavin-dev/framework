@@ -1,7 +1,7 @@
 import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, fillIn, triggerEvent } from '@ember/test-helpers';
+import { render, fillIn, blur, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 module('Integration | Component | visualization config/goal gauge', function(hooks) {
@@ -18,13 +18,7 @@ module('Integration | Component | visualization config/goal gauge', function(hoo
   test('it renders', async function(assert) {
     await render(hbs`{{visualization-config/goal-gauge}}`);
 
-    let headers = this.$('.goal-gauge-config__section-header')
-      .toArray()
-      .map(value =>
-        this.$(value)
-          .text()
-          .trim()
-      );
+    const headers = findAll('.goal-gauge-config__section-header').map(el => el.textContent.trim());
     assert.deepEqual(headers, ['Label', 'Baseline', 'Goal'], 'headers are displayed for goal gauge config');
   });
 
@@ -36,11 +30,8 @@ module('Integration | Component | visualization config/goal gauge', function(hoo
     });
 
     await render(Template);
-
-    run(async () => {
-      await fillIn('.goal-gauge-config__baseline-input', 1);
-      await triggerEvent('.goal-gauge-config__baseline-input', 'focusout');
-    });
+    await fillIn('.goal-gauge-config__baseline-input', '1');
+    await blur('.goal-gauge-config__baseline-input');
   });
 
   test('onUpdateConfig goalValue input', async function(assert) {
@@ -54,7 +45,7 @@ module('Integration | Component | visualization config/goal gauge', function(hoo
 
     run(async () => {
       await fillIn('.goal-gauge-config__goal-input', 10);
-      await triggerEvent('.goal-gauge-config__goal-input', 'focusout');
+      await blur('.goal-gauge-config__goal-input');
     });
   });
 
@@ -69,7 +60,7 @@ module('Integration | Component | visualization config/goal gauge', function(hoo
 
     run(async () => {
       await fillIn('.goal-gauge-config__label-input', 'bottles');
-      await triggerEvent('.goal-gauge-config__label-input', 'focusout');
+      await blur('.goal-gauge-config__label-input');
     });
   });
 });

@@ -63,17 +63,17 @@ export default Component.extend({
   /**
    * @property {Array} rawData - data from the WS
    */
-  rawData: readOnly('model.firstObject.response.rows'),
+  rawData: readOnly('model.0.response.rows'),
 
   /**
    * @property {Number} totalRows - total rows for the request
    */
-  totalRows: readOnly('model.firstObject.response.meta.pagination.numberOfResults'),
+  totalRows: readOnly('model.0.response.meta.pagination.numberOfResults'),
 
   /**
    * @property {Number} rowsInResponse - rows in response
    */
-  rowsInResponse: alias('model.firstObject.response.rows.length'),
+  rowsInResponse: alias('model.0.response.rows.length'),
 
   /**
    * @method computeColumnTotal
@@ -290,7 +290,7 @@ export default Component.extend({
   /**
    * @property {Object} request
    */
-  request: alias('model.firstObject.request'),
+  request: alias('model.0.request'),
 
   /**
    * @property {String} cellRendererPrefix - prefix for all cell renderer types

@@ -8,7 +8,7 @@ module('Integration | Component | pick inner component', function(hooks) {
 
   hooks.beforeEach(function() {
     // Create an extended component for testing since pick-inner-component can't be used directly
-    let innerComponent = this.container.factoryFor('component:pick-inner-component').class,
+    let innerComponent = this.owner.__container__.factoryFor('component:pick-inner-component').class,
       testComponent = innerComponent.extend({
         componentName: 'extended-component'
       });

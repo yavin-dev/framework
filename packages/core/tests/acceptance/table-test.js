@@ -27,7 +27,7 @@ module('Acceptance | table', function(hooks) {
       'The headers for the table are as specified'
     );
 
-    await this.owner.base.testHelpers.reorder(
+    await reorder(
       'mouse',
       '.table-header-cell',
       '.dimension:contains(Operating System)',

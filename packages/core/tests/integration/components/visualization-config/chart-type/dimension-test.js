@@ -1,11 +1,10 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find } from '@ember/test-helpers';
+import { render, find, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { clickTrigger as toggleSelector, nativeMouseUp as toggleOption } from 'ember-power-select/test-support/helpers';
 import { setupMock, teardownMock } from '../../../../helpers/mirage-helper';
 import { get } from '@ember/object';
-import { run } from '@ember/runloop';
 
 let MetadataService;
 
@@ -134,17 +133,15 @@ module('Integration | Component | visualization config/line chart type/dimension
 
     await render(Template);
 
-    assert.ok(this.$('.dimension-line-chart-config').is(':visible'), 'The line chart config component renders');
+    assert.dom('.dimension-line-chart-config').isVisible('The line chart config component renders');
 
-    assert.ok(
-      this.$('.dimension-line-chart-config .dimension-line-chart-config__metric-selector').is(':visible'),
-      'The metric selector component is displayed in the line chart config'
-    );
+    assert
+      .dom('.dimension-line-chart-config .dimension-line-chart-config__metric-selector')
+      .isVisible('The metric selector component is displayed in the line chart config');
 
-    assert.ok(
-      this.$('.dimension-line-chart-config .chart-series-collection').is(':visible'),
-      'The chart series selection component is displayed in the line chart config'
-    );
+    assert
+      .dom('.dimension-line-chart-config .chart-series-collection')
+      .isVisible('The chart series selection component is displayed in the line chart config');
   });
 
   test('on metric change', async function(assert) {
@@ -162,15 +159,13 @@ module('Integration | Component | visualization config/line chart type/dimension
 
     toggleSelector('.dimension-line-chart-config__metric-selector');
 
-    assert.equal(
-      find(
-        '.dimension-line-chart-config__metric-selector .ember-power-select-option:contains(Revenue)'
-      ).textContent.trim(),
-      'Revenue (USD)',
-      'Parameterized metric is displayed correctly in the dimension visualization config'
-    );
+    assert
+      .dom('.dimension-line-chart-config__metric-selector .ember-power-select-option[data-option-index="2"]')
+      .hasText('Revenue (USD)', 'Parameterized metric is displayed correctly in the dimension visualization config');
 
-    toggleOption(find('.dimension-line-chart-config__metric-selector .ember-power-select-option:contains(metric2)'));
+    toggleOption(
+      find('.dimension-line-chart-config__metric-selector .ember-power-select-option[data-option-index="1"]')
+    );
   });
 
   test('on add series', async function(assert) {
@@ -200,8 +195,8 @@ module('Integration | Component | visualization config/line chart type/dimension
     await render(Template);
 
     //Add first series in dropdown
-    this.$('.add-series .btn-add').click();
-    this.$('.add-series .table-row:first-of-type').click();
+    await click('.add-series .btn-add');
+    await click('.add-series .table-body .table-row');
   });
 
   test('on remove series', async function(assert) {
@@ -221,12 +216,6 @@ module('Integration | Component | visualization config/line chart type/dimension
     });
 
     await render(Template);
-
-    return run(() => {
-      // Delete first series
-      this.$('.navi-icon__delete')
-        .first()
-        .click();
-    });
+    await click('.navi-icon__delete');
   });
 });
