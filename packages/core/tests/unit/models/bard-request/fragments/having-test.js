@@ -19,7 +19,7 @@ module('Unit | Model Fragment | BardRequest - Having', function(hooks) {
       RevenueMetric = MetadataService.getById('metric', 'revenue');
 
       //Add instances to the store
-      return run(() => {
+      run(() => {
         Store.pushPayload('fragments-mock', {
           data: {
             id: 1,
@@ -139,112 +139,110 @@ module('Unit | Model Fragment | BardRequest - Having', function(hooks) {
     );
   });
 
-  test('Computed values', function(assert) {
+  test('Computed values', async function(assert) {
     assert.expect(3);
 
-    return settled().then(() => {
-      return run(() => {
-        let mockModel = Store.peekRecord('fragments-mock', 1);
+    await settled();
+    run(() => {
+      let mockModel = Store.peekRecord('fragments-mock', 1);
 
-        assert.deepEqual(
-          mockModel
-            .get('having')
-            .objectAt(0)
-            .get('values'),
-          [100],
-          'Values as fetched from the Store'
-        );
+      assert.deepEqual(
+        mockModel
+          .get('having')
+          .objectAt(0)
+          .get('values'),
+        [100],
+        'Values as fetched from the Store'
+      );
 
-        assert.deepEqual(
-          mockModel
-            .get('having')
-            .objectAt(0)
-            .get('value'),
-          100,
-          'Value computed from values'
-        );
+      assert.deepEqual(
+        mockModel
+          .get('having')
+          .objectAt(0)
+          .get('value'),
+        100,
+        'Value computed from values'
+      );
 
-        mockModel.set('having.firstObject.value', 200);
+      mockModel.set('having.firstObject.value', 200);
 
-        assert.deepEqual(
-          mockModel
-            .get('having')
-            .objectAt(0)
-            .get('values'),
-          [200],
-          'Values set from the value property'
-        );
-      });
+      assert.deepEqual(
+        mockModel
+          .get('having')
+          .objectAt(0)
+          .get('values'),
+        [200],
+        'Values set from the value property'
+      );
     });
   });
 
-  test('Validations', function(assert) {
+  test('Validations', async function(assert) {
     assert.expect(14);
 
-    return settled().then(() => {
-      let having = run(function() {
-        return Store.peekRecord('fragments-mock', 1)
-          .get('having')
-          .objectAt(0);
-      });
+    await settled();
+    let having = run(function() {
+      return Store.peekRecord('fragments-mock', 1)
+        .get('having')
+        .objectAt(0);
+    });
 
-      having.validate().then(({ validations }) => {
-        assert.ok(validations.get('isValid'), 'Having is valid');
-        assert.equal(validations.get('messages').length, 0, 'There are no validation errors');
-      });
+    having.validate().then(({ validations }) => {
+      assert.ok(validations.get('isValid'), 'Having is valid');
+      assert.equal(validations.get('messages').length, 0, 'There are no validation errors');
+    });
 
-      having.set('metric', null);
-      having.validate().then(({ validations }) => {
-        assert.ok(!validations.get('isValid'), 'Having is invalid');
+    having.set('metric', null);
+    having.validate().then(({ validations }) => {
+      assert.ok(!validations.get('isValid'), 'Having is invalid');
 
-        assert.equal(validations.get('messages').length, 1, 'There is one validation errors');
+      assert.equal(validations.get('messages').length, 1, 'There is one validation errors');
 
-        assert.equal(
-          validations.get('messages').objectAt(0),
-          'The metric field in the having cannot be empty',
-          'Metric cannot be empty is a part of the error messages'
-        );
-      });
+      assert.equal(
+        validations.get('messages').objectAt(0),
+        'The metric field in the having cannot be empty',
+        'Metric cannot be empty is a part of the error messages'
+      );
+    });
 
-      having.set('operator', undefined);
-      having.validate().then(({ validations }) => {
-        assert.ok(!validations.get('isValid'), 'Having is invalid');
+    having.set('operator', undefined);
+    having.validate().then(({ validations }) => {
+      assert.ok(!validations.get('isValid'), 'Having is invalid');
 
-        assert.equal(validations.get('messages').length, 2, 'There are two validation errors');
+      assert.equal(validations.get('messages').length, 2, 'There are two validation errors');
 
-        assert.equal(
-          validations.get('messages').objectAt(1),
-          'The operator field in the having cannot be empty',
-          'Operator cannot be empty is a part of the error messages'
-        );
-      });
+      assert.equal(
+        validations.get('messages').objectAt(1),
+        'The operator field in the having cannot be empty',
+        'Operator cannot be empty is a part of the error messages'
+      );
+    });
 
-      having.set('values', []);
-      having.validate().then(({ validations }) => {
-        assert.ok(!validations.get('isValid'), 'Having is invalid');
+    having.set('values', []);
+    having.validate().then(({ validations }) => {
+      assert.ok(!validations.get('isValid'), 'Having is invalid');
 
-        assert.equal(validations.get('messages').length, 3, 'There are three validation errors');
+      assert.equal(validations.get('messages').length, 3, 'There are three validation errors');
 
-        assert.equal(
-          validations.get('messages').objectAt(2),
-          'The values field in the having cannot be empty',
-          'value should have some value assigned'
-        );
-      });
+      assert.equal(
+        validations.get('messages').objectAt(2),
+        'The values field in the having cannot be empty',
+        'value should have some value assigned'
+      );
+    });
 
-      having.set('metric', { metric: { longName: 'Ad Clicks' }, parameters: {} });
-      having.set('values', ['foo']);
-      having.validate().then(({ validations }) => {
-        assert.ok(!validations.get('isValid'), 'Having is invalid');
+    having.set('metric', { metric: { longName: 'Ad Clicks' }, parameters: {} });
+    having.set('values', ['foo']);
+    having.validate().then(({ validations }) => {
+      assert.ok(!validations.get('isValid'), 'Having is invalid');
 
-        assert.equal(validations.get('messages').length, 2, 'There are two validation errors');
+      assert.equal(validations.get('messages').length, 2, 'There are two validation errors');
 
-        assert.equal(
-          validations.get('messages').objectAt(1),
-          'Ad Clicks filter must be a number',
-          'Having value should be numeric'
-        );
-      });
+      assert.equal(
+        validations.get('messages').objectAt(1),
+        'Ad Clicks filter must be a number',
+        'Having value should be numeric'
+      );
     });
   });
 });

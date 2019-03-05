@@ -4,10 +4,8 @@
  */
 
 import DS from 'ember-data';
-import MF from 'model-fragments';
+import Fragment from 'ember-data-model-fragments/fragment';
 import { validator, buildValidations } from 'ember-cp-validations';
-
-const { Fragment } = MF;
 
 const Validations = buildValidations({
   dimension: validator('presence', {

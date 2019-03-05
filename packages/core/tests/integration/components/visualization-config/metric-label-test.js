@@ -1,7 +1,7 @@
 import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find } from '@ember/test-helpers';
+import { render, find, fillIn, blur } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 let Template = hbs`
@@ -52,8 +52,8 @@ module('Integration | Component | visualization config/metric-label', function(h
     await render(Template);
 
     run(() => {
-      $('.number-format-selector__format-input').val('foo');
-      $('.number-format-selector__format-input').focusout();
+      fillIn('.number-format-selector__format-input', 'foo');
+      blur('.number-format-selector__format-input');
     });
   });
 
@@ -67,8 +67,8 @@ module('Integration | Component | visualization config/metric-label', function(h
     await render(Template);
 
     run(() => {
-      $('.metric-label-config__description-input').val('foo');
-      $('.metric-label-config__description-input').focusout();
+      fillIn('.metric-label-config__description-input', 'foo');
+      blur('.metric-label-config__description-input');
     });
   });
 });

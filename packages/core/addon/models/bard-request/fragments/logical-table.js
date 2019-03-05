@@ -6,11 +6,9 @@
 import { A } from '@ember/array';
 
 import { set, get, computed } from '@ember/object';
-import MF from 'model-fragments';
+import Fragment from 'ember-data-model-fragments/fragment';
 import DS from 'ember-data';
 import { validator, buildValidations } from 'ember-cp-validations';
-
-const { Fragment } = MF;
 
 const Validations = buildValidations({
   table: validator('presence', {

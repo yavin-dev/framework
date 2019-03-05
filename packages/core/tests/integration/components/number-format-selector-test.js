@@ -1,7 +1,7 @@
 import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, settled } from '@ember/test-helpers';
+import { render, settled, click, fillIn, blur } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 let Template = hbs`
@@ -27,8 +27,8 @@ module('Integration | Component | number format selector', function(hooks) {
 
     await render(Template);
 
-    run(() => {
-      $('.number-format-selector__radio-number input').click();
+    run(async () => {
+      await click('.number-format-selector__radio-number input');
     });
   });
 
@@ -41,8 +41,8 @@ module('Integration | Component | number format selector', function(hooks) {
 
     await render(Template);
 
-    run(() => {
-      $('.number-format-selector__radio-custom input').click();
+    run(async () => {
+      await click('.number-format-selector__radio-custom input');
     });
   });
 
@@ -52,27 +52,25 @@ module('Integration | Component | number format selector', function(hooks) {
     await render(Template);
 
     run(() => {
-      $('.number-format-selector__format-input').val('$0,0[.]00a');
-      $('.number-format-selector__format-input').focusout();
+      fillIn('.number-format-selector__format-input', '$0,0[.]00a');
+      blur('.number-format-selector__format-input');
     });
 
-    return settled().then(() => {
-      assert.ok(
-        $('.number-format-selector__radio-custom input').prop('checked'),
-        'custom format correctly highlighted when user enters custom format'
-      );
+    await settled();
 
-      run(() => {
-        $('.number-format-selector__format-input').val('0,0.00');
-        $('.number-format-selector__format-input').focusout();
-      });
+    assert
+      .dom('.number-format-selector__radio-custom input')
+      .isChecked('custom format correctly highlighted when user enters custom format');
 
-      return settled().then(() => {
-        assert.ok(
-          $('.number-format-selector__radio-number input').prop('checked'),
-          'number format correctly highlighted when user enters number format'
-        );
-      });
+    run(() => {
+      fillIn('.number-format-selector__format-input', '0,0.00');
+      blur('.number-format-selector__format-input');
     });
+
+    await settled();
+
+    assert
+      .dom('.number-format-selector__radio-number input')
+      .isChecked('number format correctly highlighted when user enters number format');
   });
 });

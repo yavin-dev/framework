@@ -35,77 +35,75 @@ module('Unit | Model Fragment | BardRequest - Dimension', function(hooks) {
     teardownMock();
   });
 
-  test('Model using the Dimension Fragment', function(assert) {
+  test('Model using the Dimension Fragment', async function(assert) {
     assert.expect(3);
 
     let mockModel;
 
-    return settled().then(() => {
-      run(() => {
-        mockModel = Store.peekRecord('fragments-mock', 1);
+    await settled();
+    run(() => {
+      mockModel = Store.peekRecord('fragments-mock', 1);
 
-        /* == Getter Method == */
-        assert.equal(
-          mockModel
-            .get('dimensions')
-            .objectAt(0)
-            .get('dimension.longName'),
-          'Age',
-          'The property Dimension with id `age` was deserialized correctly with the longName `Age`'
-        );
-
-        /* == Setter Method == */
-        mockModel
-          .get('dimensions')
-          .objectAt(0)
-          .set('dimension', MetadataService.getById('dimension', 'loginState'));
-      });
-
+      /* == Getter Method == */
       assert.equal(
         mockModel
           .get('dimensions')
           .objectAt(0)
           .get('dimension.longName'),
-        'Logged-in State',
-        'The property dimension was set to `Login State` using the setter'
+        'Age',
+        'The property Dimension with id `age` was deserialized correctly with the longName `Age`'
       );
 
-      /* == Serialize Method == */
-      assert.deepEqual(
-        mockModel.serialize().data.attributes.dimensions,
-        [{ dimension: 'loginState' }],
-        'The model object was serialized correctly'
-      );
+      /* == Setter Method == */
+      mockModel
+        .get('dimensions')
+        .objectAt(0)
+        .set('dimension', MetadataService.getById('dimension', 'loginState'));
     });
+
+    assert.equal(
+      mockModel
+        .get('dimensions')
+        .objectAt(0)
+        .get('dimension.longName'),
+      'Logged-in State',
+      'The property dimension was set to `Login State` using the setter'
+    );
+
+    /* == Serialize Method == */
+    assert.deepEqual(
+      mockModel.serialize().data.attributes.dimensions,
+      [{ dimension: 'loginState' }],
+      'The model object was serialized correctly'
+    );
   });
 
-  test('Validations', function(assert) {
+  test('Validations', async function(assert) {
     assert.expect(5);
 
-    return settled().then(() => {
-      let dimension = run(() => {
-        return Store.peekRecord('fragments-mock', 1)
-          .get('dimensions')
-          .objectAt(0);
-      });
+    await settled();
+    let dimension = run(() => {
+      return Store.peekRecord('fragments-mock', 1)
+        .get('dimensions')
+        .objectAt(0);
+    });
 
-      dimension.validate().then(({ validations }) => {
-        assert.ok(validations.get('isValid'), 'Dimension is valid');
-        assert.equal(validations.get('messages').length, 0, 'There are no validation errors');
-      });
+    dimension.validate().then(({ validations }) => {
+      assert.ok(validations.get('isValid'), 'Dimension is valid');
+      assert.equal(validations.get('messages').length, 0, 'There are no validation errors');
+    });
 
-      dimension.set('dimension', null);
-      dimension.validate().then(({ validations }) => {
-        assert.ok(!validations.get('isValid'), 'Dimension is invalid');
+    dimension.set('dimension', null);
+    dimension.validate().then(({ validations }) => {
+      assert.ok(!validations.get('isValid'), 'Dimension is invalid');
 
-        assert.equal(validations.get('messages').length, 1, 'There is one validation errors');
+      assert.equal(validations.get('messages').length, 1, 'There is one validation errors');
 
-        assert.equal(
-          validations.get('messages').objectAt(0),
-          'The dimension field cannot be empty',
-          'Dimension cannot be empty is a part of the error messages'
-        );
-      });
+      assert.equal(
+        validations.get('messages').objectAt(0),
+        'The dimension field cannot be empty',
+        'Dimension cannot be empty is a part of the error messages'
+      );
     });
   });
 });

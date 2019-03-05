@@ -4,36 +4,35 @@
  */
 
 import DS from 'ember-data';
-import MF from 'model-fragments';
+import Fragment from 'ember-data-model-fragments/fragment';
 import { validator, buildValidations } from 'ember-cp-validations';
 import { computed, get, set } from '@ember/object';
 import { inject as service } from '@ember/service';
 import { A as arr } from '@ember/array';
 import { resolve } from 'rsvp';
 
-const { Fragment } = MF,
-  Validations = buildValidations({
-    dimension: validator('presence', {
-      presence: true,
-      message: 'The dimension field in the filter cannot be empty'
+const Validations = buildValidations({
+  dimension: validator('presence', {
+    presence: true,
+    message: 'The dimension field in the filter cannot be empty'
+  }),
+  operator: validator('presence', {
+    presence: true,
+    message: 'The operator field in the filter cannot be empty'
+  }),
+  rawValues: [
+    validator('length', {
+      min: 1,
+      message() {
+        let dimensionName = get(this, 'model.dimension.longName');
+        return `${dimensionName} filter needs at least one value`;
+      }
     }),
-    operator: validator('presence', {
-      presence: true,
-      message: 'The operator field in the filter cannot be empty'
-    }),
-    rawValues: [
-      validator('length', {
-        min: 1,
-        message() {
-          let dimensionName = get(this, 'model.dimension.longName');
-          return `${dimensionName} filter needs at least one value`;
-        }
-      }),
-      validator('array-empty-value', {
-        message: 'A filter cannot have any empty values'
-      })
-    ]
-  });
+    validator('array-empty-value', {
+      message: 'A filter cannot have any empty values'
+    })
+  ]
+});
 
 export default Fragment.extend(Validations, {
   dimension: DS.attr('dimension'),

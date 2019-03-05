@@ -6,9 +6,9 @@
 import { set, get } from '@ember/object';
 
 import DS from 'ember-data';
-import MF from 'model-fragments';
+import Fragment from 'ember-data-model-fragments/fragment';
 
-export default MF.Fragment.extend({
+export default Fragment.extend({
   type: DS.attr('string'),
   version: DS.attr('number'),
   metadata: DS.attr(),

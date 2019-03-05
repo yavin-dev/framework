@@ -8,11 +8,10 @@ import { A as array } from '@ember/array';
 import { set, get, computed } from '@ember/object';
 
 import DS from 'ember-data';
-import MF from 'model-fragments';
+import { fragment } from 'ember-data-model-fragments/attributes';
+import Fragment from 'ember-data-model-fragments/fragment';
 import { validator, buildValidations } from 'ember-cp-validations';
 import { metricFormat } from 'navi-data/helpers/metric-format';
-
-const { Fragment, fragment } = MF;
 
 const Validations = buildValidations({
   metric: validator('presence', {

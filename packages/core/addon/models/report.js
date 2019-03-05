@@ -8,7 +8,7 @@ import { inject as service } from '@ember/service';
 import { A as arr } from '@ember/array';
 import { computed, get } from '@ember/object';
 import DS from 'ember-data';
-import MF from 'model-fragments';
+import { fragment } from 'ember-data-model-fragments/attributes';
 import DeliverableItem from 'navi-core/models/deliverable-item';
 import { v1 } from 'ember-uuid';
 import hasVisualization from 'navi-core/mixins/models/has-visualization';
@@ -32,7 +32,7 @@ export default DeliverableItem.extend(hasVisualization, Validations, {
   createdOn: DS.attr('moment'),
   updatedOn: DS.attr('moment'),
   author: DS.belongsTo('user', { async: true }),
-  request: MF.fragment('bard-request/request', { defaultValue: {} }),
+  request: fragment('bard-request/request', { defaultValue: {} }),
 
   /**
    * @property {String} tempId - uuid for unsaved records

@@ -49,13 +49,6 @@ module('helper:serialize', function(hooks) {
     });
   });
 
-  test("it throws an assertion if it's not serializable model", function(assert) {
-    assert.expectAssertion(async () => {
-      this.set('model', { some: 'object', will: 'fail' });
-      await render(hbs`{{serialize model}}`);
-    });
-  });
-
   test('it returns with undefined or null', async function(assert) {
     assert.expect(2);
     this.set('model', null);

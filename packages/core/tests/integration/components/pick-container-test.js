@@ -203,7 +203,7 @@ module('Integration | Component | pick container', function(hooks) {
 
     assert.dom('.pick-form').isVisible('Form is open when isFormOpen=true is set');
 
-    /* == Click inside form == */
+    /* == Click inside fo?rm == */
     await click('#inside-form');
     assert.dom('.pick-form').isVisible('Form is still open when clicking inside the form');
 

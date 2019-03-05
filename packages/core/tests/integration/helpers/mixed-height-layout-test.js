@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render } from '@ember/test-helpers';
+import { render, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { formatItemDimension } from 'navi-core/helpers/mixed-height-layout';
 import cloneDeep from 'lodash/cloneDeep';
@@ -26,7 +26,7 @@ module('mixed height layout', function(hooks) {
     await render(TEMPLATE);
 
     assert.deepEqual(
-      findItems(this),
+      findItems(),
       [
         { height: 10, left: 0, top: 0, width: 10 },
         { height: 10, left: 0, top: 10, width: 10 },
@@ -43,7 +43,7 @@ module('mixed height layout', function(hooks) {
     this.set('rowDimensions', newRowDimensions);
 
     assert.deepEqual(
-      findItems(this),
+      findItems(),
       [
         { height: 20, left: 0, top: 0, width: 10 },
         { height: 10, left: 0, top: 20, width: 10 },
@@ -55,23 +55,18 @@ module('mixed height layout', function(hooks) {
     );
   });
 
-  function findItems(context) {
+  function findItems() {
     // scrollable content rows
-    let selector = '.mixed-height-layout-test > div > div > div > div';
+    return findAll('.mixed-height-layout-test > div > div > div > div').map(element => {
+      let parentRect = element.parentElement.getBoundingClientRect(),
+        elementRect = element.getBoundingClientRect();
 
-    return context
-      .$(selector)
-      .toArray()
-      .map(element => {
-        let parentRect = element.parentElement.getBoundingClientRect(),
-          elementRect = element.getBoundingClientRect();
-
-        return {
-          left: elementRect.left - parentRect.left,
-          top: elementRect.top - parentRect.top,
-          width: elementRect.width,
-          height: elementRect.height
-        };
-      });
+      return {
+        left: elementRect.left - parentRect.left,
+        top: elementRect.top - parentRect.top,
+        width: elementRect.width,
+        height: elementRect.height
+      };
+    });
   }
 });

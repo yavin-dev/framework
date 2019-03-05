@@ -7,10 +7,10 @@ import { on } from '@ember/object/evented';
 
 import Mixin from '@ember/object/mixin';
 import { set, get } from '@ember/object';
-import MF from 'model-fragments';
+import { fragment } from 'ember-data-model-fragments/attributes';
 
 export default Mixin.create({
-  visualization: MF.fragment('visualization', { polymorphic: true }),
+  visualization: fragment('visualization', { polymorphic: true }),
 
   /**
    * Caches the persisted visualization type

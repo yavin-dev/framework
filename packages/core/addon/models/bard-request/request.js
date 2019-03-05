@@ -3,7 +3,6 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import DS from 'ember-data';
-import MF from 'model-fragments';
 import isEqual from 'lodash/isEqual';
 import { validator, buildValidations } from 'ember-cp-validations';
 import Interval from 'navi-core/utils/classes/interval';
@@ -14,8 +13,8 @@ import { isEmpty } from '@ember/utils';
 import { inject as service } from '@ember/service';
 import { copy } from 'ember-copy';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
-
-const { Fragment, fragment, fragmentArray } = MF;
+import Fragment from 'ember-data-model-fragments/fragment';
+import { fragment, fragmentArray } from 'ember-data-model-fragments/attributes';
 
 const Validations = buildValidations({
   logicalTable: [

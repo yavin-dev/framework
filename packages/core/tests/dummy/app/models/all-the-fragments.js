@@ -1,11 +1,11 @@
 import DS from 'ember-data';
-import MF from 'model-fragments';
+import { fragment } from 'ember-data-model-fragments/attributes';
 
 export default DS.Model.extend({
-  lineChart: MF.fragment('line-chart', { defaultValue: {} }),
-  barChart: MF.fragment('bar-chart', { defaultValue: {} }),
-  table: MF.fragment('table', { defaultValue: {} }),
-  goalGauge: MF.fragment('goalGauge', { defaultValue: {} }),
-  metricLabel: MF.fragment('metricLabel', { defaultValue: {} }),
-  pieChart: MF.fragment('pie-chart', { defaultValue: {} })
+  lineChart: fragment('line-chart', { defaultValue: {} }),
+  barChart: fragment('bar-chart', { defaultValue: {} }),
+  table: fragment('table', { defaultValue: {} }),
+  goalGauge: fragment('goalGauge', { defaultValue: {} }),
+  metricLabel: fragment('metricLabel', { defaultValue: {} }),
+  pieChart: fragment('pie-chart', { defaultValue: {} })
 });
