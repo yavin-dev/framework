@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2019, Yahoo Inc.
+ */
 package com.yahoo.navi.ws.test.integration
 
 import com.yahoo.navi.ws.test.framework.IntegrationTest
@@ -7,10 +10,6 @@ import org.junit.Test
 import org.hamcrest.Matchers.*
 import com.jayway.restassured.RestAssured.given
 
-
-/**
- * Copyright (c) 2019, Yahoo Inc.
- */
 class UserTest: IntegrationTest() {
     private val naviUser1 = "user1"
     private val naviUser2 = "user2"

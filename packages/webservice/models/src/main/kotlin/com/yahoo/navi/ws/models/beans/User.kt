@@ -20,7 +20,7 @@ import javax.persistence.Id
 import javax.persistence.Column
 import javax.persistence.Temporal
 import javax.persistence.TemporalType
-import javax.validation.constraints.Size;
+import javax.validation.constraints.NotBlank
 
 @Entity
 @Table(name="navi_users")
@@ -31,7 +31,7 @@ import javax.validation.constraints.Size;
 @UpdatePermission(expression = "is the same user now")
 class User {
     @get:Id
-    @get:Size(min = 1)
+    @get:NotBlank
     var id: String? = null
 
     @get:Generated(GenerationTime.INSERT)
