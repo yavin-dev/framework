@@ -4,7 +4,6 @@
  */
 
 import { computed } from '@ember/object';
-
 import { makeArray } from '@ember/array';
 
 /**

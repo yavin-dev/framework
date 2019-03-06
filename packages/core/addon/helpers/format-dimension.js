@@ -5,7 +5,6 @@
  * Util for formatting an dimension object as a user readable string
  */
 import Helper from '@ember/component/helper';
-
 import { get } from '@ember/object';
 
 /**

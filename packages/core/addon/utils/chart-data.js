@@ -3,7 +3,6 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { A as arr } from '@ember/array';
-
 import { get } from '@ember/object';
 import DataGroup from 'navi-core/utils/classes/data-group';
 import objectValues from 'lodash/values';

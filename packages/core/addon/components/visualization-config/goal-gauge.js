@@ -10,7 +10,6 @@
  *  }}
  */
 import { alias } from '@ember/object/computed';
-
 import Component from '@ember/component';
 import layout from '../../templates/components/visualization-config/goal-gauge';
 import { get } from '@ember/object';

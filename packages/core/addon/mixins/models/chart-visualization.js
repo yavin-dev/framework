@@ -3,7 +3,6 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Mixin from '@ember/object/mixin';
-
 import { get } from '@ember/object';
 import { topN, maxDataByDimensions } from 'navi-core/utils/data';
 import { canonicalizeMetric } from 'navi-data/utils/metric';

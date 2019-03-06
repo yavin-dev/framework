@@ -4,7 +4,6 @@
  */
 
 import { or } from '@ember/object/computed';
-
 import { A } from '@ember/array';
 import { inject as service } from '@ember/service';
 import { computed, get } from '@ember/object';

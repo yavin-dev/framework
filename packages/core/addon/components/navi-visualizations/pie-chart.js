@@ -10,7 +10,6 @@
  */
 
 import { alias, readOnly } from '@ember/object/computed';
-
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
 import { get, computed } from '@ember/object';

@@ -3,7 +3,6 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { get } from '@ember/object';
-
 import capitalize from 'lodash/capitalize';
 import last from 'lodash/last';
 

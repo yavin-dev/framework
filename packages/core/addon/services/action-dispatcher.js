@@ -6,7 +6,6 @@
  */
 
 import Service from '@ember/service';
-
 import { getOwner } from '@ember/application';
 import { set, getWithDefault, get } from '@ember/object';
 

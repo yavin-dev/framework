@@ -9,7 +9,6 @@
  */
 
 import Component from '@ember/component';
-
 import { get, computed } from '@ember/object';
 import layout from '../templates/components/navi-table-sort-icon';
 

@@ -11,7 +11,6 @@
  */
 
 import Component from '@ember/component';
-
 import { set, get } from '@ember/object';
 import { copy } from '@ember/object/internals';
 import layout from '../../templates/components/visualization-config/pie-chart';

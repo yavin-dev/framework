@@ -12,7 +12,6 @@
 /* globals d3 */
 
 import { alias } from '@ember/object/computed';
-
 import Component from '@ember/component';
 import { computed, get, getWithDefault } from '@ember/object';
 import { guidFor } from '@ember/object/internals';

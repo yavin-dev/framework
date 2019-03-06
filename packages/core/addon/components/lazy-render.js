@@ -14,7 +14,6 @@
  */
 
 import { assert } from '@ember/debug';
-
 import Component from '@ember/component';
 import { computed, set, get } from '@ember/object';
 import $ from 'jquery';

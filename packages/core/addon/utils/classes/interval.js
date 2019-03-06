@@ -4,7 +4,6 @@
  */
 
 import { assert } from '@ember/debug';
-
 import { A } from '@ember/array';
 import moment from 'moment';
 import Duration from './duration';
@@ -14,7 +13,6 @@ import DurationUtils from '../duration-utils';
 
 const CURRENT = 'current';
 const NEXT = 'next';
-
 const MACROS = A([CURRENT, NEXT]);
 
 /**

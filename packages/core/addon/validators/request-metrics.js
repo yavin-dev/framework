@@ -4,7 +4,6 @@
  */
 
 import { get } from '@ember/object';
-
 import BaseValidator from 'ember-cp-validations/validators/base';
 import isEqual from 'lodash/isEqual';
 import { getRequestMetrics } from 'navi-core/utils/chart-data';

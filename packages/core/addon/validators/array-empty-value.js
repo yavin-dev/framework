@@ -4,7 +4,6 @@
  */
 
 import { isArray } from '@ember/array';
-
 import { isPresent } from '@ember/utils';
 import BaseValidator from 'ember-cp-validations/validators/base';
 

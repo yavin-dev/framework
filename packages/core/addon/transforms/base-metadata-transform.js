@@ -4,7 +4,6 @@
  */
 
 import { inject as service } from '@ember/service';
-
 import { get } from '@ember/object';
 import { isArray } from '@ember/array';
 import DS from 'ember-data';

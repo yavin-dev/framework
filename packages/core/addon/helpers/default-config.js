@@ -11,7 +11,6 @@
  *  }}
  */
 import { getOwner } from '@ember/application';
-
 import { assert } from '@ember/debug';
 import { inject as service } from '@ember/service';
 import Helper from '@ember/component/helper';

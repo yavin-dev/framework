@@ -4,7 +4,6 @@
  */
 
 import Service, { inject as service } from '@ember/service';
-
 import { get } from '@ember/object';
 import config from 'ember-get-config';
 

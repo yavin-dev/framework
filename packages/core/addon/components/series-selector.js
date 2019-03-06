@@ -12,7 +12,6 @@
  *   {{/series-selector}}
  */
 import { next } from '@ember/runloop';
-
 import $ from 'jquery';
 import { isBlank } from '@ember/utils';
 import Component from '@ember/component';

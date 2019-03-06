@@ -4,9 +4,7 @@
  */
 
 import { A as array } from '@ember/array';
-
 import { set, get, computed } from '@ember/object';
-
 import DS from 'ember-data';
 import { fragment } from 'ember-data-model-fragments/attributes';
 import Fragment from 'ember-data-model-fragments/fragment';

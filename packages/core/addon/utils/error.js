@@ -3,7 +3,6 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { typeOf } from '@ember/utils';
-
 import { get } from '@ember/object';
 
 const UNKNOWN_ERROR = 'Server Error';

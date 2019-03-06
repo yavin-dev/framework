@@ -4,7 +4,6 @@
  */
 
 import { set, get } from '@ember/object';
-
 import DS from 'ember-data';
 import Fragment from 'ember-data-model-fragments/fragment';
 

@@ -11,7 +11,6 @@
  * }}
  */
 import { readOnly, alias } from '@ember/object/computed';
-
 import layout from '../../templates/components/navi-visualizations/table';
 import { computed, get, set } from '@ember/object';
 import { inject as service } from '@ember/service';

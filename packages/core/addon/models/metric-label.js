@@ -3,7 +3,6 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { readOnly } from '@ember/object/computed';
-
 import { A } from '@ember/array';
 import { get, set } from '@ember/object';
 import VisualizationBase from './visualization';

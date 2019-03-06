@@ -4,7 +4,6 @@
  */
 
 import { capitalize } from '@ember/string';
-
 import { assert } from '@ember/debug';
 
 /**

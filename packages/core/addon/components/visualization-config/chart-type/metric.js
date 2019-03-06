@@ -11,7 +11,6 @@
  */
 
 import { A } from '@ember/array';
-
 import Component from '@ember/component';
 import { set, get, computed } from '@ember/object';
 import { copy } from '@ember/object/internals';

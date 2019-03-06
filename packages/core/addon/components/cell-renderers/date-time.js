@@ -11,7 +11,6 @@
  */
 
 import { alias } from '@ember/object/computed';
-
 import Component from '@ember/component';
 import { get, computed } from '@ember/object';
 import layout from '../../templates/components/cell-renderers/date-time';

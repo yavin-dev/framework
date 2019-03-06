@@ -12,7 +12,6 @@
  */
 
 import { assign } from '@ember/polyfills';
-
 import { A } from '@ember/array';
 import Component from '@ember/component';
 import { set, get, computed } from '@ember/object';

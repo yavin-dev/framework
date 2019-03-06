@@ -4,7 +4,6 @@
  */
 
 import { on } from '@ember/object/evented';
-
 import Mixin from '@ember/object/mixin';
 import { set, get } from '@ember/object';
 import { fragment } from 'ember-data-model-fragments/attributes';

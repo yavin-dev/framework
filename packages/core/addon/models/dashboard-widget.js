@@ -4,7 +4,6 @@
  */
 
 import { get, computed } from '@ember/object';
-
 import DS from 'ember-data';
 import { fragmentArray } from 'ember-data-model-fragments/attributes';
 import { v1 } from 'ember-uuid';

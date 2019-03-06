@@ -17,7 +17,6 @@
  *  }}
  */
 import { next, scheduleOnce } from '@ember/runloop';
-
 import { assign } from '@ember/polyfills';
 import { set, getProperties, get, computed } from '@ember/object';
 import C3Chart from 'ember-c3/components/c3-chart';

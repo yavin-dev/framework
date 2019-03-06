@@ -5,7 +5,6 @@
  * Returns the name of the currently visited route
  */
 import { readOnly } from '@ember/object/computed';
-
 import Helper from '@ember/component/helper';
 import { getOwner } from '@ember/application';
 import { observer, computed, get } from '@ember/object';

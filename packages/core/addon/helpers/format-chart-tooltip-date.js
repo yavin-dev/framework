@@ -3,7 +3,6 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { helper as buildHelper } from '@ember/component/helper';
-
 import { get } from '@ember/object';
 import moment from 'moment';
 

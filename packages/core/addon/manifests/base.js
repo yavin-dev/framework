@@ -7,8 +7,8 @@
  *
  */
 import { assert } from '@ember/debug';
-
 import EmberObject, { get } from '@ember/object';
+
 export default EmberObject.extend({
   /**
    * @property name

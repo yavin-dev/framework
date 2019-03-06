@@ -4,7 +4,6 @@
  */
 
 import { isEmpty } from '@ember/utils';
-
 import BaseValidator from 'ember-cp-validations/validators/base';
 
 export default BaseValidator.extend({

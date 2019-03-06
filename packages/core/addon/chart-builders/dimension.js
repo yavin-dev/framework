@@ -23,7 +23,6 @@
  *}
  */
 import Mixin from '@ember/object/mixin';
-
 import EmberObject, { set, get, computed } from '@ember/object';
 import moment from 'moment';
 import DataGroup from 'navi-core/utils/classes/data-group';

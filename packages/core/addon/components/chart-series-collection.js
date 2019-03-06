@@ -13,7 +13,6 @@
  *   }}
  */
 import Component from '@ember/component';
-
 import { get, computed } from '@ember/object';
 import layout from '../templates/components/chart-series-collection';
 import { computedSetDiff } from 'navi-core/utils/custom-computed-properties';

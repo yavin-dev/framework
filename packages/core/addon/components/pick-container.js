@@ -19,7 +19,6 @@
  *   {{/pick-container}}
  */
 import { assert } from '@ember/debug';
-
 import { assign } from '@ember/polyfills';
 import { copy } from '@ember/object/internals';
 import { get, computed, observer } from '@ember/object';

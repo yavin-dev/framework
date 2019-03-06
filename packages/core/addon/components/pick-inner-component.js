@@ -5,7 +5,6 @@
  * Base Class for child components
  */
 import { camelize } from '@ember/string';
-
 import { assert } from '@ember/debug';
 import { computed } from '@ember/object';
 import Component from '@ember/component';
