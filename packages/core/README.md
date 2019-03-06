@@ -1,6 +1,8 @@
 # navi-core
 
-# Library of common logic, components, and styles for navi
+Library of common logic, components, and styles for navi
+
+## Installation
 
 - Install Addon
   - `ember install navi-core`
@@ -8,23 +10,15 @@
 ## Requirements
 
 - node >= 4
-  Compatibility
 
----
+## Running Tests
 
-- Ember.js v2.18 or above
-- Ember CLI v2.13 or above
+- `npm test` (Runs `ember try:each` to test your addon against multiple Ember versions)
+- `ember test`
+- `ember test --server`
 
-## Installation
+## Building
 
-```
-ember install my-addon
-```
+- `ember build`
 
-## Usage
-
-[Longer description of how to use the addon in apps.]
-
-## License
-
-This project is licensed under the [MIT License](LICENSE.md).
+For more information on using ember-cli, visit [https://ember-cli.com/](https://ember-cli.com/).

@@ -4,8 +4,8 @@
  */
 
 import EmberObject from '@ember/object';
-
 import Ember from 'ember';
+
 export default EmberObject.extend(Ember.ActionHandler, {
   /**
    * @property {Object} actions - object of functions, keyed by name to

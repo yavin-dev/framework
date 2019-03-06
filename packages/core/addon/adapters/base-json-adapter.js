@@ -4,12 +4,10 @@
  */
 
 import { camelize } from '@ember/string';
-
 import { computed, getWithDefault, get } from '@ember/object';
-
-import Ember from 'ember';
 import DS from 'ember-data';
 import config from 'ember-get-config';
+import { pluralize } from 'ember-inflector';
 
 export default DS.JSONAPIAdapter.extend({
   /**
@@ -55,7 +53,7 @@ export default DS.JSONAPIAdapter.extend({
   findMany(store, type, ids, snapshots) {
     // Match our API's format for filters since it differs from Ember Data default
     let url = this.buildURL(type.modelName, ids, snapshots, 'findMany'),
-      filterRoot = Ember.Inflector.inflector.pluralize(type.modelName),
+      filterRoot = pluralize(type.modelName),
       filterId = `${filterRoot}.id`;
 
     return this.ajax(url, 'GET', {
@@ -92,6 +90,6 @@ export default DS.JSONAPIAdapter.extend({
    * @returns {String} transformed name for type
    */
   pathForType(type) {
-    return Ember.String.pluralize(camelize(type));
+    return pluralize(camelize(type));
   }
 });
