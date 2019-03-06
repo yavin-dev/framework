@@ -27,16 +27,16 @@ test('model hook', function(assert) {
   });
 
   /* == Persisted id == */
-  let model = route.model({ widgetId: 1 });
+  let model = route.model({ widget_id: 1 });
   assert.equal(model.id, 1, 'Route model looks up widget based on id');
 
   /* == Temp id == */
-  model = route.model({ widgetId: '123-456' });
+  model = route.model({ widget_id: '123-456' });
   assert.equal(model.tempId, '123-456', 'Route can find widgets based on temp id');
 
   /* == Error widget not found == */
   try {
-    route.model({ widgetId: 10 });
+    route.model({ widget_id: 10 });
   } catch (error) {
     assert.equal(
       error.message,

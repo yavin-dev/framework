@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Blueprint utility to auto-insert the custom reports routes after installing the addon
@@ -21,7 +21,7 @@ module.exports = {
         this.route('new');" +
       EOL +
       "\
-        this.route('report', { path: '/:reportId'}, function() {" +
+        this.route('report', { path: '/:report_id'}, function() {" +
       EOL +
       "\
             this.route('view');" +
@@ -49,7 +49,7 @@ module.exports = {
       "\tthis.route('reportCollections', function() {" +
       EOL +
       "\
-        this.route('collection', {path: '/:collectionId'})" +
+        this.route('collection', {path: '/:collection_id'})" +
       EOL +
       '\
     });' +
@@ -65,7 +65,7 @@ module.exports = {
             this.route('new');" +
       EOL +
       "\
-            this.route('report', { path: '/:reportId'}, function() {" +
+            this.route('report', { path: '/:report_id'}, function() {" +
       EOL +
       "\
                 this.route('view');" +

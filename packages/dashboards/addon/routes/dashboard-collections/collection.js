@@ -1,18 +1,18 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import Ember from 'ember';
+import Route from '@ember/routing/route';
 
-export default Ember.Route.extend({
+export default Route.extend({
   /**
    * @method model
    * @override
    *
    * Makes an ajax request to retrieve relevant dashbords in the collection
    */
-  model({ collectionId }) {
-    return this.store.find('dashboard-collection', collectionId);
+  model({ collection_id }) {
+    return this.store.find('dashboard-collection', collection_id);
   }
 });

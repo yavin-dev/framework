@@ -4,7 +4,7 @@ import { camelize } from '@ember/string';
 export default JSONAPISerializer.extend({
   alwaysIncludeLinkageData: true,
 
-  keyForAttribute: attr => camelize(attr),
+  keyForAttribute: attr => attr,
 
   keyForModel: attr => camelize(attr),
 

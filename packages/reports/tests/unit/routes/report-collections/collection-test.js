@@ -12,6 +12,7 @@ moduleFor('route:report-collections/collection', 'Unit | Route | report collecti
     'adapter:report',
     'adapter:user',
     'model:report',
+    'model:deliverable-item',
     'model:user',
     'transform:array',
     'transform:fragment-array',
@@ -24,6 +25,8 @@ moduleFor('route:report-collections/collection', 'Unit | Route | report collecti
     'validator:request-metrics',
     'validator:request-metric-exist',
     'validator:request-dimension-order',
+    'validator:request-time-grain',
+    'validator:request-filters',
     'model:bard-request/request',
     'model:bard-request/fragments/dimension',
     'model:bard-request/fragments/filter',
@@ -74,18 +77,18 @@ test('model', function(assert) {
   assert.expect(4);
 
   return Ember.run(() => {
-    let params = { collectionId: 1 },
+    let params = { collection_id: 1 },
       route = this.subject(),
       modelPromise = route.model(params);
 
     assert.ok(modelPromise.then, 'Route returns a promise in the model hook');
 
     return modelPromise.then(model => {
-      assert.equal(model.id, params.collectionId, 'The requested collection is retrieved');
+      assert.equal(model.id, params.collection_id, 'The requested collection is retrieved');
 
       assert.equal(
         model.get('title'),
-        `Report Collection ${params.collectionId}`,
+        `Report Collection ${params.collection_id}`,
         'The requested collection is retrieved'
       );
 

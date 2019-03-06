@@ -12,19 +12,19 @@ Router.map(function() {
   });
 
   this.route('dashboardCollections', function() {
-    this.route('collection', { path: '/:collectionId' });
+    this.route('collection', { path: '/:collection_id' });
   });
   this.route('dashboards', function() {
     this.route('new');
 
-    this.route('dashboard', { path: '/:dashboardId' }, function() {
+    this.route('dashboard', { path: '/:dashboard_id' }, function() {
       this.route('clone');
       this.route('view');
 
       this.route('widgets', function() {
         this.route('add');
         this.route('new');
-        this.route('widget', { path: '/:widgetId' }, function() {
+        this.route('widget', { path: '/:widget_id' }, function() {
           this.route('clone-to-report');
           this.route('edit');
           this.route('view');
@@ -36,14 +36,14 @@ Router.map(function() {
 
   this.route('print', function() {
     this.route('dashboards', function() {
-      this.route('dashboard', { path: '/:dashboardId' }, function() {
+      this.route('dashboard', { path: '/:dashboard_id' }, function() {
         this.route('view');
       });
     });
   });
 
   this.route('reports', function() {
-    this.route('report', { path: '/:reportId' }, function() {
+    this.route('report', { path: '/:report_id' }, function() {
       this.route('view');
       this.route('clone');
       this.route('edit');

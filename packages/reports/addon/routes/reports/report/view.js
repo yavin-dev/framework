@@ -1,24 +1,25 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import Ember from 'ember';
 import isEqual from 'lodash/isEqual';
+import { get, set, computed } from '@ember/object';
+import Route from '@ember/routing/route';
+import { inject as service } from '@ember/service';
 import merge from 'lodash/merge';
 import { isForbiddenError } from 'ember-ajax/errors';
+import { reject } from 'rsvp';
 
-const { get, set } = Ember;
-
-export default Ember.Route.extend({
+export default Route.extend({
   /**
    * @property {Service} facts - instance of bard facts service
    */
-  facts: Ember.inject.service('bard-facts'),
+  facts: service('bard-facts'),
 
   /**
    * @property {Service} naviVisualizations - instance of navi visualizations service
    */
-  naviVisualizations: Ember.inject.service(),
+  naviVisualizations: service(),
 
   /**
    * @property {Object} requestOptions - options for bard request
@@ -32,7 +33,7 @@ export default Ember.Route.extend({
   /**
    * @property {Object} parentModel - object containing request to view
    */
-  parentModel: Ember.computed(function() {
+  parentModel: computed(function() {
     return this.modelFor('reports.report');
   }).volatile(),
 
@@ -64,7 +65,7 @@ export default Ember.Route.extend({
         if (isForbiddenError(response)) {
           this.transitionTo('reports.report.unauthorized', get(report, 'id'));
         } else {
-          return Ember.RSVP.reject(response);
+          return reject(response);
         }
       });
   },
@@ -136,7 +137,12 @@ export default Ember.Route.extend({
      * @action loading
      */
     loading(transition) {
-      transition.send('setReportState', 'running');
+      /**
+       * false is sent as the first argument due to a change in router_js
+       * TODO: Remove false if this is ever removed
+       * https://github.com/emberjs/ember.js/issues/17545
+       */
+      transition.send(false, 'setReportState', 'running');
       return true; // allows the loading template to be shown
     },
 
@@ -144,7 +150,12 @@ export default Ember.Route.extend({
      * @action error
      */
     error(error, transition) {
-      transition.send('setReportState', 'failed');
+      /**
+       * false is sent as the first argument due to a change in router_js
+       * TODO: Remove false if this is ever removed
+       * https://github.com/emberjs/ember.js/issues/17545
+       */
+      transition.send(false, 'setReportState', 'failed');
       return true; // allows the error template to be shown
     },
 

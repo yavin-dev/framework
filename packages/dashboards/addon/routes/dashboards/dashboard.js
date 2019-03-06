@@ -1,17 +1,19 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
+import { computed, get, set, setProperties } from '@ember/object';
+import { A as arr, makeArray } from '@ember/array';
+import { isEmpty } from '@ember/utils';
+import { run } from '@ember/runloop';
+import Route from '@ember/routing/route';
+import { inject as service } from '@ember/service';
 
-import Ember from 'ember';
-
-const { computed, get, makeArray, run, set, setProperties } = Ember;
-
-export default Ember.Route.extend({
+export default Route.extend({
   /**
    * @property {Service} user
    */
-  user: Ember.inject.service(),
+  user: service(),
 
   /**
    * @property {DS.Model} currentDashboard - current dashboard model
@@ -23,7 +25,7 @@ export default Ember.Route.extend({
   /**
    * @property {Service} naviNotifications
    */
-  naviNotifications: Ember.inject.service(),
+  naviNotifications: service(),
 
   /**
    * Makes an ajax request to retrieve relevant widgets in the dashboard
@@ -35,8 +37,8 @@ export default Ember.Route.extend({
    * @returns {Promise} Promise that resolves to a dashboard model
    *
    */
-  model({ dashboardId }) {
-    return get(this, 'store').find('dashboard', dashboardId);
+  model({ dashboard_id }) {
+    return get(this, 'store').find('dashboard', dashboard_id);
   },
 
   /**
@@ -50,7 +52,7 @@ export default Ember.Route.extend({
    */
   _updateLayout(updatedWidgets) {
     let dashboard = get(this, 'currentDashboard'),
-      layout = Ember.A(get(dashboard, 'presentation.layout'));
+      layout = arr(get(dashboard, 'presentation.layout'));
 
     makeArray(updatedWidgets).forEach(updatedWidget => {
       let modelWidget = layout.findBy('widgetId', Number(updatedWidget.id));
@@ -138,7 +140,7 @@ export default Ember.Route.extend({
 
           // Remove layout reference
           let presentation = get(this, 'currentDashboard.presentation'),
-            newLayout = Ember.A(get(presentation, 'layout')).rejectBy('widgetId', Number(id));
+            newLayout = arr(get(presentation, 'layout')).rejectBy('widgetId', Number(id));
           set(presentation, 'layout', newLayout);
           this.send('saveDashboard');
 
@@ -182,7 +184,7 @@ export default Ember.Route.extend({
      * @param {String} title
      */
     updateTitle(title) {
-      if (!Ember.isEmpty(title)) {
+      if (!isEmpty(title)) {
         let dashboard = get(this, 'currentDashboard');
         set(dashboard, 'title', title);
         this.send('saveDashboard');
