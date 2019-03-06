@@ -141,6 +141,8 @@ export default C3Chart.extend({
   chart: computed('_config', '_chart', function() {
     if (!get(this, '_chart')) {
       let config = get(this, '_config');
+
+      // eslint-disable-next-line ember/no-side-effects
       set(this, '_chart', c3.generate(config));
     }
     return get(this, '_chart');
