@@ -4,9 +4,9 @@
  *
  * Notification service
  */
-import Ember from 'ember';
+import Service, { inject as service } from '@ember/service';
 
-const { get } = Ember;
+import { get } from '@ember/object';
 
 const TIMEOUTS = {
   short: 3000,
@@ -14,11 +14,11 @@ const TIMEOUTS = {
   long: 50000
 };
 
-export default Ember.Service.extend({
+export default Service.extend({
   /**
    * {Ember.Service} notificationService
    */
-  notificationService: Ember.inject.service('flash-messages'),
+  notificationService: service('flash-messages'),
 
   /**
    * Calls the add notification method of notification service
@@ -34,7 +34,7 @@ export default Ember.Service.extend({
    * @returns {Ember.Service} notification service
    */
   add(options = {}) {
-    let notificationService = get(this, 'notificationService');
+    let notificationService = this.notificationService;
 
     //Check if message already is present
     if (
@@ -56,6 +56,6 @@ export default Ember.Service.extend({
    * @returns {Ember.Service} navi notification service
    */
   clearMessages() {
-    return get(this, 'notificationService').clearMessages();
+    return this.notificationService.clearMessages();
   }
 });
