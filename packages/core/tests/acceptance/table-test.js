@@ -3,6 +3,8 @@ import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import config from 'ember-get-config';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { run } from '@ember/runloop';
+import reorder from '../helpers/reorder';
 
 module('Acceptance | table', function(hooks) {
   setupApplicationTest(hooks);
@@ -30,17 +32,19 @@ module('Acceptance | table', function(hooks) {
     await reorder(
       'mouse',
       '.table-header-cell',
-      '.dimension:contains(Operating System)',
-      '.dateTime',
-      '.metric:contains(Unique Identifiers)',
-      '.metric:contains(Total Page Views)',
-      '.threshold:contains(Total Page Views WoW)'
+      '.table-header-cell:nth-child(2)', // move second column to first column position
+      '.table-header-cell:nth-child(2)', // move new second column to second column position
+      '.table-header-cell:nth-child(3)',
+      '.table-header-cell:nth-child(4)',
+      '.table-header-cell:nth-child(5)'
     );
 
-    assert.deepEqual(
-      findAll('.table-header-row-vc--view .table-header-cell__title').map(el => el.textContent.trim()),
-      ['Operating System', 'Date', 'Unique Identifiers', 'Total Page Views', 'Total Page Views WoW'],
-      'The headers are reordered as specified by the reorder'
+    run(() =>
+      assert.deepEqual(
+        findAll('.table-header-row-vc--view .table-header-cell__title').map(el => el.textContent.trim()),
+        ['Operating System', 'Date', 'Unique Identifiers', 'Total Page Views', 'Total Page Views WoW'],
+        'The headers are reordered as specified by the reorder'
+      )
     );
   });
 

@@ -48,7 +48,7 @@ const ExpectedRequest = {
                 series: {
                   type: 'dimension',
                   config: {
-                    metric: 'adClicks',
+                    metric: { metric: 'adClicks', parameters: {} },
                     dimensionOrder: ['property'],
                     dimensions: [
                       { name: 'Property 1', values: { property: '114' } },
@@ -263,20 +263,16 @@ module('Unit | Model | report', function(hooks) {
   test('deliveryRuleForUser', function(assert) {
     assert.expect(1);
 
-    return run(() => {
-      return Store.findRecord('user', 'navi_user').then(() => {
-        return Store.findRecord('report', 3).then(reportModel => {
-          reportModel.user = {
-            getUser: () => {
-              return Store.peekRecord('user', 'navi_user');
-            }
-          };
+    return run(async () => {
+      const user = await Store.findRecord('user', 'navi_user');
+      const reportModel = await Store.findRecord('report', 3);
 
-          return reportModel.get('deliveryRuleForUser').then(rule => {
-            assert.deepEqual(rule, Store.peekRecord('deliveryRule', 1), 'deliveryRule is fetched for current user');
-          });
-        });
+      Object.defineProperty(reportModel, 'user', {
+        value: { getUser: () => user }
       });
+
+      const rule = await reportModel.get('deliveryRuleForUser');
+      assert.deepEqual(rule, Store.peekRecord('deliveryRule', 1), 'deliveryRule is fetched for current user');
     });
   });
 });
