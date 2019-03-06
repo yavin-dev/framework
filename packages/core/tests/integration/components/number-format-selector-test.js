@@ -27,9 +27,7 @@ module('Integration | Component | number format selector', function(hooks) {
 
     await render(Template);
 
-    run(async () => {
-      await click('.number-format-selector__radio-number input');
-    });
+    await run(() => click('.number-format-selector__radio-number input'));
   });
 
   test('clearFormat', async function(assert) {
@@ -41,9 +39,7 @@ module('Integration | Component | number format selector', function(hooks) {
 
     await render(Template);
 
-    run(async () => {
-      await click('.number-format-selector__radio-custom input');
-    });
+    await run(() => click('.number-format-selector__radio-custom input'));
   });
 
   test('highlight correct format when customFormat is changed', async function(assert) {
@@ -51,9 +47,9 @@ module('Integration | Component | number format selector', function(hooks) {
 
     await render(Template);
 
-    run(() => {
-      fillIn('.number-format-selector__format-input', '$0,0[.]00a');
-      blur('.number-format-selector__format-input');
+    await run(async () => {
+      await fillIn('.number-format-selector__format-input', '$0,0[.]00a');
+      await blur('.number-format-selector__format-input');
     });
 
     await settled();
@@ -62,9 +58,9 @@ module('Integration | Component | number format selector', function(hooks) {
       .dom('.number-format-selector__radio-custom input')
       .isChecked('custom format correctly highlighted when user enters custom format');
 
-    run(() => {
-      fillIn('.number-format-selector__format-input', '0,0.00');
-      blur('.number-format-selector__format-input');
+    await run(async () => {
+      await fillIn('.number-format-selector__format-input', '0,0.00');
+      await blur('.number-format-selector__format-input');
     });
 
     await settled();

@@ -88,20 +88,19 @@ module('Unit | Model | report', function(hooks) {
     teardownMock();
   });
 
-  test('Retrieving records', function(assert) {
+  test('Retrieving records', async function(assert) {
     assert.expect(3);
 
-    return run(() => {
-      return Store.findRecord('report', 1).then(report => {
-        assert.ok(report, 'Found report with id 1');
-        assert.ok(report instanceof DeliverableItem, 'Report should be instance of DeliverableItem');
+    await run(async () => {
+      const report = await Store.findRecord('report', 1);
 
-        assert.deepEqual(report.serialize(), ExpectedReport, 'Fetched report has all attributes as expected');
-      });
+      assert.ok(report, 'Found report with id 1');
+      assert.ok(report instanceof DeliverableItem, 'Report should be instance of DeliverableItem');
+      assert.deepEqual(report.serialize(), ExpectedReport, 'Fetched report has all attributes as expected');
     });
   });
 
-  test('Coalescing find requests', function(assert) {
+  test('Coalescing find requests', async function(assert) {
     assert.expect(1);
 
     server.urlPrefix = `${config.navi.appPersistence.uri}`;
@@ -116,154 +115,139 @@ module('Unit | Model | report', function(hooks) {
       return new Mirage.Response(204);
     });
 
-    return run(() => {
-      return all([
+    await run(() =>
+      all([
         this.owner.lookup('service:store').findRecord('report', 1),
         this.owner.lookup('service:store').findRecord('report', 2),
         this.owner.lookup('service:store').findRecord('report', 4)
-      ]).catch(() => 'Ignore empty response error');
-    });
+      ]).catch(() => 'Ignore empty response error')
+    );
   });
 
-  test('Saving records', function(assert) {
+  test('Saving records', async function(assert) {
     assert.expect(1);
 
-    return run(() => {
-      return Store.findRecord('user', 'navi_user').then(user => {
-        let report = {
-          title: 'New Report',
-          author: user,
-          request: null
-        };
+    await run(async () => {
+      const user = await Store.findRecord('user', 'navi_user');
+      const report = {
+        title: 'New Report',
+        author: user,
+        request: null
+      };
 
-        return Store.createRecord('report', report)
-          .save()
-          .then(savedReport => {
-            let id = savedReport.get('id');
+      const savedReport = await Store.createRecord('report', report).save();
+      const id = savedReport.get('id');
+      Store.unloadAll('report'); // flush cache/store
 
-            Store.unloadAll('report'); // flush cache/store
-
-            return Store.findRecord('report', id).then(() => {
-              assert.ok(true, 'Newly created report is persisted');
-            });
-          });
-      });
+      await Store.findRecord('report', id);
+      assert.ok(true, 'Newly created report is persisted');
     });
   });
 
-  test('Cloning Reports', function(assert) {
+  test('Cloning Reports', async function(assert) {
     assert.expect(2);
 
-    return run(() => {
-      return Store.findRecord('report', 1).then(model => {
-        let clonedModel = model.clone(Store),
-          expectedTitle = model.toJSON().title;
+    await run(async () => {
+      const model = await Store.findRecord('report', 1);
+      const clonedModel = model.clone(Store);
+      const expectedTitle = model.toJSON().title;
 
-        assert.equal(clonedModel.title, expectedTitle, 'The report model is cloned as expected');
+      assert.equal(clonedModel.title, expectedTitle, 'The report model is cloned as expected');
 
-        assert.deepEqual(
-          clonedModel.visualization.toJSON(),
-          model.get('visualization').toJSON(),
-          'Visualization config is also cloned'
-        );
-      });
+      assert.deepEqual(
+        clonedModel.visualization.toJSON(),
+        model.get('visualization').toJSON(),
+        'Visualization config is also cloned'
+      );
     });
   });
 
-  test('isOwner', function(assert) {
+  test('isOwner', async function(assert) {
     assert.expect(2);
 
-    return run(() => {
+    await run(async () => {
       // Make sure user is loaded into store
-      return Store.findRecord('user', 'navi_user').then(() => {
-        return Store.findRecord('report', 3).then(model => {
-          assert.notOk(model.get('isOwner'), 'isOwner returns false when author does not match user');
+      await Store.findRecord('user', 'navi_user');
 
-          return Store.findRecord('report', 1).then(model => {
-            assert.ok(model.get('isOwner'), 'isOwner returns true when user is the author of the report');
-          });
-        });
-      });
+      const report3 = await Store.findRecord('report', 3);
+      assert.notOk(report3.get('isOwner'), 'isOwner returns false when author does not match user');
+
+      const report1 = await Store.findRecord('report', 1);
+      assert.ok(report1.get('isOwner'), 'isOwner returns true when user is the author of the report');
     });
   });
 
-  test('isFavorite', function(assert) {
+  test('isFavorite', async function(assert) {
     assert.expect(2);
 
-    return run(() => {
+    await run(async () => {
       // Make sure user is loaded into store
-      return Store.findRecord('user', 'navi_user').then(() => {
-        return Store.findRecord('report', 1).then(model => {
-          assert.notOk(model.get('isFavorite'), 'isFavorite returns false when report is not in favorite list');
+      await Store.findRecord('user', 'navi_user');
+      const report1 = await Store.findRecord('report', 1);
 
-          return Store.findRecord('report', 2).then(model => {
-            assert.ok(model.get('isFavorite'), 'isFavorite returns true when report is in favorite list');
-          });
-        });
-      });
+      assert.notOk(report1.get('isFavorite'), 'isFavorite returns false when report is not in favorite list');
+
+      const report2 = await Store.findRecord('report', 2);
+      assert.ok(report2.get('isFavorite'), 'isFavorite returns true when report is in favorite list');
     });
   });
 
-  test('tempId', function(assert) {
+  test('tempId', async function(assert) {
     assert.expect(3);
 
-    return run(() => {
-      return Store.findRecord('user', 'navi_user').then(author => {
-        let report = Store.createRecord('report', {
-          author,
-          request: null
-        });
-
-        assert.ok(!!get(report, 'tempId'), '`tempId` exists when `id` does not');
-
-        assert.equal(get(report, 'tempId'), get(report, 'tempId'), '`tempId` is always the same value');
-
-        return report.save().then(() => {
-          assert.notOk(!!get(report, 'tempId'), '`tempId` is null when `id` exists');
-        });
+    await run(async () => {
+      const author = await Store.findRecord('user', 'navi_user');
+      const report = Store.createRecord('report', {
+        author,
+        request: null
       });
+
+      assert.ok(!!get(report, 'tempId'), '`tempId` exists when `id` does not');
+
+      assert.equal(get(report, 'tempId'), get(report, 'tempId'), '`tempId` is always the same value');
+
+      await report.save();
+      assert.notOk(!!get(report, 'tempId'), '`tempId` is null when `id` exists');
     });
   });
 
-  test('delivery rules relationship', function(assert) {
+  test('delivery rules relationship', async function(assert) {
     assert.expect(1);
 
-    return run(() => {
-      return Store.findRecord('report', 3).then(reportModel => {
-        return reportModel.get('deliveryRules').then(rules => {
-          assert.equal(
-            rules.get('firstObject'),
-            Store.peekRecord('deliveryRule', 1),
-            'report deliveryRule property contains deliveryRule model'
-          );
-        });
-      });
+    await run(async () => {
+      const reportModel = await Store.findRecord('report', 3);
+      const rules = await reportModel.get('deliveryRules');
+
+      assert.equal(
+        rules.get('firstObject'),
+        Store.peekRecord('deliveryRule', 1),
+        'report deliveryRule property contains deliveryRule model'
+      );
     });
   });
 
-  test('Validations', function(assert) {
+  test('Validations', async function(assert) {
     assert.expect(5);
 
-    return run(() => {
-      return Store.findRecord('report', 1).then(reportModel => {
-        return reportModel.validate().then(({ validations }) => {
-          assert.ok(validations.get('isValid'), 'report is valid');
-          assert.equal(validations.get('messages').length, 0, 'There are no validation errors');
-          reportModel.set('title', '');
-          return reportModel.validate().then(({ model, validations }) => {
-            assert.notOk(validations.get('isValid'), 'report is invalid');
-            assert.equal(validations.get('messages').length, 1, 'There is one validation error');
-            assert.notOk(model.get('validations.attrs.title.isValid'), 'Title must have a value');
-          });
-        });
-      });
+    await run(async () => {
+      const reportModel = await Store.findRecord('report', 1);
+      const s1 = await reportModel.validate();
+
+      assert.ok(s1.validations.get('isValid'), 'report is valid');
+      assert.equal(s1.validations.get('messages').length, 0, 'There are no validation errors');
+      reportModel.set('title', '');
+
+      const s2 = await reportModel.validate();
+      assert.notOk(s2.validations.get('isValid'), 'report is invalid');
+      assert.equal(s2.validations.get('messages').length, 1, 'There is one validation error');
+      assert.notOk(s2.model.get('validations.attrs.title.isValid'), 'Title must have a value');
     });
   });
 
-  test('deliveryRuleForUser', function(assert) {
+  test('deliveryRuleForUser', async function(assert) {
     assert.expect(1);
 
-    return run(async () => {
+    await run(async () => {
       const user = await Store.findRecord('user', 'navi_user');
       const reportModel = await Store.findRecord('report', 3);
 

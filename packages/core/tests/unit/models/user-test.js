@@ -20,36 +20,33 @@ module('Unit | Model | user', function(hooks) {
     teardownMock();
   });
 
-  test('Retrieving records', function(assert) {
+  test('Retrieving records', async function(assert) {
     assert.expect(1);
 
-    return run(() => {
-      return Store.findRecord('user', 'navi_user').then(() => {
-        assert.ok(true, 'Found navi user');
-      });
+    await run(async () => {
+      await Store.findRecord('user', 'navi_user');
+      assert.ok(true, 'Found navi user');
     });
   });
 
-  test('Saving records', function(assert) {
+  test('Saving records', async function(assert) {
     assert.expect(1);
 
-    return run(() => {
-      let newUser = 'new_user';
-      return Store.createRecord('user', { id: newUser })
-        .save()
-        .then(() => {
-          Store.unloadAll('user'); // flush cache/store
-          return Store.findRecord('user', newUser).then(() => {
-            assert.ok(true, 'Newly created user is successfully persisted');
-          });
-        });
+    await run(async () => {
+      const newUser = 'new_user';
+      await Store.createRecord('user', { id: newUser }).save();
+
+      Store.unloadAll('user'); // flush cache/store
+
+      await Store.findRecord('user', newUser);
+      assert.ok(true, 'Newly created user is successfully persisted');
     });
   });
 
   test('Linking Reports to Users', function(assert) {
     assert.expect(3);
 
-    return run(() => {
+    run(() => {
       let user = Store.createRecord('user', { id: 'jon_snow' });
 
       Store.createRecord('report', {
@@ -80,70 +77,61 @@ module('Unit | Model | user', function(hooks) {
     });
   });
 
-  test('Favoriting reports', function(assert) {
+  test('Favoriting reports', async function(assert) {
     assert.expect(3);
 
     let naviUser = config.navi.user;
 
-    return run(() => {
-      return Store.findRecord('user', naviUser).then(user => {
-        /*
-         * Fetch all reports favorited by test user or else Ember Data throws error when calling `unloadAll`
-         * https://github.com/emberjs/data/issues/3084
-         */
-        return Store.findRecord('report', 2).then(() => {
-          return Store.findRecord('report', 1).then(report => {
-            // Favorite a report
-            user.get('favoriteReports').pushObject(report);
+    await run(async () => {
+      const user = await Store.findRecord('user', naviUser);
+      /**
+       * Fetch all reports favorited by test user or else Ember Data throws error when calling `unloadAll`
+       * https://github.com/emberjs/data/issues/3084
+       */
 
-            return user.save().then(() => {
-              assert.equal(
-                user.get('favoriteReports.lastObject.title'),
-                'Hyrule News',
-                'Favorite reports contains full report object'
-              );
+      await Store.findRecord('report', 2);
+      const report = await Store.findRecord('report', 1);
 
-              // flush cache/Store
-              Store.unloadAll();
+      // Favorite a report
+      user.get('favoriteReports').pushObject(report);
+      await user.save();
 
-              return Store.findRecord('user', naviUser).then(savedUser => {
-                assert.deepEqual(
-                  savedUser.get('favoriteReports').mapBy('id'),
-                  ['2', '1'],
-                  'Reports can be added to user favorites'
-                );
+      assert.equal(
+        user.get('favoriteReports.lastObject.title'),
+        'Hyrule News',
+        'Favorite reports contains full report object'
+      );
 
-                // Trigger async request and wait
-                return savedUser.get('favoriteReports').then(() => {
-                  assert.equal(
-                    savedUser.get('favoriteReports.lastObject.title'),
-                    'Hyrule News',
-                    'Accessing favoriteReports relationship returns full report object'
-                  );
-                });
-              });
-            });
-          });
-        });
-      });
+      // flush cache/Store
+      Store.unloadAll();
+
+      const savedUser = await Store.findRecord('user', naviUser);
+
+      assert.deepEqual(
+        savedUser.get('favoriteReports').mapBy('id'),
+        ['2', '1'],
+        'Reports can be added to user favorites'
+      );
+
+      // Trigger async request and wait
+      await savedUser.get('favoriteReports');
+      assert.equal(
+        savedUser.get('favoriteReports.lastObject.title'),
+        'Hyrule News',
+        'Accessing favoriteReports relationship returns full report object'
+      );
     });
   });
 
-  test('delivery rules relationship', function(assert) {
+  test('delivery rules relationship', async function(assert) {
     assert.expect(1);
 
-    return run(() => {
-      return Store.findRecord('deliveryRule', 1).then(deliveryRule => {
-        return Store.findRecord('user', 'navi_user').then(userModel => {
-          return userModel.get('deliveryRules').then(rules => {
-            assert.equal(
-              rules.get('firstObject'),
-              deliveryRule,
-              'user deliveryRule property contains deliveryRule model'
-            );
-          });
-        });
-      });
+    await run(async () => {
+      const deliveryRule = await Store.findRecord('deliveryRule', 1);
+      const userModel = await Store.findRecord('user', 'navi_user');
+      const rules = await userModel.get('deliveryRules');
+
+      assert.equal(rules.get('firstObject'), deliveryRule, 'user deliveryRule property contains deliveryRule model');
     });
   });
 });

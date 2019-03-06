@@ -61,8 +61,6 @@ module('Integration | Component | visualization config/warpper', function(hooks)
 
     await render(Template);
 
-    run(async () => {
-      await click('.visualization-config--body .mock');
-    });
+    await run(() => click('.visualization-config--body .mock'));
   });
 });

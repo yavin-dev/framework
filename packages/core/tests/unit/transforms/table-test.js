@@ -18,16 +18,15 @@ module('Unit | Transform | Table', function(hooks) {
     teardownMock();
   });
 
-  test('serialize and deserialize', function(assert) {
+  test('serialize and deserialize', async function(assert) {
     assert.expect(2);
 
-    return settled().then(() => {
-      let transform = this.owner.lookup('transform:table'),
-        table = MetadataService.getById('table', 'network');
+    await settled();
+    let transform = this.owner.lookup('transform:table'),
+      table = MetadataService.getById('table', 'network');
 
-      assert.equal(transform.serialize(table), 'network', 'Table is serialized to the name');
+    assert.equal(transform.serialize(table), 'network', 'Table is serialized to the name');
 
-      assert.equal(transform.deserialize('network'), table, 'Table is deserialized to the right object');
-    });
+    assert.equal(transform.deserialize('network'), table, 'Table is deserialized to the right object');
   });
 });

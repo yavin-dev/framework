@@ -18,17 +18,16 @@ module('Unit | Transform | Dimension', function(hooks) {
     teardownMock();
   });
 
-  test('serialize and deserialize', function(assert) {
+  test('serialize and deserialize', async function(assert) {
     assert.expect(2);
 
-    return settled().then(() => {
-      let transform = this.owner.lookup('transform:dimension'),
-        dim = MetadataService.getById('dimension', 'os');
+    await settled();
+    let transform = this.owner.lookup('transform:dimension'),
+      dim = MetadataService.getById('dimension', 'os');
 
-      assert.equal(transform.serialize(dim), 'os', 'Dimension is serialized to the name');
+    assert.equal(transform.serialize(dim), 'os', 'Dimension is serialized to the name');
 
-      assert.equal(transform.deserialize('os'), dim, 'Dimension is deserialized to the right object');
-    });
+    assert.equal(transform.deserialize('os'), dim, 'Dimension is deserialized to the right object');
   });
 
   test('Do not cause crash when metadata is not available', function(assert) {

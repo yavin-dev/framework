@@ -43,7 +43,7 @@ module('Integration | Component | visualization config/goal gauge', function(hoo
 
     await render(Template);
 
-    run(async () => {
+    await run(async () => {
       await fillIn('.goal-gauge-config__goal-input', 10);
       await blur('.goal-gauge-config__goal-input');
     });
@@ -58,7 +58,7 @@ module('Integration | Component | visualization config/goal gauge', function(hoo
 
     await render(Template);
 
-    run(async () => {
+    await run(async () => {
       await fillIn('.goal-gauge-config__label-input', 'bottles');
       await blur('.goal-gauge-config__label-input');
     });

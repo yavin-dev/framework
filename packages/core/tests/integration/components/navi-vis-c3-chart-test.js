@@ -46,7 +46,7 @@ module('Integration | Component | navi vis c3 chart', function(hooks) {
       find('.container').style.height = '200px';
     });
 
-    run(async () => {
+    await run(async () => {
       await triggerEvent('.test-container', 'resizestop');
 
       assert.equal(

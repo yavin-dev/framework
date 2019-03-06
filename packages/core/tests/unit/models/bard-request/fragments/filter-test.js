@@ -188,25 +188,25 @@ module('Unit | Model Fragment | BardRequest - Filter', function(hooks) {
     await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1);
 
-    run(() => {
-      return mockModel.get('filters.firstObject.values').then(values => {
-        mockModel.get('filters.firstObject').set('operator', 'contains');
+    await run(async () => {
+      const values = await mockModel.get('filters.firstObject.values');
 
-        assert.equal(get(values, 'length'), 2, 'The property `values` are fetched from the store');
+      mockModel.get('filters.firstObject').set('operator', 'contains');
 
-        mockModel.get('filters.firstObject').set('values', TextInput);
+      assert.equal(get(values, 'length'), 2, 'The property `values` are fetched from the store');
 
-        let filterValues = mockModel.get('filters.firstObject.values');
-        assert.equal(filterValues.length, 4, 'The property `values` was correctly updated');
+      mockModel.get('filters.firstObject').set('values', TextInput);
 
-        assert.deepEqual(filterValues, ['mirror', 'shield', 'deku', 'tree'], 'The property `values` has been updated');
+      let filterValues = mockModel.get('filters.firstObject.values');
+      assert.equal(filterValues.length, 4, 'The property `values` was correctly updated');
 
-        assert.deepEqual(
-          mockModel.get('filters.firstObject.rawValues'),
-          ['mirror', 'shield', 'deku', 'tree'],
-          'The property `rawValues` has all of the text input values updated using setter'
-        );
-      });
+      assert.deepEqual(filterValues, ['mirror', 'shield', 'deku', 'tree'], 'The property `values` has been updated');
+
+      assert.deepEqual(
+        mockModel.get('filters.firstObject.rawValues'),
+        ['mirror', 'shield', 'deku', 'tree'],
+        'The property `rawValues` has all of the text input values updated using setter'
+      );
     });
   });
 

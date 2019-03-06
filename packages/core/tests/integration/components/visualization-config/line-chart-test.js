@@ -65,8 +65,6 @@ module('Integration | Component | visualization config/line chart', function(hoo
 
     await render(Template);
 
-    run(async () => {
-      await click('.mock');
-    });
+    await run(() => click('.mock'));
   });
 });

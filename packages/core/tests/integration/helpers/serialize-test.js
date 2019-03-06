@@ -8,7 +8,7 @@ import { run } from '@ember/runloop';
 module('helper:serialize', function(hooks) {
   setupRenderingTest(hooks);
 
-  test('it returns serialization of model', function(assert) {
+  test('it returns serialization of model', async function(assert) {
     assert.expect(1);
     const modelClass = DS.Model.extend({
       something: DS.attr('weird')
@@ -26,7 +26,7 @@ module('helper:serialize', function(hooks) {
     this.owner.register('model:weirdo', modelClass);
     this.owner.register('transform:weird', weirdTransform);
 
-    run(async () => {
+    await run(async () => {
       let store = this.owner.lookup('service:store');
 
       store.pushPayload({

@@ -3,7 +3,6 @@ import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import config from 'ember-get-config';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
-import { run } from '@ember/runloop';
 import reorder from '../helpers/reorder';
 
 module('Acceptance | table', function(hooks) {
@@ -39,12 +38,10 @@ module('Acceptance | table', function(hooks) {
       '.table-header-cell:nth-child(5)'
     );
 
-    run(() =>
-      assert.deepEqual(
-        findAll('.table-header-row-vc--view .table-header-cell__title').map(el => el.textContent.trim()),
-        ['Operating System', 'Date', 'Unique Identifiers', 'Total Page Views', 'Total Page Views WoW'],
-        'The headers are reordered as specified by the reorder'
-      )
+    assert.deepEqual(
+      findAll('.table-header-row-vc--view .table-header-cell__title').map(el => el.textContent.trim()),
+      ['Operating System', 'Date', 'Unique Identifiers', 'Total Page Views', 'Total Page Views WoW'],
+      'The headers are reordered as specified by the reorder'
     );
   });
 

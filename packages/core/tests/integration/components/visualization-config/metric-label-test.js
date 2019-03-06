@@ -51,9 +51,9 @@ module('Integration | Component | visualization config/metric-label', function(h
 
     await render(Template);
 
-    run(() => {
-      fillIn('.number-format-selector__format-input', 'foo');
-      blur('.number-format-selector__format-input');
+    await run(async () => {
+      await fillIn('.number-format-selector__format-input', 'foo');
+      await blur('.number-format-selector__format-input');
     });
   });
 
@@ -66,9 +66,9 @@ module('Integration | Component | visualization config/metric-label', function(h
 
     await render(Template);
 
-    run(() => {
-      fillIn('.metric-label-config__description-input', 'foo');
-      blur('.metric-label-config__description-input');
+    await run(async () => {
+      await fillIn('.metric-label-config__description-input', 'foo');
+      await blur('.metric-label-config__description-input');
     });
   });
 });
