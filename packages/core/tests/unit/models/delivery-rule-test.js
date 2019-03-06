@@ -37,97 +37,84 @@ module('Unit | Model | delivery rule', function(hooks) {
     teardownMock();
   });
 
-  test('Retrieving records', function(assert) {
+  test('Retrieving records', async function(assert) {
     assert.expect(2);
 
-    return run(() => {
-      return Store.findRecord('deliveryRule', 1).then(deliveryRule => {
-        assert.ok(deliveryRule, 'Found deliveryRule with id 1');
+    await run(async () => {
+      const deliveryRule = await Store.findRecord('deliveryRule', 1);
+      assert.ok(deliveryRule, 'Found deliveryRule with id 1');
 
-        assert.deepEqual(
-          deliveryRule.toJSON(),
-          ExpectedDeliveryRule,
-          'Fetched deliveryRule has all attributes as expected'
-        );
-      });
+      assert.deepEqual(
+        deliveryRule.toJSON(),
+        ExpectedDeliveryRule,
+        'Fetched deliveryRule has all attributes as expected'
+      );
     });
   });
 
-  test('user relationship', function(assert) {
+  test('user relationship', async function(assert) {
     assert.expect(1);
 
-    return run(() => {
-      return Store.findRecord('user', 'navi_user').then(userModel => {
-        return Store.findRecord('deliveryRule', 1).then(deliveryRule => {
-          return deliveryRule.get('owner').then(owner => {
-            assert.equal(owner, userModel, 'deliveryRule author property contains user model');
-          });
-        });
-      });
+    await run(async () => {
+      const userModel = await Store.findRecord('user', 'navi_user');
+      const deliveryRule = await Store.findRecord('deliveryRule', 1);
+      const owner = await deliveryRule.get('owner');
+
+      assert.equal(owner, userModel, 'deliveryRule author property contains user model');
     });
   });
 
-  test('delivered item relationship', function(assert) {
+  test('delivered item relationship', async function(assert) {
     assert.expect(1);
 
-    return run(() => {
-      return Store.findRecord('report', 3).then(reportModel => {
-        return Store.findRecord('deliveryRule', 1).then(deliveryRule => {
-          return deliveryRule.get('deliveredItem').then(item => {
-            assert.equal(item, reportModel, 'deliveryRule deliveredItem property contains report model');
-          });
-        });
-      });
+    await run(async () => {
+      const reportModel = await Store.findRecord('report', 3);
+      const deliveryRule = await Store.findRecord('deliveryRule', 1);
+      const item = await deliveryRule.get('deliveredItem');
+
+      assert.equal(item, reportModel, 'deliveryRule deliveredItem property contains report model');
     });
   });
 
-  test('Validations', function(assert) {
+  test('Validations', async function(assert) {
     assert.expect(14);
 
-    return run(() => {
-      return Store.findRecord('deliveryRule', 1).then(deliveryRule => {
-        return deliveryRule.get('deliveredItem').then(() => {
-          deliveryRule.validate().then(({ validations }) => {
-            assert.ok(validations.get('isValid'), 'deliveryRule is valid');
-            assert.equal(validations.get('messages').length, 0, 'There are no validation errors');
-          });
+    await run(async () => {
+      const deliveryRule = await Store.findRecord('deliveryRule', 1);
+      await deliveryRule.get('deliveredItem');
+      const v1 = await deliveryRule.validate();
 
-          //setting format to null
-          deliveryRule.set('format', null);
-          deliveryRule.validate().then(({ model, validations }) => {
-            assert.notOk(validations.get('isValid'), 'deliveryRule is invalid');
-            assert.equal(validations.get('messages').length, 1, 'One Field is invalid in the deliveryRule model');
-            assert.notOk(model.get('validations.attrs.format.isValid'), 'Delivery format must have a value');
-          });
+      assert.ok(v1.validations.get('isValid'), 'deliveryRule is valid');
+      assert.equal(v1.validations.get('messages').length, 0, 'There are no validation errors');
 
-          //setting frequency to null
-          deliveryRule.set('frequency', null);
-          deliveryRule.validate().then(({ model, validations }) => {
-            assert.notOk(validations.get('isValid'), 'deliveryRule is invalid');
-            assert.equal(validations.get('messages').length, 2, 'Two Fields are invalid in the deliveryRule model');
-            assert.notOk(model.get('validations.attrs.frequency.isValid'), 'Delivery frequency must have a value');
-          });
+      //setting format to null
+      deliveryRule.set('format', null);
+      const v2 = await deliveryRule.validate();
 
-          //setting no recipients
-          deliveryRule.set('recipients', []);
-          deliveryRule.validate().then(({ model, validations }) => {
-            assert.notOk(validations.get('isValid'), 'deliveryRule is invalid');
-            assert.equal(validations.get('messages').length, 3, 'Three Fields are invalid in the deliveryRule model');
-            assert.notOk(model.get('validations.attrs.recipients.isValid'), 'There must be at least one recipient');
-          });
+      assert.notOk(v2.validations.get('isValid'), 'deliveryRule is invalid');
+      assert.equal(v2.validations.get('messages').length, 1, 'One Field is invalid in the deliveryRule model');
+      assert.notOk(v2.model.get('validations.attrs.format.isValid'), 'Delivery format must have a value');
 
-          //setting recipients with invalid emails
-          deliveryRule.set('recipients', ['user@bad', 'otherUser']);
-          deliveryRule.validate().then(({ model, validations }) => {
-            assert.notOk(validations.get('isValid'), 'deliveryRule is invalid');
-            assert.equal(validations.get('messages').length, 3, 'Three Fields are invalid in the deliveryRule model');
-            assert.notOk(
-              model.get('validations.attrs.recipients.isValid'),
-              'Recipients must have valid email addresses'
-            );
-          });
-        });
-      });
+      //setting frequency to null
+      deliveryRule.set('frequency', null);
+      const v3 = await deliveryRule.validate();
+      assert.notOk(v3.validations.get('isValid'), 'deliveryRule is invalid');
+      assert.equal(v3.validations.get('messages').length, 2, 'Two Fields are invalid in the deliveryRule model');
+      assert.notOk(v3.model.get('validations.attrs.frequency.isValid'), 'Delivery frequency must have a value');
+
+      //setting no recipients
+      deliveryRule.set('recipients', []);
+      const v4 = await deliveryRule.validate();
+      assert.notOk(v4.validations.get('isValid'), 'deliveryRule is invalid');
+      assert.equal(v4.validations.get('messages').length, 3, 'Three Fields are invalid in the deliveryRule model');
+      assert.notOk(v4.model.get('validations.attrs.recipients.isValid'), 'There must be at least one recipient');
+
+      //setting recipients with invalid emails
+      deliveryRule.set('recipients', ['user@bad', 'otherUser']);
+      const v5 = await deliveryRule.validate();
+      assert.notOk(v5.validations.get('isValid'), 'deliveryRule is invalid');
+      assert.equal(v5.validations.get('messages').length, 3, 'Three Fields are invalid in the deliveryRule model');
+      assert.notOk(v5.model.get('validations.attrs.recipients.isValid'), 'Recipients must have valid email addresses');
     });
   });
 });
