@@ -48,8 +48,8 @@ test('Retrieving Records', function(assert) {
         {
           title: 'Dashboard 2',
           author: 'navi_user',
-          createdOn: '2016-01-01 00:00:00.000',
-          updatedOn: '2016-01-01 00:00:00.000',
+          createdOn: '2016-02-01 00:00:00.000',
+          updatedOn: '2016-02-01 00:00:00.000',
           presentation: {
             version: 1,
             layout: [
