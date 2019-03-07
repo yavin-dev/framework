@@ -22,8 +22,8 @@ export default [
     title: 'Dashboard 2',
     authorId: 'navi_user',
     dashboardWidgetIds: [4, 5],
-    createdOn: '2016-01-01 00:00:00',
-    updatedOn: '2016-01-01 00:00:00',
+    createdOn: '2016-02-01 00:00:00',
+    updatedOn: '2016-02-01 00:00:00',
     deliveryRuleIds: [3],
     presentation: {
       version: 1,
@@ -39,8 +39,8 @@ export default [
     title: 'Dashboard 3',
     authorId: 'ciela',
     dashboardWidgetIds: [],
-    createdOn: '2016-01-01 00:00:00',
-    updatedOn: '2016-01-01 00:00:00',
+    createdOn: '2016-01-03 00:00:00',
+    updatedOn: '2016-01-03 00:00:00',
     deliveryRuleIds: [],
     presentation: {
       version: 1,
@@ -67,8 +67,8 @@ export default [
     title: 'Empty Dashboard',
     authorId: 'navi_user',
     dashboardWidgetIds: [],
-    createdOn: '2016-01-01 00:00:00',
-    updatedOn: '2016-01-01 00:00:00',
+    createdOn: '2016-01-01 03:00:00',
+    updatedOn: '2016-01-01 03:00:00',
     deliveryRuleIds: [],
     presentation: {
       version: 1,
