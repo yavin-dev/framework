@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Description: A model that holds a dimension value response.
@@ -7,8 +7,15 @@
 import EmberObject from '@ember/object';
 
 export default EmberObject.extend({
+  /**
+   * Test to see if the dimension is considered the same as the other
+   * @override
+   * @param {BardDimension} other - another model to test for equality
+   * @returns {Boolean} - if the object can be considered equal
+   */
   isEqual(other) {
-    return this.id === other.id;
+    const idField = this.constructor.identifierField || 'id';
+    return this[idField] === other[idField];
   }
 }).reopenClass({
   /**
