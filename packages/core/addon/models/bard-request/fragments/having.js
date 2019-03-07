@@ -36,9 +36,7 @@ const Validations = buildValidations({
 
 export default Fragment.extend(Validations, {
   metric: fragment('bard-request/fragments/metric', {
-    defaultValue: () => {
-      return {};
-    }
+    defaultValue: () => ({})
   }),
   operator: DS.attr('string', { defaultValue: 'gt' }),
   values: DS.attr({ defaultValue: () => array([]) }),

@@ -17,5 +17,11 @@ export default DS.JSONSerializer.extend({
       delete json.parameters;
     }
     return json;
+  },
+
+  normalize(type, hash) {
+    const newHash = (typeof hash === 'string' && { metric: hash }) || hash;
+
+    return this._super(type, newHash);
   }
 });

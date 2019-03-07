@@ -5,6 +5,7 @@
 
 import DS from 'ember-data';
 import { hasParameters, getAliasedMetrics, canonicalizeMetric } from 'navi-data/utils/metric';
+import { get } from '@ember/object';
 
 export default DS.JSONSerializer.extend({
   /**
@@ -120,7 +121,11 @@ export default DS.JSONSerializer.extend({
       return;
     }
     return field.map(obj => {
-      let metricName = canonicalizeMetric(obj.metric) || obj.metric;
+      let metricName =
+        canonicalizeMetric(obj.metric) ||
+        (typeof get(obj, 'metric') === 'string' && get(obj, 'metric')) ||
+        get(obj, 'metric.metric');
+
       obj.metric = aliasMap[metricName] || metricName;
       obj.metric = canonMap[obj.metric] || obj.metric;
       return obj;

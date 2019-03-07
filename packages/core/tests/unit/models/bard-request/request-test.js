@@ -245,8 +245,8 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
     assert.expect(13);
 
     await settled();
-    let mockModel = Store.peekRecord('fragments-mock', MODEL_TO_CLONE),
-      request = mockModel.get('request').clone();
+    const mockModel = Store.peekRecord('fragments-mock', MODEL_TO_CLONE);
+    const request = mockModel.get('request').clone();
 
     assert.equal(
       request.get('logicalTable.table'),
@@ -322,7 +322,6 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
       { name: 'dateTime' },
       'The dateTime property in sort is set with correct metadata'
     );
-
     assert.equal(
       request
         .get('sort')

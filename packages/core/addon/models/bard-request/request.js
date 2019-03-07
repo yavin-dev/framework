@@ -550,7 +550,7 @@ export default Fragment.extend(Validations, {
         store.createFragment('bard-request/fragments/having', {
           metric: store.createFragment('bard-request/fragments/metric', {
             metric: metadataService.getById('metric', having.metric.metric),
-            parameters: having.metric.parameters
+            parameters: having.metric.parameters || {}
           }),
           operator: having.operator,
           values: having.values
