@@ -17,7 +17,6 @@ module('Unit | Model | Bard Dimension', function() {
   });
 
   test('isEqual', function(assert) {
-    assert.expect(3);
     let dim1 = BardDimension.extend().reopenClass({
       dimensionName: 'testDimension1',
       identifierField: 'key'
