@@ -12,7 +12,7 @@
 
 import Component from '@ember/component';
 import { set, get } from '@ember/object';
-import { copy } from '@ember/object/internals';
+import { copy } from 'ember-copy';
 import layout from '../../templates/components/visualization-config/line-chart';
 
 export default Component.extend({

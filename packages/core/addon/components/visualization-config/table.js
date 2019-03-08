@@ -14,7 +14,7 @@ import { inject as service } from '@ember/service';
 import { mapBy, bool } from '@ember/object/computed';
 import Component from '@ember/component';
 import { A as arr } from '@ember/array';
-import { copy } from '@ember/object/internals';
+import { copy } from 'ember-copy';
 import { get, computed } from '@ember/object';
 import layout from '../../templates/components/visualization-config/table';
 

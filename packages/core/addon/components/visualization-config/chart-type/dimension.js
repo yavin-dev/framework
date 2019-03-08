@@ -15,7 +15,7 @@ import { assign } from '@ember/polyfills';
 import { A } from '@ember/array';
 import Component from '@ember/component';
 import { set, get, computed } from '@ember/object';
-import { copy } from '@ember/object/internals';
+import { copy } from 'ember-copy';
 import { dataByDimensions } from 'navi-core/utils/data';
 import { getRequestMetrics } from 'navi-core/utils/chart-data';
 import layout from '../../../templates/components/visualization-config/chart-type/dimension';

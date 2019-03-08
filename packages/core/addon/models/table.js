@@ -18,15 +18,13 @@ import keyBy from 'lodash/keyBy';
  */
 const Validations = buildValidations(
   {
-    'metadata.columns': validator(
-      function(columns, options) {
+    'metadata.columns': validator('inline', {
+      validate(columns, options) {
         let request = get(options, 'request');
         return request && hasAllColumns(request, arr(columns));
       },
-      {
-        dependentKeys: ['model._request.dimensions.[]', 'model._request.metrics.[]']
-      }
-    )
+      dependentKeys: ['model._request.dimensions.[]', 'model._request.metrics.[]']
+    })
   },
   {
     //Global Validation Options

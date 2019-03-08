@@ -20,7 +20,7 @@
  */
 import { assert } from '@ember/debug';
 import { assign } from '@ember/polyfills';
-import { copy } from '@ember/object/internals';
+import { copy } from 'ember-copy';
 import { get, computed, observer } from '@ember/object';
 import { typeOf } from '@ember/utils';
 import $ from 'jquery';

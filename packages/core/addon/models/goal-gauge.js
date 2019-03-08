@@ -18,8 +18,8 @@ const Validations = buildValidations(
   {
     //Selected metric list  is the same as request metric list
     'metadata.metric': validator('request-metric-exist'),
-    'metadata.baselineValue': validator('number', { allowString: true }),
-    'metadata.goalValue': validator('number', { allowString: true })
+    'metadata.baselineValue': validator('number', { allowString: true, allowNone: false }),
+    'metadata.goalValue': validator('number', { allowString: true, allowNone: false })
   },
   {
     //Global Validation Options

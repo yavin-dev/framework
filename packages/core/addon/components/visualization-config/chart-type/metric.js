@@ -13,7 +13,7 @@
 import { A } from '@ember/array';
 import Component from '@ember/component';
 import { set, get, computed } from '@ember/object';
-import { copy } from '@ember/object/internals';
+import { copy } from 'ember-copy';
 import layout from '../../../templates/components/visualization-config/chart-type/metric';
 import { computedSetDiff } from 'navi-core/utils/custom-computed-properties';
 

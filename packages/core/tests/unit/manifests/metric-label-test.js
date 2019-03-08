@@ -1,5 +1,5 @@
 import { A } from '@ember/array';
-import { copy } from '@ember/object/internals';
+import { copy } from 'ember-copy';
 import { set } from '@ember/object';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
