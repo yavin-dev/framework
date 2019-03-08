@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { find, findAll, render } from '@ember/test-helpers';
+import { findAll, render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 module('Integration | Component | dir sidebar', function(hooks) {
@@ -13,7 +13,7 @@ module('Integration | Component | dir sidebar', function(hooks) {
   test('it renders', function(assert) {
     assert.expect(3);
 
-    assert.ok(find('.dir-sidebar'), 'The sidebar component is rendered');
+    assert.dom('.dir-sidebar').exists('The sidebar component is rendered');
 
     assert.deepEqual(
       findAll('.dir-sidebar__group').map(el => el.textContent.trim()),

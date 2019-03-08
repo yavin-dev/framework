@@ -1,5 +1,5 @@
 import { module, test } from 'qunit';
-import { click, currentURL, find, findAll, visit } from '@ember/test-helpers';
+import { click, currentURL, findAll, visit } from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
@@ -12,15 +12,13 @@ module('Acceptance | dir table', function(hooks) {
 
     await visit('/directory/my-data');
 
-    assert.equal(findAll('tbody tr').length, 6, 'All items for a user are listed by default in my-data');
+    assert.dom('tbody tr').exists({ count: 6 }, 'All items for a user are listed by default in my-data');
 
     await visit('/directory/my-data?filter=favorites');
 
-    assert.equal(
-      findAll('tbody tr').length,
-      2,
-      'Only the favorite items are shown in the table when the favorites filter is applied'
-    );
+    assert
+      .dom('tbody tr')
+      .exists({ count: 2 }, 'Only the favorite items are shown in the table when the favorites filter is applied');
   });
 
   test('dir-table sorting updates query params and items are sorted correctly', async function(assert) {
@@ -85,20 +83,12 @@ module('Acceptance | dir table', function(hooks) {
 
     await visit('/directory/my-data?sortBy=author&sortDir=asc');
 
-    assert.equal(
-      find('.dir-table-filter__trigger').textContent.trim(),
-      'All',
-      'Initially the selected type filter is `all`'
-    );
+    assert.dom('.dir-table-filter__trigger').hasText('All', 'Initially the selected type filter is `all`');
 
     await click('.dir-table-filter__trigger');
     let option = findAll('.dir-table-filter__dropdown-option').find(opt => opt.textContent.trim() === 'Reports');
     await click(option);
-    assert.equal(
-      find('.dir-table-filter__trigger').textContent.trim(),
-      'Reports',
-      'On click the selected option is set'
-    );
+    assert.dom('.dir-table-filter__trigger').hasText('Reports', 'On click the selected option is set');
     assert.equal(
       currentURL(),
       '/directory/my-data?sortBy=author&sortDir=asc&type=reports',
@@ -106,10 +96,8 @@ module('Acceptance | dir table', function(hooks) {
     );
 
     await visit('/directory/my-data?type=dashboards');
-    assert.equal(
-      find('.dir-table-filter__trigger').textContent.trim(),
-      'Dashboards',
-      'The selected type is set based on the query param in the url'
-    );
+    assert
+      .dom('.dir-table-filter__trigger')
+      .hasText('Dashboards', 'The selected type is set based on the query param in the url');
   });
 });

@@ -32,14 +32,14 @@ export default Component.extend({
    * @property {Boolean} isSearching
    */
   isSearching: computed('searchQuery', function() {
-    return !isEmpty(get(this, 'searchQuery'));
+    return !isEmpty(this.searchQuery);
   }),
 
   /**
    * @property {Array} model - Used by ember-light-table to create rows
    */
   model: computed('items', function() {
-    let items = get(this, 'items') || [];
+    let items = this.items || [];
     return items.map(item => ({
       model: item,
       lastUpdatedDate: Moment(get(item, 'updatedOn')).format('MM/DD/YYYY -  hh:mm:ss a')
@@ -101,20 +101,20 @@ export default Component.extend({
    * @property {Object} table - Used by ember-light-table to create the table
    */
   table: computed('model', function() {
-    let table = new Table(get(this, 'columns'), get(this, 'model'), {
+    let table = new Table(this.columns, this.model, {
       rowOptions: {
         classNames: 'dir-table__row'
       }
     });
 
-    let sortBy = get(this, 'sortBy');
+    let { sortBy } = this;
     if (!isEmpty(sortBy)) {
       let sortColumn = table.get('allColumns').findBy('sortByKey', sortBy);
 
       if (sortColumn) {
         sortColumn.setProperties({
           sorted: true,
-          ascending: get(this, 'sortDir') !== 'desc'
+          ascending: this.sortDir !== 'desc'
         });
       }
     }
@@ -131,7 +131,7 @@ export default Component.extend({
    * @returns {Object} sort column key and direction
    */
   _getNextSort(column) {
-    let sortBy = get(this, 'sortBy'),
+    let { sortBy } = this,
       nextSortBy = get(column, 'sortByKey'),
       nextSortDir;
 
@@ -154,7 +154,7 @@ export default Component.extend({
      */
     onColumnClick(column) {
       if (column.sorted) {
-        let onColumnClick = get(this, 'onColumnClick');
+        let onColumnClick = this.onColumnClick;
 
         if (typeof onColumnClick === 'function') {
           onColumnClick(this._getNextSort(column));

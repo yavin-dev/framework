@@ -1,12 +1,12 @@
-{{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{#link-to itemLink itemId classNames='dir-item-name-cell'}}
+{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{#link-to itemLink itemId classNames="dir-item-name-cell"}}
   {{dir-icon iconClass}}
-  {{get value 'title'}}
-  {{#if (get value 'isFavorite')}}
-    {{dir-icon 'star'}}
+  {{get value "title"}}
+  {{#if (get value "isFavorite")}}
+    {{dir-icon "star"}}
   {{/if}}
 {{/link-to}}
 
-{{#if (get value 'tempId')}}
-  <span class='dir-item-name-cell__unsaved-label'>Unsaved</span>
+{{#if (get value "tempId")}}
+  <span class="dir-item-name-cell__unsaved-label">Unsaved</span>
 {{/if}}

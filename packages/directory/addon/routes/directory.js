@@ -4,7 +4,6 @@
  */
 import Route from '@ember/routing/route';
 import { inject } from '@ember/service';
-import { get } from '@ember/object';
 
 export default Route.extend({
   /**
@@ -39,7 +38,7 @@ export default Route.extend({
    * @override
    */
   model() {
-    return get(this, 'user').getUser();
+    return this.user.getUser();
   },
 
   actions: {
