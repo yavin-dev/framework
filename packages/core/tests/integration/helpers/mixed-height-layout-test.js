@@ -6,7 +6,7 @@ import { formatItemDimension } from 'navi-core/helpers/mixed-height-layout';
 import cloneDeep from 'lodash/cloneDeep';
 
 const TEMPLATE = hbs`
-  <div class="mixed-height-layout-test" style="position:relative;height:50px;width:10px">
+  <div class="mixed-height-layout-test" style="position:relative;height:100px;width:10px">
     {{#ember-collection items=items estimated-width=10 cell-layout=(mixed-height-layout rowDimensions) as |item|}}
       <div>{{item}}</div>
     {{/ember-collection}}
