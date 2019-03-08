@@ -18,3 +18,6 @@
 /.node_modules.ember-try/
 /bower.json.ember-try
 /package.json.ember-try
+
+# ember-cli-deprecation-workflow config file
+/config/tests/dummy/config/deprecation-workflow.js
