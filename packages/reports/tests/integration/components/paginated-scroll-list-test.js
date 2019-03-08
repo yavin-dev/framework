@@ -1,6 +1,7 @@
+import { A } from '@ember/array';
+import { run } from '@ember/runloop';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import Ember from 'ember';
 import wait from 'ember-test-helpers/wait';
 
 const COMMON_TEMPLATE = hbs`
@@ -92,7 +93,7 @@ test('component displays more items on clicking show more link', function(assert
     assert.ok(true, 'show more action is triggered');
   });
 
-  Ember.run(() => {
+  run(() => {
     this.$('a:contains("Show more")').click();
   });
 
@@ -174,7 +175,7 @@ test('updating items or perPage will cause _itemsToRender to update', function(a
 
   assert.equal($('.item').length, 10, 'updating with new items array causes _itemsToRender to be updated correctly');
 
-  Ember.run(() => {
+  run(() => {
     this.get('items').popObject();
   });
 
@@ -194,5 +195,5 @@ function _buildItemsArray(numberOfItems, content) {
       foo: content
     });
   }
-  return Ember.A(items);
+  return A(items);
 }

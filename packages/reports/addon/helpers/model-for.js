@@ -2,15 +2,17 @@
  * Copyright 2017, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import Ember from 'ember';
+import { oneWay } from '@ember/object/computed';
 
-const { computed, get, getOwner, observer, set } = Ember;
+import Helper from '@ember/component/helper';
+import { getOwner } from '@ember/application';
+import { set, observer, get } from '@ember/object';
 
-export default Ember.Helper.extend({
+export default Helper.extend({
   /**
    * @property {*} content - model of route
    */
-  content: computed.oneWay('route.controller.model'),
+  content: oneWay('route.controller.model'),
 
   /**
    * Returns the resolved model of a parent (or any ancestor) route

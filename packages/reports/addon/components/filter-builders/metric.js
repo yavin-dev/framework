@@ -7,13 +7,12 @@
  *       requestFragment=request.filters.firstObject
  *   }}
  */
-import Ember from 'ember';
+import { A } from '@ember/array';
+
 import Base from './base';
-import { computed } from '@ember/object';
+import { computed, get } from '@ember/object';
 import { metricFormat } from 'navi-data/helpers/metric-format';
 import layout from 'navi-reports/templates/components/filter-builders/metric';
-
-const { get } = Ember;
 
 export default Base.extend({
   layout,
@@ -85,7 +84,7 @@ export default Base.extend({
   filter: computed('requestFragment.{operator,metric,values.[]}', function() {
     const metricFragment = get(this, 'requestFragment'),
       operatorId = get(metricFragment, 'operator'),
-      operator = Ember.A(get(this, 'supportedOperators')).findBy('id', operatorId);
+      operator = A(get(this, 'supportedOperators')).findBy('id', operatorId);
 
     return {
       subject: get(metricFragment, 'metric'),

@@ -1,4 +1,5 @@
-import Ember from 'ember';
+import EmberObject from '@ember/object';
+import { A } from '@ember/array';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 
@@ -165,10 +166,10 @@ test('updating filter values', function(assert) {
 
 //Builds mock array of filter values
 function _buildFilterVals(count) {
-  let values = Ember.A([]);
+  let values = A([]);
   for (let i = 0; i < count; i++) {
     values.push(
-      Ember.Object.create({
+      EmberObject.create({
         id: i.toString(),
         description: 'Property ' + i
       })

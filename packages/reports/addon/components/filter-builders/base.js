@@ -4,13 +4,14 @@
  *
  * Base class for filter builders.
  */
-import Ember from 'ember';
+import { assign } from '@ember/polyfills';
+
+import Component from '@ember/component';
+import { get } from '@ember/object';
 import layout from 'navi-reports/templates/components/filter-builders/base';
 import { readOnly } from '@ember/object/computed';
 
-const { get } = Ember;
-
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   /**
@@ -52,7 +53,7 @@ export default Ember.Component.extend({
        * unless operators share valuesComponent
        */
       if (get(this, 'filter.operator.valuesComponent') !== operatorObject.valuesComponent) {
-        Ember.assign(changeSet, { values: [] });
+        assign(changeSet, { values: [] });
       }
 
       this.onUpdateFilter(changeSet);

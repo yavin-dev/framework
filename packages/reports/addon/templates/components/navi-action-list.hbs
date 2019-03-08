@@ -74,7 +74,7 @@
             tagName='li'
             classNames='action delete'
             model=report
-            warnMsg=(if report.deliveryRuleForUser
+            warnMsg=(if (await report.deliveryRuleForUser)
                         'Are you sure you want to delete this report and the associated schedule?'
                         'Are you sure you want to delete this report?')
             deleteAction=(item-action 'DELETE_ITEM' report)

@@ -1,11 +1,11 @@
+import { A } from '@ember/array';
+import { helper as buildHelper } from '@ember/component/helper';
+import { getOwner } from '@ember/application';
 import { moduleForComponent, test } from 'ember-qunit';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
-import Ember from 'ember';
 import wait from 'ember-test-helpers/wait';
 import hbs from 'htmlbars-inline-precompile';
 import Interval from 'navi-core/utils/classes/interval';
-
-const { getOwner } = Ember;
 
 const RESPONSE = {
   rows: [
@@ -56,7 +56,7 @@ moduleForComponent('report-view', 'Integration | Component | report view', {
 
     this.register(
       'helper:route-action',
-      Ember.Helper.helper(() => {
+      buildHelper(() => {
         return () => {};
       }),
       {
@@ -80,7 +80,7 @@ moduleForComponent('report-view', 'Integration | Component | report view', {
               timeGrainName: 'day'
             }),
             responseFormat: 'csv',
-            intervals: Ember.A([{ interval: new Interval('current', 'next') }])
+            intervals: A([{ interval: new Interval('current', 'next') }])
           }),
           visualization: {
             type: 'line-chart',
@@ -132,7 +132,7 @@ test('metric label visualization selector is available on single metric, single 
           direction: 'asc'
         }
       ],
-      intervals: Ember.A([{ interval: new Interval('current', 'next') }]),
+      intervals: A([{ interval: new Interval('current', 'next') }]),
       bardVersion: 'v1',
       requestVersion: 'v1'
     });

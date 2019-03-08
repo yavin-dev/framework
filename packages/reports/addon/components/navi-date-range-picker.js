@@ -9,16 +9,19 @@
  *      onSetInterval=(action 'updateInterval')
  *   }}
  */
-import Ember from 'ember';
+import { or } from '@ember/object/computed';
+
+import { assert } from '@ember/debug';
+import { A } from '@ember/array';
+import Component from '@ember/component';
+import { get, computed, set } from '@ember/object';
 import Duration from 'navi-core/utils/classes/duration';
 import Interval from 'navi-core/utils/classes/interval';
 import config from 'ember-get-config';
 import layout from '../templates/components/navi-date-range-picker';
 import DefaultIntervals from 'navi-reports/utils/enums/default-intervals';
 
-const { computed, get } = Ember;
-
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   /**
@@ -44,7 +47,7 @@ export default Ember.Component.extend({
   /**
    * @property {Object} customRange - custom range interval, or default interval
    */
-  customRange: computed.or('interval', 'defaultInterval'),
+  customRange: or('interval', 'defaultInterval'),
 
   /**
    * @property {Object} defaultInterval - get a default interval based on the dateTime period
@@ -59,7 +62,7 @@ export default Ember.Component.extend({
    */
   predefinedRanges: computed('dateTimePeriod', function() {
     let dateTimePeriod = get(this, 'dateTimePeriod'),
-      predefinedRanges = get(config, `navi.predefinedIntervalRanges.${dateTimePeriod}`) || Ember.A();
+      predefinedRanges = get(config, `navi.predefinedIntervalRanges.${dateTimePeriod}`) || A();
 
     return predefinedRanges.map(lookBack => {
       // If lookback = current/next, then we are checking for the current freq
@@ -82,10 +85,10 @@ export default Ember.Component.extend({
   /**
    * @property (Array} ranges - list of ranges with `isActive` flag
    */
-  ranges: Ember.computed('dateTimePeriod', 'interval', 'predefinedRanges', function() {
+  ranges: computed('dateTimePeriod', 'interval', 'predefinedRanges', function() {
     let ranges = this.get('predefinedRanges');
     ranges.forEach(range => {
-      Ember.set(range, 'isActive', this.isActiveInterval(range.interval));
+      set(range, 'isActive', this.isActiveInterval(range.interval));
     });
     return ranges;
   }),
@@ -95,7 +98,7 @@ export default Ember.Component.extend({
    */
   isCustomRangeActive: computed('interval', 'ranges', function() {
     // Custom range is considered active when the selected interval does not match any existing range
-    return get(this, 'interval') && !Ember.A(get(this, 'ranges')).isAny('isActive');
+    return get(this, 'interval') && !A(get(this, 'ranges')).isAny('isActive');
   }),
 
   /**
@@ -105,7 +108,7 @@ export default Ember.Component.extend({
    * @override
    */
   didReceiveAttrs() {
-    Ember.assert('dateTimePeriod must be defined in order to use navi-date-range-picker', get(this, 'dateTimePeriod'));
+    assert('dateTimePeriod must be defined in order to use navi-date-range-picker', get(this, 'dateTimePeriod'));
     this._super(...arguments);
   },
 

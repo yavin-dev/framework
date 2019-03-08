@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import { run, next } from '@ember/runloop';
 import moment from 'moment';
 import { test, moduleForComponent } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
@@ -30,7 +30,7 @@ test('Select date', function(assert) {
   );
 
   /* == Update date after creation == */
-  Ember.run(() => {
+  run(() => {
     this.set('date', moment('2015-06-17', TEST_FORMAT));
   });
 
@@ -43,7 +43,7 @@ test('Select date', function(assert) {
   );
 
   /* == Date outside of range == */
-  Ember.run(() => {
+  run(() => {
     this.set('date', moment('2050-06-17', TEST_FORMAT));
   });
 
@@ -207,7 +207,7 @@ test('Selection changes with time period', function(assert) {
 
   /* == Month to Quarter Selection == */
   this.set('dateTimePeriod', 'quarter');
-  Ember.run.next(() => {
+  next(() => {
     assert.deepEqual(
       this.$('.active-month')
         .toArray()
@@ -219,7 +219,7 @@ test('Selection changes with time period', function(assert) {
 
   /* == Quarter to Year Selection == */
   this.set('dateTimePeriod', 'year');
-  Ember.run.next(() => {
+  next(() => {
     assert.ok(
       this.$('.year:contains(2015)').is('.active'),
       'Month to Quarter Selection - Previously selected quarter is converted to its year'

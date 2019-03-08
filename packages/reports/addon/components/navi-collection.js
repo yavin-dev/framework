@@ -15,12 +15,15 @@
  *       )
  *   }}
  */
-import Ember from 'ember';
+import { oneWay, or } from '@ember/object/computed';
+
+import { A } from '@ember/array';
+import Component from '@ember/component';
+import { get, computed } from '@ember/object';
+import { isEmpty } from '@ember/utils';
 import layout from '../templates/components/navi-collection';
 
-const { computed, get, isEmpty } = Ember;
-
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   /**
@@ -36,7 +39,7 @@ export default Ember.Component.extend({
   /**
    * @param {Object} filter - current report table filter
    */
-  filter: computed.oneWay('filterOptions.firstObject'),
+  filter: oneWay('filterOptions.firstObject'),
 
   /**
    *
@@ -71,7 +74,7 @@ export default Ember.Component.extend({
   /**
    * @param {Array} filterOptions - list of filters for the report table
    */
-  filterOptions: Ember.A([
+  filterOptions: A([
     {
       filterFn: item => item,
       name: 'All'
@@ -85,5 +88,5 @@ export default Ember.Component.extend({
   /**
    * @property {Boolean} hasTableLoaded - indicates if table has loaded
    */
-  hasTableLoaded: computed.or('items.isSettled', 'items.isLoaded')
+  hasTableLoaded: or('items.isSettled', 'items.isLoaded')
 });

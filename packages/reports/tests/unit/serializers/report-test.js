@@ -1,8 +1,7 @@
-import Ember from 'ember';
+import { run } from '@ember/runloop';
+import { getOwner } from '@ember/application';
 import { moduleForModel, test } from 'ember-qunit';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
-
-const { getOwner } = Ember;
 
 let Store;
 
@@ -144,7 +143,7 @@ test('Serializing record', function(assert) {
     }
   };
 
-  return Ember.run(() => {
+  return run(() => {
     return Store.findRecord('report', 1).then(report => {
       assert.ok(report.get('createdOn'), 'Report model contains "createdOn" attribute');
 
@@ -241,7 +240,7 @@ test('Serializing multi param request', function(assert) {
     }
   };
 
-  return Ember.run(() => {
+  return run(() => {
     return Store.findRecord('report', 8).then(report => {
       assert.deepEqual(
         report.serialize(),

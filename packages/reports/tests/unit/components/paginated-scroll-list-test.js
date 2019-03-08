@@ -1,7 +1,5 @@
+import { get } from '@ember/object';
 import { test, moduleForComponent } from 'ember-qunit';
-import Ember from 'ember';
-
-const { get } = Ember;
 
 const ITEMS = [1, 2, 3, 4, 5, 6, 7, 8];
 

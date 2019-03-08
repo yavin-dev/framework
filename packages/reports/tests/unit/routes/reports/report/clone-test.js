@@ -1,7 +1,7 @@
+import Service from '@ember/service';
+import { run } from '@ember/runloop';
+import { getOwner } from '@ember/application';
 import { moduleFor, test } from 'ember-qunit';
-import Ember from 'ember';
-
-const { getOwner } = Ember;
 
 moduleFor('route:reports/report/clone', 'Unit | Route | reports/report/clone', {
   needs: ['model:user', 'model:report', 'model:delivery-rule', 'model:dashboard', 'service:navi-notifications']
@@ -10,13 +10,13 @@ moduleFor('route:reports/report/clone', 'Unit | Route | reports/report/clone', {
 test('_cloneReport', function(assert) {
   assert.expect(3);
 
-  return Ember.run(() => {
+  return run(() => {
     const store = getOwner(this).lookup('service:store'),
       mockAuthor = store.createRecord('user', { id: 'Gannon' });
 
     this.register(
       'service:user',
-      Ember.Service.extend({
+      Service.extend({
         getUser: () => mockAuthor
       })
     );

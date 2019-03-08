@@ -1,5 +1,7 @@
+import EmberObject, { get } from '@ember/object';
+import { run } from '@ember/runloop';
+import { resolve } from 'rsvp';
 import { moduleFor, test } from 'ember-qunit';
-import Ember from 'ember';
 
 moduleFor('route:reports/report/view', 'Unit | Route | reports/report/view', {
   needs: [
@@ -61,12 +63,12 @@ test('model', function(assert) {
           'Options from route are passed to fact service'
         );
 
-        return Ember.RSVP.resolve({ request: serializedRequest, response: factServiceResponse });
+        return resolve({ request: serializedRequest, response: factServiceResponse });
       }
     }
   });
 
-  Ember.run(() => route.model()).then(model => {
+  run(() => route.model()).then(model => {
     assert.deepEqual(
       model,
       { request: serializedRequest, response: factServiceResponse },
@@ -80,7 +82,7 @@ test('invalid visualization', function(assert) {
 
   this.register(
     'manifest:invalid-type',
-    Ember.Object.extend({
+    EmberObject.extend({
       typeIsValid: () => false
     })
   );
@@ -92,15 +94,11 @@ test('invalid visualization', function(assert) {
       }
     };
 
-  Ember.run(() => {
+  run(() => {
     route._setValidVisualizationType(null, report);
   });
 
-  assert.equal(
-    Ember.get(report, 'visualization.type'),
-    'table',
-    'Any invalid visualization types are defaulted to table'
-  );
+  assert.equal(get(report, 'visualization.type'), 'table', 'Any invalid visualization types are defaulted to table');
 });
 
 test('runReport action', function(assert) {

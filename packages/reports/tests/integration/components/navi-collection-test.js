@@ -1,10 +1,13 @@
-import Ember from 'ember';
+import { run } from '@ember/runloop';
+import Component from '@ember/component';
+import { A } from '@ember/array';
+import ArrayProxy from '@ember/array/proxy';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 
-const REPORTS = Ember.ArrayProxy.create({
+const REPORTS = ArrayProxy.create({
   isSettled: true, // Mock a loaded promise array
-  content: Ember.A([
+  content: A([
     {
       id: 1,
       title: 'Hyrule News',
@@ -44,7 +47,7 @@ moduleForComponent('navi-collection', 'Integration | Component | navi collection
 
   beforeEach() {
     // suppress report-actions/export component inside integration tests, since we are not testing it here
-    this.register('component:report-actions/export', Ember.Component.extend(), { instantiate: false });
+    this.register('component:report-actions/export', Component.extend(), { instantiate: false });
   }
 });
 
@@ -56,7 +59,7 @@ test('Table filtering', function(assert) {
   this.render(TEMPLATE);
 
   // Click "Favorites" filter option
-  Ember.run(() => this.$('.pick-form li:contains(All)').click());
+  run(() => this.$('.pick-form li:contains(All)').click());
 
   let listedReports = this.$('tbody tr td:first-of-type')
     .toArray()
@@ -73,7 +76,7 @@ test('Table filtering', function(assert) {
   );
 
   // Click "Favorites" filter option
-  Ember.run(() => this.$('.pick-form li:contains(Favorites)').click());
+  run(() => this.$('.pick-form li:contains(Favorites)').click());
   listedReports = this.$('tbody tr td:first-of-type')
     .toArray()
     .map(el =>
@@ -97,7 +100,7 @@ test('Favorite icon', function(assert) {
   this.render(TEMPLATE);
 
   //Reset to all filter
-  Ember.run(() => this.$('.pick-form li:contains(All)').click());
+  run(() => this.$('.pick-form li:contains(All)').click());
 
   assert.notOk(
     this.$('tbody tr:eq(0) td:first-of-type i').is('.favorite-item--active'),
@@ -157,7 +160,7 @@ test('Actions in Table', function(assert) {
     'Actions column is not shown when `actions` component is missing from collection config'
   );
 
-  this.register('component:mock-actions-component', Ember.Component.extend(), {
+  this.register('component:mock-actions-component', Component.extend(), {
     instantiate: false
   });
 
@@ -181,9 +184,9 @@ test('Error Message - default', function(assert) {
 
   this.set(
     'items',
-    Ember.ArrayProxy.create({
+    ArrayProxy.create({
       isSettled: true,
-      content: Ember.A()
+      content: A()
     })
   );
 
@@ -214,9 +217,9 @@ test('Error Message - custom', function(assert) {
 
   this.set(
     'items',
-    Ember.ArrayProxy.create({
+    ArrayProxy.create({
       isSettled: true,
-      content: Ember.A()
+      content: A()
     })
   );
 

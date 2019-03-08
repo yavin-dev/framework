@@ -1,4 +1,5 @@
-import Ember from 'ember';
+import { run } from '@ember/runloop';
+import { isEmpty } from '@ember/utils';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { fillInSync } from '../../helpers/fill-in-sync';
@@ -85,7 +86,7 @@ test('show all/show selected', function(assert) {
   );
 
   assert.ok(
-    Ember.isEmpty(this.$('.test-item__filtered')),
+    isEmpty(this.$('.test-item__filtered')),
     'the boolean `areItemsFiltered` is falsy when the item list is unfiltered'
   );
 
@@ -101,7 +102,7 @@ test('show all/show selected', function(assert) {
     'All the items are rendered as list-item initially'
   );
 
-  Ember.run(() => {
+  run(() => {
     this.$('.navi-list-selector__show-link').click();
   });
 
@@ -146,7 +147,7 @@ test('show all/show selected', function(assert) {
     'the show link will be change to "Show Selected"'
   );
 
-  Ember.run(() => {
+  run(() => {
     this.$('.navi-list-selector__show-link').click();
   });
   assert.equal(
@@ -161,7 +162,7 @@ test('show all/show selected', function(assert) {
 test('search', function(assert) {
   assert.expect(5);
 
-  Ember.run(() => {
+  run(() => {
     fillInSync('.navi-list-selector__search-input', 'ba');
   });
 
@@ -177,7 +178,7 @@ test('search', function(assert) {
     'the items that match the search query are rendered as `list-item`s'
   );
 
-  Ember.run(() => {
+  run(() => {
     this.$('.navi-list-selector__show-link').click();
   });
 
@@ -201,7 +202,7 @@ test('search', function(assert) {
     'No items found error message is displayed when no items match the search query'
   );
 
-  Ember.run(() => {
+  run(() => {
     this.$('.navi-list-selector__search-input-clear').click();
   });
 

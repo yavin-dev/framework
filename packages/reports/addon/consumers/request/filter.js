@@ -2,8 +2,12 @@
  * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
+import { inject as service } from '@ember/service';
+
+import { assign } from '@ember/polyfills';
+import { setProperties, set, get } from '@ember/object';
+import { assert } from '@ember/debug';
 import ActionConsumer from 'navi-core/consumers/action-consumer';
-import Ember from 'ember';
 import { RequestActions } from 'navi-reports/services/request-action-dispatcher';
 import DefaultIntervals from 'navi-reports/utils/enums/default-intervals';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
@@ -11,8 +15,6 @@ import { getSelectedMetricsOfBase, getUnfilteredMetricsOfBase } from 'navi-repor
 import { isEmpty } from '@ember/utils';
 import IntervalFragment from 'navi-core/models/bard-request/fragments/interval';
 import { featureFlag } from 'navi-core/helpers/feature-flag';
-
-const { assign, inject, get, set, setProperties, assert } = Ember;
 
 const DEFAULT_METRIC_FILTER = {
   operator: 'gt',
@@ -23,7 +25,7 @@ export default ActionConsumer.extend({
   /**
    * @property {Ember.Service} requestActionDispatcher
    */
-  requestActionDispatcher: inject.service(),
+  requestActionDispatcher: service(),
 
   /**
    * @method _getNextParameterForMetric

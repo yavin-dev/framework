@@ -1,8 +1,9 @@
+import { A } from '@ember/array';
+import { run } from '@ember/runloop';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import Duration from 'navi-core/utils/classes/duration';
 import Interval from 'navi-core/utils/classes/interval';
-import Ember from 'ember';
 
 moduleForComponent('filter-values/date-range', 'Integration | Component | filter values/date range', {
   integration: true,
@@ -52,9 +53,9 @@ test('it renders', function(assert) {
     'Predefined ranges are set based on the request time grain'
   );
 
-  Ember.run(() => {
+  run(() => {
     let selectedInterval = new Interval(new Duration('P7D'), 'current');
-    this.set('filter', { values: Ember.A([selectedInterval]) });
+    this.set('filter', { values: A([selectedInterval]) });
   });
 
   assert.equal(

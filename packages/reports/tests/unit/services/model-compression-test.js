@@ -1,6 +1,7 @@
+import { run } from '@ember/runloop';
+import { getOwner } from '@ember/application';
 import { moduleFor, test } from 'ember-qunit';
 import { startMirage } from 'dummy/initializers/ember-cli-mirage';
-import Ember from 'ember';
 
 moduleFor('service:model-compression', 'Unit | Service | model compression', {
   needs: [
@@ -59,7 +60,7 @@ moduleFor('service:model-compression', 'Unit | Service | model compression', {
 
   beforeEach() {
     this.server = startMirage();
-    return Ember.getOwner(this)
+    return getOwner(this)
       .lookup('service:bard-metadata')
       .loadMetadata();
   },
@@ -74,7 +75,7 @@ test('compress and decompress', function(assert) {
 
   let service = this.subject();
 
-  return Ember.run(async function() {
+  return run(async function() {
     let store = service.get('store'),
       user = store.createRecord('user', { id: 'midna' }),
       request = store.createFragment('bard-request/request'),
@@ -114,7 +115,7 @@ test('compress and decompress', function(assert) {
 test('id is required', function(assert) {
   assert.expect(1);
 
-  Ember.run(() => {
+  run(() => {
     let service = this.subject(),
       store = service.get('store'),
       report = store.createRecord('report', { title: 'Hello World' });
@@ -130,7 +131,7 @@ test('id is required', function(assert) {
 test('_pushPayload', function(assert) {
   assert.expect(3);
 
-  Ember.run(() => {
+  run(() => {
     let service = this.subject(),
       store = service.get('store'),
       report = store.createRecord('report', { title: 'Hello World' }),

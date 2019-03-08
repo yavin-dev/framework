@@ -14,13 +14,14 @@
  *   {{/dimension-selector}}
  */
 
-import Ember from 'ember';
+import { readOnly, filter, mapBy } from '@ember/object/computed';
+
+import Component from '@ember/component';
+import { getWithDefault, set, get, computed } from '@ember/object';
 import { A as arr } from '@ember/array';
 import layout from '../templates/components/dimension-selector';
 
-const { computed, get, set, getWithDefault } = Ember;
-
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   /*
@@ -31,17 +32,17 @@ export default Ember.Component.extend({
   /*
    * @property {Array} allDimensions
    */
-  allDimensions: computed.readOnly('request.logicalTable.timeGrain.dimensions'),
+  allDimensions: readOnly('request.logicalTable.timeGrain.dimensions'),
 
   /*
    * @property {Array} timeGrains - copy of all time grains for the logical table selected
    */
-  timeGrains: computed.readOnly('request.logicalTable.table.timeGrains'),
+  timeGrains: readOnly('request.logicalTable.table.timeGrains'),
 
   /*
    * @property {Array} allTimeGrains - all time grains for the logical table selected
    */
-  allTimeGrains: computed.filter('timeGrains', function(timeGrain) {
+  allTimeGrains: filter('timeGrains', function(timeGrain) {
     //add category to every timegrain object
     set(timeGrain, 'category', 'Time Grain');
 
@@ -63,7 +64,7 @@ export default Ember.Component.extend({
   /*
    * @property {Array} selectedDimensions - dimensions in the request
    */
-  selectedDimensions: computed.mapBy('request.dimensions', 'dimension'),
+  selectedDimensions: mapBy('request.dimensions', 'dimension'),
 
   /*
    * @property {Array} selectedFilters - filters in the request
@@ -75,7 +76,7 @@ export default Ember.Component.extend({
   /*
    * @property {Object} selectedTimeGrain - timeGrain in the request
    */
-  selectedTimeGrain: computed.readOnly('request.logicalTable.timeGrain'),
+  selectedTimeGrain: readOnly('request.logicalTable.timeGrain'),
 
   /*
    * @property {Object} selectedColumnsAndFilters - combination of selectedColumns and SelectedFilters

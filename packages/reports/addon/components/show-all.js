@@ -9,12 +9,14 @@
  *      cancel=(action cancelAction)
  *   }}
  */
-import Ember from 'ember';
+import { A } from '@ember/array';
+
+import Component from '@ember/component';
+import { assert } from '@ember/debug';
+import { get, set } from '@ember/object';
 import layout from '../templates/components/show-all';
 
-const { assert, set, get } = Ember;
-
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   /**
@@ -51,7 +53,7 @@ export default Ember.Component.extend({
 
   actions: {
     removeFilterVal(filterVal) {
-      Ember.A(get(this, 'values')).removeObject(filterVal);
+      A(get(this, 'values')).removeObject(filterVal);
       set(this, 'filterValsDidChange', true);
     }
   }

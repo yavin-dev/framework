@@ -2,12 +2,14 @@
  * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import Ember from 'ember';
+import { readOnly } from '@ember/object/computed';
+
+import { inject as service } from '@ember/service';
+import Component from '@ember/component';
+import { get, computed } from '@ember/object';
 import layout from '../templates/components/report-builder';
 
-const { computed, get } = Ember;
-
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   classNames: ['report-builder'],
@@ -15,12 +17,12 @@ export default Ember.Component.extend({
   /**
    * @property {Service} metadataService
    */
-  metadataService: Ember.inject.service('bard-metadata'),
+  metadataService: service('bard-metadata'),
 
   /**
    * @property {Object} request
    */
-  request: computed.readOnly('report.request'),
+  request: readOnly('report.request'),
 
   /**
    * @property {boolean} -- whether report has valid table

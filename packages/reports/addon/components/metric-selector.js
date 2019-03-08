@@ -13,14 +13,16 @@
  *   {{/metric-selector}}
  */
 
-import Ember from 'ember';
+import { readOnly } from '@ember/object/computed';
+
+import { A } from '@ember/array';
+import Component from '@ember/component';
+import { get, computed } from '@ember/object';
 import uniqBy from 'lodash/uniqBy';
 import layout from '../templates/components/metric-selector';
 import { run } from '@ember/runloop';
 
-const { computed, get } = Ember;
-
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   /*
@@ -31,7 +33,7 @@ export default Ember.Component.extend({
   /*
    * @property {Array} allMetrics
    */
-  allMetrics: computed.readOnly('request.logicalTable.timeGrain.metrics'),
+  allMetrics: readOnly('request.logicalTable.timeGrain.metrics'),
 
   /*
    * @property {Array} selectedMetrics - selected metrics in the request
@@ -40,7 +42,7 @@ export default Ember.Component.extend({
     let metrics = get(this, 'request.metrics').toArray(),
       selectedBaseMetrics = uniqBy(metrics, metric => get(metric, 'metric.name'));
 
-    return Ember.A(selectedBaseMetrics).mapBy('metric');
+    return A(selectedBaseMetrics).mapBy('metric');
   }),
 
   /*
@@ -59,7 +61,7 @@ export default Ember.Component.extend({
    *                                         in request havings
    */
   metricsFiltered: computed('request.having.[]', function() {
-    return Ember.A(get(this, 'request.having'))
+    return A(get(this, 'request.having'))
       .mapBy('metric.metric.name')
       .reduce((list, metric) => {
         list[metric] = true;

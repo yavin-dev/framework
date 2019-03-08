@@ -2,15 +2,15 @@
  * Copyright 2017, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import Ember from 'ember';
 import { computed } from '@ember/object';
 import isEqual from 'lodash/isEqual';
+import Controller, { inject as controller } from '@ember/controller';
 
-export default Ember.Controller.extend({
+export default Controller.extend({
   /*
    * @property {Controller} reportController
    */
-  reportController: Ember.inject.controller('reports.report'),
+  reportController: controller('reports.report'),
 
   /*
    * @property {Boolean} hasRequestRun

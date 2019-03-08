@@ -1,5 +1,5 @@
+import { A } from '@ember/array';
 import { moduleForComponent, test } from 'ember-qunit';
-import Ember from 'ember';
 
 moduleForComponent('filter-builders/dimension', 'Unit | Component | filter-builders/dimension', {
   unit: true
@@ -24,7 +24,7 @@ test('filter property', function(assert) {
 
   assert.deepEqual(
     dimBuilder.get('filter.operator'),
-    Ember.A(dimBuilder.get('supportedOperators')).findBy('id', mockFilterFragment.operator),
+    A(dimBuilder.get('supportedOperators')).findBy('id', mockFilterFragment.operator),
     'Filter operator matches the supported operator object with the id from the request fragment'
   );
 

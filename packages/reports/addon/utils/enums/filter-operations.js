@@ -3,16 +3,19 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import Ember from 'ember';
+import { A } from '@ember/array';
+
+import { assert } from '@ember/debug';
+import { typeOf } from '@ember/utils';
+import { computed, get } from '@ember/object';
 import config from 'ember-get-config';
-const { get, assert, typeOf, computed } = Ember;
 
 export default {
   /**
    * @property {Array} _definitions - list of response formats
    */
   _definitions: computed(function() {
-    let defaultOperations = Ember.A([
+    let defaultOperations = A([
       {
         id: 'in',
         name: 'Equals',

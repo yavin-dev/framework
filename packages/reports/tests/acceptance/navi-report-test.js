@@ -1,11 +1,12 @@
+import { run } from '@ember/runloop';
+import Component from '@ember/component';
+import { get } from '@ember/object';
 import Ember from 'ember';
 import { module, test } from 'qunit';
 import startApp from '../helpers/start-app';
 import { teardownModal } from '../helpers/teardown-modal';
 import config from 'ember-get-config';
 import Mirage from 'ember-cli-mirage';
-
-const { get } = Ember;
 
 let Application;
 
@@ -25,7 +26,7 @@ module('Acceptances | Navi Report', {
     // Mocking add-to-dashboard component
     Application.register(
       'component:report-actions/add-to-dashboard',
-      Ember.Component.extend({ classNames: 'add-to-dashboard' }),
+      Component.extend({ classNames: 'add-to-dashboard' }),
       { instantiate: false }
     );
 
@@ -34,7 +35,7 @@ module('Acceptances | Navi Report', {
   afterEach() {
     teardownModal();
     server.shutdown();
-    Ember.run(Application, 'destroy');
+    run(Application, 'destroy');
 
     config.navi.FEATURES.enableVerticalCollectionTableIterator = false;
   }

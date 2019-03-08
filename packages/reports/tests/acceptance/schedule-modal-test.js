@@ -511,12 +511,10 @@ test('schedule modal error when fetching existing schedule', function(assert) {
   let originalLoggerError = Ember.Logger.error,
     originalException = Ember.Test.adapter.exception;
 
-  Ember.Logger.error = function() {};
-  Ember.Test.adapter.exception = function() {};
+  Ember.Logger.error = () => {};
+  Ember.Test.adapter.exception = () => {};
 
-  server.get('/deliveryRules/:id', () => {
-    return new Mirage.Response(500);
-  });
+  server.get('/deliveryRules/:id', { errors: ['The deliveryRules endpoint is down'] }, 500);
 
   // Open an existing schedule
   andThen(() => $('.navi-collection__row:nth-of-type(3)').trigger('mouseenter'));

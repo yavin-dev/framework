@@ -1,10 +1,9 @@
-import Ember from 'ember';
+import { run } from '@ember/runloop';
+import { getOwner } from '@ember/application';
 import { moduleFor, test } from 'ember-qunit';
 import config from 'ember-get-config';
 import wait from 'ember-test-helpers/wait';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
-
-const { getOwner } = Ember;
 
 let Store;
 
@@ -34,7 +33,7 @@ test('getUser returns user', function(assert) {
   let getUser = this.subject();
 
   return wait().then(() => {
-    return Ember.run(() => {
+    return run(() => {
       let userFromStore = Store.peekRecord('user', config.navi.user),
         user = getUser.compute();
       assert.deepEqual(user, userFromStore, 'the user model retrieved using the helper is the current user');

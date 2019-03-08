@@ -9,11 +9,10 @@
  *       removeEmailAtIndex=(action 'removeEmailAtIndex')
  *   }}
  */
+import { get } from '@ember/object';
+
 import Component from '@ember/component';
 import layout from '../templates/components/navi-email-input';
-import Ember from 'ember';
-
-const { get } = Ember;
 
 export default Component.extend({
   layout,

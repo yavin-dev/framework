@@ -10,12 +10,13 @@
  *   {{/report-actions/multiple-format-export}}
  */
 
-import Ember from 'ember';
+import { inject as service } from '@ember/service';
+
+import Component from '@ember/component';
+import { getProperties, get, computed } from '@ember/object';
 import layout from '../../templates/components/report-actions/multiple-format-export';
 
-const { get, getProperties } = Ember;
-
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   /**
@@ -26,27 +27,27 @@ export default Ember.Component.extend({
   /**
    * @property {Service} facts - instance of bard facts service
    */
-  facts: Ember.inject.service('bard-facts'),
+  facts: service('bard-facts'),
 
   /**
    * @property {Service} modelCompression
    */
-  modelCompression: Ember.inject.service(),
+  modelCompression: service(),
 
   /**
    * @property {Service} store
    */
-  store: Ember.inject.service(),
+  store: service(),
 
   /**
    * @property {Service} naviNotifications
    */
-  naviNotifications: Ember.inject.service(),
+  naviNotifications: service(),
 
   /**
    * @property {String} csvHref - CSV download link for the report
    */
-  csvHref: Ember.computed('report.request', 'report.validations.isTruelyValid', function() {
+  csvHref: computed('report.request', 'report.validations.isTruelyValid', function() {
     let request = get(this, 'report.request').serialize();
     return get(this, 'facts').getURL(request, { format: 'csv' });
   }),
@@ -54,7 +55,7 @@ export default Ember.Component.extend({
   /**
    * @property {Promise} pdfHref - Promise resolving to pdf download link
    */
-  pdfHref: Ember.computed('report.request', 'report.visualization', 'report.validations.isTruelyValid', function() {
+  pdfHref: computed('report.request', 'report.visualization', 'report.validations.isTruelyValid', function() {
     let { report, modelCompression, store } = getProperties(this, 'report', 'modelCompression', 'store'),
       modelWithId = report;
 
@@ -73,7 +74,7 @@ export default Ember.Component.extend({
   /**
    * @property {Array} exportFormats - A list of export formats
    */
-  exportFormats: Ember.computed('csvHref', 'pdfHref', function() {
+  exportFormats: computed('csvHref', 'pdfHref', function() {
     return [
       {
         type: 'CSV',

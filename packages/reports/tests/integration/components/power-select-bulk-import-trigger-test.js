@@ -1,8 +1,9 @@
+import { run } from '@ember/runloop';
+import { getOwner } from '@ember/application';
 import { moduleForComponent, test } from 'ember-qunit';
 import { hbsWithModal } from '../../helpers/hbs-with-modal';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
 import wait from 'ember-test-helpers/wait';
-import Ember from 'ember';
 
 moduleForComponent('power-select-bulk-import-trigger', 'Integration | Component | power select bulk import trigger', {
   integration: true,
@@ -41,7 +42,7 @@ moduleForComponent('power-select-bulk-import-trigger', 'Integration | Component 
                         <span class='selected-dim-id'>{{item.id}}</span>
                     {{/power-select-multiple}}
                 `,
-                Ember.getOwner(this)
+                getOwner(this)
               )
             );
           });
@@ -126,7 +127,7 @@ test('importing dimensions', function(assert) {
 
   paste(this, '78787, ,114, 101272');
   return wait().then(() => {
-    Ember.run(() => {
+    run(() => {
       $('.dimension-bulk-import .btn-primary').click();
     });
 
@@ -135,7 +136,7 @@ test('importing dimensions', function(assert) {
     /* == Duplicate ids == */
     paste(this, '114, 101272');
     return wait().then(() => {
-      Ember.run(() => {
+      run(() => {
         $('.dimension-bulk-import .btn-primary').click();
       });
 
@@ -144,7 +145,7 @@ test('importing dimensions', function(assert) {
       /* == Adding ids == */
       paste(this, '100001, 100002');
       return wait().then(() => {
-        Ember.run(() => {
+        run(() => {
           $('.dimension-bulk-import .btn-primary').click();
         });
 
@@ -170,7 +171,7 @@ test('trying to import invalid values', function(assert) {
 
   paste(this, 'not, a, valid, id');
   return wait().then(() => {
-    Ember.run(() => {
+    run(() => {
       $('.dimension-bulk-import .btn-primary').click();
     });
 

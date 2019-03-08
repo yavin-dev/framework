@@ -1,11 +1,10 @@
+import { A } from '@ember/array';
+import { getOwner } from '@ember/application';
 import { moduleForComponent, test } from 'ember-qunit';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
-import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
 import Interval from 'navi-core/utils/classes/interval';
-
-const { getOwner } = Ember;
 
 const RESPONSE = {
   rows: [
@@ -70,7 +69,7 @@ moduleForComponent('print-report-view', 'Integration | Component | print report 
               timeGrainName: 'day'
             }),
             responseFormat: 'csv',
-            intervals: Ember.A([{ interval: new Interval('current', 'next') }])
+            intervals: A([{ interval: new Interval('current', 'next') }])
           }),
           visualization: {
             type: 'line-chart',

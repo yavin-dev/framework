@@ -1,7 +1,8 @@
+import { run } from '@ember/runloop';
+import { resolve, reject } from 'rsvp';
+import { A } from '@ember/array';
+import { get } from '@ember/object';
 import { moduleFor, test } from 'ember-qunit';
-import Ember from 'ember';
-
-const { get } = Ember;
 
 moduleFor('route:reports/report', 'Unit | Route | reports/report', {
   needs: [
@@ -29,11 +30,11 @@ test('model hook', function(assert) {
 
   let route = this.subject({
     store: {
-      findRecord: (type, id) => Ember.A(webserviceReports).findBy('id', id),
+      findRecord: (type, id) => A(webserviceReports).findBy('id', id),
       peekAll: () => localReports
     },
     user: {
-      findOrRegister: () => Ember.RSVP.resolve()
+      findOrRegister: () => resolve()
     },
     _defaultVisualization: report => report
   });
@@ -129,7 +130,7 @@ test('deactivate method', function(assert) {
 test('saveReport action', function(assert) {
   assert.expect(2);
 
-  let savePromise = Ember.RSVP.reject(),
+  let savePromise = reject(),
     mockReport = {
       save: () => savePromise
     },
@@ -139,7 +140,7 @@ test('saveReport action', function(assert) {
       replaceWith: () => null // Functionality covered in acceptance test
     });
 
-  return Ember.run(() => {
+  return run(() => {
     /* == Error save == */
     mockNotificationService.add = ({ type }) => {
       assert.equal(type, 'danger', 'Danger notification is shown when save was unsuccesful');
@@ -152,7 +153,7 @@ test('saveReport action', function(assert) {
       mockNotificationService.add = ({ type }) => {
         assert.equal(type, 'success', 'Success notification is shown when save was succesful');
       };
-      savePromise = Ember.RSVP.resolve();
+      savePromise = resolve();
 
       route.send('saveReport', mockReport);
       return savePromise;

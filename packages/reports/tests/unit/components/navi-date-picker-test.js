@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import { run } from '@ember/runloop';
 import { test, moduleForComponent } from 'ember-qunit';
 
 moduleForComponent('navi-date-picker', 'Unit | Component | Navi Date Picker', {
@@ -9,7 +9,7 @@ moduleForComponent('navi-date-picker', 'Unit | Component | Navi Date Picker', {
 test('_isNewDateValue', function(assert) {
   assert.expect(3);
 
-  let component = Ember.run(() => this.subject()),
+  let component = run(() => this.subject()),
     testDate1 = new Date(1995, 11, 17),
     testDate2 = new Date(2011, 11, 11);
 

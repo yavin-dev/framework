@@ -1,7 +1,8 @@
+import { A } from '@ember/array';
+import Component from '@ember/component';
 import { moduleForComponent, test } from 'ember-qunit';
 import { clickTrigger, nativeMouseUp } from 'ember-power-select/test-support/helpers';
 import hbs from 'htmlbars-inline-precompile';
-import Ember from 'ember';
 
 const filter = {
   subject: {
@@ -43,11 +44,11 @@ moduleForComponent('filter-builders/base', 'Integration | Component | filter-bui
     });
     this.register(
       'component:mock/values-component',
-      Ember.Component.extend({
+      Component.extend({
         classNames: 'mock-value-component'
       })
     );
-    this.register('component:mock/another-values-component', Ember.Component.extend());
+    this.register('component:mock/another-values-component', Component.extend());
   }
 });
 
@@ -81,7 +82,7 @@ test('it renders', function(assert) {
           .trim();
       })
       .get(),
-    Ember.A(supportedOperators).mapBy('longName'),
+    A(supportedOperators).mapBy('longName'),
     'All supported operators show up as options in the operator selector'
   );
 

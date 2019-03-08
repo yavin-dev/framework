@@ -1,9 +1,8 @@
-import Ember from 'ember';
+import { run } from '@ember/runloop';
+import { getOwner } from '@ember/application';
 import { moduleFor, test } from 'ember-qunit';
 import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
 import wait from 'ember-test-helpers/wait';
-
-const { getOwner } = Ember;
 
 moduleFor('route:reports/index', 'Unit | Route | reports/index', {
   needs: [
@@ -77,7 +76,7 @@ test('reports model', function(assert) {
   return wait().then(() => {
     let route = this.subject();
 
-    return Ember.run(() => {
+    return run(() => {
       return route.model().then(model => {
         return model.get('reports').then(reports => {
           assert.deepEqual(reports.mapBy('id'), ['1', '2', '4'], 'Routes model returns the reports');

@@ -1,11 +1,11 @@
-import Ember from 'ember';
+import { run } from '@ember/runloop';
+import { get } from '@ember/object';
+import { getOwner } from '@ember/application';
 import { moduleFor, test } from 'ember-qunit';
 import { RequestActions } from 'navi-reports/services/request-action-dispatcher';
 import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
 
 let Store, MetadataService, AdClicks, PageViews, CurrentModel, Consumer;
-
-const { get, getOwner } = Ember;
 
 moduleFor('consumer:request/metric', 'Unit | Consumer | request metric', {
   needs: [
@@ -70,7 +70,7 @@ moduleFor('consumer:request/metric', 'Unit | Consumer | request metric', {
 test('ADD_METRIC', function(assert) {
   assert.expect(1);
 
-  Ember.run(() => {
+  run(() => {
     Consumer.send(RequestActions.ADD_METRIC, { currentModel: CurrentModel }, AdClicks);
   });
 
@@ -84,7 +84,7 @@ test('ADD_METRIC', function(assert) {
 test('REMOVE_METRIC', function(assert) {
   assert.expect(1);
 
-  Ember.run(() => {
+  run(() => {
     Consumer.send(RequestActions.ADD_METRIC, { currentModel: CurrentModel }, AdClicks);
     Consumer.send(RequestActions.REMOVE_METRIC, { currentModel: CurrentModel }, AdClicks);
   });
@@ -97,7 +97,7 @@ test('ADD_METRIC_FILTER', function(assert) {
 
   assert.equal(get(CurrentModel, 'request.metrics.length'), 0, 'The request starts with no metrics');
 
-  Ember.run(() => {
+  run(() => {
     Consumer.send(RequestActions.ADD_METRIC_FILTER, { currentModel: CurrentModel }, AdClicks);
   });
 
@@ -111,7 +111,7 @@ test('ADD_METRIC_FILTER', function(assert) {
 test('DID_UPDATE_TIME_GRAIN', function(assert) {
   assert.expect(2);
 
-  Ember.run(() => {
+  run(() => {
     Consumer.send(RequestActions.ADD_METRIC, { currentModel: CurrentModel }, AdClicks);
     Consumer.send(RequestActions.ADD_METRIC, { currentModel: CurrentModel }, PageViews);
   });

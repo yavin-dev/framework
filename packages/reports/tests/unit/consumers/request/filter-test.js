@@ -1,11 +1,11 @@
-import Ember from 'ember';
+import { A } from '@ember/array';
+import { get } from '@ember/object';
+import { getOwner } from '@ember/application';
 import { moduleFor, test } from 'ember-qunit';
 import { RequestActions } from 'navi-reports/services/request-action-dispatcher';
 import Interval from 'navi-core/utils/classes/interval';
 import Moment from 'moment';
 import DefaultIntervals from 'navi-reports/utils/enums/default-intervals';
-
-const { get, getOwner } = Ember;
 
 moduleFor('consumer:request/filter', 'Unit | Consumer | request filter', {
   needs: ['consumer:action-consumer', 'service:request-action-dispatcher'],
@@ -78,18 +78,18 @@ test('REMOVE_FILTER', function(assert) {
 
   let filter = { dimension: 'age', operator: 'in', values: [] },
     request = {
-      filters: Ember.A([filter]),
-      intervals: Ember.A([1, 2, 3]),
-      having: Ember.A([123])
+      filters: A([filter]),
+      intervals: A([1, 2, 3]),
+      having: A([123])
     };
 
   this.subject().send(RequestActions.REMOVE_FILTER, { currentModel: { request } }, filter);
   assert.deepEqual(
     request,
     {
-      filters: Ember.A([]),
-      intervals: Ember.A([1, 2, 3]),
-      having: Ember.A([123])
+      filters: A([]),
+      intervals: A([1, 2, 3]),
+      having: A([123])
     },
     'The given filter was removed from any "filter" property that contained it'
   );
@@ -98,9 +98,9 @@ test('REMOVE_FILTER', function(assert) {
   assert.deepEqual(
     request,
     {
-      filters: Ember.A([]),
-      intervals: Ember.A([1, 3]),
-      having: Ember.A([123])
+      filters: A([]),
+      intervals: A([1, 3]),
+      having: A([123])
     },
     'The given filter was removed from any "filter" property that contained it'
   );
@@ -109,9 +109,9 @@ test('REMOVE_FILTER', function(assert) {
   assert.deepEqual(
     request,
     {
-      filters: Ember.A([]),
-      intervals: Ember.A([1, 3]),
-      having: Ember.A([])
+      filters: A([]),
+      intervals: A([1, 3]),
+      having: A([])
     },
     'The given filter was removed from any "filter" property that contained it'
   );
@@ -129,7 +129,7 @@ test('TOGGLE_DIM_FILTER', function(assert) {
   };
 
   let consumer = this.subject({ requestActionDispatcher: MockDispatcher }),
-    currentModel = { request: { filters: Ember.A() } };
+    currentModel = { request: { filters: A() } };
 
   consumer.send(RequestActions.TOGGLE_DIM_FILTER, { currentModel }, 'mockDim');
 });
@@ -149,7 +149,7 @@ test('ADD_DIM_FILTER', function(assert) {
         'the filterObj passed to the request to add is well formed'
       );
     },
-    currentModel = { request: { filters: Ember.A(), addFilter } };
+    currentModel = { request: { filters: A(), addFilter } };
 
   this.subject().send(
     RequestActions.ADD_DIM_FILTER,
@@ -173,7 +173,7 @@ test('ADD_DIM_FILTER - alternative primary key', function(assert) {
         'the filterObj passed to the request has the right field'
       );
     },
-    currentModel = { request: { filters: Ember.A(), addFilter } };
+    currentModel = { request: { filters: A(), addFilter } };
 
   this.subject().send(
     RequestActions.ADD_DIM_FILTER,
@@ -198,7 +198,7 @@ test('TOGGLE_METRIC_FILTER', function(assert) {
   };
 
   let consumer = this.subject({ requestActionDispatcher: MockDispatcher }),
-    currentModel = { request: { having: Ember.A() } };
+    currentModel = { request: { having: A() } };
 
   consumer.send(RequestActions.TOGGLE_METRIC_FILTER, { currentModel }, 'mockMetric');
 });
@@ -217,7 +217,7 @@ test('ADD_METRIC_FILTER', function(assert) {
         'the filterObj passed to the request to addHaving is well formed'
       );
     },
-    currentModel = { request: { having: Ember.A(), addHaving } };
+    currentModel = { request: { having: A(), addHaving } };
 
   this.subject().send(RequestActions.ADD_METRIC_FILTER, { currentModel }, 'mockMetric');
 });
@@ -237,7 +237,7 @@ test('ADD_METRIC_FILTER - with parameters', function(assert) {
         'the filterObj passed to the request to addHaving is well formed'
       );
     },
-    currentModel = { request: { having: Ember.A(), addHaving } };
+    currentModel = { request: { having: A(), addHaving } };
 
   this.subject().send(RequestActions.ADD_METRIC_FILTER, { currentModel }, 'mockMetric', parameters);
 });
@@ -251,9 +251,9 @@ test('REMOVE_METRIC', function(assert) {
 
   let currentModel = {
       request: {
-        intervals: Ember.A(),
-        filters: Ember.A(),
-        having: Ember.A(),
+        intervals: A(),
+        filters: A(),
+        having: A(),
         addHaving(having) {
           let metric = having.metric;
           metric.canonicalName = metric.name;
@@ -296,9 +296,9 @@ test('REMOVE_METRIC - multiple of same base metric', function(assert) {
 
   let currentModel = {
       request: {
-        intervals: Ember.A(),
-        filters: Ember.A(),
-        having: Ember.A(),
+        intervals: A(),
+        filters: A(),
+        having: A(),
         addHaving(having) {
           let metric = having.metric;
           metric.canonicalName = metric.parameters.foo;
@@ -334,9 +334,9 @@ test('DID_UPDATE_TIME_GRAIN', function(assert) {
 
   let currentModel = {
       request: {
-        intervals: Ember.A([{}]),
-        filters: Ember.A([{ dimension: Age }, { dimension: Gender }]),
-        having: Ember.A()
+        intervals: A([{}]),
+        filters: A([{ dimension: Age }, { dimension: Gender }]),
+        having: A()
       }
     },
     newTimeGrain = {
@@ -347,9 +347,7 @@ test('DID_UPDATE_TIME_GRAIN', function(assert) {
   this.subject().send(RequestActions.DID_UPDATE_TIME_GRAIN, { currentModel }, newTimeGrain);
 
   assert.ok(
-    Ember.get(currentModel, 'request.intervals.firstObject.interval').isEqual(
-      DefaultIntervals.getDefault(newTimeGrain.name)
-    ),
+    get(currentModel, 'request.intervals.firstObject.interval').isEqual(DefaultIntervals.getDefault(newTimeGrain.name)),
     'After time grain change, interval filter is set to default for new time grain'
   );
 
@@ -380,7 +378,7 @@ test('TOGGLE_PARAMETERIZED_METRIC_FILTER - add metric', function(assert) {
   };
 
   let consumer = this.subject({ requestActionDispatcher: MockDispatcher }),
-    currentModel = { request: { having: Ember.A() } };
+    currentModel = { request: { having: A() } };
 
   consumer.send(RequestActions.TOGGLE_PARAMETERIZED_METRIC_FILTER, { currentModel }, 'mockMetric', parameters);
 });
@@ -415,7 +413,7 @@ test('TOGGLE_PARAMETERIZED_METRIC_FILTER - remove metric', function(assert) {
   };
 
   let consumer = this.subject({ requestActionDispatcher: MockDispatcher }),
-    currentModel = { request: { having: Ember.A(havings) } };
+    currentModel = { request: { having: A(havings) } };
 
   consumer.send(RequestActions.TOGGLE_PARAMETERIZED_METRIC_FILTER, { currentModel }, metricWParam, parameters);
 });

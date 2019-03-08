@@ -4,12 +4,13 @@
  *
  * An ember-power-select options component that uses ember-collection
  */
-import Ember from 'ember';
+import { alias } from '@ember/object/computed';
+
+import { A } from '@ember/array';
+import { setProperties, get, computed } from '@ember/object';
 import Options from 'ember-power-select/components/power-select/options';
 import layout from '../templates/components/power-select-collection-options';
 import _ from 'lodash';
-
-const { computed, get, setProperties } = Ember;
 
 export default Options.extend({
   layout,
@@ -51,12 +52,12 @@ export default Options.extend({
   /**
    * @property {String} groupKey - option property to group by
    */
-  groupKey: computed.alias('extra.groupKey'),
+  groupKey: alias('extra.groupKey'),
 
   /**
    * @property {String} sortKey - option property to sort by
    */
-  sortKey: computed.alias('extra.sortKey'),
+  sortKey: alias('extra.sortKey'),
 
   /**
    * @property {Array} items - array of options to be used by hbs
@@ -121,7 +122,7 @@ export default Options.extend({
     let sortKey = get(this, 'sortKey');
 
     if (sortKey) {
-      return Ember.A(options).sortBy(sortKey);
+      return A(options).sortBy(sortKey);
     } else {
       return options;
     }

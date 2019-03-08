@@ -1,10 +1,10 @@
+import { getOwner } from '@ember/application';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
 import { clickTrigger, nativeMouseUp } from 'ember-power-select/test-support/helpers';
 import AgeValues from 'navi-data/mirage/bard-lite/dimensions/age';
 import wait from 'ember-test-helpers/wait';
-import Ember from 'ember';
 import config from 'ember-get-config';
 
 const MockFilter = {
@@ -27,7 +27,7 @@ moduleForComponent('filter-values/dimension-select', 'Integration | Component | 
   beforeEach: function() {
     this.filter = MockFilter;
     Mirage = setupMock();
-    return Ember.getOwner(this)
+    return getOwner(this)
       .lookup('service:bard-metadata')
       .loadMetadata();
   },

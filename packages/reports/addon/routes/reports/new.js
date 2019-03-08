@@ -3,40 +3,43 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import Ember from 'ember';
+import { A } from '@ember/array';
+
+import { reject } from 'rsvp';
+import { inject as service } from '@ember/service';
+import Route from '@ember/routing/route';
+import { get } from '@ember/object';
 import DS from 'ember-data';
 import Interval from 'navi-core/utils/classes/interval';
 import Duration from 'navi-core/utils/classes/duration';
 import DefaultIntervals from 'navi-reports/utils/enums/default-intervals';
 import config from 'ember-get-config';
 
-const { get } = Ember;
-
-export default Ember.Route.extend({
+export default Route.extend({
   /**
    * @property {Service} naviNotifications
    */
-  naviNotifications: Ember.inject.service(),
+  naviNotifications: service(),
 
   /**
    * @property {Service} naviVisualizations
    */
-  naviVisualizations: Ember.inject.service(),
+  naviVisualizations: service(),
 
   /**
    * @property {Service} modelCompression
    */
-  modelCompression: Ember.inject.service(),
+  modelCompression: service(),
 
   /**
    * @property {Service} metadataService - Bard Metadata Service
    */
-  metadataService: Ember.inject.service('bard-metadata'),
+  metadataService: service('bard-metadata'),
 
   /**
    * @property {Service} user
    */
-  user: Ember.inject.service(),
+  user: service(),
 
   /**
    * @method model
@@ -79,7 +82,7 @@ export default Ember.Route.extend({
 
         return model;
       })
-      .catch(() => Ember.RSVP.reject(new Error('Could not parse model query param')));
+      .catch(() => reject(new Error('Could not parse model query param')));
   },
 
   /**
@@ -147,7 +150,7 @@ export default Ember.Route.extend({
    */
   _getDefaultTimeGrainName(table) {
     let timeGrainName = get(config, 'navi.defaultTimeGrain'),
-      tableTimeGrains = Ember.A(get(table, 'timeGrains')),
+      tableTimeGrains = A(get(table, 'timeGrains')),
       timeGrainExist = tableTimeGrains.findBy('name', timeGrainName);
 
     if (!timeGrainExist) {

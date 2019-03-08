@@ -1,9 +1,9 @@
-import Ember from 'ember';
+import { run } from '@ember/runloop';
+import { getOwner } from '@ember/application';
+import { set, get } from '@ember/object';
 import { moduleForComponent, test } from 'ember-qunit';
 import { hbsWithModal } from '../../../helpers/hbs-with-modal';
 import wait from 'ember-test-helpers/wait';
-
-const { get, getOwner, set } = Ember;
 
 let Template;
 
@@ -41,7 +41,7 @@ test('confirm modal', function(assert) {
 
   assert.notOk(!!$('.ember-modal-dialog').length, 'Modal is not visible at the start');
 
-  Ember.run(() => {
+  run(() => {
     this.$('.delete > button').click();
   });
 
@@ -63,7 +63,7 @@ test('confirm modal', function(assert) {
     'Warning message is included in the widget modal'
   );
 
-  Ember.run(() => {
+  run(() => {
     $('button:contains(Cancel)').click();
   });
 
@@ -79,7 +79,7 @@ test('delete action', function(assert) {
 
   this.render(Template);
 
-  Ember.run(() => {
+  run(() => {
     this.$('.delete > button').click();
   });
 
@@ -106,7 +106,7 @@ test('default warning message', function(assert) {
     )
   );
 
-  Ember.run(() => {
+  run(() => {
     this.$('.delete > button').click();
   });
 

@@ -8,10 +8,10 @@
  *       request=request
  *   }}
  */
-import Ember from 'ember';
-import Base from './base';
+import { A } from '@ember/array';
 
-const { computed, get } = Ember;
+import { get, computed } from '@ember/object';
+import Base from './base';
 
 export default Base.extend({
   /**
@@ -44,7 +44,7 @@ export default Base.extend({
     return {
       subject: { longName },
       operator,
-      values: Ember.A([interval])
+      values: A([interval])
     };
   })
 });

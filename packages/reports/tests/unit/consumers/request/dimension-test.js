@@ -1,11 +1,11 @@
-import Ember from 'ember';
+import { run } from '@ember/runloop';
+import { get } from '@ember/object';
+import { getOwner } from '@ember/application';
 import { moduleFor, test } from 'ember-qunit';
 import { RequestActions } from 'navi-reports/services/request-action-dispatcher';
 import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
 
 let Store, MetadataService, Age, EventId, CurrentModel, Consumer;
-
-const { get, getOwner } = Ember;
 
 moduleFor('consumer:request/dimension', 'Unit | Consumer | request dimension', {
   needs: [
@@ -69,7 +69,7 @@ moduleFor('consumer:request/dimension', 'Unit | Consumer | request dimension', {
 test('ADD_DIMENSION', function(assert) {
   assert.expect(1);
 
-  Ember.run(() => {
+  run(() => {
     Consumer.send(RequestActions.ADD_DIMENSION, { currentModel: CurrentModel }, Age);
   });
 
@@ -83,7 +83,7 @@ test('ADD_DIMENSION', function(assert) {
 test('REMOVE_DIMENSION', function(assert) {
   assert.expect(1);
 
-  Ember.run(() => {
+  run(() => {
     Consumer.send(RequestActions.ADD_DIMENSION, { currentModel: CurrentModel }, Age);
     Consumer.send(RequestActions.REMOVE_DIMENSION, { currentModel: CurrentModel }, Age);
   });
@@ -94,7 +94,7 @@ test('REMOVE_DIMENSION', function(assert) {
 test('DID_UPDATE_TIME_GRAIN', function(assert) {
   assert.expect(2);
 
-  Ember.run(() => {
+  run(() => {
     Consumer.send(RequestActions.ADD_DIMENSION, { currentModel: CurrentModel }, Age);
     Consumer.send(RequestActions.ADD_DIMENSION, { currentModel: CurrentModel }, EventId);
   });

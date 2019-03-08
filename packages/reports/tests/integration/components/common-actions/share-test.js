@@ -1,8 +1,7 @@
-import Ember from 'ember';
+import { run } from '@ember/runloop';
+import { getOwner } from '@ember/application';
 import { moduleForComponent, test } from 'ember-qunit';
 import { hbsWithModal } from '../../../helpers/hbs-with-modal';
-
-const { getOwner } = Ember;
 
 let Template;
 
@@ -67,7 +66,7 @@ test('Modal', function(assert) {
 
   assert.notOk($('.ember-modal-dialog').is(':visible'), 'Share modal is not visible before clicking the component');
 
-  Ember.run(() => {
+  run(() => {
     this.$('.share > button').click();
   });
 
@@ -108,14 +107,14 @@ test('Copy Link Notification', function(assert) {
 
   this.render(Template);
 
-  Ember.run(() => {
+  run(() => {
     this.$('.share > button').click();
   });
 
   assert.notOk($('.modal-notification').is(':visible'), 'Copy notification is not visible before clicking copy button');
 
   // Click Copy Link
-  Ember.run(() => {
+  run(() => {
     $('.btn-container button:contains(Copy Link)').click();
   });
 
@@ -130,14 +129,14 @@ test('Cancel button', function(assert) {
   assert.notOk($('.ember-modal-dialog').is(':visible'), 'Share modal is not visible before clicking the component');
 
   // Click component
-  Ember.run(() => {
+  run(() => {
     this.$('.share > button').click();
   });
 
   assert.ok($('.ember-modal-dialog').is(':visible'), 'Share modal dialog pops up on clicking the component');
 
   // Click Cancel
-  Ember.run(() => {
+  run(() => {
     $('.btn-container button:contains(Cancel)').click();
   });
 
@@ -152,7 +151,7 @@ test('buildUrl option', function(assert) {
   this.render(Template);
 
   // Click component
-  Ember.run(() => {
+  run(() => {
     this.$('.share > button').click();
   });
 

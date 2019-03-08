@@ -6,12 +6,12 @@
  *   {{unauthorized-table report=reportModel}}
  */
 
-import Ember from 'ember';
+import Component from '@ember/component';
+
+import { set, get } from '@ember/object';
 import layout from '../templates/components/unauthorized-table';
 
-const { get, set } = Ember;
-
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   /**

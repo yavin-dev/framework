@@ -12,13 +12,15 @@
  *      Inner template
  *   {{/common-actions/delete}}
  */
-import Ember from 'ember';
+import Component from '@ember/component';
+
+import { dasherize } from '@ember/string';
+import { computed, set, get } from '@ember/object';
 import layout from '../../templates/components/common-actions/delete';
 
-const { get, set, computed } = Ember;
-const dasherizeName = Ember.String.dasherize;
+const dasherizeName = dasherize;
 
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   /**

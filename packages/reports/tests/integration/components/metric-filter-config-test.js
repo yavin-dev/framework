@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import { helper as buildHelper } from '@ember/component/helper';
 import { moduleForComponent, test } from 'ember-qunit';
 import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 import hbs from 'htmlbars-inline-precompile';
@@ -11,7 +11,7 @@ let Metric, Request;
 moduleForComponent('metric-filter-config', 'Integration | Component | metric filter config', {
   integration: true,
   beforeEach() {
-    this.register('helper:update-report-action', Ember.Helper.helper(() => {}), { instantiate: false });
+    this.register('helper:update-report-action', buildHelper(() => {}), { instantiate: false });
 
     Metric = {
       metric: { name: 'testMetric', longName: 'Test Metric' },

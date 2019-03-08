@@ -1,10 +1,11 @@
-import Ember from 'ember';
+import { isEmpty } from '@ember/utils';
+import { run } from '@ember/runloop';
+import { getOwner } from '@ember/application';
+import { set } from '@ember/object';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
 import { assertTooltipRendered, assertTooltipNotRendered, assertTooltipContent } from '../../helpers/ember-tooltips';
-
-const { getOwner, set } = Ember;
 
 let Store, MetadataService, Age;
 
@@ -97,7 +98,7 @@ test('show selected', function(assert) {
     'Initially all the dimensions are shown in the dimension-selector'
   );
 
-  Ember.run(() => {
+  run(() => {
     this.$('.navi-list-selector__show-link').click();
   });
 
@@ -134,7 +135,7 @@ test('actions', function(assert) {
   });
 
   //select first time grain
-  Ember.run(() => {
+  run(() => {
     //addTimeGrain when a different time grain is clicked
     this.$('.grouped-list__item:contains(Week) .grouped-list__item-label').click();
 
@@ -155,7 +156,7 @@ test('actions', function(assert) {
   });
 
   //select a random dimension
-  Ember.run(() => {
+  run(() => {
     //addDimension when an unselected dimension is clicked
     this.$('.grouped-list__item:contains(Gender) .grouped-list__item-label').click();
 
@@ -168,12 +169,12 @@ test('filter icon', function(assert) {
   assert.expect(3);
 
   assert.notOk(
-    Ember.isEmpty(this.$('.grouped-list__item:contains(Age) .checkbox-selector__filter--active')),
+    isEmpty(this.$('.grouped-list__item:contains(Age) .checkbox-selector__filter--active')),
     'The filter icon with the age dimension has the active class'
   );
 
   assert.ok(
-    Ember.isEmpty(this.$('.grouped-list__item:contains(Gender) .checkbox-selector__filter--active')),
+    isEmpty(this.$('.grouped-list__item:contains(Gender) .checkbox-selector__filter--active')),
     'The filter icon with the gender dimension does not have the active class'
   );
 
@@ -181,7 +182,7 @@ test('filter icon', function(assert) {
     assert.deepEqual(dimension, Age, 'The age dimension is passed to the action when filter icon is clicked');
   });
 
-  Ember.run(() => {
+  run(() => {
     this.$('.grouped-list__item:contains(Age) .checkbox-selector__filter').click();
   });
 });
@@ -194,7 +195,7 @@ test('tooltip', function(assert) {
     content: { description: 'foo' }
   });
 
-  Ember.run(() => {
+  run(() => {
     this.$('.grouped-list__group-header:contains(Test)').trigger('click');
     // triggerTooltipTargetEvent will not work for hidden elementc
     this.$('.grouped-list__item:contains(Age) .grouped-list__item-info').trigger('mouseenter');

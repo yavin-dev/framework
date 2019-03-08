@@ -9,15 +9,19 @@
  *  }}
  */
 
-import Ember from 'ember';
+import { readOnly } from '@ember/object/computed';
+
+import { scheduleOnce, later } from '@ember/runloop';
+import { capitalize } from '@ember/string';
+import { inject as service } from '@ember/service';
+import Component from '@ember/component';
+import { set, get, computed, observer } from '@ember/object';
 import layout from '../templates/components/report-view';
 import { DETAILS_DURATION } from '../transitions';
 
 const VISUALIZATION_RESIZE_EVENT = 'resizestop';
 
-const { computed, get, set } = Ember;
-
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   /**
@@ -40,12 +44,12 @@ export default Ember.Component.extend({
   /**
    * @property {Object} request
    */
-  request: computed.readOnly('report.request'),
+  request: readOnly('report.request'),
 
   /**
    * @property {Service} naviVisualizations - navi visualizations service
    */
-  naviVisualizations: Ember.inject.service(),
+  naviVisualizations: service(),
 
   /**
    * @property {Array} visualizations - array of available visualizations
@@ -61,7 +65,7 @@ export default Ember.Component.extend({
   visualizationTypeLabel: computed('report.visualization.type', function() {
     return get(this, 'report.visualization.type')
       .split('-')
-      .map(Ember.String.capitalize)
+      .map(capitalize)
       .join(' ');
   }),
 
@@ -108,8 +112,8 @@ export default Ember.Component.extend({
    *
    * @method filterCountDidChange
    */
-  filterCountDidChange: Ember.observer('report.request.{filters.[],having.[],intervals.[]}', function() {
-    Ember.run.scheduleOnce('afterRender', this, 'resizeVisualization');
+  filterCountDidChange: observer('report.request.{filters.[],having.[],intervals.[]}', function() {
+    scheduleOnce('afterRender', this, 'resizeVisualization');
   }),
 
   actions: {
@@ -118,14 +122,14 @@ export default Ember.Component.extend({
      */
     toggleEditVisualization() {
       this.toggleProperty('isEditingVisualization');
-      Ember.run.scheduleOnce('afterRender', this, 'resizeVisualization');
+      scheduleOnce('afterRender', this, 'resizeVisualization');
     },
 
     /**
      * @action resizeVisualization
      */
     resizeVisualization(delay) {
-      Ember.run.later(this, 'resizeVisualization', delay);
+      later(this, 'resizeVisualization', delay);
     }
   }
 });

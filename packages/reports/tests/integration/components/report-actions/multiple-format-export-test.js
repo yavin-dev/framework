@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import { getOwner } from '@ember/application';
 import { moduleForComponent, test } from 'ember-qunit';
 import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
 import hbs from 'htmlbars-inline-precompile';
@@ -14,8 +14,6 @@ const TEMPLATE = hbs`
         Export
     {{/report-actions/multiple-format-export}}
     `;
-
-const { getOwner } = Ember;
 
 let Store;
 

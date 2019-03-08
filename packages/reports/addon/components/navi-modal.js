@@ -12,13 +12,12 @@
  * {{/navi-modal}}
  */
 
-import Ember from 'ember';
+import Component from '@ember/component';
+
 import layout from '../templates/components/navi-modal';
-import { get } from '@ember/object';
+import { get, set } from '@ember/object';
 
-const { set } = Ember;
-
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   /**

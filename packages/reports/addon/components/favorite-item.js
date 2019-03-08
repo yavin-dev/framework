@@ -9,12 +9,15 @@
  *      itemType='type'
  *   }}
  */
+import { A } from '@ember/array';
+
+import { capitalize } from '@ember/string';
+import Component from '@ember/component';
+import { get, computed } from '@ember/object';
 import Ember from 'ember';
 import layout from '../templates/components/favorite-item';
 
-const { computed, get } = Ember;
-
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   classNames: ['favorite-item', 'clickable'],
@@ -33,7 +36,7 @@ export default Ember.Component.extend({
    */
   favoriteItems: computed('itemType', function() {
     let itemType = get(this, 'itemType'),
-      pluralizedType = Ember.String.capitalize(Ember.Inflector.inflector.pluralize(itemType));
+      pluralizedType = capitalize(Ember.Inflector.inflector.pluralize(itemType));
 
     return get(this, `user.favorite${pluralizedType}`);
   }),
@@ -42,7 +45,7 @@ export default Ember.Component.extend({
    * @property {Boolean} isFavorite - whether or not the given user favorites the given item
    */
   isFavorite: computed('favoriteItems.[]', 'item', function() {
-    let items = Ember.A(get(this, 'favoriteItems'));
+    let items = A(get(this, 'favoriteItems'));
     return items.includes(get(this, 'item'));
   })
 });

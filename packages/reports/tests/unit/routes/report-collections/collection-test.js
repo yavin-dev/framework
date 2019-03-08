@@ -1,8 +1,7 @@
-import Ember from 'ember';
+import { run } from '@ember/runloop';
+import { getOwner } from '@ember/application';
 import { moduleFor, test } from 'ember-qunit';
 import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
-
-const { getOwner } = Ember;
 
 moduleFor('route:report-collections/collection', 'Unit | Route | report collections/collection', {
   needs: [
@@ -76,7 +75,7 @@ moduleFor('route:report-collections/collection', 'Unit | Route | report collecti
 test('model', function(assert) {
   assert.expect(4);
 
-  return Ember.run(() => {
+  return run(() => {
     let params = { collection_id: 1 },
       route = this.subject(),
       modelPromise = route.model(params);

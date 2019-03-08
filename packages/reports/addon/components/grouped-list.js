@@ -13,14 +13,15 @@
  *       {{item.val}}
  *   {{/grouped-list}}
  */
-import Ember from 'ember';
+import Component from '@ember/component';
+
+import { get, computed } from '@ember/object';
+import { isBlank } from '@ember/utils';
 import layout from '../templates/components/grouped-list';
 import groupBy from 'lodash/groupBy';
 import sortBy from 'lodash/sortBy';
 
-const { computed, get, isBlank } = Ember;
-
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   classNames: ['grouped-list'],

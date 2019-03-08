@@ -1,4 +1,6 @@
-import Ember from 'ember';
+import { resolve } from 'rsvp';
+import { run } from '@ember/runloop';
+import { getOwner } from '@ember/application';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { hbsWithModal } from '../../../helpers/hbs-with-modal';
@@ -6,8 +8,6 @@ import wait from 'ember-test-helpers/wait';
 import { clickTrigger, nativeMouseUp } from 'ember-power-select/test-support/helpers';
 import { typeInInput } from '../../../helpers/ember-tag-input';
 import config from 'ember-get-config';
-
-const { getOwner } = Ember;
 
 const DeliveryRule = {
   frequency: 'Week',
@@ -127,7 +127,7 @@ test('schedule modal', function(assert) {
         }}
     `);
 
-  Ember.run(() => {
+  run(() => {
     this.$('.schedule-action__button').click();
   });
 
@@ -200,7 +200,7 @@ test('schedule modal - delivery rule passed in', function(assert) {
         }}
     `);
 
-  Ember.run(() => {
+  run(() => {
     this.$('.schedule-action__button').click();
   });
 
@@ -236,7 +236,7 @@ test('onSave Action', function(assert) {
     `);
 
   //Open modal
-  Ember.run(() => {
+  run(() => {
     this.$('.schedule-action__button').click();
   });
 
@@ -264,7 +264,7 @@ test('onSave Action', function(assert) {
     'The delete button is not available when model does not have a delivery rule for the current user'
   );
 
-  Ember.run(() => {
+  run(() => {
     typeInInput('.js-ember-tag-input-new', 'test1@navi.io');
     $('.js-ember-tag-input-new').blur();
 
@@ -290,11 +290,11 @@ test('onSave Action', function(assert) {
 
     rule.rollbackAttributes();
 
-    return Ember.RSVP.resolve();
+    return resolve();
   });
 
   //Click save after modal is open
-  Ember.run(() => {
+  run(() => {
     $('.schedule-modal__save-btn').click();
   });
 
@@ -322,7 +322,7 @@ test('onRevert Action', function(assert) {
     `);
 
   //Open modal
-  Ember.run(() => {
+  run(() => {
     this.$('.schedule-action__button').click();
   });
 
@@ -331,7 +331,7 @@ test('onRevert Action', function(assert) {
   });
 
   //Click cancel after modal is open
-  Ember.run(() => {
+  run(() => {
     $('.schedule-modal__cancel-btn').click();
   });
 });
@@ -361,7 +361,7 @@ test('onDelete action', function(assert) {
     )
   );
 
-  Ember.run(() => {
+  run(() => {
     this.$('.schedule-action__button').click();
   });
 
@@ -371,7 +371,7 @@ test('onDelete action', function(assert) {
     'Delete button is shown when deliveryRule is present for current user'
   );
 
-  Ember.run(() => {
+  run(() => {
     $('.btn-container button:contains(Delete)').click();
   });
 
@@ -394,11 +394,11 @@ test('frequency options - default', function(assert) {
         }}
     `);
 
-  Ember.run(() => {
+  run(() => {
     this.$('.schedule-action__button').click();
   });
 
-  Ember.run(() => {
+  run(() => {
     clickTrigger('.schedule-modal__dropdown--frequency');
     assert.deepEqual(
       $('.ember-power-select-option')
@@ -431,11 +431,11 @@ test('frequency options - config schedule', function(assert) {
         }}
     `);
 
-  Ember.run(() => {
+  run(() => {
     this.$('.schedule-action__button').click();
   });
 
-  Ember.run(() => {
+  run(() => {
     clickTrigger('.schedule-modal__dropdown--frequency');
     assert.deepEqual(
       $('.ember-power-select-option')
@@ -469,11 +469,11 @@ test('format options - config formats', function(assert) {
         }}
     `);
 
-  Ember.run(() => {
+  run(() => {
     this.$('.schedule-action__button').click();
   });
 
-  Ember.run(() => {
+  run(() => {
     clickTrigger('.schedule-modal__dropdown--format');
     assert.deepEqual(
       $('.ember-power-select-option')
@@ -507,11 +507,11 @@ test('format options - config enableMultipleExport', function(assert) {
         }}
     `);
 
-  Ember.run(() => {
+  run(() => {
     this.$('.schedule-action__button').click();
   });
 
-  Ember.run(() => {
+  run(() => {
     clickTrigger('.schedule-modal__dropdown--format');
     assert.deepEqual(
       $('.ember-power-select-option')
@@ -538,11 +538,11 @@ test('format options - config enableMultipleExport', function(assert) {
         }}
     `);
 
-  Ember.run(() => {
+  run(() => {
     this.$('.schedule-action__button').click();
   });
 
-  Ember.run(() => {
+  run(() => {
     assert.ok(
       $('.schedule-modal__dropdown--format .ember-power-select-trigger').attr('aria-disabled'),
       'The formats dropdown is disabled by default'

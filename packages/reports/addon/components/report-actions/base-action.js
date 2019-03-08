@@ -2,11 +2,12 @@
  * Copyright 2017, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import Ember from 'ember';
+import Component from '@ember/component';
 
-const { get, warn, computed } = Ember;
+import { warn } from '@ember/debug';
+import { computed, get } from '@ember/object';
 
-export default Ember.Component.extend({
+export default Component.extend({
   /**
    * @property {DS.Model} report - custom report
    */

@@ -1,4 +1,5 @@
-import Ember from 'ember';
+import { run } from '@ember/runloop';
+import { getOwner } from '@ember/application';
 import { moduleForComponent, test } from 'ember-qunit';
 import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
 import hbs from 'htmlbars-inline-precompile';
@@ -12,8 +13,6 @@ const TEMPLATE = hbs`
         Export
     {{/report-actions/export}}
     `;
-
-const { getOwner } = Ember;
 
 let Store;
 
@@ -65,7 +64,7 @@ test('Component Renders', function(assert) {
 test('Component is not disabled for unsaved reports', function(assert) {
   assert.expect(1);
 
-  Ember.run(() => {
+  run(() => {
     let request = {
       logicalTable: {
         table: 'network',

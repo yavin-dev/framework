@@ -1,8 +1,9 @@
+import { reject } from 'rsvp';
+import { run } from '@ember/runloop';
+import Service from '@ember/service';
+import { getOwner } from '@ember/application';
 import { moduleForComponent, test } from 'ember-qunit';
 import { hbsWithModal } from '../../../helpers/hbs-with-modal';
-import Ember from 'ember';
-
-const { getOwner } = Ember;
 
 let Template;
 
@@ -33,7 +34,7 @@ moduleForComponent('common-actions/get-api', 'Integration | Component | common a
     // Mock fact service
     this.register(
       'service:bard-facts',
-      Ember.Service.extend({
+      Service.extend({
         getURL: () => MockUrl
       })
     );
@@ -71,7 +72,7 @@ test('beforeAction', function(assert) {
   });
   this.render(Template);
 
-  Ember.run(() => {
+  run(() => {
     this.$('.get-api > button').click();
   });
 
@@ -92,11 +93,11 @@ test('beforeAction - prevent modal', function(assert) {
   this.set('beforeAction', () => {
     assert.ok(true, 'Component can accept an extra action to run before opening the modal');
 
-    return Ember.RSVP.reject();
+    return reject();
   });
   this.render(Template);
 
-  Ember.run(() => {
+  run(() => {
     this.$('.get-api > button').click();
   });
 
@@ -113,7 +114,7 @@ test('Modal', function(assert) {
 
   assert.notOk(this.$('.ember-modal-dialog').is(':visible'), 'Copy modal is not visible before clicking the component');
 
-  Ember.run(() => {
+  run(() => {
     this.$('.get-api > button').click();
   });
 
@@ -146,7 +147,7 @@ test('Copy Link Notification', function(assert) {
 
   this.render(Template);
 
-  Ember.run(() => {
+  run(() => {
     this.$('.get-api > button').click();
   });
 
@@ -156,7 +157,7 @@ test('Copy Link Notification', function(assert) {
   );
 
   // Click Copy Link
-  Ember.run(() => {
+  run(() => {
     this.$('.btn-container button:contains(Copy Link)').click();
   });
 
@@ -174,14 +175,14 @@ test('Cancel button', function(assert) {
   assert.notOk(this.$('.ember-modal-dialog').is(':visible'), 'Copy modal is not visible before clicking the component');
 
   // Click component
-  Ember.run(() => {
+  run(() => {
     this.$('.get-api > button').click();
   });
 
   assert.ok(this.$('.ember-modal-dialog').is(':visible'), 'Copy modal dialog pops up on clicking the component');
 
   // Click Cancel
-  Ember.run(() => {
+  run(() => {
     this.$('.btn-container button:contains(Cancel)').click();
   });
 

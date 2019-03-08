@@ -1,4 +1,5 @@
-import Ember from 'ember';
+import { set } from '@ember/object';
+import { A } from '@ember/array';
 import { moduleFor, test } from 'ember-qunit';
 import { RequestActions } from 'navi-reports/services/request-action-dispatcher';
 
@@ -45,8 +46,8 @@ test('REMOVE_TIME_GRAIN', function(assert) {
     }
   };
 
-  let tableWithAll = { timeGrains: Ember.A([{ name: 'all' }]) },
-    tableWithoutAll = { timeGrains: Ember.A([]) },
+  let tableWithAll = { timeGrains: A([{ name: 'all' }]) },
+    tableWithoutAll = { timeGrains: A([]) },
     logicalTable = { table: tableWithAll },
     currentModel = { request: { logicalTable } },
     consumer = this.subject({ requestActionDispatcher: MockDispatcher });
@@ -64,8 +65,8 @@ test('REMOVE_TIME_GRAIN', function(assert) {
   MockDispatcher.dispatch = () => {
     throw new Error('DID_UPDATE_TIME_GRAIN should not be called when REMOVE_TIME_GRAIN makes no change');
   };
-  Ember.set(logicalTable, 'table', tableWithoutAll);
-  Ember.set(logicalTable, 'timeGrain', { name: 'week' });
+  set(logicalTable, 'table', tableWithoutAll);
+  set(logicalTable, 'timeGrain', { name: 'week' });
   consumer.send(RequestActions.REMOVE_TIME_GRAIN, { currentModel });
 
   assert.equal(

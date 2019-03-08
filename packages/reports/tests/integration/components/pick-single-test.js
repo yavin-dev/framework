@@ -1,4 +1,7 @@
-import Ember from 'ember';
+import { get } from '@ember/object';
+import { run } from '@ember/runloop';
+import { A } from '@ember/array';
+import { isEmpty } from '@ember/utils';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 
@@ -41,7 +44,7 @@ test('it renders', function(assert) {
 
   this.render(Template);
 
-  assert.notOk(Ember.isEmpty(this.$('.pick-container')), 'pick-single component is rendered');
+  assert.notOk(isEmpty(this.$('.pick-container')), 'pick-single component is rendered');
 
   assert.equal(
     this.$('.pick-single .pick-value')
@@ -61,7 +64,7 @@ test('it renders', function(assert) {
 
   assert.deepEqual(
     formValues,
-    Ember.A(Options).mapBy('id'),
+    A(Options).mapBy('id'),
     'The pick-form contains the ids from options using the displayField `id`'
   );
 
@@ -79,7 +82,7 @@ test('switching display field', function(assert) {
 
   let displayField = 'name';
 
-  Ember.run(() => {
+  run(() => {
     this.set('displayField', displayField);
   });
 
@@ -89,7 +92,7 @@ test('switching display field', function(assert) {
     this.$('.pick-single .pick-value')
       .text()
       .trim(),
-    Ember.get(Options[0], displayField),
+    get(Options[0], displayField),
     'The displayField of the selected options object is displayed'
   );
 
@@ -103,7 +106,7 @@ test('switching display field', function(assert) {
 
   assert.deepEqual(
     formValues,
-    Ember.A(Options).mapBy(displayField),
+    A(Options).mapBy(displayField),
     'The pick-form contains the ids from options based on displayField set'
   );
 
@@ -132,9 +135,9 @@ test('label', function(assert) {
 
   this.render(Template);
 
-  assert.ok(Ember.isEmpty(this.$('.pick-value label')), 'No label is present when not defined');
+  assert.ok(isEmpty(this.$('.pick-value label')), 'No label is present when not defined');
 
-  Ember.run(() => {
+  run(() => {
     this.set('label', 'Hello');
   });
 

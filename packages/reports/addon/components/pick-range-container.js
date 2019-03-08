@@ -19,14 +19,13 @@
  *   {{/pick-range-container}}
  */
 
-import Ember from 'ember';
+import { set, get, computed } from '@ember/object';
+
 import PickObjectContainer from 'navi-core/components/pick-object-container';
 import Interval from 'navi-core/utils/classes/interval';
 import moment from 'moment';
 import layout from '../templates/components/pick-range-container';
 import DateUtils from 'navi-core/utils/date';
-
-const { computed, get, set } = Ember;
 
 export default PickObjectContainer.extend({
   layout,

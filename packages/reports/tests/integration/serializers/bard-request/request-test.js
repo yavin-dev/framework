@@ -1,10 +1,10 @@
+import { getOwner } from '@ember/application';
+import { run } from '@ember/runloop';
+import { get } from '@ember/object';
 import { moduleForComponent, test } from 'ember-qunit';
-import Ember from 'ember';
 import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
 
-let store,
-  metaService,
-  { getOwner, run, get } = Ember;
+let store, metaService;
 
 moduleForComponent('serializer:bard-request/request', 'Integration | Serializer | Request Fragment', {
   integration: true,

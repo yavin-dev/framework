@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import EmberObject from '@ember/object';
 import CollectionSelectorMixin from 'navi-reports/mixins/collection-selector';
 import { module, test } from 'qunit';
 
@@ -17,7 +17,7 @@ let CollectionSelector;
 
 module('Unit | Mixin | Collection Selector', {
   beforeEach() {
-    CollectionSelector = Ember.Object.extend(CollectionSelectorMixin);
+    CollectionSelector = EmberObject.extend(CollectionSelectorMixin);
   }
 });
 

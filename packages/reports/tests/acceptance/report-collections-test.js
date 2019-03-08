@@ -1,3 +1,4 @@
+import { run } from '@ember/runloop';
 import Ember from 'ember';
 import { module, test } from 'qunit';
 import startApp from '../helpers/start-app';
@@ -15,7 +16,7 @@ module('Acceptance | Report Collections', {
   afterEach: function() {
     teardownModal();
     server.shutdown();
-    Ember.run(Application, 'destroy');
+    run(Application, 'destroy');
   }
 });
 

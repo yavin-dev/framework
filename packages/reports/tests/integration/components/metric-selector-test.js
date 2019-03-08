@@ -1,10 +1,13 @@
-import Ember from 'ember';
+import { isEmpty } from '@ember/utils';
+import { run } from '@ember/runloop';
+import { A } from '@ember/array';
+import { helper as buildHelper } from '@ember/component/helper';
+import { getOwner } from '@ember/application';
+import { set, get } from '@ember/object';
 import hbs from 'htmlbars-inline-precompile';
 import { moduleForComponent, test } from 'ember-qunit';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
 import { assertTooltipRendered, assertTooltipNotRendered, assertTooltipContent } from '../../helpers/ember-tooltips';
-
-const { get, getOwner, set } = Ember;
 
 let Store, MetadataService, AdClicks, PageViews;
 
@@ -16,7 +19,7 @@ moduleForComponent('metric-selector', 'Integration | Component | metric selector
     MetadataService = getOwner(this).lookup('service:bard-metadata');
     setupMock();
 
-    this.register('helper:update-report-action', Ember.Helper.helper(() => {}), { instantiate: false });
+    this.register('helper:update-report-action', buildHelper(() => {}), { instantiate: false });
 
     this.set('addMetric', () => {});
     this.set('removeMetric', () => {});
@@ -47,7 +50,7 @@ moduleForComponent('metric-selector', 'Integration | Component | metric selector
               }
             }
           ],
-          having: Ember.A([{ metric: { metric: AdClicks } }]),
+          having: A([{ metric: { metric: AdClicks } }]),
           responseFormat: 'csv'
         })
       );
@@ -98,7 +101,7 @@ test('show selected', function(assert) {
     'The Show Selected link has the correct number of selected base metrics shown'
   );
 
-  Ember.run(() => {
+  run(() => {
     this.$('.navi-list-selector__show-link').click();
   });
 
@@ -137,7 +140,7 @@ test('show selected', function(assert) {
     "Removing one metric while another metric with the same base is still selected does not change 'Show Selected'"
   );
 
-  Ember.run(() => {
+  run(() => {
     this.$('.navi-list-selector__show-link').click();
   });
 
@@ -149,7 +152,7 @@ test('show selected', function(assert) {
     'The Show Selected link still has the correct number of selected base metrics shown'
   );
 
-  Ember.run(() => {
+  run(() => {
     metrics.createFragment({
       metric: PageViews,
       parameters: 'Param1'
@@ -164,7 +167,7 @@ test('show selected', function(assert) {
     'The Show Selected link increases the count when a metric with a different base is added'
   );
 
-  Ember.run(() => {
+  run(() => {
     this.$('.navi-list-selector__show-link').click();
   });
 
@@ -201,7 +204,7 @@ test('add and remove metric actions', function(assert) {
   });
 
   //select first time grain
-  Ember.run(() => {
+  run(() => {
     //add total clicks
     this.$('.grouped-list__item:contains(Total Clicks) .grouped-list__item-label').click();
 
@@ -214,12 +217,12 @@ test('filter icon', function(assert) {
   assert.expect(3);
 
   assert.notOk(
-    Ember.isEmpty(this.$('.grouped-list__item:contains(Ad Clicks) .checkbox-selector__filter--active')),
+    isEmpty(this.$('.grouped-list__item:contains(Ad Clicks) .checkbox-selector__filter--active')),
     'The filter icon with the adclicks metric has the active class'
   );
 
   assert.ok(
-    Ember.isEmpty(this.$('.grouped-list__item:contains(Total Clicks) .checkbox-selector__filter--active')),
+    isEmpty(this.$('.grouped-list__item:contains(Total Clicks) .checkbox-selector__filter--active')),
     'The filter icon with the total clicks metric does not have the active class'
   );
 
@@ -227,7 +230,7 @@ test('filter icon', function(assert) {
     assert.deepEqual(metric, AdClicks, 'The adclicks metric is passed to the action when filter icon is clicked');
   });
 
-  Ember.run(() => {
+  run(() => {
     this.$('.grouped-list__item:contains(Ad Clicks) .checkbox-selector__filter').click();
   });
 });
@@ -240,7 +243,7 @@ test('tooltip', function(assert) {
     content: { description: 'foo' }
   });
 
-  Ember.run(() => {
+  run(() => {
     this.$('.grouped-list__group-header:contains(Clicks)').trigger('click');
     // triggerTooltipTargetEvent will not work for hidden elementc
     this.$('.grouped-list__item:contains(Ad Clicks) .grouped-list__item-info').trigger('mouseenter');
@@ -256,12 +259,12 @@ test('metric config for metric with parameters', function(assert) {
   assert.expect(2);
 
   assert.ok(
-    Ember.isEmpty(this.$('.grouped-list__item:contains(Ad Clicks) .metric-config')),
+    isEmpty(this.$('.grouped-list__item:contains(Ad Clicks) .metric-config')),
     'The metric config trigger icon is not present for a metric without parameters'
   );
 
   assert.notOk(
-    Ember.isEmpty(this.$('.grouped-list__item:contains(Revenue) .metric-config')),
+    isEmpty(this.$('.grouped-list__item:contains(Revenue) .metric-config')),
     'The metric config trigger icon is present for a metric with parameters'
   );
 });

@@ -1,12 +1,12 @@
+import { A } from '@ember/array';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import Ember from 'ember';
 
 moduleForComponent('filter-values/range-input', 'Integration | Component | filter values/range input', {
   integration: true,
 
   beforeEach: function() {
-    this.filter = { values: Ember.A([1000, 2000]) };
+    this.filter = { values: A([1000, 2000]) };
     this.onUpdateFilter = () => null;
 
     this.render(hbs`{{filter-values/range-input

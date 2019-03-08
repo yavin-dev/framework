@@ -14,13 +14,13 @@
  *   {{/navi-list-selector}}
  */
 
-import Ember from 'ember';
+import Component from '@ember/component';
+
+import { set, get, computed } from '@ember/object';
 import layout from '../templates/components/navi-list-selector';
 import { searchRecords } from 'navi-core/utils/search';
 
-const { computed, get, set } = Ember;
-
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   /*

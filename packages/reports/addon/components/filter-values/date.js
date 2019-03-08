@@ -9,10 +9,10 @@
  *       onUpdateFilter=(action 'update')
  *   }}
  */
+import { oneWay } from '@ember/object/computed';
 import Component from '@ember/component';
 import Moment from 'moment';
 import layout from '../../templates/components/filter-values/date';
-import { computed } from '@ember/object';
 
 export default Component.extend({
   layout,
@@ -25,7 +25,7 @@ export default Component.extend({
   /**
    * @property {String} date - the date that's saved in the filter
    */
-  date: computed.oneWay('filter.values.firstObject'),
+  date: oneWay('filter.values.firstObject'),
 
   actions: {
     /**

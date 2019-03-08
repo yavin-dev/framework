@@ -8,9 +8,9 @@
  *       onUpdateFilter=(action 'update')
  *   }}
  */
-import Ember from 'ember';
+import Component from '@ember/component';
 
-export default Ember.Component.extend({
+export default Component.extend({
   tagName: '',
 
   /**
