@@ -154,7 +154,7 @@ export default Component.extend({
      */
     onColumnClick(column) {
       if (column.sorted) {
-        let onColumnClick = this.onColumnClick;
+        let { onColumnClick } = this;
 
         if (typeof onColumnClick === 'function') {
           onColumnClick(this._getNextSort(column));
