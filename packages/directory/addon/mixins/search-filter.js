@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Mixin from '@ember/object/mixin';
@@ -19,8 +19,6 @@ export default Mixin.create({
    */
   searchResults: computed('directory.q', 'sortedItems', function() {
     let queryString = get(this, 'directory.q');
-    return get(this, 'sortedItems').then(
-      items => (isEmpty(queryString) ? items : searchRecords(items, queryString, 'title'))
-    );
+    return this.sortedItems.then(items => (isEmpty(queryString) ? items : searchRecords(items, queryString, 'title')));
   })
 });

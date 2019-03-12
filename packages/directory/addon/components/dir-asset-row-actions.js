@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -24,9 +24,9 @@ export default Component.extend({
    * @property {String} type - the type of the asset
    */
   type: computed('value', function() {
-    let value = get(this, 'value');
+    let { value } = this;
 
-    return value ? get(this, 'value').constructor.modelName : null;
+    return value ? value.constructor.modelName : null;
   }),
 
   /**

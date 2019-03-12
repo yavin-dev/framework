@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -10,7 +10,7 @@
  */
 import Component from '@ember/component';
 import layout from '../templates/components/dir-table-filter';
-import { computed, get } from '@ember/object';
+import { computed } from '@ember/object';
 import { isEmpty } from '@ember/utils';
 import FileTypes from 'navi-directory/utils/enums/file-types';
 
@@ -29,7 +29,7 @@ export default Component.extend({
    * @property {String} selectedFileType
    */
   selectedFileType: computed('selectedType', function() {
-    let selected = get(this, 'selectedType');
+    let selected = this.selectedType;
     return isEmpty(selected) ? 'all' : selected;
   }),
 
@@ -52,7 +52,7 @@ export default Component.extend({
         queryParam = null;
       }
 
-      this.get('updateQueryParams')({ type: queryParam });
+      this.updateQueryParams({ type: queryParam });
     }
   }
 });

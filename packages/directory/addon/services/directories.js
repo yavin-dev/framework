@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Service from '@ember/service';
-import { get, computed } from '@ember/object';
+import { computed } from '@ember/object';
 
 export default Service.extend({
   /**
@@ -30,6 +30,6 @@ export default Service.extend({
    * @function getDirectories - returns list of valid directories
    */
   getDirectories() {
-    return get(this, 'directories');
+    return this.directories;
   }
 });
