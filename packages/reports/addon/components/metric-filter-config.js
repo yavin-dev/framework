@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Note: This component assumes there is only one possible parameter for a metric,
@@ -35,7 +35,7 @@ export default Component.extend({
   /**
    * @property {Array} otherParams - other selected params for the same metric
    */
-  otherParams: computed('request.metrics.[]', 'request.having.[]', 'metric.metric', 'metric.parameters', function() {
+  otherParams: computed('request.{metrics.[],having.[]}', 'metric.{metric,parameters}', function() {
     let unFilteredMetrics = getUnfilteredMetricsOfBase(get(this, 'metric.metric'), get(this, 'request')),
       otherParameters = arr(unFilteredMetrics).mapBy('parameters');
 

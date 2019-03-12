@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -10,7 +10,6 @@
  */
 
 import { oneWay } from '@ember/object/computed';
-
 import Component from '@ember/component';
 import { computed, set, get } from '@ember/object';
 import { run, next } from '@ember/runloop';
@@ -51,7 +50,7 @@ export default Component.extend({
     editComplete(value) {
       set(this, 'isEditingValue', false);
       if (get(this, 'value') !== value) {
-        run.debounce(this.attrs, 'onChange', value, 10);
+        run.debounce(this, 'onChange', value, 10);
       }
     },
 

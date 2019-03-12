@@ -55,7 +55,7 @@ test('validation errors', function(assert) {
     let errors = find('.navi-info-message__error-list-item')
       .toArray()
       .map(el =>
-        $(el)
+        find(el)
           .text()
           .trim()
       );
@@ -77,10 +77,10 @@ test('Clone report', function(assert) {
   visit('/reports/1/clone');
 
   andThen(() => {
-    assert.ok($('.report-view').is(':visible'), 'The route transistions to report view');
+    assert.ok(find('.report-view').is(':visible'), 'The route transistions to report view');
 
     assert.equal(
-      $('.navi-report__title')
+      find('.navi-report__title')
         .text()
         .trim(),
       'Copy of Hyrule News',
@@ -182,7 +182,7 @@ test('Revert changes when exiting report - existing report', function(assert) {
       'Day timegrain is unchecked after clicking on it'
     );
     assert.ok(
-      $('.navi-report__revert-btn').is(':visible'),
+      find('.navi-report__revert-btn').is(':visible'),
       'Revert changes button is visible once a change has been made'
     );
   });
@@ -194,7 +194,7 @@ test('Revert changes when exiting report - existing report', function(assert) {
   click("a[href$='/reports/1/view']");
   andThen(() => {
     assert.notOk(
-      $('.navi-report__revert-btn').is(':visible'),
+      find('.navi-report__revert-btn').is(':visible'),
       'After navigating away and back to the route, the Revert button disappears'
     );
     assert.ok(
@@ -212,7 +212,7 @@ test('Revert changes - existing report', function(assert) {
   visit('/reports/1/view');
   andThen(() => {
     assert.ok(
-      $('.filter-builder__subject:contains(Day)').is(':visible'),
+      find('.filter-builder__subject:contains(Day)').is(':visible'),
       'After navigating to a route, the Timegrain "Day" option is visible'
     );
   });
@@ -221,7 +221,7 @@ test('Revert changes - existing report', function(assert) {
   click('.checkbox-selector--dimension .grouped-list__item:contains(Week) .grouped-list__item-label');
   andThen(() => {
     assert.ok(
-      $('.navi-report__revert-btn').is(':visible'),
+      find('.navi-report__revert-btn').is(':visible'),
       'Revert changes button is visible once a change has been made'
     );
   });
@@ -234,7 +234,7 @@ test('Revert changes - existing report', function(assert) {
     );
 
     assert.notOk(
-      $('.navi-report__revert-btn').is(':visible'),
+      find('.navi-report__revert-btn').is(':visible'),
       'After clicking "Revert Changes", button is once again hidden'
     );
   });
@@ -245,12 +245,12 @@ test('Revert changes - new report', function(assert) {
 
   visit('/reports/new');
   andThen(() => {
-    assert.notOk($('.navi-report__revert-btn').is(':visible'), 'Revert changes button is not initially visible');
+    assert.notOk(find('.navi-report__revert-btn').is(':visible'), 'Revert changes button is not initially visible');
 
     click('.checkbox-selector--metric .grouped-list__item:contains(Ad Clicks) .grouped-list__item-label');
     andThen(() => {
       assert.notOk(
-        $('.navi-report__revert-btn').is(':visible'),
+        find('.navi-report__revert-btn').is(':visible'),
         'Revert changes button is not visible on a new report even after making a change'
       );
     });
@@ -328,7 +328,7 @@ test('Cancel Save As report', function(assert) {
   andThen(() => {
     // Changes were not reverted, but they were not saved
     assert.ok(
-      $('.filter-builder__subject:contains(Week)').is(':visible'),
+      find('.filter-builder__subject:contains(Week)').is(':visible'),
       'On cancel the dirty state of the report still remains.'
     );
 
@@ -411,7 +411,7 @@ test('Save As report', function(assert) {
     );
 
     assert.equal(
-      $('.navi-report__title')
+      find('.navi-report__title')
         .text()
         .trim(),
       '(New Copy) Hyrule News',
@@ -427,7 +427,7 @@ test('Save As report', function(assert) {
     assert.ok($('.filter-builder__subject:contains(Day)').is(':visible'), 'Old unsaved report have the old DIM.');
 
     assert.equal(
-      $('.navi-report__title')
+      find('.navi-report__title')
         .text()
         .trim(),
       'Hyrule News',
@@ -462,7 +462,7 @@ test('Save As on failure', function(assert) {
 
     // Old Report
     assert.equal(
-      $('.navi-report__title')
+      find('.navi-report__title')
         .text()
         .trim(),
       'Hyrule News',
@@ -480,7 +480,7 @@ test('Save report', function(assert) {
   visit('/reports');
   visit('/reports/new');
   andThen(() => {
-    assert.ok($('.navi-report__save-btn').is(':visible'), 'Save button is visible in the new route');
+    assert.ok(find('.navi-report__save-btn').is(':visible'), 'Save button is visible in the new route');
   });
 
   // Build a report
@@ -495,7 +495,7 @@ test('Save report', function(assert) {
     assert.ok(PersistedIdRegex.test(currentURL()), 'After saving, user is brought to /view route with persisted id');
 
     assert.notOk(
-      $('.navi-report__save-btn').is(':visible'),
+      find('.navi-report__save-btn').is(':visible'),
       'Save button is not visible when report is saved and has no changes'
     );
   });
@@ -514,7 +514,7 @@ test('Clone action', function(assert) {
     );
 
     assert.equal(
-      $('.navi-report__title')
+      find('.navi-report__title')
         .text()
         .trim(),
       'Copy of Hyrule News',
@@ -766,7 +766,10 @@ test('Get API action - enabled/disabled', function(assert) {
 
   visit('/reports/1/view');
   andThen(() => {
-    assert.notOk($('.get-api').is('.navi-report__action--is-disabled'), 'Get API action is enabled for a valid report');
+    assert.notOk(
+      find('.get-api').is('.navi-report__action--is-disabled'),
+      'Get API action is enabled for a valid report'
+    );
   });
 
   // Remove all metrics
@@ -778,7 +781,7 @@ test('Get API action - enabled/disabled', function(assert) {
 
   andThen(() => {
     assert.ok(
-      $('.get-api').is('.navi-report__action--is-disabled'),
+      find('.get-api').is('.navi-report__action--is-disabled'),
       'Get API action is disabled for an invalid report'
     );
   });
@@ -793,7 +796,9 @@ test('Share report', function(assert) {
 
   andThen(() => {
     assert.equal(
-      $('.navi-modal .primary-header').text(),
+      find('.navi-modal .primary-header')
+        .text()
+        .trim(),
       'Share "Hyrule News"',
       'Clicking share action brings up share modal'
     );
@@ -828,18 +833,20 @@ test('Share report notifications reset', function(assert) {
 
   andThen(() => {
     assert.equal(
-      $('.navi-modal .primary-header').text(),
+      find('.navi-modal .primary-header')
+        .text()
+        .trim(),
       'Share "Hyrule News"',
       'Clicking share action brings up share modal'
     );
 
-    assert.notOk($('.navi-modal .modal-notification').is(':visible'), 'Notification banner is not shown');
+    assert.notOk(find('.navi-modal .modal-notification').is(':visible'), 'Notification banner is not shown');
   });
 
   click('.navi-modal .copy-btn');
 
   andThen(() => {
-    assert.ok($('.navi-modal .modal-notification').is(':visible'), 'Notification banner is shown');
+    assert.ok(find('.navi-modal .modal-notification').is(':visible'), 'Notification banner is shown');
   });
 
   click('.navi-modal .btn:contains(Cancel)');
@@ -847,7 +854,7 @@ test('Share report notifications reset', function(assert) {
 
   andThen(() => {
     assert.notOk(
-      $('.navi-modal .modal-notification').is(':visible'),
+      find('.navi-modal .modal-notification').is(':visible'),
       'Notification banner is not shown after close and reopen'
     );
   });
@@ -859,7 +866,7 @@ test('Delete report on success', function(assert) {
   /* == Delete success == */
   visit('/reports');
   andThen(() => {
-    let reportNames = $('.table tbody td:first-child')
+    let reportNames = find('.table tbody td:first-child')
       .map(function() {
         return this.textContent.trim();
       })
@@ -890,7 +897,7 @@ test('Delete report on success', function(assert) {
   andThen(() => {
     assert.ok(currentURL().endsWith('/reports'), 'After deleting, user is brought to report list view');
 
-    let reportNames = $('.table tbody td:first-child')
+    let reportNames = find('.table tbody td:first-child')
       .map(function() {
         return this.textContent.trim();
       })
@@ -1050,7 +1057,7 @@ test('redirect from report/index route', function(assert) {
     );
 
     assert.ok(
-      $('.navi-report__body .report-view').is(':visible'),
+      find('.navi-report__body .report-view').is(':visible'),
       'The report/index route redirects to the reports view route by default'
     );
   });
@@ -1064,7 +1071,7 @@ test('visiting Reports Route', function(assert) {
     let titles = find('.navi-collection .table tr td:first-of-type')
       .toArray()
       .map(el =>
-        $(el)
+        find(el)
           .text()
           .trim()
       );
@@ -1092,7 +1099,7 @@ test('reports route actions -- clone', function(assert) {
     );
 
     assert.equal(
-      $('.navi-report__title')
+      find('.navi-report__title')
         .text()
         .trim(),
       'Copy of Hyrule News',
@@ -1107,7 +1114,7 @@ test('reports route actions -- share', function(assert) {
   visit('/reports');
 
   // TriggerEvent does not work here, need to use jquery trigger mouseenter
-  andThen(() => $('.navi-collection__row:first-of-type').trigger('mouseenter'));
+  andThen(() => find('.navi-collection__row:first-of-type').trigger('mouseenter'));
   // Click "Share"
   click('.navi-collection__row:first-of-type .share .btn');
 
@@ -1151,7 +1158,7 @@ test('reports route actions -- delete', function(assert) {
   andThen(() => {
     assert.ok(currentURL().endsWith('/reports'), 'After deleting, user is brought to report list view');
 
-    let reportNames = $('.table tbody td:first-child')
+    let reportNames = find('.table tbody td:first-child')
       .map(function() {
         return this.textContent.trim();
       })
@@ -1433,7 +1440,7 @@ test('Save changes', function(assert) {
   click('.checkbox-selector--metric .grouped-list__item:contains(Ad Clicks) .grouped-list__item-label');
   andThen(() => {
     assert.ok(
-      $('.navi-report__save-btn').is(':visible'),
+      find('.navi-report__save-btn').is(':visible'),
       'Save changes button is visible once a change has been made and when owner of report'
     );
   });
@@ -1442,7 +1449,7 @@ test('Save changes', function(assert) {
   click('.checkbox-selector--metric .grouped-list__item:contains(Ad Clicks) .grouped-list__item-label');
   andThen(() => {
     assert.notOk(
-      $('.navi-report__save-btn').is(':visible'),
+      find('.navi-report__save-btn').is(':visible'),
       'Save changes button is visible when not owner of a report'
     );
   });
@@ -1461,7 +1468,7 @@ test('Error route', function(assert) {
   visit('/reports/invalidRoute');
   andThen(() => {
     assert.equal(
-      $('.report-not-found')
+      find('.report-not-found')
         .text()
         .replace(/\s+/g, ' ')
         .trim(),
@@ -1491,7 +1498,7 @@ test('Error data request', function(assert) {
   visit('/reports/5/view');
   andThen(() => {
     assert.equal(
-      $('.navi-report-error__info-message')
+      find('.navi-report-error__info-message')
         .text()
         .replace(/\s+/g, ' ')
         .trim(),
@@ -1553,7 +1560,7 @@ test('favorite reports', function(assert) {
     let listedReports = find('tbody tr td:first-of-type')
       .toArray()
       .map(el =>
-        $(el)
+        find(el)
           .text()
           .trim()
       );
@@ -1573,7 +1580,7 @@ test('favorite reports', function(assert) {
     let listedReports = find('tbody tr td:first-of-type')
       .toArray()
       .map(el =>
-        $(el)
+        find(el)
           .text()
           .trim()
       );
@@ -1591,7 +1598,7 @@ test('favorite reports', function(assert) {
     let listedReports = find('tbody tr td:first-of-type')
       .toArray()
       .map(el =>
-        $(el)
+        find(el)
           .text()
           .trim()
       );
@@ -1617,7 +1624,7 @@ test('favorite report - rollback on failure', function(assert) {
     let listedReports = find('tbody tr td:first-of-type')
       .toArray()
       .map(el =>
-        $(el)
+        find(el)
           .text()
           .trim()
       );
@@ -1639,7 +1646,7 @@ test('favorite report - rollback on failure', function(assert) {
           let listedReports = find('tbody tr td:first-of-type')
             .toArray()
             .map(el =>
-              $(el)
+              find(el)
                 .text()
                 .trim()
             );
@@ -1834,7 +1841,7 @@ test('Show selected dimensions and filters', function(assert) {
   click('.report-builder__dimension-selector .navi-list-selector__show-link');
   andThen(() => {
     assert.deepEqual(
-      $('.report-builder__dimension-selector .grouped-list__item')
+      find('.report-builder__dimension-selector .grouped-list__item')
         .toArray()
         .map(el => el.textContent.trim()),
       ['Day', 'Property', 'Operating System'],
@@ -2067,7 +2074,7 @@ test('adding metrics to reordered table keeps order', function(assert) {
       find('.table-header-row-vc--view .table-header-cell__title')
         .toArray()
         .map(el =>
-          $(el)
+          find(el)
             .text()
             .trim()
         ),
@@ -2084,7 +2091,7 @@ test('adding metrics to reordered table keeps order', function(assert) {
       find('.table-header-row-vc--view .table-header-cell__title')
         .toArray()
         .map(el =>
-          $(el)
+          find(el)
             .text()
             .trim()
         ),
@@ -2129,7 +2136,7 @@ test('Cancel Report', function(assert) {
       find('.navi-report__footer .btn')
         .toArray()
         .map(e =>
-          $(e)
+          find(e)
             .text()
             .trim()
         ),
@@ -2147,7 +2154,7 @@ test('Cancel Report', function(assert) {
       find('.navi-report__footer .btn')
         .toArray()
         .map(e =>
-          $(e)
+          find(e)
             .text()
             .trim()
         ),
@@ -2165,7 +2172,7 @@ test('Cancel Report', function(assert) {
       find('.navi-report__footer .btn')
         .toArray()
         .map(e =>
-          $(e)
+          find(e)
             .text()
             .trim()
         ),

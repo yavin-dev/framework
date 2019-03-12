@@ -23,7 +23,7 @@ module('Acceptance | Report Collections', {
 test('report-collection success', function(assert) {
   assert.expect(2);
 
-  visit('/reportCollections/1');
+  visit('/report-collections/1');
   andThen(function() {
     assert.notOk(!!find('.error').length, 'Error message not present when route is successfully loaded');
 
@@ -43,11 +43,9 @@ test('report-collection error', function(assert) {
   Ember.Logger.error = function() {};
   Ember.Test.adapter.exception = function() {};
 
-  server.get('/reportCollections/:id', () => {
-    return new Mirage.Response(500);
-  });
+  server.get('/reportCollections/:id', { errors: ['The report-collections endpoint is down'] }, 500);
 
-  visit('/reportCollections/1');
+  visit('/report-collections/1');
   andThen(function() {
     assert.ok(!!find('.error').length, 'Error message is present when route encounters an error');
 
@@ -60,7 +58,7 @@ test('report-collection error', function(assert) {
 
 test('report-collection link', function(assert) {
   assert.expect(1);
-  visit('/reportCollections/1');
+  visit('/report-collections/1');
   andThen(function() {
     click('.navi-collection table > tbody > tr > td > a');
     andThen(function() {
@@ -73,7 +71,7 @@ test('report-collection link', function(assert) {
 test('report-collection loading', function(assert) {
   assert.expect(1);
 
-  visit('/reportCollections/loading');
+  visit('/report-collections/loading');
 
   andThen(function() {
     assert.ok(!!find('.navi-loader__container').length, 'Loader is present when visiting loading route');

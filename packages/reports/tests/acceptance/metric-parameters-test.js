@@ -38,7 +38,7 @@ test('adding and removing metrics', function(assert) {
       find('.metric-config__dropdown-container .grouped-list__item')
         .toArray()
         .map(el =>
-          $(el)
+          find(el)
             .text()
             .trim()
         ),
@@ -57,7 +57,7 @@ test('adding and removing metrics', function(assert) {
       find('.metric-config__dropdown-container .grouped-list__item')
         .toArray()
         .map(el =>
-          $(el)
+          find(el)
             .text()
             .trim()
         ),
@@ -76,7 +76,7 @@ test('adding and removing metrics', function(assert) {
       find('.metric-config__dropdown-container .grouped-list__item')
         .toArray()
         .map(el =>
-          $(el)
+          find(el)
             .text()
             .trim()
         ),
@@ -111,7 +111,7 @@ test('auto open metric config', function(assert) {
   click('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .grouped-list__item-label');
   andThen(() => {
     assert.ok(
-      $('.metric-config__dropdown-container').is(':visible'),
+      find('.metric-config__dropdown-container').is(':visible'),
       'The metric config dropdown container is opened when a metric with parameters is selected'
     );
   });
@@ -120,7 +120,7 @@ test('auto open metric config', function(assert) {
   click('.metric-config__dropdown-container .metric-config__done-btn');
   andThen(() => {
     assert.notOk(
-      $('.metric-config__dropdown-container').is(':visible'),
+      find('.metric-config__dropdown-container').is(':visible'),
       'The metric config dropdown container is closed when the done button is clicked'
     );
   });
@@ -129,7 +129,7 @@ test('auto open metric config', function(assert) {
   click('.grouped-list__item:contains(Revenue) .grouped-list__item-label');
   andThen(() => {
     assert.notOk(
-      $('.metric-config__dropdown-container').is(':visible'),
+      find('.metric-config__dropdown-container').is(':visible'),
       'The metric config dropdown container remains closed when the metric is removed'
     );
   });

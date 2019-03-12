@@ -20,7 +20,6 @@
  */
 
 import { set, get, computed } from '@ember/object';
-
 import PickObjectContainer from 'navi-core/components/pick-object-container';
 import Interval from 'navi-core/utils/classes/interval';
 import moment from 'moment';
@@ -43,7 +42,7 @@ export default PickObjectContainer.extend({
   /**
    * @property {Object} dateMoments - start and end dates/durations as moments
    */
-  dateMoments: computed('_editableSelection._start', '_editableSelection._end', function() {
+  dateMoments: computed('_editableSelection.{_start,_end}', function() {
     let { _start, _end } = this.getStagedSelection();
     return this._momentsForCustomRange(new Interval(_start, _end));
   }),
@@ -51,7 +50,7 @@ export default PickObjectContainer.extend({
   /**
    * @property {Object} dateStrings - start and end dates/durations as strings
    */
-  dateStrings: computed('_editableSelection._start', '_editableSelection._end', function() {
+  dateStrings: computed('_editableSelection.{_start,_end}', function() {
     let { _start, _end } = this.getStagedSelection();
     return new Interval(_start, _end).asStrings(DateUtils.PARAM_DATE_FORMAT_STRING);
   }),

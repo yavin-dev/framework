@@ -9,12 +9,12 @@
  *      onSetInterval=(action 'updateInterval')
  *   }}
  */
-import { or } from '@ember/object/computed';
 
+import { or } from '@ember/object/computed';
 import { assert } from '@ember/debug';
 import { A } from '@ember/array';
 import Component from '@ember/component';
-import { get, computed, set } from '@ember/object';
+import { get, computed } from '@ember/object';
 import Duration from 'navi-core/utils/classes/duration';
 import Interval from 'navi-core/utils/classes/interval';
 import config from 'ember-get-config';
@@ -86,11 +86,14 @@ export default Component.extend({
    * @property (Array} ranges - list of ranges with `isActive` flag
    */
   ranges: computed('dateTimePeriod', 'interval', 'predefinedRanges', function() {
-    let ranges = this.get('predefinedRanges');
-    ranges.forEach(range => {
-      set(range, 'isActive', this.isActiveInterval(range.interval));
+    const ranges = this.get('predefinedRanges');
+
+    return ranges.map(range => {
+      let newRange = Object.assign({}, range);
+
+      newRange.isActive = this.isActiveInterval(range.interval);
+      return newRange;
     });
-    return ranges;
   }),
 
   /**

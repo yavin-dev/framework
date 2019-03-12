@@ -1,3 +1,5 @@
+// jquery is still needed until ember-tag-input test helper typeInInput behaves with triggerEvent
+/* eslint ember/no-global-jquery: 1 */
 import { test } from 'qunit';
 import moduleForAcceptance from '../../tests/helpers/module-for-acceptance';
 import { teardownModal } from '../helpers/teardown-modal';
@@ -68,7 +70,7 @@ test('schedule modal save new schedule', function(assert) {
   // Set recipients to a new value
   andThen(() => {
     typeInInput('.js-ember-tag-input-new', 'navi_user@navi.io');
-    $('.js-ember-tag-input-new').blur();
+    triggerEvent('.js-ember-tag-input-new', 'blur');
   });
 
   // Set frequency to Day
@@ -130,7 +132,7 @@ test('schedule modal save changes to existing schedule', function(assert) {
   // Add a new recipient
   andThen(() => {
     typeInInput('.js-ember-tag-input-new', 'navi_user@navi.io');
-    $('.js-ember-tag-input-new').blur();
+    triggerEvent('.js-ember-tag-input-new', 'blur');
   });
 
   // Set frequency to Day
@@ -300,9 +302,9 @@ test('schedule modal cancel existing schedule', function(assert) {
   // Set recipients to a new value
   andThen(() => {
     typeInInput('.js-ember-tag-input-new', 'navi_user@navi.io');
-    $('.js-ember-tag-input-new').blur();
+    triggerEvent('.js-ember-tag-input-new', 'blur');
     typeInInput('.js-ember-tag-input-new', 'test_user@navi.io');
-    $('.js-ember-tag-input-new').blur();
+    triggerEvent('.js-ember-tag-input-new', 'blur');
   });
 
   // Set frequency to Day
@@ -351,7 +353,7 @@ test('schedule modal cancel new schedule', function(assert) {
   // Set recipients to a new value
   andThen(() => {
     typeInInput('.js-ember-tag-input-new', 'navi_user@navi.io');
-    $('.js-ember-tag-input-new').blur();
+    triggerEvent('.js-ember-tag-input-new', 'blur');
   });
 
   // Set frequency to Day
@@ -472,7 +474,7 @@ test('schedule modal validations', function(assert) {
   click('.emberTagInput-remove');
   andThen(() => {
     typeInInput('.js-ember-tag-input-new', 'navi_user@navi.io ');
-    $('.js-ember-tag-input-new').blur();
+    keyEvent('.js-ember-tag-input-new', 'keypress', 13);
   });
 
   andThen(() => {
@@ -586,7 +588,7 @@ test('schedule modal error when saving schedule', function(assert) {
 
   andThen(() => {
     typeInInput('.js-ember-tag-input-new', 'navi_user@navi.io');
-    $('.js-ember-tag-input-new').blur();
+    triggerEvent('.js-ember-tag-input-new', 'blur');
   });
 
   //Save the schedule

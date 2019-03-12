@@ -23,11 +23,11 @@ export default Route.extend({
   /**
    * @property {Object} requestOptions - options for bard request
    */
-  requestOptions: {
+  requestOptions: computed(() => ({
     page: 1,
     perPage: 10000,
     clientId: 'customReports'
-  },
+  })),
 
   /**
    * @property {Object} parentModel - object containing request to view

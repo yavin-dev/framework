@@ -22,23 +22,25 @@ export default Base.extend({
    * @property {Array} supportedOperators
    * @override
    */
-  supportedOperators: [
-    {
-      id: 'gte',
-      longName: 'Since (>=)',
-      valuesComponent: 'filter-values/date'
-    },
-    {
-      id: 'lt',
-      longName: 'Before (<)',
-      valuesComponent: 'filter-values/date'
-    },
-    {
-      id: 'bet',
-      longName: 'Between (<=>)',
-      valuesComponent: 'filter-values/dimension-date-range'
-    }
-  ],
+  supportedOperators: computed(function() {
+    return [
+      {
+        id: 'gte',
+        longName: 'Since (>=)',
+        valuesComponent: 'filter-values/date'
+      },
+      {
+        id: 'lt',
+        longName: 'Before (<)',
+        valuesComponent: 'filter-values/date'
+      },
+      {
+        id: 'bet',
+        longName: 'Between (<=>)',
+        valuesComponent: 'filter-values/dimension-date-range'
+      }
+    ];
+  }),
 
   /**
    * @property {Object} filter

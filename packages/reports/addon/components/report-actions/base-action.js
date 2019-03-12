@@ -42,7 +42,7 @@ export default Component.extend({
   /**
    * @property {Boolean} - actionDisabled
    */
-  actionDisabled: computed('checkPermission', 'report.isOwner', 'report.isNew', function() {
+  actionDisabled: computed('checkPermission', 'report.{isOwner,isNew}', function() {
     if (get(this, 'report.isNew')) {
       return true;
     }

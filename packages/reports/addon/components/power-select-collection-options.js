@@ -47,7 +47,7 @@ export default Options.extend({
   /**
    * @property {Array} colums - columns sized using percentage widths
    */
-  columns: [100],
+  columns: computed(() => [100]),
 
   /**
    * @property {String} groupKey - option property to group by

@@ -47,7 +47,7 @@ export default Component.extend({
   /**
    * @property {String} csvHref - CSV download link for the report
    */
-  csvHref: computed('report.request', 'report.validations.isTruelyValid', function() {
+  csvHref: computed('report.{request,validations.isTruelyValid}', function() {
     let request = get(this, 'report.request').serialize();
     return get(this, 'facts').getURL(request, { format: 'csv' });
   }),
@@ -55,7 +55,7 @@ export default Component.extend({
   /**
    * @property {Promise} pdfHref - Promise resolving to pdf download link
    */
-  pdfHref: computed('report.request', 'report.visualization', 'report.validations.isTruelyValid', function() {
+  pdfHref: computed('report.{request,visualization,validations.isTruelyValid}', function() {
     let { report, modelCompression, store } = getProperties(this, 'report', 'modelCompression', 'store'),
       modelWithId = report;
 

@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -8,28 +8,29 @@
  *       request=request
  *   }}
  */
-import { A } from '@ember/array';
-
+import { A as arr } from '@ember/array';
 import { get, computed } from '@ember/object';
 import Base from './base';
 
 export default Base.extend({
   /**
+   * @override
+   * @param {Array} supportedOperators - list of valid operators for a date-time filter
+   */
+  supportedOperators: computed(function() {
+    return [
+      {
+        id: 'in',
+        longName: 'In Range',
+        valuesComponent: 'filter-values/date-range'
+      }
+    ];
+  }),
+
+  /**
    * @property {Object} requestFragment - interval fragment from request
    */
   requestFragment: undefined,
-
-  /**
-   * @property {Array} supportedOperators
-   * @override
-   */
-  supportedOperators: [
-    {
-      id: 'in',
-      longName: 'In Range',
-      valuesComponent: 'filter-values/date-range'
-    }
-  ],
 
   /**
    * @property {Object} filter
@@ -44,7 +45,7 @@ export default Base.extend({
     return {
       subject: { longName },
       operator,
-      values: A([interval])
+      values: arr([interval])
     };
   })
 });

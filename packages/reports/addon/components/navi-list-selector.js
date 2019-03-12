@@ -17,6 +17,7 @@
 import Component from '@ember/component';
 
 import { set, get, computed } from '@ember/object';
+import { or } from '@ember/object/computed';
 import layout from '../templates/components/navi-list-selector';
 import { searchRecords } from 'navi-core/utils/search';
 
@@ -44,6 +45,11 @@ export default Component.extend({
     }
   }),
 
+  /**
+   * @property {Boolean} areItemsFiltered - true if items are filtered by selected state or a search query
+   */
+  areItemsFiltered: or('showSelected', 'query'),
+
   /*
    * @property {Array} filteredItems - items filtered either by selected and by searchQuery
    */
@@ -51,11 +57,8 @@ export default Component.extend({
     let query = get(this, 'query'),
       items;
 
-    set(this, 'areItemsFiltered', false);
-
     //set items to selected or all items based on showSelected
     if (get(this, 'showSelected')) {
-      set(this, 'areItemsFiltered', true);
       items = get(this, 'selected');
     } else {
       items = get(this, 'items');
@@ -63,7 +66,6 @@ export default Component.extend({
 
     //filter items by searchQuery
     if (query) {
-      set(this, 'areItemsFiltered', true);
       return searchRecords(items, query, get(this, 'searchField'));
     }
 
