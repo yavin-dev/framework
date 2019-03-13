@@ -6,6 +6,12 @@ import DS from 'ember-data';
 import { isEmpty } from '@ember/utils';
 
 export default DS.JSONSerializer.extend({
+  /**
+   * Omit `parameters` if empty object.
+   *
+   * @override
+   * @returns {Object}
+   */
   serialize() {
     let json = this._super(...arguments);
 
@@ -19,6 +25,14 @@ export default DS.JSONSerializer.extend({
     return json;
   },
 
+  /**
+   * If `hash` is a string create model with metric = hash.
+   *
+   * @param {String} type
+   * @param {Any} hash - what is passed on creation
+   * @override
+   * @returns {Object}
+   */
   normalize(type, hash) {
     const newHash = (typeof hash === 'string' && { metric: hash }) || hash;
 

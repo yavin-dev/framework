@@ -1,7 +1,7 @@
 import { resolve } from 'rsvp';
 import { A } from '@ember/array';
 import Route from '@ember/routing/route';
-import _ from 'lodash';
+import cloneDeep from 'lodash/cloneDeep';
 
 const MOCK_ROWS = [
   {
@@ -53,7 +53,7 @@ export default Route.extend({
 
     //20k rows
     for (let i = 0; i < 4000; i++) {
-      rows.pushObjects(_.cloneDeep(MOCK_ROWS));
+      rows.pushObjects(cloneDeep(MOCK_ROWS));
     }
 
     let meta = {

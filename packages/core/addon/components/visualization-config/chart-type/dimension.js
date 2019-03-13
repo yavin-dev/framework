@@ -19,7 +19,8 @@ import { copy } from 'ember-copy';
 import { dataByDimensions } from 'navi-core/utils/data';
 import { getRequestMetrics } from 'navi-core/utils/chart-data';
 import layout from '../../../templates/components/visualization-config/chart-type/dimension';
-import _ from 'lodash';
+import values from 'lodash/values';
+import reject from 'lodash/reject';
 
 export default Component.extend({
   layout,
@@ -118,7 +119,7 @@ export default Component.extend({
    * [{searchKey: '...', dimensions: [{dimension: dimModel, value: {id: dimValueId, description: dimValDesc}}, ...]}, ...]
    */
   allSeriesData: computed('seriesByDimensions', function() {
-    return _.values(get(this, 'seriesByDimensions'));
+    return values(get(this, 'seriesByDimensions'));
   }),
 
   /**
@@ -173,7 +174,7 @@ export default Component.extend({
       const handleUpdateConfig = get(this, 'onUpdateConfig');
 
       //remove series from config
-      set(newSeriesConfig, 'dimensions', _.reject(seriesInConfig, series.config));
+      set(newSeriesConfig, 'dimensions', reject(seriesInConfig, series.config));
       if (handleUpdateConfig) handleUpdateConfig(newSeriesConfig);
     }
   }
