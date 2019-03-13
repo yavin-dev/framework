@@ -31,7 +31,7 @@ module('Integration | Component | dir-item-name-cell', function(hooks) {
 
     assert.ok(this.element.querySelector('.fa-file-text'), 'The correct icon is used for a report');
 
-    assert.equal(this.element.textContent.trim(), 'Report 1', "The item's title is displayed in the component");
+    assert.dom(this.element).hasText('Report 1', "The item's title is displayed in the component");
 
     assert.ok(this.element.querySelector('.fa-star'), 'The favorite icon is shown for a favorited item');
 

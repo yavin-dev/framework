@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Route from '@ember/routing/route';
@@ -28,7 +28,7 @@ export default Route.extend({
    */
   async _fetchFromUser(user, entity) {
     //local cache
-    let cache = get(this, '_cache') || {};
+    let cache = this['_cache'] || {};
 
     //fetch from cache if present
     if (cache[entity]) return cache[entity];
@@ -82,7 +82,7 @@ export default Route.extend({
    * @override
    */
   model() {
-    let user = get(this, 'user').getUser(),
+    let user = this.user.getUser(),
       directoryParams = this.paramsFor('directory');
 
     //returning an object so that the table can handle the promise

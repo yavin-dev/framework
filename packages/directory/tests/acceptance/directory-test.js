@@ -1,5 +1,5 @@
 import { module, test } from 'qunit';
-import { visit, currentURL, find } from '@ember/test-helpers';
+import { visit, currentURL } from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
@@ -18,20 +18,12 @@ module('Acceptance | directory', function(hooks) {
     assert.expect(3);
 
     await visit('/directory/my-data');
-    assert.equal(find('.directory__table h1').textContent, 'My Data', 'Default title shows correctly');
+    assert.dom('.directory__table h1').hasText('My Data', 'Default title shows correctly');
 
     await visit('/directory/my-data?filter=favorites');
-    assert.equal(
-      find('.directory__table h1').textContent,
-      'Favorites',
-      'Title shows correctly when looking at favorites'
-    );
+    assert.dom('.directory__table h1').hasText('Favorites', 'Title shows correctly when looking at favorites');
 
     await visit('/directory/other-data');
-    assert.equal(
-      find('.directory__table h1').textContent,
-      'Other Data',
-      'Title shows correctly for some other directory'
-    );
+    assert.dom('.directory__table h1').hasText('Other Data', 'Title shows correctly for some other directory');
   });
 });

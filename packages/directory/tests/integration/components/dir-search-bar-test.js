@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { find, fillIn, render, triggerEvent } from '@ember/test-helpers';
+import { fillIn, render, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 module('Integration | Component | dir search bar', function(hooks) {
@@ -19,12 +19,11 @@ module('Integration | Component | dir search bar', function(hooks) {
       searchFor=(action searchFor)
     }}`);
 
-    assert.ok(find('.dir-search-bar__input'), 'The search bar input is visible when the component is rendered');
+    assert.dom('.dir-search-bar__input').exists('The search bar input is visible when the component is rendered');
 
-    assert.ok(
-      find('.dir-search-bar__search-icon'),
-      'The search bar search icon is visible when the component is rendered'
-    );
+    assert
+      .dom('.dir-search-bar__search-icon')
+      .exists('The search bar search icon is visible when the component is rendered');
 
     await fillIn('.dir-search-bar__input', fillInText);
     await triggerEvent('.dir-search-bar__input', 'keyup');

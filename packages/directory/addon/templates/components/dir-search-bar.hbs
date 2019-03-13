@@ -1,13 +1,13 @@
-{{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{input
     value=(readonly query)
-    type='text'
-    class='dir-search-bar__input'
+    type="text"
+    class="dir-search-bar__input"
     key-up=(action searchFor)
-    placeholder='Search'
+    placeholder="Search"
 }}
-{{navi-icon 'search' class='dir-search-bar__search-icon'}}
-{{navi-icon 'times' 
-    class=(concat 'dir-search-bar__clear-icon' (if (not-eq query.length 0) ' dir-search-bar__clear-icon--show'))
-    click=(action (mut query) '')
+{{navi-icon "search" class="dir-search-bar__search-icon"}}
+{{navi-icon "times"
+    class=(concat "dir-search-bar__clear-icon" (if (not-eq query.length 0) " dir-search-bar__clear-icon--show"))
+    click=(action (mut query) "")
 }}
