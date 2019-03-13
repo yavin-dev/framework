@@ -15,7 +15,7 @@ import { Promise } from 'rsvp';
  */
 
 export default registerAsyncHelper('waitForElement', function(app, selector, timeout = 3000) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function(resolve /*, reject */) {
     let interval, timer, found;
 
     //Poll for selector

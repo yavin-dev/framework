@@ -1,9 +1,11 @@
-import Ember from 'ember';
+import { A } from '@ember/array';
+import { resolve } from 'rsvp';
+import Route from '@ember/routing/route';
 
-export default Ember.Route.extend({
+export default Route.extend({
   model() {
-    return Ember.RSVP.resolve(
-      Ember.A([
+    return resolve(
+      A([
         {
           request: {
             metrics: ['uniqueIdentifier', 'totalPageViews', 'revenue(currency=USD)'],

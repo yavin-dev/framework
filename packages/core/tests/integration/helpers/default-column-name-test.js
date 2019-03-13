@@ -1,81 +1,65 @@
-import Ember from 'ember';
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
 
-moduleForComponent('default-column-name', 'helper:default-column-name', {
-  integration: true,
-  beforeEach() {
+module('helper:default-column-name', function(hooks) {
+  setupRenderingTest(hooks);
+
+  hooks.beforeEach(function() {
     setupMock();
 
-    return Ember.getOwner(this)
-      .lookup('service:bard-metadata')
-      .loadMetadata();
-  },
-  afterEach() {
+    return this.owner.lookup('service:bard-metadata').loadMetadata();
+  });
+
+  hooks.afterEach(function() {
     teardownMock();
-  }
-});
+  });
 
-test('dateTime column', function(assert) {
-  const column = { type: 'dateTime' };
-  this.set('column', column);
+  test('dateTime column', async function(assert) {
+    const column = { type: 'dateTime' };
+    this.set('column', column);
 
-  this.render(hbs`{{default-column-name column}}`);
+    await render(hbs`{{default-column-name column}}`);
 
-  assert.equal(
-    this.$()
-      .text()
-      .trim(),
-    'Date',
-    'The default column name for dateTime is Date'
-  );
-});
+    assert.dom('*').hasText('Date', 'The default column name for dateTime is Date');
+  });
 
-test('dimension column', function(assert) {
-  const column = { type: 'dimension', attributes: { name: 'os' } };
-  this.set('column', column);
+  test('dimension column', async function(assert) {
+    const column = { type: 'dimension', attributes: { name: 'os' } };
+    this.set('column', column);
 
-  this.render(hbs`{{default-column-name column}}`);
+    await render(hbs`{{default-column-name column}}`);
 
-  assert.equal(
-    this.$()
-      .text()
-      .trim(),
-    'Operating System',
-    'The default column name for os dimension is Operating System'
-  );
-});
+    assert.dom('*').hasText('Operating System', 'The default column name for os dimension is Operating System');
+  });
 
-test('metric column', function(assert) {
-  const column = { type: 'metric', attributes: { name: 'totalPageViews' } };
-  this.set('column', column);
+  test('metric column', async function(assert) {
+    const column = { type: 'metric', attributes: { name: 'totalPageViews' } };
+    this.set('column', column);
 
-  this.render(hbs`{{default-column-name column}}`);
+    await render(hbs`{{default-column-name column}}`);
 
-  assert.equal(
-    this.$()
-      .text()
-      .trim(),
-    'Total Page Views',
-    'The default column name for totalPageViews metric is Total Page Views'
-  );
-});
+    assert
+      .dom('*')
+      .hasText('Total Page Views', 'The default column name for totalPageViews metric is Total Page Views');
+  });
 
-test('metric column with parameters', function(assert) {
-  const column = {
-    type: 'metric',
-    attributes: { name: 'revenue', parameters: { currency: 'USD' } }
-  };
-  this.set('column', column);
+  test('metric column with parameters', async function(assert) {
+    const column = {
+      type: 'metric',
+      attributes: { name: 'revenue', parameters: { currency: 'USD' } }
+    };
+    this.set('column', column);
 
-  this.render(hbs`{{default-column-name column}}`);
+    await render(hbs`{{default-column-name column}}`);
 
-  assert.equal(
-    this.$()
-      .text()
-      .trim(),
-    'Revenue (USD)',
-    'The default column name for revenue metric with currency param of USD is Revenue (USD)'
-  );
+    assert
+      .dom('*')
+      .hasText(
+        'Revenue (USD)',
+        'The default column name for revenue metric with currency param of USD is Revenue (USD)'
+      );
+  });
 });

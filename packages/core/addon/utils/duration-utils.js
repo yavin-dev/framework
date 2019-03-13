@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import Ember from 'ember';
+import { assert } from '@ember/debug';
 import moment from 'moment';
 import Duration from './classes/duration';
 import DateUtils from './date';
@@ -24,7 +24,7 @@ const YEAR_MAP = {
  * @param {Duration} duration
  */
 function validateDurationArgument(duration) {
-  Ember.assert('Duration should be a duration object', Duration.isDuration(duration));
+  assert('Duration should be a duration object', Duration.isDuration(duration));
 }
 
 export default {
@@ -37,7 +37,7 @@ export default {
    * @returns {Moment} - resultant date of the subtraction
    */
   subtractDurationFromDate: function(date, duration) {
-    Ember.assert('Date should be a moment object', moment.isMoment(date));
+    assert('Date should be a moment object', moment.isMoment(date));
     validateDurationArgument(duration);
     // Moment subtract mutates original date object hence the clone
     return date.clone().subtract(duration.getValue(), duration.getUnit());
@@ -54,7 +54,7 @@ export default {
    */
   computeStartOfInterval: function(endDate, duration, dateTimePeriod) {
     validateDurationArgument(duration);
-    Ember.assert('Date should be a moment object', moment.isMoment(endDate));
+    assert('Date should be a moment object', moment.isMoment(endDate));
 
     let epochDate = moment(DateUtils.getFirstDayEpochIsoDateTimePeriod(dateTimePeriod));
     if (Duration.isAll(duration)) {
@@ -76,7 +76,7 @@ export default {
    */
   isDurationOverAYear: function(duration, dateTimePeriod) {
     validateDurationArgument(duration);
-    Ember.assert('Date time period must be defined', dateTimePeriod);
+    assert('Date time period must be defined', dateTimePeriod);
 
     let comparisonPeriod = YEAR_MAP[dateTimePeriod] || 'P1Y';
 

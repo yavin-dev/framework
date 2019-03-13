@@ -10,11 +10,12 @@
  * }}
  */
 
-import Ember from 'ember';
+import { alias } from '@ember/object/computed';
+import Component from '@ember/component';
+import { get, computed } from '@ember/object';
 import layout from '../../templates/components/cell-renderers/date-time';
-const { computed, get } = Ember;
 
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   /**
@@ -26,7 +27,7 @@ export default Ember.Component.extend({
    * @property {String} value
    * Date start time from the response data or 'TOTAL'
    */
-  value: computed.alias('data.dateTime'),
+  value: alias('data.dateTime'),
 
   /**
    * @property {String} granularity- Time Grain in request

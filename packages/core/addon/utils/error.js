@@ -2,9 +2,8 @@
  * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import Ember from 'ember';
-
-const { get } = Ember;
+import { typeOf } from '@ember/utils';
+import { get } from '@ember/object';
 
 const UNKNOWN_ERROR = 'Server Error';
 
@@ -38,7 +37,7 @@ export function getApiErrMsg(error) {
  */
 export function _getErrorText(error = {}) {
   let detail = get(error, 'detail'),
-    type = Ember.typeOf(detail);
+    type = typeOf(detail);
 
   if (type === 'string') {
     return detail;

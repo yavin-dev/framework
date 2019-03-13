@@ -3,11 +3,10 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import Ember from 'ember';
+import { isArray } from '@ember/array';
+import { isPresent } from '@ember/utils';
 import BaseValidator from 'ember-cp-validations/validators/base';
 import { regularExpressions } from 'ember-validators/format';
-
-const { isArray, isPresent } = Ember;
 
 export default BaseValidator.extend({
   validate(value, options) {

@@ -13,11 +13,11 @@
  *     }
  *   }
  */
-import Ember from 'ember';
+import Mixin from '@ember/object/mixin';
 import moment from 'moment';
 import tooltipLayout from '../templates/chart-tooltips/date';
 import DataGroup from 'navi-core/utils/classes/data-group';
-import { get, set, getWithDefault } from '@ember/object';
+import EmberObject, { get, set, getWithDefault, computed } from '@ember/object';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 
 const API_DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss.SSS';
@@ -189,7 +189,7 @@ const _getGrouper = (request, config) => {
   return GROUP[timeGrain].by[seriesTimeGrain];
 };
 
-export default Ember.Object.extend({
+export default EmberObject.extend({
   /**
    * @method getSeriesName
    * @param {Object} row - single row of fact data
@@ -255,13 +255,13 @@ export default Ember.Object.extend({
   buildTooltip() {
     let builder = this;
 
-    return Ember.Mixin.create({
+    return Mixin.create({
       layout: tooltipLayout,
 
       /**
        * @property {Object[]} rowData - maps a response row to each series in a tooltip
        */
-      rowData: Ember.computed('x', 'tooltipData', function() {
+      rowData: computed('x', 'tooltipData', function() {
         return get(this, 'tooltipData').map(series => {
           // Get the full data for this combination of x + series
           let dataForSeries = get(builder, 'byXSeries').getDataForKey(get(this, 'x') + series.name) || [];

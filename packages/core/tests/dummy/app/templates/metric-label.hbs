@@ -1,44 +1,44 @@
 {{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 
-<div style="display:flex;flex-flow: row wrap;">
-    {{navi-visualizations/metric-label
-        model=model
-        options=(hash
-            description='Hit Points (HP)'
-            metric=(hash metric='hp' parameters=(hash))
-        )
-    }}
-    {{navi-visualizations/metric-label
-        model=model
-        options=(hash
-            description='Magic Points (MP)'
-            metric=(hash metric='magic' parameters=(hash))
-        )
-    }}
-    {{navi-visualizations/metric-label
-        model=model
-        options=(hash
-            description='Rupees'
-            metric=(hash metric='rupees' parameters=(hash))
-            format='$0,0[.]00'
-        )
-    }}
-    {{navi-visualizations/metric-label
-        model=model
-        options=(hash
-            description='Arrows'
-            metric=(hash metric='arrows' parameters=(hash))
-            format='$0,0[.]00'
-        )
-    }}
-    {{visualization-config/wrapper
-        request=request
-        response=response
-        visualization=metricVisualization
-        onUpdateConfig=(action 'onUpdateConfig')
-    }}
-    {{navi-visualizations/metric-label
-        model=model
-        options=metricLabelOptions
-    }}
+<div class="metric-label__container">
+  {{navi-visualizations/metric-label
+    model=model
+    options=(hash
+      description="Hit Points (HP)"
+      metric=(hash metric="hp" parameters=(hash))
+    )
+  }}
+  {{navi-visualizations/metric-label
+    model=model
+    options=(hash
+      description="Magic Points (MP)"
+      metric=(hash metric="magic" parameters=(hash))
+    )
+  }}
+  {{navi-visualizations/metric-label
+    model=model
+    options=(hash
+      description="Rupees"
+      metric=(hash metric="rupees" parameters=(hash))
+      format="$0,0[.]00"
+    )
+  }}
+  {{navi-visualizations/metric-label
+    model=model
+    options=(hash
+      description="Arrows"
+      metric=(hash metric="arrows" parameters=(hash))
+      format="$0,0[.]00"
+    )
+  }}
+  {{visualization-config/wrapper
+    request=request
+    response=response
+    visualization=metricVisualization
+    onUpdateConfig=(action "onUpdateConfig")
+  }}
+  {{navi-visualizations/metric-label
+    model=model
+    options=metricLabelOptions
+  }}
 </div>

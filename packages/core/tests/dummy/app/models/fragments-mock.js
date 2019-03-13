@@ -1,7 +1,5 @@
 import DS from 'ember-data';
-import MF from 'model-fragments';
-
-const { fragment, fragmentArray } = MF;
+import { fragment, fragmentArray } from 'ember-data-model-fragments/attributes';
 
 export default DS.Model.extend({
   table: fragment('bard-request/fragments/logicalTable'),

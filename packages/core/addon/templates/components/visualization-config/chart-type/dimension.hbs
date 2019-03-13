@@ -3,11 +3,11 @@
   options=metrics
   selected=selectedMetric
   searchEnabled=false
-  onchange=(action 'onUpdateChartMetric')
-  dropdownClass='dimension-line-chart-config__metric-dropdown'
-  triggerClass='dimension-line-chart-config__metric-trigger'
-  class='dimension-line-chart-config__metric-selector'
-  tagName='div'
+  onchange=(action "onUpdateChartMetric")
+  dropdownClass="dimension-line-chart-config__metric-dropdown"
+  triggerClass="dimension-line-chart-config__metric-trigger"
+  class="dimension-line-chart-config__metric-selector"
+  tagName="div"
   renderInPlace=true
   as |metric|
 }}
@@ -18,6 +18,6 @@
     selectedSeriesData=selectedSeriesData
     seriesDimensions=dimensions
     maxSeries=maxSeries
-    onRemoveSeries=(action 'onRemoveSeries')
-    onAddSeries=(action 'onAddSeries')
+    onRemoveSeries=(action "onRemoveSeries")
+    onAddSeries=(action "onAddSeries")
 }}

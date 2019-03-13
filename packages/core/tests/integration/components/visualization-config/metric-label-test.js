@@ -1,5 +1,7 @@
-import Ember from 'ember';
-import { moduleForComponent, test } from 'ember-qunit';
+import { run } from '@ember/runloop';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render, find, fillIn, blur } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 let Template = hbs`
@@ -10,66 +12,63 @@ let Template = hbs`
     onUpdateConfig=(action onUpdateConfig)
   }}`;
 
-moduleForComponent('visualization-config/metric-label', 'Integration | Component | visualization config/metric-label', {
-  integration: true,
-  beforeEach() {
+module('Integration | Component | visualization config/metric-label', function(hooks) {
+  setupRenderingTest(hooks);
+
+  hooks.beforeEach(function() {
     this.set('options', {
       description: "Glass Bottles of the ranch's finest pasteurized whole milk!!!!!!!",
       metric: 'bottles',
       format: '$0,0[.]00'
     });
     this.set('onUpdateConfig', () => null);
-  }
-});
-
-test('component renders', function(assert) {
-  assert.expect(2);
-
-  this.render(Template);
-
-  assert.equal(
-    this.$('.metric-label-config__description-input')
-      .val()
-      .trim(),
-    "Glass Bottles of the ranch's finest pasteurized whole milk!!!!!!!",
-    'Component correctly displays initial description'
-  );
-
-  assert.equal(
-    this.$('.number-format-selector__format-input')
-      .val()
-      .trim(),
-    '$0,0[.]00',
-    'Component correctly displays initial format'
-  );
-});
-
-test('onUpdateConfig format input', function(assert) {
-  assert.expect(1);
-
-  this.set('onUpdateConfig', result => {
-    assert.equal(result.format, 'foo', 'onUpdateConfig action is called by format input');
   });
 
-  this.render(Template);
+  test('component renders', async function(assert) {
+    assert.expect(2);
 
-  Ember.run(() => {
-    $('.number-format-selector__format-input').val('foo');
-    $('.number-format-selector__format-input').focusout();
+    await render(Template);
+
+    assert.equal(
+      find('.metric-label-config__description-input').value.trim(),
+      "Glass Bottles of the ranch's finest pasteurized whole milk!!!!!!!",
+      'Component correctly displays initial description'
+    );
+
+    assert.equal(
+      find('.number-format-selector__format-input').value.trim(),
+      '$0,0[.]00',
+      'Component correctly displays initial format'
+    );
   });
-});
 
-test('onUpdateConfig description input', function(assert) {
-  assert.expect(1);
+  test('onUpdateConfig format input', async function(assert) {
+    assert.expect(1);
 
-  this.set('onUpdateConfig', result => {
-    assert.equal(result.description, 'foo', 'onUpdateConfig action is called by description input');
+    this.set('onUpdateConfig', result => {
+      assert.equal(result.format, 'foo', 'onUpdateConfig action is called by format input');
+    });
+
+    await render(Template);
+
+    await run(async () => {
+      await fillIn('.number-format-selector__format-input', 'foo');
+      await blur('.number-format-selector__format-input');
+    });
   });
 
-  this.render(Template);
+  test('onUpdateConfig description input', async function(assert) {
+    assert.expect(1);
 
-  Ember.run(() => {
-    $('.metric-label-config__description-input').val('foo');
-    $('.metric-label-config__description-input').focusout();
+    this.set('onUpdateConfig', result => {
+      assert.equal(result.description, 'foo', 'onUpdateConfig action is called by description input');
+    });
+
+    await render(Template);
+
+    await run(async () => {
+      await fillIn('.metric-label-config__description-input', 'foo');
+      await blur('.metric-label-config__description-input');
+    });
   });
 });

@@ -9,6 +9,7 @@
  * }}
  */
 
+import { alias, readOnly } from '@ember/object/computed';
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
 import { get, computed } from '@ember/object';
@@ -52,7 +53,7 @@ export default Component.extend({
   /**
    * @property {Object} request
    */
-  request: computed.alias('model.firstObject.request'),
+  request: alias('model.firstObject.request'),
 
   /**
    * @property {Object} builder - Series builder for pie chart
@@ -62,7 +63,7 @@ export default Component.extend({
   /**
    * @property {Object} seriesConfig - config for chart series
    */
-  seriesConfig: computed.readOnly('options.series.config'),
+  seriesConfig: readOnly('options.series.config'),
 
   /**
    * Formatter for label (percentage value) shown on pie slices

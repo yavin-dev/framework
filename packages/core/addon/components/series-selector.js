@@ -11,12 +11,14 @@
  *      addSeries=(action 'addSeries')
  *   {{/series-selector}}
  */
-import Ember from 'ember';
+import { next } from '@ember/runloop';
+import $ from 'jquery';
+import { isBlank } from '@ember/utils';
+import Component from '@ember/component';
+import { set, observer, get, computed } from '@ember/object';
 import Search from 'navi-core/utils/search';
 import DebouncedPropertiesMixin from 'ember-debounced-properties/mixin';
 import layout from '../templates/components/series-selector';
-
-const { computed, get, observer, set } = Ember;
 
 /**
  * @constant {Number} SCROLL_BUFFER - % of remaining scroll height used to fire pagination
@@ -28,7 +30,7 @@ const SCROLL_BUFFER = 20;
  */
 const SCROLL_EVENT = 'scroll.seriesSelectorTable';
 
-export default Ember.Component.extend(DebouncedPropertiesMixin, {
+export default Component.extend(DebouncedPropertiesMixin, {
   layout,
 
   /**
@@ -39,7 +41,7 @@ export default Ember.Component.extend(DebouncedPropertiesMixin, {
   /**
    * @property {Array} debouncedProperties - list of properties to debounce
    */
-  debouncedProperties: ['searchTerm'],
+  debouncedProperties: computed(() => ['searchTerm']),
 
   /**
    * @property {Number} searchTermDelay - number of milliseconds to wait for user to stop typing search term
@@ -60,7 +62,7 @@ export default Ember.Component.extend(DebouncedPropertiesMixin, {
       items = get(this, 'availableSeriesData');
 
     // Empty query returns all items
-    if (Ember.isBlank(query)) {
+    if (isBlank(query)) {
       return items;
     }
 
@@ -110,7 +112,7 @@ export default Ember.Component.extend(DebouncedPropertiesMixin, {
    */
   willDestroyElement() {
     //turning off scroll listener
-    Ember.$(`.${get(this, 'scrollableContainerClass')}`).off(SCROLL_EVENT);
+    $(`.${get(this, 'scrollableContainerClass')}`).off(SCROLL_EVENT);
   },
 
   /**
@@ -191,7 +193,7 @@ export default Ember.Component.extend(DebouncedPropertiesMixin, {
      */
     formToggled(isFormOpen) {
       if (isFormOpen) {
-        Ember.run.next(() => {
+        next(() => {
           this.$('.search input').select();
         });
       }

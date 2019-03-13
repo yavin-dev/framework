@@ -3,10 +3,8 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import Ember from 'ember';
+import { isEmpty } from '@ember/utils';
 import BaseValidator from 'ember-cp-validations/validators/base';
-
-const { isEmpty } = Ember;
 
 export default BaseValidator.extend({
   validate(value, options) {

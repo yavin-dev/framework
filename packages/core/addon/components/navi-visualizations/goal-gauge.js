@@ -11,6 +11,7 @@
 
 /* globals d3 */
 
+import { alias } from '@ember/object/computed';
 import Component from '@ember/component';
 import { computed, get, getWithDefault } from '@ember/object';
 import { guidFor } from '@ember/object/internals';
@@ -56,17 +57,17 @@ export default Component.extend({
   /**
    * @property {object} - target metric model pulled from serialized request
    */
-  metricModel: computed.alias('model.firstObject.request.metrics.0'),
+  metricModel: alias('model.firstObject.request.metrics.0'),
 
   /**
    * @property {Number} - starting value to measure progress towards the gaol
    */
-  baselineValue: computed.alias('config.baselineValue'),
+  baselineValue: alias('config.baselineValue'),
 
   /**
    * @property {Number} - value which is desired to be achieved
    */
-  goalValue: computed.alias('config.goalValue'),
+  goalValue: alias('config.goalValue'),
 
   /**
    * @property {String} formatted default metric
@@ -96,22 +97,22 @@ export default Component.extend({
   /**
    * @property {String} - name of goal metric
    */
-  metric: computed.alias('config.metric'),
+  metric: alias('config.metric'),
 
   /**
    * @property {String} - metric prefix
    */
-  prefix: computed.alias('config.prefix'),
+  prefix: alias('config.prefix'),
 
   /**
    * @property {String} - metric unit
    */
-  unit: computed.alias('config.unit'),
+  unit: alias('config.unit'),
 
   /**
    * @property {Object} - gauge tooltip configuration
    */
-  tooltip: { show: false },
+  tooltip: computed(() => ({ show: false })),
 
   /**
    * @property {Object} config - config options for the chart
@@ -150,12 +151,12 @@ export default Component.extend({
   /**
    * @property {Array} - colors to render corresponding to the thresholdValues
    */
-  thresholdColors: computed.alias('config.thresholdColors'),
+  thresholdColors: alias('config.thresholdColors'),
 
   /**
    * @property {Array} - percentages to render corresponding to the colors
    */
-  thresholdPercentages: computed.alias('config.thresholdPercentages'),
+  thresholdPercentages: alias('config.thresholdPercentages'),
 
   /**
    * @property {Array} - threshold values to indicate what color to render

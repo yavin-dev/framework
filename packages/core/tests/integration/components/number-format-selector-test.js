@@ -1,7 +1,8 @@
 import { run } from '@ember/runloop';
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render, settled, click, fillIn, blur } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import wait from 'ember-test-helpers/wait';
 
 let Template = hbs`
   {{number-format-selector
@@ -9,68 +10,63 @@ let Template = hbs`
     onUpdateFormat=(action onUpdateFormat)
   }}`;
 
-moduleForComponent('number-format-selector', 'Integration | Component | number format selector', {
-  integration: true,
-  beforeEach() {
+module('Integration | Component | number format selector', function(hooks) {
+  setupRenderingTest(hooks);
+
+  hooks.beforeEach(function() {
     this.set('format', '$0,0[.]00');
     this.set('onUpdateFormat', () => null);
-  }
-});
-
-test('updateFormat from radio button', function(assert) {
-  assert.expect(1);
-
-  this.set('onUpdateFormat', result => {
-    assert.equal(result, '0,0.00', 'onUpdateFormat action is called by radio button');
   });
 
-  this.render(Template);
+  test('updateFormat from radio button', async function(assert) {
+    assert.expect(1);
 
-  run(() => {
-    $('.number-format-selector__radio-number input').click();
-  });
-});
-
-test('clearFormat', function(assert) {
-  assert.expect(1);
-
-  this.set('onUpdateFormat', result => {
-    assert.equal(result, '', 'onUpdateFormat action is called by custom format radio button');
-  });
-
-  this.render(Template);
-
-  run(() => {
-    $('.number-format-selector__radio-custom input').click();
-  });
-});
-
-test('highlight correct format when customFormat is changed', function(assert) {
-  assert.expect(2);
-
-  this.render(Template);
-
-  run(() => {
-    $('.number-format-selector__format-input').val('$0,0[.]00a');
-    $('.number-format-selector__format-input').focusout();
-  });
-
-  return wait().then(() => {
-    assert.ok(
-      $('.number-format-selector__radio-custom input').prop('checked'),
-      'custom format correctly highlighted when user enters custom format'
-    );
-
-    run(() => {
-      $('.number-format-selector__format-input').val('0,0.00');
-      $('.number-format-selector__format-input').focusout();
+    this.set('onUpdateFormat', result => {
+      assert.equal(result, '0,0.00', 'onUpdateFormat action is called by radio button');
     });
 
-    return wait().then(() => {
-      assert.ok(
-        $('.number-format-selector__radio-number input').prop('checked'),
-        'number format correctly highlighted when user enters number format'
-      );
+    await render(Template);
+
+    await run(() => click('.number-format-selector__radio-number input'));
+  });
+
+  test('clearFormat', async function(assert) {
+    assert.expect(1);
+
+    this.set('onUpdateFormat', result => {
+      assert.equal(result, '', 'onUpdateFormat action is called by custom format radio button');
     });
+
+    await render(Template);
+
+    await run(() => click('.number-format-selector__radio-custom input'));
+  });
+
+  test('highlight correct format when customFormat is changed', async function(assert) {
+    assert.expect(2);
+
+    await render(Template);
+
+    await run(async () => {
+      await fillIn('.number-format-selector__format-input', '$0,0[.]00a');
+      await blur('.number-format-selector__format-input');
+    });
+
+    await settled();
+
+    assert
+      .dom('.number-format-selector__radio-custom input')
+      .isChecked('custom format correctly highlighted when user enters custom format');
+
+    await run(async () => {
+      await fillIn('.number-format-selector__format-input', '0,0.00');
+      await blur('.number-format-selector__format-input');
+    });
+
+    await settled();
+
+    assert
+      .dom('.number-format-selector__radio-number input')
+      .isChecked('number format correctly highlighted when user enters number format');
   });
 });

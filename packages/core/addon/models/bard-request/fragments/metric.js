@@ -4,13 +4,11 @@
  */
 
 import DS from 'ember-data';
-import MF from 'model-fragments';
+import Fragment from 'ember-data-model-fragments/fragment';
 import { validator, buildValidations } from 'ember-cp-validations';
 import { computed, get } from '@ember/object';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 import { Copyable } from 'ember-copy';
-
-const { Fragment } = MF;
 
 const Validations = buildValidations({
   metric: validator('presence', {

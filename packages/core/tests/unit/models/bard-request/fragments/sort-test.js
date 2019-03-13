@@ -1,40 +1,19 @@
-import { moduleForModel, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupTest } from 'ember-qunit';
+import { settled } from '@ember/test-helpers';
 import { setupMock, teardownMock } from '../../../../helpers/mirage-helper';
-import wait from 'ember-test-helpers/wait';
-import { getOwner } from '@ember/application';
 import { run } from '@ember/runloop';
 
 var Store, MetadataService;
 
-moduleForModel('fragments-mock', 'Unit | Model | Fragment | BardRequest - Sort', {
-  // Specify the other units that are required for this test.
-  needs: [
-    'transform:fragment-array',
-    'transform:table',
-    'transform:fragment',
-    'transform:metric',
-    'model:bard-request/fragments/metric',
-    'model:bard-request/fragments/sort',
-    'validator:presence',
-    'service:bard-metadata',
-    'adapter:bard-metadata',
-    'serializer:bard-metadata',
-    'service:keg',
-    'service:ajax',
-    'service:bard-facts',
-    'model:metadata/table',
-    'model:metadata/dimension',
-    'model:metadata/metric',
-    'model:metadata/time-grain',
-    'service:bard-dimensions',
-    'adapter:dimensions/bard'
-  ],
+module('Unit | Model | Fragment | BardRequest - Sort', function(hooks) {
+  setupTest(hooks);
 
-  beforeEach() {
+  hooks.beforeEach(function() {
     setupMock();
 
-    Store = getOwner(this).lookup('service:store');
-    MetadataService = getOwner(this).lookup('service:bard-metadata');
+    Store = this.owner.lookup('service:store');
+    MetadataService = this.owner.lookup('service:bard-metadata');
 
     MetadataService.loadMetadata().then(() => {
       //Add instances to the store
@@ -56,16 +35,16 @@ moduleForModel('fragments-mock', 'Unit | Model | Fragment | BardRequest - Sort',
         }
       });
     });
-  },
-  afterEach() {
+  });
+
+  hooks.afterEach(function() {
     teardownMock();
-  }
-});
+  });
 
-test('Model using the Sort Fragment', function(assert) {
-  assert.expect(6);
+  test('Model using the Sort Fragment', async function(assert) {
+    assert.expect(6);
 
-  return wait().then(() => {
+    await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1);
     assert.ok(mockModel, 'mockModel is fetched from the store');
 
@@ -123,23 +102,22 @@ test('Model using the Sort Fragment', function(assert) {
       mockModel.serialize().data.attributes.sorts,
       [
         {
-          metric: { metric: 'pageViews', parameters: {} },
+          metric: { metric: 'pageViews' },
           direction: 'asc'
         },
         {
-          metric: { metric: 'timeSpent', parameters: {} },
+          metric: { metric: 'timeSpent' },
           direction: 'desc'
         }
       ],
       'The model object was serialized correctly'
     );
   });
-});
 
-test('Validations', function(assert) {
-  assert.expect(8);
+  test('Validations', async function(assert) {
+    assert.expect(8);
 
-  return wait().then(() => {
+    await settled();
     let sort = run(function() {
       return Store.peekRecord('fragments-mock', 1)
         .get('sorts')

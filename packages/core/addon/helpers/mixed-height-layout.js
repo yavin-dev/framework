@@ -6,7 +6,7 @@
  * and 100% width
  */
 
-import Ember from 'ember';
+import { helper as buildHelper } from '@ember/component/helper';
 import { formatPercentageStyle } from 'ember-collection/utils/style-generators';
 import ShelfFirst from 'layout-bin-packer/shelf-first';
 
@@ -66,6 +66,6 @@ export function formatItemDimension(height) {
   };
 }
 
-export default Ember.Helper.helper(function(params /*, hash */) {
+export default buildHelper(function(params /*, hash */) {
   return new MixedHeightLayout(params[0]);
 });

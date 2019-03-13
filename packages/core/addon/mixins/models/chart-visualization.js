@@ -2,7 +2,8 @@
  * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import Ember from 'ember';
+import Mixin from '@ember/object/mixin';
+import { get } from '@ember/object';
 import { topN, maxDataByDimensions } from 'navi-core/utils/data';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 import {
@@ -14,9 +15,7 @@ import {
   buildDimensionSeriesValues
 } from 'navi-core/utils/chart-data';
 
-const { get } = Ember;
-
-export default Ember.Mixin.create({
+export default Mixin.create({
   /**
    * Get a series builder based on type of chart
    *

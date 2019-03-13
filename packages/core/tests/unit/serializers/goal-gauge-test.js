@@ -1,80 +1,82 @@
-import { moduleFor, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupTest } from 'ember-qunit';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
-import { getOwner } from '@ember/application';
 
 let Serializer, Model;
 
-moduleFor('serializer:goal-gauge', 'Unit | Serializer | goal gauge', {
-  needs: ['model:goal-gauge', 'validator:request-metric-exist', 'validator:number'],
-  beforeEach() {
+module('Unit | Serializer | goal gauge', function(hooks) {
+  setupTest(hooks);
+
+  hooks.beforeEach(function() {
     setupMock();
-    Serializer = this.subject();
-    const store = getOwner(this).lookup('service:store');
+    Serializer = this.owner.lookup('serializer:goal-gauge');
+    const store = this.owner.lookup('service:store');
     Model = store.modelFor('goal-gauge');
-  },
-  afterEach() {
+  });
+
+  hooks.afterEach(function() {
     teardownMock();
-  }
-});
+  });
 
-test('normalize', function(assert) {
-  assert.expect(3);
+  test('normalize', function(assert) {
+    assert.expect(3);
 
-  let initialMetaData = {
-      version: 1,
-      type: 'goal-gauge',
-      metadata: {
-        metric: 'rupees',
-        baselineValue: 1000,
-        goalValue: 1500,
-        metricTitle: null,
-        unit: null,
-        prefix: null
-      }
-    },
-    metricObjectMetaData = {
-      version: 1,
-      type: 'goal-gauge',
-      metadata: {
-        metric: { metric: 'rupees', parameters: {} },
-        baselineValue: 1000,
-        goalValue: 1500,
-        metricTitle: null,
-        unit: null,
-        prefix: null
-      }
-    },
-    expectedPayload = {
-      data: {
-        id: null,
-        relationships: {},
+    let initialMetaData = {
+        version: 1,
         type: 'goal-gauge',
-        attributes: {
-          version: 1,
+        metadata: {
+          metric: 'rupees',
+          baselineValue: 1000,
+          goalValue: 1500,
+          metricTitle: null,
+          unit: null,
+          prefix: null
+        }
+      },
+      metricObjectMetaData = {
+        version: 1,
+        type: 'goal-gauge',
+        metadata: {
+          metric: { metric: 'rupees', parameters: {} },
+          baselineValue: 1000,
+          goalValue: 1500,
+          metricTitle: null,
+          unit: null,
+          prefix: null
+        }
+      },
+      expectedPayload = {
+        data: {
+          id: null,
+          relationships: {},
           type: 'goal-gauge',
-          metadata: {
-            metric: { metric: 'rupees', parameters: {} },
-            baselineValue: 1000,
-            goalValue: 1500,
-            metricTitle: null,
-            unit: null,
-            prefix: null
+          attributes: {
+            version: 1,
+            type: 'goal-gauge',
+            metadata: {
+              metric: { metric: 'rupees', parameters: {} },
+              baselineValue: 1000,
+              goalValue: 1500,
+              metricTitle: null,
+              unit: null,
+              prefix: null
+            }
           }
         }
-      }
-    };
+      };
 
-  assert.deepEqual(Serializer.normalize(), { data: null }, 'null is returned for an undefined response');
+    assert.deepEqual(Serializer.normalize(), { data: null }, 'null is returned for an undefined response');
 
-  assert.deepEqual(
-    Serializer.normalize(Model, initialMetaData),
-    expectedPayload,
-    'Config with a metric name stored is successfully converted to an object for a non-parameterized metric'
-  );
+    assert.deepEqual(
+      Serializer.normalize(Model, initialMetaData),
+      expectedPayload,
+      'Config with a metric name stored is successfully converted to an object for a non-parameterized metric'
+    );
 
-  assert.deepEqual(
-    Serializer.normalize(Model, metricObjectMetaData),
-    expectedPayload,
-    'Config with a metric object stored is unchanged'
-  );
+    assert.deepEqual(
+      Serializer.normalize(Model, metricObjectMetaData),
+      expectedPayload,
+      'Config with a metric object stored is unchanged'
+    );
+  });
 });

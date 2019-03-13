@@ -10,12 +10,12 @@
  * }}
  */
 
-import Ember from 'ember';
+import Component from '@ember/component';
+import { set, get } from '@ember/object';
+import { copy } from 'ember-copy';
 import layout from '../../templates/components/visualization-config/pie-chart';
 
-const { get, set, copy } = Ember;
-
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   /**

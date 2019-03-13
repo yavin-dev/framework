@@ -1,46 +1,25 @@
-import { moduleForModel, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupTest } from 'ember-qunit';
+import { settled } from '@ember/test-helpers';
 import { setupMock, teardownMock } from '../../../../helpers/mirage-helper';
-import wait from 'ember-test-helpers/wait';
-import { getOwner } from '@ember/application';
 import { run } from '@ember/runloop';
 
 var Store, MetadataService, RevenueMetric;
 
-moduleForModel('fragments-mock', 'Unit | Model Fragment | BardRequest - Having', {
-  needs: [
-    'transform:fragment-array',
-    'transform:fragment',
-    'transform:metric',
-    'model:bard-request/fragments/metric',
-    'model:bard-request/fragments/having',
-    'validator:array-number',
-    'validator:length',
-    'validator:presence',
-    'service:bard-metadata',
-    'adapter:bard-metadata',
-    'serializer:bard-metadata',
-    'service:keg',
-    'service:ajax',
-    'service:bard-facts',
-    'model:metadata/table',
-    'model:metadata/dimension',
-    'model:metadata/metric',
-    'model:metadata/time-grain',
-    'service:bard-dimensions',
-    'adapter:dimensions/bard'
-  ],
+module('Unit | Model Fragment | BardRequest - Having', function(hooks) {
+  setupTest(hooks);
 
-  beforeEach() {
-    Store = getOwner(this).lookup('service:store');
+  hooks.beforeEach(function() {
+    Store = this.owner.lookup('service:store');
     setupMock();
 
-    MetadataService = getOwner(this).lookup('service:bard-metadata');
+    MetadataService = this.owner.lookup('service:bard-metadata');
 
     return MetadataService.loadMetadata().then(() => {
       RevenueMetric = MetadataService.getById('metric', 'revenue');
 
       //Add instances to the store
-      return run(() => {
+      run(() => {
         Store.pushPayload('fragments-mock', {
           data: {
             id: 1,
@@ -61,37 +40,84 @@ moduleForModel('fragments-mock', 'Unit | Model Fragment | BardRequest - Having',
         });
       });
     });
-  },
-  afterEach() {
+  });
+
+  hooks.afterEach(function() {
     teardownMock();
-  }
-});
+  });
 
-test('Model using the Having Fragment', function(assert) {
-  assert.expect(8);
+  test('Model using the Having Fragment', function(assert) {
+    assert.expect(8);
 
-  let mockModel = Store.peekRecord('fragments-mock', 1),
-    pageViewMetric = MetadataService.getById('metric', 'pageViews');
+    let mockModel = Store.peekRecord('fragments-mock', 1),
+      pageViewMetric = MetadataService.getById('metric', 'pageViews');
 
-  assert.ok(mockModel, 'mockModel is fetched from the store');
+    assert.ok(mockModel, 'mockModel is fetched from the store');
 
-  run(() => {
+    run(() => {
+      assert.deepEqual(
+        mockModel
+          .get('having')
+          .objectAt(0)
+          .get('metric.metric'),
+        RevenueMetric,
+        'The property metric is deserialized to the `Revenue` metric metadata object'
+      );
+
+      assert.deepEqual(
+        mockModel
+          .get('having')
+          .objectAt(0)
+          .get('metric.parameters'),
+        { currency: 'USD' },
+        'The property metric has the correct parameters object'
+      );
+
+      assert.equal(
+        mockModel
+          .get('having')
+          .objectAt(0)
+          .get('operator'),
+        'gt',
+        'The property operator has the value `gt`'
+      );
+
+      assert.deepEqual(
+        mockModel
+          .get('having')
+          .objectAt(0)
+          .get('values'),
+        [100],
+        'The property values has the value `100`'
+      );
+
+      /* == Setter Method == */
+      mockModel
+        .get('having')
+        .objectAt(0)
+        .set(
+          'metric',
+          Store.createFragment('bard-request/fragments/metric', {
+            metric: pageViewMetric
+          })
+        );
+      mockModel
+        .get('having')
+        .objectAt(0)
+        .set('operator', 'gte');
+      mockModel
+        .get('having')
+        .objectAt(0)
+        .set('values', [350]);
+    });
+
     assert.deepEqual(
       mockModel
         .get('having')
         .objectAt(0)
         .get('metric.metric'),
-      RevenueMetric,
-      'The property metric is deserialized to the `Revenue` metric metadata object'
-    );
-
-    assert.deepEqual(
-      mockModel
-        .get('having')
-        .objectAt(0)
-        .get('metric.parameters'),
-      { currency: 'USD' },
-      'The property metric has the correct parameters object'
+      pageViewMetric,
+      'The property having has the metric with metadata for `Page Views` set using setter'
     );
 
     assert.equal(
@@ -99,8 +125,8 @@ test('Model using the Having Fragment', function(assert) {
         .get('having')
         .objectAt(0)
         .get('operator'),
-      'gt',
-      'The property operator has the value `gt`'
+      'gte',
+      'The property having has the operator `gte` set using setter'
     );
 
     assert.deepEqual(
@@ -108,63 +134,16 @@ test('Model using the Having Fragment', function(assert) {
         .get('having')
         .objectAt(0)
         .get('values'),
-      [100],
-      'The property values has the value `100`'
+      [350],
+      'The property values has the value `[350]` set using setter'
     );
-
-    /* == Setter Method == */
-    mockModel
-      .get('having')
-      .objectAt(0)
-      .set(
-        'metric',
-        Store.createFragment('bard-request/fragments/metric', {
-          metric: pageViewMetric
-        })
-      );
-    mockModel
-      .get('having')
-      .objectAt(0)
-      .set('operator', 'gte');
-    mockModel
-      .get('having')
-      .objectAt(0)
-      .set('values', [350]);
   });
 
-  assert.deepEqual(
-    mockModel
-      .get('having')
-      .objectAt(0)
-      .get('metric.metric'),
-    pageViewMetric,
-    'The property having has the metric with metadata for `Page Views` set using setter'
-  );
+  test('Computed values', async function(assert) {
+    assert.expect(3);
 
-  assert.equal(
-    mockModel
-      .get('having')
-      .objectAt(0)
-      .get('operator'),
-    'gte',
-    'The property having has the operator `gte` set using setter'
-  );
-
-  assert.deepEqual(
-    mockModel
-      .get('having')
-      .objectAt(0)
-      .get('values'),
-    [350],
-    'The property values has the value `[350]` set using setter'
-  );
-});
-
-test('Computed values', function(assert) {
-  assert.expect(3);
-
-  return wait().then(() => {
-    return run(() => {
+    await settled();
+    run(() => {
       let mockModel = Store.peekRecord('fragments-mock', 1);
 
       assert.deepEqual(
@@ -197,12 +176,11 @@ test('Computed values', function(assert) {
       );
     });
   });
-});
 
-test('Validations', function(assert) {
-  assert.expect(14);
+  test('Validations', async function(assert) {
+    assert.expect(14);
 
-  return wait().then(() => {
+    await settled();
     let having = run(function() {
       return Store.peekRecord('fragments-mock', 1)
         .get('having')

@@ -1,6 +1,8 @@
-import Ember from 'ember';
+import { A } from '@ember/array';
 import config from 'ember-get-config';
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
 
@@ -35,7 +37,7 @@ const ROWS = [
   }
 ];
 
-const Model = Ember.A([
+const Model = A([
   {
     request: {
       dimensions: [{ dimension: 'os' }],
@@ -78,9 +80,10 @@ const Options = {
   ]
 };
 
-moduleForComponent('navi-visualizations/table-print', 'Integration | Component | navi visualizations/table print', {
-  integration: true,
-  beforeEach() {
+module('Integration | Component | navi visualizations/table print', function(hooks) {
+  setupRenderingTest(hooks);
+
+  hooks.beforeEach(function() {
     config.navi.FEATURES.enableVerticalCollectionTableIterator = true;
     setupMock();
 
@@ -88,57 +91,56 @@ moduleForComponent('navi-visualizations/table-print', 'Integration | Component |
     this.set('options', Options);
     this.set('onUpdateReport', () => {});
 
-    return Ember.getOwner(this)
-      .lookup('service:bard-metadata')
-      .loadMetadata();
-  },
-  afterEach() {
+    return this.owner.lookup('service:bard-metadata').loadMetadata();
+  });
+
+  hooks.afterEach(function() {
     config.navi.FEATURES.enableVerticalCollectionTableIterator = false;
     teardownMock();
-  }
-});
+  });
 
-test('it renders', function(assert) {
-  assert.expect(3);
+  test('it renders', async function(assert) {
+    assert.expect(3);
 
-  this.render(TEMPLATE);
+    await render(TEMPLATE);
 
-  assert.ok(this.$('.table-widget').is(':visible'), 'The table widget component is visible');
+    assert.ok(this.$('.table-widget').is(':visible'), 'The table widget component is visible');
 
-  let headers = this.$('div.table-header-row-vc .table-header-cell')
-    .toArray()
-    .map(el =>
-      this.$(el)
-        .text()
-        .trim()
+    let headers = this.$('div.table-header-row-vc .table-header-cell')
+      .toArray()
+      .map(el =>
+        this.$(el)
+          .text()
+          .trim()
+      );
+
+    assert.deepEqual(
+      headers,
+      ['Date', 'Operating System', 'Unique Identifiers', 'Total Page Views'],
+      'The table renders the headers correctly based on the request'
     );
 
-  assert.deepEqual(
-    headers,
-    ['Date', 'Operating System', 'Unique Identifiers', 'Total Page Views'],
-    'The table renders the headers correctly based on the request'
-  );
+    let body = this.$('tbody tr')
+      .toArray()
+      .map(row =>
+        this.$(row)
+          .find('.table-cell')
+          .toArray()
+          .map(cell =>
+            this.$(cell)
+              .text()
+              .trim()
+          )
+      );
 
-  let body = this.$('tbody tr')
-    .toArray()
-    .map(row =>
-      this.$(row)
-        .find('.table-cell')
-        .toArray()
-        .map(cell =>
-          this.$(cell)
-            .text()
-            .trim()
-        )
+    assert.deepEqual(
+      body,
+      [
+        ['05/30/2016', 'All Other', '172,933,788', '3,669,828,357'],
+        ['05/30/2016', 'Android', '183,206,656', '4,088,487,125'],
+        ['05/30/2016', 'BlackBerry OS', '183,380,921', '4,024,700,302']
+      ],
+      'The table renders the response dataset correctly'
     );
-
-  assert.deepEqual(
-    body,
-    [
-      ['05/30/2016', 'All Other', '172,933,788', '3,669,828,357'],
-      ['05/30/2016', 'Android', '183,206,656', '4,088,487,125'],
-      ['05/30/2016', 'BlackBerry OS', '183,380,921', '4,024,700,302']
-    ],
-    'The table renders the response dataset correctly'
-  );
+  });
 });

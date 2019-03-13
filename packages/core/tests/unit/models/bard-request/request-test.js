@@ -1,7 +1,7 @@
-import { moduleForModel, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupTest } from 'ember-qunit';
+import { settled } from '@ember/test-helpers';
 import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
-import wait from 'ember-test-helpers/wait';
-import { getOwner } from '@ember/application';
 import { get, set } from '@ember/object';
 import { run } from '@ember/runloop';
 import moment from 'moment';
@@ -13,53 +13,14 @@ const UNDEFINED_SORT_MODEL = 2,
 
 let Store, MetadataService;
 
-moduleForModel('fragments-mock', 'Unit | Model Fragment | BardRequest - Request', {
-  needs: [
-    'transform:array',
-    'transform:fragment-array',
-    'transform:dimension',
-    'transform:fragment',
-    'transform:metric',
-    'transform:moment',
-    'transform:table',
-    'model:dimension-age',
-    'model:bard-request/request',
-    'model:bard-request/fragments/dimension',
-    'model:bard-request/fragments/filter',
-    'model:bard-request/fragments/interval',
-    'model:bard-request/fragments/logicalTable',
-    'model:bard-request/fragments/metric',
-    'model:bard-request/fragments/having',
-    'model:bard-request/fragments/sort',
-    'serializer:bard-request/fragments/logical-table',
-    'serializer:bard-request/fragments/interval',
-    'validator:length',
-    'validator:belongs-to',
-    'validator:has-many',
-    'validator:interval',
-    'validator:presence',
-    'validator:array-empty-value',
-    'service:bard-metadata',
-    'adapter:bard-metadata',
-    'serializer:bard-metadata',
-    'service:keg',
-    'service:ajax',
-    'service:bard-facts',
-    'model:metadata/table',
-    'model:metadata/dimension',
-    'model:metadata/metric',
-    'model:metadata/time-grain',
-    'service:bard-dimensions',
-    'adapter:dimensions/bard',
-    'validator:number',
-    'validator:array-number'
-  ],
+module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
+  setupTest(hooks);
 
-  beforeEach() {
+  hooks.beforeEach(function() {
     setupMock();
-    Store = getOwner(this).lookup('service:store');
+    Store = this.owner.lookup('service:store');
 
-    MetadataService = getOwner(this).lookup('service:bard-metadata');
+    MetadataService = this.owner.lookup('service:bard-metadata');
 
     MetadataService.loadMetadata().then(() => {
       run(() => {
@@ -222,16 +183,16 @@ moduleForModel('fragments-mock', 'Unit | Model Fragment | BardRequest - Request'
         });
       });
     });
-  },
-  afterEach() {
+  });
+
+  hooks.afterEach(function() {
     teardownMock();
-  }
-});
+  });
 
-test('Request Model Fragment', function(assert) {
-  assert.expect(9);
+  test('Request Model Fragment', async function(assert) {
+    assert.expect(9);
 
-  return wait().then(() => {
+    await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1),
       request = mockModel.get('request');
 
@@ -279,14 +240,13 @@ test('Request Model Fragment', function(assert) {
 
     assert.equal(request.get('sort.length'), 0, 'There are no sort in the request model fragment');
   });
-});
 
-test('Clone Request', function(assert) {
-  assert.expect(13);
+  test('Clone Request', async function(assert) {
+    assert.expect(13);
 
-  return wait().then(() => {
-    let mockModel = Store.peekRecord('fragments-mock', MODEL_TO_CLONE),
-      request = mockModel.get('request').clone();
+    await settled();
+    const mockModel = Store.peekRecord('fragments-mock', MODEL_TO_CLONE);
+    const request = mockModel.get('request').clone();
 
     assert.equal(
       request.get('logicalTable.table'),
@@ -308,7 +268,7 @@ test('Clone Request', function(assert) {
         .get('metrics')
         .objectAt(0)
         .get('parameters'),
-      { param: 'foo', as: 'm1' },
+      { param: 'foo' },
       'The cloned metric has the right parameters set in the request model fragment'
     );
 
@@ -341,7 +301,7 @@ test('Clone Request', function(assert) {
       'The property dimensions is set with correct metadata'
     );
 
-    /*
+    /**
      * TODO uncomment when cloning filters is fixed
      * assert.equal(request.get('filters.firstObject.values.length'),
      * 1,
@@ -362,7 +322,6 @@ test('Clone Request', function(assert) {
       { name: 'dateTime' },
       'The dateTime property in sort is set with correct metadata'
     );
-
     assert.equal(
       request
         .get('sort')
@@ -384,26 +343,24 @@ test('Clone Request', function(assert) {
       'The property having is set with correct parameters'
     );
   });
-});
 
-// Test that navi supports legacy saved reports without a sort field
-test('Clone Request without sort', function(assert) {
-  assert.expect(1);
+  // Test that navi supports legacy saved reports without a sort field
+  test('Clone Request without sort', async function(assert) {
+    assert.expect(1);
 
-  return wait().then(() => {
+    await settled();
     let mockModel = Store.peekRecord('fragments-mock', UNDEFINED_SORT_MODEL),
       request = mockModel.get('request').clone();
 
     assert.equal(request.get('sort.length'), 0, 'Undefined sort is cloned to be an empty array');
   });
-});
 
-/* == Metric == */
+  /* == Metric == */
 
-test('addMetric', function(assert) {
-  assert.expect(4);
+  test('addMetric', async function(assert) {
+    assert.expect(4);
 
-  return wait().then(() => {
+    await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1),
       newMetric = {
         metric: MetadataService.getById('metric', 'pageViews')
@@ -434,12 +391,11 @@ test('addMetric', function(assert) {
       'Adding a metric already present in the request does not result in duplicate metrics'
     );
   });
-});
 
-test('addRequestMetricByModel', function(assert) {
-  assert.expect(6);
+  test('addRequestMetricByModel', async function(assert) {
+    assert.expect(6);
 
-  return wait().then(() => {
+    await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1),
       newMetric = MetadataService.getById('metric', 'pageViews'),
       request = mockModel.get('request');
@@ -483,12 +439,11 @@ test('addRequestMetricByModel', function(assert) {
       'The new metric with the default parameter has been added to the model fragment'
     );
   });
-});
 
-test('addRequestMetricWithParam', function(assert) {
-  assert.expect(8);
+  test('addRequestMetricWithParam', async function(assert) {
+    assert.expect(8);
 
-  return wait().then(() => {
+    await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1),
       newMetric = MetadataService.getById('metric', 'revenue'),
       request = mockModel.get('request');
@@ -547,12 +502,11 @@ test('addRequestMetricWithParam', function(assert) {
       'The final metric is not added since it already exists in the request'
     );
   });
-});
 
-test('removeRequestMetric', function(assert) {
-  assert.expect(2);
+  test('removeRequestMetric', async function(assert) {
+    assert.expect(2);
 
-  return wait().then(() => {
+    await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1),
       request = mockModel.get('request');
 
@@ -561,12 +515,11 @@ test('removeRequestMetric', function(assert) {
     request.removeRequestMetric(request.get('metrics').objectAt(0));
     assert.equal(request.get('metrics.length'), 0, 'There are no metrics in the model fragment');
   });
-});
 
-test('removeRequestMetricByModel', function(assert) {
-  assert.expect(2);
+  test('removeRequestMetricByModel', async function(assert) {
+    assert.expect(2);
 
-  return wait().then(() => {
+    await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1),
       request = mockModel.get('request');
 
@@ -576,12 +529,11 @@ test('removeRequestMetricByModel', function(assert) {
 
     assert.equal(request.get('metrics.length'), 0, 'There are no metrics in the model fragment');
   });
-});
 
-test('removeRequestMetricByModel - multiple metrics', function(assert) {
-  assert.expect(2);
+  test('removeRequestMetricByModel - multiple metrics', async function(assert) {
+    assert.expect(2);
 
-  return wait().then(() => {
+    await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1),
       revenueMetric = MetadataService.getById('metric', 'revenue'),
       request = mockModel.get('request');
@@ -595,12 +547,11 @@ test('removeRequestMetricByModel - multiple metrics', function(assert) {
 
     assert.equal(request.get('metrics.length'), 1, 'There are no metrics in the model fragment');
   });
-});
 
-test('removeRequestMetricWithParam', function(assert) {
-  assert.expect(4);
+  test('removeRequestMetricWithParam', async function(assert) {
+    assert.expect(4);
 
-  return wait().then(() => {
+    await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1),
       revenueMetric = MetadataService.getById('metric', 'revenue'),
       request = mockModel.get('request');
@@ -631,12 +582,11 @@ test('removeRequestMetricWithParam', function(assert) {
       'the selected revenue metric has the right parameter'
     );
   });
-});
 
-test('clearMetrics', function(assert) {
-  assert.expect(2);
+  test('clearMetrics', async function(assert) {
+    assert.expect(2);
 
-  return wait().then(() => {
+    await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1),
       newMetric = MetadataService.getById('metric', 'pageViews'),
       request = mockModel.get('request');
@@ -647,14 +597,13 @@ test('clearMetrics', function(assert) {
     request.clearMetrics();
     assert.equal(request.get('metrics.length'), 0, 'All metrics have been cleared in the model fragment');
   });
-});
 
-/* == Interval == */
+  /* == Interval == */
 
-test('addInterval', function(assert) {
-  assert.expect(4);
+  test('addInterval', async function(assert) {
+    assert.expect(4);
 
-  return wait().then(() => {
+    await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1),
       startDate = moment('1951-07-21 00:00:00.000'),
       endDate = moment('2014-08-11 00:00:00.000'),
@@ -680,12 +629,11 @@ test('addInterval', function(assert) {
       'Adding an interval already present in the request does not result in duplicate intervals'
     );
   });
-});
 
-test('removeInterval', function(assert) {
-  assert.expect(2);
+  test('removeInterval', async function(assert) {
+    assert.expect(2);
 
-  return wait().then(() => {
+    await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1),
       request = mockModel.get('request');
 
@@ -694,14 +642,13 @@ test('removeInterval', function(assert) {
     request.removeInterval(request.get('intervals.firstObject'));
     assert.equal(request.get('intervals.length'), 0, 'There are no intervals in the model fragment');
   });
-});
 
-/* == Dimension == */
+  /* == Dimension == */
 
-test('addDimension', function(assert) {
-  assert.expect(3);
+  test('addDimension', async function(assert) {
+    assert.expect(3);
 
-  return wait().then(() => {
+    await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1),
       newDimension = {
         dimension: MetadataService.getById('dimension', 'age')
@@ -729,12 +676,11 @@ test('addDimension', function(assert) {
       'Adding a dimension already present in the request does not result in duplicate dimensions'
     );
   });
-});
 
-test('addRequestDimensionByModel', function(assert) {
-  assert.expect(2);
+  test('addRequestDimensionByModel', async function(assert) {
+    assert.expect(2);
 
-  return wait().then(() => {
+    await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1),
       newDimension = MetadataService.getById('dimension', 'age'),
       request = mockModel.get('request');
@@ -752,12 +698,11 @@ test('addRequestDimensionByModel', function(assert) {
       'The new dimension has been added to the model fragment'
     );
   });
-});
 
-test('removeRequestDimension', function(assert) {
-  assert.expect(2);
+  test('removeRequestDimension', async function(assert) {
+    assert.expect(2);
 
-  return wait().then(() => {
+    await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1),
       newDimension = {
         dimension: MetadataService.getById('dimension', 'age')
@@ -770,12 +715,11 @@ test('removeRequestDimension', function(assert) {
     request.removeRequestDimension(request.get('dimensions').objectAt(0));
     assert.equal(request.get('dimensions.length'), 0, 'There are no groupBy dimensions in the model fragment');
   });
-});
 
-test('removeRequestDimensionByModel', function(assert) {
-  assert.expect(2);
+  test('removeRequestDimensionByModel', async function(assert) {
+    assert.expect(2);
 
-  return wait().then(() => {
+    await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1),
       newDimension = {
         dimension: MetadataService.getById('dimension', 'age')
@@ -788,12 +732,11 @@ test('removeRequestDimensionByModel', function(assert) {
     request.removeRequestDimensionByModel(MetadataService.getById('dimension', 'age'));
     assert.equal(request.get('dimensions.length'), 0, 'There are no groupBy dimensions in the model fragment');
   });
-});
 
-test('clearDimensions', function(assert) {
-  assert.expect(2);
+  test('clearDimensions', async function(assert) {
+    assert.expect(2);
 
-  return wait().then(() => {
+    await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1),
       dimension1 = {
         dimension: MetadataService.getById('dimension', 'age')
@@ -810,14 +753,13 @@ test('clearDimensions', function(assert) {
     request.clearDimensions();
     assert.equal(request.get('dimensions.length'), 0, 'All dimensions have been cleared in the model fragment');
   });
-});
 
-/* == Filters == */
+  /* == Filters == */
 
-test('addFilters', function(assert) {
-  assert.expect(3);
+  test('addFilters', async function(assert) {
+    assert.expect(3);
 
-  return wait().then(() => {
+    await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1),
       newFilter = {
         dimension: MetadataService.getById('dimension', 'age'),
@@ -849,18 +791,17 @@ test('addFilters', function(assert) {
           dimension: get(newFilter, 'dimension.name'),
           field: get(newFilter, 'field'),
           operator: get(newFilter, 'operator'),
-          rawValues: get(newFilter, 'values')
+          values: get(newFilter, 'values')
         }
       ],
       'Adding a filter that is already present in the request does not result in duplicate filters'
     );
   });
-});
 
-test('removeRequestFilter', function(assert) {
-  assert.expect(2);
+  test('removeRequestFilter', async function(assert) {
+    assert.expect(2);
 
-  return wait().then(() => {
+    await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1),
       newFilter = {
         dimension: MetadataService.getById('dimension', 'age'),
@@ -875,12 +816,11 @@ test('removeRequestFilter', function(assert) {
     request.removeRequestFilter(request.get('filters').objectAt(0));
     assert.equal(request.get('filters.length'), 0, 'There is no filters in the model fragment');
   });
-});
 
-test('removeRequestFilterByDimension', function(assert) {
-  assert.expect(2);
+  test('removeRequestFilterByDimension', async function(assert) {
+    assert.expect(2);
 
-  return wait().then(() => {
+    await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1),
       newFilter = {
         dimension: MetadataService.getById('dimension', 'age'),
@@ -895,12 +835,11 @@ test('removeRequestFilterByDimension', function(assert) {
     request.removeRequestFilterByDimension(MetadataService.getById('dimension', 'age'));
     assert.equal(request.get('filters.length'), 0, 'There are no filters in the model fragment');
   });
-});
 
-test('updateFilter', function(assert) {
-  assert.expect(9);
+  test('updateFilter', async function(assert) {
+    assert.expect(9);
 
-  return wait().then(() => {
+    await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1),
       filter = {
         dimension: MetadataService.getById('dimension', 'age'),
@@ -1000,14 +939,13 @@ test('updateFilter', function(assert) {
       'The filter values is updated in the model fragment'
     );
   });
-});
 
-/* == Having == */
+  /* == Having == */
 
-test('addHaving', function(assert) {
-  assert.expect(3);
+  test('addHaving', async function(assert) {
+    assert.expect(3);
 
-  return wait().then(() => {
+    await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1),
       newHaving = {
         metric: {
@@ -1039,8 +977,7 @@ test('addHaving', function(assert) {
       [
         {
           metric: {
-            metric: get(newHaving, 'metric.metric.name'),
-            parameters: {}
+            metric: get(newHaving, 'metric.metric.name')
           },
           operator: get(newHaving, 'operator'),
           values: [get(newHaving, 'value')]
@@ -1049,12 +986,11 @@ test('addHaving', function(assert) {
       'Adding a having already present in the request does not result in duplicate havings'
     );
   });
-});
 
-test('removeRequestHaving', function(assert) {
-  assert.expect(2);
+  test('removeRequestHaving', async function(assert) {
+    assert.expect(2);
 
-  return wait().then(() => {
+    await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1),
       newHaving = {
         metric: {
@@ -1071,12 +1007,11 @@ test('removeRequestHaving', function(assert) {
     request.removeRequestHaving(request.get('having').objectAt(0));
     assert.equal(request.get('having.length'), 0, 'There is no having in the model fragment');
   });
-});
 
-test('removeRequestHavingByMetric', function(assert) {
-  assert.expect(2);
+  test('removeRequestHavingByMetric', async function(assert) {
+    assert.expect(2);
 
-  return wait().then(() => {
+    await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1),
       newHaving = {
         metric: {
@@ -1093,12 +1028,11 @@ test('removeRequestHavingByMetric', function(assert) {
     request.removeRequestHavingByMetric(MetadataService.getById('metric', 'pageViews'));
     assert.equal(request.get('having.length'), 0, 'There are no having in the model fragment');
   });
-});
 
-test('updateHaving', function(assert) {
-  assert.expect(5);
+  test('updateHaving', async function(assert) {
+    assert.expect(5);
 
-  return wait().then(() => {
+    await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1),
       having = {
         metric: {
@@ -1154,14 +1088,13 @@ test('updateHaving', function(assert) {
       'The filter value have been updated successfully in the model fragment'
     );
   });
-});
 
-/* == Sort == */
+  /* == Sort == */
 
-test('dateTime Sort', function(assert) {
-  assert.expect(3);
+  test('dateTime Sort', async function(assert) {
+    assert.expect(3);
 
-  return wait().then(() => {
+    await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1),
       newSort = {
         metric: { metric: MetadataService.getById('metric', 'pageViews') },
@@ -1190,18 +1123,17 @@ test('dateTime Sort', function(assert) {
         .objectAt(0)
         .serialize(),
       {
-        metric: { metric: 'dateTime', parameters: {} },
+        metric: { metric: 'dateTime' },
         direction: 'asc'
       },
       'The new dateTime sort direction has been updated'
     );
   });
-});
 
-test('addSorts', function(assert) {
-  assert.expect(4);
+  test('addSorts', async function(assert) {
+    assert.expect(4);
 
-  return wait().then(() => {
+    await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1),
       newSort = {
         metric: Store.createFragment('bard-request/fragments/metric', {
@@ -1243,8 +1175,7 @@ test('addSorts', function(assert) {
       [
         {
           metric: {
-            metric: get(newSort, 'metric.metric.name'),
-            parameters: {}
+            metric: get(newSort, 'metric.metric.name')
           },
           direction: get(newSort, 'direction')
         }
@@ -1252,11 +1183,10 @@ test('addSorts', function(assert) {
       'Adding a sort already present in the request does not result in duplicate sorts'
     );
   });
-});
 
-test('add Parameterized Sort', function(assert) {
-  assert.expect(5);
-  return wait().then(() => {
+  test('add Parameterized Sort', async function(assert) {
+    assert.expect(5);
+    await settled();
     let mockModel = Store.peekRecord('fragments-mock', UNDEFINED_SORT_MODEL),
       newSort = {
         metric: Store.createFragment('bard-request/fragments/metric', {
@@ -1296,7 +1226,10 @@ test('add Parameterized Sort', function(assert) {
     );
 
     assert.deepEqual(
-      request.get('sort').map(m => m.serialize()),
+      request
+        .get('sort')
+        .map(m => m.serialize())
+        .toArray(),
       [
         {
           metric: {
@@ -1327,12 +1260,11 @@ test('add Parameterized Sort', function(assert) {
       'Adding a sort with a different parameter loads correctly'
     );
   });
-});
 
-test('addSort By Metric Name', function(assert) {
-  assert.expect(11);
+  test('addSort By Metric Name', async function(assert) {
+    assert.expect(11);
 
-  return wait().then(() => {
+    await settled();
     let mockModel = Store.peekRecord('fragments-mock', UNDEFINED_SORT_MODEL),
       request = mockModel.get('request');
 
@@ -1375,12 +1307,11 @@ test('addSort By Metric Name', function(assert) {
 
     assert.equal(get(theSort, 'direction'), 'desc', 'parameterized USD metric Goes the right direction');
   });
-});
 
-test('removeSort', function(assert) {
-  assert.expect(4);
+  test('removeSort', async function(assert) {
+    assert.expect(4);
 
-  return wait().then(() => {
+    await settled();
     let mockModel = Store.peekRecord('fragments-mock', UNDEFINED_SORT_MODEL),
       newSort = {
         metric: { metric: MetadataService.getById('metric', 'pageViews') },
@@ -1418,12 +1349,11 @@ test('removeSort', function(assert) {
     request.removeSort(request.get('sort').objectAt(0));
     assert.equal(request.get('sort.length'), 1, 'There is one parameterized sort in the model fragment');
   });
-});
 
-test('removeSortByMetricName', function(assert) {
-  assert.expect(4);
+  test('removeSortByMetricName', async function(assert) {
+    assert.expect(4);
 
-  return wait().then(() => {
+    await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1),
       newSort = {
         metric: { metric: MetadataService.getById('metric', 'pageViews') },
@@ -1461,12 +1391,11 @@ test('removeSortByMetricName', function(assert) {
     request.removeSortByMetricName('revenue(currency=CAD)');
     assert.equal(request.get('sort.length'), 1, 'There is one parameterized sort in the model fragment');
   });
-});
 
-test('removeSortMetricWithParam', function(assert) {
-  assert.expect(3);
+  test('removeSortMetricWithParam', async function(assert) {
+    assert.expect(3);
 
-  return wait().then(() => {
+    await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1),
       revenueMetric = MetadataService.getById('metric', 'revenue'),
       request = mockModel.get('request');
@@ -1507,12 +1436,11 @@ test('removeSortMetricWithParam', function(assert) {
       'Revenue metric with parametrer currency=CAD is not removed from the sort in the model fragment'
     );
   });
-});
 
-test('removeSortMetricByModel', function(assert) {
-  assert.expect(3);
+  test('removeSortMetricByModel', async function(assert) {
+    assert.expect(3);
 
-  return wait().then(() => {
+    await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1),
       revenueMetric = MetadataService.getById('metric', 'revenue'),
       request = mockModel.get('request');
@@ -1562,12 +1490,11 @@ test('removeSortMetricByModel', function(assert) {
       'pageViews metric is not removed from the sort in the model fragment'
     );
   });
-});
 
-test('updateSort', function(assert) {
-  assert.expect(5);
+  test('updateSort', async function(assert) {
+    assert.expect(5);
 
-  return wait().then(() => {
+    await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1),
       sort = {
         metric: Store.createFragment('bard-request/fragments/metric', {
@@ -1644,12 +1571,11 @@ test('updateSort', function(assert) {
       'The sort direction is preserved for unmatching canonicalized metric'
     );
   });
-});
 
-test('Validations', function(assert) {
-  assert.expect(14);
+  test('Validations', async function(assert) {
+    assert.expect(14);
 
-  return wait().then(() => {
+    await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1),
       request = mockModel.get('request');
 
@@ -1708,12 +1634,11 @@ test('Validations', function(assert) {
       );
     });
   });
-});
 
-test('logicalTable belongs-to validation', function(assert) {
-  assert.expect(4);
+  test('logicalTable belongs-to validation', async function(assert) {
+    assert.expect(4);
 
-  return wait().then(() => {
+    await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1),
       request = mockModel.get('request');
 
@@ -1739,12 +1664,11 @@ test('logicalTable belongs-to validation', function(assert) {
       );
     });
   });
-});
 
-test('dimensions has-many validation', function(assert) {
-  assert.expect(3);
+  test('dimensions has-many validation', async function(assert) {
+    assert.expect(3);
 
-  return wait().then(() => {
+    await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1),
       request = mockModel.get('request');
 
@@ -1760,12 +1684,11 @@ test('dimensions has-many validation', function(assert) {
       );
     });
   });
-});
 
-test('filters has-many validation', function(assert) {
-  assert.expect(4);
+  test('filters has-many validation', async function(assert) {
+    assert.expect(4);
 
-  return wait().then(() => {
+    await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1),
       newFilter = {
         dimension: MetadataService.getById('dimension', 'age'),
@@ -1792,12 +1715,11 @@ test('filters has-many validation', function(assert) {
       );
     });
   });
-});
 
-test('metrics has-many validation', function(assert) {
-  assert.expect(3);
+  test('metrics has-many validation', async function(assert) {
+    assert.expect(3);
 
-  return wait().then(() => {
+    await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1),
       request = mockModel.get('request');
 
@@ -1813,12 +1735,11 @@ test('metrics has-many validation', function(assert) {
       );
     });
   });
-});
 
-test('intervals has-many validations', function(assert) {
-  assert.expect(3);
+  test('intervals has-many validations', async function(assert) {
+    assert.expect(3);
 
-  return wait().then(() => {
+    await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1),
       newInterval = new Interval(moment('2015', 'YYYY'), moment('1990', 'YYYY')),
       request = mockModel.get('request');
@@ -1835,12 +1756,11 @@ test('intervals has-many validations', function(assert) {
       );
     });
   });
-});
 
-test('sort has-many validation', function(assert) {
-  assert.expect(3);
+  test('sort has-many validation', async function(assert) {
+    assert.expect(3);
 
-  return wait().then(() => {
+    await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1),
       newSort = {
         metric: { metric: MetadataService.getById('metric', 'pageViews') }
@@ -1860,12 +1780,11 @@ test('sort has-many validation', function(assert) {
       );
     });
   });
-});
 
-test('having has-many validation', function(assert) {
-  assert.expect(3);
+  test('having has-many validation', async function(assert) {
+    assert.expect(3);
 
-  return wait().then(() => {
+    await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1),
       newHaving = {
         metric: {

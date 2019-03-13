@@ -4,7 +4,8 @@
  *
  * Util for formatting an dimension object as a user readable string
  */
-import Ember from 'ember';
+import Helper from '@ember/component/helper';
+import { get } from '@ember/object';
 
 /**
  * @param {Object} dimension - a dimension object
@@ -18,8 +19,8 @@ export function formatDimension([dimension]) {
     return '';
   }
 
-  let desc = Ember.get(dimension, 'description'),
-    id = Ember.get(dimension, 'id');
+  let desc = get(dimension, 'description'),
+    id = get(dimension, 'id');
 
   if (!id && !desc) {
     return '';
@@ -28,4 +29,4 @@ export function formatDimension([dimension]) {
   return desc ? `${desc} (${id})` : id;
 }
 
-export default Ember.Helper.extend({ compute: formatDimension });
+export default Helper.extend({ compute: formatDimension });

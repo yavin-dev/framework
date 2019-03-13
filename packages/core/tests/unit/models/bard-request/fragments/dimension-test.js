@@ -1,38 +1,19 @@
-import { moduleForModel, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupTest } from 'ember-qunit';
+import { settled } from '@ember/test-helpers';
 import { setupMock, teardownMock } from '../../../../helpers/mirage-helper';
-import wait from 'ember-test-helpers/wait';
-import { getOwner } from '@ember/application';
 import { run } from '@ember/runloop';
 
 var Store, MetadataService;
 
-moduleForModel('fragments-mock', 'Unit | Model Fragment | BardRequest - Dimension', {
-  needs: [
-    'transform:fragment',
-    'transform:fragment-array',
-    'transform:dimension',
-    'transform:table',
-    'model:bard-request/fragments/dimension',
-    'validator:presence',
-    'service:bard-metadata',
-    'adapter:bard-metadata',
-    'serializer:bard-metadata',
-    'service:keg',
-    'service:ajax',
-    'service:bard-facts',
-    'model:metadata/table',
-    'model:metadata/dimension',
-    'model:metadata/metric',
-    'model:metadata/time-grain',
-    'service:bard-dimensions',
-    'adapter:dimensions/bard'
-  ],
+module('Unit | Model Fragment | BardRequest - Dimension', function(hooks) {
+  setupTest(hooks);
 
-  beforeEach() {
+  hooks.beforeEach(function() {
     setupMock();
 
-    Store = getOwner(this).lookup('service:store');
-    MetadataService = getOwner(this).lookup('service:bard-metadata');
+    Store = this.owner.lookup('service:store');
+    MetadataService = this.owner.lookup('service:bard-metadata');
 
     MetadataService.loadMetadata().then(() => {
       //Add instances to the store
@@ -48,18 +29,18 @@ moduleForModel('fragments-mock', 'Unit | Model Fragment | BardRequest - Dimensio
         });
       });
     });
-  },
-  afterEach() {
+  });
+
+  hooks.afterEach(function() {
     teardownMock();
-  }
-});
+  });
 
-test('Model using the Dimension Fragment', function(assert) {
-  assert.expect(3);
+  test('Model using the Dimension Fragment', async function(assert) {
+    assert.expect(3);
 
-  let mockModel;
+    let mockModel;
 
-  return wait().then(() => {
+    await settled();
     run(() => {
       mockModel = Store.peekRecord('fragments-mock', 1);
 
@@ -96,12 +77,11 @@ test('Model using the Dimension Fragment', function(assert) {
       'The model object was serialized correctly'
     );
   });
-});
 
-test('Validations', function(assert) {
-  assert.expect(5);
+  test('Validations', async function(assert) {
+    assert.expect(5);
 
-  return wait().then(() => {
+    await settled();
     let dimension = run(() => {
       return Store.peekRecord('fragments-mock', 1)
         .get('dimensions')

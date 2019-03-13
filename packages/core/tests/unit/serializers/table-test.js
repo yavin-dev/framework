@@ -1,140 +1,142 @@
-import { moduleFor, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupTest } from 'ember-qunit';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
-import { getOwner } from '@ember/application';
 
 let Serializer, Model;
 
-moduleFor('serializer:table', 'Unit | Serializer | table', {
-  needs: ['model:table'],
-  beforeEach() {
+module('Unit | Serializer | table', function(hooks) {
+  setupTest(hooks);
+
+  hooks.beforeEach(function() {
     setupMock();
-    Serializer = this.subject();
-    const store = getOwner(this).lookup('service:store');
+    Serializer = this.owner.lookup('serializer:table');
+    const store = this.owner.lookup('service:store');
     Model = store.modelFor('table');
-  },
-  afterEach() {
+  });
+
+  hooks.afterEach(function() {
     teardownMock();
-  }
-});
+  });
 
-test('normalize', function(assert) {
-  assert.expect(2);
+  test('normalize', function(assert) {
+    assert.expect(2);
 
-  let initialMetadata = {
-      type: 'table',
-      version: 1,
-      metadata: {
-        columns: [
-          {
-            field: 'clicks',
-            type: 'metric',
-            displayName: 'Clicks'
-          },
-          {
-            field: { metric: 'pageViews', parameters: {} },
-            type: 'metric',
-            displayName: 'Page Views',
-            format: '',
-            foo: 'bar'
-          },
-          {
-            attributes: { name: 'revenue', parameters: { currency: 'EUR' } },
-            type: 'threshold',
-            displayName: 'Revenue (EUR)'
-          },
-          {
-            field: 'revenue(currency=USD)',
-            type: 'threshold',
-            displayName: 'Revenue (USD)',
-            format: ''
-          },
-          {
-            field: 'gender',
-            type: 'dimension',
-            displayName: 'Gender'
-          },
-          {
-            field: { dimension: 'age' },
-            type: 'dimension',
-            displayName: 'Age'
-          },
-          {
-            attributes: { name: 'platform' },
-            type: 'dimension',
-            displayName: 'Platform',
-            foo: 'bar'
-          },
-          {
-            field: 'dateTime',
-            type: 'dateTime',
-            displayName: 'Date'
-          }
-        ]
-      }
-    },
-    expectedPayload = {
-      data: {
-        id: null,
-        relationships: {},
+    let initialMetadata = {
         type: 'table',
-        attributes: {
+        version: 1,
+        metadata: {
+          columns: [
+            {
+              field: 'clicks',
+              type: 'metric',
+              displayName: 'Clicks'
+            },
+            {
+              field: { metric: 'pageViews', parameters: {} },
+              type: 'metric',
+              displayName: 'Page Views',
+              format: '',
+              foo: 'bar'
+            },
+            {
+              attributes: { name: 'revenue', parameters: { currency: 'EUR' } },
+              type: 'threshold',
+              displayName: 'Revenue (EUR)'
+            },
+            {
+              field: 'revenue(currency=USD)',
+              type: 'threshold',
+              displayName: 'Revenue (USD)',
+              format: ''
+            },
+            {
+              field: 'gender',
+              type: 'dimension',
+              displayName: 'Gender'
+            },
+            {
+              field: { dimension: 'age' },
+              type: 'dimension',
+              displayName: 'Age'
+            },
+            {
+              attributes: { name: 'platform' },
+              type: 'dimension',
+              displayName: 'Platform',
+              foo: 'bar'
+            },
+            {
+              field: 'dateTime',
+              type: 'dateTime',
+              displayName: 'Date'
+            }
+          ]
+        }
+      },
+      expectedPayload = {
+        data: {
+          id: null,
+          relationships: {},
           type: 'table',
-          version: 1,
-          metadata: {
-            columns: [
-              {
-                attributes: { name: 'clicks', parameters: {} },
-                type: 'metric',
-                displayName: 'Clicks'
-              },
-              {
-                attributes: { name: 'pageViews', parameters: {}, format: '' },
-                type: 'metric',
-                displayName: 'Page Views',
-                foo: 'bar'
-              },
-              {
-                attributes: { name: 'revenue', parameters: { currency: 'EUR' } },
-                type: 'threshold',
-                displayName: 'Revenue (EUR)'
-              },
-              {
-                attributes: { name: 'revenue', parameters: { currency: 'USD' }, format: '' },
-                type: 'threshold',
-                displayName: 'Revenue (USD)'
-              },
-              {
-                attributes: { name: 'gender' },
-                type: 'dimension',
-                displayName: 'Gender'
-              },
-              {
-                attributes: { name: 'age' },
-                type: 'dimension',
-                displayName: 'Age'
-              },
-              {
-                attributes: { name: 'platform' },
-                type: 'dimension',
-                displayName: 'Platform',
-                foo: 'bar'
-              },
-              {
-                attributes: { name: 'dateTime' },
-                type: 'dateTime',
-                displayName: 'Date'
-              }
-            ]
+          attributes: {
+            type: 'table',
+            version: 1,
+            metadata: {
+              columns: [
+                {
+                  attributes: { name: 'clicks', parameters: {} },
+                  type: 'metric',
+                  displayName: 'Clicks'
+                },
+                {
+                  attributes: { name: 'pageViews', parameters: {}, format: '' },
+                  type: 'metric',
+                  displayName: 'Page Views',
+                  foo: 'bar'
+                },
+                {
+                  attributes: { name: 'revenue', parameters: { currency: 'EUR' } },
+                  type: 'threshold',
+                  displayName: 'Revenue (EUR)'
+                },
+                {
+                  attributes: { name: 'revenue', parameters: { currency: 'USD' }, format: '' },
+                  type: 'threshold',
+                  displayName: 'Revenue (USD)'
+                },
+                {
+                  attributes: { name: 'gender' },
+                  type: 'dimension',
+                  displayName: 'Gender'
+                },
+                {
+                  attributes: { name: 'age' },
+                  type: 'dimension',
+                  displayName: 'Age'
+                },
+                {
+                  attributes: { name: 'platform' },
+                  type: 'dimension',
+                  displayName: 'Platform',
+                  foo: 'bar'
+                },
+                {
+                  attributes: { name: 'dateTime' },
+                  type: 'dateTime',
+                  displayName: 'Date'
+                }
+              ]
+            }
           }
         }
-      }
-    };
+      };
 
-  assert.deepEqual(Serializer.normalize(), { data: null }, 'null is returned for an undefined response');
+    assert.deepEqual(Serializer.normalize(), { data: null }, 'null is returned for an undefined response');
 
-  assert.deepEqual(
-    Serializer.normalize(Model, initialMetadata),
-    expectedPayload,
-    'Columns with a `field` property are mapped to ones with `attributes` and other columns are left alone'
-  );
+    assert.deepEqual(
+      Serializer.normalize(Model, initialMetadata),
+      expectedPayload,
+      'Columns with a `field` property are mapped to ones with `attributes` and other columns are left alone'
+    );
+  });
 });

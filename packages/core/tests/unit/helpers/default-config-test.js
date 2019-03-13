@@ -1,43 +1,50 @@
+import { run } from '@ember/runloop';
 import { buildTestRequest } from '../../helpers/request';
-import { moduleFor, test } from 'ember-qunit';
-import Ember from 'ember';
+import { module, test } from 'qunit';
+import { setupTest } from 'ember-qunit';
+import { setOwner } from '@ember/application';
 
-moduleFor('helper:default-config', 'Unit | Helper | default config', {
-  needs: ['model:metric-label']
-});
+let helper;
+module('Unit | Helper | default config', function(hooks) {
+  setupTest(hooks);
 
-test('default config', function(assert) {
-  assert.expect(1);
+  hooks.beforeEach(function() {
+    helper = this.owner.lookup('helper:default-config');
+    helper = new helper();
+    setOwner(helper, this.owner);
+  });
 
-  let helper = this.subject(),
-    rows = [{ rupees: 999, hp: 0 }],
-    request = buildTestRequest([{ metric: 'rupees', parameters: {} }, { metric: 'hp', parameters: {} }], []),
-    generatedConfig = Ember.run(() => helper.compute(['metric-label', request, { rows }]));
+  test('default config', function(assert) {
+    assert.expect(1);
 
-  assert.deepEqual(
-    generatedConfig,
-    {
-      metric: {
-        metric: 'rupees',
-        parameters: {}
+    let rows = [{ rupees: 999, hp: 0 }],
+      request = buildTestRequest([{ metric: 'rupees', parameters: {} }, { metric: 'hp', parameters: {} }], []),
+      generatedConfig = run(() => helper.compute(['metric-label', request, { rows }]));
+
+    assert.deepEqual(
+      generatedConfig,
+      {
+        metric: {
+          metric: 'rupees',
+          parameters: {}
+        },
+        format: '0,0.00',
+        description: 'Rupees'
       },
-      format: '0,0.00',
-      description: 'Rupees'
-    },
-    'A config is generated for the given visualization, request, and response'
-  );
-});
+      'A config is generated for the given visualization, request, and response'
+    );
+  });
 
-test('bad visualization', function(assert) {
-  assert.expect(1);
+  test('bad visualization', function(assert) {
+    assert.expect(1);
 
-  let helper = this.subject(),
-    rows = [{ rupees: 999, hp: 0 }],
-    request = buildTestRequest(['rupees', 'hp'], []);
+    let rows = [{ rupees: 999, hp: 0 }],
+      request = buildTestRequest(['rupees', 'hp'], []);
 
-  assert.throws(
-    () => helper.compute(['not-a-vis', request, { rows }]),
-    /Default config can not be made since model:not-a-vis was not found/,
-    'Giving an invalid visualization name throws an error'
-  );
+    assert.throws(
+      () => helper.compute(['not-a-vis', request, { rows }]),
+      /Default config can not be made since model:not-a-vis was not found/,
+      'Giving an invalid visualization name throws an error'
+    );
+  });
 });

@@ -3,7 +3,8 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import Ember from 'ember';
+import { assert } from '@ember/debug';
+import { A } from '@ember/array';
 import moment from 'moment';
 import Duration from './duration';
 import { isIsoDurationString } from './duration';
@@ -12,8 +13,7 @@ import DurationUtils from '../duration-utils';
 
 const CURRENT = 'current';
 const NEXT = 'next';
-
-const MACROS = Ember.A([CURRENT, NEXT]);
+const MACROS = A([CURRENT, NEXT]);
 
 /**
  * Interval
@@ -29,8 +29,8 @@ export default class Interval {
    * @param {Duration|moment|String} end - exclusive interval boundary
    */
   constructor(start, end) {
-    Ember.assert('Interval start must be: Duration, moment, or macro', this._isAcceptedType(start));
-    Ember.assert('Interval end must be: moment, or macro', this._isAcceptedType(end) && !Duration.isDuration(end));
+    assert('Interval start must be: Duration, moment, or macro', this._isAcceptedType(start));
+    assert('Interval end must be: moment, or macro', this._isAcceptedType(end) && !Duration.isDuration(end));
 
     this._start = start;
     this._end = end;
@@ -219,7 +219,7 @@ export default class Interval {
    * @returns {Duration|moment|String} object most closely represented by string
    */
   static fromString(property, format = DateUtils.API_DATE_FORMAT_STRING) {
-    Ember.assert('Argument must be a string', typeof property === 'string');
+    assert('Argument must be a string', typeof property === 'string');
 
     if (MACROS.includes(property)) {
       return property;

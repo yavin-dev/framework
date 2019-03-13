@@ -1,10 +1,10 @@
-import { moduleForModel, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupTest } from 'ember-qunit';
+import { settled } from '@ember/test-helpers';
 import { setupMock, teardownMock } from '../../../../helpers/mirage-helper';
-import wait from 'ember-test-helpers/wait';
 import config from 'ember-get-config';
 import { A as arr } from '@ember/array';
 import { get } from '@ember/object';
-import { getOwner } from '@ember/application';
 import { run } from '@ember/runloop';
 
 let Store, MetadataService, Server;
@@ -26,36 +26,12 @@ const AgeResponse = arr([
   }
 ]);
 
-moduleForModel('fragments-mock', 'Unit | Model Fragment | BardRequest - Filter', {
-  needs: [
-    'transform:fragment-array',
-    'transform:array',
-    'transform:dimension',
-    'model:bard-dimension',
-    'model:bard-request/fragments/dimension',
-    'model:bard-request/fragments/filter',
-    'validator:presence',
-    'validator:length',
-    'validator:array-empty-value',
-    'service:bard-metadata',
-    'adapter:bard-metadata',
-    'serializer:bard-metadata',
-    'service:keg',
-    'service:ajax',
-    'service:bard-facts',
-    'service:bard-dimensions',
-    'adapter:dimensions/bard',
-    'adapter:dimensions/keg',
-    'serializer:dimensions/bard',
-    'model:metadata/table',
-    'model:metadata/dimension',
-    'model:metadata/metric',
-    'model:metadata/time-grain'
-  ],
+module('Unit | Model Fragment | BardRequest - Filter', function(hooks) {
+  setupTest(hooks);
 
-  beforeEach() {
+  hooks.beforeEach(function() {
     Server = setupMock();
-    Store = getOwner(this).lookup('service:store');
+    Store = this.owner.lookup('service:store');
 
     Server.urlPrefix = config.navi.dataSources[0].uri;
     Server.get(`/v1/dimensions/age/values/`, () => {
@@ -64,7 +40,7 @@ moduleForModel('fragments-mock', 'Unit | Model Fragment | BardRequest - Filter',
       };
     });
 
-    MetadataService = getOwner(this).lookup('service:bard-metadata');
+    MetadataService = this.owner.lookup('service:bard-metadata');
 
     MetadataService.loadMetadata().then(() => {
       //Add instances to the store
@@ -86,16 +62,16 @@ moduleForModel('fragments-mock', 'Unit | Model Fragment | BardRequest - Filter',
         });
       });
     });
-  },
-  afterEach() {
+  });
+
+  hooks.afterEach(function() {
     teardownMock();
-  }
-});
+  });
 
-test('Model using the Filter Fragment', function(assert) {
-  assert.expect(5);
+  test('Model using the Filter Fragment', async function(assert) {
+    assert.expect(5);
 
-  return wait().then(() => {
+    await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1);
     assert.ok(mockModel, 'mockModel is fetched from the store');
 
@@ -148,12 +124,11 @@ test('Model using the Filter Fragment', function(assert) {
       'The property filter has the operator `not-in` set using setter'
     );
   });
-});
 
-test('Get and Set for Contains Filter Fragment', function(assert) {
-  assert.expect(5);
+  test('Get and Set for Contains Filter Fragment', async function(assert) {
+    assert.expect(5);
 
-  return wait().then(() => {
+    await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1);
     assert.ok(mockModel, 'mockModel is fetched from the store');
 
@@ -206,44 +181,42 @@ test('Get and Set for Contains Filter Fragment', function(assert) {
       'The property filter has the operator `contains` set using setter'
     );
   });
-});
 
-test('Computed Value Objects for Contains Filter', function(assert) {
-  assert.expect(4);
+  test('Computed Value Objects for Contains Filter', async function(assert) {
+    assert.expect(4);
 
-  return wait().then(() => {
+    await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1);
 
-    return run(() => {
-      return mockModel.get('filters.firstObject.values').then(values => {
-        mockModel.get('filters.firstObject').set('operator', 'contains');
+    await run(async () => {
+      const values = await mockModel.get('filters.firstObject.values');
 
-        assert.equal(get(values, 'length'), 2, 'The property `values` are fetched from the store');
+      mockModel.get('filters.firstObject').set('operator', 'contains');
 
-        mockModel.get('filters.firstObject').set('values', TextInput);
+      assert.equal(get(values, 'length'), 2, 'The property `values` are fetched from the store');
 
-        let filterValues = mockModel.get('filters.firstObject.values');
-        assert.equal(filterValues.length, 4, 'The property `values` was correctly updated');
+      mockModel.get('filters.firstObject').set('values', TextInput);
 
-        assert.deepEqual(filterValues, ['mirror', 'shield', 'deku', 'tree'], 'The property `values` has been updated');
+      let filterValues = mockModel.get('filters.firstObject.values');
+      assert.equal(filterValues.length, 4, 'The property `values` was correctly updated');
 
-        assert.deepEqual(
-          mockModel.get('filters.firstObject.rawValues'),
-          ['mirror', 'shield', 'deku', 'tree'],
-          'The property `rawValues` has all of the text input values updated using setter'
-        );
-      });
+      assert.deepEqual(filterValues, ['mirror', 'shield', 'deku', 'tree'], 'The property `values` has been updated');
+
+      assert.deepEqual(
+        mockModel.get('filters.firstObject.rawValues'),
+        ['mirror', 'shield', 'deku', 'tree'],
+        'The property `rawValues` has all of the text input values updated using setter'
+      );
     });
   });
-});
 
-test('Computed Value Objects', function(assert) {
-  assert.expect(6);
+  test('Computed Value Objects', async function(assert) {
+    assert.expect(6);
 
-  return wait().then(() => {
+    await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1);
 
-    return run(() => {
+    run(() => {
       return mockModel.get('filters.firstObject.values').then(values => {
         assert.equal(get(values, 'length'), 2, 'The property `values` are fetched from the store');
 
@@ -281,12 +254,11 @@ test('Computed Value Objects', function(assert) {
       });
     });
   });
-});
 
-test('Validations', function(assert) {
-  assert.expect(13);
+  test('Validations', async function(assert) {
+    assert.expect(13);
 
-  return wait().then(() => {
+    await settled();
     let filter = run(function() {
       return Store.peekRecord('fragments-mock', 1)
         .get('filters')
