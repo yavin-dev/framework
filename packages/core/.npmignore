@@ -6,7 +6,7 @@
 /bower_components/
 
 # misc
-/**/.gitkeep
+/.bowerrc
 /.editorconfig
 /.ember-cli
 /.env*
@@ -17,6 +17,7 @@
 /.template-lintrc.js
 /.travis.yml
 /.watchmanconfig
+/**/.gitkeep
 /config/ember-try.js
 /CONTRIBUTING.md
 /ember-cli-build.js
