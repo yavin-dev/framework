@@ -30,7 +30,7 @@
     "ember-data-model-fragments": "~2.11.5",
     "ember-get-config": "0.2.4",
     "ember-gridstack": "1.2.0",
-    "ember-lodash": "^4.17.5",
+    "ember-lodash": "^4.19.4",
     "ember-math-helpers": "^2.3.0",
     "ember-modal-dialog": "^2.4.1",
     "ember-moment": "7.5.0",

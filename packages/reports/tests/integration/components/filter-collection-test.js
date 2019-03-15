@@ -1,4 +1,6 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render, findAll, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { clickTrigger, nativeMouseUp } from '../../helpers/ember-power-select';
 import Duration from 'navi-core/utils/classes/duration';
@@ -34,73 +36,77 @@ const MockFilterFragment1 = {
     logicalTable: { timeGrain: { name: 'day', longName: 'Day' } }
   };
 
-moduleForComponent('filter-collection', 'Integration | Component | filter collection', {
-  integration: true,
+module('Integration | Component | filter collection', function(hooks) {
+  setupRenderingTest(hooks);
 
-  beforeEach() {
+  hooks.beforeEach(async function() {
     this.request = MockRequest;
     this.onUpdateFilter = () => null;
     this.onRemoveFilter = () => null;
 
-    this.render(hbs`{{filter-collection
+    await render(hbs`{{filter-collection
             request=request
             onUpdateFilter=(action onUpdateFilter)
             onRemoveFilter=(action onRemoveFilter)
         }}`);
-  }
-});
+  });
 
-test('it renders', function(assert) {
-  assert.expect(4);
+  test('it renders', function(assert) {
+    assert.expect(4);
 
-  assert.equal(this.$('.filter-collection__row').length, 5, 'Each request filter is represented by a filter row');
+    assert.equal(findAll('.filter-collection__row').length, 5, 'Each request filter is represented by a filter row');
 
-  assert.ok(
-    this.$('.filter-collection__row .filter-collection__remove').is(':visible'),
-    'Each filter row has a remove button'
-  );
+    assert.ok(
+      this.$('.filter-collection__row .filter-collection__remove').is(':visible'),
+      'Each filter row has a remove button'
+    );
 
-  assert.ok(
-    this.$('.filter-collection__row .filter-collection__builder').is(':visible'),
-    'Each filter row has a filter builder'
-  );
+    assert.ok(
+      this.$('.filter-collection__row .filter-collection__builder').is(':visible'),
+      'Each filter row has a filter builder'
+    );
 
-  assert.ok(this.$('.filter-values--range-input').is(':visible'), 'Range input should be rendered');
-});
+    assert.ok(this.$('.filter-values--range-input').is(':visible'), 'Range input should be rendered');
+  });
 
-test('updating a filter', function(assert) {
-  assert.expect(2);
+  test('updating a filter', function(assert) {
+    assert.expect(2);
 
-  /* == Changing operator == */
-  this.set('onUpdateFilter', (filter, changeSet) => {
-    assert.equal(filter, MockFilterFragment1, 'Filter to update is given to action');
+    /* == Changing operator == */
+    this.set('onUpdateFilter', (filter, changeSet) => {
+      assert.equal(filter, MockFilterFragment1, 'Filter to update is given to action');
 
-    assert.deepEqual(
-      changeSet,
-      {
-        operator: 'null'
-      },
-      'Operator update is requested'
+      assert.deepEqual(
+        changeSet,
+        {
+          operator: 'null'
+        },
+        'Operator update is requested'
+      );
+    });
+    clickTrigger(`#${$('.filter-builder__operator:eq(1)').attr('id')}`);
+    nativeMouseUp($('.ember-power-select-option:contains(Is Empty)')[0]);
+  });
+
+  test('remove a filter', async function(assert) {
+    assert.expect(1);
+
+    this.set('onRemoveFilter', filter => {
+      assert.equal(
+        filter,
+        MockFilterFragment1,
+        'When clicking remove icon, remove action is sent with selected filter'
+      );
+    });
+    await click(findAll('.filter-collection__remove')[1]);
+  });
+
+  test('removing date filter', function(assert) {
+    assert.expect(1);
+
+    assert.ok(
+      this.$('.filter-collection__remove:eq(0)').is('.filter-collection__remove--disabled'),
+      'The first filter has remove disabled'
     );
   });
-  clickTrigger(`#${$('.filter-builder__operator:eq(1)').attr('id')}`);
-  nativeMouseUp($('.ember-power-select-option:contains(Is Empty)')[0]);
-});
-
-test('remove a filter', function(assert) {
-  assert.expect(1);
-
-  this.set('onRemoveFilter', filter => {
-    assert.equal(filter, MockFilterFragment1, 'When clicking remove icon, remove action is sent with selected filter');
-  });
-  this.$('.filter-collection__remove:eq(1)').click();
-});
-
-test('removing date filter', function(assert) {
-  assert.expect(1);
-
-  assert.ok(
-    this.$('.filter-collection__remove:eq(0)').is('.filter-collection__remove--disabled'),
-    'The first filter has remove disabled'
-  );
 });

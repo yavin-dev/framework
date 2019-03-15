@@ -2,8 +2,9 @@ import { A } from '@ember/array';
 import Service from '@ember/service';
 import { getOwner } from '@ember/application';
 import { set, get } from '@ember/object';
-import { moduleFor, test } from 'ember-qunit';
-import wait from 'ember-test-helpers/wait';
+import { module, test } from 'qunit';
+import { setupTest } from 'ember-qunit';
+import { settled } from '@ember/test-helpers';
 import config from 'ember-get-config';
 import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
 
@@ -43,199 +44,136 @@ const NEW_MODEL = {
   }
 };
 
-moduleFor('route:reports/new', 'Unit | Route | reports/new', {
-  needs: [
-    'adapter:report',
-    'adapter:user',
-    'model:report',
-    'model:user',
-    'model:delivery-rule',
-    'model:dashboard',
-    'adapter:delivery-rule',
-    'serializer:delivery-rule',
-    'transform:array',
-    'transform:fragment-array',
-    'transform:dimension',
-    'transform:fragment',
-    'transform:metric',
-    'transform:moment',
-    'transform:table',
-    'transform:dimension',
-    'model:table',
-    'model:bard-request/request',
-    'model:bard-request/fragments/dimension',
-    'model:bard-request/fragments/filter',
-    'model:bard-request/fragments/interval',
-    'model:bard-request/fragments/logicalTable',
-    'model:bard-request/fragments/metric',
-    'model:bard-request/fragments/sort',
-    'serializer:bard-request/request',
-    'serializer:bard-request/fragments/filter',
-    'serializer:bard-request/fragments/logical-table',
-    'serializer:bard-request/fragments/interval',
-    'serializer:visualization',
-    'validator:length',
-    'validator:belongs-to',
-    'validator:has-many',
-    'validator:interval',
-    'validator:presence',
-    'validator:request-filters',
-    'service:bard-metadata',
-    'service:navi-visualizations',
-    'service:model-compression',
-    'adapter:bard-metadata',
-    'serializer:report',
-    'serializer:user',
-    'serializer:bard-metadata',
-    'service:keg',
-    'service:ajax',
-    'service:bard-facts',
-    'service:user',
-    'service:navi-notifications',
-    'model:metadata/table',
-    'model:metadata/dimension',
-    'model:metadata/metric',
-    'model:metadata/time-grain',
-    'service:bard-dimensions',
-    'adapter:dimensions/bard',
-    'model:line-chart',
-    'model:table',
-    'validator:chart-type',
-    'validator:request-metrics',
-    'validator:request-metric-exist',
-    'validator:request-dimension-order',
-    'validator:length',
-    'validator:belongs-to',
-    'validator:has-many',
-    'validator:interval',
-    'validator:presence',
-    'validator:recipients',
-    'validator:request-time-grain'
-  ],
+module('Unit | Route | reports/new', function(hooks) {
+  setupTest(hooks);
 
-  beforeEach() {
+  hooks.beforeEach(function() {
     setupMock();
 
-    let metadataService = getOwner(this).lookup('service:bard-metadata');
+    let metadataService = this.owner.lookup('service:bard-metadata');
     metadataService.loadMetadata();
 
-    let mockAuthor = getOwner(this)
-      .lookup('service:store')
-      .createRecord('user', { id: 'navi_user' });
+    let mockAuthor = this.owner.lookup('service:store').createRecord('user', { id: 'navi_user' });
 
-    this.register(
+    this.owner.register(
       'service:user',
       Service.extend({
         getUser: () => mockAuthor
       })
     );
-  },
+  });
 
-  afterEach() {
+  hooks.afterEach(function() {
     teardownMock();
-  }
-});
-
-test('model', function(assert) {
-  assert.expect(1);
-
-  return wait().then(() => {
-    let model = this.subject().model(null, { queryParams: {} });
-
-    assert.deepEqual(model.toJSON(), NEW_MODEL, 'A new report model is returned');
   });
-});
 
-test('_newModel', function(assert) {
-  assert.expect(1);
+  test('model', function(assert) {
+    assert.expect(1);
 
-  return wait().then(() => {
-    let model = this.subject()._newModel();
-    assert.deepEqual(model.toJSON(), NEW_MODEL, 'A new report model is returned');
+    return settled().then(() => {
+      let model = this.owner.lookup('route:reports/new').model(null, { queryParams: {} });
+
+      assert.deepEqual(model.toJSON(), NEW_MODEL, 'A new report model is returned');
+    });
   });
-});
 
-test('_deserializeUrlModel', function(assert) {
-  assert.expect(3);
+  test('_newModel', function(assert) {
+    assert.expect(1);
 
-  return wait().then(() => {
-    return this.subject()
-      ._deserializeUrlModel(SERIALIZED_MODEL)
-      .then(newModel => {
-        assert.ok(newModel.get('isNew'), 'A new ember data model is returned');
+    return settled().then(() => {
+      let model = this.owner.lookup('route:reports/new')._newModel();
+      assert.deepEqual(model.toJSON(), NEW_MODEL, 'A new report model is returned');
+    });
+  });
 
-        assert.ok(get(newModel, 'tempId'), 'A tempId is present');
+  test('_deserializeUrlModel', function(assert) {
+    assert.expect(3);
 
-        assert.equal(
-          get(newModel, 'title'),
-          'Hyrule News',
-          'The new model inherits the properties of the given serialized model'
+    return settled().then(() => {
+      return this.owner
+        .lookup('route:reports/new')
+        ._deserializeUrlModel(SERIALIZED_MODEL)
+        .then(newModel => {
+          assert.ok(newModel.get('isNew'), 'A new ember data model is returned');
+
+          assert.ok(get(newModel, 'tempId'), 'A tempId is present');
+
+          assert.equal(
+            get(newModel, 'title'),
+            'Hyrule News',
+            'The new model inherits the properties of the given serialized model'
+          );
+        });
+    });
+  });
+
+  test('_deserializeUrlModel - error', function(assert) {
+    assert.expect(1);
+
+    return settled().then(() => {
+      return this.owner
+        .lookup('route:reports/new')
+        ._deserializeUrlModel('not actually a model')
+        .catch(error =>
+          assert.equal(
+            error.message,
+            'Could not parse model query param',
+            'When modelString fails to deserialize, a rejected promise is returned'
+          )
         );
-      });
+    });
   });
-});
 
-test('_deserializeUrlModel - error', function(assert) {
-  assert.expect(1);
+  test('_getDefaultTable', function(assert) {
+    assert.expect(2);
 
-  return wait().then(() => {
-    return this.subject()
-      ._deserializeUrlModel('not actually a model')
-      .catch(error =>
-        assert.equal(
-          error.message,
-          'Could not parse model query param',
-          'When modelString fails to deserialize, a rejected promise is returned'
-        )
+    return settled().then(() => {
+      let table = this.owner.lookup('route:reports/new')._getDefaultTable();
+      assert.deepEqual(
+        table.name,
+        'network',
+        'Return table based on alphabetical order if default config not specified'
       );
+
+      let defaultDataTable = get(config, 'navi.defaultDataTable');
+
+      set(config, 'navi.defaultDataTable', 'tableA');
+      table = this.owner.lookup('route:reports/new')._getDefaultTable();
+      assert.deepEqual(table.name, 'tableA', 'Return default table');
+
+      set(config, 'navi.defaultDataTable', defaultDataTable);
+    });
   });
-});
 
-test('_getDefaultTable', function(assert) {
-  assert.expect(2);
+  test('_getDefaultTimeGrainName', function(assert) {
+    assert.expect(3);
 
-  return wait().then(() => {
-    let table = this.subject()._getDefaultTable();
-    assert.deepEqual(table.name, 'network', 'Return table based on alphabetical order if default config not specified');
+    return settled().then(() => {
+      let table = this.owner.lookup('route:reports/new')._getDefaultTable(),
+        tableTimeGrains = A(get(table, 'timeGrains')),
+        timeGrainName = this.owner.lookup('route:reports/new')._getDefaultTimeGrainName(table);
 
-    let defaultDataTable = get(config, 'navi.defaultDataTable');
+      assert.deepEqual(
+        timeGrainName,
+        get(tableTimeGrains, 'firstObject.name'),
+        'Return the first time grain in the table'
+      );
 
-    set(config, 'navi.defaultDataTable', 'tableA');
-    table = this.subject()._getDefaultTable();
-    assert.deepEqual(table.name, 'tableA', 'Return default table');
+      let defaultTimeGrain = get(config, 'navi.defaultTimeGrain');
 
-    set(config, 'navi.defaultDataTable', defaultDataTable);
-  });
-});
+      set(config, 'navi.defaultTimeGrain', 'year');
+      timeGrainName = this.owner.lookup('route:reports/new')._getDefaultTimeGrainName(table);
+      assert.deepEqual(timeGrainName, 'year', 'Return default time grain');
 
-test('_getDefaultTimeGrainName', function(assert) {
-  assert.expect(3);
+      set(config, 'navi.defaultTimeGrain', 'no');
+      timeGrainName = this.owner.lookup('route:reports/new')._getDefaultTimeGrainName(table);
+      assert.deepEqual(
+        timeGrainName,
+        get(tableTimeGrains, 'firstObject.name'),
+        'Return the first time grain in the table when default is not found'
+      );
 
-  return wait().then(() => {
-    let table = this.subject()._getDefaultTable(),
-      tableTimeGrains = A(get(table, 'timeGrains')),
-      timeGrainName = this.subject()._getDefaultTimeGrainName(table);
-
-    assert.deepEqual(
-      timeGrainName,
-      get(tableTimeGrains, 'firstObject.name'),
-      'Return the first time grain in the table'
-    );
-
-    let defaultTimeGrain = get(config, 'navi.defaultTimeGrain');
-
-    set(config, 'navi.defaultTimeGrain', 'year');
-    timeGrainName = this.subject()._getDefaultTimeGrainName(table);
-    assert.deepEqual(timeGrainName, 'year', 'Return default time grain');
-
-    set(config, 'navi.defaultTimeGrain', 'no');
-    timeGrainName = this.subject()._getDefaultTimeGrainName(table);
-    assert.deepEqual(
-      timeGrainName,
-      get(tableTimeGrains, 'firstObject.name'),
-      'Return the first time grain in the table when default is not found'
-    );
-
-    set(config, 'navi.defaultTimeGrain', defaultTimeGrain);
+      set(config, 'navi.defaultTimeGrain', defaultTimeGrain);
+    });
   });
 });

@@ -1,15 +1,17 @@
 import { run } from '@ember/runloop';
 import { getOwner } from '@ember/application';
 import { set, get } from '@ember/object';
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render, settled, click } from '@ember/test-helpers';
 import { hbsWithModal } from '../../../helpers/hbs-with-modal';
-import wait from 'ember-test-helpers/wait';
 
 let Template;
 
-moduleForComponent('common-actions/delete', 'Integration | Component | common actions/delete', {
-  integration: true,
-  beforeEach() {
+module('Integration | Component | common actions/delete', function(hooks) {
+  setupRenderingTest(hooks);
+
+  hooks.beforeEach(function() {
     Template = hbsWithModal(
       `
       {{#common-actions/delete
@@ -21,7 +23,7 @@ moduleForComponent('common-actions/delete', 'Integration | Component | common ac
         Delete
       {{/common-actions/delete}}
     `,
-      getOwner(this)
+      this.owner
     );
 
     set(this, 'widget', {
@@ -31,69 +33,68 @@ moduleForComponent('common-actions/delete', 'Integration | Component | common ac
     });
 
     set(this, 'deleteWidget', () => {});
-  }
-});
-
-test('confirm modal', function(assert) {
-  assert.expect(5);
-
-  this.render(Template);
-
-  assert.notOk(!!$('.ember-modal-dialog').length, 'Modal is not visible at the start');
-
-  run(() => {
-    this.$('.delete > button').click();
   });
 
-  assert.ok(!!$('.ember-modal-dialog').length, 'Modal is visible after clicking the delete action');
+  test('confirm modal', async function(assert) {
+    assert.expect(5);
 
-  assert.equal(
-    $('.primary-header')
-      .text()
-      .trim(),
-    'Delete "The Wind Waker"',
-    'Widget title is included in modal header'
-  );
+    await render(Template);
 
-  assert.equal(
-    $('.secondary-header')
-      .text()
-      .trim(),
-    'Are you sure you want to delete the widget?',
-    'Warning message is included in the widget modal'
-  );
+    assert.notOk(!!$('.ember-modal-dialog').length, 'Modal is not visible at the start');
 
-  run(() => {
-    $('button:contains(Cancel)').click();
+    run(async () => {
+      await click('.delete > button');
+    });
+
+    assert.ok(!!$('.ember-modal-dialog').length, 'Modal is visible after clicking the delete action');
+
+    assert.equal(
+      $('.primary-header')
+        .text()
+        .trim(),
+      'Delete "The Wind Waker"',
+      'Widget title is included in modal header'
+    );
+
+    assert.equal(
+      $('.secondary-header')
+        .text()
+        .trim(),
+      'Are you sure you want to delete the widget?',
+      'Warning message is included in the widget modal'
+    );
+
+    run(() => {
+      $('button:contains(Cancel)').click();
+    });
+
+    assert.notOk(!!$('.ember-modal-dialog').length, 'Modal is closed after clicking cancel button');
   });
 
-  assert.notOk(!!$('.ember-modal-dialog').length, 'Modal is closed after clicking cancel button');
-});
+  test('delete action', async function(assert) {
+    assert.expect(1);
 
-test('delete action', function(assert) {
-  assert.expect(1);
+    this.set('deleteWidget', widget => {
+      assert.equal(widget, get(this, 'widget'), 'the selected widget is passed to the action');
+    });
 
-  this.set('deleteWidget', widget => {
-    assert.equal(widget, get(this, 'widget'), 'the selected widget is passed to the action');
+    await render(Template);
+
+    run(async () => {
+      await click('.delete > button');
+    });
+
+    return settled().then(() => {
+      $('button:contains(Confirm)').click();
+    });
   });
 
-  this.render(Template);
+  test('default warning message', async function(assert) {
+    assert.expect(1);
 
-  run(() => {
-    this.$('.delete > button').click();
-  });
-
-  return wait().then(() => {
-    $('button:contains(Confirm)').click();
-  });
-});
-
-test('default warning message', function(assert) {
-  assert.expect(1);
-
-  this.render(
-    hbsWithModal(
-      `
+    await render(
+      hbsWithModal(
+        `
     {{#common-actions/delete
         model=widget
         deleteAction=(action deleteWidget)
@@ -102,19 +103,20 @@ test('default warning message', function(assert) {
         Delete
     {{/common-actions/delete}}
    `,
-      getOwner(this)
-    )
-  );
+        this.owner
+      )
+    );
 
-  run(() => {
-    this.$('.delete > button').click();
+    run(async () => {
+      await click('.delete > button');
+    });
+
+    assert.equal(
+      $('.secondary-header')
+        .text()
+        .trim(),
+      'Are you sure you want to delete this test-widget?',
+      'Default warning message is included in widget modal'
+    );
   });
-
-  assert.equal(
-    $('.secondary-header')
-      .text()
-      .trim(),
-    'Are you sure you want to delete this test-widget?',
-    'Default warning message is included in widget modal'
-  );
 });

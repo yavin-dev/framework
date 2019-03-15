@@ -1,4 +1,6 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render } from '@ember/test-helpers';
 import { getOwner } from '@ember/application';
 import { helper } from '@ember/component/helper';
 import hbs from 'htmlbars-inline-precompile';
@@ -6,13 +8,13 @@ import { setupMock, teardownMock } from '../../helpers/mirage-helper';
 
 let MetadataService, Store;
 
-moduleForComponent('report-builder', 'Integration | Component | report builder', {
-  integration: true,
+module('Integration | Component | report builder', function(hooks) {
+  setupRenderingTest(hooks);
 
-  beforeEach() {
+  hooks.beforeEach(function() {
     setupMock();
-    MetadataService = getOwner(this).lookup('service:bard-metadata');
-    Store = getOwner(this).lookup('service:store');
+    MetadataService = this.owner.lookup('service:bard-metadata');
+    Store = this.owner.lookup('service:store');
 
     this.container.registry.registrations['helper:update-report-action'] = helper(() => () => {});
 
@@ -30,39 +32,39 @@ moduleForComponent('report-builder', 'Integration | Component | report builder',
         })
       );
     });
-  },
+  });
 
-  afterEach() {
+  hooks.afterEach(function() {
     teardownMock();
-  }
-});
+  });
 
-test("Single table in meta shouldn't show table selector", function(assert) {
-  assert.expect(2);
-  //reset meta data and load only one table
-  MetadataService.get('_keg').resetByType('metadata/table');
-  MetadataService._loadMetadataForType('table', [
-    {
-      name: 'tableA',
-      longName: 'Table A',
-      description: 'Table A'
-    }
-  ]);
+  test("Single table in meta shouldn't show table selector", async function(assert) {
+    assert.expect(2);
+    //reset meta data and load only one table
+    MetadataService.get('_keg').resetByType('metadata/table');
+    MetadataService._loadMetadataForType('table', [
+      {
+        name: 'tableA',
+        longName: 'Table A',
+        description: 'Table A'
+      }
+    ]);
 
-  this.render(hbs`{{report-builder
-    report=report
-  }}`);
+    await render(hbs`{{report-builder
+      report=report
+    }}`);
 
-  assert.ok(this.$('.report-builder__main').is(':visible'), 'Report builder renders');
-  assert.notOk(this.$('.navi-table-select').is(':visible'), 'Table selector does not render with only one table');
-});
+    assert.ok(this.$('.report-builder__main').is(':visible'), 'Report builder renders');
+    assert.notOk(this.$('.navi-table-select').is(':visible'), 'Table selector does not render with only one table');
+  });
 
-test('Multiple tables in meta should show table selector', function(assert) {
-  assert.expect(1);
+  test('Multiple tables in meta should show table selector', async function(assert) {
+    assert.expect(1);
 
-  this.render(hbs`{{report-builder
-    report=report
-  }}`);
+    await render(hbs`{{report-builder
+      report=report
+    }}`);
 
-  assert.ok(this.$('.navi-table-select').is(':visible'), 'Table renders when there are multiple tables');
+    assert.ok(this.$('.navi-table-select').is(':visible'), 'Table renders when there are multiple tables');
+  });
 });

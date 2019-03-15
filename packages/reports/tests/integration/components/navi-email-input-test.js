@@ -1,58 +1,60 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render, find, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { typeInInput } from '../../helpers/ember-tag-input';
 
 const EMAILS = ['toonlink@naviapp.io', 'midna@naviapp.io'];
 
-moduleForComponent('navi-email-input', 'Integration | Component | navi email input', {
-  integration: true,
+module('Integration | Component | navi email input', function(hooks) {
+  setupRenderingTest(hooks);
 
-  beforeEach() {
+  hooks.beforeEach(function() {
     this.emails = EMAILS;
-  }
-});
+  });
 
-test('render emails', function(assert) {
-  assert.expect(1);
+  test('render emails', async function(assert) {
+    assert.expect(1);
 
-  this.render(hbs`{{navi-email-input emails=emails}}`);
+    await render(hbs`{{navi-email-input emails=emails}}`);
 
-  assert.deepEqual(
-    this.$('.navi-email-input .navi-email-tag')
-      .toArray()
-      .map(e => e.textContent.trim()),
-    EMAILS,
-    'An email tag is rendered for each given email'
-  );
-});
-
-test('add email', function(assert) {
-  assert.expect(1);
-
-  const newEmail = 'wolflinkamibo@naviapp.io';
-
-  this.onUpdateEmails = emails => {
     assert.deepEqual(
-      emails,
-      [...EMAILS, newEmail],
-      'onUpdateEmails action is called with newly typed email added to the end'
+      this.$('.navi-email-input .navi-email-tag')
+        .toArray()
+        .map(e => e.textContent.trim()),
+      EMAILS,
+      'An email tag is rendered for each given email'
     );
-  };
+  });
 
-  this.render(hbs`{{navi-email-input emails=emails onUpdateEmails=(action onUpdateEmails)}}`);
+  test('add email', async function(assert) {
+    assert.expect(1);
 
-  typeInInput('.js-ember-tag-input-new', newEmail);
-  this.$('.js-ember-tag-input-new').blur();
-});
+    const newEmail = 'wolflinkamibo@naviapp.io';
 
-test('remove email', function(assert) {
-  assert.expect(1);
+    this.onUpdateEmails = emails => {
+      assert.deepEqual(
+        emails,
+        [...EMAILS, newEmail],
+        'onUpdateEmails action is called with newly typed email added to the end'
+      );
+    };
 
-  this.onUpdateEmails = emails => {
-    assert.deepEqual(emails, EMAILS.slice(1), 'onUpdateEmails action is called with removed email excluded');
-  };
+    await render(hbs`{{navi-email-input emails=emails onUpdateEmails=(action onUpdateEmails)}}`);
 
-  this.render(hbs`{{navi-email-input emails=emails onUpdateEmails=(action onUpdateEmails)}}`);
+    typeInInput('.js-ember-tag-input-new', newEmail);
+    this.$('.js-ember-tag-input-new').blur();
+  });
 
-  this.$('.emberTagInput-remove:eq(0)').click();
+  test('remove email', async function(assert) {
+    assert.expect(1);
+
+    this.onUpdateEmails = emails => {
+      assert.deepEqual(emails, EMAILS.slice(1), 'onUpdateEmails action is called with removed email excluded');
+    };
+
+    await render(hbs`{{navi-email-input emails=emails onUpdateEmails=(action onUpdateEmails)}}`);
+
+    await click(find('.emberTagInput-remove'));
+  });
 });

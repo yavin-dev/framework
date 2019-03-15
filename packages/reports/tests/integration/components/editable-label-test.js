@@ -1,4 +1,6 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render, find, click, triggerEvent } from '@ember/test-helpers';
 import { fillInSync } from '../../helpers/fill-in-sync';
 import hbs from 'htmlbars-inline-precompile';
 
@@ -9,99 +11,111 @@ const TEMPLATE = hbs`
         }}
     `;
 
-moduleForComponent('editable-label', 'Integration | Component | Editable Label', {
-  integration: true
-});
+module('Integration | Component | Editable Label', function(hooks) {
+  setupRenderingTest(hooks);
 
-test('edit label triggers action', function(assert) {
-  assert.expect(3);
+  test('edit label triggers action', async function(assert) {
+    assert.expect(3);
 
-  this.set('value', 'Default Value');
-  this.set('onChange', value => {
-    assert.equal(value, 'Edited Value', '`onChange` action sent an updated value');
+    this.set('value', 'Default Value');
+    this.set('onChange', value => {
+      assert.equal(value, 'Edited Value', '`onChange` action sent an updated value');
+    });
+
+    await render(TEMPLATE);
+
+    await click('.editable-label__icon');
+
+    assert.equal(find('.editable-label__input').value, 'Default Value', 'Label contains the default value');
+
+    fillInSync('.editable-label__input', 'Edited Value');
+
+    await triggerEvent('.editable-label__input', 'focusout');
+
+    assert.equal(
+      this.get('value'),
+      'Default Value',
+      'Editing the label does not mutate the provided `value` attribute'
+    );
   });
 
-  this.render(TEMPLATE);
+  test('no change in value', async function(assert) {
+    assert.expect(1);
 
-  this.$('.editable-label__icon').click();
+    this.set('value', 'Default Value');
+    this.set('onChange', () => {
+      assert.notOk(true, '`onChange` is not invoked if `value` is not updated');
+    });
 
-  assert.equal(this.$('.editable-label__input').val(), 'Default Value', 'Label contains the default value');
+    await render(TEMPLATE);
 
-  fillInSync('.editable-label__input', 'Edited Value');
+    await click('.editable-label__icon');
 
-  this.$('.editable-label__input').focusout();
+    await triggerEvent('.editable-label__input', 'focusout');
 
-  assert.equal(this.get('value'), 'Default Value', 'Editing the label does not mutate the provided `value` attribute');
-});
-
-test('no change in value', function(assert) {
-  assert.expect(1);
-
-  this.set('value', 'Default Value');
-  this.set('onChange', () => {
-    assert.notOk(true, '`onChange` is not invoked if `value` is not updated');
+    assert.equal(
+      this.get('value'),
+      'Default Value',
+      'Editing the label does not mutate the provided `value` attribute'
+    );
   });
 
-  this.render(TEMPLATE);
+  test('_inputSize', async function(assert) {
+    assert.expect(3);
 
-  this.$('.editable-label__icon').click();
+    this.set('value', '');
+    this.set('onChange', () => {});
 
-  this.$('.editable-label__input').focusout();
+    await render(TEMPLATE);
 
-  assert.equal(this.get('value'), 'Default Value', 'Editing the label does not mutate the provided `value` attribute');
-});
+    await click('.editable-label__icon');
 
-test('_inputSize', function(assert) {
-  assert.expect(3);
+    assert.equal(find('.editable-label__input').getAttribute('size'), 1, 'Size of the input is greater or equal to 1');
 
-  this.set('value', '');
-  this.set('onChange', () => {});
+    fillInSync('.editable-label__input', 'Default Value');
+    assert.equal(
+      find('.editable-label__input').getAttribute('size'),
+      find('.editable-label__input').value.length + 1,
+      'Size of the input is the string length plus 1'
+    );
 
-  this.render(TEMPLATE);
+    let longValue = Array(100)
+      .fill(1)
+      .join('');
+    fillInSync('.editable-label__input', longValue);
+    assert.equal(
+      find('.editable-label__input').getAttribute('size'),
+      50,
+      'Size of the input is less than or equal to 50'
+    );
+  });
 
-  this.$('.editable-label__icon').click();
+  test('value is reset when editing', async function(assert) {
+    assert.expect(3);
 
-  assert.equal(this.$('.editable-label__input').attr('size'), 1, 'Size of the input is greater or equal to 1');
+    this.set('value', 'Initial value');
+    this.set('onChange', () => {});
 
-  fillInSync('.editable-label__input', 'Default Value');
-  assert.equal(
-    this.$('.editable-label__input').attr('size'),
-    this.$('.editable-label__input').val().length + 1,
-    'Size of the input is the string length plus 1'
-  );
+    await render(TEMPLATE);
+    await click('.editable-label__icon');
 
-  let longValue = Array(100)
-    .fill(1)
-    .join('');
-  fillInSync('.editable-label__input', longValue);
-  assert.equal(this.$('.editable-label__input').attr('size'), 50, 'Size of the input is less than or equal to 50');
-});
+    assert.equal(
+      find('.editable-label__input').value,
+      'Initial value',
+      'Input starts with text equal to given value property'
+    );
 
-test('value is reset when editing', function(assert) {
-  assert.expect(3);
+    fillInSync('.editable-label__input', 'Something else');
 
-  this.set('value', 'Initial value');
-  this.set('onChange', () => {});
+    assert.equal(find('.editable-label__input').value, 'Something else', 'Input text changes with user input');
 
-  this.render(TEMPLATE);
-  this.$('.editable-label__icon').click();
+    await triggerEvent('.editable-label__input', 'focusout');
+    await click('.editable-label__icon');
 
-  assert.equal(
-    this.$('.editable-label__input').val(),
-    'Initial value',
-    'Input starts with text equal to given value property'
-  );
-
-  fillInSync('.editable-label__input', 'Something else');
-
-  assert.equal(this.$('.editable-label__input').val(), 'Something else', 'Input text changes with user input');
-
-  this.$('.editable-label__input').focusout();
-  this.$('.editable-label__icon').click();
-
-  assert.equal(
-    this.$('.editable-label__input').val(),
-    'Initial value',
-    'When focusing in and out, input text is reset to given value property'
-  );
+    assert.equal(
+      find('.editable-label__input').value,
+      'Initial value',
+      'When focusing in and out, input text is reset to given value property'
+    );
+  });
 });

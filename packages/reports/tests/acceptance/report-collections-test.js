@@ -1,79 +1,65 @@
-import { run } from '@ember/runloop';
+import { click, findAll, currentURL, visit } from '@ember/test-helpers';
 import Ember from 'ember';
 import { module, test } from 'qunit';
-import startApp from '../helpers/start-app';
 import { teardownModal } from '../helpers/teardown-modal';
-import Mirage from 'ember-cli-mirage';
+import { setupApplicationTest } from 'ember-qunit';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
-let Application, OriginalLoggerError, OriginalTestAdapterException;
+let OriginalLoggerError, OriginalTestAdapterException;
 
-module('Acceptance | Report Collections', {
-  beforeEach: function() {
-    Application = startApp();
-    wait();
-  },
+module('Acceptance | Report Collections', function(hooks) {
+  setupApplicationTest(hooks);
+  setupMirage(hooks);
 
-  afterEach: function() {
+  hooks.afterEach(function() {
     teardownModal();
-    server.shutdown();
-    run(Application, 'destroy');
-  }
-});
+  });
 
-test('report-collection success', function(assert) {
-  assert.expect(2);
+  test('report-collection success', async function(assert) {
+    assert.expect(2);
 
-  visit('/report-collections/1');
-  andThen(function() {
-    assert.notOk(!!find('.error').length, 'Error message not present when route is successfully loaded');
+    await visit('/report-collections/1');
+    assert.notOk(!!findAll('.error').length, 'Error message not present when route is successfully loaded');
 
     assert.ok(
-      !!find('.navi-collection').length,
+      !!findAll('.navi-collection').length,
       'the report collection component is rendered when route is successfully loaded'
     );
   });
-});
 
-test('report-collection error', function(assert) {
-  assert.expect(2);
+  test('report-collection error', async function(assert) {
+    assert.expect(2);
 
-  // Allow testing of errors - https://github.com/emberjs/ember.js/issues/11469
-  OriginalLoggerError = Ember.Logger.error;
-  OriginalTestAdapterException = Ember.Test.adapter.exception;
-  Ember.Logger.error = function() {};
-  Ember.Test.adapter.exception = function() {};
+    // Allow testing of errors - https://github.com/emberjs/ember.js/issues/11469
+    OriginalLoggerError = Ember.Logger.error;
+    OriginalTestAdapterException = Ember.Test.adapter.exception;
+    Ember.Logger.error = function() {};
+    Ember.Test.adapter.exception = function() {};
 
-  server.get('/reportCollections/:id', { errors: ['The report-collections endpoint is down'] }, 500);
+    server.get('/reportCollections/:id', { errors: ['The report-collections endpoint is down'] }, 500);
 
-  visit('/report-collections/1');
-  andThen(function() {
-    assert.ok(!!find('.error').length, 'Error message is present when route encounters an error');
+    await visit('/report-collections/1');
+    assert.ok(!!findAll('.error').length, 'Error message is present when route encounters an error');
 
-    assert.notOk(!!find('.navi-collection').length, 'Navi report collection component is not rendered');
+    assert.notOk(!!findAll('.navi-collection').length, 'Navi report collection component is not rendered');
 
     Ember.Logger.error = OriginalLoggerError;
     Ember.Test.adapter.exception = OriginalTestAdapterException;
   });
-});
 
-test('report-collection link', function(assert) {
-  assert.expect(1);
-  visit('/report-collections/1');
-  andThen(function() {
-    click('.navi-collection table > tbody > tr > td > a');
-    andThen(function() {
-      const urlRe = /\/reports\/\d+\/view/;
-      assert.ok(urlRe.test(currentURL()), 'Navigate to the report when link is clicked');
-    });
+  test('report-collection link', async function(assert) {
+    assert.expect(1);
+    await visit('/report-collections/1');
+    await click('.navi-collection table > tbody > tr > td > a');
+    const urlRe = /\/reports\/\d+\/view/;
+    assert.ok(urlRe.test(currentURL()), 'Navigate to the report when link is clicked');
   });
-});
 
-test('report-collection loading', function(assert) {
-  assert.expect(1);
+  test('report-collection loading', async function(assert) {
+    assert.expect(1);
 
-  visit('/report-collections/loading');
+    await visit('/report-collections/loading');
 
-  andThen(function() {
-    assert.ok(!!find('.navi-loader__container').length, 'Loader is present when visiting loading route');
+    assert.ok(!!findAll('.navi-loader__container').length, 'Loader is present when visiting loading route');
   });
 });

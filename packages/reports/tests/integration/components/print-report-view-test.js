@@ -1,9 +1,10 @@
 import { A } from '@ember/array';
 import { getOwner } from '@ember/application';
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render, settled, find } from '@ember/test-helpers';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
 import hbs from 'htmlbars-inline-precompile';
-import wait from 'ember-test-helpers/wait';
 import Interval from 'navi-core/utils/classes/interval';
 
 const RESPONSE = {
@@ -47,14 +48,14 @@ const RESPONSE = {
   ]
 };
 
-moduleForComponent('print-report-view', 'Integration | Component | print report view', {
-  integration: true,
+module('Integration | Component | print report view', function(hooks) {
+  setupRenderingTest(hooks);
 
-  beforeEach() {
+  hooks.beforeEach(function() {
     setupMock();
 
-    let metadataService = getOwner(this).lookup('service:bard-metadata'),
-      store = getOwner(this).lookup('service:store');
+    let metadataService = this.owner.lookup('service:bard-metadata'),
+      store = this.owner.lookup('service:store');
 
     metadataService.loadMetadata().then(() => {
       this.set('response', RESPONSE);
@@ -97,82 +98,80 @@ moduleForComponent('print-report-view', 'Integration | Component | print report 
         })
       );
     });
-  },
-
-  afterEach() {
-    teardownMock();
-  }
-});
-
-test('visualization is chosen based on report', function(assert) {
-  assert.expect(3);
-
-  return wait().then(() => {
-    this.render(hbs`
-            {{print-report-view
-                report=report
-                response=response
-            }}
-        `);
-
-    assert.ok(
-      this.$('.line-chart-widget').is(':visible'),
-      'Visualization is rendered based on the report visualization type'
-    );
-
-    this.set('report.visualization', {
-      type: 'table',
-      version: 1,
-      metadata: {
-        columns: [
-          {
-            attributes: { name: 'dateTime' },
-            type: 'dateTime',
-            displayName: 'Date'
-          },
-          {
-            attributes: { name: 'adClicks' },
-            type: 'metric',
-            displayName: 'Ad Clicks'
-          }
-        ]
-      }
-    });
-
-    assert.ok(this.$('.table-widget').is(':visible'), 'Rendered visualization updates with report');
-
-    assert.notOk(this.$('.line-chart-widget').is(':visible'), 'Old visualization is removed');
   });
-});
 
-test('no data', function(assert) {
-  assert.expect(1);
+  hooks.afterEach(function() {
+    teardownMock();
+  });
 
-  return wait().then(() => {
-    this.set('response', {
-      rows: [],
-      meta: {
-        pagination: {
-          currentPage: 1,
-          rowsPerPage: 10000,
-          numberOfResults: 0
+  test('visualization is chosen based on report', function(assert) {
+    assert.expect(3);
+
+    return settled().then(async () => {
+      await render(hbs`
+              {{print-report-view
+                  report=report
+                  response=response
+              }}
+          `);
+
+      assert.ok(
+        this.$('.line-chart-widget').is(':visible'),
+        'Visualization is rendered based on the report visualization type'
+      );
+
+      this.set('report.visualization', {
+        type: 'table',
+        version: 1,
+        metadata: {
+          columns: [
+            {
+              attributes: { name: 'dateTime' },
+              type: 'dateTime',
+              displayName: 'Date'
+            },
+            {
+              attributes: { name: 'adClicks' },
+              type: 'metric',
+              displayName: 'Ad Clicks'
+            }
+          ]
         }
-      }
+      });
+
+      assert.ok(this.$('.table-widget').is(':visible'), 'Rendered visualization updates with report');
+
+      assert.notOk(this.$('.line-chart-widget').is(':visible'), 'Old visualization is removed');
     });
+  });
 
-    this.render(hbs`
-            {{print-report-view
-                report=report
-                response=response
-            }}
-        `);
+  test('no data', function(assert) {
+    assert.expect(1);
 
-    assert.equal(
-      this.$('.print-report-view__visualization-no-results')
-        .text()
-        .trim(),
-      'No results available.',
-      'A message is displayed when the response has no data'
-    );
+    return settled().then(async () => {
+      this.set('response', {
+        rows: [],
+        meta: {
+          pagination: {
+            currentPage: 1,
+            rowsPerPage: 10000,
+            numberOfResults: 0
+          }
+        }
+      });
+
+      await render(hbs`
+              {{print-report-view
+                  report=report
+                  response=response
+              }}
+          `);
+
+      assert.equal(
+        find('.print-report-view__visualization-no-results').textContent.trim(),
+        'No results available.',
+        'A message is displayed when the response has no data'
+      );
+    });
   });
 });

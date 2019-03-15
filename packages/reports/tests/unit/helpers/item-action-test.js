@@ -1,53 +1,50 @@
-import { moduleFor, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupTest } from 'ember-qunit';
 import { getOwner } from '@ember/application';
 import ActionConsumer from 'navi-core/consumers/action-consumer';
 
 let Container;
-moduleFor('helper:item-action', 'Unit | Helper | item action', {
-  needs: [
-    'helper:route-action',
-    'service:request-action-dispatcher',
-    'service:item-action-dispatcher',
-    'service:action-dispatcher'
-  ],
 
-  beforeEach() {
-    Container = getOwner(this);
-  }
-});
+module('Unit | Helper | item action', function(hooks) {
+  setupTest(hooks);
 
-test('item action', function(assert) {
-  assert.expect(4);
+  hooks.beforeEach(function() {
+    Container = this.owner;
+  });
 
-  Container.register(
-    'consumer:item',
-    ActionConsumer.extend({
-      send(actionType, ...params) {
-        assert.equal(actionType, 'deleteItem', 'consumer receives the correct action from the item-action helper');
+  test('item action', function(assert) {
+    assert.expect(4);
 
-        assert.deepEqual(
-          params,
-          [{ title: 'Report' }],
-          'consumer receives the correct params from the item-action helper'
-        );
+    Container.register(
+      'consumer:item',
+      ActionConsumer.extend({
+        send(actionType, ...params) {
+          assert.equal(actionType, 'deleteItem', 'consumer receives the correct action from the item-action helper');
+
+          assert.deepEqual(
+            params,
+            [{ title: 'Report' }],
+            'consumer receives the correct params from the item-action helper'
+          );
+        }
+      })
+    );
+
+    let action = this.owner.lookup('helper:item-action').compute([
+      'DELETE_ITEM',
+      {
+        title: 'Report'
       }
-    })
-  );
+    ]);
 
-  let action = this.subject().compute([
-    'DELETE_ITEM',
-    {
-      title: 'Report'
-    }
-  ]);
+    assert.equal(typeof action, 'function', 'The helper returns a function that dispatches the desired action');
 
-  assert.equal(typeof action, 'function', 'The helper returns a function that dispatches the desired action');
+    action();
 
-  action();
-
-  assert.throws(
-    () => this.subject().compute(['Invalid']),
-    /The action name "Invalid" is not a valid item action/,
-    'An invalid action name throws an exception'
-  );
+    assert.throws(
+      () => this.owner.lookup('helper:item-action').compute(['Invalid']),
+      /The action name "Invalid" is not a valid item action/,
+      'An invalid action name throws an exception'
+    );
+  });
 });

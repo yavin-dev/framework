@@ -12,8 +12,8 @@ module.exports = {
   overrides: [
     // node files
     {
-      files: ['index.js', 'testem.js', 'ember-cli-build.js', 'config/**/*.js', 'tests/dummy/config/**/*.js'],
-      excludedFiles: ['app/**', 'addon/**', 'tests/dummy/app/**'],
+      files: ['ember-cli-build.js', 'index.js', 'testem.js', 'config/**/*.js', 'tests/dummy/config/**/*.js'],
+      excludedFiles: ['addon/**', 'addon-test-support/**', 'app/**', 'tests/dummy/app/**'],
       parserOptions: {
         sourceType: 'script',
         ecmaVersion: 2017
@@ -26,15 +26,6 @@ module.exports = {
       rules: Object.assign({}, require('eslint-plugin-node').configs.recommended.rules, {
         'multiline-comment-style': ['error', 'starred-block']
       })
-    },
-
-    // test files
-    {
-      files: ['tests/**/*.js'],
-      excludedFiles: ['tests/dummy/**/*.js'],
-      env: {
-        embertest: true
-      }
     }
   ]
 };

@@ -67,7 +67,7 @@
     "ember-get-config": "0.2.4",
     "ember-gridstack": "1.2.0",
     "ember-load-initializers": "^1.1.0",
-    "ember-lodash": "^4.17.5",
+    "ember-lodash": "^4.19.4",
     "ember-maybe-import-regenerator": "^0.1.6",
     "ember-modal-dialog": "^2.4.1",
     "ember-moment": "7.5.0",
