@@ -355,19 +355,12 @@ module('Integration | Component | table', function(hooks) {
     assert.expect(1);
 
     Model[0].response.rows = ROWS.slice(0, 4);
-    let model = merge({}, Model, [
-      {
-        response: {
-          meta: {
-            pagination: {
-              numberOfResults: 10
-            }
-          }
-        }
+    Model[0].response.meta = {
+      pagination: {
+        numberOfResults: 10
       }
-    ]);
+    };
 
-    this.set('model', model);
     await render(TEMPLATE);
 
     assert.equal(
@@ -383,22 +376,16 @@ module('Integration | Component | table', function(hooks) {
     assert.expect(1);
 
     Model[0].response.rows = ROWS.slice(0, 4);
-    let model = merge({}, Model, [
-        {
-          response: {
-            meta: {
-              pagination: {
-                numberOfResults: 10
-              }
-            }
-          }
-        }
-      ]),
-      options = merge({}, Options, {
-        showTotals: { grandTotal: true, subtotal: 'os' }
-      });
+    Model[0].response.meta = {
+      pagination: {
+        numberOfResults: 10
+      }
+    };
 
-    this.set('model', model);
+    let options = merge({}, Options, {
+      showTotals: { grandTotal: true, subtotal: 'os' }
+    });
+
     this.set('options', options);
     await render(TEMPLATE);
 
