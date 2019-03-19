@@ -62,17 +62,17 @@ export default Component.extend({
   /**
    * @property {Array} rawData - data from the WS
    */
-  rawData: readOnly('model.0.response.rows'),
+  rawData: readOnly('model.firstObject.response.rows'),
 
   /**
    * @property {Number} totalRows - total rows for the request
    */
-  totalRows: readOnly('model.0.response.meta.pagination.numberOfResults'),
+  totalRows: readOnly('model.firstObject.response.meta.pagination.numberOfResults'),
 
   /**
    * @property {Number} rowsInResponse - rows in response
    */
-  rowsInResponse: alias('model.0.response.rows.length'),
+  rowsInResponse: alias('model.firstObject.response.rows.length'),
 
   /**
    * @method computeColumnTotal
