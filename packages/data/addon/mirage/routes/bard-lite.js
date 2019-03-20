@@ -211,4 +211,25 @@ export default function(
 
     return { rows };
   });
+
+  this.get('/dimensions/:dimension/search', function(db, request) {
+    let dimension = request.params.dimension,
+      rows = _getDimensionValues(dimension),
+      { query } = request.queryParams;
+
+    if (query) {
+      let values = query
+        .toLowerCase()
+        .split(/\s+/)
+        .map(v => v.trim())
+        .filter(_ => _);
+
+      rows = rows.filter(row => {
+        let rowValue = `${row.id} ${row.description}`.toLowerCase();
+        return values.every(value => rowValue.includes(value));
+      });
+    }
+
+    return { rows };
+  });
 }

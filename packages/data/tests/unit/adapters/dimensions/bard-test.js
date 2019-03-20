@@ -47,6 +47,22 @@ module('Unit | Adapter | Dimensions | Bard', function(hooks) {
         }
         return MockBardResponse;
       });
+
+      this.get(`${HOST}/v1/dimensions/dimensionOne/search/`, function(request) {
+        if (request.queryParams.page && request.queryParams.perPage) {
+          let paginatedResponse = assign({}, Response);
+
+          paginatedResponse.meta.pagination = {
+            page: request.queryParams.page,
+            perPage: request.queryParams.perPage
+          };
+
+          return [200, { 'Content-Type': 'application/json' }, JSON.stringify(paginatedResponse)];
+        } else if (request.queryParams.query === 'v1') {
+          return MockBardResponse2;
+        }
+        return MockBardResponse;
+      });
     });
 
     //Load metadata
@@ -60,12 +76,18 @@ module('Unit | Adapter | Dimensions | Bard', function(hooks) {
   });
 
   test('_buildUrl', function(assert) {
-    assert.expect(2);
+    assert.expect(3);
 
     assert.equal(
       Adapter._buildUrl('dimensionOne'),
       `${HOST}/v1/dimensions/dimensionOne/values/`,
       '_buildUrl correctly built the URL for the provided dimension when a host is configured'
+    );
+
+    assert.equal(
+      Adapter._buildUrl('dimensionOne', 'search'),
+      `${HOST}/v1/dimensions/dimensionOne/search/`,
+      '_buildUrl correctly built the URL for the provided dimension and `search` path'
     );
 
     let prevDS = config.navi.dataSources;
@@ -109,6 +131,28 @@ module('Unit | Adapter | Dimensions | Bard', function(hooks) {
     );
   });
 
+  test('_buildSearchQuery', function(assert) {
+    assert.expect(3);
+
+    assert.deepEqual(
+      Adapter._buildSearchQuery('dimensionOne', { values: 'v1' }),
+      { query: 'v1' },
+      '_buildSearchQuery correctly built the query object for the provided dimension filters'
+    );
+
+    assert.deepEqual(
+      Adapter._buildSearchQuery('dimensionOne', { values: ['foo', 'bar'] }),
+      { query: 'foo bar' },
+      '_buildSearchQuery correctly built the query object when given an array of values'
+    );
+
+    assert.deepEqual(
+      Adapter._buildSearchQuery('dimensionOne', { values: ['foo,bar'] }),
+      { query: 'foo,bar' },
+      '_buildSearchQuery correctly built the query object when given a value containing a comma'
+    );
+  });
+
   test('all', function(assert) {
     assert.expect(1);
 
@@ -121,7 +165,23 @@ module('Unit | Adapter | Dimensions | Bard', function(hooks) {
     assert.expect(1);
 
     return Adapter.find('dimensionOne', { values: 'v1' }).then(function(result) {
-      return assert.deepEqual(result, Response2, 'Ajax GET returns the response object for Test dimension and filters');
+      return assert.deepEqual(
+        result,
+        Response2,
+        'Ajax GET /values returns the response object for Test dimension and filters'
+      );
+    });
+  });
+
+  test('search', function(assert) {
+    assert.expect(1);
+
+    return Adapter.search('dimensionOne', { values: 'v1' }).then(function(result) {
+      return assert.deepEqual(
+        result,
+        Response2,
+        'Ajax GET /search returns the response object for Test dimension and query'
+      );
     });
   });
 
