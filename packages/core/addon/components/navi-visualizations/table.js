@@ -289,7 +289,7 @@ export default Component.extend({
   /**
    * @property {Object} request
    */
-  request: alias('model.0.request'),
+  request: alias('model.firstObject.request'),
 
   /**
    * @property {String} cellRendererPrefix - prefix for all cell renderer types
