@@ -13,10 +13,6 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
-    await visit('/reports');
-  });
-
   hooks.afterEach(function() {
     teardownModal();
     server.shutdown();
@@ -24,6 +20,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
 
   test('schedule modal save new schedule', async function(assert) {
     assert.expect(11);
+    await visit('/reports');
 
     // Click "Schedule"
     await triggerEvent('.navi-collection__row0', 'mouseover');
@@ -51,7 +48,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
       .dom('.schedule-modal__dropdown--format .ember-power-select-selected-item')
       .hasText('csv', 'Format field is set to the default value when creating a new schedule');
 
-    await typeInInput('.js-ember-tag-input-new', 'navi_user@navi.io');
+    typeInInput('.js-ember-tag-input-new', 'navi_user@navi.io');
     await blur('.js-ember-tag-input-new');
 
     // Set frequency to Day
@@ -88,12 +85,13 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
 
   test('schedule modal save changes to existing schedule', async function(assert) {
     assert.expect(5);
+    await visit('/reports');
 
     // Open an existing schedule
     await triggerEvent('.navi-collection__row2', 'mouseover');
     await click('.navi-collection__row2 .schedule .btn');
 
-    await typeInInput('.js-ember-tag-input-new', 'navi_user@navi.io');
+    typeInInput('.js-ember-tag-input-new', 'navi_user@navi.io');
     await blur('.js-ember-tag-input-new');
 
     // Set frequency to Day
@@ -132,6 +130,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
 
   test('schedule modal delete action', async function(assert) {
     assert.expect(12);
+    await visit('/reports');
 
     // Click "Schedule"
     await triggerEvent('.navi-collection__row2', 'mouseover');
@@ -200,14 +199,15 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
 
   test('schedule modal cancel existing schedule', async function(assert) {
     assert.expect(3);
+    await visit('/reports');
 
     // Click "Schedule"
     await triggerEvent('.navi-collection__row2', 'mouseover');
     await click('.navi-collection__row2 .schedule .btn');
 
-    await typeInInput('.js-ember-tag-input-new', 'navi_user@navi.io');
+    typeInInput('.js-ember-tag-input-new', 'navi_user@navi.io');
     await blur('.js-ember-tag-input-new');
-    await typeInInput('.js-ember-tag-input-new', 'test_user@navi.io');
+    typeInInput('.js-ember-tag-input-new', 'test_user@navi.io');
     await blur('.js-ember-tag-input-new');
 
     // Set frequency to Day
@@ -236,11 +236,12 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
 
   test('schedule modal cancel new schedule', async function(assert) {
     assert.expect(3);
+    await visit('/reports');
 
     await triggerEvent('.navi-collection__row0', 'mouseover');
     await click('.navi-collection__row0 .schedule .btn');
 
-    await typeInInput('.js-ember-tag-input-new', 'navi_user@navi.io');
+    typeInInput('.js-ember-tag-input-new', 'navi_user@navi.io');
     await blur('.js-ember-tag-input-new');
 
     // Set frequency to Day
@@ -287,6 +288,8 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
   test('schedule modal validations', async function(assert) {
     assert.expect(9);
 
+    await visit('/reports');
+
     await triggerEvent('.navi-collection__row0', 'mouseover');
     await click('.navi-collection__row0 .schedule .btn');
 
@@ -309,7 +312,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
       .dom('.schedule-modal__recipients--invalid>.schedule-modal__input--recipients')
       .isVisible('Recipients field is highlighted red when creating a new schedule before attempting to save');
 
-    await typeInInput('.js-ember-tag-input-new', 'test_user');
+    typeInInput('.js-ember-tag-input-new', 'test_user');
     await blur('.js-ember-tag-input-new');
 
     assert
@@ -322,7 +325,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
 
     // Set recipients to a valid value
     await click('.emberTagInput-remove');
-    await typeInInput('.js-ember-tag-input-new', 'navi_user@navi.io ');
+    typeInInput('.js-ember-tag-input-new', 'navi_user@navi.io ');
     await blur('.js-ember-tag-input-new');
 
     assert
@@ -358,6 +361,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
 
     server.get('/deliveryRules/:id', { errors: ['The deliveryRules endpoint is down'] }, 500);
 
+    await visit('/reports');
     await triggerEvent('.navi-collection__row2', 'mouseover');
     await click('.navi-collection__row2 .schedule .btn');
 
@@ -419,11 +423,12 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
         }
       );
     });
+    await visit('/reports');
     await triggerEvent('.navi-collection__row0', 'mouseover');
 
     await click('.navi-collection__row0 .schedule .btn');
 
-    await typeInInput('.js-ember-tag-input-new', 'navi_user@navi.io');
+    typeInInput('.js-ember-tag-input-new', 'navi_user@navi.io');
     await blur('.js-ember-tag-input-new');
 
     //Save the schedule
@@ -459,8 +464,8 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
  * @param {String} selector
  * @param {String} text
  */
-async function typeInInput(selector, text) {
-  let element = await find(selector);
+function typeInInput(selector, text) {
+  let element = find(selector);
   if (element) {
     element.value = text;
   }

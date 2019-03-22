@@ -9,7 +9,7 @@ import { Promise } from 'rsvp';
 /**
  * Helper to wait for element to be loaded
  *
- * @param {Object} selector - element selector
+ * @param {String} selector - element selector
  * @param {Number} [timeout] - wait timeout in milliseconds
  * @returns {Promise} - Promise that will resolve when element is found, or reject if timed-out
  */

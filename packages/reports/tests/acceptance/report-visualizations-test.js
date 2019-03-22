@@ -33,7 +33,7 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
         .find(elm => elm.innerText.includes('Property'))
         .querySelector('.checkbox-selector__filter')
     );
-    await selectChoose('.filter-values--dimension-select', '.ember-power-select-option', 0);
+    await selectChoose('.filter-values--dimension-select__trigger', '.ember-power-select-option', 0);
     await click('.navi-report__run-btn');
 
     assert.deepEqual(
