@@ -1,18 +1,20 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
-moduleForComponent('filter-values/null-input', 'Integration | Component | filter values/null input', {
-  integration: true
-});
+module('Integration | Component | filter values/null input', function(hooks) {
+  setupRenderingTest(hooks);
 
-test('changing values', function(assert) {
-  assert.expect(1);
+  test('changing values', async function(assert) {
+    assert.expect(1);
 
-  this.onUpdateFilter = changeSet => {
-    assert.deepEqual(changeSet.values, ['""'], 'When rendering the component, "" is set as the filter value');
-  };
+    this.onUpdateFilter = changeSet => {
+      assert.deepEqual(changeSet.values, ['""'], 'When rendering the component, "" is set as the filter value');
+    };
 
-  this.render(hbs`{{filter-values/null-input onUpdateFilter=(action onUpdateFilter)}}`);
+    await render(hbs`{{filter-values/null-input onUpdateFilter=(action onUpdateFilter)}}`);
 
-  // Assert handled in action
+    // Assert handled in action
+  });
 });

@@ -2,17 +2,18 @@
  * Copyright 2017, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import ActionConsumer from 'navi-core/consumers/action-consumer';
-import Ember from 'ember';
-import { RequestActions } from 'navi-reports/services/request-action-dispatcher';
+import { inject as service } from '@ember/service';
 
-const { inject, get, set } = Ember;
+import { A } from '@ember/array';
+import { set, get } from '@ember/object';
+import ActionConsumer from 'navi-core/consumers/action-consumer';
+import { RequestActions } from 'navi-reports/services/request-action-dispatcher';
 
 export default ActionConsumer.extend({
   /**
    * @property {Ember.Service} requestActionDispatcher
    */
-  requestActionDispatcher: inject.service(),
+  requestActionDispatcher: service(),
 
   actions: {
     /**
@@ -32,8 +33,7 @@ export default ActionConsumer.extend({
        * Since timeGrain is tied to logicalTable, send a timeGrain update
        * and try to find a new time grain with the same name as the previous
        */
-      let newTimeGrain =
-        Ember.A(get(table, 'timeGrains')).findBy('name', oldTimeGrain.name) || get(table, 'timeGrains.0');
+      let newTimeGrain = A(get(table, 'timeGrains')).findBy('name', oldTimeGrain.name) || get(table, 'timeGrains.0');
       get(this, 'requestActionDispatcher').dispatch(RequestActions.ADD_TIME_GRAIN, route, newTimeGrain);
     }
   }

@@ -8,6 +8,8 @@
  *       onDetailsToggle=(action 'resizeVisualization')
  *   }}
  */
+import { notEmpty } from '@ember/object/computed';
+
 import Component from '@ember/component';
 import { computed, get } from '@ember/object';
 import Moment from 'moment';
@@ -53,5 +55,5 @@ export default Component.extend({
   /**
    * @property {Boolean} warningEnabled - Shows the warning if missing intervals are present
    */
-  warningEnabled: computed.notEmpty('missingIntervals')
+  warningEnabled: notEmpty('missingIntervals')
 });

@@ -9,12 +9,13 @@
  *  }}
  */
 
-import Ember from 'ember';
+import Component from '@ember/component';
+
+import { get, computed } from '@ember/object';
+import { getOwner } from '@ember/application';
 import layout from '../templates/components/report-visualization';
 
-const { computed, get, getOwner } = Ember;
-
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   /**

@@ -10,6 +10,8 @@
  *      onCancel= (action cancel) - {String} name of action to trigger on cancel
  *   }}
  */
+import { not } from '@ember/object/computed';
+
 import Component from '@ember/component';
 import { get, set, computed } from '@ember/object';
 import { A as arr } from '@ember/array';
@@ -71,7 +73,7 @@ export default Component.extend({
    * @private
    * @property {Boolean} _disableButton - if true button is disabled else not
    */
-  _disableButton: computed.not('_loadingPromise.isSettled'),
+  _disableButton: not('_loadingPromise.isSettled'),
 
   /**
    * @private

@@ -8,8 +8,10 @@
  *       onUpdateFilter=(action 'update')
  *   }}
  */
+
+import { oneWay } from '@ember/object/computed';
 import Component from '@ember/component';
-import { computed, get } from '@ember/object';
+import { get } from '@ember/object';
 import layout from '../../templates/components/filter-values/dimension-date-range';
 import Moment from 'moment';
 
@@ -24,12 +26,12 @@ export default Component.extend({
   /**
    * @property {String} startDate - date (YYYY-MM-DD) of beginning of interval
    */
-  startDate: computed.oneWay('filter.values.firstObject'),
+  startDate: oneWay('filter.values.firstObject'),
 
   /**
    * @property {String} endDate - date (YYYY-MM-DD) of end of interval
    */
-  endDate: computed.oneWay('filter.values.lastObject'),
+  endDate: oneWay('filter.values.lastObject'),
 
   /**
    * @property {String} lowPlaceholder

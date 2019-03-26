@@ -8,12 +8,12 @@
 
 /* global requirejs */
 
-import Ember from 'ember';
+import Service from '@ember/service';
+
+import { getOwner } from '@ember/application';
 import config from 'ember-get-config';
 
-const { getOwner } = Ember;
-
-export default Ember.Service.extend({
+export default Service.extend({
   /**
    * @method defaultVisualization
    * @param request

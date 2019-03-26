@@ -1,4 +1,6 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 const Request = {
@@ -22,75 +24,75 @@ const Request = {
   }
 };
 
-moduleForComponent('report-visualization', 'Integration | Component | report visualization', {
-  integration: true
-});
+module('Integration | Component | report visualization', function(hooks) {
+  setupRenderingTest(hooks);
 
-test('it renders the specified visualization', function(assert) {
-  assert.expect(2);
+  test('it renders the specified visualization', async function(assert) {
+    assert.expect(2);
 
-  this.set('report', {
-    request: Request,
-    visualization: { type: 'table' }
+    this.set('report', {
+      request: Request,
+      visualization: { type: 'table' }
+    });
+
+    await render(hbs`
+      {{report-visualization
+        report=report
+        print=false
+      }}
+    `);
+
+    assert.ok(!!findAll('.table-widget').length, 'report-visualization renders the correct visualization');
+
+    assert.notOk(
+      !!findAll('.table-widget--print').length,
+      'report-visualization renders the correct screen visualization'
+    );
   });
 
-  this.render(hbs`
-    {{report-visualization
-      report=report
-      print=false
-    }}
-  `);
+  test('it renders the specified print visualization', async function(assert) {
+    assert.expect(1);
 
-  assert.ok(!!this.$('.table-widget').length, 'report-visualization renders the correct visualization');
+    this.set('report', {
+      request: Request,
+      visualization: { type: 'table' }
+    });
 
-  assert.notOk(
-    !!this.$('.table-widget--print').length,
-    'report-visualization renders the correct screen visualization'
-  );
-});
+    await render(hbs`
+      {{report-visualization
+        report=report
+        print=true
+      }}
+    `);
 
-test('it renders the specified print visualization', function(assert) {
-  assert.expect(1);
-
-  this.set('report', {
-    request: Request,
-    visualization: { type: 'table' }
+    assert.ok(!!findAll('.table-widget--print').length, 'report-visualization renders the correct print visualization');
   });
 
-  this.render(hbs`
-    {{report-visualization
-      report=report
-      print=true
-    }}
-  `);
+  test('it renders the specified fallback print visualization', async function(assert) {
+    assert.expect(2);
 
-  assert.ok(!!this.$('.table-widget--print').length, 'report-visualization renders the correct print visualization');
-});
+    this.set('report', {
+      request: Request,
+      visualization: { type: 'line-chart' }
+    });
+    this.set('response', { rows: [] });
 
-test('it renders the specified fallback print visualization', function(assert) {
-  assert.expect(2);
+    await render(hbs`
+      {{report-visualization
+        report=report
+        response=response
+        print=true
+      }}
+    `);
 
-  this.set('report', {
-    request: Request,
-    visualization: { type: 'line-chart' }
+    assert.ok(
+      !!findAll('.line-chart-widget').length,
+      'report-visualization falls back to non print visualization when print version is not available'
+    );
+
+    assert.notOk(
+      !!findAll('.line-chart-widget--print').length,
+      'report-visualization falls back to non print visualization when print version is not available'
+    );
   });
-  this.set('response', { rows: [] });
-
-  this.render(hbs`
-    {{report-visualization
-      report=report
-      response=response
-      print=true
-    }}
-  `);
-
-  assert.ok(
-    !!this.$('.line-chart-widget').length,
-    'report-visualization falls back to non print visualization when print version is not available'
-  );
-
-  assert.notOk(
-    !!this.$('.line-chart-widget--print').length,
-    'report-visualization falls back to non print visualization when print version is not available'
-  );
 });

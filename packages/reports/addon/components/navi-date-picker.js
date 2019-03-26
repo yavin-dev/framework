@@ -9,13 +9,14 @@
  *      onUpdate=(action handleUpdate)
  *   }}
  */
-import Ember from 'ember';
+import { scheduleOnce, next } from '@ember/runloop';
+
+import Component from '@ember/component';
+import { set, get, computed } from '@ember/object';
 import layout from '../templates/components/navi-date-picker';
 import $ from 'jquery';
 import moment from 'moment';
 import { getFirstDayEpochIsoDateTimePeriod, getIsoDateTimePeriod } from 'navi-core/utils/date';
-
-const { computed, get, set } = Ember;
 
 /**
  * @constant {String} DATE_FORMAT - date string format used internally
@@ -34,7 +35,7 @@ const VIEW_MODE_FROM_PERIOD = {
   year: 2
 };
 
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   classNames: ['navi-date-picker'],
@@ -102,7 +103,7 @@ export default Ember.Component.extend({
     set(this, '_lastTimeDate', selectedDate);
 
     // Make sure selection is highlighted
-    Ember.run.scheduleOnce('afterRender', this, this._highlightSelection);
+    scheduleOnce('afterRender', this, this._highlightSelection);
   },
 
   /**
@@ -117,7 +118,7 @@ export default Ember.Component.extend({
    * @param {Number} newViewMode - view mode to set as min view mode and current view mode
    */
   _updateViewMode(newViewMode) {
-    Ember.run.scheduleOnce('afterRender', () => {
+    scheduleOnce('afterRender', () => {
       // Change `minViewMode` option after initial creation
       get(this, '_datePickerReference')
         .data('datepicker')
@@ -155,7 +156,7 @@ export default Ember.Component.extend({
 
     if (get(this, 'dateTimePeriod') === 'quarter') {
       //Add active-month class in next tick, since months will be re-rendered
-      Ember.run.next(() => {
+      next(() => {
         let months = this.$('.month'),
           activeIndex = months.index(this.$('.month.active')),
           quarter = Math.ceil((activeIndex + 1) / 3);

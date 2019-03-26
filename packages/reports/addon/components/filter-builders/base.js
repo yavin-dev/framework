@@ -4,14 +4,15 @@
  *
  * Base class for filter builders.
  */
-import Ember from 'ember';
+
+import { assign } from '@ember/polyfills';
+import Component from '@ember/component';
+import { get, computed } from '@ember/object';
 import layout from 'navi-reports/templates/components/filter-builders/base';
 import { readOnly } from '@ember/object/computed';
 import { assign } from '@ember/polyfills';
 
-const { get } = Ember;
-
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   /**
@@ -38,7 +39,9 @@ export default Ember.Component.extend({
   /**
    * @property {Array} supportedOperators - list of valid values for filter.operator
    */
-  supportedOperators: [],
+  supportedOperators: computed(function() {
+    return [];
+  }),
 
   actions: {
     /**

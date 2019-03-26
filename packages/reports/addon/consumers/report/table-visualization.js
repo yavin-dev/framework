@@ -2,15 +2,16 @@
  * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import Ember from 'ember';
+import { assert } from '@ember/debug';
+
+import { assign } from '@ember/polyfills';
+import { set, get } from '@ember/object';
 import isEqual from 'lodash/isEqual';
 import ActionConsumer from 'navi-core/consumers/action-consumer';
 import { UpdateReportActions } from 'navi-reports/services/update-report-action-dispatcher';
 import keyBy from 'lodash/keyBy';
 import omit from 'lodash/omit';
 import { canonicalizeColumnAttributes } from 'navi-data/utils/metric';
-
-const { assign, get, set } = Ember;
 
 export default ActionConsumer.extend({
   actions: {
@@ -20,7 +21,7 @@ export default ActionConsumer.extend({
      * @param {Object} newColumnOrder - new column order to replace old
      */
     [UpdateReportActions.UPDATE_TABLE_COLUMN_ORDER]({ currentModel: report }, newColumnOrder) {
-      Ember.assert('Visualization must be a table', get(report, 'visualization.type') === 'table');
+      assert('Visualization must be a table', get(report, 'visualization.type') === 'table');
       let visualizationMetadata = get(report, 'visualization.metadata'),
         metrics = get(report, 'request.metrics'),
         metricIndex = keyBy(metrics.toArray(), metric => get(metric, 'canonicalName')),
@@ -39,7 +40,7 @@ export default ActionConsumer.extend({
      * @param {Object} updatedColumn - updated column object
      */
     [UpdateReportActions.UPDATE_TABLE_COLUMN]({ currentModel: report }, updatedColumn) {
-      Ember.assert('Visualization must be a table', get(report, 'visualization.type') === 'table');
+      assert('Visualization must be a table', get(report, 'visualization.type') === 'table');
       let visualizationMetadata = get(report, 'visualization.metadata'),
         newColumns = get(visualizationMetadata, 'columns').map(col => {
           let propsToOmit = ['format'];

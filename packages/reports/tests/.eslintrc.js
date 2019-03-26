@@ -6,7 +6,6 @@ module.exports = {
     $: true,
     selectChoose: true,
     selectSearch: true,
-    clickDropdown: true,
     visitWithoutWait: true,
     waitForElement: true,
     server: true,

@@ -4,13 +4,13 @@
  *
  * An ember-power-select trigger component that can import a list of comma separated values on paste
  */
+import { A } from '@ember/array';
+
+import { setProperties, set, get } from '@ember/object';
 import Trigger from 'ember-power-select/components/power-select-multiple/trigger';
-import Ember from 'ember';
 import layout from '../templates/components/power-select-bulk-import-trigger';
 
 const BULK_IMPORT_DELIMETER = ',';
-
-const { get, set, setProperties } = Ember;
 
 export default Trigger.extend({
   layout,
@@ -43,7 +43,7 @@ export default Trigger.extend({
      */
     importValues(values) {
       let oldSelection = get(this, 'select.selected'),
-        newSelection = Ember.A([...oldSelection, ...values]).uniq();
+        newSelection = A([...oldSelection, ...values]).uniq();
 
       get(this, 'select.actions').select(newSelection);
     },

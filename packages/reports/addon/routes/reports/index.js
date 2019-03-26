@@ -3,10 +3,13 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import Ember from 'ember';
-import DS from 'ember-data';
+import { inject as service } from '@ember/service';
 
-const { computed, get } = Ember;
+import Route from '@ember/routing/route';
+import { A } from '@ember/array';
+import { hash } from 'rsvp';
+import EmberObject, { get, computed } from '@ember/object';
+import DS from 'ember-data';
 
 /**
  * Object that computes a combined report list
@@ -14,17 +17,17 @@ const { computed, get } = Ember;
  * @extends Ember.Object
  * @private
  */
-const _ReportObject = Ember.Object.extend({
+const _ReportObject = EmberObject.extend({
   /**
    * @property {DS.PromiseArray} - Returns a combined report list while listening to store changes
    */
   reports: computed('userReports.[]', 'favoriteReports.[]', function() {
     return DS.PromiseArray.create({
-      promise: Ember.RSVP.hash({
+      promise: hash({
         userReports: get(this, 'userReports'),
         favoriteReports: get(this, 'favoriteReports')
       }).then(({ userReports, favoriteReports }) => {
-        return Ember.A()
+        return A()
           .pushObjects(userReports.toArray())
           .pushObjects(favoriteReports.toArray())
           .uniq();
@@ -33,16 +36,16 @@ const _ReportObject = Ember.Object.extend({
   })
 });
 
-export default Ember.Route.extend({
+export default Route.extend({
   /**
    * @property {Service} naviNotifications
    */
-  naviNotifications: Ember.inject.service(),
+  naviNotifications: service(),
 
   /**
    * @property {Service} user
    */
-  user: Ember.inject.service(),
+  user: service(),
 
   /**
    * Sets the model for this route

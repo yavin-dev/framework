@@ -31,15 +31,18 @@
  *      }
  *   }
  */
-import Ember from 'ember';
+import { A } from '@ember/array';
+
+import Component from '@ember/component';
+import { set, get, computed } from '@ember/object';
+import { run } from '@ember/runloop';
 import layout from '../templates/components/paginated-scroll-list';
 
-const { computed, get, set, run } = Ember,
-  DEFAULT_ITEMS_TO_RENDER = 20,
+const DEFAULT_ITEMS_TO_RENDER = 20,
   DEFAULT_PER_PAGE = 250,
   DEFAULT_SCROLL_PADDING = 250;
 
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   /**
@@ -107,7 +110,7 @@ export default Ember.Component.extend({
    * @property {Array} _itemsToRender - items to render
    */
   _itemsToRender: computed('items.[]', '_perPage', function() {
-    return Ember.A(get(this, 'items').slice(0, get(this, '_perPage')));
+    return A(get(this, 'items').slice(0, get(this, '_perPage')));
   }),
 
   /**
@@ -212,7 +215,7 @@ export default Ember.Component.extend({
       endIndex = startIndex + perPage,
       recordsToAppend = get(this, 'items').slice(startIndex, endIndex);
 
-    Ember.A(get(this, '_itemsToRender')).pushObjects(recordsToAppend);
+    A(get(this, '_itemsToRender')).pushObjects(recordsToAppend);
   },
 
   actions: {

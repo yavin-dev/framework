@@ -8,10 +8,10 @@
  *       onUpdateFilter=(action 'update')
  *   }}
  */
-import Ember from 'ember';
+import Component from '@ember/component';
 import layout from '../../templates/components/filter-values/value-input';
 
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   /**

@@ -11,12 +11,13 @@
  *      Inner template
  *   {{/common-actions/get-api}}
  */
-import Ember from 'ember';
+import { inject as service } from '@ember/service';
+
+import Component from '@ember/component';
+import { set, get, computed } from '@ember/object';
 import layout from '../../templates/components/common-actions/get-api';
 
-const { get, set } = Ember;
-
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   classNames: ['get-api'],
@@ -24,12 +25,12 @@ export default Ember.Component.extend({
   /**
    * @property {Service} facts - instance of bard facts service
    */
-  facts: Ember.inject.service('bard-facts'),
+  facts: service('bard-facts'),
 
   /**
    * @property {String} requestUrl - API link
    */
-  requestUrl: Ember.computed('request', 'showModal', function() {
+  requestUrl: computed('request', 'showModal', function() {
     // Observe 'showModal' to recompute each time the modal opens
     let request = get(this, 'request').serialize();
     return get(this, 'facts').getURL(request);

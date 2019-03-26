@@ -2,15 +2,16 @@
  * Copyright 2017, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import Ember from 'ember';
+import { inject as service } from '@ember/service';
 
-const { get, set, setProperties } = Ember;
+import Route from '@ember/routing/route';
+import { setProperties, set, get } from '@ember/object';
 
-export default Ember.Route.extend({
+export default Route.extend({
   /**
    * @property {Service} user
    */
-  user: Ember.inject.service(),
+  user: service(),
 
   /**
    * @method model

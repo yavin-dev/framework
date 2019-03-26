@@ -46,7 +46,7 @@ module.exports = {
       EOL;
 
     routeInfo +=
-      "\tthis.route('reportCollections', function() {" +
+      "\tthis.route('report-collections', function() {" +
       EOL +
       "\
         this.route('collection', {path: '/:collection_id'})" +

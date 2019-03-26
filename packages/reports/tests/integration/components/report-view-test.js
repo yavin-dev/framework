@@ -1,11 +1,12 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { A } from '@ember/array';
+import { helper as buildHelper } from '@ember/component/helper';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render, settled } from '@ember/test-helpers';
+import $ from 'jquery';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
-import Ember from 'ember';
-import wait from 'ember-test-helpers/wait';
 import hbs from 'htmlbars-inline-precompile';
 import Interval from 'navi-core/utils/classes/interval';
-
-const { getOwner } = Ember;
 
 const RESPONSE = {
   rows: [
@@ -48,15 +49,15 @@ const RESPONSE = {
   ]
 };
 
-moduleForComponent('report-view', 'Integration | Component | report view', {
-  integration: true,
+module('Integration | Component | report view', function(hooks) {
+  setupRenderingTest(hooks);
 
-  async beforeEach() {
+  hooks.beforeEach(function() {
     setupMock();
 
-    this.register(
+    this.owner.register(
       'helper:route-action',
-      Ember.Helper.helper(() => {
+      buildHelper(() => {
         return () => {};
       }),
       {
@@ -64,10 +65,10 @@ moduleForComponent('report-view', 'Integration | Component | report view', {
       }
     );
 
-    let metadataService = getOwner(this).lookup('service:bard-metadata'),
-      store = getOwner(this).lookup('service:store');
+    let metadataService = this.owner.lookup('service:bard-metadata'),
+      store = this.owner.lookup('service:store');
 
-    await metadataService.loadMetadata().then(() => {
+    metadataService.loadMetadata().then(() => {
       this.set('response', RESPONSE);
 
       //set report object
@@ -80,7 +81,7 @@ moduleForComponent('report-view', 'Integration | Component | report view', {
               timeGrainName: 'day'
             }),
             responseFormat: 'csv',
-            intervals: Ember.A([{ interval: new Interval('current', 'next') }])
+            intervals: A([{ interval: new Interval('current', 'next') }])
           }),
           visualization: {
             type: 'line-chart',
@@ -107,122 +108,118 @@ moduleForComponent('report-view', 'Integration | Component | report view', {
         })
       );
     });
-  },
+  });
 
-  afterEach() {
+  hooks.afterEach(function() {
     teardownMock();
-  }
-});
-
-test('metric label visualization selector is available on single metric, single time bucket, no dimensions', function(assert) {
-  assert.expect(2);
-
-  return wait().then(() => {
-    this.set('report.request', {
-      logicalTable: {
-        table: 'network',
-        timeGrain: { name: 'day' }
-      },
-      metrics: [{ metric: 'adClicks' }],
-      dimensions: [],
-      filters: [],
-      sort: [
-        {
-          metric: 'navClicks',
-          direction: 'asc'
-        }
-      ],
-      intervals: Ember.A([{ interval: new Interval('current', 'next') }]),
-      bardVersion: 'v1',
-      requestVersion: 'v1'
-    });
-
-    this.render(hbs`
-            {{report-view
-                report=report
-                response=response
-            }}
-        `);
-
-    assert.ok(this.$('.visualization-toggle__option:contains(Data Table)').is(':visible'), 'Table Selector is visible');
-
-    assert.ok(
-      this.$('.visualization-toggle__option:contains(Metric Label)').is(':visible'),
-      'Metric Label Selector is visible'
-    );
   });
-});
 
-test('visualization is chosen based on report', function(assert) {
-  assert.expect(3);
+  test('metric label visualization selector is available on single metric, single time bucket, no dimensions', function(assert) {
+    assert.expect(2);
 
-  return wait().then(() => {
-    this.render(hbs`
-            {{report-view
-                report=report
-                response=response
-            }}
-        `);
-
-    assert.ok(
-      this.$('.line-chart-widget').is(':visible'),
-      'Visualization is rendered based on the report visualization type'
-    );
-
-    this.set('report.visualization', {
-      type: 'table',
-      version: 1,
-      metadata: {
-        columns: [
+    return settled().then(async () => {
+      this.set('report.request', {
+        logicalTable: {
+          table: 'network',
+          timeGrain: { name: 'day' }
+        },
+        metrics: [{ metric: 'adClicks' }],
+        dimensions: [],
+        filters: [],
+        sort: [
           {
-            attributes: { name: 'dateTime' },
-            type: 'dateTime',
-            displayName: 'Date'
-          },
-          {
-            attributes: { name: 'adClicks' },
-            type: 'metric',
-            displayName: 'Ad Clicks'
+            metric: 'navClicks',
+            direction: 'asc'
           }
-        ]
-      }
-    });
+        ],
+        intervals: A([{ interval: new Interval('current', 'next') }]),
+        bardVersion: 'v1',
+        requestVersion: 'v1'
+      });
 
-    assert.ok(this.$('.table-widget').is(':visible'), 'Rendered visualization updates with report');
+      await render(hbs`
+              {{report-view
+                  report=report
+                  response=response
+              }}
+          `);
 
-    assert.notOk(this.$('.line-chart-widget').is(':visible'), 'Old visualization is removed');
-  });
-});
+      assert.ok($('.visualization-toggle__option:contains(Data Table)').is(':visible'), 'Table Selector is visible');
 
-test('no data', function(assert) {
-  assert.expect(1);
-  return wait().then(() => {
-    this.set('response', {
-      rows: [],
-      meta: {
-        pagination: {
-          currentPage: 1,
-          rowsPerPage: 10000,
-          numberOfResults: 0
-        }
-      }
-    });
-
-    return wait().then(() => {
-      this.render(hbs`
-            {{report-view
-                report=report
-                response=response
-            }}
-        `);
-
-      assert.equal(
-        this.$('.report-view__visualization-no-results')
-          .text()
-          .trim(),
-        'No results available.',
-        'A message is displayed when the response has no data'
+      assert.ok(
+        $('.visualization-toggle__option:contains(Metric Label)').is(':visible'),
+        'Metric Label Selector is visible'
       );
+    });
+  });
+
+  test('visualization is chosen based on report', function(assert) {
+    assert.expect(3);
+
+    return settled().then(async () => {
+      await render(hbs`
+              {{report-view
+                  report=report
+                  response=response
+              }}
+          `);
+
+      assert.ok(
+        $('.line-chart-widget').is(':visible'),
+        'Visualization is rendered based on the report visualization type'
+      );
+
+      this.set('report.visualization', {
+        type: 'table',
+        version: 1,
+        metadata: {
+          columns: [
+            {
+              attributes: { name: 'dateTime' },
+              type: 'dateTime',
+              displayName: 'Date'
+            },
+            {
+              attributes: { name: 'adClicks' },
+              type: 'metric',
+              displayName: 'Ad Clicks'
+            }
+          ]
+        }
+      });
+
+      assert.ok($('.table-widget').is(':visible'), 'Rendered visualization updates with report');
+
+      assert.notOk($('.line-chart-widget').is(':visible'), 'Old visualization is removed');
+    });
+  });
+
+  test('no data', function(assert) {
+    assert.expect(1);
+    return settled().then(() => {
+      this.set('response', {
+        rows: [],
+        meta: {
+          pagination: {
+            currentPage: 1,
+            rowsPerPage: 10000,
+            numberOfResults: 0
+          }
+        }
+      });
+
+      return settled().then(async () => {
+        await render(hbs`
+              {{report-view
+                  report=report
+                  response=response
+              }}
+          `);
+
+        assert
+          .dom('.report-view__visualization-no-results')
+          .hasText('No results available.', 'A message is displayed when the response has no data');
+      });
     });
   });
 });

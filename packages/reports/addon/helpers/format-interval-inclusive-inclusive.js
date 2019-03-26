@@ -2,7 +2,10 @@
  * Copyright 2017, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import Ember from 'ember';
+import { helper as buildHelper } from '@ember/component/helper';
+
+import { assert } from '@ember/debug';
+import { capitalize } from '@ember/string';
 import Duration from 'navi-core/utils/classes/duration';
 import DateUtils from 'navi-core/utils/date';
 
@@ -22,7 +25,7 @@ export function formatInterval([interval, timePeriod]) {
 
   // to Date detection
   if (interval._end === 'next' && interval._start === 'current') {
-    return `Current ${Ember.String.capitalize(timePeriod)}`;
+    return `Current ${capitalize(timePeriod)}`;
   }
 
   // Format 'duration/current' intervals based on duration
@@ -64,18 +67,18 @@ export function formatDurationFromCurrent(duration, timePeriod) {
     durationUnit = duration.getUnit();
 
   if (timePeriod === 'quarter') {
-    Ember.assert('Formatting a quarter with a duration must be in terms on months', durationUnit === 'month');
+    assert('Formatting a quarter with a duration must be in terms on months', durationUnit === 'month');
     durationValue = durationValue / 3;
     durationUnit = 'quarter';
   }
 
   // Singular
   if (durationValue === 1) {
-    return `Last ${Ember.String.capitalize(durationUnit)}`;
+    return `Last ${capitalize(durationUnit)}`;
   }
 
   // Standard case
-  return `Last ${durationValue} ${Ember.String.capitalize(durationUnit)}s`;
+  return `Last ${durationValue} ${capitalize(durationUnit)}s`;
 }
 
 /**
@@ -88,7 +91,7 @@ export function formatDurationFromCurrent(duration, timePeriod) {
  * @returns {String} formatted string
  */
 export function formatDateRange(start, end, timePeriod) {
-  Ember.assert('Start & End dates and time period  must be defined', start && end && timePeriod);
+  assert('Start & End dates and time period  must be defined', start && end && timePeriod);
 
   let formats = {
     month: 'MMM YYYY',
@@ -107,4 +110,4 @@ export function formatDateRange(start, end, timePeriod) {
   return `${startString} - ${endString}`;
 }
 
-export default Ember.Helper.helper(formatInterval);
+export default buildHelper(formatInterval);

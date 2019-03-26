@@ -7,7 +7,6 @@
  *       requestFragment=request.filters.firstObject
  *   }}
  */
-import Ember from 'ember';
 import Base from './base';
 import { computed, get } from '@ember/object';
 import { readOnly } from '@ember/object/computed';
@@ -80,7 +79,7 @@ export default Base.extend({
   filter: computed('requestFragment.{operator,dimension,rawValues.[],field}', function() {
     let dimensionFragment = get(this, 'requestFragment'),
       operatorId = get(dimensionFragment, 'operator'),
-      operator = Ember.A(get(this, 'supportedOperators')).findBy('id', operatorId);
+      operator = A(get(this, 'supportedOperators')).findBy('id', operatorId);
 
     return {
       subject: get(dimensionFragment, 'dimension'),

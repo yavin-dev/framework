@@ -2,10 +2,9 @@
  * Copyright 2017, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import Ember from 'ember';
-import ReportNewRoute from 'navi-reports/routes/reports/new';
+import { get } from '@ember/object';
 
-const { get } = Ember;
+import ReportNewRoute from 'navi-reports/routes/reports/new';
 
 export default ReportNewRoute.extend({
   /**

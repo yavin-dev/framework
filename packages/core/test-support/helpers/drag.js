@@ -1,6 +1,6 @@
-import { find, settled, triggerEvent } from '@ember/test-helpers';
+import { settled, triggerEvent } from '@ember/test-helpers';
 
-export default async function drag(mode, itemSelector, offsetFn, callbacks = {}) {
+export default async function drag(mode, itemElement, offsetFn, callbacks = {}) {
   let start, move, end, which;
 
   if (mode === 'mouse') {
@@ -18,7 +18,6 @@ export default async function drag(mode, itemSelector, offsetFn, callbacks = {})
 
   await settled();
 
-  let itemElement = find(itemSelector);
   let offset = offsetFn();
   let rect = itemElement.getBoundingClientRect();
   /**
