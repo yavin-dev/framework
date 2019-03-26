@@ -4,7 +4,7 @@ import { find, click, findAll, blur, visit, triggerEvent } from '@ember/test-hel
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { teardownModal } from '../helpers/teardown-modal';
-import findByContains from '../helpers/contains-helpers';
+import { findContains } from '../helpers/contains-helpers';
 import Mirage from 'ember-cli-mirage';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import Ember from 'ember';
@@ -53,7 +53,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
 
     // Set frequency to Day
     await click('.schedule-modal__dropdown--frequency .ember-power-select-trigger');
-    await click(findByContains('.ember-power-select-option', 'Day'));
+    await click(findContains('.ember-power-select-option:contains(Day)'));
 
     //Save the schedule
     await click('.schedule-modal__save-btn');
@@ -96,7 +96,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
 
     // Set frequency to Day
     await click('.schedule-modal__dropdown--frequency .ember-power-select-trigger');
-    await click(findByContains('.ember-power-select-option', 'Day'));
+    await click(findContains('.ember-power-select-option:contains(Day)'));
 
     //Save the schedule
     await click('.schedule-modal__save-btn');
@@ -212,7 +212,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
 
     // Set frequency to Day
     await click('.schedule-modal__dropdown--frequency .ember-power-select-trigger');
-    await click(findByContains('.ember-power-select-option', 'Day'));
+    await click(findContains('.ember-power-select-option:contains(Day)'));
 
     //Cancel changes to the schedule
     await click('.schedule-modal__cancel-btn');
@@ -246,7 +246,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
 
     // Set frequency to Day
     await click('.schedule-modal__dropdown--frequency .ember-power-select-trigger');
-    await click(findByContains('.ember-power-select-option', 'Day'));
+    await click(findContains('.ember-power-select-option:contains(Day)'));
 
     //Cancel changes to the schedule
     await click('.schedule-modal__cancel-btn');

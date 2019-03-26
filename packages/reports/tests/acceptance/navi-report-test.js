@@ -1,10 +1,21 @@
 import Component from '@ember/component';
 import { get } from '@ember/object';
 import Ember from 'ember';
-import { module, test, skip } from 'qunit';
-import { click, fillIn, visit, currentURL, find, findAll, blur, triggerEvent, waitFor } from '@ember/test-helpers';
+import { module, test } from 'qunit';
+import {
+  click,
+  fillIn,
+  visit,
+  currentURL,
+  find,
+  findAll,
+  blur,
+  triggerEvent,
+  waitFor,
+  settled
+} from '@ember/test-helpers';
 import { teardownModal } from '../helpers/teardown-modal';
-import findByContains from '../helpers/contains-helpers';
+import { findContains } from '../helpers/contains-helpers';
 import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 import { selectChoose, selectSearch } from 'ember-power-select/test-support/helpers';
 import { setupApplicationTest } from 'ember-qunit';
@@ -43,12 +54,12 @@ module('Acceptance | Navi Report', function(hooks) {
     config.navi.FEATURES.enableVerticalCollectionTableIterator = false;
   });
 
-  test('validation errors', async function(assert) {
+  test('validation errors abcdef', async function(assert) {
     assert.expect(3);
 
     // Make an invalid change and run report
     await visit('/reports/1');
-    await click(findByContains('.grouped-list__item', 'Operating System').querySelector('.checkbox-selector__filter'));
+    await click(findContains('.grouped-list__item:contains(Operating System) .checkbox-selector__filter'));
     await click('.navi-report__run-btn');
 
     assert.equal(currentURL(), '/reports/1/invalid', 'User is transitioned to invalid route');
@@ -78,8 +89,8 @@ module('Acceptance | Navi Report', function(hooks) {
 
     await visit('/reports/1');
     // Add a metric filter
-    await click(findByContains('.grouped-list__item', 'Operating System').querySelector('.checkbox-selector__filter'));
-    await click(findByContains('.navi-report__action-link', 'Clone'));
+    await click(findContains('.grouped-list__item:contains(Operating System) .checkbox-selector__filter'));
+    await click(findContains('.navi-report__action-link:contains(Clone)'));
 
     assert.ok(currentURL().endsWith('edit'), 'An invalid new report transitions to the reports/:id/edit route');
   });
@@ -102,9 +113,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     /* == Fix errors == */
     await click(
-      findByContains('.checkbox-selector--metric .grouped-list__item', 'Ad Clicks').querySelector(
-        '.grouped-list__item-label'
-      )
+      findContains('.checkbox-selector--metric .grouped-list__item:contains(Ad Clicks) .grouped-list__item-label')
     );
     await click('.navi-report__run-btn');
 
@@ -124,9 +133,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     await visit('/reports/new');
     await click(
-      findByContains('.checkbox-selector--metric .grouped-list__item', 'Ad Clicks').querySelector(
-        '.grouped-list__item-label'
-      )
+      findContains('.checkbox-selector--metric .grouped-list__item:contains(Ad Clicks) .grouped-list__item-label')
     );
     await click('.navi-report__copy-api-btn .get-api__btn');
 
@@ -135,8 +142,8 @@ module('Acceptance | Navi Report', function(hooks) {
     /* == Add some more metrics and check that copy modal updates == */
     await click('.navi-modal__close');
     await click(
-      findByContains('.checkbox-selector--metric .grouped-list__item', 'Additive Page Views').querySelector(
-        '.grouped-list__item-label'
+      findContains(
+        '.checkbox-selector--metric .grouped-list__item:contains(Additive Page Views) .grouped-list__item-label'
       )
     );
     await click('.navi-report__copy-api-btn .get-api__btn');
@@ -156,21 +163,19 @@ module('Acceptance | Navi Report', function(hooks) {
     assert
       .dom(
         '.grouped-list__item-label input',
-        findByContains('.checkbox-selector--dimension .grouped-list__item', 'Day')
+        findContains('.checkbox-selector--dimension .grouped-list__item:contains(Day)')
       )
       .isChecked('Day timegrain is checked by default');
 
     // uncheck the day timegrain
     await click(
-      findByContains('.checkbox-selector--dimension .grouped-list__item', 'Day').querySelector(
-        '.grouped-list__item-label'
-      )
+      findContains('.checkbox-selector--dimension .grouped-list__item:contains(Day) .grouped-list__item-label')
     );
 
     assert
       .dom(
         '.grouped-list__item-label input',
-        findByContains('.checkbox-selector--dimension .grouped-list__item', 'Day')
+        findContains('.checkbox-selector--dimension .grouped-list__item:contains(Day)')
       )
       .isNotChecked('Day timegrain is unchecked after clicking on it');
 
@@ -189,7 +194,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert
       .dom(
         '.grouped-list__item-label input',
-        findByContains('.checkbox-selector--dimension .grouped-list__item', 'Day')
+        findContains('.checkbox-selector--dimension .grouped-list__item:contains(Day)')
       )
       .isChecked('After navigating away and back to the route, changes are reverted');
   });
@@ -200,15 +205,13 @@ module('Acceptance | Navi Report', function(hooks) {
     await visit('/reports/1/view');
 
     assert.ok(
-      !!findByContains('.filter-builder__subject', 'Day'),
+      !!findContains('.filter-builder__subject:contains(Day)'),
       'After navigating to a route, the Timegrain "Day" option is visible'
     );
 
     // Remove a metric
     await click(
-      findByContains('.checkbox-selector--dimension .grouped-list__item', 'Week').querySelector(
-        '.grouped-list__item-label'
-      )
+      findContains('.checkbox-selector--dimension .grouped-list__item:contains(Week) .grouped-list__item-label')
     );
 
     assert.dom('.navi-report__revert-btn').isVisible('Revert changes button is visible once a change has been made');
@@ -216,7 +219,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await click('.navi-report__revert-btn');
 
     assert.ok(
-      !!findByContains('.filter-builder__subject', 'Day'),
+      !!findContains('.filter-builder__subject:contains(Day)'),
       'After navigating out of the route, the report model is rolled back'
     );
 
@@ -231,9 +234,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.dom('.navi-report__revert-btn').isNotVisible('Revert changes button is not initially visible');
 
     await click(
-      findByContains('.checkbox-selector--metric .grouped-list__item', 'Ad Clicks').querySelector(
-        '.grouped-list__item-label'
-      )
+      findContains('.checkbox-selector--metric .grouped-list__item:contains(Ad Clicks) .grouped-list__item-label')
     );
 
     assert
@@ -250,24 +251,22 @@ module('Acceptance | Navi Report', function(hooks) {
 
     //Add three metrics and save the report
     await click(
-      findByContains('.checkbox-selector--metric .grouped-list__item', 'Page Views').querySelector(
-        '.grouped-list__item-label'
-      )
+      findContains('.checkbox-selector--metric .grouped-list__item:contains(Page Views) .grouped-list__item-label')
     );
     await click('.navi-report__save-btn');
 
     //remove a metric and save the report
     await click(
-      findByContains('.checkbox-selector--metric .grouped-list__item', 'Total Page Views').querySelector(
-        '.grouped-list__item-label'
+      findContains(
+        '.checkbox-selector--metric .grouped-list__item:contains(Total Page Views) .grouped-list__item-label'
       )
     );
     await click('.navi-report__save-btn');
 
     //remove another metric and run the report
     await click(
-      findByContains('.checkbox-selector--metric .grouped-list__item', 'Additive Page Views').querySelector(
-        '.grouped-list__item-label'
+      findContains(
+        '.checkbox-selector--metric .grouped-list__item:contains(Additive Page Views) .grouped-list__item-label'
       )
     );
     await click('.navi-report__run-btn');
@@ -300,17 +299,15 @@ module('Acceptance | Navi Report', function(hooks) {
 
     //Add a metrics and save the report
     await click(
-      findByContains('.checkbox-selector--metric .grouped-list__item', 'Additive Page Views').querySelector(
-        '.grouped-list__item-label'
+      findContains(
+        '.checkbox-selector--metric .grouped-list__item:contains(Additive Page Views) .grouped-list__item-label'
       )
     );
     await click('.navi-report__save-btn');
 
     // Change the Dim
     await click(
-      findByContains('.checkbox-selector--dimension .grouped-list__item', 'Week').querySelector(
-        '.grouped-list__item-label'
-      )
+      findContains('.checkbox-selector--dimension .grouped-list__item:contains(Week) .grouped-list__item-label')
     );
 
     // And click Save AS the report
@@ -324,7 +321,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     // Changes were not reverted, but they were not saved
     assert.ok(
-      !!findByContains('.filter-builder__subject', 'Week'),
+      !!findContains('.filter-builder__subject:contains(Week)'),
       'On cancel the dirty state of the report still remains'
     );
 
@@ -347,7 +344,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     // Changes were not reverted, but they were not saved
     assert.ok(
-      !!findByContains('.filter-builder__subject', 'Week'),
+      !!findContains('.filter-builder__subject:contains(Week)'),
       'On cancel the dirty state of the report still remains'
     );
 
@@ -366,9 +363,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     // Change the Dim
     await click(
-      findByContains('.checkbox-selector--dimension .grouped-list__item', 'Week').querySelector(
-        '.grouped-list__item-label'
-      )
+      findContains('.checkbox-selector--dimension .grouped-list__item:contains(Week) .grouped-list__item-label')
     );
 
     // And click Save AS the report
@@ -381,7 +376,7 @@ module('Acceptance | Navi Report', function(hooks) {
     // Press the save as
     await click('.save-as__save-as-modal-btn');
 
-    assert.ok(!!findByContains('.filter-builder__subject', 'Week'), 'The new Dim is shown in the new report.');
+    assert.ok(!!findContains('.filter-builder__subject:contains(Week)'), 'The new Dim is shown in the new report.');
 
     // New Report is run
     let emberId = find('.report-view.ember-view').id,
@@ -400,7 +395,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     await visit('/reports/1');
 
-    assert.ok(!!findByContains('.filter-builder__subject', 'Day'), 'Old unsaved report have the old DIM.');
+    assert.ok(!!findContains('.filter-builder__subject:contains(Day)'), 'Old unsaved report have the old DIM.');
 
     assert.equal(
       find('.navi-report__title').innerText.trim(),
@@ -421,9 +416,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     // Change the Dim
     await click(
-      findByContains('.checkbox-selector--dimension .grouped-list__item', 'Week').querySelector(
-        '.grouped-list__item-label'
-      )
+      findContains('.checkbox-selector--dimension .grouped-list__item:contains(Week) .grouped-list__item-label')
     );
 
     // And click Save AS the report
@@ -445,7 +438,7 @@ module('Acceptance | Navi Report', function(hooks) {
     );
 
     // Dirty state of old
-    assert.ok(!!findByContains('.filter-builder__subject', 'Week'), 'Old unsaved report have the old DIM.');
+    assert.ok(!!findContains('.filter-builder__subject:contains(Week)'), 'Old unsaved report have the old DIM.');
   });
 
   test('Save report', async function(assert) {
@@ -458,9 +451,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     // Build a report
     await click(
-      findByContains('.checkbox-selector--metric .grouped-list__item', 'Ad Clicks').querySelector(
-        '.grouped-list__item-label'
-      )
+      findContains('.checkbox-selector--metric .grouped-list__item:contains(Ad Clicks) .grouped-list__item-label')
     );
     await click('.navi-report__run-btn');
 
@@ -479,7 +470,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.expect(2);
 
     await visit('/reports/1/view');
-    await click(findByContains('.navi-report__action-link', 'Clone'));
+    await click(findContains('.navi-report__action-link:contains(Clone)'));
 
     assert.ok(
       TempIdRegex.test(currentURL()),
@@ -505,14 +496,10 @@ module('Acceptance | Navi Report', function(hooks) {
 
     // Remove all metrics to create , but do not save
     await click(
-      findByContains('.checkbox-selector--metric .grouped-list__item', 'Ad Clicks').querySelector(
-        '.grouped-list__item-label'
-      )
+      findContains('.checkbox-selector--metric .grouped-list__item:contains(Ad Clicks) .grouped-list__item-label')
     );
     await click(
-      findByContains('.checkbox-selector--metric .grouped-list__item', 'Nav Link Clicks').querySelector(
-        '.grouped-list__item-label'
-      )
+      findContains('.checkbox-selector--metric .grouped-list__item:contains(Nav Link Clicks) .grouped-list__item-label')
     );
 
     assert.notOk(
@@ -533,8 +520,8 @@ module('Acceptance | Navi Report', function(hooks) {
 
     // Add new dimension to make it out of sync with the visualization
     await click(
-      findByContains('.checkbox-selector--dimension .grouped-list__item', 'Product Family').querySelector(
-        '.grouped-list__item-label'
+      findContains(
+        '.checkbox-selector--dimension .grouped-list__item:contains(Product Family) .grouped-list__item-label'
       )
     );
 
@@ -545,8 +532,8 @@ module('Acceptance | Navi Report', function(hooks) {
 
     // Remove new dimension to make it in sync with the visualization
     await click(
-      findByContains('.checkbox-selector--dimension .grouped-list__item', 'Product Family').querySelector(
-        '.grouped-list__item-label'
+      findContains(
+        '.checkbox-selector--dimension .grouped-list__item:contains(Product Family) .grouped-list__item-label'
       )
     );
 
@@ -557,14 +544,10 @@ module('Acceptance | Navi Report', function(hooks) {
 
     // Remove all metrics to create an invalid report
     await click(
-      findByContains('.checkbox-selector--metric .grouped-list__item', 'Ad Clicks').querySelector(
-        '.grouped-list__item-label'
-      )
+      findContains('.checkbox-selector--metric .grouped-list__item:contains(Ad Clicks) .grouped-list__item-label')
     );
     await click(
-      findByContains('.checkbox-selector--metric .grouped-list__item', 'Nav Link Clicks').querySelector(
-        '.grouped-list__item-label'
-      )
+      findContains('.checkbox-selector--metric .grouped-list__item:contains(Nav Link Clicks) .grouped-list__item-label')
     );
 
     assert.ok(
@@ -584,7 +567,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await visit('/reports/1/view');
 
     assert.ok(
-      findByContains('.navi-report__action-link', 'Export')
+      findContains('.navi-report__action-link:contains(Export)')
         .getAttribute('href')
         .includes('/network/day/property/?dateTime='),
       'Export url contains dimension path param'
@@ -592,21 +575,21 @@ module('Acceptance | Navi Report', function(hooks) {
 
     /* == Add groupby == */
     await click(
-      findByContains('.checkbox-selector--dimension .grouped-list__item', 'Product Family').querySelector(
-        '.grouped-list__item-label'
+      findContains(
+        '.checkbox-selector--dimension .grouped-list__item:contains(Product Family) .grouped-list__item-label'
       )
     );
     await click('.navi-report__run-btn');
 
     assert.ok(
-      findByContains('.navi-report__action-link', 'Export')
+      findContains('.navi-report__action-link:contains(Export)')
         .getAttribute('href')
         .includes('/network/day/property/productFamily/?dateTime='),
       'Groupby changes are automatically included in export url'
     );
 
     assert.notOk(
-      findByContains('.navi-report__action-link', 'Export')
+      findContains('.navi-report__action-link:contains(Export)')
         .getAttribute('href')
         .includes('filter'),
       'No filters are initially present in export url'
@@ -615,8 +598,8 @@ module('Acceptance | Navi Report', function(hooks) {
     /* == Add filter == */
     await click('.navi-report__run-btn');
     await click(
-      findByContains('.checkbox-selector--dimension .grouped-list__item', 'Product Family').querySelector(
-        '.checkbox-selector__filter'
+      findContains(
+        '.checkbox-selector--dimension .grouped-list__item:contains(Product Family) .checkbox-selector__filter'
       )
     );
 
@@ -625,7 +608,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await click('.navi-report__run-btn');
 
     assert.ok(
-      findByContains('.navi-report__action-link', 'Export')
+      findContains('.navi-report__action-link:contains(Export)')
         .getAttribute('href')
         .includes('productFamily%7Cid-in%5B1%5D'),
       'Filter updates are automatically included in export url'
@@ -641,7 +624,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await clickTrigger('.multiple-format-export');
 
     assert.ok(
-      findByContains('.multiple-format-export__dropdown a', 'CSV')
+      findContains('.multiple-format-export__dropdown a:contains(CSV)')
         .getAttribute('href')
         .includes('/network/day/property/?dateTime='),
       'Export url contains dimension path param'
@@ -649,22 +632,22 @@ module('Acceptance | Navi Report', function(hooks) {
 
     /* == Add groupby == */
     await click(
-      findByContains('.checkbox-selector--dimension .grouped-list__item', 'Product Family').querySelector(
-        '.grouped-list__item-label'
+      findContains(
+        '.checkbox-selector--dimension .grouped-list__item:contains(Product Family) .grouped-list__item-label'
       )
     );
     await click('.navi-report__run-btn');
     await clickTrigger('.multiple-format-export');
 
     assert.ok(
-      findByContains('.multiple-format-export__dropdown a', 'CSV')
+      findContains('.multiple-format-export__dropdown a:contains(CSV)')
         .getAttribute('href')
         .includes('/network/day/property/productFamily/?dateTime='),
       'Groupby changes are automatically included in export url'
     );
 
     assert.notOk(
-      findByContains('.multiple-format-export__dropdown a', 'CSV')
+      findContains('.multiple-format-export__dropdown a:contains(CSV)')
         .getAttribute('href')
         .includes('filter'),
       'No filters are initially present in export url'
@@ -672,8 +655,8 @@ module('Acceptance | Navi Report', function(hooks) {
 
     /* == Add filter == */
     await click(
-      findByContains('.checkbox-selector--dimension .grouped-list__item', 'Product Family').querySelector(
-        '.checkbox-selector__filter'
+      findContains(
+        '.checkbox-selector--dimension .grouped-list__item:contains(Product Family) .checkbox-selector__filter'
       )
     );
     /* == Update filter value == */
@@ -682,7 +665,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await clickTrigger('.multiple-format-export');
 
     assert.ok(
-      findByContains('.multiple-format-export__dropdown a', 'CSV')
+      findContains('.multiple-format-export__dropdown a:contains(CSV)')
         .getAttribute('href')
         .includes('productFamily%7Cid-in%5B1%5D'),
       'Filter updates are automatically included in export url'
@@ -698,21 +681,21 @@ module('Acceptance | Navi Report', function(hooks) {
     await clickTrigger('.multiple-format-export');
 
     assert.equal(
-      findByContains('.multiple-format-export__dropdown a', 'PDF').getAttribute('href'),
+      findContains('.multiple-format-export__dropdown a:contains(PDF)').getAttribute('href'),
       initialUrl,
       'Export url contains serialized report'
     );
 
     /* == Add groupby == */
     await click(
-      findByContains('.checkbox-selector--dimension .grouped-list__item', 'Product Family').querySelector(
-        '.grouped-list__item-label'
+      findContains(
+        '.checkbox-selector--dimension .grouped-list__item:contains(Product Family) .grouped-list__item-label'
       )
     );
     await click('.navi-report__run-btn');
     await clickTrigger('.multiple-format-export');
 
-    let modelStr = findByContains('.multiple-format-export__dropdown a', 'PDF')
+    let modelStr = findContains('.multiple-format-export__dropdown a:contains(PDF)')
       .getAttribute('href')
       .split('=')[1];
 
@@ -727,11 +710,11 @@ module('Acceptance | Navi Report', function(hooks) {
     });
 
     /* == Change to table == */
-    await click(findByContains('.visualization-toggle__option', 'Data Table'));
+    await click(findContains('.visualization-toggle__option:contains(Data Table)'));
     await click('.navi-report__run-btn');
     await clickTrigger('.multiple-format-export');
 
-    modelStr = findByContains('.multiple-format-export__dropdown a', 'PDF')
+    modelStr = findContains('.multiple-format-export__dropdown a:contains(PDF)')
       .getAttribute('href')
       .split('=')[1];
     await CompressionService.decompress(modelStr).then(model => {
@@ -748,7 +731,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await click('.navi-report__run-btn');
     await clickTrigger('.multiple-format-export');
 
-    modelStr = findByContains('.multiple-format-export__dropdown a', 'PDF')
+    modelStr = findContains('.multiple-format-export__dropdown a:contains(PDF)')
       .getAttribute('href')
       .split('=')[1];
     await CompressionService.decompress(modelStr).then(model => {
@@ -771,14 +754,10 @@ module('Acceptance | Navi Report', function(hooks) {
 
     // Remove all metrics to create an invalid report
     await click(
-      findByContains('.checkbox-selector--metric .grouped-list__item', 'Ad Clicks').querySelector(
-        '.grouped-list__item-label'
-      )
+      findContains('.checkbox-selector--metric .grouped-list__item:contains(Ad Clicks) .grouped-list__item-label')
     );
     await click(
-      findByContains('.checkbox-selector--metric .grouped-list__item', 'Nav Link Clicks').querySelector(
-        '.grouped-list__item-label'
-      )
+      findContains('.checkbox-selector--metric .grouped-list__item:contains(Nav Link Clicks) .grouped-list__item-label')
     );
 
     assert
@@ -791,7 +770,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     /* == Saved report == */
     await visit('/reports/1/view');
-    await click(findByContains('.navi-report__action', 'Share').querySelector('button'));
+    await click(findContains('.navi-report__action:contains(Share) button'));
 
     assert.equal(
       find('.navi-modal .primary-header').textContent.trim(),
@@ -801,14 +780,10 @@ module('Acceptance | Navi Report', function(hooks) {
 
     // Remove all metrics to create an invalid report
     await click(
-      findByContains('.checkbox-selector--metric .grouped-list__item', 'Ad Clicks').querySelector(
-        '.grouped-list__item-label'
-      )
+      findContains('.checkbox-selector--metric .grouped-list__item:contains(Ad Clicks) .grouped-list__item-label')
     );
     await click(
-      findByContains('.checkbox-selector--metric .grouped-list__item', 'Nav Link Clicks').querySelector(
-        '.grouped-list__item-label'
-      )
+      findContains('.checkbox-selector--metric .grouped-list__item:contains(Nav Link Clicks) .grouped-list__item-label')
     );
 
     assert.notOk(
@@ -830,7 +805,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     /* == Saved report == */
     await visit('/reports/1/view');
-    await click(findByContains('.navi-report__action', 'Share').querySelector('button'));
+    await click(findContains('.navi-report__action:contains(Share) button'));
 
     assert.equal(
       find('.navi-modal .primary-header').textContent.trim(),
@@ -844,8 +819,8 @@ module('Acceptance | Navi Report', function(hooks) {
 
     assert.dom('.navi-modal .modal-notification').isVisible('Notification banner is shown');
 
-    await click(findByContains('.navi-modal .btn', 'Cancel'));
-    await click(findByContains('.navi-report__action', 'Share').querySelector('button'));
+    await click(findContains('.navi-modal .btn:contains(Cancel)'));
+    await click(findContains('.navi-report__action:contains(Share) button'));
 
     assert
       .dom('.navi-modal .modal-notification')
@@ -867,7 +842,7 @@ module('Acceptance | Navi Report', function(hooks) {
     );
 
     await visit('/reports/1/view');
-    await click(findByContains('.navi-report__action', 'Delete').querySelector('button'));
+    await click(findContains('.navi-report__action:contains(Delete) button'));
 
     assert.equal(
       find('.primary-header').textContent.trim(),
@@ -887,7 +862,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await visit('/reports/3/view');
 
     assert.notOk(
-      !!findByContains('.navi-report__action', 'Delete'),
+      !!findContains('.navi-report__action:contains(Delete)'),
       'Delete action is not available if user is not the author'
     );
   });
@@ -916,14 +891,10 @@ module('Acceptance | Navi Report', function(hooks) {
      * Delete is not Disabled on invalid
      */
     await click(
-      findByContains('.checkbox-selector--metric .grouped-list__item', 'Ad Clicks').querySelector(
-        '.grouped-list__item-label'
-      )
+      findContains('.checkbox-selector--metric .grouped-list__item:contains(Ad Clicks) .grouped-list__item-label')
     );
     await click(
-      findByContains('.checkbox-selector--metric .grouped-list__item', 'Nav Link Clicks').querySelector(
-        '.grouped-list__item-label'
-      )
+      findContains('.checkbox-selector--metric .grouped-list__item:contains(Nav Link Clicks) .grouped-list__item-label')
     );
 
     assert.notOk(
@@ -932,7 +903,7 @@ module('Acceptance | Navi Report', function(hooks) {
     );
 
     // Check Delete modal appear
-    await click(findByContains('.navi-report__action', 'Delete').querySelector('button'));
+    await click(findContains('.navi-report__action:contains(Delete) button'));
 
     assert.equal(
       find('.primary-header').textContent.trim(),
@@ -950,7 +921,7 @@ module('Acceptance | Navi Report', function(hooks) {
     });
 
     await visit('/reports/2/view');
-    await click(findByContains('.navi-report__action', 'Delete').querySelector('button'));
+    await click(findContains('.navi-report__action:contains(Delete) button'));
     await click('.navi-modal .btn-primary');
 
     assert.ok(currentURL().endsWith('reports/2/view'), 'User stays on current view when delete fails');
@@ -986,7 +957,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     assert.equal(findAll('.c3-legend-item').length, 3, 'Line chart visualization has 3 series as configured');
 
-    await click(findByContains('.visualization-toggle__option', 'Data Table'));
+    await click(findContains('.visualization-toggle__option:contains(Data Table)'));
 
     assert.ok(!!findAll('.table-widget').length, 'table visualization is shown when selected');
 
@@ -996,7 +967,7 @@ module('Acceptance | Navi Report', function(hooks) {
       'Edit Data Table label is displayed'
     );
 
-    await click(findByContains('.visualization-toggle__option', 'Line Chart'));
+    await click(findContains('.visualization-toggle__option:contains(Line Chart)'));
 
     assert.ok(!!findAll('.line-chart-widget').length, 'line-chart visualization is shown when selected');
 
@@ -1114,14 +1085,12 @@ module('Acceptance | Navi Report', function(hooks) {
     await visit('/reports/4/view');
 
     assert.ok(
-      !!findByContains('.filter-builder__subject', 'Day'),
+      !!findContains('.filter-builder__subject:contains(Day)'),
       'After navigating out of the route, the report model is rolled back'
     );
 
     await click(
-      findByContains('.checkbox-selector--dimension .grouped-list__item', 'Week').querySelector(
-        '.grouped-list__item-label'
-      )
+      findContains('.checkbox-selector--dimension .grouped-list__item:contains(Week) .grouped-list__item-label')
     );
 
     //Navigate out of report
@@ -1131,7 +1100,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await visit('/reports/4/view');
 
     assert.ok(
-      !!findByContains('.filter-builder__subject', 'Day'),
+      !!findContains('.filter-builder__subject:contains(Day)'),
       'After navigating out of the route, the report model is rolled back'
     );
   });
@@ -1145,7 +1114,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.ok(!!findAll('.line-chart-widget').length, 'Line chart visualization is shown as configured');
 
     /* == Switch to table == */
-    await click(findByContains('.visualization-toggle__option', 'Data Table'));
+    await click(findContains('.visualization-toggle__option:contains(Data Table)'));
 
     assert.ok(!!findAll('.table-widget').length, 'table visualization is shown when selected');
 
@@ -1164,7 +1133,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.ok(!!findAll('.line-chart-widget').length, 'Line chart visualization is shown as configured');
 
     /* == Switch to table == */
-    await click(findByContains('.visualization-toggle__option', 'Data Table'));
+    await click(findContains('.visualization-toggle__option:contains(Data Table)'));
 
     assert.ok(!!findAll('.table-widget').length, 'table visualization is shown when selected');
 
@@ -1174,7 +1143,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.ok(!!findAll('.table-widget').length, 'table visualization is still shown when saved');
 
     /* == Switch to chart == */
-    await click(findByContains('.visualization-toggle__option', 'Line Chart'));
+    await click(findContains('.visualization-toggle__option:contains(Line Chart)'));
 
     assert.ok(!!findAll('.line-chart-widget').length, 'line-chart visualization is shown when selected');
 
@@ -1191,9 +1160,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await visit('/reports');
     await visit('/reports/new');
     await click(
-      findByContains('.checkbox-selector--metric .grouped-list__item', 'Ad Clicks').querySelector(
-        '.grouped-list__item-label'
-      )
+      findContains('.checkbox-selector--metric .grouped-list__item:contains(Ad Clicks) .grouped-list__item-label')
     );
     await click('.navi-report__run-btn');
 
@@ -1205,7 +1172,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.ok(!!findAll('.table-widget').length, 'Table visualization is still shown when saved');
 
     /* == Switch to metric label == */
-    await click(findByContains('.visualization-toggle__option', 'Metric Label'));
+    await click(findContains('.visualization-toggle__option:contains(Metric Label)'));
 
     assert.ok(!!findAll('.metric-label-vis').length, 'Metric label visualization is shown when selected');
 
@@ -1250,7 +1217,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     // Visit report and make a change that invalidates visualization
     await visit('/reports/1/view');
-    await click(findByContains('.grouped-list__item', 'Product Family').querySelector('.checkbox-selector__checkbox'));
+    await click(findContains('.grouped-list__item:contains(Product Family) .checkbox-selector__checkbox'));
 
     assert.dom('.report-view__visualization-edit-btn').isNotVisible('Edit visualization button is no longer visible');
 
@@ -1296,7 +1263,7 @@ module('Acceptance | Navi Report', function(hooks) {
     );
 
     // Make a change that invalidates visualization
-    await click(findByContains('.grouped-list__item', 'Product Family').querySelector('.checkbox-selector__checkbox'));
+    await click(findContains('.grouped-list__item:contains(Product Family) .checkbox-selector__checkbox'));
 
     assert
       .dom('.report-view__visualization-edit')
@@ -1327,9 +1294,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     await visit('/reports/1/view');
     await click(
-      findByContains('.checkbox-selector--metric .grouped-list__item', 'Ad Clicks').querySelector(
-        '.grouped-list__item-label'
-      )
+      findContains('.checkbox-selector--metric .grouped-list__item:contains(Ad Clicks) .grouped-list__item-label')
     );
 
     assert
@@ -1338,9 +1303,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     await visit('/reports/3/view');
     await click(
-      findByContains('.checkbox-selector--metric .grouped-list__item', 'Ad Clicks').querySelector(
-        '.grouped-list__item-label'
-      )
+      findContains('.checkbox-selector--metric .grouped-list__item:contains(Ad Clicks) .grouped-list__item-label')
     );
 
     assert.dom('.navi-report__save-btn').isNotVisible('Save changes button is visible when not owner of a report');
@@ -1415,7 +1378,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.deepEqual(seriesLabels, ['Property 1', 'Property 3'], 'Selected series has been deleted from chart');
 
     // Add a series
-    await click(findByContains('.add-series .table-row', 'Property 4'));
+    await click(findContains('.add-series .table-row:contains(Property 4)'));
 
     seriesLabels = findAll('.c3-legend-item').map(el => el.textContent.trim());
     assert.deepEqual(seriesLabels, ['Property 1', 'Property 3', 'Property 4'], 'Selected series has been added chart');
@@ -1426,7 +1389,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     // Filter by favorites
     await visit('/reports');
-    await click(findByContains('.pick-form li', 'Favorites'));
+    await click(findContains('.pick-form li:contains(Favorites)'));
 
     let listedReports = findAll('tbody tr td:first-of-type').map(el => el.innerText.trim());
 
@@ -1438,17 +1401,17 @@ module('Acceptance | Navi Report', function(hooks) {
 
     // Filter by favorites
     await visit('/reports');
-    await click(findByContains('.pick-form li', 'Favorites'));
+    await click(findContains('.pick-form li:contains(Favorites)'));
 
     listedReports = findAll('tbody tr td:first-of-type').map(el => el.innerText.trim());
 
     assert.deepEqual(listedReports, ['Hyrule News', 'Hyrule Ad&Nav Clicks'], 'Two reports are in favorites now');
 
     // Unfavorite report 2
-    await click(findByContains('tbody tr td a', 'Hyrule Ad&Nav Clicks'));
+    await click(findContains('tbody tr td a:contains(Hyrule Ad&Nav Clicks)'));
     await click('.favorite-item');
     await visit('/reports');
-    await click(findByContains('.pick-form li', 'Favorites'));
+    await click(findContains('.pick-form li:contains(Favorites)'));
 
     listedReports = findAll('tbody tr td:first-of-type').map(el => el.innerText.trim());
 
@@ -1466,7 +1429,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     // Filter by favorites
     await visit('/reports');
-    await click(findByContains('.pick-form li', 'Favorites'));
+    await click(findContains('.pick-form li:contains(Favorites)'));
 
     let listedReports = findAll('tbody tr td:first-of-type').map(el => el.innerText.trim());
 
@@ -1478,7 +1441,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     await visit('/reports');
 
-    await click(findByContains('.pick-form li', 'Favorites'));
+    await click(findContains('.pick-form li:contains(Favorites)'));
 
     listedReports = findAll('tbody tr td:first-of-type').map(el => el.innerText.trim());
 
@@ -1490,29 +1453,25 @@ module('Acceptance | Navi Report', function(hooks) {
 
     /* == Modify report by adding a metric == */
     await visit('/reports/1/view');
-    await click(findByContains('.visualization-toggle__option', 'Data Table'));
+    await click(findContains('.visualization-toggle__option:contains(Data Table)'));
     await click(
-      findByContains('.checkbox-selector--metric .grouped-list__item', 'Time Spent').querySelector(
-        '.grouped-list__item-label'
-      )
+      findContains('.checkbox-selector--metric .grouped-list__item:contains(Time Spent) .grouped-list__item-label')
     );
     await click('.navi-report__run-btn');
 
     assert.ok(
-      !!findByContains('.table-header-row-vc--view .table-header-cell', 'Time Spent'),
+      !!findContains('.table-header-row-vc--view .table-header-cell:contains(Time Spent)'),
       'Time Spent column is displayed'
     );
 
     /* == Revert report to its original state == */
     await click(
-      findByContains('.checkbox-selector--metric .grouped-list__item', 'Time Spent').querySelector(
-        '.grouped-list__item-label'
-      )
+      findContains('.checkbox-selector--metric .grouped-list__item:contains(Time Spent) .grouped-list__item-label')
     );
     await click('.navi-report__run-btn');
 
     assert.notOk(
-      !!findByContains('.table-header-row-vc--view .table-header-cell', 'Time Spent'),
+      !!findContains('.table-header-row-vc--view .table-header-cell:contains(Time Spent)'),
       'Time Spent column is not displayed'
     );
   });
@@ -1531,7 +1490,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     await selectChoose('.navi-table-select__dropdown', 'Network');
     await click('.navi-report__run-btn');
-    await click(findByContains('.visualization-toggle__option', 'Table'));
+    await click(findContains('.visualization-toggle__option:contains(Table)'));
 
     assert.equal(currentURL(), '/reports/1/view', 'check to seee if we are on the view route');
 
@@ -1548,9 +1507,9 @@ module('Acceptance | Navi Report', function(hooks) {
 
     //Add filter for a dimension where storageStrategy is 'none' and try to run the report
     await visit('/reports/1/view');
-    await click(findByContains('.grouped-list__group-header', 'Test'));
-    await click(findByContains('.grouped-list__item', 'Context Id'));
-    await click(findByContains('.grouped-list__item', 'Context Id').querySelector('.checkbox-selector__filter'));
+    await click(findContains('.grouped-list__group-header:contains(Test)'));
+    await click(findContains('.grouped-list__item:contains(Context Id)'));
+    await click(findContains('.grouped-list__item:contains(Context Id) .checkbox-selector__filter'));
     await click('.navi-report__run-btn');
 
     assert
@@ -1598,8 +1557,8 @@ module('Acceptance | Navi Report', function(hooks) {
 
     assert.dom('.filter-values--multi-value-input--error').isVisible('Filter value input validation errors are shown');
 
-    await click(findByContains('.grouped-list__item', 'Operating System'));
-    await click(findByContains('.grouped-list__item', 'Operating System').querySelector('.checkbox-selector__filter'));
+    await click(findContains('.grouped-list__item:contains(Operating System)'));
+    await click(findContains('.grouped-list__item:contains(Operating System) .checkbox-selector__filter'));
 
     assert
       .dom('.filter-values--dimension-select__trigger')
@@ -1611,31 +1570,31 @@ module('Acceptance | Navi Report', function(hooks) {
 
     await visit('/reports/1');
     //add dimension filter
-    await click(findByContains('.grouped-list__item', 'Operating System').querySelector('.checkbox-selector__filter'));
+    await click(findContains('.grouped-list__item:contains(Operating System) .checkbox-selector__filter'));
 
     assert.ok(
-      !!findByContains('.filter-builder__subject', 'Operating System'),
+      !!findContains('.filter-builder__subject:contains(Operating System)'),
       'The Operating System dimension filter is added'
     );
 
     //remove filter by clicking on filter icon again
-    await click(findByContains('.grouped-list__item', 'Operating System').querySelector('.checkbox-selector__filter'));
+    await click(findContains('.grouped-list__item:contains(Operating System) .checkbox-selector__filter'));
 
     assert.notOk(
-      !!findByContains('.filter-builder__subject', 'Operating System'),
+      !!findContains('.filter-builder__subject:contains(Operating System)'),
       'The Operating System dimension filter is removed when filter icon is clicked again'
     );
 
     //add metric filter
-    await click(findByContains('.grouped-list__item', 'Ad Clicks').querySelector('.checkbox-selector__filter'));
+    await click(findContains('.grouped-list__item:contains(Ad Clicks) .checkbox-selector__filter'));
 
-    assert.ok(!!findByContains('.filter-builder__subject', 'Ad Clicks'), 'The Ad Clicks metric filter is added');
+    assert.ok(!!findContains('.filter-builder__subject:contains(Ad Clicks)'), 'The Ad Clicks metric filter is added');
 
     //remove metric filter by clicking on filter icon again
-    await click(findByContains('.grouped-list__item', 'Ad Clicks').querySelector('.checkbox-selector__filter'));
+    await click(findContains('.grouped-list__item:contains(Ad Clicks) .checkbox-selector__filter'));
 
     assert.notOk(
-      !!findByContains('.filter-builder__subject', 'Ad Clicks'),
+      !!findContains('.filter-builder__subject:contains(Ad Clicks)'),
       'The Ad Clicks metric filter is removed when filter icon is clicked again'
     );
   });
@@ -1646,7 +1605,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await visit('/reports/1');
 
     // Add Dimension
-    await click(findByContains('.grouped-list__item', 'Operating System').querySelector('.grouped-list__item-label'));
+    await click(findContains('.grouped-list__item:contains(Operating System) .grouped-list__item-label'));
     await click('.report-builder__dimension-selector .navi-list-selector__show-link');
 
     assert.deepEqual(
@@ -1657,7 +1616,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     // Add selected dimension as filter
     await click('.report-builder__dimension-selector .navi-list-selector__show-link');
-    await click(findByContains('.grouped-list__item', 'Operating System').querySelector('.checkbox-selector__filter'));
+    await click(findContains('.grouped-list__item:contains(Operating System) .checkbox-selector__filter'));
     await click('.report-builder__dimension-selector .navi-list-selector__show-link');
 
     assert.deepEqual(
@@ -1668,7 +1627,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     // Remove the dimension filter
     await click('.report-builder__dimension-selector .navi-list-selector__show-link');
-    await click(findByContains('.grouped-list__item', 'Operating System').querySelector('.checkbox-selector__filter'));
+    await click(findContains('.grouped-list__item:contains(Operating System) .checkbox-selector__filter'));
     await click('.report-builder__dimension-selector .navi-list-selector__show-link');
 
     assert.deepEqual(
@@ -1679,7 +1638,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     // // Remove Dimension
     await click('.report-builder__dimension-selector .navi-list-selector__show-link');
-    await click(findByContains('.grouped-list__item', 'Operating System').querySelector('.grouped-list__item-label'));
+    await click(findContains('.grouped-list__item:contains(Operating System) .grouped-list__item-label'));
     await click('.report-builder__dimension-selector .navi-list-selector__show-link');
 
     assert.deepEqual(
@@ -1693,7 +1652,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.expect(2);
     await visit('/reports/1');
 
-    await click(findByContains('.grouped-list__item', 'Operating System').querySelector('.checkbox-selector__filter'));
+    await click(findContains('.grouped-list__item:contains(Operating System) .checkbox-selector__filter'));
     await selectChoose('.filter-collection__row:last-of-type .filter-builder__operator', 'Is Empty');
     await click('.navi-report__run-btn');
 
@@ -1709,7 +1668,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.expect(2);
     await visit('/reports/1');
 
-    await click(findByContains('.grouped-list__item', 'Operating System').querySelector('.checkbox-selector__filter'));
+    await click(findContains('.grouped-list__item:contains(Operating System) .checkbox-selector__filter'));
     await selectChoose('.filter-collection__row:last-of-type .filter-builder__operator', 'Is Not Empty');
     await click('.navi-report__run-btn');
 
@@ -1725,18 +1684,18 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.expect(3);
 
     await visit('/reports/1');
-    await click(findByContains('.grouped-list__item-label', 'Month'));
+    await click(findContains('.grouped-list__item-label:contains(Month)'));
 
     // Select the month Jan
     await click('.custom-range-form .pick-value');
-    await click(findByContains('.navi-date-picker:nth-of-type(3) .datepicker .month', 'Jan'));
-    await click(findByContains('.navi-date-picker:nth-of-type(4) .datepicker .month', 'Jan'));
+    await click(findContains('.navi-date-picker:nth-of-type(3) .datepicker .month:contains(Jan)'));
+    await click(findContains('.navi-date-picker:nth-of-type(4) .datepicker .month:contains(Jan)'));
     await click('.navi-date-range-picker__apply-btn');
     await click('.navi-report__run-btn');
 
     assert.dom('.date-range__select-trigger').hasText('Jan 2015', 'Month is changed to Jan 2015');
 
-    await click(findByContains('.grouped-list__item-label', 'Day'));
+    await click(findContains('.grouped-list__item-label:contains(Day)'));
     await click('.navi-report__run-btn');
 
     assert
@@ -1746,7 +1705,7 @@ module('Acceptance | Navi Report', function(hooks) {
         'Switching to day preserves the day casts the dates to match the time period'
       );
 
-    await click(findByContains('.grouped-list__item-label', 'Week'));
+    await click(findContains('.grouped-list__item-label:contains(Week)'));
     await click('.navi-report__run-btn');
 
     assert
@@ -1809,7 +1768,7 @@ module('Acceptance | Navi Report', function(hooks) {
     );
   });
 
-  test('adding metrics to reordered table keeps order', async function(assert) {
+  test('adding metrics to reordered table keeps order abcdef', async function(assert) {
     assert.expect(2);
     await visit('/reports/2');
 
@@ -1828,7 +1787,7 @@ module('Acceptance | Navi Report', function(hooks) {
       'The headers are reordered as specified by the reorder'
     );
 
-    await click(findByContains('.grouped-list__item-label', 'Total Clicks'));
+    await click(findContains('.grouped-list__item-label:contains(Total Clicks)'));
     await click('.navi-report__run-btn');
 
     assert.deepEqual(
@@ -1853,7 +1812,7 @@ module('Acceptance | Navi Report', function(hooks) {
       );
   });
 
-  skip('Cancel Report', async function(assert) {
+  test('Cancel Report abcdef', async function(assert) {
     //Slow down mock
     server.timing = 400;
     server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
@@ -1875,6 +1834,10 @@ module('Acceptance | Navi Report', function(hooks) {
       );
 
       //Cancel the report
+      // await settled();
+      // await waitUntil(() => !getSettledState().hasPendingTransitions);
+      // debugger;
+
       await click(buttons[0]);
     });
 
