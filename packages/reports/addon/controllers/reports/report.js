@@ -15,7 +15,7 @@ const REPORT_STATE = {
 
 export default Controller.extend({
   /**
-   * @property {String} showSaveAs - whether the save as dialog is showing
+   * @property {Boolean} showSaveAs - whether the save as dialog is showing
    */
   showSaveAs: false,
 
