@@ -366,7 +366,7 @@ test('Cancel Save As report', function(assert) {
 });
 
 test('Save As report', function(assert) {
-  assert.expect(6);
+  assert.expect(7);
 
   visit('/reports/1');
   let container = Application.__container__;
@@ -404,6 +404,8 @@ test('Save As report', function(assert) {
       '(New Copy) Hyrule News',
       'New Saved Report is being viewed'
     );
+
+    assert.notOk(find('.save-as__save-as-modal-btn').is(':visible'), 'Save As Modal not visible after save');
   });
 
   visit('/reports/1');

@@ -15,6 +15,11 @@ const REPORT_STATE = {
 
 export default Controller.extend({
   /**
+   * @property {String} showSaveAs - whether the save as dialog is showing
+   */
+  showSaveAs: false,
+
+  /**
    * @property {String} reportState - state of the the report
    */
   reportState: computed({
@@ -55,5 +60,14 @@ export default Controller.extend({
    */
   didReportFail: computed('reportState', function() {
     return get(this, 'reportState') === REPORT_STATE.FAILED;
-  })
+  }),
+
+  actions: {
+    /**
+     * Closes save as modal
+     */
+    closeSaveAs() {
+      this.set('showSaveAs', false);
+    }
+  }
 });
