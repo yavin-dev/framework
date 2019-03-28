@@ -10,6 +10,7 @@
  */
 import Ember from 'ember';
 import layout from '../../templates/components/filter-values/dimension-select';
+import { featureFlag } from 'navi-core/helpers/feature-flag';
 
 const { computed, get } = Ember;
 
@@ -67,6 +68,13 @@ export default Ember.Component.extend({
   }),
 
   /**
+   * @property {Boolean} useNewSearchAPI - whether to use /search endpoint instead of /values
+   */
+  useNewSearchAPI: computed(function() {
+    return featureFlag('newDimensionsSearchAPI');
+  }),
+
+  /**
    * Executes a dimension search for a given term and executes the
    * provided callbacks
    *
@@ -78,9 +86,11 @@ export default Ember.Component.extend({
    * @returns {Void}
    */
   _performSearch(term, resolve, reject) {
-    let dimension = get(this, 'dimensionName');
+    let dimension = get(this, 'dimensionName'),
+      useNewSearchAPI = get(this, 'useNewSearchAPI');
+
     get(this, '_dimensionService')
-      .search(dimension, { term })
+      .search(dimension, { term, useNewSearchAPI })
       .then(resolve, reject);
   },
 

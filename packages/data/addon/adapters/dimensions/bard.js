@@ -24,6 +24,10 @@ const URL_FIELD_NAMES = {
   description: 'desc'
 };
 
+const SEARCH_TIMEOUT = 30000;
+
+const CLIENT_ID = 'UI';
+
 export default EmberObject.extend({
   /**
    * @property namespace
@@ -58,17 +62,18 @@ export default EmberObject.extend({
   },
 
   /**
-   * Builds the dimension values URL
+   * Builds the URL for dimension search
    * @method _buildUrl
    * @private
-   * @param {string} dimension - dimension name
+   * @param {String} dimension - dimension name
+   * @param {String} path - url path
    * @returns {String} dimension value URL string
    */
-  _buildUrl(dimension) {
+  _buildUrl(dimension, path = 'values') {
     let host = FACT_HOST,
       namespace = get(this, 'namespace');
 
-    return `${host}/${namespace}/dimensions/${dimension}/values/`;
+    return `${host}/${namespace}/dimensions/${dimension}/${path}/`;
   },
 
   /**
@@ -105,6 +110,77 @@ export default EmberObject.extend({
   },
 
   /**
+   * Builds a search query string for dimension /search request
+   *
+   * @method _buildSearchQuery
+   * @private
+   * @param {String} dimension
+   * @param {Object} query - filter query object
+   * @param {String} query.values
+   * @returns {String} filter query string
+   */
+  _buildSearchQuery(dimension, query) {
+    let defaultQueryOptions = { values: [] };
+
+    query = assign({}, defaultQueryOptions, query);
+
+    let values = makeArray(get(query, 'values'));
+
+    return {
+      query: values.join(' ')
+    };
+  },
+
+  /**
+   * @method _find - makes an ajax request
+   * @param {String} url
+   * @param {Object} [data]
+   * @param {Object} [options]
+   *      Ex: {
+   *        page: 1,
+   *        perPage: 200,
+   *        clientId: 'custom id',
+   *        timeout: 10000,
+   *        ...
+   *      }
+   * @returns {Promise} - Promise with the response
+   */
+  _find(url, data, options) {
+    let clientId = CLIENT_ID,
+      timeout = SEARCH_TIMEOUT;
+
+    if (options) {
+      // Support custom clientid header
+      if (options.clientId) {
+        clientId = options.clientId;
+      }
+
+      // Support custom timeout
+      if (options.timeout) {
+        timeout = options.timeout;
+      }
+
+      // pagination
+      if (options.page && options.perPage) {
+        data.page = options.page;
+        data.perPage = options.perPage;
+      }
+    }
+
+    return get(this, 'ajax').request(url, {
+      xhrFields: {
+        withCredentials: true
+      },
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader('clientid', clientId);
+      },
+      crossDomain: true,
+      data,
+      timeout
+    });
+  },
+
+  /**
    * @method all - Makes a request for all values for a given dimension
    * @param {String} dimension - dimension name
    * @param {Object} [options] - options object
@@ -112,6 +188,7 @@ export default EmberObject.extend({
    *        page: 1,
    *        perPage: 200,
    *        clientId: 'custom id',
+   *        timeout: 10000,
    *        ...
    *      }
    * @returns {Promise} - Promise with the response
@@ -132,7 +209,7 @@ export default EmberObject.extend({
   },
 
   /**
-   * @method find - Uses the url generated using the adapter to make an ajax request
+   * @method find - makes a request to /values api to find dimensions by query term
    * @param {String} dimension - dimension name
    * @param {Object} [query] - the filter query object
    * @param {Object} [options] - options object
@@ -140,50 +217,46 @@ export default EmberObject.extend({
    *        page: 1,
    *        perPage: 200,
    *        clientId: 'custom id',
+   *        timeout: 10000,
    *        ...
    *      }
    * @returns {Promise} - Promise with the response
    */
   find(dimension, query, options) {
     let url = this._buildUrl(dimension),
-      filterQuery = {},
-      clientId = 'UI',
-      timeout = 30000;
+      data = {};
 
     // If filter query is present, build query having the filter
     if (query) {
-      filterQuery = this._buildFilterQuery(dimension, query);
+      data = this._buildFilterQuery(dimension, query);
     }
 
-    if (options) {
-      // Support custom clientid header
-      if (options.clientId) {
-        clientId = options.clientId;
-      }
+    return this._find(url, data, options);
+  },
 
-      // Support custom timeout
-      if (options.timeout) {
-        timeout = options.timeout;
-      }
+  /**
+   * @method search - makes a request to /search api to find dimensions by query term
+   * @param {String} dimension - dimension name
+   * @param {Object} query - the filter query object
+   * @param {Object} [options] - options object
+   *      Ex: {
+   *        page: 1,
+   *        perPage: 200,
+   *        clientId: 'custom id',
+   *        timeout: 10000,
+   *        ...
+   *      }
+   * @returns {Promise} - Promise with the response
+   */
+  search(dimension, query, options) {
+    let url = this._buildUrl(dimension, 'search'),
+      data = {};
 
-      // pagination
-      if (options.page && options.perPage) {
-        filterQuery.page = options.page;
-        filterQuery.perPage = options.perPage;
-      }
+    if (query) {
+      data = this._buildSearchQuery(dimension, query);
     }
 
-    return get(this, 'ajax').request(url, {
-      xhrFields: {
-        withCredentials: true
-      },
-      beforeSend: function(xhr) {
-        xhr.setRequestHeader('clientid', clientId);
-      },
-      crossDomain: true,
-      data: filterQuery,
-      timeout: timeout
-    });
+    return this._find(url, data, options);
   },
 
   /**

@@ -62,6 +62,28 @@ module('Unit | Service | Dimensions', function(hooks) {
         }
         return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ rows })];
       });
+
+      this.get(`${HOST}/v1/dimensions/dimensionOne/search/`, request => {
+        let rows = request.queryParams.query === 'v1' ? Response2.rows : Response.rows;
+        if (request.queryParams.page && request.queryParams.perPage) {
+          let meta = {
+            pagination: {
+              currentPage: parseInt(request.queryParams.page),
+              rowsPerPage: parseInt(request.queryParams.perPage),
+              numberOfResults: rows.length
+            }
+          };
+          return [
+            200,
+            { 'Content-Type': 'application/json' },
+            JSON.stringify({
+              rows: A(rows),
+              meta
+            })
+          ];
+        }
+        return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ rows })];
+      });
     });
 
     Server.map(metadataRoutes);
@@ -341,6 +363,40 @@ module('Unit | Service | Dimensions', function(hooks) {
     });
   });
 
+  test('searchValue', async function(assert) {
+    assert.expect(2);
+
+    let response3 = {
+      rows: [{ id: 'v1', desc: 'value1' }, { id: 'v2', desc: 'value2' }],
+      meta: { test: true }
+    };
+
+    Server.get(`${HOST}/v1/dimensions/dimensionThree/search/`, req => {
+      let { query } = req.queryParams,
+        rows = response3.rows.filter(row => `${row.id} ${row.description}`.includes(query));
+
+      return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ rows })];
+    });
+
+    await settled();
+
+    let res = await Service.searchValue('dimensionThree', 'v1');
+
+    assert.deepEqual(
+      A(res.rows).mapBy('desc'),
+      ['value1'],
+      'searchValue returns expected dimension values when searched for "v1"'
+    );
+
+    /* == no results == */
+    res = await Service.searchValue('dimensionThree', 'foo');
+
+    assert.deepEqual(A(res.rows), [], 'searchValue returns no dimension values as expected when searched for "foo"');
+
+    res = await Service.searchValue('dimensionThree', 'value1, value2');
+    A(res.rows).mapBy('id'), ['value1', 'value2'], 'searchValue returns dimensions when comma separated spaced value';
+  });
+
   test('searchValueField: contains search', async function(assert) {
     assert.expect(7);
 
@@ -602,6 +658,100 @@ module('Unit | Service | Dimensions', function(hooks) {
         assert.deepEqual(A(res).mapBy('id'), ['v2'], 'search returns dimension values for page 2 as expected');
 
         options = { term: 'foo', page: 2 };
+        assert.throws(
+          () => {
+            Service.search('product-region', options);
+          },
+          /for pagination both page and limit must be defined in search options/,
+          'search throws an error when both page and limit params attributes are not present in the search options'
+        );
+      });
+    });
+  });
+
+  test('search: low dimension cardinality with useNewSearchAPI=true', function(assert) {
+    assert.expect(3);
+
+    return settled().then(() => {
+      let options = { term: 'v1', useNewSearchAPI: true };
+      return Service.search('dimensionOne', options).then(res => {
+        assert.deepEqual(
+          A(res).mapBy('id'),
+          ['v1'],
+          'search returns dimension values as expected when searched for "v1"'
+        );
+
+        options.term = 'value1';
+        return Service.search('dimensionOne', options).then(res => {
+          assert.deepEqual(
+            A(res).mapBy('description'),
+            ['value1'],
+            'search returns dimension values as expected when searched for "value1"'
+          );
+
+          /* == no results == */
+          options.term = 'foo';
+          return Service.search('dimensionOne', options).then(res => {
+            assert.deepEqual(A(res), [], 'search returns no dimension values as expected when searched for "foo"');
+          });
+        });
+      });
+    });
+  });
+
+  test('search: high dimension cardinality with useNewSearchAPI=true', function(assert) {
+    assert.expect(2);
+
+    let response3 = {
+      rows: [
+        {
+          id: 'v1',
+          description: 'value1'
+        },
+        {
+          id: 'v2',
+          description: 'value2'
+        }
+      ],
+      meta: {
+        test: true
+      }
+    };
+
+    Server.get(`${HOST}/v1/dimensions/dimensionTwo/search/`, req => {
+      let { query } = req.queryParams,
+        rows = response3.rows.filter(row => `${row.id} ${row.description}`.includes(query));
+
+      return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ rows })];
+    });
+
+    return settled().then(() => {
+      let options = { term: 'v1', useNewSearchAPI: true };
+      return Service.search('dimensionTwo', options).then(res => {
+        assert.deepEqual(
+          A(res).mapBy('id'),
+          ['v1'],
+          'search returns expected dimension values when searched for "EMEA Region"'
+        );
+
+        /* == no results == */
+        options = { term: 'foo', useNewSearchAPI: true };
+        return Service.search('dimensionTwo', options).then(res => {
+          assert.deepEqual(A(res), [], 'search returns no dimension values as expected when searched for "foo"');
+        });
+      });
+    });
+  });
+
+  test('search: pagination with useNewSearchAPI=true', function(assert) {
+    assert.expect(2);
+
+    return settled().then(() => {
+      let options = { term: 'val', page: 2, limit: 1, useNewSearchAPI: true };
+      return Service.search('dimensionOne', options).then(res => {
+        assert.deepEqual(A(res).mapBy('id'), ['v2'], 'search returns dimension values for page 2 as expected');
+
+        options = { term: 'foo', page: 2, useNewSearchAPI: true };
         assert.throws(
           () => {
             Service.search('product-region', options);
