@@ -371,6 +371,15 @@ test('Save As report', function(assert) {
   visit('/reports/1');
   let container = Application.__container__;
 
+  const saveAsVisible = () => {
+    let el = find('.save-as__save-as-modal-btn');
+    if (el instanceof $) {
+      //use this to normalize, we can remove this once jquery is gone.
+      el = el[0];
+    }
+    return Boolean(el && el.offsetParent);
+  };
+
   // Change the Dim
   click('.checkbox-selector--dimension .grouped-list__item:contains(Week) .grouped-list__item-label');
 
@@ -379,7 +388,7 @@ test('Save As report', function(assert) {
 
   // The Modal with buttons is Visible
   andThen(() => {
-    assert.ok(find('.save-as__save-as-modal-btn').is(':visible'), 'Save As Modal is visible with save as key');
+    assert.ok(saveAsVisible(), 'Save As Modal is visible with save as key');
   });
 
   // Press the save as
@@ -405,7 +414,7 @@ test('Save As report', function(assert) {
       'New Saved Report is being viewed'
     );
 
-    assert.notOk(find('.save-as__save-as-modal-btn').is(':visible'), 'Save As Modal not visible after save');
+    assert.notOk(saveAsVisible(), 'Save As Modal not visible after save');
   });
 
   visit('/reports/1');
