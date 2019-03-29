@@ -23,7 +23,11 @@ const Validations = buildValidations(
         let request = get(options, 'request');
         return request && hasAllColumns(request, arr(columns));
       },
-      dependentKeys: ['model._request.dimensions.[]', 'model._request.metrics.[]']
+      dependentKeys: [
+        'model._request.dimensions.[]',
+        'model._request.metrics.[]',
+        'model._request.logicalTable.timeGrain.name'
+      ]
     })
   },
   {
@@ -54,7 +58,8 @@ export default VisualizationBase.extend(Validations, {
       metrics = get(request, 'metrics') || [],
       columns = get(this, 'metadata.columns'),
       // index column based on metricId or dimensionId
-      columnIndex = indexColumnById(columns);
+      columnIndex = indexColumnById(columns),
+      timeGrain = get(request, 'logicalTable.timeGrain.name');
 
     let dateColumn = {
       type: 'dateTime',
@@ -62,11 +67,12 @@ export default VisualizationBase.extend(Validations, {
       displayName: 'Date'
     };
 
-    let newColumns = [
-      dateColumn,
-      ...buildDimensionColumns(dimensions, columnIndex),
-      ...buildMetricColumns(metrics, columnIndex)
-    ];
+    let newColumns = [...buildDimensionColumns(dimensions, columnIndex), ...buildMetricColumns(metrics, columnIndex)];
+
+    //Add DateTime column when on timegrain other than All
+    if (timeGrain !== 'all') {
+      newColumns.unshift(dateColumn);
+    }
 
     set(this, 'metadata', {
       columns: columnTransform(newColumns, columns)
@@ -178,7 +184,9 @@ function columnTransform(newColumns, oldColumns) {
 
 /**
  * Determines if the columns include all dimensions
- * and metrics from the request
+ * and metrics from the request and if it should/does have
+ * a dateTime column based on the timeGrain
+ * (all timegrain shouldn't have dateTime column)
  *
  * @function hasAllColumns
  * @param {Object} request - request object
@@ -205,9 +213,16 @@ function hasAllColumns(request, columns) {
       })
     ),
     metrics = arr(get(request, 'metrics')).mapBy('canonicalName'),
-    requestFields = [...dimensions, ...metrics];
+    requestFields = [...dimensions, ...metrics],
+    timeGrain = get(request, 'logicalTable.timeGrain.name'),
+    shouldHaveDateTimeCol = timeGrain !== 'all',
+    doesHaveDateTimeCol = !!arr(columns).findBy('type', 'dateTime');
 
-  return requestFields.length === columnFields.length && requestFields.every(field => columnFields.includes(field));
+  return (
+    requestFields.length === columnFields.length &&
+    requestFields.every(field => columnFields.includes(field)) &&
+    shouldHaveDateTimeCol === doesHaveDateTimeCol
+  );
 }
 
 export function indexColumnById(columns) {
