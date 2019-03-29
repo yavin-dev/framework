@@ -1,3 +1,7 @@
+/**
+ * Copyright 2019, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
 package com.yahoo.navi.ws.test.framework
 
 import org.junit.After
@@ -40,7 +44,7 @@ abstract class IntegrationTest: RestAssuredSupport {
         fun assuredPort(): Int {
             // Grab port assigned from pom.xml plugin
             val restassuredPort = System.getProperty("restassured.port", System.getenv("restassured.port"))
-            return Integer.parseInt(if (restassuredPort != null && !restassuredPort!!.isEmpty()) restassuredPort else "9999")
+            return Integer.parseInt(if (restassuredPort != null && !restassuredPort.isEmpty()) restassuredPort else "9999")
         }
 
         /**

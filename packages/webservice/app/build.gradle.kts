@@ -13,7 +13,6 @@ application {
 dependencies {
     implementation(project(":models"))
     implementation("com.h2database", "h2", "1.3.176")
-    testImplementation("com.jayway.restassured", "rest-assured", "2.9.0")
 }
 
 java {
