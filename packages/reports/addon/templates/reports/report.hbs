@@ -78,7 +78,7 @@
             onclick={{pipe
               (route-action "validate" model)
               (route-action "runReport" model)
-              (toggle "showModal" this)
+              (toggle "showSaveAs" this)
           }}>
             Save As ...
           </button>
@@ -109,5 +109,5 @@
 
 {{report-actions/save-as
   model=model
-  showModal=showModal
+  showModal=showSaveAs
 }}
