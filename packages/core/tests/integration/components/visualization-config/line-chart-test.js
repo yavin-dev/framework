@@ -1,5 +1,8 @@
-import Ember from 'ember';
-import { moduleForComponent, test } from 'ember-qunit';
+import { run } from '@ember/runloop';
+import Component from '@ember/component';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { get } from '@ember/object';
 
@@ -20,13 +23,14 @@ let Template = hbs`
     }
   };
 
-moduleForComponent('visualization-config/line-chart', 'Integration | Component | visualization config/line chart', {
-  integration: true,
-  beforeEach() {
+module('Integration | Component | visualization config/line chart', function(hooks) {
+  setupRenderingTest(hooks);
+
+  hooks.beforeEach(function() {
     //mocking line chart type component
-    this.register(
+    this.owner.register(
       'component:visualization-config/chart-type/mock',
-      Ember.Component.extend({
+      Component.extend({
         classNames: ['mock'],
         click() {
           const handleUpdateConfig = get(this, 'onUpdateConfig');
@@ -40,29 +44,27 @@ moduleForComponent('visualization-config/line-chart', 'Integration | Component |
     this.set('options', chartOptions);
 
     this.set('onUpdateConfig', () => null);
-  }
-});
-
-test('component renders', function(assert) {
-  assert.expect(1);
-
-  this.render(Template);
-  assert.ok(
-    this.$('.line-chart-config .mock').is(':visible'),
-    'The Mock component is correctly rendered based on visualization type'
-  );
-});
-
-test('onUpdateConfig', function(assert) {
-  assert.expect(1);
-
-  this.set('onUpdateConfig', result => {
-    assert.deepEqual(result, chartOptions, 'onUpdateConfig action is called by the mock component');
   });
 
-  this.render(Template);
+  test('component renders', async function(assert) {
+    assert.expect(1);
 
-  Ember.run(() => {
-    this.$('.mock').click();
+    await render(Template);
+    assert.ok(
+      this.$('.line-chart-config .mock').is(':visible'),
+      'The Mock component is correctly rendered based on visualization type'
+    );
+  });
+
+  test('onUpdateConfig', async function(assert) {
+    assert.expect(1);
+
+    this.set('onUpdateConfig', result => {
+      assert.deepEqual(result, chartOptions, 'onUpdateConfig action is called by the mock component');
+    });
+
+    await render(Template);
+
+    await run(() => click('.mock'));
   });
 });

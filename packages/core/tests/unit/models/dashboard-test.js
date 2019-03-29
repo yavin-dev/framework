@@ -1,55 +1,35 @@
-import Ember from 'ember';
-import { moduleForModel, test } from 'ember-qunit';
+import { run } from '@ember/runloop';
+import { module, test } from 'qunit';
+import { setupTest } from 'ember-qunit';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
 
 let Store;
 
-moduleForModel('dashboard', 'Unit | Model | dashboard', {
-  // Specify the other units that are required for this test.
-  needs: [
-    'adapter:dashboard',
-    'adapter:dashboard-widget',
-    'adapter:delivery-rule',
-    'adapter:user',
-    'config:environment',
-    'model:dashboard-widget',
-    'model:deliverable-item',
-    'model:delivery-rule',
-    'model:fragments/presentation',
-    'model:report',
-    'model:user',
-    'serializer:dashboard',
-    'serializer:dashboard-widget',
-    'serializer:delivery-rule',
-    'serializer:user',
-    'service:user',
-    'transform:moment',
-    'transform:fragment',
-    'validator:presence',
-    'validator:recipients'
-  ],
-  beforeEach() {
-    Store = this.store();
+module('Unit | Model | dashboard', function(hooks) {
+  setupTest(hooks);
+
+  hooks.beforeEach(function() {
+    Store = this.owner.lookup('service:store');
     setupMock();
-    return this.container.lookup('service:user').findUser();
-  },
-  afterEach() {
+    return this.owner.lookup('service:user').findUser();
+  });
+
+  hooks.afterEach(function() {
     teardownMock();
-  }
-});
+  });
 
-test('Retrieving Records', function(assert) {
-  assert.expect(2);
+  test('Retrieving Records', async function(assert) {
+    assert.expect(2);
 
-  return Ember.run(() => {
-    return Store.findRecord('dashboard', 2).then(rec => {
+    await run(async () => {
+      const rec = await Store.findRecord('dashboard', 2);
       assert.deepEqual(
         JSON.parse(JSON.stringify(rec.toJSON())), //to remove undefined props
         {
           title: 'Dashboard 2',
           author: 'navi_user',
-          createdOn: '2016-01-01 00:00:00.000',
-          updatedOn: '2016-01-01 00:00:00.000',
+          createdOn: '2016-02-01 00:00:00.000',
+          updatedOn: '2016-02-01 00:00:00.000',
           presentation: {
             version: 1,
             layout: [
@@ -69,52 +49,46 @@ test('Retrieving Records', function(assert) {
       );
     });
   });
-});
 
-test('user relationship', function(assert) {
-  assert.expect(4);
+  test('user relationship', async function(assert) {
+    assert.expect(4);
 
-  return Ember.run(() => {
-    return Store.findRecord('user', 'navi_user').then(userModel => {
-      return Store.findRecord('dashboard', 2).then(dashboard => {
-        return dashboard.get('author').then(author => {
-          assert.deepEqual(author, userModel, 'Dashboard author property contains user model');
+    await run(async () => {
+      const userModel = await Store.findRecord('user', 'navi_user');
+      const dashboard = await Store.findRecord('dashboard', 2);
+      const author = await dashboard.get('author');
 
-          assert.ok(dashboard.get('isUserOwner'), 'Dashboard is owned by current user');
+      assert.deepEqual(author, userModel, 'Dashboard author property contains user model');
 
-          assert.notOk(dashboard.get('isUserEditor'), 'Editors list is not currently supported');
+      assert.ok(dashboard.get('isUserOwner'), 'Dashboard is owned by current user');
 
-          assert.ok(dashboard.get('canUserEdit'), 'Owner can edit dashboard');
-        });
-      });
+      assert.notOk(dashboard.get('isUserEditor'), 'Editors list is not currently supported');
+
+      assert.ok(dashboard.get('canUserEdit'), 'Owner can edit dashboard');
     });
   });
-});
 
-test('isFavorite', function(assert) {
-  assert.expect(2);
+  test('isFavorite', async function(assert) {
+    assert.expect(2);
 
-  return Ember.run(() => {
-    // Make sure user is loaded into store
-    return Store.findRecord('user', 'navi_user').then(() => {
-      return Store.findRecord('dashboard', 2).then(model => {
-        assert.notOk(model.get('isFavorite'), 'isFavorite returns false when dashboard is not in favorite list');
+    await run(async () => {
+      // Make sure user is loaded into store
+      await Store.findRecord('user', 'navi_user');
+      const dashboard2 = await Store.findRecord('dashboard', 2);
+      assert.notOk(dashboard2.get('isFavorite'), 'isFavorite returns false when dashboard is not in favorite list');
 
-        return Store.findRecord('dashboard', 1).then(model => {
-          assert.ok(model.get('isFavorite'), 'isFavorite returns true when dashboard is in favorite list');
-        });
-      });
+      const dashboard1 = await Store.findRecord('dashboard', 1);
+      assert.ok(dashboard1.get('isFavorite'), 'isFavorite returns true when dashboard is in favorite list');
     });
   });
-});
 
-test('Cloning Dashboards', function(assert) {
-  assert.expect(1);
+  test('Cloning Dashboards', async function(assert) {
+    assert.expect(1);
 
-  return Ember.run(() => {
-    return Store.findRecord('dashboard', 3).then(model => {
-      let clonedModel = model.clone().toJSON(),
-        expectedModel = model.toJSON();
+    await run(async () => {
+      const model = await Store.findRecord('dashboard', 3);
+      const clonedModel = model.clone().toJSON();
+      const expectedModel = model.toJSON();
 
       expectedModel.author = 'navi_user';
 
@@ -125,27 +99,27 @@ test('Cloning Dashboards', function(assert) {
       assert.deepEqual(clonedModel, expectedModel, 'The cloned dashboard model has the same attrs as original model');
     });
   });
-});
 
-/**
- * TODO Fix test after moving to core
- * test('deliveryRuleForUser', function (assert) {
- *   assert.expect(1);
- *
- *   return Ember.run(() => {
- *     return Store.findRecord('user', 'navi_user').then(() => {
- *       return Store.findRecord('dashboard', 2).then(dashboardModel => {
- *         dashboardModel.user = {
- *           getUser: () => Store.peekRecord('user', 'navi_user')
- *         };
- *
- *         return dashboardModel.get('deliveryRuleForUser').then(rule => {
- *           assert.deepEqual(rule,
- *             Store.peekRecord('deliveryRule', 3),
- *             'deliveryRule is fetched for current user');
- *         });
- *       });
- *     });
- *   });
- * });
- */
+  /**
+   * TODO Fix test after moving to core
+   * test('deliveryRuleForUser', function (assert) {
+   *   assert.expect(1);
+   *
+   *   return Ember.run(() => {
+   *     return Store.findRecord('user', 'navi_user').then(() => {
+   *       return Store.findRecord('dashboard', 2).then(dashboardModel => {
+   *         dashboardModel.user = {
+   *           getUser: () => Store.peekRecord('user', 'navi_user')
+   *         };
+   *
+   *         return dashboardModel.get('deliveryRuleForUser').then(rule => {
+   *           assert.deepEqual(rule,
+   *             Store.peekRecord('deliveryRule', 3),
+   *             'deliveryRule is fetched for current user');
+   *         });
+   *       });
+   *     });
+   *   });
+   * });
+   */
+});

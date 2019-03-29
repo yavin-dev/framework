@@ -18,11 +18,16 @@
  *      {{/pick-form}}
  *   {{/pick-container}}
  */
-import Ember from 'ember';
+import { assert } from '@ember/debug';
+import { assign } from '@ember/polyfills';
+import { copy } from 'ember-copy';
+import { get, computed, observer } from '@ember/object';
+import { typeOf } from '@ember/utils';
+import $ from 'jquery';
+import Component from '@ember/component';
 import Layout from '../templates/components/pick-container';
-import { get, computed } from '@ember/object';
 
-export default Ember.Component.extend({
+export default Component.extend({
   layout: Layout,
 
   classNames: ['pick-container'],
@@ -79,19 +84,19 @@ export default Ember.Component.extend({
   /*
    * @method copySelection - clear any temporary changes and set internal selection state to a copy of outside state
    */
-  copySelection: Ember.observer('selection', function() {
+  copySelection: observer('selection', function() {
     let selection = this.get('selection'),
-      copy;
+      copied;
 
     //If type is object or ember object instance
-    if (Ember.typeOf(selection) === 'object' || Ember.typeOf(selection) === 'instance') {
+    if (typeOf(selection) === 'object' || typeOf(selection) === 'instance') {
       //deep copy object
-      copy = Ember.assign({}, selection);
+      copied = assign({}, selection);
     } else {
-      copy = Ember.copy(selection);
+      copied = copy(selection);
     }
 
-    this.set('_editableSelection', copy);
+    this.set('_editableSelection', copied);
   }),
 
   /**
@@ -108,19 +113,19 @@ export default Ember.Component.extend({
     this.set('_registered', {});
 
     // Setup "click off container" event
-    Ember.$(document).on(this.get('_clickEventName'), event => {
+    $(document).on(this.get('_clickEventName'), event => {
       /*
        * Since jQuery can't find the closest parent of stale elements,
        * ignore click events if the element was removed by another
        * click event handler. This prevents a click on an element
        * removed from the form being considered outside of the form.
        */
-      if (!Ember.$.contains(document.documentElement, event.target)) {
+      if (!$.contains(document.documentElement, event.target)) {
         return;
       }
 
       // Determine whether or not click came from inside form
-      if (Ember.$(event.target).closest('.pick-container').length === 0) {
+      if ($(event.target).closest('.pick-container').length === 0) {
         this._clickOffElement();
       }
     });
@@ -143,7 +148,7 @@ export default Ember.Component.extend({
   willDestroyElement() {
     this._super(...arguments);
 
-    Ember.$(document).off(this.get('_clickEventName'));
+    $(document).off(this.get('_clickEventName'));
   },
 
   /**
@@ -154,7 +159,7 @@ export default Ember.Component.extend({
   register(name, component) {
     let registeredComponents = this.get('_registered');
 
-    Ember.assert(name + ' is already registered', !registeredComponents[name]);
+    assert(name + ' is already registered', !registeredComponents[name]);
     registeredComponents[name] = component;
   },
 

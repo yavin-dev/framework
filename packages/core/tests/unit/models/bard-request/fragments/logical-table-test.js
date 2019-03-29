@@ -1,39 +1,22 @@
-import { moduleForModel, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupTest } from 'ember-qunit';
+import { settled } from '@ember/test-helpers';
 import { setupMock, teardownMock } from '../../../../helpers/mirage-helper';
-import wait from 'ember-test-helpers/wait';
-import { getOwner } from '@ember/application';
 import { run } from '@ember/runloop';
 
 var Store, MetadataService;
 
-moduleForModel('fragments-mock', 'Unit | Model Fragment | BardRequest - Logical Table', {
-  needs: [
-    'transform:fragment',
-    'transform:table',
-    'model:bard-request/fragments/logicalTable',
-    'validator:presence',
-    'service:bard-metadata',
-    'adapter:bard-metadata',
-    'serializer:bard-metadata',
-    'service:keg',
-    'service:ajax',
-    'service:bard-facts',
-    'model:metadata/table',
-    'model:metadata/dimension',
-    'model:metadata/metric',
-    'model:metadata/time-grain',
-    'service:bard-dimensions',
-    'adapter:dimensions/bard'
-  ],
+module('Unit | Model Fragment | BardRequest - Logical Table', function(hooks) {
+  setupTest(hooks);
 
-  async beforeEach() {
+  hooks.beforeEach(async function() {
     setupMock();
-    Store = getOwner(this).lookup('service:store');
-    MetadataService = getOwner(this).lookup('service:bard-metadata');
+    Store = this.owner.lookup('service:store');
+    MetadataService = this.owner.lookup('service:bard-metadata');
 
     await MetadataService.loadMetadata().then(() => {
       //Add instances to the store
-      return run(() => {
+      run(() => {
         Store.pushPayload({
           data: {
             id: 1,
@@ -48,51 +31,51 @@ moduleForModel('fragments-mock', 'Unit | Model Fragment | BardRequest - Logical 
         });
       });
     });
-  },
-  afterEach() {
-    teardownMock();
-  }
-});
-
-test('Model using the Logical Table Fragment', function(assert) {
-  assert.expect(5);
-
-  let mockModel = Store.peekRecord('fragments-mock', 1);
-  assert.ok(mockModel, 'mockModel is fetched from the store');
-
-  return run(() => {
-    /* == Getter Method == */
-    assert.equal(
-      mockModel.get('table.table.description'),
-      'Network, Product, and Property level data',
-      'The property `table` has the description `Network table`'
-    );
-
-    assert.equal(mockModel.get('table.timeGrainName'), 'day', 'The property `table` has the time grain `day`');
-
-    /* == Setter Method == */
-    mockModel.set('table.table', MetadataService.getById('table', 'tableA'));
-    mockModel.set('table.timeGrainName', 'week');
-
-    assert.equal(
-      mockModel.get('table.table.description'),
-      'Table A',
-      'The property `table` has been updated with the description `Table A`'
-    );
-
-    assert.equal(
-      mockModel.get('table.timeGrainName'),
-      'week',
-      'The property `table` has been updated with the time grain `week`'
-    );
   });
-});
 
-test('Computed timeGrains', function(assert) {
-  assert.expect(3);
+  hooks.afterEach(function() {
+    teardownMock();
+  });
 
-  return wait().then(() => {
-    return run(() => {
+  test('Model using the Logical Table Fragment', function(assert) {
+    assert.expect(5);
+
+    let mockModel = Store.peekRecord('fragments-mock', 1);
+    assert.ok(mockModel, 'mockModel is fetched from the store');
+
+    run(() => {
+      /* == Getter Method == */
+      assert.equal(
+        mockModel.get('table.table.description'),
+        'Network, Product, and Property level data',
+        'The property `table` has the description `Network table`'
+      );
+
+      assert.equal(mockModel.get('table.timeGrainName'), 'day', 'The property `table` has the time grain `day`');
+
+      /* == Setter Method == */
+      mockModel.set('table.table', MetadataService.getById('table', 'tableA'));
+      mockModel.set('table.timeGrainName', 'week');
+
+      assert.equal(
+        mockModel.get('table.table.description'),
+        'Table A',
+        'The property `table` has been updated with the description `Table A`'
+      );
+
+      assert.equal(
+        mockModel.get('table.timeGrainName'),
+        'week',
+        'The property `table` has been updated with the time grain `week`'
+      );
+    });
+  });
+
+  test('Computed timeGrains', async function(assert) {
+    assert.expect(3);
+
+    await settled();
+    run(() => {
       let mockModel = Store.peekRecord('fragments-mock', 1);
 
       assert.equal(
@@ -120,12 +103,11 @@ test('Computed timeGrains', function(assert) {
       );
     });
   });
-});
 
-test('timeGrain updates when table changed', function(assert) {
-  assert.expect(2);
+  test('timeGrain updates when table changed', async function(assert) {
+    assert.expect(2);
 
-  return wait().then(() => {
+    await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1);
 
     run(() => {
@@ -144,12 +126,11 @@ test('timeGrain updates when table changed', function(assert) {
       );
     });
   });
-});
 
-test('Validations', function(assert) {
-  assert.expect(8);
+  test('Validations', async function(assert) {
+    assert.expect(8);
 
-  return wait().then(() => {
+    await settled();
     let logicalTable = run(function() {
       return Store.peekRecord('fragments-mock', 1).get('table');
     });

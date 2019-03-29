@@ -4,10 +4,9 @@
  */
 
 import DS from 'ember-data';
-import MF from 'model-fragments';
+import Fragment from 'ember-data-model-fragments/fragment';
+import { fragment } from 'ember-data-model-fragments/attributes';
 import { validator, buildValidations } from 'ember-cp-validations';
-
-const { Fragment, fragment } = MF;
 
 const Validations = buildValidations({
   metric: validator('presence', {

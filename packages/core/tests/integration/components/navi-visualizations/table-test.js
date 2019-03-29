@@ -1,11 +1,11 @@
 import config from 'ember-get-config';
 import { set } from '@ember/object';
 import { A as arr } from '@ember/array';
-import { getOwner } from '@ember/application';
 import merge from 'lodash/merge';
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render, settled, click, find, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import wait from 'ember-test-helpers/wait';
 import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
 
 const TEMPLATE = hbs`
@@ -130,9 +130,10 @@ const Options = {
   ]
 };
 
-moduleForComponent('navi-visualizations/table', 'Integration | Component | table', {
-  integration: true,
-  beforeEach() {
+module('Integration | Component | table', function(hooks) {
+  setupRenderingTest(hooks);
+
+  hooks.beforeEach(function() {
     config.navi.FEATURES.enableVerticalCollectionTableIterator = true;
     setupMock();
 
@@ -140,49 +141,31 @@ moduleForComponent('navi-visualizations/table', 'Integration | Component | table
     this.set('options', Options);
     this.set('onUpdateReport', () => {});
 
-    return getOwner(this)
-      .lookup('service:bard-metadata')
-      .loadMetadata();
-  },
-  afterEach() {
+    return this.owner.lookup('service:bard-metadata').loadMetadata();
+  });
+
+  hooks.afterEach(function() {
     config.navi.FEATURES.enableVerticalCollectionTableIterator = false;
     teardownMock();
-  }
-});
+  });
 
-test('it renders', function(assert) {
-  assert.expect(3);
+  test('it renders', async function(assert) {
+    assert.expect(3);
 
-  this.render(TEMPLATE);
+    await render(TEMPLATE);
 
-  return wait().then(() => {
-    assert.ok(this.$('.table-widget').is(':visible'), 'The table widget component is visible');
+    assert.dom('.table-widget').isVisible('The table widget component is visible');
 
-    let headers = this.$('.table-header-row-vc--view .table-header-cell')
-      .toArray()
-      .map(el =>
-        this.$(el)
-          .text()
-          .trim()
-      );
+    let headers = findAll('.table-header-row-vc--view .table-header-cell').map(el => el.textContent.trim());
 
     assert.deepEqual(
       headers,
       ['Date', 'Operating System', 'Unique Identifiers', 'Total Page Views', 'Platform Revenue (USD)'],
       'The table renders the headers correctly based on the request'
     );
-    let body = this.$('tbody tr')
-      .toArray()
-      .map(row =>
-        this.$(row)
-          .find('.table-cell')
-          .toArray()
-          .map(cell =>
-            this.$(cell)
-              .text()
-              .trim()
-          )
-      );
+    let body = findAll('tbody tr').map(row =>
+      [...row.querySelectorAll('.table-cell')].map(cell => cell.textContent.trim())
+    );
 
     assert.deepEqual(
       body,
@@ -199,57 +182,54 @@ test('it renders', function(assert) {
       'The table renders the response dataset correctly'
     );
   });
-});
 
-test('onUpdateReport', function(assert) {
-  assert.expect(9);
+  test('onUpdateReport', async function(assert) {
+    assert.expect(9);
 
-  this.set(
-    'options',
-    merge({}, Options, {
-      columns: [
-        {
-          attributes: { name: 'dateTime' },
-          type: 'dateTime',
-          displayName: 'Date'
-        },
-        {
-          attributes: { name: 'os' },
-          type: 'dimension',
-          displayName: 'Operating System'
-        },
-        {
-          attributes: { name: 'uniqueIdentifier', parameters: {} },
-          type: 'metric',
-          displayName: 'Unique Identifiers'
-        },
-        {
-          attributes: { name: 'totalPageViews', parameters: {} },
-          type: 'metric',
-          displayName: 'Total Page Views'
-        },
-        {
-          attributes: { name: 'platformRevenue', parameters: { currency: 'USD' } },
-          type: 'metric',
-          displayName: 'Platform Revenue (USD)'
-        },
-        {
-          attributes: { name: 'totalPageViewsWoW', parameters: {} },
-          type: 'threshold',
-          displayName: 'Total Page Views WoW'
-        }
-      ]
-    })
-  );
+    this.set(
+      'options',
+      merge({}, Options, {
+        columns: [
+          {
+            attributes: { name: 'dateTime' },
+            type: 'dateTime',
+            displayName: 'Date'
+          },
+          {
+            attributes: { name: 'os' },
+            type: 'dimension',
+            displayName: 'Operating System'
+          },
+          {
+            attributes: { name: 'uniqueIdentifier', parameters: {} },
+            type: 'metric',
+            displayName: 'Unique Identifiers'
+          },
+          {
+            attributes: { name: 'totalPageViews', parameters: {} },
+            type: 'metric',
+            displayName: 'Total Page Views'
+          },
+          {
+            attributes: { name: 'platformRevenue', parameters: { currency: 'USD' } },
+            type: 'metric',
+            displayName: 'Platform Revenue (USD)'
+          },
+          {
+            attributes: { name: 'totalPageViewsWoW', parameters: {} },
+            type: 'threshold',
+            displayName: 'Total Page Views WoW'
+          }
+        ]
+      })
+    );
 
-  this.set('onUpdateReport', () => {
-    assert.notok(true, 'onUpdateReport should not be called when a dimension header is clicked');
-  });
+    this.set('onUpdateReport', () => {
+      assert.notok(true, 'onUpdateReport should not be called when a dimension header is clicked');
+    });
 
-  this.render(TEMPLATE);
-
-  return wait().then(() => {
-    this.$('.table-header-row-vc--view .table-header-cell.dimension').click();
+    await render(TEMPLATE);
+    await click('.table-header-row-vc--view .table-header-cell.dimension');
 
     this.set('onUpdateReport', (actionType, metricName, direction) => {
       assert.equal(actionType, 'upsertSort', 'the action type is `upsertSort`');
@@ -259,7 +239,7 @@ test('onUpdateReport', function(assert) {
       assert.equal(direction, 'asc', 'The asc direction is passed along when the dateTime header is clicked');
     });
 
-    this.$('.table-header-row-vc--view .table-header-cell.dateTime').click();
+    await click('.table-header-row-vc--view .table-header-cell.dateTime');
 
     this.set('onUpdateReport', (actionType, metricName, direction) => {
       assert.equal(actionType, 'upsertSort', 'the action type is `upsertSort`');
@@ -289,29 +269,18 @@ test('onUpdateReport', function(assert) {
 
     this.$('.table-header-row-vc--view .table-header-cell.threshold:contains(Total Page Views WoW)').click();
   });
-});
 
-test('grand total in table', function(assert) {
-  assert.expect(3);
+  test('grand total in table', async function(assert) {
+    assert.expect(3);
 
-  let options = merge({}, Options, { showTotals: { grandTotal: true } });
-  this.set('options', options);
+    let options = merge({}, Options, { showTotals: { grandTotal: true } });
+    this.set('options', options);
 
-  this.render(TEMPLATE);
+    await render(TEMPLATE);
 
-  return wait().then(() => {
-    assert.ok(
-      this.$('.table-row__total-row').is(':visible'),
-      'The total row is visible when show grand total is `true`'
-    );
+    assert.dom('.table-row__total-row').isVisible('The total row is visible when show grand total is `true`');
 
-    let totalRow = this.$('.table-row__total-row .table-cell')
-      .toArray()
-      .map(cell =>
-        this.$(cell)
-          .text()
-          .trim()
-      );
+    let totalRow = findAll('.table-row__total-row .table-cell').map(cell => cell.textContent.trim());
 
     assert.deepEqual(
       totalRow,
@@ -320,38 +289,26 @@ test('grand total in table', function(assert) {
     );
 
     //Turn off the flag
-    set(options, 'showTotals.grandTotal', false);
+    set(this, 'options.showTotals.grandTotal', false);
 
-    return wait().then(() => {
-      assert.notOk(
-        this.$('.table-row__total-row').is(':visible'),
-        'The total row is not visible when show grand total is `false`'
-      );
-    });
+    await settled();
+
+    assert.dom('.table-row__total-row').isNotVisible('The total row is not visible when show grand total is `false`');
   });
-});
 
-test('subtotals in table', function(assert) {
-  assert.expect(2);
+  test('subtotals in table', async function(assert) {
+    assert.expect(2);
 
-  let options = merge({}, Options, { showTotals: { subtotal: 'os' } });
+    let options = merge({}, Options, { showTotals: { subtotal: 'os' } });
 
-  Model[0].response.rows = ROWS.slice(0, 4);
-  this.set('model', Model);
-  this.set('options', options);
+    Model[0].response.rows = ROWS.slice(0, 4);
+    this.set('model', Model);
+    this.set('options', options);
 
-  this.render(TEMPLATE);
+    await render(TEMPLATE);
 
-  return wait().then(() => {
     assert.deepEqual(
-      this.$('.table-row__total-row')
-        .toArray()
-        .map(el =>
-          $(el)
-            .text()
-            .replace(/\s+/g, ' ')
-            .trim()
-        ),
+      findAll('.table-row__total-row').map(el => el.textContent.replace(/\s+/g, ' ').trim()),
       [
         'Subtotal All Other 345,867,576 7,339,656,714 0',
         'Subtotal Android 183,206,656 4,088,487,125 0',
@@ -363,118 +320,77 @@ test('subtotals in table', function(assert) {
     let newOptions = merge({}, options, { showTotals: { grandTotal: true } });
     this.set('options', newOptions);
 
-    return wait().then(() => {
-      assert.deepEqual(
-        this.$('.table-row__total-row')
-          .toArray()
-          .map(el =>
-            $(el)
-              .text()
-              .replace(/\s+/g, ' ')
-              .trim()
-          ),
-        [
-          'Subtotal All Other 345,867,576 7,339,656,714 0',
-          'Subtotal Android 183,206,656 4,088,487,125 0',
-          'Subtotal BlackBerry OS 183,380,921 4,024,700,302 0',
-          'Grand Total -- 712,455,153 15,452,844,141 0'
-        ],
-        'The total rows including grandTotal are visible along with the subtotals'
-      );
-    });
-  });
-});
-
-test('subtotals by date in table', function(assert) {
-  assert.expect(1);
-
-  let options = merge({}, Options, { showTotals: { subtotal: 'dateTime' } });
-
-  Model[0].response.rows = ROWS.slice(0, 4);
-  this.set('model', Model);
-  this.set('options', options);
-
-  this.render(TEMPLATE);
-
-  return wait().then(() => {
+    await settled();
     assert.deepEqual(
-      this.$('.table-row__total-row')
-        .toArray()
-        .map(el =>
-          $(el)
-            .text()
-            .replace(/\s+/g, ' ')
-            .trim()
-        ),
+      findAll('.table-row__total-row').map(el => el.textContent.replace(/\s+/g, ' ').trim()),
+      [
+        'Subtotal All Other 345,867,576 7,339,656,714 0',
+        'Subtotal Android 183,206,656 4,088,487,125 0',
+        'Subtotal BlackBerry OS 183,380,921 4,024,700,302 0',
+        'Grand Total -- 712,455,153 15,452,844,141 0'
+      ],
+      'The total rows including grandTotal are visible along with the subtotals'
+    );
+  });
+
+  test('subtotals by date in table', async function(assert) {
+    assert.expect(1);
+
+    let options = merge({}, Options, { showTotals: { subtotal: 'dateTime' } });
+
+    Model[0].response.rows = ROWS.slice(0, 4);
+    this.set('model', Model);
+    this.set('options', options);
+
+    await render(TEMPLATE);
+
+    assert.deepEqual(
+      findAll('.table-row__total-row').map(el => el.textContent.replace(/\s+/g, ' ').trim()),
       ['Subtotal -- 539,521,365 11,783,015,784 0', 'Subtotal -- 172,933,788 3,669,828,357 0'],
       'The subtotal rows are visible for each group of the specified subtotal in the options'
     );
   });
-});
 
-test('table row info', function(assert) {
-  assert.expect(1);
+  test('table row info', async function(assert) {
+    assert.expect(1);
 
-  let model = merge({}, Model, [
-    {
-      response: {
-        meta: {
-          pagination: {
-            numberOfResults: 10
-          }
-        }
+    Model[0].response.rows = ROWS.slice(0, 4);
+    Model[0].response.meta = {
+      pagination: {
+        numberOfResults: 10
       }
-    }
-  ]);
+    };
 
-  this.set('model', model);
-  this.render(TEMPLATE);
+    await render(TEMPLATE);
 
-  return wait().then(() => {
     assert.equal(
-      this.$('.table-widget__row-info')
-        .text()
-        .replace(/\s+/g, ' ')
+      find('.table-widget__row-info')
+        .textContent.replace(/\s+/g, ' ')
         .trim(),
       '4 out of 10 rows',
       'The row info is always shown'
     );
   });
-});
 
-test('totals and subtotals for partial data', function(assert) {
-  assert.expect(1);
+  test('totals and subtotals for partial data', async function(assert) {
+    assert.expect(1);
 
-  Model[0].response.rows = ROWS.slice(0, 4);
-  let model = merge({}, Model, [
-      {
-        response: {
-          meta: {
-            pagination: {
-              numberOfResults: 10
-            }
-          }
-        }
+    Model[0].response.rows = ROWS.slice(0, 4);
+    Model[0].response.meta = {
+      pagination: {
+        numberOfResults: 10
       }
-    ]),
-    options = merge({}, Options, {
+    };
+
+    let options = merge({}, Options, {
       showTotals: { grandTotal: true, subtotal: 'os' }
     });
 
-  this.set('model', model);
-  this.set('options', options);
-  this.render(TEMPLATE);
+    this.set('options', options);
+    await render(TEMPLATE);
 
-  return wait().then(() => {
     assert.deepEqual(
-      this.$('.table-row__total-row')
-        .toArray()
-        .map(el =>
-          $(el)
-            .text()
-            .replace(/\s+/g, ' ')
-            .trim()
-        ),
+      findAll('.table-row__total-row').map(el => el.textContent.replace(/\s+/g, ' ').trim()),
       [
         'Subtotal All Other -- -- --',
         'Subtotal Android -- -- --',
@@ -484,15 +400,13 @@ test('totals and subtotals for partial data', function(assert) {
       'The metric totals are not calculated when only partial data is displayed in table'
     );
   });
-});
 
-test('sort icon for a parameterized metric', function(assert) {
-  assert.expect(2);
+  test('sort icon for a parameterized metric', async function(assert) {
+    assert.expect(2);
 
-  this.set('model', Model);
-  this.render(TEMPLATE);
+    this.set('model', Model);
+    await render(TEMPLATE);
 
-  return wait().then(() => {
     assert.ok(
       this.$('.table-header-cell:contains(Platform Revenue) .navi-table-sort-icon--desc').is(':visible'),
       'The right sort metric is recognized from the alias'
@@ -503,26 +417,24 @@ test('sort icon for a parameterized metric', function(assert) {
       'Even if not an alias, the correct sort metric is recognized'
     );
   });
-});
 
-test('table header cell display name', function(assert) {
-  assert.expect(2);
+  test('table header cell display name', async function(assert) {
+    assert.expect(2);
 
-  this.set(
-    'options',
-    merge({}, Options, {
-      columns: [
-        {
-          field: 'dateTime',
-          type: 'dateTime',
-          displayName: 'Customize Date'
-        }
-      ]
-    })
-  );
-  this.render(TEMPLATE);
+    this.set(
+      'options',
+      merge({}, Options, {
+        columns: [
+          {
+            field: 'dateTime',
+            type: 'dateTime',
+            displayName: 'Customize Date'
+          }
+        ]
+      })
+    );
+    await render(TEMPLATE);
 
-  return wait().then(() => {
     assert.ok(
       this.$('.table-header-cell:contains(Customize Date)').is(':visible'),
       'Customize Date should be shown as title in dateTime field'
@@ -541,11 +453,10 @@ test('table header cell display name', function(assert) {
       })
     );
 
-    return wait().then(() => {
-      assert.ok(
-        this.$('.table-header-cell:contains(Date)').is(':visible'),
-        'Date should be shown as title in dateTime field'
-      );
-    });
+    await settled();
+    assert.ok(
+      this.$('.table-header-cell:contains(Date)').is(':visible'),
+      'Date should be shown as title in dateTime field'
+    );
   });
 });

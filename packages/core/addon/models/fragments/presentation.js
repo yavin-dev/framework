@@ -4,9 +4,9 @@
  */
 
 import DS from 'ember-data';
-import MF from 'model-fragments';
+import Fragment from 'ember-data-model-fragments/fragment';
 
-export default MF.Fragment.extend({
+export default Fragment.extend({
   columns: DS.attr('number', { defaultValue: 12 }),
   layout: DS.attr({ defaultValue: () => [] }),
   version: DS.attr('number', { defaultValue: '1' })

@@ -1,10 +1,11 @@
-import Ember from 'ember';
+import { inject as service } from '@ember/service';
+import Route from '@ember/routing/route';
 
-export default Ember.Route.extend({
+export default Route.extend({
   /**
    * @property {Ember.Service}
    */
-  bardMetadata: Ember.inject.service(),
+  bardMetadata: service(),
 
   /**
    * @method model

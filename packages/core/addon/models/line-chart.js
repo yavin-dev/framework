@@ -3,14 +3,13 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import Ember from 'ember';
+import { readOnly } from '@ember/object/computed';
+import { set, get, computed } from '@ember/object';
 import DS from 'ember-data';
 import VisualizationBase from './visualization';
 import ChartVisualization from 'navi-core/mixins/models/chart-visualization';
 import { validator, buildValidations } from 'ember-cp-validations';
 import { METRIC_SERIES, DIMENSION_SERIES, DATE_TIME_SERIES, chartTypeForRequest } from 'navi-core/utils/chart-data';
-
-const { computed, get, set } = Ember;
 
 const SERIES_PATH = 'metadata.axis.y.series';
 const CONFIG_PATH = `${SERIES_PATH}.config`;
@@ -74,16 +73,11 @@ const Validations = buildValidations(
   },
   {
     //Global Validation Options
-    chartType: computed(
-      'model._request.dimensions.[]',
-      'model._request.metrics.[]',
-      'model._request.intervals.firstObject.interval',
-      function() {
-        let request = get(this, 'request');
-        return request && chartTypeForRequest(request);
-      }
-    ),
-    request: computed.readOnly('model._request')
+    chartType: computed('model._request.{dimensions.[],metrics.[],intervals.firstObject.interval}', function() {
+      let request = get(this, 'request');
+      return request && chartTypeForRequest(request);
+    }),
+    request: readOnly('model._request')
   }
 );
 

@@ -1,14 +1,14 @@
-import Ember from 'ember';
+import Controller from '@ember/controller';
+import { A as arr } from '@ember/array';
+import { setProperties, set, get, computed } from '@ember/object';
 import isEqual from 'lodash/isEqual';
 import merge from 'lodash/merge';
 import omit from 'lodash/omit';
 
-const { A: arr, computed, get, set, setProperties } = Ember;
-
-export default Ember.Controller.extend({
-  request: {
+export default Controller.extend({
+  request: computed(() => ({
     dimensions: [{ dimension: { name: 'os', longName: 'Operating System' } }]
-  },
+  })),
 
   visualization: computed('options', function() {
     return {
@@ -19,7 +19,7 @@ export default Ember.Controller.extend({
   }),
 
   //options passed through to the table component
-  options: {
+  options: computed(() => ({
     columns: [
       {
         attributes: { name: 'dateTime' },
@@ -51,7 +51,7 @@ export default Ember.Controller.extend({
       grandTotal: true,
       subtotal: true
     }
-  },
+  })),
 
   upsertSort(options) {
     let request = arr(get(this, 'model.firstObject.request'));

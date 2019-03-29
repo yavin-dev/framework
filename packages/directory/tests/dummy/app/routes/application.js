@@ -1,4 +1,3 @@
-import { get } from '@ember/object';
 import Route from '@ember/routing/route';
 import { inject } from '@ember/service';
 import { hash } from 'rsvp';
@@ -13,8 +12,8 @@ export default Route.extend({
 
   model() {
     return hash({
-      user: get(this, 'user').findOrRegister(),
-      metadata: get(this, 'bardMetadata').loadMetadata()
+      user: this.user.findOrRegister(),
+      metadata: this.bardMetadata.loadMetadata()
     }).then(() => undefined);
   },
 

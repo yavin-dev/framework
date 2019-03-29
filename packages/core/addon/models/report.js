@@ -3,15 +3,16 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import Ember from 'ember';
+import { inject as service } from '@ember/service';
+import { A as arr } from '@ember/array';
+import { computed, get } from '@ember/object';
 import DS from 'ember-data';
-import MF from 'model-fragments';
+import { fragment } from 'ember-data-model-fragments/attributes';
 import DeliverableItem from 'navi-core/models/deliverable-item';
 import { v1 } from 'ember-uuid';
 import hasVisualization from 'navi-core/mixins/models/has-visualization';
 import { validator, buildValidations } from 'ember-cp-validations';
 
-const { A: arr, get, computed } = Ember;
 const Validations = buildValidations({
   visualization: [validator('belongs-to')],
   request: [validator('belongs-to')],
@@ -30,7 +31,7 @@ export default DeliverableItem.extend(hasVisualization, Validations, {
   createdOn: DS.attr('moment'),
   updatedOn: DS.attr('moment'),
   author: DS.belongsTo('user', { async: true }),
-  request: MF.fragment('bard-request/request', { defaultValue: {} }),
+  request: fragment('bard-request/request', { defaultValue: {} }),
 
   /**
    * @property {String} tempId - uuid for unsaved records
@@ -46,7 +47,7 @@ export default DeliverableItem.extend(hasVisualization, Validations, {
   /**
    * @property {Service} user
    */
-  user: Ember.inject.service(),
+  user: service(),
 
   /**
    * @property {Boolean} isOwner - is owner of report

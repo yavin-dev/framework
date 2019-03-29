@@ -16,7 +16,7 @@ import { isEmpty } from '@ember/utils';
 import BardDimensionArray from 'navi-data/models/bard-dimension-array';
 import SearchUtils from 'navi-data/utils/search';
 import config from 'ember-get-config';
-import _ from 'lodash';
+import intersection from 'lodash/intersection';
 
 const LOAD_CARDINALITY = config.navi.searchThresholds.contains;
 
@@ -240,7 +240,7 @@ export default Service.extend({
     assert('dimension must be defined', dimension);
 
     let searchOperator = A(
-      _.intersection(SEARCH_OPERATOR_PRIORITY, get(this, '_bardAdapter').supportedFilterOperators)
+      intersection(SEARCH_OPERATOR_PRIORITY, get(this, '_bardAdapter').supportedFilterOperators)
     ).objectAt(0);
 
     assert(
@@ -254,7 +254,7 @@ export default Service.extend({
   /**
    * Gets all dimension records containing the search string in the given field
    *
-   * @method searchValues
+   * @method searchValueField
    * @param {String} dimension - name of dimension
    * @param {String} field - dimension record/value field
    * @param {String} query - search query
@@ -282,6 +282,23 @@ export default Service.extend({
               .filter(_ => _)
           : [query]
     });
+  },
+
+  /**
+   * Gets all dimension records containing the search string
+   *
+   * @method searchValue
+   * @param {String} dimension - name of dimension
+   * @param {String} query - search query
+   * @returns {Promise} - Array Promise containing the search result
+   */
+  searchValue(dimension, query) {
+    let values = query
+      .split(/,\s+|\s+/)
+      .map(v => v.trim())
+      .filter(_ => _);
+
+    return get(this, '_bardAdapter').search(dimension, { values });
   },
 
   /**
@@ -323,6 +340,12 @@ export default Service.extend({
             options.page
           )
         ).mapBy('record');
+      });
+    } else if (options.useNewSearchAPI) {
+      promise = this.searchValue(dimension, query).then(dimValues => {
+        dimensionRecords = A(getWithDefault(dimValues, 'rows', []));
+
+        return A(SearchUtils.searchDimensionRecords(dimensionRecords, query, MAX_SEARCH_RESULT_COUNT)).mapBy('record');
       });
     } else {
       let promises = {

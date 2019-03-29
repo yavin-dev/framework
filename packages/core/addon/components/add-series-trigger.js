@@ -3,10 +3,10 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import Ember from 'ember';
+import Component from '@ember/component';
 import layout from '../templates/components/add-series-trigger';
 
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   /**

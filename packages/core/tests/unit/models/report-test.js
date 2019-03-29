@@ -1,13 +1,14 @@
-import Ember from 'ember';
-import { moduleForModel, test } from 'ember-qunit';
+import { all } from 'rsvp';
+import { run } from '@ember/runloop';
+import { get } from '@ember/object';
+import { module, test } from 'qunit';
+import { setupTest } from 'ember-qunit';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
 import config from 'ember-get-config';
 import Mirage from 'ember-cli-mirage';
 import DeliverableItem from 'navi-core/models/deliverable-item';
 
-const { get, getOwner } = Ember;
-
-let Store, MetadataService;
+let Store, MetadataService, server;
 
 const ExpectedRequest = {
     logicalTable: {
@@ -47,7 +48,7 @@ const ExpectedRequest = {
                 series: {
                   type: 'dimension',
                   config: {
-                    metric: 'adClicks',
+                    metric: { metric: 'adClicks', parameters: {} },
                     dimensionOrder: ['property'],
                     dimensions: [
                       { name: 'Property 1', values: { property: '114' } },
@@ -73,150 +74,83 @@ const ExpectedRequest = {
     }
   };
 
-moduleForModel('report', 'Unit | Model | report', {
-  needs: [
-    'adapter:report',
-    'adapter:user',
-    'adapter:delivery-rule',
-    'adapter:bard-metadata',
-    'adapter:dimensions/bard',
-    'model:user',
-    'transform:array',
-    'transform:fragment-array',
-    'transform:dimension',
-    'transform:fragment',
-    'transform:metric',
-    'transform:moment',
-    'transform:table',
-    'model:bard-request/request',
-    'model:bard-request/fragments/dimension',
-    'model:bard-request/fragments/filter',
-    'model:bard-request/fragments/having',
-    'model:bard-request/fragments/interval',
-    'model:bard-request/fragments/logicalTable',
-    'model:bard-request/fragments/metric',
-    'model:bard-request/fragments/sort',
-    'model:fragments/presentation',
-    'model:dashboard',
-    'model:delivery-rule',
-    'model:deliverable-item',
-    'model:metadata/table',
-    'model:metadata/dimension',
-    'model:metadata/metric',
-    'model:metadata/time-grain',
-    'model:line-chart',
-    'model:table',
-    'validator:chart-type',
-    'validator:request-metrics',
-    'validator:request-metric-exist',
-    'validator:request-dimension-order',
-    'validator:request-time-grain',
-    'validator:request-filters',
-    'validator:length',
-    'validator:belongs-to',
-    'validator:has-many',
-    'validator:interval',
-    'validator:presence',
-    'service:bard-metadata',
-    'serializer:bard-request/fragments/logical-table',
-    'serializer:bard-request/fragments/interval',
-    'serializer:bard-request/fragments/metric',
-    'serializer:bard-request/request',
-    'serializer:visualization',
-    'serializer:report',
-    'serializer:user',
-    'serializer:delivery-rule',
-    'serializer:bard-metadata',
-    'service:keg',
-    'service:ajax',
-    'service:bard-facts',
-    'service:user',
-    'service:bard-dimensions',
-    'validator:recipients',
-    'validator:request-time-grain'
-  ],
+module('Unit | Model | report', function(hooks) {
+  setupTest(hooks);
 
-  beforeEach() {
-    setupMock();
-    Store = this.store();
-    MetadataService = getOwner(this).lookup('service:bard-metadata');
+  hooks.beforeEach(function() {
+    server = setupMock();
+    Store = this.owner.lookup('service:store');
+    MetadataService = this.owner.lookup('service:bard-metadata');
     MetadataService.loadMetadata();
-  },
-  afterEach() {
+  });
+
+  hooks.afterEach(function() {
     teardownMock();
-  }
-});
+  });
 
-test('Retrieving records', function(assert) {
-  assert.expect(3);
+  test('Retrieving records', async function(assert) {
+    assert.expect(3);
 
-  return Ember.run(() => {
-    return Store.findRecord('report', 1).then(report => {
+    await run(async () => {
+      const report = await Store.findRecord('report', 1);
+
       assert.ok(report, 'Found report with id 1');
       assert.ok(report instanceof DeliverableItem, 'Report should be instance of DeliverableItem');
-
       assert.deepEqual(report.serialize(), ExpectedReport, 'Fetched report has all attributes as expected');
     });
   });
-});
 
-test('Coalescing find requests', function(assert) {
-  assert.expect(1);
+  test('Coalescing find requests', async function(assert) {
+    assert.expect(1);
 
-  server.urlPrefix = `${config.navi.appPersistence.uri}`;
-  server.get('/reports', (schema, request) => {
-    assert.equal(
-      request.queryParams['filter[reports.id]'],
-      '1,2,4',
-      'Multiple find requests are grouped using filter query param'
+    server.urlPrefix = `${config.navi.appPersistence.uri}`;
+    server.get('/reports', (schema, request) => {
+      assert.equal(
+        request.queryParams['filter[reports.id]'],
+        '1,2,4',
+        'Multiple find requests are grouped using filter query param'
+      );
+
+      // Test case doesn't care about actual repsonse, so skip mocking it
+      return new Mirage.Response(204);
+    });
+
+    await run(() =>
+      all([
+        this.owner.lookup('service:store').findRecord('report', 1),
+        this.owner.lookup('service:store').findRecord('report', 2),
+        this.owner.lookup('service:store').findRecord('report', 4)
+      ]).catch(() => 'Ignore empty response error')
     );
-
-    // Test case doesn't care about actual repsonse, so skip mocking it
-    return new Mirage.Response(204);
   });
 
-  return Ember.run(() => {
-    return Ember.RSVP.all([
-      this.store().findRecord('report', 1),
-      this.store().findRecord('report', 2),
-      this.store().findRecord('report', 4)
-    ]).catch(() => 'Ignore empty response error');
-  });
-});
+  test('Saving records', async function(assert) {
+    assert.expect(1);
 
-test('Saving records', function(assert) {
-  assert.expect(1);
-
-  return Ember.run(() => {
-    return Store.findRecord('user', 'navi_user').then(user => {
-      let report = {
+    await run(async () => {
+      const user = await Store.findRecord('user', 'navi_user');
+      const report = {
         title: 'New Report',
         author: user,
         request: null
       };
 
-      return Store.createRecord('report', report)
-        .save()
-        .then(savedReport => {
-          let id = savedReport.get('id');
+      const savedReport = await Store.createRecord('report', report).save();
+      const id = savedReport.get('id');
+      Store.unloadAll('report'); // flush cache/store
 
-          Store.unloadAll('report'); // flush cache/store
-
-          return Store.findRecord('report', id).then(() => {
-            assert.ok(true, 'Newly created report is persisted');
-          });
-        });
+      await Store.findRecord('report', id);
+      assert.ok(true, 'Newly created report is persisted');
     });
   });
-});
 
-test('Cloning Reports', function(assert) {
-  assert.expect(2);
+  test('Cloning Reports', async function(assert) {
+    assert.expect(2);
 
-  return Ember.run(() => {
-    return Store.findRecord('report', 1).then(model => {
-      let clonedModel = model.clone(Store),
-        expectedTitle = model.toJSON().title;
+    await run(async () => {
+      const model = await Store.findRecord('report', 1);
+      const clonedModel = model.clone(Store);
+      const expectedTitle = model.toJSON().title;
 
       assert.equal(clonedModel.title, expectedTitle, 'The report model is cloned as expected');
 
@@ -227,48 +161,43 @@ test('Cloning Reports', function(assert) {
       );
     });
   });
-});
 
-test('isOwner', function(assert) {
-  assert.expect(2);
+  test('isOwner', async function(assert) {
+    assert.expect(2);
 
-  return Ember.run(() => {
-    // Make sure user is loaded into store
-    return Store.findRecord('user', 'navi_user').then(() => {
-      return Store.findRecord('report', 3).then(model => {
-        assert.notOk(model.get('isOwner'), 'isOwner returns false when author does not match user');
+    await run(async () => {
+      // Make sure user is loaded into store
+      await Store.findRecord('user', 'navi_user');
 
-        return Store.findRecord('report', 1).then(model => {
-          assert.ok(model.get('isOwner'), 'isOwner returns true when user is the author of the report');
-        });
-      });
+      const report3 = await Store.findRecord('report', 3);
+      assert.notOk(report3.get('isOwner'), 'isOwner returns false when author does not match user');
+
+      const report1 = await Store.findRecord('report', 1);
+      assert.ok(report1.get('isOwner'), 'isOwner returns true when user is the author of the report');
     });
   });
-});
 
-test('isFavorite', function(assert) {
-  assert.expect(2);
+  test('isFavorite', async function(assert) {
+    assert.expect(2);
 
-  return Ember.run(() => {
-    // Make sure user is loaded into store
-    return Store.findRecord('user', 'navi_user').then(() => {
-      return Store.findRecord('report', 1).then(model => {
-        assert.notOk(model.get('isFavorite'), 'isFavorite returns false when report is not in favorite list');
+    await run(async () => {
+      // Make sure user is loaded into store
+      await Store.findRecord('user', 'navi_user');
+      const report1 = await Store.findRecord('report', 1);
 
-        return Store.findRecord('report', 2).then(model => {
-          assert.ok(model.get('isFavorite'), 'isFavorite returns true when report is in favorite list');
-        });
-      });
+      assert.notOk(report1.get('isFavorite'), 'isFavorite returns false when report is not in favorite list');
+
+      const report2 = await Store.findRecord('report', 2);
+      assert.ok(report2.get('isFavorite'), 'isFavorite returns true when report is in favorite list');
     });
   });
-});
 
-test('tempId', function(assert) {
-  assert.expect(3);
+  test('tempId', async function(assert) {
+    assert.expect(3);
 
-  return Ember.run(() => {
-    return Store.findRecord('user', 'navi_user').then(author => {
-      let report = Store.createRecord('report', {
+    await run(async () => {
+      const author = await Store.findRecord('user', 'navi_user');
+      const report = Store.createRecord('report', {
         author,
         request: null
       });
@@ -277,64 +206,57 @@ test('tempId', function(assert) {
 
       assert.equal(get(report, 'tempId'), get(report, 'tempId'), '`tempId` is always the same value');
 
-      return report.save().then(() => {
-        assert.notOk(!!get(report, 'tempId'), '`tempId` is null when `id` exists');
-      });
+      await report.save();
+      assert.notOk(!!get(report, 'tempId'), '`tempId` is null when `id` exists');
     });
   });
-});
 
-test('delivery rules relationship', function(assert) {
-  assert.expect(1);
+  test('delivery rules relationship', async function(assert) {
+    assert.expect(1);
 
-  return Ember.run(() => {
-    return Store.findRecord('report', 3).then(reportModel => {
-      return reportModel.get('deliveryRules').then(rules => {
-        assert.equal(
-          rules.get('firstObject'),
-          Store.peekRecord('deliveryRule', 1),
-          'report deliveryRule property contains deliveryRule model'
-        );
-      });
+    await run(async () => {
+      const reportModel = await Store.findRecord('report', 3);
+      const rules = await reportModel.get('deliveryRules');
+
+      assert.equal(
+        rules.get('firstObject'),
+        Store.peekRecord('deliveryRule', 1),
+        'report deliveryRule property contains deliveryRule model'
+      );
     });
   });
-});
 
-test('Validations', function(assert) {
-  assert.expect(5);
+  test('Validations', async function(assert) {
+    assert.expect(5);
 
-  return Ember.run(() => {
-    return Store.findRecord('report', 1).then(reportModel => {
-      return reportModel.validate().then(({ validations }) => {
-        assert.ok(validations.get('isValid'), 'report is valid');
-        assert.equal(validations.get('messages').length, 0, 'There are no validation errors');
-        reportModel.set('title', '');
-        return reportModel.validate().then(({ model, validations }) => {
-          assert.notOk(validations.get('isValid'), 'report is invalid');
-          assert.equal(validations.get('messages').length, 1, 'There is one validation error');
-          assert.notOk(model.get('validations.attrs.title.isValid'), 'Title must have a value');
-        });
-      });
+    await run(async () => {
+      const reportModel = await Store.findRecord('report', 1);
+      const s1 = await reportModel.validate();
+
+      assert.ok(s1.validations.get('isValid'), 'report is valid');
+      assert.equal(s1.validations.get('messages').length, 0, 'There are no validation errors');
+      reportModel.set('title', '');
+
+      const s2 = await reportModel.validate();
+      assert.notOk(s2.validations.get('isValid'), 'report is invalid');
+      assert.equal(s2.validations.get('messages').length, 1, 'There is one validation error');
+      assert.notOk(s2.model.get('validations.attrs.title.isValid'), 'Title must have a value');
     });
   });
-});
 
-test('deliveryRuleForUser', function(assert) {
-  assert.expect(1);
+  test('deliveryRuleForUser', async function(assert) {
+    assert.expect(1);
 
-  return Ember.run(() => {
-    return Store.findRecord('user', 'navi_user').then(() => {
-      return Store.findRecord('report', 3).then(reportModel => {
-        reportModel.user = {
-          getUser: () => {
-            return Store.peekRecord('user', 'navi_user');
-          }
-        };
+    await run(async () => {
+      const user = await Store.findRecord('user', 'navi_user');
+      const reportModel = await Store.findRecord('report', 3);
 
-        return reportModel.get('deliveryRuleForUser').then(rule => {
-          assert.deepEqual(rule, Store.peekRecord('deliveryRule', 1), 'deliveryRule is fetched for current user');
-        });
+      Object.defineProperty(reportModel, 'user', {
+        value: { getUser: () => user }
       });
+
+      const rule = await reportModel.get('deliveryRuleForUser');
+      assert.deepEqual(rule, Store.peekRecord('deliveryRule', 1), 'deliveryRule is fetched for current user');
     });
   });
 });

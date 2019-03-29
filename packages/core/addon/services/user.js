@@ -3,17 +3,17 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import Ember from 'ember';
+import Service, { inject as service } from '@ember/service';
+import { get } from '@ember/object';
 import config from 'ember-get-config';
 
-const { get, inject } = Ember;
 const NOT_FOUND = '404';
 
-export default Ember.Service.extend({
+export default Service.extend({
   /**
    * @property {Ember.Service} store
    */
-  store: inject.service(),
+  store: service(),
 
   /**
    * Gets user model given user ID without triggering a fetch, if  user ID not specified gets logged-in user

@@ -1,5 +1,7 @@
-import Ember from 'ember';
-import _ from 'lodash';
+import { resolve } from 'rsvp';
+import { A } from '@ember/array';
+import Route from '@ember/routing/route';
+import cloneDeep from 'lodash/cloneDeep';
 
 const MOCK_ROWS = [
   {
@@ -45,13 +47,13 @@ const MOCK_ROWS = [
   }
 ];
 
-export default Ember.Route.extend({
+export default Route.extend({
   model() {
-    let rows = Ember.A();
+    let rows = A();
 
     //20k rows
     for (let i = 0; i < 4000; i++) {
-      rows.pushObjects(_.cloneDeep(MOCK_ROWS));
+      rows.pushObjects(cloneDeep(MOCK_ROWS));
     }
 
     let meta = {
@@ -60,8 +62,8 @@ export default Ember.Route.extend({
       }
     };
 
-    return Ember.RSVP.resolve(
-      Ember.A([
+    return resolve(
+      A([
         {
           request: {
             dimensions: [{ dimension: 'os' }],

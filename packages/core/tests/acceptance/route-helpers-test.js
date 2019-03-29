@@ -1,30 +1,32 @@
-import { test } from 'qunit';
-import moduleForAcceptance from '../../tests/helpers/module-for-acceptance';
+import { click, visit } from '@ember/test-helpers';
+import { module, test } from 'qunit';
+import { setupApplicationTest } from 'ember-qunit';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
-moduleForAcceptance('Acceptance | route helpers');
+module('Acceptance | route helpers', function(hooks) {
+  setupApplicationTest(hooks);
+  setupMirage(hooks);
 
-test('route helpers', function(assert) {
-  assert.expect(6);
+  test('route helpers', async function(assert) {
+    assert.expect(6);
 
-  visit('/helpers');
-  andThen(function() {
-    assert.equal(find('#parent').text(), 'helpers', 'parent-route helper return parent route name');
+    await visit('/helpers');
+    assert.dom('#parent').hasText('helpers', 'parent-route helper return parent route name');
 
-    assert.equal(find('#current').text(), 'helpers.index', 'current-route helper return current route name');
+    assert.dom('#current').hasText('helpers.index', 'current-route helper return current route name');
 
-    assert.equal(
-      find('#sibling').text(),
-      'helpers.sibling',
-      'sibling-route helper return a generated name based on parent and given sibling name'
-    );
-  });
+    assert
+      .dom('#sibling')
+      .hasText(
+        'helpers.sibling',
+        'sibling-route helper return a generated name based on parent and given sibling name'
+      );
 
-  click('#link-to-child');
-  andThen(function() {
-    assert.equal(find('#parent').text(), 'helpers.child1', 'parent-route updates with route transition');
+    await click('#link-to-child');
+    assert.dom('#parent').hasText('helpers.child1', 'parent-route updates with route transition');
 
-    assert.equal(find('#current').text(), 'helpers.child1.child2', 'current-route updates with route transition');
+    assert.dom('#current').hasText('helpers.child1.child2', 'current-route updates with route transition');
 
-    assert.equal(find('#sibling').text(), 'helpers.child1.sibling', 'sibling-route updates with route transition');
+    assert.dom('#sibling').hasText('helpers.child1.sibling', 'sibling-route updates with route transition');
   });
 });

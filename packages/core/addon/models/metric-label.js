@@ -2,14 +2,14 @@
  * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
+import { readOnly } from '@ember/object/computed';
+import { A } from '@ember/array';
+import { get, set } from '@ember/object';
 import VisualizationBase from './visualization';
 import { buildValidations, validator } from 'ember-cp-validations';
-import Ember from 'ember';
 import DS from 'ember-data';
 import { metricFormat } from 'navi-data/helpers/metric-format';
 import NumberFormats from 'navi-core/utils/enums/number-formats';
-
-const { computed, set, get } = Ember;
 
 /**
  * @constant {Object} Validations - Validation object
@@ -21,7 +21,7 @@ const Validations = buildValidations(
   },
   {
     //Global Validation Options
-    request: computed.readOnly('model._request')
+    request: readOnly('model._request')
   }
 );
 
@@ -43,7 +43,7 @@ export default VisualizationBase.extend(Validations, {
    * @return {Object} this object
    */
   rebuildConfig(request /*response*/) {
-    let metrics = Ember.A(get(request, 'metrics')),
+    let metrics = A(get(request, 'metrics')),
       metric = get(metrics, 'firstObject').toJSON(),
       description = metricFormat(get(metrics, 'firstObject'), get(metrics, 'firstObject.metric.longName')),
       allFormats = NumberFormats,

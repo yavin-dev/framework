@@ -3,14 +3,13 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import Ember from 'ember';
+import { get, computed } from '@ember/object';
 import DS from 'ember-data';
-import MF from 'model-fragments';
+import { fragmentArray } from 'ember-data-model-fragments/attributes';
 import { v1 } from 'ember-uuid';
 import hasVisualization from 'navi-core/mixins/models/has-visualization';
 import { validator, buildValidations } from 'ember-cp-validations';
 
-const { computed, get } = Ember;
 const Validations = buildValidations({
   visualization: [validator('belongs-to')],
   request: [validator('belongs-to')],
@@ -28,7 +27,7 @@ export default DS.Model.extend(hasVisualization, Validations, {
   title: DS.attr('string', { defaultValue: 'Untitled Widget' }),
   createdOn: DS.attr('moment'),
   updatedOn: DS.attr('moment'),
-  requests: MF.fragmentArray('bard-request/request', {
+  requests: fragmentArray('bard-request/request', {
     defaultValue: () => []
   }),
 

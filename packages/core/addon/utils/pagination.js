@@ -3,9 +3,8 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import Ember from 'ember';
-
-const { assert, typeOf } = Ember;
+import { assert } from '@ember/debug';
+import { typeOf } from '@ember/utils';
 
 /**
  * Gets the paginated records given the page number and limit

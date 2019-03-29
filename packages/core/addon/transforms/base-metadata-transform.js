@@ -3,16 +3,16 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import Ember from 'ember';
+import { inject as service } from '@ember/service';
+import { get } from '@ember/object';
+import { isArray } from '@ember/array';
 import DS from 'ember-data';
-
-const { get, isArray } = Ember;
 
 export default DS.Transform.extend({
   /**
    * @property {Service} metadataService
    */
-  metadataService: Ember.inject.service('bard-metadata'),
+  metadataService: service('bard-metadata'),
 
   /**
    * @property {String} type - type of transform

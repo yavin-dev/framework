@@ -3,7 +3,8 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import { computed, get, set } from '@ember/object';
+import { readOnly } from '@ember/object/computed';
+import { get, set } from '@ember/object';
 import { A as arr } from '@ember/array';
 import DS from 'ember-data';
 import VisualizationBase from './visualization';
@@ -17,12 +18,12 @@ const Validations = buildValidations(
   {
     //Selected metric list  is the same as request metric list
     'metadata.metric': validator('request-metric-exist'),
-    'metadata.baselineValue': validator('number', { allowString: true }),
-    'metadata.goalValue': validator('number', { allowString: true })
+    'metadata.baselineValue': validator('number', { allowString: true, allowNone: false }),
+    'metadata.goalValue': validator('number', { allowString: true, allowNone: false })
   },
   {
     //Global Validation Options
-    request: computed.readOnly('model._request')
+    request: readOnly('model._request')
   }
 );
 

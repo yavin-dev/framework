@@ -61,8 +61,8 @@ export default [
   {
     id: 2,
     title: 'Hyrule Ad&Nav Clicks',
-    createdOn: '2015-01-01 11:00:00',
-    updatedOn: '2015-01-01 11:00:00',
+    createdOn: '2016-04-01 11:00:00',
+    updatedOn: '2016-04-01 11:00:00',
     authorId: 'navi_user',
     deliveryRuleIds: [],
     visualization: {

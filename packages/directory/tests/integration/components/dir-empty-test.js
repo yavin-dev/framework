@@ -9,6 +9,6 @@ module('Integration | Component | dir-empty', function(hooks) {
   test('it renders', async function(assert) {
     await render(hbs`{{dir-empty}}`);
 
-    assert.equal(this.element.textContent.trim(), 'Welcome to Navi, get started by creating a new report');
+    assert.dom(this.element).hasText('Welcome to Navi, get started by creating a new report');
   });
 });

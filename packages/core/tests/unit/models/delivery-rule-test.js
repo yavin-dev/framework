@@ -1,8 +1,7 @@
-import Ember from 'ember';
-import { moduleForModel, test } from 'ember-qunit';
+import { run } from '@ember/runloop';
+import { module, test } from 'qunit';
+import { setupTest } from 'ember-qunit';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
-
-const { getOwner } = Ember;
 
 let Store, MetadataService;
 
@@ -24,84 +23,25 @@ const ExpectedDeliveryRule = {
   version: 1
 };
 
-moduleForModel('delivery-rule', 'Unit | Model | delivery rule', {
-  // Specify the other units that are required for this test.
-  needs: [
-    'model:deliverable-item',
-    'model:delivery-rule',
-    'model:report',
-    'model:dashboard',
-    'adapter:report',
-    'adapter:user',
-    'adapter:delivery-rule',
-    'adapter:bard-metadata',
-    'adapter:dimensions/bard',
-    'transform:array',
-    'transform:fragment-array',
-    'transform:dimension',
-    'transform:fragment',
-    'transform:metric',
-    'transform:moment',
-    'transform:table',
-    'model:bard-request/request',
-    'model:bard-request/fragments/dimension',
-    'model:bard-request/fragments/filter',
-    'model:bard-request/fragments/having',
-    'model:bard-request/fragments/interval',
-    'model:bard-request/fragments/logicalTable',
-    'model:bard-request/fragments/metric',
-    'model:bard-request/fragments/sort',
-    'model:metadata/table',
-    'model:metadata/dimension',
-    'model:metadata/metric',
-    'model:metadata/time-grain',
-    'model:line-chart',
-    'model:table',
-    'validator:chart-type',
-    'validator:request-metrics',
-    'validator:request-metric-exist',
-    'validator:request-dimension-order',
-    'validator:length',
-    'validator:belongs-to',
-    'validator:has-many',
-    'validator:interval',
-    'validator:presence',
-    'validator:format',
-    'validator:recipients',
-    'validator:exclusion',
-    'service:bard-metadata',
-    'serializer:bard-request/fragments/logical-table',
-    'serializer:bard-request/fragments/interval',
-    'serializer:visualization',
-    'serializer:report',
-    'serializer:user',
-    'serializer:bard-metadata',
-    'service:keg',
-    'service:ajax',
-    'service:bard-facts',
-    'service:user',
-    'service:bard-dimensions',
-    'model:user',
-    'serializer:delivery-rule'
-  ],
+module('Unit | Model | delivery rule', function(hooks) {
+  setupTest(hooks);
 
-  beforeEach() {
+  hooks.beforeEach(function() {
     setupMock();
-    Store = this.store();
-    MetadataService = getOwner(this).lookup('service:bard-metadata');
+    Store = this.owner.lookup('service:store');
+    MetadataService = this.owner.lookup('service:bard-metadata');
     return MetadataService.loadMetadata();
-  },
+  });
 
-  afterEach() {
+  hooks.afterEach(function() {
     teardownMock();
-  }
-});
+  });
 
-test('Retrieving records', function(assert) {
-  assert.expect(2);
+  test('Retrieving records', async function(assert) {
+    assert.expect(2);
 
-  return Ember.run(() => {
-    return Store.findRecord('deliveryRule', 1).then(deliveryRule => {
+    await run(async () => {
+      const deliveryRule = await Store.findRecord('deliveryRule', 1);
       assert.ok(deliveryRule, 'Found deliveryRule with id 1');
 
       assert.deepEqual(
@@ -111,79 +51,70 @@ test('Retrieving records', function(assert) {
       );
     });
   });
-});
 
-test('user relationship', function(assert) {
-  assert.expect(1);
+  test('user relationship', async function(assert) {
+    assert.expect(1);
 
-  return Ember.run(() => {
-    return Store.findRecord('user', 'navi_user').then(userModel => {
-      return Store.findRecord('deliveryRule', 1).then(deliveryRule => {
-        return deliveryRule.get('owner').then(owner => {
-          assert.equal(owner, userModel, 'deliveryRule author property contains user model');
-        });
-      });
+    await run(async () => {
+      const userModel = await Store.findRecord('user', 'navi_user');
+      const deliveryRule = await Store.findRecord('deliveryRule', 1);
+      const owner = await deliveryRule.get('owner');
+
+      assert.equal(owner, userModel, 'deliveryRule author property contains user model');
     });
   });
-});
 
-test('delivered item relationship', function(assert) {
-  assert.expect(1);
+  test('delivered item relationship', async function(assert) {
+    assert.expect(1);
 
-  return Ember.run(() => {
-    return Store.findRecord('report', 3).then(reportModel => {
-      return Store.findRecord('deliveryRule', 1).then(deliveryRule => {
-        return deliveryRule.get('deliveredItem').then(item => {
-          assert.equal(item, reportModel, 'deliveryRule deliveredItem property contains report model');
-        });
-      });
+    await run(async () => {
+      const reportModel = await Store.findRecord('report', 3);
+      const deliveryRule = await Store.findRecord('deliveryRule', 1);
+      const item = await deliveryRule.get('deliveredItem');
+
+      assert.equal(item, reportModel, 'deliveryRule deliveredItem property contains report model');
     });
   });
-});
 
-test('Validations', function(assert) {
-  assert.expect(14);
+  test('Validations', async function(assert) {
+    assert.expect(14);
 
-  return Ember.run(() => {
-    return Store.findRecord('deliveryRule', 1).then(deliveryRule => {
-      return deliveryRule.get('deliveredItem').then(() => {
-        deliveryRule.validate().then(({ validations }) => {
-          assert.ok(validations.get('isValid'), 'deliveryRule is valid');
-          assert.equal(validations.get('messages').length, 0, 'There are no validation errors');
-        });
+    await run(async () => {
+      const deliveryRule = await Store.findRecord('deliveryRule', 1);
+      await deliveryRule.get('deliveredItem');
+      const v1 = await deliveryRule.validate();
 
-        //setting format to null
-        deliveryRule.set('format', null);
-        deliveryRule.validate().then(({ model, validations }) => {
-          assert.notOk(validations.get('isValid'), 'deliveryRule is invalid');
-          assert.equal(validations.get('messages').length, 1, 'One Field is invalid in the deliveryRule model');
-          assert.notOk(model.get('validations.attrs.format.isValid'), 'Delivery format must have a value');
-        });
+      assert.ok(v1.validations.get('isValid'), 'deliveryRule is valid');
+      assert.equal(v1.validations.get('messages').length, 0, 'There are no validation errors');
 
-        //setting frequency to null
-        deliveryRule.set('frequency', null);
-        deliveryRule.validate().then(({ model, validations }) => {
-          assert.notOk(validations.get('isValid'), 'deliveryRule is invalid');
-          assert.equal(validations.get('messages').length, 2, 'Two Fields are invalid in the deliveryRule model');
-          assert.notOk(model.get('validations.attrs.frequency.isValid'), 'Delivery frequency must have a value');
-        });
+      //setting format to null
+      deliveryRule.set('format', null);
+      const v2 = await deliveryRule.validate();
 
-        //setting no recipients
-        deliveryRule.set('recipients', []);
-        deliveryRule.validate().then(({ model, validations }) => {
-          assert.notOk(validations.get('isValid'), 'deliveryRule is invalid');
-          assert.equal(validations.get('messages').length, 3, 'Three Fields are invalid in the deliveryRule model');
-          assert.notOk(model.get('validations.attrs.recipients.isValid'), 'There must be at least one recipient');
-        });
+      assert.notOk(v2.validations.get('isValid'), 'deliveryRule is invalid');
+      assert.equal(v2.validations.get('messages').length, 1, 'One Field is invalid in the deliveryRule model');
+      assert.notOk(v2.model.get('validations.attrs.format.isValid'), 'Delivery format must have a value');
 
-        //setting recipients with invalid emails
-        deliveryRule.set('recipients', ['user@bad', 'otherUser']);
-        deliveryRule.validate().then(({ model, validations }) => {
-          assert.notOk(validations.get('isValid'), 'deliveryRule is invalid');
-          assert.equal(validations.get('messages').length, 3, 'Three Fields are invalid in the deliveryRule model');
-          assert.notOk(model.get('validations.attrs.recipients.isValid'), 'Recipients must have valid email addresses');
-        });
-      });
+      //setting frequency to null
+      deliveryRule.set('frequency', null);
+      const v3 = await deliveryRule.validate();
+      assert.notOk(v3.validations.get('isValid'), 'deliveryRule is invalid');
+      assert.equal(v3.validations.get('messages').length, 2, 'Two Fields are invalid in the deliveryRule model');
+      assert.notOk(v3.model.get('validations.attrs.frequency.isValid'), 'Delivery frequency must have a value');
+
+      //setting no recipients
+      deliveryRule.set('recipients', []);
+      const v4 = await deliveryRule.validate();
+      assert.notOk(v4.validations.get('isValid'), 'deliveryRule is invalid');
+      assert.equal(v4.validations.get('messages').length, 3, 'Three Fields are invalid in the deliveryRule model');
+      assert.notOk(v4.model.get('validations.attrs.recipients.isValid'), 'There must be at least one recipient');
+
+      //setting recipients with invalid emails
+      deliveryRule.set('recipients', ['user@bad', 'otherUser']);
+      const v5 = await deliveryRule.validate();
+      assert.notOk(v5.validations.get('isValid'), 'deliveryRule is invalid');
+      assert.equal(v5.validations.get('messages').length, 3, 'Three Fields are invalid in the deliveryRule model');
+      assert.notOk(v5.model.get('validations.attrs.recipients.isValid'), 'Recipients must have valid email addresses');
     });
   });
 });

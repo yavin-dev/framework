@@ -44,7 +44,7 @@ export default Controller.extend({
    * @property {String} sortKey - sort key (computed by sortBy query param)
    */
   sortKey: computed('sortBy', function() {
-    let sortBy = get(this, 'sortBy');
+    let { sortBy } = this;
 
     return sortBy === 'author' ? 'author.id' : sortBy;
   }),
@@ -64,7 +64,7 @@ export default Controller.extend({
    */
   title: computed('filter', 'router.currentRouteName', function() {
     const currentRoute = get(this, 'router.currentRouteName'),
-      dirInfo = get(this, 'directories').getDirectories(),
+      dirInfo = this.directories.getDirectories(),
       currentDir = arr(dirInfo).findBy('routeLink', currentRoute);
 
     let title = currentDir.name,

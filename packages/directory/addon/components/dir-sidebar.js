@@ -9,7 +9,7 @@ import Component from '@ember/component';
 import layout from '../templates/components/dir-sidebar';
 import { inject as service } from '@ember/service';
 import { oneWay } from '@ember/object/computed';
-import { computed, get } from '@ember/object';
+import { computed } from '@ember/object';
 
 export default Component.extend({
   layout,
@@ -25,7 +25,7 @@ export default Component.extend({
    * @property {Array} directories
    */
   directories: computed(function() {
-    return get(this, 'directoriesService').getDirectories();
+    return this.directoriesService.getDirectories();
   }),
 
   /**

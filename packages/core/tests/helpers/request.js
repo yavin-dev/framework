@@ -1,11 +1,7 @@
-import Ember from 'ember';
+import { classify } from '@ember/string';
+import { A } from '@ember/array';
 import Interval from 'navi-core/utils/classes/interval';
 import { canonicalizeMetric, parseMetricName } from 'navi-data/utils/metric';
-
-const {
-  String: { classify },
-  A
-} = Ember;
 
 /**
  * @function buildTestRequest

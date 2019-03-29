@@ -10,7 +10,7 @@
  * }}
  */
 
-import Ember from 'ember';
+import Component from '@ember/component';
 import layout from '../../templates/components/cell-renderers/metric';
 import { computed, get } from '@ember/object';
 import { oneWay } from '@ember/object/computed';
@@ -19,7 +19,7 @@ import { canonicalizeColumnAttributes } from 'navi-data/utils/metric';
 import { smartFormatNumber } from 'navi-core/helpers/smart-format-number';
 import numeral from 'numeral';
 
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   /**

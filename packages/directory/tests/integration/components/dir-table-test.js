@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
-import { render, find } from '@ember/test-helpers';
+import { render } from '@ember/test-helpers';
 import { run } from '@ember/runloop';
 import { set } from '@ember/object';
 import hbs from 'htmlbars-inline-precompile';
@@ -264,7 +264,7 @@ module('Integration | Component | dir table', function(hooks) {
       isLoading=isLoading
     }}`);
 
-    assert.ok(find('.navi-loader__spinner'), 'The loader is rendered when `isLoading` property is true');
+    assert.dom('.navi-loader__spinner').exists('The loader is rendered when `isLoading` property is true');
 
     set(this, 'isLoading', false);
 
@@ -273,6 +273,6 @@ module('Integration | Component | dir table', function(hooks) {
       isLoading=isLoading
     }}`);
 
-    assert.notOk(find('.navi-loader__spinner'), 'The loader is not rendered when `isLoading` property is false');
+    assert.dom('.navi-loader__spinner').doesNotExist('The loader is not rendered when `isLoading` property is false');
   });
 });

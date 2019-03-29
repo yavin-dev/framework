@@ -6,10 +6,10 @@
  * This file registers the visualization with navi
  *
  */
-import Ember from 'ember';
+import { assert } from '@ember/debug';
+import EmberObject, { get } from '@ember/object';
 
-const { get } = Ember;
-export default Ember.Object.extend({
+export default EmberObject.extend({
   /**
    * @property name
    */
@@ -90,6 +90,6 @@ export default Ember.Object.extend({
    * @return {Boolean} - visualization type is valid
    */
   typeIsValid(/*request*/) {
-    Ember.assert(`typeIsValid is not implemented in ${this.niceName}`);
+    assert(`typeIsValid is not implemented in ${this.niceName}`);
   }
 });

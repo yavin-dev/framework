@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * This component won't be used directly. It is passed to ember-light-table as a custom cell component.
@@ -9,6 +9,8 @@
  *  value=item
  * }}
  */
+
+import { oneWay } from '@ember/object/computed';
 
 import Component from '@ember/component';
 import layout from '../templates/components/dir-item-name-cell';
@@ -28,7 +30,7 @@ export default Component.extend({
    * @property {String} itemLink - the route that this component should link to (without the id)
    */
   itemLink: computed('type', function() {
-    let type = get(this, 'type'),
+    let { type } = this,
       pluralType = pluralize(type);
 
     return `${pluralType}.${type}`;
@@ -37,7 +39,7 @@ export default Component.extend({
   /**
    * @property {String} itemId - the id of the model or the tempId of an unsaved model
    */
-  itemId: computed.oneWay('value.modelId'),
+  itemId: oneWay('value.modelId'),
 
   /**
    * @property {String} type - the type of the item
@@ -52,7 +54,7 @@ export default Component.extend({
    * @property {String} iconClass - the icon class that is passed to navi-icon
    */
   iconClass: computed('type', function() {
-    let type = pluralize(get(this, 'type'));
+    let type = pluralize(this.type);
 
     return get(fileTypes, `definitions.${type}.iconClass`);
   })

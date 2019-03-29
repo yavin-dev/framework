@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import Ember from 'ember';
+import { helper as buildHelper } from '@ember/component/helper';
 import numeral from 'numeral';
 
 /**
@@ -40,4 +40,4 @@ export function smartFormatNumber([value]) {
   return numeral(value).format('0,0');
 }
 
-export default Ember.Helper.helper(smartFormatNumber);
+export default buildHelper(smartFormatNumber);

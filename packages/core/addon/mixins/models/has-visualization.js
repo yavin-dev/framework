@@ -3,13 +3,13 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import Ember from 'ember';
-import MF from 'model-fragments';
+import { on } from '@ember/object/evented';
+import Mixin from '@ember/object/mixin';
+import { set, get } from '@ember/object';
+import { fragment } from 'ember-data-model-fragments/attributes';
 
-const { get, set } = Ember;
-
-export default Ember.Mixin.create({
-  visualization: MF.fragment('visualization', { polymorphic: true }),
+export default Mixin.create({
+  visualization: fragment('visualization', { polymorphic: true }),
 
   /**
    * Caches the persisted visualization type
@@ -17,7 +17,7 @@ export default Ember.Mixin.create({
    * @method _cachePersistedVisualization
    * @private
    */
-  _cachePersistedVisualization: Ember.on('didCreate', 'didUpdate', 'didLoad', function() {
+  _cachePersistedVisualization: on('didCreate', 'didUpdate', 'didLoad', function() {
     set(this, '_persistedVisualization', get(this, 'visualization'));
   }),
 

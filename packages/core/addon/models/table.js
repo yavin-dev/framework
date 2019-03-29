@@ -2,7 +2,8 @@
  * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import { get, set, computed } from '@ember/object';
+import { readOnly } from '@ember/object/computed';
+import { get, set } from '@ember/object';
 import { A as arr } from '@ember/array';
 import DS from 'ember-data';
 import VisualizationBase from './visualization';
@@ -17,19 +18,17 @@ import keyBy from 'lodash/keyBy';
  */
 const Validations = buildValidations(
   {
-    'metadata.columns': validator(
-      function(columns, options) {
+    'metadata.columns': validator('inline', {
+      validate(columns, options) {
         let request = get(options, 'request');
         return request && hasAllColumns(request, arr(columns));
       },
-      {
-        dependentKeys: ['model._request.dimensions.[]', 'model._request.metrics.[]']
-      }
-    )
+      dependentKeys: ['model._request.dimensions.[]', 'model._request.metrics.[]']
+    })
   },
   {
     //Global Validation Options
-    request: computed.readOnly('model._request')
+    request: readOnly('model._request')
   }
 );
 

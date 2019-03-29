@@ -1,5 +1,5 @@
 'use strict';
 
 module.exports = {
-  name: 'navi-directory'
+  name: require('./package').name
 };

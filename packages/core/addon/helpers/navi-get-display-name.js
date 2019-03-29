@@ -2,15 +2,16 @@
  * Copyright 2017, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import Ember from 'ember';
+import { assert } from '@ember/debug';
+import { inject as service } from '@ember/service';
+import Helper from '@ember/component/helper';
+import { get } from '@ember/object';
 
-const { get } = Ember;
-
-export default Ember.Helper.extend({
+export default Helper.extend({
   /**
    * @property {Ember.Service}
    */
-  metadata: Ember.inject.service('bard-metadata'),
+  metadata: service('bard-metadata'),
 
   /**
    * @method compute
@@ -30,7 +31,7 @@ export default Ember.Helper.extend({
     }
 
     let metadataModel = get(this, 'metadata').getById(type, id);
-    Ember.assert(`No ${type} found for id: ${id}`, metadataModel);
+    assert(`No ${type} found for id: ${id}`, metadataModel);
     return get(metadataModel, 'longName');
   }
 });

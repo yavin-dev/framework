@@ -3,16 +3,18 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import Ember from 'ember';
+import { camelize } from '@ember/string';
+import { computed, getWithDefault, get } from '@ember/object';
 import DS from 'ember-data';
 import config from 'ember-get-config';
+import { pluralize } from 'ember-inflector';
 
 export default DS.JSONAPIAdapter.extend({
   /**
    * @property {String} host - persistence WS host
    */
-  host: Ember.computed(function() {
-    return Ember.getWithDefault(config, 'navi.appPersistence.uri', '');
+  host: computed(function() {
+    return getWithDefault(config, 'navi.appPersistence.uri', '');
   }),
 
   /**
@@ -51,7 +53,7 @@ export default DS.JSONAPIAdapter.extend({
   findMany(store, type, ids, snapshots) {
     // Match our API's format for filters since it differs from Ember Data default
     let url = this.buildURL(type.modelName, ids, snapshots, 'findMany'),
-      filterRoot = Ember.Inflector.inflector.pluralize(type.modelName),
+      filterRoot = pluralize(type.modelName),
       filterId = `${filterRoot}.id`;
 
     return this.ajax(url, 'GET', {
@@ -69,7 +71,7 @@ export default DS.JSONAPIAdapter.extend({
    * @return {Object} errors payload
    */
   normalizeErrorResponse(status, headers, payload) {
-    let detail = Ember.get(payload, 'errors');
+    let detail = get(payload, 'errors');
     return [
       {
         status: `${status}`,
@@ -88,6 +90,6 @@ export default DS.JSONAPIAdapter.extend({
    * @returns {String} transformed name for type
    */
   pathForType(type) {
-    return Ember.String.pluralize(Ember.String.camelize(type));
+    return pluralize(camelize(type));
   }
 });
