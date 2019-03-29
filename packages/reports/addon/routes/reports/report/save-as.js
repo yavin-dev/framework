@@ -79,6 +79,7 @@ export default Route.extend({
         this._onSaveAsSuccess();
         // Roll back old report to revert any changes applied to original report
         oldReport.rollbackAttributes();
+        this.controllerFor('reports.report').send('closeSaveAs');
         // Switch to the newly created report
         return this.replaceWith('reports.report.view', get(report, 'id'));
       })
