@@ -1,3 +1,7 @@
+/**
+ * Copyright 2019, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
 package com.yahoo.navi.ws.test.integration
 
 import com.jayway.restassured.RestAssured.given
@@ -16,22 +20,22 @@ class CorsFilterTest: IntegrationTest() {
         given()
                 .header("Origin", testOrigin)
                 .header("User", "testuser")
-            .When()
-                .get("/")
-            .then()
-                .assertThat()
-                .header("Access-Control-Allow-Origin", testOrigin)
+        .When()
+            .get("/")
+        .then()
+            .assertThat()
+            .header("Access-Control-Allow-Origin", testOrigin)
 
         /*
          * When no origin header is given, all origins are allowed
          */
         given()
                 .header("User", "testuser")
-            .When()
-                .get("/")
-            .then()
-                .assertThat()
-                .header("Access-Control-Allow-Origin", "*")
+        .When()
+            .get("/")
+        .then()
+            .assertThat()
+            .header("Access-Control-Allow-Origin", "*")
     }
 
     @Test
@@ -44,22 +48,22 @@ class CorsFilterTest: IntegrationTest() {
         given()
                 .header("Access-Control-Request-Headers", testHeaders)
                 .header("User", "testuser")
-            .When()
-                .get("/")
-            .then()
-                .assertThat()
-                .header("Access-Control-Allow-Headers", testHeaders)
+        .When()
+            .get("/")
+        .then()
+            .assertThat()
+            .header("Access-Control-Allow-Headers", testHeaders)
 
         /*
          * Allowed headers is empty when none are given
          */
         given()
                 .header("User", "testuser")
-            .When()
-                .get("/")
-            .then()
-                .assertThat()
-                .header("Access-Control-Allow-Headers", nullValue())
+        .When()
+            .get("/")
+        .then()
+            .assertThat()
+            .header("Access-Control-Allow-Headers", nullValue())
     }
 
     @Test
@@ -69,21 +73,21 @@ class CorsFilterTest: IntegrationTest() {
          */
         given()
                 .header("User", "testuser")
-            .When()
-                .options("/")
-            .then()
-                .assertThat()
-                .header("Access-Control-Allow-Methods", "OPTIONS,GET,POST,PATCH,DELETE")
+        .When()
+            .options("/")
+        .then()
+            .assertThat()
+            .header("Access-Control-Allow-Methods", "OPTIONS,GET,POST,PATCH,DELETE")
     }
 
     @Test
     fun allowCredentialsTest() {
         given()
                 .header("User", "testuser")
-            .When()
-                .options("/users")
-            .then()
-                .assertThat()
-                .header("Access-Control-Allow-Credentials", "true")
+        .When()
+            .options("/users")
+        .then()
+            .assertThat()
+            .header("Access-Control-Allow-Credentials", "true")
     }
 }
