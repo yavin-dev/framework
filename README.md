@@ -10,27 +10,69 @@ Start exploring our sample data with the [demo app](https://yahoo.github.io/navi
 
 ## Requirements
 
-* node >= 4
+- node >= 4
 
-## Setup
+## Table of Contents
 
-* Clone this repo
-* `npm install`
+- [Installation](https://github.com/yahoo/navi#Installation)
+- [SubPackages](https://github.com/yahoo/navi#SubPacakages)
+- [Contribution](https://github.com/yahoo/navi#Contribution)
+- [License](https://github.com/yahoo/navi#License)
 
-## Running
+## Installation
 
-### Navi Application
+You can install the individual packages via npm
 
-* `npm start`
+- [navi-reports](https://www.npmjs.com/package/navi-reports)
+- [navi-core](https://www.npmjs.com/package/navi-core)
+- [navi-dashboards](https://www.npmjs.com/package/navi-dashboards)
+- [navi-directory](https://www.npmjs.com/package/navi-directory)
+- [navi-data](https://www.npmjs.com/package/navi-data)
+- [navi-app](https://www.npmjs.com/package/navi-app)
+- [navi-webservice](https://www.npmjs.com/package/navi-webservice)
 
-### Sub Packages
-* `cd` to the sub-package you want to run
-* `ember serve`
-* Visit your app at [http://localhost:4200](http://localhost:4200).
+Please see the detailed installation instructions in the README of the indicidual packages for more info.
 
-## Running Tests
+## Sub Packages
 
-* `npm test`
+---
+
+- [navi-reports](https://github.com/yahoo/navi/tree/master/packages/reports)
+- [navi-core](https://github.com/yahoo/navi/tree/master/packages/core)
+- [navi-dashboards](https://github.com/yahoo/navi/tree/master/packages/dashboards)
+- [navi-directory](https://github.com/yahoo/navi/tree/master/packages/directory)
+- [navi-data](https://github.com/yahoo/navi/tree/master/packages/data)
+- [navi-app](https://github.com/yahoo/navi/tree/master/packages/app)
+- [navi-webservice](https://github.com/yahoo/navi/tree/master/packages/webservice)
+
+## Contribution
+
+See [CONTRUBUTING.md](https://github.com/yahoo/navi/blob/master/CONTRIBUTING.md)
+
+### Setup
+
+- Clone this repo
+- `npm install`
+
+### Running
+
+#### Navi Application
+
+- `npm start`
+
+#### Sub Packages
+
+- `cd` to the sub-package you want to run
+- `ember serve`
+- Visit your app at [http://localhost:4200](http://localhost:4200).
+
+### Running Tests
+
+- `npm test`
 
 For more information on using ember-cli, visit [https://ember-cli.com/](https://ember-cli.com/).
 For more information on using lerna, visit [https://lernajs.io/](https://lernajs.io/)
+
+## License
+
+This project is licensed under the [MIT License](LICENSE.md).
