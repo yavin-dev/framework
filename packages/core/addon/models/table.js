@@ -61,18 +61,23 @@ export default VisualizationBase.extend(Validations, {
       columnIndex = indexColumnById(columns),
       timeGrain = get(request, 'logicalTable.timeGrain.name');
 
-    let dateColumn = {
-      type: 'dateTime',
-      attributes: { name: 'dateTime' },
-      displayName: 'Date'
-    };
+    //Only add dateColumn if timegrain is not 'all'
+    let dateColumn =
+      timeGrain !== 'all'
+        ? [
+            {
+              type: 'dateTime',
+              attributes: { name: 'dateTime' },
+              displayName: 'Date'
+            }
+          ]
+        : [];
 
-    let newColumns = [...buildDimensionColumns(dimensions, columnIndex), ...buildMetricColumns(metrics, columnIndex)];
-
-    //Add DateTime column when on timegrain other than All
-    if (timeGrain !== 'all') {
-      newColumns.unshift(dateColumn);
-    }
+    const newColumns = [
+      ...dateColumn,
+      ...buildDimensionColumns(dimensions, columnIndex),
+      ...buildMetricColumns(metrics, columnIndex)
+    ];
 
     set(this, 'metadata', {
       columns: columnTransform(newColumns, columns)
