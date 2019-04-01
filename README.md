@@ -29,7 +29,6 @@ You can install the individual packages via npm
 - [navi-directory](https://www.npmjs.com/package/navi-directory)
 - [navi-data](https://www.npmjs.com/package/navi-data)
 - [navi-app](https://www.npmjs.com/package/navi-app)
-- [navi-webservice](https://www.npmjs.com/package/navi-webservice)
 
 Please see the detailed installation instructions in the README of the indicidual packages for more info.
 
