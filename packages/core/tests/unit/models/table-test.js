@@ -23,7 +23,7 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
   });
 
   test('valid and invalid table fragment', function(assert) {
-    assert.expect(9);
+    assert.expect(12);
 
     let dimsMetricsAndThresholds = [
         [
@@ -36,7 +36,8 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
         [{ metric: 'm1' }, { metric: 'm2' }],
         [{ metric: 't1' }]
       ],
-      request = buildTestRequest(...dimsMetricsAndThresholds),
+      request = buildTestRequest(...dimsMetricsAndThresholds, 'day'),
+      allTimeGrainRequest = buildTestRequest(...dimsMetricsAndThresholds, 'all'),
       model = run(() => this.owner.lookup('service:store').createRecord('all-the-fragments'));
 
     run(() => {
@@ -53,7 +54,35 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
 
     assert.ok(
       model.get('table').isValidForRequest(request),
-      'a table fragment with the same metrics and dimensions as the request is valid'
+      'a table fragment with the same metrics and dimensions as the request and a datetime column on a non-all timegrain is valid'
+    );
+
+    assert.notOk(
+      model.get('table').isValidForRequest(allTimeGrainRequest),
+      'a table with all timegrain and a datetime column is invalid'
+    );
+
+    run(() => {
+      set(
+        model,
+        'table',
+        buildTestConfig(
+          [{ dimension: 'd1' }, { dimension: 'd2', field: 'id' }, { dimension: 'd2', field: 'desc' }],
+          [{ metric: 'm1' }, { metric: 'm2' }],
+          [{ metric: 't1' }],
+          false //Don't include a date time column in the config
+        )
+      );
+    });
+
+    assert.notOk(
+      model.get('table').isValidForRequest(request),
+      'a table fragment with the same metrics and dimensions as the request but no datetime column on a non-all timegrain is invalid'
+    );
+
+    assert.ok(
+      model.get('table').isValidForRequest(allTimeGrainRequest),
+      'a table with all timegrain and no datetime column is valid'
     );
 
     run(() => {
@@ -179,7 +208,7 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
   });
 
   test('rebuildConfig', function(assert) {
-    assert.expect(4);
+    assert.expect(5);
 
     let table = run(() => run(() => this.owner.lookup('service:store').createRecord('all-the-fragments')).get('table')),
       request1 = buildTestRequest(
@@ -190,7 +219,9 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
             fields: ['id', 'desc']
           }
         ],
-        [{ metric: 'm1' }, { metric: 'm2' }]
+        [{ metric: 'm1' }, { metric: 'm2' }],
+        [],
+        'month'
       ),
       config1 = run(() => table.rebuildConfig(request1).toJSON());
 
@@ -319,6 +350,47 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
         }
       },
       'Columns config should be persistent'
+    );
+
+    let allTimeGrainRequest = buildTestRequest(
+      [
+        { dimension: 'd1' },
+        {
+          dimension: 'd2',
+          fields: ['id', 'desc']
+        }
+      ],
+      [{ metric: 'm1' }, { metric: 'm2' }],
+      [],
+      'all'
+    );
+
+    let allTimeGrainConfig = run(() => table.rebuildConfig(allTimeGrainRequest).toJSON());
+
+    assert.deepEqual(
+      allTimeGrainConfig,
+      {
+        type: 'table',
+        version: 1,
+        metadata: {
+          columns: [
+            { displayName: 'D1', attributes: { name: 'd1' }, type: 'dimension' },
+            { displayName: 'D2 (id)', attributes: { name: 'd2', field: 'id' }, type: 'dimension' },
+            { displayName: 'D2 (desc)', attributes: { name: 'd2', field: 'desc' }, type: 'dimension' },
+            {
+              displayName: 'M4',
+              attributes: { name: 'm1', parameters: {}, format: '' },
+              type: 'metric'
+            },
+            {
+              displayName: 'M2',
+              attributes: { name: 'm2', parameters: {}, format: '' },
+              type: 'metric'
+            }
+          ]
+        }
+      },
+      'Date time column is not present for request with all time grain'
     );
   });
 
@@ -460,11 +532,11 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
    * @param {Array} dimensions - array of dimensions
    * @param {Array} metrics - array of metrics
    * @param {Array} thresholds - array of thresholds
+   * @param {Boolean} includeDateTime - should include DateTime column
    * @returns {Object} config object
    */
-  function buildTestConfig(dimensions = [], metrics = [], thresholds = []) {
+  function buildTestConfig(dimensions = [], metrics = [], thresholds = [], includeDateTime = true) {
     let columns = [
-      { attributes: { name: 'dateTime' }, type: 'dateTime' },
       ...metrics.map(m => {
         let name = get(m, 'metric'),
           parameters = get(m, 'parameters') || {},
@@ -485,6 +557,14 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
         type: 'dimension'
       }))
     ];
+
+    if (includeDateTime) {
+      columns.unshift({
+        attributes: { name: 'dateTime' },
+        type: 'dateTime'
+      });
+    }
+
     return {
       metadata: {
         columns
@@ -499,7 +579,7 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
    * @param {Array} thresholds - array of thresholds
    * @returns {Object} request object
    */
-  function buildTestRequest(dimensions = [], metrics = [], thresholds = []) {
+  function buildTestRequest(dimensions = [], metrics = [], thresholds = [], timeGrain = 'day') {
     return {
       metrics: [...metrics, ...thresholds].map(m => {
         let metricName = get(m, 'metric'),
@@ -530,7 +610,12 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
           fields,
           getFieldsForTag: () => (fields ? fields.map(name => ({ name })) : [])
         }
-      }))
+      })),
+      logicalTable: {
+        timeGrain: {
+          name: timeGrain
+        }
+      }
     };
   }
 });

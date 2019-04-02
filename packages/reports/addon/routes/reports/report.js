@@ -68,6 +68,15 @@ export default Route.extend({
   },
 
   /**
+   * @param {Controller} controller
+   * @override
+   */
+  setupController(controller) {
+    this._super(...arguments);
+    controller.set('showSaveAs', false);
+  },
+
+  /**
    * @method _findByTempId
    * @private
    * @param {String} id - temp id of local report

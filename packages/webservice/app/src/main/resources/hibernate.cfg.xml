@@ -12,5 +12,6 @@
         <property name="hibernate.connection.url">jdbc:h2:mem:db1;DB_CLOSE_DELAY=-1;MVCC=TRUE</property>   
         <property name="hibernate.hbm2ddl.auto">create</property>   
         <property name="current_session_context_class">thread</property>
+        <mapping class="com.yahoo.navi.ws.models.beans.User" />
     </session-factory>
 </hibernate-configuration>
