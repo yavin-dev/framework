@@ -109,8 +109,10 @@ export default Route.extend({
 
   actions: {
     /**
+     * Runs report if it has changed
+     *
      * @action runReport
-     * @param {Object} report - object with report id
+     * @returns {Transition|Void} - the model refresh transition
      */
     runReport() {
       let report = get(this, 'parentModel'),
@@ -120,6 +122,8 @@ export default Route.extend({
       // Run the report only if there are request changes
       if (!isEqual(request, previousRequest)) {
         return this.refresh();
+      } else {
+        this.send('setReportState', 'completed');
       }
     },
 

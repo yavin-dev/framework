@@ -401,3 +401,19 @@ test('Table column sort', function(assert) {
     assert.ok(!!find('.table-widget').length, 'table visualization is still shown');
   });
 });
+
+test('Table Column Config - Does not prompt for rerun', function(assert) {
+  visit('/reports/2/view');
+
+  //Update column name
+  click('.report-view__visualization-edit-btn');
+  fillIn('.dateTime > .table-header-cell__input', 'test');
+  click('.report-view__visualization-edit-btn');
+
+  andThen(() => {
+    assert.notOk(
+      !!find('.report-view__info-text').length,
+      'Updating the column config does not prompt the user to rerun the report'
+    );
+  });
+});
