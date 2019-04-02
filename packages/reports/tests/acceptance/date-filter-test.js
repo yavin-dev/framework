@@ -41,12 +41,12 @@ test('dimension date range filter keeps values after save', async function(asser
 
   //Set low value
   await clickDropdown('.filter-values--dimension-date-range-input__low-value>.dropdown-date-picker__trigger');
-  await click('td.day:contains(4):first-of-type');
+  await click('.dropdown-date-picker__dropdown td.day:contains(4):not(.new):not(.old)');
   await click('.dropdown-date-picker__apply');
 
   //Set high value
   await clickDropdown('.filter-values--dimension-date-range-input__high-value>.dropdown-date-picker__trigger');
-  await click('td.day:contains(5):first-of-type');
+  await click('.dropdown-date-picker__dropdown td.day:contains(5):not(.new):not(.old)');
   await click('.dropdown-date-picker__apply');
 
   assert.ok(find('.filter-values--dimension-date-range-input__low-value:contains(4)'), 'The low value is set');
