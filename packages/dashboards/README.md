@@ -2,32 +2,37 @@
 
 Analytics dashboard library for navi
 
-## Installation
+- Install Addon
 
-* Install Addon
-  * `ember install navi-dashboards`
+  - `ember install navi-dashboards`
 
-* Including CSS styling:
-  * Add `@import "navi-dashboards";` into your `app.less`
-
+- Including CSS styling:
+  - Add `@import "navi-dashboards";` into your `app.less`
 
 ## Requirements
 
-* node >= 4
+- node >= 4
 
-## Running
+- Ember.js v2.18 or above
+- Ember CLI v2.13 or above
 
-* `ember server`
-* Visit the dummy app at [http://localhost:4200](http://localhost:4200).
+- `ember server`
+- Visit the dummy app at [http://localhost:4200](http://localhost:4200).
 
-## Running Tests
+## Installation
 
-* `npm test` (Runs `ember try:each` to test your addon against multiple Ember versions)
-* `ember test`
-* `ember test --server`
+```
+ember install my-addon
+```
 
-## Building
+## Usage
 
-* `ember build`
+[Longer description of how to use the addon in apps.]
 
-For more information on using ember-cli, visit [https://ember-cli.com/](https://ember-cli.com/).
+## Contributing
+
+See the [Contributing](CONTRIBUTING.md) guide for details.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE.md).

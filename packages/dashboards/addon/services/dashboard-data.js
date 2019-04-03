@@ -4,32 +4,34 @@
  */
 import { A as arr } from '@ember/array';
 import { get, getWithDefault } from '@ember/object';
-import { inject } from '@ember/service';
+import Service, { inject as service } from '@ember/service';
 import { isEmpty } from '@ember/utils';
 import { merge, flow } from 'lodash';
+import { all } from 'rsvp';
+import { computed } from '@ember/object';
 import { v1 } from 'ember-uuid';
 import DS from 'ember-data';
-import RSVP from 'rsvp';
-import Service from '@ember/service';
 
 export default Service.extend({
   /**
    * @property {Ember.Service} bardFacts
    */
-  bardFacts: inject(),
+  bardFacts: service(),
 
   /**
    * @property {Ember.Service} store
    */
-  store: inject(),
+  store: service(),
 
   /**
    * @property {Object} widgetOptions - options for the fact request
    */
-  widgetOptions: {
-    page: 1,
-    perPage: 10000
-  },
+  widgetOptions: computed(function() {
+    return {
+      page: 1,
+      perPage: 10000
+    };
+  }),
 
   /**
    * @method fetchDataForDashboard
@@ -76,7 +78,7 @@ export default Service.extend({
       });
 
       result[get(widget, 'id')] = DS.PromiseArray.create({
-        promise: RSVP.all(widgetDataPromises).then(arr) // PromiseArray expects an Ember array returned
+        promise: all(widgetDataPromises).then(arr) // PromiseArray expects an Ember array returned
       });
     });
 

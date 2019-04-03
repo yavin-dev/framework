@@ -10,10 +10,10 @@
  *      deleteAction=actionToDelete
  *   }}
  */
-import Ember from 'ember';
+import Component from '@ember/component';
 import layout from '../templates/components/navi-dashboard';
 
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   /**

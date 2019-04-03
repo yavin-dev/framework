@@ -2,7 +2,7 @@
 <div class="navi-dashboard navi-dashboard--print">
     <div class="navi-dashboard__body">
         {{#if model.dashboard.widgets.length}}
-            <div class='navi-dashboard__widgets'>
+            <div class="navi-dashboard__widgets">
                 {{#each model.dashboard.presentation.layout as |layout|}}
                     {{#with (get-widget layout.widgetId) as |widget|}}
                         {{#if widget}}
@@ -15,8 +15,8 @@
                 {{/each}}
             </div>
         {{else}}
-            <div class='error-container'>
-                <div class='error'>
+            <div class="error-container">
+                <div class="error">
                     <p>Looks like this dashboard has no widgets.</p>
                 </div>
             </div>

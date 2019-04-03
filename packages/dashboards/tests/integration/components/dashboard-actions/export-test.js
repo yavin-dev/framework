@@ -1,81 +1,86 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
 
-moduleForComponent('dashboard-actions/export', 'Integration | Component | dashboard actions/export', {
-  integration: true
-});
+import { render, find, click } from '@ember/test-helpers';
 
-test('export href', function(assert) {
-  assert.expect(1);
+module('Integration | Component | dashboard actions/export', function(hooks) {
+  setupRenderingTest(hooks);
 
-  this.dashboard = { id: 123, title: 'Akkala Tech Lab Weekly Reports' };
+  test('export href', async function(assert) {
+    assert.expect(1);
 
-  this.render(`
-    {{dashboard-actions/export
-      dashboard=dashboard
-    }}
-  `);
+    this.dashboard = { id: 123, title: 'Akkala Tech Lab Weekly Reports' };
 
-  assert.equal(
-    this.$('a').attr('href'),
-    '/export?dashboard=123',
-    'Export actions links to export service and gives the dashboard id'
-  );
-});
+    await render(`
+      {{dashboard-actions/export
+        dashboard=dashboard
+      }}
+    `);
 
-test('export filename', function(assert) {
-  assert.expect(1);
+    assert
+      .dom('a')
+      .hasAttribute(
+        'href',
+        '/export?dashboard=123',
+        'Export actions links to export service and gives the dashboard id'
+      );
+  });
 
-  this.dashboard = { id: 123, title: 'Akkala Tech Lab Weekly Reports' };
+  test('export filename', async function(assert) {
+    assert.expect(1);
 
-  this.render(`
-    {{dashboard-actions/export
-      dashboard=dashboard
-    }}
-  `);
+    this.dashboard = { id: 123, title: 'Akkala Tech Lab Weekly Reports' };
 
-  assert.equal(
-    this.$('a').attr('download'),
-    'akkala-tech-lab-weekly-reports-dashboard',
-    'Download attribute is set to the dasherized dashboard name, appended with -dashboard'
-  );
-});
+    await render(`
+      {{dashboard-actions/export
+        dashboard=dashboard
+      }}
+    `);
 
-test('disabled', function(assert) {
-  assert.expect(1);
+    assert
+      .dom('a')
+      .hasAttribute(
+        'download',
+        'akkala-tech-lab-weekly-reports-dashboard',
+        'Download attribute is set to the dasherized dashboard name, appended with -dashboard'
+      );
+  });
 
-  this.dashboard = { id: 123, title: 'Akkala Tech Lab Weekly Reports' };
+  test('disabled', async function(assert) {
+    assert.expect(1);
 
-  this.render(`
-    {{dashboard-actions/export
-      dashboard=dashboard
-      disabled=true
-    }}
-  `);
+    this.dashboard = { id: 123, title: 'Akkala Tech Lab Weekly Reports' };
 
-  assert.equal(
-    this.$('a').attr('href'),
-    'unsafe:javascript:void(0);',
-    'When disabled, the export action href has no effect'
-  );
-});
+    await render(`
+      {{dashboard-actions/export
+        dashboard=dashboard
+        disabled=true
+      }}
+    `);
 
-test('notifications', function(assert) {
-  assert.expect(1);
+    assert
+      .dom('a')
+      .hasAttribute('href', 'unsafe:javascript:void(0);', 'When disabled, the export action href has no effect');
+  });
 
-  this.dashboard = { id: 123, title: 'Akkala Tech Lab Weekly Reports' };
+  test('notifications', async function(assert) {
+    assert.expect(1);
 
-  this.mockNotifications = {
-    add({ message }) {
-      assert.equal(message, 'The download should begin soon.', 'A notification is added when export is clicked.');
-    }
-  };
+    this.dashboard = { id: 123, title: 'Akkala Tech Lab Weekly Reports' };
 
-  this.render(`
-    {{dashboard-actions/export
-      dashboard=dashboard
-      naviNotifications=mockNotifications
-    }}
-  `);
+    this.mockNotifications = {
+      add({ message }) {
+        assert.equal(message, 'The download should begin soon.', 'A notification is added when export is clicked.');
+      }
+    };
 
-  this.$('a').click();
+    await render(`
+      {{dashboard-actions/export
+        dashboard=dashboard
+        naviNotifications=mockNotifications
+      }}
+    `);
+
+    await click('a');
+  });
 });

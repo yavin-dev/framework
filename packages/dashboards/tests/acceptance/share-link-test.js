@@ -1,25 +1,24 @@
-import { test } from 'qunit';
+import { click, visit } from '@ember/test-helpers';
+import { module, test } from 'qunit';
+import { setupApplicationTest } from 'ember-qunit';
 import { teardownModal } from '../helpers/teardown-modal';
-import moduleForAcceptance from '../../tests/helpers/module-for-acceptance';
 
-moduleForAcceptance('Acceptance | share link', {
-  afterEach() {
+module('Acceptance | share link', function(hooks) {
+  setupApplicationTest(hooks);
+
+  hooks.afterEach(function() {
     teardownModal();
     server.shutdown();
-  }
-});
+  });
 
-test('dashboard share link', function(assert) {
-  assert.expect(1);
+  test('dashboard share link', async function(assert) {
+    assert.expect(1);
 
-  visit('/dashboards');
-  let baseUrl = document.location.origin;
-  // TriggerEvent does not work here, need to use jquery trigger mouseenter
-  andThen(() => $('.navi-collection__row:first-of-type').trigger('mouseenter'));
+    await visit('/dashboards');
+    let baseUrl = document.location.origin;
 
-  click('.navi-collection__row:first-of-type .share .btn');
+    await click('.navi-collection__row:first-of-type .share .btn');
 
-  andThen(() => {
     assert.equal(
       find('.modal-input-box')[0].value,
       `${baseUrl}/dashboards/1`,

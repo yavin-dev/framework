@@ -3,20 +3,22 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import Ember from 'ember';
+import { all } from 'rsvp';
 
-const { get, set } = Ember;
+import { inject as service } from '@ember/service';
+import Route from '@ember/routing/route';
+import { set, get } from '@ember/object';
 
-export default Ember.Route.extend({
+export default Route.extend({
   /**
    * @property {Service} user
    */
-  user: Ember.inject.service(),
+  user: service(),
 
   /**
    * @property {Service} naviNotifications
    */
-  naviNotifications: Ember.inject.service(),
+  naviNotifications: service(),
 
   /**
    * Sets the model for this route
@@ -55,7 +57,7 @@ export default Ember.Route.extend({
 
     return cloneDashboard.save().then(cloneDashboardModel =>
       this._cloneWidgets(dashboardModel, cloneDashboardModel).then(widgetPromiseArray =>
-        Ember.RSVP.all(widgetPromiseArray).then(newWidgets => {
+        all(widgetPromiseArray).then(newWidgets => {
           let layout = cloneDashboardModel.get('presentation.layout');
 
           //Replace original widget IDs with newly cloned widget IDs

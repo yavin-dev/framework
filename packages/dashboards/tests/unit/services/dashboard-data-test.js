@@ -1,116 +1,26 @@
-import { cloneDeep, merge } from 'lodash';
-import { moduleFor, test } from 'ember-qunit';
+import { run } from '@ember/runloop';
+import { resolve } from 'rsvp';
+import { get } from '@ember/object';
+import { module, test } from 'qunit';
+import { setupTest } from 'ember-qunit';
+import { settled } from '@ember/test-helpers';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
 import config from 'ember-get-config';
-import Ember from 'ember';
-import wait from 'ember-test-helpers/wait';
 
-const { get } = Ember;
+module('Unit | Service | dashboard data', function(hooks) {
+  setupTest(hooks);
 
-moduleFor('service:dashboard-data', 'Unit | Service | dashboard data', {
-  needs: [
-    'model:dashboard',
-    'adapter:dashboard',
-    'serializer:dashboard',
-    'model:dashboard-widget',
-    'model:user',
-    'transform:fragment',
-    'model:fragments/presentation',
-    'adapter:dashboard-widget',
-    'serializer:dashboard-widget',
-    'transform:moment',
-    'service:bard-facts',
-    'adapter:bard-facts',
-    'serializer:bard-facts',
-    'service:ajax',
-    'config:environment',
-    'service:request-decorator',
-    'model:visualization',
-    'model:goal-gauge',
-    'model:line-chart',
-    'model:table',
-    'adapter:bard-metadata',
-    'adapter:dimensions/bard',
-    'transform:array',
-    'transform:fragment-array',
-    'transform:dimension',
-    'transform:fragment',
-    'transform:metric',
-    'transform:moment',
-    'transform:table',
-    'model:bard-request/request',
-    'model:bard-request/fragments/dimension',
-    'model:bard-request/fragments/filter',
-    'model:bard-request/fragments/interval',
-    'model:bard-request/fragments/logicalTable',
-    'model:bard-request/fragments/metric',
-    'model:bard-request/fragments/sort',
-    'model:metadata/table',
-    'model:metadata/dimension',
-    'model:metadata/metric',
-    'model:metadata/time-grain',
-    'validator:length',
-    'validator:belongs-to',
-    'validator:has-many',
-    'validator:interval',
-    'validator:presence',
-    'service:bard-metadata',
-    'serializer:bard-request/fragments/logical-table',
-    'serializer:bard-request/fragments/interval',
-    'serializer:visualization',
-    'serializer:report',
-    'serializer:user',
-    'serializer:bard-metadata',
-    'service:keg',
-    'service:ajax',
-    'service:bard-facts',
-    'service:user',
-    'service:bard-dimensions'
-  ],
-  beforeEach() {
+  hooks.beforeEach(function() {
     setupMock();
 
     // Load metadata needed for request fragment
-    let metadataService = this.container.lookup('service:bard-metadata');
+    let metadataService = this.owner.lookup('service:bard-metadata');
     return metadataService.loadMetadata();
-  },
-  afterEach() {
+  });
+
+  hooks.afterEach(function() {
     teardownMock();
-  }
-});
-
-test('fetch data for dashboard', function(assert) {
-  assert.expect(2);
-
-  let mockDashboard = {
-    id: 1,
-    widgets: Ember.RSVP.resolve([1, 2, 3]),
-    get(prop) {
-      return this[prop];
-    }
-  };
-
-  let service = this.subject({
-    // Skip the ws data fetch for this test
-    fetchDataForWidgets: (id, widgets, decorators, options) => {
-      //removing custom headers
-      delete options.customHeaders;
-      assert.deepEqual(
-        options,
-        { page: 1, perPage: 10000 },
-        'Default pagination options are passed through for widget data fetch'
-      );
-
-      return widgets;
-    }
   });
-
-  return Ember.run(() => {
-    return service.fetchDataForDashboard(mockDashboard).then(dataForWidget => {
-      assert.deepEqual(dataForWidget, [1, 2, 3], 'widgetData is returned by `fetchDataForWidgets` method');
-    });
-  });
-});
 
 test('fetch data for widget', async function(assert) {
   assert.expect(9);
@@ -125,7 +35,17 @@ test('fetch data for widget', async function(assert) {
     }
   });
 
-  assert.deepEqual(service.fetchDataForWidgets(1, []), {}, 'no widgets returns empty data object');
+  test('fetch data for widget', function(assert) {
+    assert.expect(9);
+
+    let service = this.owner.factoryFor('service:dashboard-data').create({
+      _fetch(request) {
+        // Skip the ws data fetch for this test
+        return resolve(request);
+      }
+    });
+
+    assert.deepEqual(service.fetchDataForWidgets(1, []), {}, 'no widgets returns empty data object');
 
   const makeRequest = (data, filters) => ({
     clone() {
@@ -156,9 +76,9 @@ test('fetch data for widget', async function(assert) {
     ],
     data = service.fetchDataForWidgets(1, widgets);
 
-  assert.deepEqual(Object.keys(data), ['1', '2', '3'], 'data is keyed by widget id');
+    assert.deepEqual(Object.keys(data), ['1', '2', '3'], 'data is keyed by widget id');
 
-  assert.ok(get(data, '1.isPending'), 'data uses a promise proxy');
+    assert.ok(get(data, '1.isPending'), 'data uses a promise proxy');
 
   await wait();
 
@@ -211,65 +131,66 @@ test('fetch data for widget', async function(assert) {
   );
 });
 
-test('_fetch', function(assert) {
-  assert.expect(1);
+  test('_fetch', function(assert) {
+    assert.expect(1);
 
-  let service = this.subject(),
-    request = {
-      logicalTable: {
-        table: 'network',
-        timeGrain: 'day'
+    let service = this.owner.lookup('service:dashboard-data'),
+      request = {
+        logicalTable: {
+          table: 'network',
+          timeGrain: 'day'
+        },
+        metrics: [{ metric: 'adClicks' }],
+        dimensions: [],
+        filters: [],
+        intervals: [
+          {
+            end: 'current',
+            start: 'P7D'
+          }
+        ],
+        bardVersion: 'v1',
+        requestVersion: 'v1'
       },
-      metrics: [{ metric: 'adClicks' }],
-      dimensions: [],
-      filters: [],
-      intervals: [
-        {
-          end: 'current',
-          start: 'P7D'
-        }
-      ],
-      bardVersion: 'v1',
-      requestVersion: 'v1'
-    },
-    response = {
-      rows: [
-        {
-          adClicks: 30
-        },
-        {
-          adClicks: 1000
-        },
-        {
-          adClicks: 200
-        }
-      ]
-    };
+      response = {
+        rows: [
+          {
+            adClicks: 30
+          },
+          {
+            adClicks: 1000
+          },
+          {
+            adClicks: 200
+          }
+        ]
+      };
 
-  server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
-  server.get('data/network/day/', () => {
-    return response;
+    server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
+    server.get('data/network/day/', () => {
+      return response;
+    });
+
+    return service._fetch(request).then(fetchResponse => {
+      assert.deepEqual(fetchResponse.get('response.rows'), response.rows, 'fetch gets response from web service');
+    });
   });
 
-  return service._fetch(request).then(fetchResponse => {
-    assert.deepEqual(fetchResponse.get('response.rows'), response.rows, 'fetch gets response from web service');
+  test('_decorate', function(assert) {
+    assert.expect(2);
+
+    let service = this.owner.lookup('service:dashboard-data'),
+      add = number => number + 5,
+      subtract = number => number - 3;
+
+    assert.equal(
+      service._decorate([add, subtract], 1),
+      3,
+      'decorate calls each decorator function and passes the result to the next decorator'
+    );
+
+    assert.equal(service._decorate([], 1), 1, 'empty array of decorators has no effect');
   });
-});
-
-test('_decorate', function(assert) {
-  assert.expect(2);
-
-  let service = this.subject(),
-    add = number => number + 5,
-    subtract = number => number - 3;
-
-  assert.equal(
-    service._decorate([add, subtract], 1),
-    3,
-    'decorate calls each decorator function and passes the result to the next decorator'
-  );
-
-  assert.equal(service._decorate([], 1), 1, 'empty array of decorators has no effect');
 });
 
 test('global filter application and error injection.', async function(assert) {

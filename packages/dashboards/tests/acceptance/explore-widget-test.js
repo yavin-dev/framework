@@ -1,3 +1,6 @@
+import { find, click, fillIn, currentURL, currentPath, findAll, blur, visit } from '@ember/test-helpers';
+import { A } from '@ember/array';
+import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import startApp from '../helpers/start-app';
 import Ember from 'ember';
@@ -9,69 +12,57 @@ let Application;
 // Regex to check that a string ends with "{uuid}/view"
 const TempIdRegex = /\/reports\/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\/view$/;
 
-module('Acceptance | Exploring Widgets', {
-  beforeEach: function() {
+module('Acceptance | Exploring Widgets', function(hooks) {
+  hooks.beforeEach(function() {
     Application = startApp();
     wait();
-  },
-
-  afterEach: function() {
-    server.shutdown();
-    Ember.run(Application, 'destroy');
-  }
-});
-
-test('Widget title', function(assert) {
-  assert.expect(1);
-
-  visit('/dashboards/1/widgets/1');
-
-  andThen(function() {
-    assert.equal(
-      find('.navi-report-widget__title')
-        .text()
-        .trim(),
-      'Mobile DAU Goal',
-      'Widget title is displayed as the page title'
-    );
   });
-});
 
-test('Editing widget title', function(assert) {
-  assert.expect(1);
+  hooks.afterEach(function() {
+    server.shutdown();
+    run(Application, 'destroy');
+  });
 
-  // Edit title
-  visit('/dashboards/1/widgets/2/view');
-  click('.editable-label__icon');
-  fillIn('.editable-label__input', 'A new title');
-  triggerEvent('.editable-label__input', 'blur');
+  test('Widget title', async function(assert) {
+    assert.expect(1);
 
-  // Save and return to dashboard
-  click('.navi-report-widget__save-btn');
-  visit('/dashboards/1');
+    await visit('/dashboards/1/widgets/1');
 
-  andThen(function() {
+    assert.dom('.navi-report-widget__title').hasText('Mobile DAU Goal', 'Widget title is displayed as the page title');
+  });
+
+  test('Editing widget title', async function(assert) {
+    assert.expect(1);
+
+    // Edit title
+    await visit('/dashboards/1/widgets/2/view');
+    await click('.editable-label__icon');
+    await fillIn('.editable-label__input', 'A new title');
+    await blur('.editable-label__input');
+
+    // Save and return to dashboard
+    await click('.navi-report-widget__save-btn');
+    await visit('/dashboards/1');
+
     let widgetNames = $('.navi-widget__title')
       .map(function() {
         return this.textContent.trim();
       })
       .toArray();
 
-    assert.ok(Ember.A(widgetNames).includes('A new title'), 'New widget title is saved and persisted on dashboard');
+    assert.ok(A(widgetNames).includes('A new title'), 'New widget title is saved and persisted on dashboard');
   });
-});
 
-test('Breadcrumb', function(assert) {
-  assert.expect(4);
-  let originalFeatureFlag = config.navi.FEATURES.enableDirectory;
+  test('Breadcrumb', async function(assert) {
+    assert.expect(4);
+    let originalFeatureFlag = config.navi.FEATURES.enableDirectory;
 
-  config.navi.FEATURES.enableDirectory = true;
+    config.navi.FEATURES.enableDirectory = true;
 
-  visit('/dashboards/1/widgets/1');
+    await visit('/dashboards/1/widgets/1');
 
-  andThen(function() {
-    let firstBreadcrumbItem = find('.navi-report-widget__breadcrumb-link:eq(0)'),
-      secondBreadcrumbItem = find('.navi-report-widget__breadcrumb-link:eq(1)');
+    let firstBreadcrumbItem = find(find('.navi-report-widget__breadcrumb-link')),
+      secondBreadcrumbItem = find(findAll('.navi-report-widget__breadcrumb-link')[1]);
 
     assert.equal(firstBreadcrumbItem.text().trim(), 'Directory', 'Breadcrumb begins with "Directory" link');
 
@@ -92,14 +83,12 @@ test('Breadcrumb', function(assert) {
     );
     config.navi.FEATURES.enableDirectory = originalFeatureFlag;
   });
-});
 
-test('Viewing a widget', function(assert) {
-  assert.expect(2);
+  test('Viewing a widget', async function(assert) {
+    assert.expect(2);
 
-  visit('/dashboards/1/widgets/2/view');
+    await visit('/dashboards/1/widgets/2/view');
 
-  andThen(function() {
     assert.ok(
       find('.navi-report-widget__body .report-builder').is(':visible'),
       'Widget body has a builder on the view route'
@@ -110,55 +99,35 @@ test('Viewing a widget', function(assert) {
       'Widget body has a visualization on the view route'
     );
   });
-});
 
-test('Exploring a widget', function(assert) {
-  assert.expect(1);
+  test('Exploring a widget', async function(assert) {
+    assert.expect(1);
 
-  visit('/dashboards/1');
-  click('.navi-widget__explore-btn:eq(1)');
+    await visit('/dashboards/1');
+    await click(findAll('.navi-widget__explore-btn')[1]);
 
-  andThen(function() {
     assert.ok(currentURL().endsWith('/dashboards/1/widgets/2/view'), 'Explore action links to widget view route');
   });
-});
 
-test('Changing and saving a widget', function(assert) {
-  assert.expect(4);
+  test('Changing and saving a widget', async function(assert) {
+    assert.expect(4);
 
-  // Add a metric to widget 2, save, and return to dashboard route
-  visit('/dashboards/1/widgets/2/view');
+    // Add a metric to widget 2, save, and return to dashboard route
+    await visit('/dashboards/1/widgets/2/view');
 
-  andThen(() => {
-    assert.notOk(
-      find('.report-view__info-text').is(':visible'),
-      'Notification to run is not visible before making changes'
-    );
-  });
+    assert.dom('.report-view__info-text').isVisible('Notification to run is not visible before making changes');
 
-  click('.checkbox-selector--metric .grouped-list__item:contains(Total Clicks) label');
+    await click('.checkbox-selector--metric .grouped-list__item:contains(Total Clicks) label');
 
-  andThen(() => {
-    assert.ok(find('.report-view__info-text').is(':visible'), 'Notification to run is visible after making changes');
-  });
+    assert.dom('.report-view__info-text').isVisible('Notification to run is visible after making changes');
 
-  click('.navi-report-widget__save-btn');
+    await click('.navi-report-widget__save-btn');
 
-  andThen(() => {
-    assert.notOk(
-      find('.report-view__info-text').is(':visible'),
-      'Notification to run is no longer visible after saving the report'
-    );
-  });
+    assert.dom('.report-view__info-text').isVisible', 'Notification to run is no longer visible after saving the report');
 
-  visit('/dashboards/1');
+    await visit('/dashboards/1');
 
-  andThen(() => {
-    let legends = $('.c3-legend-item')
-      .map(function() {
-        return this.textContent.trim();
-      })
-      .toArray();
+    const legends = find('.c3-legend-item').map(el => el.textContent.trim());
 
     assert.deepEqual(
       legends,
@@ -166,28 +135,22 @@ test('Changing and saving a widget', function(assert) {
       'Added metric appears in dashboard view after saving widget'
     );
   });
-});
 
-test('Revert changes', function(assert) {
-  assert.expect(4);
+  test('Revert changes', async function(assert) {
+    assert.expect(4);
 
-  visit('/dashboards/1/widgets/2/view');
+    await visit('/dashboards/1/widgets/2/view');
 
-  andThen(() => {
     assert.notOk($('.navi-report-widget__revert-btn').is(':visible'), 'Revert changes button is not initially visible');
-  });
 
-  // Remove a metric
-  click('.checkbox-selector--dimension .grouped-list__item:contains(Week) label');
-  andThen(() => {
+    // Remove a metric
+    await click('.checkbox-selector--dimension .grouped-list__item:contains(Week) label');
     assert.ok(
       $('.navi-report-widget__revert-btn').is(':visible'),
       'Revert changes button is visible once a change has been made'
     );
-  });
 
-  click('.navi-report-widget__revert-btn');
-  andThen(() => {
+    await click('.navi-report-widget__revert-btn');
     assert.ok(
       $('.filter-builder__subject:contains(Day)').is(':visible'),
       'After clicking "Revert Changes", the changed time grain is returned'
@@ -198,36 +161,32 @@ test('Revert changes', function(assert) {
       'After clicking "Revert Changes", button is once again hidden'
     );
   });
-});
 
-test('Export action', function(assert) {
-  assert.expect(3);
+  test('Export action', async function(assert) {
+    assert.expect(3);
 
-  let originalFeatureFlag = config.navi.FEATURES.enableMultipleExport;
+    let originalFeatureFlag = config.navi.FEATURES.enableMultipleExport;
 
-  // Turn flag off
-  config.navi.FEATURES.enableMultipleExport = false;
+    // Turn flag off
+    config.navi.FEATURES.enableMultipleExport = false;
 
-  visit('/dashboards/1/widgets/2/view');
+    await visit('/dashboards/1/widgets/2/view');
 
-  andThen(() => {
     assert.notOk(
       $('.navi-report-widget__action-link:contains(Export)').is('.navi-report-widget__action-link--is-disabled'),
       'Export action is enabled for a valid request'
     );
     assert.ok(
       find('.navi-report-widget__action-link:contains(Export)')
-        .attr('href')
+        .getAttribute('href')
         .includes('metrics=adClicks%2CnavClicks'),
       'Have correct metric in export url'
     );
-  });
 
-  // Remove all metrics to create an invalid request
-  click('.checkbox-selector--metric .grouped-list__item:contains(Ad Clicks) label');
-  click('.checkbox-selector--metric .grouped-list__item:contains(Nav Link Clicks) label');
+    // Remove all metrics to create an invalid request
+    await click('.checkbox-selector--metric .grouped-list__item:contains(Ad Clicks) label');
+    await click('.checkbox-selector--metric .grouped-list__item:contains(Nav Link Clicks) label');
 
-  andThen(() => {
     assert.ok(
       $('.navi-report-widget__action-link:contains(Export)').is('.navi-report-widget__action-link--is-disabled'),
       'Export action is disabled when request is not valid'
@@ -235,156 +194,128 @@ test('Export action', function(assert) {
 
     config.navi.FEATURES.enableMultipleExport = originalFeatureFlag;
   });
-});
 
-test('Multi export action', function(assert) {
-  assert.expect(1);
+  test('Multi export action', async function(assert) {
+    assert.expect(1);
 
-  visit('/dashboards/1/widgets/2/view');
-  clickDropdown('.multiple-format-export');
-  andThen(() => {
+    await visit('/dashboards/1/widgets/2/view');
+    clickDropdown('.multiple-format-export');
     assert.ok(
       find('.multiple-format-export__dropdown a:contains(PDF)')
-        .attr('href')
+        .getAttribute('href')
         .includes('export?reportModel='),
       'Export url contains serialized report'
     );
   });
-});
 
-test('Get API action - enabled/disabled', function(assert) {
-  assert.expect(2);
+  test('Get API action - enabled/disabled', async function(assert) {
+    assert.expect(2);
 
-  visit('/dashboards/1/widgets/2/view');
-  andThen(() => {
+    await visit('/dashboards/1/widgets/2/view');
     assert.notOk(
       $('.get-api').is('.navi-report-widget__action--is-disabled'),
       'Get API action is enabled for a valid request'
     );
-  });
 
-  // Remove all metrics
-  click('.checkbox-selector--metric .grouped-list__item:contains(Ad Clicks) label');
-  click('.checkbox-selector--metric .grouped-list__item:contains(Nav Link Clicks) label');
+    // Remove all metrics
+    click('.checkbox-selector--metric .grouped-list__item:contains(Ad Clicks) label');
+    click('.checkbox-selector--metric .grouped-list__item:contains(Nav Link Clicks) label');
 
-  // Create empty filter to make request invalid
-  click('.grouped-list__item:Contains(Operating System) .checkbox-selector__filter');
 
-  andThen(() => {
+    // Remove all metrics to create an invalid request
+    await click('.checkbox-selector--metric .grouped-list__item:contains(Ad Clicks) label');
+    await click('.checkbox-selector--metric .grouped-list__item:contains(Nav Link Clicks) label');
+
+    // Create empty filter to make request invalid
+    await click($('.grouped-list__item:Contains(Operating System) .checkbox-selector__filter')[0]);
     assert.ok(
       $('.get-api').is('.navi-report-widget__action--is-disabled'),
       'Get API action is disabled when request is not valid'
     );
   });
-});
 
-test('Share action', function(assert) {
-  assert.expect(2);
+  test('Share action', async function(assert) {
+    assert.expect(2);
 
-  /* == Unsaved widget == */
-  visit('/dashboards/1/widgets/new');
-  click('.checkbox-selector--metric .grouped-list__item:contains(Ad Clicks) label');
-  click('.navi-report-widget__run-btn');
-  andThen(() => {
+    /* == Unsaved widget == */
+    await visit('/dashboards/1/widgets/new');
+    await click('.checkbox-selector--metric .grouped-list__item:contains(Ad Clicks) label');
+    await click('.navi-report-widget__run-btn');
     assert.notOk(
       $('.navi-report-widget__action:contains(Share)').is(':visible'),
       'Share action is not present on an unsaved report'
     );
-  });
 
-  /* == Saved widget == */
-  visit('/dashboards/1/widgets/2/view');
-  click('.navi-report-widget__action:contains(Share) button');
+    /* == Saved widget == */
+    await visit('/dashboards/1/widgets/2/view');
+    await click('.navi-report-widget__action:contains(Share) button');
 
-  andThen(() => {
     assert.equal(
       $('.navi-modal .primary-header').text(),
       'Share "Mobile DAU Graph"',
       'Clicking share action brings up share modal'
     );
   });
-});
 
-test('Delete widget', function(assert) {
-  assert.expect(5);
+  test('Delete widget', async function(assert) {
+    assert.expect(5);
 
-  /* == Not author == */
-  visit('/dashboards/3/widgets/4/view');
-  andThen(() => {
+    /* == Not author == */
+    await visit('/dashboards/3/widgets/4/view');
     assert.notOk(
       $('.navi-report-widget__action:contains(Delete)').is(':visible'),
       'Delete action is not available if user is not the author'
     );
-  });
 
-  /* == Delete success == */
-  visit('/dashboards/1');
-  andThen(() => {
-    let widgetNames = $('.navi-widget__title')
+    /* == Delete success == */
+    await visit('/dashboards/1');
+    let widgetNamesBefore = $('.navi-widget__title')
       .map(function() {
         return this.textContent.trim();
       })
       .toArray();
 
     assert.deepEqual(
-      widgetNames,
+      widgetNamesBefore,
       ['Mobile DAU Goal', 'Mobile DAU Graph', 'Mobile DAU Table'],
       '"DAU Graph" widget is initially present on dashboard'
     );
-  });
 
-  visit('/dashboards/1/widgets/2/view');
-  click('.navi-report-widget__action:contains(Delete) button');
-  andThen(() => {
-    assert.equal(
-      find('.primary-header')
-        .text()
-        .trim(),
-      'Delete "Mobile DAU Graph"',
-      'Delete modal pops up when action is clicked'
-    );
-  });
+    await visit('/dashboards/1/widgets/2/view');
+    await click('.navi-report-widget__action:contains(Delete) button');
+    assert.dom('.primary-header').hasText('Delete "Mobile DAU Graph"', 'Delete modal pops up when action is clicked');
 
-  click('.navi-modal .btn-primary');
-  andThen(() => {
+    await click('.navi-modal .btn-primary');
     assert.ok(currentURL().endsWith('/dashboards/1/view'), 'After deleting, user is brought to dashboard view');
 
-    let widgetNames = $('.navi-widget__title')
+    let widgetNamesAfter = $('.navi-widget__title')
       .map(function() {
         return this.textContent.trim();
       })
       .toArray();
 
-    assert.deepEqual(widgetNames, ['Mobile DAU Goal', 'Mobile DAU Table'], 'Deleted widget is removed from dashboard');
-  });
-});
-
-test('Clone a widget', function(assert) {
-  assert.expect(4);
-  let originalWidgetTitle;
-
-  visit('/dashboards/1/widgets/1/view');
-  andThen(() => {
-    originalWidgetTitle = find('.navi-report-widget__title')
-      .text()
-      .trim();
+    assert.deepEqual(
+      widgetNamesAfter,
+      ['Mobile DAU Goal', 'Mobile DAU Table'],
+      'Deleted widget is removed from dashboard'
+    );
   });
 
-  click('.navi-report-widget__action-link:contains("Clone As Report")');
+  test('Clone a widget', async function(assert) {
+    assert.expect(4);
+    let originalWidgetTitle;
 
-  andThen(() => {
+    await visit('/dashboards/1/widgets/1/view');
+    originalWidgetTitle = find('.navi-report-widget__title').textContent.trim();
+
+    await click('.navi-report-widget__action-link:contains("Clone As Report")');
+
     assert.ok(
       TempIdRegex.test(currentURL()),
       'After cloning, user is brought to view route for a new report with a temp id'
     );
 
-    assert.equal(
-      find('.navi-report__title')
-        .text()
-        .trim(),
-      'Copy of ' + originalWidgetTitle,
-      'Cloned Report title is displayed'
-    );
+    assert.dom('.navi-report__title').hasText('Copy of ' + originalWidgetTitle, 'Cloned Report title is displayed');
 
     assert.ok(find('.navi-report__body .report-builder').is(':visible'), 'Report body has a builder on the view route');
 
@@ -393,24 +324,22 @@ test('Clone a widget', function(assert) {
       'Report body has a visualization on the view route'
     );
   });
-});
 
-test('Error data request', function(assert) {
-  assert.expect(1);
+  test('Error data request', async function(assert) {
+    assert.expect(1);
 
-  server.get(`${config.navi.dataSources[0].uri}/v1/data/*path`, () => {
-    return new Mirage.Response(500, {}, { description: 'Cannot merge mismatched time grains month and day' });
-  });
+    server.get(`${config.navi.dataSources[0].uri}/v1/data/*path`, () => {
+      return new Mirage.Response(500, {}, { description: 'Cannot merge mismatched time grains month and day' });
+    });
 
-  //suppress errors and exceptions for this test
-  let originalLoggerError = Ember.Logger.error,
-    originalException = Ember.Test.adapter.exception;
+    //suppress errors and exceptions for this test
+    let originalLoggerError = Ember.Logger.error,
+      originalException = Ember.Test.adapter.exception;
 
-  Ember.Logger.error = function() {};
-  Ember.Test.adapter.exception = function() {};
+    Ember.Logger.error = function() {};
+    Ember.Test.adapter.exception = function() {};
 
-  visit('/dashboards/2/widgets/4/view');
-  andThen(() => {
+    await visit('/dashboards/2/widgets/4/view');
     assert.equal(
       $('.navi-report-error__info-message')
         .text()
@@ -423,37 +352,35 @@ test('Error data request', function(assert) {
     Ember.Logger.error = originalLoggerError;
     Ember.Test.adapter.exception = originalException;
   });
-});
 
-test('Cancel Widget', function(assert) {
-  //Slow down mock
-  server.timing = 400;
-  server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
-  server.get('data/*path', () => {
-    return { rows: [] };
-  });
+  test('Cancel Widget', async function(assert) {
+    //Slow down mock
+    server.timing = 400;
+    server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
+    server.get('data/*path', () => {
+      return { rows: [] };
+    });
 
-  //Load the widget
-  visitWithoutWait('/dashboards/1/widgets/1/view');
-  waitForElement('.navi-report-widget__cancel-btn').then(() => {
-    assert.equal(currentPath(), 'dashboards.dashboard.widgets.widget.loading', 'Widget is loading');
+    //Load the widget
+    visitWithoutWait('/dashboards/1/widgets/1/view');
+    waitForElement('.navi-report-widget__cancel-btn').then(() => {
+      assert.equal(currentPath(), 'dashboards.dashboard.widgets.widget.loading', 'Widget is loading');
 
-    assert.deepEqual(
-      find('.navi-report-widget__footer .btn')
-        .toArray()
-        .map(e =>
-          $(e)
-            .text()
-            .trim()
-        ),
-      ['Cancel'],
-      'When widget is loading, the only footer button is `Cancel`'
-    );
-  });
+      assert.deepEqual(
+        find('.navi-report-widget__footer .btn')
+          .toArray()
+          .map(e =>
+            $(e)
+              .text()
+              .trim()
+          ),
+        ['Cancel'],
+        'When widget is loading, the only footer button is `Cancel`'
+      );
+    });
 
-  //Cancel the widget
-  click('.navi-report-widget__cancel-btn');
-  andThen(function() {
+    //Cancel the widget
+    await click('.navi-report-widget__cancel-btn');
     assert.equal(
       currentPath(),
       'dashboards.dashboard.widgets.widget.edit',
@@ -471,11 +398,9 @@ test('Cancel Widget', function(assert) {
       ['Run', 'Save Changes', 'Revert Changes'],
       'When not loading a widget, the standard footer buttons are available'
     );
-  });
 
-  //Run the widget
-  click('.navi-report-widget__run-btn');
-  andThen(function() {
+    //Run the widget
+    await click('.navi-report-widget__run-btn');
     assert.equal(
       currentPath(),
       'dashboards.dashboard.widgets.widget.view',

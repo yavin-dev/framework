@@ -3,13 +3,15 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import Ember from 'ember';
+import { inject as service } from '@ember/service';
 
-export default Ember.Route.extend({
+import Route from '@ember/routing/route';
+
+export default Route.extend({
   /**
    * @property {Ember.Service} dashboardData
    */
-  dashboardData: Ember.inject.service(),
+  dashboardData: service(),
   /**
    * Makes an ajax request to retrieve relevant widgets in the dashboard
    *

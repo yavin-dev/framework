@@ -11,12 +11,14 @@
  *   {{/dashboard-actions/add-widget}}
  */
 
-import Ember from 'ember';
+import { oneWay } from '@ember/object/computed';
+
+import { A } from '@ember/array';
+import Component from '@ember/component';
+import { set, get, computed } from '@ember/object';
 import layout from '../../templates/components/dashboard-actions/add-widget';
 
-const { computed, get, set } = Ember;
-
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   /**
@@ -32,7 +34,7 @@ export default Ember.Component.extend({
   /**
    * @property {Object} selectedReport - selectedReport defaults to `new report`
    */
-  selectedReport: computed.oneWay('reportsWithCreate.firstObject'),
+  selectedReport: oneWay('reportsWithCreate.firstObject'),
 
   /**
    * @property {Array} reportsWithCreate - users reports with create new as the first object
@@ -44,7 +46,7 @@ export default Ember.Component.extend({
       },
       reports = get(this, 'reports');
 
-    return Ember.A([
+    return A([
       newReport,
       {
         groupName: 'My Reports',
