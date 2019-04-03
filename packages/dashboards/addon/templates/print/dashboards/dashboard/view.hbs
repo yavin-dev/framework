@@ -1,25 +1,25 @@
 {{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="navi-dashboard navi-dashboard--print">
-    <div class="navi-dashboard__body">
-        {{#if model.dashboard.widgets.length}}
-            <div class="navi-dashboard__widgets">
-                {{#each model.dashboard.presentation.layout as |layout|}}
-                    {{#with (get-widget layout.widgetId) as |widget|}}
-                        {{#if widget}}
-                            {{navi-widget
-                                model=widget
-                                data=(get model.dataForWidget widget.id)
-                            }}
-                        {{/if}}
-                    {{/with}}
-                {{/each}}
-            </div>
-        {{else}}
-            <div class="error-container">
-                <div class="error">
-                    <p>Looks like this dashboard has no widgets.</p>
-                </div>
-            </div>
-        {{/if}}
-    </div>
+  <div class="navi-dashboard__body">
+    {{#if model.dashboard.widgets.length}}
+      <div class="navi-dashboard__widgets">
+        {{#each model.dashboard.presentation.layout as |layout|}}
+          {{#with (get-widget layout.widgetId) as |widget|}}
+            {{#if widget}}
+              {{navi-widget
+                model=widget
+                data=(get model.dataForWidget widget.id)
+              }}
+            {{/if}}
+          {{/with}}
+        {{/each}}
+      </div>
+    {{else}}
+      <div class="error-container">
+        <div class="error">
+          <p>Looks like this dashboard has no widgets.</p>
+        </div>
+      </div>
+    {{/if}}
+  </div>
 </div>
