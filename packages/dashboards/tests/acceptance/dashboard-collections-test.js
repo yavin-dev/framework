@@ -1,22 +1,15 @@
 import { findAll, visit } from '@ember/test-helpers';
-import { run } from '@ember/runloop';
 import Ember from 'ember';
 import { module, test } from 'qunit';
-import startApp from '../helpers/start-app';
-import Mirage from 'ember-cli-mirage';
+import { setupApplicationTest } from 'ember-qunit';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { Response } from 'ember-cli-mirage';
 
-let Application, OriginalLoggerError, OriginalTestAdapterException;
+let OriginalLoggerError, OriginalTestAdapterException;
 
 module('Acceptance | Dashboard Collections', function(hooks) {
-  hooks.beforeEach(function() {
-    Application = startApp();
-    wait();
-  });
-
-  hooks.afterEach(function() {
-    server.shutdown();
-    run(Application, 'destroy');
-  });
+  setupApplicationTest(hooks);
+  setupMirage(hooks);
 
   test('dashobard-collection success', async function(assert) {
     assert.expect(2);
@@ -40,7 +33,7 @@ module('Acceptance | Dashboard Collections', function(hooks) {
     Ember.Test.adapter.exception = function() {};
 
     server.get('/dashboardCollections/:id', () => {
-      return new Mirage.Response(500);
+      return new Response(500);
     });
 
     await visit('/dashboardCollections/1');

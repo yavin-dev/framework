@@ -1,20 +1,12 @@
-import { findAll, currentURL, visit } from '@ember/test-helpers';
-import { run } from '@ember/runloop';
+import { find, findAll, currentURL, visit } from '@ember/test-helpers';
 import { module, test } from 'qunit';
-import startApp from '../helpers/start-app';
-
-let Application;
+import { setupApplicationTest } from 'ember-qunit';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { getContext } from '@ember/test-helpers';
 
 module('Acceptance | Add New Widget', function(hooks) {
-  hooks.beforeEach(function() {
-    Application = startApp();
-    wait();
-  });
-
-  hooks.afterEach(function() {
-    server.shutdown();
-    run(Application, 'destroy');
-  });
+  setupApplicationTest(hooks);
+  setupMirage(hooks);
 
   test('visiting /dashboards/dashboard/widgets/Adds without param', async function(assert) {
     assert.expect(1);
@@ -41,9 +33,9 @@ module('Acceptance | Add New Widget', function(hooks) {
     assert.notOk(!!findAll('[data-gs-id="6"]').length, 'widget 4 is not present');
 
     //Make a new widget
-    let store = Application.__container__.lookup('service:store'),
-      widget = store.peekRecord('dashboard-widget', 1).clone(),
-      tempId = widget.get('tempId');
+    const store = getContext().owner.lookup('service:store');
+    const widget = store.peekRecord('dashboard-widget', 1).clone();
+    const tempId = widget.get('tempId');
 
     //Visit somewhere else to test the add route redirect
     await visit('/dashboards/2/');
@@ -60,6 +52,6 @@ module('Acceptance | Add New Widget', function(hooks) {
 
     assert.ok(!!findAll('[data-gs-id="6"]').length, 'widget 4 is present');
 
-    assert.equal(find('[data-gs-id="6"]').data().gsY, 8, 'widget 4 was added to the next available row');
+    assert.equal(find('[data-gs-id="6"]').getAttribute('data-gs-y'), 8, 'widget 4 was added to the next available row');
   });
 });

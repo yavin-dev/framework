@@ -1,38 +1,32 @@
-import { find, click } from '@ember/test-helpers';
+import { pauseTest, click, currentURL, fillIn, find, findAll, triggerEvent, visit } from '@ember/test-helpers';
 import { run } from '@ember/runloop';
-import { get } from '@ember/object';
 import Ember from 'ember';
 import { module, test } from 'qunit';
-import startApp from '../helpers/start-app';
-import Mirage from 'ember-cli-mirage';
 import config from 'ember-get-config';
+import { setupApplicationTest } from 'ember-qunit';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { Response } from 'ember-cli-mirage';
+import { selectChoose } from 'ember-power-select/test-support';
+import $ from 'jquery';
+import { getContext } from 'ember-test-helpers';
 
-let Application, OriginalLoggerError, OriginalTestAdapterException;
+let OriginalLoggerError, OriginalTestAdapterException;
 
 module('Acceptance | Dashboards', function(hooks) {
-  hooks.beforeEach(function() {
-    Application = startApp();
-    return wait();
-  });
+  setupApplicationTest(hooks);
+  setupMirage(hooks);
 
-  hooks.afterEach(function() {
-    server.shutdown();
-    run(Application, 'destroy');
-  });
-
-  test('dashboard success', function(assert) {
+  test('dashboard success', async function(assert) {
     assert.expect(2);
 
-    visit('/dashboards/1');
-    assert.notOk(!!find('.error').length, 'Error message not present when route is successfully loaded');
-
-    assert.ok(
-      !!find('.navi-dashboard').length,
-      'the dashboard collection component is rendered when route is successfully loaded'
-    );
+    await visit('/dashboards/1');
+    assert.dom('.error').doesNotExist('Error message not present when route is successfully loaded');
+    assert
+      .dom('.navi-dashboard')
+      .exists('the dashboard collection component is rendered when route is successfully loaded');
   });
 
-  test('dashboard error', function(assert) {
+  test('dashboard error', async function(assert) {
     assert.expect(2);
 
     // Allow testing of errors - https://github.com/emberjs/ember.js/issues/11469
@@ -42,34 +36,32 @@ module('Acceptance | Dashboards', function(hooks) {
     Ember.Test.adapter.exception = function() {};
 
     this.urlPrefix = config.navi.appPersistence.uri;
-    server.get('/dashboards/:id', () => {
-      return new Mirage.Response(500);
-    });
+    server.get('/dashboards/:id', () => new Response(500));
 
-    visit('/dashboards/1');
-    assert.ok(!!find('.error').length, 'Error message is present when route encounters an error');
+    await visit('/dashboards/1');
+    assert.dom('.error').exists('Error message not present when route is successfully loaded');
 
-    assert.notOk(!!find('.navi-dashboard').length, 'Navi dashboard collection component is not rendered');
+    assert.dom('.navi-dashboard').doesNotExist('Navi dashboard collection component is not rendered');
 
     Ember.Logger.error = OriginalLoggerError;
     Ember.Test.adapter.exception = OriginalTestAdapterException;
   });
 
-  test('dashboard loading', function(assert) {
+  test('dashboard loading', async function(assert) {
     assert.expect(1);
 
-    visit('/dashboards/loading');
+    await visit('/dashboards/loading');
 
-    assert.ok(!!find('.loader-container').length, 'Loader is present when visiting loading route');
+    assert.dom('.loader-container').exists('Loader is present when visiting loading route');
   });
 
-  test('updates to dashboard layout', function(assert) {
+  test('updates to dashboard layout', async function(assert) {
     assert.expect(2);
 
-    visit('/dashboards/1');
+    await visit('/dashboards/1');
 
-    let route = Application.__container__.lookup('route:dashboards.dashboard'),
-      layout = get(route, 'currentDashboard.presentation.layout');
+    const route = getContext().owner.lookup('route:dashboards.dashboard');
+    const layout = route.currentDashboard.presentation.layout;
 
     assert.deepEqual(
       layout,
@@ -82,8 +74,8 @@ module('Acceptance | Dashboards', function(hooks) {
     );
 
     //swap widget rows
-    let grid = find('.grid-stack').data('gridstack'),
-      items = find('.grid-stack-item');
+    const grid = $('.grid-stack').data('gridstack');
+    const items = findAll('.grid-stack-item');
     run(() => grid.move(items[2], 0, 0));
 
     assert.deepEqual(
@@ -100,35 +92,24 @@ module('Acceptance | Dashboards', function(hooks) {
   test('empty dashboard', async function(assert) {
     assert.expect(2);
 
-    visit('/dashboards/5');
+    await visit('/dashboards/5');
 
     assert.equal(
-      find('.error-container .error')
-        .text()
-        .replace(/\s+/g, ' ')
-        .trim(),
+      find('.error-container .error').textContent.trim(),
       'Looks like this dashboard has no widgets. Go ahead and add a widget now?'
     );
 
     await click('.navi-dashboard-container__add-widget-text');
-    assert.ok(
-      $('.ember-modal-dialog').is(':visible'),
-      'Add Widget Dialog box is visible when `add a widget` text is clicked'
-    );
+    assert.dom('.ember-modal-dialog').isVisible('Add Widget Dialog box is visible when `add a widget` text is clicked');
   });
 
-  test('index route', function(assert) {
+  test('index route', async function(assert) {
     assert.expect(1);
 
-    visit('/dashboards');
+    await visit('/dashboards');
 
-    let titles = find('.navi-collection .table tr td:first-of-type')
-      .toArray()
-      .map(el =>
-        $(el)
-          .text()
-          .trim()
-      );
+    let titles = findAll('.navi-collection .table tr td:first-of-type').map(el => el.textContent.trim());
+
     assert.deepEqual(
       titles,
       ['Tumblr Goals Dashboard', 'Dashboard 2', 'Empty Dashboard'],
@@ -139,9 +120,10 @@ module('Acceptance | Dashboards', function(hooks) {
   test('index route actions', async function(assert) {
     assert.expect(4);
 
-    visit('/dashboards');
+    await visit('/dashboards');
 
-    $('.navi-collection__row:first-of-type').trigger('mouseenter');
+    await triggerEvent('.navi-collection__row:first-of-type', 'mouseenter');
+    await pauseTest();
 
     // Click "Share"
     await click('.navi-collection__row:first-of-type .share .btn');
@@ -336,7 +318,7 @@ test('Delete a dashboard', function(assert) {
 
     // Mock server path endpoint to mock failure
     server.patch('/users/:id', () => {
-      return new Mirage.Response(500);
+      return new Response(500);
     });
 
     /* == mark dashboard as favorite == */
@@ -404,7 +386,7 @@ test('Delete a dashboard', function(assert) {
     assert.expect(1);
 
     server.post('/dashboards/', () => {
-      return new Mirage.Response(500);
+      return new Response(500);
     });
 
     visit('/dashboards/2');
@@ -467,7 +449,7 @@ test('Delete a dashboard', function(assert) {
     assert.expect(2);
 
     server.patch('/dashboards/1', () => {
-      return new Mirage.Response(500);
+      return new Response(500);
     });
 
     // Create and save
@@ -512,7 +494,7 @@ test('Delete a dashboard', function(assert) {
 
     server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
     server.get('/data/network/day/os', function() {
-      return new Mirage.Response(403);
+      return new Response(403);
     });
 
     visit('/dashboards/2/view');
