@@ -37,7 +37,7 @@
     "ember-math-helpers": "^2.10.0",
     "ember-modal-dialog": "^2.4.3",
     "ember-moment": "7.8.1",
-    "ember-power-select": "^2.2.2",
+    "ember-power-select": "2.2.2",
     "ember-promise-helpers": "^1.0.6",
     "ember-route-action-helper": "^2.0.6",
     "ember-sortable": "1.12.6",
