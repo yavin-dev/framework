@@ -53,8 +53,6 @@ export default Ember.Component.extend({
       dimensionService = get(this, '_dimensionService'),
       metadataService = get(this, '_metadataService');
 
-    console.log(get(metadataService.getById('dimension', dimensionName), 'cardinality'));
-
     if (get(metadataService.getById('dimension', dimensionName), 'cardinality') <= LOAD_CARDINALITY) {
       return dimensionService.all(dimensionName);
     }
