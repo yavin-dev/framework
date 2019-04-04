@@ -20,6 +20,11 @@ export default Controller.extend({
   showSaveAs: false,
 
   /**
+   * @property {Object} modifiedRequest - the serialized request after calling `onUpdateReport`
+   */
+  modifiedRequest: null,
+
+  /**
    * @property {String} reportState - state of the the report
    */
   reportState: computed({

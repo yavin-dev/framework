@@ -73,7 +73,10 @@ export default Route.extend({
    */
   setupController(controller) {
     this._super(...arguments);
-    controller.set('showSaveAs', false);
+    controller.setProperties({
+      showSaveAs: false,
+      modifiedRequest: null
+    });
   },
 
   /**
@@ -208,6 +211,15 @@ export default Route.extend({
       controller.set('reportState', state);
     },
 
+    /*
+     * @action setModifiedRequest
+     * @param {Object} request
+     */
+    setModifiedRequest(request) {
+      const controller = this.controllerFor(this.routeName);
+      controller.set('modifiedRequest', request);
+    },
+
     /**
      * @action onUpdateVisualizationConfig
      *
@@ -237,6 +249,8 @@ export default Route.extend({
       if (actionType) {
         get(this, 'updateReportActionDispatcher').dispatch(actionType, this, ...args);
       }
+
+      this.send('setModifiedRequest', this.currentModel.get('request').serialize());
     },
 
     /**
