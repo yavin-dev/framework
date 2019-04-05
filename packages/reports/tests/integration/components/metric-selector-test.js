@@ -94,11 +94,9 @@ module('Integration | Component | metric selector', function(hooks) {
       'Initially all the metrics are shown in the metric selector'
     );
 
-    assert.equal(
-      find('.navi-list-selector__show-link').textContent.trim(),
-      'Show Selected (1)',
-      'The Show Selected link has the correct number of selected base metrics shown'
-    );
+    assert
+      .dom('.navi-list-selector__show-link')
+      .hasText('Show Selected (1)', 'The Show Selected link has the correct number of selected base metrics shown');
 
     run(async () => {
       await click('.navi-list-selector__show-link');
@@ -143,11 +141,12 @@ module('Integration | Component | metric selector', function(hooks) {
       await click('.navi-list-selector__show-link');
     });
 
-    assert.equal(
-      find('.navi-list-selector__show-link').textContent.trim(),
-      'Show Selected (1)',
-      'The Show Selected link still has the correct number of selected base metrics shown'
-    );
+    assert
+      .dom('.navi-list-selector__show-link')
+      .hasText(
+        'Show Selected (1)',
+        'The Show Selected link still has the correct number of selected base metrics shown'
+      );
 
     run(() => {
       metrics.createFragment({
@@ -156,11 +155,12 @@ module('Integration | Component | metric selector', function(hooks) {
       });
     });
 
-    assert.equal(
-      find('.navi-list-selector__show-link').textContent.trim(),
-      'Show Selected (2)',
-      'The Show Selected link increases the count when a metric with a different base is added'
-    );
+    assert
+      .dom('.navi-list-selector__show-link')
+      .hasText(
+        'Show Selected (2)',
+        'The Show Selected link increases the count when a metric with a different base is added'
+      );
 
     run(async () => {
       await click('.navi-list-selector__show-link');

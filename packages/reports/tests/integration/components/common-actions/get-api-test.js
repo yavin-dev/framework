@@ -47,7 +47,7 @@ module('Integration | Component | common actions/get api', function(hooks) {
 
     await render(Template);
 
-    assert.equal(find('.get-api').textContent.trim(), 'Get API', 'Component yields given text');
+    assert.dom('.get-api').hasText('Get API', 'Component yields given text');
   });
 
   test('Custom button classes', async function(assert) {
@@ -118,13 +118,11 @@ module('Integration | Component | common actions/get api', function(hooks) {
 
     assert.ok(this.$('.ember-modal-dialog').is(':visible'), 'Copy modal dialog pops up on clicking the component');
 
-    assert.equal(
-      find('.navi-modal__header--secondary').textContent.trim(),
-      'Select the Copy button to copy to clipboard.',
-      'Secondary header is visible with instructions'
-    );
+    assert
+      .dom('.navi-modal__header--secondary')
+      .hasText('Select the Copy button to copy to clipboard.', 'Secondary header is visible with instructions');
 
-    assert.equal(find('.navi-modal__input').value, MockUrl, 'Modal input box has link to the current page');
+    assert.dom('.navi-modal__input').hasValue(MockUrl, 'Modal input box has link to the current page');
 
     let buttons = this.$('.btn-container .btn');
     assert.deepEqual(

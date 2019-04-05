@@ -58,17 +58,13 @@ module('Integration | Component | filter-builders/base', function(hooks) {
 
     await render(hbs`{{filter-builders/base filter=filter supportedOperators=supportedOperators }}`);
 
-    assert.equal(
-      find('.filter-builder__subject').textContent.trim(),
-      filter.subject.longName,
-      "Subject's long name is display in filter builder"
-    );
+    assert
+      .dom('.filter-builder__subject')
+      .hasText(filter.subject.longName, "Subject's long name is display in filter builder");
 
-    assert.equal(
-      find('.filter-builder__operator .ember-power-select-selected-item').textContent.trim(),
-      filter.operator.longName,
-      'The filter current operator is selected by default'
-    );
+    assert
+      .dom('.filter-builder__operator .ember-power-select-selected-item')
+      .hasText(filter.operator.longName, 'The filter current operator is selected by default');
 
     clickTrigger();
     assert.deepEqual(

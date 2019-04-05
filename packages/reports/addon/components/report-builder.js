@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { readOnly } from '@ember/object/computed';
-
+import { A as arr } from '@ember/array';
 import { inject as service } from '@ember/service';
 import Component from '@ember/component';
 import { get, computed } from '@ember/object';
@@ -28,7 +28,7 @@ export default Component.extend({
    * @property {boolean} -- whether report has valid table
    */
   hasValidLogicalTable: computed('report.request.logicalTable.table', function() {
-    const allTables = get(this, 'allTables');
+    const allTables = arr(get(this, 'allTables'));
     const tableName = get(this, 'report.request.logicalTable.table.name');
     return allTables.filterBy('name', tableName).length > 0;
   }),

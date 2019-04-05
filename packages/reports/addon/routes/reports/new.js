@@ -3,8 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import { A } from '@ember/array';
-
+import { A as arr } from '@ember/array';
 import { reject } from 'rsvp';
 import { inject as service } from '@ember/service';
 import Route from '@ember/routing/route';
@@ -135,7 +134,7 @@ export default Route.extend({
       let dataSourceTables = get(this, 'metadataService')
         .all('table')
         .sortBy('longName');
-      table = get(dataSourceTables, 'firstObject');
+      table = get(arr(dataSourceTables), 'firstObject');
     }
 
     return table;
@@ -150,7 +149,7 @@ export default Route.extend({
    */
   _getDefaultTimeGrainName(table) {
     let timeGrainName = get(config, 'navi.defaultTimeGrain'),
-      tableTimeGrains = A(get(table, 'timeGrains')),
+      tableTimeGrains = arr(get(table, 'timeGrains')),
       timeGrainExist = tableTimeGrains.findBy('name', timeGrainName);
 
     if (!timeGrainExist) {

@@ -174,14 +174,14 @@ module('Integration | Component | Navi Date Range Picker', function(hooks) {
           }}
       `);
 
-    assert.equal(findAll('li.active').length, 0, 'When there is no selection, no intervals are active');
+    assert.dom('li.active').doesNotExist('When there is no selection, no intervals are active');
 
     run(() => {
       this.set('interval', new Interval(new Duration('P4W'), 'current'));
     });
 
     assert.ok(this.$('li:eq(2)').is('.active'), 'Selected interval is marked active');
-    assert.equal(findAll('li.active').length, 1, 'Only one interval is marked active');
+    assert.dom('li.active').exists({ count: 1 }, 'Only one interval is marked active');
   });
 
   test('Placeholder text', async function(assert) {
@@ -196,28 +196,22 @@ module('Integration | Component | Navi Date Range Picker', function(hooks) {
           }}
       `);
 
-    assert.equal(
-      find('.pick-value.selection-box').textContent.trim(),
-      'Date Range',
-      'Placeholder text is displayed when no interval is selected'
-    );
+    assert
+      .dom('.pick-value.selection-box')
+      .hasText('Date Range', 'Placeholder text is displayed when no interval is selected');
 
     run(() => {
       this.set('interval', new Interval(moment('09-08-2014', 'MM-DD-YYYY'), moment('10-13-2014', 'MM-DD-YYYY')));
     });
 
-    assert.equal(
-      find('.pick-value label').textContent.trim(),
-      'Select date range',
-      'Label text is displayed when an interval is selected'
-    );
+    assert
+      .dom('.pick-value label')
+      .hasText('Select date range', 'Label text is displayed when an interval is selected');
 
     //Date Picker displays one timePeriod less than the selectionInterval
-    assert.equal(
-      find('.pick-value .value').textContent.trim(),
-      'Sep 08, 2014 - Oct 12, 2014',
-      'Interval range is displayed when an interval is selected'
-    );
+    assert
+      .dom('.pick-value .value')
+      .hasText('Sep 08, 2014 - Oct 12, 2014', 'Interval range is displayed when an interval is selected');
   });
 
   test('Custom value template', async function(assert) {
@@ -237,11 +231,7 @@ module('Integration | Component | Navi Date Range Picker', function(hooks) {
 
     assert.ok(this.$('.custom-template').is(':visible'), 'When used in block form, a custom template is allowed');
 
-    assert.equal(
-      find('.custom-template').textContent.trim(),
-      'Last 7 Days',
-      'The selected interval is yielded to the custom template'
-    );
+    assert.dom('.custom-template').hasText('Last 7 Days', 'The selected interval is yielded to the custom template');
 
     assert.notOk(this.$('.placeholder').is(':visible'), 'The default placeholder template is not visible');
   });
@@ -255,7 +245,7 @@ module('Integration | Component | Navi Date Range Picker', function(hooks) {
           }}
       `);
 
-    assert.equal(find('li:last-of-type > div').textContent.trim(), 'Custom range', 'Last option is "Custom range"');
+    assert.dom(find('li:last-of-type > div')).hasText('Custom range', 'Last option is "Custom range"');
   });
 
   test('Open custom interval form', async function(assert) {
@@ -299,13 +289,9 @@ module('Integration | Component | Navi Date Range Picker', function(hooks) {
       this.set('interval', new Interval(moment('09-14-2014', 'MM-DD-YYYY'), moment('10-15-2014', 'MM-DD-YYYY')));
     });
 
-    assert.equal(
-      find('.datepicker:eq(0) .active').textContent,
-      '14Sep2014',
-      'First date picker has start day selected'
-    );
+    assert.dom(find('.datepicker:eq(0) .active')).hasText('14Sep2014', 'First date picker has start day selected');
 
-    assert.equal(find('.datepicker:eq(1) .active').textContent, '14Oct2014', 'Second date picker has end day selected');
+    assert.dom(find('.datepicker:eq(1) .active')).hasText('14Oct2014', 'Second date picker has end day selected');
 
     //toggle advanced calendar
     run(() => openAdvancedCalendar(this));
@@ -326,11 +312,9 @@ module('Integration | Component | Navi Date Range Picker', function(hooks) {
       this.set('interval', new Interval(new Duration('P5D'), moment('10-15-2014', 'MM-DD-YYYY')));
     });
 
-    assert.equal(
-      find('.datepicker:eq(0) .active').textContent,
-      '10Oct2014',
-      'First date picker has correct day selected when using a duration in the interval'
-    );
+    assert
+      .dom(find('.datepicker:eq(0) .active'))
+      .hasText('10Oct2014', 'First date picker has correct day selected when using a duration in the interval');
 
     assert.equal(
       this.$('.navi-date-input')[0].value,
@@ -356,7 +340,7 @@ module('Integration | Component | Navi Date Range Picker', function(hooks) {
       'Custom range is active when selection does not match another interval'
     );
 
-    assert.equal(findAll('li.active').length, 1, 'Only one interval is marked active');
+    assert.dom('li.active').exists({ count: 1 }, 'Only one interval is marked active');
   });
 
   test('Custom range reset button', async function(assert) {
@@ -375,17 +359,13 @@ module('Integration | Component | Navi Date Range Picker', function(hooks) {
     await click('.datepicker:eq(0) .day:contains(20)');
     await click('.datepicker:eq(1) .day:contains(21)');
 
-    assert.equal(
-      find('.datepicker:eq(0) .active').textContent,
-      '20Sep2014',
-      'First date picker has newly selected start date'
-    );
+    assert
+      .dom(find('.datepicker:eq(0) .active'))
+      .hasText('20Sep2014', 'First date picker has newly selected start date');
 
-    assert.equal(
-      find('.datepicker:eq(1) .active').textContent,
-      '21Oct2014',
-      'Second date picker has newly selected end date'
-    );
+    assert
+      .dom(find('.datepicker:eq(1) .active'))
+      .hasText('21Oct2014', 'Second date picker has newly selected end date');
 
     //toggle advanced calendar
     run(() => openAdvancedCalendar(this));
@@ -405,17 +385,9 @@ module('Integration | Component | Navi Date Range Picker', function(hooks) {
     // Click reset
     await click('.btn.btn-secondary');
 
-    assert.equal(
-      find('.datepicker:eq(0) .active').textContent,
-      '14Sep2014',
-      'Clicking reset reverts to original start date'
-    );
+    assert.dom(find('.datepicker:eq(0) .active')).hasText('14Sep2014', 'Clicking reset reverts to original start date');
 
-    assert.equal(
-      find('.datepicker:eq(1) .active').textContent,
-      '14Oct2014',
-      'Clicking reset reverts to original end date'
-    );
+    assert.dom(find('.datepicker:eq(1) .active')).hasText('14Oct2014', 'Clicking reset reverts to original end date');
   });
 
   test('Select custom interval', async function(assert) {
@@ -653,9 +625,9 @@ module('Integration | Component | Navi Date Range Picker', function(hooks) {
           }}
       `);
 
-    assert.equal(findAll('li').length, 1, 'Only one option is available to select for All time grain');
+    assert.dom('li').exists({ count: 1 }, 'Only one option is available to select for All time grain');
 
-    assert.equal(find('li:last-of-type > div').textContent.trim(), 'Custom range', 'Last option is "Custom range"');
+    assert.dom(find('li:last-of-type > div')).hasText('Custom range', 'Last option is "Custom range"');
 
     // Click the Custom range and click apply
     run(() => {

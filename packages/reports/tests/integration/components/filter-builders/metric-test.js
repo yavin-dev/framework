@@ -51,11 +51,12 @@ module('Integration | Component | filter-builders/metric', function(hooks) {
     this.set('request', Request);
     await render(hbs`{{filter-builders/metric filter=filter request=request}}`);
 
-    assert.equal(
-      find('.filter-builder__subject').textContent.trim(),
-      'metric-with-params (bar,baz)',
-      "Subject's long name displayed in filter builder includes the metric long name and the parameters"
-    );
+    assert
+      .dom('.filter-builder__subject')
+      .hasText(
+        'metric-with-params (bar,baz)',
+        "Subject's long name displayed in filter builder includes the metric long name and the parameters"
+      );
 
     //check display name for metric without params
     filter = {
@@ -73,10 +74,8 @@ module('Integration | Component | filter-builders/metric', function(hooks) {
 
     this.set('filter', filter);
 
-    assert.equal(
-      find('.filter-builder__subject').textContent.trim(),
-      'metric-without-params',
-      "Only the subject's long name is displayed when the metric has no parameters"
-    );
+    assert
+      .dom('.filter-builder__subject')
+      .hasText('metric-without-params', "Only the subject's long name is displayed when the metric has no parameters");
   });
 });

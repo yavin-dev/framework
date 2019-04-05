@@ -54,7 +54,7 @@ module('Integration | Component | filter collection', function(hooks) {
   test('it renders', function(assert) {
     assert.expect(4);
 
-    assert.equal(findAll('.filter-collection__row').length, 5, 'Each request filter is represented by a filter row');
+    assert.dom('.filter-collection__row').exists({ count: 5 }, 'Each request filter is represented by a filter row');
 
     assert.ok(
       this.$('.filter-collection__row .filter-collection__remove').is(':visible'),

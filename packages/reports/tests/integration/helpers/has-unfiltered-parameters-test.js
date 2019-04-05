@@ -25,25 +25,19 @@ module('Integration | Helper | has unfiltered parameters', function(hooks) {
       request
     }}</span>`);
 
-    assert.equal(
-      find('.has-unfiltered-parameters').textContent.trim(),
-      'true',
-      'hasUnfilteredParameters returns true when the metric is not selected'
-    );
+    assert
+      .dom('.has-unfiltered-parameters')
+      .hasText('true', 'hasUnfilteredParameters returns true when the metric is not selected');
 
     this.set('request', { metrics: [metric], having: [] });
-    assert.equal(
-      find('.has-unfiltered-parameters').textContent.trim(),
-      'true',
-      'hasUnfilteredParameters returns true when the metric is selected but unfiltered'
-    );
+    assert
+      .dom('.has-unfiltered-parameters')
+      .hasText('true', 'hasUnfilteredParameters returns true when the metric is selected but unfiltered');
 
     this.set('request', { metrics: [metric], having: [{ metric }] });
-    assert.equal(
-      find('.has-unfiltered-parameters').textContent.trim(),
-      'false',
-      'hasUnfilteredParameters returns false when the metric is selected and filtered'
-    );
+    assert
+      .dom('.has-unfiltered-parameters')
+      .hasText('false', 'hasUnfilteredParameters returns false when the metric is selected and filtered');
 
     let newMetric = {
       metric: { name: 'foo' },
@@ -52,10 +46,11 @@ module('Integration | Helper | has unfiltered parameters', function(hooks) {
     };
     this.set('metric', newMetric.metric);
     this.set('request', { metrics: [metric, newMetric], having: [{ metric }] });
-    assert.equal(
-      find('.has-unfiltered-parameters').textContent.trim(),
-      'true',
-      'hasUnfilteredParameters returns true when the new metric of the same base is selected but unfiltered'
-    );
+    assert
+      .dom('.has-unfiltered-parameters')
+      .hasText(
+        'true',
+        'hasUnfilteredParameters returns true when the new metric of the same base is selected but unfiltered'
+      );
   });
 });

@@ -8,7 +8,7 @@
             tagName='li'
         }}
             {{navi-icon 'copy'}}
-            {{tooltip-on-component text='Save report to enable clone'}}
+            {{ember-tooltip text='Save report to enable clone'}}
         {{/link-to}}
     {{else}}
         {{#link-to 'reports.report.clone' report.id
@@ -16,7 +16,7 @@
             tagName='li'
         }}
             {{navi-icon 'copy'}}
-            {{tooltip-on-component text='Clone the report'}}
+            {{ember-tooltip text='Clone the report'}}
         {{/link-to}}
     {{/if}}
 
@@ -30,9 +30,9 @@
         tagName='li'
     }}
         {{navi-icon 'download'}}
-        {{#tooltip-on-component}}
+        {{#ember-tooltip}}
             {{if item.request.validations.isTruelyValid 'Export the report' 'Run a valid report to enable export'}}
-        {{/tooltip-on-component}}
+        {{/ember-tooltip}}
     {{/component}}
 
     {{!-- Share only enabled on a saved report --}}
@@ -45,9 +45,9 @@
         classNameBindings='item.isNew:navi-report__action--is-disabled'
     }}
         {{navi-icon 'share'}}
-        {{#tooltip-on-component}}
+        {{#ember-tooltip}}
             {{if item.isNew 'Save report to enable share' 'Share the report'}}
-        {{/tooltip-on-component}}
+        {{/ember-tooltip}}
     {{/common-actions/share}}
 
     {{!-- Check if user is the owner of the report --}}
@@ -64,9 +64,9 @@
                 onDelete=(delivery-rule-action 'DELETE_DELIVERY_RULE')
                 classNameBindings='item.request.validations.isTruelyValid::navi-report__action--is-disabled'
             }}
-                {{#tooltip-on-component}}
+                {{#ember-tooltip}}
                     {{if item.request.validations.isTruelyValid 'Schedule the report' 'Validate report to enable scheduling'}}
-                {{/tooltip-on-component}}
+                {{/ember-tooltip}}
             {{/common-actions/schedule}}
         {{/if}}
         {{!-- Delete Action enabled on an owned report --}}
@@ -74,13 +74,13 @@
             tagName='li'
             classNames='action delete'
             model=report
-            warnMsg=(if (await report.deliveryRuleForUser)
+            warnMsg=(if (await report.loadDeliveryRuleForUser)
                         'Are you sure you want to delete this report and the associated schedule?'
                         'Are you sure you want to delete this report?')
             deleteAction=(item-action 'DELETE_ITEM' report)
         }}
             {{navi-icon 'trash-o'}}
-            {{tooltip-on-component text='Delete the report' enableLazyRendering=true}}
+            {{ember-tooltip text='Delete the report'}}
         {{/common-actions/delete}}
 
     {{/if}}

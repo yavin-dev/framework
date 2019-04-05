@@ -51,7 +51,7 @@ module('Integration | Component | paginated scroll list', function(hooks) {
 
     assert.ok(true, 'Component renders');
 
-    assert.equal(findAll('.items-container.trimmed').length, 1, 'items container has "trimmed" class');
+    assert.dom('.items-container.trimmed').exists({ count: 1 }, 'items container has "trimmed" class');
 
     assert.equal(
       this.$('a:contains("Show more")').length,
@@ -87,11 +87,9 @@ module('Integration | Component | paginated scroll list', function(hooks) {
       'Show more link is visible before clicking show more link'
     );
 
-    assert.equal(
-      findAll('.items-container.trimmed').length,
-      1,
-      'items container has "trimmed" class before clicking show more link'
-    );
+    assert
+      .dom('.items-container.trimmed')
+      .exists({ count: 1 }, 'items container has "trimmed" class before clicking show more link');
 
     /* == Click Show more link == */
     this.set('showMoreAction', () => {
@@ -108,11 +106,9 @@ module('Integration | Component | paginated scroll list', function(hooks) {
       'Show more link is not visible after clicking show more link'
     );
 
-    assert.equal(
-      findAll('.items-container.show-all').length,
-      1,
-      'items container has "show-all" class after clicking show more link'
-    );
+    assert
+      .dom('.items-container.show-all')
+      .exists({ count: 1 }, 'items container has "show-all" class after clicking show more link');
   });
 
   test('component is rendered in show all state', async function(assert) {
@@ -125,7 +121,7 @@ module('Integration | Component | paginated scroll list', function(hooks) {
 
     assert.ok(true, 'Component renders');
 
-    assert.equal(findAll('.items-container.show-all').length, 1, 'items container has "show-all" class');
+    assert.dom('.items-container.show-all').exists({ count: 1 }, 'items container has "show-all" class');
 
     assert.equal(this.$('a:contains("Show more")').length, 0, 'Show more link is not visible when trim flag is false');
   });
@@ -162,7 +158,7 @@ module('Integration | Component | paginated scroll list', function(hooks) {
     await triggerEvent('.items-container', 'scroll');
 
     return settled().then(() => {
-      assert.equal(findAll('.mock-item').length, 50, '50 items are shown after scrolling');
+      assert.dom('.mock-item').exists({ count: 50 }, '50 items are shown after scrolling');
     });
   });
 

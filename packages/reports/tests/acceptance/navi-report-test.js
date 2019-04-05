@@ -1,7 +1,7 @@
 import Component from '@ember/component';
 import { get } from '@ember/object';
 import Ember from 'ember';
-import { module, test, skip } from 'qunit';
+import { module, test } from 'qunit';
 import { click, fillIn, visit, currentURL, find, findAll, blur, triggerEvent, waitFor } from '@ember/test-helpers';
 import { teardownModal } from '../helpers/teardown-modal';
 import { findContains } from '../helpers/contains-helpers';
@@ -68,7 +68,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     await visit('/reports/1/clone');
 
-    assert.ok(find('.report-view'), 'The route transistions to report view');
+    assert.dom('.report-view').exists('The route transistions to report view');
 
     assert.equal(find('.navi-report__title').innerText.trim(), 'Copy Of Hyrule News', 'Cloned report is being viewed');
   });
@@ -466,11 +466,7 @@ module('Acceptance | Navi Report', function(hooks) {
       'After cloning, user is brought to view route for a new report with a temp id'
     );
 
-    assert.equal(
-      find('.navi-report__title').textContent.trim(),
-      'Copy of Hyrule News',
-      'Cloned report is being viewed'
-    );
+    assert.dom('.navi-report__title').hasText('Copy of Hyrule News', 'Cloned report is being viewed');
   });
 
   test('Clone action - enabled/disabled', async function(assert) {
@@ -478,12 +474,9 @@ module('Acceptance | Navi Report', function(hooks) {
 
     await visit('/reports/1/view');
 
-    assert.notOk(
-      findContains('.navi-report__action-link:contains(Clone)').classList.contains(
-        'navi-report__action-link--force-disabled'
-      ),
-      'Clone action is enabled for a valid report'
-    );
+    assert
+      .dom(findContains('.navi-report__action-link:contains(Clone)'))
+      .hasNoClass('navi-report__action-link--force-disabled', 'Clone action is enabled for a valid report');
 
     // Remove all metrics to create , but do not save
     await click(
@@ -493,12 +486,9 @@ module('Acceptance | Navi Report', function(hooks) {
       findContains('.checkbox-selector--metric .grouped-list__item:contains(Nav Link Clicks) .grouped-list__item-label')
     );
 
-    assert.notOk(
-      findContains('.navi-report__action-link:contains(Clone)').classList.contains(
-        'navi-report__action-link--force-disabled'
-      ),
-      'Clone action is enabled from a valid save report'
-    );
+    assert
+      .dom(findContains('.navi-report__action-link:contains(Clone)'))
+      .hasNoClass('navi-report__action-link--force-disabled', 'Clone action is enabled from a valid save report');
   });
 
   test('Export action - enabled/disabled', async function(assert) {
@@ -506,12 +496,9 @@ module('Acceptance | Navi Report', function(hooks) {
 
     await visit('/reports/1/view');
 
-    assert.notOk(
-      findContains('.navi-report__action-link:contains(Export)').classList.contains(
-        'navi-report__action-link--force-disabled'
-      ),
-      'Export action is enabled for a valid report'
-    );
+    assert
+      .dom(findContains('.navi-report__action-link:contains(Export)'))
+      .hasNoClass('navi-report__action-link--force-disabled', 'Export action is enabled for a valid report');
 
     // Add new dimension to make it out of sync with the visualization
     await click(
@@ -520,12 +507,9 @@ module('Acceptance | Navi Report', function(hooks) {
       )
     );
 
-    assert.ok(
-      findContains('.navi-report__action-link:contains(Export)').classList.contains(
-        'navi-report__action-link--force-disabled'
-      ),
-      'Export action is disabled when report is not valid'
-    );
+    assert
+      .dom(findContains('.navi-report__action-link:contains(Export)'))
+      .hasClass('navi-report__action-link--force-disabled', 'Export action is disabled when report is not valid');
 
     // Remove new dimension to make it in sync with the visualization
     await click(
@@ -534,12 +518,9 @@ module('Acceptance | Navi Report', function(hooks) {
       )
     );
 
-    assert.notOk(
-      findContains('.navi-report__action-link:contains(Export)').classList.contains(
-        'navi-report__action-link--force-disabled'
-      ),
-      'Export action is enabled for a valid report'
-    );
+    assert
+      .dom(findContains('.navi-report__action-link:contains(Export)'))
+      .hasNoClass('navi-report__action-link--force-disabled', 'Export action is enabled for a valid report');
 
     // Remove all metrics to create an invalid report
     await click(
@@ -549,12 +530,9 @@ module('Acceptance | Navi Report', function(hooks) {
       findContains('.checkbox-selector--metric .grouped-list__item:contains(Nav Link Clicks) .grouped-list__item-label')
     );
 
-    assert.ok(
-      findContains('.navi-report__action-link:contains(Export)').classList.contains(
-        'navi-report__action-link--force-disabled'
-      ),
-      'Export action is disabled when report is not valid'
-    );
+    assert
+      .dom(findContains('.navi-report__action-link:contains(Export)'))
+      .hasClass('navi-report__action-link--force-disabled', 'Export action is disabled when report is not valid');
   });
 
   test('Export action - href', async function(assert) {
@@ -773,11 +751,9 @@ module('Acceptance | Navi Report', function(hooks) {
     await visit('/reports/1/view');
     await click(findContains('.navi-report__action:contains(Share) button'));
 
-    assert.equal(
-      find('.navi-modal .primary-header').textContent.trim(),
-      'Share "Hyrule News"',
-      'Clicking share action brings up share modal'
-    );
+    assert
+      .dom('.navi-modal .primary-header')
+      .hasText('Share "Hyrule News"', 'Clicking share action brings up share modal');
 
     // Remove all metrics to create an invalid report
     await click(
@@ -787,18 +763,16 @@ module('Acceptance | Navi Report', function(hooks) {
       findContains('.checkbox-selector--metric .grouped-list__item:contains(Nav Link Clicks) .grouped-list__item-label')
     );
 
-    assert.notOk(
-      findContains('.navi-report__action:contains(Share)').classList.contains('navi-report__action--is-disabled'),
-      'Share action is disabled for invalid report'
-    );
+    assert
+      .dom(findContains('.navi-report__action:contains(Share)'))
+      .hasNoClass('navi-report__action--is-disabled', 'Share action is disabled for invalid report');
 
     // Share is disabled on new
     await visit('/reports/new');
 
-    assert.notOk(
-      findContains('.navi-report__action:contains(Share)').classList.contains('navi-report__action--is-disabled'),
-      'Share action is disabled for new report'
-    );
+    assert
+      .dom(findContains('.navi-report__action:contains(Share)'))
+      .hasNoClass('navi-report__action--is-disabled', 'Share action is disabled for new report');
   });
 
   test('Share report notifications reset', async function(assert) {
@@ -808,11 +782,9 @@ module('Acceptance | Navi Report', function(hooks) {
     await visit('/reports/1/view');
     await click(findContains('.navi-report__action:contains(Share) button'));
 
-    assert.equal(
-      find('.navi-modal .primary-header').textContent.trim(),
-      'Share "Hyrule News"',
-      'Clicking share action brings up share modal'
-    );
+    assert
+      .dom('.navi-modal .primary-header')
+      .hasText('Share "Hyrule News"', 'Clicking share action brings up share modal');
 
     assert.dom('.navi-modal .modal-notification').isNotVisible('Notification banner is not shown');
 
@@ -845,11 +817,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await visit('/reports/1/view');
     await click(findContains('.navi-report__action:contains(Delete) button'));
 
-    assert.equal(
-      find('.primary-header').textContent.trim(),
-      'Delete "Hyrule News"',
-      'Delete modal pops up when action is clicked'
-    );
+    assert.dom('.primary-header').hasText('Delete "Hyrule News"', 'Delete modal pops up when action is clicked');
 
     await click('.navi-modal .btn-primary');
 
@@ -874,18 +842,16 @@ module('Acceptance | Navi Report', function(hooks) {
     // Delete is not Disabled on new
     await visit('/reports/new');
 
-    assert.notOk(
-      findContains('.navi-report__action:contains(Delete)').classList.contains('navi-report__action--is-disabled'),
-      'Delete action is enabled for a valid report'
-    );
+    assert
+      .dom(findContains('.navi-report__action:contains(Delete)'))
+      .hasNoClass('navi-report__action--is-disabled', 'Delete action is enabled for a valid report');
 
     // Delete is not Disabled on valid
     await visit('/reports/1/view');
 
-    assert.notOk(
-      findContains('.navi-report__action:contains(Delete)').classList.contains('navi-report__action--is-disabled'),
-      'Delete action is enabled for a valid report'
-    );
+    assert
+      .dom(findContains('.navi-report__action:contains(Delete)'))
+      .hasNoClass('navi-report__action--is-disabled', 'Delete action is enabled for a valid report');
 
     /*
      * Remove all metrics to create an invalid report
@@ -898,19 +864,14 @@ module('Acceptance | Navi Report', function(hooks) {
       findContains('.checkbox-selector--metric .grouped-list__item:contains(Nav Link Clicks) .grouped-list__item-label')
     );
 
-    assert.notOk(
-      findContains('.navi-report__action:contains(Delete)').classList.contains('navi-report__action--is-disabled'),
-      'Delete action is enabled when report is not valid'
-    );
+    assert
+      .dom(findContains('.navi-report__action:contains(Delete)'))
+      .hasNoClass('navi-report__action--is-disabled', 'Delete action is enabled when report is not valid');
 
     // Check Delete modal appear
     await click(findContains('.navi-report__action:contains(Delete) button'));
 
-    assert.equal(
-      find('.primary-header').textContent.trim(),
-      'Delete "Hyrule News"',
-      'Delete modal pops up when action is clicked'
-    );
+    assert.dom('.primary-header').hasText('Delete "Hyrule News"', 'Delete modal pops up when action is clicked');
   });
 
   test('Delete report on failure', async function(assert) {
@@ -950,33 +911,21 @@ module('Acceptance | Navi Report', function(hooks) {
 
     assert.ok(!!findAll('.line-chart-widget').length, 'Line chart visualization is shown as configured');
 
-    assert.equal(
-      find('.report-view__visualization-edit-btn').textContent.trim(),
-      'Edit Line Chart',
-      'Edit Line Chart label is displayed'
-    );
+    assert.dom('.report-view__visualization-edit-btn').hasText('Edit Line Chart', 'Edit Line Chart label is displayed');
 
-    assert.equal(findAll('.c3-legend-item').length, 3, 'Line chart visualization has 3 series as configured');
+    assert.dom('.c3-legend-item').exists({ count: 3 }, 'Line chart visualization has 3 series as configured');
 
     await click(findContains('.visualization-toggle__option:contains(Data Table)'));
 
     assert.ok(!!findAll('.table-widget').length, 'table visualization is shown when selected');
 
-    assert.equal(
-      find('.report-view__visualization-edit-btn').textContent.trim(),
-      'Edit Table',
-      'Edit Data Table label is displayed'
-    );
+    assert.dom('.report-view__visualization-edit-btn').hasText('Edit Table', 'Edit Data Table label is displayed');
 
     await click(findContains('.visualization-toggle__option:contains(Line Chart)'));
 
     assert.ok(!!findAll('.line-chart-widget').length, 'line-chart visualization is shown when selected');
 
-    assert.equal(
-      find('.report-view__visualization-edit-btn').textContent.trim(),
-      'Edit Line Chart',
-      'Edit Line Chart label is displayed'
-    );
+    assert.dom('.report-view__visualization-edit-btn').hasText('Edit Line Chart', 'Edit Line Chart label is displayed');
   });
 
   test('redirect from report/index route', async function(assert) {
@@ -1023,11 +972,7 @@ module('Acceptance | Navi Report', function(hooks) {
       'After cloning, user is brought to view route for a new report with a temp id'
     );
 
-    assert.equal(
-      find('.navi-report__title').textContent.trim(),
-      'Copy of Hyrule News',
-      'Cloned report is being viewed'
-    );
+    assert.dom('.navi-report__title').hasText('Copy of Hyrule News', 'Cloned report is being viewed');
   });
 
   test('reports route actions -- share', async function(assert) {
@@ -1406,7 +1351,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     listedReports = findAll('tbody tr td:first-of-type').map(el => el.innerText.trim());
 
-    assert.deepEqual(listedReports, ['Hyrule News', 'Hyrule Ad&Nav Clicks'], 'Two reports are in favorites now');
+    assert.deepEqual(listedReports, ['Hyrule Ad&Nav Clicks', 'Hyrule News'], 'Two reports are in favorites now');
 
     // Unfavorite report 2
     await click(findContains('tbody tr td a:contains(Hyrule Ad&Nav Clicks)'));
@@ -1681,7 +1626,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.dom('.navi-info-message__error-list-item').isNotVisible('Should not show empty values error');
   });
 
-  test('Date Picker doesn`t change date when moving to time grain where dates are valid', async function(assert) {
+  test("Date Picker doesn't change date when moving to time grain where dates are valid", async function(assert) {
     assert.expect(3);
 
     await visit('/reports/1');
@@ -1813,7 +1758,7 @@ module('Acceptance | Navi Report', function(hooks) {
       );
   });
 
-  skip('Cancel Report', async function(assert) {
+  test('Cancel Report', async function(assert) {
     //Slow down mock
     server.timing = 400;
     server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
@@ -1824,18 +1769,18 @@ module('Acceptance | Navi Report', function(hooks) {
     //Load the report without waiting for it to finish loading
     visit('/reports/1');
 
-    await waitFor('.navi-report__cancel-btn').then(async () => {
-      let buttons = findAll('.navi-report__footer .btn');
-      assert.dom('.navi-loader__spinner').isVisible('Report is loading');
+    await waitFor('.navi-report__cancel-btn');
 
-      assert.deepEqual(
-        buttons.map(e => e.textContent.trim()),
-        ['Cancel'],
-        'When report is loading, the only footer button is `Cancel`'
-      );
+    let buttons = findAll('.navi-report__footer .btn');
+    assert.dom('.navi-loader__spinner').isVisible('Report is loading');
 
-      await click(buttons[0]);
-    });
+    assert.deepEqual(
+      buttons.map(e => e.textContent.trim()),
+      ['Cancel'],
+      'When report is loading, the only footer button is `Cancel`'
+    );
+
+    await click(buttons[0]);
 
     assert.equal(currentURL(), '/reports/1/edit', 'Clicking `Cancel` brings the user to the edit route');
 

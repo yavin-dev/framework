@@ -19,11 +19,9 @@ module('Integration | Component | filter values/value input', function(hooks) {
   test('it renders', function(assert) {
     assert.expect(1);
 
-    assert.equal(
-      find('.filter-values--value-input').value,
-      this.filter.values[0],
-      'The value select contains an input with the first filter value as the text'
-    );
+    assert
+      .dom('.filter-values--value-input')
+      .hasValue(this.filter.values[0], 'The value select contains an input with the first filter value as the text');
   });
 
   test('changing values', async function(assert) {

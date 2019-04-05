@@ -6,7 +6,6 @@ import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 import { set } from '@ember/object';
 import { run } from '@ember/runloop';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
-import { getOwner } from '@ember/application';
 import { defer, reject } from 'rsvp';
 import { isEmpty } from '@ember/utils';
 import { A as arr } from '@ember/array';

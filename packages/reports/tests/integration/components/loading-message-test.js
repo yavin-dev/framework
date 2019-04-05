@@ -7,7 +7,7 @@ module('Integration | Component | loading message', function(hooks) {
   setupRenderingTest(hooks);
 
   test('it renders', async function(assert) {
-    assert.equal(find('*').textContent.trim(), '');
+    assert.dom('*').hasText('');
 
     // Template block usage:
     await render(hbs`
@@ -18,10 +18,6 @@ module('Integration | Component | loading message', function(hooks) {
 
     assert.ok(this.$('.navi-loader'), 'the navi-loader component is rendered');
 
-    assert.equal(
-      find('.loading-message').textContent.trim(),
-      'Loading',
-      'The text inside the block is rendered as specified'
-    );
+    assert.dom('.loading-message').hasText('Loading', 'The text inside the block is rendered as specified');
   });
 });

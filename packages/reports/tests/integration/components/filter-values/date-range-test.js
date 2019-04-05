@@ -25,11 +25,9 @@ module('Integration | Component | filter values/date range', function(hooks) {
   test('it renders', function(assert) {
     assert.expect(3);
 
-    assert.equal(
-      find('.date-range__select-trigger').textContent.trim(),
-      'Select date range',
-      'Placeholder text is present when no date range is selected'
-    );
+    assert
+      .dom('.date-range__select-trigger')
+      .hasText('Select date range', 'Placeholder text is present when no date range is selected');
 
     assert.deepEqual(
       this.$('.predefined-range')
@@ -57,11 +55,7 @@ module('Integration | Component | filter values/date range', function(hooks) {
       this.set('filter', { values: A([selectedInterval]) });
     });
 
-    assert.equal(
-      find('.date-range__select-trigger').textContent.trim(),
-      'Last 7 Days',
-      'Trigger text is updated with selected interval'
-    );
+    assert.dom('.date-range__select-trigger').hasText('Last 7 Days', 'Trigger text is updated with selected interval');
   });
 
   test('changing values', function(assert) {

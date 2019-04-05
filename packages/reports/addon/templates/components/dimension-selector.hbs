@@ -19,13 +19,13 @@
         </label>
         {{#unless (eq item.category 'Time Grain')}}
             {{#navi-icon 'question-circle-o' class='grouped-list__item-info'}}
-                {{#tooltip-on-component enableLazyRendering=true side='right'}}
+                {{#ember-tooltip side='right'}}
                     {{#if item.extended.isPending}}
                         {{loading-message}}
                     {{else}}
                         {{or item.extended.content.description 'No description available'}}
                     {{/if}}
-                {{/tooltip-on-component}}
+                {{/ember-tooltip}}
             {{/navi-icon}}
 
             {{navi-icon

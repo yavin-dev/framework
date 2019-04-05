@@ -28,11 +28,12 @@ module('Integration | Component | missing intervals warning', function(hooks) {
       onDetailsToggle=onDetailsToggle
     }}`);
 
-    assert.equal(
-      find('.missing-intervals-warning__message-text').textContent.trim(),
-      'Results have missing data.',
-      'The component is visible when missing intervals are present and the warning is displayed'
-    );
+    assert
+      .dom('.missing-intervals-warning__message-text')
+      .hasText(
+        'Results have missing data.',
+        'The component is visible when missing intervals are present and the warning is displayed'
+      );
 
     assert.notOk(
       this.$('.missing-intervals-warning__details-content').is(':visible'),
@@ -54,11 +55,12 @@ module('Integration | Component | missing intervals warning', function(hooks) {
       'The missing intervals are displayed correctly'
     );
 
-    assert.equal(
-      find('.missing-intervals-warning__disclaimer').textContent.trim(),
-      'Note: Listed intervals include both the start and end dates.',
-      'The disclaimer is shown when the details are expanded'
-    );
+    assert
+      .dom('.missing-intervals-warning__disclaimer')
+      .hasText(
+        'Note: Listed intervals include both the start and end dates.',
+        'The disclaimer is shown when the details are expanded'
+      );
 
     await click('.missing-intervals-warning__contents');
 

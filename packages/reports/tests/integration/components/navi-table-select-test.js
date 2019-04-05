@@ -28,13 +28,9 @@ module('Integration | Component | navi table select', function(hooks) {
   test('it renders', function(assert) {
     assert.expect(2);
 
-    assert.equal(find('.navi-table-select__header').textContent.trim(), 'Table', 'The header text equals `table`');
+    assert.dom('.navi-table-select__header').hasText('Table', 'The header text equals `table`');
 
-    assert.equal(
-      find('.ember-power-select-selected-item').textContent.trim(),
-      'network',
-      'The selected item equals `network`'
-    );
+    assert.dom('.ember-power-select-selected-item').hasText('network', 'The selected item equals `network`');
   });
 
   test('trigger dropdown', function(assert) {
@@ -59,11 +55,7 @@ module('Integration | Component | navi table select', function(hooks) {
 
     clickTrigger();
     nativeMouseUp($('.ember-power-select-option:contains(network2)')[0]);
-    assert.equal(
-      find('.ember-power-select-selected-item').textContent.trim(),
-      'network2',
-      'The selected item equals `network2`'
-    );
+    assert.dom('.ember-power-select-selected-item').hasText('network2', 'The selected item equals `network2`');
   });
 
   test('enable search', async function(assert) {

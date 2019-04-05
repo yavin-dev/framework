@@ -14,10 +14,9 @@
 }}
     {{item.longName}}
     {{#if item.description}}
-        {{tooltip-on-element
+        {{ember-tooltip
             text=item.description
             side='right'
-            enableLazyRendering=true
         }}
     {{/if}}
 {{/power-select}}

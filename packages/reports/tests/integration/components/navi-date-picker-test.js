@@ -27,33 +27,29 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
           }}
       `);
 
-    assert.equal(find('.day.active').textContent, '14', 'The active day is based on the given date');
+    assert.dom('.day.active').hasText('14', 'The active day is based on the given date');
 
-    assert.equal(
-      find('.datepicker-days .datepicker-switch').textContent,
-      'July 2015',
-      'The active month is based on the given date'
-    );
+    assert
+      .dom('.datepicker-days .datepicker-switch')
+      .hasText('July 2015', 'The active month is based on the given date');
 
     /* == Update date after creation == */
     run(() => {
       this.set('date', moment('2015-06-17', TEST_FORMAT));
     });
 
-    assert.equal(find('.day.active').textContent, '17', 'The active day is based on the new given date');
+    assert.dom('.day.active').hasText('17', 'The active day is based on the new given date');
 
-    assert.equal(
-      find('.datepicker-days .datepicker-switch').textContent,
-      'June 2015',
-      'The active month is based on the new given date'
-    );
+    assert
+      .dom('.datepicker-days .datepicker-switch')
+      .hasText('June 2015', 'The active month is based on the new given date');
 
     /* == Date outside of range == */
     run(() => {
       this.set('date', moment('2050-06-17', TEST_FORMAT));
     });
 
-    assert.equal(findAll('.day.active').length, 1, 'No date, even a future date is out of range');
+    assert.dom('.day.active').exists({ count: 1 }, 'No date, even a future date is out of range');
   });
 
   test('Change date through calendar, then through attr', async function(assert) {

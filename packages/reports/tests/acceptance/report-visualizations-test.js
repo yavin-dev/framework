@@ -115,14 +115,14 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
     //first parameter
     assert.notOk(
       findContains(
-        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon'
+        'div.table-header-row .table-header-cell.metric:contains("Platform Revenue (USD)") .navi-table-sort-icon'
       ).classList.contains('navi-table-sort-icon--desc'),
       'Metric with first parameter is not sorted desc'
     );
 
     assert.notOk(
       findContains(
-        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon'
+        'div.table-header-row .table-header-cell.metric:contains("Platform Revenue (USD)") .navi-table-sort-icon'
       ).classList.contains('navi-table-sort-icon--asc'),
       'Metric with first parameter is not sorted asc'
     );
@@ -130,14 +130,14 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
     //second parameter
     assert.notOk(
       findContains(
-        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon'
+        'div.table-header-row .table-header-cell.metric:contains("Platform Revenue (EUR)") .navi-table-sort-icon'
       ).classList.contains('navi-table-sort-icon--desc'),
       'Metric with second parameter is not sorted desc'
     );
 
     assert.notOk(
       findContains(
-        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon'
+        'div.table-header-row .table-header-cell.metric:contains("Platform Revenue (EUR)") .navi-table-sort-icon'
       ).classList.contains('navi-table-sort-icon--asc'),
       'Metric with second parameter is not sorted asc'
     );
@@ -145,20 +145,20 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
     //sort by first parameter desc
     await click(
       findContains(
-        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon'
+        'div.table-header-row .table-header-cell.metric:contains("Platform Revenue (USD)") .navi-table-sort-icon'
       )
     );
     //first parameter
     assert.ok(
       findContains(
-        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon'
+        'div.table-header-row .table-header-cell.metric:contains("Platform Revenue (USD)") .navi-table-sort-icon'
       ).classList.contains('navi-table-sort-icon--desc'),
       'Metric with first parameter is sorted desc after first sort click'
     );
 
     assert.notOk(
       findContains(
-        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon'
+        'div.table-header-row .table-header-cell.metric:contains("Platform Revenue (USD)") .navi-table-sort-icon'
       ).classList.contains('navi-table-sort-icon--asc'),
       'Metric with first parameter is not sorted asc after first sort click'
     );
@@ -166,14 +166,14 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
     //second parameter
     assert.notOk(
       findContains(
-        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon'
+        'div.table-header-row .table-header-cell.metric:contains("Platform Revenue (EUR)") .navi-table-sort-icon'
       ).classList.contains('navi-table-sort-icon--desc'),
       'Metric with second parameter is not sorted desc after first sort click'
     );
 
     assert.notOk(
       findContains(
-        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon'
+        'div.table-header-row .table-header-cell.metric:contains("Platform Revenue (EUR)") .navi-table-sort-icon'
       ).classList.contains('navi-table-sort-icon--asc'),
       'Metric with second parameter is not sorted asc after first sort click'
     );
@@ -194,20 +194,20 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
     //sort by first parameter asc
     await click(
       findContains(
-        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon'
+        'div.table-header-row .table-header-cell.metric:contains("Platform Revenue (USD)") .navi-table-sort-icon'
       )
     );
     //first parameter
     assert.notOk(
       findContains(
-        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon'
+        'div.table-header-row .table-header-cell.metric:contains("Platform Revenue (USD)") .navi-table-sort-icon'
       ).classList.contains('navi-table-sort-icon--desc'),
       'Metric with first parameter is not sorted desc after second sort click'
     );
 
     assert.ok(
       findContains(
-        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon'
+        'div.table-header-row .table-header-cell.metric:contains("Platform Revenue (USD)") .navi-table-sort-icon'
       ).classList.contains('navi-table-sort-icon--asc'),
       'Metric with first parameter is sorted asc after second sort click'
     );
@@ -215,14 +215,14 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
     //second parameter
     assert.notOk(
       findContains(
-        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon'
+        'div.table-header-row .table-header-cell.metric:contains("Platform Revenue (EUR)") .navi-table-sort-icon'
       ).classList.contains('navi-table-sort-icon--desc'),
       'Metric with second parameter is not sorted desc after second sort click'
     );
 
     assert.notOk(
       findContains(
-        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon'
+        'div.table-header-row .table-header-cell.metric:contains("Platform Revenue (EUR)") .navi-table-sort-icon'
       ).classList.contains('navi-table-sort-icon--asc'),
       'Metric with second parameter is not sorted asc after second sort click'
     );
@@ -243,20 +243,20 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
     //remove sort by first parameter
     await click(
       findContains(
-        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon'
+        'div.table-header-row .table-header-cell.metric:contains("Platform Revenue (USD)") .navi-table-sort-icon'
       )
     );
     //first parameter
     assert.notOk(
       findContains(
-        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon'
+        'div.table-header-row .table-header-cell.metric:contains("Platform Revenue (USD)") .navi-table-sort-icon'
       ).classList.contains('navi-table-sort-icon--desc'),
       'Metric with first parameter is not sorted desc after third sort click'
     );
 
     assert.notOk(
       findContains(
-        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon'
+        'div.table-header-row .table-header-cell.metric:contains("Platform Revenue (USD)") .navi-table-sort-icon'
       ).classList.contains('navi-table-sort-icon--asc'),
       'Metric with first parameter is not sorted asc after third sort click'
     );
@@ -264,14 +264,14 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
     //second parameter
     assert.notOk(
       findContains(
-        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon'
+        'div.table-header-row .table-header-cell.metric:contains("Platform Revenue (EUR)") .navi-table-sort-icon'
       ).classList.contains('navi-table-sort-icon--desc'),
       'Metric with second parameter is not sorted desc after third sort click'
     );
 
     assert.notOk(
       findContains(
-        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon'
+        'div.table-header-row .table-header-cell.metric:contains("Platform Revenue (EUR)") .navi-table-sort-icon'
       ).classList.contains('navi-table-sort-icon--asc'),
       'Metric with second parameter is not sorted asc after third sort click'
     );
@@ -292,18 +292,18 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
     //sort by both parameters
     await click(
       findContains(
-        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon'
+        'div.table-header-row .table-header-cell.metric:contains("Platform Revenue (USD)") .navi-table-sort-icon'
       )
     );
     await click(
       findContains(
-        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon'
+        'div.table-header-row .table-header-cell.metric:contains("Platform Revenue (EUR)") .navi-table-sort-icon'
       )
     );
     //first parameter
     assert.ok(
       findContains(
-        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon'
+        'div.table-header-row .table-header-cell.metric:contains("Platform Revenue (USD)") .navi-table-sort-icon'
       ).classList.contains('navi-table-sort-icon--desc'),
       'Metric with first parameter is sorted desc after sorting by both parameters'
     );
@@ -311,7 +311,7 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
     //second parameter
     assert.ok(
       findContains(
-        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon'
+        'div.table-header-row .table-header-cell.metric:contains("Platform Revenue (EUR)") .navi-table-sort-icon'
       ).classList.contains('navi-table-sort-icon--desc'),
       'Metric with first parameter is sorted desc after sorting by both parameters'
     );

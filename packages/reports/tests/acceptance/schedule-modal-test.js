@@ -1,7 +1,7 @@
 // jquery is still needed until ember-tag-input test helper typeInInput behaves with triggerEvent
 /* eslint ember/no-global-jquery: 1 */
 import { find, click, findAll, blur, visit, triggerEvent } from '@ember/test-helpers';
-import { module, test } from 'qunit';
+import { module, test, skip } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { teardownModal } from '../helpers/teardown-modal';
 import { findContains } from '../helpers/contains-helpers';
@@ -349,7 +349,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
     );
   });
 
-  test('schedule modal error when fetching existing schedule', async function(assert) {
+  skip('schedule modal error when fetching existing schedule', async function(assert) {
     assert.expect(6);
 
     //suppress errors and exceptions for this test because 500 response will throw an error

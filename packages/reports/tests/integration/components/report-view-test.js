@@ -219,11 +219,9 @@ module('Integration | Component | report view', function(hooks) {
               }}
           `);
 
-        assert.equal(
-          find('.report-view__visualization-no-results').textContent.trim(),
-          'No results available.',
-          'A message is displayed when the response has no data'
-        );
+        assert
+          .dom('.report-view__visualization-no-results')
+          .hasText('No results available.', 'A message is displayed when the response has no data');
       });
     });
   });

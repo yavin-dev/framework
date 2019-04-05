@@ -54,17 +54,15 @@ module('Integration | Component | navi list selector', function(hooks) {
 
     assert.ok(this.$('.navi-list-selector').is(':visible'), 'The navi-list-selector component is rendered');
 
-    assert.equal(
-      find('.navi-list-selector__title').textContent.trim(),
-      'Items',
-      'The navi-list-selector component renders a title'
-    );
+    assert.dom('.navi-list-selector__title').hasText('Items', 'The navi-list-selector component renders a title');
 
-    assert.equal(
-      find('.navi-list-selector__search-input').getAttribute('placeholder'),
-      'Search Items',
-      'The navi-list-selector search bar has the title in the placeholder'
-    );
+    assert
+      .dom('.navi-list-selector__search-input')
+      .hasAttribute(
+        'placeholder',
+        'Search Items',
+        'The navi-list-selector search bar has the title in the placeholder'
+      );
 
     assert.ok(
       this.$('.navi-list-selector__show-link').is(':visible'),
@@ -77,11 +75,9 @@ module('Integration | Component | navi list selector', function(hooks) {
   test('show all/show selected', function(assert) {
     assert.expect(8);
 
-    assert.equal(
-      find('.navi-list-selector__show-link').textContent.trim(),
-      'Show Selected (1)',
-      'the show link initially has the text `Show Selected`'
-    );
+    assert
+      .dom('.navi-list-selector__show-link')
+      .hasText('Show Selected (1)', 'the show link initially has the text `Show Selected`');
 
     assert.ok(
       isEmpty(this.$('.test-item__filtered')),
@@ -104,11 +100,9 @@ module('Integration | Component | navi list selector', function(hooks) {
       await click('.navi-list-selector__show-link');
     });
 
-    assert.equal(
-      find('.navi-list-selector__show-link').textContent.trim(),
-      'Show All',
-      'the show link text is toggled to `Show All` when clicked'
-    );
+    assert
+      .dom('.navi-list-selector__show-link')
+      .hasText('Show All', 'the show link text is toggled to `Show All` when clicked');
 
     assert.deepEqual(
       this.$('.test-item')
@@ -135,20 +129,16 @@ module('Integration | Component | navi list selector', function(hooks) {
     );
 
     this.set('selected', []);
-    assert.equal(
-      find('.navi-list-selector__show-link').textContent.trim(),
-      'Show Selected (0)',
-      'the show link will be change to "Show Selected"'
-    );
+    assert
+      .dom('.navi-list-selector__show-link')
+      .hasText('Show Selected (0)', 'the show link will be change to "Show Selected"');
 
     run(async () => {
       await click('.navi-list-selector__show-link');
     });
-    assert.equal(
-      find('.navi-list-selector__content--error').textContent.trim(),
-      'No items selected',
-      'No items selected error message is displayed when no items are selected'
-    );
+    assert
+      .dom('.navi-list-selector__content--error')
+      .hasText('No items selected', 'No items selected error message is displayed when no items are selected');
   });
 
   test('search', function(assert) {
@@ -186,11 +176,9 @@ module('Integration | Component | navi list selector', function(hooks) {
       'no items match with the search query in the selected item list'
     );
 
-    assert.equal(
-      find('.navi-list-selector__content--error').textContent.trim(),
-      'No items found',
-      'No items found error message is displayed when no items match the search query'
-    );
+    assert
+      .dom('.navi-list-selector__content--error')
+      .hasText('No items found', 'No items found error message is displayed when no items match the search query');
 
     run(async () => {
       await click('.navi-list-selector__search-input-clear');

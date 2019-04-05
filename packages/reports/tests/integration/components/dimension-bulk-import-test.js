@@ -290,24 +290,21 @@ module('Integration | Component | Dimension Bulk Import', function(hooks) {
     await render(COMMON_TEMPLATE);
 
     /* == Main header == */
-    assert.equal(
-      find('.primary-header').textContent.trim(),
-      'Add Multiple Properties',
-      'Main header contains plural form of the dimension name'
-    );
+    assert
+      .dom('.primary-header')
+      .hasText('Add Multiple Properties', 'Main header contains plural form of the dimension name');
 
-    assert.equal(
-      find('.secondary-header').textContent.trim(),
-      'Hold tight! We are searching for valid Properties.',
-      'Secondary header has expected searching text while searching'
-    );
+    assert
+      .dom('.secondary-header')
+      .hasText(
+        'Hold tight! We are searching for valid Properties.',
+        'Secondary header has expected searching text while searching'
+      );
 
     return settled().then(() => {
-      assert.equal(
-        find('.secondary-header').textContent.trim(),
-        'Search Results.',
-        'Secondary header has expected result text after searching'
-      );
+      assert
+        .dom('.secondary-header')
+        .hasText('Search Results.', 'Secondary header has expected result text after searching');
     });
   });
 

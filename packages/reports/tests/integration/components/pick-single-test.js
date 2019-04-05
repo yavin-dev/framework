@@ -47,11 +47,9 @@ module('Integration | Component | Pick Single', function(hooks) {
 
     assert.notOk(isEmpty(this.$('.pick-container')), 'pick-single component is rendered');
 
-    assert.equal(
-      find('.pick-single .pick-value').textContent.trim(),
-      Options[0].id,
-      'The Id of the selected options object is displayed by default'
-    );
+    assert
+      .dom('.pick-single .pick-value')
+      .hasText(Options[0].id, 'The Id of the selected options object is displayed by default');
 
     let formValues = this.$('.pick-single .pick-form li')
       .toArray()
@@ -67,11 +65,9 @@ module('Integration | Component | Pick Single', function(hooks) {
       'The pick-form contains the ids from options using the displayField `id`'
     );
 
-    assert.equal(
-      find('.pick-single .pick-form .active').textContent.trim(),
-      this.get('selection.id'),
-      'The active class is set for the selected value'
-    );
+    assert
+      .dom('.pick-single .pick-form .active')
+      .hasText(this.get('selection.id'), 'The active class is set for the selected value');
   });
 
   test('switching display field', async function(assert) {
@@ -85,11 +81,9 @@ module('Integration | Component | Pick Single', function(hooks) {
 
     await render(Template);
 
-    assert.equal(
-      find('.pick-single .pick-value').textContent.trim(),
-      get(Options[0], displayField),
-      'The displayField of the selected options object is displayed'
-    );
+    assert
+      .dom('.pick-single .pick-value')
+      .hasText(get(Options[0], displayField), 'The displayField of the selected options object is displayed');
 
     let formValues = this.$('.pick-single .pick-form li')
       .toArray()
@@ -105,11 +99,9 @@ module('Integration | Component | Pick Single', function(hooks) {
       'The pick-form contains the ids from options based on displayField set'
     );
 
-    assert.equal(
-      find('.pick-single .pick-form .active').textContent.trim(),
-      this.get(`selection.${displayField}`),
-      'The active class is set for the selected value'
-    );
+    assert
+      .dom('.pick-single .pick-form .active')
+      .hasText(this.get(`selection.${displayField}`), 'The active class is set for the selected value');
   });
 
   test('update selection action', async function(assert) {
@@ -135,6 +127,6 @@ module('Integration | Component | Pick Single', function(hooks) {
     });
 
     await render(Template);
-    assert.equal(find('.pick-value label').textContent.trim(), 'Hello', 'the label defined is present');
+    assert.dom('.pick-value label').hasText('Hello', 'the label defined is present');
   });
 });

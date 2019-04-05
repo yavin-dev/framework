@@ -26,16 +26,12 @@ module('Integration | Component | filter values/date', function(hooks) {
   test('Displayed text', function(assert) {
     assert.expect(2);
 
-    assert.equal(
-      find('*').textContent.trim(),
-      'Select date',
-      'The placeholder text is displayed when no date is selected'
-    );
+    assert.dom('*').hasText('Select date', 'The placeholder text is displayed when no date is selected');
 
     run(() => {
       this.set('filter', { values: arr(['2018-10-31']) });
     });
 
-    assert.equal(find('*').textContent.trim(), 'Oct 31, 2018', 'The selected date is displayed');
+    assert.dom('*').hasText('Oct 31, 2018', 'The selected date is displayed');
   });
 });

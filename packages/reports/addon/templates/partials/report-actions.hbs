@@ -13,7 +13,7 @@
         }}
             {{navi-icon 'th-large' class='navi-report__action-icon'}}
             Add to Dashboard
-            {{tooltip-on-component text='Add visualization to Dashboard' enableLazyRendering=true}}
+            {{ember-tooltip text='Add visualization to Dashboard'}}
         {{/report-actions/add-to-dashboard}}
     </li>
 {{/if}}
@@ -28,9 +28,9 @@
     }}
         {{navi-icon 'code' class='navi-report__action-icon'}}
         Copy API Query
-        {{#tooltip-on-component enableLazyRendering=true}}
+        {{#ember-tooltip}}
             {{if model.request.validations.isTruelyValid 'Copy API Query of the report' 'Run a valid report to enable Copy API Query'}}
-        {{/tooltip-on-component}}
+        {{/ember-tooltip}}
     {{/common-actions/get-api}}
 </li>
 
@@ -44,9 +44,9 @@
     }}
         {{navi-icon 'copy' class='navi-report__action-icon'}}
         Clone
-        {{#tooltip-on-component enableLazyRendering=true}}
+        {{#ember-tooltip}}
             {{if model.isNew 'Save report to enable clone' 'Clone the report'}}
-        {{/tooltip-on-component}}
+        {{/ember-tooltip}}
     {{/link-to}}
 </li>
 
@@ -61,9 +61,9 @@
     }}
         {{navi-icon 'download' class='navi-report__action-icon'}}
         Export
-        {{#tooltip-on-component enableLazyRendering=true}}
+        {{#ember-tooltip}}
             {{if model.request.validations.isTruelyValid 'Export the report' 'Run a valid report to enable export'}}
-        {{/tooltip-on-component}}
+        {{/ember-tooltip}}
     {{/component}}
 </li>
 
@@ -76,9 +76,9 @@
     }}
         {{navi-icon 'share' class='navi-report__action-icon'}}
         Share
-        {{#tooltip-on-component enableLazyRendering=true}}
+        {{#ember-tooltip}}
             {{if model.isNew 'Save report to enable share' 'Share the report'}}
-        {{/tooltip-on-component}}
+        {{/ember-tooltip}}
     {{/common-actions/share}}
 </li>
 
@@ -95,7 +95,7 @@
                 onSave=(delivery-rule-action 'SAVE_DELIVERY_RULE')
             }}
                 Schedule
-                {{tooltip-on-component text='Schedule a report run' enableLazyRendering=true}}
+                {{ember-tooltip text='Schedule a report run'}}
             {{/common-actions/schedule}}
         </li>
     {{/if}}
@@ -108,7 +108,7 @@
         }}
             {{navi-icon 'trash-o' class='navi-report__action-icon'}}
             Delete
-            {{tooltip-on-component text='Delete the report' enableLazyRendering=true}}
+            {{ember-tooltip text='Delete the report'}}
         {{/common-actions/delete}}
     </li>
 {{/if}}

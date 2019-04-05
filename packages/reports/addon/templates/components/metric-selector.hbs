@@ -19,13 +19,13 @@
         </label>
 
         {{#navi-icon 'question-circle-o' class='grouped-list__item-info'}}
-            {{#tooltip-on-component enableLazyRendering=true side='right'}}
+            {{#ember-tooltip side='right'}}
                 {{#if metric.extended.isPending}}
                     {{loading-message}}
                 {{else}}
                     {{or metric.extended.content.description 'No description available'}}
                 {{/if}}
-            {{/tooltip-on-component}}
+            {{/ember-tooltip}}
         {{/navi-icon}}
 
         <div class='metric-selector__icon-set'>
@@ -43,7 +43,7 @@
               class=(concat (if (get metricsFiltered metric.name) 'checkbox-selector__filter--active ') 'checkbox-selector__filter metric-selector__filter')
               click=(action onToggleMetricFilter metric)
           }}
-            {{#tooltip-on-component enableLazyRendering=true side='right'}}
+            {{#ember-tooltip side='right'}}
                 {{#if (has-parameters metric)}}
                   {{#if (has-unfiltered-parameters metric request)}}
                     Add next filter
@@ -57,7 +57,7 @@
                       Add Filter
                   {{/if}}
                 {{/if}}
-            {{/tooltip-on-component}}
+            {{/ember-tooltip}}
           {{/navi-icon}}
         </div>
     {{/grouped-list}}

@@ -27,7 +27,7 @@ module('Integration | Component | Pick Range Container', function(hooks) {
 
     await click('#set-start');
 
-    assert.equal(find('#start').textContent, 'P7D', 'Selection start value was set by action');
+    assert.dom('#start').hasText('P7D', 'Selection start value was set by action');
   });
 
   test('setEnd Action', async function(assert) {
@@ -48,7 +48,7 @@ module('Integration | Component | Pick Range Container', function(hooks) {
 
     await click('#set-end');
 
-    assert.equal(find('#end').textContent, 'current', 'Selection end value was set by action');
+    assert.dom('#end').hasText('current', 'Selection end value was set by action');
   });
 
   test('dateMoments', async function(assert) {
@@ -67,13 +67,9 @@ module('Integration | Component | Pick Range Container', function(hooks) {
           {{/pick-range-container}}
       `);
 
-    assert.equal(
-      find('#start').textContent,
-      '2015-01-19',
-      'The start duration is converted to the right moment object'
-    );
+    assert.dom('#start').hasText('2015-01-19', 'The start duration is converted to the right moment object');
 
-    assert.equal(find('#end').textContent, '2015-01-19', 'The end moment object is returned as a moment');
+    assert.dom('#end').hasText('2015-01-19', 'The end moment object is returned as a moment');
   });
 
   test('dateStrings', async function(assert) {
@@ -92,16 +88,8 @@ module('Integration | Component | Pick Range Container', function(hooks) {
           {{/pick-range-container}}
       `);
 
-    assert.equal(
-      find('#start').textContent,
-      'P1D',
-      'The start duration is converted to a string representing the duration'
-    );
+    assert.dom('#start').hasText('P1D', 'The start duration is converted to a string representing the duration');
 
-    assert.equal(
-      find('#end').textContent,
-      '2015-01-20',
-      'The end moment object is converted to a formatted date string'
-    );
+    assert.dom('#end').hasText('2015-01-20', 'The end moment object is converted to a formatted date string');
   });
 });

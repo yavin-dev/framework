@@ -52,11 +52,7 @@ module('Integration | Component | report actions - multiple-format-export', func
 
     await render(TEMPLATE);
 
-    assert.equal(
-      find('.ember-basic-dropdown-trigger').textContent.trim(),
-      'Export',
-      'Component yields content as expected'
-    );
+    assert.dom('.ember-basic-dropdown-trigger').hasText('Export', 'Component yields content as expected');
 
     clickTrigger();
     return settled().then(() => {

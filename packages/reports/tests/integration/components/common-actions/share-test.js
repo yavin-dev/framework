@@ -31,7 +31,7 @@ module('Integration | Component | common actions/share', function(hooks) {
 
     await render(Template);
 
-    assert.equal(find('.share').textContent.trim(), 'Share Report', 'Component yields given text');
+    assert.dom('.share').hasText('Share Report', 'Component yields given text');
   });
 
   test('Component is enabled / disabled', async function(assert) {

@@ -105,11 +105,9 @@ module('Integration | Component | common actions/schedule', function(hooks) {
       {{/common-actions/schedule}}
       `);
 
-    assert.equal(
-      find('.schedule-action__icon-label').textContent.trim(),
-      'Schedule',
-      'When used in block mode, the text `Schedule` is displayed'
-    );
+    assert
+      .dom('.schedule-action__icon-label')
+      .hasText('Schedule', 'When used in block mode, the text `Schedule` is displayed');
   });
 
   test('schedule modal', async function(assert) {

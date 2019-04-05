@@ -23,16 +23,16 @@ module('Integration | Helper | model for', function(hooks) {
 
     set(route, 'controller.model', 'foo');
     await render(hbs`<span>{{model-for 'mock-route'}}</span>`);
-    assert.equal(find('span').textContent, 'foo', "model-for helper returned the route's model");
+    assert.dom('span').hasText('foo', "model-for helper returned the route's model");
 
     run(() => set(route, 'controller.model', 'bar'));
-    assert.equal(find('span').textContent, 'bar', "model-for helper recomputes when the route's model changes");
+    assert.dom('span').hasText('bar', "model-for helper recomputes when the route's model changes");
   });
 
   test('modelFor - missing route', async function(assert) {
     assert.expect(1);
 
     await render(hbs`<span>{{model-for 'missing-route'}}</span>`);
-    assert.equal(find('span').textContent, '', 'model-for helper returns undefined when route does not exist');
+    assert.dom('span').hasText('', 'model-for helper returns undefined when route does not exist');
   });
 });

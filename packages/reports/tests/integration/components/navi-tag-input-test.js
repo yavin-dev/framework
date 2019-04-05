@@ -70,10 +70,8 @@ module('Integration | Component | navi tag input/tag', function(hooks) {
       'Custom tag component can be given to add new behavior'
     );
 
-    assert.equal(
-      findAll('.emberTagInput-remove').length,
-      0,
-      'Elements from the default component are not required in a custom tag'
-    );
+    assert
+      .dom('.emberTagInput-remove')
+      .doesNotExist('Elements from the default component are not required in a custom tag');
   });
 });

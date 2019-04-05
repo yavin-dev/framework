@@ -2,20 +2,6 @@
 
 ### Unknown Global
 
-**Global**: `Ember.Inflector`
-
-**Location**: `addon/components/favorite-item.js` at line 39
-
-```js
-  favoriteItems: computed('itemType', function() {
-    let itemType = get(this, 'itemType'),
-      pluralizedType = capitalize(Ember.Inflector.inflector.pluralize(itemType));
-
-    return get(this, `user.favorite${pluralizedType}`);
-```
-
-### Unknown Global
-
 **Global**: `Ember.__loader`
 
 **Location**: `addon/helpers/delivery-rule-action.js` at line 15
@@ -70,82 +56,16 @@ const CLOSURE_ACTION_MODULE =
 
 ### Unknown Global
 
-**Global**: `Ember.Logger`
+**Global**: `Ember.Inflector`
 
-**Location**: `tests/acceptance/print-report-test.js` at line 53
-
-```js
-//suppress errors and exceptions for this test
-let originalLoggerError = Ember.Logger.error,
-  originalException = Ember.Test.adapter.exception;
-```
-
-### Unknown Global
-
-**Global**: `Ember.Test`
-
-**Location**: `tests/acceptance/print-report-test.js` at line 54
+**Location**: `addon/components/favorite-item.js` at line 39
 
 ```js
-//suppress errors and exceptions for this test
-let originalLoggerError = Ember.Logger.error,
-  originalException = Ember.Test.adapter.exception;
+  favoriteItems: computed('itemType', function() {
+    let itemType = get(this, 'itemType'),
+      pluralizedType = capitalize(Ember.Inflector.inflector.pluralize(itemType));
 
-Ember.Logger.error = function() {};
-```
-
-### Unknown Global
-
-**Global**: `Ember.Logger`
-
-**Location**: `tests/acceptance/print-report-test.js` at line 56
-
-```js
-originalException = Ember.Test.adapter.exception;
-
-Ember.Logger.error = function() {};
-Ember.Test.adapter.exception = function() {};
-```
-
-### Unknown Global
-
-**Global**: `Ember.Test`
-
-**Location**: `tests/acceptance/print-report-test.js` at line 57
-
-```js
-Ember.Logger.error = function() {};
-Ember.Test.adapter.exception = function() {};
-
-await visit('/print/reports/5');
-```
-
-### Unknown Global
-
-**Global**: `Ember.Logger`
-
-**Location**: `tests/acceptance/print-report-test.js` at line 69
-
-```js
-    );
-
-    Ember.Logger.error = originalLoggerError;
-    Ember.Test.adapter.exception = originalException;
-  });
-```
-
-### Unknown Global
-
-**Global**: `Ember.Test`
-
-**Location**: `tests/acceptance/print-report-test.js` at line 70
-
-```js
-
-    Ember.Logger.error = originalLoggerError;
-    Ember.Test.adapter.exception = originalException;
-  });
-
+    return get(this, `user.favorite${pluralizedType}`);
 ```
 
 ### Unknown Global
@@ -234,7 +154,7 @@ server.get('/reportCollections/:id', { errors: ['The report-collections endpoint
 
 **Global**: `Ember.Logger`
 
-**Location**: `tests/acceptance/navi-report-test.js` at line 1353
+**Location**: `tests/acceptance/print-report-test.js` at line 47
 
 ```js
 //suppress errors and exceptions for this test
@@ -246,7 +166,7 @@ let originalLoggerError = Ember.Logger.error,
 
 **Global**: `Ember.Test`
 
-**Location**: `tests/acceptance/navi-report-test.js` at line 1354
+**Location**: `tests/acceptance/print-report-test.js` at line 48
 
 ```js
 //suppress errors and exceptions for this test
@@ -260,7 +180,7 @@ Ember.Logger.error = function() {};
 
 **Global**: `Ember.Logger`
 
-**Location**: `tests/acceptance/navi-report-test.js` at line 1356
+**Location**: `tests/acceptance/print-report-test.js` at line 50
 
 ```js
 originalException = Ember.Test.adapter.exception;
@@ -273,180 +193,20 @@ Ember.Test.adapter.exception = function() {};
 
 **Global**: `Ember.Test`
 
-**Location**: `tests/acceptance/navi-report-test.js` at line 1357
+**Location**: `tests/acceptance/print-report-test.js` at line 51
 
 ```js
 Ember.Logger.error = function() {};
 Ember.Test.adapter.exception = function() {};
 
-await visit('/reports/invalidRoute');
+await visit('/print/reports/5');
 ```
 
 ### Unknown Global
 
 **Global**: `Ember.Logger`
 
-**Location**: `tests/acceptance/navi-report-test.js` at line 1370
-
-```js
-      );
-
-      Ember.Logger.error = originalLoggerError;
-      Ember.Test.adapter.exception = originalException;
-
-```
-
-### Unknown Global
-
-**Global**: `Ember.Test`
-
-**Location**: `tests/acceptance/navi-report-test.js` at line 1371
-
-```js
-
-      Ember.Logger.error = originalLoggerError;
-      Ember.Test.adapter.exception = originalException;
-
-  });
-```
-
-### Unknown Global
-
-**Global**: `Ember.Logger`
-
-**Location**: `tests/acceptance/navi-report-test.js` at line 1383
-
-```js
-//suppress errors and exceptions for this test
-let originalLoggerError = Ember.Logger.error,
-  originalException = Ember.Test.adapter.exception;
-```
-
-### Unknown Global
-
-**Global**: `Ember.Test`
-
-**Location**: `tests/acceptance/navi-report-test.js` at line 1384
-
-```js
-//suppress errors and exceptions for this test
-let originalLoggerError = Ember.Logger.error,
-  originalException = Ember.Test.adapter.exception;
-
-Ember.Logger.error = function() {};
-```
-
-### Unknown Global
-
-**Global**: `Ember.Logger`
-
-**Location**: `tests/acceptance/navi-report-test.js` at line 1386
-
-```js
-originalException = Ember.Test.adapter.exception;
-
-Ember.Logger.error = function() {};
-Ember.Test.adapter.exception = function() {};
-```
-
-### Unknown Global
-
-**Global**: `Ember.Test`
-
-**Location**: `tests/acceptance/navi-report-test.js` at line 1387
-
-```js
-Ember.Logger.error = function() {};
-Ember.Test.adapter.exception = function() {};
-
-await visit('/reports/5/view');
-```
-
-### Unknown Global
-
-**Global**: `Ember.Logger`
-
-**Location**: `tests/acceptance/navi-report-test.js` at line 1400
-
-```js
-      );
-
-      Ember.Logger.error = originalLoggerError;
-      Ember.Test.adapter.exception = originalException;
-
-```
-
-### Unknown Global
-
-**Global**: `Ember.Test`
-
-**Location**: `tests/acceptance/navi-report-test.js` at line 1401
-
-```js
-
-      Ember.Logger.error = originalLoggerError;
-      Ember.Test.adapter.exception = originalException;
-
-  });
-```
-
-### Unknown Global
-
-**Global**: `Ember.Logger`
-
-**Location**: `tests/acceptance/schedule-modal-test.js` at line 425
-
-```js
-//suppress errors and exceptions for this test because 500 response will throw an error
-let originalLoggerError = Ember.Logger.error,
-  originalException = Ember.Test.adapter.exception;
-```
-
-### Unknown Global
-
-**Global**: `Ember.Test`
-
-**Location**: `tests/acceptance/schedule-modal-test.js` at line 426
-
-```js
-//suppress errors and exceptions for this test because 500 response will throw an error
-let originalLoggerError = Ember.Logger.error,
-  originalException = Ember.Test.adapter.exception;
-
-Ember.Logger.error = () => {};
-```
-
-### Unknown Global
-
-**Global**: `Ember.Logger`
-
-**Location**: `tests/acceptance/schedule-modal-test.js` at line 428
-
-```js
-originalException = Ember.Test.adapter.exception;
-
-Ember.Logger.error = () => {};
-Ember.Test.adapter.exception = () => {};
-```
-
-### Unknown Global
-
-**Global**: `Ember.Test`
-
-**Location**: `tests/acceptance/schedule-modal-test.js` at line 429
-
-```js
-Ember.Logger.error = () => {};
-Ember.Test.adapter.exception = () => {};
-
-server.get('/deliveryRules/:id', { errors: ['The deliveryRules endpoint is down'] }, 500);
-```
-
-### Unknown Global
-
-**Global**: `Ember.Logger`
-
-**Location**: `tests/acceptance/schedule-modal-test.js` at line 469
+**Location**: `tests/acceptance/print-report-test.js` at line 62
 
 ```js
     );
@@ -460,7 +220,7 @@ server.get('/deliveryRules/:id', { errors: ['The deliveryRules endpoint is down'
 
 **Global**: `Ember.Test`
 
-**Location**: `tests/acceptance/schedule-modal-test.js` at line 470
+**Location**: `tests/acceptance/print-report-test.js` at line 63
 
 ```js
 
@@ -474,7 +234,167 @@ server.get('/deliveryRules/:id', { errors: ['The deliveryRules endpoint is down'
 
 **Global**: `Ember.Logger`
 
-**Location**: `tests/acceptance/schedule-modal-test.js` at line 477
+**Location**: `tests/acceptance/navi-report-test.js` at line 1291
+
+```js
+//suppress errors and exceptions for this test
+let originalLoggerError = Ember.Logger.error,
+  originalException = Ember.Test.adapter.exception;
+```
+
+### Unknown Global
+
+**Global**: `Ember.Test`
+
+**Location**: `tests/acceptance/navi-report-test.js` at line 1292
+
+```js
+//suppress errors and exceptions for this test
+let originalLoggerError = Ember.Logger.error,
+  originalException = Ember.Test.adapter.exception;
+
+Ember.Logger.error = function() {};
+```
+
+### Unknown Global
+
+**Global**: `Ember.Logger`
+
+**Location**: `tests/acceptance/navi-report-test.js` at line 1294
+
+```js
+originalException = Ember.Test.adapter.exception;
+
+Ember.Logger.error = function() {};
+Ember.Test.adapter.exception = function() {};
+```
+
+### Unknown Global
+
+**Global**: `Ember.Test`
+
+**Location**: `tests/acceptance/navi-report-test.js` at line 1295
+
+```js
+Ember.Logger.error = function() {};
+Ember.Test.adapter.exception = function() {};
+
+await visit('/reports/invalidRoute');
+```
+
+### Unknown Global
+
+**Global**: `Ember.Logger`
+
+**Location**: `tests/acceptance/navi-report-test.js` at line 1307
+
+```js
+    );
+
+    Ember.Logger.error = originalLoggerError;
+    Ember.Test.adapter.exception = originalException;
+  });
+```
+
+### Unknown Global
+
+**Global**: `Ember.Test`
+
+**Location**: `tests/acceptance/navi-report-test.js` at line 1308
+
+```js
+
+    Ember.Logger.error = originalLoggerError;
+    Ember.Test.adapter.exception = originalException;
+  });
+
+```
+
+### Unknown Global
+
+**Global**: `Ember.Logger`
+
+**Location**: `tests/acceptance/navi-report-test.js` at line 1319
+
+```js
+//suppress errors and exceptions for this test
+let originalLoggerError = Ember.Logger.error,
+  originalException = Ember.Test.adapter.exception;
+```
+
+### Unknown Global
+
+**Global**: `Ember.Test`
+
+**Location**: `tests/acceptance/navi-report-test.js` at line 1320
+
+```js
+//suppress errors and exceptions for this test
+let originalLoggerError = Ember.Logger.error,
+  originalException = Ember.Test.adapter.exception;
+
+Ember.Logger.error = function() {};
+```
+
+### Unknown Global
+
+**Global**: `Ember.Logger`
+
+**Location**: `tests/acceptance/navi-report-test.js` at line 1322
+
+```js
+originalException = Ember.Test.adapter.exception;
+
+Ember.Logger.error = function() {};
+Ember.Test.adapter.exception = function() {};
+```
+
+### Unknown Global
+
+**Global**: `Ember.Test`
+
+**Location**: `tests/acceptance/navi-report-test.js` at line 1323
+
+```js
+Ember.Logger.error = function() {};
+Ember.Test.adapter.exception = function() {};
+
+await visit('/reports/5/view');
+```
+
+### Unknown Global
+
+**Global**: `Ember.Logger`
+
+**Location**: `tests/acceptance/navi-report-test.js` at line 1335
+
+```js
+    );
+
+    Ember.Logger.error = originalLoggerError;
+    Ember.Test.adapter.exception = originalException;
+  });
+```
+
+### Unknown Global
+
+**Global**: `Ember.Test`
+
+**Location**: `tests/acceptance/navi-report-test.js` at line 1336
+
+```js
+
+    Ember.Logger.error = originalLoggerError;
+    Ember.Test.adapter.exception = originalException;
+  });
+
+```
+
+### Unknown Global
+
+**Global**: `Ember.Logger`
+
+**Location**: `tests/acceptance/schedule-modal-test.js` at line 356
 
 ```js
 //suppress errors and exceptions for this test because 500 response will throw an error
@@ -486,7 +406,7 @@ let originalLoggerError = Ember.Logger.error,
 
 **Global**: `Ember.Test`
 
-**Location**: `tests/acceptance/schedule-modal-test.js` at line 478
+**Location**: `tests/acceptance/schedule-modal-test.js` at line 357
 
 ```js
 //suppress errors and exceptions for this test because 500 response will throw an error
@@ -500,7 +420,7 @@ Ember.Logger.error = () => {};
 
 **Global**: `Ember.Logger`
 
-**Location**: `tests/acceptance/schedule-modal-test.js` at line 480
+**Location**: `tests/acceptance/schedule-modal-test.js` at line 359
 
 ```js
 originalException = Ember.Test.adapter.exception;
@@ -513,7 +433,87 @@ Ember.Test.adapter.exception = () => {};
 
 **Global**: `Ember.Test`
 
-**Location**: `tests/acceptance/schedule-modal-test.js` at line 481
+**Location**: `tests/acceptance/schedule-modal-test.js` at line 360
+
+```js
+Ember.Logger.error = () => {};
+Ember.Test.adapter.exception = () => {};
+
+server.get('/deliveryRules/:id', { errors: ['The deliveryRules endpoint is down'] }, 500);
+```
+
+### Unknown Global
+
+**Global**: `Ember.Logger`
+
+**Location**: `tests/acceptance/schedule-modal-test.js` at line 401
+
+```js
+      .isVisible('The cancel button is the primary button on the modal when there is an error fetching the schedule');
+
+    Ember.Logger.error = originalLoggerError;
+    Ember.Test.adapter.exception = originalException;
+  });
+```
+
+### Unknown Global
+
+**Global**: `Ember.Test`
+
+**Location**: `tests/acceptance/schedule-modal-test.js` at line 402
+
+```js
+
+    Ember.Logger.error = originalLoggerError;
+    Ember.Test.adapter.exception = originalException;
+  });
+
+```
+
+### Unknown Global
+
+**Global**: `Ember.Logger`
+
+**Location**: `tests/acceptance/schedule-modal-test.js` at line 409
+
+```js
+//suppress errors and exceptions for this test because 500 response will throw an error
+let originalLoggerError = Ember.Logger.error,
+  originalException = Ember.Test.adapter.exception;
+```
+
+### Unknown Global
+
+**Global**: `Ember.Test`
+
+**Location**: `tests/acceptance/schedule-modal-test.js` at line 410
+
+```js
+//suppress errors and exceptions for this test because 500 response will throw an error
+let originalLoggerError = Ember.Logger.error,
+  originalException = Ember.Test.adapter.exception;
+
+Ember.Logger.error = () => {};
+```
+
+### Unknown Global
+
+**Global**: `Ember.Logger`
+
+**Location**: `tests/acceptance/schedule-modal-test.js` at line 412
+
+```js
+originalException = Ember.Test.adapter.exception;
+
+Ember.Logger.error = () => {};
+Ember.Test.adapter.exception = () => {};
+```
+
+### Unknown Global
+
+**Global**: `Ember.Test`
+
+**Location**: `tests/acceptance/schedule-modal-test.js` at line 413
 
 ```js
 
@@ -527,7 +527,7 @@ Ember.Test.adapter.exception = () => {};
 
 **Global**: `Ember.Logger`
 
-**Location**: `tests/acceptance/schedule-modal-test.js` at line 522
+**Location**: `tests/acceptance/schedule-modal-test.js` at line 456
 
 ```js
     );
@@ -541,7 +541,7 @@ Ember.Test.adapter.exception = () => {};
 
 **Global**: `Ember.Test`
 
-**Location**: `tests/acceptance/schedule-modal-test.js` at line 523
+**Location**: `tests/acceptance/schedule-modal-test.js` at line 457
 
 ```js
 

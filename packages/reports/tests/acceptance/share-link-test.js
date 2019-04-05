@@ -1,4 +1,4 @@
-import { click, visit, triggerEvent, find } from '@ember/test-helpers';
+import { click, visit, triggerEvent } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { teardownModal } from '../helpers/teardown-modal';
@@ -23,10 +23,8 @@ module('Acceptance | share link', function(hooks) {
     await triggerEvent('.navi-collection__row0', 'mouseover');
     await click('.navi-collection__row0 .share .btn');
 
-    assert.equal(
-      find('.modal-input-box').value,
-      `${baseUrl}/reports/1`,
-      'The share link is built correctly by buildReportUrl'
-    );
+    assert
+      .dom('.modal-input-box')
+      .hasValue(`${baseUrl}/reports/1`, 'The share link is built correctly by buildReportUrl');
   });
 });
