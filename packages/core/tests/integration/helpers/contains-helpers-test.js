@@ -82,7 +82,7 @@ module('helper:contains-helpers', function(hooks) {
   });
 
   test('findAllContains', async function(assert) {
-    assert.expect(4);
+    assert.expect(13);
 
     let allTest1Spans = findAllContains('.test-div:contains(Test1) .test-span');
 
@@ -99,5 +99,82 @@ module('helper:contains-helpers', function(hooks) {
     assert.ok(Array.isArray(noMatches), 'An array is returned');
 
     assert.equal(noMatches.length, 0, "Empty array is returned when the selector doesn't match any elements");
+
+    assert.deepEqual(
+      findAllContains('#ember-testing :contains(Span4) div').map(el => el.textContent.trim().replace(/\s+/g, ' ')),
+      [
+        'Test1 Span1 Span2 Span3',
+        'Test1 Span1 Copy Span2 Copy Span3 Copy',
+        'Test2 Span4 Inner Div 1 Span5 Inner Div 2',
+        'Inner Div 1',
+        'Inner Div 2',
+        'Test3 (Other) Span Other Span'
+      ],
+      'Does not return duplicates'
+    );
+
+    assert.deepEqual(
+      findAllContains('#ember-testing :CoNtainS(Span4) div').map(el => el.textContent.trim().replace(/\s+/g, ' ')),
+      [
+        'Test1 Span1 Span2 Span3',
+        'Test1 Span1 Copy Span2 Copy Span3 Copy',
+        'Test2 Span4 Inner Div 1 Span5 Inner Div 2',
+        'Inner Div 1',
+        'Inner Div 2',
+        'Test3 (Other) Span Other Span'
+      ],
+      'Works with any contains casing'
+    );
+
+    assert.deepEqual(
+      findAllContains('#ember-testing\n:contains(Span4)\ndiv').map(el => el.textContent.trim().replace(/\s+/g, ' ')),
+      [
+        'Test1 Span1 Span2 Span3',
+        'Test1 Span1 Copy Span2 Copy Span3 Copy',
+        'Test2 Span4 Inner Div 1 Span5 Inner Div 2',
+        'Inner Div 1',
+        'Inner Div 2',
+        'Test3 (Other) Span Other Span'
+      ],
+      'Works multiline'
+    );
+
+    assert.equal(findAllContains(':contains(Span1 Copy)').length, 6, ':contains of nothing searches from root');
+
+    assert.deepEqual(
+      findAllContains('#ember-testing :contains(Span1):contains(Copy)').map(el =>
+        el.textContent.trim().replace(/\s+/g, ' ')
+      ),
+      [
+        'Test1 Span1 Span2 Span3 Test1 Span1 Copy Span2 Copy Span3 Copy Test2 Span4 Inner Div 1 Span5 Inner Div 2 Test3 (Other) Span Other Span',
+        'Test1 Span1 Copy Span2 Copy Span3 Copy',
+        'Span1 Copy'
+      ],
+      'ajoined :contains behaves conjunctively'
+    );
+
+    assert.deepEqual(
+      findAllContains('.test-div:contains(Span1)').map(el => el.textContent.trim().replace(/\s+/g, ' ')),
+      ['Test1 Span1 Span2 Span3', 'Test1 Span1 Copy Span2 Copy Span3 Copy'],
+      'ajoined :contains behave conjunctively'
+    );
+
+    assert.deepEqual(
+      findAllContains('.test-div ~ :contains(Span1)').map(el => el.textContent.trim().replace(/\s+/g, ' ')),
+      ['Test1 Span1 Copy Span2 Copy Span3 Copy'],
+      'works with ~'
+    );
+
+    assert.deepEqual(
+      findAllContains('.test-div > :contains(Inner Div 1)').map(el => el.textContent.trim().replace(/\s+/g, ' ')),
+      ['Span4 Inner Div 1'],
+      'works with >'
+    );
+
+    assert.deepEqual(
+      findAllContains('#test123 + :contains(Span)').map(el => el.textContent.trim().replace(/\s+/g, ' ')),
+      ['Test1 Span1 Copy Span2 Copy Span3 Copy'],
+      'works with +'
+    );
   });
 });

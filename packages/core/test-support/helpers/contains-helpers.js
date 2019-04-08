@@ -1,4 +1,5 @@
 import { findAll } from '@ember/test-helpers';
+import { flatten, sortedUniq } from 'lodash';
 
 /**
  * Finds selector by innerText
@@ -29,6 +30,34 @@ export function linkContains(text) {
 }
 
 /**
+ * Finds what child of the `parent` contains the
+ * `element` and returns the index of that child + 1.
+ *
+ * @param {HTMLElement} element
+ * @param {HTMLElement} parent
+ * @returns {Number}
+ */
+function nthChildContains(element, parent) {
+  return [...parent.children].findIndex(child => child.contains(element)) + 1;
+}
+
+/**
+ * Takes an `element` and returns a selector that uniquely
+ * selects that element.  Element is assumed to be contained
+ * within `baseSelector`'s children.
+ *
+ * @param {HTMLElement} element
+ * @param {String} baseSelector - selector to start with
+ * @returns {String}
+ */
+function uniqueSelector(element, baseSelector = ':root') {
+  const nthChild = nthChildContains(element, document.querySelector(baseSelector));
+
+  if (nthChild) return uniqueSelector(element, `${baseSelector} > :nth-child(${nthChild})`);
+  return baseSelector;
+}
+
+/**
  * This function allows us to keep using the jquery notation for :contains without using jquery
  *
  * Need quotes around content with parentheses -- e.g. class:contains("(content)")
@@ -56,43 +85,58 @@ export function findContains(selector, baseElement) {
   return findAllContains(selector, baseElement)[0];
 }
 
-/**
- * Same as findContains but returns ALL elements that match rather than just the first one
- *
- * @param {String} selector
- * @param {HTMLElement} baseElement
- * @returns {HTMLElement[]} - Array of all elements that match the selector and text content
- */
-export function findAllContains(selector, baseElement) {
-  let parentElement = baseElement || document;
-  let hasContains = /:[cC]ontains\(/;
+function findAllContainsSelectors(selector) {
+  const hasContains = /:contains\(/im;
 
   if (hasContains.exec(selector)) {
-    let regex = /^(.*?):[cC]ontains\((["']?)(.*?)\2\)(.*)$/;
-    let matches = regex.exec(selector);
+    const regex = /^([\0-\uFFFF]*?):contains\((["']?)(.*?)\2\)([\0-\uFFFF]*)$/im;
+    const allRegex = /(\s|[>~+]\s*)$/im;
+    const matches = regex.exec(selector);
+
     let firstSelector = matches[1];
-    let content = matches[3];
-    let nextSelector = matches[4];
-    let filteredElements = [...parentElement.querySelectorAll(firstSelector)].filter(el =>
-      el.innerText.includes(content)
-    );
+    /**
+     * When first selector is empty, check against every element.
+     * i.e. `':contains(someting)'` -> `'*:contains(something)'`
+     */
+    if (!firstSelector) {
+      firstSelector = '*';
+
+      /**
+       * When first selectors ending in ` `, `+`, `>`, `~` operators
+       * i.e.
+       * `'.test-div :contains(someting)'`
+       *   ->
+       * `document.querySelectorAll('.test-div *').map(el => el.innerText.includes('something'))`
+       */
+    } else if (allRegex.test(firstSelector)) {
+      firstSelector = `${firstSelector}*`;
+    }
+
+    const content = matches[3];
+    const nextSelector = matches[4];
+    const filteredElementSelectors = [...document.querySelectorAll(firstSelector)]
+      .filter(el => el.innerText.includes(content))
+      .map(el => uniqueSelector(el));
 
     /**
      * If the :contains was used at the very end of the selector, return the element we found here
      * Else recursively find element from rest of selector using the found element as the base
      */
-    return nextSelector
-      ? flattenDeep(filteredElements.map(el => findAllContains(nextSelector, el)))
-      : flattenDeep(filteredElements);
+    return flatten(filteredElementSelectors.map(unique => findAllContainsSelectors(`${unique}${nextSelector}`)));
   }
 
-  return [...parentElement.querySelectorAll(selector)];
+  return [...document.querySelectorAll(selector)].map(el => uniqueSelector(el));
 }
 
 /**
- * Deep flatten array
- * @param {Array} arr - Array to flatten
+ * Same as findContains but returns ALL elements that match rather than just the first one
+ *
+ * @param {String} selector - selector
+ * @param {HTMLElement} baseElement - scoping element
+ * @returns {Array<HTMLElement>}
  */
-function flattenDeep(arr) {
-  return arr.reduce((acc, val) => (Array.isArray(val) ? acc.concat(flattenDeep(val)) : acc.concat(val)), []);
+export function findAllContains(selector, baseElement) {
+  return sortedUniq(
+    findAllContainsSelectors(`${uniqueSelector(baseElement)} ${selector}`).sort((a, b) => a.localeCompare(b))
+  ).map(uniqueSelector => document.querySelector(uniqueSelector));
 }
