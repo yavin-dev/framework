@@ -39,8 +39,8 @@ const Validations = buildValidations({
   metrics: [
     validator('has-many'),
     validator('length', {
-      min: 1,
-      message: 'At least one metric should be selected'
+      min: 0,
+      message: 'Metrics can be emtpy'
     })
   ],
   having: [
