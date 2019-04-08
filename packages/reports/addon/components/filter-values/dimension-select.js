@@ -8,13 +8,16 @@
  *       onUpdateFilter=(action 'update')
  *   }}
  */
+import { computed, get } from '@ember/object';
+import { featureFlag } from 'navi-core/helpers/feature-flag';
+import { inject as service } from '@ember/service';
+import config from 'ember-get-config';
 import Ember from 'ember';
 import layout from '../../templates/components/filter-values/dimension-select';
-import { featureFlag } from 'navi-core/helpers/feature-flag';
-
-const { computed, get } = Ember;
 
 const SEARCH_DEBOUNCE_TIME = 200;
+
+const LOAD_CARDINALITY = config.navi.searchThresholds.contains;
 
 export default Ember.Component.extend({
   layout,
@@ -25,7 +28,12 @@ export default Ember.Component.extend({
    * @private
    * @property {Ember.Service} _dimensionService
    */
-  _dimensionService: Ember.inject.service('bard-dimensions'),
+  _dimensionService: service('bard-dimensions'),
+
+  /**
+   * @property _metadataService
+   */
+  _metadataService: service('bard-metadata'),
 
   /**
    * @property {String} dimensionName - name of dimension to be filtered
@@ -42,9 +50,14 @@ export default Ember.Component.extend({
    */
   dimensionOptions: computed('filter.subject', function() {
     let dimensionName = get(this, 'dimensionName'),
-      dimensionService = get(this, '_dimensionService');
+      dimensionService = get(this, '_dimensionService'),
+      metadataService = get(this, '_metadataService');
 
-    return dimensionService.all(dimensionName);
+    if (get(metadataService.getById('dimension', dimensionName), 'cardinality') <= LOAD_CARDINALITY) {
+      return dimensionService.all(dimensionName);
+    }
+
+    return undefined;
   }),
 
   /**

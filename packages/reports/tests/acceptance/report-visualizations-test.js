@@ -32,18 +32,28 @@ test('filter changes line chart series', function(assert) {
       });
 
     click('.checkbox-selector__filter', property);
-    selectChoose('.filter-values--dimension-select', '.ember-power-select-option', 0);
-    click('.navi-report__run-btn');
+  });
 
-    andThen(() => {
-      assert.deepEqual(
-        find('.c3-legend-item')
-          .toArray()
-          .map(el => el.textContent.trim()),
-        ['Property 1'],
-        'With filter, only the filtered series is shown'
-      );
-    });
+  andThen(() => {
+    selectSearch('.filter-values--dimension-select', 'Property');
+  });
+
+  andThen(() => {
+    selectChoose('.filter-values--dimension-select', '.ember-power-select-option', 0);
+  });
+
+  andThen(() => {
+    click('.navi-report__run-btn');
+  });
+
+  andThen(() => {
+    assert.deepEqual(
+      find('.c3-legend-item')
+        .toArray()
+        .map(el => el.textContent.trim()),
+      ['Property 1'],
+      'With filter, only the filtered series is shown'
+    );
   });
 });
 

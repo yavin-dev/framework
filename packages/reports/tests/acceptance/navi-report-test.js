@@ -1959,15 +1959,22 @@ test("Report with an unknown table doesn't crash", function(assert) {
 });
 
 test('Filter with large cardinality dimensions value selection works', function(assert) {
-  assert.expect(1);
-  let options,
-    option,
+  assert.expect(2);
+  let option,
     dropdownSelector = '.filter-values--dimension-select';
   visit('/reports/new');
 
   // Load table A as it has the large cardinality dimensions, and choose a large cardinality dimension
   andThen(() => {
     selectChoose('.navi-table-select__dropdown', 'Table A');
+    click('.grouped-list__item:Contains(EventId) .grouped-list__item-label');
+    click('.grouped-list__item:Contains(Network Sessions) .grouped-list__item-label');
+    click('.navi-report__footer button:Contains(Run)');
+  });
+
+  // Grab one of the dim names after running a report
+  andThen(() => {
+    option = find('.table-cell-content.dimension')[0].textContent.trim();
     click('.grouped-list__item:Contains(EventId) .checkbox-selector__filter');
   });
 
@@ -1976,18 +1983,18 @@ test('Filter with large cardinality dimensions value selection works', function(
     click(dropdownSelector + ' .ember-power-select-trigger');
   });
 
-  // Parse the options from the dropdown, and then select the second item.
+  // Parse the options from the dropdown, and then select the first item.
   andThen(() => {
-    options = find('.filter-values--dimension-select__dropdown .item-row-content')
-      .toArray()
-      .map(e => e.textContent.replace(/\(\d+\)/, '').trim());
-    option = options[1];
-    selectChoose(dropdownSelector, 2);
+    let message = find(
+      '.filter-values--dimension-select__dropdown .ember-power-select-option--search-message'
+    )[0].textContent.trim();
+    assert.equal(message, 'Type to search', 'Message is correct');
   });
 
   // Simulate typing a search which pulls large cardinality dimension values from the server
   andThen(() => {
     selectSearch(dropdownSelector, option.toLowerCase().substring(0, 3));
+    click('.filter-values--dimension-select__dropdown .ember-power-select-option:contains(' + option + ')');
   });
 
   // Check if the selected item is still selected after the search
