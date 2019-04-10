@@ -61,16 +61,16 @@ test('model', function(assert) {
           'Options from route are passed to fact service'
         );
 
-        return Ember.RSVP.resolve({ response: factServiceResponse });
+        return Ember.RSVP.resolve({ request: serializedRequest, response: factServiceResponse });
       }
     }
   });
 
   Ember.run(() => route.model()).then(model => {
-    assert.equal(
+    assert.deepEqual(
       model,
-      factServiceResponse,
-      'Model hook returns response from fact service wrapped in a PromiseObject'
+      { request: serializedRequest, response: factServiceResponse },
+      'Model hook returns request and response from fact service wrapped in a PromiseObject'
     );
   });
 });
@@ -104,32 +104,24 @@ test('invalid visualization', function(assert) {
 });
 
 test('runReport action', function(assert) {
-  assert.expect(2);
+  assert.expect(1);
 
-  let request = { serialize: () => 'foo' },
-    parentModel = {
-      request
+  let route = this.subject({
+    _hasRequestRun() {
+      return true;
     },
-    route = this.subject({
-      parentModel,
-      previousRequest: 'foo',
-      refresh() {
-        throw new Error('The route should not refresh if the request has not changed');
-      }
-    });
+    refresh() {
+      throw new Error('The route should not refresh if the request has not changed');
+    }
+  });
 
   /* == Request has no changes == */
   route.send('runReport');
 
   /* == Request has been changed == */
   route.refresh = () => {
-    route.previousRequest = request.serialize();
     assert.ok(true, 'Action asks route to refresh model');
   };
-  request.serialize = () => 'bar';
-  route.send('runReport');
-
-  /* == Request has been changed again== */
-  request.serialize = () => 'foo';
+  route._hasRequestRun = () => false;
   route.send('runReport');
 });

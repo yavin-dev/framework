@@ -2,7 +2,6 @@
  * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import isEqual from 'lodash/isEqual';
 import { get, set, computed } from '@ember/object';
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
@@ -55,11 +54,10 @@ export default Route.extend({
     return get(this, 'facts')
       .fetch(serializedRequest, requestOptions)
       .then(response => {
-        set(this, 'previousRequest', serializedRequest);
         this._setValidVisualizationType(request, report);
         this._setValidVisualizationConfig(request, report, response.response);
 
-        return response.response;
+        return response;
       })
       .catch(response => {
         if (isForbiddenError(response)) {
@@ -93,7 +91,7 @@ export default Route.extend({
   /**
    * Makes sure the visualization config is valid for the request
    * If it is not currently valid, a default will be provided
-   * @method _setValidVisualizationType
+   * @method _setValidVisualizationConfig
    * @private
    * @param {Object} request
    * @param {Object} report
@@ -107,6 +105,16 @@ export default Route.extend({
     }
   },
 
+  /**
+   * Returns whether the current request has already run
+   * @method _hasRequestRun
+   * @private
+   * @returns {Boolean}
+   */
+  _hasRequestRun() {
+    return this.controllerFor(this.routeName).get('hasRequestRun');
+  },
+
   actions: {
     /**
      * Runs report if it has changed
@@ -115,12 +123,8 @@ export default Route.extend({
      * @returns {Transition|Void} - the model refresh transition
      */
     runReport() {
-      let report = get(this, 'parentModel'),
-        request = get(report, 'request').serialize(),
-        previousRequest = get(this, 'previousRequest');
-
       // Run the report only if there are request changes
-      if (!isEqual(request, previousRequest)) {
+      if (!this._hasRequestRun()) {
         return this.refresh();
       } else {
         this.send('setReportState', 'completed');
@@ -168,6 +172,7 @@ export default Route.extend({
      */
     didTransition() {
       this.send('setReportState', 'completed');
+
       return true;
     },
 
@@ -178,7 +183,7 @@ export default Route.extend({
     onVisualizationTypeUpdate(type) {
       let report = get(this, 'parentModel'),
         request = get(report, 'request'),
-        response = this.currentModel;
+        response = this.currentModel.response;
 
       let newVisualization = this.store.createFragment(type, {
         _request: request //Provide request for validation

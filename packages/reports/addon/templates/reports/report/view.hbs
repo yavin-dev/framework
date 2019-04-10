@@ -1,6 +1,6 @@
 {{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{report-view
-    hasReportRun=reportController.didReportComplete
+    hasRequestRun=hasRequestRun
     report=(model-for (parent-route))
-    response=model
+    response=model.response
 }}
