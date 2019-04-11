@@ -50,6 +50,11 @@ export default Component.extend({
   resize: service(),
 
   /**
+   * @property {ResizeObserver} -- chrome resize observer
+   */
+  resizeObserver: null,
+
+  /**
    * @property {String} tableWrapperClass - class of table wrapper div
    */
   tableWrapperClass: 'table-widget__table-wrapper',
@@ -100,6 +105,15 @@ export default Component.extend({
     );
 
     get(this, 'tableHeadersDomElement').addEventListener(WHEEL_EVENT, e => this._headerWheelSync(e));
+
+    //chrome better behavior
+    if (typeof window.ResizeObserver !== 'undefined') {
+      const resizeObserver = new ResizeObserver(() => {
+        this._syncHeadersWidth();
+      });
+      document.querySelectorAll('.table-header-row-vc th').forEach(el => resizeObserver.observe(el));
+      set(this, 'resizeObserver', resizeObserver);
+    }
   },
 
   /**
@@ -247,6 +261,9 @@ export default Component.extend({
 
     //turn off view resize listener
     get(this, 'resize').off(RESIZE_EVENT);
+
+    //turn off resize Observer
+    get(this, 'resizeObserver').disconnect();
 
     this._super(...arguments);
   }
