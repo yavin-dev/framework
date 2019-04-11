@@ -38,9 +38,9 @@ const Validations = buildValidations({
   ],
   metrics: [
     validator('has-many'),
-    validator('length', {
-      min: 0,
-      message: 'Metrics can be emtpy'
+    validator('collection', {
+      collection: true,
+      message: 'Must be a collection'
     })
   ],
   having: [

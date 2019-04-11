@@ -103,10 +103,12 @@ test('Clone invalid report', function(assert) {
 
 test('New report', function(assert) {
   assert.expect(4);
-
   visit('/reports/new');
 
-  /* == Run with errors == */
+  // add filter
+  click('.grouped-list__item:Contains(Operating System) .checkbox-selector__filter');
+
+  // run with errors
   click('.navi-report__run-btn');
   andThen(() => {
     assert.ok(
@@ -116,6 +118,7 @@ test('New report', function(assert) {
   });
 
   /* == Fix errors == */
+  click('.grouped-list__item:Contains(Operating System) .checkbox-selector__filter');
   click('.checkbox-selector--metric .grouped-list__item:contains(Ad Clicks) .grouped-list__item-label');
   click('.navi-report__run-btn');
   andThen(() => {
@@ -765,9 +768,13 @@ test('Get API action - enabled/disabled', function(assert) {
     assert.notOk($('.get-api').is('.navi-report__action--is-disabled'), 'Get API action is enabled for a valid report');
   });
 
-  // Remove all metrics to create an invalid report
+  // Remove all metrics
   click('.checkbox-selector--metric .grouped-list__item:contains(Ad Clicks) .grouped-list__item-label');
   click('.checkbox-selector--metric .grouped-list__item:contains(Nav Link Clicks) .grouped-list__item-label');
+
+  // add filter
+  click('.grouped-list__item:Contains(Operating System) .checkbox-selector__filter');
+
   andThen(() => {
     assert.ok(
       $('.get-api').is('.navi-report__action--is-disabled'),
