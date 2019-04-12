@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Description:
@@ -103,16 +103,29 @@ export default PickObjectContainer.extend({
       this.send('stagePropertyChange', '_start', start);
     },
 
+    /**
+     * Used to set the end of the advanced range selector
+     * @param {String} - date entered into box, could be date or macro.
+     */
+    setAdvancedEnd(end) {
+      end = this.parseDate(end); //convert from string
+
+      set(this, 'prevEndDate', end);
+
+      this.send('stagePropertyChange', '_end', end);
+    },
+
+    /**
+     * Used to set date when picking from calendar picker.
+     * @param {String} - date string chosen from calendar
+     */
     setEnd(end) {
       end = this.parseDate(end); //convert from string
 
-      /*
-       *If moment object, add one time period to end date to match exclusive interval
-       *Do not increment when date is the same as the old value
-       */
-      if (moment.isMoment(end) && !end.isSame(get(this, 'prevEndDate'))) {
+      if (moment.isMoment(end)) {
         end = end.clone().add(1, this.get('dateTimePeriod'));
       }
+
       set(this, 'prevEndDate', end);
 
       this.send('stagePropertyChange', '_end', end);

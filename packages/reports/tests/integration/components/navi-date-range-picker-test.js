@@ -452,6 +452,35 @@ test('Select custom interval', function(assert) {
   this.$('.btn.btn-primary').click();
 });
 
+test('Select date for the next day', function(assert) {
+  assert.expect(1);
+
+  this.interval = new Interval(moment('04-01-2019', 'MM-DD-YYYY'), moment('04-03-2019', 'MM-DD-YYYY'));
+
+  this.render(`
+          {{navi-date-range-picker
+              dateTimePeriod='day'
+              interval=interval
+              onSetInterval=(action setInterval)
+          }}
+      `);
+
+  // Select first date after new selected date
+  this.$('.datepicker:eq(1) td.day:not(.old):contains(3):eq(0)').click();
+  this.set('setInterval', interval => {
+    let selectedStart = moment('04-01-2019', 'MM-DD-YYYY'),
+      selectedEnd = moment('04-03-2019', 'MM-DD-YYYY');
+
+    assert.ok(
+      interval.isEqual(new Interval(selectedStart, selectedEnd.add(1, 'day'))),
+      'Interval comes from date picker and end date is one more than selected'
+    );
+  });
+
+  // Click apply
+  this.$('.btn.btn-primary').click();
+});
+
 /* == Calendar Bug - Date increments on apply == */
 
 test('Custom Range Date doesn`t increment on apply', function(assert) {
@@ -509,10 +538,7 @@ test('Editing custom interval - string', function(assert) {
     let selectedStart = moment('10-15-2014', 'MM-DD-YYYY'),
       selectedEnd = moment('10-25-2014', 'MM-DD-YYYY');
 
-    assert.ok(
-      interval.isEqual(new Interval(selectedStart, selectedEnd.add(1, 'day'))),
-      'Interval comes from date inputs and end date is one more than date entered'
-    );
+    assert.ok(interval.isEqual(new Interval(selectedStart, selectedEnd)), 'Interval comes from date inputs');
   });
 
   // Click apply
