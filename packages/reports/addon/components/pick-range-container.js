@@ -107,7 +107,7 @@ export default PickObjectContainer.extend({
      * Used to set the end of the advanced range selector
      * @param {String} - date entered into box, could be date or macro.
      */
-    setAdvancedEnd(end) {
+    setExclusiveEnd(end) {
       end = this.parseDate(end); //convert from string
 
       set(this, 'prevEndDate', end);
