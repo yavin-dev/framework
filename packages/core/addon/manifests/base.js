@@ -35,6 +35,24 @@ export default EmberObject.extend({
   },
 
   /**
+   * @method hasNoMetric
+   * @param {Object} request
+   * @returns {Boolean} has no metrics
+   */
+  hasNoMetric(request) {
+    return get(request, 'metrics.length') === 0;
+  },
+
+  /**
+   * @method hasMetric
+   * @param {Object} request
+   * @returns {Boolean} has some metrics
+   */
+  hasMetric(request) {
+    return !this.hasNoMetric(request);
+  },
+
+  /**
    * @method hasSingleTimeBucket
    * @param {Object} request
    * @returns {Boolean} has single time bucket
@@ -61,7 +79,7 @@ export default EmberObject.extend({
    * @returns {Boolean} has multiple metrics
    */
   hasMultipleMetrics(request) {
-    return !this.hasSingleMetric(request);
+    return !(this.hasSingleMetric(request) || this.hasNoMetric(request));
   },
 
   /**
