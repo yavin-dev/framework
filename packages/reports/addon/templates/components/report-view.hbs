@@ -11,7 +11,7 @@
                 validVisualizations=validVisualizations
                 onVisualizationTypeUpdate=(route-action 'onVisualizationTypeUpdate')
             }}
-            {{#if hasReportRun}}
+            {{#if hasRequestRun}}
                 {{#unless isEditingVisualization}}
                     <div class='clickable report-view__visualization-edit-btn' onclick={{action 'toggleEditVisualization' this}}>
                         Edit {{visualizationTypeLabel}}
@@ -28,7 +28,7 @@
             response=response
             container=this
             annotationData=annotationData
-            isEditing=isEditingVisualization
+            isEditing=(and isEditingVisualization hasRequestRun)
             onUpdateReport=(pipe
                 (route-action 'onUpdateReport')
                 (route-action 'validate' report)
@@ -41,7 +41,7 @@
         }}
     {{/if}}
 </div>
-{{#if (and isEditingVisualization hasReportRun)}}
+{{#if (and isEditingVisualization hasRequestRun)}}
     <div class='report-view__visualization-edit'>
         <div class='report-view__visualization-edit-header'>
             <div class='clickable report-view__visualization-edit-btn' onclick={{action 'toggleEditVisualization' this}}> Edit {{visualizationTypeLabel}}

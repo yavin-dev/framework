@@ -1360,9 +1360,9 @@ test('Disabled Visualization Edit', function(assert) {
 });
 
 test('Disabled Visualization Edit While Editing', function(assert) {
-  assert.expect(4);
+  assert.expect(9);
 
-  visit('/reports/1/view');
+  visit('/reports/2/view');
   click('.report-view__visualization-edit-btn');
   andThen(() => {
     assert.ok(
@@ -1371,17 +1371,42 @@ test('Disabled Visualization Edit While Editing', function(assert) {
     );
   });
 
+  // Make a change that does NOT invalidate visualization
+  fillIn('.table-header-cell.dateTime input', 'Foo');
+  triggerEvent('.table-header-cell.dateTime input', 'blur');
+  andThen(() => {
+    assert.ok(
+      find('.report-view__visualization-edit').is(':visible'),
+      'Visualization edit panel is still visible after making changes that do not change the request'
+    );
+
+    assert.ok(
+      find('.report-view__visualization-edit-btn').is(':visible'),
+      'Visualization edit button is is still visible after making changes that do not change the request'
+    );
+
+    assert.notOk(
+      find('.report-view__info-text').is(':visible'),
+      'Notification to run is not visible after making changes that do not change the request'
+    );
+  });
+
   // Make a change that invalidates visualization
   click('.grouped-list__item:contains(Product Family) .checkbox-selector__checkbox');
   andThen(() => {
     assert.notOk(
       find('.report-view__visualization-edit').is(':visible'),
-      'Visualization edit panel is hidden when there are request changes that have not been run'
+      'Visualization edit panel is no longer visible when there are request changes that have not been run'
     );
 
     assert.notOk(
       find('.report-view__visualization-edit-btn').is(':visible'),
-      'Visualization edit button is hidden when there are request changes that have not been run'
+      'Visualization edit button is no longer visible when there are request changes that have not been run'
+    );
+
+    assert.ok(
+      find('.report-view__info-text').is(':visible'),
+      'Notification to run is visible when there are request changes that have not been run'
     );
   });
 
@@ -1390,7 +1415,12 @@ test('Disabled Visualization Edit While Editing', function(assert) {
   andThen(() => {
     assert.ok(
       find('.report-view__visualization-edit-btn').is(':visible'),
-      'Visualization edit button is back after running report'
+      'Visualization edit button is visible again after running the report'
+    );
+
+    assert.notOk(
+      find('.report-view__info-text').is(':visible'),
+      'Notification to run is no longer visible after running the report'
     );
   });
 });
