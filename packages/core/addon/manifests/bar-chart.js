@@ -32,6 +32,6 @@ export default ManifestBase.extend({
    * @return {Boolean} - visualization type is valid
    */
   typeIsValid(request) {
-    return this.hasGroupBy(request) || this.hasMultipleTimeBuckets(request);
+    return this.hasMetric(request) && (this.hasGroupBy(request) || this.hasMultipleTimeBuckets(request));
   }
 });

@@ -37,12 +37,9 @@ test('Add to dashboard button is hidden when there are unrun request changes', f
     );
   });
 
-  /*
-   * Change request
-   * Remove all metrics to create an invalid report
-   */
-  click('.checkbox-selector--metric .grouped-list__item:contains(Ad Clicks) .grouped-list__item-label');
-  click('.checkbox-selector--metric .grouped-list__item:contains(Nav Link Clicks) .grouped-list__item-label');
+  // Create empty filter to make request invalid
+  click('.grouped-list__item:Contains(Operating System) .checkbox-selector__filter');
+
   andThen(() => {
     assert.notOk(
       find('.navi-report__action:contains("Add to Dashboard")').is(':visible'),
@@ -50,8 +47,8 @@ test('Add to dashboard button is hidden when there are unrun request changes', f
     );
   });
 
-  // Reselect the merics and Run the report
-  click('.checkbox-selector--metric .grouped-list__item:contains(Nav Link Clicks) .grouped-list__item-label');
+  // Remove empty filter and run query
+  click('.grouped-list__item:Contains(Operating System) .checkbox-selector__filter');
   click('.navi-report__run-btn');
   andThen(() => {
     assert.ok(
