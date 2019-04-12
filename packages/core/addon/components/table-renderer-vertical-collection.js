@@ -21,18 +21,13 @@
 import Component from '@ember/component';
 import layout from '../templates/components/table-renderer-vertical-collection';
 import { computed, get, set } from '@ember/object';
-import { inject as service } from '@ember/service';
 import { run } from '@ember/runloop';
+import ResizeObserver from 'resize-observer-polyfill';
 
 /**
  * @constant {String} SCROLL_EVENT - Scroll event name
  */
 const SCROLL_EVENT = 'scroll';
-
-/**
- * @constant {String} RESIZE_EVENT - Resize event name
- */
-const RESIZE_EVENT = 'didResize';
 
 /**
  * @constant {String} WHEEL_EVENT - event for mouse and trackpad gestures
@@ -45,14 +40,14 @@ export default Component.extend({
   classNames: ['table-widget-container', 'table-widget-container--vc'],
 
   /**
-   * @property {Service} resize - Resize service to respond to view resize events
-   */
-  resize: service(),
-
-  /**
-   * @property {ResizeObserver} -- chrome resize observer
+   * @property {ResizeObserver} -- chrome resize observer for header changes
    */
   resizeObserver: null,
+
+  /**
+   * @property {mutationObserver} -- mutation observer for header changes (drag drop, adding and removing metrics)
+   */
+  mutationObserver: null,
 
   /**
    * @property {String} tableWrapperClass - class of table wrapper div
@@ -105,29 +100,30 @@ export default Component.extend({
     );
 
     get(this, 'tableHeadersDomElement').addEventListener(WHEEL_EVENT, e => this._headerWheelSync(e));
-
-    //chrome better behavior
-    if (typeof window.ResizeObserver !== 'undefined') {
-      const resizeObserver = new ResizeObserver(() => {
-        this._syncHeadersWidth();
-      });
-      document.querySelectorAll('.table-header-row-vc th').forEach(el => resizeObserver.observe(el));
-      set(this, 'resizeObserver', resizeObserver);
-    }
   },
 
   /**
-   * Registers view resize event
+   * Registers and reregisters resize observer
    *
    * @method _registerViewResize
    * @private
    * @returns {void}
    */
   _registerViewResize() {
-    get(this, 'resize').on(RESIZE_EVENT, () => {
-      this._syncHeadersWidth();
-      this._syncScroll();
-    });
+    //if existing observer exists disconnect
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect();
+    } else {
+      set(
+        this,
+        'resizeObserver',
+        new ResizeObserver(() => {
+          this._syncHeadersWidth();
+          this._syncScroll();
+        })
+      );
+    }
+    document.querySelectorAll('.table-header-row-vc th').forEach(el => this.resizeObserver.observe(el));
   },
 
   /**
@@ -226,6 +222,18 @@ export default Component.extend({
       if (!get(this, 'isDestroyed') && !get(this, 'isDestroying')) {
         this._registerTableScroll();
         this._registerViewResize();
+
+        set(
+          this,
+          'mutationObserver',
+          new MutationObserver(() => {
+            this._registerViewResize();
+          })
+        );
+
+        document
+          .querySelectorAll('tr.table-header-row-vc')
+          .forEach(el => this.mutationObserver.observe(el, { attributes: false, childList: true, subtree: true }));
       }
     });
   },
@@ -240,7 +248,6 @@ export default Component.extend({
     this._super(...arguments);
 
     if (!get(this, 'isDestroyed') && !get(this, 'isDestroying')) {
-      this._syncHeadersWidth();
       this._syncScroll();
     }
   },
@@ -259,11 +266,9 @@ export default Component.extend({
 
     get(this, 'tableHeadersDomElement').removeEventListener(WHEEL_EVENT, e => this._headerWheelSync(e));
 
-    //turn off view resize listener
-    get(this, 'resize').off(RESIZE_EVENT);
-
     //turn off resize Observer
-    get(this, 'resizeObserver').disconnect();
+    this.resizeObserver.disconnect();
+    this.mutationObserver.disconnect();
 
     this._super(...arguments);
   }

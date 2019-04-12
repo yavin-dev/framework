@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@html-next/vertical-collection": "^1.0.0-beta.12",
+    "ember-auto-import": "^1.2.21",
     "ember-cli-babel": "^7.1.2",
     "ember-cli-format-number": "2.0.0",
     "ember-cli-htmlbars": "^3.0.0",
@@ -33,7 +34,8 @@
     "ember-tether": "^1.0.0",
     "ember-toggle": "^5.2.1",
     "ember-tooltips": "^2.10.0",
-    "ember-truth-helpers": "^2.0.0"
+    "ember-truth-helpers": "^2.0.0",
+    "resize-observer-polyfill": "^1.5.1"
   },
   "devDependencies": {
     "@ember/optional-features": "^0.6.3",
