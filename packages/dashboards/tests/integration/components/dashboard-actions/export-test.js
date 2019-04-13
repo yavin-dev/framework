@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-
-import { render, find, click } from '@ember/test-helpers';
+import { render, click } from '@ember/test-helpers';
+import hbs from 'htmlbars-inline-precompile';
 
 module('Integration | Component | dashboard actions/export', function(hooks) {
   setupRenderingTest(hooks);
@@ -11,7 +11,7 @@ module('Integration | Component | dashboard actions/export', function(hooks) {
 
     this.dashboard = { id: 123, title: 'Akkala Tech Lab Weekly Reports' };
 
-    await render(`
+    await render(hbs`
       {{dashboard-actions/export
         dashboard=dashboard
       }}
@@ -31,7 +31,7 @@ module('Integration | Component | dashboard actions/export', function(hooks) {
 
     this.dashboard = { id: 123, title: 'Akkala Tech Lab Weekly Reports' };
 
-    await render(`
+    await render(hbs`
       {{dashboard-actions/export
         dashboard=dashboard
       }}
@@ -51,7 +51,7 @@ module('Integration | Component | dashboard actions/export', function(hooks) {
 
     this.dashboard = { id: 123, title: 'Akkala Tech Lab Weekly Reports' };
 
-    await render(`
+    await render(hbs`
       {{dashboard-actions/export
         dashboard=dashboard
         disabled=true
@@ -74,7 +74,7 @@ module('Integration | Component | dashboard actions/export', function(hooks) {
       }
     };
 
-    await render(`
+    await render(hbs`
       {{dashboard-actions/export
         dashboard=dashboard
         naviNotifications=mockNotifications

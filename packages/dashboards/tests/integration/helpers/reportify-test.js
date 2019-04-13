@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find } from '@ember/test-helpers';
+import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 const widgetModel = {
@@ -31,7 +31,7 @@ module('Integration | Helper | reportify', function(hooks) {
     this.set('model', widgetModel);
     await render(hbs`{{get (reportify model) 'request.test'}}`);
 
-    assert.dom('*').hasText('foo', 'Request should have foo text rendered');
+    assert.dom(this.element).hasText('foo', 'Request should have foo text rendered');
 
     this.set('model.request', {
       clone() {
@@ -41,6 +41,6 @@ module('Integration | Helper | reportify', function(hooks) {
       }
     });
 
-    assert.dom('*').hasText('bar', 'Request should have bar text rendered');
+    assert.dom(this.element).hasText('bar', 'Request should have bar text rendered');
   });
 });

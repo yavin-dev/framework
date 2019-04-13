@@ -1,27 +1,16 @@
 import { find, click, fillIn, currentURL, currentPath, findAll, blur, visit } from '@ember/test-helpers';
-import { A } from '@ember/array';
-import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
-import startApp from '../helpers/start-app';
 import Ember from 'ember';
 import config from 'ember-get-config';
-import Mirage from 'ember-cli-mirage';
-
-let Application;
+import { setupApplicationTest } from 'ember-qunit';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 // Regex to check that a string ends with "{uuid}/view"
 const TempIdRegex = /\/reports\/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\/view$/;
 
 module('Acceptance | Exploring Widgets', function(hooks) {
-  hooks.beforeEach(function() {
-    Application = startApp();
-    wait();
-  });
-
-  hooks.afterEach(function() {
-    server.shutdown();
-    run(Application, 'destroy');
-  });
+  setupApplicationTest(hooks);
+  setupMirage(hooks);
 
   test('Widget title', async function(assert) {
     assert.expect(1);
@@ -44,13 +33,9 @@ module('Acceptance | Exploring Widgets', function(hooks) {
     await click('.navi-report-widget__save-btn');
     await visit('/dashboards/1');
 
-    let widgetNames = $('.navi-widget__title')
-      .map(function() {
-        return this.textContent.trim();
-      })
-      .toArray();
+    const widgetNames = find('.navi-widget__title').map(el => el.textContent.trim());
 
-    assert.ok(A(widgetNames).includes('A new title'), 'New widget title is saved and persisted on dashboard');
+    assert.ok(widgetNames.includes('A new title'), 'New widget title is saved and persisted on dashboard');
   });
 
   test('Breadcrumb', async function(assert) {

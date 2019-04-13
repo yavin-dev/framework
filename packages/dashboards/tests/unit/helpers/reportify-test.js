@@ -26,7 +26,7 @@ module('Unit | Helper | reportify', function(hooks) {
   test('reportify returns report', function(assert) {
     assert.expect(2);
 
-    let reportify = this.owner.lookup('helper:reportify');
+    let reportify = this.owner.factoryFor('helper:reportify').create();
 
     return settled().then(() => {
       return run(() => {

@@ -1,4 +1,4 @@
-import { pauseTest, click, currentURL, fillIn, find, findAll, triggerEvent, visit } from '@ember/test-helpers';
+import { click, currentURL, fillIn, find, findAll, triggerEvent, visit } from '@ember/test-helpers';
 import { run } from '@ember/runloop';
 import Ember from 'ember';
 import { module, test } from 'qunit';
@@ -9,6 +9,7 @@ import { Response } from 'ember-cli-mirage';
 import { selectChoose } from 'ember-power-select/test-support';
 import $ from 'jquery';
 import { getContext } from 'ember-test-helpers';
+import { buttonContains } from '../helpers/contains-helpers';
 
 let OriginalLoggerError, OriginalTestAdapterException;
 
@@ -95,7 +96,9 @@ module('Acceptance | Dashboards', function(hooks) {
     await visit('/dashboards/5');
 
     assert.equal(
-      find('.error-container .error').textContent.trim(),
+      find('.error-container .error')
+        .textContent.replace(/\s\s+/g, ' ')
+        .trim(),
       'Looks like this dashboard has no widgets. Go ahead and add a widget now?'
     );
 
@@ -122,23 +125,20 @@ module('Acceptance | Dashboards', function(hooks) {
 
     await visit('/dashboards');
 
-    await triggerEvent('.navi-collection__row:first-of-type', 'mouseenter');
-    await pauseTest();
+    //https://github.com/emberjs/ember-test-helpers/issues/343
+    await triggerEvent('.navi-collection__row:first-of-type', 'mouseover');
 
     // Click "Share"
     await click('.navi-collection__row:first-of-type .share .btn');
 
-    assert.equal(
-      find('.navi-collection__row:first-of-type td:eq(1) .action').length,
-      5,
-      'The second column contains five actions'
-    );
+    assert.dom('.navi-collection__actions .action').exists({ count: 5 }, 'The second column contains five actions');
+
     assert
       .dom('.primary-header')
       .hasText('Share "Tumblr Goals Dashboard"', 'Share modal pops up when action is clicked');
 
     // Cancel modal and click "Delete"
-    await click('.btn:contains(Cancel)');
+    await click(buttonContains('Cancel'));
     await click('.navi-collection__row:first-of-type .delete button');
 
     assert
@@ -146,7 +146,7 @@ module('Acceptance | Dashboards', function(hooks) {
       .hasText('Delete "Tumblr Goals Dashboard"', 'Delete modal pops up when action is clicked');
 
     // Cancel modal and click "Clone"
-    await click('.btn:contains(Cancel)');
+    await click(buttonContains('Cancel'));
     await click('.navi-icon__copy');
 
     assert.equal(currentURL(), '/dashboards/6/view', 'A dashboard is cloned when the action is clicked');
@@ -155,22 +155,17 @@ module('Acceptance | Dashboards', function(hooks) {
   test('Add new dashboard in index route', async function(assert) {
     assert.expect(2);
 
-    visit('/dashboards');
+    await visit('/dashboards');
     await click('.dashboards-index__new-btn');
 
     assert
       .dom('.navi-dashboard .page-title')
       .hasText('Untitled Dashboard', 'Adding new dashboard in dashboards route transitions to new dasboard');
 
-    visit('/dashboards');
+    await visit('/dashboards');
 
-    let titles = find('.navi-collection .table tr td:first-of-type')
-      .toArray()
-      .map(el =>
-        $(el)
-          .text()
-          .trim()
-      );
+    let titles = findAll('.navi-collection .table tr td:first-of-type').map(el => el.textContent.trim());
+
     assert.deepEqual(
       titles,
       ['Tumblr Goals Dashboard', 'Dashboard 2', 'Empty Dashboard', 'Untitled Dashboard'],
@@ -181,19 +176,15 @@ module('Acceptance | Dashboards', function(hooks) {
   test('add widget button', async function(assert) {
     assert.expect(4);
 
-    visit('/dashboards/4');
+    await visit('/dashboards/4');
 
-    assert.notOk(
-      find('.add-widget button').is(':visible'),
-      'The `Add Widget` button is not visible when user cannot edit the dashboard'
-    );
+    assert
+      .dom('.add-widget button')
+      .isNotVisible('The `Add Widget` button is not visible when user cannot edit the dashboard');
 
-    visit('/dashboards/5');
+    await visit('/dashboards/5');
 
-    assert.ok(
-      find('.add-widget button').is(':visible'),
-      'The `Add Widget` button is visible when user can edit the dashboard'
-    );
+    assert.dom('.add-widget button').isVisible('The `Add Widget` button is visible when user can edit the dashboard');
 
     await click('.add-widget .btn');
 
@@ -203,7 +194,7 @@ module('Acceptance | Dashboards', function(hooks) {
       'Create new assigns the new widget route to the primary button'
     );
 
-    selectChoose('.report-select', 'Report 12');
+    await selectChoose('.report-select', 'Report 12');
 
     assert.equal(
       find('.add-widget-modal .btn').getAttribute('href'),
@@ -238,34 +229,24 @@ test('Delete a dashboard', function(assert) {
   test('Delete a dashboard', function(assert) {
     assert.expect(3);
 
-    visit('/dashboards');
+    await visit('/dashboards');
 
-    let titles = find('.navi-collection .table tr td:first-of-type')
-      .toArray()
-      .map(el =>
-        $(el)
-          .text()
-          .trim()
-      );
+    const titles = findAll('.navi-collection .table tr td:first-of-type').map(el => el.textContent.trim());
+
     assert.deepEqual(
       titles,
       ['Tumblr Goals Dashboard', 'Dashboard 2', 'Empty Dashboard'],
       '`navi-user`s dashboard are shown '
     );
 
-    visit('/dashboards/2');
+    await visit('/dashboards/2');
 
     click('.dashboard-actions .delete > button').then(function() {
       click('button:contains(Confirm)').then(function() {
         assert.equal(currentURL(), '/dashboards', 'Deleting a dashboard transitions to index route');
 
-        let titles = find('.navi-collection .table tr td:first-of-type')
-          .toArray()
-          .map(el =>
-            $(el)
-              .text()
-              .trim()
-          );
+        const titles = findAll('.navi-collection .table tr td:first-of-type').map(el => $(el).textContent.trim());
+
         assert.deepEqual(
           titles,
           ['Tumblr Goals Dashboard', 'Empty Dashboard'],
@@ -279,36 +260,24 @@ test('Delete a dashboard', function(assert) {
     assert.expect(2);
 
     // Favorite dashboard 2
-    visit('/dashboards/2');
+    await visit('/dashboards/2');
     await click('.navi-dashboard__fav-icon');
 
     // Filter by favorites
-    visit('/dashboards');
+    await visit('/dashboards');
     await click('.pick-form li:contains(Favorites)');
 
-    let dasboardBefore = find('tbody tr td:first-of-type')
-      .toArray()
-      .map(el =>
-        $(el)
-          .text()
-          .trim()
-      );
+    const dashboardBefore = findAll('tbody tr td:first-of-type').map(el => el.textContent.trim());
 
-    assert.deepEqual(dasboardBefore, ['Tumblr Goals Dashboard', 'Dashboard 2'], 'Two dashboards are in favories now');
+    assert.deepEqual(dashboardBefore, ['Tumblr Goals Dashboard', 'Dashboard 2'], 'Two dashboards are in favories now');
 
     // Unfavorite dashboard 1
     await click('tbody tr td a:contains(Tumblr Goals Dashboard)');
     await click('.navi-dashboard__fav-icon');
-    visit('/dashboards');
+    await visit('/dashboards');
     await click('.pick-form li:contains(Favorites)');
 
-    let dashboardsAfter = find('tbody tr td:first-of-type')
-      .toArray()
-      .map(el =>
-        $(el)
-          .text()
-          .trim()
-      );
+    const dashboardsAfter = findAll('tbody tr td:first-of-type').map(el => el.textContent.trim());
 
     assert.deepEqual(dashboardsAfter, ['Dashboard 2'], 'Only one dashboard is in favories now');
   });
@@ -322,20 +291,14 @@ test('Delete a dashboard', function(assert) {
     });
 
     /* == mark dashboard as favorite == */
-    visit('/dashboards/3');
+    await visit('/dashboards/3');
     await click('.navi-dashboard__fav-icon');
 
     /* == list favorites in list view == */
-    visit('/dashboards');
+    await visit('/dashboards');
     await click('.pick-form li:contains(Favorites)');
 
-    let listedDashboards = find('tbody tr td:first-of-type')
-      .toArray()
-      .map(el =>
-        $(el)
-          .text()
-          .trim()
-      );
+    const listedDashboards = findAll('tbody tr td:first-of-type').map(el => el.textContent.trim());
 
     assert.deepEqual(listedDashboards, ['Tumblr Goals Dashboard'], 'The user state is rolled back on failure');
   });
@@ -345,18 +308,11 @@ test('Delete a dashboard', function(assert) {
 
     let originalDashboardTitle, originalWidgetTitles;
 
-    visit('/dashboards/2');
+    await visit('/dashboards/2');
 
-    originalDashboardTitle = find('.page-title .clickable')
-      .text()
-      .trim();
-    originalWidgetTitles = find('.navi-widget__title')
-      .toArray()
-      .map(el =>
-        $(el)
-          .text()
-          .trim()
-      );
+    originalDashboardTitle = find('.page-title .clickable').textContent.trim();
+
+    originalWidgetTitles = findAll('.navi-widget__title').map(el => el.textContent.trim());
 
     await click('.navi-icon__copy');
 
@@ -370,26 +326,20 @@ test('Delete a dashboard', function(assert) {
       );
 
     assert.deepEqual(
-      find('.navi-widget__title')
-        .toArray()
-        .map(el =>
-          $(el)
-            .text()
-            .trim()
-        ),
+      findAll('.navi-widget__title').map(el => el.textContent.trim()),
       originalWidgetTitles,
       'Cloned widgets are present in the dashboard '
     );
   });
 
-  test('clone dashboard on failure', function(assert) {
+  test('clone dashboard on failure', async function(assert) {
     assert.expect(1);
 
     server.post('/dashboards/', () => {
       return new Response(500);
     });
 
-    visit('/dashboards/2');
+    await visit('/dashboards/2');
 
     click('.navi-icon__copy').then(() => {
       assert.equal(currentURL(), '/dashboards', 'Transition to `dashboards` route on failed cloning action');
@@ -400,12 +350,8 @@ test('Delete a dashboard', function(assert) {
     assert.expect(4);
 
     // Check original set of widgets
-    visit('/dashboards/1');
-    let widgetsBefore = $('.navi-widget__title')
-      .map(function() {
-        return this.textContent.trim();
-      })
-      .toArray();
+    await visit('/dashboards/1');
+    const widgetsBefore = findAll('.navi-widget__title').map(el => el.textContent.trim());
 
     assert.deepEqual(
       widgetsBefore,
@@ -432,11 +378,7 @@ test('Delete a dashboard', function(assert) {
       'After saving for the first time, user is brought back to dashboard view'
     );
 
-    let widgetsAfter = $('.navi-widget__title')
-      .map(function() {
-        return this.textContent.trim();
-      })
-      .toArray();
+    let widgetsAfter = findAll('.navi-widget__title').map(el => el.textContent.trim());
 
     assert.deepEqual(
       widgetsAfter,
@@ -453,7 +395,7 @@ test('Delete a dashboard', function(assert) {
     });
 
     // Create and save
-    visit('/dashboards/1/widgets/new');
+    await visit('/dashboards/1/widgets/new');
     await click('.checkbox-selector--metric .grouped-list__item:contains(Total Clicks) label');
     await click('.navi-report-widget__run-btn');
     await click('.navi-report-widget__save-btn');
@@ -462,7 +404,7 @@ test('Delete a dashboard', function(assert) {
       'User ends up on dashboards route when there is an error adding a widget'
     );
 
-    visit('/dashboards/1');
+    await visit('/dashboards/1');
     assert.dom('.navi-widget').exists({ count: 3 }, 'The new widget was never added to the dashboard');
   });
 
@@ -470,21 +412,21 @@ test('Delete a dashboard', function(assert) {
     assert.expect(2);
 
     // Edit title of the dashboard
-    visit('/dashboards/1');
+    await visit('/dashboards/1');
     await click('.editable-label__icon');
-    fillIn('.editable-label__input', 'A new title');
-    triggerEvent('.editable-label__input', 'blur');
+    await fillIn('.editable-label__input', 'A new title');
+    await triggerEvent('.editable-label__input', 'blur');
 
     assert
       .dom('.navi-dashboard .page-title')
       .hasText('A new title', 'New Dashboard title is persisted with value `A new title` ');
 
     //Not Editor
-    visit('/dashboards/3');
-    assert.notOk($('.editable-label__icon').is(':visible'), 'Edit icon is not available if user is not the editor');
+    await visit('/dashboards/3');
+    assert.dom('.editable-label__icon').isNotVisible('Edit icon is not available if user is not the editor');
   });
 
-  test('Unauthorized widget', function(assert) {
+  test('Unauthorized widget', async function(assert) {
     assert.expect(2);
     // Allow testing of errors - https://github.com/emberjs/ember.js/issues/11469
     OriginalLoggerError = Ember.Logger.error;
@@ -497,7 +439,7 @@ test('Delete a dashboard', function(assert) {
       return new Response(403);
     });
 
-    visit('/dashboards/2/view');
+    await visit('/dashboards/2/view');
     assert.ok(
       find('.navi-widget:eq(0) .navi-widget__content').hasClass('visualization-container'),
       'Widget loaded visualization for allowed component'

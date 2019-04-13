@@ -28,7 +28,7 @@ export default Ember.Component.extend({
   hasValidLogicalTable: computed('report.request.logicalTable.table', function() {
     const allTables = get(this, 'allTables');
     const tableName = get(this, 'report.request.logicalTable.table.name');
-    return allTables.filterBy('name', tableName).length > 0;
+    return allTables.filter(t => t.name === tableName).length > 0;
   }),
 
   /**

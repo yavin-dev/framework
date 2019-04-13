@@ -122,7 +122,11 @@
       }}
         {{#each dashboard.presentation.layout as |layout|}}
           {{#with (get-widget layout.widgetId) as |widget|}}
+            {{log 'widget: -->'}}
+            {{log dataForWidget}}
             {{#if widget}}
+              {{log 'widget data: -->'}}
+              {{log (get dataForWidget widget.id)}}
               {{navi-widget
                 model=widget
                 layoutOptions=layout

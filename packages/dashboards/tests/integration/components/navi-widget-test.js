@@ -5,7 +5,7 @@ import { defer, reject, resolve } from 'rsvp';
 import { helper as buildHelper } from '@ember/component/helper';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, settled, find, findAll } from '@ember/test-helpers';
+import { render, findAll, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import DS from 'ember-data';
 import { ForbiddenError } from 'ember-ajax/errors';
@@ -53,20 +53,17 @@ module('Integration | Component | navi widget', function(hooks) {
 
     assert.dom('.navi-widget__title').hasText(WIDGET.title, 'widget title is rendered');
 
-    assert.ok(this.$('.loader-container').is(':visible'), 'loader is visibile while promise is pending');
+    assert.dom('.loader-container').isVisible('loader is visible while promise is pending');
 
-    assert.notOk(
-      this.$('.visualization-container').is(':visible'),
-      'visualization is not rendered while data is loading'
-    );
+    assert.dom('.visualization-container').doesNotExist('visualization is not rendered while data is loading');
 
     run(() => {
       dataPromise.resolve([]);
     });
 
-    assert.ok(this.$('.visualization-container').is(':visible'), 'visualization is visible when data is ready');
+    assert.dom('.visualization-container').exists('visualization exists when data is ready');
 
-    assert.notOk(this.$('.loader-container').is(':visible'), 'loader is hidden when promise is resolved');
+    assert.dom('.loader-container').isNotVisible('loader is hidden when promise is resolved');
 
     run(() => {
       this.set(
@@ -77,7 +74,7 @@ module('Integration | Component | navi widget', function(hooks) {
       );
     });
 
-    assert.ok(this.$('.error-container').is(':visible'), 'error is shown on rejected promise');
+    assert.dom('.error-container').isVisible('error is shown on rejected promise');
 
     run(() => {
       this.set(
@@ -88,10 +85,9 @@ module('Integration | Component | navi widget', function(hooks) {
       ).catch(() => null);
     });
 
-    assert.ok(
-      this.$('.navi-report-invalid__info-message .fa-lock').is(':visible'),
-      'Unauthorized view should be shown when receiving ForbiddenError'
-    );
+    assert
+      .dom('.navi-report-invalid__info-message .fa-lock')
+      .isVisible('Unauthorized view should be shown when receiving ForbiddenError');
   });
 
   test('layout', async function(assert) {
@@ -115,19 +111,19 @@ module('Integration | Component | navi widget', function(hooks) {
 
     assert
       .dom('.grid-stack-item')
-      .hasAttribute('data-gs-x', 2, 'given column is correctly translated to gridstack data attribute');
+      .hasAttribute('data-gs-x', '2', 'given column is correctly translated to gridstack data attribute');
 
     assert
       .dom('.grid-stack-item')
-      .hasAttribute('data-gs-y', 1, 'given row is correctly translated to gridstack data attribute');
+      .hasAttribute('data-gs-y', '1', 'given row is correctly translated to gridstack data attribute');
 
     assert
       .dom('.grid-stack-item')
-      .hasAttribute('data-gs-width', 10, 'given width is correctly translated to gridstack data attribute');
+      .hasAttribute('data-gs-width', '10', 'given width is correctly translated to gridstack data attribute');
 
     assert
       .dom('.grid-stack-item')
-      .hasAttribute('data-gs-height', 4, 'given height is correctly translated to gridstack data attribute');
+      .hasAttribute('data-gs-height', '4', 'given height is correctly translated to gridstack data attribute');
   });
 
   test('visualization', async function(assert) {
@@ -167,18 +163,16 @@ module('Integration | Component | navi widget', function(hooks) {
         didInsertElement() {
           this._super(...arguments);
 
-          containerComponent = this.get('containerComponent');
+          containerComponent = this.containerComponent;
 
           // Assert model and options are correct
-          assert.deepEqual(this.get('options'), metadata, 'metadata is passed to visualization as options');
+          assert.deepEqual(this.options, metadata, 'metadata is passed to visualization as options');
 
-          assert.deepEqual(this.get('model').toArray(), data, 'data is passed to visualization as model');
+          assert.deepEqual(this.model.toArray(), data, 'data is passed to visualization as model');
 
-          this.get('containerComponent')
-            .$()
-            .on('resizestop', () => {
-              assert.ok(true, 'visualization can listen to resize events on containerComponent property');
-            });
+          this.containerComponent.element.addEventListener('resizestop', () => {
+            assert.ok(true, 'visualization can listen to resize events on containerComponent property');
+          });
         }
       })
     );
@@ -190,12 +184,10 @@ module('Integration | Component | navi widget', function(hooks) {
       }}
     `);
 
-    return settled().then(() => {
-      assert.ok(this.$('.test-visualization').is(':visible'), 'visualization component is rendered');
+    assert.dom('.test-visualization').exists('visualization component is rendered');
 
-      // Test visualization listening to events
-      containerComponent.$().trigger('resizestop');
-    });
+    // Test visualization listening to events
+    triggerEvent(containerComponent.element, 'resizestop');
   });
 
   test('delete action visibility', async function(assert) {

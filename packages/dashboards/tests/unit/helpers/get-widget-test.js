@@ -8,8 +8,8 @@ module('Unit | Helper | get widget', function(hooks) {
   test('getWidget', function(assert) {
     assert.expect(2);
 
-    let store = this.owner.lookup('service:store'),
-      getWidget = this.owner.lookup('helper:get-widget');
+    const store = this.owner.lookup('service:store');
+    const getWidget = this.owner.factoryFor('helper:get-widget').create();
 
     run(() => {
       store.push({ data: { id: 2, type: 'dashboard-widget' } });

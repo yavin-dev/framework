@@ -22,6 +22,7 @@ import layout from '../../templates/components/navi-visualizations/line-chart';
 import numeral from 'numeral';
 import merge from 'lodash/merge';
 import { run } from '@ember/runloop';
+import { A as arr } from '@ember/array';
 
 const DEFAULT_OPTIONS = {
   axis: {
@@ -175,7 +176,8 @@ export default Component.extend({
    * @property {Object} pointConfig - point radius config options for chart
    */
   pointConfig: computed('model.[]', function() {
-    let pointCount = get(this, 'model.firstObject.response.rows.length');
+    const firstObject = arr(this.model).firstObject;
+    let pointCount = firstObject.response.rows.length;
 
     //set point radius higher for single data
     if (pointCount === 1) {
@@ -188,16 +190,17 @@ export default Component.extend({
   /**
    * @property {Object} data - configuration for chart x and y values
    */
-  dataConfig: computed('model.firstObject', 'seriesConfig', function() {
-    let response = get(this, 'model.firstObject.response'),
-      request = get(this, 'model.firstObject.request'),
-      builder = get(this, 'builder'),
-      seriesConfig = get(this, 'seriesConfig.config'),
-      seriesData = builder.buildData(get(response, 'rows'), seriesConfig, request);
+  dataConfig: computed('model.0', 'seriesConfig', function() {
+    const firstObject = arr(this.model).firstObject;
+    const response = firstObject.response;
+    const request = firstObject.request;
+    const builder = this.builder;
+    const seriesConfig = this.seriesConfig.config;
+    const seriesData = builder.buildData(response.rows, seriesConfig, request);
 
     return {
       data: {
-        type: get(this, 'chartType'),
+        type: this.chartType,
         json: seriesData,
         selection: {
           enabled: true
@@ -211,7 +214,7 @@ export default Component.extend({
    */
   dataSelectionConfig: computed('model.[]', function() {
     // model is an array, and object at index 1 is insights data promise
-    let insights = get(this, 'model').objectAt(1);
+    const insights = arr(this.model).objectAt(1);
     return insights ? { dataSelection: insights } : {};
   }),
 
@@ -229,15 +232,16 @@ export default Component.extend({
    * @property {Ember.Component} tooltipComponent - component used for rendering HTMLBars templates
    */
   tooltipComponent: computed('dataConfig', function() {
-    let request = get(this, 'model.firstObject.request'),
-      seriesConfig = get(this, 'seriesConfig.config'),
-      tooltipComponentName = get(this, 'tooltipComponentName'),
-      registryEntry = `component:${tooltipComponentName}`,
-      builder = get(this, 'builder'),
-      owner = getOwner(this),
-      tooltipComponent = Component.extend(owner.ownerInjection(), builder.buildTooltip(seriesConfig, request), {
-        renderer: owner.lookup('renderer:-dom')
-      });
+    const request = arr(this.model).firstObject.request;
+    const seriesConfig = this.seriesConfig.config;
+    const tooltipComponentName = this.tooltipComponentName;
+    const registryEntry = `component:${tooltipComponentName}`;
+    const builder = this.builder;
+    const owner = getOwner(this);
+    const tooltipComponent = Component.extend(owner.ownerInjection(), builder.buildTooltip(seriesConfig, request), {
+      renderer: owner.lookup('renderer:-dom')
+    });
+
     if (!owner.lookup(registryEntry)) {
       owner.register(registryEntry, tooltipComponent);
     }
@@ -256,11 +260,11 @@ export default Component.extend({
     'seriesConfig.config',
     'dataConfig.data.json',
     'tooltipComponent',
-    'model.firstObject.request',
+    'model.0.request',
     function() {
       let rawData = get(this, 'dataConfig.data.json'),
         tooltipComponent = get(this, 'tooltipComponent'),
-        request = get(this, 'model.firstObject.request'),
+        request = get(this, 'model.0.request'),
         seriesConfig = get(this, 'seriesConfig.config');
 
       return {

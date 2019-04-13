@@ -1,23 +1,20 @@
-import { A } from '@ember/array';
-import { getOwner } from '@ember/application';
+import { A as arr } from '@ember/array';
 import { set } from '@ember/object';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, settled, click, find } from '@ember/test-helpers';
-import { hbsWithModal } from '../../../helpers/hbs-with-modal';
-import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
-import { clickTrigger as toggleSelector, nativeMouseUp as toggleOption } from 'ember-power-select/test-support/helpers';
+import { fillIn, findAll, render, click } from '@ember/test-helpers';
+import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
+import hbs from 'htmlbars-inline-precompile';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 let Template;
 
 module('Integration | Component | report actions/add to dashboard', function(hooks) {
   setupRenderingTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
-    setupMock();
-
-    Template = hbsWithModal(
-      `
+    Template = hbs`
       {{#report-actions/add-to-dashboard
         report=report
         dashboards=dashboards
@@ -27,9 +24,7 @@ module('Integration | Component | report actions/add to dashboard', function(hoo
       }}
         Add to Dashboard
       {{/report-actions/add-to-dashboard}}
-    `,
-      this.owner
-    );
+    `;
 
     set(this, 'report', {
       id: 1,
@@ -40,7 +35,7 @@ module('Integration | Component | report actions/add to dashboard', function(hoo
     set(
       this,
       'dashboards',
-      A([
+      arr([
         {
           id: 1,
           title: 'Tumblr Goals Dashboard'
@@ -56,14 +51,9 @@ module('Integration | Component | report actions/add to dashboard', function(hoo
     set(this, 'addToNewDashboard', () => {});
   });
 
-  hooks.afterEach(function() {
-    teardownMock();
-  });
-
   test('component renders', async function(assert) {
     await render(Template);
-
-    assert.dom('*').hasText('Add to Dashboard', 'Template content is yielded');
+    assert.dom('.add-to-dashboard').hasText('Add to Dashboard', 'Template content is yielded');
   });
 
   test('component`s Modal', async function(assert) {
@@ -71,25 +61,19 @@ module('Integration | Component | report actions/add to dashboard', function(hoo
 
     await render(Template);
 
-    assert.notOk(
-      !!$('.ember-modal-dialog').length,
-      'add to dashboard report action modal is not visible before clicking the component'
-    );
+    assert
+      .dom('.ember-modal-dialog')
+      .isNotVisible('add to dashboard report action modal is not visible before clicking the component');
 
     await click('.report-control');
 
-    return settled().then(() => {
-      assert.ok(
-        !!$('.ember-modal-dialog').length,
-        'add to dashboard report modal dialog pops up on clicking the component'
-      );
+    assert
+      .dom('.ember-modal-dialog')
+      .isVisible('add to dashboard report modal dialog pops up on clicking the component');
 
-      assert.equal(
-        $('.add-to-dashboard-modal .text-input').val(),
-        'Buzz Blob',
-        'the report title is displayed as the default name for widget title'
-      );
-    });
+    assert
+      .dom('.add-to-dashboard-modal .text-input')
+      .hasValue('Buzz Blob', 'the report title is displayed as the default name for widget title');
   });
 
   test('create vs select', async function(assert) {
@@ -98,47 +82,29 @@ module('Integration | Component | report actions/add to dashboard', function(hoo
     await render(Template);
     await click('.report-control');
 
-    return settled().then(() => {
-      assert.ok(
-        $('.add-to-dashboard-modal .dashboard-select').is(':visible'),
-        'Dashboard selector is shown by default'
-      );
+    assert.dom('.add-to-dashboard-modal .dashboard-select').isVisible('Dashboard selector is shown by default');
 
-      assert.notOk(
-        $('.add-to-dashboard-modal .text-input.dashboard-title').is(':visible'),
-        'Dashboard title input is not shown by default'
-      );
+    assert
+      .dom('.add-to-dashboard-modal .text-input.dashboard-title')
+      .isNotVisible('Dashboard title input is not shown by default');
 
-      assert.equal(
-        $('.add-to-dashboard-modal a.dashboard-action-text')
-          .text()
-          .trim(),
-        'Create new dashboard',
-        'Create new dashboard link is also shown by default'
-      );
+    assert
+      .dom('.add-to-dashboard-modal a.dashboard-action-text')
+      .hasText('Create new dashboard', 'Create new dashboard link is also shown by default');
 
-      $('.add-to-dashboard-modal a.dashboard-action-text').click();
+    await click('.add-to-dashboard-modal a.dashboard-action-text');
 
-      return settled().then(() => {
-        assert.ok(
-          $('.add-to-dashboard-modal .text-input.dashboard-title').is(':visible'),
-          'Dashboard title input is shown when create dashboard link is clicked'
-        );
+    assert
+      .dom('.add-to-dashboard-modal .text-input.dashboard-title')
+      .isVisible('Dashboard title input is shown when create dashboard link is clicked');
 
-        assert.notOk(
-          $('.add-to-dashboard-modal .ember-power-select').is(':visible'),
-          'Dashboard selector is hidden after link click'
-        );
+    assert
+      .dom('.add-to-dashboard-modal .ember-power-select')
+      .isNotVisible('Dashboard selector is hidden after link click');
 
-        assert.equal(
-          $('.add-to-dashboard-modal a.dashboard-action-text')
-            .text()
-            .trim(),
-          'Select from my dashboards',
-          'Select from my dashboards link is also shown after link click'
-        );
-      });
-    });
+    assert
+      .dom('.add-to-dashboard-modal a.dashboard-action-text')
+      .hasText('Select from my dashboards', 'Select from my dashboards link is also shown after link click');
   });
 
   test('dropdown options', async function(assert) {
@@ -146,29 +112,17 @@ module('Integration | Component | report actions/add to dashboard', function(hoo
 
     await render(Template);
     await click('.report-control');
-    toggleSelector('.add-to-dashboard-modal');
+    await clickTrigger('.add-to-dashboard-modal');
 
-    return settled().then(() => {
-      assert.equal(
-        $('.add-to-dashboard-modal .ember-power-select-group .ember-power-select-group-name')
-          .text()
-          .trim(),
-        'My Dashboards',
-        'The user`s dashboards are grouped under `My Dashboards`'
-      );
+    assert
+      .dom('.add-to-dashboard-modal .ember-power-select-group .ember-power-select-group-name')
+      .hasText('My Dashboards', 'The user`s dashboards are grouped under `My Dashboards`');
 
-      assert.deepEqual(
-        $('.add-to-dashboard-modal .ember-power-select-option')
-          .toArray()
-          .map(el =>
-            $(el)
-              .text()
-              .trim()
-          ),
-        ['Tumblr Goals Dashboard', 'Dashboard 2'],
-        'The user`s dashboard titles are shown in the dropdown'
-      );
-    });
+    assert.deepEqual(
+      findAll('.add-to-dashboard-modal .ember-power-select-option').map(el => el.textContent.trim()),
+      ['Tumblr Goals Dashboard', 'Dashboard 2'],
+      'The user`s dashboard titles are shown in the dropdown'
+    );
   });
 
   test('addToDashboard action', async function(assert) {
@@ -183,22 +137,17 @@ module('Integration | Component | report actions/add to dashboard', function(hoo
     await render(Template);
     await click('.report-control');
 
-    return settled().then(() => {
-      assert.ok(
-        $('.add-to-dashboard-modal .btn.add-to-dashboard').is(':disabled'),
-        '`Add To Dashboard` Button is disabled by default'
-      );
+    assert
+      .dom('.add-to-dashboard-modal .btn.add-to-dashboard')
+      .isDisabled('`Add To Dashboard` Button is disabled by default');
 
-      toggleSelector('.add-to-dashboard-modal');
-      toggleOption($('.add-to-dashboard-modal .ember-power-select-option:contains(Tumblr)')[0]);
+    await selectChoose('.add-to-dashboard-modal', 'Tumblr');
 
-      assert.notOk(
-        $('.add-to-dashboard-modal .btn.add-to-dashboard').is(':disabled'),
-        '`Add To Dashboard` Button is not disabled once a dashboard is selected'
-      );
+    assert
+      .dom('.add-to-dashboard-modal .btn.add-to-dashboard')
+      .isNotDisabled('`Add To Dashboard` Button is not disabled once a dashboard is selected');
 
-      $('.add-to-dashboard-modal .btn.add-to-dashboard').click();
-    });
+    await click('.add-to-dashboard-modal .btn.add-to-dashboard');
   });
 
   test('addToNewDashboard action', async function(assert) {
@@ -213,17 +162,9 @@ module('Integration | Component | report actions/add to dashboard', function(hoo
     await render(Template);
     await click('.report-control');
 
-    return settled().then(() => {
-      $('.add-to-dashboard-modal a.dashboard-action-text').click();
-      return settled().then(() => {
-        $('input.dashboard-title')
-          .val('Tri Force Heroes')
-          .change();
-        return settled().then(() => {
-          $('.add-to-dashboard-modal .btn.add-to-dashboard').click();
-        });
-      });
-    });
+    await click('.add-to-dashboard-modal a.dashboard-action-text');
+    await fillIn('input.dashboard-title', 'Tri Force Heroes');
+    await click('.add-to-dashboard-modal .btn.add-to-dashboard');
   });
 
   test('one way widget title', async function(assert) {
@@ -239,15 +180,13 @@ module('Integration | Component | report actions/add to dashboard', function(hoo
 
     await render(Template);
     await click('.report-control');
+    await fillIn('input.widget-title', 'ChuChu');
 
-    return settled().then(() => {
-      $('input.widget-title')
-        .val('ChuChu')
-        .change();
-      return settled().then(() => {
-        assert.equal(this.get('report.title'), 'Buzz Blob', 'Report Title remains unchanged as `Buzz Blob`');
-        $('.add-to-dashboard-modal .btn.add-to-dashboard').click();
-      });
-    });
+    await selectChoose('.add-to-dashboard-modal', 'Tumblr');
+
+    assert.equal(this.get('report.title'), 'Buzz Blob', 'Report Title remains unchanged as `Buzz Blob`');
+
+    //$('.add-to-dashboard').click();
+    await click('.add-to-dashboard-modal .btn.add-to-dashboard');
   });
 });

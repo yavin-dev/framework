@@ -1,25 +1,22 @@
 import { run } from '@ember/runloop';
 import { helper as buildHelper } from '@ember/component/helper';
-import { get } from '@ember/object';
-import { getOwner } from '@ember/application';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, settled, findAll, find } from '@ember/test-helpers';
+import { render, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import { setupMock, teardownMock } from '../../helpers/mirage-helper';
-import { initialize as extendUserModel } from 'navi-dashboards/initializers/user-model';
 import config from 'ember-get-config';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 module('Integration | Component | navi dashboard', function(hooks) {
   setupRenderingTest(hooks);
+  setupMirage(hooks);
 
-  hooks.beforeEach(function() {
-    extendUserModel();
-    setupMock();
+  hooks.beforeEach(async function() {
+    const { owner } = this;
 
-    this.owner.register('helper:route-action', buildHelper(() => () => {}), { instantiate: false });
+    owner.register('helper:route-action', buildHelper(() => () => {}), { instantiate: false });
 
-    let dashboardModel = {
+    const dashboardModel = {
       title: 'Test Dashboard',
       isUserOwner: true,
       widgets: [1, 2],
@@ -32,124 +29,100 @@ module('Integration | Component | navi dashboard', function(hooks) {
         ],
         columns: 20
       },
-      constructor: {
-        modelName: 'dashboard'
-      }
+      constructor: { modelName: 'dashboard' }
     };
 
     this.set('dashboardModel', dashboardModel);
 
-    return this.owner
-      .lookup('service:user')
-      .findUser()
-      .then(() => {
-        //load metadata into the store
-        return this.owner
-          .lookup('service:bard-metadata')
-          .loadMetadata()
-          .then(() => {
-            // Add some dashboard models to the store
-            run(() => {
-              let store = this.owner.lookup('service:store');
-              store.push({
-                data: [{ id: 1, type: 'dashboard-widget' }, { id: 2, type: 'dashboard-widget' }]
-              });
-            });
-          });
+    await owner.lookup('service:user').findUser();
+    await owner.lookup('service:bard-metadata').loadMetadata();
+
+    // Add some dashboard models to the store
+    run(() => {
+      owner.lookup('service:store').push({
+        data: [{ id: 1, type: 'dashboard-widget' }, { id: 2, type: 'dashboard-widget' }]
       });
+    });
   });
 
-  hooks.afterEach(function() {
-    teardownMock();
-  });
-
-  test('it renders', function(assert) {
+  test('it renders', async function(assert) {
     assert.expect(4);
 
-    return settled().then(async () => {
-      await render(hbs`{{navi-dashboard dashboard=dashboardModel}}`);
+    await render(hbs`{{navi-dashboard dashboard=dashboardModel}}`);
 
-      assert
-        .dom('.page-title')
-        .hasText(this.get('dashboardModel.title'), 'Component renders header with dashboard title');
+    assert.dom('.page-title').hasText(this.dashboardModel.title, 'Component renders header with dashboard title');
 
-      assert
-        .dom('.grid-stack .grid-stack-item')
-        .exists({ count: 2 }, 'Component renders a grid-stack-item for each widget, ignoring ones that do not exist');
+    assert
+      .dom('.grid-stack .grid-stack-item')
+      .exists({ count: 2 }, 'Component renders a grid-stack-item for each widget, ignoring ones that do not exist');
 
-      assert
-        .dom(findAll('.grid-stack .grid-stack-item')[1])
-        .hasAttribute('data-gs-x', 3, 'Widget x position is based on layout');
+    assert
+      .dom(findAll('.grid-stack .grid-stack-item')[1])
+      .hasAttribute('data-gs-x', '3', 'Widget x position is based on layout');
 
-      assert
-        .dom(findAll('.grid-stack .grid-stack-item')[1])
-        .hasAttribute('data-gs-width', 6, 'Widget width is based on layout');
-    });
+    assert
+      .dom(findAll('.grid-stack .grid-stack-item')[1])
+      .hasAttribute('data-gs-width', '6', 'Widget width is based on layout');
   });
 
-  test('widget data', function(assert) {
+  test('widget data', async function(assert) {
     assert.expect(2);
 
-    return settled().then(async () => {
-      let dataForWidget = { 1: 'foo', 2: 'bar' };
-      this.set('dataForWidget', dataForWidget);
+    let dataForWidget = { 1: 'foo', 2: 'bar' };
+    this.set('dataForWidget', dataForWidget);
 
-      await render(hbs`{{navi-dashboard dashboard=dashboardModel dataForWidget=dataForWidget}}`);
-      findAll('.navi-widget').forEach((elm, id) => {
-        let emberId = this.$(elm).attr('id');
-        let component = getOwner(this).lookup('-view-registry:main')[emberId];
-        let widgetId = get(component, 'model.id');
-        let data = get(this, 'data');
+    await render(hbs`{{navi-dashboard dashboard=dashboardModel dataForWidget=dataForWidget}}`);
 
-        assert.equal(data, dataForWidget[widgetId], 'widget gets matching model and data');
-      });
+    const { owner } = this;
+    const components = owner.lookup('-view-registry:main');
+
+    findAll('.navi-widget').forEach(el => {
+      const emberId = el.getAttribute('id');
+      const component = components[emberId].parentView;
+      const { id } = component.model;
+      const { data } = component;
+      assert.equal(data, dataForWidget[id], 'widget gets matching model and data');
     });
   });
 
-  test('dashboard export', function(assert) {
+  test('dashboard export', async function(assert) {
     assert.expect(2);
-    let originalFeatureFlag = config.navi.FEATURES.enableDashboardExport;
+    const originalFeatureFlag = config.navi.FEATURES.enableDashboardExport;
 
-    return settled().then(async () => {
-      config.navi.FEATURES.enableDashboardExport = true;
-      await render(hbs`{{navi-dashboard dashboard=dashboardModel}}`);
+    config.navi.FEATURES.enableDashboardExport = true;
+    await render(hbs`{{navi-dashboard dashboard=dashboardModel}}`);
 
-      assert.ok($('.action.export').is(':visible'), 'Dashboard export button should be visible');
+    assert.dom('.action.export').isVisible('Dashboard export button should be visible');
 
-      config.navi.FEATURES.enableDashboardExport = false;
-      await render(hbs`{{navi-dashboard dashboard=dashboardModel}}`);
-      assert.notOk($('.action.export').is(':visible'), 'Dashboard export button should not be visible');
+    config.navi.FEATURES.enableDashboardExport = false;
+    await render(hbs`{{navi-dashboard dashboard=dashboardModel}}`);
+    assert.dom('.action.export').isNotVisible('Dashboard export button should not be visible');
 
-      config.navi.FEATURES.enableDashboardExport = originalFeatureFlag;
-    });
+    config.navi.FEATURES.enableDashboardExport = originalFeatureFlag;
   });
 
-  test('dashboard schedule - config', function(assert) {
+  test('dashboard schedule - config', async function(assert) {
     assert.expect(2);
-    let originalFeatureFlag = config.navi.FEATURES.enableScheduleDashboards;
+    const originalFeatureFlag = config.navi.FEATURES.enableScheduleDashboards;
 
-    return settled().then(async () => {
-      config.navi.FEATURES.enableScheduleDashboards = true;
-      await render(hbs`{{navi-dashboard dashboard=dashboardModel}}`);
+    config.navi.FEATURES.enableScheduleDashboards = true;
+    await render(hbs`{{navi-dashboard dashboard=dashboardModel}}`);
 
-      assert.ok($('.action.schedule').is(':visible'), 'Dashboard schedule button should be visible');
+    assert.dom('.action.schedule').isVisible('Dashboard schedule button should be visible');
 
-      config.navi.FEATURES.enableScheduleDashboards = false;
-      await render(hbs`{{navi-dashboard dashboard=dashboardModel}}`);
-      assert.notOk($('.action.schedule').is(':visible'), 'Dashboard schedule button should not be visible');
+    config.navi.FEATURES.enableScheduleDashboards = false;
+    await render(hbs`{{navi-dashboard dashboard=dashboardModel}}`);
+    assert.dom('.action.schedule').isNotVisible('Dashboard schedule button should not be visible');
 
-      config.navi.FEATURES.enableScheduleDashboards = originalFeatureFlag;
-    });
+    config.navi.FEATURES.enableScheduleDashboards = originalFeatureFlag;
   });
 
-  test('dashboard schedule - isUserOwner', function(assert) {
+  test('dashboard schedule - isUserOwner', async function(assert) {
     assert.expect(1);
 
-    return settled().then(async () => {
-      this.set('dashboardModel.isUserOwner', false);
+    this.set('dashboardModel.isUserOwner', false);
 
-      await render(hbs`{{navi-dashboard dashboard=dashboardModel}}`);
-      assert.notOk($('.action.schedule').is(':visible'), 'Dashboard schedule button should not be visible');
-    });
+    await render(hbs`{{navi-dashboard dashboard=dashboardModel}}`);
+    assert.dom('.action.schedule').isNotVisible('Dashboard schedule button should not be visible');
   });
 });

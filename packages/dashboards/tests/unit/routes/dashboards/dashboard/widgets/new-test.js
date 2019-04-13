@@ -3,7 +3,7 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { settled } from '@ember/test-helpers';
 import config from 'ember-get-config';
-import { setupMock, teardownMock } from '../../../../../helpers/mirage-helper';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 const defaultDataTable = get(config, 'navi.defaultDataTable');
 const NEW_MODEL = {
@@ -26,8 +26,7 @@ const NEW_MODEL = {
       metrics: [],
       having: [],
       sort: [],
-      requestVersion: 'v1',
-      responseFormat: 'json'
+      requestVersion: 'v1'
     }
   ],
   title: 'Untitled Widget',
@@ -53,12 +52,10 @@ let Store, Route;
 
 module('Unit | Route | dashboards/dashboard/widgets/new', function(hooks) {
   setupTest(hooks);
+  setupMirage(hooks);
 
-  hooks.beforeEach(function() {
-    setupMock();
-
+  hooks.beforeEach(async function() {
     Store = this.owner.lookup('service:store');
-
     Route = this.owner.factoryFor('route:dashboards/dashboard/widgets/new').create({
       modelFor: () =>
         Store.createRecord('dashboard', {
@@ -69,16 +66,14 @@ module('Unit | Route | dashboards/dashboard/widgets/new', function(hooks) {
 
     set(config, 'navi.defaultDataTable', 'tableA');
 
-    return this.owner.lookup('service:bard-metadata').loadMetadata();
+    await this.owner.lookup('service:bard-metadata').loadMetadata();
   });
 
   hooks.afterEach(function() {
     set(config, 'navi.defaultDataTable', defaultDataTable);
-
-    teardownMock();
   });
 
-  test('model', function(assert) {
+  test('model', async function(assert) {
     assert.expect(2);
 
     return settled().then(() => {

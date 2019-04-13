@@ -24,14 +24,6 @@ module('Unit | Mixin | routes/report to widget', function() {
         /* == Mock Data == */
         modelFor: () => reportModel,
 
-        store: {
-          createRecord() {
-            return {
-              tempId: tempWidgetId
-            };
-          }
-        },
-
         /* == Transition Asserts == */
         transitionTo(route, id, { queryParams }) {
           assert.equal(
@@ -45,7 +37,13 @@ module('Unit | Mixin | routes/report to widget', function() {
           assert.equal(queryParams.unsavedWidgetId, tempWidgetId, "Widget's temporary id is passed as a query param");
         }
       }),
-      subject = RouteObject.create();
+      subject = RouteObject.create({
+        store: {
+          createRecord() {
+            return { tempId: tempWidgetId };
+          }
+        }
+      });
 
     // Trigger the action
     subject.send('addToDashboard', dashboardId, 'Test Title');
@@ -69,14 +67,6 @@ module('Unit | Mixin | routes/report to widget', function() {
         /* == Mock Data == */
         modelFor: () => reportModel,
 
-        store: {
-          createRecord() {
-            return {
-              tempId: tempWidgetId
-            };
-          }
-        },
-
         /* == Transition Asserts == */
         transitionTo(route, { queryParams }) {
           assert.equal(route, 'dashboards.new', 'addToNewDashboard action transitions to new dashboard route');
@@ -86,7 +76,13 @@ module('Unit | Mixin | routes/report to widget', function() {
           assert.equal(queryParams.unsavedWidgetId, tempWidgetId, "Widget's temporary id is passed as a query param");
         }
       }),
-      subject = RouteObject.create();
+      subject = RouteObject.create({
+        store: {
+          createRecord() {
+            return { tempId: tempWidgetId };
+          }
+        }
+      });
 
     // Trigger the action
     subject.send('addToNewDashboard', 'Custom Dashboard Title', 'Test Title');
@@ -108,8 +104,9 @@ module('Unit | Mixin | routes/report to widget', function() {
       },
       RouteObject = Route.extend(ReportToWidgetMixin, {
         /* == Mock Data == */
-        modelFor: () => reportModel,
-
+        modelFor: () => reportModel
+      }),
+      subject = RouteObject.create({
         /* == Store Asserts == */
         store: {
           createRecord(type, record) {
@@ -134,8 +131,7 @@ module('Unit | Mixin | routes/report to widget', function() {
             };
           }
         }
-      }),
-      subject = RouteObject.create();
+      });
 
     subject._createWidget('Test Title');
   });

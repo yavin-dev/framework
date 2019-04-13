@@ -121,14 +121,18 @@ module('Unit | Route | dashboards/dashboard', function(hooks) {
   test('didUpdateLayout - user can edit', function(assert) {
     assert.expect(1);
 
+    const currentDashboard = {
+      canUserEdit: true,
+      save: () => resolve()
+    };
+
     Route.reopen({
       _updateLayout() {
         return;
       },
-      currentDashboard: {
-        canUserEdit: true,
-        save: () => resolve()
-      },
+
+      currentDashboard,
+
       _saveDashboardFn() {
         assert.ok(true, '_saveDashboardFn method is called when user can edit');
       }
@@ -141,13 +145,14 @@ module('Unit | Route | dashboards/dashboard', function(hooks) {
   test('didUpdateLayout - user cannot edit', function(assert) {
     assert.expect(1);
 
+    const currentDashboard = { canUserEdit: false };
     Route.reopen({
       _updateLayout() {
         return;
       },
-      currentDashboard: {
-        canUserEdit: false
-      },
+
+      currentDashboard,
+
       _saveDashboardFn() {
         assert.ok(false, 'Error: _saveDashboardFn method when user cannot edit');
       }
@@ -163,16 +168,19 @@ module('Unit | Route | dashboards/dashboard', function(hooks) {
 
     return run(() => {
       return Route.store.findRecord('dashboard', 1).then(dashboard => {
+        const naviNotifications = {
+          add({ message }) {
+            assert.equal(
+              message,
+              'Widget "Mobile DAU Graph" deleted successfully!',
+              'A notification is sent containing the widget title'
+            );
+          }
+        };
+
         Route.reopen(mockModelFor(dashboard), {
-          naviNotifications: {
-            add({ message }) {
-              assert.equal(
-                message,
-                'Widget "Mobile DAU Graph" deleted successfully!',
-                'A notification is sent containing the widget title'
-              );
-            }
-          },
+          naviNotifications,
+
           _saveDashboardFn() {
             assert.ok(true, 'Dashboard is saved after layout update');
           },
@@ -215,17 +223,16 @@ module('Unit | Route | dashboards/dashboard', function(hooks) {
 
     return run(() => {
       return Route.store.findRecord('dashboard', 1).then(dashboard => {
-        Route.reopen(mockModelFor(dashboard), {
-          naviNotifications: {
-            add({ message }) {
-              assert.equal(
-                message,
-                'OOPS! An error occurred while deleting widget "Mobile DAU Graph"',
-                'A notification is sent containing the widget title'
-              );
-            }
+        const naviNotifications = {
+          add({ message }) {
+            assert.equal(
+              message,
+              'OOPS! An error occurred while deleting widget "Mobile DAU Graph"',
+              'A notification is sent containing the widget title'
+            );
           }
-        });
+        };
+        Route.reopen(mockModelFor(dashboard), { naviNotifications });
 
         // Make sure necessary widget is prefetched
         return dashboard.get('widgets').then(() => {
