@@ -8,7 +8,7 @@ import { A } from '@ember/array';
 import { inject as service } from '@ember/service';
 import { computed, get } from '@ember/object';
 import DS from 'ember-data';
-import { fragment } from 'ember-data-model-fragments/attributes';
+import { fragment, fragmentArray } from 'ember-data-model-fragments/attributes';
 import DeliverableItem from 'navi-core/models/deliverable-item';
 import config from 'ember-get-config';
 import { validator, buildValidations } from 'ember-cp-validations';
@@ -29,6 +29,7 @@ export default DeliverableItem.extend(Validations, {
   createdOn: DS.attr('moment'),
   updatedOn: DS.attr('moment'),
   widgets: DS.hasMany('dashboard-widget', { async: true }),
+  filters: fragmentArray('bard-request/fragments/filter', { defaultValue: [] }),
   presentation: fragment('fragments/presentation', {
     defaultValue: () => {
       return {};

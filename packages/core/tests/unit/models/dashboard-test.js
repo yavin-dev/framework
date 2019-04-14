@@ -11,6 +11,7 @@ module('Unit | Model | dashboard', function(hooks) {
   hooks.beforeEach(function() {
     Store = this.owner.lookup('service:store');
     setupMock();
+    this.owner.lookup('service:bard-metadata').loadMetadata();
     return this.owner.lookup('service:user').findUser();
   });
 
@@ -37,7 +38,15 @@ module('Unit | Model | dashboard', function(hooks) {
               { column: 0, row: 6, height: 5, width: 9, widgetId: 5 }
             ],
             columns: 40
-          }
+          },
+          filters: [
+            {
+              dimension: 'property',
+              field: 'id',
+              operator: 'in',
+              values: ['114', '100001']
+            }
+          ]
         },
         'dashboard record with id 2 is found in the store'
       );
