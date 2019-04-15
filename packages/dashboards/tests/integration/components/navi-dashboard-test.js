@@ -38,10 +38,10 @@ module('Integration | Component | navi dashboard', function(hooks) {
     await owner.lookup('service:bard-metadata').loadMetadata();
 
     // Add some dashboard models to the store
+    const store = owner.lookup('service:store');
     run(() => {
-      owner.lookup('service:store').push({
-        data: [{ id: 1, type: 'dashboard-widget' }, { id: 2, type: 'dashboard-widget' }]
-      });
+      store.createRecord('dashboard-widget', { id: 1, visualization: { type: 'table' } });
+      store.createRecord('dashboard-widget', { id: 2, visualization: { type: 'table' } });
     });
   });
 

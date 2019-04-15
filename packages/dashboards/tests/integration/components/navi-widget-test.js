@@ -25,15 +25,15 @@ module('Integration | Component | navi widget', function(hooks) {
     this.owner.register('helper:route-action', buildHelper(() => {}), {
       instantiate: false
     });
+
+    // Mock a visualization component
+    this.owner.register('component:navi-visualizations/my-test-visualization', Component.extend());
   });
 
   test('it renders', async function(assert) {
     assert.expect(7);
 
     let dataPromise = defer();
-
-    // Mock a visualization component
-    this.owner.register('component:navi-visualizations/my-test-visualization', Component.extend());
 
     this.set('widgetModel', WIDGET);
 

@@ -28,14 +28,14 @@
   </div>
 
   {{!-- Loading --}}
-  {{#if data.isPending}}
+  {{#if (is-pending data)}}
     <div class="navi-widget__content loader-container">
       {{navi-loader}}
     </div>
   {{/if}}
 
   {{!-- Error --}}
-  {{#if data.isRejected}}
+  {{#if (is-rejected data)}}
     {{#if (is-forbidden data.reason)}}
       {{unauthorized-table report=model}}
     {{else}}
@@ -46,7 +46,7 @@
   {{/if}}
 
   {{!-- Success --}}
-  {{#if data.isFulfilled}}
+  {{#if (is-fulfilled data)}}
     <div class="navi-widget__content visualization-container">
       {{component
         (concat visualizationPrefix model.visualization.type)
