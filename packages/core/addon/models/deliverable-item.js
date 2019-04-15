@@ -26,11 +26,8 @@ export default DS.Model.extend({
   deliveryRuleForUser: computed('user', 'deliveryRules.[]', function() {
     let userId = get(get(this, 'user').getUser(), 'id');
 
-    return DS.PromiseObject.create({
-      promise: get(this, 'deliveryRules').then(rules =>
-        arr(rules.filter(rule => rule.get('owner.id') === userId)).get('firstObject')
-      ),
-      reason: 'Unable to fetch delivery rule'
-    });
+    return get(this, 'deliveryRules').then(rules =>
+      arr(rules.filter(rule => rule.get('owner.id') === userId)).get('firstObject')
+    );
   })
 });

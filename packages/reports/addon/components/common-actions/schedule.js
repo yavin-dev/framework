@@ -10,8 +10,7 @@
  * }}
  */
 
-import { alias } from '@ember/object/computed';
-
+import { oneWay } from '@ember/object/computed';
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
 import layout from '../../templates/components/common-actions/schedule';
@@ -46,16 +45,12 @@ export default Component.extend({
   /**
    * @property {DS.Model} deliveryRule - deliveryRule for the current user
    */
-  deliveryRule: computed('model.deliveryRuleForUser.isFulfilled', function() {
-    return get(this, 'model.deliveryRuleForUser');
-  }),
+  deliveryRule: undefined,
 
   /**
    * @property {DS.Model} localDeliveryRule - Model that stores the values of the modal's fields
    */
-  localDeliveryRule: computed('deliveryRule.isFulfilled', function() {
-    return get(this, 'deliveryRule.content') || this._createNewDeliveryRule();
-  }),
+  localDeliveryRule: undefined,
 
   /**
    * @property {Array} frequencies
@@ -83,7 +78,7 @@ export default Component.extend({
   /**
    * @property {Boolean} isRuleValid
    */
-  isRuleValid: alias('localDeliveryRule.validations.isValid'),
+  isRuleValid: oneWay('localDeliveryRule.validations.isValid'),
 
   /**
    * @property {Boolean} disableSave
@@ -166,6 +161,9 @@ export default Component.extend({
 
       return deletePromise
         .then(() => {
+          //Make sure there is no more local rule after deletion
+          set(this, 'localDeliveryRule', undefined);
+
           //Add Page notification
           get(this, 'naviNotifications').add({
             message: `Delivery schedule successfully removed!`,
@@ -180,6 +178,22 @@ export default Component.extend({
             type: 'danger',
             timeout: 'short'
           });
+        });
+    },
+
+    /**
+     * @action onOpen
+     */
+    onOpen() {
+      //Kick off a fetch for existing delivery rules
+      set(this, 'deliveryRule', get(this, 'model.deliveryRuleForUser'));
+
+      get(this, 'deliveryRule')
+        .then(rule => {
+          set(this, 'localDeliveryRule', rule ? rule : get(this, 'localDeliveryRule') || this._createNewDeliveryRule());
+        })
+        .catch(() => {
+          set(this, 'localDeliveryRule', this._createNewDeliveryRule());
         });
     },
 

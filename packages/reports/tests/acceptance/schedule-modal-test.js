@@ -1,7 +1,7 @@
 // jquery is still needed until ember-tag-input test helper typeInInput behaves with triggerEvent
 /* eslint ember/no-global-jquery: 1 */
-import { find, click, findAll, blur, visit, triggerEvent } from '@ember/test-helpers';
-import { module, test, skip } from 'qunit';
+import { find, click, findAll, blur, visit, triggerEvent, waitFor } from '@ember/test-helpers';
+import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { teardownModal } from '../helpers/teardown-modal';
 import { findContains } from '../helpers/contains-helpers';
@@ -57,6 +57,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
 
     //Save the schedule
     await click('.schedule-modal__save-btn');
+    await waitFor('.notification-text');
 
     assert
       .dom('.success .notification-text')
@@ -100,6 +101,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
 
     //Save the schedule
     await click('.schedule-modal__save-btn');
+    await waitFor('.notification-text');
 
     assert
       .dom('.notification-text ')
@@ -334,9 +336,10 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
 
     //Attempt to save the schedule now that recipients is valid
     await click('.schedule-modal__save-btn');
+    await waitFor('.notification-text');
 
     assert
-      .dom('.notification-text ')
+      .dom('.notification-text')
       .hasText(
         'Report delivery schedule successfully saved!',
         'Successful notification is shown after clicking save and the schedule is valid'
@@ -349,7 +352,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
     );
   });
 
-  skip('schedule modal error when fetching existing schedule', async function(assert) {
+  test('schedule modal error when fetching existing schedule', async function(assert) {
     assert.expect(6);
 
     //suppress errors and exceptions for this test because 500 response will throw an error
@@ -364,6 +367,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
     await visit('/reports');
     await triggerEvent('.navi-collection__row2', 'mouseover');
     await click('.navi-collection__row2 .schedule .btn');
+    await waitFor('.modal-notification');
 
     assert
       .dom('.schedule-modal__notification.modal-notification.alert.failure')
@@ -433,6 +437,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
 
     //Save the schedule
     await click('.schedule-modal__save-btn');
+    await waitFor('.notification-text');
 
     assert.equal(
       find('.failure .notification-text').innerText.trim(),
@@ -446,12 +451,14 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
 
     //Save the schedule
     await click('.schedule-modal__save-btn');
+    await waitFor('.notification-text');
 
-    assert.equal(
-      find('.failure .notification-text').innerText.trim(),
-      'Oops! There was an error updating your delivery settings',
-      'failing notification is shown if server returns 500'
-    );
+    assert
+      .dom('.failure .notification-text')
+      .includesText(
+        'Oops! There was an error updating your delivery settings',
+        'failing notification is shown if server returns 500'
+      );
 
     Ember.Logger.error = originalLoggerError;
     Ember.Test.adapter.exception = originalException;

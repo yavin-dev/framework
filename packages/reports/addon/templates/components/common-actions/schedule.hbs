@@ -1,7 +1,7 @@
 {{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 
 {{!-- Check if in need of disabling the button when the action should be disabled --}}
-<button class='schedule-action__button btn' disabled={{disabled}}  onclick={{toggle 'showModal' this}}>
+<button class='schedule-action__button btn' disabled={{disabled}}  onclick={{pipe (toggle 'showModal' this) (action 'onOpen')}}>
     {{navi-icon 'clock-o' class='schedule-action__icon'}}
     {{#if hasBlock}}
         <span class='schedule-action__icon-label'>{{yield}}</span>
@@ -14,7 +14,7 @@
 }}
     <div class='schedule-modal__header navi-modal-header'>
         <h1 class='schedule-modal__header--primary primary-header'>Schedule "{{capitalize model.title}}"</h1>
-        {{#if deliveryRule.isRejected}}
+        {{#if (is-rejected deliveryRule)}}
             <div class='schedule-modal__notification modal-notification alert failure'>
                 {{navi-icon 'exclamation-circle'}}
                 <div class='notification-text'>Oops! An error occurred while fetching the schedule for this {{localDeliveryRule.deliveryType}}.</div>
@@ -30,17 +30,18 @@
             {{/if}}
         {{/if}}
     </div>
-    {{#if deliveryRule.isPending}}
+    
+    {{#if (is-pending deliveryRule)}}
         {{navi-loader}}
     {{else}}
         <form class='schedule-modal__body navi-modal-body'>
             <fieldset class='{{if (not isRuleValid) 'schedule-modal__recipients--invalid'}} schedule-modal__section'>
                 <div class='schedule-modal__label'>Recipients</div>
                 {{navi-email-input
-                     class='schedule-modal__input--recipients text-input'
-                     emails=(readonly localDeliveryRule.recipients)
-                     onUpdateEmails=(action 'updateRecipients')
-                     isDisabled=deliveryRule.isRejected
+                    class='schedule-modal__input--recipients text-input'
+                    emails=(readonly localDeliveryRule.recipients)
+                    onUpdateEmails=(action 'updateRecipients')
+                    isDisabled=(is-rejected deliveryRule)
                 }}
                 <div class='schedule-modal__helper-recipients'>
                     Please enter valid email addresses separated by commas.
@@ -54,7 +55,7 @@
                         options=frequencies
                         renderInPlace=true
                         selected=localDeliveryRule.frequency
-                        disabled=deliveryRule.isRejected
+                        disabled=(is-rejected deliveryRule)
                         searchEnabled=false
                         tagName='div'
                         onchange=(action (mut localDeliveryRule.frequency))
@@ -82,7 +83,7 @@
             </div>
             <div class='schedule-modal__btn-container btn-container'>
                 <div class='button-group'>
-                {{#if deliveryRule.isRejected}}
+                {{#if (is-rejected deliveryRule)}}
                     <button
                         class='schedule-modal__cancel-btn btn btn-primary'
                         onclick={{pipe (action 'closeModal') (action onRevert localDeliveryRule)}}
@@ -129,7 +130,7 @@
                         warnMsg=(concat 'Are you sure you want to delete the schedule for this' localDeliveryRule.deliveryType)
                         deleteAction=(pipe (action 'onDelete') (action 'closeModal'))
                     }}
-                      Delete
+                    Delete
                     {{/common-actions/delete}}
                 {{/unless}}
                 </div>
