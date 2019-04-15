@@ -1,4 +1,4 @@
-import { click, find, findAll, visit } from '@ember/test-helpers';
+import { blur, click, find, findAll, visit } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { teardownModal } from '../helpers/teardown-modal';
@@ -49,7 +49,7 @@ module('Acceptances | Navi Dashboard Schedule Modal', function(hooks) {
       'Format field is set to the default value when creating a new schedule'
     );
     typeInInput('.js-ember-tag-input-new', 'navi_user@navi.io');
-    $('.js-ember-tag-input-new').blur();
+    await blur('.js-ember-tag-input-new');
 
     // Set frequency to Day
     await click('.schedule-modal__dropdown--frequency .ember-power-select-trigger');

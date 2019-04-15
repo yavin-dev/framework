@@ -8,8 +8,6 @@ import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import { Response } from 'ember-cli-mirage';
 import { selectChoose } from 'ember-power-select/test-support';
 import $ from 'jquery';
-import { getContext } from 'ember-test-helpers';
-import { buttonContains } from '../helpers/contains-helpers';
 
 let OriginalLoggerError, OriginalTestAdapterException;
 
@@ -61,7 +59,7 @@ module('Acceptance | Dashboards', function(hooks) {
 
     await visit('/dashboards/1');
 
-    const route = getContext().owner.lookup('route:dashboards.dashboard');
+    const route = this.owner.lookup('route:dashboards.dashboard');
     const layout = route.currentDashboard.presentation.layout;
 
     assert.deepEqual(
@@ -138,7 +136,7 @@ module('Acceptance | Dashboards', function(hooks) {
       .hasText('Share "Tumblr Goals Dashboard"', 'Share modal pops up when action is clicked');
 
     // Cancel modal and click "Delete"
-    await click(buttonContains('Cancel'));
+    await click($('button:contains(Cancel)')[0]);
     await click('.navi-collection__row:first-of-type .delete button');
 
     assert
@@ -146,7 +144,7 @@ module('Acceptance | Dashboards', function(hooks) {
       .hasText('Delete "Tumblr Goals Dashboard"', 'Delete modal pops up when action is clicked');
 
     // Cancel modal and click "Clone"
-    await click(buttonContains('Cancel'));
+    await click($('button:contains(Cancel)')[0]);
     await click('.navi-icon__copy');
 
     assert.equal(currentURL(), '/dashboards/6/view', 'A dashboard is cloned when the action is clicked');
@@ -231,29 +229,27 @@ test('Delete a dashboard', function(assert) {
 
     await visit('/dashboards');
 
-    const titles = findAll('.navi-collection .table tr td:first-of-type').map(el => el.textContent.trim());
+    const initialTitles = findAll('.navi-collection .table tr td:first-of-type').map(el => el.textContent.trim());
 
     assert.deepEqual(
-      titles,
+      initialTitles,
       ['Tumblr Goals Dashboard', 'Dashboard 2', 'Empty Dashboard'],
       '`navi-user`s dashboard are shown '
     );
 
     await visit('/dashboards/2');
 
-    click('.dashboard-actions .delete > button').then(function() {
-      click('button:contains(Confirm)').then(function() {
-        assert.equal(currentURL(), '/dashboards', 'Deleting a dashboard transitions to index route');
+    await click('.dashboard-actions .delete > button');
+    await click($('button:contains(Confirm)')[0]);
+    assert.equal(currentURL(), '/dashboards', 'Deleting a dashboard transitions to index route');
 
-        const titles = findAll('.navi-collection .table tr td:first-of-type').map(el => $(el).textContent.trim());
+    const newTitles = findAll('.navi-collection .table tr td:first-of-type').map(el => el.textContent.trim());
 
-        assert.deepEqual(
-          titles,
-          ['Tumblr Goals Dashboard', 'Empty Dashboard'],
-          '`navi-user`s dashboard are shown after deleting `Dashboard 2`'
-        );
-      });
-    });
+    assert.deepEqual(
+      newTitles,
+      ['Tumblr Goals Dashboard', 'Empty Dashboard'],
+      '`navi-user`s dashboard are shown after deleting `Dashboard 2`'
+    );
   });
 
   test('favorite dashboards', async function(assert) {
@@ -265,17 +261,17 @@ test('Delete a dashboard', function(assert) {
 
     // Filter by favorites
     await visit('/dashboards');
-    await click('.pick-form li:contains(Favorites)');
+    await click($('.pick-form li:contains(Favorites)')[0]);
 
     const dashboardBefore = findAll('tbody tr td:first-of-type').map(el => el.textContent.trim());
 
     assert.deepEqual(dashboardBefore, ['Tumblr Goals Dashboard', 'Dashboard 2'], 'Two dashboards are in favories now');
 
     // Unfavorite dashboard 1
-    await click('tbody tr td a:contains(Tumblr Goals Dashboard)');
+    await click($('tbody tr td a:contains(Tumblr Goals Dashboard)')[0]);
     await click('.navi-dashboard__fav-icon');
     await visit('/dashboards');
-    await click('.pick-form li:contains(Favorites)');
+    await click($('.pick-form li:contains(Favorites)')[0]);
 
     const dashboardsAfter = findAll('tbody tr td:first-of-type').map(el => el.textContent.trim());
 
@@ -296,7 +292,7 @@ test('Delete a dashboard', function(assert) {
 
     /* == list favorites in list view == */
     await visit('/dashboards');
-    await click('.pick-form li:contains(Favorites)');
+    await click($('.pick-form li:contains(Favorites)')[0]);
 
     const listedDashboards = findAll('tbody tr td:first-of-type').map(el => el.textContent.trim());
 
@@ -364,7 +360,7 @@ test('Delete a dashboard', function(assert) {
     await click('.add-widget-modal .add-to-dashboard');
 
     // Fill out request
-    await click('.checkbox-selector--metric .grouped-list__item:contains(Total Clicks) label');
+    await click($('.checkbox-selector--metric .grouped-list__item:contains(Total Clicks) label')[0]);
     await click('.navi-report-widget__run-btn');
     // Regex to check that a string ends with "{uuid}/view"
     const TempIdRegex = /\/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\/view$/;
@@ -396,7 +392,7 @@ test('Delete a dashboard', function(assert) {
 
     // Create and save
     await visit('/dashboards/1/widgets/new');
-    await click('.checkbox-selector--metric .grouped-list__item:contains(Total Clicks) label');
+    await click($('.checkbox-selector--metric .grouped-list__item:contains(Total Clicks) label')[0]);
     await click('.navi-report-widget__run-btn');
     await click('.navi-report-widget__save-btn');
     assert.ok(
@@ -428,11 +424,6 @@ test('Delete a dashboard', function(assert) {
 
   test('Unauthorized widget', async function(assert) {
     assert.expect(2);
-    // Allow testing of errors - https://github.com/emberjs/ember.js/issues/11469
-    OriginalLoggerError = Ember.Logger.error;
-    OriginalTestAdapterException = Ember.Test.adapter.exception;
-    Ember.Logger.error = function() {};
-    Ember.Test.adapter.exception = function() {};
 
     server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
     server.get('/data/network/day/os', function() {
@@ -440,17 +431,15 @@ test('Delete a dashboard', function(assert) {
     });
 
     await visit('/dashboards/2/view');
-    assert.ok(
-      find('.navi-widget:eq(0) .navi-widget__content').hasClass('visualization-container'),
-      'Widget loaded visualization for allowed component'
-    );
+    assert
+      .dom('[data-gs-id="4"] .navi-widget__content')
+      .hasClass('visualization-container', 'Widget shows visualization for authorized table');
 
-    assert.ok(
-      find('.navi-widget:eq(1) .navi-report-invalid__info-message .fa-lock').is(':visible'),
-      'Unauthorized widget loaded unauthorized component'
-    );
-
-    Ember.Logger.error = OriginalLoggerError;
-    Ember.Test.adapter.exception = OriginalTestAdapterException;
+    assert
+      .dom('[data-gs-id="5"]')
+      .includesText(
+        'You do not have access to run queries against Network',
+        'Unauthorized widget loaded unauthorized component'
+      );
   });
 });
