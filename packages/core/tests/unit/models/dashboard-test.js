@@ -8,11 +8,11 @@ let Store;
 module('Unit | Model | dashboard', function(hooks) {
   setupTest(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(async function() {
     Store = this.owner.lookup('service:store');
     setupMock();
-    this.owner.lookup('service:bard-metadata').loadMetadata();
-    return this.owner.lookup('service:user').findUser();
+    await this.owner.lookup('service:bard-metadata').loadMetadata();
+    await this.owner.lookup('service:user').findUser();
   });
 
   hooks.afterEach(function() {
