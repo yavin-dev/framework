@@ -25,6 +25,14 @@ export default [
     createdOn: '2016-02-01 00:00:00',
     updatedOn: '2016-02-01 00:00:00',
     deliveryRuleIds: [3],
+    filters: [
+      {
+        dimension: 'property',
+        operator: 'in',
+        field: 'id',
+        values: ['114', '100001']
+      }
+    ],
     presentation: {
       version: 1,
       layout: [

@@ -7,19 +7,32 @@ let Route;
 
 moduleFor('route:dashboards/index', 'Unit | Route | dashboards/index', {
   needs: [
+    'adapter:bard-metadata',
     'adapter:dashboard',
     'adapter:user',
-    'model:dashboard',
+    'model:bard-request/fragments/filter',
     'model:dashboard-widget',
+    'model:dashboard',
     'model:deliverable-item',
     'model:delivery-rule',
     'model:fragments/presentation',
+    'model:metadata/dimension',
+    'model:metadata/metric',
+    'model:metadata/table',
+    'model:metadata/time-grain',
     'model:report',
     'model:user',
+    'serializer:bard-metadata',
+    'serializer:bard-request/fragments/filter',
     'serializer:dashboard',
+    'serializer:user',
+    'service:ajax',
+    'service:bard-metadata',
+    'service:keg',
     'service:navi-notifications',
     'service:user',
-    'serializer:user',
+    'transform:dimension',
+    'transform:fragment-array',
     'transform:fragment',
     'transform:moment',
     'validator:presence'
@@ -27,6 +40,7 @@ moduleFor('route:dashboards/index', 'Unit | Route | dashboards/index', {
   beforeEach() {
     setupMock();
     initializeUserModel();
+    this.container.lookup('service:bard-metadata').loadMetadata();
     Route = this.subject();
   },
   afterEach() {
