@@ -1,7 +1,7 @@
 import { click, findAll, visit } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
-import { findContains } from '../helpers/contains-helpers';
+import $ from 'jquery';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 module('Acceptance | navi-report - metric parameters', function(hooks) {
@@ -18,13 +18,13 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
     await visit('/reports/1/view');
 
     assert.ok(
-      !!findContains('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .metric-config'),
+      !!$('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .metric-config').length,
       'Revenue metric has the metric config icon since it has parameters'
     );
 
     //adding a metric with default params
     await click(
-      findContains('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .grouped-list__item-label')
+      $('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .grouped-list__item-label')[0]
     );
 
     assert
@@ -44,7 +44,7 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
     //adding another param for the same metric
     await click('.metric-config__dropdown-container .navi-list-selector__show-link');
     await click(
-      findContains('.metric-config__dropdown-container .grouped-list__item:contains(Euro) .grouped-list__item-label')
+      $('.metric-config__dropdown-container .grouped-list__item:contains(Euro) .grouped-list__item-label')[0]
     );
     await click('.metric-config__dropdown-container .navi-list-selector__show-link');
 
@@ -57,9 +57,7 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
     //closing and reopening dropdown does not affect the selected params
     await click('.metric-config__dropdown-container .metric-config__done-btn');
     await click(
-      findContains(
-        '.report-builder__metric-selector .grouped-list__item:contains(Revenue) .metric-config__trigger-icon'
-      )
+      $('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .metric-config__trigger-icon')[0]
     );
     await click('.metric-config__dropdown-container .navi-list-selector__show-link');
 
@@ -74,12 +72,10 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
 
     //removing the metric
     await click(
-      findContains('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .grouped-list__item-label')
+      $('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .grouped-list__item-label')[0]
     );
     await click(
-      findContains(
-        '.report-builder__metric-selector .grouped-list__item:contains(Revenue) .metric-config__trigger-icon'
-      )
+      $('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .metric-config__trigger-icon')[0]
     );
 
     assert
@@ -93,7 +89,7 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
     await visit('/reports/1/view');
     //add revenue (metric with params)
     await click(
-      findContains('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .grouped-list__item-label')
+      $('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .grouped-list__item-label')[0]
     );
     assert
       .dom('.metric-config__dropdown-container')
@@ -106,7 +102,7 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
       .isNotVisible('The metric config dropdown container is closed when the done button is clicked');
 
     //remove revenue
-    await click(findContains('.grouped-list__item:contains(Revenue) .grouped-list__item-label'));
+    await click($('.grouped-list__item:contains(Revenue) .grouped-list__item-label')[0]);
     assert
       .dom('.metric-config__dropdown-container')
       .isNotVisible('The metric config dropdown container remains closed when the metric is removed');
@@ -117,10 +113,10 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
 
     await visit('/reports/1/view');
     await click(
-      findContains('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .grouped-list__item-label')
+      $('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .grouped-list__item-label')[0]
     );
     await click(
-      findContains('.metric-config__dropdown-container .grouped-list__item:contains(EUR) .metric-config__filter-icon')
+      $('.metric-config__dropdown-container .grouped-list__item:contains(EUR) .metric-config__filter-icon')[0]
     );
     await click('.metric-config__dropdown-container .navi-list-selector__show-link');
 
@@ -130,10 +126,7 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
       'The filtered parameter is also selected'
     );
 
-    assert.ok(
-      !!findContains('.filter-builder__subject:contains(EUR)'),
-      'The parameterized metric is added as a filter'
-    );
+    assert.ok(!!$('.filter-builder__subject:contains(EUR)'), 'The parameterized metric is added as a filter');
   });
 
   test('metric filter config', async function(assert) {
@@ -141,39 +134,35 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
 
     await visit('/reports/1/view');
     await click(
-      findContains('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .grouped-list__item-label')
+      $('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .grouped-list__item-label')[0]
     );
+    await click($('.metric-config__dropdown-container .grouped-list__item:contains(AUD) .grouped-list__item-label')[0]);
+    await click($('.metric-config__dropdown-container .grouped-list__item:contains(CAD) .grouped-list__item-label')[0]);
     await click(
-      findContains('.metric-config__dropdown-container .grouped-list__item:contains(AUD) .grouped-list__item-label')
-    );
-    await click(
-      findContains('.metric-config__dropdown-container .grouped-list__item:contains(CAD) .grouped-list__item-label')
-    );
-    await click(
-      findContains('.metric-config__dropdown-container .grouped-list__item:contains(EUR) .metric-config__filter-icon')
+      $('.metric-config__dropdown-container .grouped-list__item:contains(EUR) .metric-config__filter-icon')[0]
     );
     await click('.metric-config__dropdown-container .navi-list-selector__show-link');
 
     assert.ok(
-      !!findContains('.filter-builder__subject:contains(EUR) .metric-filter-config__trigger-icon'),
+      !!$('.filter-builder__subject:contains(EUR) .metric-filter-config__trigger-icon').length,
       'The metric config trigger icon is rendered next to the parameterized filter'
     );
 
-    await click(findContains('.filter-builder__subject:contains(EUR) .metric-filter-config__trigger-icon'));
+    await click($('.filter-builder__subject:contains(EUR) .metric-filter-config__trigger-icon')[0]);
     assert.deepEqual(
       findAll('.metric-filter-config__item').map(el => el.innerText.trim()),
       ['USD', 'AUD', 'CAD'],
       'Only the non filtered parameters from the list of selected metrics are shown in the filter config list'
     );
 
-    await click(findContains('.metric-filter-config__item:contains(USD)'));
+    await click($('.metric-filter-config__item:contains(USD)')[0]);
     assert.equal(
-      findContains('.filter-builder__subject:contains(Revenue)').innerText.trim(),
+      $('.filter-builder__subject:contains(Revenue)')[0].innerText.trim(),
       'Platform Revenue (USD)',
       'The Euro parameter is updated to USD'
     );
 
-    await click(findContains('.filter-builder__subject:contains(USD) .metric-filter-config__trigger-icon'));
+    await click($('.filter-builder__subject:contains(USD) .metric-filter-config__trigger-icon')[0]);
     assert.deepEqual(
       findAll('.metric-filter-config__item').map(el => el.innerText.trim()),
       ['AUD', 'CAD', 'EUR'],
@@ -186,15 +175,13 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
 
     await visit('/reports/1/view');
     await click(
-      findContains('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .grouped-list__item-label')
+      $('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .grouped-list__item-label')[0]
     );
-    await click(
-      findContains('.metric-config__dropdown-container .grouped-list__item:contains(AUD) .grouped-list__item-label')
-    );
+    await click($('.metric-config__dropdown-container .grouped-list__item:contains(AUD) .grouped-list__item-label')[0]);
     await click('.metric-config__dropdown-container .metric-config__done-btn');
 
     await click(
-      findContains('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .metric-selector__filter')
+      $('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .metric-selector__filter')[0]
     );
     assert.equal(
       findAll('.filter-builder__subject').filter(el => el.innerText.includes('Revenue')).length,
@@ -203,7 +190,7 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
     );
 
     await click(
-      findContains('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .metric-selector__filter')
+      $('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .metric-selector__filter')[0]
     );
     assert.equal(
       findAll('.filter-builder__subject').filter(el => el.innerText.includes('Revenue')).length,
@@ -220,7 +207,7 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
     );
 
     await click(
-      findContains('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .metric-selector__filter')
+      $('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .metric-selector__filter')[0]
     );
     assert.equal(
       findAll('.filter-builder__subject').filter(el => el.innerText.includes('Revenue')).length,
@@ -234,9 +221,7 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
     await visit('/reports/11/view');
 
     await click('.report-builder__metric-selector .navi-list-selector__show-link');
-    await click(
-      findContains('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .metric-config > div')
-    );
+    await click($('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .metric-config > div')[0]);
 
     const options = findAll('.metric-config__dropdown-container .grouped-list__item');
     assert.ok(options.length > 0, 'Metric options should render');

@@ -1,4 +1,4 @@
-import { click, findAll, currentURL, visit } from '@ember/test-helpers';
+import { click, currentURL, visit } from '@ember/test-helpers';
 import Ember from 'ember';
 import { module, test } from 'qunit';
 import { teardownModal } from '../helpers/teardown-modal';
@@ -19,12 +19,11 @@ module('Acceptance | Report Collections', function(hooks) {
     assert.expect(2);
 
     await visit('/report-collections/1');
-    assert.notOk(!!findAll('.error').length, 'Error message not present when route is successfully loaded');
+    assert.dom('.error').isNotVisible('Error message not present when route is successfully loaded');
 
-    assert.ok(
-      !!findAll('.navi-collection').length,
-      'the report collection component is rendered when route is successfully loaded'
-    );
+    assert
+      .dom('.navi-collection')
+      .isVisible('the report collection component is rendered when route is successfully loaded');
   });
 
   test('report-collection error', async function(assert) {
@@ -39,9 +38,9 @@ module('Acceptance | Report Collections', function(hooks) {
     server.get('/reportCollections/:id', { errors: ['The report-collections endpoint is down'] }, 500);
 
     await visit('/report-collections/1');
-    assert.ok(!!findAll('.error').length, 'Error message is present when route encounters an error');
+    assert.dom('.error').isVisible('Error message is present when route encounters an error');
 
-    assert.notOk(!!findAll('.navi-collection').length, 'Navi report collection component is not rendered');
+    assert.dom('.navi-collection').isNotVisible('Navi report collection component is not rendered');
 
     Ember.Logger.error = OriginalLoggerError;
     Ember.Test.adapter.exception = OriginalTestAdapterException;
@@ -60,6 +59,6 @@ module('Acceptance | Report Collections', function(hooks) {
 
     await visit('/report-collections/loading');
 
-    assert.ok(!!findAll('.navi-loader__container').length, 'Loader is present when visiting loading route');
+    assert.dom('.navi-loader__container').isVisible('Loader is present when visiting loading route');
   });
 });

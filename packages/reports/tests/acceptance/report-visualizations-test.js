@@ -1,7 +1,7 @@
 import { click, find, findAll, visit } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
-import { findContains } from '../helpers/contains-helpers';
+import $ from 'jquery';
 import { setupApplicationTest } from 'ember-qunit';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
@@ -25,9 +25,7 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
     );
 
     await click(
-      findContains(
-        '.grouped-list__group:contains(Asset) .checkbox-selector--dimension .grouped-list__item:contains(Property) .checkbox-selector__filter'
-      )
+      $('.grouped-list__group:contains(Asset) .grouped-list__item:contains(Property) .checkbox-selector__filter')[0]
     );
     await selectChoose('.filter-values--dimension-select__trigger', '.ember-power-select-option', 0);
     await click('.navi-report__run-btn');
@@ -103,78 +101,74 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
 
     //add a parameterized metric with a couple of parameters and run the report
     await click(
-      findContains(
-        '.report-builder__metric-selector .grouped-list__item:contains(Platform Revenue) .grouped-list__item-label'
-      )
+      $('.report-builder__metric-selector .grouped-list__item:contains(Platform Revenue) .grouped-list__item-label')[0]
     );
     await click(
-      findContains('.metric-config__dropdown-container .grouped-list__item:contains(Euro) .grouped-list__item-label')
+      $('.metric-config__dropdown-container .grouped-list__item:contains(Euro) .grouped-list__item-label')[0]
     );
     await click('.navi-report__run-btn');
 
     //first parameter
     assert.notOk(
-      findContains(
-        'div.table-header-row .table-header-cell.metric:contains("Platform Revenue (USD)") .navi-table-sort-icon'
-      ).classList.contains('navi-table-sort-icon--desc'),
+      $(
+        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon'
+      )[0].classList.contains('navi-table-sort-icon--desc'),
       'Metric with first parameter is not sorted desc'
     );
 
     assert.notOk(
-      findContains(
-        'div.table-header-row .table-header-cell.metric:contains("Platform Revenue (USD)") .navi-table-sort-icon'
-      ).classList.contains('navi-table-sort-icon--asc'),
+      $(
+        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon'
+      )[0].classList.contains('navi-table-sort-icon--asc'),
       'Metric with first parameter is not sorted asc'
     );
 
     //second parameter
     assert.notOk(
-      findContains(
-        'div.table-header-row .table-header-cell.metric:contains("Platform Revenue (EUR)") .navi-table-sort-icon'
-      ).classList.contains('navi-table-sort-icon--desc'),
+      $(
+        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon'
+      )[0].classList.contains('navi-table-sort-icon--desc'),
       'Metric with second parameter is not sorted desc'
     );
 
     assert.notOk(
-      findContains(
-        'div.table-header-row .table-header-cell.metric:contains("Platform Revenue (EUR)") .navi-table-sort-icon'
-      ).classList.contains('navi-table-sort-icon--asc'),
+      $(
+        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon'
+      )[0].classList.contains('navi-table-sort-icon--asc'),
       'Metric with second parameter is not sorted asc'
     );
 
     //sort by first parameter desc
     await click(
-      findContains(
-        'div.table-header-row .table-header-cell.metric:contains("Platform Revenue (USD)") .navi-table-sort-icon'
-      )
+      $('div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon')[0]
     );
     //first parameter
     assert.ok(
-      findContains(
-        'div.table-header-row .table-header-cell.metric:contains("Platform Revenue (USD)") .navi-table-sort-icon'
-      ).classList.contains('navi-table-sort-icon--desc'),
+      $(
+        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon'
+      )[0].classList.contains('navi-table-sort-icon--desc'),
       'Metric with first parameter is sorted desc after first sort click'
     );
 
     assert.notOk(
-      findContains(
-        'div.table-header-row .table-header-cell.metric:contains("Platform Revenue (USD)") .navi-table-sort-icon'
-      ).classList.contains('navi-table-sort-icon--asc'),
+      $(
+        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon'
+      )[0].classList.contains('navi-table-sort-icon--asc'),
       'Metric with first parameter is not sorted asc after first sort click'
     );
 
     //second parameter
     assert.notOk(
-      findContains(
-        'div.table-header-row .table-header-cell.metric:contains("Platform Revenue (EUR)") .navi-table-sort-icon'
-      ).classList.contains('navi-table-sort-icon--desc'),
+      $(
+        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon'
+      )[0].classList.contains('navi-table-sort-icon--desc'),
       'Metric with second parameter is not sorted desc after first sort click'
     );
 
     assert.notOk(
-      findContains(
-        'div.table-header-row .table-header-cell.metric:contains("Platform Revenue (EUR)") .navi-table-sort-icon'
-      ).classList.contains('navi-table-sort-icon--asc'),
+      $(
+        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon'
+      )[0].classList.contains('navi-table-sort-icon--asc'),
       'Metric with second parameter is not sorted asc after first sort click'
     );
 
@@ -193,37 +187,35 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
 
     //sort by first parameter asc
     await click(
-      findContains(
-        'div.table-header-row .table-header-cell.metric:contains("Platform Revenue (USD)") .navi-table-sort-icon'
-      )
+      $('div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon')[0]
     );
     //first parameter
     assert.notOk(
-      findContains(
-        'div.table-header-row .table-header-cell.metric:contains("Platform Revenue (USD)") .navi-table-sort-icon'
-      ).classList.contains('navi-table-sort-icon--desc'),
+      $(
+        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon'
+      )[0].classList.contains('navi-table-sort-icon--desc'),
       'Metric with first parameter is not sorted desc after second sort click'
     );
 
     assert.ok(
-      findContains(
-        'div.table-header-row .table-header-cell.metric:contains("Platform Revenue (USD)") .navi-table-sort-icon'
-      ).classList.contains('navi-table-sort-icon--asc'),
+      $(
+        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon'
+      )[0].classList.contains('navi-table-sort-icon--asc'),
       'Metric with first parameter is sorted asc after second sort click'
     );
 
     //second parameter
     assert.notOk(
-      findContains(
-        'div.table-header-row .table-header-cell.metric:contains("Platform Revenue (EUR)") .navi-table-sort-icon'
-      ).classList.contains('navi-table-sort-icon--desc'),
+      $(
+        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon'
+      )[0].classList.contains('navi-table-sort-icon--desc'),
       'Metric with second parameter is not sorted desc after second sort click'
     );
 
     assert.notOk(
-      findContains(
-        'div.table-header-row .table-header-cell.metric:contains("Platform Revenue (EUR)") .navi-table-sort-icon'
-      ).classList.contains('navi-table-sort-icon--asc'),
+      $(
+        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon'
+      )[0].classList.contains('navi-table-sort-icon--asc'),
       'Metric with second parameter is not sorted asc after second sort click'
     );
 
@@ -242,37 +234,35 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
 
     //remove sort by first parameter
     await click(
-      findContains(
-        'div.table-header-row .table-header-cell.metric:contains("Platform Revenue (USD)") .navi-table-sort-icon'
-      )
+      $('div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon')[0]
     );
     //first parameter
     assert.notOk(
-      findContains(
-        'div.table-header-row .table-header-cell.metric:contains("Platform Revenue (USD)") .navi-table-sort-icon'
-      ).classList.contains('navi-table-sort-icon--desc'),
+      $(
+        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon'
+      )[0].classList.contains('navi-table-sort-icon--desc'),
       'Metric with first parameter is not sorted desc after third sort click'
     );
 
     assert.notOk(
-      findContains(
-        'div.table-header-row .table-header-cell.metric:contains("Platform Revenue (USD)") .navi-table-sort-icon'
-      ).classList.contains('navi-table-sort-icon--asc'),
+      $(
+        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon'
+      )[0].classList.contains('navi-table-sort-icon--asc'),
       'Metric with first parameter is not sorted asc after third sort click'
     );
 
     //second parameter
     assert.notOk(
-      findContains(
-        'div.table-header-row .table-header-cell.metric:contains("Platform Revenue (EUR)") .navi-table-sort-icon'
-      ).classList.contains('navi-table-sort-icon--desc'),
+      $(
+        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon'
+      )[0].classList.contains('navi-table-sort-icon--desc'),
       'Metric with second parameter is not sorted desc after third sort click'
     );
 
     assert.notOk(
-      findContains(
-        'div.table-header-row .table-header-cell.metric:contains("Platform Revenue (EUR)") .navi-table-sort-icon'
-      ).classList.contains('navi-table-sort-icon--asc'),
+      $(
+        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon'
+      )[0].classList.contains('navi-table-sort-icon--asc'),
       'Metric with second parameter is not sorted asc after third sort click'
     );
 
@@ -291,36 +281,30 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
 
     //sort by both parameters
     await click(
-      findContains(
-        'div.table-header-row .table-header-cell.metric:contains("Platform Revenue (USD)") .navi-table-sort-icon'
-      )
+      $('div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon')[0]
     );
     await click(
-      findContains(
-        'div.table-header-row .table-header-cell.metric:contains("Platform Revenue (EUR)") .navi-table-sort-icon'
-      )
+      $('div.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon')[0]
     );
     //first parameter
     assert.ok(
-      findContains(
-        'div.table-header-row .table-header-cell.metric:contains("Platform Revenue (USD)") .navi-table-sort-icon'
-      ).classList.contains('navi-table-sort-icon--desc'),
+      $(
+        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon'
+      )[0].classList.contains('navi-table-sort-icon--desc'),
       'Metric with first parameter is sorted desc after sorting by both parameters'
     );
 
     //second parameter
     assert.ok(
-      findContains(
-        'div.table-header-row .table-header-cell.metric:contains("Platform Revenue (EUR)") .navi-table-sort-icon'
-      ).classList.contains('navi-table-sort-icon--desc'),
+      $(
+        'div.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon'
+      )[0].classList.contains('navi-table-sort-icon--desc'),
       'Metric with first parameter is sorted desc after sorting by both parameters'
     );
 
     //remove the metric
     await click(
-      findContains(
-        '.report-builder__metric-selector .grouped-list__item:contains(Platform Revenue) .grouped-list__item-label'
-      )
+      $('.report-builder__metric-selector .grouped-list__item:contains(Platform Revenue) .grouped-list__item-label')[0]
     );
 
     //test API query and close the modal

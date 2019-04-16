@@ -1,6 +1,6 @@
 import { findAll, settled } from '@ember/test-helpers';
-import { findContains } from './contains-helpers';
 import drag from './drag';
+import $ from 'jquery';
 
 const OVERSHOOT = 2;
 
@@ -14,7 +14,7 @@ export default async function reorder(mode, itemSelector, ...resultSelectors) {
   const promises = resultSelectors.map((selector, targetIndex) => async () => {
     await settled();
 
-    let element = findContains(selector);
+    let element = $(selector)[0];
     let targetElement = findAll(itemSelector)[targetIndex];
     let dx = targetElement.offsetLeft - OVERSHOOT - element.offsetLeft;
     let dy = targetElement.offsetTop - OVERSHOOT - element.offsetTop;

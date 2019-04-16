@@ -2,7 +2,7 @@ import { click, visit } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
-import { findContains } from '../helpers/contains-helpers';
+import $ from 'jquery';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 module('Acceptance | date filter', function(hooks) {
@@ -13,19 +13,19 @@ module('Acceptance | date filter', function(hooks) {
     assert.expect(2);
 
     await visit('/reports/1/view');
-    await click(findContains('.grouped-list__group-header:contains(Test)'));
-    await click(findContains('.grouped-list__item:contains(User Signup Date) .checkbox-selector__filter'));
+    await click($('.grouped-list__group-header:contains(test)')[0]);
+    await click($('.grouped-list__item:contains(User Signup Date) .checkbox-selector__filter')[0]);
 
     assert.ok(
-      !!findContains('.filter-builder__operator:contains(Since)'),
+      !!$('.filter-builder__operator:contains(Since)').length,
       'The date dimension filter builder is used for a dimension with date values'
     );
 
     await click('.filter-collection__remove');
-    await click(findContains('.grouped-list__item:contains(User Region) .checkbox-selector__filter'));
+    await click($('.grouped-list__item:contains(User Region) .checkbox-selector__filter')[0]);
 
     assert.ok(
-      !!findContains('.filter-builder__operator:contains(Equals)'),
+      !!$('.filter-builder__operator:contains(Equals)').length,
       'The normal dimension filter builder is used for a dimension with non-date values'
     );
   });
@@ -34,40 +34,37 @@ module('Acceptance | date filter', function(hooks) {
     assert.expect(5);
 
     await visit('/reports/1/view');
-    await click(findContains('.grouped-list__group-header:contains(Test)'));
-    await click(findContains('.grouped-list__item:contains(User Signup Date) .checkbox-selector__filter'));
-    await click(findContains('.filter-builder__operator:contains(Since) .filter-builder__select-trigger'));
-    await click(findContains('li.ember-power-select-option:contains(Between)'));
+    await click($('.grouped-list__group-header:contains(test)')[0]);
+    await click($('.grouped-list__item:contains(User Signup Date) .checkbox-selector__filter')[0]);
+    await click($('.filter-builder__operator:contains(Since) .filter-builder__select-trigger')[0]);
+    await click($('li.ember-power-select-option:contains(Between)')[0]);
 
-    assert.ok(!!findContains('.filter-builder__operator:contains(Between)'), 'Between is the selected operator');
+    assert.ok(!!$('.filter-builder__operator:contains(Between)').length, 'Between is the selected operator');
 
     //Set low value
     await clickTrigger('.filter-values--dimension-date-range-input__low-value .ember-basic-dropdown-trigger');
-    await click(findContains('.dropdown-date-picker__dropdown td.day:not(.old):not(.new):contains(4)'));
+    await click($('.dropdown-date-picker__dropdown td.day:not(.old):not(.new):contains(4)')[0]);
     await click('.dropdown-date-picker__apply');
 
     //Set high value
     await clickTrigger('.filter-values--dimension-date-range-input__high-value .ember-basic-dropdown-trigger');
-    await click(findContains('.dropdown-date-picker__dropdown td.day:not(.old):not(.new):contains(5)'));
+    await click($('.dropdown-date-picker__dropdown td.day:not(.old):not(.new):contains(5)')[0]);
     await click('.dropdown-date-picker__apply');
 
+    assert.ok(!!$('.filter-values--dimension-date-range-input__low-value:contains(4)').length, 'The low value is set');
     assert.ok(
-      !!findContains('.filter-values--dimension-date-range-input__low-value:contains(4)'),
-      'The low value is set'
-    );
-    assert.ok(
-      !!findContains('.filter-values--dimension-date-range-input__high-value:contains(9)'),
+      !!$('.filter-values--dimension-date-range-input__high-value:contains(9)').length,
       'The high value is set'
     );
 
     await click('.navi-report__save-btn');
 
     assert.ok(
-      !!findContains('.filter-values--dimension-date-range-input__low-value:contains(4)'),
+      !!$('.filter-values--dimension-date-range-input__low-value:contains(4)').length,
       'The low value is still set after the report is saved'
     );
     assert.ok(
-      findContains('.filter-values--dimension-date-range-input__high-value:contains(9)'),
+      !!$('.filter-values--dimension-date-range-input__high-value:contains(9)').length,
       'The high value is still set after the report is saved'
     );
   });
