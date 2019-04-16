@@ -18,7 +18,7 @@
         class="text-input dashboard-title"
         autofocus=true
       }}
-      <a class="dashboard-action-text" onclick={{action (toggle "shouldCreateDashboard" this)}}>Select from my dashboards</a>
+      <a class="dashboard-action-text" role="button" onclick={{action (toggle "shouldCreateDashboard" this)}}>Select from my dashboards</a>
       <div class="btn-container">
         <button class="btn btn-primary add-to-dashboard" onclick={{action onAddToNewDashboard newDashboardTitle reportName}} disabled={{disableAdd}}>Add To Dashboard</button>
         <button class="btn btn-secondary" onclick={{action (toggle "showModal" this)}}>Cancel</button>
@@ -38,7 +38,7 @@
       }}
         {{dashboard.title}}
       {{/power-select}}
-      <a class="dashboard-action-text" onclick={{action (toggle "shouldCreateDashboard" this)}}>Create new dashboard</a>
+      <a class="dashboard-action-text" role="button" onclick={{action (toggle "shouldCreateDashboard" this)}}>Create new dashboard</a>
       <div class="btn-container">
         <button class="btn btn-primary add-to-dashboard" onclick={{action onAddToDashboard selectedDashboard.id reportName}} disabled={{disableAdd}}>Add To Dashboard</button>
         <button class="btn btn-secondary" onclick={{action (toggle "showModal" this)}}>Cancel</button>
