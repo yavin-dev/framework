@@ -12,18 +12,20 @@ module('Acceptances | Report to dashboard action', function(hooks) {
     assert.expect(1);
 
     await visit('/reports/1/view');
-    assert
-      .dom('.navi-report__action:contains("Add to Dashboard")')
-      .isVisible('Add to Dashboard button is visible when feature flag is on');
+    assert.ok(
+      !!$('.navi-report__action:contains("Add to Dashboard")').length,
+      'Add to Dashboard button is visible when feature flag is on'
+    );
   });
 
   test('Add to dashboard button is hidden when there are unrun request changes', async function(assert) {
     assert.expect(3);
 
     await visit('/reports/1/view');
-    assert
-      .dom('.navi-report__action:contains("Add to Dashboard")')
-      .isVisible('Add to Dashboard button is visible by default');
+    assert.ok(
+      !!$('.navi-report__action:contains("Add to Dashboard")').length,
+      'Add to Dashboard button is visible by default'
+    );
 
   // Create empty filter to make request invalid
   await click($('.grouped-list__item:Contains(Operating System) .checkbox-selector__filter')[0]);

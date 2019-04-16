@@ -1,15 +1,11 @@
-import { click, visit } from '@ember/test-helpers';
+import { click, triggerEvent, visit } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
-import { teardownModal } from '../helpers/teardown-modal';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 module('Acceptance | share link', function(hooks) {
   setupApplicationTest(hooks);
-
-  hooks.afterEach(function() {
-    teardownModal();
-    server.shutdown();
-  });
+  setupMirage(hooks);
 
   test('dashboard share link', async function(assert) {
     assert.expect(1);
@@ -17,12 +13,13 @@ module('Acceptance | share link', function(hooks) {
     await visit('/dashboards');
     let baseUrl = document.location.origin;
 
+    //https://github.com/emberjs/ember-test-helpers/issues/343
+    await triggerEvent('.navi-collection__row:first-of-type', 'mouseover');
+
     await click('.navi-collection__row:first-of-type .share .btn');
 
-    assert.equal(
-      find('.modal-input-box')[0].value,
-      `${baseUrl}/dashboards/1`,
-      'The share link is built correctly by buildDashboardUrl'
-    );
+    assert
+      .dom('.modal-input-box')
+      .hasValue(`${baseUrl}/dashboards/1`, 'The share link is built correctly by buildDashboardUrl');
   });
 });

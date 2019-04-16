@@ -1,13 +1,11 @@
 import { currentURL, visit } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 module('Acceptance | print dashboard', function(hooks) {
   setupApplicationTest(hooks);
-
-  hooks.afterEach(function() {
-    server.shutdown();
-  });
+  setupMirage(hooks);
 
   test('print dashboards index', async function(assert) {
     assert.expect(1);
@@ -20,12 +18,12 @@ module('Acceptance | print dashboard', function(hooks) {
     assert.expect(4);
     await visit('/print/dashboards/1/view');
 
-    assert.notOk(find('.page-title').is(':visible'), 'Title should not be visible');
+    assert.dom('.page-title').isNotVisible('Title should not be visible');
 
-    assert.notOk(find('.editable-label__icon').is(':visible'), 'Title edit icon should not be visible');
+    assert.dom('.editable-label__icon').isNotVisible('Title edit icon should not be visible');
 
-    assert.notOk(find('.favorite-item').is(':visible'), 'Favirote icon should not be visible');
+    assert.dom('.favorite-item').isNotVisible('Favorite icon should not be visible');
 
-    assert.notOk(find('.dashboard-actions').is(':visible'), 'Dashboard actions should not be visible');
+    assert.dom('.dashboard-actions').isNotVisible('Dashboard actions should not be visible');
   });
 });
