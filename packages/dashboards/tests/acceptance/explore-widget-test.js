@@ -1,16 +1,5 @@
-import {
-  settled,
-  find,
-  click,
-  fillIn,
-  currentURL,
-  currentRouteName,
-  findAll,
-  blur,
-  visit,
-  waitFor
-} from '@ember/test-helpers';
-import { module, skip, test } from 'qunit';
+import { find, click, fillIn, currentURL, currentRouteName, findAll, blur, visit, waitFor } from '@ember/test-helpers';
+import { module, test } from 'qunit';
 import config from 'ember-get-config';
 import { setupApplicationTest } from 'ember-qunit';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
@@ -312,7 +301,7 @@ module('Acceptance | Exploring Widgets', function(hooks) {
       );
   });
 
-  skip('Cancel Widget', async function(assert) {
+  test('Cancel Widget', async function(assert) {
     //Slow down mock
     server.timing = 400;
     server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
@@ -321,7 +310,14 @@ module('Acceptance | Exploring Widgets', function(hooks) {
     });
 
     //Load the widget
-    visit('/dashboards/1/widgets/1/view');
+    visit('/dashboards/1/widgets/1/view').catch(error => {
+      //https://github.com/emberjs/ember-test-helpers/issues/332
+      const { message } = error;
+      if (message !== 'TransitionAborted') {
+        throw error;
+      }
+    });
+
     await waitFor('.navi-report-widget__cancel-btn', { timeout: 2000 });
 
     assert.equal(currentRouteName(), 'dashboards.dashboard.widgets.widget.loading', 'Widget is loading');
@@ -332,15 +328,8 @@ module('Acceptance | Exploring Widgets', function(hooks) {
       'When widget is loading, the only footer button is `Cancel`'
     );
 
-    try {
-      //Cancel the widget
-      await click('.navi-report-widget__cancel-btn');
-      await settled;
-    } catch (e) {
-      if (e.message !== 'TransitionAborted') {
-        throw e;
-      }
-    }
+    await click('.navi-report-widget__cancel-btn');
+
     assert.equal(
       currentRouteName(),
       'dashboards.dashboard.widgets.widget.edit',
