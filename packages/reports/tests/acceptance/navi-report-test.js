@@ -1,7 +1,7 @@
 import Component from '@ember/component';
 import { get } from '@ember/object';
 import Ember from 'ember';
-import { module, test, skip } from 'qunit';
+import { module, test } from 'qunit';
 import { click, fillIn, visit, currentURL, find, findAll, blur, triggerEvent, waitFor } from '@ember/test-helpers';
 import { teardownModal } from '../helpers/teardown-modal';
 import $ from 'jquery';
@@ -1686,7 +1686,7 @@ module('Acceptance | Navi Report', function(hooks) {
       );
   });
 
-  skip('Cancel Report', async function(assert) {
+  test('Cancel Report', async function(assert) {
     //Slow down mock
     server.timing = 400;
     server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
@@ -1695,7 +1695,13 @@ module('Acceptance | Navi Report', function(hooks) {
     });
 
     //Load the report without waiting for it to finish loading
-    visit('/reports/1');
+    visit('/reports/1').catch(error => {
+      //https://github.com/emberjs/ember-test-helpers/issues/332
+      const { message } = error;
+      if (message !== 'TransitionAborted') {
+        throw error;
+      }
+    });
 
     await waitFor('.navi-report__cancel-btn');
 

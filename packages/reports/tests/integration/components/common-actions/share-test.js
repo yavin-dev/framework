@@ -1,9 +1,8 @@
-import { run } from '@ember/runloop';
-import { getOwner } from '@ember/application';
+import $ from 'jquery';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click, find } from '@ember/test-helpers';
-import { hbsWithModal } from '../../../helpers/hbs-with-modal';
+import { render, click } from '@ember/test-helpers';
+import hbs from 'htmlbars-inline-precompile';
 
 let Template;
 
@@ -11,8 +10,7 @@ module('Integration | Component | common actions/share', function(hooks) {
   setupRenderingTest(hooks);
 
   hooks.beforeEach(function() {
-    Template = hbsWithModal(
-      `
+    Template = hbs`
       {{#common-actions/share
         pageTitle=pageTitle
         buildUrl=buildUrl
@@ -21,9 +19,7 @@ module('Integration | Component | common actions/share', function(hooks) {
       }}
         Share Report
       {{/common-actions/share}}
-    `,
-      this.owner
-    );
+    `;
   });
 
   test('Component renders', async function(assert) {
@@ -64,9 +60,7 @@ module('Integration | Component | common actions/share', function(hooks) {
 
     assert.notOk($('.ember-modal-dialog').is(':visible'), 'Share modal is not visible before clicking the component');
 
-    run(async () => {
-      await click('.share > button');
-    });
+    await click('.share > button');
 
     assert.ok($('.ember-modal-dialog').is(':visible'), 'Share modal dialog pops up on clicking the component');
 
@@ -105,9 +99,7 @@ module('Integration | Component | common actions/share', function(hooks) {
 
     await render(Template);
 
-    run(async () => {
-      await click('.share > button');
-    });
+    await click('.share > button');
 
     assert.notOk(
       $('.modal-notification').is(':visible'),
@@ -115,9 +107,7 @@ module('Integration | Component | common actions/share', function(hooks) {
     );
 
     // Click Copy Link
-    run(() => {
-      $('.btn-container button:contains(Copy Link)').click();
-    });
+    await click($('.btn-container button:contains(Copy Link)')[0]);
 
     assert.ok($('.modal-notification').is(':visible'), 'Copy notification message is shown after clicking copy button');
   });
@@ -130,16 +120,12 @@ module('Integration | Component | common actions/share', function(hooks) {
     assert.notOk($('.ember-modal-dialog').is(':visible'), 'Share modal is not visible before clicking the component');
 
     // Click component
-    run(async () => {
-      await click('.share > button');
-    });
+    await click('.share > button');
 
     assert.ok($('.ember-modal-dialog').is(':visible'), 'Share modal dialog pops up on clicking the component');
 
     // Click Cancel
-    run(() => {
-      $('.btn-container button:contains(Cancel)').click();
-    });
+    await click($('.btn-container button:contains(Cancel)')[0]);
 
     assert.notOk($('.ember-modal-dialog').is(':visible'), 'Share modal is closed after clicking cancel button');
   });
@@ -152,9 +138,7 @@ module('Integration | Component | common actions/share', function(hooks) {
     await render(Template);
 
     // Click component
-    run(async () => {
-      await click('.share > button');
-    });
+    await click('.share > button');
 
     assert.equal(
       $('.modal-input-box').val(),

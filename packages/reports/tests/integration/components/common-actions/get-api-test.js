@@ -1,11 +1,10 @@
 import { reject } from 'rsvp';
-import { run } from '@ember/runloop';
 import Service from '@ember/service';
-import { getOwner } from '@ember/application';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click, find } from '@ember/test-helpers';
-import { hbsWithModal } from '../../../helpers/hbs-with-modal';
+import { render, click, findAll } from '@ember/test-helpers';
+import hbs from 'htmlbars-inline-precompile';
+import $ from 'jquery';
 
 let Template;
 
@@ -20,8 +19,7 @@ module('Integration | Component | common actions/get api', function(hooks) {
   hooks.beforeEach(function() {
     this.MockRequest = MockRequest;
 
-    Template = hbsWithModal(
-      `
+    Template = hbs`
       {{#common-actions/get-api
         request=MockRequest
         buttonClassNames=buttonClassNames
@@ -29,9 +27,7 @@ module('Integration | Component | common actions/get api', function(hooks) {
       }}
         Get API
       {{/common-actions/get-api}}
-    `,
-      this.owner
-    );
+    `;
 
     // Mock fact service
     this.owner.register(
@@ -56,7 +52,7 @@ module('Integration | Component | common actions/get api', function(hooks) {
     this.set('buttonClassNames', 'a-custom-class');
     await render(Template);
 
-    assert.ok(this.$('button').is('.a-custom-class'), 'Class names for the button element can be configured');
+    assert.ok($('button').is('.a-custom-class'), 'Class names for the button element can be configured');
   });
 
   test('beforeAction', async function(assert) {
@@ -67,12 +63,10 @@ module('Integration | Component | common actions/get api', function(hooks) {
     });
     await render(Template);
 
-    run(async () => {
-      await click('.get-api > button');
-    });
+    await click('.get-api > button');
 
     // Check if modal was opened
-    if (this.$('.ember-modal-dialog').is(':visible')) {
+    if ($('.ember-modal-dialog').is(':visible')) {
       assert.step('Copy modal is opened');
     }
 
@@ -92,14 +86,11 @@ module('Integration | Component | common actions/get api', function(hooks) {
     });
     await render(Template);
 
-    run(async () => {
-      await click('.get-api > button');
-    });
+    await click('.get-api > button');
 
-    assert.notOk(
-      this.$('.ember-modal-dialog').is(':visible'),
-      'Copy modal does not open if `beforeAction` returns a rejected promise'
-    );
+    assert
+      .dom('.ember-modal-dialog')
+      .isNotVisible('Copy modal does not open if `beforeAction` returns a rejected promise');
   });
 
   test('Modal', async function(assert) {
@@ -107,16 +98,11 @@ module('Integration | Component | common actions/get api', function(hooks) {
 
     await render(Template);
 
-    assert.notOk(
-      this.$('.ember-modal-dialog').is(':visible'),
-      'Copy modal is not visible before clicking the component'
-    );
+    assert.dom('.ember-modal-dialog').isNotVisible('Copy modal is not visible before clicking the component');
 
-    run(async () => {
-      await click('.get-api > button');
-    });
+    await click('.get-api > button');
 
-    assert.ok(this.$('.ember-modal-dialog').is(':visible'), 'Copy modal dialog pops up on clicking the component');
+    assert.dom('.ember-modal-dialog').isVisible('Copy modal dialog pops up on clicking the component');
 
     assert
       .dom('.navi-modal__header--secondary')
@@ -124,13 +110,9 @@ module('Integration | Component | common actions/get api', function(hooks) {
 
     assert.dom('.navi-modal__input').hasValue(MockUrl, 'Modal input box has link to the current page');
 
-    let buttons = this.$('.btn-container .btn');
+    let buttons = findAll('.btn-container .btn');
     assert.deepEqual(
-      buttons
-        .map(function() {
-          return this.textContent.trim();
-        })
-        .get(),
+      buttons.map(el => el.textContent.trim()),
       ['Copy Link', 'Run API Query in New Tab', 'Cancel'],
       'Copy, New Tab, and Cancel buttons are rendered'
     );
@@ -141,24 +123,14 @@ module('Integration | Component | common actions/get api', function(hooks) {
 
     await render(Template);
 
-    run(async () => {
-      await click('.get-api > button');
-    });
+    await click('.get-api > button');
 
-    assert.notOk(
-      this.$('.modal-notification').is(':visible'),
-      'Copy notification is not visible before clicking copy button'
-    );
+    assert.dom('.modal-notification').isNotVisible('Copy notification is not visible before clicking copy button');
 
     // Click Copy Link
-    run(() => {
-      this.$('.btn-container button:contains(Copy Link)').click();
-    });
+    await click($('.btn-container button:contains(Copy Link)')[0]);
 
-    assert.ok(
-      this.$('.modal-notification').is(':visible'),
-      'Copy notification message is shown after clicking copy button'
-    );
+    assert.dom('.modal-notification').isVisible('Copy notification message is shown after clicking copy button');
   });
 
   test('Cancel button', async function(assert) {
@@ -166,23 +138,16 @@ module('Integration | Component | common actions/get api', function(hooks) {
 
     await render(Template);
 
-    assert.notOk(
-      this.$('.ember-modal-dialog').is(':visible'),
-      'Copy modal is not visible before clicking the component'
-    );
+    assert.dom('.ember-modal-dialog').isNotVisible('Copy modal is not visible before clicking the component');
 
     // Click component
-    run(async () => {
-      await click('.get-api > button');
-    });
+    await click('.get-api > button');
 
-    assert.ok(this.$('.ember-modal-dialog').is(':visible'), 'Copy modal dialog pops up on clicking the component');
+    assert.dom('.ember-modal-dialog').isVisible('Copy modal dialog pops up on clicking the component');
 
     // Click Cancel
-    run(() => {
-      this.$('.btn-container button:contains(Cancel)').click();
-    });
+    await click($('.btn-container button:contains(Cancel)')[0]);
 
-    assert.notOk(this.$('.ember-modal-dialog').is(':visible'), 'Copy modal is closed after clicking cancel button');
+    assert.dom('.ember-modal-dialog').isNotVisible('Copy modal is closed after clicking cancel button');
   });
 });

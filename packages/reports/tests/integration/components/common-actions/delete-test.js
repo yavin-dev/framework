@@ -1,10 +1,9 @@
-import { run } from '@ember/runloop';
-import { getOwner } from '@ember/application';
+import $ from 'jquery';
 import { set, get } from '@ember/object';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, settled, click } from '@ember/test-helpers';
-import { hbsWithModal } from '../../../helpers/hbs-with-modal';
+import { render, click } from '@ember/test-helpers';
+import hbs from 'htmlbars-inline-precompile';
 
 let Template;
 
@@ -12,8 +11,7 @@ module('Integration | Component | common actions/delete', function(hooks) {
   setupRenderingTest(hooks);
 
   hooks.beforeEach(function() {
-    Template = hbsWithModal(
-      `
+    Template = hbs`
       {{#common-actions/delete
         model=widget
         warnMsg='Are you sure you want to delete the widget?'
@@ -22,9 +20,7 @@ module('Integration | Component | common actions/delete', function(hooks) {
       }}
         Delete
       {{/common-actions/delete}}
-    `,
-      this.owner
-    );
+    `;
 
     set(this, 'widget', {
       id: 10,
@@ -40,35 +36,21 @@ module('Integration | Component | common actions/delete', function(hooks) {
 
     await render(Template);
 
-    assert.notOk(!!$('.ember-modal-dialog').length, 'Modal is not visible at the start');
+    assert.dom('.ember-modal-dialog').isNotVisible('Modal is not visible at the start');
 
-    run(async () => {
-      await click('.delete > button');
-    });
+    await click('.delete > button');
 
-    assert.ok(!!$('.ember-modal-dialog').length, 'Modal is visible after clicking the delete action');
+    assert.dom('.ember-modal-dialog').isVisible('Modal is visible after clicking the delete action');
 
-    assert.equal(
-      $('.primary-header')
-        .text()
-        .trim(),
-      'Delete "The Wind Waker"',
-      'Widget title is included in modal header'
-    );
+    assert.dom('.primary-header').includesText('Delete "The Wind Waker"', 'Widget title is included in modal header');
 
-    assert.equal(
-      $('.secondary-header')
-        .text()
-        .trim(),
-      'Are you sure you want to delete the widget?',
-      'Warning message is included in the widget modal'
-    );
+    assert
+      .dom('.secondary-header')
+      .includesText('Are you sure you want to delete the widget?', 'Warning message is included in the widget modal');
 
-    run(() => {
-      $('button:contains(Cancel)').click();
-    });
+    await click($('button:contains(Cancel)')[0]);
 
-    assert.notOk(!!$('.ember-modal-dialog').length, 'Modal is closed after clicking cancel button');
+    assert.dom('.ember-modal-dialog').isNotVisible('Modal is closed after clicking cancel button');
   });
 
   test('delete action', async function(assert) {
@@ -79,44 +61,31 @@ module('Integration | Component | common actions/delete', function(hooks) {
     });
 
     await render(Template);
+    await click('.delete > button');
 
-    run(async () => {
-      await click('.delete > button');
-    });
-
-    return settled().then(() => {
-      $('button:contains(Confirm)').click();
-    });
+    await click($('button:contains(Confirm)')[0]);
   });
 
   test('default warning message', async function(assert) {
     assert.expect(1);
 
-    await render(
-      hbsWithModal(
-        `
-    {{#common-actions/delete
-        model=widget
-        deleteAction=(action deleteWidget)
-        classNames='delete'
-    }}
-        Delete
-    {{/common-actions/delete}}
-   `,
-        this.owner
-      )
-    );
+    await render(hbs`
+      {{#common-actions/delete
+          model=widget
+          deleteAction=(action deleteWidget)
+          classNames='delete'
+      }}
+          Delete
+      {{/common-actions/delete}}
+    `);
 
-    run(async () => {
-      await click('.delete > button');
-    });
+    await click('.delete > button');
 
-    assert.equal(
-      $('.secondary-header')
-        .text()
-        .trim(),
-      'Are you sure you want to delete this test-widget?',
-      'Default warning message is included in widget modal'
-    );
+    assert
+      .dom('.secondary-header')
+      .includesText(
+        'Are you sure you want to delete this test-widget?',
+        'Default warning message is included in widget modal'
+      );
   });
 });

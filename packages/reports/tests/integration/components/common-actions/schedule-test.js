@@ -1,14 +1,12 @@
 import { resolve } from 'rsvp';
-import { run } from '@ember/runloop';
-import { getOwner } from '@ember/application';
+import $ from 'jquery';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, settled, click, find } from '@ember/test-helpers';
+import { render, settled, click, blur, findAll, fillIn } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import { hbsWithModal } from '../../../helpers/hbs-with-modal';
 import { clickTrigger, nativeMouseUp } from 'ember-power-select/test-support/helpers';
-import { typeInInput } from '../../../helpers/ember-tag-input';
 import config from 'ember-get-config';
+import RSVP from 'rsvp';
 
 const DeliveryRule = {
   frequency: 'Week',
@@ -17,17 +15,11 @@ const DeliveryRule = {
 };
 const TestModel = {
   title: 'Test Test',
-  deliveryRuleForUser: {
-    isFulfilled: true,
-    content: DeliveryRule
-  }
+  deliveryRuleForUser: new RSVP.Promise(resolve => resolve(DeliveryRule))
 };
 const unscheduledModel = {
   title: 'Test Test',
-  deliveryRuleForUser: {
-    isFulfilled: true,
-    content: null
-  }
+  deliveryRuleForUser: new RSVP.Promise(resolve => resolve(null))
 };
 
 module('Integration | Component | common actions/schedule', function(hooks) {
@@ -124,9 +116,7 @@ module('Integration | Component | common actions/schedule', function(hooks) {
           }}
       `);
 
-    run(async () => {
-      await click('.schedule-action__button');
-    });
+    await click('.schedule-action__button');
 
     assert.ok($('.navi-modal').is(':visible'), 'Schedule Modal component is rendered when the button is clicked');
 
@@ -197,9 +187,7 @@ module('Integration | Component | common actions/schedule', function(hooks) {
           }}
       `);
 
-    run(async () => {
-      await click('.schedule-action__button');
-    });
+    await click('.schedule-action__button');
 
     assert.deepEqual(
       $('.schedule-modal__input--recipients .navi-email-tag')
@@ -224,50 +212,34 @@ module('Integration | Component | common actions/schedule', function(hooks) {
     this.set('model', unscheduledModel);
 
     await render(hbs`
-          {{common-actions/schedule
-              model=model
-              onSave=(action onSaveAction)
-              onRevert=(action onRevertAction)
-              onDelete=(action onDeleteAction)
-          }}
-      `);
+      {{common-actions/schedule
+          model=model
+          onSave=(action onSaveAction)
+          onRevert=(action onRevertAction)
+          onDelete=(action onDeleteAction)
+      }}
+    `);
 
     //Open modal
-    run(async () => {
-      await click('.schedule-action__button');
-    });
+    await click('.schedule-action__button');
 
-    assert.equal(
-      $('.schedule-modal__save-btn')
-        .text()
-        .trim(),
-      'Save',
-      'The save button says `Save` when model does not have a delivery rule for the current user'
-    );
+    assert
+      .dom('.schedule-modal__save-btn')
+      .hasText('Save', 'The save button says `Save` when model does not have a delivery rule for the current user');
 
     assert.ok($('.schedule-modal__save-btn').attr('disabled'), 'The save button should be disabled initially');
 
-    assert.equal(
-      $('.schedule-modal__cancel-btn')
-        .text()
-        .trim(),
-      'Cancel',
-      'Show cancel button before save a delivery rule'
-    );
+    assert.dom('.schedule-modal__cancel-btn').hasText('Cancel', 'Show cancel button before save a delivery rule');
 
-    assert.equal(
-      $('.schedule-modal__delete-btn').length,
-      0,
-      'The delete button is not available when model does not have a delivery rule for the current user'
-    );
+    assert
+      .dom('.schedule-modal__delete-btn')
+      .isNotVisible('The delete button is not available when model does not have a delivery rule for the current user');
 
-    run(() => {
-      typeInInput('.js-ember-tag-input-new', 'test1@navi.io');
-      $('.js-ember-tag-input-new').blur();
+    await fillIn('.js-ember-tag-input-new', 'test1@navi.io');
+    await blur('.js-ember-tag-input-new');
 
-      clickTrigger('.schedule-modal__dropdown--frequency');
-      nativeMouseUp($('.ember-power-select-option:contains(Month)')[0]);
-    });
+    await clickTrigger('.schedule-modal__dropdown--frequency');
+    await nativeMouseUp($('.ember-power-select-option:contains(Month)')[0]);
 
     assert.notOk(
       $('.schedule-modal__save-btn').attr('disabled'),
@@ -291,9 +263,7 @@ module('Integration | Component | common actions/schedule', function(hooks) {
     });
 
     //Click save after modal is open
-    run(() => {
-      $('.schedule-modal__save-btn').click();
-    });
+    await click('.schedule-modal__save-btn');
 
     assert.equal(
       $('.schedule-modal__cancel-btn')
@@ -319,18 +289,14 @@ module('Integration | Component | common actions/schedule', function(hooks) {
       `);
 
     //Open modal
-    run(async () => {
-      await click('.schedule-action__button');
-    });
+    await click('.schedule-action__button');
 
     this.set('onRevertAction', () => {
       assert.ok(true, 'OnRevert action is called');
     });
 
     //Click cancel after modal is open
-    run(() => {
-      $('.schedule-modal__cancel-btn').click();
-    });
+    await click('.schedule-modal__cancel-btn');
   });
 
   test('onDelete action', async function(assert) {
@@ -345,22 +311,17 @@ module('Integration | Component | common actions/schedule', function(hooks) {
     });
 
     await render(
-      hbsWithModal(
-        `
+      hbs`
         {{common-actions/schedule
             model=model
             onSave=(action onSaveAction)
             onRevert=(action onRevertAction)
             onDelete=(action onDeleteAction)
         }}
-    `,
-        this.owner
-      )
+    `
     );
 
-    run(async () => {
-      await click('.schedule-action__button');
-    });
+    await click('.schedule-action__button');
 
     assert.equal(
       $('.schedule-modal__delete-btn').length,
@@ -368,9 +329,7 @@ module('Integration | Component | common actions/schedule', function(hooks) {
       'Delete button is shown when deliveryRule is present for current user'
     );
 
-    run(() => {
-      $('.btn-container button:contains(Delete)').click();
-    });
+    $('.btn-container button:contains(Delete)').click();
 
     return settled().then(() => {
       $('.btn-container button:contains(Confirm)').click();
@@ -391,24 +350,14 @@ module('Integration | Component | common actions/schedule', function(hooks) {
           }}
       `);
 
-    run(async () => {
-      await click('.schedule-action__button');
-    });
+    await click('.schedule-action__button');
 
-    run(() => {
-      clickTrigger('.schedule-modal__dropdown--frequency');
-      assert.deepEqual(
-        $('.ember-power-select-option')
-          .map((i, el) =>
-            $(el)
-              .text()
-              .trim()
-          )
-          .toArray(),
-        ['Day', 'Week', 'Month', 'Quarter', 'Year'],
-        'Schedule frequency should have correct default options'
-      );
-    });
+    await clickTrigger('.schedule-modal__dropdown--frequency');
+    assert.deepEqual(
+      findAll('.ember-power-select-option').map(el => el.textContent.trim()),
+      ['Day', 'Week', 'Month', 'Quarter', 'Year'],
+      'Schedule frequency should have correct default options'
+    );
   });
 
   test('frequency options - config schedule', async function(assert) {
@@ -428,25 +377,15 @@ module('Integration | Component | common actions/schedule', function(hooks) {
           }}
       `);
 
-    run(async () => {
-      await click('.schedule-action__button');
-    });
+    await click('.schedule-action__button');
 
-    run(() => {
-      clickTrigger('.schedule-modal__dropdown--frequency');
-      assert.deepEqual(
-        $('.ember-power-select-option')
-          .map((i, el) =>
-            $(el)
-              .text()
-              .trim()
-          )
-          .toArray(),
-        ['Day', 'Week', 'Month'],
-        'Schedule frequency should have correct options'
-      );
-      config.navi.schedule = originalSchedule;
-    });
+    await clickTrigger('.schedule-modal__dropdown--frequency');
+    assert.deepEqual(
+      findAll('.ember-power-select-option').map(el => el.textContent.trim()),
+      ['Day', 'Week', 'Month'],
+      'Schedule frequency should have correct options'
+    );
+    config.navi.schedule = originalSchedule;
   });
 
   test('format options - config formats', async function(assert) {
@@ -466,25 +405,15 @@ module('Integration | Component | common actions/schedule', function(hooks) {
           }}
       `);
 
-    run(async () => {
-      await click('.schedule-action__button');
-    });
+    await click('.schedule-action__button');
 
-    run(() => {
-      clickTrigger('.schedule-modal__dropdown--format');
-      assert.deepEqual(
-        $('.ember-power-select-option')
-          .map((i, el) =>
-            $(el)
-              .text()
-              .trim()
-          )
-          .toArray(),
-        ['csv', 'test'],
-        'Schedule format should have correct options'
-      );
-      config.navi.schedule = originalSchedule;
-    });
+    await clickTrigger('.schedule-modal__dropdown--format');
+    assert.deepEqual(
+      findAll('.ember-power-select-option').map(el => el.textContent.trim()),
+      ['csv', 'test'],
+      'Schedule format should have correct options'
+    );
+    config.navi.schedule = originalSchedule;
   });
 
   test('format options - config enableMultipleExport', async function(assert) {
@@ -504,24 +433,14 @@ module('Integration | Component | common actions/schedule', function(hooks) {
           }}
       `);
 
-    run(async () => {
-      await click('.schedule-action__button');
-    });
+    await click('.schedule-action__button');
 
-    run(() => {
-      clickTrigger('.schedule-modal__dropdown--format');
-      assert.deepEqual(
-        $('.ember-power-select-option')
-          .map((i, el) =>
-            $(el)
-              .text()
-              .trim()
-          )
-          .toArray(),
-        ['csv', 'pdf'],
-        'Schedule format should have correct options'
-      );
-    });
+    await clickTrigger('.schedule-modal__dropdown--format');
+    assert.deepEqual(
+      findAll('.ember-power-select-option').map(el => el.textContent.trim()),
+      ['csv', 'pdf'],
+      'Schedule format should have correct options'
+    );
 
     config.navi.FEATURES.enableMultipleExport = false;
 
@@ -535,24 +454,16 @@ module('Integration | Component | common actions/schedule', function(hooks) {
           }}
       `);
 
-    run(async () => {
-      await click('.schedule-action__button');
-    });
+    await click('.schedule-action__button');
 
-    run(() => {
-      assert.ok(
-        $('.schedule-modal__dropdown--format .ember-power-select-trigger').attr('aria-disabled'),
-        'The formats dropdown is disabled by default'
-      );
-      assert.deepEqual(
-        $('.schedule-modal__dropdown--format .ember-power-select-selected-item')
-          .text()
-          .trim(),
-        'csv',
-        'Schedule format should have correct default option'
-      );
+    assert.ok(
+      $('.schedule-modal__dropdown--format .ember-power-select-trigger').attr('aria-disabled'),
+      'The formats dropdown is disabled by default'
+    );
+    assert
+      .dom('.schedule-modal__dropdown--format .ember-power-select-selected-item')
+      .includesText('csv', 'Schedule format should have correct default option');
 
-      config.navi.FEATURES.enableMultipleExport = originalFeatureFlag;
-    });
+    config.navi.FEATURES.enableMultipleExport = originalFeatureFlag;
   });
 });
