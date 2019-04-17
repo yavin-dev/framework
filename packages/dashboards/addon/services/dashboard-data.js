@@ -59,6 +59,7 @@ export default Ember.Service.extend({
             uiView: `dashboard.${dashboardId}.${uuid}.${widgetId}`
           };
 
+          request = this._applyFilters(widget, request);
           request = this._decorate(decorators, request.serialize());
 
           return this._fetch(request, options);
@@ -85,6 +86,23 @@ export default Ember.Service.extend({
     } else {
       return _.flow(...decorators)(request);
     }
+  },
+
+  /**
+   * Takes a widget and a request on that widget and
+   * applys the filters from the widget's dashboard to
+   * the widget's request.
+   *
+   * @param {Object} widget
+   * @param {Object} request
+   */
+  _applyFilters(widget, request) {
+    const requestClone = request.clone();
+    const filters = get(widget, 'dashboard.filters');
+
+    filters.forEach(filter => requestClone.addFilter(filter));
+
+    return requestClone;
   },
 
   /**
