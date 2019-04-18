@@ -22,24 +22,27 @@ module('Acceptances | Report to dashboard action', function(hooks) {
     assert.expect(3);
 
     await visit('/reports/1/view');
+
     assert.ok(
       !!$('.navi-report__action:contains("Add to Dashboard")').length,
       'Add to Dashboard button is visible by default'
     );
 
-  // Create empty filter to make request invalid
-  await click($('.grouped-list__item:Contains(Operating System) .checkbox-selector__filter')[0]);
+    // Create empty filter to make request invalid
+    await click($('.grouped-list__item:Contains(Operating System) .checkbox-selector__filter')[0]);
 
-  assert
-    .dom('.navi-report__action:contains("Add to Dashboard")')
-    .isVisible('Add to Dashboard button is hidden when all metrics is disabled');
+    assert.notOk(
+      !!$('.navi-report__action:contains("Add to Dashboard")').length,
+      'Add to Dashboard button is hidden when all metrics is disabled'
+    );
 
-  // Remove empty filter and run query
-  await click($('.grouped-list__item:Contains(Operating System) .checkbox-selector__filter')[0]);
-  await click('.navi-report__run-btn');
+    // Remove empty filter and run query
+    await click($('.grouped-list__item:Contains(Operating System) .checkbox-selector__filter')[0]);
+    await click('.navi-report__run-btn');
 
-  assert
-    .dom('.navi-report__action:contains("Add to Dashboard")')
-    .isVisible('Add to Dashboard button is once again visible after running the latest request');
+    assert.ok(
+      !!$('.navi-report__action:contains("Add to Dashboard")').length,
+      'Add to Dashboard button is once again visible after running the latest request'
+    );
   });
 });

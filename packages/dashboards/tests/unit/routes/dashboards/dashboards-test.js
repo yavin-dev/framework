@@ -5,26 +5,20 @@ import { get } from '@ember/object';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { settled } from '@ember/test-helpers';
-import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import Mirage from 'ember-cli-mirage';
 
 let Route;
 
 module('Unit | Route | dashboards/dashboard', function(hooks) {
   setupTest(hooks);
+  setupMirage(hooks);
 
-  hooks.beforeEach(function() {
-    setupMock();
-
+  hooks.beforeEach(async function() {
     // Load metadata needed for request fragment
-    let metadataService = this.owner.lookup('service:bard-metadata');
-    metadataService.loadMetadata();
+    await this.owner.lookup('service:bard-metadata').loadMetadata();
 
     Route = this.owner.lookup('route:dashboards/dashboard');
-  });
-
-  hooks.afterEach(function() {
-    teardownMock();
   });
 
   test('it exists', function(assert) {
