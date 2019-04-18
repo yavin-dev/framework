@@ -1,10 +1,10 @@
-import Ember from 'ember';
+import { get } from '@ember/object';
+import { getOwner } from '@ember/application';
 import { moduleFor, test } from 'ember-qunit';
 import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
-import wait from 'ember-test-helpers/wait';
+import Ember from 'ember';
 import Mirage from 'ember-cli-mirage';
-
-const { get } = Ember;
+import wait from 'ember-test-helpers/wait';
 
 let Route;
 
@@ -78,12 +78,13 @@ moduleFor('route:dashboards/dashboard', 'Unit | Route | dashboards/dashboard', {
     'service:user',
     'service:bard-dimensions'
   ],
-  beforeEach() {
+  async beforeEach() {
     setupMock();
 
     // Load metadata needed for request fragment
-    let metadataService = this.container.lookup('service:bard-metadata');
-    metadataService.loadMetadata();
+    await getOwner(this)
+      .lookup('service:bard-metadata')
+      .loadMetadata();
 
     Route = this.subject();
   },

@@ -8,10 +8,10 @@ let MetadataService;
 module('Unit | Transform | Dimension', function(hooks) {
   setupTest(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(async function() {
     setupMock();
     MetadataService = this.owner.lookup('service:bard-metadata');
-    MetadataService.loadMetadata();
+    await MetadataService.loadMetadata();
   });
 
   hooks.afterEach(function() {

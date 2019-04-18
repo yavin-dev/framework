@@ -108,14 +108,14 @@ moduleFor('route:dashboards/dashboard/clone', 'Unit | Route | dashboards/dashboa
     'model:delivery-rule',
     'service:navi-notifications'
   ],
-  beforeEach() {
+  async beforeEach() {
     setupMock();
     Route = this.subject();
     this.container.lookup('service:user').findUser();
 
     // Load metadata needed for request fragment
     let metadataService = this.container.lookup('service:bard-metadata');
-    metadataService.loadMetadata();
+    await metadataService.loadMetadata();
   },
   afterEach() {
     teardownMock();

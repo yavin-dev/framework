@@ -112,11 +112,12 @@ moduleFor('route:reports/new', 'Unit | Route | reports/new', {
     'validator:request-time-grain'
   ],
 
-  beforeEach() {
+  async beforeEach() {
     setupMock();
 
-    let metadataService = getOwner(this).lookup('service:bard-metadata');
-    metadataService.loadMetadata();
+    await getOwner(this)
+      .lookup('service:bard-metadata')
+      .loadMetadata();
 
     let mockAuthor = getOwner(this)
       .lookup('service:store')
