@@ -1,22 +1,16 @@
 import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { setupMock, teardownMock } from '../../helpers/mirage-helper';
-import { initialize as extendUserModel } from 'navi-dashboards/initializers/user-model';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 let Store;
 
 module('Unit | Initializer | user', function(hooks) {
   setupTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
-    setupMock();
     Store = this.owner.lookup('service:store');
-    extendUserModel();
-  });
-
-  hooks.afterEach(function() {
-    teardownMock();
   });
 
   test('Linking Dashboards to Users', function(assert) {

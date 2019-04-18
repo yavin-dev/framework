@@ -1,23 +1,23 @@
-import { A } from '@ember/array';
 import { resolve } from 'rsvp';
 import { run } from '@ember/runloop';
-import { get } from '@ember/object';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { settled } from '@ember/test-helpers';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
-import Mirage from 'ember-cli-mirage';
+import { Response } from 'ember-cli-mirage';
 
 let Route;
+
+const mockModelFor = currentDashboard => {
+  return { currentDashboard };
+};
 
 module('Unit | Route | dashboards/dashboard', function(hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
   hooks.beforeEach(async function() {
-    // Load metadata needed for request fragment
     await this.owner.lookup('service:bard-metadata').loadMetadata();
-
     Route = this.owner.lookup('route:dashboards/dashboard');
   });
 
@@ -26,48 +26,43 @@ module('Unit | Route | dashboards/dashboard', function(hooks) {
     assert.ok(Route, 'Route Exists');
   });
 
-  test('model', function(assert) {
+  test('model', async function(assert) {
     assert.expect(4);
 
-    return run(() => {
-      let params = { dashboard_id: '1' },
-        modelPromise = Route.model(params);
+    await run(async () => {
+      const params = { dashboard_id: '1' };
+      const modelPromise = Route.model(params);
 
       assert.ok(modelPromise.then, 'Route returns a promise in the model hook');
 
-      return modelPromise.then(dashboard => {
-        assert.equal(dashboard.id, params.dashboard_id, 'The requested dashboard is retrieved');
+      const dashboard = await modelPromise;
+      assert.equal(dashboard.id, params.dashboard_id, 'The requested dashboard is retrieved');
 
-        assert.equal(dashboard.get('title'), 'Tumblr Goals Dashboard', 'The requested dashboard is retrieved');
+      assert.equal(dashboard.get('title'), 'Tumblr Goals Dashboard', 'The requested dashboard is retrieved');
 
-        return dashboard.get('widgets').then(res => {
-          assert.deepEqual(
-            res.mapBy('id'),
-            ['1', '2', '3'],
-            'The requested dashboard is retrieved with the three widgets'
-          );
-        });
-      });
+      const widgets = await dashboard.get('widgets');
+      assert.deepEqual(
+        widgets.map(w => w.id),
+        ['1', '2', '3'],
+        'The requested dashboard is retrieved with the three widgets'
+      );
     });
   });
 
   test('currentDashboard', function(assert) {
     assert.expect(1);
 
-    let model = {};
+    const model = {};
+
     Route.reopen(mockModelFor(model));
 
-    assert.equal(
-      get(Route, 'currentDashboard'),
-      model,
-      'currentDashboard returns the dashboard in the current model object'
-    );
+    assert.equal(Route.currentDashboard, model, 'currentDashboard returns the dashboard in the current model object');
   });
 
   test('_updateLayout', function(assert) {
     assert.expect(2);
 
-    let dashboard = {
+    const dashboard = {
       presentation: {
         layout: [
           { widgetId: 1, column: 0, row: 0, height: 4, width: 4 },
@@ -80,13 +75,13 @@ module('Unit | Route | dashboards/dashboard', function(hooks) {
 
     Route._updateLayout([{ id: 1, x: 1, y: 1, height: 3, width: 1 }, { id: 2, x: 2, y: 4, height: 4, width: 5 }]);
 
-    let expectedLayout = [
+    const expectedLayout = [
       { widgetId: 1, column: 1, row: 1, height: 3, width: 1 },
       { widgetId: 2, column: 2, row: 4, height: 4, width: 5 },
       { widgetId: 3, column: 1, row: 7, height: 3, width: 9 }
     ];
 
-    let actualLayout = get(Route, 'currentDashboard.presentation.layout');
+    const actualLayout = Route.currentDashboard.presentation.layout;
 
     assert.deepEqual(actualLayout, expectedLayout, '_updateLayout successfully updated the dashboard layout');
 
@@ -99,20 +94,19 @@ module('Unit | Route | dashboards/dashboard', function(hooks) {
     );
   });
 
-  test('_saveDashboardFn', function(assert) {
+  test('_saveDashboardFn', async function(assert) {
     assert.expect(1);
 
-    let dashboard = {
+    const dashboard = {
       save: () => resolve()
     };
 
     Route.reopen(mockModelFor(dashboard));
-    return Route._saveDashboardFn().then(() => {
-      assert.ok(true, '_saveDashboardFn saves dashboard model when user can edit');
-    });
+    await Route._saveDashboardFn();
+    assert.ok(true, '_saveDashboardFn saves dashboard model when user can edit');
   });
 
-  test('didUpdateLayout - user can edit', function(assert) {
+  test('didUpdateLayout - user can edit', async function(assert) {
     assert.expect(1);
 
     const currentDashboard = {
@@ -133,10 +127,10 @@ module('Unit | Route | dashboards/dashboard', function(hooks) {
     });
 
     Route.send('didUpdateLayout', undefined, [1, 2]);
-    return settled();
+    await settled();
   });
 
-  test('didUpdateLayout - user cannot edit', function(assert) {
+  test('didUpdateLayout - user cannot edit', async function(assert) {
     assert.expect(1);
 
     const currentDashboard = { canUserEdit: false };
@@ -154,107 +148,87 @@ module('Unit | Route | dashboards/dashboard', function(hooks) {
 
     Route.send('didUpdateLayout', undefined, [1, 2]);
     assert.ok(true, '_saveDashboardFn method is not called');
-    return settled();
+    await settled();
   });
 
-  test('delete widget - success', function(assert) {
+  test('delete widget - success', async function(assert) {
     assert.expect(5);
 
-    return run(() => {
-      return Route.store.findRecord('dashboard', 1).then(dashboard => {
-        const naviNotifications = {
-          add({ message }) {
-            assert.equal(
-              message,
-              'Widget "Mobile DAU Graph" deleted successfully!',
-              'A notification is sent containing the widget title'
-            );
-          }
-        };
+    await run(async () => {
+      const dashboard = await Route.store.findRecord('dashboard', 1);
+      const naviNotifications = {
+        add({ message }) {
+          assert.equal(
+            message,
+            'Widget "Mobile DAU Graph" deleted successfully!',
+            'A notification is sent containing the widget title'
+          );
+        }
+      };
 
-        Route.reopen(mockModelFor(dashboard), {
-          naviNotifications,
+      Route.reopen(mockModelFor(dashboard), {
+        naviNotifications,
 
-          _saveDashboardFn() {
-            assert.ok(true, 'Dashboard is saved after layout update');
-          },
-          transitionTo(route) {
-            assert.equal(route, this.routeName, 'After deleting a widget, user is transitioned out of any child route');
-          }
-        });
-
-        // Make sure necessary widget is prefetched
-        return dashboard.get('widgets').then(() => {
-          let originalWidgetCount = dashboard.get('widgets.length');
-
-          Route.send('deleteWidget', Route.store.peekRecord('dashboard-widget', 2));
-
-          return settled().then(() => {
-            assert.equal(
-              dashboard.get('widgets.length'),
-              originalWidgetCount - 1,
-              'Dashboard has one less widget after a delete'
-            );
-
-            assert.equal(
-              A(dashboard.get('presentation.layout')).findBy('widgetId', 2),
-              undefined,
-              'Dashboard layout no longer has reference to deleted widget'
-            );
-          });
-        });
+        _saveDashboardFn() {
+          assert.ok(true, 'Dashboard is saved after layout update');
+        },
+        transitionTo(route) {
+          assert.equal(route, this.routeName, 'After deleting a widget, user is transitioned out of any child route');
+        }
       });
+
+      const widgets = await dashboard.get('widgets');
+      const originalWidgetCount = widgets.length;
+
+      Route.send('deleteWidget', Route.store.peekRecord('dashboard-widget', 2));
+
+      await settled();
+      assert.equal(dashboard.widgets.length, originalWidgetCount - 1, 'Dashboard has one less widget after a delete');
+
+      assert.equal(
+        dashboard.presentation.layout.find(w => w.widgetId === 2),
+        undefined,
+        'Dashboard layout no longer has reference to deleted widget'
+      );
     });
   });
 
-  test('delete widget - failure', function(assert) {
+  test('delete widget - failure', async function(assert) {
     assert.expect(3);
 
     //Mock Server Endpoint
-    server.delete('/dashboards/:id/widgets/:widget_id', () => {
-      return new Mirage.Response(500);
-    });
+    server.delete('/dashboards/:id/widgets/:widget_id', () => new Response(500));
 
-    return run(() => {
-      return Route.store.findRecord('dashboard', 1).then(dashboard => {
-        const naviNotifications = {
-          add({ message }) {
-            assert.equal(
-              message,
-              'OOPS! An error occurred while deleting widget "Mobile DAU Graph"',
-              'A notification is sent containing the widget title'
-            );
-          }
-        };
-        Route.reopen(mockModelFor(dashboard), { naviNotifications });
+    await run(async () => {
+      const dashboard = await Route.store.findRecord('dashboard', 1);
+      const naviNotifications = {
+        add({ message }) {
+          assert.equal(
+            message,
+            'OOPS! An error occurred while deleting widget "Mobile DAU Graph"',
+            'A notification is sent containing the widget title'
+          );
+        }
+      };
+      Route.reopen(mockModelFor(dashboard), { naviNotifications });
 
-        // Make sure necessary widget is prefetched
-        return dashboard.get('widgets').then(() => {
-          let originalWidgetCount = dashboard.get('widgets.length');
+      const widgets = await dashboard.get('widgets');
+      const originalWidgetCount = widgets.length;
 
-          Route.send('deleteWidget', Route.store.peekRecord('dashboard-widget', 2));
+      Route.send('deleteWidget', Route.store.peekRecord('dashboard-widget', 2));
 
-          return settled().then(() => {
-            assert.equal(
-              dashboard.get('widgets.length'),
-              originalWidgetCount,
-              'Dashboard still has all widgets after a failed delete'
-            );
+      await settled();
+      assert.equal(
+        dashboard.widgets.length,
+        originalWidgetCount,
+        'Dashboard still has all widgets after a failed delete'
+      );
 
-            assert.notEqual(
-              A(dashboard.get('presentation.layout')).findBy('widgetId', 2),
-              undefined,
-              'Dashboard layout still has reference to widget after a failed delete'
-            );
-          });
-        });
-      });
+      assert.notEqual(
+        dashboard.presentation.layout.find(w => w.widgetId === 2),
+        undefined,
+        'Dashboard layout still has reference to widget after a failed delete'
+      );
     });
   });
-
-  function mockModelFor(currentDashboard) {
-    return {
-      currentDashboard
-    };
-  }
 });

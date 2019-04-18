@@ -20,14 +20,10 @@ module('Unit | Route | dashboards/index', function(hooks) {
       const model = await route.model();
       const dashboards = await model.get('dashboards');
 
-      assert.deepEqual(
-        dashboards.map(d => d.get('id')),
-        ['1', '2', '5'],
-        'Routes model returns the `navi_user`s dashboards'
-      );
+      assert.deepEqual(dashboards.map(d => d.id), ['1', '2', '5'], 'Routes model returns the `navi_user`s dashboards');
 
       assert.deepEqual(
-        dashboards.map(d => d.get('title')),
+        dashboards.map(d => d.title),
         ['Tumblr Goals Dashboard', 'Dashboard 2', 'Empty Dashboard'],
         'the actual models of the dashboards can be retrieved through the model'
       );

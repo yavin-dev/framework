@@ -4,22 +4,15 @@ import { get } from '@ember/object';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { settled } from '@ember/test-helpers';
-import { setupMock, teardownMock } from '../../helpers/mirage-helper';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import config from 'ember-get-config';
 
 module('Unit | Service | dashboard data', function(hooks) {
   setupTest(hooks);
+  setupMirage(hooks);
 
-  hooks.beforeEach(function() {
-    setupMock();
-
-    // Load metadata needed for request fragment
-    let metadataService = this.owner.lookup('service:bard-metadata');
-    return metadataService.loadMetadata();
-  });
-
-  hooks.afterEach(function() {
-    teardownMock();
+  hooks.beforeEach(async function() {
+    await this.owner.lookup('service:bard-metadata').loadMetadata();
   });
 
 test('fetch data for widget', async function(assert) {

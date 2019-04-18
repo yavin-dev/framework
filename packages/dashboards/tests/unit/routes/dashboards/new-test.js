@@ -6,22 +6,23 @@ import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 let Route;
 
 const NEW_MODEL = {
-    author: 'navi_user',
-    createdOn: null,
-    filters: [],
-    presentation: {
-      columns: 12,
-      layout: [],
-      version: 1
-    },
-    updatedOn: null
+  author: 'navi_user',
+  createdOn: null,
+  filters: [],
+  presentation: {
+    columns: 12,
+    layout: [],
+    version: 1
   },
-  NEW_MODEL_WITH_DEFAULT_TITLE = Object.assign({}, NEW_MODEL, {
-    title: 'Untitled Dashboard'
-  }),
-  NEW_MODEL_WITH_GIVEN_TITLE = Object.assign({}, NEW_MODEL, {
-    title: 'Dashing Dashboard'
-  });
+  updatedOn: null
+};
+const NEW_MODEL_WITH_DEFAULT_TITLE = Object.assign({}, NEW_MODEL, {
+  title: 'Untitled Dashboard'
+});
+
+const NEW_MODEL_WITH_GIVEN_TITLE = Object.assign({}, NEW_MODEL, {
+  title: 'Dashing Dashboard'
+});
 
 module('Unit | Route | dashboards/new', function(hooks) {
   setupTest(hooks);
@@ -31,46 +32,44 @@ module('Unit | Route | dashboards/new', function(hooks) {
     Route = this.owner.lookup('route:dashboards/new');
   });
 
-  test('model - new with default title', function(assert) {
+  test('model - new with default title', async function(assert) {
     assert.expect(1);
 
-    return run(() => {
-      let modelPromise = Route.model(null, {});
+    await run(async () => {
+      const modelPromise = Route.model(null, {});
 
-      return modelPromise.then(routeModel => {
-        //We don't need to match on the createdOn and updatedOn timestamps so just set them to null
-        assert.deepEqual(
-          Object.assign({}, routeModel.toJSON(), { createdOn: null, updatedOn: null }),
-          NEW_MODEL_WITH_DEFAULT_TITLE,
-          'The model hook returns a new model when the title query param is not defined'
-        );
-      });
+      const routeModel = await modelPromise;
+
+      //We don't need to match on the createdOn and updatedOn timestamps so just set them to null
+      assert.deepEqual(
+        Object.assign({}, routeModel.toJSON(), { createdOn: null, updatedOn: null }),
+        NEW_MODEL_WITH_DEFAULT_TITLE,
+        'The model hook returns a new model when the title query param is not defined'
+      );
     });
   });
 
-  test('model - new with given title', function(assert) {
+  test('model - new with given title', async function(assert) {
     assert.expect(1);
 
-    return run(() => {
-      let queryParams = { title: 'Dashing Dashboard' },
-        modelPromise = Route.model(null, { queryParams });
+    await run(async () => {
+      const queryParams = { title: 'Dashing Dashboard' };
 
-      return modelPromise.then(routeModel => {
-        //We don't need to match on the createdOn and updatedOn timestamps so just set them to null
-        assert.deepEqual(
-          Object.assign({}, routeModel.toJSON(), { createdOn: null, updatedOn: null }),
-          NEW_MODEL_WITH_GIVEN_TITLE,
-          'The model hook returns a new model when the title query param is defined'
-        );
-      });
+      const routeModel = await Route.model(null, { queryParams });
+      //We don't need to match on the createdOn and updatedOn timestamps so just set them to null
+      assert.deepEqual(
+        Object.assign({}, routeModel.toJSON(), { createdOn: null, updatedOn: null }),
+        NEW_MODEL_WITH_GIVEN_TITLE,
+        'The model hook returns a new model when the title query param is defined'
+      );
     });
   });
 
   test('afterModel', function(assert) {
     assert.expect(2);
 
-    let dashboard = { id: 3 },
-      queryParams = {};
+    const dashboard = { id: 3 };
+    const queryParams = {};
 
     /* == Without unsavedWidgetId == */
     Route.replaceWith = destinationRoute => {

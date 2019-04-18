@@ -5,7 +5,7 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { settled } from '@ember/test-helpers';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
-import Mirage from 'ember-cli-mirage';
+import { Response } from 'ember-cli-mirage';
 
 let Route;
 
@@ -47,11 +47,12 @@ module('Unit | Route | dashboards/dashboard/clone', function(hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(async function() {
     Route = this.owner.lookup('route:dashboards/dashboard/clone');
-    await this.owner.lookup('service:user').findUser();
-    await this.container.lookup('service:bard-metadata').loadMetadata();
-  },
+    this.owner.lookup('service:user').findUser();
+
+    await this.owner.lookup('service:bard-metadata').loadMetadata();
+  });
 
   test('_cloneDashboard - valid dashboard', function(assert) {
     assert.expect(4);
@@ -89,9 +90,7 @@ module('Unit | Route | dashboards/dashboard/clone', function(hooks) {
     assert.expect(1);
 
     //Mock Server Endpoint
-    server.get('/dashboards/:id/widgets/', () => {
-      return new Mirage.Response(500);
-    });
+    server.get('/dashboards/:id/widgets/', () => new Response(500));
 
     return run(() => {
       return Route.store.findRecord('dashboard', 1).then(dashboard => {

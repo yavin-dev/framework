@@ -1,21 +1,17 @@
 import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { setupMock, teardownMock } from '../../helpers/mirage-helper';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 let Store, Model;
 
 module('Unit | Model | dashboard collection', function(hooks) {
   setupTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
-    setupMock();
     Store = this.owner.lookup('service:store');
     Model = run(() => this.owner.lookup('service:store').createRecord('dashboard-collection'));
-  });
-
-  hooks.afterEach(function() {
-    teardownMock();
   });
 
   test('it exists', function(assert) {
