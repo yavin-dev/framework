@@ -1,8 +1,9 @@
+import { cloneDeep, merge } from 'lodash';
 import { moduleFor, test } from 'ember-qunit';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
-import wait from 'ember-test-helpers/wait';
 import config from 'ember-get-config';
 import Ember from 'ember';
+import wait from 'ember-test-helpers/wait';
 
 const { get } = Ember;
 
@@ -111,7 +112,7 @@ test('fetch data for dashboard', function(assert) {
   });
 });
 
-test('fetch data for widget', function(assert) {
+test('fetch data for widget', async function(assert) {
   assert.expect(9);
 
   let service = this.subject({
@@ -124,9 +125,18 @@ test('fetch data for widget', function(assert) {
   assert.deepEqual(service.fetchDataForWidgets(1, []), {}, 'no widgets returns empty data object');
 
   const makeRequest = data => {
-    return {
-      serialize: () => data
+    const result = {
+      response: {
+        data
+      }
     };
+
+    const resultObj = merge({}, cloneDeep(result), {
+      serialize: () => cloneDeep(result),
+      clone: () => cloneDeep(resultObj)
+    });
+
+    return resultObj;
   };
 
   let widgets = [
@@ -140,34 +150,51 @@ test('fetch data for widget', function(assert) {
 
   assert.ok(get(data, '1.isPending'), 'data uses a promise proxy');
 
-  return wait().then(() => {
-    assert.deepEqual(get(data, '1').toArray(), [1, 2, 3], 'data for widget is an array of request responses');
+  await wait();
 
-    /* == Decorators == */
-    data = service.fetchDataForWidgets(1, widgets, [number => number + 1]);
-    return wait().then(() => {
-      assert.deepEqual(get(data, '1').toArray(), [2, 3, 4], 'each response is modified by the decorators');
+  assert.deepEqual(
+    get(data, '1')
+      .toArray()
+      .map(res => get(res, 'response.data')),
+    [1, 2, 3],
+    'data for widget is an array of request responses'
+  );
 
-      /* == Options == */
-      let optionsObject = {
-        page: 1
-      };
+  /* == Decorators == */
+  data = service.fetchDataForWidgets(1, widgets, [
+    obj => merge({}, obj, { response: { data: obj.response.data + 1 } })
+  ]);
 
-      service.set('dashboardId', 1);
-      service.set('_fetch', (request, options) => {
-        assert.equal(options, optionsObject, 'options object is passed on to data fetch method');
+  await wait();
 
-        let uiViewHeaderElems = options.customHeaders.uiView.split('.');
+  assert.deepEqual(
+    get(data, '1')
+      .toArray()
+      .map(obj => get(obj, 'response.data')),
+    [2, 3, 4],
+    'each response is modified by the decorators'
+  );
 
-        assert.equal(uiViewHeaderElems[1], 1, 'uiView header has the dashboard id');
+  /* == Options == */
+  let optionsObject = {
+    page: 1
+  };
 
-        assert.equal(uiViewHeaderElems[3], 2, 'uiView header has the widget id');
+  service.set('dashboardId', 1);
+  service.set('_fetch', (request, options) => {
+    assert.equal(options, optionsObject, 'options object is passed on to data fetch method');
 
-        assert.ok(uiViewHeaderElems[2], 'uiView header has a random uuid attached to the end');
-      });
-      service.fetchDataForWidgets(1, [{ id: 2, requests: [makeRequest(4)] }], [], optionsObject);
-    });
+    let uiViewHeaderElems = options.customHeaders.uiView.split('.');
+
+    assert.equal(uiViewHeaderElems[1], 1, 'uiView header has the dashboard id');
+
+    assert.equal(uiViewHeaderElems[3], 2, 'uiView header has the widget id');
+
+    assert.ok(uiViewHeaderElems[2], 'uiView header has a random uuid attached to the end');
+
+    return Ember.RSVP.resolve({});
   });
+  service.fetchDataForWidgets(1, [{ id: 2, requests: [makeRequest(4)] }], [], optionsObject);
 });
 
 test('_fetch', function(assert) {
