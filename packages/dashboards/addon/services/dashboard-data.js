@@ -56,25 +56,22 @@ export default Service.extend({
     // Construct hash of widget id to data
     widgets.forEach(widget => {
       const widgetId = get(widget, 'id');
+      const dashboard = get(widget, 'dashboard');
       const widgetDataPromises = get(widget, 'requests').map(request => {
         //construct custom header for each widget with uuid
         options.customHeaders = {
           uiView: `dashboard.${dashboardId}.${uuid}.${widgetId}`
         };
 
-        request = this._applyFilters(widget, request);
-        request = this._decorate(decorators, request.serialize());
+        const requestWithFilters = this._applyFilters(dashboard, request);
+        const requestDecorated = this._decorate(decorators, requestWithFilters.serialize());
 
-        const filterErrors = this._getFilterErrors(widget);
+        const filterErrors = this._getFilterErrors(dashboard, request);
 
-        return this._fetch(request, options).then(result => {
+        return this._fetch(requestDecorated, options).then(result => {
           const serverErrors = getWithDefault(result, 'response.errors', []);
 
-          return merge({}, result, {
-            response: {
-              errors: [...serverErrors, ...filterErrors]
-            }
-          });
+          return merge({}, result, { response: { errors: [...serverErrors, ...filterErrors] } });
         });
       });
 
@@ -102,72 +99,78 @@ export default Service.extend({
   },
 
   /**
-   * Takes a widget and a request on that widget and
-   * applys the filters from the widget's dashboard to
-   * the widget's request.
+   * Takes a dashboard and a request on a widget in that
+   * dashboard and returns a new request object filtered with
+   * applicable global dashboard filters.
    *
-   * @param {Object} widget
+   * @param {Object} dashboard
    * @param {Object} request
    * @returns {Object}
    */
-  _applyFilters(widget, request) {
+  _applyFilters(dashboard, request) {
     const requestClone = request.clone();
 
-    this._getValidGlobalFilters(widget).forEach(filter => requestClone.addFilter(filter));
+    this._getValidGlobalFilters(dashboard, request).forEach(filter => requestClone.addFilter(filter));
 
     return requestClone;
   },
 
   /**
    * Finds the invalid global filters for a
-   * widget and returns them.
+   * request and return them.
    *
-   * @param {Object} widget
+   * @param {Object} dashboard
+   * @param {Object} request
    * @returns {Array<Object>}
    */
-  _getInvalidGlobalFilters(widget) {
-    const filters = getWithDefault(widget, 'dashboard.filters', []);
+  _getInvalidGlobalFilters(dashboard, request) {
+    const filters = getWithDefault(dashboard, 'filters', []);
 
-    return filters.filter(filter => !this._isFilterValid(widget, filter));
+    return filters.filter(filter => !this._isFilterValid(request, filter));
   },
 
   /**
+   * Finds the valid global filters for a
+   * request and return them.
    *
-   * @param {Object} widget
+   * @param {Object} dashboard
+   * @param {Object} request
+   * @returns {Array<Object>}
    */
-  _getFilterErrors(widget) {
-    const invalidFilters = this._getInvalidGlobalFilters(widget);
+  _getValidGlobalFilters(dashboard, request) {
+    const filters = getWithDefault(dashboard, 'filters', []);
+
+    return filters.filter(filter => this._isFilterValid(request, filter));
+  },
+
+  /**
+   * Generate the Invalid Filter error objects for a
+   * request on a widget in a dashboard.
+   *
+   * @param {Object} dashboard
+   * @param {Object} request
+   * @return {Array<Object>}
+   */
+  _getFilterErrors(dashboard, request) {
+    const invalidFilters = this._getInvalidGlobalFilters(dashboard, request);
 
     return invalidFilters.map(filter => ({
       detail: `"${get(filter, 'dimension.name')}" is not a dimension in the "${get(
-        widget,
-        'request.logicalTable.table.name'
+        request,
+        'logicalTable.table.name'
       )}" table.`,
       title: 'Invalid Filter'
     }));
   },
 
   /**
-   * Finds the valid global filters for a
-   * widget and returns them.
    *
-   * @param {Object} widget
-   * @returns {Array<Object>}
-   */
-  _getValidGlobalFilters(widget) {
-    const filters = getWithDefault(widget, 'dashboard.filters', []);
-
-    return filters.filter(filter => this._isFilterValid(widget, filter));
-  },
-
-  /**
-   *
-   * @param {Object} widget
+   * @param {Object} request
    * @param {Object} filter
    * @returns {Boolean}
    */
-  _isFilterValid(widget, filter) {
-    const validDimensions = []; // get(widget, 'request.logicalTable.timeGrain.dimensionIds');
+  _isFilterValid(request, filter) {
+    const validDimensions = get(request, 'logicalTable.timeGrain.dimensionIds');
 
     return validDimensions.includes(get(filter, 'dimension.name'));
   },

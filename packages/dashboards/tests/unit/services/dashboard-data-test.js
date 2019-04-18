@@ -257,3 +257,122 @@ test('_decorate', function(assert) {
 
   assert.equal(service._decorate([], 1), 1, 'empty array of decorators has no effect');
 });
+
+test('global filter application and error injection.', async function(assert) {
+  assert.expect(4);
+
+  const VALID_FILTERS = ['dim1', 'dim3'];
+  const DASHBOARD_FILTERS = ['dim1', 'dim2'];
+
+  const service = this.subject({
+    _fetch(request) {
+      // Skip the ws data fetch for this test
+      return Ember.RSVP.resolve({
+        request,
+        response: {
+          errors: [{ title: 'Server Error' }]
+        }
+      });
+    }
+  });
+
+  const makeFilter = ({ dimension }) => ({ dimension: { name: dimension } });
+
+  const dashboard = {
+    filters: DASHBOARD_FILTERS.map(dimension => makeFilter({ dimension }))
+  };
+
+  const makeRequest = (data, filters) => ({
+    clone() {
+      return cloneDeep(this);
+    },
+    serialize() {
+      return cloneDeep(this);
+    },
+    addFilter(filter) {
+      this.filters.push(filter);
+    },
+    logicalTable: {
+      table: { name: 'table1' },
+      timeGrain: { dimensionIds: VALID_FILTERS }
+    },
+    data,
+    filters: filters || [makeFilter({ dimension: `original dim${data}` })]
+  });
+
+  const widgets = [
+    {
+      dashboard: cloneDeep(dashboard),
+      id: 1,
+      requests: [makeRequest(1), makeRequest(2, []), makeRequest(3)]
+    },
+    {
+      dashboard: cloneDeep(dashboard),
+      id: 2,
+      requests: [makeRequest(4)]
+    },
+    {
+      dashboard: cloneDeep(dashboard),
+      id: 3,
+      requests: []
+    }
+  ];
+
+  const data = service.fetchDataForWidgets(1, widgets);
+
+  const widget1 = await get(data, '1');
+  const widget2 = await get(data, '2');
+  const widget3 = await get(data, '3');
+
+  assert.deepEqual(
+    widget1.map(result => get(result, 'request.filters').map(filter => get(filter, 'dimension.name'))),
+    [['original dim1', 'dim1'], ['dim1'], ['original dim3', 'dim1']],
+    'Applicable global filters are applied to widget 1 requests'
+  );
+
+  assert.deepEqual(
+    widget2.map(result => get(result, 'request.filters').map(filter => get(filter, 'dimension.name'))),
+    [['original dim4', 'dim1']],
+    'Applicable global filters are applied to widget 2 requests'
+  );
+
+  assert.deepEqual(
+    widget3.map(result => get(result, 'request.filters').map(filter => get(filter, 'dimension.name'))),
+    [],
+    'Applicable global filters are applied to widget 3 requests'
+  );
+
+  assert.deepEqual(
+    widget1.map(result => get(result, 'response.errors')),
+    [
+      [
+        {
+          title: 'Server Error'
+        },
+        {
+          detail: '"dim2" is not a dimension in the "table1" table.',
+          title: 'Invalid Filter'
+        }
+      ],
+      [
+        {
+          title: 'Server Error'
+        },
+        {
+          detail: '"dim2" is not a dimension in the "table1" table.',
+          title: 'Invalid Filter'
+        }
+      ],
+      [
+        {
+          title: 'Server Error'
+        },
+        {
+          detail: '"dim2" is not a dimension in the "table1" table.',
+          title: 'Invalid Filter'
+        }
+      ]
+    ],
+    'Errors are injected into the response.'
+  );
+});
