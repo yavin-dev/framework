@@ -2,6 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, findAll, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
+import $ from 'jquery';
 import { clickTrigger, nativeMouseUp } from '../../helpers/ember-power-select';
 import Duration from 'navi-core/utils/classes/duration';
 import Interval from 'navi-core/utils/classes/interval';
@@ -56,20 +57,14 @@ module('Integration | Component | filter collection', function(hooks) {
 
     assert.dom('.filter-collection__row').exists({ count: 5 }, 'Each request filter is represented by a filter row');
 
-    assert.ok(
-      this.$('.filter-collection__row .filter-collection__remove').is(':visible'),
-      'Each filter row has a remove button'
-    );
+    assert.dom('.filter-collection__row .filter-collection__remove').isVisible('Each filter row has a remove button');
 
-    assert.ok(
-      this.$('.filter-collection__row .filter-collection__builder').is(':visible'),
-      'Each filter row has a filter builder'
-    );
+    assert.dom('.filter-collection__row .filter-collection__builder').isVisible('Each filter row has a filter builder');
 
-    assert.ok(this.$('.filter-values--range-input').is(':visible'), 'Range input should be rendered');
+    assert.dom('.filter-values--range-input').isVisible('Range input should be rendered');
   });
 
-  test('updating a filter', function(assert) {
+  test('updating a filter', async function(assert) {
     assert.expect(2);
 
     /* == Changing operator == */
@@ -84,8 +79,8 @@ module('Integration | Component | filter collection', function(hooks) {
         'Operator update is requested'
       );
     });
-    clickTrigger(`#${$('.filter-builder__operator:eq(1)').attr('id')}`);
-    nativeMouseUp($('.ember-power-select-option:contains(Is Empty)')[0]);
+    await clickTrigger(`#${$('.filter-builder__operator:eq(1)').attr('id')}`);
+    await nativeMouseUp($('.ember-power-select-option:contains(Is Empty)')[0]);
   });
 
   test('remove a filter', async function(assert) {
@@ -105,7 +100,7 @@ module('Integration | Component | filter collection', function(hooks) {
     assert.expect(1);
 
     assert.ok(
-      this.$('.filter-collection__remove:eq(0)').is('.filter-collection__remove--disabled'),
+      $('.filter-collection__remove:eq(0)').is('.filter-collection__remove--disabled'),
       'The first filter has remove disabled'
     );
   });

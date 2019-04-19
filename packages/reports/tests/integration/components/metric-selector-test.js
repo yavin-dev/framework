@@ -2,12 +2,12 @@ import { isEmpty } from '@ember/utils';
 import { run } from '@ember/runloop';
 import { A } from '@ember/array';
 import { helper as buildHelper } from '@ember/component/helper';
-import { getOwner } from '@ember/application';
 import { set, get } from '@ember/object';
 import hbs from 'htmlbars-inline-precompile';
+import $ from 'jquery';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click, findAll, fillIn, find, triggerEvent } from '@ember/test-helpers';
+import { render, click, findAll, fillIn, triggerEvent } from '@ember/test-helpers';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
 import { assertTooltipRendered, assertTooltipNotRendered, assertTooltipContent } from '../../helpers/ember-tooltips';
 
@@ -70,23 +70,19 @@ module('Integration | Component | metric selector', function(hooks) {
     teardownMock();
   });
 
-  test('it renders', function(assert) {
+  test('it renders', async function(assert) {
     assert.expect(3);
 
-    assert.ok(this.$('.checkbox-selector--metric').is(':visible'), 'The metric selector component is rendered');
+    assert.dom('.checkbox-selector--metric').isVisible('The metric selector component is rendered');
 
-    assert.ok(
-      this.$('.navi-list-selector').is(':visible'),
-      'a navi-list-selector component is rendered as part of the metric selector'
-    );
+    assert
+      .dom('.navi-list-selector')
+      .isVisible('a navi-list-selector component is rendered as part of the metric selector');
 
-    assert.ok(
-      this.$('.grouped-list').is(':visible'),
-      'a grouped-list component is rendered as part of the metric selector'
-    );
+    assert.dom('.grouped-list').isVisible('a grouped-list component is rendered as part of the metric selector');
   });
 
-  test('show selected', function(assert) {
+  test('show selected', async function(assert) {
     assert.expect(9);
 
     assert.ok(
@@ -98,26 +94,17 @@ module('Integration | Component | metric selector', function(hooks) {
       .dom('.navi-list-selector__show-link')
       .hasText('Show Selected (1)', 'The Show Selected link has the correct number of selected base metrics shown');
 
-    run(async () => {
-      await click('.navi-list-selector__show-link');
-    });
+    await click('.navi-list-selector__show-link');
 
     assert.deepEqual(
-      this.$('.grouped-list__item')
-        .toArray()
-        .map(el =>
-          $(el)
-            .text()
-            .trim()
-        ),
+      findAll('.grouped-list__item').map(el => el.textContent.trim()),
       ['Ad Clicks'],
       'When show selected is clicked only the selected adClicks base metric is shown'
     );
 
     assert.notOk(
-      this.$('.checkbox-selector__checkbox')
-        .toArray()
-        .map(el => $(el)[0]['checked'])
+      findAll('.checkbox-selector__checkbox')
+        .map(el => el['checked'])
         .includes(false),
       'The selected items are checked'
     );
@@ -126,20 +113,12 @@ module('Integration | Component | metric selector', function(hooks) {
     metrics.removeFragment(metrics.toArray()[0]);
 
     assert.deepEqual(
-      this.$('.grouped-list__item')
-        .toArray()
-        .map(el =>
-          $(el)
-            .text()
-            .trim()
-        ),
+      findAll('.grouped-list__item').map(el => el.textContent.trim()),
       ['Ad Clicks'],
       "Removing one metric while another metric with the same base is still selected does not change 'Show Selected'"
     );
 
-    run(async () => {
-      await click('.navi-list-selector__show-link');
-    });
+    await click('.navi-list-selector__show-link');
 
     assert
       .dom('.navi-list-selector__show-link')
@@ -162,32 +141,23 @@ module('Integration | Component | metric selector', function(hooks) {
         'The Show Selected link increases the count when a metric with a different base is added'
       );
 
-    run(async () => {
-      await click('.navi-list-selector__show-link');
-    });
+    await click('.navi-list-selector__show-link');
 
     assert.deepEqual(
-      this.$('.grouped-list__item')
-        .toArray()
-        .map(el =>
-          $(el)
-            .text()
-            .trim()
-        ),
+      findAll('.grouped-list__item').map(el => el.textContent.trim()),
       ['Ad Clicks', 'Page Views'],
       'Adding a new metric will show its base metric as selected'
     );
 
     assert.notOk(
-      this.$('.checkbox-selector__checkbox')
-        .toArray()
-        .map(el => $(el)[0]['checked'])
+      findAll('.checkbox-selector__checkbox')
+        .map(el => el['checked'])
         .includes(false),
       'All selected items are checked'
     );
   });
 
-  test('add and remove metric actions', function(assert) {
+  test('add and remove metric actions', async function(assert) {
     assert.expect(2);
 
     this.set('addMetric', metric => {
@@ -199,25 +169,24 @@ module('Integration | Component | metric selector', function(hooks) {
     });
 
     //select first time grain
-    run(() => {
-      //add total clicks
-      this.$('.grouped-list__item:contains(Total Clicks) .grouped-list__item-label').click();
 
-      //remove ad clicks
-      this.$('.grouped-list__item:contains(Ad Clicks) .grouped-list__item-label').click();
-    });
+    //add total clicks
+    await click($('.grouped-list__item:contains(Total Clicks) .grouped-list__item-label')[0]);
+
+    //remove ad clicks
+    await click($('.grouped-list__item:contains(Ad Clicks) .grouped-list__item-label')[0]);
   });
 
-  test('filter icon', function(assert) {
+  test('filter icon', async function(assert) {
     assert.expect(3);
 
     assert.notOk(
-      isEmpty(this.$('.grouped-list__item:contains(Ad Clicks) .checkbox-selector__filter--active')),
+      isEmpty($('.grouped-list__item:contains(Ad Clicks) .checkbox-selector__filter--active')),
       'The filter icon with the adclicks metric has the active class'
     );
 
     assert.ok(
-      isEmpty(this.$('.grouped-list__item:contains(Total Clicks) .checkbox-selector__filter--active')),
+      isEmpty($('.grouped-list__item:contains(Total Clicks) .checkbox-selector__filter--active')),
       'The filter icon with the total clicks metric does not have the active class'
     );
 
@@ -225,12 +194,10 @@ module('Integration | Component | metric selector', function(hooks) {
       assert.deepEqual(metric, AdClicks, 'The adclicks metric is passed to the action when filter icon is clicked');
     });
 
-    run(() => {
-      this.$('.grouped-list__item:contains(Ad Clicks) .checkbox-selector__filter').click();
-    });
+    await click($('.grouped-list__item:contains(Ad Clicks) .checkbox-selector__filter')[0]);
   });
 
-  test('tooltip', function(assert) {
+  test('tooltip', async function(assert) {
     assert.expect(3);
 
     assertTooltipNotRendered(assert);
@@ -238,11 +205,9 @@ module('Integration | Component | metric selector', function(hooks) {
       content: { description: 'foo' }
     });
 
-    run(() => {
-      this.$('.grouped-list__group-header:contains(Clicks)').trigger('click');
-      // triggerTooltipTargetEvent will not work for hidden elementc
-      this.$('.grouped-list__item:contains(Ad Clicks) .grouped-list__item-info').trigger('mouseenter');
-    });
+    await click($('.grouped-list__group-header:contains(Clicks)')[0]);
+    // triggerTooltipTargetEvent will not work for hidden elementc
+    await triggerEvent($('.grouped-list__item:contains(Ad Clicks) .grouped-list__item-info')[0], 'mouseenter');
 
     assertTooltipRendered(assert);
     assertTooltipContent(assert, {
@@ -250,16 +215,16 @@ module('Integration | Component | metric selector', function(hooks) {
     });
   });
 
-  test('metric config for metric with parameters', function(assert) {
+  test('metric config for metric with parameters', async function(assert) {
     assert.expect(2);
 
     assert.ok(
-      isEmpty(this.$('.grouped-list__item:contains(Ad Clicks) .metric-config')),
+      isEmpty($('.grouped-list__item:contains(Ad Clicks) .metric-config')),
       'The metric config trigger icon is not present for a metric without parameters'
     );
 
     assert.notOk(
-      isEmpty(this.$('.grouped-list__item:contains(Revenue) .metric-config')),
+      isEmpty($('.grouped-list__item:contains(Revenue) .metric-config')),
       'The metric config trigger icon is present for a metric with parameters'
     );
   });
@@ -268,7 +233,7 @@ module('Integration | Component | metric selector', function(hooks) {
     assert.expect(2);
 
     assert.deepEqual(
-      this.$('.grouped-list__item:contains(Page)')
+      $('.grouped-list__item:contains(Page)')
         .toArray()
         .map(el => el.textContent.trim()),
       ['Additive Page Views', 'Page Views', 'Total Page Views', 'Total Page Views WoW'],
@@ -279,9 +244,7 @@ module('Integration | Component | metric selector', function(hooks) {
     await triggerEvent('.navi-list-selector__search-input', 'focusout');
 
     assert.deepEqual(
-      this.$('.grouped-list__item')
-        .toArray()
-        .map(el => el.textContent.trim()),
+      findAll('.grouped-list__item').map(el => el.textContent.trim()),
       ['Page Views', 'Total Page Views', 'Additive Page Views', 'Total Page Views WoW'],
       'The search results are ranked based on relevance'
     );

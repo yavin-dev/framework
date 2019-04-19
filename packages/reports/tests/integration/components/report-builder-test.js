@@ -1,7 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
-import { getOwner } from '@ember/application';
 import { helper } from '@ember/component/helper';
 import hbs from 'htmlbars-inline-precompile';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
@@ -16,7 +15,7 @@ module('Integration | Component | report builder', function(hooks) {
     MetadataService = this.owner.lookup('service:bard-metadata');
     Store = this.owner.lookup('service:store');
 
-    this.container.registry.registrations['helper:update-report-action'] = helper(() => () => {});
+    this.owner.__container__.registry.registrations['helper:update-report-action'] = helper(() => () => {});
 
     return MetadataService.loadMetadata().then(() => {
       this.set(
@@ -54,8 +53,8 @@ module('Integration | Component | report builder', function(hooks) {
       report=report
     }}`);
 
-    assert.ok(this.$('.report-builder__main').is(':visible'), 'Report builder renders');
-    assert.notOk(this.$('.navi-table-select').is(':visible'), 'Table selector does not render with only one table');
+    assert.dom('.report-builder__main').isVisible('Report builder renders');
+    assert.dom('.navi-table-select').isNotVisible('Table selector does not render with only one table');
   });
 
   test('Multiple tables in meta should show table selector', async function(assert) {
@@ -65,6 +64,6 @@ module('Integration | Component | report builder', function(hooks) {
       report=report
     }}`);
 
-    assert.ok(this.$('.navi-table-select').is(':visible'), 'Table renders when there are multiple tables');
+    assert.dom('.navi-table-select').isVisible('Table renders when there are multiple tables');
   });
 });

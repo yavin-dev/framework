@@ -1,8 +1,9 @@
-import { A } from '@ember/array';
+import { A as arr } from '@ember/array';
 import Component from '@ember/component';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find } from '@ember/test-helpers';
+import { render, findAll } from '@ember/test-helpers';
+import $ from 'jquery';
 import { clickTrigger, nativeMouseUp } from 'ember-power-select/test-support/helpers';
 import hbs from 'htmlbars-inline-precompile';
 
@@ -47,7 +48,8 @@ module('Integration | Component | filter-builders/base', function(hooks) {
     this.owner.register(
       'component:mock/values-component',
       Component.extend({
-        classNames: 'mock-value-component'
+        classNames: 'mock-value-component',
+        layout: hbs`<div>Test</div>`
       })
     );
     this.owner.register('component:mock/another-values-component', Component.extend());
@@ -66,22 +68,13 @@ module('Integration | Component | filter-builders/base', function(hooks) {
       .dom('.filter-builder__operator .ember-power-select-selected-item')
       .hasText(filter.operator.longName, 'The filter current operator is selected by default');
 
-    clickTrigger();
-    assert.deepEqual(
-      $('.ember-power-select-option')
-        .map(function() {
-          return $(this)
-            .text()
-            .trim();
-        })
-        .get(),
-      A(supportedOperators).mapBy('longName'),
-      'All supported operators show up as options in the operator selector'
-    );
+    assert.dom('.mock-value-component').isVisible('The component specified by the filter operator is rendered');
 
-    assert.ok(
-      this.$('.mock-value-component').is(':visible'),
-      'The component specified by the filter operator is rendered'
+    await clickTrigger();
+    assert.deepEqual(
+      findAll('.ember-power-select-option').map(el => el.textContent.trim()),
+      arr(supportedOperators).mapBy('longName'),
+      'All supported operators show up as options in the operator selector'
     );
   });
 
@@ -102,14 +95,14 @@ module('Integration | Component | filter-builders/base', function(hooks) {
     );
 
     /* == Operator with same valuesComponent == */
-    clickTrigger();
-    nativeMouseUp($('.ember-power-select-option:contains(Not Equals)')[0]);
+    await clickTrigger();
+    await nativeMouseUp($('.ember-power-select-option:contains(Not Equals)')[0]);
 
     /* == Operator with different valuesComponent == */
     this.set('onUpdateFilter', changeSet => {
       assert.deepEqual(changeSet.values, [], 'Values is reset when changing between operators to avoid conflicts');
     });
-    clickTrigger();
-    nativeMouseUp($('.ember-power-select-option:contains(Is Empty)')[0]);
+    await clickTrigger();
+    await nativeMouseUp($('.ember-power-select-option:contains(Is Empty)')[0]);
   });
 });

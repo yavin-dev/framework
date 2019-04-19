@@ -2,10 +2,13 @@ import { set } from '@ember/object';
 import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, findAll, click, fillIn, find } from '@ember/test-helpers';
+import { render, findAll, click, find, blur } from '@ember/test-helpers';
+import $ from 'jquery';
+import hbs from 'htmlbars-inline-precompile';
 import Interval from 'navi-core/utils/classes/interval';
 import Duration from 'navi-core/utils/classes/duration';
 import moment from 'moment';
+import waitForError from '../../helpers/wait-for-error';
 
 module('Integration | Component | Navi Date Range Picker', function(hooks) {
   setupRenderingTest(hooks);
@@ -14,14 +17,14 @@ module('Integration | Component | Navi Date Range Picker', function(hooks) {
     this.set('setInterval', () => {});
   });
 
-  test('dateTimePeriod must be defined', function(assert) {
+  test('dateTimePeriod must be defined', async function(assert) {
     assert.expect(1);
 
-    assert.expectAssertion(
-      async () => {
-        await render('{{navi-date-range-picker}}');
-      },
-      /Assertion Failed: dateTimePeriod must be defined in order to use navi-date-range-picker/,
+    const [e] = await Promise.all([waitForError(), render(hbs`{{navi-date-range-picker}}`)]);
+
+    assert.equal(
+      e.message,
+      'Assertion Failed: dateTimePeriod must be defined in order to use navi-date-range-picker',
       'Error is thrown when using component without a time period'
     );
   });
@@ -31,19 +34,13 @@ module('Integration | Component | Navi Date Range Picker', function(hooks) {
 
     this.dateTimePeriod = 'week';
 
-    await render(`
+    await render(hbs`
           {{navi-date-range-picker
               dateTimePeriod=dateTimePeriod
           }}
       `);
 
-    let ranges = this.$('.predefined-range')
-      .map(function() {
-        return $(this)
-          .text()
-          .trim();
-      })
-      .get();
+    let ranges = findAll('.predefined-range').map(el => el.textContent.trim());
 
     assert.deepEqual(
       ranges,
@@ -65,13 +62,7 @@ module('Integration | Component | Navi Date Range Picker', function(hooks) {
       set(this, 'dateTimePeriod', 'day');
     });
 
-    ranges = this.$('.predefined-range')
-      .map(function() {
-        return $(this)
-          .text()
-          .trim();
-      })
-      .get();
+    ranges = findAll('.predefined-range').map(el => el.textContent.trim());
 
     assert.deepEqual(
       ranges,
@@ -92,13 +83,7 @@ module('Integration | Component | Navi Date Range Picker', function(hooks) {
       set(this, 'dateTimePeriod', 'month');
     });
 
-    ranges = this.$('.predefined-range')
-      .map(function() {
-        return $(this)
-          .text()
-          .trim();
-      })
-      .get();
+    ranges = findAll('.predefined-range').map(el => el.textContent.trim());
 
     assert.deepEqual(
       ranges,
@@ -124,22 +109,20 @@ module('Integration | Component | Navi Date Range Picker', function(hooks) {
       assert.ok(interval.isEqual(expectedInterval), 'Interval starts "duration" weeks ago and ends on "current"');
     });
 
-    await render(`
-          {{navi-date-range-picker
-              dateTimePeriod='week'
-              onSetInterval=(action setInterval)
-          }}
-      `);
+    await render(hbs`
+        {{navi-date-range-picker
+            dateTimePeriod='week'
+            onSetInterval=(action setInterval)
+        }}
+    `);
 
-    run(async () => {
-      await click(findAll('li')[2]);
-    });
+    await click(findAll('li')[2]);
   });
 
   test('intervalSet class', async function(assert) {
     assert.expect(2);
 
-    await render(`
+    await render(hbs`
           {{navi-date-range-picker
               dateTimePeriod='week'
               onSetInterval=(action (mut testInterval))
@@ -147,17 +130,14 @@ module('Integration | Component | Navi Date Range Picker', function(hooks) {
           }}
       `);
 
-    assert.ok(
-      this.$('.navi-date-range-picker').not('.interval-set'),
-      'interval-set class is not present when the interval attr is not provided'
-    );
+    assert
+      .dom('.navi-date-range-picker')
+      .doesNotHaveClass('.interval-set', 'interval-set class is not present when the interval attr is not provided');
 
-    run(async () => {
-      await click(findAll('li')[2]);
-    });
+    await click(findAll('li')[2]);
 
     assert.ok(
-      this.$('.navi-date-range-picker').is('.interval-set'),
+      [...find('.navi-date-range-picker').classList].includes('interval-set'),
       'interval-set class is present when the interval attr is provided'
     );
   });
@@ -167,7 +147,7 @@ module('Integration | Component | Navi Date Range Picker', function(hooks) {
 
     this.interval = null;
 
-    await render(`
+    await render(hbs`
           {{navi-date-range-picker
               dateTimePeriod='week'
               interval=interval
@@ -180,7 +160,7 @@ module('Integration | Component | Navi Date Range Picker', function(hooks) {
       this.set('interval', new Interval(new Duration('P4W'), 'current'));
     });
 
-    assert.ok(this.$('li:eq(2)').is('.active'), 'Selected interval is marked active');
+    assert.ok($('.navi-date-range-picker li:eq(2)').is('.active'), 'Selected interval is marked active');
     assert.dom('li.active').exists({ count: 1 }, 'Only one interval is marked active');
   });
 
@@ -189,12 +169,12 @@ module('Integration | Component | Navi Date Range Picker', function(hooks) {
 
     this.interval = null;
 
-    await render(`
-          {{navi-date-range-picker
-              dateTimePeriod='week'
-              interval=interval
-          }}
-      `);
+    await render(hbs`
+      {{navi-date-range-picker
+          dateTimePeriod='week'
+          interval=interval
+      }}
+    `);
 
     assert
       .dom('.pick-value.selection-box')
@@ -219,7 +199,7 @@ module('Integration | Component | Navi Date Range Picker', function(hooks) {
 
     this.interval = new Interval(new Duration('P7D'), 'current');
 
-    await render(`
+    await render(hbs`
           {{#navi-date-range-picker
               dateTimePeriod='week'
               interval=interval
@@ -229,21 +209,21 @@ module('Integration | Component | Navi Date Range Picker', function(hooks) {
           {{/navi-date-range-picker}}
       `);
 
-    assert.ok(this.$('.custom-template').is(':visible'), 'When used in block form, a custom template is allowed');
+    assert.dom('.custom-template').isVisible('When used in block form, a custom template is allowed');
 
     assert.dom('.custom-template').hasText('Last 7 Days', 'The selected interval is yielded to the custom template');
 
-    assert.notOk(this.$('.placeholder').is(':visible'), 'The default placeholder template is not visible');
+    assert.dom('.placeholder').isNotVisible('The default placeholder template is not visible');
   });
 
   test('Fixed range is last option', async function(assert) {
     assert.expect(1);
 
-    await render(`
-          {{navi-date-range-picker
-              dateTimePeriod='week'
-          }}
-      `);
+    await render(hbs`
+      {{navi-date-range-picker
+          dateTimePeriod='week'
+      }}
+    `);
 
     assert.dom(find('li:last-of-type > div')).hasText('Custom range', 'Last option is "Custom range"');
   });
@@ -251,21 +231,19 @@ module('Integration | Component | Navi Date Range Picker', function(hooks) {
   test('Open custom interval form', async function(assert) {
     assert.expect(2);
 
-    await render(`
-          {{navi-date-range-picker
-              dateTimePeriod='week'
-              onSetInterval=(action setInterval)
-          }}
-      `);
+    await render(hbs`
+      {{navi-date-range-picker
+          dateTimePeriod='week'
+          onSetInterval=(action setInterval)
+      }}
+    `);
 
-    assert.ok(this.$('.custom-range-form').is(':not(:visible)'), 'Custom range form is hidden by default');
+    assert.dom('.custom-range-form').isNotVisible('Custom range form is hidden by default');
 
-    run(() => {
-      openRangePicker(this);
-      openCustomRange(this);
-    });
+    await openRangePicker();
+    await openCustomRange();
 
-    assert.ok(this.$('.custom-range-form').is(':visible'), 'Clicking "Custom range" option opens up range form');
+    assert.dom('.custom-range-form').isVisible('Clicking "Custom range" option opens up range form');
   });
 
   test('Custom range form shows selected interval', async function(assert) {
@@ -273,37 +251,41 @@ module('Integration | Component | Navi Date Range Picker', function(hooks) {
 
     this.interval = null;
 
-    await render(`
-          {{navi-date-range-picker
-              dateTimePeriod='day'
-              interval=interval
-          }}
-      `);
+    await render(hbs`
+      {{navi-date-range-picker
+          dateTimePeriod='day'
+          interval=interval
+      }}
+    `);
 
-    run(() => {
-      openRangePicker(this);
-      openCustomRange(this);
-    });
+    await openRangePicker();
+    await openCustomRange();
 
     run(() => {
       this.set('interval', new Interval(moment('09-14-2014', 'MM-DD-YYYY'), moment('10-15-2014', 'MM-DD-YYYY')));
     });
 
-    assert.dom(find('.datepicker:eq(0) .active')).hasText('14Sep2014', 'First date picker has start day selected');
+    let firstActiveDate = [...this.element.querySelectorAll('.datepicker')[0].querySelectorAll('.active')].reduce(
+      (acc, curr) => acc + curr.textContent.trim(),
+      ''
+    );
+    assert.equal(firstActiveDate, '14Sep2014', 'First date picker has start day selected');
 
-    assert.dom(find('.datepicker:eq(1) .active')).hasText('14Oct2014', 'Second date picker has end day selected');
+    let secondActiveDate = [...this.element.querySelectorAll('.datepicker')[1].querySelectorAll('.active')].reduce(
+      (acc, curr) => acc + curr.textContent.trim(),
+      ''
+    );
+    assert.equal(secondActiveDate, '14Oct2014', 'Second date picker has end day selected');
 
     //toggle advanced calendar
-    run(() => openAdvancedCalendar(this));
+    await openAdvancedCalendar();
+
+    assert
+      .dom('.navi-date-input')
+      .hasValue('2014-09-14', 'From text input displays start day selected in `YYYY-MM-DD` format');
 
     assert.equal(
-      this.$('.navi-date-input')[0].value,
-      '2014-09-14',
-      'From text input displays start day selected in `YYYY-MM-DD` format'
-    );
-
-    assert.equal(
-      this.$('.navi-date-input')[1].value,
+      findAll('.navi-date-input')[1].value,
       '2014-10-15',
       'To text input displays end day selected in `YYYY-MM-DD` format'
     );
@@ -312,15 +294,19 @@ module('Integration | Component | Navi Date Range Picker', function(hooks) {
       this.set('interval', new Interval(new Duration('P5D'), moment('10-15-2014', 'MM-DD-YYYY')));
     });
 
-    assert
-      .dom(find('.datepicker:eq(0) .active'))
-      .hasText('10Oct2014', 'First date picker has correct day selected when using a duration in the interval');
-
-    assert.equal(
-      this.$('.navi-date-input')[0].value,
-      'P5D',
-      'From text input displays the duration when using a duration in the interval'
+    let newFirstActiveDate = [...this.element.querySelectorAll('.datepicker')[0].querySelectorAll('.active')].reduce(
+      (acc, curr) => acc + curr.textContent.trim(),
+      ''
     );
+    assert.equal(
+      newFirstActiveDate,
+      '10Oct2014',
+      'First date picker has correct day selected when using a duration in the interval'
+    );
+
+    assert
+      .dom('.navi-date-input')
+      .hasValue('P5D', 'From text input displays the duration when using a duration in the interval');
   });
 
   test('Custom range is active when selection does not match another interval', async function(assert) {
@@ -328,17 +314,16 @@ module('Integration | Component | Navi Date Range Picker', function(hooks) {
 
     this.interval = new Interval(moment('09-14-2014', 'MM-DD-YYYY'), moment('10-15-2014', 'MM-DD-YYYY'));
 
-    await render(`
-          {{navi-date-range-picker
-              dateTimePeriod='day'
-              interval=interval
-          }}
-      `);
+    await render(hbs`
+      {{navi-date-range-picker
+          dateTimePeriod='day'
+          interval=interval
+      }}
+    `);
 
-    assert.ok(
-      this.$('.custom-range-form').is('.active'),
-      'Custom range is active when selection does not match another interval'
-    );
+    assert
+      .dom('.custom-range-form .active')
+      .exists('Custom range is active when selection does not match another interval');
 
     assert.dom('li.active').exists({ count: 1 }, 'Only one interval is marked active');
   });
@@ -348,46 +333,54 @@ module('Integration | Component | Navi Date Range Picker', function(hooks) {
 
     this.interval = new Interval(moment('09-14-2014', 'MM-DD-YYYY'), moment('10-15-2014', 'MM-DD-YYYY'));
 
-    await render(`
-          {{navi-date-range-picker
-              dateTimePeriod='day'
-              interval=interval
-          }}
-      `);
+    await render(hbs`
+      {{navi-date-range-picker
+          dateTimePeriod='day'
+          interval=interval
+      }}
+    `);
 
     // Select a new date
-    await click('.datepicker:eq(0) .day:contains(20)');
-    await click('.datepicker:eq(1) .day:contains(21)');
+    await click($('.datepicker:eq(0) .day:contains(20)')[0]);
+    await click($('.datepicker:eq(1) .day:contains(21)')[0]);
 
-    assert
-      .dom(find('.datepicker:eq(0) .active'))
-      .hasText('20Sep2014', 'First date picker has newly selected start date');
+    let firstActiveDate = [...this.element.querySelectorAll('.datepicker')[0].querySelectorAll('.active')].reduce(
+      (acc, curr) => acc + curr.textContent.trim(),
+      ''
+    );
+    assert.equal(firstActiveDate, '20Sep2014', 'First date picker has newly selected start date');
 
-    assert
-      .dom(find('.datepicker:eq(1) .active'))
-      .hasText('21Oct2014', 'Second date picker has newly selected end date');
+    let secondActiveDate = [...this.element.querySelectorAll('.datepicker')[1].querySelectorAll('.active')].reduce(
+      (acc, curr) => acc + curr.textContent.trim(),
+      ''
+    );
+    assert.equal(secondActiveDate, '21Oct2014', 'Second date picker has newly selected end date');
 
     //toggle advanced calendar
-    run(() => openAdvancedCalendar(this));
+    await openAdvancedCalendar();
 
-    assert.equal(
-      this.$('.navi-date-input')[0].value,
-      '2014-09-20',
-      'From text input displays the changed start day in `YYYY-MM-DD` format'
-    );
+    assert
+      .dom('.navi-date-input')
+      .hasValue('2014-09-20', 'From text input displays the changed start day in `YYYY-MM-DD` format');
 
-    assert.equal(
-      this.$('.navi-date-input')[1].value,
-      '2014-10-22',
-      'To text input displays the changed end day in `YYYY-MM-DD` format'
-    );
+    assert
+      .dom(findAll('.navi-date-input')[1])
+      .hasValue('2014-10-22', 'To text input displays the changed end day in `YYYY-MM-DD` format');
 
     // Click reset
     await click('.btn.btn-secondary');
 
-    assert.dom(find('.datepicker:eq(0) .active')).hasText('14Sep2014', 'Clicking reset reverts to original start date');
+    firstActiveDate = [...this.element.querySelectorAll('.datepicker')[0].querySelectorAll('.active')].reduce(
+      (acc, curr) => acc + curr.textContent.trim(),
+      ''
+    );
+    assert.equal(firstActiveDate, '14Sep2014', 'Clicking reset reverts to original start date');
 
-    assert.dom(find('.datepicker:eq(1) .active')).hasText('14Oct2014', 'Clicking reset reverts to original end date');
+    secondActiveDate = [...this.element.querySelectorAll('.datepicker')[1].querySelectorAll('.active')].reduce(
+      (acc, curr) => acc + curr.textContent.trim(),
+      ''
+    );
+    assert.equal(secondActiveDate, '14Oct2014', 'Clicking reset reverts to original end date');
   });
 
   test('Select custom interval', async function(assert) {
@@ -395,17 +388,17 @@ module('Integration | Component | Navi Date Range Picker', function(hooks) {
 
     this.interval = new Interval(moment('09-14-2014', 'MM-DD-YYYY'), moment('10-15-2014', 'MM-DD-YYYY'));
 
-    await render(`
-          {{navi-date-range-picker
-              dateTimePeriod='day'
-              interval=interval
-              onSetInterval=(action setInterval)
-          }}
-      `);
+    await render(hbs`
+      {{navi-date-range-picker
+          dateTimePeriod='day'
+          interval=interval
+          onSetInterval=(action setInterval)
+      }}
+    `);
 
     // Select a new date
-    await click('.datepicker:eq(0) .day:contains(15)');
-    await click('.datepicker:eq(1) .day:contains(16)');
+    await click($('.datepicker:eq(0) .day:contains(15)')[0]);
+    await click($('.datepicker:eq(1) .day:contains(16)')[0]);
 
     this.set('setInterval', interval => {
       let selectedStart = moment('09-15-2014', 'MM-DD-YYYY'),
@@ -458,17 +451,17 @@ module('Integration | Component | Navi Date Range Picker', function(hooks) {
 
     let expectedInterval = new Interval(moment('09-15-2014', 'MM-DD-YYYY'), moment('10-17-2014', 'MM-DD-YYYY'));
 
-    await render(`
-          {{navi-date-range-picker
-              interval=interval
-              dateTimePeriod='day'
-              onSetInterval=(action setInterval)
-          }}
-      `);
+    await render(hbs`
+        {{navi-date-range-picker
+            interval=interval
+            dateTimePeriod='day'
+            onSetInterval=(action setInterval)
+        }}
+    `);
 
     // Select a new date
-    await click('.datepicker:eq(0) .day:contains(15)');
-    await click('.datepicker:eq(1) .day:contains(16)');
+    await click($('.datepicker:eq(0) .day:contains(15)')[0]);
+    await click($('.datepicker:eq(1) .day:contains(16)')[0]);
 
     this.set('setInterval', interval => {
       this.set('interval', interval);
@@ -483,25 +476,6 @@ module('Integration | Component | Navi Date Range Picker', function(hooks) {
     assert.expect(1);
 
     this.interval = new Interval(moment('09-14-2014', 'MM-DD-YYYY'), moment('10-15-2014', 'MM-DD-YYYY'));
-
-    await render(`
-          {{navi-date-range-picker
-              dateTimePeriod='day'
-              interval=interval
-              onSetInterval=(action setInterval)
-          }}
-      `);
-
-    //toggle advanced calendar
-    run(() => openAdvancedCalendar(this));
-
-    // Set a new date and blur input to trigger change
-    await fillIn('.navi-date-range-picker__start-input', '2014-10-15');
-    this.$('.navi-date-range-picker__start-input').blur();
-
-    await fillIn('.navi-date-range-picker__end-input', '2014-10-25');
-    this.$('.navi-date-range-picker__end-input').blur();
-
     this.set('setInterval', interval => {
       let selectedStart = moment('10-15-2014', 'MM-DD-YYYY'),
         selectedEnd = moment('10-25-2014', 'MM-DD-YYYY');
@@ -509,8 +483,28 @@ module('Integration | Component | Navi Date Range Picker', function(hooks) {
       assert.ok(interval.isEqual(new Interval(selectedStart, selectedEnd)), 'Interval comes from date inputs');
     });
 
+    await render(hbs`
+      {{navi-date-range-picker
+          dateTimePeriod='day'
+          interval=interval
+          onSetInterval=(action setInterval)
+      }}
+    `);
+
+    //toggle advanced calendar
+    await openRangePicker();
+    await openCustomRange();
+    await openAdvancedCalendar();
+
+    // Set a new date and blur input to trigger change
+    find('.navi-date-range-picker__start-input').value = '2014-10-15'; //fillIn helper was not working correctly
+    await blur('.navi-date-range-picker__start-input');
+
+    find('.navi-date-range-picker__end-input').value = '2014-10-25';
+    await blur('.navi-date-range-picker__end-input');
+
     // Click apply
-    await click('.btn.btn-primary');
+    await click('.navi-date-range-picker__apply-btn');
   });
 
   test('Editing custom interval - macros', async function(assert) {
@@ -518,23 +512,25 @@ module('Integration | Component | Navi Date Range Picker', function(hooks) {
 
     this.interval = new Interval(moment('09-14-2014', 'MM-DD-YYYY'), moment('10-15-2014', 'MM-DD-YYYY'));
 
-    await render(`
-          {{navi-date-range-picker
-              dateTimePeriod='day'
-              interval=interval
-              onSetInterval=(action setInterval)
-          }}
-      `);
+    await render(hbs`
+      {{navi-date-range-picker
+          dateTimePeriod='day'
+          interval=interval
+          onSetInterval=(action setInterval)
+      }}
+    `);
 
     //toggle advanced calendar
-    run(() => openAdvancedCalendar(this));
+    await openRangePicker();
+    await openCustomRange();
+    await openAdvancedCalendar();
 
     // Set a new date and blur input to trigger change
-    await fillIn('.navi-date-range-picker__start-input', 'P7D');
-    this.$('.navi-date-range-picker__start-input').blur();
+    find('.navi-date-range-picker__start-input').value = 'P7D'; //fillIn helper was not working correctly
+    await blur('.navi-date-range-picker__start-input');
 
-    await fillIn('.navi-date-range-picker__end-input', 'current');
-    this.$('.navi-date-range-picker__end-input').blur();
+    find('.navi-date-range-picker__end-input').value = 'current';
+    await blur('.navi-date-range-picker__end-input');
 
     this.set('setInterval', interval => {
       assert.equal(
@@ -556,18 +552,16 @@ module('Integration | Component | Navi Date Range Picker', function(hooks) {
     // set dateTimePeriod to day
     this.dateTimePeriod = 'day';
 
-    await render(`
-          {{navi-date-range-picker
-              dateTimePeriod=dateTimePeriod
-              onSetInterval=(action setInterval)
-          }}
-      `);
+    await render(hbs`
+        {{navi-date-range-picker
+            dateTimePeriod=dateTimePeriod
+            onSetInterval=(action setInterval)
+        }}
+    `);
 
     // Click the Custom range and click apply
-    run(() => {
-      openRangePicker(this);
-      openCustomRange(this);
-    });
+    await openRangePicker();
+    await openCustomRange();
 
     this.set('setInterval', interval => {
       let expectedInterval = new Interval(new Duration('P1D'), 'current');
@@ -618,22 +612,20 @@ module('Integration | Component | Navi Date Range Picker', function(hooks) {
 
     this.dateTimePeriod = 'all';
 
-    await render(`
-          {{navi-date-range-picker
-              dateTimePeriod=dateTimePeriod
-              onSetInterval=(action setInterval)
-          }}
-      `);
+    await render(hbs`
+        {{navi-date-range-picker
+            dateTimePeriod=dateTimePeriod
+            onSetInterval=(action setInterval)
+        }}
+    `);
 
     assert.dom('li').exists({ count: 1 }, 'Only one option is available to select for All time grain');
 
     assert.dom(find('li:last-of-type > div')).hasText('Custom range', 'Last option is "Custom range"');
 
     // Click the Custom range and click apply
-    run(() => {
-      openRangePicker(this);
-      openCustomRange(this);
-    });
+    await openRangePicker();
+    await openCustomRange();
 
     this.set('setInterval', interval => {
       let expectedInterval = new Interval(new Duration('P7D'), 'current');
@@ -644,15 +636,15 @@ module('Integration | Component | Navi Date Range Picker', function(hooks) {
     await click('.btn.btn-primary');
   });
 
-  function openRangePicker(test) {
-    test.$('.navi-date-range-picker > .pick-container > .pick-value').click();
+  async function openRangePicker() {
+    await click('.navi-date-range-picker > .pick-container > .pick-value');
   }
 
-  function openCustomRange(test) {
-    test.$('.custom-range-form .pick-value').click();
+  async function openCustomRange() {
+    await click('.custom-range-form .pick-value');
   }
 
-  function openAdvancedCalendar(test) {
-    test.$('.navi-date-range-picker__advanced-calendar-toggle').click();
+  async function openAdvancedCalendar() {
+    await click('.navi-date-range-picker__advanced-calendar-toggle');
   }
 });

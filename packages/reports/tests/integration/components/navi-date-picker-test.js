@@ -2,7 +2,8 @@ import { run, next } from '@ember/runloop';
 import moment from 'moment';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, findAll, find } from '@ember/test-helpers';
+import $ from 'jquery';
+import { render, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import config from 'ember-get-config';
 
@@ -148,10 +149,10 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
 
     // Test helper functions
     let isMonthSelection = () => {
-        return this.$('.datepicker-months').is(':visible') && this.$('.datepicker-days').is(':not(:visible)');
+        return $('.datepicker-months').is(':visible') && $('.datepicker-days').is(':not(:visible)');
       },
       isDaySelection = () => {
-        return this.$('.datepicker-days').is(':visible') && this.$('.datepicker-months').is(':not(:visible)');
+        return $('.datepicker-days').is(':visible') && $('.datepicker-months').is(':not(:visible)');
       };
 
     assert.ok(isMonthSelection(), '"dateTimePeriod: month" uses month selection view');
@@ -192,7 +193,7 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
 
     /* == Month Selection == */
     this.set('dateTimePeriod', 'month');
-    assert.ok(this.$('.month:contains(Jun)').is('.active'), 'Month Selection - Chosen month is active');
+    assert.ok($('.month:contains(Jun)').is('.active'), 'Month Selection - Chosen month is active');
 
     /* == Back to Week Selection == */
     this.set('dateTimePeriod', 'week');
@@ -211,9 +212,7 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
     this.set('dateTimePeriod', 'quarter');
     next(() => {
       assert.deepEqual(
-        this.$('.active-month')
-          .toArray()
-          .map(el => $(el).text()),
+        findAll('.active-month').map(el => el.textContent.trim()),
         ['Apr', 'May', 'Jun'],
         'Month to Quarter - Previously selected month is converted to its quarter'
       );
@@ -223,7 +222,7 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
     this.set('dateTimePeriod', 'year');
     next(() => {
       assert.ok(
-        this.$('.year:contains(2015)').is('.active'),
+        $('.year:contains(2015)').is('.active'),
         'Month to Quarter Selection - Previously selected quarter is converted to its year'
       );
     });

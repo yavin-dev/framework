@@ -1,10 +1,10 @@
 import { helper as buildHelper } from '@ember/component/helper';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render } from '@ember/test-helpers';
+import { render, findAll, click } from '@ember/test-helpers';
+import $ from 'jquery';
 import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 import hbs from 'htmlbars-inline-precompile';
-import { run } from '@ember/runloop';
 import { set } from '@ember/object';
 import { A as arr } from '@ember/array';
 
@@ -71,40 +71,27 @@ module('Integration | Component | metric filter config', function(hooks) {
     `);
   });
 
-  test('it renders', function(assert) {
+  test('it renders', async function(assert) {
     assert.expect(4);
 
-    assert.ok(
-      this.$('.metric-filter-config__dropdown-trigger .metric-filter-config__trigger-icon').is(':visible'),
-      'The trigger icon is rendered'
-    );
+    assert
+      .dom('.metric-filter-config__dropdown-trigger .metric-filter-config__trigger-icon')
+      .isVisible('The trigger icon is rendered');
 
-    run(() => clickTrigger('.metric-filter-config__dropdown-trigger'));
+    await clickTrigger('.metric-filter-config__dropdown-trigger');
 
-    assert.ok($('.metric-filter-config__dropdown-container').is(':visible'), 'The dropdown renders on click');
+    assert.dom('.metric-filter-config__dropdown-container').isVisible('The dropdown renders on click');
 
-    assert.equal(
-      $('.metric-filter-config__header')
-        .text()
-        .trim(),
-      'param (2)',
-      'The parameter name is rendered as the header'
-    );
+    assert.dom('.metric-filter-config__header').hasText('param (2)', 'The parameter name is rendered as the header');
 
     assert.deepEqual(
-      $('.metric-filter-config__item')
-        .toArray()
-        .map(el =>
-          $(el)
-            .text()
-            .trim()
-        ),
+      findAll('.metric-filter-config__item').map(el => el.textContent.trim()),
       ['bar', 'baz'],
       'The parameter excluding the selected param in the request is an item in the dropdown'
     );
   });
 
-  test('click action', function(assert) {
+  test('click action', async function(assert) {
     assert.expect(2);
 
     this.set('paramClicked', (param, paramValue) => {
@@ -113,13 +100,11 @@ module('Integration | Component | metric filter config', function(hooks) {
       assert.equal(paramValue, 'bar', 'The clicked param is passed to the action');
     });
 
-    run(() => {
-      clickTrigger('.metric-filter-config__dropdown-trigger');
-      $('.metric-filter-config__item:contains(bar)').click();
-    });
+    await clickTrigger('.metric-filter-config__dropdown-trigger');
+    await click($('.metric-filter-config__item:contains(bar)')[0]);
   });
 
-  test('metric parameters already in filter', function(assert) {
+  test('metric parameters already in filter', async function(assert) {
     assert.expect(1);
 
     set(
@@ -142,15 +127,9 @@ module('Integration | Component | metric filter config', function(hooks) {
     );
 
     this.set('request', Request);
-    run(() => clickTrigger('.metric-filter-config__dropdown-trigger'));
+    await clickTrigger('.metric-filter-config__dropdown-trigger');
     assert.deepEqual(
-      $('.metric-filter-config__item')
-        .toArray()
-        .map(el =>
-          $(el)
-            .text()
-            .trim()
-        ),
+      findAll('.metric-filter-config__item').map(el => el.textContent.trim()),
       ['baz'],
       'The parameter list excludes the filters in the request'
     );
@@ -186,9 +165,8 @@ module('Integration | Component | metric filter config', function(hooks) {
 
     this.set('request', Request);
 
-    assert.notOk(
-      this.$('.metric-filter-config').is(':visible'),
-      'the component is not rendered when no other metric parameters exist'
-    );
+    assert
+      .dom('.metric-filter-config')
+      .isNotVisible('the component is not rendered when no other metric parameters exist');
   });
 });

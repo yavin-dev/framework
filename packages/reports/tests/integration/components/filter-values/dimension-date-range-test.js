@@ -1,8 +1,9 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find } from '@ember/test-helpers';
+import { render, find, click } from '@ember/test-helpers';
 import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 import { A as arr } from '@ember/array';
+import $ from 'jquery';
 import { get } from '@ember/object';
 import hbs from 'htmlbars-inline-precompile';
 
@@ -21,7 +22,7 @@ module('Integration | Component | filter values/dimension date range', function(
     }}`);
 
     assert.equal(
-      find('*')
+      find('.filter-values--dimension-date-range-input')
         .textContent.replace(/\s\s+/g, ' ')
         .trim(),
       'Since and Before',
@@ -34,9 +35,9 @@ module('Integration | Component | filter values/dimension date range', function(
     this.set('onUpdateFilter', filter => {
       assert.deepEqual(get(filter, 'values'), ['2019-01-12', null], 'Selecting the low date updates the filter');
     });
-    clickTrigger('.filter-values--dimension-date-range-input__low-value>.dropdown-date-picker__trigger');
-    $('td.day:contains(12)').click();
-    $('.dropdown-date-picker__apply').click();
+    await clickTrigger('.filter-values--dimension-date-range-input__low-value>.dropdown-date-picker__trigger');
+    await click($('td.day:contains(12)')[0]);
+    await click('.dropdown-date-picker__apply');
 
     //Set a high value so that the calendar opens to January 2019 instead of the month that this test is run
     this.set('filter', { values: arr(['2019-01-05', '2019-01-12']) });
@@ -49,14 +50,14 @@ module('Integration | Component | filter values/dimension date range', function(
         'Selecting the high date updates the filter'
       );
     });
-    clickTrigger('.filter-values--dimension-date-range-input__high-value>.dropdown-date-picker__trigger');
-    $('td.day:contains(15)').click();
-    $('.dropdown-date-picker__apply').click();
+    await clickTrigger('.filter-values--dimension-date-range-input__high-value>.dropdown-date-picker__trigger');
+    await click($('td.day:contains(15)')[0]);
+    await click('.dropdown-date-picker__apply');
 
     //Check that dates are displayed correctly
     this.set('filter', { values: arr(['2019-01-12', '2019-01-15']) });
     assert.equal(
-      find('*')
+      find('.filter-values--dimension-date-range-input')
         .textContent.replace(/\s\s+/g, ' ')
         .trim(),
       'Jan 12, 2019 and Jan 15, 2019',

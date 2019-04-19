@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find, fillIn, triggerEvent } from '@ember/test-helpers';
+import { render, fillIn, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 module('Integration | Component | filter values/value input', function(hooks) {
@@ -21,7 +21,10 @@ module('Integration | Component | filter values/value input', function(hooks) {
 
     assert
       .dom('.filter-values--value-input')
-      .hasValue(this.filter.values[0], 'The value select contains an input with the first filter value as the text');
+      .hasValue(
+        `${this.filter.values[0]}`,
+        'The value select contains an input with the first filter value as the text'
+      );
   });
 
   test('changing values', async function(assert) {

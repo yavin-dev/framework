@@ -1,12 +1,12 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, settled } from '@ember/test-helpers';
+import { render, settled, click, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 import { set } from '@ember/object';
-import { run } from '@ember/runloop';
+import $ from 'jquery';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
-import { defer, reject } from 'rsvp';
+import RSVP, { reject } from 'rsvp';
 import { isEmpty } from '@ember/utils';
 import { A as arr } from '@ember/array';
 
@@ -85,100 +85,76 @@ module('Integration | Component | metric config', function(hooks) {
     teardownMock();
   });
 
-  test('it renders', function(assert) {
+  test('it renders', async function(assert) {
     assert.expect(5);
 
-    assert.ok(this.$('.metric-config').is(':visible'), 'Metric Config component is rendered');
+    assert.dom('.metric-config').isVisible('Metric Config component is rendered');
 
-    assert.ok(
-      this.$('.metric-config__dropdown-trigger .metric-config__trigger-icon').is(':visible'),
-      'An icon is shown as the trigger to the dropdown'
-    );
+    assert
+      .dom('.metric-config__dropdown-trigger .metric-config__trigger-icon')
+      .isVisible('An icon is shown as the trigger to the dropdown');
 
-    run(() => clickTrigger('.metric-config__dropdown-trigger'));
+    await clickTrigger('.metric-config__dropdown-trigger');
 
     //wait for all promises to be resolved
-    return settled().then(() => {
-      assert.ok($('.metric-config__dropdown-container').is(':visible'), 'the trigger opens a dropdown on click');
+    await settled();
+    assert.dom('.metric-config__dropdown-container').isVisible('the trigger opens a dropdown on click');
 
-      assert.ok(
-        $('.metric-config__footer .metric-config__done-btn'),
-        'the done button is rendered in the footer of the component'
-      );
+    assert
+      .dom('.metric-config__footer .metric-config__done-btn')
+      .isVisible('the done button is rendered in the footer of the component');
 
-      run(() => $('.metric-config__done-btn').click());
+    await click('.metric-config__done-btn');
 
-      assert.notOk(
-        $('.metric-config__dropdown-container').is(':visible'),
-        'the done button closes the dropdown on click'
-      );
-    });
+    assert.dom('.metric-config__dropdown-container').isNotVisible('the done button closes the dropdown on click');
   });
 
-  test('grouped list', function(assert) {
+  test('grouped list', async function(assert) {
     assert.expect(2);
 
-    run(() => clickTrigger('.metric-config__dropdown-trigger'));
+    await clickTrigger('.metric-config__dropdown-trigger');
 
-    return settled().then(() => {
-      assert.equal(
-        $('.metric-config__dropdown-container .navi-list-selector__title')
-          .text()
-          .trim(),
-        'Metric 1',
-        'the metric longName is included in the header'
-      );
+    await settled();
 
-      assert.deepEqual(
-        $('.grouped-list__group-header')
-          .toArray()
-          .map(el =>
-            $(el)
-              .text()
-              .trim()
-          ),
-        ['currency (14)', 'property (4)'],
-        'The group headers reflect the two parameters in the metric'
-      );
-    });
+    assert
+      .dom('.metric-config__dropdown-container .navi-list-selector__title')
+      .hasText('Metric 1', 'the metric longName is included in the header');
+
+    assert.deepEqual(
+      findAll('.grouped-list__group-header').map(el => el.textContent.trim()),
+      ['currency (14)', 'property (4)'],
+      'The group headers reflect the two parameters in the metric'
+    );
   });
 
-  test('show selected', function(assert) {
+  test('show selected', async function(assert) {
     assert.expect(3);
 
-    run(() => clickTrigger('.metric-config__dropdown-trigger'));
+    await clickTrigger('.metric-config__dropdown-trigger');
 
-    return settled().then(() => {
-      assert.ok(
-        $('.grouped-list__item').length > this.get('request.metrics.length'),
-        'Initially all the parameters are shown in the metric-config'
-      );
+    await settled();
+    assert.ok(
+      findAll('.grouped-list__item').length > this.get('request.metrics.length'),
+      'Initially all the parameters are shown in the metric-config'
+    );
 
-      run(() => $('.navi-list-selector__show-link').click());
+    await click('.navi-list-selector__show-link');
 
-      assert.deepEqual(
-        $('.grouped-list__item')
-          .toArray()
-          .map(el =>
-            $(el)
-              .text()
-              .trim()
-          ),
-        ['Dollars (USD)'],
-        'When show selected is clicked only the selected parameter is shown'
-      );
+    assert.deepEqual(
+      findAll('.grouped-list__item').map(el => el.textContent.trim()),
+      ['Dollars (USD)'],
+      'When show selected is clicked only the selected parameter is shown'
+    );
 
-      assert.notOk(
-        $('.checkbox-selector__checkbox')
-          .toArray()
-          .map(el => $(el)[0]['checked'])
-          .includes(false),
-        'The selected items are checked'
-      );
-    });
+    assert.notOk(
+      findAll('.checkbox-selector__checkbox')
+        .map(el => el['checked'])
+        .includes(false),
+      'The selected items are checked'
+    );
   });
 
-  test('add/remove param', function(assert) {
+  test('add/remove param', async function(assert) {
     assert.expect(4);
 
     set(this, 'addParameterizedMetric', (metric, param) => {
@@ -193,17 +169,16 @@ module('Integration | Component | metric config', function(hooks) {
       assert.deepEqual(param, { currency: 'USD' }, 'The selected param is also passed to the action');
     });
 
-    run(() => clickTrigger('.metric-config__dropdown-trigger'));
-    return settled().then(() => {
-      //add Param `Drams`
-      $('.grouped-list__item:contains(Drams) .grouped-list__item-label').click();
+    await clickTrigger('.metric-config__dropdown-trigger');
+    await settled();
+    //add Param `Drams`
+    await click($('.grouped-list__item:contains(Drams) .grouped-list__item-label')[0]);
 
-      //remove Param `Dollars(USD)`
-      $('.grouped-list__item:contains(USD) .grouped-list__item-label').click();
-    });
+    //remove Param `Dollars(USD)`
+    await click($('.grouped-list__item:contains(USD) .grouped-list__item-label')[0]);
   });
 
-  test('filter icon', function(assert) {
+  test('filter icon', async function(assert) {
     assert.expect(4);
 
     this.set('toggleParameterizedMetricFilter', (metric, param) => {
@@ -212,48 +187,58 @@ module('Integration | Component | metric config', function(hooks) {
       assert.deepEqual(param, { currency: 'AMD' }, 'The selected param is also passed to the action');
     });
 
-    run(() => clickTrigger('.metric-config__dropdown-trigger'));
+    await clickTrigger('.metric-config__dropdown-trigger');
 
-    return settled().then(() => {
-      assert.notOk(
-        isEmpty($('.grouped-list__item:contains(USD) .checkbox-selector__filter--active')),
-        'The filter icon with the `USD` param has the active class'
-      );
+    await settled();
+    assert.notOk(
+      isEmpty($('.grouped-list__item:contains(USD) .checkbox-selector__filter--active')),
+      'The filter icon with the `USD` param has the active class'
+    );
 
-      assert.ok(
-        isEmpty($('.grouped-list__item:contains(Drams) .checkbox-selector__filter--active')),
-        'The filter icon with the `Drams` param does not have the active class'
-      );
+    assert.ok(
+      isEmpty($('.grouped-list__item:contains(Drams) .checkbox-selector__filter--active')),
+      'The filter icon with the `Drams` param does not have the active class'
+    );
 
-      run(() => {
-        $('.grouped-list__item:contains(Drams) .checkbox-selector__filter').click();
-      });
-    });
+    await click($('.grouped-list__item:contains(Drams) .checkbox-selector__filter')[0]);
   });
 
-  test('loader', function(assert) {
+  test('loader', async function(assert) {
     assert.expect(1);
 
-    set(this, 'parametersPromise', defer().promise);
+    //_fetchAllParams overwrites the parametersPromise property
+    set(this, 'noOpFetch', () => {});
+    set(this, 'parametersPromise', new RSVP.Promise((resolve /*, reject*/) => setTimeout(() => resolve, 400)));
 
-    run(() => clickTrigger('.metric-config__dropdown-trigger'));
-    assert.ok($('.navi-loader__container').is(':visible'), 'The loader is displayed while the promise is pending');
-    return settled();
+    await render(hbs`
+      {{metric-config
+        metric=metric
+        request=request
+        onAddParameterizedMetric=(action addParameterizedMetric)
+        onRemoveParameterizedMetric=(action removeParameterizedMetric)
+        onToggleParameterizedMetricFilter=(action toggleParameterizedMetricFilter)
+        parametersPromise=parametersPromise
+        _fetchAllParams=noOpFetch
+      }}`);
+
+    await clickTrigger('.metric-config__dropdown-trigger');
+    assert.dom('.navi-loader__container').isVisible('The loader is displayed while the promise is pending');
+
+    await settled();
   });
 
-  test('error message', function(assert) {
+  test('error message', async function(assert) {
     assert.expect(1);
 
-    run(() => clickTrigger('.metric-config__dropdown-trigger'));
+    await clickTrigger('.metric-config__dropdown-trigger');
     set(this, 'parametersPromise', reject());
-    return settled().then(() => {
-      assert.equal(
-        $('.metric-config__error-msg')
-          .text()
-          .trim(),
+    await settled();
+
+    assert
+      .dom('.metric-config__error-msg')
+      .hasText(
         'OOPS! Something went wrong. Please try refreshing the page.',
         'The error message is displayed when the promise is rejected'
       );
-    });
   });
 });

@@ -1,7 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find, click, triggerEvent } from '@ember/test-helpers';
-import { fillInSync } from '../../helpers/fill-in-sync';
+import { render, find, click, fillIn, blur } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 const TEMPLATE = hbs`
@@ -28,9 +27,9 @@ module('Integration | Component | Editable Label', function(hooks) {
 
     assert.dom('.editable-label__input').hasValue('Default Value', 'Label contains the default value');
 
-    fillInSync('.editable-label__input', 'Edited Value');
+    await fillIn('.editable-label__input', 'Edited Value');
 
-    await triggerEvent('.editable-label__input', 'focusout');
+    await blur('.editable-label__input');
 
     assert.equal(
       this.get('value'),
@@ -51,7 +50,7 @@ module('Integration | Component | Editable Label', function(hooks) {
 
     await click('.editable-label__icon');
 
-    await triggerEvent('.editable-label__input', 'focusout');
+    await blur('.editable-label__input');
 
     assert.equal(
       this.get('value'),
@@ -70,22 +69,22 @@ module('Integration | Component | Editable Label', function(hooks) {
 
     await click('.editable-label__icon');
 
-    assert.dom('.editable-label__input').hasAttribute('size', 1, 'Size of the input is greater or equal to 1');
+    assert.dom('.editable-label__input').hasAttribute('size', '1', 'Size of the input is greater or equal to 1');
 
-    fillInSync('.editable-label__input', 'Default Value');
+    await fillIn('.editable-label__input', 'Default Value');
     assert
       .dom('.editable-label__input')
       .hasAttribute(
         'size',
-        find('.editable-label__input').value.length + 1,
+        String(find('.editable-label__input').value.length + 1),
         'Size of the input is the string length plus 1'
       );
 
     let longValue = Array(100)
       .fill(1)
       .join('');
-    fillInSync('.editable-label__input', longValue);
-    assert.dom('.editable-label__input').hasAttribute('size', 50, 'Size of the input is less than or equal to 50');
+    await fillIn('.editable-label__input', longValue);
+    assert.dom('.editable-label__input').hasAttribute('size', '50', 'Size of the input is less than or equal to 50');
   });
 
   test('value is reset when editing', async function(assert) {
@@ -101,11 +100,11 @@ module('Integration | Component | Editable Label', function(hooks) {
       .dom('.editable-label__input')
       .hasValue('Initial value', 'Input starts with text equal to given value property');
 
-    fillInSync('.editable-label__input', 'Something else');
+    await fillIn('.editable-label__input', 'Something else');
 
     assert.dom('.editable-label__input').hasValue('Something else', 'Input text changes with user input');
 
-    await triggerEvent('.editable-label__input', 'focusout');
+    await blur('.editable-label__input');
     await click('.editable-label__icon');
 
     assert

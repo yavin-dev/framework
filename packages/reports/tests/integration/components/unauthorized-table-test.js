@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find } from '@ember/test-helpers';
+import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 module('Integration | Component | unauthorized table', function(hooks) {
@@ -25,8 +25,10 @@ module('Integration | Component | unauthorized table', function(hooks) {
       {{unauthorized-table report=model}}
     `);
 
-    assert.ok(this.$('.fa-lock').is(':visible'), 'Lock icon is visible');
+    assert.dom('.fa-lock').isVisible('Lock icon is visible');
 
-    assert.ok(find('*').textContent.includes('Protected Table'), "Displays table name they don't have access to");
+    assert
+      .dom('.navi-report-invalid__unauthorized')
+      .includesText('Protected Table', "Displays table name they don't have access to");
   });
 });

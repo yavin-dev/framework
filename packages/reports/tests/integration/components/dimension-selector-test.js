@@ -1,9 +1,8 @@
 import { isEmpty } from '@ember/utils';
-import { run } from '@ember/runloop';
-import { getOwner } from '@ember/application';
 import { set } from '@ember/object';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
+import $ from 'jquery';
 import { render, click, findAll, fillIn, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
@@ -60,29 +59,19 @@ module('Integration | Component | dimension selector', function(hooks) {
   test('it renders', function(assert) {
     assert.expect(3);
 
-    assert.ok(this.$('.checkbox-selector--dimension').is(':visible'), 'The dimension selector component is rendered');
+    assert.dom('.checkbox-selector--dimension').isVisible('The dimension selector component is rendered');
 
-    assert.ok(
-      this.$('.navi-list-selector').is(':visible'),
-      'a navi-list-selector component is rendered as part of the dimension selector'
-    );
+    assert
+      .dom('.navi-list-selector')
+      .isVisible('a navi-list-selector component is rendered as part of the dimension selector');
 
-    assert.ok(
-      this.$('.grouped-list').is(':visible'),
-      'a grouped-list component is rendered as part of the dimension selector'
-    );
+    assert.dom('.grouped-list').isVisible('a grouped-list component is rendered as part of the dimension selector');
   });
 
   test('groups', function(assert) {
     assert.expect(2);
 
-    let groups = this.$('.grouped-list__group-header')
-      .toArray()
-      .map(el =>
-        $(el)
-          .text()
-          .trim()
-      );
+    let groups = findAll('.grouped-list__group-header').map(el => el.textContent.trim());
 
     assert.ok(
       groups[0].includes('Time Grain'),
@@ -96,7 +85,7 @@ module('Integration | Component | dimension selector', function(hooks) {
     );
   });
 
-  test('show selected', function(assert) {
+  test('show selected', async function(assert) {
     assert.expect(3);
 
     assert.ok(
@@ -104,32 +93,23 @@ module('Integration | Component | dimension selector', function(hooks) {
       'Initially all the dimensions are shown in the dimension-selector'
     );
 
-    run(async () => {
-      await click('.navi-list-selector__show-link');
-    });
+    await click('.navi-list-selector__show-link');
 
     assert.deepEqual(
-      this.$('.grouped-list__item')
-        .toArray()
-        .map(el =>
-          $(el)
-            .text()
-            .trim()
-        ),
+      findAll('.grouped-list__item').map(el => el.textContent.trim()),
       ['Day', 'Age'],
       'When show selected is clicked only the selected age dimension and the selected timegrain are shown'
     );
 
     assert.notOk(
-      this.$('.checkbox-selector__checkbox')
-        .toArray()
-        .map(el => $(el)[0]['checked'])
+      findAll('.checkbox-selector__checkbox')
+        .map(el => el.checked)
         .includes(false),
       'The selected items are checked'
     );
   });
 
-  test('actions', function(assert) {
+  test('actions', async function(assert) {
     assert.expect(4);
 
     this.set('addTimeGrain', item => {
@@ -141,13 +121,12 @@ module('Integration | Component | dimension selector', function(hooks) {
     });
 
     //select first time grain
-    run(() => {
-      //addTimeGrain when a different time grain is clicked
-      this.$('.grouped-list__item:contains(Week) .grouped-list__item-label').click();
 
-      //removeTimeGrain when selected time grain is clicked
-      this.$('.grouped-list__item:contains(Day) .grouped-list__item-label').click();
-    });
+    //addTimeGrain when a different time grain is clicked
+    await click($('.grouped-list__item:contains(Week) .grouped-list__item-label')[0]);
+
+    //removeTimeGrain when selected time grain is clicked
+    await click($('.grouped-list__item:contains(Day) .grouped-list__item-label')[0]);
 
     this.set('addDimension', item => {
       assert.equal(
@@ -166,25 +145,24 @@ module('Integration | Component | dimension selector', function(hooks) {
     });
 
     //select a random dimension
-    run(() => {
-      //addDimension when an unselected dimension is clicked
-      this.$('.grouped-list__item:contains(Gender) .grouped-list__item-label').click();
 
-      //removeDimension when a selected dimension is clicked
-      this.$('.grouped-list__item:contains(Age) .grouped-list__item-label').click();
-    });
+    //addDimension when an unselected dimension is clicked
+    await click($('.grouped-list__item:contains(Gender) .grouped-list__item-label')[0]);
+
+    //removeDimension when a selected dimension is clicked
+    await click($('.grouped-list__item:contains(Age) .grouped-list__item-label')[0]);
   });
 
-  test('filter icon', function(assert) {
+  test('filter icon', async function(assert) {
     assert.expect(3);
 
     assert.notOk(
-      isEmpty(this.$('.grouped-list__item:contains(Age) .checkbox-selector__filter--active')),
+      isEmpty($('.grouped-list__item:contains(Age) .checkbox-selector__filter--active')),
       'The filter icon with the age dimension has the active class'
     );
 
     assert.ok(
-      isEmpty(this.$('.grouped-list__item:contains(Gender) .checkbox-selector__filter--active')),
+      isEmpty($('.grouped-list__item:contains(Gender) .checkbox-selector__filter--active')),
       'The filter icon with the gender dimension does not have the active class'
     );
 
@@ -192,12 +170,10 @@ module('Integration | Component | dimension selector', function(hooks) {
       assert.deepEqual(dimension, Age, 'The age dimension is passed to the action when filter icon is clicked');
     });
 
-    run(() => {
-      this.$('.grouped-list__item:contains(Age) .checkbox-selector__filter').click();
-    });
+    await click($('.grouped-list__item:contains(Age) .checkbox-selector__filter')[0]);
   });
 
-  test('tooltip', function(assert) {
+  test('tooltip', async function(assert) {
     assert.expect(3);
 
     assertTooltipNotRendered(assert);
@@ -205,11 +181,9 @@ module('Integration | Component | dimension selector', function(hooks) {
       content: { description: 'foo' }
     });
 
-    run(() => {
-      this.$('.grouped-list__group-header:contains(Test)').trigger('click');
-      // triggerTooltipTargetEvent will not work for hidden elementc
-      this.$('.grouped-list__item:contains(Age) .grouped-list__item-info').trigger('mouseenter');
-    });
+    await click($('.grouped-list__group-header:contains(test)')[0]);
+    // triggerTooltipTargetEvent will not work for hidden elementc
+    await triggerEvent($('.grouped-list__item:contains(Age) .grouped-list__item-info')[0], 'mouseenter');
 
     assertTooltipRendered(assert);
     assertTooltipContent(assert, {
@@ -221,7 +195,7 @@ module('Integration | Component | dimension selector', function(hooks) {
     assert.expect(2);
 
     assert.deepEqual(
-      this.$('.grouped-list__item:contains(Country)')
+      $('.grouped-list__item:contains(Country)')
         .toArray()
         .map(el => el.textContent.trim()),
       ['Property Country', 'User Country'],
@@ -232,9 +206,7 @@ module('Integration | Component | dimension selector', function(hooks) {
     await triggerEvent('.navi-list-selector__search-input', 'focusout');
 
     assert.deepEqual(
-      this.$('.grouped-list__item')
-        .toArray()
-        .map(el => el.textContent.trim()),
+      findAll('.grouped-list__item').map(el => el.textContent.trim()),
       ['User Country', 'Property Country'],
       'The search results are ranked based on relevance'
     );

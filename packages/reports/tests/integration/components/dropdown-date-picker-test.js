@@ -1,6 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render } from '@ember/test-helpers';
+import { render, click } from '@ember/test-helpers';
+import $ from 'jquery';
 import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 import Moment from 'moment';
 import hbs from 'htmlbars-inline-precompile';
@@ -31,42 +32,25 @@ module('Integration | Component | dropdown date picker', function(hooks) {
       {{/dropdown-date-picker}}
     `);
 
-    assert.equal(
-      $('.dropdown-date-picker__trigger')
-        .text()
-        .trim(),
-      'Dropdown Trigger',
-      'Trigger is displayed'
-    );
+    assert.dom('.dropdown-date-picker__trigger').hasText('Dropdown Trigger', 'Trigger is displayed');
 
-    clickTrigger('.dropdown-date-picker__trigger');
+    await clickTrigger('.dropdown-date-picker__trigger');
 
-    assert.ok(
-      $('.navi-date-picker.day').is(':visible'),
-      'The day time grain date picker is shown when the dropdown is open'
-    );
+    assert.dom('.navi-date-picker.day').isVisible('The day time grain date picker is shown when the dropdown is open');
 
-    assert.ok($('.dropdown-date-picker__controls').is(':visible'), 'The controls for the date picker are shown');
+    assert.dom('.dropdown-date-picker__controls').isVisible('The controls for the date picker are shown');
 
-    assert.equal(
-      $('.active.day')[0].innerText.trim(),
-      '25',
-      'The saved date is passed to the date picker as the selected date'
-    );
+    assert.dom('.active.day').hasText('25', 'The saved date is passed to the date picker as the selected date');
 
-    $('.day:contains(24)').click();
-    assert.equal($('.active.day')[0].innerText.trim(), '24', 'The selected date changed');
+    await click($('td.day:contains(24)')[0]);
+    assert.dom('.active.day').hasText('24', 'The selected date changed');
 
-    $('.dropdown-date-picker__reset').click();
-    assert.equal(
-      $('.active.day')[0].innerText.trim(),
-      '25',
-      'The selected date is reset to the saved date after clicking reset'
-    );
+    await click('.dropdown-date-picker__reset');
+    assert.dom('.active.day').hasText('25', 'The selected date is reset to the saved date after clicking reset');
 
-    $('.day:contains(24)').click();
-    assert.equal($('.active.day')[0].innerText.trim(), '24', 'The selected date changed');
+    await click($('td.day:contains(24)')[0]);
+    assert.dom('.active.day').hasText('24', 'The selected date changed');
 
-    $('.dropdown-date-picker__apply').click();
+    await click('.dropdown-date-picker__apply');
   });
 });

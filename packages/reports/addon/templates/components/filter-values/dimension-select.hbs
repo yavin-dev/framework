@@ -11,9 +11,8 @@
     placeholder=(concat filter.subject.longName ' Values')
     loadingMessage='Loading...'
     dropdownClass='filter-values--dimension-select__dropdown'
-    triggerClass='filter-values--dimension-select__trigger'
+    triggerClass=(concat 'filter-values--dimension-select__trigger' (if filter.validations.attrs.rawValues.isInvalid ' filter-values--dimension-select--error'))
     class='filter-values--dimension-select'
-    classNameBindings='filter.validations.attrs.rawValues.isInvalid:filter-values--dimension-select--error'
     as |item|
 }}
     {{#with (format-dimension item) as |dimension|}}

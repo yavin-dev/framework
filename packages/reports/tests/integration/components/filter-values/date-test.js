@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find } from '@ember/test-helpers';
+import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { A as arr } from '@ember/array';
 import { run } from '@ember/runloop';
@@ -23,15 +23,17 @@ module('Integration | Component | filter values/date', function(hooks) {
       }}`);
   });
 
-  test('Displayed text', function(assert) {
+  test('Displayed text', async function(assert) {
     assert.expect(2);
 
-    assert.dom('*').hasText('Select date', 'The placeholder text is displayed when no date is selected');
+    assert
+      .dom('.filter-values--date')
+      .hasText('Select date', 'The placeholder text is displayed when no date is selected');
 
-    run(() => {
+    await run(() => {
       this.set('filter', { values: arr(['2018-10-31']) });
     });
 
-    assert.dom('*').hasText('Oct 31, 2018', 'The selected date is displayed');
+    assert.dom('.filter-values--date').hasText('Oct 31, 2018', 'The selected date is displayed');
   });
 });
