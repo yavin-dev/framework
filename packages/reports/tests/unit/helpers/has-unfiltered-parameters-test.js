@@ -1,5 +1,6 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
+import { setOwner } from '@ember/application';
 
 module('Unit | Helper | has unfiltered parameters', function(hooks) {
   setupTest(hooks);
@@ -7,7 +8,9 @@ module('Unit | Helper | has unfiltered parameters', function(hooks) {
   test('has unfiltered parameters', function(assert) {
     assert.expect(4);
 
-    let hasUnfilteredParameters = this.owner.lookup('helper:has-unfiltered-parameters');
+    let hasUnfilteredParametersFactory = this.owner.lookup('helper:has-unfiltered-parameters');
+    let hasUnfilteredParameters = new hasUnfilteredParametersFactory();
+    setOwner(hasUnfilteredParameters, this.owner);
 
     let request = { metrics: [], having: [] },
       metric = {

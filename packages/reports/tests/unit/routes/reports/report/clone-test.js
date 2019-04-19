@@ -11,7 +11,7 @@ module('Unit | Route | reports/report/clone', function(hooks) {
     assert.expect(3);
 
     return run(() => {
-      const store = getOwner(this).lookup('service:store'),
+      const store = this.owner.lookup('service:store'),
         mockAuthor = store.createRecord('user', { id: 'Gannon' });
 
       this.owner.register(

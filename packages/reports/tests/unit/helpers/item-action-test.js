@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { getOwner } from '@ember/application';
+import { setOwner } from '@ember/application';
 import ActionConsumer from 'navi-core/consumers/action-consumer';
 
 let Container;
@@ -30,7 +30,11 @@ module('Unit | Helper | item action', function(hooks) {
       })
     );
 
-    let action = this.owner.lookup('helper:item-action').compute([
+    let actionFactory = this.owner.lookup('helper:item-action');
+    let actionHelper = new actionFactory();
+    setOwner(actionHelper, this.owner);
+
+    let action = actionHelper.compute([
       'DELETE_ITEM',
       {
         title: 'Report'
@@ -42,7 +46,7 @@ module('Unit | Helper | item action', function(hooks) {
     action();
 
     assert.throws(
-      () => this.owner.lookup('helper:item-action').compute(['Invalid']),
+      () => actionHelper.compute(['Invalid']),
       /The action name "Invalid" is not a valid item action/,
       'An invalid action name throws an exception'
     );

@@ -1,10 +1,8 @@
-import { run } from '@ember/runloop';
-import { getOwner } from '@ember/application';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { settled } from '@ember/test-helpers';
 import config from 'ember-get-config';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
+import { setOwner } from '@ember/application';
 
 let Store;
 
@@ -21,17 +19,17 @@ module('Unit | Helper | get user', function(hooks) {
     teardownMock();
   });
 
-  test('getUser returns user', function(assert) {
+  test('getUser returns user', async function(assert) {
     assert.expect(1);
 
-    let getUser = this.owner.lookup('helper:get-user');
+    let getUser = await this.owner.lookup('helper:get-user');
+    let helper = new getUser();
 
-    return settled().then(() => {
-      return run(() => {
-        let userFromStore = Store.peekRecord('user', config.navi.user),
-          user = getUser.compute();
-        assert.deepEqual(user, userFromStore, 'the user model retrieved using the helper is the current user');
-      });
-    });
+    setOwner(helper, this.owner);
+
+    let userFromStore = Store.peekRecord('user', config.navi.user),
+      user = helper.compute();
+
+    assert.deepEqual(user, userFromStore, 'the user model retrieved using the helper is the current user');
   });
 });

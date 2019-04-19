@@ -2,15 +2,18 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { UpdateReportActions } from 'navi-reports/services/update-report-action-dispatcher';
 import Route from '@ember/routing/route';
-import { getOwner } from '@ember/application';
+import { setOwner } from '@ember/application';
 
-let Container;
+let Container, helper;
 
 module('Unit | Helper | update report action', function(hooks) {
   setupTest(hooks);
 
   hooks.beforeEach(function() {
     Container = this.owner;
+    let helperFactory = this.owner.lookup('helper:update-report-action');
+    helper = new helperFactory();
+    setOwner(helper, this.owner);
   });
 
   test('update-report-action helper calls the correct route action', function(assert) {
@@ -30,16 +33,13 @@ module('Unit | Helper | update report action', function(hooks) {
       assert.equal(invocationParam, 'invocationParam', 'update-report-action called with the correct invocationParam');
     });
 
-    this.owner.lookup('helper:update-report-action').compute(['UPDATE_TABLE', 'helperParam'])('invocationParam');
+    helper.compute(['UPDATE_TABLE', 'helperParam'])('invocationParam');
   });
 
   test('update-report-action errors', function(assert) {
     assert.expect(1);
 
-    assert.throws(
-      () => this.owner.lookup('helper:update-report-action').compute(['BAD NAME']),
-      'report action throws error if report action cannot be found'
-    );
+    assert.throws(() => helper.compute(['BAD NAME']), 'report action throws error if report action cannot be found');
   });
 
   function createMockRoute(onUpdateReport) {

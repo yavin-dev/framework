@@ -1,5 +1,3 @@
-import { run } from '@ember/runloop';
-import { getOwner } from '@ember/application';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
@@ -19,7 +17,7 @@ module('Unit | Serializer | Report', function(hooks) {
     teardownMock();
   });
 
-  test('Serializing record', function(assert) {
+  test('Serializing record', async function(assert) {
     assert.expect(3);
 
     let expectedResult = {
@@ -59,7 +57,10 @@ module('Unit | Serializer | Report', function(hooks) {
                   series: {
                     type: 'dimension',
                     config: {
-                      metric: 'adClicks',
+                      metric: {
+                        metric: 'adClicks',
+                        parameters: {}
+                      },
                       dimensionOrder: ['property'],
                       dimensions: [
                         { name: 'Property 1', values: { property: '114' } },
@@ -85,22 +86,19 @@ module('Unit | Serializer | Report', function(hooks) {
       }
     };
 
-    return run(() => {
-      return Store.findRecord('report', 1).then(report => {
-        assert.ok(report.get('createdOn'), 'Report model contains "createdOn" attribute');
+    let report = await Store.findRecord('report', 1);
+    assert.ok(report.get('createdOn'), 'Report model contains "createdOn" attribute');
 
-        assert.ok(report.get('updatedOn'), 'Report model contains "updatedOn" attribute');
+    assert.ok(report.get('updatedOn'), 'Report model contains "updatedOn" attribute');
 
-        assert.deepEqual(
-          report.serialize(),
-          expectedResult,
-          'Serialize method does not serialize createdOn and updatedOn attributes as expected'
-        );
-      });
-    });
+    assert.deepEqual(
+      report.serialize(),
+      expectedResult,
+      'Serialize method does not serialize createdOn and updatedOn attributes as expected'
+    );
   });
 
-  test('Serializing multi param request', function(assert) {
+  test('Serializing multi param request', async function(assert) {
     assert.expect(1);
 
     let expectedResult = {
@@ -182,14 +180,12 @@ module('Unit | Serializer | Report', function(hooks) {
       }
     };
 
-    return run(() => {
-      return Store.findRecord('report', 8).then(report => {
-        assert.deepEqual(
-          report.serialize(),
-          expectedResult,
-          'Serialize report with parameterized metric serializes as expected'
-        );
-      });
-    });
+    let report = await Store.findRecord('report', 8);
+
+    assert.deepEqual(
+      report.serialize(),
+      expectedResult,
+      'Serialize report with parameterized metric serializes as expected'
+    );
   });
 });

@@ -44,13 +44,13 @@ module('Unit | Utils | Enums - Filter Operations', function() {
     let allFilterOperations = FilterOperations.all(),
       responseFormat = FilterOperations.getById('in');
 
-    assert.equal(responseFormat, allFilterOperations[0], 'getById returned expected object with id in');
+    assert.deepEqual(responseFormat, allFilterOperations[0], 'getById returned expected object with id in');
 
     responseFormat = FilterOperations.getById('notin');
-    assert.equal(responseFormat, allFilterOperations[1], 'getById returned expected object with id notin');
+    assert.deepEqual(responseFormat, allFilterOperations[1], 'getById returned expected object with id notin');
 
     responseFormat = FilterOperations.getById('foo');
-    assert.equal(
+    assert.deepEqual(
       responseFormat,
       undefined,
       'getById returned undefined when object is not present in enum with id foo'
