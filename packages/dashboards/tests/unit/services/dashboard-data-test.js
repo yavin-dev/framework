@@ -115,34 +115,44 @@ test('fetch data for dashboard', function(assert) {
 test('fetch data for widget', async function(assert) {
   assert.expect(9);
 
-  let service = this.subject({
+  const service = this.subject({
     _fetch(request) {
       // Skip the ws data fetch for this test
-      return Ember.RSVP.resolve(request);
+      return Ember.RSVP.resolve({
+        request,
+        response: { data: request.data }
+      });
     }
   });
 
   assert.deepEqual(service.fetchDataForWidgets(1, []), {}, 'no widgets returns empty data object');
 
-  const makeRequest = data => {
-    const result = {
-      response: {
-        data
-      }
-    };
+  const makeRequest = (data, filters) => ({
+    clone() {
+      return cloneDeep(this);
+    },
+    serialize() {
+      return cloneDeep(this);
+    },
+    addFilter(filter) {
+      this.filters.push(filter);
+    },
+    logicalTable: {
+      table: { name: 'table1' },
+      timeGrain: { dimensionIds: [] }
+    },
+    data,
+    filters: filters || []
+  });
 
-    const resultObj = merge({}, cloneDeep(result), {
-      serialize: () => cloneDeep(result),
-      clone: () => cloneDeep(resultObj)
-    });
-
-    return resultObj;
+  const dashboard = {
+    filters: []
   };
 
   let widgets = [
-      { id: 1, requests: [makeRequest(1), makeRequest(2), makeRequest(3)] },
-      { id: 2, requests: [makeRequest(4)] },
-      { id: 3, requests: [] }
+      { id: 1, dashboard: cloneDeep(dashboard), requests: [makeRequest(1), makeRequest(2), makeRequest(3)] },
+      { id: 2, dashboard: cloneDeep(dashboard), requests: [makeRequest(4)] },
+      { id: 3, dashboard: cloneDeep(dashboard), requests: [] }
     ],
     data = service.fetchDataForWidgets(1, widgets);
 
@@ -161,9 +171,7 @@ test('fetch data for widget', async function(assert) {
   );
 
   /* == Decorators == */
-  data = service.fetchDataForWidgets(1, widgets, [
-    obj => merge({}, obj, { response: { data: obj.response.data + 1 } })
-  ]);
+  data = service.fetchDataForWidgets(1, widgets, [obj => merge({}, obj, { data: obj.data + 1 })]);
 
   await wait();
 
@@ -194,7 +202,13 @@ test('fetch data for widget', async function(assert) {
 
     return Ember.RSVP.resolve({});
   });
-  service.fetchDataForWidgets(1, [{ id: 2, requests: [makeRequest(4)] }], [], optionsObject);
+
+  await service.fetchDataForWidgets(
+    1,
+    [{ id: 2, dashboard: cloneDeep(dashboard), requests: [makeRequest(4)] }],
+    [],
+    optionsObject
+  );
 });
 
 test('_fetch', function(assert) {
