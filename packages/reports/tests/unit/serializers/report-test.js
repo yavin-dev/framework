@@ -145,22 +145,36 @@ module('Unit | Serializer | Report', function(hooks) {
             metadata: {
               columns: [
                 {
-                  field: 'dateTime',
+                  attributes: {
+                    name: 'dateTime'
+                  },
                   type: 'dateTime',
                   displayName: 'Date'
                 },
                 {
-                  field: 'property',
+                  attributes: {
+                    name: 'property'
+                  },
                   type: 'dimension',
                   displayName: 'Property'
                 },
                 {
-                  field: 'revenue(currency=USD)',
+                  attributes: {
+                    name: 'revenue',
+                    parameters: {
+                      currency: 'USD'
+                    }
+                  },
                   type: 'metric',
                   displayName: 'Revenue (USD)'
                 },
                 {
-                  field: 'revenue(currency=EUR)',
+                  attributes: {
+                    name: 'revenue',
+                    parameters: {
+                      currency: 'EUR'
+                    }
+                  },
                   type: 'metric',
                   displayName: 'Revenue (EUR)'
                 }

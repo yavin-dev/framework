@@ -7,7 +7,7 @@ import { setupTest } from 'ember-qunit';
 module('Unit | Route | reports/report/view', function(hooks) {
   setupTest(hooks);
 
-  test('model', function(assert) {
+  test('model', async function(assert) {
     assert.expect(5);
 
     const serializedRequest = 'foo',
@@ -55,18 +55,18 @@ module('Unit | Route | reports/report/view', function(hooks) {
             'Options from route are passed to fact service'
           );
 
-          return resolve({ response: factServiceResponse });
+          return resolve({ request: serializedRequest, response: factServiceResponse });
         }
       }
     });
 
-    run(() => route.model()).then(model => {
-      assert.equal(
-        model,
-        factServiceResponse,
-        'Model hook returns response from fact service wrapped in a PromiseObject'
-      );
-    });
+    let model = await route.model();
+
+    assert.deepEqual(
+      model,
+      { request: serializedRequest, response: factServiceResponse },
+      'Model hook returns request and response from fact service wrapped in a PromiseObject'
+    );
   });
 
   test('invalid visualization', function(assert) {
@@ -97,13 +97,13 @@ module('Unit | Route | reports/report/view', function(hooks) {
     assert.expect(1);
 
     let route = this.owner.factoryFor('route:reports/report/view').create({
-        _hasRequestRun() {
-          return true;
-        },        
-        refresh() {
-          throw new Error('The route should not refresh if the request has not changed');
-        }
-      });
+      _hasRequestRun() {
+        return true;
+      },
+      refresh() {
+        throw new Error('The route should not refresh if the request has not changed');
+      }
+    });
 
     /* == Request has no changes == */
     route.send('runReport');
