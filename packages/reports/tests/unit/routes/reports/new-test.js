@@ -3,6 +3,7 @@ import { moduleFor, test } from 'ember-qunit';
 import wait from 'ember-test-helpers/wait';
 import config from 'ember-get-config';
 import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
+import { run } from '@ember/runloop';
 
 const { getOwner, get, set } = Ember;
 
@@ -115,9 +116,11 @@ moduleFor('route:reports/new', 'Unit | Route | reports/new', {
   async beforeEach() {
     setupMock();
 
-    await getOwner(this)
-      .lookup('service:bard-metadata')
-      .loadMetadata();
+    await run(() =>
+      getOwner(this)
+        .lookup('service:bard-metadata')
+        .loadMetadata()
+    );
 
     let mockAuthor = getOwner(this)
       .lookup('service:store')
