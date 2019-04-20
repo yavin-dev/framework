@@ -11,6 +11,7 @@
 
 /* global requirejs */
 
+import { A as arr } from '@ember/array';
 import Component from '@ember/component';
 import { camelize } from '@ember/string';
 import { computed, get } from '@ember/object';
@@ -22,7 +23,6 @@ import layout from '../../templates/components/navi-visualizations/line-chart';
 import numeral from 'numeral';
 import merge from 'lodash/merge';
 import { run } from '@ember/runloop';
-import { A as arr } from '@ember/array';
 
 const DEFAULT_OPTIONS = {
   axis: {
@@ -176,8 +176,8 @@ export default Component.extend({
    * @property {Object} pointConfig - point radius config options for chart
    */
   pointConfig: computed('model.[]', function() {
-    const firstObject = arr(this.model).firstObject;
-    let pointCount = firstObject.response.rows.length;
+    const model = arr(get(this, 'model'));
+    const pointCount = get(model, 'firstObject.response.rows.length');
 
     //set point radius higher for single data
     if (pointCount === 1) {
@@ -190,17 +190,17 @@ export default Component.extend({
   /**
    * @property {Object} data - configuration for chart x and y values
    */
-  dataConfig: computed('model.0', 'seriesConfig', function() {
-    const firstObject = arr(this.model).firstObject;
-    const response = firstObject.response;
-    const request = firstObject.request;
-    const builder = this.builder;
-    const seriesConfig = this.seriesConfig.config;
-    const seriesData = builder.buildData(response.rows, seriesConfig, request);
+  dataConfig: computed('model.[]', 'seriesConfig', function() {
+    const model = arr(get(this, 'model'));
+    const response = get(model, 'firstObject.response');
+    const request = get(model, 'firstObject.request');
+    const builder = get(this, 'builder');
+    const seriesConfig = get(this, 'seriesConfig.config');
+    const seriesData = builder.buildData(get(response, 'rows'), seriesConfig, request);
 
     return {
       data: {
-        type: this.chartType,
+        type: get(this, 'chartType'),
         json: seriesData,
         selection: {
           enabled: true
@@ -214,7 +214,7 @@ export default Component.extend({
    */
   dataSelectionConfig: computed('model.[]', function() {
     // model is an array, and object at index 1 is insights data promise
-    const insights = arr(this.model).objectAt(1);
+    let insights = get(this, 'model').objectAt(1);
     return insights ? { dataSelection: insights } : {};
   }),
 
@@ -232,11 +232,12 @@ export default Component.extend({
    * @property {Ember.Component} tooltipComponent - component used for rendering HTMLBars templates
    */
   tooltipComponent: computed('dataConfig', function() {
-    const request = arr(this.model).firstObject.request;
-    const seriesConfig = this.seriesConfig.config;
-    const tooltipComponentName = this.tooltipComponentName;
+    const model = arr(get(this, 'model'));
+    const request = get(model, 'firstObject.request');
+    const seriesConfig = get(this, 'seriesConfig.config');
+    const tooltipComponentName = get(this, 'tooltipComponentName');
     const registryEntry = `component:${tooltipComponentName}`;
-    const builder = this.builder;
+    const builder = get(this, 'builder');
     const owner = getOwner(this);
     const tooltipComponent = Component.extend(owner.ownerInjection(), builder.buildTooltip(seriesConfig, request), {
       renderer: owner.lookup('renderer:-dom')
@@ -260,12 +261,13 @@ export default Component.extend({
     'seriesConfig.config',
     'dataConfig.data.json',
     'tooltipComponent',
-    'model.0.request',
+    'model.[].request',
     function() {
-      let rawData = get(this, 'dataConfig.data.json'),
-        tooltipComponent = get(this, 'tooltipComponent'),
-        request = get(this, 'model.0.request'),
-        seriesConfig = get(this, 'seriesConfig.config');
+      const rawData = get(this, 'dataConfig.data.json');
+      const tooltipComponent = get(this, 'tooltipComponent');
+      const model = arr(get(this, 'model'));
+      const request = get(model, 'firstObject.request');
+      const seriesConfig = get(this, 'seriesConfig.config');
 
       return {
         contents(tooltipData) {
