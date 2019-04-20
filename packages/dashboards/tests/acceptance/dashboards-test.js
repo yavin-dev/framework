@@ -1,6 +1,5 @@
 import { click, currentURL, fillIn, find, findAll, triggerEvent, visit } from '@ember/test-helpers';
 import { run } from '@ember/runloop';
-import Ember from 'ember';
 import { module, test } from 'qunit';
 import config from 'ember-get-config';
 import { setupApplicationTest } from 'ember-qunit';
@@ -8,8 +7,6 @@ import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import { Response } from 'ember-cli-mirage';
 import { selectChoose } from 'ember-power-select/test-support';
 import $ from 'jquery';
-
-let OriginalLoggerError, OriginalTestAdapterException;
 
 module('Acceptance | Dashboards', function(hooks) {
   setupApplicationTest(hooks);
@@ -28,12 +25,6 @@ module('Acceptance | Dashboards', function(hooks) {
   test('dashboard error', async function(assert) {
     assert.expect(2);
 
-    // Allow testing of errors - https://github.com/emberjs/ember.js/issues/11469
-    OriginalLoggerError = Ember.Logger.error;
-    OriginalTestAdapterException = Ember.Test.adapter.exception;
-    Ember.Logger.error = function() {};
-    Ember.Test.adapter.exception = function() {};
-
     this.urlPrefix = config.navi.appPersistence.uri;
     server.get('/dashboards/:id', () => new Response(500));
 
@@ -41,9 +32,6 @@ module('Acceptance | Dashboards', function(hooks) {
     assert.dom('.error').exists('Error message not present when route is successfully loaded');
 
     assert.dom('.navi-dashboard').doesNotExist('Navi dashboard collection component is not rendered');
-
-    Ember.Logger.error = OriginalLoggerError;
-    Ember.Test.adapter.exception = OriginalTestAdapterException;
   });
 
   test('dashboard loading', async function(assert) {
