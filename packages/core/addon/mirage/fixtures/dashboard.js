@@ -28,9 +28,21 @@ export default [
     filters: [
       {
         dimension: 'property',
-        operator: 'in',
+        operator: 'contains',
         field: 'id',
         values: ['114', '100001']
+      },
+      {
+        dimension: 'property',
+        operator: 'notin',
+        field: 'id',
+        values: ['1']
+      },
+      {
+        dimension: 'property',
+        operator: 'notin',
+        field: 'id',
+        values: ['2', '3', '4', '5', '6', '4', '5', '6', '4', '5', '6']
       }
     ],
     presentation: {

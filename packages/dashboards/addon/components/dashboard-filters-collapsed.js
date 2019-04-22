@@ -7,5 +7,6 @@ import Component from '@ember/component';
 import layout from '../templates/components/dashboard-filters-collapsed';
 
 export default Component.extend({
-  layout
+  layout,
+  classNames: ['dashboard-filters', 'dashboard-filters-collapsed']
 });
