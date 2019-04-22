@@ -476,6 +476,12 @@ module('Integration | Component | Navi Date Range Picker', function(hooks) {
     assert.expect(1);
 
     this.interval = new Interval(moment('09-14-2014', 'MM-DD-YYYY'), moment('10-15-2014', 'MM-DD-YYYY'));
+    this.set('setInterval', interval => {
+      let selectedStart = moment('10-15-2014', 'MM-DD-YYYY'),
+        selectedEnd = moment('10-25-2014', 'MM-DD-YYYY');
+
+      assert.ok(interval.isEqual(new Interval(selectedStart, selectedEnd)), 'Interval comes from date inputs');
+    });
 
     await render(hbs`
       {{navi-date-range-picker
@@ -491,20 +497,11 @@ module('Integration | Component | Navi Date Range Picker', function(hooks) {
     await openAdvancedCalendar();
 
     // Set a new date and blur input to trigger change
-    await fillIn('input.navi-date-range-picker__start-input', '2014-10-15');
-    await blur('.navi-date-range-picker__start-input');
-    await waitUntil(() => !!$('.navi-date-picker:eq(0) .active.day:contains(15)').length);
-
-    find('.navi-date-range-picker__end-input').value = '2014-10-25'; //fillIn helper was not working correctly
-    await blur('.navi-date-range-picker__end-input');
-    await waitUntil(() => !!$('.navi-date-picker:eq(1) .active.day:contains(24)').length);
-
-    this.set('setInterval', interval => {
-      let selectedStart = moment('10-15-2014', 'MM-DD-YYYY'),
-        selectedEnd = moment('10-25-2014', 'MM-DD-YYYY');
-
-      assert.ok(interval.isEqual(new Interval(selectedStart, selectedEnd)), 'Interval comes from date inputs');
-    });
+    // Explicitly using Jquery because the ember-test-helpers functions were not working properly for this test
+    $('.navi-date-range-picker__start-input').val('2014-10-15');
+    $('.navi-date-range-picker__start-input').blur();
+    $('.navi-date-range-picker__end-input').val('2014-10-25');
+    $('.navi-date-range-picker__end-input').blur();
 
     // Click apply
     await click('.navi-date-range-picker__apply-btn');
@@ -529,11 +526,11 @@ module('Integration | Component | Navi Date Range Picker', function(hooks) {
     await openAdvancedCalendar();
 
     // Set a new date and blur input to trigger change
-    find('.navi-date-range-picker__start-input').value = 'P7D'; //fillIn helper was not working correctly
-    await blur('.navi-date-range-picker__start-input');
-
-    find('.navi-date-range-picker__end-input').value = 'current';
-    await blur('.navi-date-range-picker__end-input');
+    // Explicitly using Jquery because the ember-test-helpers functions were not working properly for this test
+    $('.navi-date-range-picker__start-input').val('P7D');
+    $('.navi-date-range-picker__start-input').blur();
+    $('.navi-date-range-picker__end-input').val('current');
+    $('.navi-date-range-picker__end-input').blur();
 
     this.set('setInterval', interval => {
       assert.equal(
