@@ -1,6 +1,6 @@
-import { click, find, findAll, visit } from '@ember/test-helpers';
+import { click, find, findAll, visit, fillIn } from '@ember/test-helpers';
 import { module, test } from 'qunit';
-import { selectChoose } from 'ember-power-select/test-support/helpers';
+import { selectChoose, selectSearch } from 'ember-power-select/test-support/helpers';
 import $ from 'jquery';
 import { setupApplicationTest } from 'ember-qunit';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
@@ -27,6 +27,7 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
     await click(
       $('.grouped-list__group:contains(Asset) .grouped-list__item:contains(Property) .checkbox-selector__filter')[0]
     );
+    await selectSearch('.filter-values--dimension-select__trigger', 'Property');
     await selectChoose('.filter-values--dimension-select__trigger', '.ember-power-select-option', 0);
     await click('.navi-report__run-btn');
 
@@ -324,20 +325,19 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
     await click('.navi-report__run-btn');
     assert.dom('.table-widget').isVisible('table visualization is still shown');
   });
-});
 
-test('Table Column Config - Does not prompt for rerun', function(assert) {
-  visit('/reports/2/view');
+  test('Table Column Config - Does not prompt for rerun', async function(assert) {
+    assert.expect(1);
 
-  //Update column name
-  click('.report-view__visualization-edit-btn');
-  fillIn('.dateTime > .table-header-cell__input', 'test');
-  click('.report-view__visualization-edit-btn');
+    await visit('/reports/2');
 
-  andThen(() => {
-    assert.notOk(
-      !!find('.report-view__info-text').length,
-      'Updating the column config does not prompt the user to rerun the report'
-    );
+    //Update column name
+    await click('.report-view__visualization-edit-btn');
+    await fillIn('.dateTime > .table-header-cell__input', 'test');
+    await click('.report-view__visualization-edit-btn');
+
+    assert
+      .dom('.report-view__info-text')
+      .isNotVisible('Updating the column config does not prompt the user to rerun the report');
   });
 });

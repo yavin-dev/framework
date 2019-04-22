@@ -90,7 +90,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await visit('/reports/new');
 
     /* == Add filter == */
-    await click('.grouped-list__item:Contains(Operating System) .checkbox-selector__filter');
+    await click($('.grouped-list__item:Contains(Operating System) .checkbox-selector__filter')[0]);
 
     /* == Run with errors == */
     await click('.navi-report__run-btn');
@@ -101,6 +101,7 @@ module('Acceptance | Navi Report', function(hooks) {
     );
 
     /* == Fix errors == */
+    await click($('.grouped-list__item:Contains(Operating System) .checkbox-selector__filter')[0]);
     await click($('.checkbox-selector--metric .grouped-list__item:contains(Ad Clicks) .grouped-list__item-label')[0]);
     await click('.navi-report__run-btn');
 
@@ -676,15 +677,19 @@ module('Acceptance | Navi Report', function(hooks) {
       .dom('.get-api')
       .doesNotHaveClass('.navi-report__action--is-disabled', 'Get API action is enabled for a valid report');
 
-    // Remove all metrics to create an invalid report
+    // Remove all metrics
     await click($('.checkbox-selector--metric .grouped-list__item:contains(Ad Clicks) .grouped-list__item-label')[0]);
     await click(
       $('.checkbox-selector--metric .grouped-list__item:contains(Nav Link Clicks) .grouped-list__item-label')[0]
     );
 
-    assert
-      .dom('.get-api')
-      .hasClass('navi-report__action--is-disabled', 'Get API action is disabled for an invalid report');
+    // add filter
+    await click($('.grouped-list__item:Contains(Operating System) .checkbox-selector__filter')[0]);
+
+    assert.ok(
+      [...find('.get-api').classList].includes('navi-report__action--is-disabled'),
+      'Get API action is disabled for an invalid report'
+    );
   });
 
   test('Share report', async function(assert) {
@@ -1121,7 +1126,7 @@ module('Acceptance | Navi Report', function(hooks) {
   test('Disabled Visualization Edit While Editing', async function(assert) {
     assert.expect(9);
 
-    await visit('/reports/1/view');
+    await visit('/reports/2/view');
     await click('.report-view__visualization-edit-btn');
 
     assert
@@ -1131,17 +1136,17 @@ module('Acceptance | Navi Report', function(hooks) {
     // Make a change that does NOT invalidate visualization
     await fillIn('.table-header-cell.dateTime input', 'Foo');
     await blur('.table-header-cell.dateTime input');
-    assert.dom('.report-view__visualization-edit').isVisible(
-      'Visualization edit panel is still visible after making changes that do not change the request'
-    );
+    assert
+      .dom('.report-view__visualization-edit')
+      .isVisible('Visualization edit panel is still visible after making changes that do not change the request');
 
-    assert.dom('.report-view__visualization-edit-btn').isVisible(
-      'Visualization edit button is is still visible after making changes that do not change the request'
-    );
+    assert
+      .dom('.report-view__visualization-edit-btn')
+      .isVisible('Visualization edit button is is still visible after making changes that do not change the request');
 
-    assert.dom('.report-view__info-text').isNotVisible(
-      'Notification to run is not visible after making changes that do not change the request'
-    );
+    assert
+      .dom('.report-view__info-text')
+      .isNotVisible('Notification to run is not visible after making changes that do not change the request');
 
     // Make a change that invalidates visualization
     await click($('.grouped-list__item:contains(Product Family) .checkbox-selector__checkbox')[0]);
@@ -1154,9 +1159,9 @@ module('Acceptance | Navi Report', function(hooks) {
       .dom('.report-view__visualization-edit-btn')
       .isNotVisible('Visualization edit button is hidden when there are request changes that have not been run');
 
-    assert.dom('.report-view__info-text').isVisible(
-      'Notification to run is visible when there are request changes that have not been run'
-    );
+    assert
+      .dom('.report-view__info-text')
+      .isVisible('Notification to run is visible when there are request changes that have not been run');
 
     // Run report
     await click('.navi-report__run-btn');
@@ -1165,9 +1170,9 @@ module('Acceptance | Navi Report', function(hooks) {
       .dom('.report-view__visualization-edit-btn')
       .isVisible('Visualization edit button is back after running report');
 
-    assert.dom('.report-view__info-text').isNotVisible(
-      'Notification to run is visible when there are request changes that have not been run'
-    );
+    assert
+      .dom('.report-view__info-text')
+      .isNotVisible('Notification to run is visible when there are request changes that have not been run');
   });
 
   test('Save changes', async function(assert) {
@@ -1604,7 +1609,7 @@ module('Acceptance | Navi Report', function(hooks) {
   test('Filter with large cardinality dimensions value selection works', async function(assert) {
     assert.expect(2);
     let option,
-      dropdownSelector = '.filter-values--dimension-select';
+      dropdownSelector = '.filter-values--dimension-select__trigger';
     await visit('/reports/new');
 
     // Load table A as it has the large cardinality dimensions, and choose a large cardinality dimension
@@ -1615,20 +1620,17 @@ module('Acceptance | Navi Report', function(hooks) {
     await click($('.navi-report__footer button:Contains(Run)')[0]);
 
     // Grab one of the dim names after running a report
-    option = find('.table-cell-content.dimension')[0].textContent.trim();
+    option = find('.table-cell-content.dimension').textContent.trim();
+    await click($('.grouped-list__item:Contains(EventId) .checkbox-selector__filter')[0]);
 
     // Open the dimension values so we can get values as they are dynamically created by mirage
     await clickTrigger(dropdownSelector);
 
-
-    // Parse the options from the dropdown, and then select the first item.
-    let message = find(
-      '.filter-values--dimension-select__dropdown .ember-power-select-option--search-message'
-    )[0].textContent.trim();
-    assert.equal(message, 'Type to search', 'Message is correct');
+    assert
+      .dom('.filter-values--dimension-select__dropdown .ember-power-select-option--search-message')
+      .hasText('Type to search', 'Message is correct');
 
     // Simulate typing a search which pulls large cardinality dimension values from the server
-
     await selectSearch(dropdownSelector, option.toLowerCase().substring(0, 3));
     await click($('.filter-values--dimension-select__dropdown .ember-power-select-option:contains(' + option + ')')[0]);
 
