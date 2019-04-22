@@ -1,6 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click, find } from '@ember/test-helpers';
+import { render, click } from '@ember/test-helpers';
+import $ from 'jquery';
 import { set } from '@ember/object';
 import { later } from '@ember/runloop';
 import hbs from 'htmlbars-inline-precompile';
@@ -36,19 +37,19 @@ module('Integration | Component | missing intervals warning', function(hooks) {
       );
 
     assert.notOk(
-      this.$('.missing-intervals-warning__details-content').is(':visible'),
+      $('.missing-intervals-warning__details-content').is(':visible'),
       'The details section is not expanded by default'
     );
 
     await click('.missing-intervals-warning__contents');
 
     assert.ok(
-      this.$('.missing-intervals-warning__details-content').is(':visible'),
+      $('.missing-intervals-warning__details-content').is(':visible'),
       'The details section expands when the component is clicked'
     );
 
     assert.deepEqual(
-      this.$('.missing-intervals-warning__date-interval')
+      $('.missing-intervals-warning__date-interval')
         .toArray()
         .map(elm => elm.innerHTML),
       ['2018/11/10 - 2018/11/12', '2018/11/14 - 2018/11/15', '2018/11/19'],
@@ -65,7 +66,7 @@ module('Integration | Component | missing intervals warning', function(hooks) {
     await click('.missing-intervals-warning__contents');
 
     assert.notOk(
-      this.$('.missing-intervals-warning__details-content').is(':visible'),
+      $('.missing-intervals-warning__details-content').is(':visible'),
       'The details section collapses when the component is clicked'
     );
   });
@@ -81,7 +82,7 @@ module('Integration | Component | missing intervals warning', function(hooks) {
     }}`);
 
     assert.notOk(
-      this.$('.missing-intervals-warning__footer').is(':visible'),
+      $('.missing-intervals-warning__footer').is(':visible'),
       'The component is not visible when there are no missing intervals'
     );
   });

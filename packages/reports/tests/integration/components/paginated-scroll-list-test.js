@@ -2,7 +2,8 @@ import { A } from '@ember/array';
 import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, settled, findAll, triggerEvent } from '@ember/test-helpers';
+import { render, settled, triggerEvent } from '@ember/test-helpers';
+import $ from 'jquery';
 import hbs from 'htmlbars-inline-precompile';
 
 const COMMON_TEMPLATE = hbs`
@@ -54,7 +55,7 @@ module('Integration | Component | paginated scroll list', function(hooks) {
     assert.dom('.items-container.trimmed').exists({ count: 1 }, 'items container has "trimmed" class');
 
     assert.equal(
-      this.$('a:contains("Show more")').length,
+      $('a:contains("Show more")').length,
       1,
       'Show more link is visible when rendered items exceed the container max height'
     );
@@ -62,7 +63,7 @@ module('Integration | Component | paginated scroll list', function(hooks) {
     this.set('items', _buildItemsArray(30, '1'));
 
     assert.equal(
-      this.$('a:contains("Show more")').length,
+      $('a:contains("Show more")').length,
       1,
       'Show more link is visible when has items not rendered and does not exceed container max height'
     );
@@ -81,11 +82,7 @@ module('Integration | Component | paginated scroll list', function(hooks) {
 
     await render(COMMON_TEMPLATE);
 
-    assert.equal(
-      this.$('a:contains("Show more")').length,
-      1,
-      'Show more link is visible before clicking show more link'
-    );
+    assert.equal($('a:contains("Show more")').length, 1, 'Show more link is visible before clicking show more link');
 
     assert
       .dom('.items-container.trimmed')
@@ -97,14 +94,10 @@ module('Integration | Component | paginated scroll list', function(hooks) {
     });
 
     run(() => {
-      this.$('a:contains("Show more")').click();
+      $('a:contains("Show more")').click();
     });
 
-    assert.equal(
-      this.$('a:contains("Show more")').length,
-      0,
-      'Show more link is not visible after clicking show more link'
-    );
+    assert.equal($('a:contains("Show more")').length, 0, 'Show more link is not visible after clicking show more link');
 
     assert
       .dom('.items-container.show-all')
@@ -123,7 +116,7 @@ module('Integration | Component | paginated scroll list', function(hooks) {
 
     assert.dom('.items-container.show-all').exists({ count: 1 }, 'items container has "show-all" class');
 
-    assert.equal(this.$('a:contains("Show more")').length, 0, 'Show more link is not visible when trim flag is false');
+    assert.equal($('a:contains("Show more")').length, 0, 'Show more link is not visible when trim flag is false');
   });
 
   test('show more link is not visible when items are within max height', async function(assert) {
@@ -134,12 +127,12 @@ module('Integration | Component | paginated scroll list', function(hooks) {
     this.set('perPage', 250);
     await render(COMMON_TEMPLATE);
 
-    assert.equal(this.$('a:contains("Show more")').length, 0, 'Show more link is not visible initially');
+    assert.equal($('a:contains("Show more")').length, 0, 'Show more link is not visible initially');
 
     /* == items exceed container == */
     this.set('items', _buildItemsArray(4, 'This is Foo Object'));
 
-    assert.equal(this.$('a:contains("Show more")').length, 1, 'Show more link is visible after items change');
+    assert.equal($('a:contains("Show more")').length, 1, 'Show more link is visible after items change');
   });
 
   test('scrolling to the bottom loads more elements', async function(assert) {
@@ -153,7 +146,7 @@ module('Integration | Component | paginated scroll list', function(hooks) {
     assert.equal($('.mock-item').length, 25, '25 items are shown before scrolling');
 
     //scroll all the way to the bottom
-    this.$('.items-container').scrollTop($('.items-list').height());
+    $('.items-container').scrollTop($('.items-list').height());
     //test can be flaky at times, make sure scroll event happens
     await triggerEvent('.items-container', 'scroll');
 

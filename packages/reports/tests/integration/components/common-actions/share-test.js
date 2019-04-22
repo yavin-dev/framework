@@ -37,17 +37,11 @@ module('Integration | Component | common actions/share', function(hooks) {
 
     await render(Template);
 
-    assert.ok(
-      this.$('button:contains("Share")').prop('disabled'),
-      'Share is disabled when the disabled is set to true'
-    );
+    assert.ok($('button:contains("Share")').prop('disabled'), 'Share is disabled when the disabled is set to true');
 
     this.set('isDisabled', false);
 
-    assert.notOk(
-      this.$('button:contains("Share")').prop('disabled'),
-      'Share is enabled when the disabled is set to false'
-    );
+    assert.notOk($('button:contains("Share")').prop('disabled'), 'Share is enabled when the disabled is set to false');
   });
 
   test('Modal', async function(assert) {

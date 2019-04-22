@@ -1,6 +1,5 @@
 import { A } from '@ember/array';
 import Service from '@ember/service';
-import { getOwner } from '@ember/application';
 import { set, get } from '@ember/object';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';

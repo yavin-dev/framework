@@ -3,7 +3,6 @@ import { setupTest } from 'ember-qunit';
 import { settled } from '@ember/test-helpers';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
 import { run } from '@ember/runloop';
-import { getOwner } from '@ember/application';
 import Response from 'ember-cli-mirage/response';
 
 let Store, Container, MetadataService, Server;

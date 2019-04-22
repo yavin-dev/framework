@@ -1,9 +1,9 @@
 import { A } from '@ember/array';
 import { helper as buildHelper } from '@ember/component/helper';
-import { getOwner } from '@ember/application';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, settled, find } from '@ember/test-helpers';
+import { render, settled } from '@ember/test-helpers';
+import $ from 'jquery';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
 import hbs from 'htmlbars-inline-precompile';
 import Interval from 'navi-core/utils/classes/interval';
@@ -144,13 +144,10 @@ module('Integration | Component | report view', function(hooks) {
               }}
           `);
 
-      assert.ok(
-        this.$('.visualization-toggle__option:contains(Data Table)').is(':visible'),
-        'Table Selector is visible'
-      );
+      assert.ok($('.visualization-toggle__option:contains(Data Table)').is(':visible'), 'Table Selector is visible');
 
       assert.ok(
-        this.$('.visualization-toggle__option:contains(Metric Label)').is(':visible'),
+        $('.visualization-toggle__option:contains(Metric Label)').is(':visible'),
         'Metric Label Selector is visible'
       );
     });
@@ -168,7 +165,7 @@ module('Integration | Component | report view', function(hooks) {
           `);
 
       assert.ok(
-        this.$('.line-chart-widget').is(':visible'),
+        $('.line-chart-widget').is(':visible'),
         'Visualization is rendered based on the report visualization type'
       );
 
@@ -191,9 +188,9 @@ module('Integration | Component | report view', function(hooks) {
         }
       });
 
-      assert.ok(this.$('.table-widget').is(':visible'), 'Rendered visualization updates with report');
+      assert.ok($('.table-widget').is(':visible'), 'Rendered visualization updates with report');
 
-      assert.notOk(this.$('.line-chart-widget').is(':visible'), 'Old visualization is removed');
+      assert.notOk($('.line-chart-widget').is(':visible'), 'Old visualization is removed');
     });
   });
 

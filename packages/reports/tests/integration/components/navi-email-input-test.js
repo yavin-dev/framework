@@ -2,6 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, find, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
+import $ from 'jquery';
 import { typeInInput } from '../../helpers/ember-tag-input';
 
 const EMAILS = ['toonlink@naviapp.io', 'midna@naviapp.io'];
@@ -19,7 +20,7 @@ module('Integration | Component | navi email input', function(hooks) {
     await render(hbs`{{navi-email-input emails=emails}}`);
 
     assert.deepEqual(
-      this.$('.navi-email-input .navi-email-tag')
+      $('.navi-email-input .navi-email-tag')
         .toArray()
         .map(e => e.textContent.trim()),
       EMAILS,
@@ -43,7 +44,7 @@ module('Integration | Component | navi email input', function(hooks) {
     await render(hbs`{{navi-email-input emails=emails onUpdateEmails=(action onUpdateEmails)}}`);
 
     typeInInput('.js-ember-tag-input-new', newEmail);
-    this.$('.js-ember-tag-input-new').blur();
+    $('.js-ember-tag-input-new').blur();
   });
 
   test('remove email', async function(assert) {

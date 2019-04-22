@@ -1,5 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
+import $ from 'jquery';
 import { render, fillIn, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
@@ -20,7 +21,7 @@ module('Integration | Component | filter values/multi value input', function(hoo
     assert.expect(1);
 
     assert.equal(
-      this.$('.emberTagInput-tag')[0].innerText.trim(),
+      $('.emberTagInput-tag')[0].innerText.trim(),
       this.filter.values[0],
       'The value select contains an input with the first filter value as a tag'
     );
@@ -47,18 +48,15 @@ module('Integration | Component | filter values/multi value input', function(hoo
       assert.deepEqual(changeSet, { rawValues: ['bbb'] }, 'Removing a tag updates the filter values');
     });
 
-    this.$('.emberTagInput-tag:contains(1000)>.emberTagInput-remove').click();
+    $('.emberTagInput-tag:contains(1000)>.emberTagInput-remove').click();
   });
 
   test('error state', function(assert) {
     assert.expect(2);
 
-    assert.notOk(
-      this.$('.filter-values--multi-value-input--error').is(':visible'),
-      'The input should not have error state'
-    );
+    assert.notOk($('.filter-values--multi-value-input--error').is(':visible'), 'The input should not have error state');
 
     this.set('filter', { validations: { isInvalid: true } });
-    assert.ok(this.$('.filter-values--multi-value-input--error').is(':visible'), 'The input should have error state');
+    assert.ok($('.filter-values--multi-value-input--error').is(':visible'), 'The input should have error state');
   });
 });

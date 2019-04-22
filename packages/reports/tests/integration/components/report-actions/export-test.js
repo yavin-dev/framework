@@ -1,11 +1,11 @@
 import { run } from '@ember/runloop';
-import { getOwner } from '@ember/application';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
 import hbs from 'htmlbars-inline-precompile';
 import Interval from 'navi-core/utils/classes/interval';
+import $ from 'jquery';
 import moment from 'moment';
 
 const TEMPLATE = hbs`

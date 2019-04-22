@@ -1,6 +1,5 @@
 import Service from '@ember/service';
 import { run } from '@ember/runloop';
-import { getOwner } from '@ember/application';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 

@@ -2,7 +2,7 @@ import { set } from '@ember/object';
 import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, findAll, click, find, blur, fillIn, settled, waitUntil, triggerEvent } from '@ember/test-helpers';
+import { render, findAll, click, find } from '@ember/test-helpers';
 import $ from 'jquery';
 import hbs from 'htmlbars-inline-precompile';
 import Interval from 'navi-core/utils/classes/interval';
@@ -496,8 +496,10 @@ module('Integration | Component | Navi Date Range Picker', function(hooks) {
     await openCustomRange();
     await openAdvancedCalendar();
 
-    // Set a new date and blur input to trigger change
-    // Explicitly using Jquery because the ember-test-helpers functions were not working properly for this test
+    /**
+     * Set a new date and blur input to trigger change
+     * Explicitly using Jquery because the ember-test-helpers functions were not working properly for this test
+     */
     $('.navi-date-range-picker__start-input').val('2014-10-15');
     $('.navi-date-range-picker__start-input').blur();
     $('.navi-date-range-picker__end-input').val('2014-10-25');
@@ -525,8 +527,10 @@ module('Integration | Component | Navi Date Range Picker', function(hooks) {
     await openCustomRange();
     await openAdvancedCalendar();
 
-    // Set a new date and blur input to trigger change
-    // Explicitly using Jquery because the ember-test-helpers functions were not working properly for this test
+    /**
+     * Set a new date and blur input to trigger change
+     * Explicitly using Jquery because the ember-test-helpers functions were not working properly for this test
+     */
     $('.navi-date-range-picker__start-input').val('P7D');
     $('.navi-date-range-picker__start-input').blur();
     $('.navi-date-range-picker__end-input').val('current');

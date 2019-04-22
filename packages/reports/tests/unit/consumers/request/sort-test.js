@@ -1,4 +1,3 @@
-import { getOwner } from '@ember/application';
 import { A as arr } from '@ember/array';
 import EmberObject from '@ember/object';
 import { module, test } from 'qunit';

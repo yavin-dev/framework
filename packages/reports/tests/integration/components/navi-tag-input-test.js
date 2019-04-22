@@ -3,6 +3,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, findAll, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import Component from '@ember/component';
+import $ from 'jquery';
 
 const DIVINE_BEASTS = ['Ruta', 'Medoh', 'Neboris', 'Rudania'];
 
@@ -29,7 +30,7 @@ module('Integration | Component | navi tag input/tag', function(hooks) {
     `);
 
     assert.deepEqual(
-      this.$('.emberTagInput-tag')
+      $('.emberTagInput-tag')
         .toArray()
         .map(e => e.textContent.trim()),
       DIVINE_BEASTS,
@@ -63,7 +64,7 @@ module('Integration | Component | navi tag input/tag', function(hooks) {
     `);
 
     assert.deepEqual(
-      this.$('.my-wacky-tag')
+      $('.my-wacky-tag')
         .toArray()
         .map(e => e.textContent.trim()),
       DIVINE_BEASTS,

@@ -1,4 +1,3 @@
-import { getOwner } from '@ember/application';
 import { run } from '@ember/runloop';
 import { get } from '@ember/object';
 import { module, test } from 'qunit';

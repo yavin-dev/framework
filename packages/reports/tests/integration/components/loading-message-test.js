@@ -1,6 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find } from '@ember/test-helpers';
+import { render } from '@ember/test-helpers';
+import $ from 'jquery';
 import hbs from 'htmlbars-inline-precompile';
 
 module('Integration | Component | loading message', function(hooks) {
@@ -16,7 +17,7 @@ module('Integration | Component | loading message', function(hooks) {
           {{/loading-message}}
       `);
 
-    assert.ok(this.$('.navi-loader'), 'the navi-loader component is rendered');
+    assert.ok($('.navi-loader'), 'the navi-loader component is rendered');
 
     assert.dom('.loading-message').hasText('Loading', 'The text inside the block is rendered as specified');
   });

@@ -1,5 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
+import $ from 'jquery';
 import { render, fillIn, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
@@ -41,11 +42,11 @@ module('Integration | Component | filter values/value input', function(hooks) {
   test('error state', function(assert) {
     assert.expect(2);
 
-    assert.notOk(this.$('.filter-values--value-input--error').is(':visible'), 'The input should not have error state');
+    assert.notOk($('.filter-values--value-input--error').is(':visible'), 'The input should not have error state');
 
     this.set('filter', {
       validations: { attrs: { values: { isInvalid: true } } }
     });
-    assert.ok(this.$('.filter-values--value-input--error').is(':visible'), 'The input should have error state');
+    assert.ok($('.filter-values--value-input--error').is(':visible'), 'The input should have error state');
   });
 });

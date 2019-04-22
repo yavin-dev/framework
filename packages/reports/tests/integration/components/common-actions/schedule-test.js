@@ -47,10 +47,7 @@ module('Integration | Component | common actions/schedule', function(hooks) {
 
     this.set('isDisabled', false);
 
-    assert.notOk(
-      this.$('.schedule-action__button').is(':disabled'),
-      'Scedule is enabled when the disabled is set to false'
-    );
+    assert.notOk($('.schedule-action__button').is(':disabled'), 'Scedule is enabled when the disabled is set to false');
   });
 
   test('schedule modal - test enabled', async function(assert) {
@@ -69,10 +66,7 @@ module('Integration | Component | common actions/schedule', function(hooks) {
 
     this.set('isDisabled', true);
 
-    assert.ok(
-      this.$('.schedule-action__button').is(':disabled'),
-      'Schedule is enabled when the disabled is set to false'
-    );
+    assert.ok($('.schedule-action__button').is(':disabled'), 'Schedule is enabled when the disabled is set to false');
   });
 
   test('it renders', async function(assert) {
@@ -82,9 +76,9 @@ module('Integration | Component | common actions/schedule', function(hooks) {
       hbs`{{common-actions/schedule onSave=(action onSaveAction) onRevert=(action onRevertAction) onDelete=(action onDeleteAction)}}`
     );
 
-    assert.ok(this.$('.schedule-action__button').is(':visible'), 'Schedule Modal component is rendered');
+    assert.ok($('.schedule-action__button').is(':visible'), 'Schedule Modal component is rendered');
 
-    assert.ok(this.$('.schedule-action__icon').is(':visible'), 'A schedule icon is rendered in the component');
+    assert.ok($('.schedule-action__icon').is(':visible'), 'A schedule icon is rendered in the component');
 
     // Template block usage:
     await render(hbs`

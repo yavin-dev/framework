@@ -1,6 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
+import $ from 'jquery';
 import hbs from 'htmlbars-inline-precompile';
 
 module('Integration | Component | grouped list', function(hooks) {
@@ -29,7 +30,7 @@ module('Integration | Component | grouped list', function(hooks) {
 
     await render(hbs`{{grouped-list}}`);
 
-    assert.ok(this.$('.grouped-list').is(':visible'), 'the grouped-list component is rendered');
+    assert.ok($('.grouped-list').is(':visible'), 'the grouped-list component is rendered');
   });
 
   test('groups', async function(assert) {
@@ -47,7 +48,7 @@ module('Integration | Component | grouped list', function(hooks) {
       `);
 
     assert.deepEqual(
-      this.$('.grouped-list__group-header')
+      $('.grouped-list__group-header')
         .toArray()
         .map(el =>
           $(el)
@@ -59,7 +60,7 @@ module('Integration | Component | grouped list', function(hooks) {
     );
 
     assert.deepEqual(
-      this.$('.grouped-list__group:first-of-type .grouped-list__group-header')
+      $('.grouped-list__group:first-of-type .grouped-list__group-header')
         .text()
         .trim(),
       'foo (3)',
@@ -67,7 +68,7 @@ module('Integration | Component | grouped list', function(hooks) {
     );
 
     assert.deepEqual(
-      this.$('.grouped-list__group:first-of-type .grouped-list__item')
+      $('.grouped-list__group:first-of-type .grouped-list__item')
         .toArray()
         .map(el =>
           $(el)
@@ -80,7 +81,7 @@ module('Integration | Component | grouped list', function(hooks) {
 
     this.set('shouldOpenAllGroups', true);
 
-    let openAttrs = this.$('.grouped-list__group')
+    let openAttrs = $('.grouped-list__group')
       .toArray()
       .map(el => $(el).attr('open'));
 
@@ -106,7 +107,7 @@ module('Integration | Component | grouped list', function(hooks) {
       `);
 
     assert.deepEqual(
-      this.$('.grouped-list__group:first-of-type .grouped-list__item')
+      $('.grouped-list__group:first-of-type .grouped-list__item')
         .toArray()
         .map(el =>
           $(el)
@@ -118,7 +119,7 @@ module('Integration | Component | grouped list', function(hooks) {
     );
 
     assert.deepEqual(
-      this.$('.grouped-list__group:nth-of-type(2) .grouped-list__item')
+      $('.grouped-list__group:nth-of-type(2) .grouped-list__item')
         .toArray()
         .map(el =>
           $(el)

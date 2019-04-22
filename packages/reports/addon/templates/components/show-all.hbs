@@ -1,15 +1,15 @@
 {{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{#with (pluralize-word values.length filter.dimension.longName omitCount=true) as |normalizedDimensionName|}}
-    <div class='navi-modal-header'>
-        <h1 class='text-capitalize primary-header'>
+    <div class="navi-modal-header">
+        <h1 class="text-capitalize primary-header">
             Included {{normalizedDimensionName}}
         </h1>
-        <h5 class='secondary-header'>
+        <h5 class="secondary-header">
             The {{normalizedDimensionName}} listed below have been included
         </h5>
     </div>
-    <div class='valid-id-count secondary-header'>
-        <span class='items-count'>{{values.length}}</span>
+    <div class="valid-id-count secondary-header">
+        <span class="items-count">{{values.length}}</span>
         {{normalizedDimensionName}}
     </div>
 {{/with}}
@@ -20,14 +20,14 @@
     as |filterDimVal|
 }}
     {{format-dimension filterDimVal}}
-    <a href tabindex='-1' class='remove-pill' {{action 'removeFilterVal' filterDimVal}}>×</a>
+    <a href tabindex="-1" class="remove-pill" {{action "removeFilterVal" filterDimVal}}>×</a>
 {{/paginated-scroll-list}}
 
-<div class='btn-container'>
+<div class="btn-container">
     {{#unless filterValsDidChange}}
-        <button class='btn btn-primary' {{action (action cancel)}}>Done</button>
+        <button class="btn btn-primary" {{action (action cancel)}}>Done</button>
     {{else}}
-        <button class='btn btn-primary' {{action (action updateFilterValues values)}}>Update</button>
-        <button class='btn btn-secondary' {{action (action cancel)}}>Cancel</button>
+        <button class="btn btn-primary" {{action (action updateFilterValues values)}}>Update</button>
+        <button class="btn btn-secondary" {{action (action cancel)}}>Cancel</button>
     {{/unless}}
 </div>

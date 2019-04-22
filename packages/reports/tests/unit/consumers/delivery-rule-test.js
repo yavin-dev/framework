@@ -3,7 +3,6 @@ import { setupTest } from 'ember-qunit';
 import { settled } from '@ember/test-helpers';
 import { startMirage } from 'dummy/initializers/ember-cli-mirage';
 import { run } from '@ember/runloop';
-import { getOwner } from '@ember/application';
 import { get } from '@ember/object';
 import Response from 'ember-cli-mirage/response';
 

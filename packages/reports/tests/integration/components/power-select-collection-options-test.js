@@ -2,6 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
+import $ from 'jquery';
 
 module('Integration | Component | Power Select Collection Options', function(hooks) {
   setupRenderingTest(hooks);
@@ -31,7 +32,7 @@ module('Integration | Component | Power Select Collection Options', function(hoo
       `);
 
     assert.deepEqual(
-      this.$('.ember-power-select-option')
+      $('.ember-power-select-option')
         .toArray()
         .map(el =>
           $(el)
@@ -56,7 +57,7 @@ module('Integration | Component | Power Select Collection Options', function(hoo
       `);
 
     assert.deepEqual(
-      this.$('.ember-power-select-option')
+      $('.ember-power-select-option')
         .toArray()
         .map(el =>
           $(el)

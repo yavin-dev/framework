@@ -1,10 +1,9 @@
 import { run } from '@ember/runloop';
 import Route from '@ember/routing/route';
-import { getOwner } from '@ember/application';
 import { set } from '@ember/object';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find } from '@ember/test-helpers';
+import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 let route;

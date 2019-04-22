@@ -7,14 +7,14 @@
 
     {{#unless disabled}}
       {{#dd.content}}
-          <ul class='multiple-format-export__dropdown'>
+          <ul class="multiple-format-export__dropdown">
               {{#each exportFormats as |exportFormat|}}
                   <li>
                       {{navi-icon exportFormat.icon}}
                       <a
                         download={{dasherize report.title}}
                         href={{await exportFormat.href}}
-                        onclick={{pipe (action 'notify' exportFormat.type) (action 'close' dd)}}
+                        onclick={{pipe (action "notify" exportFormat.type) (action "close" dd)}}
                       >
                         {{exportFormat.type}}
                       </a>

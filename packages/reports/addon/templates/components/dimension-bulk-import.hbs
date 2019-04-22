@@ -1,11 +1,11 @@
 {{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{#with (pluralize-word 2 dimension.longName omitCount=true) as |normalizedDimensionName|}}
-    <div class='navi-modal-header'>
-        <div class='text-capitalize primary-header'>Add Multiple {{normalizedDimensionName}}</div>
+    <div class="navi-modal-header">
+        <div class="text-capitalize primary-header">Add Multiple {{normalizedDimensionName}}</div>
         {{#unless _loadingPromise.isSettled}}
-            <div class='secondary-header'>Hold tight! We are searching for valid {{normalizedDimensionName}}.</div>
+            <div class="secondary-header">Hold tight! We are searching for valid {{normalizedDimensionName}}.</div>
         {{else}}
-            <div class='secondary-header'>Search Results.</div>
+            <div class="secondary-header">Search Results.</div>
         {{/unless}}
     </div>
 {{/with}}
@@ -15,18 +15,18 @@
         Searching
     {{/loading-message}}
 {{else}}
-    <div class='id-container valid-ids'>
-        <span class='valid-id-count'>{{_validDimValues.length}}</span> valid <span class='text-capitalize dimension'>{{pluralize-word _validDimValues.length dimension.longName omitCount=true}}</span>
+    <div class="id-container valid-ids">
+        <span class="valid-id-count">{{_validDimValues.length}}</span> valid <span class="text-capitalize dimension">{{pluralize-word _validDimValues.length dimension.longName omitCount=true}}</span>
         {{#paginated-scroll-list
             items=_validDimValues
             as |dimVal|
         }}
             {{format-dimension dimVal}}
-            <button type='button' tabindex='-1' class='btn remove-pill' onclick={{action 'removeRecord' dimVal}}>×</button>
+            <button type="button" tabindex="-1" class="btn remove-pill" onclick={{action "removeRecord" dimVal}}>×</button>
         {{/paginated-scroll-list}}
     </div>
-    <div class='id-container invalid-ids'>
-        <span class='invalid-id-count'>{{_invalidDimValueIds.length}}</span> invalid <span class='text-capitalize dimension'>{{pluralize-word _invalidDimValueIds.length dimension.longName omitCount=true}}</span>
+    <div class="id-container invalid-ids">
+        <span class="invalid-id-count">{{_invalidDimValueIds.length}}</span> invalid <span class="text-capitalize dimension">{{pluralize-word _invalidDimValueIds.length dimension.longName omitCount=true}}</span>
         {{#paginated-scroll-list
             items=_invalidDimValueIds
             as |invalidDimId|
@@ -36,7 +36,7 @@
     </div>
 {{/unless}}
 
-<div class='btn-container'>
-    <button type='button' class='btn btn-primary' onclick={{action onSelectValues _validDimValues}} disabled={{_disableButton}}>Include Valid IDs</button>
-    <button type='button' class='btn btn-secondary' onclick={{action onCancel}}>Cancel</button>
+<div class="btn-container">
+    <button type="button" class="btn btn-primary" onclick={{action onSelectValues _validDimValues}} disabled={{_disableButton}}>Include Valid IDs</button>
+    <button type="button" class="btn btn-secondary" onclick={{action onCancel}}>Cancel</button>
 </div>

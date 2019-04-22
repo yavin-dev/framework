@@ -1,6 +1,5 @@
 import { run } from '@ember/runloop';
 import { get } from '@ember/object';
-import { getOwner } from '@ember/application';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { RequestActions } from 'navi-reports/services/request-action-dispatcher';

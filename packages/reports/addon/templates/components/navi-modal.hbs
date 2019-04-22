@@ -3,11 +3,11 @@
 {{! The Template will only be visible if its attribute isShown is set to true}}
 {{#if isShown}}
     {{#modal-dialog
-        onClose=(action 'closeModal')
-        containerClass='navi-modal'
+        onClose=(action "closeModal")
+        containerClass="navi-modal"
         translucentOverlay=true
     }}
-        {{navi-icon 'times' class='navi-modal__close' click=(action 'closeModal')}}
+        {{navi-icon "times" class="navi-modal__close" click=(action "closeModal")}}
         {{! Yielding this to all the navi-modal component to be used as a target}}
         {{yield this}}
     {{/modal-dialog}}

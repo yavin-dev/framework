@@ -2,6 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
+import $ from 'jquery';
 
 module('Integration | Component | navi email tag', function(hooks) {
   setupRenderingTest(hooks);
@@ -14,7 +15,7 @@ module('Integration | Component | navi email tag', function(hooks) {
     await render(hbs`{{navi-email-tag tag=email}}`);
 
     assert.notOk(
-      this.$('.navi-email-tag').is('.navi-email-tag--is-disabled'),
+      $('.navi-email-tag').is('.navi-email-tag--is-disabled'),
       'Tag containing a valid email is not given the disabled class'
     );
   });
@@ -27,7 +28,7 @@ module('Integration | Component | navi email tag', function(hooks) {
     await render(hbs`{{navi-email-tag tag=email}}`);
 
     assert.ok(
-      this.$('.navi-email-tag').is('.navi-email-tag--is-disabled'),
+      $('.navi-email-tag').is('.navi-email-tag--is-disabled'),
       'Tag containing an invalid email is given the disabled class'
     );
   });

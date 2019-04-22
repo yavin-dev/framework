@@ -3,29 +3,29 @@
 {{#navi-modal
     isShown=showModal
 }}
-    <div class='navi-modal-header'>
-      <h1 class='primary-header'>Save Report As</h1>
-      <h5 class='secondary-header'>This will create a new report with the new given name.</h5>
+    <div class="navi-modal-header">
+      <h1 class="primary-header">Save Report As</h1>
+      <h5 class="secondary-header">This will create a new report with the new given name.</h5>
     </div>
 
     {{!-- input for new Name of the Report --}}
     {{input
         placeholder=reportName
         value=reportName
-        class='text-input dashboard-title'
+        class="text-input dashboard-title"
         autofocus=true
         maxlength=150
     }}
 
     {{!-- Buttons --}}
-    <div class='btn-container'>
+    <div class="btn-container">
         {{!-- Create a new copy of the report --}}
-        {{#link-to 'reports.report.save-as' (query-params title=reportName)
-            tagName='button'
-            class='btn btn-primary save-as__save-as-modal-btn'
+        {{#link-to "reports.report.save-as" (query-params title=reportName)
+            tagName="button"
+            class="btn btn-primary save-as__save-as-modal-btn"
          }}
             Save
         {{/link-to}}
-        <button class='btn btn-secondary save-as__cancel-modal-btn' onclick={{action 'closeModal'}}>Cancel</button>
+        <button class="btn btn-secondary save-as__cancel-modal-btn" onclick={{action "closeModal"}}>Cancel</button>
     </div>
 {{/navi-modal}}

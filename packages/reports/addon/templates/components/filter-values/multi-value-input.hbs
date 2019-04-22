@@ -1,11 +1,11 @@
 {{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.--}}
 {{#navi-tag-input
     tags=(readonly filter.values)
-    addTag=(action 'addValue')
-    classNames='filter-values--multi-value-input'
-    classNameBindings='filter.validations.isInvalid:filter-values--multi-value-input--error'
-    placeholder=(concat filter.subject.longName ' Values')
-    removeTagAtIndex=(action 'removeValueAtIndex')
+    addTag=(action "addValue")
+    classNames="filter-values--multi-value-input"
+    classNameBindings="filter.validations.isInvalid:filter-values--multi-value-input--error"
+    placeholder=(concat filter.subject.longName " Values")
+    removeTagAtIndex=(action "removeValueAtIndex")
     as |tag|
 }}
     {{tag}}

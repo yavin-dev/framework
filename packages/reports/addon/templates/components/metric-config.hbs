@@ -3,19 +3,19 @@
   calculatePosition=calculatePosition
   as |dd|
 }}
-  {{#dd.trigger class='metric-config__dropdown-trigger' onMouseDown=(action 'triggerFetch')}}
-    {{navi-icon 'cog' class='metric-config__trigger-icon'}}
+  {{#dd.trigger class="metric-config__dropdown-trigger" onMouseDown=(action "triggerFetch")}}
+    {{navi-icon "cog" class="metric-config__trigger-icon"}}
   {{/dd.trigger}}
 
-  {{#dd.content class='metric-config__dropdown-container'}}
+  {{#dd.content class="metric-config__dropdown-container"}}
     {{#if (is-pending parametersPromise)}}
       {{navi-loader}}
     {{else if (is-rejected parametersPromise)}}
-      <div class='metric-config__error-msg'>OOPS! Something went wrong. Please try refreshing the page.</div>
+      <div class="metric-config__error-msg">OOPS! Something went wrong. Please try refreshing the page.</div>
     {{else}}
       {{#navi-list-selector
          items=allParameters
-         searchField='name'
+         searchField="name"
          selected=selectedParams
          title=metric.longName
          as | params areParamsFiltered |
@@ -23,29 +23,29 @@
         {{#grouped-list
             items=params
             shouldOpenAllGroups=true
-            groupByField='param'
-            sortByField='name'
+            groupByField="param"
+            sortByField="name"
             as | param |
         }}
-            <label class='grouped-list__item-label'>
+            <label class="grouped-list__item-label">
                 <input
-                  class='checkbox-selector__checkbox'
-                  type='checkbox' onchange={{action 'paramToggled' metric param}}
-                  checked={{get parametersChecked (concat param.param '|' param.id)}}/>
+                  class="checkbox-selector__checkbox"
+                  type="checkbox" onchange={{action "paramToggled" metric param}}
+                  checked={{get parametersChecked (concat param.param "|" param.id)}}/>
                 {{param.name}} ({{param.id}})
             </label>
 
             {{navi-icon
-                'filter'
+                "filter"
                 class=(concat
-                  (if (get paramsFiltered (concat param.param '|' param.id)) 'checkbox-selector__filter--active ')
-                  'metric-config__filter-icon ' 'checkbox-selector__filter')
-                click=(action 'paramFilterToggled' metric param)
+                  (if (get paramsFiltered (concat param.param "|" param.id)) "checkbox-selector__filter--active ")
+                  "metric-config__filter-icon " "checkbox-selector__filter")
+                click=(action "paramFilterToggled" metric param)
             }}
         {{/grouped-list}}
       {{/navi-list-selector}}
-      <div class='metric-config__footer'>
-        <div class='metric-config__done-btn btn btn-primary' onclick={{action dd.actions.close}}>Done</div>
+      <div class="metric-config__footer">
+        <div class="metric-config__done-btn btn btn-primary" onclick={{action dd.actions.close}}>Done</div>
       </div>
     {{/if}}
   {{/dd.content}}

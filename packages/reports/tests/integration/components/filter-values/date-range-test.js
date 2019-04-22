@@ -2,7 +2,8 @@ import { A } from '@ember/array';
 import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find } from '@ember/test-helpers';
+import { render } from '@ember/test-helpers';
+import $ from 'jquery';
 import hbs from 'htmlbars-inline-precompile';
 import Duration from 'navi-core/utils/classes/duration';
 import Interval from 'navi-core/utils/classes/interval';
@@ -30,7 +31,7 @@ module('Integration | Component | filter values/date range', function(hooks) {
       .hasText('Select date range', 'Placeholder text is present when no date range is selected');
 
     assert.deepEqual(
-      this.$('.predefined-range')
+      $('.predefined-range')
         .map(function() {
           return $(this)
             .text()
@@ -66,6 +67,6 @@ module('Integration | Component | filter values/date range', function(hooks) {
       assert.ok(changeSet.interval.isEqual(expectedInterval), 'Selected interval is given to update action');
     });
 
-    this.$('.predefined-range:contains(Last 7 Days)').click();
+    $('.predefined-range:contains(Last 7 Days)').click();
   });
 });

@@ -2,6 +2,7 @@ import { run } from '@ember/runloop';
 import Component from '@ember/component';
 import { A } from '@ember/array';
 import ArrayProxy from '@ember/array/proxy';
+import $ from 'jquery';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, find } from '@ember/test-helpers';
@@ -60,12 +61,12 @@ module('Integration | Component | navi collection', function(hooks) {
     await render(TEMPLATE);
 
     // Click "Favorites" filter option
-    run(() => this.$('.pick-form li:contains(All)').click());
+    run(() => $('.pick-form li:contains(All)').click());
 
-    let listedReports = this.$('tbody tr td:first-of-type')
+    let listedReports = $('tbody tr td:first-of-type')
       .toArray()
       .map(el =>
-        this.$(el)
+        $(el)
           .text()
           .trim()
       );
@@ -77,11 +78,11 @@ module('Integration | Component | navi collection', function(hooks) {
     );
 
     // Click "Favorites" filter option
-    run(() => this.$('.pick-form li:contains(Favorites)').click());
-    listedReports = this.$('tbody tr td:first-of-type')
+    run(() => $('.pick-form li:contains(Favorites)').click());
+    listedReports = $('tbody tr td:first-of-type')
       .toArray()
       .map(el =>
-        this.$(el)
+        $(el)
           .text()
           .trim()
       );
@@ -101,15 +102,15 @@ module('Integration | Component | navi collection', function(hooks) {
     await render(TEMPLATE);
 
     //Reset to all filter
-    run(() => this.$('.pick-form li:contains(All)').click());
+    run(() => $('.pick-form li:contains(All)').click());
 
     assert.notOk(
-      this.$('tbody tr:eq(0) td:first-of-type i').is('.favorite-item--active'),
+      $('tbody tr:eq(0) td:first-of-type i').is('.favorite-item--active'),
       'Report that is not a favorite does not have favorite icon'
     );
 
     assert.ok(
-      this.$('tbody tr:eq(1) td:first-of-type i').is('.favorite-item--active'),
+      $('tbody tr:eq(1) td:first-of-type i').is('.favorite-item--active'),
       'Report that is a favorite has favorite icon'
     );
   });
@@ -126,7 +127,7 @@ module('Integration | Component | navi collection', function(hooks) {
       `);
 
     assert.notOk(
-      this.$('.navi-collection .pick-container').is(':visible'),
+      $('.navi-collection .pick-container').is(':visible'),
       'Filter dropdown is not shown when `filterable` flag is not set to true in collection config'
     );
 
@@ -140,7 +141,7 @@ module('Integration | Component | navi collection', function(hooks) {
       `);
 
     assert.ok(
-      this.$('.navi-collection .pick-container').is(':visible'),
+      $('.navi-collection .pick-container').is(':visible'),
       'Filter dropdown is shown when `filterable` flag is set to true in collection config'
     );
   });
@@ -157,7 +158,7 @@ module('Integration | Component | navi collection', function(hooks) {
       `);
 
     assert.notOk(
-      this.$('.navi-collection .navi-collection__actions').is(':visible'),
+      $('.navi-collection .navi-collection__actions').is(':visible'),
       'Actions column is not shown when `actions` component is missing from collection config'
     );
 
@@ -175,7 +176,7 @@ module('Integration | Component | navi collection', function(hooks) {
       `);
 
     assert.ok(
-      this.$('.navi-collection .navi-collection__actions').is(':visible'),
+      $('.navi-collection .navi-collection__actions').is(':visible'),
       'Actions column is shown when `actions` component is in the collection config'
     );
   });
@@ -206,7 +207,7 @@ module('Integration | Component | navi collection', function(hooks) {
     );
 
     assert.ok(
-      this.$('.navi-collection .no-results a').is(':visible'),
+      $('.navi-collection .no-results a').is(':visible'),
       'Default message is shown when no items are rendered with a link'
     );
   });

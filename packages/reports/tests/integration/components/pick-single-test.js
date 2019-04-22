@@ -4,7 +4,8 @@ import { A } from '@ember/array';
 import { isEmpty } from '@ember/utils';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, findAll, click, find } from '@ember/test-helpers';
+import { render, findAll, click } from '@ember/test-helpers';
+import $ from 'jquery';
 import hbs from 'htmlbars-inline-precompile';
 
 let Options, Template;
@@ -45,13 +46,13 @@ module('Integration | Component | Pick Single', function(hooks) {
 
     await render(Template);
 
-    assert.notOk(isEmpty(this.$('.pick-container')), 'pick-single component is rendered');
+    assert.notOk(isEmpty($('.pick-container')), 'pick-single component is rendered');
 
     assert
       .dom('.pick-single .pick-value')
       .hasText(Options[0].id, 'The Id of the selected options object is displayed by default');
 
-    let formValues = this.$('.pick-single .pick-form li')
+    let formValues = $('.pick-single .pick-form li')
       .toArray()
       .map(function(li) {
         return $(li)
@@ -85,7 +86,7 @@ module('Integration | Component | Pick Single', function(hooks) {
       .dom('.pick-single .pick-value')
       .hasText(get(Options[0], displayField), 'The displayField of the selected options object is displayed');
 
-    let formValues = this.$('.pick-single .pick-form li')
+    let formValues = $('.pick-single .pick-form li')
       .toArray()
       .map(function(li) {
         return $(li)
@@ -120,7 +121,7 @@ module('Integration | Component | Pick Single', function(hooks) {
 
     await render(Template);
 
-    assert.ok(isEmpty(this.$('.pick-value label')), 'No label is present when not defined');
+    assert.ok(isEmpty($('.pick-value label')), 'No label is present when not defined');
 
     run(() => {
       this.set('label', 'Hello');
