@@ -2,7 +2,7 @@ import { set } from '@ember/object';
 import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, findAll, click, find, blur } from '@ember/test-helpers';
+import { render, findAll, click, find, blur, fillIn, settled, waitUntil, triggerEvent } from '@ember/test-helpers';
 import $ from 'jquery';
 import hbs from 'htmlbars-inline-precompile';
 import Interval from 'navi-core/utils/classes/interval';
@@ -419,7 +419,7 @@ module('Integration | Component | Navi Date Range Picker', function(hooks) {
 
     this.interval = new Interval(moment('04-01-2019', 'MM-DD-YYYY'), moment('04-03-2019', 'MM-DD-YYYY'));
 
-    await render(`
+    await render(hbs`
       {{navi-date-range-picker
         dateTimePeriod='day'
         interval=interval
@@ -476,12 +476,6 @@ module('Integration | Component | Navi Date Range Picker', function(hooks) {
     assert.expect(1);
 
     this.interval = new Interval(moment('09-14-2014', 'MM-DD-YYYY'), moment('10-15-2014', 'MM-DD-YYYY'));
-    this.set('setInterval', interval => {
-      let selectedStart = moment('10-15-2014', 'MM-DD-YYYY'),
-        selectedEnd = moment('10-25-2014', 'MM-DD-YYYY');
-
-      assert.ok(interval.isEqual(new Interval(selectedStart, selectedEnd)), 'Interval comes from date inputs');
-    });
 
     await render(hbs`
       {{navi-date-range-picker
@@ -497,11 +491,20 @@ module('Integration | Component | Navi Date Range Picker', function(hooks) {
     await openAdvancedCalendar();
 
     // Set a new date and blur input to trigger change
-    find('.navi-date-range-picker__start-input').value = '2014-10-15'; //fillIn helper was not working correctly
+    await fillIn('input.navi-date-range-picker__start-input', '2014-10-15');
     await blur('.navi-date-range-picker__start-input');
+    await waitUntil(() => !!$('.navi-date-picker:eq(0) .active.day:contains(15)').length);
 
-    find('.navi-date-range-picker__end-input').value = '2014-10-25';
+    find('.navi-date-range-picker__end-input').value = '2014-10-25'; //fillIn helper was not working correctly
     await blur('.navi-date-range-picker__end-input');
+    await waitUntil(() => !!$('.navi-date-picker:eq(1) .active.day:contains(24)').length);
+
+    this.set('setInterval', interval => {
+      let selectedStart = moment('10-15-2014', 'MM-DD-YYYY'),
+        selectedEnd = moment('10-25-2014', 'MM-DD-YYYY');
+
+      assert.ok(interval.isEqual(new Interval(selectedStart, selectedEnd)), 'Interval comes from date inputs');
+    });
 
     // Click apply
     await click('.navi-date-range-picker__apply-btn');
