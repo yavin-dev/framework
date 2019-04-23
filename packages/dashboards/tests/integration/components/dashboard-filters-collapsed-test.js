@@ -12,6 +12,6 @@ test('it renders', function(assert) {
     this.$()
       .text()
       .trim(),
-    ''
+    'Settings'
   );
 });
