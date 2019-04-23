@@ -1,29 +1,29 @@
 {{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <button type="button" onclick={{toggle "showModal" this}} disabled={{disabled}}>
-    {{yield}}
+  {{yield}}
 </button>
 {{#navi-modal
-    isShown=showModal
+  isShown=showModal
 }}
-    <div class="navi-modal-header">
-        <h1 class="primary-header">{{headerMsg}}</h1>
-        <h5 class="secondary-header">
-            {{warnMsg}}
-        </h5>
-    </div>
-    {{#if isDeleting}}
-        {{#loading-message}}
-            Deleting {{classify modelName}}
-        {{/loading-message}}
-    {{/if}}
-    <div class="btn-container">
-        <button
-            class="btn btn-primary"
-            {{action (pipe (toggle "isDeleting" this) (action deleteAction model) (action "closeModal"))}}
-            disabled={{isDeleting}}
-        >
-            Confirm
-        </button>
-        <button class="btn btn-secondary" onclick={{toggle "showModal" this}} disabled={{isDeleting}}>Cancel</button>
-    </div>
+  <div class="navi-modal-header">
+    <h1 class="primary-header">{{headerMsg}}</h1>
+    <h5 class="secondary-header">
+      {{warnMsg}}
+    </h5>
+  </div>
+  {{#if isDeleting}}
+    {{#loading-message}}
+      Deleting {{classify modelName}}
+    {{/loading-message}}
+  {{/if}}
+  <div class="btn-container">
+    <button
+      class="btn btn-primary"
+      {{action (pipe (toggle "isDeleting" this) (action deleteAction model) (action "closeModal"))}}
+      disabled={{isDeleting}}
+    >
+      Confirm
+    </button>
+    <button class="btn btn-secondary" onclick={{toggle "showModal" this}} disabled={{isDeleting}}>Cancel</button>
+  </div>
 {{/navi-modal}}

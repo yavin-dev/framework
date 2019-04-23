@@ -1635,11 +1635,10 @@ module('Acceptance | Navi Report', function(hooks) {
     await click($('.filter-values--dimension-select__dropdown .ember-power-select-option:contains(' + option + ')')[0]);
 
     // Check if the selected item is still selected after the search
-    assert.equal(
-      $(`.filter-values--dimension-select__dropdown .ember-power-select-option:contains(${option})`).attr(
+    assert.ok(
+      $(`.filter-values--dimension-select__dropdown .ember-power-select-option:contains(${option})`)[0].hasAttribute(
         'aria-selected'
       ),
-      'true',
       'The value is selected after a search is done'
     );
   });

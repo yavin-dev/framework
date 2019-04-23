@@ -2,139 +2,140 @@
 
 {{!-- Check if in need of disabling the button when the action should be disabled --}}
 <button class="schedule-action__button btn" disabled={{disabled}}  onclick={{pipe (toggle "showModal" this) (action "onOpen")}}>
-    {{navi-icon "clock-o" class="schedule-action__icon"}}
-    {{#if hasBlock}}
-        <span class="schedule-action__icon-label">{{yield}}</span>
-    {{/if}}
+  {{navi-icon "clock-o" class="schedule-action__icon"}}
+  {{#if hasBlock}}
+    <span class="schedule-action__icon-label">{{yield}}</span>
+  {{/if}}
 </button>
 
 {{#navi-modal
-    isShown=showModal
-    onClose=(action onRevert localDeliveryRule)
+  isShown=showModal
+  onClose=(action onRevert localDeliveryRule)
 }}
-    <div class="schedule-modal__header navi-modal-header">
-        <h1 class="schedule-modal__header--primary primary-header">Schedule "{{capitalize model.title}}"</h1>
-        {{#if (is-rejected deliveryRule)}}
-            <div class="schedule-modal__notification modal-notification alert failure">
-                {{navi-icon "exclamation-circle"}}
-                <div class="notification-text">Oops! An error occurred while fetching the schedule for this {{localDeliveryRule.deliveryType}}.</div>
-            </div>
-        {{else}}
-            {{#if notification}}
-                <div class="schedule-modal__notification modal-notification {{notification.classNames}}">
-                    <div class="schedule-modal__notification-text notification-text ">{{notification.text}}</div>
-                    {{navi-icon "times" class="notification-remove-icon clickable" click=(action "closeNotification")}}
-                </div>
-            {{else}}
-                <h5 class="schedule-modal__header--secondary secondary-header">Please provide delivery rules for your {{localDeliveryRule.deliveryType}}</h5>
-            {{/if}}
-        {{/if}}
-    </div>
-    
-    {{#if (is-pending deliveryRule)}}
-        {{navi-loader}}
+  <div class="schedule-modal__header navi-modal-header">
+    <h1 class="schedule-modal__header--primary primary-header">Schedule "{{capitalize model.title}}"</h1>
+    {{#if (is-rejected deliveryRule)}}
+      <div class="schedule-modal__notification modal-notification alert failure">
+        {{navi-icon "exclamation-circle"}}
+        <div class="notification-text">Oops! An error occurred while fetching the schedule for this {{localDeliveryRule.deliveryType}}.</div>
+      </div>
     {{else}}
-        <form class="schedule-modal__body navi-modal-body">
-            <fieldset class="{{if (not isRuleValid) "schedule-modal__recipients--invalid"}} schedule-modal__section">
-                <div class="schedule-modal__label">Recipients</div>
-                {{navi-email-input
-                    class="schedule-modal__input--recipients text-input"
-                    emails=(readonly localDeliveryRule.recipients)
-                    onUpdateEmails=(action "updateRecipients")
-                    isDisabled=(is-rejected deliveryRule)
-                }}
-                <div class="schedule-modal__helper-recipients">
-                    Please enter valid email addresses separated by commas.
-                </div>
-            </fieldset>
-            <div class="schedule-modal__section-group">
-                <fieldset class="schedule-modal__section">
-                    <div class="schedule-modal__label">Frequency</div>
-                    {{#power-select
-                        class="schedule-modal__dropdown schedule-modal__dropdown--frequency"
-                        options=frequencies
-                        renderInPlace=true
-                        selected=localDeliveryRule.frequency
-                        disabled=(is-rejected deliveryRule)
-                        searchEnabled=false
-                        tagName="div"
-                        onchange=(action (mut localDeliveryRule.frequency))
-                        as | frequency |
-                    }}
-                        {{capitalize frequency}}
-                    {{/power-select}}
-                </fieldset>
-                <fieldset class="schedule-modal__section">
-                    <div class="schedule-modal__label">Format</div>
-                    {{#power-select
-                        class="schedule-modal__dropdown schedule-modal__dropdown--format"
-                        disabled=(lt formats.length 2)
-                        options=formats
-                        renderInPlace=true
-                        selected=localDeliveryRule.format.type
-                        searchEnabled=false
-                        tagName="div"
-                        onchange=(action "updateFormat")
-                        as | format |
-                    }}
-                        {{format}}
-                    {{/power-select}}
-                </fieldset>
-            </div>
-            <div class="schedule-modal__btn-container btn-container">
-                <div class="button-group">
-                {{#if (is-rejected deliveryRule)}}
-                    <button
-                        class="schedule-modal__cancel-btn btn btn-primary"
-                        onclick={{pipe (action "closeModal") (action onRevert localDeliveryRule)}}
-                        disabled={{isSaving}}
-                        type="button"
-                    > Cancel </button>
-                {{else}}
-                    <button
-                        class="schedule-modal__save-btn btn btn-primary"
-                        onclick={{action (pipe (toggle "isSaving" this) (action "onSave"))}}
-                        disabled={{disableSave}}
-                        type="button"
-                    >
-                        {{#if isSaving}}
-                            {{#loading-message}}
-                                Saving schedule
-                            {{/loading-message}}
-                        {{else}}
-                            {{#unless localDeliveryRule.isNew}}Save Changes{{else}}Save{{/unless}}
-                        {{/if}}
-                    </button>
-                    <button
-                        class="schedule-modal__cancel-btn btn btn-secondary"
-                        onclick={{pipe (action "closeModal") (action onRevert localDeliveryRule)}}
-                        disabled={{isSaving}}
-                        type="button"
-                    >
-                        {{#if localDeliveryRule.hasDirtyAttributes}}
-                            Cancel
-                        {{else}}
-                            Close
-                        {{/if}}
-                    </button>
-                {{/if}}
-                </div>
-                <div class="button-group">
-                {{#unless localDeliveryRule.isNew}}
-                    {{#common-actions/delete
-                        classNames="schedule-modal__delete-btn btn btn-secondary"
-                        disabled=isSaving
-                        model=localDeliveryRule
-                        modelName="schedule"
-                        headerMsg=(concat "Delete schedule for " "\"" model.title "\"")
-                        warnMsg=(concat "Are you sure you want to delete the schedule for this" localDeliveryRule.deliveryType)
-                        deleteAction=(pipe (action "onDelete") (action "closeModal"))
-                    }}
-                    Delete
-                    {{/common-actions/delete}}
-                {{/unless}}
-                </div>
-            </div>
-        </form>
+      {{#if notification}}
+        <div class="schedule-modal__notification modal-notification {{notification.classNames}}">
+          <div class="schedule-modal__notification-text notification-text ">{{notification.text}}</div>
+          {{navi-icon "times" class="notification-remove-icon clickable" click=(action "closeNotification")}}
+        </div>
+      {{else}}
+        <h5 class="schedule-modal__header--secondary secondary-header">Please provide delivery rules for your {{localDeliveryRule.deliveryType}}</h5>
+      {{/if}}
     {{/if}}
+  </div>
+  
+  {{#if (is-pending deliveryRule)}}
+    {{navi-loader}}
+  {{else}}
+    <form class="schedule-modal__body navi-modal-body">
+      <fieldset class="{{if (not isRuleValid) "schedule-modal__recipients--invalid"}} schedule-modal__section">
+        <div class="schedule-modal__label">Recipients</div>
+        {{navi-email-input
+          class="schedule-modal__input--recipients text-input"
+          emails=(readonly localDeliveryRule.recipients)
+          onUpdateEmails=(action "updateRecipients")
+          isDisabled=(is-rejected deliveryRule)
+        }}
+        <div class="schedule-modal__helper-recipients">
+          Please enter valid email addresses separated by commas.
+        </div>
+      </fieldset>
+      <div class="schedule-modal__section-group">
+        <fieldset class="schedule-modal__section">
+          <div class="schedule-modal__label">Frequency</div>
+          {{#power-select
+            class="schedule-modal__dropdown schedule-modal__dropdown--frequency"
+            options=frequencies
+            renderInPlace=true
+            selected=localDeliveryRule.frequency
+            disabled=(is-rejected deliveryRule)
+            searchEnabled=false
+            tagName="div"
+            onchange=(action (mut localDeliveryRule.frequency))
+            as | frequency |
+          }}
+            {{capitalize frequency}}
+          {{/power-select}}
+        </fieldset>
+        <fieldset class="schedule-modal__section">
+          <div class="schedule-modal__label">Format</div>
+          {{#power-select
+            class="schedule-modal__dropdown schedule-modal__dropdown--format"
+            disabled=(lt formats.length 2)
+            options=formats
+            renderInPlace=true
+            selected=localDeliveryRule.format.type
+            searchEnabled=false
+            tagName="div"
+            onchange=(action "updateFormat")
+            as | format |
+          }}
+            {{format}}
+          {{/power-select}}
+        </fieldset>
+      </div>
+      <div class="schedule-modal__btn-container btn-container">
+        <div class="button-group">
+          {{#if (is-rejected deliveryRule)}}
+            <button
+              class="schedule-modal__cancel-btn btn btn-primary"
+              onclick={{pipe (action "closeModal") (action onRevert localDeliveryRule)}}
+              disabled={{isSaving}}
+              type="button"
+            > Cancel
+            </button>
+          {{else}}
+            <button
+              class="schedule-modal__save-btn btn btn-primary"
+              onclick={{action (pipe (toggle "isSaving" this) (action "onSave"))}}
+              disabled={{disableSave}}
+              type="button"
+            >
+              {{#if isSaving}}
+                {{#loading-message}}
+                  Saving schedule
+                {{/loading-message}}
+              {{else}}
+                {{#if localDeliveryRule.isNew}}Save{{else}}Save Changes{{/if}}
+              {{/if}}
+            </button>
+            <button
+              class="schedule-modal__cancel-btn btn btn-secondary"
+              onclick={{pipe (action "closeModal") (action onRevert localDeliveryRule)}}
+              disabled={{isSaving}}
+              type="button"
+            >
+              {{#if localDeliveryRule.hasDirtyAttributes}}
+                Cancel
+              {{else}}
+                Close
+              {{/if}}
+            </button>
+          {{/if}}
+        </div>
+        <div class="button-group">
+          {{#unless localDeliveryRule.isNew}}
+            {{#common-actions/delete
+              classNames="schedule-modal__delete-btn btn btn-secondary"
+              disabled=isSaving
+              model=localDeliveryRule
+              modelName="schedule"
+              headerMsg=(concat "Delete schedule for " "\"" model.title "\"")
+              warnMsg=(concat "Are you sure you want to delete the schedule for this" localDeliveryRule.deliveryType)
+              deleteAction=(pipe (action "onDelete") (action "closeModal"))
+            }}
+              Delete
+            {{/common-actions/delete}}
+          {{/unless}}
+        </div>
+      </div>
+    </form>
+  {{/if}}
 {{/navi-modal}}

@@ -1,29 +1,29 @@
 {{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="navi-list-selector__header">
-    <span class="navi-list-selector__title" title={{title}}>{{title}}</span>
-    <a class="navi-list-selector__show-link" onclick={{toggle "showSelected" this}}>
-      {{#if showSelected}}
-          Show All
-      {{else}}
-          Show Selected ({{selected.length}})
-      {{/if}}
-    </a>
+  <span class="navi-list-selector__title" title={{title}}>{{title}}</span>
+  <a class="navi-list-selector__show-link" onclick={{toggle "showSelected" this}}>
+    {{#if showSelected}}
+      Show All
+    {{else}}
+      Show Selected ({{selected.length}})
+    {{/if}}
+  </a>
 </div>
 <div class="navi-list-selector__search">
-    {{navi-icon "search" class="navi-list-selector__search-icon"}}
-    {{input
-      placeholder=(concat "Search " (capitalize title)) 
-      value=query 
-      autocomplete=false 
-      spellcheck=false 
-      class="navi-list-selector__search-input"
-    }}
-    {{navi-icon "times-circle" class="navi-list-selector__search-input-clear" click=(action (mut query) undefined)}}
+  {{navi-icon "search" class="navi-list-selector__search-icon"}}
+  {{input
+    placeholder=(concat "Search " (capitalize title)) 
+    value=query 
+    autocomplete=false 
+    spellcheck=false 
+    class="navi-list-selector__search-input"
+  }}
+  {{navi-icon "times-circle" class="navi-list-selector__search-input-clear" click=(action (mut query) undefined)}}
 </div>
 <div class="navi-list-selector__content">
-    {{#if (eq filteredItems.length 0)}}
-        <span class="navi-list-selector__content navi-list-selector__content--error">{{errorMessage}}</span>
-    {{else}}
-        {{yield filteredItems areItemsFiltered}}
-    {{/if}}
+  {{#if (eq filteredItems.length 0)}}
+    <span class="navi-list-selector__content navi-list-selector__content--error">{{errorMessage}}</span>
+  {{else}}
+    {{yield filteredItems areItemsFiltered}}
+  {{/if}}
 </div>

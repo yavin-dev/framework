@@ -2,52 +2,52 @@
 
 {{!-- Check wether we need to disable the button click --}}
 <button class="get-api__btn {{buttonClassNames}}" type="button" disabled={{disabled}}
-        onclick={{pipe (optional beforeAction) (toggle "showModal" this)}}>
-    {{yield}}
+  onclick={{pipe (optional beforeAction) (toggle "showModal" this)}}>
+  {{yield}}
 </button>
 
 {{#navi-modal
-    isShown=showModal
-    onClose=(action "resetNotifications")
+  isShown=showModal
+  onClose=(action "resetNotifications")
 }}
-    <div class="get-api-modal-container">
-        <div class="navi-modal__header">
-            <div class="navi-modal__header--primary">API Query</div>
+  <div class="get-api-modal-container">
+    <div class="navi-modal__header">
+      <div class="navi-modal__header--primary">API Query</div>
 
-            {{!-- Notification center --}}
-            {{#if errorNotification}}
-                <div class="modal-notification alert info">
-                    {{navi-icon "exclamation-circle"}}
-                    <div class="notification-text">Please Type ⌘-c to copy</div>
-                    {{navi-icon "times" class="notification-remove-icon clickable" click=(toggle "errorNotification" this)}}
-                </div>
-            {{else}}
-                {{#if successNotification}}
-                    <div class="modal-notification alert success">
-                        {{navi-icon "check"}}
-                        <div class="notification-text">Success! The link has been copied to your clipboard</div>
-                        {{navi-icon "times" class="notification-remove-icon clickable" click=(toggle "successNotification" this)}}
-                    </div>
-                {{else}}
-                    <div class="navi-modal__header--secondary">Select the Copy button to copy to clipboard.</div>
-                {{/if}}
-            {{/if}}
+      {{!-- Notification center --}}
+      {{#if errorNotification}}
+        <div class="modal-notification alert info">
+          {{navi-icon "exclamation-circle"}}
+          <div class="notification-text">Please Type ⌘-c to copy</div>
+          {{navi-icon "times" class="notification-remove-icon clickable" click=(toggle "errorNotification" this)}}
         </div>
-
-        <input class="navi-modal__input" value={{requestUrl}} readonly>
-
-        {{!-- Buttons --}}
-        <div class="btn-container">
-            {{#copy-button
-                class="btn btn-primary"
-                clipboardText=requestUrl
-                success=(toggle "successNotification" this)
-                error=(toggle "errorNotification" this)
-            }}
-                Copy Link
-            {{/copy-button}}
-            <a class="btn btn-secondary" href={{requestUrl}} target="_blank" rel="noopener noreferrer">Run API Query in New Tab</a>
-            <button class="btn btn-secondary" onclick={{pipe (toggle "showModal" this) (action "resetNotifications")}}>Cancel</button>
-        </div>
+      {{else}}
+        {{#if successNotification}}
+          <div class="modal-notification alert success">
+            {{navi-icon "check"}}
+            <div class="notification-text">Success! The link has been copied to your clipboard</div>
+            {{navi-icon "times" class="notification-remove-icon clickable" click=(toggle "successNotification" this)}}
+          </div>
+        {{else}}
+          <div class="navi-modal__header--secondary">Select the Copy button to copy to clipboard.</div>
+        {{/if}}
+      {{/if}}
     </div>
+
+    <input class="navi-modal__input" value={{requestUrl}} readonly>
+
+    {{!-- Buttons --}}
+    <div class="btn-container">
+      {{#copy-button
+        class="btn btn-primary"
+        clipboardText=requestUrl
+        success=(toggle "successNotification" this)
+        error=(toggle "errorNotification" this)
+      }}
+        Copy Link
+      {{/copy-button}}
+      <a class="btn btn-secondary" href={{requestUrl}} target="_blank" rel="noopener noreferrer">Run API Query in New Tab</a>
+      <button class="btn btn-secondary" onclick={{pipe (toggle "showModal" this) (action "resetNotifications")}}>Cancel</button>
+    </div>
+  </div>
 {{/navi-modal}}

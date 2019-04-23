@@ -1,45 +1,45 @@
 {{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{#if select.loading}}
-    {{#if loadingMessage}}
-        <li class="ember-power-select-option ember-power-select-option--loading-message" role="option">{{loadingMessage}}</li>
-    {{/if}}
+  {{#if loadingMessage}}
+    <li class="ember-power-select-option ember-power-select-option--loading-message" role="option">{{loadingMessage}}</li>
+  {{/if}}
 {{else}}
-    {{#if extra.allowClear}}
-        <li class="ember-power-select-option ember-power-select-option--clear" onmouseup={{action "clear"}} role="option">Clear Selection</li>
-    {{/if}}
+  {{#if extra.allowClear}}
+    <li class="ember-power-select-option ember-power-select-option--clear" onmouseup={{action "clear"}} role="option">Clear Selection</li>
+  {{/if}}
 {{/if}}
-<div class="ember-collection-options" style="position:relative;width:100%;height:{{_height}}px">
-    {{#ember-collection
-        buffer=10
-        items=items
-        cell-layout=(percentage-columns-layout items.length columns itemHeight)
-        as |opt index|
-    }}
-        {{#if opt.groupName}}
-            <li class="ember-power-select-group" aria-disabled={{ember-power-select-true-string-if-present opt.disabled}} role="option">
-                <div class="item-row">
-                    <div class="item-row-content">
-                        <span class="ember-power-select-group-name">{{opt.groupName}} ({{opt.groupSize}})</span>
-                    </div>
-                </div>
-            </li>
-        {{else}}
-            <li class="ember-power-select-option"
-              aria-selected="{{ember-power-select-is-selected opt select.selected}}"
-              aria-disabled="{{ember-power-select-true-string-if-present opt.disabled}}"
-              aria-current="{{eq opt select.highlighted}}"
-              data-option-index="{{opt.idx}}"
-              role="option"
-            >
-                <div class="item-row">
-                    <div class="item-row-content">
-                        {{yield opt select}}
-                    </div>
-                    <div class="item-row-icon">
-                        {{navi-icon "plus-circle"}}
-                    </div>
-                </div>
-            </li>
-        {{/if}}
-    {{/ember-collection}}
+<div class="ember-collection-options" style={{html-safe "position:relative;width:100%;height:{{_height}}px"}}>
+  {{#ember-collection
+    buffer=10
+    items=items
+    cell-layout=(percentage-columns-layout items.length columns itemHeight)
+    as |opt|
+  }}
+    {{#if opt.groupName}}
+      <li class="ember-power-select-group" aria-disabled={{ember-power-select-true-string-if-present opt.disabled}} role="option">
+        <div class="item-row">
+          <div class="item-row-content">
+            <span class="ember-power-select-group-name">{{opt.groupName}} ({{opt.groupSize}})</span>
+          </div>
+        </div>
+      </li>
+    {{else}}
+      <li class="ember-power-select-option"
+        aria-selected={{ember-power-select-is-selected opt select.selected}}
+        aria-disabled={{ember-power-select-true-string-if-present opt.disabled}}
+        aria-current={{eq opt select.highlighted}}
+        data-option-index={{opt.idx}}
+        role="option"
+      >
+        <div class="item-row">
+          <div class="item-row-content">
+            {{yield opt select}}
+          </div>
+          <div class="item-row-icon">
+            {{navi-icon "plus-circle"}}
+          </div>
+        </div>
+      </li>
+    {{/if}}
+  {{/ember-collection}}
 </div>

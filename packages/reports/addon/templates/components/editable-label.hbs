@@ -1,22 +1,23 @@
 {{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{#if isEditingValue}}
-    {{input
-        classNames="editable-label__input"
-        value=_localValue
-        size=_inputSize
-        maxlength=150
-        enter=(action "blurLabelInput")
-        focus-out=(action "editComplete")
-    }}
+  {{input
+    classNames="editable-label__input"
+    value=_localValue
+    size=_inputSize
+    maxlength=150
+    enter=(action "blurLabelInput")
+    focus-out=(action "editComplete")
+  }}
 {{else}}
-    <span
-        class="clickable editable-label__value"
-        {{action (pipe (action "resetValue") (toggle "isEditingValue" this) (action "highlightLabelInput"))}}
-    >
-        {{value}}
-        <span>
-            {{navi-icon "pencil" class="editable-label__icon"}}
-            {{ember-tooltip text="Rename"}}
-        </span>
+  <span
+    class="clickable editable-label__value"
+    {{action (pipe (action "resetValue") (toggle "isEditingValue" this) (action "highlightLabelInput"))}}
+    role="button"
+  >
+    {{value}}
+    <span>
+      {{navi-icon "pencil" class="editable-label__icon"}}
+      {{ember-tooltip text="Rename"}}
     </span>
+  </span>
 {{/if}}

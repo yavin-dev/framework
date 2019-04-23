@@ -1,22 +1,22 @@
 {{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{#pick-container
-    selection=selection
-    onUpdateSelection=(action "updateSelection")
-    as |selection container|
+  selection=selection
+  onUpdateSelection=(action "updateSelection")
+  as |selection container|
 }}
-    {{#pick-value classNameBindings="container.isFormOpen:has-focus"}}
-        {{#if label}}
-            <label class="label">{{label}}</label>
-        {{/if}}
-        <span class="value">{{get selection displayField}}</span>
-        {{navi-icon "angle-down"}}
-    {{/pick-value}}
-    {{#pick-form tagName="ul"}}
-        {{#each options as |option|}}
-            <li {{action "applyChanges" option target=container}}
-                class="{{if (eq (get selection idField) (get option idField)) "active"}}">
-                {{get option displayField}}
-            </li>
-        {{/each}}
-    {{/pick-form}}
+  {{#pick-value classNameBindings="container.isFormOpen:has-focus"}}
+    {{#if label}}
+      <label class="label">{{label}}</label>
+    {{/if}}
+    <span class="value">{{get selection displayField}}</span>
+    {{navi-icon "angle-down"}}
+  {{/pick-value}}
+  {{#pick-form tagName="ul"}}
+    {{#each options as |option|}}
+      <li role="button" {{action "applyChanges" option target=container}}
+        class={{if (eq (get selection idField) (get option idField)) "active"}}>
+        {{get option displayField}}
+      </li>
+    {{/each}}
+  {{/pick-form}}
 {{/pick-container}}
