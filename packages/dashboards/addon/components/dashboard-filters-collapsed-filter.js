@@ -37,7 +37,7 @@ export default Component.extend({
    * @property {String} filterDimension
    */
   filterDimension: computed('filter.dimension.{name,longName}', function() {
-    const dimension = get(this, 'ftiler.dimension');
+    const dimension = get(this, 'filter.dimension');
     const longName = get(this, 'filter.dimension.longName');
     const name = get(this, 'filter.dimension.name');
 
@@ -63,6 +63,10 @@ export default Component.extend({
    */
   filterOperator: computed('filter.operator', function() {
     const op = get(this, 'filter.operator');
+
+    if (!op) {
+      return 'noop';
+    }
 
     return getWithDefault(SUPPORTED_OPERATORS, `${op}.longName`, op);
   }),
