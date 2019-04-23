@@ -3,7 +3,6 @@ import { moduleFor, test } from 'ember-qunit';
 import wait from 'ember-test-helpers/wait';
 import config from 'ember-get-config';
 import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
-import { run } from '@ember/runloop';
 
 const { getOwner, get, set } = Ember;
 
@@ -113,14 +112,16 @@ moduleFor('route:reports/new', 'Unit | Route | reports/new', {
     'validator:request-time-grain'
   ],
 
-  async beforeEach() {
+  beforeEach() {
     setupMock();
 
-    await run(() =>
-      getOwner(this)
-        .lookup('service:bard-metadata')
-        .loadMetadata()
-    );
+    /**
+     * Awaiting on this promise causes an runloop error.
+     * Not sure why.
+     */
+    getOwner(this)
+      .lookup('service:bard-metadata')
+      .loadMetadata();
 
     let mockAuthor = getOwner(this)
       .lookup('service:store')
