@@ -103,42 +103,41 @@ module('Integration | Component | print report view', function(hooks) {
     teardownMock();
   });
 
-  test('visualization is chosen based on report', function(assert) {
+  test('visualization is chosen based on report', async function(assert) {
     assert.expect(3);
 
-    return settled().then(async () => {
-      await render(hbs`
-              {{print-report-view
-                  report=report
-                  response=response
-              }}
-          `);
+    await settled();
+    await render(hbs`
+      {{print-report-view
+        report=report
+        response=response
+      }}
+    `);
 
-      assert.dom('.line-chart-widget').isVisible('Visualization is rendered based on the report visualization type');
+    assert.dom('.line-chart-widget').exists('Visualization is rendered based on the report visualization type');
 
-      this.set('report.visualization', {
-        type: 'table',
-        version: 1,
-        metadata: {
-          columns: [
-            {
-              attributes: { name: 'dateTime' },
-              type: 'dateTime',
-              displayName: 'Date'
-            },
-            {
-              attributes: { name: 'adClicks' },
-              type: 'metric',
-              displayName: 'Ad Clicks'
-            }
-          ]
-        }
-      });
-
-      assert.dom('.table-widget').isVisible('Rendered visualization updates with report');
-
-      assert.dom('.line-chart-widget').isNotVisible('Old visualization is removed');
+    this.set('report.visualization', {
+      type: 'table',
+      version: 1,
+      metadata: {
+        columns: [
+          {
+            attributes: { name: 'dateTime' },
+            type: 'dateTime',
+            displayName: 'Date'
+          },
+          {
+            attributes: { name: 'adClicks' },
+            type: 'metric',
+            displayName: 'Ad Clicks'
+          }
+        ]
+      }
     });
+
+    assert.dom('.table-widget').exists('Rendered visualization updates with report');
+
+    assert.dom('.line-chart-widget').doesNotExist('Old visualization is removed');
   });
 
   test('no data', function(assert) {

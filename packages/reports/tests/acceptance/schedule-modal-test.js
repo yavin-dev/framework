@@ -1,6 +1,6 @@
 // jquery is still needed until ember-tag-input test helper typeInInput behaves with triggerEvent
 /* eslint ember/no-global-jquery: 1 */
-import { find, click, findAll, blur, visit, triggerEvent, waitFor } from '@ember/test-helpers';
+import { find, click, findAll, blur, visit, triggerEvent, waitFor, fillIn } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { teardownModal } from '../helpers/teardown-modal';
@@ -48,7 +48,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
       .dom('.schedule-modal__dropdown--format .ember-power-select-selected-item')
       .hasText('csv', 'Format field is set to the default value when creating a new schedule');
 
-    typeInInput('.js-ember-tag-input-new', 'navi_user@navi.io');
+    await fillIn('.js-ember-tag-input-new', 'navi_user@navi.io');
     await blur('.js-ember-tag-input-new');
 
     // Set frequency to Day
@@ -92,7 +92,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
     await triggerEvent('.navi-collection__row2', 'mouseover');
     await click('.navi-collection__row2 .schedule .btn');
 
-    typeInInput('.js-ember-tag-input-new', 'navi_user@navi.io');
+    await fillIn('.js-ember-tag-input-new', 'navi_user@navi.io');
     await blur('.js-ember-tag-input-new');
 
     // Set frequency to Day
@@ -207,9 +207,9 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
     await triggerEvent('.navi-collection__row2', 'mouseover');
     await click('.navi-collection__row2 .schedule .btn');
 
-    typeInInput('.js-ember-tag-input-new', 'navi_user@navi.io');
+    await fillIn('.js-ember-tag-input-new', 'navi_user@navi.io');
     await blur('.js-ember-tag-input-new');
-    typeInInput('.js-ember-tag-input-new', 'test_user@navi.io');
+    await fillIn('.js-ember-tag-input-new', 'test_user@navi.io');
     await blur('.js-ember-tag-input-new');
 
     // Set frequency to Day
@@ -243,7 +243,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
     await triggerEvent('.navi-collection__row0', 'mouseover');
     await click('.navi-collection__row0 .schedule .btn');
 
-    typeInInput('.js-ember-tag-input-new', 'navi_user@navi.io');
+    await fillIn('.js-ember-tag-input-new', 'navi_user@navi.io');
     await blur('.js-ember-tag-input-new');
 
     // Set frequency to Day
@@ -314,7 +314,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
       .dom('.schedule-modal__recipients--invalid>.schedule-modal__input--recipients')
       .isVisible('Recipients field is highlighted red when creating a new schedule before attempting to save');
 
-    typeInInput('.js-ember-tag-input-new', 'test_user');
+    await fillIn('.js-ember-tag-input-new', 'test_user');
     await blur('.js-ember-tag-input-new');
 
     assert
@@ -327,7 +327,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
 
     // Set recipients to a valid value
     await click('.emberTagInput-remove');
-    typeInInput('.js-ember-tag-input-new', 'navi_user@navi.io ');
+    await fillIn('.js-ember-tag-input-new', 'navi_user@navi.io ');
     await blur('.js-ember-tag-input-new');
 
     assert
@@ -432,7 +432,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
 
     await click('.navi-collection__row0 .schedule .btn');
 
-    typeInInput('.js-ember-tag-input-new', 'navi_user@navi.io');
+    await fillIn('.js-ember-tag-input-new', 'navi_user@navi.io');
     await blur('.js-ember-tag-input-new');
 
     //Save the schedule
@@ -464,16 +464,3 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
     Ember.Test.adapter.exception = originalException;
   });
 });
-
-/**
- * Set some text value in an input
- * The helper from ember-tag-input uses jquery
- * @param {String} selector
- * @param {String} text
- */
-function typeInInput(selector, text) {
-  let element = find(selector);
-  if (element) {
-    element.value = text;
-  }
-}

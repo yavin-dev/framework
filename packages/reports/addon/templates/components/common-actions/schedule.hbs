@@ -126,7 +126,7 @@
                         disabled=isSaving
                         model=localDeliveryRule
                         modelName="schedule"
-                        headerMsg=(concat "Delete schedule for "" model.title """)
+                        headerMsg=(concat "Delete schedule for " "\"" model.title "\"")
                         warnMsg=(concat "Are you sure you want to delete the schedule for this" localDeliveryRule.deliveryType)
                         deleteAction=(pipe (action "onDelete") (action "closeModal"))
                     }}
