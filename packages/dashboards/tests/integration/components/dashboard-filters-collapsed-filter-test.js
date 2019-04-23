@@ -10,12 +10,24 @@ moduleForComponent(
 );
 
 test('it renders', function(assert) {
-  this.render(hbs`{{dashboard-filters-collapsed-filter}}`);
+  this.filter = {
+    dimension: {
+      name: 'property',
+      longName: 'Proptery'
+    },
+    operator: 'in',
+    field: 'id',
+    rawValues: ['1', '2']
+  };
+
+  this.render(hbs`{{dashboard-filters-collapsed-filter filter=filter}}`);
 
   assert.equal(
     this.$()
       .text()
-      .trim(),
-    ''
+      .trim()
+      .replace(/\s+/g, ' '),
+    'Proptery equals 1, 2',
+    'Has expected text'
   );
 });

@@ -32,7 +32,32 @@ export default Component.extend({
   classNames: ['dashboard-filters-collapsed-filter'],
 
   /**
-   * The computed filter operator long name.
+   * The comupted filter dimension display name.
+   *
+   * @property {String} filterDimension
+   */
+  filterDimension: computed('filter.dimension.{name,longName}', function() {
+    const dimension = get(this, 'ftiler.dimension');
+    const longName = get(this, 'filter.dimension.longName');
+    const name = get(this, 'filter.dimension.name');
+
+    if (longName) {
+      return longName;
+    }
+
+    if (name) {
+      return name;
+    }
+
+    if (typeof dimension === 'string' && dimension) {
+      return dimension;
+    }
+
+    return 'Unknown Dimension';
+  }),
+
+  /**
+   * The computed filter operator display name.
    *
    * @property {String} filterOperator
    */
