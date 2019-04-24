@@ -18,8 +18,12 @@ import javax.persistence.Entity
 import javax.persistence.Table
 import javax.persistence.Id
 import javax.persistence.Column
+import javax.persistence.JoinTable
+import javax.persistence.JoinColumn
 import javax.persistence.Temporal
 import javax.persistence.TemporalType
+import javax.persistence.OneToMany
+import javax.persistence.ManyToMany
 import javax.validation.constraints.NotBlank
 
 @Entity
@@ -39,4 +43,15 @@ class User {
     @get:Temporal(TemporalType.TIMESTAMP)
     @get:UpdatePermission(expression = "nobody")
     var createdOn: Date? = null
+
+    @get:OneToMany(mappedBy = "author")
+    var reports: Collection<Report> = arrayListOf()
+
+    @get:ManyToMany
+    @get:JoinTable(
+            name = "map_user_to_fav_reports",
+            joinColumns = arrayOf(JoinColumn( name = "user_id", referencedColumnName = "id")),
+            inverseJoinColumns = arrayOf(JoinColumn( name = "report_id", referencedColumnName = "id"))
+    )
+    var favoriteReports: Collection<Report> = arrayListOf()
 }
