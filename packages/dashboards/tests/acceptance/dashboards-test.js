@@ -277,6 +277,36 @@ test('add widget button', function(assert) {
   });
 });
 
+test('Collapsed filters render on load', function(assert) {
+  assert.expect(3);
+
+  visit('/dashboards/1');
+
+  andThen(() => {
+    assert.equal(
+      find('.dashboard-filters')[0]
+        .textContent.replace(/\s+/g, ' ')
+        .trim(),
+      'Settings'
+    );
+  });
+
+  visit('/dashboards/2');
+
+  andThen(() => {
+    const filters = find('.dashboard-filters-collapsed-filter')
+      .toArray()
+      .map(el => el.textContent.replace(/\s+/g, ' ').trim());
+
+    assert.equal(filters.length, 3, 'correct number of filters');
+
+    assert.ok(
+      filters.every(filter => /^Property (contains|not equals|equals) (.*?\d+.*?)(, .*?\d+.*?)*$/.test(filter)),
+      'correct format of filters'
+    );
+  });
+});
+
 test('Delete a dashboard', function(assert) {
   assert.expect(3);
 
