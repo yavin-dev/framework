@@ -68,6 +68,7 @@
     "ember-cli-bootstrap-datepicker": "0.5.3",
     "ember-cli-code-coverage": "^0.4.1",
     "ember-cli-dependency-checker": "^3.1.0",
+    "ember-cli-deprecation-workflow": "^1.0.1",
     "ember-cli-eslint": "^4.2.3",
     "ember-cli-format-number": "^2.0.0",
     "ember-cli-htmlbars-inline-precompile": "^1.0.3",
