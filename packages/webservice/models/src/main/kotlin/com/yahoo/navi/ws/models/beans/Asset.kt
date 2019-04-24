@@ -7,7 +7,6 @@ package com.yahoo.navi.ws.models.beans
 import com.yahoo.elide.annotation.ComputedAttribute
 import com.yahoo.elide.annotation.ReadPermission
 import com.yahoo.elide.annotation.UpdatePermission
-import com.yahoo.navi.ws.models.utils.FormatDate
 import org.hibernate.annotations.Generated
 import org.hibernate.annotations.GenerationTime
 import java.util.*
