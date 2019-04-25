@@ -41,4 +41,6 @@ class Report : Asset(), HasAuthor {
     @get:Type(type = "com.yahoo.navi.ws.models.types.JsonType", parameters =
         arrayOf(Parameter(name = "class", value = "com.yahoo.navi.ws.models.beans.fragments.Visualization")))
     var visualization: Visualization? = null
+
+
 }
