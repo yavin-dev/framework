@@ -1,11 +1,10 @@
-import { run } from '@ember/runloop';
 import Component from '@ember/component';
 import { A } from '@ember/array';
 import ArrayProxy from '@ember/array/proxy';
 import $ from 'jquery';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find } from '@ember/test-helpers';
+import { render, find, click, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 const REPORTS = ArrayProxy.create({
@@ -61,15 +60,9 @@ module('Integration | Component | navi collection', function(hooks) {
     await render(TEMPLATE);
 
     // Click "Favorites" filter option
-    run(() => $('.pick-form li:contains(All)').click());
+    await click($('.pick-form li:contains(All)')[0]);
 
-    let listedReports = $('tbody tr td:first-of-type')
-      .toArray()
-      .map(el =>
-        $(el)
-          .text()
-          .trim()
-      );
+    let listedReports = findAll('tbody tr td:first-of-type').map(el => el.textContent.trim());
 
     assert.deepEqual(
       listedReports,
@@ -78,14 +71,8 @@ module('Integration | Component | navi collection', function(hooks) {
     );
 
     // Click "Favorites" filter option
-    run(() => $('.pick-form li:contains(Favorites)').click());
-    listedReports = $('tbody tr td:first-of-type')
-      .toArray()
-      .map(el =>
-        $(el)
-          .text()
-          .trim()
-      );
+    await click($('.pick-form li:contains(Favorites)')[0]);
+    listedReports = findAll('tbody tr td:first-of-type').map(el => el.textContent.trim());
 
     assert.deepEqual(
       listedReports,
@@ -102,7 +89,7 @@ module('Integration | Component | navi collection', function(hooks) {
     await render(TEMPLATE);
 
     //Reset to all filter
-    run(() => $('.pick-form li:contains(All)').click());
+    await click($('.pick-form li:contains(All)')[0]);
 
     assert.notOk(
       $('tbody tr:eq(0) td:first-of-type i').is('.favorite-item--active'),
