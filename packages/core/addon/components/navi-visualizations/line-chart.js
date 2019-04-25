@@ -173,11 +173,18 @@ export default Component.extend({
   }),
 
   /**
+   * @property {Object} firstModel - the first model in the model array
+   */
+  firstModel: computed('model.[]', function() {
+    const model = arr(get(this, 'model'));
+    return get(model, 'firstObject');
+  }),
+
+  /**
    * @property {Object} pointConfig - point radius config options for chart
    */
-  pointConfig: computed('model.[]', function() {
-    const model = arr(get(this, 'model'));
-    const pointCount = get(model, 'firstObject.response.rows.length');
+  pointConfig: computed('firstModel', function() {
+    const pointCount = get(this, 'firstModel.response.rows.length');
 
     //set point radius higher for single data
     if (pointCount === 1) {
@@ -190,13 +197,12 @@ export default Component.extend({
   /**
    * @property {Object} data - configuration for chart x and y values
    */
-  dataConfig: computed('model.[]', 'seriesConfig', function() {
-    const model = arr(get(this, 'model'));
-    const response = get(model, 'firstObject.response');
-    const request = get(model, 'firstObject.request');
+  dataConfig: computed('firstModel', 'seriesConfig', function() {
+    const request = get(this, 'firstModel.request');
+    const rows = get(this, 'firstModel.response.rows');
     const builder = get(this, 'builder');
     const seriesConfig = get(this, 'seriesConfig.config');
-    const seriesData = builder.buildData(get(response, 'rows'), seriesConfig, request);
+    const seriesData = builder.buildData(rows, seriesConfig, request);
 
     return {
       data: {
@@ -231,9 +237,8 @@ export default Component.extend({
   /**
    * @property {Ember.Component} tooltipComponent - component used for rendering HTMLBars templates
    */
-  tooltipComponent: computed('dataConfig', function() {
-    const model = arr(get(this, 'model'));
-    const request = get(model, 'firstObject.request');
+  tooltipComponent: computed('firstModel', 'dataConfig', function() {
+    const request = get(this, 'firstModel.request');
     const seriesConfig = get(this, 'seriesConfig.config');
     const tooltipComponentName = get(this, 'tooltipComponentName');
     const registryEntry = `component:${tooltipComponentName}`;
@@ -257,44 +262,37 @@ export default Component.extend({
   /**
    * @property {Object} chartTooltip - configuration for tooltip
    */
-  chartTooltip: computed(
-    'seriesConfig.config',
-    'dataConfig.data.json',
-    'tooltipComponent',
-    'model.[].request',
-    function() {
-      const rawData = get(this, 'dataConfig.data.json');
-      const tooltipComponent = get(this, 'tooltipComponent');
-      const model = arr(get(this, 'model'));
-      const request = get(model, 'firstObject.request');
-      const seriesConfig = get(this, 'seriesConfig.config');
+  chartTooltip: computed('seriesConfig.config', 'dataConfig.data.json', 'tooltipComponent', 'firstModel', function() {
+    const rawData = get(this, 'dataConfig.data.json');
+    const tooltipComponent = get(this, 'tooltipComponent');
+    const request = get(this, 'firstModel.request');
+    const seriesConfig = get(this, 'seriesConfig.config');
 
-      return {
-        contents(tooltipData) {
-          /*
-           * Since tooltipData.x only contains the index value, map it
-           * to the raw x value for better formatting
-           */
-          let x = rawData[tooltipData[0].x].x.rawValue,
-            tooltip = tooltipComponent.create({
-              tooltipData,
-              x,
-              request,
-              seriesConfig
-            });
-
-          run(() => {
-            let element = document.createElement('div');
-            tooltip.appendTo(element);
+    return {
+      contents(tooltipData) {
+        /*
+         * Since tooltipData.x only contains the index value, map it
+         * to the raw x value for better formatting
+         */
+        let x = rawData[tooltipData[0].x].x.rawValue,
+          tooltip = tooltipComponent.create({
+            tooltipData,
+            x,
+            request,
+            seriesConfig
           });
 
-          let innerHTML = tooltip.element.innerHTML;
-          tooltip.destroy();
-          return innerHTML;
-        }
-      };
-    }
-  ),
+        run(() => {
+          let element = document.createElement('div');
+          tooltip.appendTo(element);
+        });
+
+        let innerHTML = tooltip.element.innerHTML;
+        tooltip.destroy();
+        return innerHTML;
+      }
+    };
+  }),
 
   /**
    * @property {Function} formattingFunction
