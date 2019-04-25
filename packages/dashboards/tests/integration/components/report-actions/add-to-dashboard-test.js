@@ -6,6 +6,7 @@ import { fillIn, findAll, render, click } from '@ember/test-helpers';
 import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
 import hbs from 'htmlbars-inline-precompile';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import $ from 'jquery';
 
 let Template;
 
@@ -123,6 +124,10 @@ module('Integration | Component | report actions/add to dashboard', function(hoo
       ['Tumblr Goals Dashboard', 'Dashboard 2'],
       'The user`s dashboard titles are shown in the dropdown'
     );
+
+    // Clean up
+    await click('.primary-header');
+    await click($('button:contains(Cancel)')[0]);
   });
 
   test('addToDashboard action', async function(assert) {
@@ -186,7 +191,6 @@ module('Integration | Component | report actions/add to dashboard', function(hoo
 
     assert.equal(this.get('report.title'), 'Buzz Blob', 'Report Title remains unchanged as `Buzz Blob`');
 
-    //$('.add-to-dashboard').click();
     await click('.add-to-dashboard-modal .btn.add-to-dashboard');
   });
 });

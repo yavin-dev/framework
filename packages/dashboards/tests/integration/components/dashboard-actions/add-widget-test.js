@@ -5,6 +5,7 @@ import { click, findAll, render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { clickTrigger as toggleSelector } from 'ember-power-select/test-support/helpers';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import $ from 'jquery';
 
 const DASHBOARD_ID = 12;
 
@@ -33,6 +34,7 @@ module('Integration | Component | dashboard actions/add widget', function(hooks)
     assert.dom('.add-widget').hasText('Add Widget', 'Template component is yielded');
     assert.dom('.ember-modal-dialog').isNotVisible('The add widget modal is not visible in the beginning');
   });
+
   test('report selector', async function(assert) {
     assert.expect(4);
 
@@ -61,5 +63,9 @@ module('Integration | Component | dashboard actions/add widget', function(hooks)
     assert
       .dom('.add-widget-modal .ember-power-select-group-name')
       .hasText('My Reports', 'The user`s report titles are shown under a group name `My Reports` in the dropdown');
+
+    // Clean up
+    await click('.primary-header');
+    await click($('button:contains(Cancel)')[0]);
   });
 });

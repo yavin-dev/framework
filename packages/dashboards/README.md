@@ -19,16 +19,6 @@ Analytics dashboard library for navi
 - `ember server`
 - Visit the dummy app at [http://localhost:4200](http://localhost:4200).
 
-## Installation
-
-```
-ember install my-addon
-```
-
-## Usage
-
-[Longer description of how to use the addon in apps.]
-
 ## Contributing
 
 See the [Contributing](CONTRIBUTING.md) guide for details.

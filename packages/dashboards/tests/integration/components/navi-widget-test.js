@@ -5,7 +5,7 @@ import { defer, reject, resolve } from 'rsvp';
 import { helper as buildHelper } from '@ember/component/helper';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, findAll, triggerEvent } from '@ember/test-helpers';
+import { render, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import DS from 'ember-data';
 import { ForbiddenError } from 'ember-ajax/errors';
@@ -203,9 +203,9 @@ module('Integration | Component | navi widget', function(hooks) {
     `);
 
     this.set('canEdit', true);
-    assert.ok(!!findAll('.navi-widget__delete-btn').length, 'Delete action is visible when user can edit');
+    assert.dom('.navi-widget__delete-btn').isVisible('Delete action is visible when user can edit');
 
     this.set('canEdit', false);
-    assert.notOk(!!findAll('.widget-actions .delete').length, 'Delete action is hidden when user can not edit');
+    assert.dom('.navi-widget__delete-btn').isNotVisible('Delete action is hidden when user can not edit');
   });
 });

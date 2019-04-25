@@ -4,7 +4,6 @@
  */
 
 import { A } from '@ember/array';
-
 import { get } from '@ember/object';
 import Interval from 'navi-core/utils/classes/interval';
 import Duration from 'navi-core/utils/classes/duration';

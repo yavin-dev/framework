@@ -1,7 +1,5 @@
-import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { settled } from '@ember/test-helpers';
 
 const widgetModel = {
   author: 'navi',
@@ -26,20 +24,11 @@ module('Unit | Helper | reportify', function(hooks) {
   test('reportify returns report', function(assert) {
     assert.expect(2);
 
-    let reportify = this.owner.factoryFor('helper:reportify').create();
+    const reportify = this.owner.factoryFor('helper:reportify').create();
+    const report = reportify.compute([widgetModel]);
+    const reportObject = report.toJSON();
 
-    return settled().then(() => {
-      return run(() => {
-        let report = reportify.compute([widgetModel]),
-          reportObject = report.toJSON();
-
-        assert.deepEqual(reportObject.title, 'test', 'Report should have correct title');
-        assert.deepEqual(
-          reportObject.visualization.type,
-          'line-chart',
-          'Report should have correct visualization type'
-        );
-      });
-    });
+    assert.deepEqual(reportObject.title, 'test', 'Report should have correct title');
+    assert.deepEqual(reportObject.visualization.type, 'line-chart', 'Report should have correct visualization type');
   });
 });
