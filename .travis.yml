@@ -31,7 +31,7 @@ before_install:
 install:
   - travis_wait npm install
 script:
-  - travis_wait lerna run test --scope $PACKAGE
+  - travis_wait lerna run test --scope $PACKAGE --stream
 jobs:
   include:
     - stage: Publish
