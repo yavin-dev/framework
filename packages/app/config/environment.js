@@ -63,7 +63,7 @@ module.exports = function(environment) {
 
   if (environment === 'production') {
     ENV['ember-cli-mirage'] = {
-      enabled: false //set to true for gh-pages
+      enabled: process.env.BUILD_NAVI_DEMO === 'true'
     };
   }
 
