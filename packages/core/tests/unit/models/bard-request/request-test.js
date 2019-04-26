@@ -1573,7 +1573,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
   });
 
   test('Validations', async function(assert) {
-    assert.expect(14);
+    assert.expect(13);
 
     await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1),
@@ -1613,12 +1613,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
 
     request.validate().then(({ validations }) => {
       assert.ok(!validations.get('isValid'), 'Request is invalid');
-      assert.equal(validations.get('messages.length'), 3, 'Three Fields are invalid in the request model');
-      assert.equal(
-        validations.get('messages').objectAt(2),
-        'At least one metric should be selected',
-        'At least one metric should be selected is part of the messages'
-      );
+      assert.equal(validations.get('messages.length'), 2, 'Two Fields are invalid in the request model');
     });
 
     //setting intervals to empty
@@ -1626,9 +1621,9 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
 
     request.validate().then(({ validations }) => {
       assert.ok(!validations.get('isValid'), 'Request is invalid');
-      assert.equal(validations.get('messages.length'), 4, 'Four Fields are invalid in the request model');
+      assert.equal(validations.get('messages.length'), 3, 'Three Fields are invalid in the request model');
       assert.equal(
-        validations.get('messages').objectAt(3),
+        validations.get('messages').objectAt(2),
         'Please select a date range',
         'Intervals missing is part of the messages'
       );

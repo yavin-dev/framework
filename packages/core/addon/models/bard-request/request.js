@@ -38,9 +38,9 @@ const Validations = buildValidations({
   ],
   metrics: [
     validator('has-many'),
-    validator('length', {
-      min: 1,
-      message: 'At least one metric should be selected'
+    validator('collection', {
+      collection: true,
+      message: 'Must be a collection'
     })
   ],
   having: [

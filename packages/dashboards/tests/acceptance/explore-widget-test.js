@@ -242,9 +242,13 @@ test('Get API action - enabled/disabled', function(assert) {
     );
   });
 
-  // Remove all metrics to create an invalid request
+  // Remove all metrics
   click('.checkbox-selector--metric .grouped-list__item:contains(Ad Clicks) label');
   click('.checkbox-selector--metric .grouped-list__item:contains(Nav Link Clicks) label');
+
+  // Create empty filter to make request invalid
+  click('.grouped-list__item:Contains(Operating System) .checkbox-selector__filter');
+
   andThen(() => {
     assert.ok(
       $('.get-api').is('.navi-report-widget__action--is-disabled'),

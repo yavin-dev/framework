@@ -7,6 +7,7 @@ let Route;
 const NEW_MODEL = {
     author: 'navi_user',
     createdOn: null,
+    filters: [],
     presentation: {
       columns: 12,
       layout: [],
@@ -32,6 +33,7 @@ moduleFor('route:dashboards/new', 'Unit | Route | dashboards/new', {
     'adapter:dashboard',
     'serializer:dashboard',
     'transform:fragment',
+    'transform:fragment-array',
     'transform:moment',
     'model:fragments/presentation',
     'model:dashboard-widget',
