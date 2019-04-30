@@ -10,7 +10,8 @@ module.exports = function(/* environment, appConfig */) {
       FEATURES: {
         dashboards: true,
         enableDashboardExport: false,
-        enableScheduleDashboards: false
+        enableScheduleDashboards: false,
+        enableDashboardFilters: false
       }
     },
     'ember-gridstack': {
