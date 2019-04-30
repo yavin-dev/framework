@@ -27,26 +27,50 @@ module('Unit | Model | dashboard', function(hooks) {
       assert.deepEqual(
         JSON.parse(JSON.stringify(rec.toJSON())), //to remove undefined props
         {
-          title: 'Dashboard 2',
           author: 'navi_user',
           createdOn: '2016-02-01 00:00:00.000',
-          updatedOn: '2016-02-01 00:00:00.000',
-          presentation: {
-            version: 1,
-            layout: [
-              { column: 0, row: 0, height: 6, width: 9, widgetId: 4 },
-              { column: 0, row: 6, height: 5, width: 9, widgetId: 5 }
-            ],
-            columns: 40
-          },
           filters: [
             {
               dimension: 'property',
               field: 'id',
-              operator: 'in',
+              operator: 'contains',
               values: ['114', '100001']
+            },
+            {
+              dimension: 'property',
+              field: 'id',
+              operator: 'notin',
+              values: ['1']
+            },
+            {
+              dimension: 'property',
+              field: 'id',
+              operator: 'notin',
+              values: ['2', '3', '4']
             }
-          ]
+          ],
+          presentation: {
+            columns: 40,
+            layout: [
+              {
+                column: 0,
+                height: 6,
+                row: 0,
+                widgetId: 4,
+                width: 9
+              },
+              {
+                column: 0,
+                height: 5,
+                row: 6,
+                widgetId: 5,
+                width: 9
+              }
+            ],
+            version: 1
+          },
+          title: 'Dashboard 2',
+          updatedOn: '2016-02-01 00:00:00.000'
         },
         'dashboard record with id 2 is found in the store'
       );
