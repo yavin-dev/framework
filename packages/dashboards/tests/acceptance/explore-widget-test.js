@@ -124,12 +124,33 @@ test('Exploring a widget', function(assert) {
 });
 
 test('Changing and saving a widget', function(assert) {
-  assert.expect(1);
+  assert.expect(4);
 
   // Add a metric to widget 2, save, and return to dashboard route
   visit('/dashboards/1/widgets/2/view');
+
+  andThen(() => {
+    assert.notOk(
+      find('.report-view__info-text').is(':visible'),
+      'Notification to run is not visible before making changes'
+    );
+  });
+
   click('.checkbox-selector--metric .grouped-list__item:contains(Total Clicks) label');
+
+  andThen(() => {
+    assert.ok(find('.report-view__info-text').is(':visible'), 'Notification to run is visible after making changes');
+  });
+
   click('.navi-report-widget__save-btn');
+
+  andThen(() => {
+    assert.notOk(
+      find('.report-view__info-text').is(':visible'),
+      'Notification to run is no longer visible after saving the report'
+    );
+  });
+
   visit('/dashboards/1');
 
   andThen(() => {
