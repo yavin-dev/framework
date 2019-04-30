@@ -69,9 +69,9 @@ export default Service.extend({
         const filterErrors = this._getFilterErrors(dashboard, request);
 
         return this._fetch(requestDecorated, options).then(result => {
-          const serverErrors = getWithDefault(result, 'response.errors', []);
+          const serverErrors = getWithDefault(result, 'response.meta.errors', []);
 
-          return merge({}, result, { response: { errors: [...serverErrors, ...filterErrors] } });
+          return merge({}, result, { response: { meta: { errors: [...serverErrors, ...filterErrors] } } });
         });
       });
 

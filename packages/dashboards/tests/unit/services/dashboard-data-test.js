@@ -284,7 +284,9 @@ test('global filter application and error injection.', async function(assert) {
       return Ember.RSVP.resolve({
         request,
         response: {
-          errors: [{ title: 'Server Error' }]
+          meta: {
+            errors: [{ title: 'Server Error' }]
+          }
         }
       });
     }
@@ -357,7 +359,7 @@ test('global filter application and error injection.', async function(assert) {
   );
 
   assert.deepEqual(
-    widget1.map(result => get(result, 'response.errors')),
+    widget1.map(result => get(result, 'response.meta.errors')),
     [
       [
         {
