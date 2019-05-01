@@ -1,8 +1,9 @@
+import { cloneDeep, merge } from 'lodash';
 import { moduleFor, test } from 'ember-qunit';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
-import wait from 'ember-test-helpers/wait';
 import config from 'ember-get-config';
 import Ember from 'ember';
+import wait from 'ember-test-helpers/wait';
 
 const { get } = Ember;
 
@@ -111,28 +112,47 @@ test('fetch data for dashboard', function(assert) {
   });
 });
 
-test('fetch data for widget', function(assert) {
+test('fetch data for widget', async function(assert) {
   assert.expect(9);
 
-  let service = this.subject({
+  const service = this.subject({
     _fetch(request) {
       // Skip the ws data fetch for this test
-      return Ember.RSVP.resolve(request);
+      return Ember.RSVP.resolve({
+        request,
+        response: { data: request.data }
+      });
     }
   });
 
   assert.deepEqual(service.fetchDataForWidgets(1, []), {}, 'no widgets returns empty data object');
 
-  const makeRequest = data => {
-    return {
-      serialize: () => data
-    };
+  const makeRequest = (data, filters) => ({
+    clone() {
+      return cloneDeep(this);
+    },
+    serialize() {
+      return cloneDeep(this);
+    },
+    addFilter(filter) {
+      this.filters.push(filter);
+    },
+    logicalTable: {
+      table: { name: 'table1' },
+      timeGrain: { dimensionIds: [] }
+    },
+    data,
+    filters: filters || []
+  });
+
+  const dashboard = {
+    filters: []
   };
 
   let widgets = [
-      { id: 1, requests: [makeRequest(1), makeRequest(2), makeRequest(3)] },
-      { id: 2, requests: [makeRequest(4)] },
-      { id: 3, requests: [] }
+      { id: 1, dashboard: cloneDeep(dashboard), requests: [makeRequest(1), makeRequest(2), makeRequest(3)] },
+      { id: 2, dashboard: cloneDeep(dashboard), requests: [makeRequest(4)] },
+      { id: 3, dashboard: cloneDeep(dashboard), requests: [] }
     ],
     data = service.fetchDataForWidgets(1, widgets);
 
@@ -140,34 +160,55 @@ test('fetch data for widget', function(assert) {
 
   assert.ok(get(data, '1.isPending'), 'data uses a promise proxy');
 
-  return wait().then(() => {
-    assert.deepEqual(get(data, '1').toArray(), [1, 2, 3], 'data for widget is an array of request responses');
+  await wait();
 
-    /* == Decorators == */
-    data = service.fetchDataForWidgets(1, widgets, [number => number + 1]);
-    return wait().then(() => {
-      assert.deepEqual(get(data, '1').toArray(), [2, 3, 4], 'each response is modified by the decorators');
+  assert.deepEqual(
+    get(data, '1')
+      .toArray()
+      .map(res => get(res, 'response.data')),
+    [1, 2, 3],
+    'data for widget is an array of request responses'
+  );
 
-      /* == Options == */
-      let optionsObject = {
-        page: 1
-      };
+  /* == Decorators == */
+  data = service.fetchDataForWidgets(1, widgets, [obj => merge({}, obj, { data: obj.data + 1 })]);
 
-      service.set('dashboardId', 1);
-      service.set('_fetch', (request, options) => {
-        assert.equal(options, optionsObject, 'options object is passed on to data fetch method');
+  await wait();
 
-        let uiViewHeaderElems = options.customHeaders.uiView.split('.');
+  assert.deepEqual(
+    get(data, '1')
+      .toArray()
+      .map(obj => get(obj, 'response.data')),
+    [2, 3, 4],
+    'each response is modified by the decorators'
+  );
 
-        assert.equal(uiViewHeaderElems[1], 1, 'uiView header has the dashboard id');
+  /* == Options == */
+  let optionsObject = {
+    page: 1
+  };
 
-        assert.equal(uiViewHeaderElems[3], 2, 'uiView header has the widget id');
+  service.set('dashboardId', 1);
+  service.set('_fetch', (request, options) => {
+    assert.equal(options, optionsObject, 'options object is passed on to data fetch method');
 
-        assert.ok(uiViewHeaderElems[2], 'uiView header has a random uuid attached to the end');
-      });
-      service.fetchDataForWidgets(1, [{ id: 2, requests: [makeRequest(4)] }], [], optionsObject);
-    });
+    let uiViewHeaderElems = options.customHeaders.uiView.split('.');
+
+    assert.equal(uiViewHeaderElems[1], 1, 'uiView header has the dashboard id');
+
+    assert.equal(uiViewHeaderElems[3], 2, 'uiView header has the widget id');
+
+    assert.ok(uiViewHeaderElems[2], 'uiView header has a random uuid attached to the end');
+
+    return Ember.RSVP.resolve({});
   });
+
+  await service.fetchDataForWidgets(
+    1,
+    [{ id: 2, dashboard: cloneDeep(dashboard), requests: [makeRequest(4)] }],
+    [],
+    optionsObject
+  );
 });
 
 test('_fetch', function(assert) {
@@ -229,4 +270,125 @@ test('_decorate', function(assert) {
   );
 
   assert.equal(service._decorate([], 1), 1, 'empty array of decorators has no effect');
+});
+
+test('global filter application and error injection.', async function(assert) {
+  assert.expect(4);
+
+  const VALID_FILTERS = ['dim1', 'dim3'];
+  const DASHBOARD_FILTERS = ['dim1', 'dim2'];
+
+  const service = this.subject({
+    _fetch(request) {
+      // Skip the ws data fetch for this test
+      return Ember.RSVP.resolve({
+        request,
+        response: {
+          meta: {
+            errors: [{ title: 'Server Error' }]
+          }
+        }
+      });
+    }
+  });
+
+  const makeFilter = ({ dimension }) => ({ dimension: { name: dimension } });
+
+  const dashboard = {
+    filters: DASHBOARD_FILTERS.map(dimension => makeFilter({ dimension }))
+  };
+
+  const makeRequest = (data, filters) => ({
+    clone() {
+      return cloneDeep(this);
+    },
+    serialize() {
+      return cloneDeep(this);
+    },
+    addFilter(filter) {
+      this.filters.push(filter);
+    },
+    logicalTable: {
+      table: { name: 'table1' },
+      timeGrain: { dimensionIds: VALID_FILTERS }
+    },
+    data,
+    filters: filters || [makeFilter({ dimension: `original dim${data}` })]
+  });
+
+  const widgets = [
+    {
+      dashboard: cloneDeep(dashboard),
+      id: 1,
+      requests: [makeRequest(1), makeRequest(2, []), makeRequest(3)]
+    },
+    {
+      dashboard: cloneDeep(dashboard),
+      id: 2,
+      requests: [makeRequest(4)]
+    },
+    {
+      dashboard: cloneDeep(dashboard),
+      id: 3,
+      requests: []
+    }
+  ];
+
+  const data = service.fetchDataForWidgets(1, widgets);
+
+  const widget1 = await get(data, '1');
+  const widget2 = await get(data, '2');
+  const widget3 = await get(data, '3');
+
+  assert.deepEqual(
+    widget1.map(result => get(result, 'request.filters').map(filter => get(filter, 'dimension.name'))),
+    [['original dim1', 'dim1'], ['dim1'], ['original dim3', 'dim1']],
+    'Applicable global filters are applied to widget 1 requests'
+  );
+
+  assert.deepEqual(
+    widget2.map(result => get(result, 'request.filters').map(filter => get(filter, 'dimension.name'))),
+    [['original dim4', 'dim1']],
+    'Applicable global filters are applied to widget 2 requests'
+  );
+
+  assert.deepEqual(
+    widget3.map(result => get(result, 'request.filters').map(filter => get(filter, 'dimension.name'))),
+    [],
+    'Applicable global filters are applied to widget 3 requests'
+  );
+
+  assert.deepEqual(
+    widget1.map(result => get(result, 'response.meta.errors')),
+    [
+      [
+        {
+          title: 'Server Error'
+        },
+        {
+          detail: '"dim2" is not a dimension in the "table1" table.',
+          title: 'Invalid Filter'
+        }
+      ],
+      [
+        {
+          title: 'Server Error'
+        },
+        {
+          detail: '"dim2" is not a dimension in the "table1" table.',
+          title: 'Invalid Filter'
+        }
+      ],
+      [
+        {
+          title: 'Server Error'
+        },
+        {
+          detail: '"dim2" is not a dimension in the "table1" table.',
+          title: 'Invalid Filter'
+        }
+      ]
+    ],
+    'Errors are injected into the response.'
+  );
 });

@@ -76,7 +76,7 @@ moduleFor('consumer:delivery-rule', 'Unit | Consumer | delivery-rule', {
     Container = getOwner(this);
     Store = Container.lookup('service:store');
     MetadataService = getOwner(this).lookup('service:bard-metadata');
-    return await MetadataService.loadMetadata();
+    await MetadataService.loadMetadata();
   },
 
   afterEach() {

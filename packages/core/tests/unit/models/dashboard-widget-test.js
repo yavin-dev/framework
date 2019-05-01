@@ -9,7 +9,7 @@ let Store;
 module('Unit | Model | dashboard widget', function(hooks) {
   setupTest(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(async function() {
     setupMock();
     Store = this.owner.lookup('service:store');
 
@@ -17,7 +17,7 @@ module('Unit | Model | dashboard widget', function(hooks) {
 
     // Load metadata needed for request fragment
     let metadataService = this.owner.lookup('service:bard-metadata');
-    metadataService.loadMetadata();
+    await metadataService.loadMetadata();
   });
 
   hooks.afterEach(function() {

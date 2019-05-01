@@ -29,7 +29,7 @@ const AgeResponse = arr([
 module('Unit | Model Fragment | BardRequest - Filter', function(hooks) {
   setupTest(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(async function() {
     Server = setupMock();
     Store = this.owner.lookup('service:store');
 
@@ -42,7 +42,7 @@ module('Unit | Model Fragment | BardRequest - Filter', function(hooks) {
 
     MetadataService = this.owner.lookup('service:bard-metadata');
 
-    MetadataService.loadMetadata().then(() => {
+    await MetadataService.loadMetadata().then(() => {
       //Add instances to the store
       return run(() => {
         Store.pushPayload({
