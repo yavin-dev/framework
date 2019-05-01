@@ -287,7 +287,8 @@ test('Collapsed filters render on load', function(assert) {
       find('.dashboard-filters')[0]
         .textContent.replace(/\s+/g, ' ')
         .trim(),
-      'Settings'
+      'Settings',
+      'only settings label is rendered when no filters are associated with dashboard'
     );
   });
 

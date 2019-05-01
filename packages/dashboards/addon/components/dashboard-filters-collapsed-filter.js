@@ -6,7 +6,7 @@
 import Component from '@ember/component';
 import layout from '../templates/components/dashboard-filters-collapsed-filter';
 import { computed, get, getWithDefault } from '@ember/object';
-import { A } from '@ember/array';
+import { A as arr } from '@ember/array';
 import { isEmpty } from '@ember/utils';
 
 const SUPPORTED_OPERATORS = {
@@ -32,7 +32,7 @@ export default Component.extend({
   classNames: ['dashboard-filters-collapsed-filter'],
 
   /**
-   * The comupted filter dimension display name.
+   * The computed filter dimension display name.
    *
    * @property {String} filterDimension
    */
@@ -79,7 +79,7 @@ export default Component.extend({
   filterValues: computed('filter.{rawValues.[],values.[],field}', function() {
     const field = get(this, 'filter.field');
     const rawValues = get(this, 'filter.rawValues');
-    const values = A(get(this, 'filter.values'));
+    const values = arr(get(this, 'filter.values'));
 
     return rawValues.map(rawValue => {
       const value = values.findBy(field, rawValue);

@@ -13,7 +13,7 @@ test('it renders', function(assert) {
   this.filter = {
     dimension: {
       name: 'property',
-      longName: 'Proptery'
+      longName: 'Property'
     },
     operator: 'in',
     field: 'id',
@@ -27,7 +27,7 @@ test('it renders', function(assert) {
       .text()
       .trim()
       .replace(/\s+/g, ' '),
-    'Proptery equals 1, 2',
+    'Property equals 1, 2',
     'Renders a filter string'
   );
 });
@@ -36,7 +36,7 @@ test('value fallbacks', function(assert) {
   this.filter = {
     dimension: {
       name: 'property',
-      longName: 'Proptery'
+      longName: 'Property'
     },
     operator: 'in',
     field: 'id',
@@ -51,7 +51,7 @@ test('value fallbacks', function(assert) {
       .text()
       .trim()
       .replace(/\s+/g, ' '),
-    'Proptery equals 1, ValueDesc (2)',
+    'Property equals 1, ValueDesc (2)',
     'has value description'
   );
 });
@@ -115,7 +115,7 @@ test('operator mapping', function(assert) {
   this.filter = {
     dimension: {
       name: 'property',
-      longName: 'Proptery'
+      longName: 'Property'
     },
     operator: 'in',
     field: 'id',
@@ -130,7 +130,7 @@ test('operator mapping', function(assert) {
       .text()
       .trim()
       .replace(/\s+/g, ' '),
-    'Proptery equals Something (1), ValueDesc (2)',
+    'Property equals Something (1), ValueDesc (2)',
     '`in` is rendered as "equals"'
   );
 
@@ -140,7 +140,7 @@ test('operator mapping', function(assert) {
       .text()
       .trim()
       .replace(/\s+/g, ' '),
-    'Proptery not equals Something (1), ValueDesc (2)',
+    'Property not equals Something (1), ValueDesc (2)',
     '`notin` is rendered as "not equals"'
   );
 
@@ -150,7 +150,7 @@ test('operator mapping', function(assert) {
       .text()
       .trim()
       .replace(/\s+/g, ' '),
-    'Proptery unknownop Something (1), ValueDesc (2)',
+    'Property unknownop Something (1), ValueDesc (2)',
     'unknown ops are passed through'
   );
 
@@ -160,7 +160,7 @@ test('operator mapping', function(assert) {
       .text()
       .trim()
       .replace(/\s+/g, ' '),
-    'Proptery noop Something (1), ValueDesc (2)',
+    'Property noop Something (1), ValueDesc (2)',
     'falsy ops are rendered as "noop"'
   );
 });
