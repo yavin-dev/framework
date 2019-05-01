@@ -51,7 +51,7 @@ const RESPONSE = {
 moduleForComponent('report-view', 'Integration | Component | report view', {
   integration: true,
 
-  beforeEach() {
+  async beforeEach() {
     setupMock();
 
     this.register(
@@ -67,7 +67,7 @@ moduleForComponent('report-view', 'Integration | Component | report view', {
     let metadataService = getOwner(this).lookup('service:bard-metadata'),
       store = getOwner(this).lookup('service:store');
 
-    metadataService.loadMetadata().then(() => {
+    await metadataService.loadMetadata().then(() => {
       this.set('response', RESPONSE);
 
       //set report object

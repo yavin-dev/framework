@@ -115,8 +115,13 @@ moduleFor('route:reports/new', 'Unit | Route | reports/new', {
   beforeEach() {
     setupMock();
 
-    let metadataService = getOwner(this).lookup('service:bard-metadata');
-    metadataService.loadMetadata();
+    /**
+     * Awaiting on this promise causes an runloop error.
+     * Not sure why.
+     */
+    getOwner(this)
+      .lookup('service:bard-metadata')
+      .loadMetadata();
 
     let mockAuthor = getOwner(this)
       .lookup('service:store')

@@ -51,13 +51,13 @@ const RESPONSE = {
 moduleForComponent('print-report-view', 'Integration | Component | print report view', {
   integration: true,
 
-  beforeEach() {
+  async beforeEach() {
     setupMock();
 
     let metadataService = getOwner(this).lookup('service:bard-metadata'),
       store = getOwner(this).lookup('service:store');
 
-    metadataService.loadMetadata().then(() => {
+    await metadataService.loadMetadata().then(() => {
       this.set('response', RESPONSE);
 
       //set report object

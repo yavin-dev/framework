@@ -9,13 +9,13 @@ var Store, MetadataService;
 module('Unit | Model Fragment | BardRequest - Dimension', function(hooks) {
   setupTest(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(async function() {
     setupMock();
 
     Store = this.owner.lookup('service:store');
     MetadataService = this.owner.lookup('service:bard-metadata');
 
-    MetadataService.loadMetadata().then(() => {
+    await MetadataService.loadMetadata().then(() => {
       //Add instances to the store
       run(() => {
         Store.pushPayload({
