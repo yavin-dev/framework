@@ -28,7 +28,8 @@ module.exports = function(environment) {
         enableDirectory: false,
         enableDashboardExport: true,
         enableMultipleExport: true,
-        enableScheduleDashboards: true
+        enableScheduleDashboards: true,
+        enableDashboardFilters: true
       }
     }
   };

@@ -105,6 +105,10 @@
       {{/dashboard-actions/add-widget}}
     {{/if}}
   </div>
+
+  {{#if (feature-flag "enableDashboardFilters")}}
+    {{dashboard-filters-collapsed dashboard=dashboard}}
+  {{/if}}
 </div>
 
 <div class="navi-dashboard__body">

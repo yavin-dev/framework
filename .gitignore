@@ -12,3 +12,4 @@ tmp/
 lerna-debug.log
 *.iml
 .idea/
+.vscode

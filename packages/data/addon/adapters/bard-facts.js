@@ -97,7 +97,9 @@ export default EmberObject.extend({
         .map(filter => {
           let dimension = get(filter, 'dimension'),
             operator = get(filter, 'operator'),
-            values = get(filter, 'values').join(','),
+            values = array(get(filter, 'values'))
+              .toArray()
+              .join(','),
             field = get(filter, 'field') || 'id';
           return `${dimension}|${field}-${operator}[${values}]`;
         })
