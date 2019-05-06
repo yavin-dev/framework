@@ -124,7 +124,7 @@ export default Service.extend({
    * @returns {Array<Object>}
    */
   _getInvalidGlobalFilters(dashboard, request) {
-    const filters = getWithDefault(dashboard, 'filters', []);
+    const filters = get(dashboard, 'filters') || [];
 
     return filters.filter(filter => !this._isFilterValid(request, filter));
   },
@@ -138,7 +138,7 @@ export default Service.extend({
    * @returns {Array<Object>}
    */
   _getValidGlobalFilters(dashboard, request) {
-    const filters = getWithDefault(dashboard, 'filters', []);
+    const filters = get(dashboard, 'filters') || [];
 
     return filters.filter(filter => this._isFilterValid(request, filter));
   },
