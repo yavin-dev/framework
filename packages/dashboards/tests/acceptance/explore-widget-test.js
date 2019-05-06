@@ -100,7 +100,9 @@ module('Acceptance | Exploring Widgets', function(hooks) {
 
     await click('.navi-report-widget__save-btn');
 
-    assert.dom('.report-view__info-text').isNotVisible(), 'Notification to run is no longer visible after saving the report');
+    assert
+      .dom('.report-view__info-text')
+      .isNotVisible('Notification to run is no longer visible after saving the report');
 
     await visit('/dashboards/1');
 

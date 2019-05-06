@@ -192,30 +192,30 @@ module('Acceptance | Dashboards', function(hooks) {
     await click($('button:contains(Cancel)')[0]);
   });
 
-test('Collapsed filters render on load', async function(assert) {
-  assert.expect(3);
+  test('Collapsed filters render on load', async function(assert) {
+    assert.expect(3);
 
-  await visit('/dashboards/1');
+    await visit('/dashboards/1');
 
-  assert.dom('.dashboard-filters')
-    .hasText('Settings', 'only settings label is rendered when no filters are associated with dashboard');
+    assert
+      .dom('.dashboard-filters')
+      .hasText('Settings', 'only settings label is rendered when no filters are associated with dashboard');
 
-  await visit('/dashboards/2');
+    await visit('/dashboards/2');
 
-  const filters = find('.dashboard-filters-collapsed-filter')
-    .map(el => el.textContent.replace(/\s+/g, ' ').trim());
+    const filters = findAll('.dashboard-filters-collapsed-filter').map(el =>
+      el.textContent.replace(/\s+/g, ' ').trim()
+    );
 
-  assert.equal(filters.length, 3, 'correct number of filters');
+    assert.equal(filters.length, 3, 'correct number of filters');
 
-  assert.ok(
-    filters.every(filter => /^Property (contains|not equals|equals) (.*?\d+.*?)(, .*?\d+.*?)*$/.test(filter)),
-    'correct format of filters');
-});
+    assert.ok(
+      filters.every(filter => /^Property (contains|not equals|equals) (.*?\d+.*?)(, .*?\d+.*?)*$/.test(filter)),
+      'correct format of filters'
+    );
+  });
 
-test('Delete a dashboard', function(assert) {
-  assert.expect(3);
-
-  test('Delete a dashboard', function(assert) {
+  test('Delete a dashboard', async function(assert) {
     assert.expect(3);
 
     await visit('/dashboards');
