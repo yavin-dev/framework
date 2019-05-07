@@ -1,4 +1,4 @@
-import { click, currentURL, fillIn, find, findAll, triggerEvent, visit } from '@ember/test-helpers';
+import { click, currentURL, fillIn, find, findAll, triggerEvent, visit, blur } from '@ember/test-helpers';
 import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import config from 'ember-get-config';
@@ -174,19 +174,23 @@ module('Acceptance | Dashboards', function(hooks) {
 
     await click('.add-widget .btn');
 
-    assert.equal(
-      find('.add-widget-modal .btn').getAttribute('href'),
-      `/dashboards/5/widgets/new`,
-      'Create new assigns the new widget route to the primary button'
-    );
+    assert
+      .dom('.add-widget-modal .btn')
+      .hasAttribute(
+        'href',
+        `/dashboards/5/widgets/new`,
+        'Create new assigns the new widget route to the primary button'
+      );
 
     await selectChoose('.report-select', 'Report 12');
 
-    assert.equal(
-      find('.add-widget-modal .btn').getAttribute('href'),
-      `/reports/4`,
-      'Selecting a report assigns the route `/reports/${id}` to the primary button where id is the id of the report'
-    );
+    assert
+      .dom('.add-widget-modal .btn')
+      .hasAttribute(
+        'href',
+        `/reports/4`,
+        'Selecting a report assigns the route `/reports/${id}` to the primary button where id is the id of the report'
+      );
 
     // Clean up
     await click($('button:contains(Cancel)')[0]);
@@ -396,7 +400,7 @@ module('Acceptance | Dashboards', function(hooks) {
     await visit('/dashboards/1');
     await click('.editable-label__icon');
     await fillIn('.editable-label__input', 'A new title');
-    await triggerEvent('.editable-label__input', 'blur');
+    await await blur('.editable-label__input');
 
     assert
       .dom('.navi-dashboard .page-title')

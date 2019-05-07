@@ -193,8 +193,8 @@ module('Acceptance | Exploring Widgets', function(hooks) {
       .doesNotHaveClass('.navi-report-widget__action--is-disabled', 'Get API action is enabled for a valid request');
 
     // Remove all metrics
-    click($('.checkbox-selector--metric .grouped-list__item:contains(Ad Clicks) label')[0]);
-    click($('.checkbox-selector--metric .grouped-list__item:contains(Nav Link Clicks) label')[0]);
+    await click($('.checkbox-selector--metric .grouped-list__item:contains(Ad Clicks) label')[0]);
+    await click($('.checkbox-selector--metric .grouped-list__item:contains(Nav Link Clicks) label')[0]);
 
     // Remove all metrics to create an invalid request
     await click($('.checkbox-selector--metric .grouped-list__item:contains(Ad Clicks) label')[0]);

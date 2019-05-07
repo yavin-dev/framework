@@ -1,4 +1,4 @@
-import { find, findAll, currentURL, visit } from '@ember/test-helpers';
+import { findAll, currentURL, visit } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
@@ -52,6 +52,6 @@ module('Acceptance | Add New Widget', function(hooks) {
 
     assert.ok(!!findAll('[data-gs-id="6"]').length, 'widget 4 is present');
 
-    assert.equal(find('[data-gs-id="6"]').getAttribute('data-gs-y'), 8, 'widget 4 was added to the next available row');
+    assert.dom('[data-gs-id="6"]').hasAttribute('data-gs-y', '8', 'widget 4 was added to the next available row');
   });
 });
