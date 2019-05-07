@@ -400,7 +400,7 @@ module('Acceptance | Dashboards', function(hooks) {
     await visit('/dashboards/1');
     await click('.editable-label__icon');
     await fillIn('.editable-label__input', 'A new title');
-    await await blur('.editable-label__input');
+    await blur('.editable-label__input');
 
     assert
       .dom('.navi-dashboard .page-title')
