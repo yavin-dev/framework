@@ -1,9 +1,4 @@
 {{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-
-<div class="dashboard-filters-collapsed__expand-button">
-  {{navi-icon "sliders"}} Settings {{navi-icon "angle-right"}}
-</div>
-
 <div class="dashboard-filters-collapsed__filters">
   {{#each dashboard.filters as |filter|}}
     {{dashboard-filters-collapsed-filter filter=filter}}
