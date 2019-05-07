@@ -8,10 +8,10 @@
  *      Inner template
  *   {{/common-actions/buttonize}}
  */
-import Ember from 'ember';
+import Component from '@ember/component';
 import layout from '../../templates/components/common-actions/buttonize';
 
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   /**

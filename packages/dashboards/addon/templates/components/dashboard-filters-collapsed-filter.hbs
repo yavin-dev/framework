@@ -9,5 +9,5 @@
 </div>
 
 <div class="dashboard-filters-collapsed-filter__values">
-  {{#each filterValues as |value idx|}}{{unless (eq idx 0) ", "}}<div class="dashboard-filters-collapsed-filter__value">{{value}}</div>{{/each}}
+  {{#each filterValues as |value idx|}}{{if (not-eq idx 0) ", "}}<div class="dashboard-filters-collapsed-filter__value">{{value}}</div>{{/each}}
 </div>

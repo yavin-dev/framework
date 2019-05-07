@@ -1,8 +1,11 @@
-import { moduleFor, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupTest } from 'ember-qunit';
 
-moduleFor('controller:dashboards/dashboard/widgets/add', 'Unit | Controller | dashboards/dashboard/widgets/add', {});
+module('Unit | Controller | dashboards/dashboard/widgets/add', function(hooks) {
+  setupTest(hooks);
 
-test('it exists', function(assert) {
-  let controller = this.subject();
-  assert.ok(controller);
+  test('it exists', function(assert) {
+    let controller = this.owner.lookup('controller:dashboards/dashboard/widgets/add');
+    assert.ok(controller);
+  });
 });

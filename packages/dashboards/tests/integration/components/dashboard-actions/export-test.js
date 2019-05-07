@@ -1,81 +1,86 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render, click } from '@ember/test-helpers';
+import hbs from 'htmlbars-inline-precompile';
 
-moduleForComponent('dashboard-actions/export', 'Integration | Component | dashboard actions/export', {
-  integration: true
-});
+module('Integration | Component | dashboard actions/export', function(hooks) {
+  setupRenderingTest(hooks);
 
-test('export href', function(assert) {
-  assert.expect(1);
+  test('export href', async function(assert) {
+    assert.expect(1);
 
-  this.dashboard = { id: 123, title: 'Akkala Tech Lab Weekly Reports' };
+    this.dashboard = { id: 123, title: 'Akkala Tech Lab Weekly Reports' };
 
-  this.render(`
-    {{dashboard-actions/export
-      dashboard=dashboard
-    }}
-  `);
+    await render(hbs`
+      {{dashboard-actions/export
+        dashboard=dashboard
+      }}
+    `);
 
-  assert.equal(
-    this.$('a').attr('href'),
-    '/export?dashboard=123',
-    'Export actions links to export service and gives the dashboard id'
-  );
-});
+    assert
+      .dom('a')
+      .hasAttribute(
+        'href',
+        '/export?dashboard=123',
+        'Export actions links to export service and gives the dashboard id'
+      );
+  });
 
-test('export filename', function(assert) {
-  assert.expect(1);
+  test('export filename', async function(assert) {
+    assert.expect(1);
 
-  this.dashboard = { id: 123, title: 'Akkala Tech Lab Weekly Reports' };
+    this.dashboard = { id: 123, title: 'Akkala Tech Lab Weekly Reports' };
 
-  this.render(`
-    {{dashboard-actions/export
-      dashboard=dashboard
-    }}
-  `);
+    await render(hbs`
+      {{dashboard-actions/export
+        dashboard=dashboard
+      }}
+    `);
 
-  assert.equal(
-    this.$('a').attr('download'),
-    'akkala-tech-lab-weekly-reports-dashboard',
-    'Download attribute is set to the dasherized dashboard name, appended with -dashboard'
-  );
-});
+    assert
+      .dom('a')
+      .hasAttribute(
+        'download',
+        'akkala-tech-lab-weekly-reports-dashboard',
+        'Download attribute is set to the dasherized dashboard name, appended with -dashboard'
+      );
+  });
 
-test('disabled', function(assert) {
-  assert.expect(1);
+  test('disabled', async function(assert) {
+    assert.expect(1);
 
-  this.dashboard = { id: 123, title: 'Akkala Tech Lab Weekly Reports' };
+    this.dashboard = { id: 123, title: 'Akkala Tech Lab Weekly Reports' };
 
-  this.render(`
-    {{dashboard-actions/export
-      dashboard=dashboard
-      disabled=true
-    }}
-  `);
+    await render(hbs`
+      {{dashboard-actions/export
+        dashboard=dashboard
+        disabled=true
+      }}
+    `);
 
-  assert.equal(
-    this.$('a').attr('href'),
-    'unsafe:javascript:void(0);',
-    'When disabled, the export action href has no effect'
-  );
-});
+    assert
+      .dom('a')
+      .hasAttribute('href', 'unsafe:javascript:void(0);', 'When disabled, the export action href has no effect');
+  });
 
-test('notifications', function(assert) {
-  assert.expect(1);
+  test('notifications', async function(assert) {
+    assert.expect(1);
 
-  this.dashboard = { id: 123, title: 'Akkala Tech Lab Weekly Reports' };
+    this.dashboard = { id: 123, title: 'Akkala Tech Lab Weekly Reports' };
 
-  this.mockNotifications = {
-    add({ message }) {
-      assert.equal(message, 'The download should begin soon.', 'A notification is added when export is clicked.');
-    }
-  };
+    this.mockNotifications = {
+      add({ message }) {
+        assert.equal(message, 'The download should begin soon.', 'A notification is added when export is clicked.');
+      }
+    };
 
-  this.render(`
-    {{dashboard-actions/export
-      dashboard=dashboard
-      naviNotifications=mockNotifications
-    }}
-  `);
+    await render(hbs`
+      {{dashboard-actions/export
+        dashboard=dashboard
+        naviNotifications=mockNotifications
+      }}
+    `);
 
-  this.$('a').click();
+    await click('a');
+  });
 });

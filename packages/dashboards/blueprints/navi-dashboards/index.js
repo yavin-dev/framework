@@ -15,7 +15,7 @@ module.exports = {
 
     //misaligned here so that it aligns in the app correctly
     var routeInfo =
-      "\tthis.route('dashboardCollections', function() { " +
+      "\tthis.route('dashboard-collections', function() { " +
       EOL +
       "\
   this.route('collection', {path:'/:collection_id'}); " +

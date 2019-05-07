@@ -1,54 +1,42 @@
-import Ember from 'ember';
-import { moduleForModel, test } from 'ember-qunit';
-import { setupMock, teardownMock } from '../../helpers/mirage-helper';
+import { run } from '@ember/runloop';
+import { module, test } from 'qunit';
+import { setupTest } from 'ember-qunit';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 let Store, Model;
 
-moduleForModel('dashboard-collection', 'Unit | Model | dashboard collection', {
-  // Specify the other units that are required for this test.
-  needs: [
-    'model:dashboard',
-    'model:dashboard-widget',
-    'model:user',
-    'transform:moment',
-    'serializer:dashboard-collection',
-    'adapter:dashboard-collection',
-    'config:environment',
-    'service:user'
-  ],
+module('Unit | Model | dashboard collection', function(hooks) {
+  setupTest(hooks);
+  setupMirage(hooks);
 
-  beforeEach() {
-    setupMock();
-    Store = this.store();
-    Model = this.subject();
-  },
-  afterEach() {
-    teardownMock();
-  }
-});
+  hooks.beforeEach(function() {
+    Store = this.owner.lookup('service:store');
+    Model = run(() => this.owner.lookup('service:store').createRecord('dashboard-collection'));
+  });
 
-test('it exists', function(assert) {
-  assert.expect(1);
+  test('it exists', function(assert) {
+    assert.expect(1);
 
-  assert.ok(!!Model, 'Dashboard Collection model exists');
-});
+    assert.ok(!!Model, 'Dashboard Collection model exists');
+  });
 
-test('Retrieving Records', function(assert) {
-  assert.expect(1);
+  test('Retrieving Records', function(assert) {
+    assert.expect(1);
 
-  return Ember.run(() => {
-    return Store.findRecord('dashboard-collection', 1).then(rec => {
-      assert.deepEqual(
-        rec.toJSON(),
-        {
-          title: 'Collection 1',
-          author: 'navi_user',
-          dashboards: ['1', '3'],
-          createdOn: '2016-01-01 00:00:00.000',
-          updatedOn: '2016-01-01 00:00:00.000'
-        },
-        'dashboard collection record with id 1 is found in the store'
-      );
+    return run(() => {
+      return Store.findRecord('dashboard-collection', 1).then(rec => {
+        assert.deepEqual(
+          rec.toJSON(),
+          {
+            title: 'Collection 1',
+            author: 'navi_user',
+            dashboards: ['1', '3'],
+            createdOn: '2016-01-01 00:00:00.000',
+            updatedOn: '2016-01-01 00:00:00.000'
+          },
+          'dashboard collection record with id 1 is found in the store'
+        );
+      });
     });
   });
 });

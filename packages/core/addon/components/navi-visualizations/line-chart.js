@@ -11,6 +11,7 @@
 
 /* global requirejs */
 
+import { A as arr } from '@ember/array';
 import Component from '@ember/component';
 import { camelize } from '@ember/string';
 import { computed, get } from '@ember/object';
@@ -172,10 +173,18 @@ export default Component.extend({
   }),
 
   /**
+   * @property {Object} firstModel - the first model in the model array
+   */
+  firstModel: computed('model.[]', function() {
+    const model = arr(get(this, 'model'));
+    return get(model, 'firstObject');
+  }),
+
+  /**
    * @property {Object} pointConfig - point radius config options for chart
    */
-  pointConfig: computed('model.[]', function() {
-    let pointCount = get(this, 'model.firstObject.response.rows.length');
+  pointConfig: computed('firstModel', function() {
+    const pointCount = get(this, 'firstModel.response.rows.length');
 
     //set point radius higher for single data
     if (pointCount === 1) {
@@ -188,12 +197,12 @@ export default Component.extend({
   /**
    * @property {Object} data - configuration for chart x and y values
    */
-  dataConfig: computed('model.firstObject', 'seriesConfig', function() {
-    let response = get(this, 'model.firstObject.response'),
-      request = get(this, 'model.firstObject.request'),
-      builder = get(this, 'builder'),
-      seriesConfig = get(this, 'seriesConfig.config'),
-      seriesData = builder.buildData(get(response, 'rows'), seriesConfig, request);
+  dataConfig: computed('firstModel', 'seriesConfig', function() {
+    const request = get(this, 'firstModel.request');
+    const rows = get(this, 'firstModel.response.rows');
+    const builder = get(this, 'builder');
+    const seriesConfig = get(this, 'seriesConfig.config');
+    const seriesData = builder.buildData(rows, seriesConfig, request);
 
     return {
       data: {
@@ -228,16 +237,17 @@ export default Component.extend({
   /**
    * @property {Ember.Component} tooltipComponent - component used for rendering HTMLBars templates
    */
-  tooltipComponent: computed('dataConfig', function() {
-    let request = get(this, 'model.firstObject.request'),
-      seriesConfig = get(this, 'seriesConfig.config'),
-      tooltipComponentName = get(this, 'tooltipComponentName'),
-      registryEntry = `component:${tooltipComponentName}`,
-      builder = get(this, 'builder'),
-      owner = getOwner(this),
-      tooltipComponent = Component.extend(owner.ownerInjection(), builder.buildTooltip(seriesConfig, request), {
-        renderer: owner.lookup('renderer:-dom')
-      });
+  tooltipComponent: computed('firstModel', 'dataConfig', function() {
+    const request = get(this, 'firstModel.request');
+    const seriesConfig = get(this, 'seriesConfig.config');
+    const tooltipComponentName = get(this, 'tooltipComponentName');
+    const registryEntry = `component:${tooltipComponentName}`;
+    const builder = get(this, 'builder');
+    const owner = getOwner(this);
+    const tooltipComponent = Component.extend(owner.ownerInjection(), builder.buildTooltip(seriesConfig, request), {
+      renderer: owner.lookup('renderer:-dom')
+    });
+
     if (!owner.lookup(registryEntry)) {
       owner.register(registryEntry, tooltipComponent);
     }
@@ -252,43 +262,37 @@ export default Component.extend({
   /**
    * @property {Object} chartTooltip - configuration for tooltip
    */
-  chartTooltip: computed(
-    'seriesConfig.config',
-    'dataConfig.data.json',
-    'tooltipComponent',
-    'model.firstObject.request',
-    function() {
-      let rawData = get(this, 'dataConfig.data.json'),
-        tooltipComponent = get(this, 'tooltipComponent'),
-        request = get(this, 'model.firstObject.request'),
-        seriesConfig = get(this, 'seriesConfig.config');
+  chartTooltip: computed('seriesConfig.config', 'dataConfig.data.json', 'tooltipComponent', 'firstModel', function() {
+    const rawData = get(this, 'dataConfig.data.json');
+    const tooltipComponent = get(this, 'tooltipComponent');
+    const request = get(this, 'firstModel.request');
+    const seriesConfig = get(this, 'seriesConfig.config');
 
-      return {
-        contents(tooltipData) {
-          /*
-           * Since tooltipData.x only contains the index value, map it
-           * to the raw x value for better formatting
-           */
-          let x = rawData[tooltipData[0].x].x.rawValue,
-            tooltip = tooltipComponent.create({
-              tooltipData,
-              x,
-              request,
-              seriesConfig
-            });
-
-          run(() => {
-            let element = document.createElement('div');
-            tooltip.appendTo(element);
+    return {
+      contents(tooltipData) {
+        /*
+         * Since tooltipData.x only contains the index value, map it
+         * to the raw x value for better formatting
+         */
+        let x = rawData[tooltipData[0].x].x.rawValue,
+          tooltip = tooltipComponent.create({
+            tooltipData,
+            x,
+            request,
+            seriesConfig
           });
 
-          let innerHTML = tooltip.element.innerHTML;
-          tooltip.destroy();
-          return innerHTML;
-        }
-      };
-    }
-  ),
+        run(() => {
+          let element = document.createElement('div');
+          tooltip.appendTo(element);
+        });
+
+        let innerHTML = tooltip.element.innerHTML;
+        tooltip.destroy();
+        return innerHTML;
+      }
+    };
+  }),
 
   /**
    * @property {Function} formattingFunction

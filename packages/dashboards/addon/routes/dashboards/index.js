@@ -3,10 +3,13 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import Ember from 'ember';
-import DS from 'ember-data';
+import { inject as service } from '@ember/service';
 
-const { computed, get } = Ember;
+import Route from '@ember/routing/route';
+import { A } from '@ember/array';
+import { hash } from 'rsvp';
+import EmberObject, { get, computed } from '@ember/object';
+import DS from 'ember-data';
 
 /**
  * Object that computes a combined dashboard list
@@ -14,17 +17,17 @@ const { computed, get } = Ember;
  * @extends Ember.Object
  * @private
  */
-const _DashboardObject = Ember.Object.extend({
+const _DashboardObject = EmberObject.extend({
   /**
    * @property {DS.PromiseArray} - Returns a combined dashboard list while listening to store changes
    */
   dashboards: computed('userDashboards.[]', 'favoriteDashboards.[]', function() {
     return DS.PromiseArray.create({
-      promise: Ember.RSVP.hash({
+      promise: hash({
         userDashboards: get(this, 'userDashboards'),
         favoriteDashboards: get(this, 'favoriteDashboards')
       }).then(({ userDashboards, favoriteDashboards }) => {
-        return Ember.A()
+        return A()
           .pushObjects(userDashboards.toArray())
           .pushObjects(favoriteDashboards.toArray())
           .uniq();
@@ -33,16 +36,16 @@ const _DashboardObject = Ember.Object.extend({
   })
 });
 
-export default Ember.Route.extend({
+export default Route.extend({
   /**
    * @property {Service} naviNotifications
    */
-  naviNotifications: Ember.inject.service(),
+  naviNotifications: service(),
 
   /**
    * @property {Service} user
    */
-  user: Ember.inject.service(),
+  user: service(),
 
   /**
    * @method model
@@ -53,7 +56,7 @@ export default Ember.Route.extend({
     return get(this, 'user')
       .findOrRegister()
       .then(userModel => {
-        return Ember.RSVP.hash({
+        return hash({
           userDashboards: get(userModel, 'dashboards'),
           favoriteDashboards: get(userModel, 'favoriteDashboards')
         }).then(({ userDashboards, favoriteDashboards }) => {

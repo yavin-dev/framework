@@ -1,128 +1,88 @@
-import { test } from 'qunit';
-import moduleForAcceptance from '../../tests/helpers/module-for-acceptance';
-import { teardownModal } from '../helpers/teardown-modal';
-import { typeInInput } from '../helpers/ember-tag-input';
+import { blur, click, fillIn, triggerEvent, visit } from '@ember/test-helpers';
+import { module, test } from 'qunit';
+import { setupApplicationTest } from 'ember-qunit';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import $ from 'jquery';
 
-moduleForAcceptance('Acceptances | Navi Dashboard Schedule Modal', {
-  afterEach() {
-    teardownModal();
-    server.shutdown();
-  }
-});
+module('Acceptances | Navi Dashboard Schedule Modal', function(hooks) {
+  setupApplicationTest(hooks);
+  setupMirage(hooks);
 
-test('schedule modal save new schedule', function(assert) {
-  assert.expect(11);
-  visit('/dashboards');
+  test('schedule modal save new schedule', async function(assert) {
+    assert.expect(11);
+    await visit('/dashboards');
 
-  // TriggerEvent does not work here, need to use jquery trigger mouseenter
-  andThen(() => $('.navi-collection__row:first-of-type').trigger('mouseenter'));
-  // Click "Schedule"
-  click('.navi-collection__row:first-of-type .schedule .btn');
+    //https://github.com/emberjs/ember-test-helpers/issues/343
+    await triggerEvent('.navi-collection__row', 'mouseover');
+    await click('.navi-collection__row:first-of-type .schedule .btn');
 
-  andThen(() => {
-    assert.ok(
-      find('.schedule-modal__header .primary-header').is(':visible'),
-      'Schedule modal pops up when action is clicked'
-    );
+    assert.dom('.schedule-modal__header .primary-header').isVisible('Schedule modal pops up when action is clicked');
 
-    assert.notOk(
-      find('.schedule-modal__delete-btn').is(':visible'),
-      'The delete button is not present when creating a new schedule'
-    );
+    assert
+      .dom('.schedule-modal__delete-btn')
+      .isNotVisible('The delete button is not present when creating a new schedule');
 
-    assert.equal(
-      find('.schedule-modal__save-btn')
-        .text()
-        .trim(),
-      'Save',
-      'The save button says "Save" and not "Save Changes" when creating a new schedule'
-    );
+    assert
+      .dom('.schedule-modal__save-btn')
+      .hasText('Save', 'The save button says "Save" and not "Save Changes" when creating a new schedule');
 
-    assert.equal(
-      find('.schedule-modal__dropdown--frequency .ember-power-select-selected-item')
-        .get(0)
-        .innerText.trim(),
-      'Week',
-      'Frequency field is set to the default value when creating a new schedule'
-    );
+    assert
+      .dom('.schedule-modal__dropdown--frequency .ember-power-select-selected-item')
+      .hasText('Week', 'Frequency field is set to the default value when creating a new schedule');
 
-    assert.equal(
-      find('.schedule-modal__input--recipients').val(),
-      '',
-      'Recipients field is empty when creating a new schedule'
-    );
+    assert
+      .dom('.schedule-modal__input--recipients input')
+      .hasNoValue('Recipients field is empty when creating a new schedule');
 
-    assert.equal(
-      find('.schedule-modal__dropdown--format .ember-power-select-selected-item')
-        .get(0)
-        .innerText.trim(),
-      'pdf',
-      'Format field is set to the default value when creating a new schedule'
-    );
-  });
+    assert
+      .dom('.schedule-modal__dropdown--format .ember-power-select-selected-item')
+      .hasText('pdf', 'Format field is set to the default value when creating a new schedule');
 
-  // Set recipients to a new value
-  andThen(() => {
-    typeInInput('.js-ember-tag-input-new', 'navi_user@navi.io');
-    $('.js-ember-tag-input-new').blur();
-  });
+    await fillIn('.js-ember-tag-input-new', 'navi_user@navi.io');
+    await blur('.js-ember-tag-input-new');
 
-  // Set frequency to Day
-  click('.schedule-modal__dropdown--frequency .ember-power-select-trigger');
-  click('.ember-power-select-option:contains(Day)');
+    // Set frequency to Day
+    await click('.schedule-modal__dropdown--frequency .ember-power-select-trigger');
+    await click($('.ember-power-select-option:contains(Day)')[0]);
 
-  //Save the schedule
-  click('.schedule-modal__save-btn');
+    //Save the schedule
+    await click('.schedule-modal__save-btn');
 
-  andThen(() => {
-    assert.equal(
-      find('.success .notification-text').text(),
-      'Dashboard delivery schedule successfully saved!',
-      'Successful notification is shown after clicking save'
-    );
+    assert
+      .dom('.success .notification-text')
+      .hasText(
+        'Dashboard delivery schedule successfully saved!',
+        'Successful notification is shown after clicking save'
+      );
 
     // Check that all fields match the delivery rule we just saved
-    assert.ok(
-      find('.schedule-modal__delete-btn').is(':visible'),
-      'The delete button is present after a delivery rule has been saved'
-    );
+    assert
+      .dom('.schedule-modal__delete-btn')
+      .isVisible('The delete button is present after a delivery rule has been saved');
 
-    assert.equal(
-      find('.schedule-modal__save-btn')
-        .text()
-        .trim(),
-      'Save Changes',
-      'The save button says "Save Changes" and not "Save" after a delivery rule has been saved'
-    );
+    assert
+      .dom('.schedule-modal__save-btn')
+      .hasText(
+        'Save Changes',
+        'The save button says "Save Changes" and not "Save" after a delivery rule has been saved'
+      );
 
-    assert.equal(
-      find('.schedule-modal__dropdown--frequency .ember-power-select-selected-item')
-        .get(0)
-        .innerText.trim(),
-      'Day',
-      'Frequency field is set by the saved delivery rule'
-    );
+    assert
+      .dom('.schedule-modal__dropdown--frequency .ember-power-select-selected-item')
+      .hasText('Day', 'Frequency field is set by the saved delivery rule');
 
-    assert.equal(
-      find('.schedule-modal__input--recipients .navi-email-tag')
-        .text()
-        .trim(),
-      'navi_user@navi.io',
-      'Recipients field is set by the saved delivery rule'
-    );
+    assert
+      .dom('.schedule-modal__input--recipients .navi-email-tag')
+      .hasText('navi_user@navi.io', 'Recipients field is set by the saved delivery rule');
   });
-});
 
-test('open schedule modal in dashboard view', function(assert) {
-  assert.expect(1);
-  visit('/dashboards/2/view');
+  test('open schedule modal in dashboard view', async function(assert) {
+    assert.expect(1);
+    await visit('/dashboards/2/view');
 
-  // TriggerEvent does not work here, need to use jquery trigger mouseenter
-  andThen(() => $('.navi-collection__row:first-of-type').trigger('mouseenter'));
-  // Click "Schedule"
-  click('.schedule-action__button');
+    // Click "Schedule"
+    await click('.schedule-action__button');
 
-  andThen(() => {
-    assert.ok(find('.schedule-modal__header').is(':visible'), 'Schedule modal pops up when action is clicked');
+    assert.dom('.schedule-modal__header').isVisible('Schedule modal pops up when action is clicked');
   });
 });

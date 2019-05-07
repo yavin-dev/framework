@@ -3,13 +3,12 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import Ember from 'ember';
+import { A } from '@ember/array';
+import { get } from '@ember/object';
 import Interval from 'navi-core/utils/classes/interval';
 import Duration from 'navi-core/utils/classes/duration';
 import DefaultIntervals from 'navi-reports/utils/enums/default-intervals';
 import ReportsNewRoute from 'navi-reports/routes/reports/new';
-
-const { get } = Ember;
 
 export default ReportsNewRoute.extend({
   /**
@@ -38,13 +37,13 @@ export default ReportsNewRoute.extend({
       .then(author => {
         // Default to first data source + time grain
         let table = this._getDefaultTable(),
-          tableTimeGrains = Ember.A(get(table, 'timeGrains')),
+          tableTimeGrains = A(get(table, 'timeGrains')),
           timeGrainName = get(tableTimeGrains, 'firstObject.name');
 
         let widget = this.store.createRecord('dashboard-widget', {
           author,
           dashboard,
-          requests: Ember.A([
+          requests: A([
             {
               logicalTable: {
                 table,

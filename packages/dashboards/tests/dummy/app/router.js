@@ -11,7 +11,7 @@ Router.map(function() {
     this.route('my-data');
   });
 
-  this.route('dashboardCollections', function() {
+  this.route('dashboard-collections', function() {
     this.route('collection', { path: '/:collection_id' });
   });
   this.route('dashboards', function() {

@@ -10,12 +10,12 @@
  *      canEdit=true
  *   }}
  */
-import Ember from 'ember';
+import Component from '@ember/component';
+
+import { get, computed } from '@ember/object';
 import layout from '../templates/components/navi-widget';
 
-const { get } = Ember;
-
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   /**
@@ -46,7 +46,7 @@ export default Ember.Component.extend({
   /**
    * @property {Object} options - object for grid-stack-item
    */
-  options: Ember.computed('layoutOptions', function() {
+  options: computed('layoutOptions', function() {
     let layout = get(this, 'layoutOptions'),
       id = get(this, 'model.id');
 

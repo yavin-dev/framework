@@ -1,4 +1,6 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 const widgetModel = {
@@ -20,37 +22,25 @@ const widgetModel = {
   }
 };
 
-moduleForComponent('helper:reportify', 'Integration | Helper | reportify', {
-  integration: true
-});
+module('Integration | Helper | reportify', function(hooks) {
+  setupRenderingTest(hooks);
 
-test('onModelChange', function(assert) {
-  assert.expect(2);
+  test('onModelChange', async function(assert) {
+    assert.expect(2);
 
-  this.set('model', widgetModel);
-  this.render(hbs`{{get (reportify model) 'request.test'}}`);
+    this.set('model', widgetModel);
+    await render(hbs`{{get (reportify model) 'request.test'}}`);
 
-  assert.equal(
-    this.$()
-      .text()
-      .trim(),
-    'foo',
-    'Request should have foo text rendered'
-  );
+    assert.dom(this.element).hasText('foo', 'Request should have foo text rendered');
 
-  this.set('model.request', {
-    clone() {
-      return {
-        test: 'bar'
-      };
-    }
+    this.set('model.request', {
+      clone() {
+        return {
+          test: 'bar'
+        };
+      }
+    });
+
+    assert.dom(this.element).hasText('bar', 'Request should have bar text rendered');
   });
-
-  assert.equal(
-    this.$()
-      .text()
-      .trim(),
-    'bar',
-    'Request should have bar text rendered'
-  );
 });
