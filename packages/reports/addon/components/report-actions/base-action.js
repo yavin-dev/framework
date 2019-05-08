@@ -3,7 +3,6 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Component from '@ember/component';
-
 import { warn } from '@ember/debug';
 import { computed, get } from '@ember/object';
 

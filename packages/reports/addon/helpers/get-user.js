@@ -3,7 +3,6 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { get } from '@ember/object';
-
 import { inject as service } from '@ember/service';
 import Helper from '@ember/component/helper';
 

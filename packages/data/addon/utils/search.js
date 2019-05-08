@@ -4,7 +4,6 @@
  */
 
 import { A } from '@ember/array';
-
 import { w } from '@ember/string';
 import { getWithDefault, get } from '@ember/object';
 import PaginationUtils from './pagination';

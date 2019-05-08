@@ -3,7 +3,6 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { A } from '@ember/array';
-
 import { isEmpty } from '@ember/utils';
 import { on } from '@ember/object/evented';
 import Mixin from '@ember/object/mixin';

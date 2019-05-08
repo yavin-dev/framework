@@ -10,7 +10,6 @@
  *   }}
  */
 import { scheduleOnce, next } from '@ember/runloop';
-
 import Component from '@ember/component';
 import { set, get, computed } from '@ember/object';
 import layout from '../templates/components/navi-date-picker';

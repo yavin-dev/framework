@@ -11,7 +11,6 @@
  */
 
 import { inject as service } from '@ember/service';
-
 import Component from '@ember/component';
 import { getProperties, get, computed } from '@ember/object';
 import layout from '../../templates/components/report-actions/multiple-format-export';

@@ -5,7 +5,6 @@
  * Description: The adapter for Keg.
  */
 import { Promise } from 'rsvp';
-
 import { A } from '@ember/array';
 import { assert } from '@ember/debug';
 import { inject as service } from '@ember/service';

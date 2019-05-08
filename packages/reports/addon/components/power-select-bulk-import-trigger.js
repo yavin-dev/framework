@@ -5,7 +5,6 @@
  * An ember-power-select trigger component that can import a list of comma separated values on paste
  */
 import { A } from '@ember/array';
-
 import { setProperties, set, get } from '@ember/object';
 import Trigger from 'ember-power-select/components/power-select-multiple/trigger';
 import layout from '../templates/components/power-select-bulk-import-trigger';

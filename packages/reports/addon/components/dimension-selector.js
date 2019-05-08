@@ -15,7 +15,6 @@
  */
 
 import { readOnly, filter, mapBy } from '@ember/object/computed';
-
 import Component from '@ember/component';
 import { getWithDefault, set, get, computed } from '@ember/object';
 import { A as arr } from '@ember/array';

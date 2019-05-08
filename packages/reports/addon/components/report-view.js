@@ -10,7 +10,6 @@
  */
 
 import { readOnly } from '@ember/object/computed';
-
 import { scheduleOnce, later } from '@ember/runloop';
 import { capitalize } from '@ember/string';
 import { inject as service } from '@ember/service';

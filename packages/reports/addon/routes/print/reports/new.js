@@ -3,7 +3,6 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { get } from '@ember/object';
-
 import ReportNewRoute from 'navi-reports/routes/reports/new';
 
 export default ReportNewRoute.extend({

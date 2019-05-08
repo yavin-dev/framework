@@ -6,7 +6,6 @@
  */
 
 import Service from '@ember/service';
-
 import { getOwner } from '@ember/application';
 import BardFactsModel from 'navi-data/models/bard-facts';
 import RequestBuilder from 'navi-data/builder/request';

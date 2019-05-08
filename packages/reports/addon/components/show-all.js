@@ -10,7 +10,6 @@
  *   }}
  */
 import { A } from '@ember/array';
-
 import Component from '@ember/component';
 import { assert } from '@ember/debug';
 import { get, set } from '@ember/object';

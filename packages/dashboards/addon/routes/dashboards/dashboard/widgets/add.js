@@ -4,7 +4,6 @@
  */
 
 import { reject } from 'rsvp';
-
 import { A } from '@ember/array';
 import { inject as service } from '@ember/service';
 import Route from '@ember/routing/route';

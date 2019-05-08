@@ -16,9 +16,7 @@ export default RequestActionDispatcher.extend({
    * @property {Array} consumers - concatenate consumers in request
    */
   consumers: computed(function() {
-    let consumers = this._super(...arguments).slice();
-    consumers.push('report/table-visualization');
-
-    return consumers;
+    const parentConsumers = this._super(...arguments) || [];
+    return [...parentConsumers, 'report/table-visualization'];
   })
 });

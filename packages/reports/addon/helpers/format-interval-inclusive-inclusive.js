@@ -3,7 +3,6 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { helper as buildHelper } from '@ember/component/helper';
-
 import { assert } from '@ember/debug';
 import { capitalize } from '@ember/string';
 import Duration from 'navi-core/utils/classes/duration';

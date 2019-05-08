@@ -13,7 +13,6 @@
  *   {{/common-actions/delete}}
  */
 import Component from '@ember/component';
-
 import { dasherize } from '@ember/string';
 import { computed, set, get } from '@ember/object';
 import layout from '../../templates/components/common-actions/delete';

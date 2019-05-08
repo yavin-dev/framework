@@ -32,7 +32,6 @@
  *   }
  */
 import { A } from '@ember/array';
-
 import Component from '@ember/component';
 import { set, get, computed } from '@ember/object';
 import { run } from '@ember/runloop';

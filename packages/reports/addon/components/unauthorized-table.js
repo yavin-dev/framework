@@ -7,7 +7,6 @@
  */
 
 import Component from '@ember/component';
-
 import { set, get } from '@ember/object';
 import layout from '../templates/components/unauthorized-table';
 

@@ -10,7 +10,6 @@
  *   }}
  */
 import { A } from '@ember/array';
-
 import { capitalize } from '@ember/string';
 import Component from '@ember/component';
 import { get, computed } from '@ember/object';

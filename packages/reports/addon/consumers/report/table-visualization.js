@@ -3,7 +3,6 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { assert } from '@ember/debug';
-
 import { assign } from '@ember/polyfills';
 import { set, get } from '@ember/object';
 import isEqual from 'lodash/isEqual';

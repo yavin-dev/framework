@@ -1,6 +1,5 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-
 import consumer from 'navi-core/consumers/action-consumer';
 
 let Container, ServiceFactory;

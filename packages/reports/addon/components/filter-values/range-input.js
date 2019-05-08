@@ -12,7 +12,6 @@
  */
 
 import Component from '@ember/component';
-
 import { get } from '@ember/object';
 import layout from '../../templates/components/filter-values/range-input';
 

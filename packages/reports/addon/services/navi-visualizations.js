@@ -9,7 +9,6 @@
 /* global requirejs */
 
 import Service from '@ember/service';
-
 import { getOwner } from '@ember/application';
 import config from 'ember-get-config';
 

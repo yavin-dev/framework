@@ -9,7 +9,6 @@
  *   }}
  */
 import { notEmpty } from '@ember/object/computed';
-
 import Component from '@ember/component';
 import { computed, get } from '@ember/object';
 import Moment from 'moment';

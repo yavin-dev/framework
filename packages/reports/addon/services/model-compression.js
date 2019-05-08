@@ -5,7 +5,6 @@
  * Service for converting an Ember Data model into a URL safe string
  */
 import Service, { inject as service } from '@ember/service';
-
 import { assert } from '@ember/debug';
 import { get, computed } from '@ember/object';
 import { run } from '@ember/runloop';

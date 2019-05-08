@@ -10,7 +10,6 @@
  */
 
 import Component from '@ember/component';
-
 import { get, computed } from '@ember/object';
 import { getOwner } from '@ember/application';
 import layout from '../templates/components/report-visualization';

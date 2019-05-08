@@ -13,7 +13,6 @@
  */
 
 import Component from '@ember/component';
-
 import layout from '../templates/components/navi-modal';
 import { get, set } from '@ember/object';
 

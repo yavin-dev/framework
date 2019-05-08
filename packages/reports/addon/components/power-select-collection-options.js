@@ -5,7 +5,6 @@
  * An ember-power-select options component that uses ember-collection
  */
 import { alias } from '@ember/object/computed';
-
 import { A } from '@ember/array';
 import { setProperties, get, computed } from '@ember/object';
 import Options from 'ember-power-select/components/power-select/options';

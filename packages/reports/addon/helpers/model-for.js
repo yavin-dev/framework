@@ -3,7 +3,6 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { oneWay } from '@ember/object/computed';
-
 import Helper from '@ember/component/helper';
 import { getOwner } from '@ember/application';
 import { set, observer, get } from '@ember/object';

@@ -6,7 +6,6 @@
  */
 
 import { hashSettled, resolve } from 'rsvp';
-
 import { A } from '@ember/array';
 import Service, { inject as service } from '@ember/service';
 import { assert } from '@ember/debug';

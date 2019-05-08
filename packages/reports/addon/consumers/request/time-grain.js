@@ -3,7 +3,6 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { inject as service } from '@ember/service';
-
 import { set, get } from '@ember/object';
 import ActionConsumer from 'navi-core/consumers/action-consumer';
 import { RequestActions } from 'navi-reports/services/request-action-dispatcher';

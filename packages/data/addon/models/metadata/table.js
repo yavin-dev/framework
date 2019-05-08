@@ -3,7 +3,6 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import EmberObject from '@ember/object';
-
 import { assign } from '@ember/polyfills';
 import { getOwner } from '@ember/application';
 

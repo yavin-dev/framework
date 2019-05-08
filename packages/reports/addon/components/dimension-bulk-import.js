@@ -11,7 +11,6 @@
  *   }}
  */
 import { not } from '@ember/object/computed';
-
 import Component from '@ember/component';
 import { get, set, computed } from '@ember/object';
 import { A as arr } from '@ember/array';

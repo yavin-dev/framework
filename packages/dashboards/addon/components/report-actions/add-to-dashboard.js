@@ -13,7 +13,6 @@
  *   {{/report-actions/add-to-dashboard}}
  */
 import { oneWay } from '@ember/object/computed';
-
 import { A } from '@ember/array';
 import { inject as service } from '@ember/service';
 import Component from '@ember/component';

@@ -3,7 +3,6 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { get } from '@ember/object';
-
 import Route from '@ember/routing/route';
 
 export default Route.extend({

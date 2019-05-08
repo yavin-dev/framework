@@ -4,7 +4,6 @@
  */
 
 import { inject as service } from '@ember/service';
-
 import Route from '@ember/routing/route';
 import { A } from '@ember/array';
 import { hash } from 'rsvp';

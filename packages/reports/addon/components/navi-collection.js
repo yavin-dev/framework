@@ -16,7 +16,6 @@
  *   }}
  */
 import { oneWay, or } from '@ember/object/computed';
-
 import { A } from '@ember/array';
 import Component from '@ember/component';
 import { get, computed } from '@ember/object';

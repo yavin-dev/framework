@@ -14,7 +14,6 @@
  *   {{/grouped-list}}
  */
 import Component from '@ember/component';
-
 import { get, computed } from '@ember/object';
 import { isBlank } from '@ember/utils';
 import layout from '../templates/components/grouped-list';

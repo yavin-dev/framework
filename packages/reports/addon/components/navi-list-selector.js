@@ -15,7 +15,6 @@
  */
 
 import Component from '@ember/component';
-
 import { set, get, computed } from '@ember/object';
 import { or } from '@ember/object/computed';
 import layout from '../templates/components/navi-list-selector';

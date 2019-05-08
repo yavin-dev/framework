@@ -3,7 +3,6 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { inject as service } from '@ember/service';
-
 import Route from '@ember/routing/route';
 import { setProperties, set, get } from '@ember/object';
 
