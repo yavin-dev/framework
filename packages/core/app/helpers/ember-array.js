@@ -1,1 +1,1 @@
-export { default, emberArray } from 'navi-core/helpers/ember-array';
+export { default, emberArray } from 'ember-composable-helpers/helpers/array';
