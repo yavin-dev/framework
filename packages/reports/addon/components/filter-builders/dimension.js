@@ -70,10 +70,7 @@ export default Base.extend({
    */
   fields: computed('requestFragment.dimension', function() {
     let fields = get(this, 'requestFragment.dimension.fields');
-    if (fields) {
-      return fields.map(field => field.name);
-    }
-    return ['id', 'desc'];
+    return fields ? fields.map(field => field.name) : ['id', 'desc'];
   }),
 
   /**
