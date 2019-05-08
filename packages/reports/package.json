@@ -15,7 +15,6 @@
     "url": "https://github.com/yahoo/navi/tree/master/packages/reports"
   },
   "scripts": {
-    "postinstall": "bower install",
     "build": "ember build",
     "start": "ember server",
     "test": "export COVERAGE=true; ember test --test-port 0"

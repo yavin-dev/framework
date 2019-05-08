@@ -16,7 +16,6 @@
     "url": "https://github.com/yahoo/navi/tree/master/packages/directory"
   },
   "scripts": {
-    "postinstall": "bower install",
     "build": "ember build",
     "lint:hbs": "ember-template-lint .",
     "lint:js": "eslint .",

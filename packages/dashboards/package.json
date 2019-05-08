@@ -15,7 +15,6 @@
     "test": "tests"
   },
   "scripts": {
-    "postinstall": "bower install",
     "build": "ember build",
     "lint:hbs": "ember-template-lint .",
     "lint:js": "eslint .",
