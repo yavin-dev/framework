@@ -55,6 +55,11 @@ export default Ember.Component.extend({
         Ember.assign(changeSet, { values: [] });
       }
 
+      //switch field to primary key if operator does not allow choosing fields
+      if (get(this, 'primaryKeyField') && !operatorObject.showFields) {
+        Ember.assign(changeSet, { field: get(this, 'primaryKeyField') });
+      }
+
       this.onUpdateFilter(changeSet);
     }
   }

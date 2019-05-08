@@ -38,7 +38,8 @@
   }
 
   .filter-builder {
-    &__operator {
+    &__operator,
+    &__field {
       flex: 1;
       margin: @filter-collection-column-margin;
     }
@@ -60,6 +61,29 @@
       flex: 3;
       margin: @filter-collection-column-margin;
       min-height: @filter-collection-row-height;
+    }
+
+    &__values--short {
+      flex: 2;
+    }
+  }
+
+  .filter-builder-dimension {
+    .filter-builder;
+    &__subject {
+      flex: 2;
+    }
+    &__operator {
+      flex: 2;
+    }
+    &__field {
+      flex: 1;
+    }
+    &__values {
+      flex: 6;
+    }
+    &__values--short {
+      flex: 5;
     }
   }
 

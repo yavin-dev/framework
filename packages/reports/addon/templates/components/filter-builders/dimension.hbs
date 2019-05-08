@@ -1,0 +1,40 @@
+<span class='filter-builder-dimension__subject'>
+    {{displayName}}
+</span>
+{{#power-select
+    class='filter-builder-dimension__operator'
+    dropdownClass='filter-builder-dimension__operator-dropdown'
+    options=supportedOperators
+    selected=filter.operator
+    searchEnabled=false
+    tagName='span'
+    triggerClass='filter-builder-dimension__select-trigger'
+    onchange=(action 'setOperator')
+    as | operator |
+}}
+    {{operator.longName}}
+{{/power-select}}
+{{#if showFields}}
+  {{#power-select
+    searchEnabled=false
+    options=fields
+    selected=filter.field
+    tagName='span'
+    class='filter-builder-dimension__field'
+    dropdownClass='filter-builder-dimension__field-dropdown'
+    triggerClass='filter-builder-dimension__select-trigger'
+    matchTriggerWidth=false
+    onchange=(action 'setField')
+    as | field |
+  }}
+    field: {{field}}
+  {{/power-select}}
+{{/if}}
+<span class='filter-builder-dimension__values {{if showFields 'filter-builder-dimension__values--short'}}'>
+    {{component
+        filter.operator.valuesComponent
+        filter=filter
+        request=request
+        onUpdateFilter=onUpdateFilter
+    }}
+</span>

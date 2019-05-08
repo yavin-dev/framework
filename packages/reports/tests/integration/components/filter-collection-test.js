@@ -83,7 +83,7 @@ test('updating a filter', function(assert) {
       'Operator update is requested'
     );
   });
-  clickTrigger(`#${$('.filter-builder__operator:eq(1)').attr('id')}`);
+  clickTrigger('.filter-builder-dimension__operator');
   nativeMouseUp($('.ember-power-select-option:contains(Is Empty)')[0]);
 });
 
