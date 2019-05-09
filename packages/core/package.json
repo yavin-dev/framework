@@ -3,7 +3,6 @@
   "version": "0.0.0",
   "description": "Library of common logic, components, and styles for navi",
   "scripts": {
-    "postinstall": "bower install",
     "build": "ember build",
     "lint:hbs": "ember-template-lint .",
     "lint:js": "eslint .",
