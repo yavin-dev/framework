@@ -1,17 +1,17 @@
 {{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{#each orderedFilters as |filter index|}}
-    <div class='filter-collection__row'>
-        {{navi-icon
-            'times'
-            class='filter-collection__remove'
-            classNameBindings='filter.required:filter-collection__remove--disabled'
-            click=(dashboard-action 'REMOVE_FILTER' dashboard filter.requestFragment)
-        }}
-        {{component
-            (concat 'filter-builders/' filter.type)
-            class='filter-collection__builder'
-            requestFragment=filter.requestFragment
-            onUpdateFilter=(dashboard-action 'UPDATE_FILTER' filter.requestFragment)
-        }}
-    </div>
+{{#each orderedFilters as |filter|}}
+  <div class="filter-collection__row">
+    {{navi-icon
+      "times"
+      class="filter-collection__remove"
+      classNameBindings="filter.required:filter-collection__remove--disabled"
+      click=(action onRemoveFilter filter.requestFragment)
+    }}
+    {{component
+      (concat "filter-builders/" filter.type)
+      class="filter-collection__builder"
+      requestFragment=filter.requestFragment
+      onUpdateFilter=(action onUpdateFilter filter.requestFragment)
+    }}
+  </div>
 {{/each}}

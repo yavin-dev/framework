@@ -3,6 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import ActionDispatcher from 'navi-core/services/action-dispatcher';
+import { computed } from '@ember/object';
 
 export const DashboardActions = {
   REMOVE_FILTER: 'removeFilter',
@@ -15,5 +16,5 @@ export default ActionDispatcher.extend({
    */
   concatenatedProperties: ['consumers'],
 
-  consumers: ['dashboard/filter']
+  consumers: computed(() => ['dashboard/filter'])
 });

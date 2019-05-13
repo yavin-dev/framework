@@ -14,15 +14,7 @@ export default ActionConsumer.extend({
      * @param {Object} changeSet - object of properties and new values
      */
     [DashboardActions.UPDATE_FILTER]: (originalFilter, changeSet) => {
-      let changeSetUpdates = {};
-
-      //If the interval is set in a dimension filter (rather than datetime filter), set values instead of the interval property
-      if (get(changeSet, 'interval')) {
-        let intervalAsStrings = get(changeSet, 'interval').asStrings('YYYY-MM-DD');
-        changeSetUpdates = { values: [`${intervalAsStrings.start}/${intervalAsStrings.end}`] };
-        delete changeSet.interval;
-      }
-      setProperties(originalFilter, Object.assign({}, changeSet, changeSetUpdates));
+      setProperties(originalFilter, changeSet);
     },
 
     /**

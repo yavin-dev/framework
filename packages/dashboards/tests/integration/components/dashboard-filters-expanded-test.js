@@ -1,34 +1,66 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render } from '@ember/test-helpers';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import hbs from 'htmlbars-inline-precompile';
 
-moduleForComponent('dashboard-filters-expanded', 'Integration | Component | dashboard filters expanded', {
-  integration: true
-});
+module('Integration | Component | dashboard filters expanded', function(hooks) {
+  setupRenderingTest(hooks);
+  setupMirage(hooks);
 
-test('it renders', function(assert) {
-  // Set any properties with this.set('myProperty', 'value');
-  // Handle any actions with this.on('myAction', function(val) { ... });
+  hooks.beforeEach(function() {
+    const MetadataService = this.owner.lookup('service:bard-metadata');
+    return MetadataService.loadMetadata();
+  });
 
-  this.render(hbs`{{dashboard-filters-expanded}}`);
+  test('it renders all filters attached to the dashboard', async function(assert) {
+    assert.expect(2);
 
-  assert.equal(
-    this.$()
-      .text()
-      .trim(),
-    ''
-  );
+    this.dashboard = {
+      filters: [
+        {
+          dimension: {
+            name: 'age',
+            longName: 'Age'
+          },
+          operator: 'in',
+          field: 'key',
+          rawValues: ['age|4', 'age|7', 'age|9'],
+          values: [
+            { key: 'age|7', id: 'age|4', description: 'Something' },
+            { key: 'age|4', id: 'age|7', description: 'ValueDesc' }
+          ]
+        },
+        {
+          dimension: {
+            name: 'os',
+            longName: 'Operating System'
+          },
+          operator: 'contains',
+          field: 'id',
+          rawValues: ['1', '2'],
+          values: [{ id: '1', description: 'Something' }, { id: '2', description: 'ValueDesc' }]
+        },
+        {
+          dimension: {
+            name: 'currency',
+            longName: 'Currency'
+          },
+          operator: 'notin',
+          field: 'id',
+          rawValues: ['1', '2'],
+          values: [{ id: '2', description: 'ValueDesc' }]
+        }
+      ]
+    };
+    await render(hbs`{{dashboard-filters-expanded dashboard=dashboard}}`);
 
-  // Template block usage:
-  this.render(hbs`
-    {{#dashboard-filters-expanded}}
-      template block text
-    {{/dashboard-filters-expanded}}
-  `);
+    assert
+      .dom('.dashboard-filter-collection')
+      .isVisible('Filter collection is rendered when component is passed a dashboard with filters');
 
-  assert.equal(
-    this.$()
-      .text()
-      .trim(),
-    'template block text'
-  );
+    assert
+      .dom('.dashboard-filter-collection .filter-collection__row')
+      .exists({ count: 3 }, 'A filter collection row is rendered for each filter');
+  });
 });
