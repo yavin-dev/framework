@@ -35,7 +35,7 @@ export default Helper.extend({
     assert(`The action name "${action}" is not a valid dashboard action`, actionName);
     let dashboardAction = (...parameters) =>
         join(() => {
-          const args = [...params, ...parameters].filter(param => !!param);
+          const args = [...params, ...parameters].filter(Boolean);
           return get(this, 'dashboardActionDispatcher').dispatch(actionName, ...args);
         }),
       actionId = CLOSURE_ACTION_MODULE.ACTION;
