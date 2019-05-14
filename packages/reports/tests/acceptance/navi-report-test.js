@@ -1790,7 +1790,7 @@ test('filter - add and remove using filter icon', function(assert) {
   click('.grouped-list__item:contains(Operating System) .checkbox-selector__filter');
   andThen(() => {
     assert.ok(
-      find('.filter-builder__subject:contains(Operating System)').is(':visible'),
+      find('.filter-builder-dimension__subject:contains(Operating System)').is(':visible'),
       'The Operating System dimension filter is added'
     );
   });
@@ -1799,7 +1799,7 @@ test('filter - add and remove using filter icon', function(assert) {
   click('.grouped-list__item:contains(Operating System) .checkbox-selector__filter');
   andThen(() => {
     assert.notOk(
-      find('.filter-builder__subject:contains(Operating System)').is(':visible'),
+      find('.filter-builder-dimension__subject:contains(Operating System)').is(':visible'),
       'The Operating System dimension filter is removed when filter icon is clicked again'
     );
   });
@@ -1817,7 +1817,7 @@ test('filter - add and remove using filter icon', function(assert) {
   click('.grouped-list__item:contains(Ad Clicks) .checkbox-selector__filter');
   andThen(() => {
     assert.notOk(
-      find('.filter-builder__subject:contains(Ad Clicks)').is(':visible'),
+      find('.filter-builder-dimension__subject:contains(Ad Clicks)').is(':visible'),
       'The Ad Clicks metric filter is removed when filter icon is clicked again'
     );
   });
@@ -1889,7 +1889,7 @@ test('Test filter "Is Empty" is accepted', function(assert) {
   visit('/reports/1');
 
   click('.grouped-list__item:contains(Operating System) .checkbox-selector__filter');
-  selectChoose('.filter-collection__row:last-of-type .filter-builder__operator', 'Is Empty');
+  selectChoose('.filter-collection__row:last-of-type .filter-builder-dimension__operator', 'Is Empty');
   click('.navi-report__run-btn');
 
   andThen(() => {
@@ -1913,7 +1913,7 @@ test('Test filter "Is Not Empty" is accepted', function(assert) {
   visit('/reports/1');
 
   click('.grouped-list__item:contains(Operating System) .checkbox-selector__filter');
-  selectChoose('.filter-collection__row:last-of-type .filter-builder__operator', 'Is Not Empty');
+  selectChoose('.filter-collection__row:last-of-type .filter-builder-dimension__operator', 'Is Not Empty');
   click('.navi-report__run-btn');
 
   andThen(() => {
@@ -2044,6 +2044,68 @@ test('Filter with large cardinality dimensions value selection works', function(
       'The value is selected after a search is done'
     );
   });
+});
+
+test('dimension contains filter works by letting users select field', async function(assert) {
+  await visit('/reports/new');
+  await click('.grouped-list__item:Contains(Multi System Id) .checkbox-selector__filter');
+
+  assert.ok(find('.filter-builder-dimension__operator').get(0), 'Operator dropdown should exist for the dimension');
+  assert.notOk(find('.filter-builder-dimension__field').get(0), 'field dropdown does not exist');
+
+  await click('.filter-builder-dimension__operator .filter-builder-dimension__select-trigger');
+  await click('.filter-builder-dimension__operator-dropdown .ember-power-select-option:contains(Contains)');
+
+  assert.ok(find('.filter-builder-dimension__field').get(0), 'field dropdown is now showing');
+  assert.equal(
+    find('.filter-builder-dimension__field')
+      .get(0)
+      .innerText.trim(),
+    'key',
+    'field shows key'
+  );
+
+  await click('.filter-builder-dimension__field .filter-builder-dimension__select-trigger');
+  await click('.filter-builder-dimension__field-dropdown .ember-power-select-option:contains(desc)');
+
+  assert.equal(
+    find('.filter-builder-dimension__field')
+      .get(0)
+      .innerText.trim(),
+    'desc',
+    'field shows desc'
+  );
+
+  await click('.filter-builder-dimension__operator .filter-builder-dimension__select-trigger');
+  await click('.filter-builder-dimension__operator-dropdown .ember-power-select-option:contains(Equals)');
+
+  assert.notOk(find('.filter-builder-dimension__field').get(0), 'field dropdown does not exist');
+
+  await click('.filter-builder-dimension__operator .filter-builder-dimension__select-trigger');
+  await click('.filter-builder-dimension__operator-dropdown .ember-power-select-option:contains(Contains)');
+
+  assert.equal(
+    find('.filter-builder-dimension__field')
+      .get(0)
+      .innerText.trim(),
+    'key',
+    'field shows key after switching back'
+  );
+
+  await click('.filter-builder-dimension__field .filter-builder-dimension__select-trigger');
+  await click('.filter-builder-dimension__field-dropdown .ember-power-select-option:contains(desc)');
+
+  await fillIn('.filter-builder-dimension__values input', 'foo');
+  await triggerEvent('.filter-builder-dimension__values input', 'blur');
+
+  await click('.get-api__btn');
+
+  assert.ok(
+    find('.navi-modal__input')
+      .get(0)
+      .value.includes(encodeURIComponent('multiSystemId|desc-contains[foo]')),
+    'Generated API URL is correct'
+  );
 });
 
 test('adding metrics to reordered table keeps order', function(assert) {

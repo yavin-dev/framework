@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Base class for filter builders.
@@ -7,6 +7,7 @@
 import Ember from 'ember';
 import layout from 'navi-reports/templates/components/filter-builders/base';
 import { readOnly } from '@ember/object/computed';
+import { assign } from '@ember/polyfills';
 
 const { get } = Ember;
 
@@ -52,7 +53,12 @@ export default Ember.Component.extend({
        * unless operators share valuesComponent
        */
       if (get(this, 'filter.operator.valuesComponent') !== operatorObject.valuesComponent) {
-        Ember.assign(changeSet, { values: [] });
+        assign(changeSet, { values: [] });
+      }
+
+      //switch field to primary key if operator does not allow choosing fields
+      if (get(this, 'primaryKeyField') && !operatorObject.showFields) {
+        assign(changeSet, { field: get(this, 'primaryKeyField') });
       }
 
       this.onUpdateFilter(changeSet);

@@ -9,10 +9,12 @@
  */
 import Ember from 'ember';
 import Base from './base';
-
-const { computed, get } = Ember;
+import { computed, get } from '@ember/object';
+import { readOnly } from '@ember/object/computed';
+import layout from 'navi-reports/templates/components/filter-builders/dimension';
 
 export default Base.extend({
+  layout,
   /**
    * @property {Object} requestFragment - filter fragment from request model
    */
@@ -47,16 +49,35 @@ export default Base.extend({
       {
         id: 'contains',
         longName: 'Contains',
-        valuesComponent: 'filter-values/multi-value-input'
+        valuesComponent: 'filter-values/multi-value-input',
+        showFields: true
       }
     ];
+  }),
+
+  /**
+   * @property {String} primaryKeyField - Primary Key Field used so we know what to use as default field for operators
+   */
+  primaryKeyField: readOnly('requestFragment.dimension.primaryKeyFieldName'),
+
+  /**
+   * @property {?Boolean} showFields - Whether to show the field chooser in the filter builder
+   */
+  showFields: readOnly('filter.operator.showFields'),
+
+  /**
+   * @property {Array} fields - List of fields that a user can choose from
+   */
+  fields: computed('requestFragment.dimension', function() {
+    let fields = get(this, 'requestFragment.dimension.fields');
+    return fields ? fields.map(field => field.name) : ['id', 'desc'];
   }),
 
   /**
    * @property {Object} filter
    * @override
    */
-  filter: computed('requestFragment.{operator,dimension,rawValues.[]}', function() {
+  filter: computed('requestFragment.{operator,dimension,rawValues.[],field}', function() {
     let dimensionFragment = get(this, 'requestFragment'),
       operatorId = get(dimensionFragment, 'operator'),
       operator = Ember.A(get(this, 'supportedOperators')).findBy('id', operatorId);
@@ -65,7 +86,19 @@ export default Base.extend({
       subject: get(dimensionFragment, 'dimension'),
       operator,
       values: get(dimensionFragment, 'rawValues'),
-      validations: get(dimensionFragment, 'validations')
+      validations: get(dimensionFragment, 'validations'),
+      field: get(dimensionFragment, 'field')
     };
-  })
+  }),
+
+  actions: {
+    /**
+     * Sets the field on the filter.
+     * @param {String} field - field to set
+     */
+    setField(field) {
+      const changeSet = { field };
+      this.onUpdateFilter(changeSet);
+    }
+  }
 });
