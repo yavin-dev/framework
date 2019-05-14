@@ -1,3 +1,4 @@
+{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <span class='filter-builder-dimension__subject'>
     {{displayName}}
 </span>
@@ -27,7 +28,7 @@
     onchange=(action 'setField')
     as | field |
   }}
-    field: {{field}}
+    {{field}}
   {{/power-select}}
 {{/if}}
 <span class='filter-builder-dimension__values {{if showFields 'filter-builder-dimension__values--short'}}'>

@@ -2061,7 +2061,7 @@ test('dimension contains filter works by letting users select field', async func
     find('.filter-builder-dimension__field')
       .get(0)
       .innerText.trim(),
-    'field: key',
+    'key',
     'field shows key'
   );
 
@@ -2072,7 +2072,7 @@ test('dimension contains filter works by letting users select field', async func
     find('.filter-builder-dimension__field')
       .get(0)
       .innerText.trim(),
-    'field: desc',
+    'desc',
     'field shows desc'
   );
 
@@ -2088,7 +2088,7 @@ test('dimension contains filter works by letting users select field', async func
     find('.filter-builder-dimension__field')
       .get(0)
       .innerText.trim(),
-    'field: key',
+    'key',
     'field shows key after switching back'
   );
 
