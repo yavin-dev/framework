@@ -8,7 +8,7 @@
  *   }}
  */
 import Component from '@ember/component';
-import layout from '../templates/components/dashboard-filter-collection';
+import layout from 'navi-reports/templates/components/filter-collection';
 import { computed, get } from '@ember/object';
 import { featureFlag } from 'navi-core/helpers/feature-flag';
 
