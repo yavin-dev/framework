@@ -44,7 +44,7 @@
     "ember-truth-helpers": "^2.0.0",
     "ember-uuid": "^1.0.0",
     "ember-validators": "^1.1.1",
-    "json-url": "^2.4.0",
+    "json-url": "~2.4.0",
     "liquid-fire": "^0.29.2"
   },
   "devDependencies": {
