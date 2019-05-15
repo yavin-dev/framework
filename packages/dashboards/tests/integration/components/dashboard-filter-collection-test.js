@@ -58,7 +58,8 @@ module('Integration | Component | dashboard filter collection', function(hooks) 
         'Operator update is requested'
       );
     });
-    await clickTrigger(`#${$('.filter-builder__operator:eq(0)').attr('id')}`);
+
+    await clickTrigger(`#${$('.filter-builder-dimension__operator:eq(0)').attr('id')}`);
     await nativeMouseUp($('.ember-power-select-option:contains(Is Empty)')[0]);
   });
 
