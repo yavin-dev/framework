@@ -29,21 +29,21 @@ test('changing values', function(assert) {
   assert.expect(3);
 
   this.set('onUpdateFilter', changeSet => {
-    assert.deepEqual(changeSet, { rawValues: ['aaa'] }, 'User inputted values are given to update action');
+    assert.deepEqual(changeSet, { rawValues: [1000, 'aaa'] }, 'User inputted values are given to update action');
   });
 
   this.$('.emberTagInput-new>input').val('aaa');
   this.$('.js-ember-tag-input-new').trigger('blur');
 
   this.set('onUpdateFilter', changeSet => {
-    assert.deepEqual(changeSet, { rawValues: ['aaa', 'bbb'] }, 'User inputted values are given to update action');
+    assert.deepEqual(changeSet, { rawValues: [1000, 'aaa', 'bbb'] }, 'User inputted values are given to update action');
   });
 
   this.$('.emberTagInput-new>input').val('bbb');
   this.$('.js-ember-tag-input-new').trigger('blur');
 
   this.set('onUpdateFilter', changeSet => {
-    assert.deepEqual(changeSet, { rawValues: ['bbb'] }, 'Removing a tag updates the filter values');
+    assert.deepEqual(changeSet, { rawValues: ['aaa', 'bbb'] }, 'Removing a tag updates the filter values');
   });
 
   this.$('.emberTagInput-tag:contains(1000)>.emberTagInput-remove').click();

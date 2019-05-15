@@ -22,7 +22,8 @@ export default Ember.Component.extend({
    */
   init() {
     this._super(...arguments);
-    set(this, 'tags', []);
+    const tags = get(this, 'filter.values') || [];
+    set(this, 'tags', tags);
   },
 
   /**

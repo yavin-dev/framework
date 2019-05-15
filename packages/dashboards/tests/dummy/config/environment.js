@@ -28,7 +28,8 @@ module.exports = function(environment) {
         enableDashboardExport: true,
         enableMultipleExport: true,
         enableScheduleDashboards: true,
-        enableDashboardFilters: true
+        enableDashboardFilters: true,
+        dateDimensionFilter: true
       }
     }
   };

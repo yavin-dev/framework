@@ -9,7 +9,7 @@ module('Integration | Component | dashboard filters collapsed', function(hooks) 
   test('it renders empty', async function(assert) {
     await render(hbs`{{dashboard-filters-collapsed}}`);
 
-    assert.dom(this.element).hasText('Settings', 'When no filters are provided, only "Settings" is rendered');
+    assert.dom(this.element).hasText('', 'When no filters are provided, no text is rendered');
   });
 
   test('it renders all filters attached to the dashboard', async function(assert) {
@@ -55,7 +55,7 @@ module('Integration | Component | dashboard filters collapsed', function(hooks) 
     assert
       .dom(this.element)
       .hasText(
-        'Settings Property equals ValueDesc (property|4), Something (property|7), property|9 Fish contains Something (1), ValueDesc (2) Dog not equals 1, ValueDesc (2)',
+        'Property equals ValueDesc (property|4), Something (property|7), property|9 Fish contains Something (1), ValueDesc (2) Dog not equals 1, ValueDesc (2)',
         'All filters are correctly displayed'
       );
   });

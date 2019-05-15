@@ -76,6 +76,14 @@ export default [
     createdOn: '2016-01-01 00:00:00',
     updatedOn: '2016-01-01 00:00:00',
     deliveryRuleIds: [],
+    filters: [
+      {
+        dimension: 'userSignupDate',
+        operator: 'lt',
+        field: 'id',
+        values: ['2019-05-05']
+      }
+    ],
     presentation: {
       version: 1,
       layout: [], //TODO
