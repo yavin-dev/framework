@@ -1,0 +1,11 @@
+{{#if (is-fulfilled groupedDimensions)}}
+  {{#power-select
+    options=(await groupedDimensions)
+    onchange=(action "change")
+    searchField="longName"
+    placeholder="Select a Dimension"
+    as |dimension|
+  }}
+    {{dimension.longName}}
+  {{/power-select}}
+{{/if}}
