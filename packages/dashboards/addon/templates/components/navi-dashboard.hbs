@@ -108,7 +108,6 @@
 
   {{#if (feature-flag "enableDashboardFilters")}}
     {{dashboard-filters dashboard=dashboard}}
-    {{dashboard-dimension-selector dashboard=dashboard onChange=(action "addDim")}}
   {{/if}}
 </div>
 
