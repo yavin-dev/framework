@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import $ from 'jquery';
-import { render, fillIn, triggerEvent } from '@ember/test-helpers';
+import { render, fillIn, triggerEvent, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 module('Integration | Component | filter values/multi value input', function(hooks) {
@@ -38,7 +38,11 @@ module('Integration | Component | filter values/multi value input', function(hoo
     await triggerEvent('.js-ember-tag-input-new', 'blur');
 
     this.set('onUpdateFilter', changeSet => {
-      assert.deepEqual(changeSet, { rawValues: [1000, 'aaa', 'bbb'] }, 'User inputted values are given to update action');
+      assert.deepEqual(
+        changeSet,
+        { rawValues: [1000, 'aaa', 'bbb'] },
+        'User inputted values are given to update action'
+      );
     });
 
     await fillIn('.emberTagInput-new>input', 'bbb');

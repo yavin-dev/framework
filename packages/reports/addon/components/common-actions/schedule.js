@@ -10,7 +10,7 @@
  * }}
  */
 
-import { oneWay } from '@ember/object/computed';
+import { reads } from '@ember/object/computed';
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
 import layout from '../../templates/components/common-actions/schedule';
@@ -43,6 +43,8 @@ export default Component.extend({
   naviNotifications: service(),
 
   /**
+   * This property is set in the onOpen action to make sure
+   * that we don't fetch any data until the modal is opened
    * @property {DS.Model} deliveryRule - deliveryRule for the current user
    */
   deliveryRule: undefined,
@@ -78,7 +80,7 @@ export default Component.extend({
   /**
    * @property {Boolean} isRuleValid
    */
-  isRuleValid: oneWay('localDeliveryRule.validations.isValid'),
+  isRuleValid: reads('localDeliveryRule.validations.isValid'),
 
   /**
    * @property {Boolean} disableSave

@@ -10,7 +10,7 @@ import { selectChoose, selectSearch } from 'ember-power-select/test-support/help
 import { setupApplicationTest } from 'ember-qunit';
 import reorder from '../helpers/reorder';
 import config from 'ember-get-config';
-import Mirage from 'ember-cli-mirage';
+import Mirage, { Response } from 'ember-cli-mirage';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 // Regex to check that a string ends with "{uuid}/view"
@@ -26,7 +26,7 @@ module('Acceptance | Navi Report', function(hooks) {
   setupMirage(hooks);
 
   hooks.beforeEach(function() {
-    CompressionService = this.owner.__container__.lookup('service:model-compression');
+    CompressionService = this.owner.lookup('service:model-compression');
     // Mocking add-to-dashboard component
     this.owner.application.register(
       'component:report-actions/add-to-dashboard',
@@ -216,7 +216,6 @@ module('Acceptance | Navi Report', function(hooks) {
 
     await visit('/reports');
     await visit('/reports/new');
-    let container = this.owner.__container__;
 
     //Add three metrics and save the report
     await click($('.checkbox-selector--metric .grouped-list__item:contains(Page Views) .grouped-list__item-label')[0]);
@@ -238,7 +237,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await click('.navi-report__revert-btn');
 
     let emberId = find('.report-view.ember-view').id,
-      component = container.lookup('-view-registry:main')[emberId];
+      component = this.owner.lookup('-view-registry:main')[emberId];
     assert.equal(
       component.get('report.visualization.type'),
       'table',
@@ -258,7 +257,6 @@ module('Acceptance | Navi Report', function(hooks) {
 
     await visit('/reports');
     await visit('/reports/new');
-    let container = this.owner.__container__;
 
     //Add a metrics and save the report
     await click(
@@ -285,7 +283,7 @@ module('Acceptance | Navi Report', function(hooks) {
     );
 
     let emberId = find('.report-view.ember-view').id,
-      component = container.lookup('-view-registry:main')[emberId];
+      component = this.owner.lookup('-view-registry:main')[emberId];
     assert.equal(
       component.get('report.visualization.type'),
       'table',
@@ -318,7 +316,6 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.expect(6);
 
     await visit('/reports/1');
-    let container = this.owner.__container__;
 
     // Change the Dim
     await click($('.checkbox-selector--dimension .grouped-list__item:contains(Week) .grouped-list__item-label')[0]);
@@ -337,37 +334,27 @@ module('Acceptance | Navi Report', function(hooks) {
 
     // New Report is run
     let emberId = find('.report-view.ember-view').id,
-      component = container.lookup('-view-registry:main')[emberId];
+      component = this.owner.lookup('-view-registry:main')[emberId];
     assert.equal(
       component.get('report.visualization.type'),
       'table',
       'Report has a valid visualization type after running then reverting.'
     );
 
-    assert.equal(
-      find('.navi-report__title').innerText.trim(),
-      '(New Copy) Hyrule News',
-      'New Saved Report is being viewed'
-    );
+    assert.dom('.navi-report__title').hasText('(New Copy) Hyrule News', 'New Saved Report is being viewed');
 
     await visit('/reports/1');
 
     assert.ok(!!$('.filter-builder__subject:contains(Day)').length, 'Old unsaved report have the old DIM.');
 
-    assert.equal(
-      find('.navi-report__title').innerText.trim(),
-      'Hyrule News',
-      'Old Report with unchanged title is being viewed.'
-    );
+    assert.dom('.navi-report__title').hasText('Hyrule News', 'Old Report with unchanged title is being viewed.');
   });
 
   test('Save As on failure', async function(assert) {
     assert.expect(3);
 
     server.urlPrefix = `${config.navi.appPersistence.uri}`;
-    server.post('/reports', () => {
-      return new Mirage.Response(500);
-    });
+    server.post('/reports', () => new Response(500));
 
     await visit('/reports/1');
 
@@ -386,11 +373,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.equal(currentURL(), '/reports/1/view', 'The url shows report 1');
 
     // Old Report
-    assert.equal(
-      find('.navi-report__title').innerText.trim(),
-      'Hyrule News',
-      'Old Report with unchanged title is being viewed.'
-    );
+    assert.dom('.navi-report__title').hasText('Hyrule News', 'Old Report with unchanged title is being viewed.');
 
     // Dirty state of old
     assert.ok(!!$('.filter-builder__subject:contains(Week)').length, 'Old unsaved report have the old DIM.');
@@ -1107,11 +1090,9 @@ module('Acceptance | Navi Report', function(hooks) {
 
     assert.dom('.report-view__visualization-edit-btn').isNotVisible('Edit visualization button is no longer visible');
 
-    assert.equal(
-      find('.report-view__info-text').innerText.trim(),
-      'Run request to update Line Chart',
-      'Notification to run request is visible'
-    );
+    assert
+      .dom('.report-view__info-text')
+      .hasText('Run request to update Line Chart', 'Notification to run request is visible');
 
     // Run report
     await click('.navi-report__run-btn');
@@ -1531,7 +1512,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await visit('/reports/1');
 
     await click($('.grouped-list__item:contains(Operating System) .checkbox-selector__filter')[0]);
-    await selectChoose('.filter-collection__row:last-of-type .filter-builder__operator', 'Is Empty');
+    await selectChoose('.filter-collection__row:last-of-type .filter-builder-dimension__operator', 'Is Empty');
     await click('.navi-report__run-btn');
 
     assert.ok(
@@ -1547,7 +1528,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await visit('/reports/1');
 
     await click($('.grouped-list__item:contains(Operating System) .checkbox-selector__filter')[0]);
-    await selectChoose('.filter-collection__row:last-of-type .filter-builder__operator', 'Is Not Empty');
+    await selectChoose('.filter-collection__row:last-of-type .filter-builder-dimension__operator', 'Is Not Empty');
     await click('.navi-report__run-btn');
 
     assert.ok(
@@ -1654,18 +1635,12 @@ module('Acceptance | Navi Report', function(hooks) {
     await click($('.filter-builder-dimension__operator-dropdown .ember-power-select-option:contains(Contains)')[0]);
 
     assert.dom('.filter-builder-dimension__field').isVisible('field dropdown is now showing');
-    assert.dom('.filter-builder-dimension__field').hasText(
-      'key',
-      'field shows key'
-    );
+    assert.dom('.filter-builder-dimension__field').hasText('key', 'field shows key');
 
     await click('.filter-builder-dimension__field .filter-builder-dimension__select-trigger');
     await click($('.filter-builder-dimension__field-dropdown .ember-power-select-option:contains(desc)')[0]);
 
-    assert.dom('.filter-builder-dimension__field').hasText(
-      'desc',
-      'field shows desc'
-    );
+    assert.dom('.filter-builder-dimension__field').hasText('desc', 'field shows desc');
 
     await click('.filter-builder-dimension__operator .filter-builder-dimension__select-trigger');
     await click($('.filter-builder-dimension__operator-dropdown .ember-power-select-option:contains(Equals)')[0]);
@@ -1675,22 +1650,18 @@ module('Acceptance | Navi Report', function(hooks) {
     await click('.filter-builder-dimension__operator .filter-builder-dimension__select-trigger');
     await click($('.filter-builder-dimension__operator-dropdown .ember-power-select-option:contains(Contains)')[0]);
 
-    assert.dom('.filter-builder-dimension__field').hasText(
-      'key',
-      'field shows key after switching back'
-    );
+    assert.dom('.filter-builder-dimension__field').hasText('key', 'field shows key after switching back');
 
     await click('.filter-builder-dimension__field .filter-builder-dimension__select-trigger');
     await click($('.filter-builder-dimension__field-dropdown .ember-power-select-option:contains(desc)')[0]);
 
     await fillIn('.filter-builder-dimension__values input', 'foo');
-    await triggerEvent('.filter-builder-dimension__values input', 'blur');
+    await await blur('.filter-builder-dimension__values input');
 
     await click('.get-api__btn');
 
     assert.ok(
-      find('.navi-modal__input')
-        .value.includes(encodeURIComponent('multiSystemId|desc-contains[foo]')),
+      find('.navi-modal__input').value.includes(encodeURIComponent('multiSystemId|desc-contains[foo]')),
       'Generated API URL is correct'
     );
   });

@@ -3,10 +3,10 @@
   {{displayName}}
   {{#if (has-parameters filter.subject)}}
     {{metric-filter-config
-    class="filter-builder__metric-config"
-    metric=filter.subject
-    request=request
-    paramClicked=(update-report-action "UPDATE_FILTER_PARAM" filter)
+      class="filter-builder__metric-config"
+      metric=filter.subject
+      request=request
+      paramClicked=(update-report-action "UPDATE_FILTER_PARAM" filter)
     }}
   {{/if}}
 </span>

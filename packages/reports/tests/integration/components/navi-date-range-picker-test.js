@@ -8,25 +8,12 @@ import hbs from 'htmlbars-inline-precompile';
 import Interval from 'navi-core/utils/classes/interval';
 import Duration from 'navi-core/utils/classes/duration';
 import moment from 'moment';
-import waitForError from '../../helpers/wait-for-error';
 
 module('Integration | Component | Navi Date Range Picker', function(hooks) {
   setupRenderingTest(hooks);
 
   hooks.beforeEach(function() {
     this.set('setInterval', () => {});
-  });
-
-  test('dateTimePeriod must be defined', async function(assert) {
-    assert.expect(1);
-
-    const [e] = await Promise.all([waitForError(), render(hbs`{{navi-date-range-picker}}`)]);
-
-    assert.equal(
-      e.message,
-      'Assertion Failed: dateTimePeriod must be defined in order to use navi-date-range-picker',
-      'Error is thrown when using component without a time period'
-    );
   });
 
   test('Each look back is a predefined interval', async function(assert) {

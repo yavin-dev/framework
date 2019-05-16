@@ -13,7 +13,7 @@ import { A } from '@ember/array';
 import { capitalize } from '@ember/string';
 import Component from '@ember/component';
 import { get, computed } from '@ember/object';
-import Ember from 'ember';
+import { pluralize } from 'ember-inflector';
 import layout from '../templates/components/favorite-item';
 
 export default Component.extend({
@@ -35,7 +35,7 @@ export default Component.extend({
    */
   favoriteItems: computed('itemType', function() {
     let itemType = get(this, 'itemType'),
-      pluralizedType = capitalize(Ember.Inflector.inflector.pluralize(itemType));
+      pluralizedType = capitalize(pluralize(itemType));
 
     return get(this, `user.favorite${pluralizedType}`);
   }),

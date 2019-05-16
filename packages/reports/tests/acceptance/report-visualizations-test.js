@@ -9,10 +9,6 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
 
-  hooks.afterEach(function() {
-    server.shutdown();
-  });
-
   test('filter changes line chart series', async function(assert) {
     assert.expect(2);
 

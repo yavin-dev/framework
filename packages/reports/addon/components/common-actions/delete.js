@@ -17,8 +17,6 @@ import { dasherize } from '@ember/string';
 import { computed, set, get } from '@ember/object';
 import layout from '../../templates/components/common-actions/delete';
 
-const dasherizeName = dasherize;
-
 export default Component.extend({
   layout,
 
@@ -51,7 +49,7 @@ export default Component.extend({
    * @property {String} warnMsg - Warning message before deleting
    */
   warnMsg: computed('modelName', function() {
-    return `Are you sure you want to delete this ${dasherizeName(get(this, 'modelName'))}?`;
+    return `Are you sure you want to delete this ${dasherize(get(this, 'modelName'))}?`;
   }),
 
   actions: {

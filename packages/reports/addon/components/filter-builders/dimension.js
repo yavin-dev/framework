@@ -10,7 +10,6 @@
 import { A as arr } from '@ember/array';
 import { get, computed } from '@ember/object';
 import Base from './base';
-import { computed, get } from '@ember/object';
 import { readOnly } from '@ember/object/computed';
 import layout from 'navi-reports/templates/components/filter-builders/dimension';
 

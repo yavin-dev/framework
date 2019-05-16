@@ -1,7 +1,7 @@
 {{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 
 {{!-- Check if in need of disabling the button when the action should be disabled --}}
-<button class="schedule-action__button btn" disabled={{disabled}}  onclick={{pipe (toggle "showModal" this) (action "onOpen")}}>
+<button class="schedule-action__button btn" disabled={{disabled}}  onclick={{queue (toggle "showModal" this) (action "onOpen")}}>
   {{navi-icon "clock-o" class="schedule-action__icon"}}
   {{#if hasBlock}}
     <span class="schedule-action__icon-label">{{yield}}</span>
@@ -86,7 +86,7 @@
           {{#if (is-rejected deliveryRule)}}
             <button
               class="schedule-modal__cancel-btn btn btn-primary"
-              onclick={{pipe (action "closeModal") (action onRevert localDeliveryRule)}}
+              onclick={{queue (action "closeModal") (action onRevert localDeliveryRule)}}
               disabled={{isSaving}}
               type="button"
             > Cancel
@@ -94,7 +94,7 @@
           {{else}}
             <button
               class="schedule-modal__save-btn btn btn-primary"
-              onclick={{action (pipe (toggle "isSaving" this) (action "onSave"))}}
+              onclick={{action (queue (toggle "isSaving" this) (action "onSave"))}}
               disabled={{disableSave}}
               type="button"
             >
@@ -108,7 +108,7 @@
             </button>
             <button
               class="schedule-modal__cancel-btn btn btn-secondary"
-              onclick={{pipe (action "closeModal") (action onRevert localDeliveryRule)}}
+              onclick={{queue (action "closeModal") (action onRevert localDeliveryRule)}}
               disabled={{isSaving}}
               type="button"
             >
@@ -129,7 +129,7 @@
               modelName="schedule"
               headerMsg=(concat "Delete schedule for " "\"" model.title "\"")
               warnMsg=(concat "Are you sure you want to delete the schedule for this" localDeliveryRule.deliveryType)
-              deleteAction=(pipe (action "onDelete") (action "closeModal"))
+              deleteAction=(queue (action "onDelete") (action "closeModal"))
             }}
               Delete
             {{/common-actions/delete}}

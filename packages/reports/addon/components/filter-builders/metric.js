@@ -17,6 +17,9 @@ import layout from 'navi-reports/templates/components/filter-builders/metric';
 export default Base.extend({
   layout,
 
+  /**
+   * @property {Object[]} supportedOperators
+   */
   supportedOperators: computed(function() {
     return [
       {

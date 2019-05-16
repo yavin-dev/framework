@@ -3,7 +3,6 @@
 import { find, click, findAll, blur, visit, triggerEvent, waitFor, fillIn } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
-import { teardownModal } from '../helpers/teardown-modal';
 import $ from 'jquery';
 import Mirage from 'ember-cli-mirage';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
@@ -12,11 +11,6 @@ import Ember from 'ember';
 module('Acceptance | Navi Report Schedule Modal', function(hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
-
-  hooks.afterEach(function() {
-    teardownModal();
-    server.shutdown();
-  });
 
   test('schedule modal save new schedule', async function(assert) {
     assert.expect(11);

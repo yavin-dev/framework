@@ -8,10 +8,6 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
 
-  hooks.afterEach(function() {
-    server.shutdown();
-  });
-
   test('adding and removing metrics', async function(assert) {
     assert.expect(6);
 
@@ -156,11 +152,9 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
     );
 
     await click($('.metric-filter-config__item:contains(USD)')[0]);
-    assert.equal(
-      $('.filter-builder__subject:contains(Revenue)')[0].innerText.trim(),
-      'Platform Revenue (USD)',
-      'The Euro parameter is updated to USD'
-    );
+    assert
+      .dom($('.filter-builder__subject:contains(Revenue)')[0])
+      .hasText('Platform Revenue (USD)', 'The Euro parameter is updated to USD');
 
     await click($('.filter-builder__subject:contains(USD) .metric-filter-config__trigger-icon')[0]);
     assert.deepEqual(

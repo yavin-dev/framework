@@ -25,7 +25,7 @@ module('Acceptance | date filter', function(hooks) {
     await click($('.grouped-list__item:contains(User Region) .checkbox-selector__filter')[0]);
 
     assert.ok(
-      !!$('.filter-builder__operator:contains(Equals)').length,
+      !!$('.filter-builder-dimension__operator:contains(Equals)').length,
       'The normal dimension filter builder is used for a dimension with non-date values'
     );
   });

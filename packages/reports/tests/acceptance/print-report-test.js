@@ -13,10 +13,6 @@ module('Acceptance | print report', function(hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
 
-  hooks.afterEach(function() {
-    server.shutdown();
-  });
-
   test('print reports index', async function(assert) {
     assert.expect(1);
     await visit('/print/reports/1');

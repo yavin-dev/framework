@@ -1,7 +1,10 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render } from '@ember/test-helpers';
 import { clickTrigger, nativeMouseUp } from 'ember-power-select/test-support/helpers';
+import Component from '@ember/component';
+import $ from 'jquery';
 import hbs from 'htmlbars-inline-precompile';
-import Ember from 'ember';
 
 const filter = {
   subject: {
@@ -43,10 +46,10 @@ const requestFragment = {
   }
 };
 
-moduleForComponent('filter-builders/dimension', 'Integration | Component | filter-builders/dimension', {
-  integration: true,
+module('Integration | Component | filter-builders/dimension', function(hooks) {
+  setupRenderingTest(hooks);
 
-  beforeEach() {
+  hooks.beforeEach(function() {
     /*
      * Normally supportedOperators will be provided by the child class,
      * but to simplify testing we pass it in
@@ -56,53 +59,53 @@ moduleForComponent('filter-builders/dimension', 'Integration | Component | filte
       supportedOperators,
       requestFragment
     });
-    this.register(
+    this.owner.register(
       'component:mock/values-component',
-      Ember.Component.extend({
+      Component.extend({
         classNames: 'mock-value-component'
       })
     );
-    this.register('component:mock/another-values-component', Ember.Component.extend());
-  }
-});
-
-test('changing operator with field', function(assert) {
-  assert.expect(6);
-
-  this.set('onUpdateFilter', changeSet => {
-    assert.equal(changeSet.operator, 'contains', 'Selected operator is given to action');
-
-    this.set('filter.operator', this.supportedOperators.find(oper => oper.id === changeSet.operator));
+    this.owner.register('component:mock/another-values-component', Component.extend());
   });
 
-  this.render(
-    hbs`{{filter-builders/dimension filter=filter requestFragment=requestFragment supportedOperators=supportedOperators onUpdateFilter=(action onUpdateFilter)}}`
-  );
+  test('changing operator with field', async function(assert) {
+    assert.expect(6);
 
-  clickTrigger();
-  nativeMouseUp($('.ember-power-select-option:contains(Contains)')[0]);
+    this.set('onUpdateFilter', changeSet => {
+      assert.equal(changeSet.operator, 'contains', 'Selected operator is given to action');
 
-  assert.ok(this.$('.filter-builder-dimension__field').is(':visible'), 'Field dropdown is shown');
+      this.set('filter.operator', this.supportedOperators.find(oper => oper.id === changeSet.operator));
+    });
 
-  this.set('onUpdateFilter', changeSet => {
-    assert.equal(changeSet.field, 'desc', 'Selected field is given to action');
+    await render(
+      hbs`{{filter-builders/dimension filter=filter requestFragment=requestFragment supportedOperators=supportedOperators onUpdateFilter=(action onUpdateFilter)}}`
+    );
 
-    this.set('filter.field', changeSet.field);
+    await clickTrigger();
+    await nativeMouseUp($('.ember-power-select-option:contains(Contains)')[0]);
+
+    assert.dom('.filter-builder-dimension__field').exists('Field dropdown is shown');
+
+    this.set('onUpdateFilter', changeSet => {
+      assert.equal(changeSet.field, 'desc', 'Selected field is given to action');
+
+      this.set('filter.field', changeSet.field);
+    });
+
+    await clickTrigger('.filter-builder-dimension__field');
+    await nativeMouseUp($('.ember-power-select-option:contains(desc)')[0]);
+
+    this.set('onUpdateFilter', changeSet => {
+      assert.equal(changeSet.operator, 'notin', 'Selected operator is given to action');
+      assert.equal(changeSet.field, 'id', 'field is switched back to id');
+
+      this.set('filter.operator', this.supportedOperators.find(oper => oper.id === changeSet.operator));
+      this.set('filter.field', changeSet.field);
+    });
+
+    await clickTrigger('.filter-builder-dimension__operator');
+    await nativeMouseUp($('.ember-power-select-option:contains(Not Equals)')[0]);
+
+    assert.dom('.filter-builder__field').doesNotExist('Field dropdown is gone');
   });
-
-  clickTrigger('.filter-builder-dimension__field');
-  nativeMouseUp($('.ember-power-select-option:contains(desc)')[0]);
-
-  this.set('onUpdateFilter', changeSet => {
-    assert.equal(changeSet.operator, 'notin', 'Selected operator is given to action');
-    assert.equal(changeSet.field, 'id', 'field is switched back to id');
-
-    this.set('filter.operator', this.supportedOperators.find(oper => oper.id === changeSet.operator));
-    this.set('filter.field', changeSet.field);
-  });
-
-  clickTrigger('.filter-builder-dimension__operator');
-  nativeMouseUp($('.ember-power-select-option:contains(Not Equals)')[0]);
-
-  assert.notOk(this.$('.filter-builder__field').is(':visible'), 'Field dropdown is gone');
 });
