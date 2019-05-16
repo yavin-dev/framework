@@ -2,7 +2,7 @@
  * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
- *  * Usage:
+ * Usage:
  *   {{dashboard-dimension-selector
  *      dashboard=dashboardModel
  *      onChange=(action changeAction)

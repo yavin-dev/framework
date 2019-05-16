@@ -5,7 +5,7 @@ import { A as arr } from '@ember/array';
 import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
 import { settled } from '@ember/test-helpers';
 
-module('dashboard-dimension-selector', 'Integration | Component | dashboard dimension selector', function(hooks) {
+module('Integration | Component | dashboard dimension selector', function(hooks) {
   setupRenderingTest(hooks);
 
   test('it renders with right options', async function(assert) {
@@ -79,13 +79,7 @@ module('dashboard-dimension-selector', 'Integration | Component | dashboard dime
 
     assert.deepEqual(structure, { cat1: ['dim1'], cat2: ['dim2', 'dim3'] }, 'Correct select structure is shown');
 
-    assert.equal(
-      this.$('.ember-power-select-placeholder')
-        .text()
-        .trim(),
-      'Select a Dimension',
-      'Placeholder is displayed'
-    );
+    assert.dom('.ember-power-select-placeholder').hasText('Select a Dimension');
 
     await selectChoose('.ember-power-select-trigger', 'dim1');
   });
