@@ -19,5 +19,11 @@ export default Component.extend({
   /**
    * @property {String} classNames
    */
-  classNames: 'navi-dashboard'
+  classNames: 'navi-dashboard',
+
+  actions: {
+    addDim(dim) {
+      console.log('action!', dim);
+    }
+  }
 });
