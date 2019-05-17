@@ -3,14 +3,13 @@ import { get } from '@ember/object';
 import Ember from 'ember';
 import { module, test } from 'qunit';
 import { click, fillIn, visit, currentURL, find, findAll, blur, triggerEvent, waitFor } from '@ember/test-helpers';
-import { teardownModal } from '../helpers/teardown-modal';
 import $ from 'jquery';
 import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 import { selectChoose, selectSearch } from 'ember-power-select/test-support/helpers';
 import { setupApplicationTest } from 'ember-qunit';
 import reorder from '../helpers/reorder';
 import config from 'ember-get-config';
-import Mirage, { Response } from 'ember-cli-mirage';
+import { Response } from 'ember-cli-mirage';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 // Regex to check that a string ends with "{uuid}/view"
@@ -38,8 +37,6 @@ module('Acceptance | Navi Report', function(hooks) {
   });
 
   hooks.afterEach(function() {
-    teardownModal();
-
     config.navi.FEATURES.enableVerticalCollectionTableIterator = false;
   });
 
@@ -805,9 +802,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.expect(1);
 
     server.urlPrefix = `${config.navi.appPersistence.uri}`;
-    server.delete('/reports/:id', () => {
-      return new Mirage.Response(500);
-    });
+    server.delete('/reports/:id', () => new Response(500));
 
     await visit('/reports/2/view');
     await click($('.navi-report__action:contains(Delete) button')[0]);
@@ -1199,9 +1194,10 @@ module('Acceptance | Navi Report', function(hooks) {
   test('Error data request', async function(assert) {
     assert.expect(1);
 
-    server.get(`${config.navi.dataSources[0].uri}/v1/data/*path`, () => {
-      return new Mirage.Response(400, {}, { description: 'Cannot merge mismatched time grains month and day' });
-    });
+    server.get(
+      `${config.navi.dataSources[0].uri}/v1/data/*path`,
+      () => new Response(400, {}, { description: 'Cannot merge mismatched time grains month and day' })
+    );
 
     //suppress errors and exceptions for this test
     let originalLoggerError = Ember.Logger.error,
@@ -1286,9 +1282,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     // Mock server path endpoint to mock failure
     server.urlPrefix = `${config.navi.appPersistence.uri}`;
-    server.patch('/users/:id', () => {
-      return new Mirage.Response(500);
-    });
+    server.patch('/users/:id', () => new Response(500));
 
     // Filter by favorites
     await visit('/reports');
