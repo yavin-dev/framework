@@ -2,11 +2,11 @@
  * Copyright 2017, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import Ember from 'ember';
+import Component from '@ember/component';
+import { warn } from '@ember/debug';
+import { computed, get } from '@ember/object';
 
-const { get, warn, computed } = Ember;
-
-export default Ember.Component.extend({
+export default Component.extend({
   /**
    * @property {DS.Model} report - custom report
    */
@@ -41,7 +41,7 @@ export default Ember.Component.extend({
   /**
    * @property {Boolean} - actionDisabled
    */
-  actionDisabled: computed('checkPermission', 'report.isOwner', 'report.isNew', function() {
+  actionDisabled: computed('checkPermission', 'report.{isOwner,isNew}', function() {
     if (get(this, 'report.isNew')) {
       return true;
     }

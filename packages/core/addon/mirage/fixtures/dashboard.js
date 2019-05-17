@@ -28,9 +28,21 @@ export default [
     filters: [
       {
         dimension: 'property',
-        operator: 'in',
+        operator: 'contains',
         field: 'id',
         values: ['114', '100001']
+      },
+      {
+        dimension: 'property',
+        operator: 'notin',
+        field: 'id',
+        values: ['1']
+      },
+      {
+        dimension: 'property',
+        operator: 'notin',
+        field: 'id',
+        values: ['2', '3', '4']
       }
     ],
     presentation: {
@@ -64,6 +76,14 @@ export default [
     createdOn: '2016-01-01 00:00:00',
     updatedOn: '2016-01-01 00:00:00',
     deliveryRuleIds: [],
+    filters: [
+      {
+        dimension: 'userSignupDate',
+        operator: 'lt',
+        field: 'id',
+        values: ['2019-05-05']
+      }
+    ],
     presentation: {
       version: 1,
       layout: [], //TODO

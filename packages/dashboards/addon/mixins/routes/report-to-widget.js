@@ -2,11 +2,10 @@
  * Copyright 2017, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import Ember from 'ember';
+import Mixin from '@ember/object/mixin';
+import { computed, get } from '@ember/object';
 
-const { get, computed } = Ember;
-
-export default Ember.Mixin.create({
+export default Mixin.create({
   /**
    * @property {DS.Model} currentReport - current report model
    */

@@ -1,29 +1,26 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 let Template;
 
-moduleForComponent('common-actions/buttonize', 'Integration | Component | common actions/buttonize', {
-  integration: true,
-  beforeEach() {
+module('Integration | Component | common actions/buttonize', function(hooks) {
+  setupRenderingTest(hooks);
+
+  hooks.beforeEach(function() {
     Template = hbs`
         {{#common-actions/buttonize}}
           Buttonize component
         {{/common-actions/buttonize}}
       `;
-  }
-});
+  });
 
-test('buttonize component renders', function(assert) {
-  assert.expect(1);
+  test('buttonize component renders', async function(assert) {
+    assert.expect(1);
 
-  this.render(Template);
+    await render(Template);
 
-  assert.equal(
-    this.$('.action')
-      .text()
-      .trim(),
-    'Buttonize component',
-    'Buttonize component is yielded'
-  );
+    assert.dom('.action').hasText('Buttonize component', 'Buttonize component is yielded');
+  });
 });

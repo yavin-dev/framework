@@ -46,6 +46,10 @@ export default DS.Transform.extend({
    * @returns {String|Array|Null} - name | array of names
    */
   serialize(deserialized = {}) {
+    if (typeof deserialized === 'string') {
+      return deserialized;
+    }
+
     if (isArray(deserialized)) {
       return deserialized.map(item => get(item, 'name') || null);
     }

@@ -1,47 +1,39 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { A as arr } from '@ember/array';
 import { run } from '@ember/runloop';
 
-moduleForComponent('filter-values/date', 'Integration | Component | filter values/date', {
-  integration: true,
+module('Integration | Component | filter values/date', function(hooks) {
+  setupRenderingTest(hooks);
 
-  beforeEach: function() {
+  hooks.beforeEach(async function() {
     this.filter = { values: [] };
     this.request = { logicalTable: { timeGrain: { name: 'day' } } };
     this.onUpdateFilter = () => null;
     this.selectedDate = null;
 
-    this.render(hbs`
+    await render(hbs`
       {{filter-values/date
         filter=filter
         request=request
         onUpdateFilter=(action onUpdateFilter)
         _selectedDate=selectedDate
       }}`);
-  }
-});
-
-test('Displayed text', function(assert) {
-  assert.expect(2);
-
-  assert.equal(
-    this.$()
-      .text()
-      .trim(),
-    'Select date',
-    'The placeholder text is displayed when no date is selected'
-  );
-
-  run(() => {
-    this.set('filter', { values: arr(['2018-10-31']) });
   });
 
-  assert.equal(
-    this.$()
-      .text()
-      .trim(),
-    'Oct 31, 2018',
-    'The selected date is displayed'
-  );
+  test('Displayed text', async function(assert) {
+    assert.expect(2);
+
+    assert
+      .dom('.filter-values--date')
+      .hasText('Select date', 'The placeholder text is displayed when no date is selected');
+
+    await run(() => {
+      this.set('filter', { values: arr(['2018-10-31']) });
+    });
+
+    assert.dom('.filter-values--date').hasText('Oct 31, 2018', 'The selected date is displayed');
+  });
 });

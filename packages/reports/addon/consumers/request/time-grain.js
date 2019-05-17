@@ -2,17 +2,16 @@
  * Copyright 2017, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
+import { inject as service } from '@ember/service';
+import { set, get } from '@ember/object';
 import ActionConsumer from 'navi-core/consumers/action-consumer';
-import Ember from 'ember';
 import { RequestActions } from 'navi-reports/services/request-action-dispatcher';
-
-const { get, set, inject } = Ember;
 
 export default ActionConsumer.extend({
   /**
    * @property {Ember.Service} requestActionDispatcher
    */
-  requestActionDispatcher: inject.service(),
+  requestActionDispatcher: service(),
 
   actions: {
     /**

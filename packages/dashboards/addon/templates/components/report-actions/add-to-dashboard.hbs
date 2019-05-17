@@ -1,47 +1,47 @@
 {{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{yield}}
 {{#navi-modal
-    isShown=showModal
+  isShown=showModal
 }}
-  <div class='add-to-dashboard-modal'>
-    <div class='navi-modal-header'>
-        <h1 class='primary-header'>Add To Dashboard</h1>
-        <h5 class='secondary-header'>Please provide a name for this widget and select a dashboard</h5>
+  <div class="add-to-dashboard-modal">
+    <div class="navi-modal-header">
+      <h1 class="primary-header">Add To Dashboard</h1>
+      <h5 class="secondary-header">Please provide a name for this widget and select a dashboard</h5>
     </div>
-    <div class='modal-header'>Widget Title</div>
-    {{input value=reportName class='text-input widget-title' autofocus=true}}
-    <div class='modal-header'>Dashboard</div>
+    <div class="modal-header">Widget Title</div>
+    {{input value=reportName class="text-input widget-title" autofocus=true}}
+    <div class="modal-header">Dashboard</div>
     {{#if shouldCreateDashboard}}
       {{input
-        placeholder='Enter new dashboard name...'
+        placeholder="Enter new dashboard name..."
         value=newDashboardTitle
-        class='text-input dashboard-title'
+        class="text-input dashboard-title"
         autofocus=true
       }}
-      <a class='dashboard-action-text' onclick={{action (toggle 'shouldCreateDashboard' this)}}>Select from my dashboards</a>
-      <div class='btn-container'>
+      <a class="dashboard-action-text" role="button" onclick={{action (toggle "shouldCreateDashboard" this)}}>Select from my dashboards</a>
+      <div class="btn-container">
         <button class="btn btn-primary add-to-dashboard" onclick={{action onAddToNewDashboard newDashboardTitle reportName}} disabled={{disableAdd}}>Add To Dashboard</button>
-        <button class="btn btn-secondary" onclick={{action (toggle 'showModal' this)}}>Cancel</button>
+        <button class="btn btn-secondary" onclick={{action (toggle "showModal" this)}}>Cancel</button>
       </div>
     {{else}}
       {{#power-select
         options=groupedDashboards
-        placeholder='Select a dashboard...'
+        placeholder="Select a dashboard..."
         selected=selectedDashboard
-        searchField='title'
-        searchPlaceholder='Search for a dashboard...'
+        searchField="title"
+        searchPlaceholder="Search for a dashboard..."
         onchange=(action (mut selectedDashboard))
-        classNames='dashboard-select'
-        tagName='div'
+        classNames="dashboard-select"
+        tagName="div"
         renderInPlace=true
         as |dashboard|
       }}
         {{dashboard.title}}
       {{/power-select}}
-      <a class='dashboard-action-text' onclick={{action (toggle 'shouldCreateDashboard' this)}}>Create new dashboard</a>
-      <div class='btn-container'>
+      <a class="dashboard-action-text" role="button" onclick={{action (toggle "shouldCreateDashboard" this)}}>Create new dashboard</a>
+      <div class="btn-container">
         <button class="btn btn-primary add-to-dashboard" onclick={{action onAddToDashboard selectedDashboard.id reportName}} disabled={{disableAdd}}>Add To Dashboard</button>
-        <button class="btn btn-secondary" onclick={{action (toggle 'showModal' this)}}>Cancel</button>
+        <button class="btn btn-secondary" onclick={{action (toggle "showModal" this)}}>Cancel</button>
       </div>
     {{/if}}
   </div>

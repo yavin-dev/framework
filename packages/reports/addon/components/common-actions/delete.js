@@ -12,13 +12,12 @@
  *      Inner template
  *   {{/common-actions/delete}}
  */
-import Ember from 'ember';
+import Component from '@ember/component';
+import { dasherize } from '@ember/string';
+import { computed, set, get } from '@ember/object';
 import layout from '../../templates/components/common-actions/delete';
 
-const { get, set, computed } = Ember;
-const dasherizeName = Ember.String.dasherize;
-
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   /**
@@ -50,7 +49,7 @@ export default Ember.Component.extend({
    * @property {String} warnMsg - Warning message before deleting
    */
   warnMsg: computed('modelName', function() {
-    return `Are you sure you want to delete this ${dasherizeName(get(this, 'modelName'))}?`;
+    return `Are you sure you want to delete this ${dasherize(get(this, 'modelName'))}?`;
   }),
 
   actions: {

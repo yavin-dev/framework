@@ -1,8 +1,7 @@
-/* eslint-env node */
 'use strict';
 
 module.exports = {
-  name: 'navi-dashboards',
+  name: require('./package').name,
 
   included: function(app, parentAddon) {
     this._super.included.apply(arguments);

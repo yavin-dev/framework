@@ -12,12 +12,14 @@
  *      Inner template
  *   {{/report-actions/add-to-dashboard}}
  */
-import Ember from 'ember';
+import { oneWay } from '@ember/object/computed';
+import { A } from '@ember/array';
+import { inject as service } from '@ember/service';
+import Component from '@ember/component';
+import { set, get, computed } from '@ember/object';
 import layout from '../../templates/components/report-actions/add-to-dashboard';
 
-const { computed, get, set } = Ember;
-
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   /**
@@ -28,13 +30,13 @@ export default Ember.Component.extend({
   /**
    * @property {Service} userService
    */
-  userService: Ember.inject.service('user'),
+  userService: service('user'),
 
   /**
    * @property {Array} groupedDashboards
    */
   groupedDashboards: computed('dashboards', function() {
-    return Ember.A([
+    return A([
       {
         groupName: 'My Dashboards',
         options: get(this, 'dashboards').toArray()
@@ -45,7 +47,7 @@ export default Ember.Component.extend({
   /**
    * @property {String} reportName - report name
    */
-  reportName: computed.oneWay('report.title'),
+  reportName: oneWay('report.title'),
 
   /**
    * @property {Boolean} shouldCreateDashboard - true if user wants to create a new dashboard

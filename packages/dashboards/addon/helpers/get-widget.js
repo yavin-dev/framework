@@ -2,10 +2,11 @@
  * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import Ember from 'ember';
+import { inject as service } from '@ember/service';
+import Helper from '@ember/component/helper';
 
-export default Ember.Helper.extend({
-  store: Ember.inject.service(),
+export default Helper.extend({
+  store: service(),
 
   /**
    * @method compute

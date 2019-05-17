@@ -6,7 +6,6 @@
  */
 
 import { assert } from '@ember/debug';
-
 import { makeArray } from '@ember/array';
 import { inject as service } from '@ember/service';
 import { assign } from '@ember/polyfills';

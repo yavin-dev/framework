@@ -4,20 +4,20 @@
 {{#each tags as |tag index|}}
   {{#component
     tagComponent
-    classNames='emberTagInput-tag navi-tag-input__tag'
+    classNames="emberTagInput-tag navi-tag-input__tag"
     tag=tag
     index=index
     isRemovable=_isRemoveButtonVisible
-    onRemoveTag=(action 'removeTag' index)
+    onRemoveTag=(action "removeTag" index)
   }}
     {{yield tag}}
   {{/component}}
 {{/each}}
 
 <li class="emberTagInput-new">
-    {{input
-        disabled=readOnly
-        class=(concat 'emberTagInput-input js-ember-tag-input-new' (if readOnly ' is-disabled'))
-        placeholder=placeholder
-    }}
+  {{input
+    disabled=readOnly
+    class=(concat "emberTagInput-input js-ember-tag-input-new" (if readOnly " is-disabled"))
+    placeholder=placeholder
+  }}
 </li>

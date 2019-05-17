@@ -26,11 +26,10 @@ matrix:
 before_install:
   - npm config set spin false
   - npm --version
-  - npm install -g bower
-  - bower --version
 install:
   - travis_wait npm install
 script:
+  - lerna run test --scope $PACKAGE -- bower install || true
   - travis_wait lerna run test --scope $PACKAGE
 jobs:
   include:

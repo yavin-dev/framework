@@ -1,18 +1,20 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import Ember from 'ember';
+import { A as arr } from '@ember/array';
+import { assert } from '@ember/debug';
+import { typeOf } from '@ember/utils';
+import { get } from '@ember/object';
 import config from 'ember-get-config';
-const { get, assert, typeOf, computed } = Ember;
 
 export default {
   /**
    * @property {Array} _definitions - list of response formats
    */
-  _definitions: computed(function() {
-    let defaultOperations = Ember.A([
+  _definitions() {
+    let defaultOperations = arr([
       {
         id: 'in',
         name: 'Equals',
@@ -42,7 +44,7 @@ export default {
       });
     }
     return defaultOperations;
-  }),
+  },
 
   /**
    * Gets all the response formats
@@ -50,7 +52,7 @@ export default {
    * @method all
    */
   all() {
-    return get(this, '_definitions');
+    return this._definitions();
   },
 
   /**
@@ -62,6 +64,6 @@ export default {
    */
   getById(id) {
     assert(`id: \`${id}\` should be of type string and non-empty`, typeOf(id) === 'string' && id !== '');
-    return get(this, '_definitions').findBy('id', id);
+    return this._definitions().findBy('id', id);
   }
 };

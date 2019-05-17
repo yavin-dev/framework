@@ -4,15 +4,16 @@
  *
  * Service for converting an Ember Data model into a URL safe string
  */
-import Ember from 'ember';
+import Service, { inject as service } from '@ember/service';
+import { assert } from '@ember/debug';
+import { get, computed } from '@ember/object';
+import { run } from '@ember/runloop';
 
-const { assert, computed, get, inject, run } = Ember;
-
-export default Ember.Service.extend({
+export default Service.extend({
   /**
    * @property {Ember.Service} store
    */
-  store: inject.service(),
+  store: service(),
 
   /**
    * @property {Object} codec - compression library

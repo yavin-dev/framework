@@ -2,7 +2,6 @@ import { get } from '@ember/object';
 import { setOwner } from '@ember/application';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-
 import { run } from '@ember/runloop';
 
 let Payload, Model, Keg;

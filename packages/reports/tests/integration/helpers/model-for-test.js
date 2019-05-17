@@ -1,35 +1,37 @@
-import { moduleForComponent, test } from 'ember-qunit';
-import Ember from 'ember';
+import { run } from '@ember/runloop';
+import Route from '@ember/routing/route';
+import { set } from '@ember/object';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
-const { getOwner, set } = Ember;
+let route;
 
-let Route;
+module('Integration | Helper | model for', function(hooks) {
+  setupRenderingTest(hooks);
 
-moduleForComponent('helper:model-for', 'Integration | Helper | model for', {
-  integration: true,
-
-  beforeEach() {
+  hooks.beforeEach(function() {
     let controller = {};
-    this.register('route:mock-route', Ember.Route.extend({ controller }));
-    Route = getOwner(this).lookup('route:mock-route');
-  }
-});
+    this.owner.register('route:mock-route', Route.extend({ controller }));
+    route = this.owner.lookup('route:mock-route');
+  });
 
-test('modelFor', function(assert) {
-  assert.expect(2);
+  test('modelFor', async function(assert) {
+    assert.expect(2);
 
-  set(Route, 'controller.model', 'foo');
-  this.render(hbs`<span>{{model-for 'mock-route'}}</span>`);
-  assert.equal(this.$('span').text(), 'foo', "model-for helper returned the route's model");
+    set(route, 'controller.model', 'foo');
+    await render(hbs`<span>{{model-for 'mock-route'}}</span>`);
+    assert.dom('span').hasText('foo', "model-for helper returned the route's model");
 
-  Ember.run(() => set(Route, 'controller.model', 'bar'));
-  assert.equal(this.$('span').text(), 'bar', "model-for helper recomputes when the route's model changes");
-});
+    run(() => set(route, 'controller.model', 'bar'));
+    assert.dom('span').hasText('bar', "model-for helper recomputes when the route's model changes");
+  });
 
-test('modelFor - missing route', function(assert) {
-  assert.expect(1);
+  test('modelFor - missing route', async function(assert) {
+    assert.expect(1);
 
-  this.render(hbs`<span>{{model-for 'missing-route'}}</span>`);
-  assert.equal(this.$('span').text(), '', 'model-for helper returns undefined when route does not exist');
+    await render(hbs`<span>{{model-for 'missing-route'}}</span>`);
+    assert.dom('span').hasText('', 'model-for helper returns undefined when route does not exist');
+  });
 });

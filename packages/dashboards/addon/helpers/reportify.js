@@ -13,7 +13,8 @@ export default Helper.extend({
    * @observer onModelChange
    * Forces recompute when model request or visualization change
    */
-  onModelChange: observer('model.request', 'model.visualization', function() {
+  // eslint-disable-next-line ember/no-observers
+  onModelChange: observer('model.{request,visualization}', function() {
     this.recompute();
   }),
 

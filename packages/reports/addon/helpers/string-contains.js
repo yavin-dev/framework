@@ -1,7 +1,7 @@
-import Ember from 'ember';
+import { helper as buildHelper } from '@ember/component/helper';
 
 export function stringContains(source, substring) {
   return source.includes(substring);
 }
 
-export default Ember.Helper.helper(args => stringContains(...args));
+export default buildHelper(args => stringContains(...args));

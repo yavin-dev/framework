@@ -16,13 +16,13 @@ let Store, MetadataService;
 module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
   setupTest(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(async function() {
     setupMock();
     Store = this.owner.lookup('service:store');
 
     MetadataService = this.owner.lookup('service:bard-metadata');
 
-    MetadataService.loadMetadata().then(() => {
+    await MetadataService.loadMetadata().then(() => {
       run(() => {
         Store.pushPayload({
           data: [

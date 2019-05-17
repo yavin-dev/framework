@@ -4,7 +4,6 @@ import ExtendedMetadataMixin from 'navi-data/mixins/extended-metadata';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import Pretender from 'pretender';
-
 import metadataRoutes, { MetricOne } from '../../helpers/metadata-routes';
 
 let Server;

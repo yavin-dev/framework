@@ -3,15 +3,17 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import Ember from 'ember';
+import { reject } from 'rsvp';
+import { A } from '@ember/array';
+import { inject as service } from '@ember/service';
+import Route from '@ember/routing/route';
+import { set, get } from '@ember/object';
 
-const { get, set } = Ember;
-
-export default Ember.Route.extend({
+export default Route.extend({
   /**
    * @property {Service} naviNotifications
    */
-  naviNotifications: Ember.inject.service(),
+  naviNotifications: service(),
 
   /**
    * Saves new widget to dashboard
@@ -46,13 +48,13 @@ export default Ember.Route.extend({
             })
             .catch(() => {
               // Remove from layout if there is an error
-              set(dashboard, 'presentation.layout', Ember.A(layout).rejectBy('widgetId', id));
+              set(dashboard, 'presentation.layout', A(layout).rejectBy('widgetId', id));
 
-              return Ember.RSVP.reject('Error saving dashboard after creating widget');
+              return reject('Error saving dashboard after creating widget');
             });
         });
       } else {
-        return Ember.RSVP.reject('Unable to find unsaved widget');
+        return reject('Unable to find unsaved widget');
       }
     }
   },

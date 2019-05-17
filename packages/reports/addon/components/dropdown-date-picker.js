@@ -8,9 +8,9 @@
  *       date=(moment savedDate)
  *   }}
  */
+import { oneWay } from '@ember/object/computed';
 import Component from '@ember/component';
 import layout from '../templates/components/dropdown-date-picker';
-import { computed } from '@ember/object';
 
 export default Component.extend({
   layout,
@@ -19,7 +19,7 @@ export default Component.extend({
    * @private
    * @property {Object} _selectedDate - local moment set by date picker (initally set to passed in date)
    */
-  _selectedDate: computed.oneWay('date'),
+  _selectedDate: oneWay('date'),
 
   actions: {
     /**

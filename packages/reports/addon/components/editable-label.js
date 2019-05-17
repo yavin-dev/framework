@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -9,12 +9,13 @@
  *   }}
  */
 
-import Ember from 'ember';
+import { oneWay } from '@ember/object/computed';
+import Component from '@ember/component';
+import { computed, set, get } from '@ember/object';
+import { run, next } from '@ember/runloop';
 import layout from '../templates/components/editable-label';
 
-const { get, set, computed, run } = Ember;
-
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   /**
@@ -30,7 +31,7 @@ export default Ember.Component.extend({
   /**
    * @property {String} _localValue
    */
-  _localValue: Ember.computed.oneWay('value'),
+  _localValue: oneWay('value'),
 
   /**
    * @property {Number} inputSize - length of the value with a max length of 50
@@ -49,7 +50,7 @@ export default Ember.Component.extend({
     editComplete(value) {
       set(this, 'isEditingValue', false);
       if (get(this, 'value') !== value) {
-        run.debounce(this.attrs, 'onChange', value, 10);
+        run.debounce(this, 'onChange', value, 10);
       }
     },
 
@@ -66,7 +67,7 @@ export default Ember.Component.extend({
      * @action highlightLabelInput
      */
     highlightLabelInput() {
-      Ember.run.next(() => {
+      next(() => {
         this.$('.editable-label__input').select();
       });
     },

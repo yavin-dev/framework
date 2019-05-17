@@ -1,29 +1,24 @@
-import { test } from 'qunit';
-import { teardownModal } from '../helpers/teardown-modal';
-import moduleForAcceptance from '../../tests/helpers/module-for-acceptance';
+import { click, visit, triggerEvent } from '@ember/test-helpers';
+import { module, test } from 'qunit';
+import { setupApplicationTest } from 'ember-qunit';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
-moduleForAcceptance('Acceptance | share link', {
-  beforeEach() {
+module('Acceptance | share link', function(hooks) {
+  setupApplicationTest(hooks);
+  setupMirage(hooks);
+
+  hooks.beforeEach(function() {
     return visit('/reports');
-  },
-  afterEach() {
-    teardownModal();
-    server.shutdown();
-  }
-});
+  });
 
-test('report share link', function(assert) {
-  let baseUrl = document.location.origin;
-  // TriggerEvent does not work here, need to use jquery trigger mouseenter
-  andThen(() => $('.navi-collection__row:first-of-type').trigger('mouseenter'));
+  test('report share link', async function(assert) {
+    let baseUrl = document.location.origin;
 
-  click('.navi-collection__row:first-of-type .share .btn');
+    await triggerEvent('.navi-collection__row0', 'mouseover');
+    await click('.navi-collection__row0 .share .btn');
 
-  andThen(() => {
-    assert.equal(
-      find('.modal-input-box')[0].value,
-      `${baseUrl}/reports/1`,
-      'The share link is built correctly by buildReportUrl'
-    );
+    assert
+      .dom('.modal-input-box')
+      .hasValue(`${baseUrl}/reports/1`, 'The share link is built correctly by buildReportUrl');
   });
 });

@@ -8,12 +8,11 @@
  *       onUpdateFilter=(action 'update')
  *   }}
  */
-import Ember from 'ember';
+import Component from '@ember/component';
+import { set, get } from '@ember/object';
 import layout from '../../templates/components/filter-values/multi-value-input';
 
-const { get, set } = Ember;
-
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   /**
@@ -22,7 +21,8 @@ export default Ember.Component.extend({
    */
   init() {
     this._super(...arguments);
-    set(this, 'tags', []);
+    const tags = get(this, 'filter.values') || [];
+    set(this, 'tags', tags);
   },
 
   /**

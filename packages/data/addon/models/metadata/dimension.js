@@ -3,7 +3,6 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { A as array } from '@ember/array';
-
 import EmberObject, { computed, get } from '@ember/object';
 import ExtendedMetadataMixin from 'navi-data/mixins/extended-metadata';
 

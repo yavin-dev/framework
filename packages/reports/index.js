@@ -1,4 +1,3 @@
-/* eslint-env node */
 'use strict';
 
 module.exports = {
@@ -8,7 +7,7 @@ module.exports = {
     nodeAssets: {
       'json-url': {
         srcDir: 'dist/browser',
-        import: ['json-url.js', 'json-url-lzstring.js', 'json-url-safe64.js']
+        import: ['json-url-single.js']
       }
     }
   },

@@ -1,20 +1,23 @@
-import Ember from 'ember';
-import { moduleForComponent, test } from 'ember-qunit';
-import { hbsWithModal } from '../../../helpers/hbs-with-modal';
-import wait from 'ember-test-helpers/wait';
-import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
+import { A as arr } from '@ember/array';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { click, findAll, render } from '@ember/test-helpers';
+import hbs from 'htmlbars-inline-precompile';
 import { clickTrigger as toggleSelector } from 'ember-power-select/test-support/helpers';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import $ from 'jquery';
 
 const DASHBOARD_ID = 12;
 
-let Template;
+module('Integration | Component | dashboard actions/add widget', function(hooks) {
+  setupRenderingTest(hooks);
+  setupMirage(hooks);
 
-moduleForComponent('dashboard-actions/add-widget', 'Integration | Component | dashboard actions/add widget', {
-  integration: true,
-  beforeEach() {
-    setupMock();
-    Template = hbsWithModal(
-      `
+  hooks.beforeEach(async function() {
+    this.set('reports', arr([{ id: 1, title: 'Report 1' }, { id: 2, title: 'Report 2' }]));
+    this.set('dashboard', { id: DASHBOARD_ID });
+
+    await render(hbs`
       {{#dashboard-actions/add-widget
         classNames='dashboard-control add-widget'
         reports=reports
@@ -22,96 +25,47 @@ moduleForComponent('dashboard-actions/add-widget', 'Integration | Component | da
       }}
         Add Widget
       {{/dashboard-actions/add-widget}}
-    `,
-      Ember.getOwner(this)
-    );
-
-    this.set(
-      'reports',
-      Ember.A([
-        {
-          id: 1,
-          title: 'Report 1'
-        },
-        {
-          id: 2,
-          title: 'Report 2'
-        }
-      ])
-    );
-
-    this.set('dashboard', { id: DASHBOARD_ID });
-  },
-  afterEach() {
-    teardownMock();
-  }
-});
-
-test('it renders', function(assert) {
-  assert.expect(2);
-
-  this.render(Template);
-
-  return wait().then(() => {
-    assert.equal(
-      this.$()
-        .text()
-        .trim(),
-      'Add Widget',
-      'Template component is yielded'
-    );
-
-    assert.notOk($('.ember-modal-dialog').is(':visible'), 'The add widget modal is not visible in the beginning');
+    `);
   });
-});
 
-test('report selector', function(assert) {
-  assert.expect(4);
+  test('it renders', async function(assert) {
+    assert.expect(2);
 
-  this.render(Template);
-  this.$('.dashboard-control').click();
+    assert.dom('.add-widget').hasText('Add Widget', 'Template component is yielded');
+    assert.dom('.ember-modal-dialog').isNotVisible('The add widget modal is not visible in the beginning');
+  });
 
-  assert.equal(
-    $('.add-widget-modal .ember-power-select-selected-item')
-      .text()
-      .trim(),
-    'Create new...',
-    'Create new option is selected by default in the dropdown'
-  );
+  test('report selector', async function(assert) {
+    assert.expect(4);
 
-  toggleSelector('.add-widget-modal');
+    await click('.dashboard-control');
 
-  return wait().then(() => {
+    assert
+      .dom('.add-widget-modal .ember-power-select-selected-item')
+      .hasText('Create new...', 'Create new option is selected by default in the dropdown');
+
+    await toggleSelector('.add-widget-modal');
+
     assert.deepEqual(
-      $('.add-widget-modal .ember-power-select-option')
-        .toArray()
-        .map(el =>
-          $(el)
-            .text()
-            .trim()
-        ),
+      findAll('.add-widget-modal .ember-power-select-option').map(el => el.textContent.trim()),
       ['Create new...', 'Report 1', 'Report 2'],
       'The user`s report titles are shown in the dropdown along with create new'
     );
 
     assert.deepEqual(
-      $('.add-widget-modal .ember-power-select-group .ember-power-select-option')
-        .toArray()
-        .map(el =>
-          $(el)
-            .text()
-            .trim()
-        ),
+      findAll('.add-widget-modal .ember-power-select-group .ember-power-select-option').map(el =>
+        el.textContent.trim()
+      ),
       ['Report 1', 'Report 2'],
       'The user`s report titles are shown under a group in the dropdown'
     );
 
-    assert.deepEqual(
-      $('.add-widget-modal .ember-power-select-group .ember-power-select-group-name')
-        .text()
-        .trim(),
-      'My Reports',
-      'The user`s report titles are shown under a group name `My Reports` in the dropdown'
-    );
+    assert
+      .dom('.add-widget-modal .ember-power-select-group-name')
+      .hasText('My Reports', 'The user`s report titles are shown under a group name `My Reports` in the dropdown');
+
+    // Clean up
+    await click('.primary-header');
+    await click($('button:contains(Cancel)')[0]);
   });
 });

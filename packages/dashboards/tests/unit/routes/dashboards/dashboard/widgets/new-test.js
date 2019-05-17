@@ -1,10 +1,9 @@
-import Ember from 'ember';
-import { moduleFor, test } from 'ember-qunit';
-import wait from 'ember-test-helpers/wait';
+import { set, get } from '@ember/object';
+import { module, test } from 'qunit';
+import { setupTest } from 'ember-qunit';
+import { settled } from '@ember/test-helpers';
 import config from 'ember-get-config';
-import { setupMock, teardownMock } from '../../../../../helpers/mirage-helper';
-
-const { get, set } = Ember;
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 const defaultDataTable = get(config, 'navi.defaultDataTable');
 const NEW_MODEL = {
@@ -27,8 +26,7 @@ const NEW_MODEL = {
       metrics: [],
       having: [],
       sort: [],
-      requestVersion: 'v1',
-      responseFormat: 'json'
+      requestVersion: 'v1'
     }
   ],
   title: 'Untitled Widget',
@@ -52,67 +50,13 @@ const NEW_MODEL = {
 
 let Store, Route;
 
-moduleFor('route:dashboards/dashboard/widgets/new', 'Unit | Route | dashboards/dashboard/widgets/new', {
-  needs: [
-    'adapter:report',
-    'adapter:user',
-    'model:dashboard-widget',
-    'model:dashboard',
-    'model:delivery-rule',
-    'model:report',
-    'model:user',
-    'transform:array',
-    'transform:fragment-array',
-    'transform:dimension',
-    'transform:fragment',
-    'transform:metric',
-    'transform:moment',
-    'transform:table',
-    'transform:dimension',
-    'model:line-chart',
-    'model:bard-request/request',
-    'model:bard-request/fragments/dimension',
-    'model:bard-request/fragments/filter',
-    'model:bard-request/fragments/interval',
-    'model:bard-request/fragments/logicalTable',
-    'model:bard-request/fragments/metric',
-    'model:bard-request/fragments/sort',
-    'serializer:bard-request/fragments/logical-table',
-    'serializer:bard-request/fragments/interval',
-    'validator:length',
-    'validator:belongs-to',
-    'validator:has-many',
-    'validator:interval',
-    'validator:presence',
-    'validator:request-metric-exist',
-    'validator:chart-type',
-    'validator:request-metrics',
-    'validator:request-dimension-order',
-    'service:bard-metadata',
-    'adapter:bard-metadata',
-    'serializer:report',
-    'serializer:user',
-    'serializer:bard-metadata',
-    'service:keg',
-    'service:ajax',
-    'service:bard-facts',
-    'service:user',
-    'model:metadata/table',
-    'model:metadata/dimension',
-    'model:metadata/metric',
-    'model:metadata/time-grain',
-    'service:bard-dimensions',
-    'adapter:dimensions/bard',
-    'service:navi-notifications',
-    'service:navi-visualizations',
-    'service:model-compression'
-  ],
-  beforeEach() {
-    setupMock();
+module('Unit | Route | dashboards/dashboard/widgets/new', function(hooks) {
+  setupTest(hooks);
+  setupMirage(hooks);
 
-    Store = this.container.lookup('service:store');
-
-    Route = this.subject({
+  hooks.beforeEach(async function() {
+    Store = this.owner.lookup('service:store');
+    Route = this.owner.factoryFor('route:dashboards/dashboard/widgets/new').create({
       modelFor: () =>
         Store.createRecord('dashboard', {
           id: 'dashboard1',
@@ -122,43 +66,42 @@ moduleFor('route:dashboards/dashboard/widgets/new', 'Unit | Route | dashboards/d
 
     set(config, 'navi.defaultDataTable', 'tableA');
 
-    return this.container.lookup('service:bard-metadata').loadMetadata();
-  },
-  afterEach() {
+    await this.owner.lookup('service:bard-metadata').loadMetadata();
+  });
+
+  hooks.afterEach(function() {
     set(config, 'navi.defaultDataTable', defaultDataTable);
+  });
 
-    teardownMock();
-  }
-});
+  test('model', async function(assert) {
+    assert.expect(2);
 
-test('model', function(assert) {
-  assert.expect(2);
+    return settled().then(() => {
+      return Route.model(null, { queryParams: {} }).then(model => {
+        assert.deepEqual(model.toJSON(), NEW_MODEL, 'A new widget model is returned');
 
-  return wait().then(() => {
-    return Route.model(null, { queryParams: {} }).then(model => {
-      assert.deepEqual(model.toJSON(), NEW_MODEL, 'A new widget model is returned');
-
-      assert.equal(
-        model.get('author.id'),
-        'navi_user',
-        'the author of the widget is set using the author from the dashboard'
-      );
+        assert.equal(
+          model.get('author.id'),
+          'navi_user',
+          'the author of the widget is set using the author from the dashboard'
+        );
+      });
     });
   });
-});
 
-test('_newModel', function(assert) {
-  assert.expect(2);
+  test('_newModel', function(assert) {
+    assert.expect(2);
 
-  return wait().then(() => {
-    return Route._newModel().then(model => {
-      assert.deepEqual(model.toJSON(), NEW_MODEL, 'A new widget model is returned');
+    return settled().then(() => {
+      return Route._newModel().then(model => {
+        assert.deepEqual(model.toJSON(), NEW_MODEL, 'A new widget model is returned');
 
-      assert.equal(
-        model.get('author.id'),
-        'navi_user',
-        'the author of the widget is set using the author from the dashboard'
-      );
+        assert.equal(
+          model.get('author.id'),
+          'navi_user',
+          'the author of the widget is set using the author from the dashboard'
+        );
+      });
     });
   });
 });

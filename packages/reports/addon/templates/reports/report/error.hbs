@@ -1,17 +1,17 @@
 {{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{#navi-info-message classNames='navi-report-error__info-message'}}
-    <span>
-        {{navi-icon 'ambulance'}}
-    </span>
-    <p>Oops! There was an error with your request.</p>
-    <ul class='navi-info-message__error-list'>
-        {{#with model.payload.description as | error | }}
-            <li class='navi-info-message__error-list-item'>
-                {{navi-icon 'times' class='navi-info-message__error-list-icon'}}
-                {{error-message (hash detail=error)}}
-            </li>
-        {{/with}}
-    </ul>
-    {{!-- The App will handle the look and feel of this component --}}
-    {{submit-defect}}
+{{#navi-info-message classNames="navi-report-error__info-message"}}
+  <span>
+    {{navi-icon "ambulance"}}
+  </span>
+  <p>Oops! There was an error with your request.</p>
+  <ul class="navi-info-message__error-list">
+    {{#with model.payload.description as | error | }}
+      <li class="navi-info-message__error-list-item">
+        {{navi-icon "times" class="navi-info-message__error-list-icon"}}
+        {{error-message (hash detail=error)}}
+      </li>
+    {{/with}}
+  </ul>
+  {{!-- The App will handle the look and feel of this component --}}
+  {{submit-defect}}
 {{/navi-info-message}}

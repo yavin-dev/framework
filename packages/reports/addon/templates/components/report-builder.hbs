@@ -1,54 +1,54 @@
 {{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<div class='report-builder__side'>
-    {{#if (or (gt allTables.length 1) (not hasValidLogicalTable))}}
-      {{navi-table-select
-          classNames='report-builder__container report-builder__container--table'
-          options=allTables
-          selected=request.logicalTable.table
-          onChange=(update-report-action 'UPDATE_TABLE')
+<div class="report-builder__side">
+  {{#if (or (gt allTables.length 1) (not hasValidLogicalTable))}}
+    {{navi-table-select
+      classNames="report-builder__container report-builder__container--table"
+      options=allTables
+      selected=request.logicalTable.table
+      onChange=(update-report-action "UPDATE_TABLE")
+    }}
+  {{/if}}
+  <div class="report-builder__container--builder {{if (not hasValidLogicalTable) "report-builder__container--builder-skel"}}">
+    {{#if hasValidLogicalTable}}
+      {{dimension-selector
+        class="report-builder__container report-builder__dimension-selector"
+        request=request
+        onAddTimeGrain=(update-report-action "ADD_TIME_GRAIN")
+        onAddDimension=(update-report-action "ADD_DIMENSION")
+        onRemoveTimeGrain=(update-report-action "REMOVE_TIME_GRAIN")
+        onRemoveDimension=(update-report-action "REMOVE_DIMENSION")
+        onToggleDimFilter=(update-report-action "TOGGLE_DIM_FILTER")
+      }}
+      {{metric-selector
+        class="report-builder__container report-builder__metric-selector"
+        request=request
+        onAddMetric=(update-report-action "ADD_METRIC")
+        onRemoveMetric=(update-report-action "REMOVE_METRIC")
+        onToggleMetricFilter=(update-report-action "TOGGLE_METRIC_FILTER")
       }}
     {{/if}}
-    <div class='report-builder__container--builder {{if (not hasValidLogicalTable) 'report-builder__container--builder-skel'}}'>
-        {{#if hasValidLogicalTable}}
-        {{dimension-selector
-            class='report-builder__container report-builder__dimension-selector'
-            request=request
-            onAddTimeGrain=(update-report-action 'ADD_TIME_GRAIN')
-            onAddDimension=(update-report-action 'ADD_DIMENSION')
-            onRemoveTimeGrain=(update-report-action 'REMOVE_TIME_GRAIN')
-            onRemoveDimension=(update-report-action 'REMOVE_DIMENSION')
-            onToggleDimFilter=(update-report-action 'TOGGLE_DIM_FILTER')
-        }}
-        {{metric-selector
-            class='report-builder__container report-builder__metric-selector'
-            request=request
-            onAddMetric=(update-report-action 'ADD_METRIC')
-            onRemoveMetric=(update-report-action 'REMOVE_METRIC')
-            onToggleMetricFilter=(update-report-action 'TOGGLE_METRIC_FILTER')
-        }}
-        {{/if}}
-    </div>
+  </div>
 </div>
-<div class='report-builder__main'>
-    {{#if hasValidLogicalTable}}
-      <div class='report-builder__container report-builder__container--filters'>
-            <span class='report-builder__container-header'>
-                <span class='report-builder__container-header__title'>FILTERS</span>
-                <span class='report-builder__container-header__message'>
-                    Click the icon {{navi-icon 'filter' class='report-builder__container-header__message--icon'}} next to a dimension/metric to add a filter.
-                </span>
-            </span>
+<div class="report-builder__main">
+  {{#if hasValidLogicalTable}}
+    <div class="report-builder__container report-builder__container--filters">
+      <span class="report-builder__container-header">
+        <span class="report-builder__container-header__title">FILTERS</span>
+        <span class="report-builder__container-header__message">
+          Click the icon {{navi-icon "filter" class="report-builder__container-header__message--icon"}} next to a dimension/metric to add a filter.
+        </span>
+      </span>
 
-            {{filter-collection
-                class='report-builder__filter-collection'
-                request=request
-                onUpdateFilter=(update-report-action 'UPDATE_FILTER')
-                onRemoveFilter=(update-report-action 'REMOVE_FILTER')
-            }}
+      {{filter-collection
+        class="report-builder__filter-collection"
+        request=request
+        onUpdateFilter=(update-report-action "UPDATE_FILTER")
+        onRemoveFilter=(update-report-action "REMOVE_FILTER")
+      }}
 
-      </div>
-    {{/if}}
-    <div class='report-builder__container report-builder__container--result'>
-        {{yield}}
     </div>
+  {{/if}}
+  <div class="report-builder__container report-builder__container--result">
+    {{yield}}
+  </div>
 </div>

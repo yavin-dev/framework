@@ -1,10 +1,8 @@
-import Ember from 'ember';
-import { moduleFor, test } from 'ember-qunit';
-import { setupMock, teardownMock } from '../../../../helpers/mirage-helper';
-import Mirage from 'ember-cli-mirage';
-import wait from 'ember-test-helpers/wait';
-
-const { get } = Ember;
+import { all } from 'rsvp';
+import { module, test } from 'qunit';
+import { setupTest } from 'ember-qunit';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { Response } from 'ember-cli-mirage';
 
 let Route;
 
@@ -42,194 +40,95 @@ const CLONED_MODEL = {
   updatedOn: null
 };
 
-moduleFor('route:dashboards/dashboard/clone', 'Unit | Route | dashboards/dashboard/clone', {
-  needs: [
-    'serializer:dashboard',
-    'serializer:dashboard-widget',
-    'adapter:dashboard-widget',
-    'service:user',
-    'model:user',
-    'model:report',
-    'model:visualization',
-    'model:goal-gauge',
-    'model:line-chart',
-    'model:table',
-    'adapter:user',
-    'model:dashboard',
-    'adapter:dashboard',
-    'transform:fragment',
-    'transform:moment',
-    'model:fragments/presentation',
-    'model:dashboard-widget',
-    'adapter:bard-metadata',
-    'adapter:dimensions/bard',
-    'transform:array',
-    'transform:fragment-array',
-    'transform:dimension',
-    'transform:fragment',
-    'transform:metric',
-    'transform:moment',
-    'transform:table',
-    'model:bard-request/request',
-    'model:bard-request/fragments/dimension',
-    'model:bard-request/fragments/filter',
-    'model:bard-request/fragments/interval',
-    'model:bard-request/fragments/logicalTable',
-    'model:bard-request/fragments/metric',
-    'model:bard-request/fragments/sort',
-    'model:metadata/table',
-    'model:metadata/dimension',
-    'model:metadata/metric',
-    'model:metadata/time-grain',
-    'validator:length',
-    'validator:belongs-to',
-    'validator:has-many',
-    'validator:interval',
-    'validator:presence',
-    'validator:request-metric-exist',
-    'validator:chart-type',
-    'validator:request-metrics',
-    'validator:request-dimension-order',
-    'validator:request-filters',
-    'validator:request-time-grain',
-    'validator:number',
-    'service:bard-metadata',
-    'serializer:bard-request/fragments/logical-table',
-    'serializer:bard-request/fragments/interval',
-    'serializer:visualization',
-    'serializer:report',
-    'serializer:user',
-    'serializer:bard-metadata',
-    'service:keg',
-    'service:ajax',
-    'service:bard-facts',
-    'service:user',
-    'service:bard-dimensions',
-    'model:delivery-rule',
-    'service:navi-notifications'
-  ],
-  beforeEach() {
-    setupMock();
-    Route = this.subject();
-    this.container.lookup('service:user').findUser();
+module('Unit | Route | dashboards/dashboard/clone', function(hooks) {
+  setupTest(hooks);
+  setupMirage(hooks);
 
-    // Load metadata needed for request fragment
-    let metadataService = this.container.lookup('service:bard-metadata');
-    metadataService.loadMetadata();
-  },
-  afterEach() {
-    teardownMock();
-  }
-});
+  hooks.beforeEach(async function() {
+    Route = this.owner.lookup('route:dashboards/dashboard/clone');
+    this.owner.lookup('service:user').findUser();
 
-test('_cloneDashboard - valid dashboard', function(assert) {
-  assert.expect(4);
+    await this.owner.lookup('service:bard-metadata').loadMetadata();
+  });
 
-  return Ember.run(() => {
-    return Route.store.findRecord('dashboard', 1).then(dashboard => {
-      let cloneDashboard = Route._cloneDashboard(dashboard),
-        widgetIdinDashboard1 = dashboard.get('presentation.layout').map(layout => layout.widgetId);
+  test('_cloneDashboard - valid dashboard', async function(assert) {
+    assert.expect(4);
 
-      return cloneDashboard.then(model => {
-        let expectedModel = model.toJSON(),
-          widgetIdinExpectedModel = model.get('presentation.layout').map(layout => layout.widgetId);
+    const dashboard = await Route.store.findRecord('dashboard', 1);
+    const widgetIdInDashboard = dashboard.get('presentation.layout').map(layout => layout.widgetId);
+    const model = await Route._cloneDashboard(dashboard);
+    const expectedModel = model.toJSON();
+    const widgetIdInExpectedModel = model.get('presentation.layout').map(layout => layout.widgetId);
 
-        assert.equal(expectedModel.title, CLONED_MODEL.title, 'Expected Models title is correct');
+    assert.equal(expectedModel.title, CLONED_MODEL.title, 'Expected Models title is correct');
 
-        assert.equal(expectedModel.author, CLONED_MODEL.author, 'Expected Models Author is correct');
+    assert.equal(expectedModel.author, CLONED_MODEL.author, 'Expected Models Author is correct');
 
-        assert.notEqual(
-          widgetIdinExpectedModel,
-          widgetIdinDashboard1,
-          'WidgetIds in expected dashboard and original dashboard is not the same'
-        );
+    assert.notEqual(
+      widgetIdInExpectedModel,
+      widgetIdInDashboard,
+      'WidgetIds in expected dashboard and original dashboard is not the same'
+    );
 
-        assert.deepEqual(
-          expectedModel.presentation,
-          CLONED_MODEL.presentation,
-          'Expected Models presentation object is correct'
-        );
-      });
+    assert.deepEqual(
+      expectedModel.presentation,
+      CLONED_MODEL.presentation,
+      'Expected Models presentation object is correct'
+    );
+  });
+
+  test('_cloneDashboard - invalid widgets for a dashboard', async function(assert) {
+    assert.expect(1);
+
+    //Mock Server Endpoint
+    server.get('/dashboards/:id/widgets/', () => new Response(500));
+
+    const dashboard = await Route.store.findRecord('dashboard', 1);
+    await Route._cloneDashboard(dashboard).catch(() => {
+      assert.ok(true, 'clone dashboard fails for invalid widgets');
     });
   });
-});
 
-test('_cloneDashboard - invalid widgets for a dashboard', function(assert) {
-  assert.expect(1);
+  test('_cloneWidget - valid widget', async function(assert) {
+    assert.expect(15);
 
-  //Mock Server Endpoint
-  server.get('/dashboards/:id/widgets/', () => {
-    return new Mirage.Response(500);
-  });
+    const dashboard = await Route.store.findRecord('dashboard', 1);
+    const oldWidgets = await dashboard.get('widgets');
+    const cloneDashboard = dashboard.clone();
 
-  return Ember.run(() => {
-    return Route.store.findRecord('dashboard', 1).then(dashboard => {
-      let cloneDashboard = Route._cloneDashboard(dashboard);
-      return cloneDashboard.catch(() => {
-        assert.ok(true, 'clone dashboard fails for invalid widgets');
-      });
+    const cloneDashboardModel = await cloneDashboard.save();
+    const widgetPromiseArray = await Route._cloneWidgets(dashboard, cloneDashboardModel);
+    const widgets = await all(widgetPromiseArray);
+
+    widgets.forEach((clonedWidget, idx) => {
+      assert.equal(clonedWidget.title, oldWidgets.objectAt(idx).title, 'Widget titles are same');
+
+      assert.deepEqual(
+        clonedWidget.requests.firstObject.toJSON(),
+        oldWidgets.objectAt(idx).requests.firstObject.toJSON(),
+        'Widget requests are same'
+      );
+
+      assert.deepEqual(
+        clonedWidget.visualization.toJSON(),
+        oldWidgets.objectAt(idx).visualization.toJSON(),
+        'Widget visualization are same'
+      );
+
+      assert.notEqual(clonedWidget.id, oldWidgets.objectAt(idx).id, 'Widget ids are not same');
+
+      assert.equal(
+        clonedWidget.dashboard.get('id'),
+        cloneDashboardModel.id,
+        'Cloned Widgets are set to the correct dashboard'
+      );
     });
   });
-});
 
-test('_cloneWidget - valid widget', function(assert) {
-  assert.expect(15);
+  test('afterModel', function(assert) {
+    assert.expect(1);
 
-  return Ember.run(() => {
-    return Route.store.findRecord('dashboard', 1).then(dashboard => {
-      return dashboard.get('widgets').then(oldWidgets => {
-        let cloneDashboard = dashboard.clone();
-
-        return cloneDashboard.save().then(cloneDashboardModel =>
-          Route._cloneWidgets(dashboard, cloneDashboardModel).then(async widgetPromiseArray => {
-            widgetPromiseArray.forEach((widgetPromise, idx) =>
-              widgetPromise.then(clonedWidget => {
-                assert.equal(
-                  get(clonedWidget, 'title'),
-                  oldWidgets.objectAt(idx).get('title'),
-                  'Widget titles are same'
-                );
-
-                assert.deepEqual(
-                  get(clonedWidget, 'requests.firstObject').toJSON(),
-                  oldWidgets
-                    .objectAt(idx)
-                    .get('requests.firstObject')
-                    .toJSON(),
-                  'Widget requests are same'
-                );
-
-                assert.deepEqual(
-                  get(clonedWidget, 'visualization').toJSON(),
-                  oldWidgets
-                    .objectAt(idx)
-                    .get('visualization')
-                    .toJSON(),
-                  'Widget visualization are same'
-                );
-
-                assert.notEqual(get(clonedWidget, 'id'), oldWidgets.objectAt(idx).get('id'), 'Widget ids are not same');
-
-                assert.equal(
-                  get(clonedWidget, 'dashboard.id'),
-                  get(cloneDashboardModel, 'id'),
-                  'Cloned Widgets are set to the correct dashboard'
-                );
-              })
-            );
-            return Ember.RSVP.all(widgetPromiseArray);
-          })
-        );
-      });
-    });
-  });
-});
-
-test('afterModel', function(assert) {
-  assert.expect(1);
-
-  return wait().then(() => {
-    let dashboard = { id: 6 };
+    const dashboard = { id: 6 };
 
     Route.replaceWith = destinationRoute => {
       assert.equal(destinationRoute, 'dashboards.dashboard', 'Route redirects to dashboard/:id route ');

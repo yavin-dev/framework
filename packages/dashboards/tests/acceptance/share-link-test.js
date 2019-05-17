@@ -1,29 +1,25 @@
-import { test } from 'qunit';
-import { teardownModal } from '../helpers/teardown-modal';
-import moduleForAcceptance from '../../tests/helpers/module-for-acceptance';
+import { click, triggerEvent, visit } from '@ember/test-helpers';
+import { module, test } from 'qunit';
+import { setupApplicationTest } from 'ember-qunit';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
-moduleForAcceptance('Acceptance | share link', {
-  afterEach() {
-    teardownModal();
-    server.shutdown();
-  }
-});
+module('Acceptance | share link', function(hooks) {
+  setupApplicationTest(hooks);
+  setupMirage(hooks);
 
-test('dashboard share link', function(assert) {
-  assert.expect(1);
+  test('dashboard share link', async function(assert) {
+    assert.expect(1);
 
-  visit('/dashboards');
-  let baseUrl = document.location.origin;
-  // TriggerEvent does not work here, need to use jquery trigger mouseenter
-  andThen(() => $('.navi-collection__row:first-of-type').trigger('mouseenter'));
+    await visit('/dashboards');
+    let baseUrl = document.location.origin;
 
-  click('.navi-collection__row:first-of-type .share .btn');
+    //https://github.com/emberjs/ember-test-helpers/issues/343
+    await triggerEvent('.navi-collection__row:first-of-type', 'mouseover');
 
-  andThen(() => {
-    assert.equal(
-      find('.modal-input-box')[0].value,
-      `${baseUrl}/dashboards/1`,
-      'The share link is built correctly by buildDashboardUrl'
-    );
+    await click('.navi-collection__row:first-of-type .share .btn');
+
+    assert
+      .dom('.modal-input-box')
+      .hasValue(`${baseUrl}/dashboards/1`, 'The share link is built correctly by buildDashboardUrl');
   });
 });

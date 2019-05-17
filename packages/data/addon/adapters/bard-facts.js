@@ -6,7 +6,6 @@
  */
 
 import $ from 'jquery';
-
 import { deprecate } from '@ember/application/deprecations';
 import { assert } from '@ember/debug';
 import { inject as service } from '@ember/service';
@@ -97,7 +96,9 @@ export default EmberObject.extend({
         .map(filter => {
           let dimension = get(filter, 'dimension'),
             operator = get(filter, 'operator'),
-            values = get(filter, 'values').join(','),
+            values = array(get(filter, 'values'))
+              .toArray()
+              .join(','),
             field = get(filter, 'field') || 'id';
           return `${dimension}|${field}-${operator}[${values}]`;
         })

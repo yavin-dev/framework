@@ -9,7 +9,7 @@ import { get } from '@ember/object';
 
 export default DS.JSONSerializer.extend({
   /**
-   * @overide
+   * @override
    * @property {Object} attrs - model attribute config while serialization
    */
   attrs: {

@@ -1,66 +1,40 @@
-import Ember from 'ember';
+import { visit } from '@ember/test-helpers';
 import { module, test } from 'qunit';
-import startApp from '../helpers/start-app';
-import Mirage from 'ember-cli-mirage';
+import { setupApplicationTest } from 'ember-qunit';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { Response } from 'ember-cli-mirage';
 
-let Application, OriginalLoggerError, OriginalTestAdapterException;
+module('Acceptance | Dashboard Collections', function(hooks) {
+  setupApplicationTest(hooks);
+  setupMirage(hooks);
 
-module('Acceptance | Dashboard Collections', {
-  beforeEach: function() {
-    Application = startApp();
-    wait();
-  },
+  test('dashobard-collection success', async function(assert) {
+    assert.expect(2);
 
-  afterEach: function() {
-    server.shutdown();
-    Ember.run(Application, 'destroy');
-  }
-});
+    await visit('/dashboard-collections/1');
+    assert.dom('.error').doesNotExist('Error message not present when route is successfully loaded');
 
-test('dashobard-collection success', function(assert) {
-  assert.expect(2);
-
-  visit('/dashboardCollections/1');
-  andThen(function() {
-    assert.notOk(!!find('.error').length, 'Error message not present when route is successfully loaded');
-
-    assert.ok(
-      !!find('.navi-collection').length,
-      'the dashboard collection component is rendered when route is successfully loaded'
-    );
-  });
-});
-
-test('dashboard-collection error', function(assert) {
-  assert.expect(2);
-
-  // Allow testing of errors - https://github.com/emberjs/ember.js/issues/11469
-  OriginalLoggerError = Ember.Logger.error;
-  OriginalTestAdapterException = Ember.Test.adapter.exception;
-  Ember.Logger.error = function() {};
-  Ember.Test.adapter.exception = function() {};
-
-  server.get('/dashboardCollections/:id', () => {
-    return new Mirage.Response(500);
+    assert
+      .dom('.navi-collection')
+      .exists('the dashboard collection component is rendered when route is successfully loaded');
   });
 
-  visit('/dashboardCollections/1');
-  andThen(function() {
-    assert.ok(!!find('.error').length, 'Error message is present when route encounters an error');
+  test('dashboard-collection error', async function(assert) {
+    assert.expect(2);
 
-    assert.notOk(!!find('.navi-collection').length, 'Navi dashboard collection component is not rendered');
+    server.get('/dashboardCollections/:id', () => new Response(500));
 
-    Ember.Logger.error = OriginalLoggerError;
-    Ember.Test.adapter.exception = OriginalTestAdapterException;
+    await visit('/dashboard-collections/1');
+    assert.dom('.error').exists('Error message is present when route encounters an error');
+
+    assert.dom('.navi-collection').doesNotExist('Navi dashboard collection component is not rendered');
   });
-});
 
-test('dashboard-collection loading', function(assert) {
-  assert.expect(1);
+  test('dashboard-collection loading', async function(assert) {
+    assert.expect(1);
 
-  visit('/dashboardCollections/loading');
+    await visit('/dashboard-collections/loading');
 
-  andThen(function() {
-    assert.ok(!!find('.loader-container').length, 'Loader is present when visiting loading route');
+    assert.dom('.loader-container').exists('Loader is present when visiting loading route');
   });
 });

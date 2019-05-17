@@ -9,11 +9,10 @@
  *       removeEmailAtIndex=(action 'removeEmailAtIndex')
  *   }}
  */
+
+import { get, computed } from '@ember/object';
 import Component from '@ember/component';
 import layout from '../templates/components/navi-email-input';
-import Ember from 'ember';
-
-const { get } = Ember;
 
 export default Component.extend({
   layout,
@@ -26,7 +25,7 @@ export default Component.extend({
   /**
    * @property {Array} emails
    */
-  emails: [],
+  emails: computed(() => []),
 
   actions: {
     /**

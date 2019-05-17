@@ -1,24 +1,24 @@
-<span class='filter-builder__subject'>
-    {{displayName}}
+<span class="filter-builder__subject">
+  {{displayName}}
 </span>
 {{#power-select
-    class='filter-builder__operator'
-    dropdownClass='filter-builder__operator-dropdown'
-    options=supportedOperators
-    selected=filter.operator
-    searchEnabled=false
-    tagName='span'
-    triggerClass='filter-builder__select-trigger'
-    onchange=(action 'setOperator')
-    as | operator |
+  class="filter-builder__operator"
+  dropdownClass="filter-builder__operator-dropdown"
+  options=supportedOperators
+  selected=filter.operator
+  searchEnabled=false
+  tagName="span"
+  triggerClass="filter-builder__select-trigger"
+  onchange=(action "setOperator")
+  as | operator |
 }}
-    {{operator.longName}}
+  {{operator.longName}}
 {{/power-select}}
-<span class='filter-builder__values'>
-    {{component
-        filter.operator.valuesComponent
-        filter=filter
-        request=request
-        onUpdateFilter=onUpdateFilter
-    }}
+<span class="filter-builder__values">
+  {{component
+    filter.operator.valuesComponent
+    filter=filter
+    request=request
+    onUpdateFilter=onUpdateFilter
+  }}
 </span>

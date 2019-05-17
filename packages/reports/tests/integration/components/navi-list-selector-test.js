@@ -1,11 +1,14 @@
-import Ember from 'ember';
-import { moduleForComponent, test } from 'ember-qunit';
+import { run } from '@ember/runloop';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render, click, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { fillInSync } from '../../helpers/fill-in-sync';
 
-moduleForComponent('navi-list-selector', 'Integration | Component | navi list selector', {
-  integration: true,
-  beforeEach() {
+module('Integration | Component | navi list selector', function(hooks) {
+  setupRenderingTest(hooks);
+
+  hooks.beforeEach(async function() {
     this.set('items', [
       {
         id: '1',
@@ -28,7 +31,7 @@ moduleForComponent('navi-list-selector', 'Integration | Component | navi list se
       }
     ]);
 
-    this.render(hbs`
+    await render(hbs`
           {{#navi-list-selector
               title='Items'
               items=items
@@ -43,189 +46,113 @@ moduleForComponent('navi-list-selector', 'Integration | Component | navi list se
               {{/each}}
           {{/navi-list-selector}}
       `);
-  }
-});
-
-test('it renders', function(assert) {
-  assert.expect(5);
-
-  assert.ok(this.$('.navi-list-selector').is(':visible'), 'The navi-list-selector component is rendered');
-
-  assert.equal(
-    this.$('.navi-list-selector__title')
-      .text()
-      .trim(),
-    'Items',
-    'The navi-list-selector component renders a title'
-  );
-
-  assert.equal(
-    this.$('.navi-list-selector__search-input').attr('placeholder'),
-    'Search Items',
-    'The navi-list-selector search bar has the title in the placeholder'
-  );
-
-  assert.ok(
-    this.$('.navi-list-selector__show-link').is(':visible'),
-    'The navi-list-selector`s show all/show selected link is rendered'
-  );
-
-  assert.ok(this.$('.navi-list-selector__search').is(':visible'), 'The navi-list-selector`s search bar is rendered');
-});
-
-test('show all/show selected', function(assert) {
-  assert.expect(8);
-
-  assert.equal(
-    this.$('.navi-list-selector__show-link')
-      .text()
-      .trim(),
-    'Show Selected (1)',
-    'the show link initially has the text `Show Selected`'
-  );
-
-  assert.ok(
-    Ember.isEmpty(this.$('.test-item__filtered')),
-    'the boolean `areItemsFiltered` is falsy when the item list is unfiltered'
-  );
-
-  assert.deepEqual(
-    this.$('.test-item')
-      .toArray()
-      .map(el =>
-        $(el)
-          .text()
-          .trim()
-      ),
-    ['foo', 'bar', 'baz'],
-    'All the items are rendered as list-item initially'
-  );
-
-  Ember.run(() => {
-    this.$('.navi-list-selector__show-link').click();
   });
 
-  assert.equal(
-    this.$('.navi-list-selector__show-link')
-      .text()
-      .trim(),
-    'Show All',
-    'the show link text is toggled to `Show All` when clicked'
-  );
+  test('it renders', async function(assert) {
+    assert.expect(5);
 
-  assert.deepEqual(
-    this.$('.test-item')
-      .toArray()
-      .map(el =>
-        $(el)
-          .text()
-          .trim()
-      ),
-    ['foo'],
-    'Only the selected items are rendered as `list-item`s'
-  );
+    assert.dom('.navi-list-selector').isVisible('The navi-list-selector component is rendered');
 
-  assert.deepEqual(
-    this.$('.test-item__filtered')
-      .toArray()
-      .map(el =>
-        $(el)
-          .text()
-          .trim()
-      ),
-    ['foo'],
-    'the boolean `areItemsFiltered` is true when item list is filtered'
-  );
+    assert.dom('.navi-list-selector__title').hasText('Items', 'The navi-list-selector component renders a title');
 
-  this.set('selected', []);
-  assert.equal(
-    this.$('.navi-list-selector__show-link')
-      .text()
-      .trim(),
-    'Show Selected (0)',
-    'the show link will be change to "Show Selected"'
-  );
+    assert
+      .dom('.navi-list-selector__search-input')
+      .hasAttribute(
+        'placeholder',
+        'Search Items',
+        'The navi-list-selector search bar has the title in the placeholder'
+      );
 
-  Ember.run(() => {
-    this.$('.navi-list-selector__show-link').click();
-  });
-  assert.equal(
-    this.$('.navi-list-selector__content--error')
-      .text()
-      .trim(),
-    'No items selected',
-    'No items selected error message is displayed when no items are selected'
-  );
-});
+    assert
+      .dom('.navi-list-selector__show-link')
+      .isVisible('The navi-list-selector`s show all/show selected link is rendered');
 
-test('search', function(assert) {
-  assert.expect(5);
-
-  Ember.run(() => {
-    fillInSync('.navi-list-selector__search-input', 'ba');
+    assert.dom('.navi-list-selector__search').isVisible('The navi-list-selector`s search bar is rendered');
   });
 
-  assert.deepEqual(
-    this.$('.test-item')
-      .toArray()
-      .map(el =>
-        $(el)
-          .text()
-          .trim()
-      ),
-    ['bar', 'baz'],
-    'the items that match the search query are rendered as `list-item`s'
-  );
+  test('show all/show selected', async function(assert) {
+    assert.expect(8);
 
-  Ember.run(() => {
-    this.$('.navi-list-selector__show-link').click();
+    assert
+      .dom('.navi-list-selector__show-link')
+      .hasText('Show Selected (1)', 'the show link initially has the text `Show Selected`');
+
+    assert
+      .dom('.test-item__filtered')
+      .isNotVisible('the boolean `areItemsFiltered` is falsy when the item list is unfiltered');
+
+    assert.deepEqual(
+      findAll('.test-item').map(el => el.textContent.trim()),
+      ['foo', 'bar', 'baz'],
+      'All the items are rendered as list-item initially'
+    );
+
+    await click('.navi-list-selector__show-link');
+
+    assert
+      .dom('.navi-list-selector__show-link')
+      .hasText('Show All', 'the show link text is toggled to `Show All` when clicked');
+
+    assert.deepEqual(
+      findAll('.test-item').map(el => el.textContent.trim()),
+      ['foo'],
+      'Only the selected items are rendered as `list-item`s'
+    );
+
+    assert.deepEqual(
+      findAll('.test-item__filtered').map(el => el.textContent.trim()),
+      ['foo'],
+      'the boolean `areItemsFiltered` is true when item list is filtered'
+    );
+
+    this.set('selected', []);
+    assert
+      .dom('.navi-list-selector__show-link')
+      .hasText('Show Selected (0)', 'the show link will be change to "Show Selected"');
+
+    await click('.navi-list-selector__show-link');
+    assert
+      .dom('.navi-list-selector__content--error')
+      .hasText('No items selected', 'No items selected error message is displayed when no items are selected');
   });
 
-  assert.deepEqual(
-    this.$('.test-item')
-      .toArray()
-      .map(el =>
-        $(el)
-          .text()
-          .trim()
-      ),
-    [],
-    'no items match with the search query in the selected item list'
-  );
+  test('search', async function(assert) {
+    assert.expect(5);
 
-  assert.equal(
-    this.$('.navi-list-selector__content--error')
-      .text()
-      .trim(),
-    'No items found',
-    'No items found error message is displayed when no items match the search query'
-  );
+    run(() => {
+      fillInSync('.navi-list-selector__search-input', 'ba');
+    });
 
-  Ember.run(() => {
-    this.$('.navi-list-selector__search-input-clear').click();
+    assert.deepEqual(
+      findAll('.test-item').map(el => el.textContent.trim()),
+      ['bar', 'baz'],
+      'the items that match the search query are rendered as `list-item`s'
+    );
+
+    await click('.navi-list-selector__show-link');
+
+    assert.deepEqual(
+      findAll('.test-item').map(el => el.textContent.trim()),
+      [],
+      'no items match with the search query in the selected item list'
+    );
+
+    assert
+      .dom('.navi-list-selector__content--error')
+      .hasText('No items found', 'No items found error message is displayed when no items match the search query');
+
+    await click('.navi-list-selector__search-input-clear');
+
+    assert.deepEqual(
+      findAll('.test-item').map(el => el.textContent.trim()),
+      ['foo'],
+      'the search query is cleared and the selected items are rendered as `list-item`s'
+    );
+
+    assert.deepEqual(
+      findAll('.test-item__filtered').map(el => el.textContent.trim()),
+      ['foo'],
+      'the boolean `areItemsFiltered` is true when item list is filtered by search query'
+    );
   });
-
-  assert.deepEqual(
-    this.$('.test-item')
-      .toArray()
-      .map(el =>
-        $(el)
-          .text()
-          .trim()
-      ),
-    ['foo'],
-    'the search query is cleared and the selected items are rendered as `list-item`s'
-  );
-
-  assert.deepEqual(
-    this.$('.test-item__filtered')
-      .toArray()
-      .map(el =>
-        $(el)
-          .text()
-          .trim()
-      ),
-    ['foo'],
-    'the boolean `areItemsFiltered` is true when item list is filtered by search query'
-  );
 });
