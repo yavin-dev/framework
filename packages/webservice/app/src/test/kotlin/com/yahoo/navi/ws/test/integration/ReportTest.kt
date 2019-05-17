@@ -434,6 +434,63 @@ class ReportTest: IntegrationTest() {
     }
 
     @Test
+    fun differentAuthorPermissions() {
+        //Post a report with different author
+        given()
+            .header("User", USER1)
+            .contentType("application/vnd.api+json")
+            .body("""
+                {
+                    "data": {
+                        "type": "reports",
+                        "attributes": {
+                            "title": "A Report",
+                            "request": $reqStr,
+                            "visualization": $visualStr
+                        },
+                        "relationships": {
+                            ${author(USER1)}
+                        }
+                    }
+                }
+            """.trimIndent())
+        .When()
+            .post("/reports")
+        .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_CREATED)
+
+        given()
+            .header("User", USER2)
+            .contentType("application/vnd.api+json")
+            .body("""
+                {
+                    "data": {
+                        "type": "reports",
+                        "id": 1,
+                        "attributes": {
+                            "title": "Updated Title"
+                        }
+                    }
+                }
+            """.trimIndent())
+        .When()
+            .patch("/reports/1")
+        .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_FORBIDDEN)
+
+        given()
+            .header("User", USER2)
+            .contentType("application/vnd.api+json")
+        .When()
+            .delete("/reports/1")
+        .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_FORBIDDEN)
+    }
+
+    @Test
     fun createDate() {
         //Post a report
         given()

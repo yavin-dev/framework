@@ -4,12 +4,18 @@
  */
 package com.yahoo.navi.ws.models.permissions.checks
 
+import com.yahoo.elide.core.Path
+import com.yahoo.elide.core.filter.FilterPredicate
+import com.yahoo.elide.core.filter.Operator
+import com.yahoo.elide.core.filter.expression.FilterExpression
 import com.yahoo.elide.security.ChangeSpec
+import com.yahoo.elide.security.FilterExpressionCheck
 import com.yahoo.elide.security.RequestScope
 import com.yahoo.elide.security.checks.CommitCheck
-import com.yahoo.elide.security.checks.OperationCheck
 import com.yahoo.navi.ws.models.beans.HasAuthor
+import com.yahoo.navi.ws.models.beans.User
 import java.security.Principal
+import java.util.Collections
 import java.util.Optional
 import kotlin.collections.Collection
 
@@ -32,16 +38,18 @@ object Author {
     /**
      * Checks at the operation level
      */
-    class AtOperation : OperationCheck<HasAuthor>() {
-
+    class AtOperation : FilterExpressionCheck<HasAuthor>() {
         /**
-         * @param record user
-         * @param requestScope Elide Resource
-         * @param changeSpec Elide Resource
-         * @return true if given record id matches user's id
+         * @param HasAuthor entityClass
+         * @param RequestScope requestScope
+         * @return
          */
-        override fun ok(record: HasAuthor, requestScope: RequestScope, changeSpec: Optional<ChangeSpec>): Boolean {
-            return check(record, requestScope)
+        override fun getFilterExpression(entityClass: Class<*>?, requestScope: RequestScope): FilterExpression {
+            val authorPath = Path.PathElement(entityClass, User::class.java, "author.id")
+
+            val user = requestScope.user!!.opaqueUser as Principal
+
+            return FilterPredicate(authorPath, Operator.IN, Collections.singletonList(user.name) as List<Any>)
         }
     }
 
