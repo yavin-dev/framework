@@ -23,7 +23,7 @@ Router.map(function() {
     this.route('my-data');
   });
 
-  this.route('reportCollections', function() {
+  this.route('report-collections', function() {
     this.route('collection', { path: '/:collection_id' });
   });
 

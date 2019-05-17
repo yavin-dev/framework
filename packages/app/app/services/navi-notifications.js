@@ -5,7 +5,6 @@
  * Notification service
  */
 import Service, { inject as service } from '@ember/service';
-
 import { get } from '@ember/object';
 
 const TIMEOUTS = {

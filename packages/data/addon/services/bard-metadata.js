@@ -6,7 +6,6 @@
  */
 
 import { deprecate } from '@ember/application/deprecations';
-
 import { A } from '@ember/array';
 import { assert } from '@ember/debug';
 import Service, { inject as service } from '@ember/service';

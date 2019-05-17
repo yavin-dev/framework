@@ -3,7 +3,6 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { get } from '@ember/object';
-
 import { getOwner } from '@ember/application';
 import ReportRoute from 'navi-reports/routes/reports/report';
 

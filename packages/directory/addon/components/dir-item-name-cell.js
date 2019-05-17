@@ -11,7 +11,6 @@
  */
 
 import { oneWay } from '@ember/object/computed';
-
 import Component from '@ember/component';
 import layout from '../templates/components/dir-item-name-cell';
 import fileTypes from 'navi-directory/utils/enums/file-types';

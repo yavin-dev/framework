@@ -5,7 +5,6 @@
  * Ember service that can store and fetch records
  */
 import { typeOf } from '@ember/utils';
-
 import { A, makeArray } from '@ember/array';
 import Service from '@ember/service';
 import { getOwner } from '@ember/application';

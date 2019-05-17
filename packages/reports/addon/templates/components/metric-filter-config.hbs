@@ -3,15 +3,15 @@
   calculatePosition=calculatePosition
   as |dd|
 }}
-  {{#dd.trigger class='metric-filter-config__dropdown-trigger'}}
-    {{navi-icon 'cog' class='metric-filter-config__trigger-icon'}}
+  {{#dd.trigger class="metric-filter-config__dropdown-trigger"}}
+    {{navi-icon "cog" class="metric-filter-config__trigger-icon"}}
   {{/dd.trigger}}
 
-  {{#dd.content class='metric-filter-config__dropdown-container'}}
-    <div class='metric-filter-config__header'>{{parameter}} ({{otherParams.length}})</div>
-    <div class='metric-filter-config__items'>
+  {{#dd.content class="metric-filter-config__dropdown-container"}}
+    <div class="metric-filter-config__header">{{parameter}} ({{otherParams.length}})</div>
+    <div class="metric-filter-config__items">
       {{#each otherParams as | param |}}
-        <div class='metric-filter-config__item' onclick={{action (queue (action paramClicked parameter param) (action dd.actions.close))}}>{{param}}</div>
+        <div class="metric-filter-config__item" role="button" onclick={{action (queue (action paramClicked parameter param) (action dd.actions.close))}}>{{param}}</div>
       {{/each}}
     </div>
   {{/dd.content}}

@@ -1,43 +1,35 @@
-import Ember from 'ember';
-import { moduleFor, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupTest } from 'ember-qunit';
 import config from 'ember-get-config';
-import wait from 'ember-test-helpers/wait';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
-
-const { getOwner } = Ember;
+import { setOwner } from '@ember/application';
 
 let Store;
 
-moduleFor('helper:get-user', 'Unit | Helper | get user', {
-  needs: [
-    'service:user',
-    'model:user',
-    'adapter:user',
-    'model:report',
-    'serializer:user',
-    'model:delivery-rule',
-    'model:dashboard'
-  ],
-  beforeEach() {
+module('Unit | Helper | get user', function(hooks) {
+  setupTest(hooks);
+
+  hooks.beforeEach(function() {
     setupMock();
-    Store = getOwner(this).lookup('service:store');
+    Store = this.owner.lookup('service:store');
     Store.find('user', config.navi.user);
-  },
-  afterEach() {
+  });
+
+  hooks.afterEach(function() {
     teardownMock();
-  }
-});
+  });
 
-test('getUser returns user', function(assert) {
-  assert.expect(1);
+  test('getUser returns user', async function(assert) {
+    assert.expect(1);
 
-  let getUser = this.subject();
+    let getUser = await this.owner.lookup('helper:get-user');
+    let helper = new getUser();
 
-  return wait().then(() => {
-    return Ember.run(() => {
-      let userFromStore = Store.peekRecord('user', config.navi.user),
-        user = getUser.compute();
-      assert.deepEqual(user, userFromStore, 'the user model retrieved using the helper is the current user');
-    });
+    setOwner(helper, this.owner);
+
+    let userFromStore = Store.peekRecord('user', config.navi.user),
+      user = helper.compute();
+
+    assert.deepEqual(user, userFromStore, 'the user model retrieved using the helper is the current user');
   });
 });

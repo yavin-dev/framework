@@ -12,11 +12,11 @@
  *  neq -> !=
  *
  */
-import Ember from 'ember';
+import { helper as buildHelper } from '@ember/component/helper';
 import HavingOperations from 'navi-reports/utils/enums/having-operators';
 
 export function formatHavingOperator([operator]) {
   return HavingOperations.findBy('id', operator).name;
 }
 
-export default Ember.Helper.helper(formatHavingOperator);
+export default buildHelper(formatHavingOperator);

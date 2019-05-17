@@ -5,7 +5,6 @@
  * Time Grain Fragment Object
  */
 import EmberObject, { computed } from '@ember/object';
-
 import { getOwner } from '@ember/application';
 
 export default EmberObject.extend({

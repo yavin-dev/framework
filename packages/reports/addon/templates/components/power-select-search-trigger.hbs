@@ -1,11 +1,11 @@
 {{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{#if hasFocus}}
-    <input type="search" class="ember-power-select-search-trigger {{elementId}}-input"
-      tabindex="0" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-      placeholder={{placeholder}}
-      oninput={{action "handleInput"}}
-      onkeydown={{action "handleKeydown"}}
-    >
+  <input type="search" class="ember-power-select-search-trigger {{elementId}}-input"
+    tabindex="0" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+    placeholder={{placeholder}}
+    oninput={{action "handleInput"}}
+    onkeydown={{action "handleKeydown"}}
+  >
 {{else}}
-    <span class="ember-power-select-selected-item">{{yield selected lastSearchedText}}</span>
+  <span class="ember-power-select-selected-item">{{yield selected lastSearchedText}}</span>
 {{/if}}

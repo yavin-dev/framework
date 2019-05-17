@@ -1,127 +1,118 @@
-import { moduleFor, test } from 'ember-qunit';
-import Ember from 'ember';
+import EmberObject, { get } from '@ember/object';
+import { run } from '@ember/runloop';
+import { resolve } from 'rsvp';
+import { module, test } from 'qunit';
+import { setupTest } from 'ember-qunit';
 
-moduleFor('route:reports/report/view', 'Unit | Route | reports/report/view', {
-  needs: [
-    'service:navi-visualizations',
-    'manifest:metric-label',
-    'manifest:table',
-    'manifest:line-chart',
-    'manifest:base',
-    'model:table',
-    'service:bard-facts'
-  ]
-});
+module('Unit | Route | reports/report/view', function(hooks) {
+  setupTest(hooks);
 
-test('model', function(assert) {
-  assert.expect(5);
+  test('model', async function(assert) {
+    assert.expect(5);
 
-  const serializedRequest = 'foo',
-    factServiceResponse = 'bar',
-    reportModel = {
-      id: 1,
-      request: {
-        serialize: () => serializedRequest
-      },
-      visualization: {
-        type: 'table',
-        isValidForRequest: () => false, // Test invalid config case
-        rebuildConfig(request, response) {
-          assert.equal(
-            request,
-            reportModel.request,
-            'When config is invalid, rebuildConfig is given raw request object'
+    const serializedRequest = 'foo',
+      factServiceResponse = 'bar',
+      reportModel = {
+        id: 1,
+        request: {
+          serialize: () => serializedRequest
+        },
+        visualization: {
+          type: 'table',
+          isValidForRequest: () => false, // Test invalid config case
+          rebuildConfig(request, response) {
+            assert.equal(
+              request,
+              reportModel.request,
+              'When config is invalid, rebuildConfig is given raw request object'
+            );
+
+            assert.equal(
+              response,
+              factServiceResponse,
+              'When config is invalid, rebuildConfig is given fact service response'
+            );
+          }
+        }
+      };
+
+    let route = this.owner.factoryFor('route:reports/report/view').create({
+      modelFor: () => reportModel,
+      facts: {
+        fetch(request, options) {
+          assert.deepEqual(request, serializedRequest, "Report's serialized request is given to fact service");
+
+          assert.deepEqual(
+            options,
+            {
+              page: 1,
+              perPage: 10000,
+              clientId: 'customReports',
+              customHeaders: {
+                uiView: 'report.spv.1'
+              }
+            },
+            'Options from route are passed to fact service'
           );
 
-          assert.equal(
-            response,
-            factServiceResponse,
-            'When config is invalid, rebuildConfig is given fact service response'
-          );
+          return resolve({ request: serializedRequest, response: factServiceResponse });
         }
       }
-    };
+    });
 
-  let route = this.subject({
-    modelFor: () => reportModel,
-    facts: {
-      fetch(request, options) {
-        assert.equal(request, serializedRequest, "Report's serialized request is given to fact service");
+    let model = await route.model();
 
-        assert.deepEqual(
-          options,
-          {
-            page: 1,
-            perPage: 10000,
-            clientId: 'customReports',
-            customHeaders: {
-              uiView: 'report.spv.1'
-            }
-          },
-          'Options from route are passed to fact service'
-        );
-
-        return Ember.RSVP.resolve({ request: serializedRequest, response: factServiceResponse });
-      }
-    }
-  });
-
-  Ember.run(() => route.model()).then(model => {
     assert.deepEqual(
       model,
       { request: serializedRequest, response: factServiceResponse },
       'Model hook returns request and response from fact service wrapped in a PromiseObject'
     );
   });
-});
 
-test('invalid visualization', function(assert) {
-  assert.expect(1);
+  test('invalid visualization', function(assert) {
+    assert.expect(1);
 
-  this.register(
-    'manifest:invalid-type',
-    Ember.Object.extend({
-      typeIsValid: () => false
-    })
-  );
+    this.owner.register(
+      'manifest:invalid-type',
+      EmberObject.extend({
+        typeIsValid: () => false
+      })
+    );
 
-  let route = this.subject(),
-    report = {
-      visualization: {
-        type: 'invalid-type'
+    let route = this.owner.lookup('route:reports/report/view'),
+      report = {
+        visualization: {
+          type: 'invalid-type'
+        }
+      };
+
+    run(() => {
+      route._setValidVisualizationType(null, report);
+    });
+
+    assert.equal(get(report, 'visualization.type'), 'table', 'Any invalid visualization types are defaulted to table');
+  });
+
+  test('runReport action', function(assert) {
+    assert.expect(1);
+
+    let route = this.owner.factoryFor('route:reports/report/view').create({
+      _hasRequestRun() {
+        return true;
+      },
+      refresh() {
+        throw new Error('The route should not refresh if the request has not changed');
       }
+    });
+
+    /* == Request has no changes == */
+    route.send('runReport');
+
+    /* == Request has been changed == */
+    route.refresh = () => {
+      assert.ok(true, 'Action asks route to refresh model');
     };
-
-  Ember.run(() => {
-    route._setValidVisualizationType(null, report);
+    route._hasRequestRun = () => false;
+    route.send('runReport');
   });
-
-  assert.equal(
-    Ember.get(report, 'visualization.type'),
-    'table',
-    'Any invalid visualization types are defaulted to table'
-  );
-});
-
-test('runReport action', function(assert) {
-  assert.expect(1);
-
-  let route = this.subject({
-    _hasRequestRun() {
-      return true;
-    },
-    refresh() {
-      throw new Error('The route should not refresh if the request has not changed');
-    }
-  });
-
-  /* == Request has no changes == */
-  route.send('runReport');
-
-  /* == Request has been changed == */
-  route.refresh = () => {
-    assert.ok(true, 'Action asks route to refresh model');
-  };
-  route._hasRequestRun = () => false;
-  route.send('runReport');
 });

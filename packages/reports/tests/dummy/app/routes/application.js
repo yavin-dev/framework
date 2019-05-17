@@ -1,15 +1,15 @@
-import Ember from 'ember';
+import Route from '@ember/routing/route';
 import { inject } from '@ember/service';
 import { get } from '@ember/object';
 import { hash } from 'rsvp';
 
-export default Ember.Route.extend({
+export default Route.extend({
   user: inject(),
 
   /**
    * @property {Ember.Service}
    */
-  bardMetadata: Ember.inject.service(),
+  bardMetadata: inject(),
 
   /**
    * @method model

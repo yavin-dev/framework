@@ -14,7 +14,6 @@
  */
 
 import { A as arr } from '@ember/array';
-
 import ScheduleAction from 'navi-reports/components/common-actions/schedule';
 
 export default ScheduleAction.extend({

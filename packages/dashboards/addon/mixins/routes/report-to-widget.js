@@ -3,7 +3,6 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Mixin from '@ember/object/mixin';
-
 import { computed, get } from '@ember/object';
 
 export default Mixin.create({

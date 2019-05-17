@@ -11,12 +11,11 @@
  *   }}
  */
 
-import Ember from 'ember';
+import Component from '@ember/component';
+import { get } from '@ember/object';
 import layout from '../../templates/components/filter-values/range-input';
 
-const { get } = Ember;
-
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   /**

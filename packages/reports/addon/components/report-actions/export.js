@@ -10,14 +10,12 @@
  *   {{/report-actions/export}}
  */
 
-/*jshint scripturl:true*/
-
-import Ember from 'ember';
+import { inject as service } from '@ember/service';
+import Component from '@ember/component';
+import { get, computed } from '@ember/object';
 import layout from '../../templates/components/report-actions/export';
 
-const { computed, get } = Ember;
-
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   /**
@@ -43,7 +41,7 @@ export default Ember.Component.extend({
   /**
    * @property {Service} facts - instance of bard facts service
    */
-  facts: Ember.inject.service('bard-facts'),
+  facts: service('bard-facts'),
 
   /**
    * @property {Boolean} download - Boolean to check if request is valid and set download
@@ -72,7 +70,7 @@ export default Ember.Component.extend({
   /**
    * @property {String} href - API link for the report
    */
-  href: computed('report.request', 'disabled', 'report.request.validations.isTruelyValid', function() {
+  href: computed('report.{request,request.validations.isTruelyValid}', 'disabled', function() {
     /*
      * Observe 'report.request.validations.isTruelyValid' to recompute with any request change
      * Void the href on a should disabled

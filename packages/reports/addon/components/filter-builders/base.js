@@ -4,14 +4,13 @@
  *
  * Base class for filter builders.
  */
-import Ember from 'ember';
+
+import Component from '@ember/component';
+import { get, computed } from '@ember/object';
 import layout from 'navi-reports/templates/components/filter-builders/base';
 import { readOnly } from '@ember/object/computed';
-import { assign } from '@ember/polyfills';
 
-const { get } = Ember;
-
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   /**
@@ -38,7 +37,9 @@ export default Ember.Component.extend({
   /**
    * @property {Array} supportedOperators - list of valid values for filter.operator
    */
-  supportedOperators: [],
+  supportedOperators: computed(function() {
+    return [];
+  }),
 
   actions: {
     /**
@@ -53,12 +54,12 @@ export default Ember.Component.extend({
        * unless operators share valuesComponent
        */
       if (get(this, 'filter.operator.valuesComponent') !== operatorObject.valuesComponent) {
-        assign(changeSet, { values: [] });
+        Object.assign(changeSet, { values: [] });
       }
 
       //switch field to primary key if operator does not allow choosing fields
       if (get(this, 'primaryKeyField') && !operatorObject.showFields) {
-        assign(changeSet, { field: get(this, 'primaryKeyField') });
+        Object.assign(changeSet, { field: get(this, 'primaryKeyField') });
       }
 
       this.onUpdateFilter(changeSet);

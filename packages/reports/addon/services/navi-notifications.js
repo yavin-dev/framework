@@ -5,9 +5,9 @@
  * Notification service meant to be a single place for
  * a parent app to receive and respond to notifications
  */
-import Ember from 'ember';
+import Service from '@ember/service';
 
-export default Ember.Service.extend({
+export default Service.extend({
   /**
    * @method add
    * @param {Object} options

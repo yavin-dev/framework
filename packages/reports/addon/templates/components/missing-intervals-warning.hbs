@@ -1,30 +1,30 @@
 {{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{#liquid-if warningEnabled class='missing-intervals-warning'}}
-  <div class='missing-intervals-warning__contents' onclick={{action (pipe (action (toggle 'showDetails' this)) (action onDetailsToggle))}}>
-    {{navi-icon 'exclamation-triangle' class='missing-intervals-warning__warning-icon'}}
-    <span class='missing-intervals-warning__message-text'>Results have missing data.</span>
-    <span class='missing-intervals-warning__details-trigger'>
+{{#liquid-if warningEnabled class="missing-intervals-warning"}}
+  <div class="missing-intervals-warning__contents" role="button" onclick={{action (pipe (action (toggle "showDetails" this)) (action onDetailsToggle))}}>
+    {{navi-icon "exclamation-triangle" class="missing-intervals-warning__warning-icon"}}
+    <span class="missing-intervals-warning__message-text">Results have missing data.</span>
+    <span class="missing-intervals-warning__details-trigger">
       {{#if showDetails}}
-        <span class='missing-intervals-warning__details-desc'>Click to close.</span>
-        {{navi-icon 'chevron-down' class='missing-intervals-warning__arrow-icon'}}
+        <span class="missing-intervals-warning__details-desc">Click to close.</span>
+        {{navi-icon "chevron-down" class="missing-intervals-warning__arrow-icon"}}
       {{else}}
-        <span class='missing-intervals-warning__details-desc'>Click for more details.</span>
-        {{navi-icon 'chevron-up' class='missing-intervals-warning__arrow-icon'}}
+        <span class="missing-intervals-warning__details-desc">Click for more details.</span>
+        {{navi-icon "chevron-up" class="missing-intervals-warning__arrow-icon"}}
       {{/if}}
     </span>
   </div>
-  {{#liquid-if showDetails class='missing-intervals-warning__details'}}
-    <div class='missing-intervals-warning__details-content'>
-      <div class='missing-intervals-warning__details-help-text'>The following intervals from the result set have missing data:</div>
-      <div class='missing-intervals-warning__dates'>
+  {{#liquid-if showDetails class="missing-intervals-warning__details"}}
+    <div class="missing-intervals-warning__details-content">
+      <div class="missing-intervals-warning__details-help-text">The following intervals from the result set have missing data:</div>
+      <div class="missing-intervals-warning__dates">
         {{#each missingIntervals as |interval|}}
-          <div class='missing-intervals-warning__date-row'>
-            {{navi-icon 'times' class='missing-intervals-warning__x-icon'}}
-            <span class='missing-intervals-warning__date-interval'>{{interval}}</span>
+          <div class="missing-intervals-warning__date-row">
+            {{navi-icon "times" class="missing-intervals-warning__x-icon"}}
+            <span class="missing-intervals-warning__date-interval">{{interval}}</span>
           </div>
         {{/each}}
       </div>
-      <div class='missing-intervals-warning__disclaimer'>Note: Listed intervals include both the start and end dates.</div>
+      <div class="missing-intervals-warning__disclaimer">Note: Listed intervals include both the start and end dates.</div>
     </div>
   {{/liquid-if}}
 {{/liquid-if}}

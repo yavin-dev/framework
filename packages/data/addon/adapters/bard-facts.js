@@ -6,7 +6,6 @@
  */
 
 import $ from 'jquery';
-
 import { deprecate } from '@ember/application/deprecations';
 import { assert } from '@ember/debug';
 import { inject as service } from '@ember/service';

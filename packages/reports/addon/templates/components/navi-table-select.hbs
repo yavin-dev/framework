@@ -1,23 +1,22 @@
 {{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<span class='navi-table-select__header'>
-    Table
+<span class="navi-table-select__header">
+  Table
 </span>
 {{#power-select
-    classNames='navi-table-select__dropdown'
-    dropdownClass='navi-table-select__dropdown-list'
-    options=options
-    selected=selected
-    searchEnabled=searchEnabled
-    tagName=tagName
-    onchange=onChange
-    as | item |
+  classNames="navi-table-select__dropdown"
+  dropdownClass="navi-table-select__dropdown-list"
+  options=options
+  selected=selected
+  searchEnabled=searchEnabled
+  tagName=tagName
+  onchange=onChange
+  as | item |
 }}
-    {{item.longName}}
-    {{#if item.description}}
-        {{tooltip-on-element
-            text=item.description
-            side='right'
-            enableLazyRendering=true
-        }}
-    {{/if}}
+  {{item.longName}}
+  {{#if item.description}}
+    {{ember-tooltip
+      text=item.description
+      side="right"
+    }}
+  {{/if}}
 {{/power-select}}

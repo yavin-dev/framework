@@ -4,7 +4,6 @@
  */
 
 import { inject as service } from '@ember/service';
-
 import EmberObject from '@ember/object';
 import config from 'ember-get-config';
 import { pluralize } from 'ember-inflector';

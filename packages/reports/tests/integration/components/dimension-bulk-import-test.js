@@ -1,9 +1,13 @@
-import Ember from 'ember';
-import { moduleForComponent, test } from 'ember-qunit';
+import { run } from '@ember/runloop';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render, settled, findAll, waitFor, click } from '@ember/test-helpers';
+import $ from 'jquery';
 import hbs from 'htmlbars-inline-precompile';
-import wait from 'ember-test-helpers/wait';
 import config from 'ember-get-config';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
+
+let server;
 
 const HOST = config.navi.dataSources[0].uri;
 
@@ -40,40 +44,43 @@ const COMMON_TEMPLATE = hbs`
     ]
   };
 
-moduleForComponent('dimension-bulk-import', 'Integration | Component | Dimension Bulk Import', {
-  integration: true,
+module('Integration | Component | Dimension Bulk Import', function(hooks) {
+  setupRenderingTest(hooks);
 
-  beforeEach: function() {
-    setupMock().pretender.map(function() {
-      this.get(`${HOST}/v1/dimensions/property/values/`, request => {
+  hooks.beforeEach(function() {
+    server = setupMock();
+    server.get(
+      `${HOST}/v1/dimensions/property/values/`,
+      (schema, request) => {
         if (request.queryParams.filters === 'property|id-in[100001,100002,56565565,78787,114,100003]') {
-          return [200, { 'Content-Type': 'application/json' }, JSON.stringify(PROPERTY_MOCK_DATA)];
+          return PROPERTY_MOCK_DATA;
         }
-      });
+      },
+      { timing: 400 }
+    );
 
-      this.get(`${HOST}/v1/dimensions/multiSystemId/values/`, request => {
+    server.get(
+      `${HOST}/v1/dimensions/multiSystemId/values/`,
+      (schema, request) => {
         if (request.queryParams.filters === 'multiSystemId|id-in[6,7]') {
-          return [
-            200,
-            { 'Content-Type': 'application/json' },
-            JSON.stringify({
-              rows: [
-                {
-                  id: '6',
-                  key: 'k6',
-                  description: 'System ID 1'
-                },
-                {
-                  id: '7',
-                  key: 'k7',
-                  description: 'System ID 2'
-                }
-              ]
-            })
-          ];
+          return {
+            rows: [
+              {
+                id: '6',
+                key: 'k6',
+                description: 'System ID 1'
+              },
+              {
+                id: '7',
+                key: 'k7',
+                description: 'System ID 2'
+              }
+            ]
+          };
         }
-      });
-    });
+      },
+      { timing: 400 }
+    );
 
     let dimension = {
       name: 'property',
@@ -87,49 +94,39 @@ moduleForComponent('dimension-bulk-import', 'Integration | Component | Dimension
       queryIds: ['100001', '100002', '56565565', '78787', '114', '100003']
     });
 
-    return this.container.lookup('service:bard-metadata').loadMetadata();
-  },
+    return this.owner.lookup('service:bard-metadata').loadMetadata();
+  });
 
-  afterEach: function() {
+  hooks.afterEach(function() {
     teardownMock();
-  }
-});
+  });
 
-test('bulk import Component renders', function(assert) {
-  assert.expect(2);
+  test('bulk import Component renders', async function(assert) {
+    assert.expect(2);
 
-  this.render(COMMON_TEMPLATE);
+    await render(COMMON_TEMPLATE);
 
-  assert.ok(this.$('.dimension-bulk-import').is(':visible'), 'Component renders');
+    assert.dom('.dimension-bulk-import').isVisible('Component renders');
 
-  let buttons = $('.btn-container button');
-  assert.deepEqual(
-    buttons
-      .map(function() {
-        return this.textContent.trim();
-      })
-      .get(),
-    ['Include Valid IDs', 'Cancel'],
-    'Include and Cancel buttons are rendered in input mode as expected'
-  );
-});
-
-test('search dimension IDs', function(assert) {
-  assert.expect(6);
-
-  this.render(COMMON_TEMPLATE);
-
-  assert.equal($('.loading-message').length, 1, 'loading spinner is visible');
-
-  return wait().then(() => {
-    /* == Valid Ids == */
-    assert.equal(
-      $('.valid-id-count')
-        .text()
-        .trim(),
-      '4',
-      'Valid ID count is 4'
+    let buttons = findAll('.btn-container button');
+    assert.deepEqual(
+      buttons.map(el => el.textContent.trim()),
+      ['Include Valid IDs', 'Cancel'],
+      'Include and Cancel buttons are rendered in input mode as expected'
     );
+  });
+
+  test('search dimension IDs', async function(assert) {
+    assert.expect(6);
+
+    render(COMMON_TEMPLATE);
+
+    await waitFor('.loading-message');
+    assert.dom('.loading-message').isVisible('loading spinner is visible');
+
+    await settled();
+    /* == Valid Ids == */
+    assert.dom('.valid-id-count').hasText('4', 'Valid ID count is 4');
 
     let validPills = $('.id-container:first .item');
     assert.deepEqual(
@@ -173,50 +170,47 @@ test('search dimension IDs', function(assert) {
       'Search and Cancel buttons are rendered in result mode as expected'
     );
   });
-});
 
-test('onSelectValues action is triggered', function(assert) {
-  assert.expect(2);
+  test('onSelectValues action is triggered', async function(assert) {
+    assert.expect(2);
 
-  this.set('onSelectValues', validDimVals => {
-    assert.ok(true, 'onSelectValues action is triggered');
+    this.set('onSelectValues', validDimVals => {
+      assert.ok(true, 'onSelectValues action is triggered');
 
-    assert.deepEqual(
-      validDimVals.mapBy('id'),
-      ['114', '100001', '100002', '100003'],
-      'Only Valid dimension IDs are received'
-    );
-  });
+      assert.deepEqual(
+        validDimVals.mapBy('id'),
+        ['114', '100001', '100002', '100003'],
+        'Only Valid dimension IDs are received'
+      );
+    });
 
-  this.render(COMMON_TEMPLATE);
+    await render(COMMON_TEMPLATE);
 
-  return wait().then(() => {
     //Click Include Valid IDs Button
-    this.$('.btn-container button:contains(Include Valid IDs)').click();
-  });
-});
-
-test('onCancel action is triggered', function(assert) {
-  assert.expect(1);
-
-  this.set('onCancel', () => {
-    assert.ok(true, 'onCancel action is triggered');
+    await click($('.btn-container button:contains(Include Valid IDs)')[0]);
   });
 
-  this.render(COMMON_TEMPLATE);
+  test('onCancel action is triggered', async function(assert) {
+    assert.expect(1);
 
-  return wait().then(() => {
+    this.set('onCancel', () => {
+      assert.ok(true, 'onCancel action is triggered');
+    });
+
+    await render(COMMON_TEMPLATE);
+
+    await settled();
     //Click Cancel Button
-    $('.btn-container button:contains(Cancel)').click();
+    await click($('.btn-container button:contains(Cancel)')[0]);
   });
-});
 
-test('remove valid IDs', function(assert) {
-  assert.expect(6);
+  test('remove valid IDs', async function(assert) {
+    assert.expect(6);
 
-  this.render(COMMON_TEMPLATE);
+    await render(COMMON_TEMPLATE);
 
-  return wait().then(() => {
+    await settled();
+
     assert.equal(
       $('.valid-id-count')
         .text()
@@ -248,7 +242,7 @@ test('remove valid IDs', function(assert) {
     );
 
     //Remove First Valid Pill, item removed depends on the ordering
-    Ember.run(() => {
+    run(() => {
       $('.items-list:first .item:first button').click();
     });
 
@@ -282,62 +276,54 @@ test('remove valid IDs', function(assert) {
       'invalid IDs do not change after removing any pills'
     );
   });
-});
 
-test('behaviour of headers', function(assert) {
-  assert.expect(3);
+  test('behavior of headers', async function(assert) {
+    assert.expect(3);
 
-  this.render(COMMON_TEMPLATE);
+    render(COMMON_TEMPLATE);
 
-  /* == Main header == */
-  assert.equal(
-    this.$('.primary-header')
-      .text()
-      .trim(),
-    'Add Multiple Properties',
-    'Main header contains plural form of the dimension name'
-  );
+    await waitFor('.primary-header');
+    /* == Main header == */
+    assert
+      .dom('.primary-header')
+      .hasText('Add Multiple Properties', 'Main header contains plural form of the dimension name');
 
-  assert.equal(
-    this.$('.secondary-header')
-      .text()
-      .trim(),
-    'Hold tight! We are searching for valid Properties.',
-    'Secondary header has expected searching text while searching'
-  );
+    assert
+      .dom('.secondary-header')
+      .hasText(
+        'Hold tight! We are searching for valid Properties.',
+        'Secondary header has expected searching text while searching'
+      );
 
-  return wait().then(() => {
-    assert.equal(
-      this.$('.secondary-header')
-        .text()
-        .trim(),
-      'Search Results.',
-      'Secondary header has expected result text after searching'
-    );
-  });
-});
+    await settled();
 
-test('Search dimension with smart key', function(assert) {
-  assert.expect(1);
-  this.setProperties({
-    dimension: { name: 'multiSystemId', longName: 'Multi System Id' },
-    onSelectValues: () => {},
-    onCancel: () => {},
-    queryIds: ['6', '7']
+    assert
+      .dom('.secondary-header')
+      .hasText('Search Results.', 'Secondary header has expected result text after searching');
   });
 
-  this.render(COMMON_TEMPLATE);
+  test('Search dimension with smart key', async function(assert) {
+    assert.expect(1);
+    this.setProperties({
+      dimension: { name: 'multiSystemId', longName: 'Multi System Id' },
+      onSelectValues: () => {},
+      onCancel: () => {},
+      queryIds: ['6', '7']
+    });
 
-  return wait().then(() => {
-    let validPills = this.$('.id-container:first .item');
-    assert.deepEqual(
-      validPills
-        .map(function() {
-          return this.childNodes[0].wholeText.trim();
-        })
-        .get(),
-      ['System ID 1 (6)', 'System ID 2 (7)'],
-      'Search returns valid IDs as expected'
-    );
+    await render(COMMON_TEMPLATE);
+
+    return settled().then(() => {
+      let validPills = $('.id-container:first .item');
+      assert.deepEqual(
+        validPills
+          .map(function() {
+            return this.childNodes[0].wholeText.trim();
+          })
+          .get(),
+        ['System ID 1 (6)', 'System ID 2 (7)'],
+        'Search returns valid IDs as expected'
+      );
+    });
   });
 });

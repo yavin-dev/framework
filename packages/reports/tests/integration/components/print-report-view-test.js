@@ -1,11 +1,10 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { A } from '@ember/array';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render, settled } from '@ember/test-helpers';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
-import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
-import wait from 'ember-test-helpers/wait';
 import Interval from 'navi-core/utils/classes/interval';
-
-const { getOwner } = Ember;
 
 const RESPONSE = {
   rows: [
@@ -48,16 +47,16 @@ const RESPONSE = {
   ]
 };
 
-moduleForComponent('print-report-view', 'Integration | Component | print report view', {
-  integration: true,
+module('Integration | Component | print report view', function(hooks) {
+  setupRenderingTest(hooks);
 
-  async beforeEach() {
+  hooks.beforeEach(function() {
     setupMock();
 
-    let metadataService = getOwner(this).lookup('service:bard-metadata'),
-      store = getOwner(this).lookup('service:store');
+    let metadataService = this.owner.lookup('service:bard-metadata'),
+      store = this.owner.lookup('service:store');
 
-    await metadataService.loadMetadata().then(() => {
+    metadataService.loadMetadata().then(() => {
       this.set('response', RESPONSE);
 
       //set report object
@@ -70,7 +69,7 @@ moduleForComponent('print-report-view', 'Integration | Component | print report 
               timeGrainName: 'day'
             }),
             responseFormat: 'csv',
-            intervals: Ember.A([{ interval: new Interval('current', 'next') }])
+            intervals: A([{ interval: new Interval('current', 'next') }])
           }),
           visualization: {
             type: 'line-chart',
@@ -98,28 +97,24 @@ moduleForComponent('print-report-view', 'Integration | Component | print report 
         })
       );
     });
-  },
+  });
 
-  afterEach() {
+  hooks.afterEach(function() {
     teardownMock();
-  }
-});
+  });
 
-test('visualization is chosen based on report', function(assert) {
-  assert.expect(3);
+  test('visualization is chosen based on report', async function(assert) {
+    assert.expect(3);
 
-  return wait().then(() => {
-    this.render(hbs`
-            {{print-report-view
-                report=report
-                response=response
-            }}
-        `);
+    await settled();
+    await render(hbs`
+      {{print-report-view
+        report=report
+        response=response
+      }}
+    `);
 
-    assert.ok(
-      this.$('.line-chart-widget').is(':visible'),
-      'Visualization is rendered based on the report visualization type'
-    );
+    assert.dom('.line-chart-widget').exists('Visualization is rendered based on the report visualization type');
 
     this.set('report.visualization', {
       type: 'table',
@@ -140,40 +135,36 @@ test('visualization is chosen based on report', function(assert) {
       }
     });
 
-    assert.ok(this.$('.table-widget').is(':visible'), 'Rendered visualization updates with report');
+    assert.dom('.table-widget').exists('Rendered visualization updates with report');
 
-    assert.notOk(this.$('.line-chart-widget').is(':visible'), 'Old visualization is removed');
+    assert.dom('.line-chart-widget').doesNotExist('Old visualization is removed');
   });
-});
 
-test('no data', function(assert) {
-  assert.expect(1);
+  test('no data', function(assert) {
+    assert.expect(1);
 
-  return wait().then(() => {
-    this.set('response', {
-      rows: [],
-      meta: {
-        pagination: {
-          currentPage: 1,
-          rowsPerPage: 10000,
-          numberOfResults: 0
+    return settled().then(async () => {
+      this.set('response', {
+        rows: [],
+        meta: {
+          pagination: {
+            currentPage: 1,
+            rowsPerPage: 10000,
+            numberOfResults: 0
+          }
         }
-      }
+      });
+
+      await render(hbs`
+              {{print-report-view
+                  report=report
+                  response=response
+              }}
+          `);
+
+      assert
+        .dom('.print-report-view__visualization-no-results')
+        .hasText('No results available.', 'A message is displayed when the response has no data');
     });
-
-    this.render(hbs`
-            {{print-report-view
-                report=report
-                response=response
-            }}
-        `);
-
-    assert.equal(
-      this.$('.print-report-view__visualization-no-results')
-        .text()
-        .trim(),
-      'No results available.',
-      'A message is displayed when the response has no data'
-    );
   });
 });

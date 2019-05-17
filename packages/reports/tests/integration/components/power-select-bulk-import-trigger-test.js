@@ -1,23 +1,24 @@
-import { moduleForComponent, test } from 'ember-qunit';
-import { hbsWithModal } from '../../helpers/hbs-with-modal';
+import $ from 'jquery';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render, fillIn, click, findAll, triggerEvent } from '@ember/test-helpers';
+import hbs from 'htmlbars-inline-precompile';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
-import wait from 'ember-test-helpers/wait';
-import Ember from 'ember';
 
-moduleForComponent('power-select-bulk-import-trigger', 'Integration | Component | power select bulk import trigger', {
-  integration: true,
+module('Integration | Component | power select bulk import trigger', function(hooks) {
+  setupRenderingTest(hooks);
 
-  beforeEach() {
+  hooks.beforeEach(function() {
     setupMock();
 
-    return this.container
+    return this.owner
       .lookup('service:bard-metadata')
       .loadMetadata()
       .then(() => {
-        return this.container
+        return this.owner
           .lookup('service:bard-dimensions')
           .all('property')
-          .then(allProperties => {
+          .then(async allProperties => {
             this.setProperties({
               options: allProperties,
               selected: [],
@@ -27,67 +28,58 @@ moduleForComponent('power-select-bulk-import-trigger', 'Integration | Component 
               }
             });
 
-            this.render(
-              hbsWithModal(
-                `
-                    {{#power-select-multiple
-                        options=options
-                        selected=selected
-                        extra=extra
-                        triggerComponent='power-select-bulk-import-trigger'
-                        onchange=(action onChange)
-                        as |item|
-                    }}
-                        <span class='selected-dim-id'>{{item.id}}</span>
-                    {{/power-select-multiple}}
-                `,
-                Ember.getOwner(this)
-              )
+            await render(
+              hbs`
+                  {{#power-select-multiple
+                      options=options
+                      selected=selected
+                      extra=extra
+                      triggerComponent='power-select-bulk-import-trigger'
+                      onchange=(action onChange)
+                      searchField='id'
+                      as |item|
+                  }}
+                      <span class='selected-dim-id'>{{item.id}}</span>
+                  {{/power-select-multiple}}
+              `
             );
           });
       });
-  },
+  });
 
-  afterEach() {
+  hooks.afterEach(function() {
     teardownMock();
-  }
-});
+  });
 
-test('it renders', function(assert) {
-  assert.expect(1);
+  test('it renders', function(assert) {
+    assert.expect(1);
 
-  assert.ok($('.ember-power-select-multiple-options').is(':visible'), 'The component renders');
-});
+    assert.dom('.ember-power-select-multiple-options').exists('The component renders');
+  });
 
-test('paste to trigger bulk import', function(assert) {
-  assert.expect(6);
+  test('paste to trigger bulk import', async function(assert) {
+    assert.expect(6);
 
-  /* == Typing text == */
-  this.$('.ember-power-select-trigger-multiple-input').val('100001,100002');
-  assert.notOk(
-    $('.dimension-bulk-import').is(':visible'),
-    'Bulk import modal does not open when typing text with a ","'
-  );
+    /* == Typing text == */
+    await fillIn('.ember-power-select-trigger-multiple-input', '100001,100002');
+    assert.dom('.dimension-bulk-import').isNotVisible('Bulk import modal does not open when typing text with a ","');
 
-  /* == Pasting text without "," == */
-  paste(this, 'Hello world');
-  assert.notOk(
-    $('.dimension-bulk-import').is(':visible'),
-    'Bulk import modal does not open when pasting text without a ","'
-  );
+    /* == Pasting text without "," == */
+    await paste('Hello world');
+    assert
+      .dom('.dimension-bulk-import')
+      .isNotVisible('Bulk import modal does not open when pasting text without a ","');
 
-  /* == Pasting only "," == */
-  paste(this, ',,,');
-  assert.notOk(
-    $('.dimension-bulk-import').is(':visible'),
-    'Bulk import modal is immediately closed when pasting only a ","'
-  );
+    /* == Pasting only "," == */
+    await paste(',,,');
+    assert
+      .dom('.dimension-bulk-import')
+      .isNotVisible('Bulk import modal is immediately closed when pasting only a ","');
 
-  /* == Pasting text with "," == */
-  paste(this, '78787, ,114, 101272');
-  assert.ok($('.dimension-bulk-import').is(':visible'), 'Bulk import modal opens when pasting text with a ","');
+    /* == Pasting text with "," == */
+    await paste('78787, ,114, 101272');
+    assert.dom('.dimension-bulk-import').isVisible('Bulk import modal opens when pasting text with a ","');
 
-  return wait().then(() => {
     let validPills = $('.id-container:first .item');
     assert.deepEqual(
       validPills
@@ -110,87 +102,67 @@ test('paste to trigger bulk import', function(assert) {
       'Invalid IDs in pasted string are filtered out and user is notified'
     );
   });
-});
 
-test('importing dimensions', function(assert) {
-  assert.expect(3);
+  test('importing dimensions', async function(assert) {
+    assert.expect(3);
 
-  const selectedValues = () =>
-    $('.selected-dim-id')
-      .map(function() {
-        return this.textContent.trim();
-      })
-      .get();
+    const selectedValues = () =>
+      $('.selected-dim-id')
+        .map(function() {
+          return this.textContent.trim();
+        })
+        .get();
 
-  this.set('onChange', newValues => this.set('selected', newValues));
+    this.set('onChange', newValues => this.set('selected', newValues));
 
-  paste(this, '78787, ,114, 101272');
-  return wait().then(() => {
-    Ember.run(() => {
-      $('.dimension-bulk-import .btn-primary').click();
-    });
+    await paste('78787, ,114, 101272');
+
+    await click('.dimension-bulk-import .btn-primary');
 
     assert.deepEqual(selectedValues(), ['114', '101272'], 'Only valid pasted ids are imported');
 
     /* == Duplicate ids == */
-    paste(this, '114, 101272');
-    return wait().then(() => {
-      Ember.run(() => {
-        $('.dimension-bulk-import .btn-primary').click();
-      });
+    await paste('114, 101272');
+    await click('.dimension-bulk-import .btn-primary');
 
-      assert.deepEqual(selectedValues(), ['114', '101272'], 'Duplicate ids are not imported twice');
+    assert.deepEqual(selectedValues(), ['114', '101272'], 'Duplicate ids are not imported twice');
 
-      /* == Adding ids == */
-      paste(this, '100001, 100002');
-      return wait().then(() => {
-        Ember.run(() => {
-          $('.dimension-bulk-import .btn-primary').click();
-        });
+    /* == Adding ids == */
+    await paste('100001, 100002');
+    await click('.dimension-bulk-import .btn-primary');
 
-        assert.deepEqual(
-          selectedValues(),
-          ['114', '101272', '100001', '100002'],
-          'New ids are imported without removing old ids'
-        );
-      });
-    });
+    assert.deepEqual(
+      selectedValues(),
+      ['114', '101272', '100001', '100002'],
+      'New ids are imported without removing old ids'
+    );
   });
-});
 
-test('trying to import invalid values', function(assert) {
-  assert.expect(1);
+  test('trying to import invalid values', async function(assert) {
+    assert.expect(1);
 
-  const selectedValues = () =>
-    $('.selected-dim-id')
-      .map(function() {
-        return this.textContent.trim();
-      })
-      .get();
+    const selectedValues = () => findAll('.selected-dim-id').map(el => el.textContent.trim());
 
-  paste(this, 'not, a, valid, id');
-  return wait().then(() => {
-    Ember.run(() => {
-      $('.dimension-bulk-import .btn-primary').click();
-    });
+    await paste('not, a, valid, id');
+    await click($('.dimension-bulk-import .btn-primary')[0]);
 
     assert.deepEqual(selectedValues(), [], 'No ids are imported when none are valid');
   });
+
+  /**
+   * Pastes a string into the power select search input
+   *
+   * @function paste
+   * @param {Object} context - current test
+   * @param {String} text - text to paste
+   */
+  async function paste(text) {
+    const selector = '.ember-power-select-trigger-multiple-input';
+
+    await triggerEvent(selector, 'paste', {
+      clipboardData: {
+        getData: () => text
+      }
+    });
+  }
 });
-
-/**
- * Pastes a string into the power select search input
- *
- * @function paste
- * @param {Object} context - current test
- * @param {String} text - text to paste
- */
-function paste(context, text) {
-  // Mock paste event since phantomjs doesn't support the ClipboardEvent
-  let pasteEvent = $.Event('paste');
-  pasteEvent.clipboardData = {
-    getData: () => text
-  };
-
-  context.$('.ember-power-select-trigger-multiple-input').trigger(pasteEvent);
-}

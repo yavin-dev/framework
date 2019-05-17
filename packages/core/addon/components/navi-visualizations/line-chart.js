@@ -320,10 +320,10 @@ export default Component.extend({
 
   /**
    * Fires before the element is destroyed
-   * @method willDestroy
+   * @method willDestroyElement
    * @override
    */
-  willDestroy() {
+  willDestroyElement() {
     this._super(...arguments);
     this._removeTooltipFromRegistry();
   },

@@ -2,12 +2,12 @@
  * Copyright 2017, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import Ember from 'ember';
+import { A } from '@ember/array';
 
 /**
  * List of having operations
  */
-export default Ember.A([
+export default A([
   {
     id: 'gt',
     name: 'greater than (>)'

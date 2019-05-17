@@ -3,7 +3,7 @@
 {{!-- Same as stock power select multiple trigger except for onPaste event --}}
 <ul id="ember-power-select-multiple-options-{{select.uniqueId}}" class="ember-power-select-multiple-options">
   {{#each select.selected as |opt idx|}}
-    <li class="ember-power-select-multiple-option {{if opt.disabled 'ember-power-select-multiple-option--disabled' }}">
+    <li class="ember-power-select-multiple-option {{if opt.disabled "ember-power-select-multiple-option--disabled" }}">
       {{#unless select.disabled }}
         <span role="button"
           aria-label="remove element"
@@ -25,7 +25,7 @@
   {{/each}}
   {{#if searchEnabled}}
     <input type="search" class="ember-power-select-trigger-multiple-input"
-      tabindex="0" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+      autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
       id="ember-power-select-trigger-multiple-input-{{select.uniqueId}}"
       value={{select.searchText}}
       aria-controls={{listboxId}}
@@ -46,10 +46,10 @@
 {{#navi-modal
     isShown=_showBulkImport
 }}
-    {{dimension-bulk-import
-        dimension=extra.filter.subject
-        queryIds=_bulkImportQueryIds
-        onSelectValues=(pipe (action 'importValues') (action (mut _showBulkImport) false))
-        onCancel=(action (mut _showBulkImport) false)
-    }}
+  {{dimension-bulk-import
+    dimension=extra.filter.subject
+    queryIds=_bulkImportQueryIds
+    onSelectValues=(pipe (action "importValues") (action (mut _showBulkImport) false))
+    onCancel=(action (mut _showBulkImport) false)
+  }}
 {{/navi-modal}}

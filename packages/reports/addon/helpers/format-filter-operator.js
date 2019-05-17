@@ -10,11 +10,11 @@
  *  notnull -> non empty
  *
  */
-import Ember from 'ember';
+import { helper as buildHelper } from '@ember/component/helper';
 import FilterOperations from 'navi-reports/utils/enums/filter-operations';
 
 export function formatFilterOperator([operator]) {
   return FilterOperations.getById(operator).name;
 }
 
-export default Ember.Helper.helper(formatFilterOperator);
+export default buildHelper(formatFilterOperator);

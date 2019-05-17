@@ -23,7 +23,7 @@
     "ember-data-model-fragments": "~4.0.0",
     "ember-debounced-properties": "0.0.5",
     "ember-get-config": "0.2.4",
-    "ember-lodash": "^4.17.5",
+    "ember-lodash": "^4.19.4",
     "ember-math-helpers": "^2.3.0",
     "ember-moment": "7.5.0",
     "ember-power-select": "^1.10.4",

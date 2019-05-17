@@ -1,13 +1,17 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
+import $ from 'jquery';
 import { clickTrigger, nativeMouseUp } from '../../helpers/ember-power-select';
 
 const options = [{ longName: 'network' }, { longName: 'network2' }];
 const selected = options[0];
 
-moduleForComponent('navi-table-select', 'Integration | Component | navi table select', {
-  integration: true,
-  beforeEach(assert) {
+module('Integration | Component | navi table select', function(hooks) {
+  setupRenderingTest(hooks);
+
+  hooks.beforeEach(async function(assert) {
     this.set('selected', selected);
     this.set('options', options);
     this.set('onChange', value => {
@@ -15,77 +19,53 @@ moduleForComponent('navi-table-select', 'Integration | Component | navi table se
       this.set('selected', value);
     });
 
-    this.render(hbs`{{navi-table-select
+    await render(hbs`{{navi-table-select
             selected=selected
             options=options
             onChange=onChange
         }}`);
-  }
-});
+  });
 
-test('it renders', function(assert) {
-  assert.expect(2);
+  test('it renders', async function(assert) {
+    assert.expect(2);
 
-  assert.equal(
-    this.$('.navi-table-select__header')
-      .text()
-      .trim(),
-    'Table',
-    'The header text equals `table`'
-  );
+    assert.dom('.navi-table-select__header').hasText('Table', 'The header text equals `table`');
 
-  assert.equal(
-    this.$('.ember-power-select-selected-item')
-      .text()
-      .trim(),
-    'network',
-    'The selected item equals `network`'
-  );
-});
+    assert.dom('.ember-power-select-selected-item').hasText('network', 'The selected item equals `network`');
+  });
 
-test('trigger dropdown', function(assert) {
-  assert.expect(1);
+  test('trigger dropdown', async function(assert) {
+    assert.expect(1);
 
-  clickTrigger();
-  assert.deepEqual(
-    $('.ember-power-select-option')
-      .map(function() {
-        return $(this)
-          .text()
-          .trim();
-      })
-      .get(),
-    ['network', 'network2'],
-    'All options are shown'
-  );
-});
+    await clickTrigger();
+    assert.deepEqual(
+      findAll('.ember-power-select-option').map(el => el.textContent.trim()),
+      ['network', 'network2'],
+      'All options are shown'
+    );
+  });
 
-test('select option', function(assert) {
-  assert.expect(2);
+  test('select option', async function(assert) {
+    assert.expect(2);
 
-  clickTrigger();
-  nativeMouseUp($('.ember-power-select-option:contains(network2)')[0]);
-  assert.equal(
-    this.$('.ember-power-select-selected-item')
-      .text()
-      .trim(),
-    'network2',
-    'The selected item equals `network2`'
-  );
-});
+    await clickTrigger();
+    await nativeMouseUp($('.ember-power-select-option:contains(network2)')[0]);
+    assert.dom('.ember-power-select-selected-item').hasText('network2', 'The selected item equals `network2`');
+  });
 
-test('enable search', function(assert) {
-  assert.expect(2);
+  test('enable search', async function(assert) {
+    assert.expect(2);
 
-  this.set('searchEnabled', true);
-  this.render(hbs`{{navi-table-select
-        selected=selected
-        options=options
-        onChange=onChange
-        searchEnabled=searchEnabled
-    }}`);
+    this.set('searchEnabled', true);
+    await render(hbs`{{navi-table-select
+          selected=selected
+          options=options
+          onChange=onChange
+          searchEnabled=searchEnabled
+      }}`);
 
-  assert.notOk($('.ember-power-select-search').is(':visible'), 'search input should not be visible');
-  clickTrigger();
-  assert.ok($('.ember-power-select-search').is(':visible'), 'search input should be visible');
+    assert.dom('.ember-power-select-search').isNotVisible('search input should not be visible');
+    await clickTrigger();
+    assert.dom('.ember-power-select-search').isVisible('search input should be visible');
+  });
 });
