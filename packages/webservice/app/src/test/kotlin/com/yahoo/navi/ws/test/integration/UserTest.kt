@@ -145,4 +145,306 @@ class UserTest: IntegrationTest() {
             .assertThat()
             .statusCode(HttpStatus.SC_FORBIDDEN)
     }
+
+    @Test
+    fun userPermissions() {
+        registerUser(naviUser1)
+        registerUser(naviUser2)
+        //post a report
+        given()
+            .header("User", naviUser1)
+            .contentType("application/vnd.api+json")
+            .body("""
+                {
+                    "data": {
+                        "type": "reports",
+                        "attributes": {
+                            "title": "A Report",
+                            "request": {
+                                "logicalTable":{
+                                   "timeGrain":"day",
+                                   "table":"base"
+                                },
+                                "bardVersion":"1.0",
+                                "requestVersion":"2.0",
+                                "intervals":[{
+                                    "start":"2015-08-20 00:00:00.000",
+                                    "end":"2015-08-21 00:00:00.000"
+                                }],
+                                "metrics": [
+                                    {"metric": "m1"},
+                                    {"metric": "m2", "parameters": {}}
+                                ]
+                            }
+                        },
+                        "relationships": {
+                            "author": {
+                                "data": {
+                                    "type": "users",
+                                    "id": "$naviUser1"
+                                }
+                            }
+                        }
+                    }
+                }
+            """.trimIndent())
+        .When()
+            .post("/reports")
+        .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_CREATED)
+
+        //should not be able to patch another user's record
+        given()
+            .header("User", naviUser2)
+            .contentType("application/vnd.api+json")
+            .body("""
+                {
+                    "data": {
+                        "type": "users",
+                        "id": "$naviUser1",
+                        "relationships": {
+                            "reports": {
+                                "data": {
+                                    "type": "reports",
+                                    "id": 1
+                                }
+                            }
+                        }
+                    }
+                }
+            """.trimIndent())
+        .When()
+            .patch("/users/$naviUser1")
+        .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_FORBIDDEN)
+
+        //a user cannot claim another users's report
+        given()
+            .header("User", naviUser2)
+            .contentType("application/vnd.api+json")
+            .body("""
+                {
+                    "data": {
+                        "type": "users",
+                        "id": "$naviUser2",
+                        "relationships": {
+                            "reports": {
+                                "data": {
+                                    "type": "reports",
+                                    "id": 1
+                                }
+                            }
+                        }
+                    }
+                }
+            """.trimIndent())
+        .When()
+            .patch("/users/$naviUser2")
+        .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_FORBIDDEN)
+
+        //a user cannot delete themselves
+        given()
+            .header("User", naviUser1)
+            .contentType("application/vnd.api+json")
+        .When()
+            .delete("/users/$naviUser1")
+        .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_FORBIDDEN)
+    }
+
+    @Test
+    fun favoriteReports() {
+        registerUser(naviUser1)
+        registerUser(naviUser2)
+
+        //add Report1
+        given()
+            .header("User", naviUser1)
+            .contentType("application/vnd.api+json")
+            .body("""
+                {
+                    "data": {
+                        "type": "reports",
+                        "attributes": {
+                            "title": "User 1's Report"
+                        },
+                        "relationships": {
+                            "author": {
+                                "data":{
+                                    "type": "users",
+                                    "id": "$naviUser1"
+                                }
+                            }
+                        }
+                    }
+                }
+            """.trimIndent())
+        .When()
+            .post("/reports")
+        .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_CREATED)
+
+        //add Report2
+        given()
+            .header("User", naviUser2)
+            .contentType("application/vnd.api+json")
+            .body("""
+            {
+                "data": {
+                    "type": "reports",
+                    "attributes": {
+                        "title": "User 2's Report"
+                    },
+                    "relationships": {
+                        "author": {
+                            "data":{
+                                "type": "users",
+                                "id": "$naviUser2"
+                            }
+                        }
+                    }
+                }
+            }
+            """.trimIndent())
+        .When()
+            .post("/reports")
+        .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_CREATED)
+
+        //user starts out with no favorite reports
+        given()
+            .header("User", naviUser2)
+            .contentType("application/vnd.api+json")
+        .When()
+            .get("/users/$naviUser1")
+        .then()
+            .assertThat()
+            .body("data.relationships.favoriteReports.data", empty<Boolean>())
+
+        //user can favorite their own reports and other users reports
+        given()
+            .header("User", naviUser1)
+            .contentType("application/vnd.api+json")
+            .body("""
+                {
+                    "data": {
+                        "type": "users",
+                        "id": "$naviUser1",
+                        "relationships": {
+                            "favoriteReports": {
+                                "data":[
+                                    {
+                                        "type": "reports",
+                                        "id": "1"
+                                    },
+                                    {
+                                        "type": "reports",
+                                        "id": "2"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+                """.trimIndent())
+        .When()
+            .patch("/users/$naviUser1")
+        .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_NO_CONTENT)
+
+        //favorited reports show up for user
+        given()
+            .header("User", naviUser1)
+            .contentType("application/vnd.api+json")
+        .When()
+            .get("/users/$naviUser1")
+        .then()
+            .assertThat()
+            .body("data.relationships.favoriteReports.data.id", hasItems("1", "2"))
+
+        //user can remove a favorite report
+        given()
+            .header("User", naviUser1)
+            .contentType("application/vnd.api+json")
+            .body("""
+                {
+                    "data": {
+                        "type": "users",
+                        "id": "$naviUser1",
+                        "relationships": {
+                            "favoriteReports": {
+                                "data":[
+                                    {
+                                        "type": "reports",
+                                        "id": "1"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+                """.trimIndent())
+        .When()
+            .patch("/users/$naviUser1")
+        .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_NO_CONTENT)
+
+        //favorited report has been removed
+        given()
+            .header("User", naviUser1)
+            .contentType("application/vnd.api+json")
+        .When()
+            .get("/users/$naviUser1")
+        .then()
+            .assertThat()
+            .body("data.relationships.favoriteReports.data.id", not(hasItems("2")))
+
+        //multiple users can favorite the same report
+        given()
+            .header("User", naviUser2)
+            .contentType("application/vnd.api+json")
+            .body("""
+                {
+                    "data": {
+                        "type": "users",
+                        "id": "$naviUser2",
+                        "relationships": {
+                            "favoriteReports": {
+                                "data":[
+                                    {
+                                        "type": "reports",
+                                        "id": "1"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+                """.trimIndent())
+        .When()
+            .patch("/users/$naviUser2")
+        .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_NO_CONTENT)
+
+        //favorite report still shows up for user1
+        given()
+            .header("User", naviUser1)
+            .contentType("application/vnd.api+json")
+        .When()
+            .get("/users/$naviUser1")
+        .then()
+            .assertThat()
+            .body("data.relationships.favoriteReports.data.id", hasItems("1"))
+
+    }
 }
