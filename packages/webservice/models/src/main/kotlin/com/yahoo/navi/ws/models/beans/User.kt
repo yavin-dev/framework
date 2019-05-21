@@ -9,17 +9,20 @@ import com.yahoo.elide.annotation.SharePermission
 import com.yahoo.elide.annotation.DeletePermission
 import com.yahoo.elide.annotation.CreatePermission
 import com.yahoo.elide.annotation.UpdatePermission
+import org.hibernate.annotations.CreationTimestamp
 
-import org.hibernate.annotations.Generated
-import org.hibernate.annotations.GenerationTime
 import java.util.Date
 
 import javax.persistence.Entity
 import javax.persistence.Table
 import javax.persistence.Id
 import javax.persistence.Column
+import javax.persistence.JoinTable
+import javax.persistence.JoinColumn
 import javax.persistence.Temporal
 import javax.persistence.TemporalType
+import javax.persistence.OneToMany
+import javax.persistence.ManyToMany
 import javax.validation.constraints.NotBlank
 
 @Entity
@@ -34,9 +37,20 @@ class User {
     @get:NotBlank
     var id: String? = null
 
-    @get:Generated(GenerationTime.INSERT)
-    @get:Column(updatable = false, insertable = false, columnDefinition = "timestamp default current_timestamp")
+    @get:CreationTimestamp
+    @get:Column(columnDefinition = "timestamp default current_timestamp")
     @get:Temporal(TemporalType.TIMESTAMP)
     @get:UpdatePermission(expression = "nobody")
     var createdOn: Date? = null
+
+    @get:OneToMany(mappedBy = "author")
+    var reports: Collection<Report> = arrayListOf()
+
+    @get:ManyToMany
+    @get:JoinTable(
+            name = "map_user_to_fav_reports",
+            joinColumns = arrayOf(JoinColumn( name = "user_id", referencedColumnName = "id")),
+            inverseJoinColumns = arrayOf(JoinColumn( name = "report_id", referencedColumnName = "id"))
+    )
+    var favoriteReports: Collection<Report> = arrayListOf()
 }
