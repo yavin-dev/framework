@@ -5,7 +5,7 @@ import { module, test } from 'qunit';
 import { click, fillIn, visit, currentURL, find, findAll, blur, triggerEvent, waitFor } from '@ember/test-helpers';
 import $ from 'jquery';
 import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
-import { selectChoose, selectSearch } from 'ember-power-select/test-support/helpers';
+import { selectChoose, selectSearch } from 'ember-power-select/test-support';
 import { setupApplicationTest } from 'ember-qunit';
 import reorder from '../helpers/reorder';
 import config from 'ember-get-config';

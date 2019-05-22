@@ -86,7 +86,7 @@
     "ember-lodash": "^4.19.4",
     "ember-math-helpers": "^2.3.0",
     "ember-maybe-import-regenerator": "^0.1.6",
-    "ember-power-select": "^2.2.3",
+    "ember-power-select": "^2.3.2",
     "ember-qunit": "^3.4.1",
     "ember-qunit-assert-helpers": "^0.2.0",
     "ember-resize": "0.0.17",
