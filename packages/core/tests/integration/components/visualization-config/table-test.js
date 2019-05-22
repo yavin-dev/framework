@@ -145,8 +145,8 @@ module('Integration | Component | visualization config/table', function(hooks) {
         );
       });
 
-    toggleSelector('.table-config__subtotal-dimension-select');
-    toggleOption(find('.subtotal-dimension-select__options .ember-power-select-option[data-option-index="2"]'));
+    await toggleSelector('.table-config__subtotal-dimension-select');
+    await toggleOption(find('.subtotal-dimension-select__options .ember-power-select-option[data-option-index="2"]'));
 
     //toggle off subtotal
     await click('.table-config__total-toggle-button--subtotal .x-toggle-btn');

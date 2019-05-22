@@ -86,7 +86,7 @@ export default Component.extend({
    * @property (Array} ranges - list of ranges with `isActive` flag
    */
   ranges: computed('dateTimePeriod', 'interval', 'predefinedRanges', function() {
-    const { predefinedRanges: ranges } = this;
+    const ranges = get(this, 'predefinedRanges');
 
     return ranges.map(range =>
       Object.assign({}, range, {

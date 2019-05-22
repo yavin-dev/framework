@@ -1,6 +1,6 @@
 import { click, find, findAll, visit, fillIn } from '@ember/test-helpers';
 import { module, test } from 'qunit';
-import { selectChoose, selectSearch } from 'ember-power-select/test-support/helpers';
+import { selectChoose, selectSearch } from 'ember-power-select/test-support';
 import $ from 'jquery';
 import { setupApplicationTest } from 'ember-qunit';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';

@@ -157,7 +157,7 @@ module('Integration | Component | visualization config/line chart type/dimension
       );
     });
 
-    toggleSelector('.dimension-line-chart-config__metric-selector');
+    await toggleSelector('.dimension-line-chart-config__metric-selector');
 
     assert
       .dom('.dimension-line-chart-config__metric-selector .ember-power-select-option[data-option-index="2"]')
