@@ -12,7 +12,7 @@ const TEMPLATE = hbs`
     {{/ember-collection}}
   </div>`;
 
-module('mixed height layout', function(hooks) {
+module('Integration | Helper | mixed height layout', function(hooks) {
   setupRenderingTest(hooks);
 
   test('layout', async function(assert) {

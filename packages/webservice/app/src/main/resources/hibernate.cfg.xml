@@ -13,5 +13,6 @@
         <property name="hibernate.hbm2ddl.auto">create</property>   
         <property name="current_session_context_class">thread</property>
         <mapping class="com.yahoo.navi.ws.models.beans.User" />
+        <mapping class="com.yahoo.navi.ws.models.beans.Report" />
     </session-factory>
 </hibernate-configuration>

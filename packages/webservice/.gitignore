@@ -3,8 +3,10 @@ build/
 
 app/target
 app/build
+app/out
 models/target
 models/build
+models/out
 
 
 # Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)

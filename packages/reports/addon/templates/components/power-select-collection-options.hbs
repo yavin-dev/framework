@@ -8,7 +8,7 @@
     <li class="ember-power-select-option ember-power-select-option--clear" onmouseup={{action "clear"}} role="option">Clear Selection</li>
   {{/if}}
 {{/if}}
-<div class="ember-collection-options" style={{html-safe "position:relative;width:100%;height:{{_height}}px"}}>
+<div class="ember-collection-options" style={{html-safe (concat "position:relative;width:100%;height:" _height "px")}}>
   {{#ember-collection
     buffer=10
     items=items
