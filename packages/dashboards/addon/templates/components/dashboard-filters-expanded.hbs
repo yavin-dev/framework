@@ -1,6 +1,20 @@
 {{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{dashboard-filter-collection 
+{{dashboard-filter-collection
   dashboard=dashboard
   onUpdateFilter=(dashboard-action "UPDATE_FILTER" filter.requestFragment)
   onRemoveFilter=(dashboard-action "REMOVE_FILTER" dashboard filter.requestFragment)
 }}
+
+{{#if addingMode}}
+  <div class="dashboard-filters-collection-add-row">
+    {{dashboard-dimension-selector
+      dashboard=dashboard
+    }}
+    <div class="dashboard-filters-collection-add-row__placeholder--operator"></div>
+    <div class="dashboard-filters-collection-add-row__placeholder--value"></div>
+  </div>
+{{else}}
+  <button onclick={{action (toggle "addingMode" this)}} class="dashboard-filters-expanded__add-filter-button">
+    Add Filter
+  </button>
+{{/if}}

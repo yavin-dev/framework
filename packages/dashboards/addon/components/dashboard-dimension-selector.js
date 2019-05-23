@@ -14,6 +14,7 @@ import layout from '../templates/components/dashboard-dimension-selector';
 
 export default Component.extend({
   layout,
+  classNames: ['dashboard-dimension-selector'],
 
   /**
    * @property {Promise} -- creates powerselect options of all dimensions that can be pick based on widgets on the dashboard
@@ -99,5 +100,13 @@ export default Component.extend({
       }
       return dimensionMap;
     }, {});
+  },
+
+  actions: {
+    change(...args) {
+      const handleChange = get(this, 'onChange');
+
+      if (handleChange) handleChange(...args);
+    }
   }
 });
