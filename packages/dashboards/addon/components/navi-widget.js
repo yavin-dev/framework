@@ -57,6 +57,9 @@ export default Component.extend({
     }
   }),
 
+  /**
+   * @property {String} filterErrors - Error messaging for filters that couldn't be applied to the widget
+   */
   filterErrors: computed('data.isFulfilled', function() {
     const filterErrors = arr(get(this, 'data.firstObject.response.meta.errors')).filterBy('title', 'Invalid Filter');
 

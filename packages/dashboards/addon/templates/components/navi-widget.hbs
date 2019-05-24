@@ -21,9 +21,7 @@
           classNames="navi-widget__action navi-widget__explore-btn"
       }}
         {{navi-icon "pencil" class="navi-icon__edit" }}
-        {{#ember-tooltip popperContainer="body"}}
-          Explore
-        {{/ember-tooltip}}
+        {{ember-tooltip popperContainer="body" text="Explore"}}
       {{/link-to}}
       {{#if canEdit}}
         {{#common-actions/delete
@@ -32,9 +30,7 @@
            deleteAction=(route-action "deleteWidget")
         }}
           {{navi-icon "trash-o" class="navi-icon__delete"}}
-          {{#ember-tooltip popperContainer="body"}}
-            Delete
-          {{/ember-tooltip}}
+          {{ember-tooltip popperContainer="body" text="Delete"}}
         {{/common-actions/delete}}
       {{/if}}
     </div>
