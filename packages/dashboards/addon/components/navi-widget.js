@@ -11,6 +11,7 @@
  *   }}
  */
 import Component from '@ember/component';
+import { A as arr } from '@ember/array';
 import { get, computed } from '@ember/object';
 import layout from '../templates/components/navi-widget';
 
@@ -54,5 +55,15 @@ export default Component.extend({
       let { column: x, row: y, height, width } = layout;
       return { id, x, y, height, width };
     }
+  }),
+
+  filterErrors: computed('data.isFulfilled', function() {
+    const filterErrors = arr(get(this, 'data.firstObject.response.meta.errors')).filterBy('title', 'Invalid Filter');
+
+    return (
+      arr(filterErrors)
+        .mapBy('detail')
+        .join('\n') || null
+    );
   })
 });

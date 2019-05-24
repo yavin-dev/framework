@@ -5,14 +5,25 @@
   as |item|
 }}
   <div class="navi-widget__header">
-    <div class="navi-widget__title">{{model.title}}</div>
+    <div class="navi-widget__title">
+      {{model.title}}
+      {{#if filterErrors}}
+        {{#navi-icon "exclamation-triangle" class="navi-widget__filter-errors-icon"}}
+          {{#ember-tooltip popperContainer="body"}}
+            {{filterErrors}}
+          {{/ember-tooltip}}
+        {{/navi-icon}}
+      {{/if}}
+    </div>
     <div class="navi-widget__actions">
       {{#link-to
         "dashboards.dashboard.widgets.widget.view" model.dashboard.id model.id
           classNames="navi-widget__action navi-widget__explore-btn"
       }}
         {{navi-icon "pencil" class="navi-icon__edit" }}
-        {{tooltip-on-component text="Explore" enableLazyRendering=true}}
+        {{#ember-tooltip popperContainer="body"}}
+          Explore
+        {{/ember-tooltip}}
       {{/link-to}}
       {{#if canEdit}}
         {{#common-actions/delete
@@ -21,7 +32,9 @@
            deleteAction=(route-action "deleteWidget")
         }}
           {{navi-icon "trash-o" class="navi-icon__delete"}}
-          {{tooltip-on-component text="Delete" enableLazyRendering=true}}
+          {{#ember-tooltip popperContainer="body"}}
+            Delete
+          {{/ember-tooltip}}
         {{/common-actions/delete}}
       {{/if}}
     </div>
