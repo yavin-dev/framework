@@ -3,6 +3,9 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
+@add-filter-cell-height: 27px;
+@add-filter-cell-margin: 3px;
+
 .dashboard-filters {
   flex: 0 0 auto;
   width: 100%;
@@ -52,6 +55,45 @@
       cursor: pointer;
       font-size: 12px;
       padding: 5px 5px 5px 10px;
+    }
+
+    &-add-row {
+      display: flex;
+      padding-left: 10px;
+
+      &__close {
+        color: @navi-gray-600;
+        flex: 0 0 auto;
+        font-size: @font-size-mid;
+        line-height: @add-filter-cell-height;
+        margin: @add-filter-cell-margin;
+        text-align: center;
+      }
+
+      &__dimension-selector {
+        min-height: @add-filter-cell-height;
+        margin: @add-filter-cell-margin;
+        flex: 2;
+      }
+
+      &__placeholder {
+        &--operator {
+          flex: 2;
+        }
+
+        &--values {
+          flex: 6;
+        }
+      }
+
+      &__placeholder-inner {
+        background-color: #f3f3f3;
+        border-color: #a3a3a3;
+        border-style: solid;
+        border-width: 1px;
+        height: @add-filter-cell-height;
+        margin: @add-filter-cell-margin;
+      }
     }
   }
 

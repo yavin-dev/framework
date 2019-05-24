@@ -6,13 +6,19 @@
 }}
 
 {{#if addingMode}}
-  <div class="dashboard-filters-collection-add-row">
+  <div class="dashboard-filters-expanded-add-row">
+    {{navi-icon "close" class="dashboard-filters-expanded-add-row__close" click=(toggle "addingMode" this)}}
     {{dashboard-dimension-selector
+      class="dashboard-filters-expanded-add-row__dimension-selector"
       dashboard=dashboard
-      onChange=(dashboard-action "ADD_FILTER" dashboard)
+      onChange=(pipe (dashboard-action "ADD_FILTER" dashboard) (action (toggle "addingMode" this)))
     }}
-    <div class="dashboard-filters-collection-add-row__placeholder--operator"></div>
-    <div class="dashboard-filters-collection-add-row__placeholder--value"></div>
+    <div class="dashboard-filters-expanded-add-row__placeholder dashboard-filters-expanded-add-row__placeholder--operator">
+      <div class="dashboard-filters-expanded-add-row__placeholder-inner"></div>
+    </div>
+    <div class="dashboard-filters-expanded-add-row__placeholder dashboard-filters-expanded-add-row__placeholder--values">
+      <div class="dashboard-filters-expanded-add-row__placeholder-inner"></div>
+    </div>
   </div>
 {{else}}
   <button onclick={{action (toggle "addingMode" this)}} class="dashboard-filters-expanded__add-filter-button">
