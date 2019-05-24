@@ -1,14 +1,15 @@
 {{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{dashboard-filter-collection
   dashboard=dashboard
-  onUpdateFilter=(dashboard-action "UPDATE_FILTER" filter.requestFragment)
-  onRemoveFilter=(dashboard-action "REMOVE_FILTER" dashboard filter.requestFragment)
+  onUpdateFilter=(dashboard-action "UPDATE_FILTER")
+  onRemoveFilter=(dashboard-action "REMOVE_FILTER" dashboard)
 }}
 
 {{#if addingMode}}
   <div class="dashboard-filters-collection-add-row">
     {{dashboard-dimension-selector
       dashboard=dashboard
+      onChange=(dashboard-action "ADD_FILTER" dashboard)
     }}
     <div class="dashboard-filters-collection-add-row__placeholder--operator"></div>
     <div class="dashboard-filters-collection-add-row__placeholder--value"></div>
