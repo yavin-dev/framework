@@ -1,4 +1,4 @@
-import { A } from '@ember/array';
+import { A as arr } from '@ember/array';
 import { run } from '@ember/runloop';
 import Component from '@ember/component';
 import { defer, reject, resolve } from 'rsvp';
@@ -8,6 +8,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import DS from 'ember-data';
+import { assertTooltipContent } from 'ember-tooltips/test-support';
 import { ForbiddenError } from 'ember-ajax/errors';
 
 const WIDGET = {
@@ -129,7 +130,7 @@ module('Integration | Component | navi widget', function(hooks) {
   test('visualization', async function(assert) {
     assert.expect(4);
 
-    let data = A([1, 2, 3]),
+    let data = arr([1, 2, 3]),
       metadata = {
         xAxis: 'timeseries'
       },
@@ -207,5 +208,79 @@ module('Integration | Component | navi widget', function(hooks) {
 
     this.set('canEdit', false);
     assert.dom('.navi-widget__delete-btn').isNotVisible('Delete action is hidden when user can not edit');
+  });
+
+  test('filter warning icon', async function(assert) {
+    assert.expect(3);
+
+    let dataPromise = resolve(
+      arr([
+        {
+          response: {
+            meta: {
+              errors: [
+                {
+                  title: 'Invalid Filter',
+                  detail: "Dimension A doesn't exist in this widget's logical table"
+                },
+                {
+                  title: 'Invalid Filter',
+                  detail: "Dimension B doesn't exist in this widget's logical table"
+                }
+              ]
+            }
+          }
+        }
+      ])
+    );
+
+    this.set('widgetModel', WIDGET);
+
+    this.set(
+      'data',
+      DS.PromiseArray.create({
+        promise: dataPromise
+      })
+    );
+
+    await render(hbs`
+      {{navi-widget
+        model=widgetModel
+        data=data
+      }}
+    `);
+
+    assert
+      .dom('.navi-widget__filter-errors-icon')
+      .isVisible('Widget Filters Error icon is visible when the widget has invalid filters');
+
+    //Render tooltip on warning icon
+    await triggerEvent('.navi-widget__filter-errors-icon', 'mouseenter');
+
+    //Tooltip contains all error messages separated by new line characters
+    assertTooltipContent(assert, {
+      contentString: `Dimension A doesn't exist in this widget's logical table\nDimension B doesn't exist in this widget's logical table`
+    });
+
+    let newDataPromise = resolve(
+      arr([
+        {
+          response: {
+            meta: {}
+          }
+        }
+      ])
+    );
+
+    this.set(
+      'data',
+      DS.PromiseArray.create({
+        promise: newDataPromise
+      })
+    );
+
+    assert
+      .dom('.navi-widget__filter-errors-icon')
+      .isNotVisible('Widget Filters Error icon is not visible when the widget has no invalid filters');
   });
 });
