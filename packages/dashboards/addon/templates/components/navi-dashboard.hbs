@@ -75,9 +75,9 @@
           model=dashboard
           classNames="action schedule"
           disabled=(not dashboard.validations.isTruelyValid)
-          onSave=(route-action "saveDeliveryRule")
-          onRevert=(route-action "revertDeliveryRule")
-          onDelete=(route-action "deleteDeliveryRule")
+          onSave=(delivery-rule-action "SAVE_DELIVERY_RULE")
+          onRevert=(delivery-rule-action "REVERT_DELIVERY_RULE")
+          onDelete=(delivery-rule-action "DELETE_DELIVERY_RULE")
         }}
           Schedule
         {{/dashboard-actions/schedule}}
