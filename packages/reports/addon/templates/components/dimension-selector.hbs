@@ -19,7 +19,7 @@
     </label>
     {{#unless (eq item.category "Time Grain")}}
       {{#navi-icon "question-circle-o" class="grouped-list__item-info"}}
-        {{#ember-tooltip side="right" popperContainer="body"}}
+        {{#ember-tooltip side="right" popperContainer="body" effect="none"}}
           {{#if item.extended.isPending}}
             {{loading-message}}
           {{else}}
