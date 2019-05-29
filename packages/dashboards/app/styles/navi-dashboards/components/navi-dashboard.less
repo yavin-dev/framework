@@ -21,7 +21,8 @@
     .display-flex;
     .flex-1;
     flex-flow: column;
-    overflow-y: auto;
+    overflow-y: hidden;
+    padding: 20px 0;
   }
 
   &__fav-icon {
@@ -29,8 +30,7 @@
   }
 
   &__widgets {
-    margin-bottom: 20px;
-    padding-top: 20px;
+    overflow-y: scroll;
   }
 
   .page-header {
