@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -11,7 +11,6 @@
  *   }}
  */
 import Component from '@ember/component';
-import { A as arr } from '@ember/array';
 import { get, computed } from '@ember/object';
 import layout from '../templates/components/navi-widget';
 
@@ -61,12 +60,12 @@ export default Component.extend({
    * @property {String} filterErrors - Error messaging for filters that couldn't be applied to the widget
    */
   filterErrors: computed('data.isFulfilled', function() {
-    const filterErrors = arr(get(this, 'data.firstObject.response.meta.errors')).filterBy('title', 'Invalid Filter');
+    const filterErrors = get(this, 'data.firstObject.response.meta.errors') || [];
+    const filterErrorMessages = filterErrors
+      .filter(e => e.title === 'Invalid Filter')
+      .map(e => e.detail)
+      .join('\n');
 
-    return (
-      arr(filterErrors)
-        .mapBy('detail')
-        .join('\n') || null
-    );
+    return filterErrorMessages ? `Unable to apply filter(s):\n${filterErrorMessages}` : null;
   })
 });

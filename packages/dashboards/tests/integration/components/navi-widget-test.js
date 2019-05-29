@@ -259,7 +259,7 @@ module('Integration | Component | navi widget', function(hooks) {
 
     //Tooltip contains all error messages separated by new line characters
     assertTooltipContent(assert, {
-      contentString: `Dimension A doesn't exist in this widget's logical table\nDimension B doesn't exist in this widget's logical table`
+      contentString: `Unable to apply filter(s):\nDimension A doesn't exist in this widget's logical table\nDimension B doesn't exist in this widget's logical table`
     });
 
     let newDataPromise = resolve(

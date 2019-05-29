@@ -7,12 +7,14 @@
   <div class="navi-widget__header">
     <div class="navi-widget__title">
       {{model.title}}
-      {{#if filterErrors}}
-        {{#navi-icon "exclamation-triangle" class="navi-widget__filter-errors-icon"}}
-          {{#ember-tooltip popperContainer="body"}}
-            {{filterErrors}}
-          {{/ember-tooltip}}
-        {{/navi-icon}}
+      {{#if (is-fulfilled data)}}
+        {{#if filterErrors}}
+          {{#navi-icon "exclamation-triangle" class="navi-widget__filter-errors-icon"}}
+            {{#ember-tooltip popperContainer="body"}}
+              {{filterErrors}}
+            {{/ember-tooltip}}
+          {{/navi-icon}}
+        {{/if}}
       {{/if}}
     </div>
     <div class="navi-widget__actions">
