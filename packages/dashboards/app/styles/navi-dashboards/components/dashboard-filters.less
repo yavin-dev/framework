@@ -5,6 +5,8 @@
 
 @add-filter-cell-height: 27px;
 @add-filter-cell-margin: 3px;
+@add-filter-placeholder-color-background: #f3f3f3;
+@add-filter-placeholder-color-border: #a3a3a3;
 
 .dashboard-filters {
   flex: 0 0 auto;
@@ -51,7 +53,7 @@
     z-index: 5;
 
     &__add-filter-button {
-      color: #198fff;
+      color: @blue-500;
       cursor: pointer;
       font-size: 12px;
       padding: 5px 5px 5px 10px;
@@ -93,8 +95,8 @@
       }
 
       &__placeholder-inner {
-        background-color: #f3f3f3;
-        border-color: #a3a3a3;
+        background-color: @add-filter-placeholder-color-background;
+        border-color: @add-filter-placeholder-color-border;
         border-style: solid;
         border-width: 1px;
         height: @add-filter-cell-height;

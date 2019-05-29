@@ -11,7 +11,7 @@
     {{dashboard-dimension-selector
       class="dashboard-filters-expanded-add-row__dimension-selector"
       dashboard=dashboard
-      onChange=(pipe (dashboard-action "ADD_FILTER" dashboard) (action (toggle "addingMode" this)))
+      onChange=(queue (dashboard-action "ADD_FILTER" dashboard) (action (toggle "addingMode" this)))
     }}
     <div class="dashboard-filters-expanded-add-row__placeholder dashboard-filters-expanded-add-row__placeholder--operator">
       <div class="dashboard-filters-expanded-add-row__placeholder-inner dashboard-filters-expanded-add-row__placeholder-inner--operator"></div>

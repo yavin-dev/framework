@@ -103,6 +103,12 @@ export default Component.extend({
   },
 
   actions: {
+    /**
+     * Action on selector change.
+     *
+     * @action
+     * @param  {...any} args
+     */
     change(...args) {
       const handleChange = get(this, 'onChange');
 
