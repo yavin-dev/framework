@@ -154,4 +154,16 @@
       </div>
     </div>
   {{/if}}
+
+  {{log dashboard}}
+  {{#if dashboard.hasDirtyAttributes}}
+    {{!-- <div class="navi-dashboard__save-dialogue navi-dashboard__save-dialogue--spacer">
+      <button class="btn btn-secondary navi-dashboard__save-button">Save Changes</button>
+      <button class="btn btn-secondary navi-dashboard__revert-button">Revert Changes</button>
+    </div> --}}
+    <div class="navi-dashboard__save-dialogue">
+      <button class="btn btn-secondary navi-dashboard__save-button">Save Changes</button>
+      <button class="btn btn-secondary navi-dashboard__revert-button">Revert Changes</button>
+    </div>
+  {{/if}}
 </div>
