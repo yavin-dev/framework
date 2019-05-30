@@ -4,12 +4,7 @@
  */
 package com.yahoo.navi.ws.models.permissions.checks
 
-import com.yahoo.elide.core.Path
-import com.yahoo.elide.core.filter.FilterPredicate
-import com.yahoo.elide.core.filter.Operator
-import com.yahoo.elide.core.filter.expression.FilterExpression
 import com.yahoo.elide.security.ChangeSpec
-import com.yahoo.elide.security.FilterExpressionCheck
 import com.yahoo.elide.security.RequestScope
 import com.yahoo.elide.security.checks.CommitCheck
 import com.yahoo.elide.security.checks.OperationCheck

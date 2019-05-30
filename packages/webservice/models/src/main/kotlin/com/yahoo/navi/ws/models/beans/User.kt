@@ -4,7 +4,6 @@
  */
 package com.yahoo.navi.ws.models.beans
 
-import com.sun.xml.internal.ws.policy.AssertionSet
 import com.yahoo.elide.annotation.Include
 import com.yahoo.elide.annotation.SharePermission
 import com.yahoo.elide.annotation.DeletePermission

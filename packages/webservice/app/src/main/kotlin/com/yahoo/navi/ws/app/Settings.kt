@@ -57,14 +57,9 @@ open class Settings : ElideStandaloneSettings {
         return "com.yahoo.navi.ws.models.beans"
     }
 
-    override fun getHibernate5ConfigPath(): String {
-        return "./src/main/resources/hibernate.properties"
-    }
-
     fun loadHibernateProperties(): Properties {
         // Load properties file
         val path = "./src/main/resources/hibernate.properties"
-        System.out.println(path)
         val properties = Properties()
         try  {
             FileInputStream(path).use{
