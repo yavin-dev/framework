@@ -76,13 +76,41 @@ module('Acceptances | Navi Dashboard Schedule Modal', function(hooks) {
       .hasText('navi_user@navi.io', 'Recipients field is set by the saved delivery rule');
   });
 
-  test('open schedule modal in dashboard view', async function(assert) {
-    assert.expect(1);
+  test('schedule modal in dashboard view', async function(assert) {
+    assert.expect(4);
     await visit('/dashboards/2/view');
 
     // Click "Schedule"
     await click('.schedule-action__button');
 
     assert.dom('.schedule-modal__header').isVisible('Schedule modal pops up when action is clicked');
+
+    assert
+      .dom('.schedule-modal__dropdown--frequency .ember-power-select-selected-item')
+      .hasText('Week', 'Frequency field is set to Week');
+
+    // Set frequency to Day
+    await click('.schedule-modal__dropdown--frequency .ember-power-select-trigger');
+    await click($('.ember-power-select-option:contains(Day)')[0]);
+
+    //Save the schedule
+    await click('.schedule-modal__save-btn');
+
+    assert
+      .dom('.success .notification-text')
+      .hasText(
+        'Dashboard delivery schedule successfully saved!',
+        'Successful notification is shown after clicking save'
+      );
+
+    // Close the modal
+    await click('.schedule-modal__cancel-btn');
+
+    // Reopen the modal
+    await click('.schedule-action__button');
+
+    assert
+      .dom('.schedule-modal__dropdown--frequency .ember-power-select-selected-item')
+      .hasText('Day', 'Changes are saved');
   });
 });
