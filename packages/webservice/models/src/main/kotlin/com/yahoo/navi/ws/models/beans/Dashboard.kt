@@ -19,12 +19,14 @@ import javax.persistence.CascadeType
 import javax.persistence.Entity
 import javax.persistence.Table
 import javax.persistence.Column
+import javax.persistence.DiscriminatorValue
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToMany
 import javax.persistence.ManyToOne
 import javax.persistence.OneToMany
 
 @Entity(name = "Dashboard")
+@DiscriminatorValue("Dashboard")
 @Table(name="custom_dashboards")
 @Include(rootLevel = true, type = "dashboards")
 @SharePermission
@@ -32,10 +34,6 @@ import javax.persistence.OneToMany
 @UpdatePermission(expression = "is an author now OR is an editor now")
 @DeletePermission(expression = "is an author now")
 class Dashboard : Asset(), HasAuthor, HasEditors {
-
-    @get:JoinColumn(name = "author")
-    @get:ManyToOne
-    override var author: User? = null
 
     @get:ManyToMany(mappedBy = "editingDashboards")
     override var editors: Collection<User> = arrayListOf()

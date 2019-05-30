@@ -63,15 +63,17 @@ open class Settings : ElideStandaloneSettings {
 
     fun loadHibernateProperties(): Properties {
         // Load properties file
+        val path = "./src/main/resources/hibernate.properties"
+        System.out.println(path)
         val properties = Properties()
         try  {
-            FileInputStream(getHibernate5ConfigPath()).use{
+            FileInputStream(path).use{
                 properties.load(it)
             }
 
             return properties;
         } catch (e: IOException) {
-            throw RuntimeException("Could not load " + getHibernate5ConfigPath(), e);
+            throw RuntimeException("Could not load " + path, e);
         }
     }
 }

@@ -4,6 +4,7 @@
  */
 package com.yahoo.navi.ws.models.beans
 
+import com.sun.xml.internal.ws.policy.AssertionSet
 import com.yahoo.elide.annotation.Include
 import com.yahoo.elide.annotation.SharePermission
 import com.yahoo.elide.annotation.DeletePermission
@@ -44,7 +45,8 @@ class User {
     @get:UpdatePermission(expression = "nobody")
     var createdOn: Date? = null
 
-    @get:OneToMany(mappedBy = "author")
+    @get:OneToMany(mappedBy = "author", targetEntity = Asset::class)
+    @get:Where(clause = "ASSET_TYPE = 'Report'")
     var reports: Collection<Report> = arrayListOf()
 
     @get:ManyToMany
@@ -55,7 +57,8 @@ class User {
     )
     var favoriteReports: Collection<Report> = arrayListOf()
 
-    @get:OneToMany(mappedBy = "author")
+    @get:OneToMany(mappedBy = "author", targetEntity = Asset::class)
+    @get:Where(clause = "ASSET_TYPE = 'Dashboard'")
     var dashboards: Collection<Dashboard> = arrayListOf()
 
     @get:UpdatePermission(expression = "is author of dashboard")
