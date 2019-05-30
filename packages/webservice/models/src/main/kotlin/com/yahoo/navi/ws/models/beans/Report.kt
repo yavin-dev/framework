@@ -15,6 +15,8 @@ import org.hibernate.annotations.Parameter
 import org.hibernate.annotations.Type
 import javax.persistence.Column
 import javax.persistence.Entity
+import javax.persistence.JoinColumn
+import javax.persistence.ManyToOne
 import javax.persistence.Table
 
 @Entity(name = "Report")
@@ -25,6 +27,10 @@ import javax.persistence.Table
 @UpdatePermission(expression = "is an author now")
 @DeletePermission(expression = "is an author now")
 class Report : Asset(), HasAuthor {
+
+    @get:JoinColumn(name = "author")
+    @get:ManyToOne
+    override var author: User? = null
 
     @get:Column(name = "request", columnDefinition = "MEDIUMTEXT")
     @get:Type(type = "com.yahoo.navi.ws.models.types.JsonType", parameters =

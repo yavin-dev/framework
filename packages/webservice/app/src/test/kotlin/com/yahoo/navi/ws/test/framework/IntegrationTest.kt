@@ -10,6 +10,11 @@ import org.junit.BeforeClass
 import com.yahoo.elide.standalone.ElideStandalone
 import com.yahoo.navi.ws.app.Settings
 import com.jayway.restassured.RestAssured
+import org.junit.Assert
+import java.sql.Connection
+import java.sql.DriverManager
+import java.sql.PreparedStatement
+import java.sql.SQLException
 
 abstract class IntegrationTest: RestAssuredSupport {
     companion object {
@@ -17,6 +22,13 @@ abstract class IntegrationTest: RestAssuredSupport {
          * local elide stand alone instance
          */
         lateinit var App: ElideStandalone
+
+        /**
+         * H2 database connection parameters
+         */
+        private val DATABASE_CONNECTION_URL = "jdbc:h2:mem:db1;DB_CLOSE_DELAY=-1"
+        private val DATABASE_USER = "SA"
+        private val DATABASE_PASSWORD = ""
 
         /**
          * sets up rest assured and sets up the server
@@ -73,6 +85,29 @@ abstract class IntegrationTest: RestAssuredSupport {
         fun tearDownServer() {
             App.stop()
         }
+    }
+
+    /**
+     * Execute select query and return number of rows
+     * @param query
+     * @return number of rows for a query
+     */
+    fun getCountForSelectQuery(query: String): Int {
+        var numberOfRows = 0
+        try {
+            DriverManager.getConnection(DATABASE_CONNECTION_URL, DATABASE_USER, DATABASE_PASSWORD).use{ conn ->
+                conn.createStatement().use{ stmt ->
+                    val rs = stmt.executeQuery(query)
+                    rs.last()
+                    numberOfRows = rs.getInt(1)
+                }
+            }
+        } catch (e: SQLException) {
+            e.printStackTrace()
+            Assert.fail("Database Error: " + e.message)
+        }
+
+        return numberOfRows
     }
 
     /**

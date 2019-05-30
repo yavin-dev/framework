@@ -23,16 +23,12 @@ import javax.persistence.TemporalType
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-abstract class Asset: HasAuthor {
+abstract class Asset {
     @get:Id
     @get:GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Int = 0
 
     open var title: String? = null
-
-    @get:JoinColumn(name = "author")
-    @get:ManyToOne
-    override var author: User? = null
 
     @get:CreationTimestamp
     @get:Column(columnDefinition = "timestamp default current_timestamp")

@@ -14,6 +14,7 @@ import com.jayway.restassured.RestAssured.given
 class UserTest: IntegrationTest() {
     private val naviUser1 = "user1"
     private val naviUser2 = "user2"
+    private val naviUser3 = "user3"
 
     fun registerUser(user: String) {
         given()
@@ -446,5 +447,519 @@ class UserTest: IntegrationTest() {
             .assertThat()
             .body("data.relationships.favoriteReports.data.id", hasItems("1"))
 
+    }
+
+    @Test
+    fun editingDashboards() {
+        registerUser(naviUser1)
+        registerUser(naviUser2)
+        registerUser(naviUser3)
+
+        // User 1 posts a dashboard
+        given()
+            .header("User", naviUser1)
+            .contentType("application/vnd.api+json")
+            .body("""
+                {
+                    "data": {
+                        "type": "dashboards",
+                        "attributes": {
+                            "title": "User 1's Dashboard"
+                        },
+                        "relationships": {
+                            "author": {
+                                "data": {
+                                    "type": "users",
+                                    "id": "$naviUser1"
+                                }
+                            }
+                        }
+                    }
+                }
+            """.trimIndent())
+        .When()
+            .post("/dashboards")
+        .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_CREATED)
+
+        // User 2 posts a dashboard
+        given()
+            .header("User", naviUser2)
+            .contentType("application/vnd.api+json")
+            .body("""
+                {
+                    "data": {
+                        "type": "dashboards",
+                        "attributes": {
+                            "title": "User 2's Dashboard"
+                        },
+                        "relationships": {
+                            "author": {
+                                "data": {
+                                    "type": "users",
+                                    "id": "$naviUser2"
+                                }
+                            }
+                        }
+                    }
+                }
+            """.trimIndent())
+        .When()
+            .post("/dashboards")
+        .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_CREATED)
+
+        // User 2 posts a second dashboard
+        given()
+            .header("User", naviUser2)
+            .contentType("application/vnd.api+json")
+            .body("""
+                {
+                    "data": {
+                        "type": "dashboards",
+                        "attributes": {
+                            "title": "User 2's Dashboard 2"
+                        },
+                        "relationships": {
+                            "author": {
+                                "data": {
+                                    "type": "users",
+                                    "id": "$naviUser2"
+                                }
+                            }
+                        }
+                    }
+                }
+            """.trimIndent())
+        .When()
+            .post("/dashboards")
+        .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_CREATED)
+
+        // User 1 has no editor access
+        given()
+            .header("User", naviUser1)
+        .When()
+            .get("/users/$naviUser1")
+        .then()
+            .assertThat()
+            .body("data.relationships.editingDashboards.data", empty<Any>())
+
+        // User 1 assigned editor access to dashboard 2
+        given()
+            .header("User", naviUser2)
+            .contentType("application/vnd.api+json")
+            .body("""
+                {
+                    "data": {
+                        "type": "dashboards",
+                        "id": "2",
+                        "relationships": {
+                            "author": {
+                                "data": {
+                                    "type": "users",
+                                    "id": "$naviUser2"
+                                }
+                            },
+                            "editors": {
+                                "data": {
+                                    "type": "users",
+                                    "id": "$naviUser1"
+                                }
+                            }
+                        }
+                    }
+                }
+            """.trimIndent())
+        .When()
+            .patch("/dashboards/2")
+        .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_NO_CONTENT)
+
+        // user 1 and user 3 given access to dashboard 3
+        given()
+            .header("User", naviUser2)
+            .contentType("application/vnd.api+json")
+            .body("""
+                {
+                    "data": {
+                        "type": "dashboards",
+                        "id": "3",
+                        "relationships": {
+                            "author": {
+                                "data": {
+                                    "type": "users",
+                                    "id": "$naviUser2"
+                                }
+                            },
+                            "editors": {
+                                "data": [
+                                    {
+                                        "type": "users",
+                                        "id": "$naviUser1"
+                                    },
+                                    {
+                                        "type": "users",
+                                        "id": "$naviUser3"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            """.trimIndent())
+        .When()
+            .patch("/dashboards/3")
+        .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_NO_CONTENT)
+
+        //dashboards that can be edited and authored are shown for user 1 and user 3
+        given()
+            .header("User", naviUser1)
+        .When()
+            .get("/users/$naviUser1")
+        .then()
+            .assertThat()
+            .body("data.relationships.editingDashboards.data.id", hasItems("2", "3")).and()
+            .body("data.relationships.dashboards.data.id", hasItems("1"))
+
+        given()
+            .header("User", naviUser3)
+        .When()
+            .get("/users/$naviUser3")
+        .then()
+            .assertThat()
+            .body("data.relationships.editingDashboards.data.id", hasItems("3")).and()
+            .body("data.relationships.dashboards.data.id", empty<Any>())
+
+        // user 2 , author of dashboard 3 remove editor access for user 3
+        given()
+            .header("User", naviUser2)
+            .contentType("application/vnd.api+json")
+            .body("""
+                {
+                    "data": {
+                        "type": "dashboards",
+                        "id": "3",
+                        "relationships": {
+                            "author": {
+                                "data": {
+                                    "type": "users",
+                                    "id": "$naviUser2"
+                                }
+                            },
+                            "editors": {
+                                "data": [
+                                    {
+                                        "type": "users",
+                                        "id": "$naviUser1"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            """.trimIndent())
+        .When()
+            .patch("/dashboards/3")
+        .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_NO_CONTENT)
+
+        given()
+            .header("User", naviUser3)
+        .When()
+            .get("/users/$naviUser3")
+        .then()
+            .assertThat()
+            .body("data.relationships.editingDashboards.data.id", empty<Any>())
+    }
+
+    @Test
+    fun favoriteDashboards() {
+        registerUser(naviUser1)
+        registerUser(naviUser2)
+
+        //Add a dashboard
+        given()
+            .header("User", naviUser1)
+            .contentType("application/vnd.api+json")
+            .body("""
+                {
+                    "data": {
+                        "type": "dashboards",
+                        "attributes": {
+                            "title": "User 1's Dashboard"
+                        },
+                        "relationships": {
+                            "author": {
+                                "data": {
+                                    "type": "users",
+                                    "id": "$naviUser1"
+                                }
+                            }
+                        }
+                    }
+                }
+            """.trimIndent())
+        .When()
+            .post("/dashboards")
+        .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_CREATED)
+
+        //add a second dashboard
+        given()
+            .header("User", naviUser2)
+            .contentType("application/vnd.api+json")
+            .body("""
+                {
+                    "data": {
+                        "type": "dashboards",
+                        "attributes": {
+                            "title": "User 2's Dashboard"
+                        },
+                        "relationships": {
+                            "author": {
+                                "data": {
+                                    "type": "users",
+                                    "id": "$naviUser2"
+                                }
+                            }
+                        }
+                    }
+                }
+            """.trimIndent())
+        .When()
+            .post("/dashboards")
+        .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_CREATED)
+
+        // user starts with no favorites
+        given()
+            .header("User", naviUser1)
+        .When()
+            .get("/users/$naviUser1")
+        .then()
+            .assertThat()
+            .body("data.relationships.favoriteDashboards.data", empty<Any>())
+
+        //user can favorite their own dashboard and other user's dashboard
+        given()
+            .header("User", naviUser1)
+            .contentType("application/vnd.api+json")
+            .body("""
+                {
+                    "data": {
+                        "type": "users",
+                        "id": "$naviUser1",
+                        "relationships": {
+                            "favoriteDashboards": {
+                                "data": [
+                                    {
+                                        "type": "dashboards",
+                                        "id": "1"
+                                    },
+                                    {
+                                        "type": "dashboards",
+                                        "id": "2"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            """.trimIndent())
+        .When()
+            .patch("/users/$naviUser1")
+        .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_NO_CONTENT)
+
+        // favorite dashboards still show up for user
+        given()
+            .header("User", naviUser1)
+        .When()
+            .get("/users/$naviUser1")
+        .then()
+            .assertThat()
+            .body("data.relationships.favoriteDashboards.data.id", hasItems("1", "2"))
+
+        //user can remove a dashboard
+        given()
+            .header("User", naviUser1)
+            .contentType("application/vnd.api+json")
+            .body("""
+                {
+                    "data": {
+                        "type": "users",
+                        "id": "$naviUser1",
+                        "relationships": {
+                            "favoriteDashboards": {
+                                "data": [
+                                    {
+                                        "type": "dashboards",
+                                        "id": "1"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            """.trimIndent())
+        .When()
+            .patch("/users/$naviUser1")
+        .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_NO_CONTENT)
+
+        given()
+            .header("User", naviUser1)
+        .When()
+            .get("/users/$naviUser1")
+        .then()
+            .assertThat()
+            .body("data.relationships.favoriteDashboards.data.id", not(hasItems("2")))
+
+        //multiple users can favorite the same dashboard
+        given()
+            .header("User", naviUser2)
+            .contentType("application/vnd.api+json")
+            .body("""
+                {
+                    "data": {
+                        "type": "users",
+                        "id": "$naviUser2",
+                        "relationships": {
+                            "favoriteDashboards": {
+                                "data": [
+                                    {
+                                        "type": "dashboards",
+                                        "id": "1"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            """.trimIndent())
+        .When()
+            .patch("/users/$naviUser2")
+        .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_NO_CONTENT)
+
+        // favorite dashboard still shows for user1
+        given()
+            .header("User", naviUser1)
+        .When()
+            .get("/users/$naviUser1")
+        .then()
+            .assertThat()
+            .body("data.relationships.favoriteDashboards.data.id", hasItems("1"))
+    }
+
+    @Test
+    fun reverseRelationships() {
+        registerUser(naviUser1)
+
+        //post reports and a dashboard
+        given()
+            .header("User", naviUser1)
+            .contentType("application/vnd.api+json")
+            .body("""
+                {
+                    "data": {
+                        "type": "reports",
+                        "attributes": {
+                            "title": "A Report 1"
+                        },
+                        "relationships": {
+                            "author": {
+                                "data": {
+                                    "type": "users",
+                                    "id": "$naviUser1"
+                                }
+                            }
+                        }
+                    }
+                }
+            """.trimIndent())
+        .When()
+            .post("/reports")
+        .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_CREATED)
+
+        given()
+            .header("User", naviUser1)
+            .contentType("application/vnd.api+json")
+            .body("""
+                {
+                    "data": {
+                        "type": "reports",
+                        "attributes": {
+                            "title": "A Report 2"
+                        },
+                        "relationships": {
+                            "author": {
+                                "data": {
+                                    "type": "users",
+                                    "id": "$naviUser1"
+                                }
+                            }
+                        }
+                    }
+                }
+            """.trimIndent())
+        .When()
+            .post("/reports")
+        .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_CREATED)
+
+        given()
+            .header("User", naviUser1)
+            .contentType("application/vnd.api+json")
+            .body("""
+                {
+                    "data": {
+                        "type": "dashboards",
+                        "attributes": {
+                            "title": "User 1's Dashboard"
+                        },
+                        "relationships": {
+                            "author": {
+                                "data": {
+                                    "type": "users",
+                                    "id": "$naviUser1"
+                                }
+                            }
+                        }
+                    }
+                }
+            """.trimIndent())
+        .When()
+            .post("/dashboards")
+        .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_CREATED)
+
+        given()
+            .header("User", naviUser1)
+        .When()
+            .get("/users/$naviUser1")
+        .then()
+            .assertThat()
+            .body("data.relationships.reports.data.type", equalTo(arrayListOf("reports", "reports"))).and()
+            .body("data.relationships.reports.data.id", hasItems("1", "2")).and()
+            .body("data.relationships.dashboards.data.type", equalTo(arrayListOf("dashboards"))).and()
+            .body("data.relationships.dashboards.data.id", equalTo(arrayListOf("3")))
     }
 }

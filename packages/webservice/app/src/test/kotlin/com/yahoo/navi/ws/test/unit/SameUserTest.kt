@@ -9,12 +9,11 @@ import com.yahoo.navi.ws.models.permissions.checks.SameUser
 
 import com.yahoo.elide.security.ChangeSpec
 import com.yahoo.elide.security.RequestScope
-import org.eclipse.jetty.security.MappedLoginService
+import java.security.Principal
 import org.junit.Assert
 import org.junit.Test
 import org.mockito.Mockito
-
-import java.util.Optional
+import java.util.*
 
 /**
  * Test cases for user security check
@@ -27,7 +26,7 @@ class SameUserTest {
         val matchingUserId = "test user"
 
         // Mock a request user
-        val requestUser = Mockito.mock(MappedLoginService.UserPrincipal::class.java)
+        val requestUser = Mockito.mock(Principal::class.java)
         Mockito.`when`(requestUser.getName()).thenReturn(matchingUserId)
 
         // Mock an Elide resource
