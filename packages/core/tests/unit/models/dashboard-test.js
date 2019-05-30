@@ -47,6 +47,12 @@ module('Unit | Model | dashboard', function(hooks) {
               field: 'id',
               operator: 'notin',
               values: ['2', '3', '4']
+            },
+            {
+              dimension: 'eventId',
+              field: 'id',
+              operator: 'in',
+              values: ['1']
             }
           ],
           presentation: {

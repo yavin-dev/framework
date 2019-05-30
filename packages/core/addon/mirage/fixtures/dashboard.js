@@ -43,6 +43,12 @@ export default [
         operator: 'notin',
         field: 'id',
         values: ['2', '3', '4']
+      },
+      {
+        dimension: 'eventId',
+        operator: 'in',
+        field: 'id',
+        values: ['1']
       }
     ],
     presentation: {
