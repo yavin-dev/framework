@@ -189,6 +189,18 @@ export default Route.extend({
         set(dashboard, 'title', title);
         this.send('saveDashboard');
       }
+    },
+
+    /**
+     * Revert the dashboard.
+     *
+     * @action revertDashboard
+     */
+    revertDashboard() {
+      const dashboard = get(this, 'currentDashboard');
+      console.log('reverting');
+      console.log(dashboard.rollbackAttributes());
+      return dashboard.rollbackAttributes();
     }
   }
 });
