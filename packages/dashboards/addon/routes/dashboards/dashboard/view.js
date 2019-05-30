@@ -21,8 +21,6 @@ export default Route.extend({
   model() {
     let dashboard = this.modelFor('dashboards.dashboard');
 
-    console.log(dashboard);
-
     return this.get('dashboardData')
       .fetchDataForDashboard(dashboard)
       .then(dataForWidget => {
