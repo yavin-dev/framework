@@ -105,11 +105,11 @@
       {{/dashboard-actions/add-widget}}
     {{/if}}
   </div>
-
-  {{#if (feature-flag "enableDashboardFilters")}}
-    {{dashboard-filters dashboard=dashboard}}
-  {{/if}}
 </div>
+
+{{#if (feature-flag "enableDashboardFilters")}}
+  {{dashboard-filters dashboard=dashboard}}
+{{/if}}
 
 <div class="navi-dashboard__body">
   {{#if dashboard.widgets.length}}
