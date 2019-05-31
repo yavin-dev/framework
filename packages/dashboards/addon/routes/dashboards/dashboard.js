@@ -198,8 +198,6 @@ export default Route.extend({
      */
     revertDashboard() {
       const dashboard = get(this, 'currentDashboard');
-      console.log('reverting');
-      console.log(dashboard.rollbackAttributes());
       return dashboard.rollbackAttributes();
     }
   }

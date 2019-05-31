@@ -2,7 +2,7 @@ import { run } from '@ember/runloop';
 import { helper as buildHelper } from '@ember/component/helper';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, findAll } from '@ember/test-helpers';
+import { render, findAll, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import config from 'ember-get-config';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
@@ -124,5 +124,20 @@ module('Integration | Component | navi dashboard', function(hooks) {
 
     await render(hbs`{{navi-dashboard dashboard=dashboardModel}}`);
     assert.dom('.action.schedule').isNotVisible('Dashboard schedule button should not be visible');
+  });
+
+  test('dashboard revert', async function(assert) {
+    assert.expect(2);
+
+    this.set('dashboardModel.hasDirtyAttributes', true);
+    this.set('dashboardModel.rollbackAttributes', () => asset.ok(true, 'Rollback happens'));
+    this.set('dashboardModel.save', () => asset.ok(true, 'Save happens'));
+
+    await render(hbs`{{navi-dashboard dashboard=dashboardModel}}`);
+
+    await click('.navi-dashboard__revert-button');
+    await click('.navi-dashboard__save-button');
+
+    debugger;
   });
 });
