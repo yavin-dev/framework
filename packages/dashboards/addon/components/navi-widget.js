@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -54,5 +54,18 @@ export default Component.extend({
       let { column: x, row: y, height, width } = layout;
       return { id, x, y, height, width };
     }
+  }),
+
+  /**
+   * @property {String} filterErrors - Error messaging for filters that couldn't be applied to the widget
+   */
+  filterErrors: computed('data.isFulfilled', function() {
+    const filterErrors = get(this, 'data.firstObject.response.meta.errors') || [];
+    const filterErrorMessages = filterErrors
+      .filter(e => e.title === 'Invalid Filter')
+      .map(e => e.detail)
+      .join('\n');
+
+    return filterErrorMessages ? `Unable to apply filter(s):\n${filterErrorMessages}` : null;
   })
 });
