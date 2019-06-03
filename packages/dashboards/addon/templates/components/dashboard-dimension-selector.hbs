@@ -2,7 +2,7 @@
 {{#if (is-fulfilled groupedDimensions)}}
   {{#power-select
     options=(await groupedDimensions)
-    onchange=(action onChange)
+    onchange=(action "change")
     searchField="longName"
     placeholder="Select a Dimension"
     as |dimension|

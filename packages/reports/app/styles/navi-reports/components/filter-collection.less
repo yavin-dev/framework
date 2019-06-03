@@ -41,12 +41,13 @@
     &__operator,
     &__field {
       flex: 1;
-      margin: @filter-collection-column-margin;
+      margin: @filter-collection-column-margin 0;
     }
 
     &__select-trigger {
       height: @filter-collection-row-height;
       line-height: @filter-collection-row-height - 2; // Vertically center, accounting for 2px taken by border
+      margin: 0 @filter-collection-column-margin;
     }
 
     &__subject {
@@ -65,6 +66,14 @@
 
     &__values--short {
       flex: 2;
+
+      .js-ember-tag-input-new {
+        margin-bottom: 0;
+      }
+
+      .navi-tag-input__tag {
+        margin-top: 2px;
+      }
     }
   }
 

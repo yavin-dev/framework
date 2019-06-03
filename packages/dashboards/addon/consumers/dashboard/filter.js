@@ -5,8 +5,12 @@
 import ActionConsumer from 'navi-core/consumers/action-consumer';
 import { DashboardActions } from 'navi-dashboards/services/dashboard-action-dispatcher';
 import { get, setProperties } from '@ember/object';
+import { inject } from '@ember/service';
 
 export default ActionConsumer.extend({
+  store: inject(),
+  bardMetadata: inject(),
+
   actions: {
     /**
      * @action UPDATE_FILTER
@@ -24,6 +28,23 @@ export default ActionConsumer.extend({
      */
     [DashboardActions.REMOVE_FILTER]: (dashboard, filter) => {
       get(dashboard, 'filters').removeObject(filter);
+    },
+
+    /**
+     * @action ADD_FILTER
+     * @param {Object} dashboard - model with filters
+     * @param {Object} dimension - new filter dimension
+     */
+    [DashboardActions.ADD_FILTER]: function(dashboard, dimension) {
+      const store = get(this, 'store');
+      const bardMetadata = get(this, 'bardMetadata');
+
+      const filter = store.createFragment('bard-request/fragments/filter', {
+        dimension: bardMetadata.getById('dimension', dimension.dimension),
+        operator: 'in'
+      });
+
+      get(dashboard, 'filters').pushObject(filter);
     }
   }
 });
