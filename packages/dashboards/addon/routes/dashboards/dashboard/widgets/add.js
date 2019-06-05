@@ -36,22 +36,6 @@ export default Route.extend({
             newLayout = this._addToLayout(layout, Number(id));
 
           set(dashboard, 'presentation.layout', newLayout);
-
-          return dashboard
-            .save()
-            .then(() => {
-              get(this, 'naviNotifications').add({
-                message: `Widget '${get(widget, 'title')}' has been added to this dashboard successfully.`,
-                type: 'success',
-                timeout: 'short'
-              });
-            })
-            .catch(() => {
-              // Remove from layout if there is an error
-              set(dashboard, 'presentation.layout', A(layout).rejectBy('widgetId', id));
-
-              return reject('Error saving dashboard after creating widget');
-            });
         });
       } else {
         return reject('Unable to find unsaved widget');

@@ -5,9 +5,10 @@
 import { computed, get, set, setProperties } from '@ember/object';
 import { A as arr, makeArray } from '@ember/array';
 import { isEmpty } from '@ember/utils';
-import { run } from '@ember/runloop';
-import Route from '@ember/routing/route';
+import Route from '@ember/rsouting/route';
 import { inject as service } from '@ember/service';
+import { copy } from '@ember/object/internals';
+import { isEqual } from 'lodash';
 
 export default Route.extend({
   /**
@@ -51,11 +52,12 @@ export default Route.extend({
    * @return {Void}
    */
   _updateLayout(updatedWidgets) {
-    let dashboard = get(this, 'currentDashboard'),
-      layout = arr(get(dashboard, 'presentation.layout'));
+    const dashboard = get(this, 'currentDashboard');
+    const oldLayout = get(dashboard, 'presentation.layout');
+    const newLayout = copy(get(dashboard, 'presentation.layout'), true);
 
     makeArray(updatedWidgets).forEach(updatedWidget => {
-      let modelWidget = layout.findBy('widgetId', Number(updatedWidget.id));
+      let modelWidget = arr(newLayout).findBy('widgetId', Number(updatedWidget.id));
 
       //Make sure the widget is still a member of the dashboard
       if (modelWidget) {
@@ -63,6 +65,11 @@ export default Route.extend({
         setProperties(modelWidget, { column, row, height, width });
       }
     });
+
+    // Prevent update of array from triggering infinite render loop
+    if (!isEqual(oldLayout, newLayout)) {
+      set(dashboard, 'presentation.layout', newLayout);
+    }
   },
 
   /**
@@ -108,10 +115,6 @@ export default Route.extend({
     didUpdateLayout(event, widgets) {
       if (widgets && get(widgets, 'length')) {
         this._updateLayout(widgets);
-        let dashboard = get(this, 'currentDashboard');
-        if (get(dashboard, 'canUserEdit')) {
-          this.send('saveDashboard');
-        }
       }
     },
 
@@ -119,7 +122,7 @@ export default Route.extend({
      * @action saveDashboard - saves dashboard updates
      */
     saveDashboard() {
-      run.debounce(this, this._saveDashboardFn, 100);
+      this._saveDashboardFn();
     },
 
     /**
@@ -127,37 +130,14 @@ export default Route.extend({
      * @param {DS.Model} widgetModel - object to delete
      */
     deleteWidget(widgetModel) {
-      let widgetName = get(widgetModel, 'title'),
-        id = get(widgetModel, 'id');
+      let id = get(widgetModel, 'id');
 
       widgetModel.deleteRecord();
 
-      return widgetModel
-        .save()
-        .then(() => {
-          //Make sure record is cleaned up locally
-          widgetModel.unloadRecord();
-
-          // Remove layout reference
-          let presentation = get(this, 'currentDashboard.presentation'),
-            newLayout = arr(get(presentation, 'layout')).rejectBy('widgetId', Number(id));
-          set(presentation, 'layout', newLayout);
-          this.send('saveDashboard');
-
-          get(this, 'naviNotifications').add({
-            message: `Widget "${widgetName}" deleted successfully!`,
-            type: 'success',
-            timeout: 'short'
-          });
-
-          // Leave any child routes after deleting a widget, since they may no longer be valid
-          this.transitionTo(this.routeName, get(this, 'currentDashboard.id'));
-        })
-        .catch(() => {
-          //rollback delete action
-          widgetModel.rollbackAttributes();
-          this.showErrorNotification(`OOPS! An error occurred while deleting widget "${widgetName}"`);
-        });
+      // Remove layout reference
+      let presentation = get(this, 'currentDashboard.presentation'),
+        newLayout = arr(get(presentation, 'layout')).rejectBy('widgetId', Number(id));
+      set(presentation, 'layout', newLayout);
     },
 
     /**
@@ -187,7 +167,6 @@ export default Route.extend({
       if (!isEmpty(title)) {
         let dashboard = get(this, 'currentDashboard');
         set(dashboard, 'title', title);
-        this.send('saveDashboard');
       }
     },
 
