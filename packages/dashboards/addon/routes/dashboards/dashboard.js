@@ -5,10 +5,9 @@
 import { computed, get, set, setProperties } from '@ember/object';
 import { A as arr, makeArray } from '@ember/array';
 import { isEmpty } from '@ember/utils';
-import Route from '@ember/rsouting/route';
+import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
 import { copy } from '@ember/object/internals';
-import { isEqual } from 'lodash';
 
 export default Route.extend({
   /**
@@ -53,7 +52,6 @@ export default Route.extend({
    */
   _updateLayout(updatedWidgets) {
     const dashboard = get(this, 'currentDashboard');
-    const oldLayout = get(dashboard, 'presentation.layout');
     const newLayout = copy(get(dashboard, 'presentation.layout'), true);
 
     makeArray(updatedWidgets).forEach(updatedWidget => {
@@ -66,10 +64,7 @@ export default Route.extend({
       }
     });
 
-    // Prevent update of array from triggering infinite render loop
-    if (!isEqual(oldLayout, newLayout)) {
-      set(dashboard, 'presentation.layout', newLayout);
-    }
+    set(dashboard, 'presentation.layout', newLayout);
   },
 
   /**
@@ -114,8 +109,12 @@ export default Route.extend({
      */
     didUpdateLayout(event, widgets) {
       if (widgets && get(widgets, 'length')) {
-        this._updateLayout(widgets);
+        this.set('_stagedLayout', widgets);
       }
+    },
+
+    commitStagedLayout() {
+      this._updateLayout(this.get('_stagedLayout'));
     },
 
     /**
@@ -130,14 +129,17 @@ export default Route.extend({
      * @param {DS.Model} widgetModel - object to delete
      */
     deleteWidget(widgetModel) {
-      let id = get(widgetModel, 'id');
+      const id = get(widgetModel, 'id');
 
       widgetModel.deleteRecord();
 
       // Remove layout reference
-      let presentation = get(this, 'currentDashboard.presentation'),
-        newLayout = arr(get(presentation, 'layout')).rejectBy('widgetId', Number(id));
+      const presentation = get(this, 'currentDashboard.presentation');
+      const newLayout = arr(get(presentation, 'layout')).rejectBy('widgetId', Number(id));
+
       set(presentation, 'layout', newLayout);
+
+      return this.transitionTo('dashboards.dashboard', this.get('currentDashboard.id'));
     },
 
     /**

@@ -375,7 +375,7 @@ module('Acceptance | Dashboards', function(hooks) {
   });
 
   test('Failing to save a new widget', async function(assert) {
-    assert.expect(2);
+    assert.expect(6);
 
     server.patch('/dashboards/1', () => new Response(500));
 
@@ -384,13 +384,27 @@ module('Acceptance | Dashboards', function(hooks) {
     await click($('.checkbox-selector--metric .grouped-list__item:contains(Total Clicks) label')[0]);
     await click('.navi-report-widget__run-btn');
     await click('.navi-report-widget__save-btn');
-    assert.ok(
-      currentURL().endsWith('/dashboards'),
-      'User ends up on dashboards route when there is an error adding a widget'
-    );
 
-    await visit('/dashboards/1');
-    assert.dom('.navi-widget').exists({ count: 3 }, 'The new widget was never added to the dashboard');
+    assert.dom('.navi-notifications').hasText('', 'No notifications before save.');
+
+    await click('.navi-dashboard__save-button');
+
+    assert
+      .dom('.navi-notifications')
+      .hasText(
+        'OOPS! An error occured while trying to save your dashboard. danger',
+        'The a navi notification appears for the error.'
+      );
+
+    assert.dom('.navi-dashboard__save-button').isVisible('Save button sticks around after failure.');
+
+    assert.dom('.navi-widget').exists({ count: 4 }, 'The new widget was added to the dashboard');
+
+    await click('.navi-dashboard__revert-button');
+
+    assert.dom('.navi-widget').exists({ count: 3 }, 'The new widget vanishes after revert');
+
+    assert.dom('.navi-dashboard__save-button').isNotVisible('Save button vanishes after revert.');
   });
 
   test('Editing dashboard title', async function(assert) {
@@ -430,5 +444,53 @@ module('Acceptance | Dashboards', function(hooks) {
         'You do not have access to run queries against Network',
         'Unauthorized widget loaded unauthorized component'
       );
+  });
+
+  test('dashboard save/revert', async function(assert) {
+    assert.expect(10);
+
+    server.patch('/dashboards/1', () => {
+      assert.notok(true, 'Dashboard should not be patched before save.');
+      return new Response(500);
+    });
+
+    await visit('/dashboards/1');
+
+    assert
+      .dom('.navi-dashboard__revert-button')
+      .isNotVisible('Revert button is not visible before making a change to the dashboard');
+
+    await click('.editable-label__icon');
+    await fillIn('.editable-label__input', 'ABCD');
+    await blur('.editable-label__input');
+
+    assert.dom('.navi-dashboard__edit-title').hasText('ABCD', 'Has updated text');
+
+    assert.dom('.navi-dashboard__revert-button').isVisible('Revert button appears after dashboard change');
+
+    await click('.navi-dashboard__revert-button');
+
+    assert.dom('.navi-dashboard__revert-button').isNotVisible('Revert button is not visible after reverting');
+
+    assert.dom('.navi-dashboard__edit-title').hasText('Tumblr Goals Dashboard', 'Has original text');
+
+    assert.dom('.navi-dashboard__save-button').isNotVisible('Save should not be visible after revert');
+
+    await click('.editable-label__icon');
+    await fillIn('.editable-label__input', 'EFGH');
+    await blur('.editable-label__input');
+
+    assert.dom('.navi-dashboard__save-button').isVisible('Save appears after change');
+
+    server.patch('/dashboards/1', () => {
+      assert.ok(true, 'Dashboard should be patched after save.');
+      return new Response(500);
+    });
+
+    assert.dom('.navi-dashboard__edit-title').hasText('EFGH', 'Has updated text before save');
+
+    await click('.navi-dashboard__save-button');
+
+    assert.dom('.navi-dashboard__edit-title').hasText('EFGH', 'Keeps updated text after save');
   });
 });

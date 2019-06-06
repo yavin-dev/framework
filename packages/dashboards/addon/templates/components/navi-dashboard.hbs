@@ -119,6 +119,8 @@
           width=dashboard.presentation.columns
         )
         onChange=(route-action "didUpdateLayout")
+        onDragstop=(route-action "commitStagedLayout")
+        onResizestop=(route-action "commitStagedLayout")
       }}
         {{#each dashboard.presentation.layout as |layout|}}
           {{#with (get-widget layout.widgetId) as |widget|}}
