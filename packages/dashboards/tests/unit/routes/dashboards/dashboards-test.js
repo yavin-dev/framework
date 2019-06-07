@@ -152,28 +152,23 @@ module('Unit | Route | dashboards/dashboard', function(hooks) {
   });
 
   test('delete widget - success', async function(assert) {
-    assert.expect(5);
+    assert.expect(4);
 
     await run(async () => {
       const dashboard = await Route.store.findRecord('dashboard', 1);
-      const naviNotifications = {
-        add({ message }) {
-          assert.equal(
-            message,
-            'Widget "Mobile DAU Graph" deleted successfully!',
-            'A notification is sent containing the widget title'
-          );
-        }
-      };
+      const _parentSaveFn = Route._saveDashboardFn;
 
       Route.reopen(mockModelFor(dashboard), {
-        naviNotifications,
-
         _saveDashboardFn() {
-          assert.ok(true, 'Dashboard is saved after layout update');
+          assert.ok(true, 'Dashboard is saved after save is clicked');
+          _parentSaveFn.call(this);
         },
         transitionTo(route) {
-          assert.equal(route, this.routeName, 'After deleting a widget, user is transitioned out of any child route');
+          assert.equal(
+            route,
+            'dashboards.dashboard',
+            'After deleting a widget, user is transitioned out of any child route'
+          );
         }
       });
 
@@ -181,8 +176,11 @@ module('Unit | Route | dashboards/dashboard', function(hooks) {
       const originalWidgetCount = widgets.length;
 
       Route.send('deleteWidget', Route.store.peekRecord('dashboard-widget', 2));
-
       await settled();
+
+      Route.send('saveDashboard');
+      await settled();
+
       assert.equal(dashboard.widgets.length, originalWidgetCount - 1, 'Dashboard has one less widget after a delete');
 
       assert.equal(

@@ -8,6 +8,7 @@ import { isEmpty } from '@ember/utils';
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
 import { copy } from '@ember/object/internals';
+import { all } from 'rsvp';
 
 export default Route.extend({
   /**
@@ -76,14 +77,19 @@ export default Route.extend({
    * @return {Void}
    */
   _saveDashboardFn() {
-    let dashboard = get(this, 'currentDashboard');
-    return dashboard.save().catch(() => {
-      get(this, 'naviNotifications').add({
-        message: 'OOPS! An error occured while trying to save your dashboard.',
-        type: 'danger',
-        timeout: 'short'
+    const dashboard = get(this, 'currentDashboard');
+    const widgets = get(this, 'currentDashboard.widgets');
+
+    return dashboard
+      .save()
+      .then(widgets.map(widget => widget.save()))
+      .catch(() => {
+        get(this, 'naviNotifications').add({
+          message: 'OOPS! An error occured while trying to save your dashboard.',
+          type: 'danger',
+          timeout: 'short'
+        });
       });
-    });
   },
 
   /**
