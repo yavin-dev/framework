@@ -13,6 +13,7 @@ import layout from '../templates/components/dashboard-filters';
 export default Component.extend({
   layout,
   classNames: ['dashboard-filters'],
+  classNameBindings: ['isCollapsed:collapsed:expanded'],
 
   /**
    * @property {Boolean} isCollapsed
