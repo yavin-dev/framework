@@ -48,10 +48,9 @@ module('Acceptance | Dashboards', function(hooks) {
     await visit('/dashboards/1');
 
     const route = this.owner.lookup('route:dashboards.dashboard');
-    const layout = route.currentDashboard.presentation.layout;
 
     assert.deepEqual(
-      layout,
+      route.currentDashboard.presentation.layout,
       [
         { column: 0, height: 4, row: 0, widgetId: 1, width: 6 },
         { column: 6, height: 4, row: 0, widgetId: 2, width: 6 },
@@ -63,10 +62,14 @@ module('Acceptance | Dashboards', function(hooks) {
     //swap widget rows
     const grid = $('.grid-stack').data('gridstack');
     const items = findAll('.grid-stack-item');
-    run(() => grid.move(items[2], 0, 0));
+
+    run(() => {
+      grid.move(items[2], 0, 0);
+      $('.grid-stack').trigger('resizestop');
+    });
 
     assert.deepEqual(
-      layout,
+      route.currentDashboard.presentation.layout,
       [
         { column: 0, height: 4, row: 4, widgetId: 1, width: 6 },
         { column: 6, height: 4, row: 4, widgetId: 2, width: 6 },

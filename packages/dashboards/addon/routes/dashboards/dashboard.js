@@ -48,10 +48,10 @@ export default Route.extend({
    *
    * @method _updateLayout
    * @private
-   * @param {Array} updatedWidgets - list of widgets that have changed
    * @return {Void}
    */
-  _updateLayout(updatedWidgets) {
+  _updateLayout() {
+    const updatedWidgets = get(this, '_stagedLayout');
     const dashboard = get(this, 'currentDashboard');
     const newLayout = copy(get(dashboard, 'presentation.layout'), true);
 
@@ -66,30 +66,6 @@ export default Route.extend({
     });
 
     set(dashboard, 'presentation.layout', newLayout);
-  },
-
-  /**
-   * Method used by saveDashboard action to save the
-   * dashboard model
-   *
-   * @method _saveDashboardFn
-   * @private
-   * @return {Void}
-   */
-  _saveDashboardFn() {
-    const dashboard = get(this, 'currentDashboard');
-    const widgets = get(this, 'currentDashboard.widgets');
-
-    return dashboard
-      .save()
-      .then(widgets.map(widget => widget.save()))
-      .catch(() => {
-        get(this, 'naviNotifications').add({
-          message: 'OOPS! An error occured while trying to save your dashboard.',
-          type: 'danger',
-          timeout: 'short'
-        });
-      });
   },
 
   /**
@@ -119,15 +95,33 @@ export default Route.extend({
       }
     },
 
+    /**
+     * Take new layout staged by didChange and set
+     * it on the dashboard model.
+     *
+     * @action commitStagedLayout
+     */
     commitStagedLayout() {
-      this._updateLayout(this.get('_stagedLayout'));
+      this._updateLayout();
     },
 
     /**
      * @action saveDashboard - saves dashboard updates
      */
     saveDashboard() {
-      this._saveDashboardFn();
+      const dashboard = get(this, 'currentDashboard');
+      const widgets = get(this, 'currentDashboard.widgets');
+
+      return dashboard
+        .save()
+        .then(all(widgets.map(async widget => widget.hasDirtyAttributes && widget.save())))
+        .catch(() => {
+          get(this, 'naviNotifications').add({
+            message: 'OOPS! An error occured while trying to save your dashboard.',
+            type: 'danger',
+            timeout: 'short'
+          });
+        });
     },
 
     /**
@@ -185,7 +179,8 @@ export default Route.extend({
      */
     revertDashboard() {
       const dashboard = get(this, 'currentDashboard');
-      return dashboard.rollbackAttributes();
+      get(dashboard, 'widgets').forEach(widget => widget.rollbackAttributes());
+      dashboard.rollbackAttributes();
     }
   }
 });

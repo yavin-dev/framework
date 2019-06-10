@@ -98,7 +98,8 @@ module('Unit | Route | dashboards/dashboard', function(hooks) {
     assert.expect(1);
 
     const dashboard = {
-      save: () => resolve()
+      save: () => resolve(),
+      widgets: []
     };
 
     Route.reopen(mockModelFor(dashboard));
@@ -111,22 +112,22 @@ module('Unit | Route | dashboards/dashboard', function(hooks) {
 
     const currentDashboard = {
       canUserEdit: true,
-      save: () => resolve()
+      save: () => resolve(),
+      widgets: []
     };
 
     Route.reopen({
-      _updateLayout() {
-        return;
-      },
-
       currentDashboard,
 
       _saveDashboardFn() {
-        assert.ok(true, '_saveDashboardFn method is called when user can edit');
+        assert.ok(false, '_saveDashboardFn method is not called during layout update');
       }
     });
 
     Route.send('didUpdateLayout', undefined, [1, 2]);
+
+    assert.deepEqual(Route.get('_stagedLayout'), [1, 2], 'Staged layout is updaded');
+
     await settled();
   });
 
@@ -208,18 +209,25 @@ module('Unit | Route | dashboards/dashboard', function(hooks) {
           );
         }
       };
-      Route.reopen(mockModelFor(dashboard), { naviNotifications });
+      Route.reopen(mockModelFor(dashboard), {
+        naviNotifications,
+        transitionTo: routeName =>
+          assert.equal(routeName, 'dashboards.dashboard', 'transtion back to dashboard after delete')
+      });
 
       const widgets = await dashboard.get('widgets');
       const originalWidgetCount = widgets.length;
 
       Route.send('deleteWidget', Route.store.peekRecord('dashboard-widget', 2));
-
       await settled();
+
+      Route.send('revertDashboard');
+      await settled();
+
       assert.equal(
         dashboard.widgets.length,
         originalWidgetCount,
-        'Dashboard still has all widgets after a failed delete'
+        'Dashboard still has all widgets after a failed delete revert'
       );
 
       assert.notEqual(
