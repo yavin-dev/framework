@@ -94,7 +94,7 @@ module('Unit | Route | dashboards/dashboard', function(hooks) {
     );
   });
 
-  test('_saveDashboardFn', async function(assert) {
+  test('saveDashboard', async function(assert) {
     assert.expect(1);
 
     const dashboard = {
@@ -103,8 +103,8 @@ module('Unit | Route | dashboards/dashboard', function(hooks) {
     };
 
     Route.reopen(mockModelFor(dashboard));
-    await Route._saveDashboardFn();
-    assert.ok(true, '_saveDashboardFn saves dashboard model when user can edit');
+    await Route.actions.saveDashboard.call(Route);
+    assert.ok(true, 'saveDashboard saves dashboard model when user can edit');
   });
 
   test('didUpdateLayout - user can edit', async function(assert) {
@@ -117,11 +117,7 @@ module('Unit | Route | dashboards/dashboard', function(hooks) {
     };
 
     Route.reopen({
-      currentDashboard,
-
-      _saveDashboardFn() {
-        assert.ok(false, '_saveDashboardFn method is not called during layout update');
-      }
+      currentDashboard
     });
 
     Route.send('didUpdateLayout', undefined, [1, 2]);
@@ -157,19 +153,21 @@ module('Unit | Route | dashboards/dashboard', function(hooks) {
 
     await run(async () => {
       const dashboard = await Route.store.findRecord('dashboard', 1);
-      const _parentSaveFn = Route._saveDashboardFn;
+      const parentSaveFn = Route.actions.saveDashboard;
 
       Route.reopen(mockModelFor(dashboard), {
-        _saveDashboardFn() {
-          assert.ok(true, 'Dashboard is saved after save is clicked');
-          _parentSaveFn.call(this);
-        },
         transitionTo(route) {
           assert.equal(
             route,
             'dashboards.dashboard',
             'After deleting a widget, user is transitioned out of any child route'
           );
+        },
+        actions: {
+          saveDashboard() {
+            assert.ok(true, 'Dashboard is saved after save is clicked');
+            parentSaveFn.call(this);
+          }
         }
       });
 

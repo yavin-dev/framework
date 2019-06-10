@@ -47,11 +47,11 @@ export default Route.extend({
    * that have changed
    *
    * @method _updateLayout
+   * @param {Array} updatedWidgets - list of widgets
    * @private
    * @return {Void}
    */
-  _updateLayout() {
-    const updatedWidgets = get(this, '_stagedLayout');
+  _updateLayout(updatedWidgets) {
     const dashboard = get(this, 'currentDashboard');
     const newLayout = copy(get(dashboard, 'presentation.layout'), true);
 
@@ -102,7 +102,7 @@ export default Route.extend({
      * @action commitStagedLayout
      */
     commitStagedLayout() {
-      this._updateLayout();
+      this._updateLayout(get(this, '_stagedLayout'));
     },
 
     /**
