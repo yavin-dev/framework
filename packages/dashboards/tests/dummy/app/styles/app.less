@@ -6,7 +6,6 @@ body {
   font-family: 'HelveticaNeue-Light', 'HelveticaNeueW01-Light', Helvetica, Arial, sans-serif;
   height: 100vh;
   margin: 0;
-  padding: 10px;
 }
 
 body > .ember-view,
@@ -14,6 +13,19 @@ body > .ember-view,
   display: flex;
   flex: 1;
   flex-flow: column;
+}
+
+.navi-dashboard-container,
+.navi-dashboard-collection-container {
+  & > .page-header,
+  & > .navi-collection,
+  & > a {
+    padding: 0 10px;
+  }
+
+  .navi-report-widget {
+    padding: 0 10px;
+  }
 }
 
 // Blue Palette

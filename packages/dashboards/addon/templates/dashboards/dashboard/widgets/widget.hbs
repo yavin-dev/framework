@@ -40,9 +40,9 @@
 
           {{navi-icon "code" class="navi-report-widget__icon"}}
           Copy API Query
-          {{#tooltip-on-component enableLazyRendering=true}}
+          {{#ember-tooltip}}
             {{if model.request.validations.isTruelyValid "Copy API Query" "Run a valid report to copy"}}
-          {{/tooltip-on-component}}
+          {{/ember-tooltip}}
         {{/common-actions/get-api}}
       </li>
 
@@ -57,9 +57,9 @@
         }}
           {{navi-icon "download" class="navi-report-widget__icon"}}
           Export
-          {{#tooltip-on-component enableLazyRendering=true}}
+          {{#ember-tooltip}}
             {{if model.validations.isTruelyValid "Export the report" "Run a valid report to enable export"}}
-          {{/tooltip-on-component}}
+          {{/ember-tooltip}}
         {{/component}}
       </li>
 
@@ -79,9 +79,9 @@
           }}
             {{navi-icon "share" class="navi-report-widget__icon"}}
             Share
-            {{#tooltip-on-component enableLazyRendering=true}}
+            {{#ember-tooltip}}
               {{if model.request.validations.isTruelyValid "Share" "Run a valid report to share"}}
-            {{/tooltip-on-component}}
+            {{/ember-tooltip}}
           {{/common-actions/share}}
         </li>
       {{/if}}

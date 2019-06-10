@@ -214,10 +214,12 @@ module('Acceptance | Dashboards', function(hooks) {
       el.textContent.replace(/\s+/g, ' ').trim()
     );
 
-    assert.equal(filters.length, 3, 'correct number of filters');
+    assert.equal(filters.length, 4, 'correct number of filters');
 
     assert.ok(
-      filters.every(filter => /^Property (contains|not equals|equals) (.*?\d+.*?)(, .*?\d+.*?)*$/.test(filter)),
+      filters.every(filter =>
+        /^(Property|EventId) (contains|not equals|equals) (.*?\d+.*?)(, .*?\d+.*?)*$/.test(filter)
+      ),
       'correct format of filters'
     );
   });
