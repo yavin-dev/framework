@@ -1,5 +1,5 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2017, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Notification service meant to be a single place for
@@ -19,7 +19,8 @@ export default Service.extend({
    *                                   be dismissed by click), set sticky to true.
    * @returns {Ember.Service} navi notification service
    */
-  add(/* options */) {
+  add(options) {
+    this.set('options', options);
     return this;
   },
 
@@ -28,6 +29,7 @@ export default Service.extend({
    * @returns {Ember.Service} navi notification service
    */
   clearMessages() {
+    this.set('options', undefined);
     return this;
   }
 });

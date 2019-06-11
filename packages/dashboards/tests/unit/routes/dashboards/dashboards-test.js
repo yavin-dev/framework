@@ -94,16 +94,17 @@ module('Unit | Route | dashboards/dashboard', function(hooks) {
     );
   });
 
-  test('_saveDashboardFn', async function(assert) {
+  test('saveDashboard', async function(assert) {
     assert.expect(1);
 
     const dashboard = {
-      save: () => resolve()
+      save: () => resolve(),
+      widgets: []
     };
 
     Route.reopen(mockModelFor(dashboard));
-    await Route._saveDashboardFn();
-    assert.ok(true, '_saveDashboardFn saves dashboard model when user can edit');
+    await Route.actions.saveDashboard.call(Route);
+    assert.ok(true, 'saveDashboard saves dashboard model when user can edit');
   });
 
   test('didUpdateLayout - user can edit', async function(assert) {
@@ -111,22 +112,18 @@ module('Unit | Route | dashboards/dashboard', function(hooks) {
 
     const currentDashboard = {
       canUserEdit: true,
-      save: () => resolve()
+      save: () => resolve(),
+      widgets: []
     };
 
     Route.reopen({
-      _updateLayout() {
-        return;
-      },
-
-      currentDashboard,
-
-      _saveDashboardFn() {
-        assert.ok(true, '_saveDashboardFn method is called when user can edit');
-      }
+      currentDashboard
     });
 
     Route.send('didUpdateLayout', undefined, [1, 2]);
+
+    assert.deepEqual(Route.get('_stagedLayout'), [1, 2], 'Staged layout is updaded');
+
     await settled();
   });
 
@@ -152,28 +149,25 @@ module('Unit | Route | dashboards/dashboard', function(hooks) {
   });
 
   test('delete widget - success', async function(assert) {
-    assert.expect(5);
+    assert.expect(4);
 
     await run(async () => {
       const dashboard = await Route.store.findRecord('dashboard', 1);
-      const naviNotifications = {
-        add({ message }) {
-          assert.equal(
-            message,
-            'Widget "Mobile DAU Graph" deleted successfully!',
-            'A notification is sent containing the widget title'
-          );
-        }
-      };
+      const parentSaveFn = Route.actions.saveDashboard;
 
       Route.reopen(mockModelFor(dashboard), {
-        naviNotifications,
-
-        _saveDashboardFn() {
-          assert.ok(true, 'Dashboard is saved after layout update');
-        },
         transitionTo(route) {
-          assert.equal(route, this.routeName, 'After deleting a widget, user is transitioned out of any child route');
+          assert.equal(
+            route,
+            'dashboards.dashboard',
+            'After deleting a widget, user is transitioned out of any child route'
+          );
+        },
+        actions: {
+          saveDashboard() {
+            assert.ok(true, 'Dashboard is saved after save is clicked');
+            parentSaveFn.call(this);
+          }
         }
       });
 
@@ -181,8 +175,11 @@ module('Unit | Route | dashboards/dashboard', function(hooks) {
       const originalWidgetCount = widgets.length;
 
       Route.send('deleteWidget', Route.store.peekRecord('dashboard-widget', 2));
-
       await settled();
+
+      Route.send('saveDashboard');
+      await settled();
+
       assert.equal(dashboard.widgets.length, originalWidgetCount - 1, 'Dashboard has one less widget after a delete');
 
       assert.equal(
@@ -210,18 +207,25 @@ module('Unit | Route | dashboards/dashboard', function(hooks) {
           );
         }
       };
-      Route.reopen(mockModelFor(dashboard), { naviNotifications });
+      Route.reopen(mockModelFor(dashboard), {
+        naviNotifications,
+        transitionTo: routeName =>
+          assert.equal(routeName, 'dashboards.dashboard', 'transtion back to dashboard after delete')
+      });
 
       const widgets = await dashboard.get('widgets');
       const originalWidgetCount = widgets.length;
 
       Route.send('deleteWidget', Route.store.peekRecord('dashboard-widget', 2));
-
       await settled();
+
+      Route.send('revertDashboard');
+      await settled();
+
       assert.equal(
         dashboard.widgets.length,
         originalWidgetCount,
-        'Dashboard still has all widgets after a failed delete'
+        'Dashboard still has all widgets after a failed delete revert'
       );
 
       assert.notEqual(
