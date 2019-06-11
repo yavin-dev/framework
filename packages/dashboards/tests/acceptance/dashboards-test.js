@@ -455,7 +455,7 @@ module('Acceptance | Dashboards', function(hooks) {
     assert.expect(10);
 
     server.patch('/dashboards/1', () => {
-      assert.notok(true, 'Dashboard should not be patched before save.');
+      assert.notOk(true, 'Dashboard should not be patched before save.');
       return new Response(500);
     });
 
