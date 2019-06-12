@@ -76,4 +76,20 @@ module('Unit | Service | metric parameter', function(hooks) {
       'fetch all values throws exception for an invalid parameter'
     );
   });
+
+  test('fetchAllValues - enum type', async function(assert) {
+    let service = this.owner.lookup('service:metric-parameter'),
+      parameter = {
+        type: 'enum',
+        values: [{ id: 1, description: 'One' }, { id: 2, description: 'Two' }]
+      };
+
+    const results = await service.fetchAllValues(parameter);
+
+    assert.deepEqual(
+      [{ id: 1, description: 'One', name: 'One' }, { id: 2, description: 'Two', name: 'Two' }],
+      results,
+      'Enum paramter type returns correct values from meta.'
+    );
+  });
 });

@@ -349,6 +349,7 @@ export default Component.extend({
      * @action updateColumnOrder
      */
     updateColumnOrder(newColumnOrder) {
+      debugger;
       this.onUpdateReport('updateColumnOrder', newColumnOrder);
     },
 
