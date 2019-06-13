@@ -31,7 +31,7 @@ export default Service.extend({
   _dimensionService: service('bard-dimensions'),
 
   /**
-   * @returns {Array} list of paramter types this service supports
+   * @returns {Array} list of parameter types this service supports
    */
   supportedTypes() {
     return Object.keys(this._supportedHandlers);
