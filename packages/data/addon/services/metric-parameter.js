@@ -10,7 +10,6 @@ import { inject as service } from '@ember/service';
 import { get } from '@ember/object';
 import { assert } from '@ember/debug';
 import { resolve } from 'rsvp';
-import { isEmpty } from '@ember/utils';
 
 export default Service.extend({
   init() {
@@ -67,8 +66,6 @@ export default Service.extend({
    * @returns {Promise} response with dimension values
    */
   _enum(meta) {
-    return resolve(
-      meta.values.map(value => (isEmpty(value.name) ? Object.assign({}, value, { name: value.description }) : value))
-    );
+    return resolve(meta.values);
   }
 });
