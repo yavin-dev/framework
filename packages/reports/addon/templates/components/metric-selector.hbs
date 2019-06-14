@@ -1,4 +1,4 @@
-{{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{#navi-list-selector
    items=allMetrics
    searchField="longName"
@@ -28,7 +28,7 @@
       {{/ember-tooltip}}
     {{/navi-icon}}
 
-    <div class="metric-selector__icon-set">
+    <div class="metric-selector__icon-set {{if (not (can-having metric)) "metric-selector__icon-set--no-filter"}}">
       {{#if (get metric "hasParameters")}}
         {{metric-config
           metric=metric
@@ -38,27 +38,29 @@
           onToggleParameterizedMetricFilter=(update-report-action "TOGGLE_PARAMETERIZED_METRIC_FILTER")
         }}
       {{/if}}
-      {{#navi-icon
-        "filter"
-        class=(concat (if (get metricsFiltered metric.name) "checkbox-selector__filter--active ") "checkbox-selector__filter metric-selector__filter")
-        click=(action onToggleMetricFilter metric)
-      }}
-        {{#ember-tooltip side="right" popperContainer="body" effect="none"}}
-          {{#if (has-parameters metric)}}
-            {{#if (has-unfiltered-parameters metric request)}}
-              Add next filter
+      {{#if (can-having metric)}}
+        {{#navi-icon
+          "filter"
+          class=(concat (if (get metricsFiltered metric.name) "checkbox-selector__filter--active ") "checkbox-selector__filter metric-selector__filter")
+          click=(action onToggleMetricFilter metric)
+        }}
+          {{#ember-tooltip side="right" popperContainer="body" effect="none"}}
+            {{#if (has-parameters metric)}}
+              {{#if (has-unfiltered-parameters metric request)}}
+                Add next filter
+              {{else}}
+                Remove all
+              {{/if}}
             {{else}}
-              Remove all
+              {{#if (get metricsFiltered metric.name)}}
+                Remove Filter
+              {{else}}
+                Add Filter
+              {{/if}}
             {{/if}}
-          {{else}}
-            {{#if (get metricsFiltered metric.name)}}
-              Remove Filter
-            {{else}}
-              Add Filter
-            {{/if}}
-          {{/if}}
-        {{/ember-tooltip}}
-      {{/navi-icon}}
+          {{/ember-tooltip}}
+        {{/navi-icon}}
+      {{/if}}
     </div>
   {{/grouped-list}}
 {{/navi-list-selector}}

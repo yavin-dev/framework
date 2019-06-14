@@ -115,6 +115,23 @@ export default {
           defaultValue: 'USD'
         }
       }
+    },
+    {
+      category: 'Clicks',
+      name: 'buttons',
+      longName: 'button click count',
+      type: 'number',
+      parameters: {
+        type: {
+          type: 'enum',
+          values: [
+            { id: 'l', description: 'Left' },
+            { id: 'r', description: 'Right' },
+            { id: 'm', description: 'Middle' }
+          ],
+          defaultValue: 'l'
+        }
+      }
     }
   ],
 

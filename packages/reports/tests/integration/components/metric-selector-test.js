@@ -22,6 +22,13 @@ module('Integration | Component | metric selector', function(hooks) {
     setupMock();
 
     this.owner.register('helper:update-report-action', buildHelper(() => {}), { instantiate: false });
+    this.owner.register(
+      'helper:can-having',
+      buildHelper(([metric]) => {
+        return get(metric, 'name') !== 'regUsers';
+      }),
+      { instantiate: false }
+    );
 
     this.set('addMetric', () => {});
     this.set('removeMetric', () => {});
@@ -248,5 +255,11 @@ module('Integration | Component | metric selector', function(hooks) {
       ['Page Views', 'Total Page Views', 'Additive Page Views', 'Total Page Views WoW'],
       'The search results are ranked based on relevance'
     );
+  });
+
+  test('hide filter if metric not allowed to show filter on base metric', function(assert) {
+    assert.dom('.metric-selector__icon-set--no-filter').exists({ count: 1 });
+    assert.dom('.metric-selector__icon-set--no-filter .metric-selector__filter').doesNotExist();
+    assert.dom('.metric-selector__icon-set .metric-selector__filter').exists();
   });
 });

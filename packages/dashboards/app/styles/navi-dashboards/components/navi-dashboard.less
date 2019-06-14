@@ -4,6 +4,8 @@
  */
 
 .navi-dashboard {
+  overflow: hidden;
+
   &__breadcrumb {
     font-size: @font-size-base;
     padding-left: 10px;
@@ -20,8 +22,12 @@
   &__body {
     .display-flex;
     .flex-1;
+
+    background-color: @denali-gray-100;
+    border-bottom: 2px solid @navi-gray-300;
     flex-flow: column;
-    overflow-y: auto;
+    overflow-y: hidden;
+    padding-bottom: 10px;
   }
 
   &__fav-icon {
@@ -29,7 +35,22 @@
   }
 
   &__widgets {
+    overflow-y: auto;
     padding: 20px 0;
+  }
+
+  &__save-dialogue {
+    background: white;
+    bottom: 0px;
+    box-shadow: 0px -2px 2px 0px #a0a0a0;
+    padding: 12px 20px;
+    position: sticky;
+    z-index: 100;
+
+    &--spacer {
+      position: relative;
+      visibility: hidden;
+    }
   }
 
   .page-header {
