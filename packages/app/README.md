@@ -82,9 +82,9 @@ Make use of the many generators for code, try `ember help generate` for more det
 
 ### Building Demo App
 
-From `packages/app`, run:
+From this directory (`packages/app`), run:
 
-- `BUILD_NAVI_DEMO=true ember github-pages:commit --message "Initial gh-pages release" --destination ../../`
+- `BUILD_NAVI_DEMO=true node node_modules/ember-cli/bin/ember github-pages:commit --message "update gh-pages" --destination ../../`
 
 #### Deploying
 
