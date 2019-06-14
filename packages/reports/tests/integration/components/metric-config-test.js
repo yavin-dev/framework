@@ -31,6 +31,10 @@ module('Integration | Component | metric config', function(hooks) {
           type: 'dimension',
           dimensionName: 'property'
         },
+        embargo: {
+          type: 'enum',
+          values: [{ id: 'Y', description: 'Embargo enforced' }, { id: 'N', description: 'No Embargo' }]
+        },
         invalid: {
           type: 'invalid',
           name: 'invalid'
@@ -110,7 +114,7 @@ module('Integration | Component | metric config', function(hooks) {
   });
 
   test('grouped list', async function(assert) {
-    assert.expect(2);
+    assert.expect(3);
 
     await clickTrigger('.metric-config__dropdown-trigger');
 
@@ -122,8 +126,16 @@ module('Integration | Component | metric config', function(hooks) {
 
     assert.deepEqual(
       findAll('.grouped-list__group-header').map(el => el.textContent.trim()),
-      ['currency (14)', 'property (4)'],
+      ['currency (14)', 'property (4)', 'embargo (2)'],
       'The group headers reflect the two parameters in the metric'
+    );
+
+    const embargoList = findAll('.grouped-list__group-header').find(el => el.textContent.startsWith('embargo'))
+      .nextElementSibling;
+    assert.deepEqual(
+      [...embargoList.querySelectorAll('li')].map(el => el.textContent.trim()),
+      ['Embargo enforced (Y)', 'No Embargo (N)'],
+      'Enum elements are correctly displayed'
     );
   });
 

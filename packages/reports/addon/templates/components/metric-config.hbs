@@ -24,7 +24,7 @@
           items=params
           shouldOpenAllGroups=true
           groupByField="param"
-          sortByField="name"
+          sortByField="description"
           as | param |
         }}
           <label class="grouped-list__item-label">
@@ -32,7 +32,7 @@
               class="checkbox-selector__checkbox"
               type="checkbox" onchange={{action "paramToggled" metric param}}
               checked={{get parametersChecked (concat param.param "|" param.id)}}>
-            {{param.name}} ({{param.id}})
+            {{param.description}} ({{param.id}})
           </label>
 
           {{navi-icon

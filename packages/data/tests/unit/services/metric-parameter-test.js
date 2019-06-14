@@ -11,11 +11,11 @@ let MetadataService,
   Rows = A([
     {
       id: '-1',
-      name: 'NULL'
+      description: 'NULL'
     },
     {
       id: '-2',
-      name: 'UNKNOWN'
+      description: 'UNKNOWN'
     }
   ]),
   Server;
@@ -74,6 +74,22 @@ module('Unit | Service | metric parameter', function(hooks) {
       () => service.fetchAllValues(invalidParameter),
       /Fetching values of type: 'invalidType' is not supported/,
       'fetch all values throws exception for an invalid parameter'
+    );
+  });
+
+  test('fetchAllValues - enum type', async function(assert) {
+    let service = this.owner.lookup('service:metric-parameter'),
+      parameter = {
+        type: 'enum',
+        values: [{ id: 1, description: 'One' }, { id: 2, description: 'Two' }]
+      };
+
+    const results = await service.fetchAllValues(parameter);
+
+    assert.deepEqual(
+      [{ id: 1, description: 'One' }, { id: 2, description: 'Two' }],
+      results,
+      'Enum paramter type returns correct values from meta.'
     );
   });
 });
