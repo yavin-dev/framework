@@ -65,6 +65,9 @@ module.exports = function(environment) {
     ENV['ember-cli-mirage'] = {
       enabled: process.env.BUILD_NAVI_DEMO === 'true'
     };
+    if (process.env.BUILD_NAVI_DEMO === 'true') {
+      ENV['rootURL'] = '/navi/';
+    }
   }
 
   return ENV;
