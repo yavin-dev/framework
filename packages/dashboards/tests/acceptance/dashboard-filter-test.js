@@ -9,7 +9,7 @@ module('Acceptance | Dashboard Filters', function(hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
 
-  test('Test dashbaord filter flow', async function(assert) {
+  test('dashboard filter flow', async function(assert) {
     await visit('/dashboards/1/view');
 
     let dataRequests = [];
@@ -33,6 +33,7 @@ module('Acceptance | Dashboard Filters', function(hooks) {
       dataRequests.every(request => request.queryParams.filters == 'property|id-in[1]'),
       'each widget request has the right filter with property in 1'
     );
+    assert.equal(dataRequests.length, 3, 'three data requests were made (one for each widget)');
     dataRequests = [];
 
     await fillIn('.filter-builder-dimension__values input', '2');
@@ -42,6 +43,7 @@ module('Acceptance | Dashboard Filters', function(hooks) {
       dataRequests.every(request => request.queryParams.filters == 'property|id-in[1,2]'),
       'each widget request has the right filter with values of both 1 and 2'
     );
+    assert.equal(dataRequests.length, 3, 'three data requests were made (one for each widget)');
 
     await click('.dashboard-filters-expanded__add-filter-button');
     await selectChoose('.dashboard-dimension-selector', 'Platform');
@@ -60,6 +62,7 @@ module('Acceptance | Dashboard Filters', function(hooks) {
       dataRequests.every(request => request.queryParams.filters == 'platform|desc-contains[win],property|id-in[1,2]'),
       'each widget request has both filters present after new one is added'
     );
+    assert.equal(dataRequests.length, 3, 'three data requests were made (one for each widget)');
     dataRequests = [];
 
     await click('.filter-collection__remove:nth-child(1)');
