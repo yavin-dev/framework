@@ -4,8 +4,24 @@
  */
 
 import AssetSerializer from 'navi-core/serializers/asset';
+import { get } from '@ember/object';
 
 export default AssetSerializer.extend({
+  /**
+   * @method normalize
+   * @override
+   *
+   * Replace null filters value with empty array
+   */
+  normalize(type, payload) {
+    if (get(type, 'modelName') === 'dashboard' && get(payload, 'attributes.filters') === null) {
+      const newPayload = Object.assign({}, payload);
+      newPayload.attributes.filters = [];
+      return this._super(type, newPayload);
+    }
+    return this._super(...arguments);
+  },
+
   /**
    * @method normalizeFindRecordResponse
    * @override
