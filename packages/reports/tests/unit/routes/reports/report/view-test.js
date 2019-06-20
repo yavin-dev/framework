@@ -94,7 +94,7 @@ module('Unit | Route | reports/report/view', function(hooks) {
   });
 
   test('runReport action', function(assert) {
-    assert.expect(1);
+    assert.expect(2);
 
     let route = this.owner.factoryFor('route:reports/report/view').create({
       _hasRequestRun() {
@@ -114,5 +114,8 @@ module('Unit | Route | reports/report/view', function(hooks) {
     };
     route._hasRequestRun = () => false;
     route.send('runReport');
+
+    route._hasRequestRun = () => true;
+    route.send('forceRun');
   });
 });

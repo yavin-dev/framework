@@ -129,6 +129,15 @@ export default Route.extend({
     },
 
     /**
+     * @action forceRun
+     * transition to view subroute since the running is not handled here.
+     * @see routes.reports.report.view.actions.forceRun
+     */
+    forceRun(report) {
+      this.send('runReport', report);
+    },
+
+    /**
      * @action cancelReport
      * transition to edit subroute
      */
