@@ -31,7 +31,8 @@
             <input
               class="checkbox-selector__checkbox"
               type="checkbox" onchange={{action "paramToggled" metric param}}
-              checked={{get parametersChecked (concat param.param "|" param.id)}}>
+              checked={{get parametersChecked (concat param.param "|" param.id)}}
+              disabled={{disabled}}>
             {{param.description}} ({{param.id}})
           </label>
 
@@ -40,7 +41,7 @@
             class=(concat
               (if (get paramsFiltered (concat param.param "|" param.id)) "checkbox-selector__filter--active ")
               "metric-config__filter-icon " "checkbox-selector__filter")
-            click=(action "paramFilterToggled" metric param)
+            click=(if disabled null (action "paramFilterToggled" metric param))
           }}
         {{/grouped-list}}
       {{/navi-list-selector}}

@@ -14,7 +14,7 @@
       as | item |
   }}
     <label class="grouped-list__item-label">
-      <input class="checkbox-selector__checkbox" type="checkbox" onchange={{action "itemClicked" item}} checked={{get itemsChecked item.name}}>
+      <input class="checkbox-selector__checkbox" type="checkbox" onchange={{action "itemClicked" item}} checked={{get itemsChecked item.name}} disabled={{disabled}}>
       {{item.longName}}
     </label>
     {{#unless (eq item.category "Time Grain")}}
@@ -31,7 +31,7 @@
       {{navi-icon
         "filter"
         class=(concat (if (get dimensionsFiltered item.name) "checkbox-selector__filter--active ") "checkbox-selector__filter")
-        click=(action onToggleDimFilter item)
+        click=(if disabled null (action onToggleDimFilter item))
       }}
     {{/unless}}
   {{/grouped-list}}

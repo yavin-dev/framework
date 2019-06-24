@@ -2,37 +2,40 @@
 <div class="report-builder__side">
   {{#if (or (gt allTables.length 1) (not hasValidLogicalTable))}}
     {{navi-table-select
-      classNames="report-builder__container report-builder__container--table"
+      class=(concat "report-builder__container report-builder__container--table" (if disabled " report-builder__container--disabled" ""))
       options=allTables
       selected=request.logicalTable.table
       onChange=(update-report-action "UPDATE_TABLE")
+      disabled=disabled
     }}
   {{/if}}
   <div class="report-builder__container--builder {{if (not hasValidLogicalTable) "report-builder__container--builder-skel"}}">
     {{#if hasValidLogicalTable}}
       {{dimension-selector
-        class="report-builder__container report-builder__dimension-selector"
+        class=(concat "report-builder__container report-builder__dimension-selector" (if disabled " report-builder__container--disabled" ""))
         request=request
         onAddTimeGrain=(update-report-action "ADD_TIME_GRAIN")
         onAddDimension=(update-report-action "ADD_DIMENSION")
         onRemoveTimeGrain=(update-report-action "REMOVE_TIME_GRAIN")
         onRemoveDimension=(update-report-action "REMOVE_DIMENSION")
         onToggleDimFilter=(update-report-action "TOGGLE_DIM_FILTER")
+        disabled=disabled
       }}
       {{metric-selector
-        class="report-builder__container report-builder__metric-selector"
+        class=(concat "report-builder__container report-builder__metric-selector" (if disabled " report-builder__container--disabled" ""))
         request=request
         onAddMetric=(update-report-action "ADD_METRIC")
         onAddMetricWithParameter=(update-report-action "ADD_METRIC_WITH_PARAM")
         onRemoveMetric=(update-report-action "REMOVE_METRIC")
         onToggleMetricFilter=(update-report-action "TOGGLE_METRIC_FILTER")
+        disabled=disabled
       }}
     {{/if}}
   </div>
 </div>
 <div class="report-builder__main">
   {{#if hasValidLogicalTable}}
-    <div class="report-builder__container report-builder__container--filters">
+    <div class={{concat "report-builder__container report-builder__container--filters" (if disabled " report-builder__container--filters-disabled" "")}}>
       <span class="report-builder__container-header">
         <span class="report-builder__container-header__title">FILTERS</span>
         <span class="report-builder__container-header__message">
@@ -45,6 +48,7 @@
         request=request
         onUpdateFilter=(update-report-action "UPDATE_FILTER")
         onRemoveFilter=(update-report-action "REMOVE_FILTER")
+        disabled=disabled
       }}
 
     </div>

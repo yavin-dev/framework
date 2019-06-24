@@ -23,6 +23,14 @@
     padding: 5px 10px;
   }
 
+  &__container--disabled {
+    background: @denali-gray-300;
+
+    .ember-power-select-trigger {
+      background: none;
+    }
+  }
+
   &__container--builder {
     display: flex;
     flex: 1;
@@ -54,6 +62,15 @@
     margin-top: 5px;
     max-height: 35%;
     padding: 5px 10px;
+
+    &-disabled {
+      background: @denali-gray-300;
+      pointer-events: none;
+
+      .ember-power-select-trigger {
+        background: none;
+      }
+    }
   }
 
   &__container-header {

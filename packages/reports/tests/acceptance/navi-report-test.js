@@ -2,7 +2,18 @@ import Component from '@ember/component';
 import { get } from '@ember/object';
 import Ember from 'ember';
 import { module, test } from 'qunit';
-import { click, fillIn, visit, currentURL, find, findAll, blur, triggerEvent, waitFor } from '@ember/test-helpers';
+import {
+  click,
+  fillIn,
+  visit,
+  currentURL,
+  find,
+  findAll,
+  blur,
+  triggerEvent,
+  waitFor,
+  settled
+} from '@ember/test-helpers';
 import $ from 'jquery';
 import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 import { selectChoose, selectSearch } from 'ember-power-select/test-support';
@@ -1705,12 +1716,16 @@ module('Acceptance | Navi Report', function(hooks) {
   });
 
   test('Cancel Report', async function(assert) {
+    assert.expect(30);
     //Slow down mock
-    server.timing = 400;
     server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
-    server.get('data/*path', () => {
-      return { rows: [] };
-    });
+    server.get(
+      'data/*path',
+      () => {
+        return { rows: [] };
+      },
+      { timing: 400 }
+    );
 
     //Load the report without waiting for it to finish loading
     visit('/reports/1').catch(error => {
@@ -1721,7 +1736,7 @@ module('Acceptance | Navi Report', function(hooks) {
       }
     });
 
-    await waitFor('.navi-report__cancel-btn');
+    await waitFor('.navi-report__cancel-btn', { timeout: 5000 });
 
     let buttons = findAll('.navi-report__footer .btn');
     assert.dom('.navi-loader__spinner').isVisible('Report is loading');
@@ -1731,8 +1746,83 @@ module('Acceptance | Navi Report', function(hooks) {
       ['Cancel'],
       'When report is loading, the only footer button is `Cancel`'
     );
+    /* ================= Test Checkboxes ================= */
+    assert.notOk(
+      $('.grouped-list__item:contains(Additive Page Views) input').is(':checked'),
+      'Additive Page Views metric is not selected'
+    );
 
-    await click(buttons[0]);
+    /**
+     * We use the Jquery click method to interact with the dom without waiting for the visit call to resolve
+     * Using "await click" syntax was causing the "visit('reports/1')" to resolve before the click was performed
+     */
+    $('.grouped-list__item:contains(Additive Page Views) input').click();
+
+    assert.notOk(
+      $('.grouped-list__item:contains(Additive Page Views) input').is(':checked'),
+      'Metric checkbox is disabled while report is running'
+    );
+
+    assert.notOk($('.grouped-list__item:contains(Age) input').is(':checked'), 'Age dimension is not selected');
+
+    $('.grouped-list__item:contains(Age) input').click();
+
+    assert.notOk(
+      $('.grouped-list__item:contains(Age) input').is(':checked'),
+      'Dimension checkbox is disabled while report is running'
+    );
+
+    $('.grouped-list__item:contains(Platform Revenue) .metric-config__dropdown-trigger').click();
+
+    assert.notOk(
+      $('.metric-config__dropdown-container .grouped-list__item:contains("Dollars (USD)") input').is(':checked'),
+      'USD Platform Revenue metric is not selected'
+    );
+
+    $('.metric-config__dropdown-container .grouped-list__item:contains("Dollars (USD)") input').click();
+
+    assert.notOk(
+      $('.metric-config__dropdown-container .grouped-list__item:contains("Dollars (USD)") input').is(':checked'),
+      'Metric config checkboxes are disabled while report is running'
+    );
+
+    /* ================= Test Filter Icons ================= */
+
+    assert.dom('.filter-collection__row').exists({ count: 1 }, 'Only the date filter is applied');
+
+    $(
+      '.metric-config__dropdown-container .grouped-list__item:contains("Dollars (USD)") .metric-config__filter-icon'
+    ).click();
+
+    assert
+      .dom('.filter-collection__row')
+      .exists({ count: 1 }, 'Metric config filter icons are disabled while report is running');
+
+    $('.grouped-list__item:contains(Additive Page Views) .checkbox-selector__filter').click();
+
+    assert
+      .dom('.filter-collection__row')
+      .exists({ count: 1 }, 'Metric selector filter icons are disabled while report is running');
+
+    $('.grouped-list__item:contains(Age) .checkbox-selector__filter').click();
+
+    assert
+      .dom('.filter-collection__row')
+      .exists({ count: 1 }, 'Dimension selector filter icons are disabled while report is running');
+
+    /* ================= Test Filter Collection ================= */
+
+    assert.dom('.date-range-form').isNotVisible('Date range selector is not open');
+
+    $('.date-range__select-trigger').click();
+
+    assert
+      .dom('.date-range-form')
+      .isNotVisible('Pointer events are not passed through to the filter collection while report is running');
+
+    /* ================= Cancel Report ================= */
+    $('.navi-report__cancel-btn').click();
+    await settled();
 
     assert.equal(currentURL(), '/reports/1/edit', 'Clicking `Cancel` brings the user to the edit route');
 
@@ -1751,6 +1841,78 @@ module('Acceptance | Navi Report', function(hooks) {
       ['Run'],
       'When not loading a report, the standard footer buttons are available'
     );
+
+    /* ================= Test Checkboxes ================= */
+    assert.notOk(
+      $('.grouped-list__item:contains(Additive Page Views) input').is(':checked'),
+      'Additive Page Views metric is not selected'
+    );
+
+    await click($('.grouped-list__item:contains(Additive Page Views) input')[0]);
+
+    assert.ok(
+      $('.grouped-list__item:contains(Additive Page Views) input').is(':checked'),
+      'Metric checkbox works when report is not running'
+    );
+
+    assert.notOk($('.grouped-list__item:contains(Age) input').is(':checked'), 'Age dimension is not selected');
+
+    await click($('.grouped-list__item:contains(Age) input')[0]);
+
+    assert.ok(
+      $('.grouped-list__item:contains(Age) input').is(':checked'),
+      'Dimension checkbox works when report is not running'
+    );
+
+    await click($('.grouped-list__item:contains(Platform Revenue) .metric-config__dropdown-trigger')[0]);
+
+    assert.notOk(
+      $('.metric-config__dropdown-container .grouped-list__item:contains("Dollars (USD)") input').is(':checked'),
+      'USD Platform Revenue metric is not selected'
+    );
+
+    await click($('.metric-config__dropdown-container .grouped-list__item:contains("Dollars (USD)") input')[0]);
+
+    assert.ok(
+      $('.metric-config__dropdown-container .grouped-list__item:contains("Dollars (USD)") input').is(':checked'),
+      'Metric config checkboxes work when report is not running'
+    );
+
+    /* ================= Test Filter Icons ================= */
+
+    assert.dom('.filter-collection__row').exists({ count: 1 }, 'Only the date filter is applied');
+
+    await click(
+      $(
+        '.metric-config__dropdown-container .grouped-list__item:contains("Dollars (USD)") .metric-config__filter-icon'
+      )[0]
+    );
+
+    assert
+      .dom('.filter-collection__row')
+      .exists({ count: 2 }, 'Metric config filter icons work when report is not running');
+
+    await click($('.grouped-list__item:contains(Additive Page Views) .checkbox-selector__filter')[0]);
+
+    assert
+      .dom('.filter-collection__row')
+      .exists({ count: 3 }, 'Metric selector filter icons work when report is not running');
+
+    await click($('.grouped-list__item:contains(Age) .checkbox-selector__filter')[0]);
+
+    assert
+      .dom('.filter-collection__row')
+      .exists({ count: 4 }, 'Dimension selector filter icons work when report is not running');
+
+    /* ================= Test Filter Collection ================= */
+
+    assert.dom('.date-range-form').isNotVisible('Date range selector is not open');
+
+    await click($('.date-range__select-trigger')[0]);
+
+    assert
+      .dom('.date-range-form')
+      .isVisible('Pointer events are passed through to the filter collection when report is not running');
   });
 
   test('Recreating same report after revert runs', async function(assert) {

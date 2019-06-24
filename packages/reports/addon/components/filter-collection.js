@@ -23,6 +23,11 @@ export default Component.extend({
   classNames: ['filter-collection'],
 
   /**
+   * @property {Array} classNameBindings
+   */
+  classNameBindings: ['disabled:filter-collection--disabled'],
+
+  /**
    * @property {Array} orderedFilters - ordered collection of date, metric, and dimension filters from request
    */
   orderedFilters: computed('request.{filters.[],intervals.[],having.[]}', function() {
