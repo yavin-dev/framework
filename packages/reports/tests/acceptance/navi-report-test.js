@@ -1752,4 +1752,39 @@ module('Acceptance | Navi Report', function(hooks) {
       'When not loading a report, the standard footer buttons are available'
     );
   });
+
+  test('Recreating same report after revert runs', async function(assert) {
+    await visit('/reports/2/view');
+
+    const columns = () => findAll('.table-widget__table-headers .table-header-cell').map(el => el.textContent.trim());
+    assert.deepEqual(columns(), ['Date', 'Property', 'Ad Clicks', 'Nav Clicks'], 'Report loads with expected columns');
+
+    await click(
+      findAll('.checkbox-selector--metric .grouped-list__item')
+        .find(el => el.textContent.trim() == 'Page Views')
+        .querySelector('.grouped-list__item-label')
+    );
+    await click('.navi-report__run-btn');
+    assert.deepEqual(
+      columns(),
+      ['Date', 'Property', 'Ad Clicks', 'Nav Clicks', 'Page Views'],
+      'Report changed and ran successfully'
+    );
+
+    await click('.navi-report__revert-btn');
+    assert.deepEqual(columns(), ['Date', 'Property', 'Ad Clicks', 'Nav Clicks'], 'Report revertted successfully');
+
+    //make same changes and make sure it's runnable
+    await click(
+      findAll('.checkbox-selector--metric .grouped-list__item')
+        .find(el => el.textContent.trim() == 'Page Views')
+        .querySelector('.grouped-list__item-label')
+    );
+    await click('.navi-report__run-btn');
+    assert.deepEqual(
+      columns(),
+      ['Date', 'Property', 'Ad Clicks', 'Nav Clicks', 'Page Views'],
+      'Report changed and ran successfully'
+    );
+  });
 });

@@ -132,6 +132,16 @@ export default Route.extend({
     },
 
     /**
+     * Forces the report to be rerun, used when user explicitly pushes run button.
+     *
+     * @action forceRun
+     * @returns {Transition} - refreshes model transition
+     */
+    forceRun() {
+      return this.refresh();
+    },
+
+    /**
      * Code to run before validating the request
      *
      * @action beforeValidate
