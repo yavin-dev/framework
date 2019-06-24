@@ -22,6 +22,7 @@ import { inject as service } from '@ember/service';
 import layout from '../../templates/components/navi-visualizations/line-chart';
 import numeral from 'numeral';
 import merge from 'lodash/merge';
+import DateUtils from '../../utils/date';
 import { run } from '@ember/runloop';
 
 const DEFAULT_OPTIONS = {
@@ -51,7 +52,9 @@ const DEFAULT_OPTIONS = {
     }
   },
   grid: {
-    x: { show: true }
+    lines: {
+      front: false
+    }
   },
   point: {
     r: 0,
@@ -129,7 +132,8 @@ export default Component.extend({
       { point },
       { axis: { x: { type: 'category' } } }, // Override old 'timeseries' config saved in db
       get(this, 'yAxisLabelConfig'),
-      get(this, 'yAxisDataFormat')
+      get(this, 'yAxisDataFormat'),
+      get(this, 'xGridLines')
     );
   }),
 
@@ -257,6 +261,60 @@ export default Component.extend({
      * Use the factory that has been registered instead of an anonymous component.
      */
     return owner.factoryFor(registryEntry);
+  }),
+
+  /**
+   * @property {Object} xGridLines - configuration of grids on x (time) axis
+   */
+  xGridLines: computed('model.firstObject', 'seriesConfig', function() {
+    const requestGrain = get(this, 'model.firstObject.request.logicalTable.timeGrain');
+
+    const requestInterval = get(this, 'model.firstObject.request.intervals.0');
+    const interval = Interval.parseFromStrings(requestInterval.start, requestInterval.end).asIntervalForTimePeriod(
+      DateUtils.getIsoDateTimePeriod(requestGrain)
+    );
+
+    const getXGridLinesFormat = interval => {
+      const duration = moment.duration(interval.diffForTimePeriod('day'), 'days');
+      if (duration.asYears() > 3) {
+        return { granularity: 'year', format: 'YY' };
+      } else if (duration.asQuarters() > 8) {
+        return { granularity: 'quarter', format: '[Q]Q YY' };
+      } else if (duration.asMonths() > 5) {
+        return { granularity: 'month', format: 'MMM' };
+      } else if (duration.asWeeks() > 3) {
+        return { granularity: 'isoWeek', format: 'MMM D' };
+      } else {
+        return { granularity: 'day', format: '[]' };
+      }
+    };
+
+    const getXGridLines = (interval, gridConfig = getXGridLinesFormat(interval)) => {
+      const start = interval.asMoments().start;
+      return DateUtils.getDatesForInterval(interval, gridConfig.granularity).map(date => ({
+        value: moment.duration(date.diff(start)).as(requestGrain + 's'),
+        text: date.format(gridConfig.format)
+      }));
+    };
+
+    const isYearChart = get(this, 'seriesConfig.config.timeGrain') === 'year';
+    const yearInterval = new Interval(
+      moment().startOf('year'),
+      moment()
+        .endOf('year')
+        .add(1, 'second')
+    );
+    const yearConfig = { granularity: 'month', format: 'MMM' };
+
+    const lines = isYearChart ? getXGridLines(yearInterval, yearConfig) : getXGridLines(interval);
+
+    return {
+      grid: {
+        x: {
+          lines
+        }
+      }
+    };
   }),
 
   /**
