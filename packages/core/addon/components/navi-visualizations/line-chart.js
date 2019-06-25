@@ -23,6 +23,8 @@ import layout from '../../templates/components/navi-visualizations/line-chart';
 import numeral from 'numeral';
 import merge from 'lodash/merge';
 import DateUtils from '../../utils/date';
+import moment from 'moment';
+import Interval from '../../utils/classes/interval';
 import { run } from '@ember/runloop';
 
 const DEFAULT_OPTIONS = {
@@ -267,18 +269,21 @@ export default Component.extend({
    * @property {Object} xGridLines - configuration of grids on x (time) axis
    */
   xGridLines: computed('model.firstObject', 'seriesConfig', function() {
-    const requestGrain = get(this, 'model.firstObject.request.logicalTable.timeGrain');
+    const requestGrain =
+      get(this, 'model.firstObject.request.logicalTable.timeGrain.name') ||
+      get(this, 'model.firstObject.request.logicalTable.timeGrain');
 
     const requestInterval = get(this, 'model.firstObject.request.intervals.0');
-    const interval = Interval.parseFromStrings(requestInterval.start, requestInterval.end).asIntervalForTimePeriod(
-      DateUtils.getIsoDateTimePeriod(requestGrain)
-    );
+    if (!requestInterval) {
+      return {};
+    }
+    let interval = Interval.parseFromStrings(requestInterval.start, requestInterval.end);
 
     const getXGridLinesFormat = interval => {
       const duration = moment.duration(interval.diffForTimePeriod('day'), 'days');
-      if (duration.asYears() > 3) {
+      if (duration.asYears() > 4) {
         return { granularity: 'year', format: 'YY' };
-      } else if (duration.asQuarters() > 8) {
+      } else if (duration.asYears() > 2) {
         return { granularity: 'quarter', format: '[Q]Q YY' };
       } else if (duration.asMonths() > 5) {
         return { granularity: 'month', format: 'MMM' };
@@ -289,21 +294,42 @@ export default Component.extend({
       }
     };
 
-    const getXGridLines = (interval, gridConfig = getXGridLinesFormat(interval)) => {
-      const start = interval.asMoments().start;
-      return DateUtils.getDatesForInterval(interval, gridConfig.granularity).map(date => ({
-        value: moment.duration(date.diff(start)).as(requestGrain + 's'),
-        text: date.format(gridConfig.format)
-      }));
+    const getXGridLines = (interval, { format, granularity } = getXGridLinesFormat(interval)) => {
+      let { start, end } = interval.asMoments();
+      if (start === undefined || end === undefined) {
+        return [];
+      }
+
+      let gridStart = start.clone();
+      if (
+        gridStart
+          .clone()
+          .startOf(granularity)
+          .isBefore(gridStart)
+      ) {
+        gridStart.add(1, granularity).startOf(granularity);
+      }
+      let gridEnd = end.clone();
+      if (
+        gridEnd
+          .clone()
+          .endOf(granularity)
+          .isSameOrAfter(gridEnd)
+      ) {
+        gridEnd.add(1, granularity).startOf(granularity);
+      }
+      let gridInterval = new Interval(gridStart, gridEnd);
+
+      return DateUtils.getDatesForInterval(gridInterval, granularity)
+        .map(date => date.startOf(granularity))
+        .map(date => ({
+          value: moment.duration(date.diff(start)).as(requestGrain + 's'),
+          text: date.format(format)
+        }));
     };
 
     const isYearChart = get(this, 'seriesConfig.config.timeGrain') === 'year';
-    const yearInterval = new Interval(
-      moment().startOf('year'),
-      moment()
-        .endOf('year')
-        .add(1, 'second')
-    );
+    const yearInterval = new Interval(moment().startOf('year'), moment().endOf('year'));
     const yearConfig = { granularity: 'month', format: 'MMM' };
 
     const lines = isYearChart ? getXGridLines(yearInterval, yearConfig) : getXGridLines(interval);

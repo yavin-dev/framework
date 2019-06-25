@@ -209,7 +209,9 @@ module('Unit | Component | line chart', function(hooks) {
           }
         },
         grid: {
-          x: { show: true }
+          lines: {
+            front: false
+          }
         },
         point: {
           r: 0,
@@ -546,6 +548,145 @@ module('Unit | Component | line chart', function(hooks) {
     assert.ok(
       tooltip.get('rowData.firstObject').hasOwnProperty('navClicks'),
       'New response has tooltip render has the right rowData'
+    );
+  });
+
+  test('xGridLines', function(assert) {
+    assert.ok(true);
+
+    const getModelDataFor = (start, end) => {
+      return {
+        response: {
+          rows: [
+            {
+              dateTime: start,
+              uniqueIdentifier: 172933788
+            },
+            {
+              dateTime: end,
+              uniqueIdentifier: 183206656
+            }
+          ]
+        },
+        request: {
+          logicalTable: {
+            timeGrain: 'day'
+          },
+          intervals: [
+            {
+              start,
+              end
+            }
+          ]
+        }
+      };
+    };
+
+    let component = this.owner.factoryFor('component:navi-visualizations/line-chart').create();
+
+    component.set('options', {
+      axis: {
+        y: {
+          series: {
+            type: 'metric',
+            config: {
+              timeGrain: 'year'
+            }
+          }
+        }
+      }
+    });
+
+    component.set('model', A([getModelDataFor('2016-01-01T00:00:00.000Z', '2019-02-01T00:00:00.000Z')]));
+
+    component.get('dataConfig');
+
+    let xGridLines = component.get('xGridLines');
+
+    assert.deepEqual(
+      xGridLines.grid.x.lines.map(grid => grid.text),
+      ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+      'Creates grid lines aligned to each month for a year timeGrain chart config'
+    );
+
+    component.set('options', {
+      axis: {
+        y: {
+          series: {
+            type: 'metric'
+          }
+        }
+      }
+    });
+
+    component.set('model', A([getModelDataFor('2016-01-01 00:00:00.000', '2016-01-07 00:00:00.000')]));
+    xGridLines = component.get('xGridLines');
+    assert.deepEqual(
+      xGridLines.grid.x.lines.map(grid => grid.text),
+      ['', '', '', '', '', '', ''],
+      'Creates grid lines aligned to day for less than a couple weeks'
+    );
+
+    component.set('model', A([getModelDataFor('2016-01-01 00:00:00.000', '2016-02-01 00:00:00.000')]));
+    xGridLines = component.get('xGridLines');
+    assert.deepEqual(
+      xGridLines.grid.x.lines.map(grid => grid.text),
+      ['Jan 4', 'Jan 11', 'Jan 18', 'Jan 25', 'Feb 1'],
+      'Creates grid lines aligned to each week from a month'
+    );
+
+    component.set('model', A([getModelDataFor('2016-01-01 00:00:00.000', '2016-07-01 00:00:00.000')]));
+    xGridLines = component.get('xGridLines');
+    assert.deepEqual(
+      xGridLines.grid.x.lines.map(grid => grid.text),
+      ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+      'Creates grid lines aligned to months for multiple months'
+    );
+
+    component.set('model', A([getModelDataFor('2016-01-01 00:00:00.000', '2019-01-01 00:00:00.000')]));
+    xGridLines = component.get('xGridLines');
+    assert.deepEqual(
+      xGridLines.grid.x.lines.map(grid => grid.text),
+      [
+        'Q1 16',
+        'Q2 16',
+        'Q3 16',
+        'Q4 16',
+        'Q1 17',
+        'Q2 17',
+        'Q3 17',
+        'Q4 17',
+        'Q1 18',
+        'Q2 18',
+        'Q3 18',
+        'Q4 18',
+        'Q1 19'
+      ],
+      'Creates grid lines aligned to quarter for multiple years'
+    );
+
+    component.set('model', A([getModelDataFor('2014-01-01 00:00:00.000', '2019-01-01 00:00:00.000')]));
+    xGridLines = component.get('xGridLines');
+    assert.deepEqual(
+      xGridLines.grid.x.lines.map(grid => grid.text),
+      ['14', '15', '16', '17', '18', '19'],
+      'Creates grid lines aligned to year for many years'
+    );
+
+    component.set('model', A([getModelDataFor('2016-01-28 00:00:00.000', '2016-07-01 00:00:00.000')]));
+    xGridLines = component.get('xGridLines');
+    assert.deepEqual(
+      xGridLines.grid.x.lines.map(grid => grid.text),
+      ['Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+      'Align to closest future grain for start date'
+    );
+
+    component.set('model', A([getModelDataFor('2016-01-01 00:00:00.000', '2016-06-28 00:00:00.000')]));
+    xGridLines = component.get('xGridLines');
+    assert.deepEqual(
+      xGridLines.grid.x.lines.map(grid => grid.text),
+      ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+      'Align to closest past grain for end date'
     );
   });
 });
