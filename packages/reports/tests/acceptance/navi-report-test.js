@@ -1352,6 +1352,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     assert.ok(!!findAll('.navi-report-invalid__info-message .fa-lock').length, 'unauthorized component is loaded');
 
+    await click('.navi-report__cancel-btn');
     await selectChoose('.navi-table-select__dropdown', 'Network');
     await click('.navi-report__run-btn');
     await click($('.visualization-toggle__option:contains(Table)')[0]);
