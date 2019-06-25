@@ -23,6 +23,7 @@
     "ember-cp-validations": "^4.0.0-beta.6",
     "ember-data-model-fragments": "~4.0.0",
     "ember-debounced-properties": "0.0.5",
+    "ember-fetch": "^6.5.1",
     "ember-get-config": "0.2.4",
     "ember-lodash": "^4.19.4",
     "ember-math-helpers": "^2.3.0",
@@ -39,7 +40,6 @@
   "devDependencies": {
     "@ember/optional-features": "^0.6.3",
     "broccoli-asset-rev": "^2.7.0",
-    "ember-ajax": "^4.0.2",
     "ember-basic-dropdown": "^0.34.0",
     "ember-c3": "^0.2.3",
     "ember-cli": "~3.8.1",
