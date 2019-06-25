@@ -209,7 +209,7 @@ module('Unit | Component | line chart', function(hooks) {
           }
         },
         grid: {
-          x: { show: true }
+          y: { show: true }
         },
         point: {
           r: 0,

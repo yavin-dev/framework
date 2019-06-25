@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -51,7 +51,7 @@ const DEFAULT_OPTIONS = {
     }
   },
   grid: {
-    x: { show: true }
+    y: { show: true }
   },
   point: {
     r: 0,
