@@ -26,4 +26,20 @@
   .ember-power-select-option[aria-current='true'] {
     background-color: @navi-purple;
   }
+
+  &__style-options {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1em;
+  }
+
+  &__curve-opt,
+  &__area-opt {
+    flex: 1;
+  }
+
+  &__area-opt {
+    align-self: flex-end;
+    text-align: right;
+  }
 }

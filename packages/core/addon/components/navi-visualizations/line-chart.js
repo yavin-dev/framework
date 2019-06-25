@@ -25,6 +25,10 @@ import merge from 'lodash/merge';
 import { run } from '@ember/runloop';
 
 const DEFAULT_OPTIONS = {
+  type: {
+    curve: 'line',
+    area: false
+  },
   axis: {
     x: {
       type: 'category',
@@ -206,7 +210,7 @@ export default Component.extend({
 
     return {
       data: {
-        type: get(this, 'chartType'),
+        type: this.lineType(),
         json: seriesData,
         selection: {
           enabled: true
@@ -214,6 +218,22 @@ export default Component.extend({
       }
     };
   }),
+
+  lineType: function() {
+    const chartType = get(this, 'chartType'),
+      options = merge({}, DEFAULT_OPTIONS, get(this, 'options')),
+      curve = options.type.curve,
+      area = options.type.area;
+    if (chartType == 'line') {
+      if (curve == 'line') {
+        return area ? 'area' : 'line';
+      } else if (curve == 'spline' || curve == 'step') {
+        return area ? `area-${curve}` : curve;
+      }
+    }
+
+    return chartType;
+  },
 
   /**
    * @property {Object} dataSelectionConfig - config for selecting data points on chart

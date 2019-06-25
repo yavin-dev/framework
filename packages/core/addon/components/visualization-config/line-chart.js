@@ -18,6 +18,11 @@ import layout from '../../templates/components/visualization-config/line-chart';
 export default Component.extend({
   layout,
 
+  init() {
+    this._super(...arguments);
+    this.curveOptions = ['line', 'spline', 'step'];
+  },
+
   /**
    * @property classNames
    */
@@ -38,6 +43,13 @@ export default Component.extend({
     onUpdateConfig(seriesConfig) {
       let newOptions = copy(get(this, 'options'));
       set(newOptions, 'axis.y.series.config', seriesConfig);
+      this.onUpdateConfig(newOptions);
+    },
+
+    onUpdateType(field, event) {
+      const value = event.srcElement && event.srcElement.type === 'checkbox' ? event.srcElement.checked : event;
+      let newOptions = copy(get(this, 'options'));
+      set(newOptions, 'type', Object.assign({}, newOptions.type, { [field]: value }));
       this.onUpdateConfig(newOptions);
     }
   }
