@@ -25,9 +25,11 @@
 
   &__container--disabled {
     background: @denali-gray-300;
+    cursor: not-allowed;
 
     .ember-power-select-trigger {
       background: none;
+      pointer-events: none;
     }
   }
 
@@ -65,7 +67,11 @@
 
     &-disabled {
       background: @denali-gray-300;
-      pointer-events: none;
+      cursor: not-allowed;
+
+      .filter-collection {
+        pointer-events: none;
+      }
 
       .ember-power-select-trigger {
         background: none;
