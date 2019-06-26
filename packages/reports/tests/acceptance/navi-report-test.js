@@ -1718,14 +1718,14 @@ module('Acceptance | Navi Report', function(hooks) {
 
   test('Cancel Report', async function(assert) {
     assert.expect(30);
-    //Slow down mock
+
     server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
     server.get(
       'data/*path',
       () => {
         return { rows: [] };
       },
-      { timing: 400 }
+      { timing: 400 } //Slow down mock
     );
 
     //Load the report without waiting for it to finish loading
