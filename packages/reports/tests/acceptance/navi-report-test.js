@@ -2,18 +2,7 @@ import Component from '@ember/component';
 import { get } from '@ember/object';
 import Ember from 'ember';
 import { module, test } from 'qunit';
-import {
-  click,
-  fillIn,
-  visit,
-  currentURL,
-  find,
-  findAll,
-  blur,
-  triggerEvent,
-  waitFor,
-  settled
-} from '@ember/test-helpers';
+import { click, fillIn, visit, currentURL, find, findAll, blur, triggerEvent, waitFor } from '@ember/test-helpers';
 import $ from 'jquery';
 import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 import { selectChoose, selectSearch } from 'ember-power-select/test-support';
