@@ -6,7 +6,6 @@
       options=allTables
       selected=request.logicalTable.table
       onChange=(update-report-action "UPDATE_TABLE")
-      disabled=disabled
     }}
   {{/if}}
   <div class="report-builder__container--builder {{if (not hasValidLogicalTable) "report-builder__container--builder-skel"}}">
@@ -19,7 +18,6 @@
         onRemoveTimeGrain=(update-report-action "REMOVE_TIME_GRAIN")
         onRemoveDimension=(update-report-action "REMOVE_DIMENSION")
         onToggleDimFilter=(update-report-action "TOGGLE_DIM_FILTER")
-        disabled=disabled
       }}
       {{metric-selector
         class=(concat "report-builder__container report-builder__metric-selector" (if disabled " report-builder__container--disabled" ""))
@@ -28,14 +26,13 @@
         onAddMetricWithParameter=(update-report-action "ADD_METRIC_WITH_PARAM")
         onRemoveMetric=(update-report-action "REMOVE_METRIC")
         onToggleMetricFilter=(update-report-action "TOGGLE_METRIC_FILTER")
-        disabled=disabled
       }}
     {{/if}}
   </div>
 </div>
 <div class="report-builder__main">
   {{#if hasValidLogicalTable}}
-    <div class={{concat "report-builder__container report-builder__container--filters" (if disabled " report-builder__container--filters-disabled" "")}}>
+    <div class={{concat "report-builder__container report-builder__container--filters" (if disabled " report-builder__container--disabled" "")}}>
       <span class="report-builder__container-header">
         <span class="report-builder__container-header__title">FILTERS</span>
         <span class="report-builder__container-header__message">
@@ -48,7 +45,6 @@
         request=request
         onUpdateFilter=(update-report-action "UPDATE_FILTER")
         onRemoveFilter=(update-report-action "REMOVE_FILTER")
-        disabled=disabled
       }}
 
     </div>

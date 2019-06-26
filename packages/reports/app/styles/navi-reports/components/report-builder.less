@@ -27,9 +27,14 @@
     background: @denali-gray-300;
     cursor: not-allowed;
 
+    .filter-collection,
+    .navi-list-selector,
+    .ember-power-select-trigger {
+      pointer-events: none;
+    }
+
     .ember-power-select-trigger {
       background: none;
-      pointer-events: none;
     }
   }
 
@@ -64,19 +69,6 @@
     margin-top: 5px;
     max-height: 35%;
     padding: 5px 10px;
-
-    &-disabled {
-      background: @denali-gray-300;
-      cursor: not-allowed;
-
-      .filter-collection {
-        pointer-events: none;
-      }
-
-      .ember-power-select-trigger {
-        background: none;
-      }
-    }
   }
 
   &__container-header {

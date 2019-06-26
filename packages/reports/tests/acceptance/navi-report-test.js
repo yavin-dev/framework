@@ -1717,7 +1717,7 @@ module('Acceptance | Navi Report', function(hooks) {
   });
 
   test('Cancel Report', async function(assert) {
-    assert.expect(30);
+    assert.expect(14);
 
     server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
     server.get(
@@ -1728,7 +1728,7 @@ module('Acceptance | Navi Report', function(hooks) {
       { timing: 400 } //Slow down mock
     );
 
-    //Load the report without waiting for it to finish loading
+    // Load the report without waiting for it to finish loading
     visit('/reports/1').catch(error => {
       //https://github.com/emberjs/ember-test-helpers/issues/332
       const { message } = error;
@@ -1747,83 +1747,22 @@ module('Acceptance | Navi Report', function(hooks) {
       ['Cancel'],
       'When report is loading, the only footer button is `Cancel`'
     );
-    /* ================= Test Checkboxes ================= */
-    assert.notOk(
-      $('.grouped-list__item:contains(Additive Page Views) input').is(':checked'),
-      'Additive Page Views metric is not selected'
-    );
-
-    /**
-     * We use the Jquery click method to interact with the dom without waiting for the visit call to resolve
-     * Using "await click" syntax was causing the "visit('reports/1')" to resolve before the click was performed
-     */
-    $('.grouped-list__item:contains(Additive Page Views) input').click();
-
-    assert.notOk(
-      $('.grouped-list__item:contains(Additive Page Views) input').is(':checked'),
-      'Metric checkbox is disabled while report is running'
-    );
-
-    assert.notOk($('.grouped-list__item:contains(Age) input').is(':checked'), 'Age dimension is not selected');
-
-    $('.grouped-list__item:contains(Age) input').click();
-
-    assert.notOk(
-      $('.grouped-list__item:contains(Age) input').is(':checked'),
-      'Dimension checkbox is disabled while report is running'
-    );
-
-    $('.grouped-list__item:contains(Platform Revenue) .metric-config__dropdown-trigger').click();
-
-    assert.notOk(
-      $('.metric-config__dropdown-container .grouped-list__item:contains("Dollars (USD)") input').is(':checked'),
-      'USD Platform Revenue metric is not selected'
-    );
-
-    $('.metric-config__dropdown-container .grouped-list__item:contains("Dollars (USD)") input').click();
-
-    assert.notOk(
-      $('.metric-config__dropdown-container .grouped-list__item:contains("Dollars (USD)") input').is(':checked'),
-      'Metric config checkboxes are disabled while report is running'
-    );
-
-    /* ================= Test Filter Icons ================= */
-
-    assert.dom('.filter-collection__row').exists({ count: 1 }, 'Only the date filter is applied');
-
-    $(
-      '.metric-config__dropdown-container .grouped-list__item:contains("Dollars (USD)") .metric-config__filter-icon'
-    ).click();
 
     assert
-      .dom('.filter-collection__row')
-      .exists({ count: 1 }, 'Metric config filter icons are disabled while report is running');
-
-    $('.grouped-list__item:contains(Additive Page Views) .checkbox-selector__filter').click();
-
+      .dom('.report-builder__dimension-selector.report-builder__container--disabled')
+      .isVisible('Dimension selector is disabled during run');
     assert
-      .dom('.filter-collection__row')
-      .exists({ count: 1 }, 'Metric selector filter icons are disabled while report is running');
-
-    $('.grouped-list__item:contains(Age) .checkbox-selector__filter').click();
-
+      .dom('.report-builder__metric-selector.report-builder__container--disabled')
+      .isVisible('Metric selector is disabled during run');
     assert
-      .dom('.filter-collection__row')
-      .exists({ count: 1 }, 'Dimension selector filter icons are disabled while report is running');
-
-    /* ================= Test Filter Collection ================= */
-
-    assert.dom('.date-range-form').isNotVisible('Date range selector is not open');
-
-    $('.date-range__select-trigger').click();
-
+      .dom('.report-builder__container--table.report-builder__container--disabled')
+      .isVisible('Table selector is disabled during run');
     assert
-      .dom('.date-range-form')
-      .isNotVisible('Pointer events are not passed through to the filter collection while report is running');
+      .dom('.report-builder__container--filters.report-builder__container--disabled')
+      .isVisible('Filter collection is disabled during run');
 
     /* ================= Cancel Report ================= */
-    $('.navi-report__cancel-btn').click();
-    await settled();
+    await click($('.navi-report__cancel-btn')[0]);
 
     assert.equal(currentURL(), '/reports/1/edit', 'Clicking `Cancel` brings the user to the edit route');
 
@@ -1833,7 +1772,7 @@ module('Acceptance | Navi Report', function(hooks) {
       'When not loading a report, the standard footer buttons are available'
     );
 
-    //Run the widget
+    //Run the report
     await click('.navi-report__run-btn');
     assert.equal(currentURL(), '/reports/1/view', 'Running the report brings the user to the view route');
 
@@ -1843,77 +1782,18 @@ module('Acceptance | Navi Report', function(hooks) {
       'When not loading a report, the standard footer buttons are available'
     );
 
-    /* ================= Test Checkboxes ================= */
-    assert.notOk(
-      $('.grouped-list__item:contains(Additive Page Views) input').is(':checked'),
-      'Additive Page Views metric is not selected'
-    );
-
-    await click($('.grouped-list__item:contains(Additive Page Views) input')[0]);
-
-    assert.ok(
-      $('.grouped-list__item:contains(Additive Page Views) input').is(':checked'),
-      'Metric checkbox works when report is not running'
-    );
-
-    assert.notOk($('.grouped-list__item:contains(Age) input').is(':checked'), 'Age dimension is not selected');
-
-    await click($('.grouped-list__item:contains(Age) input')[0]);
-
-    assert.ok(
-      $('.grouped-list__item:contains(Age) input').is(':checked'),
-      'Dimension checkbox works when report is not running'
-    );
-
-    await click($('.grouped-list__item:contains(Platform Revenue) .metric-config__dropdown-trigger')[0]);
-
-    assert.notOk(
-      $('.metric-config__dropdown-container .grouped-list__item:contains("Dollars (USD)") input').is(':checked'),
-      'USD Platform Revenue metric is not selected'
-    );
-
-    await click($('.metric-config__dropdown-container .grouped-list__item:contains("Dollars (USD)") input')[0]);
-
-    assert.ok(
-      $('.metric-config__dropdown-container .grouped-list__item:contains("Dollars (USD)") input').is(':checked'),
-      'Metric config checkboxes work when report is not running'
-    );
-
-    /* ================= Test Filter Icons ================= */
-
-    assert.dom('.filter-collection__row').exists({ count: 1 }, 'Only the date filter is applied');
-
-    await click(
-      $(
-        '.metric-config__dropdown-container .grouped-list__item:contains("Dollars (USD)") .metric-config__filter-icon'
-      )[0]
-    );
-
     assert
-      .dom('.filter-collection__row')
-      .exists({ count: 2 }, 'Metric config filter icons work when report is not running');
-
-    await click($('.grouped-list__item:contains(Additive Page Views) .checkbox-selector__filter')[0]);
-
+      .dom('.report-builder__dimension-selector')
+      .doesNotHaveClass('report-builder__container--disabled', 'Dimension selector is enabled after run');
     assert
-      .dom('.filter-collection__row')
-      .exists({ count: 3 }, 'Metric selector filter icons work when report is not running');
-
-    await click($('.grouped-list__item:contains(Age) .checkbox-selector__filter')[0]);
-
+      .dom('.report-builder__metric-selector')
+      .doesNotHaveClass('report-builder__container--disabled', 'Metric selector is enabled after run');
     assert
-      .dom('.filter-collection__row')
-      .exists({ count: 4 }, 'Dimension selector filter icons work when report is not running');
-
-    /* ================= Test Filter Collection ================= */
-
-    assert.dom('.date-range-form').isNotVisible('Date range selector is not open');
-
-    await click($('.date-range__select-trigger')[0]);
-
+      .dom('.report-builder__container--table')
+      .doesNotHaveClass('report-builder__container--disabled', 'Table selector is enabled after run');
     assert
-      .dom('.date-range-form')
-      .isVisible('Pointer events are passed through to the filter collection when report is not running');
+      .dom('.report-builder__container--filters')
+      .doesNotHaveClass('report-builder__container--disabled', 'Filter collection is enabled after run');
   });
 
   test('Recreating same report after revert runs', async function(assert) {
