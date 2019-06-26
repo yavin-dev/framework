@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * {{visualization-config/line-chart
@@ -46,8 +46,7 @@ export default Component.extend({
       this.onUpdateConfig(newOptions);
     },
 
-    onUpdateType(field, event) {
-      const value = event.srcElement && event.srcElement.type === 'checkbox' ? event.srcElement.checked : event;
+    onUpdateType(field, value) {
       let newOptions = copy(get(this, 'options'));
       set(newOptions, 'type', Object.assign({}, newOptions.type, { [field]: value }));
       this.onUpdateConfig(newOptions);

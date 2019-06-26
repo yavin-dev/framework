@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -210,7 +210,7 @@ export default Component.extend({
 
     return {
       data: {
-        type: this.lineType(),
+        type: this._lineType(),
         json: seriesData,
         selection: {
           enabled: true
@@ -219,7 +219,13 @@ export default Component.extend({
     };
   }),
 
-  lineType: function() {
+  /**
+   * Gets current options and decides c3 chart type
+   * @private
+   * @method
+   * @returns {String} - c3 chart type to determine line behavior
+   */
+  _lineType() {
     const chartType = get(this, 'chartType'),
       options = merge({}, DEFAULT_OPTIONS, get(this, 'options')),
       curve = options.type.curve,

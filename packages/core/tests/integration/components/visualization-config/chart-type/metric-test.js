@@ -45,8 +45,6 @@ module('Integration | Component | visualization config/line chart type/metric', 
 
     await render(Template);
 
-    assert
-      .dom('.metric-line-chart-config')
-      .hasText('No configuration options available.', 'Table Configuration Component displays the warning message');
+    assert.dom('.metric-line-chart-config').exists();
   });
 });

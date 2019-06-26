@@ -1,10 +1,11 @@
-{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{log options}}
-{{#if (eq type "line-chart")}}
-  <div class="line-chart-config__style-options">
-    <label class="line-chart-config__curve-opt">
-      Line Style
+{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<span class="line-chart-config__header">Chart Style Options</span>
+<div class="line-chart-config__style-options">
+  {{#if (eq type "line-chart")}}
+    <div class="line-chart-config__curve-opt">
+      <span class="line-chart-config__curve-opt-title">Line Style</span>
       {{#power-select 
+        triggerClass="line-chart-config__curve-opt-select"
         options=curveOptions 
         selected=(readonly options.type.curve)
         onchange=(action "onUpdateType" "curve")
@@ -13,16 +14,21 @@
         as |curve|}}
         {{curve}}
       {{/power-select}}
-    </label>
-    <label class="line-chart-config__area-opt">
-      <input 
-        type="checkbox"
-        checked={{readonly options.type.area}}
-        onchange={{action "onUpdateType" "area"}}
-      /> area
-    </label>
-  </div>
-{{/if}}
+    </div>
+    <div class="line-chart-config__area-opt">
+      <span class="line-chart-config__area-opt-title">Area</span>
+      {{x-toggle
+        class="line-chart-config__area-opt-select"
+        value=(readonly options.type.area)
+        size="small"
+        onToggle=(action "onUpdateType" "area")
+      }}
+    </div>
+    {{! TODO: remove the else and place the stack toggle outside the if}}
+  {{else}}
+    <div>No additional configuration available</div>
+  {{/if}}
+</div>
 {{component
   (concat typePrefix (readonly options.axis.y.series.type))
   request=request

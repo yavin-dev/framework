@@ -43,8 +43,6 @@ module('Integration | Component | visualization config/chart type/date time', fu
 
     await render(Template);
 
-    assert
-      .dom('.date-time-line-chart-config')
-      .hasText('No configuration options available.', 'Table Configuration Component displays the warning message');
+    assert.dom('.date-time-line-chart-config').exists();
   });
 });

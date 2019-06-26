@@ -4,7 +4,13 @@
  */
 
 .line-chart-config {
+  .config-container();
   padding: 5px;
+
+  &__header {
+    color: @navi-gray;
+    margin: 5px;
+  }
 
   .chart-series-collection {
     margin-top: 5px;
@@ -28,18 +34,30 @@
   }
 
   &__style-options {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 1em;
+    .config-section();
   }
 
   &__curve-opt,
   &__area-opt {
-    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    margin: 8px 0;
+    &-title {
+      text-align: left;
+      color: @navi-gray;
+    }
   }
 
   &__area-opt {
-    align-self: flex-end;
-    text-align: right;
+    &-select {
+      padding-right: 8px;
+    }
+  }
+
+  &__curve-opt {
+    &-title,
+    &-select {
+      flex: 1;
+    }
   }
 }
