@@ -123,15 +123,15 @@ export default Component.extend({
     return merge(
       {},
       DEFAULT_OPTIONS,
-      get(this, 'options'),
-      get(this, 'dataConfig'),
-      get(this, 'dataSelectionConfig'),
-      { tooltip: get(this, 'chartTooltip') },
+      this.options,
+      this.dataConfig,
+      this.dataSelectionConfig,
+      { tooltip: this.chartTooltip },
       { point },
       { axis: { x: { type: 'category' } } }, // Override old 'timeseries' config saved in db
-      get(this, 'yAxisLabelConfig'),
-      get(this, 'yAxisDataFormat'),
-      get(this, 'xAxisTickValues')
+      this.yAxisLabelConfig,
+      this.yAxisDataFormat,
+      this.xAxisTickValues
     );
   }),
 
@@ -261,15 +261,10 @@ export default Component.extend({
     return owner.factoryFor(registryEntry);
   }),
 
-  xAxisTickValues: computed('model.firstObject', 'seriesConfig', function() {
-    const chartGrain = get(this, 'seriesConfig.config.timeGrain');
-    if (chartGrain !== 'year') {
-      return {};
-    }
-    const requestGrain =
-      get(this, 'model.firstObject.request.logicalTable.timeGrain.name') ||
-      get(this, 'model.firstObject.request.logicalTable.timeGrain');
-
+  /**
+   * @property {Object} xAxisTickValuesByGrain - x axis tick positions for day/week/month grain on year chart grain
+   */
+  xAxisTickValuesByGrain: computed(function() {
     const dayValues = [];
     for (let i = 0; i < 12; i++) {
       dayValues.push(
@@ -280,13 +275,27 @@ export default Component.extend({
       );
     }
 
-    const values = {
+    return {
       day: dayValues,
       // week.by.year in date-time is hardcoded to YEAR_WITH_53_ISOWEEKS (2015)
       week: [1, 5, 9, 13, 18, 22, 26, 31, 35, 39, 44, 48],
       month: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
-    }[requestGrain];
+    };
+  }),
 
+  /**
+   * @property {Object} xAxisTickValues - explicity specifies x axis tick positions for year chart grain
+   */
+  xAxisTickValues: computed('model.firstObject', 'seriesConfig', function() {
+    const chartGrain = get(this, 'seriesConfig.config.timeGrain');
+    if (chartGrain !== 'year') {
+      return {};
+    }
+    const requestGrain =
+      get(this, 'model.firstObject.request.logicalTable.timeGrain.name') ||
+      get(this, 'model.firstObject.request.logicalTable.timeGrain');
+
+    const values = this.xAxisTickValuesByGrain[requestGrain];
     return {
       axis: {
         x: {
