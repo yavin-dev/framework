@@ -210,7 +210,7 @@ export default Component.extend({
 
     return {
       data: {
-        type: this._lineType(),
+        type: this._c3ChartType(),
         json: seriesData,
         selection: {
           enabled: true
@@ -225,20 +225,17 @@ export default Component.extend({
    * @method
    * @returns {String} - c3 chart type to determine line behavior
    */
-  _lineType() {
-    const chartType = get(this, 'chartType'),
-      options = merge({}, DEFAULT_OPTIONS, get(this, 'options')),
-      curve = options.style.curve,
-      area = options.style.area;
-    if (chartType === 'line') {
-      if (curve === 'line') {
-        return area ? 'area' : 'line';
-      } else if (curve === 'spline' || curve === 'step') {
-        return area ? `area-${curve}` : curve;
-      }
+  _c3ChartType() {
+    const options = merge({}, DEFAULT_OPTIONS, this.options),
+      { curve, area } = options.style;
+
+    if (curve === 'line') {
+      return area ? 'area' : 'line';
+    } else if (curve === 'spline' || curve === 'step') {
+      return area ? `area-${curve}` : curve;
     }
 
-    return chartType;
+    return this.chartType;
   },
 
   /**

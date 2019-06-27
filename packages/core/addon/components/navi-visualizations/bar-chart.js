@@ -19,5 +19,14 @@ export default LineChart.extend({
    * @property {Array} classNames - since bar-chart is a tagless wrapper component,
    * classes specified here are applied to the underlying c3-chart component
    */
-  classNames: ['bar-chart-widget']
+  classNames: ['bar-chart-widget'],
+
+  /**
+   * Chooses c3 chart type
+   *
+   * @override
+   */
+  _c3ChartType() {
+    return this.chartType;
+  }
 });

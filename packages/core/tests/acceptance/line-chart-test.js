@@ -50,15 +50,13 @@ module('Acceptance | line chart', function(hooks) {
     await visit('/line-chart');
 
     let linePath = find('svg .c3-chart-line.chart-series-0 .c3-lines path').getAttribute('d');
-    let lineArea = find('svg .c3-chart-line.chart-series-0 .c3-areas path').getAttribute('d');
 
-    await selectChoose('.line-chart-config__curve-opt', 'spline');
+    await selectChoose('.line-chart-config__curve-opt', 'Spline');
 
     let linePathSpline = find('svg .c3-chart-line.chart-series-0 .c3-lines path').getAttribute('d');
     let lineAreaSpline = find('svg .c3-chart-line.chart-series-0 .c3-areas path').getAttribute('d');
 
     assert.notEqual(linePath, linePathSpline, 'Chart updated with new values');
-    assert.notEqual(lineArea, lineAreaSpline, 'Chart updated with new area values');
 
     await click('.line-chart-config__area-opt .x-toggle-btn');
 

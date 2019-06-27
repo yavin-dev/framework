@@ -10,9 +10,9 @@
         selected=(readonly options.style.curve)
         onchange=(action "onUpdateStyle" "curve")
         searchEnabled=false
-        placeholder="line"
+        placeholder="Line"
         as |curve|}}
-        {{curve}}
+        {{capitalize curve}}
       {{/power-select}}
     </div>
     <div class="line-chart-config__area-opt">

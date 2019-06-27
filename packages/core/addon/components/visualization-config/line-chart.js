@@ -54,7 +54,8 @@ export default Component.extend({
      * @param {String|Boolean} - value to update the setting with.
      */
     onUpdateStyle(field, value) {
-      let newOptions = copy(get(this, 'options'));
+      const { options } = this;
+      let newOptions = copy(options);
       set(newOptions, 'style', Object.assign({}, newOptions.style, { [field]: value }));
       this.onUpdateConfig(newOptions);
     }
