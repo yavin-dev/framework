@@ -210,7 +210,7 @@ export default Component.extend({
 
     return {
       data: {
-        type: this._c3ChartType(),
+        type: this.c3ChartType,
         json: seriesData,
         selection: {
           enabled: true
@@ -220,12 +220,9 @@ export default Component.extend({
   }),
 
   /**
-   * Gets current options and decides c3 chart type
-   * @private
-   * @method
-   * @returns {String} - c3 chart type to determine line behavior
+   * @property {String} c3ChartType - c3 chart type to determine line behavior
    */
-  _c3ChartType() {
+  c3ChartType: computed('options', 'chartType', function() {
     const options = merge({}, DEFAULT_OPTIONS, this.options),
       { curve, area } = options.style;
 
@@ -236,7 +233,7 @@ export default Component.extend({
     }
 
     return this.chartType;
-  },
+  }),
 
   /**
    * @property {Object} dataSelectionConfig - config for selecting data points on chart
