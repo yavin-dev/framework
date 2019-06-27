@@ -7,8 +7,8 @@
       {{#power-select 
         triggerClass="line-chart-config__curve-opt-select"
         options=curveOptions 
-        selected=(readonly options.type.curve)
-        onchange=(action "onUpdateType" "curve")
+        selected=(readonly options.style.curve)
+        onchange=(action "onUpdateStyle" "curve")
         searchEnabled=false
         placeholder="line"
         as |curve|}}
@@ -19,9 +19,9 @@
       <span class="line-chart-config__area-opt-title">Area</span>
       {{x-toggle
         class="line-chart-config__area-opt-select"
-        value=(readonly options.type.area)
+        value=(readonly options.style.area)
         size="small"
-        onToggle=(action "onUpdateType" "area")
+        onToggle=(action "onUpdateStyle" "area")
       }}
     </div>
     {{! TODO: remove the else and place the stack toggle outside the if}}

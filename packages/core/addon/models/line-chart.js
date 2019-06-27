@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -111,9 +111,11 @@ export default VisualizationBase.extend(Validations, ChartVisualization, {
     this.isValidForRequest(request);
 
     let chartType = chartTypeForRequest(request),
-      series = this.getSeriesBuilder(chartType).call(this, CONFIG_PATH, get(this, 'validations'), request, response);
+      series = this.getSeriesBuilder(chartType).call(this, CONFIG_PATH, get(this, 'validations'), request, response),
+      style = this.getWithDefault('metadata.style', {});
 
     set(this, 'metadata', {
+      style,
       axis: {
         y: { series }
       }

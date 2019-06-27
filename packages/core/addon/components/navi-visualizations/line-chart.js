@@ -25,7 +25,7 @@ import merge from 'lodash/merge';
 import { run } from '@ember/runloop';
 
 const DEFAULT_OPTIONS = {
-  type: {
+  style: {
     curve: 'line',
     area: false
   },
@@ -228,8 +228,8 @@ export default Component.extend({
   _lineType() {
     const chartType = get(this, 'chartType'),
       options = merge({}, DEFAULT_OPTIONS, get(this, 'options')),
-      curve = options.type.curve,
-      area = options.type.area;
+      curve = options.style.curve,
+      area = options.style.area;
     if (chartType === 'line') {
       if (curve === 'line') {
         return area ? 'area' : 'line';

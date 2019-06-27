@@ -186,7 +186,7 @@ module('Unit | Component | line chart', function(hooks) {
         model: A([{ response: { rows: [] } }])
       }),
       defaultConfig = {
-        type: {
+        style: {
           curve: 'line',
           area: false
         },
@@ -583,22 +583,22 @@ module('Unit | Component | line chart', function(hooks) {
 
     assert.equal(component.config.data.type, 'line');
 
-    component.set('options', { type: { curve: 'line', area: true } });
+    component.set('options', { style: { curve: 'line', area: true } });
     assert.equal(component.config.data.type, 'area', 'default of line returns as configured');
 
-    component.set('options', { type: { curve: 'spline', area: false } });
+    component.set('options', { style: { curve: 'spline', area: false } });
     assert.equal(component.config.data.type, 'spline', 'adding spline passes a spline config');
 
-    component.set('options', { type: { curve: 'spline', area: true } });
+    component.set('options', { style: { curve: 'spline', area: true } });
     assert.equal(component.config.data.type, 'area-spline', 'spline with area true returns a area spline config');
 
-    component.set('options', { type: { curve: 'step', area: false } });
+    component.set('options', { style: { curve: 'step', area: false } });
     assert.equal(component.config.data.type, 'step', 'step returns a step config');
 
-    component.set('options', { type: { curve: 'step', area: true } });
+    component.set('options', { style: { curve: 'step', area: true } });
     assert.equal(component.config.data.type, 'area-step', 'step with area true returns a area step config');
 
-    component.set('options', { type: { curve: 'moose', area: false } });
+    component.set('options', { style: { curve: 'moose', area: false } });
     assert.equal(component.config.data.type, 'line', 'bad config uses default line');
   });
 });
