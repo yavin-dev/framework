@@ -4,9 +4,9 @@
   {{#if (eq type "line-chart")}}
     <div class="line-chart-config__curve-opt">
       <span class="line-chart-config__curve-opt-title">Line Style</span>
-      {{#power-select 
+      {{#power-select
         triggerClass="line-chart-config__curve-opt-select"
-        options=curveOptions 
+        options=curveOptions
         selected=(readonly options.style.curve)
         onchange=(action "onUpdateStyle" "curve")
         searchEnabled=false
@@ -24,9 +24,19 @@
         onToggle=(action "onUpdateStyle" "area")
       }}
     </div>
-    {{! TODO: remove the else and place the stack toggle outside the if}}
-  {{else}}
-    <div>No additional configuration available</div>
+  {{else if (not displayStackOption)}}
+    <div>No configuration options available.</div>
+  {{/if}}
+  {{#if displayStackOption}}
+    <div class="line-chart-config__stacked-opt">
+      <span class="line-chart-config__stacked-opt-title">Stacked</span>
+      {{x-toggle
+        class="line-chart-config__stacked-opt-select"
+        value=(readonly options.style.stacked)
+        size="small"
+        onToggle=(action "onUpdateStyle" "stacked")
+      }}
+    </div>
   {{/if}}
 </div>
 {{component

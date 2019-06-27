@@ -28,7 +28,8 @@ import { run } from '@ember/runloop';
 const DEFAULT_OPTIONS = {
   style: {
     curve: 'line',
-    area: false
+    area: false,
+    stacked: false
   },
   axis: {
     x: {
@@ -127,7 +128,7 @@ export default Component.extend({
     return merge(
       {},
       DEFAULT_OPTIONS,
-      get(this, 'options'),
+      this.options,
       get(this, 'dataConfig'),
       get(this, 'dataSelectionConfig'),
       { tooltip: get(this, 'chartTooltip') },
@@ -201,19 +202,56 @@ export default Component.extend({
   }),
 
   /**
-   * @property {Object} data - configuration for chart x and y values
+   * @property {Array} seriesData - chart series data
    */
-  dataConfig: computed('firstModel', 'seriesConfig', 'c3ChartType', function() {
+  seriesData: computed('firstModel', 'builder', 'seriesConfig', function() {
     const request = get(this, 'firstModel.request');
     const rows = get(this, 'firstModel.response.rows');
     const builder = get(this, 'builder');
     const seriesConfig = get(this, 'seriesConfig.config');
-    const seriesData = builder.buildData(rows, seriesConfig, request);
+    return builder.buildData(rows, seriesConfig, request);
+  }),
+
+  /**
+   * @property {Array} seriesDataGroups - chart series groups for stacking
+   */
+  seriesDataGroups: computed('options', 'seriesData', function() {
+    const seriesData = get(this, 'seriesData'),
+      options = merge({}, DEFAULT_OPTIONS, this.options),
+      { stacked } = options.style;
+
+    /**
+     * if stacked, transform:
+     * [{
+     *   x: {
+     *     displayValue: "Jun 24",
+     *     rawValue: "2019-06-24 00:00:00.000"
+     *   },
+     *   group1: value1,
+     *   group2: value2,
+     *   ...
+     * }, {
+     *  ...
+     * }]
+     * to:
+     * [[ "group1", "group2", ... ]]
+     */
+    return stacked && seriesData.length ? [Object.keys(seriesData[0]).filter(key => key !== 'x')] : [];
+  }),
+
+  /**
+   * @property {Object} dataConfig - configuration for chart x and y values
+   */
+  dataConfig: computed('c3ChartType', 'seriesData', 'seriesDataGroups', function() {
+    const c3ChartType = get(this, 'c3ChartType'),
+      seriesData = get(this, 'seriesData'),
+      seriesDataGroups = get(this, 'seriesDataGroups');
 
     return {
       data: {
-        type: get(this, 'c3ChartType'),
+        type: c3ChartType,
         json: seriesData,
+        groups: seriesDataGroups,
         selection: {
           enabled: true
         }
@@ -315,7 +353,7 @@ export default Component.extend({
       get(this, 'model.firstObject.request.logicalTable.timeGrain.name') ||
       get(this, 'model.firstObject.request.logicalTable.timeGrain');
 
-    const values = this.xAxisTickValuesByGrain[requestGrain];
+    const values = this.get('xAxisTickValuesByGrain')[requestGrain];
     return {
       axis: {
         x: {
