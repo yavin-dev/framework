@@ -46,6 +46,13 @@ export default Component.extend({
       this.onUpdateConfig(newOptions);
     },
 
+    /**
+     * Updates line chart type
+     *
+     * @method
+     * @param {String} field - which setting is getting updated, currently `curve` and `area`
+     * @param {String|Boolean} - value to update the setting with.
+     */
     onUpdateType(field, value) {
       let newOptions = copy(get(this, 'options'));
       set(newOptions, 'type', Object.assign({}, newOptions.type, { [field]: value }));

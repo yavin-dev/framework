@@ -43,6 +43,6 @@ module('Integration | Component | visualization config/chart type/date time', fu
 
     await render(Template);
 
-    assert.dom('.date-time-line-chart-config').exists();
+    assert.dom('.date-time-line-chart-config').exists('Date time configuration component renders');
   });
 });

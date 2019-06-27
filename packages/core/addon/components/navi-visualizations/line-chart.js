@@ -230,8 +230,8 @@ export default Component.extend({
       options = merge({}, DEFAULT_OPTIONS, get(this, 'options')),
       curve = options.type.curve,
       area = options.type.area;
-    if (chartType == 'line') {
-      if (curve == 'line') {
+    if (chartType === 'line') {
+      if (curve === 'line') {
         return area ? 'area' : 'line';
       } else if (curve == 'spline' || curve == 'step') {
         return area ? `area-${curve}` : curve;

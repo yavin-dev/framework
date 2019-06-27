@@ -45,6 +45,6 @@ module('Integration | Component | visualization config/line chart type/metric', 
 
     await render(Template);
 
-    assert.dom('.metric-line-chart-config').exists();
+    assert.dom('.metric-line-chart-config').exists('Metric line configuration renders');
   });
 });
