@@ -233,7 +233,7 @@ export default Component.extend({
     if (chartType === 'line') {
       if (curve === 'line') {
         return area ? 'area' : 'line';
-      } else if (curve == 'spline' || curve == 'step') {
+      } else if (curve === 'spline' || curve === 'step') {
         return area ? `area-${curve}` : curve;
       }
     }
