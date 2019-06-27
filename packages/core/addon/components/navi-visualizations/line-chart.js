@@ -201,7 +201,7 @@ export default Component.extend({
   /**
    * @property {Object} data - configuration for chart x and y values
    */
-  dataConfig: computed('firstModel', 'seriesConfig', function() {
+  dataConfig: computed('firstModel', 'seriesConfig', 'c3ChartType', function() {
     const request = get(this, 'firstModel.request');
     const rows = get(this, 'firstModel.response.rows');
     const builder = get(this, 'builder');
