@@ -1,6 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, blur, focus, triggerEvent, triggerKeyEvent } from '@ember/test-helpers';
+import { render, blur, focus, triggerEvent, triggerKeyEvent, click } from '@ember/test-helpers';
+import { typeInSearch, clickTrigger } from 'ember-power-select/test-support/helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 module('Integration | Component | power-select-search', function(hooks) {
@@ -53,5 +54,49 @@ module('Integration | Component | power-select-search', function(hooks) {
 
     this.set('searchEnabled', false);
     assert.dom('.navi-power-select-search').isNotVisible('Does not render when searchEnabled is true');
+  });
+
+  test('passed to power-select', async function(assert) {
+    assert.expect(8);
+
+    this.set('options', ['Link', 'Zelda', 'Ganon', 'Impa']);
+    this.set('placeholder', 'Choose a LoZ character');
+    this.set('searchPlaceholder', 'Search');
+    this.set('selected', null);
+
+    await render(hbs`
+      {{#power-select 
+        options=options
+        onchange=(action (mut selected))
+        placeholder=placeholder
+        selected=selected
+        searchPlaceholder=searchPlaceholder
+        beforeOptionsComponent="power-select-search"
+        as |option|
+      }}
+        {{option}}
+      {{/power-select}}`);
+
+    assert.dom('.ember-power-select-placeholder').isVisible('Placeholder visible when nothing selected');
+    await clickTrigger();
+
+    assert
+      .dom('.navi-power-select-search input')
+      .hasAttribute('placeholder', 'Search', 'Search placeholder is visible initially');
+    assert.dom('.navi-power-select-search .fa-search').isVisible('Search icon shown');
+    assert.dom('.ember-power-select-option').isVisible({ count: 4 }, 'All options listed initially');
+
+    await typeInSearch('l');
+
+    assert.dom('.ember-power-select-option').isVisible({ count: 2 }, 'Search value filters down the options');
+
+    await click('li.ember-power-select-option:first-of-type');
+
+    assert.dom('.ember-power-select-trigger').hasText('Link', 'Selected option is shown in trigger');
+
+    await clickTrigger();
+
+    assert.dom('.navi-power-select-search input').hasNoValue('Search text does not persist through open and close');
+    assert.dom('.ember-power-select-option').isVisible({ count: 4 }, 'Clearing search shows all options');
   });
 });
