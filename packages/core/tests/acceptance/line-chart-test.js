@@ -1,4 +1,4 @@
-import { findAll, find, visit } from '@ember/test-helpers';
+import { findAll, find, visit, click } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
@@ -44,6 +44,27 @@ module('Acceptance | line chart', function(hooks) {
       ['custom', 'series', 'grouping'],
       'A custom chart builder can be supplied for unique series grouping logic'
     );
+  });
+
+  test('line style options', async function(assert) {
+    await visit('/line-chart');
+
+    let linePath = find('svg .c3-chart-line.chart-series-0 .c3-lines path').getAttribute('d');
+
+    await selectChoose('.line-chart-config__curve-opt', 'Spline');
+
+    let linePathSpline = find('svg .c3-chart-line.chart-series-0 .c3-lines path').getAttribute('d');
+    let lineAreaSpline = find('svg .c3-chart-line.chart-series-0 .c3-areas path').getAttribute('d');
+
+    assert.notEqual(linePath, linePathSpline, 'Chart updated with new values');
+
+    await click('.line-chart-config__area-opt .x-toggle-btn');
+
+    let linePathSplineArea = find('svg .c3-chart-line.chart-series-0 .c3-lines path').getAttribute('d');
+    let lineAreaSplineArea = find('svg .c3-chart-line.chart-series-0 .c3-areas path').getAttribute('d');
+
+    assert.notEqual(linePathSpline, linePathSplineArea, 'lines have been updated');
+    assert.notEqual(lineAreaSpline, lineAreaSplineArea, 'Area is updated');
   });
 
   /**
