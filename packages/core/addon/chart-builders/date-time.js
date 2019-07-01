@@ -83,7 +83,10 @@ export const GROUP = {
       year: {
         xValueCount: 366,
         getXValue: dateTime => dateTime.dayOfYear(),
-        getXDisplay: x => 'Day ' + x,
+        getXDisplay: x =>
+          moment()
+            .dayOfYear(x)
+            .format('MMM'),
         getSeries: dateTime => dateTime.format('YYYY')
       }
     }

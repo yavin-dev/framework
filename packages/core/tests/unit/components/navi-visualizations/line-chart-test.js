@@ -6,6 +6,7 @@ import { run } from '@ember/runloop';
 import moment from 'moment';
 import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
 import merge from 'lodash/merge';
+import { GROUP } from 'navi-core/chart-builders/date-time';
 
 let MetadataService;
 
@@ -213,7 +214,7 @@ module('Unit | Component | line chart', function(hooks) {
           }
         },
         grid: {
-          x: { show: true }
+          y: { show: true }
         },
         point: {
           r: 0,
@@ -600,5 +601,96 @@ module('Unit | Component | line chart', function(hooks) {
 
     component.set('options', { style: { curve: 'moose', area: false } });
     assert.equal(component.config.data.type, 'line', 'bad config uses default line');
+  });
+
+  test('xAxisTickValues', function(assert) {
+    assert.expect(4);
+
+    const getModelDataFor = (start, end, timeGrain) => {
+      return {
+        response: {
+          rows: [
+            {
+              dateTime: start,
+              uniqueIdentifier: 172933788
+            },
+            {
+              dateTime: end,
+              uniqueIdentifier: 183206656
+            }
+          ]
+        },
+        request: {
+          logicalTable: {
+            timeGrain
+          },
+          intervals: [
+            {
+              start,
+              end
+            }
+          ]
+        }
+      };
+    };
+
+    let component = this.owner.factoryFor('component:navi-visualizations/line-chart').create();
+
+    component.set('options', {
+      axis: {
+        y: {
+          series: {
+            type: 'metric',
+            config: {
+              timeGrain: 'year'
+            }
+          }
+        }
+      }
+    });
+
+    const allMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+    let grain = 'day';
+    component.set('model', A([getModelDataFor('2018-01-01T00:00:00.000Z', '2019-06-01T00:00:00.000Z', grain)]));
+    let xAxisTickValues = component.get('xAxisTickValues');
+    assert.deepEqual(
+      xAxisTickValues.axis.x.tick.values.map(x => GROUP[grain].by.year.getXDisplay(x + 1)),
+      allMonths,
+      `Create label for each month on ${grain} grain year chart`
+    );
+
+    grain = 'week';
+    component.set('model', A([getModelDataFor('2018-01-01 00:00:00.000', '2019-06-01 00:00:00.000', grain)]));
+    xAxisTickValues = component.get('xAxisTickValues');
+    assert.deepEqual(
+      xAxisTickValues.axis.x.tick.values.map(x => GROUP[grain].by.year.getXDisplay(x + 1)),
+      allMonths,
+      `Create label for each month on ${grain} grain year chart`
+    );
+
+    grain = 'month';
+    component.set('model', A([getModelDataFor('2018-01-01 00:00:00.000', '2019-06-01 00:00:00.000', grain)]));
+    xAxisTickValues = component.get('xAxisTickValues');
+    assert.deepEqual(
+      xAxisTickValues.axis.x.tick.values.map(x => GROUP[grain].by.year.getXDisplay(x + 1)),
+      allMonths,
+      `Create label for each month on ${grain} grain year chart`
+    );
+
+    component.set('options', {
+      axis: {
+        y: {
+          series: {
+            type: 'metric'
+          }
+        }
+      }
+    });
+
+    grain = 'day';
+    component.set('model', A([getModelDataFor('2018-01-01T00:00:00.000Z', '2019-06-01T00:00:00.000Z', grain)]));
+    xAxisTickValues = component.get('xAxisTickValues');
+    assert.deepEqual(xAxisTickValues, {}, 'Does not generate custom values for non-year timeGrain series');
   });
 });
