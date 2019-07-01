@@ -26,6 +26,10 @@ import moment from 'moment';
 import { run } from '@ember/runloop';
 
 const DEFAULT_OPTIONS = {
+  style: {
+    curve: 'line',
+    area: false
+  },
   axis: {
     x: {
       type: 'category',
@@ -199,7 +203,7 @@ export default Component.extend({
   /**
    * @property {Object} data - configuration for chart x and y values
    */
-  dataConfig: computed('firstModel', 'seriesConfig', function() {
+  dataConfig: computed('firstModel', 'seriesConfig', 'c3ChartType', function() {
     const request = get(this, 'firstModel.request');
     const rows = get(this, 'firstModel.response.rows');
     const builder = get(this, 'builder');
@@ -208,13 +212,29 @@ export default Component.extend({
 
     return {
       data: {
-        type: get(this, 'chartType'),
+        type: this.c3ChartType,
         json: seriesData,
         selection: {
           enabled: true
         }
       }
     };
+  }),
+
+  /**
+   * @property {String} c3ChartType - c3 chart type to determine line behavior
+   */
+  c3ChartType: computed('options', 'chartType', function() {
+    const options = merge({}, DEFAULT_OPTIONS, this.options),
+      { curve, area } = options.style;
+
+    if (curve === 'line') {
+      return area ? 'area' : 'line';
+    } else if (curve === 'spline' || curve === 'step') {
+      return area ? `area-${curve}` : curve;
+    }
+
+    return this.chartType;
   }),
 
   /**

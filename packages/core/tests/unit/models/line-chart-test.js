@@ -197,6 +197,7 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
         type: 'line-chart',
         version: 1,
         metadata: {
+          style: {},
           axis: {
             y: {
               series: {
@@ -250,6 +251,7 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
         type: 'line-chart',
         version: 1,
         metadata: {
+          style: {},
           axis: {
             y: {
               series: {
@@ -370,6 +372,7 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
         type: 'line-chart',
         version: 1,
         metadata: {
+          style: {},
           axis: {
             y: {
               series: {
@@ -466,6 +469,7 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
         type: 'line-chart',
         version: 1,
         metadata: {
+          style: {},
           axis: {
             y: {
               series: {
@@ -524,6 +528,7 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
         type: 'line-chart',
         version: 1,
         metadata: {
+          style: {},
           axis: {
             y: {
               series: {
@@ -579,6 +584,7 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
         type: 'line-chart',
         version: 1,
         metadata: {
+          style: {},
           axis: {
             y: {
               series: {
@@ -620,6 +626,7 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
         type: 'line-chart',
         version: 1,
         metadata: {
+          style: {},
           axis: {
             y: {
               series: {

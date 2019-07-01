@@ -187,6 +187,10 @@ module('Unit | Component | line chart', function(hooks) {
         model: A([{ response: { rows: [] } }])
       }),
       defaultConfig = {
+        style: {
+          curve: 'line',
+          area: false
+        },
         axis: {
           x: {
             type: 'category',
@@ -548,6 +552,55 @@ module('Unit | Component | line chart', function(hooks) {
       tooltip.get('rowData.firstObject').hasOwnProperty('navClicks'),
       'New response has tooltip render has the right rowData'
     );
+  });
+
+  test('line chart styles', function(assert) {
+    let component = this.owner.factoryFor('component:navi-visualizations/line-chart').create({
+      model: A([
+        {
+          response: {
+            rows: [
+              {
+                dateTime: '2016-05-30 00:00:00.000',
+                uniqueIdentifier: 172933788,
+                totalPageViews: 3669828357
+              }
+            ]
+          },
+          request: {
+            logicalTable: {
+              timeGrain: 'day'
+            },
+            intervals: [
+              {
+                start: '2016-05-30 00:00:00.000',
+                end: '2016-06-04 00:00:00.000'
+              }
+            ]
+          }
+        }
+      ])
+    });
+
+    assert.equal(component.config.data.type, 'line');
+
+    component.set('options', { style: { curve: 'line', area: true } });
+    assert.equal(component.config.data.type, 'area', 'default of line returns as configured');
+
+    component.set('options', { style: { curve: 'spline', area: false } });
+    assert.equal(component.config.data.type, 'spline', 'adding spline passes a spline config');
+
+    component.set('options', { style: { curve: 'spline', area: true } });
+    assert.equal(component.config.data.type, 'area-spline', 'spline with area true returns a area spline config');
+
+    component.set('options', { style: { curve: 'step', area: false } });
+    assert.equal(component.config.data.type, 'step', 'step returns a step config');
+
+    component.set('options', { style: { curve: 'step', area: true } });
+    assert.equal(component.config.data.type, 'area-step', 'step with area true returns a area step config');
+
+    component.set('options', { style: { curve: 'moose', area: false } });
+    assert.equal(component.config.data.type, 'line', 'bad config uses default line');
   });
 
   test('xAxisTickValues', function(assert) {

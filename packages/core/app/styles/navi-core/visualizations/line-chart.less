@@ -20,7 +20,7 @@
       }
     }
     path {
-      stroke: @denali-gray-200;
+      stroke: @denali-gray-400;
     }
   }
 
@@ -29,7 +29,7 @@
   }
 
   .c3-grid line {
-    stroke: @denali-gray-200;
+    stroke: @denali-gray-400;
   }
 
   .c3-legend-item text {
@@ -52,6 +52,11 @@
 
     path {
       stroke: inherit !important;
+    }
+
+    //allowing the series color will override the inline color c3 sets for area
+    .c3-area {
+      fill: inherit !important;
     }
   }
 

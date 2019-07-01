@@ -2,7 +2,7 @@
 <div class="report-builder__side">
   {{#if (or (gt allTables.length 1) (not hasValidLogicalTable))}}
     {{navi-table-select
-      classNames="report-builder__container report-builder__container--table"
+      class=(concat "report-builder__container report-builder__container--table" (if disabled " report-builder__container--disabled" ""))
       options=allTables
       selected=request.logicalTable.table
       onChange=(update-report-action "UPDATE_TABLE")
@@ -11,7 +11,7 @@
   <div class="report-builder__container--builder {{if (not hasValidLogicalTable) "report-builder__container--builder-skel"}}">
     {{#if hasValidLogicalTable}}
       {{dimension-selector
-        class="report-builder__container report-builder__dimension-selector"
+        class=(concat "report-builder__container report-builder__dimension-selector" (if disabled " report-builder__container--disabled" ""))
         request=request
         onAddTimeGrain=(update-report-action "ADD_TIME_GRAIN")
         onAddDimension=(update-report-action "ADD_DIMENSION")
@@ -20,7 +20,7 @@
         onToggleDimFilter=(update-report-action "TOGGLE_DIM_FILTER")
       }}
       {{metric-selector
-        class="report-builder__container report-builder__metric-selector"
+        class=(concat "report-builder__container report-builder__metric-selector" (if disabled " report-builder__container--disabled" ""))
         request=request
         onAddMetric=(update-report-action "ADD_METRIC")
         onAddMetricWithParameter=(update-report-action "ADD_METRIC_WITH_PARAM")
@@ -32,7 +32,7 @@
 </div>
 <div class="report-builder__main">
   {{#if hasValidLogicalTable}}
-    <div class="report-builder__container report-builder__container--filters">
+    <div class={{concat "report-builder__container report-builder__container--filters" (if disabled " report-builder__container--disabled" "")}}>
       <span class="report-builder__container-header">
         <span class="report-builder__container-header__title">FILTERS</span>
         <span class="report-builder__container-header__message">
