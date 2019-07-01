@@ -23,6 +23,21 @@
     padding: 5px 10px;
   }
 
+  &__container--disabled {
+    background: @denali-gray-300;
+    cursor: not-allowed;
+
+    .filter-collection,
+    .navi-list-selector,
+    .ember-power-select-trigger {
+      pointer-events: none;
+    }
+
+    .ember-power-select-trigger {
+      background: none;
+    }
+  }
+
   &__container--builder {
     display: flex;
     flex: 1;
