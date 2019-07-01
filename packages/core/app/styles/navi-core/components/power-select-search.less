@@ -1,0 +1,24 @@
+/**
+ * Copyright 2019, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
+
+.navi-power-select-search {
+  border-bottom: 1px solid #aaaaaa;
+  color: @navi-gray-500;
+  display: flex;
+  flex-direction: row;
+
+  i.fa-search {
+    font-size: @font-size-base-large;
+    padding-top: 2px;
+  }
+
+  &-input.ember-power-select-search-input {
+    border: none;
+
+    &:focus {
+      border: none;
+    }
+  }
+}
