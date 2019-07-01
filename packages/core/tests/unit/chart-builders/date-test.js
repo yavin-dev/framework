@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { get } from '@ember/object';
 import Object from '@ember/object';
 import BuilderClass from 'navi-core/chart-builders/date-time';
-import TooltipTemplate from '../../../../navi-core/templates/chart-tooltips/date';
+import TooltipTemplate from 'navi-core/templates/chart-tooltips/date';
 
 const DateChartBuilder = BuilderClass.create();
 
@@ -148,7 +148,7 @@ module('Unit | Chart Builders | Date Time', function() {
       {
         x: {
           rawValue: 1,
-          displayValue: 'Day 1'
+          displayValue: 'Jan'
         },
         '2016': 1,
         '2015': 3
