@@ -9,7 +9,7 @@ import { get } from '@ember/object';
 
 /**
  * @param {Object} dimension - a dimension object
- * @param {Object} [field=null] - field to use as identifier
+ * @param {String} [field=null] - field to use as identifier
  * @returns {String} string in one of the following forms:
  *                  'description (id)'
  *                  'id' if no description
