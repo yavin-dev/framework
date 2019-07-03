@@ -2,5 +2,6 @@
 {{#lazy-render target=rowElement}}
   {{component (get assetActionComponents type)
     item=value
+    index=row.rowId
   }}
 {{/lazy-render}}
