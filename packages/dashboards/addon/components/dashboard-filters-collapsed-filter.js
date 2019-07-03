@@ -84,17 +84,7 @@ export default Component.extend({
     return rawValues.map(rawValue => {
       const value = values.findBy(field, rawValue);
 
-      if (isEmpty(value)) {
-        return rawValue;
-      }
-
-      const description = get(value, 'description');
-
-      if (!description) {
-        return rawValue;
-      }
-
-      return `${get(value, 'description')} (${rawValue})`;
+      return isEmpty(value) ? rawValue : value;
     });
   })
 });
