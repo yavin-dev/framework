@@ -84,7 +84,14 @@ export default Component.extend({
     return rawValues.map(rawValue => {
       const value = values.findBy(field, rawValue);
 
-      return isEmpty(value) ? rawValue : value;
+      if (isEmpty(value)) {
+        const rawValObj = {};
+
+        rawValObj[field] = rawValue;
+        return rawValObj;
+      }
+
+      return value;
     });
   })
 });

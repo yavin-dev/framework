@@ -3,7 +3,7 @@ import { module, test } from 'qunit';
 
 module('Unit | Helper | format dimension', function() {
   test('Formatted id', function(assert) {
-    assert.expect(7);
+    assert.expect(6);
 
     let testDim = {
       id: 'rainbow_road',
@@ -24,7 +24,6 @@ module('Unit | Helper | format dimension', function() {
     assert.equal(formatDimension([testDim]), '', 'Undefined Id and Description formats to just blank string');
 
     assert.equal(formatDimension([]), '', 'Undefined dimension formats to blank string');
-    assert.equal(formatDimension(['Dimension']), 'Dimension', 'Formatting a string returns that same string');
 
     let fieldDim = {
       id: 'moo_moo_meadows',
