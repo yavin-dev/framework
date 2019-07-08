@@ -234,7 +234,7 @@ export default Component.extend({
       return area ? `area-${curve}` : curve;
     }
 
-    return get(this, 'chartType');
+    return this.chartType;
   }),
 
   /**
