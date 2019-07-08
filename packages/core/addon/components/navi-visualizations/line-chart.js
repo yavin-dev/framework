@@ -127,15 +127,15 @@ export default Component.extend({
     return merge(
       {},
       DEFAULT_OPTIONS,
-      this.options,
-      this.dataConfig,
-      this.dataSelectionConfig,
-      { tooltip: this.chartTooltip },
+      get(this, 'options'),
+      get(this, 'dataConfig'),
+      get(this, 'dataSelectionConfig'),
+      { tooltip: get(this, 'chartTooltip') },
       { point },
       { axis: { x: { type: 'category' } } }, // Override old 'timeseries' config saved in db
-      this.yAxisLabelConfig,
-      this.yAxisDataFormat,
-      this.xAxisTickValues
+      get(this, 'yAxisLabelConfig'),
+      get(this, 'yAxisDataFormat'),
+      get(this, 'xAxisTickValues')
     );
   }),
 
@@ -212,7 +212,7 @@ export default Component.extend({
 
     return {
       data: {
-        type: this.c3ChartType,
+        type: get(this, 'c3ChartType'),
         json: seriesData,
         selection: {
           enabled: true
@@ -225,7 +225,7 @@ export default Component.extend({
    * @property {String} c3ChartType - c3 chart type to determine line behavior
    */
   c3ChartType: computed('options', 'chartType', function() {
-    const options = merge({}, DEFAULT_OPTIONS, this.options),
+    const options = merge({}, DEFAULT_OPTIONS, get(this, 'options')),
       { curve, area } = options.style;
 
     if (curve === 'line') {

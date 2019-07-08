@@ -10,7 +10,7 @@
  */
 
 import LineChart from './line-chart';
-import { computed } from '@ember/object';
+import { computed, get } from '@ember/object';
 
 //TODO add a base class for charts
 export default LineChart.extend({
@@ -27,6 +27,6 @@ export default LineChart.extend({
    * @property {String} c3ChartType - c3 chart type
    */
   c3ChartType: computed('chartType', function() {
-    return this.chartType;
+    return get(this, 'chartType');
   })
 });
