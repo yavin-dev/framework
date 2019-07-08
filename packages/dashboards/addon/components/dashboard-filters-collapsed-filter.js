@@ -85,16 +85,13 @@ export default Component.extend({
       const value = values.findBy(field, rawValue);
 
       if (isEmpty(value)) {
-        return rawValue;
+        const rawValObj = {};
+
+        rawValObj[field] = rawValue;
+        return rawValObj;
       }
 
-      const description = get(value, 'description');
-
-      if (!description) {
-        return rawValue;
-      }
-
-      return `${get(value, 'description')} (${rawValue})`;
+      return value;
     });
   })
 });
