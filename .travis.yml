@@ -29,7 +29,7 @@ before_install:
 install:
   - travis_wait npm install
 script:
-  - lerna run test --scope $PACKAGE -- bower install || true
+  - lerna exec --scope $PACKAGE -- bower install || true
   - travis_wait lerna run test --scope $PACKAGE
 jobs:
   include:
