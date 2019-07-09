@@ -4,15 +4,20 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import { get } from '@ember/object';
+import EmberObject, { get } from '@ember/object';
 
 let Template = hbs`
   {{visualization-config/line-chart
     response=response
     request=request
     options=options
+    type=type
     onUpdateConfig=(action onUpdateConfig)
   }}`,
+  request = {
+    hasGroupBy: true,
+    hasMultipleMetrics: true
+  },
   chartOptions = {
     axis: {
       y: {
@@ -27,6 +32,20 @@ module('Integration | Component | visualization config/line chart', function(hoo
   setupRenderingTest(hooks);
 
   hooks.beforeEach(function() {
+    //mocking visualization manifest
+    this.owner.register(
+      'manifest:mock',
+      EmberObject.extend({
+        hasGroupBy(request) {
+          return request.hasGroupBy;
+        },
+
+        hasMultipleMetrics(request) {
+          return request.hasMultipleMetrics;
+        }
+      })
+    );
+
     //mocking line chart type component
     this.owner.register(
       'component:visualization-config/chart-type/mock',
@@ -41,8 +60,9 @@ module('Integration | Component | visualization config/line chart', function(hoo
       { instantiate: false }
     );
 
+    this.set('type', 'mock');
+    this.set('request', request);
     this.set('options', chartOptions);
-
     this.set('onUpdateConfig', () => null);
   });
 
@@ -50,10 +70,10 @@ module('Integration | Component | visualization config/line chart', function(hoo
     assert.expect(1);
 
     await render(Template);
-    assert.ok(
-      this.$('.line-chart-config .mock').is(':visible'),
-      'The Mock component is correctly rendered based on visualization type'
-    );
+
+    assert
+      .dom('.line-chart-config .mock')
+      .exists('The Mock component is correctly rendered based on visualization type');
   });
 
   test('onUpdateConfig', async function(assert) {
@@ -66,5 +86,26 @@ module('Integration | Component | visualization config/line chart', function(hoo
     await render(Template);
 
     await run(() => click('.mock'));
+  });
+
+  test('displayStackOption', async function(assert) {
+    assert.expect(2);
+
+    await render(Template);
+
+    assert
+      .dom('.line-chart-config .line-chart-config__stacked-opt')
+      .isVisible('The `stacked` option is correctly rendered based on request');
+
+    this.set('request', {
+      hasGroupBy: false,
+      hasMultipleMetrics: false
+    });
+
+    await render(Template);
+
+    assert
+      .dom('.line-chart-config .line-chart-config__stacked-opt')
+      .isNotVisible('The `stacked` option is correctly hidden based on request');
   });
 });
