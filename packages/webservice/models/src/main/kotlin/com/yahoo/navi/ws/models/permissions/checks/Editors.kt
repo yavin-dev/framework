@@ -14,9 +14,6 @@ import com.yahoo.navi.ws.models.beans.User
 import java.security.Principal
 import java.util.*
 
-/**
- * Copyright (c) 2018, Yahoo Inc.
- */
 object Editors {
 
     /**
