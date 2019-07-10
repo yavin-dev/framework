@@ -3,9 +3,19 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
+@add-filter-cell-height: 27px;
+@add-filter-cell-margin: 3px;
+@add-filter-placeholder-color-background: #f3f3f3;
+@add-filter-placeholder-color-border: #a3a3a3;
+
 .dashboard-filters {
   flex: 0 0 auto;
   width: 100%;
+
+  &--collapsed {
+    border-bottom: 2px solid @navi-gray-300;
+    padding-bottom: 10px;
+  }
 
   &-collapsed {
     cursor: pointer;
@@ -41,23 +51,77 @@
     background-color: @navi-white;
     box-shadow: 0px 2px 2px 0px #a0a0a0;
     display: block;
-    left: 0;
     padding: 0 100px 10px 20px;
-    position: absolute;
-    width: 100vw;
+    position: relative;
     z-index: 5;
+
+    &__add-filter-button {
+      color: @navi-blue-500;
+      cursor: pointer;
+      font-size: 12px;
+      padding: 5px 5px 5px 10px;
+    }
+
+    &-add-row {
+      display: flex;
+      padding-left: 10px;
+
+      &__close {
+        color: @navi-gray-600;
+        flex: 0 0 auto;
+        font-size: @font-size-mid;
+        line-height: @add-filter-cell-height;
+        margin: @add-filter-cell-margin;
+        text-align: center;
+      }
+
+      &__dimension-selector {
+        flex: 2;
+        font-size: @font-size-mid;
+        margin: @add-filter-cell-margin;
+        min-height: @add-filter-cell-height;
+
+        .ember-power-select-placeholder {
+          line-height: @add-filter-cell-height - 2;
+        }
+      }
+
+      &__placeholder {
+        &--operator {
+          flex: 2;
+        }
+
+        &--values {
+          flex: 6;
+          margin: @add-filter-cell-margin;
+        }
+      }
+
+      &__placeholder-inner {
+        background-color: @add-filter-placeholder-color-background;
+        border-color: @add-filter-placeholder-color-border;
+        border-style: solid;
+        border-width: 1px;
+        height: @add-filter-cell-height;
+
+        &--operator {
+          margin: @add-filter-cell-margin;
+        }
+      }
+    }
   }
 
   &__expand-button {
     cursor: pointer;
     display: inline-block;
     font-size: 18px;
+    margin-left: 10px;
     user-select: none;
   }
 
   .dashboard-filter-collection {
     .filter-collection;
 
-    padding-left: 17px;
+    padding-left: 10px;
   }
 }

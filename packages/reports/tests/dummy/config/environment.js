@@ -44,6 +44,7 @@ module.exports = function(environment) {
         enableMultipleExport: true,
         enableContains: true,
         enableTableEditing: true,
+        enableChartStacking: true,
         dateDimensionFilter: true
       }
     }

@@ -1341,6 +1341,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     assert.ok(!!findAll('.navi-report-invalid__info-message .fa-lock').length, 'unauthorized component is loaded');
 
+    await click('.navi-report__cancel-btn');
     await selectChoose('.navi-table-select__dropdown', 'Network');
     await click('.navi-report__run-btn');
     await click($('.visualization-toggle__option:contains(Table)')[0]);
@@ -1705,14 +1706,18 @@ module('Acceptance | Navi Report', function(hooks) {
   });
 
   test('Cancel Report', async function(assert) {
-    //Slow down mock
-    server.timing = 400;
-    server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
-    server.get('data/*path', () => {
-      return { rows: [] };
-    });
+    assert.expect(14);
 
-    //Load the report without waiting for it to finish loading
+    server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
+    server.get(
+      'data/*path',
+      () => {
+        return { rows: [] };
+      },
+      { timing: 400 } //Slow down mock
+    );
+
+    // Load the report without waiting for it to finish loading
     visit('/reports/1').catch(error => {
       //https://github.com/emberjs/ember-test-helpers/issues/332
       const { message } = error;
@@ -1721,7 +1726,7 @@ module('Acceptance | Navi Report', function(hooks) {
       }
     });
 
-    await waitFor('.navi-report__cancel-btn');
+    await waitFor('.navi-report__cancel-btn', { timeout: 5000 });
 
     let buttons = findAll('.navi-report__footer .btn');
     assert.dom('.navi-loader__spinner').isVisible('Report is loading');
@@ -1732,7 +1737,21 @@ module('Acceptance | Navi Report', function(hooks) {
       'When report is loading, the only footer button is `Cancel`'
     );
 
-    await click(buttons[0]);
+    assert
+      .dom('.report-builder__dimension-selector.report-builder__container--disabled')
+      .isVisible('Dimension selector is disabled during run');
+    assert
+      .dom('.report-builder__metric-selector.report-builder__container--disabled')
+      .isVisible('Metric selector is disabled during run');
+    assert
+      .dom('.report-builder__container--table.report-builder__container--disabled')
+      .isVisible('Table selector is disabled during run');
+    assert
+      .dom('.report-builder__container--filters.report-builder__container--disabled')
+      .isVisible('Filter collection is disabled during run');
+
+    /* ================= Cancel Report ================= */
+    await click($('.navi-report__cancel-btn')[0]);
 
     assert.equal(currentURL(), '/reports/1/edit', 'Clicking `Cancel` brings the user to the edit route');
 
@@ -1742,7 +1761,7 @@ module('Acceptance | Navi Report', function(hooks) {
       'When not loading a report, the standard footer buttons are available'
     );
 
-    //Run the widget
+    //Run the report
     await click('.navi-report__run-btn');
     assert.equal(currentURL(), '/reports/1/view', 'Running the report brings the user to the view route');
 
@@ -1750,6 +1769,54 @@ module('Acceptance | Navi Report', function(hooks) {
       findAll('.navi-report__footer .btn').map(e => e.textContent.trim()),
       ['Run'],
       'When not loading a report, the standard footer buttons are available'
+    );
+
+    assert
+      .dom('.report-builder__dimension-selector')
+      .doesNotHaveClass('report-builder__container--disabled', 'Dimension selector is enabled after run');
+    assert
+      .dom('.report-builder__metric-selector')
+      .doesNotHaveClass('report-builder__container--disabled', 'Metric selector is enabled after run');
+    assert
+      .dom('.report-builder__container--table')
+      .doesNotHaveClass('report-builder__container--disabled', 'Table selector is enabled after run');
+    assert
+      .dom('.report-builder__container--filters')
+      .doesNotHaveClass('report-builder__container--disabled', 'Filter collection is enabled after run');
+  });
+
+  test('Recreating same report after revert runs', async function(assert) {
+    await visit('/reports/2/view');
+
+    const columns = () => findAll('.table-widget__table-headers .table-header-cell').map(el => el.textContent.trim());
+    assert.deepEqual(columns(), ['Date', 'Property', 'Ad Clicks', 'Nav Clicks'], 'Report loads with expected columns');
+
+    await click(
+      findAll('.checkbox-selector--metric .grouped-list__item')
+        .find(el => el.textContent.trim() == 'Page Views')
+        .querySelector('.grouped-list__item-label')
+    );
+    await click('.navi-report__run-btn');
+    assert.deepEqual(
+      columns(),
+      ['Date', 'Property', 'Ad Clicks', 'Nav Clicks', 'Page Views'],
+      'Report changed and ran successfully'
+    );
+
+    await click('.navi-report__revert-btn');
+    assert.deepEqual(columns(), ['Date', 'Property', 'Ad Clicks', 'Nav Clicks'], 'Report revertted successfully');
+
+    //make same changes and make sure it's runnable
+    await click(
+      findAll('.checkbox-selector--metric .grouped-list__item')
+        .find(el => el.textContent.trim() == 'Page Views')
+        .querySelector('.grouped-list__item-label')
+    );
+    await click('.navi-report__run-btn');
+    assert.deepEqual(
+      columns(),
+      ['Date', 'Property', 'Ad Clicks', 'Nav Clicks', 'Page Views'],
+      'Report changed and ran successfully'
     );
   });
 });

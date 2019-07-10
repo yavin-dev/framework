@@ -27,7 +27,8 @@ module.exports = function(/* environment, appConfig */) {
       },
       FEATURES: {
         enableTotals: true,
-        enableTableEditing: false
+        enableTableEditing: false,
+        enableChartStacking: false
       }
     }
   };

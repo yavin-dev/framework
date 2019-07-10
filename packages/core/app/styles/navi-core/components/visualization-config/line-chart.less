@@ -4,7 +4,13 @@
  */
 
 .line-chart-config {
+  .config-container();
   padding: 5px;
+
+  &__header {
+    color: @navi-gray;
+    margin: 5px;
+  }
 
   .chart-series-collection {
     margin-top: 5px;
@@ -25,5 +31,35 @@
 
   .ember-power-select-option[aria-current='true'] {
     background-color: @navi-purple;
+  }
+
+  &__style-options {
+    .config-section();
+  }
+
+  &__curve-opt,
+  &__area-opt,
+  &__stacked-opt {
+    display: flex;
+    justify-content: space-between;
+    margin: 8px 0;
+    &-title {
+      text-align: left;
+      color: @navi-gray;
+    }
+  }
+
+  &__area-opt,
+  &__stacked-opt {
+    &-select {
+      padding-right: 8px;
+    }
+  }
+
+  &__curve-opt {
+    &-title,
+    &-select {
+      flex: 1;
+    }
   }
 }

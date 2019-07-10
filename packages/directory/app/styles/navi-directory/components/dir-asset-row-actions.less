@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 .dir-asset-row-actions {
@@ -14,6 +14,9 @@
     text-align: left;
 
     .action {
+      height: 17px;
+      line-height: 17px;
+      margin-bottom: 2px;
       margin-right: 15px;
       visibility: hidden;
     }
@@ -30,7 +33,6 @@
     }
   }
 
-  .edit,
   .clone,
   .export,
   .share,
@@ -38,11 +40,23 @@
   .schedule,
   button {
     color: @navi-gray-500;
-    line-height: 17px;
+    cursor: pointer;
+    font-size: 14px;
+    height: 17px;
     padding: 0;
     vertical-align: bottom;
+
     &:hover {
       color: @navi-black;
+    }
+
+    &:disabled,
+    &.disabled {
+      cursor: not-allowed;
+
+      &:hover {
+        color: @navi-gray-500;
+      }
     }
   }
 }

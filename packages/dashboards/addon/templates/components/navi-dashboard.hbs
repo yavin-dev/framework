@@ -105,11 +105,11 @@
       {{/dashboard-actions/add-widget}}
     {{/if}}
   </div>
-
-  {{#if (feature-flag "enableDashboardFilters")}}
-    {{dashboard-filters dashboard=dashboard}}
-  {{/if}}
 </div>
+
+{{#if (feature-flag "enableDashboardFilters")}}
+  {{dashboard-filters dashboard=dashboard}}
+{{/if}}
 
 <div class="navi-dashboard__body">
   {{#if dashboard.widgets.length}}
@@ -119,6 +119,8 @@
           width=dashboard.presentation.columns
         )
         onChange=(route-action "didUpdateLayout")
+        onDragstop=(route-action "commitStagedLayout")
+        onResizestop=(route-action "commitStagedLayout")
       }}
         {{#each dashboard.presentation.layout as |layout|}}
           {{#with (get-widget layout.widgetId) as |widget|}}
@@ -155,3 +157,10 @@
     </div>
   {{/if}}
 </div>
+
+{{#if dashboard.hasDirtyAttributes}}
+  <div class="navi-dashboard__save-dialogue">
+    <button onclick={{route-action "saveDashboard"}} class="btn btn-secondary navi-dashboard__save-button">Save Changes</button>
+    <button onclick={{route-action "revertDashboard"}} class="btn btn-secondary navi-dashboard__revert-button">Revert Changes</button>
+  </div>
+{{/if}}

@@ -27,9 +27,9 @@ before_install:
   - npm config set spin false
   - npm --version
 install:
-  - travis_wait npm install
+  - travis_wait npm ci
 script:
-  - lerna run test --scope $PACKAGE -- bower install || true
+  - lerna exec --scope $PACKAGE -- bower install || true
   - travis_wait lerna run test --scope $PACKAGE
 jobs:
   include:

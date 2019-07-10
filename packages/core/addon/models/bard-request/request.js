@@ -308,11 +308,35 @@ export default Fragment.extend(Validations, {
    * @returns {Void}
    */
   addFilter(filterObj) {
+    this._addFilter(filterObj, 'values');
+  },
+
+  /**
+   * Adds a filter using raw values
+   * to the filters array unless a duplicate filter is already present
+   *
+   * @method addRawFilter
+   * @param {Object} filterObj
+   * @returns {Void}
+   */
+  addRawFilter(filterObj) {
+    this._addFilter(filterObj, 'rawValues');
+  },
+
+  /**
+   * adds filter with the request unless a duplicate filter is already present
+   * @private
+   * @method _addFilter
+   * @param {Object} filterObj
+   * @param {String} field
+   * @returns {void}
+   */
+  _addFilter(filterObj, valueParam) {
     let newFilter = this.store.createFragment('bard-request/fragments/filter', {
         dimension: get(filterObj, 'dimension'),
         operator: get(filterObj, 'operator'),
         field: get(filterObj, 'field'),
-        values: arr(get(filterObj, 'values'))
+        [valueParam]: arr(get(filterObj, valueParam))
       }),
       filters = get(this, 'filters'),
       existingFilter = filters.find(filter => isEqual(filter.serialize(), newFilter.serialize()));

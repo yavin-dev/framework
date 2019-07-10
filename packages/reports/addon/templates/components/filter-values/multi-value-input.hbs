@@ -6,6 +6,7 @@
   classNameBindings="filter.validations.isInvalid:filter-values--multi-value-input--error"
   placeholder=(concat filter.subject.longName " Values")
   removeTagAtIndex=(action "removeValueAtIndex")
+  allowSpacesInTags=true
   as |tag|
 }}
   {{tag}}

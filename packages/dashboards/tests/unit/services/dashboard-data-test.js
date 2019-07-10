@@ -63,7 +63,7 @@ module('Unit | Service | dashboard data', function(hooks) {
 
     assert.deepEqual(service.fetchDataForWidgets(1, []), {}, 'no widgets returns empty data object');
 
-    const makeRequest = (data, filters) => ({
+    const makeRequest = (data, filters = []) => ({
       clone() {
         return cloneDeep(this);
       },
@@ -78,7 +78,7 @@ module('Unit | Service | dashboard data', function(hooks) {
         timeGrain: { dimensionIds: [] }
       },
       data,
-      filters: filters || []
+      filters
     });
 
     const dashboard = {
@@ -205,8 +205,9 @@ module('Unit | Service | dashboard data', function(hooks) {
   test('global filter application and error injection.', async function(assert) {
     assert.expect(4);
 
-    const VALID_FILTERS = ['dim1', 'dim3'];
-    const DASHBOARD_FILTERS = ['dim1', 'dim2'];
+    const VALID_FILTERS = ['dim1', 'dim3', 'dim4'];
+    const DASHBOARD_FILTERS = ['dim1', 'dim2', 'dim4'];
+    const NO_VALUE_FILTERS = ['dim4'];
 
     const service = this.owner.factoryFor('service:dashboard-data').create({
       _fetch(request) {
@@ -222,7 +223,11 @@ module('Unit | Service | dashboard data', function(hooks) {
       }
     });
 
-    const makeFilter = ({ dimension }) => ({ dimension: { name: dimension } });
+    const makeFilter = ({ dimension }) => {
+      const rawValues = NO_VALUE_FILTERS.includes(dimension) ? [] : ['1'];
+
+      return { dimension: { name: dimension }, rawValues };
+    };
 
     const dashboard = {
       filters: DASHBOARD_FILTERS.map(dimension => makeFilter({ dimension }))
@@ -235,7 +240,7 @@ module('Unit | Service | dashboard data', function(hooks) {
       serialize() {
         return cloneDeep(this);
       },
-      addFilter(filter) {
+      addRawFilter(filter) {
         this.filters.push(filter);
       },
       logicalTable: {

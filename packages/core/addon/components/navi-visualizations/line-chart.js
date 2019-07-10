@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -22,9 +22,15 @@ import { inject as service } from '@ember/service';
 import layout from '../../templates/components/navi-visualizations/line-chart';
 import numeral from 'numeral';
 import merge from 'lodash/merge';
+import moment from 'moment';
 import { run } from '@ember/runloop';
 
 const DEFAULT_OPTIONS = {
+  style: {
+    curve: 'line',
+    area: false,
+    stacked: false
+  },
   axis: {
     x: {
       type: 'category',
@@ -51,7 +57,7 @@ const DEFAULT_OPTIONS = {
     }
   },
   grid: {
-    x: { show: true }
+    y: { show: true }
   },
   point: {
     r: 0,
@@ -122,14 +128,15 @@ export default Component.extend({
     return merge(
       {},
       DEFAULT_OPTIONS,
-      get(this, 'options'),
+      this.options,
       get(this, 'dataConfig'),
       get(this, 'dataSelectionConfig'),
       { tooltip: get(this, 'chartTooltip') },
       { point },
       { axis: { x: { type: 'category' } } }, // Override old 'timeseries' config saved in db
       get(this, 'yAxisLabelConfig'),
-      get(this, 'yAxisDataFormat')
+      get(this, 'yAxisDataFormat'),
+      get(this, 'xAxisTickValues')
     );
   }),
 
@@ -195,24 +202,77 @@ export default Component.extend({
   }),
 
   /**
-   * @property {Object} data - configuration for chart x and y values
+   * @property {Array} seriesData - chart series data
    */
-  dataConfig: computed('firstModel', 'seriesConfig', function() {
+  seriesData: computed('firstModel', 'builder', 'seriesConfig', function() {
     const request = get(this, 'firstModel.request');
     const rows = get(this, 'firstModel.response.rows');
     const builder = get(this, 'builder');
     const seriesConfig = get(this, 'seriesConfig.config');
-    const seriesData = builder.buildData(rows, seriesConfig, request);
+    return builder.buildData(rows, seriesConfig, request);
+  }),
+
+  /**
+   * @property {Array} seriesDataGroups - chart series groups for stacking
+   */
+  seriesDataGroups: computed('options', 'seriesData', function() {
+    const seriesData = get(this, 'seriesData'),
+      options = merge({}, DEFAULT_OPTIONS, this.options),
+      { stacked } = options.style;
+
+    /**
+     * if stacked, transform:
+     * [{
+     *   x: {
+     *     displayValue: "Jun 24",
+     *     rawValue: "2019-06-24 00:00:00.000"
+     *   },
+     *   group1: value1,
+     *   group2: value2,
+     *   ...
+     * }, {
+     *  ...
+     * }]
+     * to:
+     * [[ "group1", "group2", ... ]]
+     */
+    return stacked && seriesData.length ? [Object.keys(seriesData[0]).filter(key => key !== 'x')] : [];
+  }),
+
+  /**
+   * @property {Object} dataConfig - configuration for chart x and y values
+   */
+  dataConfig: computed('c3ChartType', 'seriesData', 'seriesDataGroups', function() {
+    const c3ChartType = get(this, 'c3ChartType'),
+      seriesData = get(this, 'seriesData'),
+      seriesDataGroups = get(this, 'seriesDataGroups');
 
     return {
       data: {
-        type: get(this, 'chartType'),
+        type: c3ChartType,
         json: seriesData,
+        groups: seriesDataGroups,
         selection: {
           enabled: true
         }
       }
     };
+  }),
+
+  /**
+   * @property {String} c3ChartType - c3 chart type to determine line behavior
+   */
+  c3ChartType: computed('options', 'chartType', function() {
+    const options = merge({}, DEFAULT_OPTIONS, get(this, 'options')),
+      { curve, area } = options.style;
+
+    if (curve === 'line') {
+      return area ? 'area' : 'line';
+    } else if (curve === 'spline' || curve === 'step') {
+      return area ? `area-${curve}` : curve;
+    }
+
+    return this.chartType;
   }),
 
   /**
@@ -257,6 +317,54 @@ export default Component.extend({
      * Use the factory that has been registered instead of an anonymous component.
      */
     return owner.factoryFor(registryEntry);
+  }),
+
+  /**
+   * @property {Object} xAxisTickValuesByGrain - x axis tick positions for day/week/month grain on year chart grain
+   */
+  xAxisTickValuesByGrain: computed(function() {
+    const dayValues = [];
+    for (let i = 0; i < 12; i++) {
+      dayValues.push(
+        moment()
+          .startOf('year')
+          .month(i)
+          .dayOfYear()
+      );
+    }
+
+    return {
+      day: dayValues,
+      // week.by.year in date-time is hardcoded to YEAR_WITH_53_ISOWEEKS (2015)
+      week: [1, 5, 9, 13, 18, 22, 26, 31, 35, 39, 44, 48],
+      month: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+    };
+  }),
+
+  /**
+   * @property {Object} xAxisTickValues - explicity specifies x axis tick positions for year chart grain
+   */
+  xAxisTickValues: computed('model.firstObject', 'seriesConfig', function() {
+    const chartGrain = get(this, 'seriesConfig.config.timeGrain');
+    if (chartGrain !== 'year') {
+      return {};
+    }
+    const requestGrain =
+      get(this, 'model.firstObject.request.logicalTable.timeGrain.name') ||
+      get(this, 'model.firstObject.request.logicalTable.timeGrain');
+
+    const values = this.get('xAxisTickValuesByGrain')[requestGrain];
+    return {
+      axis: {
+        x: {
+          tick: {
+            values,
+            fit: !values,
+            culling: !values
+          }
+        }
+      }
+    };
   }),
 
   /**

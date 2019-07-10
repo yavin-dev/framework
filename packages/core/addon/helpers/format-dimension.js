@@ -9,24 +9,25 @@ import { get } from '@ember/object';
 
 /**
  * @param {Object} dimension - a dimension object
+ * @param {String} [field='id'] - field to use as identifier with 'id' as the default field
  * @returns {String} string in one of the following forms:
- *                  'description (id)'
- *                  'id' if no description
+ *                  'description (field)'
+ *                  'field' if no description
  *                  '' empty string if dimension is undefined
  */
-export function formatDimension([dimension]) {
+export function formatDimension([dimension, field = 'id']) {
   if (!dimension) {
     return '';
   }
 
   let desc = get(dimension, 'description'),
-    id = get(dimension, 'id');
+    identifier = get(dimension, field);
 
-  if (!id && !desc) {
+  if (!identifier && !desc) {
     return '';
   }
 
-  return desc ? `${desc} (${id})` : id;
+  return desc ? `${desc} (${identifier})` : identifier;
 }
 
 export default Helper.extend({ compute: formatDimension });

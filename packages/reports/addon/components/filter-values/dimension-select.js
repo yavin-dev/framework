@@ -57,7 +57,7 @@ export default Component.extend({
       dimensionService = get(this, '_dimensionService'),
       metadataService = get(this, '_metadataService');
 
-    if (get(metadataService.getById('dimension', dimensionName), 'cardinality') <= LOAD_CARDINALITY) {
+    if (dimensionName && get(metadataService.getById('dimension', dimensionName), 'cardinality') <= LOAD_CARDINALITY) {
       return dimensionService.all(dimensionName);
     }
 

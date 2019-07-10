@@ -6,6 +6,7 @@ import { run } from '@ember/runloop';
 import moment from 'moment';
 import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
 import merge from 'lodash/merge';
+import { GROUP } from 'navi-core/chart-builders/date-time';
 
 let MetadataService;
 
@@ -23,7 +24,7 @@ module('Unit | Component | line chart', function(hooks) {
   });
 
   test('dataConfig', function(assert) {
-    assert.expect(2);
+    assert.expect(4);
 
     let response = {
         rows: [
@@ -66,11 +67,8 @@ module('Unit | Component | line chart', function(hooks) {
         ]
       };
 
-    let component = this.owner.factoryFor('component:navi-visualizations/line-chart').create(),
-      model = { request, response };
-
-    component.set('model', A([model]));
-    component.set('options', {
+    let options = {
+      style: { stacked: false },
       axis: {
         y: {
           series: {
@@ -87,7 +85,13 @@ module('Unit | Component | line chart', function(hooks) {
           }
         }
       }
-    });
+    };
+
+    let component = this.owner.factoryFor('component:navi-visualizations/line-chart').create(),
+      model = { request, response };
+
+    component.set('model', A([model]));
+    component.set('options', options);
 
     let expectedData = response.rows.map(row => {
       return {
@@ -105,7 +109,13 @@ module('Unit | Component | line chart', function(hooks) {
       'Data config contains json property with values for each x value and each series'
     );
 
-    let options = {
+    assert.deepEqual(
+      component.get('dataConfig.data.groups'),
+      [],
+      'Data config groups is empty when chart is not stacked'
+    );
+
+    options = {
       axis: {
         y: {
           series: {
@@ -143,6 +153,14 @@ module('Unit | Component | line chart', function(hooks) {
     });
 
     assert.deepEqual(component.get('dataConfig.data.json'), expectedData, 'Data config updates with series options');
+
+    component.set('options', Object.assign({}, options, { style: { stacked: true } }));
+
+    assert.deepEqual(
+      component.get('dataConfig.data.groups'),
+      [['Total Page Views', 'Unique Identifiers']],
+      'Data config groups is array of series keys when chart is stacked'
+    );
   });
 
   test('dataSelectionConfig', function(assert) {
@@ -186,6 +204,11 @@ module('Unit | Component | line chart', function(hooks) {
         model: A([{ response: { rows: [] } }])
       }),
       defaultConfig = {
+        style: {
+          curve: 'line',
+          area: false,
+          stacked: false
+        },
         axis: {
           x: {
             type: 'category',
@@ -209,7 +232,7 @@ module('Unit | Component | line chart', function(hooks) {
           }
         },
         grid: {
-          x: { show: true }
+          y: { show: true }
         },
         point: {
           r: 0,
@@ -547,5 +570,145 @@ module('Unit | Component | line chart', function(hooks) {
       tooltip.get('rowData.firstObject').hasOwnProperty('navClicks'),
       'New response has tooltip render has the right rowData'
     );
+  });
+
+  test('line chart styles', function(assert) {
+    let component = this.owner.factoryFor('component:navi-visualizations/line-chart').create({
+      model: A([
+        {
+          response: {
+            rows: [
+              {
+                dateTime: '2016-05-30 00:00:00.000',
+                uniqueIdentifier: 172933788,
+                totalPageViews: 3669828357
+              }
+            ]
+          },
+          request: {
+            logicalTable: {
+              timeGrain: 'day'
+            },
+            intervals: [
+              {
+                start: '2016-05-30 00:00:00.000',
+                end: '2016-06-04 00:00:00.000'
+              }
+            ]
+          }
+        }
+      ])
+    });
+
+    assert.equal(component.config.data.type, 'line');
+
+    component.set('options', { style: { curve: 'line', area: true } });
+    assert.equal(component.config.data.type, 'area', 'default of line returns as configured');
+
+    component.set('options', { style: { curve: 'spline', area: false } });
+    assert.equal(component.config.data.type, 'spline', 'adding spline passes a spline config');
+
+    component.set('options', { style: { curve: 'spline', area: true } });
+    assert.equal(component.config.data.type, 'area-spline', 'spline with area true returns a area spline config');
+
+    component.set('options', { style: { curve: 'step', area: false } });
+    assert.equal(component.config.data.type, 'step', 'step returns a step config');
+
+    component.set('options', { style: { curve: 'step', area: true } });
+    assert.equal(component.config.data.type, 'area-step', 'step with area true returns a area step config');
+
+    component.set('options', { style: { curve: 'moose', area: false } });
+    assert.equal(component.config.data.type, 'line', 'bad config uses default line');
+  });
+
+  test('xAxisTickValues', function(assert) {
+    assert.expect(4);
+
+    const getModelDataFor = (start, end, timeGrain) => {
+      return {
+        response: {
+          rows: [
+            {
+              dateTime: start,
+              uniqueIdentifier: 172933788
+            },
+            {
+              dateTime: end,
+              uniqueIdentifier: 183206656
+            }
+          ]
+        },
+        request: {
+          logicalTable: {
+            timeGrain
+          },
+          intervals: [
+            {
+              start,
+              end
+            }
+          ]
+        }
+      };
+    };
+
+    let component = this.owner.factoryFor('component:navi-visualizations/line-chart').create();
+
+    component.set('options', {
+      axis: {
+        y: {
+          series: {
+            type: 'metric',
+            config: {
+              timeGrain: 'year'
+            }
+          }
+        }
+      }
+    });
+
+    const allMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+    let grain = 'day';
+    component.set('model', A([getModelDataFor('2018-01-01T00:00:00.000Z', '2019-06-01T00:00:00.000Z', grain)]));
+    let xAxisTickValues = component.get('xAxisTickValues');
+    assert.deepEqual(
+      xAxisTickValues.axis.x.tick.values.map(x => GROUP[grain].by.year.getXDisplay(x + 1)),
+      allMonths,
+      `Create label for each month on ${grain} grain year chart`
+    );
+
+    grain = 'week';
+    component.set('model', A([getModelDataFor('2018-01-01 00:00:00.000', '2019-06-01 00:00:00.000', grain)]));
+    xAxisTickValues = component.get('xAxisTickValues');
+    assert.deepEqual(
+      xAxisTickValues.axis.x.tick.values.map(x => GROUP[grain].by.year.getXDisplay(x + 1)),
+      allMonths,
+      `Create label for each month on ${grain} grain year chart`
+    );
+
+    grain = 'month';
+    component.set('model', A([getModelDataFor('2018-01-01 00:00:00.000', '2019-06-01 00:00:00.000', grain)]));
+    xAxisTickValues = component.get('xAxisTickValues');
+    assert.deepEqual(
+      xAxisTickValues.axis.x.tick.values.map(x => GROUP[grain].by.year.getXDisplay(x + 1)),
+      allMonths,
+      `Create label for each month on ${grain} grain year chart`
+    );
+
+    component.set('options', {
+      axis: {
+        y: {
+          series: {
+            type: 'metric'
+          }
+        }
+      }
+    });
+
+    grain = 'day';
+    component.set('model', A([getModelDataFor('2018-01-01T00:00:00.000Z', '2019-06-01T00:00:00.000Z', grain)]));
+    xAxisTickValues = component.get('xAxisTickValues');
+    assert.deepEqual(xAxisTickValues, {}, 'Does not generate custom values for non-year timeGrain series');
   });
 });

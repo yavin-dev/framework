@@ -112,7 +112,9 @@ export default Service.extend({
   _applyFilters(dashboard, request) {
     const requestClone = request.clone();
 
-    this._getValidGlobalFilters(dashboard, request).forEach(filter => requestClone.addFilter(filter));
+    this._getValidGlobalFilters(dashboard, request)
+      .filter(filter => filter.rawValues.length > 0)
+      .forEach(filter => requestClone.addRawFilter(filter));
 
     return requestClone;
   },

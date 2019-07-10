@@ -34,7 +34,8 @@ module.exports = function(environment) {
       FEATURES: {
         enableDirectory: true,
         enableMultipleExport: false,
-        enableTableEditing: true
+        enableTableEditing: true,
+        enableChartStacking: true
       }
     }
   };

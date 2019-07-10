@@ -135,17 +135,6 @@
         &__title {
           flex: 1;
           overflow: hidden;
-          /* autoprefixer: off */
-          display: -webkit-box;
-          -webkit-line-clamp: @navi-table-max-wrap;
-          -webkit-box-orient: vertical;
-          /* autoprefixer: on */
-
-          &:hover {
-            /* autoprefixer: off */
-            -webkit-line-clamp: 40;
-            /* autoprefixer: on */
-          }
 
           &--custom-name {
             text-decoration: underline;
@@ -350,12 +339,18 @@
   }
 }
 
-@supports not (-webkit-line-clamp: @navi-table-max-wrap) {
-  .table-header-cell__title {
-    line-height: @navi-header-line-height;
-    max-height: @navi-header-line-height * @navi-table-max-wrap;
-    &:hover {
-      max-height: @navi-header-line-height * 40;
-    }
+.table-header-cell__title {
+  line-height: @navi-header-line-height;
+  max-height: @navi-header-line-height * @navi-table-max-wrap;
+  &:hover {
+    max-height: @navi-header-line-height * 40;
+  }
+}
+
+.sortable-item {
+  transition: all 0.125s;
+
+  &.is-dragging {
+    transition-duration: 0s;
   }
 }

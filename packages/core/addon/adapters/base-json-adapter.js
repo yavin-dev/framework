@@ -8,8 +8,9 @@ import { computed, getWithDefault, get } from '@ember/object';
 import DS from 'ember-data';
 import config from 'ember-get-config';
 import { pluralize } from 'ember-inflector';
+import AdapterFetch from 'ember-fetch/mixins/adapter-fetch';
 
-export default DS.JSONAPIAdapter.extend({
+export default DS.JSONAPIAdapter.extend(AdapterFetch, {
   /**
    * @property {String} host - persistence WS host
    */
@@ -31,13 +32,7 @@ export default DS.JSONAPIAdapter.extend({
    */
   ajaxOptions() {
     let hash = this._super(...arguments);
-
-    hash.xhrFields = { withCredentials: true };
-
-    hash.crossDomain = true;
-
-    hash.timeout = config.navi.appPersistence.timeout;
-
+    hash.credentials = 'include';
     return hash;
   },
 
@@ -69,6 +64,7 @@ export default DS.JSONAPIAdapter.extend({
    * @param  {Object} headers - response headers
    * @param  {Object} payload - response payload
    * @return {Object} errors payload
+   *
    */
   normalizeErrorResponse(status, headers, payload) {
     let detail = get(payload, 'errors');

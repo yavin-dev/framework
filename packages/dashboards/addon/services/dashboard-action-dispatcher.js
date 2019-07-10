@@ -6,6 +6,7 @@ import ActionDispatcher from 'navi-core/services/action-dispatcher';
 import { computed } from '@ember/object';
 
 export const DashboardActions = {
+  ADD_FILTER: 'addFilter',
   REMOVE_FILTER: 'removeFilter',
   UPDATE_FILTER: 'updateFilter'
 };

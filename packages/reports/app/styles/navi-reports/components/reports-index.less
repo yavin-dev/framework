@@ -18,19 +18,21 @@
   }
 
   &__report-control {
-    margin-left: 0;
-    margin-right: 15px;
     display: inline-block;
+    margin: 0 15px 2px 0;
   }
 
-  .edit,
   .clone,
   .export,
   .share,
+  .schedule,
   .delete {
+    color: @navi-gray-500;
+    cursor: pointer;
+    height: 17px;
     line-height: 17px;
     vertical-align: bottom;
-    color: @navi-gray-500;
+
     &:hover {
       color: @navi-black;
     }
@@ -49,6 +51,7 @@
   cursor: pointer;
   font-family: @font-family-sans-serif;
   font-size: 14px;
+  height: 17px;
   line-height: 17px;
   margin: 0;
   padding: 0;
@@ -56,5 +59,14 @@
 
   &:hover {
     color: @navi-black;
+  }
+
+  &:disabled,
+  &.disabled {
+    cursor: not-allowed;
+
+    &:hover {
+      color: @navi-gray-500;
+    }
   }
 }

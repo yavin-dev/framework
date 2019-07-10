@@ -5,9 +5,10 @@
 import { computed, get, set, setProperties } from '@ember/object';
 import { A as arr, makeArray } from '@ember/array';
 import { isEmpty } from '@ember/utils';
-import { run } from '@ember/runloop';
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
+import { copy } from '@ember/object/internals';
+import { all } from 'rsvp';
 
 export default Route.extend({
   /**
@@ -46,16 +47,16 @@ export default Route.extend({
    * that have changed
    *
    * @method _updateLayout
+   * @param {Array} updatedWidgets - list of widgets
    * @private
-   * @param {Array} updatedWidgets - list of widgets that have changed
    * @return {Void}
    */
   _updateLayout(updatedWidgets) {
-    let dashboard = get(this, 'currentDashboard'),
-      layout = arr(get(dashboard, 'presentation.layout'));
+    const dashboard = get(this, 'currentDashboard');
+    const newLayout = copy(get(dashboard, 'presentation.layout'), true);
 
     makeArray(updatedWidgets).forEach(updatedWidget => {
-      let modelWidget = layout.findBy('widgetId', Number(updatedWidget.id));
+      let modelWidget = arr(newLayout).findBy('widgetId', Number(updatedWidget.id));
 
       //Make sure the widget is still a member of the dashboard
       if (modelWidget) {
@@ -63,25 +64,8 @@ export default Route.extend({
         setProperties(modelWidget, { column, row, height, width });
       }
     });
-  },
 
-  /**
-   * Method used by saveDashboard action to save the
-   * dashboard model
-   *
-   * @method _saveDashboardFn
-   * @private
-   * @return {Void}
-   */
-  _saveDashboardFn() {
-    let dashboard = get(this, 'currentDashboard');
-    return dashboard.save().catch(() => {
-      get(this, 'naviNotifications').add({
-        message: 'OOPS! An error occured while trying to save your dashboard.',
-        type: 'danger',
-        timeout: 'short'
-      });
-    });
+    set(dashboard, 'presentation.layout', newLayout);
   },
 
   /**
@@ -107,19 +91,37 @@ export default Route.extend({
      */
     didUpdateLayout(event, widgets) {
       if (widgets && get(widgets, 'length')) {
-        this._updateLayout(widgets);
-        let dashboard = get(this, 'currentDashboard');
-        if (get(dashboard, 'canUserEdit')) {
-          this.send('saveDashboard');
-        }
+        this.set('_stagedLayout', widgets);
       }
+    },
+
+    /**
+     * Take new layout staged by didChange and set
+     * it on the dashboard model.
+     *
+     * @action commitStagedLayout
+     */
+    commitStagedLayout() {
+      this._updateLayout(get(this, '_stagedLayout'));
     },
 
     /**
      * @action saveDashboard - saves dashboard updates
      */
     saveDashboard() {
-      run.debounce(this, this._saveDashboardFn, 100);
+      const dashboard = get(this, 'currentDashboard');
+      const widgets = get(this, 'currentDashboard.widgets');
+
+      return dashboard
+        .save()
+        .then(all(widgets.map(async widget => widget.hasDirtyAttributes && widget.save())))
+        .catch(() => {
+          get(this, 'naviNotifications').add({
+            message: 'OOPS! An error occured while trying to save your dashboard.',
+            type: 'danger',
+            timeout: 'short'
+          });
+        });
     },
 
     /**
@@ -127,37 +129,17 @@ export default Route.extend({
      * @param {DS.Model} widgetModel - object to delete
      */
     deleteWidget(widgetModel) {
-      let widgetName = get(widgetModel, 'title'),
-        id = get(widgetModel, 'id');
+      const id = get(widgetModel, 'id');
 
       widgetModel.deleteRecord();
 
-      return widgetModel
-        .save()
-        .then(() => {
-          //Make sure record is cleaned up locally
-          widgetModel.unloadRecord();
+      // Remove layout reference
+      const presentation = get(this, 'currentDashboard.presentation');
+      const newLayout = arr(get(presentation, 'layout')).rejectBy('widgetId', Number(id));
 
-          // Remove layout reference
-          let presentation = get(this, 'currentDashboard.presentation'),
-            newLayout = arr(get(presentation, 'layout')).rejectBy('widgetId', Number(id));
-          set(presentation, 'layout', newLayout);
-          this.send('saveDashboard');
+      set(presentation, 'layout', newLayout);
 
-          get(this, 'naviNotifications').add({
-            message: `Widget "${widgetName}" deleted successfully!`,
-            type: 'success',
-            timeout: 'short'
-          });
-
-          // Leave any child routes after deleting a widget, since they may no longer be valid
-          this.transitionTo(this.routeName, get(this, 'currentDashboard.id'));
-        })
-        .catch(() => {
-          //rollback delete action
-          widgetModel.rollbackAttributes();
-          this.showErrorNotification(`OOPS! An error occurred while deleting widget "${widgetName}"`);
-        });
+      return this.transitionTo('dashboards.dashboard', this.get('currentDashboard.id'));
     },
 
     /**
@@ -187,8 +169,18 @@ export default Route.extend({
       if (!isEmpty(title)) {
         let dashboard = get(this, 'currentDashboard');
         set(dashboard, 'title', title);
-        this.send('saveDashboard');
       }
+    },
+
+    /**
+     * Revert the dashboard.
+     *
+     * @action revertDashboard
+     */
+    revertDashboard() {
+      const dashboard = get(this, 'currentDashboard');
+      get(dashboard, 'widgets').forEach(widget => widget.rollbackAttributes());
+      dashboard.rollbackAttributes();
     }
   }
 });

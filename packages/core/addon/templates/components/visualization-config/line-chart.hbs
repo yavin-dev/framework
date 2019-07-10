@@ -1,8 +1,49 @@
-{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<span class="line-chart-config__header">Chart Style Options</span>
+<div class="line-chart-config__style-options">
+  {{#if (eq type "line-chart")}}
+    <div class="line-chart-config__curve-opt">
+      <span class="line-chart-config__curve-opt-title">Line Style</span>
+      {{#power-select
+        triggerClass="line-chart-config__curve-opt-select"
+        options=curveOptions
+        selected=(readonly options.style.curve)
+        onchange=(action "onUpdateStyle" "curve")
+        searchEnabled=false
+        placeholder="Line"
+        as |curve|}}
+        {{capitalize curve}}
+      {{/power-select}}
+    </div>
+    <div class="line-chart-config__area-opt">
+      <span class="line-chart-config__area-opt-title">Area</span>
+      {{x-toggle
+        class="line-chart-config__area-opt-select"
+        value=(readonly options.style.area)
+        size="small"
+        onToggle=(action "onUpdateStyle" "area")
+      }}
+    </div>
+  {{else if (not displayStackOption)}}
+    <div>No configuration options available.</div>
+  {{/if}}
+  {{#if displayStackOption}}
+    <div class="line-chart-config__stacked-opt">
+      <span class="line-chart-config__stacked-opt-title">Stacked</span>
+      {{x-toggle
+        class="line-chart-config__stacked-opt-select"
+        value=(readonly options.style.stacked)
+        size="small"
+        onToggle=(action "onUpdateStyle" "stacked")
+      }}
+    </div>
+  {{/if}}
+</div>
 {{component
   (concat typePrefix (readonly options.axis.y.series.type))
   request=request
   response=response
   seriesConfig=(readonly options.axis.y.series.config)
   onUpdateConfig=(action "onUpdateConfig")
+  options=options
 }}
