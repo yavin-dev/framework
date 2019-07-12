@@ -1,16 +1,25 @@
-language: node_js
-node_js:
-  - '8'
+language: java
+jdk:
+  - openjdk8
+
 sudo: true
 addons:
   chrome: stable
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 cache:
   directories:
     - '$HOME/.npm'
     - '$HOME/packages/*/.npm'
     - '$HOME/packages/*/.cache'
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
 env:
+  global:
+    - NODE_VERSION=8.16.0
   matrix:
+    - PACKAGE=navi-webservice
     - PACKAGE=navi-app
     - PACKAGE=navi-core
     - PACKAGE=navi-dashboards
@@ -23,14 +32,21 @@ branches:
     - master
 matrix:
   fast_finish: true
-before_install:
-  - npm config set spin false
-  - npm --version
 install:
-  - travis_wait npm ci
+  - if [[ "${PACKAGE}" == "navi-webservice" ]]; then
+    pushd packages/webservice && ./gradlew assemble && popd;
+    else
+    nvm install ${NODE_VERSION};
+    npm config set spin false;
+    travis_wait npm ci;
+    npx lerna exec --scope ${PACKAGE} -- bower install || true;
+    fi
 script:
-  - lerna exec --scope $PACKAGE -- bower install || true
-  - travis_wait lerna run test --scope $PACKAGE
+  - if [[ "${PACKAGE}" == "navi-webservice" ]]; then
+    pushd packages/webservice && ./gradlew check && popd;
+    else
+    travis_wait npx lerna run test --scope ${PACKAGE};
+    fi
 jobs:
   include:
     - stage: Publish
