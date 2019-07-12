@@ -33,6 +33,10 @@ export default DS.JSONAPIAdapter.extend(AdapterFetch, {
   ajaxOptions() {
     let hash = this._super(...arguments);
     hash.credentials = 'include';
+    hash.headers = {
+      Accept: 'application/vnd.api+json',
+      'Content-Type': 'application/vnd.api+json'
+    };
     return hash;
   },
 
