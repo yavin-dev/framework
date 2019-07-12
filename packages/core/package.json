@@ -1,6 +1,6 @@
 {
   "name": "navi-core",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Library of common logic, components, and styles for navi",
   "scripts": {
     "build": "ember build",
@@ -76,7 +76,7 @@
     "eslint-plugin-ember": "^5.2.0",
     "eslint-plugin-node": "^7.0.1",
     "loader.js": "^4.7.0",
-    "navi-data": "^0.0.0",
+    "navi-data": "^0.1.0",
     "qunit-dom": "^0.8.0"
   },
   "keywords": [

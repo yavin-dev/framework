@@ -1,6 +1,6 @@
 {
   "name": "navi-app",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Template project for your Navi application",
   "repository": {
     "type": "git",
@@ -88,11 +88,11 @@
     "eslint-plugin-ember": "^5.2.0",
     "liquid-fire": "^0.29.2",
     "loader.js": "^4.7.0",
-    "navi-core": "^0.0.0",
-    "navi-dashboards": "^0.0.0",
-    "navi-data": "^0.0.0",
-    "navi-directory": "^0.0.0",
-    "navi-reports": "^0.0.0",
+    "navi-core": "^0.1.0",
+    "navi-dashboards": "^0.1.0",
+    "navi-data": "^0.1.0",
+    "navi-directory": "^0.1.0",
+    "navi-reports": "^0.1.0",
     "qunit-dom": "^0.8.0"
   },
   "engines": {
