@@ -61,7 +61,13 @@ module('Unit | Route | dashboards/dashboard/widgets/new', function(hooks) {
         Store.createRecord('dashboard', {
           id: 'dashboard1',
           author: 'navi_user'
-        })
+        }),
+
+      router: {
+        currentRoute: {
+          queryParams: {}
+        }
+      }
     });
 
     set(config, 'navi.defaultDataTable', 'tableA');
@@ -77,7 +83,7 @@ module('Unit | Route | dashboards/dashboard/widgets/new', function(hooks) {
     assert.expect(2);
 
     return settled().then(() => {
-      return Route.model(null, { queryParams: {} }).then(model => {
+      return Route.model().then(model => {
         assert.deepEqual(model.toJSON(), NEW_MODEL, 'A new widget model is returned');
 
         assert.equal(
