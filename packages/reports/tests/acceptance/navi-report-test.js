@@ -209,7 +209,7 @@ module('Acceptance | Navi Report', function(hooks) {
   });
 
   test('Revert and Save report', async function(assert) {
-    assert.expect(2);
+    assert.expect(4);
 
     await visit('/reports');
     await visit('/reports/new');
@@ -217,6 +217,15 @@ module('Acceptance | Navi Report', function(hooks) {
     //Add three metrics and save the report
     await click($('.checkbox-selector--metric .grouped-list__item:contains(Page Views) .grouped-list__item-label')[0]);
     await click('.navi-report__save-btn');
+
+    server.patch('/reports/:id', function({ reports }, request) {
+      assert.equal(request.requestHeaders['content-type'], 'application/vnd.api+json');
+      assert.equal(request.requestHeaders.accept, 'application/vnd.api+json');
+      const id = request.params.id;
+      let attrs = this.normalizedRequestAttrs();
+
+      return reports.find(id).update(attrs);
+    });
 
     //remove a metric and save the report
     await click(
