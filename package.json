@@ -15,7 +15,7 @@
     "start": "lerna exec --scope navi-app npm start",
     "postinstall": "lerna bootstrap --concurrency 2; lerna exec --ignore navi-data bower install",
     "test": "lerna run test",
-    "lerna-ci-publish": "lerna publish --canary --force-publish=* --yes"
+    "lerna-ci-publish": "lerna publish --canary premajor --force-publish=* --yes"
   },
   "devDependencies": {
     "bower": "^1.8.8",
