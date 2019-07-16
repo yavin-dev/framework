@@ -383,8 +383,16 @@ module('Acceptance | Dashboards', function(hooks) {
     assert.expect(8);
 
     server.patch('/dashboards/1', (_, request) => {
-      assert.equal(request.requestHeaders['content-type'], 'application/vnd.api+json');
-      assert.equal(request.requestHeaders.accept, 'application/vnd.api+json');
+      assert.equal(
+        request.requestHeaders['content-type'],
+        'application/vnd.api+json',
+        'Request header content-type is correct JSON-API mime type'
+      );
+      assert.equal(
+        request.requestHeaders.accept,
+        'application/vnd.api+json',
+        'Request header accept is correct JSON-API mime type'
+      );
 
       return new Response(500);
     });

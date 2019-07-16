@@ -219,8 +219,16 @@ module('Acceptance | Navi Report', function(hooks) {
     await click('.navi-report__save-btn');
 
     server.patch('/reports/:id', function({ reports }, request) {
-      assert.equal(request.requestHeaders['content-type'], 'application/vnd.api+json');
-      assert.equal(request.requestHeaders.accept, 'application/vnd.api+json');
+      assert.equal(
+        request.requestHeaders['content-type'],
+        'application/vnd.api+json',
+        'Request header content-type is correct JSON-API mime type'
+      );
+      assert.equal(
+        request.requestHeaders.accept,
+        'application/vnd.api+json',
+        'Request header accept is correct JSON-API mime type'
+      );
       const id = request.params.id;
       let attrs = this.normalizedRequestAttrs();
 
