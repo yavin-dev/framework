@@ -15,6 +15,8 @@ import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.PreparedStatement
 import java.sql.SQLException
+import com.jayway.restassured.RestAssured.given
+import org.apache.http.HttpStatus
 
 abstract class IntegrationTest: RestAssuredSupport {
     companion object {
@@ -67,10 +69,6 @@ abstract class IntegrationTest: RestAssuredSupport {
                 override fun getPort(): Int {
                     return assuredPort()
                 }
-
-                override fun getHibernate5ConfigPath(): String {
-                    return "./src/main/resources/hibernate.cfg.xml"
-                }
             })
 
             App.start(false)
@@ -88,9 +86,30 @@ abstract class IntegrationTest: RestAssuredSupport {
     }
 
     /**
-     * Execute select query and return number of rows
-     * @param query
-     * @return number of rows for a query
+     * Registers a test user
+     */
+    fun registerUser(user: String) {
+      given()
+            .header("User", user)
+            .contentType("application/vnd.api+json")
+            .body("""
+                {
+                    "data": {
+                        "type": "users",
+                        "id": "$user"
+                    }
+                }
+            """.trimIndent())
+        .When()
+            .post("/users")
+        .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_CREATED)
+    }
+
+    /**
+     * Execute a COUNT(*) select query and return the count
+     * @return number returned by COUNT query
      */
     fun getCountForSelectQuery(query: String): Int {
         var numberOfRows = 0
@@ -99,14 +118,14 @@ abstract class IntegrationTest: RestAssuredSupport {
                 conn.createStatement().use{ stmt ->
                     val rs = stmt.executeQuery(query)
                     rs.last()
-                    numberOfRows = rs.getInt(1)
+                    numberOfRows = rs.getInt(1);
                 }
             }
         } catch (e: SQLException) {
             e.printStackTrace()
             Assert.fail("Database Error: " + e.message)
         }
-
+        System.out.println(numberOfRows);
         return numberOfRows
     }
 

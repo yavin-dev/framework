@@ -73,7 +73,7 @@ object Editors {
             val user = requestScope.user!!.opaqueUser as Principal
             val userId = user.name
 
-            if(!changeSpec.isPresent()) {
+            if(!changeSpec.isPresent) {
                 val recordId = record.id
                 return recordId == userId
             }

@@ -13,7 +13,7 @@ import java.security.Principal
 import org.junit.Assert
 import org.junit.Test
 import org.mockito.Mockito
-import java.util.*
+import java.util.Optional
 
 /**
  * Test cases for user security check

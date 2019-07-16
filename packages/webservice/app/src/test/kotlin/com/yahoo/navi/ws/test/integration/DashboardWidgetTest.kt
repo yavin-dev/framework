@@ -131,42 +131,11 @@ class DashboardWidgetTest: IntegrationTest() {
             }
         """.trimIndent()
 
-         /***
-         * Post test users
-         */
-        given()
-            .header("User", USER1)
-            .contentType("application/vnd.api+json")
-            .body("""
-                {
-                    "data": {
-                        "type": "users",
-                        "id": "$USER1"
-                    }
-                }
-            """.trimIndent())
-        .When()
-            .post("/users")
-        .then()
-            .assertThat()
-            .statusCode(HttpStatus.SC_CREATED)
-
-        given()
-            .header("User", USER2)
-            .contentType("application/vnd.api+json")
-            .body("""
-                {
-                    "data": {
-                        "type": "users",
-                        "id": "$USER2"
-                    }
-                }
-            """.trimIndent())
-        .When()
-            .post("/users")
-        .then()
-            .assertThat()
-            .statusCode(HttpStatus.SC_CREATED)
+        /***
+        * Post test users
+        */
+        registerUser(USER1)
+        registerUser(USER2)
 
         given()
             .header("User", USER1)
@@ -260,10 +229,10 @@ class DashboardWidgetTest: IntegrationTest() {
             .get("/dashboards/1/widgets")
         .then()
             .assertThat()
-            .body("data.id", hasItems("1",  "2")).and()
-            .body("data.attributes.title", hasItems("A widget 1")).and()
+            .body("data.id", hasItems("1",  "2"))
+            .body("data.attributes.title", hasItems("A widget 1"))
             .body("data.attributes.requests.logicalTable.table", hasItems(arrayListOf(arrayListOf("base"), arrayListOf("base")), arrayListOf(arrayListOf("base"), arrayListOf("base"))))
-            .body("data.attributes.visualization[0]", matchesJsonMap(visual1)).and()
+            .body("data.attributes.visualization[0]", matchesJsonMap(visual1))
             .body("data.attributes.visualization[1]", matchesJsonMap(visual2))
 
         //delete a widget
@@ -281,8 +250,8 @@ class DashboardWidgetTest: IntegrationTest() {
             .get("/dashboards/1/widgets")
         .then()
             .assertThat()
-            .body("data.id", not(hasItems("1"))).and()
-            .body("data.id", hasItems("2")).and()
+            .body("data.id", not(hasItems("1")))
+            .body("data.id", hasItems("2"))
             .body("data.relationships.author.data.id", hasItems("user1"))
     }
 
@@ -290,33 +259,33 @@ class DashboardWidgetTest: IntegrationTest() {
     fun widgetUserPermission() {
         // User1 posts a widget to dashboard1
         given()
-                .header("User", USER1)
-                .contentType("application/vnd.api+json")
-                .body("""
-                {
-                    "data": {
-                        "type": "dashboardWidgets",
-                        "attributes": {
-                            "title": "A widget 1",
-                            "requests": $requests,
-                            "visualization": $visual1
-                        },
-                        "relationships": {
-                            "dashboard": {
-                                "data": {
-                                    "type": "dashboards",
-                                    "id":"1"
-                                }
-                            }
-                        }
-                    }
-                }
-            """.trimIndent())
-                .When()
-                .post("/dashboards/1/widgets")
-                .then()
-                .assertThat()
-                .statusCode(HttpStatus.SC_CREATED)
+            .header("User", USER1)
+            .contentType("application/vnd.api+json")
+            .body("""
+              {
+                  "data": {
+                      "type": "dashboardWidgets",
+                      "attributes": {
+                          "title": "A widget 1",
+                          "requests": $requests,
+                          "visualization": $visual1
+                      },
+                      "relationships": {
+                          "dashboard": {
+                              "data": {
+                                  "type": "dashboards",
+                                  "id":"1"
+                              }
+                          }
+                      }
+                  }
+              }
+          """.trimIndent())
+        .When()
+            .post("/dashboards/1/widgets")
+        .then()
+            .assertThat()
+        .statusCode(HttpStatus.SC_CREATED)
 
         //User 1 edits widget1 of dashboard1
         given()

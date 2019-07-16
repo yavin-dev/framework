@@ -19,11 +19,12 @@ import com.yahoo.elide.datastores.jpa.transaction.NonJtaTransaction
 import com.yahoo.elide.datastores.jpa.JpaDataStore
 import java.io.FileInputStream
 import java.io.IOException
-import java.util.*
+import java.util.TimeZone
+import java.util.Properties
 
 
 open class Settings : ElideStandaloneSettings {
-     override fun getElideSettings(injector: ServiceLocator): ElideSettings {
+    override fun getElideSettings(injector: ServiceLocator): ElideSettings {
          val entityManagerFactory = Util.getEntityManagerFactory(modelPackageName, loadHibernateProperties())
          val dataStore = JpaDataStore(
                  { entityManagerFactory.createEntityManager() },

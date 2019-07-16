@@ -56,56 +56,9 @@ class DashboardTest: IntegrationTest() {
         /***
          * Post test users
          */
-        given()
-            .header("User", USER1)
-            .contentType("application/vnd.api+json")
-            .body("""
-                {
-                    "data": {
-                        "type": "users",
-                        "id": "$USER1"
-                    }
-                }
-            """.trimIndent())
-        .When()
-            .post("/users")
-        .then()
-            .assertThat()
-            .statusCode(HttpStatus.SC_CREATED)
-
-        given()
-            .header("User", USER2)
-            .contentType("application/vnd.api+json")
-            .body("""
-                {
-                    "data": {
-                        "type": "users",
-                        "id": "$USER2"
-                    }
-                }
-            """.trimIndent())
-        .When()
-            .post("/users")
-        .then()
-            .assertThat()
-            .statusCode(HttpStatus.SC_CREATED)
-
-        given()
-            .header("User", USER3)
-            .contentType("application/vnd.api+json")
-            .body("""
-                {
-                    "data": {
-                        "type": "users",
-                        "id": "$USER3"
-                    }
-                }
-            """.trimIndent())
-        .When()
-            .post("/users")
-        .then()
-            .assertThat()
-            .statusCode(HttpStatus.SC_CREATED)
+        registerUser(USER1)
+        registerUser(USER2)
+        registerUser(USER3)
     }
 
     @Test
@@ -193,6 +146,14 @@ class DashboardTest: IntegrationTest() {
         .then()
             .assertThat()
             .statusCode(HttpStatus.SC_NO_CONTENT)
+
+        given()
+            .header("User", USER1)
+        .When()
+            .get("/dashboards/1")
+        .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_NOT_FOUND)
     }
 
     @Test
@@ -287,6 +248,15 @@ class DashboardTest: IntegrationTest() {
         .then()
             .assertThat()
             .statusCode(HttpStatus.SC_FORBIDDEN)
+
+        given()
+            .header("User", USER1)
+            .contentType("application/vnd.api+json")
+        .When()
+            .get("/dashboards/1")
+        .then()
+            .assertThat()
+            .body("data.attributes.title", equalTo("Updated Title"))
 
         given()
             .header("User", USER2)
@@ -436,8 +406,8 @@ class DashboardTest: IntegrationTest() {
             .get("/dashboards/1/widgets")
         .then()
             .assertThat()
-            .statusCode(HttpStatus.SC_OK).and()
-            .body("data.size()", equalTo(2)).and()
+            .statusCode(HttpStatus.SC_OK)
+            .body("data.size()", equalTo(2))
             .body("data.relationships.dashboard.data.id", equalTo(arrayListOf("1", "1")))
 
         val numberOfWidgetsInDashboard1 = "select count(*) from dashboard_widgets where dashboard = 1 "

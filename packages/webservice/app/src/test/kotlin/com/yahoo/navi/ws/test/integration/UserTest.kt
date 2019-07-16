@@ -16,27 +16,6 @@ class UserTest: IntegrationTest() {
     private val naviUser2 = "user2"
     private val naviUser3 = "user3"
 
-    fun registerUser(user: String) {
-        given()
-            .header("User", user)
-            .contentType("application/vnd.api+json")
-            .body(
-                """
-                    {
-                        "data": {
-                            "type": "users",
-                            "id": "$user"
-                        }
-                    }
-                """.trimIndent()
-            )
-        .When()
-            .post("/users")
-        .then()
-            .assertThat()
-            .statusCode(HttpStatus.SC_CREATED)
-    }
-
     @Test
     fun userEndpointTest() {
 
@@ -50,7 +29,7 @@ class UserTest: IntegrationTest() {
         .then()
             .assertThat()
             .statusCode(HttpStatus.SC_OK)
-            .and()
+            
             .body("data", empty<Any>())
 
         /*
@@ -119,7 +98,7 @@ class UserTest: IntegrationTest() {
         .then()
             .assertThat()
             .body("data.attributes.createDate", nullValue())
-        .and()
+        
             .body("data.attributes.createdOn",
                 RegexMatcher.matchesRegex("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}")) // YYYY-MM-DD HH:MM:ss
 
@@ -625,7 +604,7 @@ class UserTest: IntegrationTest() {
             .get("/users/$naviUser1")
         .then()
             .assertThat()
-            .body("data.relationships.editingDashboards.data.id", hasItems("2", "3")).and()
+            .body("data.relationships.editingDashboards.data.id", hasItems("2", "3"))
             .body("data.relationships.dashboards.data.id", hasItems("1"))
 
         given()
@@ -634,7 +613,7 @@ class UserTest: IntegrationTest() {
             .get("/users/$naviUser3")
         .then()
             .assertThat()
-            .body("data.relationships.editingDashboards.data.id", hasItems("3")).and()
+            .body("data.relationships.editingDashboards.data.id", hasItems("3"))
             .body("data.relationships.dashboards.data.id", empty<Any>())
 
         // user 2 , author of dashboard 3 remove editor access for user 3
@@ -957,9 +936,9 @@ class UserTest: IntegrationTest() {
             .get("/users/$naviUser1")
         .then()
             .assertThat()
-            .body("data.relationships.reports.data.type", equalTo(arrayListOf("reports", "reports"))).and()
-            .body("data.relationships.reports.data.id", hasItems("1", "2")).and()
-            .body("data.relationships.dashboards.data.type", equalTo(arrayListOf("dashboards"))).and()
+            .body("data.relationships.reports.data.type", equalTo(arrayListOf("reports", "reports")))
+            .body("data.relationships.reports.data.id", hasItems("1", "2"))
+            .body("data.relationships.dashboards.data.type", equalTo(arrayListOf("dashboards")))
             .body("data.relationships.dashboards.data.id", equalTo(arrayListOf("3")))
     }
 }
