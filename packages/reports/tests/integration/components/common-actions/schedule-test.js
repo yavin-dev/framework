@@ -130,7 +130,7 @@ module('Integration | Component | common actions/schedule', function(hooks) {
             .text()
             .trim()
         ),
-      ['Recipients', 'Frequency', 'Format'],
+      ['Recipients', 'Frequency', 'Format', 'Notify When Empty'],
       'Schedule Modal has all the expected sections'
     );
 
