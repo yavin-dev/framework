@@ -19,13 +19,13 @@ env:
   global:
     - NODE_VERSION=8.16.0
   matrix:
-    - PACKAGE=navi-webservice
     - PACKAGE=navi-app
     - PACKAGE=navi-core
     - PACKAGE=navi-dashboards
     - PACKAGE=navi-data
     - PACKAGE=navi-directory
     - PACKAGE=navi-reports
+    - PACKAGE=navi-webservice
 # safelist
 branches:
   only:
