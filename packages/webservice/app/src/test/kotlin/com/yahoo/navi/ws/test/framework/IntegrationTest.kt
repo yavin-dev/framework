@@ -125,7 +125,7 @@ abstract class IntegrationTest: RestAssuredSupport {
             e.printStackTrace()
             Assert.fail("Database Error: " + e.message)
         }
-        System.out.println(numberOfRows);
+        
         return numberOfRows
     }
 
