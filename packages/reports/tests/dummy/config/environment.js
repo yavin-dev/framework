@@ -42,6 +42,7 @@ module.exports = function(environment) {
       FEATURES: {
         enableScheduleReports: true,
         enableMultipleExport: true,
+        enableNotifyWhenEmpty: true,
         enableContains: true,
         enableTableEditing: true,
         dateDimensionFilter: true

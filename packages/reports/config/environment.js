@@ -30,7 +30,8 @@ module.exports = function(/* environment, appConfig */) {
         frequencies: null
       },
       FEATURES: {
-        enableMultipleExport: false
+        enableMultipleExport: false,
+        enableNotifyWhenEmpty: false
       }
     }
   };

@@ -37,6 +37,7 @@ export default DS.Model.extend(Validations, {
   format: DS.attr({ defaultValue: () => {} }),
   recipients: DS.attr({ defaultValue: () => [] }),
   version: DS.attr('number', { defaultValue: '1' }),
+  notifyWhenEmpty: DS.attr('number', { defaultValue: '0' }),
 
   deliveredItem: DS.belongsTo('deliverableItem', {
     async: true,
