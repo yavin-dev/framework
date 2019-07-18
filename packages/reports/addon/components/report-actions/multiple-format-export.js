@@ -29,9 +29,9 @@ export default Component.extend({
   facts: service('bard-facts'),
 
   /**
-   * @property {Service} modelCompression
+   * @property {Service} compression
    */
-  modelCompression: service(),
+  compression: service(),
 
   /**
    * @property {Service} store
@@ -55,7 +55,7 @@ export default Component.extend({
    * @property {Promise} pdfHref - Promise resolving to pdf download link
    */
   pdfHref: computed('report.{request,visualization,validations.isTruelyValid}', function() {
-    let { report, modelCompression, store } = getProperties(this, 'report', 'modelCompression', 'store'),
+    let { report, compression, store } = getProperties(this, 'report', 'compression', 'store'),
       modelWithId = report;
 
     /*
@@ -67,7 +67,7 @@ export default Component.extend({
       modelWithId.set('id', get(modelWithId, 'tempId'));
     }
 
-    return modelCompression.compress(modelWithId).then(serializedModel => `/export?reportModel=${serializedModel}`);
+    return compression.compressModel(modelWithId).then(serializedModel => `/export?reportModel=${serializedModel}`);
   }),
 
   /**

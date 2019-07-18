@@ -25,7 +25,7 @@ module('Acceptance | Navi Report', function(hooks) {
   setupMirage(hooks);
 
   hooks.beforeEach(function() {
-    CompressionService = this.owner.lookup('service:model-compression');
+    CompressionService = this.owner.lookup('service:compression');
     // Mocking add-to-dashboard component
     this.owner.application.register(
       'component:report-actions/add-to-dashboard',
@@ -621,7 +621,7 @@ module('Acceptance | Navi Report', function(hooks) {
       .attr('href')
       .split('=')[1];
 
-    await CompressionService.decompress(modelStr).then(model => {
+    await CompressionService.decompressModel(modelStr).then(model => {
       assert.ok(
         get(model, 'request.dimensions')
           .objectAt(1)
@@ -639,7 +639,7 @@ module('Acceptance | Navi Report', function(hooks) {
     modelStr = $('.multiple-format-export__dropdown a:contains(PDF)')
       .attr('href')
       .split('=')[1];
-    await CompressionService.decompress(modelStr).then(model => {
+    await CompressionService.decompressModel(modelStr).then(model => {
       assert.equal(
         get(model, 'visualization.type'),
         'table',
@@ -656,7 +656,7 @@ module('Acceptance | Navi Report', function(hooks) {
     modelStr = $('.multiple-format-export__dropdown a:contains(PDF)')
       .attr('href')
       .split('=')[1];
-    await CompressionService.decompress(modelStr).then(model => {
+    await CompressionService.decompressModel(modelStr).then(model => {
       assert.equal(
         get(model, 'visualization.metadata.showTotals.grandTotal'),
         true,
