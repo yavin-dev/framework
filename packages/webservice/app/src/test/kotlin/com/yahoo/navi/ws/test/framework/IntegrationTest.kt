@@ -10,6 +10,13 @@ import org.junit.BeforeClass
 import com.yahoo.elide.standalone.ElideStandalone
 import com.yahoo.navi.ws.app.Settings
 import com.jayway.restassured.RestAssured
+import org.junit.Assert
+import java.sql.Connection
+import java.sql.DriverManager
+import java.sql.PreparedStatement
+import java.sql.SQLException
+import com.jayway.restassured.RestAssured.given
+import org.apache.http.HttpStatus
 
 abstract class IntegrationTest: RestAssuredSupport {
     companion object {
@@ -17,6 +24,13 @@ abstract class IntegrationTest: RestAssuredSupport {
          * local elide stand alone instance
          */
         lateinit var App: ElideStandalone
+
+        /**
+         * H2 database connection parameters
+         */
+        private val DATABASE_CONNECTION_URL = "jdbc:h2:mem:db1;DB_CLOSE_DELAY=-1"
+        private val DATABASE_USER = "SA"
+        private val DATABASE_PASSWORD = ""
 
         /**
          * sets up rest assured and sets up the server
@@ -55,10 +69,6 @@ abstract class IntegrationTest: RestAssuredSupport {
                 override fun getPort(): Int {
                     return assuredPort()
                 }
-
-                override fun getHibernate5ConfigPath(): String {
-                    return "./src/main/resources/hibernate.cfg.xml"
-                }
             })
 
             App.start(false)
@@ -73,6 +83,50 @@ abstract class IntegrationTest: RestAssuredSupport {
         fun tearDownServer() {
             App.stop()
         }
+    }
+
+    /**
+     * Registers a test user
+     */
+    fun registerUser(user: String) {
+      given()
+            .header("User", user)
+            .contentType("application/vnd.api+json")
+            .body("""
+                {
+                    "data": {
+                        "type": "users",
+                        "id": "$user"
+                    }
+                }
+            """.trimIndent())
+        .When()
+            .post("/users")
+        .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_CREATED)
+    }
+
+    /**
+     * Execute a COUNT(*) select query and return the count
+     * @return number returned by COUNT query
+     */
+    fun getCountForSelectQuery(query: String): Int {
+        var numberOfRows = 0
+        try {
+            DriverManager.getConnection(DATABASE_CONNECTION_URL, DATABASE_USER, DATABASE_PASSWORD).use{ conn ->
+                conn.createStatement().use{ stmt ->
+                    val rs = stmt.executeQuery(query)
+                    rs.last()
+                    numberOfRows = rs.getInt(1);
+                }
+            }
+        } catch (e: SQLException) {
+            e.printStackTrace()
+            Assert.fail("Database Error: " + e.message)
+        }
+        
+        return numberOfRows
     }
 
     /**
