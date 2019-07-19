@@ -3,7 +3,7 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { startMirage } from 'dummy/initializers/ember-cli-mirage';
 
-module('Unit | Service | model compression', function(hooks) {
+module('Unit | Service | compression', function(hooks) {
   setupTest(hooks);
 
   hooks.beforeEach(function() {
@@ -16,9 +16,36 @@ module('Unit | Service | model compression', function(hooks) {
   });
 
   test('compress and decompress', function(assert) {
+    assert.expect(3);
+    let service = this.owner.lookup('service:compression');
+
+    return run(async function() {
+      const object = {
+          foo: 'bar'
+        },
+        compressedString = await service.compress(object);
+
+      assert.equal(
+        compressedString,
+        encodeURIComponent(compressedString),
+        'The object compressed to a string safe for use in a URL without requiring an id'
+      );
+
+      assert.ok(
+        compressedString.length < 1000,
+        'The object compresses to a string significantly shorter than the URL limit'
+      );
+
+      const decompressedObject = await service.decompress(compressedString);
+
+      assert.deepEqual(decompressedObject, { foo: 'bar' }, 'Decompressing the string returns the original object');
+    });
+  });
+
+  test('compressModel and decompressModel', function(assert) {
     assert.expect(5);
 
-    let service = this.owner.lookup('service:model-compression');
+    let service = this.owner.lookup('service:compression');
 
     return run(async function() {
       let store = service.get('store'),
@@ -30,7 +57,7 @@ module('Unit | Service | model compression', function(hooks) {
           author: user,
           request
         }),
-        compressedString = await service.compress(report);
+        compressedString = await service.compressModel(report);
 
       assert.equal(
         compressedString,
@@ -43,7 +70,7 @@ module('Unit | Service | model compression', function(hooks) {
         'The model compresses to a string significantly shorter than the URL limit'
       );
 
-      let decompressedModel = await service.decompress(compressedString);
+      let decompressedModel = await service.decompressModel(compressedString);
       assert.deepEqual(
         decompressedModel.getProperties('id', 'title'),
         { id: '1234', title: 'Hello World' },
@@ -61,16 +88,16 @@ module('Unit | Service | model compression', function(hooks) {
     });
   });
 
-  test('id is required', function(assert) {
+  test('compressModel: id is required', function(assert) {
     assert.expect(1);
 
     run(() => {
-      let service = this.owner.lookup('service:model-compression'),
+      let service = this.owner.lookup('service:compression'),
         store = service.get('store'),
         report = store.createRecord('report', { title: 'Hello World' });
 
       assert.throws(
-        () => service.compress(report),
+        () => service.compressModel(report),
         /A model given to `compress` must have an id/,
         'An error is thrown if the model does not have an id set'
       );
@@ -81,7 +108,7 @@ module('Unit | Service | model compression', function(hooks) {
     assert.expect(3);
 
     run(() => {
-      let service = this.owner.lookup('service:model-compression'),
+      let service = this.owner.lookup('service:compression'),
         store = service.get('store'),
         report = store.createRecord('report', { title: 'Hello World' }),
         jsonPayload = report.serialize();
