@@ -45,7 +45,13 @@ export default Route.extend({
    * @override
    * @returns {Promise} route model
    */
-  model(params, { queryParams }) {
+  model(_, transition) {
+    const queryParams =
+      (transition &&
+        (transition.queryParams || //Ember2.x support
+          (transition.to && transition.to.queryParams))) ||
+      {};
+
     // Allow for a report to be passed through the URL
     if (queryParams.model) {
       return this._deserializeUrlModel(queryParams.model);
