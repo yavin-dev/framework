@@ -49,7 +49,7 @@ export default Route.extend({
     const queryParams =
       (transition &&
         (transition.queryParams || //Ember2.x support
-          transition.to.queryParams)) ||
+          (transition.to && transition.to.queryParams))) ||
       {};
 
     // Allow for a report to be passed through the URL
