@@ -33,7 +33,7 @@ class Report : Asset(), HasAuthor {
         arrayOf(Parameter(name = "class", value = "com.yahoo.navi.ws.models.beans.fragments.Request")))
     var request: Request? = null
 
-    @get:Column(name="visualization", columnDefinition = "MEDIUMTEXT")
+    @get:Column(name = "visualization", columnDefinition = "MEDIUMTEXT")
     @get:Type(type = "com.yahoo.navi.ws.models.types.JsonType", parameters =
         arrayOf(Parameter(name = "class", value = "com.yahoo.navi.ws.models.beans.fragments.Visualization")))
     var visualization: Visualization? = null

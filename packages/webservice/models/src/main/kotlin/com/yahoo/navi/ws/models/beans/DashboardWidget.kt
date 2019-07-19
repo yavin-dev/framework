@@ -37,7 +37,7 @@ import javax.persistence.Transient
 @CreatePermission(expression = "is an author OR is an editor")
 @UpdatePermission(expression = "is an author now OR is an editor now")
 @DeletePermission(expression = "is an author now OR is an editor now")
-class DashboardWidget: HasAuthor, HasEditors {
+class DashboardWidget : HasAuthor, HasEditors {
     @get:Id
     @get:GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Int = 0

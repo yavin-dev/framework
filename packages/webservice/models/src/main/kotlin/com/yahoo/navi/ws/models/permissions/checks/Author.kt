@@ -65,7 +65,7 @@ object Author {
          * @return
          */
         override fun ok(record: HasAuthor, requestScope: RequestScope, changeSpec: Optional<ChangeSpec>): Boolean {
-            if(!changeSpec.isPresent()) {
+            if (!changeSpec.isPresent()) {
                 return check(record, requestScope)
             }
 
@@ -74,13 +74,13 @@ object Author {
 
             val user = requestScope.user!!.opaqueUser as Principal
 
-            if(original is Collection<*> && modified is Collection<*>
-                && original.all { orig -> orig is HasAuthor} && modified.all { mod -> mod is HasAuthor}) {
-                val records: List<HasAuthor> = modified.subtract(original).map{ it -> it as HasAuthor}
+            if (original is Collection<*> && modified is Collection<*> &&
+                original.all { orig -> orig is HasAuthor } && modified.all { mod -> mod is HasAuthor }) {
+                val records: List<HasAuthor> = modified.subtract(original).map { it -> it as HasAuthor }
                 return records.all { it -> it.author!!.id == user.name }
             } else {
                 val resource: Any? = changeSpec.get().resource?.`object`
-                if(resource != null) {
+                if (resource != null) {
                     return check(resource as HasAuthor, requestScope)
                 }
             }

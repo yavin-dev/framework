@@ -27,7 +27,7 @@ import javax.persistence.ManyToMany
 import javax.validation.constraints.NotBlank
 
 @Entity
-@Table(name="navi_users")
+@Table(name = "navi_users")
 @Include(rootLevel = true, type = "users")
 @SharePermission
 @DeletePermission(expression = "nobody")
@@ -51,8 +51,8 @@ class User {
     @get:ManyToMany
     @get:JoinTable(
             name = "map_user_to_fav_reports",
-            joinColumns = arrayOf(JoinColumn( name = "user_id", referencedColumnName = "id")),
-            inverseJoinColumns = arrayOf(JoinColumn( name = "report_id", referencedColumnName = "id"))
+            joinColumns = arrayOf(JoinColumn(name = "user_id", referencedColumnName = "id")),
+            inverseJoinColumns = arrayOf(JoinColumn(name = "report_id", referencedColumnName = "id"))
     )
     var favoriteReports: Collection<Report> = arrayListOf()
 
@@ -64,14 +64,14 @@ class User {
     @get:ManyToMany
     @get:JoinTable(
             name = "map_editor_to_dashboard_collections",
-            joinColumns=arrayOf(JoinColumn(name = "user_id", referencedColumnName = "id")),
+            joinColumns = arrayOf(JoinColumn(name = "user_id", referencedColumnName = "id")),
             inverseJoinColumns = arrayOf(JoinColumn(name = "dashboard_collection_id", referencedColumnName = "id")))
     var editingDashboards: Collection<Dashboard> = arrayListOf()
 
     @get:ManyToMany
     @JoinTable(
             name = "map_user_to_fav_dashboards",
-            joinColumns = arrayOf(JoinColumn( name = "user_id", referencedColumnName = "id")),
+            joinColumns = arrayOf(JoinColumn(name = "user_id", referencedColumnName = "id")),
             inverseJoinColumns = arrayOf(JoinColumn(name = "dashboard_id", referencedColumnName = "id"))
     )
     var favoriteDashboards: Collection<Dashboard> = arrayListOf()

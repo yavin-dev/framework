@@ -7,10 +7,10 @@ package com.yahoo.navi.ws.app.security
 import java.security.Principal
 import javax.ws.rs.core.SecurityContext
 
-class ApplicationSecurityContext(val _isSecure : Boolean, isLoggedIn: Boolean, userName: String) : SecurityContext {
-    val principal : AccountPrincipal = AccountPrincipal(userName, isLoggedIn)
+class ApplicationSecurityContext(val _isSecure: Boolean, isLoggedIn: Boolean, userName: String) : SecurityContext {
+    val principal: AccountPrincipal = AccountPrincipal(userName, isLoggedIn)
 
-    override fun isUserInRole(role: String?) : Boolean {
+    override fun isUserInRole(role: String?): Boolean {
         return false
     }
 

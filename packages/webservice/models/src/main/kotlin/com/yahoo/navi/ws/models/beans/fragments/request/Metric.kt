@@ -14,5 +14,5 @@ data class Metric(
         Parameter(name = "class", value = "kotlin.collections.HashMap")
     ]) var parameters: Map<String, String>
 ) {
-    constructor(): this("", emptyMap())
+    constructor() : this("", emptyMap())
 }

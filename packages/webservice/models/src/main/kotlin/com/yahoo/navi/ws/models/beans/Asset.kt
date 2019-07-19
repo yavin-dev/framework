@@ -24,8 +24,8 @@ import javax.persistence.TemporalType
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(name="ASSET_TYPE")
-abstract class Asset: HasAuthor {
+@DiscriminatorColumn(name = "ASSET_TYPE")
+abstract class Asset : HasAuthor {
     @get:Id
     @get:GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Int = 0

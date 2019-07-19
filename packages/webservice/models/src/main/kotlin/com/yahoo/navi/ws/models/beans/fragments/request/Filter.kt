@@ -10,5 +10,5 @@ data class Filter(
     var values: Array<String>,
     var field: String
 ) {
-    constructor(): this("", "", arrayOf<String>(), "")
+    constructor() : this("", "", arrayOf<String>(), "")
 }

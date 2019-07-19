@@ -8,7 +8,7 @@ import com.yahoo.navi.ws.app.security.ApplicationSecurityContext
 import javax.ws.rs.container.ContainerRequestContext
 import javax.ws.rs.container.ContainerRequestFilter
 
-class UserAuthFilter: ContainerRequestFilter {
+class UserAuthFilter : ContainerRequestFilter {
     override fun filter(requestContext: ContainerRequestContext?) {
         requestContext?.let { ctx ->
             val user = ctx.getHeaderString("User") ?: ""
@@ -16,7 +16,7 @@ class UserAuthFilter: ContainerRequestFilter {
 
             var loggedIn = false
 
-            if(!user.isEmpty()) {
+            if (!user.isEmpty()) {
                 loggedIn = true
             }
 

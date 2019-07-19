@@ -7,10 +7,14 @@ allprojects {
 buildscript {
     repositories {
         mavenCentral()
+        maven {
+            url = uri("https://plugins.gradle.org/m2/")
+        }
     }
 
     dependencies {
         classpath(kotlin("gradle-plugin", version = "1.3.31"))
+        classpath("org.jmailen.gradle:kotlinter-gradle:1.26.0")
     }
 }
 
@@ -18,10 +22,16 @@ plugins {
     java
     base
     kotlin("jvm") version "1.3.31" apply false
+    id("org.jmailen.kotlinter") version "1.26.0"
+}
+
+kotlinter {
+    allowWildcardImports = false
 }
 
 subprojects {
     apply(plugin = "java")
+    apply(plugin = "org.jmailen.kotlinter")
 
     repositories {
         jcenter()
@@ -40,5 +50,4 @@ subprojects {
         testImplementation("org.mockito", "mockito-core", "2.23.4")
         testImplementation("com.jayway.restassured", "rest-assured", "2.9.0")
     }
-
 }

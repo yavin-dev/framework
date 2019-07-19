@@ -10,13 +10,13 @@ import com.yahoo.navi.ws.models.types.JsonType
 import org.hibernate.annotations.TypeDef
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@TypeDef(typeClass = JsonType::class, name="json")
+@TypeDef(typeClass = JsonType::class, name = "json")
 data class DashboardPresentation(
-        var version: Int = 0,
-        var layout: List<Layout> = arrayListOf(),
-        var columns: Int = 0
+    var version: Int = 0,
+    var layout: List<Layout> = arrayListOf(),
+    var columns: Int = 0
 ) {
-    constructor() :this(
+    constructor() : this(
             0,
             arrayListOf<Layout>(),
             0

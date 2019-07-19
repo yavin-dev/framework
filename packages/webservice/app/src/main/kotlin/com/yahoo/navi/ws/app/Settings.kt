@@ -22,24 +22,22 @@ import java.io.IOException
 import java.util.TimeZone
 import java.util.Properties
 
-
 open class Settings : ElideStandaloneSettings {
     override fun getElideSettings(injector: ServiceLocator): ElideSettings {
-         val entityManagerFactory = Util.getEntityManagerFactory(modelPackageName, loadHibernateProperties())
-         val dataStore = JpaDataStore(
-                 { entityManagerFactory.createEntityManager() },
-                 { em -> NonJtaTransaction(em) })
+        val entityManagerFactory = Util.getEntityManagerFactory(modelPackageName, loadHibernateProperties())
+        val dataStore = JpaDataStore(
+                { entityManagerFactory.createEntityManager() },
+                { em -> NonJtaTransaction(em) })
 
-         val dictionary = EntityDictionary(checkMappings, injector::inject)
+        val dictionary = EntityDictionary(checkMappings, injector::inject)
 
-         var builder = ElideSettingsBuilder(dataStore)
-                 .withUseFilterExpressions(true)
-                 .withEntityDictionary(dictionary)
-                 .withJoinFilterDialect(RSQLFilterDialect(dictionary))
-                 .withSubqueryFilterDialect(RSQLFilterDialect(dictionary))
+        var builder = ElideSettingsBuilder(dataStore)
+                .withUseFilterExpressions(true)
+                .withEntityDictionary(dictionary)
+                .withJoinFilterDialect(RSQLFilterDialect(dictionary))
+                .withSubqueryFilterDialect(RSQLFilterDialect(dictionary))
 
-
-         if (enableIS06081Dates()) {
+        if (enableIS06081Dates()) {
             builder = builder.withISO8601Dates("yyyy-MM-dd HH:mm:ss", TimeZone.getTimeZone("UTC"))
         }
 
@@ -62,14 +60,14 @@ open class Settings : ElideStandaloneSettings {
         // Load properties file
         val path = "./src/main/resources/hibernate.properties"
         val properties = Properties()
-        try  {
-            FileInputStream(path).use{
+        try {
+            FileInputStream(path).use {
                 properties.load(it)
             }
 
-            return properties;
+            return properties
         } catch (e: IOException) {
-            throw RuntimeException("Could not load " + path, e);
+            throw RuntimeException("Could not load " + path, e)
         }
     }
 }
