@@ -22,7 +22,7 @@
     "test": "export COVERAGE=true; ember test --test-port 0"
   },
   "dependencies": {
-    "ember-ajax": "^3.1.0",
+    "ember-ajax": "^5.0.0",
     "ember-cli-babel": "^7.1.2",
     "ember-cli-htmlbars": "^3.0.0",
     "ember-get-config": "0.2.4",
