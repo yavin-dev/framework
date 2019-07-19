@@ -83,12 +83,13 @@
       </div>
       {{#if (feature-flag "enableNotifyWhenEmpty")}}
         <div class="schedule-modal__section-group">
-          {{input type = "checkbox" name = "NotifyWhenEmptyCheckBox"
-                  class="schedule-modal__checkbox schedule-modal__checkbox--notifyWhenEmpty"
-                  checked = localDeliveryRule.notifyWhenEmpty
-                  onchange=(action (mut localDeliveryRule.notifyWhenEmpty))
-          }}
-          <div class="schedule-modal__label">Only Send If The Report Contains Data</div>
+          {{x-toggle
+            theme="ios"
+            size="small"
+            class="schedule-modal__toggle schedule-modal__toggle--notifyWhenEmpty"
+            value=localDeliveryRule.notifyWhenEmpty
+            onToggle=(mut localDeliveryRule.notifyWhenEmpty)}}
+          <div class="schedule-modal__label">Do Not Send The Report If It Is Empty</div>
         </div>
       {{/if}}
       <div class="schedule-modal__btn-container btn-container">
