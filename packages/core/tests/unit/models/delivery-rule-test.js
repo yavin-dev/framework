@@ -39,11 +39,17 @@ module('Unit | Model | delivery rule', function(hooks) {
   });
 
   test('Retrieving records', async function(assert) {
-    assert.expect(2);
+    assert.expect(3);
 
     await run(async () => {
       const deliveryRule = await Store.findRecord('deliveryRule', 1);
       assert.ok(deliveryRule, 'Found deliveryRule with id 1');
+
+      assert.equal(
+        JSON.stringify(deliveryRule.toJSON()),
+        JSON.stringify(ExpectedDeliveryRule),
+        'Fetched deliveryRule has all attributes as expected -- string'
+      );
 
       assert.deepEqual(
         deliveryRule.toJSON(),
