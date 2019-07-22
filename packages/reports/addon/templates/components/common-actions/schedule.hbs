@@ -81,15 +81,14 @@
           {{/power-select}}
         </fieldset>
       </div>
-      {{#if (feature-flag "enableNotifyWhenEmpty")}}
+      {{#if (feature-flag "enabledNotifyIfData")}}
         <div class="schedule-modal__section-group">
           {{x-toggle
-            theme="ios"
             size="small"
             class="schedule-modal__toggle schedule-modal__toggle--notifyWhenEmpty"
-            value=localDeliveryRule.notifyWhenEmpty
-            onToggle=(mut localDeliveryRule.notifyWhenEmpty)}}
-          <div class="schedule-modal__label">Do Not Send The Report If It Is Empty</div>
+            value=localDeliveryRule.schedulingRules.mustHaveData
+            onToggle=(mut localDeliveryRule.schedulingRules.mustHaveData)}}
+          <div class="schedule-modal__label">Only send if data is present</div>
         </div>
       {{/if}}
       <div class="schedule-modal__btn-container btn-container">

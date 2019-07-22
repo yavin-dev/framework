@@ -20,8 +20,7 @@ const ExpectedDeliveryRule = {
     type: 'csv'
   },
   recipients: ['user-or-list1@navi.io', 'user-or-list2@navi.io'],
-  version: 1,
-  notifyWhenEmpty: 0
+  version: 1
 };
 
 module('Unit | Model | delivery rule', function(hooks) {

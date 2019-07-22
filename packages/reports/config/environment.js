@@ -31,7 +31,7 @@ module.exports = function(/* environment, appConfig */) {
       },
       FEATURES: {
         enableMultipleExport: false,
-        enableNotifyWhenEmpty: false
+        enabledNotifyIfData: false
       }
     }
   };
