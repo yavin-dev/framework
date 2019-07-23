@@ -14,10 +14,12 @@ import com.yahoo.navi.ws.models.beans.fragments.Visualization
 import org.hibernate.annotations.Parameter
 import org.hibernate.annotations.Type
 import javax.persistence.Column
+import javax.persistence.DiscriminatorValue
 import javax.persistence.Entity
 import javax.persistence.Table
 
 @Entity(name = "Report")
+@DiscriminatorValue("Report")
 @Include(rootLevel = true, type = "reports")
 @Table(name = "custom_reports")
 @SharePermission

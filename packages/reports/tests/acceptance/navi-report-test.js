@@ -25,7 +25,7 @@ module('Acceptance | Navi Report', function(hooks) {
   setupMirage(hooks);
 
   hooks.beforeEach(function() {
-    CompressionService = this.owner.lookup('service:model-compression');
+    CompressionService = this.owner.lookup('service:compression');
     // Mocking add-to-dashboard component
     this.owner.application.register(
       'component:report-actions/add-to-dashboard',
@@ -209,7 +209,7 @@ module('Acceptance | Navi Report', function(hooks) {
   });
 
   test('Revert and Save report', async function(assert) {
-    assert.expect(2);
+    assert.expect(4);
 
     await visit('/reports');
     await visit('/reports/new');
@@ -217,6 +217,23 @@ module('Acceptance | Navi Report', function(hooks) {
     //Add three metrics and save the report
     await click($('.checkbox-selector--metric .grouped-list__item:contains(Page Views) .grouped-list__item-label')[0]);
     await click('.navi-report__save-btn');
+
+    server.patch('/reports/:id', function({ reports }, request) {
+      assert.equal(
+        request.requestHeaders['content-type'],
+        'application/vnd.api+json',
+        'Request header content-type is correct JSON-API mime type'
+      );
+      assert.equal(
+        request.requestHeaders.accept,
+        'application/vnd.api+json',
+        'Request header accept is correct JSON-API mime type'
+      );
+      const id = request.params.id;
+      let attrs = this.normalizedRequestAttrs();
+
+      return reports.find(id).update(attrs);
+    });
 
     //remove a metric and save the report
     await click(
@@ -604,7 +621,7 @@ module('Acceptance | Navi Report', function(hooks) {
       .attr('href')
       .split('=')[1];
 
-    await CompressionService.decompress(modelStr).then(model => {
+    await CompressionService.decompressModel(modelStr).then(model => {
       assert.ok(
         get(model, 'request.dimensions')
           .objectAt(1)
@@ -622,7 +639,7 @@ module('Acceptance | Navi Report', function(hooks) {
     modelStr = $('.multiple-format-export__dropdown a:contains(PDF)')
       .attr('href')
       .split('=')[1];
-    await CompressionService.decompress(modelStr).then(model => {
+    await CompressionService.decompressModel(modelStr).then(model => {
       assert.equal(
         get(model, 'visualization.type'),
         'table',
@@ -639,7 +656,7 @@ module('Acceptance | Navi Report', function(hooks) {
     modelStr = $('.multiple-format-export__dropdown a:contains(PDF)')
       .attr('href')
       .split('=')[1];
-    await CompressionService.decompress(modelStr).then(model => {
+    await CompressionService.decompressModel(modelStr).then(model => {
       assert.equal(
         get(model, 'visualization.metadata.showTotals.grandTotal'),
         true,

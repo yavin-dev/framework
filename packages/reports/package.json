@@ -1,6 +1,6 @@
 {
   "name": "navi-reports",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Analytics reporting library for navi",
   "keywords": [
     "ember-addon"
@@ -52,7 +52,6 @@
     "ember-truth-helpers": "^2.0.0",
     "ember-uuid": "^1.0.0",
     "ember-validators": "^1.1.1",
-    "json-url": "~2.4.0",
     "liquid-fire": "^0.29.2"
   },
   "devDependencies": {
@@ -100,8 +99,8 @@
     "eslint-plugin-ember": "^5.2.0",
     "eslint-plugin-node": "^7.0.1",
     "loader.js": "^4.7.0",
-    "navi-core": "^0.0.0",
-    "navi-data": "^0.0.0",
+    "navi-core": "^0.1.0",
+    "navi-data": "^0.1.0",
     "qunit-dom": "^0.8.4"
   },
   "engines": {

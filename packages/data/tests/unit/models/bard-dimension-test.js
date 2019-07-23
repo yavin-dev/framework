@@ -23,12 +23,12 @@ module('Unit | Model | Bard Dimension', function() {
     });
 
     assert.ok(
-      isEqual(new dim1({ key: 'foo', id: '1' }), new dim1({ key: 'foo', id: '2' })),
+      isEqual(dim1.create({ key: 'foo', id: '1' }), dim1.create({ key: 'foo', id: '2' })),
       'Two fields that are identified by the same field and same name are equal'
     );
 
     assert.notOk(
-      isEqual(new dim1({ key: 'foo', id: '2' }), new dim1({ key: 'bar', id: '2' })),
+      isEqual(dim1.create({ key: 'foo', id: '2' }), dim1.create({ key: 'bar', id: '2' })),
       'Two fields that are identified by the same field and have different name but different key should not be equal'
     );
   });

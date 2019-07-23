@@ -2,7 +2,7 @@ import { findAll, settled } from '@ember/test-helpers';
 import drag from './drag';
 import $ from 'jquery';
 
-const OVERSHOOT = 2;
+const OVERSHOOT = 4;
 
 /**
  *
@@ -19,7 +19,7 @@ export default async function reorder(mode, itemSelector, ...resultSelectors) {
     let dx = targetElement.offsetLeft - OVERSHOOT - element.offsetLeft;
     let dy = targetElement.offsetTop - OVERSHOOT - element.offsetTop;
 
-    await drag(mode, element, () => ({ dx, dy }));
+    return drag(mode, element, () => ({ dx, dy }));
   });
 
   for (const promise of promises) {
@@ -27,5 +27,5 @@ export default async function reorder(mode, itemSelector, ...resultSelectors) {
     await promise();
   }
 
-  await settled();
+  return settled();
 }

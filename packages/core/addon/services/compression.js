@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Service for converting an Ember Data model into a URL safe string
@@ -8,6 +8,7 @@ import Service, { inject as service } from '@ember/service';
 import { assert } from '@ember/debug';
 import { get, computed } from '@ember/object';
 import { run } from '@ember/runloop';
+import JsonUrl from 'json-url';
 
 export default Service.extend({
   /**
@@ -19,33 +20,50 @@ export default Service.extend({
    * @property {Object} codec - compression library
    */
   codec: computed(() => {
-    return new window.JsonUrl('lzstring');
+    return new JsonUrl('lzstring');
   }),
 
   /**
    * @method compress
-   * @param {DS.Model} model - ember data model with id
-   * @return {Promise} promise that resolves to a string representation of model safe for URL use
+   * @param {Object} obj - object to compress
+   * @return {Promise} promise that resolves to a string representation of object safe for URL use
    */
-  compress(model) {
-    let serializedModel = model.serialize({ includeId: true });
-
-    // Ember Data requires an id to push to the store
-    assert('A model given to `compress` must have an id.', serializedModel.data.id);
-
-    let modelPayload = JSON.stringify(serializedModel);
-    return get(this, 'codec').compress(modelPayload);
+  compress(obj) {
+    let payload = JSON.stringify(obj);
+    return get(this, 'codec').compress(payload);
   },
 
   /**
    * @method decompress
    * @param {String} string - result of a previous call to `compress`
-   * @return {Promise} promise that resolvs to a new ember data model
+   * @return {Promise} promise that resolvs to an object
    */
   decompress(string) {
     return get(this, 'codec')
       .decompress(string)
-      .then(modelPayload => run(() => this._pushPayload(JSON.parse(modelPayload))));
+      .then(jsonStr => JSON.parse(jsonStr));
+  },
+
+  /**
+   * @method compressModel
+   * @param {DS.Model} model - ember data model with id
+   * @return {Promise} promise that resolves to a string representation of model safe for URL use
+   */
+  compressModel(model) {
+    let serializedModel = model.serialize({ includeId: true });
+
+    // Ember Data requires an id to push to the store
+    assert('A model given to `compress` must have an id.', serializedModel.data.id);
+    return this.compress(serializedModel);
+  },
+
+  /**
+   * @method decompressModel
+   * @param {String} string - result of a previous call to `compress`
+   * @return {Promise} promise that resolvs to a new ember data model
+   */
+  decompressModel(string) {
+    return this.decompress(string).then(modelPayload => run(() => this._pushPayload(modelPayload)));
   },
 
   /**

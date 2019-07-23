@@ -28,7 +28,8 @@ module.exports = function(/* environment, appConfig */) {
       FEATURES: {
         enableTotals: true,
         enableTableEditing: false,
-        enabledNotifyIfData: false
+        enabledNotifyIfData: false,
+        enableChartStacking: false
       }
     }
   };

@@ -1,4 +1,4 @@
-{{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 
 {{!-- Add to Dashboard visible if a report has been run--}}
 {{#if (and (feature-flag "dashboards") model.request.validations.isTruelyValid)}}
@@ -13,8 +13,8 @@
     }}
       {{navi-icon "th-large" class="navi-report__action-icon"}}
       Add to Dashboard
-      {{ember-tooltip text="Add visualization to Dashboard"}}
     {{/report-actions/add-to-dashboard}}
+    {{ember-tooltip text="Add visualization to Dashboard"}}
   </li>
 {{/if}}
 
@@ -28,10 +28,10 @@
   }}
     {{navi-icon "code" class="navi-report__action-icon"}}
     Copy API Query
-    {{#ember-tooltip}}
-      {{if model.request.validations.isTruelyValid "Copy API Query of the report" "Run a valid report to enable Copy API Query"}}
-    {{/ember-tooltip}}
   {{/common-actions/get-api}}
+  {{#ember-tooltip}}
+    {{if model.request.validations.isTruelyValid "Copy API Query of the report" "Run a valid report to enable Copy API Query"}}
+  {{/ember-tooltip}}
 </li>
 
 {{!-- Clone only enabled on a Saved report --}}
@@ -44,10 +44,10 @@
   }}
     {{navi-icon "copy" class="navi-report__action-icon"}}
     Clone
-    {{#ember-tooltip}}
-      {{if model.isNew "Save report to enable clone" "Clone the report"}}
-    {{/ember-tooltip}}
   {{/link-to}}
+  {{#ember-tooltip}}
+    {{if model.isNew "Save report to enable clone" "Clone the report"}}
+  {{/ember-tooltip}}
 </li>
 
 {{!-- Export only enabled on a valid report --}}
@@ -61,10 +61,10 @@
   }}
     {{navi-icon "download" class="navi-report__action-icon"}}
     Export
-    {{#ember-tooltip}}
-      {{if model.request.validations.isTruelyValid "Export the report" "Run a valid report to enable export"}}
-    {{/ember-tooltip}}
   {{/component}}
+  {{#ember-tooltip}}
+    {{if model.request.validations.isTruelyValid "Export the report" "Run a valid report to enable export"}}
+  {{/ember-tooltip}}
 </li>
 
 {{!-- Share only enabled on a Valid saved report --}}
@@ -76,10 +76,10 @@
   }}
     {{navi-icon "share" class="navi-report__action-icon"}}
     Share
-    {{#ember-tooltip}}
-      {{if model.isNew "Save report to enable share" "Share the report"}}
-    {{/ember-tooltip}}
   {{/common-actions/share}}
+  {{#ember-tooltip}}
+    {{if model.isNew "Save report to enable share" "Share the report"}}
+  {{/ember-tooltip}}
 </li>
 
 {{#if model.isOwner}}
@@ -95,8 +95,8 @@
         onSave=(delivery-rule-action "SAVE_DELIVERY_RULE")
       }}
         Schedule
-        {{ember-tooltip text="Schedule a report run"}}
       {{/common-actions/schedule}}
+      {{ember-tooltip text="Schedule a report run"}}
     </li>
   {{/if}}
 
@@ -108,7 +108,7 @@
     }}
       {{navi-icon "trash-o" class="navi-report__action-icon"}}
       Delete
-      {{ember-tooltip text="Delete the report"}}
     {{/common-actions/delete}}
+    {{ember-tooltip text="Delete the report"}}
   </li>
 {{/if}}

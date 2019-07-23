@@ -29,14 +29,20 @@ module('Unit | Route | dashboards/new', function(hooks) {
   setupMirage(hooks);
 
   hooks.beforeEach(function() {
-    Route = this.owner.lookup('route:dashboards/new');
+    Route = this.owner.factoryFor('route:dashboards/new').create({
+      router: {
+        currentRoute: {
+          queryParams: {}
+        }
+      }
+    });
   });
 
   test('model - new with default title', async function(assert) {
     assert.expect(1);
 
     await run(async () => {
-      const modelPromise = Route.model(null, {});
+      const modelPromise = Route.model();
 
       const routeModel = await modelPromise;
 
@@ -53,9 +59,9 @@ module('Unit | Route | dashboards/new', function(hooks) {
     assert.expect(1);
 
     await run(async () => {
-      const queryParams = { title: 'Dashing Dashboard' };
+      Route.set('router.currentRoute.queryParams', { title: 'Dashing Dashboard' });
 
-      const routeModel = await Route.model(null, { queryParams });
+      const routeModel = await Route.model();
       //We don't need to match on the createdOn and updatedOn timestamps so just set them to null
       assert.deepEqual(
         Object.assign({}, routeModel.toJSON(), { createdOn: null, updatedOn: null }),
@@ -69,7 +75,6 @@ module('Unit | Route | dashboards/new', function(hooks) {
     assert.expect(2);
 
     const dashboard = { id: 3 };
-    const queryParams = {};
 
     /* == Without unsavedWidgetId == */
     Route.replaceWith = destinationRoute => {
@@ -79,10 +84,10 @@ module('Unit | Route | dashboards/new', function(hooks) {
         'Route redirects to dashboard/:id route when unsavedWidgetId is not given'
       );
     };
-    Route.afterModel(dashboard, { queryParams });
+    Route.afterModel(dashboard);
 
     /* == With unsavedWidgetId == */
-    queryParams.unsavedWidgetId = 10;
+    Route.set('router.currentRoute.queryParams', { unsavedWidgetId: 10 });
     Route.replaceWith = destinationRoute => {
       assert.equal(
         destinationRoute,
@@ -90,6 +95,6 @@ module('Unit | Route | dashboards/new', function(hooks) {
         'Route redirects to dashboard/:id/widgets/new route when unsavedWidgetId is given'
       );
     };
-    Route.afterModel(dashboard, { queryParams });
+    Route.afterModel(dashboard);
   });
 });

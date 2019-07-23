@@ -11,9 +11,11 @@
  */
 
 import Component from '@ember/component';
-import { set, get } from '@ember/object';
+import { set, get, computed } from '@ember/object';
+import { getOwner } from '@ember/application';
 import { copy } from 'ember-copy';
 import layout from '../../templates/components/visualization-config/line-chart';
+import { featureFlag } from 'navi-core/helpers/feature-flag';
 
 export default Component.extend({
   layout,
@@ -33,6 +35,20 @@ export default Component.extend({
    */
   typePrefix: 'visualization-config/chart-type/',
 
+  /**
+   * @property {Boolean} displayStackOption - whether to display the `stacked` toggle
+   */
+  displayStackOption: computed('type', 'request', function() {
+    if (!featureFlag('enableChartStacking')) {
+      return false;
+    }
+
+    const { type, request } = this,
+      visualizationManifest = getOwner(this).lookup(`manifest:${type}`);
+
+    return visualizationManifest.hasGroupBy(request) || visualizationManifest.hasMultipleMetrics(request);
+  }),
+
   actions: {
     /**
      * Method to replace the seriesConfig in visualization config object.
@@ -49,12 +65,12 @@ export default Component.extend({
     /**
      * Updates line chart style
      *
-     * @method
+     * @method onUpdateStyle
      * @param {String} field - which setting is getting updated, currently `curve` and `area`
      * @param {String|Boolean} - value to update the setting with.
      */
     onUpdateStyle(field, value) {
-      const { options } = this;
+      const options = get(this, 'options');
       let newOptions = copy(options);
       set(newOptions, 'style', Object.assign({}, newOptions.style, { [field]: value }));
       this.onUpdateConfig(newOptions);

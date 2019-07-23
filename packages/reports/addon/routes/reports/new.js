@@ -26,9 +26,9 @@ export default Route.extend({
   naviVisualizations: service(),
 
   /**
-   * @property {Service} modelCompression
+   * @property {Service} compression
    */
-  modelCompression: service(),
+  compression: service(),
 
   /**
    * @property {Service} metadataService - Bard Metadata Service
@@ -45,7 +45,13 @@ export default Route.extend({
    * @override
    * @returns {Promise} route model
    */
-  model(params, { queryParams }) {
+  model(_, transition) {
+    const queryParams =
+      (transition &&
+        (transition.queryParams || //Ember2.x support
+          (transition.to && transition.to.queryParams))) ||
+      {};
+
     // Allow for a report to be passed through the URL
     if (queryParams.model) {
       return this._deserializeUrlModel(queryParams.model);
@@ -72,8 +78,8 @@ export default Route.extend({
    * @returns {Promise} promise that resolves to new model
    */
   _deserializeUrlModel(modelString) {
-    return get(this, 'modelCompression')
-      .decompress(modelString)
+    return get(this, 'compression')
+      .decompressModel(modelString)
       .then(model => {
         // Always return a new model
         model._internalModel.currentState = DS.RootState.loaded.created;
