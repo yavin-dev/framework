@@ -47,7 +47,8 @@ module.exports = function(environment) {
       },
       FEATURES: {
         enableTotals: false,
-        enableTableEditing: true
+        enableTableEditing: true,
+        enabledNotifyIfData: true
       }
     }
   };

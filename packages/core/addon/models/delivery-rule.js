@@ -5,6 +5,7 @@
 
 import DS from 'ember-data';
 import { validator, buildValidations } from 'ember-cp-validations';
+import { featureFlag } from 'navi-core/helpers/feature-flag';
 
 const Validations = buildValidations({
   frequency: [
@@ -33,7 +34,7 @@ export default DS.Model.extend(Validations, {
   updatedOn: DS.attr('moment'),
   deliveryType: DS.attr('string', { defaultValue: 'report' }),
   frequency: DS.attr('string', { defaultValue: 'week' }),
-  schedulingRules: DS.attr({ defaultValue: () => {} }),
+  schedulingRules: DS.attr({ defaultValue: () => {return featureFlag('enabledNotifyIfData') ? {mustHaveData: false} : {} }}),
   format: DS.attr({ defaultValue: () => {} }),
   recipients: DS.attr({ defaultValue: () => [] }),
   version: DS.attr('number', { defaultValue: '1' }),

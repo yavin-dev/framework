@@ -85,7 +85,7 @@
         <div class="schedule-modal__section-group">
           {{x-toggle
             size="small"
-            class="schedule-modal__toggle schedule-modal__toggle--notifyWhenEmpty"
+            class="schedule-modal__toggle schedule-modal__toggle--must-have-data"
             value=localDeliveryRule.schedulingRules.mustHaveData
             onToggle=(mut localDeliveryRule.schedulingRules.mustHaveData)}}
           <div class="schedule-modal__label">Only send if data is present</div>
