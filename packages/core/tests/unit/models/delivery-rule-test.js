@@ -14,8 +14,7 @@ const ExpectedDeliveryRule = {
   frequency: 'week',
   schedulingRules: {
     stopAfter: '2017-09-04 00:00:00',
-    every: '2 weeks',
-    mustHaveData: false
+    every: '2 weeks'
   },
   format: {
     type: 'csv'
@@ -39,17 +38,11 @@ module('Unit | Model | delivery rule', function(hooks) {
   });
 
   test('Retrieving records', async function(assert) {
-    assert.expect(3);
+    assert.expect(2);
 
     await run(async () => {
       const deliveryRule = await Store.findRecord('deliveryRule', 1);
       assert.ok(deliveryRule, 'Found deliveryRule with id 1');
-
-      assert.equal(
-        JSON.stringify(deliveryRule.toJSON()),
-        JSON.stringify(ExpectedDeliveryRule),
-        'Fetched deliveryRule has all attributes as expected -- string'
-      );
 
       assert.deepEqual(
         deliveryRule.toJSON(),
