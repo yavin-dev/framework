@@ -284,7 +284,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
 
     assert
       .dom('.schedule-modal__must-have-data-toggle .x-toggle')
-      .isNotDisabled('notify when empty changes to an existing schedule are discarded after clicking cancel');
+      .isNotChecked('notify when empty changes to an existing schedule are discarded after clicking cancel');
 
     assert
       .dom('.schedule-modal__save-btn')
