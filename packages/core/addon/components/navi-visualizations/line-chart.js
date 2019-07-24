@@ -252,6 +252,7 @@ export default Component.extend({
         type: c3ChartType,
         json: seriesData,
         groups: seriesDataGroups,
+        order: [],
         selection: {
           enabled: true
         }

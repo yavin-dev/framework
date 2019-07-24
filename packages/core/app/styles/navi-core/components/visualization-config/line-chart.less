@@ -20,19 +20,6 @@
     margin-bottom: 10px;
   }
 
-  .ember-power-select-status-icon {
-    display: inline-block;
-    right: 10px;
-  }
-
-  .ember-power-select-search input {
-    border: none;
-  }
-
-  .ember-power-select-option[aria-current='true'] {
-    background-color: @navi-purple;
-  }
-
   &__style-options {
     .config-section();
   }
@@ -60,6 +47,50 @@
     &-title,
     &-select {
       flex: 1;
+    }
+  }
+
+  &__series-config {
+    &__content {
+      .config-section();
+      padding: @report-selector-padding-left;
+      margin-top: 5px;
+    }
+
+    &__collection {
+      display: flex;
+      flex-flow: column-reverse;
+    }
+
+    &__item {
+      display: flex;
+      justify-content: space-between;
+      border: 1px solid #f1f1f5;
+      border-left-width: 5px;
+      .generate-chart-colors-for(border-left-color);
+      border-radius: 5px;
+      font-size: 12px;
+      margin-bottom: 5px;
+
+      &__content {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        padding: 2px 5px;
+      }
+
+      &__handler {
+        background-color: #e7e7e7;
+        padding-top: 5px;
+        cursor: move;
+
+        div {
+          width: 15px;
+          height: 1px;
+          background-color: #aaaaaa;
+          margin: 3px 10px;
+        }
+      }
     }
   }
 }

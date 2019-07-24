@@ -24,10 +24,10 @@
         onToggle=(action "onUpdateStyle" "area")
       }}
     </div>
-  {{else if (not displayStackOption)}}
+  {{else if (not showStackOption)}}
     <div>No configuration options available.</div>
   {{/if}}
-  {{#if displayStackOption}}
+  {{#if showStackOption}}
     <div class="line-chart-config__stacked-opt">
       <span class="line-chart-config__stacked-opt-title">Stacked</span>
       {{x-toggle
@@ -39,11 +39,18 @@
     </div>
   {{/if}}
 </div>
+{{#if (and showStackOption options.style.stacked)}}
+  {{chart-series-config
+    seriesConfig=seriesConfig
+    seriesType=seriesType
+    onUpdateConfig=(action "onUpdateConfig")
+  }}
+{{/if}}
 {{component
-  (concat typePrefix (readonly options.axis.y.series.type))
+  (concat typePrefix seriesType)
   request=request
   response=response
-  seriesConfig=(readonly options.axis.y.series.config)
+  seriesConfig=seriesConfig
   onUpdateConfig=(action "onUpdateConfig")
   options=options
 }}

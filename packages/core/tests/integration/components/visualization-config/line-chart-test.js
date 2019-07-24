@@ -88,7 +88,7 @@ module('Integration | Component | visualization config/line chart', function(hoo
     await run(() => click('.mock'));
   });
 
-  test('displayStackOption', async function(assert) {
+  test('showStackOption', async function(assert) {
     assert.expect(2);
 
     await render(Template);

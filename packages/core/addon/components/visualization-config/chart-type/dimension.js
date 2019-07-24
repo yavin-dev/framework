@@ -12,7 +12,7 @@
  */
 
 import { assign } from '@ember/polyfills';
-import { A } from '@ember/array';
+import { A as arr } from '@ember/array';
 import Component from '@ember/component';
 import { set, get, computed } from '@ember/object';
 import { copy } from 'ember-copy';
@@ -41,14 +41,7 @@ export default Component.extend({
    * @property {Array} dimensions
    */
   dimensions: computed('request', function() {
-    return A(get(this, 'request.dimensions')).mapBy('dimension');
-  }),
-
-  /**
-   * @property {Object} selectedMetric
-   */
-  selectedMetric: computed('seriesConfig', function() {
-    return get(this, 'seriesConfig.metric');
+    return arr(get(this, 'request.dimensions')).mapBy('dimension');
   }),
 
   /**
@@ -130,7 +123,7 @@ export default Component.extend({
     let dimensionOrder = get(this, 'seriesConfig.dimensionOrder'),
       selectedDimensions = get(this, 'seriesConfig.dimensions');
 
-    let keys = A(selectedDimensions)
+    let keys = arr(selectedDimensions)
       .mapBy('values')
       .map(value => dimensionOrder.map(dimension => value[dimension]).join('|'));
     return keys.map(key => get(this, 'seriesByDimensions')[key]);
@@ -141,18 +134,6 @@ export default Component.extend({
    */
   actions: {
     /**
-     * @method onUpdateChartMetric
-     * @param {Object} metric
-     */
-    onUpdateChartMetric(metric) {
-      const newSeriesConfig = copy(get(this, 'seriesConfig'));
-      const handleUpdateConfig = get(this, 'onUpdateConfig');
-
-      set(newSeriesConfig, 'metric', metric);
-      if (handleUpdateConfig) handleUpdateConfig(newSeriesConfig);
-    },
-
-    /**
      * @method onAddSeries
      * @param {Object} series
      */
@@ -160,7 +141,7 @@ export default Component.extend({
       const newSeriesConfig = copy(get(this, 'seriesConfig'));
       const handleUpdateConfig = get(this, 'onUpdateConfig');
 
-      A(newSeriesConfig.dimensions).pushObject(series.config);
+      arr(newSeriesConfig.dimensions).pushObject(series.config);
       if (handleUpdateConfig) handleUpdateConfig(newSeriesConfig);
     },
 
