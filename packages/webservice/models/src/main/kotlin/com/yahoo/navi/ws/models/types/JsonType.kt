@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 package com.yahoo.navi.ws.models.types
@@ -8,7 +8,6 @@ import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.hibernate.HibernateException
-import org.hibernate.engine.spi.SessionImplementor
 import org.hibernate.engine.spi.SharedSessionContractImplementor
 import org.hibernate.usertype.ParameterizedType
 import org.hibernate.usertype.UserType

@@ -1,6 +1,6 @@
 {
   "name": "navi-dashboards",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Analytics dashboard library for navi",
   "keywords": [
     "ember-addon"
@@ -88,9 +88,9 @@
     "eslint-plugin-ember": "^6.2.0",
     "eslint-plugin-node": "^8.0.1",
     "loader.js": "^4.7.0",
-    "navi-core": "^0.0.0",
-    "navi-data": "^0.0.0",
-    "navi-reports": "^0.0.0",
+    "navi-core": "^0.1.0",
+    "navi-data": "^0.1.0",
+    "navi-reports": "^0.1.0",
     "qunit-dom": "^0.8.0"
   },
   "engines": {

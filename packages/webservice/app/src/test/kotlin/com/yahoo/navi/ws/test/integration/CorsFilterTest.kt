@@ -46,8 +46,8 @@ class CorsFilterTest: IntegrationTest() {
          * Web service allows any requested header
          */
         given()
-                .header("Access-Control-Request-Headers", testHeaders)
-                .header("User", "testuser")
+            .header("Access-Control-Request-Headers", testHeaders)
+            .header("User", "testuser")
         .When()
             .get("/")
         .then()
@@ -58,12 +58,12 @@ class CorsFilterTest: IntegrationTest() {
          * Allowed headers is empty when none are given
          */
         given()
-                .header("User", "testuser")
+            .header("User", "testuser")
         .When()
             .get("/")
         .then()
             .assertThat()
-            .header("Access-Control-Allow-Headers", nullValue())
+            .header("Access-Control-Allow-Headers", isEmptyOrNullString())
     }
 
     @Test

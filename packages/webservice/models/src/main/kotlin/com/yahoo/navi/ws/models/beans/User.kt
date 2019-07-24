@@ -10,6 +10,7 @@ import com.yahoo.elide.annotation.DeletePermission
 import com.yahoo.elide.annotation.CreatePermission
 import com.yahoo.elide.annotation.UpdatePermission
 import org.hibernate.annotations.CreationTimestamp
+import org.hibernate.annotations.Where
 
 import java.util.Date
 
@@ -43,7 +44,8 @@ class User {
     @get:UpdatePermission(expression = "nobody")
     var createdOn: Date? = null
 
-    @get:OneToMany(mappedBy = "author")
+    @get:OneToMany(mappedBy = "author", targetEntity = Asset::class)
+    @get:Where(clause = "ASSET_TYPE = 'Report'")
     var reports: Collection<Report> = arrayListOf()
 
     @get:ManyToMany
@@ -53,4 +55,24 @@ class User {
             inverseJoinColumns = arrayOf(JoinColumn( name = "report_id", referencedColumnName = "id"))
     )
     var favoriteReports: Collection<Report> = arrayListOf()
+
+    @get:OneToMany(mappedBy = "author", targetEntity = Asset::class)
+    @get:Where(clause = "ASSET_TYPE = 'Dashboard'")
+    var dashboards: Collection<Dashboard> = arrayListOf()
+
+    @get:UpdatePermission(expression = "is author of dashboard")
+    @get:ManyToMany
+    @get:JoinTable(
+            name = "map_editor_to_dashboard_collections",
+            joinColumns=arrayOf(JoinColumn(name = "user_id", referencedColumnName = "id")),
+            inverseJoinColumns = arrayOf(JoinColumn(name = "dashboard_collection_id", referencedColumnName = "id")))
+    var editingDashboards: Collection<Dashboard> = arrayListOf()
+
+    @get:ManyToMany
+    @JoinTable(
+            name = "map_user_to_fav_dashboards",
+            joinColumns = arrayOf(JoinColumn( name = "user_id", referencedColumnName = "id")),
+            inverseJoinColumns = arrayOf(JoinColumn(name = "dashboard_id", referencedColumnName = "id"))
+    )
+    var favoriteDashboards: Collection<Dashboard> = arrayListOf()
 }

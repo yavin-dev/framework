@@ -19,15 +19,19 @@ export default Route.extend({
   user: service(),
 
   /**
+   * @property {Service} router
+   */
+  router: service(),
+
+  /**
    * Sets the model for this route
    *
    * @method model
    * @override
-   * @param title - query param containing the title of dashboard
    * @returns {DS.Model} route model
    */
-  model(pathParams, { queryParams }) {
-    queryParams = queryParams || {};
+  model() {
+    const { queryParams = {} } = this.get('router.currentRoute');
     return this._newModel(queryParams.title);
   },
 
@@ -38,7 +42,9 @@ export default Route.extend({
    * @param dashboard - resolved dashboard model
    * @override
    */
-  afterModel(dashboard, { queryParams }) {
+  afterModel(dashboard) {
+    const { queryParams } = this.get('router.currentRoute');
+
     // If an initial widget was given in the query params, create it
     if (queryParams.unsavedWidgetId) {
       return this.replaceWith('dashboards.dashboard.widgets.add', get(dashboard, 'id'), { queryParams });

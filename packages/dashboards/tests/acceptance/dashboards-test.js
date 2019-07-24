@@ -380,9 +380,22 @@ module('Acceptance | Dashboards', function(hooks) {
   });
 
   test('Failing to save a new widget', async function(assert) {
-    assert.expect(6);
+    assert.expect(8);
 
-    server.patch('/dashboards/1', () => new Response(500));
+    server.patch('/dashboards/1', (_, request) => {
+      assert.equal(
+        request.requestHeaders['content-type'],
+        'application/vnd.api+json',
+        'Request header content-type is correct JSON-API mime type'
+      );
+      assert.equal(
+        request.requestHeaders.accept,
+        'application/vnd.api+json',
+        'Request header accept is correct JSON-API mime type'
+      );
+
+      return new Response(500);
+    });
 
     // Create and save
     await visit('/dashboards/1/widgets/new');

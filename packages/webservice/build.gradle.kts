@@ -10,14 +10,14 @@ buildscript {
     }
 
     dependencies {
-        classpath(kotlin("gradle-plugin", version = "1.3.20"))
+        classpath(kotlin("gradle-plugin", version = "1.3.31"))
     }
 }
 
 plugins {
     java
     base
-    kotlin("jvm") version "1.3.10" apply false
+    kotlin("jvm") version "1.3.31" apply false
 }
 
 subprojects {
@@ -30,8 +30,8 @@ subprojects {
     }
 
     dependencies {
-        implementation(kotlin("stdlib", "1.3.10"))
-        implementation("com.yahoo.elide", "elide-standalone", "4.2.7")
+        implementation(kotlin("stdlib-jdk8", "1.3.31"))
+        implementation("com.yahoo.elide", "elide-standalone", "4.4.4")
         implementation("org.slf4j", "slf4j-api", "1.7.25")
         implementation("ch.qos.logback", "logback-core", "1.2.3")
         implementation("org.hibernate", "hibernate-validator", "4.0.2.GA")

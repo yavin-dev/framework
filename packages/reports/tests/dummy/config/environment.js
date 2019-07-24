@@ -45,6 +45,7 @@ module.exports = function(environment) {
         enabledNotifyIfData: true,
         enableContains: true,
         enableTableEditing: true,
+        enableChartStacking: true,
         dateDimensionFilter: true
       }
     }

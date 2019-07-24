@@ -118,43 +118,8 @@ class ReportTest: IntegrationTest() {
         /***
          * Post test users
          */
-        given()
-            .header("User", USER1)
-            .contentType("application/vnd.api+json")
-            .body(
-                """
-                {
-                    "data": {
-                        "type": "users",
-                        "id": "$USER1"
-                    }
-                }
-                """.trimIndent()
-            )
-        .When()
-            .post("/users")
-        .then()
-            .assertThat()
-            .statusCode(HttpStatus.SC_CREATED)
-
-        given()
-            .header("User", USER2)
-            .contentType("application/vnd.api+json")
-            .body(
-                """
-                {
-                    "data": {
-                        "type": "users",
-                        "id": "$USER2"
-                    }
-                }
-                """.trimIndent()
-            )
-        .When()
-            .post("/users")
-        .then()
-            .assertThat()
-            .statusCode(HttpStatus.SC_CREATED)
+        registerUser(USER1)
+        registerUser(USER2)
     }
 
     @Test
@@ -192,9 +157,9 @@ class ReportTest: IntegrationTest() {
             .get("/reports")
         .then()
             .assertThat()
-            .body("data.id", hasItems("1")).and()
-            .body("data[0].attributes.title", equalTo("A Report")).and()
-            .body("data[0].attributes.request", matchesJsonMap(expectedReqStr)).and()
+            .body("data.id", hasItems("1"))
+            .body("data[0].attributes.title", equalTo("A Report"))
+            .body("data[0].attributes.request", matchesJsonMap(expectedReqStr))
             .body("data[0].attributes.visualization", matchesJsonMap(visualStr))
 
         //test patch
@@ -316,8 +281,8 @@ class ReportTest: IntegrationTest() {
             .get("/reports/1")
         .then()
             .assertThat()
-            .body("data.attributes.request.sort.metric", hasItems("m1", "m2")).and()
-            .body("data.attributes.request.sort.find { it.metric == 'm1'}.direction", equalTo("asc")).and()
+            .body("data.attributes.request.sort.metric", hasItems("m1", "m2"))
+            .body("data.attributes.request.sort.find { it.metric == 'm1'}.direction", equalTo("asc"))
             .body("data.attributes.request.sort.find { it.metric == 'm2'}.direction", equalTo("desc"))
     }
 
@@ -387,11 +352,11 @@ class ReportTest: IntegrationTest() {
             .get("/reports/1")
         .then()
             .assertThat()
-            .body("data.attributes.request.having.metric", hasItems("m1", "m2")).and()
-            .body("data.attributes.request.having.find { it.metric == 'm1'}.operator", equalTo("lt")).and()
-            .body("data.attributes.request.having.find { it.metric == 'm1'}.values[0]", equalTo(2.0f)).and()
-            .body("data.attributes.request.having.find { it.metric == 'm1'}.values[1]", equalTo(4.0f)).and()
-            .body("data.attributes.request.having.find { it.metric == 'm2'}.operator", equalTo("notgt")).and()
+            .body("data.attributes.request.having.metric", hasItems("m1", "m2"))
+            .body("data.attributes.request.having.find { it.metric == 'm1'}.operator", equalTo("lt"))
+            .body("data.attributes.request.having.find { it.metric == 'm1'}.values[0]", equalTo(2.0f))
+            .body("data.attributes.request.having.find { it.metric == 'm1'}.values[1]", equalTo(4.0f))
+            .body("data.attributes.request.having.find { it.metric == 'm2'}.operator", equalTo("notgt"))
             .body("data.attributes.request.having.find { it.metric == 'm2'}.values[0]", equalTo(199.21f))
     }
 
@@ -525,8 +490,8 @@ class ReportTest: IntegrationTest() {
             .get("/reports/1")
         .then()
             .assertThat()
-            .statusCode(HttpStatus.SC_OK).and()
-            .body("data.attributes.createdOn", matchesRegex("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}")).and()
+            .statusCode(HttpStatus.SC_OK)
+            .body("data.attributes.createdOn", matchesRegex("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}"))
             .body("data.attributes.updatedOn", matchesRegex("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}"))
     }
 

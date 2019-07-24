@@ -1,13 +1,12 @@
-{{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{#with item as | dashboard |}}
-
   {{!-- Clone action enabled at all times --}}
   <li class="action">
     {{#link-to "dashboards.dashboard.clone" dashboard.id
       classNames="clone"
     }}
       {{navi-icon "copy" class="navi-icon__copy"}}
-      {{ember-tooltip text="Clone"}}
+      {{ember-tooltip text="Clone the dashboard"}}
     {{/link-to}}
   </li>
 
@@ -20,7 +19,7 @@
       tagName="li"
     }}
       {{navi-icon "download" class="navi-icon__download"}}
-      {{ember-tooltip text="PDF Export"}}
+      {{ember-tooltip text="Export the dashboard"}}
     {{/dashboard-actions/export}}
   {{/if}}
 
@@ -33,9 +32,7 @@
     disabled=(not item.validations.isTruelyValid)
   }}
     {{navi-icon "share" class="navi-icon__share"}}
-    {{#ember-tooltip}}
-      Share
-    {{/ember-tooltip}}
+    {{ember-tooltip text="Share the dashboard"}}
   {{/common-actions/share}}
 
   {{!-- Delete action visible when user owns the Dashboard --}}
@@ -44,6 +41,7 @@
     {{#if (feature-flag "enableScheduleDashboards")}}
       {{#dashboard-actions/schedule
         tagName="li"
+        id=(concat "navi-dashboard-action-schedule-" index)
         model=dashboard
         classNames="action schedule"
         disabled=(not item.validations.isTruelyValid)
@@ -51,7 +49,7 @@
         onRevert=(delivery-rule-action "REVERT_DELIVERY_RULE")
         onDelete=(delivery-rule-action "DELETE_DELIVERY_RULE")
       }}
-        {{#ember-tooltip}}
+        {{#ember-tooltip targetId=(concat "navi-dashboard-action-schedule-" index)}}
           {{if item.validations.isTruelyValid "Schedule the dashboard" "Validate dashboard to enable scheduling"}}
         {{/ember-tooltip}}
       {{/dashboard-actions/schedule}}
