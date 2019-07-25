@@ -51,10 +51,25 @@
   }
 
   &__series-config {
+    margin-bottom: 20px;
+
+    &__header {
+      color: @navi-gray;
+      margin: 5px;
+      margin-bottom: 0;
+      cursor: pointer;
+    }
+
     &__content {
       .config-section();
       padding: @report-selector-padding-left;
+      margin: 0;
       margin-top: 5px;
+      display: none;
+
+      .is-open & {
+        display: block;
+      }
     }
 
     &__collection {

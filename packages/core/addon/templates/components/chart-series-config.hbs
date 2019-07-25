@@ -1,8 +1,9 @@
 
-<span class="line-chart-config__header">
+<div class="line-chart-config__series-config__header"
+  onclick={{toggle "isOpen" this}}>
   Stack Order
-  {{navi-icon "angle-down"}}
-</span>
+  {{navi-icon (concat "angle-" (if isOpen "down" "right"))}}
+</div>
 <div class="line-chart-config__series-config__content">
   {{#sortable-group
     class="line-chart-config__series-config__collection"

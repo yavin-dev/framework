@@ -20,6 +20,15 @@ import layout from '../templates/components/chart-series-config';
 export default Component.extend({
   layout,
 
+  /**
+   * @property classNames
+   */
+  classNames: ['line-chart-config__series-config'],
+
+  classNameBindings: ['isOpen'],
+
+  isOpen: false,
+
   seriesConfigDataKey: computed('seriesType', function() {
     return this.seriesType === 'dimension' ? 'dimensions' : 'metrics';
   }),
