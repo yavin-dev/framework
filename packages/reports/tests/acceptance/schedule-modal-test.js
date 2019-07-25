@@ -44,7 +44,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
 
     assert
       .dom('.schedule-modal__must-have-data-toggle .x-toggle')
-      .isNotChecked('the Notify When Empty is not checked by default');
+      .isNotChecked('mustHaveData is toggled off by default');
 
     await fillIn('.js-ember-tag-input-new', 'navi_user@navi.io');
     await blur('.js-ember-tag-input-new');
@@ -97,7 +97,6 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
     await click('.schedule-modal__dropdown--frequency .ember-power-select-trigger');
     await click($('.ember-power-select-option:contains(Day)')[0]);
 
-    // Set notify when empty to be true
     await click('.schedule-modal__must-have-data-toggle .x-toggle');
 
     //Save the schedule
@@ -126,7 +125,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
 
     assert
       .dom('.schedule-modal__must-have-data-toggle .x-toggle')
-      .isChecked('the notify when empty toggle should be toggled on after toggling it on');
+      .isChecked('mustHaveData should be toggled on after toggling it on');
 
     assert.deepEqual(
       findAll('.schedule-modal__input--recipients .navi-email-tag').map(e => e.innerText.trim()),
@@ -221,7 +220,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
     await click('.schedule-modal__dropdown--frequency .ember-power-select-trigger');
     await click($('.ember-power-select-option:contains(Day)')[0]);
 
-    // Set notify when empty to be true
+    // Set mustHaveData to be true
     await click('.schedule-modal__must-have-data-toggle .x-toggle');
 
     //Cancel changes to the schedule
@@ -239,7 +238,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
 
     assert
       .dom('.schedule-modal__must-have-data-toggle .x-toggle')
-      .isNotChecked('notify when empty changes to an existing schedule are discarded after clicking cancel');
+      .isNotChecked('mustHaveData changes to an existing schedule are discarded after clicking cancel');
 
     assert.deepEqual(
       findAll('.schedule-modal__input--recipients .navi-email-tag').map(e => e.innerText.trim()),
@@ -262,7 +261,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
     await click('.schedule-modal__dropdown--frequency .ember-power-select-trigger');
     await click($('.ember-power-select-option:contains(Day)')[0]);
 
-    // Set notify when empty to be true
+    // Set mustHaveData to be true
     await click('.schedule-modal__must-have-data-toggle .x-toggle');
 
     //Cancel changes to the schedule
@@ -284,7 +283,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
 
     assert
       .dom('.schedule-modal__must-have-data-toggle .x-toggle')
-      .isNotChecked('notify when empty changes to an existing schedule are discarded after clicking cancel');
+      .isNotChecked('mustHaveData changes to an existing schedule are discarded after clicking cancel');
 
     assert
       .dom('.schedule-modal__save-btn')
