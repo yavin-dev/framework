@@ -1,8 +1,8 @@
 {{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{dashboard-filter-collection
   dashboard=dashboard
-  onUpdateFilter=(queue (dashboard-action "UPDATE_FILTER") (transition-to "dashboards.dashboard" dashboard.id))
-  onRemoveFilter=(queue (dashboard-action "REMOVE_FILTER" dashboard) (transition-to "dashboards.dashboard" dashboard.id))
+  onUpdateFilter=(queue (dashboard-action "UPDATE_FILTER") (action onFilterChange))
+  onRemoveFilter=(queue (dashboard-action "REMOVE_FILTER" dashboard) (action onFilterChange))
 }}
 
 {{#if addingMode}}

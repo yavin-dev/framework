@@ -6,5 +6,8 @@
 {{#if isCollapsed}}
   {{dashboard-filters-collapsed dashboard=dashboard tagName="span"}}
 {{else}}
-  {{dashboard-filters-expanded dashboard=dashboard}}
+  {{dashboard-filters-expanded 
+    dashboard=dashboard 
+    onFilterChange=(action onFilterChange)
+  }}
 {{/if}}

@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -13,18 +13,55 @@ export default Route.extend({
   dashboardData: service(),
 
   /**
+   * @override
+   * @method init - set hasEntered to false until we've setup the controller
+   */
+  init() {
+    this._super(...arguments);
+    this.set('hasEntered', false);
+  },
+
+  /**
    * Makes an ajax request to retrieve relevant widgets in the dashboard
    *
-   * @method model
    * @override
+   * @method model
    */
-  model() {
-    let dashboard = this.modelFor('dashboards.dashboard');
+  async model() {
+    const dashboard = this.modelFor('dashboards.dashboard');
+    const dataForWidget = await this.get('dashboardData').fetchDataForDashboard(dashboard);
 
-    return this.get('dashboardData')
-      .fetchDataForDashboard(dashboard)
-      .then(dataForWidget => {
-        return { dashboard, dataForWidget };
-      });
+    return { dashboard, dataForWidget };
+  },
+
+  /**
+   * @override
+   * @method resetController - reset query params on exit of route
+   * @param {Object} controller
+   * @param {Boolean} isExiting
+   */
+  resetController(controller, isExiting /*transition*/) {
+    this._super(...arguments);
+
+    if (isExiting) {
+      //Reset hasEntered state to false as we exit the route
+      this.set('hasEntered', false);
+      // controller.set('filters', null);
+    }
+  },
+
+  /**
+   * @override
+   * @method setupController - set model in controller and add filters to model from query params
+   */
+  async setupController(controller, model) {
+    this._super(...arguments);
+
+    //Add filters from query params on route entry only and after model and query params are set in controller
+    if (!this.get('hasEntered') && !model.dashboard.hasDirtyAttributes) {
+      //Make sure this only gets run on initial route entry
+      this.set('hasEntered', true);
+      await this.controllerFor('dashboards/dashboard/view').addFiltersFromQueryParams();
+    }
   }
 });
