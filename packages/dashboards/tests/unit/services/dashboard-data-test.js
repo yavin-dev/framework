@@ -7,12 +7,16 @@ import { setupTest } from 'ember-qunit';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import config from 'ember-get-config';
 
+let MetadataService, Store;
+
 module('Unit | Service | dashboard data', function(hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
   hooks.beforeEach(async function() {
-    await this.owner.lookup('service:bard-metadata').loadMetadata();
+    MetadataService = this.owner.lookup('service:bard-metadata');
+    Store = this.owner.lookup('service:store');
+    await MetadataService.loadMetadata();
   });
 
   test('fetch data for dashboard', function(assert) {
@@ -205,9 +209,10 @@ module('Unit | Service | dashboard data', function(hooks) {
   test('global filter application and error injection.', async function(assert) {
     assert.expect(4);
 
-    const VALID_FILTERS = ['dim1', 'dim3', 'dim4'];
-    const DASHBOARD_FILTERS = ['dim1', 'dim2', 'dim4'];
-    const NO_VALUE_FILTERS = ['dim4'];
+    const DIMENSIONS = ['os', 'age', 'gender', 'platform', 'property', 'browser', 'userCountry', 'screenType'];
+    const VALID_FILTERS = ['os', 'gender', 'platform'];
+    const DASHBOARD_FILTERS = ['os', 'age', 'platform'];
+    const NO_VALUE_FILTERS = ['platform'];
 
     const service = this.owner.factoryFor('service:dashboard-data').create({
       _fetch(request) {
@@ -225,8 +230,14 @@ module('Unit | Service | dashboard data', function(hooks) {
 
     const makeFilter = ({ dimension }) => {
       const rawValues = NO_VALUE_FILTERS.includes(dimension) ? [] : ['1'];
+      const dimensionFragment = MetadataService.getById('dimension', dimension);
 
-      return { dimension: { name: dimension }, rawValues };
+      return Store.createFragment('bard-request/fragments/filter', {
+        dimension: dimensionFragment,
+        field: 'id',
+        operator: 'in',
+        rawValues
+      });
     };
 
     const dashboard = {
@@ -248,19 +259,19 @@ module('Unit | Service | dashboard data', function(hooks) {
         timeGrain: { dimensionIds: VALID_FILTERS }
       },
       data,
-      filters: filters || [makeFilter({ dimension: `original dim${data}` })]
+      filters: filters || [makeFilter({ dimension: `${DIMENSIONS[data + 4]}` })]
     });
 
     const widgets = [
       {
         dashboard: cloneDeep(dashboard),
         id: 1,
-        requests: [makeRequest(1), makeRequest(2, []), makeRequest(3)]
+        requests: [makeRequest(0), makeRequest(1, []), makeRequest(2)]
       },
       {
         dashboard: cloneDeep(dashboard),
         id: 2,
-        requests: [makeRequest(4)]
+        requests: [makeRequest(3)]
       },
       {
         dashboard: cloneDeep(dashboard),
@@ -277,13 +288,13 @@ module('Unit | Service | dashboard data', function(hooks) {
 
     assert.deepEqual(
       widget1.map(result => get(result, 'request.filters').map(filter => get(filter, 'dimension.name'))),
-      [['original dim1', 'dim1'], ['dim1'], ['original dim3', 'dim1']],
+      [['property', 'os'], ['os'], ['userCountry', 'os']],
       'Applicable global filters are applied to widget 1 requests'
     );
 
     assert.deepEqual(
       widget2.map(result => get(result, 'request.filters').map(filter => get(filter, 'dimension.name'))),
-      [['original dim4', 'dim1']],
+      [['screenType', 'os']],
       'Applicable global filters are applied to widget 2 requests'
     );
 
@@ -301,7 +312,7 @@ module('Unit | Service | dashboard data', function(hooks) {
             title: 'Server Error'
           },
           {
-            detail: '"dim2" is not a dimension in the "table1" table.',
+            detail: '"age" is not a dimension in the "table1" table.',
             title: 'Invalid Filter'
           }
         ],
@@ -310,7 +321,7 @@ module('Unit | Service | dashboard data', function(hooks) {
             title: 'Server Error'
           },
           {
-            detail: '"dim2" is not a dimension in the "table1" table.',
+            detail: '"age" is not a dimension in the "table1" table.',
             title: 'Invalid Filter'
           }
         ],
@@ -319,7 +330,7 @@ module('Unit | Service | dashboard data', function(hooks) {
             title: 'Server Error'
           },
           {
-            detail: '"dim2" is not a dimension in the "table1" table.',
+            detail: '"age" is not a dimension in the "table1" table.',
             title: 'Invalid Filter'
           }
         ]
