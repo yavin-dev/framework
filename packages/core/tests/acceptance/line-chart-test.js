@@ -20,7 +20,7 @@ module('Acceptance | line chart', function(hooks) {
     assert.dom('.sub-title').hasText('Ad Clicks', "The tooltip contains the metric's display name.");
 
     // Select a different metric
-    await selectChoose('.dimension-line-chart-config__metric-selector', 'Revenue (USD)');
+    await selectChoose('.visualization-config .metric-select__select__selector', 'Revenue (USD)');
 
     showTooltip(container);
 

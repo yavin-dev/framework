@@ -1,10 +1,8 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find, click } from '@ember/test-helpers';
+import { render, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import { clickTrigger as toggleSelector, nativeMouseUp as toggleOption } from 'ember-power-select/test-support/helpers';
 import { setupMock, teardownMock } from '../../../../helpers/mirage-helper';
-import { get } from '@ember/object';
 
 let MetadataService;
 
@@ -129,43 +127,15 @@ module('Integration | Component | visualization config/line chart type/dimension
   });
 
   test('component renders', async function(assert) {
-    assert.expect(3);
+    assert.expect(2);
 
     await render(Template);
 
     assert.dom('.dimension-line-chart-config').isVisible('The line chart config component renders');
 
     assert
-      .dom('.dimension-line-chart-config .dimension-line-chart-config__metric-selector')
-      .isVisible('The metric selector component is displayed in the line chart config');
-
-    assert
       .dom('.dimension-line-chart-config .chart-series-collection')
       .isVisible('The chart series selection component is displayed in the line chart config');
-  });
-
-  test('on metric change', async function(assert) {
-    assert.expect(2);
-
-    await render(Template);
-
-    this.set('onUpdateChartConfig', config => {
-      assert.deepEqual(
-        get(config, 'metric.canonicalName'),
-        'metric2',
-        'Metric 2 is selected and passed on to the onUpdateChartConfig action'
-      );
-    });
-
-    await toggleSelector('.dimension-line-chart-config__metric-selector');
-
-    assert
-      .dom('.dimension-line-chart-config__metric-selector .ember-power-select-option[data-option-index="2"]')
-      .hasText('Revenue (USD)', 'Parameterized metric is displayed correctly in the dimension visualization config');
-
-    toggleOption(
-      find('.dimension-line-chart-config__metric-selector .ember-power-select-option[data-option-index="1"]')
-    );
   });
 
   test('on add series', async function(assert) {
