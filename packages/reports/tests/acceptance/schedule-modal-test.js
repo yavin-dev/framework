@@ -13,7 +13,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
   setupMirage(hooks);
 
   test('schedule modal save new schedule', async function(assert) {
-    assert.expect(11);
+    assert.expect(12);
     await visit('/reports');
 
     // Click "Schedule"
@@ -41,6 +41,10 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
     assert
       .dom('.schedule-modal__dropdown--format .ember-power-select-selected-item')
       .hasText('csv', 'Format field is set to the default value when creating a new schedule');
+
+    assert
+      .dom('.schedule-modal__must-have-data-toggle .x-toggle')
+      .isNotChecked('mustHaveData is toggled off by default');
 
     await fillIn('.js-ember-tag-input-new', 'navi_user@navi.io');
     await blur('.js-ember-tag-input-new');
@@ -79,7 +83,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
   });
 
   test('schedule modal save changes to existing schedule', async function(assert) {
-    assert.expect(5);
+    assert.expect(6);
     await visit('/reports');
 
     // Open an existing schedule
@@ -92,6 +96,8 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
     // Set frequency to Day
     await click('.schedule-modal__dropdown--frequency .ember-power-select-trigger');
     await click($('.ember-power-select-option:contains(Day)')[0]);
+
+    await click('.schedule-modal__must-have-data-toggle .x-toggle');
 
     //Save the schedule
     await click('.schedule-modal__save-btn');
@@ -116,6 +122,10 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
     assert
       .dom('.schedule-modal__dropdown--frequency .ember-power-select-selected-item')
       .hasText('Day', 'Changes made to the frequency field are kept after clicking save changes');
+
+    assert
+      .dom('.schedule-modal__must-have-data-toggle .x-toggle')
+      .isChecked('mustHaveData should be toggled on after toggling it on');
 
     assert.deepEqual(
       findAll('.schedule-modal__input--recipients .navi-email-tag').map(e => e.innerText.trim()),
@@ -194,7 +204,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
   });
 
   test('schedule modal cancel existing schedule', async function(assert) {
-    assert.expect(3);
+    assert.expect(4);
     await visit('/reports');
 
     // Click "Schedule"
@@ -210,6 +220,9 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
     await click('.schedule-modal__dropdown--frequency .ember-power-select-trigger');
     await click($('.ember-power-select-option:contains(Day)')[0]);
 
+    // Set mustHaveData to be true
+    await click('.schedule-modal__must-have-data-toggle .x-toggle');
+
     //Cancel changes to the schedule
     await click('.schedule-modal__cancel-btn');
 
@@ -223,6 +236,10 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
       .dom('.schedule-modal__dropdown--frequency .ember-power-select-selected-item')
       .hasText('Month', 'Frequency field changes to an existing schedule are discarded after clicking cancel');
 
+    assert
+      .dom('.schedule-modal__must-have-data-toggle .x-toggle')
+      .isNotChecked('mustHaveData changes to an existing schedule are discarded after clicking cancel');
+
     assert.deepEqual(
       findAll('.schedule-modal__input--recipients .navi-email-tag').map(e => e.innerText.trim()),
       ['user-or-list1@navi.io', 'user-or-list2@navi.io'],
@@ -231,7 +248,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
   });
 
   test('schedule modal cancel new schedule', async function(assert) {
-    assert.expect(3);
+    assert.expect(4);
     await visit('/reports');
 
     await triggerEvent('.navi-collection__row0', 'mouseover');
@@ -243,6 +260,9 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
     // Set frequency to Day
     await click('.schedule-modal__dropdown--frequency .ember-power-select-trigger');
     await click($('.ember-power-select-option:contains(Day)')[0]);
+
+    // Set mustHaveData to be true
+    await click('.schedule-modal__must-have-data-toggle .x-toggle');
 
     //Cancel changes to the schedule
     await click('.schedule-modal__cancel-btn');
@@ -260,6 +280,10 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
       ['navi_user@navi.io'],
       'Recipients field changes to a new schedule kept but not saved to the store'
     );
+
+    assert
+      .dom('.schedule-modal__must-have-data-toggle .x-toggle')
+      .isNotChecked('mustHaveData changes to an existing schedule are discarded after clicking cancel');
 
     assert
       .dom('.schedule-modal__save-btn')

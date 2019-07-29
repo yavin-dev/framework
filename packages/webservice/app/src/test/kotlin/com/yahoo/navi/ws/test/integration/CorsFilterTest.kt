@@ -9,7 +9,7 @@ import com.yahoo.navi.ws.test.framework.IntegrationTest
 import org.junit.Test
 import org.hamcrest.Matchers.*
 
-class CorsFilterTest: IntegrationTest() {
+class CorsFilterTest : IntegrationTest() {
     @Test
     fun allowOriginTest() {
         val testOrigin = "https://navi.yahoo.com"

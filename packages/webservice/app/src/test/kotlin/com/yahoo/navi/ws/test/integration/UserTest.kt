@@ -11,7 +11,7 @@ import org.junit.Test
 import org.hamcrest.Matchers.*
 import com.jayway.restassured.RestAssured.given
 
-class UserTest: IntegrationTest() {
+class UserTest : IntegrationTest() {
     private val naviUser1 = "user1"
     private val naviUser2 = "user2"
     private val naviUser3 = "user3"
@@ -29,7 +29,7 @@ class UserTest: IntegrationTest() {
         .then()
             .assertThat()
             .statusCode(HttpStatus.SC_OK)
-            
+
             .body("data", empty<Any>())
 
         /*
@@ -98,10 +98,9 @@ class UserTest: IntegrationTest() {
         .then()
             .assertThat()
             .body("data.attributes.createDate", nullValue())
-        
+
             .body("data.attributes.createdOn",
                 RegexMatcher.matchesRegex("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}")) // YYYY-MM-DD HH:MM:ss
-
 
         given()
             .cookie("User", user1)
@@ -130,7 +129,7 @@ class UserTest: IntegrationTest() {
     fun userPermissions() {
         registerUser(naviUser1)
         registerUser(naviUser2)
-        //post a report
+        // post a report
         given()
             .header("User", naviUser1)
             .contentType("application/vnd.api+json")
@@ -174,7 +173,7 @@ class UserTest: IntegrationTest() {
             .assertThat()
             .statusCode(HttpStatus.SC_CREATED)
 
-        //should not be able to patch another user's record
+        // should not be able to patch another user's record
         given()
             .header("User", naviUser2)
             .contentType("application/vnd.api+json")
@@ -200,7 +199,7 @@ class UserTest: IntegrationTest() {
             .assertThat()
             .statusCode(HttpStatus.SC_FORBIDDEN)
 
-        //a user cannot claim another users's report
+        // a user cannot claim another users's report
         given()
             .header("User", naviUser2)
             .contentType("application/vnd.api+json")
@@ -226,7 +225,7 @@ class UserTest: IntegrationTest() {
             .assertThat()
             .statusCode(HttpStatus.SC_FORBIDDEN)
 
-        //a user cannot delete themselves
+        // a user cannot delete themselves
         given()
             .header("User", naviUser1)
             .contentType("application/vnd.api+json")
@@ -242,7 +241,7 @@ class UserTest: IntegrationTest() {
         registerUser(naviUser1)
         registerUser(naviUser2)
 
-        //add Report1
+        // add Report1
         given()
             .header("User", naviUser1)
             .contentType("application/vnd.api+json")
@@ -270,7 +269,7 @@ class UserTest: IntegrationTest() {
             .assertThat()
             .statusCode(HttpStatus.SC_CREATED)
 
-        //add Report2
+        // add Report2
         given()
             .header("User", naviUser2)
             .contentType("application/vnd.api+json")
@@ -298,7 +297,7 @@ class UserTest: IntegrationTest() {
             .assertThat()
             .statusCode(HttpStatus.SC_CREATED)
 
-        //user starts out with no favorite reports
+        // user starts out with no favorite reports
         given()
             .header("User", naviUser2)
             .contentType("application/vnd.api+json")
@@ -308,7 +307,7 @@ class UserTest: IntegrationTest() {
             .assertThat()
             .body("data.relationships.favoriteReports.data", empty<Boolean>())
 
-        //user can favorite their own reports and other users reports
+        // user can favorite their own reports and other users reports
         given()
             .header("User", naviUser1)
             .contentType("application/vnd.api+json")
@@ -340,7 +339,7 @@ class UserTest: IntegrationTest() {
             .assertThat()
             .statusCode(HttpStatus.SC_NO_CONTENT)
 
-        //favorited reports show up for user
+        // favorited reports show up for user
         given()
             .header("User", naviUser1)
             .contentType("application/vnd.api+json")
@@ -350,7 +349,7 @@ class UserTest: IntegrationTest() {
             .assertThat()
             .body("data.relationships.favoriteReports.data.id", hasItems("1", "2"))
 
-        //user can remove a favorite report
+        // user can remove a favorite report
         given()
             .header("User", naviUser1)
             .contentType("application/vnd.api+json")
@@ -378,7 +377,7 @@ class UserTest: IntegrationTest() {
             .assertThat()
             .statusCode(HttpStatus.SC_NO_CONTENT)
 
-        //favorited report has been removed
+        // favorited report has been removed
         given()
             .header("User", naviUser1)
             .contentType("application/vnd.api+json")
@@ -388,7 +387,7 @@ class UserTest: IntegrationTest() {
             .assertThat()
             .body("data.relationships.favoriteReports.data.id", not(hasItems("2")))
 
-        //multiple users can favorite the same report
+        // multiple users can favorite the same report
         given()
             .header("User", naviUser2)
             .contentType("application/vnd.api+json")
@@ -416,7 +415,7 @@ class UserTest: IntegrationTest() {
             .assertThat()
             .statusCode(HttpStatus.SC_NO_CONTENT)
 
-        //favorite report still shows up for user1
+        // favorite report still shows up for user1
         given()
             .header("User", naviUser1)
             .contentType("application/vnd.api+json")
@@ -425,7 +424,6 @@ class UserTest: IntegrationTest() {
         .then()
             .assertThat()
             .body("data.relationships.favoriteReports.data.id", hasItems("1"))
-
     }
 
     @Test
@@ -597,7 +595,7 @@ class UserTest: IntegrationTest() {
             .assertThat()
             .statusCode(HttpStatus.SC_NO_CONTENT)
 
-        //dashboards that can be edited and authored are shown for user 1 and user 3
+        // dashboards that can be edited and authored are shown for user 1 and user 3
         given()
             .header("User", naviUser1)
         .When()
@@ -664,7 +662,7 @@ class UserTest: IntegrationTest() {
         registerUser(naviUser1)
         registerUser(naviUser2)
 
-        //Add a dashboard
+        // Add a dashboard
         given()
             .header("User", naviUser1)
             .contentType("application/vnd.api+json")
@@ -692,7 +690,7 @@ class UserTest: IntegrationTest() {
             .assertThat()
             .statusCode(HttpStatus.SC_CREATED)
 
-        //add a second dashboard
+        // add a second dashboard
         given()
             .header("User", naviUser2)
             .contentType("application/vnd.api+json")
@@ -729,7 +727,7 @@ class UserTest: IntegrationTest() {
             .assertThat()
             .body("data.relationships.favoriteDashboards.data", empty<Any>())
 
-        //user can favorite their own dashboard and other user's dashboard
+        // user can favorite their own dashboard and other user's dashboard
         given()
             .header("User", naviUser1)
             .contentType("application/vnd.api+json")
@@ -770,7 +768,7 @@ class UserTest: IntegrationTest() {
             .assertThat()
             .body("data.relationships.favoriteDashboards.data.id", hasItems("1", "2"))
 
-        //user can remove a dashboard
+        // user can remove a dashboard
         given()
             .header("User", naviUser1)
             .contentType("application/vnd.api+json")
@@ -806,7 +804,7 @@ class UserTest: IntegrationTest() {
             .assertThat()
             .body("data.relationships.favoriteDashboards.data.id", not(hasItems("2")))
 
-        //multiple users can favorite the same dashboard
+        // multiple users can favorite the same dashboard
         given()
             .header("User", naviUser2)
             .contentType("application/vnd.api+json")
@@ -848,7 +846,7 @@ class UserTest: IntegrationTest() {
     fun reverseRelationships() {
         registerUser(naviUser1)
 
-        //post reports and a dashboard
+        // post reports and a dashboard
         given()
             .header("User", naviUser1)
             .contentType("application/vnd.api+json")

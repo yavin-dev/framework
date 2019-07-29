@@ -16,20 +16,20 @@ import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.empty
 import org.junit.Assert
 
-class DashboardTest: IntegrationTest() {
+class DashboardTest : IntegrationTest() {
     private val USER1 = "user1"
     private val USER2 = "user2"
     private val USER3 = "user3"
 
     private var presentation = String()
-    private var author = {user:String -> """
+    private var author = { user: String -> """
         |"author": {
         |   "data": {
         |        "type": "users",
-        |        "id": "${user}"
+        |        "id": "$user"
         |    }
         |}
-        """.trimMargin()}
+        """.trimMargin() }
 
     @Before
     fun setup() {
@@ -503,7 +503,7 @@ class DashboardTest: IntegrationTest() {
             .body("data.attributes.filters[0].field", equalTo("id"))
             .body("data.attributes.filters[0].operator", equalTo("in"))
 
-         given()
+        given()
             .header("User", USER1)
             .contentType("application/vnd.api+json")
             .body("""

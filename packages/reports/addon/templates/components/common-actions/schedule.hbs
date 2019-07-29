@@ -81,6 +81,16 @@
           {{/power-select}}
         </fieldset>
       </div>
+      {{#if (feature-flag "enabledNotifyIfData")}}
+        <div class="schedule-modal__section-group">
+          {{x-toggle
+            size="small"
+            class="schedule-modal__must-have-data-toggle"
+            value=localDeliveryRule.schedulingRules.mustHaveData
+            onToggle=(mut localDeliveryRule.schedulingRules.mustHaveData)}}
+          <div class="schedule-modal__label">Only send if data is present</div>
+        </div>
+      {{/if}}
       <div class="schedule-modal__btn-container btn-container">
         <div class="button-group">
           {{#if (is-rejected deliveryRule)}}

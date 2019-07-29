@@ -8,5 +8,5 @@ data class LogicalTable(
     var table: String,
     var timeGrain: String
 ) {
-    constructor(): this("", "")
+    constructor() : this("", "")
 }

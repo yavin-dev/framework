@@ -39,7 +39,7 @@ class JsonType : UserType, ParameterizedType {
     }
 
     override fun nullSafeGet(resultSet: ResultSet?, names: Array<out String>?, session: SharedSessionContractImplementor, obj: Any?): Any? {
-        if(resultSet!!.getString(names!![0]) != null) {
+        if (resultSet!!.getString(names!![0]) != null) {
             val rawJson = resultSet.getString(names[0])
             try {
                 val mapper = ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
@@ -52,7 +52,7 @@ class JsonType : UserType, ParameterizedType {
     }
 
     override fun nullSafeSet(stmt: PreparedStatement?, value: Any?, index: Int, session: SharedSessionContractImplementor?) {
-        if(value == null) {
+        if (value == null) {
             stmt!!.setNull(index, Types.NULL)
         } else {
             val mapper = ObjectMapper()
