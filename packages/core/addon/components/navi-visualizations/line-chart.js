@@ -221,19 +221,21 @@ export default Component.extend({
       options = merge({}, DEFAULT_OPTIONS, this.options),
       { stacked } = options.style;
 
-    if (stacked) {
-      // if stacked, return [[ "Dimension 1", "Dimension 2", ... ]] or [[ "Metric 1", "Metric 2", ... ]]
-      if (seriesType === 'dimension') {
-        return [
-          get(seriesConfig, 'config.dimensions')
-            .map(dimension => dimension.name)
-        ];
-      } else if (seriesType === 'metric') {
-        return [
-          get(seriesConfig, 'config.metrics')
-            .map(metric => this.metricName.getDisplayName(metric))
-        ];
-      }
+    if (!stacked) {
+      return [];
+    }
+
+    // if stacked, return [[ "Dimension 1", "Dimension 2", ... ]] or [[ "Metric 1", "Metric 2", ... ]]
+    if (seriesType === 'dimension') {
+      return [
+        get(seriesConfig, 'config.dimensions')
+          .map(dimension => dimension.name)
+      ];
+    } else if (seriesType === 'metric') {
+      return [
+        get(seriesConfig, 'config.metrics')
+          .map(metric => this.metricName.getDisplayName(metric))
+      ];
     }
 
     return [];
@@ -247,12 +249,18 @@ export default Component.extend({
       seriesData = get(this, 'seriesData'),
       seriesDataGroups = get(this, 'seriesDataGroups');
 
+    /**
+     * controls the order of stacking which should be the same as order of groups
+     * `null` will be order the data loaded (object properties) which might not be predictable in some browsers
+     */
+    const order = seriesDataGroups[0] || null;
+
     return {
       data: {
         type: c3ChartType,
         json: seriesData,
         groups: seriesDataGroups,
-        order: seriesDataGroups[0] || null,
+        order,
         selection: {
           enabled: true
         }
