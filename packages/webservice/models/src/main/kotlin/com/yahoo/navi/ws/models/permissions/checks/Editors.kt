@@ -25,7 +25,7 @@ object Editors {
         val user = requestScope.user!!.opaqueUser as Principal
         val userId = user.name
 
-        return record.editors.any{ editor -> editor.id == userId }
+        return record.editors.any { editor -> editor.id == userId }
     }
 
     /**
@@ -39,7 +39,7 @@ object Editors {
          * @return
          */
         override fun ok(record: HasEditors, requestScope: RequestScope, changeSpec: Optional<ChangeSpec>): Boolean {
-            return check(record, requestScope);
+            return check(record, requestScope)
         }
     }
 
@@ -62,7 +62,7 @@ object Editors {
     /**
      * Checks that every record in changeset belongs to logged in user
      */
-    class canAddEditor: CommitCheck<User>() {
+    class canAddEditor : CommitCheck<User>() {
         /**
          * @param record user
          * @param requestScope Elide Resource
@@ -73,7 +73,7 @@ object Editors {
             val user = requestScope.user!!.opaqueUser as Principal
             val userId = user.name
 
-            if(!changeSpec.isPresent) {
+            if (!changeSpec.isPresent) {
                 val recordId = record.id
                 return recordId == userId
             }
@@ -81,10 +81,10 @@ object Editors {
             val modified: Any? = changeSpec.get().modified
             val original: Any? = changeSpec.get().original
 
-            if(modified is Collection<*> && original is Collection<*>
-                    && modified.all{it is HasAuthor} && original.all{it is HasAuthor}) {
-                val records: List<HasAuthor> = modified.subtract(original).map{it as HasAuthor}
-                return records.all{ asset -> asset.author!!.id == userId }
+            if (modified is Collection<*> && original is Collection<*> &&
+                    modified.all { it is HasAuthor } && original.all { it is HasAuthor }) {
+                val records: List<HasAuthor> = modified.subtract(original).map { it as HasAuthor }
+                return records.all { asset -> asset.author!!.id == userId }
             }
             return false
         }

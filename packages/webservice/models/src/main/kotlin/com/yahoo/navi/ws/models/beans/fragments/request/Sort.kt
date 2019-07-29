@@ -8,5 +8,5 @@ data class Sort(
     var metric: String,
     var direction: String
 ) {
-    constructor(): this("", "")
+    constructor() : this("", "")
 }

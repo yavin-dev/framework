@@ -9,5 +9,5 @@ data class Having(
     var operator: String,
     var values: Array<Double>
 ) {
-    constructor(): this("", "", arrayOf<Double>())
+    constructor() : this("", "", arrayOf<Double>())
 }

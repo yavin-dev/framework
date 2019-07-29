@@ -3,13 +3,14 @@ package com.yahoo.navi.ws.test.integration
 import com.yahoo.navi.ws.test.framework.IntegrationTest
 import org.junit.Before
 import org.junit.Test
-import org.hamcrest.Matchers.*
 import com.jayway.restassured.RestAssured.given
 import com.yahoo.navi.ws.test.framework.matchers.JsonMatcher.Companion.matchesJsonMap
 import com.yahoo.navi.ws.test.framework.matchers.RegexMatcher.Companion.matchesRegex
 import org.apache.http.HttpStatus
+import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.hasItems
 
-class ReportTest: IntegrationTest() {
+class ReportTest : IntegrationTest() {
     private val USER1 = "user1"
     private val USER2 = "user2"
 
@@ -17,14 +18,14 @@ class ReportTest: IntegrationTest() {
     private var testReqStrMF = String()
     private var expectedReqStr = String()
     private var visualStr = String()
-    private var author = {user:String -> """
+    private var author = { user: String -> """
         |"author": {
         |   "data": {
         |        "type": "users",
-        |        "id": "${user}"
+        |        "id": "$user"
         |    }
         |}
-        """.trimMargin()}
+        """.trimMargin() }
 
     @Before
     fun setup() {
@@ -124,7 +125,7 @@ class ReportTest: IntegrationTest() {
 
     @Test
     fun report() {
-        //Post a report
+        // Post a report
         given()
             .header("User", USER1)
             .contentType("application/vnd.api+json")
@@ -149,7 +150,7 @@ class ReportTest: IntegrationTest() {
             .assertThat()
             .statusCode(HttpStatus.SC_CREATED)
 
-        //test that it exists
+        // test that it exists
         given()
             .header("User", USER1)
             .contentType("application/vnd.api+json")
@@ -162,7 +163,7 @@ class ReportTest: IntegrationTest() {
             .body("data[0].attributes.request", matchesJsonMap(expectedReqStr))
             .body("data[0].attributes.visualization", matchesJsonMap(visualStr))
 
-        //test patch
+        // test patch
         given()
             .header("User", USER1)
             .contentType("application/vnd.api+json")
@@ -183,7 +184,7 @@ class ReportTest: IntegrationTest() {
             .assertThat()
             .statusCode(HttpStatus.SC_NO_CONTENT)
 
-        //test if title is updated
+        // test if title is updated
         given()
             .header("User", USER1)
             .contentType("application/vnd.api+json")
@@ -193,7 +194,7 @@ class ReportTest: IntegrationTest() {
             .assertThat()
             .body("data.attributes.title", equalTo("Updated Title"))
 
-        //test delete
+        // test delete
         given()
             .header("User", USER1)
             .contentType("application/vnd.api+json")
@@ -203,7 +204,7 @@ class ReportTest: IntegrationTest() {
             .assertThat()
                 .statusCode(HttpStatus.SC_NO_CONTENT)
 
-        //make sure report doesn't exist
+        // make sure report doesn't exist
         given()
             .header("User", USER1)
             .contentType("application/vnd.api+json")
@@ -212,7 +213,6 @@ class ReportTest: IntegrationTest() {
         .then()
             .assertThat()
             .statusCode(HttpStatus.SC_NOT_FOUND)
-
     }
 
     @Test
@@ -248,7 +248,7 @@ class ReportTest: IntegrationTest() {
             |]
             |}""".trimMargin()
 
-        //Post a report
+        // Post a report
         given()
             .header("User", USER1)
             .contentType("application/vnd.api+json")
@@ -273,7 +273,7 @@ class ReportTest: IntegrationTest() {
             .assertThat()
             .statusCode(HttpStatus.SC_CREATED)
 
-        //check the sorts
+        // check the sorts
         given()
             .header("User", USER1)
             .contentType("application/vnd.api+json")
@@ -319,7 +319,7 @@ class ReportTest: IntegrationTest() {
             |]
             |}""".trimMargin()
 
-        //Post a report
+        // Post a report
         given()
             .header("User", USER1)
             .contentType("application/vnd.api+json")
@@ -344,7 +344,7 @@ class ReportTest: IntegrationTest() {
             .assertThat()
             .statusCode(HttpStatus.SC_CREATED)
 
-        //check the sorts
+        // check the sorts
         given()
             .header("User", USER1)
             .contentType("application/vnd.api+json")
@@ -362,7 +362,7 @@ class ReportTest: IntegrationTest() {
 
     @Test
     fun wrongUser() {
-        //Post a report with different author
+        // Post a report with different author
         given()
             .header("User", USER1)
             .contentType("application/vnd.api+json")
@@ -387,7 +387,7 @@ class ReportTest: IntegrationTest() {
             .assertThat()
             .statusCode(HttpStatus.SC_FORBIDDEN)
 
-        //make sure report doesn't exist
+        // make sure report doesn't exist
         given()
             .header("User", USER1)
             .contentType("application/vnd.api+json")
@@ -400,7 +400,7 @@ class ReportTest: IntegrationTest() {
 
     @Test
     fun differentAuthorPermissions() {
-        //Post a report with different author
+        // Post a report with different author
         given()
             .header("User", USER1)
             .contentType("application/vnd.api+json")
@@ -457,7 +457,7 @@ class ReportTest: IntegrationTest() {
 
     @Test
     fun createDate() {
-        //Post a report
+        // Post a report
         given()
             .header("User", USER1)
             .contentType("application/vnd.api+json")
@@ -482,7 +482,7 @@ class ReportTest: IntegrationTest() {
             .assertThat()
             .statusCode(HttpStatus.SC_CREATED)
 
-        //check date fields
+        // check date fields
         given()
             .header("User", USER1)
             .contentType("application/vnd.api+json")
@@ -497,7 +497,7 @@ class ReportTest: IntegrationTest() {
 
     @Test
     fun userPermissions() {
-        //Post a report
+        // Post a report
         given()
             .header("User", USER1)
             .contentType("application/vnd.api+json")
@@ -522,7 +522,7 @@ class ReportTest: IntegrationTest() {
             .assertThat()
             .statusCode(HttpStatus.SC_CREATED)
 
-        //non author should not update a report
+        // non author should not update a report
         given()
             .header("User", USER2)
             .contentType("application/vnd.api+json")
@@ -543,7 +543,7 @@ class ReportTest: IntegrationTest() {
             .assertThat()
             .statusCode(HttpStatus.SC_FORBIDDEN)
 
-        //non author should not be able to delete report
+        // non author should not be able to delete report
         given()
             .header("User", USER2)
             .contentType("application/vnd.api+json")

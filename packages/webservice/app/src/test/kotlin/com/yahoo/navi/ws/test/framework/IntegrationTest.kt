@@ -11,14 +11,12 @@ import com.yahoo.elide.standalone.ElideStandalone
 import com.yahoo.navi.ws.app.Settings
 import com.jayway.restassured.RestAssured
 import org.junit.Assert
-import java.sql.Connection
 import java.sql.DriverManager
-import java.sql.PreparedStatement
 import java.sql.SQLException
 import com.jayway.restassured.RestAssured.given
 import org.apache.http.HttpStatus
 
-abstract class IntegrationTest: RestAssuredSupport {
+abstract class IntegrationTest : RestAssuredSupport {
     companion object {
         /**
          * local elide stand alone instance
@@ -89,7 +87,7 @@ abstract class IntegrationTest: RestAssuredSupport {
      * Registers a test user
      */
     fun registerUser(user: String) {
-      given()
+        given()
             .header("User", user)
             .contentType("application/vnd.api+json")
             .body("""
@@ -114,18 +112,18 @@ abstract class IntegrationTest: RestAssuredSupport {
     fun getCountForSelectQuery(query: String): Int {
         var numberOfRows = 0
         try {
-            DriverManager.getConnection(DATABASE_CONNECTION_URL, DATABASE_USER, DATABASE_PASSWORD).use{ conn ->
-                conn.createStatement().use{ stmt ->
+            DriverManager.getConnection(DATABASE_CONNECTION_URL, DATABASE_USER, DATABASE_PASSWORD).use { conn ->
+                conn.createStatement().use { stmt ->
                     val rs = stmt.executeQuery(query)
                     rs.last()
-                    numberOfRows = rs.getInt(1);
+                    numberOfRows = rs.getInt(1)
                 }
             }
         } catch (e: SQLException) {
             e.printStackTrace()
             Assert.fail("Database Error: " + e.message)
         }
-        
+
         return numberOfRows
     }
 
@@ -139,5 +137,4 @@ abstract class IntegrationTest: RestAssuredSupport {
         App.stop()
         App.start(false)
     }
-
 }

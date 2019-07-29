@@ -8,5 +8,5 @@ data class Interval(
     var start: String,
     var end: String
 ) {
-    constructor(): this("", "")
+    constructor() : this("", "")
 }

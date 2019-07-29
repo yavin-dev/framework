@@ -25,7 +25,7 @@ import javax.persistence.OneToMany
 
 @Entity(name = "Dashboard")
 @DiscriminatorValue("Dashboard")
-@Table(name="custom_dashboards")
+@Table(name = "custom_dashboards")
 @Include(rootLevel = true, type = "dashboards")
 @SharePermission
 @CreatePermission(expression = "is an author")
@@ -50,5 +50,4 @@ class Dashboard : Asset(), HasAuthor, HasEditors {
             Parameter(name = "class", value = "java.util.ArrayList")
     ))
     var filters: Collection<Filter> = emptyList()
-
 }

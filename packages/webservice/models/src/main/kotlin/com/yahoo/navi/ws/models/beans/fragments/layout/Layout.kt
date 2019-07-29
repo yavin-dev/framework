@@ -5,13 +5,13 @@
 package com.yahoo.navi.ws.models.beans.fragments.layout
 
 data class Layout(
-        var column: Int,
-        var row: Int,
-        var height: Int,
-        var width: Int,
-        var widgetId: Int
+    var column: Int,
+    var row: Int,
+    var height: Int,
+    var width: Int,
+    var widgetId: Int
 ) {
-    constructor(): this(
-            0,0,0,0,0
+    constructor() : this(
+            0, 0, 0, 0, 0
     )
 }

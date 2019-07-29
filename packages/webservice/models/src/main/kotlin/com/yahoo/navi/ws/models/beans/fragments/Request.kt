@@ -35,7 +35,7 @@ data class Request(
         arrayOf<Filter>(),
         arrayOf<Dimension>(),
         arrayOf<Metric>(),
-        LogicalTable("",""),
+        LogicalTable("", ""),
         arrayOf<Sort>(),
         arrayOf<Having>(), "v1", "v1"
     )

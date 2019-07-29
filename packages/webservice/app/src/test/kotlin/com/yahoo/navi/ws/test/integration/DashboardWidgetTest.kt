@@ -14,7 +14,7 @@ import org.hamcrest.Matchers.empty
 import org.hamcrest.Matchers.hasItems
 import org.hamcrest.Matchers.not
 
-class DashboardWidgetTest: IntegrationTest() {
+class DashboardWidgetTest : IntegrationTest() {
     private val USER1 = "user1"
     private val USER2 = "user2"
 
@@ -22,14 +22,14 @@ class DashboardWidgetTest: IntegrationTest() {
     private var requests = String()
     private var visual1 = String()
     private var visual2 = String()
-    private var author = {user:String -> """
+    private var author = { user: String -> """
         |"author": {
         |   "data": {
         |        "type": "users",
-        |        "id": "${user}"
+        |        "id": "$user"
         |    }
         |}
-        """.trimMargin()}
+        """.trimMargin() }
 
     @Before
     fun setup() {
@@ -163,7 +163,7 @@ class DashboardWidgetTest: IntegrationTest() {
 
     @Test
     fun dashboardWidget() {
-        //post 2 widgets
+        // post 2 widgets
         given()
             .header("User", USER1)
             .contentType("application/vnd.api+json")
@@ -229,13 +229,13 @@ class DashboardWidgetTest: IntegrationTest() {
             .get("/dashboards/1/widgets")
         .then()
             .assertThat()
-            .body("data.id", hasItems("1",  "2"))
+            .body("data.id", hasItems("1", "2"))
             .body("data.attributes.title", hasItems("A widget 1"))
             .body("data.attributes.requests.logicalTable.table", hasItems(arrayListOf(arrayListOf("base"), arrayListOf("base")), arrayListOf(arrayListOf("base"), arrayListOf("base"))))
             .body("data.attributes.visualization[0]", matchesJsonMap(visual1))
             .body("data.attributes.visualization[1]", matchesJsonMap(visual2))
 
-        //delete a widget
+        // delete a widget
         given()
             .header("User", USER1)
         .When()
@@ -287,7 +287,7 @@ class DashboardWidgetTest: IntegrationTest() {
             .assertThat()
         .statusCode(HttpStatus.SC_CREATED)
 
-        //User 1 edits widget1 of dashboard1
+        // User 1 edits widget1 of dashboard1
         given()
             .header("User", USER1)
             .contentType("application/vnd.api+json")
@@ -316,7 +316,7 @@ class DashboardWidgetTest: IntegrationTest() {
             .assertThat()
             .statusCode(HttpStatus.SC_NO_CONTENT)
 
-        //title should be updated
+        // title should be updated
         given()
             .header("User", USER1)
         .When()
@@ -325,7 +325,7 @@ class DashboardWidgetTest: IntegrationTest() {
             .assertThat()
             .body("data.attributes.title", hasItems("edited by User 1"))
 
-        //User2 tries to edit widget but isn't an editor
+        // User2 tries to edit widget but isn't an editor
         given()
             .header("User", USER2)
             .contentType("application/vnd.api+json")
@@ -354,7 +354,7 @@ class DashboardWidgetTest: IntegrationTest() {
             .assertThat()
             .statusCode(HttpStatus.SC_FORBIDDEN)
 
-        //User1 gives editing permission to User2 to dashboard1
+        // User1 gives editing permission to User2 to dashboard1
         given()
             .header("User", USER1)
             .contentType("application/vnd.api+json")
@@ -382,7 +382,7 @@ class DashboardWidgetTest: IntegrationTest() {
             .assertThat()
             .statusCode(HttpStatus.SC_NO_CONTENT)
 
-        //User2 can edit now
+        // User2 can edit now
         given()
             .header("User", USER2)
             .contentType("application/vnd.api+json")
@@ -411,7 +411,7 @@ class DashboardWidgetTest: IntegrationTest() {
             .assertThat()
             .statusCode(HttpStatus.SC_NO_CONTENT)
 
-        //user2 (editor) deletes widget1 from dashboard1
+        // user2 (editor) deletes widget1 from dashboard1
         given()
             .header("User", USER2)
         .When()
@@ -420,7 +420,7 @@ class DashboardWidgetTest: IntegrationTest() {
             .assertThat()
             .statusCode(HttpStatus.SC_NO_CONTENT)
 
-        //checking if widget was deleted
+        // checking if widget was deleted
         given()
             .header("User", USER1)
         .When()
@@ -467,7 +467,7 @@ class DashboardWidgetTest: IntegrationTest() {
             .assertThat()
             .statusCode(HttpStatus.SC_BAD_REQUEST)
 
-        //posting with the parent dashboard's author is OK
+        // posting with the parent dashboard's author is OK
         given()
             .header("User", USER1)
             .contentType("application/vnd.api+json")
