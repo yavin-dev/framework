@@ -19,6 +19,7 @@ let Template = hbs`
     hasMultipleMetrics: true
   },
   chartOptions = {
+    style: {},
     axis: {
       y: {
         series: {
@@ -89,13 +90,23 @@ module('Integration | Component | visualization config/line chart', function(hoo
   });
 
   test('showStackOption', async function(assert) {
-    assert.expect(2);
+    assert.expect(5);
 
     await render(Template);
 
     assert
       .dom('.line-chart-config .line-chart-config__stacked-opt')
       .isVisible('The `stacked` option is correctly rendered based on request');
+
+    assert
+      .dom('.line-chart-config .line-chart-config__series-config')
+      .isNotVisible('The series config component is not rendered when `stacked` option is off');
+
+    this.set('options.style', { stacked: true });
+
+    assert
+      .dom('.line-chart-config .line-chart-config__series-config')
+      .isVisible('The series config component is rendered when `stacked` option is on');
 
     this.set('request', {
       hasGroupBy: false,
@@ -107,5 +118,9 @@ module('Integration | Component | visualization config/line chart', function(hoo
     assert
       .dom('.line-chart-config .line-chart-config__stacked-opt')
       .isNotVisible('The `stacked` option is correctly hidden based on request');
+
+    assert
+      .dom('.line-chart-config .line-chart-config__series-config')
+      .isNotVisible('The series config component is correctly hidden based on request');
   });
 });
