@@ -15,35 +15,35 @@ const TEMPLATE = hbs`
 `;
 
 const SERIES_CONFIG = {
-	metrics: [{
-		metric: "adClicks",
-		parameters: {}
-	}, {
-		metric: "revenue",
-		parameters: {
-			currency: "CAD",
-			as: "m1"
-		}
-	}, {
-		metric: "revenue",
-		parameters: {
-			currency: "EUR",
-			as: "m2"
-		}
-	}],
-	dimensions: [{
-		name: "Property 1"
-	}, {
-		name: "Property 2"
-	}, {
-		name: "Property 3"
-	}]
+  metrics: [{
+    metric: "adClicks",
+    parameters: {}
+  }, {
+    metric: "revenue",
+    parameters: {
+      currency: "CAD",
+      as: "m1"
+    }
+  }, {
+    metric: "revenue",
+    parameters: {
+      currency: "EUR",
+      as: "m2"
+    }
+  }],
+  dimensions: [{
+    name: "Property 1"
+  }, {
+    name: "Property 2"
+  }, {
+    name: "Property 3"
+  }]
 };
 
-module('Integration | Component | chart series config', function(hooks) {
+module('Integration | Component | chart series config', function (hooks) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     setupMock();
 
     this.setProperties({
@@ -56,11 +56,11 @@ module('Integration | Component | chart series config', function(hooks) {
     return MetadataService.loadMetadata();
   });
 
-  hooks.afterEach(function() {
+  hooks.afterEach(function () {
     teardownMock();
   });
 
-  test('Component renders', async function(assert) {
+  test('Component renders', async function (assert) {
     assert.expect(1);
 
     await render(TEMPLATE);
@@ -70,7 +70,7 @@ module('Integration | Component | chart series config', function(hooks) {
       .exists('The chart series config component is rendered');
   });
 
-  test('Component is collapsible', async function(assert) {
+  test('Component is collapsible', async function (assert) {
     assert.expect(6);
 
     await render(TEMPLATE);
@@ -104,7 +104,7 @@ module('Integration | Component | chart series config', function(hooks) {
       .isNotVisible('The chart series config component is not visible after clicking header twice');
   });
 
-  test('Component renders dimensions correctly', async function(assert) {
+  test('Component renders dimensions correctly', async function (assert) {
     assert.expect(1);
 
     this.set('isOpen', true);
@@ -117,7 +117,7 @@ module('Integration | Component | chart series config', function(hooks) {
       'Component renders dimension names correctly');
   });
 
-  test('Component renders formatted metrics correctly', async function(assert) {
+  test('Component renders formatted metrics correctly', async function (assert) {
     assert.expect(1);
 
     this.setProperties({

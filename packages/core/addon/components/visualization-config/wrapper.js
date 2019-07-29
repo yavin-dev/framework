@@ -23,7 +23,7 @@ export default Component.extend({
   classNames: ['visualization-config'],
 
   /**
-   * @property {Object} seriesConfig
+   * @property {Object} series
    */
   series: computed('visualization.metadata', function() {
     return get(this, 'visualization.metadata.axis.y.series');

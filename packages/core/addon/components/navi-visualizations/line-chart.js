@@ -222,6 +222,7 @@ export default Component.extend({
       { stacked } = options.style;
 
     if (stacked) {
+      // if stacked, return [[ "Dimension 1", "Dimension 2", ... ]] or [[ "Metric 1", "Metric 2", ... ]]
       if (seriesType === 'dimension') {
         return [
           get(seriesConfig, 'config.dimensions')

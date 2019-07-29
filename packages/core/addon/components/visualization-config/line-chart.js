@@ -58,7 +58,7 @@ export default Component.extend({
   }),
 
   /**
-   * @property {Object} seriesConfig
+   * @property {String} seriesType
    */
   seriesType: readOnly('options.axis.y.series.type'),
 
