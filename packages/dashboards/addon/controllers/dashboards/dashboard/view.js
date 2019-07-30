@@ -40,10 +40,6 @@ export default Controller.extend({
     const modelFilters = dashboard.filters;
     const filterQueryParams = this.filters;
 
-    /**
-     * We only want to add filters to the model on initial load of the route
-     * If the model already has dirty filters, then this was not called from the initial load
-     */
     if (isEmpty(filterQueryParams)) {
       return;
     }
@@ -53,7 +49,7 @@ export default Controller.extend({
       decompressedFilters = await this.compression.decompress(filterQueryParams);
 
       if (!decompressedFilters.hasOwnProperty('filters') || !isArray(decompressedFilters.filters)) {
-        throw Error('Compressed filter is not the right format. Please only ');
+        throw Error('Filter query params are not valid filters');
       }
 
       this._removeAllFiltersFromDashboard(dashboard);
@@ -73,7 +69,7 @@ export default Controller.extend({
         })
       );
     } catch (e) {
-      throw Error(`Error decompressing filter query params: ${filterQueryParams}\nError: ${e}`);
+      throw Error(`Error decompressing filter query params: ${filterQueryParams}\n${e}`);
     }
   },
 
@@ -93,9 +89,9 @@ export default Controller.extend({
     /**
      * Update query params to match dirty filter attributes of model
      *
-     * @method syncQueryParamsWithModel
+     * @method generateFilterQueryParams
      */
-    async syncQueryParamsWithModel() {
+    async generateFilterQueryParams() {
       const model = this.model.dashboard;
       const hasDirtyAttrs = get(model, 'filters').hasDirtyAttributes;
       const filterQueryParams = hasDirtyAttrs
