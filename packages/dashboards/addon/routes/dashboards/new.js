@@ -71,7 +71,6 @@ export default Route.extend({
    * @returns {DS.Model} route model
    */
   _newModel(title = 'Untitled Dashboard') {
-    debugger;
     return get(this, 'user')
       .findOrRegister()
       .then(author =>
