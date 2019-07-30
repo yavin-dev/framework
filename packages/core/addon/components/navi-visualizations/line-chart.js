@@ -234,7 +234,7 @@ export default Component.extend({
     } else if (seriesType === 'metric') {
       return [
         get(seriesConfig, 'config.metrics')
-          .map(metric => this.metricName.getDisplayName(metric))
+          .map(metric => this.get('metricName').getDisplayName(metric))
       ];
     }
 
