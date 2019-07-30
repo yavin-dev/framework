@@ -30,8 +30,13 @@ export default Route.extend({
    * @override
    * @returns {DS.Model} route model
    */
-  model() {
-    const { queryParams = {} } = this.get('router.currentRoute');
+  model(_, transition) {
+    const queryParams =
+      (transition &&
+        (transition.queryParams || //Ember2.x support
+          (transition.to && transition.to.queryParams))) ||
+      {};
+
     return this._newModel(queryParams.title);
   },
 
@@ -42,8 +47,12 @@ export default Route.extend({
    * @param dashboard - resolved dashboard model
    * @override
    */
-  afterModel(dashboard) {
-    const { queryParams } = this.get('router.currentRoute');
+  afterModel(dashboard, transition) {
+    const queryParams =
+      (transition &&
+        (transition.queryParams || //Ember2.x support
+          (transition.to && transition.to.queryParams))) ||
+      {};
 
     // If an initial widget was given in the query params, create it
     if (queryParams.unsavedWidgetId) {
