@@ -305,4 +305,78 @@ module('Unit | Builder | Request', function() {
 
     assert.notEqual(Request, updatedRequest, 'original request was not modified');
   });
+
+  test('sort', function(assert) {
+    assert.expect(6);
+
+    assert.deepEqual(Request.get('sort'), [], 'sort is initially an empty array');
+
+    /* == Add sort Shorthand == */
+    let updatedRequest = Request.addSort('pageViews');
+
+    assert.deepEqual(
+      updatedRequest.get('sort'),
+      [
+        {
+          metric: 'pageViews',
+          direction: 'desc'
+        }
+      ],
+      'sort can be updated with shorthand add function without specifying a sort direction'
+    );
+
+    /* == Add sort Shorthand == */
+    updatedRequest = Request.addSort('pageViews', 'asc');
+
+    assert.deepEqual(
+      updatedRequest.get('sort'),
+      [
+        {
+          metric: 'pageViews',
+          direction: 'asc'
+        }
+      ],
+      'sort can be updated with shorthand add function'
+    );
+
+    /* == Add sort == */
+    updatedRequest = updatedRequest.addSorts({
+      metric: 'adClicks',
+      direction: 'desc'
+    });
+
+    assert.deepEqual(
+      updatedRequest.get('sort'),
+      [
+        {
+          metric: 'pageViews',
+          direction: 'asc'
+        },
+        {
+          metric: 'adClicks',
+          direction: 'desc'
+        }
+      ],
+      'sort can be updated with add function'
+    );
+
+    /* == Set sort == */
+    updatedRequest = updatedRequest.setSorts({
+      metric: 'navClicks',
+      direction: 'asc'
+    });
+
+    assert.deepEqual(
+      updatedRequest.get('sort'),
+      [
+        {
+          metric: 'navClicks',
+          direction: 'asc'
+        }
+      ],
+      'sort can be replaced with set function'
+    );
+
+    assert.notEqual(Request, updatedRequest, 'original request was not modified');
+  });
 });

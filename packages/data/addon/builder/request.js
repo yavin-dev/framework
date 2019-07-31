@@ -52,6 +52,13 @@ export default EmberObject.extend({
   }),
 
   /**
+   * @property {Array} sort - list of sort objects
+   */
+  sort: computed(function() {
+    return [];
+  }),
+
+  /**
    * @method copy
    * @param {...Object} arguments - objects with properties to merge into copy
    * @returns {Object} copy of request
@@ -247,5 +254,33 @@ export default EmberObject.extend({
    */
   setHavings(...having) {
     return this._immutableSet('having', having);
+  },
+
+  /**
+   * @method addSort
+   * @param {String} metric
+   * @param {String} direction
+   * @returns {Object} copy of request with property updated
+   */
+  addSort(metric, direction = 'desc') {
+    return this._immutablePush('sort', [{ metric, direction }]);
+  },
+
+  /**
+   * @method addSorts
+   * @param {...Object} sort - objects with metric, direction
+   * @returns {Object} copy of request with property updated
+   */
+  addSorts(...sorts) {
+    return this._immutablePush('sort', sorts);
+  },
+
+  /**
+   * @method setSorts
+   * @param {...Object} sorts - objects with metric, and direction
+   * @returns {Object} copy of request with property updated
+   */
+  setSorts(...sorts) {
+    return this._immutableSet('sort', sorts);
   }
 });
