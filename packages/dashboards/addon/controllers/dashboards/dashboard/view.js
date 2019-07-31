@@ -89,7 +89,7 @@ export default Controller.extend({
     /**
      * Update query params to match dirty filter attributes of model
      *
-     * @method generateFilterQueryParams
+     * @action generateFilterQueryParams
      */
     async generateFilterQueryParams() {
       const model = this.model.dashboard;
