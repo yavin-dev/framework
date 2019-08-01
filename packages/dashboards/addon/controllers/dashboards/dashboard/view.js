@@ -74,6 +74,14 @@ export default Controller.extend({
   },
 
   /**
+   * @method resetModel - Rollback model attributes and clear query params
+   */
+  resetModel() {
+    this.set('filters', null);
+    this.get('model.dashboard').rollbackAttributes();
+  },
+
+  /**
    * @private
    * @method _removeAllFiltersFromDashboard
    * @param {Object} dashboard

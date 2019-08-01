@@ -93,7 +93,7 @@ module('Acceptance | Dashboard Filters', function(hooks) {
   });
 
   test('dashboard filter query params - model changes query params', async function(assert) {
-    assert.expect(12);
+    assert.expect(9);
 
     const INITIAL_FILTERS = [
       {
@@ -160,16 +160,10 @@ module('Acceptance | Dashboard Filters', function(hooks) {
     await click('.navi-collection__row1 a');
     assert.equal(
       currentURL(),
-      dirtyURL,
-      'Returning to index view and back to the dashboard keeps dirty state and query params'
+      '/dashboards/2/view',
+      'Returning to index view and back to the dashboard clears the dirty state and query params'
     );
-    assert.deepEqual(extractCollapsedFilters(), dirtyFilters, 'Filters are in same dirty state');
-    assert.dom('.navi-dashboard__save-dialogue').isVisible('The dashboard is still in a dirty state');
-
-    //Revert to clean state and check if query params are removed
-    await click('.navi-dashboard__revert-button');
-    assert.equal(currentURL(), '/dashboards/2/view', 'No query params set after revert');
-    assert.deepEqual(extractCollapsedFilters(), INITIAL_FILTERS, 'Filters are back to original state');
+    assert.deepEqual(extractCollapsedFilters(), INITIAL_FILTERS, 'Initial filters are present');
     assert.dom('.navi-dashboard__save-dialogue').isNotVisible('The dashboard is in a clean state');
   });
 

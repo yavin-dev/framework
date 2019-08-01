@@ -46,7 +46,7 @@ export default Route.extend({
     if (isExiting) {
       //Reset hasEntered state to false as we exit the route
       this.set('hasEntered', false);
-      // controller.set('filters', null);
+      controller.resetModel();
     }
   },
 
