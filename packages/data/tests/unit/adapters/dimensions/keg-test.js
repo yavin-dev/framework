@@ -116,7 +116,19 @@ module('Unit | Adapters | Dimensions | Keg', function(hooks) {
   });
 
   test('getById', function(assert) {
-    assert.expect(1);
+    assert.expect(3);
+
+    assert.deepEqual(
+      Adapter.getById('unknownDimensionName', '1'),
+      undefined,
+      'getById() returns undefined for an unknown dimension'
+    );
+
+    assert.deepEqual(
+      Adapter.getById('dimensionOne', 'unkownDimensionId'),
+      undefined,
+      'getById() returns undefined for an known dimension with an unknown id'
+    );
 
     assert.deepEqual(
       Adapter.getById('dimensionOne', '1').get('id'),
