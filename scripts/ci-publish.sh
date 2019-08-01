@@ -8,7 +8,3 @@ npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
 
 # Publish dev build via lerna
 npm run-script lerna-ci-publish
-
-echo Publishing demo app
-cd package/app
-npm run-script deploy-demo-app

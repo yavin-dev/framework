@@ -17,8 +17,7 @@
     "lint:hbs": "ember-template-lint .",
     "lint:js": "eslint .",
     "start": "ember serve",
-    "test": "export COVERAGE=true; ember test --test-port 0",
-    "deploy-demo-app": "export BUILD_NAVI_DEMO=true; ember github-pages:commit --message 'update gh-pages' --destination ../../; git push origin gh-pages:gh-pages"
+    "test": "export COVERAGE=true; ember test --test-port 0"
   },
   "dependencies": {
     "compression": "^1.6.2",
@@ -47,7 +46,6 @@
     "ember-cli-eslint": "^4.2.3",
     "ember-cli-flash": "^1.3.16",
     "ember-cli-format-number": "2.0.0",
-    "ember-cli-github-pages": "^0.2.2",
     "ember-cli-htmlbars": "^3.0.0",
     "ember-cli-htmlbars-inline-precompile": "^1.0.3",
     "ember-cli-inject-live-reload": "^1.8.2",
