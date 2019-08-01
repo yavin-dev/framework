@@ -186,6 +186,16 @@ export default Service.extend({
   },
 
   /**
+   * @method getById - Returns the dimension value object for a bard dimension where identifierField value matches value
+   * @param {String} dimension - dimension name
+   * @param {Object} value - the value to be looked up
+   * @returns {Object} - The bard dimension model object
+   */
+  getById(dimension, value) {
+    return get(this, '_kegAdapter').getById(dimension, value);
+  },
+
+  /**
    * @method findById - Returns the dimension value object for a bard dimension where identifierField value matches value
    * @param {String} dimension - dimension name
    * @param {Object} value - the value to be looked up

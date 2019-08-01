@@ -129,15 +129,23 @@ export default EmberObject.extend({
   },
 
   /**
+   * @method getById - Finds a dimension value object by its id
+   * @param {String} dimension - dimension name
+   * @param {String} value - the value to be looked up
+   * @returns {Object} - The dimension value object
+   */
+  getById(dimension, value) {
+    return get(this, 'keg').getById(`${KEG_NAMESPACE}/${dimension}`, value);
+  },
+
+  /**
    * @method findById - Finds a dimension value object by its id
    * @param {String} dimension - dimension name
    * @param {String} value - the value to be looked up
    * @returns {Promise} - Promise with the response
    */
   findById(dimension, value) {
-    let keg = get(this, 'keg');
-
-    return Promise.resolve(keg.getById(`${KEG_NAMESPACE}/${dimension}`, value));
+    return Promise.resolve(this.getById(dimension, value));
   },
 
   /**

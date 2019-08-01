@@ -296,6 +296,24 @@ module('Unit | Service | Dimensions', function(hooks) {
     });
   });
 
+  test('getById', function(assert) {
+    assert.expect(2);
+
+    assert.deepEqual(
+      Service.getById(TestDimension, 'v1'),
+      undefined,
+      'getById returns undefined for unloaded dimension'
+    );
+
+    let keg = Service.get('_kegAdapter.keg');
+    keg.pushMany('dimension/dimensionOne', Response.rows, {
+      modelFactory: Object
+    });
+
+    const dimensionId = get(Service.getById(TestDimension, 'v1'), 'id');
+    assert.deepEqual(dimensionId, 'v1', 'getById returns the expected dimension value');
+  });
+
   test('all and catch error', function(assert) {
     assert.expect(2);
 

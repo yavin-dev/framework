@@ -115,6 +115,28 @@ module('Unit | Adapters | Dimensions | Keg', function(hooks) {
     });
   });
 
+  test('getById', function(assert) {
+    assert.expect(3);
+
+    assert.deepEqual(
+      Adapter.getById('unknownDimensionName', '1'),
+      undefined,
+      'getById() returns undefined for an unknown dimension'
+    );
+
+    assert.deepEqual(
+      Adapter.getById('dimensionOne', 'unkownDimensionId'),
+      undefined,
+      'getById() returns undefined for an known dimension with an unknown id'
+    );
+
+    assert.deepEqual(
+      Adapter.getById('dimensionOne', '1').get('id'),
+      1,
+      'getById() returns the expected response object for Test dimension, identifierField and query'
+    );
+  });
+
   test('pushMany', function(assert) {
     assert.expect(2);
     Adapter.pushMany('dimensionOne', [{ id: 22, foo: 'bar' }, { id: 44, foo: 'baz' }]);
