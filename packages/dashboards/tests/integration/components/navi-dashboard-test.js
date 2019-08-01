@@ -33,6 +33,7 @@ module('Integration | Component | navi dashboard', function(hooks) {
     };
 
     this.set('dashboardModel', dashboardModel);
+    this.set('onFilterChange', function() { return null; });
 
     await owner.lookup('service:user').findUser();
     await owner.lookup('service:bard-metadata').loadMetadata();
@@ -48,7 +49,7 @@ module('Integration | Component | navi dashboard', function(hooks) {
   test('it renders', async function(assert) {
     assert.expect(4);
 
-    await render(hbs`{{navi-dashboard dashboard=dashboardModel}}`);
+    await render(hbs`{{navi-dashboard dashboard=dashboardModel onFilterChange=(action onFilterChange)}}`);
 
     assert.dom('.page-title').hasText(this.dashboardModel.title, 'Component renders header with dashboard title');
 
@@ -71,7 +72,7 @@ module('Integration | Component | navi dashboard', function(hooks) {
     let dataForWidget = { 1: 'foo', 2: 'bar' };
     this.set('dataForWidget', dataForWidget);
 
-    await render(hbs`{{navi-dashboard dashboard=dashboardModel dataForWidget=dataForWidget}}`);
+    await render(hbs`{{navi-dashboard dashboard=dashboardModel dataForWidget=dataForWidget onFilterChange=(action onFilterChange)}}`);
 
     const { owner } = this;
     const components = owner.lookup('-view-registry:main');
@@ -90,12 +91,12 @@ module('Integration | Component | navi dashboard', function(hooks) {
     const originalFeatureFlag = config.navi.FEATURES.enableDashboardExport;
 
     config.navi.FEATURES.enableDashboardExport = true;
-    await render(hbs`{{navi-dashboard dashboard=dashboardModel}}`);
+    await render(hbs`{{navi-dashboard dashboard=dashboardModel onFilterChange=(action onFilterChange)}}`);
 
     assert.dom('.action.export').isVisible('Dashboard export button should be visible');
 
     config.navi.FEATURES.enableDashboardExport = false;
-    await render(hbs`{{navi-dashboard dashboard=dashboardModel}}`);
+    await render(hbs`{{navi-dashboard dashboard=dashboardModel onFilterChange=(action onFilterChange)}}`);
     assert.dom('.action.export').isNotVisible('Dashboard export button should not be visible');
 
     config.navi.FEATURES.enableDashboardExport = originalFeatureFlag;
@@ -106,12 +107,12 @@ module('Integration | Component | navi dashboard', function(hooks) {
     const originalFeatureFlag = config.navi.FEATURES.enableScheduleDashboards;
 
     config.navi.FEATURES.enableScheduleDashboards = true;
-    await render(hbs`{{navi-dashboard dashboard=dashboardModel}}`);
+    await render(hbs`{{navi-dashboard dashboard=dashboardModel onFilterChange=onFilterChange}}`);
 
     assert.dom('.action.schedule').isVisible('Dashboard schedule button should be visible');
 
     config.navi.FEATURES.enableScheduleDashboards = false;
-    await render(hbs`{{navi-dashboard dashboard=dashboardModel}}`);
+    await render(hbs`{{navi-dashboard dashboard=dashboardModel onFilterChange=(action onFilterChange)}}`);
     assert.dom('.action.schedule').isNotVisible('Dashboard schedule button should not be visible');
 
     config.navi.FEATURES.enableScheduleDashboards = originalFeatureFlag;
@@ -122,7 +123,7 @@ module('Integration | Component | navi dashboard', function(hooks) {
 
     this.set('dashboardModel.isUserOwner', false);
 
-    await render(hbs`{{navi-dashboard dashboard=dashboardModel}}`);
+    await render(hbs`{{navi-dashboard dashboard=dashboardModel onFilterChange=(action onFilterChange)}}`);
     assert.dom('.action.schedule').isNotVisible('Dashboard schedule button should not be visible');
   });
 });

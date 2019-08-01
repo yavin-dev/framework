@@ -59,8 +59,9 @@ module('Integration | Component | dashboard filters', function(hooks) {
         }
       ]
     };
+    this.onFilterChange = function() { return null; };
 
-    await render(hbs`{{dashboard-filters dashboard=dashboard}}`);
+    await render(hbs`{{dashboard-filters dashboard=dashboard onFilterChange=(action onFilterChange)}}`);
 
     assert.dom('.dashboard-filters-collapsed').isVisible('Filters component is collapsed initially');
 

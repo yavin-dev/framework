@@ -55,7 +55,8 @@ module('Integration | Component | dashboard filters expanded', function(hooks) {
         }
       ]
     };
-    await render(hbs`{{dashboard-filters-expanded dashboard=dashboard}}`);
+    this.onFilterChange = function() { return null };
+    await render(hbs`{{dashboard-filters-expanded dashboard=dashboard onFilterChange=(action onFilterChange)}}`);
 
     assert
       .dom('.dashboard-filter-collection')
@@ -111,8 +112,9 @@ module('Integration | Component | dashboard filters expanded', function(hooks) {
         }
       ])
     };
+    this.onFilterChange = function() { return null };
 
-    await render(hbs`{{dashboard-filters-expanded dashboard=dashboard}}`);
+    await render(hbs`{{dashboard-filters-expanded dashboard=dashboard onFilterChange=(action onFilterChange)}}`);
 
     assert.dom('.dashboard-filters-expanded__add-filter-button').isVisible('add filter button visible');
 

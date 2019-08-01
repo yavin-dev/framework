@@ -69,7 +69,7 @@ module('Unit | Controller | dashboards/dashboard/view', function(hooks) {
         title: 'Test Dashboard',
         author
       });
-    controller.transitionToRoute = transition => {
+    controller.transitionToRoute = (destination, model, transition) => {
       controller.filters = transition.queryParams.filters;
     };
     controller.set('model', { dashboard });
