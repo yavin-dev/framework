@@ -11,4 +11,6 @@ npm run-script lerna-ci-publish
 
 echo Publishing demo app
 cd packages/app
-npm run-script deploy-demo-app
+export BUILD_NAVI_DEMO=true
+npx ember github-pages:commit --message 'travis update gh-pages' --destination ../../
+ssh-agent sh -c 'ssh-add $TRAVIS_BUILD_DIR/travis-secrets/deploy_rsa; git push origin gh-pages:gh-pages || echo Failed to push gh-pages update'
