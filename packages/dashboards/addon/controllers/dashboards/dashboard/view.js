@@ -5,7 +5,6 @@
 
 import Controller from '@ember/controller';
 import { inject as service } from '@ember/service';
-import { isArray } from '@ember/array';
 import { get } from '@ember/object';
 import { isEmpty } from '@ember/utils';
 
@@ -48,7 +47,7 @@ export default Controller.extend({
     try {
       decompressedFilters = await this.compression.decompress(filterQueryParams);
 
-      if (!decompressedFilters.hasOwnProperty('filters') || !isArray(decompressedFilters.filters)) {
+      if (!decompressedFilters.hasOwnProperty('filters') || !Array.isArray(decompressedFilters.filters)) {
         throw Error('Filter query params are not valid filters');
       }
 

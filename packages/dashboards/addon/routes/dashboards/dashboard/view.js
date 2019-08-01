@@ -63,7 +63,7 @@ export default Route.extend({
       //Make sure this only gets run on initial route entry
       this.set('hasEntered', true);
 
-      if(featureFlag('enableDashboardFilterQueryParams')) {
+      if (featureFlag('enableDashboardFilters') && featureFlag('enableDashboardFilterQueryParams')) {
         await this.controllerFor('dashboards/dashboard/view').addFiltersFromQueryParams();
       }
     }
