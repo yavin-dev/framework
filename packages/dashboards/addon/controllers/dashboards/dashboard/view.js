@@ -110,7 +110,7 @@ export default Controller.extend({
           })
         : null;
 
-      this.transitionToRoute({ queryParams: { filters: filterQueryParams } });
+      this.transitionToRoute('dashboards.dashboard', model, { queryParams: { filters: filterQueryParams } });
     }
   }
 });

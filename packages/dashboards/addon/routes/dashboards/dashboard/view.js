@@ -5,6 +5,7 @@
 
 import { inject as service } from '@ember/service';
 import Route from '@ember/routing/route';
+import { featureFlag } from 'navi-core/helpers/feature-flag';
 
 export default Route.extend({
   /**
@@ -61,7 +62,10 @@ export default Route.extend({
     if (!this.get('hasEntered') && !model.dashboard.hasDirtyAttributes) {
       //Make sure this only gets run on initial route entry
       this.set('hasEntered', true);
-      await this.controllerFor('dashboards/dashboard/view').addFiltersFromQueryParams();
+
+      if(featureFlag('enableDashboardFilterQueryParams')) {
+        await this.controllerFor('dashboards/dashboard/view').addFiltersFromQueryParams();
+      }
     }
   }
 });
