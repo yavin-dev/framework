@@ -15,8 +15,9 @@ git config --global user.name "Travis CI"
 cd packages/app
 export BUILD_NAVI_DEMO=true
 COMMIT=$(git rev-parse --short HEAD)
-git remote add ssh-origin git@github.com:yahoo/navi.git
-git fetch ssh-origin gh-pages
+ssh-agent sh -c "ssh-add $TRAVIS_BUILD_DIR/travis-secrets/deploy_rsa;
+  git remote add ssh-origin git@github.com:yahoo/navi.git;
+  git fetch ssh-origin gh-pages"
 npx ember github-pages:commit --message "Deploy gh-pages from $COMMIT}" --destination ../../
 ssh-agent sh -c "ssh-add $TRAVIS_BUILD_DIR/travis-secrets/deploy_rsa;
   git push ssh-origin gh-pages:gh-pages || echo Failed to push gh-pages update"
