@@ -10,7 +10,7 @@ module('Unit | Helper | default config', function(hooks) {
 
   hooks.beforeEach(function() {
     helper = this.owner.lookup('helper:default-config');
-    helper = new helper();
+    helper = helper.create();
     setOwner(helper, this.owner);
   });
 

@@ -22,7 +22,7 @@ module('Unit | Helper | navi get display name', function(hooks) {
     this.owner.register('service:bard-metadata', MockService);
 
     helper = this.owner.lookup('helper:navi-get-display-name');
-    helper = new helper();
+    helper = helper.create();
     setOwner(helper, this.owner);
   });
 
