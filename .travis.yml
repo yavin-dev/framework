@@ -31,12 +31,6 @@ branches:
     - master
 matrix:
   fast_finish: true
-before_install:
-  - if [[ "$TRAVIS_BRANCH" == "master" ]]; then
-    openssl aes-256-cbc -K $encrypted_3709885499a2_key -iv $encrypted_3709885499a2_iv -in travis-secrets.tar.gz.enc -out travis-secrets.tar.gz -d;
-    echo "Successfully decrypted travis secrets";
-    tar xvf travis-secrets.tar.gz;
-    fi
 install:
   - if [[ "${PACKAGE}" == "navi-webservice" ]]; then
     pushd packages/webservice && ./gradlew assemble && popd;
