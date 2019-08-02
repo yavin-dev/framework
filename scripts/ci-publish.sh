@@ -10,7 +10,10 @@ npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
 npm run-script lerna-ci-publish
 
 echo Publishing demo app
+git config --global user.email "travis@travis-ci.org"
+git config --global user.name "Travis CI"
 cd packages/app
 export BUILD_NAVI_DEMO=true
-npx ember github-pages:commit --message 'travis update gh-pages' --destination ../../
+COMMIT=$(git rev-parse --short HEAD)
+npx ember github-pages:commit --message "Deploy gh-pages from $COMMIT}" --destination ../../
 ssh-agent sh -c 'ssh-add $TRAVIS_BUILD_DIR/travis-secrets/deploy_rsa; git push origin gh-pages:gh-pages || echo Failed to push gh-pages update'
