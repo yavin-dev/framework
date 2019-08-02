@@ -86,6 +86,14 @@ export default Controller.extend({
      */
     searchFor(query) {
       set(this, 'q', query);
+    },
+
+    /**
+     * @action updateQueryParams - update to the new query params
+     * @param {Object} queryParams
+     */
+    updateQueryParams(queryParams) {
+      this.transitionToRoute({ queryParams });
     }
   }
 });

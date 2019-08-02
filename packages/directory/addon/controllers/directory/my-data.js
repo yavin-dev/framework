@@ -29,5 +29,15 @@ export default Controller.extend(SearchFilterMixin, {
     }
 
     return sortDir === 'desc' ? sortedItems.reverse() : sortedItems;
-  })
+  }),
+
+  actions: {
+    /**
+     * @action updateQueryParams - update to the new query params
+     * @param {Object} queryParams
+     */
+    updateQueryParams(queryParams) {
+      this.transitionToRoute({ queryParams });
+    }
+  }
 });
