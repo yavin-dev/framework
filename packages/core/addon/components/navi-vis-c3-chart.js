@@ -62,8 +62,7 @@ export default C3Chart.extend({
     'color',
     'transition',
     function() {
-      var self = this;
-      var c = self.getProperties([
+      const c = this.getProperties([
         'data',
         'axis',
         'regions',
@@ -85,15 +84,20 @@ export default C3Chart.extend({
         'transition'
       ]);
 
-      A(['oninit', 'onrendered', 'onmouseover', 'onmouseout', 'onresize', 'onresized']).forEach(function(eventname) {
-        c[eventname] = function() {
-          if (!self.get('isDestroyed') && !self.get('isDestroying')) {
-            self.sendAction(eventname, this);
-          }
-        };
-      });
+      ['oninit', 'onrendered', 'onmouseover', 'onmouseout', 'onresize', 'onresized'].forEach(
+        function(eventname) {
+          c[eventname] = function() {
+            if (!this.get('isDestroyed') && !this.get('isDestroying')) {
+              const eventAction = this.get(eventname);
+              if (eventAction) {
+                eventAction(this);
+              }
+            }
+          }.bind(this);
+        }.bind(this)
+      );
 
-      c.bindto = self.$().get(0);
+      c.bindto = this.$().get(0);
       return c;
     }
   ),

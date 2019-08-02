@@ -28,11 +28,12 @@ module('Acceptance | table', function(hooks) {
       'The headers for the table are as specified'
     );
 
+    debugger;
     await reorder(
       'mouse',
       '.table-header-cell',
       '.table-header-cell:nth-child(2)', // move second column to first column position
-      '.table-header-cell:nth-child(2)', // move new second column to second column position
+      '.table-header-cell', // move new second column to second column position
       '.table-header-cell:nth-child(3)',
       '.table-header-cell:nth-child(4)',
       '.table-header-cell:nth-child(5)'

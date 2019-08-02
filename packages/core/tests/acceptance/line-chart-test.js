@@ -88,8 +88,10 @@ module('Acceptance | line chart', function(hooks) {
     await reorder(
       'mouse',
       '.line-chart-config__series-config__item__handler',
-      '.line-chart-config__series-config__item__handler:nth-child(2)', // move second metric to first metric position
-      '.line-chart-config__series-config__item__handler:nth-child(2)', // move new second metric to second metric position
+      '.chart-series-1>.line-chart-config__series-config__item__handler',
+      '.chart-series-2>.line-chart-config__series-config__item__handler',
+      '.chart-series-0>.line-chart-config__series-config__item__handler', // move second metric to first metric position
+      // '.line-chart-config__series-config__item__handler:nth-child(2)', // move new second metric to second metric position
     );
 
     assert.deepEqual(

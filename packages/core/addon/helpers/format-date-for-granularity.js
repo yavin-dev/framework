@@ -24,6 +24,11 @@ export const DATE_TIME_FORMATS = {
  * @returns {String} date in a human readable format based on granularity
  */
 export function formatDateForGranularity(date, granularity) {
+  //Construct date to avoid deprecation warning
+  if (!date || (!moment.isMoment(date) && !moment(new Date(date)).isValid())) {
+    return '--';
+  }
+
   if (granularity === 'week') {
     return _formatWeek(date);
   }
