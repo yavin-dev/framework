@@ -18,7 +18,7 @@
     "lint:js": "eslint .",
     "start": "ember serve",
     "test": "export COVERAGE=true; ember test --test-port 0",
-    "deploy-demo-app": "export BUILD_NAVI_DEMO=true; ember github-pages:commit --message 'update gh-pages' --destination ../../; git push origin gh-pages:gh-pages"
+    "deploy-demo-app": "export BUILD_NAVI_DEMO=true; ember github-pages:commit --message 'update gh-pages' --destination ../../; echo 'gh-pages updated, now run:\ngit push origin gh-pages:gh-pages'"
   },
   "dependencies": {
     "compression": "^1.6.2",
