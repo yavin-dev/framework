@@ -160,7 +160,9 @@
 
 {{#if dashboard.hasDirtyAttributes}}
   <div class="navi-dashboard__save-dialogue">
-    <button onclick={{route-action "saveDashboard"}} class="btn btn-secondary navi-dashboard__save-button">Save Changes</button>
+    {{#if dashboard.canUserEdit}}
+      <button onclick={{route-action "saveDashboard"}} class="btn btn-secondary navi-dashboard__save-button">Save Changes</button>
+    {{/if}}
     <button onclick={{route-action "revertDashboard"}} class="btn btn-secondary navi-dashboard__revert-button">Revert Changes</button>
   </div>
 {{/if}}
