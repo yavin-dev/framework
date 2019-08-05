@@ -39,15 +39,5 @@ export default Route.extend({
    */
   model() {
     return this.user.getUser();
-  },
-
-  actions: {
-    /**
-     * @action updateQueryParams - update to the new query params
-     * @param {Object} queryParams
-     */
-    updateQueryParams(queryParams) {
-      this.transitionTo({ queryParams });
-    }
   }
 });
