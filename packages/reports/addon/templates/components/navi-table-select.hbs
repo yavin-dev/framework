@@ -1,4 +1,4 @@
-{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <span class="navi-table-select__header">
   Table
 </span>
@@ -10,15 +10,8 @@
   searchEnabled=searchEnabled
   tagName=tagName
   onchange=onChange
+  selectedItemComponent="navi-table-select-item"
   as | item |
 }}
-  {{item.longName}}
-  {{#if item.description}}
-    {{ember-tooltip
-      text=item.description
-      side="right"
-      popperContainer="body"
-      effect="none"
-    }}
-  {{/if}}
+  {{navi-table-select-item option=item}}
 {{/power-select}}

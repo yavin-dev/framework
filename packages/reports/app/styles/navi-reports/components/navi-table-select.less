@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 .navi-table-select {
@@ -21,18 +21,22 @@
       border: 0;
       font-size: 14px;
       height: 24px;
-    }
 
-    .ember-power-select-selected-item,
-    .ember-power-select-placeholder {
-      margin-left: 18px;
-      & > div {
-        display: inline;
+      .ember-tooltip-target {
+        margin-left: 18px;
       }
     }
   }
 
   &__dropdown-list {
     font-size: 14px;
+
+    .ember-power-select-option span {
+      display: flex;
+    }
   }
+}
+
+.navi-table-select-tooltip {
+  left: 5px !important;
 }
