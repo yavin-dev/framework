@@ -12,6 +12,7 @@
 
 import Component from '@ember/component';
 import { set, get, computed } from '@ember/object';
+import { readOnly } from '@ember/object/computed';
 import { getOwner } from '@ember/application';
 import { copy } from 'ember-copy';
 import layout from '../../templates/components/visualization-config/line-chart';
@@ -36,9 +37,9 @@ export default Component.extend({
   typePrefix: 'visualization-config/chart-type/',
 
   /**
-   * @property {Boolean} displayStackOption - whether to display the `stacked` toggle
+   * @property {Boolean} showStackOption - whether to display the `stacked` toggle
    */
-  displayStackOption: computed('type', 'request', function() {
+  showStackOption: computed('type', 'request', function() {
     if (!featureFlag('enableChartStacking')) {
       return false;
     }
@@ -48,6 +49,18 @@ export default Component.extend({
 
     return visualizationManifest.hasGroupBy(request) || visualizationManifest.hasMultipleMetrics(request);
   }),
+
+  /**
+   * @property {Object} seriesConfig
+   */
+  seriesConfig: computed('options', function() {
+    return get(this, 'options.axis.y.series.config');
+  }),
+
+  /**
+   * @property {String} seriesType
+   */
+  seriesType: readOnly('options.axis.y.series.type'),
 
   actions: {
     /**

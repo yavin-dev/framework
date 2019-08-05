@@ -215,28 +215,30 @@ export default Component.extend({
   /**
    * @property {Array} seriesDataGroups - chart series groups for stacking
    */
-  seriesDataGroups: computed('options', 'seriesData', function() {
-    const seriesData = get(this, 'seriesData'),
+  seriesDataGroups: computed('options', 'seriesConfig', function() {
+    const seriesConfig = get(this, 'seriesConfig'),
+      seriesType = get(seriesConfig, 'type'),
       options = merge({}, DEFAULT_OPTIONS, this.options),
       { stacked } = options.style;
 
-    /**
-     * if stacked, transform:
-     * [{
-     *   x: {
-     *     displayValue: "Jun 24",
-     *     rawValue: "2019-06-24 00:00:00.000"
-     *   },
-     *   group1: value1,
-     *   group2: value2,
-     *   ...
-     * }, {
-     *  ...
-     * }]
-     * to:
-     * [[ "group1", "group2", ... ]]
-     */
-    return stacked && seriesData.length ? [Object.keys(seriesData[0]).filter(key => key !== 'x')] : [];
+    if (!stacked) {
+      return [];
+    }
+
+    // if stacked, return [[ "Dimension 1", "Dimension 2", ... ]] or [[ "Metric 1", "Metric 2", ... ]]
+    if (seriesType === 'dimension') {
+      return [
+        get(seriesConfig, 'config.dimensions')
+          .map(dimension => dimension.name)
+      ];
+    } else if (seriesType === 'metric') {
+      return [
+        get(seriesConfig, 'config.metrics')
+          .map(metric => this.get('metricName').getDisplayName(metric))
+      ];
+    }
+
+    return [];
   }),
 
   /**
@@ -247,11 +249,18 @@ export default Component.extend({
       seriesData = get(this, 'seriesData'),
       seriesDataGroups = get(this, 'seriesDataGroups');
 
+    /**
+     * controls the order of stacking which should be the same as order of groups
+     * `null` will be order the data loaded (object properties) which might not be predictable in some browsers
+     */
+    const order = seriesDataGroups[0] || null;
+
     return {
       data: {
         type: c3ChartType,
         json: seriesData,
         groups: seriesDataGroups,
+        order,
         selection: {
           enabled: true
         }

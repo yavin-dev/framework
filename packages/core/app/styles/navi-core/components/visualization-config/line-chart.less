@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -18,19 +18,6 @@
 
   &__chart-series-item {
     margin-bottom: 10px;
-  }
-
-  .ember-power-select-status-icon {
-    display: inline-block;
-    right: 10px;
-  }
-
-  .ember-power-select-search input {
-    border: none;
-  }
-
-  .ember-power-select-option[aria-current='true'] {
-    background-color: @navi-purple;
   }
 
   &__style-options {
@@ -60,6 +47,65 @@
     &-title,
     &-select {
       flex: 1;
+    }
+  }
+
+  &__series-config {
+    margin-bottom: 20px;
+
+    &__header {
+      color: @navi-gray;
+      cursor: pointer;
+      margin: 5px;
+      margin-bottom: 0;
+    }
+
+    &__content {
+      .config-section();
+      display: none;
+      margin: 0;
+      margin-top: 5px;
+      padding: @report-selector-padding-left;
+
+      .is-open & {
+        display: block;
+      }
+    }
+
+    &__collection {
+      display: flex;
+      flex-flow: column-reverse;
+    }
+
+    &__item {
+      .generate-chart-colors-for(border-left-color);
+      border: 1px solid #f1f1f5;
+      border-left-width: 5px;
+      border-radius: 5px;
+      display: flex;
+      font-size: 12px;
+      justify-content: space-between;
+      margin-bottom: 5px;
+
+      &__content {
+        overflow: hidden;
+        padding: 2px 5px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      &__handler {
+        background-color: #e7e7e7;
+        cursor: move;
+        padding-top: 5px;
+
+        div {
+          background-color: #aaaaaa;
+          height: 1px;
+          margin: 3px 10px;
+          width: 15px;
+        }
+      }
     }
   }
 }

@@ -1,4 +1,25 @@
-{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{#if showMetricSelect}}
+  <div class="metric-select">
+    <span class="metric-select__header">Metric</span>
+    <div class="metric-select__select">
+      {{#power-select
+        options=metrics
+        selected=selectedMetric
+        searchEnabled=false
+        onchange=(action "onUpdateChartMetric")
+        dropdownClass="metric-select__select__dropdown"
+        triggerClass="metric-select__select__trigger"
+        class="metric-select__select__selector"
+        tagName="div"
+        renderInPlace=true
+        as |metric|
+      }}
+        {{metric-format metric}}
+      {{/power-select}}
+    </div>
+  </div>
+{{/if}}
 {{component
   (concat "visualization-config/" visualization.type)
   request=request

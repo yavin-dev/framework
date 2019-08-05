@@ -1,18 +1,4 @@
-{{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{#power-select
-  options=metrics
-  selected=selectedMetric
-  searchEnabled=false
-  onchange=(action "onUpdateChartMetric")
-  dropdownClass="dimension-line-chart-config__metric-dropdown"
-  triggerClass="dimension-line-chart-config__metric-trigger"
-  class="dimension-line-chart-config__metric-selector"
-  tagName="div"
-  renderInPlace=true
-  as |metric|
-}}
-  {{metric-format metric}}
-{{/power-select}}
+{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{chart-series-collection
     allSeriesData=allSeriesData
     selectedSeriesData=selectedSeriesData
