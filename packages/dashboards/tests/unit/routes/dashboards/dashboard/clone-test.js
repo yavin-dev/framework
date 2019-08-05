@@ -16,21 +16,21 @@ const CLONED_MODEL = {
         column: 0,
         height: 4,
         row: 0,
-        widgetId: 6,
+        widgetId: 7,
         width: 6
       },
       {
         column: 6,
         height: 4,
         row: 0,
-        widgetId: 7,
+        widgetId: 8,
         width: 6
       },
       {
         column: 0,
         height: 4,
         row: 4,
-        widgetId: 8,
+        widgetId: 9,
         width: 12
       }
     ],

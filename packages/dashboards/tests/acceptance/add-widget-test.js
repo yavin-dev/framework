@@ -30,7 +30,9 @@ module('Acceptance | Add New Widget', function(hooks) {
     await visit('/dashboards/1/');
     assert.dom('.navi-widget').exists({ count: 3 }, 'dashboard 1 initially has 3 widgets');
 
-    assert.notOk(!!findAll('[data-gs-id="6"]').length, 'widget 4 is not present');
+    const NEW_WIDGET_ID = 7;
+
+    assert.notOk(!!findAll(`[data-gs-id="${NEW_WIDGET_ID}"]`).length, '4th widget is not present');
 
     //Make a new widget
     const store = getContext().owner.lookup('service:store');
@@ -50,8 +52,10 @@ module('Acceptance | Add New Widget', function(hooks) {
 
     assert.dom('.navi-widget').exists({ count: 4 }, 'visiting the add route adds a widget to dashboard 1');
 
-    assert.ok(!!findAll('[data-gs-id="6"]').length, 'widget 4 is present');
+    assert.ok(!!findAll(`[data-gs-id="${NEW_WIDGET_ID}"]`).length, '4th widget is present');
 
-    assert.dom('[data-gs-id="6"]').hasAttribute('data-gs-y', '8', 'widget 4 was added to the next available row');
+    assert
+      .dom(`[data-gs-id="${NEW_WIDGET_ID}"]`)
+      .hasAttribute('data-gs-y', '8', '4th widget was added to the next available row');
   });
 });

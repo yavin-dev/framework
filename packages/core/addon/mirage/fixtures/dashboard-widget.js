@@ -230,5 +230,48 @@ export default [
     ],
     createdOn: '2016-01-01 00:00:00',
     updatedOn: '2016-01-01 00:00:00'
+  },
+  {
+    id: 6,
+    dashboardId: 4,
+    authorId: 'ciela',
+    title: 'Clicks',
+    visualization: {
+      type: 'line-chart',
+      version: 1,
+      metadata: {
+        axis: {
+          y: {
+            series: {
+              type: 'metric',
+              config: {
+                metrics: ['adClicks', 'navClicks']
+              }
+            }
+          }
+        }
+      }
+    },
+    requests: [
+      {
+        logicalTable: {
+          table: 'network',
+          timeGrain: 'day'
+        },
+        metrics: [{ metric: 'adClicks' }, { metric: 'navClicks' }],
+        dimensions: [],
+        filters: [],
+        intervals: [
+          {
+            end: 'current',
+            start: 'P7D'
+          }
+        ],
+        bardVersion: 'v1',
+        requestVersion: 'v1'
+      }
+    ],
+    createdOn: '2016-01-01 00:00:00',
+    updatedOn: '2016-01-01 00:00:00'
   }
 ];

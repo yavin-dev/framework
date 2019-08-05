@@ -78,7 +78,7 @@ export default [
     id: 4,
     title: 'Dashboard 4',
     authorId: 'ciela',
-    dashboardWidgetIds: [],
+    dashboardWidgetIds: [6],
     createdOn: '2016-01-01 00:00:00',
     updatedOn: '2016-01-01 00:00:00',
     deliveryRuleIds: [],
@@ -92,8 +92,8 @@ export default [
     ],
     presentation: {
       version: 1,
-      layout: [], //TODO
-      columns: 15
+      layout: [{ column: 0, row: 0, height: 6, width: 9, widgetId: 6 }],
+      columns: 40
     }
   },
   {

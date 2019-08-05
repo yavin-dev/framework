@@ -43,7 +43,22 @@ module('Acceptance | Dashboards', function(hooks) {
   });
 
   test('updates to dashboard layout', async function(assert) {
-    assert.expect(2);
+    assert.expect(5);
+
+    await visit('/dashboards/4');
+
+    //trigger a change
+    run(() => {
+      $('.grid-stack').trigger('resizestop');
+    });
+
+    assert
+      .dom('.navi-dashboard__save-button')
+      .isNotVisible('Save button is not visible when user cannot edit the dashboard.');
+
+    assert
+      .dom('.navi-dashboard__revert-button')
+      .isVisible('Revert button is visible even when user cannot edit the dashboard.');
 
     await visit('/dashboards/1');
 
@@ -77,6 +92,8 @@ module('Acceptance | Dashboards', function(hooks) {
       ],
       "Moving widget locations updates the dashboard's layout property"
     );
+
+    assert.dom('.navi-dashboard__save-button').isVisible('Save button is visible when user can edit the dashboard.');
   });
 
   test('empty dashboard', async function(assert) {
