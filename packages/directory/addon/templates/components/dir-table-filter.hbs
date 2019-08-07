@@ -10,6 +10,7 @@
       <div
         class={{concat "dir-table-filter__dropdown-option" (if (eq type selectedFileType) " dir-table-filter__dropdown-option--selected")}}
         onclick={{pipe (action "filterByType" type) (action "close" dd)}}
+        role="button"
       >
         {{capitalize type}}
       </div>
