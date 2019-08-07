@@ -5,7 +5,8 @@ self.deprecationWorkflow.config = {
     { handler: 'silence', matchId: 'ember-component.send-action' },
     { handler: 'silence', matchId: 'ember-views.event-dispatcher.jquery-event' },
     { handler: 'silence', matchId: 'events.remove-all-listeners' },
-    { handler: 'silence', matchId: 'object.new-constructor' }
+    { handler: 'silence', matchId: 'object.new-constructor' },
+    { handler: 'silence', matchId: 'deprecate-fetch-ember-data-support' }
   ],
   throwOnUnhandled: true
 };

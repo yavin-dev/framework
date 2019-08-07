@@ -9,10 +9,11 @@
     <p>
       Select some dimensions and metrics, then click
       <a class="navi-link clickable"
+        role="button"
         onclick={{pipe
-        (route-action "validate" report)
-        (route-action "runReport" report)
-      }}>
+          (route-action "validate" report)
+          (route-action "runReport" report)
+        }}>
         Run
       </a>
     </p>

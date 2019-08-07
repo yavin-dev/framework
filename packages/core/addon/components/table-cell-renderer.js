@@ -14,6 +14,7 @@
 import Component from '@ember/component';
 import layout from '../templates/components/table-cell-renderer';
 import { computed } from '@ember/object';
+import { dasherize } from '@ember/string';
 
 export default Component.extend({
   layout,
@@ -26,6 +27,6 @@ export default Component.extend({
    * Chooses which cell renderer to use based on type of column
    */
   cellRenderer: computed('column.type', function() {
-    return this.get('prefix') + this.get('column.type');
+    return this.get('prefix') + dasherize(this.get('column.type'));
   })
 });
