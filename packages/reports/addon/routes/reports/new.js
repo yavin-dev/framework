@@ -8,7 +8,6 @@ import { reject } from 'rsvp';
 import { inject as service } from '@ember/service';
 import Route from '@ember/routing/route';
 import { get } from '@ember/object';
-import DS from 'ember-data';
 import Interval from 'navi-core/utils/classes/interval';
 import Duration from 'navi-core/utils/classes/duration';
 import DefaultIntervals from 'navi-reports/utils/enums/default-intervals';
@@ -81,11 +80,7 @@ export default Route.extend({
     return get(this, 'compression')
       .decompressModel(modelString)
       .then(model => {
-        // Always return a new model
-        model._internalModel.currentState = DS.RootState.loaded.created;
-        model.set('id', null);
-
-        return model;
+        return this.store.createRecord('report', model.clone());
       })
       .catch(() => reject(new Error('Could not parse model query param')));
   },
