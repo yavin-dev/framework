@@ -11,6 +11,7 @@ tmp/
 *~
 .com.apple.timemachine.supported
 lerna-debug.log
+travis_wait*.log
 *.iml
 .idea/
 package-lock.json
