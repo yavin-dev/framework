@@ -1,0 +1,337 @@
+
+> husky@3.0.1 install /home/travis/build/yahoo/navi/node_modules/husky
+> node husky install
+
+husky > Setting up git hooks
+CI detected, skipping Git hooks installation.
+
+> husky@3.0.1 postinstall /home/travis/build/yahoo/navi/node_modules/husky
+> opencollective-postinstall || true
+
+
+> navi@0.1.0 postinstall /home/travis/build/yahoo/navi
+> lerna bootstrap --concurrency 2; lerna exec --ignore navi-data bower install
+
+lerna notice cli v3.15.0
+lerna info ci enabled
+lerna info Bootstrapping 6 packages
+lerna info Installing external dependencies
+lerna info Symlinking packages and binaries
+lerna success Bootstrapped 6 packages
+lerna notice cli v3.15.0
+lerna info ci enabled
+lerna info filter [ '!navi-data' ]
+lerna info Executing command in 5 packages: "bower install"
+bower d3#3.5.17             not-cached https://github.com/mbostock-bower/d3-bower.git#3.5.17
+bower d3#3.5.17                resolve https://github.com/mbostock-bower/d3-bower.git#3.5.17
+bower c3#0.4.20             not-cached https://github.com/masayuki0812/c3.git#0.4.20
+bower c3#0.4.20                resolve https://github.com/masayuki0812/c3.git#0.4.20
+bower numeral#^1.5.3        not-cached https://github.com/adamwdraper/Numeral-js.git#^1.5.3
+bower numeral#^1.5.3           resolve https://github.com/adamwdraper/Numeral-js.git#^1.5.3
+bower numeral#^1.5.3          download https://github.com/adamwdraper/Numeral-js/archive/1.5.6.tar.gz
+bower c3#0.4.20               download https://github.com/masayuki0812/c3/archive/v0.4.20.tar.gz
+bower d3#3.5.17               download https://github.com/mbostock-bower/d3-bower/archive/v3.5.17.tar.gz
+bower numeral#^1.5.3           extract archive.tar.gz
+bower numeral#^1.5.3          resolved https://github.com/adamwdraper/Numeral-js.git#1.5.6
+bower d3#3.5.17                extract archive.tar.gz
+bower d3#3.5.17               resolved https://github.com/mbostock-bower/d3-bower.git#3.5.17
+bower c3#0.4.20                extract archive.tar.gz
+bower c3#0.4.20               resolved https://github.com/masayuki0812/c3.git#0.4.20
+bower numeral#^1.5.3           install numeral#1.5.6
+bower d3#3.5.17                install d3#3.5.17
+bower c3#0.4.20                install c3#0.4.20
+
+numeral#1.5.6 bower_components/numeral
+
+d3#3.5.17 bower_components/d3
+
+c3#0.4.20 bower_components/c3
+└── d3#3.5.17
+bower d3#3.5.17                 cached https://github.com/mbostock-bower/d3-bower.git#3.5.17
+bower d3#3.5.17               validate 3.5.17 against https://github.com/mbostock-bower/d3-bower.git#3.5.17
+bower c3#0.4.20                 cached https://github.com/masayuki0812/c3.git#0.4.20
+bower c3#0.4.20               validate 0.4.20 against https://github.com/masayuki0812/c3.git#0.4.20
+bower numeral#^1.5.3            cached https://github.com/adamwdraper/Numeral-js.git#1.5.6
+bower numeral#^1.5.3          validate 1.5.6 against https://github.com/adamwdraper/Numeral-js.git#^1.5.3
+bower bootstrap-datepicker#1.4.0       not-cached https://github.com/eternicode/bootstrap-datepicker.git#1.4.0
+bower bootstrap-datepicker#1.4.0          resolve https://github.com/eternicode/bootstrap-datepicker.git#1.4.0
+bower Faker#~3.1.0                     not-cached https://github.com/Marak/Faker.js.git#~3.1.0
+bower Faker#~3.1.0                        resolve https://github.com/Marak/Faker.js.git#~3.1.0
+bower pretender#^1.4.2                 not-cached https://github.com/trek/pretender.git#^1.4.2
+bower pretender#^1.4.2                    resolve https://github.com/trek/pretender.git#^1.4.2
+bower Faker#~3.1.0                       download https://github.com/Marak/Faker.js/archive/v3.1.0.tar.gz
+bower bootstrap-datepicker#1.4.0         download https://github.com/eternicode/bootstrap-datepicker/archive/v1.4.0.tar.gz
+bower pretender#^1.4.2                   download https://github.com/trek/pretender/archive/v1.6.1.tar.gz
+bower Faker#~3.1.0                        extract archive.tar.gz
+bower pretender#^1.4.2                    extract archive.tar.gz
+bower bootstrap-datepicker#1.4.0          extract archive.tar.gz
+bower pretender#^1.4.2                   mismatch Version declared in the json (1.4.1) is different than the resolved one (1.6.1)
+bower pretender#^1.4.2                   resolved https://github.com/trek/pretender.git#1.6.1
+bower FakeXMLHttpRequest#^1.6.0        not-cached https://github.com/trek/FakeXMLHttpRequest.git#^1.6.0
+bower FakeXMLHttpRequest#^1.6.0           resolve https://github.com/trek/FakeXMLHttpRequest.git#^1.6.0
+bower route-recognizer#^0.2.3          not-cached https://github.com/tildeio/route-recognizer.git#^0.2.3
+bower route-recognizer#^0.2.3             resolve https://github.com/tildeio/route-recognizer.git#^0.2.3
+bower bootstrap-datepicker#1.4.0     invalid-meta for:/tmp/travis/bower/5302a8e90732aef5f2e93a0af3490637-5672-JScLxz/bower.json
+bower bootstrap-datepicker#1.4.0     invalid-meta The "main" field has to contain only 1 file per filetype; found multiple .css files: ["dist/css/bootstrap-datepicker.css","dist/css/bootstrap-datepicker3.css"]
+bower bootstrap-datepicker#1.4.0         resolved https://github.com/eternicode/bootstrap-datepicker.git#1.4.0
+bower bootstrap#>=2.0.4 <4.0           not-cached https://github.com/twbs/bootstrap.git#>=2.0.4 <4.0
+bower bootstrap#>=2.0.4 <4.0              resolve https://github.com/twbs/bootstrap.git#>=2.0.4 <4.0
+bower jquery#>=1.7.1                   not-cached https://github.com/jquery/jquery-dist.git#>=1.7.1
+bower jquery#>=1.7.1                      resolve https://github.com/jquery/jquery-dist.git#>=1.7.1
+bower route-recognizer#^0.2.3            download https://github.com/tildeio/route-recognizer/archive/v0.2.9.tar.gz
+bower FakeXMLHttpRequest#^1.6.0          download https://github.com/trek/FakeXMLHttpRequest/archive/v1.6.0.tar.gz
+bower bootstrap#>=2.0.4 <4.0             download https://github.com/twbs/bootstrap/archive/v3.4.1.tar.gz
+bower route-recognizer#^0.2.3             extract archive.tar.gz
+bower jquery#>=1.7.1                     download https://github.com/jquery/jquery-dist/archive/3.4.1.tar.gz
+bower route-recognizer#^0.2.3            mismatch Version declared in the json (0.2.7) is different than the resolved one (0.2.9)
+bower route-recognizer#^0.2.3            resolved https://github.com/tildeio/route-recognizer.git#0.2.9
+bower FakeXMLHttpRequest#^1.6.0           extract archive.tar.gz
+bower FakeXMLHttpRequest#^1.6.0          mismatch Version declared in the json (1.4.0) is different than the resolved one (1.6.0)
+bower FakeXMLHttpRequest#^1.6.0          resolved https://github.com/trek/FakeXMLHttpRequest.git#1.6.0
+bower jquery#>=1.7.1                      extract archive.tar.gz
+bower bootstrap#>=2.0.4 <4.0              extract archive.tar.gz
+bower jquery#>=1.7.1                     resolved https://github.com/jquery/jquery-dist.git#3.4.1
+bower bootstrap#>=2.0.4 <4.0             resolved https://github.com/twbs/bootstrap.git#3.4.1
+bower Faker#~3.1.0                       resolved https://github.com/Marak/Faker.js.git#3.1.0
+bower d3#3.5.17                           install d3#3.5.17
+bower numeral#^1.5.3                      install numeral#1.5.6
+bower c3#0.4.20                           install c3#0.4.20
+bower pretender#^1.4.2                    install pretender#1.6.1
+bower bootstrap-datepicker#1.4.0          install bootstrap-datepicker#1.4.0
+bower route-recognizer#^0.2.3             install route-recognizer#0.2.9
+bower FakeXMLHttpRequest#^1.6.0           install FakeXMLHttpRequest#1.6.0
+bower jquery#>=1.7.1                      install jquery#3.4.1
+bower bootstrap#>=2.0.4 <4.0              install bootstrap#3.4.1
+bower Faker#~3.1.0                        install Faker#3.1.0
+
+d3#3.5.17 bower_components/d3
+
+numeral#1.5.6 bower_components/numeral
+
+c3#0.4.20 bower_components/c3
+└── d3#3.5.17
+
+pretender#1.6.1 bower_components/pretender
+├── FakeXMLHttpRequest#1.6.0
+└── route-recognizer#0.2.9
+
+bootstrap-datepicker#1.4.0 bower_components/bootstrap-datepicker
+├── bootstrap#3.4.1
+└── jquery#3.4.1
+
+route-recognizer#0.2.9 bower_components/route-recognizer
+
+FakeXMLHttpRequest#1.6.0 bower_components/FakeXMLHttpRequest
+
+jquery#3.4.1 bower_components/jquery
+
+bootstrap#3.4.1 bower_components/bootstrap
+└── jquery#3.4.1
+
+Faker#3.1.0 bower_components/Faker
+bower pretender#~1.1.0      not-cached https://github.com/trek/pretender.git#~1.1.0
+bower pretender#~1.1.0         resolve https://github.com/trek/pretender.git#~1.1.0
+bower numeral#~1.5.3            cached https://github.com/adamwdraper/Numeral-js.git#1.5.6
+bower numeral#~1.5.3          validate 1.5.6 against https://github.com/adamwdraper/Numeral-js.git#~1.5.3
+bower Faker#~3.1.0              cached https://github.com/Marak/Faker.js.git#3.1.0
+bower Faker#~3.1.0            validate 3.1.0 against https://github.com/Marak/Faker.js.git#~3.1.0
+bower d3#3.5.17                 cached https://github.com/mbostock-bower/d3-bower.git#3.5.17
+bower d3#3.5.17               validate 3.5.17 against https://github.com/mbostock-bower/d3-bower.git#3.5.17
+bower bootstrap-datepicker#1.4.0           cached https://github.com/eternicode/bootstrap-datepicker.git#1.4.0
+bower bootstrap-datepicker#1.4.0         validate 1.4.0 against https://github.com/eternicode/bootstrap-datepicker.git#1.4.0
+bower c3#0.4.20                            cached https://github.com/masayuki0812/c3.git#0.4.20
+bower c3#0.4.20                          validate 0.4.20 against https://github.com/masayuki0812/c3.git#0.4.20
+bower gridstack#~0.2.6                 not-cached https://github.com/troolee/gridstack.js.git#~0.2.6
+bower gridstack#~0.2.6                    resolve https://github.com/troolee/gridstack.js.git#~0.2.6
+bower lodash#^4.13.1                   not-cached https://github.com/lodash/lodash.git#^4.13.1
+bower lodash#^4.13.1                      resolve https://github.com/lodash/lodash.git#^4.13.1
+bower jquery-ui#1.12.0                 not-cached https://github.com/components/jqueryui.git#1.12.0
+bower jquery-ui#1.12.0                    resolve https://github.com/components/jqueryui.git#1.12.0
+bower pretender#~1.1.0                   download https://github.com/trek/pretender/archive/1.1.0.tar.gz
+bower jquery#>=1.7.1                       cached https://github.com/jquery/jquery-dist.git#3.4.1
+bower jquery#>=1.7.1                     validate 3.4.1 against https://github.com/jquery/jquery-dist.git#>=1.7.1
+bower bootstrap#>=2.0.4 <4.0               cached https://github.com/twbs/bootstrap.git#3.4.1
+bower bootstrap#>=2.0.4 <4.0             validate 3.4.1 against https://github.com/twbs/bootstrap.git#>=2.0.4 <4.0
+bower gridstack#~0.2.6                   download https://github.com/troolee/gridstack.js/archive/v0.2.6.tar.gz
+bower jquery-ui#1.12.0                   download https://github.com/components/jqueryui/archive/1.12.0.tar.gz
+bower pretender#~1.1.0                    extract archive.tar.gz
+bower lodash#^4.13.1                     download https://github.com/lodash/lodash/archive/4.17.15.tar.gz
+bower pretender#~1.1.0                   resolved https://github.com/trek/pretender.git#1.1.0
+bower route-recognizer#~0.1.1          not-cached https://github.com/tildeio/route-recognizer.git#~0.1.1
+bower route-recognizer#~0.1.1             resolve https://github.com/tildeio/route-recognizer.git#~0.1.1
+bower FakeXMLHttpRequest#^1.4.0            cached https://github.com/trek/FakeXMLHttpRequest.git#1.6.0
+bower FakeXMLHttpRequest#^1.4.0          validate 1.6.0 against https://github.com/trek/FakeXMLHttpRequest.git#^1.4.0
+bower gridstack#~0.2.6                    extract archive.tar.gz
+bower jquery-ui#1.12.0                    extract archive.tar.gz
+bower route-recognizer#~0.1.1            download https://github.com/tildeio/route-recognizer/archive/v0.1.11.tar.gz
+bower lodash#^4.13.1                      extract archive.tar.gz
+bower gridstack#~0.2.6                   resolved https://github.com/troolee/gridstack.js.git#0.2.6
+bower lodash#>= 4.14.2                 not-cached https://github.com/lodash/lodash.git#>= 4.14.2
+bower lodash#>= 4.14.2                    resolve https://github.com/lodash/lodash.git#>= 4.14.2
+bower lodash#>= 4.14.2                   download https://github.com/lodash/lodash/archive/4.17.15.tar.gz
+bower lodash#^4.13.1                     resolved https://github.com/lodash/lodash.git#4.17.15
+bower route-recognizer#~0.1.1             extract archive.tar.gz
+bower route-recognizer#~0.1.1            mismatch Version declared in the json (0.1.9) is different than the resolved one (0.1.11)
+bower route-recognizer#~0.1.1            resolved https://github.com/tildeio/route-recognizer.git#0.1.11
+bower lodash#>= 4.14.2                    extract archive.tar.gz
+bower jquery-ui#1.12.0                   resolved https://github.com/components/jqueryui.git#1.12.0
+bower lodash#>= 4.14.2                   resolved https://github.com/lodash/lodash.git#4.17.15
+bower Faker#~3.1.0                        install Faker#3.1.0
+bower bootstrap-datepicker#1.4.0          install bootstrap-datepicker#1.4.0
+bower numeral#~1.5.3                      install numeral#1.5.6
+bower d3#3.5.17                           install d3#3.5.17
+bower c3#0.4.20                           install c3#0.4.20
+bower jquery#>=1.7.1                      install jquery#3.4.1
+bower pretender#~1.1.0                    install pretender#1.1.0
+bower bootstrap#>=2.0.4 <4.0              install bootstrap#3.4.1
+bower FakeXMLHttpRequest#^1.4.0           install FakeXMLHttpRequest#1.6.0
+bower gridstack#~0.2.6                    install gridstack#0.2.6
+bower lodash#^4.13.1                      install lodash#4.17.15
+bower route-recognizer#~0.1.1             install route-recognizer#0.1.11
+bower jquery-ui#1.12.0                    install jquery-ui#1.12.0
+
+Faker#3.1.0 bower_components/Faker
+
+bootstrap-datepicker#1.4.0 bower_components/bootstrap-datepicker
+├── bootstrap#3.4.1
+└── jquery#3.4.1
+
+numeral#1.5.6 bower_components/numeral
+
+d3#3.5.17 bower_components/d3
+
+c3#0.4.20 bower_components/c3
+└── d3#3.5.17
+
+jquery#3.4.1 bower_components/jquery
+
+pretender#1.1.0 bower_components/pretender
+├── FakeXMLHttpRequest#1.6.0
+└── route-recognizer#0.1.11
+
+bootstrap#3.4.1 bower_components/bootstrap
+└── jquery#3.4.1
+
+FakeXMLHttpRequest#1.6.0 bower_components/FakeXMLHttpRequest
+
+gridstack#0.2.6 bower_components/gridstack
+├── jquery#3.4.1
+├── jquery-ui#1.12.0
+└── lodash#4.17.15
+
+lodash#4.17.15 bower_components/lodash
+
+route-recognizer#0.1.11 bower_components/route-recognizer
+
+jquery-ui#1.12.0 bower_components/jquery-ui
+└── jquery#3.4.1
+bower c3#0.4.20                 cached https://github.com/masayuki0812/c3.git#0.4.20
+bower c3#0.4.20               validate 0.4.20 against https://github.com/masayuki0812/c3.git#0.4.20
+bower bootstrap-datepicker#1.4.0           cached https://github.com/eternicode/bootstrap-datepicker.git#1.4.0
+bower bootstrap-datepicker#1.4.0         validate 1.4.0 against https://github.com/eternicode/bootstrap-datepicker.git#1.4.0
+bower d3#3.5.17                            cached https://github.com/mbostock-bower/d3-bower.git#3.5.17
+bower d3#3.5.17                          validate 3.5.17 against https://github.com/mbostock-bower/d3-bower.git#3.5.17
+bower numeral#^1.5.3                       cached https://github.com/adamwdraper/Numeral-js.git#1.5.6
+bower numeral#^1.5.3                     validate 1.5.6 against https://github.com/adamwdraper/Numeral-js.git#^1.5.3
+bower jquery#>=1.7.1                       cached https://github.com/jquery/jquery-dist.git#3.4.1
+bower jquery#>=1.7.1                     validate 3.4.1 against https://github.com/jquery/jquery-dist.git#>=1.7.1
+bower bootstrap#>=2.0.4 <4.0               cached https://github.com/twbs/bootstrap.git#3.4.1
+bower bootstrap#>=2.0.4 <4.0             validate 3.4.1 against https://github.com/twbs/bootstrap.git#>=2.0.4 <4.0
+bower c3#0.4.20                           install c3#0.4.20
+bower numeral#^1.5.3                      install numeral#1.5.6
+bower bootstrap-datepicker#1.4.0          install bootstrap-datepicker#1.4.0
+bower d3#3.5.17                           install d3#3.5.17
+bower jquery#>=1.7.1                      install jquery#3.4.1
+bower bootstrap#>=2.0.4 <4.0              install bootstrap#3.4.1
+
+c3#0.4.20 bower_components/c3
+└── d3#3.5.17
+
+numeral#1.5.6 bower_components/numeral
+
+bootstrap-datepicker#1.4.0 bower_components/bootstrap-datepicker
+├── bootstrap#3.4.1
+└── jquery#3.4.1
+
+d3#3.5.17 bower_components/d3
+
+jquery#3.4.1 bower_components/jquery
+
+bootstrap#3.4.1 bower_components/bootstrap
+└── jquery#3.4.1
+bower pretender#~1.1.0          cached https://github.com/trek/pretender.git#1.1.0
+bower pretender#~1.1.0        validate 1.1.0 against https://github.com/trek/pretender.git#~1.1.0
+bower bootstrap-datepicker#1.4.0           cached https://github.com/eternicode/bootstrap-datepicker.git#1.4.0
+bower bootstrap-datepicker#1.4.0         validate 1.4.0 against https://github.com/eternicode/bootstrap-datepicker.git#1.4.0
+bower numeral#~1.5.3                       cached https://github.com/adamwdraper/Numeral-js.git#1.5.6
+bower numeral#~1.5.3                     validate 1.5.6 against https://github.com/adamwdraper/Numeral-js.git#~1.5.3
+bower jquery-ui#1.12.0                     cached https://github.com/components/jqueryui.git#1.12.0
+bower jquery-ui#1.12.0                   validate 1.12.0 against https://github.com/components/jqueryui.git#1.12.0
+bower lodash#^4.13.1                       cached https://github.com/lodash/lodash.git#4.17.15
+bower lodash#^4.13.1                     validate 4.17.15 against https://github.com/lodash/lodash.git#^4.13.1
+bower gridstack#~0.2.6                     cached https://github.com/troolee/gridstack.js.git#0.2.6
+bower gridstack#~0.2.6                   validate 0.2.6 against https://github.com/troolee/gridstack.js.git#~0.2.6
+bower d3#3.5.17                            cached https://github.com/mbostock-bower/d3-bower.git#3.5.17
+bower d3#3.5.17                          validate 3.5.17 against https://github.com/mbostock-bower/d3-bower.git#3.5.17
+bower c3#0.4.20                            cached https://github.com/masayuki0812/c3.git#0.4.20
+bower c3#0.4.20                          validate 0.4.20 against https://github.com/masayuki0812/c3.git#0.4.20
+bower FakeXMLHttpRequest#^1.4.0            cached https://github.com/trek/FakeXMLHttpRequest.git#1.6.0
+bower FakeXMLHttpRequest#^1.4.0          validate 1.6.0 against https://github.com/trek/FakeXMLHttpRequest.git#^1.4.0
+bower route-recognizer#~0.1.1              cached https://github.com/tildeio/route-recognizer.git#0.1.11
+bower route-recognizer#~0.1.1            validate 0.1.11 against https://github.com/tildeio/route-recognizer.git#~0.1.1
+bower jquery#>=1.6                         cached https://github.com/jquery/jquery-dist.git#3.4.1
+bower jquery#>=1.6                       validate 3.4.1 against https://github.com/jquery/jquery-dist.git#>=1.6
+bower jquery#>=1.7.1                       cached https://github.com/jquery/jquery-dist.git#3.4.1
+bower jquery#>=1.7.1                     validate 3.4.1 against https://github.com/jquery/jquery-dist.git#>=1.7.1
+bower bootstrap#>=2.0.4 <4.0               cached https://github.com/twbs/bootstrap.git#3.4.1
+bower bootstrap#>=2.0.4 <4.0             validate 3.4.1 against https://github.com/twbs/bootstrap.git#>=2.0.4 <4.0
+bower jquery#>= 3.1.0                      cached https://github.com/jquery/jquery-dist.git#3.4.1
+bower jquery#>= 3.1.0                    validate 3.4.1 against https://github.com/jquery/jquery-dist.git#>= 3.1.0
+bower pretender#~1.1.0                    install pretender#1.1.0
+bower jquery-ui#1.12.0                    install jquery-ui#1.12.0
+bower bootstrap-datepicker#1.4.0          install bootstrap-datepicker#1.4.0
+bower lodash#^4.13.1                      install lodash#4.17.15
+bower numeral#~1.5.3                      install numeral#1.5.6
+bower FakeXMLHttpRequest#^1.4.0           install FakeXMLHttpRequest#1.6.0
+bower d3#3.5.17                           install d3#3.5.17
+bower route-recognizer#~0.1.1             install route-recognizer#0.1.11
+bower gridstack#~0.2.6                    install gridstack#0.2.6
+bower c3#0.4.20                           install c3#0.4.20
+bower jquery#>=1.7.1                      install jquery#3.4.1
+bower bootstrap#>=2.0.4 <4.0              install bootstrap#3.4.1
+
+pretender#1.1.0 bower_components/pretender
+├── FakeXMLHttpRequest#1.6.0
+└── route-recognizer#0.1.11
+
+jquery-ui#1.12.0 bower_components/jquery-ui
+└── jquery#3.4.1
+
+bootstrap-datepicker#1.4.0 bower_components/bootstrap-datepicker
+├── bootstrap#3.4.1
+└── jquery#3.4.1
+
+lodash#4.17.15 bower_components/lodash
+
+numeral#1.5.6 bower_components/numeral
+
+FakeXMLHttpRequest#1.6.0 bower_components/FakeXMLHttpRequest
+
+d3#3.5.17 bower_components/d3
+
+route-recognizer#0.1.11 bower_components/route-recognizer
+
+gridstack#0.2.6 bower_components/gridstack
+├── jquery#3.4.1
+├── jquery-ui#1.12.0
+└── lodash#4.17.15
+
+c3#0.4.20 bower_components/c3
+└── d3#3.5.17
+
+jquery#3.4.1 bower_components/jquery
+
+bootstrap#3.4.1 bower_components/bootstrap
+└── jquery#3.4.1
+lerna success exec Executed command in 5 packages: "bower install"
+added 734 packages in 155.855s
