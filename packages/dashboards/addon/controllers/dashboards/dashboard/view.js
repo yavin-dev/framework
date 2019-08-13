@@ -5,8 +5,8 @@
 
 import Controller from '@ember/controller';
 import { inject as service } from '@ember/service';
-import { get } from '@ember/object';
-import { isEmpty } from '@ember/utils';
+import isEqual from 'lodash/isEqual';
+import { get, setProperties } from '@ember/object';
 
 export default Controller.extend({
   /**
@@ -15,62 +15,19 @@ export default Controller.extend({
   compression: service(),
 
   /**
-   * @property {Service} store
-   */
-  store: service(),
-
-  /**
    * @property {Service} metadataService
    */
   metadataService: service('bard-metadata'),
 
   /**
+   * @property {Service} store
+   */
+  store: service(),
+
+  /**
    * @property {String[]} queryParams
    */
   queryParams: ['filters'],
-
-  /**
-   * Update Model to have dirty attributes that match the filter query params
-   *
-   * @method addFiltersFromQueryParams
-   */
-  async addFiltersFromQueryParams() {
-    const dashboard = this.model.dashboard;
-    const modelFilters = dashboard.filters;
-    const filterQueryParams = this.filters;
-
-    if (isEmpty(filterQueryParams)) {
-      return;
-    }
-
-    let decompressedFilters = null;
-    try {
-      decompressedFilters = await this.compression.decompress(filterQueryParams);
-
-      if (!decompressedFilters.hasOwnProperty('filters') || !Array.isArray(decompressedFilters.filters)) {
-        throw Error('Filter query params are not valid filters');
-      }
-
-      this._removeAllFiltersFromDashboard(dashboard);
-
-      await Promise.all(
-        decompressedFilters.filters.map(async fil => {
-          const newFragmentFields = {
-            field: fil.field,
-            operator: fil.operator,
-            rawValues: fil.values,
-            dimension: this.metadataService.getById('dimension', fil.dimension)
-          };
-
-          const newFragment = this.store.createFragment('bard-request/fragments/filter', newFragmentFields);
-
-          modelFilters.pushObject(newFragment);
-        })
-      );
-    } catch (e) {
-      throw Error(`Error decompressing filter query params: ${filterQueryParams}\n${e}`);
-    }
-  },
 
   /**
    * @method resetModel - Rollback model attributes and clear query params
@@ -80,36 +37,85 @@ export default Controller.extend({
     this.get('model.dashboard').rollbackAttributes();
   },
 
-  /**
-   * @private
-   * @method _removeAllFiltersFromDashboard
-   * @param {Object} dashboard
-   */
-  _removeAllFiltersFromDashboard(dashboard) {
-    const filters = dashboard.filters;
-    while (filters.get('firstObject')) {
-      filters.popObject();
-    }
-  },
-
   actions: {
     /**
-     * Update query params to match dirty filter attributes of model
-     *
-     * @action generateFilterQueryParams
+     * @action updateFilter
+     * @param {Object} dashboard
+     * @param {Object} originalFilter
+     * @param {Object} changeSet
      */
-    async generateFilterQueryParams() {
-      const model = this.model.dashboard;
-      const hasDirtyAttrs = get(model, 'filters').hasDirtyAttributes;
-      const filterQueryParams = hasDirtyAttrs
-        ? await this.compression.compress({
-            filters: get(model, 'filters')
-              .toArray()
-              .map(fil => fil.serialize())
-          })
-        : null;
+    async updateFilter(dashboard, originalFilter, changeSet) {
+      const origFilter = originalFilter.serialize();
+      const newFilters = get(dashboard, 'filters')
+        .toArray()
+        .map(fil => fil.serialize()); //Native array of serialized filters
+      const newFilter = newFilters.find(fil => isEqual(fil, origFilter));
+      const validChangeSet = cookValues(changeSet);
 
-      this.transitionToRoute('dashboards.dashboard', model, { queryParams: { filters: filterQueryParams } });
+      setProperties(newFilter, validChangeSet);
+
+      const filterQueryParams = await get(this, 'compression').compress({ filters: newFilters });
+
+      this.transitionToRoute('dashboards.dashboard', { queryParams: { filters: filterQueryParams } });
+    },
+
+    /**
+     * @action removeFilter
+     * @param {Object} dashboard
+     * @param {Object} filter
+     */
+    async removeFilter(dashboard, filter) {
+      const filters = get(dashboard, 'filters').serialize();
+      const removedFilter = filter.serialize();
+      const newFilters = filters.filter(fil => !isEqual(fil, removedFilter));
+      const filterQueryParams = await get(this, 'compression').compress({ filters: newFilters });
+
+      this.transitionToRoute('dashboards.dashboard', { queryParams: { filters: filterQueryParams } });
+    },
+
+    /**
+     * @action addFilter
+     * @param {Object} dashboard
+     * @param {Object} dimension
+     */
+    async addFilter(dashboard, dimension) {
+      const store = get(this, 'store');
+      const bardMetadata = get(this, 'metadataService');
+      const filters = get(dashboard, 'filters').serialize();
+      const filter = store
+        .createFragment('bard-request/fragments/filter', {
+          dimension: bardMetadata.getById('dimension', dimension.dimension),
+          operator: 'in'
+        })
+        .serialize();
+
+      filters.push(filter);
+
+      const filterQueryParams = await get(this, 'compression').compress({ filters });
+
+      this.transitionToRoute('dashboards.dashboard', { queryParams: { filters: filterQueryParams } });
+    },
+
+    /**
+     * @action clearFilterQueryParams - Remove query params as model enters clean state
+     */
+    clearFilterQueryParams() {
+      this.set('filters', null);
     }
   }
 });
+
+/**
+ * Move values from `rawValues` property to `values` property
+ * @function cookValues
+ * @param {Object} obj - object with rawValues property
+ * @returns {Object} object with values property and no rawValues property
+ */
+function cookValues(obj) {
+  const cookedObj = Object.assign({}, obj);
+  if (cookedObj.hasOwnProperty('rawValues')) {
+    cookedObj.values = cookedObj.rawValues;
+    delete cookedObj.rawValues;
+  }
+  return cookedObj;
+}

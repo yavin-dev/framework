@@ -201,6 +201,45 @@ module('Acceptance | Dashboard Filters', function(hooks) {
       'Filters did not change even though query params were removed'
     );
   });
+
+  test('dashboard filter query params - returns cached dashboard widget data on filter add', async function(assert) {
+    assert.expect(6);
+
+    let dataRequests = [];
+    server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
+    server.pretender.handledRequest = (verb, url, req) => {
+      if (verb == 'GET' && url.includes('/v1/data')) {
+        dataRequests.push(req);
+      }
+    };
+
+    await visit('/dashboards/1/view');
+    assert.equal(currentURL(), '/dashboards/1/view', 'No query params are set');
+
+    assert.equal(dataRequests.length, 3, 'Three requests have been run since route entry');
+
+    await click('.dashboard-filters__expand-button');
+    await click('.dashboard-filters-expanded__add-filter-button');
+
+    await selectChoose('.dashboard-dimension-selector', 'Property');
+
+    assert.equal(
+      currentURL(),
+      '/dashboards/1/view?filters=EQbwOsBmCWA2AuBTATgZwgLgNrmAE2gFtEA7VaAexMwgAdkLaV4BPCAGgkZQEN4LkNYNGrBOwAG49YAV0Tpg2ALriYiWHiHRNwAL5LdwIAA',
+      'Query params are added on filter add'
+    );
+    assert.equal(dataRequests.length, 3, 'No new requests run on filter add (model hook should use cached data)');
+
+    await fillIn('.filter-builder-dimension__values input', '1');
+    await selectChoose('.filter-builder-dimension__values', '.item-row', 0);
+
+    assert.equal(dataRequests.length, 6, 'New requests are sent once filter values are set');
+    assert.equal(
+      currentURL(),
+      '/dashboards/1/view?filters=EQbwOsBmCWA2AuBTATgZwgLgNrmAE2gFtEA7VaAexMwgAdkLaV4BPCAGgkZQEN4LkNYNGrBOwAG49YAV0Tpg2CAEYIAXXExEsPEOi7gAXzWHgQAA',
+      'Filter query params are changed when filter values are set'
+    );
+  });
 });
 
 /**

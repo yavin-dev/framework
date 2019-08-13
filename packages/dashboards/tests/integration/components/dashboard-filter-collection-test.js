@@ -48,7 +48,7 @@ module('Integration | Component | dashboard filter collection', function(hooks) 
     assert.expect(2);
 
     /* == Changing operator == */
-    this.set('onUpdateFilter', (filter, changeSet) => {
+    this.set('onUpdateFilter', (dashboard, filter, changeSet) => {
       assert.equal(filter, MockFilterFragment1, 'Filter to update is given to action');
       assert.deepEqual(
         changeSet,
@@ -66,7 +66,7 @@ module('Integration | Component | dashboard filter collection', function(hooks) 
   test('remove a filter', async function(assert) {
     assert.expect(1);
 
-    this.set('onRemoveFilter', filter => {
+    this.set('onRemoveFilter', (dashboard, filter) => {
       assert.equal(
         filter,
         MockFilterFragment1,

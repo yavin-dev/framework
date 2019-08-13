@@ -110,7 +110,9 @@
 {{#if (feature-flag "enableDashboardFilters")}}
   {{dashboard-filters 
     dashboard=dashboard 
-    onFilterChange=(action onFilterChange)
+    onUpdateFilter=(action onUpdateFilter)
+    onRemoveFilter=(action onRemoveFilter)
+    onAddFilter=(action onAddFilter)
   }}
 {{/if}}
 
@@ -161,11 +163,11 @@
   {{/if}}
 </div>
 
-{{#if dashboard.hasDirtyAttributes}}
+{{#if dashboardIsDirty}}
   <div class="navi-dashboard__save-dialogue">
     {{#if dashboard.canUserEdit}}
-      <button onclick={{queue (route-action "saveDashboard") (action onFilterChange)}} class="btn btn-secondary navi-dashboard__save-button">Save Changes</button>
+      <button onclick={{queue (route-action "saveDashboard") (action onModelSaveOrRevert)}} class="btn btn-secondary navi-dashboard__save-button">Save Changes</button>
     {{/if}}
-    <button onclick={{queue (route-action "revertDashboard") (action onFilterChange)}} class="btn btn-secondary navi-dashboard__revert-button">Revert Changes</button>
+    <button onclick={{queue (route-action "revertDashboard") (action onModelSaveOrRevert)}} class="btn btn-secondary navi-dashboard__revert-button">Revert Changes</button>
   </div>
 {{/if}}

@@ -1,7 +1,6 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { startMirage } from 'dummy/initializers/ember-cli-mirage';
-import { settled } from '@ember/test-helpers';
 
 let Store, MetadataService, controller, compression;
 
@@ -23,156 +22,130 @@ module('Unit | Controller | dashboards/dashboard/view', function(hooks) {
     this.server.shutdown();
   });
 
-  test('_removeAllFiltersFromDashboard', function(assert) {
-    assert.expect(2);
+  test('updateFilter', async function(assert) {
+    assert.expect(3);
 
     let osFilter = Store.createFragment('bard-request/fragments/filter', {
         dimension: MetadataService.getById('dimension', 'os'),
         operator: 'in',
         field: 'id',
         rawValues: ['MacOS']
-      }),
-      ageFilter = Store.createFragment('bard-request/fragments/filter', {
-        dimension: MetadataService.getById('dimension', 'age'),
-        operator: 'notin',
-        field: 'id',
-        rawValues: ['13-17', '18-25']
-      }),
-      dashboard = Store.createRecord('dashboard', {
-        title: 'Test Dashboard'
-      });
-
-    dashboard.get('filters').pushObjects([osFilter, ageFilter]);
-    assert.equal(dashboard.get('filters.length'), 2, 'Dashboard has two filters');
-    controller._removeAllFiltersFromDashboard(dashboard);
-
-    assert.equal(dashboard.get('filters.length'), 0, 'Dashboard has no filters');
-  });
-
-  test('generateFilterQueryParams', async function(assert) {
-    assert.expect(8);
-
-    let osFilter = Store.createFragment('bard-request/fragments/filter', {
-        dimension: MetadataService.getById('dimension', 'os'),
-        operator: 'in',
-        field: 'id',
-        rawValues: ['MacOS']
-      }),
-      ageFilter = Store.createFragment('bard-request/fragments/filter', {
-        dimension: MetadataService.getById('dimension', 'age'),
-        operator: 'notin',
-        field: 'id',
-        rawValues: ['13-17', '18-25']
       }),
       author = await Store.findRecord('user', 'navi_user'),
       dashboard = Store.createRecord('dashboard', {
         title: 'Test Dashboard',
         author
       });
-    controller.transitionToRoute = (destination, model, transition) => {
-      controller.filters = transition.queryParams.filters;
-    };
-    controller.set('model', { dashboard });
+
     dashboard.get('filters').pushObject(osFilter);
     await dashboard.save();
 
     assert.equal(dashboard.get('filters.length'), 1, 'Dashboard has one filter');
-    assert.notOk(dashboard.hasDirtyAttributes, 'Dashboard has one filter in clean state');
-    assert.notOk(controller.get('filters'), 'No query params set in controller');
 
-    await generateFilterQueryParams(controller);
+    controller.transitionToRoute = async (destination, transition) => {
+      assert.deepEqual(
+        transition,
+        {
+          queryParams: {
+            filters:
+              'EQbwOsBmCWA2AuBTATgZwgLgNrmAE2gFtEA7VaAexMwgvWABpaAHFAQ3guRuGmsYgA3NrACuietggBZNgGMA8gGUITYAHU-eCgHd6AXTUxEsPD2hngAX31XgQAA'
+          }
+        },
+        'Updating the filter sets the filters query param to the expected compressed string'
+      );
 
-    assert.notOk(controller.get('filters'), 'No query params generated in controller when model is in clean state');
+      const decompressed = await compression.decompress(transition.queryParams.filters);
+      assert.deepEqual(
+        decompressed,
+        {
+          filters: [
+            {
+              dimension: 'os',
+              field: 'id',
+              operator: 'in',
+              values: ['MacOS', 'Windows']
+            }
+          ]
+        },
+        'The filter decompresses correctly'
+      );
+    };
 
-    dashboard.get('filters').pushObject(ageFilter);
-
-    assert.ok(dashboard.hasDirtyAttributes, 'Dashboard has two filters in dirty state');
-
-    await generateFilterQueryParams(controller);
-    let expectedQueryParams = await compression.compress({ filters: [osFilter.serialize(), ageFilter.serialize()] });
-
-    assert.equal(
-      controller.filters,
-      expectedQueryParams,
-      'Filter fragments are compressed correctly when dashboard has dirty filters'
-    );
-
-    dashboard.rollbackAttributes();
-    assert.notOk(dashboard.hasDirtyAttributes, 'Dashboard is in a clean state');
-
-    await generateFilterQueryParams(controller);
-
-    assert.notOk(controller.get('filters'), 'No query params generated in controller after model rollback');
+    await controller.send('updateFilter', dashboard, osFilter, { rawValues: ['MacOS', 'Windows'] });
   });
 
-  test('addFiltersFromQueryParams', async function(assert) {
-    assert.expect(7);
-
-    let author = await Store.findRecord('user', 'navi_user'),
-      genderFilter = Store.createFragment('bard-request/fragments/filter', {
-        dimension: MetadataService.getById('dimension', 'gender'),
+  test('removeFilter', async function(assert) {
+    let osFilter = Store.createFragment('bard-request/fragments/filter', {
+        dimension: MetadataService.getById('dimension', 'os'),
         operator: 'in',
         field: 'id',
-        rawValues: ['Male']
+        rawValues: ['MacOS']
       }),
-      ageFilter = Store.createFragment('bard-request/fragments/filter', {
-        dimension: MetadataService.getById('dimension', 'age'),
-        operator: 'notin',
-        field: 'desc',
-        rawValues: ['13-17', '18-20']
-      }),
+      author = await Store.findRecord('user', 'navi_user'),
       dashboard = Store.createRecord('dashboard', {
         title: 'Test Dashboard',
         author
       });
-    controller.set('model', { dashboard });
 
-    assert.notOk(controller.get('filters'), 'No filter query params are set');
-    assert.equal(dashboard.get('filters.length'), 0, 'Dashboard has no filters');
+    dashboard.get('filters').pushObject(osFilter);
+    await dashboard.save();
 
-    await controller.addFiltersFromQueryParams();
-    assert.equal(dashboard.get('filters.length'), 0, 'No filters added when query params are empty');
+    assert.equal(dashboard.get('filters.length'), 1, 'Dashboard has one filter');
 
-    let compressedFilters = await compression.compress({ filters: [genderFilter.serialize(), ageFilter.serialize()] });
-    controller.set('filters', compressedFilters);
-    await controller.addFiltersFromQueryParams();
-
-    assert.deepEqual(
-      dashboard.get('filters').map(fil => fil.serialize()),
-      [genderFilter.serialize(), ageFilter.serialize()],
-      'Two filters are added from valid filter query params'
-    );
-
-    dashboard.rollbackAttributes();
-
-    assert.equal(dashboard.get('filters.length'), 0, 'Dashboard has no filters');
-    controller.set('filters', 'SomeInvalidFilterString');
-
-    await controller.addFiltersFromQueryParams().catch(e => {
-      assert.equal(
-        e.message,
-        `Error decompressing filter query params: SomeInvalidFilterString\nRangeError: Invalid array length`,
-        "query params that don't decompress properly throw a decompression error"
+    controller.transitionToRoute = async (destination, transition) => {
+      assert.deepEqual(
+        transition,
+        {
+          queryParams: {
+            filters: 'EQbwOsBmCWA2AuBTATgZwgLgNoF0C-wQAAA'
+          }
+        },
+        'Removing the filter sets the filters query param to the expected compressed string'
       );
-    });
 
-    let singleCompressedFilter = await compression.compress(ageFilter);
-    controller.set('filters', singleCompressedFilter);
-    await controller.addFiltersFromQueryParams().catch(e => {
-      assert.equal(
-        e.message,
-        `Error decompressing filter query params: ${singleCompressedFilter}\nError: Filter query params are not valid filters`,
-        'query params that only contain a single filter rather than an array throw an error'
+      const decompressed = await compression.decompress(transition.queryParams.filters);
+      assert.deepEqual(decompressed, { filters: [] }, 'The filter decompresses correctly to an empty array');
+    };
+
+    await controller.send('removeFilter', dashboard, osFilter);
+  });
+
+  test('addFilter', async function(assert) {
+    let author = await Store.findRecord('user', 'navi_user'),
+      dashboard = Store.createRecord('dashboard', {
+        title: 'Test Dashboard',
+        author
+      });
+
+    controller.transitionToRoute = async (destination, transition) => {
+      assert.deepEqual(
+        transition,
+        {
+          queryParams: {
+            filters:
+              'EQbwOsBmCWA2AuBTATgZwgLgNrmAE2gFtEA7VaAexMwgEMBzRCAGggoAcVb4Lkbho1YK2AA3WrACuidMGwBdETESw8_aGuABfeVuBAAA'
+          }
+        },
+        'Adding a filter sets the filters query param to the expected compressed string'
       );
-    });
+
+      const decompressed = await compression.decompress(transition.queryParams.filters);
+      assert.deepEqual(
+        decompressed,
+        {
+          filters: [
+            {
+              dimension: 'age',
+              operator: 'in',
+              values: [],
+              field: 'id'
+            }
+          ]
+        },
+        'The filter decompresses correctly to an array with a valueless filter'
+      );
+    };
+
+    await controller.send('addFilter', dashboard, { dimension: 'age' });
   });
 });
-
-/**
- * Wait for query params to generate
- * @function generateFilterQueryParams
- */
-async function generateFilterQueryParams(controller) {
-  controller.send('generateFilterQueryParams');
-  await settled();
-}

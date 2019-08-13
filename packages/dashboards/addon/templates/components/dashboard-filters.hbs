@@ -8,6 +8,8 @@
 {{else}}
   {{dashboard-filters-expanded 
     dashboard=dashboard 
-    onFilterChange=(action onFilterChange)
+    onUpdateFilter=(action onUpdateFilter)
+    onRemoveFilter=(action onRemoveFilter)
+    onAddFilter=(action onAddFilter)
   }}
 {{/if}}
