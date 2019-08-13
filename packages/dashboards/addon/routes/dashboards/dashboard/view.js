@@ -52,6 +52,7 @@ export default Route.extend({
     await this._addFiltersFromQueryParams(dashboard, filterQueryParams);
     const newFilters = dashboard.get('filters').serialize();
 
+    //If we just added a new filter (no values yet) return the last set of widget data because the requests will not have changed
     if (
       cachedWidgetData &&
       newFilters.length === originalFilters.length + 1 &&
@@ -97,7 +98,7 @@ export default Route.extend({
             field: fil.field,
             operator: fil.operator,
             rawValues: fil.values,
-            dimension: this.metadataService.getById('dimension', fil.dimension)
+            dimension: this.get('metadataService').getById('dimension', fil.dimension)
           };
 
           const newFragment = this.store.createFragment('bard-request/fragments/filter', newFragmentFields);
