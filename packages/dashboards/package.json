@@ -38,7 +38,6 @@
     "ember-modal-dialog": "^2.4.3",
     "ember-moment": "7.8.1",
     "ember-promise-helpers": "^1.0.6",
-    "ember-route-action-helper": "^2.0.6",
     "ember-sortable": "1.12.6",
     "ember-tag-input": "^1.2.2",
     "ember-tether": "^1.0.0",

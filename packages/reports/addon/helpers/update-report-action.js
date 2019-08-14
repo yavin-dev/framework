@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { assert } from '@ember/debug';
-import RouteAction from 'ember-route-action-helper/helpers/route-action';
+import RouteAction from 'navi-core/helpers/route-action';
 import { UpdateReportActions } from 'navi-reports/services/update-report-action-dispatcher';
 
 const ROUTE_ACTION = 'onUpdateReport';

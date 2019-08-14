@@ -58,5 +58,21 @@ module('Unit | Helper | update report action', function(hooks) {
       },
       { instantiate: false }
     );
+
+    Container.register(
+      'service:router',
+      {
+        _router: {
+          currentHandlerInfos: [
+            {
+              handler: Route.extend({
+                actions: { onUpdateReport }
+              }).create()
+            }
+          ]
+        }
+      },
+      { instantiate: false }
+    );
   }
 });
