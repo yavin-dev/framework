@@ -36,6 +36,16 @@ export default Route.extend({
   _widgetDataCache: null,
 
   /**
+   * @override
+   * @property {Object} queryParams - any time the filters query params changes, rerun the model hook
+   */
+  queryParams: {
+    filters: {
+      refreshModel: true
+    }
+  },
+
+  /**
    * Adds filters from query params to the dashboard then
    * makes an ajax request to retrieve relevant widgets in the dashboard
    *
@@ -49,15 +59,23 @@ export default Route.extend({
     const cachedWidgetData = this.get('_widgetDataCache');
 
     const originalFilters = dashboard.get('filters').serialize();
+    const originalValuelessFilters = originalFilters.filter(fil => fil.values.length === 0);
     await this._addFiltersFromQueryParams(dashboard, filterQueryParams);
     const newFilters = dashboard.get('filters').serialize();
+    const newValuelessFilters = newFilters.filter(fil => fil.values.length === 0);
 
-    //If we just added a new filter (no values yet) return the last set of widget data because the requests will not have changed
-    if (
-      cachedWidgetData &&
-      newFilters.length === originalFilters.length + 1 &&
-      newFilters.any(fil => fil.values.length === 0)
-    ) {
+    const wasNewFilterAdded =
+      newValuelessFilters.length === originalValuelessFilters.length + 1 &&
+      newFilters.length === originalFilters.length + 1;
+    const wasEmptyFilterRemoved =
+      newValuelessFilters.length === originalValuelessFilters.length - 1 &&
+      newFilters.length === originalFilters.length - 1;
+
+    /**
+     * If we just added a new filter (no values yet) or just removed a filter with no values,
+     * return the last set of widget data because the requests will not have changed
+     */
+    if (cachedWidgetData && (wasNewFilterAdded || wasEmptyFilterRemoved)) {
       return { dashboard, dataForWidget: cachedWidgetData };
     }
     const dataForWidget = await this.get('dashboardData').fetchDataForDashboard(dashboard);

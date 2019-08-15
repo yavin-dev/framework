@@ -5,9 +5,15 @@ import config from 'ember-get-config';
 import { setupApplicationTest } from 'ember-qunit';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
+let CompressionService;
+
 module('Acceptance | Dashboard Filters', function(hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
+
+  hooks.beforeEach(function() {
+    CompressionService = this.owner.lookup('service:compression');
+  });
 
   test('dashboard filter flow', async function(assert) {
     await visit('/dashboards/1/view');
@@ -203,6 +209,88 @@ module('Acceptance | Dashboard Filters', function(hooks) {
   });
 
   test('dashboard filter query params - returns cached dashboard widget data on filter add', async function(assert) {
+    assert.expect(9);
+
+    let dataRequests = [];
+    server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
+    server.pretender.handledRequest = (verb, url, req) => {
+      if (verb == 'GET' && url.includes('/v1/data')) {
+        dataRequests.push(req);
+      }
+    };
+
+    await visit('/dashboards/1/view');
+    assert.equal(currentURL(), '/dashboards/1/view', 'No query params are set');
+
+    assert.equal(dataRequests.length, 3, 'Three requests have been run since route entry');
+
+    //Add a filter with no values
+    await click('.dashboard-filters__expand-button');
+    await click('.dashboard-filters-expanded__add-filter-button');
+    await selectChoose('.dashboard-dimension-selector', 'Property');
+
+    let decompressed = await CompressionService.decompress(currentURL().split('=')[1]);
+    assert.deepEqual(
+      decompressed,
+      {
+        filters: [
+          {
+            dimension: 'property',
+            field: 'id',
+            operator: 'in',
+            values: []
+          }
+        ]
+      },
+      'A filter with no values was added'
+    );
+    assert.equal(dataRequests.length, 3, 'No new requests run on filter add (model hook should use cached data)');
+
+    //Remove the filter with no values
+    await click('.filter-collection__remove');
+    assert.equal(
+      dataRequests.length,
+      3,
+      'No new requests run on empty filter remove (model hook should use cached data)'
+    );
+
+    //Add the filter with no values again
+    await click('.dashboard-filters-expanded__add-filter-button');
+    await selectChoose('.dashboard-dimension-selector', 'Property');
+
+    assert.equal(dataRequests.length, 3, 'No new requests run on filter add (model hook should use cached data)');
+
+    //Add a value to the filter
+    await fillIn('.filter-builder-dimension__values input', '1');
+    await selectChoose('.filter-builder-dimension__values', '.item-row', 0);
+
+    decompressed = await CompressionService.decompress(currentURL().split('=')[1]);
+    assert.deepEqual(
+      decompressed,
+      {
+        filters: [
+          {
+            dimension: 'property',
+            field: 'id',
+            operator: 'in',
+            values: ['1']
+          }
+        ]
+      },
+      'A value was added to the filter'
+    );
+    assert.equal(dataRequests.length, 6, 'New requests are sent once filter values are set');
+
+    //Remove the filter with a value
+    await click('.filter-collection__remove');
+    assert.equal(dataRequests.length, 9, 'New requests run when nonempty filter is removed');
+  });
+
+  test('dashboard filter query params - visiting route with one more filter and same empty filter', async function(assert) {
+    /**
+     * This is to test a specific corner case where a new filter is added (no values) and then the user pastes a
+     * link to the same dashboard with the same filters except has one more added filter with a value
+     */
     assert.expect(6);
 
     let dataRequests = [];
@@ -218,26 +306,58 @@ module('Acceptance | Dashboard Filters', function(hooks) {
 
     assert.equal(dataRequests.length, 3, 'Three requests have been run since route entry');
 
+    //Add a filter with no values
     await click('.dashboard-filters__expand-button');
     await click('.dashboard-filters-expanded__add-filter-button');
-
     await selectChoose('.dashboard-dimension-selector', 'Property');
 
-    assert.equal(
-      currentURL(),
-      '/dashboards/1/view?filters=EQbwOsBmCWA2AuBTATgZwgLgNrmAE2gFtEA7VaAexMwgAdkLaV4BPCAGgkZQEN4LkNYNGrBOwAG49YAV0Tpg2ALriYiWHiHRNwAL5LdwIAA',
-      'Query params are added on filter add'
+    let decompressed = await CompressionService.decompress(currentURL().split('=')[1]);
+    assert.deepEqual(
+      decompressed,
+      {
+        filters: [
+          {
+            dimension: 'property',
+            field: 'id',
+            operator: 'in',
+            values: []
+          }
+        ]
+      },
+      'A filter with no values was added'
     );
     assert.equal(dataRequests.length, 3, 'No new requests run on filter add (model hook should use cached data)');
 
-    await fillIn('.filter-builder-dimension__values input', '1');
-    await selectChoose('.filter-builder-dimension__values', '.item-row', 0);
-
-    assert.equal(dataRequests.length, 6, 'New requests are sent once filter values are set');
+    await visit(
+      '/dashboards/1/view?filters=EQbwOsBmCWA2AuBTATgZwgLgNrmAE2gFtEA7VaAexMwgAdkLaV4BPCAGgkZQEN4LkNYNGrBOwAG49YAV0Tpg2ALriYiWHiHRNwAL7tcBYmUqiMEHgHNEHLk2R8BW0eKmz5mLBAC0AZggqEGoaWjq6SrrAQA',
+      { refresh: true }
+    );
     assert.equal(
-      currentURL(),
-      '/dashboards/1/view?filters=EQbwOsBmCWA2AuBTATgZwgLgNrmAE2gFtEA7VaAexMwgAdkLaV4BPCAGgkZQEN4LkNYNGrBOwAG49YAV0Tpg2CAEYIAXXExEsPEOi7gAXzWHgQAA',
-      'Filter query params are changed when filter values are set'
+      dataRequests.length,
+      6,
+      'New requests run when entering query params with one new filter and the same empty filter'
+    );
+
+    decompressed = await CompressionService.decompress(currentURL().split('=')[1]);
+    assert.deepEqual(
+      decompressed,
+      {
+        filters: [
+          {
+            dimension: 'property',
+            field: 'id',
+            operator: 'in',
+            values: []
+          },
+          {
+            dimension: 'age',
+            field: 'id',
+            operator: 'in',
+            values: ['-3']
+          }
+        ]
+      },
+      'The expected filters are set in the query params'
     );
   });
 });
