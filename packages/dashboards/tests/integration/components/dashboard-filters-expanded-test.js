@@ -5,13 +5,17 @@ import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import hbs from 'htmlbars-inline-precompile';
 import { selectChoose } from 'ember-power-select/test-support';
 import { A as arr } from '@ember/array';
+import { get } from '@ember/object';
+
+let Store, MetadataService;
 
 module('Integration | Component | dashboard filters expanded', function(hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
   hooks.beforeEach(function() {
-    const MetadataService = this.owner.lookup('service:bard-metadata');
+    Store = this.owner.lookup('service:store');
+    MetadataService = this.owner.lookup('service:bard-metadata');
     return MetadataService.loadMetadata();
   });
 
@@ -55,7 +59,16 @@ module('Integration | Component | dashboard filters expanded', function(hooks) {
         }
       ]
     };
-    await render(hbs`{{dashboard-filters-expanded dashboard=dashboard}}`);
+    this.onUpdateFilter = () => null;
+    this.onRemoveFilter = () => null;
+    this.onAddFilter = () => null;
+    await render(hbs`
+      {{dashboard-filters-expanded 
+        dashboard=dashboard 
+        onUpdateFilter=(action onUpdateFilter)
+        onRemoveFilter=(action onRemoveFilter)
+        onAddFilter=(action onAddFilter)
+      }}`);
 
     assert
       .dom('.dashboard-filter-collection')
@@ -111,8 +124,23 @@ module('Integration | Component | dashboard filters expanded', function(hooks) {
         }
       ])
     };
+    this.onUpdateFilter = () => null;
+    this.onRemoveFilter = () => null;
+    this.onAddFilter = function(dashboard, dimension) {
+      const filter = Store.createFragment('bard-request/fragments/filter', {
+        dimension: MetadataService.getById('dimension', dimension.dimension),
+        operator: 'in'
+      });
 
-    await render(hbs`{{dashboard-filters-expanded dashboard=dashboard}}`);
+      get(dashboard, 'filters').pushObject(filter);
+    };
+    await render(hbs`
+      {{dashboard-filters-expanded 
+        dashboard=dashboard 
+        onUpdateFilter=(action onUpdateFilter)
+        onRemoveFilter=(action onRemoveFilter)
+        onAddFilter=(action onAddFilter)
+      }}`);
 
     assert.dom('.dashboard-filters-expanded__add-filter-button').isVisible('add filter button visible');
 

@@ -6,6 +6,7 @@ import { render, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import config from 'ember-get-config';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { get } from '@ember/object';
 
 module('Integration | Component | navi dashboard', function(hooks) {
   setupRenderingTest(hooks);
@@ -29,10 +30,16 @@ module('Integration | Component | navi dashboard', function(hooks) {
         ],
         columns: 20
       },
-      constructor: { modelName: 'dashboard' }
+      constructor: { modelName: 'dashboard' },
+      get(key) {
+        return get(this, key);
+      }
     };
 
     this.set('dashboardModel', dashboardModel);
+    this.set('onUpdateFilter', () => null);
+    this.set('onRemoveFilter', () => null);
+    this.set('onAddFilter', () => null);
 
     await owner.lookup('service:user').findUser();
     await owner.lookup('service:bard-metadata').loadMetadata();
@@ -48,7 +55,10 @@ module('Integration | Component | navi dashboard', function(hooks) {
   test('it renders', async function(assert) {
     assert.expect(4);
 
-    await render(hbs`{{navi-dashboard dashboard=dashboardModel}}`);
+    await render(hbs`{{navi-dashboard dashboard=dashboardModel 
+      onUpdateFilter=(action onUpdateFilter)
+      onRemoveFilter=(action onRemoveFilter)
+      onAddFilter=(action onAddFilter)}}`);
 
     assert.dom('.page-title').hasText(this.dashboardModel.title, 'Component renders header with dashboard title');
 
@@ -71,7 +81,13 @@ module('Integration | Component | navi dashboard', function(hooks) {
     let dataForWidget = { 1: 'foo', 2: 'bar' };
     this.set('dataForWidget', dataForWidget);
 
-    await render(hbs`{{navi-dashboard dashboard=dashboardModel dataForWidget=dataForWidget}}`);
+    await render(hbs`{{navi-dashboard 
+      dashboard=dashboardModel 
+      dataForWidget=dataForWidget 
+      onUpdateFilter=(action onUpdateFilter)
+      onRemoveFilter=(action onRemoveFilter)
+      onAddFilter=(action onAddFilter)
+    }}`);
 
     const { owner } = this;
     const components = owner.lookup('-view-registry:main');
@@ -90,12 +106,21 @@ module('Integration | Component | navi dashboard', function(hooks) {
     const originalFeatureFlag = config.navi.FEATURES.enableDashboardExport;
 
     config.navi.FEATURES.enableDashboardExport = true;
-    await render(hbs`{{navi-dashboard dashboard=dashboardModel}}`);
+    await render(hbs`{{navi-dashboard 
+      dashboard=dashboardModel 
+      onUpdateFilter=(action onUpdateFilter)
+      onRemoveFilter=(action onRemoveFilter)
+      onAddFilter=(action onAddFilter)
+    }}`);
 
     assert.dom('.action.export').isVisible('Dashboard export button should be visible');
 
     config.navi.FEATURES.enableDashboardExport = false;
-    await render(hbs`{{navi-dashboard dashboard=dashboardModel}}`);
+    await render(hbs`{{navi-dashboard dashboard=dashboardModel 
+      onUpdateFilter=(action onUpdateFilter)
+      onRemoveFilter=(action onRemoveFilter)
+      onAddFilter=(action onAddFilter)
+    }}`);
     assert.dom('.action.export').isNotVisible('Dashboard export button should not be visible');
 
     config.navi.FEATURES.enableDashboardExport = originalFeatureFlag;
@@ -106,12 +131,22 @@ module('Integration | Component | navi dashboard', function(hooks) {
     const originalFeatureFlag = config.navi.FEATURES.enableScheduleDashboards;
 
     config.navi.FEATURES.enableScheduleDashboards = true;
-    await render(hbs`{{navi-dashboard dashboard=dashboardModel}}`);
+    await render(hbs`{{navi-dashboard 
+      dashboard=dashboardModel 
+      onUpdateFilter=(action onUpdateFilter)
+      onRemoveFilter=(action onRemoveFilter)
+      onAddFilter=(action onAddFilter)
+    }}`);
 
     assert.dom('.action.schedule').isVisible('Dashboard schedule button should be visible');
 
     config.navi.FEATURES.enableScheduleDashboards = false;
-    await render(hbs`{{navi-dashboard dashboard=dashboardModel}}`);
+    await render(hbs`{{navi-dashboard 
+      dashboard=dashboardModel 
+      onUpdateFilter=(action onUpdateFilter)
+      onRemoveFilter=(action onRemoveFilter)
+      onAddFilter=(action onAddFilter)
+    }}`);
     assert.dom('.action.schedule').isNotVisible('Dashboard schedule button should not be visible');
 
     config.navi.FEATURES.enableScheduleDashboards = originalFeatureFlag;
@@ -122,7 +157,12 @@ module('Integration | Component | navi dashboard', function(hooks) {
 
     this.set('dashboardModel.isUserOwner', false);
 
-    await render(hbs`{{navi-dashboard dashboard=dashboardModel}}`);
+    await render(hbs`{{navi-dashboard 
+      dashboard=dashboardModel 
+      onUpdateFilter=(action onUpdateFilter)
+      onRemoveFilter=(action onRemoveFilter)
+      onAddFilter=(action onAddFilter)
+    }}`);
     assert.dom('.action.schedule').isNotVisible('Dashboard schedule button should not be visible');
   });
 });
