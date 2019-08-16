@@ -6,6 +6,7 @@ import hbs from 'htmlbars-inline-precompile';
 import { initialize as injectC3Enhancements } from 'navi-core/initializers/inject-c3-enhancements';
 import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
 import { next } from '@ember/runloop';
+import { getTranslation } from 'navi-core/utils/chart';
 
 const TEMPLATE = hbs`
     {{navi-visualizations/pie-chart
@@ -189,18 +190,18 @@ module('Integration | Component | pie chart', function(hooks) {
     //Calulate where the metric label should be relative to the pie chart
     let chartElm = find('.c3-chart-arcs'),
       xTranslate =
-        d3.transform(chartElm.getAttribute('transform')).translate[0] - chartElm.getBoundingClientRect().width / 2 - 50,
+        getTranslation(chartElm.getAttribute('transform')).x - chartElm.getBoundingClientRect().width / 2 - 50,
       yTranslate = find('svg').getAttribute('height') / 2;
 
     next(() => {
       assert.equal(
-        Math.round(d3.transform(find('.c3-title').getAttribute('transform')).translate[0]),
+        Math.round(getTranslation(find('.c3-title').getAttribute('transform')).x),
         Math.round(xTranslate),
         'The metric name is in the correct X position on initial render'
       );
 
       assert.equal(
-        Math.round(d3.transform(find('.c3-title').getAttribute('transform')).translate[1]),
+        Math.round(getTranslation(find('.c3-title').getAttribute('transform')).y),
         Math.round(yTranslate),
         'The metric name is in the correct Y position on initial render'
       );
@@ -239,8 +240,7 @@ module('Integration | Component | pie chart', function(hooks) {
 
     //Recalculate these after the chart is rerendered
     chartElm = find('.c3-chart-arcs');
-    xTranslate =
-      d3.transform(chartElm.getAttribute('transform')).translate[0] - chartElm.getBoundingClientRect().width / 2 - 50;
+    xTranslate = getTranslation(chartElm.getAttribute('transform')).x - chartElm.getBoundingClientRect().width / 2 - 50;
     yTranslate =
       this.$('svg')
         .css('height')
@@ -249,13 +249,13 @@ module('Integration | Component | pie chart', function(hooks) {
     assert.dom('.c3-title').hasText('Unique Identifiers', 'The metric label is updated after the metric is changed');
 
     assert.equal(
-      Math.round(d3.transform(find('.c3-title').getAttribute('transform')).translate[0]),
+      Math.round(getTranslation(find('.c3-title').getAttribute('transform')).x),
       Math.round(xTranslate),
       'The metric name is in the correct X position after the pie chart moves'
     );
 
     assert.equal(
-      Math.round(d3.transform(find('.c3-title').getAttribute('transform')).translate[1]),
+      Math.round(getTranslation(find('.c3-title').getAttribute('transform')).y),
       Math.round(yTranslate),
       'The metric name is in the correct Y position after the pie chart moves'
     );
@@ -300,11 +300,11 @@ module('Integration | Component | pie chart', function(hooks) {
 
     assert
       .dom('.c3-target-All-Other text')
-      .hasText('40.00%', 'Percentage label shown on slice is formatted properly for `All Other`');
+      .hasText('40%', 'Percentage label shown on slice is formatted properly for `All Other`');
 
     assert
       .dom('.c3-target-Under-13 text')
-      .hasText('60.00%', 'Percentage label shown on slice is formatted properly for `Under 13`');
+      .hasText('60%', 'Percentage label shown on slice is formatted properly for `Under 13`');
   });
 
   test('cleanup tooltip', async function(assert) {
