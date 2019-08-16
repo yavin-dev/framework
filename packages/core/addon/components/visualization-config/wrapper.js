@@ -40,13 +40,16 @@ export default Component.extend({
    * @property {Boolean} showMetricSelect - whether to display the metric select
    */
   showMetricSelect: computed('visualization', 'series', function() {
-    const series = get(this, 'series'),
-      { visualization: { type }, request } = this,
-      visualizationManifest = getOwner(this).lookup(`manifest:${type}`);
+    const seriesType = get(this, 'series.type'),
+      visualizationType = get(this, 'visualization.type'),
+      request = get(this, 'request'),
+      visualizationManifest = getOwner(this).lookup(`manifest:${visualizationType}`);
 
-    return ['line-chart', 'bar-chart', 'pie-chart'].includes(type) &&
-      series.type === 'dimension' &&
-      visualizationManifest.hasMultipleMetrics(request);
+    return (
+      ['line-chart', 'bar-chart', 'pie-chart'].includes(visualizationType) &&
+      seriesType === 'dimension' &&
+      visualizationManifest.hasMultipleMetrics(request)
+    );
   }),
 
   /**
@@ -72,6 +75,6 @@ export default Component.extend({
       const newConfig = copy(get(this, 'visualization.metadata'));
       set(newConfig, 'axis.y.series.config.metric', metric);
       this.onUpdateConfig(newConfig);
-    },
+    }
   }
 });
