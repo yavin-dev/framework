@@ -58,13 +58,15 @@ export default Route.extend({
     const filterQueryParams = get(transition, 'queryParams.filters');
     const cachedWidgetData = this.get('_widgetDataCache');
 
+    //Record filters before and after setting from query params
     const originalFilters = dashboard.get('filters').serialize();
-    const originalValuelessFilters = originalFilters.filter(fil => fil.values.length === 0);
     await this._addFiltersFromQueryParams(dashboard, filterQueryParams);
     const newFilters = dashboard.get('filters').serialize();
+
+    const originalValuelessFilters = originalFilters.filter(fil => fil.values.length === 0);
     const newValuelessFilters = newFilters.filter(fil => fil.values.length === 0);
 
-    const wasNewFilterAdded =
+    const wasEmptyFilterAdded =
       newValuelessFilters.length === originalValuelessFilters.length + 1 &&
       newFilters.length === originalFilters.length + 1;
     const wasEmptyFilterRemoved =
@@ -73,9 +75,10 @@ export default Route.extend({
 
     /**
      * If we just added a new filter (no values yet) or just removed a filter with no values,
-     * return the last set of widget data because the requests will not have changed
+     * return the last set of widget data because the requests will not have changed because
+     * empty filters are pruned from the request
      */
-    if (cachedWidgetData && (wasNewFilterAdded || wasEmptyFilterRemoved)) {
+    if (cachedWidgetData && (wasEmptyFilterAdded || wasEmptyFilterRemoved)) {
       return { dashboard, dataForWidget: cachedWidgetData };
     }
     const dataForWidget = await this.get('dashboardData').fetchDataForDashboard(dashboard);
