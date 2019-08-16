@@ -22,9 +22,10 @@ module('Acceptance | Dashboard Filters', function(hooks) {
 
     server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
     server.pretender.handledRequest = (verb, url, req) => {
-      if (verb == 'GET' && url.includes('/v1/data')) {
+      if (url.includes('/v1/data')) {
         dataRequests.push(req);
       }
+      return { rows: [] };
     };
 
     await click('.dashboard-filters__expand-button');
@@ -98,8 +99,8 @@ module('Acceptance | Dashboard Filters', function(hooks) {
     );
   });
 
-  test('dashboard filter query params - model changes query params', async function(assert) {
-    assert.expect(9);
+  test('dashboard filter query params - ui changes update the model', async function(assert) {
+    assert.expect(10);
 
     const INITIAL_FILTERS = [
       {
@@ -163,6 +164,17 @@ module('Acceptance | Dashboard Filters', function(hooks) {
     //Go back to dashboards index view and return to dashboard still in dirty state
     await click('.navi-dashboard__breadcrumb-link');
     assert.equal(currentURL(), '/dashboards', 'Routed back to dashboards route with no active query params');
+
+    //Capture requests to check their format
+    let dataRequests = [];
+    server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
+    server.pretender.handledRequest = (verb, url, req) => {
+      if (url.includes('/v1/data')) {
+        dataRequests.push(req);
+      }
+      return { rows: [] };
+    };
+
     await click('.navi-collection__row1 a');
     assert.equal(
       currentURL(),
@@ -171,10 +183,19 @@ module('Acceptance | Dashboard Filters', function(hooks) {
     );
     assert.deepEqual(extractCollapsedFilters(), INITIAL_FILTERS, 'Initial filters are present');
     assert.dom('.navi-dashboard__save-dialogue').isNotVisible('The dashboard is in a clean state');
+
+    assert.deepEqual(
+      dataRequests.map(req => req.queryParams.filters),
+      [
+        'property|id-notin[2,3,4],property|id-notin[1],property|id-contains[114,100001]',
+        'property|id-notin[2,3,4],property|id-notin[1],property|id-contains[114,100001]'
+      ],
+      'The requests are sent with the initial filters'
+    );
   });
 
   test('dashboard filter query params - query params change model on load', async function(assert) {
-    assert.expect(5);
+    assert.expect(7);
 
     const dirtyURL =
       '/dashboards/2/view?filters=EQbwOsBmCWA2AuBTATgZwgLgNrmAE2gFtEA7VaAexMwgAdkLaV4BPCAGgkZQEN4LkNYNGrBOwAG49YAV0Tpg2CACYOEAMxrgAFggBdcTESw8Q6KeABfPZeBA';
@@ -197,6 +218,7 @@ module('Acceptance | Dashboard Filters', function(hooks) {
     assert
       .dom('.navi-dashboard__save-dialogue')
       .isVisible('The dashboard loads in a dirty state when query params are set');
+    assert.dom('.navi-notifications').isNotVisible('No notifications on query param decompression success');
 
     //Save the dashboard, making it clean with the filters set by the query params
     await click('.navi-dashboard__save-button');
@@ -206,6 +228,14 @@ module('Acceptance | Dashboard Filters', function(hooks) {
       filters,
       'Filters did not change even though query params were removed'
     );
+
+    await visit('/dashboards/2/view?filters=blahblahblah_this_isnt_valid');
+    assert
+      .dom('.navi-notifications')
+      .hasText(
+        'Error decoding filter query params. Using default dashboard filters. danger',
+        'Notification shown when error decompressing filter query params'
+      );
   });
 
   test('dashboard filter query params - returns cached dashboard widget data on filter add', async function(assert) {
@@ -214,9 +244,11 @@ module('Acceptance | Dashboard Filters', function(hooks) {
     let dataRequests = [];
     server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
     server.pretender.handledRequest = (verb, url, req) => {
-      if (verb == 'GET' && url.includes('/v1/data')) {
+      if (url.includes('/v1/data')) {
         dataRequests.push(req);
       }
+
+      return { rows: [] };
     };
 
     await visit('/dashboards/1/view');
@@ -296,9 +328,10 @@ module('Acceptance | Dashboard Filters', function(hooks) {
     let dataRequests = [];
     server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
     server.pretender.handledRequest = (verb, url, req) => {
-      if (verb == 'GET' && url.includes('/v1/data')) {
+      if (url.includes('/v1/data')) {
         dataRequests.push(req);
       }
+      return { rows: [] };
     };
 
     await visit('/dashboards/1/view');
@@ -329,8 +362,7 @@ module('Acceptance | Dashboard Filters', function(hooks) {
     assert.equal(dataRequests.length, 3, 'No new requests run on filter add (model hook should use cached data)');
 
     await visit(
-      '/dashboards/1/view?filters=EQbwOsBmCWA2AuBTATgZwgLgNrmAE2gFtEA7VaAexMwgAdkLaV4BPCAGgkZQEN4LkNYNGrBOwAG49YAV0Tpg2ALriYiWHiHRNwAL7tcBYmUqiMEHgHNEHLk2R8BW0eKmz5mLBAC0AZggqEGoaWjq6SrrAQA',
-      { refresh: true }
+      '/dashboards/1/view?filters=EQbwOsBmCWA2AuBTATgZwgLgNrmAE2gFtEA7VaAexMwgAdkLaV4BPCAGgkZQEN4LkNYNGrBOwAG49YAV0Tpg2ALriYiWHiHRNwAL7tcBYmUqiMEHgHNEHLk2R8BW0eKmz5mLBAC0AZggqEGoaWjq6SrrAQA'
     );
     assert.equal(
       dataRequests.length,

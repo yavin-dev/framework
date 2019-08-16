@@ -59,15 +59,9 @@ module('Integration | Component | dashboard filters', function(hooks) {
         }
       ]
     };
-    this.onUpdateFilter = function() {
-      return null;
-    };
-    this.onRemoveFilter = function() {
-      return null;
-    };
-    this.onAddFilter = function() {
-      return null;
-    };
+    this.onUpdateFilter = () => null;
+    this.onRemoveFilter = () => null;
+    this.onAddFilter = () => null;
 
     await render(hbs`
       {{dashboard-filters 

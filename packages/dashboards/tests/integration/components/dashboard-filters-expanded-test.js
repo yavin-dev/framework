@@ -59,15 +59,9 @@ module('Integration | Component | dashboard filters expanded', function(hooks) {
         }
       ]
     };
-    this.onUpdateFilter = function() {
-      return null;
-    };
-    this.onRemoveFilter = function() {
-      return null;
-    };
-    this.onAddFilter = function() {
-      return null;
-    };
+    this.onUpdateFilter = () => null;
+    this.onRemoveFilter = () => null;
+    this.onAddFilter = () => null;
     await render(hbs`
       {{dashboard-filters-expanded 
         dashboard=dashboard 
@@ -130,12 +124,8 @@ module('Integration | Component | dashboard filters expanded', function(hooks) {
         }
       ])
     };
-    this.onUpdateFilter = function() {
-      return null;
-    };
-    this.onRemoveFilter = function() {
-      return null;
-    };
+    this.onUpdateFilter = () => null;
+    this.onRemoveFilter = () => null;
     this.onAddFilter = function(dashboard, dimension) {
       const filter = Store.createFragment('bard-request/fragments/filter', {
         dimension: MetadataService.getById('dimension', dimension.dimension),

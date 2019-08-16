@@ -37,15 +37,9 @@ module('Integration | Component | navi dashboard', function(hooks) {
     };
 
     this.set('dashboardModel', dashboardModel);
-    this.set('onUpdateFilter', function() {
-      return null;
-    });
-    this.set('onRemoveFilter', function() {
-      return null;
-    });
-    this.set('onAddFilter', function() {
-      return null;
-    });
+    this.set('onUpdateFilter', () => null);
+    this.set('onRemoveFilter', () => null);
+    this.set('onAddFilter', () => null);
 
     await owner.lookup('service:user').findUser();
     await owner.lookup('service:bard-metadata').loadMetadata();

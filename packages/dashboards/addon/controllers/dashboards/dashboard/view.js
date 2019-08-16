@@ -29,14 +29,6 @@ export default Controller.extend({
    */
   queryParams: ['filters'],
 
-  /**
-   * @method resetModel - Rollback model attributes and clear query params
-   */
-  resetModel() {
-    this.set('filters', null);
-    this.get('model.dashboard').rollbackAttributes();
-  },
-
   actions: {
     /**
      * @action updateFilter
@@ -49,10 +41,21 @@ export default Controller.extend({
       const newFilters = get(dashboard, 'filters')
         .toArray()
         .map(fil => fil.serialize()); //Native array of serialized filters
-      const newFilter = newFilters.find(fil => isEqual(fil, origFilter));
-      const validChangeSet = cookValues(changeSet);
+      const filterToUpdate = newFilters.find(fil => isEqual(fil, origFilter));
 
-      setProperties(newFilter, validChangeSet);
+      setProperties(filterToUpdate, changeSet);
+
+      const newFilter = get(this, 'store')
+        .createFragment('bard-request/fragments/filter', {
+          dimension: get(this, 'metadataService').getById('dimension', filterToUpdate.dimension),
+          operator: filterToUpdate.operator,
+          field: filterToUpdate.field,
+          rawValues: filterToUpdate.rawValues || filterToUpdate.values
+        })
+        .serialize();
+
+      const index = newFilters.indexOf(filterToUpdate);
+      newFilters[index] = newFilter;
 
       const filterQueryParams = await get(this, 'compression').compress({ filters: newFilters });
 
@@ -106,18 +109,3 @@ export default Controller.extend({
     }
   }
 });
-
-/**
- * Move values from `rawValues` property to `values` property
- * @function cookValues
- * @param {Object} obj - object with rawValues property
- * @returns {Object} object with values property and no rawValues property
- */
-function cookValues(obj) {
-  const cookedObj = Object.assign({}, obj);
-  if (cookedObj.hasOwnProperty('rawValues')) {
-    cookedObj.values = cookedObj.rawValues;
-    delete cookedObj.rawValues;
-  }
-  return cookedObj;
-}

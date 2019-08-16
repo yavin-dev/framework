@@ -69,11 +69,10 @@ export default Route.extend({
       await this._addFiltersFromQueryParams(dashboard, filterQueryParams);
     } catch (e) {
       get(this, 'naviNotifications').add({
-        message: `Error decoding filter query params. Using default dashboard filters`,
+        message: `Error decoding filter query params. Using default dashboard filters.`,
         type: 'danger',
         timeout: 'medium'
       });
-      throw e;
     }
     const newFilters = dashboard.get('filters').serialize();
 
@@ -126,19 +125,17 @@ export default Route.extend({
       //Remove all filters from the fragment array
       modelFilters.length = 0;
 
-      await Promise.all(
-        decompressedFilters.filters.map(async fil => {
-          const newFragmentFields = {
-            field: fil.field,
-            operator: fil.operator,
-            rawValues: fil.values,
-            dimension: this.get('metadataService').getById('dimension', fil.dimension)
-          };
+      decompressedFilters.filters.map(fil => {
+        const newFragmentFields = {
+          field: fil.field,
+          operator: fil.operator,
+          rawValues: fil.values,
+          dimension: this.get('metadataService').getById('dimension', fil.dimension)
+        };
 
-          const newFragment = this.store.createFragment('bard-request/fragments/filter', newFragmentFields);
-          modelFilters.pushObject(newFragment);
-        })
-      );
+        const newFragment = this.store.createFragment('bard-request/fragments/filter', newFragmentFields);
+        modelFilters.pushObject(newFragment);
+      });
     } catch (e) {
       throw Error(`Error decompressing filter query params: ${filterQueryParams}\n${e}`);
     }
@@ -150,11 +147,11 @@ export default Route.extend({
    * @param {Object} controller
    * @param {Boolean} isExiting
    */
-  resetController(controller, isExiting /*transition*/) {
+  deactivate() {
     this._super(...arguments);
 
-    if (isExiting) {
-      controller.resetModel();
-    }
+    this.controllerFor('dashboards.dashboard.view').set('filters', null);
+    this.set('_widgetDataCache', null);
+    this.modelFor(this.routeName).dashboard.rollbackAttributes();
   }
 });
