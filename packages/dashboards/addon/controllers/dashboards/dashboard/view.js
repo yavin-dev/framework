@@ -81,7 +81,9 @@ export default Controller.extend({
     async addFilter(dashboard, dimension) {
       const store = get(this, 'store');
       const bardMetadata = get(this, 'metadataService');
-      const filters = get(dashboard, 'filters').serialize();
+      const filters = get(dashboard, 'filters')
+        .toArray()
+        .map(fil => fil.serialize()); //Native array of serialized filters
       const filter = store
         .createFragment('bard-request/fragments/filter', {
           dimension: bardMetadata.getById('dimension', dimension.dimension),
