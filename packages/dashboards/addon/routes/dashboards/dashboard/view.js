@@ -30,6 +30,11 @@ export default Route.extend({
   store: service(),
 
   /**
+   * @property {Service} naviNotifications
+   */
+  naviNotifications: service(),
+
+  /**
    * @private
    * @property {Object} _widgetDataCache - stores most recent widget data
    */
@@ -60,7 +65,16 @@ export default Route.extend({
 
     //Record filters before and after setting from query params
     const originalFilters = dashboard.get('filters').serialize();
-    await this._addFiltersFromQueryParams(dashboard, filterQueryParams);
+    try {
+      await this._addFiltersFromQueryParams(dashboard, filterQueryParams);
+    } catch (e) {
+      get(this, 'naviNotifications').add({
+        message: `Error decoding filter query params. Using default dashboard filters`,
+        type: 'warning',
+        timeout: 'medium'
+      });
+      throw e;
+    }
     const newFilters = dashboard.get('filters').serialize();
 
     const originalValuelessFilters = originalFilters.filter(fil => fil.values.length === 0);
@@ -102,9 +116,8 @@ export default Route.extend({
       return;
     }
 
-    let decompressedFilters = null;
     try {
-      decompressedFilters = await this.get('compression').decompress(filterQueryParams);
+      const decompressedFilters = await this.get('compression').decompress(filterQueryParams);
 
       if (!decompressedFilters.hasOwnProperty('filters') || !Array.isArray(decompressedFilters.filters)) {
         throw Error('Filter query params are not valid filters');
@@ -141,8 +154,6 @@ export default Route.extend({
     this._super(...arguments);
 
     if (isExiting) {
-      //Reset hasEntered state to false as we exit the route
-      this.set('hasEntered', false);
       controller.resetModel();
     }
   }
