@@ -70,7 +70,7 @@ export default Route.extend({
     } catch (e) {
       get(this, 'naviNotifications').add({
         message: `Error decoding filter query params. Using default dashboard filters`,
-        type: 'warning',
+        type: 'danger',
         timeout: 'medium'
       });
       throw e;
