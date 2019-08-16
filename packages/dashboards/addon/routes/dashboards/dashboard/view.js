@@ -150,7 +150,7 @@ export default Route.extend({
   deactivate() {
     this._super(...arguments);
 
-    this.controllerFor('dashboards.dashboard.view').set('filters', null);
+    this.get('controller').set('filters', null);
     this.set('_widgetDataCache', null);
     this.modelFor(this.routeName).dashboard.rollbackAttributes();
   }
