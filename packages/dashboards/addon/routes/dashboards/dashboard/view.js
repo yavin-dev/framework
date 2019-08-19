@@ -123,7 +123,9 @@ export default Route.extend({
       }
 
       //Remove all filters from the fragment array
-      modelFilters.length = 0;
+      if (modelFilters.get('length') > 0) {
+        modelFilters.removeAt(0, modelFilters.get('length'));
+      }
 
       decompressedFilters.filters.map(fil => {
         const newFragmentFields = {

@@ -29,6 +29,8 @@ export default Controller.extend({
    */
   queryParams: ['filters'],
 
+  filters: null,
+
   actions: {
     /**
      * @action updateFilter
