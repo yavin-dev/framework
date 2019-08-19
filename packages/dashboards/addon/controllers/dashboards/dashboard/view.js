@@ -29,6 +29,9 @@ export default Controller.extend({
    */
   queryParams: ['filters'],
 
+  /**
+   * @property {String} filters query param holding encoded filters for the dashboard
+   */
   filters: null,
 
   actions: {
