@@ -44,7 +44,6 @@
     "ember-pluralize": "0.2.0",
     "ember-promise-helpers": "^1.0.6",
     "ember-radio-button": "^1.2.1",
-    "ember-route-action-helper": "^2.0.7",
     "ember-tag-input": "1.2.1",
     "ember-tether": "^1.0.0",
     "ember-toggle": "5.3.2",
