@@ -12,6 +12,6 @@ export default ReportNewRoute.extend({
    * @override
    */
   afterModel(report) {
-    return this.replaceWith('print.reports.report.view', get(report, 'tempId'));
+    return this.replaceWith('reports-print.reports.report.view', get(report, 'tempId'));
   }
 });

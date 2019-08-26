@@ -12,6 +12,6 @@ export default Route.extend({
    * @param {DS.Model} model - report model record
    */
   redirect(model) {
-    this.replaceWith('print.reports.report.view', get(model, 'id'));
+    this.replaceWith('reports-print.reports.report.view', get(model, 'id'));
   }
 });

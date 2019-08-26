@@ -10,6 +10,6 @@ export default ReportViewRoute.extend({
    * @property {Object} parentModel - object containing request to view
    */
   parentModel: computed(function() {
-    return this.modelFor('print.reports.report');
+    return this.modelFor('reports-print.reports.report');
   }).volatile()
 });

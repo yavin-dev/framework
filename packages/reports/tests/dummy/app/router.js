@@ -1,5 +1,6 @@
 import EmberRouter from '@ember/routing/router';
 import config from './config/environment';
+import { reportRoutes, reportCollectionRoutes, reportPrintRoutes } from 'navi-reports/router';
 
 const Router = EmberRouter.extend({
   location: config.locationType,
@@ -7,34 +8,12 @@ const Router = EmberRouter.extend({
 });
 
 Router.map(function() {
-  this.route('reports', function() {
-    this.route('new');
-    this.route('report', { path: '/:report_id' }, function() {
-      this.route('clone');
-      this.route('save-as');
-      this.route('invalid');
-      this.route('edit');
-      this.route('view');
-      this.route('unauthorized');
-    });
-  });
+  reportRoutes(this);
+  reportCollectionRoutes(this);
+  reportPrintRoutes(this);
 
   this.route('directory', function() {
     this.route('my-data');
-  });
-
-  this.route('report-collections', function() {
-    this.route('collection', { path: '/:collection_id' });
-  });
-
-  this.route('print', function() {
-    this.route('reports', function() {
-      this.route('new');
-      this.route('report', { path: '/:report_id' }, function() {
-        this.route('view');
-        this.route('invalid');
-      });
-    });
   });
 });
 

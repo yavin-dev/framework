@@ -4,6 +4,7 @@
  */
 import EmberRouter from '@ember/routing/router';
 import config from './config/environment';
+import { reportRoutes, reportCollectionRoutes, reportPrintRoutes } from 'navi-reports/router';
 
 const Router = EmberRouter.extend({
   location: config.locationType,
@@ -40,16 +41,10 @@ Router.map(function() {
     });
   });
 
-  this.route('reports', function() {
-    this.route('new');
-    this.route('report', { path: '/:report_id' }, function() {
-      this.route('edit');
-      this.route('invalid');
-      this.route('view');
-      this.route('clone');
-      this.route('save-as');
-    });
-  });
+  reportRoutes(this);
+  reportCollectionRoutes(this);
+  reportPrintRoutes(this);
+
 });
 
 export default Router;
