@@ -23,10 +23,18 @@ export default Component.extend({
   classNames: ['visualization-config'],
 
   /**
+   * @property {String} seriesPath
+   */
+  seriesPath: computed('visualization.type', function() {
+    return get(this, 'visualization.type') === 'pie-chart' ? 'series' : 'axis.y.series';
+  }),
+
+  /**
    * @property {Object} series
    */
-  series: computed('visualization.metadata', function() {
-    return get(this, 'visualization.metadata.axis.y.series');
+  series: computed('visualization.metadata', 'seriesPath', function() {
+    const seriesPath = get(this, 'seriesPath');
+    return get(this, `visualization.metadata.${seriesPath}`);
   }),
 
   /**
@@ -72,8 +80,9 @@ export default Component.extend({
      * @param {Object} metric
      */
     onUpdateChartMetric(metric) {
-      const newConfig = copy(get(this, 'visualization.metadata'));
-      set(newConfig, 'axis.y.series.config.metric', metric);
+      const seriesPath = get(this, 'seriesPath'),
+        newConfig = copy(get(this, 'visualization.metadata'));
+      set(newConfig, `${seriesPath}.config.metric`, metric);
       this.onUpdateConfig(newConfig);
     }
   }

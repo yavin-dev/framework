@@ -12,8 +12,8 @@
 
 import Component from '@ember/component';
 import { set, get, computed } from '@ember/object';
-import { readOnly } from '@ember/object/computed';
 import { getOwner } from '@ember/application';
+import { dasherize } from '@ember/string';
 import { copy } from 'ember-copy';
 import layout from '../../templates/components/visualization-config/line-chart';
 import { featureFlag } from 'navi-core/helpers/feature-flag';
@@ -60,7 +60,9 @@ export default Component.extend({
   /**
    * @property {String} seriesType
    */
-  seriesType: readOnly('options.axis.y.series.type'),
+  seriesType: computed('options.axis.y.series.type', function() {
+    return dasherize(get(this, 'options.axis.y.series.type'));
+  }),
 
   actions: {
     /**

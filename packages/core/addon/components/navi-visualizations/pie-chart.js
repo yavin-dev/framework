@@ -9,18 +9,21 @@
  * }}
  */
 
+/* global requirejs */
+
 import { alias, readOnly } from '@ember/object/computed';
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
 import { get, computed } from '@ember/object';
+import config from 'ember-get-config';
 import { getOwner } from '@ember/application';
+import { camelize } from '@ember/string';
 import { run } from '@ember/runloop';
 import { guidFor } from '@ember/object/internals';
 import layout from '../../templates/components/navi-visualizations/pie-chart';
 import tooltipLayout from '../../templates/chart-tooltips/pie-chart';
 import merge from 'lodash/merge';
 import { smartFormatNumber } from 'navi-core/helpers/smart-format-number';
-import DimensionBuilder from 'navi-core/chart-builders/dimension';
 
 export default Component.extend({
   layout,
@@ -56,14 +59,42 @@ export default Component.extend({
   request: alias('model.firstObject.request'),
 
   /**
-   * @property {Object} builder - Series builder for pie chart
+   * @param {Object} chartBuilders - map of chart type to builder
    */
-  builder: DimensionBuilder.create(),
+  chartBuilders: computed(function() {
+    // Find all chart builders registered in requirejs under the namespace "chart-builders"
+    let builderRegExp = new RegExp(`^${config.modulePrefix}/chart-builders/(.*)`),
+      chartBuilderEntries = Object.keys(requirejs.entries).filter(key => builderRegExp.test(key)),
+      owner = getOwner(this),
+      builderMap = chartBuilderEntries.reduce((map, builderName) => {
+        let builderKey = camelize(builderRegExp.exec(builderName)[1]);
+
+        map[builderKey] = owner.lookup(`chart-builder:${builderKey}`);
+        return map;
+      }, {});
+
+    return builderMap;
+  }),
+
+  /**
+   * @property {Object} builder - builder based on series type
+   */
+  builder: computed('seriesType', function() {
+    let type = get(this, 'seriesType'),
+      builders = get(this, 'chartBuilders');
+
+    return builders[type];
+  }),
 
   /**
    * @property {Object} seriesConfig - config for chart series
    */
   seriesConfig: readOnly('options.series.config'),
+
+  /**
+   * @property {String} seriesType
+   */
+  seriesType: readOnly('options.series.type'),
 
   /**
    * Formatter for label (percentage value) shown on pie slices
@@ -87,7 +118,7 @@ export default Component.extend({
   metricDisplayName: computed('options', function() {
     let metric = get(this, 'seriesConfig.metric');
 
-    return get(this, 'metricName') && get(this, 'metricName').getDisplayName(metric);
+    return metric && get(this, 'metricName').getDisplayName(metric);
   }),
 
   /**
@@ -211,7 +242,7 @@ export default Component.extend({
 
   /**
    * Removes metric label from pie chart
-   * @method _removeTitle
+   * @method _removeMetricLabel
    * @private
    */
   _removeMetricLabel() {
@@ -259,7 +290,9 @@ export default Component.extend({
     redrawMetricLabel() {
       if (!get(this, 'isDestroyed') && !get(this, 'isDestroying')) {
         this._removeMetricLabel();
-        this._drawMetricLabel();
+        if (get(this, 'seriesType') === 'dimension') {
+          this._drawMetricLabel();
+        }
       }
     }
   }
