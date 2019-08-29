@@ -9,13 +9,9 @@
  * }}
  */
 
-/* global requirejs */
-
 import { A as arr } from '@ember/array';
 import Component from '@ember/component';
-import { camelize } from '@ember/string';
 import { computed, get } from '@ember/object';
-import config from 'ember-get-config';
 import { getOwner } from '@ember/application';
 import { guidFor } from '@ember/object/internals';
 import { inject as service } from '@ember/service';
@@ -24,6 +20,7 @@ import numeral from 'numeral';
 import merge from 'lodash/merge';
 import moment from 'moment';
 import { run } from '@ember/runloop';
+import hasChartBuilders from 'navi-core/mixins/components/has-chart-builders';
 
 const DEFAULT_OPTIONS = {
   style: {
@@ -67,7 +64,7 @@ const DEFAULT_OPTIONS = {
   }
 };
 
-export default Component.extend({
+export default Component.extend(hasChartBuilders, {
   layout,
 
   /**
@@ -90,24 +87,6 @@ export default Component.extend({
    * classes specified here are applied to the underlying c3-chart component
    */
   classNames: ['line-chart-widget'],
-
-  /**
-   * @param {Object} chartBuilders - map of chart type to builder
-   */
-  chartBuilders: computed(function() {
-    // Find all chart builders registered in requirejs under the namespace "chart-builders"
-    let builderRegExp = new RegExp(`^${config.modulePrefix}/chart-builders/(.*)`),
-      chartBuilderEntries = Object.keys(requirejs.entries).filter(key => builderRegExp.test(key)),
-      owner = getOwner(this),
-      builderMap = chartBuilderEntries.reduce((map, builderName) => {
-        let builderKey = camelize(builderRegExp.exec(builderName)[1]);
-
-        map[builderKey] = owner.lookup(`chart-builder:${builderKey}`);
-        return map;
-      }, {});
-
-    return builderMap;
-  }),
 
   /**
    * @property {Object} builder - builder based on series type

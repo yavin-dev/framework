@@ -9,23 +9,20 @@
  * }}
  */
 
-/* global requirejs */
-
 import { alias, readOnly } from '@ember/object/computed';
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
 import { get, computed } from '@ember/object';
-import config from 'ember-get-config';
 import { getOwner } from '@ember/application';
-import { camelize } from '@ember/string';
 import { run } from '@ember/runloop';
 import { guidFor } from '@ember/object/internals';
 import layout from '../../templates/components/navi-visualizations/pie-chart';
 import tooltipLayout from '../../templates/chart-tooltips/pie-chart';
 import merge from 'lodash/merge';
 import { smartFormatNumber } from 'navi-core/helpers/smart-format-number';
+import hasChartBuilders from 'navi-core/mixins/components/has-chart-builders';
 
-export default Component.extend({
+export default Component.extend(hasChartBuilders, {
   layout,
 
   /**
@@ -57,24 +54,6 @@ export default Component.extend({
    * @property {Object} request
    */
   request: alias('model.firstObject.request'),
-
-  /**
-   * @param {Object} chartBuilders - map of chart type to builder
-   */
-  chartBuilders: computed(function() {
-    // Find all chart builders registered in requirejs under the namespace "chart-builders"
-    let builderRegExp = new RegExp(`^${config.modulePrefix}/chart-builders/(.*)`),
-      chartBuilderEntries = Object.keys(requirejs.entries).filter(key => builderRegExp.test(key)),
-      owner = getOwner(this),
-      builderMap = chartBuilderEntries.reduce((map, builderName) => {
-        let builderKey = camelize(builderRegExp.exec(builderName)[1]);
-
-        map[builderKey] = owner.lookup(`chart-builder:${builderKey}`);
-        return map;
-      }, {});
-
-    return builderMap;
-  }),
 
   /**
    * @property {Object} builder - builder based on series type
