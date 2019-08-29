@@ -119,8 +119,8 @@ module('Integration | Component | pie chart', function(hooks) {
 
     this.set('options', {
       series: {
+        type: 'dimension',
         config: {
-          type: 'dimension',
           metric: {
             metric: 'totalPageViews',
             parameters: {},
@@ -160,8 +160,8 @@ module('Integration | Component | pie chart', function(hooks) {
 
     this.set('options', {
       series: {
+        type: 'dimension',
         config: {
-          type: 'dimension',
           metric: {
             metric: 'totalPageViews',
             parameters: {},
@@ -215,8 +215,8 @@ module('Integration | Component | pie chart', function(hooks) {
     //Rerender with a new metric and new chart position
     this.set('options', {
       series: {
+        type: 'dimension',
         config: {
-          type: 'dimension',
           metric: {
             metric: 'uniqueIdentifier',
             parameters: {},
@@ -266,8 +266,8 @@ module('Integration | Component | pie chart', function(hooks) {
 
     this.set('options', {
       series: {
+        type: 'dimension',
         config: {
-          type: 'dimension',
           metric: {
             metric: 'revenue',
             parameters: {
@@ -320,8 +320,8 @@ module('Integration | Component | pie chart', function(hooks) {
 
     this.set('options', {
       series: {
+        type: 'dimension',
         config: {
-          type: 'dimension',
           metric: {
             metric: 'revenue',
             parameters: { currency: 'USD' },

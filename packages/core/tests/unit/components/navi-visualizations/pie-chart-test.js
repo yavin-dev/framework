@@ -82,6 +82,7 @@ module('Unit | Component | pie chart', function(hooks) {
 
   const OPTIONS = {
     series: {
+      type: 'dimension',
       config: {
         metric: {
           metric: 'totalPageViews',
@@ -154,6 +155,7 @@ module('Unit | Component | pie chart', function(hooks) {
 
     let updatedOptions = {
       series: {
+        type: 'dimension',
         config: {
           metric: {
             metric: 'uniqueIdentifier',
