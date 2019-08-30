@@ -106,7 +106,7 @@ module('Acceptance | Exploring Widgets', function(hooks) {
 
     await visit('/dashboards/1');
 
-    const legends = findAll('.c3-legend-item').map(el => el.textContent.trim());
+    const legends = findAll('.line-chart-widget .c3-legend-item').map(el => el.textContent.trim());
 
     assert.deepEqual(
       legends,

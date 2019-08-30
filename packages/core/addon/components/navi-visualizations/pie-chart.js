@@ -9,6 +9,7 @@
  * }}
  */
 
+import d3 from 'd3';
 import { alias, readOnly } from '@ember/object/computed';
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
@@ -21,6 +22,7 @@ import tooltipLayout from '../../templates/chart-tooltips/pie-chart';
 import merge from 'lodash/merge';
 import { smartFormatNumber } from 'navi-core/helpers/smart-format-number';
 import hasChartBuilders from 'navi-core/mixins/components/has-chart-builders';
+import { getTranslation } from '../../utils/chart';
 
 export default Component.extend(hasChartBuilders, {
   layout,
@@ -242,7 +244,7 @@ export default Component.extend(hasChartBuilders, {
        * We want the metric label to be just to the left of the pie chart
        * Find the x translation of the pie chart element and subtract half the chart's width and 50 more pixels
        */
-      xTranslate = d3.transform(chartElm.attr('transform')).translate[0] - chartElm.node().getBBox().width / 2 - 50,
+      xTranslate = getTranslation(chartElm.attr('transform')).x - chartElm.node().getBBox().width / 2 - 50,
       yTranslate = svgElm.style('height').replace('px', '') / 2, //vertically center the label in the svg
       metricTitle = get(this, 'metricDisplayName');
 

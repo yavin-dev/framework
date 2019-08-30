@@ -9,14 +9,13 @@
  *  }}
  */
 
-/* globals d3 */
-
 import { alias } from '@ember/object/computed';
 import Component from '@ember/component';
 import { computed, get, getWithDefault } from '@ember/object';
 import { guidFor } from '@ember/object/internals';
 import { inject as service } from '@ember/service';
 import numeral from 'numeral';
+import d3 from 'd3';
 import layout from '../../templates/components/navi-visualizations/goal-gauge';
 import { metricFormat } from 'navi-data/helpers/metric-format';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
@@ -68,6 +67,11 @@ export default Component.extend({
    * @property {Number} - value which is desired to be achieved
    */
   goalValue: alias('config.goalValue'),
+
+  /**
+   * @property {Object} - legend configuration
+   */
+  legend: computed(() => ({ hide: true })),
 
   /**
    * @property {String} formatted default metric
@@ -139,11 +143,13 @@ export default Component.extend({
       width: 20,
       max: get(this, 'goalValue'),
       min: get(this, 'baselineValue'),
-      minmaxformat: value => {
-        let number = this._formatNumber(value),
-          prefix = get(this, 'prefix'),
-          unit = get(this, 'unit');
-        return `${prefix}${number}${unit}`;
+      label: {
+        extents: value => {
+          let number = this._formatNumber(value),
+            prefix = get(this, 'prefix'),
+            unit = get(this, 'unit');
+          return `${prefix}${number}${unit}`;
+        }
       }
     };
   }),
