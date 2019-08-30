@@ -8,5 +8,5 @@ self.deprecationWorkflow.config = {
     { handler: 'silence', matchId: 'object.new-constructor' },
     { handler: 'silence', matchId: 'deprecate-fetch-ember-data-support' }
   ],
-  throwOnUnhandled: true
+  throwOnUnhandled: false
 };

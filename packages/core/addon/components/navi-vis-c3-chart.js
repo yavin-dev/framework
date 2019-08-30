@@ -20,11 +20,11 @@ import { next, scheduleOnce } from '@ember/runloop';
 import { assign } from '@ember/polyfills';
 import { set, getProperties, get, computed } from '@ember/object';
 import C3Chart from 'ember-c3/components/c3-chart';
+import c3 from 'c3';
 import { A } from '@ember/array';
 import { inject as service } from '@ember/service';
 import $ from 'jquery';
 
-/* globals c3: true */
 export default C3Chart.extend({
   /**
    * @property {Service} metricName
@@ -137,14 +137,14 @@ export default C3Chart.extend({
   /**
    * @property {Object} chart - c3 object reference
    */
-  chart: computed('_config', '_chart', function() {
-    if (!get(this, '_chart')) {
+  chart: computed('_config', 'c3chart', function() {
+    if (!get(this, 'c3chart')) {
       let config = get(this, '_config');
 
       // eslint-disable-next-line ember/no-side-effects
-      set(this, '_chart', c3.generate(config));
+      set(this, 'c3chart', c3.generate(config));
     }
-    return get(this, '_chart');
+    return get(this, 'c3chart');
   }),
 
   /**
@@ -169,8 +169,7 @@ export default C3Chart.extend({
    * @returns {Void}
    */
   _teardownChart() {
-    get(this, 'chart').destroy();
-    set(this, '_chart', null);
+    set(this, 'c3chart', null);
   },
 
   /**
@@ -229,4 +228,3 @@ export default C3Chart.extend({
     this._teardownChart();
   }
 });
-/* globals c3: false */

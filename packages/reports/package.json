@@ -57,7 +57,6 @@
     "broccoli-asset-rev": "^2.7.0",
     "ember-basic-dropdown": "1.1.2",
     "ember-basic-dropdown-hover": "^0.6.0",
-    "ember-c3": "0.2.3",
     "ember-cli": "~3.9.0",
     "ember-cli-autoprefixer": "~0.8.1",
     "ember-cli-bootstrap-datepicker": "0.5.3",
