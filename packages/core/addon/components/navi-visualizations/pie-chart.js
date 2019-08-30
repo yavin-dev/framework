@@ -61,7 +61,7 @@ export default Component.extend(hasChartBuilders, {
    * @property {Object} builder - builder based on series type
    */
   builder: computed('seriesType', function() {
-    let type = get(this, 'seriesType'),
+    const type = get(this, 'seriesType'),
       builders = get(this, 'chartBuilders');
 
     return builders[type];

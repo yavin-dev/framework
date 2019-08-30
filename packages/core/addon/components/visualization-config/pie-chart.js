@@ -11,8 +11,8 @@
  */
 
 import Component from '@ember/component';
-import { set, get, computed } from '@ember/object';
-import { dasherize } from '@ember/string';
+import { set, get } from '@ember/object';
+import { readOnly } from '@ember/object/computed';
 import { copy } from 'ember-copy';
 import layout from '../../templates/components/visualization-config/pie-chart';
 
@@ -32,9 +32,7 @@ export default Component.extend({
   /**
    * @property {String} seriesType
    */
-  seriesType: computed('options.series.type', function() {
-    return dasherize(get(this, 'options.series.type'));
-  }),
+  seriesType: readOnly('options.series.type'),
 
   actions: {
     /**
