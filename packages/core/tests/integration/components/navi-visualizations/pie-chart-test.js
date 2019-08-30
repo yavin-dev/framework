@@ -398,12 +398,12 @@ module('Integration | Component | pie chart', function(hooks) {
     assert.dom('.c3-chart-arc').exists({ count: 2 }, 'Two pie slices are present on the chart');
 
     assert
-      .dom('.c3-target-Revenue--USD- text')
-      .hasText('40.00%', 'Percentage label shown on slice is formatted properly for `Revenue (USD)`');
+      .dom('.c3-chart-arc.chart-series-0 text')
+      .hasText('40%', 'Percentage label shown on slice is formatted properly for `Revenue (USD)`');
 
     assert
-      .dom('.c3-target-Revenue--CAD- text')
-      .hasText('60.00%', 'Percentage label shown on slice is formatted properly for `Revenue (CAD)`');
+      .dom('.c3-chart-arc.chart-series-1 text')
+      .hasText('60%', 'Percentage label shown on slice is formatted properly for `Revenue (CAD)`');
   });
 
   test('cleanup tooltip', async function(assert) {

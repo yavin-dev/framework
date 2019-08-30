@@ -68,10 +68,19 @@ module('Integration | Component | visualization config/warpper', function(hooks)
   });
 
   test('metric selector', async function(assert) {
-    assert.expect(3);
+    assert.expect(5);
 
     this.owner.register(
       'manifest:line-chart',
+      EmberObject.extend({
+        hasMultipleMetrics() {
+          return true;
+        }
+      })
+    );
+
+    this.owner.register(
+      'manifest:pie-chart',
       EmberObject.extend({
         hasMultipleMetrics() {
           return true;
@@ -85,21 +94,11 @@ module('Integration | Component | visualization config/warpper', function(hooks)
       { instantiate: false }
     );
 
-    this.set('visualization', {
-      type: 'line-chart',
-      metadata: {
-        axis: {
-          y: {
-            series: {
-              type: 'dimension',
-              config: {
-                metric: 'foo'
-              }
-            }
-          }
-        }
-      }
-    });
+    this.owner.register(
+      'component:visualization-config/pie-chart',
+      Component.extend({}),
+      { instantiate: false }
+    );
 
     this.set('request', {
       metrics: [
@@ -130,17 +129,33 @@ module('Integration | Component | visualization config/warpper', function(hooks)
       ]
     });
 
+    this.set('visualization', {
+      type: 'line-chart',
+      metadata: {
+        axis: {
+          y: {
+            series: {
+              type: 'dimension',
+              config: {
+                metric: 'foo'
+              }
+            }
+          }
+        }
+      }
+    });
+
     await render(Template);
 
     assert
       .dom('.visualization-config .metric-select')
-      .exists('The metric selector component is rendered correctly');
+      .exists('The metric selector component is rendered correctly for line chart');
 
     this.set('onUpdateChartConfig', config => {
       assert.deepEqual(
         get(config, 'axis.y.series.config.metric.canonicalName'),
         'metric2',
-        'Metric 2 is selected and passed on to the onUpdateChartMetric action'
+        'Metric 2 is selected and passed on to onUpdateChartMetric with correct series path for line chart'
       );
     });
 
@@ -149,6 +164,38 @@ module('Integration | Component | visualization config/warpper', function(hooks)
     assert
       .dom('.metric-select__select__selector .ember-power-select-option[data-option-index="2"]')
       .hasText('Revenue (USD)', 'Parameterized metric is displayed correctly in the dimension visualization config');
+
+    await toggleOption(
+      find('.metric-select__select__selector .ember-power-select-option[data-option-index="1"]')
+    );
+
+    this.set('visualization', {
+      type: 'pie-chart',
+      metadata: {
+        series: {
+          type: 'dimension',
+          config: {
+            metric: 'foo'
+          }
+        }
+      }
+    });
+
+    await render(Template);
+
+    assert
+      .dom('.visualization-config .metric-select')
+      .exists('The metric selector component is rendered correctly for pie chart');
+
+    this.set('onUpdateChartConfig', config => {
+      assert.deepEqual(
+        get(config, 'series.config.metric.canonicalName'),
+        'metric2',
+        'Metric 2 is selected and passed on to onUpdateChartMetric with correct series path for pie chart'
+      );
+    });
+
+    await toggleSelector('.metric-select__select__selector');
 
     await toggleOption(
       find('.metric-select__select__selector .ember-power-select-option[data-option-index="1"]')
