@@ -1,6 +1,9 @@
 /* eslint ember/routes-segments-snake-case: "off" */
 import EmberRouter from '@ember/routing/router';
 import config from './config/environment';
+import { reportRoutes } from 'navi-reports/router';
+import { dashboardRoutes } from 'navi-dashboards/router';
+import { directoryRoutes } from 'navi-directory/router';
 
 const Router = EmberRouter.extend({
   location: config.locationType,
@@ -8,40 +11,11 @@ const Router = EmberRouter.extend({
 });
 
 Router.map(function() {
-  this.route('directory', function() {
-    this.route('my-data');
+  directoryRoutes(this, function() {
     this.route('other-data');
   });
-
-  this.route('dashboards', function() {
-    this.route('new');
-    this.route('dashboard', { path: '/:dashboardId' }, function() {
-      this.route('clone');
-      this.route('view');
-
-      this.route('widgets', function() {
-        this.route('add');
-        this.route('new');
-        this.route('widget', { path: '/:widgetId' }, function() {
-          this.route('edit');
-          this.route('invalid');
-          this.route('view');
-          this.route('clone-to-report');
-        });
-      });
-    });
-  });
-
-  this.route('reports', function() {
-    this.route('new');
-    this.route('report', { path: '/:reportId' }, function() {
-      this.route('edit');
-      this.route('invalid');
-      this.route('view');
-      this.route('clone');
-      this.route('save-as');
-    });
-  });
+  reportRoutes(this);
+  dashboardRoutes(this);
 });
 
 export default Router;
