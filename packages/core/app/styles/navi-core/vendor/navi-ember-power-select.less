@@ -18,14 +18,16 @@
 .ember-power-select-option {
   padding: 3px 8px 3px 16px;
 
-  &[aria-selected='true'] {
+  &[aria-selected='true'],
+  &[aria-selected=''] {
     background-color: @denali-active-blue;
     color: @navi-blue-300;
   }
 
-  &[aria-selected='false'][aria-current='true'] {
-    color: @navi-gray-800;
+  &[aria-selected='false'][aria-current='true'],
+  &:not([aria-selected=''])[aria-current=''] {
     background-color: @navi-lightest-gray;
+    color: @navi-gray-800;
   }
 }
 

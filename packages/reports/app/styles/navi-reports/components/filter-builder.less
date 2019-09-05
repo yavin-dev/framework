@@ -17,18 +17,6 @@
     .ember-power-select-option {
       font-size: @font-size-mid-base;
       padding-left: 8px;
-
-      &[aria-selected='true'],
-      &[aria-selected=''] {
-        background-color: @denali-active-blue;
-        color: @navi-blue-300;
-      }
-
-      &[aria-selected='false'][aria-current='true'],
-      &:not([aria-selected=''])[aria-current=''] {
-        color: @navi-gray-800;
-        background-color: @navi-lightest-gray;
-      }
     }
   }
 

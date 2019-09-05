@@ -56,7 +56,7 @@ export default Component.extend({
    * @property {Object} selectedMetric
    */
   selectedMetric: computed('seriesConfig', function() {
-    return get(this, 'seriesConfig.metric');
+    return get(this, 'metrics').find(m => m.metric === get(this, 'seriesConfig.metric.metric'));
   }),
 
   /**
