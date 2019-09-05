@@ -11,8 +11,7 @@
 
 .ember-power-select-options {
   font-family: @font-family-strong;
-  color: @navi-white;
-  background: @gray-10;
+  background: @navi-white;
   padding: 0;
 }
 
@@ -20,11 +19,13 @@
   padding: 3px 8px 3px 16px;
 
   &[aria-selected='true'] {
-    background-color: @navi-purple-dark;
+    background-color: @denali-active-blue;
+    color: @navi-blue-300;
   }
 
-  &[aria-current='true'] {
-    background-color: @navi-purple;
+  &[aria-selected='false'][aria-current='true'] {
+    color: @navi-gray-800;
+    background-color: @navi-lightest-gray;
   }
 }
 

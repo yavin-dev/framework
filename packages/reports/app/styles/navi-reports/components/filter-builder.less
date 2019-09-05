@@ -3,15 +3,37 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-.filter-builder {
+.filter-builder,
+.filter-builder-dimension {
   &__subject {
     display: flex;
   }
 
   &__operator-dropdown {
+    .ember-power-select-options {
+      background: @navi-white;
+      color: @navi-gray-800;
+    }
     .ember-power-select-option {
       font-size: @font-size-mid-base;
       padding-left: 8px;
+
+      &[aria-selected='true'],
+      &[aria-selected=''] {
+        background-color: @denali-active-blue;
+        color: @navi-blue-300;
+      }
+
+      &[aria-selected='false'][aria-current='true'],
+      &:not([aria-selected=''])[aria-current=''] {
+        color: @navi-gray-800;
+        background-color: @navi-lightest-gray;
+      }
     }
+  }
+
+  .ember-power-select-multiple-option {
+    background-color: @denali-active-blue;
+    color: @navi-blue-300;
   }
 }
