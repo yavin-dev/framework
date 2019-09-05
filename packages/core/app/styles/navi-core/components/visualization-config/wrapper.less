@@ -12,37 +12,6 @@
   padding: 10px 5px;
   overflow-y: auto;
 
-  .metric-select {
-    .config-container();
-    padding: 5px;
-
-    &__header {
-      color: @navi-gray;
-      margin: 5px;
-    }
-
-    &__select {
-      margin-top: 5px;
-
-      .ember-power-select-status-icon {
-        right: 10px;
-      }
-
-      .ember-power-select-option[aria-current='true'] {
-        background-color: @navi-purple;
-      }
-
-      &__trigger {
-        border-color: @navi-lightest-gray;
-        border-radius: 5px;
-      }
-
-      &__dropdown {
-        border-color: @navi-lightest-gray;
-      }
-    }
-  }
-
   &__contents {
     display: flex;
     flex-flow: column;
@@ -52,12 +21,6 @@
   }
 
   &__warn-msg {
-    margin: 5px;
-    background-color: @navi-container-gray;
-    display: flex;
-    flex: 1;
-    align-items: center;
-    justify-content: center;
     text-align: center;
     padding: 10px;
   }

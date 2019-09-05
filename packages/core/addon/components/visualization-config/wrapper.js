@@ -11,79 +11,10 @@
  */
 
 import Component from '@ember/component';
-import { get, set, computed } from '@ember/object';
-import { getOwner } from '@ember/application';
 import layout from '../../templates/components/visualization-config/wrapper';
-import { getRequestMetrics } from 'navi-core/utils/chart-data';
-import { copy } from 'ember-copy';
 
 export default Component.extend({
   layout,
 
-  classNames: ['visualization-config'],
-
-  /**
-   * @property {String} seriesPath
-   */
-  seriesPath: computed('visualization.type', function() {
-    return get(this, 'visualization.type') === 'pie-chart' ? 'series' : 'axis.y.series';
-  }),
-
-  /**
-   * @property {Object} series
-   */
-  series: computed('visualization.metadata', 'seriesPath', function() {
-    const seriesPath = get(this, 'seriesPath');
-    return get(this, `visualization.metadata.${seriesPath}`);
-  }),
-
-  /**
-   * @property {Object} seriesConfig
-   */
-  seriesConfig: computed('series', function() {
-    return get(this, 'series.config');
-  }),
-
-  /**
-   * @property {Boolean} showMetricSelect - whether to display the metric select
-   */
-  showMetricSelect: computed('visualization', 'series', function() {
-    const seriesType = get(this, 'series.type'),
-      visualizationType = get(this, 'visualization.type'),
-      request = get(this, 'request'),
-      visualizationManifest = getOwner(this).lookup(`manifest:${visualizationType}`);
-
-    return (
-      ['line-chart', 'bar-chart', 'pie-chart'].includes(visualizationType) &&
-      seriesType === 'dimension' &&
-      visualizationManifest.hasMultipleMetrics(request)
-    );
-  }),
-
-  /**
-   * @property {Object} selectedMetric
-   */
-  selectedMetric: computed('seriesConfig', function() {
-    return get(this, 'seriesConfig.metric');
-  }),
-
-  /**
-   * @property {Array} metrics
-   */
-  metrics: computed('request', function() {
-    return getRequestMetrics(this.request);
-  }),
-
-  actions: {
-    /**
-     * @method onUpdateChartMetric
-     * @param {Object} metric
-     */
-    onUpdateChartMetric(metric) {
-      const seriesPath = get(this, 'seriesPath'),
-        newConfig = copy(get(this, 'visualization.metadata'));
-      set(newConfig, `${seriesPath}.config.metric`, metric);
-      this.onUpdateConfig(newConfig);
-    }
-  }
+  classNames: ['visualization-config']
 });

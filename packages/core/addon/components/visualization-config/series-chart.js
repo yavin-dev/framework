@@ -2,12 +2,12 @@
  * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
- * {{visualization-config/chart-type/dimension
+ * {{visualization-config/series-chart
  *    request=request
  *    response=response
  *    seriesConfig=seriesConfig
- *    maxSeries=maxSeries
- *    onUpdateConfig=(action 'onUpdateChartConfig')
+ *    seriesType=seriesType
+ *    onUpdateConfig=(action "onUpdateChartConfig")
  * }}
  */
 
@@ -15,10 +15,11 @@ import { assign } from '@ember/polyfills';
 import { A as arr } from '@ember/array';
 import Component from '@ember/component';
 import { set, get, computed } from '@ember/object';
+import { isArray } from '@ember/array';
 import { copy } from 'ember-copy';
 import { dataByDimensions } from 'navi-core/utils/data';
 import { getRequestMetrics } from 'navi-core/utils/chart-data';
-import layout from '../../../templates/components/visualization-config/chart-type/dimension';
+import layout from '../../templates/components/visualization-config/series-chart';
 import values from 'lodash/values';
 import reject from 'lodash/reject';
 
@@ -28,13 +29,29 @@ export default Component.extend({
   /**
    * @property classNames
    */
-  classNames: ['dimension-line-chart-config'],
+  classNames: ['series-chart-config'],
 
   /**
    * @property {Array} metrics
    */
   metrics: computed('request', function() {
     return getRequestMetrics(get(this, 'request'));
+  }),
+
+  /**
+   * @property {Object} selectedMetric
+   */
+  selectedMetric: computed('seriesConfig', function() {
+    return get(this, 'seriesConfig.metric');
+  }),
+
+  /**
+   * @property {Boolean} showMetricSelect - whether to display the metric select
+   */
+  showMetricSelect: computed('metrics', function() {
+    const metrics = get(this, 'metrics'),
+      seriesType = get(this, 'seriesType');
+    return seriesType === 'dimension' && isArray(metrics) && metrics.length > 1;
   }),
 
   /**
@@ -157,6 +174,16 @@ export default Component.extend({
       //remove series from config
       set(newSeriesConfig, 'dimensions', reject(seriesInConfig, series.config));
       if (handleUpdateConfig) handleUpdateConfig(newSeriesConfig);
+    },
+
+    /**
+     * @method onUpdateChartMetric
+     * @param {Object} metric
+     */
+    onUpdateChartMetric(metric) {
+      const newConfig = copy(get(this, 'seriesConfig'));
+      set(newConfig, `metric`, metric);
+      this.onUpdateConfig(newConfig);
     }
   }
 });

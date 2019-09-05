@@ -60,7 +60,7 @@ export default Component.extend({
   /**
    * @property {String} seriesType
    */
-  seriesType: computed('options.axis.y.series.type', function() {
+  seriesType: computed('options', function() {
     return dasherize(get(this, 'options.axis.y.series.type'));
   }),
 

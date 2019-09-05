@@ -11,10 +11,9 @@
  */
 
 import Component from '@ember/component';
-import { set, get } from '@ember/object';
-import { readOnly } from '@ember/object/computed';
-import { copy } from 'ember-copy';
 import layout from '../../templates/components/visualization-config/pie-chart';
+import { set, get } from '@ember/object';
+import { copy } from 'ember-copy';
 
 export default Component.extend({
   layout,
@@ -23,16 +22,6 @@ export default Component.extend({
    * @property classNames
    */
   classNames: ['pie-chart-config'],
-
-  /**
-   * @property {String} typePrefix - prefix for the line chart component
-   */
-  typePrefix: 'visualization-config/chart-type/',
-
-  /**
-   * @property {String} seriesType
-   */
-  seriesType: readOnly('options.series.type'),
 
   actions: {
     /**

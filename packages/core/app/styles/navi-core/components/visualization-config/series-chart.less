@@ -1,0 +1,28 @@
+
+.metric-select {
+  margin-bottom: 20px;
+
+  &__header {
+    color: @navi-gray;
+    margin: 5px;
+  }
+
+  &__select {
+    .ember-power-select-status-icon {
+      right: 10px;
+    }
+
+    .ember-power-select-option[aria-current='true'] {
+      background-color: @navi-purple;
+    }
+
+    &__trigger {
+      border-color: @navi-lightest-gray;
+      border-radius: 5px;
+    }
+
+    &__dropdown {
+      border-color: @navi-lightest-gray;
+    }
+  }
+}
