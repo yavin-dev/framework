@@ -37,14 +37,14 @@ install:
     else
     nvm install ${NODE_VERSION};
     npm config set spin false;
-    travis_wait npm ci;
+    npm ci;
     npx lerna exec --scope ${PACKAGE} -- bower install || true;
     fi
 script:
   - if [[ "${PACKAGE}" == "navi-webservice" ]]; then
     pushd packages/webservice && ./gradlew check && popd;
     else
-    travis_wait npx lerna run test --scope ${PACKAGE};
+    npx lerna run test --scope ${PACKAGE} --stream;
     fi
 jobs:
   include:
