@@ -1,11 +1,15 @@
-{{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{#each validVisualizations as |visualization|}}
-  <span
-    class="visualization-toggle__option {{if (eq report.visualization.type visualization.name) "visualization-toggle__option--is-active"}}"
-    role="button"
-    onclick={{action onVisualizationTypeUpdate visualization.name}}
-  >
-    {{navi-icon visualization.icon class="visualization-toggle__icon"}}
-    {{visualization.niceName}}
-  </span>
-{{/each}}
+{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<ul class="visualization-toggle__list">
+  {{#each validVisualizations as |visualization|}}
+    <li
+      class="visualization-toggle__option {{if (eq report.visualization.type visualization.name) "visualization-toggle__option--is-active"}}"
+      role="button"
+      onclick={{action onVisualizationTypeUpdate visualization.name}}
+    >
+      {{navi-icon visualization.icon class="visualization-toggle__option-icon"}}
+      <span class="visualization-toggle__option-name">
+        {{visualization.niceName}}
+      </span>
+    </li>
+  {{/each}}
+</ul>

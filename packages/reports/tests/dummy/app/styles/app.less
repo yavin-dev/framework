@@ -1,15 +1,6 @@
 @import 'navi-reports';
 
-// Blue Palette
-// -----------
-@blue-200: #2698b8;
-@blue-300: #2285bc;
-@blue-400: #258dc8;
-@blue-500: #198fff;
-@blue-600: #1c66bf;
-@blue-700: #1e39a2;
-@blue-800: #211981;
-@blue-900: #210a6f;
+@top-bar-color: #1a2d48;
 
 html,
 body {
@@ -29,17 +20,7 @@ body > .ember-view {
 }
 
 .top-bar {
-  background: linear-gradient(
-    135deg,
-    @blue-900 0%,
-    @blue-800 11%,
-    @blue-700 36%,
-    @blue-600 64%,
-    @blue-400 83%,
-    @blue-300 95%,
-    @blue-200 99%
-  );
-
+  background: @top-bar-color;
   color: @navi-white;
   display: flex;
   padding: 10px 0;

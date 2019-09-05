@@ -1,6 +1,6 @@
 {{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{#basic-dropdown as |dd|}}
-  {{#dd.trigger classNames="dir-new-button__trigger button__blue button__blue--primary"}}New{{/dd.trigger}}
+  {{#dd.trigger classNames="dir-new-button__trigger btn btn-primary"}}New{{/dd.trigger}}
   {{#dd.content class="dir-new-button__content dropdown-arrow"}}
     {{#each fileTypeNames as |typeName|}}
       {{#with (get fileTypes typeName) as |typeObject|}}
