@@ -22,8 +22,10 @@ const API_DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss.SSS',
     lte: (values, metricValue) => parseFloat(metricValue) <= parseFloat(values[0]),
     eq: (values, metricValue) => parseFloat(metricValue) === parseFloat(values[0]),
     neq: (values, metricValue) => parseFloat(metricValue) !== parseFloat(values[0]),
-    bet: (values, metricValue) => parseFloat(values[0]) < metricValue && metricValue < parseFloat(values[1]),
-    nbet: (values, metricValue) => !(parseFloat(values[0]) < metricValue && metricValue < parseFloat(values[1]))
+    bet: (values, metricValue) =>
+      parseFloat(values[0]) < parseFloat(metricValue) && parseFloat(metricValue) < parseFloat(values[1]),
+    nbet: (values, metricValue) =>
+      !(parseFloat(values[0]) < parseFloat(metricValue) && parseFloat(metricValue) < parseFloat(values[1]))
   },
   DIMENSION_OPS = {
     in: (filterValues, value, field) => filterValues.includes(value[field]),
