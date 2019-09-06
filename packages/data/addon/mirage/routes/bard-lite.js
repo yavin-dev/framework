@@ -72,7 +72,7 @@ function _filterDimensions(dimensions, filter) {
   if (!filter) {
     return dimensions;
   }
-  dimensions.reduce((arr, value) => {
+  return dimensions.reduce((arr, value) => {
     if (DIMENSION_OPS[filter.operation](filter.values, value, filter.field)) {
       arr.push(value);
     }
