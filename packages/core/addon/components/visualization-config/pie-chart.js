@@ -1,20 +1,19 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2017, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * {{visualization-config/pie-chart
  *    request=request
  *    response=response
  *    options=chartOptions
- *    type=type
  *    onUpdateConfig=(action 'onUpdateChartConfig')
  * }}
  */
 
 import Component from '@ember/component';
-import layout from '../../templates/components/visualization-config/pie-chart';
 import { set, get } from '@ember/object';
 import { copy } from 'ember-copy';
+import layout from '../../templates/components/visualization-config/pie-chart';
 
 export default Component.extend({
   layout,
