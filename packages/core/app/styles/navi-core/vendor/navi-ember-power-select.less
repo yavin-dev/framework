@@ -11,20 +11,24 @@
 
 .ember-power-select-options {
   font-family: @font-family-strong;
-  color: @navi-white;
-  background: @gray-10;
+  background: @navi-white;
   padding: 0;
+  color: @navi-gray-800;
 }
 
 .ember-power-select-option {
   padding: 3px 8px 3px 16px;
 
-  &[aria-selected='true'] {
-    background-color: @navi-purple-dark;
+  &[aria-selected='true'],
+  &[aria-selected=''] {
+    background-color: @denali-active-blue;
+    color: @navi-blue-300;
   }
 
-  &[aria-current='true'] {
-    background-color: @navi-purple;
+  &[aria-selected='false'][aria-current='true'],
+  &:not([aria-selected=''])[aria-current=''] {
+    background-color: @navi-lightest-gray;
+    color: @navi-gray-800;
   }
 }
 

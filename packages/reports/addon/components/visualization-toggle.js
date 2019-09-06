@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -13,15 +13,6 @@ import Component from '@ember/component';
 import layout from '../templates/components/visualization-toggle';
 
 export default Component.extend({
-  /**
-   * @property classNames
-   */
   classNames: ['visualization-toggle'],
-
-  /**
-   * @property tagName
-   */
-  tagName: 'span',
-
   layout
 });

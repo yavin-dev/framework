@@ -7,21 +7,29 @@
   display: flex;
   justify-content: flex-end;
 
+  &__list {
+    display: flex;
+  }
+
   &__option {
     border: 1px solid @navi-lighter-gray;
-    padding: 4px 10px;
+    padding: 6px 10px;
     font-size: @font-size-mid;
     margin-right: -1px;
     cursor: pointer;
 
-    &--is-active {
-      background-color: @navi-purple-lightest;
-      pointer-events: none;
+    &:hover {
+      background-color: @navi-lightest-gray;
     }
 
-    &:hover {
-      background-color: @navi-purple-lightest;
+    &--is-active {
+      background: @denali-active-blue;
+      pointer-events: none;
     }
+  }
+
+  &__option-name {
+    color: @navi-blue-300;
   }
 
   &__option:nth-of-type(1) {

@@ -32,12 +32,13 @@
 
   &__header {
     display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
   }
 
   &__title {
     font-family: @font-family-strong;
     font-size: @font-size-base;
-    margin: auto 0;
     text-transform: uppercase;
   }
 
@@ -56,7 +57,7 @@
 
   &__search-input {
     flex: 1;
-    padding: 0 5px;
+    padding: 3px;
   }
 
   &__search-input-clear {
@@ -69,7 +70,6 @@
     .clickable;
     color: @navi-blue;
     font-size: @font-size-mid;
-    margin: 5px 0 5px auto;
     white-space: nowrap;
   }
 }
