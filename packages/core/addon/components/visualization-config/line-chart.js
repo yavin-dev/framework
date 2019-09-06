@@ -6,6 +6,7 @@
  *    request=request
  *    response=response
  *    options=chartOptions
+ *    type=type
  *    onUpdateConfig=(action 'onUpdateChartConfig')
  * }}
  */
@@ -44,7 +45,8 @@ export default Component.extend({
       return false;
     }
 
-    const { type, request } = this,
+    const type = get(this, 'type'),
+      request = get(this, 'request'),
       visualizationManifest = getOwner(this).lookup(`manifest:${type}`);
 
     return visualizationManifest.hasGroupBy(request) || visualizationManifest.hasMultipleMetrics(request);

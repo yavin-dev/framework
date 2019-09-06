@@ -2,8 +2,7 @@
 {{#if (not (eq options.series.type "dimension"))}}
   <div class="visualization-config__warn-msg">No configuration options available.</div>
 {{/if}}
-{{component
-  "visualization-config/series-chart"
+{{visualization-config/series-chart
   request=request
   response=response
   seriesConfig=(readonly options.series.config)

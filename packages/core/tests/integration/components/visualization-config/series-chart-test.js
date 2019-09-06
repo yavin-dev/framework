@@ -1,13 +1,16 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click } from '@ember/test-helpers';
+import { render, click, find } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import { setupMock, teardownMock } from '../../../../helpers/mirage-helper';
+import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
+import { clickTrigger as toggleSelector, nativeMouseUp as toggleOption } from 'ember-power-select/test-support/helpers';
+import { get } from '@ember/object';
 
 let MetadataService;
 
-let Template = hbs`{{visualization-config/chart-type/dimension
+let Template = hbs`{{visualization-config/series-chart
                     seriesConfig=seriesConfig
+                    seriesType=seriesType
                     response=response
                     request=request
                     onUpdateConfig=(action onUpdateChartConfig)
@@ -56,12 +59,13 @@ const ROWS = [
   }
 ];
 
-module('Integration | Component | visualization config/line chart type/dimension', function(hooks) {
+module('Integration | Component | visualization config/series chart', function(hooks) {
   setupRenderingTest(hooks);
 
   hooks.beforeEach(function() {
     setupMock();
 
+    this.set('seriesType', 'dimension');
     this.set('seriesConfig', {
       dimensionOrder: ['foo'],
       metric: {
@@ -131,11 +135,43 @@ module('Integration | Component | visualization config/line chart type/dimension
 
     await render(Template);
 
-    assert.dom('.dimension-line-chart-config').isVisible('The line chart config component renders');
+    assert.dom('.series-chart-config').isVisible('The series chart config component renders');
 
     assert
-      .dom('.dimension-line-chart-config .chart-series-collection')
-      .isVisible('The chart series selection component is displayed in the line chart config');
+      .dom('.series-chart-config .chart-series-collection')
+      .isVisible('The chart series selection component is displayed in the series chart config');
+  });
+
+  test('metric selector', async function(assert) {
+    assert.expect(4);
+
+    await render(Template);
+
+    assert.dom('.series-chart-config .metric-select').exists('The metric selector component is rendered correctly');
+
+    this.set('onUpdateChartConfig', config => {
+      assert.deepEqual(
+        get(config, 'metric.canonicalName'),
+        'metric2',
+        'Metric 2 is selected and passed on to onUpdateChartConfig'
+      );
+    });
+
+    await toggleSelector('.metric-select__select__selector');
+
+    assert
+      .dom('.metric-select__select__selector .ember-power-select-option[data-option-index="2"]')
+      .hasText('Revenue (USD)', 'Parameterized metric is displayed correctly');
+
+    await toggleOption(find('.metric-select__select__selector .ember-power-select-option[data-option-index="1"]'));
+
+    this.set('seriesType', 'metric');
+
+    await render(Template);
+
+    assert
+      .dom('.series-chart-config .metric-select')
+      .doesNotExist('The metric selector component is not rendered for a metric series');
   });
 
   test('on add series', async function(assert) {
@@ -181,7 +217,7 @@ module('Integration | Component | visualization config/line chart type/dimension
             values: { foo: '2' }
           }
         ],
-        'The deleted series is removed to the config and passed on to the onUpdateChartConfig action'
+        'The deleted series is removed from the config and passed on to the onUpdateChartConfig action'
       );
     });
 

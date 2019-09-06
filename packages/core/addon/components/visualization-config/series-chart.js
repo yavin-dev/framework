@@ -7,7 +7,7 @@
  *    response=response
  *    seriesConfig=seriesConfig
  *    seriesType=seriesType
- *    onUpdateConfig=(action "onUpdateChartConfig")
+ *    onUpdateConfig=(action "onUpdateConfig")
  * }}
  */
 
