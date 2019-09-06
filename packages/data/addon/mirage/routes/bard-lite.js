@@ -166,14 +166,9 @@ export default function(
       filters = request.queryParams.filters.split(']').reduce((filterObj, currFilter) => {
         if (currFilter.length > 0) {
           if (currFilter[0] === ',') currFilter = currFilter.substring(1);
-
-          const columnOp = currFilter.split('-');
-          const column = columnOp[0].split('|');
-          const op = columnOp[1].split('[');
-          let dimension = column[0],
-            field = column[1] === 'desc' ? 'description' : column[1],
-            operation = op[0],
-            values = op[1].split(',');
+          let [, dimension, field, operation, values] = currFilter.match(/(.*)\|(.*)-(.*)\[(.*)/);
+          field = field === 'desc' ? 'description' : field;
+          values = values.split(',');
 
           filterObj[dimension] = { field, operation, values };
         }
@@ -211,12 +206,8 @@ export default function(
       havings = request.queryParams.having.split(']').reduce((havingObj, currHaving) => {
         if (currHaving.length > 0) {
           if (currHaving[0] === ',') currHaving = currHaving.substring(1);
-
-          const rowOp = currHaving.split('-');
-          const op = rowOp[1].split('[');
-          const metric = rowOp[0],
-            operation = op[0],
-            values = op[1].split(',');
+          let [, metric, operation, values] = currHaving.match(new RegExp('(.*)-(.*)\\[(.*)'));
+          values = values.split(',');
 
           havingObj[metric] = { operation, values };
         }
