@@ -21,7 +21,7 @@
               </div>
               <div class="dim-value has-tooltip selection-item pill">
                 {{#with (format-dimension dimension.value) as |dimensionValue|}}
-                  {{tooltip-on-element
+                  {{ember-tooltip
                     text=dimensionValue
                     enableLazyRendering=true
                   }}

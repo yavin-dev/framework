@@ -3,8 +3,8 @@
 {{#if data.__meta__.hasPartialData}}
   <div class="table-cell__info-message">
     {{navi-icon "exclamation-triangle" class="table-cell__info-message--icon"}}
-    {{#tooltip-on-element side="right" class="table-cell__info-message--tooltip" enableLazyRendering=true}}
+    {{#ember-tooltip side="right" class="table-cell__info-message--tooltip" enableLazyRendering=true}}
       Totals and Subtotals are not calculated when data is partially loaded
-    {{/tooltip-on-element}}
+    {{/ember-tooltip}}
   </div>
 {{/if}}

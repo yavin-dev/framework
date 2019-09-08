@@ -23,7 +23,7 @@ module('Unit | Component | table', function(hooks) {
     this.owner.register('component:navi-icon', Component.extend(), {
       instantiate: false
     });
-    this.owner.register('component:tooltip-on-element', Component.extend(), {
+    this.owner.register('component:ember-tooltip', Component.extend(), {
       instantiate: false
     });
 
