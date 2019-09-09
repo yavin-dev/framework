@@ -1,4 +1,4 @@
-{{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="navi-dashboard__breadcrumb">
   {{#if (feature-flag "enableDirectory")}}
     {{#link-to "directory.my-data" class="navi-dashboard__breadcrumb-link"}}Directory{{/link-to}}
@@ -121,11 +121,9 @@
     <div class="navi-dashboard__widgets">
       {{#grid-stack
         options=(hash
-          width=dashboard.presentation.columns
+          width=width
         )
         onChange=(route-action "didUpdateLayout")
-        onDragstop=(route-action "commitStagedLayout")
-        onResizestop=(route-action "commitStagedLayout")
       }}
         {{#each dashboard.presentation.layout as |layout|}}
           {{#with (get-widget layout.widgetId) as |widget|}}

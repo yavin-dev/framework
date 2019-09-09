@@ -1,7 +1,13 @@
-{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{#grid-stack-item
   classNames="navi-widget"
-  options=options
+  options=(hash
+    x=layoutOptions.column
+    y=layoutOptions.row
+    height=layoutOptions.height
+    width=layoutOptions.width
+    id=layoutOptions.widgetId
+  )
   as |item|
 }}
   <div class="navi-widget__header">

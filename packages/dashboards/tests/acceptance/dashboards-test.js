@@ -48,8 +48,10 @@ module('Acceptance | Dashboards', function(hooks) {
     await visit('/dashboards/4');
 
     //trigger a change
+    const singlegrid = $('.grid-stack').data('gridstack');
+    const item = findAll('.grid-stack-item')[0];
     run(() => {
-      $('.grid-stack').trigger('resizestop');
+      singlegrid.resize(item, 12, 4);
     });
 
     assert
@@ -65,7 +67,7 @@ module('Acceptance | Dashboards', function(hooks) {
     const route = this.owner.lookup('route:dashboards.dashboard');
 
     assert.deepEqual(
-      route.currentDashboard.presentation.layout,
+      route.currentDashboard.presentation.layout.serialize(),
       [
         { column: 0, height: 4, row: 0, widgetId: 1, width: 6 },
         { column: 6, height: 4, row: 0, widgetId: 2, width: 6 },
@@ -80,11 +82,10 @@ module('Acceptance | Dashboards', function(hooks) {
 
     run(() => {
       grid.move(items[2], 0, 0);
-      $('.grid-stack').trigger('resizestop');
     });
 
     assert.deepEqual(
-      route.currentDashboard.presentation.layout,
+      route.currentDashboard.presentation.layout.serialize(),
       [
         { column: 0, height: 4, row: 4, widgetId: 1, width: 6 },
         { column: 6, height: 4, row: 4, widgetId: 2, width: 6 },

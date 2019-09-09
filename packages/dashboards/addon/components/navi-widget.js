@@ -45,7 +45,7 @@ export default Component.extend({
   /**
    * @property {Object} options - object for grid-stack-item
    */
-  options: computed('layoutOptions', function() {
+  options: computed('layoutOptions.@each.{width,height,row,column,widgetId}', 'model.id', function() {
     let layout = get(this, 'layoutOptions'),
       id = get(this, 'model.id');
 

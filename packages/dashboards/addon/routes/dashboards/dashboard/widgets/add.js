@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -61,20 +61,18 @@ export default Route.extend({
    * @private
    * @param {Array} layout - dashboard layout array
    * @param {Number} widgetId - id of widget to add
-   * @returns {Array} new layout with new widget
+   * @returns {Fragment} - layout with new widget
    */
   _addToLayout(layout, widgetId) {
     let row = this._findNextAvailableRow(layout);
-    return [
-      ...layout,
-      {
-        widgetId: Number(widgetId),
-        width: 5,
-        height: 4,
-        column: 0,
-        row
-      }
-    ];
+    layout.createFragment({
+      widgetId: Number(widgetId),
+      width: 5,
+      height: 4,
+      column: 0,
+      row
+    });
+    return layout;
   },
 
   /**
