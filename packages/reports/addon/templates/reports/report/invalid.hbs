@@ -1,4 +1,4 @@
-{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{#navi-info-message classNames="navi-report-invalid__info-message"}}
   {{#with (get (model-for (parent-route)) "request.validations") as |validations|}}
     {{#if validations.isTruelyValid}}
@@ -6,14 +6,14 @@
         {{navi-icon "check-square-o"}}
       </span>
       <p>
-        Lookin" good. We"re ready to
+        Lookin' good. We're ready to
         {{#link-to (sibling-route "view") class="navi-link info-message__run-link"}}run{{/link-to}}.
       </p>
     {{else}}
       <span>
         {{navi-icon "ambulance"}}
       </span>
-      <p>Whoa! We can"t run this query. Let"s figure out what went wrong.</p>
+      <p>Whoa! We can't run this query. Let's figure out what went wrong.</p>
       <ul class="navi-info-message__error-list">
         {{#each validations.messages as |message|}}
           <li class="navi-info-message__error-list-item">

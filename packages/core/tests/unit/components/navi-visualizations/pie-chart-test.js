@@ -2,9 +2,22 @@ import { A } from '@ember/array';
 import { get } from '@ember/object';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
+import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
+
+let MetadataService;
 
 module('Unit | Component | pie chart', function(hooks) {
   setupTest(hooks);
+
+  hooks.beforeEach(function() {
+    setupMock();
+    MetadataService = this.owner.lookup('service:bard-metadata');
+    return MetadataService.loadMetadata();
+  });
+
+  hooks.afterEach(function() {
+    teardownMock();
+  });
 
   const REQUEST = {
     dimensions: [
@@ -80,8 +93,9 @@ module('Unit | Component | pie chart', function(hooks) {
     ]
   };
 
-  const OPTIONS = {
+  const DIMENSION_SERIES_OPTIONS = {
     series: {
+      type: 'dimension',
       config: {
         metric: {
           metric: 'totalPageViews',
@@ -115,6 +129,23 @@ module('Unit | Component | pie chart', function(hooks) {
     }
   };
 
+  const METRIC_SERIES_OPTIONS = {
+    series: {
+      type: 'metric',
+      config: {
+        metrics: [{
+          metric: 'totalPageViews',
+          parameters: {},
+          canonicalName: 'totalPageViews'
+        }, {
+          metric: 'uniqueIdentifier',
+          parameters: {},
+          canonicalName: 'uniqueIdentifier'
+        }]
+      }
+    }
+  };
+
   test('pieConfig', function(assert) {
     assert.expect(1);
 
@@ -124,13 +155,13 @@ module('Unit | Component | pie chart', function(hooks) {
   });
 
   test('dataConfig', function(assert) {
-    assert.expect(3);
+    assert.expect(4);
 
     let component = this.owner.factoryFor('component:navi-visualizations/pie-chart').create(),
       model = { request: REQUEST, response: RESPONSE };
 
     component.set('model', A([model]));
-    component.set('options', OPTIONS);
+    component.set('options', DIMENSION_SERIES_OPTIONS);
 
     assert.equal(component.get('dataConfig.data.type'), 'pie', 'Data config contains the type property as `pie`');
 
@@ -154,6 +185,7 @@ module('Unit | Component | pie chart', function(hooks) {
 
     let updatedOptions = {
       series: {
+        type: 'dimension',
         config: {
           metric: {
             metric: 'uniqueIdentifier',
@@ -206,6 +238,23 @@ module('Unit | Component | pie chart', function(hooks) {
       ],
       'Data config updates when metric has been changed in series options'
     );
+
+    component.set('options', METRIC_SERIES_OPTIONS);
+
+    assert.deepEqual(
+      component.get('dataConfig.data.json'),
+      [
+        {
+          'Total Page Views': 3072620639,
+          'Unique Identifiers': 155191081,
+          x: {
+            displayValue: 'Dec 14',
+            rawValue: '2015-12-14 00:00:00.000'
+          }
+        }
+      ],
+      'Data config updates correctly for a metrics series according to first row of response'
+    );
   });
 
   test('tooltipComponent', function(assert) {
@@ -221,7 +270,7 @@ module('Unit | Component | pie chart', function(hooks) {
       };
 
     component.set('model', A([model]));
-    component.set('options', OPTIONS);
+    component.set('options', DIMENSION_SERIES_OPTIONS);
     component.get('dataConfig');
 
     let metricName = component.get('seriesConfig.metric'),

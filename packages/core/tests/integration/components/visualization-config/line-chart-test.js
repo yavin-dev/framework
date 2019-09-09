@@ -1,10 +1,8 @@
-import { run } from '@ember/runloop';
-import Component from '@ember/component';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click } from '@ember/test-helpers';
+import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import EmberObject, { get } from '@ember/object';
+import EmberObject from '@ember/object';
 
 let Template = hbs`
   {{visualization-config/line-chart
@@ -16,9 +14,12 @@ let Template = hbs`
   }}`,
   request = {
     hasGroupBy: true,
-    hasMultipleMetrics: true
+    hasMultipleMetrics: true,
+    dimensions: [],
+    metrics: []
   },
   chartOptions = {
+    type: 'metric',
     style: {},
     axis: {
       y: {
@@ -47,20 +48,6 @@ module('Integration | Component | visualization config/line chart', function(hoo
       })
     );
 
-    //mocking line chart type component
-    this.owner.register(
-      'component:visualization-config/chart-type/mock',
-      Component.extend({
-        classNames: ['mock'],
-        click() {
-          const handleUpdateConfig = get(this, 'onUpdateConfig');
-
-          if (handleUpdateConfig) handleUpdateConfig(chartOptions);
-        }
-      }),
-      { instantiate: false }
-    );
-
     this.set('type', 'mock');
     this.set('request', request);
     this.set('options', chartOptions);
@@ -72,21 +59,7 @@ module('Integration | Component | visualization config/line chart', function(hoo
 
     await render(Template);
 
-    assert
-      .dom('.line-chart-config .mock')
-      .exists('The Mock component is correctly rendered based on visualization type');
-  });
-
-  test('onUpdateConfig', async function(assert) {
-    assert.expect(1);
-
-    this.set('onUpdateConfig', result => {
-      assert.deepEqual(result, chartOptions, 'onUpdateConfig action is called by the mock component');
-    });
-
-    await render(Template);
-
-    await run(() => click('.mock'));
+    assert.dom('.line-chart-config').exists('The component is rendered');
   });
 
   test('showStackOption', async function(assert) {
@@ -110,7 +83,9 @@ module('Integration | Component | visualization config/line chart', function(hoo
 
     this.set('request', {
       hasGroupBy: false,
-      hasMultipleMetrics: false
+      hasMultipleMetrics: false,
+      dimensions: [],
+      metrics: []
     });
 
     await render(Template);

@@ -1,7 +1,11 @@
-{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{visualization-config/chart-type/dimension
+{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{#if (not (eq options.series.type "dimension"))}}
+  <div class="visualization-config__warn-msg">No configuration options available.</div>
+{{/if}}
+{{visualization-config/series-chart
   request=request
   response=response
   seriesConfig=(readonly options.series.config)
+  seriesType=(readonly options.series.type)
   onUpdateConfig=(action "onUpdateConfig")
 }}
