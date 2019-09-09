@@ -29,28 +29,56 @@ module('Unit | Manifests | bar chart', function(hooks) {
   setupTest(hooks);
 
   test('bar chart visualization type is valid', function(assert) {
-    assert.expect(4);
+    assert.expect(6);
 
-    // invalid for single time bucket no dimension
+    // invalid for single time bucket, no dimension, single metric
     let request = copy(VALID_REQUEST),
       manifest = this.owner.lookup('manifest:bar-chart');
-    assert.notOk(manifest.typeIsValid(request), 'bar chart type is invalid for single time bucket no dimension');
+    assert.notOk(
+      manifest.typeIsValid(request),
+      'bar chart type is invalid for single time bucket, no dimensions, single metric'
+    );
 
-    // valid for single time bucket with dimension
-    set(request, 'dimensions', ['sword']);
-    assert.ok(manifest.typeIsValid(request), 'bar chart type is valid for single time bucket with dimension');
+    // valid for single time bucket, no dimensions, multiple metrics
+    set(request, 'metrics', [{ metric: 'adClicks' }, { metric: 'totalPageViews' }]);
+    assert.ok(
+      manifest.typeIsValid(request),
+      'bar chart type is valid for single time bucket, no dimensions, multiple metrics'
+    );
 
-    // valid for multiple time buckets with dimension
+    // valid for single time bucket with dimension and a single metric
+    set(request, 'dimensions', [{ dimension: 'sword' }]);
+    set(request, 'metrics', [{ metric: 'adClicks' }]);
+    assert.ok(
+      manifest.typeIsValid(request),
+      'bar chart type is valid for single time bucket with dimension and metric'
+    );
+
+    // invalid for single time bucket with dimension and no metrics
+    set(request, 'metrics', []);
+    assert.notOk(
+      manifest.typeIsValid(request),
+      'bar chart type is invalid for single time bucket with dimension and no metrics'
+    );
+
+    // valid for multiple time buckets with dimension and metric
     let intervals = A([
       {
         interval: new Interval(moment('2015-11-09 00:00:00.000'), moment('2015-11-16 00:00:00.000'))
       }
     ]);
     set(request, 'intervals', intervals);
-    assert.ok(manifest.typeIsValid(request), 'bar chart type is valid for multiple time buckets with dimension');
+    set(request, 'metrics', [{ metric: 'adClicks' }]);
+    assert.ok(
+      manifest.typeIsValid(request),
+      'bar chart type is valid for multiple time buckets with dimension and metric'
+    );
 
-    // valid for multiple time bucket no dimension
+    // valid for multiple time bucket no dimension and metric
     set(request, 'dimensions', []);
-    assert.ok(manifest.typeIsValid(request), 'bar chart type is invalid for multiple time bucket no dimension');
+    assert.ok(
+      manifest.typeIsValid(request),
+      'bar chart type is invalid for multiple time bucket no dimension and metric'
+    );
   });
 });

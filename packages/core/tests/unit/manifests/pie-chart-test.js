@@ -29,12 +29,15 @@ module('Unit | Manifests | pie chart', function(hooks) {
   setupTest(hooks);
 
   test('pie chart visualization type is valid', function(assert) {
-    assert.expect(3);
+    assert.expect(5);
 
     // valid for single time bucket and group by
     let request = copy(VALID_REQUEST),
       manifest = this.owner.lookup('manifest:pie-chart');
-    assert.ok(manifest.typeIsValid(request), 'pie chart type is valid for single time buckets');
+    assert.ok(
+      manifest.typeIsValid(request),
+      'pie chart type is valid for single time bucket with dimension and metric'
+    );
 
     // invalid for multiple time buckets
     let intervals = A([
@@ -50,5 +53,15 @@ module('Unit | Manifests | pie chart', function(hooks) {
     set(request, 'intervals', intervals);
     set(request, 'dimensions', []);
     assert.notOk(manifest.typeIsValid(request), 'pie chart type is invalid for single time bucket with no group by');
+
+    set(request, 'metrics', [{ metric: 'adClicks' }, { metric: 'totalPageViews' }]);
+    assert.ok(
+      manifest.typeIsValid(request),
+      'pie chart type is valid for single time bucket with no group by and multiple metrics'
+    );
+
+    set(request, 'dimensions', [{ dimension: 'age' }]);
+    set(request, 'metrics', []);
+    assert.notOk(manifest.typeIsValid(request), 'pie chart type is invalid for single time bucket with no metrics');
   });
 });

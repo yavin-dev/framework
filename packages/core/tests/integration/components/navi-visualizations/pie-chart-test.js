@@ -58,8 +58,9 @@ const Model = A([
           'age|id': '-3',
           'age|desc': 'All Other',
           uniqueIdentifier: 155191081,
-          totalPageViews: 3072620639,
-          'revenue(currency=USD)': 200
+          totalPageViews: 310382162,
+          'revenue(currency=USD)': 200,
+          'revenue(currency=CAD)': 300
         },
         {
           dateTime: '2015-12-14 00:00:00.000',
@@ -67,7 +68,8 @@ const Model = A([
           'age|desc': 'under 13',
           uniqueIdentifier: 55191081,
           totalPageViews: 2072620639,
-          'revenue(currency=USD)': 300
+          'revenue(currency=USD)': 300,
+          'revenue(currency=CAD)': 256
         },
         {
           dateTime: '2015-12-14 00:00:00.000',
@@ -75,7 +77,8 @@ const Model = A([
           'age|desc': '13 - 25',
           uniqueIdentifier: 55191081,
           totalPageViews: 2620639,
-          'revenue(currency=USD)': 400
+          'revenue(currency=USD)': 400,
+          'revenue(currency=CAD)': 5236
         },
         {
           dateTime: '2015-12-14 00:00:00.000',
@@ -83,7 +86,8 @@ const Model = A([
           'age|desc': '25 - 35',
           uniqueIdentifier: 55191081,
           totalPageViews: 72620639,
-          'revenue(currency=USD)': 500
+          'revenue(currency=USD)': 500,
+          'revenue(currency=CAD)': 4321
         },
         {
           dateTime: '2015-12-14 00:00:00.000',
@@ -91,7 +95,8 @@ const Model = A([
           'age|desc': '35 - 45',
           uniqueIdentifier: 55191081,
           totalPageViews: 72620639,
-          'revenue(currency=USD)': 600
+          'revenue(currency=USD)': 600,
+          'revenue(currency=CAD)': 132
         }
       ]
     }
@@ -115,13 +120,13 @@ module('Integration | Component | pie chart', function(hooks) {
     teardownMock();
   });
 
-  test('it renders', async function(assert) {
+  test('it renders for a dimension series', async function(assert) {
     assert.expect(4);
 
     this.set('options', {
       series: {
+        type: 'dimension',
         config: {
-          type: 'dimension',
           metric: {
             metric: 'totalPageViews',
             parameters: {},
@@ -149,20 +154,75 @@ module('Integration | Component | pie chart', function(hooks) {
 
     assert
       .dom('.c3-target-All-Other text')
-      .hasText('59.72%', 'Percentage label shown on slice is formatted properly for `All Other`');
+      .hasText('13.02%', 'Percentage label shown on slice is formatted properly for `All Other`');
 
     assert
       .dom('.c3-target-Under-13 text')
-      .hasText('40.28%', 'Percentage label shown on slice is formatted properly for `Under 13`');
+      .hasText('86.98%', 'Percentage label shown on slice is formatted properly for `Under 13`');
   });
 
-  test('metric label', async function(assert) {
-    assert.expect(6);
+  test('it renders for a metric series', async function(assert) {
+    assert.expect(4);
 
     this.set('options', {
       series: {
+        type: 'metric',
         config: {
-          type: 'dimension',
+          metrics: [{
+            metric: 'totalPageViews',
+            parameters: {},
+            canonicalName: 'totalPageViews'
+          }, {
+            metric: 'uniqueIdentifier',
+            parameters: {},
+            canonicalName: 'uniqueIdentifier'
+          }]
+        }
+      }
+    });
+    await render(TEMPLATE);
+
+    assert.ok(this.$('.navi-vis-c3-chart').is(':visible'), 'The pie chart widget component is visible');
+
+    assert.dom('.c3-chart-arc').exists({ count: 2 }, 'Two pie slices are present on the chart');
+
+    assert
+      .dom('.c3-target-Total-Page-Views text')
+      .hasText('66.67%', 'Percentage label shown on slice is formatted properly for `Total Page Views`');
+
+    assert
+      .dom('.c3-target-Unique-Identifiers text')
+      .hasText('33.33%', 'Percentage label shown on slice is formatted properly for `Unique Identifier`');
+  });
+
+  test('metric label', async function(assert) {
+    assert.expect(7);
+
+    this.set('options', {
+      series: {
+        type: 'metric',
+        config: {
+          metrics: [{
+            metric: 'totalPageViews',
+            parameters: {},
+            canonicalName: 'totalPageViews'
+          }, {
+            metric: 'uniqueIdentifier',
+            parameters: {},
+            canonicalName: 'uniqueIdentifier'
+          }]
+        }
+      }
+    });
+
+    await render(TEMPLATE);
+
+    assert.dom('.c3-title').hasText('', 'The metric label is not visible for a series of type metric');
+
+    this.set('options', {
+      series: {
+        type: 'dimension',
+        config: {
           metric: {
             metric: 'totalPageViews',
             parameters: {},
@@ -216,8 +276,8 @@ module('Integration | Component | pie chart', function(hooks) {
     //Rerender with a new metric and new chart position
     this.set('options', {
       series: {
+        type: 'dimension',
         config: {
-          type: 'dimension',
           metric: {
             metric: 'uniqueIdentifier',
             parameters: {},
@@ -261,13 +321,13 @@ module('Integration | Component | pie chart', function(hooks) {
     );
   });
 
-  test('parameterized metric renders correctly', async function(assert) {
+  test('parameterized metric renders correctly for dimension series', async function(assert) {
     assert.expect(5);
 
     this.set('options', {
       series: {
+        type: 'dimension',
         config: {
-          type: 'dimension',
           metric: {
             metric: 'revenue',
             parameters: {
@@ -307,6 +367,45 @@ module('Integration | Component | pie chart', function(hooks) {
       .hasText('60%', 'Percentage label shown on slice is formatted properly for `Under 13`');
   });
 
+  test('parameterized metric renders correctly for metric series', async function(assert) {
+    assert.expect(4);
+
+    this.set('options', {
+      series: {
+        type: 'metric',
+        config: {
+          metrics: [{
+            metric: 'revenue',
+            parameters: {
+              currency: 'USD'
+            },
+            canonicalName: 'revenue(currency=USD)'
+          }, {
+            metric: 'revenue',
+            parameters: {
+              currency: 'CAD'
+            },
+            canonicalName: 'revenue(currency=CAD)'
+          }]
+        }
+      }
+    });
+
+    await render(TEMPLATE);
+
+    assert.ok(this.$('.navi-vis-c3-chart').is(':visible'), 'The pie chart widget component is visible');
+
+    assert.dom('.c3-chart-arc').exists({ count: 2 }, 'Two pie slices are present on the chart');
+
+    assert
+      .dom('.c3-chart-arc.chart-series-0 text')
+      .hasText('40%', 'Percentage label shown on slice is formatted properly for `Revenue (USD)`');
+
+    assert
+      .dom('.c3-chart-arc.chart-series-1 text')
+      .hasText('60%', 'Percentage label shown on slice is formatted properly for `Revenue (CAD)`');
+  });
+
   test('cleanup tooltip', async function(assert) {
     assert.expect(2);
 
@@ -320,8 +419,8 @@ module('Integration | Component | pie chart', function(hooks) {
 
     this.set('options', {
       series: {
+        type: 'dimension',
         config: {
-          type: 'dimension',
           metric: {
             metric: 'revenue',
             parameters: { currency: 'USD' },

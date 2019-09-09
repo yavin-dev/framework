@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Visualization Manifest File for the Pie Chart Visualization
@@ -32,6 +32,10 @@ export default ManifestBase.extend({
    * @return {Boolean} - visualization type is valid
    */
   typeIsValid(request) {
-    return this.hasSingleTimeBucket(request) && this.hasGroupBy(request);
+    return (
+      this.hasSingleTimeBucket(request) &&
+      this.hasMetric(request) &&
+      (this.hasGroupBy(request) || this.hasMultipleMetrics(request))
+    );
   }
 });
