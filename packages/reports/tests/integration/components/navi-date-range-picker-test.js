@@ -252,16 +252,14 @@ module('Integration | Component | Navi Date Range Picker', function(hooks) {
       this.set('interval', new Interval(moment('09-14-2014', 'MM-DD-YYYY'), moment('10-15-2014', 'MM-DD-YYYY')));
     });
 
-    let firstActiveDate = [...this.element.querySelectorAll('.datepicker')[0].querySelectorAll('.active')].reduce(
-      (acc, curr) => acc + curr.textContent.trim(),
-      ''
-    );
+    let firstActiveDate = [
+      ...this.element.querySelectorAll('.datepicker')[0].querySelectorAll('.active:not(.disabled)')
+    ].reduce((acc, curr) => acc + curr.textContent.trim(), '');
     assert.equal(firstActiveDate, '14Sep2014', 'First date picker has start day selected');
 
-    let secondActiveDate = [...this.element.querySelectorAll('.datepicker')[1].querySelectorAll('.active')].reduce(
-      (acc, curr) => acc + curr.textContent.trim(),
-      ''
-    );
+    let secondActiveDate = [
+      ...this.element.querySelectorAll('.datepicker')[1].querySelectorAll('.active:not(.disabled)')
+    ].reduce((acc, curr) => acc + curr.textContent.trim(), '');
     assert.equal(secondActiveDate, '14Oct2014', 'Second date picker has end day selected');
 
     //toggle advanced calendar
@@ -281,10 +279,9 @@ module('Integration | Component | Navi Date Range Picker', function(hooks) {
       this.set('interval', new Interval(new Duration('P5D'), moment('10-15-2014', 'MM-DD-YYYY')));
     });
 
-    let newFirstActiveDate = [...this.element.querySelectorAll('.datepicker')[0].querySelectorAll('.active')].reduce(
-      (acc, curr) => acc + curr.textContent.trim(),
-      ''
-    );
+    let newFirstActiveDate = [
+      ...this.element.querySelectorAll('.datepicker')[0].querySelectorAll('.active:not(.disabled)')
+    ].reduce((acc, curr) => acc + curr.textContent.trim(), '');
     assert.equal(
       newFirstActiveDate,
       '10Oct2014',
@@ -331,16 +328,14 @@ module('Integration | Component | Navi Date Range Picker', function(hooks) {
     await click($('.datepicker:eq(0) .day:contains(20)')[0]);
     await click($('.datepicker:eq(1) .day:contains(21)')[0]);
 
-    let firstActiveDate = [...this.element.querySelectorAll('.datepicker')[0].querySelectorAll('.active')].reduce(
-      (acc, curr) => acc + curr.textContent.trim(),
-      ''
-    );
+    let firstActiveDate = [
+      ...this.element.querySelectorAll('.datepicker')[0].querySelectorAll('.active:not(.disabled)')
+    ].reduce((acc, curr) => acc + curr.textContent.trim(), '');
     assert.equal(firstActiveDate, '20Sep2014', 'First date picker has newly selected start date');
 
-    let secondActiveDate = [...this.element.querySelectorAll('.datepicker')[1].querySelectorAll('.active')].reduce(
-      (acc, curr) => acc + curr.textContent.trim(),
-      ''
-    );
+    let secondActiveDate = [
+      ...this.element.querySelectorAll('.datepicker')[1].querySelectorAll('.active:not(.disabled)')
+    ].reduce((acc, curr) => acc + curr.textContent.trim(), '');
     assert.equal(secondActiveDate, '21Oct2014', 'Second date picker has newly selected end date');
 
     //toggle advanced calendar
@@ -357,16 +352,14 @@ module('Integration | Component | Navi Date Range Picker', function(hooks) {
     // Click reset
     await click('.btn.btn-secondary');
 
-    firstActiveDate = [...this.element.querySelectorAll('.datepicker')[0].querySelectorAll('.active')].reduce(
-      (acc, curr) => acc + curr.textContent.trim(),
-      ''
-    );
+    firstActiveDate = [
+      ...this.element.querySelectorAll('.datepicker')[0].querySelectorAll('.active:not(.disabled)')
+    ].reduce((acc, curr) => acc + curr.textContent.trim(), '');
     assert.equal(firstActiveDate, '14Sep2014', 'Clicking reset reverts to original start date');
 
-    secondActiveDate = [...this.element.querySelectorAll('.datepicker')[1].querySelectorAll('.active')].reduce(
-      (acc, curr) => acc + curr.textContent.trim(),
-      ''
-    );
+    secondActiveDate = [
+      ...this.element.querySelectorAll('.datepicker')[1].querySelectorAll('.active:not(.disabled)')
+    ].reduce((acc, curr) => acc + curr.textContent.trim(), '');
     assert.equal(secondActiveDate, '14Oct2014', 'Clicking reset reverts to original end date');
   });
 

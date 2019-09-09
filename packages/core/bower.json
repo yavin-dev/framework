@@ -1,6 +1,0 @@
-{
-  "name": "navi-core",
-  "dependencies": {
-    "numeral": "^1.5.3"
-  }
-}
