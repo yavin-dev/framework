@@ -15,6 +15,7 @@ import { assign } from '@ember/polyfills';
 import { A as arr } from '@ember/array';
 import Component from '@ember/component';
 import { set, get, computed } from '@ember/object';
+import { readOnly } from '@ember/object/computed';
 import { isArray } from '@ember/array';
 import { copy } from 'ember-copy';
 import { dataByDimensions } from 'navi-core/utils/data';
@@ -41,9 +42,7 @@ export default Component.extend({
   /**
    * @property {Object} selectedMetric
    */
-  selectedMetric: computed('seriesConfig', function() {
-    return get(this, 'seriesConfig.metric');
-  }),
+  selectedMetric: readOnly('seriesConfig.metric'),
 
   /**
    * @property {Boolean} showMetricSelect - whether to display the metric select

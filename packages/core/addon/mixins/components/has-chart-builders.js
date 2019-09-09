@@ -17,11 +17,12 @@ export default Mixin.create({
    */
   chartBuilders: computed(function() {
     // Find all chart builders registered in requirejs under the namespace "chart-builders"
-    let builderRegExp = new RegExp(`^${config.modulePrefix}/chart-builders/(.*)`),
-      chartBuilderEntries = Object.keys(requirejs.entries).filter(key => builderRegExp.test(key)),
+    const modules = Object.keys(requirejs.entries),
+      builderRegExp = new RegExp(`^${config.modulePrefix}/chart-builders/(.*)`),
+      chartBuilderEntries = modules.filter(key => builderRegExp.test(key)),
       owner = getOwner(this),
       builderMap = chartBuilderEntries.reduce((map, builderName) => {
-        let builderKey = camelize(builderRegExp.exec(builderName)[1]);
+        const builderKey = camelize(builderRegExp.exec(builderName)[1]);
 
         map[builderKey] = owner.lookup(`chart-builder:${builderKey}`);
         return map;

@@ -248,15 +248,17 @@ export default Component.extend(hasChartBuilders, {
       yTranslate = svgElm.style('height').replace('px', '') / 2, //vertically center the label in the svg
       metricTitle = get(this, 'metricDisplayName');
 
-    titleElm
-      .insert('tspan')
-      .attr('class', 'pie-metric-label')
-      .attr('y', 0)
-      .attr('x', 0)
-      .text(metricTitle);
+    if (metricTitle) {
+      titleElm
+        .insert('tspan')
+        .attr('class', 'pie-metric-label')
+        .attr('y', 0)
+        .attr('x', 0)
+        .text(metricTitle);
 
-    //rotate the label to be vertical and place it just left of the pie chart
-    titleElm.attr('text-anchor', 'middle').attr('transform', `translate(${xTranslate}, ${yTranslate}) rotate(-90)`);
+      //rotate the label to be vertical and place it just left of the pie chart
+      titleElm.attr('text-anchor', 'middle').attr('transform', `translate(${xTranslate}, ${yTranslate}) rotate(-90)`);
+    }
   },
 
   /**
@@ -271,9 +273,7 @@ export default Component.extend(hasChartBuilders, {
     redrawMetricLabel() {
       if (!get(this, 'isDestroyed') && !get(this, 'isDestroying')) {
         this._removeMetricLabel();
-        if (get(this, 'seriesType') === 'dimension') {
-          this._drawMetricLabel();
-        }
+        this._drawMetricLabel();
       }
     }
   }
