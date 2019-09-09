@@ -63,11 +63,10 @@ module.exports = function(environment) {
   }
 
   if (environment === 'production') {
-    ENV['ember-cli-mirage'] = {
-      enabled: process.env.BUILD_NAVI_DEMO === 'true'
-    };
     if (process.env.BUILD_NAVI_DEMO === 'true') {
       ENV['rootURL'] = '/navi/';
+      ENV['locationType'] = 'hash';
+      ENV['ember-cli-mirage'] = { enabled: true };
     }
   }
 
