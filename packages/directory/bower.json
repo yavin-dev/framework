@@ -1,7 +1,0 @@
-{
-  "name": "navi-directory",
-  "dependencies": {
-    "bootstrap-datepicker": "1.4.0",
-    "numeral": "^1.5.3"
-  }
-}

@@ -37,6 +37,7 @@
     "ember-tooltips": "^2.10.0",
     "ember-truth-helpers": "^2.0.0",
     "json-url": "~2.4.1",
+    "numeral": "^2.0.6",
     "resize-observer-polyfill": "^1.5.1"
   },
   "devDependencies": {

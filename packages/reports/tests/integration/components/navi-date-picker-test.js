@@ -185,6 +185,7 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
 
     /* == Week Selection == */
     this.set('dateTimePeriod', 'week');
+
     assert.ok(isWeekActive(this, startDate), 'Week Selection - Entire week of chosen day is selected');
 
     findDayElement(this, clickDate).click();
@@ -355,15 +356,15 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
     // Determine day selector based on currently visible calendar month
     if (date.isSame(calendarMonth, 'month')) {
       // Exclude days from the previous month (marked .old) and days from the next month (marked .new)
-      selector = '.day:not(.old):not(.new)';
+      selector = '.datepicker-days .day:not(.old):not(.new)';
     }
     if (date.isSame(calendarMonth.clone().subtract(1, 'month'), 'month')) {
       // Look for day in previous month
-      selector = '.day.old';
+      selector = '.datepicker-days .day.old';
     }
     if (date.isSame(calendarMonth.clone().add(1, 'month'), 'month')) {
       // Look for day in next month
-      selector = '.day.new';
+      selector = '.datepicker-days .day.new';
     }
 
     if (selector) {
