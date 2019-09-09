@@ -185,7 +185,6 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
 
     /* == Week Selection == */
     this.set('dateTimePeriod', 'week');
-    //await (new Promise(resolve => setTimeout(resolve, 30000)));
 
     assert.ok(isWeekActive(this, startDate), 'Week Selection - Entire week of chosen day is selected');
 

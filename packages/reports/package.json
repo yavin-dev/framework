@@ -101,7 +101,6 @@
     "loader.js": "^4.7.0",
     "navi-core": "^0.1.0",
     "navi-data": "^0.1.0",
-    "pretender": "^3.0.2",
     "qunit-dom": "^0.8.4"
   },
   "engines": {

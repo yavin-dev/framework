@@ -91,7 +91,6 @@
     "navi-core": "^0.1.0",
     "navi-data": "^0.1.0",
     "navi-reports": "^0.1.0",
-    "pretender": "^3.0.2",
     "qunit-dom": "^0.8.0"
   },
   "engines": {
