@@ -6,7 +6,7 @@ import $ from 'jquery';
 import { render, click, findAll, fillIn, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { setupMock, teardownMock } from '../../helpers/mirage-helper';
-import { assertTooltipRendered, assertTooltipNotRendered, assertTooltipContent } from '../../helpers/ember-tooltips';
+import { assertTooltipRendered, assertTooltipNotRendered, assertTooltipContent } from 'ember-tooltips/test-support';
 
 let Store, MetadataService, Age;
 
