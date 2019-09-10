@@ -55,7 +55,7 @@ export default Route.extend({
     const layout = get(dashboard, 'presentation.layout');
 
     makeArray(updatedWidgets).forEach(updatedWidget => {
-      let modelWidget = layout.find(widget => widget.widgetId === Number(updatedWidget.id));
+      let modelWidget = layout.find(widget => widget.get('widgetId') === Number(updatedWidget.id));
 
       //Make sure the widget is still a member of the dashboard
       if (modelWidget) {

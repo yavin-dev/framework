@@ -5,9 +5,10 @@
 
 import DS from 'ember-data';
 import Fragment from 'ember-data-model-fragments/fragment';
+import { Copyable } from 'ember-copy';
 import { fragmentArray } from 'ember-data-model-fragments/attributes';
 
-export default Fragment.extend({
+export default Fragment.extend(Copyable, {
   columns: DS.attr('number', { defaultValue: 12 }),
   layout: fragmentArray('fragments/layout', { defaultValue: () => [] }),
   version: DS.attr('number', { defaultValue: '1' }),

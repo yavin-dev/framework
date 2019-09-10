@@ -84,7 +84,7 @@ export default Route.extend({
       widgets.forEach(rec => (widgetsById[rec.id] = rec));
 
       return cloneDashboardModel.get('presentation.layout').map(item => {
-        let widget = widgetsById[item.widgetId],
+        let widget = widgetsById[item.get('widgetId')],
           cloneWidget = widget.clone();
 
         cloneWidget.set('dashboard', cloneDashboardModel);

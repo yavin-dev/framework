@@ -1,5 +1,6 @@
 import { resolve } from 'rsvp';
 import { run } from '@ember/runloop';
+import emberObj from '@ember/object';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { settled } from '@ember/test-helpers';
@@ -11,6 +12,8 @@ let Route;
 const mockModelFor = currentDashboard => {
   return { currentDashboard };
 };
+
+const serializeLayout = layout => JSON.parse(JSON.stringify(layout));
 
 module('Unit | Route | dashboards/dashboard', function(hooks) {
   setupTest(hooks);
@@ -56,7 +59,11 @@ module('Unit | Route | dashboards/dashboard', function(hooks) {
 
     Route.reopen(mockModelFor(model));
 
-    assert.equal(Route.currentDashboard, model, 'currentDashboard returns the dashboard in the current model object');
+    assert.equal(
+      Route.currentDashboard,
+      model,
+      'currentDashboard returns the dashboard in the current model emberObject'
+    );
   });
 
   test('_updateLayout', function(assert) {
@@ -65,9 +72,9 @@ module('Unit | Route | dashboards/dashboard', function(hooks) {
     const dashboard = {
       presentation: {
         layout: [
-          { widgetId: 1, column: 0, row: 0, height: 4, width: 4 },
-          { widgetId: 2, column: 0, row: 4, height: 3, width: 3 },
-          { widgetId: 3, column: 1, row: 7, height: 3, width: 9 }
+          emberObj.create({ widgetId: 1, column: 0, row: 0, height: 4, width: 4 }),
+          emberObj.create({ widgetId: 2, column: 0, row: 4, height: 3, width: 3 }),
+          emberObj.create({ widgetId: 3, column: 1, row: 7, height: 3, width: 9 })
         ]
       }
     };
@@ -81,7 +88,7 @@ module('Unit | Route | dashboards/dashboard', function(hooks) {
       { widgetId: 3, column: 1, row: 7, height: 3, width: 9 }
     ];
 
-    const actualLayout = Route.currentDashboard.presentation.layout;
+    const actualLayout = serializeLayout(Route.currentDashboard.presentation.layout);
 
     assert.deepEqual(actualLayout, expectedLayout, '_updateLayout successfully updated the dashboard layout');
 
@@ -114,7 +121,7 @@ module('Unit | Route | dashboards/dashboard', function(hooks) {
       canUserEdit: true,
       save: () => resolve(),
       widgets: [],
-      presentation: { layout: [{ widgetId: 1 }, { widgetId: 2 }] }
+      presentation: { layout: [emberObj.create({ widgetId: 1 }), emberObj.create({ widgetId: 2 })] }
     };
 
     Route.reopen({
@@ -127,7 +134,7 @@ module('Unit | Route | dashboards/dashboard', function(hooks) {
     ]);
 
     assert.deepEqual(
-      Route.get('currentDashboard.presentation.layout'),
+      serializeLayout(Route.get('currentDashboard.presentation.layout')),
       [
         { widgetId: 1, column: 1, row: 2, height: 5, width: 12 },
         { widgetId: 2, column: 3, row: 3, height: 4, width: 6 }
