@@ -80,7 +80,7 @@ export default DeliverableItem.extend(Validations, {
       clonedDashboard = Object.assign(this.toJSON(), {
         author: user,
         widgets: [],
-        filters: this.filters.map(filter =>
+        filters: this.get('filters').map(filter =>
           this.store.createFragment('bard-request/fragments/filter', filter.toJSON())
         ),
         presentation: copy(get(this, 'presentation')),
