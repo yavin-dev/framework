@@ -1,4 +1,4 @@
-{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{navi-dashboard
     dashboard=model.dashboard
     dataForWidget=model.dataForWidget
@@ -8,4 +8,5 @@
     onRemoveFilter=(action "removeFilter")
     onAddFilter=(action "addFilter")
     onModelSaveOrRevert=(action "clearFilterQueryParams")
+    width=model.dashboard.presentation.columns
 }}

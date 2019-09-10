@@ -36,25 +36,32 @@ module('Unit | Route | dashboards/dashboard/widgets/add', function(hooks) {
   test('_addToLayout', function(assert) {
     assert.expect(2);
 
-    let layout = [];
+    const store = this.owner.lookup('service:store');
+
+    let layout = store.createFragment('fragments/presentation').get('layout');
 
     assert.deepEqual(
-      Route._addToLayout(layout, 42),
+      Route._addToLayout(layout, 42).serialize(),
       [{ row: 0, column: 0, height: 4, width: 5, widgetId: 42 }],
       '_addToLayout adds a widget to an empty dashboard'
     );
 
-    layout = [
-      { row: 0, column: 0, height: 2, widgetId: 1 },
-      { row: 2, column: 0, height: 5, widgetId: 3 },
-      { row: 0, column: 2, height: 2, widgetId: 2 }
-    ];
+    layout = store.createFragment('fragments/presentation').get('layout');
+
+    [
+      { row: 0, column: 0, height: 2, width: 4, widgetId: 1 },
+      { row: 2, column: 0, height: 5, width: 4, widgetId: 3 },
+      { row: 0, column: 2, height: 2, width: 4, widgetId: 2 }
+    ].forEach(cell => {
+      layout.createFragment(cell);
+    });
+
     assert.deepEqual(
-      Route._addToLayout(layout, 42),
+      Route._addToLayout(layout, 42).serialize(),
       [
-        { row: 0, column: 0, height: 2, widgetId: 1 },
-        { row: 2, column: 0, height: 5, widgetId: 3 },
-        { row: 0, column: 2, height: 2, widgetId: 2 },
+        { row: 0, column: 0, height: 2, width: 4, widgetId: 1 },
+        { row: 2, column: 0, height: 5, width: 4, widgetId: 3 },
+        { row: 0, column: 2, height: 2, width: 4, widgetId: 2 },
         { row: 7, column: 0, height: 4, width: 5, widgetId: 42 }
       ],
       '_addToLayout adds a widget to the end of the dashboard'

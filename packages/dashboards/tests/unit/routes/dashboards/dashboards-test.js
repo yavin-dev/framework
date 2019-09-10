@@ -113,16 +113,27 @@ module('Unit | Route | dashboards/dashboard', function(hooks) {
     const currentDashboard = {
       canUserEdit: true,
       save: () => resolve(),
-      widgets: []
+      widgets: [],
+      presentation: { layout: [{ widgetId: 1 }, { widgetId: 2 }] }
     };
 
     Route.reopen({
       currentDashboard
     });
 
-    Route.send('didUpdateLayout', undefined, [1, 2]);
+    Route.send('didUpdateLayout', undefined, [
+      { id: 1, x: 1, y: 2, height: 5, width: 12 },
+      { id: 2, x: 3, y: 3, height: 4, width: 6 }
+    ]);
 
-    assert.deepEqual(Route.get('_stagedLayout'), [1, 2], 'Staged layout is updaded');
+    assert.deepEqual(
+      Route.get('currentDashboard.presentation.layout'),
+      [
+        { widgetId: 1, column: 1, row: 2, height: 5, width: 12 },
+        { widgetId: 2, column: 3, row: 3, height: 4, width: 6 }
+      ],
+      'layout is updaded'
+    );
 
     await settled();
   });
