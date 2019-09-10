@@ -7,7 +7,6 @@ import { A as arr, makeArray } from '@ember/array';
 import { isEmpty } from '@ember/utils';
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
-import { copy } from '@ember/object/internals';
 import { all } from 'rsvp';
 
 export default Route.extend({
@@ -53,10 +52,10 @@ export default Route.extend({
    */
   _updateLayout(updatedWidgets) {
     const dashboard = get(this, 'currentDashboard');
-    const newLayout = copy(get(dashboard, 'presentation.layout'), true);
+    const layout = get(dashboard, 'presentation.layout');
 
     makeArray(updatedWidgets).forEach(updatedWidget => {
-      let modelWidget = arr(newLayout).findBy('widgetId', Number(updatedWidget.id));
+      let modelWidget = layout.find(widget => widget.widgetId === Number(updatedWidget.id));
 
       //Make sure the widget is still a member of the dashboard
       if (modelWidget) {
@@ -64,8 +63,6 @@ export default Route.extend({
         setProperties(modelWidget, { column, row, height, width });
       }
     });
-
-    set(dashboard, 'presentation.layout', newLayout);
   },
 
   /**
@@ -90,19 +87,7 @@ export default Route.extend({
      * @param {Array} [widgets] - Array of widgets that updated
      */
     didUpdateLayout(event, widgets) {
-      if (widgets && get(widgets, 'length')) {
-        this.set('_stagedLayout', widgets);
-      }
-    },
-
-    /**
-     * Take new layout staged by didChange and set
-     * it on the dashboard model.
-     *
-     * @action commitStagedLayout
-     */
-    commitStagedLayout() {
-      this._updateLayout(get(this, '_stagedLayout'));
+      this._updateLayout(widgets);
     },
 
     /**

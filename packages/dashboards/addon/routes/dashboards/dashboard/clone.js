@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -61,7 +61,7 @@ export default Route.extend({
 
           //Replace original widget IDs with newly cloned widget IDs
           newWidgets.forEach((widget, idx) => {
-            set(layout[idx], 'widgetId', Number(widget.id));
+            set(layout.objectAt(idx), 'widgetId', Number(widget.id));
           });
           return cloneDashboardModel.save();
         })
