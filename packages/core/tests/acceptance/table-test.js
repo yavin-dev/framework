@@ -1,5 +1,5 @@
 import { click, fillIn, findAll, blur, visit } from '@ember/test-helpers';
-import { module, test } from 'qunit';
+import { module, test, skip } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import config from 'ember-get-config';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
@@ -17,7 +17,7 @@ module('Acceptance | table', function(hooks) {
     config.navi.FEATURES.enableVerticalCollectionTableIterator = false;
   });
 
-  test('visiting /table', async function(assert) {
+  skip('visiting /table', async function(assert) {
     assert.expect(2);
 
     await visit('/table');
