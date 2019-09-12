@@ -31,11 +31,9 @@ export function dashboardCollectionRoutes(router) {
 }
 
 export function dashboardPrintRoutes(router) {
-  router.route('dashboards-print', { path: '/print' }, function() {
-    this.route('dashboards', function() {
-      this.route('dashboard', { path: '/:dashboard_id' }, function() {
-        this.route('view');
-      });
+  router.route('dashboards-print.dashboards', { path: '/print/dashboards' }, function() {
+    this.route('dashboard', { path: '/:dashboard_id' }, function() {
+      this.route('view');
     });
   });
 }
