@@ -23,16 +23,6 @@ export default Component.extend({
   classNames: ['line-chart-config__series-config'],
 
   /**
-   * @property {Array} classNameBindings
-   */
-  classNameBindings: ['isOpen'],
-
-  /**
-   * @property {Boolean} isOpen - whether the content is visible
-   */
-  isOpen: false,
-
-  /**
    * @property {String} seriesConfigDataKey - object key of `seriesConfig` to read from and update when reordering
    */
   seriesConfigDataKey: computed('seriesType', function() {
