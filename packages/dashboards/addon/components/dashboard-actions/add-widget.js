@@ -1,11 +1,12 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
  *   {{#dashboard-actions/add-widget
  *      reports=reports
  *      dashboard=dashboard
+ *      onAddWidgetToDashboard=(action "onAddWidgetToDashboard")
  *   }}
  *      Inner template
  *   {{/dashboard-actions/add-widget}}

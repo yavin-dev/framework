@@ -100,6 +100,7 @@
         classNames="add-widget primary action"
         reports=(get (get-user) "reports")
         dashboard=dashboard
+        onAddWidgetToDashboard=(action onAddWidgetToDashboard)
       }}
         <button class="btn btn-primary">+ Add Widget</button>
       {{/dashboard-actions/add-widget}}
@@ -108,8 +109,8 @@
 </div>
 
 {{#if (feature-flag "enableDashboardFilters")}}
-  {{dashboard-filters 
-    dashboard=dashboard 
+  {{dashboard-filters
+    dashboard=dashboard
     onUpdateFilter=(action onUpdateFilter)
     onRemoveFilter=(action onRemoveFilter)
     onAddFilter=(action onAddFilter)
@@ -150,6 +151,7 @@
               classNames="navi-dashboard-container__add-widget-text"
               reports=(get (get-user) "reports")
               dashboard=dashboard
+              onAddWidgetToDashboard=(action onAddWidgetToDashboard)
             }}
               add a widget
             {{/dashboard-actions/add-widget}}

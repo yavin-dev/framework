@@ -181,7 +181,7 @@ module('Acceptance | Dashboards', function(hooks) {
   });
 
   test('add widget button', async function(assert) {
-    assert.expect(4);
+    assert.expect(5);
 
     await visit('/dashboards/4');
 
@@ -189,7 +189,13 @@ module('Acceptance | Dashboards', function(hooks) {
       .dom('.add-widget button')
       .isNotVisible('The `Add Widget` button is not visible when user cannot edit the dashboard');
 
-    await visit('/dashboards/5');
+    await visit('/dashboards/1');
+
+    assert.deepEqual(
+      findAll('.navi-widget__title').map(el => el.textContent.trim()),
+      ['Mobile DAU Goal', 'Mobile DAU Graph', 'Mobile DAU Table'],
+      'There are 3 widgets in the dashboard'
+    );
 
     assert.dom('.add-widget button').isVisible('The `Add Widget` button is visible when user can edit the dashboard');
 
@@ -199,22 +205,18 @@ module('Acceptance | Dashboards', function(hooks) {
       .dom('.add-widget-modal .btn')
       .hasAttribute(
         'href',
-        `/dashboards/5/widgets/new`,
+        `/dashboards/1/widgets/new`,
         'Create new assigns the new widget route to the primary button'
       );
 
     await selectChoose('.report-select', 'Report 12');
+    await click('.add-widget-modal .btn');
 
-    assert
-      .dom('.add-widget-modal .btn')
-      .hasAttribute(
-        'href',
-        `/reports/4`,
-        'Selecting a report assigns the route `/reports/${id}` to the primary button where id is the id of the report'
-      );
-
-    // Clean up
-    await click($('button:contains(Cancel)')[0]);
+    assert.deepEqual(
+      findAll('.navi-widget__title').map(el => el.textContent.trim()),
+      ['Mobile DAU Goal', 'Mobile DAU Graph', 'Mobile DAU Table', 'Report 12'],
+      'The widget is added to the dashboard'
+    );
   });
 
   test('Collapsed filters render on load', async function(assert) {
