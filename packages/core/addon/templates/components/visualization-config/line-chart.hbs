@@ -16,10 +16,9 @@
           {{#power-select
             triggerClass="line-chart-config__curve-opt-select"
             options=curveOptions
-            selected=(readonly options.style.curve)
+            selected=(or (readonly options.style.curve) "line")
             onchange=(action "onUpdateStyle" "curve")
             searchEnabled=false
-            placeholder="Line"
             as |curve|}}
             {{capitalize curve}}
           {{/power-select}}

@@ -27,12 +27,12 @@
   &__curve-opt,
   &__area-opt,
   &__stacked-opt {
+    align-items: center;
     display: flex;
     justify-content: space-between;
     margin: 8px 0;
     &-title {
       text-align: left;
-      color: @navi-gray;
     }
   }
 
@@ -62,14 +62,9 @@
 
     &__content {
       .config-section();
-      display: none;
       margin: 0;
       margin-top: 5px;
       padding: @report-selector-padding-left;
-
-      .is-open & {
-        display: block;
-      }
     }
 
     &__collection {
@@ -79,11 +74,11 @@
 
     &__item {
       .generate-chart-colors-for(border-left-color);
+      align-items: center;
       border: 1px solid #f1f1f5;
       border-left-width: 5px;
       border-radius: 5px;
       display: flex;
-      font-size: 12px;
       justify-content: space-between;
       margin-bottom: 5px;
 
@@ -97,7 +92,7 @@
       &__handler {
         background-color: #e7e7e7;
         cursor: move;
-        padding-top: 5px;
+        padding: 8px 0;
 
         div {
           background-color: #aaaaaa;
