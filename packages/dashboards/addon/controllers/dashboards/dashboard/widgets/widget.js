@@ -4,4 +4,6 @@
  */
 import ReportController from 'navi-reports/controllers/reports/report';
 
-export default ReportController.extend({});
+export default ReportController.extend({
+  parentQueryParams: null
+});

@@ -80,6 +80,21 @@ export default Route.extend({
     });
   },
 
+  /**
+   * @override
+   * @method resetController - reset query params on exit of route
+   * @param {Object} controller
+   * @param {Boolean} isExiting
+   */
+  deactivate() {
+    this._super(...arguments);
+    const dashboard = this.modelFor(this.routeName);
+    // don't rollback attributes if dashboard was unloaded.
+    if (!dashboard.isEmpty) {
+      dashboard.rollbackAttributes();
+    }
+  },
+
   actions: {
     /**
      * @action didUpdateLayout - updates dashboard's layout property and save it
@@ -166,6 +181,30 @@ export default Route.extend({
       const dashboard = get(this, 'currentDashboard');
       get(dashboard, 'widgets').forEach(widget => widget.rollbackAttributes());
       dashboard.rollbackAttributes();
+    },
+
+    willTransition(transition) {
+      //subroute just continue
+      if (transition.targetName.startsWith('dashboards.dashboard')) {
+        return true;
+      }
+
+      const dashboard = get(this, 'currentDashboard');
+
+      const isDirty =
+        dashboard.get('hasDirtyAttributes') ||
+        dashboard.get('filters.hasDirtyAttributes') ||
+        dashboard.get('presentation.hasDirtyAttributes');
+
+      if (
+        isDirty &&
+        dashboard.get('canUserEdit') &&
+        !confirm('You have unsaved changes, are you sure you want to exit?')
+      ) {
+        transition.abort();
+      } else {
+        return true;
+      }
     }
   }
 });
