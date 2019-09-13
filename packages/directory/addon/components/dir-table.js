@@ -101,7 +101,9 @@ export default Component.extend({
    * @property {Object} table - Used by ember-light-table to create the table
    */
   table: computed('model', function() {
-    let table = new Table(this.columns, this.model, {
+    let table = Table.create({
+      columns: this.columns,
+      rows: this.model,
       rowOptions: {
         classNames: 'dir-table__row'
       }
