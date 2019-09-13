@@ -21,7 +21,7 @@ module('Acceptance | print report', function(hooks) {
   });
 
   test('print reports view', async function(assert) {
-    assert.expect(3);
+    assert.expect(5);
     await visit('/print/reports/1/view');
 
     assert.dom('.navi-report__title').hasText('Hyrule News', 'Should show report title');
@@ -29,6 +29,13 @@ module('Acceptance | print report', function(hooks) {
     assert.dom('.print-report-view__visualization').isVisible('Should show report visualization');
 
     assert.dom('.print-report-view__visualization-header').isNotVisible('Should not show report visualization header');
+
+    assert.dom('.c3-axis-y-label').hasText('Ad Clicks', 'Report chart should have y-axis label');
+    assert.deepEqual(
+      [...document.querySelectorAll('.c3-legend-item')].map(el => el.textContent.trim()),
+      ['Property 1', 'Property 2', 'Property 3'],
+      'The legend fills in with widget dimensions'
+    );
   });
 
   test('print reports error', async function(assert) {
