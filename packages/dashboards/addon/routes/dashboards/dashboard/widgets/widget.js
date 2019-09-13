@@ -7,11 +7,15 @@ import { getOwner } from '@ember/application';
 import ReportRoute from 'navi-reports/routes/reports/report';
 
 export default ReportRoute.extend({
+  /**
+   * Decide if we need to store the query params of the parent route so we can add them to breadcrumbs
+   * @param {Ember.Transition} transition - current route transition.
+   */
   beforeModel(transition) {
     const controller = this.controllerFor(this.routeName);
     const fromRoute = transition.from && transition.from.find(info => info.paramNames.includes('dashboard_id'));
     const fromDashboardId = fromRoute ? fromRoute.params.dashboard_id : null;
-    const toRoute = transition.to.find(info => info.paramNames.includes('dashboard_id'));
+    const toRoute = transition.to && transition.to.find(info => info.paramNames.includes('dashboard_id'));
     const toDashboardId = toRoute ? toRoute.params.dashboard_id : null;
 
     if (

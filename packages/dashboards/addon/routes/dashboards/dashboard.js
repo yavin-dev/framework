@@ -90,7 +90,7 @@ export default Route.extend({
     this._super(...arguments);
     const dashboard = this.modelFor(this.routeName);
     // don't rollback attributes if dashboard was unloaded.
-    if (!dashboard.isEmpty) {
+    if (typeof dashboard.isEmpty !== 'boolean' || !dashboard.isEmpty) {
       dashboard.rollbackAttributes();
     }
   },
