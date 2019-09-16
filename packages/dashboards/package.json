@@ -41,7 +41,6 @@
     "ember-promise-helpers": "^1.0.6",
     "ember-sortable": "1.12.3",
     "ember-tag-input": "^1.2.2",
-    "ember-tether": "^1.0.0",
     "ember-toggle": "^5.3.3",
     "ember-tooltips": "^3.2.0",
     "ember-transition-helper": "^1.0.0",
