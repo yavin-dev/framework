@@ -27,13 +27,15 @@ const Request = {
 module('Integration | Component | report visualization', function(hooks) {
   setupRenderingTest(hooks);
 
-  test('it renders the specified visualization', async function(assert) {
-    assert.expect(2);
-
+  hooks.beforeEach(function() {
     this.set('report', {
       request: Request,
       visualization: { type: 'table' }
     });
+  });
+
+  test('it renders the specified visualization', async function(assert) {
+    assert.expect(2);
 
     await render(hbs`
       {{report-visualization
@@ -52,11 +54,6 @@ module('Integration | Component | report visualization', function(hooks) {
 
   test('it renders the specified print visualization', async function(assert) {
     assert.expect(1);
-
-    this.set('report', {
-      request: Request,
-      visualization: { type: 'table' }
-    });
 
     await render(hbs`
       {{report-visualization
