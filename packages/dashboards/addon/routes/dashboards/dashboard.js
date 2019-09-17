@@ -90,7 +90,7 @@ export default Route.extend({
     this._super(...arguments);
     const dashboard = this.modelFor(this.routeName);
     // don't rollback attributes if dashboard was unloaded.
-    if (typeof dashboard.isEmpty !== 'boolean' || !dashboard.isEmpty) {
+    if (dashboard.isEmpty !== true) {
       dashboard.rollbackAttributes();
     }
   },
@@ -183,9 +183,13 @@ export default Route.extend({
       dashboard.rollbackAttributes();
     },
 
+    /**
+     * Prompts user if they are leaving the route with unsaved changes.
+     * @param {Transition} transition
+     */
     willTransition(transition) {
       //subroute just continue
-      if (transition.targetName.startsWith('dashboards.dashboard')) {
+      if (transition.targetName.startsWith(this.routeName)) {
         return true;
       }
 
