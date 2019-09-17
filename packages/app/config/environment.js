@@ -26,10 +26,6 @@ module.exports = function(environment) {
        */
     },
 
-    'ember-tether': {
-      bodyElementId: 'navi-root'
-    },
-
     navi: {
       FEATURES: {
         enableDirectory: true,
