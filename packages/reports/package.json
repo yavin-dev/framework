@@ -43,7 +43,6 @@
     "ember-promise-helpers": "^1.0.6",
     "ember-radio-button": "^1.2.1",
     "ember-tag-input": "^1.2.2",
-    "ember-tether": "^1.0.0",
     "ember-toggle": "^5.3.3",
     "ember-tooltips": "^3.2.0",
     "ember-truth-helpers": "^2.0.0",
