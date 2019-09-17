@@ -8,27 +8,6 @@ import ReportRoute from 'navi-reports/routes/reports/report';
 
 export default ReportRoute.extend({
   /**
-   * Decide if we need to store the query params of the parent route so we can add them to breadcrumbs
-   * @param {Ember.Transition} transition - current route transition.
-   */
-  beforeModel(transition) {
-    const controller = this.controllerFor(this.routeName);
-    const fromRoute = transition.from && transition.from.find(info => info.paramNames.includes('dashboard_id'));
-    const fromDashboardId = fromRoute ? fromRoute.params.dashboard_id : null;
-    const toRoute = transition.to && transition.to.find(info => info.paramNames.includes('dashboard_id'));
-    const toDashboardId = toRoute ? toRoute.params.dashboard_id : null;
-
-    if (
-      transition.from &&
-      transition.from.name.startsWith('dashboards.dashboard') &&
-      fromDashboardId === toDashboardId
-    ) {
-      controller.set('parentQueryParams', transition.from.queryParams);
-    } else {
-      controller.set('parentQueryParams', null);
-    }
-  },
-  /**
    * @method model
    * @param {Object} params
    * @param {String} params.widgetId - persisted id or temp id of widget to fetch

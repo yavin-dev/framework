@@ -95,6 +95,26 @@ export default Route.extend({
     }
   },
 
+  /**
+   * If traveling to the same route as the current dashboard, cache the query for breadcrumb purposes
+   * @param {Transition} transition
+   */
+  cacheQuery(transition) {
+    const controller = this.controllerFor(this.routeName);
+    if (transition.from && transition.from.queryParams) {
+      const fromRoute = transition.from.find(info => info.paramNames.includes('dashboard_id'));
+      const fromDashboardId = fromRoute ? fromRoute.params.dashboard_id : null;
+      const toRoute = transition.to && transition.to.find(info => info.paramNames.includes('dashboard_id'));
+      const toDashboardId = toRoute ? toRoute.params.dashboard_id : null;
+
+      if (fromDashboardId === toDashboardId) {
+        controller.set('queryCache', transition.from.queryParams);
+        return;
+      }
+    }
+    this.controller.set('queryCache', null);
+  },
+
   actions: {
     /**
      * @action didUpdateLayout - updates dashboard's layout property and save it
@@ -188,8 +208,9 @@ export default Route.extend({
      * @param {Transition} transition
      */
     willTransition(transition) {
-      //subroute just continue
+      //subroute cache queryString and continue
       if (transition.targetName.startsWith(this.routeName)) {
+        this.cacheQuery(transition);
         return true;
       }
 
