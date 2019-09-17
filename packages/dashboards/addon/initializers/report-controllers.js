@@ -5,11 +5,9 @@
  * This initializer adds the report-to-widget logic to navi-reports controllers
  */
 import ReportToWidget from 'navi-dashboards/mixins/controllers/report-to-widget';
-import ReportsNewController from 'navi-reports/controllers/reports/new';
 import ReportsReportController from 'navi-reports/controllers/reports/report';
 
 export function initialize(/* application */) {
-  ReportsNewController.reopen(ReportToWidget);
   ReportsReportController.reopen(ReportToWidget);
 }
 
