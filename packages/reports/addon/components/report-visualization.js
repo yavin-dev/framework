@@ -28,7 +28,7 @@ export default Component.extend({
    */
   visualizationHash: computed('report.request', 'response', function() {
     let request = get(this, 'report.request').serialize(), // Visualization wants serialized request
-      response = get(this, 'response');
+      response = get(this, 'response') || { rows: [] };
 
     return {
       request,
