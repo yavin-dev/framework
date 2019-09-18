@@ -6,7 +6,7 @@
  *   {{#dashboard-actions/add-widget
  *      reports=reports
  *      dashboard=dashboard
- *      onAddWidgetToDashboard=(action "onAddWidgetToDashboard")
+ *      onSelectReport=(action "onSelectReport")
  *   }}
  *      Inner template
  *   {{/dashboard-actions/add-widget}}

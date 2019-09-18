@@ -29,7 +29,7 @@
       {{else}}
         <button class="btn btn-primary add-to-dashboard"
                 onclick={{pipe
-                          (action onAddWidgetToDashboard selectedReport dashboard.id selectedReport.title)
+                          (action onSelectReport selectedReport dashboard.id selectedReport.title)
                           (action (toggle "showModal" this))
                         }}
         >
