@@ -1,14 +1,13 @@
-import Route from '@ember/routing/route';
 import EmberObject from '@ember/object';
 import Ember from 'ember';
-import ReportToWidgetMixin from 'navi-dashboards/mixins/routes/report-to-widget';
+import ReportToWidgetMixin from 'navi-dashboards/mixins/controllers/report-to-widget';
 import { module, test } from 'qunit';
 
-module('Unit | Mixin | routes/report to widget', function() {
+module('Unit | Mixin | controllers/report to widget', function() {
   test('addToDashboard', function(assert) {
     assert.expect(3);
 
-    let visualizationMetadata = 'foo bar',
+    const visualizationMetadata = 'foo bar',
       serializedRequest = 123,
       dashboardId = 5,
       tempWidgetId = 1000,
@@ -20,12 +19,9 @@ module('Unit | Mixin | routes/report to widget', function() {
           serialize: () => visualizationMetadata
         }
       },
-      RouteObject = EmberObject.extend(ReportToWidgetMixin, Ember.ActionHandler, {
-        /* == Mock Data == */
-        modelFor: () => reportModel,
-
+      subject = EmberObject.extend(ReportToWidgetMixin, Ember.ActionHandler, {
         /* == Transition Asserts == */
-        transitionTo(route, id, { queryParams }) {
+        transitionToRoute: (route, id, { queryParams }) => {
           assert.equal(
             route,
             'dashboards.dashboard.widgets.add',
@@ -36,8 +32,7 @@ module('Unit | Mixin | routes/report to widget', function() {
 
           assert.equal(queryParams.unsavedWidgetId, tempWidgetId, "Widget's temporary id is passed as a query param");
         }
-      }),
-      subject = RouteObject.create({
+      }).create({
         store: {
           createRecord() {
             return { tempId: tempWidgetId };
@@ -46,13 +41,13 @@ module('Unit | Mixin | routes/report to widget', function() {
       });
 
     // Trigger the action
-    subject.send('addToDashboard', dashboardId, 'Test Title');
+    subject.send('addToDashboard', reportModel, dashboardId, 'Test Title');
   });
 
   test('addToNewDashboard', function(assert) {
     assert.expect(3);
 
-    let visualizationMetadata = 'foo bar',
+    const visualizationMetadata = 'foo bar',
       serializedRequest = 123,
       tempWidgetId = 1000,
       reportModel = {
@@ -63,20 +58,16 @@ module('Unit | Mixin | routes/report to widget', function() {
           serialize: () => visualizationMetadata
         }
       },
-      RouteObject = EmberObject.extend(ReportToWidgetMixin, Ember.ActionHandler, {
-        /* == Mock Data == */
-        modelFor: () => reportModel,
-
+      subject = EmberObject.extend(ReportToWidgetMixin, Ember.ActionHandler, {
         /* == Transition Asserts == */
-        transitionTo(route, { queryParams }) {
+        transitionToRoute(route, { queryParams }) {
           assert.equal(route, 'dashboards.new', 'addToNewDashboard action transitions to new dashboard route');
 
           assert.equal(queryParams.title, 'Custom Dashboard Title', 'Dashboard title is passed as a query param');
 
           assert.equal(queryParams.unsavedWidgetId, tempWidgetId, "Widget's temporary id is passed as a query param");
         }
-      }),
-      subject = RouteObject.create({
+      }).create({
         store: {
           createRecord() {
             return { tempId: tempWidgetId };
@@ -85,7 +76,7 @@ module('Unit | Mixin | routes/report to widget', function() {
       });
 
     // Trigger the action
-    subject.send('addToNewDashboard', 'Custom Dashboard Title', 'Test Title');
+    subject.send('addToNewDashboard', reportModel, 'Custom Dashboard Title', 'Test Title');
   });
 
   test('_createWidget', function(assert) {
@@ -102,11 +93,7 @@ module('Unit | Mixin | routes/report to widget', function() {
           serialize: () => visualizationMetadata
         }
       },
-      RouteObject = Route.extend(ReportToWidgetMixin, {
-        /* == Mock Data == */
-        modelFor: () => reportModel
-      }),
-      subject = RouteObject.create({
+      subject = EmberObject.extend(ReportToWidgetMixin).create({
         /* == Store Asserts == */
         store: {
           createRecord(type, record) {
@@ -133,6 +120,6 @@ module('Unit | Mixin | routes/report to widget', function() {
         }
       });
 
-    subject._createWidget('Test Title');
+    subject._createWidget(reportModel, 'Test Title');
   });
 });

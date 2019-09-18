@@ -7,8 +7,9 @@ import Controller from '@ember/controller';
 import { inject as service } from '@ember/service';
 import isEqual from 'lodash/isEqual';
 import { get, setProperties } from '@ember/object';
+import ReportToWidget from 'navi-dashboards/mixins/controllers/report-to-widget';
 
-export default Controller.extend({
+export default Controller.extend(ReportToWidget, {
   /**
    * @property {Service} compression
    */

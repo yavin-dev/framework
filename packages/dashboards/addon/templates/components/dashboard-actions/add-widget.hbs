@@ -1,4 +1,4 @@
-{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{yield}}
 {{#navi-modal
     isShown=showModal
@@ -8,7 +8,6 @@
       <h1 class="primary-header">Add Widget</h1>
       <h5 class="secondary-header">
         <p>To add a widget, choose a report or create a new one using the dropdown below.</p>
-        <p>Then click on <em>{{navi-icon "th-large" class="navi-icon__add-to-dash"}} Add To Dashboard</em> on the report results view.</p>
       </h5>
     </div>
     {{#power-select
@@ -28,7 +27,14 @@
       {{#if (eq selectedReport.id "new")}}
         {{#link-to "dashboards.dashboard.widgets.new" dashboard.id classNames="btn btn-primary add-to-dashboard"}}Take me there!{{/link-to}}
       {{else}}
-        {{#link-to "reports.report" selectedReport.id classNames="btn btn-primary add-to-dashboard"}}Take me there!{{/link-to}}
+        <button class="btn btn-primary add-to-dashboard"
+                onclick={{pipe
+                          (action onSelectReport selectedReport dashboard.id selectedReport.title)
+                          (action (toggle "showModal" this))
+                        }}
+        >
+          Add to dashboard
+        </button>
       {{/if}}
       <button class="btn btn-secondary" onclick={{action (toggle "showModal" this)}}>Cancel</button>
     </div>
