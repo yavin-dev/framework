@@ -8,8 +8,8 @@
       classNames="btn"
       report=model
       dashboards=(get (get-user) "dashboards")
-      onAddToDashboard=(route-action "addToDashboard")
-      onAddToNewDashboard=(route-action "addToNewDashboard")
+      onAddToDashboard=(action "addToDashboard" model)
+      onAddToNewDashboard=(action "addToNewDashboard" model)
     }}
       {{navi-icon "th-large" class="navi-report__action-icon"}}
       Add to Dashboard
