@@ -38,7 +38,6 @@ install:
     nvm install ${NODE_VERSION};
     npm config set spin false;
     npm ci;
-    npx lerna exec --scope ${PACKAGE} -- bower install || true;
     fi
 script:
   - if [[ "${PACKAGE}" == "navi-webservice" ]]; then
