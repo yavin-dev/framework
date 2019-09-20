@@ -8,9 +8,19 @@ import { Response } from 'ember-cli-mirage';
 import { selectChoose } from 'ember-power-select/test-support';
 import $ from 'jquery';
 
+let confirm;
+
 module('Acceptance | Dashboards', function(hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
+
+  hooks.beforeEach(() => {
+    confirm = window.confirm;
+  });
+
+  hooks.afterEach(() => {
+    window.confirm = confirm;
+  });
 
   test('dashboard success', async function(assert) {
     assert.expect(2);
@@ -359,7 +369,7 @@ module('Acceptance | Dashboards', function(hooks) {
   });
 
   test('New widget', async function(assert) {
-    assert.expect(4);
+    assert.expect(11);
 
     // Check original set of widgets
     await visit('/dashboards/1');
@@ -397,6 +407,38 @@ module('Acceptance | Dashboards', function(hooks) {
       ['Mobile DAU Goal', 'Mobile DAU Graph', 'Mobile DAU Table', 'Untitled Widget'],
       '"Untitled Widget" has been added to dashboard'
     );
+
+    // hover css events are hard
+    find('.navi-widget__actions').style.visibility = 'visible';
+    await click('.navi-widget__explore-btn');
+
+    assert.equal(currentURL(), '/dashboards/1/widgets/1/view', 'Taken to explore widget page');
+
+    await click(findAll('.navi-report-widget__breadcrumb-link')[1]);
+
+    assert.equal(currentURL(), '/dashboards/1/view', 'Taken back to dashboard page');
+
+    assert.deepEqual(
+      widgetsAfter,
+      ['Mobile DAU Goal', 'Mobile DAU Graph', 'Mobile DAU Table', 'Untitled Widget'],
+      '"Untitled Widget" is still on dashboard after navigating to subroute'
+    );
+
+    window.confirm = () => {
+      assert.step('navigation confirmation denied');
+      return false;
+    };
+
+    await click('.navi-dashboard__breadcrumb-link');
+
+    assert.equal(currentURL(), '/dashboards/1/view', 'We are still on the dashboard route');
+
+    await click('.navi-dashboard__save-button');
+    await click('.navi-dashboard__breadcrumb-link');
+
+    assert.equal(currentURL(), '/dashboards', 'successfully navigated away with no unsaved changes');
+
+    assert.verifySteps(['navigation confirmation denied']);
   });
 
   test('Failing to save a new widget', async function(assert) {

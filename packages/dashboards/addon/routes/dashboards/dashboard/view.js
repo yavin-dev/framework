@@ -154,10 +154,5 @@ export default Route.extend({
 
     this.get('controller').set('filters', null);
     this.set('_widgetDataCache', null);
-    const dashboard = this.modelFor(this.routeName).dashboard;
-    // don't rollback attributes if dashboard was unloaded.
-    if (!dashboard.isEmpty) {
-      dashboard.rollbackAttributes();
-    }
   }
 });
