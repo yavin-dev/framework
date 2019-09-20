@@ -48,11 +48,10 @@ script:
     fi
 jobs:
   include:
-    - stage: NPM Publish
+    - stage: 'Publish'
       if: branch = master AND repo = yahoo/navi AND type = push
       node_js: '8'
+      name: 'NPM'
       script: bash ./scripts/npm-publish.sh
-    - stage: GitHub Pages Publish
-      if: branch = master AND repo = yahoo/navi AND type = push
-      node_js: '8'
-      script: bash ./scripts/gh-pages-publish.sh
+    - script: bash ./scripts/gh-pages-publish.sh
+      name: 'GitHub Pages'
