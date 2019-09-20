@@ -21,7 +21,7 @@ git fetch ssh-origin gh-pages
 git branch gh-pages ssh-origin/gh-pages # Force it to track from ssh-origin if master has gh-pages as well
 
 echo 'Building demo app'
-travis_wait npx ember github-pages:commit --message "Deploy gh-pages from $COMMIT" --destination ../../
+npx ember github-pages:commit --message "Deploy gh-pages from $COMMIT" --destination ../../
 
 echo 'Publishing demo app'
 git push ssh-origin gh-pages:gh-pages
