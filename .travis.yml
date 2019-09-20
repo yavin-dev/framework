@@ -3,6 +3,8 @@ jdk:
   - openjdk8
 
 sudo: true
+git:
+  depth: false
 addons:
   chrome: stable
 before_cache:
