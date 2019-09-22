@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
- * {{cell-renderers/dimension
+ * {{navi-cell-renderers/dimension
  *   data=row
  *   column=column
  *   request=request
@@ -13,7 +13,7 @@
 import Component from '@ember/component';
 import { computed, get } from '@ember/object';
 import { readOnly } from '@ember/object/computed';
-import layout from '../../templates/components/cell-renderers/dimension';
+import layout from '../../templates/components/navi-cell-renderers/dimension';
 import { isEmpty } from '@ember/utils';
 
 export default Component.extend({

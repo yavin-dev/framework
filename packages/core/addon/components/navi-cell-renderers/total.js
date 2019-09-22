@@ -4,7 +4,7 @@
  */
 
 import Component from '@ember/component';
-import layout from '../../templates/components/cell-renderers/total';
+import layout from '../../templates/components/navi-cell-renderers/total';
 
 export default Component.extend({
   layout,

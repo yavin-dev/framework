@@ -4,7 +4,7 @@ import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 const TEMPLATE = hbs`
-  {{cell-renderers/date-time
+  {{navi-cell-renderers/date-time
     data=data
     column=column
     request=request
@@ -59,7 +59,7 @@ module('Integration | Component | cell renderers/date-time', function(hooks) {
     _setRequestForTimeGrain(this, 'week');
 
     await render(hbs`
-      {{cell-renderers/date-time
+      {{navi-cell-renderers/date-time
         data=data
         column=column
         request=request
@@ -78,7 +78,7 @@ module('Integration | Component | cell renderers/date-time', function(hooks) {
     this.set('data', { dateTime: '2015-12-30 00:00:00.000' });
 
     await render(hbs`
-      {{cell-renderers/date-time
+      {{navi-cell-renderers/date-time
         data=data
         column=column
         request=request
@@ -96,7 +96,7 @@ module('Integration | Component | cell renderers/date-time', function(hooks) {
     _setRequestForTimeGrain(this, 'month');
 
     await render(hbs`
-      {{cell-renderers/date-time
+      {{navi-cell-renderers/date-time
         data=data
         column=column
         request=request
@@ -112,7 +112,7 @@ module('Integration | Component | cell renderers/date-time', function(hooks) {
     _setRequestForTimeGrain(this, 'quarter');
 
     await render(hbs`
-      {{cell-renderers/date-time
+      {{navi-cell-renderers/date-time
         data=data
         column=column
         request=request
@@ -128,7 +128,7 @@ module('Integration | Component | cell renderers/date-time', function(hooks) {
     _setRequestForTimeGrain(this, 'year');
 
     await render(hbs`
-      {{cell-renderers/date-time
+      {{navi-cell-renderers/date-time
         data=data
         column=column
         request=request
@@ -144,7 +144,7 @@ module('Integration | Component | cell renderers/date-time', function(hooks) {
     _setRequestForTimeGrain(this, 'hour');
 
     await render(hbs`
-      {{cell-renderers/date-time
+      {{navi-cell-renderers/date-time
         data=data
         column=column
         request=request
@@ -162,7 +162,7 @@ module('Integration | Component | cell renderers/date-time', function(hooks) {
     _setRequestForTimeGrain(this, 'minute');
 
     await render(hbs`
-      {{cell-renderers/date-time
+      {{navi-cell-renderers/date-time
         data=data
         column=column
         request=request
@@ -180,7 +180,7 @@ module('Integration | Component | cell renderers/date-time', function(hooks) {
     _setRequestForTimeGrain(this, 'second');
 
     await render(hbs`
-      {{cell-renderers/date-time
+      {{navi-cell-renderers/date-time
         data=data
         column=column
         request=request

@@ -5,14 +5,14 @@
  * Picks the correct cell renderer to use. Allows for extension in apps.
  *
  * Usage:
- * {{table-cell-renderer
+ * {{navi-table-cell-renderer
  *     column=column
  *     data=data
  *     request=request
  * }}
  */
 import Component from '@ember/component';
-import layout from '../templates/components/table-cell-renderer';
+import layout from '../templates/components/navi-table-cell-renderer';
 import { computed } from '@ember/object';
 import { dasherize } from '@ember/string';
 
@@ -21,7 +21,7 @@ export default Component.extend({
 
   tagName: '',
 
-  prefix: 'cell-renderers/',
+  prefix: 'navi-cell-renderers/',
 
   /**
    * Chooses which cell renderer to use based on type of column

@@ -294,7 +294,7 @@ export default Component.extend({
   /**
    * @property {String} cellRendererPrefix - prefix for all cell renderer types
    */
-  cellRendererPrefix: 'cell-renderers/',
+  cellRendererPrefix: 'navi-cell-renderers/',
 
   /**
    * @property {Number} estimateHeight - estimated height in px of a single row
