@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -16,8 +16,8 @@ import $ from 'jquery';
 import { isBlank } from '@ember/utils';
 import Component from '@ember/component';
 import { set, observer, get, computed } from '@ember/object';
+import { debounce } from '@ember/runloop';
 import Search from 'navi-core/utils/search';
-import DebouncedPropertiesMixin from 'ember-debounced-properties/mixin';
 import layout from '../templates/components/series-selector';
 
 /**
@@ -30,7 +30,7 @@ const SCROLL_BUFFER = 20;
  */
 const SCROLL_EVENT = 'scroll.seriesSelectorTable';
 
-export default Component.extend(DebouncedPropertiesMixin, {
+export default Component.extend({
   layout,
 
   /**
@@ -39,9 +39,11 @@ export default Component.extend(DebouncedPropertiesMixin, {
   classNames: ['series-selector'],
 
   /**
-   * @property {Array} debouncedProperties - list of properties to debounce
+   * @property {observer} - Observes searchTerm
    */
-  debouncedProperties: computed(() => ['searchTerm']),
+  searchTermDidChange: observer('searchTerm', function() {
+    debounce(this, this.setDebouncedSearchTerm, this.get('searchTermDelay'));
+  }),
 
   /**
    * @property {Number} searchTermDelay - number of milliseconds to wait for user to stop typing search term
@@ -92,6 +94,15 @@ export default Component.extend(DebouncedPropertiesMixin, {
    * @property {Number} currentPage - Current content page
    */
   currentPage: 0,
+
+  /**
+   * debounced setter wrapper for debounced search term.
+   *
+   * @method setDebouncedSearchTerm
+   */
+  setDebouncedSearchTerm() {
+    this.set('debouncedSearchTerm', this.get('searchTerm'));
+  },
 
   /**
    * Hook called after component insert into the DOM

@@ -24,7 +24,7 @@ module('Integration | Component | power select bulk import trigger', function(ho
               selected: [],
               onChange: () => null,
               extra: {
-                filter: { subject: { name: 'property' } }
+                filter: { subject: { name: 'property', longName: 'property' } }
               }
             });
 
