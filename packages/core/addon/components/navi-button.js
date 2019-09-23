@@ -4,7 +4,7 @@
  *
  * Usage:
  *   <NaviButton
- *     @type="seconary"
+ *     @type="secondary"
  *     @disabled={{false}}
  *     @onClick={{action onClick}}
  *   >
@@ -20,8 +20,7 @@ export default Component.extend({
   tagName: '',
   class: computed('disabled', 'type', function() {
     const type = this.type || 'primary';
-    const isDisabled = this.disabled;
-    const diabledModifier = isDisabled ? '-disabled' : '';
+    const diabledModifier = this.disabled ? '-disabled' : '';
     const modifier = `navi-button--${type}${diabledModifier}`;
     return `navi-button ${modifier}`;
   })
