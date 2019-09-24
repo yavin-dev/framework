@@ -48,20 +48,21 @@
   <footer class="navi-report__footer">
     {{#if (not isRunningReport)}}
 
-      <button
-        class="btn btn-primary navi-report__run-btn"
-        onclick={{pipe
+      <NaviButton
+        class="navi-report__run-btn"
+        @onClick={{pipe
           (route-action "validate" model)
           (route-action "forceRun" model)
         }}
       >
         Run
-      </button>
+      </NaviButton>
 
       {{#if (and model.isOwner model.hasDirtyAttributes)}}
-        <button
-          class="btn btn-secondary navi-report__save-btn"
-          onclick={{pipe
+        <NaviButton
+          class="navi-report__save-btn"
+          @type="secondary"
+          @onClick={{pipe
             (route-action "validate" model)
             (route-action "runReport" model)
             (route-action "saveReport" model)
@@ -72,37 +73,40 @@
           {{else}}
             Save
           {{/if}}
-        </button>
+        </NaviButton>
 
         {{#if (not model.isNew)}}
-          <button class="btn btn-secondary navi-report__save-as-btn" type="button"
-            onclick={{pipe
+          <NaviButton
+            class="navi-report__save-as-btn"
+            @type="secondary"
+            @onClick={{pipe
               (route-action "validate" model)
               (route-action "runReport" model)
               (toggle "showSaveAs" this)
           }}>
             Save As ...
-          </button>
+          </NaviButton>
         {{/if}}
       {{/if}}
 
       {{#if (and model.hasDirtyAttributes (not model.isNew))}}
-        <button
-          class="btn btn-secondary navi-report__revert-btn"
-          onclick={{route-action "revertChanges" model}}
+        <NaviButton
+          class="navi-report__revert-btn"
+          @type="secondary"
+          @onClick={{route-action "revertChanges" model}}
         >
           Revert
-        </button>
+        </NaviButton>
       {{/if}}
 
     {{else}}
 
-      <button
-        class="btn btn-primary navi-report__cancel-btn"
-        onclick={{route-action "cancelReport" model}}
+      <NaviButton
+        class="navi-report__cancel-btn"
+        @onClick={{route-action "cancelReport" model}}
       >
         Cancel
-      </button>
+      </NaviButton>
 
     {{/if}}
   </footer>
