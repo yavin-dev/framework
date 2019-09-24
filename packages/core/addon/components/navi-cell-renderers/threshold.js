@@ -3,14 +3,14 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
- * {{cell-renderers/threshold
+ * {{navi-cell-renderers/threshold
  *   data=row
  *   column=column
  *   request=request
  * }}
  */
 
-import MetricRender from 'navi-core/components/cell-renderers/metric';
+import MetricRender from 'navi-core/components/navi-cell-renderers/metric';
 import { computed, get } from '@ember/object';
 
 export default MetricRender.extend({

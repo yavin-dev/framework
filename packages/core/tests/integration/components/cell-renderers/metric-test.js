@@ -5,7 +5,7 @@ import hbs from 'htmlbars-inline-precompile';
 import merge from 'lodash/merge';
 
 const TEMPLATE = hbs`
-  {{cell-renderers/metric
+  {{navi-cell-renderers/metric
     data=data
     column=column
     request=request

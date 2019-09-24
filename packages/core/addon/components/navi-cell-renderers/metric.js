@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
- * {{cell-renderers/metric
+ * {{navi-cell-renderers/metric
  *   data=row
  *   column=column
  *   request=request
@@ -11,7 +11,7 @@
  */
 
 import Component from '@ember/component';
-import layout from '../../templates/components/cell-renderers/metric';
+import layout from '../../templates/components/navi-cell-renderers/metric';
 import { computed, get } from '@ember/object';
 import { oneWay } from '@ember/object/computed';
 import { isEmpty } from '@ember/utils';
