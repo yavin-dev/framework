@@ -4,7 +4,7 @@ import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 const TEMPLATE = hbs`
-  {{cell-renderers/dimension
+  {{navi-cell-renderers/dimension
     data=data
     column=column
     request=request
@@ -110,7 +110,7 @@ module('Integration | Component | cell renderers/dimension', function(hooks) {
     this.set('data', {});
 
     await render(hbs`
-      {{cell-renderers/dimension
+      {{navi-cell-renderers/dimension
         data=data
         column=column
         request=request

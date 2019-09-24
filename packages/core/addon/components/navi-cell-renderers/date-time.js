@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
- * {{cell-renderers/date-time
+ * {{navi-cell-renderers/date-time
  *   data=row
  *   column=column
  *   request=request
@@ -13,7 +13,7 @@
 import { alias } from '@ember/object/computed';
 import Component from '@ember/component';
 import { get, computed } from '@ember/object';
-import layout from '../../templates/components/cell-renderers/date-time';
+import layout from '../../templates/components/navi-cell-renderers/date-time';
 
 export default Component.extend({
   layout,
