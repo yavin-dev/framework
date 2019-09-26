@@ -16,7 +16,7 @@ import Component from '@ember/component';
 import { computed, get } from '@ember/object';
 import layout from '../templates/components/dir-table';
 import Table from 'ember-light-table';
-import Moment from 'moment';
+import moment from 'moment';
 import { isEmpty } from '@ember/utils';
 
 export default Component.extend({
@@ -42,7 +42,7 @@ export default Component.extend({
     let items = this.items || [];
     return items.map(item => ({
       model: item,
-      lastUpdatedDate: Moment(get(item, 'updatedOn')).format('MM/DD/YYYY -  hh:mm:ss a')
+      lastUpdatedDate: moment(get(item, 'updatedOn')).format('MM/DD/YYYY -  hh:mm:ss a')
     }));
   }),
 
