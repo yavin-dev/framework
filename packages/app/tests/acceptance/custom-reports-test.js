@@ -3,6 +3,8 @@ import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import { linkContains } from '../helpers/contains-helpers';
+import $ from 'jquery';
+import { selectChoose } from 'ember-power-select/test-support';
 
 module('Acceptance | custom reports', function(hooks) {
   setupApplicationTest(hooks);
@@ -39,5 +41,20 @@ module('Acceptance | custom reports', function(hooks) {
     );
 
     assert.dom('.report-builder').exists();
+  });
+
+  test('Run report with a filter', async function(assert) {
+    await visit('/reports/new');
+
+    // Add filter
+    await click(
+      $('.checkbox-selector--dimension .grouped-list__item:contains(Character) .checkbox-selector__filter')[0]
+    );
+    await selectChoose('.filter-values--dimension-select__trigger', 'Luigi');
+    assert.dom('.filter-builder-dimension__values').containsText('Luigi', 'A filter value can be selected');
+
+    // Run Report
+    await click('.navi-report__run-btn');
+    assert.dom('.table-widget').exists('Data visualization is shown');
   });
 });
