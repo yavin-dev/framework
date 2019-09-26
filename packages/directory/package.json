@@ -25,11 +25,17 @@
   "dependencies": {
     "ember-cli-babel": "^7.1.2",
     "ember-cli-htmlbars": "^3.0.0",
+    "ember-cli-moment-shim": "^3.7.1",
     "ember-data-model-fragments": "~4.0.0",
     "ember-get-config": "^0.2.4",
     "ember-light-table": "^2.0.0-beta.4",
+    "ember-moment": "^7.8.1",
     "ember-power-select": "^2.3.5",
-    "ember-responsive": "^3.0.0-beta.3"
+    "ember-responsive": "^3.0.0-beta.3",
+    "navi-core": "^0.1.0",
+    "navi-dashboards": "^0.1.0",
+    "navi-data": "^0.1.0",
+    "navi-reports": "^0.1.0"
   },
   "devDependencies": {
     "@ember/jquery": "^0.6.0",
@@ -44,10 +50,9 @@
     "ember-cli-inject-live-reload": "^1.8.2",
     "ember-cli-less": "^1.5.5",
     "ember-cli-mirage": "~0.4.9",
-    "ember-cli-moment-shim": "^3.7.1",
     "ember-cli-shims": "^1.2.0",
     "ember-cli-sri": "^2.1.1",
-    "ember-cli-string-helpers": "^1.6.0",
+    "ember-cli-string-helpers": "^4.0.4",
     "ember-cli-template-lint": "^1.0.0-beta.1",
     "ember-cli-uglify": "^2.1.0",
     "ember-collection": "1.0.0-alpha.9",
@@ -65,7 +70,6 @@
     "ember-math-helpers": "^2.3.0",
     "ember-maybe-import-regenerator": "^0.1.6",
     "ember-modal-dialog": "^2.4.1",
-    "ember-moment": "^7.8.1",
     "ember-promise-helpers": "^1.0.6",
     "ember-qunit": "^3.4.1",
     "ember-resolver": "^5.0.1",
@@ -83,10 +87,6 @@
     "eslint-plugin-node": "^7.0.1",
     "liquid-fire": "^0.29.2",
     "loader.js": "^4.7.0",
-    "navi-core": "^0.1.0",
-    "navi-dashboards": "^0.1.0",
-    "navi-data": "^0.1.0",
-    "navi-reports": "^0.1.0",
     "qunit-dom": "^0.8.0"
   },
   "engines": {
