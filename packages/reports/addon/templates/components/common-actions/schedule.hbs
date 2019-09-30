@@ -1,7 +1,8 @@
 {{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 
 {{!-- Check if in need of disabling the button when the action should be disabled --}}
-<button class="schedule-action__button btn" disabled={{disabled}}  onclick={{queue (toggle "showModal" this) (action "onOpen")}}>
+<button class="schedule-action__button btn" disabled={{disabled}}
+  onclick={{queue (toggle "showModal" this) (action "onOpen")}}>
   {{navi-icon "clock-o" class="schedule-action__icon"}}
   {{#if hasBlock}}
     <span class="schedule-action__icon-label">{{yield}}</span>
@@ -17,7 +18,8 @@
     {{#if (is-rejected deliveryRule)}}
       <div class="schedule-modal__notification modal-notification alert failure">
         {{navi-icon "exclamation-circle"}}
-        <div class="notification-text">Oops! An error occurred while fetching the schedule for this {{localDeliveryRule.deliveryType}}.</div>
+        <div class="notification-text">Oops! An error occurred while fetching the schedule for this
+          {{localDeliveryRule.deliveryType}}.</div>
       </div>
     {{else}}
       {{#if notification}}
@@ -26,11 +28,12 @@
           {{navi-icon "times" class="notification-remove-icon clickable" click=(action "closeNotification")}}
         </div>
       {{else}}
-        <h5 class="schedule-modal__header--secondary secondary-header">Please provide delivery rules for your {{localDeliveryRule.deliveryType}}</h5>
+        <h5 class="schedule-modal__header--secondary secondary-header">Please provide delivery rules for your
+          {{localDeliveryRule.deliveryType}}</h5>
       {{/if}}
     {{/if}}
   </div>
-  
+
   {{#if (is-pending deliveryRule)}}
     {{navi-loader}}
   {{else}}
@@ -87,27 +90,21 @@
             size="small"
             class="schedule-modal__must-have-data-toggle"
             value=localDeliveryRule.schedulingRules.mustHaveData
-            onToggle=(mut localDeliveryRule.schedulingRules.mustHaveData)}}
+            onToggle=(action "toggleMustHaveData")}}
           <div class="schedule-modal__label">Only send if data is present</div>
         </div>
       {{/if}}
       <div class="schedule-modal__btn-container btn-container">
         <div class="button-group">
           {{#if (is-rejected deliveryRule)}}
-            <button
-              class="schedule-modal__cancel-btn btn btn-primary"
-              onclick={{queue (action "closeModal") (action onRevert localDeliveryRule)}}
-              disabled={{isSaving}}
-              type="button"
-            > Cancel
+            <button class="schedule-modal__cancel-btn btn btn-primary"
+              onclick={{queue (action "closeModal") (action onRevert localDeliveryRule)}} disabled={{isSaving}}
+              type="button"> Cancel
             </button>
           {{else}}
-            <button
-              class="schedule-modal__save-btn btn btn-primary"
-              onclick={{action (queue (toggle "isSaving" this) (action "onSave"))}}
-              disabled={{disableSave}}
-              type="button"
-            >
+            <button class="schedule-modal__save-btn btn btn-primary"
+              onclick={{action (queue (toggle "isSaving" this) (action "onSave"))}} disabled={{disableSave}}
+              type="button">
               {{#if isSaving}}
                 {{#loading-message}}
                   Saving schedule
@@ -116,12 +113,9 @@
                 {{#if localDeliveryRule.isNew}}Save{{else}}Save Changes{{/if}}
               {{/if}}
             </button>
-            <button
-              class="schedule-modal__cancel-btn btn btn-secondary"
-              onclick={{queue (action "closeModal") (action onRevert localDeliveryRule)}}
-              disabled={{isSaving}}
-              type="button"
-            >
+            <button class="schedule-modal__cancel-btn btn btn-secondary"
+              onclick={{queue (action "closeModal") (action onRevert localDeliveryRule)}} disabled={{isSaving}}
+              type="button">
               {{#if localDeliveryRule.hasDirtyAttributes}}
                 Cancel
               {{else}}

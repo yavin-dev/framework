@@ -200,6 +200,14 @@ export default Component.extend({
     },
 
     /**
+     * @action toggleMustHaveData - flips the value of the mustHaveData property of the deliveryRule scheduling rules
+     */
+    toggleMustHaveData() {
+      let mustHaveData = !get(this, 'localDeliveryRule.schedulingRules.mustHaveData');
+      set(this, 'localDeliveryRule.schedulingRules.mustHaveData', mustHaveData);
+    },
+
+    /**
      * @action updateRecipients
      * @param {Array} recipients - list of email strings
      */
