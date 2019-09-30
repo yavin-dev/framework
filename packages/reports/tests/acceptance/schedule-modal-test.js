@@ -13,7 +13,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
   setupMirage(hooks);
 
   test('schedule modal save new schedule', async function(assert) {
-    assert.expect(12);
+    assert.expect(13);
     await visit('/reports');
 
     // Click "Schedule"
@@ -22,6 +22,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
 
     assert.dom('.schedule-modal__header .primary-header').isVisible('Schedule modal pops up when action is clicked');
 
+    // Default View
     assert
       .dom('.schedule-modal__delete-btn')
       .isNotVisible('The delete button is not present when creating a new schedule');
@@ -46,12 +47,16 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
       .dom('.schedule-modal__must-have-data-toggle .x-toggle')
       .isNotChecked('mustHaveData is toggled off by default');
 
+    // Enter email address
     await fillIn('.js-ember-tag-input-new', 'navi_user@navi.io');
     await blur('.js-ember-tag-input-new');
 
-    // Set frequency to Day
+    // Set frequency to 'Day'
     await click('.schedule-modal__dropdown--frequency .ember-power-select-trigger');
     await click($('.ember-power-select-option:contains(Day)')[0]);
+
+    // Toggle mustHaveData to 'on'
+    await click('.schedule-modal__must-have-data-toggle .x-toggle');
 
     //Save the schedule
     await click('.schedule-modal__save-btn');
@@ -80,6 +85,10 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
     assert
       .dom('.schedule-modal__input--recipients .navi-email-tag')
       .hasText('navi_user@navi.io', 'Recipients field is set by the saved delivery rule');
+
+    assert
+      .dom('.schedule-modal__must-have-data-toggle .x-toggle')
+      .isChecked('mustHaveData field is set by the saved delivery rule');
   });
 
   test('schedule modal save changes to existing schedule', async function(assert) {
@@ -90,14 +99,36 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
     await triggerEvent('.navi-collection__row2', 'mouseover');
     await click('.navi-collection__row2 .schedule .btn');
 
+    // The initial state of the Cancel button should say "Close"
+    assert
+      .dom('.schedule-modal__cancel-btn')
+      .hasText('Close', 'The cancel button says "Close" upon opening the schedule modal');
+
+    // Change the value of the mustHaveData toggle and make sure the model detects changes
+    await click('.schedule-modal__must-have-data-toggle .x-toggle');
+    assert
+      .dom('.schedule-modal__cancel-btn')
+      .hasText(
+        'Cancel',
+        'The cancel button says "Cancel" and not "Close" after a user modifies the state of the mustHaveData toggled'
+      );
+
+    // Reverting the changes are also detected by the model and reflected to the user
+    await click('.schedule-modal__must-have-data-toggle .x-toggle');
+    assert
+      .dom('.schedule-modal__cancel-btn')
+      .hasText(
+        'Close',
+        'The cancel button says "Close" after a user puts the mustHaveData toggle value back to its initial state'
+      );
+
+    // Enter emails
     await fillIn('.js-ember-tag-input-new', 'navi_user@navi.io');
     await blur('.js-ember-tag-input-new');
 
     // Set frequency to Day
     await click('.schedule-modal__dropdown--frequency .ember-power-select-trigger');
     await click($('.ember-power-select-option:contains(Day)')[0]);
-
-    await click('.schedule-modal__must-have-data-toggle .x-toggle');
 
     //Save the schedule
     await click('.schedule-modal__save-btn');
@@ -122,10 +153,6 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
     assert
       .dom('.schedule-modal__dropdown--frequency .ember-power-select-selected-item')
       .hasText('Day', 'Changes made to the frequency field are kept after clicking save changes');
-
-    assert
-      .dom('.schedule-modal__must-have-data-toggle .x-toggle')
-      .isChecked('mustHaveData should be toggled on after toggling it on');
 
     assert.deepEqual(
       findAll('.schedule-modal__input--recipients .navi-email-tag').map(e => e.innerText.trim()),
