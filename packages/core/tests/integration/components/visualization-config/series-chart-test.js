@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click, find } from '@ember/test-helpers';
+import { render, find } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import { clickTrigger as toggleSelector, nativeMouseUp as toggleOption } from 'ember-power-select/test-support/helpers';
@@ -125,18 +125,6 @@ module('Integration | Component | visualization config/series chart', function(h
     return MetadataService.loadMetadata();
   });
 
-  test('component renders', async function(assert) {
-    assert.expect(2);
-
-    await render(Template);
-
-    assert.dom('.series-chart-config').isVisible('The series chart config component renders');
-
-    assert
-      .dom('.series-chart-config .chart-series-collection')
-      .isVisible('The chart series selection component is displayed in the series chart config');
-  });
-
   test('metric selector', async function(assert) {
     assert.expect(4);
 
@@ -167,56 +155,5 @@ module('Integration | Component | visualization config/series chart', function(h
     assert
       .dom('.series-chart-config .metric-select')
       .doesNotExist('The metric selector component is not rendered for a metric series');
-  });
-
-  test('on add series', async function(assert) {
-    assert.expect(1);
-
-    this.set('onUpdateChartConfig', config => {
-      assert.deepEqual(
-        config.dimensions,
-        [
-          {
-            name: 'Foo1',
-            values: { foo: '1' }
-          },
-          {
-            name: 'Foo2',
-            values: { foo: '2' }
-          },
-          {
-            name: '3',
-            values: { foo: '3' }
-          }
-        ],
-        'The new series selected is added to the config and passed on to the onUpdateChartConfig action'
-      );
-    });
-
-    await render(Template);
-
-    //Add first series in dropdown
-    await click('.add-series .btn-add');
-    await click('.add-series .table-body .table-row');
-  });
-
-  test('on remove series', async function(assert) {
-    assert.expect(1);
-
-    this.set('onUpdateChartConfig', config => {
-      assert.deepEqual(
-        config.dimensions,
-        [
-          {
-            name: 'Foo2',
-            values: { foo: '2' }
-          }
-        ],
-        'The deleted series is removed from the config and passed on to the onUpdateChartConfig action'
-      );
-    });
-
-    await render(Template);
-    await click('.navi-icon__delete');
   });
 });
