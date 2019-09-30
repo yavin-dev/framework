@@ -59,10 +59,7 @@ export default [
     },
     deliveryType: 'dashboard',
     frequency: 'week',
-    schedulingRules: {
-      stopAfter: '2017-09-04 00:00:00',
-      every: '2 weeks'
-    },
+    schedulingRules: {},
     format: {
       type: 'pdf'
     },

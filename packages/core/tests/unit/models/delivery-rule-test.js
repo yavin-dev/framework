@@ -13,8 +13,7 @@ const ExpectedDeliveryRule = {
   deliveryType: 'report',
   frequency: 'week',
   schedulingRules: {
-    stopAfter: '2017-09-04 00:00:00',
-    every: '2 weeks'
+    mustHaveData: false
   },
   format: {
     type: 'csv'
