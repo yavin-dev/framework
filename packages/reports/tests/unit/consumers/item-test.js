@@ -1,25 +1,21 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { settled } from '@ember/test-helpers';
-import { startMirage } from 'dummy/initializers/ember-cli-mirage';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import { run } from '@ember/runloop';
 import Response from 'ember-cli-mirage/response';
 
-let Store, Container, MetadataService, Server;
+let Store, Container, MetadataService;
 
 module('Unit | Consumer | item', function(hooks) {
   setupTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
-    Server = startMirage();
     Container = this.owner;
     Store = Container.lookup('service:store');
     MetadataService = this.owner.lookup('service:bard-metadata');
     return MetadataService.loadMetadata();
-  });
-
-  hooks.afterEach(function() {
-    Server.shutdown();
   });
 
   test('delete item - success', function(assert) {
@@ -57,7 +53,7 @@ module('Unit | Consumer | item', function(hooks) {
     assert.expect(3);
 
     //Mock Server Endpoint
-    Server.delete('/reports/:id', () => {
+    this.server.delete('/reports/:id', () => {
       return new Response(500);
     });
 
