@@ -36,7 +36,7 @@ module('Integration | Component | visualization config/line chart', function(hoo
   hooks.beforeEach(function() {
     //mocking visualization manifest
     this.owner.register(
-      'manifest:mock',
+      'navi-visualization-manifest:mock',
       EmberObject.extend({
         hasGroupBy(request) {
           return request.hasGroupBy;

@@ -25,29 +25,25 @@ const VALID_REQUEST = {
   requestVersion: 'v1'
 };
 
-module('Unit | Manifests | metric label', function(hooks) {
+module('Unit | Manifests | goal gauge', function(hooks) {
   setupTest(hooks);
 
-  test('metric label visualization type is valid', function(assert) {
+  test('goal gauge visualization type is valid', function(assert) {
     assert.expect(4);
 
     // valid
     let validRequest = copy(VALID_REQUEST),
-      manifest = this.owner.lookup('manifest:metric-label'),
+      manifest = this.owner.lookup('navi-visualization-manifest:goal-gauge'),
       request = copy(validRequest);
-    assert.deepEqual(
-      manifest.typeIsValid(request),
-      true,
-      'metric label is valid for single time bucket, single row, single metric'
-    );
+    assert.ok(manifest.typeIsValid(request), 'goal gauge is valid for single time bucket, single row, single metric');
 
     // multiple rows
     set(request, 'dimensions', [{ dimension: 'property' }]);
-    assert.deepEqual(manifest.typeIsValid(request), false, 'metric label is invalid due to multiple rows');
+    assert.notOk(manifest.typeIsValid(request), 'goal gauge is invalid due to multiple rows');
 
     // multiple metrics
     set(request, 'metrics', [{ metric: 'adClicks' }, { metric: 'navClicks' }]);
-    assert.deepEqual(manifest.typeIsValid(request), false, 'metric label is invalid due to multiple metrics');
+    assert.notOk(manifest.typeIsValid(request), 'goal gauge is invalid due to multiple metrics');
 
     // multiple time buckets
     request = copy(VALID_REQUEST);
@@ -57,6 +53,6 @@ module('Unit | Manifests | metric label', function(hooks) {
       }
     ]);
     set(request, 'intervals', intervals);
-    assert.deepEqual(manifest.typeIsValid(request), false, 'metric label is invalid due to multiple time buckets');
+    assert.notOk(manifest.typeIsValid(request), 'goal gauge is invalid due to multiple time buckets');
   });
 });
