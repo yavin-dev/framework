@@ -1,6 +1,6 @@
 import Application from '@ember/application';
 import { run } from '@ember/runloop';
-import { initialize } from 'dummy/initializers/inject-c3-enhancements';
+import c3Enhancements from 'dummy/initializers/inject-c3-enhancements';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import c3 from 'c3';
@@ -11,8 +11,8 @@ module('Unit | Initializer | inject c3 enhancements', function(hooks) {
   hooks.beforeEach(function() {
     this.TestApplication = Application.extend();
     this.TestApplication.initializer({
-      name: 'c3 enhancements initializer',
-      initialize
+      name: c3Enhancements.name,
+      initialize: c3Enhancements.initialize
     });
     this.application = this.TestApplication.create({ autoboot: false });
   });
