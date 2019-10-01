@@ -4,7 +4,7 @@ import { setupTest } from 'ember-qunit';
 import Interval from 'navi-core/utils/classes/interval';
 import Duration from 'navi-core/utils/classes/duration';
 
-var Validator, TestInterval;
+let Validator, TestInterval;
 
 module('Unit | Validator | interval', function(hooks) {
   setupTest(hooks);

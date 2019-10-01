@@ -5,7 +5,7 @@ import hbs from 'htmlbars-inline-precompile';
 import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 import { set } from '@ember/object';
 import $ from 'jquery';
-import { setupMock, teardownMock } from '../../helpers/mirage-helper';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import RSVP, { reject } from 'rsvp';
 import { isEmpty } from '@ember/utils';
 import { A as arr } from '@ember/array';
@@ -14,10 +14,10 @@ let MockRequest, MockMetric, MetadataService;
 
 module('Integration | Component | metric config', function(hooks) {
   setupRenderingTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
     MetadataService = this.owner.lookup('service:bard-metadata');
-    setupMock();
 
     MockMetric = {
       name: 'metric1',
@@ -83,10 +83,6 @@ module('Integration | Component | metric config', function(hooks) {
       set(this, 'metric', MockMetric);
       set(this, 'request', MockRequest);
     });
-  });
-
-  hooks.afterEach(function() {
-    teardownMock();
   });
 
   test('it renders', async function(assert) {

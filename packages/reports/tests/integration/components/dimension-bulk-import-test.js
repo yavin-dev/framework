@@ -5,9 +5,7 @@ import { render, settled, findAll, waitFor, click } from '@ember/test-helpers';
 import $ from 'jquery';
 import hbs from 'htmlbars-inline-precompile';
 import config from 'ember-get-config';
-import { setupMock, teardownMock } from '../../helpers/mirage-helper';
-
-let server;
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 const HOST = config.navi.dataSources[0].uri;
 
@@ -46,10 +44,10 @@ const COMMON_TEMPLATE = hbs`
 
 module('Integration | Component | Dimension Bulk Import', function(hooks) {
   setupRenderingTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
-    server = setupMock();
-    server.get(
+    this.server.get(
       `${HOST}/v1/dimensions/property/values/`,
       (schema, request) => {
         if (request.queryParams.filters === 'property|id-in[100001,100002,56565565,78787,114,100003]') {
@@ -59,7 +57,7 @@ module('Integration | Component | Dimension Bulk Import', function(hooks) {
       { timing: 400 }
     );
 
-    server.get(
+    this.server.get(
       `${HOST}/v1/dimensions/multiSystemId/values/`,
       (schema, request) => {
         if (request.queryParams.filters === 'multiSystemId|id-in[6,7]') {
@@ -95,10 +93,6 @@ module('Integration | Component | Dimension Bulk Import', function(hooks) {
     });
 
     return this.owner.lookup('service:bard-metadata').loadMetadata();
-  });
-
-  hooks.afterEach(function() {
-    teardownMock();
   });
 
   test('bulk import Component renders', async function(assert) {

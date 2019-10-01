@@ -1,20 +1,13 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { setupMock, teardownMock } from '../../helpers/mirage-helper';
-
-let MetadataService;
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 module('Unit | Service | metric long name', function(hooks) {
   setupTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
-    setupMock();
-    MetadataService = this.owner.lookup('service:bard-metadata');
-    return MetadataService.loadMetadata();
-  });
-
-  hooks.afterEach(function() {
-    teardownMock();
+    return this.owner.lookup('service:bard-metadata').loadMetadata();
   });
 
   test('getLongName', function(assert) {

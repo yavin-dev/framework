@@ -4,7 +4,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, settled } from '@ember/test-helpers';
 import $ from 'jquery';
-import { setupMock, teardownMock } from '../../helpers/mirage-helper';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import hbs from 'htmlbars-inline-precompile';
 import Interval from 'navi-core/utils/classes/interval';
 
@@ -51,10 +51,9 @@ const RESPONSE = {
 
 module('Integration | Component | report view', function(hooks) {
   setupRenderingTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
-    setupMock();
-
     this.owner.register(
       'helper:route-action',
       buildHelper(() => {
@@ -108,10 +107,6 @@ module('Integration | Component | report view', function(hooks) {
         })
       );
     });
-  });
-
-  hooks.afterEach(function() {
-    teardownMock();
   });
 
   test('metric label visualization selector is available on single metric, single time bucket, no dimensions', function(assert) {

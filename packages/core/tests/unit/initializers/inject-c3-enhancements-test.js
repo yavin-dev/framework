@@ -1,24 +1,26 @@
 import Application from '@ember/application';
 import { run } from '@ember/runloop';
-import { initialize } from 'dummy/initializers/inject-c3-enhancements';
+import c3Enhancements from 'dummy/initializers/inject-c3-enhancements';
 import { module, test } from 'qunit';
 import c3 from 'c3';
-import destroyApp from '../../helpers/destroy-app';
 
 module('Unit | Initializer | inject c3 enhancements', function(hooks) {
   hooks.beforeEach(function() {
-    run(() => {
-      this.application = Application.create();
-      this.application.deferReadiness();
+    this.TestApplication = Application.extend();
+    this.TestApplication.initializer({
+      name: c3Enhancements.name,
+      initialize: c3Enhancements.initialize
     });
+    this.application = this.TestApplication.create({ autoboot: false });
   });
 
   hooks.afterEach(function() {
-    destroyApp(this.application);
+    run(this.application, 'destroy');
   });
 
-  test('function overrides', function(assert) {
-    initialize(this.application);
+  test('function overrides', async function(assert) {
+    await this.application.boot();
+
     assert.notOk(c3.chart.internal.fn.isCustomX(), 'initializer injected custom method');
   });
 });

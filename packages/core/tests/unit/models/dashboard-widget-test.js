@@ -2,15 +2,15 @@ import { run } from '@ember/runloop';
 import { get } from '@ember/object';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { setupMock, teardownMock } from '../../helpers/mirage-helper';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 let Store;
 
 module('Unit | Model | dashboard widget', function(hooks) {
   setupTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(async function() {
-    setupMock();
     Store = this.owner.lookup('service:store');
 
     Store.createRecord('user', { id: 'navi_user' });
@@ -18,10 +18,6 @@ module('Unit | Model | dashboard widget', function(hooks) {
     // Load metadata needed for request fragment
     let metadataService = this.owner.lookup('service:bard-metadata');
     await metadataService.loadMetadata();
-  });
-
-  hooks.afterEach(function() {
-    teardownMock();
   });
 
   test('tempId', async function(assert) {

@@ -1,22 +1,18 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { setupMock, teardownMock } from '../../helpers/mirage-helper';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 let Serializer, DashboardClass, MetadataService;
 
 module('Unit | Serializer | dashboard', function(hooks) {
   setupTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
-    setupMock();
     Serializer = this.owner.lookup('serializer:dashboard');
     DashboardClass = this.owner.lookup('service:store').modelFor('dashboard');
     MetadataService = this.owner.lookup('service:bard-metadata');
     return MetadataService.loadMetadata();
-  });
-
-  hooks.afterEach(function() {
-    teardownMock();
   });
 
   test('_addLinks', function(assert) {

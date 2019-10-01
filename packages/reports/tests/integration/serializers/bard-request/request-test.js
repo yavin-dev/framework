@@ -2,23 +2,18 @@ import { run } from '@ember/runloop';
 import { get } from '@ember/object';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import '@ember/test-helpers';
-import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 let store, metaService;
 
 module('Integration | Serializer | Request Fragment', function(hooks) {
   setupRenderingTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
-    setupMock();
     store = this.owner.lookup('service:store');
     metaService = this.owner.lookup('service:bard-metadata');
     return metaService.loadMetadata();
-  });
-
-  hooks.afterEach(function() {
-    teardownMock();
   });
 
   test('Adds aliases to reports when serialized', function(assert) {

@@ -25,7 +25,7 @@ module('Unit - Utils - Search Utils', function() {
       'Match is found despite word order'
     );
 
-    var weight1 = SearchUtils.getPartialMatchWeight('heavy green character', 'character'),
+    const weight1 = SearchUtils.getPartialMatchWeight('heavy green character', 'character'),
       weight2 = SearchUtils.getPartialMatchWeight('heavy green character', 'heavy character');
 
     assert.ok(weight1 > weight2, 'Closer match has smaller match weight');
@@ -42,7 +42,7 @@ module('Unit - Utils - Search Utils', function() {
 
     assert.equal(SearchUtils.getExactMatchWeight('15897', '158'), 3, 'Match is found when string contains query');
 
-    var weight1 = SearchUtils.getExactMatchWeight('15897', '158'),
+    const weight1 = SearchUtils.getExactMatchWeight('15897', '158'),
       weight2 = SearchUtils.getExactMatchWeight('158', '158');
 
     assert.ok(weight1 > weight2, 'Closer match has smaller match weight');
@@ -51,7 +51,7 @@ module('Unit - Utils - Search Utils', function() {
   test('searchDimensionRecords', function(assert) {
     assert.expect(8);
 
-    var records = A([
+    const records = A([
       EmberObject.create({
         id: 'bike',
         description: 'All Bikes'
@@ -70,7 +70,7 @@ module('Unit - Utils - Search Utils', function() {
       })
     ]);
 
-    var results = A(SearchUtils.searchDimensionRecords(records, 'Bike', 100));
+    let results = A(SearchUtils.searchDimensionRecords(records, 'Bike', 100));
 
     assert.equal(results[0].record.get('description'), 'All Bikes', 'First result is most relevant dimension');
 
@@ -95,7 +95,7 @@ module('Unit - Utils - Search Utils', function() {
 
     assert.deepEqual(results.mapBy('record.id'), ['123', '123456', '1234567'], 'Results are sorted in relevance order');
 
-    var expectedResults = [
+    const expectedResults = [
       {
         record: records[3],
         relevance: 1

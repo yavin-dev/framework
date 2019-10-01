@@ -6,7 +6,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, settled, click, find, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 const TEMPLATE = hbs`
   <div style="width: 800px; height: 800px; display: flex;">
@@ -132,10 +132,10 @@ const Options = {
 
 module('Integration | Component | table', function(hooks) {
   setupRenderingTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
     config.navi.FEATURES.enableVerticalCollectionTableIterator = true;
-    setupMock();
 
     this.set('model', Model);
     this.set('options', Options);
@@ -146,7 +146,6 @@ module('Integration | Component | table', function(hooks) {
 
   hooks.afterEach(function() {
     config.navi.FEATURES.enableVerticalCollectionTableIterator = false;
-    teardownMock();
   });
 
   test('it renders', async function(assert) {
