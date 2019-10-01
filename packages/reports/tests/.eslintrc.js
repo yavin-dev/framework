@@ -4,9 +4,6 @@ module.exports = {
   },
   globals: {
     $: true,
-    selectChoose: true,
-    selectSearch: true,
-    visitWithoutWait: true,
     server: true,
     wait: true,
     reorder: true,
