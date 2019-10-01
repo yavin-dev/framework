@@ -2,21 +2,14 @@ import { A } from '@ember/array';
 import { get } from '@ember/object';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
-
-let MetadataService;
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 module('Unit | Component | pie chart', function(hooks) {
   setupTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
-    setupMock();
-    MetadataService = this.owner.lookup('service:bard-metadata');
-    return MetadataService.loadMetadata();
-  });
-
-  hooks.afterEach(function() {
-    teardownMock();
+    return this.owner.lookup('service:bard-metadata').loadMetadata();
   });
 
   const REQUEST = {
@@ -133,15 +126,18 @@ module('Unit | Component | pie chart', function(hooks) {
     series: {
       type: 'metric',
       config: {
-        metrics: [{
-          metric: 'totalPageViews',
-          parameters: {},
-          canonicalName: 'totalPageViews'
-        }, {
-          metric: 'uniqueIdentifier',
-          parameters: {},
-          canonicalName: 'uniqueIdentifier'
-        }]
+        metrics: [
+          {
+            metric: 'totalPageViews',
+            parameters: {},
+            canonicalName: 'totalPageViews'
+          },
+          {
+            metric: 'uniqueIdentifier',
+            parameters: {},
+            canonicalName: 'uniqueIdentifier'
+          }
+        ]
       }
     }
   };

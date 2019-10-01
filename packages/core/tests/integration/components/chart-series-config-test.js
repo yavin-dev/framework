@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import { setupMock, teardownMock } from '../../helpers/mirage-helper';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 let MetadataService;
 
@@ -50,10 +50,9 @@ const SERIES_CONFIG = {
 
 module('Integration | Component | chart series config', function(hooks) {
   setupRenderingTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
-    setupMock();
-
     this.setProperties({
       seriesType: 'dimension',
       seriesConfig: SERIES_CONFIG,
@@ -62,10 +61,6 @@ module('Integration | Component | chart series config', function(hooks) {
 
     MetadataService = this.owner.lookup('service:bard-metadata');
     return MetadataService.loadMetadata();
-  });
-
-  hooks.afterEach(function() {
-    teardownMock();
   });
 
   test('Component renders', async function(assert) {

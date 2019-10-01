@@ -4,7 +4,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, find } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize as injectC3Enhancements } from 'navi-core/initializers/inject-c3-enhancements';
-import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import { next } from '@ember/runloop';
 import { getTranslation } from 'navi-core/utils/chart';
 
@@ -107,17 +107,13 @@ let MetadataService;
 
 module('Integration | Component | pie chart', function(hooks) {
   setupRenderingTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
     injectC3Enhancements();
     this.set('model', Model);
-    setupMock();
     MetadataService = this.owner.lookup('service:bard-metadata');
     return MetadataService.loadMetadata();
-  });
-
-  hooks.afterEach(function() {
-    teardownMock();
   });
 
   test('it renders for a dimension series', async function(assert) {
@@ -168,15 +164,18 @@ module('Integration | Component | pie chart', function(hooks) {
       series: {
         type: 'metric',
         config: {
-          metrics: [{
-            metric: 'totalPageViews',
-            parameters: {},
-            canonicalName: 'totalPageViews'
-          }, {
-            metric: 'uniqueIdentifier',
-            parameters: {},
-            canonicalName: 'uniqueIdentifier'
-          }]
+          metrics: [
+            {
+              metric: 'totalPageViews',
+              parameters: {},
+              canonicalName: 'totalPageViews'
+            },
+            {
+              metric: 'uniqueIdentifier',
+              parameters: {},
+              canonicalName: 'uniqueIdentifier'
+            }
+          ]
         }
       }
     });
@@ -202,15 +201,18 @@ module('Integration | Component | pie chart', function(hooks) {
       series: {
         type: 'metric',
         config: {
-          metrics: [{
-            metric: 'totalPageViews',
-            parameters: {},
-            canonicalName: 'totalPageViews'
-          }, {
-            metric: 'uniqueIdentifier',
-            parameters: {},
-            canonicalName: 'uniqueIdentifier'
-          }]
+          metrics: [
+            {
+              metric: 'totalPageViews',
+              parameters: {},
+              canonicalName: 'totalPageViews'
+            },
+            {
+              metric: 'uniqueIdentifier',
+              parameters: {},
+              canonicalName: 'uniqueIdentifier'
+            }
+          ]
         }
       }
     });
@@ -374,19 +376,22 @@ module('Integration | Component | pie chart', function(hooks) {
       series: {
         type: 'metric',
         config: {
-          metrics: [{
-            metric: 'revenue',
-            parameters: {
-              currency: 'USD'
+          metrics: [
+            {
+              metric: 'revenue',
+              parameters: {
+                currency: 'USD'
+              },
+              canonicalName: 'revenue(currency=USD)'
             },
-            canonicalName: 'revenue(currency=USD)'
-          }, {
-            metric: 'revenue',
-            parameters: {
-              currency: 'CAD'
-            },
-            canonicalName: 'revenue(currency=CAD)'
-          }]
+            {
+              metric: 'revenue',
+              parameters: {
+                currency: 'CAD'
+              },
+              canonicalName: 'revenue(currency=CAD)'
+            }
+          ]
         }
       }
     });

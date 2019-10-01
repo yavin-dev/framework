@@ -1,21 +1,17 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { setupMock, teardownMock } from '../../helpers/mirage-helper';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 let Serializer, Model;
 
 module('Unit | Serializer | metric label', function(hooks) {
   setupTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
-    setupMock();
     Serializer = this.owner.lookup('serializer:metric-label');
     const store = this.owner.lookup('service:store');
     Model = store.modelFor('metric-label');
-  });
-
-  hooks.afterEach(function() {
-    teardownMock();
   });
 
   test('normalize', function(assert) {

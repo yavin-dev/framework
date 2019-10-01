@@ -3,15 +3,15 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 import { helper } from '@ember/component/helper';
 import hbs from 'htmlbars-inline-precompile';
-import { setupMock, teardownMock } from '../../helpers/mirage-helper';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 let MetadataService, Store;
 
 module('Integration | Component | report builder', function(hooks) {
   setupRenderingTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
-    setupMock();
     MetadataService = this.owner.lookup('service:bard-metadata');
     Store = this.owner.lookup('service:store');
 
@@ -31,10 +31,6 @@ module('Integration | Component | report builder', function(hooks) {
         })
       );
     });
-  });
-
-  hooks.afterEach(function() {
-    teardownMock();
   });
 
   test("Single table in meta shouldn't show table selector", async function(assert) {

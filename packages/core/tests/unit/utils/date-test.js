@@ -28,9 +28,9 @@ module('Unit | Utils | DateUtils', function() {
   test('getFirstDayOfPrevIsoDateTimePeriod - date format provided', function(assert) {
     assert.expect(4);
 
-    var dateFormat = 'MM-DD-YYYY';
+    const dateFormat = 'MM-DD-YYYY';
 
-    var expectedDate1 = moment()
+    const expectedDate1 = moment()
       .subtract(1, 'week')
       .startOf('isoweek')
       .format(dateFormat);
@@ -40,7 +40,7 @@ module('Unit | Utils | DateUtils', function() {
       `getFirstDayOfPrevIsoDateTimePeriod should return: ${expectedDate1}`
     );
 
-    var expectedDate2 = moment()
+    const expectedDate2 = moment()
       .subtract(1, 'month')
       .startOf('month')
       .format(dateFormat);
@@ -50,7 +50,7 @@ module('Unit | Utils | DateUtils', function() {
       `getFirstDayOfPrevIsoDateTimePeriod should return: ${expectedDate2}`
     );
 
-    var expectedDate3 = moment()
+    const expectedDate3 = moment()
       .subtract(1, 'year')
       .startOf('year')
       .format(dateFormat);
@@ -60,7 +60,7 @@ module('Unit | Utils | DateUtils', function() {
       `getFirstDayOfPrevIsoDateTimePeriod should return: ${expectedDate3}`
     );
 
-    var expectedDate4 = moment()
+    const expectedDate4 = moment()
       .subtract(1, 'day')
       .startOf('day')
       .format(dateFormat);

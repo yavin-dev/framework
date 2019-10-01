@@ -2,7 +2,7 @@ import { A } from '@ember/array';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, settled } from '@ember/test-helpers';
-import { setupMock, teardownMock } from '../../helpers/mirage-helper';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import hbs from 'htmlbars-inline-precompile';
 import Interval from 'navi-core/utils/classes/interval';
 
@@ -49,10 +49,9 @@ const RESPONSE = {
 
 module('Integration | Component | print report view', function(hooks) {
   setupRenderingTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
-    setupMock();
-
     let metadataService = this.owner.lookup('service:bard-metadata'),
       store = this.owner.lookup('service:store');
 
@@ -97,10 +96,6 @@ module('Integration | Component | print report view', function(hooks) {
         })
       );
     });
-  });
-
-  hooks.afterEach(function() {
-    teardownMock();
   });
 
   test('visualization is chosen based on report', async function(assert) {

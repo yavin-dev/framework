@@ -3,12 +3,12 @@ import { run } from '@ember/runloop';
 import { get } from '@ember/object';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { setupMock, teardownMock } from '../../helpers/mirage-helper';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import config from 'ember-get-config';
 import Mirage from 'ember-cli-mirage';
 import DeliverableItem from 'navi-core/models/deliverable-item';
 
-let Store, MetadataService, server;
+let Store, MetadataService;
 
 const ExpectedRequest = {
     logicalTable: {
@@ -76,16 +76,12 @@ const ExpectedRequest = {
 
 module('Unit | Model | report', function(hooks) {
   setupTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(async function() {
-    server = setupMock();
     Store = this.owner.lookup('service:store');
     MetadataService = this.owner.lookup('service:bard-metadata');
     await MetadataService.loadMetadata();
-  });
-
-  hooks.afterEach(function() {
-    teardownMock();
   });
 
   test('Retrieving records', async function(assert) {
@@ -103,8 +99,8 @@ module('Unit | Model | report', function(hooks) {
   test('Coalescing find requests', async function(assert) {
     assert.expect(1);
 
-    server.urlPrefix = `${config.navi.appPersistence.uri}`;
-    server.get('/reports', (schema, request) => {
+    this.server.urlPrefix = `${config.navi.appPersistence.uri}`;
+    this.server.get('/reports', (schema, request) => {
       assert.equal(
         request.queryParams['filter[reports.id]'],
         '1,2,4',

@@ -1,13 +1,13 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { settled } from '@ember/test-helpers';
-import { setupMock, teardownMock } from '../../../../helpers/mirage-helper';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import config from 'ember-get-config';
 import { A as arr } from '@ember/array';
 import { get } from '@ember/object';
 import { run } from '@ember/runloop';
 
-let Store, MetadataService, Server;
+let Store, MetadataService;
 
 const TextInput = arr(['mirror', 'shield', 'deku', 'tree']);
 
@@ -28,13 +28,13 @@ const AgeResponse = arr([
 
 module('Unit | Model Fragment | BardRequest - Filter', function(hooks) {
   setupTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(async function() {
-    Server = setupMock();
     Store = this.owner.lookup('service:store');
 
-    Server.urlPrefix = config.navi.dataSources[0].uri;
-    Server.get(`/v1/dimensions/age/values/`, () => {
+    this.server.urlPrefix = config.navi.dataSources[0].uri;
+    this.server.get(`/v1/dimensions/age/values/`, () => {
       return {
         rows: AgeResponse.slice(0, 2)
       };
@@ -62,10 +62,6 @@ module('Unit | Model Fragment | BardRequest - Filter', function(hooks) {
         });
       });
     });
-  });
-
-  hooks.afterEach(function() {
-    teardownMock();
   });
 
   test('Model using the Filter Fragment', async function(assert) {

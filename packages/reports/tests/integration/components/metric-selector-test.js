@@ -8,18 +8,18 @@ import $ from 'jquery';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, click, findAll, fillIn, triggerEvent } from '@ember/test-helpers';
-import { setupMock, teardownMock } from '../../helpers/mirage-helper';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import { assertTooltipRendered, assertTooltipNotRendered, assertTooltipContent } from 'ember-tooltips/test-support';
 
 let Store, MetadataService, AdClicks, PageViews;
 
 module('Integration | Component | metric selector', function(hooks) {
   setupRenderingTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
     Store = this.owner.lookup('service:store');
     MetadataService = this.owner.lookup('service:bard-metadata');
-    setupMock();
 
     this.owner.register('helper:update-report-action', buildHelper(() => {}), { instantiate: false });
     this.owner.register(
@@ -71,10 +71,6 @@ module('Integration | Component | metric selector', function(hooks) {
             onToggleMetricFilter=(action addMetricFilter)
           }}`);
     });
-  });
-
-  hooks.afterEach(function() {
-    teardownMock();
   });
 
   test('it renders', async function(assert) {

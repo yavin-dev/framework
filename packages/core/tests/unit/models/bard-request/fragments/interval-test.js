@@ -4,13 +4,14 @@ import moment from 'moment';
 import DateUtils from 'navi-core/utils/date';
 import Interval from 'navi-core/utils/classes/interval';
 import Duration from 'navi-core/utils/classes/duration';
-import { setupMock, teardownMock } from '../../../../helpers/mirage-helper';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import { run } from '@ember/runloop';
 
-var Store;
+let Store;
 
 module('Unit | Model Fragment | BardRequest - Interval', function(hooks) {
   setupTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
     //Set up testing environment
@@ -20,7 +21,6 @@ module('Unit | Model Fragment | BardRequest - Interval', function(hooks) {
       end: '2015-08-20 00:00:00.000'
     };
 
-    setupMock();
     Store = this.owner.lookup('service:store');
 
     //Add instances to the store
@@ -35,10 +35,6 @@ module('Unit | Model Fragment | BardRequest - Interval', function(hooks) {
         }
       });
     });
-  });
-
-  hooks.afterEach(function() {
-    teardownMock();
   });
 
   test('Model using the Interval Fragment', function(assert) {

@@ -5,18 +5,18 @@ import { setupRenderingTest } from 'ember-qunit';
 import $ from 'jquery';
 import { render, click, findAll, fillIn, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import { setupMock, teardownMock } from '../../helpers/mirage-helper';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import { assertTooltipRendered, assertTooltipNotRendered, assertTooltipContent } from 'ember-tooltips/test-support';
 
 let Store, MetadataService, Age;
 
 module('Integration | Component | dimension selector', function(hooks) {
   setupRenderingTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
     Store = this.owner.lookup('service:store');
     MetadataService = this.owner.lookup('service:bard-metadata');
-    setupMock();
 
     this.set('addTimeGrain', () => {});
     this.set('removeTimeGrain', () => {});
@@ -50,10 +50,6 @@ module('Integration | Component | dimension selector', function(hooks) {
             onToggleDimFilter=(action addDimFilter)
           }}`);
     });
-  });
-
-  hooks.afterEach(function() {
-    teardownMock();
   });
 
   test('it renders', function(assert) {
