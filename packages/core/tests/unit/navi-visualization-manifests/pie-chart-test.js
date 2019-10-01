@@ -33,7 +33,7 @@ module('Unit | Manifests | pie chart', function(hooks) {
 
     // valid for single time bucket and group by
     let request = copy(VALID_REQUEST),
-      manifest = this.owner.lookup('manifest:pie-chart');
+      manifest = this.owner.lookup('navi-visualization-manifest:pie-chart');
     assert.ok(
       manifest.typeIsValid(request),
       'pie chart type is valid for single time bucket with dimension and metric'

@@ -73,7 +73,7 @@ module('Unit | Route | reports/report/view', function(hooks) {
     assert.expect(1);
 
     this.owner.register(
-      'manifest:invalid-type',
+      'navi-visualization-manifest:invalid-type',
       EmberObject.extend({
         typeIsValid: () => false
       })

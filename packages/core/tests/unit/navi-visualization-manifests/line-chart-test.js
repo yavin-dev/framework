@@ -33,7 +33,7 @@ module('Unit | Manifests | line chart', function(hooks) {
 
     // invalid for single time bucket
     let request = copy(VALID_REQUEST),
-      manifest = this.owner.lookup('manifest:line-chart');
+      manifest = this.owner.lookup('navi-visualization-manifest:line-chart');
     assert.notOk(manifest.typeIsValid(request), 'line chart type is invalid for single time bucket');
 
     // valid for multiple time buckets
