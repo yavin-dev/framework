@@ -11,9 +11,9 @@
 {{/with}}
 
 {{#if (is-pending _loadingPromise)}}
-  {{#loading-message}}
+  {{#navi-loading-message}}
     Searching
-  {{/loading-message}}
+  {{/navi-loading-message}}
 {{else}}
   <div class="id-container valid-ids">
     <span class="valid-id-count">{{_validDimValues.length}}</span> valid <span class="text-capitalize dimension">{{pluralize _validDimValues.length dimension.longName  without-count=true}}</span>
