@@ -33,7 +33,7 @@ module('Unit | Manifests | bar chart', function(hooks) {
 
     // invalid for single time bucket, no dimension, single metric
     let request = copy(VALID_REQUEST),
-      manifest = this.owner.lookup('manifest:bar-chart');
+      manifest = this.owner.lookup('navi-visualization-manifest:bar-chart');
     assert.notOk(
       manifest.typeIsValid(request),
       'bar chart type is invalid for single time bucket, no dimensions, single metric'
