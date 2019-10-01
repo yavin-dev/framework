@@ -1,22 +1,18 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import config from 'ember-get-config';
-import { setupMock, teardownMock } from '../../helpers/mirage-helper';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import { setOwner } from '@ember/application';
 
 let Store;
 
 module('Unit | Helper | get user', function(hooks) {
   setupTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
-    setupMock();
     Store = this.owner.lookup('service:store');
     Store.find('user', config.navi.user);
-  });
-
-  hooks.afterEach(function() {
-    teardownMock();
   });
 
   test('getUser returns user', async function(assert) {

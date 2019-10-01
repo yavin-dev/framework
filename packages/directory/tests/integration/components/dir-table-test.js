@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { setupMock, teardownMock } from '../../helpers/mirage-helper';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import { render } from '@ember/test-helpers';
 import { run } from '@ember/runloop';
 import { set } from '@ember/object';
@@ -10,14 +10,10 @@ let Store;
 
 module('Integration | Component | dir table', function(hooks) {
   setupRenderingTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
-    setupMock();
     Store = this.owner.lookup('service:store');
-  });
-
-  hooks.afterEach(function() {
-    teardownMock();
   });
 
   test('table populates from items correctly', async function(assert) {

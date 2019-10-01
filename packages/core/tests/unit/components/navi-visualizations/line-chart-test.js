@@ -4,23 +4,16 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { run } from '@ember/runloop';
 import moment from 'moment';
-import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import merge from 'lodash/merge';
 import { GROUP } from 'navi-core/chart-builders/date-time';
 
-let MetadataService;
-
 module('Unit | Component | line chart', function(hooks) {
   setupTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
-    setupMock();
-    MetadataService = this.owner.lookup('service:bard-metadata');
-    return MetadataService.loadMetadata();
-  });
-
-  hooks.afterEach(function() {
-    teardownMock();
+    return this.owner.lookup('service:bard-metadata').loadMetadata();
   });
 
   test('dataConfig', function(assert) {

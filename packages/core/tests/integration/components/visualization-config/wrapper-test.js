@@ -4,7 +4,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 let MetadataService;
 
@@ -18,10 +18,9 @@ let Template = hbs`
 
 module('Integration | Component | visualization config/warpper', function(hooks) {
   setupRenderingTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
-    setupMock();
-
     // mocking viz-config component
     this.owner.register(
       'component:visualization-config/mock',
@@ -44,10 +43,6 @@ module('Integration | Component | visualization config/warpper', function(hooks)
 
     MetadataService = this.owner.lookup('service:bard-metadata');
     return MetadataService.loadMetadata();
-  });
-
-  hooks.afterEach(function() {
-    teardownMock();
   });
 
   test('component renders', async function(assert) {

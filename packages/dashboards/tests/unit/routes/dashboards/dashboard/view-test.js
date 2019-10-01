@@ -1,14 +1,14 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { startMirage } from 'dummy/initializers/ember-cli-mirage';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 let Route, Store, MetadataService, compression;
 
 module('Unit | Route | dashboards/dashboard/view', function(hooks) {
   setupTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(async function() {
-    this.server = startMirage();
     Route = this.owner.lookup('route:dashboards/dashboard/view');
     this.owner.lookup('service:user').findUser();
     Store = this.owner.lookup('service:store');

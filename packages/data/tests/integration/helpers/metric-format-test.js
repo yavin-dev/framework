@@ -2,21 +2,14 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import { setupMock, teardownMock } from '../../helpers/mirage-helper';
-
-let metaService;
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 module('helper:metric-format', function(hooks) {
   setupRenderingTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
-    setupMock();
-    metaService = this.owner.lookup('service:bard-metadata');
-    return metaService.loadMetadata();
-  });
-
-  hooks.afterEach(function() {
-    teardownMock();
+    return this.owner.lookup('service:bard-metadata').loadMetadata();
   });
 
   test('it renders with serialized metric object', async function(assert) {

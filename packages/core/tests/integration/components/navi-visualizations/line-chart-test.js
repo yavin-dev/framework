@@ -7,7 +7,7 @@ import { render, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize as injectC3Enhancements } from 'navi-core/initializers/inject-c3-enhancements';
 import DateUtils from 'navi-core/utils/date';
-import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 let MetadataService;
 
@@ -70,9 +70,9 @@ const Model = A([
 
 module('Integration | Component | line chart', function(hooks) {
   setupRenderingTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
-    setupMock();
     injectC3Enhancements();
     this.set('model', Model);
     this.set('options', {
@@ -98,10 +98,6 @@ module('Integration | Component | line chart', function(hooks) {
 
     MetadataService = this.owner.lookup('service:bard-metadata');
     return MetadataService.loadMetadata();
-  });
-
-  hooks.afterEach(function() {
-    teardownMock();
   });
 
   test('it renders', async function(assert) {

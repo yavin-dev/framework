@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, click, find } from '@ember/test-helpers';
-import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import $ from 'jquery';
 import hbs from 'htmlbars-inline-precompile';
 import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
@@ -20,9 +20,9 @@ let Store;
 
 module('Integration | Component | report actions - multiple-format-export', function(hooks) {
   setupRenderingTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
-    setupMock();
     Store = this.owner.lookup('service:store');
 
     // Mock notifications
@@ -39,10 +39,6 @@ module('Integration | Component | report actions - multiple-format-export', func
       .then(report => {
         this.set('report', report);
       });
-  });
-
-  hooks.afterEach(function() {
-    teardownMock();
   });
 
   test('export links', async function(assert) {

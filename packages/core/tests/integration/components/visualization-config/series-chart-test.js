@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, click, find } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import { clickTrigger as toggleSelector, nativeMouseUp as toggleOption } from 'ember-power-select/test-support/helpers';
 import { get } from '@ember/object';
 
@@ -61,10 +61,9 @@ const ROWS = [
 
 module('Integration | Component | visualization config/series chart', function(hooks) {
   setupRenderingTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
-    setupMock();
-
     this.set('seriesType', 'dimension');
     this.set('seriesConfig', {
       dimensionOrder: ['foo'],
@@ -124,10 +123,6 @@ module('Integration | Component | visualization config/series chart', function(h
 
     MetadataService = this.owner.lookup('service:bard-metadata');
     return MetadataService.loadMetadata();
-  });
-
-  hooks.afterEach(function() {
-    teardownMock();
   });
 
   test('component renders', async function(assert) {

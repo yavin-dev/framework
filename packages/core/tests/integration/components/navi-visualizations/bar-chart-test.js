@@ -4,7 +4,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize as injectC3Enhancements } from 'navi-core/initializers/inject-c3-enhancements';
-import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 let MetadataService;
 
@@ -379,9 +379,9 @@ const DimensionModel = A([
 
 module('Integration | Component | bar chart', function(hooks) {
   setupRenderingTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
-    setupMock();
     injectC3Enhancements();
 
     this.set('model', Model);
@@ -408,10 +408,6 @@ module('Integration | Component | bar chart', function(hooks) {
 
     MetadataService = this.owner.lookup('service:bard-metadata');
     return MetadataService.loadMetadata();
-  });
-
-  hooks.afterEach(function() {
-    teardownMock();
   });
 
   test('it renders', async function(assert) {

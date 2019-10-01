@@ -5,19 +5,15 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, findAll } from '@ember/test-helpers';
 import { initialize as injectC3Enhancements } from 'navi-core/initializers/inject-c3-enhancements';
 import hbs from 'htmlbars-inline-precompile';
-import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 module('Integration | Component | goal gauge ', function(hooks) {
   setupRenderingTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
     injectC3Enhancements();
-    setupMock();
     return this.owner.lookup('service:bard-metadata').loadMetadata();
-  });
-
-  hooks.afterEach(function() {
-    return teardownMock();
   });
 
   test('goal-gauge renders correctly', async function(assert) {

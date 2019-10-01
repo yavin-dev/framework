@@ -1,16 +1,15 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { setupMock, teardownMock } from '../../../../helpers/mirage-helper';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import { run } from '@ember/runloop';
 
 var Store, MetadataService;
 
 module('Unit | Model | Fragment | BardRequest - Metric', function(hooks) {
   setupTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
-    setupMock();
-
     Store = this.owner.lookup('service:store');
     MetadataService = this.owner.lookup('service:bard-metadata');
 
@@ -28,10 +27,6 @@ module('Unit | Model | Fragment | BardRequest - Metric', function(hooks) {
         });
       });
     });
-  });
-
-  hooks.afterEach(function() {
-    teardownMock();
   });
 
   test('Model using the Metric Fragment', function(assert) {

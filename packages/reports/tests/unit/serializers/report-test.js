@@ -1,20 +1,16 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { setupMock, teardownMock } from '../../helpers/mirage-helper';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 let Store;
 
 module('Unit | Serializer | Report', function(hooks) {
   setupTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
-    setupMock();
     Store = this.owner.lookup('service:store');
     return this.owner.lookup('service:bard-metadata').loadMetadata();
-  });
-
-  hooks.afterEach(function() {
-    teardownMock();
   });
 
   test('Serializing record', async function(assert) {
