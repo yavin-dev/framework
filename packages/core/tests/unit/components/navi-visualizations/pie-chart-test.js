@@ -9,7 +9,7 @@ module('Unit | Component | pie chart', function(hooks) {
   setupMirage(hooks);
 
   hooks.beforeEach(function() {
-    return this.owner.lookup('service:bard-metadata');
+    return this.owner.lookup('service:bard-metadata').loadMetadata();
   });
 
   const REQUEST = {

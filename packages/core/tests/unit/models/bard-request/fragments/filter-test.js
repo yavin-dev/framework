@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { settled } from '@ember/test-helpers';
-import { setupMock, teardownMock } from '../../../../helpers/mirage-helper';
+import { startMirage } from 'dummy/initializers/ember-cli-mirage';
 import config from 'ember-get-config';
 import { A as arr } from '@ember/array';
 import { get } from '@ember/object';
@@ -30,7 +30,7 @@ module('Unit | Model Fragment | BardRequest - Filter', function(hooks) {
   setupTest(hooks);
 
   hooks.beforeEach(async function() {
-    Server = setupMock();
+    Server = startMirage();
     Store = this.owner.lookup('service:store');
 
     Server.urlPrefix = config.navi.dataSources[0].uri;
@@ -65,7 +65,7 @@ module('Unit | Model Fragment | BardRequest - Filter', function(hooks) {
   });
 
   hooks.afterEach(function() {
-    teardownMock();
+    Server.shutdown();
   });
 
   test('Model using the Filter Fragment', async function(assert) {

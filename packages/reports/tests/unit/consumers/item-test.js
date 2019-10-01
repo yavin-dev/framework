@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { settled } from '@ember/test-helpers';
-import { setupMock, teardownMock } from '../../helpers/mirage-helper';
+import { startMirage } from 'dummy/initializers/ember-cli-mirage';
 import { run } from '@ember/runloop';
 import Response from 'ember-cli-mirage/response';
 
@@ -11,7 +11,7 @@ module('Unit | Consumer | item', function(hooks) {
   setupTest(hooks);
 
   hooks.beforeEach(function() {
-    Server = setupMock();
+    Server = startMirage();
     Container = this.owner;
     Store = Container.lookup('service:store');
     MetadataService = this.owner.lookup('service:bard-metadata');
@@ -19,7 +19,7 @@ module('Unit | Consumer | item', function(hooks) {
   });
 
   hooks.afterEach(function() {
-    teardownMock();
+    Server.shutdown();
   });
 
   test('delete item - success', function(assert) {

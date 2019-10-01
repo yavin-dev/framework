@@ -5,9 +5,9 @@ import { render, settled, findAll, waitFor, click } from '@ember/test-helpers';
 import $ from 'jquery';
 import hbs from 'htmlbars-inline-precompile';
 import config from 'ember-get-config';
-import { setupMock, teardownMock } from '../../helpers/mirage-helper';
+import { startMirage } from 'dummy/initializers/ember-cli-mirage';
 
-let server;
+let Server;
 
 const HOST = config.navi.dataSources[0].uri;
 
@@ -48,8 +48,8 @@ module('Integration | Component | Dimension Bulk Import', function(hooks) {
   setupRenderingTest(hooks);
 
   hooks.beforeEach(function() {
-    server = setupMock();
-    server.get(
+    Server = startMirage();
+    Server.get(
       `${HOST}/v1/dimensions/property/values/`,
       (schema, request) => {
         if (request.queryParams.filters === 'property|id-in[100001,100002,56565565,78787,114,100003]') {
@@ -59,7 +59,7 @@ module('Integration | Component | Dimension Bulk Import', function(hooks) {
       { timing: 400 }
     );
 
-    server.get(
+    Server.get(
       `${HOST}/v1/dimensions/multiSystemId/values/`,
       (schema, request) => {
         if (request.queryParams.filters === 'multiSystemId|id-in[6,7]') {
@@ -98,7 +98,7 @@ module('Integration | Component | Dimension Bulk Import', function(hooks) {
   });
 
   hooks.afterEach(function() {
-    teardownMock();
+    Server.shutdown();
   });
 
   test('bulk import Component renders', async function(assert) {

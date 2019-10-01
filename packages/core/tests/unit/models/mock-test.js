@@ -3,25 +3,25 @@ import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import config from 'ember-get-config';
-import { setupMock, teardownMock } from '../../helpers/mirage-helper';
+import { startMirage } from 'dummy/initializers/ember-cli-mirage';
 
-let server;
+let Server;
 
 module('Unit | Adapter | base json adapter', function(hooks) {
   setupTest(hooks);
 
   hooks.beforeEach(function() {
-    server = setupMock();
+    Server = startMirage();
   });
 
   hooks.afterEach(function() {
-    teardownMock();
+    Server.shutdown();
   });
 
   test('Coalescing find requests', function(assert) {
     assert.expect(1);
-    server.urlPrefix = config.navi.appPersistence.uri;
-    server.get('/mocks', (schema, request) => {
+    Server.urlPrefix = config.navi.appPersistence.uri;
+    Server.get('/mocks', (schema, request) => {
       assert.equal(
         request.queryParams['filter[mocks.id]'],
         '1,2,4',

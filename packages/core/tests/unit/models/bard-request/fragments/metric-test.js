@@ -3,7 +3,7 @@ import { setupTest } from 'ember-qunit';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import { run } from '@ember/runloop';
 
-var Store, MetadataService;
+let Store, MetadataService;
 
 module('Unit | Model | Fragment | BardRequest - Metric', function(hooks) {
   setupTest(hooks);
