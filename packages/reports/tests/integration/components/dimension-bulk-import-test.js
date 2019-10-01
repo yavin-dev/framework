@@ -121,8 +121,8 @@ module('Integration | Component | Dimension Bulk Import', function(hooks) {
 
     render(COMMON_TEMPLATE);
 
-    await waitFor('.loading-message');
-    assert.dom('.loading-message').isVisible('loading spinner is visible');
+    await waitFor('.navi-loading-message');
+    assert.dom('.navi-loading-message').isVisible('loading spinner is visible');
 
     await settled();
     /* == Valid Ids == */

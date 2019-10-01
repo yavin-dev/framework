@@ -21,7 +21,7 @@
       {{#navi-icon "question-circle-o" class="grouped-list__item-info"}}
         {{#ember-tooltip side="right" popperContainer="body" effect="none"}}
           {{#if item.extended.isPending}}
-            {{loading-message}}
+            {{navi-loading-message}}
           {{else}}
             {{or item.extended.content.description "No description available"}}
           {{/if}}

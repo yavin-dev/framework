@@ -4,7 +4,7 @@ import { render } from '@ember/test-helpers';
 import $ from 'jquery';
 import hbs from 'htmlbars-inline-precompile';
 
-module('Integration | Component | loading message', function(hooks) {
+module('Integration | Component | navi loading message', function(hooks) {
   setupRenderingTest(hooks);
 
   test('it renders', async function(assert) {
@@ -12,13 +12,13 @@ module('Integration | Component | loading message', function(hooks) {
 
     // Template block usage:
     await render(hbs`
-          {{#loading-message}}
+          {{#navi-loading-message}}
                 Loading
-          {{/loading-message}}
+          {{/navi-loading-message}}
       `);
 
     assert.ok($('.navi-loader'), 'the navi-loader component is rendered');
 
-    assert.dom('.loading-message').hasText('Loading', 'The text inside the block is rendered as specified');
+    assert.dom('.navi-loading-message').hasText('Loading', 'The text inside the block is rendered as specified');
   });
 });

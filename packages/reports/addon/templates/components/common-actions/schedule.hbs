@@ -109,9 +109,9 @@
               type="button"
             >
               {{#if isSaving}}
-                {{#loading-message}}
+                {{#navi-loading-message}}
                   Saving schedule
-                {{/loading-message}}
+                {{/navi-loading-message}}
               {{else}}
                 {{#if localDeliveryRule.isNew}}Save{{else}}Save Changes{{/if}}
               {{/if}}
