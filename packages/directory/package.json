@@ -1,6 +1,6 @@
 {
   "name": "navi-directory",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "The default blueprint for ember-cli addons.",
   "keywords": [
     "ember-addon"
@@ -32,10 +32,10 @@
     "ember-moment": "^7.8.1",
     "ember-power-select": "^2.3.5",
     "ember-responsive": "^3.0.0-beta.3",
-    "navi-core": "^0.1.0",
-    "navi-dashboards": "^0.1.0",
-    "navi-data": "^0.1.0",
-    "navi-reports": "^0.1.0"
+    "navi-core": "0.2.0",
+    "navi-dashboards": "0.2.0",
+    "navi-data": "0.2.0",
+    "navi-reports": "0.2.0"
   },
   "devDependencies": {
     "@ember/jquery": "^0.6.0",
