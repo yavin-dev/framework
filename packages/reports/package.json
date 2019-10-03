@@ -1,6 +1,6 @@
 {
   "name": "navi-reports",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Analytics reporting library for navi",
   "keywords": [
     "ember-addon"
@@ -50,8 +50,8 @@
     "ember-truth-helpers": "^2.0.0",
     "ember-uuid": "^1.0.0",
     "liquid-fire": "^0.29.2",
-    "navi-core": "^0.1.0",
-    "navi-data": "^0.1.0"
+    "navi-core": "0.2.0",
+    "navi-data": "0.2.0"
   },
   "devDependencies": {
     "broccoli-asset-rev": "^2.7.0",
