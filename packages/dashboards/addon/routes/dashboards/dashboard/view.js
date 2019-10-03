@@ -60,7 +60,7 @@ export default Route.extend({
    */
   async model(_, transition) {
     const dashboard = this.modelFor('dashboards.dashboard');
-    const filterQueryParams = get(transition, 'queryParams.filters');
+    const filterQueryParams = get(transition, 'to.queryParams.filters');
     const cachedWidgetData = this.get('_widgetDataCache');
 
     //Record filters before and after setting from query params
