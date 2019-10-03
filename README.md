@@ -32,7 +32,7 @@ You can install the individual packages via npm
 - [navi-data](https://www.npmjs.com/package/navi-data)
 - [navi-app](https://www.npmjs.com/package/navi-app) 
 
-Please see the detailed installation instructions in the README of the indicidual packages for more info.
+Please see the detailed installation instructions in the README of the individual packages for more info.
 
 ## Sub Packages
 
@@ -48,7 +48,7 @@ Please see the detailed installation instructions in the README of the indicidua
 
 ## Contribution
 
-See [CONTRUBUTING.md](https://github.com/yahoo/navi/blob/master/CONTRIBUTING.md)
+See [CONTRIBUTING.md](https://github.com/yahoo/navi/blob/master/CONTRIBUTING.md)
 
 ### Setup
 
