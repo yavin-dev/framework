@@ -72,7 +72,7 @@ See [CONTRUBUTING.md](https://github.com/yahoo/navi/blob/master/CONTRIBUTING.md)
 - `npm test`
 
 For more information on using ember-cli, visit [https://ember-cli.com/](https://ember-cli.com/).
-For more information on using lerna, visit [https://lernajs.io/](https://lernajs.io/)
+For more information on using lerna, visit [https://lerna.js.org](https://lerna.js.org)
 
 ## License
 
