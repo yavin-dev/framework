@@ -12,14 +12,19 @@
     border-radius: 5px;
     color: @navi-gray-700;
     cursor: pointer;
-    display: grid;
     font-family: @font-family-thin;
-    grid-template-columns: 1fr 5px;
     margin-left: auto;
     padding: 5px 10px;
     text-align: left;
     user-select: none;
     width: 120px;
+    display: flex;
+    justify-content: space-between;
+    
+    &-type {
+      margin-right: auto;
+      width: 100%;
+    }
   }
 
   &__dropdown-options {
