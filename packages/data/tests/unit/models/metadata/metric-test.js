@@ -1,10 +1,15 @@
 import { get } from '@ember/object';
 import { module, test } from 'qunit';
 import MetricMetadataModel from 'navi-data/models/metadata/metric';
+import { setupTest } from 'ember-qunit';
+import Pretender from 'pretender';
+import metadataRoutes from '../../../helpers/metadata-routes';
 
 let Payload, Metric;
 
 module('Unit | Metadata Model | Metric', function(hooks) {
+  setupTest(hooks);
+
   hooks.beforeEach(function() {
     Payload = {
       name: 'dayAvgPageViews',
@@ -20,7 +25,7 @@ module('Unit | Metadata Model | Metric', function(hooks) {
       }
     };
 
-    Metric = MetricMetadataModel.create(Payload);
+    Metric = MetricMetadataModel.create(this.owner.ownerInjection(), Payload);
   });
 
   test('factory has identifierField defined', function(assert) {
@@ -136,5 +141,20 @@ module('Unit | Metadata Model | Metric', function(hooks) {
       { currency: 'USD', country: 'US' },
       'The method returns all the defaults for all the parameters of the metric'
     );
+  });
+
+  test('extended property', async function(assert) {
+    const metricOne = MetricMetadataModel.create(this.owner.ownerInjection(), {
+      name: 'metricOne'
+    });
+    const server = new Pretender(metadataRoutes);
+
+    const result = await metricOne.get('extended');
+    assert.deepEqual(result, 	{
+      'category': 'category',
+      'longName': 'Metric One',
+      'name': 'metricOne'
+    }, 'metric model can fetch extended attributes');
+    server.shutdown();
   });
 });
