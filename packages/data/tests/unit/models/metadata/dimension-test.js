@@ -1,10 +1,15 @@
 import { get } from '@ember/object';
 import { module, test } from 'qunit';
 import DimensionMetadataModel from 'navi-data/models/metadata/dimension';
+import { setupTest } from 'ember-qunit';
+import Pretender from 'pretender';
+import metadataRoutes from '../../../helpers/metadata-routes';
 
 let Payload, Dimension;
 
-module('Unit | Metadata Model | Metric', function(hooks) {
+module('Unit | Metadata Model | Dimension', function(hooks) {
+  setupTest(hooks);
+
   hooks.beforeEach(function() {
     Payload = {
       name: 'age',
@@ -27,7 +32,7 @@ module('Unit | Metadata Model | Metric', function(hooks) {
       ]
     };
 
-    Dimension = DimensionMetadataModel.create(Payload);
+    Dimension = DimensionMetadataModel.create(this.owner.ownerInjection(), Payload);
   });
 
   test('factory has identifierField defined', function(assert) {
@@ -192,5 +197,21 @@ module('Unit | Metadata Model | Metric', function(hooks) {
       'desc',
       'descriptionFieldName returns `desc` when there are no `description` tags'
     );
+  });
+
+  test('extended property', async function(assert) {
+    const dimensionOne = DimensionMetadataModel.create(this.owner.ownerInjection(), {
+      name: 'dimensionOne'
+    });
+    const server = new Pretender(metadataRoutes);
+
+    const result = await dimensionOne.get('extended');
+    assert.deepEqual(result, {
+      'cardinality': 60,
+      'category': 'categoryOne',
+      'longName': 'Dimension One',
+      'name': 'dimensionOne'
+    }, 'dimension model can fetch extended attributes');
+    server.shutdown();
   });
 });

@@ -1,9 +1,16 @@
-import ExtendedMetadataMixin from 'navi-data/mixins/extended-metadata';
 import EmberObject, { computed, get } from '@ember/object';
 import { isEmpty } from '@ember/utils';
 import forIn from 'lodash/forIn';
+import PromiseProxyMixin from '@ember/object/promise-proxy-mixin';
+import ObjectProxy from '@ember/object/proxy';
+import { inject as service } from '@ember/service';
 
-let Model = EmberObject.extend(ExtendedMetadataMixin, {
+const Model = EmberObject.extend({
+  /**
+   * @property {Ember.Service} metadata
+   */
+  metadata: service('bard-metadata'),
+
   /**
    * @property {String} type
    */
@@ -79,7 +86,17 @@ let Model = EmberObject.extend(ExtendedMetadataMixin, {
     });
 
     return defaultParameters;
-  }
+  },
+
+  /**
+   * @property {Promise} extended
+   */
+  extended: computed(function() {
+    const { metadata, name, type } = this;
+    return ObjectProxy.extend(PromiseProxyMixin).create({
+      promise: metadata.fetchById(type, name)
+    });
+  })
 });
 
 //factory level properties
