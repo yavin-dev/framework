@@ -5,7 +5,6 @@
  * Description: The adapter for the bard-facts model.
  */
 
-import $ from 'jquery';
 import { deprecate } from '@ember/application/deprecations';
 import { assert } from '@ember/debug';
 import { inject as service } from '@ember/service';
@@ -270,7 +269,8 @@ export default EmberObject.extend({
     let decoratedRequest = this._decorate(request),
       path = this._buildURLPath(decoratedRequest, options),
       query = this._buildQuery(decoratedRequest, options),
-      queryStr = $.param(query);
+      queryStr = Object.entries(query).map(([key, value]) =>
+        `${encodeURIComponent(key)}=${encodeURIComponent(value)}`).join('&');
 
     return `${path}?${queryStr}`;
   },

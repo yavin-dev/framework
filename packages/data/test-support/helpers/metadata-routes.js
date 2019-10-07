@@ -137,4 +137,8 @@ export default function() {
   this.get(`${Host}/v1/metrics/metricOne`, function() {
     return [200, { 'Content-Type': 'application/json' }, JSON.stringify(MetricOne)];
   });
+
+  this.get(`${Host}/v1/dimensions/dimensionOne`, function() {
+    return [200, { 'Content-Type': 'application/json' }, JSON.stringify(DimensionOne)];
+  });
 }
