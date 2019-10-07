@@ -26,6 +26,7 @@ env:
     - PACKAGE=navi-dashboards
     - PACKAGE=navi-data
     - PACKAGE=navi-directory
+    - PACKAGE=navi-notifications
     - PACKAGE=navi-reports
     - PACKAGE=navi-webservice
 branches:
