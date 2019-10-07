@@ -1,0 +1,27 @@
+/**
+ * Copyright 2019, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
+@import 'navi-core/variables/index';
+
+.alert {
+  border: 1px solid transparent;
+  color: @navi-white;
+  font-size: @font-size-secondary-header;
+  font-family: @font-family-sans-serif;
+  position: fixed;
+  padding: 15px;
+  width: 100%;
+  z-index: 999;
+
+  &.alert-success {
+    background-color: @navi-notification-success-background-color;
+  }
+  &.alert-info {
+    background-color: @navi-notification-info-background-color;
+  }
+
+  &.alert-danger {
+    background-color: @navi-notification-failure-background-color;
+  }
+}
