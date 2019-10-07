@@ -300,7 +300,7 @@ module('Integration | Component | table', function(hooks) {
 
     let options = merge({}, Options, { showTotals: { subtotal: 'os' } });
 
-    Model[0].response.rows = ROWS.slice(0, 4);
+    set(Model, 'firstObject.response.rows', ROWS.slice(0, 4));
     this.set('model', Model);
     this.set('options', options);
 
@@ -337,7 +337,7 @@ module('Integration | Component | table', function(hooks) {
 
     let options = merge({}, Options, { showTotals: { subtotal: 'dateTime' } });
 
-    Model[0].response.rows = ROWS.slice(0, 4);
+    set(Model, 'firstObject.response.rows', ROWS.slice(0, 4));
     this.set('model', Model);
     this.set('options', options);
 
@@ -353,12 +353,12 @@ module('Integration | Component | table', function(hooks) {
   test('table row info', async function(assert) {
     assert.expect(1);
 
-    Model[0].response.rows = ROWS.slice(0, 4);
-    Model[0].response.meta = {
+    set(Model, 'firstObject.response.rows', ROWS.slice(0, 4));
+    set(Model, 'firstObject.response.meta', {
       pagination: {
         numberOfResults: 10
       }
-    };
+    });
 
     await render(TEMPLATE);
 
@@ -374,12 +374,12 @@ module('Integration | Component | table', function(hooks) {
   test('totals and subtotals for partial data', async function(assert) {
     assert.expect(1);
 
-    Model[0].response.rows = ROWS.slice(0, 4);
-    Model[0].response.meta = {
+    set(Model, 'firstObject.response.rows', ROWS.slice(0, 4));
+    set(Model, 'firstObject.response.meta', {
       pagination: {
         numberOfResults: 10
       }
-    };
+    });
 
     let options = merge({}, Options, {
       showTotals: { grandTotal: true, subtotal: 'os' }
