@@ -87,6 +87,7 @@
     "eslint-plugin-node": "^9.0.1",
     "liquid-fire": "^0.29.2",
     "loader.js": "^4.7.0",
+    "navi-notifications": "0.2.0",
     "qunit-dom": "^0.8.4"
   },
   "engines": {
