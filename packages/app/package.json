@@ -65,6 +65,7 @@
     "navi-dashboards": "0.2.0",
     "navi-data": "0.2.0",
     "navi-directory": "0.2.0",
+    "navi-notifications": "0.2.0",
     "navi-reports": "0.2.0",
     "qunit-dom": "^0.8.4"
   },
