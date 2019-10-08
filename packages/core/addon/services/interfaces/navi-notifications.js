@@ -1,24 +1,13 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Notification service
  */
-import Service, { inject as service } from '@ember/service';
-import { get } from '@ember/object';
+import Service from '@ember/service';
+import { assert } from '@ember/debug';
 
-const TIMEOUTS = {
-  short: 3000,
-  medium: 10000,
-  long: 50000
-};
-
-export default Service.extend({
-  /**
-   * {Ember.Service} notificationService
-   */
-  notificationService: service('flash-messages'),
-
+export default class NaviNotifications extends Service {
   /**
    * Calls the add notification method of notification service
    *
@@ -32,21 +21,9 @@ export default Service.extend({
    *                                   be dismissed by click), set sticky to true.
    * @returns {Ember.Service} notification service
    */
-  add(options = {}) {
-    let notificationService = this.notificationService;
-
-    //Check if message already is present
-    if (
-      notificationService &&
-      get(notificationService, 'queue')
-        .mapBy('message')
-        .includes(options.message)
-    ) {
-      return notificationService;
-    }
-    options.timeout = TIMEOUTS[options.timeout];
-    return notificationService.add(options);
-  },
+  add(/* options */) {
+    assert('NaviNotifications must implement `add`');
+  }
 
   /**
    * Clears all messages from the notification service
@@ -55,6 +32,6 @@ export default Service.extend({
    * @returns {Ember.Service} navi notification service
    */
   clearMessages() {
-    return this.notificationService.clearMessages();
+    assert('NaviNotifications must implement `clearMessages`');
   }
-});
+}

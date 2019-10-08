@@ -1,3 +1,19 @@
-<h2 id="title">Welcome to Ember</h2>
+<button class="success-btn" onclick={{action "addSuccess"}}>
+  success
+</button>
 
-{{outlet}}
+<button class="info-btn" onclick={{action "addInfo"}}>
+  info
+</button>
+
+<button class="danger-btn" onclick={{action "addDanger"}}>
+  danger
+</button>
+
+<button class="clear-btn" onclick={{action "clear"}}>
+  clear
+</button>
+
+{{#each flashMessages.queue as |flash|}}
+  <FlashMessage @flash={{flash}} />
+{{/each}}

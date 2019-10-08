@@ -1,10 +1,11 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Notification service
  */
-import Service, { inject as service } from '@ember/service';
+import { inject as service } from '@ember/service';
+import NaviNotificationInterface from 'navi-core/services/interfaces/navi-notifications';
 
 const TIMEOUTS = {
   short: 3000,
@@ -12,7 +13,7 @@ const TIMEOUTS = {
   long: 50000
 };
 
-export default class NaviNotifications extends Service {
+export default class NaviNotifications extends NaviNotificationInterface {
   @service('flash-messages')
   notificationService;
 
@@ -31,9 +32,7 @@ export default class NaviNotifications extends Service {
    */
   add(options = {}) {
     const { notificationService } = this;
-
-    //Check if message already is present
-    if (notificationService && notificationService.queue.mapBy('message').includes(options.message)) {
+    if (notificationService.queue.find(q => q.message === options.message)) {
       return notificationService;
     } else {
       options.timeout = TIMEOUTS[options.timeout];
