@@ -31,7 +31,7 @@ module('Unit | Helper | item action', function(hooks) {
     );
 
     let actionFactory = this.owner.lookup('helper:item-action');
-    let actionHelper = new actionFactory();
+    let actionHelper = actionFactory.create();
     setOwner(actionHelper, this.owner);
 
     let action = actionHelper.compute([

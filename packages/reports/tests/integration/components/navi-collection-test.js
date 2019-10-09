@@ -91,15 +91,13 @@ module('Integration | Component | navi collection', function(hooks) {
     //Reset to all filter
     await click($('.pick-form li:contains(All)')[0]);
 
-    assert.notOk(
-      $('tbody tr:eq(0) td:first-of-type i').is('.favorite-item--active'),
-      'Report that is not a favorite does not have favorite icon'
-    );
+    assert
+      .dom($('tbody tr:eq(0) td:first-of-type i')[0])
+      .doesNotHaveClass('favorite-item--active', 'Report that is not a favorite does not have favorite icon');
 
-    assert.ok(
-      $('tbody tr:eq(1) td:first-of-type i').is('.favorite-item--active'),
-      'Report that is a favorite has favorite icon'
-    );
+    assert
+      .dom($('tbody tr:eq(1) td:first-of-type i')[0])
+      .hasClass('favorite-item--active', 'Report that is a favorite has favorite icon');
   });
 
   test('Filterable Table', async function(assert) {

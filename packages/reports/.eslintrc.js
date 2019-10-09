@@ -1,13 +1,17 @@
 module.exports = {
   root: true,
   parserOptions: {
-    ecmaVersion: 2017,
+    ecmaVersion: 2018,
     sourceType: 'module'
   },
   plugins: ['ember'],
   extends: ['eslint:recommended', 'plugin:ember/recommended', 'prettier'],
   env: {
     browser: true
+  },
+  rules: {
+    'ember/no-observers': 'warn',
+    'ember/no-side-effects': 'warn'
   },
   overrides: [
     // node files
@@ -24,8 +28,7 @@ module.exports = {
       ],
       excludedFiles: ['addon/**', 'addon-test-support/**', 'app/**', 'tests/dummy/app/**'],
       parserOptions: {
-        sourceType: 'script',
-        ecmaVersion: 2017
+        sourceType: 'script'
       },
       env: {
         browser: false,

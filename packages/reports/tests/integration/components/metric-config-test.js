@@ -16,7 +16,7 @@ module('Integration | Component | metric config', function(hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(async function() {
     MetadataService = this.owner.lookup('service:bard-metadata');
 
     MockMetric = {
@@ -69,20 +69,18 @@ module('Integration | Component | metric config', function(hooks) {
     set(this, 'removeParameterizedMetric', () => {});
     set(this, 'toggleParameterizedMetricFilter', () => {});
 
-    return MetadataService.loadMetadata().then(async () => {
-      await render(hbs`
-        {{metric-config
-          metric=metric
-          request=request
-          onAddParameterizedMetric=(action addParameterizedMetric)
-          onRemoveParameterizedMetric=(action removeParameterizedMetric)
-          onToggleParameterizedMetricFilter=(action toggleParameterizedMetricFilter)
-          parametersPromise=parametersPromise
-        }}`);
-
-      set(this, 'metric', MockMetric);
-      set(this, 'request', MockRequest);
-    });
+    await MetadataService.loadMetadata();
+    set(this, 'metric', MockMetric);
+    set(this, 'request', MockRequest);
+    await render(hbs`
+      {{metric-config
+        metric=metric
+        request=request
+        onAddParameterizedMetric=(action addParameterizedMetric)
+        onRemoveParameterizedMetric=(action removeParameterizedMetric)
+        onToggleParameterizedMetricFilter=(action toggleParameterizedMetricFilter)
+        parametersPromise=parametersPromise
+      }}`);
   });
 
   test('it renders', async function(assert) {
@@ -122,7 +120,7 @@ module('Integration | Component | metric config', function(hooks) {
 
     assert.deepEqual(
       findAll('.grouped-list__group-header').map(el => el.textContent.trim()),
-      ['currency (14)', 'property (4)', 'embargo (2)'],
+      ['embargo (2)', 'currency (14)', 'property (4)'],
       'The group headers reflect the two parameters in the metric'
     );
 
