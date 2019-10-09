@@ -12,7 +12,7 @@ module('Unit | Helper | update report action', function(hooks) {
   hooks.beforeEach(function() {
     Container = this.owner;
     let helperFactory = this.owner.lookup('helper:update-report-action');
-    helper = new helperFactory();
+    helper = helperFactory.create();
     setOwner(helper, this.owner);
   });
 
