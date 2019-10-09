@@ -6,5 +6,7 @@ import FileTypes from 'navi-directory/utils/enums/file-types';
 export default Component.extend({
   layout,
   classNames: ['dir-empty'],
-  reportRoute: computed(() => FileTypes.definitions.reports.linkRoute)
+  reportRoute: computed(function() {
+    return FileTypes.definitions.reports.linkRoute;
+  })
 });

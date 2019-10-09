@@ -41,12 +41,10 @@ export default Component.extend({
   /**
    * @property {Object} assetActionComponents - action list component for each asset type
    */
-  assetActionComponents: computed(() => {
-    const components = {
+  assetActionComponents: computed(function() {
+    return {
       report: 'navi-action-list',
       dashboard: 'dashboard-action-list'
     };
-
-    return components;
   })
 });
