@@ -6,6 +6,9 @@ package com.yahoo.navi.ws.app
 import com.yahoo.elide.standalone.ElideStandalone
 
 fun main(args: Array<String>) {
-    val app = ElideStandalone(Settings())
+    val settings = Settings()
+    val app = ElideStandalone(settings)
+
+    println("Webservice running on http://localhost:${settings.port}")
     app.start()
 }
