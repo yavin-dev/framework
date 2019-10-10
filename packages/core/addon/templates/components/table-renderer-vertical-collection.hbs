@@ -13,8 +13,8 @@
           model=(readonly column)
           group=group
           click=(action headerClicked column)
-          onDragStart=(action (mut isDragged) true)
-          onDragStop=(action (mut isDragged) false)
+          onDragStart=(action (set this "isDragged" true))
+          onDragStop=(action (set this "isDragged" false))
         }}
           <span
             class="table-header-cell__title {{if column.hasCustomDisplayName "table-header-cell__title--custom-name"}}"
