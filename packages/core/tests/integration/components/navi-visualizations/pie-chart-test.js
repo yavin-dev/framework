@@ -5,6 +5,7 @@ import { render, find } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize as injectC3Enhancements } from 'navi-core/initializers/inject-c3-enhancements';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import $ from 'jquery';
 import { next } from '@ember/runloop';
 import { getTranslation } from 'navi-core/utils/chart';
 
@@ -144,7 +145,7 @@ module('Integration | Component | pie chart', function(hooks) {
     });
     await render(TEMPLATE);
 
-    assert.ok(this.$('.navi-vis-c3-chart').is(':visible'), 'The pie chart widget component is visible');
+    assert.dom('.navi-vis-c3-chart').isVisible('The pie chart widget component is visible');
 
     assert.dom('.c3-chart-arc').exists({ count: 2 }, 'Two pie slices are present on the chart');
 
@@ -181,7 +182,7 @@ module('Integration | Component | pie chart', function(hooks) {
     });
     await render(TEMPLATE);
 
-    assert.ok(this.$('.navi-vis-c3-chart').is(':visible'), 'The pie chart widget component is visible');
+    assert.dom('.navi-vis-c3-chart').isVisible('The pie chart widget component is visible');
 
     assert.dom('.c3-chart-arc').exists({ count: 2 }, 'Two pie slices are present on the chart');
 
@@ -304,7 +305,7 @@ module('Integration | Component | pie chart', function(hooks) {
     chartElm = find('.c3-chart-arcs');
     xTranslate = getTranslation(chartElm.getAttribute('transform')).x - chartElm.getBoundingClientRect().width / 2 - 50;
     yTranslate =
-      this.$('svg')
+      $('svg')
         .css('height')
         .replace('px', '') / 2;
 
@@ -356,7 +357,7 @@ module('Integration | Component | pie chart', function(hooks) {
 
     assert.dom('.c3-title').hasText('Revenue (USD)', 'The metric name is displayed in the metric label correctly');
 
-    assert.ok(this.$('.navi-vis-c3-chart').is(':visible'), 'The pie chart widget component is visible');
+    assert.dom('.navi-vis-c3-chart').isVisible('The pie chart widget component is visible');
 
     assert.dom('.c3-chart-arc').exists({ count: 2 }, 'Two pie slices are present on the chart');
 
@@ -398,7 +399,7 @@ module('Integration | Component | pie chart', function(hooks) {
 
     await render(TEMPLATE);
 
-    assert.ok(this.$('.navi-vis-c3-chart').is(':visible'), 'The pie chart widget component is visible');
+    assert.dom('.navi-vis-c3-chart').isVisible('The pie chart widget component is visible');
 
     assert.dom('.c3-chart-arc').exists({ count: 2 }, 'Two pie slices are present on the chart');
 
