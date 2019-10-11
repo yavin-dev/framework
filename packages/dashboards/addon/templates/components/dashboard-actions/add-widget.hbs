@@ -15,7 +15,7 @@
       selected=selectedReport
       searchField="title"
       searchPlaceholder="Search for a report..."
-      onchange=(action (mut selectedReport))
+      onchange=(action (set this "selectedReport" _))
       classNames="report-select"
       tagName="div"
       renderInPlace=true

@@ -58,7 +58,7 @@
             disabled=(is-rejected deliveryRule)
             searchEnabled=false
             tagName="div"
-            onchange=(action (mut localDeliveryRule.frequency))
+            onchange=(action (set localDeliveryRule "frequency" _))
             as | frequency |
           }}
             {{capitalize frequency}}

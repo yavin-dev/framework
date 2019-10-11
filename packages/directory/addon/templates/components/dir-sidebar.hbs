@@ -3,7 +3,7 @@
   {{#each directories as | directory |}}
     {{#link-to directory.routeLink (query-params filter=null)
       classNames="dir-sidebar__group"
-      click=(pipe (action (mut selectedDirectory) directory) (action (mut selectedFilter) (object-at 0 directory.filters)))
+      click=(pipe (action (set this "selectedDirectory" directory)) (action (set this "selectedFilter" (object-at 0 directory.filters))))
     }}
       <div>
         <span class="dir-sidebar__group--icon">{{navi-icon "folder-o"}}</span>

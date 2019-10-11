@@ -8,7 +8,7 @@
     {{navi-date-picker
       date=_selectedDate
       dateTimePeriod="day"
-      onUpdate=(action (mut _selectedDate))
+      onUpdate=(action (set this "_selectedDate" _))
     }}
 
     <div class="dropdown-date-picker__controls">

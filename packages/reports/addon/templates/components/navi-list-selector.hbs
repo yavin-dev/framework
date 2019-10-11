@@ -18,7 +18,7 @@
     spellcheck=false 
     class="navi-list-selector__search-input"
   }}
-  {{navi-icon "times-circle" class="navi-list-selector__search-input-clear" click=(action (mut query) undefined)}}
+  {{navi-icon "times-circle" class="navi-list-selector__search-input-clear" click=(action (set this "query" undefined))}}
 </div>
 <div class="navi-list-selector__content">
   {{#if (eq filteredItems.length 0)}}

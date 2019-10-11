@@ -49,7 +49,7 @@
   {{dimension-bulk-import
     dimension=extra.filter.subject
     queryIds=_bulkImportQueryIds
-    onSelectValues=(pipe (action "importValues") (action (mut _showBulkImport) false))
-    onCancel=(action (mut _showBulkImport) false)
+    onSelectValues=(pipe (action "importValues") (action (set this "_showBulkImport" false)))
+    onCancel=(action (set this "_showBulkImport" false))
   }}
 {{/navi-modal}}

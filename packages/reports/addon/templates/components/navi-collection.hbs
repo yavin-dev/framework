@@ -3,7 +3,7 @@
   {{pick-single
     selection=filter
     options=filterOptions
-    onUpdateSelection=(action (mut filter))
+    onUpdateSelection=(action (set this "filter" _))
     idField="filterKey"
     displayField="name"
   }}
