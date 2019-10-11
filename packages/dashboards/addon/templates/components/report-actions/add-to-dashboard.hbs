@@ -30,7 +30,7 @@
         selected=selectedDashboard
         searchField="title"
         searchPlaceholder="Search for a dashboard..."
-        onchange=(action (mut selectedDashboard))
+        onchange=(action (set this "selectedDashboard" _))
         classNames="dashboard-select"
         tagName="div"
         renderInPlace=true
