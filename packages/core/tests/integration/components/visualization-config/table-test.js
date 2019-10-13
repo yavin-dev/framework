@@ -20,7 +20,7 @@ module('Integration | Component | visualization config/table', function(hooks) {
     let originalFlag = config.navi.FEATURES.enableTotals;
     config.navi.FEATURES.enableTotals = false;
 
-    await render(hbs`{{visualization-config/table}}`);
+    await render(hbs`{{navi-visualization-config/table}}`);
 
     assert
       .dom('.table-config')
@@ -42,7 +42,7 @@ module('Integration | Component | visualization config/table', function(hooks) {
     this.set('request', {
       dimensions: [{ dimension: 'os' }, { dimension: 'age' }]
     });
-    await render(hbs`{{visualization-config/table
+    await render(hbs`{{navi-visualization-config/table
       request=request
       onUpdateConfig=(action onUpdateConfig)
     }}`);
@@ -79,7 +79,7 @@ module('Integration | Component | visualization config/table', function(hooks) {
     let originalFlag = config.navi.FEATURES.enableTotals;
     config.navi.FEATURES.enableTotals = true;
 
-    await render(hbs`{{visualization-config/table
+    await render(hbs`{{navi-visualization-config/table
       options=options
     }}`);
 
@@ -102,7 +102,7 @@ module('Integration | Component | visualization config/table', function(hooks) {
     this.set('options', { showTotals: { grandTotal: true } });
     this.set('onUpdateConfig', () => {});
 
-    await render(hbs`{{visualization-config/table
+    await render(hbs`{{navi-visualization-config/table
       request=request
       options=options
       onUpdateConfig=(action onUpdateConfig)
@@ -169,7 +169,7 @@ module('Integration | Component | visualization config/table', function(hooks) {
 
     this.set('request', request);
 
-    await render(hbs`{{visualization-config/table
+    await render(hbs`{{navi-visualization-config/table
       request=request
       options=options
     }}`);

@@ -8,7 +8,7 @@ import { get } from '@ember/object';
 
 let MetadataService;
 
-let Template = hbs`{{visualization-config/series-chart
+let Template = hbs`{{navi-visualization-config/series-chart
                     seriesConfig=seriesConfig
                     seriesType=seriesType
                     response=response

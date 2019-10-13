@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
- *  {{visualization-config/metric-label
+ *  {{navi-visualization-config/metric-label
  *    request=request
  *    response=response
  *    options=options
@@ -11,7 +11,7 @@
  *  }}
  */
 import Component from '@ember/component';
-import layout from '../../templates/components/visualization-config/metric-label';
+import layout from '../../templates/components/navi-visualization-config/metric-label';
 import { get } from '@ember/object';
 
 export default Component.extend({

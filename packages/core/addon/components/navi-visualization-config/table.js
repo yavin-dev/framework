@@ -2,7 +2,7 @@
  * Copyright 2017, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
- * {{visualization-config/table
+ * {{navi-visualization-config/table
  *    request=request
  *    response=response
  *    options=tableOptions
@@ -16,7 +16,7 @@ import Component from '@ember/component';
 import { A as arr } from '@ember/array';
 import { copy } from 'ember-copy';
 import { get, computed } from '@ember/object';
-import layout from '../../templates/components/visualization-config/table';
+import layout from '../../templates/components/navi-visualization-config/table';
 
 export default Component.extend({
   layout,

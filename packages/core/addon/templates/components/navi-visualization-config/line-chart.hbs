@@ -1,6 +1,6 @@
 {{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{#component
-  "visualization-config/series-chart"
+  "navi-visualization-config/series-chart"
   request=request
   response=response
   seriesConfig=seriesConfig
@@ -54,6 +54,6 @@
       }}
     {{/if}}
   {{else if (not (eq seriesType "dimension"))}}
-    <div class="visualization-config__warn-msg">No configuration options available.</div>
+    <div class="navi-visualization-config__warn-msg">No configuration options available.</div>
   {{/if}}
 {{/component}}

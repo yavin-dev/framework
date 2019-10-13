@@ -1,5 +1,5 @@
 /**
- * {{visualization-config/bar-chart
+ * {{navi-visualization-config/bar-chart
  *    request=request
  *    response=response
  *    options=chartOptions

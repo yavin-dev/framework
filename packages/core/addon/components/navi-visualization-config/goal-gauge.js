@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
- *  {{visualization-config/goal-gauge
+ *  {{navi-visualization-config/goal-gauge
  *    request=request
  *    response=response
  *    options=options
@@ -11,7 +11,7 @@
  */
 import { alias } from '@ember/object/computed';
 import Component from '@ember/component';
-import layout from '../../templates/components/visualization-config/goal-gauge';
+import layout from '../../templates/components/navi-visualization-config/goal-gauge';
 import { get } from '@ember/object';
 
 export default Component.extend({

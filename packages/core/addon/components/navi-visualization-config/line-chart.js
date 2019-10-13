@@ -2,7 +2,7 @@
  * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
- * {{visualization-config/line-chart
+ * {{navi-visualization-config/line-chart
  *    request=request
  *    response=response
  *    options=chartOptions
@@ -16,7 +16,7 @@ import { set, get, computed } from '@ember/object';
 import { readOnly } from '@ember/object/computed';
 import { getOwner } from '@ember/application';
 import { copy } from 'ember-copy';
-import layout from '../../templates/components/visualization-config/line-chart';
+import layout from '../../templates/components/navi-visualization-config/line-chart';
 import { featureFlag } from 'navi-core/helpers/feature-flag';
 
 export default Component.extend({
@@ -35,7 +35,7 @@ export default Component.extend({
   /**
    * @property {String} typePrefix - prefix for the line chart component
    */
-  typePrefix: 'visualization-config/chart-type/',
+  typePrefix: 'navi-visualization-config/chart-type/',
 
   /**
    * @property {Boolean} showStackOption - whether to display the `stacked` toggle

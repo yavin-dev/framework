@@ -2,7 +2,7 @@
  * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
- * {{visualization-config/series-chart
+ * {{navi-visualization-config/series-chart
  *    request=request
  *    response=response
  *    seriesConfig=seriesConfig
@@ -20,7 +20,7 @@ import { isArray } from '@ember/array';
 import { copy } from 'ember-copy';
 import { dataByDimensions } from 'navi-core/utils/data';
 import { getRequestMetrics } from 'navi-core/utils/chart-data';
-import layout from '../../templates/components/visualization-config/series-chart';
+import layout from '../../templates/components/navi-visualization-config/series-chart';
 import values from 'lodash/values';
 import reject from 'lodash/reject';
 
