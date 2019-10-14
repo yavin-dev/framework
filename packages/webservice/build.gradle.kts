@@ -1,7 +1,16 @@
+import groovy.json.JsonSlurper
+
+fun readVersion(): String {
+    val inputFile = File("${project.projectDir}/../../package.json")
+    val json = JsonSlurper().parseText(inputFile.readText()) as Map<*, *>
+    return json["version"] as String
+}
+val parentVersion = readVersion()
+
 allprojects {
-    group = "com.yahoo.navi.ws"
-    description = "webservice"
-    version = "1.0-SNAPSHOT"
+    group = "com.yahoo.navi"
+    description = "The persistence webservice for navi application data"
+    version = parentVersion
 }
 
 buildscript {
@@ -13,7 +22,7 @@ buildscript {
     }
 
     dependencies {
-        classpath(kotlin("gradle-plugin", version = "1.3.31"))
+        classpath(kotlin("gradle-plugin", version = "1.3.50"))
         classpath("org.jmailen.gradle:kotlinter-gradle:1.26.0")
     }
 }
@@ -21,7 +30,7 @@ buildscript {
 plugins {
     java
     base
-    kotlin("jvm") version "1.3.31" apply false
+    kotlin("jvm") version "1.3.50" apply false
     id("org.jmailen.kotlinter") version "1.26.0"
 }
 
@@ -40,8 +49,8 @@ subprojects {
     }
 
     dependencies {
-        implementation(kotlin("stdlib-jdk8", "1.3.31"))
-        implementation("com.yahoo.elide", "elide-standalone", "4.4.4")
+        implementation(kotlin("stdlib-jdk8", "1.3.50"))
+        implementation("com.yahoo.elide", "elide-standalone", "4.5.4")
         implementation("org.slf4j", "slf4j-api", "1.7.25")
         implementation("ch.qos.logback", "logback-core", "1.2.3")
         implementation("org.hibernate", "hibernate-validator", "4.0.2.GA")
