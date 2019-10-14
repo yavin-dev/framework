@@ -11,13 +11,11 @@ module.exports = {
   locals(options) {
     const dasherizedModuleName = dasherize(options.entity.name);
     const componentPathName = [options.path, dasherizedModuleName].filter(Boolean).join('/');
-    const friendlyTestDescription = [ 'Integration', 'Component', dasherizedModuleName ].join(' | ');
-
+    const friendlyTestDescription = ['Integration', 'Component', dasherizedModuleName].join(' | ');
     const selfCloseComponent = descriptor => `<${descriptor} />`;
-
     const componentName = invocationFor(options);
 
-    return  {
+    return {
       componentName,
       componentPathName,
       friendlyTestDescription,
