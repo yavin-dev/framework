@@ -112,16 +112,13 @@ open class Settings : ElideStandaloneSettings {
     }
 
     class SwaggerUIServlet : HttpServlet() {
-        override fun doGet(req: HttpServletRequest?, resp: HttpServletResponse?) {
-            requireNotNull(req) { "request was null" }
-            requireNotNull(resp) { "response was null" }
-
-            val file = req.requestURI.let {
+        override fun doGet(request: HttpServletRequest, response: HttpServletResponse) {
+            val file = request.requestURI.let {
                 if (!it.endsWith("/")) it else "${it}index.html"
             }
 
             javaClass.getResourceAsStream(file).use {
-                it.copyTo(resp.outputStream)
+                it.copyTo(response.outputStream)
             }
         }
     }
