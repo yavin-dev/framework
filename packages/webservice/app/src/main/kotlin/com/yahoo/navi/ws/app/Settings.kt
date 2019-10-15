@@ -29,6 +29,9 @@ import org.glassfish.hk2.api.ServiceLocator
 import java.io.IOException
 import java.util.Properties
 import java.util.TimeZone
+import javax.servlet.http.HttpServlet
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
 import kotlin.collections.HashMap
 
 open class Settings : ElideStandaloneSettings {
@@ -75,7 +78,7 @@ open class Settings : ElideStandaloneSettings {
         dictionary.bindEntity(DashboardWidget::class.java)
         dictionary.bindEntity(Report::class.java)
         dictionary.bindEntity(User::class.java)
-        val info = Info().title("Navi webservice").version("1.0")
+        val info = Info().title("Navi webservice").version("0.2.0")
 
         val builder = SwaggerBuilder(dictionary, info)
         val swagger = builder.build().basePath("/api/v1")
@@ -106,5 +109,20 @@ open class Settings : ElideStandaloneSettings {
     override fun updateServletContextHandler(servletContextHandler: ServletContextHandler?) {
         val holderPwd = ServletHolder("default", SwaggerUIServlet::class.java)
         servletContextHandler?.addServlet(holderPwd, "/")
+    }
+
+    class SwaggerUIServlet : HttpServlet() {
+        override fun doGet(req: HttpServletRequest?, resp: HttpServletResponse?) {
+            requireNotNull(req) { "request was null" }
+            requireNotNull(resp) { "response was null" }
+
+            val file = req.requestURI.let {
+                if (!it.endsWith("/")) it else "${it}index.html"
+            }
+
+            javaClass.getResourceAsStream(file).use {
+                it.copyTo(resp.outputStream)
+            }
+        }
     }
 }
