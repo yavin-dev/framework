@@ -5,7 +5,7 @@ import hbs from 'htmlbars-inline-precompile';
 import EmberObject from '@ember/object';
 
 let Template = hbs`
-  {{visualization-config/line-chart
+  {{navi-visualization-config/line-chart
     response=response
     request=request
     options=options

@@ -8,7 +8,7 @@ module('Integration | Component | visualization config/goal gauge', function(hoo
   setupRenderingTest(hooks);
 
   let Template = hbs`
-    {{visualization-config/goal-gauge
+    {{navi-visualization-config/goal-gauge
       response=response
       request=request
       options=options
@@ -16,7 +16,7 @@ module('Integration | Component | visualization config/goal gauge', function(hoo
     }}`;
 
   test('it renders', async function(assert) {
-    await render(hbs`{{visualization-config/goal-gauge}}`);
+    await render(hbs`{{navi-visualization-config/goal-gauge}}`);
 
     const headers = findAll('.goal-gauge-config__section-header').map(el => el.textContent.trim());
     assert.deepEqual(headers, ['Label', 'Baseline', 'Goal'], 'headers are displayed for goal gauge config');

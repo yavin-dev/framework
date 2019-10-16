@@ -9,7 +9,7 @@ import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 let MetadataService;
 
 let Template = hbs`
-  {{visualization-config/wrapper
+  {{navi-visualization-config/wrapper
     response=response
     request=request
     visualization=visualization
@@ -23,7 +23,7 @@ module('Integration | Component | visualization config/warpper', function(hooks)
   hooks.beforeEach(function() {
     // mocking viz-config component
     this.owner.register(
-      'component:visualization-config/mock',
+      'component:navi-visualization-config/mock',
       Component.extend({
         classNames: ['mock'],
         click() {
@@ -51,7 +51,7 @@ module('Integration | Component | visualization config/warpper', function(hooks)
     await render(Template);
 
     assert
-      .dom('.visualization-config .visualization-config__contents.mock')
+      .dom('.navi-visualization-config .navi-visualization-config__contents.mock')
       .exists('The Mock component is correctly rendered based on visualization type');
   });
 
@@ -64,6 +64,6 @@ module('Integration | Component | visualization config/warpper', function(hooks)
 
     await render(Template);
 
-    await run(() => click('.visualization-config .visualization-config__contents.mock'));
+    await run(() => click('.navi-visualization-config .navi-visualization-config__contents.mock'));
   });
 });

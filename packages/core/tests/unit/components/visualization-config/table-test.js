@@ -24,7 +24,7 @@ module('Unit | Component | table config', function(hooks) {
     assert.deepEqual(
       A(
         this.owner
-          .factoryFor('component:visualization-config/table')
+          .factoryFor('component:navi-visualization-config/table')
           .create({ request })
           .get('dimensions')
       ).mapBy('longName'),
