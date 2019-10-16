@@ -1,0 +1,27 @@
+/**
+ * Copyright 2019, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
+
+.navi-visualization-config {
+  border: 1px solid @navi-lighter-gray;
+  display: flex;
+  flex-flow: column;
+  flex: 1;
+  flex-basis: 0;
+  padding: 10px 5px;
+  overflow-y: auto;
+
+  &__contents {
+    display: flex;
+    flex-flow: column;
+    flex: 1;
+    flex-basis: 0;
+    min-height: 0;
+  }
+
+  &__warn-msg {
+    text-align: center;
+    padding: 10px;
+  }
+}
