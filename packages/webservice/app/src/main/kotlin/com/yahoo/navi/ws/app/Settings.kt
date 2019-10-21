@@ -4,23 +4,31 @@
  */
 package com.yahoo.navi.ws.app
 
-import com.yahoo.elide.standalone.config.ElideStandaloneSettings
+import com.yahoo.elide.ElideSettings
+import com.yahoo.elide.ElideSettingsBuilder
+import com.yahoo.elide.contrib.swagger.SwaggerBuilder
+import com.yahoo.elide.core.EntityDictionary
+import com.yahoo.elide.core.filter.dialect.RSQLFilterDialect
+import com.yahoo.elide.datastores.jpa.JpaDataStore
+import com.yahoo.elide.datastores.jpa.transaction.NonJtaTransaction
 import com.yahoo.elide.security.checks.Check
+import com.yahoo.elide.standalone.Util
+import com.yahoo.elide.standalone.config.ElideStandaloneSettings
 import com.yahoo.navi.ws.app.filters.CorsFilter
 import com.yahoo.navi.ws.app.filters.UserAuthFilter
 import com.yahoo.navi.ws.models.permissions.PermissionExpressions
-import com.yahoo.elide.core.filter.dialect.RSQLFilterDialect
-import com.yahoo.elide.ElideSettingsBuilder
-import com.yahoo.elide.core.EntityDictionary
+import io.swagger.models.Info
+import io.swagger.models.Swagger
+import org.eclipse.jetty.servlet.ServletContextHandler
+import org.eclipse.jetty.servlet.ServletHolder
 import org.glassfish.hk2.api.ServiceLocator
-import com.yahoo.elide.ElideSettings
-import com.yahoo.elide.standalone.Util
-import com.yahoo.elide.datastores.jpa.transaction.NonJtaTransaction
-import com.yahoo.elide.datastores.jpa.JpaDataStore
-import java.io.FileInputStream
 import java.io.IOException
-import java.util.TimeZone
-import java.util.Properties
+import java.lang.reflect.Modifier
+import java.util.*
+import javax.servlet.http.HttpServlet
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
+import kotlin.collections.HashMap
 
 open class Settings : ElideStandaloneSettings {
     override fun getElideSettings(injector: ServiceLocator): ElideSettings {
@@ -56,18 +64,58 @@ open class Settings : ElideStandaloneSettings {
         return "com.yahoo.navi.ws.models.beans"
     }
 
+    /**
+     * Runs swagger on <host>/swagger/doc/api
+     */
+    override fun enableSwagger(): Map<String, Swagger> {
+        val dictionary = EntityDictionary(HashMap())
+        Util.getAllEntities(modelPackageName)
+                .map(javaClass.classLoader::loadClass)
+                .filterNot { Modifier.isAbstract(it.modifiers) }
+                .forEach(dictionary::bindEntity)
+
+        val info = Info().title("Navi webservice").version("0.2.0")
+
+        val builder = SwaggerBuilder(dictionary, info)
+        val swagger = builder.build().basePath("/api/v1")
+
+        val docs = HashMap<String, Swagger>()
+        docs["api"] = swagger
+        return docs
+    }
+
+    /**
+     * Loads the hibernate.properties file
+     */
     fun loadHibernateProperties(): Properties {
-        // Load properties file
-        val path = "./src/main/resources/hibernate.properties"
+        val propertiesFile = "/hibernate.properties"
+
         val properties = Properties()
         try {
-            FileInputStream(path).use {
+            javaClass.getResourceAsStream(propertiesFile).use {
                 properties.load(it)
             }
 
             return properties
         } catch (e: IOException) {
-            throw RuntimeException("Could not load " + path, e)
+            throw RuntimeException("Could not load $propertiesFile", e)
+        }
+    }
+
+    override fun updateServletContextHandler(servletContextHandler: ServletContextHandler?) {
+        val holderPwd = ServletHolder("default", SwaggerUIServlet::class.java)
+        servletContextHandler?.addServlet(holderPwd, "/")
+    }
+
+    class SwaggerUIServlet : HttpServlet() {
+        override fun doGet(request: HttpServletRequest, response: HttpServletResponse) {
+            val file = request.requestURI.let {
+                if (!it.endsWith("/")) it else "${it}index.html"
+            }
+
+            javaClass.getResourceAsStream(file).use {
+                it.copyTo(response.outputStream)
+            }
         }
     }
 }
