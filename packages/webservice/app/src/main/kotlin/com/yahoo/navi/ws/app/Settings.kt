@@ -16,10 +16,6 @@ import com.yahoo.elide.standalone.Util
 import com.yahoo.elide.standalone.config.ElideStandaloneSettings
 import com.yahoo.navi.ws.app.filters.CorsFilter
 import com.yahoo.navi.ws.app.filters.UserAuthFilter
-import com.yahoo.navi.ws.models.beans.Dashboard
-import com.yahoo.navi.ws.models.beans.DashboardWidget
-import com.yahoo.navi.ws.models.beans.Report
-import com.yahoo.navi.ws.models.beans.User
 import com.yahoo.navi.ws.models.permissions.PermissionExpressions
 import io.swagger.models.Info
 import io.swagger.models.Swagger
@@ -27,8 +23,8 @@ import org.eclipse.jetty.servlet.ServletContextHandler
 import org.eclipse.jetty.servlet.ServletHolder
 import org.glassfish.hk2.api.ServiceLocator
 import java.io.IOException
-import java.util.Properties
-import java.util.TimeZone
+import java.lang.reflect.Modifier
+import java.util.*
 import javax.servlet.http.HttpServlet
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -73,11 +69,11 @@ open class Settings : ElideStandaloneSettings {
      */
     override fun enableSwagger(): Map<String, Swagger> {
         val dictionary = EntityDictionary(HashMap())
+        Util.getAllEntities(modelPackageName)
+                .map(javaClass.classLoader::loadClass)
+                .filterNot { Modifier.isAbstract(it.modifiers) }
+                .forEach(dictionary::bindEntity)
 
-        dictionary.bindEntity(Dashboard::class.java)
-        dictionary.bindEntity(DashboardWidget::class.java)
-        dictionary.bindEntity(Report::class.java)
-        dictionary.bindEntity(User::class.java)
         val info = Info().title("Navi webservice").version("0.2.0")
 
         val builder = SwaggerBuilder(dictionary, info)
