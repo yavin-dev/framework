@@ -93,10 +93,12 @@ export default Controller.extend(ReportToWidget, {
       const filters = get(dashboard, 'filters')
         .toArray()
         .map(fil => fil.serialize()); //Native array of serialized filters
+      const dimensionMeta = bardMetadata.getById('dimension', dimension.dimension);
       const filter = store
         .createFragment('bard-request/fragments/filter', {
-          dimension: bardMetadata.getById('dimension', dimension.dimension),
-          operator: 'in'
+          dimension: dimensionMeta,
+          operator: 'in',
+          field: dimensionMeta.primaryKeyFieldName
         })
         .serialize();
 
