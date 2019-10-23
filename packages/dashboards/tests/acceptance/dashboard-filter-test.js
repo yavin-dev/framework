@@ -136,8 +136,6 @@ module('Acceptance | Dashboard Filters', function(hooks) {
     assert
       .dom('.dashboard-filters-collapsed-filter__values')
       .matchesText(/[a-z ]+\(1\)/i, 'filter collapse display should show id and not key');
-
-    return new Promise(resolve => setTimeout(resolve, 5000));
   });
 
   test('dashboard filter query params - ui changes update the model', async function(assert) {
