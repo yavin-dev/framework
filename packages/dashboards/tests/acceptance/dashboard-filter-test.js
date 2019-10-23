@@ -104,6 +104,40 @@ module('Acceptance | Dashboard Filters', function(hooks) {
     );
   });
 
+  test('adding dimension with key primary id field creates correct request', async function(assert) {
+    await visit('/dashboards/1/view');
+
+    let dataRequests = [];
+
+    server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
+    server.pretender.handledRequest = (verb, url, req) => {
+      if (url.includes('/v1/data')) {
+        dataRequests.push(req);
+      }
+      return { rows: [] };
+    };
+
+    await click('.dashboard-filters__expand-button');
+    await click('.dashboard-filters-expanded__add-filter-button');
+
+    await selectChoose('.dashboard-dimension-selector', 'Multi System Id');
+
+    await fillIn('.filter-builder-dimension__values input', '1');
+    await selectChoose('.filter-builder-dimension__values', '.item-row', 0);
+
+    assert.ok(
+      dataRequests.every(request => request.queryParams.filters == 'multiSystemId|key-in[k1]'),
+      'each widget request has the filter added using the key field'
+    );
+    assert.equal(dataRequests.length, 3, 'three data requests were made (one for each widget)');
+
+    await click('.dashboard-filters__expand-button');
+
+    assert
+      .dom('.dashboard-filters-collapsed-filter__values')
+      .matchesText(/[a-z ]+\(1\)/i, 'filter collapse display should show id and not key');
+  });
+
   test('dashboard filter query params - ui changes update the model', async function(assert) {
     assert.expect(12);
 
