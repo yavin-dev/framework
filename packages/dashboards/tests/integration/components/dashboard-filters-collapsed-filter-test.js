@@ -2,9 +2,16 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 module('Integration | Component | dashboard filters collapsed filter', function(hooks) {
   setupRenderingTest(hooks);
+  setupMirage(hooks);
+
+  hooks.beforeEach(function() {
+    const MetadataService = this.owner.lookup('service:bard-metadata');
+    return MetadataService.loadMetadata();
+  });
 
   test('it renders', async function(assert) {
     this.filter = {
@@ -109,7 +116,7 @@ module('Integration | Component | dashboard filters collapsed filter', function(
     assert.dom(this.element).hasText('Property noop Something (1), ValueDesc (2)', 'falsy ops are rendered as "noop"');
   });
 
-  test('it respects the field provided by the filter', async function(assert) {
+  test('it respects the field provided by meta data', async function(assert) {
     this.filter = {
       dimension: {
         name: 'property',
@@ -120,7 +127,8 @@ module('Integration | Component | dashboard filters collapsed filter', function(
       rawValues: ['property|4', 'property|7', 'property|9'],
       values: [
         { key: 'property|7', id: 'property|4', description: 'Something' },
-        { key: 'property|4', id: 'property|7', description: 'ValueDesc' }
+        { key: 'property|4', id: 'property|7', description: 'ValueDesc' },
+        { key: 'property|9', id: 'property|9' }
       ]
     };
 
@@ -130,8 +138,8 @@ module('Integration | Component | dashboard filters collapsed filter', function(
     assert
       .dom(this.element)
       .hasText(
-        'property equals ValueDesc (property|4), Something (property|7), property|9',
-        'when field = "key" rawValues are matched against key prop, not id'
+        'property equals ValueDesc (property|7), Something (property|4), property|9',
+        'when field = "key" rawValues are matched against id prop, not key'
       );
   });
 });
