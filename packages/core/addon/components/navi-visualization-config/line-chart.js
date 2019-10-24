@@ -17,7 +17,6 @@ import { readOnly } from '@ember/object/computed';
 import { getOwner } from '@ember/application';
 import { copy } from 'ember-copy';
 import layout from '../../templates/components/navi-visualization-config/line-chart';
-import { featureFlag } from 'navi-core/helpers/feature-flag';
 
 export default Component.extend({
   layout,
@@ -41,10 +40,6 @@ export default Component.extend({
    * @property {Boolean} showStackOption - whether to display the `stacked` toggle
    */
   showStackOption: computed('type', 'request', function() {
-    if (!featureFlag('enableChartStacking')) {
-      return false;
-    }
-
     const type = get(this, 'type'),
       request = get(this, 'request'),
       visualizationManifest = getOwner(this).lookup(`navi-visualization-manifest:${type}`);
