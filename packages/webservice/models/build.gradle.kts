@@ -46,6 +46,14 @@ publishing {
 
 }
 
+tasks {
+    "artifactoryPublish" {
+        doFirst {
+            version = "$version-SNAPSHOT"
+        }
+    }
+}
+
 // Config for snapshot deploys
 artifactory {
     setContextUrl("https://oss.jfrog.org")
@@ -53,9 +61,8 @@ artifactory {
     publish(closureOf<PublisherConfig> {
         repository(closureOf<DoubleDelegateWrapper> {
             this.invokeMethod("setRepoKey", "oss-snapshot-local")
-            this.invokeMethod("setUsername", System.getenv("BINTRAY_USER"))
-            this.invokeMethod("setPassword", System.getenv("BINTRAY_KEY"))
-
+            this.invokeMethod("setUsername", System.getenv("ARTIFACTORY_USER"))
+            this.invokeMethod("setPassword", System.getenv("ARTIFACTORY_KEY"))
         })
         defaults(closureOf<ArtifactoryTask> {
             publications("models")

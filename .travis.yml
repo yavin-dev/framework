@@ -59,3 +59,7 @@ jobs:
       name: 'GitHub Pages'
       node_js: '8'
       if: branch = master AND repo = yahoo/navi AND type = push
+    - script: bash ./scripts/artifactory-publish.sh
+      name: 'Artifactory'
+      node_js: '8'
+      if: branch = master AND repo = yahoo/navi AND type = push
