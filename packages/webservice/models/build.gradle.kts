@@ -47,9 +47,12 @@ publishing {
 }
 
 tasks {
-    "artifactoryPublish" {
+    "generatePomFileForModelsPublication" {
         doFirst {
-            version = "$version-SNAPSHOT"
+            if(project.gradle.taskGraph.hasTask(":models:artifactoryPublish")) {
+                version = "$version-SNAPSHOT"
+                println("Overriding version as $version for artifactory")
+            }
         }
     }
 }
