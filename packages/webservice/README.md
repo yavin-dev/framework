@@ -4,7 +4,7 @@ The webservice that powers navi's persistence
 
 # Installation
 
-Latest models version: [ ![Download](https://api.bintray.com/packages/yahoo/maven/navi/images/download.svg) ](https://bintray.com/yahoo/maven/navi/_latestVersion)
+Latest models release: [ ![Download](https://api.bintray.com/packages/yahoo/maven/navi/images/download.svg) ](https://bintray.com/yahoo/maven/navi/_latestVersion)
 
 We provide a collection of models to use with [Elide](https://github.com/yahoo/elide) (check out the [demo app](./app) for usage)
 
@@ -28,6 +28,20 @@ compile 'com.yahoo.navi:models:0.2.0'
 ```
 
 </details>
+
+---
+
+You can also try the latest builds using the `0.2.0-SNAPSHOT` version by adding the snapshot repo
+
+_build.gradle.kts_
+
+```
+repositories {
+    maven {
+        url = uri("https://oss.jfrog.org/artifactory/oss-snapshot-local")
+    }
+}
+```
 
 # Running
 
