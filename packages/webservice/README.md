@@ -8,7 +8,7 @@ We provide a collection of models to use with [Elide](https://github.com/yahoo/e
 
 _You can also try the latest builds with `0.2.0-SNAPSHOT` version_
 
-### <details open=true><summary>Gradle</summary>
+<details open=true><summary><strong>Gradle</strong></summary>
 
 ```
 repositories {
@@ -37,7 +37,7 @@ implementation('com.yahoo.navi:models:0.2.0-SNAPSHOT')
 </details></blockquote>
 </details>
 
-### <details><summary>Maven</summary>
+<details><summary><strong>Maven</strong></summary>
 
 ```xml
 <repository>
