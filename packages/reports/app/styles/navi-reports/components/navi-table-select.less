@@ -3,40 +3,35 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 .navi-table-select {
-  &__header {
-    font-size: @font-size-mid-base;
-    font-family: @font-family-strong;
-    height: 17px;
-    margin-top: 3px;
-    margin-bottom: 3px;
-    text-transform: uppercase;
+  &.report-builder__container--table {
+    padding: 0;
   }
 
   &__dropdown {
+    align-items: center;
+    display: flex;
     flex: 1;
-    padding-left: 14px;
 
     .ember-power-select-trigger,
     .ember-power-select-trigger:focus {
+      align-items: center;
       border: 0;
+      display: flex;
       font-size: 14px;
-      height: 24px;
+      flex: 1;
+      height: 100%;
 
-      .ember-tooltip-target {
-        margin-left: 18px;
+      &[aria-expanded='true'] {
+        border: 1px solid #aaaaaa;
       }
     }
   }
 
-  &__dropdown-list {
+  &__dropdown-list.ember-power-select-dropdown {
     font-size: 14px;
 
     .ember-power-select-option span {
       display: flex;
     }
   }
-}
-
-.navi-table-select-tooltip {
-  left: 5px !important;
 }

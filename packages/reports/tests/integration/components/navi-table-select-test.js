@@ -19,21 +19,20 @@ module('Integration | Component | navi table select', function(hooks) {
       this.set('selected', value);
     });
 
-    await render(hbs`{{navi-table-select
-            selected=selected
-            options=options
-            onChange=onChange
-        }}`);
+    await render(hbs`
+        <NaviTableSelect
+            @selected={{selected}}
+            @options={{options}}
+            @onChange={{onChange}}
+        />`);
   });
 
   test('it renders', async function(assert) {
     assert.expect(2);
 
-    assert.dom('.navi-table-select__header').hasText('Table', 'The header text equals `table`');
+    assert.dom('.navi-table-select-trigger__label').hasText('Table', 'The header text equals `table`');
 
-    assert
-      .dom('.navi-table-select__dropdown .ember-power-select-trigger span')
-      .hasText('network', 'The selected item equals `network`');
+    assert.dom('.navi-table-select-trigger__item').hasText('network', 'The selected item equals `network`');
   });
 
   test('trigger dropdown', async function(assert) {
@@ -52,9 +51,7 @@ module('Integration | Component | navi table select', function(hooks) {
 
     await clickTrigger();
     await nativeMouseUp($('.ember-power-select-option:contains(network2)')[0]);
-    assert
-      .dom('.navi-table-select__dropdown .ember-power-select-trigger span')
-      .hasText('network2', 'The selected item equals `network2`');
+    assert.dom('.navi-table-select-trigger__item').hasText('network2', 'The selected item equals `network2`');
   });
 
   test('enable search', async function(assert) {
