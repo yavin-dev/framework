@@ -20,7 +20,7 @@ repositories {
 implementation('com.yahoo.navi:models:0.2.0')
 ```
 
-> <details><summary>Snapshot build</summary>
+<blockquote><details><summary>Snapshot build</summary>
 
 ```
 repositories {
@@ -34,7 +34,7 @@ repositories {
 implementation('com.yahoo.navi:models:0.2.0-SNAPSHOT')
 ```
 
-</details>
+</details></blockquote>
 </details>
 
 ### <details><summary>Maven</summary>
@@ -58,7 +58,7 @@ implementation('com.yahoo.navi:models:0.2.0-SNAPSHOT')
 </dependency>
 ```
 
-> <details><summary>Snapshot build</summary>
+<blockquote><details><summary>Snapshot build</summary>
 
 ```xml
 <repository>
@@ -76,7 +76,7 @@ implementation('com.yahoo.navi:models:0.2.0-SNAPSHOT')
 </dependency>
 ```
 
-</details>
+</details></blockquote>
 </details>
 
 # Running
