@@ -2,46 +2,82 @@
 
 The webservice that powers navi's persistence
 
-# Installation
-
-Latest models release: [ ![Download](https://api.bintray.com/packages/yahoo/maven/navi/images/download.svg) ](https://bintray.com/yahoo/maven/navi/_latestVersion)
-
 We provide a collection of models to use with [Elide](https://github.com/yahoo/elide) (check out the [demo app](./app) for usage)
+
+# Installation [ ![Download](https://api.bintray.com/packages/yahoo/maven/navi/images/download.svg) ](https://bintray.com/yahoo/maven/navi/_latestVersion)
+
+_You can also try the latest builds with `0.2.0-SNAPSHOT` version_
 
 <details open=true><summary>Gradle</summary>
 
 ```
-compile 'com.yahoo.navi:models:0.2.0'
+repositories {
+    jcenter()
+}
+```
+
+```
+implementation('com.yahoo.navi:models:0.2.0')
+```
+
+<details><summary>Snapshot build</summary>
+
+```
+repositories {
+    maven {
+        url "https://oss.jfrog.org/artifactory/oss-snapshot-local"
+    }
+}
+```
+
+```
+implementation('com.yahoo.navi:models:0.2.0-SNAPSHOT')
 ```
 
 </details>
+</details>
 
 <details><summary>Maven</summary>
+
+```xml
+<repository>
+    <snapshots>
+        <enabled>false</enabled>
+    </snapshots>
+    <id>central</id>
+    <name>bintray</name>
+    <url>https://jcenter.bintray.com</url>
+</repository>
+```
 
 ```xml
 <dependency>
   <groupId>com.yahoo.navi</groupId>
   <artifactId>models</artifactId>
   <version>0.2.0</version>
-  <type>pom</type>
+</dependency>
+```
+
+<details><summary>Snapshot build</summary>
+
+```xml
+<repository>
+    <id>oss-snapshot-local</id>
+    <name>oss-snapshot-local</name>
+    <url>https://oss.jfrog.org/artifactory/oss-snapshot-local</url>
+</repository>
+```
+
+```xml
+<dependency>
+  <groupId>com.yahoo.navi</groupId>
+  <artifactId>models</artifactId>
+  <version>0.2.0-SNAPSHOT</version>
 </dependency>
 ```
 
 </details>
-
----
-
-You can also try the latest builds using the `0.2.0-SNAPSHOT` version by adding the snapshot repo
-
-_build.gradle.kts_
-
-```
-repositories {
-    maven {
-        url = uri("https://oss.jfrog.org/artifactory/oss-snapshot-local")
-    }
-}
-```
+</details>
 
 # Running
 
