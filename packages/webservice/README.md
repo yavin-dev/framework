@@ -17,7 +17,9 @@ repositories {
 ```
 
 ```
-implementation('com.yahoo.navi:models:0.2.0')
+dependencies {
+    implementation("com.yahoo.navi:models:0.2.0")
+}
 ```
 
 <blockquote><details><summary>Snapshot build</summary>
@@ -31,7 +33,9 @@ repositories {
 ```
 
 ```
-implementation('com.yahoo.navi:models:0.2.0-SNAPSHOT')
+dependencies {
+    implementation("com.yahoo.navi:models:0.2.0-SNAPSHOT")
+}
 ```
 
 </details></blockquote>
@@ -40,40 +44,48 @@ implementation('com.yahoo.navi:models:0.2.0-SNAPSHOT')
 <details><summary><strong>Maven</strong></summary>
 
 ```xml
-<repository>
-    <snapshots>
-        <enabled>false</enabled>
-    </snapshots>
-    <id>central</id>
-    <name>bintray</name>
-    <url>https://jcenter.bintray.com</url>
-</repository>
+<repositories>
+    <repository>
+        <snapshots>
+            <enabled>false</enabled>
+        </snapshots>
+        <id>central</id>
+        <name>bintray</name>
+        <url>https://jcenter.bintray.com</url>
+    </repository>
+</repositories>
 ```
 
 ```xml
-<dependency>
-  <groupId>com.yahoo.navi</groupId>
-  <artifactId>models</artifactId>
-  <version>0.2.0</version>
-</dependency>
+<dependencies>
+    <dependency>
+      <groupId>com.yahoo.navi</groupId>
+      <artifactId>models</artifactId>
+      <version>0.2.0</version>
+    </dependency>
+</dependencies>
 ```
 
 <blockquote><details><summary>Snapshot build</summary>
 
 ```xml
-<repository>
-    <id>oss-snapshot-local</id>
-    <name>oss-snapshot-local</name>
-    <url>https://oss.jfrog.org/artifactory/oss-snapshot-local</url>
-</repository>
+<repositories>
+    <repository>
+        <id>oss-snapshot-local</id>
+        <name>oss-snapshot-local</name>
+        <url>https://oss.jfrog.org/artifactory/oss-snapshot-local</url>
+    </repository>
+</repositories>
 ```
 
 ```xml
-<dependency>
-  <groupId>com.yahoo.navi</groupId>
-  <artifactId>models</artifactId>
-  <version>0.2.0-SNAPSHOT</version>
-</dependency>
+<dependencies>
+    <dependency>
+      <groupId>com.yahoo.navi</groupId>
+      <artifactId>models</artifactId>
+      <version>0.2.0-SNAPSHOT</version>
+    </dependency>
+</dependencies>
 ```
 
 </details></blockquote>
