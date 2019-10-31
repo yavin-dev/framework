@@ -2,19 +2,57 @@
  * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
+@grouped-list-icon-width: 12px;
+
 .grouped-list {
-  color: @navi-gray-500;
+  color: @denali-grey-800;
   font-size: @font-size-mid-base;
 
   &__group-header {
-    text-transform: capitalize;
     margin: 2px 0;
+
+    span {
+      font-family: @font-family-sans-serif; // override icon font
+      text-transform: capitalize;
+    }
+
+    &::-webkit-details-marker {
+      display: none; // hide default <summary> marker in Chrome
+    }
+
+    &::marker {
+      content: ''; // hide default <summary> marker in FF
+    }
+
+    &:before {
+      // mimic <NaviIcon @icon="fa-angle-right" /> or class="fa fa-angle-right"
+      content: '\f105';
+      display: inline-block;
+      margin-left: 2px;
+      width: 8px;
+    }
+  }
+
+  &__group[open] &__group-header:before {
+    // mimic <NaviIcon @icon="fa-angle-down" /> or class="fa fa-angle-down"
+    content: '\f107';
+    margin-left: 0;
+    width: 10px;
   }
 
   &__item {
     display: flex;
     margin-left: 15px;
     font-size: @font-size-mid;
+
+    &-container {
+      display: flex;
+      flex: 1;
+
+      &--selected {
+        background-color: @denali-brand-100;
+      }
+    }
 
     &-label {
       .clickable;
@@ -29,6 +67,66 @@
 
     &:hover &-info {
       display: initial;
+    }
+  }
+
+  &__add-icon {
+    color: @denali-brand-600;
+    cursor: pointer;
+    display: inline-block;
+    font-size: @font-size-base;
+    margin: 2px 5px 0 0;
+
+    &--deselected:not(:hover) {
+      opacity: 0.5;
+    }
+  }
+
+  &__icon-set {
+    align-items: center;
+    display: flex;
+    margin: 0 10px 0 auto;
+  }
+
+  &__filter {
+    cursor: pointer;
+    display: block;
+    margin: 0 (@grouped-list-icon-width / 2) 3px (@grouped-list-icon-width / 2);
+    position: relative;
+    width: @grouped-list-icon-width;
+
+    span {
+      opacity: 0.5;
+    }
+
+    span,
+    span:before,
+    span:after {
+      background: @denali-brand-600;
+      content: '';
+      display: block;
+      height: 2px;
+      position: absolute;
+      width: @grouped-list-icon-width * 3 / 4;
+    }
+
+    span:before {
+      top: -4px;
+      width: @grouped-list-icon-width;
+    }
+
+    span:after {
+      bottom: -4px;
+      width: @grouped-list-icon-width / 2;
+    }
+
+    &:hover,
+    &--active {
+      span,
+      span:before,
+      span:after {
+        opacity: 1;
+      }
     }
   }
 }

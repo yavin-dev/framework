@@ -37,12 +37,11 @@ export default EmberObject.extend({
    */
   _buildDimensionsPath(request /*options*/) {
     let dimensions = array(get(request, 'dimensions'));
-
-    if (dimensions.length) {
-      return `/${dimensions.mapBy('dimension').join('/')}`;
-    } else {
-      return '';
-    }
+    return dimensions.length
+      ? `/${array(dimensions.mapBy('dimension'))
+          .uniq()
+          .join('/')}`
+      : '';
   },
 
   /**
@@ -72,8 +71,8 @@ export default EmberObject.extend({
    * @return {String} metrics param value
    */
   _buildMetricsParam(request) {
-    return array(get(request, 'metrics'))
-      .map(canonicalizeMetric)
+    return array((get(request, 'metrics') || []).map(canonicalizeMetric))
+      .uniq()
       .join(',');
   },
 

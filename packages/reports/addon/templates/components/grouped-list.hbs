@@ -1,7 +1,9 @@
 {{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{#each-in groupedItems as | group items |}}
   <details class="grouped-list__group" open={{shouldOpenAllGroups}}>
-    <summary class="grouped-list__group-header">{{group}} ({{items.length}})</summary>
+    <summary class="fa grouped-list__group-header">
+      <span>{{group}} ({{items.length}})</span>
+    </summary>
     <ul>
       {{#each items as |item|}}
         <li class="grouped-list__item">

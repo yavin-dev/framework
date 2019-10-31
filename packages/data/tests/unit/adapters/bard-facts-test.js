@@ -103,6 +103,15 @@ module('Unit | Bard facts Adapter', function(hooks) {
       '_buildDimensionsPath built the correct string for many dimensions'
     );
 
+    let duplicateDims = {
+      dimensions: [{ dimension: 'd1' }, { dimension: 'd2' }, { dimension: 'd1' }]
+    };
+    assert.equal(
+      Adapter._buildDimensionsPath(duplicateDims),
+      '/d1/d2',
+      '_buildDimensionsPath built the correct string for duplicate dimensions'
+    );
+
     let noDims = {};
     assert.equal(
       Adapter._buildDimensionsPath(noDims),
@@ -152,6 +161,21 @@ module('Unit | Bard facts Adapter', function(hooks) {
       Adapter._buildMetricsParam(manyMetrics),
       'm1,m2',
       '_buildMetricsParam built the correct string for many metrics'
+    );
+
+    let duplicateMetrics = {
+      metrics: [
+        { metric: 'm1' },
+        { metric: 'm2' },
+        { metric: 'm1' },
+        { metric: 'r', parameters: { p: '123', as: 'm1' } },
+        { metric: 'r', parameters: { p: '123', as: 'm2' } }
+      ]
+    };
+    assert.equal(
+      Adapter._buildMetricsParam(duplicateMetrics),
+      'm1,m2,r(p=123)',
+      '_buildMetricsParam built the correct string for duplicate metrics'
     );
   });
 

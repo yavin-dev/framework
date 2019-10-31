@@ -23,7 +23,6 @@
         class=(concat "report-builder__container report-builder__metric-selector" (if disabled " report-builder__container--disabled" ""))
         request=request
         onAddMetric=(update-report-action "ADD_METRIC")
-        onAddMetricWithParameter=(update-report-action "ADD_METRIC_WITH_PARAM")
         onRemoveMetric=(update-report-action "REMOVE_METRIC")
         onToggleMetricFilter=(update-report-action "TOGGLE_METRIC_FILTER")
       }}
@@ -34,7 +33,7 @@
   {{#if hasValidLogicalTable}}
     <div class={{concat "report-builder__container report-builder__container--filters" (if disabled " report-builder__container--disabled" "")}}>
       <span class="report-builder__container-header">
-        <span class="report-builder__container-header__title">FILTERS</span>
+        <h3 class="report-builder__container-header__title">Filters</h3>
         <span class="report-builder__container-header__message">
           Click the icon {{navi-icon "filter" class="report-builder__container-header__message--icon"}} next to a dimension/metric to add a filter.
         </span>

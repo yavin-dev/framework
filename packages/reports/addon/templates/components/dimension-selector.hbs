@@ -13,26 +13,37 @@
       sortByField=(unless areItemsFiltered "longName")
       as | item |
   }}
-    <label class="grouped-list__item-label">
-      <input class="checkbox-selector__checkbox" type="checkbox" onchange={{action "itemClicked" item}} checked={{get itemsChecked item.name}}>
-      {{item.longName}}
-    </label>
-    {{#unless (eq item.category "Time Grain")}}
-      {{#navi-icon "question-circle-o" class="grouped-list__item-info"}}
-        {{#ember-tooltip side="right" popperContainer="body" effect="none"}}
-          {{#if item.extended.isPending}}
-            {{navi-loading-message}}
-          {{else}}
-            {{or item.extended.content.description "No description available"}}
-          {{/if}}
-        {{/ember-tooltip}}
-      {{/navi-icon}}
+    {{#if (eq item.category "Time Grain")}}
+      <label class="grouped-list__item-label">
+        <input class="checkbox-selector__checkbox" type="checkbox" onchange={{action "itemClicked" item}} checked={{get itemsChecked item.name}}>
+        {{item.longName}}
+      </label>
+    {{else}}
+      <div class="grouped-list__item-container {{if (and (get itemsChecked item.name) enableRequestPreview) "grouped-list__item-container--selected"}}">
+        <NaviIcon
+          @icon={{if (and (get itemsChecked item.name) (not enableRequestPreview)) "minus-circle" "plus-circle"}}
+          class="grouped-list__add-icon {{if (not (or enableRequestPreview (get itemsChecked item.name))) "grouped-list__add-icon--deselected"}}"
+          onclick={{action "itemClicked" item}} />
+        {{item.longName}}
 
-      {{navi-icon
-        "filter"
-        class=(concat (if (get dimensionsFiltered item.name) "checkbox-selector__filter--active ") "checkbox-selector__filter")
-        click=(action onToggleDimFilter item)
-      }}
-    {{/unless}}
+        <NaviIcon @icon="question-circle-o" class="grouped-list__item-info">
+          <EmberTooltip @side="right" @popperContainer="body" @effect="none">
+            {{#if item.extended.isPending}}
+              {{navi-loading-message}}
+            {{else}}
+              {{or item.extended.content.description "No description available"}}
+            {{/if}}
+          </EmberTooltip>
+        </NaviIcon>
+
+        <div class="grouped-list__icon-set">
+          <a
+            class={{concat (if (get dimensionsFiltered item.name) "grouped-list__filter--active ") "grouped-list__filter"}}
+            onclick={{action onToggleDimFilter item}}>
+            <span></span>
+          </a>
+        </div>
+      </div>
+    {{/if}}
   {{/grouped-list}}
 {{/navi-list-selector}}

@@ -1,6 +1,6 @@
 {{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="navi-list-selector__header">
-  <span class="navi-list-selector__title" title={{title}}>{{title}}</span>
+  <h3 class="navi-list-selector__title" title={{title}}>{{title}}</h3>
   <a class="navi-list-selector__show-link" onclick={{toggle "showSelected" this}} role="button">
     {{#if showSelected}}
       Show All
@@ -12,10 +12,10 @@
 <div class="navi-list-selector__search">
   {{navi-icon "search" class="navi-list-selector__search-icon"}}
   {{input
-    placeholder=(concat "Search " (capitalize title)) 
-    value=query 
-    autocomplete=false 
-    spellcheck=false 
+    placeholder=(concat "Search " (capitalize title))
+    value=query
+    autocomplete=false
+    spellcheck=false
     class="navi-list-selector__search-input"
   }}
   {{navi-icon "times-circle" class="navi-list-selector__search-input-clear" click=(action (set this "query" undefined))}}

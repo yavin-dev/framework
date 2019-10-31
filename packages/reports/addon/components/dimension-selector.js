@@ -19,6 +19,7 @@ import Component from '@ember/component';
 import { getWithDefault, set, get, computed } from '@ember/object';
 import { A as arr } from '@ember/array';
 import layout from '../templates/components/dimension-selector';
+import { featureFlag } from 'navi-core/helpers/feature-flag';
 
 export default Component.extend({
   layout,
@@ -118,14 +119,29 @@ export default Component.extend({
       }, {});
   }),
 
+  /**
+   * @property {Boolean} enableRequestPreview
+   */
+  enableRequestPreview: computed(function() {
+    return featureFlag('enableRequestPreview');
+  }),
+
   actions: {
     /*
      * @action itemClicked
      * @param {Object} item
      */
     itemClicked(item) {
-      const type = get(item, 'category') === 'Time Grain' ? 'TimeGrain' : 'Dimension';
-      const action = get(this, 'itemsChecked')[get(item, 'name')] ? 'Remove' : 'Add';
+      const type = get(item, 'category') === 'Time Grain' ? 'TimeGrain' : 'Dimension',
+        enableRequestPreview = get(this, 'enableRequestPreview');
+      let action;
+
+      if (enableRequestPreview && type === 'Dimension') {
+        action = 'Add';
+      } else {
+        action = get(this, 'itemsChecked')[get(item, 'name')] ? 'Remove' : 'Add';
+      }
+
       const handler = get(this, `on${action}${type}`);
 
       if (handler) handler(item);

@@ -15,6 +15,7 @@ import { copy } from 'ember-copy';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 import Fragment from 'ember-data-model-fragments/fragment';
 import { fragment, fragmentArray } from 'ember-data-model-fragments/attributes';
+import { featureFlag } from 'navi-core/helpers/feature-flag';
 
 const Validations = buildValidations({
   logicalTable: [
@@ -100,8 +101,13 @@ export default Fragment.extend(Validations, {
    * @returns {Void}
    */
   addMetric(requestMetric) {
-    let metrics = get(this, 'metrics'),
-      metricMetadata = get(requestMetric, 'metric'),
+    let metrics = get(this, 'metrics');
+
+    if (featureFlag('enableRequestPreview')) {
+      return metrics.createFragment(requestMetric);
+    }
+
+    let metricMetadata = get(requestMetric, 'metric'),
       metricDoesntExist = isEmpty(metrics.findBy('metric', metricMetadata));
 
     //check if metric with parameter exists when metric hasParameters
@@ -248,7 +254,7 @@ export default Fragment.extend(Validations, {
       newDimension = get(dimensionObj, 'dimension'),
       existingDimension = dimensions.findBy('dimension', newDimension);
 
-    if (!existingDimension) {
+    if (!existingDimension || featureFlag('enableRequestPreview')) {
       dimensions.createFragment(dimensionObj);
     }
   },
