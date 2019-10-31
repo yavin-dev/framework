@@ -12,13 +12,7 @@
         @popperContainer="body"
         @effect="none"
         @tooltipClass="navi-table-select-tooltip"
-      >
-        {{#if item.extended.isPending}}
-          <NaviLoadingMessage />
-        {{else}}
-          {{or item.extended.content.description "No description available"}}
-        {{/if}}
-      </EmberTooltip>
+      />
     </NaviIcon>
   {{/if}}
 </div>
