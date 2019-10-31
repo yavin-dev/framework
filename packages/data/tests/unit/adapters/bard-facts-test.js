@@ -5,6 +5,7 @@ import config from 'ember-get-config';
 import { assign } from '@ember/polyfills';
 
 const HOST = config.navi.dataSources[0].uri;
+const HOST2 = config.navi.dataSources[1].uri;
 
 const TestRequest = {
     logicalTable: {
@@ -594,7 +595,7 @@ module('Unit | Bard facts Adapter', function(hooks) {
   });
 
   test('urlForFindQuery', function(assert) {
-    assert.expect(5);
+    assert.expect(6);
 
     assert.equal(
       decodeURIComponent(Adapter.urlForFindQuery(TestRequest)),
@@ -644,6 +645,15 @@ module('Unit | Bard facts Adapter', function(hooks) {
         'metrics=m1,m2,r(p=123)&filters=d3|id-in[v1,v2],d4|id-in[v3,v4],d5|id-notin[""]&having=m1-gt[0]&' +
         'format=json&_cache=false',
       'urlForFindQuery correctly built the URL for the provided request with the cache option'
+    );
+
+    assert.equal(
+      decodeURIComponent(Adapter.urlForFindQuery(TestRequest, { dataSourceName: 'blockhead' })),
+      HOST2 +
+        '/v1/data/table1/grain1/d1/d2/?dateTime=2015-01-03/2015-01-04&' +
+        'metrics=m1,m2,r(p=123)&filters=d3|id-in[v1,v2],d4|id-in[v3,v4],d5|id-notin[""]&having=m1-gt[0]&' +
+        'format=json',
+      'uriForFindQuery renders alternative host name if option is given'
     );
   });
 
@@ -726,5 +736,17 @@ module('Unit | Bard facts Adapter', function(hooks) {
         baz: 'qux'
       }
     });
+  });
+
+  test('fetchDataForRequest with alternative datasource', function(assert) {
+    assert.expect(1);
+
+    Server.get(`${HOST2}/v1/data/table1/grain1/d1/d2/`, request => {
+      assert.ok(request.url.startsWith(HOST2), 'Alternative host was accessed');
+
+      return MockBardResponse;
+    });
+
+    return Adapter.fetchDataForRequest(TestRequest, { dataSourceName: 'blockhead' });
   });
 });
