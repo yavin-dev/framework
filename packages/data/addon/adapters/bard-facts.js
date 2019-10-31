@@ -1,12 +1,12 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Description: The adapter for the bard-facts model.
  */
 
 import { deprecate } from '@ember/application/deprecations';
-import { assert } from '@ember/debug';
+import { assert, warn } from '@ember/debug';
 import { inject as service } from '@ember/service';
 import { A as array } from '@ember/array';
 import { assign } from '@ember/polyfills';
@@ -15,8 +15,6 @@ import config from 'ember-get-config';
 import { canonicalizeMetric, getAliasedMetrics, canonicalizeAlias } from '../utils/metric';
 
 const SORT_DIRECTIONS = ['desc', 'asc'];
-
-const FACT_HOST = config.navi.dataSources[0].uri;
 
 export default EmberObject.extend({
   /**
@@ -175,6 +173,27 @@ export default EmberObject.extend({
   },
 
   /**
+   * Gets host by name in [{name: String, uri: String}]
+   * config datastructure in config.navi.dataSources.
+   *
+   * @private
+   * @param {String} name - name of host to get
+   * @returns {String} - uri of fact datasource to use
+   */
+  _getHost(name) {
+    if (name) {
+      const host = config.navi.dataSources.find(dataSource => dataSource.name === name);
+      if (host && host.uri) {
+        return host.uri;
+      }
+      warn(`Fact host for ${name} requested but none was found in configuration. Falling back to default`, {
+        id: 'navi-fact-host-not-configured'
+      });
+    }
+    return config.navi.dataSources[0].uri;
+  },
+
+  /**
    * Builds a URL path for a request
    *
    * @method _buildURLPath
@@ -183,7 +202,7 @@ export default EmberObject.extend({
    * @return {String} URL Path
    */
   _buildURLPath(request, options) {
-    let host = FACT_HOST,
+    let host = this._getHost(getWithDefault(options || {}, 'dataSourceName', 'facts')),
       namespace = get(this, 'namespace'),
       table = get(request, 'logicalTable.table'),
       timeGrain = get(request, 'logicalTable.timeGrain'),
@@ -269,8 +288,9 @@ export default EmberObject.extend({
     let decoratedRequest = this._decorate(request),
       path = this._buildURLPath(decoratedRequest, options),
       query = this._buildQuery(decoratedRequest, options),
-      queryStr = Object.entries(query).map(([key, value]) =>
-        `${encodeURIComponent(key)}=${encodeURIComponent(value)}`).join('&');
+      queryStr = Object.entries(query)
+        .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+        .join('&');
 
     return `${path}?${queryStr}`;
   },
