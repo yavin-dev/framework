@@ -21,12 +21,3 @@
   </div>
 {{/if}}
 {{yield}}
-{{#if (eq seriesType "dimension")}}
-  {{chart-series-collection
-      allSeriesData=allSeriesData
-      selectedSeriesData=selectedSeriesData
-      seriesDimensions=dimensions
-      onRemoveSeries=(action "onRemoveSeries")
-      onAddSeries=(action "onAddSeries")
-  }}
-{{/if}}
