@@ -5,7 +5,7 @@ import { render, find, fillIn, blur } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 let Template = hbs`
-  {{visualization-config/metric-label
+  {{navi-visualization-config/metric-label
     response=response
     request=request
     options=options

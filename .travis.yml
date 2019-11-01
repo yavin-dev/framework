@@ -3,6 +3,8 @@ jdk:
   - openjdk8
 
 sudo: true
+git:
+  depth: false
 addons:
   chrome: stable
 before_cache:
@@ -24,6 +26,7 @@ env:
     - PACKAGE=navi-dashboards
     - PACKAGE=navi-data
     - PACKAGE=navi-directory
+    - PACKAGE=navi-notifications
     - PACKAGE=navi-reports
     - PACKAGE=navi-webservice
 branches:
@@ -38,7 +41,6 @@ install:
     nvm install ${NODE_VERSION};
     npm config set spin false;
     npm ci;
-    npx lerna exec --scope ${PACKAGE} -- bower install || true;
     fi
 script:
   - if [[ "${PACKAGE}" == "navi-webservice" ]]; then
@@ -48,11 +50,16 @@ script:
     fi
 jobs:
   include:
-    - stage: NPM Publish
+    - stage: 'Publish'
       if: branch = master AND repo = yahoo/navi AND type = push
       node_js: '8'
+      name: 'NPM'
       script: bash ./scripts/npm-publish.sh
-    - stage: GitHub Pages Publish
-      if: branch = master AND repo = yahoo/navi AND type = push
+    - script: bash ./scripts/gh-pages-publish.sh
+      name: 'GitHub Pages'
       node_js: '8'
-      script: bash ./scripts/gh-pages-publish.sh
+      if: branch = master AND repo = yahoo/navi AND type = push
+    - script: bash ./scripts/artifactory-publish.sh
+      name: 'Artifactory'
+      node_js: '8'
+      if: branch = master AND repo = yahoo/navi AND type = push

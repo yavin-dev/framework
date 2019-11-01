@@ -3,19 +3,15 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, click, find, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import config from 'ember-get-config';
-import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import { clickTrigger as toggleSelector, nativeMouseUp as toggleOption } from 'ember-power-select/test-support/helpers';
 
 module('Integration | Component | visualization config/table', function(hooks) {
   setupRenderingTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
-    setupMock();
     return this.owner.lookup('service:bard-metadata').loadMetadata();
-  });
-
-  hooks.afterEach(function() {
-    teardownMock();
   });
 
   test('it renders', async function(assert) {
@@ -24,7 +20,7 @@ module('Integration | Component | visualization config/table', function(hooks) {
     let originalFlag = config.navi.FEATURES.enableTotals;
     config.navi.FEATURES.enableTotals = false;
 
-    await render(hbs`{{visualization-config/table}}`);
+    await render(hbs`{{navi-visualization-config/table}}`);
 
     assert
       .dom('.table-config')
@@ -46,7 +42,7 @@ module('Integration | Component | visualization config/table', function(hooks) {
     this.set('request', {
       dimensions: [{ dimension: 'os' }, { dimension: 'age' }]
     });
-    await render(hbs`{{visualization-config/table
+    await render(hbs`{{navi-visualization-config/table
       request=request
       onUpdateConfig=(action onUpdateConfig)
     }}`);
@@ -83,7 +79,7 @@ module('Integration | Component | visualization config/table', function(hooks) {
     let originalFlag = config.navi.FEATURES.enableTotals;
     config.navi.FEATURES.enableTotals = true;
 
-    await render(hbs`{{visualization-config/table
+    await render(hbs`{{navi-visualization-config/table
       options=options
     }}`);
 
@@ -106,7 +102,7 @@ module('Integration | Component | visualization config/table', function(hooks) {
     this.set('options', { showTotals: { grandTotal: true } });
     this.set('onUpdateConfig', () => {});
 
-    await render(hbs`{{visualization-config/table
+    await render(hbs`{{navi-visualization-config/table
       request=request
       options=options
       onUpdateConfig=(action onUpdateConfig)
@@ -173,7 +169,7 @@ module('Integration | Component | visualization config/table', function(hooks) {
 
     this.set('request', request);
 
-    await render(hbs`{{visualization-config/table
+    await render(hbs`{{navi-visualization-config/table
       request=request
       options=options
     }}`);

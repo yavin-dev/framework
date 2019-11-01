@@ -11,6 +11,7 @@ import DS from 'ember-data';
 import { fragment, fragmentArray } from 'ember-data-model-fragments/attributes';
 import DeliverableItem from 'navi-core/models/deliverable-item';
 import config from 'ember-get-config';
+import { copy } from 'ember-copy';
 import { validator, buildValidations } from 'ember-cp-validations';
 
 const Validations = buildValidations({
@@ -79,6 +80,10 @@ export default DeliverableItem.extend(Validations, {
       clonedDashboard = Object.assign(this.toJSON(), {
         author: user,
         widgets: [],
+        filters: this.get('filters').map(filter =>
+          this.store.createFragment('bard-request/fragments/filter', filter.toJSON())
+        ),
+        presentation: copy(get(this, 'presentation')),
         createdOn: null,
         updatedOn: null
       });

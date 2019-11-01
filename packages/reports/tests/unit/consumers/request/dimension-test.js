@@ -3,22 +3,22 @@ import { get } from '@ember/object';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { RequestActions } from 'navi-reports/services/request-action-dispatcher';
-import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
-let Store, MetadataService, Age, EventId, CurrentModel, Consumer;
+let Age, EventId, CurrentModel, Consumer;
 
 module('Unit | Consumer | request dimension', function(hooks) {
   setupTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
-    setupMock();
-    Store = this.owner.lookup('service:store');
+    const store = this.owner.lookup('service:store');
 
-    MetadataService = this.owner.lookup('service:bard-metadata');
+    const metadataService = this.owner.lookup('service:bard-metadata');
 
     Consumer = this.owner.lookup('consumer:request/dimension');
     CurrentModel = {
-      request: Store.createFragment('bard-request/request', { dimensions: [] })
+      request: store.createFragment('bard-request/request', { dimensions: [] })
     };
 
     // Isolate test to focus on only this consumer
@@ -26,14 +26,10 @@ module('Unit | Consumer | request dimension', function(hooks) {
     requestActionDispatcher._registeredConsumers = [];
     requestActionDispatcher.registerConsumer('request/dimension');
 
-    return MetadataService.loadMetadata().then(() => {
-      Age = MetadataService.getById('dimension', 'age');
-      EventId = MetadataService.getById('dimension', 'eventId');
+    return metadataService.loadMetadata().then(() => {
+      Age = metadataService.getById('dimension', 'age');
+      EventId = metadataService.getById('dimension', 'eventId');
     });
-  });
-
-  hooks.afterEach(function() {
-    teardownMock();
   });
 
   test('ADD_DIMENSION', function(assert) {

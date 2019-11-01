@@ -3,6 +3,8 @@
 Navi is a production quality analytics reporting UI with _out of the box_ support for [Fili](http://fili.io/).
 
 [![Build Status](https://travis-ci.org/yahoo/navi.svg?branch=master)](https://travis-ci.org/yahoo/navi)
+![npm (custom registry)](https://img.shields.io/npm/v/navi-app/latest)
+![npm (custom registry)](https://img.shields.io/npm/v/navi-app/canary)
 
 ## Try it
 
@@ -28,9 +30,9 @@ You can install the individual packages via npm
 - [navi-dashboards](https://www.npmjs.com/package/navi-dashboards)
 - [navi-directory](https://www.npmjs.com/package/navi-directory)
 - [navi-data](https://www.npmjs.com/package/navi-data)
-- [navi-app](https://www.npmjs.com/package/navi-app)
+- [navi-app](https://www.npmjs.com/package/navi-app) 
 
-Please see the detailed installation instructions in the README of the indicidual packages for more info.
+Please see the detailed installation instructions in the README of the individual packages for more info.
 
 ## Sub Packages
 
@@ -46,7 +48,7 @@ Please see the detailed installation instructions in the README of the indicidua
 
 ## Contribution
 
-See [CONTRUBUTING.md](https://github.com/yahoo/navi/blob/master/CONTRIBUTING.md)
+See [CONTRIBUTING.md](https://github.com/yahoo/navi/blob/master/CONTRIBUTING.md)
 
 ### Setup
 
@@ -70,7 +72,7 @@ See [CONTRUBUTING.md](https://github.com/yahoo/navi/blob/master/CONTRIBUTING.md)
 - `npm test`
 
 For more information on using ember-cli, visit [https://ember-cli.com/](https://ember-cli.com/).
-For more information on using lerna, visit [https://lernajs.io/](https://lernajs.io/)
+For more information on using lerna, visit [https://lerna.js.org](https://lerna.js.org)
 
 ## License
 

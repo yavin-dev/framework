@@ -1,5 +1,5 @@
-{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{#with (pluralize-word values.length filter.dimension.longName omitCount=true) as |normalizedDimensionName|}}
+{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{#with (pluralize values.length filter.dimension.longName  without-count=true) as |normalizedDimensionName|}}
   <div class="navi-modal-header">
     <h1 class="text-capitalize primary-header">
       Included {{normalizedDimensionName}}

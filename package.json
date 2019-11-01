@@ -1,6 +1,6 @@
 {
   "name": "navi",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Navi Project",
   "author": "team-navi@googlegroups.com",
   "license": "MIT",
@@ -11,9 +11,9 @@
   },
   "scripts": {
     "start": "lerna exec --scope navi-app npm start",
-    "postinstall": "lerna bootstrap --concurrency 2; lerna exec --ignore navi-data bower install",
+    "postinstall": "lerna bootstrap --concurrency 2 --ci",
     "test": "lerna run test",
-    "lerna-ci-publish": "lerna publish --canary preminor --force-publish=* --yes"
+    "lerna-ci-publish": "lerna publish --canary --exact preminor --force-publish=* --yes"
   },
   "husky": {
     "hooks": {
@@ -22,7 +22,6 @@
     }
   },
   "devDependencies": {
-    "bower": "^1.8.8",
     "husky": "^3.0.1",
     "lerna": "^3.15.0",
     "prettier": "^1.13.5",

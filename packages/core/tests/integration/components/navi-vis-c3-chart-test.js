@@ -41,7 +41,7 @@ module('Integration | Component | navi vis c3 chart', function(hooks) {
     `);
 
     run(() => {
-      assert.equal(find('svg').getAttribute('height'), '100', 'chart fills height of container on initial render');
+      assert.dom('svg').hasAttribute('height', '100', 'chart fills height of container on initial render');
 
       find('.container').style.height = '200px';
     });
@@ -49,11 +49,7 @@ module('Integration | Component | navi vis c3 chart', function(hooks) {
     await run(async () => {
       await triggerEvent('.test-container', 'resizestop');
 
-      assert.equal(
-        find('svg').getAttribute('height'),
-        '200',
-        'chart height updates to match container after resize action'
-      );
+      assert.dom('svg').hasAttribute('height', '200', 'chart height updates to match container after resize action');
     });
   });
 

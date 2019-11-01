@@ -18,6 +18,7 @@ export GIT_SSH_COMMAND='ssh -i /tmp/.travis-secrets/deploy_rsa -v -o UserKnownHo
 echo 'Initiating connection to GitHub'
 git remote add ssh-origin git@github.com:yahoo/navi.git
 git fetch ssh-origin gh-pages
+git branch gh-pages ssh-origin/gh-pages # Force it to track from ssh-origin if master has gh-pages as well
 
 echo 'Building demo app'
 npx ember github-pages:commit --message "Deploy gh-pages from $COMMIT" --destination ../../

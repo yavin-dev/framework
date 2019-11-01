@@ -8,6 +8,7 @@ import layout from '../templates/components/dashboard-filters-collapsed-filter';
 import { computed, get, getWithDefault } from '@ember/object';
 import { A as arr } from '@ember/array';
 import { isEmpty } from '@ember/utils';
+import { inject as service } from '@ember/service';
 
 const SUPPORTED_OPERATORS = {
   in: {
@@ -30,6 +31,7 @@ const SUPPORTED_OPERATORS = {
 export default Component.extend({
   layout,
   classNames: ['dashboard-filters-collapsed-filter'],
+  bardMetadata: service(),
 
   /**
    * The computed filter dimension display name.
@@ -69,6 +71,17 @@ export default Component.extend({
     }
 
     return getWithDefault(SUPPORTED_OPERATORS, `${op}.longName`, op);
+  }),
+
+  /**
+   * Which id field to use as ID display.
+   */
+  filterValueFieldId: computed('filter.{dimension.name,field}', function() {
+    const meta = this.bardMetadata.getById('dimension', get(this, 'filter.dimension.name'));
+    if (meta) {
+      return meta.idFieldName;
+    }
+    return get(this, 'filter.field');
   }),
 
   /**

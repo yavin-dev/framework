@@ -1,18 +1,14 @@
 import { A } from '@ember/array';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 module('Unit | Component | table config', function(hooks) {
   setupTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
-    setupMock();
     this.owner.lookup('service:bard-metadata').loadMetadata();
-  });
-
-  hooks.afterEach(function() {
-    teardownMock();
   });
 
   test('dimensions', function(assert) {
@@ -28,7 +24,7 @@ module('Unit | Component | table config', function(hooks) {
     assert.deepEqual(
       A(
         this.owner
-          .factoryFor('component:visualization-config/table')
+          .factoryFor('component:navi-visualization-config/table')
           .create({ request })
           .get('dimensions')
       ).mapBy('longName'),

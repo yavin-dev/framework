@@ -13,7 +13,6 @@ import { scheduleOnce, next } from '@ember/runloop';
 import Component from '@ember/component';
 import { set, get, computed } from '@ember/object';
 import layout from '../templates/components/navi-date-picker';
-import $ from 'jquery';
 import moment from 'moment';
 import { getFirstDayEpochIsoDateTimePeriod, getIsoDateTimePeriod } from 'navi-core/utils/date';
 
@@ -119,20 +118,10 @@ export default Component.extend({
   _updateViewMode(newViewMode) {
     scheduleOnce('afterRender', () => {
       // Change `minViewMode` option after initial creation
-      get(this, '_datePickerReference')
-        .data('datepicker')
-        ._process_options({ minViewMode: newViewMode });
+      const picker = get(this, '_datePickerReference').data('datepicker');
+      picker.setViewMode(newViewMode);
+      picker.update(get(this, 'selectedDateObj'));
 
-      /*
-       * Set view mode to the minimum value
-       * View mode cannot be set directly, only set bigger or smaller:
-       *   ex: datepicker('showMode', +1) will move from 'month' view to 'decade' view
-       *
-       * To set to the minimum, move view mode as low as possible
-       */
-      get(this, '_datePickerReference').datepicker('showMode', -10);
-
-      // Ensure the selected date has been highlighted in the new view mode
       this._highlightSelection();
     });
   },
@@ -161,9 +150,9 @@ export default Component.extend({
           quarter = Math.ceil((activeIndex + 1) / 3);
 
         let startIndex = (quarter - 1) * 3;
-        $(months[startIndex + 0]).addClass('active-month');
-        $(months[startIndex + 1]).addClass('active-month');
-        $(months[startIndex + 2]).addClass('active-month');
+        this.$(months[startIndex + 0]).addClass('active-month');
+        this.$(months[startIndex + 1]).addClass('active-month');
+        this.$(months[startIndex + 2]).addClass('active-month');
       });
     }
   },

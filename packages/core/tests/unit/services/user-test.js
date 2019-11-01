@@ -1,20 +1,20 @@
 import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { setupMock, teardownMock } from '../../helpers/mirage-helper';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import config from 'ember-get-config';
 import Mirage from 'ember-cli-mirage';
 import DS from 'ember-data';
 import UserAdapter from 'navi-core/adapters/base-json-adapter';
 
-let Store, NaviUser, server;
+let Store, NaviUser;
 
 module('Unit | Service | user', function(hooks) {
   setupTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
     NaviUser = config.navi.user;
-    server = setupMock();
     // Mock fact service
     this.owner.register(
       'model:user',
@@ -27,7 +27,6 @@ module('Unit | Service | user', function(hooks) {
   });
 
   hooks.afterEach(function() {
-    teardownMock();
     config.navi.user = NaviUser; //reset user in navi config
   });
 
@@ -120,20 +119,20 @@ module('Unit | Service | user', function(hooks) {
     });
   });
 
-  test('register - handle server error', function(assert) {
+  test('register - handle Server error', function(assert) {
     assert.expect(1);
 
     let service = this.owner.lookup('service:user');
 
     //mock persistence WS to throw error
-    server.urlPrefix = config.navi.appPersistence.uri;
-    server.post('/users', () => {
+    this.server.urlPrefix = config.navi.appPersistence.uri;
+    this.server.post('/users', () => {
       return new Mirage.Response(500);
     });
 
     return run(() => {
       return service.register().catch(() => {
-        assert.ok(true, 'register return an error promise when server throws an error');
+        assert.ok(true, 'register return an error promise when Server throws an error');
       });
     });
   });
@@ -177,20 +176,20 @@ module('Unit | Service | user', function(hooks) {
     });
   });
 
-  test('findOrRegister - handle server errors', function(assert) {
+  test('findOrRegister - handle Server errors', function(assert) {
     assert.expect(1);
 
     let service = this.owner.lookup('service:user');
 
     //mock persistence WS to throw error
-    server.urlPrefix = config.navi.appPersistence.uri;
-    server.post('/users', () => {
+    this.server.urlPrefix = config.navi.appPersistence.uri;
+    this.server.post('/users', () => {
       return new Mirage.Response(500);
     });
 
     return run(() => {
       return service.register().catch(() => {
-        assert.ok(true, 'register return an error promise when server throws an error');
+        assert.ok(true, 'register return an error promise when Server throws an error');
       });
     });
   });

@@ -4,7 +4,7 @@ import { initialize } from '../../../initializers/config';
 import { module, test } from 'qunit';
 import config from 'navi-app/config/environment';
 
-var registry, application;
+let registry, application;
 
 module('Unit | Initializers | config', function(hooks) {
   hooks.beforeEach(function() {

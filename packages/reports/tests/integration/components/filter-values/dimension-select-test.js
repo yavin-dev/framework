@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import { clickTrigger, nativeMouseUp } from 'ember-power-select/test-support/helpers';
 import AgeValues from 'navi-data/mirage/bard-lite/dimensions/age';
 import config from 'ember-get-config';
@@ -21,19 +21,13 @@ const MockFilter = {
 
 const HOST = config.navi.dataSources[0].uri;
 
-let server;
-
 module('Integration | Component | filter values/dimension select', function(hooks) {
   setupRenderingTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
     this.filter = MockFilter;
-    server = setupMock();
     return this.owner.lookup('service:bard-metadata').loadMetadata();
-  });
-
-  hooks.afterEach(function() {
-    teardownMock();
   });
 
   test('it renders', async function(assert) {
@@ -75,7 +69,7 @@ module('Integration | Component | filter values/dimension select', function(hook
   test('no values', async function(assert) {
     assert.expect(1);
 
-    server.get(`${HOST}/v1/dimensions/age/values`, (schema, request) => {
+    this.server.get(`${HOST}/v1/dimensions/age/values`, (schema, request) => {
       if (request.queryParams.filters === 'age|id-in[]') {
         assert.notOk(true, 'dimension-select should not request dimension values when the filter has no values');
       }

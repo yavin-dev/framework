@@ -1,18 +1,14 @@
 import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { startMirage } from 'dummy/initializers/ember-cli-mirage';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 module('Unit | Service | compression', function(hooks) {
   setupTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
-    this.server = startMirage();
     return this.owner.lookup('service:bard-metadata').loadMetadata();
-  });
-
-  hooks.afterEach(function() {
-    this.server.shutdown();
   });
 
   test('compress and decompress', function(assert) {

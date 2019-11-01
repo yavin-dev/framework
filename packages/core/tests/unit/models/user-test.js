@@ -1,23 +1,19 @@
 import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { setupMock, teardownMock } from '../../helpers/mirage-helper';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import config from 'ember-get-config';
 
 let Store, MetadataService;
 
 module('Unit | Model | user', function(hooks) {
   setupTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(async function() {
-    setupMock();
     Store = this.owner.lookup('service:store');
     MetadataService = this.owner.lookup('service:bard-metadata');
     await MetadataService.loadMetadata();
-  });
-
-  hooks.afterEach(function() {
-    teardownMock();
   });
 
   test('Retrieving records', async function(assert) {

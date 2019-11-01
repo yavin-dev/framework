@@ -37,7 +37,7 @@
               direction=(readonly column.sortDirection)
             }}
           {{else}}
-            {{tooltip-on-element
+            {{ember-tooltip
               text="Column cannot be sorted."
               showOn="click"
               hideOn="mousedown mouseleave"
@@ -70,7 +70,7 @@
                     column=column
                 }}
               {{else}}
-                {{table-cell-renderer
+                {{navi-table-cell-renderer
                   data=row
                   column=column
                   request=request

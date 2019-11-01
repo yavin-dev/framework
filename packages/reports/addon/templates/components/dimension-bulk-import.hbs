@@ -1,5 +1,5 @@
-{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{#with (pluralize-word 2 dimension.longName omitCount=true) as |normalizedDimensionName|}}
+{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{#with (pluralize 2 dimension.longName without-count=true) as |normalizedDimensionName|}}
   <div class="navi-modal-header">
     <div class="text-capitalize primary-header">Add Multiple {{normalizedDimensionName}}</div>
     {{#if (is-pending _loadingPromise)}}
@@ -11,12 +11,12 @@
 {{/with}}
 
 {{#if (is-pending _loadingPromise)}}
-  {{#loading-message}}
+  {{#navi-loading-message}}
     Searching
-  {{/loading-message}}
+  {{/navi-loading-message}}
 {{else}}
   <div class="id-container valid-ids">
-    <span class="valid-id-count">{{_validDimValues.length}}</span> valid <span class="text-capitalize dimension">{{pluralize-word _validDimValues.length dimension.longName omitCount=true}}</span>
+    <span class="valid-id-count">{{_validDimValues.length}}</span> valid <span class="text-capitalize dimension">{{pluralize _validDimValues.length dimension.longName  without-count=true}}</span>
     {{#paginated-scroll-list
       items=_validDimValues
       as |dimVal|
@@ -26,7 +26,7 @@
     {{/paginated-scroll-list}}
   </div>
   <div class="id-container invalid-ids">
-    <span class="invalid-id-count">{{_invalidDimValueIds.length}}</span> invalid <span class="text-capitalize dimension">{{pluralize-word _invalidDimValueIds.length dimension.longName omitCount=true}}</span>
+    <span class="invalid-id-count">{{_invalidDimValueIds.length}}</span> invalid <span class="text-capitalize dimension">{{pluralize _invalidDimValueIds.length dimension.longName  without-count=true}}</span>
     {{#paginated-scroll-list
       items=_invalidDimValueIds
       as |invalidDimId|

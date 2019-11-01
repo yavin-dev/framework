@@ -21,6 +21,7 @@ testem.log
 .idea/*
 .travis.yml
 *.iml
+/.travis.yml
 
 # ember-try
 /.node_modules.ember-try/

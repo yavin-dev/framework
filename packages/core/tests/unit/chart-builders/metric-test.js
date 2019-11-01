@@ -4,11 +4,9 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import BuilderClass from 'navi-core/chart-builders/metric';
 import TooltipTemplate from '../../../../navi-core/templates/chart-tooltips/metric';
-import { setupMock, teardownMock } from '../../helpers/mirage-helper';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 const MetricChartBuilder = BuilderClass.create();
-
-let MetadataService;
 
 const DATA = [
     {
@@ -51,16 +49,11 @@ const DATA = [
 
 module('Unit | Chart Builders | Metric', function(hooks) {
   setupTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
     setOwner(MetricChartBuilder, this.owner);
-    setupMock();
-    MetadataService = this.owner.lookup('service:bard-metadata');
-    return MetadataService.loadMetadata();
-  });
-
-  hooks.afterEach(function() {
-    teardownMock();
+    return this.owner.lookup('service:bard-metadata').loadMetadata();
   });
 
   test('buildData - no metrics', function(assert) {

@@ -1,11 +1,11 @@
-import { click, fillIn, visit, triggerKeyEvent, findAll, currentURL } from '@ember/test-helpers';
+import { click, fillIn, visit, triggerKeyEvent, find, findAll, currentURL } from '@ember/test-helpers';
 import { selectChoose } from 'ember-power-select/test-support';
 import { module, test } from 'qunit';
 import config from 'ember-get-config';
 import { setupApplicationTest } from 'ember-qunit';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
-let CompressionService;
+let CompressionService, confirm;
 
 module('Acceptance | Dashboard Filters', function(hooks) {
   setupApplicationTest(hooks);
@@ -13,6 +13,11 @@ module('Acceptance | Dashboard Filters', function(hooks) {
 
   hooks.beforeEach(function() {
     CompressionService = this.owner.lookup('service:compression');
+    confirm = window.confirm;
+  });
+
+  hooks.afterEach(function() {
+    window.confirm = confirm;
   });
 
   test('dashboard filter flow', async function(assert) {
@@ -99,8 +104,47 @@ module('Acceptance | Dashboard Filters', function(hooks) {
     );
   });
 
+  test('adding dimension with key primary id field creates correct request', async function(assert) {
+    await visit('/dashboards/1/view');
+
+    let dataRequests = [];
+
+    server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
+    server.pretender.handledRequest = (verb, url, req) => {
+      if (url.includes('/v1/data')) {
+        dataRequests.push(req);
+      }
+      return { rows: [] };
+    };
+
+    await click('.dashboard-filters__expand-button');
+    await click('.dashboard-filters-expanded__add-filter-button');
+
+    await selectChoose('.dashboard-dimension-selector', 'Multi System Id');
+
+    await fillIn('.filter-builder-dimension__values input', '1');
+    await selectChoose('.filter-builder-dimension__values', '.item-row', 0);
+
+    assert.ok(
+      dataRequests.every(request => request.queryParams.filters == 'multiSystemId|key-in[k1]'),
+      'each widget request has the filter added using the key field'
+    );
+    assert.equal(dataRequests.length, 3, 'three data requests were made (one for each widget)');
+
+    await click('.dashboard-filters__expand-button');
+
+    assert
+      .dom('.dashboard-filters-collapsed-filter__values')
+      .matchesText(/[a-z ]+\(1\)/i, 'filter collapse display should show id and not key');
+  });
+
   test('dashboard filter query params - ui changes update the model', async function(assert) {
-    assert.expect(10);
+    assert.expect(12);
+
+    window.confirm = () => {
+      assert.step('confirm called');
+      return true;
+    };
 
     const INITIAL_FILTERS = [
       {
@@ -164,6 +208,7 @@ module('Acceptance | Dashboard Filters', function(hooks) {
     //Go back to dashboards index view and return to dashboard still in dirty state
     await click('.navi-dashboard__breadcrumb-link');
     assert.equal(currentURL(), '/dashboards', 'Routed back to dashboards route with no active query params');
+    assert.verifySteps(['confirm called']);
 
     //Capture requests to check their format
     let dataRequests = [];
@@ -391,6 +436,26 @@ module('Acceptance | Dashboard Filters', function(hooks) {
       },
       'The expected filters are set in the query params'
     );
+  });
+
+  test('breadcrumbs in subroute also have query params', async function(assert) {
+    assert.expect(2);
+    await visit(
+      '/dashboards/1/view?filters=EQbwOsBmCWA2AuBTATgZwgLgNrmAE2gFtEA7VaAexMwgAdkLaV4BPCAGgkZQEN4LkNYNGrBOwAG49YAV0Tpg2ALriYiWHiHRNwAL7tcBYmUqiMEHgHNEHLk2R8BW0eKmz5mLBAC0AZggqEGoaWjq6SrrAQA'
+    );
+
+    // hover css events are hard
+    find('.navi-widget__actions').style.visibility = 'visible';
+    await click('.navi-widget__explore-btn');
+
+    assert.equal(currentURL(), '/dashboards/1/widgets/1/view', 'Successfully followed exploring widget link');
+
+    assert
+      .dom(findAll('.navi-report-widget__breadcrumb-link')[1])
+      .hasAttribute(
+        'href',
+        '/dashboards/1?filters=EQbwOsBmCWA2AuBTATgZwgLgNrmAE2gFtEA7VaAexMwgAdkLaV4BPCAGgkZQEN4LkNYNGrBOwAG49YAV0Tpg2ALriYiWHiHRNwAL7tcBYmUqiMEHgHNEHLk2R8BW0eKmz5mLBAC0AZggqEGoaWjq6SrrAQA'
+      );
   });
 });
 

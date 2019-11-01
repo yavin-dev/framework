@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -21,10 +21,10 @@ import layout from '../../templates/components/navi-visualizations/pie-chart';
 import tooltipLayout from '../../templates/chart-tooltips/pie-chart';
 import merge from 'lodash/merge';
 import { smartFormatNumber } from 'navi-core/helpers/smart-format-number';
-import DimensionBuilder from 'navi-core/chart-builders/dimension';
+import hasChartBuilders from 'navi-core/mixins/components/has-chart-builders';
 import { getTranslation } from '../../utils/chart';
 
-export default Component.extend({
+export default Component.extend(hasChartBuilders, {
   layout,
 
   /**
@@ -58,14 +58,24 @@ export default Component.extend({
   request: alias('model.firstObject.request'),
 
   /**
-   * @property {Object} builder - Series builder for pie chart
+   * @property {Object} builder - builder based on series type
    */
-  builder: DimensionBuilder.create(),
+  builder: computed('seriesType', function() {
+    const type = get(this, 'seriesType'),
+      builders = get(this, 'chartBuilders');
+
+    return builders[type];
+  }),
 
   /**
    * @property {Object} seriesConfig - config for chart series
    */
   seriesConfig: readOnly('options.series.config'),
+
+  /**
+   * @property {String} seriesType
+   */
+  seriesType: readOnly('options.series.type'),
 
   /**
    * Formatter for label (percentage value) shown on pie slices
@@ -89,7 +99,7 @@ export default Component.extend({
   metricDisplayName: computed('options', function() {
     let metric = get(this, 'seriesConfig.metric');
 
-    return get(this, 'metricName') && get(this, 'metricName').getDisplayName(metric);
+    return metric && get(this, 'metricName').getDisplayName(metric);
   }),
 
   /**
@@ -213,7 +223,7 @@ export default Component.extend({
 
   /**
    * Removes metric label from pie chart
-   * @method _removeTitle
+   * @method _removeMetricLabel
    * @private
    */
   _removeMetricLabel() {
@@ -238,15 +248,17 @@ export default Component.extend({
       yTranslate = svgElm.style('height').replace('px', '') / 2, //vertically center the label in the svg
       metricTitle = get(this, 'metricDisplayName');
 
-    titleElm
-      .insert('tspan')
-      .attr('class', 'pie-metric-label')
-      .attr('y', 0)
-      .attr('x', 0)
-      .text(metricTitle);
+    if (metricTitle) {
+      titleElm
+        .insert('tspan')
+        .attr('class', 'pie-metric-label')
+        .attr('y', 0)
+        .attr('x', 0)
+        .text(metricTitle);
 
-    //rotate the label to be vertical and place it just left of the pie chart
-    titleElm.attr('text-anchor', 'middle').attr('transform', `translate(${xTranslate}, ${yTranslate}) rotate(-90)`);
+      //rotate the label to be vertical and place it just left of the pie chart
+      titleElm.attr('text-anchor', 'middle').attr('transform', `translate(${xTranslate}, ${yTranslate}) rotate(-90)`);
+    }
   },
 
   /**

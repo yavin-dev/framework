@@ -1,11 +1,18 @@
 {{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{option.longName}}
-{{#if option.description}}
-  {{ember-tooltip
-    text=option.description
-    side="right"
-    popperContainer="body"
-    effect="none"
-    tooltipClass="navi-table-select-tooltip"
-  }}
-{{/if}}
+<div
+  class="navi-table-select-item"
+  ...attributes
+>
+  {{option.longName}}
+  {{#if option.description}}
+    <NaviIcon @icon="question-circle-o" class="navi-table-select-item__info-icon">
+      <EmberTooltip
+        @text={{option.description}}
+        @side="right"
+        @popperContainer="body"
+        @effect="none"
+        @tooltipClass="navi-table-select-tooltip"
+      />
+    </NaviIcon>
+  {{/if}}
+</div>

@@ -1,9 +1,9 @@
 import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { setupMock, teardownMock } from '../../helpers/mirage-helper';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
-let Store, MetadataService;
+let Store;
 
 const ExpectedDeliveryRule = {
   createdOn: '2017-01-01 00:00:00.000',
@@ -13,8 +13,7 @@ const ExpectedDeliveryRule = {
   deliveryType: 'report',
   frequency: 'week',
   schedulingRules: {
-    stopAfter: '2017-09-04 00:00:00',
-    every: '2 weeks'
+    mustHaveData: false
   },
   format: {
     type: 'csv'
@@ -25,16 +24,11 @@ const ExpectedDeliveryRule = {
 
 module('Unit | Model | delivery rule', function(hooks) {
   setupTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
-    setupMock();
     Store = this.owner.lookup('service:store');
-    MetadataService = this.owner.lookup('service:bard-metadata');
-    return MetadataService.loadMetadata();
-  });
-
-  hooks.afterEach(function() {
-    teardownMock();
+    return this.owner.lookup('service:bard-metadata').loadMetadata();
   });
 
   test('Retrieving records', async function(assert) {

@@ -1,0 +1,10 @@
+{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{#if metricValue}}
+  {{format-number
+    metricValue
+    maximumFractionDigits=2
+    minimumFractionDigits=2
+  }}
+{{else}}
+  --
+{{/if}}

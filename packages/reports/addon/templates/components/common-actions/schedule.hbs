@@ -58,7 +58,7 @@
             disabled=(is-rejected deliveryRule)
             searchEnabled=false
             tagName="div"
-            onchange=(action (mut localDeliveryRule.frequency))
+            onchange=(action (set localDeliveryRule "frequency" _))
             as | frequency |
           }}
             {{capitalize frequency}}
@@ -87,7 +87,7 @@
             size="small"
             class="schedule-modal__must-have-data-toggle"
             value=localDeliveryRule.schedulingRules.mustHaveData
-            onToggle=(mut localDeliveryRule.schedulingRules.mustHaveData)}}
+            onToggle=(action (toggle "mustHaveData" localDeliveryRule.schedulingRules))}}
           <div class="schedule-modal__label">Only send if data is present</div>
         </div>
       {{/if}}
@@ -109,9 +109,9 @@
               type="button"
             >
               {{#if isSaving}}
-                {{#loading-message}}
+                {{#navi-loading-message}}
                   Saving schedule
-                {{/loading-message}}
+                {{/navi-loading-message}}
               {{else}}
                 {{#if localDeliveryRule.isNew}}Save{{else}}Save Changes{{/if}}
               {{/if}}

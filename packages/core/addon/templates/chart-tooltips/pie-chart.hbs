@@ -1,5 +1,8 @@
-{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<div class="title pie-chart-tooltip__title">{{requiredToolTipData.name}} ({{format-number requiredToolTipData.ratio style="percent"}})</div>
+{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<div class="title pie-chart-tooltip__title">
+  {{requiredToolTipData.name}}
+  ({{if requiredToolTipData.ratio (format-number requiredToolTipData.ratio style="percent") "--"}})
+</div>
 <ol class="pie-chart-tooltip__series">
   <li class="pie-chart-tooltip__metric-val">
     <svg class="pie-chart-tooltip__series-indicator">

@@ -24,7 +24,7 @@ module('Unit | Helper | navi get display list', function(hooks) {
     this.owner.register('service:bard-metadata', MockService);
 
     helper = this.owner.lookup('helper:navi-get-display-list');
-    helper = new helper();
+    helper = helper.create();
     setOwner(helper, this.owner);
   });
 

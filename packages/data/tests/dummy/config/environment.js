@@ -8,10 +8,8 @@ module.exports = function(environment) {
     locationType: 'auto',
     EmberENV: {
       FEATURES: {
-        /*
-         * Here you can enable experimental features on an ember canary build
-         * e.g. 'with-controller': true
-         */
+        // Here you can enable experimental features on an ember canary build
+        // e.g. EMBER_NATIVE_DECORATOR_SUPPORT: true
       },
       EXTEND_PROTOTYPES: {
         // Prevent Ember Data from overriding Date.parse.
@@ -27,7 +25,10 @@ module.exports = function(environment) {
     },
 
     navi: {
-      dataSources: [{ name: 'dummy', uri: 'https://data.naviapp.io' }],
+      dataSources: [
+        { name: 'dummy', uri: 'https://data.naviapp.io' },
+        { name: 'blockhead', uri: 'https://data2.naviapp.com' }
+      ],
       searchThresholds: {
         contains: 600,
         in: 50000

@@ -1,7 +1,8 @@
 module.exports = {
   root: true,
+  parser: 'babel-eslint',
   parserOptions: {
-    ecmaVersion: 2017,
+    ecmaVersion: 2018,
     sourceType: 'module'
   },
   plugins: ['ember'],
@@ -10,7 +11,8 @@ module.exports = {
     browser: true
   },
   rules: {
-    'multiline-comment-style': ['error', 'starred-block']
+    'multiline-comment-style': ['error', 'starred-block'],
+    'ember/no-observers': ['warn']
   },
   globals: {
     c3: true,
@@ -31,8 +33,7 @@ module.exports = {
       ],
       excludedFiles: ['addon/**', 'addon-test-support/**', 'app/**', 'tests/dummy/app/**'],
       parserOptions: {
-        sourceType: 'script',
-        ecmaVersion: 2015
+        sourceType: 'script'
       },
       env: {
         browser: false,

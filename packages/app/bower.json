@@ -1,8 +1,0 @@
-{
-  "name": "navi-app",
-  "dependencies": {
-    "pretender": "~1.1.0",
-    "numeral": "~1.5.3",
-    "bootstrap-datepicker": "1.4.0"
-  }
-}

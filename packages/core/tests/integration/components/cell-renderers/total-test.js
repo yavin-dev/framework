@@ -5,7 +5,7 @@ import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 const TEMPLATE = hbs`
-  {{cell-renderers/total
+  {{navi-cell-renderers/total
     data=data
     column=column
     request=request

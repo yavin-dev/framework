@@ -12,7 +12,6 @@ module.exports = function(environment) {
          * Here you can enable experimental features on an ember canary build
          * e.g. 'with-controller': true
          */
-        enableDirectory: true
       },
       EXTEND_PROTOTYPES: {
         // Prevent Ember Data from overriding Date.parse.
@@ -45,7 +44,6 @@ module.exports = function(environment) {
         enabledNotifyIfData: true,
         enableContains: true,
         enableTableEditing: true,
-        enableChartStacking: true,
         dateDimensionFilter: true
       }
     }

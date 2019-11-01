@@ -30,18 +30,19 @@ const Validations = buildValidations(
       dependentKeys: ['model._request.metrics.[]']
     }),
 
-    [`${CONFIG_PATH}.metric`]: validator('request-metric-exist', {
-      disabled: computed('chartType', function() {
-        return get(this, 'chartType') !== DIMENSION_SERIES && get(this, 'chartType') !== DATE_TIME_SERIES;
-      }),
-      dependentKeys: ['model._request.metrics.[]']
-    }),
-
     [`${CONFIG_PATH}.timeGrain`]: validator('request-time-grain', {
       disabled: computed('chartType', function() {
         return get(this, 'chartType') !== DATE_TIME_SERIES;
       }),
       dependentKeys: ['model._request.intervals.[]']
+    }),
+
+    //Dimension Series Validations
+    [`${CONFIG_PATH}.metric`]: validator('request-metric-exist', {
+      disabled: computed('chartType', function() {
+        return get(this, 'chartType') !== DIMENSION_SERIES && get(this, 'chartType') !== DATE_TIME_SERIES;
+      }),
+      dependentKeys: ['model._request.metrics.[]']
     }),
 
     [`${CONFIG_PATH}.dimensionOrder`]: validator('request-dimension-order', {
@@ -51,7 +52,6 @@ const Validations = buildValidations(
       dependentKeys: ['model._request.dimensions.[]']
     }),
 
-    //Dimension Series Validations
     [`${CONFIG_PATH}.dimensions`]: [
       validator(
         'length',

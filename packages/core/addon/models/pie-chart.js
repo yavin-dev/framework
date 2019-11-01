@@ -1,15 +1,15 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
 import { readOnly } from '@ember/object/computed';
-import { set, get } from '@ember/object';
+import { set, get, computed } from '@ember/object';
 import DS from 'ember-data';
 import VisualizationBase from './visualization';
 import ChartVisualization from 'navi-core/mixins/models/chart-visualization';
 import { validator, buildValidations } from 'ember-cp-validations';
-import { DIMENSION_SERIES } from 'navi-core/utils/chart-data';
+import { METRIC_SERIES, DIMENSION_SERIES, chartTypeForRequest } from 'navi-core/utils/chart-data';
 
 const SERIES_PATH = 'metadata.series';
 const CONFIG_PATH = `${SERIES_PATH}.config`;
@@ -22,20 +22,46 @@ const Validations = buildValidations(
     //Global Validations
     [`${SERIES_PATH}.type`]: validator('chart-type'),
 
+    //Metric Series Validation
+    [`${CONFIG_PATH}.metrics`]: validator('request-metrics', {
+      disabled: computed('chartType', function() {
+        return get(this, 'chartType') !== METRIC_SERIES;
+      }),
+      dependentKeys: ['model._request.metrics.[]']
+    }),
+
     //Dimension Series Validations
     [`${CONFIG_PATH}.metric`]: validator('request-metric-exist', {
+      disabled: computed('chartType', function() {
+        return get(this, 'chartType') !== DIMENSION_SERIES;
+      }),
       dependentKeys: ['model._request.metrics.[]']
     }),
 
     [`${CONFIG_PATH}.dimensionOrder`]: validator('request-dimension-order', {
+      disabled: computed('chartType', function() {
+        return get(this, 'chartType') !== DIMENSION_SERIES;
+      }),
       dependentKeys: ['model._request.dimensions.[]']
     }),
 
-    [`${CONFIG_PATH}.dimensions`]: validator('length', { min: 1 })
+    [`${CONFIG_PATH}.dimensions`]: validator(
+      'length',
+      { min: 1 },
+      {
+        disabled: computed('chartType', function() {
+          return get(this, 'chartType') !== DIMENSION_SERIES;
+        }),
+        dependentKeys: ['model._request.dimensions.[]']
+      }
+    )
   },
   {
     //Global Validation Options
-    chartType: DIMENSION_SERIES,
+    chartType: computed('model._request.{dimensions.[],metrics.[],intervals.firstObject.interval}', function() {
+      const request = get(this, 'request');
+      return request && chartTypeForRequest(request);
+    }),
     request: readOnly('model._request')
   }
 );
@@ -47,7 +73,7 @@ export default VisualizationBase.extend(Validations, ChartVisualization, {
     defaultValue: () => {
       return {
         series: {
-          type: DIMENSION_SERIES,
+          type: null,
           config: {}
         }
       };
@@ -65,13 +91,8 @@ export default VisualizationBase.extend(Validations, ChartVisualization, {
   rebuildConfig(request, response) {
     this.isValidForRequest(request);
 
-    let series = this.getSeriesBuilder(DIMENSION_SERIES).call(
-      this,
-      CONFIG_PATH,
-      get(this, 'validations'),
-      request,
-      response
-    );
+    const chartType = chartTypeForRequest(request),
+      series = this.getSeriesBuilder(chartType).call(this, CONFIG_PATH, get(this, 'validations'), request, response);
     set(this, 'metadata', { series });
     return this;
   }

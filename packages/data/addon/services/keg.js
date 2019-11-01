@@ -8,24 +8,23 @@ import { typeOf } from '@ember/utils';
 import { A, makeArray } from '@ember/array';
 import Service from '@ember/service';
 import { getOwner } from '@ember/application';
-import { setProperties, set, get } from '@ember/object';
+import { setProperties } from '@ember/object';
 
-export default Service.extend({
+export default class KegService extends Service {
   /**
    * @property {String} identifierField - field name of the id field
    */
-  identifierField: 'id',
+  static identifierField = 'id';
 
   /**
-   * Initializes the service
-   *
-   * @method init
-   * @returns {undefined}
+   * @property {Object} recordKeg - Object of record arrays
    */
-  init() {
-    this._super(...arguments);
-    this.reset();
-  },
+  recordKegs = {};
+
+  /**
+   * @property {Object} idIndexes - Object of record idexes
+   */
+  idIndexes = {};
 
   /**
    * Resets internal data structures
@@ -34,9 +33,9 @@ export default Service.extend({
    * @returns {undefined}
    */
   reset() {
-    set(this, 'recordKegs', {});
-    set(this, 'idIndexes', {});
-  },
+    this.recordKegs = {};
+    this.idIndexes = {};
+  }
 
   /**
    * resets internal data structure by type
@@ -45,15 +44,10 @@ export default Service.extend({
    * @param {String} type - model type to reset
    */
   resetByType(type) {
-    let recordKegs = get(this, 'recordKegs'),
-      idIndexes = get(this, 'idIndexes');
-
+    const { recordKegs, idIndexes } = this;
     idIndexes[type] = {};
     recordKegs[type] = A();
-
-    set(this, 'recordKegs', recordKegs);
-    set(this, 'idIndexes', idIndexes);
-  },
+  }
 
   /**
    * Pushes a single record into the store
@@ -67,7 +61,7 @@ export default Service.extend({
    */
   push(type, rawRecord, options) {
     return this.pushMany(type, [rawRecord], options).get('firstObject');
-  },
+  }
 
   /**
    * Pushes an array of records into the store
@@ -80,22 +74,22 @@ export default Service.extend({
    * @returns {Array} records that were pushed to the keg
    */
   pushMany(type, rawRecords, options = {}) {
-    let factory = this._getFactoryForType(options.modelFactory || type),
-      recordKeg = this._getRecordKegForType(type),
-      idIndex = this._getIdIndexForType(type),
-      identifierField = get(factory, 'identifierField') || get(this, 'identifierField');
+    const factory = this._getFactoryForType(options.modelFactory || type);
+    const recordKeg = this._getRecordKegForType(type);
+    const idIndex = this._getIdIndexForType(type);
+    const identifierField = factory.identifierField || KegService.identifierField;
+    const owner = getOwner(this);
 
-    let returnedRecords = A();
-
+    const returnedRecords = A();
     for (let i = 0; i < rawRecords.length; i++) {
-      let id = get(rawRecords[i], identifierField),
-        existingRecord = this.getById(type, id);
+      const id = rawRecords[i][identifierField];
+      const existingRecord = this.getById(type, id);
 
       if (existingRecord) {
         setProperties(existingRecord, rawRecords[i]);
         returnedRecords.pushObject(existingRecord);
       } else {
-        let newRecord = factory.create(rawRecords[i]);
+        let newRecord = factory.create(Object.assign({}, owner.ownerInjection(), rawRecords[i]));
 
         idIndex[id] = newRecord;
         recordKeg.pushObject(newRecord);
@@ -103,7 +97,7 @@ export default Service.extend({
       }
     }
     return returnedRecords;
-  },
+  }
 
   /**
    * Fetches a record by its identifier
@@ -116,7 +110,7 @@ export default Service.extend({
   getById(type, id) {
     let idIndex = this._getIdIndexForType(type) || {};
     return idIndex[id];
-  },
+  }
 
   /**
    * Fetches a record by the provided clause
@@ -147,7 +141,7 @@ export default Service.extend({
       foundRecords = A(recordKeg.filter(clause));
     }
     return foundRecords;
-  },
+  }
 
   /**
    * Fetches all records for a type
@@ -158,7 +152,7 @@ export default Service.extend({
    */
   all(type) {
     return this._getRecordKegForType(type);
-  },
+  }
 
   /**
    * Fetches model factor for a type
@@ -174,7 +168,7 @@ export default Service.extend({
     } else {
       return type;
     }
-  },
+  }
 
   /**
    * Fetches records keg for a type or creates one
@@ -185,11 +179,11 @@ export default Service.extend({
    * @returns {Object} - record keg
    */
   _getRecordKegForType(type) {
-    let recordKegs = get(this, 'recordKegs');
+    const { recordKegs } = this;
 
     recordKegs[type] = recordKegs[type] || A();
     return recordKegs[type];
-  },
+  }
 
   /**
    * Fetches id index for a type or creates one
@@ -200,9 +194,9 @@ export default Service.extend({
    * @returns {Object} - record id index
    */
   _getIdIndexForType(type) {
-    let idIndexes = get(this, 'idIndexes');
+    const { idIndexes } = this;
 
     idIndexes[type] = idIndexes[type] || {};
     return idIndexes[type];
   }
-});
+};

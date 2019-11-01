@@ -1,4 +1,4 @@
-{{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="navi-dashboard__breadcrumb">
   {{#if (feature-flag "enableDirectory")}}
     {{#link-to "directory.my-data" class="navi-dashboard__breadcrumb-link"}}Directory{{/link-to}}
@@ -100,6 +100,7 @@
         classNames="add-widget primary action"
         reports=(get (get-user) "reports")
         dashboard=dashboard
+        onSelectReport=(action addWidgetToDashboard)
       }}
         <button class="btn btn-primary">+ Add Widget</button>
       {{/dashboard-actions/add-widget}}
@@ -108,8 +109,8 @@
 </div>
 
 {{#if (feature-flag "enableDashboardFilters")}}
-  {{dashboard-filters 
-    dashboard=dashboard 
+  {{dashboard-filters
+    dashboard=dashboard
     onUpdateFilter=(action onUpdateFilter)
     onRemoveFilter=(action onRemoveFilter)
     onAddFilter=(action onAddFilter)
@@ -121,11 +122,9 @@
     <div class="navi-dashboard__widgets">
       {{#grid-stack
         options=(hash
-          width=dashboard.presentation.columns
+          width=width
         )
         onChange=(route-action "didUpdateLayout")
-        onDragstop=(route-action "commitStagedLayout")
-        onResizestop=(route-action "commitStagedLayout")
       }}
         {{#each dashboard.presentation.layout as |layout|}}
           {{#with (get-widget layout.widgetId) as |widget|}}
@@ -152,6 +151,7 @@
               classNames="navi-dashboard-container__add-widget-text"
               reports=(get (get-user) "reports")
               dashboard=dashboard
+              onSelectReport=(action addWidgetToDashboard)
             }}
               add a widget
             {{/dashboard-actions/add-widget}}

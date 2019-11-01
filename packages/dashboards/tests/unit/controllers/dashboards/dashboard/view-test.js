@@ -1,14 +1,14 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { startMirage } from 'dummy/initializers/ember-cli-mirage';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 let Store, MetadataService, controller, compression;
 
 module('Unit | Controller | dashboards/dashboard/view', function(hooks) {
   setupTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
-    this.server = startMirage();
     Store = this.owner.lookup('service:store');
     MetadataService = this.owner.lookup('service:bard-metadata');
 
@@ -16,10 +16,6 @@ module('Unit | Controller | dashboards/dashboard/view', function(hooks) {
     compression = this.owner.lookup('service:compression');
 
     return MetadataService.loadMetadata();
-  });
-
-  hooks.afterEach(function() {
-    this.server.shutdown();
   });
 
   test('updateFilter', async function(assert) {

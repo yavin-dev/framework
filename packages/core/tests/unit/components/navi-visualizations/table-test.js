@@ -4,11 +4,12 @@ import { helper as buildHelper } from '@ember/component/helper';
 import Component from '@ember/component';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import merge from 'lodash/merge';
 
 module('Unit | Component | table', function(hooks) {
   setupTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
     this.owner.register('component:navi-table-sort-icon', Component.extend(), {
@@ -23,7 +24,7 @@ module('Unit | Component | table', function(hooks) {
     this.owner.register('component:navi-icon', Component.extend(), {
       instantiate: false
     });
-    this.owner.register('component:tooltip-on-element', Component.extend(), {
+    this.owner.register('component:ember-tooltip', Component.extend(), {
       instantiate: false
     });
 
@@ -44,12 +45,7 @@ module('Unit | Component | table', function(hooks) {
       instantiate: false
     });
 
-    setupMock();
     return this.owner.lookup('service:bard-metadata').loadMetadata();
-  });
-
-  hooks.afterEach(function() {
-    teardownMock();
   });
 
   const ROWS = [

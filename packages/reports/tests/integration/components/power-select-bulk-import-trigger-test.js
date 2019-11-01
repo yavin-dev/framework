@@ -3,14 +3,13 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, fillIn, click, findAll, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import { setupMock, teardownMock } from '../../helpers/mirage-helper';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 module('Integration | Component | power select bulk import trigger', function(hooks) {
   setupRenderingTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
-    setupMock();
-
     return this.owner
       .lookup('service:bard-metadata')
       .loadMetadata()
@@ -24,7 +23,7 @@ module('Integration | Component | power select bulk import trigger', function(ho
               selected: [],
               onChange: () => null,
               extra: {
-                filter: { subject: { name: 'property' } }
+                filter: { subject: { name: 'property', longName: 'property' } }
               }
             });
 
@@ -45,10 +44,6 @@ module('Integration | Component | power select bulk import trigger', function(ho
             );
           });
       });
-  });
-
-  hooks.afterEach(function() {
-    teardownMock();
   });
 
   test('it renders', function(assert) {

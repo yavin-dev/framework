@@ -32,17 +32,10 @@ const NEW_MODEL = {
   title: 'Untitled Widget',
   updatedOn: null,
   visualization: {
-    type: 'line-chart',
+    type: 'table',
     version: 1,
     metadata: {
-      axis: {
-        y: {
-          series: {
-            type: null,
-            config: {}
-          }
-        }
-      }
+      columns: []
     }
   },
   dashboard: 'dashboard1'

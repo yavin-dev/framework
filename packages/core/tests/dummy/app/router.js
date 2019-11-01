@@ -19,6 +19,7 @@ Router.map(function() {
   this.route('table');
   this.route('metric-label');
   this.route('pie-chart');
+  this.route('buttons');
 });
 
 export default Router;

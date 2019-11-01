@@ -1,0 +1,1 @@
+export { default } from '<%= addonName %>/navi-visualization-manifests/<%= dasherizedModuleName %>';

@@ -3,15 +3,15 @@ import { get } from '@ember/object';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { RequestActions } from 'navi-reports/services/request-action-dispatcher';
-import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 let Store, MetadataService, AdClicks, PageViews, CurrentModel, Consumer;
 
 module('Unit | Consumer | request metric', function(hooks) {
   setupTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
-    setupMock();
     Store = this.owner.lookup('service:store');
 
     MetadataService = this.owner.lookup('service:bard-metadata');
@@ -30,10 +30,6 @@ module('Unit | Consumer | request metric', function(hooks) {
       AdClicks = MetadataService.getById('metric', 'adClicks');
       PageViews = MetadataService.getById('metric', 'pageViews');
     });
-  });
-
-  hooks.afterEach(function() {
-    teardownMock();
   });
 
   test('ADD_METRIC', function(assert) {

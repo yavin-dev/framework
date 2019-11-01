@@ -2,9 +2,9 @@ import { A } from '@ember/array';
 import config from 'ember-get-config';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render } from '@ember/test-helpers';
+import { render, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 const TEMPLATE = hbs`
   {{navi-visualizations/table-print
@@ -82,10 +82,10 @@ const Options = {
 
 module('Integration | Component | navi visualizations/table print', function(hooks) {
   setupRenderingTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
     config.navi.FEATURES.enableVerticalCollectionTableIterator = true;
-    setupMock();
 
     this.set('model', Model);
     this.set('options', Options);
@@ -96,7 +96,6 @@ module('Integration | Component | navi visualizations/table print', function(hoo
 
   hooks.afterEach(function() {
     config.navi.FEATURES.enableVerticalCollectionTableIterator = false;
-    teardownMock();
   });
 
   test('it renders', async function(assert) {
@@ -104,15 +103,9 @@ module('Integration | Component | navi visualizations/table print', function(hoo
 
     await render(TEMPLATE);
 
-    assert.ok(this.$('.table-widget').is(':visible'), 'The table widget component is visible');
+    assert.dom('.table-widget').isVisible('The table widget component is visible');
 
-    let headers = this.$('div.table-header-row-vc .table-header-cell')
-      .toArray()
-      .map(el =>
-        this.$(el)
-          .text()
-          .trim()
-      );
+    let headers = findAll('div.table-header-row-vc .table-header-cell').map(el => el.textContent.trim());
 
     assert.deepEqual(
       headers,
@@ -120,18 +113,9 @@ module('Integration | Component | navi visualizations/table print', function(hoo
       'The table renders the headers correctly based on the request'
     );
 
-    let body = this.$('tbody tr')
-      .toArray()
-      .map(row =>
-        this.$(row)
-          .find('.table-cell')
-          .toArray()
-          .map(cell =>
-            this.$(cell)
-              .text()
-              .trim()
-          )
-      );
+    let body = findAll('tbody tr').map(row =>
+      [...row.querySelectorAll('.table-cell')].map(cell => cell.textContent.trim())
+    );
 
     assert.deepEqual(
       body,

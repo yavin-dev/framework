@@ -1238,26 +1238,25 @@ module('Acceptance | Navi Report', function(hooks) {
   });
 
   test('Updating chart series', async function(assert) {
-    assert.expect(3);
+    assert.expect(4);
 
     // Check inital series
     await visit('/reports/1/view');
 
     let seriesLabels = findAll('.c3-legend-item').map(el => el.textContent.trim());
+    let hiddenLabels = findAll('.c3-legend-item-hidden').map(el => el.textContent.trim());
     assert.deepEqual(seriesLabels, ['Property 1', 'Property 2', 'Property 3'], '3 series are initially present');
+    assert.deepEqual(hiddenLabels, [], 'No series are initially hidden from chart');
 
-    // Delete a series
-    await click('.report-view__visualization-edit-btn');
-    await click(findAll('.series-collection .navi-icon__delete')[1]);
+    // Toggle off first series
+    await click('.c3-legend-item-Property-1');
+    hiddenLabels = findAll('.c3-legend-item-hidden').map(el => el.textContent.trim());
+    assert.deepEqual(hiddenLabels, ['Property 1'], 'Selected series has been hidden from chart');
 
-    seriesLabels = findAll('.c3-legend-item').map(el => el.textContent.trim());
-    assert.deepEqual(seriesLabels, ['Property 1', 'Property 3'], 'Selected series has been deleted from chart');
-
-    // Add a series
-    await click($('.add-series .table-row:contains(Property 4)')[0]);
-
-    seriesLabels = findAll('.c3-legend-item').map(el => el.textContent.trim());
-    assert.deepEqual(seriesLabels, ['Property 1', 'Property 3', 'Property 4'], 'Selected series has been added chart');
+    // Toggle on first series
+    await click('.c3-legend-item-Property-1');
+    hiddenLabels = findAll('.c3-legend-item-hidden').map(el => el.textContent.trim());
+    assert.deepEqual(hiddenLabels, [], 'Property 1 is no longer hidden from chart');
   });
 
   test('favorite reports', async function(assert) {
@@ -1745,7 +1744,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     await waitFor('.navi-report__cancel-btn', { timeout: 5000 });
 
-    let buttons = findAll('.navi-report__footer .btn');
+    let buttons = findAll('.navi-report__footer .navi-button');
     assert.dom('.navi-loader__spinner').isVisible('Report is loading');
 
     assert.deepEqual(
@@ -1773,7 +1772,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.equal(currentURL(), '/reports/1/edit', 'Clicking `Cancel` brings the user to the edit route');
 
     assert.deepEqual(
-      findAll('.navi-report__footer .btn').map(e => e.textContent.trim()),
+      findAll('.navi-report__footer .navi-button').map(e => e.textContent.trim()),
       ['Run'],
       'When not loading a report, the standard footer buttons are available'
     );
@@ -1783,7 +1782,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.equal(currentURL(), '/reports/1/view', 'Running the report brings the user to the view route');
 
     assert.deepEqual(
-      findAll('.navi-report__footer .btn').map(e => e.textContent.trim()),
+      findAll('.navi-report__footer .navi-button').map(e => e.textContent.trim()),
       ['Run'],
       'When not loading a report, the standard footer buttons are available'
     );

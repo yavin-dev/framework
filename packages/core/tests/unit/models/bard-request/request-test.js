@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { settled } from '@ember/test-helpers';
-import { setupMock, teardownMock } from '../../../helpers/mirage-helper';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import { get, set } from '@ember/object';
 import { run } from '@ember/runloop';
 import moment from 'moment';
@@ -15,9 +15,9 @@ let Store, MetadataService;
 
 module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
   setupTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(async function() {
-    setupMock();
     Store = this.owner.lookup('service:store');
 
     MetadataService = this.owner.lookup('service:bard-metadata');
@@ -183,10 +183,6 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
         });
       });
     });
-  });
-
-  hooks.afterEach(function() {
-    teardownMock();
   });
 
   test('Request Model Fragment', async function(assert) {

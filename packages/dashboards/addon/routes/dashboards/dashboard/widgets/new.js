@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -51,7 +51,7 @@ export default ReportsNewRoute.extend({
               }
             }
           ]),
-          visualization: { type: 'line-chart' }
+          visualization: { type: 'table' }
         });
 
         get(widget, 'request.intervals').createFragment({

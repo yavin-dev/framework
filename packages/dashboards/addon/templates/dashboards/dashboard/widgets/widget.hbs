@@ -9,9 +9,15 @@
     {{/if}}
     {{navi-icon "angle-right"}}
     {{#with (model-for "dashboards.dashboard") as |parentDashboard|}}
-      {{#link-to "dashboards.dashboard" parentDashboard.id class="navi-report-widget__breadcrumb-link"}}
-        {{parentDashboard.title}}
-      {{/link-to}}
+      {{#if parentQueryParams}}
+        {{#link-to "dashboards.dashboard" parentDashboard.id (query-params filters=parentQueryParams.filters) class="navi-report-widget__breadcrumb-link"}}
+          {{parentDashboard.title}}
+        {{/link-to}}
+      {{else}}
+        {{#link-to "dashboards.dashboard" parentDashboard.id class="navi-report-widget__breadcrumb-link"}}
+          {{parentDashboard.title}}
+        {{/link-to}}
+      {{/if}}
     {{/with}}
     {{navi-icon "angle-right"}}
   </div>

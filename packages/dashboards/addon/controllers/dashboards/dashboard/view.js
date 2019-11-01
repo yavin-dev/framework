@@ -7,8 +7,9 @@ import Controller from '@ember/controller';
 import { inject as service } from '@ember/service';
 import isEqual from 'lodash/isEqual';
 import { get, setProperties } from '@ember/object';
+import ReportToWidget from 'navi-dashboards/mixins/controllers/report-to-widget';
 
-export default Controller.extend({
+export default Controller.extend(ReportToWidget, {
   /**
    * @property {Service} compression
    */
@@ -92,10 +93,12 @@ export default Controller.extend({
       const filters = get(dashboard, 'filters')
         .toArray()
         .map(fil => fil.serialize()); //Native array of serialized filters
+      const dimensionMeta = bardMetadata.getById('dimension', dimension.dimension);
       const filter = store
         .createFragment('bard-request/fragments/filter', {
-          dimension: bardMetadata.getById('dimension', dimension.dimension),
-          operator: 'in'
+          dimension: dimensionMeta,
+          operator: 'in',
+          field: dimensionMeta.primaryKeyFieldName
         })
         .serialize();
 

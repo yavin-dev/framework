@@ -8,10 +8,8 @@ module.exports = function(environment) {
     locationType: 'auto',
     EmberENV: {
       FEATURES: {
-        /*
-         * Here you can enable experimental features on an ember canary build
-         * e.g. 'with-controller': true
-         */
+        // Here you can enable experimental features on an ember canary build
+        // e.g. EMBER_NATIVE_DECORATOR_SUPPORT: true
       },
       EXTEND_PROTOTYPES: {
         // Prevent Ember Data from overriding Date.parse.
@@ -26,16 +24,10 @@ module.exports = function(environment) {
        */
     },
 
-    'ember-tether': {
-      bodyElementId: 'navi-root'
-    },
-
     navi: {
       FEATURES: {
-        enableDirectory: true,
         enableMultipleExport: false,
-        enableTableEditing: true,
-        enableChartStacking: true
+        enableTableEditing: true
       }
     }
   };
@@ -63,11 +55,10 @@ module.exports = function(environment) {
   }
 
   if (environment === 'production') {
-    ENV['ember-cli-mirage'] = {
-      enabled: process.env.BUILD_NAVI_DEMO === 'true'
-    };
     if (process.env.BUILD_NAVI_DEMO === 'true') {
       ENV['rootURL'] = '/navi/';
+      ENV['locationType'] = 'hash';
+      ENV['ember-cli-mirage'] = { enabled: true };
     }
   }
 

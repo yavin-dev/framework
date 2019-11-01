@@ -8,10 +8,8 @@ module.exports = function(environment) {
     locationType: 'auto',
     EmberENV: {
       FEATURES: {
-        /*
-         * Here you can enable experimental features on an ember canary build
-         * e.g. 'with-controller': true
-         */
+        // Here you can enable experimental features on an ember canary build
+        // e.g. EMBER_NATIVE_DECORATOR_SUPPORT: true
       },
       EXTEND_PROTOTYPES: {
         // Prevent Ember Data from overriding Date.parse.
@@ -48,8 +46,7 @@ module.exports = function(environment) {
       FEATURES: {
         enableTotals: false,
         enableTableEditing: true,
-        enabledNotifyIfData: true,
-        enableChartStacking: true
+        enabledNotifyIfData: true
       }
     }
   };

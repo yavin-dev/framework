@@ -9,7 +9,7 @@ module('Unit | Helper | has unfiltered parameters', function(hooks) {
     assert.expect(4);
 
     let hasUnfilteredParametersFactory = this.owner.lookup('helper:has-unfiltered-parameters');
-    let hasUnfilteredParameters = new hasUnfilteredParametersFactory();
+    let hasUnfilteredParameters = hasUnfilteredParametersFactory.create();
     setOwner(hasUnfilteredParameters, this.owner);
 
     let request = { metrics: [], having: [] },

@@ -7,7 +7,6 @@ import { A as arr, makeArray } from '@ember/array';
 import { isEmpty } from '@ember/utils';
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
-import { copy } from '@ember/object/internals';
 import { all } from 'rsvp';
 
 export default Route.extend({
@@ -53,10 +52,10 @@ export default Route.extend({
    */
   _updateLayout(updatedWidgets) {
     const dashboard = get(this, 'currentDashboard');
-    const newLayout = copy(get(dashboard, 'presentation.layout'), true);
+    const layout = get(dashboard, 'presentation.layout');
 
     makeArray(updatedWidgets).forEach(updatedWidget => {
-      let modelWidget = arr(newLayout).findBy('widgetId', Number(updatedWidget.id));
+      let modelWidget = layout.find(widget => widget.get('widgetId') === Number(updatedWidget.id));
 
       //Make sure the widget is still a member of the dashboard
       if (modelWidget) {
@@ -64,8 +63,6 @@ export default Route.extend({
         setProperties(modelWidget, { column, row, height, width });
       }
     });
-
-    set(dashboard, 'presentation.layout', newLayout);
   },
 
   /**
@@ -83,6 +80,41 @@ export default Route.extend({
     });
   },
 
+  /**
+   * @override
+   * @method resetController - reset query params on exit of route
+   * @param {Object} controller
+   * @param {Boolean} isExiting
+   */
+  deactivate() {
+    this._super(...arguments);
+    const dashboard = this.modelFor(this.routeName);
+    // don't rollback attributes if dashboard was unloaded.
+    if (dashboard.isEmpty !== true) {
+      dashboard.rollbackAttributes();
+    }
+  },
+
+  /**
+   * If traveling to the same route as the current dashboard, cache the query for breadcrumb purposes
+   * @param {Transition} transition
+   */
+  cacheQuery(transition) {
+    const controller = this.controllerFor(this.routeName);
+    if (transition.from && transition.from.queryParams) {
+      const fromRoute = transition.from.find(info => info.paramNames.includes('dashboard_id'));
+      const fromDashboardId = fromRoute ? fromRoute.params.dashboard_id : null;
+      const toRoute = transition.to && transition.to.find(info => info.paramNames.includes('dashboard_id'));
+      const toDashboardId = toRoute ? toRoute.params.dashboard_id : null;
+
+      if (fromDashboardId === toDashboardId) {
+        controller.set('queryCache', transition.from.queryParams);
+        return;
+      }
+    }
+    this.controller.set('queryCache', null);
+  },
+
   actions: {
     /**
      * @action didUpdateLayout - updates dashboard's layout property and save it
@@ -90,19 +122,7 @@ export default Route.extend({
      * @param {Array} [widgets] - Array of widgets that updated
      */
     didUpdateLayout(event, widgets) {
-      if (widgets && get(widgets, 'length')) {
-        this.set('_stagedLayout', widgets);
-      }
-    },
-
-    /**
-     * Take new layout staged by didChange and set
-     * it on the dashboard model.
-     *
-     * @action commitStagedLayout
-     */
-    commitStagedLayout() {
-      this._updateLayout(get(this, '_stagedLayout'));
+      this._updateLayout(widgets);
     },
 
     /**
@@ -181,6 +201,35 @@ export default Route.extend({
       const dashboard = get(this, 'currentDashboard');
       get(dashboard, 'widgets').forEach(widget => widget.rollbackAttributes());
       dashboard.rollbackAttributes();
+    },
+
+    /**
+     * Prompts user if they are leaving the route with unsaved changes.
+     * @param {Transition} transition
+     */
+    willTransition(transition) {
+      //subroute cache queryString and continue
+      if (transition.targetName.startsWith(this.routeName)) {
+        this.cacheQuery(transition);
+        return true;
+      }
+
+      const dashboard = get(this, 'currentDashboard');
+
+      const isDirty =
+        dashboard.get('hasDirtyAttributes') ||
+        dashboard.get('filters.hasDirtyAttributes') ||
+        dashboard.get('presentation.hasDirtyAttributes');
+
+      if (
+        isDirty &&
+        dashboard.get('canUserEdit') &&
+        !confirm('You have unsaved changes, are you sure you want to exit?')
+      ) {
+        transition.abort();
+      } else {
+        return true;
+      }
     }
   }
 });

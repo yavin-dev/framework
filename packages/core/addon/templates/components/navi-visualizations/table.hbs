@@ -1,8 +1,8 @@
 {{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="table-widget__info-header">
   <div class="table-widget__row-info">
-    <span class="table-widget__row-info-number">{{format-number rowsInResponse fallback="0"}}</span> out of
-    <span class="table-widget__row-info-number">{{format-number totalRows fallback="0"}}</span> rows
+    <span class="table-widget__row-info-number">{{if rowsInResponse (format-number rowsInResponse) 0}}</span> out of
+    <span class="table-widget__row-info-number">{{if totalRows (format-number totalRows) 0}}</span> rows
   </div>
   {{#if isEditingMode}}
     <div class="table-widget__edit-col-msg">

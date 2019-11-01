@@ -23,13 +23,11 @@ export function reportCollectionRoutes(router) {
 }
 
 export function reportPrintRoutes(router) {
-  router.route('reports-print', { path: '/print' }, function() {
-    this.route('reports', function() {
-      this.route('new');
-      this.route('report', { path: '/:report_id' }, function() {
-        this.route('view');
-        this.route('invalid');
-      });
+  router.route('reports-print.reports', { path: '/print/reports' }, function() {
+    this.route('new');
+    this.route('report', { path: '/:report_id' }, function() {
+      this.route('view');
+      this.route('invalid');
     });
   });
 }

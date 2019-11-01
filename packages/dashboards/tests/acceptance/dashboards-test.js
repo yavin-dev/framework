@@ -8,9 +8,19 @@ import { Response } from 'ember-cli-mirage';
 import { selectChoose } from 'ember-power-select/test-support';
 import $ from 'jquery';
 
+let confirm;
+
 module('Acceptance | Dashboards', function(hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
+
+  hooks.beforeEach(() => {
+    confirm = window.confirm;
+  });
+
+  hooks.afterEach(() => {
+    window.confirm = confirm;
+  });
 
   test('dashboard success', async function(assert) {
     assert.expect(2);
@@ -48,8 +58,10 @@ module('Acceptance | Dashboards', function(hooks) {
     await visit('/dashboards/4');
 
     //trigger a change
+    const singlegrid = $('.grid-stack').data('gridstack');
+    const item = findAll('.grid-stack-item')[0];
     run(() => {
-      $('.grid-stack').trigger('resizestop');
+      singlegrid.resize(item, 12, 4);
     });
 
     assert
@@ -65,7 +77,7 @@ module('Acceptance | Dashboards', function(hooks) {
     const route = this.owner.lookup('route:dashboards.dashboard');
 
     assert.deepEqual(
-      route.currentDashboard.presentation.layout,
+      route.currentDashboard.presentation.layout.serialize(),
       [
         { column: 0, height: 4, row: 0, widgetId: 1, width: 6 },
         { column: 6, height: 4, row: 0, widgetId: 2, width: 6 },
@@ -80,11 +92,10 @@ module('Acceptance | Dashboards', function(hooks) {
 
     run(() => {
       grid.move(items[2], 0, 0);
-      $('.grid-stack').trigger('resizestop');
     });
 
     assert.deepEqual(
-      route.currentDashboard.presentation.layout,
+      route.currentDashboard.presentation.layout.serialize(),
       [
         { column: 0, height: 4, row: 4, widgetId: 1, width: 6 },
         { column: 6, height: 4, row: 4, widgetId: 2, width: 6 },
@@ -180,7 +191,7 @@ module('Acceptance | Dashboards', function(hooks) {
   });
 
   test('add widget button', async function(assert) {
-    assert.expect(4);
+    assert.expect(5);
 
     await visit('/dashboards/4');
 
@@ -188,7 +199,13 @@ module('Acceptance | Dashboards', function(hooks) {
       .dom('.add-widget button')
       .isNotVisible('The `Add Widget` button is not visible when user cannot edit the dashboard');
 
-    await visit('/dashboards/5');
+    await visit('/dashboards/1');
+
+    assert.deepEqual(
+      findAll('.navi-widget__title').map(el => el.textContent.trim()),
+      ['Mobile DAU Goal', 'Mobile DAU Graph', 'Mobile DAU Table'],
+      'There are 3 widgets in the dashboard'
+    );
 
     assert.dom('.add-widget button').isVisible('The `Add Widget` button is visible when user can edit the dashboard');
 
@@ -198,22 +215,18 @@ module('Acceptance | Dashboards', function(hooks) {
       .dom('.add-widget-modal .btn')
       .hasAttribute(
         'href',
-        `/dashboards/5/widgets/new`,
+        `/dashboards/1/widgets/new`,
         'Create new assigns the new widget route to the primary button'
       );
 
     await selectChoose('.report-select', 'Report 12');
+    await click('.add-widget-modal .btn');
 
-    assert
-      .dom('.add-widget-modal .btn')
-      .hasAttribute(
-        'href',
-        `/reports/4`,
-        'Selecting a report assigns the route `/reports/${id}` to the primary button where id is the id of the report'
-      );
-
-    // Clean up
-    await click($('button:contains(Cancel)')[0]);
+    assert.deepEqual(
+      findAll('.navi-widget__title').map(el => el.textContent.trim()),
+      ['Mobile DAU Goal', 'Mobile DAU Graph', 'Mobile DAU Table', 'Report 12'],
+      'The widget is added to the dashboard'
+    );
   });
 
   test('Collapsed filters render on load', async function(assert) {
@@ -356,7 +369,7 @@ module('Acceptance | Dashboards', function(hooks) {
   });
 
   test('New widget', async function(assert) {
-    assert.expect(4);
+    assert.expect(11);
 
     // Check original set of widgets
     await visit('/dashboards/1');
@@ -394,6 +407,38 @@ module('Acceptance | Dashboards', function(hooks) {
       ['Mobile DAU Goal', 'Mobile DAU Graph', 'Mobile DAU Table', 'Untitled Widget'],
       '"Untitled Widget" has been added to dashboard'
     );
+
+    // hover css events are hard
+    find('.navi-widget__actions').style.visibility = 'visible';
+    await click('.navi-widget__explore-btn');
+
+    assert.equal(currentURL(), '/dashboards/1/widgets/1/view', 'Taken to explore widget page');
+
+    await click(findAll('.navi-report-widget__breadcrumb-link')[1]);
+
+    assert.equal(currentURL(), '/dashboards/1/view', 'Taken back to dashboard page');
+
+    assert.deepEqual(
+      widgetsAfter,
+      ['Mobile DAU Goal', 'Mobile DAU Graph', 'Mobile DAU Table', 'Untitled Widget'],
+      '"Untitled Widget" is still on dashboard after navigating to subroute'
+    );
+
+    window.confirm = () => {
+      assert.step('navigation confirmation denied');
+      return false;
+    };
+
+    await click('.navi-dashboard__breadcrumb-link');
+
+    assert.equal(currentURL(), '/dashboards/1/view', 'We are still on the dashboard route');
+
+    await click('.navi-dashboard__save-button');
+    await click('.navi-dashboard__breadcrumb-link');
+
+    assert.equal(currentURL(), '/dashboards', 'successfully navigated away with no unsaved changes');
+
+    assert.verifySteps(['navigation confirmation denied']);
   });
 
   test('Failing to save a new widget', async function(assert) {

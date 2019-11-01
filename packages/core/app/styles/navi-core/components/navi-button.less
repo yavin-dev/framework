@@ -1,0 +1,64 @@
+/**
+ * Copyright 2019, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
+
+@navi-button-border-width: 1px;
+@navi-button-top-bottom-padding: 5px;
+@navi-button-side-padding: 5px;
+
+.navi-button {
+  align-items: center;
+  border-radius: 2px;
+  box-sizing: border-box;
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 14px;
+  justify-content: center;
+  margin: 0px;
+  min-width: 120px;
+  padding: @navi-button-top-bottom-padding @navi-button-side-padding;
+  transition: 300ms;
+
+  &--primary {
+    background: linear-gradient(to right, @denali-brand-600, @denali-brand-700);
+    color: @navi-white;
+    min-width: 120px;
+    padding: (@navi-button-top-bottom-padding + @navi-button-border-width) @navi-button-side-padding;
+
+    &:hover {
+      background: linear-gradient(to right, @denali-brand-700, @denali-brand-800);
+    }
+
+    &-disabled {
+      background: rgba(48, 48, 48, 0.12);
+      box-shadow: none;
+      color: rgba(48, 48, 48, 0.5);
+      cursor: not-allowed;
+    }
+  }
+
+  &--secondary {
+    background: transparent;
+    border-color: @denali-brand-600;
+    border-style: solid;
+    border-width: @navi-button-border-width;
+    color: @denali-brand-600;
+
+    &:hover {
+      background: rgba(0, 68, 224, 0.26);
+      border-color: #3570f4;
+      border-width: 1px;
+      color: #0044e0;
+    }
+
+    &-disabled {
+      background: rgba(48, 48, 48, 0.12);
+      border-color: rgba(48, 48, 48, 0.5);
+      border-style: solid;
+      border-width: 1px;
+      color: rgba(48, 48, 48, 0.5);
+      cursor: not-allowed;
+    }
+  }
+}

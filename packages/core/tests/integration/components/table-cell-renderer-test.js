@@ -18,7 +18,7 @@ module('Integration | Component | table cell renderer', function(hooks) {
 
     this.set('request', {});
 
-    await render(hbs`{{table-cell-renderer
+    await render(hbs`{{navi-table-cell-renderer
       column=column
       data=data
       request=request
