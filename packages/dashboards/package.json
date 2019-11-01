@@ -29,7 +29,7 @@
     "ember-collection": "1.0.0-alpha.9",
     "ember-composable-helpers": "^2.2.0",
     "ember-concurrency": "~0.8.27",
-    "ember-cp-validations": "^4.0.0-beta.9",
+    "ember-cp-validations": "^4.0.0-beta.10",
     "ember-data-model-fragments": "~4.0.0",
     "ember-get-config": "0.2.4",
     "ember-gridstack": "1.3.2",
