@@ -20,6 +20,14 @@ java {
     }
 }
 
+tasks.create<Jar>("sourcesJar") {
+    dependsOn(JavaPlugin.CLASSES_TASK_NAME)
+    archiveClassifier.set("sources")
+    from(sourceSets.main.get().allSource)
+}
+
+artifacts.add("archives", tasks["sourcesJar"])
+
 publishing {
     publications {
         create<MavenPublication>("models") {
