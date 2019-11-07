@@ -573,4 +573,59 @@ module('Acceptance | Dashboards', function(hooks) {
 
     assert.dom('.navi-dashboard__edit-title').hasText('EFGH', 'Keeps updated text after save');
   });
+
+  test('modifying dashboard filters, navigating away, and coming back to modifications', async function(assert) {
+    assert.expect(3);
+
+    let dataRequests = [];
+    server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
+    server.pretender.handledRequest = (verb, url, req) => {
+      if (url.includes('/v1/data')) {
+        dataRequests.push(req);
+      }
+      return { rows: [] };
+    };
+
+    // load the dashboard
+    await visit('/dashboards/2/view');
+
+    assert.deepEqual(
+      dataRequests.map(thing => thing.queryParams.filters),
+      [
+        'property|id-notin[2,3,4],property|id-notin[1],property|id-contains[114,100001]',
+        'property|id-notin[2,3,4],property|id-notin[1],property|id-contains[114,100001]'
+      ],
+      'the filters from the request are unmodified from the dashboard'
+    );
+
+    // modify the filters
+    await click('.dashboard-filters__expand-button');
+    await click(findAll('.ember-power-select-multiple-remove-btn')[0]);
+
+    const modifiedURL = currentURL();
+
+    // navigate away
+    window.confirm = () => true;
+    await click('.navi-dashboard__breadcrumb-link');
+
+    dataRequests = [];
+
+    // come back with modified filters
+    await visit(modifiedURL);
+
+    assert
+      .dom('.navi-dashboard__save-dialogue')
+      .exists(
+        'The dashboard is in a dirty state after modifying the dashboard, navigating away, and coming back to the modified url'
+      );
+
+    assert.deepEqual(
+      dataRequests.map(thing => thing.queryParams.filters),
+      [
+        'property|id-notin[2,3,4],property|id-contains[114,100001]',
+        'property|id-notin[2,3,4],property|id-contains[114,100001]'
+      ],
+      'the filters reflect the dashboards modified filters'
+    );
+  });
 });
