@@ -579,12 +579,12 @@ module('Acceptance | Dashboards', function(hooks) {
 
     let dataRequests = [];
     server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
-    server.pretender.handledRequest = (verb, url, req) => {
-      if (url.includes('/v1/data')) {
+    server.get('/data/*path', (schema, req) => {
+      if (req.url.includes('/v1/data')) {
         dataRequests.push(req);
       }
       return { rows: [] };
-    };
+    });
 
     // load the dashboard
     await visit('/dashboards/2/view');
