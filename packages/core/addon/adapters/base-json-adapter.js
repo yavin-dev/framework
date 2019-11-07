@@ -41,6 +41,17 @@ export default DS.JSONAPIAdapter.extend(AdapterFetch, {
   },
 
   /**
+   * Don't reload models in the background by default when fetching records
+   *
+   * @override
+   * @method shouldBackgroundReloadRecord
+   * @returns {boolean}
+   */
+  shouldBackgroundReloadRecord() {
+    return false;
+  },
+
+  /**
    * @override
    * @method findMany
    * @param {DS.Store} store
