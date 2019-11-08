@@ -37,7 +37,7 @@
             </label>
 
             <div class="grouped-list__icon-set">
-              <a
+              <a role="button"
                 class={{concat (if (get paramsFiltered (concat param.param "|" param.id)) "grouped-list__filter--active ") "grouped-list__filter"}}
                 onclick={{action "paramFilterToggled" metric param}}>
                 <span></span>

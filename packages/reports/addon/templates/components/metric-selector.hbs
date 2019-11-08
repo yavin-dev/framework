@@ -41,7 +41,7 @@
           }}
         {{/if}}
         {{#if (can-having metric)}}
-          <a
+          <a role="button"
             class={{concat (if (get metricsFiltered metric.name) "grouped-list__filter--active ") "grouped-list__filter"}}
             onclick={{action onToggleMetricFilter metric}}>
             <span></span>

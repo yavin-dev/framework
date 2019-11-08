@@ -7,6 +7,7 @@ import { render, click, findAll, fillIn, triggerEvent } from '@ember/test-helper
 import hbs from 'htmlbars-inline-precompile';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import { assertTooltipRendered, assertTooltipNotRendered, assertTooltipContent } from 'ember-tooltips/test-support';
+import config from 'ember-get-config';
 
 let Store, MetadataService, Age;
 
@@ -82,7 +83,7 @@ module('Integration | Component | dimension selector', function(hooks) {
   });
 
   test('show selected', async function(assert) {
-    assert.expect(3);
+    assert.expect(4);
 
     assert.ok(
       findAll('.grouped-list__item').length > this.get('request.dimensions.length') + 1 /*for timegrain*/,
@@ -99,10 +100,33 @@ module('Integration | Component | dimension selector', function(hooks) {
 
     assert.notOk(
       findAll('.checkbox-selector__checkbox')
-        .map(el => el.checked)
-        .includes(false),
-      'The selected items are checked'
+        .filter(el => !el.checked)
+        .concat(findAll('.grouped-list__add-icon--deselected')).length,
+      'No items are marked as unselected'
     );
+
+    config.navi.FEATURES.enableRequestPreview = true;
+
+    await render(hbs`{{dimension-selector
+      request=request
+      onAddTimeGrain=(action addTimeGrain)
+      onRemoveTimeGrain=(action removeTimeGrain)
+      onAddDimension=(action addDimension)
+      onRemoveDimension=(action removeDimension)
+      onToggleDimFilter=(action addDimFilter)
+    }}`);
+
+    await click('.navi-list-selector__show-link');
+
+    assert.equal(
+      findAll('.checkbox-selector__checkbox')
+        .filter(el => el.checked)
+        .concat(findAll('.grouped-list__item-container--selected')).length,
+      2,
+      'The selected items are marked as added or selected'
+    );
+
+    config.navi.FEATURES.enableRequestPreview = false;
   });
 
   test('actions', async function(assert) {
@@ -143,22 +167,22 @@ module('Integration | Component | dimension selector', function(hooks) {
     //select a random dimension
 
     //addDimension when an unselected dimension is clicked
-    await click($('.grouped-list__item:contains(Gender) .grouped-list__item-label')[0]);
+    await click($('.grouped-list__item:contains(Gender) .grouped-list__add-icon')[0]);
 
     //removeDimension when a selected dimension is clicked
-    await click($('.grouped-list__item:contains(Age) .grouped-list__item-label')[0]);
+    await click($('.grouped-list__item:contains(Age) .grouped-list__add-icon')[0]);
   });
 
   test('filter icon', async function(assert) {
     assert.expect(3);
 
     assert.notOk(
-      isEmpty($('.grouped-list__item:contains(Age) .checkbox-selector__filter--active')),
+      isEmpty($('.grouped-list__item:contains(Age) .grouped-list__filter--active')),
       'The filter icon with the age dimension has the active class'
     );
 
     assert.ok(
-      isEmpty($('.grouped-list__item:contains(Gender) .checkbox-selector__filter--active')),
+      isEmpty($('.grouped-list__item:contains(Gender) .grouped-list__filter--active')),
       'The filter icon with the gender dimension does not have the active class'
     );
 
@@ -166,7 +190,7 @@ module('Integration | Component | dimension selector', function(hooks) {
       assert.deepEqual(dimension, Age, 'The age dimension is passed to the action when filter icon is clicked');
     });
 
-    await click($('.grouped-list__item:contains(Age) .checkbox-selector__filter')[0]);
+    await click($('.grouped-list__item:contains(Age) .grouped-list__filter')[0]);
   });
 
   test('tooltip', async function(assert) {
