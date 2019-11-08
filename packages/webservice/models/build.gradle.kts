@@ -20,13 +20,13 @@ java {
     }
 }
 
-tasks.create<Jar>("sourcesJar") {
+val sourcesJar by tasks. registering(Jar::class) {
     dependsOn(JavaPlugin.CLASSES_TASK_NAME)
     archiveClassifier.set("sources")
     from(sourceSets.main.get().allSource)
 }
 
-artifacts.add("archives", tasks["sourcesJar"])
+artifacts.add("archives", sourcesJar)
 
 publishing {
     publications {
