@@ -83,7 +83,7 @@ module('Unit | Bard facts Adapter', function(hooks) {
   });
 
   test('_buildDimensionsPath', function(assert) {
-    assert.expect(3);
+    assert.expect(4);
 
     let singleDim = {
       dimensions: [{ dimension: 'd1' }]
@@ -143,7 +143,7 @@ module('Unit | Bard facts Adapter', function(hooks) {
   });
 
   test('_buildMetricsParam', function(assert) {
-    assert.expect(2);
+    assert.expect(3);
 
     let singleMetric = {
       metrics: [{ metric: 'm1' }]
