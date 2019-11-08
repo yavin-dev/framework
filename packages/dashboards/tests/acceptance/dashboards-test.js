@@ -580,9 +580,7 @@ module('Acceptance | Dashboards', function(hooks) {
     let dataRequests = [];
     server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
     server.get('/data/*path', (schema, req) => {
-      if (req.url.includes('/v1/data')) {
-        dataRequests.push(req);
-      }
+      dataRequests.push(req);
       return { rows: [] };
     });
 
