@@ -29,7 +29,7 @@ module('Acceptances | Report to dashboard action', function(hooks) {
     );
 
     // Create empty filter to make request invalid
-    await click($('.grouped-list__item:Contains(Operating System) .checkbox-selector__filter')[0]);
+    await click($('.grouped-list__item:Contains(Operating System) .grouped-list__filter')[0]);
 
     assert.notOk(
       !!$('.navi-report__action:contains("Add to Dashboard")').length,
@@ -37,7 +37,7 @@ module('Acceptances | Report to dashboard action', function(hooks) {
     );
 
     // Remove empty filter and run query
-    await click($('.grouped-list__item:Contains(Operating System) .checkbox-selector__filter')[0]);
+    await click($('.grouped-list__item:Contains(Operating System) .grouped-list__filter')[0]);
     await click('.navi-report__run-btn');
 
     assert.ok(

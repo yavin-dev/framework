@@ -47,9 +47,7 @@ module('Acceptance | custom reports', function(hooks) {
     await visit('/reports/new');
 
     // Add filter
-    await click(
-      $('.checkbox-selector--dimension .grouped-list__item:contains(Character) .checkbox-selector__filter')[0]
-    );
+    await click($('.checkbox-selector--dimension .grouped-list__item:contains(Character) .grouped-list__filter')[0]);
     await selectChoose('.filter-values--dimension-select__trigger', 'Luigi');
     assert.dom('.filter-builder-dimension__values').containsText('Luigi', 'A filter value can be selected');
 

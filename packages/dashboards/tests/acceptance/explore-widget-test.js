@@ -201,7 +201,7 @@ module('Acceptance | Exploring Widgets', function(hooks) {
     await click($('.checkbox-selector--metric .grouped-list__item:contains(Nav Link Clicks) label')[0]);
 
     // Create empty filter to make request invalid
-    await click($('.grouped-list__item:Contains(Operating System) .checkbox-selector__filter')[0]);
+    await click($('.grouped-list__item:Contains(Operating System) .grouped-list__filter')[0]);
 
     assert
       .dom('.get-api')
