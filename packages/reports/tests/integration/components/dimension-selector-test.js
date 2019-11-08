@@ -123,7 +123,7 @@ module('Integration | Component | dimension selector', function(hooks) {
         .filter(el => el.checked)
         .concat(findAll('.grouped-list__item-container--selected')).length,
       2,
-      'The selected items are marked as added or selected'
+      'The selected items are marked as added or selected when enableRequestPreview is on'
     );
 
     config.navi.FEATURES.enableRequestPreview = false;

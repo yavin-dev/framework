@@ -28,13 +28,11 @@
           as | param |
         }}
           <div class="grouped-list__item-container">
-            <label class="grouped-list__item-label">
-              <input
-                class="checkbox-selector__checkbox"
-                type="checkbox" onchange={{action "paramToggled" metric param}}
-                checked={{get parametersChecked (concat param.param "|" param.id)}}>
-              {{param.description}} ({{param.id}})
-            </label>
+            <NaviIcon
+              @icon={{if (and (get parametersChecked (concat param.param "|" param.id))) "minus-circle" "plus-circle"}}
+              class="grouped-list__add-icon {{if (not (get parametersChecked (concat param.param "|" param.id))) "grouped-list__add-icon--deselected"}}"
+              onclick={{action "paramToggled" metric param}} />
+            {{param.description}} ({{param.id}})
 
             <div class="grouped-list__icon-set">
               <a role="button"
