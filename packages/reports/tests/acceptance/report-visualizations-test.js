@@ -21,7 +21,7 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
     );
 
     await click(
-      $('.grouped-list__group:contains(Asset) .grouped-list__item:contains(Property) .checkbox-selector__filter')[0]
+      $('.grouped-list__group:contains(Asset) .grouped-list__item:contains(Property) .grouped-list__filter')[0]
     );
     await selectSearch('.filter-values--dimension-select__trigger', 'Property');
     await selectChoose('.filter-values--dimension-select__trigger', '.ember-power-select-option', 0);
@@ -98,11 +98,9 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
 
     //add a parameterized metric with a couple of parameters and run the report
     await click(
-      $('.report-builder__metric-selector .grouped-list__item:contains(Platform Revenue) .grouped-list__item-label')[0]
+      $('.report-builder__metric-selector .grouped-list__item:contains(Platform Revenue) .grouped-list__add-icon')[0]
     );
-    await click(
-      $('.metric-config__dropdown-container .grouped-list__item:contains(Euro) .grouped-list__item-label')[0]
-    );
+    await click($('.metric-config__dropdown-container .grouped-list__item:contains(Euro) .grouped-list__add-icon')[0]);
     await click('.navi-report__run-btn');
 
     //first parameter
@@ -307,7 +305,7 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
 
     //remove the metric
     await click(
-      $('.report-builder__metric-selector .grouped-list__item:contains(Platform Revenue) .grouped-list__item-label')[0]
+      $('.report-builder__metric-selector .grouped-list__item:contains(Platform Revenue) .grouped-list__add-icon')[0]
     );
 
     //test API query and close the modal

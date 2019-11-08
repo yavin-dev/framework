@@ -14,7 +14,7 @@ module('Acceptance | date filter', function(hooks) {
 
     await visit('/reports/1/view');
     await click($('.grouped-list__group-header:contains(test)')[0]);
-    await click($('.grouped-list__item:contains(User Signup Date) .checkbox-selector__filter')[0]);
+    await click($('.grouped-list__item:contains(User Signup Date) .grouped-list__filter')[0]);
 
     assert.ok(
       !!$('.filter-builder__operator:contains(Since)').length,
@@ -22,7 +22,7 @@ module('Acceptance | date filter', function(hooks) {
     );
 
     await click('.filter-collection__remove');
-    await click($('.grouped-list__item:contains(User Region) .checkbox-selector__filter')[0]);
+    await click($('.grouped-list__item:contains(User Region) .grouped-list__filter')[0]);
 
     assert.ok(
       !!$('.filter-builder-dimension__operator:contains(Equals)').length,
@@ -35,7 +35,7 @@ module('Acceptance | date filter', function(hooks) {
 
     await visit('/reports/1/view');
     await click($('.grouped-list__group-header:contains(test)')[0]);
-    await click($('.grouped-list__item:contains(User Signup Date) .checkbox-selector__filter')[0]);
+    await click($('.grouped-list__item:contains(User Signup Date) .grouped-list__filter')[0]);
     await click($('.filter-builder__operator:contains(Since) .filter-builder__select-trigger')[0]);
     await click($('li.ember-power-select-option:contains(Between)')[0]);
 
