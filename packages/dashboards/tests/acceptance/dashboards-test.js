@@ -386,7 +386,7 @@ module('Acceptance | Dashboards', function(hooks) {
     await click('.add-widget-modal .add-to-dashboard');
 
     // Fill out request
-    await click($('.checkbox-selector--metric .grouped-list__item:contains(Total Clicks) label')[0]);
+    await click($('.checkbox-selector--metric .grouped-list__item:contains(Total Clicks) .grouped-list__add-icon')[0]);
     await click('.navi-report-widget__run-btn');
     // Regex to check that a string ends with "{uuid}/view"
     const TempIdRegex = /\/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\/view$/;
@@ -461,7 +461,7 @@ module('Acceptance | Dashboards', function(hooks) {
 
     // Create and save
     await visit('/dashboards/1/widgets/new');
-    await click($('.checkbox-selector--metric .grouped-list__item:contains(Total Clicks) label')[0]);
+    await click($('.checkbox-selector--metric .grouped-list__item:contains(Total Clicks) .grouped-list__add-icon')[0]);
     await click('.navi-report-widget__run-btn');
     await click('.navi-report-widget__save-btn');
 
