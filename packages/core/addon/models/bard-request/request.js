@@ -101,7 +101,7 @@ export default Fragment.extend(Validations, {
    * @returns {Void}
    */
   addMetric(requestMetric) {
-    let metrics = get(this, 'metrics');
+    const metrics = get(this, 'metrics');
 
     if (featureFlag('enableRequestPreview')) {
       return metrics.createFragment(requestMetric);
@@ -250,11 +250,16 @@ export default Fragment.extend(Validations, {
    * @returns {Void}
    */
   addDimension(dimensionObj) {
-    let dimensions = get(this, 'dimensions'),
-      newDimension = get(dimensionObj, 'dimension'),
+    const dimensions = get(this, 'dimensions');
+
+    if (featureFlag('enableRequestPreview')) {
+      return dimensions.createFragment(dimensionObj);
+    }
+
+    const newDimension = get(dimensionObj, 'dimension'),
       existingDimension = dimensions.findBy('dimension', newDimension);
 
-    if (!existingDimension || featureFlag('enableRequestPreview')) {
+    if (!existingDimension) {
       dimensions.createFragment(dimensionObj);
     }
   },
