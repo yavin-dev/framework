@@ -355,7 +355,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
   /* == Metric == */
 
   test('addMetric', async function(assert) {
-    assert.expect(4);
+    assert.expect(5);
 
     await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1),
