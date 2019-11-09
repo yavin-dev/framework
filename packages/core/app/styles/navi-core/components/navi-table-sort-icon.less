@@ -14,9 +14,15 @@
     font-size: @font-size-base;
   }
 
-  &--asc .sort-icon__caret-up,
-  &--desc .sort-icon__caret-down {
+  &--asc {
     color: @navi-gray;
+    transform: scaleY(-1);
+    margin-top: 18px;
+  }
+
+  &--desc {
+    color: @navi-gray;
+    margin-top: -2px;
   }
 
   &--none {
@@ -24,10 +30,12 @@
 
     .table-header-cell:hover & {
       display: inherit;
+      margin-top: -2px;
     }
 
     .table-header-row-vc & {
       display: inherit;
+      margin-top: -2px;
 
       @media print {
         display: none;
