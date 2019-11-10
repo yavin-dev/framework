@@ -7,6 +7,7 @@
   display: flex;
   flex-flow: column;
   margin-left: 5px;
+  margin-top: -2px;
 
   &__caret {
     height: 0;
@@ -17,12 +18,11 @@
   &--asc .sort-icon__caret-down {
     color: @navi-gray;
     transform: scaleY(-1);
-    margin-top: 18px;
+    margin-top: 20px;
   }
 
   &--desc .sort-icon__caret-down {
     color: @navi-gray;
-    margin-top: -2px;
   }
 
   &--none {
@@ -30,12 +30,10 @@
 
     .table-header-cell:hover & {
       display: inherit;
-      margin-top: -2px;
     }
 
     .table-header-row-vc & {
       display: inherit;
-      margin-top: -2px;
 
       @media print {
         display: none;
