@@ -143,7 +143,7 @@ module('Unit | Bard facts Adapter', function(hooks) {
   });
 
   test('_buildMetricsParam', function(assert) {
-    assert.expect(3);
+    assert.expect(4);
 
     let singleMetric = {
       metrics: [{ metric: 'm1' }]
@@ -161,6 +161,20 @@ module('Unit | Bard facts Adapter', function(hooks) {
       Adapter._buildMetricsParam(manyMetrics),
       'm1,m2',
       '_buildMetricsParam built the correct string for many metrics'
+    );
+
+    let differentParams = {
+      metrics: [
+        { metric: 'm1' },
+        { metric: 'm2' },
+        { metric: 'r', parameters: { p: '123', as: 'm1' } },
+        { metric: 'r', parameters: { p: 'xyz', as: 'm2' } }
+      ]
+    };
+    assert.equal(
+      Adapter._buildMetricsParam(differentParams),
+      'm1,m2,r(p=123),r(p=xyz)',
+      '_buildMetricsParam built the correct string for different parameters'
     );
 
     let duplicateMetrics = {

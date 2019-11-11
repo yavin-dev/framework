@@ -122,9 +122,9 @@ export default Component.extend({
   /**
    * @property {Boolean} enableRequestPreview
    */
-  enableRequestPreview: computed(function() {
+  get enableRequestPreview() {
     return featureFlag('enableRequestPreview');
-  }),
+  },
 
   actions: {
     /*
@@ -132,8 +132,8 @@ export default Component.extend({
      * @param {Object} item
      */
     itemClicked(item) {
-      const type = get(item, 'category') === 'Time Grain' ? 'TimeGrain' : 'Dimension',
-        enableRequestPreview = get(this, 'enableRequestPreview');
+      const type = item.category === 'Time Grain' ? 'TimeGrain' : 'Dimension',
+        { enableRequestPreview } = this;
       let action;
 
       if (enableRequestPreview && type === 'Dimension') {
@@ -142,7 +142,7 @@ export default Component.extend({
         action = get(this, 'itemsChecked')[get(item, 'name')] ? 'Remove' : 'Add';
       }
 
-      const handler = get(this, `on${action}${type}`);
+      const handler = this[`on${action}${type}`];
 
       if (handler) handler(item);
     }

@@ -1,18 +1,18 @@
 {{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{#navi-list-selector
-  items=listItems
-  searchField="longName"
-  selected=selectedColumnsAndFilters
-  title="Dimensions"
+<NaviListSelector
+  @items={{this.listItems}}
+  @searchField="longName"
+  @selected={{this.selectedColumnsAndFilters}}
+  @title="Dimensions"
   as | items areItemsFiltered |
-}}
-  {{#grouped-list
-      items=items
-      shouldOpenAllGroups=areItemsFiltered
-      groupByField="category"
-      sortByField=(unless areItemsFiltered "longName")
-      as | item |
-  }}
+>
+  <GroupedList
+    @items={{items}}
+    @shouldOpenAllGroups={{areItemsFiltered}}
+    @groupByField="category"
+    @sortByField={{unless areItemsFiltered "longName"}}
+    as | item |
+  >
     {{#if (eq item.category "Time Grain")}}
       <label class="grouped-list__item-label">
         <input class="checkbox-selector__checkbox" type="checkbox" onchange={{action "itemClicked" item}} checked={{get itemsChecked item.name}}>
@@ -40,10 +40,10 @@
           <a role="button"
             class={{concat (if (get dimensionsFiltered item.name) "grouped-list__filter--active ") "grouped-list__filter"}}
             onclick={{action onToggleDimFilter item}}>
-            <span></span>
+            <span class="grouped-list__filter--icon"></span>
           </a>
         </div>
       </div>
     {{/if}}
-  {{/grouped-list}}
-{{/navi-list-selector}}
+  </GroupedList>
+</NaviListSelector>

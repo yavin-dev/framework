@@ -72,9 +72,9 @@ export default Component.extend({
   /**
    * @property {Boolean} enableRequestPreview
    */
-  enableRequestPreview: computed(function() {
+  get enableRequestPreview() {
     return featureFlag('enableRequestPreview');
-  }),
+  },
 
   /*
    * @method _openConfig
@@ -109,9 +109,9 @@ export default Component.extend({
      * @param {Object} metric
      */
     metricClicked(metric) {
-      const enableRequestPreview = get(this, 'enableRequestPreview'),
+      const { enableRequestPreview } = this,
         action = !enableRequestPreview && get(this, 'metricsChecked')[get(metric, 'name')] ? 'Remove' : 'Add',
-        handler = get(this, `on${action}Metric`);
+        handler = this[`on${action}Metric`];
 
       if (handler) handler(metric);
 

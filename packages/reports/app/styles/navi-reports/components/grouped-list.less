@@ -95,14 +95,16 @@
     margin: 0 (@grouped-list-icon-width / 2) 3px (@grouped-list-icon-width / 2);
     position: relative;
     width: @grouped-list-icon-width;
+    opacity: 0.5;
 
-    span {
-      opacity: 0.5;
+    &:hover,
+    &--active {
+      opacity: 1;
     }
 
-    span,
-    span:before,
-    span:after {
+    &--icon,
+    &--icon:before,
+    &--icon:after {
       background: @denali-brand-600;
       content: '';
       display: block;
@@ -111,23 +113,14 @@
       width: @grouped-list-icon-width * 3 / 4;
     }
 
-    span:before {
+    &--icon:before {
       top: -4px;
       width: @grouped-list-icon-width;
     }
 
-    span:after {
+    &--icon:after {
       bottom: -4px;
       width: @grouped-list-icon-width / 2;
-    }
-
-    &:hover,
-    &--active {
-      span,
-      span:before,
-      span:after {
-        opacity: 1;
-      }
     }
   }
 }
