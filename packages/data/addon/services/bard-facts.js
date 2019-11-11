@@ -7,7 +7,7 @@
 
 import Service from '@ember/service';
 import { getOwner } from '@ember/application';
-import BardFactsModel from 'navi-data/models/bard-facts';
+import NaviFactsModel from 'navi-data/models/navi-facts';
 import RequestBuilder from 'navi-data/builder/request';
 
 export default Service.extend({
@@ -71,7 +71,7 @@ export default Service.extend({
     let adapter = this.get('_adapter'),
       serializer = this.get('_serializer');
     return adapter.fetchDataForRequest(request, options).then(payload => {
-      return BardFactsModel.create({
+      return NaviFactsModel.create({
         request: request,
         response: serializer.normalize(payload),
         _factsService: this

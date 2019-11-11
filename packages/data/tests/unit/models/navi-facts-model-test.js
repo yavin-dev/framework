@@ -1,10 +1,10 @@
 import { get } from '@ember/object';
 import { module, test } from 'qunit';
-import BardFactsModel from 'navi-data/models/bard-facts';
+import NaviFactsModel from 'navi-data/models/navi-facts';
 
-let BardResponse, Payload;
-
-module('Unit | Bard Facts Model', function(hooks) {
+module('Unit | Navi Facts Model', function(hooks) {
+  let Response, Payload;
+  
   hooks.beforeEach(function() {
     Payload = {
       request: {
@@ -38,10 +38,10 @@ module('Unit | Bard Facts Model', function(hooks) {
       }
     };
 
-    BardResponse = BardFactsModel.create(Payload);
+    Response = NaviFactsModel.create(Payload);
 
     //Mocking facts service
-    BardResponse.set('_factService', {
+    Response.set('_factService', {
       fetch: (request, options) => ({
         request,
         options
@@ -52,31 +52,31 @@ module('Unit | Bard Facts Model', function(hooks) {
   test('it properly hydrates properties', function(assert) {
     assert.expect(2);
 
-    assert.deepEqual(get(BardResponse, 'rows'), Payload.rows, 'rows property was properly hydrated');
+    assert.deepEqual(get(Response, 'rows'), Payload.rows, 'rows property was properly hydrated');
 
-    assert.equal(get(BardResponse, 'request'), Payload.request, 'request property was properly hydrated');
+    assert.equal(get(Response, 'request'), Payload.request, 'request property was properly hydrated');
   });
 
   test('pagination methods', function(assert) {
     assert.expect(2);
 
     //Mocking facts service
-    BardResponse.set('_factService', {
+    Response.set('_factService', {
       fetchNext: () => {
         assert.ok('The service`s fetch Next method is invoked with the response and request')
       }
     });
 
-    BardResponse.next();
+    Response.next();
 
 
     //Mocking facts service
-    BardResponse.set('_factService', {
+    Response.set('_factService', {
       fetchPrevious: () => {
         assert.ok('The service`s fetch Previous method is invoked with the response and request')
       }
     });
     
-    BardResponse.previous();
+    Response.previous();
   });
 });
