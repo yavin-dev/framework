@@ -77,5 +77,54 @@ export default Service.extend({
         _factsService: this
       });
     });
+  },
+
+  /**
+   * @method fetchNext
+   * @param {Object} response 
+   * @param {Object} request 
+   * @return {Promise|null} returns the promise with the next set of results or null
+   */
+  fetchNext(response, request) {
+    if (response.meta.pagination) {
+      const {
+        perPage,
+        numberOfResults, 
+        currentPage
+      } = response.meta.pagination;
+      
+      const totalPages = numberOfResults / perPage;
+      
+      if (currentPage < totalPages) {
+        let options = {
+            page: currentPage + 1,
+            perPage: perPage
+          };
+
+        return this.fetch(request, options);
+      }
+    }
+    return null;
+  },
+
+  /**
+   * @method fetchPrevious
+   * @param {Object} response 
+   * @param {Object} request 
+   * @return {Promise|null} returns the promise with the previous set of results or null
+   */
+  fetchPrevious(response, request){
+    if (response.meta.pagination) {
+      if (response.meta.pagination.currentPage > 1) {
+        const options = {
+          page: response.meta.pagination.currentPage - 1,
+          perPage: response.meta.pagination.rowsPerPage
+        };
+
+        return this.fetch(request, options);
+      }
+    }
+
+    return null;
   }
 });

@@ -41,7 +41,7 @@ module('Unit | Bard Facts Model', function(hooks) {
     BardResponse = BardFactsModel.create(Payload);
 
     //Mocking facts service
-    BardResponse.set('_factsService', {
+    BardResponse.set('_factService', {
       fetch: (request, options) => ({
         request,
         options
@@ -58,50 +58,25 @@ module('Unit | Bard Facts Model', function(hooks) {
   });
 
   test('pagination methods', function(assert) {
-    assert.expect(6);
+    assert.expect(2);
 
-    assert.deepEqual(
-      BardResponse.next(),
-      {
-        request: {
-          request: 'object'
-        },
-        options: {
-          page: 4,
-          perPage: 10
-        }
-      },
-      'Next method request the data for the page next to the current page'
-    );
+    //Mocking facts service
+    BardResponse.set('_factService', {
+      fetchNext: () => {
+        assert.ok('The service`s fetch Next method is invoked with the response and request')
+      }
+    });
 
-    Payload.response.meta.pagination.currentPage = 4;
+    BardResponse.next();
 
-    assert.deepEqual(BardResponse.next(), null, 'Next method returns null when total pages is exceeded');
 
-    Payload.response.meta.pagination.currentPage = 2;
-
-    assert.deepEqual(
-      BardResponse.previous(),
-      {
-        request: {
-          request: 'object'
-        },
-        options: {
-          page: 1,
-          perPage: 10
-        }
-      },
-      'Previous method requests the data for the page previous to the current page'
-    );
-
-    Payload.response.meta.pagination.currentPage = 1;
-
-    assert.deepEqual(BardResponse.previous(), null, 'Previous method returns null trying previous from first page');
-
-    delete Payload.response.meta.pagination;
-
-    assert.deepEqual(BardResponse.previous(), null, 'Previous method returns null when there is no pagination options');
-
-    assert.deepEqual(BardResponse.next(), null, 'Next method returns null when there is no pagination options');
+    //Mocking facts service
+    BardResponse.set('_factService', {
+      fetchPrevious: () => {
+        assert.ok('The service`s fetch Previous method is invoked with the response and request')
+      }
+    });
+    
+    BardResponse.previous();
   });
 });
