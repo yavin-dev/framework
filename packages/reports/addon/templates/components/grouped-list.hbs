@@ -2,7 +2,7 @@
 {{#each-in groupedItems as | group items |}}
   <details class="grouped-list__group" open={{shouldOpenAllGroups}}>
     <summary class="fa grouped-list__group-header">
-      <span>{{group}} ({{items.length}})</span>
+      <span class="grouped-list__group-header-content">{{group}} ({{items.length}})</span>
     </summary>
     <ul>
       {{#each items as |item|}}
