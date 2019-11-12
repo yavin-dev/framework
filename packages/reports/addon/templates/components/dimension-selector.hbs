@@ -14,10 +14,18 @@
     as | item |
   >
     {{#if (eq item.category "Time Grain")}}
-      <label class="grouped-list__item-label">
-        <input class="checkbox-selector__checkbox" type="checkbox" onchange={{action "itemClicked" item}} checked={{get itemsChecked item.name}}>
-        {{item.longName}}
-      </label>
+      <div class="grouped-list__item-checkbox-container">
+        <input
+          type="checkbox"
+          class="grouped-list__item-checkbox"
+          id={{concat "grouped-list-checkbox-" (dasherize item.longName)}}
+          onchange={{action "itemClicked" item}}
+          checked={{get itemsChecked item.name}}>
+        <label for={{concat "grouped-list-checkbox-" (dasherize item.longName)}}
+          class="grouped-list__item-checkbox-label">
+          {{item.longName}}
+        </label>
+      </div>
     {{else}}
       <div class="grouped-list__item-container {{if (and (get itemsChecked item.name) enableRequestPreview) "grouped-list__item-container--selected"}}">
         <NaviIcon

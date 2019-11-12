@@ -99,7 +99,7 @@ module('Integration | Component | dimension selector', function(hooks) {
     );
 
     assert.notOk(
-      findAll('.checkbox-selector__checkbox')
+      findAll('.grouped-list__item-checkbox')
         .filter(el => !el.checked)
         .concat(findAll('.grouped-list__add-icon--deselected')).length,
       'No items are marked as unselected'
@@ -119,7 +119,7 @@ module('Integration | Component | dimension selector', function(hooks) {
     await click('.navi-list-selector__show-link');
 
     assert.equal(
-      findAll('.checkbox-selector__checkbox')
+      findAll('.grouped-list__item-checkbox')
         .filter(el => el.checked)
         .concat(findAll('.grouped-list__item-container--selected')).length,
       2,
@@ -143,10 +143,10 @@ module('Integration | Component | dimension selector', function(hooks) {
     //select first time grain
 
     //addTimeGrain when a different time grain is clicked
-    await click($('.grouped-list__item:contains(Week) .grouped-list__item-label')[0]);
+    await click($('.grouped-list__item:contains(Week) .grouped-list__item-checkbox-label')[0]);
 
     //removeTimeGrain when selected time grain is clicked
-    await click($('.grouped-list__item:contains(Day) .grouped-list__item-label')[0]);
+    await click($('.grouped-list__item:contains(Day) .grouped-list__item-checkbox-label')[0]);
 
     this.set('addDimension', item => {
       assert.equal(

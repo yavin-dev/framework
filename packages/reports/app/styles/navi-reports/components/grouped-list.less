@@ -46,6 +46,7 @@
     font-size: @font-size-mid;
 
     &-container {
+      align-items: flex-start;
       display: flex;
       flex: 1;
 
@@ -54,8 +55,58 @@
       }
     }
 
-    &-label {
-      .clickable;
+    &-checkbox {
+      display: inline-block;
+      height: 10px;
+      opacity: 0; // Hide it
+      position: absolute; // Take it out of the documenet flow
+
+      &-container {
+        position: relative;
+      }
+
+      &-label {
+        .clickable;
+
+        &:before {
+          border-radius: 1px;
+          box-shadow: 0 0 0 2px rgba(54, 151, 242, 0.5);
+          content: '';
+          display: inline-block;
+          height: 8px;
+          margin-left: 2px;
+          margin-right: 5px;
+          transition: all 0.2s;
+          width: 8px;
+        }
+      }
+
+      &:hover + &-label:before {
+        box-shadow: 0 0 0 2px @denali-brand-600;
+      }
+
+      &:focus + &-label:before {
+        box-shadow: 0 0 0 2px rgba(54, 151, 242, 0.5);
+      }
+
+      &:checked + &-label:before {
+        box-shadow: 0 0 0 2px @denali-brand-600;
+        background: @denali-brand-600;
+      }
+
+      &:checked + &-label:after {
+        border: solid #fff;
+        border-width: 0 2px 2px 0; // creates the inverted "L" shape
+        box-sizing: border-box;
+        content: ' ';
+        display: block;
+        height: 8px;
+        left: 4px;
+        position: absolute;
+        top: 4px;
+        transform: rotate(45deg);
+        width: 4px;
+      }
     }
 
     &-info {
@@ -76,7 +127,7 @@
     cursor: pointer;
     display: inline-block;
     font-size: @font-size-base;
-    margin: 2px 5px 0 0;
+    margin: 1px 5px 0 0;
 
     &--deselected:not(:hover) {
       opacity: 0.5;
@@ -86,7 +137,7 @@
   &__icon-set {
     align-items: center;
     display: flex;
-    margin: 0 10px 0 auto;
+    margin: 7px 10px 0 auto;
   }
 
   &__filter {

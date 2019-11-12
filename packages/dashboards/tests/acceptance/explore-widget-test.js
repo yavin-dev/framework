@@ -123,7 +123,9 @@ module('Acceptance | Exploring Widgets', function(hooks) {
     assert.dom('.navi-report-widget__revert-btn').isNotVisible('Revert changes button is not initially visible');
 
     // Remove a metric
-    await click($('.checkbox-selector--dimension .grouped-list__item:contains(Week) label')[0]);
+    await click(
+      $('.checkbox-selector--dimension .grouped-list__item:contains(Week) .grouped-list__item-checkbox-label')[0]
+    );
     assert
       .dom('.navi-report-widget__revert-btn')
       .isVisible('Revert changes button is visible once a change has been made');
