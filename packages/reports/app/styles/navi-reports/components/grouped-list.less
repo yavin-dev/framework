@@ -2,8 +2,6 @@
  * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-@grouped-list-icon-width: 12px;
-
 .grouped-list {
   color: @denali-grey-800;
   font-size: @font-size-mid-base;
@@ -46,7 +44,7 @@
     font-size: @font-size-mid;
 
     &-container {
-      align-items: flex-start;
+      align-items: center;
       display: flex;
       flex: 1;
 
@@ -56,8 +54,6 @@
     }
 
     &-checkbox {
-      display: inline-block;
-      height: 10px;
       opacity: 0; // Hide it
       position: absolute; // Take it out of the documenet flow
 
@@ -66,16 +62,14 @@
       }
 
       &-label {
-        .clickable;
-
         &:before {
           border-radius: 1px;
           box-shadow: 0 0 0 2px rgba(54, 151, 242, 0.5);
           content: '';
           display: inline-block;
           height: 8px;
-          margin-left: 2px;
-          margin-right: 5px;
+          margin-left: 5px;
+          margin-right: 2px;
           transition: all 0.2s;
           width: 8px;
         }
@@ -101,11 +95,11 @@
         content: ' ';
         display: block;
         height: 8px;
-        left: 4px;
+        left: 6px;
         position: absolute;
         top: 4px;
         transform: rotate(45deg);
-        width: 4px;
+        width: 5px;
       }
     }
 
@@ -127,7 +121,7 @@
     cursor: pointer;
     display: inline-block;
     font-size: @font-size-base;
-    margin: 1px 5px 0 0;
+    margin-right: 5px;
 
     &--deselected:not(:hover) {
       opacity: 0.5;
@@ -137,41 +131,25 @@
   &__icon-set {
     align-items: center;
     display: flex;
-    margin: 7px 10px 0 auto;
+    font-size: @font-size-base;
+    margin: 0 15px 0 auto;
+
+    &--no-filter {
+      .metric-config {
+        margin-right: 21px;
+      }
+    }
   }
 
   &__filter {
+    color: @denali-brand-600;
     cursor: pointer;
-    display: block;
-    margin: 0 (@grouped-list-icon-width / 2) 3px (@grouped-list-icon-width / 2);
-    position: relative;
-    width: @grouped-list-icon-width;
+    margin: 0 5px;
     opacity: 0.5;
 
     &:hover,
     &--active {
       opacity: 1;
-    }
-
-    &--icon,
-    &--icon:before,
-    &--icon:after {
-      background: @denali-brand-600;
-      content: '';
-      display: block;
-      height: 2px;
-      position: absolute;
-      width: @grouped-list-icon-width * 3 / 4;
-    }
-
-    &--icon:before {
-      top: -4px;
-      width: @grouped-list-icon-width;
-    }
-
-    &--icon:after {
-      bottom: -4px;
-      width: @grouped-list-icon-width / 2;
     }
   }
 }

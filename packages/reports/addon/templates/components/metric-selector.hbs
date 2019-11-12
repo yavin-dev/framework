@@ -41,10 +41,10 @@
           />
         {{/if}}
         {{#if (can-having metric)}}
-          <a role="button"
+          <NaviIcon
+            @icon="filter"
             class={{concat (if (get metricsFiltered metric.name) "grouped-list__filter--active ") "grouped-list__filter"}}
             onclick={{action onToggleMetricFilter metric}}>
-            <span class="grouped-list__filter--icon"></span>
             <EmberTooltip @side="right" @popperContainer="body" @effect="none">
               {{#if (has-parameters metric)}}
                 {{#if (has-unfiltered-parameters metric request)}}
@@ -60,7 +60,7 @@
                 {{/if}}
               {{/if}}
             </EmberTooltip>
-          </a>
+          </NaviIcon>
         {{/if}}
       </div>
     </div>

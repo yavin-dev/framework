@@ -45,11 +45,11 @@
         </NaviIcon>
 
         <div class="grouped-list__icon-set">
-          <a role="button"
+          <NaviIcon
+            @icon="filter"
             class={{concat (if (get dimensionsFiltered item.name) "grouped-list__filter--active ") "grouped-list__filter"}}
-            onclick={{action onToggleDimFilter item}}>
-            <span class="grouped-list__filter--icon"></span>
-          </a>
+            onclick={{action onToggleDimFilter item}}
+          />
         </div>
       </div>
     {{/if}}

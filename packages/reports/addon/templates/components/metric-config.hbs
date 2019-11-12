@@ -35,11 +35,11 @@
             {{param.description}} ({{param.id}})
 
             <div class="grouped-list__icon-set">
-              <a role="button"
+              <NaviIcon
+                @icon="filter"
                 class={{concat (if (get paramsFiltered (concat param.param "|" param.id)) "grouped-list__filter--active ") "grouped-list__filter"}}
-                onclick={{action "paramFilterToggled" metric param}}>
-                <span class="grouped-list__filter--icon"></span>
-              </a>
+                onclick={{action "paramFilterToggled" metric param}}
+              />
             </div>
           </div>
         </GroupedList>
