@@ -28,11 +28,12 @@
       </div>
     {{else}}
       <div class="grouped-list__item-container {{if (and (get itemsChecked item.name) enableRequestPreview) "grouped-list__item-container--selected"}}">
-        <NaviIcon
-          @icon={{if (and (get itemsChecked item.name) (not enableRequestPreview)) "minus-circle" "plus-circle"}}
-          class="grouped-list__add-icon {{if (not (or enableRequestPreview (get itemsChecked item.name))) "grouped-list__add-icon--deselected"}}"
-          onclick={{action "itemClicked" item}} />
-        {{item.longName}}
+        <span class="grouped-list__item-label" onclick={{action "itemClicked" item}} role="button">
+          <NaviIcon
+            @icon={{if (and (get itemsChecked item.name) (not enableRequestPreview)) "minus-circle" "plus-circle"}}
+            class="grouped-list__add-icon {{if (not (or enableRequestPreview (get itemsChecked item.name))) "grouped-list__add-icon--deselected"}}" />
+          {{item.longName}}
+        </span>
 
         <NaviIcon @icon="question-circle-o" class="grouped-list__item-info">
           <EmberTooltip @side="right" @popperContainer="body" @effect="none">

@@ -28,11 +28,12 @@
           as | param |
         >
           <div class="grouped-list__item-container">
-            <NaviIcon
-              @icon={{if (and (get parametersChecked (concat param.param "|" param.id))) "minus-circle" "plus-circle"}}
-              class="grouped-list__add-icon {{if (not (get parametersChecked (concat param.param "|" param.id))) "grouped-list__add-icon--deselected"}}"
-              onclick={{action "paramToggled" metric param}} />
-            {{param.description}} ({{param.id}})
+            <span class="grouped-list__item-label" onclick={{action "paramToggled" metric param}} role="button">
+              <NaviIcon
+                @icon={{if (and (get parametersChecked (concat param.param "|" param.id))) "minus-circle" "plus-circle"}}
+                class="grouped-list__add-icon {{if (not (get parametersChecked (concat param.param "|" param.id))) "grouped-list__add-icon--deselected"}}" />
+              {{param.description}} ({{param.id}})
+            </span>
 
             <div class="grouped-list__icon-set">
               <NaviIcon

@@ -14,11 +14,12 @@
     as | metric |
   >
     <div class="grouped-list__item-container {{if (and (get metricsChecked metric.name) enableRequestPreview) "grouped-list__item-container--selected"}}">
-      <NaviIcon
-        @icon={{if (and (get metricsChecked metric.name) (not enableRequestPreview)) "minus-circle" "plus-circle"}}
-        class="grouped-list__add-icon {{if (not (or enableRequestPreview (get metricsChecked metric.name))) "grouped-list__add-icon--deselected"}}"
-        onclick={{action "metricClicked" metric}} />
-      {{metric.longName}}
+      <span class="grouped-list__item-label" onclick={{action "metricClicked" metric}} role="button">
+        <NaviIcon
+          @icon={{if (and (get metricsChecked metric.name) (not enableRequestPreview)) "minus-circle" "plus-circle"}}
+          class="grouped-list__add-icon {{if (not (or enableRequestPreview (get metricsChecked metric.name))) "grouped-list__add-icon--deselected"}}" />
+        {{metric.longName}}
+      </span>
 
       <NaviIcon @icon="question-circle-o" class="grouped-list__item-info">
         <EmberTooltip @side="right" @popperContainer="body" @effect="none">

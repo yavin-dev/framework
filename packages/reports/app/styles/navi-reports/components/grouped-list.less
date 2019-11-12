@@ -68,8 +68,7 @@
           content: '';
           display: inline-block;
           height: 8px;
-          margin-left: 5px;
-          margin-right: 2px;
+          margin: 0 5px;
           transition: all 0.2s;
           width: 8px;
         }
@@ -103,6 +102,11 @@
       }
     }
 
+    &-label {
+      cursor: pointer;
+      margin: 0 3px;
+    }
+
     &-info {
       align-self: center;
       color: @denali-grey-700;
@@ -121,7 +125,7 @@
     cursor: pointer;
     display: inline-block;
     font-size: @font-size-base;
-    margin-right: 5px;
+    margin-right: 2px;
 
     &--deselected:not(:hover) {
       opacity: 0.5;
