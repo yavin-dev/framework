@@ -205,4 +205,61 @@ module('Unit | Service | Bard Facts', function(hooks) {
 
     assert.notEqual(Service.request(newRequest), newRequest, 'Each call to request returns a new builder instance');
   });
+
+  test('fetchNext', function(assert) {
+    assert.expect(2);
+    
+    const originalFetch = Service.fetch;
+    Service.fetch = (request, options) => {
+      assert.equal(options.page, 3, 'FetchNext calls fetch with updated options');
+    };
+
+    const response = {
+      rows: {},
+      meta: {
+        pagination: {
+          currentPage: 2,
+          perPage: 10,
+          numberOfResults: 30
+        }
+      }
+    };
+    const request = {};
+    
+    Service.fetchNext(response, request);
+
+    response.meta.pagination.currentPage = 3;
+    assert.equal(Service.fetchNext(response, request), null, 'fetchNext returns null when the last page is reached');
+    
+
+    Service.fetch = originalFetch;
+  });
+
+  test('fetchPrevious', function(assert) {
+    assert.expect(2);
+    
+    const originalFetch = Service.fetch;
+    Service.fetch = (request, options) => {
+      assert.equal(options.page, 1, 'FetchPrevious calls fetch with updated options');
+    };
+
+    const response = {
+      rows: {},
+      meta: {
+        pagination: {
+          currentPage: 2,
+          perPage: 10,
+          numberOfResults: 30
+        }
+      }
+    };
+    const request = {};
+    
+    Service.fetchPrevious(response, request);
+
+    response.meta.pagination.currentPage = 1;
+    assert.equal(Service.fetchPrevious(response, request), null, 'fetchPrevious returns null when the first page is reached');
+    
+    Service.fetch = originalFetch;
+  });
 });
