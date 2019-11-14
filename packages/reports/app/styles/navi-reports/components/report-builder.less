@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 .report-builder {
@@ -34,8 +34,15 @@
       pointer-events: none;
     }
 
-    .ember-power-select-trigger {
+    .ember-power-select-trigger,
+    .metric-selector__item-container--selected {
       background: none;
+    }
+
+    .navi-list-selector__search-input {
+      background: rgba(48, 48, 48, 0.05);
+      color: rgba(48, 48, 48, 0.25);
+      transition: none;
     }
   }
 
@@ -88,8 +95,8 @@
     }
 
     &__title {
-      font-family: @font-family-strong;
       font-size: @font-size-base;
+      margin: 0;
     }
   }
 

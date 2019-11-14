@@ -10,6 +10,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, click, findAll, fillIn, triggerEvent } from '@ember/test-helpers';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import { assertTooltipRendered, assertTooltipNotRendered, assertTooltipContent } from 'ember-tooltips/test-support';
+import config from 'ember-get-config';
 
 let Store, MetadataService, AdClicks, PageViews;
 
@@ -86,7 +87,7 @@ module('Integration | Component | metric selector', function(hooks) {
   });
 
   test('show selected', async function(assert) {
-    assert.expect(9);
+    assert.expect(10);
 
     assert.ok(
       findAll('.grouped-list__item').length > this.get('request.metrics.length'),
@@ -106,10 +107,8 @@ module('Integration | Component | metric selector', function(hooks) {
     );
 
     assert.notOk(
-      findAll('.checkbox-selector__checkbox')
-        .map(el => el['checked'])
-        .includes(false),
-      'The selected items are checked'
+      findAll('.grouped-list__add-icon--deselected').length,
+      'The selected items are marked as added or selected'
     );
 
     let metrics = get(this, 'request.metrics');
@@ -152,12 +151,26 @@ module('Integration | Component | metric selector', function(hooks) {
       'Adding a new metric will show its base metric as selected'
     );
 
-    assert.notOk(
-      findAll('.checkbox-selector__checkbox')
-        .map(el => el['checked'])
-        .includes(false),
-      'All selected items are checked'
+    assert.notOk(findAll('.grouped-list__add-icon--deselected').length, 'All selected items are marked as selected');
+
+    config.navi.FEATURES.enableRequestPreview = true;
+
+    await render(hbs`{{metric-selector
+      request=request
+      onAddMetric=(action addMetric)
+      onRemoveMetric=(action removeMetric)
+      onToggleMetricFilter=(action addMetricFilter)
+    }}`);
+
+    await click('.navi-list-selector__show-link');
+
+    assert.equal(
+      findAll('.grouped-list__item-container').length,
+      findAll('.grouped-list__item-container--selected').length,
+      'All selected items are marked as added or selected when enableRequestPreview is on'
     );
+
+    config.navi.FEATURES.enableRequestPreview = false;
   });
 
   test('add and remove metric actions', async function(assert) {
@@ -174,22 +187,22 @@ module('Integration | Component | metric selector', function(hooks) {
     //select first time grain
 
     //add total clicks
-    await click($('.grouped-list__item:contains(Total Clicks) .grouped-list__item-label')[0]);
+    await click($('.grouped-list__item:contains(Total Clicks) .grouped-list__add-icon')[0]);
 
     //remove ad clicks
-    await click($('.grouped-list__item:contains(Ad Clicks) .grouped-list__item-label')[0]);
+    await click($('.grouped-list__item:contains(Ad Clicks) .grouped-list__add-icon')[0]);
   });
 
   test('filter icon', async function(assert) {
     assert.expect(3);
 
     assert.notOk(
-      isEmpty($('.grouped-list__item:contains(Ad Clicks) .checkbox-selector__filter--active')),
+      isEmpty($('.grouped-list__item:contains(Ad Clicks) .grouped-list__filter--active')),
       'The filter icon with the adclicks metric has the active class'
     );
 
     assert.ok(
-      isEmpty($('.grouped-list__item:contains(Total Clicks) .checkbox-selector__filter--active')),
+      isEmpty($('.grouped-list__item:contains(Total Clicks) .grouped-list__filter--active')),
       'The filter icon with the total clicks metric does not have the active class'
     );
 
@@ -197,7 +210,7 @@ module('Integration | Component | metric selector', function(hooks) {
       assert.deepEqual(metric, AdClicks, 'The adclicks metric is passed to the action when filter icon is clicked');
     });
 
-    await click($('.grouped-list__item:contains(Ad Clicks) .checkbox-selector__filter')[0]);
+    await click($('.grouped-list__item:contains(Ad Clicks) .grouped-list__filter')[0]);
   });
 
   test('tooltip', async function(assert) {
@@ -255,7 +268,7 @@ module('Integration | Component | metric selector', function(hooks) {
 
   test('hide filter if metric not allowed to show filter on base metric', function(assert) {
     assert.dom('.metric-selector__icon-set--no-filter').exists({ count: 1 });
-    assert.dom('.metric-selector__icon-set--no-filter .metric-selector__filter').doesNotExist();
-    assert.dom('.metric-selector__icon-set .metric-selector__filter').exists();
+    assert.dom('.metric-selector__icon-set--no-filter .grouped-list__filter').doesNotExist();
+    assert.dom('.grouped-list__icon-set .grouped-list__filter').exists();
   });
 });

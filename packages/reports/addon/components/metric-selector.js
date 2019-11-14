@@ -20,6 +20,7 @@ import { get, computed } from '@ember/object';
 import uniqBy from 'lodash/uniqBy';
 import layout from '../templates/components/metric-selector';
 import { run } from '@ember/runloop';
+import { featureFlag } from 'navi-core/helpers/feature-flag';
 
 export default Component.extend({
   layout,
@@ -101,13 +102,14 @@ export default Component.extend({
      * @param {Object} metric
      */
     metricClicked(metric) {
-      const action = get(this, 'metricsChecked')[get(metric, 'name')] ? 'Remove' : 'Add';
-      const handler = get(this, `on${action}Metric`);
+      const enableRequestPreview = featureFlag('enableRequestPreview'),
+        action = !enableRequestPreview && get(this, 'metricsChecked')[get(metric, 'name')] ? 'Remove' : 'Add',
+        handler = this[`on${action}Metric`];
 
       if (handler) handler(metric);
 
       //On add, trigger metric-config mousedown event when metric has parameters
-      if (action === 'Add' && get(metric, 'hasParameters')) {
+      if (action === 'Add' && get(metric, 'hasParameters') && !enableRequestPreview) {
         this._openConfig(metric);
       }
     }

@@ -124,7 +124,7 @@ module('Integration | Component | metric config', function(hooks) {
       'The group headers reflect the two parameters in the metric'
     );
 
-    const embargoList = findAll('.grouped-list__group-header').find(el => el.textContent.startsWith('embargo'))
+    const embargoList = findAll('.grouped-list__group-header').find(el => el.textContent.trim().startsWith('embargo'))
       .nextElementSibling;
     assert.deepEqual(
       [...embargoList.querySelectorAll('li')].map(el => el.textContent.trim()),
@@ -152,12 +152,7 @@ module('Integration | Component | metric config', function(hooks) {
       'When show selected is clicked only the selected parameter is shown'
     );
 
-    assert.notOk(
-      findAll('.checkbox-selector__checkbox')
-        .map(el => el['checked'])
-        .includes(false),
-      'The selected items are checked'
-    );
+    assert.notOk(findAll('.grouped-list__add-icon--deselected').length, 'The selected items are marked as selected');
   });
 
   test('add/remove param', async function(assert) {
@@ -178,10 +173,10 @@ module('Integration | Component | metric config', function(hooks) {
     await clickTrigger('.metric-config__dropdown-trigger');
     await settled();
     //add Param `Drams`
-    await click($('.grouped-list__item:contains(Drams) .grouped-list__item-label')[0]);
+    await click($('.grouped-list__item:contains(Drams) .grouped-list__add-icon')[0]);
 
     //remove Param `Dollars(USD)`
-    await click($('.grouped-list__item:contains(USD) .grouped-list__item-label')[0]);
+    await click($('.grouped-list__item:contains(USD) .grouped-list__add-icon')[0]);
   });
 
   test('filter icon', async function(assert) {
@@ -197,16 +192,16 @@ module('Integration | Component | metric config', function(hooks) {
 
     await settled();
     assert.notOk(
-      isEmpty($('.grouped-list__item:contains(USD) .checkbox-selector__filter--active')),
+      isEmpty($('.grouped-list__item:contains(USD) .grouped-list__filter--active')),
       'The filter icon with the `USD` param has the active class'
     );
 
     assert.ok(
-      isEmpty($('.grouped-list__item:contains(Drams) .checkbox-selector__filter--active')),
+      isEmpty($('.grouped-list__item:contains(Drams) .grouped-list__filter--active')),
       'The filter icon with the `Drams` param does not have the active class'
     );
 
-    await click($('.grouped-list__item:contains(Drams) .checkbox-selector__filter')[0]);
+    await click($('.grouped-list__item:contains(Drams) .grouped-list__filter')[0]);
   });
 
   test('loader', async function(assert) {

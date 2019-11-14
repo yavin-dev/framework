@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -66,7 +66,14 @@
   }
 
   &__dropdown-trigger {
+    color: @denali-brand-600;
     display: flex;
+    opacity: 0.5;
+
+    &:hover,
+    &[aria-expanded='true'] {
+      opacity: 1;
+    }
   }
 
   &__error-msg {

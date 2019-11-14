@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import DS from 'ember-data';
@@ -15,6 +15,7 @@ import { copy } from 'ember-copy';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 import Fragment from 'ember-data-model-fragments/fragment';
 import { fragment, fragmentArray } from 'ember-data-model-fragments/attributes';
+import { featureFlag } from 'navi-core/helpers/feature-flag';
 
 const Validations = buildValidations({
   logicalTable: [
@@ -100,8 +101,13 @@ export default Fragment.extend(Validations, {
    * @returns {Void}
    */
   addMetric(requestMetric) {
-    let metrics = get(this, 'metrics'),
-      metricMetadata = get(requestMetric, 'metric'),
+    const metrics = get(this, 'metrics');
+
+    if (featureFlag('enableRequestPreview')) {
+      return metrics.createFragment(requestMetric);
+    }
+
+    let metricMetadata = get(requestMetric, 'metric'),
       metricDoesntExist = isEmpty(metrics.findBy('metric', metricMetadata));
 
     //check if metric with parameter exists when metric hasParameters
@@ -244,8 +250,13 @@ export default Fragment.extend(Validations, {
    * @returns {Void}
    */
   addDimension(dimensionObj) {
-    let dimensions = get(this, 'dimensions'),
-      newDimension = get(dimensionObj, 'dimension'),
+    const dimensions = get(this, 'dimensions');
+
+    if (featureFlag('enableRequestPreview')) {
+      return dimensions.createFragment(dimensionObj);
+    }
+
+    const newDimension = get(dimensionObj, 'dimension'),
       existingDimension = dimensions.findBy('dimension', newDimension);
 
     if (!existingDimension) {

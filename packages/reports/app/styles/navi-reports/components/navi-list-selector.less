@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -37,33 +37,56 @@
   }
 
   &__title {
-    font-family: @font-family-strong;
     font-size: @font-size-base;
-    text-transform: uppercase;
+    margin: 0;
   }
 
   &__search {
     align-items: center;
-    border: 1px solid @navi-gray-400;
-    border-radius: 2px;
     display: flex;
-    padding: 0 5px;
+    position: relative;
   }
 
   &__search-icon {
-    color: @navi-gray-600;
+    color: @denali-brand-300;
     font-size: @font-size-mid;
+    left: 8px;
+    position: absolute;
   }
 
   &__search-input {
-    flex: 1;
-    padding: 3px;
+    appearance: none;
+    border: none;
+    border-bottom: solid 2px transparent;
+    box-shadow: none;
+    background: rgba(53, 112, 244, 0.08);
+    border-radius: 4px;
+    color: @denali-grey-800;
+    flex: 1 0 auto;
+    font: inherit;
+    font-size: 12px;
+    height: 20px;
+    margin: 0;
+    outline: none;
+    padding: 12px 24px;
+    text-align: left;
+    transition: 200ms;
+    width: inherit;
+
+    &:active,
+    &:focus {
+      border-bottom-color: @denali-brand-700;
+      border-bottom-style: solid;
+      border-bottom-width: 2px;
+    }
   }
 
   &__search-input-clear {
-    color: @navi-gray-600;
+    color: @denali-brand-300;
     cursor: pointer;
     font-size: @font-size-mid;
+    position: absolute;
+    right: 8px;
   }
 
   &__show-link {

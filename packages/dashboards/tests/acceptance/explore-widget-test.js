@@ -94,7 +94,7 @@ module('Acceptance | Exploring Widgets', function(hooks) {
 
     assert.dom('.report-view__info-text').isNotVisible('Notification to run is not visible before making changes');
 
-    await click($('.checkbox-selector--metric .grouped-list__item:contains(Total Clicks) label')[0]);
+    await click($('.checkbox-selector--metric .grouped-list__item:contains(Total Clicks) .grouped-list__add-icon')[0]);
 
     assert.dom('.report-view__info-text').isVisible('Notification to run is visible after making changes');
 
@@ -123,7 +123,9 @@ module('Acceptance | Exploring Widgets', function(hooks) {
     assert.dom('.navi-report-widget__revert-btn').isNotVisible('Revert changes button is not initially visible');
 
     // Remove a metric
-    await click($('.checkbox-selector--dimension .grouped-list__item:contains(Week) label')[0]);
+    await click(
+      $('.checkbox-selector--dimension .grouped-list__item:contains(Week) .grouped-list__item-checkbox-label')[0]
+    );
     assert
       .dom('.navi-report-widget__revert-btn')
       .isVisible('Revert changes button is visible once a change has been made');
@@ -161,8 +163,10 @@ module('Acceptance | Exploring Widgets', function(hooks) {
       .hasAttribute('href', /metrics=adClicks%2CnavClicks/, 'Have correct metric in export url');
 
     // Remove all metrics to create an invalid request
-    await click($('.checkbox-selector--metric .grouped-list__item:contains(Ad Clicks) label')[0]);
-    await click($('.checkbox-selector--metric .grouped-list__item:contains(Nav Link Clicks) label')[0]);
+    await click($('.checkbox-selector--metric .grouped-list__item:contains(Ad Clicks) .grouped-list__add-icon')[0]);
+    await click(
+      $('.checkbox-selector--metric .grouped-list__item:contains(Nav Link Clicks) .grouped-list__add-icon')[0]
+    );
 
     assert
       .dom($('.navi-report-widget__action-link:contains(Export)')[0])
@@ -193,15 +197,19 @@ module('Acceptance | Exploring Widgets', function(hooks) {
       .doesNotHaveClass('.navi-report-widget__action--is-disabled', 'Get API action is enabled for a valid request');
 
     // Remove all metrics
-    await click($('.checkbox-selector--metric .grouped-list__item:contains(Ad Clicks) label')[0]);
-    await click($('.checkbox-selector--metric .grouped-list__item:contains(Nav Link Clicks) label')[0]);
+    await click($('.checkbox-selector--metric .grouped-list__item:contains(Ad Clicks) .grouped-list__add-icon')[0]);
+    await click(
+      $('.checkbox-selector--metric .grouped-list__item:contains(Nav Link Clicks) .grouped-list__add-icon')[0]
+    );
 
     // Remove all metrics to create an invalid request
-    await click($('.checkbox-selector--metric .grouped-list__item:contains(Ad Clicks) label')[0]);
-    await click($('.checkbox-selector--metric .grouped-list__item:contains(Nav Link Clicks) label')[0]);
+    await click($('.checkbox-selector--metric .grouped-list__item:contains(Ad Clicks) .grouped-list__add-icon')[0]);
+    await click(
+      $('.checkbox-selector--metric .grouped-list__item:contains(Nav Link Clicks) .grouped-list__add-icon')[0]
+    );
 
     // Create empty filter to make request invalid
-    await click($('.grouped-list__item:Contains(Operating System) .checkbox-selector__filter')[0]);
+    await click($('.grouped-list__item:Contains(Operating System) .grouped-list__filter')[0]);
 
     assert
       .dom('.get-api')
@@ -213,7 +221,7 @@ module('Acceptance | Exploring Widgets', function(hooks) {
 
     /* == Unsaved widget == */
     await visit('/dashboards/1/widgets/new');
-    await click($('.checkbox-selector--metric .grouped-list__item:contains(Ad Clicks) label')[0]);
+    await click($('.checkbox-selector--metric .grouped-list__item:contains(Ad Clicks) .grouped-list__add-icon')[0]);
     await click('.navi-report-widget__run-btn');
 
     assert.notOk(

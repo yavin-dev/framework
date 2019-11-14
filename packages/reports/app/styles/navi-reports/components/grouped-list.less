@@ -1,14 +1,41 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 .grouped-list {
-  color: @navi-gray-500;
+  color: @denali-grey-800;
   font-size: @font-size-mid-base;
 
   &__group-header {
-    text-transform: capitalize;
     margin: 2px 0;
+
+    &-content {
+      font-family: @font-family-sans-serif; // override icon font
+      text-transform: capitalize;
+    }
+
+    &::-webkit-details-marker {
+      display: none; // hide default <summary> marker in Chrome
+    }
+
+    &::marker {
+      content: ''; // hide default <summary> marker in FF
+    }
+
+    &:before {
+      // mimic <NaviIcon @icon="fa-angle-right" /> or class="fa fa-angle-right"
+      content: '\f105';
+      display: inline-block;
+      margin-left: 2px;
+      width: 8px;
+    }
+  }
+
+  &__group[open] &__group-header:before {
+    // mimic <NaviIcon @icon="fa-angle-down" /> or class="fa fa-angle-down"
+    content: '\f107';
+    margin-left: 0;
+    width: 10px;
   }
 
   &__item {
@@ -16,12 +43,73 @@
     margin-left: 15px;
     font-size: @font-size-mid;
 
+    &-container {
+      align-items: center;
+      display: flex;
+      flex: 1;
+
+      &--selected {
+        background-color: @denali-brand-100;
+      }
+    }
+
+    &-checkbox {
+      opacity: 0; // Hide it
+      position: absolute; // Take it out of the documenet flow
+
+      &-container {
+        position: relative;
+      }
+
+      &-label {
+        &:before {
+          border-radius: 1px;
+          box-shadow: 0 0 0 2px rgba(54, 151, 242, 0.5);
+          content: '';
+          display: inline-block;
+          height: 8px;
+          margin: 0 5px;
+          transition: all 0.2s;
+          width: 8px;
+        }
+      }
+
+      &:hover + &-label:before {
+        box-shadow: 0 0 0 2px @denali-brand-600;
+      }
+
+      &:focus + &-label:before {
+        box-shadow: 0 0 0 2px rgba(54, 151, 242, 0.5);
+      }
+
+      &:checked + &-label:before {
+        box-shadow: 0 0 0 2px @denali-brand-600;
+        background: @denali-brand-600;
+      }
+
+      &:checked + &-label:after {
+        border: solid #fff;
+        border-width: 0 2px 2px 0; // creates the inverted "L" shape
+        box-sizing: border-box;
+        content: ' ';
+        display: block;
+        height: 8px;
+        left: 6px;
+        position: absolute;
+        top: 4px;
+        transform: rotate(45deg);
+        width: 5px;
+      }
+    }
+
     &-label {
-      .clickable;
+      cursor: pointer;
+      margin: 0 3px;
     }
 
     &-info {
       align-self: center;
+      color: @denali-grey-700;
       cursor: help;
       display: none;
       margin-left: 5px;
@@ -29,6 +117,43 @@
 
     &:hover &-info {
       display: initial;
+    }
+  }
+
+  &__add-icon {
+    color: @denali-brand-600;
+    cursor: pointer;
+    display: inline-block;
+    font-size: @font-size-base;
+    margin-right: 2px;
+
+    &--deselected:not(:hover) {
+      opacity: 0.5;
+    }
+  }
+
+  &__icon-set {
+    align-items: center;
+    display: flex;
+    font-size: @font-size-base;
+    margin: 0 15px 0 auto;
+
+    &--no-filter {
+      .metric-config {
+        margin-right: 21px;
+      }
+    }
+  }
+
+  &__filter {
+    color: @denali-brand-600;
+    cursor: pointer;
+    margin: 0 5px;
+    opacity: 0.5;
+
+    &:hover,
+    &--active {
+      opacity: 1;
     }
   }
 }

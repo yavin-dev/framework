@@ -83,7 +83,7 @@ module('Unit | Bard facts Adapter', function(hooks) {
   });
 
   test('_buildDimensionsPath', function(assert) {
-    assert.expect(3);
+    assert.expect(4);
 
     let singleDim = {
       dimensions: [{ dimension: 'd1' }]
@@ -101,6 +101,15 @@ module('Unit | Bard facts Adapter', function(hooks) {
       Adapter._buildDimensionsPath(manyDims),
       '/d1/d2',
       '_buildDimensionsPath built the correct string for many dimensions'
+    );
+
+    let duplicateDims = {
+      dimensions: [{ dimension: 'd1' }, { dimension: 'd2' }, { dimension: 'd1' }]
+    };
+    assert.equal(
+      Adapter._buildDimensionsPath(duplicateDims),
+      '/d1/d2',
+      '_buildDimensionsPath built the correct string for duplicate dimensions'
     );
 
     let noDims = {};
@@ -134,7 +143,7 @@ module('Unit | Bard facts Adapter', function(hooks) {
   });
 
   test('_buildMetricsParam', function(assert) {
-    assert.expect(2);
+    assert.expect(4);
 
     let singleMetric = {
       metrics: [{ metric: 'm1' }]
@@ -152,6 +161,35 @@ module('Unit | Bard facts Adapter', function(hooks) {
       Adapter._buildMetricsParam(manyMetrics),
       'm1,m2',
       '_buildMetricsParam built the correct string for many metrics'
+    );
+
+    let differentParams = {
+      metrics: [
+        { metric: 'm1' },
+        { metric: 'm2' },
+        { metric: 'r', parameters: { p: '123', as: 'm1' } },
+        { metric: 'r', parameters: { p: 'xyz', as: 'm2' } }
+      ]
+    };
+    assert.equal(
+      Adapter._buildMetricsParam(differentParams),
+      'm1,m2,r(p=123),r(p=xyz)',
+      '_buildMetricsParam built the correct string for different parameters'
+    );
+
+    let duplicateMetrics = {
+      metrics: [
+        { metric: 'm1' },
+        { metric: 'm2' },
+        { metric: 'm1' },
+        { metric: 'r', parameters: { p: '123', as: 'm1' } },
+        { metric: 'r', parameters: { p: '123', as: 'm2' } }
+      ]
+    };
+    assert.equal(
+      Adapter._buildMetricsParam(duplicateMetrics),
+      'm1,m2,r(p=123)',
+      '_buildMetricsParam built the correct string for duplicate metrics'
     );
   });
 

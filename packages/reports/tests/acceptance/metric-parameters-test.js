@@ -19,9 +19,7 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
     );
 
     //adding a metric with default params
-    await click(
-      $('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .grouped-list__item-label')[0]
-    );
+    await click($('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .grouped-list__add-icon')[0]);
 
     assert
       .dom('.metric-config__dropdown-container .navi-list-selector__show-link')
@@ -39,9 +37,7 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
 
     //adding another param for the same metric
     await click('.metric-config__dropdown-container .navi-list-selector__show-link');
-    await click(
-      $('.metric-config__dropdown-container .grouped-list__item:contains(Euro) .grouped-list__item-label')[0]
-    );
+    await click($('.metric-config__dropdown-container .grouped-list__item:contains(Euro) .grouped-list__add-icon')[0]);
     await click('.metric-config__dropdown-container .navi-list-selector__show-link');
 
     assert.deepEqual(
@@ -67,9 +63,7 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
     await click('.metric-config__done-btn');
 
     //removing the metric
-    await click(
-      $('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .grouped-list__item-label')[0]
-    );
+    await click($('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .grouped-list__add-icon')[0]);
     await click(
       $('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .metric-config__trigger-icon')[0]
     );
@@ -84,9 +78,7 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
 
     await visit('/reports/1/view');
     //add revenue (metric with params)
-    await click(
-      $('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .grouped-list__item-label')[0]
-    );
+    await click($('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .grouped-list__add-icon')[0]);
     assert
       .dom('.metric-config__dropdown-container')
       .isVisible('The metric config dropdown container is opened when a metric with parameters is selected');
@@ -98,7 +90,7 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
       .isNotVisible('The metric config dropdown container is closed when the done button is clicked');
 
     //remove revenue
-    await click($('.grouped-list__item:contains(Revenue) .grouped-list__item-label')[0]);
+    await click($('.grouped-list__item:contains(Revenue) .grouped-list__add-icon')[0]);
     assert
       .dom('.metric-config__dropdown-container')
       .isNotVisible('The metric config dropdown container remains closed when the metric is removed');
@@ -108,12 +100,8 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
     assert.expect(2);
 
     await visit('/reports/1/view');
-    await click(
-      $('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .grouped-list__item-label')[0]
-    );
-    await click(
-      $('.metric-config__dropdown-container .grouped-list__item:contains(EUR) .metric-config__filter-icon')[0]
-    );
+    await click($('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .grouped-list__add-icon')[0]);
+    await click($('.metric-config__dropdown-container .grouped-list__item:contains(EUR) .grouped-list__filter')[0]);
     await click('.metric-config__dropdown-container .navi-list-selector__show-link');
 
     assert.deepEqual(
@@ -129,14 +117,10 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
     assert.expect(4);
 
     await visit('/reports/1/view');
-    await click(
-      $('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .grouped-list__item-label')[0]
-    );
-    await click($('.metric-config__dropdown-container .grouped-list__item:contains(AUD) .grouped-list__item-label')[0]);
-    await click($('.metric-config__dropdown-container .grouped-list__item:contains(CAD) .grouped-list__item-label')[0]);
-    await click(
-      $('.metric-config__dropdown-container .grouped-list__item:contains(EUR) .metric-config__filter-icon')[0]
-    );
+    await click($('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .grouped-list__add-icon')[0]);
+    await click($('.metric-config__dropdown-container .grouped-list__item:contains(AUD) .grouped-list__add-icon')[0]);
+    await click($('.metric-config__dropdown-container .grouped-list__item:contains(CAD) .grouped-list__add-icon')[0]);
+    await click($('.metric-config__dropdown-container .grouped-list__item:contains(EUR) .grouped-list__filter')[0]);
     await click('.metric-config__dropdown-container .navi-list-selector__show-link');
 
     assert.ok(
@@ -168,24 +152,18 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
     assert.expect(4);
 
     await visit('/reports/1/view');
-    await click(
-      $('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .grouped-list__item-label')[0]
-    );
-    await click($('.metric-config__dropdown-container .grouped-list__item:contains(AUD) .grouped-list__item-label')[0]);
+    await click($('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .grouped-list__add-icon')[0]);
+    await click($('.metric-config__dropdown-container .grouped-list__item:contains(AUD) .grouped-list__add-icon')[0]);
     await click('.metric-config__dropdown-container .metric-config__done-btn');
 
-    await click(
-      $('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .metric-selector__filter')[0]
-    );
+    await click($('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .grouped-list__filter')[0]);
     assert.equal(
       findAll('.filter-builder__subject').filter(el => el.innerText.includes('Revenue')).length,
       1,
       'The metric filter adds a single filter of type revenue'
     );
 
-    await click(
-      $('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .metric-selector__filter')[0]
-    );
+    await click($('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .grouped-list__filter')[0]);
     assert.equal(
       findAll('.filter-builder__subject').filter(el => el.innerText.includes('Revenue')).length,
       2,
@@ -200,9 +178,7 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
       'Both the selected metrics have been added as filters'
     );
 
-    await click(
-      $('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .metric-selector__filter')[0]
-    );
+    await click($('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .grouped-list__filter')[0]);
     assert.equal(
       findAll('.filter-builder__subject').filter(el => el.innerText.includes('Revenue')).length,
       0,

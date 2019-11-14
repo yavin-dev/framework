@@ -1,5 +1,6 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
+import config from 'ember-get-config';
 import { settled } from '@ember/test-helpers';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import { get, set } from '@ember/object';
@@ -354,7 +355,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
   /* == Metric == */
 
   test('addMetric', async function(assert) {
-    assert.expect(4);
+    assert.expect(5);
 
     await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1),
@@ -386,6 +387,15 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
       ['uniqueIdentifier', 'pageViews'],
       'Adding a metric already present in the request does not result in duplicate metrics'
     );
+
+    config.navi.FEATURES.enableRequestPreview = true;
+    request.addMetric(newMetric);
+    assert.deepEqual(
+      request.get('metrics').map(m => get(m, 'metric.name')),
+      ['uniqueIdentifier', 'pageViews', 'pageViews'],
+      'Adding a metric already present in the request results in duplicate metrics when enableRequestPreview feature flag is on'
+    );
+    config.navi.FEATURES.enableRequestPreview = false;
   });
 
   test('addRequestMetricByModel', async function(assert) {
@@ -642,7 +652,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
   /* == Dimension == */
 
   test('addDimension', async function(assert) {
-    assert.expect(3);
+    assert.expect(4);
 
     await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1),
@@ -671,6 +681,15 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
       ['age'],
       'Adding a dimension already present in the request does not result in duplicate dimensions'
     );
+
+    config.navi.FEATURES.enableRequestPreview = true;
+    request.addDimension(newDimension);
+    assert.deepEqual(
+      request.get('dimensions').map(m => get(m, 'dimension.name')),
+      ['age', 'age'],
+      'Adding a dimension already present in the request results in duplicate dimensions when enableRequestPreview feature flag is on'
+    );
+    config.navi.FEATURES.enableRequestPreview = false;
   });
 
   test('addRequestDimensionByModel', async function(assert) {

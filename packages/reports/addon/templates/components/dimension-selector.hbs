@@ -1,38 +1,60 @@
 {{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{#navi-list-selector
-  items=listItems
-  searchField="longName"
-  selected=selectedColumnsAndFilters
-  title="Dimensions"
+<NaviListSelector
+  @items={{this.listItems}}
+  @searchField="longName"
+  @selected={{this.selectedColumnsAndFilters}}
+  @title="Dimensions"
   as | items areItemsFiltered |
-}}
-  {{#grouped-list
-      items=items
-      shouldOpenAllGroups=areItemsFiltered
-      groupByField="category"
-      sortByField=(unless areItemsFiltered "longName")
-      as | item |
-  }}
-    <label class="grouped-list__item-label">
-      <input class="checkbox-selector__checkbox" type="checkbox" onchange={{action "itemClicked" item}} checked={{get itemsChecked item.name}}>
-      {{item.longName}}
-    </label>
-    {{#unless (eq item.category "Time Grain")}}
-      {{#navi-icon "question-circle-o" class="grouped-list__item-info"}}
-        {{#ember-tooltip side="right" popperContainer="body" effect="none"}}
-          {{#if item.extended.isPending}}
-            {{navi-loading-message}}
-          {{else}}
-            {{or item.extended.content.description "No description available"}}
-          {{/if}}
-        {{/ember-tooltip}}
-      {{/navi-icon}}
+>
+  <GroupedList
+    @items={{items}}
+    @shouldOpenAllGroups={{areItemsFiltered}}
+    @groupByField="category"
+    @sortByField={{unless areItemsFiltered "longName"}}
+    as | item |
+  >
+    {{#if (eq item.category "Time Grain")}}
+      <div class="grouped-list__item-checkbox-container">
+        <input
+          type="checkbox"
+          class="grouped-list__item-checkbox"
+          id={{concat "grouped-list-checkbox-" (dasherize item.longName)}}
+          onchange={{action "itemClicked" item}}
+          checked={{get itemsChecked item.name}}
+        >
+        <label for={{concat "grouped-list-checkbox-" (dasherize item.longName)}}
+          class="grouped-list__item-checkbox-label">
+          {{item.longName}}
+        </label>
+      </div>
+    {{else}}
+      <div class="grouped-list__item-container {{if (and (get itemsChecked item.name) (feature-flag "enableRequestPreview")) "grouped-list__item-container--selected"}}">
+        <span class="grouped-list__item-label" onclick={{action "itemClicked" item}} role="button">
+          <NaviIcon
+            @icon={{if (and (get itemsChecked item.name) (not (feature-flag "enableRequestPreview"))) "minus-circle" "plus-circle"}}
+            class="grouped-list__add-icon {{if (not (or (feature-flag "enableRequestPreview") (get itemsChecked item.name))) "grouped-list__add-icon--deselected"}}"
+          />
+          {{item.longName}}
+        </span>
 
-      {{navi-icon
-        "filter"
-        class=(concat (if (get dimensionsFiltered item.name) "checkbox-selector__filter--active ") "checkbox-selector__filter")
-        click=(action onToggleDimFilter item)
-      }}
-    {{/unless}}
-  {{/grouped-list}}
-{{/navi-list-selector}}
+        <NaviIcon @icon="question-circle-o" class="grouped-list__item-info">
+          <EmberTooltip @side="right" @popperContainer="body" @effect="none">
+            {{#if item.extended.isPending}}
+              {{navi-loading-message}}
+            {{else}}
+              {{or item.extended.content.description "No description available"}}
+            {{/if}}
+          </EmberTooltip>
+        </NaviIcon>
+
+        <div class="grouped-list__icon-set">
+          <NaviIcon
+            @icon="filter"
+            class={{concat (if (get dimensionsFiltered item.name) "grouped-list__filter--active ") "grouped-list__filter"}}
+            onclick={{action onToggleDimFilter item}}
+          />
+        </div>
+      </div>
+    {{/if}}
+  </GroupedList>
+</NaviListSelector>

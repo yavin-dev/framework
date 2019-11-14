@@ -1,66 +1,71 @@
 {{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{#navi-list-selector
-   items=allMetrics
-   searchField="longName"
-   selected=selectedMetrics
-   title="Metrics"
-   as | metrics areMetricsFiltered |
-}}
-  {{#grouped-list
-    items=metrics
-    shouldOpenAllGroups=areMetricsFiltered
-    groupByField="category"
-    sortByField=(unless areMetricsFiltered "longName")
+<NaviListSelector
+  @items={{this.allMetrics}}
+  @searchField="longName"
+  @selected={{this.selectedMetrics}}
+  @title="Metrics"
+  as | metrics areMetricsFiltered |
+>
+  <GroupedList
+    @items={{metrics}}
+    @shouldOpenAllGroups={{areMetricsFiltered}}
+    @groupByField="category"
+    @sortByField={{unless areMetricsFiltered "longName"}}
     as | metric |
-  }}
-    <label class="grouped-list__item-label">
-      <input class="checkbox-selector__checkbox" type="checkbox" onchange={{action "metricClicked" metric}} checked={{get metricsChecked metric.name}}>
-      {{metric.longName}}
-    </label>
+  >
+    <div class="grouped-list__item-container {{if (and (get metricsChecked metric.name) (feature-flag "enableRequestPreview")) "grouped-list__item-container--selected"}}">
+      <span class="grouped-list__item-label" onclick={{action "metricClicked" metric}} role="button">
+        <NaviIcon
+          @icon={{if (and (get metricsChecked metric.name) (not (feature-flag "enableRequestPreview"))) "minus-circle" "plus-circle"}}
+          class="grouped-list__add-icon {{if (not (or (feature-flag "enableRequestPreview") (get metricsChecked metric.name))) "grouped-list__add-icon--deselected"}}"
+        />
+        {{metric.longName}}
+      </span>
 
-    {{#navi-icon "question-circle-o" class="grouped-list__item-info"}}
-      {{#ember-tooltip side="right" popperContainer="body" effect="none"}}
-        {{#if metric.extended.isPending}}
-          {{navi-loading-message}}
-        {{else}}
-          {{or metric.extended.content.description "No description available"}}
+      <NaviIcon @icon="question-circle-o" class="grouped-list__item-info">
+        <EmberTooltip @side="right" @popperContainer="body" @effect="none">
+          {{#if metric.extended.isPending}}
+            {{navi-loading-message}}
+          {{else}}
+            {{or metric.extended.content.description "No description available"}}
+          {{/if}}
+        </EmberTooltip>
+      </NaviIcon>
+
+      <div class="grouped-list__icon-set {{if (not (can-having metric)) "metric-selector__icon-set--no-filter"}}">
+        {{#if (get metric "hasParameters")}}
+          <MetricConfig
+            @metric={{metric}}
+            @request={{this.request}}
+            @onAddParameterizedMetric={{update-report-action "ADD_METRIC_WITH_PARAM"}}
+            @onRemoveParameterizedMetric={{update-report-action "REMOVE_METRIC_WITH_PARAM"}}
+            @onToggleParameterizedMetricFilter={{update-report-action "TOGGLE_PARAMETERIZED_METRIC_FILTER"}}
+          />
         {{/if}}
-      {{/ember-tooltip}}
-    {{/navi-icon}}
-
-    <div class="metric-selector__icon-set {{if (not (can-having metric)) "metric-selector__icon-set--no-filter"}}">
-      {{#if (get metric "hasParameters")}}
-        {{metric-config
-          metric=metric
-          request=request
-          onAddParameterizedMetric=(update-report-action "ADD_METRIC_WITH_PARAM")
-          onRemoveParameterizedMetric=(update-report-action "REMOVE_METRIC_WITH_PARAM")
-          onToggleParameterizedMetricFilter=(update-report-action "TOGGLE_PARAMETERIZED_METRIC_FILTER")
-        }}
-      {{/if}}
-      {{#if (can-having metric)}}
-        {{#navi-icon
-          "filter"
-          class=(concat (if (get metricsFiltered metric.name) "checkbox-selector__filter--active ") "checkbox-selector__filter metric-selector__filter")
-          click=(action onToggleMetricFilter metric)
-        }}
-          {{#ember-tooltip side="right" popperContainer="body" effect="none"}}
-            {{#if (has-parameters metric)}}
-              {{#if (has-unfiltered-parameters metric request)}}
-                Add next filter
+        {{#if (can-having metric)}}
+          <NaviIcon
+            @icon="filter"
+            class={{concat (if (get metricsFiltered metric.name) "grouped-list__filter--active ") "grouped-list__filter"}}
+            onclick={{action onToggleMetricFilter metric}}
+          >
+            <EmberTooltip @side="right" @popperContainer="body" @effect="none">
+              {{#if (has-parameters metric)}}
+                {{#if (has-unfiltered-parameters metric request)}}
+                  Add next filter
+                {{else}}
+                  Remove all
+                {{/if}}
               {{else}}
-                Remove all
+                {{#if (get metricsFiltered metric.name)}}
+                  Remove Filter
+                {{else}}
+                  Add Filter
+                {{/if}}
               {{/if}}
-            {{else}}
-              {{#if (get metricsFiltered metric.name)}}
-                Remove Filter
-              {{else}}
-                Add Filter
-              {{/if}}
-            {{/if}}
-          {{/ember-tooltip}}
-        {{/navi-icon}}
-      {{/if}}
+            </EmberTooltip>
+          </NaviIcon>
+        {{/if}}
+      </div>
     </div>
-  {{/grouped-list}}
-{{/navi-list-selector}}
+  </GroupedList>
+</NaviListSelector>

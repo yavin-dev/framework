@@ -45,7 +45,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     // Make an invalid change and run report
     await visit('/reports/1');
-    await click($('.grouped-list__item:contains(Operating System) .checkbox-selector__filter')[0]);
+    await click($('.grouped-list__item:contains(Operating System) .grouped-list__filter')[0]);
     await click('.navi-report__run-btn');
 
     assert.equal(currentURL(), '/reports/1/invalid', 'User is transitioned to invalid route');
@@ -75,7 +75,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     await visit('/reports/1');
     // Add a metric filter
-    await click($('.grouped-list__item:contains(Operating System) .checkbox-selector__filter')[0]);
+    await click($('.grouped-list__item:contains(Operating System) .grouped-list__filter')[0]);
     await click($('.navi-report__action-link:contains(Clone)')[0]);
 
     assert.ok(currentURL().endsWith('edit'), 'An invalid new report transitions to the reports/:id/edit route');
@@ -87,7 +87,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await visit('/reports/new');
 
     /* == Add filter == */
-    await click($('.grouped-list__item:Contains(Operating System) .checkbox-selector__filter')[0]);
+    await click($('.grouped-list__item:Contains(Operating System) .grouped-list__filter')[0]);
 
     /* == Run with errors == */
     await click('.navi-report__run-btn');
@@ -98,7 +98,7 @@ module('Acceptance | Navi Report', function(hooks) {
     );
 
     /* == Fix errors == */
-    await click($('.grouped-list__item:Contains(Operating System) .checkbox-selector__filter')[0]);
+    await click($('.grouped-list__item:Contains(Operating System) .grouped-list__filter')[0]);
     await click($('.checkbox-selector--metric .grouped-list__item:contains(Ad Clicks) .grouped-list__item-label')[0]);
     await click('.navi-report__run-btn');
 
@@ -142,14 +142,16 @@ module('Acceptance | Navi Report', function(hooks) {
     await visit('/reports/1/view');
 
     assert
-      .dom('.grouped-list__item-label input', $('.checkbox-selector--dimension .grouped-list__item:contains(Day)')[0])
+      .dom('.grouped-list__item-checkbox', $('.checkbox-selector--dimension .grouped-list__item:contains(Day)')[0])
       .isChecked('Day timegrain is checked by default');
 
     // uncheck the day timegrain
-    await click($('.checkbox-selector--dimension .grouped-list__item:contains(Day) .grouped-list__item-label')[0]);
+    await click(
+      $('.checkbox-selector--dimension .grouped-list__item:contains(Day) .grouped-list__item-checkbox-label')[0]
+    );
 
     assert
-      .dom('.grouped-list__item-label input', $('.checkbox-selector--dimension .grouped-list__item:contains(Day)')[0])
+      .dom('.grouped-list__item-checkbox', $('.checkbox-selector--dimension .grouped-list__item:contains(Day)')[0])
       .isNotChecked('Day timegrain is unchecked after clicking on it');
 
     assert.dom('.navi-report__revert-btn').isVisible('Revert changes button is visible once a change has been made');
@@ -165,7 +167,7 @@ module('Acceptance | Navi Report', function(hooks) {
       .isNotVisible('After navigating away and back to the route, the Revert button disappears');
 
     assert
-      .dom('.grouped-list__item-label input', $('.checkbox-selector--dimension .grouped-list__item:contains(Day)')[0])
+      .dom('.grouped-list__item-checkbox', $('.checkbox-selector--dimension .grouped-list__item:contains(Day)')[0])
       .isChecked('After navigating away and back to the route, changes are reverted');
   });
 
@@ -180,7 +182,9 @@ module('Acceptance | Navi Report', function(hooks) {
     );
 
     // Remove a metric
-    await click($('.checkbox-selector--dimension .grouped-list__item:contains(Week) .grouped-list__item-label')[0]);
+    await click(
+      $('.checkbox-selector--dimension .grouped-list__item:contains(Week) .grouped-list__item-checkbox-label')[0]
+    );
 
     assert.dom('.navi-report__revert-btn').isVisible('Revert changes button is visible once a change has been made');
 
@@ -279,7 +283,9 @@ module('Acceptance | Navi Report', function(hooks) {
     await click('.navi-report__save-btn');
 
     // Change the Dim
-    await click($('.checkbox-selector--dimension .grouped-list__item:contains(Week) .grouped-list__item-label')[0]);
+    await click(
+      $('.checkbox-selector--dimension .grouped-list__item:contains(Week) .grouped-list__item-checkbox-label')[0]
+    );
 
     // And click Save AS the report
     await click('.navi-report__save-as-btn');
@@ -332,7 +338,9 @@ module('Acceptance | Navi Report', function(hooks) {
     await visit('/reports/1');
 
     // Change the Dim
-    await click($('.checkbox-selector--dimension .grouped-list__item:contains(Week) .grouped-list__item-label')[0]);
+    await click(
+      $('.checkbox-selector--dimension .grouped-list__item:contains(Week) .grouped-list__item-checkbox-label')[0]
+    );
 
     // And click Save AS the report
     await click('.navi-report__save-as-btn');
@@ -373,7 +381,9 @@ module('Acceptance | Navi Report', function(hooks) {
     await visit('/reports/1');
 
     // Change the Dim
-    await click($('.checkbox-selector--dimension .grouped-list__item:contains(Week) .grouped-list__item-label')[0]);
+    await click(
+      $('.checkbox-selector--dimension .grouped-list__item:contains(Week) .grouped-list__item-checkbox-label')[0]
+    );
 
     // And click Save AS the report
     await click('.navi-report__save-as-btn');
@@ -528,7 +538,7 @@ module('Acceptance | Navi Report', function(hooks) {
     /* == Add filter == */
     await click('.navi-report__run-btn');
     await click(
-      $('.checkbox-selector--dimension .grouped-list__item:contains(Product Family) .checkbox-selector__filter')[0]
+      $('.checkbox-selector--dimension .grouped-list__item:contains(Product Family) .grouped-list__filter')[0]
     );
 
     /* == Update filter value == */
@@ -581,7 +591,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     /* == Add filter == */
     await click(
-      $('.checkbox-selector--dimension .grouped-list__item:contains(Product Family) .checkbox-selector__filter')[0]
+      $('.checkbox-selector--dimension .grouped-list__item:contains(Product Family) .grouped-list__filter')[0]
     );
     /* == Update filter value == */
     await selectChoose('.filter-values--dimension-select__trigger', '(1)');
@@ -681,7 +691,7 @@ module('Acceptance | Navi Report', function(hooks) {
     );
 
     // add filter
-    await click($('.grouped-list__item:Contains(Operating System) .checkbox-selector__filter')[0]);
+    await click($('.grouped-list__item:Contains(Operating System) .grouped-list__filter')[0]);
 
     assert.ok(
       [...find('.get-api').classList].includes('navi-report__action--is-disabled'),
@@ -974,7 +984,9 @@ module('Acceptance | Navi Report', function(hooks) {
       'After navigating out of the route, the report model is rolled back'
     );
 
-    await click($('.checkbox-selector--dimension .grouped-list__item:contains(Week) .grouped-list__item-label')[0]);
+    await click(
+      $('.checkbox-selector--dimension .grouped-list__item:contains(Week) .grouped-list__item-checkbox-label')[0]
+    );
 
     //Navigate out of report
     await click('.navi-report__breadcrumb-link');
@@ -1098,7 +1110,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     // Visit report and make a change that invalidates visualization
     await visit('/reports/1/view');
-    await click($('.grouped-list__item:contains(Product Family) .checkbox-selector__checkbox')[0]);
+    await click($('.grouped-list__item:contains(Product Family) .grouped-list__item-label')[0]);
 
     assert.dom('.report-view__visualization-edit-btn').isNotVisible('Edit visualization button is no longer visible');
 
@@ -1142,7 +1154,7 @@ module('Acceptance | Navi Report', function(hooks) {
       .isNotVisible('Notification to run is not visible after making changes that do not change the request');
 
     // Make a change that invalidates visualization
-    await click($('.grouped-list__item:contains(Product Family) .checkbox-selector__checkbox')[0]);
+    await click($('.grouped-list__item:contains(Product Family) .grouped-list__item-label')[0]);
 
     assert
       .dom('.report-view__visualization-edit')
@@ -1379,7 +1391,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await visit('/reports/1/view');
     await click($('.grouped-list__group-header:contains(test)')[0]);
     await click($('.grouped-list__item:contains(Context Id)')[0]);
-    await click($('.grouped-list__item:contains(Context Id) .checkbox-selector__filter')[0]);
+    await click($('.grouped-list__item:contains(Context Id) .grouped-list__filter')[0]);
     await click('.navi-report__run-btn');
 
     assert
@@ -1428,7 +1440,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.dom('.filter-values--multi-value-input--error').isVisible('Filter value input validation errors are shown');
 
     await click($('.grouped-list__item:contains(Operating System)')[0]);
-    await click($('.grouped-list__item:contains(Operating System) .checkbox-selector__filter')[0]);
+    await click($('.grouped-list__item:contains(Operating System) .grouped-list__filter')[0]);
 
     assert
       .dom('.filter-values--dimension-select__trigger')
@@ -1440,7 +1452,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     await visit('/reports/1');
     //add dimension filter
-    await click($('.grouped-list__item:contains(Operating System) .checkbox-selector__filter')[0]);
+    await click($('.grouped-list__item:contains(Operating System) .grouped-list__filter')[0]);
 
     assert.ok(
       !!$('.filter-builder__subject:contains(Operating System)'.length),
@@ -1448,7 +1460,7 @@ module('Acceptance | Navi Report', function(hooks) {
     );
 
     //remove filter by clicking on filter icon again
-    await click($('.grouped-list__item:contains(Operating System) .checkbox-selector__filter')[0]);
+    await click($('.grouped-list__item:contains(Operating System) .grouped-list__filter')[0]);
 
     assert.notOk(
       !!$('.filter-builder__subject:contains(Operating System)').length,
@@ -1456,12 +1468,12 @@ module('Acceptance | Navi Report', function(hooks) {
     );
 
     //add metric filter
-    await click($('.grouped-list__item:contains(Ad Clicks) .checkbox-selector__filter')[0]);
+    await click($('.grouped-list__item:contains(Ad Clicks) .grouped-list__filter')[0]);
 
     assert.ok(!!$('.filter-builder__subject:contains(Ad Clicks)').length, 'The Ad Clicks metric filter is added');
 
     //remove metric filter by clicking on filter icon again
-    await click($('.grouped-list__item:contains(Ad Clicks) .checkbox-selector__filter')[0]);
+    await click($('.grouped-list__item:contains(Ad Clicks) .grouped-list__filter')[0]);
 
     assert.notOk(
       !!$('.filter-builder__subject:contains(Ad Clicks)').length,
@@ -1486,7 +1498,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     // Add selected dimension as filter
     await click('.report-builder__dimension-selector .navi-list-selector__show-link');
-    await click($('.grouped-list__item:contains(Operating System) .checkbox-selector__filter')[0]);
+    await click($('.grouped-list__item:contains(Operating System) .grouped-list__filter')[0]);
     await click('.report-builder__dimension-selector .navi-list-selector__show-link');
 
     assert.deepEqual(
@@ -1497,7 +1509,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     // Remove the dimension filter
     await click('.report-builder__dimension-selector .navi-list-selector__show-link');
-    await click($('.grouped-list__item:contains(Operating System) .checkbox-selector__filter')[0]);
+    await click($('.grouped-list__item:contains(Operating System) .grouped-list__filter')[0]);
     await click('.report-builder__dimension-selector .navi-list-selector__show-link');
 
     assert.deepEqual(
@@ -1522,7 +1534,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.expect(2);
     await visit('/reports/1');
 
-    await click($('.grouped-list__item:contains(Operating System) .checkbox-selector__filter')[0]);
+    await click($('.grouped-list__item:contains(Operating System) .grouped-list__filter')[0]);
     await selectChoose('.filter-collection__row:last-of-type .filter-builder-dimension__operator', 'Is Empty');
     await click('.navi-report__run-btn');
 
@@ -1538,7 +1550,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.expect(2);
     await visit('/reports/1');
 
-    await click($('.grouped-list__item:contains(Operating System) .checkbox-selector__filter')[0]);
+    await click($('.grouped-list__item:contains(Operating System) .grouped-list__filter')[0]);
     await selectChoose('.filter-collection__row:last-of-type .filter-builder-dimension__operator', 'Is Not Empty');
     await click('.navi-report__run-btn');
 
@@ -1554,7 +1566,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.expect(3);
 
     await visit('/reports/1');
-    await click($('.grouped-list__item-label:contains(Month)')[0]);
+    await click($('.grouped-list__item-checkbox-label:contains(Month)')[0]);
 
     // Select the month Jan
     await click('.custom-range-form .pick-value');
@@ -1565,7 +1577,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     assert.dom('.date-range__select-trigger').hasText('Jan 2015', 'Month is changed to Jan 2015');
 
-    await click($('.grouped-list__item-label:contains(Day)')[0]);
+    await click($('.grouped-list__item-checkbox-label:contains(Day)')[0]);
     await click('.navi-report__run-btn');
 
     assert
@@ -1575,7 +1587,7 @@ module('Acceptance | Navi Report', function(hooks) {
         'Switching to day preserves the day casts the dates to match the time period'
       );
 
-    await click($('.grouped-list__item-label:contains(Week)')[0]);
+    await click($('.grouped-list__item-checkbox-label:contains(Week)')[0]);
     await click('.navi-report__run-btn');
 
     assert
@@ -1613,7 +1625,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     // Grab one of the dim names after running a report
     option = find('.table-cell-content.dimension').textContent.trim();
-    await click($('.grouped-list__item:Contains(EventId) .checkbox-selector__filter')[0]);
+    await click($('.grouped-list__item:Contains(EventId) .grouped-list__filter')[0]);
 
     // Open the dimension values so we can get values as they are dynamically created by mirage
     await clickTrigger(dropdownSelector);
@@ -1637,7 +1649,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
   test('dimension contains filter works by letting users select field', async function(assert) {
     await visit('/reports/new');
-    await click($('.grouped-list__item:Contains(Multi System Id) .checkbox-selector__filter')[0]);
+    await click($('.grouped-list__item:Contains(Multi System Id) .grouped-list__filter')[0]);
 
     assert.dom('.filter-builder-dimension__operator').exists('Operator dropdown should exist for the dimension');
     assert.dom('.filter-builder-dimension__field').doesNotExist('field dropdown does not exist');
@@ -1696,7 +1708,7 @@ module('Acceptance | Navi Report', function(hooks) {
       'The headers are reordered as specified by the reorder'
     );
 
-    await click($('.grouped-list__item-label:contains(Total Clicks)')[0]);
+    await click($('.grouped-list__item-container:contains(Total Clicks) .grouped-list__item-label')[0]);
     await click('.navi-report__run-btn');
 
     assert.deepEqual(
