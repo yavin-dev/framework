@@ -133,14 +133,11 @@ export default Component.extend({
      */
     itemClicked(item) {
       const type = item.category === 'Time Grain' ? 'TimeGrain' : 'Dimension',
-        { enableRequestPreview } = this;
-      let action;
-
-      if (enableRequestPreview && type === 'Dimension') {
-        action = 'Add';
-      } else {
-        action = get(this, 'itemsChecked')[get(item, 'name')] ? 'Remove' : 'Add';
-      }
+        { enableRequestPreview } = this,
+        action =
+          (enableRequestPreview && type === 'Dimension') || !get(this, 'itemsChecked')[get(item, 'name')]
+            ? 'Add'
+            : 'Remove';
 
       const handler = this[`on${action}${type}`];
 

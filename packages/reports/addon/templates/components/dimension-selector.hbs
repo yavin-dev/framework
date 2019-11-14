@@ -20,7 +20,8 @@
           class="grouped-list__item-checkbox"
           id={{concat "grouped-list-checkbox-" (dasherize item.longName)}}
           onchange={{action "itemClicked" item}}
-          checked={{get itemsChecked item.name}}>
+          checked={{get itemsChecked item.name}}
+        >
         <label for={{concat "grouped-list-checkbox-" (dasherize item.longName)}}
           class="grouped-list__item-checkbox-label">
           {{item.longName}}
@@ -31,7 +32,8 @@
         <span class="grouped-list__item-label" onclick={{action "itemClicked" item}} role="button">
           <NaviIcon
             @icon={{if (and (get itemsChecked item.name) (not enableRequestPreview)) "minus-circle" "plus-circle"}}
-            class="grouped-list__add-icon {{if (not (or enableRequestPreview (get itemsChecked item.name))) "grouped-list__add-icon--deselected"}}" />
+            class="grouped-list__add-icon {{if (not (or enableRequestPreview (get itemsChecked item.name))) "grouped-list__add-icon--deselected"}}"
+          />
           {{item.longName}}
         </span>
 

@@ -17,7 +17,8 @@
       <span class="grouped-list__item-label" onclick={{action "metricClicked" metric}} role="button">
         <NaviIcon
           @icon={{if (and (get metricsChecked metric.name) (not enableRequestPreview)) "minus-circle" "plus-circle"}}
-          class="grouped-list__add-icon {{if (not (or enableRequestPreview (get metricsChecked metric.name))) "grouped-list__add-icon--deselected"}}" />
+          class="grouped-list__add-icon {{if (not (or enableRequestPreview (get metricsChecked metric.name))) "grouped-list__add-icon--deselected"}}"
+        />
         {{metric.longName}}
       </span>
 
@@ -45,7 +46,8 @@
           <NaviIcon
             @icon="filter"
             class={{concat (if (get metricsFiltered metric.name) "grouped-list__filter--active ") "grouped-list__filter"}}
-            onclick={{action onToggleMetricFilter metric}}>
+            onclick={{action onToggleMetricFilter metric}}
+          >
             <EmberTooltip @side="right" @popperContainer="body" @effect="none">
               {{#if (has-parameters metric)}}
                 {{#if (has-unfiltered-parameters metric request)}}
