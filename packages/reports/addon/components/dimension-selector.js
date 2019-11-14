@@ -119,13 +119,6 @@ export default Component.extend({
       }, {});
   }),
 
-  /**
-   * @property {Boolean} enableRequestPreview
-   */
-  get enableRequestPreview() {
-    return featureFlag('enableRequestPreview');
-  },
-
   actions: {
     /*
      * @action itemClicked
@@ -133,7 +126,7 @@ export default Component.extend({
      */
     itemClicked(item) {
       const type = item.category === 'Time Grain' ? 'TimeGrain' : 'Dimension',
-        { enableRequestPreview } = this,
+        enableRequestPreview = featureFlag('enableRequestPreview'),
         action =
           (enableRequestPreview && type === 'Dimension') || !get(this, 'itemsChecked')[get(item, 'name')]
             ? 'Add'

@@ -28,11 +28,11 @@
         </label>
       </div>
     {{else}}
-      <div class="grouped-list__item-container {{if (and (get itemsChecked item.name) enableRequestPreview) "grouped-list__item-container--selected"}}">
+      <div class="grouped-list__item-container {{if (and (get itemsChecked item.name) (feature-flag "enableRequestPreview")) "grouped-list__item-container--selected"}}">
         <span class="grouped-list__item-label" onclick={{action "itemClicked" item}} role="button">
           <NaviIcon
-            @icon={{if (and (get itemsChecked item.name) (not enableRequestPreview)) "minus-circle" "plus-circle"}}
-            class="grouped-list__add-icon {{if (not (or enableRequestPreview (get itemsChecked item.name))) "grouped-list__add-icon--deselected"}}"
+            @icon={{if (and (get itemsChecked item.name) (not (feature-flag "enableRequestPreview"))) "minus-circle" "plus-circle"}}
+            class="grouped-list__add-icon {{if (not (or (feature-flag "enableRequestPreview") (get itemsChecked item.name))) "grouped-list__add-icon--deselected"}}"
           />
           {{item.longName}}
         </span>
