@@ -1,0 +1,142 @@
+/**
+ * Copyright 2019, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
+@background-stripe-color: #f5f8fe;
+
+.navi-request-preview {
+  align-items: space-between;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 15px;
+  width: 100%;
+
+  &__table-container {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 2;
+  }
+
+  &__table {
+    background: repeating-linear-gradient(
+      to bottom,
+      @navi-white,
+      @navi-white 25px,
+      @background-stripe-color 25px,
+      @background-stripe-color 50px
+    );
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+  }
+
+  &__table-body {
+    border: 1px solid @navi-gray-400;
+    border-top: none;
+    border-radius: 0 0 0 6px;
+    display: flex;
+    flex: 2;
+  }
+
+  &__table-header {
+    border: 1px solid @navi-gray-400;
+    border-radius: 6px 0 0 0;
+    display: flex;
+    flex-direction: row;
+    background-color: @navi-gray-300;
+  }
+
+  &__column-header {
+    align-items: center;
+    border-left: 1px solid @navi-gray-400;
+    display: flex;
+    flex: 1;
+    justify-content: space-between;
+    padding: 5px 15px;
+
+    &:first-of-type {
+      border-left: none;
+    }
+
+    &-option {
+      cursor: pointer;
+    }
+
+    &-options {
+      font-size: @font-size-xlarge;
+
+      &-content {
+        color: @denali-brand-600;
+        font-size: @font-size-base;
+        margin-top: 5px;
+        padding: 10px 80px 10px 10px;
+
+        &:before,
+        &:after {
+          right: 70%;
+          left: 0;
+        }
+
+        &:before {
+          top: -24px;
+        }
+
+        &:after {
+          top: -19px;
+        }
+      }
+
+      &-trigger {
+        cursor: pointer;
+      }
+    }
+
+    &-sort {
+      cursor: pointer;
+      font-size: @font-size-mid-base;
+
+      &:hover {
+        color: @denali-brand-700;
+      }
+
+      &.inactive {
+        color: @navi-gray-400;
+
+        &:hover {
+          color: @denali-brand-600;
+        }
+      }
+    }
+
+    &.metric {
+      background-color: @navi-pale-orange;
+    }
+
+    &.dimension {
+      justify-content: center;
+
+      .navi-request-preview__column-header-label {
+        flex: 1;
+      }
+    }
+
+    .ember-basic-dropdown-content-wormhole-origin {
+      display: none;
+    }
+  }
+
+  &__column-header-label {
+    font-family: @font-family-sans-serif;
+    font-size: @font-size-base;
+    font-weight: 300;
+  }
+
+  &__option-icon {
+    color: @navi-gray-800;
+  }
+
+  &__icon {
+    color: @denali-brand-600;
+  }
+}

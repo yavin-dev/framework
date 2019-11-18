@@ -1,0 +1,58 @@
+{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<div class="navi-request-preview__table-container">
+  <table class="navi-request-preview__table">
+    <thead class="navi-request-preview__table-header">
+      {{#each columns as |col|}}
+        <th class={{concat "navi-request-preview__column-header" " " col.type}}>
+          <BasicDropdown 
+            @calculatePosition={{calculatePosition}}
+            as |dd|
+          >
+            <dd.trigger @class="navi-request-preview__column-header-options-trigger">
+              {{navi-icon "ellipsis-v" class="navi-request-preview__column-header-options navi-request-preview__icon"}}
+            </dd.trigger>
+            <dd.content @class="navi-request-preview__column-header-options-content dropdown-arrow">
+              <ul class="navi-request-preview__column-header-options-list">
+                <li class="navi-request-preview__column-header-option" role="button" {{action "removeColumn" col dd}}>
+                  <NaviIcon @icon="trash-o" class="navi-request-preview__option-icon"/>
+                  Remove
+                </li>
+                <li class="navi-request-preview__column-header-option" role="button" {{action "editColumn" col dd}}>
+                  <NaviIcon @icon="pencil" class="navi-request-preview__option-icon"/>
+                  Edit
+                </li>
+              </ul>
+            </dd.content>
+          </BasicDropdown>
+          <span class="navi-request-preview__column-header-label">
+            {{col.displayName}}
+          </span>
+          {{!-- TODO: Remove this "unless" when dimension sorting is added --}}
+          {{#unless (eq col.type "dimension")}} 
+            <NaviIcon 
+              @icon={{if (eq col.sort "asc") "chevron-up" "chevron-down"}} 
+              class={{concat "navi-request-preview__column-header-sort navi-request-preview__icon" (if (eq col.sort "none") " inactive")}}
+              role="button"
+              {{action "sortClicked" col}}
+            />
+          {{/unless}}
+        </th>
+      {{/each}}
+    </thead>
+    <tbody class="navi-request-preview__table-body">
+      <tr class="navi-request-preview__table-row">
+        <td class="navi-request-preview__table-cell">
+          {{!-- Nothing here yet! --}}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  {{#if editingColumn}}
+    <NaviRequestColumnConfig::Base 
+      @column={{editingColumn}} 
+      @metadata={{visualization.metadata}}
+      @onClose={{action "closeColumnConfig"}}
+      @onUpdateColumnName={{action "updateColumnName"}}
+    />
+  {{/if}}
+</div>
