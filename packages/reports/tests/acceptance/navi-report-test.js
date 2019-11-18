@@ -146,9 +146,7 @@ module('Acceptance | Navi Report', function(hooks) {
       .isChecked('Day timegrain is checked by default');
 
     // uncheck the day timegrain
-    await click(
-      $('.checkbox-selector--dimension .grouped-list__item:contains(Day) .grouped-list__item-checkbox-label')[0]
-    );
+    await click($('.checkbox-selector--dimension .grouped-list__item:contains(Day) .grouped-list__item-label')[0]);
 
     assert
       .dom('.grouped-list__item-checkbox', $('.checkbox-selector--dimension .grouped-list__item:contains(Day)')[0])
@@ -182,9 +180,7 @@ module('Acceptance | Navi Report', function(hooks) {
     );
 
     // Remove a metric
-    await click(
-      $('.checkbox-selector--dimension .grouped-list__item:contains(Week) .grouped-list__item-checkbox-label')[0]
-    );
+    await click($('.checkbox-selector--dimension .grouped-list__item:contains(Week) .grouped-list__item-label')[0]);
 
     assert.dom('.navi-report__revert-btn').isVisible('Revert changes button is visible once a change has been made');
 
@@ -283,9 +279,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await click('.navi-report__save-btn');
 
     // Change the Dim
-    await click(
-      $('.checkbox-selector--dimension .grouped-list__item:contains(Week) .grouped-list__item-checkbox-label')[0]
-    );
+    await click($('.checkbox-selector--dimension .grouped-list__item:contains(Week) .grouped-list__item-label')[0]);
 
     // And click Save AS the report
     await click('.navi-report__save-as-btn');
@@ -338,9 +332,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await visit('/reports/1');
 
     // Change the Dim
-    await click(
-      $('.checkbox-selector--dimension .grouped-list__item:contains(Week) .grouped-list__item-checkbox-label')[0]
-    );
+    await click($('.checkbox-selector--dimension .grouped-list__item:contains(Week) .grouped-list__item-label')[0]);
 
     // And click Save AS the report
     await click('.navi-report__save-as-btn');
@@ -381,9 +373,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await visit('/reports/1');
 
     // Change the Dim
-    await click(
-      $('.checkbox-selector--dimension .grouped-list__item:contains(Week) .grouped-list__item-checkbox-label')[0]
-    );
+    await click($('.checkbox-selector--dimension .grouped-list__item:contains(Week) .grouped-list__item-label')[0]);
 
     // And click Save AS the report
     await click('.navi-report__save-as-btn');
@@ -984,9 +974,7 @@ module('Acceptance | Navi Report', function(hooks) {
       'After navigating out of the route, the report model is rolled back'
     );
 
-    await click(
-      $('.checkbox-selector--dimension .grouped-list__item:contains(Week) .grouped-list__item-checkbox-label')[0]
-    );
+    await click($('.checkbox-selector--dimension .grouped-list__item:contains(Week) .grouped-list__item-label')[0]);
 
     //Navigate out of report
     await click('.navi-report__breadcrumb-link');
@@ -1566,7 +1554,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.expect(3);
 
     await visit('/reports/1');
-    await click($('.grouped-list__item-checkbox-label:contains(Month)')[0]);
+    await click($('.grouped-list__item-label:contains(Month)')[0]);
 
     // Select the month Jan
     await click('.custom-range-form .pick-value');
@@ -1577,7 +1565,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     assert.dom('.date-range__select-trigger').hasText('Jan 2015', 'Month is changed to Jan 2015');
 
-    await click($('.grouped-list__item-checkbox-label:contains(Day)')[0]);
+    await click($('.grouped-list__item-label:contains(Day)')[0]);
     await click('.navi-report__run-btn');
 
     assert
@@ -1587,7 +1575,7 @@ module('Acceptance | Navi Report', function(hooks) {
         'Switching to day preserves the day casts the dates to match the time period'
       );
 
-    await click($('.grouped-list__item-checkbox-label:contains(Week)')[0]);
+    await click($('.grouped-list__item-label:contains(Week)')[0]);
     await click('.navi-report__run-btn');
 
     assert

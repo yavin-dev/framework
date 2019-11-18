@@ -18,12 +18,12 @@
         <input
           type="checkbox"
           class="grouped-list__item-checkbox"
-          id={{concat "grouped-list-checkbox-" (dasherize item.longName)}}
+          id={{concat "grouped-list-item-checkbox-" (dasherize item.longName)}}
           onchange={{action "itemClicked" item}}
           checked={{get itemsChecked item.name}}
         >
-        <label for={{concat "grouped-list-checkbox-" (dasherize item.longName)}}
-          class="grouped-list__item-checkbox-label">
+        <label for={{concat "grouped-list-item-checkbox-" (dasherize item.longName)}}
+          class="grouped-list__item-label">
           {{item.longName}}
         </label>
       </div>
