@@ -23,6 +23,7 @@
         class=(concat "report-builder__container report-builder__metric-selector" (if disabled " report-builder__container--disabled" ""))
         request=request
         onAddMetric=(update-report-action "ADD_METRIC")
+        onAddMetricWithParameter=(update-report-action "ADD_METRIC_WITH_PARAM")
         onRemoveMetric=(update-report-action "REMOVE_METRIC")
         onToggleMetricFilter=(update-report-action "TOGGLE_METRIC_FILTER")
       }}
