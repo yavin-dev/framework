@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, triggerKeyEvent, click } from '@ember/test-helpers';
+import { render, triggerKeyEvent, click, fillIn } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 module('Integration | Component | navi-request-column-config/base', function(hooks) {
@@ -32,8 +32,8 @@ module('Integration | Component | navi-request-column-config/base', function(hoo
     `);
 
     assert.dom('input').hasValue('Property', "Column Name field has value of column's display name");
-    this.element.querySelector('input').value = 'Some other value';
-    triggerKeyEvent('input', 'keyup', 13);
+    await fillIn('input', 'Some other value');
+    await triggerKeyEvent('input', 'keyup', 13);
 
     await click('.navi-request-column-config__exit-icon');
   });

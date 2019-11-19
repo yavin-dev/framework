@@ -17,8 +17,8 @@
  */
 import Component from '@ember/component';
 import layout from '../templates/components/navi-request-preview';
-import { layout as templateLayout, classNames, tagName } from '@ember-decorators/component';
-import { computed, get, set } from '@ember/object';
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
+import { computed, get, set, action } from '@ember/object';
 import { capitalize } from '@ember/string';
 import { A as arr } from '@ember/array';
 import { inject as service } from '@ember/service';
@@ -36,8 +36,7 @@ const NEXT_SORT_DIRECTION = {
   asc: 'none'
 };
 
-@tagName('div')
-@classNames('navi-request-preview')
+@tagName('')
 @templateLayout(layout)
 class NaviRequestPreview extends Component {
   /**
@@ -101,10 +100,10 @@ class NaviRequestPreview extends Component {
   getDisplayName(asset, type, visualization) {
     const visMetaData = visualization.metadata.style || {};
     const nameServiceMap = {
-      metric: function(metric) {
+      metric: metric => {
         return this.metricName.getDisplayName(metric.serialize());
-      }.bind(this),
-      dimension: function(dimension) {
+      },
+      dimension: dimension => {
         return dimension.dimension.longName || dimension.dimension.name;
       },
       dateTime: () => 'Date'
@@ -170,76 +169,79 @@ class NaviRequestPreview extends Component {
     }
   }
 
-  actions = {
-    /**
-     * @action
-     * @param {Object} column - contains type and name of column to remove from request
-     * @param {Object} dropdown - ember basic dropdown public api, used to close dropdown on removal
-     */
-    removeColumn(column, dropdown) {
-      const { type, name } = column;
-      const request = this.request;
-      const removalType = type === 'dateTime' ? 'TimeGrain' : capitalize(type);
-      const removalHandler = get(this, `onRemove${removalType}`);
-      const fragmentToRemove = {
-        dimension: () => request.dimensions.findBy('dimension.name', name).dimension,
-        metric: () => request.metrics.findBy('canonicalName', name).metric,
-        dateTime: () => request.logicalTable.timeGrain
-      }[type]();
+  /**
+   * @action
+   * @param {Object} column - contains type and name of column to remove from request
+   * @param {Object} dropdown - ember basic dropdown public api, used to close dropdown on removal
+   */
+  @action
+  removeColumn(column, dropdown) {
+    const { type, name } = column;
+    const request = this.request;
+    const removalType = type === 'dateTime' ? 'TimeGrain' : capitalize(type);
+    const removalHandler = get(this, `onRemove${removalType}`);
+    const fragmentToRemove = {
+      dimension: () => request.dimensions.findBy('dimension.name', name).dimension,
+      metric: () => request.metrics.findBy('canonicalName', name).metric,
+      dateTime: () => request.logicalTable.timeGrain
+    }[type]();
 
-      if (removalHandler && fragmentToRemove) {
-        removalHandler(fragmentToRemove);
-        dropdown.actions.close();
-
-        if (this.editingColumn && this.editingColumn.type === type && this.editingColumn.name === name) {
-          this.set('editingColumn', null);
-        }
-      }
-    },
-
-    /**
-     * @action
-     * @param {Object} column - contains type and name of column to remove from request
-     * @param {Object} dropdown - ember basic dropdown public api, used to close dropdown on edit
-     */
-    editColumn(column, dropdown) {
+    if (removalHandler && fragmentToRemove) {
+      removalHandler(fragmentToRemove);
       dropdown.actions.close();
-      this.set('editingColumn', column);
-    },
 
-    /**
-     * @action
-     */
-    closeColumnConfig() {
-      this.set('editingColumn', null);
-    },
-
-    /**
-     * @action
-     * @param {String} newName - New display name for the current editingColumn
-     */
-    updateColumnName(newName) {
-      debounce(this, 'doUpdateColumnName', newName, 300);
-    },
-
-    /**
-     * @action
-     * @param {Object} column - column that the sort should be applied to or removed from
-     */
-    sortClicked(column) {
-      const type = column.type;
-      const currentSort = column.sort;
-      const nextDirection = type === 'dateTime' && currentSort === 'asc' ? 'desc' : NEXT_SORT_DIRECTION[currentSort];
-
-      if (currentSort && nextDirection) {
-        if (nextDirection === 'none') {
-          this.onRemoveSort(column.name);
-        } else {
-          this.onAddSort(column.name, nextDirection);
-        }
+      if (this.editingColumn && this.editingColumn.type === type && this.editingColumn.name === name) {
+        this.set('editingColumn', null);
       }
     }
-  };
+  }
+
+  /**
+   * @action
+   * @param {Object} column - contains type and name of column to remove from request
+   * @param {Object} dropdown - ember basic dropdown public api, used to close dropdown on edit
+   */
+  @action
+  editColumn(column, dropdown) {
+    dropdown.actions.close();
+    this.set('editingColumn', column);
+  }
+
+  /**
+   * @action
+   */
+  @action
+  closeColumnConfig() {
+    this.set('editingColumn', null);
+  }
+
+  /**
+   * @action
+   * @param {String} newName - New display name for the current editingColumn
+   */
+  @action
+  updateColumnName(newName) {
+    debounce(this, 'doUpdateColumnName', newName, 300);
+  }
+
+  /**
+   * @action
+   * @param {Object} column - column that the sort should be applied to or removed from
+   */
+  @action
+  sortClicked(column) {
+    const type = column.type;
+    const currentSort = column.sort;
+    const nextDirection = type === 'dateTime' && currentSort === 'asc' ? 'desc' : NEXT_SORT_DIRECTION[currentSort];
+
+    if (currentSort && nextDirection) {
+      if (nextDirection === 'none') {
+        this.onRemoveSort(column.name);
+      } else {
+        this.onAddSort(column.name, nextDirection);
+      }
+    }
+  }
 }
 
 export default NaviRequestPreview;

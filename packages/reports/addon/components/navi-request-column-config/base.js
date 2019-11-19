@@ -13,11 +13,10 @@
  *  />
  */
 import Component from '@ember/component';
-import { layout as templateLayout, classNames, tagName } from '@ember-decorators/component';
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
 import layout from '../../templates/components/navi-request-column-config/base';
 
-@classNames('navi-request-column-config')
-@tagName('div')
+@tagName('')
 @templateLayout(layout)
 class Base extends Component {}
 

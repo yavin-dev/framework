@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click, triggerKeyEvent } from '@ember/test-helpers';
+import { render, click, triggerKeyEvent, fillIn } from '@ember/test-helpers';
 import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import hbs from 'htmlbars-inline-precompile';
@@ -160,7 +160,7 @@ module('Integration | Component | navi-request-preview', function(hooks) {
     assert.dom('.navi-request-column-config').isVisible('Column config opens on edit option click');
     assert.dom('#columnName').hasValue('Ad Clicks (BannerAds)', 'Selected column name is displayed in input');
 
-    this.element.querySelector('#columnName').value = 'Banner Ad Clicks';
+    await fillIn('#columnName', 'Banner Ad Clicks');
     await triggerKeyEvent('#columnName', 'keyup', 13);
 
     assert.dom('#columnName').hasValue('Banner Ad Clicks', 'Updated column name is in the input field');
