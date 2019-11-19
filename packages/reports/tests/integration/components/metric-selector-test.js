@@ -267,8 +267,8 @@ module('Integration | Component | metric selector', function(hooks) {
   });
 
   test('hide filter if metric not allowed to show filter on base metric', function(assert) {
-    assert.dom('.metric-selector__icon-set--no-filter').exists({ count: 1 });
-    assert.dom('.metric-selector__icon-set--no-filter .grouped-list__filter').doesNotExist();
+    assert.dom('.grouped-list__icon-set--no-filter').exists({ count: 1 });
+    assert.dom('.grouped-list__icon-set--no-filter .grouped-list__filter').doesNotExist();
     assert.dom('.grouped-list__icon-set .grouped-list__filter').exists();
   });
 });
