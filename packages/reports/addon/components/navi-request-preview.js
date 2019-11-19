@@ -141,29 +141,24 @@ class NaviRequestPreview extends Component {
     const editingColumn = this.editingColumn;
 
     if (metadata && editingColumn) {
-      const aliases = get(metadata, 'style.aliases');
-      if (aliases) {
-        const existingAlias = aliases.find(
-          alias => alias.name === editingColumn.name && alias.type === editingColumn.type
-        );
-        if (existingAlias) {
-          set(existingAlias, 'as', newName);
-        } else {
-          aliases.pushObject({
-            type: editingColumn.type,
-            name: editingColumn.name,
-            as: newName
-          });
-        }
-      } else {
+      if (!get(metadata, 'style.aliases')) {
         set(metadata, 'style', {
-          aliases: arr([
-            {
-              name: editingColumn.name,
-              type: editingColumn.type,
-              as: newName
-            }
-          ])
+          aliases: arr([])
+        });
+      }
+
+      const aliases = get(metadata, 'style.aliases');
+      const existingAlias = aliases.find(
+        alias => alias.name === editingColumn.name && alias.type === editingColumn.type
+      );
+
+      if (existingAlias) {
+        set(existingAlias, 'as', newName);
+      } else {
+        aliases.pushObject({
+          type: editingColumn.type,
+          name: editingColumn.name,
+          as: newName
         });
       }
     }
