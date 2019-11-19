@@ -32,7 +32,7 @@
         </EmberTooltip>
       </NaviIcon>
 
-      <div class="grouped-list__icon-set {{if (not (can-having metric)) "metric-selector__icon-set--no-filter"}}">
+      <div class="grouped-list__icon-set {{if (not (can-having metric)) "grouped-list__icon-set--no-filter"}}">
         {{#if (get metric "hasParameters")}}
           <MetricConfig
             @metric={{metric}}
