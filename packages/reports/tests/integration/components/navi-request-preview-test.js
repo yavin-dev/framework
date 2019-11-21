@@ -108,26 +108,26 @@ module('Integration | Component | navi-request-preview', function(hooks) {
     );
 
     assert.deepEqual(
-      textContentArray('.navi-request-preview__column-header.dateTime'),
+      textContentArray('.navi-request-preview__column-header--dateTime'),
       ['Date'],
       'Date class is applied to the date column only'
     );
 
     assert.deepEqual(
-      textContentArray('.navi-request-preview__column-header.dimension'),
+      textContentArray('.navi-request-preview__column-header--dimension'),
       ['Age'],
       'Dimension class is applied to the dimension column only'
     );
 
     assert.deepEqual(
-      textContentArray('.navi-request-preview__column-header.metric'),
+      textContentArray('.navi-request-preview__column-header--metric'),
       ['Ad Clicks (BannerAds)', 'Ad Clicks (VideoAds)', 'Page Views'],
       'Metric class is applied to only the metric columns'
     );
 
     // Click the first metric column options
     await clickTrigger(
-      '.navi-request-preview__column-header.metric>.navi-request-preview__column-header-options-trigger'
+      '.navi-request-preview__column-header--metric>.navi-request-preview__column-header-options-trigger'
     );
 
     assert.deepEqual(
@@ -141,19 +141,19 @@ module('Integration | Component | navi-request-preview', function(hooks) {
 
     // Click the first dimension column options and click remove
     await clickTrigger(
-      '.navi-request-preview__column-header.dimension>.navi-request-preview__column-header-options-trigger'
+      '.navi-request-preview__column-header--dimension>.navi-request-preview__column-header-options-trigger'
     );
     await click('.navi-request-preview__column-header-option:first-of-type');
 
     // Click the dateTime column options and click remove
     await clickTrigger(
-      '.navi-request-preview__column-header.dateTime>.navi-request-preview__column-header-options-trigger'
+      '.navi-request-preview__column-header--dateTime>.navi-request-preview__column-header-options-trigger'
     );
     await click('.navi-request-preview__column-header-option:first-of-type');
 
     // Click the first metric column options and click edit
     await clickTrigger(
-      '.navi-request-preview__column-header.metric>.navi-request-preview__column-header-options-trigger'
+      '.navi-request-preview__column-header--metric>.navi-request-preview__column-header-options-trigger'
     );
     await click('.navi-request-preview__column-header-option:last-of-type');
 
@@ -172,7 +172,7 @@ module('Integration | Component | navi-request-preview', function(hooks) {
 
     // Click the first dimension column options and click edit
     await clickTrigger(
-      '.navi-request-preview__column-header.dimension>.navi-request-preview__column-header-options-trigger'
+      '.navi-request-preview__column-header--dimension>.navi-request-preview__column-header-options-trigger'
     );
     await click('.navi-request-preview__column-header-option:last-of-type');
 
@@ -181,7 +181,7 @@ module('Integration | Component | navi-request-preview', function(hooks) {
       .isVisible("Column config stays open when a different column's edit option is clicked");
     assert.dom('#columnName').hasValue('Age', 'Selected column name is updated and displayed in input');
 
-    await click('.navi-request-preview__column-header.metric>.navi-request-preview__column-header-sort');
-    await click('.navi-request-preview__column-header.metric:last-of-type>.navi-request-preview__column-header-sort');
+    await click('.navi-request-preview__column-header--metric>.navi-request-preview__column-header-sort');
+    await click('.navi-request-preview__column-header--metric:last-of-type>.navi-request-preview__column-header-sort');
   });
 });

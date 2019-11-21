@@ -4,7 +4,7 @@
     <table class="navi-request-preview__table">
       <thead class="navi-request-preview__table-header">
         {{#each columns as |col|}}
-          <th class={{concat "navi-request-preview__column-header" " " col.type}}>
+          <th class={{concat "navi-request-preview__column-header" " navi-request-preview__column-header--" col.type}}>
             <BasicDropdown 
               @calculatePosition={{calculatePosition}}
               as |dd|

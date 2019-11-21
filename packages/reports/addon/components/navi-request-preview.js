@@ -7,8 +7,8 @@
  * Usage:
  *  <NaviRequestPreview
  *    @request={{this.request}}
- *    @visualization={{this.request}}
- *    @onRemoveMetric={{action "oneRemoveMetric"}}
+ *    @visualization={{this.visualization}}
+ *    @onRemoveMetric={{action "onRemoveMetric"}}
  *    @onRemoveDimension={{action "onRemoveDimension"}}
  *    @onRemoveTimeGrain={{action "onRemoveTimeGrain"}}
  *    @onAddSort={{action "onAddSort"}}
@@ -58,8 +58,10 @@ class NaviRequestPreview extends Component {
     'visualization.metadata.style.aliases.@each.as'
   )
   get columns() {
-    const visualization = this.visualization;
-    const sort = this.request.sort;
+    const {
+      visualization,
+      request: { sort }
+    } = this;
     const metrics = this.request.metrics.toArray().map(metric => {
       return {
         type: 'metric',
@@ -92,10 +94,11 @@ class NaviRequestPreview extends Component {
   }
 
   /**
-   * Return display name from visualization metadata or default display name for metric, dimension, or Date
+   * @method getDisplayName
    * @param {Object} asset
    * @param {String} type
    * @param {Object} visualization
+   * @returns {String} display name from visualization metadata or default display name for metric, dimension, or Date
    */
   getDisplayName(asset, type, visualization) {
     const visMetaData = visualization.metadata.style || {};
@@ -121,7 +124,7 @@ class NaviRequestPreview extends Component {
    * @returns {Object} - positioning info used by ember-basic-dropdown
    */
   calculatePosition(trigger /*, content */) {
-    let { top, left, height } = trigger.getBoundingClientRect(),
+    const { top, left, height } = trigger.getBoundingClientRect(),
       marginFromTopBar = 5,
       paddingFromLeft = 22,
       style = {
@@ -137,8 +140,10 @@ class NaviRequestPreview extends Component {
    * @param {String} newName
    */
   doUpdateColumnName(newName) {
-    const metadata = this.visualization.metadata;
-    const editingColumn = this.editingColumn;
+    const {
+      visualization: { metadata },
+      editingColumn
+    } = this;
 
     if (metadata && editingColumn) {
       if (!get(metadata, 'style.aliases')) {
