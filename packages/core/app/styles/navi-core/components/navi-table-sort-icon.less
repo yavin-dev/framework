@@ -7,25 +7,21 @@
   display: flex;
   flex-flow: column;
   margin-left: 5px;
-  margin-top: -2px;
 
   &__caret {
+    display: none;
     height: 0;
     color: @navi-lighter-gray;
     font-size: @font-size-base;
   }
 
-  &--asc .sort-icon__caret-down {
-    color: @navi-gray;
-    transform: scaleY(-1);
-    margin-top: 20px;
-  }
-
+  &--asc .sort-icon__caret-up,
   &--desc .sort-icon__caret-down {
+    display: inherit;
     color: @navi-gray;
   }
 
-  &--none {
+  &--none .sort-icon__caret-down {
     display: none;
 
     .table-header-cell:hover & {
