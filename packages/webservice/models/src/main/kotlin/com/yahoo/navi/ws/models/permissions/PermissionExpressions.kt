@@ -11,6 +11,7 @@ import com.yahoo.navi.ws.models.permissions.checks.Author
 import com.yahoo.navi.ws.models.permissions.checks.Editors
 
 object PermissionExpressions {
+    @JvmField
     var expressions: MutableMap<String, Class<out Check<out Any>>> = mutableMapOf(
         "is the same user" to SameUser.AtCommit::class.java,
         "is the same user now" to SameUser.AtOperation::class.java,

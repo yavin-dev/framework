@@ -69,7 +69,7 @@ class User {
     var editingDashboards: Collection<Dashboard> = arrayListOf()
 
     @get:ManyToMany
-    @JoinTable(
+    @get:JoinTable(
             name = "map_user_to_fav_dashboards",
             joinColumns = arrayOf(JoinColumn(name = "user_id", referencedColumnName = "id")),
             inverseJoinColumns = arrayOf(JoinColumn(name = "dashboard_id", referencedColumnName = "id"))
