@@ -11,9 +11,9 @@ import { reject } from 'rsvp';
 
 export default Route.extend({
   /**
-   * @property {Service} facts - instance of bard facts service
+   * @property {Service} facts - instance of navi facts service
    */
-  facts: service('bard-facts'),
+  facts: service('navi-facts'),
 
   /**
    * @property {Service} naviVisualizations - instance of navi visualizations service

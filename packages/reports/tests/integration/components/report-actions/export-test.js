@@ -29,7 +29,7 @@ module('Integration | Component | report actions - export', function(hooks) {
   test('Component Renders', function(assert) {
     assert.expect(4);
 
-    let factService = this.owner.lookup('service:bard-facts'),
+    let factService = this.owner.lookup('service:navi-facts'),
       reportPromise = this.owner
         .lookup('service:bard-metadata')
         .loadMetadata()

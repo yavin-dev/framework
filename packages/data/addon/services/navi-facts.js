@@ -9,6 +9,7 @@ import Service from '@ember/service';
 import { getOwner } from '@ember/application';
 import NaviFactsModel from 'navi-data/models/navi-facts';
 import RequestBuilder from 'navi-data/builder/request';
+import config from 'ember-get-config';
 
 export default Service.extend({
   /**
@@ -29,11 +30,10 @@ export default Service.extend({
   init() {
     this._super(...arguments);
 
+    const type = config.navi.dataSources[0].type;
     //Instantiating the bard response adapter & serializer
-    let adapter = getOwner(this).lookup('adapter:bard-facts');
-
-    this.set('_adapter', adapter);
-    this.set('_serializer', getOwner(this).lookup('serializer:bard-facts'));
+    this.set('_adapter', getOwner(this).lookup(`adapter:${type}`));
+    this.set('_serializer', getOwner(this).lookup(`serializer:${type}`));
   },
 
   /**
@@ -81,25 +81,21 @@ export default Service.extend({
 
   /**
    * @method fetchNext
-   * @param {Object} response 
-   * @param {Object} request 
+   * @param {Object} response
+   * @param {Object} request
    * @return {Promise|null} returns the promise with the next set of results or null
    */
   fetchNext(response, request) {
     if (response.meta.pagination) {
-      const {
-        perPage,
-        numberOfResults, 
-        currentPage
-      } = response.meta.pagination;
-      
+      const { perPage, numberOfResults, currentPage } = response.meta.pagination;
+
       const totalPages = numberOfResults / perPage;
-      
+
       if (currentPage < totalPages) {
         let options = {
-            page: currentPage + 1,
-            perPage: perPage
-          };
+          page: currentPage + 1,
+          perPage: perPage
+        };
 
         return this.fetch(request, options);
       }
@@ -109,11 +105,11 @@ export default Service.extend({
 
   /**
    * @method fetchPrevious
-   * @param {Object} response 
-   * @param {Object} request 
+   * @param {Object} response
+   * @param {Object} request
    * @return {Promise|null} returns the promise with the previous set of results or null
    */
-  fetchPrevious(response, request){
+  fetchPrevious(response, request) {
     if (response.meta.pagination) {
       if (response.meta.pagination.currentPage > 1) {
         const options = {
