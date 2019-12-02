@@ -13,29 +13,23 @@ import config from 'ember-get-config';
 
 export default Service.extend({
   /**
-   * @private
-   * @property {Object} adapter - the adapter object
+   * @method _adapterFor
+   *
+   * @param {String} type
+   * @returns {Adapter} adpater instance for type
    */
-  _adapter: undefined,
+  _adapterFor(type = 'bard-facts') {
+    return getOwner(this).lookup(`adapter:${type}`);
+  },
 
   /**
-   * @private
-   * @property {Object} serializer - the serializer object
+   * @method _serializerFor
+   *
+   * @param {String} type
+   * @returns {Serializer} serializer instance for type
    */
-  _serializer: undefined,
-
-  /**
-   * @method init
-   */
-  init() {
-    this._super(...arguments);
-
-    //default datasource type to bard-facts if not defined
-    const type = config.navi.dataSources[0].type || 'bard-facts';
-
-    //Instantiating the bard response adapter & serializer
-    this.set('_adapter', getOwner(this).lookup(`adapter:${type}`));
-    this.set('_serializer', getOwner(this).lookup(`serializer:${type}`));
+  _serializerFor(type = 'bard-facts') {
+    return getOwner(this).lookup(`serializer:${type}`);
   },
 
   /**
@@ -56,7 +50,8 @@ export default Service.extend({
    * @returns {String} - url for the request
    */
   getURL(request, options) {
-    let adapter = this.get('_adapter');
+    const type = config.navi.dataSources[0].type,
+      adapter = this._adapterFor(type);
     return adapter.urlForFindQuery(request, options);
   },
 
@@ -70,8 +65,10 @@ export default Service.extend({
    * @returns {Promise} - Promise with the bard response model object
    */
   fetch(request, options) {
-    let adapter = this.get('_adapter'),
-      serializer = this.get('_serializer');
+    const type = config.navi.dataSources[0].type,
+      adapter = this._adapterFor(type),
+      serializer = this._serializerFor(type);
+
     return adapter.fetchDataForRequest(request, options).then(payload => {
       return NaviFactsModel.create({
         request: request,
