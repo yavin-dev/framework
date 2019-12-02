@@ -30,7 +30,9 @@ export default Service.extend({
   init() {
     this._super(...arguments);
 
-    const type = config.navi.dataSources[0].type;
+    //default datasource type to bard-facts if not defined
+    const type = config.navi.dataSources[0].type || 'bard-facts';
+
     //Instantiating the bard response adapter & serializer
     this.set('_adapter', getOwner(this).lookup(`adapter:${type}`));
     this.set('_serializer', getOwner(this).lookup(`serializer:${type}`));
