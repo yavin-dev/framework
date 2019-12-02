@@ -28,6 +28,23 @@
     }
   }
 
+  &--lookback-input {
+    display: flex;
+    flex-direction: row;
+
+    &__value {
+      flex: 1;
+      border: 1px solid @navi-gray-400;
+      font-family: @font-family-thin;
+    }
+
+    &__label {
+      flex: 3;
+      padding: 5px;
+    }
+  }
+
+  &--date-range-input,
   &--dimension-date-range-input {
     display: flex;
     flex-direction: row;
@@ -38,6 +55,10 @@
 
     &__separator {
       padding: 5px;
+    }
+
+    &__trigger {
+      text-align: center;
     }
 
     .dropdown-date-picker__trigger {
@@ -54,6 +75,7 @@
   }
 
   &--range-input__input--error,
+  &--lookback-input--error,
   &--value-input--error,
   &--multi-value-input--error,
   &--dimension-select--error {

@@ -1,0 +1,11 @@
+{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{input
+  value=(readonly this.lookback)
+  placeholder="Value"
+  classNames="filter-values--lookback-input__value"
+  classNameBindings="filter.validations.attrs.values.isInvalid:filter-values--lookback-input--error"
+  key-up=(action "setLookback")
+  type="number"
+  min="1"
+}}
+<span class="filter-values--lookback-input__label">{{concat this.timeGrainName (if (eq this.lookback 1) "" "s") " (" this.dateRange ")"}}</span>

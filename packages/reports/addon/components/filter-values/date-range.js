@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -11,24 +11,59 @@
  */
 import Component from '@ember/component';
 import layout from '../../templates/components/filter-values/date-range';
+import { get, set, action } from '@ember/object';
+import { layout as templateLayout, classNames } from '@ember-decorators/component';
+import Interval from 'navi-core/utils/classes/interval';
 
-export default Component.extend({
-  layout,
+@templateLayout(layout)
+@classNames('filter-values--date-range-input')
+export default class extends Component {
+  init() {
+    super.init(...arguments);
+    const { start, end } = get(this, 'filter.values.firstObject').asMoments();
+    this.startDate = start;
+    this.endDate = end;
+  }
 
   /**
-   * @property {Array} classNames
+   * @property {Moment} startDate - start of interval
    */
-  classNames: ['filter-values--date-range'],
+  startDate;
 
-  actions: {
-    /**
-     * @action setInterval
-     * @param {Interval} interval - new interval to set in filter
-     */
-    setInterval(interval) {
-      this.onUpdateFilter({
-        interval
-      });
-    }
+  /**
+   * @property {Moment} endDate - end of interval
+   */
+  endDate;
+
+  /**
+   * @action setInterval
+   * @param {Moment} start - start date for interval
+   * @param {Moment} end - end date for interval
+   */
+  @action
+  setInterval(start, end) {
+    this.onUpdateFilter({
+      interval: new Interval(start, end)
+    });
   }
-});
+
+  /**
+   * @action setLowValue
+   * @param {Moment} value - start date for interval
+   */
+  @action
+  setLowValue(value) {
+    set(this, 'startDate', value);
+    this.setInterval(this.startDate, this.endDate);
+  }
+
+  /**
+   * @action setHighValue
+   * @param {Moment} value - end date for interval
+   */
+  @action
+  setHighValue(value) {
+    set(this, 'endDate', value);
+    this.setInterval(this.startDate, this.endDate);
+  }
+}

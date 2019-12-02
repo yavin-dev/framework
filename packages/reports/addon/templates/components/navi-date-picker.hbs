@@ -1,8 +1,40 @@
 {{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{bootstrap-datepicker-inline
+{{!bootstrap-datepicker-inline
     value=selectedDateObj
     weekStart=1
     startDate=minDate
     minViewMode=minViewMode
     changeDate=(action "changeDate")
 }}
+<PowerCalendar
+  @selected={{moment selectedDateObj}}
+  @onSelect={{action "changeDate" value="moment"}}
+  @center={{this.centerDate}}
+  @onCenterChange={{action (mut this.centerDate) value="moment"}}
+  as |powerCalendar|
+>
+  <powerCalendar.Nav>
+    <span class="with-invisible-select">
+      {{#with (moment-format powerCalendar.center 'MMMM') as |currentMonth|}}
+        {{currentMonth}}
+        <select onchange={{fn this.changeCenter "month" powerCalendar}}>
+          {{#each months as |month|}}
+            <option value="{{month}}" selected={{eq month currentMonth}}>{{month}}</option>
+          {{/each}}
+        </select>
+      {{/with}}
+    </span>
+    <span class="with-invisible-select">
+      {{#with (moment-format powerCalendar.center 'YYYY') as |currentYear|}}
+        {{currentYear}}
+        <select onchange={{fn this.changeCenter "year" powerCalendar}}>
+          {{#each years as |year|}}
+            <option value="{{year}}" selected={{eq year currentYear}}>{{year}}</option>
+          {{/each}}
+        </select>
+      {{/with}}
+    </span>
+  </powerCalendar.Nav>
+
+  <powerCalendar.Days @startOfWeek={{1}} />
+</PowerCalendar>
