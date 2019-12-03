@@ -1,2 +1,2 @@
 rootProject.name = "webservice"
-include("models", "app")
+include("models", "app", "navi-spring-boot-autoconfigure")
