@@ -95,11 +95,30 @@ export default Component.extend({
    * @returns {void}
    */
   _registerTableScroll() {
+    //detect passive feature
+    let supportsPassive = false;
+    try {
+      let opts = Object.defineProperty({}, 'passive', {
+        get: function() {
+          supportsPassive = true;
+          return true;
+        }
+      });
+      window.addEventListener('testPassive', null, opts);
+      window.removeEventListener('testPassive', null, opts);
+    } catch (e) {
+      // noop
+    }
+
     [get(this, 'tableWrapperDomElement'), get(this, 'tableHeadersDomElement')].forEach(elm =>
-      elm.addEventListener(SCROLL_EVENT, () => this._syncScroll())
+      elm.addEventListener(SCROLL_EVENT, () => this._syncScroll(), supportsPassive ? { passive: true } : false)
     );
 
-    get(this, 'tableHeadersDomElement').addEventListener(WHEEL_EVENT, e => this._headerWheelSync(e));
+    get(this, 'tableHeadersDomElement').addEventListener(
+      WHEEL_EVENT,
+      e => this._headerWheelSync(e),
+      supportsPassive ? { passive: true } : false
+    );
   },
 
   /**
