@@ -25,6 +25,7 @@ module('Integration | Component | dropdown date picker', function(hooks) {
 
     await render(hbs`
       {{#dropdown-date-picker
+        dateTimePeriod="day"
         date=(moment savedDate)
         onUpdate=(action 'onUpdate')
       }}

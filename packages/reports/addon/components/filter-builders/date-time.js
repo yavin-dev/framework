@@ -12,6 +12,8 @@ import { A as arr } from '@ember/array';
 import { get, set, computed, action } from '@ember/object';
 import Base from './base';
 import Interval from 'navi-core/utils/classes/interval';
+import { getFirstDayOfIsoDateTimePeriod } from 'navi-core/utils/date';
+import moment from 'moment';
 
 export default class extends Base {
   /**
@@ -22,14 +24,14 @@ export default class extends Base {
   get supportedOperators() {
     return [
       {
-        id: 'in',
-        longName: 'In Range',
-        valuesComponent: 'filter-values/date-range'
-      },
-      {
         id: 'inPast',
         longName: 'In The Past',
         valuesComponent: 'filter-values/lookback-input'
+      },
+      {
+        id: 'in',
+        longName: 'In Range',
+        valuesComponent: 'filter-values/date-range'
       }
     ];
   }
@@ -53,9 +55,9 @@ export default class extends Base {
 
     const { start, end } = interval.asStrings();
     if (start.startsWith('P') && end === 'current') {
-      operator = get(this, 'supportedOperators')[1];
-    } else {
       operator = get(this, 'supportedOperators')[0];
+    } else {
+      operator = get(this, 'supportedOperators')[1];
     }
 
     return {
@@ -79,29 +81,36 @@ export default class extends Base {
     }
 
     let changeSet = { operator: newOperator };
+    const timeGrain = get(this, 'request.logicalTable.timeGrain.name');
 
+    const originalInterval = get(this, 'requestFragment.interval');
+    let { start, end } = originalInterval.asMomentsForTimePeriod(timeGrain);
     if (newOperator === 'inPast') {
-      const interval = get(this, 'requestFragment.interval');
-      const timeGrain = get(this, 'request.logicalTable.timeGrain.longName').toLowerCase();
-
+      debugger;
       const isQuarter = timeGrain === 'quarter';
       const diffGrain = isQuarter ? 'month' : timeGrain;
 
-      // todo only use this if the end is aligned to latest grain
-      // else fall back to default of P1G
-      let intervalValue = interval.diffForTimePeriod(diffGrain);
-      if (isQuarter) {
-        // round to quarter
-        const quarters = Math.max(Math.floor(intervalValue / 3), 1);
-        intervalValue = quarters * 3;
+      let intervalValue;
+      if (!end.isSame(moment(getFirstDayOfIsoDateTimePeriod(moment(), timeGrain)))) {
+        intervalValue = 1;
+      } else {
+        intervalValue = originalInterval.diffForTimePeriod(diffGrain);
+        if (isQuarter) {
+          // round to quarter
+          const quarters = Math.max(Math.floor(intervalValue / 3), 1);
+          intervalValue = quarters * 3;
+        }
       }
-      const start = `P${intervalValue}${diffGrain[0].toUpperCase()}`;
+
+      const grainLabel = diffGrain[0].toUpperCase();
+      const start = `P${intervalValue}${grainLabel}`;
       set(this, 'requestFragment.interval', Interval.parseFromStrings(start, 'current'));
     } else if (newOperator === 'in') {
-      const { start, end } = get(this, 'requestFragment.interval').asMoments();
-      const exactInterval = new Interval(start, end);
+      // if (get(originalInterval, '_end') === 'current') {
+      //   end = moment(getFirstDayOfPrevIsoDateTimePeriod(timeGrain));
+      // }
 
-      set(this, 'requestFragment.interval', exactInterval);
+      set(this, 'requestFragment.interval', new Interval(start, end));
     }
 
     Object.assign(changeSet, {

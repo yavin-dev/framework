@@ -1,40 +1,79 @@
-{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{!bootstrap-datepicker-inline
-    value=selectedDateObj
-    weekStart=1
-    startDate=minDate
-    minViewMode=minViewMode
-    changeDate=(action "changeDate")
-}}
+{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <PowerCalendar
-  @selected={{moment selectedDateObj}}
+  @selected={{this.date}}
   @onSelect={{action "changeDate" value="moment"}}
   @center={{this.centerDate}}
   @onCenterChange={{action (mut this.centerDate) value="moment"}}
   as |powerCalendar|
 >
-  <powerCalendar.Nav>
-    <span class="with-invisible-select">
-      {{#with (moment-format powerCalendar.center 'MMMM') as |currentMonth|}}
-        {{currentMonth}}
-        <select onchange={{fn this.changeCenter "month" powerCalendar}}>
-          {{#each months as |month|}}
-            <option value="{{month}}" selected={{eq month currentMonth}}>{{month}}</option>
-          {{/each}}
-        </select>
-      {{/with}}
-    </span>
-    <span class="with-invisible-select">
-      {{#with (moment-format powerCalendar.center 'YYYY') as |currentYear|}}
-        {{currentYear}}
-        <select onchange={{fn this.changeCenter "year" powerCalendar}}>
-          {{#each years as |year|}}
-            <option value="{{year}}" selected={{eq year currentYear}}>{{year}}</option>
-          {{/each}}
-        </select>
-      {{/with}}
-    </span>
-  </powerCalendar.Nav>
 
-  <powerCalendar.Days @startOfWeek={{1}} />
+  {{#if (or (eq dateTimePeriod "day") (eq dateTimePeriod "week") (eq dateTimePeriod "month"))}}
+    <powerCalendar.Nav>
+      {{#if (not-eq dateTimePeriod "month")}}
+        <span class="with-invisible-select">
+          {{#with (moment-format powerCalendar.center "MMMM") as |currentMonth|}}
+            {{currentMonth}}
+            <select onchange={{fn this.changeCenter "month" powerCalendar}}>
+              {{#each months as |month|}}
+                <option value="{{month}}" selected={{eq month currentMonth}}>{{month}}</option>
+              {{/each}}
+            </select>
+          {{/with}}
+        </span>
+      {{/if}}
+
+      <span class="with-invisible-select">
+        {{#with (moment-format powerCalendar.center "YYYY") as |currentYear|}}
+          {{currentYear}}
+          <select onchange={{fn this.changeCenter "year" powerCalendar}}>
+            {{#each years as |year|}}
+              <option value="{{year}}" selected={{eq year currentYear}}>{{year}}</option>
+            {{/each}}
+          </select>
+        {{/with}}
+      </span>
+    </powerCalendar.Nav>
+
+  {{else if (eq dateTimePeriod "quarter")}}
+    <PowerCalendarSelectorsNav
+      @calendar={{powerCalendar}}
+      @by="year"
+    />
+  {{else if (eq dateTimePeriod "year")}}
+    <PowerCalendarSelectorsNav
+      @calendar={{powerCalendar}}
+      @by="decade"
+    />
+  {{/if}}
+
+
+  {{#if (eq dateTimePeriod "day")}}
+    <powerCalendar.Days
+      @startOfWeek={{1}}
+      @minDate={{this.minDate}}
+    />
+  {{else if (eq dateTimePeriod "week")}}
+    <powerCalendar.Days
+      @startOfWeek={{1}}
+      @minDate={{this.minDate}}
+      @dayClass={{this.selectedWeekClass}}
+    />
+  {{else if (eq dateTimePeriod "month")}}
+    <PowerCalendarMonths
+      @calendar={{powerCalendar}}
+      @minDate={{this.minDate}}
+      @showQuarters={{false}}
+    />
+  {{else if (eq dateTimePeriod "quarter")}}
+    <PowerCalendarMonths
+      @calendar={{powerCalendar}}
+      @minDate={{this.minDate}}
+      @showQuarters={{true}}
+    />
+  {{else if (eq dateTimePeriod "year")}}
+    <PowerCalendarYears
+      @calendar={{powerCalendar}}
+      @minDate={{this.minDate}}
+    />
+  {{/if}}
 </PowerCalendar>

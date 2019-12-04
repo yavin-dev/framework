@@ -11,29 +11,53 @@
  */
 import Component from '@ember/component';
 import layout from '../../templates/components/filter-values/date-range';
-import { get, set, action } from '@ember/object';
+import { get, computed, action } from '@ember/object';
 import { layout as templateLayout, classNames } from '@ember-decorators/component';
 import Interval from 'navi-core/utils/classes/interval';
 
 @templateLayout(layout)
 @classNames('filter-values--date-range-input')
 export default class extends Component {
-  init() {
-    super.init(...arguments);
-    const { start, end } = get(this, 'filter.values.firstObject').asMoments();
-    this.startDate = start;
-    this.endDate = end;
+  /**
+   * @property {String} dateTimePeriod - the current time grain
+   */
+  @computed('request.logicalTable.timeGrain.name')
+  get dateTimePeriod() {
+    return get(this, 'request.logicalTable.timeGrain.name');
   }
 
   /**
    * @property {Moment} startDate - start of interval
    */
-  startDate;
+  @computed('filter.values.firstObject')
+  get startDate() {
+    const { start } = get(this, 'filter.values.firstObject').asMomentsForTimePeriod(this.dateTimePeriod);
+    return start;
+  }
 
   /**
    * @property {Moment} endDate - end of interval
    */
-  endDate;
+  @computed('filter.values.firstObject')
+  get endDate() {
+    let { end } = get(this, 'filter.values.firstObject').asMomentsForTimePeriod(this.dateTimePeriod);
+    end = end.clone().subtract(1, this.dateTimePeriod);
+    return end;
+  }
+
+  /**
+   * @property {String} calendarTriggerFormat - the datetime format to display based on the time grain
+   */
+  @computed('dateTimePeriod')
+  get calendarTriggerFormat() {
+    let dateMap = {
+      day: 'MMM DD, YYYY',
+      month: 'MMM, YYYY',
+      quarter: '[Q]Q YYYY',
+      year: 'YYYY'
+    };
+    return dateMap[this.dateTimePeriod] || dateMap.day;
+  }
 
   /**
    * @action setInterval
@@ -53,8 +77,7 @@ export default class extends Component {
    */
   @action
   setLowValue(value) {
-    set(this, 'startDate', value);
-    this.setInterval(this.startDate, this.endDate);
+    this.setInterval(value, this.endDate);
   }
 
   /**
@@ -63,7 +86,7 @@ export default class extends Component {
    */
   @action
   setHighValue(value) {
-    set(this, 'endDate', value);
-    this.setInterval(this.startDate, this.endDate);
+    value = value.clone().add(1, this.dateTimePeriod);
+    this.setInterval(this.startDate, value);
   }
 }

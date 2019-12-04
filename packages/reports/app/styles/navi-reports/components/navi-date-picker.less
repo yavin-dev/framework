@@ -3,11 +3,37 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
+@navi-date-picker-cell-size: 40px;
+
 .navi-date-picker {
-  .ember-power-calendar(@cell-size: 32px);
+  .ember-power-calendar(@cell-size: @navi-date-picker-cell-size);
+  .ember-power-calendar-selectors(@cell-size: @navi-date-picker-cell-size);
+  box-shadow: 0 3px 8px fade(@navi-black, 38%);
+
+  .ember-power-calendar {
+  }
+
+  &-week {
+    .ember-power-calendar-week:hover {
+      & > .ember-power-calendar-week-day:not(.ember-power-calendar-day--selected) {
+        background-color: #eee;
+      }
+    }
+  }
+
+  &-quarter {
+    .ember-power-calendar-selector-month-row--quarter:hover {
+      & > .ember-power-calendar-selector-month:not(.ember-power-calendar-selector-month--selected) {
+        background-color: #eee;
+      }
+    }
+  }
 
   .with-invisible-select {
     position: relative;
+    top: 5px;
+    font-size: 125%;
+
     select {
       position: absolute;
       top: 0;
