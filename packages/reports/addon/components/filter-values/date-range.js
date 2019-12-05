@@ -17,7 +17,7 @@ import Interval from 'navi-core/utils/classes/interval';
 
 @templateLayout(layout)
 @classNames('filter-values--date-range-input')
-export default class extends Component {
+class DateRange extends Component {
   /**
    * @property {String} dateTimePeriod - the current time grain
    */
@@ -56,6 +56,7 @@ export default class extends Component {
       quarter: '[Q]Q YYYY',
       year: 'YYYY'
     };
+    // if (dateTimePeriod=week and formatting endDate) { show end of week }
     return dateMap[this.dateTimePeriod] || dateMap.day;
   }
 
@@ -66,6 +67,7 @@ export default class extends Component {
    */
   @action
   setInterval(start, end) {
+    end = end.clone().add(1, this.dateTimePeriod);
     this.onUpdateFilter({
       interval: new Interval(start, end)
     });
@@ -86,7 +88,8 @@ export default class extends Component {
    */
   @action
   setHighValue(value) {
-    value = value.clone().add(1, this.dateTimePeriod);
     this.setInterval(this.startDate, value);
   }
 }
+
+export default DateRange;

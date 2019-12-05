@@ -86,14 +86,15 @@ export default class extends Base {
     const originalInterval = get(this, 'requestFragment.interval');
     let { start, end } = originalInterval.asMomentsForTimePeriod(timeGrain);
     if (newOperator === 'inPast') {
-      debugger;
       const isQuarter = timeGrain === 'quarter';
       const diffGrain = isQuarter ? 'month' : timeGrain;
 
       let intervalValue;
       if (!end.isSame(moment(getFirstDayOfIsoDateTimePeriod(moment(), timeGrain)))) {
+        // end is not 'current'
         intervalValue = 1;
       } else {
+        // end is 'current', get lookback amount
         intervalValue = originalInterval.diffForTimePeriod(diffGrain);
         if (isQuarter) {
           // round to quarter
@@ -106,10 +107,6 @@ export default class extends Base {
       const start = `P${intervalValue}${grainLabel}`;
       set(this, 'requestFragment.interval', Interval.parseFromStrings(start, 'current'));
     } else if (newOperator === 'in') {
-      // if (get(originalInterval, '_end') === 'current') {
-      //   end = moment(getFirstDayOfPrevIsoDateTimePeriod(timeGrain));
-      // }
-
       set(this, 'requestFragment.interval', new Interval(start, end));
     }
 

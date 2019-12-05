@@ -13,4 +13,6 @@ import layout from '../templates/components/dropdown-date-picker';
 import { layout as templateLayout } from '@ember-decorators/component';
 
 @templateLayout(layout)
-export default class extends Component {}
+class DropdownDatePicker extends Component {}
+
+export default DropdownDatePicker;
