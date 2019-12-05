@@ -91,6 +91,19 @@ export default Base.extend({
     };
   }),
 
+  /**
+   * @property {String} field - chosen field (if not primaryKeyField)
+   */
+  field: computed('showFields', 'primaryKeyField', 'filter.field', function() {
+    const {
+      showFields,
+      primaryKeyField,
+      filter: { field }
+    } = this;
+
+    return showFields && field !== primaryKeyField ? field : null;
+  }),
+
   actions: {
     /**
      * Sets the field on the filter.

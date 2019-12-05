@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -106,14 +106,18 @@ export default Component.extend({
   },
 
   /**
-   * Observer that resizes the visualization when the number of filters change
+   * Observer that resizes the visualization when the number of filters or collapsed state change
    * since the filter and visualization share the same vertical space
    *
-   * @method filterCountDidChange
+   * @method filterCountOrCollapsedDidChange
    */
-  filterCountDidChange: observer('report.request.{filters.[],having.[],intervals.[]}', function() {
-    scheduleOnce('afterRender', this, 'resizeVisualization');
-  }),
+  filterCountOrCollapsedDidChange: observer(
+    'isFiltersCollapsed',
+    'report.request.{filters.[],having.[],intervals.[]}',
+    function() {
+      scheduleOnce('afterRender', this, 'resizeVisualization');
+    }
+  ),
 
   actions: {
     /**

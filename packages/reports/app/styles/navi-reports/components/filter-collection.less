@@ -146,4 +146,9 @@
       color: @navi-gray-600;
     }
   }
+
+  &--collapsed-item:not(:last-child):after {
+    content: ';';
+    margin-left: -3px;
+  }
 }

@@ -17,7 +17,7 @@
         onAddDimension=(update-report-action "ADD_DIMENSION")
         onRemoveTimeGrain=(update-report-action "REMOVE_TIME_GRAIN")
         onRemoveDimension=(update-report-action "REMOVE_DIMENSION")
-        onToggleDimFilter=(update-report-action "TOGGLE_DIM_FILTER")
+        onToggleDimFilter=(update-report-action "TOGGLE_DIM_FILTER" (action (optional this.setFiltersCollapsed) false))
       }}
       {{metric-selector
         class=(concat "report-builder__container report-builder__metric-selector" (if disabled " report-builder__container--disabled" ""))
@@ -25,27 +25,44 @@
         onAddMetric=(update-report-action "ADD_METRIC")
         onAddMetricWithParameter=(update-report-action "ADD_METRIC_WITH_PARAM")
         onRemoveMetric=(update-report-action "REMOVE_METRIC")
-        onToggleMetricFilter=(update-report-action "TOGGLE_METRIC_FILTER")
+        onToggleMetricFilter=(update-report-action "TOGGLE_METRIC_FILTER" (action (optional this.setFiltersCollapsed) false))
+        expandFilters=(action (optional this.setFiltersCollapsed) false)
       }}
     {{/if}}
   </div>
 </div>
 <div class="report-builder__main">
   {{#if hasValidLogicalTable}}
-    <div class={{concat "report-builder__container report-builder__container--filters" (if disabled " report-builder__container--disabled" "")}}>
+    <div class={{
+      concat "report-builder__container report-builder__container--filters"
+        (if this.disabled " report-builder__container--disabled")
+        (if this.isFiltersCollapsed " report-builder__container--filters--collapsed")
+      }}>
       <span class="report-builder__container-header">
-        <h3 class="report-builder__container-header__title">Filters</h3>
-        <span class="report-builder__container-header__message">
-          Click the icon {{navi-icon "filter" class="report-builder__container-header__message--icon"}} next to a dimension/metric to add a filter.
+        <span
+          class="report-builder__container-header__filters-toggle"
+          role="button"
+          onclick={{action (optional this.setFiltersCollapsed) (not this.isFiltersCollapsed)}}>
+          <h3 class="report-builder__container-header__title">Filters</h3>
+          <NaviIcon
+            class="report-builder__container-header__filters-toggle-icon"
+            @icon="angle-down" />
         </span>
+        {{#if (not this.isFiltersCollapsed)}}
+          <span class="report-builder__container-header__message">
+            Click the icon <NaviIcon @icon="filter" class="report-builder__container-header__message--icon" /> next to a dimension/metric to add a filter.
+          </span>
+        {{/if}}
       </span>
 
-      {{filter-collection
+      <FilterCollection
         class="report-builder__filter-collection"
-        request=request
-        onUpdateFilter=(update-report-action "UPDATE_FILTER")
-        onRemoveFilter=(update-report-action "REMOVE_FILTER")
-      }}
+        @isCollapsed={{this.isFiltersCollapsed}}
+        @expandFilters={{action (optional this.setFiltersCollapsed) false}}
+        @request={{this.request}}
+        @onUpdateFilter={{update-report-action "UPDATE_FILTER"}}
+        @onRemoveFilter={{update-report-action "REMOVE_FILTER"}}
+      />
 
     </div>
   {{/if}}

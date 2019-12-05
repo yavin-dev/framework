@@ -49,11 +49,15 @@ module('Integration | Component | filter collection', function(hooks) {
             request=request
             onUpdateFilter=(action onUpdateFilter)
             onRemoveFilter=(action onRemoveFilter)
+            isCollapsed=isCollapsed
+            expandFilters=expandFilters
         }}`);
   });
 
-  test('it renders', function(assert) {
+  test('it renders', async function(assert) {
     assert.expect(4);
+
+    this.set('expandFilters', () => assert.ok(false, 'expandFilters is not called on click when not collapsed'));
 
     assert.dom('.filter-collection__row').exists({ count: 5 }, 'Each request filter is represented by a filter row');
 
@@ -62,6 +66,24 @@ module('Integration | Component | filter collection', function(hooks) {
     assert.dom('.filter-collection__row .filter-collection__builder').isVisible('Each filter row has a filter builder');
 
     assert.dom('.filter-values--range-input').isVisible('Range input should be rendered');
+
+    await click('.filter-collection');
+  });
+
+  test('collapsed', async function(assert) {
+    assert.expect(3);
+
+    this.set('isCollapsed', true);
+
+    this.set('expandFilters', () => assert.ok(true, 'expandFilters is called on click'));
+
+    assert
+      .dom('span.filter-collection--collapsed-item')
+      .exists({ count: 5 }, 'Each request filter is represented by a filter span');
+
+    assert.dom('.filter-collection__remove').doesNotExist('Remove buttons are not visible');
+
+    await click('.filter-collection--collapsed');
   });
 
   test('updating a filter', async function(assert) {

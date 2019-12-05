@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -82,6 +82,15 @@ export default Component.extend({
     } else {
       return resolve(A());
     }
+  }),
+
+  /**
+   * @property {String} selectedValuesText - concatenated string of currently selected dimension values and descriptions
+   */
+  selectedValuesText: computed('selectedDimensions', function() {
+    return this.selectedDimensions.then(selected =>
+      !selected.length ? '' : selected.map(dimension => `${dimension.description} (${dimension.id})`).join(', ')
+    );
   }),
 
   /**

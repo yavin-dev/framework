@@ -1469,6 +1469,58 @@ module('Acceptance | Navi Report', function(hooks) {
     );
   });
 
+  test('filters - collapse and expand', async function(assert) {
+    assert.expect(9);
+
+    await visit('/reports/1');
+
+    //collapse filters
+    await click('.report-builder__container-header__filters-toggle');
+    assert.dom('.filter-collection').hasClass('filter-collection--collapsed', 'Filters are collapsed (1)');
+
+    //expand filters
+    await click('.filter-collection--collapsed');
+    assert
+      .dom('.filter-collection')
+      .doesNotHaveClass('filter-collection--collapsed', 'Collapsed filters are expanded on click');
+
+    //collapse again
+    await click('.report-builder__container-header__filters-toggle');
+    assert.dom('.filter-collection').hasClass('filter-collection--collapsed', 'Filters are collapsed (2)');
+
+    //add a dimension filter
+    await click($('.grouped-list__item:contains(Operating System) .grouped-list__filter')[0]);
+    assert
+      .dom('.filter-collection')
+      .doesNotHaveClass('filter-collection--collapsed', 'Adding a dimension filter expands filters');
+
+    //collapse again
+    await click('.report-builder__container-header__filters-toggle');
+    assert.dom('.filter-collection').hasClass('filter-collection--collapsed', 'Filters are collapsed (3)');
+
+    //remove the dimension filter
+    await click($('.grouped-list__item:contains(Operating System) .grouped-list__filter')[0]);
+    assert
+      .dom('.filter-collection')
+      .hasClass('filter-collection--collapsed', 'Filters are still collapsed when removing a dimension filter');
+
+    //add a metric filter
+    await click($('.grouped-list__item:contains(Ad Clicks) .grouped-list__filter')[0]);
+    assert
+      .dom('.filter-collection')
+      .doesNotHaveClass('filter-collection--collapsed', 'Adding a metric filter expands filters');
+
+    //collapse again
+    await click('.report-builder__container-header__filters-toggle');
+    assert.dom('.filter-collection').hasClass('filter-collection--collapsed', 'Filters are collapsed (4)');
+
+    //remove the metric filter
+    await click($('.grouped-list__item:contains(Ad Clicks) .grouped-list__filter')[0]);
+    assert
+      .dom('.filter-collection')
+      .hasClass('filter-collection--collapsed', 'Filters are still collapsed when removing a metric filter');
+  });
+
   test('Show selected dimensions and filters', async function(assert) {
     assert.expect(4);
 

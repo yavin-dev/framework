@@ -62,10 +62,54 @@ module('Integration | Component | filter-builders/dimension', function(hooks) {
     this.owner.register(
       'component:mock/values-component',
       Component.extend({
-        classNames: 'mock-value-component'
+        classNames: 'mock-value-component',
+        layout: hbs`<div>dimension values</div>`
       })
     );
     this.owner.register('component:mock/another-values-component', Component.extend());
+  });
+
+  test('collapsed', async function(assert) {
+    assert.expect(2);
+
+    await render(hbs`<FilterBuilders::Dimension
+      @filter={{this.filter}}
+      @supportedOperators={{this.upportedOperators}}
+      @requestFragment={{this.requestFragment}}
+      @isCollapsed={{true}} />`);
+
+    assert
+      .dom('.filter-builder')
+      .hasText(
+        `${filter.subject.longName} ${filter.operator.longName.toLowerCase()} dimension values`,
+        'Rendered correctly when collapsed'
+      );
+
+    const field = 'desc',
+      filterWithDescField = {
+        subject: {
+          longName: 'Device Type'
+        },
+        operator: {
+          id: 'contains',
+          longName: 'Contains',
+          valuesComponent: 'mock/values-component',
+          showFields: true
+        },
+        field,
+        values: [1, 2, 3]
+      };
+
+    this.set('filter', filterWithDescField);
+
+    assert
+      .dom('.filter-builder')
+      .hasText(
+        `${
+          filterWithDescField.subject.longName
+        } (${field}) ${filterWithDescField.operator.longName.toLowerCase()} dimension values`,
+        'Rendered correctly with field when collapsed'
+      );
   });
 
   test('changing operator with field', async function(assert) {

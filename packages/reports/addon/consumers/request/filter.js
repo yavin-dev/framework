@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { inject as service } from '@ember/service';
@@ -51,14 +51,18 @@ export default ActionConsumer.extend({
     /**
      * @action TOGGLE_DIM_FILTER
      * @param {Object} route - route that has a model that contains a request property
+     * @param {Function} expandFilters - expand filters section action
      * @param {Object} dimension - dimension to filter
      */
-    [RequestActions.TOGGLE_DIM_FILTER]: function(route, dimension) {
+    [RequestActions.TOGGLE_DIM_FILTER]: function(route, expandFilters, dimension) {
       let filteredDimensions = get(route, 'currentModel.request.filters'),
         filter = filteredDimensions.findBy('dimension', dimension);
 
       //do not add filter if it already exists
       if (!filter) {
+        if (typeof expandFilters === 'function') {
+          expandFilters();
+        }
         get(this, 'requestActionDispatcher').dispatch(RequestActions.ADD_DIM_FILTER, route, dimension);
       } else {
         get(this, 'requestActionDispatcher').dispatch(RequestActions.REMOVE_FILTER, route, filter);
@@ -104,15 +108,19 @@ export default ActionConsumer.extend({
     /**
      * @action TOGGLE_METRIC_FILTER
      * @param {Object} route - route that has a model that contains a request property
+     * @param {Function} expandFilters - expand filters section action
      * @param {Object} metric - metric to filter
      */
-    [RequestActions.TOGGLE_METRIC_FILTER]: function(route, metric) {
+    [RequestActions.TOGGLE_METRIC_FILTER]: function(route, expandFilters, metric) {
       let filteredMetrics = get(route, 'currentModel.request.having'),
         havingsForMetric = filteredMetrics.filterBy('metric.metric.name', get(metric, 'name')),
         nextParameter = this._getNextParameterForMetric(metric, get(route, 'currentModel.request')),
         shouldAdd = !!nextParameter || isEmpty(havingsForMetric);
 
       if (shouldAdd) {
+        if (typeof expandFilters === 'function') {
+          expandFilters();
+        }
         get(this, 'requestActionDispatcher').dispatch(RequestActions.ADD_METRIC_FILTER, route, metric, nextParameter);
       } else {
         havingsForMetric.forEach(having => {
@@ -124,10 +132,11 @@ export default ActionConsumer.extend({
     /**
      * @action TOGGLE_PARAMETERIZED_METRIC_FILTER
      * @param {Object} route - route that has a model that contains a request property
+     * @param {Function} expandFilters - expand filters section action
      * @param {Object} metric - metric to filter
      * @param {Object} parameters - metric parameter to filter
      */
-    [RequestActions.TOGGLE_PARAMETERIZED_METRIC_FILTER]: function(route, metric, parameters) {
+    [RequestActions.TOGGLE_PARAMETERIZED_METRIC_FILTER]: function(route, expandFilters, metric, parameters) {
       let filteredMetrics = get(route, 'currentModel.request.having'),
         //find if having for metric and parameters exists in request using the canonicalName
         having = filteredMetrics.find(
@@ -136,6 +145,9 @@ export default ActionConsumer.extend({
         );
 
       if (!having) {
+        if (typeof expandFilters === 'function') {
+          expandFilters();
+        }
         get(this, 'requestActionDispatcher').dispatch(RequestActions.ADD_METRIC_FILTER, route, metric, parameters);
       } else {
         get(this, 'requestActionDispatcher').dispatch(RequestActions.REMOVE_FILTER, route, having);

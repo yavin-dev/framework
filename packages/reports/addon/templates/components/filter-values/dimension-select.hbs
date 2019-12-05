@@ -1,21 +1,31 @@
-{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{#power-select-multiple
-  options=dimensionOptions
-  selected=selectedDimensions
-  extra=(hash filter=filter)
-  triggerComponent="power-select-bulk-import-trigger"
-  optionsComponent="power-select-collection-options"
-  onchange=(action "setValues")
-  search=(action "searchDimensionValues")
-  closeOnSelect=false
-  placeholder=(concat filter.subject.longName " Values")
-  loadingMessage="Loading..."
-  dropdownClass="filter-values--dimension-select__dropdown"
-  triggerClass=(concat "filter-values--dimension-select__trigger" (if filter.validations.attrs.rawValues.isInvalid " filter-values--dimension-select--error"))
-  class="filter-values--dimension-select"
-  as |item|
-}}
-  {{#with (format-dimension item) as |dimension|}}
-    <span title={{dimension}}>{{dimension}}</span>
-  {{/with}}
-{{/power-select-multiple}}
+{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{#if this.isCollapsed}}
+  {{#if (is-fulfilled this.selectedValuesText)}}
+    {{#if this.filter.validations.attrs.rawValues.isInvalid}}
+      <FilterValues::InvalidValue/>
+    {{else}}
+      {{await this.selectedValuesText}}
+    {{/if}}
+  {{/if}}
+{{else}}
+  <PowerSelectMultiple
+    @options={{this.dimensionOptions}}
+    @selected={{this.selectedDimensions}}
+    @extra={{hash filter=this.filter}}
+    @triggerComponent="power-select-bulk-import-trigger"
+    @optionsComponent="power-select-collection-options"
+    @onchange={{action "setValues"}}
+    @search={{action "searchDimensionValues"}}
+    @closeOnSelect={{false}}
+    @placeholder={{concat this.filter.subject.longName " Values"}}
+    @loadingMessage="Loading..."
+    @dropdownClass="filter-values--dimension-select__dropdown"
+    @triggerClass={{concat "filter-values--dimension-select__trigger" (if this.filter.validations.attrs.rawValues.isInvalid " filter-values--dimension-select--error")}}
+    class="filter-values--dimension-select"
+    as |item|
+  >
+    {{#with (format-dimension item) as |dimension|}}
+      <span title={{dimension}}>{{dimension}}</span>
+    {{/with}}
+  </PowerSelectMultiple>
+{{/if}}

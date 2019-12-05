@@ -90,7 +90,7 @@ export default Base.extend({
     return {
       subject: get(metricFragment, 'metric'),
       operator,
-      values: get(metricFragment, 'values'),
+      values: arr(get(metricFragment, 'values')),
       validations: get(metricFragment, 'validations')
     };
   })

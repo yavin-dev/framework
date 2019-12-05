@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -20,12 +20,16 @@ export default Component.extend({
   didInsertElement() {
     this._super(...arguments);
 
+    const { isCollapsed, onUpdateFilter } = this;
+
     /*
      * Since this operator doesn't require values, pass empty string
      * here empty string denoted as "" is the same as 'null' in druid
      */
-    this.onUpdateFilter({
-      values: ['""']
-    });
+    if (!isCollapsed && onUpdateFilter) {
+      onUpdateFilter({
+        values: ['""']
+      });
+    }
   }
 });

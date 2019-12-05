@@ -14,6 +14,7 @@ module('Integration | Component | filter values/multi value input', function(hoo
     await render(hbs`{{filter-values/multi-value-input
             filter=filter
             onUpdateFilter=(action onUpdateFilter)
+            isCollapsed=isCollapsed
         }}`);
   });
 
@@ -25,6 +26,15 @@ module('Integration | Component | filter values/multi value input', function(hoo
       this.filter.values[0],
       'The value select contains an input with the first filter value as a tag'
     );
+  });
+
+  test('collapsed', function(assert) {
+    assert.expect(2);
+
+    this.set('isCollapsed', true);
+
+    assert.dom('.emberTagInput').doesNotExist('The tag input is not rendered when collapsed');
+    assert.dom().hasText('1000', 'Selected values are rendered correctly when collapsed');
   });
 
   test('changing values', async function(assert) {
@@ -56,11 +66,14 @@ module('Integration | Component | filter values/multi value input', function(hoo
   });
 
   test('error state', function(assert) {
-    assert.expect(2);
+    assert.expect(3);
 
     assert.notOk($('.filter-values--multi-value-input--error').is(':visible'), 'The input should not have error state');
 
     this.set('filter', { validations: { isInvalid: true } });
     assert.ok($('.filter-values--multi-value-input--error').is(':visible'), 'The input should have error state');
+
+    this.set('isCollapsed', true);
+    assert.dom('.filter-values--selected-error').exists('Error is rendered correctly when collapsed');
   });
 });

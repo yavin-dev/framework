@@ -39,7 +39,7 @@
             @request={{this.request}}
             @onAddParameterizedMetric={{update-report-action "ADD_METRIC_WITH_PARAM"}}
             @onRemoveParameterizedMetric={{update-report-action "REMOVE_METRIC_WITH_PARAM"}}
-            @onToggleParameterizedMetricFilter={{update-report-action "TOGGLE_PARAMETERIZED_METRIC_FILTER"}}
+            @onToggleParameterizedMetricFilter={{update-report-action "TOGGLE_PARAMETERIZED_METRIC_FILTER" this.expandFilters}}
           />
         {{/if}}
         {{#if (can-having metric)}}

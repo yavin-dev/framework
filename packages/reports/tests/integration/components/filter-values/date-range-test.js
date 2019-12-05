@@ -20,6 +20,7 @@ module('Integration | Component | filter values/date range', function(hooks) {
             filter=filter
             request=request
             onUpdateFilter=(action onUpdateFilter)
+            isCollapsed=isCollapsed
         }}`);
   });
 
@@ -68,5 +69,21 @@ module('Integration | Component | filter values/date range', function(hooks) {
     });
 
     $('.predefined-range:contains(Last 7 Days)').click();
+  });
+
+  test('collapsed', async function(assert) {
+    assert.expect(2);
+
+    const selectedInterval = new Interval(new Duration('P7D'), 'current');
+    this.set('filter', { values: A([selectedInterval]) });
+    this.set('isCollapsed', true);
+
+    assert.dom().hasText('Last 7 Days', 'Selected range text is rendered correctly');
+
+    this.set('filter', { values: null });
+
+    assert
+      .dom('.filter-values--date-range .filter-values--selected-error')
+      .exists('Error is rendered when range is invalid');
   });
 });

@@ -149,12 +149,16 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
   });
 
   test('metric selector filter action for parameterized metrics', async function(assert) {
-    assert.expect(4);
+    assert.expect(8);
 
     await visit('/reports/1/view');
     await click($('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .grouped-list__add-icon')[0]);
     await click($('.metric-config__dropdown-container .grouped-list__item:contains(AUD) .grouped-list__add-icon')[0]);
     await click('.metric-config__dropdown-container .metric-config__done-btn');
+
+    //collapse filters
+    await click('.report-builder__container-header__filters-toggle');
+    assert.dom('.filter-collection').hasClass('filter-collection--collapsed', 'Filters are collapsed (1)');
 
     await click($('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .grouped-list__filter')[0]);
     assert.equal(
@@ -162,6 +166,12 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
       1,
       'The metric filter adds a single filter of type revenue'
     );
+    assert
+      .dom('.filter-collection')
+      .doesNotHaveClass(
+        'filter-collection--collapsed',
+        'Adding a parameterized metric filter expands the filters section'
+      );
 
     await click($('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .grouped-list__filter')[0]);
     assert.equal(
@@ -178,12 +188,22 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
       'Both the selected metrics have been added as filters'
     );
 
+    //collapse filters
+    await click('.report-builder__container-header__filters-toggle');
+    assert.dom('.filter-collection').hasClass('filter-collection--collapsed', 'Filters are collapsed (2)');
+
     await click($('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .grouped-list__filter')[0]);
     assert.equal(
       findAll('.filter-builder__subject').filter(el => el.innerText.includes('Revenue')).length,
       0,
       'After adding all the request parameters for a metric, clicking an additional time removes all filters for the metric'
     );
+    assert
+      .dom('.filter-collection')
+      .hasClass(
+        'filter-collection--collapsed',
+        'Filters are still collapsed when removing a parameterized metric filter'
+      );
   });
 
   test('old reports still allow you to choose parameters', async function(assert) {

@@ -107,11 +107,13 @@
 
   {{!-- Body --}}
   <div class="navi-report-widget__body">
-    {{#report-builder
-      report=model
-    }}
+    <ReportBuilder
+      @report={{this.model}}
+      @isFiltersCollapsed={{this.isFiltersCollapsed}}
+      @setFiltersCollapsed={{set this.isFiltersCollapsed _}}
+    >
       {{outlet}}
-    {{/report-builder}}
+    </ReportBuilder>
   </div>
 
   {{!-- Footer --}}
