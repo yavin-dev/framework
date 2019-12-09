@@ -96,7 +96,6 @@ class DateRange extends Component {
       quarter: '[Q]Q YYYY',
       year: 'YYYY'
     };
-    // TODO: if (dateTimePeriod=week and formatting endDate) { show end of week }
     return dateMap[this.dateTimePeriod] || dateMap.day;
   }
 

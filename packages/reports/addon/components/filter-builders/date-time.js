@@ -31,7 +31,7 @@ export default class extends Base {
       {
         id: 'current',
         longName: `Current ${this.timeGrainName}`,
-        valuesComponent: null // TODO: show range
+        valuesComponent: 'filter-values/current-period'
       },
       {
         id: 'inPast',
