@@ -10,8 +10,7 @@
  *   }}
  */
 import Component from '@ember/component';
-import { get, computed, action } from '@ember/object';
-import { oneWay } from '@ember/object/computed';
+import { get, set, computed, action } from '@ember/object';
 import { layout as templateLayout, classNames, className } from '@ember-decorators/component';
 import layout from '../templates/components/navi-date-picker';
 import moment from 'moment';
@@ -25,7 +24,37 @@ import {
 
 @templateLayout(layout)
 @classNames('navi-date-picker')
-export default class extends Component {
+class NaviDatePicker extends Component {
+  /**
+   * @method init
+   * @override
+   */
+  init() {
+    super.init(...arguments);
+    this.centerDate = this.centerDate || this.date || getFirstDayOfIsoDateTimePeriod(moment(), this.dateTimePeriod);
+  }
+
+  /**
+   * @method didReceiveAttrs
+   * @override
+   */
+  didReceiveAttrs() {
+    super.didReceiveAttrs(...arguments);
+
+    let { previousDate, date } = this;
+
+    if (date !== previousDate) {
+      let newDate = date ? date : undefined;
+
+      set(this, 'selectedDate', newDate);
+      set(this, 'centerDate', newDate);
+    }
+
+    //Store old date for rerender logic above
+    set(this, 'previousDate', date);
+    set(this, '_lastTimeDate', date);
+  }
+
   /**
    * @property {String} dateTimePeriodClass - The class to append depending on the dateTimePeriod
    */
@@ -36,14 +65,13 @@ export default class extends Component {
   }
 
   /**
-   * @property {Object} date - date should be after `minDate`
+   * @property {Moment} date - date should be after `minDate`
    */
-  date = undefined;
+  date;
 
   /**
    * @property {Moment} centerDate - The date to focus the calendar around, initially the provided date
    */
-  @oneWay('date')
   centerDate;
 
   /**
@@ -52,7 +80,7 @@ export default class extends Component {
   dateTimePeriod = 'day';
 
   /**
-   * @property {String} minDate - minimum selectable date
+   * @property {Date} minDate - minimum selectable date
    */
   @computed('dateTimePeriod')
   get minDate() {
@@ -64,9 +92,11 @@ export default class extends Component {
    */
   @computed('centerDate', 'minDate')
   get months() {
+    const { centerDate, minDate } = this;
+
     let months = moment.months();
-    const minDateTime = moment(this.minDate);
-    if (this.centerDate.year() === minDateTime.year()) {
+    const minDateTime = moment(minDate);
+    if (centerDate.year() === minDateTime.year()) {
       const minMonth = minDateTime.month - 1;
       months = months.filter((m, i) => i >= minMonth);
     }
@@ -120,6 +150,24 @@ export default class extends Component {
   }
 
   /**
+   * @method _isNewDateValue - checks if the date is the same as the last time this method was called
+   * @private
+   * @param {Date} newDate - date to check
+   * @returns {boolean} true if date is the same
+   */
+  _isNewDateValue(newDate) {
+    let lastTime = get(this, '_lastTimeDate');
+
+    set(this, '_lastTimeDate', newDate);
+
+    if (!lastTime) {
+      return false;
+    }
+
+    return moment(lastTime).isSame(newDate);
+  }
+
+  /**
    * Action sent whenever user makes a selection
    * Converts the selected Date into a moment and
    * passes the action on
@@ -129,10 +177,21 @@ export default class extends Component {
    */
   @action
   changeDate(newDate) {
-    const handleUpdate = get(this, 'onUpdate');
+    // Don't do anything if the date is the same as the last time action was called
+    if (this._isNewDateValue(newDate)) {
+      return;
+    }
 
     // Convert date to start of time period
-    let dateTimePeriod = getIsoDateTimePeriod(get(this, 'dateTimePeriod'));
-    if (handleUpdate) handleUpdate(moment(newDate).startOf(dateTimePeriod));
+    let dateTimePeriod = getIsoDateTimePeriod(this.dateTimePeriod);
+    const selectedDate = moment(newDate).startOf(dateTimePeriod);
+
+    set(this, 'selectedDate', selectedDate);
+    const handleUpdate = this.onUpdate;
+    if (handleUpdate) {
+      handleUpdate(selectedDate);
+    }
   }
 }
+
+export default NaviDatePicker;

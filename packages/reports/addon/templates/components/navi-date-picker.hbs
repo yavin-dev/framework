@@ -1,21 +1,21 @@
 {{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <PowerCalendar
-  @selected={{this.date}}
+  @selected={{this.selectedDate}}
   @onSelect={{action "changeDate" value="moment"}}
   @center={{this.centerDate}}
   @onCenterChange={{action (mut this.centerDate) value="moment"}}
   as |powerCalendar|
 >
 
-  {{#if (or (eq dateTimePeriod "day") (eq dateTimePeriod "week") (eq dateTimePeriod "month"))}}
+  {{#if (or (eq this.dateTimePeriod "day") (eq this.dateTimePeriod "week") (eq this.dateTimePeriod "month"))}}
     <powerCalendar.Nav>
-      {{#if (not-eq dateTimePeriod "month")}}
+      {{#if (not-eq this.dateTimePeriod "month")}}
         <span class="with-invisible-select">
           {{#with (moment-format powerCalendar.center "MMMM") as |currentMonth|}}
             {{currentMonth}}
             <select onchange={{fn this.changeCenter "month" powerCalendar}}>
               {{#each months as |month|}}
-                <option value="{{month}}" selected={{eq month currentMonth}}>{{month}}</option>
+                <option value={{month}} selected={{eq month currentMonth}}>{{month}}</option>
               {{/each}}
             </select>
           {{/with}}
@@ -27,19 +27,19 @@
           {{currentYear}}
           <select onchange={{fn this.changeCenter "year" powerCalendar}}>
             {{#each years as |year|}}
-              <option value="{{year}}" selected={{eq year currentYear}}>{{year}}</option>
+              <option value={{year}} selected={{eq year currentYear}}>{{year}}</option>
             {{/each}}
           </select>
         {{/with}}
       </span>
     </powerCalendar.Nav>
 
-  {{else if (eq dateTimePeriod "quarter")}}
+  {{else if (eq this.dateTimePeriod "quarter")}}
     <PowerCalendarSelectorsNav
       @calendar={{powerCalendar}}
       @by="year"
     />
-  {{else if (eq dateTimePeriod "year")}}
+  {{else if (eq this.dateTimePeriod "year")}}
     <PowerCalendarSelectorsNav
       @calendar={{powerCalendar}}
       @by="decade"
@@ -47,30 +47,30 @@
   {{/if}}
 
 
-  {{#if (eq dateTimePeriod "day")}}
+  {{#if (eq this.dateTimePeriod "day")}}
     <powerCalendar.Days
       @startOfWeek={{1}}
       @minDate={{this.minDate}}
     />
-  {{else if (eq dateTimePeriod "week")}}
+  {{else if (eq this.dateTimePeriod "week")}}
     <powerCalendar.Days
       @startOfWeek={{1}}
       @minDate={{this.minDate}}
       @dayClass={{this.selectedWeekClass}}
     />
-  {{else if (eq dateTimePeriod "month")}}
+  {{else if (eq this.dateTimePeriod "month")}}
     <PowerCalendarMonths
       @calendar={{powerCalendar}}
       @minDate={{this.minDate}}
       @showQuarters={{false}}
     />
-  {{else if (eq dateTimePeriod "quarter")}}
+  {{else if (eq this.dateTimePeriod "quarter")}}
     <PowerCalendarMonths
       @calendar={{powerCalendar}}
       @minDate={{this.minDate}}
       @showQuarters={{true}}
     />
-  {{else if (eq dateTimePeriod "year")}}
+  {{else if (eq this.dateTimePeriod "year")}}
     <PowerCalendarYears
       @calendar={{powerCalendar}}
       @minDate={{this.minDate}}

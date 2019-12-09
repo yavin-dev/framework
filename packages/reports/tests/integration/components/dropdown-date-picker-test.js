@@ -10,16 +10,14 @@ module('Integration | Component | dropdown date picker', function(hooks) {
   setupRenderingTest(hooks);
 
   test('dropdown-date-picker', async function(assert) {
-    assert.expect(8);
+    assert.expect(5);
 
     this.set('savedDate', '2018-12-25');
     this.set('actions', {
       onUpdate(date) {
-        assert.equal(
-          Moment(date).format('YYYY-MM-DD'),
-          '2018-12-24',
-          'The current selected date is sent to the onUpdate action'
-        );
+        const clickedDate = Moment(date).format('YYYY-MM-DD');
+        assert.equal(clickedDate, '2018-12-24', 'The current selected date is sent to the onUpdate action');
+        this.set('savedDate', clickedDate);
       }
     });
 
@@ -37,21 +35,15 @@ module('Integration | Component | dropdown date picker', function(hooks) {
 
     await clickTrigger('.dropdown-date-picker__trigger');
 
-    assert.dom('.navi-date-picker.day').isVisible('The day time grain date picker is shown when the dropdown is open');
+    assert.dom('.navi-date-picker-day').isVisible('The day time grain date picker is shown when the dropdown is open');
 
-    assert.dom('.dropdown-date-picker__controls').isVisible('The controls for the date picker are shown');
+    assert
+      .dom('.ember-power-calendar-day--selected')
+      .hasText('25', 'The saved date is passed to the date picker as the selected date');
 
-    assert.dom('.active.day').hasText('25', 'The saved date is passed to the date picker as the selected date');
+    await click($('.ember-power-calendar-day--current-month:contains(24)')[0]);
+    await clickTrigger('.dropdown-date-picker__trigger');
 
-    await click($('td.day:contains(24)')[0]);
-    assert.dom('.active.day').hasText('24', 'The selected date changed');
-
-    await click('.dropdown-date-picker__reset');
-    assert.dom('.active.day').hasText('25', 'The selected date is reset to the saved date after clicking reset');
-
-    await click($('td.day:contains(24)')[0]);
-    assert.dom('.active.day').hasText('24', 'The selected date changed');
-
-    await click('.dropdown-date-picker__apply');
+    assert.dom('.ember-power-calendar-day--selected').hasText('24', 'The selected date changed');
   });
 });

@@ -18,6 +18,10 @@ import Interval from 'navi-core/utils/classes/interval';
 @templateLayout(layout)
 @classNames('filter-values--date-range-input')
 class DateRange extends Component {
+  lowPlaceholder = 'Start';
+
+  highPlaceholder = 'Before';
+
   /**
    * @property {String} dateTimePeriod - the current time grain
    */
@@ -27,22 +31,58 @@ class DateRange extends Component {
   }
 
   /**
-   * @property {Moment} startDate - start of interval
+   * @property {Interval} interval - The interval of the selected date range
    */
   @computed('filter.values.firstObject')
+  get interval() {
+    return get(this, 'filter.values.firstObject');
+  }
+
+  /**
+   * @property {Moment} startDate - start of interval
+   */
+  @computed('interval', 'dateTimePeriod')
   get startDate() {
-    const { start } = get(this, 'filter.values.firstObject').asMomentsForTimePeriod(this.dateTimePeriod);
-    return start;
+    const { interval, dateTimePeriod } = this;
+    if (Interval.isInterval(interval)) {
+      return interval.asMomentsForTimePeriod(dateTimePeriod).start;
+    }
+    return undefined;
+  }
+
+  /**
+   * @property {String} startFormat - start of interval
+   */
+  @computed('startDate', 'calendarTriggerFormat')
+  get startFormat() {
+    return this.startDate.format(this.calendarTriggerFormat);
   }
 
   /**
    * @property {Moment} endDate - end of interval
    */
-  @computed('filter.values.firstObject')
+  @computed('interval', 'dateTimePeriod')
   get endDate() {
-    let { end } = get(this, 'filter.values.firstObject').asMomentsForTimePeriod(this.dateTimePeriod);
-    end = end.clone().subtract(1, this.dateTimePeriod);
-    return end;
+    const { interval, dateTimePeriod } = this;
+    if (Interval.isInterval(interval)) {
+      let end = interval.asMomentsForTimePeriod(dateTimePeriod).end;
+      end = end.clone().subtract(1, dateTimePeriod);
+      return end;
+    }
+    return undefined;
+  }
+
+  /**
+   * @property {String} startFormat - start of interval
+   */
+  @computed('endDate', 'dateTimePeriod', 'calendarTriggerFormat')
+  get endFormat() {
+    const { dateTimePeriod, endDate } = this;
+    let end = endDate;
+    if (dateTimePeriod === 'week') {
+      end = endDate.clone().endOf('isoweek');
+    }
+    return end.format(this.calendarTriggerFormat);
   }
 
   /**
@@ -52,11 +92,11 @@ class DateRange extends Component {
   get calendarTriggerFormat() {
     let dateMap = {
       day: 'MMM DD, YYYY',
-      month: 'MMM, YYYY',
+      month: 'MMM YYYY',
       quarter: '[Q]Q YYYY',
       year: 'YYYY'
     };
-    // if (dateTimePeriod=week and formatting endDate) { show end of week }
+    // TODO: if (dateTimePeriod=week and formatting endDate) { show end of week }
     return dateMap[this.dateTimePeriod] || dateMap.day;
   }
 

@@ -1603,39 +1603,40 @@ module('Acceptance | Navi Report', function(hooks) {
   });
 
   test("Date Picker doesn't change date when moving to time grain where dates are valid", async function(assert) {
-    assert.expect(3);
+    assert.expect(6);
 
     await visit('/reports/1');
     await click($('.grouped-list__item-label:contains(Month)')[0]);
 
     // Select the month Jan
-    await click('.custom-range-form .pick-value');
-    await click($('.navi-date-picker:nth-of-type(3) .datepicker .month:contains(Jan)')[0]);
-    await click($('.navi-date-picker:nth-of-type(4) .datepicker .month:contains(Jan)')[0]);
-    await click('.navi-date-range-picker__apply-btn');
+    await clickTrigger('.filter-values--date-range-input__low-value');
+    await click($('.ember-power-calendar-selector-month:contains(Jan)')[0]);
+    await clickTrigger('.filter-values--date-range-input__high-value');
+    await click($('.ember-power-calendar-selector-month:contains(Jan)')[0]);
     await click('.navi-report__run-btn');
 
-    assert.dom('.date-range__select-trigger').hasText('Jan 2015', 'Month is changed to Jan 2015');
+    assert.dom('.filter-values--date-range-input__low-value').hasText('Jan 2015', 'Start Month is changed to Jan 2015');
+    assert.dom('.filter-values--date-range-input__high-value').hasText('Jan 2015', 'End Month is changed to Jan 2015');
 
     await click($('.grouped-list__item-label:contains(Day)')[0]);
     await click('.navi-report__run-btn');
 
     assert
-      .dom('.date-range__select-trigger')
-      .hasText(
-        'Jan 01, 2015 - Jan 31, 2015',
-        'Switching to day preserves the day casts the dates to match the time period'
-      );
+      .dom('.filter-values--date-range-input__low-value')
+      .hasText('Jan 01, 2015', 'Switching to day time period preserves date to start of month');
+    assert
+      .dom('.filter-values--date-range-input__high-value')
+      .hasText('Jan 31, 2015', 'Switching to day time period preserves date to end of month');
 
     await click($('.grouped-list__item-label:contains(Week)')[0]);
     await click('.navi-report__run-btn');
 
     assert
-      .dom('.date-range__select-trigger')
-      .hasText(
-        'Dec 29, 2014 - Jan 25, 2015',
-        'Switching to week casts the dates to match the start and end of the date time period'
-      );
+      .dom('.filter-values--date-range-input__low-value')
+      .hasText('Dec 29, 2014', 'Switching to week casts the date to match the start of the date time period');
+    assert
+      .dom('.filter-values--date-range-input__high-value')
+      .hasText('Jan 25, 2015', 'Switching to week casts the date to match the end of the date time period');
   });
 
   test("Report with an unknown table doesn't crash", async function(assert) {
@@ -1719,7 +1720,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await click($('.filter-builder-dimension__field-dropdown .ember-power-select-option:contains(desc)')[0]);
 
     await fillIn('.filter-builder-dimension__values input', 'foo');
-    await await blur('.filter-builder-dimension__values input');
+    await blur('.filter-builder-dimension__values input');
 
     await click('.get-api__btn');
 

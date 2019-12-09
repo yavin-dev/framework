@@ -2,11 +2,10 @@ import { A } from '@ember/array';
 import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render } from '@ember/test-helpers';
-import $ from 'jquery';
+import { render, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import Duration from 'navi-core/utils/classes/duration';
 import Interval from 'navi-core/utils/classes/interval';
+import moment from 'moment';
 
 module('Integration | Component | filter values/date range', function(hooks) {
   setupRenderingTest(hooks);
@@ -24,51 +23,64 @@ module('Integration | Component | filter values/date range', function(hooks) {
         }}`);
   });
 
-  test('it renders', function(assert) {
-    assert.expect(3);
+  test('it renders', async function(assert) {
+    assert.expect(4);
 
     assert
-      .dom('.date-range__select-trigger')
-      .hasText('Select date range', 'Placeholder text is present when no date range is selected');
+      .dom('.filter-values--date-range-input__low-value')
+      .hasText('Start', 'Placeholder text is present when no date range is selected');
 
-    assert.deepEqual(
-      $('.predefined-range')
-        .map(function() {
-          return $(this)
-            .text()
-            .trim();
-        })
-        .get(),
-      [
-        'Last Day',
-        'Last 7 Days',
-        'Last 14 Days',
-        'Last 30 Days',
-        'Last 60 Days',
-        'Last 90 Days',
-        'Last 180 Days',
-        'Last 400 Days'
-      ],
-      'Predefined ranges are set based on the request time grain'
-    );
+    assert
+      .dom('.filter-values--date-range-input__high-value')
+      .hasText('Before', 'Placeholder text is present when no date range is selected');
 
     run(() => {
-      let selectedInterval = new Interval(new Duration('P7D'), 'current');
+      let selectedInterval = new Interval(moment('11-29-2019'), moment('12-06-2019'));
       this.set('filter', { values: A([selectedInterval]) });
     });
 
-    assert.dom('.date-range__select-trigger').hasText('Last 7 Days', 'Trigger text is updated with selected interval');
+    assert
+      .dom('.filter-values--date-range-input__low-value')
+      .hasText('Nov 29, 2019', 'Placeholder text is inclusive start date');
+
+    assert
+      .dom('.filter-values--date-range-input__high-value')
+      .hasText('Dec 05, 2019', 'Placeholder text is inclusive end date');
   });
 
-  test('changing values', function(assert) {
-    assert.expect(1);
+  test('changing values', async function(assert) {
+    assert.expect(2);
 
-    this.set('onUpdateFilter', changeSet => {
-      let expectedInterval = new Interval(new Duration('P7D'), 'current');
-      assert.ok(changeSet.interval.isEqual(expectedInterval), 'Selected interval is given to update action');
+    const start = moment('11-29-2019');
+    const end = moment('12-06-2019');
+    run(() => {
+      let selectedInterval = new Interval(start, end);
+      this.set('filter', { values: A([selectedInterval]) });
     });
 
-    $('.predefined-range:contains(Last 7 Days)').click();
+    // Click start date
+    await click('.filter-values--date-range-input__low-value > .dropdown-date-picker__trigger');
+    const newStartStr = '2019-11-28';
+
+    this.set('onUpdateFilter', changeSet => {
+      let expectedInterval = new Interval(moment(newStartStr), end);
+      assert.ok(changeSet.interval.isEqual(expectedInterval), 'Updating start date works');
+      this.set('filter', { values: A([changeSet.interval]) });
+    });
+
+    await click(`.ember-power-calendar-day[data-date="${newStartStr}"]`);
+
+    // Click end date
+    await click('.filter-values--date-range-input__high-value > .dropdown-date-picker__trigger');
+    const newEndStr = '2019-12-07';
+
+    this.set('onUpdateFilter', changeSet => {
+      let expectedInterval = new Interval(moment(newStartStr), moment(newEndStr).add(1, 'day'));
+      assert.ok(changeSet.interval.isEqual(expectedInterval), 'Updating inclusive end date adds extra day');
+      this.set('filter', { values: A([changeSet.interval]) });
+    });
+
+    await click(`.ember-power-calendar-day[data-date="${newEndStr}"]`);
   });
 
   test('collapsed', async function(assert) {

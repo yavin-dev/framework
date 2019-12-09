@@ -1,6 +1,7 @@
 import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
+import moment from 'moment';
 
 module('Unit | Component | Navi Date Picker', function(hooks) {
   setupTest(hooks);
@@ -9,8 +10,8 @@ module('Unit | Component | Navi Date Picker', function(hooks) {
     assert.expect(3);
 
     let component = run(() => this.owner.factoryFor('component:navi-date-picker').create()),
-      testDate1 = new Date(1995, 11, 17),
-      testDate2 = new Date(2011, 11, 11);
+      testDate1 = moment('1995-11-17'),
+      testDate2 = moment('1995-11-11');
 
     assert.equal(component._isNewDateValue(testDate1), false, 'Date is not the same when function was never called');
 

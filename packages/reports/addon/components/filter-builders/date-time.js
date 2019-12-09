@@ -16,22 +16,42 @@ import { getFirstDayOfIsoDateTimePeriod } from 'navi-core/utils/date';
 import moment from 'moment';
 
 export default class extends Base {
+  @computed('request.logicalTable.timeGrain')
+  get timeGrainName() {
+    return get(this, 'request.logicalTable.timeGrain.longName');
+  }
+
   /**
    * @override
    * @property {Array} supportedOperators - list of valid operators for a date-time filter
    */
-  @computed()
+  @computed('timeGrainName')
   get supportedOperators() {
     return [
+      {
+        id: 'current',
+        longName: `Current ${this.timeGrainName}`,
+        valuesComponent: null // TODO: show range
+      },
       {
         id: 'inPast',
         longName: 'In The Past',
         valuesComponent: 'filter-values/lookback-input'
       },
       {
+        id: 'since',
+        longName: 'Since',
+        valuesComponent: null // TODO: Show dropdown date picker, include current?, and range
+      },
+      {
         id: 'in',
-        longName: 'In Range',
+        longName: 'Between',
         valuesComponent: 'filter-values/date-range'
+      },
+      {
+        id: 'advanced',
+        longName: 'Advanced',
+        valuesComponent: null // TODO: Show two inputs and range
       }
     ];
   }
@@ -41,28 +61,36 @@ export default class extends Base {
    */
   requestFragment = undefined;
 
+  intervalOperator(interval) {
+    const { start, end } = interval.asStrings();
+
+    let operatorId;
+    if (start === 'current' && end === 'next') {
+      operatorId = 'current';
+    } else if (start.startsWith('P') && end === 'current') {
+      operatorId = 'inPast';
+    } else if (moment.isMoment(interval._start) && (end === 'current' || end === 'next')) {
+      operatorId = 'since';
+    } else if (moment.isMoment(interval._start) && moment.isMoment(interval._end)) {
+      operatorId = 'in';
+    } else {
+      operatorId = 'advanced';
+    }
+
+    return get(this, 'supportedOperators').find(op => op.id === operatorId);
+  }
+
   /**
    * @property {Object} filter
    * @override
    */
-  @computed('requestFragment.interval', 'request.logicalTable.timeGrain')
+  @computed('requestFragment.interval', 'timeGrainName')
   get filter() {
-    const interval = get(this, 'requestFragment.interval'),
-      timeGrainName = get(this, 'request.logicalTable.timeGrain.longName'),
-      longName = `Date Time (${timeGrainName})`;
-
-    let operator;
-
-    const { start, end } = interval.asStrings();
-    if (start.startsWith('P') && end === 'current') {
-      operator = get(this, 'supportedOperators')[0];
-    } else {
-      operator = get(this, 'supportedOperators')[1];
-    }
+    const interval = get(this, 'requestFragment.interval');
 
     return {
-      subject: { longName },
-      operator,
+      subject: { longName: `Date Time (${this.timeGrainName})` },
+      operator: this.intervalOperator(interval),
       values: arr([interval])
     };
   }
@@ -85,22 +113,24 @@ export default class extends Base {
 
     const originalInterval = get(this, 'requestFragment.interval');
     let { start, end } = originalInterval.asMomentsForTimePeriod(timeGrain);
-    if (newOperator === 'inPast') {
+    if (newOperator === 'current') {
+      set(this, 'requestFragment.interval', Interval.parseFromStrings('current', 'next'));
+    } else if (newOperator === 'inPast') {
       const isQuarter = timeGrain === 'quarter';
       const diffGrain = isQuarter ? 'month' : timeGrain;
 
       let intervalValue;
-      if (!end.isSame(moment(getFirstDayOfIsoDateTimePeriod(moment(), timeGrain)))) {
-        // end is not 'current'
-        intervalValue = 1;
-      } else {
+      if (end.isSame(moment(getFirstDayOfIsoDateTimePeriod(moment(), timeGrain)))) {
         // end is 'current', get lookback amount
         intervalValue = originalInterval.diffForTimePeriod(diffGrain);
-        if (isQuarter) {
-          // round to quarter
-          const quarters = Math.max(Math.floor(intervalValue / 3), 1);
-          intervalValue = quarters * 3;
-        }
+      } else {
+        intervalValue = 1;
+      }
+
+      if (isQuarter) {
+        // round to quarter
+        const quarters = Math.max(Math.floor(intervalValue / 3), 1);
+        intervalValue = quarters * 3;
       }
 
       const grainLabel = diffGrain[0].toUpperCase();

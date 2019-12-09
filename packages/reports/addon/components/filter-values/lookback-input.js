@@ -20,7 +20,7 @@ import { getIsoDateTimePeriod } from 'navi-core/utils/date';
 
 @templateLayout(layout)
 @classNames('filter-values--lookback-input')
-export default class extends Component {
+class LookbackInput extends Component {
   /**
    * @property {String} timeGrainName - The dateTimePeriod
    */
@@ -87,3 +87,5 @@ export default class extends Component {
     });
   }
 }
+
+export default LookbackInput;
