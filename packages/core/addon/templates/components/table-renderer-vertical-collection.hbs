@@ -8,10 +8,9 @@
       as | group |
     }}
       {{#each columns as |column|}}
-        {{#sortable-item
+        {{#group.item
           class=(concat "table-header-cell " column.type)
           model=(readonly column)
-          group=group
           click=(action headerClicked column)
           onDragStart=(action (set this "isDragged" true))
           onDragStop=(action (set this "isDragged" false))
@@ -36,7 +35,7 @@
               enableLazyRendering=true
             }}
           {{/if}}
-        {{/sortable-item}}
+        {{/group.item}}
       {{/each}}
     {{/sortable-group}}
   {{/unless}}

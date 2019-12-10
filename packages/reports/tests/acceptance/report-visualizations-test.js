@@ -40,61 +40,61 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
     await visit('/reports/2/view');
 
     assert
-      .dom('div.table-header-row .table-header-cell.metric .navi-table-sort-icon')
+      .dom('.table-header-row .table-header-cell.metric .navi-table-sort-icon')
       .doesNotHaveClass('navi-table-sort-icon--desc', 'Metric is not desc sorted');
 
     assert
-      .dom('div.table-header-row .table-header-cell.metric .navi-table-sort-icon')
+      .dom('.table-header-row .table-header-cell.metric .navi-table-sort-icon')
       .doesNotHaveClass('navi-table-sort-icon--asc', 'Metric is not asc sorted');
 
     //sort by first metric desc
-    await click('div.table-header-row .table-header-cell.metric .navi-table-sort-icon');
+    await click('.table-header-row .table-header-cell.metric .navi-table-sort-icon');
     assert
-      .dom('div.table-header-row .table-header-cell.metric .navi-table-sort-icon')
+      .dom('.table-header-row .table-header-cell.metric .navi-table-sort-icon')
       .hasClass('navi-table-sort-icon--desc', 'Metric is sorted desc on first sort click');
 
     assert
-      .dom('div.table-header-row .table-header-cell.metric .navi-table-sort-icon')
+      .dom('.table-header-row .table-header-cell.metric .navi-table-sort-icon')
       .doesNotHaveClass('navi-table-sort-icon--asc', 'Metric is not sorted asc on first sort click');
 
     //sort by first metric asc
-    await click('div.table-header-row .table-header-cell.metric .navi-table-sort-icon');
+    await click('.table-header-row .table-header-cell.metric .navi-table-sort-icon');
     assert
-      .dom('div.table-header-row .table-header-cell.metric .navi-table-sort-icon')
+      .dom('.table-header-row .table-header-cell.metric .navi-table-sort-icon')
       .hasClass('navi-table-sort-icon--asc', 'Metric is sorted asc on second sort click');
 
     assert
-      .dom('div.table-header-row .table-header-cell.metric .navi-table-sort-icon')
+      .dom('.table-header-row .table-header-cell.metric .navi-table-sort-icon')
       .doesNotHaveClass('navi-table-sort-icon--desc', 'Metric is not sorted desc on second sort click');
 
     //remove sort by first metric
-    await click('div.table-header-row .table-header-cell.metric .navi-table-sort-icon');
+    await click('.table-header-row .table-header-cell.metric .navi-table-sort-icon');
     assert
-      .dom('div.table-header-row .table-header-cell.metric .navi-table-sort-icon')
+      .dom('.table-header-row .table-header-cell.metric .navi-table-sort-icon')
       .doesNotHaveClass('navi-table-sort-icon--desc', 'Metric is not sorted desc after third sort click');
 
     assert
-      .dom('div.table-header-row .table-header-cell.metric .navi-table-sort-icon')
+      .dom('.table-header-row .table-header-cell.metric .navi-table-sort-icon')
       .doesNotHaveClass('navi-table-sort-icon--asc', 'Metric is not sorted asc after third sort click');
 
     assert
-      .dom('div.table-header-row .table-header-cell.dateTime .navi-table-sort-icon')
+      .dom('.table-header-row .table-header-cell.dateTime .navi-table-sort-icon')
       .hasClass('navi-table-sort-icon--desc', 'Datetime is sorted desc by default');
 
     //sort by dateTime desc
-    await click('div.table-header-row .table-header-cell.dateTime .navi-table-sort-icon');
+    await click('.table-header-row .table-header-cell.dateTime .navi-table-sort-icon');
     assert
-      .dom('div.table-header-row .table-header-cell.dateTime .navi-table-sort-icon')
+      .dom('.table-header-row .table-header-cell.dateTime .navi-table-sort-icon')
       .hasClass('navi-table-sort-icon--asc', 'Datetime is sorted asc after first sort click');
 
     //sort by dateTime asc
-    await click('div.table-header-row .table-header-cell.dateTime .navi-table-sort-icon');
+    await click('.table-header-row .table-header-cell.dateTime .navi-table-sort-icon');
     assert
-      .dom('div.table-header-row .table-header-cell.dateTime .navi-table-sort-icon')
+      .dom('.table-header-row .table-header-cell.dateTime .navi-table-sort-icon')
       .hasClass('navi-table-sort-icon--desc', 'Datetime is sorted desc after second sort click');
 
     //remove sort by dateTime
-    await click('div.table-header-row .table-header-cell.dateTime .navi-table-sort-icon');
+    await click('.table-header-row .table-header-cell.dateTime .navi-table-sort-icon');
 
     //add a parameterized metric with a couple of parameters and run the report
     await click(
@@ -105,61 +105,45 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
 
     //first parameter
     assert
-      .dom(
-        $('div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon')[0]
-      )
+      .dom($('.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon')[0])
       .hasNoClass('navi-table-sort-icon--desc', 'Metric with first parameter is not sorted desc');
 
     assert
-      .dom(
-        $('div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon')[0]
-      )
+      .dom($('.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon')[0])
       .hasNoClass('navi-table-sort-icon--asc', 'Metric with first parameter is not sorted asc');
 
     //second parameter
     assert
-      .dom(
-        $('div.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon')[0]
-      )
+      .dom($('.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon')[0])
       .hasNoClass('navi-table-sort-icon--desc', 'Metric with second parameter is not sorted desc');
 
     assert
-      .dom(
-        $('div.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon')[0]
-      )
+      .dom($('.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon')[0])
       .hasNoClass('navi-table-sort-icon--asc', 'Metric with second parameter is not sorted asc');
 
     //sort by first parameter desc
     await click(
-      $('div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon')[0]
+      $('.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon')[0]
     );
     //first parameter
     assert
-      .dom(
-        $('div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon')[0]
-      )
+      .dom($('.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon')[0])
       .hasClass('navi-table-sort-icon--desc', 'Metric with first parameter is sorted desc after first sort click');
 
     assert
-      .dom(
-        $('div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon')[0]
-      )
+      .dom($('.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon')[0])
       .hasNoClass('navi-table-sort-icon--asc', 'Metric with first parameter is not sorted asc after first sort click');
 
     //second parameter
     assert
-      .dom(
-        $('div.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon')[0]
-      )
+      .dom($('.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon')[0])
       .hasNoClass(
         'navi-table-sort-icon--desc',
         'Metric with second parameter is not sorted desc after first sort click'
       );
 
     assert
-      .dom(
-        $('div.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon')[0]
-      )
+      .dom($('.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon')[0])
       .hasNoClass('navi-table-sort-icon--asc', 'Metric with second parameter is not sorted asc after first sort click');
 
     //test API query and close the modal
@@ -177,38 +161,30 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
 
     //sort by first parameter asc
     await click(
-      $('div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon')[0]
+      $('.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon')[0]
     );
     //first parameter
     assert
-      .dom(
-        $('div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon')[0]
-      )
+      .dom($('.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon')[0])
       .hasNoClass(
         'navi-table-sort-icon--desc',
         'Metric with first parameter is not sorted desc after second sort click'
       );
 
     assert
-      .dom(
-        $('div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon')[0]
-      )
+      .dom($('.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon')[0])
       .hasClass('navi-table-sort-icon--asc', 'Metric with first parameter is sorted asc after second sort click');
 
     //second parameter
     assert
-      .dom(
-        $('div.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon')[0]
-      )
+      .dom($('.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon')[0])
       .hasNoClass(
         'navi-table-sort-icon--desc',
         'Metric with second parameter is not sorted desc after second sort click'
       );
 
     assert
-      .dom(
-        $('div.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon')[0]
-      )
+      .dom($('.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon')[0])
       .hasNoClass(
         'navi-table-sort-icon--asc',
         'Metric with second parameter is not sorted asc after second sort click'
@@ -229,38 +205,30 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
 
     //remove sort by first parameter
     await click(
-      $('div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon')[0]
+      $('.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon')[0]
     );
     //first parameter
     assert
-      .dom(
-        $('div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon')[0]
-      )
+      .dom($('.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon')[0])
       .hasNoClass(
         'navi-table-sort-icon--desc',
         'Metric with first parameter is not sorted desc after third sort click'
       );
 
     assert
-      .dom(
-        $('div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon')[0]
-      )
+      .dom($('.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon')[0])
       .hasNoClass('navi-table-sort-icon--asc', 'Metric with first parameter is not sorted asc after third sort click');
 
     //second parameter
     assert
-      .dom(
-        $('div.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon')[0]
-      )
+      .dom($('.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon')[0])
       .hasNoClass(
         'navi-table-sort-icon--desc',
         'Metric with second parameter is not sorted desc after third sort click'
       );
 
     assert
-      .dom(
-        $('div.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon')[0]
-      )
+      .dom($('.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon')[0])
       .hasNoClass('navi-table-sort-icon--asc', 'Metric with second parameter is not sorted asc after third sort click');
 
     //test API query and close the modal
@@ -278,16 +246,14 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
 
     //sort by both parameters
     await click(
-      $('div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon')[0]
+      $('.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon')[0]
     );
     await click(
-      $('div.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon')[0]
+      $('.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon')[0]
     );
     //first parameter
     assert
-      .dom(
-        $('div.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon')[0]
-      )
+      .dom($('.table-header-row .table-header-cell.metric:contains(Platform Revenue (USD)) .navi-table-sort-icon')[0])
       .hasClass(
         'navi-table-sort-icon--desc',
         'Metric with first parameter is sorted desc after sorting by both parameters'
@@ -295,9 +261,7 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
 
     //second parameter
     assert
-      .dom(
-        $('div.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon')[0]
-      )
+      .dom($('.table-header-row .table-header-cell.metric:contains(Platform Revenue (EUR)) .navi-table-sort-icon')[0])
       .hasClass(
         'navi-table-sort-icon--desc',
         'Metric with first parameter is sorted desc after sorting by both parameters'

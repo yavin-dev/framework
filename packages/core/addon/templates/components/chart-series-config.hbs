@@ -6,10 +6,9 @@
     onChange=(action "onReorderSeries") as |group|
   }}
     {{#each seriesData as |seriesDataItem index|}}
-      {{#sortable-item
+      {{#group.item
         class=(concat "line-chart-config__series-config__item chart-series-" index)
         model=seriesDataItem
-        group=group
         handle=".line-chart-config__series-config__item__handler"
       }}
         <div class="line-chart-config__series-config__item__content">
@@ -19,7 +18,7 @@
           <div></div>
           <div></div>
         </div>
-      {{/sortable-item}}
+      {{/group.item}}
     {{/each}}
   {{/sortable-group}}
 </div>

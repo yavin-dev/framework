@@ -105,7 +105,7 @@ module('Integration | Component | navi visualizations/table print', function(hoo
 
     assert.dom('.table-widget').isVisible('The table widget component is visible');
 
-    let headers = findAll('div.table-header-row-vc .table-header-cell').map(el => el.textContent.trim());
+    let headers = findAll('.table-header-row-vc div.table-header-cell').map(el => el.textContent.trim());
 
     assert.deepEqual(
       headers,
