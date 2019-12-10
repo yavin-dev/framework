@@ -43,6 +43,18 @@ export default ActionConsumer.extend({
     },
 
     /**
+     * @action UPDATE_METRIC_PARAM
+     * @param {Object} route - route that has a model that contains a request property
+     * @param {String} metric - canonical name of metric to add
+     * @param {Object} parameter - selected metric parameter
+     */
+    [RequestActions.UPDATE_METRIC_PARAM]({ currentModel }, metric, parameterId, parameterKey) {
+      const metricModel = get(currentModel, 'request.metrics').findBy('canonicalName', metric);
+
+      metricModel && metricModel.updateParameter(parameterId, parameterKey);
+    },
+
+    /**
      * @action REMOVE_METRIC_WITH_PARAM
      * @param {Object} route - route that has a model that contains a request property
      * @param {Object} metric - metadata model of metric to add

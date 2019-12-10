@@ -6,7 +6,7 @@
 import DS from 'ember-data';
 import Fragment from 'ember-data-model-fragments/fragment';
 import { validator, buildValidations } from 'ember-cp-validations';
-import { computed, get } from '@ember/object';
+import { computed, get, set } from '@ember/object';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 import { Copyable } from 'ember-copy';
 
@@ -26,7 +26,7 @@ export default Fragment.extend(Copyable, Validations, {
    * ex: revenue(currency=USD)
    * @return string
    */
-  canonicalName: computed('metric', 'parameters', function() {
+  canonicalName: computed('metric.name', 'parameters.{}', function() {
     const metric = get(this, 'metric.name'),
       parameters = get(this, 'parameters') || {};
 
@@ -35,6 +35,17 @@ export default Fragment.extend(Copyable, Validations, {
       parameters
     });
   }),
+
+  /**
+   *
+   * @param {Object} parameter -
+   */
+  updateParameter(paramId, paramKey) {
+    const newParam = { [paramKey]: paramId };
+    const parameters = this.parameters;
+
+    set(this, 'parameters', Object.assign({}, parameters, newParam));
+  },
 
   /**
    * Overrides Ember.Copyable implemented in Fragment.copy

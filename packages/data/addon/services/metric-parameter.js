@@ -7,9 +7,9 @@
 
 import Service from '@ember/service';
 import { inject as service } from '@ember/service';
-import { get } from '@ember/object';
+import { get, set } from '@ember/object';
 import { assert } from '@ember/debug';
-import { resolve } from 'rsvp';
+import { resolve, hash } from 'rsvp';
 
 export default Service.extend({
   init() {
@@ -47,6 +47,42 @@ export default Service.extend({
     assert(`Fetching values of type: '${meta.type}' is not supported`, this.supportedTypes().includes(meta.type));
 
     return this._supportedHandlers[meta.type](meta);
+  },
+
+  /**
+   * @method fetchAllParams
+   * @param {Object} metricMeta - Metric metadata object
+   * @returns {Promise} promise hash with all the kinds of params and their values
+   */
+  fetchAllParams(metricMeta) {
+    const promises = {};
+    const parameterObj = metricMeta.parameters || {};
+    const supportedTypes = this.supportedTypes();
+    const allParametersMap = {};
+    const parameters = Object.entries(parameterObj).filter(([, paramMeta]) =>
+      supportedTypes.includes(get(paramMeta, 'type'))
+    );
+
+    parameters.forEach(([paramType, paramMeta]) => {
+      promises[paramType] = this.fetchAllValues(paramMeta);
+    });
+
+    const promiseHash = hash(promises).then(res => {
+      //add property param to every element in each array
+      Object.entries(res).forEach(([key, values]) => {
+        const valArray = Array.isArray(values) ? values : values.toArray();
+        valArray.forEach(val => {
+          set(val, 'param', key);
+
+          //add object to map
+          allParametersMap[`${key}|${val.id}`] = val;
+        });
+      });
+
+      return allParametersMap;
+    });
+
+    return promiseHash;
   },
 
   /**

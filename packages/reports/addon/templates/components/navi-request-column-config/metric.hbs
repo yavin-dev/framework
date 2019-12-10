@@ -1,0 +1,38 @@
+{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<div class="navi-request-column-config" ...attributes>
+  <div class="navi-request-column-config__header">
+    <span class="navi-request-column-config__header-label">Column Configuration</span>
+    <span class="navi-request-column-config__header-icons">
+      <NaviIcon @icon="star-o" class="navi-request-column-config__star-icon" role="button"/>
+      <NaviIcon @icon="times" class="navi-request-column-config__exit-icon" role="button" {{action this.onClose}}/>
+    </span>
+  </div>
+  <div class="navi-request-column-config__body">
+    <div class="navi-request-column-config__option navi-request-column-config__column-name">
+      <label for="columnName" class="navi-request-column-config__column-name-label navi-request-column-config__option-label">Column Name</label>
+      <Input 
+        class="navi-request-column-config__column-name-input navi-request-column-config__option-input"
+        @id="columnName" 
+        @value={{@column.displayName}}
+        @key-up={{action @onUpdateColumnName}}
+      />
+    </div>
+    {{#if this.column.fragment.metric.hasParameters}}
+      <div class="navi-request-column-config__option navi-request-column-config__parameter">
+        <label for="columnParameter" class="navi-request-column-config__parameter-label navi-request-column-config__option-label">Metric Parameter</label>
+        <PowerSelect 
+          @triggerClass="navi-request-column-config__parameter-trigger navi-request-column-config__option-input"
+          @triggerId="columnParameter" 
+          @dropdownClass="navi-request-column-config__parameter-dropdown"
+          @selected={{this.currentParameter}}
+          @searchPlaceholder="Type to search"
+          @options={{this.allParameters}}
+          @onchange={{action "updateMetricParam"}}
+          as | param |
+        >
+          {{param.description}} ({{param.id}})
+        </PowerSelect>
+      </div>
+    {{/if}}
+  </div>
+</div>

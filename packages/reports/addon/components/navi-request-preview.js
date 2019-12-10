@@ -46,16 +46,32 @@ class NaviRequestPreview extends Component {
   metricName;
 
   /**
+   * @private
+   * @property {Number} _editingColumnIndex - null when not editing column, index of the edited column otherwise
+   */
+  _editingColumnIndex = null;
+
+  /**
    * @property {Object} editingColumn - The column object that is currently being edited, null if not editing
    */
-  editingColumn = null;
+  @computed('_editingColumnIndex', 'columns.[]')
+  get editingColumn() {
+    const columnIndex = this._editingColumnIndex;
+    const columns = this.columns;
+
+    if (typeof columnIndex === 'number' && columnIndex > -1 && columnIndex < this.columns.length) {
+      return columns[columnIndex];
+    }
+    return null;
+  }
 
   /**
    * @property {Object[]} columns - column objects rendered in the template
    */
   @computed(
-    'request.{sort.@each.direction,metrics.[],dimensions.[],logicalTable.timeGrain}',
-    'visualization.metadata.style.aliases.@each.as'
+    'request.{sort.@each.direction,metrics.@each.parameters,dimensions.[],logicalTable.timeGrain}',
+    'visualization.metadata.style.aliases.@each.as',
+    'editingColumn.fragment.parameters.[]'
   )
   get columns() {
     const {
@@ -67,7 +83,8 @@ class NaviRequestPreview extends Component {
         type: 'metric',
         name: metric.canonicalName,
         displayName: this.getDisplayName(metric, 'metric', visualization),
-        sort: (sort.findBy('metric.canonicalName', metric.canonicalName) || { direction: 'none' }).direction
+        sort: (sort.findBy('metric.canonicalName', metric.canonicalName) || { direction: 'none' }).direction,
+        fragment: metric
       };
     });
     const dimensions = this.request.dimensions.toArray().map(dimension => {
@@ -75,7 +92,8 @@ class NaviRequestPreview extends Component {
         type: 'dimension',
         name: dimension.dimension.name,
         displayName: this.getDisplayName(dimension, 'dimension', visualization),
-        sort: null //TODO: Support sorts on dimensions
+        sort: null, //TODO: Support sorts on dimensions
+        fragment: dimension
       };
     });
     const columns = [...dimensions, ...metrics];
@@ -86,7 +104,8 @@ class NaviRequestPreview extends Component {
         type: 'dateTime',
         name: 'dateTime',
         displayName: this.getDisplayName(timeGrain, 'dateTime', visualization),
-        sort: (sort.findBy('metric.canonicalName', 'dateTime') || { direction: 'none' }).direction
+        sort: (sort.findBy('metric.canonicalName', 'dateTime') || { direction: 'none' }).direction,
+        fragment: timeGrain
       });
     }
 
@@ -158,8 +177,12 @@ class NaviRequestPreview extends Component {
       );
 
       if (existingAlias) {
-        set(existingAlias, 'as', newName);
-      } else {
+        if (newName === '') {
+          aliases.removeObject(existingAlias);
+        } else {
+          set(existingAlias, 'as', newName);
+        }
+      } else if (newName !== '') {
         aliases.pushObject({
           type: editingColumn.type,
           name: editingColumn.name,
@@ -198,13 +221,13 @@ class NaviRequestPreview extends Component {
 
   /**
    * @action
-   * @param {Object} column - contains type and name of column to remove from request
+   * @param {Object} index - index of the column we want to edit
    * @param {Object} dropdown - ember basic dropdown public api, used to close dropdown on edit
    */
   @action
-  editColumn(column, dropdown) {
+  editColumn(index, dropdown) {
     dropdown.actions.close();
-    this.set('editingColumn', column);
+    this.set('_editingColumnIndex', index);
   }
 
   /**
@@ -212,7 +235,7 @@ class NaviRequestPreview extends Component {
    */
   @action
   closeColumnConfig() {
-    this.set('editingColumn', null);
+    this.set('_editingColumnIndex', null);
   }
 
   /**
