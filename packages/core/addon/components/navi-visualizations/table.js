@@ -74,6 +74,10 @@ export default Component.extend({
    */
   rowsInResponse: alias('model.firstObject.response.rows.length'),
 
+  get isDraggingDisabled() {
+    return this.element.parentElement.classList.contains('navi-widget__content');
+  },
+
   /**
    * @method computeColumnTotal
    * Compute total for a metric column

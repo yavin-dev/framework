@@ -19,11 +19,11 @@
   {{else}}
     {{#sortable-group class="table-header-row" direction="x" onChange=(action updateColumnOrder) as | group |}}
       {{#each columns as |column|}}
-        {{#sortable-item
+        {{#group.item
           class=(concat "table-header-cell " column.type)
           model=(readonly column)
-          group=group
           click=(action headerClicked column)
+          isDraggingDisabled=@isDraggingDisabled
         }}
           <span
             class="table-header-cell__title {{if column.hasCustomDisplayName "table-header-cell__title--custom-name"}}"
@@ -45,7 +45,7 @@
               enableLazyRendering=true
             }}
           {{/if}}
-        {{/sortable-item}}
+        {{/group.item}}
       {{/each}}
     {{/sortable-group}}
   {{/if}}
