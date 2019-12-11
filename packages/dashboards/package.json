@@ -41,7 +41,7 @@
     "ember-moment": "^7.8.1",
     "ember-promise-helpers": "^1.0.6",
     "ember-set-helper": "^0.1.1",
-    "ember-sortable": "1.12.3",
+    "ember-sortable": "2.1.1",
     "ember-tag-input": "^1.2.2",
     "ember-toggle": "^5.3.3",
     "ember-tooltips": "^3.2.0",

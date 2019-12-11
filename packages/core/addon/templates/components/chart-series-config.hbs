@@ -1,17 +1,17 @@
 {{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="line-chart-config__series-config__header">Stack Order</div>
 <div class="line-chart-config__series-config__content">
-  {{#sortable-group
+  <SortableGroup
     class="line-chart-config__series-config__collection"
-    onChange=(action "onReorderSeries") as |group|
-  }}
+    @onChange={{action "onReorderSeries"}}
+    as |group|
+  >
     {{#each seriesData as |seriesDataItem index|}}
-      {{#sortable-item
-        class=(concat "line-chart-config__series-config__item chart-series-" index)
-        model=seriesDataItem
-        group=group
-        handle=".line-chart-config__series-config__item__handler"
-      }}
+      <group.item
+        class={{concat "line-chart-config__series-config__item chart-series-" index}}
+        @model={{seriesDataItem}}
+        @handle={{".line-chart-config__series-config__item__handler"}}
+      >
         <div class="line-chart-config__series-config__item__content">
           {{if (eq seriesType "dimension") seriesDataItem.name (metric-format seriesDataItem)}}
         </div>
@@ -19,7 +19,7 @@
           <div></div>
           <div></div>
         </div>
-      {{/sortable-item}}
+      </group.item>
     {{/each}}
-  {{/sortable-group}}
+  </SortableGroup>
 </div>

@@ -10,6 +10,7 @@
     "test": "ember test"
   },
   "dependencies": {
+    "@ember-decorators/component": "^6.1.1",
     "@ember/jquery": "^0.6.1",
     "@html-next/vertical-collection": "^1.0.0",
     "babel-eslint": "^10.0.3",
@@ -33,7 +34,7 @@
     "ember-moment": "^7.8.1",
     "ember-radio-button": "^1.2.1",
     "ember-resize": "^0.3.4",
-    "ember-sortable": "1.12.3",
+    "ember-sortable": "2.1.1",
     "ember-toggle": "^5.3.3",
     "ember-tooltips": "^3.2.0",
     "ember-truth-helpers": "^2.0.0",

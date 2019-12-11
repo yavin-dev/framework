@@ -1,26 +1,27 @@
-{{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="table-widget__info-header">
   <div class="table-widget__row-info">
-    <span class="table-widget__row-info-number">{{if rowsInResponse (format-number rowsInResponse) 0}}</span> out of
-    <span class="table-widget__row-info-number">{{if totalRows (format-number totalRows) 0}}</span> rows
+    <span class="table-widget__row-info-number">{{if this.rowsInResponse (format-number this.rowsInResponse) 0}}</span> out of
+    <span class="table-widget__row-info-number">{{if this.totalRows (format-number this.totalRows) 0}}</span> rows
   </div>
-  {{#if isEditingMode}}
+  {{#if this.isEditingMode}}
     <div class="table-widget__edit-col-msg">
-      {{navi-icon "pencil"}} <span>Enter custom column names</span>
+      <NaviIcon @icon="pencil"/> <span>Enter custom column names</span>
     </div>
   {{/if}}
 </div>
 {{component tableRenderer
-  tableData=tableData
-  request=request
-  columns=columns
-  occlusion=occlusion
-  estimateHeight=estimateHeight
-  bufferSize=bufferSize
-  isEditingMode=isEditingMode
-  cellRendererPrefix=cellRendererPrefix
+  tableData=this.tableData
+  request=this.request
+  columns=this.columns
+  isDraggingDisabled=this.isDraggingDisabled
+  occlusion=this.occlusion
+  estimateHeight=this.estimateHeight
+  bufferSize=this.bufferSize
+  isEditingMode=this.isEditingMode
+  cellRendererPrefix=this.cellRendererPrefix
   headerClicked=(action "headerClicked")
   updateColumnOrder=(action "updateColumnOrder")
   updateColumnDisplayName=(action "updateColumnDisplayName")
-  onUpdateReport=(action (optional onUpdateReport))
+  onUpdateReport=(action (optional this.onUpdateReport))
 }}
