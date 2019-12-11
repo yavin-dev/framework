@@ -37,8 +37,9 @@ export default Fragment.extend(Copyable, Validations, {
   }),
 
   /**
-   *
-   * @param {Object} parameter -
+   * @method updateParameter - Update a parameter of the metric
+   * @param {String} parameterId - id property of parameter metadata object
+   * @param {String} parameterKey - name of the parameter type (e.g. currency)
    */
   updateParameter(paramId, paramKey) {
     const newParam = { [paramKey]: paramId };
