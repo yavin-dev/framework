@@ -10,6 +10,7 @@
     "test": "ember test"
   },
   "dependencies": {
+    "@ember-decorators/component": "^6.1.1",
     "@ember/jquery": "^0.6.1",
     "@html-next/vertical-collection": "^1.0.0",
     "babel-eslint": "^10.0.3",

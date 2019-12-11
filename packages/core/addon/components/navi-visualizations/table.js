@@ -1,18 +1,18 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
- * {{navi-visualizations/table
- *   model=model
- *   isEditing=isEditing
- *   options=options
- *   onUpdateReport=(action 'onUpdateReport')
+ * <NaviVisualizations::Table
+ *   @model={{model}}
+ *   @isEditing={{isEditing}}
+ *   @options={{options}}
+ *   @onUpdateReport={{action 'onUpdateReport'}}
  * }}
  */
 import { readOnly, alias } from '@ember/object/computed';
 import layout from '../../templates/components/navi-visualizations/table';
-import { computed, get, set } from '@ember/object';
+import { computed, get, set, action } from '@ember/object';
 import { inject as service } from '@ember/service';
 import { run } from '@ember/runloop';
 import { assign } from '@ember/polyfills';
@@ -24,6 +24,7 @@ import groupBy from 'lodash/groupBy';
 import { canonicalizeMetric, canonicalizeColumnAttributes } from 'navi-data/utils/metric';
 import { getColumnDefaultName } from 'navi-core/helpers/default-column-name';
 import { featureFlag } from 'navi-core/helpers/feature-flag';
+import { layout as templateLayout, classNames } from '@ember-decorators/component';
 
 const NEXT_SORT_DIRECTION = {
   none: 'desc',
@@ -36,47 +37,50 @@ const HEADER_TITLE = {
   subtotal: 'Subtotal'
 };
 
-export default Component.extend({
-  layout,
-
-  /**
-   * @property {Array} classNames - list of component class names
-   */
-  classNames: ['table-widget'],
-
+@templateLayout(layout)
+@classNames('table-widget')
+class Table extends Component {
   /**
    * @property {Service} bardMetadata
    */
-  bardMetadata: service(),
+  @service
+  bardMetadata;
 
   /*
    * @property {Boolean} occlusion - whether or not to incremental render
    */
-  occlusion: true,
+  occlusion = true;
 
   /**
    * @property {String} selectedSubtotal
    */
-  selectedSubtotal: readOnly('options.showTotals.subtotal'),
+  @readOnly('options.showTotals.subtotal')
+  selectedSubtotal;
 
   /**
    * @property {Array} rawData - data from the WS
    */
-  rawData: readOnly('model.firstObject.response.rows'),
+  @readOnly('model.firstObject.response.rows')
+  rawData;
 
   /**
    * @property {Number} totalRows - total rows for the request
    */
-  totalRows: readOnly('model.firstObject.response.meta.pagination.numberOfResults'),
+  @readOnly('model.firstObject.response.meta.pagination.numberOfResults')
+  totalRows;
 
   /**
    * @property {Number} rowsInResponse - rows in response
    */
-  rowsInResponse: alias('model.firstObject.response.rows.length'),
+  @alias('model.firstObject.response.rows.length')
+  rowsInResponse;
 
+  /**
+   * @property {Boolean} isDraggingDisabled - Determines whether table columns can be reordered
+   */
   get isDraggingDisabled() {
     return this.element.parentElement.classList.contains('navi-widget__content');
-  },
+  }
 
   /**
    * @method computeColumnTotal
@@ -95,7 +99,7 @@ export default Component.extend({
       let number = Number(row[metricName]);
       return Number.isNaN(number) ? sum : sum + number;
     }, 0);
-  },
+  }
 
   /**
    * @method _computeTotal
@@ -145,7 +149,7 @@ export default Component.extend({
     }
 
     return totalRow;
-  },
+  }
 
   /**
    * @method _computeSubtotals
@@ -168,7 +172,7 @@ export default Component.extend({
       }, []);
 
     return dataWithSubtotals;
-  },
+  }
 
   /**
    * @method _hasCustomDisplayName
@@ -184,12 +188,13 @@ export default Component.extend({
 
     let defaultName = getColumnDefaultName(column, get(this, 'bardMetadata'));
     return column.displayName !== defaultName;
-  },
+  }
 
   /**
    * @property {Object} groupedData - data grouped by grouping column specified in selectedSubtotal
    */
-  groupedData: computed('selectedSubtotal', 'rawData', function() {
+  @computed('selectedSubtotal', 'rawData')
+  get groupedData() {
     let groupingColumn = get(this, 'selectedSubtotal'),
       rawData = get(this, 'rawData');
 
@@ -198,12 +203,13 @@ export default Component.extend({
     }
 
     return groupBy(rawData, row => get(row, groupingColumn));
-  }),
+  }
 
   /**
    * @property {Object} tableData
    */
-  tableData: computed('rawData', 'columns', 'options.showTotals.{grandTotal,subtotal}', function() {
+  @computed('rawData', 'columns', 'options.showTotals.{grandTotal,subtotal}')
+  get tableData() {
     let tableData = this._computeSubtotals(),
       rawData = get(this, 'rawData');
 
@@ -212,7 +218,7 @@ export default Component.extend({
     }
 
     return [...tableData, this._computeTotal(rawData, 'grandTotal')];
-  }),
+  }
 
   /**
    * @method _mapAlias
@@ -240,12 +246,13 @@ export default Component.extend({
       sort.metric = metric ? canonicalizeMetric(metric) : sort.metric;
       return sort;
     });
-  },
+  }
 
   /**
    * @property {Object} columns
    */
-  columns: computed('options.columns', 'request.sort', function() {
+  @computed('options.columns', 'request.sort')
+  get columns() {
     let sorts = this._mapAlias(get(this, 'request')),
       columns = cloneDeep(get(this, 'options.columns') || []);
 
@@ -267,50 +274,55 @@ export default Component.extend({
         sortDirection
       });
     });
-  }),
+  }
 
   /**
    * @property {Boolean} isEditingMode
    */
-  isEditingMode: computed('isEditing', function() {
+  @computed('isEditing')
+  get isEditingMode() {
     return featureFlag('enableTableEditing') && get(this, 'isEditing');
-  }),
+  }
 
   /**
    * @property {Boolean} isVerticalCollectionEnabled
    */
-  isVerticalCollectionEnabled: computed(function() {
+  @computed
+  get isVerticalCollectionEnabled() {
     return featureFlag('enableVerticalCollectionTableIterator');
-  }),
+  }
 
   /**
    * @property {String} tableRenderer
    */
-  tableRenderer: computed('isVerticalCollectionEnabled', function() {
+  @computed('isVerticalCollectionEnabled')
+  get tableRenderer() {
     return `table-renderer${get(this, 'isVerticalCollectionEnabled') ? '-vertical-collection' : ''}`;
-  }),
+  }
 
   /**
    * @property {Object} request
    */
-  request: alias('model.firstObject.request'),
+  @alias('model.firstObject.request')
+  request;
 
   /**
    * @property {String} cellRendererPrefix - prefix for all cell renderer types
    */
-  cellRendererPrefix: 'navi-cell-renderers/',
+  cellRendererPrefix = 'navi-cell-renderers/';
 
   /**
    * @property {Number} estimateHeight - estimated height in px of a single row
    */
-  estimateHeight: computed('isVerticalCollectionEnabled', function() {
+  @computed('isVerticalCollectionEnabled')
+  get estimateHeight() {
     return get(this, 'isVerticalCollectionEnabled') ? 32 : 30;
-  }),
+  }
 
   /**
    * @property {Number} bufferSize - size of the buffer before and after the collection
    */
-  bufferSize: 10,
+  bufferSize = 10;
 
   /**
    * Get next direction based on column type and current direction
@@ -330,44 +342,47 @@ export default Component.extend({
     }
 
     return direction;
-  },
+  }
 
-  actions: {
-    /**
-     * @action headerClicked
-     * sends sort action when dateTime header is clicked
-     * @param {Object} column object
-     */
-    headerClicked({ attributes, type, sortDirection }) {
-      if (/^threshold|dateTime|metric$/.test(type)) {
-        let direction = this._getNextSortDirection(type, sortDirection),
-          //TODO Fetch from report action dispatcher service
-          actionType = direction === 'none' ? 'removeSort' : 'upsertSort',
-          canonicalName = type === 'dateTime' ? type : canonicalizeColumnAttributes(attributes);
+  /**
+   * @action headerClicked
+   * sends sort action when dateTime header is clicked
+   * @param {Object} column object
+   */
+  @action
+  headerClicked({ attributes, type, sortDirection }) {
+    if (/^threshold|dateTime|metric$/.test(type)) {
+      let direction = this._getNextSortDirection(type, sortDirection),
+        //TODO Fetch from report action dispatcher service
+        actionType = direction === 'none' ? 'removeSort' : 'upsertSort',
+        canonicalName = type === 'dateTime' ? type : canonicalizeColumnAttributes(attributes);
 
-        this.onUpdateReport(actionType, canonicalName, direction);
-      }
-    },
-
-    /**
-     * @action updateColumnOrder
-     */
-    updateColumnOrder(newColumnOrder) {
-      this.onUpdateReport('updateColumnOrder', newColumnOrder);
-    },
-
-    /**
-     * @action updateColumnDisplayName
-     */
-    updateColumnDisplayName(column, displayName) {
-      run.scheduleOnce('afterRender', () => {
-        this.onUpdateReport(
-          'updateColumn',
-          assign({}, column, {
-            displayName
-          })
-        );
-      });
+      this.onUpdateReport(actionType, canonicalName, direction);
     }
   }
-});
+
+  /**
+   * @action updateColumnOrder
+   */
+  @action
+  updateColumnOrder(newColumnOrder) {
+    this.onUpdateReport('updateColumnOrder', newColumnOrder);
+  }
+
+  /**
+   * @action updateColumnDisplayName
+   */
+  @action
+  updateColumnDisplayName(column, displayName) {
+    run.scheduleOnce('afterRender', () => {
+      this.onUpdateReport(
+        'updateColumn',
+        assign({}, column, {
+          displayName
+        })
+      );
+    });
+  }
+}
+
+export default Table;
