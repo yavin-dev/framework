@@ -41,7 +41,7 @@ class Metric extends Component {
    * @method didReceiveAttrs
    */
   didReceiveAttrs() {
-    super.didUpdateAttrs(...arguments);
+    super.didReceiveAttrs(...arguments);
     const { metric, canonicalName } = this.column.fragment;
     const prevMetricName = this._previousMetricName;
 
