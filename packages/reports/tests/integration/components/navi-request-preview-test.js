@@ -23,13 +23,14 @@ module('Integration | Component | navi-request-preview', function(hooks) {
     this.owner.register(
       'helper:update-report-action',
       buildHelper(([action]) => {
-        return (metricName, parameter) => {
+        return (metricName, parameterId, parameterKey) => {
           const actionName = UpdateReportActions[action];
           return UpdateReportAction.dispatch(
             actionName,
             { currentModel: { request: this.get('request') } },
             metricName,
-            parameter
+            parameterId,
+            parameterKey
           );
         };
       }),

@@ -41,10 +41,10 @@ module('Integration | Component | navi-request-column-config/metric', function(h
     this.set('onUpdateColumnName', newName => {
       assert.equal(newName, 'Money', 'New display name is passed to name update action');
     });
-    this.set('onUpdateMetricParam', (metricName, param) => {
+    this.set('onUpdateMetricParam', (metricName, paramId, paramKey) => {
       assert.equal(metricName, 'revenue(currency=USD)', 'Metric name is passed with the currently selected parameter');
-      assert.equal(`${param.param}=${param.id}`, 'currency=CAD', 'Parameter is passed to onUpdateMetricParam method');
-      metric.set('parameters', { [param.param]: param.id });
+      assert.equal(`${paramKey}=${paramId}`, 'currency=CAD', 'Parameter is passed to onUpdateMetricParam method');
+      metric.set('parameters', { [paramKey]: paramId });
     });
     await render(hbs`
       <NaviRequestColumnConfig::Metric
