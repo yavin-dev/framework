@@ -3,56 +3,59 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
- * {{dir-table-filter
- *    selectedType=type
- *    updateQueryParams=(action 'updateQueryParams')
- *  }}
+ * <DirTableFilter
+ *    @selectedType={{type}}
+ *    @updateQueryParams={{action 'updateQueryParams'}}
+ *  />
  */
 import Component from '@ember/component';
 import layout from '../templates/components/dir-table-filter';
-import { computed } from '@ember/object';
+import { computed, action } from '@ember/object';
 import { isEmpty } from '@ember/utils';
 import FileTypes from 'navi-directory/utils/enums/file-types';
+import { layout as templateLayout } from '@ember-decorators/component';
 
-export default Component.extend({
-  layout,
-
+@templateLayout(layout)
+class DirTableFilter extends Component {
   /**
    * @property {Array} fileTypes
    */
-  fileTypes: computed(function() {
-    let types = FileTypes.getTypes();
-    return ['all', ...types];
-  }),
+  @computed
+  get fileTypes() {
+    return ['all', ...FileTypes.getTypes()];
+  }
 
   /**
    * @property {String} selectedFileType
    */
-  selectedFileType: computed('selectedType', function() {
-    let selected = this.selectedType;
-    return isEmpty(selected) ? 'all' : selected;
-  }),
-
-  actions: {
-    /**
-     * @action close
-     * @param {Object} dropdown
-     */
-    close(dropdown) {
-      dropdown.actions.close();
-    },
-
-    /**
-     * @action filterByType
-     * @param {String} type - query param value for type
-     */
-    filterByType(type) {
-      let queryParam = type;
-      if (type === 'all') {
-        queryParam = null;
-      }
-
-      this.updateQueryParams({ type: queryParam });
-    }
+  @computed('selectedType')
+  get selectedFileType() {
+    const { selectedType } = this;
+    return isEmpty(selectedType) ? 'all' : selectedType;
   }
-});
+
+  /**
+   * @action close
+   * @param {Object} dropdown
+   */
+  @action
+  close(dropdown) {
+    dropdown.actions.close();
+  }
+
+  /**
+   * @action filterByType
+   * @param {String} type - query param value for type
+   */
+  @action
+  filterByType(type) {
+    let queryParam = type;
+    if (type === 'all') {
+      queryParam = null;
+    }
+
+    this.updateQueryParams({ type: queryParam });
+  }
+}
+
+export default DirTableFilter;

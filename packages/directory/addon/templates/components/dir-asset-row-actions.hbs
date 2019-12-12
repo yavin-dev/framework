@@ -1,7 +1,7 @@
 {{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{#lazy-render target=rowElement}}
+<LazyRender @target={{this.rowElement}}>
   {{component (get assetActionComponents type)
     item=value
     index=row.rowId
   }}
-{{/lazy-render}}
+</LazyRender>

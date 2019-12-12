@@ -1,11 +1,11 @@
 {{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{#link-to itemLink itemId classNames="dir-item-name-cell"}}
-  {{dir-icon iconClass}}
+<LinkTo @route={{this.itemLink}} @model={{this.itemId}} class="dir-item-name-cell">
+  <DirIcon @iconClass={{this.iconClass}}/>
   {{get value "title"}}
   {{#if (get value "isFavorite")}}
-    {{dir-icon "star"}}
+    <DirIcon @iconClass="star"/>
   {{/if}}
-{{/link-to}}
+</LinkTo>
 
 {{#if (get value "tempId")}}
   <span class="dir-item-name-cell__unsaved-label">Unsaved</span>

@@ -3,22 +3,23 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Route from '@ember/routing/route';
-import { inject } from '@ember/service';
+import { inject as service } from '@ember/service';
 import { get, set } from '@ember/object';
 import { A as arr } from '@ember/array';
 import { run } from '@ember/runloop';
 import { isPresent } from '@ember/utils';
 
-export default Route.extend({
+class MyData extends Route {
   /**
    * @property { Service } user
    */
-  user: inject(),
+  @service()
+  user;
 
   /**
    * @property {Object} _cache - local cache
    */
-  _cache: undefined,
+  _cache = undefined;
 
   /**
    * @method _fetchFromUser
@@ -28,17 +29,17 @@ export default Route.extend({
    */
   async _fetchFromUser(user, entity) {
     //local cache
-    let cache = this['_cache'] || {};
+    const cache = this['_cache'] || {};
 
     //fetch from cache if present
     if (cache[entity]) return cache[entity];
 
     //else fetch from user and set local cache
-    let results = await get(user, entity);
+    const results = await get(user, entity);
     cache[entity] = results;
     set(this, '_cache', cache);
     return results;
-  },
+  }
 
   /**
    * @method _fetchItems
@@ -75,14 +76,14 @@ export default Route.extend({
     }
 
     return items;
-  },
+  }
 
   /**
    * @method model
    * @override
    */
   model() {
-    let user = this.user.getUser(),
+    const user = this.user.getUser(),
       directoryParams = this.paramsFor('directory');
 
     //returning an object so that the table can handle the promise
@@ -90,4 +91,6 @@ export default Route.extend({
       items: this._fetchItems(user, directoryParams)
     };
   }
-});
+}
+
+export default MyData;

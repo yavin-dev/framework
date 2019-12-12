@@ -1,9 +1,9 @@
 {{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{dir-table
-  isLoading=(is-pending searchResults)
-  items=(await searchResults)
-  searchQuery=directory.q
-  sortBy=directory.sortBy
-  sortDir=directory.sortDir
-  onColumnClick=(action "updateQueryParams")
-}}
+<DirTable
+  @isLoading={{is-pending searchResults}}
+  @items={{await searchResults}}
+  @searchQuery={{directory.q}}
+  @sortBy={{directory.sortBy}}
+  @sortDir={{directory.sortDir}}
+  @onColumnClick={{action "updateQueryParams"}}
+/>

@@ -1,21 +1,21 @@
 {{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{#basic-dropdown classNames="dir-table-filter" as |dd|}}
-  {{#dd.trigger class="dir-table-filter__trigger"}}
+<BasicDropdown @class="dir-table-filter" as |dd|>
+  <dd.trigger @class="dir-table-filter__trigger">
     <span class="dir-table-filter__trigger-type">
-      {{capitalize selectedFileType}}
+      {{capitalize this.selectedFileType}}
     </span>
-    {{navi-icon "caret-down" class="dir-table-filter__dropdown-icon"}}
-  {{/dd.trigger}}
+    <NaviIcon @icon="caret-down" class="dir-table-filter__dropdown-icon"/>
+  </dd.trigger>
 
-  {{#dd.content class="dir-table-filter__dropdown-options dropdown-arrow"}}
+  <dd.content @class="dir-table-filter__dropdown-options dropdown-arrow">
     {{#each fileTypes as | type |}}
       <div
-        class={{concat "dir-table-filter__dropdown-option" (if (eq type selectedFileType) " dir-table-filter__dropdown-option--selected")}}
+        class={{concat "dir-table-filter__dropdown-option" (if (eq type this.selectedFileType) " dir-table-filter__dropdown-option--selected")}}
         onclick={{pipe (action "filterByType" type) (action "close" dd)}}
         role="button"
       >
         {{capitalize type}}
       </div>
     {{/each}}
-  {{/dd.content}}
-{{/basic-dropdown}}
+  </dd.content>
+</BasicDropdown>
