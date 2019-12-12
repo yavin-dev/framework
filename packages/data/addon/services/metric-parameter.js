@@ -58,7 +58,6 @@ export default Service.extend({
     const promises = {};
     const parameterObj = metricMeta.parameters || {};
     const supportedTypes = this.supportedTypes();
-    const allParametersMap = {};
     const parameters = Object.entries(parameterObj).filter(([, paramMeta]) =>
       supportedTypes.includes(get(paramMeta, 'type'))
     );
@@ -68,6 +67,7 @@ export default Service.extend({
     });
 
     const promiseHash = hash(promises).then(res => {
+      const allParametersMap = {};
       //add property param to every element in each array
       Object.entries(res).forEach(([key, values]) => {
         const valArray = Array.isArray(values) ? values : values.toArray();

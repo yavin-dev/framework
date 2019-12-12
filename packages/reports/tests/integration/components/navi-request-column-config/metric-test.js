@@ -1,7 +1,8 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click } from '@ember/test-helpers';
+import { render, click, fillIn, triggerKeyEvent } from '@ember/test-helpers';
 import { A as arr } from '@ember/array';
+import { helper as buildHelper } from '@ember/component/helper';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
 import hbs from 'htmlbars-inline-precompile';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
@@ -19,7 +20,7 @@ module('Integration | Component | navi-request-column-config/metric', function(h
   });
 
   test('Configuring metric column', async function(assert) {
-    assert.expect(8);
+    assert.expect(9);
 
     const metric = this.owner.lookup('service:store').createFragment('bard-request/fragments/metric', {
       metric: await MetadataService.findById('metric', 'revenue'),
@@ -41,18 +42,27 @@ module('Integration | Component | navi-request-column-config/metric', function(h
     this.set('onUpdateColumnName', newName => {
       assert.equal(newName, 'Money', 'New display name is passed to name update action');
     });
-    this.set('onUpdateMetricParam', (metricName, paramId, paramKey) => {
-      assert.equal(metricName, 'revenue(currency=USD)', 'Metric name is passed with the currently selected parameter');
-      assert.equal(`${paramKey}=${paramId}`, 'currency=CAD', 'Parameter is passed to onUpdateMetricParam method');
-      metric.set('parameters', { [paramKey]: paramId });
-    });
+    this.owner.register(
+      'helper:update-report-action',
+      buildHelper(() => {
+        return (metricName, paramId, paramKey) => {
+          assert.equal(
+            metricName,
+            'revenue(currency=USD)',
+            'Metric name is passed with the currently selected parameter'
+          );
+          assert.equal(`${paramKey}=${paramId}`, 'currency=CAD', 'Parameter is passed to onUpdateMetricParam method');
+          metric.set('parameters', { [paramKey]: paramId });
+        };
+      }),
+      { instantiate: false }
+    );
     await render(hbs`
-      <NaviRequestColumnConfig::Metric
+      <NaviRequestColumnConfig::Base
         @column={{editingColumn}} 
         @metadata={{metadata}}
         @onClose={{action onClose}}
         @onUpdateColumnName={{action onUpdateColumnName}}
-        @onUpdateMetricParam={{action onUpdateMetricParam}}
       />
     `);
 
@@ -84,6 +94,10 @@ module('Integration | Component | navi-request-column-config/metric', function(h
 
     assert.dom('#columnName').hasValue('Revenue', 'Custom display name is still shown when parameter is changed');
     assert.dom('#columnParameter').hasText('Dollars (CAD)', 'Parameter selector shows new parameter value');
+
+    await fillIn('#columnName', 'Money');
+    await triggerKeyEvent('#columnName', 'keyup', 13);
+
     await click('.navi-request-column-config__exit-icon');
   });
 });

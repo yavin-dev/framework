@@ -38,8 +38,8 @@ export default Fragment.extend(Copyable, Validations, {
 
   /**
    * @method updateParameter - Update a parameter of the metric
-   * @param {String} parameterId - id property of parameter metadata object
-   * @param {String} parameterKey - name of the parameter type (e.g. currency)
+   * @param {String} paramId - id property of parameter metadata object
+   * @param {String} paramKey - name of the parameter type (e.g. currency)
    */
   updateParameter(paramId, paramKey) {
     const newParam = { [paramKey]: paramId };

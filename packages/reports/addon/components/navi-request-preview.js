@@ -56,10 +56,9 @@ class NaviRequestPreview extends Component {
    */
   @computed('_editingColumnIndex', 'columns.[]')
   get editingColumn() {
-    const columnIndex = this._editingColumnIndex;
-    const columns = this.columns;
+    const { _editingColumnIndex: columnIndex, columns } = this;
 
-    if (typeof columnIndex === 'number' && columnIndex > -1 && columnIndex < this.columns.length) {
+    if (typeof columnIndex === 'number' && 0 <= columnIndex && columnIndex < this.columns.length) {
       return columns[columnIndex];
     }
     return null;

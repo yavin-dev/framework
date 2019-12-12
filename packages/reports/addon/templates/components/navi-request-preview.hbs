@@ -49,17 +49,12 @@
       </tbody>
     </table>
     {{#if editingColumn}}
-      {{#let (component (concat "navi-request-column-config/" (dasherize editingColumn.type))) 
-        as | ColumnConfig |
-      }}
-        <ColumnConfig
-          @column={{editingColumn}} 
-          @metadata={{visualization.metadata}}
-          @onClose={{action "closeColumnConfig"}}
-          @onUpdateColumnName={{action "updateColumnName"}}
-          @onUpdateMetricParam={{update-report-action "UPDATE_METRIC_PARAM"}}
-        />
-      {{/let}}
+      <NaviRequestColumnConfig::Base
+        @column={{editingColumn}} 
+        @metadata={{visualization.metadata}}
+        @onClose={{action "closeColumnConfig"}}
+        @onUpdateColumnName={{action "updateColumnName"}}
+      />
     {{/if}}
   </div>
 </div>
