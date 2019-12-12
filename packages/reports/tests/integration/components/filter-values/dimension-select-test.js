@@ -67,7 +67,7 @@ module('Integration | Component | filter values/dimension select', function(hook
 
     this.set('isCollapsed', true);
 
-    assert.dom().hasText('under 13 (1), 13-17 (2), 18-20 (3)', 'Selected values are rendered correctly when collapsed');
+    assert.dom().hasText('under 13 (1) 13-17 (2) 18-20 (3)', 'Selected values are rendered correctly when collapsed');
   });
 
   test('no values', async function(assert) {

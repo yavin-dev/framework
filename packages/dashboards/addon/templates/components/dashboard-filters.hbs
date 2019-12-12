@@ -1,15 +1,41 @@
 {{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<span class="dashboard-filters__expand-button" role="button" onclick={{action (toggle "isCollapsed" this)}}>
-  {{navi-icon "sliders"}} Settings {{navi-icon (if isCollapsed "angle-right" "angle-down")}}
+<span class="dashboard-filters__expand-button" role="button" onclick={{toggle "isCollapsed" this}}>
+  <NaviIcon @icon="sliders" /> Settings<NaviIcon @icon="angle-down" class="dashboard-filters__toggle" />
 </span>
 
-{{#if isCollapsed}}
-  {{dashboard-filters-collapsed dashboard=dashboard tagName="span"}}
-{{else}}
-  {{dashboard-filters-expanded 
-    dashboard=dashboard 
-    onUpdateFilter=(action onUpdateFilter)
-    onRemoveFilter=(action onRemoveFilter)
-    onAddFilter=(action onAddFilter)
-  }}
+<FilterCollection
+  class="dashboard-filters-collection"
+  @isCollapsed={{this.isCollapsed}}
+  @setFiltersCollapsed={{set this.isCollapsed _}}
+  @request={{this.filters}}
+  @onUpdateFilter={{action this.onUpdateFilter}}
+  @onRemoveFilter={{action this.onRemoveFilter}}
+  @onAddFilter={{action this.onAddFilter}}
+/>
+
+{{#if (not this.isCollapsed)}}
+  {{#if this.isAddingMode}}
+    <div class="dashboard-filters--expanded-add-row">
+      <NaviIcon
+        class="dashboard-filters--expanded-add-row__close"
+        @icon="close"
+        @click={{toggle "isAddingMode" this}}
+      />
+      <DashboardDimensionSelector
+        class="dashboard-filters--expanded-add-row__dimension-selector"
+        @dashboard={{this.dashboard}}
+        @onChange={{queue (action this.onAddFilter) (toggle "isAddingMode" this)}}
+      />
+      <div class="dashboard-filters--expanded-add-row__placeholder dashboard-filters--expanded-add-row__placeholder--operator">
+        <div class="dashboard-filters--expanded-add-row__placeholder-inner dashboard-filters--expanded-add-row__placeholder-inner--operator"></div>
+      </div>
+      <div class="dashboard-filters--expanded-add-row__placeholder dashboard-filters--expanded-add-row__placeholder--values">
+        <div class="dashboard-filters--expanded-add-row__placeholder-inner dashboard-filters--expanded-add-row__placeholder-inner--values"></div>
+      </div>
+    </div>
+  {{else}}
+    <button type="button" onclick={{toggle "isAddingMode" this}} class="dashboard-filters--expanded__add-filter-button">
+      Add Filter
+    </button>
+  {{/if}}
 {{/if}}

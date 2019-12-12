@@ -53,7 +53,7 @@ export default Component.extend({
    * @property {BardDimensionArray} dimensionOptions - list of all dimension values
    */
   dimensionOptions: computed('filter.subject', function() {
-    let dimensionName = get(this, 'dimensionName'),
+    const dimensionName = get(this, 'dimensionName'),
       dimensionService = get(this, '_dimensionService'),
       metadataService = get(this, '_metadataService');
 
@@ -85,12 +85,14 @@ export default Component.extend({
   }),
 
   /**
-   * @property {String} selectedValuesText - concatenated string of currently selected dimension values and descriptions
+   * @property {String} filterValueFieldId - which id field to use as ID display.
    */
-  selectedValuesText: computed('selectedDimensions', function() {
-    return this.selectedDimensions.then(selected =>
-      !selected.length ? '' : selected.map(dimension => `${dimension.description} (${dimension.id})`).join(', ')
-    );
+  filterValueFieldId: computed('dimensionName', 'filter.field', function() {
+    const dimensionName = get(this, 'dimensionName'),
+      metadataService = get(this, '_metadataService'),
+      meta = metadataService.getById('dimension', dimensionName);
+
+    return meta ? meta.idFieldName : get(this, 'filter.field');
   }),
 
   /**

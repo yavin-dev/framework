@@ -9,65 +9,64 @@
 @add-filter-placeholder-color-border: #a3a3a3;
 
 .dashboard-filters {
-  flex: 0 0 auto;
-  width: 100%;
+  align-items: flex-start;
+  border-bottom: 2px solid @navi-gray-300;
+  display: flex;
+  flex-direction: column;
+  padding: 5px 0 10px 0;
+
+  &__toggle {
+    height: 19px;
+    text-align: center;
+    transition: transform 100ms;
+    width: 19px;
+  }
+
+  .filter-collection {
+    font-size: 12px;
+  }
 
   &--collapsed {
-    border-bottom: 2px solid @navi-gray-300;
-    padding-bottom: 10px;
-  }
+    flex-direction: row;
 
-  &-collapsed {
-    cursor: pointer;
-
-    &__filters {
-      display: inline;
+    .dashboard-filters__toggle {
+      transform: rotate(-90deg);
     }
 
-    &-filter {
-      display: inline-block;
-      margin-left: 10px;
+    .filter-collection {
+      font-size: inherit;
+      padding-right: 20px;
 
-      &__dimension {
-        display: inline-block;
-      }
-
-      &__operator {
-        display: inline-block;
-      }
-
-      &__values {
-        display: inline;
-        font-weight: bold;
-      }
-
-      &__value {
-        display: inline-block;
+      .filter-values--selected-error {
+        display: none;
       }
     }
   }
 
-  &-expanded {
+  &--expanded {
     background-color: @navi-white;
-    box-shadow: 0px 2px 2px 0px #a0a0a0;
-    display: block;
-    padding: 0 100px 10px 20px;
-    position: relative;
     z-index: 5;
+
+    .filter-collection {
+      align-self: stretch;
+      padding: 5px 20px 0 20px;
+    }
 
     &__add-filter-button {
       color: @navi-blue-500;
       cursor: pointer;
       font-size: 12px;
-      padding: 5px 5px 5px 10px;
+      margin: 5px 15px;
     }
 
     &-add-row {
+      align-self: stretch;
       display: flex;
-      padding-left: 10px;
+      padding: 0 20px;
 
       &__close {
         color: @navi-gray-600;
+        cursor: pointer;
         flex: 0 0 auto;
         font-size: @font-size-mid;
         line-height: @add-filter-cell-height;
@@ -113,15 +112,8 @@
 
   &__expand-button {
     cursor: pointer;
-    display: inline-block;
-    font-size: 18px;
+    flex-shrink: 0;
     margin-left: 10px;
     user-select: none;
-  }
-
-  .dashboard-filter-collection {
-    .filter-collection;
-
-    padding-left: 10px;
   }
 }

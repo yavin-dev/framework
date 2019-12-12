@@ -67,5 +67,9 @@
 
   &--collapsed {
     display: inline;
+
+    &--value:not(:last-child):after {
+      content: ',';
+    }
   }
 }

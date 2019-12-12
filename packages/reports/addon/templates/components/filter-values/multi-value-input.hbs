@@ -3,7 +3,9 @@
   {{#if this.filter.validations.isInvalid}}
     <FilterValues::InvalidValue/>
   {{else}}
-    {{join ", " this.filter.values}}
+    {{#each this.filter.values as |value|}}
+      <span class="filter-values--collapsed--value">{{value}}</span>
+    {{/each}}
   {{/if}}
 {{else}}
   {{#navi-tag-input

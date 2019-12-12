@@ -50,14 +50,16 @@ module('Integration | Component | filter collection', function(hooks) {
             onUpdateFilter=(action onUpdateFilter)
             onRemoveFilter=(action onRemoveFilter)
             isCollapsed=isCollapsed
-            expandFilters=expandFilters
+            setFiltersCollapsed=setFiltersCollapsed
         }}`);
   });
 
   test('it renders', async function(assert) {
     assert.expect(4);
 
-    this.set('expandFilters', () => assert.ok(false, 'expandFilters is not called on click when not collapsed'));
+    this.set('setFiltersCollapsed', () =>
+      assert.ok(false, 'setFiltersCollapsed is not called on click when not collapsed')
+    );
 
     assert.dom('.filter-collection__row').exists({ count: 5 }, 'Each request filter is represented by a filter row');
 
@@ -75,7 +77,9 @@ module('Integration | Component | filter collection', function(hooks) {
 
     this.set('isCollapsed', true);
 
-    this.set('expandFilters', () => assert.ok(true, 'expandFilters is called on click'));
+    this.set('setFiltersCollapsed', collapsed =>
+      assert.notOk(collapsed, 'setFiltersCollapsed(false) is called on click')
+    );
 
     assert
       .dom('span.filter-collection--collapsed-item')

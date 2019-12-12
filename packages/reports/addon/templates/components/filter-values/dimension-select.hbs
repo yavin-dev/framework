@@ -1,10 +1,12 @@
 {{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{#if this.isCollapsed}}
-  {{#if (is-fulfilled this.selectedValuesText)}}
+  {{#if (is-fulfilled this.selectedDimensions)}}
     {{#if this.filter.validations.attrs.rawValues.isInvalid}}
       <FilterValues::InvalidValue/>
     {{else}}
-      {{await this.selectedValuesText}}
+      {{#each (await this.selectedDimensions) as |value|}}
+        <span class="filter-values--collapsed--value">{{format-dimension value this.filterValueFieldId}}</span>
+      {{/each}}
     {{/if}}
   {{/if}}
 {{else}}

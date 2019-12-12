@@ -147,8 +147,12 @@
     }
   }
 
-  &--collapsed-item:not(:last-child):after {
-    content: ';';
-    margin-left: -3px;
+  &--collapsed {
+    cursor: pointer;
+
+    &-item:not(:last-child):after {
+      content: ';';
+      margin-left: -3px;
+    }
   }
 }

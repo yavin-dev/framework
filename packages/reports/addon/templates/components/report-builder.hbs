@@ -58,7 +58,7 @@
       <FilterCollection
         class="report-builder__filter-collection"
         @isCollapsed={{this.isFiltersCollapsed}}
-        @expandFilters={{action (optional this.setFiltersCollapsed) false}}
+        @setFiltersCollapsed={{action (optional this.setFiltersCollapsed)}}
         @request={{this.request}}
         @onUpdateFilter={{update-report-action "UPDATE_FILTER"}}
         @onRemoveFilter={{update-report-action "REMOVE_FILTER"}}

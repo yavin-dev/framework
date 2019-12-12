@@ -9,6 +9,8 @@
  *   }}
  */
 import Component from '@ember/component';
+import { get } from '@ember/object';
+import isEqual from 'lodash/isEqual';
 
 export default Component.extend({
   tagName: '',
@@ -26,7 +28,7 @@ export default Component.extend({
      * Since this operator doesn't require values, pass empty string
      * here empty string denoted as "" is the same as 'null' in druid
      */
-    if (!isCollapsed && onUpdateFilter) {
+    if (!isCollapsed && onUpdateFilter && !isEqual(get(this, 'filter.values'), ['""'])) {
       onUpdateFilter({
         values: ['""']
       });

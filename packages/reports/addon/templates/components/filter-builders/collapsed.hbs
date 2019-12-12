@@ -1,9 +1,9 @@
 {{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{this.displayName}}
+<span class="filter-dimension--collapsed">{{this.displayName}}</span>
 {{#if this.field}}
-  ({{this.field}})
+  <span class="filter-field--collapsed">({{this.field}})</span>
 {{/if}}
-{{lowercase this.filter.operator.longName}}
+<span class="filter-operator--collapsed">{{lowercase this.filter.operator.longName}}</span>
 <strong>
   {{component
     this.filter.operator.valuesComponent
