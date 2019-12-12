@@ -3,16 +3,22 @@ module.exports = {
     server: true
   },
   root: true,
+  parser: 'babel-eslint',
   parserOptions: {
     ecmaVersion: 2018,
-    sourceType: 'module'
+    sourceType: 'module',
+    ecmaFeatures: {
+      legacyDecorators: true
+    }
   },
   plugins: ['ember'],
   extends: ['eslint:recommended', 'plugin:ember/recommended', 'prettier'],
   env: {
     browser: true
   },
-  rules: {},
+  rules: {
+    'ember/no-jquery': 'error'
+  },
   overrides: [
     // node files
     {
