@@ -10,7 +10,7 @@
  * />
  */
 
-import { oneWay } from '@ember/object/computed';
+import { readOnly } from '@ember/object/computed';
 import Component from '@ember/component';
 import layout from '../templates/components/dir-item-name-cell';
 import fileTypes from 'navi-directory/utils/enums/file-types';
@@ -35,7 +35,7 @@ class DirItemNameCell extends Component {
   /**
    * @property {String} itemId - the id of the model or the tempId of an unsaved model
    */
-  @oneWay('value.modelId')
+  @readOnly('value.modelId')
   itemId;
 
   /**
