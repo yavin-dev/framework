@@ -1,5 +1,5 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Controller from '@ember/controller';
@@ -8,7 +8,7 @@ import { computed, get, action } from '@ember/object';
 import { A as arr } from '@ember/array';
 import moment from 'moment';
 
-class MyData extends Controller.extend(SearchFilterMixin) {
+export default class MyDataController extends Controller.extend(SearchFilterMixin) {
   /**
    * @property {Promise<Array>} sortedItems - items sorted by `sortKey` and `sortDir`
    */
@@ -47,5 +47,3 @@ class MyData extends Controller.extend(SearchFilterMixin) {
     this.transitionToRoute({ queryParams });
   }
 }
-
-export default MyData;

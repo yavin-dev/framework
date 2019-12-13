@@ -5,15 +5,9 @@
  * Usage:
  * <DirEmpty />
  */
-import Component from '@ember/component';
-import layout from '../templates/components/dir-empty';
+import Component from '@glimmer/component';
 import FileTypes from 'navi-directory/utils/enums/file-types';
-import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
-@templateLayout(layout)
-@tagName('')
-class DirEmpty extends Component {
+export default class DirEmptyComponent extends Component {
   reportRoute = FileTypes.definitions.reports.linkRoute;
 }
-
-export default DirEmpty;

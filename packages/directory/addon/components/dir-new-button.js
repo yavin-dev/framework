@@ -1,19 +1,15 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * <DirNewButton />
  */
 
-import Component from '@ember/component';
-import layout from '../templates/components/dir-new-button';
+import Component from '@glimmer/component';
 import { get } from '@ember/object';
 import FileTypes from 'navi-directory/utils/enums/file-types';
-import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
-@templateLayout(layout)
-@tagName('')
-class DirNewButton extends Component {
+export default class DirNewButtonComponent extends Component {
   /**
    * @method calculatePosition
    * @returns {Object} - positioning info used by ember-basic-dropdown
@@ -40,5 +36,3 @@ class DirNewButton extends Component {
    */
   fileTypes = get(FileTypes, 'definitions');
 }
-
-export default DirNewButton;

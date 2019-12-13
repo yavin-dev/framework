@@ -1,36 +1,30 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
  * <DirAssetRowActions
- *   @value={{assetModel}}
- *   @row={{rowObject}}
+ *   @value={{@assetModel}}
+ *   @row={{@rowObject}}
  * />
  */
-import Component from '@ember/component';
-import layout from '../templates/components/dir-asset-row-actions';
-import { computed, get } from '@ember/object';
-import { layout as templateLayout, tagName } from '@ember-decorators/component';
+import Component from '@glimmer/component';
+import { get } from '@ember/object';
 
-@templateLayout(layout)
-@tagName('')
-class DirAssetRowActions extends Component {
+export default class DirAssetRowActionsComponent extends Component {
   /**
    * @property {String} type - the type of the asset
    */
-  @computed('value')
   get type() {
-    const { value } = this;
+    const { value } = this.args;
     return value ? value.constructor.modelName : null;
   }
 
   /**
    * @property {String} rowElement - selector for the row containing this
    */
-  @computed('value', 'row.rowId')
   get rowElement() {
-    const rowId = get(this, 'row.rowId');
+    const rowId = get(this, 'args.row.rowId');
     return `[data-row-id="${rowId}"]`;
   }
 
@@ -42,5 +36,3 @@ class DirAssetRowActions extends Component {
     dashboard: 'dashboard-action-list'
   };
 }
-
-export default DirAssetRowActions;

@@ -12,7 +12,7 @@ module('Integration | Component | dir new button', function(hooks) {
 
     await render(hbs`<DirNewButton />`);
 
-    assert.equal(this.element.innerText.trim(), 'New', 'The New button is labeled correctly');
+    assert.dom(this.element).hasText('New', 'The New button is labeled correctly');
 
     await clickTrigger('.dir-new-button__trigger');
 
