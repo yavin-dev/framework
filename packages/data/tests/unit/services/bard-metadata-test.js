@@ -65,6 +65,76 @@ module('Unit - Service - Bard Metadata', function(hooks) {
     assert.ok(Service.metadataLoaded, 'metadataLoaded property is set to true after data is loaded');
   });
 
+  test('loadMetadata from multiple sources', async function(assert) {
+    metadataRoutes.bind(Server)(1);
+    await Service.loadMetadata({ dataSourceName: 'dummy' });
+    await Service.loadMetadata({ dataSourceName: 'blockhead' });
+    let keg = Service._keg;
+
+    assert.equal(
+      keg.getById('metadata/table', 'table1', 'dummy').source,
+      'dummy',
+      'Table 1 is loaded with the correct data source'
+    );
+    assert.equal(
+      keg.getById('metadata/table', 'table2').source,
+      'dummy',
+      'Table 2 is loaded with the correct data source'
+    );
+    assert.equal(
+      keg.getById('metadata/table', 'table3', 'blockhead').source,
+      'blockhead',
+      'Table 3 is loaded with the correct data source'
+    );
+    assert.equal(
+      keg.getById('metadata/table', 'table4', 'blockhead').source,
+      'blockhead',
+      'Table 4 is loaded with the correct data source'
+    );
+
+    assert.equal(
+      keg.getById('metadata/metric', 'metricOne', 'dummy').source,
+      'dummy',
+      'MetricOne is loaded with the correct data source'
+    );
+    assert.equal(
+      keg.getById('metadata/metric', 'metricTwo').source,
+      'dummy',
+      'MetricTwo is loaded with the correct data source'
+    );
+    assert.equal(
+      keg.getById('metadata/metric', 'metricThree', 'blockhead').source,
+      'blockhead',
+      'MetricThree is loaded with the correct data source'
+    );
+    assert.equal(
+      keg.getById('metadata/metric', 'metricFour', 'blockhead').source,
+      'blockhead',
+      'MetricFour is loaded with the correct data source'
+    );
+
+    assert.equal(
+      keg.getById('metadata/dimension', 'dimensionOne', 'dummy').source,
+      'dummy',
+      'DimensionOne is loaded with the correct data source'
+    );
+    assert.equal(
+      keg.getById('metadata/dimension', 'dimensionTwo').source,
+      'dummy',
+      'DimensionTwo is loaded with the correct data source'
+    );
+    assert.equal(
+      keg.getById('metadata/dimension', 'dimensionThree').source,
+      'dummy',
+      'DimensionThree is loaded with the correct data source'
+    );
+    assert.equal(
+      keg.getById('metadata/dimension', 'dimensionFour', 'blockhead').source,
+      'blockhead',
+      'DimensionFour is loaded with the correct data source'
+    );
+  });
+
   test('loadMetadata after data loaded', async function(assert) {
     assert.expect(1);
 
@@ -215,9 +285,9 @@ module('Unit - Service - Bard Metadata', function(hooks) {
       'Fetched entity has been added to the keg'
     );
 
-   const data = await Service.findById('metric', 'metricOne');
-   assert.deepEqual(data.name, MetricOne.name, 'Service findById should return correct data');
-   assert.equal(Server.handledRequests.length, 1, 'Meta data endpoint only called once');
+    const data = await Service.findById('metric', 'metricOne');
+    assert.deepEqual(data.name, MetricOne.name, 'Service findById should return correct data');
+    assert.equal(Server.handledRequests.length, 1, 'Meta data endpoint only called once');
   });
 
   test('getMetaField', async function(assert) {

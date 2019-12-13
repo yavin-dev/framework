@@ -2,6 +2,7 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 
 const Payload = {
+    source: 'dummy',
     tables: [
       {
         name: 'tableName',
@@ -96,6 +97,7 @@ const Payload = {
       description: 'Table Description',
       longName: 'tableLongName',
       category: 'General',
+      source: 'dummy',
       timeGrains: [
         {
           name: 'day',
@@ -122,28 +124,32 @@ const Payload = {
       name: 'dimensionOne',
       longName: 'Dimension One',
       uri: 'https://host:port/namespace/dimensions/dimensionOne',
-      cardinality: '10'
+      cardinality: '10',
+      source: 'dummy'
     },
     {
       category: 'categoryTwo',
       name: 'dimensionTwo',
       longName: 'Dimension Two',
       uri: 'https://host:port/namespace/dimensions/dimensionTwo',
-      cardinality: '5'
+      cardinality: '5',
+      source: 'dummy'
     },
     {
       category: 'categoryOne',
       name: 'dimensionOne',
       longName: 'Dimension One',
       uri: 'https://host:port/namespace/dimensions/dimensionOne',
-      cardinality: '10'
+      cardinality: '10',
+      source: 'dummy'
     },
     {
       category: 'categoryTwo',
       name: 'dimensionTwo',
       longName: 'Dimension Two',
       uri: 'https://host:port/namespace/dimensions/dimensionTwo',
-      cardinality: '5'
+      cardinality: '5',
+      source: 'dummy'
     }
   ],
   Metrics = [
@@ -153,7 +159,8 @@ const Payload = {
       longName: 'Metric One',
       type: 'metric',
       uri: 'https://metric-one-url',
-      valueType: 'number'
+      valueType: 'number',
+      source: 'dummy'
     },
     {
       category: 'category',
@@ -161,7 +168,8 @@ const Payload = {
       longName: 'Metric Two',
       type: 'metric',
       uri: 'https://metric-two-url',
-      valueType: 'money'
+      valueType: 'money',
+      source: 'dummy'
     },
     {
       category: 'category',
@@ -169,7 +177,8 @@ const Payload = {
       longName: 'Metric One',
       type: 'metric',
       uri: 'https://metric-one-url',
-      valueType: 'number'
+      valueType: 'number',
+      source: 'dummy'
     },
     {
       category: 'category',
@@ -177,7 +186,8 @@ const Payload = {
       longName: 'Metric Two',
       type: 'metric',
       uri: 'https://metric-two-url',
-      valueType: 'money'
+      valueType: 'money',
+      source: 'dummy'
     }
   ];
 

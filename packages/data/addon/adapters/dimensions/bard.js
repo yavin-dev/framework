@@ -10,9 +10,7 @@ import { makeArray } from '@ember/array';
 import { inject as service } from '@ember/service';
 import { assign } from '@ember/polyfills';
 import EmberObject, { get } from '@ember/object';
-import config from 'ember-get-config';
-
-const FACT_HOST = config.navi.dataSources[0].uri;
+import { configHost } from '../../utils/adapter';
 
 const SUPPORTED_FILTER_OPERATORS = ['in', 'notin', 'startswith', 'contains'];
 
@@ -68,8 +66,8 @@ export default EmberObject.extend({
    * @param {String} path - url path
    * @returns {String} dimension value URL string
    */
-  _buildUrl(dimension, path = 'values') {
-    let host = FACT_HOST,
+  _buildUrl(dimension, path = 'values', options) {
+    let host = configHost(options),
       namespace = get(this, 'namespace');
 
     return `${host}/${namespace}/dimensions/${dimension}/${path}/`;
@@ -222,7 +220,7 @@ export default EmberObject.extend({
    * @returns {Promise} - Promise with the response
    */
   find(dimension, query, options) {
-    let url = this._buildUrl(dimension),
+    let url = this._buildUrl(dimension, undefined, options),
       data = {};
 
     // If filter query is present, build query having the filter
@@ -248,7 +246,7 @@ export default EmberObject.extend({
    * @returns {Promise} - Promise with the response
    */
   search(dimension, query, options) {
-    let url = this._buildUrl(dimension, 'search'),
+    let url = this._buildUrl(dimension, 'search', options),
       data = {};
 
     if (query) {
