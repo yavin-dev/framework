@@ -8,10 +8,10 @@
 import Component from '@ember/component';
 import layout from '../templates/components/dir-empty';
 import FileTypes from 'navi-directory/utils/enums/file-types';
-import { layout as templateLayout, classNames } from '@ember-decorators/component';
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
 @templateLayout(layout)
-@classNames('dir-empty')
+@tagName('')
 class DirEmpty extends Component {
   reportRoute = FileTypes.definitions.reports.linkRoute;
 }

@@ -10,10 +10,10 @@
  */
 import Component from '@ember/component';
 import layout from '../templates/components/dir-search-bar';
-import { layout as templateLayout, classNames } from '@ember-decorators/component';
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
 @templateLayout(layout)
-@classNames('dir-search-bar')
+@tagName('')
 class DirSearchBar extends Component {}
 
 export default DirSearchBar;

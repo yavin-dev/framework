@@ -10,10 +10,10 @@ import layout from '../templates/components/dir-sidebar';
 import { inject as service } from '@ember/service';
 import { oneWay } from '@ember/object/computed';
 import { computed } from '@ember/object';
-import { layout as templateLayout, classNames } from '@ember-decorators/component';
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
 @templateLayout(layout)
-@classNames('dir-sidebar')
+@tagName('')
 class DirSidebar extends Component {
   /**
    * @property {Service} directoriesService - service for loading valid directory choices

@@ -9,10 +9,10 @@ import Component from '@ember/component';
 import layout from '../templates/components/dir-new-button';
 import { get } from '@ember/object';
 import FileTypes from 'navi-directory/utils/enums/file-types';
-import { layout as templateLayout, classNames } from '@ember-decorators/component';
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
 @templateLayout(layout)
-@classNames('dir-new-button')
+@tagName('')
 class DirNewButton extends Component {
   /**
    * @method calculatePosition

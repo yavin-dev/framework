@@ -11,10 +11,10 @@
 import Component from '@ember/component';
 import layout from '../templates/components/dir-asset-row-actions';
 import { computed, get } from '@ember/object';
-import { layout as templateLayout, classNames } from '@ember-decorators/component';
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
 @templateLayout(layout)
-@classNames('dir-asset-row-actions')
+@tagName('')
 class DirAssetRowActions extends Component {
   /**
    * @property {String} type - the type of the asset

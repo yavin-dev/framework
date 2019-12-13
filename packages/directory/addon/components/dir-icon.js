@@ -8,11 +8,10 @@
 
 import Component from '@ember/component';
 import layout from '../templates/components/dir-icon';
-import { layout as templateLayout, classNames, tagName } from '@ember-decorators/component';
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
 @templateLayout(layout)
-@classNames('dir-icon')
-@tagName('span')
+@tagName('')
 class DirIcon extends Component {
   static positionalParams = ['iconClass'];
 }

@@ -13,9 +13,10 @@ import layout from '../templates/components/dir-table-filter';
 import { computed, action } from '@ember/object';
 import { isEmpty } from '@ember/utils';
 import FileTypes from 'navi-directory/utils/enums/file-types';
-import { layout as templateLayout } from '@ember-decorators/component';
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
 @templateLayout(layout)
+@tagName('')
 class DirTableFilter extends Component {
   /**
    * @property {Array} fileTypes
