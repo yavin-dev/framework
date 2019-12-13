@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Ember service that helps retrieve metadata from WS
@@ -39,6 +39,11 @@ export default Service.extend({
   metadataLoaded: false,
 
   /**
+   * @property {Array} loadedDataSources - list of data sources in which meta data has already been loaded
+   */
+  loadedDataSources: null,
+
+  /**
    * @method init
    */
   init() {
@@ -50,6 +55,7 @@ export default Service.extend({
 
     this.set('_adapter', adapter);
     this.set('_serializer', owner.lookup('serializer:bard-metadata'));
+    this.set('loadedDataSources', []);
   },
 
   /**
@@ -59,9 +65,9 @@ export default Service.extend({
    * @param {Object} options - options object used by the adapter
    * @returns {Promise} promise that loads metadata
    */
-  loadMetadata(options) {
+  loadMetadata(options = {}) {
     //fetch metadata from WS if metadata not yet loaded
-    if (!get(this, 'metadataLoaded')) {
+    if (!get(this, 'metadataLoaded') || !this.loadedDataSources.includes(options.dataSourceName)) {
       return get(this, '_adapter')
         .fetchAll(
           'table',
@@ -74,6 +80,7 @@ export default Service.extend({
         )
         .then(payload => {
           //normalize payload
+          payload.source = options.dataSourceName;
           let metadata = get(this, '_serializer').normalize(payload);
 
           //set metadataLoaded property
@@ -84,6 +91,7 @@ export default Service.extend({
             this._loadMetadataForType('metric', metadata.metrics);
 
             this.set('metadataLoaded', true);
+            this.loadedDataSources.push(options.dataSourceName);
           }
         });
     }
