@@ -11,7 +11,7 @@ module('Integration | Component | dir-icon', function(hooks) {
     assert.expect(1);
     set(this, 'iconClass', 'star');
 
-    await render(hbs`{{dir-icon iconClass}}`);
+    await render(hbs`<DirIcon @iconClass={{this.iconClass}} />`);
 
     assert.ok(
       this.element.querySelector('.dir-icon>.fa-star'),

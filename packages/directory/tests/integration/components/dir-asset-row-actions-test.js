@@ -34,7 +34,7 @@ module('Integration | Component | dir-asset-row-actions', function(hooks) {
 
     await render(hbs`
       <div class=row data-row-id=123>
-        {{dir-asset-row-actions row=row value=item}}
+        <DirAssetRowActions @row={{this.row}} @value={{this.item}} />
       </div>
     `);
     await triggerEvent('.row', 'mouseover');
@@ -45,7 +45,7 @@ module('Integration | Component | dir-asset-row-actions', function(hooks) {
 
     await render(hbs`
       <div class=row data-row-id=123>
-        {{dir-asset-row-actions row=row value=item}}
+        <DirAssetRowActions @row={{this.row}} @value={{this.item}} />
       </div>
     `);
     await triggerEvent('.row', 'mouseover');

@@ -27,7 +27,7 @@ module('Integration | Component | dir-item-name-cell', function(hooks) {
         }
       };
     set(this, 'item', report);
-    await render(hbs`{{dir-item-name-cell value=item}}`);
+    await render(hbs`<DirItemNameCell @value={{this.item}} />`);
 
     assert.ok(this.element.querySelector('.fa-file-text'), 'The correct icon is used for a report');
 
@@ -36,7 +36,7 @@ module('Integration | Component | dir-item-name-cell', function(hooks) {
     assert.ok(this.element.querySelector('.fa-star'), 'The favorite icon is shown for a favorited item');
 
     set(this, 'item', dashboard);
-    await render(hbs`{{dir-item-name-cell value=item}}`);
+    await render(hbs`<DirItemNameCell @value={{this.item}} />`);
 
     assert.ok(this.element.querySelector('.fa-th-large'), 'The correct icon is used for a dashboard');
 
@@ -60,7 +60,7 @@ module('Integration | Component | dir-item-name-cell', function(hooks) {
     };
 
     set(this, 'item', report);
-    await render(hbs`{{dir-item-name-cell value=item}}`);
+    await render(hbs`<DirItemNameCell @value={{this.item}} />`);
 
     assert.ok(
       this.element.querySelector('.dir-item-name-cell__unsaved-label'),
@@ -70,7 +70,7 @@ module('Integration | Component | dir-item-name-cell', function(hooks) {
     set(report, 'id', 2);
     set(report, 'tempId', undefined);
 
-    await render(hbs`{{dir-item-name-cell value=item}}`);
+    await render(hbs`<DirItemNameCell @value={{this.item}} />`);
 
     assert.notOk(
       this.element.querySelector('.dir-item-name-cell__unsaved-label'),

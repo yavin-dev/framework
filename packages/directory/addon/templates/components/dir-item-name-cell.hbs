@@ -1,8 +1,8 @@
 {{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <LinkTo @route={{this.itemLink}} @model={{this.itemId}} class="dir-item-name-cell">
   <DirIcon @iconClass={{this.iconClass}} />
-  {{get value "title"}}
-  {{#if (get value "isFavorite")}}
+  {{get @value "title"}}
+  {{#if (get @value "isFavorite")}}
     <DirIcon @iconClass="star"/>
   {{/if}}
 </LinkTo>

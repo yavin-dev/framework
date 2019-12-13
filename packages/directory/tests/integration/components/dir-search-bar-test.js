@@ -16,9 +16,9 @@ module('Integration | Component | dir search bar', function(hooks) {
       assert.equal(val, fillInText, 'The entered text is passed on to the action on `key-up`');
     });
 
-    await render(hbs`{{dir-search-bar
-      searchFor=(action searchFor)
-    }}`);
+    await render(hbs`<DirSearchBar
+      @searchFor={{action this.searchFor}}
+    />`);
 
     assert.dom('.dir-search-bar__input').exists('The search bar input is visible when the component is rendered');
 
