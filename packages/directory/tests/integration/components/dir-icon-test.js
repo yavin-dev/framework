@@ -1,6 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
+import { set } from '@ember/object';
 import hbs from 'htmlbars-inline-precompile';
 
 module('Integration | Component | dir-icon', function(hooks) {
@@ -8,7 +9,7 @@ module('Integration | Component | dir-icon', function(hooks) {
 
   test('Renders icon', async function(assert) {
     assert.expect(1);
-    this.set('iconClass', 'star');
+    set(this, 'iconClass', 'star');
 
     await render(hbs`{{dir-icon iconClass}}`);
 
