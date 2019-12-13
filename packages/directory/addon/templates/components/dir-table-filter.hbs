@@ -8,7 +8,7 @@
   </dd.trigger>
 
   <dd.content @class="dir-table-filter__dropdown-options dropdown-arrow">
-    {{#each fileTypes as | type |}}
+    {{#each this.fileTypes as | type |}}
       <div
         class={{concat "dir-table-filter__dropdown-option" (if (eq type this.selectedFileType) " dir-table-filter__dropdown-option--selected")}}
         onclick={{pipe (action "filterByType" type) (action "close" dd)}}
