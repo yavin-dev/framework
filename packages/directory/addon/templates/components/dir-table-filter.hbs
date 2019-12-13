@@ -12,8 +12,9 @@
       {{#each this.fileTypes as | type |}}
         <div
           class={{concat "dir-table-filter__dropdown-option" (if (eq type this.selectedFileType) " dir-table-filter__dropdown-option--selected")}}
-          onclick={{pipe (action "filterByType" type) (action "close" dd)}}
           role="button"
+          {{on "click" (fn this.filterByType type)}}
+          {{on "click" (fn this.close dd)}}
         >
           {{capitalize type}}
         </div>

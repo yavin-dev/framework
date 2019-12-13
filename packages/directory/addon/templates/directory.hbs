@@ -9,13 +9,13 @@
     <DirSearchBar
       class="directory__search"
       @query={{this.q}}
-      @searchFor={{action "searchFor"}}
+      @searchFor={{action this.searchFor}}
     />
 
     <DirTableFilter
       class="directory__table-filter"
       @selectedType={{this.type}}
-      @updateQueryParams={{action "updateQueryParams"}}
+      @updateQueryParams={{action this.updateQueryParams}}
     />
   </section>
 
