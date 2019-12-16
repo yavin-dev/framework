@@ -213,6 +213,6 @@ module('Integration | Component | dashboard filters', function(hooks) {
     });
 
     await click('.dashboard-filters__expand-button');
-    await click(findAll('.filter-collection__remove')[0]);
+    await click('.filter-collection__remove');
   });
 });
