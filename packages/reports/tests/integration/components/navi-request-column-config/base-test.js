@@ -1,5 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
+import { helper as buildHelper } from '@ember/component/helper';
 import { render, triggerKeyEvent, click, fillIn } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
@@ -8,6 +9,7 @@ module('Integration | Component | navi-request-column-config/base', function(hoo
 
   test('it renders', async function(assert) {
     assert.expect(3);
+    this.owner.register('helper:update-report-action', buildHelper(() => {}), { instantiate: false });
 
     this.set('column', {
       name: 'property',

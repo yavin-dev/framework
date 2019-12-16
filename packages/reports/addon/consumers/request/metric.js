@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { inject as service } from '@ember/service';
@@ -40,6 +40,19 @@ export default ActionConsumer.extend({
      */
     [RequestActions.ADD_METRIC_WITH_PARAM]({ currentModel }, metric, parameters) {
       get(currentModel, 'request').addRequestMetricWithParam(metric, parameters);
+    },
+
+    /**
+     * @action UPDATE_METRIC_PARAM
+     * @param {Object} route - route that has a model that contains a request property
+     * @param {String} metric - canonical name of metric to add
+     * @param {String} parameterId - id property of parameter object, value of param
+     * @param {String} parameterKey - type of parameter, e.g. 'currency'
+     */
+    [RequestActions.UPDATE_METRIC_PARAM]({ currentModel }, metric, parameterId, parameterKey) {
+      const metricModel = get(currentModel, 'request.metrics').findBy('canonicalName', metric);
+
+      metricModel && metricModel.updateParameter(parameterId, parameterKey);
     },
 
     /**

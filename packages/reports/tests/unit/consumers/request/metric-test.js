@@ -4,8 +4,9 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { RequestActions } from 'navi-reports/services/request-action-dispatcher';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { A as arr } from '@ember/array';
 
-let Store, MetadataService, AdClicks, PageViews, CurrentModel, Consumer;
+let Store, MetadataService, AdClicks, PageViews, CurrentModel, Consumer, Revenue;
 
 module('Unit | Consumer | request metric', function(hooks) {
   setupTest(hooks);
@@ -29,6 +30,7 @@ module('Unit | Consumer | request metric', function(hooks) {
     return MetadataService.loadMetadata().then(() => {
       AdClicks = MetadataService.getById('metric', 'adClicks');
       PageViews = MetadataService.getById('metric', 'pageViews');
+      Revenue = MetadataService.getById('metric', 'revenue');
     });
   });
 
@@ -55,6 +57,42 @@ module('Unit | Consumer | request metric', function(hooks) {
     });
 
     assert.ok(get(CurrentModel, 'request.metrics.length') === 0, 'The given metric is removed from the request');
+  });
+
+  test('UPDATE_METRIC_PARAM', async function(assert) {
+    assert.expect(3);
+
+    const currentModel = {
+      request: Store.createFragment('bard-request/request', {
+        metrics: arr([
+          {
+            metric: Revenue,
+            parameters: {
+              currency: 'USD'
+            }
+          }
+        ])
+      })
+    };
+    const metric = currentModel.request.metrics.firstObject;
+
+    assert.equal(metric.parameters.currency, 'USD', 'Parameter set to USD initially');
+
+    run(() => {
+      Consumer.send(RequestActions.UPDATE_METRIC_PARAM, { currentModel }, 'revenue(currency=USD)', 'EUR', 'currency');
+    });
+
+    assert.equal(metric.parameters.currency, 'EUR', 'Parameter updates from consumer action');
+
+    run(() => {
+      Consumer.send(RequestActions.UPDATE_METRIC_PARAM, { currentModel }, 'foo', 'USD', 'currency');
+    });
+
+    assert.deepEqual(
+      metric.parameters,
+      { currency: 'EUR' },
+      "Sending an update action with an invalid metric name doens't change the parameters object"
+    );
   });
 
   test('ADD_METRIC_FILTER', function(assert) {

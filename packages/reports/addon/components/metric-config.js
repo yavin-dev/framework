@@ -16,8 +16,6 @@ import layout from '../templates/components/metric-config';
 import { inject as service } from '@ember/service';
 import { computed, get, observer, set } from '@ember/object';
 import { A as arr } from '@ember/array';
-import { hash } from 'rsvp';
-import forIn from 'lodash/forIn';
 
 export default Component.extend({
   layout,
@@ -53,38 +51,13 @@ export default Component.extend({
    * creates a hash of promises for all metric parameter values and sets the appropriate properties
    */
   _fetchAllParams: observer('metric', function() {
-    let promises = {},
-      parameterObj = get(this, 'metric.parameters') || {},
-      supportedTypes = get(this, 'parameterService').supportedTypes(),
-      parameters = arr(Object.entries(parameterObj)).filter(([, paramMeta]) =>
-        supportedTypes.includes(get(paramMeta, 'type'))
-      ),
-      allParametersMap = {},
-      allParamValues = [];
+    const fetchParamsPromise = this.parameterService.fetchAllParams(this.metric);
 
-    parameters.forEach(([paramType, paramMeta]) => {
-      promises[paramType] = get(this, 'parameterService').fetchAllValues(paramMeta);
+    set(this, 'parametersPromise', fetchParamsPromise);
+    fetchParamsPromise.then(result => {
+      set(this, 'allParametersMap', result);
+      set(this, 'allParameters', Object.values(result));
     });
-
-    let promiseHash = hash(promises).then(res => {
-      //add property param to every element in each array
-      forIn(res, (values, key) => {
-        let valArray = Array.isArray(values) ? values : values.toArray();
-        valArray.forEach(val => {
-          set(val, 'param', key);
-
-          //add object to map
-          allParametersMap[`${key}|${val.id}`] = val;
-        });
-
-        allParamValues.push(...valArray);
-      });
-
-      set(this, 'allParametersMap', allParametersMap);
-      set(this, 'allParameters', allParamValues);
-    });
-
-    set(this, 'parametersPromise', promiseHash);
   }),
 
   /**

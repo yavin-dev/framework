@@ -13,10 +13,21 @@
       <Input 
         class="navi-request-column-config__column-name-input navi-request-column-config__option-input"
         @id="columnName" 
-        @value={{readonly column.displayName}}
-        @focus-out={{action onUpdateColumnName}}
-        @key-up={{action onUpdateColumnName}}
+        @value={{@column.displayName}}
+        @key-up={{action @onUpdateColumnName}}
       />
     </div>
+
+    {{#let (component (concat "navi-request-column-config/" (dasherize @column.type))) 
+        as | ColumnConfig |
+    }}
+      <ColumnConfig
+        @column={{@column}} 
+        @metadata={{@metadata}}
+        @onClose={{action @onClose}}
+        @onUpdateColumnName={{action @onUpdateColumnName}}
+        @onUpdateMetricParam={{update-report-action "UPDATE_METRIC_PARAM"}}
+      />
+    {{/let}}
   </div>
 </div>
