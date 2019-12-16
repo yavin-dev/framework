@@ -26,8 +26,8 @@
     class="filter-values--dimension-select"
     as |item|
   >
-    {{#with (format-dimension item) as |dimension|}}
+    {{#let (format-dimension item) as |dimension|}}
       <span title={{dimension}}>{{dimension}}</span>
-    {{/with}}
+    {{/let}}
   </PowerSelectMultiple>
 {{/if}}

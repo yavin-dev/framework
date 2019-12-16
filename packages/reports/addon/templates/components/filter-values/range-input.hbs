@@ -6,21 +6,19 @@
     {{concat this.filter.values.firstObject " and " this.filter.values.lastObject}}
   {{/if}}
 {{else}}
-  {{input
-      value=(readonly this.filter.values.firstObject)
-      placeholder=this.lowPlaceholder
-      classNames="filter-values--range-input__input"
-      classNameBindings="filter.validations.attrs.values.isInvalid:filter-values--range-input__input--error"
-      key-up=(action "setLowValue")
-  }}
+  <Input
+    @value={{readonly this.filter.values.firstObject}}
+    @placeholder={{this.lowPlaceholder}}
+    class="filter-values--range-input__input {{if this.filter.validations.attrs.values.isInvalid "filter-values--range-input__input--error"}}"
+    @key-up={{action "setLowValue"}}
+  />
 
   <span class="filter-values--range-input__separator">and</span>
 
-  {{input
-      value=(readonly this.filter.values.lastObject)
-      placeholder=this.highPlaceholder
-      classNames="filter-values--range-input__input"
-      classNameBindings="filter.validations.attrs.values.isInvalid:filter-values--range-input__input--error"
-      key-up=(action "setHighValue")
-  }}
+  <Input
+    @value={{readonly this.filter.values.lastObject}}
+    @placeholder={{this.highPlaceholder}}
+    class="filter-values--range-input__input {{if this.filter.validations.attrs.values.isInvalid "filter-values--range-input__input--error"}}"
+    @key-up={{action "setHighValue"}}
+  />
 {{/if}}

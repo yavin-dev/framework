@@ -41,7 +41,7 @@
       @report={{this.model}}
       @disabled={{this.isRunningReport}}
       @isFiltersCollapsed={{this.isFiltersCollapsed}}
-      @setFiltersCollapsed={{set this.isFiltersCollapsed _}}
+      @onUpdateCollapsed={{set this.isFiltersCollapsed _}}
     >
       {{outlet}}
     </ReportBuilder>

@@ -74,7 +74,7 @@ module('Integration | Component | filter-builders/dimension', function(hooks) {
 
     await render(hbs`<FilterBuilders::Dimension
       @filter={{this.filter}}
-      @supportedOperators={{this.upportedOperators}}
+      @supportedOperators={{this.supportedOperators}}
       @requestFragment={{this.requestFragment}}
       @isCollapsed={{true}} />`);
 

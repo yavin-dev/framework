@@ -33,10 +33,6 @@ export default Component.extend({
    * @property {Object} filters
    */
   filters: computed('dashboard.filters', function() {
-    const {
-      dashboard: { filters }
-    } = this;
-
-    return { filters };
+    return { filters: this.dashboard.filters };
   })
 });

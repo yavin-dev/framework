@@ -6,11 +6,10 @@
     {{this.filter.values.firstObject}}
   {{/if}}
 {{else}}
-  {{input
-      value=(readonly this.filter.values.firstObject)
-      placeholder="Value"
-      classNames="filter-values--value-input"
-      classNameBindings="filter.validations.attrs.values.isInvalid:filter-values--value-input--error"
-      key-up=(action "setValue")
-  }}
+  <Input
+    @value={{readonly this.filter.values.firstObject}}
+    @placeholder="Value"
+    class="filter-values--value-input {{if this.filter.validations.attrs.values.isInvalid "filter-values--value-input--error"}}"
+    @key-up={{action "setValue"}}
+  />
 {{/if}}

@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click, findAll } from '@ember/test-helpers';
+import { render, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import { selectChoose } from 'ember-power-select/test-support';
@@ -213,6 +213,6 @@ module('Integration | Component | dashboard filters', function(hooks) {
     });
 
     await click('.dashboard-filters__expand-button');
-    await click(findAll('.filter-collection__remove')[0]);
+    await click('.filter-collection__remove');
   });
 });

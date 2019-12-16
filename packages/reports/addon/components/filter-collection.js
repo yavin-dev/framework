@@ -5,7 +5,7 @@
  * Usage:
  *   <FilterCollection
  *     @isCollapsed={{isCollapsed}}
- *     @setFiltersCollapsed={{action setFiltersCollapsed}}
+ *     @onUpdateCollapsed={{action onUpdateCollapsed}}
  *     @request={{request}}
  *     @onUpdateFilter={{update-report-action 'UPDATE_FILTER'}}
  *     @onRemoveFilter={{update-report-action 'REMOVE_FILTER'}}
@@ -38,9 +38,9 @@ export default Component.extend({
    * @method click - expand filters on click (when collapsed)
    */
   click() {
-    const { isCollapsed, setFiltersCollapsed } = this;
-    if (isCollapsed && typeof setFiltersCollapsed === 'function') {
-      setFiltersCollapsed(false);
+    const { isCollapsed, onUpdateCollapsed } = this;
+    if (isCollapsed && typeof onUpdateCollapsed === 'function') {
+      onUpdateCollapsed(false);
     }
   },
 

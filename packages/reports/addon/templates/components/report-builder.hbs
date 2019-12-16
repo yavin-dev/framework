@@ -17,7 +17,7 @@
         onAddDimension=(update-report-action "ADD_DIMENSION")
         onRemoveTimeGrain=(update-report-action "REMOVE_TIME_GRAIN")
         onRemoveDimension=(update-report-action "REMOVE_DIMENSION")
-        onToggleDimFilter=(update-report-action "TOGGLE_DIM_FILTER" (action (optional this.setFiltersCollapsed) false))
+        onToggleDimFilter=(update-report-action "TOGGLE_DIM_FILTER" (action (optional this.onUpdateCollapsed) false))
       }}
       {{metric-selector
         class=(concat "report-builder__container report-builder__metric-selector" (if disabled " report-builder__container--disabled" ""))
@@ -25,8 +25,8 @@
         onAddMetric=(update-report-action "ADD_METRIC")
         onAddMetricWithParameter=(update-report-action "ADD_METRIC_WITH_PARAM")
         onRemoveMetric=(update-report-action "REMOVE_METRIC")
-        onToggleMetricFilter=(update-report-action "TOGGLE_METRIC_FILTER" (action (optional this.setFiltersCollapsed) false))
-        expandFilters=(action (optional this.setFiltersCollapsed) false)
+        onToggleMetricFilter=(update-report-action "TOGGLE_METRIC_FILTER" (action (optional this.onUpdateCollapsed) false))
+        expandFilters=(action (optional this.onUpdateCollapsed) false)
       }}
     {{/if}}
   </div>
@@ -42,7 +42,7 @@
         <span
           class="report-builder__container-header__filters-toggle"
           role="button"
-          onclick={{action (optional this.setFiltersCollapsed) (not this.isFiltersCollapsed)}}>
+          onclick={{action (optional this.onUpdateCollapsed) (not this.isFiltersCollapsed)}}>
           <h3 class="report-builder__container-header__title">Filters</h3>
           <NaviIcon
             class="report-builder__container-header__filters-toggle-icon"
@@ -58,7 +58,7 @@
       <FilterCollection
         class="report-builder__filter-collection"
         @isCollapsed={{this.isFiltersCollapsed}}
-        @setFiltersCollapsed={{action (optional this.setFiltersCollapsed)}}
+        @onUpdateCollapsed={{action (optional this.onUpdateCollapsed)}}
         @request={{this.request}}
         @onUpdateFilter={{update-report-action "UPDATE_FILTER"}}
         @onRemoveFilter={{update-report-action "REMOVE_FILTER"}}
