@@ -5,7 +5,7 @@
  * Usage:
  * <DirSearchBar
  *   @query={{query}}
- *   @searchFor={{action 'searchFor' query}}
+ *   @searchFor={{action "searchFor" query}}
  * />
  */
 import Component from '@ember/component';

@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
- * <DirIcon iconClass>
+ * <DirIcon @iconClass="icon-class">
  */
 
 import Component from '@ember/component';
@@ -12,8 +12,6 @@ import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
 @templateLayout(layout)
 @tagName('')
-class DirIcon extends Component {
-  static positionalParams = ['iconClass'];
-}
+class DirIcon extends Component {}
 
 export default DirIcon;
