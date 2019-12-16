@@ -29,21 +29,18 @@ module('Integration | Component | dir-item-name-cell', function(hooks) {
     set(this, 'item', report);
     await render(hbs`<DirItemNameCell @value={{this.item}} />`);
 
-    assert.ok(this.element.querySelector('.fa-file-text'), 'The correct icon is used for a report');
+    assert.dom('.fa-file-text').exists('The correct icon is used for a report');
 
     assert.dom(this.element).hasText('Report 1', "The item's title is displayed in the component");
 
-    assert.ok(this.element.querySelector('.fa-star'), 'The favorite icon is shown for a favorited item');
+    assert.dom('.fa-star').exists('The favorite icon is shown for a favorited item');
 
     set(this, 'item', dashboard);
     await render(hbs`<DirItemNameCell @value={{this.item}} />`);
 
-    assert.ok(this.element.querySelector('.fa-th-large'), 'The correct icon is used for a dashboard');
+    assert.dom('.fa-th-large').exists('The correct icon is used for a dashboard');
 
-    assert.notOk(
-      this.element.querySelector('.fa-star'),
-      'The favorite icon is not shown for a item that is not a favorite'
-    );
+    assert.dom('.fa-star').doesNotExist('The favorite icon is not shown for a item that is not a favorite');
   });
 
   test('unsaved report label', async function(assert) {
@@ -62,19 +59,13 @@ module('Integration | Component | dir-item-name-cell', function(hooks) {
     set(this, 'item', report);
     await render(hbs`<DirItemNameCell @value={{this.item}} />`);
 
-    assert.ok(
-      this.element.querySelector('.dir-item-name-cell__unsaved-label'),
-      'The unsaved label is shown for an unsaved item'
-    );
+    assert.dom('.dir-item-name-cell__unsaved-label').exists('The unsaved label is shown for an unsaved item');
 
     set(report, 'id', 2);
     set(report, 'tempId', undefined);
 
     await render(hbs`<DirItemNameCell @value={{this.item}} />`);
 
-    assert.notOk(
-      this.element.querySelector('.dir-item-name-cell__unsaved-label'),
-      'The unsaved label is not shown for a saved item'
-    );
+    assert.dom('.dir-item-name-cell__unsaved-label').doesNotExist('The unsaved label is not shown for a saved item');
   });
 });

@@ -45,11 +45,7 @@ module('Integration | Component | dir table', function(hooks) {
       @searchQuery={{this.searchQuery}}
     />`);
 
-    assert.equal(
-      this.element.querySelectorAll('.dir-table__row').length,
-      3,
-      'There is one row per item passed to the table'
-    );
+    assert.dom('.dir-table__row').exists({ count: 3 }, 'There is one row per item passed to the table');
 
     assert.deepEqual(
       [...this.element.querySelectorAll('th')].map(elm => elm.innerText.trim()),
@@ -218,11 +214,12 @@ module('Integration | Component | dir table', function(hooks) {
       searchQuery=searchQuery
     }}`);
 
-    assert.equal(
-      this.element.querySelector('.lt-body').innerText.trim(),
-      'Welcome to Navi, get started by creating a new report',
-      "Gives the correct message when no items are present and there's no search query"
-    );
+    assert
+      .dom('.lt-body')
+      .hasText(
+        'Welcome to Navi, get started by creating a new report',
+        "Gives the correct message when no items are present and there's no search query"
+      );
 
     set(this, 'searchQuery', 'invalidQuery');
 
@@ -231,11 +228,12 @@ module('Integration | Component | dir table', function(hooks) {
       searchQuery=searchQuery
     }}`);
 
-    assert.equal(
-      this.element.querySelector('.lt-body').innerText.trim(),
-      'None of your files or folders match invalidQuery.\nPlease try a different search.',
-      'Gives the correct message when no items are present and there is a search query'
-    );
+    assert
+      .dom('.lt-body')
+      .hasText(
+        'None of your files or folders match invalidQuery.\nPlease try a different search.',
+        'Gives the correct message when no items are present and there is a search query'
+      );
   });
 
   test('table loader', async function(assert) {

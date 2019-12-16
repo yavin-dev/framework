@@ -13,9 +13,8 @@ module('Integration | Component | dir-icon', function(hooks) {
 
     await render(hbs`<DirIcon @iconClass={{this.iconClass}} />`);
 
-    assert.ok(
-      this.element.querySelector('.dir-icon>.fa-star'),
-      'An fa icon element with parent class dir-icon is rendered with the `fa-star` class'
-    );
+    assert
+      .dom('.dir-icon>.fa-star')
+      .exists('An fa icon element with parent class dir-icon is rendered with the `fa-star` class');
   });
 });
