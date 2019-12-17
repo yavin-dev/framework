@@ -1,8 +1,9 @@
 import DirectoryService from 'navi-directory/services/directories';
 import { computed } from '@ember/object';
 
-export default DirectoryService.extend({
-  directories: computed(function() {
+export default class Directories extends DirectoryService {
+  @computed
+  get directories() {
     return [
       {
         name: 'My Data',
@@ -21,5 +22,5 @@ export default DirectoryService.extend({
         filters: []
       }
     ];
-  })
-});
+  }
+}

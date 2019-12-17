@@ -1,14 +1,16 @@
 {{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{#basic-dropdown as |dd|}}
-  {{#dd.trigger classNames="dir-new-button__trigger btn btn-primary"}}New{{/dd.trigger}}
-  {{#dd.content class="dir-new-button__content dropdown-arrow"}}
-    {{#each fileTypeNames as |typeName|}}
-      {{#with (get fileTypes typeName) as |typeObject|}}
-        {{#link-to (get typeObject "linkRoute") classNames="dir-new-button__dropdown-option"}}
-          {{dir-icon (get typeObject "iconClass")}}
-          <span class="dir-new-button__option-text">{{capitalize (singularize typeName) }}</span>
-        {{/link-to}}
-      {{/with}}
-    {{/each}}
-  {{/dd.content}}
-{{/basic-dropdown}}
+<div class="dir-new-button" ...attributes>
+  <BasicDropdown as |dd|>
+    <dd.trigger @class="dir-new-button__trigger btn btn-primary">New</dd.trigger>
+    <dd.content @class="dir-new-button__content dropdown-arrow">
+      {{#each this.fileTypeNames as |typeName|}}
+        {{#with (get this.fileTypes typeName) as |typeObject|}}
+          <LinkTo @route={{get typeObject "linkRoute"}} class="dir-new-button__dropdown-option">
+            <DirIcon @iconClass={{get typeObject "iconClass"}} />
+            <span class="dir-new-button__option-text">{{capitalize (singularize typeName) }}</span>
+          </LinkTo>
+        {{/with}}
+      {{/each}}
+    </dd.content>
+  </BasicDropdown>
+</div>
