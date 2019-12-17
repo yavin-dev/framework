@@ -24,7 +24,7 @@ export default Component.extend({
   /**
    * @property {Service} facts - instance of bard facts service
    */
-  facts: service('bard-facts'),
+  facts: service('navi-facts'),
 
   /**
    * @property {String} requestUrl - API link

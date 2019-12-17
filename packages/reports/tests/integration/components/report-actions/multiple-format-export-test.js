@@ -44,7 +44,7 @@ module('Integration | Component | report actions - multiple-format-export', func
   test('export links', async function(assert) {
     assert.expect(3);
 
-    let factService = this.owner.lookup('service:bard-facts');
+    let factService = this.owner.lookup('service:navi-facts');
 
     await render(TEMPLATE);
 
