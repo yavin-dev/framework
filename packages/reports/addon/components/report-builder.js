@@ -42,25 +42,26 @@ export default Component.extend({
     return metadataService.all('table').sortBy('longName');
   }),
 
+  /**
+   * @method _expandFilters
+   * @param {Function} shouldExpand
+   * @private
+   */
+  _expandFilters(shouldExpand) {
+    const { isFiltersCollapsed, onUpdateFiltersCollapsed } = this;
+
+    if (isFiltersCollapsed && typeof onUpdateFiltersCollapsed === 'function' && shouldExpand()) {
+      onUpdateFiltersCollapsed(false);
+    }
+  },
+
   actions: {
-    /**
-     * @action expandFilters
-     * @param {Function} shouldExpand
-     */
-    expandFilters(shouldExpand) {
-      const { isFiltersCollapsed, onUpdateFiltersCollapsed } = this;
-
-      if (isFiltersCollapsed && typeof onUpdateFiltersCollapsed === 'function' && shouldExpand()) {
-        onUpdateFiltersCollapsed(false);
-      }
-    },
-
     /**
      * @action onToggleDimFilter
      * @param {Object} dimension
      */
     onToggleDimFilter(dimension) {
-      this.send('expandFilters', () => arr(this.request.filters).findBy('dimension', dimension));
+      this._expandFilters(() => arr(this.request.filters).findBy('dimension', dimension));
     },
 
     /**
@@ -68,7 +69,7 @@ export default Component.extend({
      * @param {Object} metric
      */
     onToggleMetricFilter(metric) {
-      this.send('expandFilters', () =>
+      this._expandFilters(() =>
         arr(this.request.having).find(having => get(having, 'metric.metric.name') === get(metric, 'name'))
       );
     },
@@ -79,7 +80,7 @@ export default Component.extend({
      * @param {Object} parameters
      */
     onToggleParameterizedMetricFilter(metric, parameters) {
-      this.send('expandFilters', () =>
+      this._expandFilters(() =>
         arr(this.request.having).find(
           having =>
             get(having, 'metric.canonicalName') ===

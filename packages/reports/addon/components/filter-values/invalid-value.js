@@ -6,11 +6,10 @@
  *   <FilterValues::InvalidValue/>
  */
 import Component from '@ember/component';
-import { layout as templateLayout, tagName, classNames } from '@ember-decorators/component';
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
 import layout from '../../templates/components/filter-values/invalid-value';
 
-@classNames('filter-values--selected-error')
-@tagName('span')
+@tagName('')
 @templateLayout(layout)
 class InvalidValue extends Component {}
 
