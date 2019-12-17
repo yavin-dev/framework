@@ -1,0 +1,7 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+ com.yahoo.navi.spring.ClientSettings, \
+ com.yahoo.navi.spring.MvcConfig, \
+ com.yahoo.navi.spring.config.AppSettings, \
+ com.yahoo.navi.spring.config.NaviFeatureSettings, \
+ com.yahoo.navi.spring.config.NaviSettings, \
+ com.yahoo.navi.spring.NaviAutoConfiguration
