@@ -149,7 +149,7 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
   });
 
   test('metric selector filter action for parameterized metrics', async function(assert) {
-    assert.expect(8);
+    assert.expect(10);
 
     await visit('/reports/1/view');
     await click($('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .grouped-list__add-icon')[0]);
@@ -173,12 +173,23 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
         'Adding a parameterized metric filter expands the filters section'
       );
 
+    //collapse filters
+    await click('.report-builder__container-header__filters-toggle');
+    assert.dom('.filter-collection').hasClass('filter-collection--collapsed', 'Filters are collapsed (2)');
+
     await click($('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .grouped-list__filter')[0]);
     assert.equal(
       findAll('.filter-builder__subject').filter(el => el.innerText.includes('Revenue')).length,
       2,
-      'Clicking on the filter adds a another filter of type revenue'
+      'Clicking on the filter adds another filter of type revenue'
     );
+
+    assert
+      .dom('.filter-collection')
+      .doesNotHaveClass(
+        'filter-collection--collapsed',
+        'Adding a parameterized metric filter with a different parameter expands the filters section'
+      );
 
     assert.deepEqual(
       findAll('.filter-builder__subject')
@@ -190,7 +201,7 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
 
     //collapse filters
     await click('.report-builder__container-header__filters-toggle');
-    assert.dom('.filter-collection').hasClass('filter-collection--collapsed', 'Filters are collapsed (2)');
+    assert.dom('.filter-collection').hasClass('filter-collection--collapsed', 'Filters are collapsed (3)');
 
     await click($('.report-builder__metric-selector .grouped-list__item:contains(Revenue) .grouped-list__filter')[0]);
     assert.equal(

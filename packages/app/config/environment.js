@@ -26,6 +26,7 @@ module.exports = function(environment) {
 
     navi: {
       FEATURES: {
+        enableDashboardFilters: true,
         enableMultipleExport: false,
         enableTableEditing: true
       }

@@ -125,9 +125,7 @@ module('Unit | Consumer | request filter', function(hooks) {
   });
 
   test('TOGGLE_DIM_FILTER - add dimension', function(assert) {
-    assert.expect(3);
-
-    const expandFiltersMock = () => assert.ok(true, 'the expand filters action is called');
+    assert.expect(2);
 
     const MockDispatcher = {
       dispatch(action, route, dimension) {
@@ -140,15 +138,13 @@ module('Unit | Consumer | request filter', function(hooks) {
     let consumer = this.owner.factoryFor('consumer:request/filter').create({ requestActionDispatcher: MockDispatcher }),
       currentModel = { request: { filters: A() } };
 
-    consumer.send(RequestActions.TOGGLE_DIM_FILTER, { currentModel }, expandFiltersMock, 'mockDim');
+    consumer.send(RequestActions.TOGGLE_DIM_FILTER, { currentModel }, 'mockDim');
   });
 
   test('TOGGLE_DIM_FILTER - remove dimension', function(assert) {
     assert.expect(2);
 
     const dimension = 'mockDim';
-
-    const expandFiltersMock = () => assert.ok(false, 'the expand filters action is not called');
 
     const MockDispatcher = {
       dispatch(action, route, dimension) {
@@ -161,7 +157,7 @@ module('Unit | Consumer | request filter', function(hooks) {
     let consumer = this.owner.factoryFor('consumer:request/filter').create({ requestActionDispatcher: MockDispatcher }),
       currentModel = { request: { filters: A([{ dimension }]) } };
 
-    consumer.send(RequestActions.TOGGLE_DIM_FILTER, { currentModel }, expandFiltersMock, dimension);
+    consumer.send(RequestActions.TOGGLE_DIM_FILTER, { currentModel }, dimension);
   });
 
   test('ADD_DIM_FILTER', function(assert) {
@@ -209,9 +205,7 @@ module('Unit | Consumer | request filter', function(hooks) {
   });
 
   test('TOGGLE_METRIC_FILTER - add metric', function(assert) {
-    assert.expect(3);
-
-    const expandFiltersMock = () => assert.ok(true, 'the expand filters action is called');
+    assert.expect(2);
 
     const MockDispatcher = {
       dispatch(action, route, metric) {
@@ -228,13 +222,11 @@ module('Unit | Consumer | request filter', function(hooks) {
     let consumer = this.owner.factoryFor('consumer:request/filter').create({ requestActionDispatcher: MockDispatcher }),
       currentModel = { request: { having: A() } };
 
-    consumer.send(RequestActions.TOGGLE_METRIC_FILTER, { currentModel }, expandFiltersMock, 'mockMetric');
+    consumer.send(RequestActions.TOGGLE_METRIC_FILTER, { currentModel }, 'mockMetric');
   });
 
   test('TOGGLE_METRIC_FILTER - remove metric', function(assert) {
     assert.expect(2);
-
-    const expandFiltersMock = () => assert.ok(false, 'the expand filters action is not called');
 
     const metric = { name: 'metric' },
       havings = [
@@ -257,7 +249,7 @@ module('Unit | Consumer | request filter', function(hooks) {
     let consumer = this.owner.factoryFor('consumer:request/filter').create({ requestActionDispatcher: MockDispatcher }),
       currentModel = { request: { having: A(havings) } };
 
-    consumer.send(RequestActions.TOGGLE_METRIC_FILTER, { currentModel }, expandFiltersMock, metric);
+    consumer.send(RequestActions.TOGGLE_METRIC_FILTER, { currentModel }, metric);
   });
 
   test('ADD_METRIC_FILTER', function(assert) {
@@ -322,8 +314,8 @@ module('Unit | Consumer | request filter', function(hooks) {
       },
       consumer = this.owner.lookup('consumer:request/filter');
 
-    consumer.send(RequestActions.TOGGLE_METRIC_FILTER, { currentModel }, null, AdClicks);
-    consumer.send(RequestActions.TOGGLE_METRIC_FILTER, { currentModel }, null, PageViews);
+    consumer.send(RequestActions.TOGGLE_METRIC_FILTER, { currentModel }, AdClicks);
+    consumer.send(RequestActions.TOGGLE_METRIC_FILTER, { currentModel }, PageViews);
 
     assert.deepEqual(
       get(currentModel, 'request.having').mapBy('metric.metric.name'),
@@ -367,8 +359,8 @@ module('Unit | Consumer | request filter', function(hooks) {
       },
       consumer = this.owner.lookup('consumer:request/filter');
 
-    consumer.send(RequestActions.TOGGLE_PARAMETERIZED_METRIC_FILTER, { currentModel }, null, AdClicks, { foo: 'bar' });
-    consumer.send(RequestActions.TOGGLE_PARAMETERIZED_METRIC_FILTER, { currentModel }, null, AdClicks, { foo: 'baz' });
+    consumer.send(RequestActions.TOGGLE_PARAMETERIZED_METRIC_FILTER, { currentModel }, AdClicks, { foo: 'bar' });
+    consumer.send(RequestActions.TOGGLE_PARAMETERIZED_METRIC_FILTER, { currentModel }, AdClicks, { foo: 'baz' });
 
     assert.deepEqual(
       get(currentModel, 'request.having').mapBy('metric.canonicalName'),
@@ -422,11 +414,9 @@ module('Unit | Consumer | request filter', function(hooks) {
   });
 
   test('TOGGLE_PARAMETERIZED_METRIC_FILTER - add metric', function(assert) {
-    assert.expect(4);
+    assert.expect(3);
 
     const parameters = { foo: 'bar' };
-
-    const expandFiltersMock = () => assert.ok(true, 'the expand filters action is called');
 
     const MockDispatcher = {
       dispatch(action, route, metric, params) {
@@ -445,19 +435,11 @@ module('Unit | Consumer | request filter', function(hooks) {
     let consumer = this.owner.factoryFor('consumer:request/filter').create({ requestActionDispatcher: MockDispatcher }),
       currentModel = { request: { having: A() } };
 
-    consumer.send(
-      RequestActions.TOGGLE_PARAMETERIZED_METRIC_FILTER,
-      { currentModel },
-      expandFiltersMock,
-      'mockMetric',
-      parameters
-    );
+    consumer.send(RequestActions.TOGGLE_PARAMETERIZED_METRIC_FILTER, { currentModel }, 'mockMetric', parameters);
   });
 
   test('TOGGLE_PARAMETERIZED_METRIC_FILTER - remove metric', function(assert) {
     assert.expect(3);
-
-    const expandFiltersMock = () => assert.ok(false, 'the expand filters action is not called');
 
     const parameters = { foo: 'bar' },
       metricWParam = { name: 'metric-with-param' },
@@ -488,12 +470,6 @@ module('Unit | Consumer | request filter', function(hooks) {
     let consumer = this.owner.factoryFor('consumer:request/filter').create({ requestActionDispatcher: MockDispatcher }),
       currentModel = { request: { having: A(havings) } };
 
-    consumer.send(
-      RequestActions.TOGGLE_PARAMETERIZED_METRIC_FILTER,
-      { currentModel },
-      expandFiltersMock,
-      metricWParam,
-      parameters
-    );
+    consumer.send(RequestActions.TOGGLE_PARAMETERIZED_METRIC_FILTER, { currentModel }, metricWParam, parameters);
   });
 });
