@@ -70,7 +70,7 @@ export default Component.extend({
      */
     onToggleMetricFilter(metric) {
       this._expandFilters(() =>
-        arr(this.request.having).find(having => get(having, 'metric.metric.name') === get(metric, 'name'))
+        (this.request.having || []).find(having => get(having, 'metric.metric.name') === get(metric, 'name'))
       );
     },
 
@@ -81,7 +81,7 @@ export default Component.extend({
      */
     onToggleParameterizedMetricFilter(metric, parameters) {
       this._expandFilters(() =>
-        arr(this.request.having).find(
+        (this.request.having || []).find(
           having =>
             get(having, 'metric.canonicalName') ===
             canonicalizeMetric({
