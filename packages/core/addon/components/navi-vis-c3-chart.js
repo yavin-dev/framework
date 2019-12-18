@@ -97,7 +97,7 @@ export default C3Chart.extend({
         }.bind(this)
       );
 
-      c.bindto = this.$().get(0);
+      c.bindto = this.element;
       return c;
     }
   ),
@@ -198,8 +198,8 @@ export default C3Chart.extend({
   _resizeFunc() {
     // Fill the parent container
     if (!get(this, 'isDestroyed') && !get(this, 'isDestroying')) {
-      this.$().css('max-height', '100%');
-      this.$().css('min-height', '100%');
+      $(this.element).css('max-height', '100%');
+      $(this.element).css('min-height', '100%');
 
       get(this, 'chart').resize();
     }

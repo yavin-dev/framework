@@ -3,7 +3,7 @@ import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
-import reorder from '../helpers/reorder';
+import { drag } from 'ember-sortable/test-support/helpers';
 
 module('Acceptance | line chart', function(hooks) {
   setupApplicationTest(hooks);
@@ -69,6 +69,8 @@ module('Acceptance | line chart', function(hooks) {
   });
 
   test('series reorder', async function(assert) {
+    assert.expect(2);
+
     await visit('/line-chart');
 
     // switch on `stacked` and expand the config
@@ -77,30 +79,16 @@ module('Acceptance | line chart', function(hooks) {
 
     assert.deepEqual(
       findAll('.line-chart-config__series-config__item__content').map(el => el.textContent.trim()),
-      [
-        'Unique Identifiers',
-        'Total Page Views',
-        'Revenue (USD)'
-      ],
-      'The headers are reordered as specified by the reorder'
+      ['Unique Identifiers', 'Total Page Views', 'Revenue (USD)'],
+      'The headers are ordered in their initial order'
     );
 
-    await reorder(
-      'mouse',
-      '.line-chart-config__series-config__item__handler',
-      '.chart-series-1>.line-chart-config__series-config__item__handler',
-      '.chart-series-2>.line-chart-config__series-config__item__handler',
-      '.chart-series-0>.line-chart-config__series-config__item__handler', // move second metric to first metric position
-      // '.line-chart-config__series-config__item__handler:nth-child(2)', // move new second metric to second metric position
-    );
+    //Drag Total Page Views to the bottom of the series config since the reorder test helper is incredibly unreliable
+    await drag('mouse', '.chart-series-1 .line-chart-config__series-config__item__handler', () => ({ dx: 0, dy: 60 }));
 
     assert.deepEqual(
       findAll('.line-chart-config__series-config__item__content').map(el => el.textContent.trim()),
-      [
-        'Total Page Views',
-        'Unique Identifiers',
-        'Revenue (USD)'
-      ],
+      ['Total Page Views', 'Unique Identifiers', 'Revenue (USD)'],
       'The headers are reordered as specified by the reorder'
     );
   });

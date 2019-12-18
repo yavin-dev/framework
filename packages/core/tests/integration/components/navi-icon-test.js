@@ -10,14 +10,11 @@ module('Integration | Component | navi icon', function(hooks) {
     assert.expect(2);
 
     await render(hbs`
-        {{navi-icon
-            class= 'test-icon'
-            type='credit-card'
-        }}
+      <NaviIcon class='test-icon' @icon='credit-card'/>
     `);
 
-    assert.ok(this.$('.fa-credit-card'), 'An fa icon element is rendered with the `fa-credit-card` class');
+    assert.dom('.fa-credit-card').exists('An fa icon element is rendered with the `fa-credit-card` class');
 
-    assert.ok(this.$('.fa-credit-card.test-icon'), 'An fa icon element with the given class name is rendered');
+    assert.dom('.fa-credit-card.test-icon').exists('An fa icon element with the given class name is rendered');
   });
 });

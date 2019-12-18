@@ -4,21 +4,24 @@
   <SortableGroup
     class="line-chart-config__series-config__collection"
     @onChange={{action "onReorderSeries"}}
+    @model={{seriesData}}
     as |group|
   >
-    {{#each seriesData as |seriesDataItem index|}}
+    {{#each group.model as |seriesDataItem index|}}
       <group.item
         class={{concat "line-chart-config__series-config__item chart-series-" index}}
-        @model={{seriesDataItem}}
-        @handle={{".line-chart-config__series-config__item__handler"}}
+        @model={{readonly seriesDataItem}}
+        as |item|
       >
         <div class="line-chart-config__series-config__item__content">
           {{if (eq seriesType "dimension") seriesDataItem.name (metric-format seriesDataItem)}}
         </div>
-        <div class="line-chart-config__series-config__item__handler">
-          <div></div>
-          <div></div>
-        </div>
+        <item.handle>
+          <div class="line-chart-config__series-config__item__handler">
+            <div></div>
+            <div></div>
+          </div>
+        </item.handle>
       </group.item>
     {{/each}}
   </SortableGroup>

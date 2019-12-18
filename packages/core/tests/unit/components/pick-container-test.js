@@ -33,7 +33,16 @@ module('Unit | Component | pick container', function(hooks) {
   test('One way selection binding', function(assert) {
     assert.expect(3);
 
-    let component = this.owner.factoryFor('component:pick-container').create({ selection: 1 });
+    const component = this.owner.factoryFor('component:pick-container').create({ selection: 1 });
+    const updateSelection = selection => {
+      component.set('selection', selection);
+
+      /**
+       * Removal of observer in component now depends on a lifecycle hook that isn't called
+       * without a component render so we force the hook to run
+       */
+      component.didReceiveAttrs();
+    };
 
     assert.equal(component.get('_editableSelection'), 1, '_editableSelection starts equal to selection');
 
@@ -45,7 +54,7 @@ module('Unit | Component | pick container', function(hooks) {
     );
 
     run(() => {
-      component.set('selection', 3);
+      updateSelection(3);
     });
     assert.equal(component.get('_editableSelection'), 3, 'Changing selection updates _editableSelection');
   });
@@ -70,13 +79,18 @@ module('Unit | Component | pick container', function(hooks) {
   test('Selection change overwrites staged change', function(assert) {
     assert.expect(2);
 
-    let component = this.owner.factoryFor('component:pick-container').create({ selection: 1 });
+    const component = this.owner.factoryFor('component:pick-container').create({ selection: 1 });
 
     component.send('stageChanges', 2);
     assert.equal(component.get('_editableSelection'), 2, 'Staged changes are visible when selection remains the same');
 
     run(() => {
+      /**
+       * Removal of observer in component now depends on a lifecycle hook that isn't called
+       * without a component render so we force the hook to run
+       */
       component.set('selection', 3);
+      component.didReceiveAttrs();
     });
     assert.equal(component.get('_editableSelection'), 3, 'Setting selection overwrites staged changes');
   });

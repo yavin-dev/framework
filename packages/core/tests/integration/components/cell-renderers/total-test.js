@@ -37,11 +37,11 @@ module('Integration | Component | cell renderers/total', function(hooks) {
   test('it renders', function(assert) {
     assert.expect(5);
 
-    assert.ok(this.$('.table-cell--total').is(':visible'), 'the total cell is rendered');
+    assert.dom('.table-cell--total').isVisible('the total cell is rendered');
 
     assert.dom('.table-cell--total').hasText('Header', 'the total cell displays the correct field from the data');
 
-    assert.notOk(this.$('.table-cell__info-message').is(':visible'), 'the info message and icon are not visible ');
+    assert.dom('.table-cell__info-message').isNotVisible('the info message and icon are not visible');
 
     this.set(
       'data',
@@ -52,14 +52,10 @@ module('Integration | Component | cell renderers/total', function(hooks) {
       })
     );
 
-    assert.ok(
-      this.$('.table-cell__info-message').is(':visible'),
-      'the info message is visible when the partial data flag is true'
-    );
+    assert.dom('.table-cell__info-message').isVisible('the info message is visible when the partial data flag is true');
 
-    assert.ok(
-      this.$('.table-cell__info-message--icon').is(':visible'),
-      'the info message icon is visible when the partial data flag is true'
-    );
+    assert
+      .dom('.table-cell__info-message--icon')
+      .isVisible('the info message icon is visible when the partial data flag is true');
   });
 });

@@ -1,9 +1,8 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import { on } from '@ember/object/evented';
 import Mixin from '@ember/object/mixin';
 import { set, get } from '@ember/object';
 import { fragment } from 'ember-data-model-fragments/attributes';
@@ -17,9 +16,9 @@ export default Mixin.create({
    * @method _cachePersistedVisualization
    * @private
    */
-  _cachePersistedVisualization: on('didCreate', 'didUpdate', 'didLoad', function() {
+  _cachePersistedVisualization() {
     set(this, '_persistedVisualization', get(this, 'visualization'));
-  }),
+  },
 
   /**
    * Removes any local modifications
@@ -38,5 +37,29 @@ export default Mixin.create({
     }
 
     this._super();
+  },
+
+  /**
+   * @method didCreate
+   * @override
+   */
+  didCreate() {
+    this._cachePersistedVisualization();
+  },
+
+  /**
+   * @method didUpdate
+   * @override
+   */
+  didUpdate() {
+    this._cachePersistedVisualization();
+  },
+
+  /**
+   * @method didLoad
+   * @override
+   */
+  didLoad() {
+    this._cachePersistedVisualization();
   }
 });

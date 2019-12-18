@@ -3,7 +3,7 @@ import { module, test, skip } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import config from 'ember-get-config';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
-import reorder from '../helpers/reorder';
+import { reorder } from 'ember-sortable/test-support/helpers';
 
 module('Acceptance | table', function(hooks) {
   setupApplicationTest(hooks);
@@ -28,7 +28,6 @@ module('Acceptance | table', function(hooks) {
       'The headers for the table are as specified'
     );
 
-    debugger;
     await reorder(
       'mouse',
       '.table-header-cell',

@@ -17,8 +17,14 @@
       {{/each}}
     </div>
   {{else}}
-    <SortableGroup class="table-header-row" @direction={{"x"}} @onChange={{action updateColumnOrder}} as | group | >
-      {{#each columns as |column|}}
+    <SortableGroup 
+      class="table-header-row" 
+      @model={{readonly columns}}
+      @direction="x" 
+      @onChange={{action updateColumnOrder}} 
+      as | group |
+    >
+      {{#each group.model as |column|}}
         <group.item
           class={{concat "table-header-cell " column.type}}
           @model={{readonly column}}

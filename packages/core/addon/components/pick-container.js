@@ -21,10 +21,11 @@
 import { assert } from '@ember/debug';
 import { assign } from '@ember/polyfills';
 import { copy } from 'ember-copy';
-import { get, computed, observer } from '@ember/object';
+import { get, computed } from '@ember/object';
 import { typeOf } from '@ember/utils';
 import $ from 'jquery';
 import Component from '@ember/component';
+import isEqual from 'lodash/isEqual';
 import Layout from '../templates/components/pick-container';
 
 export default Component.extend({
@@ -84,7 +85,7 @@ export default Component.extend({
   /*
    * @method copySelection - clear any temporary changes and set internal selection state to a copy of outside state
    */
-  copySelection: observer('selection', function() {
+  copySelection() {
     let selection = this.get('selection'),
       copied;
 
@@ -97,7 +98,25 @@ export default Component.extend({
     }
 
     this.set('_editableSelection', copied);
-  }),
+  },
+
+  /**
+   * Check for changes to the selection property and trigger copySelection if there is a change
+   * @method didReceiveAttrs
+   * @override
+   */
+  didReceiveAttrs() {
+    this._super(...arguments);
+
+    const newSelection = this.selection;
+    const previousSelection = this._previousSelection;
+
+    if (!previousSelection || !isEqual(newSelection, previousSelection)) {
+      this.copySelection();
+    }
+
+    this._previousSelection = newSelection;
+  },
 
   /**
    * @method init
