@@ -67,7 +67,7 @@ export default Service.extend({
    */
   loadMetadata(options = {}) {
     //fetch metadata from WS if metadata not yet loaded
-    if (!get(this, 'metadataLoaded') || !this.loadedDataSources.includes(options.dataSourceName)) {
+    if (!(get(this, 'metadataLoaded') && this.loadedDataSources.includes(options.dataSourceName))) {
       return get(this, '_adapter')
         .fetchAll(
           'table',

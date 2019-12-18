@@ -15,7 +15,7 @@ module('Unit - Utils - Adapter Utils', function() {
     const oldDefault = config.navi.defaultDataSource;
     config.navi.defaultDataSource = undefined;
 
-    assert.equal(getDefaultDataSource(), 'facts', 'uses facts as default datasourcename');
+    assert.equal(getDefaultDataSource(), 'dummy', 'uses first configured datasource as default datasourcename');
     config.navi.defaultDataSource = oldDefault;
   });
 

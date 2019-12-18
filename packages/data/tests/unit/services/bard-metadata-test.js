@@ -89,7 +89,7 @@ module('Unit - Service - Bard Metadata', function(hooks) {
     assert.equal(
       keg.getById('metadata/table', 'table4').source,
       'blockhead',
-      'Table 3 is loaded with the correct data source'
+      'Table 4 is loaded with the correct data source'
     );
 
     assert.equal(
@@ -98,14 +98,14 @@ module('Unit - Service - Bard Metadata', function(hooks) {
       'MetricOne is loaded with the correct data source'
     );
     assert.equal(
+      keg.getById('metadata/metric', 'metricTwo').source,
+      'dummy',
+      'MetricTwo is loaded with the correct data source'
+    );
+    assert.equal(
       keg.getById('metadata/metric', 'metricThree').source,
       'blockhead',
       'MetricThree is loaded with the correct data source'
-    );
-    assert.equal(
-      keg.getById('metadata/metric', 'metricTwo').source,
-      'dummy',
-      'MetricTwo  is loaded with the correct data source'
     );
     assert.equal(
       keg.getById('metadata/metric', 'metricFour').source,
@@ -116,17 +116,17 @@ module('Unit - Service - Bard Metadata', function(hooks) {
     assert.equal(
       keg.getById('metadata/dimension', 'dimensionOne').source,
       'dummy',
-      'DimensionOne  is loaded with the correct data source'
+      'DimensionOne is loaded with the correct data source'
     );
     assert.equal(
       keg.getById('metadata/dimension', 'dimensionTwo').source,
       'dummy',
-      'DimensionTwo  is loaded with the correct data source'
+      'DimensionTwo is loaded with the correct data source'
     );
     assert.equal(
       keg.getById('metadata/dimension', 'dimensionThree').source,
       'dummy',
-      'DimensionThree  is loaded with the correct data source'
+      'DimensionThree is loaded with the correct data source'
     );
     assert.equal(
       keg.getById('metadata/dimension', 'dimensionFour').source,

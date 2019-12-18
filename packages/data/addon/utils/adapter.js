@@ -19,19 +19,22 @@ export function getHost(name) {
     if (host && host.uri) {
       return host.uri;
     }
-    warn(`Fact host for ${name} requested but none was found in configuration. Falling back to default`, {
-      id: 'navi-fact-host-not-configured'
-    });
+    warn(
+      `Fact host for ${name} requested but none was found in configuration. Falling back to first configured datasource`,
+      {
+        id: 'navi-fact-host-not-configured'
+      }
+    );
   }
   return config.navi.dataSources[0].uri;
 }
 
 /**
- * Gets default data source from config
+ * Gets default data source from config, if none found use name of first dataSource
  * @returns {String} - name of default data source
  */
 export function getDefaultDataSource() {
-  return getWithDefault(config, 'navi.defaultDataSource', 'facts');
+  return getWithDefault(config, 'navi.defaultDataSource', config.navi.dataSources[0].name);
 }
 
 /**
@@ -39,7 +42,7 @@ export function getDefaultDataSource() {
  * @param {Object} options - adapter options that includes dataSourceName
  * @returns {String} correct host for the options given
  */
-export function configHost(options) {
-  const dataSourceName = getWithDefault(options || {}, 'dataSourceName', getDefaultDataSource());
+export function configHost(options = {}) {
+  const dataSourceName = getWithDefault(options, 'dataSourceName', getDefaultDataSource());
   return getHost(dataSourceName);
 }
