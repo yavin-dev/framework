@@ -9,7 +9,7 @@ import { A, makeArray } from '@ember/array';
 import Service from '@ember/service';
 import { getOwner } from '@ember/application';
 import { setProperties } from '@ember/object';
-import { getDefaultDataSource } from '../utils/adapter';
+import { getDefaultDataSourceName } from '../utils/adapter';
 
 export default class KegService extends Service {
   /**
@@ -78,7 +78,7 @@ export default class KegService extends Service {
     const factory = this._getFactoryForType(options.modelFactory || type);
     const recordKeg = this._getRecordKegForType(type);
     const idIndex = this._getIdIndexForType(type);
-    const namespace = options.namespace || getDefaultDataSource();
+    const namespace = options.namespace || getDefaultDataSourceName();
     const identifierField = factory.identifierField || KegService.identifierField;
     const owner = getOwner(this);
 
@@ -112,7 +112,7 @@ export default class KegService extends Service {
   getById(type, id) {
     let idIndex = this._getIdIndexForType(type) || {};
     if (!String(id).includes('.')) {
-      id = `${getDefaultDataSource()}.${id}`;
+      id = `${getDefaultDataSourceName()}.${id}`;
     }
     return idIndex[id];
   }

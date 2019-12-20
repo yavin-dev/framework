@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import config from 'ember-get-config';
 import { set } from '@ember/object';
-import { getHost, getDefaultDataSource, configHost } from 'navi-data/utils/adapter';
+import { getHost, getDefaultDataSourceName, configHost } from 'navi-data/utils/adapter';
 
 module('Unit - Utils - Adapter Utils', function() {
   test('getHost gets correct host depending on configuration', function(assert) {
@@ -11,12 +11,12 @@ module('Unit - Utils - Adapter Utils', function() {
   });
 
   test('getDefaultDatasource gets correct source object depending on configuration', function(assert) {
-    assert.equal(getDefaultDataSource(), 'dummy', 'Gets the default datasource that is configured');
+    assert.equal(getDefaultDataSourceName(), 'dummy', 'Gets the default datasource that is configured');
 
     const oldDefault = config.navi.defaultDataSource;
     set(config, 'navi.defaultDataSource', undefined);
 
-    assert.equal(getDefaultDataSource(), 'dummy', 'uses first configured datasource as default datasourcename');
+    assert.equal(getDefaultDataSourceName(), 'dummy', 'uses first configured datasource as default datasourcename');
     set(config, 'navi.defaultDataSource', oldDefault);
   });
 

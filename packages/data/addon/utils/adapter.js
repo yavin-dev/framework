@@ -33,7 +33,7 @@ export function getHost(name) {
  * Gets default data source from config, if none found use name of first dataSource
  * @returns {String} - name of default data source
  */
-export function getDefaultDataSource() {
+export function getDefaultDataSourceName() {
   return getWithDefault(config, 'navi.defaultDataSource', config.navi.dataSources[0].name);
 }
 
@@ -43,6 +43,6 @@ export function getDefaultDataSource() {
  * @returns {String} correct host for the options given
  */
 export function configHost(options = {}) {
-  const dataSourceName = getWithDefault(options, 'dataSourceName', getDefaultDataSource());
+  const dataSourceName = getWithDefault(options, 'dataSourceName', getDefaultDataSourceName());
   return getHost(dataSourceName);
 }
