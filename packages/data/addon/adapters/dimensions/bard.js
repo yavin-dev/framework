@@ -67,9 +67,10 @@ export default EmberObject.extend({
    * @returns {String} dimension value URL string
    */
   _buildUrl(dimension, path = 'values', options) {
-    let namespace = get(this, 'namespace');
+    let host = configHost(options),
+      namespace = get(this, 'namespace');
 
-    return `${configHost(options)}/${namespace}/dimensions/${dimension}/${path}/`;
+    return `${host}/${namespace}/dimensions/${dimension}/${path}/`;
   },
 
   /**

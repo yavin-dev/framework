@@ -67,7 +67,7 @@ export default Service.extend({
    */
   loadMetadata(options = {}) {
     //fetch metadata from WS if metadata not yet loaded
-    if (!(get(this, 'metadataLoaded') && this.loadedDataSources.includes(options.dataSourceName))) {
+    if (!this.loadedDataSources.includes(options.dataSourceName)) {
       return get(this, '_adapter')
         .fetchAll(
           'table',
@@ -86,9 +86,9 @@ export default Service.extend({
           //set metadataLoaded property
           if (!(get(this, 'isDestroyed') || get(this, 'isDestroying'))) {
             //create metadata model objects and load into keg
-            this._loadMetadataForType('table', metadata.tables);
-            this._loadMetadataForType('dimension', metadata.dimensions);
-            this._loadMetadataForType('metric', metadata.metrics);
+            this._loadMetadataForType('table', metadata.tables, options.dataSourceName);
+            this._loadMetadataForType('dimension', metadata.dimensions, options.dataSourceName);
+            this._loadMetadataForType('metric', metadata.metrics, options.dataSourceName);
 
             this.set('metadataLoaded', true);
             this.loadedDataSources.push(options.dataSourceName);
@@ -106,7 +106,7 @@ export default Service.extend({
    * @param {String} type - type of metadata, table, dimension, or metric
    * @param {Array} metadataObjects - array of metadata objects
    */
-  _loadMetadataForType(type, metadataObjects) {
+  _loadMetadataForType(type, metadataObjects, namespace) {
     let metadata = metadataObjects.map(data => {
       let payload = assign({}, data),
         owner = getOwner(this);
@@ -114,7 +114,7 @@ export default Service.extend({
       return owner.factoryFor(`model:metadata/${type}`).create(payload);
     });
 
-    get(this, '_keg').pushMany(`metadata/${type}`, metadata);
+    get(this, '_keg').pushMany(`metadata/${type}`, metadata, { namespace });
   },
 
   /**

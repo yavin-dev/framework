@@ -54,15 +54,15 @@ export default EmberObject.extend({
           longName: table.longName,
           description: table.description,
           category: table.category,
-          timeGrains: timeGrains,
+          timeGrains,
           source
         };
       });
 
     return {
-      tables: tables,
-      dimensions: dimensions,
-      metrics: metrics
+      tables,
+      dimensions,
+      metrics
     };
   },
 

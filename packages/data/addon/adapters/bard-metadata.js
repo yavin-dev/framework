@@ -29,8 +29,9 @@ export default EmberObject.extend({
    * @return {String} URL Path
    */
   _buildURLPath(type, id, options) {
-    let namespace = this.get('namespace');
-    return `${configHost(options)}/${namespace}/${pluralize(type)}/${id}`;
+    const host = configHost(options),
+      namespace = this.get('namespace');
+    return `${host}/${namespace}/${pluralize(type)}/${id}`;
   },
 
   /**

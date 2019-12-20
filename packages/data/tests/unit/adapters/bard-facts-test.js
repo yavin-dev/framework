@@ -703,13 +703,6 @@ module('Unit | Bard facts Adapter', function(hooks) {
     });
   });
 
-  /*test('get host works correctly', function(assert) {
-    assert.equal(Adapter._getHost('dummy'), HOST, 'Returns the correct uri');
-    assert.equal(Adapter._getHost('blockhead'), HOST2, 'Returns the correct uri with alternative host');
-    assert.equal(Adapter._getHost('spoon'), HOST, 'Returns first uri when name is not configured');
-    assert.equal(Adapter._getHost(), HOST, 'Returns default when name is not given');
-  });*/
-
   test('fetchDataForRequest with pagination options', function(assert) {
     assert.expect(1);
     return Adapter.fetchDataForRequest(TestRequest, {

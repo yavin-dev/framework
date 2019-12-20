@@ -180,12 +180,13 @@ export default EmberObject.extend({
    * @return {String} URL Path
    */
   _buildURLPath(request, options) {
-    let namespace = get(this, 'namespace'),
+    const host = configHost(options),
+      namespace = get(this, 'namespace'),
       table = get(request, 'logicalTable.table'),
       timeGrain = get(request, 'logicalTable.timeGrain'),
       dimensions = this._buildDimensionsPath(request, options);
 
-    return `${configHost(options)}/${namespace}/${table}/${timeGrain}${dimensions}/`;
+    return `${host}/${namespace}/${table}/${timeGrain}${dimensions}/`;
   },
 
   /**
