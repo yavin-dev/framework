@@ -84,18 +84,16 @@ export default C3Chart.extend({
         'transition'
       ]);
 
-      ['oninit', 'onrendered', 'onmouseover', 'onmouseout', 'onresize', 'onresized'].forEach(
-        function(eventname) {
-          c[eventname] = function() {
-            if (!this.get('isDestroyed') && !this.get('isDestroying')) {
-              const eventAction = this.get(eventname);
-              if (eventAction) {
-                eventAction(this);
-              }
+      ['oninit', 'onrendered', 'onmouseover', 'onmouseout', 'onresize', 'onresized'].forEach(eventname => {
+        c[eventname] = () => {
+          if (!this.get('isDestroyed') && !this.get('isDestroying')) {
+            const eventAction = this.get(eventname);
+            if (eventAction) {
+              eventAction(this);
             }
-          }.bind(this);
-        }.bind(this)
-      );
+          }
+        };
+      });
 
       c.bindto = this.element;
       return c;

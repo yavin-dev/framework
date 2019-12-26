@@ -253,7 +253,7 @@ module('Integration | Component | table', function(hooks) {
       assert.equal(direction, 'desc', 'The desc direction is passed along when the dateTime header is clicked');
     });
 
-    $('.table-header-row-vc--view .table-header-cell.metric:contains(Total Page Views)').click();
+    await click($('.table-header-row-vc--view .table-header-cell.metric:contains(Total Page Views)')[0]);
 
     this.set('onUpdateReport', (actionType, metricName, direction) => {
       assert.equal(actionType, 'upsertSort', 'the action type is `upsertSort`');
@@ -267,7 +267,7 @@ module('Integration | Component | table', function(hooks) {
       assert.equal(direction, 'desc', 'The desc direction is passed along when the dateTime header is clicked');
     });
 
-    $('.table-header-row-vc--view .table-header-cell.threshold:contains(Total Page Views WoW)').click();
+    await click($('.table-header-row-vc--view .table-header-cell.threshold:contains(Total Page Views WoW)')[0]);
   });
 
   test('grand total in table', async function(assert) {

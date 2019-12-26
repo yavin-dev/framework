@@ -15,15 +15,11 @@ module('Unit | Model | deliverable item', function(hooks) {
         tempId
       })
     );
-    const model2 = run(() =>
-    this.owner.lookup('service:store').createRecord('deliverable-item', {
-      id,
-      tempId
-    })
-  );;
 
     assert.equal(model.get('modelId'), tempId, 'getId returns the tempId of the model when id is absent');
-  
-    assert.equal(model2.get('modelId'), id, 'getId returns the id when present');
+
+    model.set('id', id);
+
+    assert.equal(model.get('modelId'), id, 'getId returns the id when present');
   });
 });
