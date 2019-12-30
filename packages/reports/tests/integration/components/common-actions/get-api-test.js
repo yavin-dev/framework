@@ -31,7 +31,7 @@ module('Integration | Component | common actions/get api', function(hooks) {
 
     // Mock fact service
     this.owner.register(
-      'service:bard-facts',
+      'service:navi-facts',
       Service.extend({
         getURL: () => MockUrl
       })

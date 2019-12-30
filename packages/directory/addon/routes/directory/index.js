@@ -1,10 +1,10 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Route from '@ember/routing/route';
 
-export default Route.extend({
+class Index extends Route {
   /**
    * @method redirect
    * @overrride
@@ -12,4 +12,6 @@ export default Route.extend({
   redirect() {
     this.transitionTo('directory.my-data');
   }
-});
+}
+
+export default Index;

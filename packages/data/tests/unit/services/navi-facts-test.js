@@ -49,11 +49,11 @@ const Response = {
 
 const HOST = config.navi.dataSources[0].uri;
 
-module('Unit | Service | Bard Facts', function(hooks) {
+module('Unit | Service | Navi Facts', function(hooks) {
   setupTest(hooks);
 
   hooks.beforeEach(function() {
-    Service = this.owner.lookup('service:bard-facts');
+    Service = this.owner.lookup('service:navi-facts');
 
     //setup Pretender
     Server = new Pretender(function() {
@@ -114,14 +114,14 @@ module('Unit | Service | Bard Facts', function(hooks) {
     assert.expect(3);
 
     return Service.fetch(TestRequest).then(function(model) {
-      assert.deepEqual(model.response, Response, 'Fetch returns a bardResponse model object for TestRequest');
+      assert.deepEqual(model.response, Response, 'Fetch returns a navi response model object for TestRequest');
 
-      assert.deepEqual(model.request, TestRequest, 'Fetch returns a bardResponse model object with the TestRequest');
+      assert.deepEqual(model.request, TestRequest, 'Fetch returns a navi response model object with the TestRequest');
 
       assert.deepEqual(
         model._factsService,
         Service,
-        'Fetch returns a bardResponse model object with the service instance'
+        'Fetch returns a navi response model object with the service instance'
       );
     });
   });
@@ -140,7 +140,7 @@ module('Unit | Service | Bard Facts', function(hooks) {
             }
           }
         },
-        'Fetch returns a bardResponse model object for the paginated request'
+        'Fetch returns a navi response model object for the paginated request'
       );
     });
   });
@@ -166,7 +166,7 @@ module('Unit | Service | Bard Facts', function(hooks) {
       assert.equal(
         response.payload.reason,
         'Result set too large.  Try reducing interval or dimensions.',
-        'Bard error is passed to catch block'
+        'error is passed to catch block'
       );
     });
   });
@@ -208,7 +208,7 @@ module('Unit | Service | Bard Facts', function(hooks) {
 
   test('fetchNext', function(assert) {
     assert.expect(2);
-    
+
     const originalFetch = Service.fetch;
     Service.fetch = (request, options) => {
       assert.equal(options.page, 3, 'FetchNext calls fetch with updated options');
@@ -225,19 +225,18 @@ module('Unit | Service | Bard Facts', function(hooks) {
       }
     };
     const request = {};
-    
+
     Service.fetchNext(response, request);
 
     response.meta.pagination.currentPage = 3;
     assert.equal(Service.fetchNext(response, request), null, 'fetchNext returns null when the last page is reached');
-    
 
     Service.fetch = originalFetch;
   });
 
   test('fetchPrevious', function(assert) {
     assert.expect(2);
-    
+
     const originalFetch = Service.fetch;
     Service.fetch = (request, options) => {
       assert.equal(options.page, 1, 'FetchPrevious calls fetch with updated options');
@@ -254,12 +253,16 @@ module('Unit | Service | Bard Facts', function(hooks) {
       }
     };
     const request = {};
-    
+
     Service.fetchPrevious(response, request);
 
     response.meta.pagination.currentPage = 1;
-    assert.equal(Service.fetchPrevious(response, request), null, 'fetchPrevious returns null when the first page is reached');
-    
+    assert.equal(
+      Service.fetchPrevious(response, request),
+      null,
+      'fetchPrevious returns null when the first page is reached'
+    );
+
     Service.fetch = originalFetch;
   });
 });

@@ -26,7 +26,7 @@ module.exports = function(environment) {
     navi: {
       user: 'navi_user',
       dataEpoch: '2013-01-01',
-      dataSources: [{ name: 'dummy', uri: 'https://data.naviapp.io' }],
+      dataSources: [{ name: 'dummy', uri: 'https://data.naviapp.io', type: 'bard-facts' }],
       appPersistence: {
         type: 'webservice',
         uri: 'https://persistence.naviapp.io',

@@ -1,8 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
-import { render } from '@ember/test-helpers';
-import { run } from '@ember/runloop';
+import { render, click } from '@ember/test-helpers';
 import { set } from '@ember/object';
 import hbs from 'htmlbars-inline-precompile';
 
@@ -19,41 +18,34 @@ module('Integration | Component | dir table', function(hooks) {
   test('table populates from items correctly', async function(assert) {
     assert.expect(4);
 
-    let items;
-    run(() => {
-      let author = Store.createRecord('user', { id: 'navi_user' });
-      items = [
-        Store.createRecord('report', {
-          title: 'Report 1',
-          author,
-          updatedOn: '2020-01-01 00:00:00'
-        }),
-        Store.createRecord('dashboard', {
-          title: 'Dashboard 1',
-          author,
-          updatedOn: '2020-01-02 00:00:00'
-        }),
-        Store.createRecord('report', {
-          title: 'Report 2',
-          author,
-          updatedOn: '2020-01-03 00:00:00'
-        })
-      ];
-    });
+    const author = Store.createRecord('user', { id: 'navi_user' });
+    const items = [
+      Store.createRecord('report', {
+        title: 'Report 1',
+        author,
+        updatedOn: '2020-01-01 00:00:00'
+      }),
+      Store.createRecord('dashboard', {
+        title: 'Dashboard 1',
+        author,
+        updatedOn: '2020-01-02 00:00:00'
+      }),
+      Store.createRecord('report', {
+        title: 'Report 2',
+        author,
+        updatedOn: '2020-01-03 00:00:00'
+      })
+    ];
 
     set(this, 'items', items);
     set(this, 'searchQuery', '');
 
-    await render(hbs`{{dir-table
-      items=items
-      searchQuery=searchQuery
-    }}`);
+    await render(hbs`<DirTable
+      @items={{this.items}}
+      @searchQuery={{this.searchQuery}}
+    />`);
 
-    assert.equal(
-      this.element.querySelectorAll('.dir-table__row').length,
-      3,
-      'There is one row per item passed to the table'
-    );
+    assert.dom('.dir-table__row').exists({ count: 3 }, 'There is one row per item passed to the table');
 
     assert.deepEqual(
       [...this.element.querySelectorAll('th')].map(elm => elm.innerText.trim()),
@@ -81,12 +73,12 @@ module('Integration | Component | dir table', function(hooks) {
     set(this, 'sortBy', 'updatedOn');
     set(this, 'sortDir', 'desc');
 
-    await render(hbs`{{dir-table
-      items=items
-      searchQuery=searchQuery
-      sortBy=sortBy
-      sortDir=sortDir
-    }}`);
+    await render(hbs`<DirTable
+      @items={{this.items}}
+      @searchQuery={{this.searchQuery}}
+      @sortBy={{this.sortBy}}
+      @sortDir={{this.sortDir}}
+    />`);
 
     let th = [...this.element.querySelectorAll('th')];
 
@@ -106,11 +98,11 @@ module('Integration | Component | dir table', function(hooks) {
     );
 
     set(this, 'sortBy', null);
-    await render(hbs`{{dir-table
-      items=items
-      searchQuery=searchQuery
-      sortBy=sortBy
-    }}`);
+    await render(hbs`<DirTable
+      @items={{this.items}}
+      @searchQuery={{this.searchQuery}}
+      @sortBy={{this.sortBy}}
+    />`);
 
     assert.equal(
       [...this.element.querySelectorAll('th')].filter(elm => {
@@ -140,17 +132,15 @@ module('Integration | Component | dir table', function(hooks) {
       );
     });
 
-    await render(hbs`{{dir-table
-      items=items
-      searchQuery=searchQuery
-      sortBy=sortBy
-      sortDir=sortDir
-      onColumnClick=onColumnClick
-    }}`);
+    await render(hbs`<DirTable
+      @items={{this.items}}
+      @searchQuery={{this.searchQuery}}
+      @sortBy={{this.sortBy}}
+      @sortDir={{this.sortDir}}
+      @onColumnClick={{this.onColumnClick}}
+    />`);
 
-    run(() => {
-      this.element.querySelector('th:nth-child(3)').click();
-    });
+    await click('th:nth-child(3)');
 
     // sorting a descending column
 
@@ -163,17 +153,15 @@ module('Integration | Component | dir table', function(hooks) {
       );
     });
 
-    await render(hbs`{{dir-table
-      items=items
-      searchQuery=searchQuery
-      sortBy=sortBy
-      sortDir=sortDir
-      onColumnClick=onColumnClick
-    }}`);
+    await render(hbs`<DirTable
+      @items={{this.items}}
+      @searchQuery={{this.searchQuery}}
+      @sortBy={{this.sortBy}}
+      @sortDir={{this.sortDir}}
+      @onColumnClick={{this.onColumnClick}}
+    />`);
 
-    run(() => {
-      this.element.querySelector('th:nth-child(3)').click();
-    });
+    await click('th:nth-child(3)');
 
     // sorting an unsorted column with sortDescFirst=undefined
 
@@ -186,16 +174,14 @@ module('Integration | Component | dir table', function(hooks) {
       );
     });
 
-    await render(hbs`{{dir-table
-      items=items
-      searchQuery=searchQuery
-      sortBy=sortBy
-      onColumnClick=onColumnClick
-    }}`);
+    await render(hbs`<DirTable
+      @items={{this.items}}
+      @searchQuery={{this.searchQuery}}
+      @sortBy={{this.sortBy}}
+      @onColumnClick={{this.onColumnClick}}
+    />`);
 
-    run(() => {
-      this.element.querySelector('th:nth-child(3)').click();
-    });
+    await click('th:nth-child(3)');
 
     // sorting an unsorted column with sortDescFirst=true
 
@@ -207,16 +193,14 @@ module('Integration | Component | dir table', function(hooks) {
       );
     });
 
-    await render(hbs`{{dir-table
-      items=items
-      searchQuery=searchQuery
-      sortBy=sortBy
-      onColumnClick=onColumnClick
-    }}`);
+    await render(hbs`<DirTable
+      @items={{this.items}}
+      @searchQuery={{this.searchQuery}}
+      @sortBy={{this.sortBy}}
+      @onColumnClick={{this.onColumnClick}}
+    />`);
 
-    run(() => {
-      this.element.querySelector('th:nth-child(4)').click();
-    });
+    await click('th:nth-child(4)');
   });
 
   test('search results messaging', async function(assert) {
@@ -230,11 +214,12 @@ module('Integration | Component | dir table', function(hooks) {
       searchQuery=searchQuery
     }}`);
 
-    assert.equal(
-      this.element.querySelector('.lt-body').innerText.trim(),
-      'Welcome to Navi, get started by creating a new report',
-      "Gives the correct message when no items are present and there's no search query"
-    );
+    assert
+      .dom('.lt-body')
+      .hasText(
+        'Welcome to Navi, get started by creating a new report',
+        "Gives the correct message when no items are present and there's no search query"
+      );
 
     set(this, 'searchQuery', 'invalidQuery');
 
@@ -243,11 +228,12 @@ module('Integration | Component | dir table', function(hooks) {
       searchQuery=searchQuery
     }}`);
 
-    assert.equal(
-      this.element.querySelector('.lt-body').innerText.trim(),
-      'None of your files or folders match invalidQuery.\nPlease try a different search.',
-      'Gives the correct message when no items are present and there is a search query'
-    );
+    assert
+      .dom('.lt-body')
+      .hasText(
+        'None of your files or folders match invalidQuery.\nPlease try a different search.',
+        'Gives the correct message when no items are present and there is a search query'
+      );
   });
 
   test('table loader', async function(assert) {
@@ -255,19 +241,19 @@ module('Integration | Component | dir table', function(hooks) {
 
     set(this, 'isLoading', true);
 
-    await render(hbs`{{dir-table
-      items=items
-      isLoading=isLoading
-    }}`);
+    await render(hbs`<DirTable
+      @items={{this.items}}
+      @isLoading={{this.isLoading}}
+    />`);
 
     assert.dom('.navi-loader__spinner').exists('The loader is rendered when `isLoading` property is true');
 
     set(this, 'isLoading', false);
 
-    await render(hbs`{{dir-table
-      items=items
-      isLoading=isLoading
-    }}`);
+    await render(hbs`<DirTable
+      @items={{this.items}}
+      @isLoading={{this.isLoading}}
+    />`);
 
     assert.dom('.navi-loader__spinner').doesNotExist('The loader is not rendered when `isLoading` property is false');
   });

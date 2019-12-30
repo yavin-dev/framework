@@ -5,11 +5,12 @@
 import Service from '@ember/service';
 import { computed } from '@ember/object';
 
-export default Service.extend({
+class Directories extends Service {
   /**
    * @property {Array} directories - Object list with info on each directory
    */
-  directories: computed(function() {
+  @computed
+  get directories() {
     //Default supported directories. Override this property in your app to add directories.
     return [
       {
@@ -24,7 +25,7 @@ export default Service.extend({
         ]
       }
     ];
-  }),
+  }
 
   /**
    * @function getDirectories - returns list of valid directories
@@ -32,4 +33,6 @@ export default Service.extend({
   getDirectories() {
     return this.directories;
   }
-});
+}
+
+export default Directories;

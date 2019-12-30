@@ -1,26 +1,28 @@
 {{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<section class="dir-sidebar__groups">
-  {{#each directories as | directory |}}
-    {{#link-to directory.routeLink (query-params filter=null)
-      classNames="dir-sidebar__group"
-      click=(pipe (action (set this "selectedDirectory" directory)) (action (set this "selectedFilter" (object-at 0 directory.filters))))
-    }}
-      <div>
-        <span class="dir-sidebar__group--icon">{{navi-icon "folder-o"}}</span>
-        <span class="dir-sidebar__group--name">{{directory.name}}</span>
-      </div>
-    {{/link-to}}
-  {{/each}}
-</section>
-<section class="dir-sidebar__filters">
-  {{#each filters as | filter |}}
-    {{#link-to "directory.my-data" (query-params filter=filter.queryParams.filter)
-      classNames="dir-sidebar__filter"
-    }}
-      <div>
-        <span class="dir-sidebar__filter--icon">{{navi-icon filter.icon}}</span>
-        <span class="dir-sidebar__filter--name">{{filter.name}}</span>
-      </div>
-    {{/link-to}}
-  {{/each}}
-</section>
+<div class="dir-sidebar" ...attributes>
+  <section class="dir-sidebar__groups">
+    {{#each this.directories as | directory |}}
+      <LinkTo @route={{directory.routeLink}} @query={{hash filter=null}}
+        class="dir-sidebar__group"
+        @click={{pipe (action (set this "selectedDirectory" directory)) (action (set this "selectedFilter" (object-at 0 directory.filters)))}}
+      >
+        <div>
+          <span class="dir-sidebar__group--icon"><NaviIcon @icon="folder-o"/></span>
+          <span class="dir-sidebar__group--name">{{directory.name}}</span>
+        </div>
+      </LinkTo>
+    {{/each}}
+  </section>
+  <section class="dir-sidebar__filters">
+    {{#each this.filters as | filter |}}
+      <LinkTo @route="directory.my-data" @query={{hash filter=filter.queryParams.filter}}
+        class="dir-sidebar__filter"
+      >
+        <div>
+          <span class="dir-sidebar__filter--icon"><NaviIcon @icon={{filter.icon}}/></span>
+          <span class="dir-sidebar__filter--name">{{filter.name}}</span>
+        </div>
+      </LinkTo>
+    {{/each}}
+  </section>
+</div>

@@ -10,7 +10,7 @@ module('Integration | Component | dir new button', function(hooks) {
   test('dir new button', async function(assert) {
     assert.expect(2);
 
-    await render(hbs`{{dir-new-button}}`);
+    await render(hbs`<DirNewButton />`);
 
     assert.equal(this.element.innerText.trim(), 'New', 'The New button is labeled correctly');
 

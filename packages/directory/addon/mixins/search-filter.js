@@ -8,6 +8,8 @@ import { computed, get } from '@ember/object';
 import { searchRecords } from 'navi-core/utils/search';
 import { isEmpty } from '@ember/utils';
 
+// TODO: Replace mixin
+// eslint-disable-next-line ember/no-new-mixins
 export default Mixin.create({
   /**
    * @property directory - directory controller

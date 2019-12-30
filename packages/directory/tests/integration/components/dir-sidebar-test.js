@@ -7,7 +7,7 @@ module('Integration | Component | dir sidebar', function(hooks) {
   setupRenderingTest(hooks);
 
   hooks.beforeEach(async function() {
-    await render(hbs`{{dir-sidebar}}`);
+    await render(hbs`<DirSidebar />`);
   });
 
   test('it renders', function(assert) {

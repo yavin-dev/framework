@@ -1,21 +1,24 @@
 import Route from '@ember/routing/route';
-import { inject } from '@ember/service';
+import { inject as service } from '@ember/service';
 import { hash } from 'rsvp';
 
-export default Route.extend({
-  user: inject(),
+export default class Application extends Route {
+  /**
+   * @property {Ember.Service}
+   */
+  @service user;
 
   /**
    * @property {Ember.Service}
    */
-  bardMetadata: inject(),
+  @service bardMetadata;
 
   model() {
     return hash({
       user: this.user.findOrRegister(),
       metadata: this.bardMetadata.loadMetadata()
     }).then(() => undefined);
-  },
+  }
 
   /**
    * @method afterModel
@@ -24,4 +27,4 @@ export default Route.extend({
   afterModel() {
     this.transitionTo('directory.my-data');
   }
-});
+}
