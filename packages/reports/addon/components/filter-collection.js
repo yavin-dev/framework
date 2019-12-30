@@ -30,11 +30,6 @@ export default Component.extend({
   classNameBindings: ['isCollapsed:filter-collection--collapsed'],
 
   /**
-   * @property {Boolean} isCollapsed
-   */
-  isCollapsed: false,
-
-  /**
    * @method click - expand filters on click (when collapsed)
    */
   click() {

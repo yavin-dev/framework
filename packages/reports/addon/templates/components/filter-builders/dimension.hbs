@@ -1,9 +1,9 @@
 {{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{#if this.isCollapsed}}
+{{#if @isCollapsed}}
   <FilterBuilders::Collapsed
     @displayName={{this.displayName}}
     @filter={{this.filter}}
-    @request={{this.request}}
+    @request={{@request}}
     @field={{this.field}}
   />
 {{else}}
@@ -43,8 +43,8 @@
     {{component
       this.filter.operator.valuesComponent
       filter=this.filter
-      request=this.request
-      onUpdateFilter=this.onUpdateFilter
+      request=@request
+      onUpdateFilter=@onUpdateFilter
     }}
   </span>
 {{/if}}

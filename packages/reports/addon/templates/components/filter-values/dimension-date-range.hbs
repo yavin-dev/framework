@@ -1,5 +1,5 @@
 {{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{#if this.isCollapsed}}
+{{#if @isCollapsed}}
   {{#if (and this.startDate this.endDate)}}
     {{moment-format this.startDate "MMM DD, YYYY"}} and {{moment-format this.endDate "MMM DD, YYYY"}}
   {{else}}

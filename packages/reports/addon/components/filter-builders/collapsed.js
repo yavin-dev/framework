@@ -14,7 +14,7 @@ import Component from '@ember/component';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
 import layout from 'navi-reports/templates/components/filter-builders/collapsed';
 
-@tagName('span')
+@tagName('')
 @templateLayout(layout)
 class Collapsed extends Component {}
 

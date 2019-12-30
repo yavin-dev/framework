@@ -110,10 +110,10 @@
 
 {{#if (feature-flag "enableDashboardFilters")}}
   <DashboardFilters
-    @dashboard={{this.dashboard}}
-    @onUpdateFilter={{action this.onUpdateFilter this.dashboard}}
-    @onRemoveFilter={{action this.onRemoveFilter this.dashboard}}
-    @onAddFilter={{action this.onAddFilter this.dashboard}}
+    @dashboard={{@dashboard}}
+    @onUpdateFilter={{action @onUpdateFilter @dashboard}}
+    @onRemoveFilter={{action @onRemoveFilter @dashboard}}
+    @onAddFilter={{action @onAddFilter @dashboard}}
   />
 {{/if}}
 

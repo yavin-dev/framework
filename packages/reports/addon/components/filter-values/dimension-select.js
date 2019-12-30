@@ -88,11 +88,11 @@ export default Component.extend({
    * @property {String} filterValueFieldId - which id field to use as ID display.
    */
   filterValueFieldId: computed('dimensionName', 'filter.field', function() {
-    const dimensionName = get(this, 'dimensionName'),
-      metadataService = get(this, '_metadataService'),
+    const { dimensionName } = this,
+      metadataService = this._metadataService,
       meta = metadataService.getById('dimension', dimensionName);
 
-    return meta ? meta.idFieldName : get(this, 'filter.field');
+    return meta ? meta.idFieldName : this.filter.field;
   }),
 
   /**

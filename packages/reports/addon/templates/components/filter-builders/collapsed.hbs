@@ -1,16 +1,16 @@
 {{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<span class="filter-dimension--collapsed">{{this.displayName}}</span>
-{{#if this.field}}
-  <span class="filter-field--collapsed">({{this.field}})</span>
+<span class="filter-dimension--collapsed">{{@displayName}}</span>
+{{#if @field}}
+  <span class="filter-field--collapsed">({{@field}})</span>
 {{/if}}
-<span class="filter-operator--collapsed">{{lowercase this.filter.operator.longName}}</span>
+<span class="filter-operator--collapsed">{{lowercase @filter.operator.longName}}</span>
 <strong>
   {{component
-    this.filter.operator.valuesComponent
+    @filter.operator.valuesComponent
     tagName="span"
     class="filter-values--collapsed"
-    filter=this.filter
-    request=this.request
+    filter=@filter
+    request=@request
     isCollapsed=true
   }}
 </strong>

@@ -1,15 +1,15 @@
 {{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{#if this.isCollapsed}}
-  {{#if this.filter.validations.attrs.values.isInvalid}}
+{{#if @isCollapsed}}
+  {{#if @filter.validations.attrs.values.isInvalid}}
     <FilterValues::InvalidValue/>
   {{else}}
-    {{this.filter.values.firstObject}}
+    {{@filter.values.firstObject}}
   {{/if}}
 {{else}}
   <Input
-    @value={{readonly this.filter.values.firstObject}}
+    @value={{readonly @filter.values.firstObject}}
     @placeholder="Value"
-    class="filter-values--value-input {{if this.filter.validations.attrs.values.isInvalid "filter-values--value-input--error"}}"
+    class="filter-values--value-input {{if @filter.validations.attrs.values.isInvalid "filter-values--value-input--error"}}"
     @key-up={{action "setValue"}}
   />
 {{/if}}

@@ -1,24 +1,24 @@
 {{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{#if this.isCollapsed}}
-  {{#if this.filter.validations.attrs.values.isInvalid}}
+{{#if @isCollapsed}}
+  {{#if @filter.validations.attrs.values.isInvalid}}
     <FilterValues::InvalidValue/>
   {{else}}
-    {{concat this.filter.values.firstObject " and " this.filter.values.lastObject}}
+    {{concat @filter.values.firstObject " and " @filter.values.lastObject}}
   {{/if}}
 {{else}}
   <Input
-    @value={{readonly this.filter.values.firstObject}}
+    @value={{readonly @filter.values.firstObject}}
     @placeholder={{this.lowPlaceholder}}
-    class="filter-values--range-input__input {{if this.filter.validations.attrs.values.isInvalid "filter-values--range-input__input--error"}}"
+    class="filter-values--range-input__input {{if @filter.validations.attrs.values.isInvalid "filter-values--range-input__input--error"}}"
     @key-up={{action "setLowValue"}}
   />
 
   <span class="filter-values--range-input__separator">and</span>
 
   <Input
-    @value={{readonly this.filter.values.lastObject}}
+    @value={{readonly @filter.values.lastObject}}
     @placeholder={{this.highPlaceholder}}
-    class="filter-values--range-input__input {{if this.filter.validations.attrs.values.isInvalid "filter-values--range-input__input--error"}}"
+    class="filter-values--range-input__input {{if @filter.validations.attrs.values.isInvalid "filter-values--range-input__input--error"}}"
     @key-up={{action "setHighValue"}}
   />
 {{/if}}

@@ -36,10 +36,10 @@
         {{#if (get metric "hasParameters")}}
           <MetricConfig
             @metric={{metric}}
-            @request={{this.request}}
+            @request={{@request}}
             @onAddParameterizedMetric={{update-report-action "ADD_METRIC_WITH_PARAM"}}
             @onRemoveParameterizedMetric={{update-report-action "REMOVE_METRIC_WITH_PARAM"}}
-            @onToggleParameterizedMetricFilter={{queue (update-report-action "TOGGLE_PARAMETERIZED_METRIC_FILTER") (action (optional this.onToggleParameterizedMetricFilter))}}
+            @onToggleParameterizedMetricFilter={{queue (update-report-action "TOGGLE_PARAMETERIZED_METRIC_FILTER") (action (optional @onToggleParameterizedMetricFilter))}}
           />
         {{/if}}
         {{#if (can-having metric)}}

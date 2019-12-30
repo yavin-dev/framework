@@ -8,9 +8,9 @@
   @isCollapsed={{this.isCollapsed}}
   @onUpdateCollapsed={{set this.isCollapsed _}}
   @request={{this.filters}}
-  @onUpdateFilter={{action this.onUpdateFilter}}
-  @onRemoveFilter={{action this.onRemoveFilter}}
-  @onAddFilter={{action this.onAddFilter}}
+  @onUpdateFilter={{action @onUpdateFilter}}
+  @onRemoveFilter={{action @onRemoveFilter}}
+  @onAddFilter={{action @onAddFilter}}
 />
 
 {{#if (not this.isCollapsed)}}
@@ -23,8 +23,8 @@
       />
       <DashboardDimensionSelector
         class="dashboard-filters--expanded-add-row__dimension-selector"
-        @dashboard={{this.dashboard}}
-        @onChange={{queue (action this.onAddFilter) (toggle "isAddingMode" this)}}
+        @dashboard={{@dashboard}}
+        @onChange={{queue (action @onAddFilter) (toggle "isAddingMode" this)}}
       />
       <div class="dashboard-filters--expanded-add-row__placeholder dashboard-filters--expanded-add-row__placeholder--operator">
         <div class="dashboard-filters--expanded-add-row__placeholder-inner dashboard-filters--expanded-add-row__placeholder-inner--operator"></div>
