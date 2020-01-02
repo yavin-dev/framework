@@ -1,8 +1,9 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { helper as buildHelper } from '@ember/component/helper';
+import { isValidMoment } from 'navi-core/helpers/is-valid-moment';
 import moment from 'moment';
 
 export const DATE_TIME_FORMATS = {
@@ -24,6 +25,11 @@ export const DATE_TIME_FORMATS = {
  * @returns {String} date in a human readable format based on granularity
  */
 export function formatDateForGranularity(date, granularity) {
+  //Construct date to avoid deprecation warning
+  if (!isValidMoment(date)) {
+    return '--';
+  }
+
   if (granularity === 'week') {
     return _formatWeek(date);
   }

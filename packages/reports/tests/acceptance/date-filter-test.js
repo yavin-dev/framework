@@ -43,28 +43,28 @@ module('Acceptance | date filter', function(hooks) {
 
     //Set low value
     await clickTrigger('.filter-values--dimension-date-range-input__low-value .ember-basic-dropdown-trigger');
-    await click($('.dropdown-date-picker__dropdown td.day:not(.old):not(.new):contains(4)')[0]);
+    await click($('.dropdown-date-picker__dropdown td.day:not(.old):not(.new):contains(17)')[0]);
     await click('.dropdown-date-picker__apply');
 
     //Set high value
     await clickTrigger('.filter-values--dimension-date-range-input__high-value .ember-basic-dropdown-trigger');
-    await click($('.dropdown-date-picker__dropdown td.day:not(.old):not(.new):contains(9)')[0]);
+    await click($('.dropdown-date-picker__dropdown td.day:not(.old):not(.new):contains(19)')[0]);
     await click('.dropdown-date-picker__apply');
 
-    assert.ok(!!$('.filter-values--dimension-date-range-input__low-value:contains(4)').length, 'The low value is set');
+    assert.ok(!!$('.filter-values--dimension-date-range-input__low-value:contains(17)').length, 'The low value is set');
     assert.ok(
-      !!$('.filter-values--dimension-date-range-input__high-value:contains(9)').length,
+      !!$('.filter-values--dimension-date-range-input__high-value:contains(19)').length,
       'The high value is set'
     );
 
     await click('.navi-report__save-btn');
 
     assert.ok(
-      !!$('.filter-values--dimension-date-range-input__low-value:contains(4)').length,
+      !!$('.filter-values--dimension-date-range-input__low-value:contains(17)').length,
       'The low value is still set after the report is saved'
     );
     assert.ok(
-      !!$('.filter-values--dimension-date-range-input__high-value:contains(9)').length,
+      !!$('.filter-values--dimension-date-range-input__high-value:contains(19)').length,
       'The high value is still set after the report is saved'
     );
   });

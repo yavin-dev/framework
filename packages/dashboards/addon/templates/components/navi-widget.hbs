@@ -63,7 +63,7 @@
   {{/if}}
 
   {{!-- Success --}}
-  {{#if (is-fulfilled data)}}
+  {{#if (and data (is-fulfilled data))}}
     <div class="navi-widget__content visualization-container">
       {{component
         (concat visualizationPrefix model.visualization.type)
