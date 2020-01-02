@@ -17,7 +17,7 @@ export function isValidMoment(value) {
     return false;
   }
 
-  return moment(value).isValid();
+  return moment(new Date(value)).isValid();
 }
 
 export default buildHelper(args => isValidMoment(...args));

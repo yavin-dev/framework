@@ -415,7 +415,7 @@ module('Integration | Component | bar chart', function(hooks) {
 
     await render(TEMPLATE);
 
-    assert.ok(this.$('.navi-vis-c3-chart').is(':visible'), 'The bar chart widget component is visible');
+    assert.dom('.navi-vis-c3-chart').isVisible('The bar chart widget component is visible');
 
     assert.dom('.c3-bar').exists({ count: 5 }, '5 bars are present on the chart');
   });

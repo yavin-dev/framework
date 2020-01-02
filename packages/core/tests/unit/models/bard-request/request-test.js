@@ -1418,8 +1418,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
     let parameterizedSortUSD = {
       metric: {
         metric: revenueMetric,
-        parameters: { currency: 'USD' },
-        canonicalName: 'revenue(currency=USD)'
+        parameters: { currency: 'USD' }
       },
       direction: 'asc'
     };
@@ -1427,8 +1426,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
     let parameterizedSortCAD = {
       metric: {
         metric: revenueMetric,
-        parameters: { currency: 'CAD' },
-        canonicalName: 'revenue(currency=CAD)'
+        parameters: { currency: 'CAD' }
       },
       direction: 'asc'
     };
@@ -1471,8 +1469,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
     let parameterizedSortUSD = {
       metric: {
         metric: revenueMetric,
-        parameters: { currency: 'USD' },
-        canonicalName: 'revenue(currency=USD)'
+        parameters: { currency: 'USD' }
       },
       direction: 'asc'
     };
@@ -1480,8 +1477,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
     let parameterizedSortCAD = {
       metric: {
         metric: revenueMetric,
-        parameters: { currency: 'CAD' },
-        canonicalName: 'revenue(currency=CAD)'
+        parameters: { currency: 'CAD' }
       },
       direction: 'asc'
     };

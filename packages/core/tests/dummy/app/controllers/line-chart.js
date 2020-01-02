@@ -1,14 +1,14 @@
 import { Promise } from 'rsvp';
 import { A } from '@ember/array';
 import Controller from '@ember/controller';
-import { set, get, computed } from '@ember/object';
+import { set, get, computed, action } from '@ember/object';
 import merge from 'lodash/merge';
 
-export default Controller.extend({
-  chartType: 'line-chart',
+export default class LineChartController extends Controller {
+  chartType = 'line-chart';
 
   //options passed through to the line-chart component
-  request: computed(() => ({
+  request = {
     dimensions: [
       {
         dimension: {
@@ -43,13 +43,14 @@ export default Controller.extend({
         }
       }
     ]
-  })),
+  };
 
-  response: computed('model', function() {
+  @computed('model')
+  get response() {
     return this.get('model.0.response.rows');
-  }),
+  }
 
-  metricOptions: computed(() => ({
+  metricOptions = {
     axis: {
       y: {
         series: {
@@ -78,9 +79,9 @@ export default Controller.extend({
         }
       }
     }
-  })),
+  };
 
-  dimensionOptions: computed(() => ({
+  dimensionOptions = {
     axis: {
       y: {
         series: {
@@ -117,25 +118,27 @@ export default Controller.extend({
         }
       }
     }
-  })),
+  };
 
-  metricVisualization: computed('metricOptions', function() {
+  @computed('metricOptions')
+  get metricVisualization() {
     return {
       type: get(this, 'chartType'),
       version: 1,
       metadata: get(this, 'metricOptions')
     };
-  }),
+  }
 
-  dimVisualization: computed('dimensionOptions', function() {
+  @computed('dimensionOptions')
+  get dimVisualization() {
     return {
       type: get(this, 'chartType'),
       version: 1,
       metadata: get(this, 'dimensionOptions')
     };
-  }),
+  }
 
-  timeOptions: computed(() => ({
+  timeOptions = {
     axis: {
       y: {
         series: {
@@ -151,9 +154,9 @@ export default Controller.extend({
         }
       }
     }
-  })),
+  };
 
-  customOptions: computed(() => ({
+  customOptions = {
     axis: {
       y: {
         series: {
@@ -161,9 +164,9 @@ export default Controller.extend({
         }
       }
     }
-  })),
+  };
 
-  dimensionModel: A([
+  dimensionModel = A([
     {
       request: {
         metrics: [
@@ -407,9 +410,9 @@ export default Controller.extend({
         ]
       }
     }
-  ]),
+  ]);
 
-  hourGrainModel: A([
+  hourGrainModel = A([
     {
       request: {
         metrics: [
@@ -478,9 +481,9 @@ export default Controller.extend({
         ]
       }
     }
-  ]),
+  ]);
 
-  hourByDayTimeOptions: computed(() => ({
+  hourByDayTimeOptions = {
     axis: {
       y: {
         series: {
@@ -499,9 +502,9 @@ export default Controller.extend({
         }
       }
     }
-  })),
+  };
 
-  minuteGrainModel: A([
+  minuteGrainModel = A([
     {
       request: {
         metrics: [
@@ -556,9 +559,9 @@ export default Controller.extend({
         ]
       }
     }
-  ]),
+  ]);
 
-  minuteByHourTimeOptions: computed(() => ({
+  minuteByHourTimeOptions = {
     axis: {
       y: {
         series: {
@@ -577,9 +580,9 @@ export default Controller.extend({
         }
       }
     }
-  })),
+  };
 
-  secondGrainModel: A([
+  secondGrainModel = A([
     {
       request: {
         metrics: [
@@ -633,9 +636,9 @@ export default Controller.extend({
         ]
       }
     }
-  ]),
+  ]);
 
-  secondByMinuteTimeOptions: computed(() => ({
+  secondByMinuteTimeOptions = {
     axis: {
       y: {
         series: {
@@ -654,9 +657,9 @@ export default Controller.extend({
         }
       }
     }
-  })),
+  };
 
-  anomalousDataModel: A([
+  anomalousDataModel = A([
     {
       request: {
         metrics: [
@@ -735,9 +738,9 @@ export default Controller.extend({
         ])
       );
     })
-  ]),
+  ]);
 
-  amomalousOptions: computed(() => ({
+  amomalousOptions = {
     axis: {
       y: {
         series: {
@@ -757,12 +760,11 @@ export default Controller.extend({
         }
       }
     }
-  })),
+  };
 
-  actions: {
-    onUpdateConfig(configUpdates) {
-      let config = get(this, 'dimensionOptions');
-      set(this, 'dimensionOptions', merge({}, config, configUpdates));
-    }
+  @action
+  onUpdateConfig(configUpdates) {
+    let config = get(this, 'dimensionOptions');
+    set(this, 'dimensionOptions', merge({}, config, configUpdates));
   }
-});
+}

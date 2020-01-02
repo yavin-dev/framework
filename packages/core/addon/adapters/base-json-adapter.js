@@ -8,9 +8,8 @@ import { computed, getWithDefault, get } from '@ember/object';
 import DS from 'ember-data';
 import config from 'ember-get-config';
 import { pluralize } from 'ember-inflector';
-import AdapterFetch from 'ember-fetch/mixins/adapter-fetch';
 
-export default DS.JSONAPIAdapter.extend(AdapterFetch, {
+export default DS.JSONAPIAdapter.extend({
   /**
    * @property {String} host - persistence WS host
    */

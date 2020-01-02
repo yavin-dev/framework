@@ -11,7 +11,7 @@
  */
 
 import { inject as service } from '@ember/service';
-import { mapBy, bool } from '@ember/object/computed';
+import { mapBy } from '@ember/object/computed';
 import Component from '@ember/component';
 import { A as arr } from '@ember/array';
 import { copy } from 'ember-copy';
@@ -44,9 +44,19 @@ export default Component.extend({
   }),
 
   /**
+   * @override
+   * @method didReceiveAttrs
+   */
+  didReceiveAttrs() {
+    this._super(...arguments);
+
+    this.set('_showSubtotalDropdown', !!get(this, 'options.showTotals.subtotal'));
+  },
+
+  /**
    * @property {Boolean} showDropdown - initial value to show subtotal dropdown
    */
-  showSubtotalDropdown: bool('options.showTotals.subtotal'),
+  _showSubtotalDropdown: undefined,
 
   /**
    * @property {Object} selectedSubtotal - selected subtotal

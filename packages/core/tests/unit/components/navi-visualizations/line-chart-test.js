@@ -191,9 +191,17 @@ module('Unit | Component | line chart', function(hooks) {
 
   test('config', function(assert) {
     assert.expect(4);
+    const componentIdentifier = 'component:navi-visualizations/line-chart',
+      originalComponent = this.owner.factoryFor(componentIdentifier),
+      componentClass = originalComponent.class.extend({
+        get dataConfig() {
+          return {};
+        } // dataConfig has a separate test
+      });
+    this.owner.unregister(componentIdentifier);
+    this.owner.register(componentIdentifier, componentClass);
 
-    let component = this.owner.factoryFor('component:navi-visualizations/line-chart').create({
-        dataConfig: {}, // dataConfig has a seperate test
+    const component = this.owner.factoryFor(componentIdentifier).create({
         model: A([{ response: { rows: [] } }])
       }),
       defaultConfig = {
@@ -313,6 +321,9 @@ module('Unit | Component | line chart', function(hooks) {
       { position: 'outer-middle' },
       'Component does not display y-axis label for a metric chart'
     );
+
+    this.owner.unregister(componentIdentifier);
+    this.owner.register(componentIdentifier, originalComponent);
   });
 
   test('single data point', function(assert) {

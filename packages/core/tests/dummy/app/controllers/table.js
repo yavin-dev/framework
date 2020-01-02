@@ -1,25 +1,26 @@
 import Controller from '@ember/controller';
 import { A as arr } from '@ember/array';
-import { setProperties, set, get, computed } from '@ember/object';
+import { setProperties, set, get, computed, action } from '@ember/object';
 import isEqual from 'lodash/isEqual';
 import merge from 'lodash/merge';
 import omit from 'lodash/omit';
 
-export default Controller.extend({
-  request: computed(() => ({
+export default class TableController extends Controller {
+  request = {
     dimensions: [{ dimension: { name: 'os', longName: 'Operating System' } }]
-  })),
+  };
 
-  visualization: computed('options', function() {
+  @computed('options')
+  get visualization() {
     return {
       type: 'table',
       version: 1,
       metadata: get(this, 'options')
     };
-  }),
+  }
 
   //options passed through to the table component
-  options: computed(() => ({
+  options = {
     columns: [
       {
         attributes: { name: 'dateTime' },
@@ -51,7 +52,7 @@ export default Controller.extend({
       grandTotal: true,
       subtotal: true
     }
-  })),
+  };
 
   upsertSort(options) {
     let request = arr(get(this, 'model.firstObject.request'));
@@ -63,12 +64,12 @@ export default Controller.extend({
         }
       ]
     });
-  },
+  }
 
   removeSort() {
     let request = arr(get(this, 'model.firstObject.request'));
     setProperties(request, { sort: [] });
-  },
+  }
 
   updateColumn(column) {
     const newColumns = get(this, 'options.columns').map(col => {
@@ -81,19 +82,19 @@ export default Controller.extend({
       return col;
     });
     set(this, 'options.columns', newColumns);
-  },
+  }
 
   updateColumnOrder(newColumnOrder) {
     set(this, 'options.columns', newColumnOrder);
-  },
-
-  actions: {
-    onUpdateReport(actionType, options) {
-      this[actionType](options);
-    },
-
-    onUpdateConfig(configUpdate) {
-      set(this, 'options', merge({}, get(this, 'options'), configUpdate));
-    }
   }
-});
+
+  @action
+  onUpdateReport(actionType, options) {
+    this[actionType](options);
+  }
+
+  @action
+  onUpdateConfig(configUpdate) {
+    set(this, 'options', merge({}, get(this, 'options'), configUpdate));
+  }
+}

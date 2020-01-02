@@ -27,7 +27,7 @@ module('Integration | Component | number format selector', function(hooks) {
 
     await render(Template);
 
-    await run(() => click('.number-format-selector__radio-number input'));
+    await click('.number-format-selector__radio-number input');
   });
 
   test('clearFormat', async function(assert) {

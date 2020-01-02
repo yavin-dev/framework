@@ -2,18 +2,19 @@
 <div class={{tableHeadersClass}}>
   {{#unless isEditingMode}}
     <SortableGroup
-      class={{"table-header-row-vc table-header-row-vc--view"}}
-      @direction={{"x"}}
+      class="table-header-row-vc table-header-row-vc--view"
+      @direction="x"
+      @model={{readonly columns}}
       @onChange={{action updateColumnOrder}}
-      as | group |
+      as |group|
     >
-      {{#each columns as |column|}}
+      {{#each group.model as |column|}}
         <group.item
           class={{concat "table-header-cell " column.type}}
           @model={{readonly column}}
           @click={{action headerClicked column}}
-          @onDragStart={{action (set this "isDragged" true)}}
-          @onDragStop={{action (set this "isDragged" false)}}
+          @onDragStart={{set this "isDragged" true}}
+          @onDragStop={{set this "isDragged" false}}
           @isDraggingDisabled={{@isDraggingDisabled}}
         >
           <span

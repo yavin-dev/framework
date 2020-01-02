@@ -446,12 +446,12 @@ module('Acceptance | Dashboards', function(hooks) {
 
     server.patch('/dashboards/1', (_, request) => {
       assert.equal(
-        request.requestHeaders['content-type'],
+        request.requestHeaders['Content-Type'],
         'application/vnd.api+json',
         'Request header content-type is correct JSON-API mime type'
       );
       assert.equal(
-        request.requestHeaders.accept,
+        request.requestHeaders.Accept,
         'application/vnd.api+json',
         'Request header accept is correct JSON-API mime type'
       );

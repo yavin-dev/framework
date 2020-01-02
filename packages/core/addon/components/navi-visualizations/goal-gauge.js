@@ -48,10 +48,7 @@ export default Component.extend({
   /**
    * @property {Number} - value to be rendered on gauge
    */
-  actualValue: computed(function() {
-    let metric = canonicalizeMetric(get(this, 'config.metric'));
-    return get(this, `model.firstObject.response.rows.0.${metric}`);
-  }),
+  actualValue: undefined,
 
   /**
    * @property {object} - target metric model pulled from serialized request
@@ -199,6 +196,19 @@ export default Component.extend({
   didRender() {
     this._super(...arguments);
     this._drawTitle();
+  },
+
+  /**
+   * Reset actualValue back to its computed value while still allowing
+   * the property to be set by the component between renders
+   * @method didReceiveAttrs
+   * @override
+   */
+  didReceiveAttrs() {
+    this._super(...arguments);
+
+    const metric = canonicalizeMetric(get(this, 'config.metric'));
+    this.actualValue = get(this, `model.firstObject.response.rows.0.${metric}`);
   },
 
   /**

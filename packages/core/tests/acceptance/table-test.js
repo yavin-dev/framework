@@ -3,7 +3,7 @@ import { module, test, skip } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import config from 'ember-get-config';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
-import reorder from '../helpers/reorder';
+import { reorder } from 'ember-sortable/test-support/helpers';
 
 module('Acceptance | table', function(hooks) {
   setupApplicationTest(hooks);
@@ -32,7 +32,7 @@ module('Acceptance | table', function(hooks) {
       'mouse',
       '.table-header-cell',
       '.table-header-cell:nth-child(2)', // move second column to first column position
-      '.table-header-cell:nth-child(2)', // move new second column to second column position
+      '.table-header-cell', // move new second column to second column position
       '.table-header-cell:nth-child(3)',
       '.table-header-cell:nth-child(4)',
       '.table-header-cell:nth-child(5)'
