@@ -84,8 +84,8 @@ export default class KegService extends Service {
 
     const returnedRecords = A();
     for (let i = 0; i < rawRecords.length; i++) {
-      const id = `${namespace}.${rawRecords[i][identifierField]}`;
-      const existingRecord = this.getById(type, id);
+      const id = rawRecords[i][identifierField];
+      const existingRecord = this.getById(type, id, namespace);
 
       if (existingRecord) {
         setProperties(existingRecord, rawRecords[i]);
@@ -93,7 +93,7 @@ export default class KegService extends Service {
       } else {
         let newRecord = factory.create(Object.assign({}, owner.ownerInjection(), rawRecords[i]));
 
-        idIndex[id] = newRecord;
+        idIndex[`${namespace}.${id}`] = newRecord;
         recordKeg.pushObject(newRecord);
         returnedRecords.pushObject(newRecord);
       }
@@ -107,14 +107,13 @@ export default class KegService extends Service {
    * @method getById
    * @param {String} type - type name of the model type
    * @param {String|Number} id - identifier value
+   * @param {String} namespace - (optional) namespace for the id
    * @returns {Object|undefined} the found record
    */
-  getById(type, id) {
+  getById(type, id, namespace) {
     let idIndex = this._getIdIndexForType(type) || {};
-    if (!String(id).includes('.')) {
-      id = `${getDefaultDataSourceName()}.${id}`;
-    }
-    return idIndex[id];
+    let source = namespace || getDefaultDataSourceName();
+    return idIndex[`${source}.${id}`];
   }
 
   /**

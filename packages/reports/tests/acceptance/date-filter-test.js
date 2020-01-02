@@ -48,7 +48,7 @@ module('Acceptance | date filter', function(hooks) {
 
     //Set high value
     await clickTrigger('.filter-values--dimension-date-range-input__high-value .ember-basic-dropdown-trigger');
-    await click($('.dropdown-date-picker__dropdown td.day:not(.old):not(.new):contains(5)')[0]);
+    await click($('.dropdown-date-picker__dropdown td.day:not(.old):not(.new):contains(9)')[0]);
     await click('.dropdown-date-picker__apply');
 
     assert.ok(!!$('.filter-values--dimension-date-range-input__low-value:contains(4)').length, 'The low value is set');
