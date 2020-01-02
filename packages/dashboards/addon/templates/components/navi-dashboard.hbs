@@ -128,7 +128,7 @@
       }}
         {{#each dashboard.presentation.layout as |layout|}}
           {{#with (get-widget layout.widgetId) as |widget|}}
-            {{#if (and widget (get dataForWidget widget.id))}}
+            {{#if widget}}
               {{navi-widget
                 model=widget
                 layoutOptions=layout
