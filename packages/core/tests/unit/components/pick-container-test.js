@@ -1,4 +1,3 @@
-import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 
@@ -54,9 +53,7 @@ module('Unit | Component | pick container', function(hooks) {
       '_editableSelection can be set without changing selection'
     );
 
-    run(() => {
-      UpdateSelection(component, 3);
-    });
+    UpdateSelection(component, 3);
     assert.equal(component.get('_editableSelection'), 3, 'Changing selection updates _editableSelection');
   });
 
