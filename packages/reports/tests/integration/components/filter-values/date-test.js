@@ -20,6 +20,7 @@ module('Integration | Component | filter values/date', function(hooks) {
         request=request
         onUpdateFilter=(action onUpdateFilter)
         _selectedDate=selectedDate
+        isCollapsed=isCollapsed
       }}`);
   });
 
@@ -35,5 +36,18 @@ module('Integration | Component | filter values/date', function(hooks) {
     });
 
     assert.dom('.filter-values--date').hasText('Oct 31, 2018', 'The selected date is displayed');
+  });
+
+  test('collapsed', async function(assert) {
+    assert.expect(2);
+
+    this.set('filter', { values: arr(['2018-10-31']) });
+    this.set('isCollapsed', true);
+
+    assert.dom().hasText('Oct 31, 2018', 'Selected date is rendered correctly');
+
+    this.set('filter', { values: arr(['']) });
+
+    assert.dom('.filter-values--date .filter-values--selected-error').exists('Error is rendered when date is invalid');
   });
 });

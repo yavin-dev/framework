@@ -77,6 +77,19 @@
     flex: 0 1 auto;
     margin-top: 5px;
     max-height: 35%;
+
+    &--collapsed {
+      align-items: flex-start;
+      flex-flow: row;
+
+      .report-builder__container-header {
+        width: 60px;
+
+        &__filters-toggle-icon {
+          transform: rotate(-90deg);
+        }
+      }
+    }
   }
 
   &__container-header {
@@ -84,6 +97,21 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+
+    &__filters-toggle {
+      align-items: center;
+      cursor: pointer;
+      display: flex;
+
+      &-icon {
+        color: @denali-brand-600;
+        font-size: @font-size-large;
+        height: 17px;
+        width: 17px;
+        text-align: center;
+        transition: transform 100ms;
+      }
+    }
 
     &__message {
       font-family: @font-family-thin;
@@ -97,6 +125,10 @@
     &__title {
       font-size: @font-size-base;
       margin: 0;
+
+      &-wrapper {
+        display: flex;
+      }
     }
   }
 
@@ -113,6 +145,10 @@
     flex-flow: column;
     min-height: 0;
     overflow: auto;
+
+    &.filter-collection--collapsed {
+      margin-top: 2px;
+    }
   }
 
   &__metric-selector {

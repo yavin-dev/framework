@@ -11,7 +11,7 @@ module('Integration | Component | filter values/dimension date range', function(
   setupRenderingTest(hooks);
 
   test('displayed dates and update actions', async function(assert) {
-    assert.expect(4);
+    assert.expect(6);
 
     this.set('filter', { values: arr([]) });
     this.set('onUpdateFilter', () => null);
@@ -19,6 +19,7 @@ module('Integration | Component | filter values/dimension date range', function(
     await render(hbs`{{filter-values/dimension-date-range
       filter=filter
       onUpdateFilter=(action onUpdateFilter)
+      isCollapsed=isCollapsed
     }}`);
 
     assert.equal(
@@ -63,5 +64,14 @@ module('Integration | Component | filter values/dimension date range', function(
       'Jan 12, 2019 and Jan 15, 2019',
       'Appropriate dates are displayed when the filter has dates'
     );
+
+    this.set('isCollapsed', true);
+    assert.dom().hasText('Jan 12, 2019 and Jan 15, 2019', 'Selected range is rendered correctly when collapsed');
+
+    this.set('filter', { values: [] });
+
+    assert
+      .dom('.filter-values--dimension-date-range-input .filter-values--selected-error')
+      .exists('Error is rendered when collapsed and range is invalid');
   });
 });

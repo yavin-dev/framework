@@ -1,15 +1,25 @@
-{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{#navi-date-range-picker
-  interval=(as-interval filter.values.firstObject)
-  dateTimePeriod=request.logicalTable.timeGrain.name
-  onSetInterval=(action "setInterval")
-  as |interval|
-}}
-  <div class="date-range__select-trigger">
+{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{#if @isCollapsed}}
+  {{#let (as-interval @filter.values.firstObject) as |interval|}}
     {{#if interval}}
-      {{format-interval-inclusive-inclusive interval request.logicalTable.timeGrain.name}}
+      {{format-interval-inclusive-inclusive interval @request.logicalTable.timeGrain.name}}
     {{else}}
-      <span class="date-range__placeholder">Select date range</span>
+      <FilterValues::InvalidValue/>
     {{/if}}
-  </div>
-{{/navi-date-range-picker}}
+  {{/let}}
+{{else}}
+  <NaviDateRangePicker
+    @interval={{as-interval @filter.values.firstObject}}
+    @dateTimePeriod={{@request.logicalTable.timeGrain.name}}
+    @onSetInterval={{action "setInterval"}}
+    as |interval|
+  >
+    <div class="date-range__select-trigger">
+      {{#if interval}}
+        {{format-interval-inclusive-inclusive interval @request.logicalTable.timeGrain.name}}
+      {{else}}
+        <span class="date-range__placeholder">Select date range</span>
+      {{/if}}
+    </div>
+  </NaviDateRangePicker>
+{{/if}}

@@ -14,7 +14,7 @@ let Request = {
 module('Integration | Component | filter-builders/metric', function(hooks) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(async function() {
     this.owner.register('helper:update-report-action', Helper.helper(() => {}), {
       instantiate: false
     });
@@ -22,16 +22,13 @@ module('Integration | Component | filter-builders/metric', function(hooks) {
     this.owner.register(
       'component:mock/values-component',
       Component.extend({
-        classNames: 'mock-value-component'
+        classNames: 'mock-value-component',
+        layout: hbs`<div>metric values</div>`
       })
     );
-  });
-
-  test('displayName', async function(assert) {
-    assert.expect(2);
 
     //check display name for metric with params
-    let filter = {
+    const filter = {
       subject: {
         metric: { longName: 'metric-with-params' },
         parameters: {
@@ -49,7 +46,13 @@ module('Integration | Component | filter-builders/metric', function(hooks) {
 
     this.set('filter', filter);
     this.set('request', Request);
-    await render(hbs`{{filter-builders/metric filter=filter request=request}}`);
+    await render(
+      hbs`<FilterBuilders::Metric @filter={{this.filter}} @request={{this.request}} @isCollapsed={{this.isCollapsed}} />`
+    );
+  });
+
+  test('displayName', async function(assert) {
+    assert.expect(2);
 
     assert
       .dom('.filter-builder__subject')
@@ -59,7 +62,7 @@ module('Integration | Component | filter-builders/metric', function(hooks) {
       );
 
     //check display name for metric without params
-    filter = {
+    const filter = {
       subject: {
         metric: { longName: 'metric-without-params' },
         parameters: {}
@@ -77,5 +80,15 @@ module('Integration | Component | filter-builders/metric', function(hooks) {
     assert
       .dom('.filter-builder__subject')
       .hasText('metric-without-params', "Only the subject's long name is displayed when the metric has no parameters");
+  });
+
+  test('collapsed', async function(assert) {
+    assert.expect(1);
+
+    this.set('isCollapsed', true);
+
+    assert
+      .dom('.filter-builder')
+      .hasText('metric-with-params (bar,baz) equals metric values', 'Rendered correctly when collapsed');
   });
 });

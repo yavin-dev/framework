@@ -124,7 +124,7 @@ module('Unit | Consumer | request filter', function(hooks) {
     );
   });
 
-  test('TOGGLE_DIM_FILTER', function(assert) {
+  test('TOGGLE_DIM_FILTER - add dimension', function(assert) {
     assert.expect(2);
 
     const MockDispatcher = {
@@ -139,6 +139,25 @@ module('Unit | Consumer | request filter', function(hooks) {
       currentModel = { request: { filters: A() } };
 
     consumer.send(RequestActions.TOGGLE_DIM_FILTER, { currentModel }, 'mockDim');
+  });
+
+  test('TOGGLE_DIM_FILTER - remove dimension', function(assert) {
+    assert.expect(2);
+
+    const dimension = 'mockDim';
+
+    const MockDispatcher = {
+      dispatch(action, route, dimension) {
+        assert.equal(action, RequestActions.REMOVE_FILTER, 'REMOVE_FILTER is sent as part of TOGGLE_DIM_FILTER');
+
+        assert.equal(dimension, dimension, 'the filter dimension is passed on to REMOVE_FILTER');
+      }
+    };
+
+    let consumer = this.owner.factoryFor('consumer:request/filter').create({ requestActionDispatcher: MockDispatcher }),
+      currentModel = { request: { filters: A([{ dimension }]) } };
+
+    consumer.send(RequestActions.TOGGLE_DIM_FILTER, { currentModel }, dimension);
   });
 
   test('ADD_DIM_FILTER', function(assert) {
@@ -185,7 +204,7 @@ module('Unit | Consumer | request filter', function(hooks) {
       .send(RequestActions.ADD_DIM_FILTER, { currentModel }, { dimension: 'mockDim', primaryKeyFieldName: 'key' });
   });
 
-  test('TOGGLE_METRIC_FILTER', function(assert) {
+  test('TOGGLE_METRIC_FILTER - add metric', function(assert) {
     assert.expect(2);
 
     const MockDispatcher = {
@@ -204,6 +223,33 @@ module('Unit | Consumer | request filter', function(hooks) {
       currentModel = { request: { having: A() } };
 
     consumer.send(RequestActions.TOGGLE_METRIC_FILTER, { currentModel }, 'mockMetric');
+  });
+
+  test('TOGGLE_METRIC_FILTER - remove metric', function(assert) {
+    assert.expect(2);
+
+    const metric = { name: 'metric' },
+      havings = [
+        {
+          metric: {
+            metric,
+            canonicalName: 'metric'
+          }
+        }
+      ];
+
+    const MockDispatcher = {
+      dispatch(action, route, having) {
+        assert.equal(action, RequestActions.REMOVE_FILTER, 'REMOVE_FILTER is sent as part of TOGGLE_METRIC_FILTER');
+
+        assert.deepEqual(having.metric.metric, metric, 'the filter metric is passed on to REMOVE_FILTER');
+      }
+    };
+
+    let consumer = this.owner.factoryFor('consumer:request/filter').create({ requestActionDispatcher: MockDispatcher }),
+      currentModel = { request: { having: A(havings) } };
+
+    consumer.send(RequestActions.TOGGLE_METRIC_FILTER, { currentModel }, metric);
   });
 
   test('ADD_METRIC_FILTER', function(assert) {
@@ -370,7 +416,7 @@ module('Unit | Consumer | request filter', function(hooks) {
   test('TOGGLE_PARAMETERIZED_METRIC_FILTER - add metric', function(assert) {
     assert.expect(3);
 
-    let parameters = { foo: 'bar' };
+    const parameters = { foo: 'bar' };
 
     const MockDispatcher = {
       dispatch(action, route, metric, params) {
@@ -395,7 +441,7 @@ module('Unit | Consumer | request filter', function(hooks) {
   test('TOGGLE_PARAMETERIZED_METRIC_FILTER - remove metric', function(assert) {
     assert.expect(3);
 
-    let parameters = { foo: 'bar' },
+    const parameters = { foo: 'bar' },
       metricWParam = { name: 'metric-with-param' },
       havings = [
         {
@@ -411,12 +457,12 @@ module('Unit | Consumer | request filter', function(hooks) {
       dispatch(action, route, having) {
         assert.equal(action, RequestActions.REMOVE_FILTER, 'REMOVE_FILTER is sent as part of TOGGLE_METRIC_FILTER');
 
-        assert.deepEqual(having.metric.metric, metricWParam, 'the filter metric is passed on to ADD_METRIC_FILTER');
+        assert.deepEqual(having.metric.metric, metricWParam, 'the filter metric is passed on to REMOVE_FILTER');
 
         assert.deepEqual(
           having.metric.parameters,
           parameters,
-          'the filter metric parameters are passed on to ADD_METRIC_FILTER'
+          'the filter metric parameters are passed on to REMOVE_FILTER'
         );
       }
     };

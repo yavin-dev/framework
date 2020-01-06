@@ -1,6 +1,7 @@
-{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{report-view
-    hasRequestRun=hasRequestRun
-    report=(model-for (parent-route))
-    response=model.response
-}}
+{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<ReportView
+  @hasRequestRun={{this.hasRequestRun}}
+  @isFiltersCollapsed={{this.reportController.isFiltersCollapsed}}
+  @report={{model-for (parent-route)}}
+  @response={{this.model.response}}
+/>

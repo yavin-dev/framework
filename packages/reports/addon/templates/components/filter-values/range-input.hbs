@@ -1,18 +1,24 @@
-{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{input
-    value=(readonly filter.values.firstObject)
-    placeholder=lowPlaceholder
-    classNames="filter-values--range-input__input"
-    classNameBindings="filter.validations.attrs.values.isInvalid:filter-values--range-input__input--error"
-    key-up=(action "setLowValue")
-}}
+{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{#if @isCollapsed}}
+  {{#if @filter.validations.attrs.values.isInvalid}}
+    <FilterValues::InvalidValue/>
+  {{else}}
+    {{concat @filter.values.firstObject " and " @filter.values.lastObject}}
+  {{/if}}
+{{else}}
+  <Input
+    @value={{readonly @filter.values.firstObject}}
+    @placeholder={{this.lowPlaceholder}}
+    class="filter-values--range-input__input {{if @filter.validations.attrs.values.isInvalid "filter-values--range-input__input--error"}}"
+    @key-up={{action "setLowValue"}}
+  />
 
-<span class="filter-values--range-input__separator">and</span>
+  <span class="filter-values--range-input__separator">and</span>
 
-{{input
-    value=(readonly filter.values.lastObject)
-    placeholder=highPlaceholder
-    classNames="filter-values--range-input__input"
-    classNameBindings="filter.validations.attrs.values.isInvalid:filter-values--range-input__input--error"
-    key-up=(action "setHighValue")
-}}
+  <Input
+    @value={{readonly @filter.values.lastObject}}
+    @placeholder={{this.highPlaceholder}}
+    class="filter-values--range-input__input {{if @filter.validations.attrs.values.isInvalid "filter-values--range-input__input--error"}}"
+    @key-up={{action "setHighValue"}}
+  />
+{{/if}}

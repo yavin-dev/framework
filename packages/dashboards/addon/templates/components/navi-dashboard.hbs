@@ -109,12 +109,12 @@
 </div>
 
 {{#if (feature-flag "enableDashboardFilters")}}
-  {{dashboard-filters
-    dashboard=dashboard
-    onUpdateFilter=(action onUpdateFilter)
-    onRemoveFilter=(action onRemoveFilter)
-    onAddFilter=(action onAddFilter)
-  }}
+  <DashboardFilters
+    @dashboard={{@dashboard}}
+    @onUpdateFilter={{action @onUpdateFilter @dashboard}}
+    @onRemoveFilter={{action @onRemoveFilter @dashboard}}
+    @onAddFilter={{action @onAddFilter @dashboard}}
+  />
 {{/if}}
 
 <div class="navi-dashboard__body">

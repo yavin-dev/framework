@@ -37,12 +37,14 @@
   </header>
 
   <div class="navi-report__body">
-    {{#report-builder
-      report=model
-      disabled=isRunningReport
-    }}
+    <ReportBuilder
+      @report={{this.model}}
+      @disabled={{this.isRunningReport}}
+      @isFiltersCollapsed={{this.isFiltersCollapsed}}
+      @onUpdateFiltersCollapsed={{set this.isFiltersCollapsed _}}
+    >
       {{outlet}}
-    {{/report-builder}}
+    </ReportBuilder>
   </div>
 
   <footer class="navi-report__footer">

@@ -240,9 +240,7 @@ module('Acceptance | Dashboards', function(hooks) {
 
     await visit('/dashboards/2');
 
-    const filters = findAll('.dashboard-filters-collapsed-filter').map(el =>
-      el.textContent.replace(/\s+/g, ' ').trim()
-    );
+    const filters = findAll('.filter-collection--collapsed-item').map(el => el.textContent.replace(/\s+/g, ' ').trim());
 
     assert.equal(filters.length, 4, 'correct number of filters');
 
@@ -590,8 +588,8 @@ module('Acceptance | Dashboards', function(hooks) {
     assert.deepEqual(
       dataRequests.map(thing => thing.queryParams.filters),
       [
-        'property|id-notin[2,3,4],property|id-notin[1],property|id-contains[114,100001]',
-        'property|id-notin[2,3,4],property|id-notin[1],property|id-contains[114,100001]'
+        'property|id-notin[2,3],property|id-notin[1],property|id-contains[114,100001]',
+        'property|id-notin[2,3],property|id-notin[1],property|id-contains[114,100001]'
       ],
       'the filters from the request are unmodified from the dashboard'
     );
@@ -620,8 +618,8 @@ module('Acceptance | Dashboards', function(hooks) {
     assert.deepEqual(
       dataRequests.map(thing => thing.queryParams.filters),
       [
-        'property|id-notin[2,3,4],property|id-contains[114,100001]',
-        'property|id-notin[2,3,4],property|id-contains[114,100001]'
+        'property|id-notin[2,3],property|id-contains[114,100001]',
+        'property|id-notin[2,3],property|id-contains[114,100001]'
       ],
       'the filters reflect the dashboards modified filters'
     );

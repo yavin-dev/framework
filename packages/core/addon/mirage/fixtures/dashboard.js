@@ -42,7 +42,7 @@ export default [
         dimension: 'property',
         operator: 'notin',
         field: 'id',
-        values: ['2', '3', '4']
+        values: ['2', '3']
       },
       {
         dimension: 'eventId',

@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -53,7 +53,7 @@ export default Component.extend({
    * @property {BardDimensionArray} dimensionOptions - list of all dimension values
    */
   dimensionOptions: computed('filter.subject', function() {
-    let dimensionName = get(this, 'dimensionName'),
+    const dimensionName = get(this, 'dimensionName'),
       dimensionService = get(this, '_dimensionService'),
       metadataService = get(this, '_metadataService');
 
@@ -82,6 +82,17 @@ export default Component.extend({
     } else {
       return resolve(A());
     }
+  }),
+
+  /**
+   * @property {String} filterValueFieldId - which id field to use as ID display.
+   */
+  filterValueFieldId: computed('dimensionName', 'filter.field', function() {
+    const { dimensionName } = this,
+      metadataService = this._metadataService,
+      meta = metadataService.getById('dimension', dimensionName);
+
+    return meta ? meta.idFieldName : this.filter.field;
   }),
 
   /**

@@ -31,9 +31,9 @@ module('Integration | Component | filter values/dimension select', function(hook
   });
 
   test('it renders', async function(assert) {
-    assert.expect(2);
+    assert.expect(3);
 
-    await render(hbs`{{filter-values/dimension-select filter=filter}}`);
+    await render(hbs`<FilterValues::DimensionSelect @filter={{this.filter}} @isCollapsed={{this.isCollapsed}} />`);
 
     // Open value selector
     await clickTrigger();
@@ -64,6 +64,10 @@ module('Integration | Component | filter values/dimension select', function(hook
       expectedOptionText,
       'Given Age as the filter subject, all age values are present in the value selector'
     );
+
+    this.set('isCollapsed', true);
+
+    assert.dom().hasText('under 13 (1) 13-17 (2) 18-20 (3)', 'Selected values are rendered correctly when collapsed');
   });
 
   test('no values', async function(assert) {
@@ -109,15 +113,18 @@ module('Integration | Component | filter values/dimension select', function(hook
   });
 
   test('error state', async function(assert) {
-    assert.expect(2);
+    assert.expect(3);
 
-    await render(hbs`{{filter-values/dimension-select filter=filter}}`);
+    await render(hbs`<FilterValues::DimensionSelect @filter={{this.filter}} @isCollapsed={{this.isCollapsed}} />`);
     assert.dom('.filter-values--dimension-select--error').isNotVisible('The input should not have error state');
 
     await run(() => {
       this.set('filter.validations', { attrs: { rawValues: { isInvalid: true } } });
     });
     assert.dom('.filter-values--dimension-select--error').isVisible('The input should have error state');
+
+    this.set('isCollapsed', true);
+    assert.dom('.filter-values--selected-error').exists('Error is rendered correctly when collapsed');
   });
 
   test('alternative primary key', async function(assert) {

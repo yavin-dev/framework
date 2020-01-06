@@ -15,6 +15,7 @@ module('Integration | Component | filter values/range input', function(hooks) {
     await render(hbs`{{filter-values/range-input
             filter=filter
             onUpdateFilter=(action onUpdateFilter)
+            isCollapsed=isCollapsed
         }}`);
   });
 
@@ -28,6 +29,15 @@ module('Integration | Component | filter values/range input', function(hooks) {
       [1000, 2000],
       'The value selects contain inputs with the filter values as the text'
     );
+  });
+
+  test('collapsed', function(assert) {
+    assert.expect(2);
+
+    this.set('isCollapsed', true);
+
+    assert.dom('.filter-values--range-input__input').doesNotExist('The range inputs are not rendered when collapsed');
+    assert.dom().hasText('1000 and 2000', 'Selected values are rendered correctly when collapsed');
   });
 
   test('changing values', function(assert) {
@@ -57,7 +67,7 @@ module('Integration | Component | filter values/range input', function(hooks) {
   });
 
   test('error state', function(assert) {
-    assert.expect(2);
+    assert.expect(3);
     assert.notOk(
       $('.filter-values--range-input__input--error').is(':visible'),
       'The input should not have error state'
@@ -67,6 +77,11 @@ module('Integration | Component | filter values/range input', function(hooks) {
       validations: { attrs: { values: { isInvalid: true } } }
     });
     assert.ok($('.filter-values--range-input__input--error').is(':visible'), 'The input should have error state');
+
+    this.set('isCollapsed', true);
+    assert
+      .dom('.filter-values--range-input .filter-values--selected-error')
+      .exists('Error is rendered correctly when collapsed');
   });
 
   test('config placeholders', async function(assert) {

@@ -34,7 +34,7 @@ module('Acceptance | Dashboard Filters', function(hooks) {
     };
 
     await click('.dashboard-filters__expand-button');
-    await click('.dashboard-filters-expanded__add-filter-button');
+    await click('.dashboard-filters--expanded__add-filter-button');
 
     await selectChoose('.dashboard-dimension-selector', 'Property');
 
@@ -57,7 +57,7 @@ module('Acceptance | Dashboard Filters', function(hooks) {
     );
     assert.equal(dataRequests.length, 3, 'three data requests were made (one for each widget)');
 
-    await click('.dashboard-filters-expanded__add-filter-button');
+    await click('.dashboard-filters--expanded__add-filter-button');
     await selectChoose('.dashboard-dimension-selector', 'Platform');
 
     await selectChoose('.filter-collection__row:nth-child(2) .filter-builder-dimension__operator', 'Contains');
@@ -118,7 +118,7 @@ module('Acceptance | Dashboard Filters', function(hooks) {
     };
 
     await click('.dashboard-filters__expand-button');
-    await click('.dashboard-filters-expanded__add-filter-button');
+    await click('.dashboard-filters--expanded__add-filter-button');
 
     await selectChoose('.dashboard-dimension-selector', 'Multi System Id');
 
@@ -134,7 +134,7 @@ module('Acceptance | Dashboard Filters', function(hooks) {
     await click('.dashboard-filters__expand-button');
 
     assert
-      .dom('.dashboard-filters-collapsed-filter__values')
+      .dom('.filter-values--collapsed')
       .matchesText(/[a-z ]+\(1\)/i, 'filter collapse display should show id and not key');
   });
 
@@ -160,7 +160,7 @@ module('Acceptance | Dashboard Filters', function(hooks) {
       {
         dimension: 'Property',
         operator: 'not equals',
-        rawValues: ['2', '3', '4']
+        rawValues: ['2', '3']
       },
       {
         dimension: 'EventId',
@@ -194,7 +194,7 @@ module('Acceptance | Dashboard Filters', function(hooks) {
         {
           dimension: 'Property',
           operator: 'equals',
-          rawValues: ['2', '3', '4']
+          rawValues: ['2', '3']
         }
       ],
       'Filters are changed from their initial state'
@@ -232,8 +232,8 @@ module('Acceptance | Dashboard Filters', function(hooks) {
     assert.deepEqual(
       dataRequests.map(req => req.queryParams.filters),
       [
-        'property|id-notin[2,3,4],property|id-notin[1],property|id-contains[114,100001]',
-        'property|id-notin[2,3,4],property|id-notin[1],property|id-contains[114,100001]'
+        'property|id-notin[2,3],property|id-notin[1],property|id-contains[114,100001]',
+        'property|id-notin[2,3],property|id-notin[1],property|id-contains[114,100001]'
       ],
       'The requests are sent with the initial filters'
     );
@@ -243,12 +243,12 @@ module('Acceptance | Dashboard Filters', function(hooks) {
     assert.expect(7);
 
     const dirtyURL =
-      '/dashboards/2/view?filters=EQbwOsBmCWA2AuBTATgZwgLgNrmAE2gFtEA7VaAexMwgAdkLaV4BPCAGgkZQEN4LkNYNGrBOwAG49YAV0Tpg2CACYOEAMxrgAFggBdcTESw8Q6KeABfPZeBA';
+      '/dashboards/2/view?filters=EQbwOsBmCWA2AuBTATgZwgLgNrmAE2gFtEA7VaAexMwgAdkLaV4BPCAGgkZQEN4LkNYNGrBOwAG49YAV0Tpg2CACYOEAMwQAuuJiJYeIdEPAAvltPAgAAA';
     const filters = [
       {
         dimension: 'Property',
         operator: 'equals',
-        rawValues: ['2', '3', '4']
+        rawValues: ['2', '3']
       }
     ];
 
@@ -303,7 +303,7 @@ module('Acceptance | Dashboard Filters', function(hooks) {
 
     //Add a filter with no values
     await click('.dashboard-filters__expand-button');
-    await click('.dashboard-filters-expanded__add-filter-button');
+    await click('.dashboard-filters--expanded__add-filter-button');
     await selectChoose('.dashboard-dimension-selector', 'Property');
 
     let decompressed = await CompressionService.decompress(currentURL().split('=')[1]);
@@ -332,7 +332,7 @@ module('Acceptance | Dashboard Filters', function(hooks) {
     );
 
     //Add the filter with no values again
-    await click('.dashboard-filters-expanded__add-filter-button');
+    await click('.dashboard-filters--expanded__add-filter-button');
     await selectChoose('.dashboard-dimension-selector', 'Property');
 
     assert.equal(dataRequests.length, 3, 'No new requests run on filter add (model hook should use cached data)');
@@ -386,7 +386,7 @@ module('Acceptance | Dashboard Filters', function(hooks) {
 
     //Add a filter with no values
     await click('.dashboard-filters__expand-button');
-    await click('.dashboard-filters-expanded__add-filter-button');
+    await click('.dashboard-filters--expanded__add-filter-button');
     await selectChoose('.dashboard-dimension-selector', 'Property');
 
     let decompressed = await CompressionService.decompress(currentURL().split('=')[1]);
@@ -467,10 +467,10 @@ module('Acceptance | Dashboard Filters', function(hooks) {
  * @returns {Object}
  */
 function extractCollapsedFilters() {
-  return findAll('.dashboard-filters-collapsed-filter').map(el => ({
-    dimension: el.querySelector('.dashboard-filters-collapsed-filter__dimension').textContent.trim(),
-    operator: el.querySelector('.dashboard-filters-collapsed-filter__operator').textContent.trim(),
-    rawValues: [...el.querySelectorAll('.dashboard-filters-collapsed-filter__value')].map(
+  return findAll('.filter-collection--collapsed-item').map(el => ({
+    dimension: el.querySelector('.filter-dimension--collapsed').textContent.trim(),
+    operator: el.querySelector('.filter-operator--collapsed').textContent.trim(),
+    rawValues: [...el.querySelectorAll('.filter-values--collapsed--value')].map(
       elm => elm.textContent.trim().match(/\d+/)[0]
     )
   }));

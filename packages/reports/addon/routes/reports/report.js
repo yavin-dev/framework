@@ -75,6 +75,7 @@ export default Route.extend({
     this._super(...arguments);
     controller.setProperties({
       showSaveAs: false,
+      isFiltersCollapsed: false,
       modifiedRequest: null
     });
   },

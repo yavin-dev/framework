@@ -42,7 +42,7 @@ module('Unit | Model | dashboard', function(hooks) {
               dimension: 'property',
               field: 'id',
               operator: 'notin',
-              values: ['2', '3', '4']
+              values: ['2', '3']
             },
             {
               dimension: 'eventId',
