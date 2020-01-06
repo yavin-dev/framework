@@ -40,7 +40,12 @@ export default Component.extend({
    * @property {String} visualizationComponent - name of the visualization component
    */
   visualizationComponent: computed('report.visualization.type', 'print', function() {
-    let componentName = `navi-visualizations/${get(this, 'report.visualization.type')}`;
+    const visType = get(this, 'report.visualization.type');
+    if (visType === 'request-preview') {
+      return 'navi-request-preview';
+    }
+
+    let componentName = `navi-visualizations/${visType}`;
     if (get(this, 'print')) {
       let printComponent = `${componentName}-print`;
       if (getOwner(this).factoryFor(`component:${printComponent}`)) {

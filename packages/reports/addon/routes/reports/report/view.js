@@ -195,6 +195,11 @@ export default Route.extend({
         request = get(report, 'request'),
         response = this.currentModel.response;
 
+      if (type === 'request-preview') {
+        set(report, 'visualization', { type: 'request-preview' });
+        return;
+      }
+
       let newVisualization = this.store.createFragment(type, {
         _request: request //Provide request for validation
       });

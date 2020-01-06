@@ -1,4 +1,11 @@
-{{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{#if (feature-flag "enableRequestPreview")}}
+  <VisualizationSelector
+    @report={{@report}}
+    @validVisualizations={{validVisualizations}}
+    @onVisualizationTypeUpdate={{route-action "onVisualizationTypeUpdate"}}
+  />
+{{/if}}
 <div class="report-view__visualization-main">
   {{#if hasNoData}}
     <div class="report-view__visualization-no-results">
@@ -6,13 +13,15 @@
     </div>
   {{else}}
     <div class="report-view__visualization-header">
-      {{visualization-toggle
-        report=report
-        validVisualizations=validVisualizations
-        onVisualizationTypeUpdate=(route-action "onVisualizationTypeUpdate")
-      }}
+      {{#unless (feature-flag "enableRequestPreview")}}
+        {{visualization-toggle
+          report=report
+          validVisualizations=validVisualizations
+          onVisualizationTypeUpdate=(route-action "onVisualizationTypeUpdate")
+        }}
+      {{/unless}}
       {{#if hasRequestRun}}
-        {{#unless isEditingVisualization}}
+        {{#unless (or isEditingVisualization (eq this.report.visualization.type "request-preview"))}}
           <div class="clickable report-view__visualization-edit-btn" role="button" onclick={{action "toggleEditVisualization" this}}>
             Edit {{visualizationTypeLabel}}
             {{navi-icon "pencil"}}
@@ -22,19 +31,31 @@
         <div class="report-view__info-text">{{navi-icon "exclamation-circle"}} Run request to update {{visualizationTypeLabel}}</div>
       {{/if}}
     </div>
-    {{report-visualization
-      classNames="report-view__visualization"
-      report=report
-      response=response
-      container=this
-      annotationData=annotationData
-      isEditing=(and isEditingVisualization hasRequestRun)
-      onUpdateReport=(pipe
-        (route-action "onUpdateReport")
-        (route-action "validate" report)
-        (route-action "runReport" report)
-      )
-    }}
+    {{#if (eq this.report.visualization.type "request-preview")}}
+      <NaviRequestPreview
+        @request={{this.report.request}}
+        @visualization={{this.report.visualization}}
+        @onRemoveMetric={{update-report-action "REMOVE_METRIC"}}
+        @onRemoveDimension={{update-report-action "REMOVE_DIMENSION"}}
+        @onRemoveTimeGrain={{update-report-action "REMOVE_TIME_GRAIN"}}
+        @onAddSort={{update-report-action "UPSERT_SORT"}}
+        @onRemoveSort={{update-report-action "REMOVE_SORT"}}
+      />
+    {{else}}
+      {{report-visualization
+        classNames="report-view__visualization"
+        report=report
+        response=response
+        container=this
+        annotationData=annotationData
+        isEditing=(and isEditingVisualization hasRequestRun)
+        onUpdateReport=(pipe
+          (route-action "onUpdateReport")
+          (route-action "validate" report)
+          (route-action "runReport" report)
+        )
+      }}
+    {{/if}}
     {{missing-intervals-warning
       response=response
       onDetailsToggle=(action "resizeVisualization" warningAnimationDuration)
