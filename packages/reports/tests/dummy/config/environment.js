@@ -45,7 +45,7 @@ module.exports = function(environment) {
         enableContains: true,
         enableTableEditing: true,
         dateDimensionFilter: true,
-        enableRequestPreview: true
+        enableRequestPreview: false
       }
     }
   };

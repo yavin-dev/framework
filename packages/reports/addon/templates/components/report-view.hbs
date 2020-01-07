@@ -13,13 +13,20 @@
     </div>
   {{else}}
     <div class="report-view__visualization-header">
-      {{#unless (feature-flag "enableRequestPreview")}}
+      {{#if (feature-flag "enableRequestPreview")}}
+        <span class="report-view__visualization-header__data-toggle">
+          <h3 class="report-view__visualization-header__title">
+            Data
+          </h3>
+          <NaviIcon @icon="angle-down" class="report-view__visualization-header__data-toggle-icon"/>
+        </span>
+      {{else}}
         {{visualization-toggle
           report=report
           validVisualizations=validVisualizations
           onVisualizationTypeUpdate=(route-action "onVisualizationTypeUpdate")
         }}
-      {{/unless}}
+      {{/if}}
       {{#if hasRequestRun}}
         {{#unless (or isEditingVisualization (eq this.report.visualization.type "request-preview"))}}
           <div class="clickable report-view__visualization-edit-btn" role="button" onclick={{action "toggleEditVisualization" this}}>

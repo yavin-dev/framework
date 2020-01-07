@@ -6,7 +6,7 @@
 .navi-request-preview {
   display: flex;
   height: 100%;
-  padding: 15px;
+  padding-left: 20px;
   width: 100%;
 
   &__table-container {
@@ -31,17 +31,29 @@
   &__table-body {
     border: 1px solid @navi-gray-400;
     border-top: none;
-    border-radius: 0 0 0 6px;
+    border-radius: 0 0 6px 6px;
     display: flex;
     flex: 2;
+
+    &--editing {
+      border-radius: 0 0 0 6px;
+    }
   }
 
   &__table-header {
     background-color: @navi-gray-300;
     border: 1px solid @navi-gray-400;
-    border-radius: 6px 0 0 0;
+    border-radius: 6px 6px 0 0;
     display: flex;
     flex-direction: row;
+
+    &--editing {
+      border-radius: 6px 0 0 0;
+
+      .navi-request-preview__column-header:last-of-type {
+        border-radius: 0;
+      }
+    }
   }
 
   &__column-header {
@@ -54,6 +66,10 @@
 
     &:first-of-type {
       border-left: none;
+    }
+
+    &:last-of-type {
+      border-radius: 0 6px 0 0;
     }
 
     &-option {
