@@ -4,6 +4,7 @@
     <li
       class="visualization-selector__option {{if (eq report.visualization.type visualization.name) "visualization-selector__option--is-active"}}"
       role="button"
+      title={{visualization.niceName}}
       onclick={{action onVisualizationTypeUpdate visualization.name}}
     >
       {{navi-icon visualization.icon class="visualization-selector__option-icon"}}
