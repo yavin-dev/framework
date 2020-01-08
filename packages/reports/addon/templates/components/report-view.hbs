@@ -49,19 +49,19 @@
         @onRemoveSort={{update-report-action "REMOVE_SORT"}}
       />
     {{else}}
-      {{report-visualization
-        classNames="report-view__visualization"
-        report=report
-        response=response
-        container=this
-        annotationData=annotationData
-        isEditing=(and isEditingVisualization hasRequestRun)
-        onUpdateReport=(pipe
+      <ReportVisualization
+        class="report-view__visualization"
+        @report={{this.report}}
+        @response={{this.response}}
+        @container={{this}}
+        @annotationData={{annotationData}}
+        @isEditing={{and isEditingVisualization hasRequestRun}}
+        @onUpdateReport={{pipe
           (route-action "onUpdateReport")
           (route-action "validate" report)
           (route-action "runReport" report)
-        )
-      }}
+        }}
+      />
     {{/if}}
     {{missing-intervals-warning
       response=response
