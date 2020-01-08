@@ -11,11 +11,11 @@
  */
 import Component from '@ember/component';
 import layout from '../templates/components/visualization-selector';
-import { layout as templateLayout, classNames } from '@ember-decorators/component';
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
 import { computed } from '@ember/object';
 
 @templateLayout(layout)
-@classNames('visualization-selector')
+@tagName('')
 class VisualizationSelector extends Component {
   @computed('validVisualizations')
   get visualizations() {
