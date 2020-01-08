@@ -2,7 +2,7 @@
 <div class="navi-request-preview" ...attributes>
   <div class="navi-request-preview__table-container">
     <table class="navi-request-preview__table">
-      <thead class="navi-request-preview__table-header{{if this.editingColumn " navi-request-preview__table-header--editing"}}">
+      <thead class="navi-request-preview__table-header {{if this.editingColumn "navi-request-preview__table-header--editing"}}">
         {{#each columns as |col idx|}}
           <th class={{concat "navi-request-preview__column-header" " navi-request-preview__column-header--" col.type}}>
             <BasicDropdown 
@@ -32,7 +32,7 @@
             {{#unless (eq col.type "dimension")}} 
               <NaviIcon 
                 @icon={{if (eq col.sort "asc") "chevron-up" "chevron-down"}} 
-                class="navi-request-preview__column-header-sort navi-request-preview__icon {{if (eq col.sort "none") " inactive"}}"
+                class="navi-request-preview__column-header-sort navi-request-preview__icon {{if (eq col.sort "none") "inactive"}}"
                 role="button"
                 {{action "sortClicked" col}}
               />
@@ -40,7 +40,7 @@
           </th>
         {{/each}}
       </thead>
-      <tbody class="navi-request-preview__table-body{{if this.editingColumn " navi-request-preview__table-body--editing"}}">
+      <tbody class="navi-request-preview__table-body {{if this.editingColumn "navi-request-preview__table-body--editing"}}">
         <tr class="navi-request-preview__table-row">
           <td class="navi-request-preview__table-cell">
             {{!-- Nothing here yet! --}}
