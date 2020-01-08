@@ -14,18 +14,6 @@ export const MetricTwo = {
   longName: 'Metric Two'
 };
 
-export const MetricThree = {
-  category: 'category',
-  name: 'metricThree',
-  longName: 'Metric Three'
-};
-
-export const MetricFour = {
-  category: 'category',
-  name: 'metricFour',
-  longName: 'Metric Four'
-};
-
 export const DimensionOne = {
   category: 'categoryOne',
   name: 'dimensionOne',
@@ -58,25 +46,6 @@ export const DimensionThree = {
   name: 'dimensionThree',
   longName: 'Dimension Three',
   cardinality: 700,
-  fields: [
-    {
-      name: 'id',
-      description: 'description',
-      tags: ['primaryKey', 'display']
-    },
-    {
-      name: 'description',
-      description: 'description',
-      tags: ['description', 'display']
-    }
-  ]
-};
-
-export const DimensionFour = {
-  category: 'categoryTwo',
-  name: 'dimensionFour',
-  longName: 'Dimension Four',
-  cardinality: 70,
   fields: [
     {
       name: 'id',
@@ -160,52 +129,16 @@ export const Tables = [
   }
 ];
 
-export const Tables2 = [
-  {
-    name: 'table3',
-    description: 'Table1 Description',
-    longName: 'table1LongName',
-    category: 'General',
-    timeGrains: [
-      {
-        name: 'day',
-        description: 'The table1 day grain',
-        metrics: [MetricThree],
-        retention: 'P24M',
-        longName: 'Day',
-        dimensions: [DimensionFour]
-      }
-    ]
-  },
-  {
-    name: 'table4',
-    description: 'Table2 Description',
-    longName: 'table2LongName',
-    category: 'General',
-    timeGrains: [
-      {
-        name: 'week',
-        description: 'The table2 week grain',
-        metrics: [MetricFour],
-        retention: 'P24M',
-        longName: 'Day',
-        dimensions: [DimensionFour]
-      }
-    ]
-  }
-];
-
-export default function(index = 0) {
-  const host = config.navi.dataSources[index].uri;
-  this.get(`${host}/v1/tables`, function() {
-    return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ tables: index > 0 ? Tables2 : Tables })];
+export default function() {
+  this.get(`${Host}/v1/tables`, function() {
+    return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ tables: Tables })];
   });
 
-  this.get(`${host}/v1/metrics/metricOne${index > 0 ? `_${index}` : ''}`, function() {
+  this.get(`${Host}/v1/metrics/metricOne`, function() {
     return [200, { 'Content-Type': 'application/json' }, JSON.stringify(MetricOne)];
   });
 
-  this.get(`${host}/v1/dimensions/dimensionOne${index > 0 ? `_${index}` : ''}`, function() {
+  this.get(`${Host}/v1/dimensions/dimensionOne`, function() {
     return [200, { 'Content-Type': 'application/json' }, JSON.stringify(DimensionOne)];
   });
 }

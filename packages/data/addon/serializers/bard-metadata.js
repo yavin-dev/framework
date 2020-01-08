@@ -14,15 +14,13 @@ export default EmberObject.extend({
    * @param rawTables {Array} - array of table objects
    * @returns {Object} - normalized table object
    */
-  _normalizeTable: function(rawTables, source) {
+  _normalizeTable: function(rawTables) {
     // build dimension and metric arrays
     let dimensions = [],
       metrics = [],
       tables = rawTables.map(table => {
         let timeGrains = table.timeGrains.map(timegrain => {
-          dimensions = dimensions.concat(
-            timegrain.dimensions.map(dimension => Object.assign({}, dimension, { source }))
-          );
+          dimensions = dimensions.concat(timegrain.dimensions);
 
           /*
            * since in fili, the metric valueTypes come under key `type`, remap it to `valuetype` and set `type` to what
@@ -31,8 +29,7 @@ export default EmberObject.extend({
           metrics = metrics.concat(
             timegrain.metrics.map(metric =>
               Object.assign({ valueType: metric.type }, metric, {
-                type: 'metric',
-                source
+                type: 'metric'
               })
             )
           );
@@ -54,15 +51,14 @@ export default EmberObject.extend({
           longName: table.longName,
           description: table.description,
           category: table.category,
-          timeGrains,
-          source
+          timeGrains: timeGrains
         };
       });
 
     return {
-      tables,
-      dimensions,
-      metrics
+      tables: tables,
+      dimensions: dimensions,
+      metrics: metrics
     };
   },
 
@@ -73,7 +69,7 @@ export default EmberObject.extend({
    */
   normalize(payload) {
     if (payload && payload.tables) {
-      return this._normalizeTable(payload.tables, payload.source);
+      return this._normalizeTable(payload.tables);
     }
   }
 });

@@ -1,5 +1,5 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Ember service that helps retrieve metadata from WS
@@ -39,11 +39,6 @@ export default Service.extend({
   metadataLoaded: false,
 
   /**
-   * @property {Array} loadedDataSources - list of data sources in which meta data has already been loaded
-   */
-  loadedDataSources: null,
-
-  /**
    * @method init
    */
   init() {
@@ -55,7 +50,6 @@ export default Service.extend({
 
     this.set('_adapter', adapter);
     this.set('_serializer', owner.lookup('serializer:bard-metadata'));
-    this.set('loadedDataSources', []);
   },
 
   /**
@@ -65,9 +59,9 @@ export default Service.extend({
    * @param {Object} options - options object used by the adapter
    * @returns {Promise} promise that loads metadata
    */
-  loadMetadata(options = {}) {
+  loadMetadata(options) {
     //fetch metadata from WS if metadata not yet loaded
-    if (!this.loadedDataSources.includes(options.dataSourceName)) {
+    if (!get(this, 'metadataLoaded')) {
       return get(this, '_adapter')
         .fetchAll(
           'table',
@@ -80,18 +74,16 @@ export default Service.extend({
         )
         .then(payload => {
           //normalize payload
-          payload.source = options.dataSourceName;
           let metadata = get(this, '_serializer').normalize(payload);
 
           //set metadataLoaded property
           if (!(get(this, 'isDestroyed') || get(this, 'isDestroying'))) {
             //create metadata model objects and load into keg
-            this._loadMetadataForType('table', metadata.tables, options.dataSourceName);
-            this._loadMetadataForType('dimension', metadata.dimensions, options.dataSourceName);
-            this._loadMetadataForType('metric', metadata.metrics, options.dataSourceName);
+            this._loadMetadataForType('table', metadata.tables);
+            this._loadMetadataForType('dimension', metadata.dimensions);
+            this._loadMetadataForType('metric', metadata.metrics);
 
             this.set('metadataLoaded', true);
-            this.loadedDataSources.push(options.dataSourceName);
           }
         });
     }
@@ -106,7 +98,7 @@ export default Service.extend({
    * @param {String} type - type of metadata, table, dimension, or metric
    * @param {Array} metadataObjects - array of metadata objects
    */
-  _loadMetadataForType(type, metadataObjects, namespace) {
+  _loadMetadataForType(type, metadataObjects) {
     let metadata = metadataObjects.map(data => {
       let payload = assign({}, data),
         owner = getOwner(this);
@@ -114,7 +106,7 @@ export default Service.extend({
       return owner.factoryFor(`model:metadata/${type}`).create(payload);
     });
 
-    get(this, '_keg').pushMany(`metadata/${type}`, metadata, { namespace });
+    get(this, '_keg').pushMany(`metadata/${type}`, metadata);
   },
 
   /**
