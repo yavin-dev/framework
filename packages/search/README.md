@@ -1,26 +1,35 @@
-# search
+# navi-search
 
-[Short description of the addon.]
-
-## Compatibility
-
-- Ember.js v3.4 or above
-- Ember CLI v2.13 or above
-- Node.js v8 or above
+Search for navi
 
 ## Installation
 
-```
-ember install search
-```
+- Install Addon
 
-## Usage
+  - `ember install navi-search`
 
-[Longer description of how to use the addon in apps.]
+- Including CSS styling:
+  - Add `@import "navi-search";` into your `app.less`
 
-## Contributing
+## Requirements
 
-See the [Contributing](CONTRIBUTING.md) guide for details.
+- node >= 4
+
+## Running
+
+- `ember serve`
+- Visit the dummy app at [http://localhost:4200](http://localhost:4200).
+
+### Running tests
+
+- `ember test` – Runs the test suite on the current Ember version
+- `ember test --server` – Runs the test suite in "watch mode"
+- `npm test` – Runs `ember try:each` to test your addon against multiple Ember versions
+
+### Running the dummy application
+
+- `ember serve`
+- Visit the dummy application at [http://localhost:4200](http://localhost:4200).
 
 ## License
 

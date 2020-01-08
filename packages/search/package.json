@@ -1,15 +1,14 @@
 {
-  "name": "search",
-  "version": "0.0.0",
-  "description": "The default blueprint for ember-cli addons.",
+  "name": "navi-search",
+  "version": "0.2.0",
+  "description": "Search for navi",
   "keywords": [
     "ember-addon"
   ],
-  "repository": "",
+  "repository": "https://github.com/yahoo/navi/tree/master/packages/search",
   "license": "MIT",
-  "author": "",
+  "author": "team-navi@googlegroups.com",
   "directories": {
-    "doc": "doc",
     "test": "tests"
   },
   "scripts": {
