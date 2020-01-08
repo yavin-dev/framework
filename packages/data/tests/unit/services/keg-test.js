@@ -121,11 +121,7 @@ module('Unit | Service | keg', function(hooks) {
       'The pushed record is registered in recordKeg'
     );
 
-    assert.deepEqual(
-      get(Keg, 'idIndexes.record'),
-      { 'dummy.1': pushedRecord },
-      'The pushed record is registered in idIndexes'
-    );
+    assert.deepEqual(get(Keg, 'idIndexes.record'), { 1: pushedRecord }, 'The pushed record is registered in idIndexes');
 
     let foundRecord = Keg.getById('record', 1);
     assert.ok(foundRecord, 'after pushing a record it can be found');
@@ -208,8 +204,8 @@ module('Unit | Service | keg', function(hooks) {
     assert.deepEqual(
       get(Keg, 'idIndexes.record'),
       {
-        'dummy.1': pushedRecords.get(0),
-        'dummy.2': pushedRecords.get(1)
+        1: pushedRecords.get(0),
+        2: pushedRecords.get(1)
       },
       'The pushed records are registered in idIndexes'
     );
@@ -278,8 +274,8 @@ module('Unit | Service | keg', function(hooks) {
     assert.deepEqual(
       get(Keg, 'idIndexes.record'),
       {
-        'dummy.foo': pushedRecords.get(0),
-        'dummy.bar': pushedRecords.get(1)
+        foo: pushedRecords.get(0),
+        bar: pushedRecords.get(1)
       },
       'The pushed records are registered in idIndexes using identifierField defined in factory'
     );

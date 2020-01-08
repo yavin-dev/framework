@@ -1,3 +1,4 @@
+import { A } from '@ember/array';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import Pretender from 'pretender';
@@ -75,7 +76,7 @@ module('Unit | Adapter | Dimensions | Bard', function(hooks) {
   });
 
   test('_buildUrl', function(assert) {
-    assert.expect(2);
+    assert.expect(3);
 
     assert.equal(
       Adapter._buildUrl('dimensionOne'),
@@ -88,6 +89,17 @@ module('Unit | Adapter | Dimensions | Bard', function(hooks) {
       `${HOST}/v1/dimensions/dimensionOne/search/`,
       '_buildUrl correctly built the URL for the provided dimension and `search` path'
     );
+
+    let prevDS = config.navi.dataSources;
+    config.navi.dataSources = A();
+
+    assert.equal(
+      Adapter._buildUrl('dimensionOne'),
+      `${HOST}/v1/dimensions/dimensionOne/values/`,
+      '_buildUrl correctly built the URL for the provided dimension when a host is not configured'
+    );
+
+    config.navi.dataSources = prevDS;
   });
 
   test('_buildFilterQuery', function(assert) {
