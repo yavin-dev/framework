@@ -94,9 +94,12 @@ module('Unit | Route | reports/report/view', function(hooks) {
   });
 
   test('runReport action', function(assert) {
-    assert.expect(2);
+    assert.expect(4);
 
-    let route = this.owner.factoryFor('route:reports/report/view').create({
+    const route = this.owner.factoryFor('route:reports/report/view').create({
+      modelFor() {
+        return { visualization: { type: 'table' } };
+      },
       _hasRequestRun() {
         return true;
       },
@@ -104,6 +107,9 @@ module('Unit | Route | reports/report/view', function(hooks) {
         throw new Error('The route should not refresh if the request has not changed');
       }
     });
+    route.actions.onVisualizationTypeUpdate = () => {
+      assert.ok(false, 'Should not be triggered on run when visualization type is not Request Preview');
+    };
 
     /* == Request has no changes == */
     route.send('runReport');
@@ -116,6 +122,21 @@ module('Unit | Route | reports/report/view', function(hooks) {
     route.send('runReport');
 
     route._hasRequestRun = () => true;
+    route.send('forceRun');
+
+    route.actions.onVisualizationTypeUpdate = type => {
+      assert.equal(
+        type,
+        'table',
+        'Visualization type is changed to table on run for a report with request preview as its visualization'
+      );
+    };
+    route.modelFor = () => ({ visualization: { type: 'request-preview' } });
+    route._hasRequestRun = () => false;
+    route.refresh = () => null;
+
+    /* == Request has no changes and visualization is request preview == */
+    route.send('runReport');
     route.send('forceRun');
   });
 });

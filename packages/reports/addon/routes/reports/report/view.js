@@ -125,6 +125,9 @@ export default Route.extend({
     runReport() {
       // Run the report only if there are request changes
       if (!this._hasRequestRun()) {
+        if (this.parentModel.visualization.type === 'request-preview') {
+          this.send('onVisualizationTypeUpdate', 'table');
+        }
         return this.refresh();
       } else {
         this.send('setReportState', 'completed');
@@ -138,6 +141,9 @@ export default Route.extend({
      * @returns {Transition} - refreshes model transition
      */
     forceRun() {
+      if (this.parentModel.visualization.type === 'request-preview') {
+        this.send('onVisualizationTypeUpdate', 'table');
+      }
       return this.refresh();
     },
 
