@@ -6,13 +6,13 @@
  */
 
 import { deprecate } from '@ember/application/deprecations';
-import { assert, warn } from '@ember/debug';
+import { assert } from '@ember/debug';
 import { inject as service } from '@ember/service';
 import { A as array } from '@ember/array';
 import { assign } from '@ember/polyfills';
 import EmberObject, { getWithDefault, get } from '@ember/object';
-import config from 'ember-get-config';
 import { canonicalizeMetric, getAliasedMetrics, canonicalizeAlias } from '../utils/metric';
+import { configHost } from '../utils/adapter';
 
 const SORT_DIRECTIONS = ['desc', 'asc'];
 
@@ -172,27 +172,6 @@ export default EmberObject.extend({
   },
 
   /**
-   * Gets host by name in [{name: String, uri: String}]
-   * config datastructure in config.navi.dataSources.
-   *
-   * @private
-   * @param {String} name - name of host to get
-   * @returns {String} - uri of fact datasource to use
-   */
-  _getHost(name) {
-    if (name) {
-      const host = config.navi.dataSources.find(dataSource => dataSource.name === name);
-      if (host && host.uri) {
-        return host.uri;
-      }
-      warn(`Fact host for ${name} requested but none was found in configuration. Falling back to default`, {
-        id: 'navi-fact-host-not-configured'
-      });
-    }
-    return config.navi.dataSources[0].uri;
-  },
-
-  /**
    * Builds a URL path for a request
    *
    * @method _buildURLPath
@@ -201,7 +180,7 @@ export default EmberObject.extend({
    * @return {String} URL Path
    */
   _buildURLPath(request, options) {
-    let host = this._getHost(getWithDefault(options || {}, 'dataSourceName', 'facts')),
+    const host = configHost(options),
       namespace = get(this, 'namespace'),
       table = get(request, 'logicalTable.table'),
       timeGrain = get(request, 'logicalTable.timeGrain'),

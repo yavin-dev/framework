@@ -5,10 +5,8 @@
 
 import { inject as service } from '@ember/service';
 import EmberObject from '@ember/object';
-import config from 'ember-get-config';
 import { pluralize } from 'ember-inflector';
-
-const FACT_HOST = config.navi.dataSources[0].uri;
+import { configHost } from '../utils/adapter';
 
 export default EmberObject.extend({
   /**
@@ -30,8 +28,8 @@ export default EmberObject.extend({
    * @param {String} id
    * @return {String} URL Path
    */
-  _buildURLPath(type, id) {
-    let host = FACT_HOST,
+  _buildURLPath(type, id, options) {
+    const host = configHost(options),
       namespace = this.get('namespace');
     return `${host}/${namespace}/${pluralize(type)}/${id}`;
   },
@@ -60,7 +58,7 @@ export default EmberObject.extend({
    * @return {Promise} metadata promise object
    */
   fetchMetadata(type, id, options = {}) {
-    let url = this._buildURLPath(type, id),
+    let url = this._buildURLPath(type, id, options),
       query = options.query || {},
       clientId = options.clientId || 'UI',
       timeout = options.timeout || 300000;
