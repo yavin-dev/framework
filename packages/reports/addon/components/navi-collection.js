@@ -43,7 +43,7 @@ class NaviCollection extends Component {
    */
   @computed('items.[]', 'filter')
   get filteredItems() {
-    let { items, filter } = this.getProperties('items', 'filter');
+    const { items, filter } = this;
 
     return isEmpty(items) ? undefined : filter.filterFn(items);
   }
