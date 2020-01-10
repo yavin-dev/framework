@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -59,20 +59,24 @@
     margin-right: 15px;
   }
 
-  .pick-value {
-    text-align: right;
-    font-size: @font-size-base;
-    .value {
-      padding-right: 6px;
+  &__filter-selector {
+    display: flex;
+    justify-content: flex-end;
+
+    .navi-collection__filter-trigger.ember-power-select-trigger {
+      border: 1px solid @navi-white;
+      display: inline-block;
+      min-width: 108px;
+      text-align: right;
+
+      &[aria-expanded='true'] {
+        border-bottom: 1px solid @navi-gray-500;
+      }
+
+      .ember-power-select-status-icon {
+        display: inline;
+      }
     }
-  }
-
-  .pick-form {
-    .dropdown-list;
-    .dropdown-list .list;
-
-    min-width: 110px;
-    right: 0;
   }
 
   &__unsaved-label {

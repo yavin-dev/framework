@@ -1264,7 +1264,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     // Filter by favorites
     await visit('/reports');
-    await click($('.pick-form li:contains(Favorites)')[0]);
+    await selectChoose('.navi-collection__filter-trigger', 'Favorites');
 
     let listedReports = findAll('tbody tr td:first-of-type').map(el => el.innerText.trim());
 
@@ -1276,7 +1276,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     // Filter by favorites
     await visit('/reports');
-    await click($('.pick-form li:contains(Favorites)')[0]);
+    await selectChoose('.navi-collection__filter-trigger', 'Favorites');
 
     listedReports = findAll('tbody tr td:first-of-type').map(el => el.innerText.trim());
 
@@ -1286,7 +1286,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await click($('tbody tr td a:contains(Hyrule Ad&Nav Clicks)')[0]);
     await click('.favorite-item');
     await visit('/reports');
-    await click($('.pick-form li:contains(Favorites)')[0]);
+    await selectChoose('.navi-collection__filter-trigger', 'Favorites');
 
     listedReports = findAll('tbody tr td:first-of-type').map(el => el.innerText.trim());
 
@@ -1302,7 +1302,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     // Filter by favorites
     await visit('/reports');
-    await click($('.pick-form li:contains(Favorites)')[0]);
+    await selectChoose('.navi-collection__filter-trigger', 'Favorites');
 
     let listedReports = findAll('tbody tr td:first-of-type').map(el => el.innerText.trim());
 
@@ -1314,7 +1314,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     await visit('/reports');
 
-    await click($('.pick-form li:contains(Favorites)')[0]);
+    await selectChoose('.navi-collection__filter-trigger', 'Favorites');
 
     listedReports = findAll('tbody tr td:first-of-type').map(el => el.innerText.trim());
 
