@@ -61,6 +61,7 @@
 
   &__filter-selector {
     display: flex;
+    font-size: @font-size-base;
     justify-content: flex-end;
 
     .navi-collection__filter-trigger.ember-power-select-trigger {
@@ -83,5 +84,13 @@
     color: @disabled-gray;
     font-size: @font-size-mid;
     margin-left: 8px;
+  }
+}
+
+.navi-collection__filter-dropdown {
+  font-size: @font-size-base;
+
+  li.ember-power-select-option {
+    text-align: right;
   }
 }
