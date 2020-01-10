@@ -53,12 +53,12 @@
             </td>
             {{#if config.actions}}
               <td class="align left navi-collection__actions">
-                {{#lazy-render target=(concat ".navi-collection__row" index)}}
+                <LazyRender @target={{concat ".navi-collection__row" index}}>
                   {{component config.actions
                     item=item
                     index=index
                   }}
-                {{/lazy-render}}
+                </LazyRender>
               </td>
             {{/if}}
             <td class="align left">{{item.author.id}}</td>
