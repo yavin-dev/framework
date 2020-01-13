@@ -17,7 +17,7 @@ import { layout as templateLayout, tagName } from '@ember-decorators/component';
 @templateLayout(layout)
 class ValueInput extends Component {
   /**
-   * @action setValues
+   * @action setValue
    * @param {String} value - single value to be set in filter
    */
   @action
