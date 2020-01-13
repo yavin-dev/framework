@@ -3,17 +3,18 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
- *   <FilterValues::CurrentPeriod
+ *   <FilterValues::SinceInput
  *       @filter={{filter}}
  *       @request={{request}}
+ *       @onUpdateFilter={{action "update"}}
  *   />
  */
 import BaseIntervalComponent from './base-interval-component';
+import layout from '../../templates/components/filter-values/since-input';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
-import layout from '../../templates/components/filter-values/current-period';
 
 @templateLayout(layout)
 @tagName('')
-class CurrentPeriodComponent extends BaseIntervalComponent {}
+class SinceInputComponent extends BaseIntervalComponent {}
 
-export default CurrentPeriodComponent;
+export default SinceInputComponent;

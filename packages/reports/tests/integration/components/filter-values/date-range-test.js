@@ -1,11 +1,19 @@
 import { A } from '@ember/array';
-import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import Interval from 'navi-core/utils/classes/interval';
 import moment from 'moment';
+import { formatDateRange } from 'navi-reports/helpers/format-interval-inclusive-inclusive';
+import { getIsoDateTimePeriod } from 'navi-core/utils/date';
+
+export function getDateRangeFormat(source) {
+  const dateTimePeriod = source.request.logicalTable.timeGrain.name;
+  const { start, end } = source.filter.values.firstObject.asMomentsForTimePeriod(dateTimePeriod);
+  end.subtract(1, getIsoDateTimePeriod(dateTimePeriod));
+  return formatDateRange(start, end, dateTimePeriod);
+}
 
 module('Integration | Component | filter values/date range', function(hooks) {
   setupRenderingTest(hooks);
@@ -15,12 +23,12 @@ module('Integration | Component | filter values/date range', function(hooks) {
     this.request = { logicalTable: { timeGrain: { name: 'day' } } };
     this.onUpdateFilter = () => null;
 
-    await render(hbs`{{filter-values/date-range
-            filter=filter
-            request=request
-            onUpdateFilter=(action onUpdateFilter)
-            isCollapsed=isCollapsed
-        }}`);
+    await render(hbs`<FilterValues::DateRange
+            @filter={{this.filter}}
+            @request={{this.request}}
+            @onUpdateFilter={{action this.onUpdateFilter}}
+            @isCollapsed={{this.isCollapsed}}
+        />`);
   });
 
   test('it renders', async function(assert) {
@@ -32,12 +40,10 @@ module('Integration | Component | filter values/date range', function(hooks) {
 
     assert
       .dom('.filter-values--date-range-input__high-value')
-      .hasText('Before', 'Placeholder text is present when no date range is selected');
+      .hasText('End', 'Placeholder text is present when no date range is selected');
 
-    run(() => {
-      let selectedInterval = new Interval(moment('11-29-2019'), moment('12-06-2019'));
-      this.set('filter', { values: A([selectedInterval]) });
-    });
+    let selectedInterval = Interval.parseFromStrings('2019-11-29', '2019-12-06');
+    this.set('filter', { values: A([selectedInterval]) });
 
     assert
       .dom('.filter-values--date-range-input__low-value')
@@ -51,12 +57,10 @@ module('Integration | Component | filter values/date range', function(hooks) {
   test('changing values', async function(assert) {
     assert.expect(2);
 
-    const start = moment('11-29-2019');
-    const end = moment('12-06-2019');
-    run(() => {
-      let selectedInterval = new Interval(start, end);
-      this.set('filter', { values: A([selectedInterval]) });
-    });
+    const start = moment('2019-11-29');
+    const end = moment('2019-12-06');
+    let selectedInterval = new Interval(start, end);
+    this.set('filter', { values: A([selectedInterval]) });
 
     // Click start date
     await click('.filter-values--date-range-input__low-value > .dropdown-date-picker__trigger');
@@ -64,7 +68,7 @@ module('Integration | Component | filter values/date range', function(hooks) {
 
     this.set('onUpdateFilter', changeSet => {
       let expectedInterval = new Interval(moment(newStartStr), end);
-      assert.ok(changeSet.interval.isEqual(expectedInterval), 'Updating start date works');
+      assert.ok(changeSet.interval.isEqual(expectedInterval), 'Updating start date works only updates start');
       this.set('filter', { values: A([changeSet.interval]) });
     });
 
@@ -86,16 +90,14 @@ module('Integration | Component | filter values/date range', function(hooks) {
   test('collapsed', async function(assert) {
     assert.expect(2);
 
-    const selectedInterval = new Interval(new Duration('P7D'), 'current');
+    const selectedInterval = Interval.parseFromStrings('P7D', '2020-01-10');
     this.set('filter', { values: A([selectedInterval]) });
     this.set('isCollapsed', true);
 
-    assert.dom().hasText('Last 7 Days', 'Selected range text is rendered correctly');
+    assert.dom().hasText('Jan 03, 2020 - Jan 09, 2020', 'Selected range text is rendered correctly');
 
     this.set('filter', { values: null });
 
-    assert
-      .dom('.filter-values--date-range .filter-values--selected-error')
-      .exists('Error is rendered when range is invalid');
+    assert.dom('.filter-values--selected-error').exists('Error is rendered when range is invalid');
   });
 });

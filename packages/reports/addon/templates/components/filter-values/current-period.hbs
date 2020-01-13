@@ -1,2 +1,12 @@
-{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<span class="filter-values--current-period__label">{{concat "The current " this.dateTimePeriod "."}}</span>
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{#if @isCollapsed}}
+  {{#if interval}}
+    {{this.dateRange}}
+  {{else}}
+    <FilterValues::InvalidValue/>
+  {{/if}}
+{{else}}
+  <div class="filter-values--current-period" ...attributes>
+    <span class="filter-values--current-period__label">The current {{this.dateTimePeriod}}. ({{this.dateRange}})</span>
+  </div>
+{{/if}}

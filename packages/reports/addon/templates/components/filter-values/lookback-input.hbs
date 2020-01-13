@@ -1,11 +1,23 @@
-{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{input
-  value=(readonly this.lookback)
-  placeholder="Value"
-  classNames="filter-values--lookback-input__value"
-  classNameBindings="filter.validations.attrs.values.isInvalid:filter-values--lookback-input--error"
-  key-up=(action "setLookback")
-  type="number"
-  min="1"
-}}
-<span class="filter-values--lookback-input__label">{{concat this.timeGrainName (if (eq this.lookback 1) "" "s") " (" this.dateRange ")"}}</span>
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{#with (concat this.dateTimePeriod (if (eq this.lookback 1) "" "s") " (" this.dateRange ")") as |dateDescription|}}
+  {{#if @isCollapsed}}
+    {{#if this.lookback}}
+      {{this.lookback}} {{dateDescription}}
+    {{else}}
+      <FilterValues::InvalidValue/>
+    {{/if}}
+  {{else}}
+    <div class="filter-values--lookback-input" ...attributes>
+      <Input
+        class="filter-values--lookback-input__value
+          {{if filter.validations.attrs.values.isInvalid "filter-values--lookback-input--error"}}"
+        @value={{readonly this.lookback}}
+        @placeholder="Value"
+        @key-up={{action this.setLookback}}
+        @type="number"
+        @min="1"
+      />
+      <span class="filter-values--lookback-input__label">{{dateDescription}}</span>
+    </div>
+  {{/if}}
+{{/with}}

@@ -1,23 +1,27 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
- *   {{filter-builders/date-time
- *       requestFragment=request.filters.firstObject
- *       request=request
- *   }}
+ *   <FilterBuilders::DateTime
+ *       @requestFragment={{request.filters.firstObject}}
+ *       @request={{request}}
+ *   />
  */
 import { A as arr } from '@ember/array';
 import { get, set, computed, action } from '@ember/object';
 import Base from './base';
 import Interval from 'navi-core/utils/classes/interval';
+import Duration from 'navi-core/utils/classes/duration';
 import { getFirstDayOfIsoDateTimePeriod } from 'navi-core/utils/date';
 import moment from 'moment';
 
 export default class extends Base {
+  /**
+   * @property {String} dateTimePeriodName - the date time period
+   */
   @computed('request.logicalTable.timeGrain')
-  get timeGrainName() {
+  get dateTimePeriodName() {
     return get(this, 'request.logicalTable.timeGrain.longName');
   }
 
@@ -25,12 +29,12 @@ export default class extends Base {
    * @override
    * @property {Array} supportedOperators - list of valid operators for a date-time filter
    */
-  @computed('timeGrainName')
+  @computed('dateTimePeriodName')
   get supportedOperators() {
     return [
       {
         id: 'current',
-        longName: `Current ${this.timeGrainName}`,
+        longName: `Current ${this.dateTimePeriodName}`,
         valuesComponent: 'filter-values/current-period'
       },
       {
@@ -41,7 +45,7 @@ export default class extends Base {
       {
         id: 'since',
         longName: 'Since',
-        valuesComponent: null // TODO: Show dropdown date picker, include current?, and range
+        valuesComponent: 'filter-values/since-input'
       },
       {
         id: 'in',
@@ -51,7 +55,7 @@ export default class extends Base {
       {
         id: 'advanced',
         longName: 'Advanced',
-        valuesComponent: null // TODO: Show two inputs and range
+        valuesComponent: 'filter-values/advanced-interval-input' // TODO: Show two inputs and range
       }
     ];
   }
@@ -61,13 +65,18 @@ export default class extends Base {
    */
   requestFragment = undefined;
 
-  intervalOperator(interval) {
+  /**
+   * Finds the appropriate interval operator to modify an existing interval
+   * @param {Interval} interval - the interval to choose an operator for
+   */
+  operatorForInterval(interval) {
     const { start, end } = interval.asStrings();
 
+    const [, /*match*/ lookback /*amount*/, , dateTimePeriodLabel] = /(P)(\d+)(\w)/.exec(start) || [];
     let operatorId;
     if (start === 'current' && end === 'next') {
       operatorId = 'current';
-    } else if (start.startsWith('P') && end === 'current') {
+    } else if (lookback === 'P' && ['D', 'W', 'M', 'Y'].includes(dateTimePeriodLabel) && end === 'current') {
       operatorId = 'inPast';
     } else if (moment.isMoment(interval._start) && (end === 'current' || end === 'next')) {
       operatorId = 'since';
@@ -77,20 +86,60 @@ export default class extends Base {
       operatorId = 'advanced';
     }
 
-    return get(this, 'supportedOperators').find(op => op.id === operatorId);
+    return this.supportedOperators.find(op => op.id === operatorId);
+  }
+
+  /**
+   *
+   * @param {Interval} interval
+   * @param {String} newOperator
+   */
+  convertIntervalToOperator(interval, dateTimePeriod, newOperator) {
+    const { start, end } = interval.asMomentsForTimePeriod(dateTimePeriod);
+
+    if (newOperator === 'current') {
+      return Interval.parseFromStrings('current', 'next');
+    } else if (newOperator === 'inPast') {
+      const isQuarter = dateTimePeriod === 'quarter';
+      const intervalDateTimePeriod = isQuarter ? 'month' : dateTimePeriod;
+
+      let intervalValue;
+      if (end.isSame(moment(getFirstDayOfIsoDateTimePeriod(moment(), dateTimePeriod)))) {
+        // end is 'current', get lookback amount
+        intervalValue = interval.diffForTimePeriod(intervalDateTimePeriod);
+      } else {
+        intervalValue = 1;
+      }
+
+      if (isQuarter) {
+        // round to quarter
+        const quarters = Math.max(Math.floor(intervalValue / 3), 1);
+        intervalValue = quarters * 3;
+      }
+
+      const dateTimePeriodLabel = intervalDateTimePeriod[0].toUpperCase();
+      return Interval.parseFromStrings(`P${intervalValue}${dateTimePeriodLabel}`, 'current');
+    } else if (newOperator === 'since') {
+      return new Interval(start, 'current');
+    } else if (newOperator === 'in') {
+      return new Interval(start, end);
+    } else if (newOperator === 'advanced') {
+      const intervalValue = interval.diffForTimePeriod('day');
+      return new Interval(new Duration(`P${intervalValue}D`), end);
+    }
   }
 
   /**
    * @property {Object} filter
    * @override
    */
-  @computed('requestFragment.interval', 'timeGrainName')
+  @computed('requestFragment.interval', 'dateTimePeriodName')
   get filter() {
     const interval = get(this, 'requestFragment.interval');
 
     return {
-      subject: { longName: `Date Time (${this.timeGrainName})` },
-      operator: this.intervalOperator(interval),
+      subject: { longName: `Date Time (${this.dateTimePeriodName})` },
+      operator: this.operatorForInterval(interval),
       values: arr([interval])
     };
   }
@@ -109,36 +158,11 @@ export default class extends Base {
     }
 
     let changeSet = { operator: newOperator };
+
     const timeGrain = get(this, 'request.logicalTable.timeGrain.name');
-
     const originalInterval = get(this, 'requestFragment.interval');
-    let { start, end } = originalInterval.asMomentsForTimePeriod(timeGrain);
-    if (newOperator === 'current') {
-      set(this, 'requestFragment.interval', Interval.parseFromStrings('current', 'next'));
-    } else if (newOperator === 'inPast') {
-      const isQuarter = timeGrain === 'quarter';
-      const diffGrain = isQuarter ? 'month' : timeGrain;
-
-      let intervalValue;
-      if (end.isSame(moment(getFirstDayOfIsoDateTimePeriod(moment(), timeGrain)))) {
-        // end is 'current', get lookback amount
-        intervalValue = originalInterval.diffForTimePeriod(diffGrain);
-      } else {
-        intervalValue = 1;
-      }
-
-      if (isQuarter) {
-        // round to quarter
-        const quarters = Math.max(Math.floor(intervalValue / 3), 1);
-        intervalValue = quarters * 3;
-      }
-
-      const grainLabel = diffGrain[0].toUpperCase();
-      const start = `P${intervalValue}${grainLabel}`;
-      set(this, 'requestFragment.interval', Interval.parseFromStrings(start, 'current'));
-    } else if (newOperator === 'in') {
-      set(this, 'requestFragment.interval', new Interval(start, end));
-    }
+    const newInterval = this.convertIntervalToOperator(originalInterval, timeGrain, newOperator);
+    set(this, 'requestFragment.interval', newInterval);
 
     Object.assign(changeSet, {
       values: arr([get(this, 'requestFragment.interval')])

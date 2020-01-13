@@ -8,9 +8,9 @@
     {{/if}}
   {{/let}}
 {{else}}
-  <div class="filter-values--date-range-input" ...attributes>
+  <div class="filter-values--since-input" ...attributes>
     <DropdownDatePicker
-      class="filter-values--date-range-input__trigger filter-values--date-range-input__low-value"
+      class="filter-values--since-input__trigger filter-values--since-input__low-value"
       @date={{this.startDate}}
       @dateTimePeriod={{this.dateTimePeriod}}
       @onUpdate={{action this.setIntervalStart}}
@@ -22,19 +22,16 @@
       {{/if}}
     </DropdownDatePicker>
 
-    <span class="filter-values--date-range-input__separator">to</span>
-
-    <DropdownDatePicker
-      class="filter-values--date-range-input__trigger filter-values--date-range-input__high-value"
-      @date={{this.endDate}}
-      @dateTimePeriod={{this.dateTimePeriod}}
-      @onUpdate={{action this.setIntervalEnd}}
-    >
-      {{#if endDate}}
-        {{this.endFormat}}
-      {{else}}
-        <span class="date__placeholder">{{this.endPlaceholder}}</span>
-      {{/if}}
-    </DropdownDatePicker>
+    {{#let (eq this.interval._end "next") as |isNext|}}
+      <div class="filter-values--since-input__separator">
+        <Input
+          @type="checkbox"
+          @id="currentDateTimePeriod"
+          @checked={{isNext}}
+          {{on "click" (fn this.setIntervalEnd (if isNext "current" "next"))}}
+        />
+        <label for="currentDateTimePeriod">Include this {{this.dateTimePeriod}}?</label>
+      </div>
+    {{/let}}
   </div>
 {{/if}}

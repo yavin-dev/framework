@@ -29,12 +29,12 @@
   }
 
   &--lookback-input,
+  &--advanced-interval-input,
   &--current-period {
     display: flex;
     flex-direction: row;
 
     &__value {
-      //flex: 1;
       border: 1px solid @navi-gray-400;
       font-family: @font-family-thin;
     }
@@ -46,6 +46,8 @@
   }
 
   &--date-range-input,
+  &--since-input,
+  &--advanced-interval-input,
   &--dimension-date-range-input {
     display: flex;
     flex-direction: row;
@@ -77,6 +79,7 @@
 
   &--range-input__input--error,
   &--lookback-input--error,
+  &--advanced-interval-input--error,
   &--value-input--error,
   &--multi-value-input--error,
   &--dimension-select--error {

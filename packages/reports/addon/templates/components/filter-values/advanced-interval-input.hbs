@@ -1,0 +1,32 @@
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{#if @isCollapsed}}
+  {{#if interval}}
+    {{this.dateRange}}
+  {{else}}
+    <FilterValues::InvalidValue/>
+  {{/if}}
+{{else}}
+  <div class="filter-values--advanced-interval-input" ...attributes>
+    <Input
+      class="filter-values--advanced-interval-input__value"
+      @value={{readonly this.dateStrings.start}}
+      @focus-out={{pipe (action this.parseDate) (action this.setIntervalStart)}}
+    />
+    <span class="filter-values--advanced-interval-input__separator">to</span>
+    <Input
+      class="filter-values--advanced-interval-input__value"
+      @value={{readonly this.dateStrings.end}}
+      @focus-out={{pipe (action this.parseDate) (action this.setIntervalEnd)}}
+    />
+
+    <div class="filter-values--advanced-interval-input__label">
+      <a href="http://fili.io/pages/guide/02-end-user-api.html#dates-and-times"
+        target="_blank"
+        rel="noopener"
+      >
+        <NaviIcon @icon="life-ring" class="filter-values--advanced-interval-input__icon-documentation" />
+        Interval Help
+      </a>
+    </div>
+  </div>
+{{/if}}

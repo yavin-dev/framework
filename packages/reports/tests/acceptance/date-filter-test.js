@@ -49,21 +49,21 @@ module('Acceptance | date filter', function(hooks) {
     await clickTrigger('.filter-values--dimension-date-range-input__high-value .ember-basic-dropdown-trigger');
     await click($('button.ember-power-calendar-day--current-month:contains(5)')[0]);
 
-    assert.ok(!!$('.filter-values--dimension-date-range-input__low-value:contains(4)').length, 'The low value is set');
-    assert.ok(
-      !!$('.filter-values--dimension-date-range-input__high-value:contains(9)').length,
-      'The high value is set'
-    );
+    assert
+      .dom('.filter-values--dimension-date-range-input__low-value .dropdown-date-picker__trigger')
+      .includesText('04,', 'The low value is set');
+    assert
+      .dom('.filter-values--dimension-date-range-input__high-value .dropdown-date-picker__trigger')
+      .includesText('05,', 'The high value is set');
 
     await click('.navi-report__save-btn');
 
-    assert.ok(
-      !!$('.filter-values--dimension-date-range-input__low-value:contains(4)').length,
-      'The low value is still set after the report is saved'
-    );
-    assert.ok(
-      !!$('.filter-values--dimension-date-range-input__high-value:contains(9)').length,
-      'The high value is still set after the report is saved'
-    );
+    assert
+      .dom('.filter-values--dimension-date-range-input__low-value .dropdown-date-picker__trigger')
+      .includesText('04,', 'The low value is still set after the report is saved');
+
+    assert
+      .dom('.filter-values--dimension-date-range-input__high-value .dropdown-date-picker__trigger')
+      .includesText('05,', 'The high value is still set after the report is saved');
   });
 });
