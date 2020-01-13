@@ -11,7 +11,7 @@
       @value={{@filter.values.firstObject}}
       @placeholder={{this.lowPlaceholder}}
       class="filter-values--range-input__input {{if @filter.validations.attrs.values.isInvalid "filter-values--range-input__input--error"}}"
-      {{on "input" (action "setLowValue" value="target.value")}}
+      {{on "input" (action this.setLowValue value="target.value")}}
     />
 
     <span class="filter-values--range-input__separator">and</span>
