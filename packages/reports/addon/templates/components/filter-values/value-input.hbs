@@ -10,6 +10,5 @@
     value={{@filter.values.firstObject}}
     placeholder="Value"
     class="filter-values--value-input {{if @filter.validations.attrs.values.isInvalid "filter-values--value-input--error"}}"
-    {{on "input" (action this.setValue value="target.value")}}
-  />
+    {{on "input" (action this.setValue value="target.value")}}>
 {{/if}}
