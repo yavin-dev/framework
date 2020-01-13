@@ -289,7 +289,7 @@ module('Acceptance | Dashboards', function(hooks) {
 
     // Filter by favorites
     await visit('/dashboards');
-    await click($('.pick-form li:contains(Favorites)')[0]);
+    await selectChoose('.navi-collection__filter-trigger', 'Favorites');
 
     const dashboardBefore = findAll('tbody tr td:first-of-type').map(el => el.textContent.trim());
 
@@ -299,7 +299,7 @@ module('Acceptance | Dashboards', function(hooks) {
     await click($('tbody tr td a:contains(Tumblr Goals Dashboard)')[0]);
     await click('.navi-dashboard__fav-icon');
     await visit('/dashboards');
-    await click($('.pick-form li:contains(Favorites)')[0]);
+    await selectChoose('.navi-collection__filter-trigger', 'Favorites');
 
     const dashboardsAfter = findAll('tbody tr td:first-of-type').map(el => el.textContent.trim());
 
@@ -318,7 +318,7 @@ module('Acceptance | Dashboards', function(hooks) {
 
     /* == list favorites in list view == */
     await visit('/dashboards');
-    await click($('.pick-form li:contains(Favorites)')[0]);
+    await selectChoose('.navi-collection__filter-trigger', 'Favorites');
 
     const listedDashboards = findAll('tbody tr td:first-of-type').map(el => el.textContent.trim());
 
