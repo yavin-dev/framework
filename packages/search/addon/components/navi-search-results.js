@@ -1,6 +1,3 @@
-import Component from '@ember/component';
-import layout from '../templates/components/navi-search-results';
+import Component from '@glimmer/component';
 
-export default Component.extend({
-  layout
-});
+export default class NaviSearchResultsComponent extends Component {}
