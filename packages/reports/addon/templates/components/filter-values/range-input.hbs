@@ -6,7 +6,7 @@
     {{concat @filter.values.firstObject " and " @filter.values.lastObject}}
   {{/if}}
 {{else}}
-  <div class="filter-values--range-input">
+  <div class="filter-values--range-input" ...attributes>
     <Input
       @value={{@filter.values.firstObject}}
       @placeholder={{this.lowPlaceholder}}
