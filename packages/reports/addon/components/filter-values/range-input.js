@@ -31,10 +31,10 @@ class RangeInput extends Component {
 
   /**
    * @action setLowValue
-   * @param {String} value - first value to be set in filter
+   * @param {InputEvent} event
    */
   @action
-  setLowValue(value) {
+  setLowValue({ target: { value } }) {
     this.onUpdateFilter({
       values: [value, get(this, 'filter.values.lastObject')]
     });
@@ -42,10 +42,10 @@ class RangeInput extends Component {
 
   /**
    * @action setHighValue
-   * @param {String} value - last value to be set in filter
+   * @param {InputEvent} event
    */
   @action
-  setHighValue(value) {
+  setHighValue({ target: { value } }) {
     this.onUpdateFilter({
       values: [get(this, 'filter.values.firstObject'), value]
     });

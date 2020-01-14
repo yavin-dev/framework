@@ -18,10 +18,10 @@ import { layout as templateLayout, tagName } from '@ember-decorators/component';
 class ValueInput extends Component {
   /**
    * @action setValue
-   * @param {String} value - single value to be set in filter
+   * @param {InputEvent} event
    */
   @action
-  setValue(value) {
+  setValue({ target: { value } }) {
     this.onUpdateFilter({
       values: [value]
     });
