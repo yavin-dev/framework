@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import $ from 'jquery';
-import { render, fillIn, triggerEvent } from '@ember/test-helpers';
+import { render, fillIn } from '@ember/test-helpers';
 import { A as arr } from '@ember/array';
 import hbs from 'htmlbars-inline-precompile';
 
@@ -12,11 +12,12 @@ module('Integration | Component | filter values/value input', function(hooks) {
     this.filter = { values: arr([1000]) };
     this.onUpdateFilter = () => null;
 
-    await render(hbs`{{filter-values/value-input
-            filter=filter
-            onUpdateFilter=(action onUpdateFilter)
-            isCollapsed=isCollapsed
-        }}`);
+    await render(hbs`
+      <FilterValues::ValueInput
+        @filter={{this.filter}}
+        @onUpdateFilter={{this.onUpdateFilter}}
+        @isCollapsed={{this.isCollapsed}}
+      />`);
   });
 
   test('it renders', function(assert) {
@@ -47,7 +48,6 @@ module('Integration | Component | filter values/value input', function(hooks) {
     });
 
     await fillIn('.filter-values--value-input', 'aaa');
-    await triggerEvent('.filter-values--value-input', 'keyup');
   });
 
   test('error state', function(assert) {
