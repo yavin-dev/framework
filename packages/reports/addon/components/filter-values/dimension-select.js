@@ -6,7 +6,7 @@
  *   <FilterValues::DimensionSelect
  *       @filter={{filter}}
  *       @onUpdateFilter={{action "update"}}
- *   }}
+ *   />
  */
 import config from 'ember-get-config';
 import { featureFlag } from 'navi-core/helpers/feature-flag';
@@ -34,7 +34,8 @@ class DimensionSelectComponent extends Component {
   @service('bard-dimensions') _dimensionService;
 
   /**
-   * @property _metadataService
+   * @private
+   * @property {Ember.Service} _metadataService
    */
   @service('bard-metadata') _metadataService;
 

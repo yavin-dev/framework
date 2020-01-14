@@ -16,9 +16,9 @@
     @extra={{hash filter=@filter}}
     @triggerComponent="power-select-bulk-import-trigger"
     @optionsComponent="power-select-collection-options"
-    @onchange={{action this.setValues}}
+    @onchange={{this.setValues}}
     @onclose={{set this.searchTerm undefined}}
-    @search={{action this.searchDimensionValues}}
+    @search={{this.searchDimensionValues}}
     @closeOnSelect={{false}}
     @placeholder={{concat @filter.subject.longName " Values"}}
     @loadingMessage="Loading..."
