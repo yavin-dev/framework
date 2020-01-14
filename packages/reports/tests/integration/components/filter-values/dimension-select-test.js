@@ -105,7 +105,7 @@ module('Integration | Component | filter values/dimension select', function(hook
     };
 
     await render(
-      hbs`<FilterValues::DimensionSelect @filter={{this.filter}} @onUpdateFilter={{action this.onUpdateFilter}} />`
+      hbs`<FilterValues::DimensionSelect @filter={{this.filter}} @onUpdateFilter={{this.onUpdateFilter}} />`
     );
 
     // Select a new value
@@ -164,7 +164,7 @@ module('Integration | Component | filter values/dimension select', function(hook
     };
 
     await render(
-      hbs`<FilterValues::DimensionSelect @filter={{this.filter}} @onUpdateFilter={{action this.onUpdateFilter}} />`
+      hbs`<FilterValues::DimensionSelect @filter={{this.filter}} @onUpdateFilter={{this.onUpdateFilter}} />`
     );
 
     await clickTrigger();
