@@ -14,6 +14,7 @@ module('Integration | Component | visualization-selector', function(hooks) {
         type: 'line-chart'
       }
     };
+    this.currentView = 'line-chart';
     this.validVisualizations = [
       {
         name: 'line-chart',
@@ -38,6 +39,7 @@ module('Integration | Component | visualization-selector', function(hooks) {
     await render(hbs`<VisualizationSelector 
       @report={{report}}
       @validVisualizations={{validVisualizations}}
+      @currentVisualization={{currentView}}
       @onVisualizationTypeUpdate={{action onVisualizationTypeUpdate}}
     />`);
 

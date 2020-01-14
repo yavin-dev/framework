@@ -307,6 +307,8 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
   });
 
   test('Navi Request Preview and Visualization Selector', async function(assert) {
+    assert.expect(10);
+
     const originalFeatureFlag = !!config.navi.FEATURES.enableRequestPreview;
     config.navi.FEATURES.enableRequestPreview = true;
 
@@ -362,8 +364,13 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
     await click('.navi-report__run-btn');
 
     assert
-      .dom('.table-widget')
-      .isVisible('Running the report from the request preview will change the visualization to data table');
+      .dom('.line-chart-widget')
+      .isVisible(
+        'Running the report from the request preview will change the visualization back to the most recently chosen visualization'
+      );
+
+    await click('.visualization-selector__option[title="Data Table"]');
+
     assert.deepEqual(
       findAll('.table-header-cell__title').map(el => el.textContent.trim()),
       ['Date', 'Property', 'Nav Link Clicks', 'Revenue (CAD)'],
@@ -385,11 +392,104 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
 
     assert
       .dom('.table-widget')
-      .isVisible('Saving the report from the request preview will change the visualization to data table');
+      .isVisible(
+        'Saving the report from the request preview will change the visualization to the most recently selected visualization'
+      );
     assert.deepEqual(
       findAll('.table-header-cell__title').map(el => el.textContent.trim()),
       ['Date', 'Property', 'Revenue (CAD)'],
       'Changes made in the request preview are reflected in the table after report save'
+    );
+
+    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
+  });
+
+  test('Navi Request Preview on new report', async function(assert) {
+    assert.expect(13);
+
+    const originalFeatureFlag = !!config.navi.FEATURES.enableRequestPreview;
+    config.navi.FEATURES.enableRequestPreview = true;
+
+    await visit('/reports/new');
+
+    // Add Revenue (USD) metric
+    await click($('.grouped-list__group-header-content:contains(Revenue)')[0]);
+    await click($('.grouped-list__item-label:contains(Revenue) .grouped-list__add-icon')[1]);
+
+    // Add Browser Dimension
+    await click($('.grouped-list__group-header-content:contains(test)')[0]);
+    await click($('.grouped-list__item-label:contains(Browser) .grouped-list__add-icon')[0]);
+
+    // Run Report
+    await click('.navi-report__run-btn');
+
+    assert.dom('.table-widget').isVisible('Table rendered on initial run');
+    assert
+      .dom('.visualization-selector__option--is-active')
+      .hasAttribute('title', 'Data Table', 'The visualization type from the report is selected');
+
+    assert.deepEqual(
+      findAll('.table-header-cell__title').map(el => el.textContent.trim()),
+      ['Date', 'Browser', 'Revenue (USD)'],
+      'Selected columns are shown in the data table'
+    );
+
+    //Open Table Edit options
+    await click('.report-view__visualization-edit-btn');
+    assert.dom('.report-view__visualization-edit').isVisible('Table edit pane is open');
+
+    // Select Request Preview
+    await click('.visualization-selector__option[title="Request Preview"]');
+
+    assert
+      .dom('.report-view__visualization-edit')
+      .isNotVisible('Visualization edit pane closes when request preview is selected');
+    assert.deepEqual(
+      findAll('.navi-request-preview__column-header').map(el => el.textContent.trim()),
+      ['Date', 'Browser', 'Revenue (USD)'],
+      'Request columns are shown in request preview'
+    );
+    assert
+      .dom('.visualization-selector__option--is-active')
+      .hasAttribute('title', 'Request Preview', 'The visualization type from the report is selected');
+
+    // Edit Revenue metric
+    await click(
+      $(
+        '.navi-request-preview__column-header:contains(Revenue) .navi-request-preview__column-header-options-trigger'
+      )[0]
+    );
+    await click($('.navi-request-preview__column-header-option:contains(Edit)')[0]);
+
+    assert.dom('.navi-request-column-config').isVisible('Column config opens on edit');
+
+    // Set Revenue parameter to Canadian Dollars
+    await selectChoose('#columnParameter', 'Euro (EUR)');
+
+    assert.deepEqual(
+      findAll('.navi-request-preview__column-header').map(el => el.textContent.trim()),
+      ['Date', 'Browser', 'Revenue (EUR)'],
+      'Revenue metric updates'
+    );
+
+    assert
+      .dom('.report-view__info-text')
+      .hasText(
+        'Run request to update Table',
+        'Changes to the request are detected and user is notified that a rerun is needed to update most recently selected visualization'
+      );
+
+    // Run Report
+    await click('.navi-report__run-btn');
+    assert.dom('.table-widget').isVisible('Previously selected visualization rendered on run');
+    assert
+      .dom('.visualization-selector__option--is-active')
+      .hasAttribute('title', 'Data Table', 'The visualization type from the report is selected');
+
+    assert.deepEqual(
+      findAll('.table-header-cell__title').map(el => el.textContent.trim()),
+      ['Date', 'Browser', 'Revenue (EUR)'],
+      'Changes made in the request preview are reflected in the other visualizations'
     );
 
     config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;

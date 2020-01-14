@@ -3,7 +3,7 @@
   <ul class="visualization-selector__list">
     {{#each visualizations as |visualization|}}
       <li
-        class="visualization-selector__option {{if (eq report.visualization.type visualization.name) "visualization-selector__option--is-active"}}"
+        class="visualization-selector__option {{if (eq currentVisualization visualization.name) "visualization-selector__option--is-active"}}"
         role="button"
         title={{visualization.niceName}}
         {{on "click" (fn onVisualizationTypeUpdate visualization.name)}}

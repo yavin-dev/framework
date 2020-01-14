@@ -1,5 +1,5 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { get, set, computed } from '@ember/object';
@@ -125,9 +125,6 @@ export default Route.extend({
     runReport() {
       // Run the report only if there are request changes
       if (!this._hasRequestRun()) {
-        if (this.parentModel.visualization.type === 'request-preview') {
-          this.send('onVisualizationTypeUpdate', 'table');
-        }
         return this.refresh();
       } else {
         this.send('setReportState', 'completed');
@@ -141,9 +138,6 @@ export default Route.extend({
      * @returns {Transition} - refreshes model transition
      */
     forceRun() {
-      if (this.parentModel.visualization.type === 'request-preview') {
-        this.send('onVisualizationTypeUpdate', 'table');
-      }
       return this.refresh();
     },
 
@@ -190,27 +184,6 @@ export default Route.extend({
       this.send('setReportState', 'completed');
 
       return true;
-    },
-
-    /**
-     * @action onVisualizationTypeUpdate
-     * @param {String} type
-     */
-    onVisualizationTypeUpdate(type) {
-      let report = get(this, 'parentModel'),
-        request = get(report, 'request'),
-        response = this.currentModel.response;
-
-      if (type === 'request-preview') {
-        set(report, 'visualization', { type: 'request-preview' });
-        return;
-      }
-
-      let newVisualization = this.store.createFragment(type, {
-        _request: request //Provide request for validation
-      });
-      newVisualization.rebuildConfig(request, response);
-      set(report, 'visualization', newVisualization);
     }
   }
 });

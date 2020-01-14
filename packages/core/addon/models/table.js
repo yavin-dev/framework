@@ -1,5 +1,5 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { readOnly } from '@ember/object/computed';
@@ -25,7 +25,7 @@ const Validations = buildValidations(
       },
       dependentKeys: [
         'model._request.dimensions.[]',
-        'model._request.metrics.[]',
+        'model._request.metrics.@each.parameters.{}',
         'model._request.logicalTable.timeGrain.name'
       ]
     })

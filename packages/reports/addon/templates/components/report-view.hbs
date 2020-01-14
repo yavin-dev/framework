@@ -2,8 +2,9 @@
 {{#if (feature-flag "enableRequestPreview")}}
   <VisualizationSelector
     @report={{@report}}
-    @validVisualizations={{validVisualizations}}
-    @onVisualizationTypeUpdate={{route-action "onVisualizationTypeUpdate"}}
+    @validVisualizations={{this.validVisualizations}}
+    @currentVisualization={{this.currentView}}
+    @onVisualizationTypeUpdate={{action "onVisualizationTypeUpdate"}}
   />
 {{/if}}
 <div class="report-view__visualization-main">
@@ -24,11 +25,11 @@
         {{visualization-toggle
           report=report
           validVisualizations=validVisualizations
-          onVisualizationTypeUpdate=(route-action "onVisualizationTypeUpdate")
+          onVisualizationTypeUpdate=(action "onVisualizationTypeUpdate")
         }}
       {{/if}}
       {{#if hasRequestRun}}
-        {{#unless (or isEditingVisualization (eq this.report.visualization.type "request-preview"))}}
+        {{#unless (or isEditingVisualization this.showRequestPreview)}}
           <div class="clickable report-view__visualization-edit-btn" role="button" onclick={{action "toggleEditVisualization" this}}>
             Edit {{visualizationTypeLabel}}
             {{navi-icon "pencil"}}
@@ -38,7 +39,7 @@
         <div class="report-view__info-text">{{navi-icon "exclamation-circle"}} Run request to update {{visualizationTypeLabel}}</div>
       {{/if}}
     </div>
-    {{#if (eq this.report.visualization.type "request-preview")}}
+    {{#if this.showRequestPreview}}
       <NaviRequestPreview
         @request={{this.report.request}}
         @visualization={{this.report.visualization}}
