@@ -11,8 +11,14 @@ import { getIsoDateTimePeriod } from 'navi-core/utils/date';
 import moment from 'moment';
 
 export default class BaseIntervalComponent extends Component {
+  /**
+   * @property {String} startPlaceholder - The text displayed when there is no startDate
+   */
   startPlaceholder = 'Start';
 
+  /**
+   * @property {String} endPlaceholder - The text displayed when there is no endDate
+   */
   endPlaceholder = 'End';
 
   /**
@@ -26,7 +32,7 @@ export default class BaseIntervalComponent extends Component {
   @readOnly('filter.values.firstObject') interval;
 
   /**
-   * @property {Moment} startDate - start of interval
+   * @property {Moment|undefined} startDate - start of interval
    */
   @computed('interval', 'dateTimePeriod')
   get startDate() {
@@ -38,15 +44,19 @@ export default class BaseIntervalComponent extends Component {
   }
 
   /**
-   * @property {String} startFormat - start of interval
+   * @property {String|undefined} startFormat - start of interval
    */
   @computed('startDate', 'calendarTriggerFormat')
   get startFormat() {
-    return this.startDate.format(this.calendarTriggerFormat);
+    const { startDate, calendarTriggerFormat } = this;
+    if (!startDate) {
+      return undefined;
+    }
+    return startDate.format(calendarTriggerFormat);
   }
 
   /**
-   * @property {Moment} endDate - end of interval
+   * @property {Moment|undefined} endDate - end of interval
    */
   @computed('interval', 'dateTimePeriod')
   get endDate() {
@@ -60,13 +70,17 @@ export default class BaseIntervalComponent extends Component {
   }
 
   /**
-   * @property {String} startFormat - start of interval
+   * @property {String|undefined} startFormat - start of interval
    */
   @computed('endDate', 'dateTimePeriod', 'calendarTriggerFormat')
   get endFormat() {
-    const { dateTimePeriod, endDate } = this;
+    const { endDate, dateTimePeriod, calendarTriggerFormat } = this;
+    if (!endDate) {
+      return undefined;
+    }
+
     const end = dateTimePeriod === 'week' ? endDate.clone().endOf('isoweek') : endDate;
-    return end.format(this.calendarTriggerFormat);
+    return end.format(calendarTriggerFormat);
   }
 
   /**

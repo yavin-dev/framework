@@ -12,11 +12,20 @@ import { A as arr } from '@ember/array';
 import { get, set, computed, action } from '@ember/object';
 import Base from './base';
 import Interval from 'navi-core/utils/classes/interval';
-import Duration from 'navi-core/utils/classes/duration';
+import Duration, { parseDuration } from 'navi-core/utils/classes/duration';
 import { getFirstDayOfIsoDateTimePeriod } from 'navi-core/utils/date';
 import moment from 'moment';
 
-export default class extends Base {
+export const MONTHS_IN_QUARTER = 3;
+export const OPERATORS = {
+  current: 'current',
+  lookback: 'inPast',
+  since: 'since',
+  dateRange: 'in',
+  advanced: 'advanced'
+};
+
+export default class DateTimeFilterBuilder extends Base {
   /**
    * @property {String} dateTimePeriodName - the date time period
    */
@@ -33,29 +42,29 @@ export default class extends Base {
   get supportedOperators() {
     return [
       {
-        id: 'current',
+        id: OPERATORS.current,
         longName: `Current ${this.dateTimePeriodName}`,
         valuesComponent: 'filter-values/current-period'
       },
       {
-        id: 'inPast',
+        id: OPERATORS.lookback,
         longName: 'In The Past',
         valuesComponent: 'filter-values/lookback-input'
       },
       {
-        id: 'since',
+        id: OPERATORS.since,
         longName: 'Since',
         valuesComponent: 'filter-values/since-input'
       },
       {
-        id: 'in',
+        id: OPERATORS.dateRange,
         longName: 'Between',
         valuesComponent: 'filter-values/date-range'
       },
       {
-        id: 'advanced',
+        id: OPERATORS.advanced,
         longName: 'Advanced',
-        valuesComponent: 'filter-values/advanced-interval-input' // TODO: Show two inputs and range
+        valuesComponent: 'filter-values/advanced-interval-input'
       }
     ];
   }
@@ -68,38 +77,45 @@ export default class extends Base {
   /**
    * Finds the appropriate interval operator to modify an existing interval
    * @param {Interval} interval - the interval to choose an operator for
+   * @returns {Object} the best supported operator for this interval
    */
   operatorForInterval(interval) {
     const { start, end } = interval.asStrings();
 
-    const [, /*match*/ lookback /*amount*/, , dateTimePeriodLabel] = /(P)(\d+)(\w)/.exec(start) || [];
+    const startDuration = parseDuration(start);
     let operatorId;
     if (start === 'current' && end === 'next') {
-      operatorId = 'current';
-    } else if (lookback === 'P' && ['D', 'W', 'M', 'Y'].includes(dateTimePeriodLabel) && end === 'current') {
-      operatorId = 'inPast';
+      operatorId = OPERATORS.current;
+    } else if (
+      startDuration != null &&
+      ['day', 'week', 'month', 'year'].includes(startDuration[1]) &&
+      end === 'current'
+    ) {
+      operatorId = OPERATORS.lookback;
     } else if (moment.isMoment(interval._start) && (end === 'current' || end === 'next')) {
-      operatorId = 'since';
+      operatorId = OPERATORS.since;
     } else if (moment.isMoment(interval._start) && moment.isMoment(interval._end)) {
-      operatorId = 'in';
+      operatorId = OPERATORS.dateRange;
     } else {
-      operatorId = 'advanced';
+      operatorId = OPERATORS.advanced;
     }
 
     return this.supportedOperators.find(op => op.id === operatorId);
   }
 
   /**
-   *
+   * Converts an Interval to a format suitable to the newOperator while retaining as much information as possible
+   * e.g. (P7D/current, day, in) -> 2020-01-01/2020-01-08
    * @param {Interval} interval
+   * @param {String} dateTimePeriod
    * @param {String} newOperator
    */
-  convertIntervalToOperator(interval, dateTimePeriod, newOperator) {
+  intervalForOperator(interval, dateTimePeriod, newOperator) {
     const { start, end } = interval.asMomentsForTimePeriod(dateTimePeriod);
 
-    if (newOperator === 'current') {
+    if (newOperator === OPERATORS.current) {
       return Interval.parseFromStrings('current', 'next');
-    } else if (newOperator === 'inPast') {
+    } else if (newOperator === OPERATORS.lookback) {
       const isQuarter = dateTimePeriod === 'quarter';
       const intervalDateTimePeriod = isQuarter ? 'month' : dateTimePeriod;
 
@@ -113,17 +129,17 @@ export default class extends Base {
 
       if (isQuarter) {
         // round to quarter
-        const quarters = Math.max(Math.floor(intervalValue / 3), 1);
-        intervalValue = quarters * 3;
+        const quarters = Math.max(Math.floor(intervalValue / MONTHS_IN_QUARTER), 1);
+        intervalValue = quarters * MONTHS_IN_QUARTER;
       }
 
       const dateTimePeriodLabel = intervalDateTimePeriod[0].toUpperCase();
       return Interval.parseFromStrings(`P${intervalValue}${dateTimePeriodLabel}`, 'current');
-    } else if (newOperator === 'since') {
+    } else if (newOperator === OPERATORS.since) {
       return new Interval(start, 'current');
-    } else if (newOperator === 'in') {
+    } else if (newOperator === OPERATORS.dateRange) {
       return new Interval(start, end);
-    } else if (newOperator === 'advanced') {
+    } else if (newOperator === OPERATORS.advanced) {
       const intervalValue = interval.diffForTimePeriod('day');
       return new Interval(new Duration(`P${intervalValue}D`), end);
     }
@@ -157,22 +173,15 @@ export default class extends Base {
       return;
     }
 
-    let changeSet = { operator: newOperator };
-
-    const timeGrain = get(this, 'request.logicalTable.timeGrain.name');
+    const dateTimePeriod = get(this, 'request.logicalTable.timeGrain.name');
     const originalInterval = get(this, 'requestFragment.interval');
-    const newInterval = this.convertIntervalToOperator(originalInterval, timeGrain, newOperator);
+
+    const newInterval = this.intervalForOperator(originalInterval, dateTimePeriod, newOperator);
     set(this, 'requestFragment.interval', newInterval);
 
-    Object.assign(changeSet, {
-      values: arr([get(this, 'requestFragment.interval')])
+    this.onUpdateFilter({
+      operator: newOperator,
+      values: arr([newInterval])
     });
-
-    //switch field to primary key if operator does not allow choosing fields
-    if (get(this, 'primaryKeyField') && !operatorObject.showFields) {
-      Object.assign(changeSet, { field: get(this, 'primaryKeyField') });
-    }
-
-    this.onUpdateFilter(changeSet);
   }
 }

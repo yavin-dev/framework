@@ -1,17 +1,17 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
- *   {{navi-date-picker
- *      date=initialDate
- *      dateTimePeriod='month'
- *      onUpdate=(action handleUpdate)
- *   }}
+ *   <NaviDatePicker
+ *      @date={{this.initialDate}}
+ *      @dateTimePeriod="month"
+ *      @onUpdate={{action this.handleUpdate}}
+ *   />
  */
 import Component from '@ember/component';
 import { get, set, computed, action } from '@ember/object';
-import { layout as templateLayout, classNames, className } from '@ember-decorators/component';
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
 import layout from '../templates/components/navi-date-picker';
 import moment from 'moment';
 import range from 'lodash/range';
@@ -23,7 +23,7 @@ import {
 } from 'navi-core/utils/date';
 
 @templateLayout(layout)
-@classNames('navi-date-picker')
+@tagName('')
 class NaviDatePicker extends Component {
   /**
    * @method init
@@ -53,15 +53,6 @@ class NaviDatePicker extends Component {
     //Store old date for rerender logic above
     set(this, 'previousDate', date);
     set(this, '_lastTimeDate', date);
-  }
-
-  /**
-   * @property {String} dateTimePeriodClass - The class to append depending on the dateTimePeriod
-   */
-  @className
-  @computed('dateTimePeriod')
-  get dateTimePeriodClass() {
-    return `navi-date-picker-${this.dateTimePeriod}`;
   }
 
   /**

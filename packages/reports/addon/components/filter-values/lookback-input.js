@@ -15,6 +15,7 @@ import layout from '../../templates/components/filter-values/lookback-input';
 import { computed, get, action } from '@ember/object';
 import Duration from 'navi-core/utils/classes/duration';
 import { isEmpty } from '@ember/utils';
+import { MONTHS_IN_QUARTER } from '../filter-builders/date-time';
 
 @templateLayout(layout)
 @tagName('')
@@ -27,7 +28,7 @@ class LookbackInput extends BaseIntervalComponent {
     const duration = get(this.interval, '_start');
     const lookback = duration.getValue();
     if (this.dateTimePeriod === 'quarter') {
-      return lookback / 3;
+      return lookback / MONTHS_IN_QUARTER;
     }
     return lookback;
   }
@@ -40,7 +41,7 @@ class LookbackInput extends BaseIntervalComponent {
    */
   lookbackToDuration(amount, dateTimePeriod) {
     if (dateTimePeriod === 'quarter') {
-      amount = amount * 3;
+      amount = amount * MONTHS_IN_QUARTER;
       dateTimePeriod = 'month';
     }
     return new Duration(`P${amount}${dateTimePeriod[0].toUpperCase()}`);

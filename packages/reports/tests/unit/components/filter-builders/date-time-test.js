@@ -122,7 +122,7 @@ module('Unit | Component | filter builders/date time', function(hooks) {
     const as = (start, end) => Interval.parseFromStrings(start, end);
     const translate = (interval, dateTimePeriod, newOperator) => {
       const { start, end } = dateBuilder
-        .convertIntervalToOperator(interval, dateTimePeriod, newOperator)
+        .intervalForOperator(interval, dateTimePeriod, newOperator)
         .asStrings(dateFormat);
       return `${start}/${end}`;
     };
