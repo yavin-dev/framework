@@ -31,7 +31,10 @@ export default DS.JSONAPIAdapter.extend({
    */
   ajaxOptions() {
     let hash = this._super(...arguments);
-    hash.credentials = 'include';
+    hash.xhrFields = {
+      withCredentials: true
+    };
+    hash.crossDomain = true;
     hash.headers = {
       Accept: 'application/vnd.api+json',
       'Content-Type': 'application/vnd.api+json'
