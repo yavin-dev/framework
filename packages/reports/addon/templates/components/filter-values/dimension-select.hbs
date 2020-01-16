@@ -1,4 +1,4 @@
-{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{#if @isCollapsed}}
   {{#if (is-fulfilled this.selectedDimensions)}}
     {{#if @filter.validations.attrs.rawValues.isInvalid}}
@@ -16,8 +16,9 @@
     @extra={{hash filter=@filter}}
     @triggerComponent="power-select-bulk-import-trigger"
     @optionsComponent="power-select-collection-options"
-    @onchange={{action "setValues"}}
-    @search={{action "searchDimensionValues"}}
+    @onchange={{this.setValues}}
+    @onclose={{set this.searchTerm undefined}}
+    @search={{this.searchDimensionValues}}
     @closeOnSelect={{false}}
     @placeholder={{concat @filter.subject.longName " Values"}}
     @loadingMessage="Loading..."

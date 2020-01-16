@@ -28,6 +28,7 @@ env:
     - PACKAGE=navi-directory
     - PACKAGE=navi-notifications
     - PACKAGE=navi-reports
+    - PACKAGE=navi-search
     - PACKAGE=navi-webservice
 branches:
   only:

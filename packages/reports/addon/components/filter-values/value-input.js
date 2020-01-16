@@ -1,34 +1,31 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
- *   {{filter-values/value-input
- *       filter=filter
- *       onUpdateFilter=(action 'update')
- *   }}
+ *   <FilterValues::ValueInput
+ *     @filter={{filter}}
+ *     @onUpdateFilter={{action "update"}}
+ *   />
  */
 import Component from '@ember/component';
+import { action } from '@ember/object';
 import layout from '../../templates/components/filter-values/value-input';
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
-export default Component.extend({
-  layout,
-
+@tagName('')
+@templateLayout(layout)
+class ValueInput extends Component {
   /**
-   * @property {String} tagName
-   * @override
+   * @action setValue
+   * @param {InputEvent} event
    */
-  tagName: '',
-
-  actions: {
-    /**
-     * @action setValues
-     * @param {String} value - single value to be set in filter
-     */
-    setValue(value) {
-      this.onUpdateFilter({
-        values: [value]
-      });
-    }
+  @action
+  setValue({ target: { value } }) {
+    this.onUpdateFilter({
+      values: [value]
+    });
   }
-});
+}
+
+export default ValueInput;
