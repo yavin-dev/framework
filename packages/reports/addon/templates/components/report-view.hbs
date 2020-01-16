@@ -43,8 +43,8 @@
       <NaviRequestPreview
         @request={{this.report.request}}
         @visualization={{this.report.visualization}}
-        @onRemoveMetric={{update-report-action "REMOVE_METRIC"}}
-        @onRemoveDimension={{update-report-action "REMOVE_DIMENSION"}}
+        @onRemoveMetric={{update-report-action "REMOVE_METRIC_FRAGMENT"}}
+        @onRemoveDimension={{update-report-action "REMOVE_DIMENSION_FRAGMENT"}}
         @onRemoveTimeGrain={{update-report-action "REMOVE_TIME_GRAIN"}}
         @onAddSort={{update-report-action "UPSERT_SORT"}}
         @onRemoveSort={{update-report-action "REMOVE_SORT"}}

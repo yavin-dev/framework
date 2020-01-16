@@ -57,6 +57,21 @@ module('Unit | Consumer | request dimension', function(hooks) {
     assert.ok(get(CurrentModel, 'request.dimensions.length') === 0, 'The given dimension is removed from the request');
   });
 
+  test('REMOVE_DIMENSION_FRAGMENT', function(assert) {
+    assert.expect(1);
+
+    run(() => {
+      Consumer.send(RequestActions.ADD_DIMENSION, { currentModel: CurrentModel }, Age);
+      Consumer.send(
+        RequestActions.REMOVE_DIMENSION_FRAGMENT,
+        { currentModel: CurrentModel },
+        CurrentModel.request.dimensions.firstObject
+      );
+    });
+
+    assert.ok(get(CurrentModel, 'request.dimensions.length') === 0, 'The given dimension is removed from the request');
+  });
+
   test('DID_UPDATE_TIME_GRAIN', function(assert) {
     assert.expect(2);
 

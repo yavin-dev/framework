@@ -33,6 +33,15 @@ export default ActionConsumer.extend({
     },
 
     /**
+     * @action REMOVE_DIMENSION_FRAGMENT
+     * @param {Object} route - route that has a model that contains a request property
+     * @param {Object} dimension - DS.Fragment of a dimension that should be removed from the request
+     */
+    [RequestActions.REMOVE_DIMENSION_FRAGMENT]({ currentModel }, dimension) {
+      get(currentModel, 'request').removeRequestDimension(dimension);
+    },
+
+    /**
      * @action DID_UPDATE_TIME_GRAIN
      * @param {Object} route - route that has a model that contains a request property
      * @param {Object} timeGrain - newly updated time grain

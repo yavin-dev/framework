@@ -16,7 +16,9 @@ export const RequestActions = {
   DID_UPDATE_TIME_GRAIN: 'didUpdateTimeGrain',
 
   REMOVE_DIMENSION: 'removeDimension',
+  REMOVE_DIMENSION_FRAGMENT: 'removeDimensionFragment',
   REMOVE_METRIC: 'removeMetric',
+  REMOVE_METRIC_FRAGMENT: 'removeMetricFragment',
   REMOVE_METRIC_WITH_PARAM: 'removeMetricWithParam',
   REMOVE_TIME_GRAIN: 'removeTimeGrain',
   REMOVE_FILTER: 'removeFilter',
