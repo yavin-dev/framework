@@ -126,7 +126,7 @@ export default Route.extend({
      * transition to view subroute if runReport is not handled in subroutes
      */
     runReport(report) {
-      this.transitionTo(`${this.routeName}.view`, get(report, 'tempId') || get(report, 'id'));
+      return this.transitionTo(`${this.routeName}.view`, get(report, 'tempId') || get(report, 'id'));
     },
 
     /**
