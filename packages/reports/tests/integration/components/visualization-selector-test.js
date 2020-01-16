@@ -40,7 +40,7 @@ module('Integration | Component | visualization-selector', function(hooks) {
       @report={{report}}
       @validVisualizations={{validVisualizations}}
       @currentVisualization={{currentView}}
-      @onVisualizationTypeUpdate={{action onVisualizationTypeUpdate}}
+      @onVisualizationTypeUpdate={{this.onVisualizationTypeUpdate}}
     />`);
 
     assert.deepEqual(

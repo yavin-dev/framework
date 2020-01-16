@@ -6,7 +6,7 @@
         class="visualization-selector__option {{if (eq currentVisualization visualization.name) "visualization-selector__option--is-active"}}"
         role="button"
         title={{visualization.niceName}}
-        {{on "click" (fn onVisualizationTypeUpdate visualization.name)}}
+        {{on "click" (fn @onVisualizationTypeUpdate visualization.name)}}
       >
         <NaviIcon @icon={{visualization.icon}} class="visualization-selector__option-icon"/>
       </li>

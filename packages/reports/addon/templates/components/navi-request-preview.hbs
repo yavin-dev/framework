@@ -4,7 +4,7 @@
     <table class="navi-request-preview__table">
       <thead class="navi-request-preview__table-header {{if this.editingColumn "navi-request-preview__table-header--editing"}}">
         {{#each columns as |col idx|}}
-          <th class={{concat "navi-request-preview__column-header " (if (eq idx this._editingColumnIndex) "navi-request-preview__column-header--editing ") "navi-request-preview__column-header--" col.type}}>
+          <th class="navi-request-preview__column-header navi-request-preview__column-header--{{col.type}} {{if (eq idx this._editingColumnIndex) "navi-request-preview__column-header--editing"}}">
             <BasicDropdown 
               @calculatePosition={{calculatePosition}}
               as |dd|
@@ -14,7 +14,7 @@
               </dd.trigger>
               <dd.content @class="navi-request-preview__column-header-options-content dropdown-arrow">
                 <ul class="navi-request-preview__column-header-options-list">
-                  <li class="navi-request-preview__column-header-option" role="button" {{action "removeColumn" col dd idx}}>
+                  <li class="navi-request-preview__column-header-option" role="button" {{on "click" (fn this.removeColumn col dd idx)}}>
                     <NaviIcon @icon="trash-o" class="navi-request-preview__option-icon"/>
                     Remove
                   </li>

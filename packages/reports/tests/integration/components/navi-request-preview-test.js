@@ -10,7 +10,7 @@ import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import hbs from 'htmlbars-inline-precompile';
 
 let Store, MetadataService, AdClicks, Revenue, Age, UpdateReportAction;
-const textContentArray = selector => [...document.querySelectorAll(selector)].map(el => el.textContent.trim());
+const textContentArray = selector => findAll(selector).map(el => el.textContent.trim());
 
 module('Integration | Component | navi-request-preview', function(hooks) {
   setupRenderingTest(hooks);
@@ -107,7 +107,7 @@ module('Integration | Component | navi-request-preview', function(hooks) {
       assert.equal(fragment.metric.longName, 'Ad Clicks', 'onRemoveMetric is called with a metric column');
     });
     this.set('onRemoveDimension', fragment => {
-      assert.equal(fragment.dimension.longName, 'Age', 'onRemoveDimension is called with a metric column');
+      assert.equal(fragment.dimension.longName, 'Age', 'onRemoveDimension is called with a dimension column');
     });
     this.set('onRemoveTimeGrain', fragment => {
       assert.equal(fragment.longName, 'Day', 'onRemoveTimeGrain is called with a dateTime column');
@@ -124,11 +124,11 @@ module('Integration | Component | navi-request-preview', function(hooks) {
       <NaviRequestPreview
         @request={{this.request}}
         @visualization={{this.visualization}}
-        @onRemoveMetric={{action onRemoveMetric}}
-        @onRemoveDimension={{action onRemoveDimension}}
-        @onRemoveTimeGrain={{action onRemoveTimeGrain}}
-        @onAddSort={{action onAddSort}}
-        @onRemoveSort={{action onRemoveSort}}
+        @onRemoveMetric={{this.onRemoveMetric}}
+        @onRemoveDimension={{this.onRemoveDimension}}
+        @onRemoveTimeGrain={{this.onRemoveTimeGrain}}
+        @onAddSort={{this.onAddSort}}
+        @onRemoveSort={{this.onRemoveSort}}
       />
     `);
 
@@ -313,11 +313,11 @@ module('Integration | Component | navi-request-preview', function(hooks) {
       <NaviRequestPreview
         @request={{this.request}}
         @visualization={{this.visualization}}
-        @onRemoveMetric={{action onRemoveMetric}}
-        @onRemoveDimension={{action onRemoveDimension}}
-        @onRemoveTimeGrain={{action onRemoveTimeGrain}}
-        @onAddSort={{action onAddSort}}
-        @onRemoveSort={{action onRemoveSort}}
+        @onRemoveMetric={{this.onRemoveMetric}}
+        @onRemoveDimension={{this.onRemoveDimension}}
+        @onRemoveTimeGrain={{this.onRemoveTimeGrain}}
+        @onAddSort={{this.onAddSort}}
+        @onRemoveSort={{this.onRemoveSort}}
       />
     `);
 
@@ -367,7 +367,7 @@ module('Integration | Component | navi-request-preview', function(hooks) {
     assert.dom('.navi-request-column-config').isVisible('Column config is open');
     assert.dom('#columnName').hasValue('Age', 'Age column config is open');
 
-    // trigger Remove metric action for FIRST Ad Clicks (VideoAds) column
+    // trigger Remove metric action for SECOND Age column
     await click(selectColumnHeaderOptions('Age', 1));
     await click('.navi-request-preview__column-header-option:first-of-type');
 
@@ -382,7 +382,7 @@ module('Integration | Component | navi-request-preview', function(hooks) {
     assert.dom('.navi-request-column-config').isVisible('Column config is open for first age column');
     assert.dom('#columnName').hasValue('Age', 'Video Ads column config is open');
 
-    // trigger Remove metric action for SECOND Age column
+    // trigger Remove dimension action for SECOND Age column
     await click(selectColumnHeaderOptions('Age', 1));
     await click('.navi-request-preview__column-header-option:first-of-type');
 
