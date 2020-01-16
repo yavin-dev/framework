@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 export default [
@@ -17,7 +17,24 @@ export default [
           y: {
             series: {
               type: 'dimension',
-              config: {}
+              config: {
+                metric: 'wins',
+                dimensionOrder: ['character'],
+                dimensions: [
+                  {
+                    name: 'Dry Bowser',
+                    values: { character: '7' }
+                  },
+                  {
+                    name: 'Daisy',
+                    values: { character: '4' }
+                  },
+                  {
+                    name: 'Wario',
+                    values: { character: '8' }
+                  }
+                ]
+              }
             }
           }
         }
@@ -61,7 +78,36 @@ export default [
           y: {
             series: {
               type: 'dimension',
-              config: {}
+              config: {
+                metric: 'timeSpent',
+                dimensionOrder: ['game'],
+                dimensions: [
+                  {
+                    name: 'Galaxy 2',
+                    values: { game: 'galaxy_2' }
+                  },
+                  {
+                    name: 'Sunshine',
+                    values: { game: 'sunshine' }
+                  },
+                  {
+                    name: '3D Land',
+                    values: { game: '3d_land' }
+                  },
+                  {
+                    name: 'Galaxy',
+                    values: { game: 'galaxy' }
+                  },
+                  {
+                    name: 'Oddysey',
+                    values: { game: 'oddysey' }
+                  },
+                  {
+                    name: 'Kart',
+                    values: { game: 'kart' }
+                  }
+                ]
+              }
             }
           }
         }
@@ -99,7 +145,52 @@ export default [
           y: {
             series: {
               type: 'dimension',
-              config: {}
+              config: {
+                metric: 'coins',
+                dimensionOrder: ['platform', 'game'],
+                dimensions: [
+                  {
+                    name: 'Switch,Galaxy 2',
+                    values: { platform: 'switch', game: 'galaxy_2' }
+                  },
+                  {
+                    name: 'Entertainment System,3D Land',
+                    values: { platform: 'nes', game: '3d_land' }
+                  },
+                  {
+                    name: 'Entertainment System,Sunshine',
+                    values: { platform: 'nes', game: 'sunshine' }
+                  },
+                  {
+                    name: 'Switch,Kart',
+                    values: { platform: 'switch', game: 'kart' }
+                  },
+                  {
+                    name: 'Entertainment System,Kart',
+                    values: { platform: 'nes', game: 'kart' }
+                  },
+                  {
+                    name: 'Entertainment System,Oddysey',
+                    values: { platform: 'nes', game: 'oddysey' }
+                  },
+                  {
+                    name: '64,Oddysey',
+                    values: { platform: '64', game: 'oddysey' }
+                  },
+                  {
+                    name: '64,3D Land',
+                    values: { platform: '64', game: '3d_land' }
+                  },
+                  {
+                    name: '64,Galaxy',
+                    values: { platform: '64', game: 'galaxy' }
+                  },
+                  {
+                    name: '64,Sunshine',
+                    values: { platform: '64', game: 'sunshine' }
+                  }
+                ]
+              }
             }
           }
         }

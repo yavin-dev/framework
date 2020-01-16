@@ -367,7 +367,7 @@ module('Acceptance | Dashboards', function(hooks) {
   });
 
   test('New widget', async function(assert) {
-    assert.expect(11);
+    assert.expect(15);
 
     // Check original set of widgets
     await visit('/dashboards/1');
@@ -385,17 +385,12 @@ module('Acceptance | Dashboards', function(hooks) {
 
     // Fill out request
     await click($('.checkbox-selector--metric .grouped-list__item:contains(Total Clicks) .grouped-list__add-icon')[0]);
-    await click('.navi-report-widget__run-btn');
-    // Regex to check that a string ends with "{uuid}/view"
-    const TempIdRegex = /\/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\/view$/;
 
-    assert.ok(TempIdRegex.test(currentURL()), 'Creating a widget brings user to /view route with a temp id');
-
-    // Save
+    // Save without running
     await click('.navi-report-widget__save-btn');
     assert.ok(
       currentURL().endsWith('/dashboards/1/view'),
-      'After saving for the first time, user is brought back to dashboard view'
+      'After saving without running, user is brought back to dashboard view'
     );
 
     let widgetsAfter = findAll('.navi-widget__title').map(el => el.textContent.trim());
@@ -404,6 +399,50 @@ module('Acceptance | Dashboards', function(hooks) {
       widgetsAfter,
       ['Mobile DAU Goal', 'Mobile DAU Graph', 'Mobile DAU Table', 'Untitled Widget'],
       '"Untitled Widget" has been added to dashboard'
+    );
+
+    let widgetColumns = findAll('.navi-widget:nth-child(4) .table-header-cell').map(el => el.textContent.trim());
+
+    assert.deepEqual(
+      widgetColumns,
+      ['Date', 'Total Clicks'],
+      'Table columns for the new widget are rendered correctly'
+    );
+
+    // Create another new widget
+    await click('.add-widget .btn');
+    await click('.add-widget-modal .add-to-dashboard');
+
+    // Fill out request
+    await click(
+      $('.checkbox-selector--metric .grouped-list__item:contains(Total Page Views) .grouped-list__add-icon')[0]
+    );
+
+    // Run request
+    await click('.navi-report-widget__run-btn');
+    // Regex to check that a string ends with "{uuid}/view"
+    const TempIdRegex = /\/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\/view$/;
+
+    assert.ok(TempIdRegex.test(currentURL()), 'Creating a widget brings user to /view route with a temp id');
+
+    // Save
+    await click('.navi-report-widget__save-btn');
+    assert.ok(currentURL().endsWith('/dashboards/1/view'), 'After saving, user is brought back to dashboard view');
+
+    widgetsAfter = findAll('.navi-widget__title').map(el => el.textContent.trim());
+
+    assert.deepEqual(
+      widgetsAfter,
+      ['Mobile DAU Goal', 'Mobile DAU Graph', 'Mobile DAU Table', 'Untitled Widget', 'Untitled Widget'],
+      'Another "Untitled Widget" has been added to dashboard'
+    );
+
+    widgetColumns = findAll('.navi-widget:nth-child(5) .table-header-cell').map(el => el.textContent.trim());
+
+    assert.deepEqual(
+      widgetColumns,
+      ['Date', 'Total Page Views'],
+      'Table columns for the second new widget are rendered correctly'
     );
 
     // hover css events are hard
@@ -418,8 +457,8 @@ module('Acceptance | Dashboards', function(hooks) {
 
     assert.deepEqual(
       widgetsAfter,
-      ['Mobile DAU Goal', 'Mobile DAU Graph', 'Mobile DAU Table', 'Untitled Widget'],
-      '"Untitled Widget" is still on dashboard after navigating to subroute'
+      ['Mobile DAU Goal', 'Mobile DAU Graph', 'Mobile DAU Table', 'Untitled Widget', 'Untitled Widget'],
+      '"Untitled Widget"s are still on dashboard after navigating to subroute'
     );
 
     window.confirm = () => {

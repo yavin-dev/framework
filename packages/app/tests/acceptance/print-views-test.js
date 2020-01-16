@@ -1,4 +1,4 @@
-import { visit } from '@ember/test-helpers';
+import { visit, findAll } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
@@ -14,8 +14,8 @@ module('Acceptance | print views', function(hooks) {
 
     assert.dom('.navi-report__title').hasText('Kart Wins By Character', 'The report title shows up');
     assert.deepEqual(
-      [...document.querySelectorAll('.line-chart-widget .c3-legend-item')].map(el => el.textContent),
-      ['Mario', 'Luigi', 'Peach', 'Toad', 'Daisy', 'Bowser', 'Boo', 'Dry Bowser', 'Wario', 'Rosalina'],
+      findAll('.line-chart-widget .c3-legend-item').map(el => el.textContent),
+      ['Dry Bowser', 'Daisy', 'Wario'],
       'The legend fills in with widget dimensions'
     );
   });
@@ -28,7 +28,7 @@ module('Acceptance | print views', function(hooks) {
     assert.dom('.navi-widget__title').hasText('Kart Wins By Character', 'The widget title shows up');
     assert.dom('.c3-axis-y-label').hasText('Wins', 'The widget y-axis title shows up');
     assert.deepEqual(
-      [...document.querySelectorAll('.line-chart-widget .c3-legend-item')].map(el => el.textContent.trim()),
+      findAll('.line-chart-widget .c3-legend-item').map(el => el.textContent.trim()),
       ['Dry Bowser', 'Daisy', 'Wario'],
       'Dashboard widget legend should fill in with dimensions'
     );
