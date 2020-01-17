@@ -1649,7 +1649,6 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.dom('.filter-values--date-range-input__high-value').hasText('Nov 15, 2015', 'The end date is Nov 15, 2015');
 
     await selectChoose('.filter-builder__select-trigger', 'Advanced');
-    await this.pauseTest();
     assert.dom(findAll('.filter-values--advanced-interval-input__value')[0]).hasValue('P7D', 'The start date is P7D');
     assert
       .dom(findAll('.filter-values--advanced-interval-input__value')[1])
