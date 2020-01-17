@@ -33,15 +33,22 @@
   &--current-period {
     display: flex;
     flex-direction: row;
+    margin-left: 8px;
 
     &__value {
-      border: 1px solid @navi-gray-400;
+      border: 1px solid #aaaaaa;
       font-family: @font-family-thin;
     }
 
     &__label {
       flex: 3;
-      padding: 5px;
+      padding: 0 5px;
+      align-self: center;
+      line-height: @filter-collection-row-height;
+    }
+
+    &__help {
+      color: @navi-blue-300;
     }
   }
 
@@ -51,13 +58,18 @@
   &--dimension-date-range-input {
     display: flex;
     flex-direction: row;
+    margin-left: 8px;
 
-    & > div {
+    &__low-value,
+    &__high-value {
       flex: 2;
+      align-self: center;
     }
 
     &__separator {
-      padding: 5px;
+      align-self: center;
+      text-align: center;
+      flex: 1;
     }
 
     &__trigger {
@@ -72,9 +84,10 @@
   &--range-input__input,
   &--multi-value-input,
   &--value-input {
-    border: 1px solid @navi-gray-400;
+    border: 1px solid #aaaaaa;
     font-family: @font-family-thin;
     width: 100%;
+    margin-left: 8px;
   }
 
   &--range-input__input--error,

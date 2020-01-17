@@ -52,11 +52,11 @@ class LookbackInput extends BaseIntervalComponent {
    * @param {Interval} interval - new interval to set in filter
    */
   @action
-  setLookback(interval) {
-    if (isEmpty(interval) || Number(interval) < 1) {
+  setLookback({ target: { value } }) {
+    if (isEmpty(value) || Number(value) < 1) {
       return;
     }
-    const lookbackDuration = this.lookbackToDuration(interval, this.dateTimePeriod);
+    const lookbackDuration = this.lookbackToDuration(value, this.dateTimePeriod);
     this.setInterval(lookbackDuration, 'current');
   }
 }

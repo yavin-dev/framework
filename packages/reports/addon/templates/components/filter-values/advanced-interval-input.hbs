@@ -7,20 +7,21 @@
   {{/if}}
 {{else}}
   <div class="filter-values--advanced-interval-input" ...attributes>
-    <Input
+    <input
       class="filter-values--advanced-interval-input__value"
-      @value={{readonly this.dateStrings.start}}
-      @focus-out={{pipe (action this.parseDate) (action this.setIntervalStart)}}
-    />
+      value={{this.dateStrings.start}}
+      {{on "focusout" (pipe this.parseDate this.setIntervalStart)}}
+    >
     <span class="filter-values--advanced-interval-input__separator">to</span>
-    <Input
+    <input
       class="filter-values--advanced-interval-input__value"
-      @value={{readonly this.dateStrings.end}}
-      @focus-out={{pipe (action this.parseDate) (action this.setIntervalEnd)}}
-    />
+      value={{this.dateStrings.end}}
+      {{on "focusout" (pipe this.parseDate this.setIntervalEnd)}}
+    >
 
     <div class="filter-values--advanced-interval-input__label">
-      <a href="http://fili.io/pages/guide/02-end-user-api.html#dates-and-times"
+      <a class="filter-values--advanced-interval-input__help" 
+        href="http://fili.io/pages/guide/02-end-user-api.html#dates-and-times"
         target="_blank"
         rel="noopener"
       >

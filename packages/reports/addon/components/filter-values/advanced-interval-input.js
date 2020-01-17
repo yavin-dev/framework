@@ -43,11 +43,11 @@ class AdvancedIntervalInputComponent extends BaseIntervalComponent {
    * @param {String} date - date string from input
    * @returns {Duration|moment|string} - object most closely represented by the string
    */
-  parseDate(date) {
-    if (typeof date === 'string') {
-      return Interval.fromString(date);
+  parseDate({ target: { value } }) {
+    if (typeof value === 'string') {
+      return Interval.fromString(value);
     }
-    return date;
+    return value;
   }
 }
 

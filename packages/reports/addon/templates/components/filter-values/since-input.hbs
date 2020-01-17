@@ -13,7 +13,7 @@
       class="filter-values--since-input__trigger filter-values--since-input__low-value"
       @date={{this.startDate}}
       @dateTimePeriod={{this.dateTimePeriod}}
-      @onUpdate={{action this.setIntervalStart}}
+      @onUpdate={{this.setIntervalStart}}
     >
       {{#if this.startDate}}
         {{this.startFormat}}
@@ -22,15 +22,17 @@
       {{/if}}
     </DropdownDatePicker>
 
-    {{#let (eq this.interval._end "next") as |isNext|}}
-      <div class="filter-values--since-input__separator">
+    <span class="filter-values--date-range-input__separator" />
+
+    {{#let (eq this.interval._end "current") as |isCurrent|}}
+      <div class="filter-values--since-input__high-value">
         <Input
           @type="checkbox"
           @id="currentDateTimePeriod"
-          @checked={{isNext}}
-          {{on "click" (fn this.setIntervalEnd (if isNext "current" "next"))}}
+          @checked={{isCurrent}}
+          {{on "click" (fn this.setIntervalEnd (if isCurrent "next" "current"))}}
         />
-        <label for="currentDateTimePeriod">Include this {{this.dateTimePeriod}}?</label>
+        <label for="currentDateTimePeriod">Exclude current {{this.dateTimePeriod}}?</label>
       </div>
     {{/let}}
   </div>

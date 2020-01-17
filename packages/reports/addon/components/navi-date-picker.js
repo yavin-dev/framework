@@ -6,7 +6,7 @@
  *   <NaviDatePicker
  *      @date={{this.initialDate}}
  *      @dateTimePeriod="month"
- *      @onUpdate={{action this.handleUpdate}}
+ *      @onUpdate={{this.handleUpdate}}
  *   />
  */
 import Component from '@ember/component';

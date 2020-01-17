@@ -8,15 +8,15 @@
     {{/if}}
   {{else}}
     <div class="filter-values--lookback-input" ...attributes>
-      <Input
+      <input
         class="filter-values--lookback-input__value
           {{if filter.validations.attrs.values.isInvalid "filter-values--lookback-input--error"}}"
-        @value={{readonly this.lookback}}
-        @placeholder="Value"
-        @key-up={{action this.setLookback}}
-        @type="number"
-        @min="1"
-      />
+        value={{this.lookback}}
+        placeholder={{capitalize (concat this.dateTimePeriod "s")}}
+        type="number"
+        min="1"
+        {{on "input" this.setLookback}}
+      >
       <span class="filter-values--lookback-input__label">{{dateDescription}}</span>
     </div>
   {{/if}}

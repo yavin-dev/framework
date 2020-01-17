@@ -11,6 +11,7 @@ import reorder from '../helpers/reorder';
 import config from 'ember-get-config';
 import { Response } from 'ember-cli-mirage';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import moment from 'moment';
 
 // Regex to check that a string ends with "{uuid}/view"
 const TempIdRegex = /\/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\/view$/;
@@ -1637,6 +1638,51 @@ module('Acceptance | Navi Report', function(hooks) {
     assert
       .dom('.filter-values--date-range-input__high-value')
       .hasText('Jan 25, 2015', 'Switching to week casts the date to match the end of the date time period');
+  });
+
+  test('Date picker change interval type', async function(assert) {
+    assert.expect(9);
+
+    await visit('/reports/1');
+
+    assert.dom('.filter-values--date-range-input__low-value').hasText('Nov 09, 2015', 'The start date is Nov 09, 2015');
+    assert.dom('.filter-values--date-range-input__high-value').hasText('Nov 15, 2015', 'The end date is Nov 15, 2015');
+
+    await selectChoose('.filter-builder__select-trigger', 'Advanced');
+    await this.pauseTest();
+    assert.dom(findAll('.filter-values--advanced-interval-input__value')[0]).hasValue('P7D', 'The start date is P7D');
+    assert
+      .dom(findAll('.filter-values--advanced-interval-input__value')[1])
+      .hasValue('2015-11-15', 'The end date is 2015-11-15');
+
+    await selectChoose('.filter-builder__select-trigger', 'Between');
+    assert
+      .dom('.filter-values--date-range-input__low-value')
+      .hasText('Nov 09, 2015', 'The start date is still Nov 09, 2015');
+    assert
+      .dom('.filter-values--date-range-input__high-value')
+      .hasText('Nov 15, 2015', 'The end date is still Nov 15, 2015');
+
+    await selectChoose('.filter-builder__select-trigger', 'Advanced');
+    await fillIn(findAll('.filter-values--advanced-interval-input__value')[1], 'current');
+    await blur(findAll('.filter-values--advanced-interval-input__value')[1]);
+    assert
+      .dom('.ember-power-select-selected-item')
+      .hasText('In The Past', 'relative/current changes date to in the past');
+
+    await selectChoose('.filter-builder__select-trigger', 'Since');
+    const dateFormat = 'MMM DD, YYYY';
+    assert.dom('.dropdown-date-picker__trigger').hasText(
+      moment()
+        .subtract(7, 'day')
+        .format(dateFormat),
+      'The start is 7 days ago'
+    );
+
+    await selectChoose('.filter-builder__select-trigger', 'Current Day');
+
+    const today = moment().format(dateFormat);
+    assert.dom('.filter-values--current-period__label').hasText(`The current day. (${today})`, 'The current day');
   });
 
   test("Report with an unknown table doesn't crash", async function(assert) {

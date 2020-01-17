@@ -17,7 +17,7 @@ module('Integration | Component | filter values/lookback input', function(hooks)
     await render(hbs`<FilterValues::LookbackInput
             @filter={{this.filter}}
             @request={{this.request}}
-            @onUpdateFilter={{action this.onUpdateFilter}}
+            @onUpdateFilter={{this.onUpdateFilter}}
             @isCollapsed={{this.isCollapsed}}
         />`);
   });

@@ -26,7 +26,7 @@ module('Integration | Component | filter values/date range', function(hooks) {
     await render(hbs`<FilterValues::DateRange
             @filter={{this.filter}}
             @request={{this.request}}
-            @onUpdateFilter={{action this.onUpdateFilter}}
+            @onUpdateFilter={{this.onUpdateFilter}}
             @isCollapsed={{this.isCollapsed}}
         />`);
   });

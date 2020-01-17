@@ -13,7 +13,7 @@
       class="filter-values--date-range-input__trigger filter-values--date-range-input__low-value"
       @date={{this.startDate}}
       @dateTimePeriod={{this.dateTimePeriod}}
-      @onUpdate={{action this.setIntervalStart}}
+      @onUpdate={{this.setIntervalStart}}
     >
       {{#if this.startDate}}
         {{this.startFormat}}
@@ -28,7 +28,7 @@
       class="filter-values--date-range-input__trigger filter-values--date-range-input__high-value"
       @date={{this.endDate}}
       @dateTimePeriod={{this.dateTimePeriod}}
-      @onUpdate={{action this.setIntervalEnd}}
+      @onUpdate={{this.setIntervalEnd}}
     >
       {{#if endDate}}
         {{this.endFormat}}

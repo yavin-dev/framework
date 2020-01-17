@@ -17,7 +17,7 @@ module('Integration | Component | filter values/advanced interval input', functi
     await render(hbs`<FilterValues::AdvancedIntervalInput
             @filter={{this.filter}}
             @request={{this.request}}
-            @onUpdateFilter={{action this.onUpdateFilter}}
+            @onUpdateFilter={{this.onUpdateFilter}}
             @isCollapsed={{this.isCollapsed}}
         />`);
   });
