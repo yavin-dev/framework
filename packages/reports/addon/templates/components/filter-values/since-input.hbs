@@ -26,12 +26,12 @@
 
     {{#let (eq this.interval._end "current") as |isCurrent|}}
       <div class="filter-values--since-input__high-value">
-        <Input
-          @type="checkbox"
-          @id="currentDateTimePeriod"
-          @checked={{isCurrent}}
+        <input
+          type="checkbox"
+          id="currentDateTimePeriod"
+          checked={{isCurrent}}
           {{on "click" (fn this.setIntervalEnd (if isCurrent "next" "current"))}}
-        />
+        >
         <label for="currentDateTimePeriod">Exclude current {{this.dateTimePeriod}}?</label>
       </div>
     {{/let}}
