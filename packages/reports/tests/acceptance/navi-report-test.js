@@ -1681,7 +1681,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await selectChoose('.filter-builder__select-trigger', 'Current Day');
 
     const today = moment().format(dateFormat);
-    assert.dom('.filter-values--current-period__label').hasText(`The current day. (${today})`, 'The current day');
+    assert.dom('.filter-values--current-period').hasText(`The current day. (${today})`, 'The current day');
   });
 
   test("Report with an unknown table doesn't crash", async function(assert) {
