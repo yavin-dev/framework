@@ -58,10 +58,7 @@ export default Fragment.extend(Validations, {
           dimensionService = get(this, 'dimensionService');
 
         return DS.PromiseArray.create({
-          promise: dimensionService.find(dimensionName, { values }).then(values => {
-            debugger;
-            return arr(values);
-          })
+          promise: dimensionService.find(dimensionName, { values }).then(values => arr(values))
         });
       }
     },
