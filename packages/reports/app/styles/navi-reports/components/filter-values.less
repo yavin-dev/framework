@@ -1,5 +1,5 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -28,9 +28,15 @@
     }
   }
 
-  &--lookback-input,
-  &--advanced-interval-input,
   &--current-period {
+    align-self: center;
+    flex: 1;
+    line-height: @filter-collection-row-height;
+    margin-left: 8px;
+  }
+
+  &--lookback-input,
+  &--advanced-interval-input {
     display: flex;
     flex-direction: row;
     margin-left: 8px;
@@ -41,14 +47,15 @@
     }
 
     &__label {
-      flex: 3;
-      padding: 0 5px;
       align-self: center;
+      flex: 3;
       line-height: @filter-collection-row-height;
+      padding: 0 5px;
     }
 
     &__help {
       color: @navi-blue-300;
+      padding-left: 8px;
     }
   }
 
@@ -68,8 +75,8 @@
 
     &__separator {
       align-self: center;
+      min-width: 32px;
       text-align: center;
-      flex: 1;
     }
 
     &__trigger {

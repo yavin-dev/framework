@@ -1,41 +1,40 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
- *   {{filter-values/date
- *       filter=filter
- *       request=request
- *       onUpdateFilter=(action 'update')
- *   }}
+ *   <FilterValues::Date
+ *       @filter={{this.filter}}
+ *       @request={{this.request}}
+ *       @onUpdateFilter={{this.update}}
+ *   />
  */
 import { oneWay } from '@ember/object/computed';
 import Component from '@ember/component';
+import { action } from '@ember/object';
 import Moment from 'moment';
 import layout from '../../templates/components/filter-values/date';
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
-export default Component.extend({
-  layout,
-
-  /**
-   * @property {Array} classNames
-   */
-  classNames: ['filter-values--date'],
-
+@templateLayout(layout)
+@tagName('')
+class DateComponent extends Component {
   /**
    * @property {String} date - the date that's saved in the filter
    */
-  date: oneWay('filter.values.firstObject'),
+  @oneWay('filter.values.firstObject')
+  date;
 
-  actions: {
-    /**
-     * @action setDate
-     * @param {Date} date - new date to set in filter
-     */
-    setDate(date) {
-      this.onUpdateFilter({
-        values: [Moment(date).format('YYYY-MM-DD')]
-      });
-    }
+  /**
+   * @action setDate
+   * @param {Date} date - new date to set in filter
+   */
+  @action
+  setDate(date) {
+    this.onUpdateFilter({
+      values: [Moment(date).format('YYYY-MM-DD')]
+    });
   }
-});
+}
+
+export default DateComponent;

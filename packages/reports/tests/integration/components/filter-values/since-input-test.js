@@ -15,11 +15,11 @@ module('Integration | Component | filter values/since input', function(hooks) {
     this.onUpdateFilter = () => null;
 
     await render(hbs`<FilterValues::SinceInput
-            @filter={{this.filter}}
-            @request={{this.request}}
-            @onUpdateFilter={{this.onUpdateFilter}}
-            @isCollapsed={{this.isCollapsed}}
-        />`);
+      @filter={{this.filter}}
+      @request={{this.request}}
+      @onUpdateFilter={{this.onUpdateFilter}}
+      @isCollapsed={{this.isCollapsed}}
+    />`);
   });
 
   test('it renders', function(assert) {
