@@ -627,8 +627,8 @@ module('Acceptance | Dashboards', function(hooks) {
     assert.deepEqual(
       dataRequests.map(thing => thing.queryParams.filters),
       [
-        'property|id-notin[2,3],property|id-notin[1],property|id-contains[114,100001]',
-        'property|id-notin[2,3],property|id-notin[1],property|id-contains[114,100001]'
+        'property|id-notin["2","3"],property|id-notin["1"],property|id-contains["114","100001"]',
+        'property|id-notin["2","3"],property|id-notin["1"],property|id-contains["114","100001"]'
       ],
       'the filters from the request are unmodified from the dashboard'
     );
@@ -657,8 +657,8 @@ module('Acceptance | Dashboards', function(hooks) {
     assert.deepEqual(
       dataRequests.map(thing => thing.queryParams.filters),
       [
-        'property|id-notin[2,3],property|id-contains[114,100001]',
-        'property|id-notin[2,3],property|id-contains[114,100001]'
+        'property|id-notin["2","3"],property|id-contains["114","100001"]',
+        'property|id-notin["2","3"],property|id-contains["114","100001"]'
       ],
       'the filters reflect the dashboards modified filters'
     );

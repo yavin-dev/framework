@@ -81,10 +81,12 @@ class DimensionSelectComponent extends Component {
 
     // Only fetch dimensions if filter has values
     if (get(dimensionIds, 'length')) {
-      return dimensionService.find(dimensionName, {
-        field: primaryKey,
-        values: dimensionIds.join(',')
-      });
+      return dimensionService.find(dimensionName, [
+        {
+          field: primaryKey,
+          values: dimensionIds
+        }
+      ]);
     } else {
       return resolve(A());
     }

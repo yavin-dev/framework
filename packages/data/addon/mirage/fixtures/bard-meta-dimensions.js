@@ -220,6 +220,14 @@ export default {
       category: 'test',
       datatype: 'date',
       storageStrategy: 'loaded'
+    },
+    {
+      name: 'commaDim',
+      longName: 'Dimension with comma',
+      cardinality: 2,
+      category: 'test',
+      datatype: 'text',
+      storageStrategy: 'loaded'
     }
   ],
 

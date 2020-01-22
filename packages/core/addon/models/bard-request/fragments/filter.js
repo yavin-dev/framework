@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -54,11 +54,11 @@ export default Fragment.extend(Validations, {
         return DS.PromiseArray.create({ promise });
       } else {
         let dimensionName = get(this, 'dimension.name'),
-          values = arr(get(this, 'rawValues')).join(','),
+          values = arr(get(this, 'rawValues')),
           dimensionService = get(this, 'dimensionService');
 
         return DS.PromiseArray.create({
-          promise: dimensionService.find(dimensionName, { values }).then(values => arr(values))
+          promise: dimensionService.find(dimensionName, [{ values }]).then(values => arr(values))
         });
       }
     },

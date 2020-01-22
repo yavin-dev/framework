@@ -155,10 +155,11 @@ export default Service.extend({
    *
    * @method find
    * @param {String} dimension - dimension name
-   * @param {Object} query - filter query object to filter dimension values
+   * @param {Array<Query>} andQueries - list of filters to be ANDed together
+   * @param {Query} query - filter query object to filter dimension values
    * @param {String} query.field - field used to query
    * @param {String} query.operator - type of query, ex: 'contains' or 'in'
-   * @param {Array} query.values - list of strings representing comma seperated lists of values to OR, with each string in the list being ANDed together
+   * @param {Array<String|number>} query.values - list of values representing an OR on a single filter
    * @param {Object} [options] - options object
    * @param {String} [options.clientId]
    * @param {Number} [options.timeout]
@@ -166,18 +167,18 @@ export default Service.extend({
    * @param {Number} [options.perPage]
    * @returns {BardDimensionArray} - array of bard dimension model objects
    */
-  find(dimension, query, options) {
+  find(dimension, andQueries, options) {
     let kegAdapter = get(this, '_kegAdapter');
 
     // fetch from keg if all records are loaded in keg
     if (this.getLoadedStatus(dimension)) {
-      return kegAdapter.find(dimension, [query], options).then(recordsFromKeg => {
+      return kegAdapter.find(dimension, andQueries, options).then(recordsFromKeg => {
         return this._createBardDimensionsArray(recordsFromKeg, recordsFromKeg.rows, dimension);
       });
     }
 
     return get(this, '_bardAdapter')
-      .find(dimension, [query], options)
+      .find(dimension, andQueries, options)
       .then(recordsFromBard => {
         let serialized = get(this, '_serializer').normalize(dimension, recordsFromBard),
           dimensions = kegAdapter.pushMany(dimension, serialized);

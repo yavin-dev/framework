@@ -41,7 +41,7 @@ module('Unit | Adapter | Dimensions | Bard', function(hooks) {
           };
 
           return [200, { 'Content-Type': 'application/json' }, JSON.stringify(paginatedResponse)];
-        } else if (request.queryParams.filters === 'dimensionOne|id-in[v1]') {
+        } else if (request.queryParams.filters === 'dimensionOne|id-in["v1"]') {
           return MockBardResponse2;
         }
         return MockBardResponse;
@@ -91,23 +91,23 @@ module('Unit | Adapter | Dimensions | Bard', function(hooks) {
   });
 
   test('_buildFilterQuery', function(assert) {
-    assert.expect(5);
+    assert.expect(7);
 
     assert.deepEqual(
       Adapter._buildFilterQuery('dimensionOne', { values: 'v1' }),
-      { filters: 'dimensionOne|id-in[v1]' },
+      { filters: 'dimensionOne|id-in["v1"]' },
       'correctly built filters for object with one string value'
     );
 
     assert.deepEqual(
       Adapter._buildFilterQuery('dimensionOne', { values: 'v1,v2,v3' }),
-      { filters: 'dimensionOne|id-in[v1,v2,v3]' },
+      { filters: 'dimensionOne|id-in["v1","v2","v3"]' },
       'correctly built the query for object with csv string values'
     );
 
     assert.deepEqual(
       Adapter._buildFilterQuery('dimensionOne', { values: ['v1', 'v2', 'v3'] }),
-      { filters: 'dimensionOne|id-in[v1,v2,v3]' },
+      { filters: 'dimensionOne|id-in["v1","v2","v3"]' },
       'correctly built the query for object with array of values'
     );
 
@@ -116,7 +116,7 @@ module('Unit | Adapter | Dimensions | Bard', function(hooks) {
         { field: 'id', operator: 'contains', values: [1, 3] },
         { field: 'id', operator: 'contains', values: [2] }
       ]),
-      { filters: 'dimensionOne|id-contains[1,3],dimensionOne|id-contains[2]' },
+      { filters: 'dimensionOne|id-contains["1","3"],dimensionOne|id-contains["2"]' },
       'AND filter is generated given a query with multiple filters and OR filter for multiple values'
     );
 
@@ -125,8 +125,28 @@ module('Unit | Adapter | Dimensions | Bard', function(hooks) {
         field: 'description',
         values: ['value1,value2']
       }),
-      { filters: 'dimensionOne|desc-in[value1,value2]' },
-      '_buildFilterQuery correctly built the query object when given an array of values'
+      { filters: 'dimensionOne|desc-in["value1,value2"]' },
+      'correctly built the query object when given an array of values'
+    );
+
+    assert.deepEqual(
+      Adapter._buildFilterQuery('dimensionOne', {
+        field: 'id',
+        operator: 'in',
+        values: ['yes, comma', 'no comma']
+      }),
+      { filters: 'dimensionOne|id-in["yes, comma","no comma"]' },
+      'correctly wraps values, even with commas'
+    );
+
+    assert.deepEqual(
+      Adapter._buildFilterQuery('dimensionOne', {
+        field: 'id',
+        operator: 'in',
+        values: ['ok', 'weird "quote" value', 'but why']
+      }),
+      { filters: 'dimensionOne|id-in["ok","weird ""quote"" value","but why"]' },
+      'correctly wraps values, even with quotes'
     );
   });
 
