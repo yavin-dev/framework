@@ -54,8 +54,25 @@
   &__visualization-header {
     align-items: center;
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
-    margin: 10px 10px 25px;
+    margin: 10px;
+
+    &__data-toggle {
+      align-items: center;
+      display: flex;
+      flex-direction: row;
+
+      &-icon {
+        color: @denali-brand-600;
+        font-size: @font-size-large;
+      }
+    }
+
+    &__title {
+      font-size: @font-size-base;
+      margin: 0 5px 0 10px;
+    }
   }
 
   &__visualization-main {

@@ -195,25 +195,21 @@ class NaviRequestPreview extends Component {
    * @action
    * @param {Object} column - contains type and name of column to remove from request
    * @param {Object} dropdown - ember basic dropdown public api, used to close dropdown on removal
+   * @param {Number} columnIndex - index of the column being removed
    */
   @action
-  removeColumn(column, dropdown) {
-    const { type, name } = column;
-    const request = this.request;
+  removeColumn(column, dropdown, columnIndex) {
+    const { type } = column;
     const removalType = type === 'dateTime' ? 'TimeGrain' : capitalize(type);
     const removalHandler = get(this, `onRemove${removalType}`);
-    const fragmentToRemove = {
-      dimension: () => request.dimensions.findBy('dimension.name', name).dimension,
-      metric: () => request.metrics.findBy('canonicalName', name).metric,
-      dateTime: () => request.logicalTable.timeGrain
-    }[type]();
+    const fragmentToRemove = column.fragment;
 
     if (removalHandler && fragmentToRemove) {
       removalHandler(fragmentToRemove);
       dropdown.actions.close();
 
-      if (this.editingColumn && this.editingColumn.type === type && this.editingColumn.name === name) {
-        this.set('editingColumn', null);
+      if (this._editingColumnIndex === columnIndex) {
+        this.set('_editingColumnIndex', null);
       }
     }
   }

@@ -59,6 +59,21 @@ module('Unit | Consumer | request metric', function(hooks) {
     assert.ok(get(CurrentModel, 'request.metrics.length') === 0, 'The given metric is removed from the request');
   });
 
+  test('REMOVE_METRIC_FRAGMENT', function(assert) {
+    assert.expect(1);
+
+    run(() => {
+      Consumer.send(RequestActions.ADD_METRIC, { currentModel: CurrentModel }, AdClicks);
+      Consumer.send(
+        RequestActions.REMOVE_METRIC_FRAGMENT,
+        { currentModel: CurrentModel },
+        CurrentModel.request.metrics.firstObject
+      );
+    });
+
+    assert.ok(get(CurrentModel, 'request.metrics.length') === 0, 'The given metric is removed from the request');
+  });
+
   test('UPDATE_METRIC_PARAM', async function(assert) {
     assert.expect(3);
 
