@@ -80,13 +80,13 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
     // Test clicking on a different date
     await click(dayElementSelector(clickDate));
 
-    assert.ok(isDayActive(this, clickDate), 'Clicked date is visibly selected');
+    assert.ok(isDayActive(clickDate), 'Clicked date is visibly selected');
 
     // Change date back through binding
     this.set('date', boundDate);
 
-    assert.ok(isDayActive(this, boundDate), 'Bound date is visibly selected');
-    assert.ok(!isDayActive(this, clickDate), 'Clicked date is no longer selected');
+    assert.ok(isDayActive(boundDate), 'Bound date is visibly selected');
+    assert.ok(!isDayActive(clickDate), 'Clicked date is no longer selected');
   });
 
   test('Change date action', async function(assert) {
@@ -108,8 +108,8 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
     await click(dayElementSelector(newDate));
 
     assert.ok(originalDate.isSame(moment('2015-07-14', TEST_FORMAT)), 'date is a one way binding');
-    assert.ok(isDayActive(this, newDate), 'New date is visibly selected regardless of action being handled');
-    assert.ok(!isDayActive(this, originalDate), 'Original date is no longer selected');
+    assert.ok(isDayActive(newDate), 'New date is visibly selected regardless of action being handled');
+    assert.ok(!isDayActive(originalDate), 'Original date is no longer selected');
 
     /*
      * Check that changing `date` to the date suggested by the action does not
@@ -187,20 +187,17 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
       `);
 
     /* == Day Selection == */
-    assert.ok(isDayActive(this, startDate), 'Day Selection - Chosen day is selected');
-    assert.ok(
-      !isDayActive(this, startDate.clone().subtract(1, 'day')),
-      'Day Selection - Other day in week is not selected'
-    );
+    assert.ok(isDayActive(startDate), 'Day Selection - Chosen day is selected');
+    assert.ok(!isDayActive(startDate.clone().subtract(1, 'day')), 'Day Selection - Other day in week is not selected');
 
     /* == Week Selection == */
     this.set('dateTimePeriod', 'week');
 
-    assert.ok(isWeekActive(this, startDate), 'Week Selection - Entire week of chosen day is selected');
+    assert.ok(isWeekActive(startDate), 'Week Selection - Entire week of chosen day is selected');
 
     await click(dayElementSelector(clickDate));
-    assert.ok(!isWeekActive(this, startDate), 'Week Selection - Previous week is no longer selected');
-    assert.ok(isWeekActive(this, clickDate), 'Week Selection - Newly clicked week is selected');
+    assert.ok(!isWeekActive(startDate), 'Week Selection - Previous week is no longer selected');
+    assert.ok(isWeekActive(clickDate), 'Week Selection - Newly clicked week is selected');
 
     /* == Month Selection == */
     this.set('dateTimePeriod', 'month');
@@ -236,10 +233,10 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
       `);
 
     await click(dayElementSelector(clickDate));
-    assert.ok(isWeekActive(this, clickDate), 'Newly clicked week is selected');
+    assert.ok(isWeekActive(clickDate), 'Newly clicked week is selected');
 
     await click(dayElementSelector(clickDate));
-    assert.ok(isWeekActive(this, clickDate), 'Newly clicked week is still selected after clicking twice');
+    assert.ok(isWeekActive(clickDate), 'Newly clicked week is still selected after clicking twice');
   });
 
   test('Start date', async function(assert) {
@@ -262,8 +259,8 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
     let epochDay = moment(testEpoch, TEST_FORMAT),
       dayBeforeEpoch = epochDay.clone().subtract(1, 'day');
 
-    assert.ok(isDayDisabled(this, dayBeforeEpoch), 'Day Selection - Day before epoch date is not selectable');
-    assert.ok(isDayEnabled(this, epochDay), 'Day Selection - Epoch date is selectable');
+    assert.ok(isDayDisabled(dayBeforeEpoch), 'Day Selection - Day before epoch date is not selectable');
+    assert.ok(isDayEnabled(epochDay), 'Day Selection - Epoch date is selectable');
 
     /* == Week Selection == */
     this.set('dateTimePeriod', 'week');
@@ -276,10 +273,10 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
       dayBeforeFirstWeek = startOfFirstFullWeek.clone().subtract(1, 'day');
 
     assert.ok(
-      isDayDisabled(this, dayBeforeFirstWeek),
+      isDayDisabled(dayBeforeFirstWeek),
       'Week Selection - Week containing days before epoch is not selectable'
     );
-    assert.ok(isDayEnabled(this, startOfFirstFullWeek), 'Week Selection - First full week after epoch is selectable');
+    assert.ok(isDayEnabled(startOfFirstFullWeek), 'Week Selection - First full week after epoch is selectable');
 
     // Set back to original values to avoid affecting other tests
     config.navi.dataEpoch = originalEpoch;
@@ -288,33 +285,30 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
   /**
    * Test Helper
    * @method isDayEnabled
-   * @param {Object} test - reference to test
    * @param {moment} date - day to check
    * @returns {Boolean} whether or not day is enabled on the calendar
    */
-  function isDayEnabled(test, date) {
-    return !isDayDisabled(test, date);
+  function isDayEnabled(date) {
+    return !isDayDisabled(date);
   }
 
   /**
    * Test Helper
    * @method isDayDisabled
-   * @param {Object} test - reference to test
    * @param {moment} date - day to check
    * @returns {Boolean} whether or not day is disabled on the calendar
    */
-  function isDayDisabled(test, date) {
-    return document.querySelector(dayElementSelector(test, date)).disabled;
+  function isDayDisabled(date) {
+    return document.querySelector(dayElementSelector(date)).disabled;
   }
 
   /**
    * Test Helper
    * @method isDayActive
-   * @param {Object} test - reference to test
    * @param {moment} date - day to check
    * @returns {Boolean} whether or not day is currently selected
    */
-  function isDayActive(test, date) {
+  function isDayActive(date) {
     const activeClasses = document.querySelector(dayElementSelector(date)).classList;
     return activeClasses.contains('ember-power-calendar-day--selected');
   }
@@ -322,12 +316,11 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
   /**
    * Test Helper
    * @method isWeekActive
-   * @param {Object} test - reference to test
    * @param {moment} date - day to check
    * @returns {Boolean} whether or not week is currently selected
    */
-  function isWeekActive(test, date) {
-    let dayElement = document.querySelector(dayElementSelector(test, date)),
+  function isWeekActive(date) {
+    let dayElement = document.querySelector(dayElementSelector(date)),
       weekElement = dayElement.parentElement,
       dayGrid = weekElement.parentElement;
 
