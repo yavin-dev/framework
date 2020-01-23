@@ -41,10 +41,10 @@ class NaviDatePicker extends Component {
   didReceiveAttrs() {
     super.didReceiveAttrs(...arguments);
 
-    let { previousDate, date } = this;
+    const { previousDate, date } = this;
 
     if (date !== previousDate) {
-      let newDate = date ? date : undefined;
+      let newDate = date || undefined;
 
       set(this, 'selectedDate', newDate);
       set(this, 'centerDate', newDate);
@@ -61,7 +61,7 @@ class NaviDatePicker extends Component {
   date;
 
   /**
-   * @property {Moment} centerDate - The date to focus the calendar around, initially the provided date
+   * @property {Moment} centerDate - The date that determines the current view of the calendar, defaults to selected date initially
    */
   centerDate;
 
@@ -114,7 +114,7 @@ class NaviDatePicker extends Component {
     let newCenter = moment(calendar.center)
       .clone()
       [unit](e.target.value);
-    calendar.actions.changeCenter(newCenter);
+    calendar.send('changeCenter', newCenter);
   }
 
   /**
@@ -130,8 +130,8 @@ class NaviDatePicker extends Component {
     const selected = weeks.flatMap(w => w.days).find(d => d.isSelected);
     const classes = ['ember-power-calendar-week-day'];
     if (selected) {
-      let selectedWeekStart = moment(getFirstDayOfIsoDateTimePeriod(selected.moment, 'week'));
-      let selectedWeekEnd = moment(getLastDayOfIsoDateTimePeriod(selectedWeekStart, 'week'));
+      const selectedWeekStart = moment(getFirstDayOfIsoDateTimePeriod(selected.moment, 'week'));
+      const selectedWeekEnd = moment(getLastDayOfIsoDateTimePeriod(selectedWeekStart, 'week'));
       if (day.moment.isBetween(selectedWeekStart, selectedWeekEnd, undefined, '[]')) {
         classes.push('ember-power-calendar-day--selected');
       }
@@ -146,7 +146,7 @@ class NaviDatePicker extends Component {
    * @param {Date} newDate - date to check
    * @returns {boolean} true if date is the same
    */
-  _isNewDateValue(newDate) {
+  _isDateSameAsLast(newDate) {
     let lastTime = get(this, '_lastTimeDate');
 
     set(this, '_lastTimeDate', newDate);
@@ -169,7 +169,7 @@ class NaviDatePicker extends Component {
   @action
   changeDate(newDate) {
     // Don't do anything if the date is the same as the last time action was called
-    if (this._isNewDateValue(newDate)) {
+    if (this._isDateSameAsLast(newDate)) {
       return;
     }
 

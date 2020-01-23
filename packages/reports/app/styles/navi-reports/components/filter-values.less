@@ -32,17 +32,15 @@
     align-self: center;
     flex: 1;
     line-height: @filter-collection-row-height;
-    margin-left: 8px;
   }
 
   &--lookback-input,
   &--advanced-interval-input {
     display: flex;
     flex-direction: row;
-    margin-left: 8px;
 
     &__value {
-      border: 1px solid #aaaaaa;
+      border: 1px solid @navi-input-border-gray;
       font-family: @font-family-thin;
     }
 
@@ -65,7 +63,6 @@
   &--dimension-date-range-input {
     display: flex;
     flex-direction: row;
-    margin-left: 8px;
 
     &__low-value,
     &__high-value {
@@ -91,10 +88,9 @@
   &--range-input__input,
   &--multi-value-input,
   &--value-input {
-    border: 1px solid #aaaaaa;
+    border: 1px solid @navi-input-border-gray;
     font-family: @font-family-thin;
     width: 100%;
-    margin-left: 8px;
   }
 
   &--range-input__input--error,

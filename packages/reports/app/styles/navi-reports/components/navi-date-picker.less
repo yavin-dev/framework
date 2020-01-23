@@ -4,6 +4,7 @@
  */
 
 @navi-date-picker-cell-size: 40px;
+@navi-date-picker-hover-color: #eee;
 
 .navi-date-picker {
   .ember-power-calendar(@cell-size: @navi-date-picker-cell-size);
@@ -16,7 +17,7 @@
   &-week {
     .ember-power-calendar-week:hover {
       & > .ember-power-calendar-week-day:not(.ember-power-calendar-day--selected) {
-        background-color: #eee;
+        background-color: @navi-date-picker-hover-color;
       }
     }
   }
@@ -24,7 +25,7 @@
   &-quarter {
     .ember-power-calendar-selector-month-row--quarter:hover {
       & > .ember-power-calendar-selector-month:not(.ember-power-calendar-selector-month--selected) {
-        background-color: #eee;
+        background-color: @navi-date-picker-hover-color;
       }
     }
   }

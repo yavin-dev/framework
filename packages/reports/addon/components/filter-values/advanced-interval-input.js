@@ -40,7 +40,7 @@ class AdvancedIntervalInputComponent extends BaseIntervalComponent {
    * Parses date string from the input fields
    *
    * @method parseDate
-   * @param {String} date - date string from input
+   * @param {InputEvent} event - date string input event
    * @returns {Duration|moment|string} - object most closely represented by the string
    */
   parseDate({ target: { value } }) {

@@ -48,8 +48,8 @@ class LookbackInput extends BaseIntervalComponent {
   }
 
   /**
-   * @action setInterval
-   * @param {Interval} interval - new interval to set in filter
+   * @action setLookback
+   * @param {InputEvent} event - new interval to set in filter
    */
   @action
   setLookback({ target: { value } }) {
