@@ -12,7 +12,7 @@
     <DropdownDatePicker
       class="filter-values--date-range-input__trigger filter-values--date-range-input__low-value"
       @date={{this.startDate}}
-      @dateTimePeriod={{this.dateTimePeriod}}
+      @dateTimePeriod={{this.calendarDateTimePeriod}}
       @onUpdate={{this.setIntervalStart}}
     >
       {{#if this.startDate}}
@@ -27,7 +27,7 @@
     <DropdownDatePicker
       class="filter-values--date-range-input__trigger filter-values--date-range-input__high-value"
       @date={{this.endDate}}
-      @dateTimePeriod={{this.dateTimePeriod}}
+      @dateTimePeriod={{this.calendarDateTimePeriod}}
       @onUpdate={{this.setIntervalEnd}}
     >
       {{#if endDate}}

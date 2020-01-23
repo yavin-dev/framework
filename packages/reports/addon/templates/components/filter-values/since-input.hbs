@@ -12,7 +12,7 @@
     <DropdownDatePicker
       class="filter-values--since-input__trigger filter-values--since-input__low-value"
       @date={{this.startDate}}
-      @dateTimePeriod={{this.dateTimePeriod}}
+      @dateTimePeriod={{this.calendarDateTimePeriod}}
       @onUpdate={{this.setIntervalStart}}
     >
       {{#if this.startDate}}
@@ -32,7 +32,7 @@
           checked={{isCurrent}}
           {{on "click" (fn this.setIntervalEnd (if isCurrent "next" "current"))}}
         >
-        <label for="currentDateTimePeriod">Exclude current {{this.dateTimePeriod}}?</label>
+        <label for="currentDateTimePeriod">Exclude current {{this.calendarDateTimePeriod}}?</label>
       </div>
     {{/let}}
   </div>

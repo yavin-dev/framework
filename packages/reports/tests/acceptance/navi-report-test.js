@@ -1684,6 +1684,40 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.dom('.filter-values--current-period').hasText(`The current day. (${today})`, 'The current day');
   });
 
+  test('Date picker all timegrain', async function(assert) {
+    assert.expect(5);
+
+    await visit('/reports/1');
+
+    // select month grain
+    await click($('.grouped-list__item-label:contains(Month)')[0]);
+
+    await clickTrigger('.filter-values--date-range-input__low-value');
+    await click($('.ember-power-calendar-selector-month:contains(Jan)')[0]);
+
+    await clickTrigger('.filter-values--date-range-input__high-value');
+    await click($('.ember-power-calendar-selector-month:contains(May)')[0]);
+
+    assert.dom('.filter-values--date-range-input__low-value').hasText('Jan 2015', 'The start date is month Jan 2015');
+    assert.dom('.filter-values--date-range-input__high-value').hasText('May 2015', 'The end date is month May 2015');
+
+    // select 'all' grain
+    await click($('.grouped-list__item-label:contains(Month)')[0]);
+
+    assert
+      .dom('.filter-values--date-range-input__low-value')
+      .hasText('Jan 01, 2015', 'The start date is beginning of Jan, 2015');
+    assert
+      .dom('.filter-values--date-range-input__high-value')
+      .hasText('May 31, 2015', 'The end date is end of May, 2015');
+
+    await clickTrigger('.filter-values--date-range-input__high-value');
+    await click('.ember-power-calendar-day[data-date="2015-05-30"]');
+    assert
+      .dom('.filter-values--date-range-input__high-value')
+      .hasText('May 30, 2015', 'Calendar defaults "all" grain  to show the lowest grain which is day');
+  });
+
   test("Report with an unknown table doesn't crash", async function(assert) {
     assert.expect(1);
     await visit('/reports/9');
