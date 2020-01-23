@@ -27,11 +27,11 @@ module('Integration | Component | filter values/since input', function(hooks) {
 
     assert
       .dom('.filter-values--since-input')
-      .hasText('Jan 01, 2020 Include current day?', 'The since input shows the start date and checkbox');
+      .hasText('Jan 01, 2020 Exclude current day?', 'The since input shows the start date and checkbox');
     assert
       .dom('.filter-values--since-input__low-value')
       .hasText('Jan 01, 2020', 'The low value is the correct start date');
-    assert.dom('#currentDateTimePeriod').isNotChecked('The interval does not include next');
+    assert.dom('#currentDateTimePeriod').isChecked('The interval does not include next');
   });
 
   test('changing values', async function(assert) {
@@ -45,13 +45,13 @@ module('Integration | Component | filter values/since input', function(hooks) {
     await click('#currentDateTimePeriod');
     const newRange = getDateRangeFormat(this);
     assert.notEqual(originalRange, newRange, 'The interval changed');
-    assert.dom('#currentDateTimePeriod').isChecked('The interval includes next');
+    assert.dom('#currentDateTimePeriod').isNotChecked('The interval includes next');
 
     await click('.filter-values--since-input__low-value > .dropdown-date-picker__trigger');
     await click('.ember-power-calendar-day--current-month[data-date="2020-01-03"]');
     assert
       .dom('.filter-values--since-input')
-      .hasText('Jan 03, 2020 Include current day?', 'The start date changes to Jan 3');
+      .hasText('Jan 03, 2020 Exclude current day?', 'The start date changes to Jan 3');
   });
 
   test('collapsed', async function(assert) {
