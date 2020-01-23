@@ -141,7 +141,7 @@ class NaviDatePicker extends Component {
   }
 
   /**
-   * @method _isNewDateValue - checks if the date is the same as the last time this method was called
+   * @method _isDateSameAsLast - checks if the date is the same as the last time this method was called
    * @private
    * @param {Date} newDate - date to check
    * @returns {boolean} true if date is the same
@@ -159,15 +159,26 @@ class NaviDatePicker extends Component {
   }
 
   /**
+   * Sets the center date from a power calendar event
+   *
+   * @action
+   * @param {Object} object - container for selected calendar date
+   */
+  @action
+  setCenterDate({ moment: newDate }) {
+    this.centerDate = newDate;
+  }
+
+  /**
    * Action sent whenever user makes a selection
    * Converts the selected Date into a moment and
    * passes the action on
    *
    * @action
-   * @param {Date} newDate - selected calendar date
+   * @param {Object} object - container for selected calendar date
    */
   @action
-  changeDate(newDate) {
+  changeDate({ moment: newDate }) {
     // Don't do anything if the date is the same as the last time action was called
     if (this._isDateSameAsLast(newDate)) {
       return;

@@ -78,7 +78,7 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
       `);
 
     // Test clicking on a different date
-    await click(findDayElement(this, clickDate));
+    await click(dayElementSelector(clickDate));
 
     assert.ok(isDayActive(this, clickDate), 'Clicked date is visibly selected');
 
@@ -105,7 +105,7 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
       `);
 
     // Test clicking on a different date
-    await click(findDayElement(this, newDate));
+    await click(dayElementSelector(newDate));
 
     assert.ok(originalDate.isSame(moment('2015-07-14', TEST_FORMAT)), 'date is a one way binding');
     assert.ok(isDayActive(this, newDate), 'New date is visibly selected regardless of action being handled');
@@ -121,7 +121,7 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
     this.set('date', newDate);
 
     // Check that clicking on already selected date does not trigger action again
-    await click(findDayElement(this, newDate));
+    await click(dayElementSelector(newDate));
   });
 
   test('Change date action always gives start of time period', async function(assert) {
@@ -141,7 +141,7 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
           }}
       `);
     // Click in the middle of the week
-    await click(findDayElement(this, originalDate.clone().subtract(1, 'day')));
+    await click(dayElementSelector(originalDate.clone().subtract(1, 'day')));
   });
 
   test('Selection view changes with time period', async function(assert) {
@@ -198,7 +198,7 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
 
     assert.ok(isWeekActive(this, startDate), 'Week Selection - Entire week of chosen day is selected');
 
-    await click(findDayElement(this, clickDate));
+    await click(dayElementSelector(clickDate));
     assert.ok(!isWeekActive(this, startDate), 'Week Selection - Previous week is no longer selected');
     assert.ok(isWeekActive(this, clickDate), 'Week Selection - Newly clicked week is selected');
 
@@ -235,10 +235,10 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
           }}
       `);
 
-    await click(findDayElement(this, clickDate));
+    await click(dayElementSelector(clickDate));
     assert.ok(isWeekActive(this, clickDate), 'Newly clicked week is selected');
 
-    await click(findDayElement(this, clickDate));
+    await click(dayElementSelector(clickDate));
     assert.ok(isWeekActive(this, clickDate), 'Newly clicked week is still selected after clicking twice');
   });
 
@@ -304,7 +304,7 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
    * @returns {Boolean} whether or not day is disabled on the calendar
    */
   function isDayDisabled(test, date) {
-    return document.querySelector(findDayElement(test, date)).disabled;
+    return document.querySelector(dayElementSelector(test, date)).disabled;
   }
 
   /**
@@ -315,7 +315,7 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
    * @returns {Boolean} whether or not day is currently selected
    */
   function isDayActive(test, date) {
-    const activeClasses = document.querySelector(findDayElement(this, date)).classList;
+    const activeClasses = document.querySelector(dayElementSelector(date)).classList;
     return activeClasses.contains('ember-power-calendar-day--selected');
   }
 
@@ -327,7 +327,7 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
    * @returns {Boolean} whether or not week is currently selected
    */
   function isWeekActive(test, date) {
-    let dayElement = document.querySelector(findDayElement(test, date)),
+    let dayElement = document.querySelector(dayElementSelector(test, date)),
       weekElement = dayElement.parentElement,
       dayGrid = weekElement.parentElement;
 
@@ -340,18 +340,11 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
 
   /**
    * Test Helper
-   * @method findDayElement
-   * @param {Object} test - reference to test
+   * @method dayElementSelector
    * @param {Moment} date - day to get element for
-   * @returns {Object} jQuery object for calendar element for given date
+   * @returns {String} element selector for the given date
    */
-  function findDayElement(test, date) {
-    const selector = `.ember-power-calendar-day[data-date="${date.format('YYYY-MM-DD')}"]`;
-
-    if (selector) {
-      return selector;
-    } else {
-      throw new Error(`Current calendar month is not in range of ${date.format()}`);
-    }
+  function dayElementSelector(date) {
+    return `.ember-power-calendar-day[data-date="${date.format('YYYY-MM-DD')}"]`;
   }
 });

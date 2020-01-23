@@ -2,9 +2,9 @@
 <PowerCalendar
   class="navi-date-picker navi-date-picker-{{this.dateTimePeriod}}"
   @selected={{this.selectedDate}}
-  @onSelect={{action "changeDate" value="moment"}}
+  @onSelect={{this.changeDate}}
   @center={{this.centerDate}}
-  @onCenterChange={{action (mut this.centerDate) value="moment"}}
+  @onCenterChange={{this.setCenterDate}}
   as |powerCalendar|
 >
 
