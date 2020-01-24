@@ -1,7 +1,6 @@
 package com.yahoo.navi.spring;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
 import com.yahoo.navi.ws.models.permissions.PermissionExpressions;
 import com.yahoo.elide.security.checks.Check;
 import com.yahoo.elide.core.EntityDictionary;
