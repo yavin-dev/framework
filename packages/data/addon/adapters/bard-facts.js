@@ -177,9 +177,10 @@ export default EmberObject.extend({
    * @method _buildURLPath
    * @private
    * @param {Object} request
+   * @param {Object} options - optional host options
    * @return {String} URL Path
    */
-  _buildURLPath(request, options) {
+  _buildURLPath(request, options = {}) {
     const host = configHost(options),
       namespace = get(this, 'namespace'),
       table = get(request, 'logicalTable.table'),

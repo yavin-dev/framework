@@ -29,7 +29,7 @@ module('Unit - Utils - Adapter Utils', function() {
     assert.equal(
       configHost({ dataSourceName: 'blockhead' }),
       'https://data2.naviapp.com',
-      'blockhead is correclty configured'
+      'blockhead is correctly configured'
     );
     assert.equal(
       configHost({ dataSourceName: 'foobar' }),

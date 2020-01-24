@@ -9,7 +9,6 @@ import { A, makeArray } from '@ember/array';
 import Service from '@ember/service';
 import { getOwner } from '@ember/application';
 import { setProperties } from '@ember/object';
-import { getDefaultDataSourceName } from '../utils/adapter';
 
 export default class KegService extends Service {
   /**
@@ -26,6 +25,11 @@ export default class KegService extends Service {
    * @property {Object} idIndexes - Object of record idexes
    */
   idIndexes = {};
+
+  /**
+   * @property {String} defaultNamespace
+   */
+  defaultNamespace = 'navi';
 
   /**
    * Resets internal data structures
@@ -78,7 +82,7 @@ export default class KegService extends Service {
     const factory = this._getFactoryForType(options.modelFactory || type);
     const recordKeg = this._getRecordKegForType(type);
     const idIndex = this._getIdIndexForType(type);
-    const namespace = options.namespace || getDefaultDataSourceName();
+    const namespace = options.namespace || this.defaultNamespace;
     const identifierField = factory.identifierField || KegService.identifierField;
     const owner = getOwner(this);
 
@@ -112,7 +116,7 @@ export default class KegService extends Service {
    */
   getById(type, id, namespace) {
     let idIndex = this._getIdIndexForType(type) || {};
-    let source = namespace || getDefaultDataSourceName();
+    let source = namespace || this.defaultNamespace;
     return idIndex[`${source}.${id}`];
   }
 
@@ -154,8 +158,13 @@ export default class KegService extends Service {
    * @param {String} type - type name of the model type
    * @returns {Array} array of records of the provided type
    */
-  all(type) {
-    return this._getRecordKegForType(type);
+  all(type, namespace) {
+    const all = this._getRecordKegForType(type);
+    if (namespace) {
+      const filtered = Object.entries(all).filter(([key]) => key.startsWith(namespace + '.'));
+      return Object.fromEntries(filtered);
+    }
+    return all;
   }
 
   /**
