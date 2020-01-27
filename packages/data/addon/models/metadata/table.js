@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import EmberObject from '@ember/object';
@@ -33,6 +33,11 @@ let Model = EmberObject.extend({
   timeGrains: undefined,
 
   /**
+   * @property {String} source - the datasource this metadata is from.
+   */
+  source: undefined,
+
+  /**
    * @method init
    * Converts timeGrains to timeGrain fragment objects
    */
@@ -42,7 +47,7 @@ let Model = EmberObject.extend({
       this.set(
         'timeGrains',
         timeGrains.map(timeGrain => {
-          let timeGrainPayload = assign({}, timeGrain),
+          let timeGrainPayload = assign({}, timeGrain, { source: this.source }),
             owner = getOwner(this);
           return owner.factoryFor('model:metadata/time-grain').create(timeGrainPayload);
         })

@@ -68,8 +68,9 @@ export default Service.extend({
    * @returns {Promise} promise that loads metadata
    */
   loadMetadata(options = {}) {
+    const dataSource = options.dataSourceName || getDefaultDataSourceName();
     //fetch metadata from WS if metadata not yet loaded
-    if (!this.loadedDataSources.includes(options.dataSourceName)) {
+    if (!this.loadedDataSources.includes(dataSource)) {
       return get(this, '_adapter')
         .fetchAll(
           'table',
@@ -82,18 +83,18 @@ export default Service.extend({
         )
         .then(payload => {
           //normalize payload
-          payload.source = options.dataSourceName;
+          payload.source = dataSource;
           let metadata = get(this, '_serializer').normalize(payload);
 
           //set metadataLoaded property
           if (!(get(this, 'isDestroyed') || get(this, 'isDestroying'))) {
             //create metadata model objects and load into keg
-            this._loadMetadataForType('table', metadata.tables, options.dataSourceName);
-            this._loadMetadataForType('dimension', metadata.dimensions, options.dataSourceName);
-            this._loadMetadataForType('metric', metadata.metrics, options.dataSourceName);
+            this._loadMetadataForType('table', metadata.tables, dataSource);
+            this._loadMetadataForType('dimension', metadata.dimensions, dataSource);
+            this._loadMetadataForType('metric', metadata.metrics, dataSource);
 
             this.set('metadataLoaded', true);
-            this.loadedDataSources.push(options.dataSourceName);
+            this.loadedDataSources.push(dataSource);
           }
         });
     }

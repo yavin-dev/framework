@@ -201,11 +201,17 @@ export default function(index = 0) {
     return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ tables: index > 0 ? Tables2 : Tables })];
   });
 
-  this.get(`${host}/v1/metrics/metricOne${index > 0 ? `_${index}` : ''}`, function() {
+  this.get(`${host}/v1/metrics/metricOne`, function() {
     return [200, { 'Content-Type': 'application/json' }, JSON.stringify(MetricOne)];
   });
 
-  this.get(`${host}/v1/dimensions/dimensionOne${index > 0 ? `_${index}` : ''}`, function() {
+  if (index === 1) {
+    this.get(`${host}/v1/metrics/metricThree`, function() {
+      return [200, { 'Content-Type': 'application/json' }, JSON.stringify(MetricThree)];
+    });
+  }
+
+  this.get(`${host}/v1/dimensions/dimensionOne`, function() {
     return [200, { 'Content-Type': 'application/json' }, JSON.stringify(DimensionOne)];
   });
 }

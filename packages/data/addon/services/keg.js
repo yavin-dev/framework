@@ -161,8 +161,7 @@ export default class KegService extends Service {
   all(type, namespace) {
     const all = this._getRecordKegForType(type);
     if (namespace) {
-      const filtered = Object.entries(all).filter(([key]) => key.startsWith(namespace + '.'));
-      return Object.fromEntries(filtered);
+      return A(all.filter(item => item.source === namespace));
     }
     return all;
   }
