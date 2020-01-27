@@ -8,9 +8,9 @@
     {{/if}}
   {{/let}}
 {{else}}
-  <div class="filter-values--date-range-input" ...attributes>
+  <div class="filter-values--since-input" ...attributes>
     <DropdownDatePicker
-      class="filter-values--date-range-input__trigger filter-values--date-range-input__low-value"
+      class="filter-values--since-input__trigger filter-values--since-input__low-value"
       @date={{this.startDate}}
       @dateTimePeriod={{this.calendarDateTimePeriod}}
       @onUpdate={{this.setIntervalStart}}
@@ -22,19 +22,18 @@
       {{/if}}
     </DropdownDatePicker>
 
-    <span class="filter-values--date-range-input__separator">to</span>
+    <span class="filter-values--date-range-input__separator" />
 
-    <DropdownDatePicker
-      class="filter-values--date-range-input__trigger filter-values--date-range-input__high-value"
-      @date={{this.endDate}}
-      @dateTimePeriod={{this.calendarDateTimePeriod}}
-      @onUpdate={{this.setIntervalEnd}}
-    >
-      {{#if endDate}}
-        {{this.endFormat}}
-      {{else}}
-        <span class="date__placeholder">{{this.endPlaceholder}}</span>
-      {{/if}}
-    </DropdownDatePicker>
+    {{#let (eq this.interval._end "current") as |isCurrent|}}
+      <div class="filter-values--since-input__high-value">
+        <input
+          type="checkbox"
+          id="currentDateTimePeriod"
+          checked={{isCurrent}}
+          {{on "click" (fn this.setIntervalEnd (if isCurrent "next" "current"))}}
+        >
+        <label for="currentDateTimePeriod">Exclude current {{this.calendarDateTimePeriod}}?</label>
+      </div>
+    {{/let}}
   </div>
 {{/if}}

@@ -3,18 +3,17 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
- *   <FilterValues::DateRange
+ *   <FilterValues::CurrentPeriod
  *       @filter={{filter}}
  *       @request={{request}}
- *       @onUpdateFilter={{action 'update'}}
  *   />
  */
 import BaseIntervalComponent from './base-interval-component';
-import layout from '../../templates/components/filter-values/date-range';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
+import layout from '../../templates/components/filter-values/current-period';
 
 @templateLayout(layout)
 @tagName('')
-class DateRange extends BaseIntervalComponent {}
+class CurrentPeriodComponent extends BaseIntervalComponent {}
 
-export default DateRange;
+export default CurrentPeriodComponent;

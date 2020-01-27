@@ -1,5 +1,5 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -28,16 +28,56 @@
     }
   }
 
+  &--current-period {
+    align-self: center;
+    flex: 1;
+    line-height: @filter-collection-row-height;
+  }
+
+  &--lookback-input,
+  &--advanced-interval-input {
+    display: flex;
+    flex-direction: row;
+
+    &__value {
+      border: 1px solid @navi-input-border-gray;
+      font-family: @font-family-thin;
+    }
+
+    &__label {
+      align-self: center;
+      flex: 3;
+      line-height: @filter-collection-row-height;
+      padding: 0 5px;
+    }
+
+    &__help {
+      color: @navi-blue-300;
+      padding-left: 8px;
+    }
+  }
+
+  &--date-range-input,
+  &--since-input,
+  &--advanced-interval-input,
   &--dimension-date-range-input {
     display: flex;
     flex-direction: row;
 
-    & > div {
+    &__low-value,
+    &__high-value {
       flex: 2;
+      align-self: center;
     }
 
     &__separator {
-      padding: 5px;
+      align-self: center;
+      min-width: 32px;
+      text-align: center;
+    }
+
+    &__trigger {
+      text-align: center;
     }
 
     .dropdown-date-picker__trigger {
@@ -48,12 +88,14 @@
   &--range-input__input,
   &--multi-value-input,
   &--value-input {
-    border: 1px solid @navi-gray-400;
+    border: 1px solid @navi-input-border-gray;
     font-family: @font-family-thin;
     width: 100%;
   }
 
   &--range-input__input--error,
+  &--lookback-input--error,
+  &--advanced-interval-input--error,
   &--value-input--error,
   &--multi-value-input--error,
   &--dimension-select--error {
