@@ -18,20 +18,25 @@ export default class NaviReportSearchProviderService extends NaviBaseSearchProvi
 
   /**
    * @method search
-   * @param {String} query
-   * @param {String} user (optional)
+   * @param {Object} searchParams
+   * @param {Object} author
    * @returns {Promise} promise
    */
-  search(params) {
+  search(searchParams, author) {
     let query = { filter: { reports: '' } };
 
-    for (let p in params) {
-      let filter = `${p}==*${params[p]}*`;
+    for (let p in searchParams) {
+      let filter = `${p}==*${searchParams[p]}*`;
       if (query.filter.reports) {
-        query.filter.reports += `;${filter}`;
+        query.filter.reports += `,${filter}`;
       } else {
-        query.filter.reports = `${filter}`;
+        query.filter.reports = `(${filter}`;
       }
+    }
+    query.filter.reports += ')';
+
+    if (author) {
+      query.filter.reports += `;author==*${author}*`;
     }
 
     return this.store.query('report', query);

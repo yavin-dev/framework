@@ -1,7 +1,0 @@
-export default {
-  NOT_FOUND: 404,
-  CREATED: 201,
-  LOCKED: 423,
-  NO_CONTENT: 204,
-  UNPROCESSABLE_ENTITY: 422
-};
