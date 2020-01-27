@@ -6,6 +6,18 @@ import EmberObject from '@ember/object';
 import { assign } from '@ember/polyfills';
 import { getOwner } from '@ember/application';
 
+const timeGrainSorting = {
+  millisecond: 1,
+  second: 2,
+  minute: 3,
+  hour: 4,
+  day: 5,
+  week: 6,
+  month: 7,
+  quarter: 8,
+  year: 9,
+  all: 10
+};
 let Model = EmberObject.extend({
   /**
    * @property {String} name
@@ -50,6 +62,9 @@ let Model = EmberObject.extend({
           let timeGrainPayload = assign({}, timeGrain, { source: this.source }),
             owner = getOwner(this);
           return owner.factoryFor('model:metadata/time-grain').create(timeGrainPayload);
+        })
+        .sort((l, r) => {
+          return (timeGrainSorting[l.name] || Infinity) - (timeGrainSorting[r.name] || Infinity);
         })
       );
     }

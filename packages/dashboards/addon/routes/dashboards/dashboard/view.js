@@ -1,5 +1,5 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -145,9 +145,7 @@ export default Route.extend({
 
   /**
    * @override
-   * @method resetController - reset query params on exit of route
-   * @param {Object} controller
-   * @param {Boolean} isExiting
+   * @method deactivate - reset query params on exit of route
    */
   deactivate() {
     this._super(...arguments);

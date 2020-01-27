@@ -48,6 +48,6 @@ module('Integration | Component | filter values/date', function(hooks) {
 
     this.set('filter', { values: arr(['']) });
 
-    assert.dom('.filter-values--date .filter-values--selected-error').exists('Error is rendered when date is invalid');
+    assert.dom('.filter-values--selected-error').exists('Error is rendered when date is invalid');
   });
 });
