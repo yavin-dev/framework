@@ -8,17 +8,39 @@ export default function() {
    * reports/ - GET endpoint to fetch many reports
    */
   this.get('/reports', function({ reports }, request) {
+    let reportsObject = null;
     let idFilter = request.queryParams['filter[reports.id]'];
+    let queryFilter = request.queryParams['filter[reports]'];
 
     // Allow filtering
     if (idFilter) {
       let ids = idFilter.split(',');
-      reports = reports.find(ids);
+      reportsObject = reports.find(ids);
+    } else if (queryFilter) {
+      let filterParameters = queryFilter
+        .split(';')[0]
+        .replace(/\(/g, '')
+        .replace(/\)/g, '')
+        .replace(/\*/g, '')
+        .split(',')
+        .map(el => el.split('==')[1]);
+      let author = queryFilter.includes('author')
+        ? queryFilter
+            .split(';')[1]
+            .replace(/\*/g, '')
+            .split('==')[1]
+        : null;
+      reportsObject = reports.all().filter(function(d) {
+        // Return all reports that include the filter parameters and are written by the specified author (if exists)
+        return filterParameters.every(arr => JSON.stringify(d).match(new RegExp(arr, 'i'))) && author != null
+          ? d.author.id.match(new RegExp(author, 'i'))
+          : true;
+      });
     } else {
-      reports = reports.all();
+      reportsObject = reports.all();
     }
 
-    return reports;
+    return reportsObject;
   });
 
   /**
