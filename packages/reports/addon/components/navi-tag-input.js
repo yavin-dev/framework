@@ -27,5 +27,20 @@ export default TagInput.extend({
   /**
    * @property {String} tagComponent - optional name of custom component for rendering tags
    */
-  tagComponent: 'navi-tag-input/tag'
+  tagComponent: 'navi-tag-input/tag',
+
+  /**
+   * Ignore comma so that only 'enter' key adds new tags
+   *
+   * @param {InputEvent} e - The keydown input event
+   * @override https://github.com/calvinlough/ember-tag-input/blob/v1.2.2/addon/components/tag-input.js#L74-L106
+   */
+  _onInputKeyDown(e) {
+    if (e.which === 118 || e.target.value === '') {
+      // comma input
+      return;
+    }
+
+    return this._super(...arguments);
+  }
 });
