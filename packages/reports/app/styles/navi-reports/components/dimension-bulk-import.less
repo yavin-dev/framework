@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -7,7 +7,7 @@
 
 .dimension-bulk-import {
   .valid-id-count {
-    color: @navi-purple-dark;
+    color: @navi-blue-500;
   }
 
   .invalid-id-count {
@@ -24,21 +24,11 @@
     .last-of-group-form-element;
 
     .item {
-      font-size: @font-size-form;
-      background: @navi-purple-lighter;
-      color: @navi-light-gray;
-      margin: 3px 5px 0 0;
-      padding: 2px 6px;
-      display: inline-block;
-      border-radius: 3px;
-      list-style: none;
+      .navi-pill;
 
       .remove-pill {
-        font-size: @font-size-mid-base;
-        margin: 0 0 0 5px;
-        color: @navi-light-gray;
-        background-color: transparent;
-        padding: 0;
+        .navi-pill-remove-button;
+        user-select: none;
       }
     }
   }
