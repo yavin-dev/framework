@@ -1,0 +1,26 @@
+#
+# Copyright 2020, Verizon Media
+# Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+#
+query {
+  allMetrics {
+    id
+    name
+    longName
+    description
+    category
+    valueType
+    defaultFormat
+    supportedFunction {
+      id
+      name
+      longName
+      description
+      arguments {
+        name
+        description
+        valueType
+      }
+    }
+  }
+}
