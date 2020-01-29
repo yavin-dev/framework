@@ -3,12 +3,46 @@ import moment from 'moment';
 import RESPONSE_CODES from '../enums/response-codes';
 const TIMESTAMP_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 
+/**
+ * @method getFilterParams
+ * @param {String} queryFilter
+ * @returns {Array} Filter parameters
+ * @description Parse filter parameters in the form of "(title==*H*,request==*Revenue*)";author==*ramvish*
+ * to a list of all the OR parameters, ie., [H, Revenue]
+ */
+const getFilterParams = function(queryFilter) {
+  return queryFilter
+    .split(';')[0]
+    .replace(/\(/g, '')
+    .replace(/\)/g, '')
+    .replace(/\*/g, '')
+    .split(',')
+    .map(el => el.split('==')[1]);
+};
+
+/**
+ * @method getQueryAuthor
+ * @param {String} queryFilter
+ * @returns Author
+ * @description Parse filter parameters in the form of "(title==*H*,request==*Revenue*)";author==*ramvish*
+ * to get the author, ie., ramvish
+ */
+const getQueryAuthor = function(queryFilter) {
+  if (queryFilter.includes('author')) {
+    return queryFilter
+      .split(';')[1]
+      .replace(/\*/g, '')
+      .split('==')[1];
+  }
+  return null;
+};
+
 export default function() {
   /**
    * reports/ - GET endpoint to fetch many reports
    */
   this.get('/reports', function({ reports }, request) {
-    let reportsObject = null;
+    let reportsObject;
     let idFilter = request.queryParams['filter[reports.id]'];
     let queryFilter = request.queryParams['filter[reports]'];
 
@@ -17,24 +51,15 @@ export default function() {
       let ids = idFilter.split(',');
       reportsObject = reports.find(ids);
     } else if (queryFilter) {
-      let filterParameters = queryFilter
-        .split(';')[0]
-        .replace(/\(/g, '')
-        .replace(/\)/g, '')
-        .replace(/\*/g, '')
-        .split(',')
-        .map(el => el.split('==')[1]);
-      let author = queryFilter.includes('author')
-        ? queryFilter
-            .split(';')[1]
-            .replace(/\*/g, '')
-            .split('==')[1]
-        : null;
-      reportsObject = reports.all().filter(function(d) {
+      let filterParameters = getFilterParams(queryFilter);
+      let author = getQueryAuthor(queryFilter);
+      reportsObject = reports.all().filter(function(report) {
         // Return all reports that include the filter parameters and are written by the specified author (if exists)
-        return filterParameters.every(arr => JSON.stringify(d).match(new RegExp(arr, 'i'))) && author != null
-          ? d.author.id.match(new RegExp(author, 'i'))
-          : true;
+        const matchesFilterParameter = filterParameters.every(filterParameter =>
+          JSON.stringify(report).match(new RegExp(filterParameter, 'i'))
+        );
+        const mathesAuthorIfExists = author != null ? report.author.id.match(new RegExp(author, 'i')) : true;
+        return matchesFilterParameter && mathesAuthorIfExists;
       });
     } else {
       reportsObject = reports.all();
