@@ -1,4 +1,3 @@
-import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, settled, findAll, waitFor, click } from '@ember/test-helpers';
@@ -236,9 +235,7 @@ module('Integration | Component | Dimension Bulk Import', function(hooks) {
     );
 
     //Remove First Valid Pill, item removed depends on the ordering
-    run(() => {
-      $('.items-list:first .item:first .remove-pill').click();
-    });
+    await click('.items-list:first-of-type .item:first-of-type .remove-pill');
 
     assert.equal(
       $('.valid-id-count')

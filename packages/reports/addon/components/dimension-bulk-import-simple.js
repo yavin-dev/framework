@@ -16,7 +16,14 @@ import { layout as templateLayout, tagName } from '@ember-decorators/component';
 @tagName('')
 @templateLayout(layout)
 class DimensionBulkImportSimpleComponent extends Component {
+  /**
+   * @property {Array<String>} unsplitValue - empty/single value array of rawInput
+   */
   unsplitValue = [];
+
+  /**
+   * @property {Array<String>} splitValues - array of values split by commas from rawInput
+   */
   splitValues = [];
 
   /**
@@ -27,27 +34,19 @@ class DimensionBulkImportSimpleComponent extends Component {
     const filter = list
       .map(v => v.trim()) // remove surrounding space
       .filter(v => v.length > 0); // remove empty values
-    return [...new Set(filter)]; // only unique falues
+    return [...new Set(filter)]; // only unique values
   }
 
   /**
-   * @method didReceiveAttrs
-   * @override
+   * Sets up the split and unsplit values based on passed rawInput
+   * @param {Element} _ - The current element, unused
+   * @param {Array<String>} rawInput - the rawInput passed to the component
    */
-  didReceiveAttrs() {
-    super.didReceiveAttrs(...arguments);
-
-    const { previousRawInput, rawInput } = this;
-
-    if (previousRawInput !== rawInput) {
-      // new input
-      let newRawInput = rawInput || '';
-
-      this.set('unsplitValue', this.listFilter([newRawInput]));
-      this.set('splitValues', this.listFilter(newRawInput.split(',')));
-    }
-
-    this.previousRawInput = rawInput;
+  @action
+  setupValues(_, rawInput) {
+    let newRawInput = rawInput[0] || '';
+    this.set('unsplitValue', this.listFilter([newRawInput]));
+    this.set('splitValues', this.listFilter(newRawInput.split(',')));
   }
 
   /**
