@@ -1,0 +1,34 @@
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<div class="dimension-bulk-import-simple" ...attributes>
+  <div class="navi-modal-header">
+    <div class="text-capitalize primary-header">Paste Import</div>
+    <div class="secondary-header">If this is a list of values, choose the split ids.</div>
+  </div>
+
+  <div class="dimension-bulk-import-simple-row dimension-bulk-import-simple-row--split-values">
+    <span class="text-capitalize dimension-bulk-import-simple-row__header">Input split by commas ({{this.splitValues.length}})</span>
+    {{#paginated-scroll-list
+      trim=false
+      items=this.splitValues
+      as |dimVal|
+    }}
+      {{dimVal}}
+    {{/paginated-scroll-list}}
+  </div>
+  <div class="dimension-bulk-import-simple-row dimension-bulk-import-simple-row--raw-value">
+    <span class="text-capitalize dimension-bulk-import-simple-row__header">Raw input</span>
+    {{#paginated-scroll-list
+      trim=false
+      items=this.unsplitValue
+      as |dimVal|
+    }}
+      {{dimVal}}
+    {{/paginated-scroll-list}}
+  </div>
+
+  <div class="btn-container">
+    <button type="button" class="btn btn-primary" {{on "click" (fn @onSelectValues this.splitValues)}}>Use split input ({{this.splitValues.length}} values)</button>
+    <button type="button" class="btn btn-primary" {{on "click" (fn @onSelectValues this.unsplitValue)}}>Use raw input</button>
+    <button type="button" class="btn btn-secondary" {{on "click" @onCancel}}>Cancel</button>
+  </div>
+</div>

@@ -1,4 +1,3 @@
-import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, settled, findAll, waitFor, click } from '@ember/test-helpers';
@@ -126,7 +125,7 @@ module('Integration | Component | Dimension Bulk Import', function(hooks) {
     assert.deepEqual(
       validPills
         .map(function() {
-          return this.childNodes[0].wholeText.trim();
+          return this.childNodes[3].wholeText.trim();
         })
         .get(),
       ['Property 1 (114)', 'Property 2 (100001)', 'Property 3 (100002)', 'Property 4 (100003)'],
@@ -217,7 +216,7 @@ module('Integration | Component | Dimension Bulk Import', function(hooks) {
     assert.deepEqual(
       validPills
         .map(function() {
-          return this.childNodes[0].wholeText.trim();
+          return this.childNodes[3].wholeText.trim();
         })
         .get(),
       ['Property 1 (114)', 'Property 2 (100001)', 'Property 3 (100002)', 'Property 4 (100003)'],
@@ -236,9 +235,7 @@ module('Integration | Component | Dimension Bulk Import', function(hooks) {
     );
 
     //Remove First Valid Pill, item removed depends on the ordering
-    run(() => {
-      $('.items-list:first .item:first button').click();
-    });
+    await click('.items-list:first-of-type .item:first-of-type .remove-pill');
 
     assert.equal(
       $('.valid-id-count')
@@ -252,7 +249,7 @@ module('Integration | Component | Dimension Bulk Import', function(hooks) {
     assert.deepEqual(
       validPills
         .map(function() {
-          return this.childNodes[0].wholeText.trim();
+          return this.childNodes[3].wholeText.trim();
         })
         .get(),
       ['Property 2 (100001)', 'Property 3 (100002)', 'Property 4 (100003)'],
@@ -312,7 +309,7 @@ module('Integration | Component | Dimension Bulk Import', function(hooks) {
       assert.deepEqual(
         validPills
           .map(function() {
-            return this.childNodes[0].wholeText.trim();
+            return this.childNodes[3].wholeText.trim();
           })
           .get(),
         ['System ID 1 (6)', 'System ID 2 (7)'],
