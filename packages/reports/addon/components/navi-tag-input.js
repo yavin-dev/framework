@@ -17,6 +17,8 @@
 import layout from '../templates/components/navi-tag-input';
 import TagInput from 'ember-tag-input/components/tag-input';
 
+const COMMA_KEY_CODE = 188;
+
 export default TagInput.extend({
   layout,
 
@@ -42,8 +44,7 @@ export default TagInput.extend({
    * @override https://github.com/calvinlough/ember-tag-input/blob/v1.2.2/addon/components/tag-input.js#L74-L106
    */
   _onInputKeyDown(e) {
-    if (e.which === 188) {
-      // comma input
+    if (e.which === COMMA_KEY_CODE) {
       return;
     }
 
