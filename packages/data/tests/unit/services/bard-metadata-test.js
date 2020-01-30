@@ -62,10 +62,11 @@ module('Unit - Service - Bard Metadata', function(hooks) {
       'All metrics are loaded in the keg'
     );
 
-    assert.ok(Service.metadataLoaded, 'metadataLoaded property is set to true after data is loaded');
+    assert.ok(Service.loadedDataSources[0], 'dummy', 'One datasource should be loaded');
   });
 
   test('loadMetadata from multiple sources', async function(assert) {
+    assert.expect(12);
     metadataRoutes.bind(Server)(1);
     await Service.loadMetadata({ dataSourceName: 'dummy' });
     await Service.loadMetadata({ dataSourceName: 'blockhead' });
@@ -186,7 +187,7 @@ module('Unit - Service - Bard Metadata', function(hooks) {
       'Service `all` method throws error when metadata type is invalid'
     );
 
-    Service.set('metadataLoaded', false);
+    Service.set('loadedDataSources', []);
 
     assert.throws(
       () => {
@@ -231,7 +232,7 @@ module('Unit - Service - Bard Metadata', function(hooks) {
       'Service `getById` method throws error when metadata type is invalid'
     );
 
-    Service.set('metadataLoaded', false);
+    Service.set('loadedDataSources', []);
 
     assert.throws(
       () => {
@@ -295,9 +296,9 @@ module('Unit - Service - Bard Metadata', function(hooks) {
   });
 
   test('findById', async function(assert) {
-    metadataRoutes.bind(Server)(1);
     assert.expect(6);
-    Service.set('metadataLoaded', true);
+    metadataRoutes.bind(Server)(1);
+    Service.set('loadedDataSources', ['dummy']);
     const metricOne = await Service.findById('metric', 'metricOne');
     assert.deepEqual(metricOne, MetricOne, 'Service findById should load correct data');
 
@@ -320,7 +321,7 @@ module('Unit - Service - Bard Metadata', function(hooks) {
       'metricThree',
       'Service findById should return correct data when requesting other datasource'
     );
-    assert.equal(Server.handledRequests.length, 2, 'Meta data endpoint called twice for each metric');
+    assert.equal(Server.handledRequests.length, 2, 'Meta data endpoint called once for each metric');
   });
 
   test('getMetaField', async function(assert) {

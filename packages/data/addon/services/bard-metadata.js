@@ -35,12 +35,6 @@ export default Service.extend({
   _keg: service('keg'),
 
   /**
-   * @property {Boolean} metadataLoaded
-   * @deprecated - use loadedDataSources instead
-   */
-  metadataLoaded: false,
-
-  /**
    * @property {Array} loadedDataSources - list of data sources in which meta data has already been loaded
    */
   loadedDataSources: null,
@@ -86,14 +80,12 @@ export default Service.extend({
           payload.source = dataSource;
           let metadata = get(this, '_serializer').normalize(payload);
 
-          //set metadataLoaded property
           if (!(get(this, 'isDestroyed') || get(this, 'isDestroying'))) {
             //create metadata model objects and load into keg
             this._loadMetadataForType('table', metadata.tables, dataSource);
             this._loadMetadataForType('dimension', metadata.dimensions, dataSource);
             this._loadMetadataForType('metric', metadata.metrics, dataSource);
 
-            this.set('metadataLoaded', true);
             this.loadedDataSources.push(dataSource);
           }
         });
@@ -129,7 +121,7 @@ export default Service.extend({
    */
   all(type, namespace) {
     assert('Type must be table, metric or dimension', A(['table', 'dimension', 'metric']).includes(type));
-    assert('Metadata must be loaded before the operation can be performed', get(this, 'metadataLoaded'));
+    assert('Metadata must be loaded before the operation can be performed', this.loadedDataSources.length > 0);
 
     return get(this, '_keg').all(`metadata/${type}`, namespace);
   },
@@ -145,7 +137,7 @@ export default Service.extend({
    */
   getById(type, id, namespace) {
     assert('Type must be table, metric or dimension', A(['table', 'dimension', 'metric']).includes(type));
-    assert('Metadata must be loaded before the operation can be performed', get(this, 'metadataLoaded'));
+    assert('Metadata must be loaded before the operation can be performed', this.loadedDataSources.length > 0);
 
     let source = namespace || getDefaultDataSourceName();
 
