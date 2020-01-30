@@ -23,9 +23,7 @@ module('Integration | Component | dimension bulk import simple', function(hooks)
   }
 
   function getSplitValues() {
-    return findAll('.dimension-bulk-import-simple-row--split-values .item').map(el =>
-      el.textContent.replace('×', '').trim()
-    );
+    return findAll('.dimension-bulk-import-simple-row--split-values .item').map(el => el.textContent.trim());
   }
 
   test('Raw inputs are filtered and split up properly', async function(assert) {
@@ -53,26 +51,6 @@ module('Integration | Component | dimension bulk import simple', function(hooks)
       'The split values will trim away weird inner spacing'
     );
     assert.dom($('.btn-primary:contains(split)')[0]).hasText('Use split input (4 values)');
-  });
-
-  test('The remove button on split values works', async function(assert) {
-    assert.expect(4);
-
-    this.set('rawInput', '1,2,3');
-    assert.deepEqual(getSplitValues(), ['1', '2', '3'], 'The input values are split on the comma');
-
-    this.set('onSelectValues', values =>
-      assert.deepEqual(values, ['1', '2', '3'], 'The selected values do not include 2 after removing it')
-    );
-    await click($('.btn-primary:contains(split)')[0]);
-
-    await click($('.dimension-bulk-import-simple-row--split-values .item:contains(2) .remove-pill')[0]);
-    assert.deepEqual(getSplitValues(), ['1', '3'], 'The 2 item was removed');
-
-    this.set('onSelectValues', values =>
-      assert.deepEqual(values, ['1', '3'], 'The selected values do not include 2 after removing it')
-    );
-    await click($('.btn-primary:contains(split)')[0]);
   });
 
   test('Selecting the raw value gives the raw array', async function(assert) {

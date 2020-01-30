@@ -1,9 +1,5 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<div 
-  class="dimension-bulk-import-simple" 
-  ...attributes
-  {{did-update this.setupValues @rawInput}}
->
+<div class="dimension-bulk-import-simple" ...attributes>
   <div class="navi-modal-header">
     <div class="text-capitalize primary-header">Paste Import</div>
     <div class="secondary-header">If this is a list of values, choose the split ids.</div>
@@ -14,9 +10,8 @@
     {{#paginated-scroll-list
       trim=false
       items=this.splitValues
-      as |dimVal idx|
+      as |dimVal|
     }}
-      <span role="button" class="remove-pill" {{on "click" (fn this.removeRecordAtIndex idx)}}>×</span>
       {{dimVal}}
     {{/paginated-scroll-list}}
   </div>
