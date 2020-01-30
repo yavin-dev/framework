@@ -54,12 +54,11 @@ export default function() {
       let filterParameters = getFilterParams(queryFilter);
       let author = getQueryAuthor(queryFilter);
       reportsObject = reports.all().filter(function(report) {
-        // Return all reports that include the filter parameters and are written by the specified author (if exists)
         const matchesFilterParameter = filterParameters.every(filterParameter =>
           JSON.stringify(report).match(new RegExp(filterParameter, 'i'))
         );
-        const mathesAuthorIfExists = author != null ? report.author.id.match(new RegExp(author, 'i')) : true;
-        return matchesFilterParameter && mathesAuthorIfExists;
+        const matchesAuthorIfExists = author != null ? report.author.id.match(new RegExp(author, 'i')) : true;
+        return matchesFilterParameter && matchesAuthorIfExists;
       });
     } else {
       reportsObject = reports.all();

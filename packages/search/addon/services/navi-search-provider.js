@@ -1,3 +1,10 @@
+/**
+ * Copyright 2020, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ *
+ * This service is used to discover all the available search providers.
+ */
+
 import Service from '@ember/service';
 import { getOwner } from '@ember/application';
 import config from 'ember-get-config';
@@ -16,14 +23,17 @@ export default class NaviSearchProviderService extends Service {
 
   /**
    * @method all
-   * @returns {Array} an array of available search providers
+   * @returns {Array} array of available search providers
    */
   all() {
     const searchProvidersRegex = new RegExp(`^(?:${config.modulePrefix}/)?services/navi-search/([a-z-]*)$`),
       searchProviderServices = Object.keys(requirejs.entries).filter(
-        key => searchProvidersRegex.test(key) && !key.includes('navi-base-search-provider')
+        requirejsFileName =>
+          searchProvidersRegex.test(requirejsFileName) && !requirejsFileName.includes('navi-base-search-provider')
       ),
-      searchProviderArray = searchProviderServices.map(key => this.getProvider(searchProvidersRegex.exec(key)[1]));
+      searchProviderArray = searchProviderServices.map(providerFileName =>
+        this.getProvider(searchProvidersRegex.exec(providerFileName)[1])
+      );
     return searchProviderArray;
   }
 }

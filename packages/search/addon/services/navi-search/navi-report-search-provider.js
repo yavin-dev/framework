@@ -3,11 +3,13 @@ import NaviBaseSearchProviderService from './navi-base-search-provider';
 export default class NaviReportSearchProviderService extends NaviBaseSearchProviderService {
   /**
    * @property name
+   * @override
    */
   name = 'reportSearchProvider';
 
   /**
    * @property niceName
+   * @override
    */
   niceName = 'Report Search Provder';
 
@@ -18,6 +20,7 @@ export default class NaviReportSearchProviderService extends NaviBaseSearchProvi
 
   /**
    * @method search
+   * @override
    * @param {Object} searchParams
    * @param {Object} author
    * @returns {Promise} promise
