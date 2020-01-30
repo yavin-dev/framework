@@ -6,7 +6,7 @@ import config from 'ember-get-config';
 
 export default class NaviSearchProviderService extends Service {
   /**
-   * @method getService
+   * @method getProvider
    * @param name
    * @returns {Object} search provider service object
    */
