@@ -10,7 +10,7 @@ export default class NaviSearchProviderService extends Service {
    * @param name
    * @returns {Object} search provider service object
    */
-  getService(name) {
+  getProvider(name) {
     return getOwner(this).lookup(`service:navi-search/${name}`);
   }
 
@@ -21,9 +21,9 @@ export default class NaviSearchProviderService extends Service {
   all() {
     const searchProvidersRegex = new RegExp(`^(?:${config.modulePrefix}/)?services/navi-search/([a-z-]*)$`),
       searchProviderServices = Object.keys(requirejs.entries).filter(
-        key => searchProvidersRegex.test(key) && !key.includes('base')
+        key => searchProvidersRegex.test(key) && !key.includes('navi-base-search-provider')
       ),
-      searchProviderArray = searchProviderServices.map(key => this.getService(searchProvidersRegex.exec(key)[1]));
+      searchProviderArray = searchProviderServices.map(key => this.getProvider(searchProvidersRegex.exec(key)[1]));
     return searchProviderArray;
   }
 }
