@@ -30,10 +30,9 @@ export default class NaviSearchProviderService extends Service {
       searchProviderServices = Object.keys(requirejs.entries).filter(
         requirejsFileName =>
           searchProvidersRegex.test(requirejsFileName) && !requirejsFileName.includes('navi-base-search-provider')
-      ),
-      searchProviderArray = searchProviderServices.map(providerFileName =>
-        this.getProvider(searchProvidersRegex.exec(providerFileName)[1])
       );
-    return searchProviderArray;
+    return searchProviderServices.map(providerFileName =>
+      this.getProvider(searchProvidersRegex.exec(providerFileName)[1])
+    );
   }
 }
