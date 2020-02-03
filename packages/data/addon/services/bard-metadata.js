@@ -117,11 +117,16 @@ export default Service.extend({
    * returns all metadata objects of type `type`
    *
    * @param {String} type
+   * @param {String} namespace - optional, filters the result by namespace
    * @returns {Promise} - array of all table metadata
    */
   all(type, namespace) {
     assert('Type must be table, metric or dimension', A(['table', 'dimension', 'metric']).includes(type));
     assert('Metadata must be loaded before the operation can be performed', this.loadedDataSources.length > 0);
+
+    if (namespace) {
+      assert('Metadata must have the requested namespace loaded', this.loadedDataSources.includes(namespace));
+    }
 
     return get(this, '_keg').all(`metadata/${type}`, namespace);
   },
@@ -137,9 +142,8 @@ export default Service.extend({
    */
   getById(type, id, namespace) {
     assert('Type must be table, metric or dimension', A(['table', 'dimension', 'metric']).includes(type));
-    assert('Metadata must be loaded before the operation can be performed', this.loadedDataSources.length > 0);
-
     let source = namespace || getDefaultDataSourceName();
+    assert('Metadata must be loaded before the operation can be performed', this.loadedDataSources.includes(source));
 
     return get(this, '_keg').getById(`metadata/${type}`, id, source);
   },
