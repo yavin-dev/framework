@@ -57,7 +57,7 @@ export default function() {
         const matchesFilterParameter = filterParameters.every(filterParameter =>
           JSON.stringify(report).match(new RegExp(filterParameter, 'i'))
         );
-        const matchesAuthorIfExists = author != null ? report.author.id.match(new RegExp(author, 'i')) : true;
+        const matchesAuthorIfExists = author && report.author.id.match(new RegExp(author, 'i')) || true;
         return matchesFilterParameter && matchesAuthorIfExists;
       });
     } else {
