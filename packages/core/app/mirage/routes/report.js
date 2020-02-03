@@ -17,7 +17,7 @@ const getFilterParams = function(queryFilter) {
     .replace(/\)/g, '')
     .replace(/\*/g, '')
     .split(',')
-    .map(el => el.split('==')[1]);
+    .map(el => el.split('=='));
 };
 
 /**
@@ -31,8 +31,8 @@ const getQueryAuthor = function(queryFilter) {
   if (queryFilter.includes('author')) {
     return queryFilter
       .split(';')[1]
-      .replace(/\*/g, '')
-      .split('==')[1];
+      .match(/\*(.*?)\*/)[0]
+      .replace('*', '');
   }
   return null;
 };
@@ -55,7 +55,7 @@ export default function() {
       let author = getQueryAuthor(queryFilter);
       reportsObject = reports.all().filter(function(report) {
         const matchesFilterParameter = filterParameters.every(filterParameter =>
-          JSON.stringify(report).match(new RegExp(filterParameter, 'i'))
+          JSON.stringify(report[filterParameter[0]]).match(new RegExp(filterParameter[1], 'i'))
         );
         const matchesAuthorIfExists = author != null ? report.author.id.match(new RegExp(author, 'i')) : true;
         return matchesFilterParameter && matchesAuthorIfExists;

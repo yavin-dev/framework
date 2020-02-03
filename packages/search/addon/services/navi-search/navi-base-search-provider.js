@@ -6,6 +6,7 @@
  */
 
 import Service, { inject as service } from '@ember/service';
+import { assert } from '@ember/debug';
 
 export default class NaviBaseSearchProviderService extends Service {
   /**
@@ -32,5 +33,7 @@ export default class NaviBaseSearchProviderService extends Service {
    * @method search
    * @returns {Array} array of search results
    */
-  search() {}
+  search() {
+    assert('Search method must be called from a subclass', false);
+  }
 }
