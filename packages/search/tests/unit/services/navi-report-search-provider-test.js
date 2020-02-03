@@ -46,4 +46,10 @@ module('Unit | Service | navi-report-search-provider', function(hooks) {
       'The service returns a report that includes the requested request parameter.'
     );
   });
+
+  test('search with empty search parameters', async function(assert) {
+    const results = await this.service.search(null, 'navi_user');
+    const author = await results.get('firstObject.author.id');
+    assert.ok(author.includes('navi_user'), 'The service returns a report from the requested user.');
+  });
 });

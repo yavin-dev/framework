@@ -12,6 +12,6 @@ module('Unit | Service | navi-search-provider', function(hooks) {
   test('get all search providers', function(assert) {
     let service = this.owner.lookup('service:navi-search-provider');
     let availableSearchProviders = service.all();
-    assert.ok(availableSearchProviders.length > 0);
+    assert.equal(availableSearchProviders.length, 1, 'Discovered 1 search provider.');
   });
 });

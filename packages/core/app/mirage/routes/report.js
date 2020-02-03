@@ -11,13 +11,16 @@ const TIMESTAMP_FORMAT = 'YYYY-MM-DD HH:mm:ss';
  * to a list of all the OR parameters, ie., [H, Revenue]
  */
 const getFilterParams = function(queryFilter) {
-  return queryFilter
-    .split(';')[0]
-    .replace(/\(/g, '')
-    .replace(/\)/g, '')
-    .replace(/\*/g, '')
-    .split(',')
-    .map(el => el.split('=='));
+  if (queryFilter != null || queryFilter != '') {
+    if (queryFilter.includes('author')) {
+      queryFilter = queryFilter.split(';')[0];
+    }
+    return queryFilter
+      .replace(/[\(\)\*]/g, '')
+      .split(',')
+      .map(el => el.split('=='));
+  }
+  return null;
 };
 
 /**
@@ -28,11 +31,11 @@ const getFilterParams = function(queryFilter) {
  * to get the author, ie., ramvish
  */
 const getQueryAuthor = function(queryFilter) {
-  if (queryFilter.includes('author')) {
-    return queryFilter
-      .split(';')[1]
-      .match(/\*(.*?)\*/)[0]
-      .replace('*', '');
+  if ((queryFilter != null || queryFilter != '') && queryFilter.includes('author')) {
+    if (queryFilter.includes('(')) {
+      queryFilter = queryFilter.split(';')[1];
+    }
+    return queryFilter.match(/\*(.*?)\*/)[0].replace(/\*/g, '');
   }
   return null;
 };
@@ -54,11 +57,13 @@ export default function() {
       let filterParameters = getFilterParams(queryFilter);
       let author = getQueryAuthor(queryFilter);
       reportsObject = reports.all().filter(function(report) {
-        const matchesFilterParameter = filterParameters.every(filterParameter =>
-          JSON.stringify(report[filterParameter[0]]).match(new RegExp(filterParameter[1], 'i'))
-        );
-        const matchesAuthorIfExists = author && report.author.id.match(new RegExp(author, 'i')) || true;
-        return matchesFilterParameter && matchesAuthorIfExists;
+        const matchesFilterParameterIfExists = !!filterParameters
+          ? filterParameters.every(filterParameter =>
+              JSON.stringify(report[filterParameter[0]]).match(new RegExp(filterParameter[1], 'i'))
+            )
+          : true;
+        const matchesAuthorIfExists = !!author ? !!report.author.id.match(new RegExp(author, 'i')) : true;
+        return matchesFilterParameterIfExists && matchesAuthorIfExists;
       });
     } else {
       reportsObject = reports.all();
