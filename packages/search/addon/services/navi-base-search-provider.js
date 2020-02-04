@@ -20,11 +20,6 @@ export default class NaviBaseSearchProviderService extends Service {
   name = undefined;
 
   /**
-   * @property {String} niceName
-   */
-  niceName = undefined;
-
-  /**
    * @property {String} associatedComponent
    */
   associatedComponent = undefined;

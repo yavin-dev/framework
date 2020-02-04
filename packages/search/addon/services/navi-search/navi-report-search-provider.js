@@ -15,12 +15,6 @@ export default class NaviReportSearchProviderService extends NaviBaseSearchProvi
   name = 'reportSearchProvider';
 
   /**
-   * @property niceName
-   * @override
-   */
-  niceName = 'Report Search Provder';
-
-  /**
    * @property associatedComponent
    */
   associatedComponent = 'navi-report-search-result';
