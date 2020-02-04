@@ -1,9 +1,9 @@
-import { run } from '@ember/runloop';
-import moment from 'moment';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click } from '@ember/test-helpers';
+import { render, click, find } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
+import { run } from '@ember/runloop';
+import moment from 'moment';
 import config from 'ember-get-config';
 
 const TEST_FORMAT = 'YYYY-MM-DD';
@@ -87,6 +87,26 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
 
     assert.ok(isDayActive(boundDate), 'Bound date is visibly selected');
     assert.ok(!isDayActive(clickDate), 'Clicked date is no longer selected');
+  });
+
+  test('Change center date', async function(assert) {
+    assert.expect(4);
+
+    const getMonth = () => find('.ember-power-calendar-nav-title > span').childNodes[2].textContent;
+    this.set('date', moment('2015-07-14', TEST_FORMAT));
+
+    await render(hbs`<NaviDatePicker @date={{this.date}} /> `);
+
+    assert.equal(getMonth(), 'July', 'The center date starts as the passed in date');
+
+    await click('.ember-power-calendar-nav-control--previous');
+    assert.equal(getMonth(), 'June', 'The center date changes to previous month');
+
+    await click('.ember-power-calendar-nav-control--next');
+    assert.equal(getMonth(), 'July', 'The center date goes back to original after click');
+
+    await click('.ember-power-calendar-nav-control--next');
+    assert.equal(getMonth(), 'August', 'The center date goes one month ahead');
   });
 
   test('Change date action', async function(assert) {
