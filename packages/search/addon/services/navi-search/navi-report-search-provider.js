@@ -1,3 +1,10 @@
+/**
+ * Copyright 2020, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ *
+ * This service is used to search for reports stored in the persistence layer.
+ */
+
 import NaviBaseSearchProviderService from '../navi-base-search-provider';
 
 export default class NaviReportSearchProviderService extends NaviBaseSearchProviderService {
