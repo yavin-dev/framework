@@ -166,7 +166,6 @@ class NaviDatePicker extends Component {
    */
   @action
   setCenterDate({ moment: newDate }) {
-    debugger;
     set(this, 'centerDate', newDate);
   }
 
