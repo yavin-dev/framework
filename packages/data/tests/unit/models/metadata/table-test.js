@@ -16,7 +16,8 @@ module('Unit | Metadata Model | Table', function(hooks) {
       description: 'Day',
       dimensionIds: [],
       metricIds: ['pv'],
-      keg: Keg
+      keg: Keg,
+      source: undefined
     };
 
     Payload = {

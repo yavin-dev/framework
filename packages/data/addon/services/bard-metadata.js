@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Ember service that helps retrieve metadata from WS
@@ -13,6 +13,7 @@ import { assign } from '@ember/polyfills';
 import { setOwner, getOwner } from '@ember/application';
 import { getWithDefault, get } from '@ember/object';
 import { resolve } from 'rsvp';
+import { getDefaultDataSourceName } from '../utils/adapter';
 
 export default Service.extend({
   /**
@@ -34,9 +35,9 @@ export default Service.extend({
   _keg: service('keg'),
 
   /**
-   * @property {Boolean} metadataLoaded
+   * @property {Array} loadedDataSources - list of data sources in which meta data has already been loaded
    */
-  metadataLoaded: false,
+  loadedDataSources: null,
 
   /**
    * @method init
@@ -50,6 +51,7 @@ export default Service.extend({
 
     this.set('_adapter', adapter);
     this.set('_serializer', owner.lookup('serializer:bard-metadata'));
+    this.set('loadedDataSources', []);
   },
 
   /**
@@ -59,9 +61,10 @@ export default Service.extend({
    * @param {Object} options - options object used by the adapter
    * @returns {Promise} promise that loads metadata
    */
-  loadMetadata(options) {
+  loadMetadata(options = {}) {
+    const dataSource = options.dataSourceName || getDefaultDataSourceName();
     //fetch metadata from WS if metadata not yet loaded
-    if (!get(this, 'metadataLoaded')) {
+    if (!this.loadedDataSources.includes(dataSource)) {
       return get(this, '_adapter')
         .fetchAll(
           'table',
@@ -74,16 +77,16 @@ export default Service.extend({
         )
         .then(payload => {
           //normalize payload
+          payload.source = dataSource;
           let metadata = get(this, '_serializer').normalize(payload);
 
-          //set metadataLoaded property
           if (!(get(this, 'isDestroyed') || get(this, 'isDestroying'))) {
             //create metadata model objects and load into keg
-            this._loadMetadataForType('table', metadata.tables);
-            this._loadMetadataForType('dimension', metadata.dimensions);
-            this._loadMetadataForType('metric', metadata.metrics);
+            this._loadMetadataForType('table', metadata.tables, dataSource);
+            this._loadMetadataForType('dimension', metadata.dimensions, dataSource);
+            this._loadMetadataForType('metric', metadata.metrics, dataSource);
 
-            this.set('metadataLoaded', true);
+            this.loadedDataSources.push(dataSource);
           }
         });
     }
@@ -98,7 +101,7 @@ export default Service.extend({
    * @param {String} type - type of metadata, table, dimension, or metric
    * @param {Array} metadataObjects - array of metadata objects
    */
-  _loadMetadataForType(type, metadataObjects) {
+  _loadMetadataForType(type, metadataObjects, namespace) {
     let metadata = metadataObjects.map(data => {
       let payload = assign({}, data),
         owner = getOwner(this);
@@ -106,7 +109,7 @@ export default Service.extend({
       return owner.factoryFor(`model:metadata/${type}`).create(payload);
     });
 
-    get(this, '_keg').pushMany(`metadata/${type}`, metadata);
+    get(this, '_keg').pushMany(`metadata/${type}`, metadata, { namespace });
   },
 
   /**
@@ -114,13 +117,18 @@ export default Service.extend({
    * returns all metadata objects of type `type`
    *
    * @param {String} type
+   * @param {String} namespace - optional, filters the result by namespace
    * @returns {Promise} - array of all table metadata
    */
-  all(type) {
+  all(type, namespace) {
     assert('Type must be table, metric or dimension', A(['table', 'dimension', 'metric']).includes(type));
-    assert('Metadata must be loaded before the operation can be performed', get(this, 'metadataLoaded'));
+    assert('Metadata must be loaded before the operation can be performed', this.loadedDataSources.length > 0);
 
-    return get(this, '_keg').all(`metadata/${type}`);
+    if (namespace) {
+      assert('Metadata must have the requested namespace loaded', this.loadedDataSources.includes(namespace));
+    }
+
+    return get(this, '_keg').all(`metadata/${type}`, namespace);
   },
 
   /**
@@ -129,13 +137,15 @@ export default Service.extend({
    *
    * @param {String} type
    * @param {String} id
+   * @param {String} namespace - optional
    * @returns {Object} metadata model object
    */
-  getById(type, id) {
+  getById(type, id, namespace) {
     assert('Type must be table, metric or dimension', A(['table', 'dimension', 'metric']).includes(type));
-    assert('Metadata must be loaded before the operation can be performed', get(this, 'metadataLoaded'));
+    let source = namespace || getDefaultDataSourceName();
+    assert('Metadata must be loaded before the operation can be performed', this.loadedDataSources.includes(source));
 
-    return get(this, '_keg').getById(`metadata/${type}`, id);
+    return get(this, '_keg').getById(`metadata/${type}`, id, source);
   },
 
   /**
@@ -144,16 +154,18 @@ export default Service.extend({
    *
    * @param {String} type
    * @param {String} id
+   * @param {String} namespace
    * @returns {Promise}
    */
-  fetchById(type, id) {
+  fetchById(type, id, namespace) {
     assert('Type must be table, metric or dimension', A(['table', 'dimension', 'metric']).includes(type));
+    let dataSourceName = namespace || getDefaultDataSourceName();
 
     return get(this, '_adapter')
-      .fetchMetadata(type, id)
+      .fetchMetadata(type, id, { dataSourceName })
       .then(meta => {
         //load into keg if not already present
-        this._loadMetadataForType(type, [meta]);
+        this._loadMetadataForType(type, [meta], dataSourceName);
         return meta;
       });
   },
@@ -164,15 +176,17 @@ export default Service.extend({
    *
    * @param {String} type
    * @param {String} id
+   * @param {String} namespace
    * @returns {Promise}
    */
-  findById(type, id) {
+  findById(type, id, namespace) {
     //Get entity if already present in the keg
-    if (get(this, '_keg').getById(`metadata/${type}`, id)) {
-      return resolve(this.getById(type, id));
+    let dataSourceName = namespace || getDefaultDataSourceName();
+    if (get(this, '_keg').getById(`metadata/${type}`, id, dataSourceName)) {
+      return resolve(this.getById(type, id, dataSourceName));
     }
 
-    return this.fetchById(type, id);
+    return this.fetchById(type, id, dataSourceName);
   },
 
   /**
@@ -194,10 +208,12 @@ export default Service.extend({
    * @param {String} id
    * @param {String} field
    * @param {*} defaultIfNone - (optional) default if meta data or field isn't found
+   * @param {String} namespace
    * @returns {*}
    */
-  getMetaField(type, id, field, defaultIfNone = null) {
-    let meta = this.getById(type, id);
+  getMetaField(type, id, field, defaultIfNone = null, namespace = null) {
+    let dataSourceName = namespace || getDefaultDataSourceName();
+    let meta = this.getById(type, id, dataSourceName);
     if (!meta) {
       return defaultIfNone;
     }

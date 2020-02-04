@@ -45,6 +45,11 @@ let Model = EmberObject.extend({
   timeGrains: undefined,
 
   /**
+   * @property {String} source - the datasource this metadata is from.
+   */
+  source: undefined,
+
+  /**
    * @method init
    * Converts timeGrains to timeGrain fragment objects
    */
@@ -53,15 +58,14 @@ let Model = EmberObject.extend({
     if (timeGrains) {
       this.set(
         'timeGrains',
-        timeGrains
-          .map(timeGrain => {
-            let timeGrainPayload = assign({}, timeGrain),
-              owner = getOwner(this);
-            return owner.factoryFor('model:metadata/time-grain').create(timeGrainPayload);
-          })
-          .sort((l, r) => {
-            return (timeGrainSorting[l.name] || Infinity) - (timeGrainSorting[r.name] || Infinity);
-          })
+        timeGrains.map(timeGrain => {
+          let timeGrainPayload = assign({}, timeGrain, { source: this.source }),
+            owner = getOwner(this);
+          return owner.factoryFor('model:metadata/time-grain').create(timeGrainPayload);
+        })
+        .sort((l, r) => {
+          return (timeGrainSorting[l.name] || Infinity) - (timeGrainSorting[r.name] || Infinity);
+        })
       );
     }
   }
