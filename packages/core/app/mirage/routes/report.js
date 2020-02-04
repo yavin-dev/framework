@@ -1,4 +1,4 @@
-import Mirage from 'ember-cli-mirage';
+import { Mirage, Response } from 'ember-cli-mirage';
 import moment from 'moment';
 import RESPONSE_CODES from '../enums/response-codes';
 import { getFilterParams, getQueryAuthor } from 'navi-core/utils/rsql-utils';
@@ -9,31 +9,44 @@ export default function() {
    * reports/ - GET endpoint to fetch many reports
    */
   this.get('/reports', function({ reports }, request) {
-    let reportsObject;
+    let reportObject;
     let idFilter = request.queryParams['filter[reports.id]'];
     let queryFilter = request.queryParams['filter[reports]'];
 
     // Allow filtering
     if (idFilter) {
       let ids = idFilter.split(',');
-      reportsObject = reports.find(ids);
-    } else if (queryFilter) {
-      let filterParameters = getFilterParams(queryFilter);
-      let author = getQueryAuthor(queryFilter);
-      reportsObject = reports.all().filter(function(report) {
-        const matchesFilterParameterIfExists = !!filterParameters
-          ? filterParameters.every(filterParameter =>
-              JSON.stringify(report[filterParameter[0]]).match(new RegExp(filterParameter[1], 'i'))
-            )
-          : true;
-        const matchesAuthorIfExists = !!author ? !!report.author.id.match(new RegExp(author, 'i')) : true;
-        return matchesFilterParameterIfExists && matchesAuthorIfExists;
-      });
+      reportObject = reports.find(ids);
+    } else if ('filter[reports]' in request.queryParams) {
+      try {
+        let filterParameters = getFilterParams(queryFilter);
+        let author = getQueryAuthor(queryFilter);
+        if (filterParameters == null && author == null) {
+          throw 'No search parameters';
+        }
+        reportObject = reports.all().filter(function(report) {
+          const matchesFilterParameterIfExists = !!filterParameters
+            ? filterParameters.every(filterParameter =>
+                JSON.stringify(report[filterParameter[0]]).match(new RegExp(filterParameter[1], 'i'))
+              )
+            : true;
+          const matchesAuthorIfExists = !!author ? !!report.author.id.match(new RegExp(author, 'i')) : true;
+          return matchesFilterParameterIfExists && matchesAuthorIfExists;
+        });
+      } catch (error) {
+        reportObject = new Response(
+          400,
+          { data: {} },
+          {
+            errors: ['InvalidPredicateException: Invalid filter format']
+          }
+        );
+      }
     } else {
-      reportsObject = reports.all();
+      reportObject = reports.all();
     }
 
-    return reportsObject;
+    return reportObject;
   });
 
   /**

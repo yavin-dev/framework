@@ -70,4 +70,12 @@ module('Unit | Service | navi-report-search-provider', function(hooks) {
     const author = await results.get('firstObject.author.id');
     assert.ok(author.includes('navi_user'), 'The service returns a report from the requested user.');
   });
+
+  test('search with empty parameters', async function(assert) {
+    try {
+      await this.service.search();
+    } catch (error) {
+      assert.equal(error.errors[0].detail[0], 'InvalidPredicateException: Invalid filter format');
+    }
+  });
 });
