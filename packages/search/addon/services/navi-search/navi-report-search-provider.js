@@ -1,4 +1,4 @@
-import NaviBaseSearchProviderService from './navi-base-search-provider';
+import NaviBaseSearchProviderService from '../navi-base-search-provider';
 
 export default class NaviReportSearchProviderService extends NaviBaseSearchProviderService {
   /**
@@ -19,13 +19,13 @@ export default class NaviReportSearchProviderService extends NaviBaseSearchProvi
   associatedComponent = 'navi-report-search-result';
 
   /**
-   * @method search
-   * @override
+   * @method constructSearchQuery
+   * @private
    * @param {Object} searchParams
-   * @param {Object} author
-   * @returns {Promise} promise
+   * @param {String} author
+   * @returns {Object} search query object
    */
-  search(searchParams, author) {
+  constructSearchQuery(searchParams, author) {
     let query = { filter: { reports: '' } };
 
     if (searchParams) {
@@ -48,6 +48,17 @@ export default class NaviReportSearchProviderService extends NaviBaseSearchProvi
       query.filter.reports += `author==*${author}*`;
     }
 
-    return this.store.query('report', query);
+    return query;
+  }
+
+  /**
+   * @method search
+   * @override
+   * @param {Object} searchParams
+   * @param {String} author
+   * @returns {Promise} promise with search query results
+   */
+  search(searchParams, author) {
+    return this.store.query('report', this.constructSearchQuery(searchParams, author));
   }
 }

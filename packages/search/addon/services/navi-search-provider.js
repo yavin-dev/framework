@@ -27,9 +27,8 @@ export default class NaviSearchProviderService extends Service {
    */
   all() {
     const searchProvidersRegex = new RegExp(`^(?:${config.modulePrefix}/)?services/navi-search/([a-z-]*)$`),
-      searchProviderServices = Object.keys(requirejs.entries).filter(
-        requirejsFileName =>
-          searchProvidersRegex.test(requirejsFileName) && !requirejsFileName.includes('navi-base-search-provider')
+      searchProviderServices = Object.keys(requirejs.entries).filter(requirejsFileName =>
+        searchProvidersRegex.test(requirejsFileName)
       );
     return searchProviderServices.map(providerFileName =>
       this.getProvider(searchProvidersRegex.exec(providerFileName)[1])
