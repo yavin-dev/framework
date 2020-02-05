@@ -168,7 +168,7 @@ export default EmberObject.extend({
       });
       andQueries = [andQueries]; // wrap
     }
-    assert("You must pass an 'Array' of queries to be ANDed together", andQueries.length);
+    assert("You must pass an 'Array' of queries to be ANDed together", Array.isArray(andQueries));
     // defaults to 'in' operation if operator is not specified
     assert(
       "Only 'in' operation is currently supported in Keg",
@@ -182,7 +182,7 @@ export default EmberObject.extend({
       });
       stringQueries.forEach(query => (query.values = query.values.split(',')));
     }
-    assert("Only 'Array' query values is currently supported in Keg", andQueries.every(q => !!q.values.length));
+    assert("Only 'Array' query values is currently supported in Keg", andQueries.every(q => Array.isArray(q.values)));
 
     let keg = get(this, 'keg');
 
