@@ -114,7 +114,7 @@ class NaviDatePicker extends Component {
     let newCenter = moment(calendar.center)
       .clone()
       [unit](e.target.value);
-    calendar.send('changeCenter', newCenter);
+    return calendar.actions.changeCenter(newCenter);
   }
 
   /**
@@ -166,7 +166,7 @@ class NaviDatePicker extends Component {
    */
   @action
   setCenterDate({ moment: newDate }) {
-    this.centerDate = newDate;
+    set(this, 'centerDate', newDate);
   }
 
   /**
