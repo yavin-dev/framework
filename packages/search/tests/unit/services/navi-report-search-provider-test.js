@@ -66,9 +66,9 @@ module('Unit | Service | navi-report-search-provider', function(hooks) {
   });
 
   test('search with empty search parameters', async function(assert) {
-    const results = await this.service.search(null, 'navi_user');
+    const results = await this.service.search(null, 'ciela');
     const author = await results.get('firstObject.author.id');
-    assert.ok(author.includes('navi_user'), 'The service returns a report from the requested user.');
+    assert.ok(author.includes('ciela'), 'The service returns a report from the requested user.');
   });
 
   test('search with no results for search parameters', async function(assert) {

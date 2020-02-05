@@ -25,12 +25,12 @@ export default function() {
           throw 'No search parameters';
         }
         reportObject = reports.all().filter(function(report) {
-          const matchesFilterParameterIfExists = !!filterParameters
+          const matchesFilterParameterIfExists = filterParameters
             ? filterParameters.every(filterParameter =>
                 JSON.stringify(report[filterParameter[0]]).match(new RegExp(filterParameter[1], 'i'))
               )
             : true;
-          const matchesAuthorIfExists = !!author ? !!report.author.id.match(new RegExp(author, 'i')) : true;
+          const matchesAuthorIfExists = author ? report.author.id.match(new RegExp(author, 'i')) : true;
           return matchesFilterParameterIfExists && matchesAuthorIfExists;
         });
       } catch (error) {
