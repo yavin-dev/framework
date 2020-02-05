@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Description: Bard dimensions service that fetches dimension values
@@ -171,7 +171,7 @@ export default Service.extend({
 
     // fetch from keg if all records are loaded in keg
     if (this.getLoadedStatus(dimension)) {
-      return kegAdapter.find(dimension, query, options).then(recordsFromKeg => {
+      return kegAdapter.find(dimension, [query], options).then(recordsFromKeg => {
         return this._createBardDimensionsArray(recordsFromKeg, recordsFromKeg.rows, dimension);
       });
     }
