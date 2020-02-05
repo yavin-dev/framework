@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click, find } from '@ember/test-helpers';
+import { render, click, find, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { run } from '@ember/runloop';
 import moment from 'moment';
@@ -92,7 +92,6 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
   test('Change center date', async function(assert) {
     assert.expect(4);
 
-    const getMonth = () => find('.ember-power-calendar-nav-title > span').childNodes[2].textContent;
     this.set('date', moment('2015-07-14', TEST_FORMAT));
 
     await render(hbs`<NaviDatePicker @date={{this.date}} /> `);
@@ -107,6 +106,32 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
 
     await click('.ember-power-calendar-nav-control--next');
     assert.equal(getMonth(), 'August', 'The center date goes one month ahead');
+  });
+
+  test('Change center date through select', async function(assert) {
+    assert.expect(4);
+
+    this.set('date', moment('2015-07-14', TEST_FORMAT));
+
+    await render(hbs`<NaviDatePicker @date={{this.date}} /> `);
+
+    // change month
+    assert.equal(getMonth(), 'July', 'The center date starts as the passed in date');
+
+    const monthSelect = getMonthSelect();
+    monthSelect.selectedIndex = monthSelect.selectedIndex - 1;
+    await triggerEvent(monthSelect, 'change');
+
+    assert.equal(getMonth(), 'June', 'The center date changes to previous month');
+
+    // change year
+    assert.equal(getYear(), '2015', 'The center date changes to next year');
+
+    const yearSelect = geYearSelect();
+    yearSelect.selectedIndex = yearSelect.selectedIndex + 1;
+    await triggerEvent(yearSelect, 'change');
+
+    assert.equal(getYear(), '2016', 'The center date changes to next year');
   });
 
   test('Change date action', async function(assert) {
@@ -301,6 +326,11 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
     // Set back to original values to avoid affecting other tests
     config.navi.dataEpoch = originalEpoch;
   });
+
+  const getMonthSelect = () => find('.ember-power-calendar-nav-title .with-invisible-select > select');
+  const getMonth = () => find('.ember-power-calendar-nav-title > span').childNodes[2].textContent;
+  const geYearSelect = () => find('.ember-power-calendar-nav-title .with-invisible-select:nth-of-type(2) > select');
+  const getYear = () => find('.ember-power-calendar-nav-title > span:nth-of-type(2)').childNodes[2].textContent;
 
   /**
    * Test Helper
