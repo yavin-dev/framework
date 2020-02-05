@@ -125,7 +125,7 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
     assert.equal(getMonth(), 'June', 'The center date changes to previous month');
 
     // change year
-    assert.equal(getYear(), '2015', 'The center date changes to next year');
+    assert.equal(getYear(), '2015', 'The center date year starts as the passed in date');
 
     const yearSelect = geYearSelect();
     yearSelect.selectedIndex = yearSelect.selectedIndex + 1;
