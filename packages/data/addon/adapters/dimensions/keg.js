@@ -182,7 +182,7 @@ export default EmberObject.extend({
       });
       stringQueries.forEach(query => (query.values = query.values.split(',')));
     }
-    assert("Only 'Array' query values is currently supported in Keg", andQueries.every(q => Array.isArray(q.values)));
+    assert("Only 'Array' query values are currently supported in Keg", andQueries.every(q => Array.isArray(q.values)));
 
     let keg = get(this, 'keg');
 
