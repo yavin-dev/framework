@@ -96,26 +96,35 @@ module('Unit | Adapters | Dimensions | Keg', function(hooks) {
     assertThrowOperator([{ operator: 'contains' }]);
     assertThrowOperator([{}, { operator: 'in' }, { operator: 'contains' }]);
 
-    const assertPromise = expected => result => {
-      assert.deepEqual(
-        result.rows.mapBy('id'),
-        expected,
-        'find() returns expected response using navi-data query object interface.'
-      );
+    const assertEquals = (expected, message) => result => {
+      assert.deepEqual(result.rows.mapBy('id'), expected, message);
     };
 
-    await Adapter.find('dimensionOne', { field: 'description', values: 'bar,gar' }).then(assertPromise([2, 3]));
-    await Adapter.find('dimensionOne', [{ field: 'description', values: 'bar,gar' }]).then(assertPromise([2, 3]));
-    await Adapter.find('dimensionOne', [{ field: 'description', values: ['bar', 'gar'] }]).then(assertPromise([2, 3]));
+    await Adapter.find('dimensionOne', {
+      field: 'description',
+      values: 'bar,gar'
+    }).then(assertEquals([2, 3], 'find() returns expected when values is a string'));
+    await Adapter.find('dimensionOne', [
+      {
+        field: 'description',
+        values: 'bar,gar'
+      }
+    ]).then(assertEquals([2, 3], 'find() returns expected when passed an array of queries'));
+    await Adapter.find('dimensionOne', [
+      {
+        field: 'description',
+        values: ['bar', 'gar']
+      }
+    ]).then(assertEquals([2, 3], 'find() returns expected when values is an array'));
     await Adapter.find('dimensionOne', [
       { field: 'id', values: [1, 2, 3] },
       { field: 'description', values: ['bar'] }
-    ]).then(assertPromise([2]));
+    ]).then(assertEquals([2], 'find() returns expected when passed multiple filters'));
     await Adapter.find('dimensionOne', [
       { field: 'id', values: [1, 2, 3] },
       { field: 'id', values: [3, 4] },
       { field: 'description', values: ['bar', 'gar'] }
-    ]).then(assertPromise([3]));
+    ]).then(assertEquals([3], 'find() returns expected when passed multiple overlapping filters'));
   });
 
   test('findById', function(assert) {
