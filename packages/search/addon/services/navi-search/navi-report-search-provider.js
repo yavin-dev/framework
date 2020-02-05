@@ -5,14 +5,14 @@
  * This service is used to search for reports stored in the persistence layer.
  */
 
+import { inject as service } from '@ember/service';
 import NaviBaseSearchProviderService from '../navi-base-search-provider';
 
 export default class NaviReportSearchProviderService extends NaviBaseSearchProviderService {
   /**
-   * @property name
-   * @override
+   * @property {Ember.Service} store
    */
-  name = 'reportSearchProvider';
+  @service store;
 
   /**
    * @property associatedComponent
@@ -26,7 +26,7 @@ export default class NaviReportSearchProviderService extends NaviBaseSearchProvi
    * @param {String} author
    * @returns {Object} search query object
    */
-  constructSearchQuery(searchParams, author) {
+  _constructSearchQuery(searchParams, author) {
     let query = { filter: { reports: '' } };
 
     if (searchParams) {
@@ -60,6 +60,6 @@ export default class NaviReportSearchProviderService extends NaviBaseSearchProvi
    * @returns {Promise} promise with search query results
    */
   search(searchParams, author) {
-    return this.store.query('report', this.constructSearchQuery(searchParams, author));
+    return this.store.query('report', this._constructSearchQuery(searchParams, author));
   }
 }

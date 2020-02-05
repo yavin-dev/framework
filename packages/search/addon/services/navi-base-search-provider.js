@@ -5,20 +5,10 @@
  * Base search provider service.
  */
 
-import Service, { inject as service } from '@ember/service';
+import Service from '@ember/service';
 import { assert } from '@ember/debug';
 
 export default class NaviBaseSearchProviderService extends Service {
-  /**
-   * @property {Ember.Service} store
-   */
-  @service store;
-
-  /**
-   * @property {String} name
-   */
-  name = undefined;
-
   /**
    * @property {String} associatedComponent
    */
