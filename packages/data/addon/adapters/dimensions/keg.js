@@ -161,7 +161,7 @@ export default EmberObject.extend({
    * @returns {Promise} - Promise with the response
    */
   find(dimension, andQueries, options) {
-    if (andQueries.length === undefined) {
+    if (!Array.isArray(andQueries)) {
       // if not array
       warn('find() was not passed an array of queries, wrapping as single query array', {
         id: 'keg-find-query-as-array'
