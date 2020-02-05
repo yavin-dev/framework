@@ -80,27 +80,42 @@ module('Unit | Adapters | Dimensions | Keg', function(hooks) {
     });
   });
 
-  test('find', function(assert) {
-    assert.expect(2);
+  test('find', async function(assert) {
+    assert.expect(8);
 
-    assert.throws(
-      () => {
-        Adapter.find('dimensionOne', { operator: 'contains' });
-      },
-      /Only 'in' operation is currently supported in Keg/,
-      'throws error when doing a contains search, which is not supported yet'
-    );
+    const assertThrowOperator = query => {
+      assert.throws(
+        () => {
+          Adapter.find('dimensionOne', query);
+        },
+        /Only 'in' operation is currently supported in Keg/,
+        'throws error when doing a contains search, which is not supported yet'
+      );
+    };
+    assertThrowOperator({ operator: 'contains' });
+    assertThrowOperator([{ operator: 'contains' }]);
+    assertThrowOperator([{}, { operator: 'in' }, { operator: 'contains' }]);
 
-    return Adapter.find('dimensionOne', {
-      field: 'description',
-      values: 'bar,gar'
-    }).then(result => {
+    const assertPromise = expected => result => {
       assert.deepEqual(
         result.rows.mapBy('id'),
-        [2, 3],
+        expected,
         'find() returns expected response using navi-data query object interface.'
       );
-    });
+    };
+
+    await Adapter.find('dimensionOne', { field: 'description', values: 'bar,gar' }).then(assertPromise([2, 3]));
+    await Adapter.find('dimensionOne', [{ field: 'description', values: 'bar,gar' }]).then(assertPromise([2, 3]));
+    await Adapter.find('dimensionOne', [{ field: 'description', values: ['bar', 'gar'] }]).then(assertPromise([2, 3]));
+    await Adapter.find('dimensionOne', [
+      { field: 'id', values: [1, 2, 3] },
+      { field: 'description', values: ['bar'] }
+    ]).then(assertPromise([2]));
+    await Adapter.find('dimensionOne', [
+      { field: 'id', values: [1, 2, 3] },
+      { field: 'id', values: [3, 4] },
+      { field: 'description', values: ['bar', 'gar'] }
+    ]).then(assertPromise([3]));
   });
 
   test('findById', function(assert) {

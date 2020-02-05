@@ -171,7 +171,7 @@ export default Service.extend({
 
     // fetch from keg if all records are loaded in keg
     if (this.getLoadedStatus(dimension)) {
-      return kegAdapter.find(dimension, query, options).then(recordsFromKeg => {
+      return kegAdapter.find(dimension, [query], options).then(recordsFromKeg => {
         return this._createBardDimensionsArray(recordsFromKeg, recordsFromKeg.rows, dimension);
       });
     }
