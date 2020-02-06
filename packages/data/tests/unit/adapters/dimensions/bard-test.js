@@ -91,22 +91,33 @@ module('Unit | Adapter | Dimensions | Bard', function(hooks) {
   });
 
   test('_buildFilterQuery', function(assert) {
-    assert.expect(3);
+    assert.expect(5);
 
     assert.deepEqual(
       Adapter._buildFilterQuery('dimensionOne', { values: 'v1' }),
       { filters: 'dimensionOne|id-in[v1]' },
-      '_buildFilterQuery correctly built the query object for the provided dimension filters'
+      'correctly built filters for object with one string value'
     );
 
     assert.deepEqual(
-      Adapter._buildFilterQuery('dimensionOne', {
-        field: 'id',
-        operator: 'contains',
-        values: [1, 2]
-      }),
-      { filters: 'dimensionOne|id-contains[1],dimensionOne|id-contains[2]' },
-      'AND filter query is generated given a query with "and" booleanOperation and an array of ids'
+      Adapter._buildFilterQuery('dimensionOne', { values: 'v1,v2,v3' }),
+      { filters: 'dimensionOne|id-in[v1,v2,v3]' },
+      'correctly built the query for object with csv string values'
+    );
+
+    assert.deepEqual(
+      Adapter._buildFilterQuery('dimensionOne', { values: ['v1', 'v2', 'v3'] }),
+      { filters: 'dimensionOne|id-in[v1,v2,v3]' },
+      'correctly built the query for object with array of values'
+    );
+
+    assert.deepEqual(
+      Adapter._buildFilterQuery('dimensionOne', [
+        { field: 'id', operator: 'contains', values: [1, 3] },
+        { field: 'id', operator: 'contains', values: [2] }
+      ]),
+      { filters: 'dimensionOne|id-contains[1,3],dimensionOne|id-contains[2]' },
+      'AND filter is generated given a query with multiple filters and OR filter for multiple values'
     );
 
     assert.deepEqual(
