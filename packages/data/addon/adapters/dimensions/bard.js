@@ -109,7 +109,7 @@ export default EmberObject.extend({
       });
       stringQueries.forEach(query => (query.values = query.values.split(',')));
     }
-    assert("Only 'Array' query values are currently supported in Keg", andQueries.every(q => Array.isArray(q.values)));
+    assert("Only 'Array' query values are currently supported in the Bard adapter", andQueries.every(q => Array.isArray(q.values)));
 
     const filters = andQueries.map(query => {
       const queryField = get(query, 'field'),
@@ -147,7 +147,7 @@ export default EmberObject.extend({
     );
 
     const defaultQueryOptions = { values: [] };
-    let query = andQueries[0];
+    const query = assign({}, defaultQueryOptions, andQueries[0]);
 
     query = assign({}, defaultQueryOptions, query);
 
