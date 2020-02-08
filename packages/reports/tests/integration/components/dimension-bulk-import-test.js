@@ -8,14 +8,13 @@ import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 const HOST = config.navi.dataSources[0].uri;
 
-const COMMON_TEMPLATE = hbs`
-        {{dimension-bulk-import
-           dimension=dimension
-           queryIds=queryIds
-           onSelectValues= (action onSelectValues)
-           onCancel= (action onCancel)
-        }}
-    `,
+const COMMON_TEMPLATE = hbs`<DimensionBulkImport
+    @rawQuery={{this.rawQuery}}
+    @dimension={{this.dimension}}
+    @queryIds={{this.queryIds}}
+    @onSelectValues={{action this.onSelectValues}}
+    @onCancel={{action this.onCancel}}
+  />`,
   PROPERTY_MOCK_DATA = {
     rows: [
       {
@@ -101,9 +100,8 @@ module('Integration | Component | Dimension Bulk Import', function(hooks) {
 
     assert.dom('.dimension-bulk-import').isVisible('Component renders');
 
-    let buttons = findAll('.btn-container button');
     assert.deepEqual(
-      buttons.map(el => el.textContent.trim()),
+      findAll('.btn-container button').map(el => el.textContent.trim()),
       ['Include Valid IDs', 'Cancel'],
       'Include and Cancel buttons are rendered in input mode as expected'
     );
@@ -316,5 +314,26 @@ module('Integration | Component | Dimension Bulk Import', function(hooks) {
         'Search returns valid IDs as expected'
       );
     });
+  });
+
+  test('Raw input is searched', async function(assert) {
+    assert.expect(1);
+    const rawQuery = 'yes, comma';
+    this.setProperties({
+      dimension: { name: 'commaDim', longName: 'Dimension With Comma' },
+      onSelectValues: () => {},
+      onCancel: () => {},
+      rawQuery,
+      queryIds: rawQuery.split(',').map(s => s.trim())
+    });
+
+    await render(COMMON_TEMPLATE);
+
+    await settled();
+    assert.deepEqual(
+      findAll('.btn-container button').map(el => el.textContent.trim()),
+      ['Include Valid IDs', 'Include Raw Input', 'Cancel'],
+      'The Include Raw Input button shows up for valid rawQuery'
+    );
   });
 });
