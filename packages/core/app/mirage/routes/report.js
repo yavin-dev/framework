@@ -26,7 +26,7 @@ export default function() {
         }
         reportObject = reports.all().filter(function(report) {
           const matchesFilterParameterIfExists = filterParameters
-            ? filterParameters.every(filterParameter =>
+            ? filterParameters.some(filterParameter =>
                 JSON.stringify(report[filterParameter[0]]).match(new RegExp(filterParameter[1], 'i'))
               )
             : true;

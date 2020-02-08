@@ -15,12 +15,31 @@ export default class NaviReportSearchProviderService extends NaviBaseSearchProvi
   @service store;
 
   /**
+   * @property {Ember.Service} user
+   */
+  @service user;
+
+  /**
    * @property associatedComponent
    */
   associatedComponent = 'navi-report-search-result';
 
   /**
-   * @method constructSearchQuery
+   * @method _parseQueryString
+   * @private
+   * @param {String} query
+   * @returns {Object} query object
+   */
+  _parseQueryString(query) {
+    let author;
+    if (query) {
+      author = this.user.getUser().id;
+    }
+    return { searchParams: { title: query, request: query }, author: author };
+  }
+
+  /**
+   * @method _constructSearchQuery
    * @private
    * @param {Object} searchParams
    * @param {String} author
@@ -55,11 +74,12 @@ export default class NaviReportSearchProviderService extends NaviBaseSearchProvi
   /**
    * @method search
    * @override
-   * @param {Object} searchParams
+   * @param {String} query
    * @param {String} author
    * @returns {Promise} promise with search query results
    */
-  search(searchParams, author) {
-    return this.store.query('report', this._constructSearchQuery(searchParams, author));
+  search(query) {
+    const parsedQuery = this._parseQueryString(query);
+    return this.store.query('report', this._constructSearchQuery(parsedQuery.searchParams, parsedQuery.author));
   }
 }
