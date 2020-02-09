@@ -1,7 +1,7 @@
-{{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 
 {{!-- Check if in need of disabling the button when the action should be disabled --}}
-<button class="schedule-action__button btn" disabled={{disabled}}  onclick={{queue (toggle "showModal" this) (action "onOpen")}}>
+<button type="button" class="schedule-action__button btn" disabled={{disabled}} onclick={{queue (toggle "showModal" this) (action "onOpen")}}>
   {{navi-icon "clock-o" class="schedule-action__icon"}}
   {{#if hasBlock}}
     <span class="schedule-action__icon-label">{{yield}}</span>
@@ -35,7 +35,7 @@
     {{navi-loader}}
   {{else}}
     <form class="schedule-modal__body navi-modal-body">
-      <fieldset class="{{if (not isRuleValid) "schedule-modal__recipients--invalid"}} schedule-modal__section">
+      <fieldset class="{{unless isRuleValid "schedule-modal__recipients--invalid"}} schedule-modal__section">
         <div class="schedule-modal__label">Recipients</div>
         {{navi-email-input
           class="schedule-modal__input--recipients text-input"

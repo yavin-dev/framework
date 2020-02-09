@@ -21,14 +21,14 @@
       {{/if}}
 
       {{!-- Favorite icon is visible if a report has been saved --}}
-      {{#if (not model.isNew)}}
+      {{#unless model.isNew}}
         {{favorite-item
           user=(get-user)
           item=model
           click=(route-action "toggleFavorite" model)
           classNames="navi-report__fav-icon"
         }}
-      {{/if}}
+      {{/unless}}
 
     </span>
     <ul class="navi-report__actions">
@@ -48,7 +48,7 @@
   </div>
 
   <footer class="navi-report__footer">
-    {{#if (not isRunningReport)}}
+    {{#unless isRunningReport}}
 
       <NaviButton
         class="navi-report__run-btn"
@@ -77,7 +77,7 @@
           {{/if}}
         </NaviButton>
 
-        {{#if (not model.isNew)}}
+        {{#unless model.isNew}}
           <NaviButton
             class="navi-report__save-as-btn"
             @type="secondary"
@@ -88,7 +88,7 @@
           }}>
             Save As ...
           </NaviButton>
-        {{/if}}
+        {{/unless}}
       {{/if}}
 
       {{#if (and model.hasDirtyAttributes (not model.isNew))}}
@@ -110,7 +110,7 @@
         Cancel
       </NaviButton>
 
-    {{/if}}
+    {{/unless}}
   </footer>
 </div>
 

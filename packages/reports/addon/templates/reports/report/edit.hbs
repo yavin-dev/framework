@@ -8,7 +8,7 @@
   {{#with (model-for (parent-route)) as | report |}}
     <p>
       Select some dimensions and metrics, then click
-      <a class="navi-link clickable"
+      <a href class="navi-link clickable"
         role="button"
         onclick={{pipe
           (route-action "validate" report)

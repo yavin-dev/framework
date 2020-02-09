@@ -1,12 +1,11 @@
-{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{#component
-  "navi-visualization-config/series-chart"
-  request=request
-  response=response
-  seriesConfig=seriesConfig
-  seriesType=seriesType
-  onUpdateConfig=(action "onUpdateConfig")
-}}
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<NaviVisualizationConfig::SeriesChart
+  @request={{request}}
+  @response={{response}}
+  @seriesConfig={{seriesConfig}}
+  @seriesType={{seriesType}}
+  @onUpdateConfig={{action "onUpdateConfig"}}
+>
   {{#if (or (eq type "line-chart") showStackOption)}}
     <div class="line-chart-config__header">Chart Style Options</div>
     <div class="line-chart-config__style-options">
@@ -56,4 +55,4 @@
   {{else if (not (eq seriesType "dimension"))}}
     <div class="navi-visualization-config__warn-msg">No configuration options available.</div>
   {{/if}}
-{{/component}}
+</NaviVisualizationConfig::SeriesChart>

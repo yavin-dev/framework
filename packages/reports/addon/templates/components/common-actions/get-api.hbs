@@ -1,4 +1,4 @@
-{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 
 {{!-- Check wether we need to disable the button click --}}
 <button class="get-api__btn {{buttonClassNames}}" type="button" disabled={{disabled}}
@@ -47,7 +47,7 @@
         Copy Link
       {{/copy-button}}
       <a class="btn btn-secondary" href={{requestUrl}} target="_blank" rel="noopener noreferrer">Run API Query in New Tab</a>
-      <button class="btn btn-secondary" onclick={{pipe (toggle "showModal" this) (action "resetNotifications")}}>Cancel</button>
+      <button type="button" class="btn btn-secondary" onclick={{pipe (toggle "showModal" this) (action "resetNotifications")}}>Cancel</button>
     </div>
   </div>
 {{/navi-modal}}

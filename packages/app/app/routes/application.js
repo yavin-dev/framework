@@ -1,33 +1,28 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import { hash } from 'rsvp';
 import { inject as service } from '@ember/service';
 import Route from '@ember/routing/route';
 
-export default Route.extend({
+export default class ApplicationRoute extends Route {
   /**
    * @property {Ember.Service}
    */
-  bardMetadata: service(),
+  @service bardMetadata;
 
   /**
    * @property {Ember.Service}
    */
-  user: service(),
+  @service user;
 
   /**
    * @method model
    * @override
    * @returns {Ember.RSVP.Promise}
    */
-  model() {
-    return hash({
-      user: this.user.findOrRegister(),
-      metadata: this.bardMetadata.loadMetadata()
-    }).then(() => {
-      return;
-    });
+  async model() {
+    await this.user.findOrRegister();
+    await this.bardMetadata.loadMetadata();
   }
-});
+}

@@ -11,11 +11,12 @@ module.exports = {
   plugins: ['ember'],
   extends: ['eslint:recommended', 'plugin:ember/recommended', 'prettier'],
   env: {
-    browser: true
+    browser: true,
+    es6: true
   },
   rules: {
     'multiline-comment-style': ['error', 'starred-block'],
-    'ember/no-jquery': 'error'
+    'ember/no-jquery': 'off'
   },
   globals: {
     NAVI_APP_SETTINGS: true
