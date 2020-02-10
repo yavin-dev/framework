@@ -29,8 +29,7 @@ export function serializeFilters(filters) {
   return filters
     .map(filter => {
       const { dimension, field, operator, values } = filter;
-      const serializedValues = array(values)
-        .toArray()
+      const serializedValues = values
         .map(v => String(v).replace(/"/g, '""')) // csv serialize " -> ""
         .map(v => `"${v}"`) // wrap each "value"
         .join(','); // comma to separate
