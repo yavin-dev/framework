@@ -1,62 +1,47 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Helper object for building request object used by fact service
  */
 import EmberObject from '@ember/object';
-import { computed } from '@ember/object';
 import { A as arr } from '@ember/array';
 
-export default EmberObject.extend({
+export default class Request extends EmberObject {
   /**
    * @property {Object} logicalTable - default value
    */
-  logicalTable: computed(function() {
-    return {};
-  }),
+  logicalTable = {};
 
   /**
    * @property {Array} dimensions - default value
    */
-  dimensions: computed(function() {
-    return arr([]);
-  }),
+  dimensions = arr([]);
 
   /**
    * @property {Array} metrics - default value
    */
-  metrics: computed(function() {
-    return [];
-  }),
+  metrics = [];
 
   /**
    * @property {Array} intervals - default value
    */
-  intervals: computed(function() {
-    return [];
-  }),
+  intervals = [];
 
   /**
    * @property {Array} filters - default value
    */
-  filters: computed(function() {
-    return [];
-  }),
+  filters = [];
 
   /**
    * @property {Array} having - list of having clause objects
    */
-  having: computed(function() {
-    return [];
-  }),
+  having = [];
 
   /**
    * @property {Array} sort - list of sort objects
    */
-  sort: computed(function() {
-    return [];
-  }),
+  sort = [];
 
   /**
    * @method copy
@@ -65,7 +50,7 @@ export default EmberObject.extend({
    */
   copy() {
     return this.constructor.create(this);
-  },
+  }
 
   /**
    * Adds to request property array in an immutable way
@@ -80,7 +65,7 @@ export default EmberObject.extend({
     let requestCopy = this.copy();
     requestCopy.set(property, this.get(property).concat(values));
     return requestCopy;
-  },
+  }
 
   /**
    * Sets a request property in an immutable way
@@ -95,7 +80,7 @@ export default EmberObject.extend({
     let requestCopy = this.copy();
     requestCopy.set(property, value);
     return requestCopy;
-  },
+  }
 
   /**
    * Maps an array of values into an array of objects
@@ -108,12 +93,8 @@ export default EmberObject.extend({
    * @returns {Array} values mapped into array of objects
    */
   _wrap(key, values) {
-    return values.map(value => {
-      return {
-        [key]: value
-      };
-    });
-  },
+    return values.map(value => ({ [key]: value }));
+  }
 
   /**
    * @method setLogicalTable
@@ -123,7 +104,7 @@ export default EmberObject.extend({
    */
   setLogicalTable(table, timeGrain) {
     return this._immutableSet('logicalTable', { table, timeGrain });
-  },
+  }
 
   /**
    * @method addDimensions
@@ -132,7 +113,7 @@ export default EmberObject.extend({
    */
   addDimensions(...dimensions) {
     return this._immutablePush('dimensions', this._wrap('dimension', dimensions));
-  },
+  }
 
   /**
    * @method setDimensions
@@ -141,7 +122,7 @@ export default EmberObject.extend({
    */
   setDimensions(...dimensions) {
     return this._immutableSet('dimensions', this._wrap('dimension', dimensions));
-  },
+  }
 
   /**
    * @method addMetrics
@@ -150,7 +131,7 @@ export default EmberObject.extend({
    */
   addMetrics(...metrics) {
     return this._immutablePush('metrics', metrics);
-  },
+  }
 
   /**
    * @method setMetrics
@@ -159,7 +140,7 @@ export default EmberObject.extend({
    */
   setMetrics(...metrics) {
     return this._immutableSet('metrics', metrics);
-  },
+  }
 
   /**
    * @method setMetricsByName
@@ -168,7 +149,7 @@ export default EmberObject.extend({
    */
   setMetricsByName(...metrics) {
     return this._immutableSet('metrics', this._wrap('metric', metrics));
-  },
+  }
 
   /**
    * @method addInterval
@@ -178,7 +159,7 @@ export default EmberObject.extend({
    */
   addInterval(start, end) {
     return this._immutablePush('intervals', [{ start, end }]);
-  },
+  }
 
   /**
    * @method addIntervals
@@ -187,7 +168,7 @@ export default EmberObject.extend({
    */
   addIntervals(...intervals) {
     return this._immutablePush('intervals', intervals);
-  },
+  }
 
   /**
    * @method setIntervals
@@ -196,7 +177,7 @@ export default EmberObject.extend({
    */
   setIntervals(...intervals) {
     return this._immutableSet('intervals', intervals);
-  },
+  }
 
   /**
    * @method addFilter
@@ -207,7 +188,7 @@ export default EmberObject.extend({
    */
   addFilter(dimension, operator, values) {
     return this._immutablePush('filters', [{ dimension, operator, values }]);
-  },
+  }
 
   /**
    * @method addFilters
@@ -216,7 +197,7 @@ export default EmberObject.extend({
    */
   addFilters(...filters) {
     return this._immutablePush('filters', filters);
-  },
+  }
 
   /**
    * @method setFilters
@@ -225,7 +206,7 @@ export default EmberObject.extend({
    */
   setFilters(...filters) {
     return this._immutableSet('filters', filters);
-  },
+  }
 
   /**
    * @method addHaving
@@ -236,7 +217,7 @@ export default EmberObject.extend({
    */
   addHaving(metric, operator, value) {
     return this._immutablePush('having', [{ metric, operator, values: [value] }]);
-  },
+  }
 
   /**
    * @method addHavings
@@ -245,7 +226,7 @@ export default EmberObject.extend({
    */
   addHavings(...having) {
     return this._immutablePush('having', having);
-  },
+  }
 
   /**
    * @method setHavings
@@ -254,7 +235,7 @@ export default EmberObject.extend({
    */
   setHavings(...having) {
     return this._immutableSet('having', having);
-  },
+  }
 
   /**
    * @method addSort
@@ -264,7 +245,7 @@ export default EmberObject.extend({
    */
   addSort(metric, direction = 'desc') {
     return this._immutablePush('sort', [{ metric, direction }]);
-  },
+  }
 
   /**
    * @method addSorts
@@ -273,7 +254,7 @@ export default EmberObject.extend({
    */
   addSorts(...sorts) {
     return this._immutablePush('sort', sorts);
-  },
+  }
 
   /**
    * @method setSorts
@@ -283,4 +264,4 @@ export default EmberObject.extend({
   setSorts(...sorts) {
     return this._immutableSet('sort', sorts);
   }
-});
+}
