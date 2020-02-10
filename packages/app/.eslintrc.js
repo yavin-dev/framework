@@ -15,7 +15,8 @@ module.exports = {
     es6: true
   },
   rules: {
-    'multiline-comment-style': ['error', 'starred-block']
+    'multiline-comment-style': ['error', 'starred-block'],
+    'ember/no-jquery': 'error'
   },
   globals: {
     NAVI_APP_SETTINGS: true
