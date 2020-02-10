@@ -1,4 +1,4 @@
-import { Mirage, Response } from 'ember-cli-mirage';
+import Mirage from 'ember-cli-mirage';
 import moment from 'moment';
 import RESPONSE_CODES from '../enums/response-codes';
 import { getFilterParams, getQueryAuthor } from 'navi-core/utils/rsql-utils';
@@ -34,7 +34,7 @@ export default function() {
           return matchesFilterParameterIfExists && matchesAuthorIfExists;
         });
       } catch (error) {
-        reportObject = new Response(
+        reportObject = new Mirage.Response(
           400,
           { data: {} },
           {
