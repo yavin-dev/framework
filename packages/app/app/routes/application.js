@@ -22,7 +22,6 @@ export default class ApplicationRoute extends Route {
    * @returns {Ember.RSVP.Promise}
    */
   async model() {
-    await this.user.findOrRegister();
-    await this.bardMetadata.loadMetadata();
+    await Promise.all([this.user.findOrRegister(), this.bardMetadata.loadMetadata()]);
   }
 }

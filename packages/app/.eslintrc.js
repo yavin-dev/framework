@@ -15,8 +15,7 @@ module.exports = {
     es6: true
   },
   rules: {
-    'multiline-comment-style': ['error', 'starred-block'],
-    'ember/no-jquery': 'off'
+    'multiline-comment-style': ['error', 'starred-block']
   },
   globals: {
     NAVI_APP_SETTINGS: true
@@ -49,6 +48,12 @@ module.exports = {
         // https://github.com/mysticatea/eslint-plugin-node/issues/77
         'node/no-unpublished-require': 'off'
       })
+    },
+    {
+      files: ['tests/**/*.js'],
+      rules: {
+        'ember/no-jquery': 'off'
+      }
     }
   ]
 };
