@@ -45,7 +45,7 @@
       }}
         Copy Link
       {{/copy-button}}
-      <button type="button" class="btn btn-secondary" onclick={{pipe (toggle "showModal" this) (action "resetNotifications")}}>Cancel</button>
+      <button type="button" class="btn btn-secondary" onclick={{queue (toggle "showModal" this) (action "resetNotifications")}}>Cancel</button>
     </div>
   </div>
 {{/navi-modal}}
