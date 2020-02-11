@@ -14,21 +14,34 @@ plugins {
 }
 
 dependencies {
-    val springBootVersion = "2.2.1.RELEASE";
+    val springBootVersion = "2.2.4.RELEASE";
     // This dependency is used internally, and not exposed to consumers on their own compile classpath.
     implementation("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
+    testImplementation("org.yaml:snakeyaml:1.25")
 
     compileOnly("org.projectlombok:lombok:1.18.10")
     compileOnly(project(":models"))
+    testImplementation(project(":models"))
 
     annotationProcessor("org.projectlombok:lombok:1.18.10")
 
     // Use JUnit test framework
     testImplementation("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
-    testImplementation("com.jayway.restassured:rest-assured:2.9.0")
+    testImplementation("io.rest-assured:rest-assured:4.2.0")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.5.2")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.5.2")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:1.3.61")
+    testImplementation("com.yahoo.elide:elide-spring-boot-starter:5.0.0-pr5")
+    testImplementation("org.springframework.security:spring-security-test:5.2.2.RELEASE")
+    testImplementation("org.springframework.boot:spring-boot-starter-security:${springBootVersion}")
     testImplementation("com.h2database:h2:1.4.197")
+}
+
+tasks.test {
+	useJUnitPlatform()
+	testLogging {
+		events("passed", "skipped", "failed")
+	}
 }
 
 val installUIDependencies by tasks.registering(NpmTask::class) {

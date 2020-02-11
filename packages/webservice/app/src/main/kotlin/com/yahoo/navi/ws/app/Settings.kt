@@ -1,5 +1,5 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 package com.yahoo.navi.ws.app
@@ -10,6 +10,8 @@ import com.yahoo.elide.contrib.swagger.SwaggerBuilder
 import com.yahoo.elide.core.EntityDictionary
 import com.yahoo.elide.core.filter.dialect.RSQLFilterDialect
 import com.yahoo.elide.datastores.jpa.JpaDataStore
+import com.yahoo.elide.datastores.jpa.JpaDataStore.EntityManagerSupplier
+import com.yahoo.elide.datastores.jpa.JpaDataStore.JpaTransactionSupplier
 import com.yahoo.elide.datastores.jpa.transaction.NonJtaTransaction
 import com.yahoo.elide.security.checks.Check
 import com.yahoo.elide.standalone.Util
@@ -34,8 +36,8 @@ open class Settings : ElideStandaloneSettings {
     override fun getElideSettings(injector: ServiceLocator): ElideSettings {
         val entityManagerFactory = Util.getEntityManagerFactory(modelPackageName, loadHibernateProperties())
         val dataStore = JpaDataStore(
-                { entityManagerFactory.createEntityManager() },
-                { em -> NonJtaTransaction(em) })
+            EntityManagerSupplier { entityManagerFactory.createEntityManager() },
+            JpaTransactionSupplier { em -> NonJtaTransaction(em) })
 
         val dictionary = EntityDictionary(checkMappings, injector::inject)
 
@@ -45,7 +47,7 @@ open class Settings : ElideStandaloneSettings {
                 .withJoinFilterDialect(RSQLFilterDialect(dictionary))
                 .withSubqueryFilterDialect(RSQLFilterDialect(dictionary))
 
-        if (enableIS06081Dates()) {
+        if (enableISO8601Dates()) {
             builder = builder.withISO8601Dates("yyyy-MM-dd HH:mm:ss", TimeZone.getTimeZone("UTC"))
         }
 

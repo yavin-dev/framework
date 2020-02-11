@@ -50,7 +50,7 @@ subprojects {
 
     dependencies {
         implementation(kotlin("stdlib-jdk8", "1.3.50"))
-        implementation("com.yahoo.elide", "elide-standalone", "5.0.0-pr2")
+        implementation("com.yahoo.elide", "elide-standalone", "5.0.0-pr5")
         implementation("org.slf4j", "slf4j-api", "1.7.25")
         implementation("ch.qos.logback", "logback-core", "1.2.3")
         implementation("org.hibernate", "hibernate-validator", "6.1.0.Final")
