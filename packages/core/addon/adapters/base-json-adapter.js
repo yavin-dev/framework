@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -8,9 +8,8 @@ import { computed, getWithDefault, get } from '@ember/object';
 import DS from 'ember-data';
 import config from 'ember-get-config';
 import { pluralize } from 'ember-inflector';
-import AdapterFetch from 'ember-fetch/mixins/adapter-fetch';
 
-export default DS.JSONAPIAdapter.extend(AdapterFetch, {
+export default DS.JSONAPIAdapter.extend({
   /**
    * @property {String} host - persistence WS host
    */
@@ -32,7 +31,10 @@ export default DS.JSONAPIAdapter.extend(AdapterFetch, {
    */
   ajaxOptions() {
     let hash = this._super(...arguments);
-    hash.credentials = 'include';
+    hash.xhrFields = {
+      withCredentials: true
+    };
+    hash.crossDomain = true;
     hash.headers = {
       Accept: 'application/vnd.api+json',
       'Content-Type': 'application/vnd.api+json'

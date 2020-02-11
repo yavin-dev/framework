@@ -1,16 +1,17 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Description: The adapter for Keg.
  */
 import { Promise } from 'rsvp';
 import { A } from '@ember/array';
-import { assert } from '@ember/debug';
+import { assert, warn } from '@ember/debug';
 import { inject as service } from '@ember/service';
 import { assign } from '@ember/polyfills';
 import EmberObject, { get } from '@ember/object';
 import { getOwner } from '@ember/application';
+import intersection from 'lodash/intersection';
 
 const KEG_NAMESPACE = 'dimension';
 
@@ -151,7 +152,7 @@ export default EmberObject.extend({
   /**
    * @method find - Find dimension values matching the query
    * @param {String} dimension - dimension name
-   * @param {Object} query - the query object
+   * @param {Array<Object>} andQueries - the array query objects to be ANDed together
    * @param {Object} [options] - options object
    *      Ex: {
    *        page: 1,
@@ -159,12 +160,29 @@ export default EmberObject.extend({
    *      }
    * @returns {Promise} - Promise with the response
    */
-  find(dimension, query, options) {
+  find(dimension, andQueries, options) {
+    if (!Array.isArray(andQueries)) {
+      // if not array
+      warn('find() was not passed an array of queries, wrapping as single query array', {
+        id: 'keg-find-query-as-array'
+      });
+      andQueries = [andQueries]; // wrap
+    }
+    assert("You must pass an 'Array' of queries to be ANDed together", Array.isArray(andQueries));
     // defaults to 'in' operation if operator is not specified
-    assert("Only 'in' operation is currently supported in Keg", query.operator ? query.operator === 'in' : true);
+    assert(
+      "Only 'in' operation is currently supported in Keg",
+      andQueries.filter(q => q.operator).every(q => q.operator === 'in')
+    );
 
-    // TODO: might need to redfine or investigate the find interface, string of comma seperated values or array of values
-    assert("Only 'string' query values is currently supported in Keg", typeof query.values === 'string');
+    const stringQueries = andQueries.filter(q => typeof q.values === 'string');
+    if (stringQueries.length) {
+      warn('find() was passed query.values as a string, falling back to splitting by commas', {
+        id: 'keg-find-query-values-as-array'
+      });
+      stringQueries.forEach(query => (query.values = query.values.split(',')));
+    }
+    assert("Only 'Array' query values are currently supported in Keg", andQueries.every(q => Array.isArray(q.values)));
 
     let keg = get(this, 'keg');
 
@@ -173,12 +191,21 @@ export default EmberObject.extend({
       values: []
     };
 
-    query = assign({}, defaultQueryOptions, query);
-
-    query.values = query.values.split(',');
+    andQueries = andQueries.map(query => assign({}, defaultQueryOptions, query));
 
     //convert navi-data query object interface to keg query object interface
-    query = { [query.field]: query.values };
+    const query = andQueries.reduce((all, query) => {
+      let values;
+      if (all.hasOwnProperty(query.field)) {
+        // if it already exists, we AND it by intersecting the values
+        values = intersection(all[query.field], query.values);
+      } else {
+        values = query.values;
+      }
+      all[query.field] = values;
+
+      return all;
+    }, {});
 
     return Promise.resolve(this._buildResponse(keg.getBy(`${KEG_NAMESPACE}/${dimension}`, query), options));
   },

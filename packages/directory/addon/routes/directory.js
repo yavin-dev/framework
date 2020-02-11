@@ -3,19 +3,20 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Route from '@ember/routing/route';
-import { inject } from '@ember/service';
+import { inject as service } from '@ember/service';
 
-export default Route.extend({
+class Directory extends Route {
   /**
-   * @property { Service } user
+   * @property {Service} user
    */
-  user: inject(),
+  @service()
+  user;
 
   /**
    * @property {Object} queryParams
    * @override
    */
-  queryParams: {
+  queryParams = {
     filter: {
       refreshModel: true
     },
@@ -31,7 +32,7 @@ export default Route.extend({
     sortDir: {
       replace: true
     }
-  },
+  };
 
   /**
    * @method model
@@ -40,4 +41,6 @@ export default Route.extend({
   model() {
     return this.user.getUser();
   }
-});
+}
+
+export default Directory;

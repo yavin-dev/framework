@@ -1,6 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { fillIn, render, triggerEvent } from '@ember/test-helpers';
+import { set } from '@ember/object';
 import hbs from 'htmlbars-inline-precompile';
 
 module('Integration | Component | dir search bar', function(hooks) {
@@ -11,13 +12,13 @@ module('Integration | Component | dir search bar', function(hooks) {
 
     let fillInText = 'testString';
 
-    this.set('searchFor', val => {
+    set(this, 'searchFor', val => {
       assert.equal(val, fillInText, 'The entered text is passed on to the action on `key-up`');
     });
 
-    await render(hbs`{{dir-search-bar
-      searchFor=(action searchFor)
-    }}`);
+    await render(hbs`<DirSearchBar
+      @searchFor={{action this.searchFor}}
+    />`);
 
     assert.dom('.dir-search-bar__input').exists('The search bar input is visible when the component is rendered');
 

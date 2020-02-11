@@ -62,8 +62,7 @@ export default C3Chart.extend({
     'color',
     'transition',
     function() {
-      var self = this;
-      var c = self.getProperties([
+      const c = this.getProperties([
         'data',
         'axis',
         'regions',
@@ -85,15 +84,18 @@ export default C3Chart.extend({
         'transition'
       ]);
 
-      A(['oninit', 'onrendered', 'onmouseover', 'onmouseout', 'onresize', 'onresized']).forEach(function(eventname) {
-        c[eventname] = function() {
-          if (!self.get('isDestroyed') && !self.get('isDestroying')) {
-            self.sendAction(eventname, this);
+      ['oninit', 'onrendered', 'onmouseover', 'onmouseout', 'onresize', 'onresized'].forEach(eventname => {
+        c[eventname] = () => {
+          if (!this.get('isDestroyed') && !this.get('isDestroying')) {
+            const eventAction = this.get(eventname);
+            if (eventAction) {
+              eventAction(this);
+            }
           }
         };
       });
 
-      c.bindto = self.$().get(0);
+      c.bindto = this.element;
       return c;
     }
   ),
@@ -194,8 +196,8 @@ export default C3Chart.extend({
   _resizeFunc() {
     // Fill the parent container
     if (!get(this, 'isDestroyed') && !get(this, 'isDestroying')) {
-      this.$().css('max-height', '100%');
-      this.$().css('min-height', '100%');
+      $(this.element).css('max-height', '100%');
+      $(this.element).css('min-height', '100%');
 
       get(this, 'chart').resize();
     }

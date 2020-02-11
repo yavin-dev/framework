@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import config from 'navi-app/config/environment';
@@ -15,7 +15,8 @@ export function initialize() {
      *TODO: set epoch date
      *dataEpoch: NAVI_APP.appSettings.dataEpoch,
      */
-    dataSources: [{ name: 'facts', uri: config.appSettings.factApiHost }],
+    dataSources: [{ name: 'default', uri: config.appSettings.factApiHost }],
+    defaultDataSource: 'default',
     appPersistence: {
       type: 'webservice',
       uri: config.appSettings.persistenceApiHost,

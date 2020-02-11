@@ -1,33 +1,41 @@
-{{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<span class="filter-builder__subject">
-  {{displayName}}
-  {{#if (has-parameters filter.subject)}}
-    {{metric-filter-config
-      class="filter-builder__metric-config"
-      metric=filter.subject
-      request=request
-      paramClicked=(update-report-action "UPDATE_FILTER_PARAM" filter)
+{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{#if @isCollapsed}}
+  <FilterBuilders::Collapsed
+    @displayName={{this.displayName}}
+    @filter={{this.filter}}
+    @request={{@request}}
+  />
+{{else}}
+  <span class="filter-builder__subject">
+    {{this.displayName}}
+    {{#if (has-parameters this.filter.subject)}}
+      <MetricFilterConfig
+        class="filter-builder__metric-config"
+        @metric={{this.filter.subject}}
+        @request={{@request}}
+        @paramClicked={{update-report-action "UPDATE_FILTER_PARAM" this.filter}}
+      />
+    {{/if}}
+  </span>
+  <PowerSelect
+    class="filter-builder__operator"
+    @dropdownClass="filter-builder__operator-dropdown"
+    @options={{this.supportedOperators}}
+    @selected={{this.filter.operator}}
+    @searchEnabled={{false}}
+    @tagName="span"
+    @triggerClass="filter-builder__select-trigger"
+    @onchange={{action "setOperator"}}
+    as | operator |
+  >
+    {{operator.longName}}
+  </PowerSelect>
+  <span class="filter-builder__values">
+    {{component
+      this.filter.operator.valuesComponent
+      filter=this.filter
+      request=@request
+      onUpdateFilter=@onUpdateFilter
     }}
-  {{/if}}
-</span>
-{{#power-select
-  class="filter-builder__operator"
-  dropdownClass="filter-builder__operator-dropdown"
-  options=supportedOperators
-  selected=filter.operator
-  searchEnabled=false
-  tagName="span"
-  triggerClass="filter-builder__select-trigger"
-  onchange=(action "setOperator")
-  as | operator |
-}}
-  {{operator.longName}}
-{{/power-select}}
-<span class="filter-builder__values">
-  {{component
-    filter.operator.valuesComponent
-    filter=filter
-    request=request
-    onUpdateFilter=onUpdateFilter
-  }}
-</span>
+  </span>
+{{/if}}

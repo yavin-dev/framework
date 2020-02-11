@@ -2,7 +2,7 @@ import { A } from '@ember/array';
 import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, settled, triggerEvent } from '@ember/test-helpers';
+import { render, settled, triggerEvent, click } from '@ember/test-helpers';
 import $ from 'jquery';
 import hbs from 'htmlbars-inline-precompile';
 
@@ -28,7 +28,7 @@ const COMMON_TEMPLATE = hbs`
         items=items
         trim=trim
         perPage=perPage
-        showMore= (action showMoreAction)
+        showMore=(action showMoreAction)
         as |item|
     }}
         <div class='mock-item'>{{item.foo}}</div>
@@ -93,9 +93,7 @@ module('Integration | Component | paginated scroll list', function(hooks) {
       assert.ok(true, 'show more action is triggered');
     });
 
-    run(() => {
-      $('a:contains("Show more")').click();
-    });
+    await click($('a:contains("Show more")')[0]);
 
     assert.equal($('a:contains("Show more")').length, 0, 'Show more link is not visible after clicking show more link');
 

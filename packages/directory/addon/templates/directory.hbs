@@ -2,28 +2,28 @@
 <main class="directory">
 
   <div class="directory__new-button">
-    {{dir-new-button classNames="directory__new-button"}}
+    <DirNewButton class="directory__new-button" />
   </div>
 
   <section class="directory__controls">
-    {{dir-search-bar
-      classNames="directory__search"
-      query=q
-      searchFor=(action "searchFor")
-    }}
+    <DirSearchBar
+      class="directory__search"
+      @query={{this.q}}
+      @searchFor={{action this.searchFor}}
+    />
 
-    {{dir-table-filter
-      classNames="directory__table-filter"
-      selectedType=type
-      updateQueryParams=(action "updateQueryParams")
-    }}
+    <DirTableFilter
+      class="directory__table-filter"
+      @selectedType={{this.type}}
+      @updateQueryParams={{action this.updateQueryParams}}
+    />
   </section>
 
-  {{dir-sidebar classNames="directory__sidebar"}}
+  <DirSidebar class="directory__sidebar"/>
 
   <section class="directory__table">
     <div class="directory__table-header">
-      <h1>{{title}}</h1>
+      <h1>{{this.title}}</h1>
     </div>
     {{outlet}}
   </section>

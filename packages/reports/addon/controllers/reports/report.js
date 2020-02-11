@@ -20,6 +20,11 @@ export default Controller.extend({
   showSaveAs: false,
 
   /**
+   * @property {Boolean} isFiltersCollapsed
+   */
+  isFiltersCollapsed: false,
+
+  /**
    * @property {Object} modifiedRequest - the serialized request after calling `onUpdateReport`
    */
   modifiedRequest: null,

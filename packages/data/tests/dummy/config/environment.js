@@ -26,9 +26,10 @@ module.exports = function(environment) {
 
     navi: {
       dataSources: [
-        { name: 'dummy', uri: 'https://data.naviapp.io' },
-        { name: 'blockhead', uri: 'https://data2.naviapp.com' }
+        { name: 'dummy', uri: 'https://data.naviapp.io', type: 'bard-facts' },
+        { name: 'blockhead', uri: 'https://data2.naviapp.com', type: 'bard-facts' }
       ],
+      defaultDataSource: 'dummy',
       searchThresholds: {
         contains: 600,
         in: 50000

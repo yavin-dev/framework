@@ -1,5 +1,5 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import merge from 'lodash/merge';
@@ -75,6 +75,7 @@ export default Route.extend({
     this._super(...arguments);
     controller.setProperties({
       showSaveAs: false,
+      isFiltersCollapsed: false,
       modifiedRequest: null
     });
   },
@@ -125,7 +126,7 @@ export default Route.extend({
      * transition to view subroute if runReport is not handled in subroutes
      */
     runReport(report) {
-      this.transitionTo(`${this.routeName}.view`, get(report, 'tempId') || get(report, 'id'));
+      return this.transitionTo(`${this.routeName}.view`, get(report, 'tempId') || get(report, 'id'));
     },
 
     /**

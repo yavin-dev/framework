@@ -105,7 +105,7 @@ module('Integration | Component | line chart', function(hooks) {
 
     await render(TEMPLATE);
 
-    assert.ok(this.$('.navi-vis-c3-chart').is(':visible'), 'The line chart widget component is visible');
+    assert.dom('.navi-vis-c3-chart').isVisible('The line chart widget component is visible');
 
     assert.dom('.c3-chart-line').exists({ count: 1 }, 'One chart line is present on the chart');
   });

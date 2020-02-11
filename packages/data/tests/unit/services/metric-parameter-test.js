@@ -16,6 +16,32 @@ let MetadataService,
     {
       id: '-2',
       description: 'UNKNOWN'
+    },
+    {
+      id: '1',
+      description: 'Value One'
+    },
+    {
+      id: '2',
+      description: 'Value Two'
+    }
+  ]),
+  OtherRows = A([
+    {
+      id: '-1',
+      description: 'NULL'
+    },
+    {
+      id: '-2',
+      description: 'UNKNOWN'
+    },
+    {
+      id: '1',
+      description: 'One'
+    },
+    {
+      id: '2',
+      description: 'Two'
     }
   ]),
   Server;
@@ -35,6 +61,15 @@ module('Unit | Service | metric parameter', function(hooks) {
           rows: Rows
         })
       ]);
+      this.get(`${HOST}/v1/dimensions/dimensionThree/values/`, () => {
+        return [
+          200,
+          { 'Content-Type': 'application/json' },
+          JSON.stringify({
+            rows: OtherRows
+          })
+        ];
+      });
     });
 
     Server.map(metadataRoutes);
@@ -91,5 +126,46 @@ module('Unit | Service | metric parameter', function(hooks) {
       results,
       'Enum paramter type returns correct values from meta.'
     );
+  });
+
+  test('fetchAllParams', async function(assert) {
+    assert.expect(2);
+
+    const service = this.owner.lookup('service:metric-parameter'),
+      metricMeta = {
+        parameters: [
+          {
+            type: 'dimension',
+            dimensionName: 'dimensionOne'
+          },
+          {
+            type: 'dimension',
+            dimensionName: 'dimensionThree'
+          }
+        ]
+      };
+
+    const results = Object.values(await service.fetchAllParams(metricMeta)).reduce((acc, curr) => {
+      const key = curr.param;
+      const obj = { id: curr.id, description: curr.description };
+      if (acc[key]) {
+        acc[key].pushObject(obj);
+      } else {
+        acc[key] = A([obj]);
+      }
+      return acc;
+    }, {});
+
+    assert.deepEqual(
+      results,
+      {
+        0: Rows,
+        1: OtherRows
+      },
+      'All Values for each metric parameter is returned'
+    );
+
+    const emptyResults = await service.fetchAllParams({});
+    assert.deepEqual(emptyResults, {}, 'A metric metadata object with no parameters returns no values');
   });
 });

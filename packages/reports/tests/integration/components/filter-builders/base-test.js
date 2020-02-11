@@ -78,6 +78,22 @@ module('Integration | Component | filter-builders/base', function(hooks) {
     );
   });
 
+  test('collapsed', async function(assert) {
+    assert.expect(1);
+
+    await render(hbs`<FilterBuilders::Base
+      @filter={{this.filter}}
+      @supportedOperators={{this.supportedOperators}}
+      @isCollapsed={{true}} />`);
+
+    assert
+      .dom('.filter-builder')
+      .hasText(
+        `${filter.subject.longName} ${filter.operator.longName.toLowerCase()} Test`,
+        'Rendered correctly when collapsed'
+      );
+  });
+
   test('changing operator', async function(assert) {
     assert.expect(3);
 

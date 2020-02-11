@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Ember service that can store and fetch records
@@ -25,6 +25,11 @@ export default class KegService extends Service {
    * @property {Object} idIndexes - Object of record idexes
    */
   idIndexes = {};
+
+  /**
+   * @property {String} defaultNamespace
+   */
+  defaultNamespace = 'navi';
 
   /**
    * Resets internal data structures
@@ -77,13 +82,14 @@ export default class KegService extends Service {
     const factory = this._getFactoryForType(options.modelFactory || type);
     const recordKeg = this._getRecordKegForType(type);
     const idIndex = this._getIdIndexForType(type);
+    const namespace = options.namespace || this.defaultNamespace;
     const identifierField = factory.identifierField || KegService.identifierField;
     const owner = getOwner(this);
 
     const returnedRecords = A();
     for (let i = 0; i < rawRecords.length; i++) {
       const id = rawRecords[i][identifierField];
-      const existingRecord = this.getById(type, id);
+      const existingRecord = this.getById(type, id, namespace);
 
       if (existingRecord) {
         setProperties(existingRecord, rawRecords[i]);
@@ -91,7 +97,7 @@ export default class KegService extends Service {
       } else {
         let newRecord = factory.create(Object.assign({}, owner.ownerInjection(), rawRecords[i]));
 
-        idIndex[id] = newRecord;
+        idIndex[`${namespace}.${id}`] = newRecord;
         recordKeg.pushObject(newRecord);
         returnedRecords.pushObject(newRecord);
       }
@@ -105,11 +111,13 @@ export default class KegService extends Service {
    * @method getById
    * @param {String} type - type name of the model type
    * @param {String|Number} id - identifier value
+   * @param {String} namespace - (optional) namespace for the id
    * @returns {Object|undefined} the found record
    */
-  getById(type, id) {
+  getById(type, id, namespace) {
     let idIndex = this._getIdIndexForType(type) || {};
-    return idIndex[id];
+    let source = namespace || this.defaultNamespace;
+    return idIndex[`${source}.${id}`];
   }
 
   /**
@@ -150,8 +158,12 @@ export default class KegService extends Service {
    * @param {String} type - type name of the model type
    * @returns {Array} array of records of the provided type
    */
-  all(type) {
-    return this._getRecordKegForType(type);
+  all(type, namespace) {
+    const all = this._getRecordKegForType(type);
+    if (namespace) {
+      return A(all.filter(item => item.source === namespace));
+    }
+    return all;
   }
 
   /**
@@ -199,4 +211,4 @@ export default class KegService extends Service {
     idIndexes[type] = idIndexes[type] || {};
     return idIndexes[type];
   }
-};
+}

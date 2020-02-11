@@ -2,7 +2,7 @@ import { run } from '@ember/runloop';
 import { A } from '@ember/array';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render } from '@ember/test-helpers';
+import { render, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 module('Integration | Component | comma separated list', function(hooks) {
@@ -30,13 +30,7 @@ module('Integration | Component | comma separated list', function(hooks) {
     run(() => list.pushObject('three'));
     assert.dom('*').hasText('one, two, and three', 'Three strings are turned into a comma separated list');
 
-    let customElementText = this.$('.custom-element')
-      .toArray()
-      .map(el =>
-        this.$(el)
-          .text()
-          .trim()
-      );
+    const customElementText = findAll('.custom-element').map(el => el.textContent.trim());
     assert.deepEqual(
       customElementText,
       ['one', 'two', 'three'],

@@ -5,10 +5,10 @@ import { reportRoutes } from 'navi-reports/router';
 import { dashboardRoutes } from 'navi-dashboards/router';
 import { directoryRoutes } from 'navi-directory/router';
 
-const Router = EmberRouter.extend({
-  location: config.locationType,
-  rootURL: config.rootURL
-});
+export default class Router extends EmberRouter {
+  location = config.locationType;
+  rootURL = config.rootURL;
+}
 
 Router.map(function() {
   directoryRoutes(this, function() {
@@ -17,5 +17,3 @@ Router.map(function() {
   reportRoutes(this);
   dashboardRoutes(this);
 });
-
-export default Router;

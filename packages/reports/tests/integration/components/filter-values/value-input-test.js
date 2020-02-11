@@ -1,20 +1,23 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import $ from 'jquery';
-import { render, fillIn, triggerEvent } from '@ember/test-helpers';
+import { render, fillIn } from '@ember/test-helpers';
+import { A as arr } from '@ember/array';
 import hbs from 'htmlbars-inline-precompile';
 
 module('Integration | Component | filter values/value input', function(hooks) {
   setupRenderingTest(hooks);
 
   hooks.beforeEach(async function() {
-    this.filter = { values: [1000] };
+    this.filter = { values: arr([1000]) };
     this.onUpdateFilter = () => null;
 
-    await render(hbs`{{filter-values/value-input
-            filter=filter
-            onUpdateFilter=(action onUpdateFilter)
-        }}`);
+    await render(hbs`
+      <FilterValues::ValueInput
+        @filter={{this.filter}}
+        @onUpdateFilter={{this.onUpdateFilter}}
+        @isCollapsed={{this.isCollapsed}}
+      />`);
   });
 
   test('it renders', function(assert) {
@@ -28,6 +31,15 @@ module('Integration | Component | filter values/value input', function(hooks) {
       );
   });
 
+  test('collapsed', function(assert) {
+    assert.expect(2);
+
+    this.set('isCollapsed', true);
+
+    assert.dom('.filter-values--value-input').doesNotExist('The value input is not rendered when collapsed');
+    assert.dom().hasText('1000', 'The value is rendered correctly when collapsed');
+  });
+
   test('changing values', async function(assert) {
     assert.expect(1);
 
@@ -36,11 +48,10 @@ module('Integration | Component | filter values/value input', function(hooks) {
     });
 
     await fillIn('.filter-values--value-input', 'aaa');
-    await triggerEvent('.filter-values--value-input', 'keyup');
   });
 
   test('error state', function(assert) {
-    assert.expect(2);
+    assert.expect(3);
 
     assert.notOk($('.filter-values--value-input--error').is(':visible'), 'The input should not have error state');
 
@@ -48,5 +59,8 @@ module('Integration | Component | filter values/value input', function(hooks) {
       validations: { attrs: { values: { isInvalid: true } } }
     });
     assert.ok($('.filter-values--value-input--error').is(':visible'), 'The input should have error state');
+
+    this.set('isCollapsed', true);
+    assert.dom('.filter-values--selected-error').exists('Error is rendered correctly when collapsed');
   });
 });

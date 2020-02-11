@@ -6,6 +6,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, settled, click, find, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
+import $ from 'jquery';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 const TEMPLATE = hbs`
@@ -252,7 +253,7 @@ module('Integration | Component | table', function(hooks) {
       assert.equal(direction, 'desc', 'The desc direction is passed along when the dateTime header is clicked');
     });
 
-    this.$('.table-header-row-vc--view .table-header-cell.metric:contains(Total Page Views)').click();
+    await click($('.table-header-row-vc--view .table-header-cell.metric:contains(Total Page Views)')[0]);
 
     this.set('onUpdateReport', (actionType, metricName, direction) => {
       assert.equal(actionType, 'upsertSort', 'the action type is `upsertSort`');
@@ -266,7 +267,7 @@ module('Integration | Component | table', function(hooks) {
       assert.equal(direction, 'desc', 'The desc direction is passed along when the dateTime header is clicked');
     });
 
-    this.$('.table-header-row-vc--view .table-header-cell.threshold:contains(Total Page Views WoW)').click();
+    await click($('.table-header-row-vc--view .table-header-cell.threshold:contains(Total Page Views WoW)')[0]);
   });
 
   test('grand total in table', async function(assert) {
@@ -407,12 +408,12 @@ module('Integration | Component | table', function(hooks) {
     await render(TEMPLATE);
 
     assert.ok(
-      this.$('.table-header-cell:contains(Platform Revenue) .navi-table-sort-icon--desc').is(':visible'),
+      $('.table-header-cell:contains(Platform Revenue) .navi-table-sort-icon--desc').is(':visible'),
       'The right sort metric is recognized from the alias'
     );
 
     assert.ok(
-      this.$('.table-header-cell:contains(Unique Identifiers) .navi-table-sort-icon--asc').is(':visible'),
+      $('.table-header-cell:contains(Unique Identifiers) .navi-table-sort-icon--asc').is(':visible'),
       'Even if not an alias, the correct sort metric is recognized'
     );
   });
@@ -435,7 +436,7 @@ module('Integration | Component | table', function(hooks) {
     await render(TEMPLATE);
 
     assert.ok(
-      this.$('.table-header-cell:contains(Customize Date)').is(':visible'),
+      $('.table-header-cell:contains(Customize Date)').is(':visible'),
       'Customize Date should be shown as title in dateTime field'
     );
 
@@ -453,9 +454,6 @@ module('Integration | Component | table', function(hooks) {
     );
 
     await settled();
-    assert.ok(
-      this.$('.table-header-cell:contains(Date)').is(':visible'),
-      'Date should be shown as title in dateTime field'
-    );
+    assert.ok($('.table-header-cell:contains(Date)').is(':visible'), 'Date should be shown as title in dateTime field');
   });
 });

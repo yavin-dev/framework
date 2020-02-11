@@ -2,7 +2,6 @@ language: java
 jdk:
   - openjdk8
 
-sudo: true
 git:
   depth: false
 addons:
@@ -28,12 +27,11 @@ env:
     - PACKAGE=navi-directory
     - PACKAGE=navi-notifications
     - PACKAGE=navi-reports
+    - PACKAGE=navi-search
     - PACKAGE=navi-webservice
 branches:
   only:
     - master
-matrix:
-  fast_finish: true
 install:
   - if [[ "${PACKAGE}" == "navi-webservice" ]]; then
     pushd packages/webservice && ./gradlew assemble && popd;
@@ -49,6 +47,7 @@ script:
     npx lerna run test --scope ${PACKAGE} --stream;
     fi
 jobs:
+  fast_finish: true
   include:
     - stage: 'Publish'
       if: branch = master AND repo = yahoo/navi AND type = push

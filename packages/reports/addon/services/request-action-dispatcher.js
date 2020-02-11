@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import ActionDispatcher from 'navi-core/services/action-dispatcher';
@@ -16,7 +16,9 @@ export const RequestActions = {
   DID_UPDATE_TIME_GRAIN: 'didUpdateTimeGrain',
 
   REMOVE_DIMENSION: 'removeDimension',
+  REMOVE_DIMENSION_FRAGMENT: 'removeDimensionFragment',
   REMOVE_METRIC: 'removeMetric',
+  REMOVE_METRIC_FRAGMENT: 'removeMetricFragment',
   REMOVE_METRIC_WITH_PARAM: 'removeMetricWithParam',
   REMOVE_TIME_GRAIN: 'removeTimeGrain',
   REMOVE_FILTER: 'removeFilter',
@@ -30,6 +32,7 @@ export const RequestActions = {
 
   UPDATE_FILTER: 'updateFilter',
   UPDATE_FILTER_PARAM: 'updateFilterParam',
+  UPDATE_METRIC_PARAM: 'updateMetricParam',
   UPDATE_TABLE: 'updateTable',
   UPSERT_SORT: 'upsertSort'
 };

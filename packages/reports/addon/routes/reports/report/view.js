@@ -1,5 +1,5 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { get, set, computed } from '@ember/object';
@@ -11,9 +11,9 @@ import { reject } from 'rsvp';
 
 export default Route.extend({
   /**
-   * @property {Service} facts - instance of bard facts service
+   * @property {Service} facts - instance of navi facts service
    */
-  facts: service('bard-facts'),
+  facts: service('navi-facts'),
 
   /**
    * @property {Service} naviVisualizations - instance of navi visualizations service
@@ -184,22 +184,6 @@ export default Route.extend({
       this.send('setReportState', 'completed');
 
       return true;
-    },
-
-    /**
-     * @action onVisualizationTypeUpdate
-     * @param {String} type
-     */
-    onVisualizationTypeUpdate(type) {
-      let report = get(this, 'parentModel'),
-        request = get(report, 'request'),
-        response = this.currentModel.response;
-
-      let newVisualization = this.store.createFragment(type, {
-        _request: request //Provide request for validation
-      });
-      newVisualization.rebuildConfig(request, response);
-      set(report, 'visualization', newVisualization);
     }
   }
 });

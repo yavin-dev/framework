@@ -9,6 +9,8 @@ module('Unit | Mixin | search-filter', function() {
   test('search results are filtered based on search query', function(assert) {
     assert.expect(2);
 
+    // TODO: Replace mixin
+    // eslint-disable-next-line ember/no-new-mixins
     let SearchFilterObject = EmberObject.extend(SearchFilterMixin);
     let subject = SearchFilterObject.create();
     set(subject, 'directory', { q: 'test' });

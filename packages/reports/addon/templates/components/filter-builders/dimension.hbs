@@ -1,41 +1,50 @@
 {{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<span class="filter-builder-dimension__subject">
-  {{displayName}}
-</span>
-{{#power-select
-  class="filter-builder-dimension__operator"
-  dropdownClass="filter-builder-dimension__operator-dropdown"
-  options=supportedOperators
-  selected=filter.operator
-  searchEnabled=false
-  tagName="span"
-  triggerClass="filter-builder-dimension__select-trigger"
-  onchange=(action "setOperator")
-  as | operator |
-}}
-  {{operator.longName}}
-{{/power-select}}
-{{#if showFields}}
-  {{#power-select
-    searchEnabled=false
-    options=fields
-    selected=filter.field
-    tagName="span"
-    class="filter-builder-dimension__field"
-    dropdownClass="filter-builder-dimension__field-dropdown"
-    triggerClass="filter-builder-dimension__select-trigger"
-    matchTriggerWidth=false
-    onchange=(action "setField")
-    as | field |
-  }}
-    {{field}}
-  {{/power-select}}
+{{#if @isCollapsed}}
+  <FilterBuilders::Collapsed
+    @displayName={{this.displayName}}
+    @filter={{this.filter}}
+    @request={{@request}}
+    @field={{this.field}}
+  />
+{{else}}
+  <span class="filter-builder-dimension__subject">
+    {{this.displayName}}
+  </span>
+  <PowerSelect
+    class="filter-builder-dimension__operator"
+    @dropdownClass="filter-builder-dimension__operator-dropdown"
+    @options={{this.supportedOperators}}
+    @selected={{this.filter.operator}}
+    @searchEnabled={{false}}
+    @tagName="span"
+    @triggerClass="filter-builder-dimension__select-trigger"
+    @onchange={{action "setOperator"}}
+    as | operator |
+  >
+    {{operator.longName}}
+  </PowerSelect>
+  {{#if this.showFields}}
+    <PowerSelect
+      @searchEnabled={{false}}
+      @options={{this.fields}}
+      @selected={{this.filter.field}}
+      @tagName="span"
+      class="filter-builder-dimension__field"
+      @dropdownClass="filter-builder-dimension__field-dropdown"
+      @triggerClass="filter-builder-dimension__select-trigger"
+      @matchTriggerWidth={{false}}
+      @onchange={{action "setField"}}
+      as | filterField |
+    >
+      {{filterField}}
+    </PowerSelect>
+  {{/if}}
+  <span class="filter-builder-dimension__values {{if this.showFields "filter-builder-dimension__values--short"}}">
+    {{component
+      this.filter.operator.valuesComponent
+      filter=this.filter
+      request=@request
+      onUpdateFilter=@onUpdateFilter
+    }}
+  </span>
 {{/if}}
-<span class="filter-builder-dimension__values {{if showFields "filter-builder-dimension__values--short"}}">
-  {{component
-    filter.operator.valuesComponent
-    filter=filter
-    request=request
-    onUpdateFilter=onUpdateFilter
-  }}
-</span>

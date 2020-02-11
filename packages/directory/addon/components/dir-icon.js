@@ -1,20 +1,17 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
- * {{dir-icon iconClass}}
+ * <DirIcon @iconClass="icon-class" />
  */
 
 import Component from '@ember/component';
 import layout from '../templates/components/dir-icon';
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
-export default Component.extend({
-  layout,
+@templateLayout(layout)
+@tagName('')
+class DirIcon extends Component {}
 
-  classNames: ['dir-icon'],
-
-  tagName: 'span'
-}).reopenClass({
-  positionalParams: ['iconClass']
-});
+export default DirIcon;

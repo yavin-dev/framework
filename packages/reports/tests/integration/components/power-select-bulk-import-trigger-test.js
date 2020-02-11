@@ -79,7 +79,7 @@ module('Integration | Component | power select bulk import trigger', function(ho
     assert.deepEqual(
       validPills
         .map(function() {
-          return this.childNodes[0].wholeText.trim();
+          return this.childNodes[3].wholeText.trim();
         })
         .get(),
       ['Property 1 (114)', 'Property 4 (101272)'],

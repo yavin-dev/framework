@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { readOnly } from '@ember/object/computed';
@@ -8,6 +8,7 @@ import { inject as service } from '@ember/service';
 import Component from '@ember/component';
 import { get, computed } from '@ember/object';
 import layout from '../templates/components/report-builder';
+import { canonicalizeMetric } from 'navi-data/utils/metric';
 
 export default Component.extend({
   layout,
@@ -39,5 +40,56 @@ export default Component.extend({
   allTables: computed(function() {
     let metadataService = get(this, 'metadataService');
     return metadataService.all('table').sortBy('longName');
-  })
+  }),
+
+  /**
+   * @method _expandFilters
+   * @param {Function} shouldExpand
+   * @private
+   */
+  _expandFilters(shouldExpand) {
+    const { isFiltersCollapsed, onUpdateFiltersCollapsed } = this;
+
+    if (isFiltersCollapsed && typeof onUpdateFiltersCollapsed === 'function' && shouldExpand()) {
+      onUpdateFiltersCollapsed(false);
+    }
+  },
+
+  actions: {
+    /**
+     * @action onToggleDimFilter
+     * @param {Object} dimension
+     */
+    onToggleDimFilter(dimension) {
+      this._expandFilters(() => arr(this.request.filters).findBy('dimension', dimension));
+    },
+
+    /**
+     * @action onToggleMetricFilter
+     * @param {Object} metric
+     */
+    onToggleMetricFilter(metric) {
+      this._expandFilters(() =>
+        (this.request.having || []).find(having => get(having, 'metric.metric.name') === get(metric, 'name'))
+      );
+    },
+
+    /**
+     * @action onToggleParameterizedMetricFilter
+     * @param {Object} metric
+     * @param {Object} parameters
+     */
+    onToggleParameterizedMetricFilter(metric, parameters) {
+      this._expandFilters(() =>
+        (this.request.having || []).find(
+          having =>
+            get(having, 'metric.canonicalName') ===
+            canonicalizeMetric({
+              metric: get(metric, 'name'),
+              parameters
+            })
+        )
+      );
+    }
+  }
 });

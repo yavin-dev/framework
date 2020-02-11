@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Description: Bard dimensions service that fetches dimension values
@@ -171,13 +171,13 @@ export default Service.extend({
 
     // fetch from keg if all records are loaded in keg
     if (this.getLoadedStatus(dimension)) {
-      return kegAdapter.find(dimension, query, options).then(recordsFromKeg => {
+      return kegAdapter.find(dimension, [query], options).then(recordsFromKeg => {
         return this._createBardDimensionsArray(recordsFromKeg, recordsFromKeg.rows, dimension);
       });
     }
 
     return get(this, '_bardAdapter')
-      .find(dimension, query, options)
+      .find(dimension, [query], options)
       .then(recordsFromBard => {
         let serialized = get(this, '_serializer').normalize(dimension, recordsFromBard),
           dimensions = kegAdapter.pushMany(dimension, serialized);
@@ -280,17 +280,13 @@ export default Service.extend({
       operator = 'in';
     }
 
-    return get(this, '_bardAdapter').find(dimension, {
+    const andValues = operator === 'contains' ? query.split(/,\s+|\s+/).map(s => s.trim()) : [query];
+    const andFilters = andValues.map(v => ({
       field,
       operator,
-      values:
-        operator === 'contains'
-          ? query
-              .split(/,\s+|\s+/)
-              .map(s => s.trim())
-              .filter(_ => _)
-          : [query]
-    });
+      values: [v]
+    }));
+    return get(this, '_bardAdapter').find(dimension, andFilters);
   },
 
   /**
@@ -302,10 +298,7 @@ export default Service.extend({
    * @returns {Promise} - Array Promise containing the search result
    */
   searchValue(dimension, query) {
-    let values = query
-      .split(/,\s+|\s+/)
-      .map(v => v.trim())
-      .filter(_ => _);
+    let values = query.split(/,\s+|\s+/).map(v => v.trim());
 
     return get(this, '_bardAdapter').search(dimension, { values });
   },

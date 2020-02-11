@@ -39,9 +39,9 @@ export default Component.extend({
   attributeBindings: ['target', 'href', 'download'],
 
   /**
-   * @property {Service} facts - instance of bard facts service
+   * @property {Service} facts - instance of navi facts service
    */
-  facts: service('bard-facts'),
+  facts: service('navi-facts'),
 
   /**
    * @property {Boolean} download - Boolean to check if request is valid and set download

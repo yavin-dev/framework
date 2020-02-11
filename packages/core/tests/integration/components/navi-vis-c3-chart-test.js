@@ -4,6 +4,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, triggerEvent, find } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
+import $ from 'jquery';
 import { initialize as injectC3Enhancements } from 'navi-core/initializers/inject-c3-enhancements';
 
 module('Integration | Component | navi vis c3 chart', function(hooks) {
@@ -68,15 +69,9 @@ module('Integration | Component | navi vis c3 chart', function(hooks) {
     `);
 
     next(() => {
-      assert.ok(
-        this.$('.c3-chart-line:eq(0)').is('.chart-series-0'),
-        'Each chart series has a corresponding class applied'
-      );
+      assert.ok($('.c3-chart-line:eq(0)').is('.chart-series-0'), 'Each chart series has a corresponding class applied');
 
-      assert.ok(
-        this.$('.c3-chart-line:eq(1)').is('.chart-series-1'),
-        'Each chart series has a corresponding class applied'
-      );
+      assert.ok($('.c3-chart-line:eq(1)').is('.chart-series-1'), 'Each chart series has a corresponding class applied');
     });
   });
 });

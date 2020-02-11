@@ -1,12 +1,7 @@
 self.deprecationWorkflow = self.deprecationWorkflow || {};
 self.deprecationWorkflow.config = {
   workflow: [
-    { handler: 'silence', matchId: 'ember-polyfills.deprecate-merge' },
-    { handler: 'silence', matchId: 'ember-component.send-action' },
-    { handler: 'silence', matchId: 'ember-views.event-dispatcher.jquery-event' },
-    { handler: 'silence', matchId: 'events.remove-all-listeners' },
-    { handler: 'silence', matchId: 'object.new-constructor' },
-    { handler: 'silence', matchId: 'deprecate-fetch-ember-data-support' }
-  ],
-  throwOnUnhandled: false
+    { handler: 'silence', matchId: 'ember-views.curly-components.jquery-element' }, //caused by ember-ajax
+    { handler: 'silence', matchId: 'ember-component.send-action' } // caused by ember-collection
+  ]
 };

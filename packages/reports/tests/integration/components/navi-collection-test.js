@@ -4,7 +4,8 @@ import ArrayProxy from '@ember/array/proxy';
 import $ from 'jquery';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find, click, findAll } from '@ember/test-helpers';
+import { render, find, findAll } from '@ember/test-helpers';
+import { selectChoose } from 'ember-power-select/test-support';
 import hbs from 'htmlbars-inline-precompile';
 
 const REPORTS = ArrayProxy.create({
@@ -60,7 +61,7 @@ module('Integration | Component | navi collection', function(hooks) {
     await render(TEMPLATE);
 
     // Click "Favorites" filter option
-    await click($('.pick-form li:contains(All)')[0]);
+    await selectChoose('.navi-collection__filter-trigger', 'All');
 
     let listedReports = findAll('tbody tr td:first-of-type').map(el => el.textContent.trim());
 
@@ -71,7 +72,7 @@ module('Integration | Component | navi collection', function(hooks) {
     );
 
     // Click "Favorites" filter option
-    await click($('.pick-form li:contains(Favorites)')[0]);
+    await selectChoose('.navi-collection__filter-trigger', 'Favorites');
     listedReports = findAll('tbody tr td:first-of-type').map(el => el.textContent.trim());
 
     assert.deepEqual(
@@ -89,7 +90,7 @@ module('Integration | Component | navi collection', function(hooks) {
     await render(TEMPLATE);
 
     //Reset to all filter
-    await click($('.pick-form li:contains(All)')[0]);
+    await selectChoose('.navi-collection__filter-trigger', 'All');
 
     assert
       .dom($('tbody tr:eq(0) td:first-of-type i')[0])
@@ -111,10 +112,9 @@ module('Integration | Component | navi collection', function(hooks) {
           }}
       `);
 
-    assert.notOk(
-      $('.navi-collection .pick-container').is(':visible'),
-      'Filter dropdown is not shown when `filterable` flag is not set to true in collection config'
-    );
+    assert
+      .dom('.navi-collection__filter-selector')
+      .isNotVisible('Filter dropdown is not shown when `filterable` flag is not set to true in collection config');
 
     await render(hbs`
           {{navi-collection
@@ -125,10 +125,9 @@ module('Integration | Component | navi collection', function(hooks) {
           }}
       `);
 
-    assert.ok(
-      $('.navi-collection .pick-container').is(':visible'),
-      'Filter dropdown is shown when `filterable` flag is set to true in collection config'
-    );
+    assert
+      .dom('.navi-collection__filter-selector')
+      .isVisible('Filter dropdown is shown when `filterable` flag is set to true in collection config');
   });
 
   test('Actions in Table', async function(assert) {

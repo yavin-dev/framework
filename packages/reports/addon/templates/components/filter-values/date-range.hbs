@@ -1,15 +1,40 @@
-{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{#navi-date-range-picker
-  interval=(as-interval filter.values.firstObject)
-  dateTimePeriod=request.logicalTable.timeGrain.name
-  onSetInterval=(action "setInterval")
-  as |interval|
-}}
-  <div class="date-range__select-trigger">
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{#if @isCollapsed}}
+  {{#let (as-interval this.interval) as |interval|}}
     {{#if interval}}
-      {{format-interval-inclusive-inclusive interval request.logicalTable.timeGrain.name}}
+      {{this.dateRange}}
     {{else}}
-      <span class="date-range__placeholder">Select date range</span>
+      <FilterValues::InvalidValue/>
     {{/if}}
+  {{/let}}
+{{else}}
+  <div class="filter-values--date-range-input" ...attributes>
+    <DropdownDatePicker
+      class="filter-values--date-range-input__trigger filter-values--date-range-input__low-value"
+      @date={{this.startDate}}
+      @dateTimePeriod={{this.calendarDateTimePeriod}}
+      @onUpdate={{this.setIntervalStart}}
+    >
+      {{#if this.startDate}}
+        {{this.startFormat}}
+      {{else}}
+        <span class="date__placeholder">{{this.startPlaceholder}}</span>
+      {{/if}}
+    </DropdownDatePicker>
+
+    <span class="filter-values--date-range-input__separator">to</span>
+
+    <DropdownDatePicker
+      class="filter-values--date-range-input__trigger filter-values--date-range-input__high-value"
+      @date={{this.endDate}}
+      @dateTimePeriod={{this.calendarDateTimePeriod}}
+      @onUpdate={{this.setIntervalEnd}}
+    >
+      {{#if endDate}}
+        {{this.endFormat}}
+      {{else}}
+        <span class="date__placeholder">{{this.endPlaceholder}}</span>
+      {{/if}}
+    </DropdownDatePicker>
   </div>
-{{/navi-date-range-picker}}
+{{/if}}

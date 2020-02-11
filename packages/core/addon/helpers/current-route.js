@@ -1,26 +1,25 @@
+/* eslint-disable ember/no-observers */
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2019, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Returns the name of the currently visited route
  */
 import { readOnly } from '@ember/object/computed';
 import Helper from '@ember/component/helper';
-import { getOwner } from '@ember/application';
-import { observer, computed, get } from '@ember/object';
+import { observer } from '@ember/object';
+import { inject as service } from '@ember/service';
 
 export default Helper.extend({
   /**
-   * @property {Ember.Controller} application
+   * @service router
    */
-  application: computed(function() {
-    return getOwner(this).lookup('controller:application');
-  }),
+  router: service(),
 
   /**
    * @property {String} currentPath - name of currently visited route
    */
-  currentPath: readOnly('application.currentPath'),
+  currentPath: readOnly('router.currentRouteName'),
 
   /**
    * @method compute
@@ -28,7 +27,7 @@ export default Helper.extend({
    * @returns {String} name of currently visited route
    */
   compute() {
-    return get(this, 'currentPath');
+    return this.currentPath;
   },
 
   /**

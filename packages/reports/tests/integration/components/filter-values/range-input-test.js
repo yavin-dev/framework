@@ -2,7 +2,7 @@ import { A } from '@ember/array';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import $ from 'jquery';
-import { render } from '@ember/test-helpers';
+import { render, fillIn } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 module('Integration | Component | filter values/range input', function(hooks) {
@@ -12,10 +12,12 @@ module('Integration | Component | filter values/range input', function(hooks) {
     this.filter = { values: A([1000, 2000]) };
     this.onUpdateFilter = () => null;
 
-    await render(hbs`{{filter-values/range-input
-            filter=filter
-            onUpdateFilter=(action onUpdateFilter)
-        }}`);
+    await render(hbs`
+      <FilterValues::RangeInput
+        @filter={{this.filter}}
+        @onUpdateFilter={{this.onUpdateFilter}}
+        @isCollapsed={{this.isCollapsed}}
+      />`);
   });
 
   test('it renders', function(assert) {
@@ -30,34 +32,33 @@ module('Integration | Component | filter values/range input', function(hooks) {
     );
   });
 
-  test('changing values', function(assert) {
+  test('collapsed', function(assert) {
+    assert.expect(2);
+
+    this.set('isCollapsed', true);
+
+    assert.dom('.filter-values--range-input__input').doesNotExist('The range inputs are not rendered when collapsed');
+    assert.dom().hasText('1000 and 2000', 'Selected values are rendered correctly when collapsed');
+  });
+
+  test('changing values', async function(assert) {
     assert.expect(2);
 
     this.set('onUpdateFilter', changeSet => {
       assert.deepEqual(changeSet, { values: ['aaa', 2000] }, 'User inputted number is given to update action');
     });
 
-    $('.filter-values--range-input__input')
-      .eq(0)
-      .val('aaa');
-    $('.filter-values--range-input__input')
-      .eq(0)
-      .trigger('keyup');
+    await fillIn('.filter-values--range-input__input:first-child', 'aaa');
 
     this.set('onUpdateFilter', changeSet => {
       assert.deepEqual(changeSet, { values: [1000, 'bbb'] }, 'User inputted number is given to update action');
     });
 
-    $('.filter-values--range-input__input')
-      .eq(1)
-      .val('bbb');
-    $('.filter-values--range-input__input')
-      .eq(1)
-      .trigger('keyup');
+    await fillIn('.filter-values--range-input__input:last-child', 'bbb');
   });
 
   test('error state', function(assert) {
-    assert.expect(2);
+    assert.expect(3);
     assert.notOk(
       $('.filter-values--range-input__input--error').is(':visible'),
       'The input should not have error state'
@@ -67,16 +68,20 @@ module('Integration | Component | filter values/range input', function(hooks) {
       validations: { attrs: { values: { isInvalid: true } } }
     });
     assert.ok($('.filter-values--range-input__input--error').is(':visible'), 'The input should have error state');
+
+    this.set('isCollapsed', true);
+    assert.dom('.filter-values--selected-error').exists('Error is rendered correctly when collapsed');
   });
 
   test('config placeholders', async function(assert) {
     assert.expect(1);
-    await render(hbs`{{filter-values/range-input
-          filter=filter
-          onUpdateFilter=(action onUpdateFilter)
-          lowPlaceholder='start'
-          highPlaceholder='end'
-      }}`);
+    await render(hbs`
+      <FilterValues::RangeInput
+        @filter={{this.filter}}
+        @onUpdateFilter={{this.onUpdateFilter}}
+        @lowPlaceholder="start"
+        @highPlaceholder="end"
+      />`);
 
     assert.deepEqual(
       $('.filter-values--range-input__input')

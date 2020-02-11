@@ -24,14 +24,14 @@
         <span class="table-config__totals-toggle-label">Subtotal</span>
         {{x-toggle
           class="table-config__total-toggle-button table-config__total-toggle-button--subtotal"
-          value=(readonly showSubtotalDropdown)
+          value=(readonly _showSubtotalDropdown)
           size="small"
-          onToggle=(queue (toggle-action "showSubtotalDropdown" this) (action "onToggleSubtotal"))
+          onToggle=(queue (toggle-action "_showSubtotalDropdown" this) (action "onToggleSubtotal"))
         }}
       </div>
 
       {{!-- Dimension dropdown for subtotal --}}
-      {{#if showSubtotalDropdown}}
+      {{#if _showSubtotalDropdown}}
         {{#power-select
           class="table-config__subtotal-dimension-select"
           dropdownClass="subtotal-dimension-select__options"

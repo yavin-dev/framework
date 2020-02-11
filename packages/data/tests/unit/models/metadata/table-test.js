@@ -16,7 +16,8 @@ module('Unit | Metadata Model | Table', function(hooks) {
       description: 'Day',
       dimensionIds: [],
       metricIds: ['pv'],
-      keg: Keg
+      keg: Keg,
+      source: undefined
     };
 
     Payload = {
@@ -71,6 +72,30 @@ module('Unit | Metadata Model | Table', function(hooks) {
       get(Model, 'timeGrains.firstObject.metrics.firstObject'),
       Keg.getById('metadata/metric', 'pv'),
       'The Page view metric is properly hydrated'
+    );
+  });
+
+  test('Time Grain are sorted', function(assert) {
+    assert.expect(1);
+
+    const allGrains = run(() =>
+      this.owner.factoryFor('model:metadata/table').create({
+        ...Payload,
+        timeGrains: [
+          { name: 'all' },
+          { name: 'hour' },
+          { name: 'second' },
+          { name: 'day' },
+          { name: 'week' },
+          { name: 'idk' }
+        ]
+      })
+    );
+
+    assert.deepEqual(
+      allGrains.timeGrains.map(t => t.name),
+      ['second', 'hour', 'day', 'week', 'all', 'idk'],
+      'The timegrains are sorted and unknown ones are pushed to the back'
     );
   });
 });

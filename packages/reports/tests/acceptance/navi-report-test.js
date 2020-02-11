@@ -11,6 +11,7 @@ import reorder from '../helpers/reorder';
 import config from 'ember-get-config';
 import { Response } from 'ember-cli-mirage';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import moment from 'moment';
 
 // Regex to check that a string ends with "{uuid}/view"
 const TempIdRegex = /\/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\/view$/;
@@ -220,12 +221,12 @@ module('Acceptance | Navi Report', function(hooks) {
 
     server.patch('/reports/:id', function({ reports }, request) {
       assert.equal(
-        request.requestHeaders['content-type'],
+        request.requestHeaders['Content-Type'],
         'application/vnd.api+json',
         'Request header content-type is correct JSON-API mime type'
       );
       assert.equal(
-        request.requestHeaders.accept,
+        request.requestHeaders.Accept,
         'application/vnd.api+json',
         'Request header accept is correct JSON-API mime type'
       );
@@ -1264,7 +1265,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     // Filter by favorites
     await visit('/reports');
-    await click($('.pick-form li:contains(Favorites)')[0]);
+    await selectChoose('.navi-collection__filter-trigger', 'Favorites');
 
     let listedReports = findAll('tbody tr td:first-of-type').map(el => el.innerText.trim());
 
@@ -1276,7 +1277,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     // Filter by favorites
     await visit('/reports');
-    await click($('.pick-form li:contains(Favorites)')[0]);
+    await selectChoose('.navi-collection__filter-trigger', 'Favorites');
 
     listedReports = findAll('tbody tr td:first-of-type').map(el => el.innerText.trim());
 
@@ -1286,7 +1287,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await click($('tbody tr td a:contains(Hyrule Ad&Nav Clicks)')[0]);
     await click('.favorite-item');
     await visit('/reports');
-    await click($('.pick-form li:contains(Favorites)')[0]);
+    await selectChoose('.navi-collection__filter-trigger', 'Favorites');
 
     listedReports = findAll('tbody tr td:first-of-type').map(el => el.innerText.trim());
 
@@ -1302,7 +1303,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     // Filter by favorites
     await visit('/reports');
-    await click($('.pick-form li:contains(Favorites)')[0]);
+    await selectChoose('.navi-collection__filter-trigger', 'Favorites');
 
     let listedReports = findAll('tbody tr td:first-of-type').map(el => el.innerText.trim());
 
@@ -1314,7 +1315,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     await visit('/reports');
 
-    await click($('.pick-form li:contains(Favorites)')[0]);
+    await selectChoose('.navi-collection__filter-trigger', 'Favorites');
 
     listedReports = findAll('tbody tr td:first-of-type').map(el => el.innerText.trim());
 
@@ -1469,6 +1470,58 @@ module('Acceptance | Navi Report', function(hooks) {
     );
   });
 
+  test('filters - collapse and expand', async function(assert) {
+    assert.expect(9);
+
+    await visit('/reports/1');
+
+    //collapse filters
+    await click('.report-builder__container-header__filters-toggle');
+    assert.dom('.filter-collection').hasClass('filter-collection--collapsed', 'Filters are collapsed (1)');
+
+    //expand filters
+    await click('.filter-collection--collapsed');
+    assert
+      .dom('.filter-collection')
+      .doesNotHaveClass('filter-collection--collapsed', 'Collapsed filters are expanded on click');
+
+    //collapse again
+    await click('.report-builder__container-header__filters-toggle');
+    assert.dom('.filter-collection').hasClass('filter-collection--collapsed', 'Filters are collapsed (2)');
+
+    //add a dimension filter
+    await click($('.grouped-list__item:contains(Operating System) .grouped-list__filter')[0]);
+    assert
+      .dom('.filter-collection')
+      .doesNotHaveClass('filter-collection--collapsed', 'Adding a dimension filter expands filters');
+
+    //collapse again
+    await click('.report-builder__container-header__filters-toggle');
+    assert.dom('.filter-collection').hasClass('filter-collection--collapsed', 'Filters are collapsed (3)');
+
+    //remove the dimension filter
+    await click($('.grouped-list__item:contains(Operating System) .grouped-list__filter')[0]);
+    assert
+      .dom('.filter-collection')
+      .hasClass('filter-collection--collapsed', 'Filters are still collapsed when removing a dimension filter');
+
+    //add a metric filter
+    await click($('.grouped-list__item:contains(Ad Clicks) .grouped-list__filter')[0]);
+    assert
+      .dom('.filter-collection')
+      .doesNotHaveClass('filter-collection--collapsed', 'Adding a metric filter expands filters');
+
+    //collapse again
+    await click('.report-builder__container-header__filters-toggle');
+    assert.dom('.filter-collection').hasClass('filter-collection--collapsed', 'Filters are collapsed (4)');
+
+    //remove the metric filter
+    await click($('.grouped-list__item:contains(Ad Clicks) .grouped-list__filter')[0]);
+    assert
+      .dom('.filter-collection')
+      .hasClass('filter-collection--collapsed', 'Filters are still collapsed when removing a metric filter');
+  });
+
   test('Show selected dimensions and filters', async function(assert) {
     assert.expect(4);
 
@@ -1551,39 +1604,118 @@ module('Acceptance | Navi Report', function(hooks) {
   });
 
   test("Date Picker doesn't change date when moving to time grain where dates are valid", async function(assert) {
-    assert.expect(3);
+    assert.expect(6);
 
     await visit('/reports/1');
     await click($('.grouped-list__item-label:contains(Month)')[0]);
 
     // Select the month Jan
-    await click('.custom-range-form .pick-value');
-    await click($('.navi-date-picker:nth-of-type(3) .datepicker .month:contains(Jan)')[0]);
-    await click($('.navi-date-picker:nth-of-type(4) .datepicker .month:contains(Jan)')[0]);
-    await click('.navi-date-range-picker__apply-btn');
+    await clickTrigger('.filter-values--date-range-input__low-value');
+    await click($('.ember-power-calendar-selector-month:contains(Jan)')[0]);
+    await clickTrigger('.filter-values--date-range-input__high-value');
+    await click($('.ember-power-calendar-selector-month:contains(Jan)')[0]);
     await click('.navi-report__run-btn');
 
-    assert.dom('.date-range__select-trigger').hasText('Jan 2015', 'Month is changed to Jan 2015');
+    assert.dom('.filter-values--date-range-input__low-value').hasText('Jan 2015', 'Start Month is changed to Jan 2015');
+    assert.dom('.filter-values--date-range-input__high-value').hasText('Jan 2015', 'End Month is changed to Jan 2015');
 
     await click($('.grouped-list__item-label:contains(Day)')[0]);
     await click('.navi-report__run-btn');
 
     assert
-      .dom('.date-range__select-trigger')
-      .hasText(
-        'Jan 01, 2015 - Jan 31, 2015',
-        'Switching to day preserves the day casts the dates to match the time period'
-      );
+      .dom('.filter-values--date-range-input__low-value')
+      .hasText('Jan 01, 2015', 'Switching to day time period preserves date to start of month');
+    assert
+      .dom('.filter-values--date-range-input__high-value')
+      .hasText('Jan 31, 2015', 'Switching to day time period preserves date to end of month');
 
     await click($('.grouped-list__item-label:contains(Week)')[0]);
     await click('.navi-report__run-btn');
 
     assert
-      .dom('.date-range__select-trigger')
-      .hasText(
-        'Dec 29, 2014 - Jan 25, 2015',
-        'Switching to week casts the dates to match the start and end of the date time period'
-      );
+      .dom('.filter-values--date-range-input__low-value')
+      .hasText('Dec 29, 2014', 'Switching to week casts the date to match the start of the date time period');
+    assert
+      .dom('.filter-values--date-range-input__high-value')
+      .hasText('Jan 25, 2015', 'Switching to week casts the date to match the end of the date time period');
+  });
+
+  test('Date picker change interval type', async function(assert) {
+    assert.expect(9);
+
+    await visit('/reports/1');
+
+    assert.dom('.filter-values--date-range-input__low-value').hasText('Nov 09, 2015', 'The start date is Nov 09, 2015');
+    assert.dom('.filter-values--date-range-input__high-value').hasText('Nov 15, 2015', 'The end date is Nov 15, 2015');
+
+    await selectChoose('.filter-builder__select-trigger', 'Advanced');
+    assert.dom(findAll('.filter-values--advanced-interval-input__value')[0]).hasValue('P7D', 'The start date is P7D');
+    assert
+      .dom(findAll('.filter-values--advanced-interval-input__value')[1])
+      .hasValue('2015-11-15', 'The end date is 2015-11-15');
+
+    await selectChoose('.filter-builder__select-trigger', 'Between');
+    assert
+      .dom('.filter-values--date-range-input__low-value')
+      .hasText('Nov 09, 2015', 'The start date is still Nov 09, 2015');
+    assert
+      .dom('.filter-values--date-range-input__high-value')
+      .hasText('Nov 15, 2015', 'The end date is still Nov 15, 2015');
+
+    await selectChoose('.filter-builder__select-trigger', 'Advanced');
+    await fillIn(findAll('.filter-values--advanced-interval-input__value')[1], 'current');
+    await blur(findAll('.filter-values--advanced-interval-input__value')[1]);
+    assert
+      .dom('.ember-power-select-selected-item')
+      .hasText('In The Past', 'relative/current changes date to in the past');
+
+    await selectChoose('.filter-builder__select-trigger', 'Since');
+    const dateFormat = 'MMM DD, YYYY';
+    assert.dom('.dropdown-date-picker__trigger').hasText(
+      moment()
+        .subtract(7, 'day')
+        .format(dateFormat),
+      'The start is 7 days ago'
+    );
+
+    await selectChoose('.filter-builder__select-trigger', 'Current Day');
+
+    const today = moment().format(dateFormat);
+    assert.dom('.filter-values--current-period').hasText(`The current day. (${today})`, 'The current day');
+  });
+
+  test('Date picker all timegrain', async function(assert) {
+    assert.expect(5);
+
+    await visit('/reports/1');
+
+    // select month grain
+    await click($('.grouped-list__item-label:contains(Month)')[0]);
+
+    await clickTrigger('.filter-values--date-range-input__low-value');
+    await click($('.ember-power-calendar-selector-month:contains(Jan)')[0]);
+
+    await clickTrigger('.filter-values--date-range-input__high-value');
+    await click($('.ember-power-calendar-selector-month:contains(May)')[0]);
+
+    assert.dom('.filter-values--date-range-input__low-value').hasText('Jan 2015', 'The start date is month Jan 2015');
+    assert.dom('.filter-values--date-range-input__high-value').hasText('May 2015', 'The end date is month May 2015');
+
+    // select 'all' grain
+    await click($('.grouped-list__item-label:contains(Month)')[0]);
+
+    assert
+      .dom('.filter-values--date-range-input__low-value')
+      .hasText('Jan 01, 2015', 'The start date is beginning of Jan, 2015');
+    assert
+      .dom('.filter-values--date-range-input__high-value')
+      .hasText('May 31, 2015', 'The end date is end of May, 2015');
+
+    await clickTrigger('.filter-values--date-range-input__high-value');
+    await click('.ember-power-calendar-day[data-date="2015-05-30"]');
+    assert
+      .dom('.filter-values--date-range-input__high-value')
+      .hasText('May 30, 2015', 'Calendar defaults "all" grain  to show the lowest grain which is day');
   });
 
   test("Report with an unknown table doesn't crash", async function(assert) {
@@ -1667,7 +1799,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await click($('.filter-builder-dimension__field-dropdown .ember-power-select-option:contains(desc)')[0]);
 
     await fillIn('.filter-builder-dimension__values input', 'foo');
-    await await blur('.filter-builder-dimension__values input');
+    await blur('.filter-builder-dimension__values input');
 
     await click('.get-api__btn');
 

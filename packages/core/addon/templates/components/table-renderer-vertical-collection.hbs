@@ -1,21 +1,22 @@
-{{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class={{tableHeadersClass}}>
   {{#unless isEditingMode}}
-    {{#sortable-group
+    <SortableGroup
       class="table-header-row-vc table-header-row-vc--view"
-      direction="x"
-      onChange=(action updateColumnOrder)
-      as | group |
-    }}
-      {{#each columns as |column|}}
-        {{#sortable-item
-          class=(concat "table-header-cell " column.type)
-          model=(readonly column)
-          group=group
-          click=(action headerClicked column)
-          onDragStart=(action (set this "isDragged" true))
-          onDragStop=(action (set this "isDragged" false))
-        }}
+      @direction="x"
+      @model={{readonly columns}}
+      @onChange={{action updateColumnOrder}}
+      as |group|
+    >
+      {{#each group.model as |column|}}
+        <group.item
+          class={{concat "table-header-cell " column.type}}
+          @model={{readonly column}}
+          @click={{action headerClicked column}}
+          @onDragStart={{set this "isDragged" true}}
+          @onDragStop={{set this "isDragged" false}}
+          @isDraggingDisabled={{@isDraggingDisabled}}
+        >
           <span
             class="table-header-cell__title {{if column.hasCustomDisplayName "table-header-cell__title--custom-name"}}"
             title="Drag column header to reorder"
@@ -23,22 +24,22 @@
             {{or column.displayName (default-column-name column)}}
           </span>
           {{#if column.sortDirection}}
-            {{navi-table-sort-icon
-              class="table-header-cell__icon"
-              direction=(readonly column.sortDirection)
-            }}
+            <NaviTableSortIcon
+              class={{"table-header-cell__icon"}}
+              @direction={{readonly column.sortDirection}}
+            />
           {{else}}
-            {{ember-tooltip
-              text="Column cannot be sorted."
-              showOn="click"
-              hideOn="mousedown mouseleave"
-              duration=2000
-              enableLazyRendering=true
-            }}
+            <EmberTooltip
+              @text={{"Column cannot be sorted."}}
+              @showOn={{"click"}}
+              @hideOn={{"mousedown mouseleave"}}
+              @duration={{2000}}
+              @enableLazyRendering={{true}}
+            />
           {{/if}}
-        {{/sortable-item}}
+        </group.item>
       {{/each}}
-    {{/sortable-group}}
+    </SortableGroup>
   {{/unless}}
 </div>
 <div class={{tableWrapperClass}}>
@@ -75,15 +76,15 @@
       </tr>
     </thead>
     <tbody>
-      {{#table-iterator
-        useVerticalCollection=true
-        tableData=tableData
-        occlusion=occlusion
-        containerSelector=(concat "." tableWrapperClass)
-        estimateHeight=estimateHeight
-        bufferSize=bufferSize
+      <TableIterator
+        @useVerticalCollection={{true}}
+        @tableData={{tableData}}
+        @occlusion={{occlusion}}
+        @containerSelector={{concat "." tableWrapperClass}}
+        @estimateHeight={{estimateHeight}}
+        @bufferSize={{bufferSize}}
         as |row idx|
-      }}
+      >
         <tr class="table-row-vc {{if row.__meta__.isTotalRow "table-row__total-row"}} {{if (eq idx (sub tableData.length 1)) "table-row__last-row"}}">
           {{#each columns as |column|}}
             <td class="table-cell">
@@ -94,16 +95,16 @@
                     column=column
                 }}
               {{else}}
-                {{navi-table-cell-renderer
-                  data=row
-                  column=column
-                  request=request
-                }}
+                <NaviTableCellRenderer
+                  @data={{row}}
+                  @column={{column}}
+                  @request={{request}}
+                />
               {{/if}}
             </td>
           {{/each}}
         </tr>
-      {{/table-iterator}}
+      </TableIterator>
     </tbody>
   </table>
 </div>

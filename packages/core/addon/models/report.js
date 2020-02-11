@@ -60,12 +60,12 @@ export default DeliverableItem.extend(hasVisualization, Validations, {
   /**
    * @property {Boolean} isFavorite - is favorite of author
    */
-  isFavorite: computed(function() {
+  get isFavorite() {
     let user = get(this, 'user').getUser(),
       favoriteReports = user.hasMany('favoriteReports').ids();
 
     return arr(favoriteReports).includes(get(this, 'id'));
-  }).volatile(),
+  },
 
   /**
    * Clones the model

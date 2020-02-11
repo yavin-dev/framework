@@ -32,7 +32,7 @@ module('Integration | Component | goal gauge ', function(hooks) {
       }}
     `);
 
-    assert.ok(!!this.$('.c3-chart-component c3 svg'), 'gauge component renders');
+    assert.dom('.c3-chart-component svg').exists('gauge component renders');
 
     assert.dom('.value-title').hasText('3.03B', 'value title is correctly displayed');
 
@@ -62,7 +62,7 @@ module('Integration | Component | goal gauge ', function(hooks) {
       }}
     `);
 
-    assert.ok(!!this.$('.c3-chart-component c3 svg'), 'gauge component renders');
+    assert.dom('.c3-chart-component svg').exists('gauge component renders');
 
     assert.dom('.value-title').hasText('75%', 'value title is correctly displayed');
 
@@ -92,7 +92,7 @@ module('Integration | Component | goal gauge ', function(hooks) {
       }}
     `);
 
-    assert.ok(!!this.$('.c3-chart-component c3 svg'), 'gauge component renders');
+    assert.dom('.c3-chart-component svg').exists('gauge component renders');
 
     assert.dom('.value-title').hasText('$75', 'value title is correctly displayed');
 
@@ -187,7 +187,7 @@ module('Integration | Component | goal gauge ', function(hooks) {
       }}
     `);
 
-    assert.ok(!!this.$('.c3-chart-component c3 svg'), 'gauge component renders');
+    assert.dom('.c3-chart-component svg').exists('gauge component renders');
 
     assert.dom('.value-title').hasText('300', 'value title is correctly displayed');
 

@@ -14,9 +14,9 @@ import DS from 'ember-data';
 
 export default Service.extend({
   /**
-   * @property {Ember.Service} bardFacts
+   * @property {Ember.Service} naviFacts
    */
-  bardFacts: service(),
+  naviFacts: service(),
 
   /**
    * @property {Ember.Service} store
@@ -187,6 +187,6 @@ export default Service.extend({
    * @returns {Promise} response from request
    */
   _fetch(request, options) {
-    return get(this, 'bardFacts').fetch(request, options);
+    return get(this, 'naviFacts').fetch(request, options);
   }
 });

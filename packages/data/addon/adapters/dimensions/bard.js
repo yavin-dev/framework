@@ -1,18 +1,15 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Description: The adapter for the Bard dimension model.
  */
 
-import { assert } from '@ember/debug';
-import { makeArray } from '@ember/array';
+import { assert, warn } from '@ember/debug';
 import { inject as service } from '@ember/service';
 import { assign } from '@ember/polyfills';
 import EmberObject, { get } from '@ember/object';
-import config from 'ember-get-config';
-
-const FACT_HOST = config.navi.dataSources[0].uri;
+import { configHost } from '../../utils/adapter';
 
 const SUPPORTED_FILTER_OPERATORS = ['in', 'notin', 'startswith', 'contains'];
 
@@ -66,10 +63,11 @@ export default EmberObject.extend({
    * @private
    * @param {String} dimension - dimension name
    * @param {String} path - url path
+   * @param {Object} options - optional list of options passed ot the host.
    * @returns {String} dimension value URL string
    */
-  _buildUrl(dimension, path = 'values') {
-    let host = FACT_HOST,
+  _buildUrl(dimension, path = 'values', options = {}) {
+    let host = configHost(options),
       namespace = get(this, 'namespace');
 
     return `${host}/${namespace}/dimensions/${dimension}/${path}/`;
@@ -81,13 +79,20 @@ export default EmberObject.extend({
    * @method _buildFilterQuery
    * @private
    * @param {String} dimension
-   * @param {Object} query - filter query object
+   * @param {Array<Query>} andQueries - filter query object
    * @param {String} query.field - field used to query
    * @param {String} query.operator - valid operators 'contains', 'in'
-   * @param {String} query.values
+   * @param {Array<String|number>} query.values
    * @returns {String} filter query string
    */
-  _buildFilterQuery(dimension, query) {
+  _buildFilterQuery(dimension, andQueries) {
+    if (!Array.isArray(andQueries)) {
+      warn('_buildFilterQuery() was not passed an array of AND queries, wrapping as single query array', {
+        id: 'bard-_buildFilterQuery-query-as-array'
+      });
+      andQueries = [andQueries]; // if not array, wrap
+    }
+    assert("You must pass an 'Array' of queries to be ANDed together", Array.isArray(andQueries));
     let defaultQueryOptions = {
       field: this._getDimensionMetadata(dimension).get('primaryKeyFieldName'),
       operator: 'in',
@@ -95,13 +100,28 @@ export default EmberObject.extend({
       values: []
     };
 
-    query = assign({}, defaultQueryOptions, query);
+    andQueries = andQueries.map(query => assign({}, defaultQueryOptions, query));
 
-    let queryField = get(query, 'field'),
-      field = URL_FIELD_NAMES[queryField] || queryField,
-      operator = get(query, 'operator'),
+    const stringQueries = andQueries.filter(q => typeof q.values === 'string');
+    if (stringQueries.length) {
+      warn('_buildFilterQuery() was passed query.values as a string, falling back to splitting by commas', {
+        id: 'bard-_buildFilterQuery-query-values-as-array'
+      });
+      stringQueries.forEach(query => (query.values = query.values.split(',')));
+    }
+    assert(
+      "Only 'Array' query values are currently supported in the Bard adapter",
+      andQueries.every(q => Array.isArray(q.values))
+    );
+
+    const filters = andQueries.map(query => {
+      const queryField = get(query, 'field'),
+        field = URL_FIELD_NAMES[queryField] || queryField,
+        operator = get(query, 'operator'),
+        values = query.values.join(',');
       // Build the filters as expected by bard api
-      filters = makeArray(get(query, 'values')).map(value => `${dimension}|${field}-${operator}[${value}]`);
+      return `${dimension}|${field}-${operator}[${values}]`;
+    });
 
     return {
       filters: filters.join(',')
@@ -114,19 +134,34 @@ export default EmberObject.extend({
    * @method _buildSearchQuery
    * @private
    * @param {String} dimension
-   * @param {Object} query - filter query object
-   * @param {String} query.values
+   * @param {[{values: Array<String|number>}]} andQueries - filter query object
    * @returns {String} filter query string
    */
-  _buildSearchQuery(dimension, query) {
-    let defaultQueryOptions = { values: [] };
+  _buildSearchQuery(dimension, andQueries) {
+    if (!Array.isArray(andQueries)) {
+      warn('_buildSearchQuery() was not passed an array of queries, wrapping as single query array', {
+        id: 'bard-_buildSearchQuery-query-as-array'
+      });
+      andQueries = [andQueries]; // if not array, wrap
+    }
+    assert(
+      "You must pass an 'Array' of queries, but searching only supports one query",
+      Array.isArray(andQueries) && andQueries.length === 1
+    );
 
-    query = assign({}, defaultQueryOptions, query);
+    const defaultQueryOptions = { values: [] };
+    const query = assign({}, defaultQueryOptions, andQueries[0]);
 
-    let values = makeArray(get(query, 'values'));
+    if (typeof query.values === 'string') {
+      warn('_buildFilterQuery() was passed query.values as a string, must be an array', {
+        id: 'bard-_buildFilterQuery-query-values-as-array'
+      });
+      query.values = query.values.split(' ');
+    }
+    assert("Only 'Array' query values are currently supported in Bard", Array.isArray(query.values));
 
     return {
-      query: values.join(' ')
+      query: query.values.join(' ')
     };
   },
 
@@ -210,7 +245,7 @@ export default EmberObject.extend({
   /**
    * @method find - makes a request to /values api to find dimensions by query term
    * @param {String} dimension - dimension name
-   * @param {Object} [query] - the filter query object
+   * @param {Array<Query>} andQueries - the filter query object
    * @param {Object} [options] - options object
    *      Ex: {
    *        page: 1,
@@ -221,13 +256,13 @@ export default EmberObject.extend({
    *      }
    * @returns {Promise} - Promise with the response
    */
-  find(dimension, query, options) {
-    let url = this._buildUrl(dimension),
+  find(dimension, andQueries, options) {
+    let url = this._buildUrl(dimension, undefined, options),
       data = {};
 
     // If filter query is present, build query having the filter
-    if (query) {
-      data = this._buildFilterQuery(dimension, query);
+    if (andQueries) {
+      data = this._buildFilterQuery(dimension, andQueries);
     }
 
     return this._find(url, data, options);
@@ -247,12 +282,12 @@ export default EmberObject.extend({
    *      }
    * @returns {Promise} - Promise with the response
    */
-  search(dimension, query, options) {
-    let url = this._buildUrl(dimension, 'search'),
+  search(dimension, andQueries, options) {
+    let url = this._buildUrl(dimension, 'search', options),
       data = {};
 
-    if (query) {
-      data = this._buildSearchQuery(dimension, query);
+    if (andQueries) {
+      data = this._buildSearchQuery(dimension, andQueries);
     }
 
     return this._find(url, data, options);

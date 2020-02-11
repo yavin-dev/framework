@@ -4,7 +4,7 @@
  */
 import Route from '@ember/routing/route';
 
-export default Route.extend({
+export default class OtherData extends Route {
   /**
    * @method model
    * @override
@@ -15,4 +15,4 @@ export default Route.extend({
       items: []
     };
   }
-});
+}

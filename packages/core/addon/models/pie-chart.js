@@ -1,5 +1,5 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -27,7 +27,7 @@ const Validations = buildValidations(
       disabled: computed('chartType', function() {
         return get(this, 'chartType') !== METRIC_SERIES;
       }),
-      dependentKeys: ['model._request.metrics.[]']
+      dependentKeys: ['model._request.metrics.@each.parameters.{}']
     }),
 
     //Dimension Series Validations
@@ -35,7 +35,7 @@ const Validations = buildValidations(
       disabled: computed('chartType', function() {
         return get(this, 'chartType') !== DIMENSION_SERIES;
       }),
-      dependentKeys: ['model._request.metrics.[]']
+      dependentKeys: ['model._request.metrics.@each.parameters.{}']
     }),
 
     [`${CONFIG_PATH}.dimensionOrder`]: validator('request-dimension-order', {
