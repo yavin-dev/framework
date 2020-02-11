@@ -13,6 +13,7 @@ import dashboard from 'navi-app/mirage/routes/dashboard';
 import dashboardCollection from 'navi-app/mirage/routes/dashboard-collection';
 import reportCollection from 'navi-app/mirage/routes/report-collections';
 import dashboardWidget from 'navi-app/mirage/routes/dashboard-widget';
+import 'papaparse'; // explicitly bring in papaparse
 
 // Generic JS string hash https://stackoverflow.com/a/7616484
 function hashCode(str) {

@@ -5,6 +5,7 @@ import ReportWS from './routes/report';
 import UserWS from './routes/user';
 import ReportCollectionsWS from './routes/report-collections';
 import DeliveryRulesWS from './routes/delivery-rules';
+import 'papaparse'; // explicitly bring in papaparse
 
 export default function() {
   // https://github.com/kategengler/ember-cli-code-coverage#create-a-passthrough-when-intercepting-all-ajax-requests-in-tests

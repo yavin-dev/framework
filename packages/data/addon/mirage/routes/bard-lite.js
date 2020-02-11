@@ -8,7 +8,7 @@
 import { faker, Response } from 'ember-cli-mirage';
 import moment from 'moment';
 import { assign } from '@ember/polyfills';
-import { parseFilters, parseHavings } from 'navi-data/mirage/routes/bard-lite-parsers';
+import { parseFilters, parseHavings } from './bard-lite-parsers';
 
 const API_DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss.SSS',
   DIMENSION_VALUE_MAP = {},
