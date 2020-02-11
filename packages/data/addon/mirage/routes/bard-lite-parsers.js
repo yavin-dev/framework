@@ -17,7 +17,6 @@ const parseConfig = {
 export function parseSingleFilter(serializedFilter) {
   const [, dimension, field, operator, valuesString] = serializedFilter.match(/(.*)\|(.*)-(.*)\[(.*)\]/);
 
-  // field = field === 'desc' ? 'description' : field;
   const results = parse(valuesString, parseConfig);
   if (results.errors.length) {
     throw new Error('Failed in parseFilter()', results.errors);
