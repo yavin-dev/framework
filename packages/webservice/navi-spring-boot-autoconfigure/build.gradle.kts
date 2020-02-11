@@ -20,8 +20,7 @@ dependencies {
     testImplementation("org.yaml:snakeyaml:1.25")
 
     compileOnly("org.projectlombok:lombok:1.18.10")
-    compileOnly(project(":models"))
-    testImplementation(project(":models"))
+    implementation(project(":models"))
 
     annotationProcessor("org.projectlombok:lombok:1.18.10")
 
