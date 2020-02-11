@@ -102,7 +102,7 @@
         dashboard=dashboard
         onSelectReport=(action addWidgetToDashboard)
       }}
-        <button class="btn btn-primary">+ Add Widget</button>
+        <button type="button" class="btn btn-primary">+ Add Widget</button>
       {{/dashboard-actions/add-widget}}
     {{/if}}
   </div>
@@ -166,8 +166,8 @@
 {{#if dashboardIsDirty}}
   <div class="navi-dashboard__save-dialogue">
     {{#if dashboard.canUserEdit}}
-      <button onclick={{queue (route-action "saveDashboard") (action onModelSaveOrRevert)}} class="btn btn-secondary navi-dashboard__save-button">Save Changes</button>
+      <button type="button" onclick={{queue (route-action "saveDashboard") (action onModelSaveOrRevert)}} class="btn btn-secondary navi-dashboard__save-button">Save Changes</button>
     {{/if}}
-    <button onclick={{queue (route-action "revertDashboard") (action onModelSaveOrRevert)}} class="btn btn-secondary navi-dashboard__revert-button">Revert Changes</button>
+    <button type="button" onclick={{queue (route-action "revertDashboard") (action onModelSaveOrRevert)}} class="btn btn-secondary navi-dashboard__revert-button">Revert Changes</button>
   </div>
 {{/if}}

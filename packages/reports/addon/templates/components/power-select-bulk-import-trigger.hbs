@@ -24,6 +24,7 @@
     {{/if}}
   {{/each}}
   {{#if searchEnabled}}
+  {{!-- template-lint-disable no-positive-tabindex --}}
     <input type="search" class="ember-power-select-trigger-multiple-input"
       autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
       id="ember-power-select-trigger-multiple-input-{{select.uniqueId}}"

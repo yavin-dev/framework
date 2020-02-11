@@ -76,7 +76,7 @@
         {{/link-to}}
       </li>
 
-      {{#if (not model.isNew)}}
+      {{#unless model.isNew}}
         {{!-- Share only enabled on a Valid widget --}}
         <li class="navi-report-widget__action">
           {{#common-actions/share
@@ -90,7 +90,7 @@
             {{/ember-tooltip}}
           {{/common-actions/share}}
         </li>
-      {{/if}}
+      {{/unless}}
       {{#if model.dashboard.isUserOwner}}
         <li class="navi-report-widget__action">
           {{#common-actions/delete
@@ -119,9 +119,17 @@
   {{!-- Footer --}}
 
   <footer class="navi-report-widget__footer">
-    {{#if (not isRunningReport) class="navi-report-widget__footer-btns"}}
-
+    {{#if isRunningReport}}
       <button
+        type="button"
+        class="btn btn-primary navi-report-widget__cancel-btn"
+        onclick={{route-action "cancelReport" model}}
+      >
+        Cancel
+      </button>
+    {{else}}
+      <button
+        type="button"
         class="btn btn-primary navi-report-widget__run-btn"
         onclick={{pipe
           (route-action "validate" model)
@@ -133,6 +141,7 @@
 
       {{#if (and model.dashboard.canUserEdit model.hasDirtyAttributes)}}
         <button
+          type="button"
           class="btn btn-secondary navi-report-widget__save-btn"
           onclick={{pipe
             (route-action "validate" model)
@@ -150,22 +159,13 @@
 
       {{#if (and model.hasDirtyAttributes (not model.isNew))}}
         <button
+          type="button"
           class="btn btn-secondary navi-report-widget__revert-btn"
           onclick={{route-action "revertChanges" model}}
         >
           Revert Changes
         </button>
       {{/if}}
-
-    {{else}}
-
-      <button
-        class="btn btn-primary navi-report-widget__cancel-btn"
-        onclick={{route-action "cancelReport" model}}
-      >
-        Cancel
-      </button>
-
     {{/if}}
   </footer>
 </div>

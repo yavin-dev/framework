@@ -8,7 +8,7 @@
       onChange=(update-report-action "UPDATE_TABLE")
     }}
   {{/if}}
-  <div class="report-builder__container--builder {{if (not hasValidLogicalTable) "report-builder__container--builder-skel"}}">
+  <div class="report-builder__container--builder {{unless hasValidLogicalTable "report-builder__container--builder-skel"}}">
     {{#if hasValidLogicalTable}}
       <DimensionSelector
         class="report-builder__container report-builder__dimension-selector{{if @disabled " report-builder__container--disabled"}}"
@@ -48,11 +48,11 @@
             class="report-builder__container-header__filters-toggle-icon"
             @icon="angle-down" />
         </span>
-        {{#if (not @isFiltersCollapsed)}}
+        {{#unless @isFiltersCollapsed}}
           <span class="report-builder__container-header__message">
             Click the icon <NaviIcon @icon="filter" class="report-builder__container-header__message--icon" /> next to a dimension/metric to add a filter.
           </span>
-        {{/if}}
+        {{/unless}}
       </span>
 
       <FilterCollection

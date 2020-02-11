@@ -8,6 +8,7 @@
   {{#with (model-for (parent-route)) as | report |}}
     <p>
       Select some dimensions and metrics, then click
+      {{!-- template-lint-disable link-href-attributes --}}
       <a class="navi-link clickable"
         role="button"
         onclick={{pipe
