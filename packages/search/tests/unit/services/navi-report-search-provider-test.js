@@ -10,7 +10,7 @@ module('Unit | Service | navi-report-search-provider', function(hooks) {
   hooks.beforeEach(async function() {
     // Load metadata needed for request fragment
     await this.owner.lookup('service:bard-metadata').loadMetadata();
-    this.service = this.owner.lookup('service:navi-search/navi-report-search-provider');
+    this.service = this.owner.lookup('service:navi-report-search-provider');
     const store = this.owner.lookup('service:store'),
       mockAuthor = store.createRecord('user', { id: 'navi_user' });
     this.owner.register(
@@ -22,7 +22,7 @@ module('Unit | Service | navi-report-search-provider', function(hooks) {
   });
 
   test('it exists', function(assert) {
-    const service = this.owner.lookup('service:navi-search/navi-report-search-provider');
+    const service = this.owner.lookup('service:navi-report-search-provider');
     assert.ok(service);
   });
 

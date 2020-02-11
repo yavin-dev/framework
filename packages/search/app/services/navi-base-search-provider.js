@@ -1,1 +1,1 @@
-export { default } from 'navi-search/services/navi-search/navi-base-search-provider';
+export { default } from 'navi-search/services/navi-base-search-provider';

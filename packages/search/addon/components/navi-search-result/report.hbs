@@ -1,0 +1,12 @@
+<div {{did-insert this.search @query}}>
+    {{#if searchResult}}
+    <h1>{{this.title}}</h1>
+    <div class="search-result">
+        <ul>
+            {{#each searchResult as |result|}}
+            <li>{{result.title}}</li>
+            {{/each}}
+        </ul>
+    </div>
+    {{/if}}
+</div>
