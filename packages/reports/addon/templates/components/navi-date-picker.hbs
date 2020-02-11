@@ -8,7 +8,7 @@
   as |powerCalendar|
 >
 
-  {{#if (or (eq this.dateTimePeriod "day") (eq this.dateTimePeriod "week") (eq this.dateTimePeriod "month"))}}
+  {{#if (or (eq this.dateTimePeriod "day") (eq this.dateTimePeriod "week"))}}
     <powerCalendar.Nav>
       {{#if (not-eq this.dateTimePeriod "month")}}
         <span class="with-invisible-select">
@@ -35,7 +35,7 @@
       </span>
     </powerCalendar.Nav>
 
-  {{else if (eq this.dateTimePeriod "quarter")}}
+  {{else if (or (eq this.dateTimePeriod "month") (eq this.dateTimePeriod "quarter"))}}
     <PowerCalendarSelectorsNav
       @calendar={{powerCalendar}}
       @by="year"

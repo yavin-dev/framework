@@ -21,35 +21,29 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
 
     this.set('date', moment('2015-07-14', TEST_FORMAT));
 
-    await render(hbs`
-          {{navi-date-picker
-              date=date
-          }}
-      `);
+    await render(hbs`<NaviDatePicker @date={{this.date}} />`);
 
     assert.dom('.ember-power-calendar-day--selected').hasText('14', 'The active day is based on the given date');
 
     assert
-      .dom(document.querySelector('.ember-power-calendar-nav-title > span:nth-of-type(1) > select').selectedOptions[0])
+      .dom(find('.ember-power-calendar-nav-title > span:nth-of-type(1) > select').selectedOptions[0])
       .hasText('July', 'The active month is based on the given date');
 
     assert
-      .dom(document.querySelector('.ember-power-calendar-nav-title > span:nth-of-type(2) > select').selectedOptions[0])
+      .dom(find('.ember-power-calendar-nav-title > span:nth-of-type(2) > select').selectedOptions[0])
       .hasText('2015', 'The active year is based on the given date');
 
     /* == Update date after creation == */
-    run(() => {
-      this.set('date', moment('2015-06-17', TEST_FORMAT));
-    });
+    this.set('date', moment('2015-06-17', TEST_FORMAT));
 
     assert.dom('.ember-power-calendar-day--selected').hasText('17', 'The active day is based on the new given date');
 
     assert
-      .dom(document.querySelector('.ember-power-calendar-nav-title > span:nth-of-type(1) > select').selectedOptions[0])
+      .dom(find('.ember-power-calendar-nav-title > span:nth-of-type(1) > select').selectedOptions[0])
       .hasText('June', 'The active month is based on the given date');
 
     assert
-      .dom(document.querySelector('.ember-power-calendar-nav-title > span:nth-of-type(2) > select').selectedOptions[0])
+      .dom(find('.ember-power-calendar-nav-title > span:nth-of-type(2) > select').selectedOptions[0])
       .hasText('2015', 'The active year is based on the given date');
 
     /* == Date outside of range == */
@@ -71,11 +65,7 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
 
     this.set('date', originalDate);
 
-    await render(hbs`
-          {{navi-date-picker
-              date=date
-          }}
-      `);
+    await render(hbs`<NaviDatePicker @date={{this.date}} />`);
 
     // Test clicking on a different date
     await click(dayElementSelector(clickDate));
@@ -89,23 +79,103 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
     assert.ok(!isDayActive(clickDate), 'Clicked date is no longer selected');
   });
 
-  test('Change center date', async function(assert) {
+  test('Change center date - day', async function(assert) {
     assert.expect(4);
 
     this.set('date', moment('2015-07-14', TEST_FORMAT));
+    this.set('dateTimePeriod', 'day');
 
-    await render(hbs`<NaviDatePicker @date={{this.date}} /> `);
+    await render(hbs`<NaviDatePicker @date={{this.date}} @dateTimePeriod={{this.dateTimePeriod}} />`);
 
     assert.equal(getMonth(), 'July', 'The center date starts as the passed in date');
-
-    await click('.ember-power-calendar-nav-control--previous');
+    await clickPrevious();
     assert.equal(getMonth(), 'June', 'The center date changes to previous month');
-
-    await click('.ember-power-calendar-nav-control--next');
+    await clickNext();
     assert.equal(getMonth(), 'July', 'The center date goes back to original after click');
-
-    await click('.ember-power-calendar-nav-control--next');
+    await clickNext();
     assert.equal(getMonth(), 'August', 'The center date goes one month ahead');
+  });
+
+  test('Change center date - week', async function(assert) {
+    assert.expect(4);
+
+    this.set('date', moment('2015-07-14', TEST_FORMAT));
+    this.set('dateTimePeriod', 'week');
+
+    await render(hbs`<NaviDatePicker @date={{this.date}} @dateTimePeriod={{this.dateTimePeriod}} />`);
+
+    assert.equal(getMonth(), 'July', 'The center date starts as the passed in date');
+    await clickPrevious();
+    assert.equal(getMonth(), 'June', 'The center date changes to previous month');
+    await clickNext();
+    assert.equal(getMonth(), 'July', 'The center date goes back to original after click');
+    await clickNext();
+    assert.equal(getMonth(), 'August', 'The center date goes one month ahead');
+  });
+
+  test('Change center date - month', async function(assert) {
+    assert.expect(4);
+
+    this.set('date', moment('2015-07-14', TEST_FORMAT));
+    this.set('dateTimePeriod', 'month');
+
+    await render(hbs`<NaviDatePicker @date={{this.date}} @dateTimePeriod={{this.dateTimePeriod}} />`);
+
+    assert
+      .dom('.ember-power-calendar-selector-nav-title')
+      .hasText('2015', 'The center date starts as the passed in date');
+    await clickPrevious();
+    assert.dom('.ember-power-calendar-selector-nav-title').hasText('2014', 'The center date changes to previous month');
+    await clickNext();
+    assert
+      .dom('.ember-power-calendar-selector-nav-title')
+      .hasText('2015', 'The center date goes back to original after click');
+    await clickNext();
+    assert.dom('.ember-power-calendar-selector-nav-title').hasText('2016', 'The center date goes one month ahead');
+  });
+
+  test('Change center date - quarter', async function(assert) {
+    assert.expect(4);
+
+    this.set('date', moment('2015-07-14', TEST_FORMAT));
+    this.set('dateTimePeriod', 'quarter');
+
+    await render(hbs`<NaviDatePicker @date={{this.date}} @dateTimePeriod={{this.dateTimePeriod}} />`);
+
+    assert
+      .dom('.ember-power-calendar-selector-nav-title')
+      .hasText('2015', 'The center date starts as the passed in date');
+    await clickPrevious();
+    assert.dom('.ember-power-calendar-selector-nav-title').hasText('2014', 'The center date changes to previous month');
+    await clickNext();
+    assert
+      .dom('.ember-power-calendar-selector-nav-title')
+      .hasText('2015', 'The center date goes back to original after click');
+    await clickNext();
+    assert.dom('.ember-power-calendar-selector-nav-title').hasText('2016', 'The center date goes one month ahead');
+  });
+
+  test('Change center date - year', async function(assert) {
+    assert.expect(4);
+
+    this.set('date', moment('2015-07-14', TEST_FORMAT));
+    this.set('dateTimePeriod', 'year');
+
+    await render(hbs`<NaviDatePicker @date={{this.date}} @dateTimePeriod={{this.dateTimePeriod}} />`);
+
+    assert
+      .dom('.ember-power-calendar-selector-nav-title')
+      .hasText(`2010's`, 'The center date starts as the passed in date');
+    await clickPrevious();
+    assert
+      .dom('.ember-power-calendar-selector-nav-title')
+      .hasText(`2000's`, 'The center date changes to previous month');
+    await clickNext();
+    assert
+      .dom('.ember-power-calendar-selector-nav-title')
+      .hasText(`2010's`, 'The center date goes back to original after click');
+    await clickNext();
+    assert.dom('.ember-power-calendar-selector-nav-title').hasText(`2020's`, 'The center date goes one month ahead');
   });
 
   test('Change center date through select', async function(assert) {
@@ -127,7 +197,7 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
     // change year
     assert.equal(getYear(), '2015', 'The center date year starts as the passed in date');
 
-    const yearSelect = geYearSelect();
+    const yearSelect = getYearSelect();
     yearSelect.selectedIndex = yearSelect.selectedIndex + 1;
     await triggerEvent(yearSelect, 'change');
 
@@ -143,11 +213,11 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
     this.set('date', originalDate);
     this.set('onUpdate', date => assert.ok(date.isSame(newDate), 'onUpdate action was called with new date'));
     await render(hbs`
-          {{navi-date-picker
-              date=date
-              onUpdate=(action onUpdate)
-          }}
-      `);
+      <NaviDatePicker
+        @date={{this.date}}
+        @onUpdate={{action this.onUpdate}}
+      />
+    `);
 
     // Test clicking on a different date
     await click(dayElementSelector(newDate));
@@ -179,12 +249,12 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
       assert.ok(date.isSame(originalDate.startOf('isoweek')), 'onUpdate action was called with start of week')
     );
     await render(hbs`
-          {{navi-date-picker
-              date=date
-              dateTimePeriod="week"
-              onUpdate=(action onUpdate)
-          }}
-      `);
+      <NaviDatePicker
+        @date={{this.date}}
+        @dateTimePeriod="week"
+        @onUpdate={{action this.onUpdate}}
+      />
+    `);
     // Click in the middle of the week
     await click(dayElementSelector(originalDate.clone().subtract(1, 'day')));
   });
@@ -195,10 +265,10 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
     this.set('date', moment('2015-07-14', TEST_FORMAT));
     this.set('dateTimePeriod', 'month');
     await render(hbs`
-          {{navi-date-picker
-              date=date
-              dateTimePeriod=dateTimePeriod
-          }}
+        <NaviDatePicker
+            @date={{this.date}}
+            @dateTimePeriod={{this.dateTimePeriod}}
+        />
       `);
 
     assert.dom('.ember-power-calendar-selector-months').exists('"dateTimePeriod: month" uses month view');
@@ -225,10 +295,10 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
     this.set('date', startDate);
     this.set('dateTimePeriod', 'day');
     await render(hbs`
-          {{navi-date-picker
-              date=date
-              dateTimePeriod=dateTimePeriod
-          }}
+        <NaviDatePicker
+            @date={{this.date}}
+            @dateTimePeriod={{this.dateTimePeriod}}
+        />
       `);
 
     /* == Day Selection == */
@@ -271,10 +341,10 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
     this.set('date', moment('2015-07-14', TEST_FORMAT));
     this.set('dateTimePeriod', 'week');
     await render(hbs`
-          {{navi-date-picker
-              date=date
-              dateTimePeriod=dateTimePeriod
-          }}
+        <NaviDatePicker
+            @date={{this.date}}
+            @dateTimePeriod={{this.dateTimePeriod}}
+        />
       `);
 
     await click(dayElementSelector(clickDate));
@@ -295,10 +365,10 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
     this.set('date', moment('2013-05-29', TEST_FORMAT));
     this.set('dateTimePeriod', 'day');
     await render(hbs`
-          {{navi-date-picker
-              date=date
-              dateTimePeriod=dateTimePeriod
-          }}
+        <NaviDatePicker
+            @date={{this.date}}
+            @dateTimePeriod={{this.dateTimePeriod}}
+        />
       `);
 
     let epochDay = moment(testEpoch, TEST_FORMAT),
@@ -329,8 +399,31 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
 
   const getMonthSelect = () => find('.ember-power-calendar-nav-title .with-invisible-select > select');
   const getMonth = () => find('.ember-power-calendar-nav-title > span').childNodes[2].textContent;
-  const geYearSelect = () => find('.ember-power-calendar-nav-title .with-invisible-select:nth-of-type(2) > select');
+  const getYearSelect = () => find('.ember-power-calendar-nav-title .with-invisible-select:nth-of-type(2) > select');
   const getYear = () => find('.ember-power-calendar-nav-title > span:nth-of-type(2)').childNodes[2].textContent;
+
+  /**
+   * Test Helper
+   * @method clickPrevious
+   * @returns {Promise} a click event to the previous button in the nav
+   */
+  function clickPrevious() {
+    return click(
+      find('.ember-power-calendar-nav-control--previous') ||
+        find('.ember-power-calendar-selector-nav-control--previous')
+    );
+  }
+
+  /**
+   * Test Helper
+   * @method clickNext
+   * @returns {Promise} a click event to the next button in the nav
+   */
+  function clickNext() {
+    return click(
+      find('.ember-power-calendar-nav-control--next') || find('.ember-power-calendar-selector-nav-control--next')
+    );
+  }
 
   /**
    * Test Helper
@@ -349,7 +442,7 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
    * @returns {Boolean} whether or not day is disabled on the calendar
    */
   function isDayDisabled(date) {
-    return document.querySelector(dayElementSelector(date)).disabled;
+    return find(dayElementSelector(date)).disabled;
   }
 
   /**
@@ -359,7 +452,7 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
    * @returns {Boolean} whether or not day is currently selected
    */
   function isDayActive(date) {
-    const activeClasses = document.querySelector(dayElementSelector(date)).classList;
+    const activeClasses = find(dayElementSelector(date)).classList;
     return activeClasses.contains('ember-power-calendar-day--selected');
   }
 
@@ -370,7 +463,7 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
    * @returns {Boolean} whether or not week is currently selected
    */
   function isWeekActive(date) {
-    let dayElement = document.querySelector(dayElementSelector(date)),
+    let dayElement = find(dayElementSelector(date)),
       weekElement = dayElement.parentElement,
       dayGrid = weekElement.parentElement;
 
