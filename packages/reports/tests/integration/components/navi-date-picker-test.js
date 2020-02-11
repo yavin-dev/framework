@@ -87,13 +87,13 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
 
     await render(hbs`<NaviDatePicker @date={{this.date}} @dateTimePeriod={{this.dateTimePeriod}} />`);
 
-    assert.equal(getMonth(), 'July', 'The center date starts as the passed in date');
+    assert.equal(getMonth(), 'July', 'The center date starts as the passed in month');
     await clickPrevious();
     assert.equal(getMonth(), 'June', 'The center date changes to previous month');
     await clickNext();
-    assert.equal(getMonth(), 'July', 'The center date goes back to original after click');
+    assert.equal(getMonth(), 'July', 'The center date goes back to original month');
     await clickNext();
-    assert.equal(getMonth(), 'August', 'The center date goes one month ahead');
+    assert.equal(getMonth(), 'August', 'The center date goes one month ahead of original');
   });
 
   test('Change center date - week', async function(assert) {
@@ -104,13 +104,13 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
 
     await render(hbs`<NaviDatePicker @date={{this.date}} @dateTimePeriod={{this.dateTimePeriod}} />`);
 
-    assert.equal(getMonth(), 'July', 'The center date starts as the passed in date');
+    assert.equal(getMonth(), 'July', 'The center date starts as the passed in month');
     await clickPrevious();
     assert.equal(getMonth(), 'June', 'The center date changes to previous month');
     await clickNext();
-    assert.equal(getMonth(), 'July', 'The center date goes back to original after click');
+    assert.equal(getMonth(), 'July', 'The center date goes back to original month');
     await clickNext();
-    assert.equal(getMonth(), 'August', 'The center date goes one month ahead');
+    assert.equal(getMonth(), 'August', 'The center date goes one month ahead of original');
   });
 
   test('Change center date - month', async function(assert) {
@@ -123,15 +123,17 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
 
     assert
       .dom('.ember-power-calendar-selector-nav-title')
-      .hasText('2015', 'The center date starts as the passed in date');
+      .hasText('2015', 'The center date starts as the passed in month');
     await clickPrevious();
     assert.dom('.ember-power-calendar-selector-nav-title').hasText('2014', 'The center date changes to previous month');
     await clickNext();
     assert
       .dom('.ember-power-calendar-selector-nav-title')
-      .hasText('2015', 'The center date goes back to original after click');
+      .hasText('2015', 'The center date goes back to original month');
     await clickNext();
-    assert.dom('.ember-power-calendar-selector-nav-title').hasText('2016', 'The center date goes one month ahead');
+    assert
+      .dom('.ember-power-calendar-selector-nav-title')
+      .hasText('2016', 'The center date goes one month ahead of original');
   });
 
   test('Change center date - quarter', async function(assert) {
@@ -144,15 +146,17 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
 
     assert
       .dom('.ember-power-calendar-selector-nav-title')
-      .hasText('2015', 'The center date starts as the passed in date');
+      .hasText('2015', 'The center date starts as the passed in year');
     await clickPrevious();
-    assert.dom('.ember-power-calendar-selector-nav-title').hasText('2014', 'The center date changes to previous month');
+    assert.dom('.ember-power-calendar-selector-nav-title').hasText('2014', 'The center date changes to previous year');
     await clickNext();
     assert
       .dom('.ember-power-calendar-selector-nav-title')
-      .hasText('2015', 'The center date goes back to original after click');
+      .hasText('2015', 'The center date goes back to original year');
     await clickNext();
-    assert.dom('.ember-power-calendar-selector-nav-title').hasText('2016', 'The center date goes one month ahead');
+    assert
+      .dom('.ember-power-calendar-selector-nav-title')
+      .hasText('2016', 'The center date goes one year ahead of original');
   });
 
   test('Change center date - year', async function(assert) {
@@ -165,17 +169,19 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
 
     assert
       .dom('.ember-power-calendar-selector-nav-title')
-      .hasText(`2010's`, 'The center date starts as the passed in date');
+      .hasText(`2010's`, 'The center date starts as the passed in decade');
     await clickPrevious();
     assert
       .dom('.ember-power-calendar-selector-nav-title')
-      .hasText(`2000's`, 'The center date changes to previous month');
+      .hasText(`2000's`, 'The center date changes to previous decade');
     await clickNext();
     assert
       .dom('.ember-power-calendar-selector-nav-title')
-      .hasText(`2010's`, 'The center date goes back to original after click');
+      .hasText(`2010's`, 'The center date goes back to original decade');
     await clickNext();
-    assert.dom('.ember-power-calendar-selector-nav-title').hasText(`2020's`, 'The center date goes one month ahead');
+    assert
+      .dom('.ember-power-calendar-selector-nav-title')
+      .hasText(`2020's`, 'The center date goes one decade ahead of original');
   });
 
   test('Change center date through select', async function(assert) {
