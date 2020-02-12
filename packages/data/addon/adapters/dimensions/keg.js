@@ -11,7 +11,7 @@ import { inject as service } from '@ember/service';
 import { assign } from '@ember/polyfills';
 import EmberObject, { get } from '@ember/object';
 import { getOwner } from '@ember/application';
-import intersection from 'lodash/intersection';
+import { intersection } from 'lodash-es';
 
 const KEG_NAMESPACE = 'dimension';
 

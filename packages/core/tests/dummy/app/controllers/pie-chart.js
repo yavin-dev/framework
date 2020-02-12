@@ -1,7 +1,7 @@
 import { A } from '@ember/array';
 import Controller from '@ember/controller';
 import { set, get, computed } from '@ember/object';
-import merge from 'lodash/merge';
+import { merge } from 'lodash-es';
 
 export default Controller.extend({
   request: computed(() => ({

@@ -17,7 +17,7 @@ import { guidFor } from '@ember/object/internals';
 import { inject as service } from '@ember/service';
 import layout from '../../templates/components/navi-visualizations/line-chart';
 import numeral from 'numeral';
-import merge from 'lodash/merge';
+import { merge } from 'lodash-es';
 import moment from 'moment';
 import { run } from '@ember/runloop';
 import hasChartBuilders from 'navi-core/mixins/components/has-chart-builders';
@@ -206,15 +206,9 @@ export default Component.extend(hasChartBuilders, {
 
     // if stacked, return [[ "Dimension 1", "Dimension 2", ... ]] or [[ "Metric 1", "Metric 2", ... ]]
     if (seriesType === 'dimension') {
-      return [
-        get(seriesConfig, 'config.dimensions')
-          .map(dimension => dimension.name)
-      ];
+      return [get(seriesConfig, 'config.dimensions').map(dimension => dimension.name)];
     } else if (seriesType === 'metric') {
-      return [
-        get(seriesConfig, 'config.metrics')
-          .map(metric => this.get('metricName').getDisplayName(metric))
-      ];
+      return [get(seriesConfig, 'config.metrics').map(metric => this.get('metricName').getDisplayName(metric))];
     }
 
     return [];

@@ -4,7 +4,7 @@
  */
 import { get } from '@ember/object';
 import DataGroup from 'navi-core/utils/classes/data-group';
-import maxBy from 'lodash/maxBy';
+import { maxBy } from 'lodash-es';
 
 /**
  * Trim rows to a max of n values, sorted by

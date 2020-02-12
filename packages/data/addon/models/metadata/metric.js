@@ -1,6 +1,6 @@
 import EmberObject, { computed, get } from '@ember/object';
 import { isEmpty } from '@ember/utils';
-import forIn from 'lodash/forIn';
+import { forIn } from 'lodash-es';
 import PromiseProxyMixin from '@ember/object/promise-proxy-mixin';
 import ObjectProxy from '@ember/object/proxy';
 import { inject as service } from '@ember/service';

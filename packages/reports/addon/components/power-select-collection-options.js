@@ -9,7 +9,7 @@ import { A } from '@ember/array';
 import { setProperties, get, computed } from '@ember/object';
 import Options from 'ember-power-select/components/power-select/options';
 import layout from '../templates/components/power-select-collection-options';
-import _ from 'lodash';
+import { groupBy } from 'lodash-es';
 
 export default Options.extend({
   layout,
@@ -98,7 +98,7 @@ export default Options.extend({
     let options = get(this, 'indexedOptions'),
       groupKey = get(this, 'groupKey');
 
-    let grouped = _.groupBy(options, groupKey);
+    let grouped = groupBy(options, groupKey);
 
     return Object.keys(grouped)
       .sort()

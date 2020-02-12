@@ -6,7 +6,7 @@ import { A as arr } from '@ember/array';
 import { get, getWithDefault } from '@ember/object';
 import Service, { inject as service } from '@ember/service';
 import { isEmpty } from '@ember/utils';
-import { merge, flow } from 'lodash';
+import { merge, flow } from 'lodash-es';
 import { all } from 'rsvp';
 import { computed } from '@ember/object';
 import { v1 } from 'ember-uuid';

@@ -5,7 +5,7 @@
 import { A as arr } from '@ember/array';
 import { get } from '@ember/object';
 import DataGroup from 'navi-core/utils/classes/data-group';
-import objectValues from 'lodash/values';
+import { objectValues } from 'lodash-es';
 
 export const METRIC_SERIES = 'metric';
 export const DIMENSION_SERIES = 'dimension';

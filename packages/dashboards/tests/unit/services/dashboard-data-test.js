@@ -1,4 +1,4 @@
-import { cloneDeep, merge } from 'lodash';
+import { cloneDeep, merge } from 'lodash-es';
 import { run } from '@ember/runloop';
 import { resolve } from 'rsvp';
 import { get } from '@ember/object';
