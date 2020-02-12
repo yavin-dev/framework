@@ -1,6 +1,5 @@
 import config from 'dummy/config/environment';
 import BardMeta from 'navi-data/mirage/routes/bard-meta';
-import 'papaparse'; // explicitly bring in papaparse
 
 export default function() {
   this.passthrough('/write-coverage');

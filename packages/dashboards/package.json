@@ -91,7 +91,6 @@
     "faker": "^4.1.0",
     "loader.js": "^4.7.0",
     "navi-notifications": "0.2.0",
-    "papaparse": "^5.1.1",
     "qunit-dom": "^0.8.4"
   },
   "engines": {

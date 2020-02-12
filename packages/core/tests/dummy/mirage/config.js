@@ -8,7 +8,6 @@ import dashboardCollection from './routes/dashboard-collection';
 import reportCollection from './routes/report-collections';
 import dashboardWidget from './routes/dashboard-widget';
 import deliveryRules from './routes/delivery-rules';
-import 'papaparse'; // explicitly bring in papaparse
 
 export default function() {
   // https://github.com/kategengler/ember-cli-code-coverage#create-a-passthrough-when-intercepting-all-ajax-requests-in-tests
