@@ -537,9 +537,9 @@ module('Acceptance | Navi Report', function(hooks) {
     await click('.navi-report__run-btn');
 
     assert.ok(
-      $('.navi-report__action-link:contains(Export)')
-        .attr('href')
-        .includes('productFamily%7Cid-in%5B1%5D'),
+      decodeURIComponent($('.navi-report__action-link:contains(Export)').attr('href')).includes(
+        'productFamily|id-in["1"]'
+      ),
       'Filter updates are automatically included in export url'
     );
 
@@ -590,9 +590,9 @@ module('Acceptance | Navi Report', function(hooks) {
     await clickTrigger('.multiple-format-export');
 
     assert.ok(
-      $('.multiple-format-export__dropdown a:contains(CSV)')
-        .attr('href')
-        .includes('productFamily%7Cid-in%5B1%5D'),
+      decodeURIComponent($('.multiple-format-export__dropdown a:contains(CSV)').attr('href')).includes(
+        'productFamily|id-in["1"]'
+      ),
       'Filter updates are automatically included in export url'
     );
   });
@@ -1402,7 +1402,7 @@ module('Acceptance | Navi Report', function(hooks) {
     server.get('/data/*path', (db, request) => {
       assert.equal(
         get(request, 'queryParams.filters'),
-        'contextId|id-in[This_will_not_match_any_dimension_values]',
+        'contextId|id-in["This_will_not_match_any_dimension_values"]',
         "Filter value is passed even when the value doesn'nt match any dimension IDs"
       );
 
@@ -1804,8 +1804,35 @@ module('Acceptance | Navi Report', function(hooks) {
     await click('.get-api__btn');
 
     assert.ok(
-      find('.navi-modal__input').value.includes(encodeURIComponent('multiSystemId|desc-contains[foo]')),
+      decodeURIComponent(find('.navi-modal__input').value).includes('multiSystemId|desc-contains["foo"]'),
       'Generated API URL is correct'
+    );
+  });
+
+  test('dimension select filter works with dimension ids containing commas', async function(assert) {
+    await visit('/reports/new');
+    await click($('.grouped-list__item:Contains(Dimension with comma) .grouped-list__filter')[0]);
+
+    await click('.filter-builder-dimension__values input');
+    await click($('.ember-power-select-option:contains(no)')[0]);
+    await click($('.ember-power-select-option:contains(yes)')[0]);
+
+    assert.deepEqual(
+      findAll('.ember-power-select-multiple-option span:not(.ember-power-select-multiple-remove-btn)').map(el =>
+        el.textContent.trim()
+      ),
+      ['no comma', 'yes, comma'],
+      'The selected dimensions are shown even with a comma'
+    );
+
+    await click('.navi-report__run-btn');
+    await click('.get-api__btn');
+
+    const url = find('.navi-modal__input').value;
+    const expectedFilter = 'commaDim|id-in["no comma","yes, comma"]';
+    assert.ok(
+      decodeURIComponent(url).includes(expectedFilter),
+      `Generated API URL, ${url} is contains filter ${expectedFilter}`
     );
   });
 

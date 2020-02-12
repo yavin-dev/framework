@@ -77,7 +77,7 @@ module('Integration | Component | dimension selector', function(hooks) {
 
     assert.deepEqual(
       groups,
-      ['Time Grain (5)', 'test (25)', 'Asset (4)'],
+      ['Time Grain (5)', 'test (26)', 'Asset (4)'],
       'The groups rendered by the component include dimension groups and Time Grain'
     );
   });

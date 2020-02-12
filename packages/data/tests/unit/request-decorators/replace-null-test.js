@@ -47,7 +47,7 @@ module('Unit | Request Decorator | Global Decorator', function() {
       {
         dimension: 'potion',
         operator: 'in',
-        values: ['""']
+        values: ['']
       },
       'Potion operator was replaced with "in" and values were replaced with ""'
     );
@@ -57,7 +57,7 @@ module('Unit | Request Decorator | Global Decorator', function() {
       {
         dimension: 'songList',
         operator: 'notin',
-        values: ['""']
+        values: ['']
       },
       'SongList operator was replaced with "notin" and values replaced with ""'
     );
@@ -66,7 +66,7 @@ module('Unit | Request Decorator | Global Decorator', function() {
       {
         dimension: 'shield',
         operator: 'notin',
-        values: ['""']
+        values: ['']
       },
       'shield operator was replaced with "notin" and values replaced with ""'
     );

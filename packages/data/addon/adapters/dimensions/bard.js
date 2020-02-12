@@ -10,6 +10,7 @@ import { inject as service } from '@ember/service';
 import { assign } from '@ember/polyfills';
 import EmberObject, { get } from '@ember/object';
 import { configHost } from '../../utils/adapter';
+import { serializeFilters } from '../bard-facts';
 
 const SUPPORTED_FILTER_OPERATORS = ['in', 'notin', 'startswith', 'contains'];
 
@@ -94,9 +95,9 @@ export default EmberObject.extend({
     }
     assert("You must pass an 'Array' of queries to be ANDed together", Array.isArray(andQueries));
     let defaultQueryOptions = {
+      dimension,
       field: this._getDimensionMetadata(dimension).get('primaryKeyFieldName'),
       operator: 'in',
-      booleanOperation: 'or',
       values: []
     };
 
@@ -114,17 +115,14 @@ export default EmberObject.extend({
       andQueries.every(q => Array.isArray(q.values))
     );
 
-    const filters = andQueries.map(query => {
-      const queryField = get(query, 'field'),
-        field = URL_FIELD_NAMES[queryField] || queryField,
-        operator = get(query, 'operator'),
-        values = query.values.join(',');
-      // Build the filters as expected by bard api
-      return `${dimension}|${field}-${operator}[${values}]`;
-    });
+    // replace field name if necessary
+    const filters = andQueries.map(query => ({
+      ...query,
+      field: URL_FIELD_NAMES[query.field] || query.field
+    }));
 
     return {
-      filters: filters.join(',')
+      filters: serializeFilters(filters)
     };
   },
 
@@ -153,8 +151,8 @@ export default EmberObject.extend({
     const query = assign({}, defaultQueryOptions, andQueries[0]);
 
     if (typeof query.values === 'string') {
-      warn('_buildFilterQuery() was passed query.values as a string, must be an array', {
-        id: 'bard-_buildFilterQuery-query-values-as-array'
+      warn('_buildSearchQuery() was passed query.values as a string, must be an array', {
+        id: 'bard-_buildSearchQuery-query-values-as-array'
       });
       query.values = query.values.split(' ');
     }

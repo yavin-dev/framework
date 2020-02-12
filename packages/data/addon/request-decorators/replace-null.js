@@ -1,12 +1,12 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
 import { assign } from '@ember/polyfills';
 import { get } from '@ember/object';
 
-const NULL_STRING_VALUE = '""';
+const NULL_STRING_VALUE = '';
 
 /**
  * Replaces values and operator for 'null' and 'notnull' filters

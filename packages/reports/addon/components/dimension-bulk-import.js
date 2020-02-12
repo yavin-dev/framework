@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -109,10 +109,12 @@ export default Component.extend({
     }
 
     let promise = get(this, '_dimensionService')
-      .find(get(this, 'dimension.name'), {
-        values: get(this, '_trimmedQueryIds').join(','),
-        field: get(this, 'searchableIdField')
-      })
+      .find(get(this, 'dimension.name'), [
+        {
+          values: get(this, '_trimmedQueryIds'),
+          field: get(this, 'searchableIdField')
+        }
+      ])
       .then(dimValues => {
         set(this, '_validDimValues', dimValues.toArray());
       });
