@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -30,7 +30,7 @@
     }
 
     &__select-trigger {
-      border: 1px solid @navi-gray-400;
+      border: 1px solid @navi-input-border-gray;
       height: @filter-collection-row-height;
       line-height: @filter-collection-row-height;
       padding-left: 8px;
@@ -97,6 +97,8 @@
   }
 
   .filter-values--range-input__input,
+  .filter-values--lookback-input__value,
+  .filter-values--advanced-interval-input__value,
   .filter-values--value-input {
     font-size: inherit;
     height: @filter-collection-row-height;
@@ -109,13 +111,15 @@
   }
 
   .filter-values--date-dimension-select,
+  .filter-values--date-range-input,
+  .filter-values--since-input,
   .filter-values--dimension-date-range-input {
     &__trigger {
-      border: 1px solid @navi-gray-400;
+      border: 1px solid @navi-input-border-gray;
       cursor: pointer;
       height: @filter-collection-row-height;
       line-height: @filter-collection-row-height;
-      padding-left: 8px;
+      max-width: 300px;
     }
   }
 
@@ -153,6 +157,14 @@
     &-item:not(:last-child):after {
       content: '.';
       margin: 0 5px 0 -2px;
+    }
+
+    &-item {
+      display: inline-block;
+      overflow: hidden;
+      max-width: 100%;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
   }
 }

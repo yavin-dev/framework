@@ -1,4 +1,4 @@
-{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{#if @isCollapsed}}
   {{#if this.date}}
     {{moment-format this.date "MMM DD, YYYY"}}
@@ -6,16 +6,19 @@
     <FilterValues::InvalidValue/>
   {{/if}}
 {{else}}
-  <DropdownDatePicker
-    @date={{moment this.date}}
-    @onUpdate={{action "setDate"}}
-  >
-    <div class="filter-values--date-dimension-select__trigger">
-      {{#if this.date}}
-        {{moment-format this.date "MMM DD, YYYY"}}
-      {{else}}
-        <span class="date__placeholder">Select date</span>
-      {{/if}}
-    </div>
-  </DropdownDatePicker>
+  <div class="filter-values--date" ...attributes>
+    <DropdownDatePicker
+      @dateTimePeriod="day"
+      @date={{moment this.date}}
+      @onUpdate={{this.setDate}}
+    >
+      <div class="filter-values--date-dimension-select__trigger">
+        {{#if this.date}}
+          {{moment-format this.date "MMM DD, YYYY"}}
+        {{else}}
+          <span class="date__placeholder">Select date</span>
+        {{/if}}
+      </div>
+    </DropdownDatePicker>
+  </div>
 {{/if}}

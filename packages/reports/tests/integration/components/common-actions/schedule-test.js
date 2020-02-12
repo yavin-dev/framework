@@ -2,7 +2,7 @@ import { resolve } from 'rsvp';
 import $ from 'jquery';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, settled, click, blur, findAll, fillIn } from '@ember/test-helpers';
+import { render, click, blur, findAll, fillIn } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { clickTrigger, nativeMouseUp } from 'ember-power-select/test-support/helpers';
 import config from 'ember-get-config';
@@ -323,11 +323,9 @@ module('Integration | Component | common actions/schedule', function(hooks) {
       'Delete button is shown when deliveryRule is present for current user'
     );
 
-    $('.btn-container button:contains(Delete)').click();
+    await click($('.btn-container button:contains(Delete)')[0]);
 
-    return settled().then(() => {
-      $('.btn-container button:contains(Confirm)').click();
-    });
+    await click($('.btn-container button:contains(Confirm)')[0]);
   });
 
   test('frequency options - default', async function(assert) {

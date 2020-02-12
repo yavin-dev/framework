@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Time Grain Fragment Object
@@ -39,24 +39,29 @@ export default EmberObject.extend({
   dimensionIds: undefined,
 
   /**
+   * @property {String} source - the datasource this metadata is from.
+   */
+  source: undefined,
+
+  /**
    * @property {Array} metrics - array of metric models
    */
-  metrics: computed(function() {
+  metrics: computed('source', function() {
     return this.get('metricIds').map(metricId => {
       return getOwner(this)
         .lookup('service:keg')
-        .getById('metadata/metric', metricId);
+        .getById('metadata/metric', metricId, this.source);
     });
   }),
 
   /**
    * @property {Array} dimensions - array of dimension models
    */
-  dimensions: computed(function() {
+  dimensions: computed('source', function() {
     return this.get('dimensionIds').map(dimensionId => {
       return getOwner(this)
         .lookup('service:keg')
-        .getById('metadata/dimension', dimensionId);
+        .getById('metadata/dimension', dimensionId, this.source);
     });
   })
 });

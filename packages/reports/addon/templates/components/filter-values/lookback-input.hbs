@@ -1,0 +1,23 @@
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{#with (concat this.calendarDateTimePeriod (if (eq this.lookback 1) "" "s") " (" this.dateRange ")") as |dateDescription|}}
+  {{#if @isCollapsed}}
+    {{#if this.lookback}}
+      {{this.lookback}} {{dateDescription}}
+    {{else}}
+      <FilterValues::InvalidValue/>
+    {{/if}}
+  {{else}}
+    <div class="filter-values--lookback-input" ...attributes>
+      <input
+        class="filter-values--lookback-input__value
+          {{if filter.validations.attrs.values.isInvalid "filter-values--lookback-input--error"}}"
+        value={{this.lookback}}
+        placeholder={{capitalize (concat this.calendarDateTimePeriod "s")}}
+        type="number"
+        min="1"
+        {{on "input" this.setLookback}}
+      >
+      <span class="filter-values--lookback-input__label">{{dateDescription}}</span>
+    </div>
+  {{/if}}
+{{/with}}

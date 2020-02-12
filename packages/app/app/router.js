@@ -8,10 +8,10 @@ import { reportRoutes, reportCollectionRoutes, reportPrintRoutes } from 'navi-re
 import { dashboardRoutes, dashboardCollectionRoutes, dashboardPrintRoutes } from 'navi-dashboards/router';
 import { directoryRoutes } from 'navi-directory/router';
 
-const Router = EmberRouter.extend({
-  location: config.locationType,
-  rootURL: config.rootURL
-});
+export default class Router extends EmberRouter {
+  location = config.locationType;
+  rootURL = config.rootURL;
+}
 
 Router.map(function() {
   this.route('landing', { path: '/' });
@@ -23,5 +23,3 @@ Router.map(function() {
   dashboardCollectionRoutes(this);
   dashboardPrintRoutes(this);
 });
-
-export default Router;

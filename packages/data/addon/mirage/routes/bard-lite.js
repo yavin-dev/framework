@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -41,12 +41,18 @@ const API_DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss.SSS',
  * @returns {Array} list of moments in requested time range
  */
 function _getDates(grain, start, end) {
-  let endDate =
-      end === 'current'
-        ? // need to use isoweek, which is what real ws uses
-          moment().startOf(grain === 'week' ? 'isoweek' : grain)
-        : moment(end, API_DATE_FORMAT),
-    startDate = start.startsWith('P')
+  const isoGrain = grain === 'week' ? 'isoweek' : grain; // need to use isoweek, which is what real ws uses
+  let endDate;
+  if (end === 'current') {
+    endDate = moment().startOf(isoGrain);
+  } else if (end === 'next') {
+    endDate = moment()
+      .startOf(isoGrain)
+      .add(1, isoGrain);
+  } else {
+    endDate = moment(end, API_DATE_FORMAT);
+  }
+  let startDate = start.startsWith('P')
       ? endDate.clone().subtract(moment.duration(start))
       : moment(start, API_DATE_FORMAT),
     currentDate = startDate,

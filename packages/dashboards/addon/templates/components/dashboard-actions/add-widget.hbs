@@ -27,7 +27,7 @@
       {{#if (eq selectedReport.id "new")}}
         {{#link-to "dashboards.dashboard.widgets.new" dashboard.id classNames="btn btn-primary add-to-dashboard"}}Take me there!{{/link-to}}
       {{else}}
-        <button class="btn btn-primary add-to-dashboard"
+        <button type="button" class="btn btn-primary add-to-dashboard"
                 onclick={{pipe
                           (action onSelectReport selectedReport dashboard.id selectedReport.title)
                           (action (toggle "showModal" this))
@@ -36,7 +36,7 @@
           Add to dashboard
         </button>
       {{/if}}
-      <button class="btn btn-secondary" onclick={{action (toggle "showModal" this)}}>Cancel</button>
+      <button type="button" class="btn btn-secondary" onclick={{action (toggle "showModal" this)}}>Cancel</button>
     </div>
   </div>
 {{/navi-modal}}

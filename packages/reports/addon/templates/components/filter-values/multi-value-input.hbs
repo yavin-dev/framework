@@ -1,4 +1,4 @@
-{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.--}}
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.--}}
 {{#if @isCollapsed}}
   {{#if @filter.validations.isInvalid}}
     <FilterValues::InvalidValue/>
@@ -16,6 +16,7 @@
     placeholder=(concat @filter.subject.longName " Values")
     removeTagAtIndex=(action "removeValueAtIndex")
     allowSpacesInTags=true
+    splitOnPaste=true
     as |tag|
   }}
     {{tag}}

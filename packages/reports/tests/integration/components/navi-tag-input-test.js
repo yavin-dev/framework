@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, findAll, click } from '@ember/test-helpers';
+import { render, findAll, click, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import Component from '@ember/component';
 import $ from 'jquery';
@@ -9,6 +9,55 @@ const DIVINE_BEASTS = ['Ruta', 'Medoh', 'Neboris', 'Rudania'];
 
 module('Integration | Component | navi tag input/tag', function(hooks) {
   setupRenderingTest(hooks);
+
+  async function paste(text) {
+    const selector = '.emberTagInput-input';
+    await triggerEvent(selector, 'paste', {
+      clipboardData: {
+        getData: () => text
+      }
+    });
+  }
+
+  test('Pasting input only shows helper if input has commas and splitOnPaste is true', async function(assert) {
+    assert.expect(4);
+    this.set('tags', []);
+    this.set('splitOnPaste', false);
+    this.set('addTag', value => {
+      assert.equal(value, 2, 'TODO');
+    });
+
+    await render(hbs`
+      <NaviTagInput
+        @addTag={{action this.addTag}}
+        @tags={{this.tags}}
+        @splitOnPaste={{splitOnPaste}}
+        as |tag|
+      >
+        {{tag}}
+      </NaviTagInput>
+    `);
+
+    await paste('123');
+    assert.dom('.dimension-bulk-import-simple').doesNotExist('The modal did not pop up because splitOnPaste is false');
+
+    await paste('1,2,3');
+    assert
+      .dom('.dimension-bulk-import-simple')
+      .doesNotExist('The modal did not pop up because the input contains a comma, but splitOnPaste is false');
+
+    this.set('splitOnPaste', true);
+
+    await paste('123');
+    assert
+      .dom('.dimension-bulk-import-simple')
+      .doesNotExist('The modal did not pop up because the input does not contain a comma');
+
+    await paste('1,2,3');
+    assert
+      .dom('.dimension-bulk-import-simple')
+      .exists('The modal popped up because the input contains a comma, and splitOnPaste is true');
+  });
 
   test('default tag component', async function(assert) {
     assert.expect(2);

@@ -13,7 +13,7 @@
   @onAddFilter={{action @onAddFilter}}
 />
 
-{{#if (not this.isCollapsed)}}
+{{#unless this.isCollapsed}}
   {{#if this.isAddingMode}}
     <div class="dashboard-filters--expanded-add-row">
       <NaviIcon
@@ -38,4 +38,4 @@
       Add Filter
     </button>
   {{/if}}
-{{/if}}
+{{/unless}}

@@ -33,6 +33,15 @@ export default ActionConsumer.extend({
     },
 
     /**
+     * @action REMOVE_METRIC_FRAGMENT
+     * @param {Object} route - route that has a model that contains a request property
+     * @param {Object} metric - DS.Fragment of a metric that should be removed from the request
+     */
+    [RequestActions.REMOVE_METRIC_FRAGMENT]({ currentModel }, metric) {
+      get(currentModel, 'request').removeRequestMetric(metric);
+    },
+
+    /**
      * @action ADD_METRIC_WITH_PARAM
      * @param {Object} route - route that has a model that contains a request property
      * @param {Object} metric - metadata model of metric to add

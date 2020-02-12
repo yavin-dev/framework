@@ -10,6 +10,7 @@ import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import hbs from 'htmlbars-inline-precompile';
 
 let Store, MetadataService, AdClicks, Revenue, Age, UpdateReportAction;
+const textContentArray = selector => findAll(selector).map(el => el.textContent.trim());
 
 module('Integration | Component | navi-request-preview', function(hooks) {
   setupRenderingTest(hooks);
@@ -62,6 +63,12 @@ module('Integration | Component | navi-request-preview', function(hooks) {
               }
             },
             {
+              metric: AdClicks,
+              parameters: {
+                adType: 'VideoAds' //Need duplicate metric column
+              }
+            },
+            {
               metric: Revenue,
               parameters: {
                 currency: 'USD'
@@ -71,6 +78,9 @@ module('Integration | Component | navi-request-preview', function(hooks) {
           dimensions: arr([
             {
               dimension: Age
+            },
+            {
+              dimension: Age //Need duplicate dimension column
             }
           ]),
           sort: arr([
@@ -90,16 +100,14 @@ module('Integration | Component | navi-request-preview', function(hooks) {
   });
 
   test('columns render and options work properly', async function(assert) {
-    assert.expect(28);
-
-    const textContentArray = selector => [...document.querySelectorAll(selector)].map(el => el.textContent.trim());
+    assert.expect(29);
 
     this.set('visualization', { metadata: {} });
     this.set('onRemoveMetric', fragment => {
-      assert.equal(fragment.longName, 'Ad Clicks', 'onRemoveMetric is called with a metric column');
+      assert.equal(fragment.metric.longName, 'Ad Clicks', 'onRemoveMetric is called with a metric column');
     });
     this.set('onRemoveDimension', fragment => {
-      assert.equal(fragment.longName, 'Age', 'onRemoveDimension is called with a metric column');
+      assert.equal(fragment.dimension.longName, 'Age', 'onRemoveDimension is called with a dimension column');
     });
     this.set('onRemoveTimeGrain', fragment => {
       assert.equal(fragment.longName, 'Day', 'onRemoveTimeGrain is called with a dateTime column');
@@ -116,17 +124,17 @@ module('Integration | Component | navi-request-preview', function(hooks) {
       <NaviRequestPreview
         @request={{this.request}}
         @visualization={{this.visualization}}
-        @onRemoveMetric={{action onRemoveMetric}}
-        @onRemoveDimension={{action onRemoveDimension}}
-        @onRemoveTimeGrain={{action onRemoveTimeGrain}}
-        @onAddSort={{action onAddSort}}
-        @onRemoveSort={{action onRemoveSort}}
+        @onRemoveMetric={{this.onRemoveMetric}}
+        @onRemoveDimension={{this.onRemoveDimension}}
+        @onRemoveTimeGrain={{this.onRemoveTimeGrain}}
+        @onAddSort={{this.onAddSort}}
+        @onRemoveSort={{this.onRemoveSort}}
       />
     `);
 
     assert.deepEqual(
       textContentArray('.navi-request-preview__column-header'),
-      ['Date', 'Age', 'Ad Clicks (BannerAds)', 'Ad Clicks (VideoAds)', 'Revenue (USD)'],
+      ['Date', 'Age', 'Age', 'Ad Clicks (BannerAds)', 'Ad Clicks (VideoAds)', 'Ad Clicks (VideoAds)', 'Revenue (USD)'],
       'Column headers are generated correctly for each column in the request'
     );
 
@@ -138,13 +146,13 @@ module('Integration | Component | navi-request-preview', function(hooks) {
 
     assert.deepEqual(
       textContentArray('.navi-request-preview__column-header--dimension'),
-      ['Age'],
-      'Dimension class is applied to the dimension column only'
+      ['Age', 'Age'],
+      'Dimension class is applied to the dimension columns only'
     );
 
     assert.deepEqual(
       textContentArray('.navi-request-preview__column-header--metric'),
-      ['Ad Clicks (BannerAds)', 'Ad Clicks (VideoAds)', 'Revenue (USD)'],
+      ['Ad Clicks (BannerAds)', 'Ad Clicks (VideoAds)', 'Ad Clicks (VideoAds)', 'Revenue (USD)'],
       'Metric class is applied to only the metric columns'
     );
 
@@ -180,6 +188,9 @@ module('Integration | Component | navi-request-preview', function(hooks) {
     );
     await click('.navi-request-preview__column-header-option:last-of-type');
 
+    assert
+      .dom('.navi-request-preview__column-header--metric.navi-request-preview__column-header--editing')
+      .hasText('Ad Clicks (BannerAds)', 'The editing column is highlighted');
     assert.dom('.navi-request-column-config').isVisible('Column config opens on edit option click');
     assert.dom('#columnName').hasValue('Ad Clicks (BannerAds)', 'Selected column name is displayed in input');
 
@@ -189,7 +200,7 @@ module('Integration | Component | navi-request-preview', function(hooks) {
     assert.dom('#columnName').hasValue('Banner Ad Clicks', 'Updated column name is in the input field');
     assert.deepEqual(
       textContentArray('.navi-request-preview__column-header'),
-      ['Date', 'Age', 'Banner Ad Clicks', 'Ad Clicks (VideoAds)', 'Revenue (USD)'],
+      ['Date', 'Age', 'Age', 'Banner Ad Clicks', 'Ad Clicks (VideoAds)', 'Ad Clicks (VideoAds)', 'Revenue (USD)'],
       'Only the selected column has the updated name'
     );
 
@@ -227,7 +238,7 @@ module('Integration | Component | navi-request-preview', function(hooks) {
     assert.dom('#columnName').hasValue('Revenue (CAD)', 'Column name updates with metric param');
     assert.deepEqual(
       textContentArray('.navi-request-preview__column-header'),
-      ['Date', 'Age', 'Banner Ad Clicks', 'Ad Clicks (VideoAds)', 'Revenue (CAD)'],
+      ['Date', 'Age', 'Age', 'Banner Ad Clicks', 'Ad Clicks (VideoAds)', 'Ad Clicks (VideoAds)', 'Revenue (CAD)'],
       'Column name updates in column headers'
     );
 
@@ -239,7 +250,15 @@ module('Integration | Component | navi-request-preview', function(hooks) {
       .hasText('Dollars (CAD)', 'Set parameter is still shown');
     assert.deepEqual(
       textContentArray('.navi-request-preview__column-header'),
-      ['Date', 'Age', 'Banner Ad Clicks', 'Ad Clicks (VideoAds)', "Dolla Dolla Bill Y'all"],
+      [
+        'Date',
+        'Age',
+        'Age',
+        'Banner Ad Clicks',
+        'Ad Clicks (VideoAds)',
+        'Ad Clicks (VideoAds)',
+        "Dolla Dolla Bill Y'all"
+      ],
       'Column name alias is shown in column headers for parameterized metric'
     );
 
@@ -250,8 +269,126 @@ module('Integration | Component | navi-request-preview', function(hooks) {
       .hasValue("Dolla Dolla Bill Y'all", 'Alias is still shown in input box after parameter change');
     assert.deepEqual(
       textContentArray('.navi-request-preview__column-header'),
-      ['Date', 'Age', 'Banner Ad Clicks', 'Ad Clicks (VideoAds)', "Dolla Dolla Bill Y'all"],
+      [
+        'Date',
+        'Age',
+        'Age',
+        'Banner Ad Clicks',
+        'Ad Clicks (VideoAds)',
+        'Ad Clicks (VideoAds)',
+        "Dolla Dolla Bill Y'all"
+      ],
       'Column name alias persists after metric parameter change'
     );
+  });
+
+  test('Remove and edit columns that have duplicates', async function(assert) {
+    assert.expect(19);
+
+    const selectColumnHeaderOptions = (content, index) =>
+      findAll('.navi-request-preview__column-header')
+        .filter(el => el.textContent.trim().includes(content))
+        [index].querySelector('.navi-request-preview__column-header-options-trigger');
+
+    this.set('visualization', { metadata: {} });
+    this.set('onRemoveMetric', fragment => {
+      assert.equal(fragment.index, 0, 'onRemoveMetric is called with the correct fragment');
+    });
+    this.set('onRemoveDimension', fragment => {
+      assert.equal(fragment.index, 1, 'onRemoveDimension is called with the correct fragment');
+    });
+    this.set('onRemoveTimeGrain', () => null);
+    this.set('onAddSort', () => null);
+    this.set('onRemoveSort', () => null);
+
+    this.request.metrics.filterBy('canonicalName', 'adClicks(adType=VideoAds)').map((metric, idx) => {
+      metric.index = idx; //Make each metric fragment identifiable for this test
+    });
+
+    this.request.dimensions.filterBy('dimension.longName', 'Age').map((dim, idx) => {
+      dim.index = idx; //Make each dimension fragment identifiable for this test
+    });
+
+    await render(hbs`
+      <NaviRequestPreview
+        @request={{this.request}}
+        @visualization={{this.visualization}}
+        @onRemoveMetric={{this.onRemoveMetric}}
+        @onRemoveDimension={{this.onRemoveDimension}}
+        @onRemoveTimeGrain={{this.onRemoveTimeGrain}}
+        @onAddSort={{this.onAddSort}}
+        @onRemoveSort={{this.onRemoveSort}}
+      />
+    `);
+
+    assert.deepEqual(
+      textContentArray('.navi-request-preview__column-header'),
+      ['Date', 'Age', 'Age', 'Ad Clicks (BannerAds)', 'Ad Clicks (VideoAds)', 'Ad Clicks (VideoAds)', 'Revenue (USD)'],
+      'Column headers are generated correctly for each column in the request'
+    );
+
+    // Open column config for FIRST Ad Clicks (VideoAds) column
+    await click(selectColumnHeaderOptions('Video', 0));
+    await click('.navi-request-preview__column-header-option:last-of-type');
+
+    assert.dom('.navi-request-column-config').isVisible('Column config is open');
+    assert.dom('#columnName').hasValue('Ad Clicks (VideoAds)', 'Video Ads column config is open');
+
+    // trigger Remove metric action for FIRST Ad Clicks (VideoAds) column
+    await click(selectColumnHeaderOptions('Video', 0));
+    await click('.navi-request-preview__column-header-option:first-of-type');
+
+    assert
+      .dom('.navi-request-column-config')
+      .isNotVisible('Column config closes when the current editing column is closed');
+
+    // Open column config for SECOND Ad Clicks (VideoAds) column
+    await click(selectColumnHeaderOptions('Video', 1));
+    await click('.navi-request-preview__column-header-option:last-of-type');
+
+    assert.dom('.navi-request-column-config').isVisible('Column config is open for second video ads column');
+    assert.dom('#columnName').hasValue('Ad Clicks (VideoAds)', 'Video Ads column config is open');
+
+    // trigger Remove metric action for FIRST Ad Clicks (VideoAds) column
+    await click(selectColumnHeaderOptions('Video', 0));
+    await click('.navi-request-preview__column-header-option:first-of-type');
+
+    assert
+      .dom('.navi-request-column-config')
+      .isVisible('Column config is still open when remove action is triggered on other column');
+    assert.dom('#columnName').hasValue('Ad Clicks (VideoAds)', 'Video Ads column config is open');
+
+    // Dimension Columns
+
+    // Open column config for SECOND Age column
+    await click(selectColumnHeaderOptions('Age', 1));
+    await click('.navi-request-preview__column-header-option:last-of-type');
+
+    assert.dom('.navi-request-column-config').isVisible('Column config is open');
+    assert.dom('#columnName').hasValue('Age', 'Age column config is open');
+
+    // trigger Remove metric action for SECOND Age column
+    await click(selectColumnHeaderOptions('Age', 1));
+    await click('.navi-request-preview__column-header-option:first-of-type');
+
+    assert
+      .dom('.navi-request-column-config')
+      .isNotVisible('Column config closes when the current editing column is closed');
+
+    // Open column config for FIRST Age column
+    await click(selectColumnHeaderOptions('Age', 0));
+    await click('.navi-request-preview__column-header-option:last-of-type');
+
+    assert.dom('.navi-request-column-config').isVisible('Column config is open for first age column');
+    assert.dom('#columnName').hasValue('Age', 'Video Ads column config is open');
+
+    // trigger Remove dimension action for SECOND Age column
+    await click(selectColumnHeaderOptions('Age', 1));
+    await click('.navi-request-preview__column-header-option:first-of-type');
+
+    assert
+      .dom('.navi-request-column-config')
+      .isVisible('Column config is still open when remove action is triggered on other column');
+    assert.dom('#columnName').hasValue('Age', 'Age column config is open');
   });
 });

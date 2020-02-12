@@ -1,0 +1,15 @@
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<div class="visualization-selector" ...attributes>
+  <ul class="visualization-selector__list">
+    {{#each visualizations as |visualization|}}
+      <li
+        class="visualization-selector__option {{if (eq currentVisualization visualization.name) "visualization-selector__option--is-active"}}"
+        role="button"
+        title={{visualization.niceName}}
+        {{on "click" (fn @onVisualizationTypeUpdate visualization.name)}}
+      >
+        <NaviIcon @icon={{visualization.icon}} class="visualization-selector__option-icon"/>
+      </li>
+    {{/each}}
+  </ul>
+</div>

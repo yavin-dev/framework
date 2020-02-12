@@ -1,169 +1,152 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
- *   {{navi-date-picker
- *      date=initialDate
- *      dateTimePeriod='month'
- *      onUpdate=(action handleUpdate)
- *   }}
+ *   <NaviDatePicker
+ *      @date={{this.initialDate}}
+ *      @dateTimePeriod="month"
+ *      @onUpdate={{this.handleUpdate}}
+ *   />
  */
-import { scheduleOnce, next } from '@ember/runloop';
 import Component from '@ember/component';
-import { set, get, computed } from '@ember/object';
+import { get, set, computed, action } from '@ember/object';
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
 import layout from '../templates/components/navi-date-picker';
 import moment from 'moment';
-import { getFirstDayEpochIsoDateTimePeriod, getIsoDateTimePeriod } from 'navi-core/utils/date';
+import range from 'lodash/range';
+import {
+  getFirstDayEpochIsoDateTimePeriod,
+  getFirstDayOfIsoDateTimePeriod,
+  getLastDayOfIsoDateTimePeriod,
+  getIsoDateTimePeriod
+} from 'navi-core/utils/date';
 
-/**
- * @constant {String} DATE_FORMAT - date string format used internally
- */
-const DATE_FORMAT = 'MM-DD-YYYY';
-
-/**
- * @constant {Object} VIEW_MODE_FROM_PERIOD - Mapping from time period to calendar mode
- */
-const VIEW_MODE_FROM_PERIOD = {
-  all: 0,
-  day: 0,
-  week: 0,
-  month: 1,
-  quarter: 1,
-  year: 2
-};
-
-export default Component.extend({
-  layout,
-
-  classNames: ['navi-date-picker'],
-
-  classNameBindings: ['dateTimePeriod'],
-
+@templateLayout(layout)
+@tagName('')
+class NaviDatePicker extends Component {
   /**
-   * @property {Object} date - date should be after `minDate`
+   * @method init
+   * @override
    */
-  date: undefined,
+  init() {
+    super.init(...arguments);
+    this.centerDate = this.centerDate || this.date || getFirstDayOfIsoDateTimePeriod(moment(), this.dateTimePeriod);
+  }
 
   /**
-   * @property {String} dateTimePeriod - unit of time being selected ('day', 'week', or 'month')
-   */
-  dateTimePeriod: 'day',
-
-  /**
-   * @property {String} minDate - minimum selectable date
-   */
-  minDate: computed('dateTimePeriod', function() {
-    return getFirstDayEpochIsoDateTimePeriod(get(this, 'dateTimePeriod'), DATE_FORMAT);
-  }),
-
-  /**
-   * @property {Number} minViewMode - minimum calendar view mode (days/months)
-   */
-  minViewMode: computed('dateTimePeriod', function() {
-    // if the period is absent, pass 0 as default value
-    let newViewMode = VIEW_MODE_FROM_PERIOD[get(this, 'dateTimePeriod')] || 0;
-
-    this._updateViewMode(newViewMode);
-
-    return newViewMode;
-  }),
-
-  /**
-   * @property {Object} _datePickerReference - jQuery object containing the datepicker plugin
-   * @private
-   */
-  _datePickerReference: computed(function() {
-    // jQuery datepicker plugin is called on the first child div
-    return this.$('> div');
-  }).volatile(),
-
-  /**
-   * Called when the attributes passed into the component have been updated and on initial render
-   *
    * @method didReceiveAttrs
    * @override
    */
   didReceiveAttrs() {
-    this._super(...arguments);
+    super.didReceiveAttrs(...arguments);
 
-    let selectedDate = get(this, 'date'),
-      previousDate = get(this, 'previousDate');
+    const { previousDate, date } = this;
 
-    if (selectedDate !== previousDate) {
-      let date = selectedDate ? selectedDate.toDate() : undefined;
+    if (date !== previousDate) {
+      let newDate = date || undefined;
 
-      set(this, 'selectedDateObj', date);
+      set(this, 'selectedDate', newDate);
+      set(this, 'centerDate', newDate);
     }
 
     //Store old date for rerender logic above
-    set(this, 'previousDate', selectedDate);
-    set(this, '_lastTimeDate', selectedDate);
-
-    // Make sure selection is highlighted
-    scheduleOnce('afterRender', this, this._highlightSelection);
-  },
+    set(this, 'previousDate', date);
+    set(this, '_lastTimeDate', date);
+  }
 
   /**
-   * TODO
-   * As of 'ember-cli-bootstrap-datepicker' release '0.5.3', updating the minViewMode after
-   * creating the component is not supported, but the current master branch has
-   * partial support. Once the latest release has this built in, we can remove
-   * this function.
+   * @property {Moment} date - date should be after `minDate`
+   */
+  date;
+
+  /**
+   * @property {Moment} centerDate - The date that determines the current view of the calendar, defaults to selected date initially
+   */
+  centerDate;
+
+  /**
+   * @property {String} dateTimePeriod - unit of time being selected ('day', 'week', or 'month')
+   */
+  dateTimePeriod = 'day';
+
+  /**
+   * @property {Date} minDate - minimum selectable date
+   */
+  @computed('dateTimePeriod')
+  get minDate() {
+    return new Date(getFirstDayEpochIsoDateTimePeriod(this.dateTimePeriod));
+  }
+
+  /**
+   * @property {String[]} months - The months available to pick from in the current year
+   */
+  @computed('centerDate', 'minDate')
+  get months() {
+    const { centerDate, minDate } = this;
+
+    let months = moment.months();
+    const minDateTime = moment(minDate);
+    if (centerDate.year() === minDateTime.year()) {
+      const minMonth = minDateTime.month - 1;
+      months = months.filter((m, i) => i >= minMonth);
+    }
+    return months;
+  }
+
+  /**
+   * @property {String[]} years - The years available to pick from
+   */
+  @computed('minDate')
+  get years() {
+    const start = moment(this.minDate).year();
+    const end = moment().year() + 1;
+    return range(start, end).map(y => y.toString());
+  }
+
+  /**
+   * Switches the calendars center based on the selected month or year from the select
+   * @param unit - grain to switch
+   * @param calendar - reference to calendar object
+   * @param e - the input event
+   */
+  changeCenter(unit, calendar, e) {
+    let newCenter = moment(calendar.center)
+      .clone()
+      [unit](e.target.value);
+    return calendar.actions.changeCenter(newCenter);
+  }
+
+  /**
+   * Applies a selected class to each day if it lies within the week being selected. This visually represents an
+   * entire week being selected on the calendar even though it is only the first day that is actually selected.
    *
-   * @method _updateViewMode - update current and minimum view mode after component creation
-   * @private
-   * @param {Number} newViewMode - view mode to set as min view mode and current view mode
+   * @param {Object} day - The day to apply a custom style for
+   * @param {Object} calendar - The calendar object being rendered on
+   * @param {Array} weeks - The weeks being shown for the calendar
+   * @returns {string}
    */
-  _updateViewMode(newViewMode) {
-    scheduleOnce('afterRender', () => {
-      // Change `minViewMode` option after initial creation
-      const picker = get(this, '_datePickerReference').data('datepicker');
-      picker.setViewMode(newViewMode);
-      picker.update(get(this, 'selectedDateObj'));
-
-      this._highlightSelection();
-    });
-  },
-
-  /**
-   * @method _highlightSelection - Makes sure the current time period is properly highlighted
-   * @private
-   */
-  _highlightSelection: function() {
-    /*
-     * If in week mode, highlight the entire week
-     * For day and month, the underlying component handles highlighting for us
-     */
-    if (get(this, 'dateTimePeriod') === 'week') {
-      get(this, '_datePickerReference')
-        .find('.active.day')
-        .parent('tr')
-        .addClass('active');
+  selectedWeekClass(day, calendar, weeks) {
+    const selected = weeks.flatMap(w => w.days).find(d => d.isSelected);
+    const classes = ['ember-power-calendar-week-day'];
+    if (selected) {
+      const selectedWeekStart = moment(getFirstDayOfIsoDateTimePeriod(selected.moment, 'week'));
+      const selectedWeekEnd = moment(getLastDayOfIsoDateTimePeriod(selectedWeekStart, 'week'));
+      if (day.moment.isBetween(selectedWeekStart, selectedWeekEnd, undefined, '[]')) {
+        classes.push('ember-power-calendar-day--selected');
+      }
     }
 
-    if (get(this, 'dateTimePeriod') === 'quarter') {
-      //Add active-month class in next tick, since months will be re-rendered
-      next(() => {
-        let months = this.$('.month'),
-          activeIndex = months.index(this.$('.month.active')),
-          quarter = Math.ceil((activeIndex + 1) / 3);
-
-        let startIndex = (quarter - 1) * 3;
-        this.$(months[startIndex + 0]).addClass('active-month');
-        this.$(months[startIndex + 1]).addClass('active-month');
-        this.$(months[startIndex + 2]).addClass('active-month');
-      });
-    }
-  },
+    return classes.join(' ');
+  }
 
   /**
-   * @method _isNewDateValue - checks if the date is the same as the last time this method was called
+   * @method _isDateSameAsLast - checks if the date is the same as the last time this method was called
    * @private
    * @param {Date} newDate - date to check
    * @returns {boolean} true if date is the same
    */
-  _isNewDateValue(newDate) {
+  _isDateSameAsLast(newDate) {
     let lastTime = get(this, '_lastTimeDate');
 
     set(this, '_lastTimeDate', newDate);
@@ -173,29 +156,44 @@ export default Component.extend({
     }
 
     return moment(lastTime).isSame(newDate);
-  },
+  }
 
-  actions: {
-    /**
-     * Action sent whenever user makes a selection
-     * Converts the selected Date into a moment and
-     * passes the action on
-     *
-     * @action
-     * @param {Date} newDate - selected calendar date
-     */
-    changeDate(newDate) {
-      this._highlightSelection();
-      const handleUpdate = get(this, 'onUpdate');
+  /**
+   * Sets the center date from a power calendar event
+   *
+   * @action
+   * @param {Object} object - container for selected calendar date
+   */
+  @action
+  setCenterDate({ moment: newDate }) {
+    set(this, 'centerDate', newDate);
+  }
 
-      // Don't do anything if the date is the same as the last time action was called
-      if (this._isNewDateValue(newDate)) {
-        return;
-      }
+  /**
+   * Action sent whenever user makes a selection
+   * Converts the selected Date into a moment and
+   * passes the action on
+   *
+   * @action
+   * @param {Object} object - container for selected calendar date
+   */
+  @action
+  changeDate({ moment: newDate }) {
+    // Don't do anything if the date is the same as the last time action was called
+    if (this._isDateSameAsLast(newDate)) {
+      return;
+    }
 
-      // Convert date to start of time period
-      let dateTimePeriod = getIsoDateTimePeriod(get(this, 'dateTimePeriod'));
-      if (handleUpdate) handleUpdate(moment(newDate).startOf(dateTimePeriod));
+    // Convert date to start of time period
+    let dateTimePeriod = getIsoDateTimePeriod(this.dateTimePeriod);
+    const selectedDate = moment(newDate).startOf(dateTimePeriod);
+
+    set(this, 'selectedDate', selectedDate);
+    const handleUpdate = this.onUpdate;
+    if (handleUpdate) {
+      handleUpdate(selectedDate);
     }
   }
-});
+}
+
+export default NaviDatePicker;

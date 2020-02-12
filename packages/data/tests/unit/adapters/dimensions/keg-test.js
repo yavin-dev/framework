@@ -80,27 +80,51 @@ module('Unit | Adapters | Dimensions | Keg', function(hooks) {
     });
   });
 
-  test('find', function(assert) {
-    assert.expect(2);
+  test('find', async function(assert) {
+    assert.expect(8);
 
-    assert.throws(
-      () => {
-        Adapter.find('dimensionOne', { operator: 'contains' });
-      },
-      /Only 'in' operation is currently supported in Keg/,
-      'throws error when doing a contains search, which is not supported yet'
-    );
+    const assertThrowOperator = query => {
+      assert.throws(
+        () => {
+          Adapter.find('dimensionOne', query);
+        },
+        /Only 'in' operation is currently supported in Keg/,
+        'throws error when doing a contains search, which is not supported yet'
+      );
+    };
+    assertThrowOperator({ operator: 'contains' });
+    assertThrowOperator([{ operator: 'contains' }]);
+    assertThrowOperator([{}, { operator: 'in' }, { operator: 'contains' }]);
 
-    return Adapter.find('dimensionOne', {
+    const assertEquals = (expected, message) => result => {
+      assert.deepEqual(result.rows.mapBy('id'), expected, message);
+    };
+
+    await Adapter.find('dimensionOne', {
       field: 'description',
       values: 'bar,gar'
-    }).then(result => {
-      assert.deepEqual(
-        result.rows.mapBy('id'),
-        [2, 3],
-        'find() returns expected response using navi-data query object interface.'
-      );
-    });
+    }).then(assertEquals([2, 3], 'find() returns expected when values is a string'));
+    await Adapter.find('dimensionOne', [
+      {
+        field: 'description',
+        values: 'bar,gar'
+      }
+    ]).then(assertEquals([2, 3], 'find() returns expected when passed an array of queries'));
+    await Adapter.find('dimensionOne', [
+      {
+        field: 'description',
+        values: ['bar', 'gar']
+      }
+    ]).then(assertEquals([2, 3], 'find() returns expected when values is an array'));
+    await Adapter.find('dimensionOne', [
+      { field: 'id', values: [1, 2, 3] },
+      { field: 'description', values: ['bar'] }
+    ]).then(assertEquals([2], 'find() returns expected when passed multiple filters'));
+    await Adapter.find('dimensionOne', [
+      { field: 'id', values: [1, 2, 3] },
+      { field: 'id', values: [3, 4] },
+      { field: 'description', values: ['bar', 'gar'] }
+    ]).then(assertEquals([3], 'find() returns expected when passed multiple overlapping filters'));
   });
 
   test('findById', function(assert) {

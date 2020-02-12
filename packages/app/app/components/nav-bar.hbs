@@ -1,0 +1,21 @@
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<ul class="nav-bar" ...attributes>
+  <li class="nav-bar__nav-item">
+    <LinkTo class="nav-bar__nav-item-link" @route="directory.my-data">
+      <NaviIcon class="nav-bar__icon" @icon="address-book-o" />
+      <div>Directory</div>
+    </LinkTo>
+  </li>
+  <li class="nav-bar__nav-item">
+    <LinkTo class="nav-bar__nav-item-link" @route="reports">
+      <NaviIcon class="nav-bar__icon" @icon="bar-chart" />
+      <div>Reports</div>
+    </LinkTo>
+  </li>
+  <li class="nav-bar__nav-item">
+    <LinkTo class="nav-bar__nav-item-link" @route="dashboards">
+      <NaviIcon class="nav-bar__icon" @icon="th-large" />
+      <div>Dashboards</div>
+    </LinkTo>
+  </li>
+</ul>

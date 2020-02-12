@@ -3,15 +3,20 @@ module.exports = {
   parser: 'babel-eslint',
   parserOptions: {
     ecmaVersion: 2018,
-    sourceType: 'module'
+    sourceType: 'module',
+    ecmaFeatures: {
+      legacyDecorators: true
+    }
   },
   plugins: ['ember'],
   extends: ['eslint:recommended', 'plugin:ember/recommended', 'prettier'],
   env: {
-    browser: true
+    browser: true,
+    es6: true
   },
   rules: {
-    'multiline-comment-style': ['error', 'starred-block']
+    'multiline-comment-style': ['error', 'starred-block'],
+    'ember/no-jquery': 'error'
   },
   globals: {
     NAVI_APP_SETTINGS: true
@@ -44,6 +49,12 @@ module.exports = {
         // https://github.com/mysticatea/eslint-plugin-node/issues/77
         'node/no-unpublished-require': 'off'
       })
+    },
+    {
+      files: ['tests/**/*.js'],
+      rules: {
+        'ember/no-jquery': 'off'
+      }
     }
   ]
 };
