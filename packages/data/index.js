@@ -29,7 +29,7 @@ module.exports = {
   },
 
   _includeDevDependencies() {
-    return this._findHost().env === 'development';
+    return ['development', 'test'].includes(this._findHost().env);
   },
 
   included() {
