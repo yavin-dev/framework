@@ -1,5 +1,6 @@
 <div {{did-insert this.search @query}}>
-    {{#if searchResult}}
+    {{#if searchResult.content}}
+    {{debugger}}
     <h1>{{this.title}}</h1>
     <div class="search-result">
         <ul>

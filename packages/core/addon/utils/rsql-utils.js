@@ -13,10 +13,8 @@
  * to a list of all the OR parameters, ie., [H, Revenue]
  */
 export function getFilterParams(queryFilter) {
-  if (queryFilter != null && queryFilter != '') {
-    if (queryFilter.includes('author')) {
-      queryFilter = queryFilter.split(';')[0];
-    }
+  if (queryFilter != null && queryFilter != '' && queryFilter.includes('author') && queryFilter.includes(';')) {
+    queryFilter = queryFilter.split(';')[0];
     return queryFilter
       .replace(/[()*]/g, '')
       .split(',')

@@ -31,11 +31,17 @@ export default class NaviReportSearchProviderService extends NaviBaseSearchProvi
    * @returns {Object} query object
    */
   _parseQueryString(query) {
-    let author;
-    if (query) {
-      author = this.user.getUser().id;
+    let author = this.user.getUser().id;
+    let parsedQuery = { searchParams: null, author: author };
+
+    if (typeof query == 'string' && query) {
+      parsedQuery.searchParams = {
+        title: query,
+        request: query
+      };
     }
-    return { searchParams: { title: query, request: query }, author: author };
+
+    return parsedQuery;
   }
 
   /**
