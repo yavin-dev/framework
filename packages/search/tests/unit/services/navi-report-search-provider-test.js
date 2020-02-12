@@ -27,21 +27,33 @@ module('Unit | Service | navi-report-search-provider', function(hooks) {
   });
 
   test('construct full search query', function(assert) {
-    assert.deepEqual(this.service._constructSearchQuery({ title: 'Hyrule', request: 'clicks' }, 'navi_user'), {
-      filter: { reports: '(title==*Hyrule*,request==*clicks*);author==*navi_user*' }
-    });
+    assert.deepEqual(
+      this.service._constructSearchQuery({ title: 'Hyrule', request: 'clicks' }, 'navi_user'),
+      {
+        filter: { reports: '(title==*Hyrule*,request==*clicks*);author==*navi_user*' }
+      },
+      'Report constructs the correct query for the api with both filter parameters and author.'
+    );
   });
 
   test('construct only query parameters search query', function(assert) {
-    assert.deepEqual(this.service._constructSearchQuery({ title: 'Hyrule', request: 'clicks' }), {
-      filter: { reports: '(title==*Hyrule*,request==*clicks*)' }
-    });
+    assert.deepEqual(
+      this.service._constructSearchQuery({ title: 'Hyrule', request: 'clicks' }),
+      {
+        filter: { reports: '(title==*Hyrule*,request==*clicks*)' }
+      },
+      'Report constructs the correct query for the api with filter parameters.'
+    );
   });
 
   test('construct only author search query', function(assert) {
-    assert.deepEqual(this.service._constructSearchQuery(null, 'navi_user'), {
-      filter: { reports: 'author==*navi_user*' }
-    });
+    assert.deepEqual(
+      this.service._constructSearchQuery(null, 'navi_user'),
+      {
+        filter: { reports: 'author==*navi_user*' }
+      },
+      'Report constructs the correct query for the api with author.'
+    );
   });
 
   test('search by user', async function(assert) {
@@ -51,22 +63,16 @@ module('Unit | Service | navi-report-search-provider', function(hooks) {
       results.get('firstObject').title.includes('Hyrule'),
       'The service returns a report that includes the requested title.'
     );
-    assert.ok(
-      JSON.stringify(results.get('firstObject').request)
-        .toLowerCase()
-        .includes('click'),
-      'The service returns a report that includes the requested request parameter.'
-    );
     assert.ok(author.includes('navi_user'), 'The service returns a report from the requested user.');
   });
 
   test('search with no results for search parameters', async function(assert) {
     const results = await this.service.search('something');
-    assert.equal(results.content.length, 0, 'No results are being returned');
+    assert.equal(results.content.length, 0, 'No results are being returned when there is no match.');
   });
 
   test('search with empty parameters', async function(assert) {
     const results = await this.service.search();
-    assert.equal(results.content.length, 0, 'No results are being returned');
+    assert.equal(results.content.length, 0, 'No results are being returned when there is no match.');
   });
 });

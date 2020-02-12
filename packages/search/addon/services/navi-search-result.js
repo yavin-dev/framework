@@ -13,7 +13,9 @@ import config from 'ember-get-config';
 export default class NaviSearchResultService extends Service {
   /**
    * @method all
-   * @returns {Array} array of available search providers
+   * @returns {Array} array of available search result components
+   * @description Discovers all the search result components
+   * under the folder components/navi-search-result/
    */
   all() {
     const resultComponentRegex = new RegExp(`^(?:${config.modulePrefix}/)?components/navi-search-result/([a-z-]*)$`),

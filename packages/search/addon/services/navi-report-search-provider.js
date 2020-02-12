@@ -20,11 +20,6 @@ export default class NaviReportSearchProviderService extends NaviBaseSearchProvi
   @service user;
 
   /**
-   * @property associatedComponent
-   */
-  associatedComponent = 'navi-report-search-result';
-
-  /**
    * @method _parseQueryString
    * @private
    * @param {String} query
@@ -50,6 +45,7 @@ export default class NaviReportSearchProviderService extends NaviBaseSearchProvi
    * @param {Object} searchParams
    * @param {String} author
    * @returns {Object} search query object
+   * @description Constructs the query filter parameters adhering to the RSQL standard
    */
   _constructSearchQuery(searchParams, author) {
     let query = { filter: { reports: '' } };
@@ -81,7 +77,6 @@ export default class NaviReportSearchProviderService extends NaviBaseSearchProvi
    * @method search
    * @override
    * @param {String} query
-   * @param {String} author
    * @returns {Promise} promise with search query results
    */
   search(query) {

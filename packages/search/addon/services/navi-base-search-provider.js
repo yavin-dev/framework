@@ -10,11 +10,6 @@ import { assert } from '@ember/debug';
 
 export default class NaviBaseSearchProviderService extends Service {
   /**
-   * @property {String} associatedComponent
-   */
-  associatedComponent = undefined;
-
-  /**
    * @method search
    * @returns {Array} array of search results
    */
