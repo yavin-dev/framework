@@ -19,7 +19,7 @@ export default [
   },
   {
     id: 2,
-    title: 'Revenue Dashboard',
+    title: 'Dashboard 2',
     authorId: 'navi_user',
     dashboardWidgetIds: [4, 5],
     createdOn: '2016-02-01 00:00:00',
@@ -62,7 +62,7 @@ export default [
   },
   {
     id: 3,
-    title: 'Dashboard 3',
+    title: 'Revenue Dashboard',
     authorId: 'ciela',
     dashboardWidgetIds: [],
     createdOn: '2016-01-03 00:00:00',
