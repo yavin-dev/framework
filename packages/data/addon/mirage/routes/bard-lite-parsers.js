@@ -34,8 +34,11 @@ export function parseSingleFilter(serializedFilter) {
  * @returns {Array} filters
  */
 export function parseFilters(filtersParam = '') {
-  const filterStrings = filtersParam
-    .split(']')
+  if (!filtersParam || filtersParam === '') {
+    return [];
+  }
+  const filterStrings = (filtersParam + ',')
+    .split('],')
     .filter(f => f.length > 0)
     .map(f => `${f}]`);
   return filterStrings.map(parseSingleFilter);
