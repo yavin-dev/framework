@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { computed } from '@ember/object';
-import isEqual from 'lodash/isEqual';
+import { isEqual } from 'lodash-es';
 import Controller, { inject as controller } from '@ember/controller';
 
 export default Controller.extend({

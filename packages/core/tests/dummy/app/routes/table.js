@@ -1,7 +1,7 @@
 import { resolve } from 'rsvp';
 import { A } from '@ember/array';
 import Route from '@ember/routing/route';
-import cloneDeep from 'lodash/cloneDeep';
+import { cloneDeep } from 'lodash-es';
 
 const MOCK_ROWS = [
   {

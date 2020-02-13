@@ -5,11 +5,9 @@
 import { assert } from '@ember/debug';
 import { assign } from '@ember/polyfills';
 import { set, get } from '@ember/object';
-import isEqual from 'lodash/isEqual';
+import { isEqual, keyBy, omit } from 'lodash-es';
 import ActionConsumer from 'navi-core/consumers/action-consumer';
 import { UpdateReportActions } from 'navi-reports/services/update-report-action-dispatcher';
-import keyBy from 'lodash/keyBy';
-import omit from 'lodash/omit';
 import { canonicalizeColumnAttributes } from 'navi-data/utils/metric';
 
 export default ActionConsumer.extend({

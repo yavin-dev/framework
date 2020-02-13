@@ -21,8 +21,7 @@ import { copy } from 'ember-copy';
 import { dataByDimensions } from 'navi-core/utils/data';
 import { getRequestMetrics } from 'navi-core/utils/chart-data';
 import layout from '../../templates/components/navi-visualization-config/series-chart';
-import values from 'lodash/values';
-import reject from 'lodash/reject';
+import { values, reject } from 'lodash-es';
 
 export default Component.extend({
   layout,

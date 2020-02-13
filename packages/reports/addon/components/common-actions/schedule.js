@@ -19,7 +19,7 @@ import { getApiErrMsg } from 'navi-core/utils/persistence-error';
 import { A as arr } from '@ember/array';
 import { get, set, computed, setProperties } from '@ember/object';
 import RSVP from 'rsvp';
-import capitalize from 'lodash/capitalize';
+import { capitalize } from 'lodash-es';
 
 const defaultFrequencies = ['day', 'week', 'month', 'quarter', 'year'];
 const defaultFormats = ['csv'];

@@ -5,7 +5,7 @@
 
 import { get } from '@ember/object';
 import BaseValidator from 'ember-cp-validations/validators/base';
-import isEqual from 'lodash/isEqual';
+import { isEqual } from 'lodash-es';
 import { getRequestDimensions } from 'navi-core/utils/chart-data';
 
 export default BaseValidator.extend({

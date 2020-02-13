@@ -14,7 +14,7 @@ import { get, set, computed, action } from '@ember/object';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
 import layout from '../templates/components/navi-date-picker';
 import moment from 'moment';
-import range from 'lodash/range';
+import { range } from 'lodash-es';
 import {
   getFirstDayEpochIsoDateTimePeriod,
   getFirstDayOfIsoDateTimePeriod,

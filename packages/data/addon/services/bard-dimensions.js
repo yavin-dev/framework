@@ -15,7 +15,7 @@ import { isEmpty } from '@ember/utils';
 import BardDimensionArray from 'navi-data/models/bard-dimension-array';
 import SearchUtils from 'navi-data/utils/search';
 import config from 'ember-get-config';
-import intersection from 'lodash/intersection';
+import { intersection } from 'lodash-es';
 
 const LOAD_CARDINALITY = config.navi.searchThresholds.contains;
 

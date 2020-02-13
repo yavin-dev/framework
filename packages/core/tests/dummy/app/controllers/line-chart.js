@@ -2,7 +2,7 @@ import { Promise } from 'rsvp';
 import { A } from '@ember/array';
 import Controller from '@ember/controller';
 import { set, get, computed, action } from '@ember/object';
-import merge from 'lodash/merge';
+import { merge } from 'lodash-es';
 
 export default class LineChartController extends Controller {
   chartType = 'line-chart';

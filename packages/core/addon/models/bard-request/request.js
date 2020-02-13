@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import DS from 'ember-data';
-import isEqual from 'lodash/isEqual';
+import { isEqual } from 'lodash-es';
 import { validator, buildValidations } from 'ember-cp-validations';
 import Interval from 'navi-core/utils/classes/interval';
 import { A as arr, makeArray } from '@ember/array';

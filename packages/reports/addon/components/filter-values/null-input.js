@@ -10,7 +10,7 @@
  */
 import Component from '@ember/component';
 import { get } from '@ember/object';
-import isEqual from 'lodash/isEqual';
+import { isEqual } from 'lodash-es';
 
 export default Component.extend({
   tagName: '',

@@ -19,7 +19,7 @@ import { run } from '@ember/runloop';
 import { guidFor } from '@ember/object/internals';
 import layout from '../../templates/components/navi-visualizations/pie-chart';
 import tooltipLayout from '../../templates/chart-tooltips/pie-chart';
-import merge from 'lodash/merge';
+import { merge } from 'lodash-es';
 import { smartFormatNumber } from 'navi-core/helpers/smart-format-number';
 import hasChartBuilders from 'navi-core/mixins/components/has-chart-builders';
 import { getTranslation } from '../../utils/chart';

@@ -17,8 +17,7 @@ import Component from '@ember/component';
 import { get, computed } from '@ember/object';
 import { isBlank } from '@ember/utils';
 import layout from '../templates/components/grouped-list';
-import groupBy from 'lodash/groupBy';
-import sortBy from 'lodash/sortBy';
+import { groupBy, sortBy } from 'lodash-es';
 
 export default Component.extend({
   layout,

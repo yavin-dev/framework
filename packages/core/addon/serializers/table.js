@@ -6,7 +6,7 @@ import VisualizationSerializer from 'navi-core/serializers/visualization';
 import { parseMetricName } from 'navi-data/utils/metric';
 import { get } from '@ember/object';
 import { isPresent, isNone } from '@ember/utils';
-import omit from 'lodash/omit';
+import { omit } from 'lodash-es';
 
 /**
  * Returns metric column attributes given a canonical name

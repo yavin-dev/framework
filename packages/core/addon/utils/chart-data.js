@@ -5,7 +5,6 @@
 import { A as arr } from '@ember/array';
 import { get } from '@ember/object';
 import DataGroup from 'navi-core/utils/classes/data-group';
-import objectValues from 'lodash/values';
 
 export const METRIC_SERIES = 'metric';
 export const DIMENSION_SERIES = 'dimension';
@@ -127,11 +126,11 @@ export function buildDimensionSeriesValues(request, rows) {
     });
 
     //Use object key to dedup dimension value combinations
-    series[objectValues(values).join('|')] = {
+    series[Object.values(values).join('|')] = {
       name: dimensionLabels.join(','),
       values
     };
   });
 
-  return objectValues(series);
+  return Object.values(series);
 }

@@ -5,7 +5,7 @@
 
 import Controller from '@ember/controller';
 import { inject as service } from '@ember/service';
-import isEqual from 'lodash/isEqual';
+import { isEqual } from 'lodash-es';
 import { get, setProperties } from '@ember/object';
 import ReportToWidget from 'navi-dashboards/mixins/controllers/report-to-widget';
 
