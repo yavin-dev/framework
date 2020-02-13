@@ -20,7 +20,7 @@
   as |filterDimVal|
 }}
   {{format-dimension filterDimVal}}
-  <span role="button" tabindex="-1" class="remove-pill" {{action "removeFilterVal" filterDimVal}}>×</span>
+  <span role="button" tabindex="-1" class="remove-pill" {{on "click" (action "removeFilterVal" filterDimVal)}}>×</span>
 {{/paginated-scroll-list}}
 
 <div class="btn-container">

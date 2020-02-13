@@ -7,5 +7,5 @@
   </ul>
 </div>
 {{#if _isTrimmed}}
-  <span class="paginated-scroll-list__show-more" tabindex="-1" onclick={{action "onShowMore"}}>{{moreLabel}}</span>
+  <span class="paginated-scroll-list__show-more" tabindex="-1" {{on "click" (action "onShowMore")}}>{{moreLabel}}</span>
 {{/if}}
