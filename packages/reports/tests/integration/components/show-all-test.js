@@ -86,7 +86,7 @@ module('Integration | Component | Show All', function(hooks) {
     await click($('button:contains("Done")')[0]);
 
     /* == update filter values == */
-    await click($('.show-all li:first a')[0]); // remove 1st pill
+    await click($('.show-all li:first span')[0]); // remove 1st pill
 
     assert.notOk(
       $('button:contains("Done")').is(':visible'),

@@ -7,6 +7,5 @@
   </ul>
 </div>
 {{#if _isTrimmed}}
-  {{!-- template-lint-disable link-href-attributes --}}
-  <a tabindex="-1" onclick={{action "onShowMore"}}>{{moreLabel}}</a>
+  <span class="paginated-scroll-list__show-more" tabindex="-1" onclick={{action "onShowMore"}}>{{moreLabel}}</span>
 {{/if}}
