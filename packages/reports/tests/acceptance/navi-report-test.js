@@ -1994,4 +1994,26 @@ module('Acceptance | Navi Report', function(hooks) {
       'Report changed and ran successfully'
     );
   });
+
+  test('Table number formatting works', async function(assert) {
+    assert.expect(4);
+    await visit('/reports/2/view');
+
+    await click($('.visualization-toggle__option:contains(Data Table)')[0]);
+    await click('.report-view__visualization-edit-btn');
+
+    await click(findAll('.number-format-dropdown__trigger')[1]); // open nav clicks dropdown
+
+    const navClicksCell = () => find('.table-row-vc').querySelectorAll('.table-cell-content.metric')[1];
+    assert.dom(navClicksCell()).hasText('718', 'The original metric value has no formatting');
+    assert.dom('.number-format-selector__radio-custom input').isChecked('The custom input is selected');
+
+    find('.number-format-selector__radio-money input').checked = true; // change format to money
+    await triggerEvent('.number-format-selector__radio-money input', 'change');
+
+    assert.dom('.number-format-selector__radio-money input').isChecked('The money input is selected');
+
+    await click('.number-format-dropdown');
+    assert.dom(navClicksCell()).hasText('$718', 'The metric is re-rendered in the money format');
+  });
 });

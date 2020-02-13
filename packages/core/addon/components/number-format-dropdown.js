@@ -1,43 +1,48 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
- *  {{number-format-dropdown
- *    column=column
- *    onUpdateFormat = (action 'onUpdateFormat')
- *  }}
+ *  <NumberFormatDropdown
+ *    @column={{@column}}
+ *    @onUpdateFormat{{action @onUpdateFormat}}
+ *  />
  */
 
 import Component from '@ember/component';
 import layout from '../templates/components/number-format-dropdown';
 import { oneWay } from '@ember/object/computed';
-import { get, getWithDefault } from '@ember/object';
+import { get, set, getWithDefault, action } from '@ember/object';
+import { layout as templateLayout } from '@ember-decorators/component';
 import { merge } from 'lodash-es';
 
-export default Component.extend({
-  layout,
-
-  /**
-   * @property {Array} classNames
-   */
-  classNames: ['number-format-dropdown'],
-
+@templateLayout(layout)
+class NumberFormatDropdownComponent extends Component {
   /**
    * @property {String} format
    */
-  format: oneWay('column.attributes.format'),
+  @oneWay('column.attributes.format') format;
 
-  actions: {
-    /**
-     * @action updateColumnNumberFormat
-     */
-    updateColumnNumberFormat() {
-      let { onUpdateReport, column } = this,
-        format = getWithDefault(this, 'format', get(column, 'attributes.format')),
-        updatedColumn = merge({}, column, { attributes: { format } });
+  /**
+   * @action updateColumnNumberFormat
+   */
+  @action
+  updateColumnNumberFormat() {
+    const { onUpdateReport, column } = this;
+    const format = getWithDefault(this, 'format', get(column, 'attributes.format'));
+    const updatedColumn = merge({}, column, { attributes: { format } });
 
-      onUpdateReport('updateColumn', updatedColumn);
-    }
+    onUpdateReport('updateColumn', updatedColumn);
   }
-});
+
+  /**
+   *
+   * @param {String} format - The new format for the number
+   */
+  @action
+  setFormat(format) {
+    set(this, 'format', format);
+  }
+}
+
+export default NumberFormatDropdownComponent;
