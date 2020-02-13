@@ -1,6 +1,7 @@
 import Response from 'ember-cli-mirage/response';
 import moment from 'moment';
 import RESPONSE_CODES from '../enums/response-codes';
+import { getFilterParams, getQueryAuthor } from 'navi-core/utils/rsql-utils';
 
 const TIMESTAMP_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 
@@ -43,17 +44,45 @@ export default function() {
   });
 
   this.get('/dashboards', ({ dashboards }, request) => {
+    let dashboardObject;
     let idFilter = request.queryParams['filter[dashboards.id]'];
+    let queryFilter = request.queryParams['filter[dashboards]'];
 
     // Allow filtering
     if (idFilter) {
       let ids = idFilter.split(',');
-      dashboards = dashboards.find(ids);
+      dashboardObject = dashboards.find(ids);
+    } else if ('filter[dashboards]') {
+      try {
+        let filterParameters = getFilterParams(queryFilter);
+        let author = getQueryAuthor(queryFilter);
+        if (filterParameters == null && author == null) {
+          throw 'No search parameters';
+        }
+        dashboardObject = dashboards.all().filter(function(dashboard) {
+          // Author can be optional, ie., not included in the query, but filterparameters are always included.
+          const matchesFilterParameterIfExists = filterParameters
+            ? filterParameters.some(filterParameter =>
+                JSON.stringify(dashboard[filterParameter[0]]).match(new RegExp(filterParameter[1], 'i'))
+              )
+            : false;
+          const matchesAuthorIfExists = author ? dashboard.author.id.match(new RegExp(author, 'i')) : true;
+          return matchesFilterParameterIfExists && matchesAuthorIfExists;
+        });
+      } catch (error) {
+        dashboardObject = new Mirage.Response(
+          400,
+          { data: {} },
+          {
+            errors: ['InvalidPredicateException: Invalid filter format']
+          }
+        );
+      }
     } else {
-      dashboards = dashboards.all();
+      dashboardObject = dashboards.all();
     }
 
-    return dashboards;
+    return dashboardObject;
   });
 
   this.post('/dashboards', function({ dashboards, users }) {

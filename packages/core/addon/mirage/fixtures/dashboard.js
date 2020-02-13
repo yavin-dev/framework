@@ -109,5 +109,23 @@ export default [
       layout: [],
       columns: 15
     }
+  },
+  {
+    id: 6,
+    title: 'Revenue Dashboard',
+    authorId: 'navi_user',
+    dashboardWidgetIds: [1, 2, 3],
+    createdOn: '2016-01-01 00:00:00',
+    updatedOn: '2016-01-01 00:00:00',
+    deliveryRuleIds: [],
+    presentation: {
+      version: 1,
+      layout: [
+        { column: 0, row: 0, height: 4, width: 6, widgetId: 1 },
+        { column: 6, row: 0, height: 4, width: 6, widgetId: 2 },
+        { column: 0, row: 4, height: 4, width: 12, widgetId: 3 }
+      ],
+      columns: 12
+    }
   }
 ];

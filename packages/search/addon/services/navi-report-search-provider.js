@@ -2,7 +2,7 @@
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
- * This service is used to search for reports stored in the persistence layer.
+ * This service is used to search for reports and dashboards stored in the persistence layer.
  */
 
 import { inject as service } from '@ember/service';
@@ -20,20 +20,28 @@ export default class NaviReportSearchProviderService extends NaviBaseSearchProvi
   @service user;
 
   /**
-   * @method _parseQueryString
+   * @method _parseReportString
    * @private
    * @param {String} query
+   * @param {String} type
    * @returns {Object} query object
+   * @description Parses string query to search parameters
    */
-  _parseQueryString(query) {
+  _parseQueryString(query, type) {
     let author = this.user.getUser().id;
     let parsedQuery = { searchParams: null, author: author };
 
     if (typeof query == 'string' && query) {
-      parsedQuery.searchParams = {
-        title: query,
-        request: query
-      };
+      if (type === 'report') {
+        parsedQuery.searchParams = {
+          title: query,
+          request: query
+        };
+      } else if (type === 'dashboard') {
+        parsedQuery.searchParams = {
+          title: query
+        };
+      }
     }
 
     return parsedQuery;
@@ -47,27 +55,27 @@ export default class NaviReportSearchProviderService extends NaviBaseSearchProvi
    * @returns {Object} search query object
    * @description Constructs the query filter parameters adhering to the RSQL standard
    */
-  _constructSearchQuery(searchParams, author) {
-    let query = { filter: { reports: '' } };
+  _constructSearchQuery(searchParams, author, type) {
+    let query = { filter: { [type]: '' } };
 
     if (searchParams) {
       for (let p in searchParams) {
         let filter = `${p}==*${searchParams[p]}*`;
-        if (query.filter.reports) {
-          query.filter.reports += `,`;
+        if (query.filter[type]) {
+          query.filter[type] += `,`;
         } else {
-          query.filter.reports += `(`;
+          query.filter[type] += `(`;
         }
-        query.filter.reports += `${filter}`;
+        query.filter[type] += `${filter}`;
       }
-      query.filter.reports += ')';
+      query.filter[type] += ')';
     }
 
     if (author) {
-      if (query.filter.reports) {
-        query.filter.reports += ';';
+      if (query.filter[type]) {
+        query.filter[type] += ';';
       }
-      query.filter.reports += `author==*${author}*`;
+      query.filter[type] += `author==*${author}*`;
     }
 
     return query;
@@ -78,9 +86,19 @@ export default class NaviReportSearchProviderService extends NaviBaseSearchProvi
    * @override
    * @param {String} query
    * @returns {Promise} promise with search query results
+   * @description Searches for reports and dashboards in the persistence layer
    */
   search(query) {
-    const parsedQuery = this._parseQueryString(query);
-    return this.store.query('report', this._constructSearchQuery(parsedQuery.searchParams, parsedQuery.author));
+    const reportParsedQuery = this._parseQueryString(query, 'report');
+    const dashboardParsedQuery = this._parseQueryString(query, 'dashboard');
+    const reportResult = this.store.query(
+      'report',
+      this._constructSearchQuery(reportParsedQuery.searchParams, reportParsedQuery.author, 'reports')
+    );
+    const dashboardResult = this.store.query(
+      'dashboard',
+      this._constructSearchQuery(dashboardParsedQuery.searchParams, dashboardParsedQuery.author, 'dashboards')
+    );
+    return { reports: reportResult, dashboards: dashboardResult };
   }
 }
