@@ -1,8 +1,11 @@
 {{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{#if searchResult.content}}
+{{#if @data}}
 <h1>{{this.title}}</h1>
 <ul class="search-result">
-    {{#each searchResult as |result|}}
+    {{#each @data.reports as |result|}}
+    <li>{{result.title}}</li>
+    {{/each}}
+    {{#each @data.dashboards as |result|}}
     <li>{{result.title}}</li>
     {{/each}}
 </ul>

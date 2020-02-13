@@ -62,8 +62,8 @@ export default [
   },
   {
     id: 3,
-    title: 'Revenue Dashboard',
-    authorId: 'navi_user',
+    title: 'Dashboard 3',
+    authorId: 'ciela',
     dashboardWidgetIds: [],
     createdOn: '2016-01-03 00:00:00',
     updatedOn: '2016-01-03 00:00:00',
@@ -76,7 +76,7 @@ export default [
   },
   {
     id: 4,
-    title: 'Dashboard 4',
+    title: 'Revenue Dashboard',
     authorId: 'ciela',
     dashboardWidgetIds: [6],
     createdOn: '2016-01-01 00:00:00',

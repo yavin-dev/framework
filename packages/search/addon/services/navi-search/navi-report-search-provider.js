@@ -6,7 +6,7 @@
  */
 
 import { inject as service } from '@ember/service';
-import NaviBaseSearchProviderService from './navi-base-search-provider';
+import NaviBaseSearchProviderService from '../navi-base-search-provider';
 
 export default class NaviReportSearchProviderService extends NaviBaseSearchProviderService {
   /**

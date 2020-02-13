@@ -10,9 +10,9 @@ module('Unit | Service | navi-report-search-provider', function(hooks) {
   hooks.beforeEach(async function() {
     // Load metadata needed for request fragment
     await this.owner.lookup('service:bard-metadata').loadMetadata();
-    this.service = this.owner.lookup('service:navi-report-search-provider');
+    this.service = this.owner.lookup('service:navi-search/navi-report-search-provider');
     const store = this.owner.lookup('service:store'),
-      mockAuthor = store.createRecord('user', { id: 'navi_user' });
+      mockAuthor = store.createRecord('user', { id: 'ciela' });
     this.owner.register(
       'service:user',
       Service.extend({
@@ -22,7 +22,7 @@ module('Unit | Service | navi-report-search-provider', function(hooks) {
   });
 
   test('it exists', function(assert) {
-    const service = this.owner.lookup('service:navi-report-search-provider');
+    const service = this.owner.lookup('service:navi-search/navi-report-search-provider');
     assert.ok(service);
   });
 
@@ -99,33 +99,33 @@ module('Unit | Service | navi-report-search-provider', function(hooks) {
       dashboards.get('firstObject').title.includes('Revenue'),
       'The service returns a dashboard that includes the requested title.'
     );
-    assert.ok(author.includes('navi_user'), 'The service returns a report from the requested user.');
+    assert.ok(author.includes('ciela'), 'The service returns a report from the requested user.');
   });
 
   test('search by user search returns only reports', async function(assert) {
-    const results = this.service.search('Hyrule');
+    const results = this.service.search('Report');
     const reports = await results.reports;
     const dashboards = await results.dashboards;
     const author = await reports.get('firstObject.author.id');
     assert.ok(
-      reports.get('firstObject').title.includes('Hyrule'),
+      reports.get('firstObject').title.includes('Report'),
       'The service returns a report that includes the requested title.'
     );
     assert.equal(dashboards.content.length, 0, 'No dashboards are being returned when there is no match.');
-    assert.ok(author.includes('navi_user'), 'The service returns a report from the requested user.');
+    assert.ok(author.includes('ciela'), 'The service returns a report from the requested user.');
   });
 
   test('search by user search returns only dashboards', async function(assert) {
-    const results = this.service.search('Tumblr');
+    const results = this.service.search('Dashboard');
     const reports = await results.reports;
     const dashboards = await results.dashboards;
     const author = await dashboards.get('firstObject.author.id');
     assert.ok(
-      dashboards.get('firstObject').title.includes('Tumblr'),
+      dashboards.get('firstObject').title.includes('Dashboard'),
       'The service returns a dashboard that includes the requested title.'
     );
     assert.equal(reports.content.length, 0, 'No reports are being returned when there is no match.');
-    assert.ok(author.includes('navi_user'), 'The service returns a dashboard from the requested user.');
+    assert.ok(author.includes('ciela'), 'The service returns a dashboard from the requested user.');
   });
 
   test('search with no results for search parameters', async function(assert) {

@@ -14,7 +14,7 @@ module('Integration | Component | navi-search-result-report', function(hooks) {
     await this.owner.lookup('service:bard-metadata').loadMetadata();
     this.service = this.owner.lookup('service:navi-report-search-provider');
     const store = this.owner.lookup('service:store'),
-      mockAuthor = store.createRecord('user', { id: 'navi_user' });
+      mockAuthor = store.createRecord('user', { id: 'ciela' });
     this.owner.register(
       'service:user',
       Service.extend({
@@ -28,6 +28,15 @@ module('Integration | Component | navi-search-result-report', function(hooks) {
     // Handle any actions with this.set('myAction', function(val) { ... });
 
     await render(hbs`<NaviSearchResult::Report />`);
+
+    assert.equal(this.element.textContent.trim(), '');
+  });
+
+  test('fetches results', async function(assert) {
+    // Set any properties with this.set('myProperty', 'value');
+    // Handle any actions with this.set('myAction', function(val) { ... });
+
+    await render(hbs`<NaviSearchResult::Report @query="Revenue"/>`);
 
     assert.equal(this.element.textContent.trim(), '');
   });
