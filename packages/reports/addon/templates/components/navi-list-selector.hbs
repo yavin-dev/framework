@@ -1,7 +1,7 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="navi-list-selector__header">
   <h3 class="navi-list-selector__title" title={{title}}>{{title}}</h3>
-  <button class="navi-list-selector__show-link" {{on "click" (toggle "showSelected" this)}}>
+  <button type="button" class="navi-list-selector__show-link" {{on "click" (toggle "showSelected" this)}}>
     {{#if showSelected}}
       Show All
     {{else}}
