@@ -20,7 +20,7 @@ module.exports = {
       trees.push(vendorTree);
     }
 
-    if (this._includeDevDependencies()) {
+    if (this._isMirageEnabled()) {
       const papaTree = new Funnel(path.resolve(require.resolve('papaparse'), '..'), { files: ['papaparse.js'] });
       trees.push(papaTree);
     }
@@ -28,14 +28,23 @@ module.exports = {
     return new MergeTrees(trees);
   },
 
-  _includeDevDependencies() {
-    return ['development', 'test'].includes(this._findHost().env);
+  _isMirageEnabled() {
+    if (this._mirageEnabled !== undefined) {
+      return this._mirageEnabled;
+    }
+
+    const host = this._findHost();
+    const mirageConfig = host.project.config(host.env)['ember-cli-mirage'] || {};
+    const mirageEnabled = !!mirageConfig.enabled;
+    const notProd = host.env !== 'production';
+    this._mirageEnabled = mirageEnabled || notProd;
+    return this._mirageEnabled;
   },
 
   included() {
     this._super.included.apply(this, arguments);
 
-    if (this._includeDevDependencies()) {
+    if (this._isMirageEnabled()) {
       this.import('vendor/papaparse.js', { using: [{ transformation: 'amd', as: 'papaparse' }] });
     }
   }

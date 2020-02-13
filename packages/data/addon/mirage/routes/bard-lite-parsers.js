@@ -33,9 +33,12 @@ export function parseSingleFilter(serializedFilter) {
  * @param {String} filtersParam - the raw filters query param `filters=dim1|field-op[values],dim2|field-op[values]`
  * @returns {Array} filters
  */
-export function parseFilters(filtersParam = '') {
-  const filterStrings = filtersParam
-    .split(']')
+export function parseFilters(filtersParam) {
+  if (!filtersParam) {
+    return [];
+  }
+  const filterStrings = (filtersParam + ',')
+    .split('],')
     .filter(f => f.length > 0)
     .map(f => `${f}]`);
   return filterStrings.map(parseSingleFilter);
