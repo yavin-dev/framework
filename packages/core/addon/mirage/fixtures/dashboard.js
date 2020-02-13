@@ -63,7 +63,7 @@ export default [
   {
     id: 3,
     title: 'Revenue Dashboard',
-    authorId: 'ciela',
+    authorId: 'navi_user',
     dashboardWidgetIds: [],
     createdOn: '2016-01-03 00:00:00',
     updatedOn: '2016-01-03 00:00:00',

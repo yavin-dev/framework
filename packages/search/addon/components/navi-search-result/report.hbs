@@ -1,11 +1,9 @@
 {{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{#if searchResult.content}}
 <h1>{{this.title}}</h1>
-<div class="search-result">
-    <ul>
-        {{#each searchResult as |result|}}
-        <li>{{result.title}}</li>
-        {{/each}}
-    </ul>
-</div>
+<ul class="search-result">
+    {{#each searchResult as |result|}}
+    <li>{{result.title}}</li>
+    {{/each}}
+</ul>
 {{/if}}
