@@ -55,6 +55,7 @@
     "ember-truth-helpers": "^2.0.0",
     "ember-uuid": "^1.0.0",
     "liquid-fire": "^0.31.0",
+    "lodash-es": "^4.17.11",
     "navi-core": "0.2.0",
     "navi-data": "0.2.0"
   },
@@ -101,7 +102,6 @@
     "eslint-plugin-node": "^9.0.1",
     "faker": "^4.1.0",
     "loader.js": "^4.7.0",
-    "lodash-es": "^4.17.11",
     "navi-notifications": "0.2.0",
     "qunit-dom": "^0.8.4"
   },
