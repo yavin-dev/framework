@@ -53,7 +53,7 @@ export default function() {
     if (idFilter) {
       let ids = idFilter.split(',');
       dashboardObject = dashboards.find(ids);
-    } else if ('filter[dashboards]') {
+    } else if ('filter[dashboards]' in request.queryParams) {
       try {
         let filterParameters = getFilterParams(queryFilter);
         let author = getQueryAuthor(queryFilter);
