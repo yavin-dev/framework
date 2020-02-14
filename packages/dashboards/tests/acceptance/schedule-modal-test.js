@@ -12,9 +12,8 @@ module('Acceptances | Navi Dashboard Schedule Modal', function(hooks) {
     assert.expect(11);
     await visit('/dashboards');
 
-    //https://github.com/emberjs/ember-test-helpers/issues/343
-    await triggerEvent('.navi-collection__row', 'mouseover');
-    await click('.navi-collection__row:first-of-type .schedule .btn');
+    await triggerEvent('.navi-collection__row0', 'mouseenter');
+    await click('.navi-collection__row0 .schedule .btn');
 
     assert.dom('.schedule-modal__header .primary-header').isVisible('Schedule modal pops up when action is clicked');
 

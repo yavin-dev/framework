@@ -17,7 +17,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
     await visit('/reports');
 
     // Click "Schedule"
-    await triggerEvent('.navi-collection__row0', 'mouseover');
+    await triggerEvent('.navi-collection__row0', 'mouseenter');
     await click('.navi-collection__row0 .schedule .btn');
 
     assert.dom('.schedule-modal__header .primary-header').isVisible('Schedule modal pops up when action is clicked');
@@ -280,7 +280,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
     assert.expect(4);
     await visit('/reports');
 
-    await triggerEvent('.navi-collection__row0', 'mouseover');
+    await triggerEvent('.navi-collection__row0', 'mouseenter');
     await click('.navi-collection__row0 .schedule .btn');
 
     // Enter an email
@@ -298,7 +298,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
     await click('.schedule-modal__cancel-btn');
 
     // Reopen the same schedule modal
-    await triggerEvent('.navi-collection__row0', 'mouseover');
+    await triggerEvent('.navi-collection__row0', 'mouseenter');
     await click('.navi-collection__row0 .schedule .btn');
 
     assert
@@ -340,7 +340,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
 
     await visit('/reports');
 
-    await triggerEvent('.navi-collection__row0', 'mouseover');
+    await triggerEvent('.navi-collection__row0', 'mouseenter');
     await click('.navi-collection__row0 .schedule .btn');
 
     assert
@@ -476,7 +476,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
       );
     });
     await visit('/reports');
-    await triggerEvent('.navi-collection__row0', 'mouseover');
+    await triggerEvent('.navi-collection__row0', 'mouseenter');
 
     await click('.navi-collection__row0 .schedule .btn');
 

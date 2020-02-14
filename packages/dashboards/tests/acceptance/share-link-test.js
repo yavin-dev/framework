@@ -13,10 +13,9 @@ module('Acceptance | share link', function(hooks) {
     await visit('/dashboards');
     let baseUrl = document.location.origin;
 
-    //https://github.com/emberjs/ember-test-helpers/issues/343
-    await triggerEvent('.navi-collection__row:first-of-type', 'mouseover');
+    await triggerEvent('.navi-collection__row0', 'mouseenter');
 
-    await click('.navi-collection__row:first-of-type .share .btn');
+    await click('.navi-collection__row0 .share .btn');
 
     assert
       .dom('.modal-input-box')
