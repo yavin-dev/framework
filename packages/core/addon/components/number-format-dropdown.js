@@ -13,10 +13,11 @@ import Component from '@ember/component';
 import layout from '../templates/components/number-format-dropdown';
 import { oneWay } from '@ember/object/computed';
 import { get, set, getWithDefault, action } from '@ember/object';
-import { layout as templateLayout } from '@ember-decorators/component';
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
 import { merge } from 'lodash-es';
 
 @templateLayout(layout)
+@tagName('')
 class NumberFormatDropdownComponent extends Component {
   /**
    * @property {String} format
