@@ -31,7 +31,7 @@ class DirAssetRowActions extends Component {
   @computed('value', 'row.rowId')
   get rowElement() {
     const rowId = get(this, 'row.rowId');
-    return `[data-row-id=${rowId}]`;
+    return `[data-row-id="${rowId}"]`;
   }
 
   /**
