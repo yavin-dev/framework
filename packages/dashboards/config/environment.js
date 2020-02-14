@@ -6,6 +6,7 @@ module.exports = function(/* environment, appConfig */) {
       includeTimezone: 'all'
     },
     navi: {
+      widgetsRequestsMaxConcurrency: 5,
       FEATURES: {
         dashboards: true,
         enableDashboardExport: false,

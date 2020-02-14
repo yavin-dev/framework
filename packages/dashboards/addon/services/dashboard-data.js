@@ -1,16 +1,21 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { A as arr } from '@ember/array';
 import { get, getWithDefault } from '@ember/object';
 import Service, { inject as service } from '@ember/service';
 import { isEmpty } from '@ember/utils';
-import { merge, flow } from 'lodash';
-import { all } from 'rsvp';
+import merge from 'lodash/merge';
+import flow from 'lodash/flow';
+import sortBy from 'lodash/sortBy';
+import { task, all } from 'ember-concurrency';
 import { computed } from '@ember/object';
 import { v1 } from 'ember-uuid';
 import DS from 'ember-data';
+import config from 'ember-get-config';
+
+const FETCH_MAX_CONCURRENCY = config.navi.widgetsRequestsMaxConcurrency || Infinity;
 
 export default Service.extend({
   /**
@@ -36,54 +41,78 @@ export default Service.extend({
   /**
    * @method fetchDataForDashboard
    * @param {Object} dashboard - dashboard model
-   * @returns {Promise} - Promise that resolves to a dashboard object with widget data
+   * @returns {Promise} - Promise that resolves to a hash of widget id to data promise array
    */
   fetchDataForDashboard(dashboard) {
     return dashboard
       .get('widgets')
+      .then(widgets =>
+        sortBy(dashboard.presentation.layout.toArray(), ['row', 'column']).map(layoutItem =>
+          widgets.findBy('id', layoutItem.widgetId.toString())
+        )
+      )
       .then(widgets => this.fetchDataForWidgets(dashboard.id, widgets, [], get(this, 'widgetOptions')));
   },
 
   /**
    * @method fetchDataForWidgets
+   * @param {Number} dashboardId
    * @param {Array} widgets - list of widget models with requests to fetch
    * @param {Array} decorators - array of functions to modify each request
    * @param {Object} options - options for web service fetch
    * @returns {Object} hash of widget id to data promise array
    */
   fetchDataForWidgets(dashboardId, widgets = [], decorators = [], options = {}) {
-    const result = {};
     const uuid = v1();
 
-    // Construct hash of widget id to data
-    widgets.forEach(widget => {
-      const widgetId = get(widget, 'id');
-      const dashboard = get(widget, 'dashboard');
-      const widgetDataPromises = get(widget, 'requests').map(request => {
-        //construct custom header for each widget with uuid
-        options.customHeaders = {
-          uiView: `dashboard.${dashboardId}.${uuid}.${widgetId}`
-        };
+    // For each widget, concurrently execute a task that will fetch all widget's requests
+    return widgets.reduce(
+      (dataByWidget, widget) => ({
+        [widget.id]: DS.PromiseArray.create({
+          promise: this._widgetTask.perform(dashboardId, widget, decorators, options, uuid).then(arr) // PromiseArray expects an Ember array
+        }),
+        ...dataByWidget
+      }),
+      {}
+    );
+  },
 
-        const requestWithFilters = this._applyFilters(dashboard, request);
-        const requestDecorated = this._decorate(decorators, requestWithFilters.serialize());
+  /**
+   * @property {Task} _widgetTask
+   * @private
+   * @param {Number} dashboardId
+   * @param {Object} widget - dashboard widget model
+   * @param {Array} decorators - array of functions to modify each request
+   * @param {Object} options - options for web service fetch
+   * @returns {TaskInstance}
+   */
+  _widgetTask: task(function*(dashboardId, widget, decorators, options, uuid) {
+    const widgetId = widget.id;
+    const { dashboard, requests } = widget;
+    let fetchTasks = [];
 
-        const filterErrors = this._getFilterErrors(dashboard, request);
+    requests.forEach((request, idx) => {
+      //construct custom header for each widget with uuid
+      options.customHeaders = {
+        uiView: `dashboard.${dashboardId}.${uuid}.${widgetId}`
+      };
 
-        return this._fetch(requestDecorated, options).then(result => {
+      const requestWithFilters = this._applyFilters(dashboard, request);
+      const requestDecorated = this._decorate(decorators, requestWithFilters.serialize());
+
+      const filterErrors = this._getFilterErrors(dashboard, request);
+
+      fetchTasks.push(
+        this._fetch.perform(requestDecorated, options).then(result => {
           const serverErrors = getWithDefault(result, 'response.meta.errors', []);
 
           return merge({}, result, { response: { meta: { errors: [...serverErrors, ...filterErrors] } } });
-        });
-      });
-
-      result[get(widget, 'id')] = DS.PromiseArray.create({
-        promise: all(widgetDataPromises).then(arr) // PromiseArray expects an Ember array returned
-      });
+        })
+      );
     });
 
-    return result;
-  },
+    return yield all(fetchTasks).then(arr);
+  }),
 
   /**
    * @method _decorate
@@ -180,13 +209,15 @@ export default Service.extend({
   },
 
   /**
-   * @method _fetch
+   * @property {Task} _fetch
    * @private
-   * @param {Object} request - object to modify
+   * @param {Object} request
    * @param {Object} options - options for web service fetch
-   * @returns {Promise} response from request
+   * @returns {TaskInstance}
    */
-  _fetch(request, options) {
-    return get(this, 'naviFacts').fetch(request, options);
-  }
+  _fetch: task(function*(request, options) {
+    return yield this.naviFacts.fetch(request, options);
+  })
+    .enqueue()
+    .maxConcurrency(FETCH_MAX_CONCURRENCY)
 });
