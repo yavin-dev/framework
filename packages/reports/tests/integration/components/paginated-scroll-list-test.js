@@ -54,19 +54,15 @@ module('Integration | Component | paginated scroll list', function(hooks) {
 
     assert.dom('.items-container.trimmed').exists({ count: 1 }, 'items container has "trimmed" class');
 
-    assert.equal(
-      $('a:contains("Show more")').length,
-      1,
-      'Show more link is visible when rendered items exceed the container max height'
-    );
+    assert
+      .dom('.paginated-scroll-list__show-more')
+      .isVisible('Show more link is visible when rendered items exceed the container max height');
 
     this.set('items', _buildItemsArray(30, '1'));
 
-    assert.equal(
-      $('a:contains("Show more")').length,
-      1,
-      'Show more link is visible when has items not rendered and does not exceed container max height'
-    );
+    assert
+      .dom('.paginated-scroll-list__show-more')
+      .isVisible('Show more link is visible when has items not rendered and does not exceed container max height');
   });
 
   test('component displays more items on clicking show more link', async function(assert) {
@@ -82,7 +78,9 @@ module('Integration | Component | paginated scroll list', function(hooks) {
 
     await render(COMMON_TEMPLATE);
 
-    assert.equal($('a:contains("Show more")').length, 1, 'Show more link is visible before clicking show more link');
+    assert
+      .dom('.paginated-scroll-list__show-more')
+      .isVisible('Show more link is visible before clicking show more link');
 
     assert
       .dom('.items-container.trimmed')
@@ -93,9 +91,11 @@ module('Integration | Component | paginated scroll list', function(hooks) {
       assert.ok(true, 'show more action is triggered');
     });
 
-    await click($('a:contains("Show more")')[0]);
+    await click('.paginated-scroll-list__show-more');
 
-    assert.equal($('a:contains("Show more")').length, 0, 'Show more link is not visible after clicking show more link');
+    assert
+      .dom('.paginated-scroll-list__show-more')
+      .isNotVisible('Show more link is not visible after clicking show more link');
 
     assert
       .dom('.items-container.show-all')
@@ -114,7 +114,9 @@ module('Integration | Component | paginated scroll list', function(hooks) {
 
     assert.dom('.items-container.show-all').exists({ count: 1 }, 'items container has "show-all" class');
 
-    assert.equal($('a:contains("Show more")').length, 0, 'Show more link is not visible when trim flag is false');
+    assert
+      .dom('.paginated-scroll-list__show-more')
+      .isNotVisible('Show more link is not visible when trim flag is false');
   });
 
   test('show more link is not visible when items are within max height', async function(assert) {
@@ -125,12 +127,12 @@ module('Integration | Component | paginated scroll list', function(hooks) {
     this.set('perPage', 250);
     await render(COMMON_TEMPLATE);
 
-    assert.equal($('a:contains("Show more")').length, 0, 'Show more link is not visible initially');
+    assert.dom('.paginated-scroll-list__show-more').isNotVisible('Show more link is not visible initially');
 
     /* == items exceed container == */
     this.set('items', _buildItemsArray(4, 'This is Foo Object'));
 
-    assert.equal($('a:contains("Show more")').length, 1, 'Show more link is visible after items change');
+    assert.dom('.paginated-scroll-list__show-more').isVisible('Show more link is visible after items change');
   });
 
   test('scrolling to the bottom loads more elements', async function(assert) {
@@ -141,16 +143,15 @@ module('Integration | Component | paginated scroll list', function(hooks) {
     this.set('perPage', 25);
     await render(COMMON_TEMPLATE);
 
-    assert.equal($('.mock-item').length, 25, '25 items are shown before scrolling');
+    assert.dom('.mock-item').exists({ count: 25 }, '25 items are shown before scrolling');
 
     //scroll all the way to the bottom
     $('.items-container').scrollTop($('.items-list').height());
     //test can be flaky at times, make sure scroll event happens
     await triggerEvent('.items-container', 'scroll');
+    await settled();
 
-    return settled().then(() => {
-      assert.dom('.mock-item').exists({ count: 50 }, '50 items are shown after scrolling');
-    });
+    assert.dom('.mock-item').exists({ count: 50 }, '50 items are shown after scrolling');
   });
 
   test('updating items or perPage will cause _itemsToRender to update', async function(assert) {
@@ -161,21 +162,25 @@ module('Integration | Component | paginated scroll list', function(hooks) {
     this.set('perPage', 250);
     await render(COMMON_TEMPLATE);
 
-    assert.equal($('.item').length, 5, '_itemsToRender is initialized correctly');
+    assert.dom('.item').exists({ count: 5 }, '_itemsToRender is initialized correctly');
 
     this.set('items', _buildItemsArray(10, 'This is Foo Object'));
 
-    assert.equal($('.item').length, 10, 'updating with new items array causes _itemsToRender to be updated correctly');
+    assert
+      .dom('.item')
+      .exists({ count: 10 }, 'updating with new items array causes _itemsToRender to be updated correctly');
 
     run(() => {
       this.get('items').popObject();
     });
 
-    assert.equal($('.item').length, 9, 'updating existing items array causes _itemsToRender to be updated correctly');
+    assert
+      .dom('.item')
+      .exists({ count: 9 }, 'updating existing items array causes _itemsToRender to be updated correctly');
 
     this.set('perPage', 4);
 
-    assert.equal($('.item').length, 4, 'updating perPage causes _itemsToRender to be updated correctly');
+    assert.dom('.item').exists({ count: 4 }, 'updating perPage causes _itemsToRender to be updated correctly');
   });
 
   // Builds a mock  array of items object in the form [{foo: content}, {foo: content}, ...]

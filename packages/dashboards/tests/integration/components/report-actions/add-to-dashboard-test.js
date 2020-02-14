@@ -90,10 +90,10 @@ module('Integration | Component | report actions/add to dashboard', function(hoo
       .isNotVisible('Dashboard title input is not shown by default');
 
     assert
-      .dom('.add-to-dashboard-modal a.dashboard-action-text')
+      .dom('.add-to-dashboard-modal button.dashboard-action-text')
       .hasText('Create new dashboard', 'Create new dashboard link is also shown by default');
 
-    await click('.add-to-dashboard-modal a.dashboard-action-text');
+    await click('.add-to-dashboard-modal button.dashboard-action-text');
 
     assert
       .dom('.add-to-dashboard-modal .text-input.dashboard-title')
@@ -104,7 +104,7 @@ module('Integration | Component | report actions/add to dashboard', function(hoo
       .isNotVisible('Dashboard selector is hidden after link click');
 
     assert
-      .dom('.add-to-dashboard-modal a.dashboard-action-text')
+      .dom('.add-to-dashboard-modal button.dashboard-action-text')
       .hasText('Select from my dashboards', 'Select from my dashboards link is also shown after link click');
   });
 
@@ -167,7 +167,7 @@ module('Integration | Component | report actions/add to dashboard', function(hoo
     await render(Template);
     await click('.report-control');
 
-    await click('.add-to-dashboard-modal a.dashboard-action-text');
+    await click('.add-to-dashboard-modal button.dashboard-action-text');
     await fillIn('input.dashboard-title', 'Tri Force Heroes');
     await click('.add-to-dashboard-modal .btn.add-to-dashboard');
   });

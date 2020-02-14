@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -11,20 +11,36 @@
   }
 
   .text-input {
+    height: 46px; //match to height of default ember power select input height
     padding: 12px;
     &.widget-title {
       margin-bottom: 15px;
     }
+
+    &::placeholder {
+      color: @navi-placeholder-gray;
+    }
   }
 
-  .dashboard-action-text {
+  button.dashboard-action-text {
+    .clickable;
+    color: @link-blue;
+    display: block;
+    font-size: @font-size-base;
     position: absolute;
     right: 30px;
-    color: @link-blue;
-    .clickable;
   }
 
-  .ember-power-select input:focus {
+  .ember-power-select-search-input:focus {
     border: none;
+  }
+
+  .ember-power-select-trigger {
+    border: 1px solid @navi-gray-400;
+
+    .ember-power-select-placeholder {
+      color: @navi-placeholder-gray;
+      display: inline;
+    }
   }
 }
