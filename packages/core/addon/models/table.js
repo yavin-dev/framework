@@ -11,7 +11,7 @@ import { canonicalizeMetric, canonicalizeColumnAttributes } from 'navi-data/util
 import { validator, buildValidations } from 'ember-cp-validations';
 import { metricFormat } from 'navi-data/helpers/metric-format';
 import { canonicalizeDimension, formatDimensionName } from 'navi-data/utils/dimension';
-import keyBy from 'lodash/keyBy';
+import { keyBy } from 'lodash-es';
 
 /**
  * @constant {Object} Validations - Validation object

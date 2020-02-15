@@ -8,6 +8,7 @@
 import { faker, Response } from 'ember-cli-mirage';
 import moment from 'moment';
 import { assign } from '@ember/polyfills';
+import { parseFilters, parseHavings } from './bard-lite-parsers';
 
 const API_DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss.SSS',
   DIMENSION_VALUE_MAP = {},
@@ -81,7 +82,7 @@ function _filterDimensions(dimensions, filter) {
     return dimensions;
   }
   return dimensions.reduce((arr, value) => {
-    if (DIMENSION_OPS[filter.operation](filter.values, value, filter.field)) {
+    if (DIMENSION_OPS[filter.operator](filter.values, value, filter.field)) {
       arr.push(value);
     }
     return arr;
@@ -167,20 +168,9 @@ export default function(
 
     // Get date range from query params + grain
     let dates = _getDates(grain, ...request.queryParams.dateTime.split('/'));
-    let filters = {};
+    let filters = [];
     if (request.queryParams.filters) {
-      filters = request.queryParams.filters.split(']').reduce((filterObj, currFilter) => {
-        if (currFilter.length > 0) {
-          if (currFilter[0] === ',') currFilter = currFilter.substring(1);
-          let [, dimension, field, operation, values] = currFilter.match(/(.*)\|(.*)-(.*)\[(.*)/);
-          field = field === 'desc' ? 'description' : field;
-          values = values.split(',');
-
-          filterObj[dimension] = { field, operation, values };
-        }
-
-        return filterObj;
-      }, filters);
+      filters = parseFilters(request.queryParams.filters);
     }
 
     // Convert each date into a row of data
@@ -193,7 +183,8 @@ export default function(
     // Add id and desc for each dimension
     dimensions.forEach(dimension => {
       rows = rows.reduce((newRows, currentRow) => {
-        let dimensionValues = _getDimensionValues(dimension, filters[dimension]);
+        const dimensionFilter = filters.find(f => f.dimension === dimension);
+        let dimensionValues = _getDimensionValues(dimension, dimensionFilter);
 
         return newRows.concat(
           dimensionValues.map(value =>
@@ -209,17 +200,7 @@ export default function(
 
     let havings = {};
     if (request.queryParams.having) {
-      havings = request.queryParams.having.split(']').reduce((havingObj, currHaving) => {
-        if (currHaving.length > 0) {
-          if (currHaving[0] === ',') currHaving = currHaving.substring(1);
-          let [, metric, operation, values] = currHaving.match(new RegExp('(.*)-(.*)\\[(.*)'));
-          values = values.split(',');
-
-          havingObj[metric] = { operation, values };
-        }
-
-        return havingObj;
-      }, filters);
+      havings = parseHavings(request.queryParams.having);
     }
 
     // Add each metric
@@ -229,7 +210,7 @@ export default function(
         const metrics = request.queryParams.metrics.split(',').reduce((metricsObj, metric) => {
           const having = havings[metric];
           const metricValue = metricBuilder(metric, row, dimensionKey);
-          if (!having || HAVING_OPS[having.operation](having.values, metricValue)) {
+          if (!having || HAVING_OPS[having.operator](having.values, metricValue)) {
             metricsObj[metric] = metricValue;
           }
           return metricsObj;
@@ -264,8 +245,7 @@ export default function(
 
     // Handle value filters
     if ('filters' in request.queryParams) {
-      let [, /* full match */ queryString] = request.queryParams.filters.match(/\[(.*)\]/),
-        values = queryString.split(','),
+      const { values } = parseFilters(request.queryParams.filters)[0],
         fieldMatch = request.queryParams.filters.match(/\|(id|key)/);
 
       rows =

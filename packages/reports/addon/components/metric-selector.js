@@ -17,7 +17,7 @@ import { readOnly } from '@ember/object/computed';
 import { A } from '@ember/array';
 import Component from '@ember/component';
 import { get, computed } from '@ember/object';
-import uniqBy from 'lodash/uniqBy';
+import { uniqBy } from 'lodash-es';
 import layout from '../templates/components/metric-selector';
 import { run } from '@ember/runloop';
 import { featureFlag } from 'navi-core/helpers/feature-flag';

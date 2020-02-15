@@ -16,6 +16,29 @@ import { configHost } from '../utils/adapter';
 
 const SORT_DIRECTIONS = ['desc', 'asc'];
 
+/**
+ * Serializes a list of filters to a fili filter string
+ * @param {Array<Filter>} filters - list of filters to be ANDed together for fili
+ * @param {Filter} filter - filters object
+ * @param {String} filter.dimension - dimension to be filtered on
+ * @param {String} filter.field - the dimension field to filter
+ * @param {String} filter.operator - the type of filter operator
+ * @param {Array<String|number>} filter.values - the values to pass to the operator
+ */
+export function serializeFilters(filters) {
+  return filters
+    .map(filter => {
+      const { dimension, field, operator, values } = filter;
+      const serializedValues = values
+        .map(v => String(v).replace(/"/g, '""')) // csv serialize " -> ""
+        .map(v => `"${v}"`) // wrap each "value"
+        .join(','); // comma to separate
+
+      return `${dimension}|${field}-${operator}[${serializedValues}]`;
+    })
+    .join(',');
+}
+
 export default EmberObject.extend({
   /**
    * @property namespace
@@ -88,17 +111,9 @@ export default EmberObject.extend({
     let filters = get(request, 'filters');
 
     if (filters && filters.length) {
-      return filters
-        .map(filter => {
-          let dimension = get(filter, 'dimension'),
-            operator = get(filter, 'operator'),
-            values = array(get(filter, 'values'))
-              .toArray()
-              .join(','),
-            field = get(filter, 'field') || 'id';
-          return `${dimension}|${field}-${operator}[${values}]`;
-        })
-        .join(',');
+      // default field to 'id'
+      filters = filters.map(filter => ({ field: 'id', ...filter }));
+      return serializeFilters(filters);
     } else {
       return undefined;
     }

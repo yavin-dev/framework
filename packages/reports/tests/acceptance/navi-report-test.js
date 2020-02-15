@@ -537,9 +537,9 @@ module('Acceptance | Navi Report', function(hooks) {
     await click('.navi-report__run-btn');
 
     assert.ok(
-      $('.navi-report__action-link:contains(Export)')
-        .attr('href')
-        .includes('productFamily%7Cid-in%5B1%5D'),
+      decodeURIComponent($('.navi-report__action-link:contains(Export)').attr('href')).includes(
+        'productFamily|id-in["1"]'
+      ),
       'Filter updates are automatically included in export url'
     );
 
@@ -590,9 +590,9 @@ module('Acceptance | Navi Report', function(hooks) {
     await clickTrigger('.multiple-format-export');
 
     assert.ok(
-      $('.multiple-format-export__dropdown a:contains(CSV)')
-        .attr('href')
-        .includes('productFamily%7Cid-in%5B1%5D'),
+      decodeURIComponent($('.multiple-format-export__dropdown a:contains(CSV)').attr('href')).includes(
+        'productFamily|id-in["1"]'
+      ),
       'Filter updates are automatically included in export url'
     );
   });
@@ -1402,7 +1402,7 @@ module('Acceptance | Navi Report', function(hooks) {
     server.get('/data/*path', (db, request) => {
       assert.equal(
         get(request, 'queryParams.filters'),
-        'contextId|id-in[This_will_not_match_any_dimension_values]',
+        'contextId|id-in["This_will_not_match_any_dimension_values"]',
         "Filter value is passed even when the value doesn'nt match any dimension IDs"
       );
 
@@ -1804,8 +1804,35 @@ module('Acceptance | Navi Report', function(hooks) {
     await click('.get-api__btn');
 
     assert.ok(
-      find('.navi-modal__input').value.includes(encodeURIComponent('multiSystemId|desc-contains[foo]')),
+      decodeURIComponent(find('.navi-modal__input').value).includes('multiSystemId|desc-contains["foo"]'),
       'Generated API URL is correct'
+    );
+  });
+
+  test('dimension select filter works with dimension ids containing commas', async function(assert) {
+    await visit('/reports/new');
+    await click($('.grouped-list__item:Contains(Dimension with comma) .grouped-list__filter')[0]);
+
+    await click('.filter-builder-dimension__values input');
+    await click($('.ember-power-select-option:contains(no)')[0]);
+    await click($('.ember-power-select-option:contains(yes)')[0]);
+
+    assert.deepEqual(
+      findAll('.ember-power-select-multiple-option span:not(.ember-power-select-multiple-remove-btn)').map(el =>
+        el.textContent.trim()
+      ),
+      ['no comma', 'yes, comma'],
+      'The selected dimensions are shown even with a comma'
+    );
+
+    await click('.navi-report__run-btn');
+    await click('.get-api__btn');
+
+    const url = find('.navi-modal__input').value;
+    const expectedFilter = 'commaDim|id-in["no comma","yes, comma"]';
+    assert.ok(
+      decodeURIComponent(url).includes(expectedFilter),
+      `Generated API URL, ${url} is contains filter ${expectedFilter}`
     );
   });
 
@@ -1966,5 +1993,27 @@ module('Acceptance | Navi Report', function(hooks) {
       ['Date', 'Property', 'Ad Clicks', 'Nav Clicks', 'Page Views'],
       'Report changed and ran successfully'
     );
+  });
+
+  test('Table number formatting works', async function(assert) {
+    assert.expect(4);
+    await visit('/reports/2/view');
+
+    await click($('.visualization-toggle__option:contains(Data Table)')[0]);
+    await click('.report-view__visualization-edit-btn');
+
+    await click(findAll('.number-format-dropdown__trigger')[1]); // open nav clicks dropdown
+
+    const navClicksCell = () => find('.table-row-vc').querySelectorAll('.table-cell-content.metric')[1];
+    assert.dom(navClicksCell()).hasText('718', 'The original metric value has no formatting');
+    assert.dom('.number-format-selector__radio-custom input').isChecked('The custom input is selected');
+
+    find('.number-format-selector__radio-money input').checked = true; // change format to money
+    await triggerEvent('.number-format-selector__radio-money input', 'change');
+
+    assert.dom('.number-format-selector__radio-money input').isChecked('The money input is selected');
+
+    await click('.number-format-dropdown');
+    assert.dom(navClicksCell()).hasText('$718', 'The metric is re-rendered in the money format');
   });
 });

@@ -21,7 +21,7 @@ const TestRequest = {
         operator: 'in',
         values: ['v3', 'v4']
       },
-      { dimension: 'd5', operator: 'notnull', values: ['""'] }
+      { dimension: 'd5', operator: 'notnull', values: [''] }
     ],
     intervals: [
       {
@@ -194,14 +194,14 @@ module('Unit | Bard facts Adapter', function(hooks) {
   });
 
   test('_buildFiltersParam', function(assert) {
-    assert.expect(4);
+    assert.expect(7);
 
     let singleFilter = {
       filters: [{ dimension: 'd1', field: 'desc', operator: 'in', values: ['v1', 'v2'] }]
     };
     assert.equal(
       Adapter._buildFiltersParam(singleFilter),
-      'd1|desc-in[v1,v2]',
+      'd1|desc-in["v1","v2"]',
       '_buildFiltersParam built the correct string for a single filter'
     );
 
@@ -223,7 +223,7 @@ module('Unit | Bard facts Adapter', function(hooks) {
     };
     assert.equal(
       Adapter._buildFiltersParam(manyFilters),
-      'd1|desc-in[v1,v2],d2|id-notin[v3,v4]',
+      'd1|desc-in["v1","v2"],d2|id-notin["v3","v4"]',
       '_buildFiltersParam built the correct string for many filters'
     );
 
@@ -239,6 +239,33 @@ module('Unit | Bard facts Adapter', function(hooks) {
       Adapter._buildFiltersParam(emptyFilters),
       undefined,
       '_buildFiltersParam returns undefined with empty filters'
+    );
+
+    let commaFilters = {
+      filters: [{ dimension: 'd3', field: 'id', operator: 'in', values: ['with, comma', 'no comma'] }]
+    };
+    assert.equal(
+      Adapter._buildFiltersParam(commaFilters),
+      'd3|id-in["with, comma","no comma"]',
+      '_buildFiltersParam quotes values correctly with commas'
+    );
+
+    let noIdFilters = {
+      filters: [{ dimension: 'd3', operator: 'in', values: ['with, comma', 'no comma'] }]
+    };
+    assert.equal(
+      Adapter._buildFiltersParam(noIdFilters),
+      'd3|id-in["with, comma","no comma"]',
+      '_buildFiltersParam defaults to "id" field'
+    );
+
+    let quoteFilters = {
+      filters: [{ dimension: 'd3', field: 'id', operator: 'in', values: ['with "quote"', 'but why'] }]
+    };
+    assert.equal(
+      Adapter._buildFiltersParam(quoteFilters),
+      'd3|id-in["with ""quote""","but why"]',
+      '_buildFiltersParam correctly escapes " in filters'
     );
   });
 
@@ -457,7 +484,7 @@ module('Unit | Bard facts Adapter', function(hooks) {
       Adapter._buildQuery(TestRequest),
       {
         dateTime: '2015-01-03/2015-01-04',
-        filters: 'd3|id-in[v1,v2],d4|id-in[v3,v4],d5|id-notnull[""]',
+        filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notnull[""]',
         metrics: 'm1,m2,r(p=123)',
         having: 'm1-gt[0]',
         format: 'json'
@@ -483,7 +510,7 @@ module('Unit | Bard facts Adapter', function(hooks) {
       Adapter._buildQuery(TestRequest, { format: 'jsonApi' }),
       {
         dateTime: '2015-01-03/2015-01-04',
-        filters: 'd3|id-in[v1,v2],d4|id-in[v3,v4],d5|id-notnull[""]',
+        filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notnull[""]',
         metrics: 'm1,m2,r(p=123)',
         having: 'm1-gt[0]',
         format: 'jsonApi'
@@ -496,7 +523,7 @@ module('Unit | Bard facts Adapter', function(hooks) {
       Adapter._buildQuery(sortRequest),
       {
         dateTime: '2015-01-03/2015-01-04',
-        filters: 'd3|id-in[v1,v2],d4|id-in[v3,v4],d5|id-notnull[""]',
+        filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notnull[""]',
         format: 'json',
         metrics: 'm1,m2,r(p=123)',
         having: 'm1-gt[0]',
@@ -510,7 +537,7 @@ module('Unit | Bard facts Adapter', function(hooks) {
       Adapter._buildQuery(sortRequest),
       {
         dateTime: '2015-01-03/2015-01-04',
-        filters: 'd3|id-in[v1,v2],d4|id-in[v3,v4],d5|id-notnull[""]',
+        filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notnull[""]',
         format: 'json',
         metrics: 'm1,m2,r(p=123)',
         having: 'm1-gt[0]',
@@ -526,7 +553,7 @@ module('Unit | Bard facts Adapter', function(hooks) {
       Adapter._buildQuery(havingRequest),
       {
         dateTime: '2015-01-03/2015-01-04',
-        filters: 'd3|id-in[v1,v2],d4|id-in[v3,v4],d5|id-notnull[""]',
+        filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notnull[""]',
         format: 'json',
         metrics: 'm1,m2,r(p=123)',
         having: 'r(p=123)-lt[50]'
@@ -538,7 +565,7 @@ module('Unit | Bard facts Adapter', function(hooks) {
       Adapter._buildQuery(TestRequest, { cache: false }),
       {
         dateTime: '2015-01-03/2015-01-04',
-        filters: 'd3|id-in[v1,v2],d4|id-in[v3,v4],d5|id-notnull[""]',
+        filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notnull[""]',
         metrics: 'm1,m2,r(p=123)',
         having: 'm1-gt[0]',
         format: 'json',
@@ -564,7 +591,7 @@ module('Unit | Bard facts Adapter', function(hooks) {
       Adapter._buildQuery(TestRequest, options),
       {
         dateTime: '2015-01-03/2015-01-04',
-        filters: 'd3|id-in[v1,v2],d4|id-in[v3,v4],d5|id-notnull[""]',
+        filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notnull[""]',
         metrics: 'm1,m2,r(p=123)',
         having: 'm1-gt[0]',
         format: 'json',
@@ -583,7 +610,7 @@ module('Unit | Bard facts Adapter', function(hooks) {
       Adapter._buildQuery(TestRequest),
       {
         dateTime: '2015-01-03/2015-01-04',
-        filters: 'd3|id-in[v1,v2],d4|id-in[v3,v4],d5|id-notnull[""]',
+        filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notnull[""]',
         metrics: 'm1,m2,r(p=123)',
         having: 'm1-gt[0]',
         format: 'json'
@@ -596,7 +623,7 @@ module('Unit | Bard facts Adapter', function(hooks) {
       Adapter._buildQuery(TestRequest, {}),
       {
         dateTime: '2015-01-03/2015-01-04',
-        filters: 'd3|id-in[v1,v2],d4|id-in[v3,v4],d5|id-notnull[""]',
+        filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notnull[""]',
         metrics: 'm1,m2,r(p=123)',
         having: 'm1-gt[0]',
         format: 'json'
@@ -609,7 +636,7 @@ module('Unit | Bard facts Adapter', function(hooks) {
       Adapter._buildQuery(TestRequest, { page: 1, perPage: 100 }),
       {
         dateTime: '2015-01-03/2015-01-04',
-        filters: 'd3|id-in[v1,v2],d4|id-in[v3,v4],d5|id-notnull[""]',
+        filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notnull[""]',
         metrics: 'm1,m2,r(p=123)',
         having: 'm1-gt[0]',
         format: 'json',
@@ -623,7 +650,7 @@ module('Unit | Bard facts Adapter', function(hooks) {
       Adapter._buildQuery(TestRequest, { format: 'csv' }),
       {
         dateTime: '2015-01-03/2015-01-04',
-        filters: 'd3|id-in[v1,v2],d4|id-in[v3,v4],d5|id-notnull[""]',
+        filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notnull[""]',
         metrics: 'm1,m2,r(p=123)',
         having: 'm1-gt[0]',
         format: 'csv'
@@ -639,7 +666,7 @@ module('Unit | Bard facts Adapter', function(hooks) {
       decodeURIComponent(Adapter.urlForFindQuery(TestRequest)),
       HOST +
         '/v1/data/table1/grain1/d1/d2/?dateTime=2015-01-03/2015-01-04&' +
-        'metrics=m1,m2,r(p=123)&filters=d3|id-in[v1,v2],d4|id-in[v3,v4],d5|id-notin[""]&having=m1-gt[0]&' +
+        'metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&' +
         'format=json',
       'urlForFindQuery correctly built the URL for the provided request'
     );
@@ -648,7 +675,7 @@ module('Unit | Bard facts Adapter', function(hooks) {
       decodeURIComponent(Adapter.urlForFindQuery(TestRequest, { format: 'csv' })),
       HOST +
         '/v1/data/table1/grain1/d1/d2/?dateTime=2015-01-03/2015-01-04&' +
-        'metrics=m1,m2,r(p=123)&filters=d3|id-in[v1,v2],d4|id-in[v3,v4],d5|id-notin[""]&having=m1-gt[0]&' +
+        'metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&' +
         'format=csv',
       'urlForFindQuery correctly built the URL for the provided request with the format option'
     );
@@ -680,7 +707,7 @@ module('Unit | Bard facts Adapter', function(hooks) {
       decodeURIComponent(Adapter.urlForFindQuery(TestRequest, { cache: false })),
       HOST +
         '/v1/data/table1/grain1/d1/d2/?dateTime=2015-01-03/2015-01-04&' +
-        'metrics=m1,m2,r(p=123)&filters=d3|id-in[v1,v2],d4|id-in[v3,v4],d5|id-notin[""]&having=m1-gt[0]&' +
+        'metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&' +
         'format=json&_cache=false',
       'urlForFindQuery correctly built the URL for the provided request with the cache option'
     );
@@ -689,7 +716,7 @@ module('Unit | Bard facts Adapter', function(hooks) {
       decodeURIComponent(Adapter.urlForFindQuery(TestRequest, { dataSourceName: 'blockhead' })),
       HOST2 +
         '/v1/data/table1/grain1/d1/d2/?dateTime=2015-01-03/2015-01-04&' +
-        'metrics=m1,m2,r(p=123)&filters=d3|id-in[v1,v2],d4|id-in[v3,v4],d5|id-notin[""]&having=m1-gt[0]&' +
+        'metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&' +
         'format=json',
       'uriForFindQuery renders alternative host name if option is given'
     );

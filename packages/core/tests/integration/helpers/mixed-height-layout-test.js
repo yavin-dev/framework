@@ -3,7 +3,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { formatItemDimension } from 'navi-core/helpers/mixed-height-layout';
-import cloneDeep from 'lodash/cloneDeep';
+import { cloneDeep } from 'lodash-es';
 
 const TEMPLATE = hbs`
   <div class="mixed-height-layout-test" style="position:relative;height:100px;width:10px">

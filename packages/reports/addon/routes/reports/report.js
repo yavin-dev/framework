@@ -2,7 +2,7 @@
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import merge from 'lodash/merge';
+import { merge } from 'lodash-es';
 import { get, set, computed } from '@ember/object';
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';

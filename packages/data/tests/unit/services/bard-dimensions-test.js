@@ -7,11 +7,9 @@ import { settled } from '@ember/test-helpers';
 import Pretender from 'pretender';
 import config from 'ember-get-config';
 import metadataRoutes from '../../helpers/metadata-routes';
+import { parseFilters } from 'navi-data/mirage/routes/bard-lite-parsers';
 
 let Service, Server, MetadataService;
-
-// Regular expression corresponding to query parameter syntax (ex: "dimensionOne|id-in[v1,v2]")
-const QUERY_PARAM_REGEX = /^\w+\|([a-zA-Z]+)-(\w+)\[((?:\w+,)*\w+)\]/;
 
 const TestDimension = 'dimensionOne';
 
@@ -42,7 +40,7 @@ module('Unit | Service | Dimensions', function(hooks) {
     //setup Pretender
     Server = new Pretender(function() {
       this.get(`${HOST}/v1/dimensions/dimensionOne/values/`, request => {
-        let rows = request.queryParams.filters === 'dimensionOne|id-in[v1]' ? Response2.rows : Response.rows;
+        let rows = request.queryParams.filters === 'dimensionOne|id-in["v1"]' ? Response2.rows : Response.rows;
         if (request.queryParams.page && request.queryParams.perPage) {
           let meta = {
             pagination: {
@@ -145,7 +143,7 @@ module('Unit | Service | Dimensions', function(hooks) {
       dimensionOne: true
     });
 
-    return Service.find(TestDimension, { field: 'id', values: 'v4' }).then(model => {
+    return Service.find(TestDimension, { field: 'id', values: ['v4'] }).then(model => {
       assert.deepEqual(
         get(model, 'dimension'),
         TestDimension,
@@ -175,7 +173,7 @@ module('Unit | Service | Dimensions', function(hooks) {
       dimensionOne: true
     });
 
-    return Service.find(TestDimension, { values: 'v4' }, { page: 1, perPage: 1 }).then(model => {
+    return Service.find(TestDimension, { values: ['v4'] }, { page: 1, perPage: 1 }).then(model => {
       assert.deepEqual(
         get(model, 'meta'),
         {
@@ -198,7 +196,7 @@ module('Unit | Service | Dimensions', function(hooks) {
       dimensionOne: false
     });
 
-    return Service.find(TestDimension, { values: 'v1' }).then(function(model) {
+    return Service.find(TestDimension, { values: ['v1'] }).then(function(model) {
       assert.deepEqual(
         get(model, 'dimension'),
         TestDimension,
@@ -223,7 +221,7 @@ module('Unit | Service | Dimensions', function(hooks) {
       dimensionOne: false
     });
 
-    return Service.find(TestDimension, { values: 'v1' }, { page: 1, perPage: 10 }).then(model => {
+    return Service.find(TestDimension, { values: ['v1'] }, { page: 1, perPage: 10 }).then(model => {
       assert.deepEqual(
         get(model, 'meta'),
         {
@@ -425,8 +423,8 @@ module('Unit | Service | Dimensions', function(hooks) {
 
     Server.get(`${HOST}/v1/dimensions/dimensionThree/values/`, req => {
       try {
-        let [, field, operator, values] = req.queryParams.filters.match(QUERY_PARAM_REGEX),
-          rows = A(response3.rows).filterBy(field, values);
+        let { field, operator, values } = parseFilters(req.queryParams.filters)[0],
+          rows = A(response3.rows).filterBy(field, values[0]);
 
         assert.equal(operator, 'contains', 'Search is done using `contains`');
 
@@ -490,8 +488,8 @@ module('Unit | Service | Dimensions', function(hooks) {
     };
 
     Server.get(`${HOST}/v1/dimensions/dimensionTwo/values/`, req => {
-      let [, field, operator, values] = req.queryParams.filters.match(QUERY_PARAM_REGEX),
-        rows = A(response3.rows).filterBy(field, values);
+      let { field, operator, values } = parseFilters(req.queryParams.filters)[0],
+        rows = A(response3.rows).filterBy(field, values[0]);
 
       assert.equal(operator, 'in', 'Search is done using `in`');
 
@@ -589,8 +587,8 @@ module('Unit | Service | Dimensions', function(hooks) {
     };
 
     Server.get(`${HOST}/v1/dimensions/dimensionTwo/values/`, req => {
-      let [, field, , values] = req.queryParams.filters.match(QUERY_PARAM_REGEX),
-        rows = A(response3.rows).filterBy(field, values);
+      let { field, values } = parseFilters(req.queryParams.filters)[0],
+        rows = A(response3.rows).filterBy(field, values[0]);
 
       return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ rows })];
     });
@@ -638,8 +636,8 @@ module('Unit | Service | Dimensions', function(hooks) {
       let filters = get(req, 'queryParams.filters');
 
       if (
-        filters === 'dimensionThree|desc-contains[value],dimensionThree|desc-contains[foo]' ||
-        filters === 'dimensionThree|desc-contains[foo],dimensionThree|desc-contains[value]'
+        filters === 'dimensionThree|desc-contains["value"],dimensionThree|desc-contains["foo"]' ||
+        filters === 'dimensionThree|desc-contains["foo"],dimensionThree|desc-contains["value"]'
       ) {
         return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ rows })];
       }
@@ -652,7 +650,7 @@ module('Unit | Service | Dimensions', function(hooks) {
         assert.deepEqual(
           A(res).mapBy('description'),
           ['value1 - foo', 'value2 - foo'],
-          'search returns expected records containing both the keywords when searched for "value foo""'
+          'search returns expected records containing both the keywords when searched for "value foo"'
         );
 
         options = { term: 'foo value' };
@@ -830,7 +828,7 @@ module('Unit | Service | Dimensions', function(hooks) {
     Server.get(`${HOST}/v1/dimensions/dimensionThree/values/`, req => {
       let filters = get(req, 'queryParams.filters');
 
-      if (filters === 'dimensionThree|desc-contains[value]') {
+      if (filters === 'dimensionThree|desc-contains["value"]') {
         return [404];
       }
 

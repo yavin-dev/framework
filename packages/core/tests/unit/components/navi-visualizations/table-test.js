@@ -5,7 +5,7 @@ import Component from '@ember/component';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
-import merge from 'lodash/merge';
+import { merge } from 'lodash-es';
 
 module('Unit | Component | table', function(hooks) {
   setupTest(hooks);

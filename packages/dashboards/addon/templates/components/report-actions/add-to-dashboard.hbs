@@ -1,4 +1,4 @@
-{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{yield}}
 {{#navi-modal
   isShown=showModal
@@ -18,11 +18,10 @@
         class="text-input dashboard-title"
         autofocus=true
       }}
-      {{!-- template-lint-disable link-href-attributes --}}
-      <a class="dashboard-action-text" role="button" onclick={{action (toggle "shouldCreateDashboard" this)}}>Select from my dashboards</a>
+      <button type="button" class="dashboard-action-text" {{on "click" (toggle "shouldCreateDashboard" this)}}>Select from my dashboards</button>
       <div class="btn-container">
-        <button type="button" class="btn btn-primary add-to-dashboard" onclick={{action onAddToNewDashboard newDashboardTitle reportName}} disabled={{disableAdd}}>Add To Dashboard</button>
-        <button type="button" class="btn btn-secondary" onclick={{action (toggle "showModal" this)}}>Cancel</button>
+        <button type="button" class="btn btn-primary add-to-dashboard" {{on "click" (action onAddToNewDashboard newDashboardTitle reportName)}} disabled={{disableAdd}}>Add To Dashboard</button>
+        <button type="button" class="btn btn-secondary" {{on "click" (toggle "showModal" this)}}>Cancel</button>
       </div>
     {{else}}
       {{#power-select
@@ -39,11 +38,10 @@
       }}
         {{dashboard.title}}
       {{/power-select}}
-      {{!-- template-lint-disable link-href-attributes --}}
-      <a class="dashboard-action-text" role="button" onclick={{action (toggle "shouldCreateDashboard" this)}}>Create new dashboard</a>
+      <button type="button" class="dashboard-action-text" {{on "click" (toggle "shouldCreateDashboard" this)}}>Create new dashboard</button>
       <div class="btn-container">
-        <button type="button" class="btn btn-primary add-to-dashboard" onclick={{action onAddToDashboard selectedDashboard.id reportName}} disabled={{disableAdd}}>Add To Dashboard</button>
-        <button type="button" class="btn btn-secondary" onclick={{action (toggle "showModal" this)}}>Cancel</button>
+        <button type="button" class="btn btn-primary add-to-dashboard" {{on "click" (action onAddToDashboard selectedDashboard.id reportName)}} disabled={{disableAdd}}>Add To Dashboard</button>
+        <button type="button" class="btn btn-secondary" {{on "click" (toggle "showModal" this)}}>Cancel</button>
       </div>
     {{/if}}
   </div>

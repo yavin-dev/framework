@@ -1,7 +1,7 @@
 import config from 'ember-get-config';
 import { set } from '@ember/object';
 import { A as arr } from '@ember/array';
-import merge from 'lodash/merge';
+import { merge } from 'lodash-es';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, settled, click, find, findAll } from '@ember/test-helpers';

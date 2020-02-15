@@ -49,7 +49,7 @@ module('Integration | Component | Dimension Bulk Import', function(hooks) {
     this.server.get(
       `${HOST}/v1/dimensions/property/values/`,
       (schema, request) => {
-        if (request.queryParams.filters === 'property|id-in[100001,100002,56565565,78787,114,100003]') {
+        if (request.queryParams.filters === 'property|id-in["100001","100002","56565565","78787","114","100003"]') {
           return PROPERTY_MOCK_DATA;
         }
       },
@@ -59,7 +59,7 @@ module('Integration | Component | Dimension Bulk Import', function(hooks) {
     this.server.get(
       `${HOST}/v1/dimensions/multiSystemId/values/`,
       (schema, request) => {
-        if (request.queryParams.filters === 'multiSystemId|id-in[6,7]') {
+        if (request.queryParams.filters === 'multiSystemId|id-in["6","7"]') {
           return {
             rows: [
               {

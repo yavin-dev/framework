@@ -1,9 +1,7 @@
 import Controller from '@ember/controller';
 import { A as arr } from '@ember/array';
 import { setProperties, set, get, computed, action } from '@ember/object';
-import isEqual from 'lodash/isEqual';
-import merge from 'lodash/merge';
-import omit from 'lodash/omit';
+import { isEqual, merge, omit } from 'lodash-es';
 
 export default class TableController extends Controller {
   request = {

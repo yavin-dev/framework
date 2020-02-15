@@ -42,7 +42,7 @@ module('Acceptance | Dashboard Filters', function(hooks) {
     await selectChoose('.filter-builder-dimension__values', '.item-row', 0);
 
     assert.ok(
-      dataRequests.every(request => request.queryParams.filters == 'property|id-in[1]'),
+      dataRequests.every(request => request.queryParams.filters == 'property|id-in["1"]'),
       'each widget request has the right filter with property in 1'
     );
     assert.equal(dataRequests.length, 3, 'three data requests were made (one for each widget)');
@@ -52,7 +52,7 @@ module('Acceptance | Dashboard Filters', function(hooks) {
     await selectChoose('.filter-builder-dimension__values', '.item-row', 0);
 
     assert.ok(
-      dataRequests.every(request => request.queryParams.filters == 'property|id-in[1,2]'),
+      dataRequests.every(request => request.queryParams.filters == 'property|id-in["1","2"]'),
       'each widget request has the right filter with values of both 1 and 2'
     );
     assert.equal(dataRequests.length, 3, 'three data requests were made (one for each widget)');
@@ -71,7 +71,9 @@ module('Acceptance | Dashboard Filters', function(hooks) {
     );
 
     assert.ok(
-      dataRequests.every(request => request.queryParams.filters == 'platform|desc-contains[win],property|id-in[1,2]'),
+      dataRequests.every(
+        request => request.queryParams.filters == 'platform|desc-contains["win"],property|id-in["1","2"]'
+      ),
       'each widget request has both filters present after new one is added'
     );
     assert.equal(dataRequests.length, 3, 'three data requests were made (one for each widget)');
@@ -80,7 +82,7 @@ module('Acceptance | Dashboard Filters', function(hooks) {
     await click('.filter-collection__remove:nth-child(1)');
 
     assert.ok(
-      dataRequests.every(request => request.queryParams.filters == 'platform|desc-contains[win]'),
+      dataRequests.every(request => request.queryParams.filters == 'platform|desc-contains["win"]'),
       'each widget request has the right filters after one has been removed'
     );
     dataRequests = [];
@@ -126,7 +128,7 @@ module('Acceptance | Dashboard Filters', function(hooks) {
     await selectChoose('.filter-builder-dimension__values', '.item-row', 0);
 
     assert.ok(
-      dataRequests.every(request => request.queryParams.filters == 'multiSystemId|key-in[k1]'),
+      dataRequests.every(request => request.queryParams.filters == 'multiSystemId|key-in["k1"]'),
       'each widget request has the filter added using the key field'
     );
     assert.equal(dataRequests.length, 3, 'three data requests were made (one for each widget)');
@@ -232,8 +234,8 @@ module('Acceptance | Dashboard Filters', function(hooks) {
     assert.deepEqual(
       dataRequests.map(req => req.queryParams.filters),
       [
-        'property|id-notin[2,3],property|id-notin[1],property|id-contains[114,100001]',
-        'property|id-notin[2,3],property|id-notin[1],property|id-contains[114,100001]'
+        'property|id-notin["2","3"],property|id-notin["1"],property|id-contains["114","100001"]',
+        'property|id-notin["2","3"],property|id-notin["1"],property|id-contains["114","100001"]'
       ],
       'The requests are sent with the initial filters'
     );
