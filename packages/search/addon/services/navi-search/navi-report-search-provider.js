@@ -20,6 +20,11 @@ export default class NaviReportSearchProviderService extends NaviBaseSearchProvi
   @service user;
 
   /**
+   * @property {String} displayComponentName
+   */
+  displayComponentName = 'navi-search-result/report';
+
+  /**
    * @method _parseReportString
    * @private
    * @param {String} query

@@ -1,11 +1,11 @@
 {{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{#if @data}}
+{{#if (or (await @data.data.reports.content) (await @data.data.dashboards.content))}}
 <h1>{{this.title}}</h1>
 <ul class="search-result">
-    {{#each @data.reports as |result|}}
+    {{#each (await @data.data.reports) as |result|}}
     <li>{{result.title}}</li>
     {{/each}}
-    {{#each @data.dashboards as |result|}}
+    {{#each (await @data.data.dashboards) as |result|}}
     <li>{{result.title}}</li>
     {{/each}}
 </ul>
