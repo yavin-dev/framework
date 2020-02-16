@@ -173,7 +173,7 @@ export function initialize() {
    * Overrides the defaults tooltipPosition to allow moving the tooltip to the left of the cursor
    * if it would go past the right side of the chart
    *
-   * https://github.com/c3js/c3/blob/f339e290a7ddd73221e9ffe01cba6356951e22d7/src/tooltip.js#L175-L215
+   * https://github.com/c3js/c3/blob/v0.7.9/src/tooltip.js#L175-L215
    * @method tooltipPosition
    * @override
    * @returns {Object} - the top and left offset positions for the tooltip
