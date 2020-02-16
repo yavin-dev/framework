@@ -33,7 +33,7 @@ class LazyRenderComponent extends Component {
   on = 'mouseenter';
 
   /**
-   * @property {String} target - jQuery selector for element to attach event handler too
+   * @property {String} target - element selector for element to attach event handler too
    */
   target = undefined;
 
