@@ -33,22 +33,22 @@ module('Integration | Component | dir-asset-row-actions', function(hooks) {
     set(this, 'row', row);
 
     await render(hbs`
-      <div class=row data-row-id=123>
+      <div class="row" data-row-id="123">
         <DirAssetRowActions @row={{this.row}} @value={{this.item}} />
       </div>
     `);
-    await triggerEvent('.row', 'mouseover');
+    await triggerEvent('.row', 'mouseenter');
 
     assert.dom('.navi-action-list').exists('The correct component is rendered for a report');
 
     set(this, 'item', dashboard);
 
     await render(hbs`
-      <div class=row data-row-id=123>
+      <div class="row" data-row-id="123">
         <DirAssetRowActions @row={{this.row}} @value={{this.item}} />
       </div>
     `);
-    await triggerEvent('.row', 'mouseover');
+    await triggerEvent('.row', 'mouseenter');
 
     assert.dom('.dashboard-action-list').exists('The correct component is rendered for a dashboard');
   });

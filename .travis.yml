@@ -1,4 +1,5 @@
 language: java
+os: linux
 jdk:
   - openjdk8
 
@@ -19,7 +20,7 @@ cache:
 env:
   global:
     - NODE_VERSION=8.16.0
-  matrix:
+  jobs:
     - PACKAGE=navi-app
     - PACKAGE=navi-core
     - PACKAGE=navi-dashboards

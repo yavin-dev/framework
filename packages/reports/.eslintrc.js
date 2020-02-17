@@ -12,7 +12,8 @@ module.exports = {
   },
   rules: {
     'ember/no-observers': 'warn',
-    'ember/no-side-effects': 'warn'
+    'ember/no-side-effects': 'warn',
+    'ember/no-jquery': 'warn'
   },
   overrides: [
     // node files
@@ -39,6 +40,12 @@ module.exports = {
       rules: Object.assign({}, require('eslint-plugin-node').configs.recommended.rules, {
         'multiline-comment-style': ['error', 'starred-block']
       })
+    },
+    {
+      files: ['tests/**/*.js'],
+      rules: {
+        'ember/no-jquery': 'off'
+      }
     }
   ]
 };

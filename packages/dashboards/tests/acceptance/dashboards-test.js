@@ -142,11 +142,10 @@ module('Acceptance | Dashboards', function(hooks) {
 
     await visit('/dashboards');
 
-    //https://github.com/emberjs/ember-test-helpers/issues/343
-    await triggerEvent('.navi-collection__row:first-of-type', 'mouseover');
+    await triggerEvent('.navi-collection__row0', 'mouseenter');
 
     // Click "Share"
-    await click('.navi-collection__row:first-of-type .share .btn');
+    await click('.navi-collection__row0 .share .btn');
 
     assert.dom('.navi-collection__actions .action').exists({ count: 5 }, 'The second column contains five actions');
 
@@ -156,7 +155,7 @@ module('Acceptance | Dashboards', function(hooks) {
 
     // Cancel modal and click "Delete"
     await click($('button:contains(Cancel)')[0]);
-    await click('.navi-collection__row:first-of-type .delete button');
+    await click('.navi-collection__row0 .delete button');
 
     assert
       .dom('.primary-header')

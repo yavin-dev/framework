@@ -14,7 +14,7 @@ module('Acceptance | share link', function(hooks) {
   test('report share link', async function(assert) {
     let baseUrl = document.location.origin;
 
-    await triggerEvent('.navi-collection__row0', 'mouseover');
+    await triggerEvent('.navi-collection__row0', 'mouseenter');
     await click('.navi-collection__row0 .share .btn');
 
     assert
