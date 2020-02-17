@@ -159,7 +159,9 @@ module('Unit | Service | dashboard data', function(hooks) {
   test('fetch concurrency and cancel', async function(assert) {
     assert.expect(3);
 
-    let fetchCalls = [];
+    const done = assert.async();
+
+    const fetchCalls = [];
 
     const service = this.owner.factoryFor('service:dashboard-data').create({
       async _fetch(request) {
@@ -208,14 +210,12 @@ module('Unit | Service | dashboard data', function(hooks) {
       ],
       layout = [{ widgetId: 1, row: 0, column: 0 }, { widgetId: 2, row: 4, column: 0 }];
 
-    const done = assert.async();
-
     try {
       const data = service.fetchDataForWidgets(1, widgets, layout);
       assert.equal(service._fetchTask.concurrency, 2, 'fetch task concurrency is correctly set by config');
       await get(data, '1');
     } catch (e) {
-      assert.deepEqual(fetchCalls, [1, 2], '2 first concurrent fetch rasks were running, others were cancelled');
+      assert.deepEqual(fetchCalls, [1, 2], '2 first concurrent fetch tasks were running, others were cancelled');
       assert.equal(service._fetchTask.concurrency, 0, 'no more tasks are running');
     } finally {
       done();

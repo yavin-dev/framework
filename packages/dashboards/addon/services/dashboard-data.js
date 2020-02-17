@@ -15,26 +15,27 @@ import config from 'ember-get-config';
 
 const FETCH_MAX_CONCURRENCY = config.navi.widgetsRequestsMaxConcurrency || Infinity;
 
-export default Service.extend({
+export default class DashboardDataService extends Service {
   /**
-   * @property {Ember.Service} naviFacts
+   * @property {Service} naviFacts
    */
-  naviFacts: service(),
+  @service naviFacts;
 
   /**
-   * @property {Ember.Service} store
+   * @property {Service} store
    */
-  store: service(),
+  @service store;
 
   /**
    * @property {Object} widgetOptions - options for the fact request
    */
-  widgetOptions: computed(function() {
+  @computed
+  get widgetOptions() {
     return {
       page: 1,
       perPage: 10000
     };
-  }),
+  }
 
   /**
    * @method fetchDataForDashboard
@@ -45,15 +46,15 @@ export default Service.extend({
     const widgets = await dashboard.widgets;
     const layout = get(dashboard, 'presentation.layout');
 
-    return this.fetchDataForWidgets(dashboard.id, widgets, layout, [], get(this, 'widgetOptions'));
-  },
+    return this.fetchDataForWidgets(dashboard.id, widgets, layout, [], this.widgetOptions);
+  }
 
   /**
    * @method cancelFetchDataForDashboard - cancels all running or enqueued fetch Task Instances
    */
   cancelFetchDataForDashboard() {
     this._fetchTask.cancelAll();
-  },
+  }
 
   /**
    * @method fetchDataForWidgets
@@ -74,16 +75,13 @@ export default Service.extend({
       .filter(widget => widget);
 
     // For each widget, concurrently execute a task that will fetch all widget's requests
-    return sortedWidgets.reduce(
-      (dataByWidget, widget) => ({
-        [widget.id]: DS.PromiseArray.create({
-          promise: this._widgetTask.perform(dashboardId, widget, decorators, options, uuid).then(arr) // PromiseArray expects an Ember array
-        }),
-        ...dataByWidget
-      }),
-      {}
-    );
-  },
+    return sortedWidgets.reduce((dataByWidget, widget) => {
+      dataByWidget[widget.id] = DS.PromiseArray.create({
+        promise: this._widgetTask.perform(dashboardId, widget, decorators, options, uuid).then(arr) // PromiseArray expects an Ember array
+      });
+      return dataByWidget;
+    }, {});
+  }
 
   /**
    * @property {Task} _widgetTask
@@ -95,10 +93,9 @@ export default Service.extend({
    * @param {String} uuid - v1 UUID
    * @returns {TaskInstance}
    */
-  _widgetTask: task(function*(dashboardId, widget, decorators, options, uuid) {
-    const widgetId = widget.id;
-    const { dashboard, requests } = widget;
-    let fetchTasks = [];
+  @task(function*(dashboardId, widget, decorators, options, uuid) {
+    const { dashboard, requests, id: widgetId } = widget;
+    const fetchTasks = [];
 
     requests.forEach(request => {
       //construct custom header for each widget with uuid
@@ -121,7 +118,8 @@ export default Service.extend({
     });
 
     return yield fetchTasks.length ? all(fetchTasks).then(arr) : arr();
-  }),
+  })
+  _widgetTask;
 
   /**
    * @method _decorate
@@ -131,12 +129,8 @@ export default Service.extend({
    * @returns {Object} transformed version of request
    */
   _decorate(decorators, request) {
-    if (isEmpty(decorators)) {
-      return request;
-    } else {
-      return flow(...decorators)(request);
-    }
-  },
+    return isEmpty(decorators) ? request : flow(...decorators)(request);
+  }
 
   /**
    * Takes a dashboard and a request on a widget in that
@@ -155,7 +149,7 @@ export default Service.extend({
       .forEach(filter => requestClone.addRawFilter(filter));
 
     return requestClone;
-  },
+  }
 
   /**
    * Finds the invalid global filters for a
@@ -169,7 +163,7 @@ export default Service.extend({
     const filters = get(dashboard, 'filters') || [];
 
     return filters.filter(filter => !this._isFilterValid(request, filter));
-  },
+  }
 
   /**
    * Finds the valid global filters for a
@@ -183,7 +177,7 @@ export default Service.extend({
     const filters = get(dashboard, 'filters') || [];
 
     return filters.filter(filter => this._isFilterValid(request, filter));
-  },
+  }
 
   /**
    * Generate the Invalid Filter error objects for a
@@ -203,7 +197,7 @@ export default Service.extend({
       )}" table.`,
       title: 'Invalid Filter'
     }));
-  },
+  }
 
   /**
    *
@@ -215,7 +209,7 @@ export default Service.extend({
     const validDimensions = get(request, 'logicalTable.timeGrain.dimensionIds');
 
     return validDimensions.includes(get(filter, 'dimension.name'));
-  },
+  }
 
   /**
    * @property {Task} _fetchTask
@@ -224,11 +218,12 @@ export default Service.extend({
    * @param {Object} options - options for web service fetch
    * @returns {TaskInstance}
    */
-  _fetchTask: task(function*(request, options) {
+  @(task(function*(request, options) {
     return yield this._fetch(request, options);
   })
     .enqueue()
-    .maxConcurrency(FETCH_MAX_CONCURRENCY),
+    .maxConcurrency(FETCH_MAX_CONCURRENCY))
+  _fetchTask;
 
   /**
    * @method _fetch
@@ -240,4 +235,4 @@ export default Service.extend({
   _fetch(request, options) {
     return this.naviFacts.fetch(request, options);
   }
-});
+}
