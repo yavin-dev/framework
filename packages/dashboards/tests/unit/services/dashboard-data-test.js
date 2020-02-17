@@ -104,13 +104,15 @@ module('Unit | Service | dashboard data', function(hooks) {
 
     assert.ok(get(data, '1.isPending'), 'data uses a promise proxy');
 
-    data = await data;
-    const widgetData = get(data, '1');
+    const widgetData = await get(data, '1');
     assert.deepEqual(
       widgetData.map(res => get(res, 'response.data')),
       [1, 2, 3],
       'data for widget is an array of request responses'
     );
+
+    await get(data, '2');
+    await get(data, '3');
 
     assert.deepEqual(fetchCalls, [4, 1, 2, 3], 'requests are enqueued by layout order');
 
@@ -143,7 +145,7 @@ module('Unit | Service | dashboard data', function(hooks) {
       return resolve({});
     });
 
-    await service.fetchDataForWidgets(
+    service.fetchDataForWidgets(
       1,
       [{ id: 2, dashboard: cloneDeep(dashboard), requests: [makeRequest(4)] }],
       [{ widgetId: 2 }],
