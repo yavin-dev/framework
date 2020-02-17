@@ -11,7 +11,6 @@
  */
 import Component from '@glimmer/component';
 import fileTypes from 'navi-directory/utils/enums/file-types';
-import { get } from '@ember/object';
 import { pluralize } from 'ember-inflector';
 
 export default class DirItemNameCellComponent extends Component {
@@ -29,15 +28,14 @@ export default class DirItemNameCellComponent extends Component {
    * @property {String} itemId - the id of the model or the tempId of an unsaved model
    */
   get itemId() {
-    return get(this, 'args.value.modelId');
+    return this.args.value?.modelId;
   }
 
   /**
    * @property {String} type - the type of the item
    */
   get type() {
-    const value = this.args.value || {};
-    return get(value, 'constructor.modelName');
+    return this.args.value?.constructor?.modelName;
   }
 
   /**
@@ -45,6 +43,6 @@ export default class DirItemNameCellComponent extends Component {
    */
   get iconClass() {
     const type = pluralize(this.type);
-    return get(fileTypes, `definitions.${type}.iconClass`);
+    return fileTypes.definitions[type]?.iconClass;
   }
 }

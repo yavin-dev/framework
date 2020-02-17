@@ -14,6 +14,6 @@ import { action } from '@ember/object';
 export default class DirSearchBarComponent extends Component {
   @action
   searchInput({ target: { value } }) {
-    this.args?.searchFor?.(value);
+    this.args.searchFor?.(value);
   }
 }

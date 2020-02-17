@@ -4,6 +4,9 @@ const EmberAddon = require('ember-cli/lib/broccoli/ember-addon');
 
 module.exports = function(defaults) {
   let app = new EmberAddon(defaults, {
+    babel: {
+      plugins: ['@babel/plugin-proposal-optional-chaining']
+    },
     'ember-cli-babel': {
       includePolyfill: true
     }

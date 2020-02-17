@@ -9,22 +9,20 @@
  * />
  */
 import Component from '@glimmer/component';
-import { get } from '@ember/object';
 
 export default class DirAssetRowActionsComponent extends Component {
   /**
    * @property {String} type - the type of the asset
    */
   get type() {
-    const { value } = this.args;
-    return value ? value.constructor.modelName : null;
+    return this.args.value?.constructor?.modelName;
   }
 
   /**
    * @property {String} rowElement - selector for the row containing this
    */
   get rowElement() {
-    const rowId = get(this, 'args.row.rowId');
+    const rowId = this.args.row?.rowId;
     return `[data-row-id="${rowId}"]`;
   }
 

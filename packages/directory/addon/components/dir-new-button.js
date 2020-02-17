@@ -6,7 +6,6 @@
  */
 
 import Component from '@glimmer/component';
-import { get } from '@ember/object';
 import FileTypes from 'navi-directory/utils/enums/file-types';
 
 export default class DirNewButtonComponent extends Component {
@@ -34,5 +33,5 @@ export default class DirNewButtonComponent extends Component {
   /**
    * @property {Object} fileTypes - Object containing file types icon class and route-link with the type name as keys
    */
-  fileTypes = get(FileTypes, 'definitions');
+  fileTypes = FileTypes.definitions;
 }

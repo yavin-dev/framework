@@ -13,7 +13,7 @@
  * />
  */
 import Component from '@glimmer/component';
-import { get, action } from '@ember/object';
+import { action } from '@ember/object';
 import Table from 'ember-light-table';
 import moment from 'moment';
 import { isEmpty } from '@ember/utils';
@@ -34,7 +34,7 @@ export default class DirTableComponent extends Component {
     const items = this.args.items || [];
     return items.map(item => ({
       model: item,
-      lastUpdatedDate: moment(get(item, 'updatedOn')).format('MM/DD/YYYY -  hh:mm:ss a')
+      lastUpdatedDate: moment(item.updatedOn).format('MM/DD/YYYY -  hh:mm:ss a')
     }));
   }
 
@@ -123,14 +123,14 @@ export default class DirTableComponent extends Component {
    * @returns {Object} sort column key and direction
    */
   _getNextSort(column) {
-    let { sortBy } = this.args,
-      nextSortBy = get(column, 'sortByKey'),
-      nextSortDir;
+    const { sortBy } = this.args;
+    const nextSortBy = column.sortByKey;
 
+    let nextSortDir;
     if (sortBy === nextSortBy) {
-      nextSortDir = get(column, 'ascending') ? 'asc' : 'desc';
+      nextSortDir = column.ascending ? 'asc' : 'desc';
     } else {
-      nextSortDir = get(column, 'sortDescFirst') ? 'desc' : 'asc';
+      nextSortDir = column.sortDescFirst ? 'desc' : 'asc';
     }
 
     return {
@@ -146,11 +146,7 @@ export default class DirTableComponent extends Component {
   @action
   onColumnClick(column) {
     if (column.sorted) {
-      const { onColumnClick } = this.args;
-
-      if (typeof onColumnClick === 'function') {
-        onColumnClick(this._getNextSort(column));
-      }
+      this.args.onColumnClick?.(this._getNextSort(column));
     }
   }
 }

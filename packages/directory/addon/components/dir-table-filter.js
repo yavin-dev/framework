@@ -25,7 +25,6 @@ export default class DirTableFilterComponent extends Component {
   /**
    * @property {String} selectedFileType
    */
-  @computed('args.selectedType')
   get selectedFileType() {
     const { selectedType } = this.args;
     return isEmpty(selectedType) ? 'all' : selectedType;
@@ -51,6 +50,6 @@ export default class DirTableFilterComponent extends Component {
       queryParam = null;
     }
 
-    this.args.updateQueryParams({ type: queryParam });
+    this.args.updateQueryParams?.({ type: queryParam });
   }
 }
