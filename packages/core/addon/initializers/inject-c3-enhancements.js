@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { set } from '@ember/object';
@@ -167,6 +167,58 @@ export function initialize() {
    */
   c3infn.isCustomX = function() {
     return false;
+  };
+
+  /**
+   * Overrides the defaults tooltipPosition to allow moving the tooltip to the left of the cursor
+   * if it would go past the right side of the chart
+   *
+   * https://github.com/c3js/c3/blob/v0.7.9/src/tooltip.js#L175-L215
+   * @method tooltipPosition
+   * @override
+   * @returns {Object} - the top and left offset positions for the tooltip
+   *
+   */
+  c3infn.tooltipPosition = function(dataToShow, tWidth, tHeight, element) {
+    const { config, d3 } = this;
+    const forArc = this.hasArcType();
+    const [mouseX, mouseY] = d3.mouse(element);
+    let tooltipLeft, tooltipTop;
+
+    if (forArc) {
+      tooltipLeft = this.width / 2 + mouseX;
+      tooltipTop = this.height / 2 + mouseY + 20;
+    } else {
+      const svgLeft = this.getSvgLeft(true);
+      // position of verticalBar on chart
+      const verticalBarX = svgLeft + this.getCurrentPaddingLeft(true) + this.x(dataToShow[0].x);
+
+      let tooltipRight, chartRight;
+      if (config.axis_rotated) {
+        tooltipLeft = svgLeft + mouseX + 100;
+        tooltipRight = tooltipLeft + tWidth;
+        chartRight = this.currentWidth - this.getCurrentPaddingRight();
+        tooltipTop = this.x(dataToShow[0].x) + 20;
+      } else {
+        tooltipLeft = verticalBarX + 20; // defaults to 20px after
+        tooltipRight = tooltipLeft + tWidth;
+        chartRight = svgLeft + this.currentWidth - this.getCurrentPaddingRight();
+        tooltipTop = mouseY + 15;
+      }
+
+      // override here to move the tooltip an equal amount to the left of the vertical bar
+      if (tooltipRight > chartRight) {
+        tooltipLeft = verticalBarX - tWidth - 20;
+      }
+      if (tooltipTop + tHeight > this.currentHeight) {
+        tooltipTop -= tHeight + 30;
+      }
+    }
+    if (tooltipTop < 0) {
+      tooltipTop = 0;
+    }
+
+    return { top: tooltipTop, left: tooltipLeft };
   };
 }
 
