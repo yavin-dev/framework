@@ -44,13 +44,12 @@
 <span class="ember-power-select-status-icon"></span>
 
 {{!-- Added logic for bulk import --}}
-{{#navi-modal
-    isShown=_showBulkImport
-}}
-  {{dimension-bulk-import
-    dimension=extra.filter.subject
-    queryIds=_bulkImportQueryIds
-    onSelectValues=(pipe (action "importValues") (action (set this "_showBulkImport" false)))
-    onCancel=(action (set this "_showBulkImport" false))
-  }}
-{{/navi-modal}}
+<NaviModal @isShown={{this._showBulkImport}}>
+  <DimensionBulkImport
+    @dimension={{@extra.filter.subject}}
+    @queryIds={{this._bulkImportQueryIds}}
+    @rawQuery={{this._bulkImportRawValue}}
+    @onSelectValues={{queue (action "importValues") (set this._showBulkImport false)}}
+    @onCancel={{set this._showBulkImport false}}
+  />
+</NaviModal>

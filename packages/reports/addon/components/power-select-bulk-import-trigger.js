@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * An ember-power-select trigger component that can import a list of comma separated values on paste
@@ -21,10 +21,16 @@ export default Trigger.extend({
   _showBulkImport: false,
 
   /**
-   * @param {Array} bulkImportQueryIds - list of ids that were pasted into search input
+   * @param {Array} _bulkImportQueryIds - list of ids that were pasted into search input
    * @private
    */
   _bulkImportQueryIds: undefined,
+
+  /**
+   * @param {String} _bulkImportRawValue - String that was pasted into search input
+   * @private
+   */
+  _bulkImportRawValue: undefined,
 
   /**
    * @method init
@@ -63,7 +69,8 @@ export default Trigger.extend({
       if (isBulkImportRequest) {
         setProperties(this, {
           _showBulkImport: true,
-          _bulkImportQueryIds: queryIds
+          _bulkImportQueryIds: queryIds,
+          _bulkImportRawValue: pastedData
         });
       }
     }
