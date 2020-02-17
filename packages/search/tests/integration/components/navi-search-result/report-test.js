@@ -30,42 +30,15 @@ module('Integration | Component | navi-search-result-report', function(hooks) {
 
     await render(hbs`<NaviSearchResult::Report />`);
 
-    assert.equal(this.element.textContent.trim(), '');
+    assert.equal(this.element.textContent.trim(), 'Reports & Dashboards');
   });
 
   test('displays results', async function(assert) {
-    set(
-      this,
-      'result',
-      this.service.search('Revenue').find(element => element.component === 'navi-search-result/report')
-    );
+    const result = await this.service.search('Revenue');
+    set(this, 'result', result.find(element => element.component === 'navi-search-result/report'));
 
-    await render(hbs`<NaviSearchResult::Report @data={{this.result}}/>`);
+    await render(hbs`<NaviSearchResult::Report @data={{this.result.data}}/>`);
 
-    assert.ok(this.element.textContent.trim().includes('Reports & Dashboards'), 'Showing search results');
-  });
-
-  test('search returns no results', async function(assert) {
-    set(
-      this,
-      'result',
-      this.service.search('something').find(element => element.component === 'navi-search-result/report')
-    );
-
-    await render(hbs`<NaviSearchResult::Report @data={{this.result}}/>`);
-
-    assert.equal(this.element.textContent.trim(), '', 'no results are rendered');
-  });
-
-  test('search query contains special characters', async function(assert) {
-    set(
-      this,
-      'result',
-      this.service.search('lala!!?.$@#').find(element => element.component === 'navi-search-result/report')
-    );
-
-    await render(hbs`<NaviSearchResult::Report @data={{this.result}}/>`);
-
-    assert.equal(this.element.textContent.trim(), '', 'no results are rendered');
+    assert.dom('li').exists('Showing search results');
   });
 });

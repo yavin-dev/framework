@@ -44,15 +44,21 @@ export default class NaviSearchProviderService extends Service {
    * the name of the result component as well as result ordering information
    * @description uses all the discovered search providers to fetch search results
    */
-  search(query) {
+  async search(query) {
     const searchProviders = this.all();
-    let results = [];
+    let results = {};
     for (const provider of searchProviders) {
-      results.push({
-        component: provider.displayComponentName,
-        data: provider.search(query)
-      });
+      const data = await provider.search(query);
+      if (data.content.length) {
+        if (!results[provider.displayComponentName]) {
+          results[provider.displayComponentName] = {
+            component: provider.displayComponentName,
+            data: []
+          };
+        }
+        results[provider.displayComponentName].data.push(data);
+      }
     }
-    return results;
+    return Object.values(results);
   }
 }
