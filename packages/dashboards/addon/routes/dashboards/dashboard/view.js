@@ -150,7 +150,8 @@ export default Route.extend({
   deactivate() {
     this._super(...arguments);
 
-    this.get('controller').set('filters', null);
+    this.dashboardData.cancelFetchDataForDashboard();
+    this.controller.set('filters', null);
     this.set('_widgetDataCache', null);
   }
 });

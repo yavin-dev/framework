@@ -1,5 +1,4 @@
 import { cloneDeep, merge } from 'lodash-es';
-import { run } from '@ember/runloop';
 import { resolve } from 'rsvp';
 import { get } from '@ember/object';
 import { module, test } from 'qunit';
@@ -19,45 +18,45 @@ module('Unit | Service | dashboard data', function(hooks) {
     await MetadataService.loadMetadata();
   });
 
-  test('fetch data for dashboard', function(assert) {
-    assert.expect(2);
+  test('fetch data for dashboard', async function(assert) {
+    assert.expect(3);
 
     const mockDashboard = {
       id: 1,
       widgets: resolve([1, 2, 3]),
-      get(prop) {
-        return this[prop];
-      }
+      presentation: { layout: 'fooLayout' }
     };
 
     const service = this.owner.factoryFor('service:dashboard-data').create({
       // Skip the ws data fetch for this test
-      fetchDataForWidgets: (id, widgets, decorators, options) => {
+      fetchDataForWidgets: (id, widgets, layout, decorators, options) => {
         //removing custom headers
         delete options.customHeaders;
         assert.deepEqual(
           options,
           { page: 1, perPage: 10000 },
-          'Default pagination options are passed through for widget data fetch'
+          'Default pagination options are passed through to fetchDataForWidgets'
         );
+
+        assert.equal(layout, 'fooLayout', 'Layout is passed through to fetchDataForWidgets');
 
         return widgets;
       }
     });
 
-    return run(() => {
-      return service.fetchDataForDashboard(mockDashboard).then(dataForWidget => {
-        assert.deepEqual(dataForWidget, [1, 2, 3], 'widgetData is returned by `fetchDataForWidgets` method');
-      });
-    });
+    const dataForWidget = await service.fetchDataForDashboard(mockDashboard);
+    assert.deepEqual(dataForWidget, [1, 2, 3], 'widgetData is returned by `fetchDataForWidgets` method');
   });
 
   test('fetch data for widget', async function(assert) {
-    assert.expect(9);
+    assert.expect(10);
+
+    let fetchCalls = [];
 
     const service = this.owner.factoryFor('service:dashboard-data').create({
       _fetch(request) {
         // Skip the ws data fetch for this test
+        fetchCalls.push(request.data);
         return resolve({
           request,
           response: { data: request.data }
@@ -94,21 +93,29 @@ module('Unit | Service | dashboard data', function(hooks) {
         { id: 2, dashboard: cloneDeep(dashboard), requests: [makeRequest(4)] },
         { id: 3, dashboard: cloneDeep(dashboard), requests: [] }
       ],
-      data = service.fetchDataForWidgets(1, widgets);
+      layout = [
+        { widgetId: 1, row: 4, column: 0 },
+        { widgetId: 2, row: 0, column: 0 },
+        { widgetId: 3, row: 4, column: 4 }
+      ],
+      data = service.fetchDataForWidgets(1, widgets, layout);
 
     assert.deepEqual(Object.keys(data), ['1', '2', '3'], 'data is keyed by widget id');
 
     assert.ok(get(data, '1.isPending'), 'data uses a promise proxy');
 
-    const widgetData = await get(data, '1');
+    data = await data;
+    const widgetData = get(data, '1');
     assert.deepEqual(
       widgetData.map(res => get(res, 'response.data')),
       [1, 2, 3],
       'data for widget is an array of request responses'
     );
 
+    assert.deepEqual(fetchCalls, [4, 1, 2, 3], 'requests are called by layout order');
+
     /* == Decorators == */
-    data = service.fetchDataForWidgets(1, widgets, [obj => merge({}, obj, { data: obj.data + 1 })]);
+    data = service.fetchDataForWidgets(1, widgets, layout, [obj => merge({}, obj, { data: obj.data + 1 })]);
 
     const decoratorWidgetData = await get(data, '1');
     assert.deepEqual(
@@ -122,7 +129,6 @@ module('Unit | Service | dashboard data', function(hooks) {
       page: 1
     };
 
-    service.set('dashboardId', 1);
     service.set('_fetch', (request, options) => {
       assert.equal(options, optionsObject, 'options object is passed on to data fetch method');
 
@@ -140,6 +146,7 @@ module('Unit | Service | dashboard data', function(hooks) {
     await service.fetchDataForWidgets(
       1,
       [{ id: 2, dashboard: cloneDeep(dashboard), requests: [makeRequest(4)] }],
+      [{ widgetId: 2 }],
       [],
       optionsObject
     );
@@ -280,7 +287,9 @@ module('Unit | Service | dashboard data', function(hooks) {
       }
     ];
 
-    const data = service.fetchDataForWidgets(1, widgets);
+    const layout = [{ widgetId: 1 }, { widgetId: 2 }, { widgetId: 3 }];
+
+    const data = service.fetchDataForWidgets(1, widgets, layout);
 
     const widget1 = await get(data, '1');
     const widget2 = await get(data, '2');

@@ -6,7 +6,7 @@ import { A as arr } from '@ember/array';
 import { get, getWithDefault } from '@ember/object';
 import Service, { inject as service } from '@ember/service';
 import { isEmpty } from '@ember/utils';
-import { merge, flow, sortBy } from 'lodash-es';
+import { merge, flow } from 'lodash-es';
 import { task, all } from 'ember-concurrency';
 import { computed } from '@ember/object';
 import { v1 } from 'ember-uuid';
@@ -41,30 +41,40 @@ export default Service.extend({
    * @param {Object} dashboard - dashboard model
    * @returns {Promise} - Promise that resolves to a hash of widget id to data promise array
    */
-  fetchDataForDashboard(dashboard) {
-    return dashboard
-      .get('widgets')
-      .then(widgets =>
-        sortBy(dashboard.presentation.layout.toArray(), ['row', 'column']).map(layoutItem =>
-          widgets.findBy('id', layoutItem.widgetId.toString())
-        )
-      )
-      .then(widgets => this.fetchDataForWidgets(dashboard.id, widgets, [], get(this, 'widgetOptions')));
+  async fetchDataForDashboard(dashboard) {
+    const widgets = await dashboard.widgets;
+    const layout = get(dashboard, 'presentation.layout');
+
+    return this.fetchDataForWidgets(dashboard.id, widgets, layout, [], get(this, 'widgetOptions'));
+  },
+
+  /**
+   * @method cancelFetchDataForDashboard - cancels all running or enqueued fetch Task Instances
+   */
+  cancelFetchDataForDashboard() {
+    this._fetchTask.cancelAll();
   },
 
   /**
    * @method fetchDataForWidgets
    * @param {Number} dashboardId
    * @param {Array} widgets - list of widget models with requests to fetch
+   * @param {Array} layout - dashboard layout
    * @param {Array} decorators - array of functions to modify each request
    * @param {Object} options - options for web service fetch
    * @returns {Object} hash of widget id to data promise array
    */
-  fetchDataForWidgets(dashboardId, widgets = [], decorators = [], options = {}) {
+  fetchDataForWidgets(dashboardId, widgets = [], layout = [], decorators = [], options = {}) {
     const uuid = v1();
 
+    // sort widgets by order in layout
+    const sortedWidgets = arr(layout)
+      .sortBy('row', 'column')
+      .map(layoutItem => widgets.find(widget => widget.id == layoutItem.widgetId))
+      .filter(widget => widget);
+
     // For each widget, concurrently execute a task that will fetch all widget's requests
-    return widgets.reduce(
+    return sortedWidgets.reduce(
       (dataByWidget, widget) => ({
         [widget.id]: DS.PromiseArray.create({
           promise: this._widgetTask.perform(dashboardId, widget, decorators, options, uuid).then(arr) // PromiseArray expects an Ember array
@@ -82,6 +92,7 @@ export default Service.extend({
    * @param {Object} widget - dashboard widget model
    * @param {Array} decorators - array of functions to modify each request
    * @param {Object} options - options for web service fetch
+   * @param {String} uuid - v1 UUID
    * @returns {TaskInstance}
    */
   _widgetTask: task(function*(dashboardId, widget, decorators, options, uuid) {
@@ -89,7 +100,7 @@ export default Service.extend({
     const { dashboard, requests } = widget;
     let fetchTasks = [];
 
-    requests.forEach((request, idx) => {
+    requests.forEach(request => {
       //construct custom header for each widget with uuid
       options.customHeaders = {
         uiView: `dashboard.${dashboardId}.${uuid}.${widgetId}`
@@ -101,7 +112,7 @@ export default Service.extend({
       const filterErrors = this._getFilterErrors(dashboard, request);
 
       fetchTasks.push(
-        this._fetch.perform(requestDecorated, options).then(result => {
+        this._fetchTask.perform(requestDecorated, options).then(result => {
           const serverErrors = getWithDefault(result, 'response.meta.errors', []);
 
           return merge({}, result, { response: { meta: { errors: [...serverErrors, ...filterErrors] } } });
@@ -109,7 +120,7 @@ export default Service.extend({
       );
     });
 
-    return yield all(fetchTasks).then(arr);
+    return yield fetchTasks.length ? all(fetchTasks).then(arr) : arr();
   }),
 
   /**
@@ -207,15 +218,26 @@ export default Service.extend({
   },
 
   /**
-   * @property {Task} _fetch
+   * @property {Task} _fetchTask
    * @private
    * @param {Object} request
    * @param {Object} options - options for web service fetch
    * @returns {TaskInstance}
    */
-  _fetch: task(function*(request, options) {
-    return yield this.naviFacts.fetch(request, options);
+  _fetchTask: task(function*(request, options) {
+    return yield this._fetch(request, options);
   })
     .enqueue()
-    .maxConcurrency(FETCH_MAX_CONCURRENCY)
+    .maxConcurrency(FETCH_MAX_CONCURRENCY),
+
+  /**
+   * @method _fetch
+   * @private
+   * @param {Object} request
+   * @param {Object} options - options for web service fetch
+   * @returns {Promise} response from request
+   */
+  async _fetch(request, options) {
+    return this.naviFacts.fetch(request, options);
+  }
 });
