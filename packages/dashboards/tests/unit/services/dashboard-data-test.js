@@ -5,6 +5,8 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import config from 'ember-get-config';
+import { timeout } from 'ember-concurrency';
+import { run, later } from '@ember/runloop';
 
 let MetadataService, Store;
 
@@ -152,6 +154,72 @@ module('Unit | Service | dashboard data', function(hooks) {
       [],
       optionsObject
     );
+  });
+
+  test('fetch concurrency and cancel', async function(assert) {
+    assert.expect(3);
+
+    let fetchCalls = [];
+
+    const service = this.owner.factoryFor('service:dashboard-data').create({
+      async _fetch(request) {
+        fetchCalls.push(request.data);
+        await timeout(100);
+
+        // cancel all tasks before first fetch resolves
+        run(() => {
+          service.cancelFetchDataForDashboard();
+        });
+
+        later(() =>
+          resolve({
+            request,
+            response: { data: request.data }
+          })
+        );
+      }
+    });
+
+    const makeRequest = (data, filters = []) => ({
+      clone() {
+        return cloneDeep(this);
+      },
+      serialize() {
+        return cloneDeep(this);
+      },
+      addFilter(filter) {
+        this.filters.push(filter);
+      },
+      logicalTable: {
+        table: { name: 'table1' },
+        timeGrain: { dimensionIds: [] }
+      },
+      data,
+      filters
+    });
+
+    const dashboard = {
+      filters: []
+    };
+
+    const widgets = [
+        { id: 1, dashboard: cloneDeep(dashboard), requests: [makeRequest(1), makeRequest(2), makeRequest(3)] },
+        { id: 2, dashboard: cloneDeep(dashboard), requests: [makeRequest(4), makeRequest(5), makeRequest(6)] }
+      ],
+      layout = [{ widgetId: 1, row: 0, column: 0 }, { widgetId: 2, row: 4, column: 0 }];
+
+    const done = assert.async();
+
+    try {
+      const data = service.fetchDataForWidgets(1, widgets, layout);
+      assert.equal(service._fetchTask.concurrency, 2, 'fetch task concurrency is correctly set by config');
+      await get(data, '1');
+    } catch (e) {
+      assert.deepEqual(fetchCalls, [1, 2], '2 first concurrent fetch rasks were running, others were cancelled');
+      assert.equal(service._fetchTask.concurrency, 0, 'no more tasks are running');
+    } finally {
+      done();
+    }
   });
 
   test('_fetch', function(assert) {

@@ -23,6 +23,7 @@ module.exports = function(environment) {
     },
 
     navi: {
+      widgetsRequestsMaxConcurrency: 2,
       FEATURES: {
         enableDashboardExport: true,
         enableMultipleExport: true,
