@@ -6,7 +6,7 @@
       {{#if (is-pending this._loadingPromise)}}
         <div class="secondary-header">Hold tight! We are searching for valid {{normalizedDimensionName}}.</div>
       {{else}}
-        <div class="secondary-header">Search Results.</div>
+        <div class="secondary-header">Search Results for <span class="pasted-input">{{@rawQuery}}</span></div>
       {{/if}}
     </div>
   {{/with}}
