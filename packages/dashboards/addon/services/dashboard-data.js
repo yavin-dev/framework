@@ -233,11 +233,11 @@ export default Service.extend({
   /**
    * @method _fetch
    * @private
-   * @param {Object} request
+   * @param {Object} request - object to modify
    * @param {Object} options - options for web service fetch
    * @returns {Promise} response from request
    */
-  async _fetch(request, options) {
+  _fetch(request, options) {
     return this.naviFacts.fetch(request, options);
   }
 });

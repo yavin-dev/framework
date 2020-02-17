@@ -112,7 +112,7 @@ module('Unit | Service | dashboard data', function(hooks) {
       'data for widget is an array of request responses'
     );
 
-    assert.deepEqual(fetchCalls, [4, 1, 2, 3], 'requests are called by layout order');
+    assert.deepEqual(fetchCalls, [4, 1, 2, 3], 'requests are enqueued by layout order');
 
     /* == Decorators == */
     data = service.fetchDataForWidgets(1, widgets, layout, [obj => merge({}, obj, { data: obj.data + 1 })]);
