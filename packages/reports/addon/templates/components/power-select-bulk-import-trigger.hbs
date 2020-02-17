@@ -49,7 +49,7 @@
     @dimension={{@extra.filter.subject}}
     @queryIds={{this._bulkImportQueryIds}}
     @rawQuery={{this._bulkImportRawValue}}
-    @onSelectValues={{pipe (action "importValues") (set this._showBulkImport false)}}
+    @onSelectValues={{queue (action "importValues") (set this._showBulkImport false)}}
     @onCancel={{set this._showBulkImport false}}
   />
 </NaviModal>

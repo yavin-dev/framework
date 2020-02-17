@@ -94,8 +94,10 @@ module('Integration | Component | Dimension Bulk Import', function(hooks) {
   });
 
   test('bulk import Component renders', async function(assert) {
-    assert.expect(2);
+    assert.expect(3);
 
+    const rawQuery = this.queryIds.join(',');
+    this.set('rawQuery', rawQuery);
     await render(COMMON_TEMPLATE);
 
     assert.dom('.dimension-bulk-import').isVisible('Component renders');
@@ -105,6 +107,9 @@ module('Integration | Component | Dimension Bulk Import', function(hooks) {
       ['Include Valid IDs', 'Cancel'],
       'Include and Cancel buttons are rendered in input mode as expected'
     );
+
+    await settled();
+    assert.dom('.pasted-input').hasText(rawQuery, 'pasted text is visible');
   });
 
   test('search dimension IDs', async function(assert) {
@@ -288,7 +293,7 @@ module('Integration | Component | Dimension Bulk Import', function(hooks) {
 
     assert
       .dom('.secondary-header')
-      .hasText('Search Results.', 'Secondary header has expected result text after searching');
+      .hasText('Search Results for', 'Secondary header has expected result text after searching');
   });
 
   test('Search dimension with smart key', async function(assert) {
