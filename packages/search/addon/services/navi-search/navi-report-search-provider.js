@@ -93,7 +93,7 @@ export default class NaviReportSearchProviderService extends NaviBaseSearchProvi
    * @returns {Promise} promise with search query results
    * @description Searches for reports and dashboards in the persistence layer
    */
-  async search(query) {
+  search(query) {
     const reportParsedQuery = this._parseQueryString(query, 'report');
     const dashboardParsedQuery = this._parseQueryString(query, 'dashboard');
     const reportPromise = this.store.query(
