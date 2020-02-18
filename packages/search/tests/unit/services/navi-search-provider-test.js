@@ -28,7 +28,7 @@ module('Unit | Service | navi-search-provider', function(hooks) {
 
   test('get all search providers', function(assert) {
     let availableSearchProviders = this.service.all();
-    assert.equal(availableSearchProviders.length, 2, 'Discovered 2 search provider.');
+    assert.equal(availableSearchProviders.length, 1, 'Discovered 1 search provider.');
   });
 
   test('search all providers', async function(assert) {
