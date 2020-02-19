@@ -1,7 +1,7 @@
 import Mirage from 'ember-cli-mirage';
 import moment from 'moment';
 import RESPONSE_CODES from '../enums/response-codes';
-import { getFilterParams, getQueryAuthor } from 'navi-core/utils/rsql-utils';
+import { filterModel } from 'navi-core/utils/rsql-utils';
 const TIMESTAMP_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 
 export default function() {
@@ -18,31 +18,7 @@ export default function() {
       let ids = idFilter.split(',');
       reportObject = reports.find(ids);
     } else if ('filter[reports]' in request.queryParams) {
-      try {
-        let filterParameters = getFilterParams(queryFilter);
-        let author = getQueryAuthor(queryFilter);
-        if (filterParameters == null && author == null) {
-          throw 'No search parameters';
-        }
-        reportObject = reports.all().filter(function(report) {
-          // Author can be optional, ie., not included in the query, but filterparameters are always included.
-          const matchesFilterParameterIfExists = filterParameters
-            ? filterParameters.some(filterParameter =>
-                JSON.stringify(report[filterParameter[0]]).match(new RegExp(filterParameter[1], 'i'))
-              )
-            : false;
-          const matchesAuthorIfExists = author ? report.author.id.match(new RegExp(author, 'i')) : true;
-          return matchesFilterParameterIfExists && matchesAuthorIfExists;
-        });
-      } catch (error) {
-        reportObject = new Mirage.Response(
-          400,
-          { data: {} },
-          {
-            errors: ['InvalidPredicateException: Invalid filter format']
-          }
-        );
-      }
+      reportObject = filterModel(reports, queryFilter);
     } else {
       reportObject = reports.all();
     }

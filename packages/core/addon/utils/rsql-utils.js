@@ -39,3 +39,33 @@ export function getQueryAuthor(queryFilter) {
   }
   return null;
 }
+
+export function filterModel(model, queryFilter) {
+  let modelObject;
+  try {
+    let filterParameters = getFilterParams(queryFilter);
+    let author = getQueryAuthor(queryFilter);
+    if (filterParameters == null && author == null) {
+      throw 'No search parameters';
+    }
+    modelObject = model.all().filter(function(report) {
+      // Author can be optional, ie., not included in the query, but filterparameters are always included.
+      const matchesFilterParameterIfExists = filterParameters
+        ? filterParameters.some(filterParameter =>
+            JSON.stringify(report[filterParameter[0]]).match(new RegExp(filterParameter[1], 'i'))
+          )
+        : false;
+      const matchesAuthorIfExists = author ? report.author.id.match(new RegExp(author, 'i')) : true;
+      return matchesFilterParameterIfExists && matchesAuthorIfExists;
+    });
+  } catch (error) {
+    reportObject = new Mirage.Response(
+      400,
+      { data: {} },
+      {
+        errors: ['InvalidPredicateException: Invalid filter format']
+      }
+    );
+  }
+  return modelObject;
+}
