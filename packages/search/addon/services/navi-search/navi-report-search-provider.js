@@ -75,7 +75,6 @@ export default class NaviReportSearchProviderService extends NaviBaseSearchProvi
       authorFilterString = paramsFilterString ? `;author==*${author}*` : `author==*${author}*`; //add semicolon if param filters present
     }
 
-    const filterString = `${paramsFilterString}${authorFilterString}`;
     query.filter[type] = `${paramsFilterString}${authorFilterString}`;
 
     return query;
