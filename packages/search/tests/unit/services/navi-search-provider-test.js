@@ -38,7 +38,7 @@ module('Unit | Service | navi-search-provider', function(hooks) {
 
   test('search with no results', async function(assert) {
     let results = await this.service.search('something');
-    assert.ok(results.length == 0, 'Returns no results');
+    assert.equal(results.length, 0, 'Returns no results');
   });
 
   test('search with special characters', async function(assert) {
