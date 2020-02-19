@@ -52,7 +52,7 @@ export default class NaviSearchProviderService extends Service {
       if (data.length) {
         results.push({
           component: provider.displayComponentName,
-          data: data
+          data
         });
       }
     }
