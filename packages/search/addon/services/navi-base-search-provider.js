@@ -12,7 +12,7 @@ export default class NaviBaseSearchProviderService extends Service {
   /**
    * @property {String} displayComponentName
    */
-  displayComponentName = undefined;
+  displayComponentName;
 
   /**
    * @method search
