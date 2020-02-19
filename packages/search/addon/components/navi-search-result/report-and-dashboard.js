@@ -5,7 +5,7 @@
 
 import Component from '@glimmer/component';
 
-export default class ReportSearchResult extends Component {
+export default class ReportAndDashboardSearchResult extends Component {
   /**
    * @property {String} title – Title of search result
    */

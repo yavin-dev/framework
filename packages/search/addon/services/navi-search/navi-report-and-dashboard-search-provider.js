@@ -8,7 +8,7 @@
 import { inject as service } from '@ember/service';
 import NaviBaseSearchProviderService from '../navi-base-search-provider';
 
-export default class NaviReportSearchProviderService extends NaviBaseSearchProviderService {
+export default class NaviReportAndDashboardSearchProviderService extends NaviBaseSearchProviderService {
   /**
    * @property {Ember.Service} store
    */
@@ -22,7 +22,7 @@ export default class NaviReportSearchProviderService extends NaviBaseSearchProvi
   /**
    * @property {String} displayComponentName
    */
-  displayComponentName = 'navi-search-result/report';
+  displayComponentName = 'navi-search-result/report-and-dashboard';
 
   /**
    * @method _parseQueryString – Parses string query to search parameters

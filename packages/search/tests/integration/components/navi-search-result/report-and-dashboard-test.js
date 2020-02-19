@@ -6,7 +6,7 @@ import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import Service from '@ember/service';
 import { set } from '@ember/object';
 
-module('Integration | Component | navi-search-result-report', function(hooks) {
+module('Integration | Component | navi-search-result-report-and-dashboard', function(hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
@@ -28,16 +28,16 @@ module('Integration | Component | navi-search-result-report', function(hooks) {
     // Set any properties with this.set('myProperty', 'value');
     // Handle any actions with this.set('myAction', function(val) { ... });
 
-    await render(hbs`<NaviSearchResult::Report />`);
+    await render(hbs`<NaviSearchResult::ReportAndDashboard />`);
 
     assert.equal(this.element.textContent.trim(), 'Reports & Dashboards');
   });
 
   test('displays results', async function(assert) {
     const result = await this.service.search('Revenue');
-    set(this, 'result', result.find(element => element.component === 'navi-search-result/report'));
+    set(this, 'result', result.find(element => element.component === 'navi-search-result/report-and-dashboard'));
 
-    await render(hbs`<NaviSearchResult::Report @data={{this.result.data}}/>`);
+    await render(hbs`<NaviSearchResult::ReportAndDashboard @data={{this.result.data}}/>`);
 
     assert.dom('li').exists('Showing search results');
   });
