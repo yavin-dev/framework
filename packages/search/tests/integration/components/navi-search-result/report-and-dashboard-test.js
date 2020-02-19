@@ -39,6 +39,6 @@ module('Integration | Component | navi-search-result-report-and-dashboard', func
 
     await render(hbs`<NaviSearchResult::ReportAndDashboard @data={{this.result.data}}/>`);
 
-    assert.dom('li').exists('Showing search results');
+    assert.dom('li').hasText('Revenue report 1', 'Showing search results');
   });
 });
