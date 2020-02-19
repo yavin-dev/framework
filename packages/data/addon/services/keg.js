@@ -160,7 +160,7 @@ export default class KegService extends Service {
    */
   all(type, namespace) {
     const all = this._getRecordKegForType(type);
-    if (namespace) {
+    if (namespace && all.any(item => !!item.source)) {
       return A(all.filter(item => item.source === namespace));
     }
     return all;

@@ -70,6 +70,60 @@ module('Integration | Component | filter values/dimension select', function(hook
     assert.dom().hasText('under 13 (1) 13-17 (2) 18-20 (3)', 'Selected values are rendered correctly when collapsed');
   });
 
+  test('it works from dimension from other datasource', async function(assert) {
+    assert.expect(3);
+    await this.owner.lookup('service:bard-metadata').loadMetadata({ dataSourceName: 'blockhead' });
+
+    const datasourceFilter = {
+      subject: {
+        name: 'age',
+        storageStrategy: 'loaded',
+        primaryKeyFieldName: 'id',
+        source: 'blockhead'
+      },
+      values: ['1', '2', '3'],
+      validations: {}
+    };
+
+    this.filter = datasourceFilter;
+
+    await render(hbs`<FilterValues::DimensionSelect @filter={{this.filter}} @isCollapsed={{this.isCollapsed}} />`);
+
+    // Open value selector
+    await clickTrigger();
+
+    let selectedValueText = findAll('.ember-power-select-multiple-option span:nth-of-type(2)').map(el =>
+        el.textContent.trim()
+      ),
+      expectedValueDimensions = AgeValues.filter(age => MockFilter.values.includes(age.id));
+
+    assert.deepEqual(
+      selectedValueText,
+      expectedValueDimensions.map(age => `${age.description} (${age.id})`),
+      'Filter value ids are converted into full dimension objects and displayed as selected'
+    );
+
+    let optionText = findAll('.ember-power-select-option').map(el => el.textContent.trim()),
+      expectedOptionText = AgeValues.map(age => `${age.description} (${age.id})`);
+
+    /*
+     * Since ember-collection is used for rendering the dropdown options,
+     * some later options may be cropped from the DOM, so just check the first 10
+     */
+    optionText.length = 10;
+    expectedOptionText.length = 10;
+
+    assert.deepEqual(
+      optionText,
+      expectedOptionText,
+      'Given Age as the filter subject, all age values are present in the value selector'
+    );
+
+    this.set('isCollapsed', true);
+
+    assert.dom().hasText('under 13 (1) 13-17 (2) 18-20 (3)', 'Selected values are rendered correctly when collapsed');
+  });
+
   test('no values', async function(assert) {
     assert.expect(1);
 

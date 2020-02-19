@@ -60,10 +60,16 @@ class DimensionSelectComponent extends Component {
 
     const dimensionName = get(this, 'dimensionName'),
       dimensionService = get(this, '_dimensionService'),
-      metadataService = get(this, '_metadataService');
+      metadataService = get(this, '_metadataService'),
+      source = get(this, 'filter.subject.source');
 
-    if (dimensionName && get(metadataService.getById('dimension', dimensionName), 'cardinality') <= LOAD_CARDINALITY) {
-      return dimensionService.all(dimensionName);
+    if (
+      dimensionName &&
+      get(metadataService.getById('dimension', dimensionName, source), 'cardinality') <= LOAD_CARDINALITY
+    ) {
+      return dimensionService.all(dimensionName, { dataSourceName: source }).then(results => {
+        return results;
+      });
     }
 
     return undefined;
@@ -77,16 +83,21 @@ class DimensionSelectComponent extends Component {
     let dimensionIds = get(this, 'filter.values'),
       dimensionName = get(this, 'dimensionName'),
       primaryKey = get(this, 'primaryKey'),
-      dimensionService = get(this, '_dimensionService');
+      dimensionService = get(this, '_dimensionService'),
+      source = get(this, 'filter.subject.source');
 
     // Only fetch dimensions if filter has values
     if (get(dimensionIds, 'length')) {
-      return dimensionService.find(dimensionName, [
-        {
-          field: primaryKey,
-          values: dimensionIds
-        }
-      ]);
+      return dimensionService.find(
+        dimensionName,
+        [
+          {
+            field: primaryKey,
+            values: dimensionIds
+          }
+        ],
+        { dataSourceName: source }
+      );
     } else {
       return resolve(A());
     }
@@ -99,7 +110,8 @@ class DimensionSelectComponent extends Component {
   get filterValueFieldId() {
     const { dimensionName } = this,
       metadataService = this._metadataService,
-      meta = metadataService.getById('dimension', dimensionName);
+      source = get(this, 'filter.subject.source'),
+      meta = metadataService.getById('dimension', dimensionName, source);
 
     return meta ? meta.idFieldName : this.filter.field;
   }
@@ -125,10 +137,11 @@ class DimensionSelectComponent extends Component {
    */
   _performSearch(term, resolve, reject) {
     let dimension = get(this, 'dimensionName'),
-      useNewSearchAPI = get(this, 'useNewSearchAPI');
+      useNewSearchAPI = get(this, 'useNewSearchAPI'),
+      dataSourceName = get(this, 'filter.subject.source');
 
     get(this, '_dimensionService')
-      .search(dimension, { term, useNewSearchAPI })
+      .search(dimension, { term, useNewSearchAPI, dataSourceName })
       .then(resolve, reject);
   }
 

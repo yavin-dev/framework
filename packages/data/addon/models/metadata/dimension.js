@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { A as array } from '@ember/array';
@@ -65,6 +65,11 @@ let Model = EmberObject.extend({
   idTag: 'id',
 
   /**
+   * @property {String} source - name of the data source this dimension is from.
+   */
+  source: undefined,
+
+  /**
    * Fetches tags for a given field name
    *
    * @method getTagsForField
@@ -125,9 +130,9 @@ let Model = EmberObject.extend({
    * @property {Promise} extended
    */
   extended: computed(function() {
-    const { metadata, name, type } = this;
+    const { metadata, name, type, source } = this;
     return ObjectProxy.extend(PromiseProxyMixin).create({
-      promise: metadata.fetchById(type, name)
+      promise: metadata.fetchById(type, name, source)
     });
   })
 });
