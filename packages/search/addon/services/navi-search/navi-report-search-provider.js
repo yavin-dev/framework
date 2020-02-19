@@ -76,7 +76,7 @@ export default class NaviReportSearchProviderService extends NaviBaseSearchProvi
     }
 
     const filterString = `${paramsFilterString}${authorFilterString}`;
-    query.filter[type] = filterString;
+    query.filter[type] = `${paramsFilterString}${authorFilterString}`;
 
     return query;
   }
