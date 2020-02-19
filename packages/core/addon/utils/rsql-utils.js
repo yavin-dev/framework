@@ -33,7 +33,7 @@ export function getFilterParams(queryFilter) {
  * to get the author, ie., ramvish
  */
 export function getQueryAuthor(queryFilter) {
-  if (queryFilter != null && queryFilter != '' && queryFilter.includes('author')) {
+  if (queryFilter && queryFilter.includes('author')) {
     if (queryFilter.includes('(')) {
       queryFilter = queryFilter.split(';')[1];
     }
