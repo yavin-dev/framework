@@ -1,4 +1,3 @@
-import Mirage from 'ember-cli-mirage';
 import Response from 'ember-cli-mirage/response';
 import moment from 'moment';
 import RESPONSE_CODES from '../enums/response-codes';

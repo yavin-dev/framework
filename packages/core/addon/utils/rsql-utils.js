@@ -5,6 +5,8 @@
  * Utilities for parsing RSQL.
  */
 
+import Mirage from 'ember-cli-mirage';
+
 /**
  * @method getFilterParams
  * @param {String} queryFilter
@@ -59,7 +61,7 @@ export function filterModel(model, queryFilter) {
       return matchesFilterParameterIfExists && matchesAuthorIfExists;
     });
   } catch (error) {
-    reportObject = new Mirage.Response(
+    modelObject = new Mirage.Response(
       400,
       { data: {} },
       {
