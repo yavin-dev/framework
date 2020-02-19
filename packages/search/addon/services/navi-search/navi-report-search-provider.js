@@ -25,12 +25,11 @@ export default class NaviReportSearchProviderService extends NaviBaseSearchProvi
   displayComponentName = 'navi-search-result/report';
 
   /**
-   * @method _parseReportString
+   * @method _parseQueryString – Parses string query to search parameters
    * @private
    * @param {String} query
    * @param {String} type
    * @returns {Object} query object
-   * @description Parses string query to search parameters
    */
   _parseQueryString(query, type) {
     let author = this.user.getUser().id;
@@ -53,12 +52,12 @@ export default class NaviReportSearchProviderService extends NaviBaseSearchProvi
   }
 
   /**
-   * @method _constructSearchQuery
+   * @method _constructSearchQuery – Constructs the query filter parameters adhering to the RSQL standard
    * @private
    * @param {Object} searchParams
    * @param {String} author
+   * @param {String} type
    * @returns {Object} search query object
-   * @description Constructs the query filter parameters adhering to the RSQL standard
    */
   _constructSearchQuery(searchParams, author, type) {
     let query = { filter: { [type]: '' } };
@@ -87,11 +86,10 @@ export default class NaviReportSearchProviderService extends NaviBaseSearchProvi
   }
 
   /**
-   * @method search
+   * @method search – Searches for reports and dashboards in the persistence layer
    * @override
    * @param {String} query
    * @returns {Promise} promise with search query results
-   * @description Searches for reports and dashboards in the persistence layer
    */
   search(query) {
     const reportParsedQuery = this._parseQueryString(query, 'report');

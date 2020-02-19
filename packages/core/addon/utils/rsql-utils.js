@@ -8,11 +8,10 @@
 import Mirage from 'ember-cli-mirage';
 
 /**
- * @method getFilterParams
+ * @method getFilterParams – Parse filter parameters in the form of "(title==*H*,request==*Revenue*)";author==*ramvish*
+ * to a list of all the OR parameters, ie., [H, Revenue]
  * @param {String} queryFilter
  * @returns {Array} Filter parameters
- * @description Parse filter parameters in the form of "(title==*H*,request==*Revenue*)";author==*ramvish*
- * to a list of all the OR parameters, ie., [H, Revenue]
  */
 export function getFilterParams(queryFilter) {
   if (queryFilter && queryFilter.includes('author') && queryFilter.includes(';')) {
@@ -26,11 +25,10 @@ export function getFilterParams(queryFilter) {
 }
 
 /**
- * @method getQueryAuthor
+ * @method getQueryAuthor – Parse filter parameters in the form of "(title==*H*,request==*Revenue*)";author==*ramvish*
+ * to get the author, ie., ramvish
  * @param {String} queryFilter
  * @returns Author
- * @description Parse filter parameters in the form of "(title==*H*,request==*Revenue*)";author==*ramvish*
- * to get the author, ie., ramvish
  */
 export function getQueryAuthor(queryFilter) {
   if (queryFilter && queryFilter.includes('author')) {

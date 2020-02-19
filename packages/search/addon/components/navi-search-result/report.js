@@ -7,8 +7,7 @@ import Component from '@glimmer/component';
 
 export default class Report extends Component {
   /**
-   * @property {String} title
-   * @description Title of search result
+   * @property {String} title – Title of search result
    */
   title = 'Reports & Dashboards';
 }
