@@ -24,9 +24,10 @@ export default class NaviSearchProviderService extends Service {
   /**
    * @method all – Discovers all the search provider services
    * under the folder services/navi-search/
+   * @private
    * @returns {Array} array of available search provider services
    */
-  all() {
+  _all() {
     const searchProvidersRegex = new RegExp(`^(?:${config.modulePrefix}/)?services/navi-search/([a-z-]*)$`),
       searchProviderServices = Object.keys(requirejs.entries).filter(requirejsFileName =>
         searchProvidersRegex.test(requirejsFileName)
@@ -43,7 +44,7 @@ export default class NaviSearchProviderService extends Service {
    * the name of the result component as well as result ordering information
    */
   async search(query) {
-    const searchProviders = this.all();
+    const searchProviders = this._all();
     let results = [];
     for (const provider of searchProviders) {
       const data = await provider.search(query);
