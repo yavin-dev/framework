@@ -62,25 +62,21 @@ export default class NaviReportSearchProviderService extends NaviBaseSearchProvi
   _constructSearchQuery(searchParams, author, type) {
     let query = { filter: { [type]: '' } };
 
+    let paramsFilterString = '';
     if (searchParams) {
-      for (let p in searchParams) {
-        let filter = `${p}==*${searchParams[p]}*`;
-        if (query.filter[type]) {
-          query.filter[type] += `,`;
-        } else {
-          query.filter[type] += `(`;
-        }
-        query.filter[type] += `${filter}`;
-      }
-      query.filter[type] += ')';
+      const paramsFilter = `${Object.keys(searchParams)
+        .map(p => `${p}==*${searchParams[p]}*`)
+        .join(',')}`; // comma separated list of param filters
+      paramsFilterString = paramsFilter ? `(${paramsFilter})` : ''; //wrap in parentheses if param filter present
     }
 
+    let authorFilterString = '';
     if (author) {
-      if (query.filter[type]) {
-        query.filter[type] += ';';
-      }
-      query.filter[type] += `author==*${author}*`;
+      authorFilterString = paramsFilterString ? `;author==*${author}*` : `author==*${author}*`; //add semicolon if param filters present
     }
+
+    const filterString = `${paramsFilterString}${authorFilterString}`;
+    query.filter[type] = filterString;
 
     return query;
   }
