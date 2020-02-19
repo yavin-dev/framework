@@ -1,4 +1,4 @@
-import Mirage from 'ember-cli-mirage';
+import Response from 'ember-cli-mirage/response';
 import moment from 'moment';
 import RESPONSE_CODES from '../enums/response-codes';
 import { filterModel } from 'navi-core/utils/rsql-utils';
@@ -61,7 +61,7 @@ export default function() {
       user = users.find(report.authorId);
 
     if (!report) {
-      return new Mirage.Response(RESPONSE_CODES.NOT_FOUND, {}, { errors: [`Unknown identifier '${id}'`] });
+      return new Response(RESPONSE_CODES.NOT_FOUND, {}, { errors: [`Unknown identifier '${id}'`] });
     }
 
     // Delete report from user
@@ -70,6 +70,6 @@ export default function() {
     });
     report.destroy();
 
-    return new Mirage.Response(RESPONSE_CODES.NO_CONTENT);
+    return new Response(RESPONSE_CODES.NO_CONTENT);
   });
 }
