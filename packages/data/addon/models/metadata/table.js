@@ -59,13 +59,13 @@ let Model = EmberObject.extend({
       this.set(
         'timeGrains',
         timeGrains.map(timeGrain => {
-            let timeGrainPayload = assign({}, timeGrain, { source: this.source }),
-              owner = getOwner(this);
-            return owner.factoryFor('model:metadata/time-grain').create(timeGrainPayload);
-          })
-          .sort((l, r) => {
-            return (timeGrainSorting[l.name] || Infinity) - (timeGrainSorting[r.name] || Infinity);
-          })
+          let timeGrainPayload = assign({}, timeGrain, { source: this.source }),
+            owner = getOwner(this);
+          return owner.factoryFor('model:metadata/time-grain').create(timeGrainPayload);
+        })
+        .sort((l, r) => {
+          return (timeGrainSorting[l.name] || Infinity) - (timeGrainSorting[r.name] || Infinity);
+        })
       );
     }
   }
