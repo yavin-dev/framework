@@ -58,8 +58,7 @@ let Model = EmberObject.extend({
     if (timeGrains) {
       this.set(
         'timeGrains',
-        timeGrains
-          .map(timeGrain => {
+        timeGrains.map(timeGrain => {
             let timeGrainPayload = assign({}, timeGrain, { source: this.source }),
               owner = getOwner(this);
             return owner.factoryFor('model:metadata/time-grain').create(timeGrainPayload);
