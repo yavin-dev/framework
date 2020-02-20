@@ -1,15 +1,30 @@
-{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{#each-in groupedItems as | group items |}}
-  <details class="grouped-list__group" open={{shouldOpenAllGroups}}>
-    <summary class="fa grouped-list__group-header">
-      <span class="grouped-list__group-header-content">{{group}} ({{items.length}})</span>
-    </summary>
-    <ul>
-      {{#each items as |item|}}
-        <li class="grouped-list__item">
-          {{yield item}}
-        </li>
-      {{/each}}
-    </ul>
-  </details>
-{{/each-in}}
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<div class="grouped-list" ...attributes>
+  <VerticalCollection
+    @items={{this.flatItems}}
+    @tagName="ul"
+    @estimateHeight={{or @estimateHeight 17}}
+    @bufferSize={{or @bufferSize 10}}
+    @containerSelector={{@containerSelector}}
+    as |item|>
+    {{#if item._isGroup}}
+      <li
+        class="grouped-list__group-header"
+        {{on "click" (fn this.toggleOpen item.name)}}
+        >
+        {{#if item._isOpen}}
+          <NaviIcon class="grouped-list__group-header-icon--open" @icon="angle-down" />
+        {{else}}
+          <NaviIcon class="grouped-list__group-header-icon--closed" @icon="angle-right" />
+        {{/if}}
+        
+        <span class="grouped-list__group-header-content">{{item.name}} ({{item.groupLength}})</span>
+      </li>
+    {{else}}
+      <li class="grouped-list__item">
+        {{yield item}}
+      </li>
+    {{/if}}
+  </VerticalCollection>
+</div>
+

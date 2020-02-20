@@ -1,9 +1,10 @@
-{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <NaviListSelector
   @items={{this.allMetrics}}
   @searchField="longName"
   @selected={{this.selectedMetrics}}
   @title="Metrics"
+  @contentClass="navi-list-selector__content--metric"
   as | metrics areMetricsFiltered |
 >
   <GroupedList
@@ -11,6 +12,7 @@
     @shouldOpenAllGroups={{areMetricsFiltered}}
     @groupByField="category"
     @sortByField={{unless areMetricsFiltered "longName"}}
+    @containerSelector=".navi-list-selector__content--metric"
     as | metric |
   >
     <div class="grouped-list__item-container {{if (and (get metricsChecked metric.name) (feature-flag "enableRequestPreview")) "grouped-list__item-container--selected"}}">
@@ -46,7 +48,7 @@
           <NaviIcon
             @icon="filter"
             class={{concat (if (get metricsFiltered metric.name) "grouped-list__filter--active ") "grouped-list__filter"}}
-            onclick={{action onToggleMetricFilter metric}}
+            {{on "click" (fn this.onToggleMetricFilter metric)}}
           >
             <EmberTooltip @side="right" @popperContainer="body" @effect="none">
               {{#if (has-parameters metric)}}

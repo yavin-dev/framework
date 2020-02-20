@@ -1,36 +1,39 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
- *   {{#grouped-list
- *      items=items
- *      shouldOpenAllGroups=false
- *      groupByField=field
- *      sortByField=field
+ *   <GroupedList
+ *      @items={{this.items}}
+ *      @shouldOpenAllGroups={{false}}
+ *      @groupByField={{this.field}}
+ *      @sortByField={{this.field}}
  *      as | item |
- *   }}
+ *   >
  *       {{item.val}}
- *   {{/grouped-list}}
+ *   </GroupedList>
  */
 import Component from '@ember/component';
-import { get, computed } from '@ember/object';
+import { getWithDefault, set, computed, action } from '@ember/object';
 import { isBlank } from '@ember/utils';
 import layout from '../templates/components/grouped-list';
 import { groupBy, sortBy } from 'lodash-es';
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
-export default Component.extend({
-  layout,
-
-  classNames: ['grouped-list'],
+@templateLayout(layout)
+@tagName('')
+class GroupedListComponent extends Component {
+  /**
+   * @property {Object} groupConfigs - contains map from [group] -> config
+   */
+  groupConfigs = {};
 
   /*
    * @property {Object} groupedItems - object with keys as group names and the values as items in the group
    */
-  groupedItems: computed('items', 'groupByField', 'sortByField', function() {
-    let items = get(this, 'items'),
-      groupByField = get(this, 'groupByField'),
-      sortByField = get(this, 'sortByField');
+  @computed('items', 'groupByField', 'sortByField')
+  get groupedItems() {
+    const { items, groupByField, sortByField } = this;
 
     let grouped = groupBy(items, row => row[groupByField].split(',')[0]);
 
@@ -41,5 +44,30 @@ export default Component.extend({
     }
 
     return grouped;
-  })
-});
+  }
+
+  get flatItems() {
+    const { groupedItems, shouldOpenAllGroups } = this;
+    return Object.keys(groupedItems).reduce((items, name) => {
+      const groupItems = groupedItems[name];
+      const isOpen = getWithDefault(this, `groupConfigs.${name}.isOpen`, false) || shouldOpenAllGroups;
+
+      items.push({ name, groupLength: groupItems.length, _isGroup: true, _isOpen: isOpen });
+      if (isOpen) {
+        items.push(...groupItems);
+      }
+      return items;
+    }, []);
+  }
+
+  @action
+  toggleOpen(group) {
+    const { groupConfigs } = this;
+    if (!groupConfigs[group]) {
+      set(this, `groupConfigs.${group}`, {});
+    }
+    set(this, `groupConfigs.${group}.isOpen`, !this.groupConfigs[group].isOpen);
+  }
+}
+
+export default GroupedListComponent;
