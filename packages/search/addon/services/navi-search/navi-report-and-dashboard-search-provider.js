@@ -22,7 +22,9 @@ export default class NaviReportAndDashboardSearchProviderService extends NaviBas
   /**
    * @property {String} displayComponentName
    */
-  displayComponentName = 'navi-search-result/report-and-dashboard';
+  get displayComponentName() {
+    return 'navi-search-result/report-and-dashboard';
+  }
 
   /**
    * @method _parseQueryString – Parses string query to search parameters

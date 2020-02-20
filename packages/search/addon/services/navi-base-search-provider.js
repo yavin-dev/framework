@@ -12,7 +12,10 @@ export default class NaviBaseSearchProviderService extends Service {
   /**
    * @property {String} displayComponentName
    */
-  displayComponentName;
+  get displayComponentName() {
+    assert('Display component name must be defined in a subclass, false');
+    return undefined;
+  }
 
   /**
    * @method search
