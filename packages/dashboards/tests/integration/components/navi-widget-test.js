@@ -1,13 +1,10 @@
 import { A as arr } from '@ember/array';
-import { run } from '@ember/runloop';
 import Component from '@ember/component';
-import { defer, reject, resolve } from 'rsvp';
 import { helper as buildHelper } from '@ember/component/helper';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import DS from 'ember-data';
 import { assertTooltipContent } from 'ember-tooltips/test-support';
 import { ForbiddenError } from 'ember-ajax/errors';
 
@@ -32,58 +29,46 @@ module('Integration | Component | navi widget', function(hooks) {
   });
 
   test('it renders', async function(assert) {
-    assert.expect(7);
-
-    let dataPromise = defer();
+    assert.expect(8);
 
     this.set('widgetModel', WIDGET);
-
-    this.set(
-      'data',
-      DS.PromiseObject.create({
-        promise: dataPromise.promise
-      })
-    );
+    this.set('taskInstance', undefined);
 
     await render(hbs`
-      {{navi-widget
-        model=widgetModel
-        data=data
-      }}
+      <NaviWidget
+        @model={{this.widgetModel}}
+        @taskInstance={{this.taskInstance}}
+      />
     `);
 
     assert.dom('.navi-widget__title').hasText(WIDGET.title, 'widget title is rendered');
 
-    assert.dom('.loader-container').isVisible('loader is visible while promise is pending');
+    assert.dom('.loader-container').isVisible('loader is visible if task instance is not defined');
+
+    this.set('taskInstance', { isRunning: true });
+
+    assert.dom('.loader-container').isVisible('loader is visible if task instance is running');
 
     assert.dom('.visualization-container').doesNotExist('visualization is not rendered while data is loading');
 
-    run(() => {
-      dataPromise.resolve([]);
+    this.set('taskInstance', {
+      isSuccessful: true,
+      value: []
     });
 
-    assert.dom('.visualization-container').exists('visualization exists when data is ready');
+    assert.dom('.visualization-container').exists('visualization exists when task is finished');
 
-    assert.dom('.loader-container').isNotVisible('loader is hidden when promise is resolved');
+    assert.dom('.loader-container').isNotVisible('loader is hidden when task is finished');
 
-    run(() => {
-      this.set(
-        'data',
-        DS.PromiseObject.create({
-          promise: reject()
-        })
-      );
+    this.set('taskInstance', {
+      isError: true
     });
 
     assert.dom('.error-container').isVisible('error is shown on rejected promise');
 
-    run(() => {
-      this.set(
-        'data',
-        DS.PromiseObject.create({
-          promise: reject(new ForbiddenError({}))
-        })
-      ).catch(() => null);
+    this.set('taskInstance', {
+      isError: true,
+      error: new ForbiddenError()
     });
 
     assert
@@ -104,10 +89,10 @@ module('Integration | Component | navi widget', function(hooks) {
     });
 
     await render(hbs`
-      {{navi-widget
-        model=widgetModel
-        layoutOptions=layoutOptions
-      }}
+      <NaviWidget
+        @model={{this.widgetModel}}
+        @layoutOptions={{this.layoutOptions}}
+      />
     `);
 
     assert
@@ -130,11 +115,14 @@ module('Integration | Component | navi widget', function(hooks) {
   test('visualization', async function(assert) {
     assert.expect(4);
 
-    let data = arr([1, 2, 3]),
+    const data = arr([1, 2, 3]),
       metadata = {
         xAxis: 'timeseries'
       },
-      dataPromise = resolve(data);
+      taskInstance = {
+        isSuccessful: true,
+        value: data
+      };
 
     this.set('widgetModel', {
       id: 1,
@@ -146,12 +134,7 @@ module('Integration | Component | navi widget', function(hooks) {
       }
     });
 
-    this.set(
-      'data',
-      DS.PromiseArray.create({
-        promise: dataPromise
-      })
-    );
+    this.set('taskInstance', taskInstance);
 
     // Make sure we have a reference to the grid-stack-item so we can test the event system
     let containerComponent = null;
@@ -179,10 +162,10 @@ module('Integration | Component | navi widget', function(hooks) {
     );
 
     await render(hbs`
-      {{navi-widget
-        model=widgetModel
-        data=data
-      }}
+      <NaviWidget
+        @model={{this.widgetModel}}
+        @taskInstance={{this.taskInstance}}
+      />
     `);
 
     assert.dom('.test-visualization').exists('visualization component is rendered');
@@ -197,10 +180,10 @@ module('Integration | Component | navi widget', function(hooks) {
     this.set('widgetModel', WIDGET);
 
     await render(hbs`
-      {{navi-widget
-        model=widgetModel
-        canEdit=canEdit
-      }}
+      <NaviWidget
+        @model={{this.widgetModel}}
+        @canEdit={{this.canEdit}}
+      />
     `);
 
     this.set('canEdit', true);
@@ -213,41 +196,37 @@ module('Integration | Component | navi widget', function(hooks) {
   test('filter warning icon', async function(assert) {
     assert.expect(3);
 
-    let dataPromise = resolve(
-      arr([
-        {
-          response: {
-            meta: {
-              errors: [
-                {
-                  title: 'Invalid Filter',
-                  detail: "Dimension A doesn't exist in this widget's logical table"
-                },
-                {
-                  title: 'Invalid Filter',
-                  detail: "Dimension B doesn't exist in this widget's logical table"
-                }
-              ]
-            }
+    const data = arr([
+      {
+        response: {
+          meta: {
+            errors: [
+              {
+                title: 'Invalid Filter',
+                detail: "Dimension A doesn't exist in this widget's logical table"
+              },
+              {
+                title: 'Invalid Filter',
+                detail: "Dimension B doesn't exist in this widget's logical table"
+              }
+            ]
           }
         }
-      ])
-    );
+      }
+    ]);
 
     this.set('widgetModel', WIDGET);
 
-    this.set(
-      'data',
-      DS.PromiseArray.create({
-        promise: dataPromise
-      })
-    );
+    this.set('taskInstance', {
+      isSuccessful: true,
+      value: data
+    });
 
     await render(hbs`
-      {{navi-widget
-        model=widgetModel
-        data=data
-      }}
+      <NaviWidget
+        @model={{this.widgetModel}}
+        @taskInstance={{this.taskInstance}}
+      />
     `);
 
     assert
@@ -262,22 +241,18 @@ module('Integration | Component | navi widget', function(hooks) {
       contentString: `Unable to apply filter(s):\nDimension A doesn't exist in this widget's logical table\nDimension B doesn't exist in this widget's logical table`
     });
 
-    let newDataPromise = resolve(
-      arr([
-        {
-          response: {
-            meta: {}
-          }
+    const newData = arr([
+      {
+        response: {
+          meta: {}
         }
-      ])
-    );
+      }
+    ]);
 
-    this.set(
-      'data',
-      DS.PromiseArray.create({
-        promise: newDataPromise
-      })
-    );
+    this.set('taskInstance', {
+      isSuccessful: true,
+      value: newData
+    });
 
     assert
       .dom('.navi-widget__filter-errors-icon')

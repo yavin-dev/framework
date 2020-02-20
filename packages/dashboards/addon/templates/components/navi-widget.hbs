@@ -51,8 +51,8 @@
   {{/if}}
 
   {{!-- Error --}}
-  {{#if @taskInstasnce.isError}}
-    {{#if (is-forbidden @taskInstasnce.error)}}
+  {{#if @taskInstance.isError}}
+    {{#if (is-forbidden @taskInstance.error)}}
       <UnauthorizedTable @report={{@model}} />
     {{else}}
       <div class="navi-widget__content error-container">
@@ -62,7 +62,7 @@
   {{/if}}
 
   {{!-- Success --}}
-  {{#if this.data}}
+  {{#if @taskInstance.isSuccessful}}
     <div class="navi-widget__content visualization-container">
       {{component
         (concat this.visualizationPrefix @model.visualization.type)

@@ -5,7 +5,7 @@
  * Usage:
  *   <NaviWidget
  *     @model={{widgetModel}}
- *     @taskInstasnce={{taskInstance}}
+ *     @taskInstance={{taskInstance}}
  *     @layoutOptions={{layoutObject}}
  *     @canEdit={{true}}
  *   />
@@ -30,9 +30,9 @@ class NaviWidget extends Component {
   model = undefined;
 
   /**
-   * @property {TaskInstance} taskInstasnce - data task instance
+   * @property {TaskInstance} taskInstance - data task instance
    */
-  taskInstasnce = undefined;
+  taskInstance = undefined;
 
   /**
    * @property {Object} layoutOptions - layout for dashboard presentation
@@ -61,11 +61,11 @@ class NaviWidget extends Component {
   /**
    * @property {Boolean} isRunning - whether widget data is loading
    */
-  @computed('taskInstasnce.isRunning')
+  @computed('taskInstance.isRunning')
   get isRunning() {
-    const { taskInstasnce } = this;
+    const { taskInstance } = this;
 
-    return !taskInstasnce || taskInstasnce.isRunning;
+    return !taskInstance || taskInstance.isRunning;
   }
 
   /**
@@ -73,7 +73,7 @@ class NaviWidget extends Component {
    */
   @computed('data')
   get filterErrors() {
-    const filterErrors = get(this, 'result.firstObject.response.meta.errors') || [];
+    const filterErrors = get(this, 'data.firstObject.response.meta.errors') || [];
     const filterErrorMessages = filterErrors
       .filter(e => e.title === 'Invalid Filter')
       .map(e => e.detail)
@@ -85,11 +85,11 @@ class NaviWidget extends Component {
   /**
    * @property {EmberArray|Null} data - widget data
    */
-  @computed('taskInstasnce.{isSuccessful,value}')
+  @computed('taskInstance.{isSuccessful,value}')
   get data() {
-    const { isSuccessful, value } = this.taskInstasnce || {};
+    const { isSuccessful, value } = this.taskInstance || {};
 
-    return isSuccessful && value ? arr(value) : null;
+    return isSuccessful ? arr(value) : null;
   }
 }
 
