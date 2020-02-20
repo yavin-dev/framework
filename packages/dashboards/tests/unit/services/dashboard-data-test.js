@@ -55,7 +55,7 @@ module('Unit | Service | dashboard data', function(hooks) {
   });
 
   test('fetch data for widget', async function(assert) {
-    assert.expect(11);
+    assert.expect(10);
 
     let fetchCalls = [];
 
@@ -71,13 +71,7 @@ module('Unit | Service | dashboard data', function(hooks) {
     });
 
     let data = service.fetchDataForWidgets(1);
-    await data.dashboardTaskInstance;
-    assert.deepEqual(data.taskByWidget, {}, 'no widgets returns empty object as taskByWidget');
-    assert.deepEqual(
-      data.dashboardTaskInstance.value,
-      [],
-      'no widgets returns empty array as dashboardTaskInstance value'
-    );
+    assert.deepEqual(data, { fetchTask: null, taskByWidget: {} }, 'no widgets returns empty object and null');
 
     const makeRequest = (data, filters = []) => ({
       clone() {
@@ -180,9 +174,9 @@ module('Unit | Service | dashboard data', function(hooks) {
         fetchCalls.push(request.data);
         await timeout(100);
 
-        // calling `fetchDataForDashboard` to restart parent task (should cancel child tasks)
+        // cancel all widget tasks
         run(() => {
-          service.fetchDataForDashboard({});
+          service._fetchRequestsForWidget.cancelAll();
         });
 
         later(() =>

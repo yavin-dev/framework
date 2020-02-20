@@ -1,4 +1,4 @@
-{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="navi-dashboard navi-dashboard--print">
   <div class="navi-dashboard__body">
     {{#if model.dashboard.widgets.length}}
@@ -8,7 +8,7 @@
             {{#if widget}}
               {{navi-widget
                 model=widget
-                data=(get model.dataForWidget widget.id)
+                taskInstasnce=(get model.taskByWidget widget.id)
               }}
             {{/if}}
           {{/with}}

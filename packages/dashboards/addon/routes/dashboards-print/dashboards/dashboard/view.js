@@ -1,28 +1,25 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
 import { inject as service } from '@ember/service';
 import Route from '@ember/routing/route';
 
-export default Route.extend({
+export default class DashboardPrintViewRoute extends Route {
   /**
    * @property {Ember.Service} dashboardData
    */
-  dashboardData: service(),
+  @service dashboardData;
   /**
    * Makes an ajax request to retrieve relevant widgets in the dashboard
    *
    * @method model
    * @override
    */
-  model() {
-    let dashboard = this.modelFor('dashboards-print.dashboards.dashboard');
-    return this.get('dashboardData')
-      .fetchDataForDashboard(dashboard)
-      .then(dataForWidget => {
-        return { dashboard, dataForWidget };
-      });
+  async model() {
+    const dashboard = this.modelFor('dashboards-print.dashboards.dashboard');
+    const widgetsData = await this.dashboardData.fetchDataForDashboard(dashboard);
+    return { dashboard, taskByWidget: widgetsData.taskByWidget };
   }
-});
+}
