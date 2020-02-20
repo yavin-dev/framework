@@ -52,7 +52,7 @@
 
   {{!-- Error --}}
   {{#if @taskInstasnce.isError}}
-    {{#if (is-forbidden @taskInstasnce.error)}} {{!--TODO: check this--}}
+    {{#if (is-forbidden @taskInstasnce.error)}}
       <UnauthorizedTable @report={{@model}} />
     {{else}}
       <div class="navi-widget__content error-container">

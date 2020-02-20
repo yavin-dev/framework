@@ -47,11 +47,15 @@ module('Unit | Service | dashboard data', function(hooks) {
     });
 
     const dataForWidget = await service.fetchDataForDashboard(mockDashboard);
-    assert.deepEqual(dataForWidget, [1, 2, 3], 'widgetData is returned by `fetchDataForWidgets` method');
+    assert.deepEqual(
+      dataForWidget,
+      [1, 2, 3],
+      '`fetchDataForDashboard` resolves to return value of `fetchDataForWidgets`'
+    );
   });
 
   test('fetch data for widget', async function(assert) {
-    assert.expect(10);
+    assert.expect(11);
 
     let fetchCalls = [];
 
@@ -66,7 +70,14 @@ module('Unit | Service | dashboard data', function(hooks) {
       }
     });
 
-    assert.deepEqual(service.fetchDataForWidgets(1, []), {}, 'no widgets returns empty data object');
+    let data = service.fetchDataForWidgets(1);
+    await data.dashboardTaskInstance;
+    assert.deepEqual(data.taskByWidget, {}, 'no widgets returns empty object as taskByWidget');
+    assert.deepEqual(
+      data.dashboardTaskInstance.value,
+      [],
+      'no widgets returns empty array as dashboardTaskInstance value'
+    );
 
     const makeRequest = (data, filters = []) => ({
       clone() {
@@ -99,29 +110,30 @@ module('Unit | Service | dashboard data', function(hooks) {
         { widgetId: 1, row: 4, column: 0 },
         { widgetId: 2, row: 0, column: 0 },
         { widgetId: 3, row: 4, column: 4 }
-      ],
-      data = service.fetchDataForWidgets(1, widgets, layout);
+      ];
 
-    assert.deepEqual(Object.keys(data), ['1', '2', '3'], 'data is keyed by widget id');
+    data = service.fetchDataForWidgets(1, widgets, layout);
 
-    assert.ok(get(data, '1.isPending'), 'data uses a promise proxy');
+    assert.deepEqual(Object.keys(data.taskByWidget), ['1', '2', '3'], 'data.taskByWidget is keyed by widget id');
 
-    const widgetData = await get(data, '1');
+    assert.ok(get(data, 'taskByWidget.1.isRunning'), 'data.taskByWidget returns a task instance per widget');
+
+    const widgetData = await get(data, 'taskByWidget.1');
     assert.deepEqual(
       widgetData.map(res => get(res, 'response.data')),
       [1, 2, 3],
       'data for widget is an array of request responses'
     );
 
-    await get(data, '2');
-    await get(data, '3');
+    await get(data, 'taskByWidget.2');
+    await get(data, 'taskByWidget.3');
 
     assert.deepEqual(fetchCalls, [4, 1, 2, 3], 'requests are enqueued by layout order');
 
     /* == Decorators == */
     data = service.fetchDataForWidgets(1, widgets, layout, [obj => merge({}, obj, { data: obj.data + 1 })]);
 
-    const decoratorWidgetData = await get(data, '1');
+    const decoratorWidgetData = await get(data, 'taskByWidget.1');
     assert.deepEqual(
       decoratorWidgetData.map(obj => get(obj, 'response.data')),
       [2, 3, 4],
@@ -156,7 +168,7 @@ module('Unit | Service | dashboard data', function(hooks) {
     );
   });
 
-  test('fetch concurrency and cancel', async function(assert) {
+  test('fetch concurrency and restart', async function(assert) {
     assert.expect(3);
 
     const done = assert.async();
@@ -168,9 +180,9 @@ module('Unit | Service | dashboard data', function(hooks) {
         fetchCalls.push(request.data);
         await timeout(100);
 
-        // cancel all tasks before first fetch resolves
+        // calling `fetchDataForDashboard` to restart parent task (should cancel child tasks)
         run(() => {
-          service.cancelFetchDataForDashboard();
+          service.fetchDataForDashboard({});
         });
 
         later(() =>
@@ -212,11 +224,15 @@ module('Unit | Service | dashboard data', function(hooks) {
 
     try {
       const data = service.fetchDataForWidgets(1, widgets, layout);
-      assert.equal(service._fetchTask.concurrency, 2, 'fetch task concurrency is correctly set by config');
-      await get(data, '1');
+      assert.equal(service._fetchRequestsForWidget.concurrency, 2, 'fetch task concurrency is correctly set by config');
+      await get(data, 'taskByWidget.1');
     } catch (e) {
-      assert.deepEqual(fetchCalls, [1, 2], '2 first concurrent fetch tasks were running, others were cancelled');
-      assert.equal(service._fetchTask.concurrency, 0, 'no more tasks are running');
+      assert.deepEqual(
+        fetchCalls,
+        [1, 2],
+        '2 first concurrent fetch tasks were running, others were cancelled by restart of parent'
+      );
+      assert.equal(service._fetchRequestsForWidget.concurrency, 0, 'no more tasks are running');
     } finally {
       done();
     }
@@ -361,9 +377,9 @@ module('Unit | Service | dashboard data', function(hooks) {
 
     const data = service.fetchDataForWidgets(1, widgets, layout);
 
-    const widget1 = await get(data, '1');
-    const widget2 = await get(data, '2');
-    const widget3 = await get(data, '3');
+    const widget1 = await get(data, 'taskByWidget.1');
+    const widget2 = await get(data, 'taskByWidget.2');
+    const widget3 = await get(data, 'taskByWidget.3');
 
     assert.deepEqual(
       widget1.map(result => get(result, 'request.filters').map(filter => get(filter, 'dimension.name'))),

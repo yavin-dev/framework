@@ -91,9 +91,14 @@ export default Route.extend({
      * return the last set of widget data because the requests will not have changed because
      * empty filters are pruned from the request
      */
-    if (cachedWidgetData && (wasEmptyFilterAdded || wasEmptyFilterRemoved)) {
-      return { dashboard, taskByWidget: cachedWidgetData.taskByWidget };
+    if (cachedWidgetData) {
+      if (wasEmptyFilterAdded || wasEmptyFilterRemoved) {
+        return { dashboard, taskByWidget: cachedWidgetData.taskByWidget };
+      } else if (cachedWidgetData.fetchTask.isRunning) {
+        await cachedWidgetData.fetchTask.cancelAll();
+      }
     }
+
     const widgetsData = await this.dashboardData.fetchDataForDashboard(dashboard);
     this.set('_widgetDataCache', widgetsData);
 
@@ -147,14 +152,14 @@ export default Route.extend({
    * @override
    * @method deactivate - reset query params on exit of route
    */
-  deactivate() {
+  async deactivate() {
     this._super(...arguments);
 
     this.controller.set('filters', null);
 
     // cancel enqueued fetch tasks for dashboard
-    if (typeof get(this, '_widgetDataCache.dashboardTaskInstance.cancel') === 'function') {
-      this._widgetDataCache.dashboardTaskInstance.cancel();
+    if (get(this, '_widgetDataCache.fetchTask.isRunning')) {
+      await this._widgetDataCache.fetchTask.cancelAll();
     }
 
     this.set('_widgetDataCache', null);

@@ -39,33 +39,27 @@ export default class DashboardDataService extends Service {
   /**
    * @method fetchDataForDashboard
    * @param {Object} dashboard - dashboard model
-   * @returns {Object} promise that resolves to a hash of task instance and a hash of widget id to widget task instance
+   * @returns {Object} promise that resolves to a hash of the widget Task and a hash of widget id to widget TaskInstance
    */
   async fetchDataForDashboard(dashboard) {
     const widgets = await dashboard.widgets;
     const layout = get(dashboard, 'presentation.layout');
 
-    const taskByWidget = {};
-
-    return {
-      dashboardTaskInstance: this._fetchDataForWidgets.perform(taskByWidget, dashboard.id, widgets, layout),
-      taskByWidget
-    };
+    return this.fetchDataForWidgets(dashboard.id, widgets, layout, [], this.widgetOptions);
   }
 
   /**
-   * @property {Task} _fetchDataForWidgets
-   * @private
-   * @param {Object} taskByWidget -
-   * @param {Object} widget - dashboard widget model
+   * @method fetchDataForWidgets
+   * @param {Number} dashboardId
+   * @param {Array} widgets - list of widget models with requests to fetch
+   * @param {Array} layout - dashboard layout
    * @param {Array} decorators - array of functions to modify each request
    * @param {Object} options - options for web service fetch
-   * @param {String} uuid - v1 UUID
-   * @returns {TaskInstance}
+   * @returns {Object} hash of the widget Task and a hash of widget id to widget TaskInstance
    */
-  @(task(function*(taskByWidget, dashboardId, widgets = [], layout = []) {
+  fetchDataForWidgets(dashboardId, widgets = [], layout = [], decorators = [], options = {}) {
     const uuid = v1(),
-      widgetTasks = [];
+      taskByWidget = {};
 
     // sort widgets by order in layout
     const sortedWidgets = arr(layout)
@@ -73,25 +67,16 @@ export default class DashboardDataService extends Service {
       .map(layoutItem => widgets.find(widget => widget.id == layoutItem.widgetId))
       .filter(widget => widget);
 
-    sortedWidgets.forEach(widget => {
-      // create widget task instance
-      const widgetTaskInstance = this._fetchRequestsForWidget.perform(
-        dashboardId,
-        widget,
-        [],
-        this.widgetOptions,
-        uuid
-      );
-      // push it to the task list
-      widgetTasks.push(widgetTaskInstance);
-      // create an entry in the widgetId to promise hash. Promise will resolve to task result (i.e. fetch results)
-      taskByWidget[widget.id] = widgetTaskInstance;
-    });
+    sortedWidgets.forEach(
+      widget =>
+        (taskByWidget[widget.id] = this._fetchRequestsForWidget.perform(dashboardId, widget, decorators, options, uuid))
+    );
 
-    // For each widget, concurrently execute a task that will fetch all widget's requests
-    return yield all(widgetTasks);
-  }).restartable())
-  _fetchDataForWidgets;
+    return {
+      fetchTask: sortedWidgets.length ? this._fetchRequestsForWidget : null,
+      taskByWidget
+    };
+  }
 
   /**
    * @property {Task} _fetchRequestsForWidget
@@ -121,7 +106,7 @@ export default class DashboardDataService extends Service {
       fetchTasks.push(this._fetchRequest.perform(requestDecorated, options, filterErrors));
     });
 
-    return yield all(fetchTasks);
+    return yield fetchTasks.length ? all(fetchTasks) : [];
   })
   _fetchRequestsForWidget;
 
