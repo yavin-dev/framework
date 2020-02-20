@@ -29,12 +29,10 @@ export default class NaviSearchProviderService extends Service {
    */
   _all() {
     const searchProvidersRegex = new RegExp(`^(?:${config.modulePrefix}/)?services/navi-search/([a-z-]*)$`),
-      searchProviderServices = Object.keys(requirejs.entries).filter(requirejsFileName =>
-        searchProvidersRegex.test(requirejsFileName)
-      );
-    return searchProviderServices.map(providerFileName =>
-      this.getProvider(searchProvidersRegex.exec(providerFileName)[1])
-    );
+      searchProviderServices = Object.keys(requirejs.entries)
+        .filter(requirejsFileName => searchProvidersRegex.test(requirejsFileName))
+        .map(fileName => searchProvidersRegex.exec(fileName)[1]);
+    return searchProviderServices.map(providerName => this.getProvider(providerName));
   }
 
   /**

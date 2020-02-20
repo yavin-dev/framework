@@ -28,7 +28,7 @@ module('Unit | Service | navi-base-search-provider', function(hooks) {
     } catch (error) {
       assert.ok(
         error.message.includes('Display component name must be defined in a subclass'),
-        'Search cannot be called from base provider.'
+        'Display component name must be defined in a subclass'
       );
     }
   });
