@@ -1,11 +1,11 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
  *   {{navi-dashboard
  *      dashboard=dashboardModel
- *      dataForWidget=widgetIdToDataMap
+ *      taskByWidget=widgetIdToDataTaskInstanceMap
  *      saveAction=actionToSave
  *      deleteAction=actionToDelete
  *   }}

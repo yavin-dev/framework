@@ -92,12 +92,12 @@ export default Route.extend({
      * empty filters are pruned from the request
      */
     if (cachedWidgetData && (wasEmptyFilterAdded || wasEmptyFilterRemoved)) {
-      return { dashboard, dataForWidget: cachedWidgetData };
+      return { dashboard, taskByWidget: cachedWidgetData.taskByWidget };
     }
-    const dataForWidget = await this.get('dashboardData').fetchDataForDashboard(dashboard);
-    this.set('_widgetDataCache', dataForWidget);
+    const widgetsData = await this.dashboardData.fetchDataForDashboard(dashboard);
+    this.set('_widgetDataCache', widgetsData);
 
-    return { dashboard, dataForWidget };
+    return { dashboard, taskByWidget: widgetsData.taskByWidget };
   },
 
   /**
@@ -150,8 +150,13 @@ export default Route.extend({
   deactivate() {
     this._super(...arguments);
 
-    this.dashboardData.cancelFetchDataForDashboard();
     this.controller.set('filters', null);
+
+    // cancel enqueued fetch tasks for dashboard
+    if (typeof get(this, '_widgetDataCache.dashboardTaskInstance.cancel') === 'function') {
+      this._widgetDataCache.dashboardTaskInstance.cancel();
+    }
+
     this.set('_widgetDataCache', null);
   }
 });

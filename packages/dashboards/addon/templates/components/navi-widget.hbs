@@ -1,60 +1,59 @@
-{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{#grid-stack-item
-  classNames="navi-widget"
-  options=(hash
-    x=layoutOptions.column
-    y=layoutOptions.row
-    height=layoutOptions.height
-    width=layoutOptions.width
-    id=layoutOptions.widgetId
-  )
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<GridStackItem
+  class="navi-widget"
+  @options={{hash
+    x=@layoutOptions.column
+    y=@layoutOptions.row
+    height=@layoutOptions.height
+    width=@layoutOptions.width
+    id=@layoutOptions.widgetId
+  }}
   as |item|
-}}
+>
   <div class="navi-widget__header">
     <div class="navi-widget__title">
-      {{model.title}}
-      {{#if (is-fulfilled data)}}
-        {{#if filterErrors}}
-          {{#navi-icon "exclamation-triangle" class="navi-widget__filter-errors-icon"}}
-            {{#ember-tooltip popperContainer="body"}}
-              {{filterErrors}}
-            {{/ember-tooltip}}
-          {{/navi-icon}}
-        {{/if}}
+      {{@model.title}}
+      {{#if this.filterErrors}}
+        <NaviIcon @icon="exclamation-triangle" class="navi-widget__filter-errors-icon">
+          <EmberTooltip @popperContainer="body">
+            {{this.filterErrors}}
+          </EmberTooltip>
+        </NaviIcon>
       {{/if}}
     </div>
     <div class="navi-widget__actions">
-      {{#link-to
-        "dashboards.dashboard.widgets.widget.view" model.dashboard.id model.id
-          classNames="navi-widget__action navi-widget__explore-btn"
-      }}
-        {{navi-icon "pencil" class="navi-icon__edit" }}
-        {{ember-tooltip popperContainer="body" text="Explore"}}
-      {{/link-to}}
-      {{#if canEdit}}
-        {{#common-actions/delete
-           classNames="navi-widget__action navi-widget__delete-btn"
-           model=model
-           deleteAction=(route-action "deleteWidget")
-        }}
-          {{navi-icon "trash-o" class="navi-icon__delete"}}
-          {{ember-tooltip popperContainer="body" text="Delete"}}
-        {{/common-actions/delete}}
+      <LinkTo
+        @route="dashboards.dashboard.widgets.widget.view"
+        @models={{array @model.dashboard.id @model.id}}
+        class="navi-widget__action navi-widget__explore-btn"
+      >
+        <NaviIcon @icon="pencil" class="navi-icon__edit" />
+        <EmberTooltip @popperContainer="body" @text="Explore" />
+      </LinkTo>
+      {{#if @canEdit}}
+        <CommonActions::Delete
+          class="navi-widget__action navi-widget__delete-btn"
+          @model={{@model}}
+          @deleteAction={{route-action "deleteWidget"}}
+        >
+          <NaviIcon @icon="trash-o" class="navi-icon__delete" />
+          <EmberTooltip @popperContainer="body" @text="Delete" />
+        </CommonActions::Delete>
       {{/if}}
     </div>
   </div>
 
   {{!-- Loading --}}
-  {{#if (is-pending data)}}
+  {{#if this.isRunning}}
     <div class="navi-widget__content loader-container">
-      {{navi-loader}}
+      <NaviLoader />
     </div>
   {{/if}}
 
   {{!-- Error --}}
-  {{#if (is-rejected data)}}
-    {{#if (is-forbidden data.reason)}}
-      {{unauthorized-table report=model}}
+  {{#if @taskInstasnce.isError}}
+    {{#if (is-forbidden @taskInstasnce.error)}} {{!--TODO: check this--}}
+      <UnauthorizedTable @report={{@model}} />
     {{else}}
       <div class="navi-widget__content error-container">
         There was an error with your request.
@@ -63,15 +62,15 @@
   {{/if}}
 
   {{!-- Success --}}
-  {{#if (and data (is-fulfilled data))}}
+  {{#if this.data}}
     <div class="navi-widget__content visualization-container">
       {{component
-        (concat visualizationPrefix model.visualization.type)
-        model=data
-        options=model.visualization.metadata
+        (concat this.visualizationPrefix @model.visualization.type)
+        model=this.data
+        options=@model.visualization.metadata
         containerComponent=item
       }}
     </div>
   {{/if}}
 
-{{/grid-stack-item}}
+</GridStackItem>

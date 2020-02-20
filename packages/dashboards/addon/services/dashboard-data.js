@@ -10,7 +10,6 @@ import { merge, flow } from 'lodash-es';
 import { task, all } from 'ember-concurrency';
 import { computed } from '@ember/object';
 import { v1 } from 'ember-uuid';
-import DS from 'ember-data';
 import config from 'ember-get-config';
 
 const FETCH_MAX_CONCURRENCY = config.navi.widgetsRequestsMaxConcurrency || Infinity;
@@ -40,33 +39,33 @@ export default class DashboardDataService extends Service {
   /**
    * @method fetchDataForDashboard
    * @param {Object} dashboard - dashboard model
-   * @returns {Promise} - Promise that resolves to a hash of widget id to data promise array
+   * @returns {Object} promise that resolves to a hash of task instance and a hash of widget id to widget task instance
    */
   async fetchDataForDashboard(dashboard) {
     const widgets = await dashboard.widgets;
     const layout = get(dashboard, 'presentation.layout');
 
-    return this.fetchDataForWidgets(dashboard.id, widgets, layout, [], this.widgetOptions);
+    const taskByWidget = {};
+
+    return {
+      dashboardTaskInstance: this._fetchDataForWidgets.perform(taskByWidget, dashboard.id, widgets, layout),
+      taskByWidget
+    };
   }
 
   /**
-   * @method cancelFetchDataForDashboard - cancels all running or enqueued fetch Task Instances
-   */
-  cancelFetchDataForDashboard() {
-    this._fetchTask.cancelAll();
-  }
-
-  /**
-   * @method fetchDataForWidgets
-   * @param {Number} dashboardId
-   * @param {Array} widgets - list of widget models with requests to fetch
-   * @param {Array} layout - dashboard layout
+   * @property {Task} _fetchDataForWidgets
+   * @private
+   * @param {Object} taskByWidget -
+   * @param {Object} widget - dashboard widget model
    * @param {Array} decorators - array of functions to modify each request
    * @param {Object} options - options for web service fetch
-   * @returns {Object} hash of widget id to data promise array
+   * @param {String} uuid - v1 UUID
+   * @returns {TaskInstance}
    */
-  fetchDataForWidgets(dashboardId, widgets = [], layout = [], decorators = [], options = {}) {
-    const uuid = v1();
+  @(task(function*(taskByWidget, dashboardId, widgets = [], layout = []) {
+    const uuid = v1(),
+      widgetTasks = [];
 
     // sort widgets by order in layout
     const sortedWidgets = arr(layout)
@@ -74,17 +73,28 @@ export default class DashboardDataService extends Service {
       .map(layoutItem => widgets.find(widget => widget.id == layoutItem.widgetId))
       .filter(widget => widget);
 
+    sortedWidgets.forEach(widget => {
+      // create widget task instance
+      const widgetTaskInstance = this._fetchRequestsForWidget.perform(
+        dashboardId,
+        widget,
+        [],
+        this.widgetOptions,
+        uuid
+      );
+      // push it to the task list
+      widgetTasks.push(widgetTaskInstance);
+      // create an entry in the widgetId to promise hash. Promise will resolve to task result (i.e. fetch results)
+      taskByWidget[widget.id] = widgetTaskInstance;
+    });
+
     // For each widget, concurrently execute a task that will fetch all widget's requests
-    return sortedWidgets.reduce((dataByWidget, widget) => {
-      dataByWidget[widget.id] = DS.PromiseArray.create({
-        promise: this._widgetTask.perform(dashboardId, widget, decorators, options, uuid).then(arr) // PromiseArray expects an Ember array
-      });
-      return dataByWidget;
-    }, {});
-  }
+    return yield all(widgetTasks);
+  }).restartable())
+  _fetchDataForWidgets;
 
   /**
-   * @property {Task} _widgetTask
+   * @property {Task} _fetchRequestsForWidget
    * @private
    * @param {Number} dashboardId
    * @param {Object} widget - dashboard widget model
@@ -108,18 +118,42 @@ export default class DashboardDataService extends Service {
 
       const filterErrors = this._getFilterErrors(dashboard, request);
 
-      fetchTasks.push(
-        this._fetchTask.perform(requestDecorated, options).then(result => {
-          const serverErrors = getWithDefault(result, 'response.meta.errors', []);
-
-          return merge({}, result, { response: { meta: { errors: [...serverErrors, ...filterErrors] } } });
-        })
-      );
+      fetchTasks.push(this._fetchRequest.perform(requestDecorated, options, filterErrors));
     });
 
-    return yield fetchTasks.length ? all(fetchTasks).then(arr) : arr();
+    return yield all(fetchTasks);
   })
-  _widgetTask;
+  _fetchRequestsForWidget;
+
+  /**
+   * @property {Task} _fetchRequest
+   * @private
+   * @param {Object} request
+   * @param {Object} options - options for web service fetch
+   * @param {Array} filterErrors - invalid Filter error objects
+   * @returns {TaskInstance}
+   */
+  @(task(function*(request, options, filterErrors) {
+    return yield this._fetch(request, options, filterErrors).then(result => {
+      const serverErrors = getWithDefault(result, 'response.meta.errors', []);
+
+      return merge({}, result, { response: { meta: { errors: [...serverErrors, ...filterErrors] } } });
+    });
+  })
+    .enqueue()
+    .maxConcurrency(FETCH_MAX_CONCURRENCY))
+  _fetchRequest;
+
+  /**
+   * @method _fetch
+   * @private
+   * @param {Object} request - object to modify
+   * @param {Object} options - options for web service fetch
+   * @returns {Promise} response from request
+   */
+  _fetch(request, options) {
+    return this.naviFacts.fetch(request, options);
+  }
 
   /**
    * @method _decorate
@@ -209,30 +243,5 @@ export default class DashboardDataService extends Service {
     const validDimensions = get(request, 'logicalTable.timeGrain.dimensionIds');
 
     return validDimensions.includes(get(filter, 'dimension.name'));
-  }
-
-  /**
-   * @property {Task} _fetchTask
-   * @private
-   * @param {Object} request
-   * @param {Object} options - options for web service fetch
-   * @returns {TaskInstance}
-   */
-  @(task(function*(request, options) {
-    return yield this._fetch(request, options);
-  })
-    .enqueue()
-    .maxConcurrency(FETCH_MAX_CONCURRENCY))
-  _fetchTask;
-
-  /**
-   * @method _fetch
-   * @private
-   * @param {Object} request - object to modify
-   * @param {Object} options - options for web service fetch
-   * @returns {Promise} response from request
-   */
-  _fetch(request, options) {
-    return this.naviFacts.fetch(request, options);
   }
 }
