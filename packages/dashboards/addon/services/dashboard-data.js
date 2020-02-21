@@ -74,12 +74,12 @@ export default class DashboardDataService extends Service {
       taskByWidget[widget.id] = taskInstance;
 
       /**
-       * don't bubble 403 errors, causes acceptance test to fail https://github.com/emberjs/ember-qunit/issues/592
-       * task would still expectedly fail.
-       * TODO: no need to catch when ^ resolves
+       * bubbling 403 errors causes acceptance test to fail https://github.com/emberjs/ember-qunit/issues/592
+       * task still expectedly fails.
+       * TODO: no need for catch block when ^ resolves (needlessly catches TaskCancelation errors as well)
        */
       taskInstance.catch(error => {
-        if (isForbidden(error)) {
+        if (isForbidden(error) || (error && error.name === 'TaskCancelation')) {
           return;
         }
         throw error;

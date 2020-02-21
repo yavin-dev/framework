@@ -157,7 +157,7 @@ export default Route.extend({
 
     this.controller.set('filters', null);
 
-    // cancel enqueued fetch tasks for dashboard
+    // cancel enqueued widget tasks
     if (get(this, '_widgetDataCache.fetchTask.isRunning')) {
       this._widgetDataCache.fetchTask.cancelAll();
     }
