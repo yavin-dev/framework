@@ -40,7 +40,7 @@ export default class DashboardDataService extends Service {
   /**
    * @method fetchDataForDashboard
    * @param {Object} dashboard - dashboard model
-   * @returns {Object} promise that resolves to a hash of the widget Task and a hash of widget id to widget TaskInstance
+   * @returns {Promise} - Promise that resolves to a hash of the widget Task and a hash of widget id to widget TaskInstance
    */
   async fetchDataForDashboard(dashboard) {
     const widgets = await dashboard.widgets;

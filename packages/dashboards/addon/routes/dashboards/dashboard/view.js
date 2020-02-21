@@ -152,14 +152,14 @@ export default Route.extend({
    * @override
    * @method deactivate - reset query params on exit of route
    */
-  async deactivate() {
+  deactivate() {
     this._super(...arguments);
 
     this.controller.set('filters', null);
 
     // cancel enqueued fetch tasks for dashboard
     if (get(this, '_widgetDataCache.fetchTask.isRunning')) {
-      await this._widgetDataCache.fetchTask.cancelAll();
+      this._widgetDataCache.fetchTask.cancelAll();
     }
 
     this.set('_widgetDataCache', null);
