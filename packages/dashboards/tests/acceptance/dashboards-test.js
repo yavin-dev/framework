@@ -664,7 +664,7 @@ module('Acceptance | Dashboards', function(hooks) {
   });
 
   test('New widget after clone', async function(assert) {
-    assert.expect(15);
+    assert.expect(18);
 
     let originalDashboardTitle, originalWidgetTitles;
 
@@ -710,7 +710,7 @@ module('Acceptance | Dashboards', function(hooks) {
     // Save without running
     await click('.navi-report-widget__save-btn');
     assert.ok(
-      currentURL().endsWith('/dashboards/1/view'),
+      currentURL().endsWith('/dashboards/6/view'),
       'After saving without running, user is brought back to dashboard view'
     );
 
@@ -748,7 +748,7 @@ module('Acceptance | Dashboards', function(hooks) {
 
     // Save
     await click('.navi-report-widget__save-btn');
-    assert.ok(currentURL().endsWith('/dashboards/1/view'), 'After saving, user is brought back to dashboard view');
+    assert.ok(currentURL().endsWith('/dashboards/6/view'), 'After saving, user is brought back to dashboard view');
 
     widgetsAfter = findAll('.navi-widget__title').map(el => el.textContent.trim());
 
@@ -770,11 +770,11 @@ module('Acceptance | Dashboards', function(hooks) {
     find('.navi-widget__actions').style.visibility = 'visible';
     await click('.navi-widget__explore-btn');
 
-    assert.equal(currentURL(), '/dashboards/1/widgets/1/view', 'Taken to explore widget page');
+    assert.equal(currentURL(), '/dashboards/6/widgets/7/view', 'Taken to explore widget page');
 
     await click(findAll('.navi-report-widget__breadcrumb-link')[1]);
 
-    assert.equal(currentURL(), '/dashboards/1/view', 'Taken back to dashboard page');
+    assert.equal(currentURL(), '/dashboards/6/view', 'Taken back to dashboard page');
 
     assert.deepEqual(
       widgetsAfter,
@@ -789,7 +789,7 @@ module('Acceptance | Dashboards', function(hooks) {
 
     await click('.navi-dashboard__breadcrumb-link');
 
-    assert.equal(currentURL(), '/dashboards/1/view', 'We are still on the dashboard route');
+    assert.equal(currentURL(), '/dashboards/6/view', 'We are still on the dashboard route');
 
     await click('.navi-dashboard__save-button');
     await click('.navi-dashboard__breadcrumb-link');

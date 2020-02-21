@@ -58,11 +58,15 @@ export default Route.extend({
       this._cloneWidgets(dashboardModel, cloneDashboardModel).then(widgetPromiseArray =>
         all(widgetPromiseArray).then(newWidgets => {
           let layout = cloneDashboardModel.get('presentation.layout');
+          console.log('Layout before clone:');
+          console.log(layout);
 
           //Replace original widget IDs with newly cloned widget IDs
           newWidgets.forEach((widget, idx) => {
             set(layout.objectAt(idx), 'widgetId', Number(widget.id));
           });
+          console.log('Cloned layout:');
+          console.log(layout);
           return cloneDashboardModel.save();
         })
       )

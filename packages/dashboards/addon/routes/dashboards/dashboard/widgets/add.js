@@ -31,10 +31,24 @@ export default Route.extend({
         widget.set('dashboard', dashboard);
 
         return widget.save().then(({ id }) => {
-          let layout = get(dashboard, 'presentation.layout'),
-            newLayout = this._addToLayout(layout, Number(id));
+          let layout = get(dashboard, 'presentation.layout');
+          console.log('Old layout:');
+          console.log(layout);
+          console.log(layout.toArray());
+          let newLayout = this._addToLayout(layout, Number(id));
+          console.log('New layout:');
+          console.log(newLayout);
+          console.log(newLayout.toArray());
+          console.log('Get dashboard layout:');
+          console.log(get(dashboard, 'presentation.layout').toArray());
+          debugger;
 
-          set(dashboard, 'presentation.layout', newLayout);
+          // set(dashboard, 'presentation.layout', newLayout);
+          console.log('Dashboard layout after set:');
+          console.log(newLayout.toArray());
+          console.log('Get dashboard layout:');
+          console.log(get(dashboard, 'presentation.layout').toArray());
+          debugger;
         });
       } else {
         return reject('Unable to find unsaved widget');
