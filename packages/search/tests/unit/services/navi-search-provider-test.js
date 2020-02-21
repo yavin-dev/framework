@@ -28,12 +28,17 @@ module('Unit | Service | navi-search-provider', function(hooks) {
 
   test('get all search providers', function(assert) {
     let availableSearchProviders = this.service._all();
-    assert.equal(availableSearchProviders.length, 1, 'Discovered 1 search provider.');
+    let systemSearchProviders = ['NaviReportAndDashboardSearchProviderService'];
+    assert.deepEqual(
+      availableSearchProviders.map(provider => provider.constructor.name),
+      systemSearchProviders,
+      'Discovered 1 search provider.'
+    );
   });
 
   test('search all providers', async function(assert) {
     let results = await this.service.search('Revenue');
-    assert.ok(results.length > 0, 'Returns multiple results');
+    assert.ok(results.every(result => result.data.every(d => d.title.includes('Revenue'))), 'Returns multiple results');
   });
 
   test('search with no results', async function(assert) {

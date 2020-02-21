@@ -88,9 +88,11 @@ module('Unit | Service | navi-report-and-dashboard-search-provider', function(ho
 
   test('search by user search returns reports and dashboards', async function(assert) {
     const results = await this.service.search('Revenue');
-    const author = await results[0].author;
-    assert.ok(results[0].title.includes('Revenue'), 'The service returns a report that includes the requested title.');
-    assert.ok(author.id.includes('ciela'), 'The service returns a report from the requested user.');
+    results.forEach(async function(result) {
+      let author = await result.author;
+      assert.ok(result.title.includes('Revenue'), 'The service returns a report that includes the requested title.');
+      assert.ok(author.id.includes('ciela'), 'The service returns a report from the requested user.');
+    });
   });
 
   test('search with no results for search parameters', async function(assert) {
