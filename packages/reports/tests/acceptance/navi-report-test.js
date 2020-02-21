@@ -903,9 +903,9 @@ module('Acceptance | Navi Report', function(hooks) {
 
     await visit('/reports');
 
-    await triggerEvent('.navi-collection__row0', 'mouseover');
+    await triggerEvent('.navi-collection__row0', 'mouseenter');
     // Click "Clone"
-    await click('.navi-collection__row:first-of-type .clone');
+    await click('.navi-collection__row0 .clone');
 
     assert.ok(
       TempIdRegex.test(currentURL()),
@@ -920,9 +920,9 @@ module('Acceptance | Navi Report', function(hooks) {
 
     await visit('/reports');
 
-    await triggerEvent('.navi-collection__row0', 'mouseover');
+    await triggerEvent('.navi-collection__row0', 'mouseenter');
     // Click "Share"
-    await click('.navi-collection__row:first-of-type .share .btn');
+    await click('.navi-collection__row0 .share .btn');
 
     assert.dom('.primary-header').hasText('Share "Hyrule News"', 'Share modal pops up when action is clicked');
 
@@ -935,9 +935,9 @@ module('Acceptance | Navi Report', function(hooks) {
 
     await visit('/reports');
 
-    await triggerEvent('.navi-collection__row0', 'mouseover');
+    await triggerEvent('.navi-collection__row0', 'mouseenter');
     // Click "Delete"
-    await click('.navi-collection__row:first-of-type .delete button');
+    await click('.navi-collection__row0 .delete button');
 
     assert.dom('.primary-header').hasText('Delete "Hyrule News"', 'Delete modal pops up when action is clicked');
 

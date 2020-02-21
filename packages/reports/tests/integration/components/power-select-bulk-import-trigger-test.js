@@ -1,49 +1,42 @@
-import $ from 'jquery';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, fillIn, click, findAll, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
+let BardMetadata, BardDimensions;
 module('Integration | Component | power select bulk import trigger', function(hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
-    return this.owner
-      .lookup('service:bard-metadata')
-      .loadMetadata()
-      .then(() => {
-        return this.owner
-          .lookup('service:bard-dimensions')
-          .all('property')
-          .then(async allProperties => {
-            this.setProperties({
-              options: allProperties,
-              selected: [],
-              onChange: () => null,
-              extra: {
-                filter: { subject: { name: 'property', longName: 'property' } }
-              }
-            });
+  hooks.beforeEach(async function() {
+    BardMetadata = this.owner.lookup('service:bard-metadata');
+    BardDimensions = this.owner.lookup('service:bard-dimensions');
 
-            await render(
-              hbs`
-                  {{#power-select-multiple
-                      options=options
-                      selected=selected
-                      extra=extra
-                      triggerComponent='power-select-bulk-import-trigger'
-                      onchange=(action onChange)
-                      searchField='id'
-                      as |item|
-                  }}
-                      <span class='selected-dim-id'>{{item.id}}</span>
-                  {{/power-select-multiple}}
-              `
-            );
-          });
-      });
+    await BardMetadata.loadMetadata();
+    const allProperties = await BardDimensions.all('property');
+    this.setProperties({
+      options: allProperties,
+      selected: [],
+      onChange: () => null,
+      extra: {
+        filter: { subject: { name: 'property', longName: 'property' } }
+      }
+    });
+
+    await render(
+      hbs`<PowerSelectMultiple
+        @options={{this.options}}
+        @selected={{this.selected}}
+        @extra={{this.extra}}
+        @triggerComponent='power-select-bulk-import-trigger'
+        @onchange={{action this.onChange}}
+        @searchField="id"
+        as |item|>
+        <span class='selected-dim-id'>{{item.id}}</span>
+      </PowerSelectMultiple>
+    `
+    );
   });
 
   test('it renders', function(assert) {
@@ -75,24 +68,14 @@ module('Integration | Component | power select bulk import trigger', function(ho
     await paste('78787, ,114, 101272');
     assert.dom('.dimension-bulk-import').isVisible('Bulk import modal opens when pasting text with a ","');
 
-    let validPills = $('.id-container:first .item');
     assert.deepEqual(
-      validPills
-        .map(function() {
-          return this.childNodes[3].wholeText.trim();
-        })
-        .get(),
+      findAll('.valid-ids .item').map(el => el.childNodes[3].wholeText.trim()),
       ['Property 1 (114)', 'Property 4 (101272)'],
       'IDs from pasted string are searched for valid dimensions'
     );
 
-    let invalidPills = $('.paginated-scroll-list:last .item');
     assert.deepEqual(
-      invalidPills
-        .map(function() {
-          return this.textContent.trim();
-        })
-        .get(),
+      findAll('.invalid-ids .item').map(el => el.textContent.trim()),
       ['78787'],
       'Invalid IDs in pasted string are filtered out and user is notified'
     );
@@ -101,12 +84,7 @@ module('Integration | Component | power select bulk import trigger', function(ho
   test('importing dimensions', async function(assert) {
     assert.expect(3);
 
-    const selectedValues = () =>
-      $('.selected-dim-id')
-        .map(function() {
-          return this.textContent.trim();
-        })
-        .get();
+    const selectedValues = () => findAll('.selected-dim-id').map(el => el.textContent.trim());
 
     this.set('onChange', newValues => this.set('selected', newValues));
 
@@ -139,9 +117,34 @@ module('Integration | Component | power select bulk import trigger', function(ho
     const selectedValues = () => findAll('.selected-dim-id').map(el => el.textContent.trim());
 
     await paste('not, a, valid, id');
-    await click($('.dimension-bulk-import .btn-primary')[0]);
+    await click('.dimension-bulk-import .btn-primary');
 
     assert.deepEqual(selectedValues(), [], 'No ids are imported when none are valid');
+  });
+
+  test('import valid raw input', async function(assert) {
+    assert.expect(3);
+
+    const selectedValues = () => findAll('.selected-dim-id').map(el => el.textContent.trim());
+
+    const allProperties = await BardDimensions.all('commaDim');
+    this.setProperties({
+      options: allProperties,
+      onChange: newValues => this.set('selected', newValues.toArray()),
+      selected: [{ id: 'no comma' }],
+      extra: {
+        filter: { subject: { name: 'commaDim', longName: 'commaDim' } }
+      }
+    });
+
+    await paste('yes, comma');
+
+    const rawInputButton = findAll('.btn-primary')[1];
+    assert.dom('.btn-primary').exists({ count: 2 }, 'There are now 2 primary buttons');
+    assert.dom(rawInputButton).hasText('Include Raw Input', 'The second button allows import the raw value if valid');
+    await click(rawInputButton);
+
+    assert.deepEqual(selectedValues(), ['no comma', 'yes, comma'], 'The valid raw input is imported');
   });
 
   /**
