@@ -94,7 +94,7 @@ export default Route.extend({
     if (cachedWidgetData) {
       if (wasEmptyFilterAdded || wasEmptyFilterRemoved) {
         return { dashboard, taskByWidget: cachedWidgetData.taskByWidget };
-      } else if (cachedWidgetData.fetchTask.isRunning) {
+      } else if (get(cachedWidgetData, 'fetchTask.isRunning')) {
         await cachedWidgetData.fetchTask.cancelAll();
       }
     }
