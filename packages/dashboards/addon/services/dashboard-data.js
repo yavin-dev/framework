@@ -11,6 +11,7 @@ import { task, all } from 'ember-concurrency';
 import { computed } from '@ember/object';
 import { v1 } from 'ember-uuid';
 import config from 'ember-get-config';
+import { isForbidden } from 'navi-core/helpers/is-forbidden';
 
 const FETCH_MAX_CONCURRENCY = config.navi.widgetsRequestsMaxConcurrency || Infinity;
 
@@ -67,10 +68,23 @@ export default class DashboardDataService extends Service {
       .map(layoutItem => widgets.find(widget => widget.id == layoutItem.widgetId))
       .filter(widget => widget);
 
-    sortedWidgets.forEach(
-      widget =>
-        (taskByWidget[widget.id] = this._fetchRequestsForWidget.perform(dashboardId, widget, decorators, options, uuid))
-    );
+    sortedWidgets.forEach(widget => {
+      const taskInstance = this._fetchRequestsForWidget.perform(dashboardId, widget, decorators, options, uuid);
+
+      taskByWidget[widget.id] = taskInstance;
+
+      /**
+       * don't bubble 403 errors, causes acceptance test to fail https://github.com/emberjs/ember-qunit/issues/592
+       * task would still expectedly fail.
+       * TODO: no need to catch when ^ resolves
+       */
+      taskInstance.catch(error => {
+        if (isForbidden(error)) {
+          return;
+        }
+        throw error;
+      });
+    });
 
     return {
       fetchTask: sortedWidgets.length ? this._fetchRequestsForWidget : null,
