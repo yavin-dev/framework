@@ -7,13 +7,13 @@ import { get, getWithDefault } from '@ember/object';
 import Service, { inject as service } from '@ember/service';
 import { isEmpty } from '@ember/utils';
 import { merge, flow } from 'lodash-es';
-import { task, all, timeout } from 'ember-concurrency';
+import { task, all } from 'ember-concurrency';
 import { computed } from '@ember/object';
 import { v1 } from 'ember-uuid';
 import config from 'ember-get-config';
 import { isForbidden } from 'navi-core/helpers/is-forbidden';
 
-const FETCH_MAX_CONCURRENCY = 1; //config.navi.widgetsRequestsMaxConcurrency || Infinity;
+const FETCH_MAX_CONCURRENCY = config.navi.widgetsRequestsMaxConcurrency || Infinity;
 
 export default class DashboardDataService extends Service {
   /**
@@ -147,8 +147,7 @@ export default class DashboardDataService extends Service {
    * @param {Object} options - options for web service fetch
    * @returns {Promise} response from request
    */
-  async _fetch(request, options) {
-    await timeout(2000);
+  _fetch(request, options) {
     return this.naviFacts.fetch(request, options);
   }
 
