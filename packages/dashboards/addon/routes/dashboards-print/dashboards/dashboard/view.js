@@ -20,6 +20,6 @@ export default class DashboardPrintViewRoute extends Route {
   async model() {
     const dashboard = this.modelFor('dashboards-print.dashboards.dashboard');
     const widgetsData = await this.dashboardData.fetchDataForDashboard(dashboard);
-    return { dashboard, taskByWidget: widgetsData.taskByWidget };
+    return { dashboard, taskByWidget: widgetsData };
   }
 }

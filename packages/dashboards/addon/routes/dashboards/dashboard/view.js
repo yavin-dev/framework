@@ -91,18 +91,33 @@ export default Route.extend({
      * return the last set of widget data because the requests will not have changed because
      * empty filters are pruned from the request
      */
-    if (cachedWidgetData) {
-      if (wasEmptyFilterAdded || wasEmptyFilterRemoved) {
-        return { dashboard, taskByWidget: cachedWidgetData.taskByWidget };
-      } else if (get(cachedWidgetData, 'fetchTask.isRunning')) {
-        await cachedWidgetData.fetchTask.cancelAll();
-      }
+    if (cachedWidgetData && (wasEmptyFilterAdded || wasEmptyFilterRemoved)) {
+      return { dashboard, taskByWidget: cachedWidgetData };
     }
 
+    this._cancelWidgetDataTasks();
     const widgetsData = await this.dashboardData.fetchDataForDashboard(dashboard);
     this.set('_widgetDataCache', widgetsData);
 
-    return { dashboard, taskByWidget: widgetsData.taskByWidget };
+    return { dashboard, taskByWidget: widgetsData };
+  },
+
+  /**
+   * Cancel running and enqueued widget data tasks, if any
+   *
+   * @private
+   * @method _cancelWidgetDataTasks
+   * @returns {Boolean} - true after calling `.cancel()` on tasks
+   */
+  _cancelWidgetDataTasks() {
+    const { _widgetDataCache } = this;
+
+    if (!_widgetDataCache) {
+      return true;
+    }
+
+    Object.values(_widgetDataCache).forEach(widgetTask => widgetTask.cancel());
+    return true;
   },
 
   /**
@@ -150,18 +165,14 @@ export default Route.extend({
 
   /**
    * @override
-   * @method deactivate - reset query params on exit of route
+   * @method deactivate - cancel tasks and reset filters, cache on exit of route
    */
-  deactivate() {
+  resetController(controller) {
     this._super(...arguments);
 
-    this.controller.set('filters', null);
+    controller.set('filters', null);
 
-    // cancel enqueued widget tasks
-    if (get(this, '_widgetDataCache.fetchTask.isRunning')) {
-      this._widgetDataCache.fetchTask.cancelAll();
-    }
-
+    this._cancelWidgetDataTasks();
     this.set('_widgetDataCache', null);
   }
 });

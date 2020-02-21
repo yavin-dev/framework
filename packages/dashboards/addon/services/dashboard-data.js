@@ -7,13 +7,13 @@ import { get, getWithDefault } from '@ember/object';
 import Service, { inject as service } from '@ember/service';
 import { isEmpty } from '@ember/utils';
 import { merge, flow } from 'lodash-es';
-import { task, all } from 'ember-concurrency';
+import { task, all, timeout } from 'ember-concurrency';
 import { computed } from '@ember/object';
 import { v1 } from 'ember-uuid';
 import config from 'ember-get-config';
 import { isForbidden } from 'navi-core/helpers/is-forbidden';
 
-const FETCH_MAX_CONCURRENCY = config.navi.widgetsRequestsMaxConcurrency || Infinity;
+const FETCH_MAX_CONCURRENCY = 1; //config.navi.widgetsRequestsMaxConcurrency || Infinity;
 
 export default class DashboardDataService extends Service {
   /**
@@ -40,7 +40,7 @@ export default class DashboardDataService extends Service {
   /**
    * @method fetchDataForDashboard
    * @param {Object} dashboard - dashboard model
-   * @returns {Promise} - Promise that resolves to a hash of the widget Task and a hash of widget id to widget TaskInstance
+   * @returns {Promise} - Promise that resolves to a hash of the widget id to its TaskInstance
    */
   async fetchDataForDashboard(dashboard) {
     const widgets = await dashboard.widgets;
@@ -56,7 +56,7 @@ export default class DashboardDataService extends Service {
    * @param {Array} layout - dashboard layout
    * @param {Array} decorators - array of functions to modify each request
    * @param {Object} options - options for web service fetch
-   * @returns {Object} hash of the widget Task and a hash of widget id to widget TaskInstance
+   * @returns {Object} hash of the widget id to its TaskInstance
    */
   fetchDataForWidgets(dashboardId, widgets = [], layout = [], decorators = [], options = {}) {
     const uuid = v1(),
@@ -86,10 +86,7 @@ export default class DashboardDataService extends Service {
       });
     });
 
-    return {
-      fetchTask: sortedWidgets.length ? this._fetchRequestsForWidget : null,
-      taskByWidget
-    };
+    return taskByWidget;
   }
 
   /**
@@ -100,7 +97,7 @@ export default class DashboardDataService extends Service {
    * @param {Array} decorators - array of functions to modify each request
    * @param {Object} options - options for web service fetch
    * @param {String} uuid - v1 UUID
-   * @returns {TaskInstance}
+   * @yields {TaskInstance}
    */
   @task(function*(dashboardId, widget, decorators, options, uuid) {
     const { dashboard, requests, id: widgetId } = widget;
@@ -130,7 +127,7 @@ export default class DashboardDataService extends Service {
    * @param {Object} request
    * @param {Object} options - options for web service fetch
    * @param {Array} filterErrors - invalid Filter error objects
-   * @returns {TaskInstance}
+   * @yields {TaskInstance}
    */
   @(task(function*(request, options, filterErrors) {
     return yield this._fetch(request, options, filterErrors).then(result => {
@@ -150,7 +147,8 @@ export default class DashboardDataService extends Service {
    * @param {Object} options - options for web service fetch
    * @returns {Promise} response from request
    */
-  _fetch(request, options) {
+  async _fetch(request, options) {
+    await timeout(2000);
     return this.naviFacts.fetch(request, options);
   }
 

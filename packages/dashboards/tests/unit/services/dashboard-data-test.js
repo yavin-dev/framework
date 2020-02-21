@@ -71,7 +71,7 @@ module('Unit | Service | dashboard data', function(hooks) {
     });
 
     let data = service.fetchDataForWidgets(1);
-    assert.deepEqual(data, { fetchTask: null, taskByWidget: {} }, 'no widgets returns empty object and null');
+    assert.deepEqual(data, {}, 'no widgets returns empty object and null');
 
     const makeRequest = (data, filters = []) => ({
       clone() {
@@ -108,26 +108,26 @@ module('Unit | Service | dashboard data', function(hooks) {
 
     data = service.fetchDataForWidgets(1, widgets, layout);
 
-    assert.deepEqual(Object.keys(data.taskByWidget), ['1', '2', '3'], 'data.taskByWidget is keyed by widget id');
+    assert.deepEqual(Object.keys(data), ['1', '2', '3'], 'data is keyed by widget id');
 
-    assert.ok(get(data, 'taskByWidget.1.isRunning'), 'data.taskByWidget returns a task instance per widget');
+    assert.ok(get(data, '1.isRunning'), 'data returns a task instance per widget');
 
-    const widgetData = await get(data, 'taskByWidget.1');
+    const widgetData = await get(data, '1');
     assert.deepEqual(
       widgetData.map(res => get(res, 'response.data')),
       [1, 2, 3],
       'data for widget is an array of request responses'
     );
 
-    await get(data, 'taskByWidget.2');
-    await get(data, 'taskByWidget.3');
+    await get(data, '2');
+    await get(data, '3');
 
     assert.deepEqual(fetchCalls, [4, 1, 2, 3], 'requests are enqueued by layout order');
 
     /* == Decorators == */
     data = service.fetchDataForWidgets(1, widgets, layout, [obj => merge({}, obj, { data: obj.data + 1 })]);
 
-    const decoratorWidgetData = await get(data, 'taskByWidget.1');
+    const decoratorWidgetData = await get(data, '1');
     assert.deepEqual(
       decoratorWidgetData.map(obj => get(obj, 'response.data')),
       [2, 3, 4],
@@ -219,7 +219,7 @@ module('Unit | Service | dashboard data', function(hooks) {
     try {
       const data = service.fetchDataForWidgets(1, widgets, layout);
       assert.equal(service._fetchRequestsForWidget.concurrency, 2, 'fetch task concurrency is correctly set by config');
-      await get(data, 'taskByWidget.1');
+      await get(data, '1');
     } catch (e) {
       assert.deepEqual(
         fetchCalls,
@@ -371,9 +371,9 @@ module('Unit | Service | dashboard data', function(hooks) {
 
     const data = service.fetchDataForWidgets(1, widgets, layout);
 
-    const widget1 = await get(data, 'taskByWidget.1');
-    const widget2 = await get(data, 'taskByWidget.2');
-    const widget3 = await get(data, 'taskByWidget.3');
+    const widget1 = await get(data, '1');
+    const widget2 = await get(data, '2');
+    const widget3 = await get(data, '3');
 
     assert.deepEqual(
       widget1.map(result => get(result, 'request.filters').map(filter => get(filter, 'dimension.name'))),

@@ -59,10 +59,10 @@ class NaviWidget extends Component {
   }
 
   /**
-   * @property {Boolean} isRunning - whether widget data is loading
+   * @property {Boolean} isLoading - whether widget data is loading
    */
   @computed('taskInstance.isRunning')
-  get isRunning() {
+  get isLoading() {
     const { taskInstance } = this;
 
     return !taskInstance || taskInstance.isRunning;
