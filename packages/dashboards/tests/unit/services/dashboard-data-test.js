@@ -5,8 +5,6 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import config from 'ember-get-config';
-import { timeout } from 'ember-concurrency';
-import { run, later } from '@ember/runloop';
 
 let MetadataService, Store;
 
@@ -55,7 +53,7 @@ module('Unit | Service | dashboard data', function(hooks) {
   });
 
   test('fetch data for widget', async function(assert) {
-    assert.expect(10);
+    assert.expect(11);
 
     let fetchCalls = [];
 
@@ -108,6 +106,7 @@ module('Unit | Service | dashboard data', function(hooks) {
 
     data = service.fetchDataForWidgets(1, widgets, layout);
 
+    assert.equal(service._fetchRequestsForWidget.concurrency, 2, 'fetch task concurrency is correctly set by config');
     assert.deepEqual(Object.keys(data), ['1', '2', '3'], 'data is keyed by widget id');
 
     assert.ok(get(data, '1.isRunning'), 'data returns a task instance per widget');
@@ -160,76 +159,6 @@ module('Unit | Service | dashboard data', function(hooks) {
       [],
       optionsObject
     );
-  });
-
-  test('fetch concurrency and restart', async function(assert) {
-    assert.expect(3);
-
-    const done = assert.async();
-
-    const fetchCalls = [];
-
-    const service = this.owner.factoryFor('service:dashboard-data').create({
-      async _fetch(request) {
-        fetchCalls.push(request.data);
-        await timeout(100);
-
-        // cancel all widget tasks
-        run(() => {
-          service._fetchRequestsForWidget.cancelAll();
-        });
-
-        later(() =>
-          resolve({
-            request,
-            response: { data: request.data }
-          })
-        );
-      }
-    });
-
-    const makeRequest = (data, filters = []) => ({
-      clone() {
-        return cloneDeep(this);
-      },
-      serialize() {
-        return cloneDeep(this);
-      },
-      addFilter(filter) {
-        this.filters.push(filter);
-      },
-      logicalTable: {
-        table: { name: 'table1' },
-        timeGrain: { dimensionIds: [] }
-      },
-      data,
-      filters
-    });
-
-    const dashboard = {
-      filters: []
-    };
-
-    const widgets = [
-        { id: 1, dashboard: cloneDeep(dashboard), requests: [makeRequest(1), makeRequest(2), makeRequest(3)] },
-        { id: 2, dashboard: cloneDeep(dashboard), requests: [makeRequest(4), makeRequest(5), makeRequest(6)] }
-      ],
-      layout = [{ widgetId: 1, row: 0, column: 0 }, { widgetId: 2, row: 4, column: 0 }];
-
-    try {
-      const data = service.fetchDataForWidgets(1, widgets, layout);
-      assert.equal(service._fetchRequestsForWidget.concurrency, 2, 'fetch task concurrency is correctly set by config');
-      await get(data, '1');
-    } catch (e) {
-      assert.deepEqual(
-        fetchCalls,
-        [1, 2],
-        '2 first concurrent fetch tasks were running, others were cancelled by restart of parent'
-      );
-      assert.equal(service._fetchRequestsForWidget.concurrency, 0, 'no more tasks are running');
-    } finally {
-      done();
-    }
   });
 
   test('_fetch', function(assert) {
