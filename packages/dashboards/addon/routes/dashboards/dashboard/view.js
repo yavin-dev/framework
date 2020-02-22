@@ -171,10 +171,10 @@ export default Route.extend({
    * @override
    * @method deactivate - cancel tasks and reset filters, cache on exit of route
    */
-  resetController(controller) {
+  deactivate() {
     this._super(...arguments);
 
-    controller.set('filters', null);
+    this.controller.set('filters', null);
 
     this._cancelWidgetDataTasks();
     this.set('_widgetDataCache', null);
