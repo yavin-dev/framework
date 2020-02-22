@@ -6,7 +6,7 @@
 import { reject } from 'rsvp';
 import { inject as service } from '@ember/service';
 import Route from '@ember/routing/route';
-import { set, get } from '@ember/object';
+import { get } from '@ember/object';
 
 export default Route.extend({
   /**
@@ -32,23 +32,7 @@ export default Route.extend({
 
         return widget.save().then(({ id }) => {
           let layout = get(dashboard, 'presentation.layout');
-          console.log('Old layout:');
-          console.log(layout);
-          console.log(layout.toArray());
-          let newLayout = this._addToLayout(layout, Number(id));
-          console.log('New layout:');
-          console.log(newLayout);
-          console.log(newLayout.toArray());
-          console.log('Get dashboard layout:');
-          console.log(get(dashboard, 'presentation.layout').toArray());
-          debugger;
-
-          // set(dashboard, 'presentation.layout', newLayout);
-          console.log('Dashboard layout after set:');
-          console.log(newLayout.toArray());
-          console.log('Get dashboard layout:');
-          console.log(get(dashboard, 'presentation.layout').toArray());
-          debugger;
+          this._addToLayout(layout, Number(id));
         });
       } else {
         return reject('Unable to find unsaved widget');
