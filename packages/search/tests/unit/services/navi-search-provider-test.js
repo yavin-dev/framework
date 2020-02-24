@@ -28,7 +28,7 @@ module('Unit | Service | navi-search-provider', function(hooks) {
 
   test('get all search providers', function(assert) {
     let availableSearchProviders = this.service._all();
-    let systemSearchProviders = ['NaviReportAndDashboardSearchProviderService'];
+    let systemSearchProviders = ['NaviSampleSearchProviderService'];
     assert.deepEqual(
       availableSearchProviders.map(provider => provider.constructor.name),
       systemSearchProviders,
@@ -37,17 +37,12 @@ module('Unit | Service | navi-search-provider', function(hooks) {
   });
 
   test('search all providers', async function(assert) {
-    let results = await this.service.search('Revenue');
-    assert.ok(results.every(result => result.data.every(d => d.title.includes('Revenue'))), 'Returns multiple results');
-  });
-
-  test('search with no results', async function(assert) {
-    let results = await this.service.search('something');
-    assert.equal(results.length, 0, 'Returns no results');
-  });
-
-  test('search with special characters', async function(assert) {
-    let results = await this.service.search('lala!@#$%^&*');
-    assert.equal(results.length, 0, 'Returns no results');
+    let results = await this.service.search.perform('Revenue');
+    assert.ok(
+      results.every(
+        result => result.data.every(d => d.includes('Revenue')) && result.component === 'navi-search-result/sample'
+      ),
+      'Returns multiple results'
+    );
   });
 });
