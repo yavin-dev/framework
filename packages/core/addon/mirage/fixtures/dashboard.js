@@ -76,7 +76,7 @@ export default [
   },
   {
     id: 4,
-    title: 'Revenue Dashboard',
+    title: 'Dashboard 4',
     authorId: 'ciela',
     dashboardWidgetIds: [6],
     createdOn: '2016-01-01 00:00:00',

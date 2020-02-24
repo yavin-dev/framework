@@ -1,7 +1,6 @@
 import Response from 'ember-cli-mirage/response';
 import moment from 'moment';
 import RESPONSE_CODES from '../enums/response-codes';
-import { filterModel } from 'navi-core/mirage/utils/rsql-utils';
 
 const TIMESTAMP_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 
@@ -44,21 +43,17 @@ export default function() {
   });
 
   this.get('/dashboards', ({ dashboards }, request) => {
-    let dashboardObject;
     let idFilter = request.queryParams['filter[dashboards.id]'];
-    let queryFilter = request.queryParams['filter[dashboards]'];
 
     // Allow filtering
     if (idFilter) {
       let ids = idFilter.split(',');
-      dashboardObject = dashboards.find(ids);
-    } else if ('filter[dashboards]' in request.queryParams) {
-      dashboardObject = filterModel(dashboards, queryFilter);
+      dashboards = dashboards.find(ids);
     } else {
-      dashboardObject = dashboards.all();
+      dashboards = dashboards.all();
     }
 
-    return dashboardObject;
+    return dashboards;
   });
 
   this.post('/dashboards', function({ dashboards, users }) {
