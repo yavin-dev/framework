@@ -1,7 +1,7 @@
 import Response from 'ember-cli-mirage/response';
 import moment from 'moment';
 import RESPONSE_CODES from '../enums/response-codes';
-import { filterModel } from 'navi-core/utils/rsql-utils';
+import { filterModel } from 'navi-core/mirage/utils/rsql-utils';
 
 const TIMESTAMP_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 
