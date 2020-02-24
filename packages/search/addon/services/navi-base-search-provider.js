@@ -10,14 +10,6 @@ import { assert } from '@ember/debug';
 
 export default class NaviBaseSearchProviderService extends Service {
   /**
-   * @property {String} displayComponentName
-   */
-  get displayComponentName() {
-    assert('Display component name must be defined in a subclass, false');
-    return undefined;
-  }
-
-  /**
    * @method search
    * @returns {Array} array of search results
    */
