@@ -20,16 +20,4 @@ module('Unit | Service | navi-base-search-provider', function(hooks) {
       );
     }
   });
-
-  test('Must override display component in subclass.', function(assert) {
-    const service = this.owner.lookup('service:navi-base-search-provider');
-    try {
-      service.displayComponentName;
-    } catch (error) {
-      assert.ok(
-        error.message.includes('Display component name must be defined in a subclass'),
-        'Display component name must be defined in a subclass'
-      );
-    }
-  });
 });
