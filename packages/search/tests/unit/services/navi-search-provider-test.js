@@ -45,4 +45,9 @@ module('Unit | Service | navi-search-provider', function(hooks) {
       'Returns multiple results'
     );
   });
+
+  test('search with no results', async function(assert) {
+    let results = await this.service.search.perform('something');
+    assert.equal(results.length, 0, 'Returns no results');
+  });
 });

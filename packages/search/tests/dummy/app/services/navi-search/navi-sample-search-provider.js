@@ -11,9 +11,13 @@ export default class NaviSampleSearchProviderService extends NaviBaseSearchProvi
   *search(query) {
     let result = yield new Promise(function(resolve) {
       setTimeout(function() {
+        let data = [];
+        if (query.includes('Revenue')) {
+          data = ['Revenue result', 'Revenue success'];
+        }
         resolve({
           component: 'navi-search-result/sample',
-          data: [`${query} result`, `${query} success`]
+          data
         });
       }, 300);
     });
