@@ -70,7 +70,7 @@ module('Integration | Component | filter values/dimension select', function(hook
     assert.dom().hasText('under 13 (1) 13-17 (2) 18-20 (3)', 'Selected values are rendered correctly when collapsed');
   });
 
-  test('it works from dimension from other datasource', async function(assert) {
+  test('it works for dimensions from other datasources', async function(assert) {
     assert.expect(3);
     await this.owner.lookup('service:bard-metadata').loadMetadata({ dataSourceName: 'blockhead' });
 

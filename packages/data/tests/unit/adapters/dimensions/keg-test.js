@@ -1,6 +1,5 @@
 import EmberObject from '@ember/object';
 import { assign } from '@ember/polyfills';
-import { all } from 'rsvp';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import metadataRoutes from '../../../helpers/metadata-routes';
@@ -52,7 +51,7 @@ module('Unit | Adapters | Dimensions | Keg', function(hooks) {
     Server = new Pretender(metadataRoutes);
     metadataRoutes.bind(Server)(1);
 
-    return all([
+    return Promise.all([
       this.owner.lookup('service:bard-metadata').loadMetadata(),
       this.owner.lookup('service:bard-metadata').loadMetadata({ dataSourceName: 'blockhead' })
     ]);
@@ -96,7 +95,7 @@ module('Unit | Adapters | Dimensions | Keg', function(hooks) {
     );
 
     const nonFoundResult = await Adapter.all('dimensionFour');
-    assert.deepEqual(nonFoundResult.rows.mapBy('id'), [], "all() returns empy array when dimension can't be found");
+    assert.deepEqual(nonFoundResult.rows.mapBy('id'), [], "all() returns empty array when dimension can't be found");
   });
 
   test('find', async function(assert) {

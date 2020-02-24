@@ -67,9 +67,7 @@ class DimensionSelectComponent extends Component {
       dimensionName &&
       get(metadataService.getById('dimension', dimensionName, source), 'cardinality') <= LOAD_CARDINALITY
     ) {
-      return dimensionService.all(dimensionName, { dataSourceName: source }).then(results => {
-        return results;
-      });
+      return dimensionService.all(dimensionName, { dataSourceName: source });
     }
 
     return undefined;

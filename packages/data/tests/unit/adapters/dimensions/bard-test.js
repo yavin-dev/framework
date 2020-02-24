@@ -4,7 +4,6 @@ import Pretender from 'pretender';
 import config from 'ember-get-config';
 import metadataRoutes from '../../../helpers/metadata-routes';
 import { assign } from '@ember/polyfills';
-import { all } from 'rsvp';
 
 const HOST = config.navi.dataSources[0].uri;
 
@@ -68,7 +67,7 @@ module('Unit | Adapter | Dimensions | Bard', function(hooks) {
     //Load metadata
     Server.map(metadataRoutes);
     metadataRoutes.bind(Server)(1);
-    return all([
+    return Promise.all([
       this.owner.lookup('service:bard-metadata').loadMetadata(),
       this.owner.lookup('service:bard-metadata').loadMetadata({ dataSourceName: 'blockhead' })
     ]);
