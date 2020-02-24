@@ -187,13 +187,18 @@ export default function(
         let dimensionValues = _getDimensionValues(dimension, dimensionFilter);
 
         return newRows.concat(
-          dimensionValues.map(value =>
+          dimensionValues.map(value => {
             // TODO figure out why Object.assign refuses to work in Phantom even with Babel polyfill
-            assign({}, currentRow, {
-              [`${dimension}|id`]: value.id,
+            let newValue = assign({}, currentRow, {
               [`${dimension}|desc`]: value.description
-            })
-          )
+            });
+            const keys = Object.keys(value).filter(key => key !== 'description');
+            keys.forEach(key => {
+              newValue[`${dimension}|${key}`] = value[key];
+            });
+
+            return newValue;
+          })
         );
       }, []);
     });
