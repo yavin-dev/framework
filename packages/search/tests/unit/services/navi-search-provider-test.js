@@ -4,7 +4,7 @@ import { setupTest } from 'ember-qunit';
 module('Unit | Service | navi-search-provider', function(hooks) {
   setupTest(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(function() {
     this.service = this.owner.lookup('service:navi-search-provider');
   });
 
