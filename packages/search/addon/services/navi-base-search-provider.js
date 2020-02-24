@@ -14,6 +14,6 @@ export default class NaviBaseSearchProviderService extends Service {
    * @returns {Array} array of search results
    */
   search() {
-    assert('Search method must be called from a subclass', false);
+    assert('Search method must be called from a subclass');
   }
 }
