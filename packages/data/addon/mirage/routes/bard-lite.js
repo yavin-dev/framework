@@ -187,14 +187,15 @@ export default function(
 
         return newRows.concat(
           dimensionValues.map(value => {
+            let newRow = Object.assign({}, currentRow);
             Object.keys(value).forEach(key => {
               if (key === 'description') {
-                currentRow[`${dimension}|desc`] = value[key];
+                newRow[`${dimension}|desc`] = value[key];
               } else {
-                currentRow[`${dimension}|${key}`] = value[key];
+                newRow[`${dimension}|${key}`] = value[key];
               }
             });
-            return currentRow;
+            return newRow;
           })
         );
       }, []);
