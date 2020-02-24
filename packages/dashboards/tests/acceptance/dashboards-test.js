@@ -23,13 +23,14 @@ module('Acceptance | Dashboards', function(hooks) {
   });
 
   test('dashboard success', async function(assert) {
-    assert.expect(2);
+    assert.expect(5);
 
     await visit('/dashboards/1');
     assert.dom('.error').doesNotExist('Error message not present when route is successfully loaded');
-    assert
-      .dom('.navi-dashboard')
-      .exists('the dashboard collection component is rendered when route is successfully loaded');
+    assert.dom('.navi-dashboard').exists('the dashboard component is rendered when route is successfully loaded');
+    assert.dom('.navi-widget__content .goal-gauge-widget').exists('the goal gauge widget is rendered');
+    assert.dom('.navi-widget__content .line-chart-widget').exists('the line chart widget is rendered');
+    assert.dom('.navi-widget__content .table-widget').exists('the table widget is rendered');
   });
 
   test('dashboard error', async function(assert) {

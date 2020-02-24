@@ -7,7 +7,7 @@ import { get, getWithDefault } from '@ember/object';
 import Service, { inject as service } from '@ember/service';
 import { isEmpty } from '@ember/utils';
 import { merge, flow } from 'lodash-es';
-import { task, all } from 'ember-concurrency';
+import { task, all, didCancel } from 'ember-concurrency';
 import { computed } from '@ember/object';
 import { v1 } from 'ember-uuid';
 import config from 'ember-get-config';
@@ -76,13 +76,13 @@ export default class DashboardDataService extends Service {
       /**
        * bubbling 403 errors causes acceptance test to fail https://github.com/emberjs/ember-qunit/issues/592
        * task still expectedly fails.
-       * TODO: no need for catch block when ^ resolves (needlessly catches TaskCancelation errors as well)
+       * TODO: no need for catch block when ^ resolves (needlessly catches task cancelation errors as well)
        */
-      taskInstance.catch(error => {
-        if (isForbidden(error) || (error && error.name === 'TaskCancelation')) {
+      taskInstance.catch(e => {
+        if (didCancel(e) || isForbidden(e)) {
           return;
         }
-        throw error;
+        throw e;
       });
     });
 
