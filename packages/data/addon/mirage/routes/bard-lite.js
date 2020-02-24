@@ -186,15 +186,16 @@ export default function(
         let dimensionValues = _getDimensionValues(dimension, dimensionFilter);
 
         return newRows.concat(
-          dimensionValues.map(value =>
-            Object.keys(value).map(key => {
+          dimensionValues.map(value => {
+            Object.keys(value).forEach(key => {
               if (key === 'description') {
                 currentRow[`${dimension}|desc`] = value[key];
               } else {
                 currentRow[`${dimension}|${key}`] = value[key];
               }
-            })
-          )
+            });
+            return currentRow;
+          })
         );
       }, []);
     });
