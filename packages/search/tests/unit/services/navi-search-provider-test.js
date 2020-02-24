@@ -4,17 +4,18 @@ import { setupTest } from 'ember-qunit';
 module('Unit | Service | navi-search-provider', function(hooks) {
   setupTest(hooks);
 
+  let Service;
+
   hooks.beforeEach(async function() {
-    this.service = this.owner.lookup('service:navi-search-provider');
+    Service = this.owner.lookup('service:navi-search-provider');
   });
 
   test('it exists', function(assert) {
-    let service = this.owner.lookup('service:navi-search-provider');
-    assert.ok(service);
+    assert.ok(Service);
   });
 
   test('get all search providers', function(assert) {
-    let availableSearchProviders = this.service._all();
+    let availableSearchProviders = Service._all();
     let systemSearchProviders = ['NaviSampleSearchProviderService'];
     assert.deepEqual(
       availableSearchProviders.map(provider => provider.constructor.name),
@@ -24,7 +25,7 @@ module('Unit | Service | navi-search-provider', function(hooks) {
   });
 
   test('search all providers', async function(assert) {
-    let results = await this.service.search.perform('Revenue');
+    let results = await Service.search.perform('Revenue');
     assert.ok(
       results.every(
         result => result.data.every(d => d.includes('Revenue')) && result.component === 'navi-search-result/sample'
@@ -34,7 +35,7 @@ module('Unit | Service | navi-search-provider', function(hooks) {
   });
 
   test('search with no results', async function(assert) {
-    let results = await this.service.search.perform('something');
+    let results = await Service.search.perform('something');
     assert.equal(results.length, 0, 'Returns no results');
   });
 });
