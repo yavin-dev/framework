@@ -6,6 +6,7 @@ import { setupApplicationTest } from 'ember-qunit';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import { Response } from 'ember-cli-mirage';
 import { selectChoose } from 'ember-power-select/test-support';
+import { clickItem } from 'navi-reports/test-support/report-builder';
 import $ from 'jquery';
 
 let confirm;
@@ -383,7 +384,7 @@ module('Acceptance | Dashboards', function(hooks) {
     await click('.add-widget-modal .add-to-dashboard');
 
     // Fill out request
-    await click($('.checkbox-selector--metric .grouped-list__item:contains(Total Clicks) .grouped-list__add-icon')[0]);
+    await clickItem(this, 'metric', 'Total Clicks');
 
     // Save without running
     await click('.navi-report-widget__save-btn');
@@ -413,9 +414,7 @@ module('Acceptance | Dashboards', function(hooks) {
     await click('.add-widget-modal .add-to-dashboard');
 
     // Fill out request
-    await click(
-      $('.checkbox-selector--metric .grouped-list__item:contains(Total Page Views) .grouped-list__add-icon')[0]
-    );
+    await clickItem(this, 'metric', 'Total Page Views');
 
     // Run request
     await click('.navi-report-widget__run-btn');
@@ -497,7 +496,7 @@ module('Acceptance | Dashboards', function(hooks) {
 
     // Create and save
     await visit('/dashboards/1/widgets/new');
-    await click($('.checkbox-selector--metric .grouped-list__item:contains(Total Clicks) .grouped-list__add-icon')[0]);
+    await clickItem(this, 'metric', 'Total Clicks');
     await click('.navi-report-widget__run-btn');
     await click('.navi-report-widget__save-btn');
 

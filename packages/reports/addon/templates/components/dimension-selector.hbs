@@ -12,7 +12,6 @@
     @shouldOpenAllGroups={{areItemsFiltered}}
     @groupByField="category"
     @sortByField={{unless areItemsFiltered "longName"}}
-    @containerSelector=".navi-list-selector__content--dimension"
     as | item |
   >
     {{#if (eq item.category "Time Grain")}}

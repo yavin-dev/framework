@@ -15,9 +15,10 @@
     {{else}}
       <NaviListSelector
         @items={{this.allParameters}}
-        @searchField="name"
+        @searchField="id"
         @selected={{this.selectedParams}}
         @title={{this.metric.longName}}
+        @contentClass="navi-list-selector__content--metric-config"
         as | params |
       >
         <GroupedList

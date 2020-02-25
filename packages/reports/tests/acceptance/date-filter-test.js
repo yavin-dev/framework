@@ -4,6 +4,7 @@ import { setupApplicationTest } from 'ember-qunit';
 import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 import $ from 'jquery';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { clickItemFilter } from 'navi-reports/test-support/report-builder';
 
 module('Acceptance | date filter', function(hooks) {
   setupApplicationTest(hooks);
@@ -13,8 +14,7 @@ module('Acceptance | date filter', function(hooks) {
     assert.expect(2);
 
     await visit('/reports/1/view');
-    await click($('.grouped-list__group-header:contains(test)')[0]);
-    await click($('.grouped-list__item:contains(User Signup Date) .grouped-list__filter')[0]);
+    await clickItemFilter(this, 'dimension', 'User Signup Date');
 
     assert.ok(
       !!$('.filter-builder__operator:contains(Since)').length,
@@ -22,7 +22,7 @@ module('Acceptance | date filter', function(hooks) {
     );
 
     await click('.filter-collection__remove');
-    await click($('.grouped-list__item:contains(User Region) .grouped-list__filter')[0]);
+    await clickItemFilter(this, 'dimension', 'User Region');
 
     assert.ok(
       !!$('.filter-builder-dimension__operator:contains(Equals)').length,
@@ -34,8 +34,7 @@ module('Acceptance | date filter', function(hooks) {
     assert.expect(5);
 
     await visit('/reports/1/view');
-    await click($('.grouped-list__group-header:contains(test)')[0]);
-    await click($('.grouped-list__item:contains(User Signup Date) .grouped-list__filter')[0]);
+    await clickItemFilter(this, 'dimension', 'User Signup Date');
     await click($('.filter-builder__operator:contains(Since) .filter-builder__select-trigger')[0]);
     await click($('li.ember-power-select-option:contains(Between)')[0]);
 

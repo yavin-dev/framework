@@ -6,6 +6,7 @@ import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import { Response } from 'ember-cli-mirage';
 import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 import $ from 'jquery';
+import { clickItem, clickItemFilter } from 'navi-reports/test-support/report-builder';
 
 // Regex to check that a string ends with "{uuid}/view"
 const TempIdRegex = /\/reports\/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\/view$/;
@@ -94,7 +95,7 @@ module('Acceptance | Exploring Widgets', function(hooks) {
 
     assert.dom('.report-view__info-text').isNotVisible('Notification to run is not visible before making changes');
 
-    await click($('.checkbox-selector--metric .grouped-list__item:contains(Total Clicks) .grouped-list__add-icon')[0]);
+    await clickItem(this, 'metric', 'Total Clicks');
 
     assert.dom('.report-view__info-text').isVisible('Notification to run is visible after making changes');
 
@@ -123,7 +124,7 @@ module('Acceptance | Exploring Widgets', function(hooks) {
     assert.dom('.navi-report-widget__revert-btn').isNotVisible('Revert changes button is not initially visible');
 
     // Remove a metric
-    await click($('.checkbox-selector--dimension .grouped-list__item:contains(Week) .grouped-list__item-label')[0]);
+    await clickItem(this, 'timeGrain', 'Week');
     assert
       .dom('.navi-report-widget__revert-btn')
       .isVisible('Revert changes button is visible once a change has been made');
@@ -161,10 +162,8 @@ module('Acceptance | Exploring Widgets', function(hooks) {
       .hasAttribute('href', /metrics=adClicks%2CnavClicks/, 'Have correct metric in export url');
 
     // Remove all metrics to create an invalid request
-    await click($('.checkbox-selector--metric .grouped-list__item:contains(Ad Clicks) .grouped-list__add-icon')[0]);
-    await click(
-      $('.checkbox-selector--metric .grouped-list__item:contains(Nav Link Clicks) .grouped-list__add-icon')[0]
-    );
+    await clickItem(this, 'metric', 'Ad Clicks');
+    await clickItem(this, 'metric', 'Nav Link Clicks');
 
     assert
       .dom($('.navi-report-widget__action-link:contains(Export)')[0])
@@ -195,19 +194,15 @@ module('Acceptance | Exploring Widgets', function(hooks) {
       .doesNotHaveClass('.navi-report-widget__action--is-disabled', 'Get API action is enabled for a valid request');
 
     // Remove all metrics
-    await click($('.checkbox-selector--metric .grouped-list__item:contains(Ad Clicks) .grouped-list__add-icon')[0]);
-    await click(
-      $('.checkbox-selector--metric .grouped-list__item:contains(Nav Link Clicks) .grouped-list__add-icon')[0]
-    );
+    await clickItem(this, 'metric', 'Ad Clicks');
+    await clickItem(this, 'metric', 'Nav Link Clicks');
 
     // Remove all metrics to create an invalid request
-    await click($('.checkbox-selector--metric .grouped-list__item:contains(Ad Clicks) .grouped-list__add-icon')[0]);
-    await click(
-      $('.checkbox-selector--metric .grouped-list__item:contains(Nav Link Clicks) .grouped-list__add-icon')[0]
-    );
+    await clickItem(this, 'metric', 'Ad Clicks');
+    await clickItem(this, 'metric', 'Nav Link Clicks');
 
     // Create empty filter to make request invalid
-    await click($('.grouped-list__item:Contains(Operating System) .grouped-list__filter')[0]);
+    await clickItemFilter(this, 'dimension', 'Operating System');
 
     assert
       .dom('.get-api')
@@ -219,7 +214,7 @@ module('Acceptance | Exploring Widgets', function(hooks) {
 
     /* == Unsaved widget == */
     await visit('/dashboards/1/widgets/new');
-    await click($('.checkbox-selector--metric .grouped-list__item:contains(Ad Clicks) .grouped-list__add-icon')[0]);
+    await clickItem(this, 'metric', 'Ad Clicks');
     await click('.navi-report-widget__run-btn');
 
     assert.notOk(

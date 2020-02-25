@@ -28,6 +28,25 @@ class GroupedListComponent extends Component {
    */
   groupConfigs = {};
 
+  groupedListClass = 'grouped-list';
+
+  get containerQuerySelector() {
+    const { containerSelector, groupedListClass, parentView } = this;
+    if (containerSelector) {
+      return containerSelector;
+    }
+    if (!parentView || !parentView.element) {
+      return 'body';
+    }
+    const parentClasses = parentView.element.querySelector(`.${groupedListClass}`).parentElement.classList.value;
+    const parentSelector = parentClasses
+      .split(' ')
+      .filter(cls => cls.length)
+      .map(cls => `.${cls}`)
+      .join('');
+    return parentSelector;
+  }
+
   /*
    * @property {Object} groupedItems - object with keys as group names and the values as items in the group
    */
@@ -46,11 +65,12 @@ class GroupedListComponent extends Component {
     return grouped;
   }
 
+  @computed('groupedItems', 'groupConfigs', 'shouldOpenAllGroups')
   get flatItems() {
-    const { groupedItems, shouldOpenAllGroups } = this;
+    const { groupedItems, shouldOpenAllGroups, groupConfigs } = this;
     return Object.keys(groupedItems).reduce((items, name) => {
       const groupItems = groupedItems[name];
-      const isOpen = getWithDefault(this, `groupConfigs.${name}.isOpen`, false) || shouldOpenAllGroups;
+      const isOpen = getWithDefault(groupConfigs, `${name}.isOpen`, false) || shouldOpenAllGroups;
 
       items.push({ name, groupLength: groupItems.length, _isGroup: true, _isOpen: isOpen });
       if (isOpen) {
@@ -63,10 +83,10 @@ class GroupedListComponent extends Component {
   @action
   toggleOpen(group) {
     const { groupConfigs } = this;
-    if (!groupConfigs[group]) {
-      set(this, `groupConfigs.${group}`, {});
-    }
-    set(this, `groupConfigs.${group}.isOpen`, !this.groupConfigs[group].isOpen);
+    groupConfigs[group] = groupConfigs[group] || {};
+    groupConfigs[group].isOpen = !this.groupConfigs[group].isOpen;
+
+    set(this, 'groupConfigs', Object.assign({}, groupConfigs));
   }
 }
 

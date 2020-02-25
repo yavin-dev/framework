@@ -1,15 +1,16 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<div class="grouped-list" ...attributes>
+<div class="{{this.groupedListClass}}" ...attributes>
   <VerticalCollection
     @items={{this.flatItems}}
     @tagName="ul"
     @estimateHeight={{or @estimateHeight 17}}
     @bufferSize={{or @bufferSize 10}}
-    @containerSelector={{@containerSelector}}
+    @containerSelector={{this.containerQuerySelector}}
     as |item|>
     {{#if item._isGroup}}
       <li
         class="grouped-list__group-header"
+        role="button"
         {{on "click" (fn this.toggleOpen item.name)}}
         >
         {{#if item._isOpen}}

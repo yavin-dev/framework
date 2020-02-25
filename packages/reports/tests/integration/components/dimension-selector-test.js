@@ -1,13 +1,13 @@
-import { isEmpty } from '@ember/utils';
 import { set } from '@ember/object';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import $ from 'jquery';
-import { render, click, findAll, fillIn, triggerEvent } from '@ember/test-helpers';
+import { render, click, findAll, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import { assertTooltipRendered, assertTooltipNotRendered, assertTooltipContent } from 'ember-tooltips/test-support';
 import config from 'ember-get-config';
+import { clickItem, clickItemFilter, getItem, getAll, getAllSelected } from 'navi-reports/test-support/report-builder';
 
 let Store, MetadataService, Age;
 
@@ -85,15 +85,15 @@ module('Integration | Component | dimension selector', function(hooks) {
   test('show selected', async function(assert) {
     assert.expect(4);
 
+    const allDimensions = await getAll(this, 'dimension');
     assert.ok(
-      findAll('.grouped-list__item').length > this.get('request.dimensions.length') + 1 /*for timegrain*/,
+      allDimensions.length > this.get('request.dimensions.length') + 1 /*for timegrain*/,
       'Initially all the dimensions are shown in the dimension-selector'
     );
 
-    await click('.navi-list-selector__show-link');
-
+    const selecetedDimensions = await getAllSelected(this, 'dimension');
     assert.deepEqual(
-      findAll('.grouped-list__item').map(el => el.textContent.trim()),
+      selecetedDimensions,
       ['Day', 'Age'],
       'When show selected is clicked only the selected age dimension and the selected timegrain are shown'
     );
@@ -143,10 +143,10 @@ module('Integration | Component | dimension selector', function(hooks) {
     //select first time grain
 
     //addTimeGrain when a different time grain is clicked
-    await click($('.grouped-list__item:contains(Week) .grouped-list__item-label')[0]);
+    await clickItem(this, 'timeGrain', 'Week');
 
     //removeTimeGrain when selected time grain is clicked
-    await click($('.grouped-list__item:contains(Day) .grouped-list__item-label')[0]);
+    await clickItem(this, 'timeGrain', 'Day');
 
     this.set('addDimension', item => {
       assert.equal(
@@ -167,30 +167,35 @@ module('Integration | Component | dimension selector', function(hooks) {
     //select a random dimension
 
     //addDimension when an unselected dimension is clicked
-    await click($('.grouped-list__item:contains(Gender) .grouped-list__add-icon')[0]);
+    await clickItem(this, 'dimension', 'Gender');
 
     //removeDimension when a selected dimension is clicked
-    await click($('.grouped-list__item:contains(Age) .grouped-list__add-icon')[0]);
+    await clickItem(this, 'dimension', 'Age');
   });
 
   test('filter icon', async function(assert) {
     assert.expect(3);
 
-    assert.notOk(
-      isEmpty($('.grouped-list__item:contains(Age) .grouped-list__filter--active')),
-      'The filter icon with the age dimension has the active class'
-    );
+    const { item: age, reset: resetAge } = await getItem(this, 'dimension', 'Age');
+    assert
+      .dom(age.querySelector('.grouped-list__filter'))
+      .hasClass('grouped-list__filter--active', 'The filter icon with the age dimension has the active class');
+    await resetAge();
 
-    assert.ok(
-      isEmpty($('.grouped-list__item:contains(Gender) .grouped-list__filter--active')),
-      'The filter icon with the gender dimension does not have the active class'
-    );
+    const { item: gender, reset: resetGender } = await getItem(this, 'dimension', 'Gender');
+    assert
+      .dom(gender.querySelector('.grouped-list__filter'))
+      .doesNotHaveClass(
+        'grouped-list__filter--active',
+        'The filter icon with the gender dimension does not have the active class'
+      );
+    await resetGender();
 
     this.set('addDimFilter', dimension => {
       assert.deepEqual(dimension, Age, 'The age dimension is passed to the action when filter icon is clicked');
     });
 
-    await click($('.grouped-list__item:contains(Age) .grouped-list__filter')[0]);
+    await clickItemFilter(this, 'dimension', 'Age');
   });
 
   test('tooltip', async function(assert) {
@@ -202,31 +207,32 @@ module('Integration | Component | dimension selector', function(hooks) {
     });
 
     await click($('.grouped-list__group-header:contains(test)')[0]);
-    // triggerTooltipTargetEvent will not work for hidden elementc
-    await triggerEvent($('.grouped-list__item:contains(Age) .grouped-list__item-info')[0], 'mouseenter');
+    // triggerTooltipTargetEvent will not work for hidden element
+
+    const { item: age, reset: resetAge } = await getItem(this, 'dimension', 'Age');
+    await triggerEvent(age.querySelector('.grouped-list__item-info'), 'mouseenter');
 
     assertTooltipRendered(assert);
     assertTooltipContent(assert, {
       contentString: 'foo'
     });
+    await resetAge();
   });
 
   test('ranked search', async function(assert) {
     assert.expect(2);
 
+    const allDimensions = await getAll(this, 'dimension');
     assert.deepEqual(
-      $('.grouped-list__item:contains(Country)')
-        .toArray()
-        .map(el => el.textContent.trim()),
+      allDimensions.filter(dim => dim.includes('Country')),
       ['Property Country', 'User Country'],
       'Initially the country dimensions are ordered alphabetically'
     );
 
-    await fillIn('.navi-list-selector__search-input', 'count');
-    await triggerEvent('.navi-list-selector__search-input', 'focusout');
+    const filteredDimensions = await getAll(this, 'dimension', 'count');
 
     assert.deepEqual(
-      findAll('.grouped-list__item').map(el => el.textContent.trim()),
+      filteredDimensions,
       ['User Country', 'Property Country'],
       'The search results are ranked based on relevance'
     );

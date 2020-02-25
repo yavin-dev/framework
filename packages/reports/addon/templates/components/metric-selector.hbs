@@ -12,7 +12,6 @@
     @shouldOpenAllGroups={{areMetricsFiltered}}
     @groupByField="category"
     @sortByField={{unless areMetricsFiltered "longName"}}
-    @containerSelector=".navi-list-selector__content--metric"
     as | metric |
   >
     <div class="grouped-list__item-container {{if (and (get metricsChecked metric.name) (feature-flag "enableRequestPreview")) "grouped-list__item-container--selected"}}">
