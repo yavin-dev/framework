@@ -4,6 +4,7 @@
     @items={{this.flatItems}}
     @tagName="ul"
     @estimateHeight={{or @estimateHeight 17}}
+    @staticHeight={{if (eq @staticHeight false) false true}}
     @bufferSize={{or @bufferSize 10}}
     @containerSelector={{this.containerQuerySelector}}
     as |item|>

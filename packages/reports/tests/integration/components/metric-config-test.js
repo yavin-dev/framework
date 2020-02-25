@@ -7,8 +7,15 @@ import { set } from '@ember/object';
 import $ from 'jquery';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import RSVP, { reject } from 'rsvp';
-import { isEmpty } from '@ember/utils';
 import { A as arr } from '@ember/array';
+import {
+  clickItemFilter,
+  getItem,
+  getAll,
+  clickShowSelected,
+  renderAll
+} from 'navi-reports/test-support/report-builder';
+import { didRender, getVerticalCollection } from 'navi-reports/test-support/vertical-collection';
 
 let MockRequest, MockMetric, MetadataService;
 
@@ -93,26 +100,24 @@ module('Integration | Component | metric config', function(hooks) {
       .isVisible('An icon is shown as the trigger to the dropdown');
 
     await clickTrigger('.metric-config__dropdown-trigger');
+    await didRender(getVerticalCollection(this));
 
-    //wait for all promises to be resolved
-    await settled();
-    assert.dom('.metric-config__dropdown-container').isVisible('the trigger opens a dropdown on click');
+    assert.dom('.metric-config__dropdown-container').exists('the trigger opens a dropdown on click');
 
     assert
       .dom('.metric-config__footer .metric-config__done-btn')
-      .isVisible('the done button is rendered in the footer of the component');
+      .exists('the done button is rendered in the footer of the component');
 
     await click('.metric-config__done-btn');
 
-    assert.dom('.metric-config__dropdown-container').isNotVisible('the done button closes the dropdown on click');
+    assert.dom('.metric-config__dropdown-container').doesNotExist('the done button closes the dropdown on click');
   });
 
   test('grouped list', async function(assert) {
     assert.expect(3);
 
     await clickTrigger('.metric-config__dropdown-trigger');
-
-    await settled();
+    await didRender(getVerticalCollection(this));
 
     assert
       .dom('.metric-config__dropdown-container .navi-list-selector__title')
@@ -124,35 +129,33 @@ module('Integration | Component | metric config', function(hooks) {
       'The group headers reflect the two parameters in the metric'
     );
 
-    const embargoList = findAll('.grouped-list__group-header').find(el => el.textContent.trim().startsWith('embargo'))
-      .nextElementSibling;
-    assert.deepEqual(
-      [...embargoList.querySelectorAll('li')].map(el => el.textContent.trim()),
-      ['Embargo enforced (Y)', 'No Embargo (N)'],
-      'Enum elements are correctly displayed'
-    );
+    const embargoList = (await getAll(this, 'metricConfig')).filter(config => config.includes('Embargo'));
+
+    assert.deepEqual(embargoList, ['Embargo enforced (Y)', 'No Embargo (N)'], 'Enum elements are correctly displayed');
   });
 
   test('show selected', async function(assert) {
     assert.expect(3);
 
     await clickTrigger('.metric-config__dropdown-trigger');
+    await didRender(getVerticalCollection(this));
 
-    await settled();
     assert.ok(
-      findAll('.grouped-list__item').length > this.get('request.metrics.length'),
+      (await getAll(this, 'metricConfig')).length > this.get('request.metrics.length'),
       'Initially all the parameters are shown in the metric-config'
     );
 
-    await click('.navi-list-selector__show-link');
+    await clickShowSelected(this, 'metricConfig');
 
     assert.deepEqual(
-      findAll('.grouped-list__item').map(el => el.textContent.trim()),
+      await getAll(this, 'metricConfig'),
       ['Dollars (USD)'],
       'When show selected is clicked only the selected parameter is shown'
     );
 
+    const resetRenderAll = await renderAll(this, 'metricConfig');
     assert.notOk(findAll('.grouped-list__add-icon--deselected').length, 'The selected items are marked as selected');
+    await resetRenderAll();
   });
 
   test('add/remove param', async function(assert) {
@@ -171,7 +174,7 @@ module('Integration | Component | metric config', function(hooks) {
     });
 
     await clickTrigger('.metric-config__dropdown-trigger');
-    await settled();
+    await didRender(getVerticalCollection(this));
     //add Param `Drams`
     await click($('.grouped-list__item:contains(Drams) .grouped-list__add-icon')[0]);
 
@@ -189,19 +192,23 @@ module('Integration | Component | metric config', function(hooks) {
     });
 
     await clickTrigger('.metric-config__dropdown-trigger');
+    await didRender(getVerticalCollection(this));
 
-    await settled();
-    assert.notOk(
-      isEmpty($('.grouped-list__item:contains(USD) .grouped-list__filter--active')),
+    let { item: usdItem, reset: usdReset } = await getItem(this, 'metricConfig', 'USD');
+    assert.ok(
+      usdItem.querySelector('.grouped-list__filter--active'),
       'The filter icon with the `USD` param has the active class'
     );
+    await usdReset();
 
-    assert.ok(
-      isEmpty($('.grouped-list__item:contains(Drams) .grouped-list__filter--active')),
-      'The filter icon with the `Drams` param does not have the active class'
+    let { item: amdItem, reset: amdReset } = await getItem(this, 'metricConfig', 'AMD');
+    assert.notOk(
+      amdItem.querySelector('.grouped-list__filter--active'),
+      'The filter icon with the `AMD` param does not have the active class'
     );
+    await amdReset();
 
-    await click($('.grouped-list__item:contains(Drams) .grouped-list__filter')[0]);
+    await clickItemFilter(this, 'metricConfig', 'AMD');
   });
 
   test('loader', async function(assert) {
@@ -224,14 +231,13 @@ module('Integration | Component | metric config', function(hooks) {
 
     await clickTrigger('.metric-config__dropdown-trigger');
     assert.dom('.navi-loader__container').isVisible('The loader is displayed while the promise is pending');
-
-    await settled();
   });
 
   test('error message', async function(assert) {
     assert.expect(1);
 
     await clickTrigger('.metric-config__dropdown-trigger');
+    await didRender(getVerticalCollection(this));
     set(this, 'parametersPromise', reject());
     await settled();
 

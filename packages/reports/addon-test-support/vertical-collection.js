@@ -1,4 +1,4 @@
-import { assert, warn } from '@ember/debug';
+import { assert } from '@ember/debug';
 import { getOwner } from '@ember/application';
 import { set } from '@ember/object';
 
@@ -21,12 +21,10 @@ export function getVerticalCollection(instance, selector = 'body') {
     .filter(isVerticalCollection)
     .filter(verticalCollection => !!document.querySelector(`${selector} #${verticalCollection.elementId}`));
 
-  if (allVerticalCollections.length !== 1) {
-    warn(
-      `Your selector ${selector} for vertical collections returned ${allVerticalCollections.length} instead of just 1`,
-      { id: 'get-single-vertical-collection' }
-    );
-  }
+  assert(
+    `Your selector '${selector}' for vertical collections returned ${allVerticalCollections.length} instead of just 1`,
+    allVerticalCollections.length === 1
+  );
 
   return allVerticalCollections[0];
 }
@@ -36,7 +34,7 @@ export async function didRender(verticalCollection, options = { timeout: 10000 }
   const { _radar: radar } = verticalCollection;
   const { _debugDidUpdate: originalDebugDidUpdate } = radar;
 
-  return new Promise((resolve, reject) => {
+  const forceRender = new Promise((resolve, reject) => {
     radar._debugDidUpdate = function() {
       originalDebugDidUpdate.apply(radar, ...arguments);
       radar._debugDidUpdate = originalDebugDidUpdate;
@@ -46,6 +44,8 @@ export async function didRender(verticalCollection, options = { timeout: 10000 }
     radar.scheduleUpdate();
     setTimeout(reject, options.timeout);
   });
+
+  await forceRender;
 }
 
 export async function renderAllItems(verticalCollection, options) {
@@ -55,7 +55,9 @@ export async function renderAllItems(verticalCollection, options) {
   await didRender(verticalCollection, options);
 
   return async () => {
-    set(verticalCollection, 'renderAll', _renderAll);
+    if (!verticalCollection.isDestroyed || !verticalCollection.isDestroying) {
+      set(verticalCollection, 'renderAll', _renderAll);
+    }
     await didRender(verticalCollection, options);
   };
 }

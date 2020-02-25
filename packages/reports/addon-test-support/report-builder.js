@@ -102,11 +102,14 @@ async function _renderAndOpenAllFiltered(instance, type) {
     config[group] = { isOpen: true };
     return config;
   }, {});
+
   set(groupedList, 'groupConfigs', allOpenGroups);
-  const resetRenderAllItems = renderAllItems(verticalCollection);
+  const resetRenderAllItems = await renderAllItems(verticalCollection);
 
   return async () => {
-    set(groupedList, 'groupConfigs', _groupConfigs);
+    if (!groupedList.isDestroyed || !groupedList.isDestroying) {
+      set(groupedList, 'groupConfigs', _groupConfigs);
+    }
     await resetRenderAllItems();
   };
 }

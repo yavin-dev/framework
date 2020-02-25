@@ -676,7 +676,7 @@ module('Acceptance | Dashboards', function(hooks) {
     await click('.add-widget-modal .add-to-dashboard');
 
     // Fill out request
-    await click($('.checkbox-selector--metric .grouped-list__item:contains(Total Clicks) .grouped-list__add-icon')[0]);
+    await clickItem(this, 'metric', 'Total Clicks');
 
     // Save without running
     await click('.navi-report-widget__save-btn');

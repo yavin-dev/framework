@@ -7,7 +7,14 @@ import hbs from 'htmlbars-inline-precompile';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import { assertTooltipRendered, assertTooltipNotRendered, assertTooltipContent } from 'ember-tooltips/test-support';
 import config from 'ember-get-config';
-import { clickItem, clickItemFilter, getItem, getAll, getAllSelected } from 'navi-reports/test-support/report-builder';
+import {
+  clickItem,
+  clickItemFilter,
+  clickShowSelected,
+  getItem,
+  getAll,
+  getAllSelected
+} from 'navi-reports/test-support/report-builder';
 
 let Store, MetadataService, Age;
 
@@ -62,7 +69,7 @@ module('Integration | Component | dimension selector', function(hooks) {
       .dom('.navi-list-selector')
       .isVisible('a navi-list-selector component is rendered as part of the dimension selector');
 
-    assert.dom('.grouped-list').isVisible('a grouped-list component is rendered as part of the dimension selector');
+    assert.dom('.grouped-list').exists('a grouped-list component is rendered as part of the dimension selector');
   });
 
   test('groups', function(assert) {
@@ -116,7 +123,7 @@ module('Integration | Component | dimension selector', function(hooks) {
       onToggleDimFilter=(action addDimFilter)
     }}`);
 
-    await click('.navi-list-selector__show-link');
+    await clickShowSelected(this, 'dimension');
 
     assert.equal(
       findAll('.grouped-list__item-checkbox')
