@@ -95,11 +95,7 @@ export default Route.extend({
       return { dashboard, taskByWidget: cachedWidgetData };
     }
 
-    /**
-     * if we don't await here, when navigating between dashboards while data is still loading
-     * `deactivate` gets called after these lines, canceling new tasks and setting the new cache to null
-     */
-    await this._cancelWidgetDataTasks();
+    this._cancelWidgetDataTasks();
     const widgetsData = await this.dashboardData.fetchDataForDashboard(dashboard);
     this.set('_widgetDataCache', widgetsData);
 
@@ -180,7 +176,20 @@ export default Route.extend({
 
     this.controller.set('filters', null);
 
-    this._cancelWidgetDataTasks();
     this.set('_widgetDataCache', null);
+  },
+
+  actions: {
+    /**
+     * @override
+     * @action willTransition
+     * @param {Transition} transition
+     */
+    willTransition(transition) {
+      if (transition.targetName !== this.routeName) {
+        this._cancelWidgetDataTasks();
+      }
+      return true;
+    }
   }
 });
