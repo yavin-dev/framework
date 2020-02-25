@@ -10,10 +10,6 @@ module('Unit | Service | navi-search-provider', function(hooks) {
     Service = this.owner.lookup('service:navi-search-provider');
   });
 
-  test('it exists', function(assert) {
-    assert.ok(Service);
-  });
-
   test('get all search providers', function(assert) {
     let availableSearchProviders = Service._all();
     let systemSearchProviders = ['NaviSampleSearchProviderService'];
