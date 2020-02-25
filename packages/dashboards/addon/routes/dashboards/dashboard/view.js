@@ -96,8 +96,8 @@ export default Route.extend({
     }
 
     /**
-     * if we don't await here, when going back and forth between dashboards while data is still loading
-     * `deactivate` gets called after these lines, cancelling new tasks and setting the new cache to null
+     * if we don't await here, when navigating between dashboards while data is still loading
+     * `deactivate` gets called after these lines, canceling new tasks and setting the new cache to null
      */
     await this._cancelWidgetDataTasks();
     const widgetsData = await this.dashboardData.fetchDataForDashboard(dashboard);
@@ -111,16 +111,20 @@ export default Route.extend({
    *
    * @private
    * @method _cancelWidgetDataTasks
-   * @returns {Boolean} - true after cancelling
+   * @returns {Boolean} - true after canceling
    */
   _cancelWidgetDataTasks() {
+    const { id: dashboardId } = this.modelFor('dashboards.dashboard');
     const { _widgetDataCache } = this;
 
     if (!_widgetDataCache) {
       return true;
     }
 
-    Object.values(_widgetDataCache).forEach(widgetTask => widgetTask.cancel());
+    for (const [widgetId, widgetTask] of Object.entries(_widgetDataCache)) {
+      widgetTask.cancel(`dashboard ${dashboardId} canceled widget task ${widgetId}`);
+    }
+
     return true;
   },
 
