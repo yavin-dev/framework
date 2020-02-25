@@ -7,7 +7,6 @@
 
 import { faker, Response } from 'ember-cli-mirage';
 import moment from 'moment';
-import { assign } from '@ember/polyfills';
 import { parseFilters, parseHavings } from './bard-lite-parsers';
 
 const API_DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss.SSS',
@@ -187,13 +186,17 @@ export default function(
         let dimensionValues = _getDimensionValues(dimension, dimensionFilter);
 
         return newRows.concat(
-          dimensionValues.map(value =>
-            // TODO figure out why Object.assign refuses to work in Phantom even with Babel polyfill
-            assign({}, currentRow, {
-              [`${dimension}|id`]: value.id,
-              [`${dimension}|desc`]: value.description
-            })
-          )
+          dimensionValues.map(value => {
+            let newRow = Object.assign({}, currentRow);
+            Object.keys(value).forEach(key => {
+              if (key === 'description') {
+                newRow[`${dimension}|desc`] = value[key];
+              } else {
+                newRow[`${dimension}|${key}`] = value[key];
+              }
+            });
+            return newRow;
+          })
         );
       }, []);
     });

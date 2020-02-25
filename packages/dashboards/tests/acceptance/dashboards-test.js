@@ -697,4 +697,44 @@ module('Acceptance | Dashboards', function(hooks) {
       'the filters reflect the dashboards modified filters'
     );
   });
+
+  test('New widget after clone', async function(assert) {
+    assert.expect(4);
+
+    await visit('/dashboards/1');
+
+    await click('.navi-icon__copy');
+
+    assert.equal(currentURL(), '/dashboards/6/view', 'Cloning a dashboard transitions to newly made dashboard');
+
+    // Create new widget
+    await click('.add-widget .btn');
+    await click('.add-widget-modal .add-to-dashboard');
+
+    // Fill out request
+    await click($('.checkbox-selector--metric .grouped-list__item:contains(Total Clicks) .grouped-list__add-icon')[0]);
+
+    // Save without running
+    await click('.navi-report-widget__save-btn');
+    assert.ok(
+      currentURL().endsWith('/dashboards/6/view'),
+      'After saving without running, user is brought back to dashboard view'
+    );
+
+    let widgetsAfter = findAll('.navi-widget__title').map(el => el.textContent.trim());
+
+    assert.deepEqual(
+      widgetsAfter,
+      ['Mobile DAU Goal', 'Mobile DAU Graph', 'Mobile DAU Table', 'Untitled Widget'],
+      '"Untitled Widget" has been added to dashboard'
+    );
+
+    let widgetColumns = findAll('.navi-widget:nth-child(4) .table-header-cell').map(el => el.textContent.trim());
+
+    assert.deepEqual(
+      widgetColumns,
+      ['Date', 'Total Clicks'],
+      'Table columns for the new widget are rendered correctly'
+    );
+  });
 });
