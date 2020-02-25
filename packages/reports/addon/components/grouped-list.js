@@ -28,8 +28,14 @@ class GroupedListComponent extends Component {
    */
   groupConfigs = {};
 
+  /**
+   * @property {String} groupedListClass - the class to apply to this element
+   */
   groupedListClass = 'grouped-list';
 
+  /**
+   * @property {String} containerQuerySelector - a query selector to get the parent element of this instance
+   */
   get containerQuerySelector() {
     const { containerSelector, groupedListClass, parentView } = this;
     if (containerSelector) {
