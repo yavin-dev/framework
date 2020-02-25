@@ -4,10 +4,21 @@ import { set } from '@ember/object';
 
 const verticalCollectionKey = 'component:vertical-collection';
 
+/**
+ * Checks whether a component is registered as a vertical-collection
+ * @param {Component} component - The component instance to check
+ * @returns {Boolean} - true if the component is a vertical collection
+ */
 function isVerticalCollection(component) {
   return component && component._debugContainerKey === verticalCollectionKey;
 }
 
+/**
+ * Finds a vertical collection visible under the given selector, the selector must pin down a single instance
+ * @param {Object} instance - the test or application instance
+ * @param {String} selector - the query selector to pin down the vertical collection
+ * @returns {Component} - the vertical collection component visible under the given selector
+ */
 export function getVerticalCollection(instance, selector = 'body') {
   const owner = instance.owner || getOwner(instance);
   assert('getVerticalCollection called with no owner', owner);
@@ -29,7 +40,12 @@ export function getVerticalCollection(instance, selector = 'body') {
   return allVerticalCollections[0];
 }
 
-export async function didRender(verticalCollection, options = { timeout: 10000 }) {
+/**
+ * Schedules an update for the vertical collection and waits for it to be run
+ * @param {Component} verticalCollection - the vertical collection component instance
+ * @param {Object} options - The options component to specify when to timeout
+ */
+export async function didRender(verticalCollection, options = { timeout: undefined }) {
   assert('didRender must be called with vertical collection', isVerticalCollection(verticalCollection));
   const { _radar: radar } = verticalCollection;
   const { _debugDidUpdate: originalDebugDidUpdate } = radar;
@@ -42,12 +58,20 @@ export async function didRender(verticalCollection, options = { timeout: 10000 }
     };
 
     radar.scheduleUpdate();
-    setTimeout(reject, options.timeout);
+    if (options.timeout) {
+      setTimeout(reject, options.timeout);
+    }
   });
 
   await forceRender;
 }
 
+/**
+ * Forces the vertical collection to render all of its contents
+ * @param {Component} verticalCollection - the vertical collection component instance
+ * @param {Object} options - The options component to specify when to timeout
+ * @returns {Function} - resets the vertical collection to its previous state
+ */
 export async function renderAllItems(verticalCollection, options) {
   const { renderAll: _renderAll } = verticalCollection;
 

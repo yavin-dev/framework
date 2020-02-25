@@ -20,14 +20,31 @@ const selector = {
   metricConfig: '.metric-config__dropdown-container'
 };
 
+/**
+ * Checks if a given type is valid for the report builder grouped lists
+ * @param {String} type - A selector type for grouped lists
+ * @returns {Boolean} - true if the selector is valid
+ */
 function isAcceptedType(type) {
   return Object.keys(selector).includes(type);
 }
 
+/**
+ * Gets the query selector containing the grouped list
+ * @param {String} type - a valid selector for grouped lists
+ * @returns {String} - query selector for type
+ */
 function getSelector(type) {
+  assert('getSelector got an accepted type', isAcceptedType(type));
   return selector[type];
 }
 
+/**
+ * Clicks the show selected button if it is not already showing selected
+ * @param {Object} instance - the test or application instance
+ * @param {String} type - a valid selector for grouped lists
+ * @returns {Function} - resets the show selected to it's original state
+ */
 export async function clickShowSelected(instance, type) {
   assert('clickShowSelected got an accepted type', isAcceptedType(type));
   const typeSelector = getSelector(type);
@@ -48,7 +65,13 @@ export async function clickShowSelected(instance, type) {
   };
 }
 
-// search for metric/dimension
+/**
+ * Searches for the given query in the grouped list
+ * @param {Object} instance - the test or application instance
+ * @param {String} type - a valid selector for grouped lists
+ * @param {String} query - The query to type in the search bar
+ * @returns {Function} - resets search to it's previous state
+ */
 export async function searchFor(instance, type, query) {
   assert('searchFor got an accepted type', isAcceptedType(type));
   const typeSelector = getSelector(type);
@@ -67,7 +90,13 @@ export async function searchFor(instance, type, query) {
   };
 }
 
-// get metric/dimension from selector
+/**
+ * Searches for the given item, then retrieves it from grouped list
+ * @param {Object} instance - the test or application instance
+ * @param {String} type - a valid selector for grouped lists
+ * @param {String} query - The query to type in the search bar
+ * @returns {Object} - the element and a function to reset the search bar
+ */
 export async function getItem(instance, type, query) {
   assert('getItem got an accepted type', isAcceptedType(type));
   const reset = await searchFor(instance, type, query);
@@ -75,7 +104,12 @@ export async function getItem(instance, type, query) {
   return { item, reset };
 }
 
-// add metric/dimension to request
+/**
+ * Searches for the given item, retrieves it, clicks it, then resets the state
+ * @param {Object} instance - the test or application instance
+ * @param {String} type - a valid selector for grouped lists
+ * @param {String} query - The query to type in the search bar
+ */
 export async function clickItem(instance, type, query) {
   assert('clickItem got an accepted type', isAcceptedType(type));
   const { item, reset } = await getItem(instance, type, query);
@@ -83,7 +117,12 @@ export async function clickItem(instance, type, query) {
   await reset();
 }
 
-// add metric/dimension filter to request
+/**
+ * Searches for the given item, retrieves it, clicks its filter button, then resets the state
+ * @param {Object} instance - the test or application instance
+ * @param {String} type - a valid selector for grouped lists
+ * @param {String} query - The query to type in the search bar
+ */
 export async function clickItemFilter(instance, type, query) {
   assert('clickItemFilter got an accepted type', isAcceptedType(type));
   const { item, reset } = await getItem(instance, type, query);
@@ -91,6 +130,12 @@ export async function clickItemFilter(instance, type, query) {
   await reset();
 }
 
+/**
+ * Forces the given grouped list to open all of its groups and render all of its contents
+ * @param {Object} instance - the test or application instance
+ * @param {String} type - a valid selector for grouped lists
+ * @returns {Function} - resets to original open groups and rendering
+ */
 async function _renderAndOpenAllFiltered(instance, type) {
   const verticalCollection = getVerticalCollection(instance, getSelector(type));
 
@@ -114,6 +159,14 @@ async function _renderAndOpenAllFiltered(instance, type) {
   };
 }
 
+/**
+ * Searches for the given query (defaults to none), opens all groups, and renders all items.
+ * This is useful to force everything to be in the dom, then revert when done
+ * @param {Object} instance - the test or application instance
+ * @param {String} type - a valid selector for grouped lists
+ * @param {String} query - The query to type in the search bar
+ * @returns {Function} - resets to previous search/open groups/render state
+ */
 export async function renderAll(instance, type, query = '') {
   const resetSearch = await searchFor(instance, type, query);
   const resetRenderAll = await _renderAndOpenAllFiltered(instance, type);
@@ -124,6 +177,13 @@ export async function renderAll(instance, type, query = '') {
   };
 }
 
+/**
+ * Renders all items that match the given query, then returns the names of all selected items
+ * @param {Object} instance - the test or application instance
+ * @param {String} type - a valid selector for grouped lists
+ * @param {String} query - The query to type in the search bar
+ * @returns {Array<String>} - the names of all the selected items
+ */
 export async function getAllSelected(instance, type, query) {
   assert('getAllSelected got an accepted type', isAcceptedType(type));
   const resetRenderAll = await renderAll(instance, type, query);
@@ -136,6 +196,13 @@ export async function getAllSelected(instance, type, query) {
   return selected;
 }
 
+/**
+ * Renders all items that match the given query, then returns the names of all items
+ * @param {Object} instance - the test or application instance
+ * @param {String} type - a valid selector for grouped lists
+ * @param {String} query - The query to type in the search bar
+ * @returns {Array<String>} - the names of all the selected items
+ */
 export async function getAll(instance, type, query) {
   assert('getAll got an accepted type', isAcceptedType(type));
   const resetRenderAll = await renderAll(instance, type, query);
@@ -146,13 +213,24 @@ export async function getAll(instance, type, query) {
   return all;
 }
 
-// metrics config
+/**
+ * Clicks the metric config trigger for the given metric
+ * @param {Object} instance - the test or application instance
+ * @param {String} metric - the name of the metric
+ * @returns {Function} - resets the search for the given metric
+ */
 export async function clickMetricConfigTrigger(instance, metric) {
   const { item, reset } = await getItem(instance, 'metric', metric);
   await click(item.querySelector('.metric-config__trigger-icon'));
   return reset;
 }
 
+/**
+ * Searches for a metric, checks if it has a metric config
+ * @param {Object} instance - the test or application instance
+ * @param {String} metric - the name of the metric
+ * @returns {Boolean} - true if the metric has a metric-config
+ */
 export async function hasMetricConfig(instance, metric) {
   const { item, reset } = await getItem(instance, 'metric', metric);
   const result = !!item.querySelector('.metric-config');
@@ -161,6 +239,12 @@ export async function hasMetricConfig(instance, metric) {
 }
 
 // timegrains
+/**
+ * Searches for the given timegrain, returns the checkbox and function to reset search
+ * @param {Object} instance - the test or application instance
+ * @param {String} timeGrain - the name of the timegrain
+ * @returns {Function} - resets the search for the given timegrain
+ */
 export async function getTimeGrainCheckbox(instance, timeGrain) {
   const { item, reset } = await getItem(instance, 'timeGrain', timeGrain);
   const result = item.querySelector(groupedListItemCheckbox);
