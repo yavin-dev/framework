@@ -449,7 +449,6 @@ module('Unit | Service | Dimensions', function(hooks) {
     });
   });
 
-  //TODO: Copy this
   test('searchValue', async function(assert) {
     assert.expect(2);
 
