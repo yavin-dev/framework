@@ -1,53 +1,55 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<div class="number-format-selector__section-header">
-  Format Type
-</div>
-<div class="number-format-selector__format-list number-format-selector__section">
-  {{#each predefinedFormats as |predefinedFormat|}}
-    <div class={{concat "number-format-selector__radio-" (dasherize predefinedFormat.name)}}>
-      {{#radio-button
-        name="format"
-        groupValue=(readonly format)
-        changed=(action onUpdateFormat predefinedFormat.format)
-        value=predefinedFormat.format
-      }}
-        {{predefinedFormat.name}}
-      {{/radio-button}}
-    </div>
-  {{/each}}
-  <div class="number-format-selector__radio-custom">
-    {{#radio-button
-      name="format"
-      groupValue=(readonly format)
-      value=customFormat
-      changed=(action onUpdateFormat "")
-    }}
-      Custom
-    {{/radio-button}}
+<div class="number-format-selector" ...attributes>
+  <div class="number-format-selector__section-header">
+    Format Type
   </div>
-</div>
+  <div class="number-format-selector__format-list number-format-selector__section">
+    {{#each this.predefinedFormats as |predefinedFormat|}}
+      <div class={{concat "number-format-selector__radio-" (dasherize predefinedFormat.name)}}>
+        <RadioButton
+          @name="format"
+          @groupValue={{readonly @format}}
+          @changed={{fn @onUpdateFormat predefinedFormat.format}}
+          @value={{predefinedFormat.format}}
+        >
+          {{predefinedFormat.name}}
+        </RadioButton>
+      </div>
+    {{/each}}
+    <div class="number-format-selector__radio-custom">
+      <RadioButton
+        @name="format"
+        @groupValue={{readonly @format}}
+        @value={{this.customFormat}}
+        @changed={{fn @onUpdateFormat ""}}
+      >
+        Custom
+      </RadioButton>
+    </div>
+  </div>
 
-<div class="number-format-selector__section-header">
-  Format
+  <div class="number-format-selector__section-header">
+    Format
+  </div>
+  <div class="number-format-selector__format number-format-selector__section">
+    <Input
+      class="number-format-selector__format-input number-format-selector__text-input"
+      @autofocus={{true}}
+      @name="format-input"
+      @type="text"
+      @maxlength="22"
+      @placeholder="Raw Format"
+      @value={{@format}}
+      @enter={{fn @onUpdateFormat}}
+      @focus-out={{fn @onUpdateFormat}}
+    />
+  </div>
+  <a class="number-format-selector__doc-link"
+    href="http://numeraljs.com/#format"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <NaviIcon @icon="life-ring" class="number-format-selector__icon-documentation" />
+    Format Documentation
+  </a>
 </div>
-<div class="number-format-selector__format number-format-selector__section">
-  {{input
-    autofocus=true
-    class="number-format-selector__format-input number-format-selector__text-input"
-    name="format-input"
-    type="text"
-    maxlength="22"
-    placeholder="Raw Format"
-    value=format
-    enter=(action onUpdateFormat)
-    focus-out=(action onUpdateFormat)
-  }}
-</div>
-<a class="number-format-selector__doc-link"
-  href="http://numeraljs.com/#format"
-  target="_blank"
-  rel="noopener noreferrer"
->
-  {{navi-icon "life-ring" class="number-format-selector__icon-documentation"}}
-  Format Documentation
-</a>

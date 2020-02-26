@@ -12,78 +12,75 @@
  */
 
 import Component from '@ember/component';
-import { set, get, computed } from '@ember/object';
+import { set, get, computed, action } from '@ember/object';
 import { readOnly } from '@ember/object/computed';
 import { getOwner } from '@ember/application';
 import { copy } from 'ember-copy';
 import layout from '../../templates/components/navi-visualization-config/line-chart';
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
-export default Component.extend({
-  layout,
-
-  init() {
-    this._super(...arguments);
-    this.curveOptions = ['line', 'spline', 'step'];
-  },
-
-  /**
-   * @property classNames
-   */
-  classNames: ['line-chart-config'],
+@templateLayout(layout)
+@tagName('')
+class NaviVisualizationConfigLineChartComponent extends Component {
+  curveOptions = ['line', 'spline', 'step'];
 
   /**
    * @property {String} typePrefix - prefix for the line chart component
    */
-  typePrefix: 'navi-visualization-config/chart-type/',
+  typePrefix = 'navi-visualization-config/chart-type/';
 
   /**
    * @property {Boolean} showStackOption - whether to display the `stacked` toggle
    */
-  showStackOption: computed('type', 'request', function() {
+  @computed('type', 'request')
+  get showStackOption() {
     const type = get(this, 'type'),
       request = get(this, 'request'),
       visualizationManifest = getOwner(this).lookup(`navi-visualization-manifest:${type}`);
 
     return visualizationManifest.hasGroupBy(request) || visualizationManifest.hasMultipleMetrics(request);
-  }),
+  }
 
   /**
    * @property {Object} seriesConfig
    */
-  seriesConfig: computed('options', function() {
+  @computed('options')
+  get seriesConfig() {
     return get(this, 'options.axis.y.series.config');
-  }),
+  }
 
   /**
    * @property {String} seriesType
    */
-  seriesType: readOnly('options.axis.y.series.type'),
+  @readOnly('options.axis.y.series.type') seriesType;
 
-  actions: {
-    /**
-     * Method to replace the seriesConfig in visualization config object.
-     *
-     * @method onUpdateConfig
-     * @param {Object} seriesConfig
-     */
-    onUpdateConfig(seriesConfig) {
-      let newOptions = copy(get(this, 'options'));
-      set(newOptions, 'axis.y.series.config', seriesConfig);
-      this.onUpdateConfig(newOptions);
-    },
-
-    /**
-     * Updates line chart style
-     *
-     * @method onUpdateStyle
-     * @param {String} field - which setting is getting updated, currently `curve` and `area`
-     * @param {String|Boolean} - value to update the setting with.
-     */
-    onUpdateStyle(field, value) {
-      const options = get(this, 'options');
-      let newOptions = copy(options);
-      set(newOptions, 'style', Object.assign({}, newOptions.style, { [field]: value }));
-      this.onUpdateConfig(newOptions);
-    }
+  /**
+   * Method to replace the seriesConfig in visualization config object.
+   *
+   * @method onUpdateConfig
+   * @param {Object} seriesConfig
+   */
+  @action
+  onUpdateSeriesConfig(seriesConfig) {
+    let newOptions = copy(get(this, 'options'));
+    set(newOptions, 'axis.y.series.config', seriesConfig);
+    this.onUpdateConfig(newOptions);
   }
-});
+
+  /**
+   * Updates line chart style
+   *
+   * @method onUpdateStyle
+   * @param {String} field - which setting is getting updated, currently `curve` and `area`
+   * @param {String|Boolean} - value to update the setting with.
+   */
+  @action
+  onUpdateStyle(field, value) {
+    const options = get(this, 'options');
+    let newOptions = copy(options);
+    set(newOptions, 'style', Object.assign({}, newOptions.style, { [field]: value }));
+    this.onUpdateConfig(newOptions);
+  }
+}
+
+export default NaviVisualizationConfigLineChartComponent;

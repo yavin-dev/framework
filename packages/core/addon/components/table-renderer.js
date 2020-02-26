@@ -22,16 +22,16 @@ import Component from '@ember/component';
 import { computed, get } from '@ember/object';
 import layout from '../templates/components/table-renderer';
 import { formatItemDimension } from '../helpers/mixed-height-layout';
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
-export default Component.extend({
-  layout,
-
-  classNames: ['table-widget__horizontal-scroll-container'],
-
+@templateLayout(layout)
+@tagName('')
+class TableRendererComponent extends Component {
   /**
    * @property {Array} rowDimensions - indicates the dimensions for each row of data
    */
-  rowDimensions: computed('tableData', function() {
+  @computed('tableData')
+  get rowDimensions() {
     let rowDimension = formatItemDimension(get(this, 'estimateHeight'));
     //Create a set of row dimensions for each row of data
     let rowDimensions = new Array(get(this, 'tableData.length'));
@@ -40,5 +40,7 @@ export default Component.extend({
     }
 
     return rowDimensions;
-  })
-});
+  }
+}
+
+export default TableRendererComponent;

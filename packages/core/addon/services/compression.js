@@ -19,7 +19,7 @@ export default Service.extend({
   /**
    * @property {Object} codec - compression library
    */
-  codec: computed(() => {
+  codec: computed(function() {
     return new JsonUrl('lzstring');
   }),
 

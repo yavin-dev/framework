@@ -19,16 +19,16 @@ module('Integration | Component | comma separated list', function(hooks) {
           {{~/comma-separated-list~}}
       `);
 
-    assert.dom('*').hasText('', 'An empty array returns an empty element');
+    assert.dom().hasText('', 'An empty array returns an empty element');
 
     run(() => list.pushObject('one'));
-    assert.dom('*').hasText('one', 'A single string is returned');
+    assert.dom().hasText('one', 'A single string is returned');
 
     run(() => list.pushObject('two'));
-    assert.dom('*').hasText('one and two', 'Two strings are returned with an "and" between, and no ","');
+    assert.dom().hasText('one and two', 'Two strings are returned with an "and" between, and no ","');
 
     run(() => list.pushObject('three'));
-    assert.dom('*').hasText('one, two, and three', 'Three strings are turned into a comma separated list');
+    assert.dom().hasText('one, two, and three', 'Three strings are turned into a comma separated list');
 
     const customElementText = findAll('.custom-element').map(el => el.textContent.trim());
     assert.deepEqual(

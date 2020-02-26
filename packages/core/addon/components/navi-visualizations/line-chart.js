@@ -147,6 +147,7 @@ export default Component.extend(hasChartBuilders, {
     if (metricName) {
       return get(this, 'metricName').getDisplayName(metricName);
     }
+    return undefined;
   }),
 
   /**

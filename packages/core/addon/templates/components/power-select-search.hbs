@@ -1,17 +1,24 @@
 {{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{#if searchEnabled}}
+{{!-- Remove template-lint-disable no-action when native class power select upgrade --}}
+{{!-- template-lint-disable no-action --}}
+{{#if this.searchEnabled}}
   <div class="ember-power-select-search navi-power-select-search">
-    {{navi-icon "search"}}
-    <input type="search" autocomplete="off"
-      autocorrect="off" autocapitalize="off"
-      spellcheck="false" role="combobox"
-      class="ember-power-select-search-input navi-power-select-search-input"
-      value={{select.searchText}}
-      aria-controls={{listboxId}}
-      placeholder={{searchPlaceholder}}
-      oninput={{onInput}}
-      onfocus={{onFocus}}
-      onblur={{onBlur}}
-      onkeydown={{action "onKeydown"}}>
+    <NaviIcon @icon="search" />
+    <input 
+      type="search" 
+      autocomplete="off" 
+      autocorrect="off" 
+      autocapitalize="off" 
+      spellcheck="false" 
+      role="combobox" 
+      class="ember-power-select-search-input navi-power-select-search-input" 
+      value={{this.select.searchText}} 
+      aria-controls={{this.listboxId}} 
+      placeholder={{this.searchPlaceholder}} 
+      oninput={{this.onInput}} 
+      onfocus={{this.onFocus}} 
+      onblur={{this.onBlur}} 
+      onkeydown={{action "onKeydown"}}
+    >
   </div>
 {{/if}}

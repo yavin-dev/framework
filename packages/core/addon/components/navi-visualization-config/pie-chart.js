@@ -11,29 +11,27 @@
  */
 
 import Component from '@ember/component';
-import { set, get } from '@ember/object';
+import { set, action } from '@ember/object';
 import { copy } from 'ember-copy';
 import layout from '../../templates/components/navi-visualization-config/pie-chart';
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
-export default Component.extend({
-  layout,
-
+@templateLayout(layout)
+@tagName('')
+class NaviVisualizationConfigPieChartComponent extends Component {
   /**
-   * @property classNames
+   * Method to replace the seriesConfig in visualization config object.
+   *
+   * @method onUpdateConfig
+   * @param {Object} seriesConfig
    */
-  classNames: ['pie-chart-config'],
-
-  actions: {
-    /**
-     * Method to replace the seriesConfig in visualization config object.
-     *
-     * @method onUpdateConfig
-     * @param {Object} seriesConfig
-     */
-    onUpdateConfig(seriesConfig) {
-      let newOptions = copy(get(this, 'options'));
-      set(newOptions, 'series.config', seriesConfig);
-      this.onUpdateConfig(newOptions);
-    }
+  @action
+  onUpdateSeriesConfig(seriesConfig) {
+    const { options } = this;
+    let newOptions = copy(options);
+    set(newOptions, 'series.config', seriesConfig);
+    this.onUpdateConfig(newOptions);
   }
-});
+}
+
+export default NaviVisualizationConfigPieChartComponent;

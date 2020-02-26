@@ -1,10 +1,13 @@
 {{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{component
-  (concat "navi-visualization-config/" visualization.type)
-  request=request
-  response=response
-  options=visualization.metadata
-  onUpdateConfig=(action onUpdateConfig)
-  type=visualization.type
-  classNames="navi-visualization-config__contents"
-}}
+<div class="navi-visualization-config" ...attributes>
+  {{component
+    (concat "navi-visualization-config/" @visualization.type)
+    request=@request
+    response=@response
+    options=@visualization.metadata
+    onUpdateConfig=@onUpdateConfig
+    type=@visualization.type
+    classNames="navi-visualization-config__contents"
+  }}
+</div>
+

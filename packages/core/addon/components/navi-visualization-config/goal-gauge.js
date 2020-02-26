@@ -9,35 +9,29 @@
  *    options=options
  *  }}
  */
-import { alias } from '@ember/object/computed';
 import Component from '@ember/component';
+import { action } from '@ember/object';
+import { alias } from '@ember/object/computed';
 import layout from '../../templates/components/navi-visualization-config/goal-gauge';
-import { get } from '@ember/object';
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
-export default Component.extend({
-  /**
-   * @property {Object} layout
-   */
-  layout,
-
-  /**
-   * @property {Array} classNames
-   */
-  classNames: ['goal-gauge-config'],
-
+@templateLayout(layout)
+@tagName('')
+class NaviVisualizationConfigGoalGaugeComponent extends Component {
   /**
    * @property {object} metric fragment
    */
-  metricModel: alias('request.metrics.firstObject'),
+  @alias('request.metrics.firstObject') metricModel;
 
-  actions: {
-    /**
-     * @action updateConfig
-     */
-    updateConfig(type, value) {
-      const handleUpdateConfig = get(this, 'onUpdateConfig');
+  /**
+   * @action updateConfig
+   */
+  @action
+  updateConfig(type, value) {
+    const { onUpdateConfig } = this;
 
-      if (handleUpdateConfig) handleUpdateConfig({ [type]: value });
-    }
+    if (onUpdateConfig) onUpdateConfig({ [type]: value });
   }
-});
+}
+
+export default NaviVisualizationConfigGoalGaugeComponent;

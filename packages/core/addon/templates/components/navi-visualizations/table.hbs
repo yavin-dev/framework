@@ -10,7 +10,7 @@
     </div>
   {{/if}}
 </div>
-{{component tableRenderer
+{{component this.tableRenderer
   tableData=this.tableData
   request=this.request
   columns=this.columns
@@ -20,8 +20,8 @@
   bufferSize=this.bufferSize
   isEditingMode=this.isEditingMode
   cellRendererPrefix=this.cellRendererPrefix
-  headerClicked=(action "headerClicked")
-  updateColumnOrder=(action "updateColumnOrder")
-  updateColumnDisplayName=(action "updateColumnDisplayName")
-  onUpdateReport=(action (optional this.onUpdateReport))
+  headerClicked=this.headerClicked
+  updateColumnOrder=this.updateColumnOrder
+  updateColumnDisplayName=this.updateColumnDisplayName
+  onUpdateReport=(optional this.onUpdateReport)
 }}

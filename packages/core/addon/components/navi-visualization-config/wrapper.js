@@ -12,9 +12,10 @@
 
 import Component from '@ember/component';
 import layout from '../../templates/components/navi-visualization-config/wrapper';
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
-export default Component.extend({
-  layout,
+@templateLayout(layout)
+@tagName('')
+class NaviVisualizationConfigWrapperComponent extends Component {}
 
-  classNames: ['navi-visualization-config']
-});
+export default NaviVisualizationConfigWrapperComponent;

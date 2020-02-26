@@ -50,6 +50,7 @@ export default Component.extend({
 
       return options.format ? numeral(value).format(options.format) : String(value);
     }
+    return undefined;
   }),
 
   /**
@@ -61,6 +62,7 @@ export default Component.extend({
     if (get(this, 'model')) {
       return get(this, 'options.description');
     }
+    return undefined;
   }),
 
   /**

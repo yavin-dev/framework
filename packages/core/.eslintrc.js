@@ -15,6 +15,7 @@ module.exports = {
   },
   rules: {
     'ember/no-jquery': 'warn',
+    'ember/no-new-mixins': 'warn',
     'ember/no-observers': 'warn'
   },
   globals: {

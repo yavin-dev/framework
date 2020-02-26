@@ -1,6 +1,8 @@
 {{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 
 {{!-- Same as stock power select multiple trigger except for onPaste event --}}
+{{!-- Remove template-lint-disable no-action when native class power select upgrade --}}
+{{!-- template-lint-disable no-action --}}
 <ul id="ember-power-select-multiple-options-{{select.uniqueId}}" class="ember-power-select-multiple-options">
   {{#each select.selected as |opt idx|}}
     <li class="ember-power-select-multiple-option {{if opt.disabled "ember-power-select-multiple-option--disabled" }}">
@@ -24,7 +26,7 @@
     {{/if}}
   {{/each}}
   {{#if searchEnabled}}
-  {{!-- template-lint-disable no-positive-tabindex --}}
+    {{!-- template-lint-disable no-positive-tabindex --}}
     <input type="search" class="ember-power-select-trigger-multiple-input"
       autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
       id="ember-power-select-trigger-multiple-input-{{select.uniqueId}}"

@@ -68,7 +68,9 @@ export default Component.extend({
   /**
    * @property {Object} - legend configuration
    */
-  legend: computed(() => ({ hide: true })),
+  legend: computed(function() {
+    return { hide: true };
+  }),
 
   /**
    * @property {String} formatted default metric
@@ -113,7 +115,9 @@ export default Component.extend({
   /**
    * @property {Object} - gauge tooltip configuration
    */
-  tooltip: computed(() => ({ show: false })),
+  tooltip: computed(function() {
+    return { show: false };
+  }),
 
   /**
    * @property {Object} config - config options for the chart
