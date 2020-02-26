@@ -87,7 +87,6 @@ export default class DirectoryController extends Controller {
   @action
   searchFor(query) {
     this.q = query;
-    // set(this, 'q', query);
   }
 
   /**

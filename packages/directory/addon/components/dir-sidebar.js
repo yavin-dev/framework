@@ -7,12 +7,11 @@
  */
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { inject as service } from '@ember/service';
 
 export default class DirSidebarComponent extends Component {
   /**
-   * @constructor
+   * @constructor - sets selectedDirectory to arg
    */
   constructor() {
     super(...arguments);
@@ -52,14 +51,4 @@ export default class DirSidebarComponent extends Component {
       queryParams: { filter: 'favorites' }
     }
   ];
-
-  @action
-  setSelectedDirectory(directory) {
-    this.selectedDirectory = directory;
-  }
-
-  @action
-  setSelectedFilter(filter) {
-    this.selectedFilter = filter;
-  }
 }
