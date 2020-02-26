@@ -20,27 +20,27 @@ module('helper:metric-format', function(hooks) {
     });
 
     await render(hbs`{{metric-format metric}}`);
-    assert.dom('*').hasText('Revenue (USD)');
+    assert.dom().hasText('Revenue (USD)');
 
     this.set('metric', {
       metric: 'revenue',
       parameters: { currency: 'CAD', as: 'revenueUSD' }
     });
-    assert.dom('*').hasText('Revenue (CAD)');
+    assert.dom().hasText('Revenue (CAD)');
 
     this.set('metric', { metric: 'revenue' });
-    assert.dom('*').hasText('Revenue');
+    assert.dom().hasText('Revenue');
 
     this.set('metric', { metric: null });
-    assert.dom('*').hasText('--');
+    assert.dom().hasText('--');
 
     this.set('metric', null);
-    assert.dom('*').hasText('--');
+    assert.dom().hasText('--');
 
     this.set('metric', { metric: '' });
-    assert.dom('*').hasText('--');
+    assert.dom().hasText('--');
 
     this.set('metric', { metric: 'foo' });
-    assert.dom('*').hasText('foo');
+    assert.dom().hasText('foo');
   });
 });
