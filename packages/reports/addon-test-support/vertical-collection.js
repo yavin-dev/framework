@@ -1,5 +1,5 @@
 import { assert } from '@ember/debug';
-import { getContext } from '@ember/test-helpers';
+import { getContext, settled } from '@ember/test-helpers';
 import { set } from '@ember/object';
 
 const verticalCollectionKey = 'component:vertical-collection';
@@ -15,72 +15,52 @@ function isVerticalCollection(component) {
 
 /**
  * Finds a vertical collection visible under the given selector, the selector must pin down a single instance
- * @param {String} selector - the query selector to pin down the vertical collection
+ * @param {String} selector - the query selector to pin down the vertical collection (e.g. '#ember23' or '.grouped-list')
  * @returns {Component} - the vertical collection component visible under the given selector
  */
 export function getVerticalCollection(selector = 'body') {
-  const { owner } = getContext();
-  assert('getVerticalCollection called with no owner', owner);
+  const viewRegistry = getContext().owner.lookup('-view-registry:main');
+  const allVCs = Object.values(viewRegistry).filter(isVerticalCollection);
 
-  const componentByView = owner.lookup('-view-registry:main');
-  if (selector.startsWith('ember')) {
-    // use ember id
-    return componentByView[selector];
+  let verticalCollection;
+  const byId = allVCs.find(vc => `#${vc.elementId}` === selector);
+  if (byId) {
+    verticalCollection = byId;
+  } else {
+    const visibleVCs = allVCs.filter(verticalCollection => {
+      const { elementId } = verticalCollection;
+      return !!document.querySelector(`${selector} #${elementId}`);
+    });
+
+    assert(
+      `Selector '${selector}' for vertical collections returned ${visibleVCs.length} instead of just 1`,
+      visibleVCs.length === 1
+    );
+    verticalCollection = visibleVCs[0];
   }
-  const allVerticalCollections = Object.values(componentByView)
-    .filter(isVerticalCollection)
-    .filter(verticalCollection => !!document.querySelector(`${selector} #${verticalCollection.elementId}`));
 
-  assert(
-    `Your selector '${selector}' for vertical collections returned ${allVerticalCollections.length} instead of just 1`,
-    allVerticalCollections.length === 1
-  );
+  assert(`A vertical collection was found for selector '${selector}'`, verticalCollection);
 
-  return allVerticalCollections[0];
-}
-
-/**
- * Schedules an update for the vertical collection and waits for it to be run
- * @param {Component} verticalCollection - the vertical collection component instance
- * @param {Object} options - The options component to specify when to timeout
- */
-export async function didRender(verticalCollection = getVerticalCollection(), options = { timeout: undefined }) {
-  assert('didRender must be called with vertical collection', isVerticalCollection(verticalCollection));
-  const { _radar: radar } = verticalCollection;
-  const { _debugDidUpdate: originalDebugDidUpdate } = radar;
-
-  const forceRender = new Promise((resolve, reject) => {
-    radar._debugDidUpdate = function() {
-      originalDebugDidUpdate.apply(radar, ...arguments);
-      radar._debugDidUpdate = originalDebugDidUpdate;
-      resolve();
-    };
-
-    radar.scheduleUpdate();
-    if (options.timeout) {
-      setTimeout(reject, options.timeout);
-    }
-  });
-
-  await forceRender;
+  return verticalCollection;
 }
 
 /**
  * Forces the vertical collection to render all of its contents
  * @param {Component} verticalCollection - the vertical collection component instance
- * @param {Object} options - The options component to specify when to timeout
  * @returns {Function} - resets the vertical collection to its previous state
  */
-export async function renderAllItems(verticalCollection = getVerticalCollection(), options) {
-  const { renderAll: _renderAll } = verticalCollection;
+export async function renderAllItems(verticalCollection = getVerticalCollection()) {
+  const { renderAll } = verticalCollection;
 
   set(verticalCollection, 'renderAll', true);
-  await didRender(verticalCollection, options);
+  // changing renderAll causes vertical collection render so we need to wait
+  await settled();
 
   return async () => {
     if (!verticalCollection.isDestroyed || !verticalCollection.isDestroying) {
-      set(verticalCollection, 'renderAll', _renderAll);
+      set(verticalCollection, 'renderAll', renderAll);
+      // changing renderAll back causes vertical collection render so we need to wait
+      await settled();
     }
-    await didRender(verticalCollection, options);
   };
 }

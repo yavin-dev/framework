@@ -2,7 +2,7 @@ import { click, fillIn, find, findAll, triggerEvent } from '@ember/test-helpers'
 import { assert } from '@ember/debug';
 import { set } from '@ember/object';
 import findByContains from 'navi-core/test-support/contains-helpers';
-import { getVerticalCollection, didRender, renderAllItems } from './vertical-collection';
+import { getVerticalCollection, renderAllItems } from './vertical-collection';
 
 const groupedList = '.grouped-list';
 const groupedListItemFilter = `${groupedList}__filter`; // dimension/metric row filter button
@@ -52,14 +52,12 @@ export async function clickShowSelected(type) {
   const originalText = showSelectedButton.textContent;
   if (showSelectedButton.textContent.includes('Show Selected')) {
     await click(showSelectedButton);
-    await didRender(getVerticalCollection(typeSelector));
   }
 
   return async () => {
     const button = find(`${typeSelector} ${showLink}`);
     if (!button.textContent.includes(originalText)) {
       await click(button);
-      await didRender(getVerticalCollection(typeSelector));
     }
   };
 }
@@ -79,12 +77,10 @@ export async function searchFor(type, query) {
   const previousSearch = searchBarInput.textContent;
   await fillIn(searchBarInput, query);
   await triggerEvent(searchBarInput, 'focusout');
-  await didRender(getVerticalCollection(typeSelector));
 
   return async () => {
     await fillIn(searchBarInputSelector, previousSearch);
     await triggerEvent(searchBarInput, 'focusout');
-    await didRender(getVerticalCollection(typeSelector));
   };
 }
 
