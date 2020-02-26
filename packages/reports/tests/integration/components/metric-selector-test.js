@@ -95,7 +95,7 @@ module('Integration | Component | metric selector', function(hooks) {
 
   test('show selected', async function(assert) {
     assert.expect(10);
-    await renderAll(this, 'metric');
+    await renderAll('metric');
 
     assert.ok(
       findAll('.grouped-list__item').length > this.get('request.metrics.length'),
@@ -106,7 +106,7 @@ module('Integration | Component | metric selector', function(hooks) {
       .dom('.navi-list-selector__show-link')
       .hasText('Show Selected (1)', 'The Show Selected link has the correct number of selected base metrics shown');
 
-    let resetShowSelected = await clickShowSelected(this, 'metric');
+    let resetShowSelected = await clickShowSelected('metric');
 
     assert.deepEqual(
       findAll('.grouped-list__item').map(el => el.textContent.trim()),
@@ -151,7 +151,7 @@ module('Integration | Component | metric selector', function(hooks) {
         'The Show Selected link increases the count when a metric with a different base is added'
       );
 
-    resetShowSelected = await clickShowSelected(this, 'metric');
+    resetShowSelected = await clickShowSelected('metric');
 
     assert.deepEqual(
       findAll('.grouped-list__item').map(el => el.textContent.trim()),
@@ -172,8 +172,8 @@ module('Integration | Component | metric selector', function(hooks) {
       onToggleMetricFilter=(action addMetricFilter)
     }}`);
 
-    await renderAll(this, 'metric');
-    resetShowSelected = await clickShowSelected(this, 'metric');
+    await renderAll('metric');
+    resetShowSelected = await clickShowSelected('metric');
 
     assert.equal(
       findAll('.grouped-list__item-container').length,
@@ -199,23 +199,23 @@ module('Integration | Component | metric selector', function(hooks) {
     //select first time grain
 
     //add total clicks
-    await clickItem(this, 'metric', 'Total Clicks');
+    await clickItem('metric', 'Total Clicks');
 
     //remove ad clicks
-    await clickItem(this, 'metric', 'Ad Clicks');
+    await clickItem('metric', 'Ad Clicks');
   });
 
   test('filter icon', async function(assert) {
     assert.expect(3);
 
-    let { item: adClicksItem, reset: adClicksReset } = await getItem(this, 'metric', 'Ad Clicks');
+    let { item: adClicksItem, reset: adClicksReset } = await getItem('metric', 'Ad Clicks');
     assert.ok(
       adClicksItem.querySelector('.grouped-list__filter--active'),
       'The filter icon with the adclicks metric has the active class'
     );
     await adClicksReset();
 
-    let { item: totalClicksItem, reset: totalClicksReset } = await getItem(this, 'metric', 'Total Clicks');
+    let { item: totalClicksItem, reset: totalClicksReset } = await getItem('metric', 'Total Clicks');
     assert.notOk(
       totalClicksItem.querySelector('.grouped-list__filter--active'),
       'The filter icon with the total clicks metric does not have the active class'
@@ -226,7 +226,7 @@ module('Integration | Component | metric selector', function(hooks) {
       assert.deepEqual(metric, AdClicks, 'The adclicks metric is passed to the action when filter icon is clicked');
     });
 
-    await clickItemFilter(this, 'metric', 'Ad Clicks');
+    await clickItemFilter('metric', 'Ad Clicks');
   });
 
   test('tooltip', async function(assert) {
@@ -238,7 +238,7 @@ module('Integration | Component | metric selector', function(hooks) {
     });
 
     // triggerTooltipTargetEvent will not work for hidden elementc
-    const { item } = await getItem(this, 'metric', 'Ad Clicks');
+    const { item } = await getItem('metric', 'Ad Clicks');
     await triggerEvent(item.querySelector('.grouped-list__item-info'), 'mouseenter');
 
     assertTooltipRendered(assert);
@@ -251,12 +251,12 @@ module('Integration | Component | metric selector', function(hooks) {
     assert.expect(2);
 
     assert.notOk(
-      await hasMetricConfig(this, 'Ad Clicks'),
+      await hasMetricConfig('Ad Clicks'),
       'The metric config trigger icon is not present for a metric without parameters'
     );
 
     assert.ok(
-      await hasMetricConfig(this, 'Revenue'),
+      await hasMetricConfig('Revenue'),
       'The metric config trigger icon is present for a metric with parameters'
     );
   });
@@ -264,14 +264,14 @@ module('Integration | Component | metric selector', function(hooks) {
   test('ranked search', async function(assert) {
     assert.expect(2);
 
-    const pageResults = (await getAll(this, 'metric')).filter(item => item.includes('Page'));
+    const pageResults = (await getAll('metric')).filter(item => item.includes('Page'));
     assert.deepEqual(
       pageResults,
       ['Additive Page Views', 'Page Views', 'Total Page Views', 'Total Page Views WoW'],
       'Initially the page view metrics are ordered alphabetically'
     );
 
-    const searchPageResults = await getAll(this, 'metric', 'Page');
+    const searchPageResults = await getAll('metric', 'Page');
 
     assert.deepEqual(
       searchPageResults,
@@ -281,7 +281,7 @@ module('Integration | Component | metric selector', function(hooks) {
   });
 
   test('hide filter if metric not allowed to show filter on base metric', async function(assert) {
-    const resetRenderAll = await renderAll(this, 'metric');
+    const resetRenderAll = await renderAll('metric');
     assert.dom('.grouped-list__icon-set--no-filter').exists({ count: 1 });
     assert.dom('.grouped-list__icon-set--no-filter .grouped-list__filter').doesNotExist();
     assert.dom('.grouped-list__icon-set .grouped-list__filter').exists();

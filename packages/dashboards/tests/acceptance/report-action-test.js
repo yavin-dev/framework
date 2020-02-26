@@ -30,7 +30,7 @@ module('Acceptances | Report to dashboard action', function(hooks) {
     );
 
     // Create empty filter to make request invalid
-    await clickItemFilter(this, 'dimension', 'Operating System');
+    await clickItemFilter('dimension', 'Operating System');
 
     assert.notOk(
       !!$('.navi-report__action:contains("Add to Dashboard")').length,
@@ -38,7 +38,7 @@ module('Acceptances | Report to dashboard action', function(hooks) {
     );
 
     // Remove empty filter and run query
-    await clickItemFilter(this, 'dimension', 'Operating System');
+    await clickItemFilter('dimension', 'Operating System');
     await click('.navi-report__run-btn');
 
     assert.ok(

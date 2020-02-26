@@ -92,13 +92,13 @@ module('Integration | Component | dimension selector', function(hooks) {
   test('show selected', async function(assert) {
     assert.expect(4);
 
-    const allDimensions = await getAll(this, 'dimension');
+    const allDimensions = await getAll('dimension');
     assert.ok(
       allDimensions.length > this.get('request.dimensions.length') + 1 /*for timegrain*/,
       'Initially all the dimensions are shown in the dimension-selector'
     );
 
-    const selecetedDimensions = await getAllSelected(this, 'dimension');
+    const selecetedDimensions = await getAllSelected('dimension');
     assert.deepEqual(
       selecetedDimensions,
       ['Day', 'Age'],
@@ -123,7 +123,7 @@ module('Integration | Component | dimension selector', function(hooks) {
       onToggleDimFilter=(action addDimFilter)
     }}`);
 
-    await clickShowSelected(this, 'dimension');
+    await clickShowSelected('dimension');
 
     assert.equal(
       findAll('.grouped-list__item-checkbox')
@@ -150,10 +150,10 @@ module('Integration | Component | dimension selector', function(hooks) {
     //select first time grain
 
     //addTimeGrain when a different time grain is clicked
-    await clickItem(this, 'timeGrain', 'Week');
+    await clickItem('timeGrain', 'Week');
 
     //removeTimeGrain when selected time grain is clicked
-    await clickItem(this, 'timeGrain', 'Day');
+    await clickItem('timeGrain', 'Day');
 
     this.set('addDimension', item => {
       assert.equal(
@@ -174,22 +174,22 @@ module('Integration | Component | dimension selector', function(hooks) {
     //select a random dimension
 
     //addDimension when an unselected dimension is clicked
-    await clickItem(this, 'dimension', 'Gender');
+    await clickItem('dimension', 'Gender');
 
     //removeDimension when a selected dimension is clicked
-    await clickItem(this, 'dimension', 'Age');
+    await clickItem('dimension', 'Age');
   });
 
   test('filter icon', async function(assert) {
     assert.expect(3);
 
-    const { item: age, reset: resetAge } = await getItem(this, 'dimension', 'Age');
+    const { item: age, reset: resetAge } = await getItem('dimension', 'Age');
     assert
       .dom(age.querySelector('.grouped-list__filter'))
       .hasClass('grouped-list__filter--active', 'The filter icon with the age dimension has the active class');
     await resetAge();
 
-    const { item: gender, reset: resetGender } = await getItem(this, 'dimension', 'Gender');
+    const { item: gender, reset: resetGender } = await getItem('dimension', 'Gender');
     assert
       .dom(gender.querySelector('.grouped-list__filter'))
       .doesNotHaveClass(
@@ -202,7 +202,7 @@ module('Integration | Component | dimension selector', function(hooks) {
       assert.deepEqual(dimension, Age, 'The age dimension is passed to the action when filter icon is clicked');
     });
 
-    await clickItemFilter(this, 'dimension', 'Age');
+    await clickItemFilter('dimension', 'Age');
   });
 
   test('tooltip', async function(assert) {
@@ -216,7 +216,7 @@ module('Integration | Component | dimension selector', function(hooks) {
     await click($('.grouped-list__group-header:contains(test)')[0]);
     // triggerTooltipTargetEvent will not work for hidden element
 
-    const { item: age, reset: resetAge } = await getItem(this, 'dimension', 'Age');
+    const { item: age, reset: resetAge } = await getItem('dimension', 'Age');
     await triggerEvent(age.querySelector('.grouped-list__item-info'), 'mouseenter');
 
     assertTooltipRendered(assert);
@@ -229,14 +229,14 @@ module('Integration | Component | dimension selector', function(hooks) {
   test('ranked search', async function(assert) {
     assert.expect(2);
 
-    const allDimensions = await getAll(this, 'dimension');
+    const allDimensions = await getAll('dimension');
     assert.deepEqual(
       allDimensions.filter(dim => dim.includes('Country')),
       ['Property Country', 'User Country'],
       'Initially the country dimensions are ordered alphabetically'
     );
 
-    const filteredDimensions = await getAll(this, 'dimension', 'count');
+    const filteredDimensions = await getAll('dimension', 'count');
 
     assert.deepEqual(
       filteredDimensions,

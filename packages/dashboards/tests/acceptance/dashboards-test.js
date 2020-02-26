@@ -384,7 +384,7 @@ module('Acceptance | Dashboards', function(hooks) {
     await click('.add-widget-modal .add-to-dashboard');
 
     // Fill out request
-    await clickItem(this, 'metric', 'Total Clicks');
+    await clickItem('metric', 'Total Clicks');
 
     // Save without running
     await click('.navi-report-widget__save-btn');
@@ -414,7 +414,7 @@ module('Acceptance | Dashboards', function(hooks) {
     await click('.add-widget-modal .add-to-dashboard');
 
     // Fill out request
-    await clickItem(this, 'metric', 'Total Page Views');
+    await clickItem('metric', 'Total Page Views');
 
     // Run request
     await click('.navi-report-widget__run-btn');
@@ -496,7 +496,7 @@ module('Acceptance | Dashboards', function(hooks) {
 
     // Create and save
     await visit('/dashboards/1/widgets/new');
-    await clickItem(this, 'metric', 'Total Clicks');
+    await clickItem('metric', 'Total Clicks');
     await click('.navi-report-widget__run-btn');
     await click('.navi-report-widget__save-btn');
 
@@ -676,7 +676,7 @@ module('Acceptance | Dashboards', function(hooks) {
     await click('.add-widget-modal .add-to-dashboard');
 
     // Fill out request
-    await clickItem(this, 'metric', 'Total Clicks');
+    await clickItem('metric', 'Total Clicks');
 
     // Save without running
     await click('.navi-report-widget__save-btn');

@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, findAll, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import { getVerticalCollection, didRender } from 'navi-reports/test-support/vertical-collection';
+import { didRender } from 'navi-reports/test-support/vertical-collection';
 
 module('Integration | Component | grouped list', function(hooks) {
   setupRenderingTest(hooks);
@@ -47,7 +47,7 @@ module('Integration | Component | grouped list', function(hooks) {
         {{item.val}}
       </GroupedList>
     `);
-    await didRender(getVerticalCollection(this));
+    await didRender();
 
     const groups = findAll('.grouped-list__group-header-content');
     assert.deepEqual(
@@ -59,7 +59,7 @@ module('Integration | Component | grouped list', function(hooks) {
     assert.dom(groups[0]).hasText('foo (3)', 'the first group header is `foo(3)`');
 
     await click(groups[0]);
-    await didRender(getVerticalCollection(this));
+    await didRender();
     assert.deepEqual(
       findAll('.grouped-list__item').map(el => el.textContent.trim()),
       ['1', '2', '3'],
@@ -67,7 +67,7 @@ module('Integration | Component | grouped list', function(hooks) {
     );
 
     this.set('shouldOpenAllGroups', true);
-    await didRender(getVerticalCollection(this));
+    await didRender();
 
     assert.deepEqual(
       findAll('.grouped-list li').map(el => el.textContent.trim()),
@@ -91,7 +91,7 @@ module('Integration | Component | grouped list', function(hooks) {
         {{item.name}}
       </GroupedList>
     `);
-    await didRender(getVerticalCollection(this));
+    await didRender();
 
     const allItems = findAll('.grouped-list li');
     assert.deepEqual(

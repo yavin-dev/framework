@@ -95,7 +95,7 @@ module('Acceptance | Exploring Widgets', function(hooks) {
 
     assert.dom('.report-view__info-text').isNotVisible('Notification to run is not visible before making changes');
 
-    await clickItem(this, 'metric', 'Total Clicks');
+    await clickItem('metric', 'Total Clicks');
 
     assert.dom('.report-view__info-text').isVisible('Notification to run is visible after making changes');
 
@@ -124,7 +124,7 @@ module('Acceptance | Exploring Widgets', function(hooks) {
     assert.dom('.navi-report-widget__revert-btn').isNotVisible('Revert changes button is not initially visible');
 
     // Remove a metric
-    await clickItem(this, 'timeGrain', 'Week');
+    await clickItem('timeGrain', 'Week');
     assert
       .dom('.navi-report-widget__revert-btn')
       .isVisible('Revert changes button is visible once a change has been made');
@@ -162,8 +162,8 @@ module('Acceptance | Exploring Widgets', function(hooks) {
       .hasAttribute('href', /metrics=adClicks%2CnavClicks/, 'Have correct metric in export url');
 
     // Remove all metrics to create an invalid request
-    await clickItem(this, 'metric', 'Ad Clicks');
-    await clickItem(this, 'metric', 'Nav Link Clicks');
+    await clickItem('metric', 'Ad Clicks');
+    await clickItem('metric', 'Nav Link Clicks');
 
     assert
       .dom($('.navi-report-widget__action-link:contains(Export)')[0])
@@ -194,15 +194,15 @@ module('Acceptance | Exploring Widgets', function(hooks) {
       .doesNotHaveClass('.navi-report-widget__action--is-disabled', 'Get API action is enabled for a valid request');
 
     // Remove all metrics
-    await clickItem(this, 'metric', 'Ad Clicks');
-    await clickItem(this, 'metric', 'Nav Link Clicks');
+    await clickItem('metric', 'Ad Clicks');
+    await clickItem('metric', 'Nav Link Clicks');
 
     // Remove all metrics to create an invalid request
-    await clickItem(this, 'metric', 'Ad Clicks');
-    await clickItem(this, 'metric', 'Nav Link Clicks');
+    await clickItem('metric', 'Ad Clicks');
+    await clickItem('metric', 'Nav Link Clicks');
 
     // Create empty filter to make request invalid
-    await clickItemFilter(this, 'dimension', 'Operating System');
+    await clickItemFilter('dimension', 'Operating System');
 
     assert
       .dom('.get-api')
@@ -214,7 +214,7 @@ module('Acceptance | Exploring Widgets', function(hooks) {
 
     /* == Unsaved widget == */
     await visit('/dashboards/1/widgets/new');
-    await clickItem(this, 'metric', 'Ad Clicks');
+    await clickItem('metric', 'Ad Clicks');
     await click('.navi-report-widget__run-btn');
 
     assert.notOk(

@@ -15,7 +15,7 @@ import {
   clickShowSelected,
   renderAll
 } from 'navi-reports/test-support/report-builder';
-import { didRender, getVerticalCollection } from 'navi-reports/test-support/vertical-collection';
+import { didRender } from 'navi-reports/test-support/vertical-collection';
 
 let MockRequest, MockMetric, MetadataService;
 
@@ -100,7 +100,7 @@ module('Integration | Component | metric config', function(hooks) {
       .isVisible('An icon is shown as the trigger to the dropdown');
 
     await clickTrigger('.metric-config__dropdown-trigger');
-    await didRender(getVerticalCollection(this));
+    await didRender();
 
     assert.dom('.metric-config__dropdown-container').exists('the trigger opens a dropdown on click');
 
@@ -117,7 +117,7 @@ module('Integration | Component | metric config', function(hooks) {
     assert.expect(3);
 
     await clickTrigger('.metric-config__dropdown-trigger');
-    await didRender(getVerticalCollection(this));
+    await didRender();
 
     assert
       .dom('.metric-config__dropdown-container .navi-list-selector__title')
@@ -129,7 +129,7 @@ module('Integration | Component | metric config', function(hooks) {
       'The group headers reflect the two parameters in the metric'
     );
 
-    const embargoList = (await getAll(this, 'metricConfig')).filter(config => config.includes('Embargo'));
+    const embargoList = (await getAll('metricConfig')).filter(config => config.includes('Embargo'));
 
     assert.deepEqual(embargoList, ['Embargo enforced (Y)', 'No Embargo (N)'], 'Enum elements are correctly displayed');
   });
@@ -138,22 +138,22 @@ module('Integration | Component | metric config', function(hooks) {
     assert.expect(3);
 
     await clickTrigger('.metric-config__dropdown-trigger');
-    await didRender(getVerticalCollection(this));
+    await didRender();
 
     assert.ok(
-      (await getAll(this, 'metricConfig')).length > this.get('request.metrics.length'),
+      (await getAll('metricConfig')).length > this.get('request.metrics.length'),
       'Initially all the parameters are shown in the metric-config'
     );
 
-    await clickShowSelected(this, 'metricConfig');
+    await clickShowSelected('metricConfig');
 
     assert.deepEqual(
-      await getAll(this, 'metricConfig'),
+      await getAll('metricConfig'),
       ['Dollars (USD)'],
       'When show selected is clicked only the selected parameter is shown'
     );
 
-    const resetRenderAll = await renderAll(this, 'metricConfig');
+    const resetRenderAll = await renderAll('metricConfig');
     assert.notOk(findAll('.grouped-list__add-icon--deselected').length, 'The selected items are marked as selected');
     await resetRenderAll();
   });
@@ -174,7 +174,7 @@ module('Integration | Component | metric config', function(hooks) {
     });
 
     await clickTrigger('.metric-config__dropdown-trigger');
-    await didRender(getVerticalCollection(this));
+    await didRender();
     //add Param `Drams`
     await click($('.grouped-list__item:contains(Drams) .grouped-list__add-icon')[0]);
 
@@ -192,23 +192,23 @@ module('Integration | Component | metric config', function(hooks) {
     });
 
     await clickTrigger('.metric-config__dropdown-trigger');
-    await didRender(getVerticalCollection(this));
+    await didRender();
 
-    let { item: usdItem, reset: usdReset } = await getItem(this, 'metricConfig', 'USD');
+    let { item: usdItem, reset: usdReset } = await getItem('metricConfig', 'USD');
     assert.ok(
       usdItem.querySelector('.grouped-list__filter--active'),
       'The filter icon with the `USD` param has the active class'
     );
     await usdReset();
 
-    let { item: amdItem, reset: amdReset } = await getItem(this, 'metricConfig', 'AMD');
+    let { item: amdItem, reset: amdReset } = await getItem('metricConfig', 'AMD');
     assert.notOk(
       amdItem.querySelector('.grouped-list__filter--active'),
       'The filter icon with the `AMD` param does not have the active class'
     );
     await amdReset();
 
-    await clickItemFilter(this, 'metricConfig', 'AMD');
+    await clickItemFilter('metricConfig', 'AMD');
   });
 
   test('loader', async function(assert) {
@@ -237,7 +237,7 @@ module('Integration | Component | metric config', function(hooks) {
     assert.expect(1);
 
     await clickTrigger('.metric-config__dropdown-trigger');
-    await didRender(getVerticalCollection(this));
+    await didRender();
     set(this, 'parametersPromise', reject());
     await settled();
 

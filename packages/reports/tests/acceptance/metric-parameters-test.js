@@ -22,13 +22,13 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
     await visit('/reports/1/view');
 
     assert.ok(
-      await hasMetricConfig(this, 'Platform Revenue'),
+      await hasMetricConfig('Platform Revenue'),
       'Revenue metric has the metric config icon since it has parameters'
     );
 
     //adding a metric with default params
-    await clickItem(this, 'metric', 'Platform Revenue');
-    await clickMetricConfigTrigger(this, 'Platform Revenue');
+    await clickItem('metric', 'Platform Revenue');
+    await clickMetricConfigTrigger('Platform Revenue');
 
     assert
       .dom('.metric-config__dropdown-container .navi-list-selector__show-link')
@@ -38,16 +38,16 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
       );
 
     assert.deepEqual(
-      await getAllSelected(this, 'metricConfig'),
+      await getAllSelected('metricConfig'),
       ['Dollars (USD)'],
       'When show selected is clicked only the default parameter for the metric is shown'
     );
 
     //adding another param for the same metric
-    await clickItem(this, 'metricConfig', 'EUR');
+    await clickItem('metricConfig', 'EUR');
 
     assert.deepEqual(
-      await getAllSelected(this, 'metricConfig'),
+      await getAllSelected('metricConfig'),
       ['Dollars (USD)', 'Euro (EUR)'],
       'When show selected is clicked all the selected parameters for the metric are shown'
     );
@@ -55,10 +55,10 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
     //closing and reopening dropdown does not affect the selected params
     await click('.metric-config__dropdown-container .metric-config__done-btn');
     // await closeConfig();
-    await clickMetricConfigTrigger(this, 'Platform Revenue');
+    await clickMetricConfigTrigger('Platform Revenue');
 
     assert.deepEqual(
-      await getAllSelected(this, 'metricConfig'),
+      await getAllSelected('metricConfig'),
       ['Dollars (USD)', 'Euro (EUR)'],
       'When show selected is clicked all the selected parameters for the metric are shown'
     );
@@ -68,8 +68,8 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
     // await closeConfig();
 
     //removing the metric
-    await clickItem(this, 'metric', 'Platform Revenue');
-    await clickMetricConfigTrigger(this, 'Platform Revenue');
+    await clickItem('metric', 'Platform Revenue');
+    await clickMetricConfigTrigger('Platform Revenue');
 
     assert
       .dom('.metric-config__dropdown-container .navi-list-selector__show-link')
@@ -81,7 +81,7 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
 
     await visit('/reports/1/view');
     //add revenue (metric with params)
-    const { item, reset } = await getItem(this, 'metric', 'Platform Revenue');
+    const { item, reset } = await getItem('metric', 'Platform Revenue');
     await click(item.querySelector('.grouped-list__item-label')); // add but don't reset state
     assert
       .dom('.metric-config__dropdown-container')
@@ -96,7 +96,7 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
     await reset();
 
     //remove revenue
-    await clickItem(this, 'metric', 'Platform Revenue');
+    await clickItem('metric', 'Platform Revenue');
     assert
       .dom('.metric-config__dropdown-container')
       .isNotVisible('The metric config dropdown container remains closed when the metric is removed');
@@ -106,12 +106,12 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
     assert.expect(2);
 
     await visit('/reports/1/view');
-    await clickItem(this, 'metric', 'Platform Revenue');
-    const close = await clickMetricConfigTrigger(this, 'Platform Revenue');
-    await clickItemFilter(this, 'metricConfig', 'EUR');
+    await clickItem('metric', 'Platform Revenue');
+    const close = await clickMetricConfigTrigger('Platform Revenue');
+    await clickItemFilter('metricConfig', 'EUR');
 
     assert.deepEqual(
-      await getAllSelected(this, 'metricConfig'),
+      await getAllSelected('metricConfig'),
       ['Dollars (USD)', 'Euro (EUR)'],
       'The filtered parameter is also selected'
     );
@@ -124,11 +124,11 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
     assert.expect(4);
 
     await visit('/reports/1/view');
-    await clickItem(this, 'metric', 'Platform Revenue');
-    const closeConfig = await clickMetricConfigTrigger(this, 'Platform Revenue');
-    await clickItem(this, 'metricConfig', 'AUD');
-    await clickItem(this, 'metricConfig', 'CAD');
-    await clickItemFilter(this, 'metricConfig', 'EUR');
+    await clickItem('metric', 'Platform Revenue');
+    const closeConfig = await clickMetricConfigTrigger('Platform Revenue');
+    await clickItem('metricConfig', 'AUD');
+    await clickItem('metricConfig', 'CAD');
+    await clickItemFilter('metricConfig', 'EUR');
     await click('.metric-config__dropdown-container .navi-list-selector__show-link');
 
     assert.ok(
@@ -162,9 +162,9 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
     assert.expect(10);
 
     await visit('/reports/1/view');
-    await clickItem(this, 'metric', 'Platform Revenue');
-    const closeConfig = await clickMetricConfigTrigger(this, 'Platform Revenue');
-    await clickItem(this, 'metricConfig', 'AUD');
+    await clickItem('metric', 'Platform Revenue');
+    const closeConfig = await clickMetricConfigTrigger('Platform Revenue');
+    await clickItem('metricConfig', 'AUD');
     await click('.metric-config__dropdown-container .metric-config__done-btn');
 
     //collapse filters
@@ -172,7 +172,7 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
     await click('.report-builder__container-header__filters-toggle');
     assert.dom('.filter-collection').hasClass('filter-collection--collapsed', 'Filters are collapsed (1)');
 
-    await clickItemFilter(this, 'metric', 'Platform Revenue');
+    await clickItemFilter('metric', 'Platform Revenue');
     assert.equal(
       findAll('.filter-builder__subject').filter(el => el.innerText.includes('Revenue')).length,
       1,
@@ -189,7 +189,7 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
     await click('.report-builder__container-header__filters-toggle');
     assert.dom('.filter-collection').hasClass('filter-collection--collapsed', 'Filters are collapsed (2)');
 
-    await clickItemFilter(this, 'metric', 'Platform Revenue');
+    await clickItemFilter('metric', 'Platform Revenue');
     assert.equal(
       findAll('.filter-builder__subject').filter(el => el.innerText.includes('Platform Revenue')).length,
       2,
@@ -215,7 +215,7 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
     await click('.report-builder__container-header__filters-toggle');
     assert.dom('.filter-collection').hasClass('filter-collection--collapsed', 'Filters are collapsed (3)');
 
-    await clickItemFilter(this, 'metric', 'Platform Revenue');
+    await clickItemFilter('metric', 'Platform Revenue');
     assert.equal(
       findAll('.filter-builder__subject').filter(el => el.innerText.includes('Platform Revenue')).length,
       0,
@@ -234,7 +234,7 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
     await visit('/reports/11/view');
 
     await click('.report-builder__metric-selector .navi-list-selector__show-link');
-    await clickMetricConfigTrigger(this, 'Revenue');
+    await clickMetricConfigTrigger('Revenue');
 
     const options = findAll('.metric-config__dropdown-container .grouped-list__item');
     assert.ok(options.length > 0, 'Metric options should render');

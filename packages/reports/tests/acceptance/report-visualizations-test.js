@@ -22,7 +22,7 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
       'Without filters, three series are shown in the chart'
     );
 
-    await clickItemFilter(this, 'dimension', 'Property');
+    await clickItemFilter('dimension', 'Property');
     await selectSearch('.filter-values--dimension-select__trigger', 'Property');
     await selectChoose('.filter-values--dimension-select__trigger', '.ember-power-select-option', 0);
     await click('.navi-report__run-btn');
@@ -97,9 +97,9 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
     await click('.table-header-row .table-header-cell.dateTime .navi-table-sort-icon');
 
     //add a parameterized metric with a couple of parameters and run the report
-    await clickItem(this, 'metric', 'Platform Revenue');
-    const closeConfig = await clickMetricConfigTrigger(this, 'Platform Revenue');
-    await clickItem(this, 'metricConfig', 'EUR');
+    await clickItem('metric', 'Platform Revenue');
+    const closeConfig = await clickMetricConfigTrigger('Platform Revenue');
+    await clickItem('metricConfig', 'EUR');
     await closeConfig();
     await click('.navi-report__run-btn');
 
@@ -268,7 +268,7 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
       );
 
     //remove the metric
-    await clickItem(this, 'metric', 'Platform Revenue');
+    await clickItem('metric', 'Platform Revenue');
 
     //test API query and close the modal
     await click('.navi-report__copy-api-btn .get-api__btn');
@@ -410,10 +410,10 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
     await visit('/reports/new');
 
     // Add Revenue (USD) metric
-    await clickItem(this, 'metric', 'Revenue');
+    await clickItem('metric', 'Revenue');
 
     // Add Browser Dimension
-    await clickItem(this, 'dimension', 'Browser');
+    await clickItem('dimension', 'Browser');
 
     // Run Report
     await click('.navi-report__run-btn');

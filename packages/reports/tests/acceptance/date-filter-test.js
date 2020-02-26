@@ -14,7 +14,7 @@ module('Acceptance | date filter', function(hooks) {
     assert.expect(2);
 
     await visit('/reports/1/view');
-    await clickItemFilter(this, 'dimension', 'User Signup Date');
+    await clickItemFilter('dimension', 'User Signup Date');
 
     assert.ok(
       !!$('.filter-builder__operator:contains(Since)').length,
@@ -22,7 +22,7 @@ module('Acceptance | date filter', function(hooks) {
     );
 
     await click('.filter-collection__remove');
-    await clickItemFilter(this, 'dimension', 'User Region');
+    await clickItemFilter('dimension', 'User Region');
 
     assert.ok(
       !!$('.filter-builder-dimension__operator:contains(Equals)').length,
@@ -34,7 +34,7 @@ module('Acceptance | date filter', function(hooks) {
     assert.expect(5);
 
     await visit('/reports/1/view');
-    await clickItemFilter(this, 'dimension', 'User Signup Date');
+    await clickItemFilter('dimension', 'User Signup Date');
     await click($('.filter-builder__operator:contains(Since) .filter-builder__select-trigger')[0]);
     await click($('li.ember-power-select-option:contains(Between)')[0]);
 

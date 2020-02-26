@@ -1,5 +1,5 @@
 import { assert } from '@ember/debug';
-import { getOwner } from '@ember/application';
+import { getContext } from '@ember/test-helpers';
 import { set } from '@ember/object';
 
 const verticalCollectionKey = 'component:vertical-collection';
@@ -15,12 +15,11 @@ function isVerticalCollection(component) {
 
 /**
  * Finds a vertical collection visible under the given selector, the selector must pin down a single instance
- * @param {Object} instance - the test or application instance
  * @param {String} selector - the query selector to pin down the vertical collection
  * @returns {Component} - the vertical collection component visible under the given selector
  */
-export function getVerticalCollection(instance, selector = 'body') {
-  const owner = instance.owner || getOwner(instance);
+export function getVerticalCollection(selector = 'body') {
+  const { owner } = getContext();
   assert('getVerticalCollection called with no owner', owner);
 
   const componentByView = owner.lookup('-view-registry:main');
@@ -45,7 +44,7 @@ export function getVerticalCollection(instance, selector = 'body') {
  * @param {Component} verticalCollection - the vertical collection component instance
  * @param {Object} options - The options component to specify when to timeout
  */
-export async function didRender(verticalCollection, options = { timeout: undefined }) {
+export async function didRender(verticalCollection = getVerticalCollection(), options = { timeout: undefined }) {
   assert('didRender must be called with vertical collection', isVerticalCollection(verticalCollection));
   const { _radar: radar } = verticalCollection;
   const { _debugDidUpdate: originalDebugDidUpdate } = radar;
@@ -72,7 +71,7 @@ export async function didRender(verticalCollection, options = { timeout: undefin
  * @param {Object} options - The options component to specify when to timeout
  * @returns {Function} - resets the vertical collection to its previous state
  */
-export async function renderAllItems(verticalCollection, options) {
+export async function renderAllItems(verticalCollection = getVerticalCollection(), options) {
   const { renderAll: _renderAll } = verticalCollection;
 
   set(verticalCollection, 'renderAll', true);

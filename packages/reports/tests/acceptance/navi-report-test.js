@@ -52,7 +52,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     // Make an invalid change and run report
     await visit('/reports/1');
-    await clickItemFilter(this, 'dimension', 'Operating System');
+    await clickItemFilter('dimension', 'Operating System');
     await click('.navi-report__run-btn');
 
     assert.equal(currentURL(), '/reports/1/invalid', 'User is transitioned to invalid route');
@@ -82,7 +82,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     await visit('/reports/1');
     // Add a metric filter
-    await clickItemFilter(this, 'dimension', 'Operating System');
+    await clickItemFilter('dimension', 'Operating System');
     await click($('.navi-report__action-link:contains(Clone)')[0]);
 
     assert.ok(currentURL().endsWith('edit'), 'An invalid new report transitions to the reports/:id/edit route');
@@ -94,7 +94,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await visit('/reports/new');
 
     /* == Add filter == */
-    await clickItemFilter(this, 'dimension', 'Operating System');
+    await clickItemFilter('dimension', 'Operating System');
 
     /* == Run with errors == */
     await click('.navi-report__run-btn');
@@ -105,8 +105,8 @@ module('Acceptance | Navi Report', function(hooks) {
     );
 
     /* == Fix errors == */
-    await clickItemFilter(this, 'dimension', 'Operating System');
-    await clickItem(this, 'metric', 'Ad Clicks');
+    await clickItemFilter('dimension', 'Operating System');
+    await clickItem('metric', 'Ad Clicks');
     await click('.navi-report__run-btn');
 
     assert.ok(currentURL().endsWith('/view'), 'Running a report with no errors transitions to view route');
@@ -124,14 +124,14 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.expect(2);
 
     await visit('/reports/new');
-    await clickItem(this, 'metric', 'Ad Clicks');
+    await clickItem('metric', 'Ad Clicks');
     await click('.navi-report__copy-api-btn .get-api__btn');
 
     assert.dom('.get-api-modal-container').isVisible('Copy modal is open after fixing error clicking button');
 
     /* == Add some more metrics and check that copy modal updates == */
     await click('.navi-modal__close');
-    await clickItem(this, 'metric', 'Additive Page Views');
+    await clickItem('metric', 'Additive Page Views');
     await click('.navi-report__copy-api-btn .get-api__btn');
 
     assert.ok(
@@ -146,14 +146,14 @@ module('Acceptance | Navi Report', function(hooks) {
     // visit report 1
     await visit('/reports/1/view');
 
-    let dayTimeGrain = await getTimeGrainCheckbox(this, 'Day');
+    let dayTimeGrain = await getTimeGrainCheckbox('Day');
     assert.dom(dayTimeGrain.item).isChecked('Day timegrain is checked by default');
     await dayTimeGrain.reset();
 
     // uncheck the day timegrain
-    await clickItem(this, 'timeGrain', 'Day');
+    await clickItem('timeGrain', 'Day');
 
-    dayTimeGrain = await getTimeGrainCheckbox(this, 'Day');
+    dayTimeGrain = await getTimeGrainCheckbox('Day');
     assert.dom(dayTimeGrain.item).isNotChecked('Day timegrain is unchecked after clicking on it');
     await dayTimeGrain.reset();
 
@@ -169,7 +169,7 @@ module('Acceptance | Navi Report', function(hooks) {
       .dom('.navi-report__revert-btn')
       .isNotVisible('After navigating away and back to the route, the Revert button disappears');
 
-    dayTimeGrain = await getTimeGrainCheckbox(this, 'Day');
+    dayTimeGrain = await getTimeGrainCheckbox('Day');
     assert.dom(dayTimeGrain.item).isChecked('After navigating away and back to the route, changes are reverted');
     await dayTimeGrain.reset();
   });
@@ -185,7 +185,7 @@ module('Acceptance | Navi Report', function(hooks) {
     );
 
     // Remove a metric
-    await clickItem(this, 'timeGrain', 'Week');
+    await clickItem('timeGrain', 'Week');
 
     assert.dom('.navi-report__revert-btn').isVisible('Revert changes button is visible once a change has been made');
 
@@ -206,7 +206,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     assert.dom('.navi-report__revert-btn').isNotVisible('Revert changes button is not initially visible');
 
-    await clickItem(this, 'metric', 'Ad Clicks');
+    await clickItem('metric', 'Ad Clicks');
 
     assert
       .dom('.navi-report__revert-btn')
@@ -220,7 +220,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await visit('/reports/new');
 
     //Add three metrics and save the report
-    await clickItem(this, 'metric', 'Page Views');
+    await clickItem('metric', 'Page Views');
     await click('.navi-report__save-btn');
 
     server.patch('/reports/:id', function({ reports }, request) {
@@ -241,11 +241,11 @@ module('Acceptance | Navi Report', function(hooks) {
     });
 
     //remove a metric and save the report
-    await clickItem(this, 'metric', 'Total Page Views');
+    await clickItem('metric', 'Total Page Views');
     await click('.navi-report__save-btn');
 
     //remove another metric and run the report
-    await clickItem(this, 'metric', 'Additive Page Views');
+    await clickItem('metric', 'Additive Page Views');
     await click('.navi-report__run-btn');
 
     //revert changes
@@ -274,11 +274,11 @@ module('Acceptance | Navi Report', function(hooks) {
     await visit('/reports/new');
 
     //Add a metrics and save the report
-    await clickItem(this, 'metric', 'Additive Page Views');
+    await clickItem('metric', 'Additive Page Views');
     await click('.navi-report__save-btn');
 
     // Change the Dim
-    await clickItem(this, 'timeGrain', 'Week');
+    await clickItem('timeGrain', 'Week');
 
     // And click Save AS the report
     await click('.navi-report__save-as-btn');
@@ -331,7 +331,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await visit('/reports/1');
 
     // Change the Dim
-    await clickItem(this, 'timeGrain', 'Week');
+    await clickItem('timeGrain', 'Week');
 
     // And click Save AS the report
     await click('.navi-report__save-as-btn');
@@ -372,7 +372,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await visit('/reports/1');
 
     // Change the Dim
-    await clickItem(this, 'timeGrain', 'Week');
+    await clickItem('timeGrain', 'Week');
 
     // And click Save AS the report
     await click('.navi-report__save-as-btn');
@@ -401,7 +401,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.dom('.navi-report__save-btn').isVisible('Save button is visible in the new route');
 
     // Build a report
-    await clickItem(this, 'metric', 'Ad Clicks');
+    await clickItem('metric', 'Ad Clicks');
     await click('.navi-report__run-btn');
 
     assert.ok(TempIdRegex.test(currentURL()), 'Creating a report brings user to /view route with a temp id');
@@ -439,8 +439,8 @@ module('Acceptance | Navi Report', function(hooks) {
       .hasNoClass('navi-report__action-link--force-disabled', 'Clone action is enabled for a valid report');
 
     // Remove all metrics to create , but do not save
-    await clickItem(this, 'metric', 'Ad Clicks');
-    await clickItem(this, 'metric', 'Nav Link Clicks');
+    await clickItem('metric', 'Ad Clicks');
+    await clickItem('metric', 'Nav Link Clicks');
 
     assert
       .dom($('.navi-report__action-link:contains(Clone)')[0])
@@ -457,22 +457,22 @@ module('Acceptance | Navi Report', function(hooks) {
       .hasNoClass('navi-report__action-link--force-disabled', 'Export action is enabled for a valid report');
 
     // Add new dimension to make it out of sync with the visualization
-    await clickItem(this, 'dimension', 'Product Family');
+    await clickItem('dimension', 'Product Family');
 
     assert
       .dom($('.navi-report__action-link:contains(Export)')[0])
       .hasClass('navi-report__action-link--force-disabled', 'Export action is disabled when report is not valid');
 
     // Remove new dimension to make it in sync with the visualization
-    await clickItem(this, 'dimension', 'Product Family');
+    await clickItem('dimension', 'Product Family');
 
     assert
       .dom($('.navi-report__action-link:contains(Export)')[0])
       .hasNoClass('navi-report__action-link--force-disabled', 'Export action is enabled for a valid report');
 
     // Remove all metrics to create an invalid report
-    await clickItem(this, 'metric', 'Ad Clicks');
-    await clickItem(this, 'metric', 'Nav Link Clicks');
+    await clickItem('metric', 'Ad Clicks');
+    await clickItem('metric', 'Nav Link Clicks');
 
     assert
       .dom($('.navi-report__action-link:contains(Export)')[0])
@@ -497,7 +497,7 @@ module('Acceptance | Navi Report', function(hooks) {
     );
 
     /* == Add groupby == */
-    await clickItem(this, 'dimension', 'Product Family');
+    await clickItem('dimension', 'Product Family');
     await click('.navi-report__run-btn');
 
     assert.ok(
@@ -516,7 +516,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     /* == Add filter == */
     await click('.navi-report__run-btn');
-    await clickItemFilter(this, 'dimension', 'Product Family');
+    await clickItemFilter('dimension', 'Product Family');
 
     /* == Update filter value == */
     await selectChoose('.filter-values--dimension-select__trigger', '(1)');
@@ -546,7 +546,7 @@ module('Acceptance | Navi Report', function(hooks) {
     );
 
     /* == Add groupby == */
-    await clickItem(this, 'dimension', 'Product Family');
+    await clickItem('dimension', 'Product Family');
     await click('.navi-report__run-btn');
     await clickTrigger('.multiple-format-export');
 
@@ -565,7 +565,7 @@ module('Acceptance | Navi Report', function(hooks) {
     );
 
     /* == Add filter == */
-    await clickItemFilter(this, 'dimension', 'Product Family');
+    await clickItemFilter('dimension', 'Product Family');
     /* == Update filter value == */
     await selectChoose('.filter-values--dimension-select__trigger', '(1)');
     await click('.navi-report__run-btn');
@@ -594,7 +594,7 @@ module('Acceptance | Navi Report', function(hooks) {
     );
 
     /* == Add groupby == */
-    await clickItem(this, 'dimension', 'Product Family');
+    await clickItem('dimension', 'Product Family');
     await click('.navi-report__run-btn');
     await clickTrigger('.multiple-format-export');
 
@@ -656,11 +656,11 @@ module('Acceptance | Navi Report', function(hooks) {
       .doesNotHaveClass('.navi-report__action--is-disabled', 'Get API action is enabled for a valid report');
 
     // Remove all metrics
-    await clickItem(this, 'metric', 'Ad Clicks');
-    await clickItem(this, 'metric', 'Nav Link Clicks');
+    await clickItem('metric', 'Ad Clicks');
+    await clickItem('metric', 'Nav Link Clicks');
 
     // add filter
-    await clickItemFilter(this, 'dimension', 'Operating System');
+    await clickItemFilter('dimension', 'Operating System');
 
     assert.ok(
       [...find('.get-api').classList].includes('navi-report__action--is-disabled'),
@@ -680,8 +680,8 @@ module('Acceptance | Navi Report', function(hooks) {
       .hasText('Share "Hyrule News"', 'Clicking share action brings up share modal');
 
     // Remove all metrics to create an invalid report
-    await clickItem(this, 'metric', 'Ad Clicks');
-    await clickItem(this, 'metric', 'Nav Link Clicks');
+    await clickItem('metric', 'Ad Clicks');
+    await clickItem('metric', 'Nav Link Clicks');
 
     assert
       .dom($('.navi-report__action:contains(Share)')[0])
@@ -777,8 +777,8 @@ module('Acceptance | Navi Report', function(hooks) {
      * Remove all metrics to create an invalid report
      * Delete is not Disabled on invalid
      */
-    await clickItem(this, 'metric', 'Ad Clicks');
-    await clickItem(this, 'metric', 'Nav Link Clicks');
+    await clickItem('metric', 'Ad Clicks');
+    await clickItem('metric', 'Nav Link Clicks');
 
     assert
       .dom($('.navi-report__action:contains(Delete)')[0])
@@ -949,7 +949,7 @@ module('Acceptance | Navi Report', function(hooks) {
       'After navigating out of the route, the report model is rolled back'
     );
 
-    await clickItem(this, 'timeGrain', 'Week');
+    await clickItem('timeGrain', 'Week');
 
     //Navigate out of report
     await click('.navi-report__breadcrumb-link');
@@ -1017,7 +1017,7 @@ module('Acceptance | Navi Report', function(hooks) {
     /* == Create report == */
     await visit('/reports');
     await visit('/reports/new');
-    await clickItem(this, 'metric', 'Ad Clicks');
+    await clickItem('metric', 'Ad Clicks');
     await click('.navi-report__run-btn');
 
     assert.ok(!!findAll('.table-widget').length, 'Table visualization is shown by default');
@@ -1073,7 +1073,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     // Visit report and make a change that invalidates visualization
     await visit('/reports/1/view');
-    await clickItem(this, 'dimension', 'Product Family');
+    await clickItem('dimension', 'Product Family');
 
     assert.dom('.report-view__visualization-edit-btn').isNotVisible('Edit visualization button is no longer visible');
 
@@ -1117,7 +1117,7 @@ module('Acceptance | Navi Report', function(hooks) {
       .isNotVisible('Notification to run is not visible after making changes that do not change the request');
 
     // Make a change that invalidates visualization
-    await clickItem(this, 'dimension', 'Product Family');
+    await clickItem('dimension', 'Product Family');
 
     assert
       .dom('.report-view__visualization-edit')
@@ -1147,14 +1147,14 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.expect(2);
 
     await visit('/reports/1/view');
-    await clickItem(this, 'metric', 'Ad Clicks');
+    await clickItem('metric', 'Ad Clicks');
 
     assert
       .dom('.navi-report__save-btn')
       .isVisible('Save changes button is visible once a change has been made and when owner of report');
 
     await visit('/reports/3/view');
-    await clickItem(this, 'metric', 'Ad Clicks');
+    await clickItem('metric', 'Ad Clicks');
 
     assert.dom('.navi-report__save-btn').isNotVisible('Save changes button is visible when not owner of a report');
   });
@@ -1302,7 +1302,7 @@ module('Acceptance | Navi Report', function(hooks) {
     /* == Modify report by adding a metric == */
     await visit('/reports/1/view');
     await click($('.visualization-toggle__option:contains(Data Table)')[0]);
-    await clickItem(this, 'metric', 'Time Spent');
+    await clickItem('metric', 'Time Spent');
     await click('.navi-report__run-btn');
 
     assert.ok(
@@ -1311,7 +1311,7 @@ module('Acceptance | Navi Report', function(hooks) {
     );
 
     /* == Revert report to its original state == */
-    await clickItem(this, 'metric', 'Time Spent');
+    await clickItem('metric', 'Time Spent');
     await click('.navi-report__run-btn');
 
     assert.notOk(
@@ -1352,8 +1352,8 @@ module('Acceptance | Navi Report', function(hooks) {
 
     //Add filter for a dimension where storageStrategy is 'none' and try to run the report
     await visit('/reports/1/view');
-    await clickItem(this, 'dimension', 'Context Id');
-    await clickItemFilter(this, 'dimension', 'Context Id');
+    await clickItem('dimension', 'Context Id');
+    await clickItemFilter('dimension', 'Context Id');
     await click('.navi-report__run-btn');
 
     assert
@@ -1401,8 +1401,8 @@ module('Acceptance | Navi Report', function(hooks) {
 
     assert.dom('.filter-values--multi-value-input--error').isVisible('Filter value input validation errors are shown');
 
-    await clickItem(this, 'dimension', 'Operating System');
-    await clickItemFilter(this, 'dimension', 'Operating System');
+    await clickItem('dimension', 'Operating System');
+    await clickItemFilter('dimension', 'Operating System');
 
     assert
       .dom('.filter-values--dimension-select__trigger')
@@ -1414,7 +1414,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     await visit('/reports/1');
     //add dimension filter
-    await clickItemFilter(this, 'dimension', 'Operating System');
+    await clickItemFilter('dimension', 'Operating System');
 
     assert.ok(
       !!$('.filter-builder__subject:contains(Operating System)'.length),
@@ -1422,7 +1422,7 @@ module('Acceptance | Navi Report', function(hooks) {
     );
 
     //remove filter by clicking on filter icon again
-    await clickItemFilter(this, 'dimension', 'Operating System');
+    await clickItemFilter('dimension', 'Operating System');
 
     assert.notOk(
       !!$('.filter-builder__subject:contains(Operating System)').length,
@@ -1430,12 +1430,12 @@ module('Acceptance | Navi Report', function(hooks) {
     );
 
     //add metric filter
-    await clickItemFilter(this, 'metric', 'Ad Clicks');
+    await clickItemFilter('metric', 'Ad Clicks');
 
     assert.ok(!!$('.filter-builder__subject:contains(Ad Clicks)').length, 'The Ad Clicks metric filter is added');
 
     //remove metric filter by clicking on filter icon again
-    await clickItemFilter(this, 'metric', 'Ad Clicks');
+    await clickItemFilter('metric', 'Ad Clicks');
 
     assert.notOk(
       !!$('.filter-builder__subject:contains(Ad Clicks)').length,
@@ -1463,7 +1463,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.dom('.filter-collection').hasClass('filter-collection--collapsed', 'Filters are collapsed (2)');
 
     //add a dimension filter
-    await clickItemFilter(this, 'dimension', 'Operating System');
+    await clickItemFilter('dimension', 'Operating System');
     assert
       .dom('.filter-collection')
       .doesNotHaveClass('filter-collection--collapsed', 'Adding a dimension filter expands filters');
@@ -1473,13 +1473,13 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.dom('.filter-collection').hasClass('filter-collection--collapsed', 'Filters are collapsed (3)');
 
     //remove the dimension filter
-    await clickItemFilter(this, 'dimension', 'Operating System');
+    await clickItemFilter('dimension', 'Operating System');
     assert
       .dom('.filter-collection')
       .hasClass('filter-collection--collapsed', 'Filters are still collapsed when removing a dimension filter');
 
     //add a metric filter
-    await clickItemFilter(this, 'metric', 'Ad Clicks');
+    await clickItemFilter('metric', 'Ad Clicks');
     assert
       .dom('.filter-collection')
       .doesNotHaveClass('filter-collection--collapsed', 'Adding a metric filter expands filters');
@@ -1489,7 +1489,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.dom('.filter-collection').hasClass('filter-collection--collapsed', 'Filters are collapsed (4)');
 
     //remove the metric filter
-    await clickItemFilter(this, 'metric', 'Ad Clicks');
+    await clickItemFilter('metric', 'Ad Clicks');
     assert
       .dom('.filter-collection')
       .hasClass('filter-collection--collapsed', 'Filters are still collapsed when removing a metric filter');
@@ -1501,37 +1501,37 @@ module('Acceptance | Navi Report', function(hooks) {
     await visit('/reports/1');
 
     // Add Dimension
-    await clickItem(this, 'dimension', 'Operating System');
+    await clickItem('dimension', 'Operating System');
 
     assert.deepEqual(
-      await getAllSelected(this, 'dimension'),
+      await getAllSelected('dimension'),
       ['Day', 'Operating System', 'Property'],
       'Initially selected items include selected dimensions, filters and timegrains'
     );
 
     // Add selected dimension as filter
-    await clickItemFilter(this, 'dimension', 'Operating System');
+    await clickItemFilter('dimension', 'Operating System');
 
     assert.deepEqual(
-      await getAllSelected(this, 'dimension'),
+      await getAllSelected('dimension'),
       ['Day', 'Operating System', 'Property'],
       'Adding a selected dimension as filter does not change the selected items'
     );
 
     // Remove the dimension filter
-    await clickItemFilter(this, 'dimension', 'Operating System');
+    await clickItemFilter('dimension', 'Operating System');
 
     assert.deepEqual(
-      await getAllSelected(this, 'dimension'),
+      await getAllSelected('dimension'),
       ['Day', 'Operating System', 'Property'],
       'Removing a filter of a dimension already selected does not change selected items'
     );
 
     // Remove Dimension
-    await clickItem(this, 'dimension', 'Operating System');
+    await clickItem('dimension', 'Operating System');
 
     assert.deepEqual(
-      await getAllSelected(this, 'dimension'),
+      await getAllSelected('dimension'),
       ['Day', 'Property'],
       'Removing a dimension as a filter and dimension changes the selected items'
     );
@@ -1541,7 +1541,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.expect(2);
     await visit('/reports/1');
 
-    await clickItemFilter(this, 'dimension', 'Operating System');
+    await clickItemFilter('dimension', 'Operating System');
     await selectChoose('.filter-collection__row:last-of-type .filter-builder-dimension__operator', 'Is Empty');
     await click('.navi-report__run-btn');
 
@@ -1557,7 +1557,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.expect(2);
     await visit('/reports/1');
 
-    await clickItemFilter(this, 'dimension', 'Operating System');
+    await clickItemFilter('dimension', 'Operating System');
     await selectChoose('.filter-collection__row:last-of-type .filter-builder-dimension__operator', 'Is Not Empty');
     await click('.navi-report__run-btn');
 
@@ -1573,7 +1573,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.expect(6);
 
     await visit('/reports/1');
-    await clickItem(this, 'timeGrain', 'Month');
+    await clickItem('timeGrain', 'Month');
 
     // Select the month Jan
     await clickTrigger('.filter-values--date-range-input__low-value');
@@ -1585,7 +1585,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.dom('.filter-values--date-range-input__low-value').hasText('Jan 2015', 'Start Month is changed to Jan 2015');
     assert.dom('.filter-values--date-range-input__high-value').hasText('Jan 2015', 'End Month is changed to Jan 2015');
 
-    await clickItem(this, 'timeGrain', 'Day');
+    await clickItem('timeGrain', 'Day');
     await click('.navi-report__run-btn');
 
     assert
@@ -1595,7 +1595,7 @@ module('Acceptance | Navi Report', function(hooks) {
       .dom('.filter-values--date-range-input__high-value')
       .hasText('Jan 31, 2015', 'Switching to day time period preserves date to end of month');
 
-    await clickItem(this, 'timeGrain', 'Week');
+    await clickItem('timeGrain', 'Week');
     await click('.navi-report__run-btn');
 
     assert
@@ -1656,7 +1656,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await visit('/reports/1');
 
     // select month grain
-    await clickItem(this, 'timeGrain', 'Month');
+    await clickItem('timeGrain', 'Month');
 
     await clickTrigger('.filter-values--date-range-input__low-value');
     await click($('.ember-power-calendar-selector-month:contains(Jan)')[0]);
@@ -1668,7 +1668,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.dom('.filter-values--date-range-input__high-value').hasText('May 2015', 'The end date is month May 2015');
 
     // select 'all' grain
-    await clickItem(this, 'timeGrain', 'Month');
+    await clickItem('timeGrain', 'Month');
 
     assert
       .dom('.filter-values--date-range-input__low-value')
@@ -1705,13 +1705,13 @@ module('Acceptance | Navi Report', function(hooks) {
     // Load table A as it has the large cardinality dimensions, and choose a large cardinality dimension
 
     await selectChoose('.navi-table-select__dropdown', 'Table A');
-    await clickItem(this, 'dimension', 'EventId');
-    await clickItem(this, 'metric', 'Network Sessions');
+    await clickItem('dimension', 'EventId');
+    await clickItem('metric', 'Network Sessions');
     await click($('.navi-report__footer button:Contains(Run)')[0]);
 
     // Grab one of the dim names after running a report
     option = find('.table-cell-content.dimension').textContent.trim();
-    await clickItemFilter(this, 'dimension', 'EventId');
+    await clickItemFilter('dimension', 'EventId');
 
     // Open the dimension values so we can get values as they are dynamically created by mirage
     await clickTrigger(dropdownSelector);
@@ -1735,7 +1735,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
   test('dimension contains filter works by letting users select field', async function(assert) {
     await visit('/reports/new');
-    await clickItemFilter(this, 'dimension', 'Multi System Id');
+    await clickItemFilter('dimension', 'Multi System Id');
 
     assert.dom('.filter-builder-dimension__operator').exists('Operator dropdown should exist for the dimension');
     assert.dom('.filter-builder-dimension__field').doesNotExist('field dropdown does not exist');
@@ -1777,7 +1777,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
   test('dimension select filter works with dimension ids containing commas', async function(assert) {
     await visit('/reports/new');
-    await clickItemFilter(this, 'dimension', 'Dimension with comma');
+    await clickItemFilter('dimension', 'Dimension with comma');
 
     await selectChoose('.filter-values--dimension-select__trigger', 'no');
     await selectChoose('.filter-values--dimension-select__trigger', 'yes');
@@ -1820,7 +1820,7 @@ module('Acceptance | Navi Report', function(hooks) {
       'The headers are reordered as specified by the reorder'
     );
 
-    await clickItem(this, 'metric', 'Total Clicks');
+    await clickItem('metric', 'Total Clicks');
     await click('.navi-report__run-btn');
 
     assert.deepEqual(
@@ -1931,7 +1931,7 @@ module('Acceptance | Navi Report', function(hooks) {
     const columns = () => findAll('.table-widget__table-headers .table-header-cell').map(el => el.textContent.trim());
     assert.deepEqual(columns(), ['Date', 'Property', 'Ad Clicks', 'Nav Clicks'], 'Report loads with expected columns');
 
-    await clickItem(this, 'metric', 'Page Views');
+    await clickItem('metric', 'Page Views');
     await click('.navi-report__run-btn');
     assert.deepEqual(
       columns(),
@@ -1943,7 +1943,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.deepEqual(columns(), ['Date', 'Property', 'Ad Clicks', 'Nav Clicks'], 'Report revertted successfully');
 
     //make same changes and make sure it's runnable
-    await clickItem(this, 'metric', 'Page Views');
+    await clickItem('metric', 'Page Views');
     await click('.navi-report__run-btn');
     assert.deepEqual(
       columns(),

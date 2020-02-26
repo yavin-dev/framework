@@ -47,7 +47,7 @@ module('Acceptance | custom reports', function(hooks) {
     await visit('/reports/new');
 
     // Add filter
-    await clickItemFilter(this, 'dimension', 'Character');
+    await clickItemFilter('dimension', 'Character');
     await selectChoose('.filter-values--dimension-select__trigger', 'Luigi');
     assert.dom('.filter-builder-dimension__values').containsText('Luigi', 'A filter value can be selected');
 
