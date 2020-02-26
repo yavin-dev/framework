@@ -90,6 +90,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
                     table: 'network',
                     timeGrain: 'day'
                   },
+                  dataSource: 'blockhead',
                   metrics: [
                     {
                       metric: 'uniqueIdentifier',
@@ -239,7 +240,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
   });
 
   test('Clone Request', async function(assert) {
-    assert.expect(13);
+    assert.expect(14);
 
     await settled();
     const mockModel = Store.peekRecord('fragments-mock', MODEL_TO_CLONE);
@@ -339,6 +340,8 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
       mockModel.get('request.having.firstObject.metric.parameters'),
       'The property having is set with correct parameters'
     );
+
+    assert.equal(request.dataSource, 'blockhead', 'datasource was cloned correctly');
   });
 
   // Test that navi supports legacy saved reports without a sort field

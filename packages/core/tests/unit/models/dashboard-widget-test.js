@@ -79,6 +79,7 @@ module('Unit | Model | dashboard widget', function(hooks) {
               ],
               bardVersion: 'v1',
               requestVersion: 'v1',
+              dataSource: 'dummy',
               sort: []
             }
           ],

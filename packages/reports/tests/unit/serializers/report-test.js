@@ -42,7 +42,8 @@ module('Unit | Serializer | Report', function(hooks) {
               }
             ],
             bardVersion: 'v1',
-            requestVersion: 'v1'
+            requestVersion: 'v1',
+            dataSource: 'dummy'
           },
           visualization: {
             type: 'line-chart',
@@ -133,7 +134,8 @@ module('Unit | Serializer | Report', function(hooks) {
               }
             ],
             bardVersion: 'v1',
-            requestVersion: 'v1'
+            requestVersion: 'v1',
+            dataSource: 'dummy'
           },
           visualization: {
             type: 'table',

@@ -107,6 +107,7 @@ export default Route.extend({
           table,
           timeGrainName
         }),
+        dataSource: table.source,
         responseFormat: 'csv'
       }),
       visualization: { type: defaultVisualization }
