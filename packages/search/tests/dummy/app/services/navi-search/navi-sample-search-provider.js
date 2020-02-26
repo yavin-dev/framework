@@ -24,6 +24,7 @@ export default class NaviSampleSearchProviderService extends NaviBaseSearchProvi
         }
         resolve({
           component: 'navi-search-result/sample',
+          title: 'Sample',
           data
         });
       }, 300);

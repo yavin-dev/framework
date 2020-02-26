@@ -1,6 +1,7 @@
-import Mirage from 'ember-cli-mirage';
+import Response from 'ember-cli-mirage/response';
 import moment from 'moment';
 import RESPONSE_CODES from '../enums/response-codes';
+import { filterModel } from 'navi-core/mirage/utils/rsql-utils';
 const TIMESTAMP_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 
 export default function() {
@@ -8,17 +9,21 @@ export default function() {
    * reports/ - GET endpoint to fetch many reports
    */
   this.get('/reports', function({ reports }, request) {
+    let reportObject;
     let idFilter = request.queryParams['filter[reports.id]'];
+    let queryFilter = request.queryParams['filter[reports]'];
 
     // Allow filtering
     if (idFilter) {
       let ids = idFilter.split(',');
-      reports = reports.find(ids);
+      reportObject = reports.find(ids);
+    } else if ('filter[reports]' in request.queryParams) {
+      reportObject = filterModel(reports, queryFilter);
     } else {
-      reports = reports.all();
+      reportObject = reports.all();
     }
 
-    return reports;
+    return reportObject;
   });
 
   /**
@@ -56,7 +61,7 @@ export default function() {
       user = users.find(report.authorId);
 
     if (!report) {
-      return new Mirage.Response(RESPONSE_CODES.NOT_FOUND, {}, { errors: [`Unknown identifier '${id}'`] });
+      return new Response(RESPONSE_CODES.NOT_FOUND, {}, { errors: [`Unknown identifier '${id}'`] });
     }
 
     // Delete report from user
@@ -65,6 +70,6 @@ export default function() {
     });
     report.destroy();
 
-    return new Mirage.Response(RESPONSE_CODES.NO_CONTENT);
+    return new Response(RESPONSE_CODES.NO_CONTENT);
   });
 }

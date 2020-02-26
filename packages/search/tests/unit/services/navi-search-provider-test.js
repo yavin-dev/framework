@@ -1,37 +1,50 @@
+import Service from '@ember/service';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 module('Unit | Service | navi-search-provider', function(hooks) {
   setupTest(hooks);
+  setupMirage(hooks);
 
-  let Service;
+  let service;
 
   hooks.beforeEach(async function() {
-    Service = this.owner.lookup('service:navi-search-provider');
+    // Load metadata needed for request fragment
+    await this.owner.lookup('service:bard-metadata').loadMetadata();
+    service = this.owner.lookup('service:navi-search-provider');
+    const store = this.owner.lookup('service:store'),
+      mockAuthor = store.createRecord('user', { id: 'ciela' });
+    this.owner.register(
+      'service:user',
+      Service.extend({
+        getUser: () => mockAuthor
+      })
+    );
   });
 
   test('get all search providers', function(assert) {
-    let availableSearchProviders = Service._all();
-    let systemSearchProviders = ['NaviSampleSearchProviderService'];
+    let availableSearchProviders = service._all();
+    let systemSearchProviders = ['NaviSampleSearchProviderService', 'NaviAssetSearchProviderService'];
     assert.deepEqual(
-      availableSearchProviders.map(provider => provider.constructor.name),
-      systemSearchProviders,
-      'Discovered 1 search provider.'
+      availableSearchProviders.map(provider => provider.constructor.name).sort(),
+      systemSearchProviders.sort(),
+      'Discovered 2 search provider.'
     );
   });
 
   test('search all providers', async function(assert) {
-    let results = await Service.search.perform('Revenue');
+    let results = await service.search.perform('Revenue');
     assert.ok(
-      results.every(
-        result => result.data.every(d => d.includes('Revenue')) && result.component === 'navi-search-result/sample'
+      results.every(result =>
+        result.data.filter(d => d.component === 'navi-search-result/sample').every(d => d.includes('Revenue'))
       ),
       'Returns multiple results'
     );
   });
 
   test('search with no results', async function(assert) {
-    let results = await Service.search.perform('something');
+    let results = await service.search.perform('something');
     assert.equal(results.length, 0, 'Returns no results');
   });
 });

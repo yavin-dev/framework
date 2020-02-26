@@ -268,7 +268,7 @@ export default [
     title: 'Revenue report 1',
     createdOn: '2015-01-01 00:00:00',
     updatedOn: '2015-01-01 00:00:00',
-    authorId: 'navi_user',
+    authorId: 'ciela',
     deliveryRuleIds: [],
     visualization: {
       type: 'table',
