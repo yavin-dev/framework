@@ -1,19 +1,19 @@
-<button type="button" class="success-btn" onclick={{action "addSuccess"}}>
+<button type="button" class="success-btn" {{on "click" this.addSuccess}}>
   success
 </button>
 
-<button type="button" class="info-btn" onclick={{action "addInfo"}}>
+<button type="button" class="info-btn" {{on "click" this.addInfo}}>
   info
 </button>
 
-<button type="button" class="danger-btn" onclick={{action "addDanger"}}>
+<button type="button" class="danger-btn" {{on "click" this.addDanger}}>
   danger
 </button>
 
-<button type="button" class="clear-btn" onclick={{action "clear"}}>
+<button type="button" class="clear-btn" {{on "click" this.clear}}>
   clear
 </button>
 
-{{#each flashMessages.queue as |flash|}}
+{{#each this.flashMessages.queue as |flash|}}
   <FlashMessage @flash={{flash}} />
 {{/each}}
