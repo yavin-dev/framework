@@ -3,7 +3,10 @@ module.exports = {
   parser: 'babel-eslint',
   parserOptions: {
     ecmaVersion: 2018,
-    sourceType: 'module'
+    sourceType: 'module',
+    ecmaFeatures: {
+      legacyDecorators: true
+    }
   },
   plugins: ['ember'],
   extends: ['eslint:recommended', 'plugin:ember/recommended', 'prettier'],
@@ -11,9 +14,8 @@ module.exports = {
     browser: true
   },
   rules: {
-    'multiline-comment-style': ['error', 'starred-block'],
-    'ember/no-jquery': ['warn'],
-    'ember/no-observers': ['warn']
+    'ember/no-jquery': 'warn',
+    'ember/no-observers': 'warn'
   },
   globals: {
     c3: true,

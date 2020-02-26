@@ -12,6 +12,7 @@
 /.env*
 /.eslintignore
 /.eslintrc.js
+/.git/
 /.gitignore
 /.gitkeep
 /.template-lintrc.js

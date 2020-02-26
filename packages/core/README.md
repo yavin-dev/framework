@@ -9,11 +9,9 @@ Library of common logic, components, and styles for navi
 
 ## Requirements
 
-- Ember.js v3.4 or above
+- Ember.js v3.12 or above
 - Ember CLI v2.13 or above
-- Node.js v8 or above
-
-* node >= 4
+- Node.js v10 or above
 
 ## Running Tests
 
@@ -26,3 +24,7 @@ Library of common logic, components, and styles for navi
 - `ember build`
 
 For more information on using ember-cli, visit [https://ember-cli.com/](https://ember-cli.com/).
+
+## License
+
+This project is licensed under the [MIT License](LICENSE.md).
