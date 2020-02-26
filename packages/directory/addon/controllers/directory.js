@@ -1,24 +1,23 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Controller from '@ember/controller';
-import { getProperties, get, set, computed, action } from '@ember/object';
+import { tracked } from '@glimmer/tracking';
+import { getProperties, get, computed, action } from '@ember/object';
 import { inject as service } from '@ember/service';
 import { A as arr } from '@ember/array';
 
-class Directory extends Controller {
+export default class DirectoryController extends Controller {
   /**
    * @property {Service} directories - service to load the valid directory options
    */
-  @service()
-  directories;
+  @service directories;
 
   /**
    * @property {Service} router - service to check current route
    */
-  @service()
-  router;
+  @service router;
 
   /**
    * @property {Array} queryParams - array of allowed query params
@@ -35,17 +34,16 @@ class Directory extends Controller {
    * @property {String} type - query param for type
    * allowed types - reports, dashboards
    */
-  type = null;
+  @tracked type = null;
 
   /**
    * @property {String} sortBy - query param for sortBy
    */
-  sortBy = 'updatedOn';
+  @tracked sortBy = 'updatedOn';
 
   /**
    * @property {String} sortKey - sort key (computed by sortBy query param)
    */
-  @computed('sortBy')
   get sortKey() {
     const { sortBy } = this;
     return sortBy === 'author' ? 'author.id' : sortBy;
@@ -54,12 +52,12 @@ class Directory extends Controller {
   /**
    * @property {String} sortDir - query param for sort direction
    */
-  sortDir = 'desc';
+  @tracked sortDir = 'desc';
 
   /**
    * @property {String} q - query param for the search query
    */
-  q = '';
+  @tracked q = '';
 
   /**
    * @property {String} title - Title for the table
@@ -88,7 +86,7 @@ class Directory extends Controller {
    */
   @action
   searchFor(query) {
-    set(this, 'q', query);
+    this.q = query;
   }
 
   /**
@@ -100,5 +98,3 @@ class Directory extends Controller {
     this.transitionToRoute({ queryParams });
   }
 }
-
-export default Directory;

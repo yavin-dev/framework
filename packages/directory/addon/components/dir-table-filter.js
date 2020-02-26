@@ -1,23 +1,19 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
  * <DirTableFilter
- *    @selectedType={{type}}
- *    @updateQueryParams={{action 'updateQueryParams'}}
+ *    @selectedType={{this.type}}
+ *    @updateQueryParams={{this.updateQueryParams}}
  *  />
  */
-import Component from '@ember/component';
-import layout from '../templates/components/dir-table-filter';
+import Component from '@glimmer/component';
 import { computed, action } from '@ember/object';
 import { isEmpty } from '@ember/utils';
 import FileTypes from 'navi-directory/utils/enums/file-types';
-import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
-@templateLayout(layout)
-@tagName('')
-class DirTableFilter extends Component {
+export default class DirTableFilterComponent extends Component {
   /**
    * @property {Array} fileTypes
    */
@@ -29,9 +25,8 @@ class DirTableFilter extends Component {
   /**
    * @property {String} selectedFileType
    */
-  @computed('selectedType')
   get selectedFileType() {
-    const { selectedType } = this;
+    const { selectedType } = this.args;
     return isEmpty(selectedType) ? 'all' : selectedType;
   }
 
@@ -55,8 +50,6 @@ class DirTableFilter extends Component {
       queryParam = null;
     }
 
-    this.updateQueryParams({ type: queryParam });
+    this.args.updateQueryParams?.({ type: queryParam });
   }
 }
-
-export default DirTableFilter;

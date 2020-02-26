@@ -1,20 +1,23 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
  * <DirSidebar />
  */
-import Component from '@ember/component';
-import layout from '../templates/components/dir-sidebar';
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
 import { inject as service } from '@ember/service';
-import { oneWay } from '@ember/object/computed';
-import { computed } from '@ember/object';
-import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
-@templateLayout(layout)
-@tagName('')
-class DirSidebar extends Component {
+export default class DirSidebarComponent extends Component {
+  /**
+   * @constructor - sets selectedDirectory to arg
+   */
+  constructor() {
+    super(...arguments);
+    this.selectedDirectory = this.args.selectedDirectory;
+  }
+
   /**
    * @property {Service} directoriesService - service for loading valid directory choices
    */
@@ -24,7 +27,6 @@ class DirSidebar extends Component {
   /**
    * @property {Array} directories
    */
-  @computed
   get directories() {
     return this.directoriesService.getDirectories();
   }
@@ -32,8 +34,12 @@ class DirSidebar extends Component {
   /**
    * @property {Object} selectedDirectory
    */
-  @oneWay('directories.0')
-  selectedDirectory;
+  @tracked selectedDirectory;
+
+  /**
+   * @property {Object} selectedFilter
+   */
+  @tracked selectedFilter;
 
   /**
    * @property {Array} filters
@@ -46,5 +52,3 @@ class DirSidebar extends Component {
     }
   ];
 }
-
-export default DirSidebar;

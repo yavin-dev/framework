@@ -1,0 +1,16 @@
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<div class="dir-search-bar" ...attributes>
+  <input
+    class="dir-search-bar__input"
+    value={{@query}}
+    type="text"
+    placeholder="Search"
+    {{on "input" this.searchInput}}
+  />
+  <NaviIcon @icon="search" class="dir-search-bar__search-icon" />
+  <NaviIcon 
+    class="dir-search-bar__clear-icon {{if (not-eq @query.length 0) "dir-search-bar__clear-icon--show"}}"
+    @icon="times"
+    {{on "click" (fn @searchFor "")}}
+  />
+</div>

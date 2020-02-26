@@ -4,7 +4,8 @@
     {{#each this.directories as | directory |}}
       <LinkTo @route={{directory.routeLink}} @query={{hash filter=null}}
         class="dir-sidebar__group"
-        @click={{pipe (action (set this "selectedDirectory" directory)) (action (set this "selectedFilter" (object-at 0 directory.filters)))}}
+        {{on "click" (fn (mut this.selectedDirectory) directory)}}
+        {{on "click" (fn (mut this.selectedFilter) (object-at 0 directory.filters))}}
       >
         <div>
           <span class="dir-sidebar__group--icon"><NaviIcon @icon="folder-o"/></span>

@@ -1,11 +1,11 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Service from '@ember/service';
 import { computed } from '@ember/object';
 
-class Directories extends Service {
+export default class DirectoriesService extends Service {
   /**
    * @property {Array} directories - Object list with info on each directory
    */
@@ -34,5 +34,3 @@ class Directories extends Service {
     return this.directories;
   }
 }
-
-export default Directories;

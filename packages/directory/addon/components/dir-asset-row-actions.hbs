@@ -2,8 +2,8 @@
 <div class="dir-asset-row-actions" ...attributes>
   <LazyRender @target={{this.rowElement}}>
     {{component (get this.assetActionComponents this.type)
-      item=value
-      index=row.rowId
+      item=@value
+      index=@row.rowId
     }}
   </LazyRender>
 </div>

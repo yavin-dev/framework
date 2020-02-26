@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
-import { render, click } from '@ember/test-helpers';
+import { render, click, findAll } from '@ember/test-helpers';
 import { set } from '@ember/object';
 import hbs from 'htmlbars-inline-precompile';
 
@@ -48,18 +48,18 @@ module('Integration | Component | dir table', function(hooks) {
     assert.dom('.dir-table__row').exists({ count: 3 }, 'There is one row per item passed to the table');
 
     assert.deepEqual(
-      [...this.element.querySelectorAll('th')].map(elm => elm.innerText.trim()),
+      findAll('th').map(elm => elm.innerText.trim()),
       ['NAME', '', 'AUTHOR', 'LAST UPDATED DATE'],
       'The correct columns are generated for the table'
     );
 
     assert.ok(
-      [...this.element.querySelectorAll('.dir-table__cell--author')].every(elm => elm.innerText.trim() === 'navi_user'),
+      findAll('.dir-table__cell--author').every(elm => elm.innerText.trim() === 'navi_user'),
       "The author's name is displayed correctly for each row"
     );
 
     assert.deepEqual(
-      [...this.element.querySelectorAll('.dir-table__cell--lastUpdatedDate')].map(elm => elm.innerText.trim()),
+      findAll('.dir-table__cell--lastUpdatedDate').map(elm => elm.innerText.trim()),
       ['01/01/2020 - 12:00:00 am', '01/02/2020 - 12:00:00 am', '01/03/2020 - 12:00:00 am'],
       'The last updated dates are formatted and displayed correctly'
     );
@@ -80,7 +80,7 @@ module('Integration | Component | dir table', function(hooks) {
       @sortDir={{this.sortDir}}
     />`);
 
-    let th = [...this.element.querySelectorAll('th')];
+    let th = findAll('th');
 
     assert.deepEqual(
       th.map(elm => elm.className.includes('is-sortable')),
@@ -105,7 +105,7 @@ module('Integration | Component | dir table', function(hooks) {
     />`);
 
     assert.equal(
-      [...this.element.querySelectorAll('th')].filter(elm => {
+      findAll('th').filter(elm => {
         let i = elm.querySelector('i');
         return i ? i.className.includes('is-sorted') : false;
       }).length,
@@ -209,10 +209,10 @@ module('Integration | Component | dir table', function(hooks) {
     set(this, 'items', []);
     set(this, 'searchQuery', '');
 
-    await render(hbs`{{dir-table
-      items=items
-      searchQuery=searchQuery
-    }}`);
+    await render(hbs`<DirTable
+      @items={{this.items}}
+      @searchQuery={{this.searchQuery}}
+    />`);
 
     assert
       .dom('.lt-body')
@@ -223,10 +223,10 @@ module('Integration | Component | dir table', function(hooks) {
 
     set(this, 'searchQuery', 'invalidQuery');
 
-    await render(hbs`{{dir-table
-      items=items
-      searchQuery=searchQuery
-    }}`);
+    await render(hbs`<DirTable
+      @items={{this.items}}
+      @searchQuery={{this.searchQuery}}
+    />`);
 
     assert
       .dom('.lt-body')

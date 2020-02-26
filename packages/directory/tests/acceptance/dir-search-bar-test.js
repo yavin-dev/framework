@@ -23,7 +23,7 @@ module('Acceptance | dir search bar', function(hooks) {
     await triggerEvent('.dir-search-bar__input', 'keyup');
     assert.equal(
       currentURL(),
-      '/directory/my-data?q=testString',
+      `/directory/my-data?q=${fillInText}`,
       'The url has the updated queryparam `q` when the search query is entered in the search bar'
     );
 

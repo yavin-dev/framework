@@ -1,46 +1,40 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
  * <DirTable
- *   @items={{items}}
- *   @isLoading={{isLoading}}
- *   @searchQuery={{searchQuery}}
- *   @sortBy={{sortBy}}
- *   @sortDir={{sortDir}}
- *   @onColumnClick={{action 'onColumnClick'}}
+ *   @items={{@items}}
+ *   @isLoading={{@isLoading}}
+ *   @searchQuery={{@searchQuery}}
+ *   @sortBy={{@sortBy}}
+ *   @sortDir={{@sortDir}}
+ *   @onColumnClick={{this.onColumnClick}}
  * />
  */
-import Component from '@ember/component';
-import { computed, get, action } from '@ember/object';
-import layout from '../templates/components/dir-table';
+import Component from '@glimmer/component';
+import { action } from '@ember/object';
 import Table from 'ember-light-table';
 import moment from 'moment';
 import { isEmpty } from '@ember/utils';
-import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
-@templateLayout(layout)
-@tagName('')
-class DirTable extends Component {
+export default class DirTableComponent extends Component {
   //TODO replace with `is-empty` helper from ember-truth-helpers once that is released
   /**
    * @property {Boolean} isSearching
    */
-  @computed('searchQuery')
   get isSearching() {
-    return !isEmpty(this.searchQuery);
+    return !isEmpty(this.args.searchQuery);
   }
 
   /**
    * @property {Array} model - Used by ember-light-table to create rows
    */
-  @computed('items')
   get model() {
-    const items = this.items || [];
+    const items = this.args.items || [];
     return items.map(item => ({
       model: item,
-      lastUpdatedDate: moment(get(item, 'updatedOn')).format('MM/DD/YYYY -  hh:mm:ss a')
+      lastUpdatedDate: moment(item.updatedOn).format('MM/DD/YYYY -  hh:mm:ss a')
     }));
   }
 
@@ -96,7 +90,6 @@ class DirTable extends Component {
   /**
    * @property {Object} table - Used by ember-light-table to create the table
    */
-  @computed('model')
   get table() {
     const table = Table.create({
       columns: this.columns,
@@ -106,14 +99,14 @@ class DirTable extends Component {
       }
     });
 
-    const { sortBy } = this;
+    const { sortBy, sortDir } = this.args;
     if (!isEmpty(sortBy)) {
       const sortColumn = table.get('allColumns').findBy('sortByKey', sortBy);
 
       if (sortColumn) {
         sortColumn.setProperties({
           sorted: true,
-          ascending: this.sortDir !== 'desc'
+          ascending: sortDir !== 'desc'
         });
       }
     }
@@ -130,14 +123,14 @@ class DirTable extends Component {
    * @returns {Object} sort column key and direction
    */
   _getNextSort(column) {
-    let { sortBy } = this,
-      nextSortBy = get(column, 'sortByKey'),
-      nextSortDir;
+    const { sortBy } = this.args;
+    const nextSortBy = column.sortByKey;
 
+    let nextSortDir;
     if (sortBy === nextSortBy) {
-      nextSortDir = get(column, 'ascending') ? 'asc' : 'desc';
+      nextSortDir = column.ascending ? 'asc' : 'desc';
     } else {
-      nextSortDir = get(column, 'sortDescFirst') ? 'desc' : 'asc';
+      nextSortDir = column.sortDescFirst ? 'desc' : 'asc';
     }
 
     return {
@@ -151,15 +144,9 @@ class DirTable extends Component {
    * @param {Object} column
    */
   @action
-  onTableColumnClick(column) {
+  onColumnClick(column) {
     if (column.sorted) {
-      const { onColumnClick } = this;
-
-      if (typeof onColumnClick === 'function') {
-        onColumnClick(this._getNextSort(column));
-      }
+      this.args.onColumnClick?.(this._getNextSort(column));
     }
   }
 }
-
-export default DirTable;
