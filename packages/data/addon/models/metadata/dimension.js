@@ -132,7 +132,7 @@ let Model = EmberObject.extend({
   extended: computed(function() {
     const { metadata, name, type, source } = this;
     return ObjectProxy.extend(PromiseProxyMixin).create({
-      promise: metadata.fetchById(type, name, source)
+      promise: metadata.findById(type, name, source)
     });
   })
 });

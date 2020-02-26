@@ -226,9 +226,8 @@ export default Service.extend({
    * @returns {string} - namespace
    */
   getTableNamespace(table) {
-    const tableIndex = this._keg.idIndexes['metadata/table'];
-    const metaKey = Object.keys(tableIndex).find(metaTable => metaTable.endsWith(table));
+    const items = this._keg.getBy('metadata/table', recordTable => (recordTable.name = table));
 
-    return metaKey ? metaKey.split('.')[0] : getDefaultDataSourceName();
+    return items.length ? items[0].source : getDefaultDataSourceName();
   }
 });

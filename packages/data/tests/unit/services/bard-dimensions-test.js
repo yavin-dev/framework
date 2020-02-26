@@ -8,7 +8,6 @@ import Pretender from 'pretender';
 import config from 'ember-get-config';
 import metadataRoutes from '../../helpers/metadata-routes';
 import { parseFilters } from 'navi-data/mirage/routes/bard-lite-parsers';
-import { all } from 'rsvp';
 
 let Service, Server, MetadataService;
 
@@ -97,7 +96,7 @@ module('Unit | Service | Dimensions', function(hooks) {
 
     Server.map(metadataRoutes);
     metadataRoutes.bind(Server)(1);
-    return all([MetadataService.loadMetadata(), MetadataService.loadMetadata({ dataSourceName: 'blockhead' })]);
+    return Promise.all([MetadataService.loadMetadata(), MetadataService.loadMetadata({ dataSourceName: 'blockhead' })]);
   });
 
   hooks.afterEach(function() {
