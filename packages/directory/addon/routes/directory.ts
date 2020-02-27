@@ -9,8 +9,7 @@ export default class DirectoryRoute extends Route {
   /**
    * @property {Service} user
    */
-  @service()
-  user;
+  @service user: TODO;
 
   /**
    * @property {Object} queryParams

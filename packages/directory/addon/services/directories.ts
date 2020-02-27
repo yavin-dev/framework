@@ -5,12 +5,26 @@
 import Service from '@ember/service';
 import { computed } from '@ember/object';
 
+export interface DirectoryFilterQueryParams {
+  filter?: string;
+}
+export interface DirectoryFilter {
+  name: string;
+  icon: string;
+  queryParams: DirectoryFilterQueryParams;
+}
+export interface Directory {
+  name: string;
+  routeLink: string;
+  filters: Array<DirectoryFilter>;
+}
+
 export default class DirectoriesService extends Service {
   /**
-   * @property {Array} directories - Object list with info on each directory
+   * @property {Array<Directory>} directories - Object list with info on each directory
    */
-  @computed
-  get directories() {
+  @computed()
+  get directories(): Array<Directory> {
     //Default supported directories. Override this property in your app to add directories.
     return [
       {
@@ -20,7 +34,7 @@ export default class DirectoriesService extends Service {
           {
             name: 'Favorites',
             icon: 'star-o',
-            queryParam: { filter: 'favorites' }
+            queryParams: { filter: 'favorites' }
           }
         ]
       }
@@ -32,5 +46,11 @@ export default class DirectoriesService extends Service {
    */
   getDirectories() {
     return this.directories;
+  }
+}
+
+declare module '@ember/service' {
+  interface Registry {
+    directories: DirectoriesService;
   }
 }

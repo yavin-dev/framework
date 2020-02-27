@@ -14,11 +14,20 @@
  */
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
-import Table from 'ember-light-table';
 import moment from 'moment';
 import { isEmpty } from '@ember/utils';
+// @ts-ignore
+import Table from 'ember-light-table';
 
-export default class DirTableComponent extends Component {
+interface DirTableComponentArgs {
+  searchQuery: string;
+  items: Array<TODO>;
+  sortBy: string;
+  sortDir: TODO<'asc' | 'desc'>;
+  onColumnClick: TODO<Function>;
+}
+
+export default class DirTableComponent extends Component<DirTableComponentArgs> {
   //TODO replace with `is-empty` helper from ember-truth-helpers once that is released
   /**
    * @property {Boolean} isSearching
@@ -122,7 +131,7 @@ export default class DirTableComponent extends Component {
    * @param {Object} column
    * @returns {Object} sort column key and direction
    */
-  _getNextSort(column) {
+  _getNextSort(column: TODO) {
     const { sortBy } = this.args;
     const nextSortBy = column.sortByKey;
 
@@ -144,7 +153,7 @@ export default class DirTableComponent extends Component {
    * @param {Object} column
    */
   @action
-  onColumnClick(column) {
+  onColumnClick(column: TODO) {
     if (column.sorted) {
       this.args.onColumnClick?.(this._getNextSort(column));
     }

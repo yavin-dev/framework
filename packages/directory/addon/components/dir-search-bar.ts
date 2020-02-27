@@ -11,9 +11,14 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 
-export default class DirSearchBarComponent extends Component {
+interface DirSearchBarComponentArgs {
+  searchFor: (value: string) => void;
+  query: string;
+}
+
+export default class DirSearchBarComponent extends Component<DirSearchBarComponentArgs> {
   @action
-  searchInput({ target: { value } }) {
-    this.args.searchFor?.(value);
+  searchInput({ target = {} as HTMLInputElement }) {
+    this.args.searchFor?.(target.value);
   }
 }

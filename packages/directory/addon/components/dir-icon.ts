@@ -7,4 +7,8 @@
  */
 import Component from '@glimmer/component';
 
-export default class DirIconComponent extends Component {}
+interface DirIconComponentArgs {
+  iconClass: string;
+}
+
+export default class DirIconComponent extends Component<DirIconComponentArgs> {}

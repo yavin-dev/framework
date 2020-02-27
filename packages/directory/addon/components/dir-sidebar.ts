@@ -8,21 +8,26 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { inject as service } from '@ember/service';
+import DirectoryService, { Directory } from '../services/directories';
+import { DirectoryFilter } from '../services/directories';
 
-export default class DirSidebarComponent extends Component {
+interface DirSidebarComponentArgs {
+  selectedDirectory: Directory;
+}
+
+export default class DirSidebarComponent extends Component<DirSidebarComponentArgs> {
   /**
    * @constructor - sets selectedDirectory to arg
    */
-  constructor() {
-    super(...arguments);
-    this.selectedDirectory = this.args.selectedDirectory;
+  constructor(owner: unknown, args: DirSidebarComponentArgs) {
+    super(owner, args);
+    this.selectedDirectory = args.selectedDirectory;
   }
 
   /**
    * @property {Service} directoriesService - service for loading valid directory choices
    */
-  @service('directories')
-  directoriesService;
+  @service('directories') directoriesService!: DirectoryService;
 
   /**
    * @property {Array} directories
@@ -34,17 +39,17 @@ export default class DirSidebarComponent extends Component {
   /**
    * @property {Object} selectedDirectory
    */
-  @tracked selectedDirectory;
+  @tracked selectedDirectory?: Directory;
 
   /**
    * @property {Object} selectedFilter
    */
-  @tracked selectedFilter;
+  @tracked selectedFilter?: DirectoryFilter;
 
   /**
-   * @property {Array} filters
+   * @property {Array<DirectoryFilter>} filters
    */
-  filters = [
+  filters: Array<DirectoryFilter> = [
     {
       name: 'Favorites',
       icon: 'star-o',
