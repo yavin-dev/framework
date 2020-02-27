@@ -39,16 +39,16 @@ export function serializeFilters(filters) {
     .join(',');
 }
 
-export default EmberObject.extend({
+export default class BardFactsAdapter extends EmberObject {
   /**
    * @property namespace
    */
-  namespace: 'v1/data',
+  namespace = 'v1/data';
 
   /**
    * @property {Service} ajax
    */
-  ajax: service(),
+  @service ajax;
 
   /**
    * Builds the dimensions path for a request
@@ -65,7 +65,7 @@ export default EmberObject.extend({
           .uniq()
           .join('/')}`
       : '';
-  },
+  }
 
   /**
    * Builds a dateTime param string for a request
@@ -83,7 +83,7 @@ export default EmberObject.extend({
         return `${get(interval, 'start')}/${get(interval, 'end')}`;
       })
       .join(',');
-  },
+  }
 
   /**
    * Builds a metrics param string for a request
@@ -97,7 +97,7 @@ export default EmberObject.extend({
     return array((get(request, 'metrics') || []).map(canonicalizeMetric))
       .uniq()
       .join(',');
-  },
+  }
 
   /**
    * Builds a filters param string for a request
@@ -117,7 +117,7 @@ export default EmberObject.extend({
     } else {
       return undefined;
     }
-  },
+  }
 
   /**
    * Builds a sort param string for a request
@@ -148,7 +148,7 @@ export default EmberObject.extend({
     } else {
       return undefined;
     }
-  },
+  }
 
   /**
    * Builds a having param string for a request
@@ -184,7 +184,7 @@ export default EmberObject.extend({
     } else {
       return undefined;
     }
-  },
+  }
 
   /**
    * Builds a URL path for a request
@@ -203,7 +203,7 @@ export default EmberObject.extend({
       dimensions = this._buildDimensionsPath(request, options);
 
     return `${host}/${namespace}/${table}/${timeGrain}${dimensions}/`;
-  },
+  }
 
   /**
    * Builds a query object for a request
@@ -267,7 +267,7 @@ export default EmberObject.extend({
     }
 
     return query;
-  },
+  }
 
   /**
    * Returns URL String for a request
@@ -287,11 +287,12 @@ export default EmberObject.extend({
         .join('&');
 
     return `${path}?${queryStr}`;
-  },
+  }
+
   /**
    * @property {Ember.Service} requestDecorator
    */
-  requestDecorator: service(),
+  @service requestDecorator;
 
   /**
    * @method _decorate
@@ -300,9 +301,8 @@ export default EmberObject.extend({
    * @returns {Object} decorated request
    */
   _decorate(request) {
-    let decorator = get(this, 'requestDecorator');
-    return decorator.applyGlobalDecorators(request);
-  },
+    return this.requestDecorator.applyGlobalDecorators(request);
+  }
 
   /**
    * @method fetchDataForRequest - Uses the url generated using the adapter to make an ajax request
@@ -353,4 +353,4 @@ export default EmberObject.extend({
       timeout: timeout
     });
   }
-});
+}

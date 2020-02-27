@@ -7,7 +7,7 @@
 
 import EmberObject from '@ember/object';
 
-export default EmberObject.extend({
+export default class BardDimensionSerializer extends EmberObject {
   /**
    * @method normalize - normalizes the JSON response
    * @param dimensionName {String} - name of the dimension
@@ -17,4 +17,4 @@ export default EmberObject.extend({
   normalize(dimensionName, payload = {}) {
     return payload.rows;
   }
-});
+}

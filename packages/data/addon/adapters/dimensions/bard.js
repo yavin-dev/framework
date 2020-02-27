@@ -25,26 +25,26 @@ const SEARCH_TIMEOUT = 30000;
 
 const CLIENT_ID = 'UI';
 
-export default EmberObject.extend({
+export default class BardDimensionAdapter extends EmberObject {
   /**
    * @property namespace
    */
-  namespace: 'v1',
+  namespace = 'v1';
 
   /**
    * @property {Service} ajax
    */
-  ajax: service(),
+  @service ajax;
 
   /**
    * @property {Service} bard metadata
    */
-  bardMetadata: service(),
+  @service bardMetadata;
 
   /**
    * @property {Array} supportedFilterOperators - List of supported filter operations
    */
-  supportedFilterOperators: SUPPORTED_FILTER_OPERATORS,
+  supportedFilterOperators = SUPPORTED_FILTER_OPERATORS;
 
   /**
    * Returns metadata for dimensionName
@@ -56,8 +56,8 @@ export default EmberObject.extend({
    * @returns {Object} metadata object
    */
   _getDimensionMetadata(dimensionName, namespace=getDefaultDataSourceName()) {
-  return this.bardMetadata.getById('dimension', dimensionName, namespace);
-  },
+    return this.bardMetadata.getById('dimension', dimensionName, namespace);
+  }
 
   /**
    * Builds the URL for dimension search
@@ -73,7 +73,7 @@ export default EmberObject.extend({
       namespace = get(this, 'namespace');
 
     return `${host}/${namespace}/dimensions/${dimension}/${path}/`;
-  },
+  }
 
   /**
    * Builds a filters query string for dimension values request
@@ -128,7 +128,7 @@ export default EmberObject.extend({
     return {
       filters: serializeFilters(filters)
     };
-  },
+  }
 
   /**
    * Builds a search query string for dimension /search request
@@ -165,7 +165,7 @@ export default EmberObject.extend({
     return {
       query: query.values.join(' ')
     };
-  },
+  }
 
   /**
    * @method _find - makes an ajax request
@@ -214,7 +214,7 @@ export default EmberObject.extend({
       data,
       timeout
     });
-  },
+  }
 
   /**
    * @method all - Makes a request for all values for a given dimension
@@ -231,7 +231,7 @@ export default EmberObject.extend({
    */
   all(dimension, options) {
     return this.find(dimension, undefined, options);
-  },
+  }
 
   /**
    * @method findById - Finds a dimension value object by its id
@@ -242,7 +242,7 @@ export default EmberObject.extend({
    */
   findById(dimension, value, options) {
     return this.find(dimension, { values: value }, options);
-  },
+  }
 
   /**
    * @method find - makes a request to /values api to find dimensions by query term
@@ -268,7 +268,7 @@ export default EmberObject.extend({
     }
 
     return this._find(url, data, options);
-  },
+  }
 
   /**
    * @method search - makes a request to /search api to find dimensions by query term
@@ -293,7 +293,7 @@ export default EmberObject.extend({
     }
 
     return this._find(url, data, options);
-  },
+  }
 
   /**
    * Pushes an array of dimension records to the web service
@@ -307,4 +307,4 @@ export default EmberObject.extend({
   pushMany(/* dimension, payload, options */) {
     assert('Operation not supported');
   }
-});
+}

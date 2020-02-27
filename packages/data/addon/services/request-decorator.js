@@ -5,7 +5,7 @@
 import Service from '@ember/service';
 import ReplaceNull from 'navi-data/request-decorators/replace-null';
 
-export default Service.extend({
+export default class RequestDecoratorService extends Service {
   /**
    * @method applyGlobalDecorators
    * @param {Object} request - object to modify
@@ -14,4 +14,4 @@ export default Service.extend({
   applyGlobalDecorators(request) {
     return ReplaceNull.replaceNullFilter(request);
   }
-});
+}

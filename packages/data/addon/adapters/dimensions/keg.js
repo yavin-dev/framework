@@ -16,21 +16,21 @@ import { getDefaultDataSourceName } from '../../utils/adapter';
 
 const KEG_NAMESPACE = 'dimension';
 
-export default EmberObject.extend({
+export default class KegDimensionAdapter extends EmberObject {
   /**
    * @property {Service} keg
    */
-  keg: undefined,
+  keg = undefined;
 
   /**
    * @property {Service} bard metadata
    */
-  bardMetadata: service(),
+  @service bardMetadata;
 
   /**
    * @property {Service} bard dimensions
    */
-  bardDimensions: service(),
+  @service bardDimensions;
 
   /**
    * Returns metadata for dimensionName
@@ -43,17 +43,18 @@ export default EmberObject.extend({
    */
   _getDimensionMetadata(dimensionName, namespace = getDefaultDataSourceName()) {
     return this.bardMetadata.getById('dimension', dimensionName, namespace);
-  },
+  }
 
   /**
    * @method init
    */
-  init() {
-    this._super(...arguments);
+  constructor() {
+    super(...arguments);
 
     //Instantiating the Keg service
     this.set('keg', getOwner(this).lookup('service:keg'));
-  },
+    // TODO why
+  }
 
   /**
    * @private
@@ -112,7 +113,7 @@ export default EmberObject.extend({
     return {
       rows: records
     };
-  },
+  }
 
   /**
    * @method all - Makes a request for all values for a given dimension
@@ -132,7 +133,7 @@ export default EmberObject.extend({
     return Promise.resolve(
       this._buildResponse(keg.all(`${KEG_NAMESPACE}/${namespace}.${dimension}`, { namespace }), options)
     );
-  },
+  }
 
   /**
    * @method getById - Finds a dimension value object by its id
@@ -143,7 +144,7 @@ export default EmberObject.extend({
    */
   getById(dimension, value, namespace = getDefaultDataSourceName()) {
     return this.keg.getById(`${KEG_NAMESPACE}/${namespace}.${dimension}`, value, namespace);
-  },
+  }
 
   /**
    * @method findById - Finds a dimension value object by its id
@@ -154,7 +155,7 @@ export default EmberObject.extend({
    */
   findById(dimension, value, namespace = getDefaultDataSourceName()) {
     return Promise.resolve(this.getById(dimension, value, namespace));
-  },
+  }
 
   /**
    * @method find - Find dimension values matching the query
@@ -190,7 +191,10 @@ export default EmberObject.extend({
       });
       stringQueries.forEach(query => (query.values = query.values.split(',')));
     }
-    assert("Only 'Array' query values are currently supported in Keg", andQueries.every(q => Array.isArray(q.values)));
+    assert(
+      "Only 'Array' query values are currently supported in Keg",
+      andQueries.every(q => Array.isArray(q.values))
+    );
 
     let keg = get(this, 'keg');
 
@@ -218,7 +222,7 @@ export default EmberObject.extend({
     return Promise.resolve(
       this._buildResponse(keg.getBy(`${KEG_NAMESPACE}/${namespace}.${dimension}`, query), options)
     );
-  },
+  }
 
   /**
    * Pushes an array of dimension records into the store
@@ -245,4 +249,4 @@ export default EmberObject.extend({
       )
     );
   }
-});
+}

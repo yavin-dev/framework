@@ -7,7 +7,7 @@
 
 import EmberObject from '@ember/object';
 
-export default EmberObject.extend({
+export default class BardFactsSerializer extends EmberObject {
   /**
    * @method normalize - normalizes the JSON response
    * @param response {Object} - JSON response object
@@ -21,4 +21,4 @@ export default EmberObject.extend({
       };
     }
   }
-});
+}

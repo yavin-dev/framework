@@ -7,13 +7,13 @@
 
 import Service from '@ember/service';
 import { inject as service } from '@ember/service';
-import { get, set } from '@ember/object';
+import { set } from '@ember/object';
 import { assert } from '@ember/debug';
 import { resolve, hash } from 'rsvp';
 
-export default Service.extend({
-  init() {
-    this._super(...arguments);
+export default class MetricParameterService extends Service {
+  constructor() {
+    super(...arguments);
     /**
      * @property {Object} _supportedHandlers List of parametery types supported.
      */
@@ -21,20 +21,20 @@ export default Service.extend({
       dimension: this._dimension.bind(this),
       enum: this._enum.bind(this)
     };
-  },
+  }
 
   /**
    * @private
    * @property {Ember.Service} dimensionService
    */
-  _dimensionService: service('bard-dimensions'),
+  @service('bard-dimensions') _dimensionService;
 
   /**
    * @returns {Array} list of parameter types this service supports
    */
   supportedTypes() {
     return Object.keys(this._supportedHandlers);
-  },
+  }
 
   /**
    * @method fetchAllValues
@@ -47,7 +47,7 @@ export default Service.extend({
     assert(`Fetching values of type: '${meta.type}' is not supported`, this.supportedTypes().includes(meta.type));
 
     return this._supportedHandlers[meta.type](meta);
-  },
+  }
 
   /**
    * @method fetchAllParams
@@ -58,9 +58,7 @@ export default Service.extend({
     const promises = {};
     const parameterObj = metricMeta.parameters || {};
     const supportedTypes = this.supportedTypes();
-    const parameters = Object.entries(parameterObj).filter(([, paramMeta]) =>
-      supportedTypes.includes(get(paramMeta, 'type'))
-    );
+    const parameters = Object.entries(parameterObj).filter(([, paramMeta]) => supportedTypes.includes(paramMeta.type));
 
     parameters.forEach(([paramType, paramMeta]) => {
       promises[paramType] = this.fetchAllValues(paramMeta);
@@ -83,7 +81,7 @@ export default Service.extend({
     });
 
     return promiseHash;
-  },
+  }
 
   /**
    * @private
@@ -92,8 +90,8 @@ export default Service.extend({
    * @returns {Promise} response with dimension values
    */
   _dimension({ dimensionName }) {
-    return get(this, '_dimensionService').all(dimensionName);
-  },
+    return this._dimensionService.all(dimensionName);
+  }
 
   /**
    * @private
@@ -104,4 +102,4 @@ export default Service.extend({
   _enum(meta) {
     return resolve(meta.values);
   }
-});
+}

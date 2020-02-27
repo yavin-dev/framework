@@ -5,13 +5,12 @@
 import Service from '@ember/service';
 import { inject as service } from '@ember/service';
 import { metricFormat } from 'navi-data/helpers/metric-format';
-import { get } from '@ember/object';
 
-export default Service.extend({
+export default class MetricNameService extends Service {
   /**
    * @property {Service} metricMeta
    */
-  metricMeta: service('bard-metadata'),
+  @service('bard-metadata') metricMeta;
 
   /**
    * @method getLongName
@@ -20,7 +19,7 @@ export default Service.extend({
    */
   getLongName(metricId, namespace) {
     return this.metricMeta.getMetaField('metric', metricId, 'longName', metricId, namespace);
-  },
+  }
 
   /**
    * @method getDisplayName
@@ -28,9 +27,9 @@ export default Service.extend({
    * @returns {String} formatted metric display name
    */
   getDisplayName(metricObject, namespace) {
-    let metricId = get(metricObject, 'metric'),
-      longName = this.getLongName(metricId, namespace);
+    const metricId = metricObject.metric;
+    const longName = this.getLongName(metricId, namespace);
 
     return metricFormat(metricObject, longName);
   }
-});
+}
