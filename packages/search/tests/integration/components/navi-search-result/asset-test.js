@@ -25,9 +25,6 @@ module('Integration | Component | navi-search-result-asset', function(hooks) {
   });
 
   test('it renders', async function(assert) {
-    // Set any properties with this.set('myProperty', 'value');
-    // Handle any actions with this.set('myAction', function(val) { ... });
-
     await render(hbs`<NaviSearchResult::Asset />`);
 
     assert.equal(this.element.textContent.trim(), '');
@@ -40,10 +37,12 @@ module('Integration | Component | navi-search-result-asset', function(hooks) {
     await render(hbs`<NaviSearchResult::Asset @data={{this.result.data}}/>`);
 
     assert.dom('li').exists({ count: 2 });
-    let results = findAll('li .navi-search-result__asset');
+    let results = findAll('li');
     let expectedResults = ['Revenue report 1', 'Revenue Dashboard'];
-    for (let i = 0; i < results.length; i++) {
-      assert.equal(results[i].textContent, expectedResults[i], 'Displayed correct search result.');
-    }
+    assert.deepEqual(
+      results.map(result => result.textContent.trim()),
+      expectedResults,
+      'Displayed correct search result.'
+    );
   });
 });

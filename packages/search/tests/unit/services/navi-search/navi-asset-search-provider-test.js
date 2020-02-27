@@ -32,7 +32,7 @@ module('Unit | Service | navi-asset-search-provider', function(hooks) {
       {
         filter: { reports: '(title==*Hyrule*,request==*clicks*);author==*navi_user*' }
       },
-      'Report constructs the correct query for the api with both filter parameters and author.'
+      'Constructs the correct report query for the api with both filter parameters and author.'
     );
   });
 
@@ -42,7 +42,7 @@ module('Unit | Service | navi-asset-search-provider', function(hooks) {
       {
         filter: { reports: '(title==*Hyrule*,request==*clicks*)' }
       },
-      'Report constructs the correct query for the api with filter parameters.'
+      'Constructs the correct report query for the api with filter parameters.'
     );
   });
 
@@ -52,7 +52,7 @@ module('Unit | Service | navi-asset-search-provider', function(hooks) {
       {
         filter: { reports: 'author==*navi_user*' }
       },
-      'Report constructs the correct query for the api with author.'
+      'Constructs the correct report query for the api with author.'
     );
   });
 
@@ -62,7 +62,7 @@ module('Unit | Service | navi-asset-search-provider', function(hooks) {
       {
         filter: { dashboards: '(title==*Hyrule*);author==*navi_user*' }
       },
-      'Report constructs the correct query for the api with both filter parameters and author.'
+      'Constructs the correct dashboard query for the api with both filter parameters and author.'
     );
   });
 
@@ -72,7 +72,7 @@ module('Unit | Service | navi-asset-search-provider', function(hooks) {
       {
         filter: { dashboards: '(title==*Hyrule*)' }
       },
-      'Report constructs the correct query for the api with filter parameters.'
+      'Constructs the correct report query for the api with filter parameters.'
     );
   });
 
@@ -82,7 +82,7 @@ module('Unit | Service | navi-asset-search-provider', function(hooks) {
       {
         filter: { dashboards: 'author==*navi_user*' }
       },
-      'Report constructs the correct query for the api with author.'
+      'Constructs the correct dashboard query for the api with author.'
     );
   });
 

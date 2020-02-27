@@ -35,12 +35,8 @@ module('Unit | Service | navi-search-provider', function(hooks) {
 
   test('search all providers', async function(assert) {
     let results = await service.search.perform('Revenue');
-    // Validate results for the sample search provider
-    let sampleResults = results.find(result => result.component === 'navi-search-result/sample');
     let expectedResults = ['Revenue result', 'Revenue success'];
-    for (let i = 0; i < sampleResults.data.length; i++) {
-      assert.equal(sampleResults.data[i], expectedResults[i], 'Returned result matches');
-    }
+    assert.deepEqual(results.find(result => result.component === 'navi-search-result/sample').data, expectedResults);
   });
 
   test('search with no results', async function(assert) {
