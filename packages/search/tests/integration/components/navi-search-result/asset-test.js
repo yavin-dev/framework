@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render } from '@ember/test-helpers';
+import { render, findAll } from '@ember/test-helpers';
 import { hbs } from 'ember-cli-htmlbars';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import Service from '@ember/service';
@@ -39,6 +39,11 @@ module('Integration | Component | navi-search-result-asset', function(hooks) {
 
     await render(hbs`<NaviSearchResult::Asset @data={{this.result.data}}/>`);
 
-    assert.dom('li').hasText('Revenue report 1', 'Showing search results');
+    assert.dom('li').exists({ count: 2 });
+    let results = findAll('li .navi-search-result__asset');
+    let expectedResults = ['Revenue report 1', 'Revenue Dashboard'];
+    for (let i = 0; i < results.length; i++) {
+      assert.equal(results[i].textContent, expectedResults[i]);
+    }
   });
 });

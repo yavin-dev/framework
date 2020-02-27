@@ -2,7 +2,9 @@
 <ul class='navi-search-results'>
   {{#each @data as |result|}}
     <li class='navi-search-result__asset'>
-      {{result.title}}
+      <LinkTo @route={{result.route}} @model={{result.modelId}}>
+        {{result.title}}
+      </LinkTo>
     </li>
   {{/each}}
 </ul>

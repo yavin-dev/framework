@@ -8,6 +8,7 @@
 import { inject as service } from '@ember/service';
 import NaviBaseSearchProviderService from '../navi-base-search-provider';
 import { keepLatestTask } from 'ember-concurrency-decorators';
+import { pluralize } from 'ember-inflector';
 
 export default class NaviAssetSearchProviderService extends NaviBaseSearchProviderService {
   /**
@@ -82,6 +83,18 @@ export default class NaviAssetSearchProviderService extends NaviBaseSearchProvid
   }
 
   /**
+   * @method _extractRoute – Extracts the route name of a given asset (report or dashboard)
+   * @private
+   * @param {Object} asset
+   * @returns {String} Route
+   */
+  _extractRoute(asset) {
+    const type = asset?.constructor?.modelName,
+      pluralType = pluralize(type);
+    return `${pluralType}.${type}`;
+  }
+
+  /**
    * @method search – Searches for reports and dashboards in the persistence layer
    * @override
    * @param {String} query
@@ -99,8 +112,14 @@ export default class NaviAssetSearchProviderService extends NaviBaseSearchProvid
       'dashboard',
       this._constructSearchQuery(dashboardParsedQuery.searchParams, dashboardParsedQuery.author, 'dashboards')
     );
+    let that = this;
     const data = yield Promise.all([reportPromise, dashboardPromise]).then(function(values) {
-      return values.flatMap(value => value.toArray());
+      return values
+        .flatMap(value => value.toArray())
+        .map(value => {
+          value.route = that._extractRoute(value);
+          return value;
+        });
     });
     return {
       component: this.displayComponentName,
