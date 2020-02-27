@@ -154,7 +154,7 @@ module('Unit | Adapters | Dimensions | Keg', function(hooks) {
 
     const result = await Adapter.findById('dimensionOne', '1');
     assert.deepEqual(
-      result.get('id'),
+      result.id,
       1,
       'findById() returns the expected response object for Test dimension, identifierField and query'
     );
