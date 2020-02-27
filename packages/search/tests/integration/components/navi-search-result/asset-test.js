@@ -43,7 +43,7 @@ module('Integration | Component | navi-search-result-asset', function(hooks) {
     let results = findAll('li .navi-search-result__asset');
     let expectedResults = ['Revenue report 1', 'Revenue Dashboard'];
     for (let i = 0; i < results.length; i++) {
-      assert.equal(results[i].textContent, expectedResults[i]);
+      assert.equal(results[i].textContent, expectedResults[i], 'Displayed correct search result.');
     }
   });
 });
