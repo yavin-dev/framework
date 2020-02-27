@@ -22,9 +22,10 @@ export default class NaviAssetSearchProviderService extends NaviBaseSearchProvid
   @service user;
 
   /**
-   * @property {String} displayComponentName
+   * @property {String} _displayComponentName
+   * @private
    */
-  displayComponentName = 'navi-search-result/asset';
+  _displayComponentName = 'navi-search-result/asset';
 
   /**
    * @method _parseQueryString – Parses string query to search parameters
@@ -122,7 +123,7 @@ export default class NaviAssetSearchProviderService extends NaviBaseSearchProvid
         });
     });
     return {
-      component: this.displayComponentName,
+      component: this._displayComponentName,
       title: 'Reports & Dashboards',
       data
     };
