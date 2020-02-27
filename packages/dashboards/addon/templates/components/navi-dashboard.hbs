@@ -1,4 +1,4 @@
-{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="navi-dashboard__breadcrumb">
   {{#if (feature-flag "enableDirectory")}}
     {{#link-to "directory.my-data" class="navi-dashboard__breadcrumb-link"}}Directory{{/link-to}}
@@ -132,7 +132,7 @@
               {{navi-widget
                 model=widget
                 layoutOptions=layout
-                data=(get dataForWidget widget.id)
+                taskInstance=(get taskByWidget widget.id)
                 canEdit=dashboard.canUserEdit
               }}
             {{/if}}

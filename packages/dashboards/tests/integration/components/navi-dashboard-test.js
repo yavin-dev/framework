@@ -55,7 +55,7 @@ module('Integration | Component | navi dashboard', function(hooks) {
   test('it renders', async function(assert) {
     assert.expect(4);
 
-    await render(hbs`{{navi-dashboard dashboard=dashboardModel 
+    await render(hbs`{{navi-dashboard dashboard=dashboardModel
       onUpdateFilter=(action onUpdateFilter)
       onRemoveFilter=(action onRemoveFilter)
       onAddFilter=(action onAddFilter)}}`);
@@ -75,15 +75,15 @@ module('Integration | Component | navi dashboard', function(hooks) {
       .hasAttribute('data-gs-width', '6', 'Widget width is based on layout');
   });
 
-  test('widget data', async function(assert) {
+  test('widget tasks', async function(assert) {
     assert.expect(2);
 
-    let dataForWidget = { 1: 'foo', 2: 'bar' };
-    this.set('dataForWidget', dataForWidget);
+    const taskByWidget = { 1: 'foo', 2: 'bar' };
+    this.set('taskByWidget', taskByWidget);
 
-    await render(hbs`{{navi-dashboard 
-      dashboard=dashboardModel 
-      dataForWidget=dataForWidget 
+    await render(hbs`{{navi-dashboard
+      dashboard=dashboardModel
+      taskByWidget=taskByWidget
       onUpdateFilter=(action onUpdateFilter)
       onRemoveFilter=(action onRemoveFilter)
       onAddFilter=(action onAddFilter)
@@ -96,8 +96,8 @@ module('Integration | Component | navi dashboard', function(hooks) {
       const emberId = el.getAttribute('id');
       const component = components[emberId].parentView;
       const { id } = component.model;
-      const { data } = component;
-      assert.equal(data, dataForWidget[id], 'widget gets matching model and data');
+      const { taskInstance } = component;
+      assert.equal(taskInstance, taskByWidget[id], 'widget gets matching model and task instance');
     });
   });
 
@@ -106,8 +106,8 @@ module('Integration | Component | navi dashboard', function(hooks) {
     const originalFeatureFlag = config.navi.FEATURES.enableDashboardExport;
 
     config.navi.FEATURES.enableDashboardExport = true;
-    await render(hbs`{{navi-dashboard 
-      dashboard=dashboardModel 
+    await render(hbs`{{navi-dashboard
+      dashboard=dashboardModel
       onUpdateFilter=(action onUpdateFilter)
       onRemoveFilter=(action onRemoveFilter)
       onAddFilter=(action onAddFilter)
@@ -116,7 +116,7 @@ module('Integration | Component | navi dashboard', function(hooks) {
     assert.dom('.action.export').isVisible('Dashboard export button should be visible');
 
     config.navi.FEATURES.enableDashboardExport = false;
-    await render(hbs`{{navi-dashboard dashboard=dashboardModel 
+    await render(hbs`{{navi-dashboard dashboard=dashboardModel
       onUpdateFilter=(action onUpdateFilter)
       onRemoveFilter=(action onRemoveFilter)
       onAddFilter=(action onAddFilter)
@@ -131,8 +131,8 @@ module('Integration | Component | navi dashboard', function(hooks) {
     const originalFeatureFlag = config.navi.FEATURES.enableScheduleDashboards;
 
     config.navi.FEATURES.enableScheduleDashboards = true;
-    await render(hbs`{{navi-dashboard 
-      dashboard=dashboardModel 
+    await render(hbs`{{navi-dashboard
+      dashboard=dashboardModel
       onUpdateFilter=(action onUpdateFilter)
       onRemoveFilter=(action onRemoveFilter)
       onAddFilter=(action onAddFilter)
@@ -141,8 +141,8 @@ module('Integration | Component | navi dashboard', function(hooks) {
     assert.dom('.action.schedule').isVisible('Dashboard schedule button should be visible');
 
     config.navi.FEATURES.enableScheduleDashboards = false;
-    await render(hbs`{{navi-dashboard 
-      dashboard=dashboardModel 
+    await render(hbs`{{navi-dashboard
+      dashboard=dashboardModel
       onUpdateFilter=(action onUpdateFilter)
       onRemoveFilter=(action onRemoveFilter)
       onAddFilter=(action onAddFilter)
@@ -157,8 +157,8 @@ module('Integration | Component | navi dashboard', function(hooks) {
 
     this.set('dashboardModel.isUserOwner', false);
 
-    await render(hbs`{{navi-dashboard 
-      dashboard=dashboardModel 
+    await render(hbs`{{navi-dashboard
+      dashboard=dashboardModel
       onUpdateFilter=(action onUpdateFilter)
       onRemoveFilter=(action onRemoveFilter)
       onAddFilter=(action onAddFilter)

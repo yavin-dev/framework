@@ -23,6 +23,7 @@
     "test:all": "ember try:each"
   },
   "dependencies": {
+    "@ember-decorators/component": "^6.1.1",
     "ember-ajax": "^5.0.0",
     "ember-auto-import": "^1.5.3",
     "ember-cli-babel": "^7.7.3",
@@ -56,6 +57,7 @@
   "devDependencies": {
     "@ember/jquery": "^0.6.0",
     "@ember/optional-features": "^1.1.0",
+    "babel-eslint": "^10.0.3",
     "broccoli-asset-rev": "^3.0.0",
     "ember-basic-dropdown-hover": "^0.6.0",
     "ember-cli": "~3.12.0",
