@@ -41,9 +41,8 @@ export default EmberObject.extend({
    * @param {String} namespace - namespace from keg
    * @returns {Object} metadata object
    */
-  _getDimensionMetadata(dimensionName, namespace) {
-    namespace = namespace || getDefaultDataSourceName();
-    return get(this, 'bardMetadata').getById('dimension', dimensionName, namespace);
+  _getDimensionMetadata(dimensionName, namespace=getDefaultDataSourceName()) {
+    return this.bardMetadata.getById('dimension', dimensionName, namespace);
   },
 
   /**
@@ -127,8 +126,8 @@ export default EmberObject.extend({
    * @returns {Promise} - Promise with the response
    */
   all(dimension, options = {}) {
-    let keg = get(this, 'keg'),
-      namespace = options.dataSourceName || getDefaultDataSourceName();
+    const { keg } = this;
+    const namespace = options.dataSourceName || getDefaultDataSourceName();
 
     return Promise.resolve(
       this._buildResponse(keg.all(`${KEG_NAMESPACE}/${namespace}.${dimension}`, { namespace }), options)
@@ -142,9 +141,8 @@ export default EmberObject.extend({
    * @param {String} namespace - namespace from the keg
    * @returns {Object} - The dimension value object
    */
-  getById(dimension, value, namespace) {
-    namespace = namespace || getDefaultDataSourceName();
-    return get(this, 'keg').getById(`${KEG_NAMESPACE}/${namespace}.${dimension}`, value);
+  getById(dimension, value, namespace=getDefaultDataSourceName()) {
+    return this.keg.getById(`${KEG_NAMESPACE}/${namespace}.${dimension}`, value);
   },
 
   /**
@@ -154,8 +152,7 @@ export default EmberObject.extend({
    * @param {String} namespace - namespace from the keg
    * @returns {Promise} - Promise with the response
    */
-  findById(dimension, value, namespace) {
-    namespace = namespace || getDefaultDataSourceName();
+  findById(dimension, value, namespace=getDefaultDataSourceName()) {
     return Promise.resolve(this.getById(dimension, value, namespace));
   },
 
@@ -233,8 +230,8 @@ export default EmberObject.extend({
    * @returns {Array} records that were pushed to the keg
    */
   pushMany(dimension, payload, options = {}) {
-    let namespace = options.dataSourceName || getDefaultDataSourceName(),
-      modelFactory = get(this, 'bardDimensions').getFactoryFor(dimension, namespace);
+    const namespace = options.dataSourceName || getDefaultDataSourceName(),
+    const modelFactory = this.bardDimensions.getFactoryFor(dimension, namespace);
 
     return get(this, 'keg').pushMany(
       `${KEG_NAMESPACE}/${namespace}.${dimension}`,

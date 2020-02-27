@@ -194,9 +194,8 @@ export default Service.extend({
    * @param {String} namespace - namespace to the keg
    * @returns {Object} - The bard dimension model object
    */
-  getById(dimension, value, namespace) {
-    namespace = namespace || getDefaultDataSourceName();
-    return get(this, '_kegAdapter').getById(dimension, value, namespace);
+  getById(dimension, value, namespace=getDefaultDataSourceName()) {
+    return this._kegAdapter.getById(dimension, value, namespace);
   },
 
   /**
@@ -207,8 +206,8 @@ export default Service.extend({
    * @returns {Promise} - Promise with the bard dimension model object
    */
   findById(dimension, value, options = {}) {
-    let kegAdapter = get(this, '_kegAdapter'),
-      namespace = options.dataSourceName || getDefaultDataSourceName();
+    const { _kegAdapter: kegAdapter } = this;
+    const namespace = options.dataSourceName || getDefaultDataSourceName();
 
     return kegAdapter.findById(dimension, value, namespace).then(recordFromKeg => {
       if (!isEmpty(recordFromKeg)) {
@@ -293,7 +292,7 @@ export default Service.extend({
       operator,
       values: [v]
     }));
-    return get(this, '_bardAdapter').find(dimension, andFilters, options);
+    return this._bardAdapter.find(dimension, andFilters, options);
   },
 
   /**
@@ -308,7 +307,7 @@ export default Service.extend({
   searchValue(dimension, query, options = {}) {
     let values = query.split(/,\s+|\s+/).map(v => v.trim());
 
-    return get(this, '_bardAdapter').search(dimension, { values }, options);
+    return this._bardAdapter.search(dimension, { values }, options);
   },
 
   /**
@@ -339,7 +338,8 @@ export default Service.extend({
       promise,
       dimensionRecords;
 
-    if (get(metadataService.getById('dimension', dimension, source), 'cardinality') <= LOAD_CARDINALITY) {
+    const { cardinality } = metadataService.getById('dimension', dimension, source);
+    if (cardinality <= LOAD_CARDINALITY) {
       promise = this.all(dimension, options).then(dimValues => {
         dimensionRecords = A(dimValues);
 
@@ -382,8 +382,7 @@ export default Service.extend({
    * @param namespace {String} - namespace of dimension
    * @returns {Object} dimension model factory
    */
-  getFactoryFor(dimensionName, namespace) {
-    namespace = namespace || getDefaultDataSourceName();
+  getFactoryFor(dimensionName, namespace=getDefaultDataSourceName()) {
     const key = `${namespace}.${dimensionName}`;
     if (MODEL_FACTORY_CACHE[key]) {
       return MODEL_FACTORY_CACHE[key];
@@ -396,9 +395,8 @@ export default Service.extend({
    * @param dimensionName {String} - name of the dimension
    * @returns {Object} dimension model factory
    */
-  _createDimensionModelFactory(dimensionName, namespace) {
-    namespace = namespace || getDefaultDataSourceName();
-    let metadata = get(this, 'metadataService').getById('dimension', dimensionName, namespace),
+  _createDimensionModelFactory(dimensionName, namespace=getDefaultDataSourceName()) {
+    const metadata = this.metadataService.getById('dimension', dimensionName, namespace),
       dimensionModel = getOwner(this).factoryFor('model:bard-dimension').class,
       identifierField = metadata.get('primaryKeyFieldName');
 

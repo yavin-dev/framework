@@ -55,9 +55,8 @@ export default EmberObject.extend({
    * @param {String} namespace - namespace of keg.
    * @returns {Object} metadata object
    */
-  _getDimensionMetadata(dimensionName, namespace) {
-    namespace = namespace || getDefaultDataSourceName();
-    return get(this, 'bardMetadata').getById('dimension', dimensionName, namespace);
+  _getDimensionMetadata(dimensionName, namespace=getDefaultDataSourceName()) {
+  return this.bardMetadata.getById('dimension', dimensionName, namespace);
   },
 
   /**

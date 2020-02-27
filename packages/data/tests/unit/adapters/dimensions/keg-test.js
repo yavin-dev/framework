@@ -161,7 +161,7 @@ module('Unit | Adapters | Dimensions | Keg', function(hooks) {
 
     const blockheadResult = await Adapter.findById('dimensionFour', '1', 'blockhead');
     assert.deepEqual(
-      blockheadResult.get('description'),
+      blockheadResult.description,
       'one',
       'findById() returns the expected response object for the blockhead sourced dimension'
     );
@@ -189,7 +189,7 @@ module('Unit | Adapters | Dimensions | Keg', function(hooks) {
     );
 
     assert.deepEqual(
-      Adapter.getById('dimensionFour', '1', 'blockhead').get('description'),
+      Adapter.getById('dimensionFour', '1', 'blockhead').description,
       'one',
       'getById() returns the expected response object from a dimension in another namespace'
     );
