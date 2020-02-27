@@ -186,7 +186,8 @@ export default Route.extend({
      * @param {Transition} transition
      */
     willTransition(transition) {
-      if (transition.targetName !== this.routeName) {
+      //don't cancel on filters updates, cancelation is in the `model` hook if model or filter values have changed
+      if (transition.targetName !== this.routeName && transition.targetName !== 'dashboards.dashboard.index') {
         this._cancelWidgetDataTasks();
       }
       return true;
