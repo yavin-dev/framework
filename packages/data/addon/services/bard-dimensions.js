@@ -227,7 +227,7 @@ export default class BardDimensionService extends Service {
       return BardDimensionArray.create({
         dimension,
         content: A(serializedRecords),
-        meta: get(rawPayload, 'meta'),
+        meta: rawPayload.meta,
         _dimensionsService: this
       });
     }
@@ -274,7 +274,7 @@ export default class BardDimensionService extends Service {
     let source = options.dataSourceName || getDefaultDataSourceName(),
       operator = this._getSearchOperator(dimension);
 
-    if (get(metadataService.getById('dimension', dimension, source), 'cardinality') > MAX_LOAD_CARDINALITY) {
+    if (metadataService.getById('dimension', dimension, source).cardinality > MAX_LOAD_CARDINALITY) {
       operator = 'in';
     }
 

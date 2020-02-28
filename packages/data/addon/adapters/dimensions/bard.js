@@ -8,7 +8,7 @@
 import { assert, warn } from '@ember/debug';
 import { inject as service } from '@ember/service';
 import { assign } from '@ember/polyfills';
-import EmberObject, { get } from '@ember/object';
+import EmberObject from '@ember/object';
 import { configHost, getDefaultDataSourceName } from '../../utils/adapter';
 import { serializeFilters } from '../bard-facts';
 
@@ -69,8 +69,8 @@ export default class BardDimensionAdapter extends EmberObject {
    * @returns {String} dimension value URL string
    */
   _buildUrl(dimension, path = 'values', options = {}) {
-    let host = configHost(options),
-      namespace = get(this, 'namespace');
+    const host = configHost(options);
+    const { namespace } = this;
 
     return `${host}/${namespace}/dimensions/${dimension}/${path}/`;
   }
@@ -203,7 +203,7 @@ export default class BardDimensionAdapter extends EmberObject {
       }
     }
 
-    return get(this, 'ajax').request(url, {
+    return this.ajax.request(url, {
       xhrFields: {
         withCredentials: true
       },

@@ -11,7 +11,7 @@ import { assert } from '@ember/debug';
 import Service, { inject as service } from '@ember/service';
 import { assign } from '@ember/polyfills';
 import { setOwner, getOwner } from '@ember/application';
-import { getWithDefault, get } from '@ember/object';
+import { getWithDefault } from '@ember/object';
 import { resolve } from 'rsvp';
 import { getDefaultDataSourceName } from '../utils/adapter';
 
@@ -63,7 +63,7 @@ export default class BardMetadataService extends Service {
     const dataSource = options.dataSourceName || getDefaultDataSourceName();
     //fetch metadata from WS if metadata not yet loaded
     if (!this.loadedDataSources.includes(dataSource)) {
-      return get(this, '_adapter')
+      return this._adapter
         .fetchAll(
           'table',
           assign(
@@ -76,9 +76,9 @@ export default class BardMetadataService extends Service {
         .then(payload => {
           //normalize payload
           payload.source = dataSource;
-          let metadata = get(this, '_serializer').normalize(payload);
+          let metadata = this._serializer.normalize(payload);
 
-          if (!(get(this, 'isDestroyed') || get(this, 'isDestroying'))) {
+          if (!(this.isDestroyed || this.isDestroying)) {
             //create metadata model objects and load into keg
             this._loadMetadataForType('table', metadata.tables, dataSource);
             this._loadMetadataForType('dimension', metadata.dimensions, dataSource);

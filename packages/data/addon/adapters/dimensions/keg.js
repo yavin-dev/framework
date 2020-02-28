@@ -9,8 +9,7 @@ import { A } from '@ember/array';
 import { assert, warn } from '@ember/debug';
 import { inject as service } from '@ember/service';
 import { assign } from '@ember/polyfills';
-import EmberObject, { get } from '@ember/object';
-import { getOwner } from '@ember/application';
+import EmberObject from '@ember/object';
 import { intersection } from 'lodash-es';
 import { getDefaultDataSourceName } from '../../utils/adapter';
 
@@ -20,7 +19,7 @@ export default class KegDimensionAdapter extends EmberObject {
   /**
    * @property {Service} keg
    */
-  keg = undefined;
+  @service keg;
 
   /**
    * @property {Service} bard metadata
@@ -43,17 +42,6 @@ export default class KegDimensionAdapter extends EmberObject {
    */
   _getDimensionMetadata(dimensionName, namespace = getDefaultDataSourceName()) {
     return this.bardMetadata.getById('dimension', dimensionName, namespace);
-  }
-
-  /**
-   * @method init
-   */
-  constructor() {
-    super(...arguments);
-
-    //Instantiating the Keg service
-    this.set('keg', getOwner(this).lookup('service:keg'));
-    // TODO why
   }
 
   /**
@@ -191,12 +179,7 @@ export default class KegDimensionAdapter extends EmberObject {
       });
       stringQueries.forEach(query => (query.values = query.values.split(',')));
     }
-    assert(
-      "Only 'Array' query values are currently supported in Keg",
-      andQueries.every(q => Array.isArray(q.values))
-    );
-
-    let keg = get(this, 'keg');
+    assert("Only 'Array' query values are currently supported in Keg", andQueries.every(q => Array.isArray(q.values)));
 
     let defaultQueryOptions = {
       field: this._getDimensionMetadata(dimension, namespace).get('primaryKeyFieldName'),
@@ -220,7 +203,7 @@ export default class KegDimensionAdapter extends EmberObject {
     }, {});
 
     return Promise.resolve(
-      this._buildResponse(keg.getBy(`${KEG_NAMESPACE}/${namespace}.${dimension}`, query), options)
+      this._buildResponse(this.keg.getBy(`${KEG_NAMESPACE}/${namespace}.${dimension}`, query), options)
     );
   }
 
@@ -237,7 +220,7 @@ export default class KegDimensionAdapter extends EmberObject {
     const namespace = options.dataSourceName || getDefaultDataSourceName();
     const modelFactory = this.bardDimensions.getFactoryFor(dimension, namespace);
 
-    return get(this, 'keg').pushMany(
+    return this.keg.pushMany(
       `${KEG_NAMESPACE}/${namespace}.${dimension}`,
       payload,
       assign(

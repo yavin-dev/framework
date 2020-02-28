@@ -30,8 +30,8 @@ export default class BardMetadataAdapter extends EmberObject {
    * @return {String} URL Path
    */
   _buildURLPath(type, id, options = {}) {
-    const host = configHost(options),
-      namespace = this.get('namespace');
+    const host = configHost(options);
+    const { namespace } = this;
     return `${host}/${namespace}/${pluralize(type)}/${id}`;
   }
 
@@ -64,7 +64,7 @@ export default class BardMetadataAdapter extends EmberObject {
       clientId = options.clientId || 'UI',
       timeout = options.timeout || 300000;
 
-    return this.get('ajax').request(url, {
+    return this.ajax.request(url, {
       xhrFields: {
         withCredentials: true
       },

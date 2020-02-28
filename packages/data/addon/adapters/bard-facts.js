@@ -59,7 +59,7 @@ export default class BardFactsAdapter extends EmberObject {
    * @return {String} dimensions path
    */
   _buildDimensionsPath(request /*options*/) {
-    let dimensions = array(get(request, 'dimensions'));
+    let dimensions = array(request.dimensions);
     return dimensions.length
       ? `/${array(dimensions.mapBy('dimension'))
           .uniq()
@@ -76,13 +76,9 @@ export default class BardFactsAdapter extends EmberObject {
    * @return {String} dateTime param value
    */
   _buildDateTimeParam(request) {
-    let intervals = get(request, 'intervals');
+    const { intervals } = request;
 
-    return intervals
-      .map(interval => {
-        return `${get(interval, 'start')}/${get(interval, 'end')}`;
-      })
-      .join(',');
+    return intervals.map(interval => `${interval.start}/${interval.end}`).join(',');
   }
 
   /**
@@ -94,7 +90,7 @@ export default class BardFactsAdapter extends EmberObject {
    * @return {String} metrics param value
    */
   _buildMetricsParam(request) {
-    return array((get(request, 'metrics') || []).map(canonicalizeMetric))
+    return array((request.metrics || []).map(canonicalizeMetric))
       .uniq()
       .join(',');
   }
@@ -108,12 +104,12 @@ export default class BardFactsAdapter extends EmberObject {
    * @return {String} filters param value
    */
   _buildFiltersParam(request) {
-    let filters = get(request, 'filters');
+    const { filters } = request;
 
     if (filters && filters.length) {
       // default field to 'id'
-      filters = filters.map(filter => ({ field: 'id', ...filter }));
-      return serializeFilters(filters);
+      const defaultedFilters = filters.map(filter => ({ field: 'id', ...filter }));
+      return serializeFilters(defaultedFilters);
     } else {
       return undefined;
     }
@@ -129,12 +125,12 @@ export default class BardFactsAdapter extends EmberObject {
    * @return {String} sort param value
    */
   _buildSortParam(request, aliasFunction = a => a) {
-    let sort = get(request, 'sort');
+    const { sort } = request;
 
     if (sort && sort.length) {
       return sort
         .map(sortMetric => {
-          let metric = aliasFunction(get(sortMetric, 'metric')),
+          let metric = aliasFunction(sortMetric.metric),
             direction = getWithDefault(sortMetric, 'direction', 'desc');
 
           assert(
@@ -160,7 +156,7 @@ export default class BardFactsAdapter extends EmberObject {
    * @return {String} having param value
    */
   _buildHavingParam(request, aliasFunction = a => a) {
-    let having = get(request, 'having');
+    const { having } = request;
 
     if (having && having.length) {
       return having
@@ -170,15 +166,13 @@ export default class BardFactsAdapter extends EmberObject {
             until: '4.0.0'
           });
 
-          let metric = aliasFunction(get(having, 'metric')),
-            operator = get(having, 'operator'),
-            value = array([get(having, 'value')]), //value is deprecated
-            values = array(get(having, 'values')),
-            valuesStr = array(values.concat(value))
-              .compact()
-              .join(',');
+          //value is deprecated
+          const { metric, operator, value, values } = having;
+          const valuesStr = array(values.concat(value))
+            .compact()
+            .join(',');
 
-          return `${metric}-${operator}[${valuesStr}]`;
+          return `${aliasFunction(metric)}-${operator}[${valuesStr}]`;
         })
         .join(',');
     } else {
@@ -196,9 +190,9 @@ export default class BardFactsAdapter extends EmberObject {
    * @return {String} URL Path
    */
   _buildURLPath(request, options = {}) {
-    const host = configHost(options),
-      namespace = get(this, 'namespace'),
-      table = get(request, 'logicalTable.table'),
+    const host = configHost(options);
+    const { namespace } = this;
+    const table = get(request, 'logicalTable.table'),
       timeGrain = get(request, 'logicalTable.timeGrain'),
       dimensions = this._buildDimensionsPath(request, options);
 
@@ -340,7 +334,7 @@ export default class BardFactsAdapter extends EmberObject {
       customHeaders = options.customHeaders;
     }
 
-    return get(this, 'ajax').request(url, {
+    return this.ajax.request(url, {
       xhrFields: {
         withCredentials: true
       },
