@@ -230,7 +230,7 @@ export default EmberObject.extend({
    * @returns {Array} records that were pushed to the keg
    */
   pushMany(dimension, payload, options = {}) {
-    const namespace = options.dataSourceName || getDefaultDataSourceName(),
+    const namespace = options.dataSourceName || getDefaultDataSourceName();
     const modelFactory = this.bardDimensions.getFactoryFor(dimension, namespace);
 
     return get(this, 'keg').pushMany(
