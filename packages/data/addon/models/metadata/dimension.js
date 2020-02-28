@@ -1,68 +1,46 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { A as array } from '@ember/array';
-import EmberObject, { computed, get } from '@ember/object';
-import PromiseProxyMixin from '@ember/object/promise-proxy-mixin';
-import ObjectProxy from '@ember/object/proxy';
+import { get } from '@ember/object';
 import { inject as service } from '@ember/service';
+import Column from './column';
 
-let Model = EmberObject.extend({
+export default class Dimension extends Column {
+  /**
+   * @static
+   * @property {String} identifierField
+   */
+  static identifierField = 'id';
+
   /**
    * @property {Ember.Service} metadata
    */
-  metadata: service('bard-metadata'),
-
-  /**
-   * @property {String} type
-   */
-  type: 'dimension',
-
-  /**
-   * @property {String} name
-   */
-  name: undefined,
-
-  /**
-   * @property {String} longName
-   */
-  longName: undefined,
-
-  /**
-   * @property {String} category
-   */
-  category: undefined,
-
-  /**
-   * @property {String} cardinality
-   */
-  cardinality: undefined,
-
-  /**
-   * @property {String} datatype
-   */
-  datatype: undefined,
-
-  /**
-   * @property {Array} Array of field objects
-   */
-  fields: undefined,
+  @service('bard-metadata')
+  metadata;
 
   /**
    * @property {String} primaryKeyTag - name of the primary key tag
    */
-  primaryKeyTag: 'primaryKey',
+  primaryKeyTag = 'primaryKey';
 
   /**
    * @property {String} description - name of the description tag
    */
-  descriptionTag: 'description',
+  descriptionTag = 'description';
 
   /**
    * @property {String} idTag - name of the searchable id tag
    */
-  idTag: 'id',
+  idTag = 'id';
+
+  /**
+   * @property {CardinalitySize} cardinality - the cardinality size of the table the dimension is sourced from
+   */
+  get cardinality() {
+    return this.sourceColumn.table.cardinalitySize;
+  }
 
   /**
    * Fetches tags for a given field name
@@ -76,7 +54,7 @@ let Model = EmberObject.extend({
       field = fields.findBy('name', fieldName) || {};
 
     return get(field, 'tags') || [];
-  },
+  }
 
   /**
    * Fetches fields for a given tag
@@ -92,50 +70,40 @@ let Model = EmberObject.extend({
       let tags = array(get(field, 'tags'));
       return tags.includes(tag);
     });
-  },
+  }
 
   /**
    * @property {String} primaryKeyFieldName
    */
-  primaryKeyFieldName: computed(function() {
+  get primaryKeyFieldName() {
     let tag = get(this, 'primaryKeyTag'),
       field = this.getFieldsForTag(tag)[0] || {};
     return get(field, 'name') || 'id';
-  }),
+  }
 
   /**
    * @property {String} descriptionFieldName
    */
-  descriptionFieldName: computed(function() {
+  get descriptionFieldName() {
     let tag = get(this, 'descriptionTag'),
       field = this.getFieldsForTag(tag)[0] || {};
     return get(field, 'name') || 'desc';
-  }),
+  }
 
   /**
    * @property {String} idFieldName
    */
-  idFieldName: computed(function() {
+  get idFieldName() {
     let tag = get(this, 'idTag'),
       field = this.getFieldsForTag(tag)[0] || {};
     return get(field, 'name') || get(this, 'primaryKeyFieldName');
-  }),
+  }
 
   /**
-   * @property {Promise} extended
+   * @property {Promise} extended - extended metadata for the dimension that isn't provided in initial table fullView metadata load
    */
-  extended: computed(function() {
-    const { metadata, name, type } = this;
-    return ObjectProxy.extend(PromiseProxyMixin).create({
-      promise: metadata.fetchById(type, name)
-    });
-  })
-});
-
-//factory level properties
-export default Model.reopenClass({
-  /**
-   * @property {String} identifierField - used by the keg as identifierField
-   */
-  identifierField: 'name'
-});
+  get extended() {
+    const { metadata, name } = this;
+    return metadata.findById('metric', name);
+  }
+}

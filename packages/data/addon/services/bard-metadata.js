@@ -84,6 +84,7 @@ export default Service.extend({
             //create metadata model objects and load into keg
             this._loadMetadataForType('table', metadata.tables, dataSource);
             this._loadMetadataForType('dimension', metadata.dimensions, dataSource);
+            this._loadMetadataForType('timeDimension', metadata.timeDimensions, dataSource);
             this._loadMetadataForType('metric', metadata.metrics, dataSource);
 
             this.loadedDataSources.push(dataSource);
@@ -102,11 +103,13 @@ export default Service.extend({
    * @param {Array} metadataObjects - array of metadata objects
    */
   _loadMetadataForType(type, metadataObjects, namespace) {
-    let metadata = metadataObjects.map(data => {
-      let payload = assign({}, data),
-        owner = getOwner(this);
+    const owner = getOwner(this);
+    // const typeFactory = owner.factoryFor(`model:metadata/${type}`);
+    const metadata = metadataObjects.map(data => {
+      const payload = assign({}, data);
+
       setOwner(payload, owner);
-      return owner.factoryFor(`model:metadata/${type}`).create(payload);
+      return payload;
     });
 
     get(this, '_keg').pushMany(`metadata/${type}`, metadata, { namespace });
