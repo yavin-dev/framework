@@ -1,12 +1,4 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{#if (feature-flag "enableRequestPreview")}}
-  <VisualizationSelector
-    @report={{@report}}
-    @validVisualizations={{this.validVisualizations}}
-    @currentVisualization={{this.currentView}}
-    @onVisualizationTypeUpdate={{this.onVisualizationTypeUpdate}}
-  />
-{{/if}}
 <div class="report-view__visualization-main">
   {{#if hasNoData}}
     <div class="report-view__visualization-no-results">
@@ -14,22 +6,13 @@
     </div>
   {{else}}
     <div class="report-view__visualization-header">
-       {{#if (feature-flag "enableRequestPreview")}}
-        <span class="report-view__visualization-header__data-toggle">
-          <h3 class="report-view__visualization-header__title">
-            Data
-          </h3>
-          <NaviIcon @icon="angle-down" class="report-view__visualization-header__data-toggle-icon"/>
-        </span>
-      {{else}}
-        <VisualizationToggle
-            @report={{@report}}
-            @validVisualizations={{this.validVisualizations}}
-            @onVisualizationTypeUpdate={{this.onVisualizationTypeUpdate}}
-        />
-      {{/if}}
+      <VisualizationToggle
+          @report={{@report}}
+          @validVisualizations={{this.validVisualizations}}
+          @onVisualizationTypeUpdate={{this.onVisualizationTypeUpdate}}
+      />
       {{#if hasRequestRun}}
-        {{#unless (or this.isEditingVisualization this.showRequestPreview)}}
+        {{#unless (or this.isEditingVisualization)}}
           <div class="clickable report-view__visualization-edit-btn" role="button" {{on "click" this.toggleEditVisualization}}>
             Edit {{this.visualizationTypeLabel}}
             <NaviIcon @icon="pencil"/>
@@ -39,31 +22,19 @@
         <div class="report-view__info-text"><NaviIcon @icon="exclamation-circle"/> Run request to update {{this.visualizationTypeLabel}}</div>
       {{/if}}
     </div>
-    {{#if this.showRequestPreview}}
-      <NaviRequestPreview
-        @request={{@report.request}}
-        @visualization={{@report.visualization}}
-        @onRemoveMetric={{update-report-action "REMOVE_METRIC_FRAGMENT"}}
-        @onRemoveDimension={{update-report-action "REMOVE_DIMENSION_FRAGMENT"}}
-        @onRemoveTimeGrain={{update-report-action "REMOVE_TIME_GRAIN"}}
-        @onAddSort={{update-report-action "UPSERT_SORT"}}
-        @onRemoveSort={{update-report-action "REMOVE_SORT"}}
-      />
-    {{else}}
-      <ReportVisualization
-        class="report-view__visualization"
-        @report={{@report}}
-        @response={{@response}}
-        @container={{this}}
-        @annotationData={{annotationData}}
-        @isEditing={{and this.isEditingVisualization @hasRequestRun}}
-        @onUpdateReport={{pipe
-          (route-action "onUpdateReport")
-          (route-action "validate" @report)
-          (route-action "runReport" @report)
-        }}
-      />
-    {{/if}}
+    <ReportVisualization
+      class="report-view__visualization"
+      @report={{@report}}
+      @response={{@response}}
+      @container={{this}}
+      @annotationData={{this.annotationData}}
+      @isEditing={{and this.isEditingVisualization @hasRequestRun}}
+      @onUpdateReport={{pipe
+        (route-action "onUpdateReport")
+        (route-action "validate" @report)
+        (route-action "runReport" @report)
+      }}
+    />
     <MissingIntervalsWarning
       @response={{this.response}}
       @onDetailsToggle={{fn this.resizeVisualization this.warningAnimationDuration}}
