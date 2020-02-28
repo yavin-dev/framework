@@ -14,8 +14,10 @@ import { layout as templateLayout, tagName } from '@ember-decorators/component';
 import layout from '../../templates/components/filter-values/lookback-input';
 import { computed, get, action } from '@ember/object';
 import Duration from 'navi-core/utils/classes/duration';
+import Interval from 'navi-core/utils/classes/interval';
 import { isEmpty } from '@ember/utils';
 import { MONTHS_IN_QUARTER } from '../filter-builders/date-time';
+import config from 'ember-get-config';
 
 @templateLayout(layout)
 @tagName('')
@@ -48,6 +50,23 @@ class LookbackInput extends BaseIntervalComponent {
   }
 
   /**
+   * @property {Array} predefinedRanges - list of ranges based on time grain supported look backs
+   */
+  @computed('dateTimePeriod', 'interval')
+  get ranges() {
+    const { dateTimePeriod } = this;
+    const predefinedRanges = get(config, `navi.predefinedIntervalRanges.${dateTimePeriod}`) || [];
+
+    return predefinedRanges.map(lookBack => {
+      const interval = new Interval(new Duration(lookBack), 'current');
+      return {
+        isActive: interval.isEqual(this.interval),
+        interval
+      };
+    });
+  }
+
+  /**
    * @action setLookback
    * @param {InputEvent} event - new interval to set in filter
    */
@@ -57,7 +76,12 @@ class LookbackInput extends BaseIntervalComponent {
       return;
     }
     const lookbackDuration = this.lookbackToDuration(value, this.dateTimePeriod);
-    this.setInterval(lookbackDuration, 'current');
+    return this.setInterval(lookbackDuration, 'current');
+  }
+
+  @action
+  setPresetInterval(interval) {
+    return this.setInterval(interval._start, interval._end, false);
   }
 }
 

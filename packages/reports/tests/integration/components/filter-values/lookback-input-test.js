@@ -1,10 +1,12 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, fillIn, triggerEvent } from '@ember/test-helpers';
+import { render, fillIn, triggerEvent, click } from '@ember/test-helpers';
 import { A as arr } from '@ember/array';
 import hbs from 'htmlbars-inline-precompile';
 import Interval from 'navi-core/utils/classes/interval';
 import { getDateRangeFormat } from './date-range-test';
+import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
+import $ from 'jquery';
 
 module('Integration | Component | filter values/lookback input', function(hooks) {
   setupRenderingTest(hooks);
@@ -59,5 +61,60 @@ module('Integration | Component | filter values/lookback input', function(hooks)
 
     assert.dom('.filter-values--lookback-input').doesNotExist('The lookback input does not display when collapsed');
     assert.dom().hasText(`4 days (${getDateRangeFormat(this)})`, 'The lookback is rendered correctly when collapsed');
+  });
+
+  test('selecting preset values', async function(assert) {
+    assert.expect(9);
+
+    this.set('onUpdateFilter', filter => {
+      this.set('filter', { values: arr([filter.interval]) });
+    });
+
+    // Set to 7
+    await clickTrigger('.filter-values--lookback-input');
+    await click($('.navi-basic-dropdown-option:contains(7)')[0]);
+    assert.dom('.filter-values--lookback-input__value').hasValue('7', 'Clicking last 7 days changes input value to 7');
+
+    // Only 7 is selected
+    await clickTrigger('.filter-values--lookback-input');
+    assert
+      .dom($('.navi-basic-dropdown-option:contains(7)')[0])
+      .hasAttribute('aria-selected', 'true', '7 is selected after being clicked');
+    assert
+      .dom($('.navi-basic-dropdown-option:contains(30)')[0])
+      .hasAttribute('aria-selected', 'false', 'only 7 is selected');
+    await clickTrigger('.filter-values--lookback-input');
+
+    // Set to 30
+    await clickTrigger('.filter-values--lookback-input');
+    await click($('.navi-basic-dropdown-option:contains(30)')[0]);
+    assert
+      .dom('.filter-values--lookback-input__value')
+      .hasValue('30', 'Clicking last 30 days changes input value to 30');
+
+    // Only 30 is selected
+    await clickTrigger('.filter-values--lookback-input');
+    assert
+      .dom($('.navi-basic-dropdown-option:contains(30)')[0])
+      .hasAttribute('aria-selected', 'true', '30 is selected after being clicked');
+    assert
+      .dom($('.navi-basic-dropdown-option:contains(7)')[0])
+      .hasAttribute('aria-selected', 'false', '7 is not selected after switching away');
+    await clickTrigger('.filter-values--lookback-input');
+
+    // type in 14
+    await fillIn('.filter-values--lookback-input__value', 14);
+    await blur('.filter-values--lookback-input__value');
+    assert.dom('.filter-values--lookback-input__value').hasValue('14', 'typing in 14 works');
+
+    // Only 14 is selected
+    await clickTrigger('.filter-values--lookback-input');
+    assert
+      .dom($('.navi-basic-dropdown-option:contains(14)')[0])
+      .hasAttribute('aria-selected', 'true', '14 is selected in the dropdown after being typed in');
+    assert
+      .dom($('.navi-basic-dropdown-option:contains(30)')[0])
+      .hasAttribute('aria-selected', 'false', '30 is not selected after switching away');
+    await clickTrigger('.filter-values--lookback-input');
   });
 });

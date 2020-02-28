@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Navi specific styles for ember-power-select
@@ -29,15 +29,12 @@
     color: @navi-blue-300;
   }
 
+  &[aria-selected='false']:hover,
   &[aria-selected='false'][aria-current='true'],
   &:not([aria-selected=''])[aria-current=''] {
     background-color: @navi-lightest-gray;
     color: @navi-gray-800;
   }
-}
-
-.ember-basic-dropdown-content {
-  z-index: 10;
 }
 
 .ember-power-select-group {
