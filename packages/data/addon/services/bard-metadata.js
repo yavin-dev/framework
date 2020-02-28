@@ -214,7 +214,7 @@ export default class BardMetadataService extends Service {
       return defaultIfNone;
     }
     return getWithDefault(meta, field, defaultIfNone);
-  },
+  }
 
   /**
    * Convenience method to get namespace of a table

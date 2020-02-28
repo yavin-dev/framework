@@ -167,8 +167,8 @@ export default class BardFactsAdapter extends EmberObject {
           });
 
           //value is deprecated
-          const { metric, operator, value, values } = having;
-          const valuesStr = array(values.concat(value))
+          const { metric, operator, value, values = [] } = having;
+          const valuesStr = array(values.concat(...[value]))
             .compact()
             .join(',');
 
