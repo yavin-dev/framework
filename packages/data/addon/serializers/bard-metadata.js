@@ -81,7 +81,7 @@ export default EmberObject.extend({
                 newMetric.metricFunctionId = metricFunctionId;
               } else if (!metricFunctionsProvided && parameters) {
                 const functionArguments = this._constructFunctionArguments(parameters);
-                const metricFunction = this._getMetricFunctionId(metricFunctions, functionArguments);
+                const metricFunction = this._getMetricFunction(metricFunctions, functionArguments);
                 newMetric.metricFunctionId = metricFunction.id;
               }
               return newMetric;
@@ -125,15 +125,15 @@ export default EmberObject.extend({
 
   /**
    * @private
-   * @method _getMetricFunctionId
+   * @method _getMetricFunction
    * @param {Object[]} metricFunctions - the current dictionary of metric functions
    * @param {Object[]} functionArgs - the set of function argument objects to find or create a metric function for
    * @returns {Object} the existing metric function with the same arguments or a new metric function with passed in arguments
    */
-  _getMetricFunctionId(metricFunctions, functionArgs) {
+  _getMetricFunction(metricFunctions, functionArgs) {
     const existingMetricFunction = metricFunctions.find(func => {
-      const metricFunctionArgumentIds = func.arguments.map(metricFunctionArg => metricFunctionArg.id);
-      return functionArgs.every(arg => metricFunctionArgumentIds.includes(arg.id));
+      const metricFunctionArgumentIds = func.arguments.map(metricFunctionArg => metricFunctionArg.id).join(',');
+      return functionArgs.map(arg => arg.id).join(',') === metricFunctionArgumentIds;
     });
 
     if (existingMetricFunction) {

@@ -334,6 +334,39 @@ const Payload = {
       source: 'dummy',
       tableId: 'secondTable'
     }
+  ],
+  FunctionArguments = [
+    {
+      id: 'currency',
+      name: 'currency',
+      valueType: 'TEXT',
+      type: 'ref',
+      expression: 'displayCurrency',
+      values: null,
+      defaultValue: 'USD'
+    },
+    {
+      id: 'type',
+      name: 'type',
+      valueType: 'TEXT',
+      type: 'ref',
+      expression: 'self',
+      values: [
+        {
+          id: 'l',
+          description: 'Left'
+        },
+        {
+          id: 'r',
+          description: 'Right'
+        },
+        {
+          id: 'm',
+          description: 'Middle'
+        }
+      ],
+      defaultValue: 'l'
+    }
   ];
 
 let Serializer;
@@ -582,40 +615,54 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
 
     assert.deepEqual(
       Serializer._constructFunctionArguments(parameters),
-      [
-        {
-          id: 'currency',
-          name: 'currency',
-          valueType: 'TEXT',
-          type: 'ref',
-          expression: 'displayCurrency',
-          values: null,
-          defaultValue: 'USD'
-        },
-        {
-          id: 'type',
-          name: 'type',
-          valueType: 'TEXT',
-          type: 'ref',
-          expression: 'self',
-          values: [
-            {
-              id: 'l',
-              description: 'Left'
-            },
-            {
-              id: 'r',
-              description: 'Right'
-            },
-            {
-              id: 'm',
-              description: 'Middle'
-            }
-          ],
-          defaultValue: 'l'
-        }
-      ],
+      FunctionArguments,
       'The parameter objects are successfully turned into metric function arguments'
+    );
+  });
+
+  test('_getMetricFunction', function(assert) {
+    assert.expect(10);
+
+    const metricFunctions = [];
+
+    const result = Serializer._getMetricFunction(metricFunctions, FunctionArguments);
+    assert.deepEqual(
+      Object.keys(result),
+      ['id', 'name', 'description', 'arguments'],
+      'Serialized metric function object is returned in the right shape'
+    );
+    assert.ok(uuidRegex.test(result.id), 'A metric function with a uuid as its id is returned');
+    assert.deepEqual(
+      metricFunctions,
+      [result],
+      'The newly created metric function is pushed to the metric functions dictionary'
+    );
+    assert.deepEqual(result.arguments, FunctionArguments, 'The newly created metric function contains the arguments');
+
+    const sameResult = Serializer._getMetricFunction(metricFunctions, FunctionArguments);
+    assert.deepEqual(
+      sameResult,
+      result,
+      'Passing the same arguments as an existing metric function returns the existing metric function'
+    );
+    assert.deepEqual(metricFunctions, [result], 'No new metric functions should have been created');
+
+    const distinctResult = Serializer._getMetricFunction(metricFunctions, [FunctionArguments[0]]);
+    assert.deepEqual(
+      metricFunctions,
+      [result, distinctResult],
+      'A new metric function is added to the dictionary when there is no existing metric function with the exact same arguments'
+    );
+    assert.ok(uuidRegex.test(distinctResult.id), 'New metric function with a uuid as its id is returned');
+    assert.deepEqual(
+      Object.keys(distinctResult),
+      ['id', 'name', 'description', 'arguments'],
+      'Serialized metric function object is returned in the right shape'
+    );
+    assert.deepEqual(
+      distinctResult.arguments,
+      [FunctionArguments[0]],
+      'The new metric function has the expected arguments'
     );
   });
 });
