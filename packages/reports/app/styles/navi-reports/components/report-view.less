@@ -38,8 +38,14 @@
     background-color: @navi-modal-gray;
     border-left: 1px solid @navi-lighter-gray;
     display: flex;
+    flex: 1;
     flex-flow: column;
     width: 300px;
+  }
+
+  &__animation-container {
+    display: flex;
+    overflow: hidden;
   }
 
   &__visualization-edit-btn {
@@ -80,7 +86,7 @@
     flex-flow: column;
     flex: 1;
     min-width: 0;
-    padding: 0 20px 10px 0;
+    min-height: 100px; // fyi, vertical collection needs > 0 height
   }
 
   &__visualization-no-results {

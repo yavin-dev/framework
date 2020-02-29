@@ -18,6 +18,7 @@ import {
   getTimeGrainCheckbox,
   getAllSelected
 } from 'navi-reports/test-support/report-builder';
+import { animationsSettled } from 'ember-animated/test-support';
 
 // Regex to check that a string ends with "{uuid}/view"
 const TempIdRegex = /\/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\/view$/;
@@ -1046,26 +1047,23 @@ module('Acceptance | Navi Report', function(hooks) {
 
     /* == Verify visualization config is not shown == */
 
-    assert.notOk(
-      !!findAll('.report-view__visualization-edit').length,
-      'visualization config is closed on initial report load'
-    );
+    assert
+      .dom('.report-view__visualization-edit')
+      .doesNotExist('visualization config is closed on initial report load');
 
     /* == Open config == */
     await click('.report-view__visualization-edit-btn');
+    await animationsSettled();
 
-    assert.ok(
-      !!findAll('.report-view__visualization-edit').length,
-      'visualization config is opened after clicking edit button'
-    );
+    assert.dom('.report-view__visualization-edit').exists('visualization config is opened after clicking edit button');
 
     /* == Close config == */
     await click('.report-view__visualization-edit-btn');
+    await animationsSettled();
 
-    assert.notOk(
-      !!findAll('.report-view__visualization-edit').length,
-      'visualization config is closed after clicking edit button'
-    );
+    assert
+      .dom('.report-view__visualization-edit')
+      .doesNotExist('visualization config is closed after clicking edit button');
   });
 
   test('Disabled Visualization Edit', async function(assert) {
@@ -1074,6 +1072,7 @@ module('Acceptance | Navi Report', function(hooks) {
     // Visit report and make a change that invalidates visualization
     await visit('/reports/1/view');
     await clickItem('dimension', 'Product Family');
+    await animationsSettled();
 
     assert.dom('.report-view__visualization-edit-btn').isNotVisible('Edit visualization button is no longer visible');
 
@@ -1083,6 +1082,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     // Run report
     await click('.navi-report__run-btn');
+    await animationsSettled();
 
     assert
       .dom('.report-view__visualization-edit-btn')
@@ -1096,6 +1096,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     await visit('/reports/2/view');
     await click('.report-view__visualization-edit-btn');
+    await animationsSettled();
 
     assert
       .dom('.report-view__visualization-edit')
@@ -1118,6 +1119,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     // Make a change that invalidates visualization
     await clickItem('dimension', 'Product Family');
+    await animationsSettled();
 
     assert
       .dom('.report-view__visualization-edit')
@@ -1133,6 +1135,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     // Run report
     await click('.navi-report__run-btn');
+    await animationsSettled();
 
     assert
       .dom('.report-view__visualization-edit-btn')
