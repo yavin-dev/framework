@@ -48,7 +48,6 @@
     "ember-transition-helper": "^1.0.0",
     "ember-truth-helpers": "^2.1.0",
     "ember-uuid": "^1.0.1",
-    "liquid-fire": "^0.31.0",
     "lodash-es": "^4.17.11",
     "navi-core": "0.2.0",
     "navi-data": "0.2.0",
