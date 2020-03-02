@@ -1,6 +1,8 @@
 /**
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ *
+ * A collection of function arguments that has a one to many relationship to metrics
  */
 import { getOwner } from '@ember/application';
 import { tracked } from '@glimmer/tracking';

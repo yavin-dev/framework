@@ -6,7 +6,7 @@
 import { A as arr } from '@ember/array';
 import EmberObject from '@ember/object';
 
-class Column extends EmberObject {
+export default class Column extends EmberObject {
   /**
    * @property {String} identifierField - field used as the id
    */
@@ -52,5 +52,3 @@ class Column extends EmberObject {
    */
   tags = arr([]);
 }
-
-export default Column;

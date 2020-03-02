@@ -18,7 +18,7 @@ export default class Metric extends Column {
   metadata;
 
   /**
-   * @property {Format} defaultFormat
+   * @property {String} defaultFormat - e.g. decimal for numbers
    */
   defaultFormat;
 
