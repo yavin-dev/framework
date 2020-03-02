@@ -8,15 +8,33 @@
     {{/if}}
   {{else}}
     <div class="filter-values--lookback-input" ...attributes>
-      <input
-        class="filter-values--lookback-input__value
-          {{if filter.validations.attrs.values.isInvalid "filter-values--lookback-input--error"}}"
-        value={{this.lookback}}
-        placeholder={{capitalize (concat this.calendarDateTimePeriod "s")}}
-        type="number"
-        min="1"
-        {{on "input" this.setLookback}}
-      >
+      <BasicDropdown @matchTriggerWidth={{true}} as |dd|>
+        <dd.trigger>
+          <input
+            class="filter-values--lookback-input__value
+              {{if filter.validations.attrs.values.isInvalid "filter-values--lookback-input--error"}}"
+            value={{this.lookback}}
+            placeholder={{capitalize (concat this.calendarDateTimePeriod "s")}}
+            type="number"
+            min="1"
+            {{on "input" this.setLookback}}
+          >
+        </dd.trigger>
+        <dd.content @class="navi-basic-dropdown-content">
+          <ul>
+            {{#each this.ranges as |range|}}
+              <li
+                role="button"
+                class="navi-basic-dropdown-option"
+                aria-selected="{{if range.isActive "true" "false"}}"
+                {{on "click" (queue (fn this.setPresetInterval range.interval) dd.actions.close)}}
+              >
+                {{range.text}}
+              </li>
+            {{/each}}
+          </ul>
+        </dd.content>
+      </BasicDropdown>
       <span class="filter-values--lookback-input__label">{{dateDescription}}</span>
     </div>
   {{/if}}
