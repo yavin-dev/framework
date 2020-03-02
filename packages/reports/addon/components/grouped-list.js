@@ -53,7 +53,7 @@ class GroupedListComponent extends Component {
     return parentSelector;
   }
 
-  /*
+  /**
    * @property {Object} groupedItems - object with keys as group names and the values as items in the group
    */
   @computed('items', 'groupByField', 'sortByField')
@@ -71,6 +71,9 @@ class GroupedListComponent extends Component {
     return grouped;
   }
 
+  /**
+   * @property {Array<Object>} - list of all groups and the items of opened groups
+   */
   @computed('groupedItems', 'groupConfigs', 'shouldOpenAllGroups')
   get flatItems() {
     const { groupedItems, shouldOpenAllGroups, groupConfigs } = this;
@@ -86,6 +89,13 @@ class GroupedListComponent extends Component {
     }, []);
   }
 
+  /**
+   * Toggles the open state for a given group
+   * @action
+   * @method toggleOpen
+   * @param {String} group - the name of the group to toggle the open state
+   * @returns {void}
+   */
   @action
   toggleOpen(group) {
     const { groupConfigs } = this;
