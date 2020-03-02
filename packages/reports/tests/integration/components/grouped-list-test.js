@@ -1,7 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render } from '@ember/test-helpers';
-import $ from 'jquery';
+import { render, findAll, click, settled } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 module('Integration | Component | grouped list', function(hooks) {
@@ -28,106 +27,74 @@ module('Integration | Component | grouped list', function(hooks) {
   test('it renders', async function(assert) {
     assert.expect(1);
 
-    await render(hbs`{{grouped-list}}`);
+    await render(hbs`<GroupedList @containerSelector="body" />`);
 
-    assert.ok($('.grouped-list').is(':visible'), 'the grouped-list component is rendered');
+    assert.dom('.grouped-list').exists('the grouped-list component is rendered');
   });
 
   test('groups', async function(assert) {
     assert.expect(4);
 
     await render(hbs`
-          {{#grouped-list
-              items=items
-              shouldOpenAllGroups=shouldOpenAllGroups
-              groupByField='field'
-              as | item |
-          }}
-              {{item.val}}
-          {{/grouped-list}}
-      `);
+      <GroupedList
+        @items={{this.items}}
+        @shouldOpenAllGroups={{this.shouldOpenAllGroups}}
+        @groupByField="field"
+        @containerSelector="body"
+        as | item |
+      >
+        {{item.val}}
+      </GroupedList>
+    `);
 
+    const groups = findAll('.grouped-list__group-header-content');
     assert.deepEqual(
-      $('.grouped-list__group-header')
-        .toArray()
-        .map(el =>
-          $(el)
-            .text()
-            .trim()
-        ),
+      groups.map(el => el.textContent.trim()),
       ['foo (3)', 'bar (1)'],
       'the groups in the grouped-list are rendered, only the first item in the groupByField is considered for grouping'
     );
 
-    assert.deepEqual(
-      $('.grouped-list__group:first-of-type .grouped-list__group-header')
-        .text()
-        .trim(),
-      'foo (3)',
-      'the first group header is `foo(3)`'
-    );
+    assert.dom(groups[0]).hasText('foo (3)', 'the first group header is `foo(3)`');
 
+    await click(groups[0]);
     assert.deepEqual(
-      $('.grouped-list__group:first-of-type .grouped-list__item')
-        .toArray()
-        .map(el =>
-          $(el)
-            .text()
-            .trim()
-        ),
+      findAll('.grouped-list__item').map(el => el.textContent.trim()),
       ['1', '2', '3'],
       'the items under the first group header belong to the group'
     );
 
     this.set('shouldOpenAllGroups', true);
+    // changing shouldOpenAllGroups causes vertical collection render so we need to wait
+    await settled();
 
-    let openAttrs = $('.grouped-list__group')
-      .toArray()
-      .map(el => $(el).attr('open'));
-
-    assert.notOk(
-      openAttrs.includes(false) || openAttrs.includes(undefined),
+    assert.deepEqual(
+      findAll('.grouped-list li').map(el => el.textContent.trim()),
+      ['foo (3)', '1', '2', '3', 'bar (1)', '6'],
       'All groups are open when `shouldOpenAllGroups` attribute is true'
     );
   });
 
   test('sorted groups', async function(assert) {
-    assert.expect(2);
+    assert.expect(1);
 
     await render(hbs`
-          {{#grouped-list
-              items=sortme
-              shouldOpenAllGroups=shouldOpenAllGroups
-              groupByField='cat'
-              sortByField='name'
-              as | item |
-          }}
-              {{item.name}}
-          {{/grouped-list}}
-      `);
+      <GroupedList
+        @items={{this.sortme}}
+        @shouldOpenAllGroups={{true}}
+        @containerSelector="body"
+        @groupByField="cat"
+        @sortByField="name"
+        as | item |
+      >
+        {{item.name}}
+      </GroupedList>
+    `);
 
+    const allItems = findAll('.grouped-list li');
     assert.deepEqual(
-      $('.grouped-list__group:first-of-type .grouped-list__item')
-        .toArray()
-        .map(el =>
-          $(el)
-            .text()
-            .trim()
-        ),
-      ['apple stand', 'ice cream stand', 'zoo'],
-      "Each item in the group 'places' is sorted by the `sortByField`"
-    );
-
-    assert.deepEqual(
-      $('.grouped-list__group:nth-of-type(2) .grouped-list__item')
-        .toArray()
-        .map(el =>
-          $(el)
-            .text()
-            .trim()
-        ),
-      ['aardvark', 'bees', 'zebra'],
-      "Each item in the group 'animals' is sorted by the `sortByField`"
+      allItems.map(el => el.textContent.trim()),
+      ['places (3)', 'apple stand', 'ice cream stand', 'zoo', 'animals (3)', 'aardvark', 'bees', 'zebra'],
+      "The 'places' and 'animals' groups are sorted by the `sortByField`"
     );
   });
 });

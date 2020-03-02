@@ -5,6 +5,7 @@ import $ from 'jquery';
 import { setupApplicationTest } from 'ember-qunit';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import config from 'ember-get-config';
+import { clickItemFilter, clickItem, clickMetricConfigTrigger } from 'navi-reports/test-support/report-builder';
 
 module('Acceptance | navi-report - report visualizations', function(hooks) {
   setupApplicationTest(hooks);
@@ -21,9 +22,7 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
       'Without filters, three series are shown in the chart'
     );
 
-    await click(
-      $('.grouped-list__group:contains(Asset) .grouped-list__item:contains(Property) .grouped-list__filter')[0]
-    );
+    await clickItemFilter('dimension', 'Property');
     await selectSearch('.filter-values--dimension-select__trigger', 'Property');
     await selectChoose('.filter-values--dimension-select__trigger', '.ember-power-select-option', 0);
     await click('.navi-report__run-btn');
@@ -98,10 +97,10 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
     await click('.table-header-row .table-header-cell.dateTime .navi-table-sort-icon');
 
     //add a parameterized metric with a couple of parameters and run the report
-    await click(
-      $('.report-builder__metric-selector .grouped-list__item:contains(Platform Revenue) .grouped-list__add-icon')[0]
-    );
-    await click($('.metric-config__dropdown-container .grouped-list__item:contains(Euro) .grouped-list__add-icon')[0]);
+    await clickItem('metric', 'Platform Revenue');
+    const closeConfig = await clickMetricConfigTrigger('Platform Revenue');
+    await clickItem('metricConfig', 'EUR');
+    await closeConfig();
     await click('.navi-report__run-btn');
 
     //first parameter
@@ -269,9 +268,7 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
       );
 
     //remove the metric
-    await click(
-      $('.report-builder__metric-selector .grouped-list__item:contains(Platform Revenue) .grouped-list__add-icon')[0]
-    );
+    await clickItem('metric', 'Platform Revenue');
 
     //test API query and close the modal
     await click('.navi-report__copy-api-btn .get-api__btn');
@@ -413,12 +410,10 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
     await visit('/reports/new');
 
     // Add Revenue (USD) metric
-    await click($('.grouped-list__group-header-content:contains(Revenue)')[0]);
-    await click($('.grouped-list__item-label:contains(Revenue) .grouped-list__add-icon')[1]);
+    await clickItem('metric', 'Revenue');
 
     // Add Browser Dimension
-    await click($('.grouped-list__group-header-content:contains(test)')[0]);
-    await click($('.grouped-list__item-label:contains(Browser) .grouped-list__add-icon')[0]);
+    await clickItem('dimension', 'Browser');
 
     // Run Report
     await click('.navi-report__run-btn');

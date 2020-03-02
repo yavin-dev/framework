@@ -3,6 +3,7 @@ import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import $ from 'jquery';
+import { clickItemFilter } from 'navi-reports/test-support/report-builder';
 
 module('Acceptances | Report to dashboard action', function(hooks) {
   setupApplicationTest(hooks);
@@ -29,7 +30,7 @@ module('Acceptances | Report to dashboard action', function(hooks) {
     );
 
     // Create empty filter to make request invalid
-    await click($('.grouped-list__item:Contains(Operating System) .grouped-list__filter')[0]);
+    await clickItemFilter('dimension', 'Operating System');
 
     assert.notOk(
       !!$('.navi-report__action:contains("Add to Dashboard")').length,
@@ -37,7 +38,7 @@ module('Acceptances | Report to dashboard action', function(hooks) {
     );
 
     // Remove empty filter and run query
-    await click($('.grouped-list__item:Contains(Operating System) .grouped-list__filter')[0]);
+    await clickItemFilter('dimension', 'Operating System');
     await click('.navi-report__run-btn');
 
     assert.ok(

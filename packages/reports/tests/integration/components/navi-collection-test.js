@@ -7,6 +7,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, find, findAll } from '@ember/test-helpers';
 import { selectChoose } from 'ember-power-select/test-support';
 import hbs from 'htmlbars-inline-precompile';
+import findByContains from 'navi-core/test-support/contains-helpers';
 
 const REPORTS = ArrayProxy.create({
   isSettled: true, // Mock a loaded promise array
@@ -93,11 +94,11 @@ module('Integration | Component | navi collection', function(hooks) {
     await selectChoose('.navi-collection__filter-trigger', 'All');
 
     assert
-      .dom($('tbody tr:eq(0) td:first-of-type i')[0])
+      .dom(findByContains('td', 'Hyrule News').querySelector('i'))
       .doesNotHaveClass('favorite-item--active', 'Report that is not a favorite does not have favorite icon');
 
     assert
-      .dom($('tbody tr:eq(1) td:first-of-type i')[0])
+      .dom(findByContains('td', 'Hyrule Ad&Nav Clicks').querySelector('i'))
       .hasClass('favorite-item--active', 'Report that is a favorite has favorite icon');
   });
 
