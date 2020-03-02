@@ -77,7 +77,7 @@ module('Integration | Component | filter values/lookback input', function(hooks)
 
     // Only 7 is selected
     await clickTrigger('.filter-values--lookback-input');
-    assert.deepEqual(getSelectedOptions(), ['Last 7 Days'], '7 is the only selected option after being clicked');
+    assert.deepEqual(getSelectedOptions(), ['7 Days'], '7 is the only selected option after being clicked');
     await clickTrigger('.filter-values--lookback-input');
 
     // Set to 30
@@ -89,7 +89,7 @@ module('Integration | Component | filter values/lookback input', function(hooks)
 
     // Only 30 is selected
     await clickTrigger('.filter-values--lookback-input');
-    assert.deepEqual(getSelectedOptions(), ['Last 30 Days'], '30 is the only selected option after being clicked');
+    assert.deepEqual(getSelectedOptions(), ['30 Days'], '30 is the only selected option after being clicked');
     await clickTrigger('.filter-values--lookback-input');
   });
 
@@ -107,19 +107,25 @@ module('Integration | Component | filter values/lookback input', function(hooks)
 
     // Only 14 is selected
     await clickTrigger('.filter-values--lookback-input');
-    assert.deepEqual(
-      getSelectedOptions(),
-      ['Last 14 Days'],
-      '14 is the only selected in the dropdown after being typed in'
-    );
+    assert.deepEqual(getSelectedOptions(), ['14 Days'], '14 is the only selected in the dropdown after being typed in');
     await clickTrigger('.filter-values--lookback-input');
   });
 
   test('typing in a not predefined lookback value', async function(assert) {
-    assert.expect(2);
+    assert.expect(4);
+
+    this.set('onUpdateFilter', filter => {
+      this.set('filter', { values: arr([filter.interval]) });
+    });
+
+    await clickTrigger('.filter-values--lookback-input');
+    await click($('.navi-basic-dropdown-option:contains(7)')[0]);
+    assert.dom('.filter-values--lookback-input__value').hasValue('7', 'Clicking last 7 days changes input value to 7');
+
+    await clickTrigger('.filter-values--lookback-input');
+    assert.deepEqual(getSelectedOptions(), ['7 Days'], '7 is the only selected option after being clicked');
 
     // type 22
-    await clickTrigger('.filter-values--lookback-input');
     await fillIn('.filter-values--lookback-input__value', '22');
     await blur('.filter-values--lookback-input__value');
 

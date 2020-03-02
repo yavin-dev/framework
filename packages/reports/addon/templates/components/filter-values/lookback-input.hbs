@@ -29,7 +29,7 @@
                 aria-selected="{{if range.isActive "true" "false"}}"
                 {{on "click" (queue (fn this.setPresetInterval range.interval) dd.actions.close)}}
               >
-                {{format-interval-inclusive-inclusive range.interval this.dateTimePeriod}}
+                {{range.text}}
               </li>
             {{/each}}
           </ul>
