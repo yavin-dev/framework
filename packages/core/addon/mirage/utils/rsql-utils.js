@@ -46,7 +46,7 @@ export function filterModel(model, queryFilter) {
     let filterParameters = getFilterParams(queryFilter);
     let author = getQueryAuthor(queryFilter);
     if (filterParameters == null && author == null) {
-      throw 'No search parameters';
+      throw new Error('No search parameters');
     }
     modelObject = model.all().filter(function(report) {
       // Author can be optional, ie., not included in the query, but filterparameters are always included.
