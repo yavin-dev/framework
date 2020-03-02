@@ -98,9 +98,9 @@ module('Integration | Component | dimension selector', function(hooks) {
       'Initially all the dimensions are shown in the dimension-selector'
     );
 
-    const selecetedDimensions = await getAllSelected('dimension');
+    const selectedDimensions = await getAllSelected('dimension');
     assert.deepEqual(
-      selecetedDimensions,
+      selectedDimensions,
       ['Day', 'Age'],
       'When show selected is clicked only the selected age dimension and the selected timegrain are shown'
     );

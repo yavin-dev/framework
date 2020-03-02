@@ -39,7 +39,7 @@ export function getVerticalCollection(selector = 'body') {
     verticalCollection = visibleVCs[0];
   }
 
-  assert(`A vertical collection was found for selector '${selector}'`, verticalCollection);
+  assert(`A vertical collection was not found for selector '${selector}'`, verticalCollection);
 
   return verticalCollection;
 }

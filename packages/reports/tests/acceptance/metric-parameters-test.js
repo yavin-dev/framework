@@ -65,7 +65,6 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
 
     //close the metric config
     await click('.metric-config__done-btn');
-    // await closeConfig();
 
     //removing the metric
     await clickItem('metric', 'Platform Revenue');

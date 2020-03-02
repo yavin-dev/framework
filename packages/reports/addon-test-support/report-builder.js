@@ -35,7 +35,7 @@ function isAcceptedType(type) {
  * @returns {String} - query selector for type
  */
 function getSelector(type) {
-  assert('getSelector got an accepted type', isAcceptedType(type));
+  assert('getSelector must be passed an accepted type', isAcceptedType(type));
   return selector[type];
 }
 
@@ -45,7 +45,7 @@ function getSelector(type) {
  * @returns {Function} - resets the show selected to it's original state
  */
 export async function clickShowSelected(type) {
-  assert('clickShowSelected got an accepted type', isAcceptedType(type));
+  assert('clickShowSelected must be passed an accepted type', isAcceptedType(type));
   const typeSelector = getSelector(type);
 
   const showSelectedButton = find(`${typeSelector} ${showLink}`);
@@ -69,7 +69,7 @@ export async function clickShowSelected(type) {
  * @returns {Function} - resets search to it's previous state
  */
 export async function searchFor(type, query) {
-  assert('searchFor got an accepted type', isAcceptedType(type));
+  assert('searchFor must be passed an accepted type', isAcceptedType(type));
   const typeSelector = getSelector(type);
 
   const searchBarInputSelector = `${typeSelector} ${searchBar}`;
@@ -91,7 +91,7 @@ export async function searchFor(type, query) {
  * @returns {Object} - the element and a function to reset the search bar
  */
 export async function getItem(type, query) {
-  assert('getItem got an accepted type', isAcceptedType(type));
+  assert('getItem must be passed an accepted type', isAcceptedType(type));
   const reset = await searchFor(type, query);
   const item = findByContains(groupedListItem, query);
   return { item, reset };
@@ -104,7 +104,7 @@ export async function getItem(type, query) {
  * @param {String} query - The query to type in the search bar
  */
 export async function clickItem(type, query) {
-  assert('clickItem got an accepted type', isAcceptedType(type));
+  assert('clickItem must be passed an accepted type', isAcceptedType(type));
   const { item, reset } = await getItem(type, query);
   await click(item.querySelector(groupedListItemLabel));
   await reset();
@@ -116,7 +116,7 @@ export async function clickItem(type, query) {
  * @param {String} query - The query to type in the search bar
  */
 export async function clickItemFilter(type, query) {
-  assert('clickItemFilter got an accepted type', isAcceptedType(type));
+  assert('clickItemFilter must be passed an accepted type', isAcceptedType(type));
   const { item, reset } = await getItem(type, query);
   await click(item.querySelector(groupedListItemFilter));
   await reset();
@@ -174,7 +174,7 @@ export async function renderAll(type, query = '') {
  * @returns {Array<String>} - the names of all the selected items
  */
 export async function getAllSelected(type, query) {
-  assert('getAllSelected got an accepted type', isAcceptedType(type));
+  assert('getAllSelected must be passed an accepted type', isAcceptedType(type));
   const resetRenderAll = await renderAll(type, query);
 
   const selected = findAll(`${getSelector(type)} ${groupedListItem}`)
@@ -192,7 +192,7 @@ export async function getAllSelected(type, query) {
  * @returns {Array<String>} - the names of all the selected items
  */
 export async function getAll(type, query) {
-  assert('getAll got an accepted type', isAcceptedType(type));
+  assert('getAll must be passed an accepted type', isAcceptedType(type));
   const resetRenderAll = await renderAll(type, query);
 
   const all = findAll(`${getSelector(type)} ${groupedListItem}`).map(el => el.textContent.trim());
