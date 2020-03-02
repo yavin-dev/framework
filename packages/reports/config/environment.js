@@ -15,6 +15,7 @@ module.exports = function(/* environment, appConfig */) {
         timeout: 90000
       },
       predefinedIntervalRanges: {
+        hour: ['P1D', 'P7D', 'P14D', 'P30D', 'P60D', 'P90D', 'P180D', 'P400D'],
         day: ['P1D', 'P7D', 'P14D', 'P30D', 'P60D', 'P90D', 'P180D', 'P400D'],
         week: ['current/next', 'P1W', 'P4W', 'P8W', 'P13W', 'P26W', 'P52W', 'P78W', 'P104W'],
         month: ['current/next', 'P1M', 'P3M', 'P6M', 'P12M', 'P18M', 'P24M'],

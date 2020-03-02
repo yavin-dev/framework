@@ -5,6 +5,10 @@
 
 export default [
   {
+    name: 'hour',
+    longName: 'Hour'
+  },
+  {
     name: 'day',
     longName: 'Day'
   },

@@ -44,6 +44,9 @@ class LookbackInput extends BaseIntervalComponent {
       amount = amount * MONTHS_IN_QUARTER;
       dateTimePeriod = 'month';
     }
+    if (dateTimePeriod === 'hour') {
+      dateTimePeriod = 'day';
+    }
     return new Duration(`P${amount}${dateTimePeriod[0].toUpperCase()}`);
   }
 
