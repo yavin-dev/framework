@@ -12,6 +12,7 @@ import { assign } from '@ember/polyfills';
 import EmberObject, { get } from '@ember/object';
 import { getOwner } from '@ember/application';
 import { intersection } from 'lodash-es';
+import { getDefaultDataSourceName } from '../../utils/adapter';
 
 const KEG_NAMESPACE = 'dimension';
 
@@ -37,10 +38,11 @@ export default EmberObject.extend({
    * @method _getDimensionMetadata
    * @private
    * @param {String} dimensionName - name of dimension
+   * @param {String} namespace - namespace from keg
    * @returns {Object} metadata object
    */
-  _getDimensionMetadata(dimensionName) {
-    return get(this, 'bardMetadata').getById('dimension', dimensionName);
+  _getDimensionMetadata(dimensionName, namespace=getDefaultDataSourceName()) {
+    return this.bardMetadata.getById('dimension', dimensionName, namespace);
   },
 
   /**
@@ -123,30 +125,35 @@ export default EmberObject.extend({
    *      }
    * @returns {Promise} - Promise with the response
    */
-  all(dimension, options) {
-    let keg = get(this, 'keg');
+  all(dimension, options = {}) {
+    const { keg } = this;
+    const namespace = options.dataSourceName || getDefaultDataSourceName();
 
-    return Promise.resolve(this._buildResponse(keg.all(`${KEG_NAMESPACE}/${dimension}`), options));
+    return Promise.resolve(
+      this._buildResponse(keg.all(`${KEG_NAMESPACE}/${namespace}.${dimension}`, { namespace }), options)
+    );
   },
 
   /**
    * @method getById - Finds a dimension value object by its id
    * @param {String} dimension - dimension name
    * @param {String} value - the value to be looked up
+   * @param {String} namespace - namespace from the keg
    * @returns {Object} - The dimension value object
    */
-  getById(dimension, value) {
-    return get(this, 'keg').getById(`${KEG_NAMESPACE}/${dimension}`, value);
+  getById(dimension, value, namespace=getDefaultDataSourceName()) {
+    return this.keg.getById(`${KEG_NAMESPACE}/${namespace}.${dimension}`, value);
   },
 
   /**
    * @method findById - Finds a dimension value object by its id
    * @param {String} dimension - dimension name
    * @param {String} value - the value to be looked up
+   * @param {String} namespace - namespace from the keg
    * @returns {Promise} - Promise with the response
    */
-  findById(dimension, value) {
-    return Promise.resolve(this.getById(dimension, value));
+  findById(dimension, value, namespace=getDefaultDataSourceName()) {
+    return Promise.resolve(this.getById(dimension, value, namespace));
   },
 
   /**
@@ -160,7 +167,8 @@ export default EmberObject.extend({
    *      }
    * @returns {Promise} - Promise with the response
    */
-  find(dimension, andQueries, options) {
+  find(dimension, andQueries, options = {}) {
+    const namespace = options.dataSourceName || getDefaultDataSourceName();
     if (!Array.isArray(andQueries)) {
       // if not array
       warn('find() was not passed an array of queries, wrapping as single query array', {
@@ -187,7 +195,7 @@ export default EmberObject.extend({
     let keg = get(this, 'keg');
 
     let defaultQueryOptions = {
-      field: this._getDimensionMetadata(dimension).get('primaryKeyFieldName'),
+      field: this._getDimensionMetadata(dimension, namespace).get('primaryKeyFieldName'),
       values: []
     };
 
@@ -207,7 +215,9 @@ export default EmberObject.extend({
       return all;
     }, {});
 
-    return Promise.resolve(this._buildResponse(keg.getBy(`${KEG_NAMESPACE}/${dimension}`, query), options));
+    return Promise.resolve(
+      this._buildResponse(keg.getBy(`${KEG_NAMESPACE}/${namespace}.${dimension}`, query), options)
+    );
   },
 
   /**
@@ -219,15 +229,17 @@ export default EmberObject.extend({
    * @param {Object} [options] - keg.pushMany options object
    * @returns {Array} records that were pushed to the keg
    */
-  pushMany(dimension, payload, options) {
-    let modelFactory = get(this, 'bardDimensions').getFactoryFor(dimension);
+  pushMany(dimension, payload, options = {}) {
+    const namespace = options.dataSourceName || getDefaultDataSourceName();
+    const modelFactory = this.bardDimensions.getFactoryFor(dimension, namespace);
 
     return get(this, 'keg').pushMany(
-      `${KEG_NAMESPACE}/${dimension}`,
+      `${KEG_NAMESPACE}/${namespace}.${dimension}`,
       payload,
       assign(
         {
-          modelFactory
+          modelFactory,
+          namespace
         },
         options
       )

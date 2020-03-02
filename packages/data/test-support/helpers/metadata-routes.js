@@ -91,6 +91,25 @@ export const DimensionFour = {
   ]
 };
 
+export const DimensionFive = {
+  category: 'categoryTwo',
+  name: 'dimensionFive',
+  longName: 'Dimension Five',
+  cardinality: 6000000000,
+  fields: [
+    {
+      name: 'id',
+      description: 'description',
+      tags: ['primaryKey', 'display']
+    },
+    {
+      name: 'description',
+      description: 'description',
+      tags: ['description', 'display']
+    }
+  ]
+};
+
 export const TableOne = {
   description: 'Table1 Description',
   longName: 'table1LongName',
@@ -173,7 +192,7 @@ export const Tables2 = [
         metrics: [MetricThree],
         retention: 'P24M',
         longName: 'Day',
-        dimensions: [DimensionFour]
+        dimensions: [DimensionFour, DimensionFive]
       }
     ]
   },
@@ -189,7 +208,7 @@ export const Tables2 = [
         metrics: [MetricFour],
         retention: 'P24M',
         longName: 'Day',
-        dimensions: [DimensionFour]
+        dimensions: [DimensionFour, DimensionFive]
       }
     ]
   }
