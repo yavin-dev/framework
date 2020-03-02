@@ -47,6 +47,8 @@ script:
     else
     npx lerna run test --scope ${PACKAGE} --stream;
     fi
+before_deploy:
+  - pip install travis-wait-improved
 jobs:
   fast_finish: true
   include:
@@ -55,7 +57,7 @@ jobs:
       node_js: '8'
       name: 'NPM'
       script: bash ./scripts/npm-publish.sh
-    - script: bash ./scripts/gh-pages-publish.sh
+    - script: travis-wait-improved --timeout 30m bash ./scripts/gh-pages-publish.sh
       name: 'GitHub Pages'
       node_js: '8'
       if: branch = master AND repo = yahoo/navi AND type = push
