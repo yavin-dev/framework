@@ -9,7 +9,7 @@
  *  />
  */
 import Component from '@glimmer/component';
-import { computed, action } from '@ember/object';
+import { action } from '@ember/object';
 import { isEmpty } from '@ember/utils';
 import FileTypes from 'navi-directory/utils/enums/file-types';
 
@@ -22,7 +22,6 @@ export default class DirTableFilterComponent extends Component<DirTableFilterCom
   /**
    * @property {Array} fileTypes
    */
-  @computed()
   get fileTypes() {
     return ['all', ...FileTypes.getTypes()];
   }

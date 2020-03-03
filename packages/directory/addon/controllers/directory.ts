@@ -4,7 +4,7 @@
  */
 import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
-import { computed, action, set } from '@ember/object';
+import { action, set } from '@ember/object';
 import { inject as service } from '@ember/service';
 import DirectoriesService from 'navi-directory/services/directories';
 import RouterService from '@ember/routing/router-service';
@@ -29,7 +29,7 @@ export default class DirectoryController extends Controller {
    * @property {String} filter - query param for filter
    * allowed filters - favorites
    */
-  filter = null;
+  @tracked filter = null;
 
   /**
    * @property {String} type - query param for type
@@ -63,7 +63,6 @@ export default class DirectoryController extends Controller {
   /**
    * @property {String} title - Title for the table
    */
-  @computed('filter', 'router.currentRouteName')
   get title() {
     const { router, directories, filter } = this;
     const currentDir = directories.getDirectories().find(dir => dir.routeLink === router.currentRouteName);

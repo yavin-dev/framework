@@ -4,7 +4,6 @@
  */
 import Controller from '@ember/controller';
 import { inject as controller } from '@ember/controller';
-import { computed } from '@ember/object';
 import { isEmpty } from '@ember/utils';
 import DirectoryController from './directory';
 // @ts-ignore
@@ -16,12 +15,11 @@ export default abstract class SearchFilterController extends Controller {
    */
   @controller directory!: DirectoryController;
 
-  abstract get sortedItems(): Promise<Array<any>>;
+  abstract get sortedItems(): Promise<Array<TODO>>;
 
   /**
    * @property {Promise} searchResults - Search and rank through items in model when a search query is available
    */
-  @computed('directory.q', 'sortedItems')
   get searchResults() {
     const { q } = this.directory;
     return this.sortedItems.then(items => (isEmpty(q) ? items : searchRecords(items, q, 'title')));

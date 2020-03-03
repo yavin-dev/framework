@@ -3,21 +3,21 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import SearchFilterController from '../search-filter';
-import { computed, action } from '@ember/object';
+import { action } from '@ember/object';
 import { A as arr } from '@ember/array';
+import { tracked } from '@glimmer/tracking';
 import moment from 'moment';
 import { ModelFrom } from '../../utils/type-utils';
 import DirectoryMyDataRoute from 'dummy/routes/directory/my-data';
 
 export default class DirectoryMyDataController extends SearchFilterController {
-  model!: ModelFrom<DirectoryMyDataRoute>;
+  @tracked model!: ModelFrom<DirectoryMyDataRoute>;
 
   /**
    * @property {Promise<Array>} sortedItems - items sorted by `sortKey` and `sortDir`
    */
-  @computed('directory.{sortKey,sortDir}', 'model.items')
   get sortedItems() {
-    return new Promise<Array<any>>(async resolve => {
+    return new Promise<Array<TODO>>(async resolve => {
       const {
         directory: { sortKey, sortDir }
       } = this;
