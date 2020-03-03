@@ -10,10 +10,12 @@ module('Integration | Component | navi-search-result-asset', function(hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
+  let service;
+
   hooks.beforeEach(async function() {
     // Load metadata needed for request fragment
     await this.owner.lookup('service:bard-metadata').loadMetadata();
-    this.service = this.owner.lookup('service:navi-search-provider');
+    service = this.owner.lookup('service:navi-search-provider');
     const store = this.owner.lookup('service:store'),
       mockAuthor = store.createRecord('user', { id: 'ciela' });
     this.owner.register(
@@ -31,7 +33,7 @@ module('Integration | Component | navi-search-result-asset', function(hooks) {
   });
 
   test('displays results', async function(assert) {
-    const result = await this.service.search.perform('Revenue');
+    const result = await service.search.perform('Revenue');
     set(this, 'result', result.find(element => element.component === 'navi-search-result/asset'));
 
     await render(hbs`<NaviSearchResult::Asset @data={{this.result.data}}/>`);
