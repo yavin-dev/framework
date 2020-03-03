@@ -366,7 +366,8 @@ module('Unit | Service | Dimensions', function(hooks) {
 
     let keg = Service.get('_kegAdapter.keg');
     keg.pushMany('dimension/dummy.dimensionOne', Response.rows, {
-      modelFactory: Object
+      modelFactory: Object,
+      namespace: 'dummy'
     });
 
     const dimensionId = get(Service.getById(TestDimension, 'v1'), 'id');
@@ -377,7 +378,7 @@ module('Unit | Service | Dimensions', function(hooks) {
       undefined,
       'getById returnd undefined for unloaded dimension from other datasource'
     );
-    keg.pushMany('dimension/blockhead.dimensionFour', Response3.rows, { modelFactory: Object });
+    keg.pushMany('dimension/blockhead.dimensionFour', Response3.rows, { modelFactory: Object, namespace: 'blockhead' });
     const dimensionFourId = get(Service.getById('dimensionFour', 'v4', 'blockhead'), 'id');
     assert.deepEqual(dimensionFourId, 'v4', 'getById returns the expected dimension value from alternate datasource');
   });
