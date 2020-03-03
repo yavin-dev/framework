@@ -35,23 +35,22 @@ export default class NaviAssetSearchProviderService extends NaviBaseSearchProvid
    * @returns {Object} query object
    */
   _parseQueryString(query, type) {
-    let author = this.user.getUser().id;
-    let parsedQuery = { searchParams: null, author: author };
+    let searchParams;
 
     if (typeof query == 'string' && query) {
       if (type === 'report') {
-        parsedQuery.searchParams = {
+        searchParams = {
           title: query,
           request: query
         };
       } else if (type === 'dashboard') {
-        parsedQuery.searchParams = {
+        searchParams = {
           title: query
         };
       }
     }
 
-    return parsedQuery;
+    return searchParams;
   }
 
   /**
@@ -62,14 +61,16 @@ export default class NaviAssetSearchProviderService extends NaviBaseSearchProvid
    * @param {String} type
    * @returns {Object} search query object
    */
-  _constructSearchQuery(searchParams, author, type) {
-    let query = { filter: { [type]: '' } };
+  _constructSearchQuery(userQuery, author, type) {
+    const searchParams = this._parseQueryString(userQuery, type);
+    const pluralType = pluralize(type);
+    let query = { filter: { [pluralType]: '' } };
 
     let paramsFilterString = '';
     if (searchParams) {
-      const paramsFilter = `${Object.keys(searchParams)
+      const paramsFilter = Object.keys(searchParams)
         .map(p => `${p}==*${searchParams[p]}*`)
-        .join(',')}`; // comma separated list of param filters
+        .join(','); // comma separated list of param filters
       paramsFilterString = paramsFilter ? `(${paramsFilter})` : ''; //wrap in parentheses if param filter present
     }
 
@@ -78,7 +79,7 @@ export default class NaviAssetSearchProviderService extends NaviBaseSearchProvid
       authorFilterString = paramsFilterString ? `;author==*${author}*` : `author==*${author}*`; //add semicolon if param filters present
     }
 
-    query.filter[type] = `${paramsFilterString}${authorFilterString}`;
+    query.filter[pluralType] = `${paramsFilterString}${authorFilterString}`;
 
     return query;
   }
@@ -104,18 +105,16 @@ export default class NaviAssetSearchProviderService extends NaviBaseSearchProvid
    */
   @keepLatestTask
   *search(query) {
-    const reportParsedQuery = this._parseQueryString(query, 'report');
-    const dashboardParsedQuery = this._parseQueryString(query, 'dashboard');
-    const reportPromise = this.store.query(
-      'report',
-      this._constructSearchQuery(reportParsedQuery.searchParams, reportParsedQuery.author, 'reports')
-    );
-    const dashboardPromise = this.store.query(
-      'dashboard',
-      this._constructSearchQuery(dashboardParsedQuery.searchParams, dashboardParsedQuery.author, 'dashboards')
-    );
+    const author = this.user.getUser().id;
+    const types = ['report', 'dashboard'];
+    const promises = [];
+
+    types.forEach(type => {
+      promises.push(this.store.query(type, this._constructSearchQuery(query, author, type)));
+    });
+
     let that = this;
-    const data = yield Promise.all([reportPromise, dashboardPromise]).then(function(values) {
+    const data = yield Promise.all(promises).then(function(values) {
       return values
         .flatMap(value => value.toArray())
         .map(value => {
