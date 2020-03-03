@@ -66,4 +66,37 @@ module('Acceptance | date filter', function(hooks) {
       .dom('.filter-values--dimension-date-range-input__high-value .dropdown-date-picker__trigger')
       .includesText('05,', 'The high value is still set after the report is saved');
   });
+
+  test('verify the different time grains work as expected', async function(assert) {
+    await visit('/reports/1/view');
+
+    assert.ok(!!$('.grouped-list__item:contains(Day)').length, 'Day is the default selected time grain');
+    assert.ok(
+      !!$('.filter-builder__operator:contains(Between)').length,
+      'Between is the selected filter builder operator'
+    );
+
+    const timeGrains = ['Hour', 'Day', 'Week', 'Month', 'Quarter', 'Year'];
+
+    timeGrains.forEach(async function(grain) {
+      await click($(`.grouped-list__item:contains(${grain})`)[0]);
+      assert.ok(
+        !!$('.filter-builder__operator:contains(Between)').length,
+        'Between is the default selected filter builder operator'
+      );
+
+      // await click($('.filter-values--date-range-input__trigger')[0]);
+      // assert.ok(!!$('ember-basic-dropdown-content').length, 'Date picker window appears');
+
+      // await click($('.filter-builder__operator:contains(Current)')[0]);
+      // assert.ok(!!$('.filter-builder__operator:contains(Current)').length, 'Between is the default selected filter builder operator');
+
+      await clickTrigger($('.filter-builder__operator-dropdown')[0]);
+      await click($('li.ember-power-select-option:contains(Since)')[0]);
+      assert.ok(
+        !!$('.filter-builder__operator:contains(Since)').length,
+        'Since is the default selected filter builder operator'
+      );
+    });
+  });
 });
