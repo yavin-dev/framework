@@ -48,7 +48,7 @@ export function filterModel(model, queryFilter) {
     if (filterParameters == null && author == null) {
       throw new Error('No search parameters');
     }
-    modelObject = model.all().filter(function(report) {
+    modelObject = model.all().filter(report => {
       // Author can be optional, ie., not included in the query, but filterparameters are always included.
       const matchesFilterParameterIfExists = filterParameters
         ? filterParameters.some(filterParameter =>
