@@ -56,7 +56,7 @@ jobs:
       name: 'NPM'
       script: bash ./scripts/npm-publish.sh
     - before_script:
-        - pyenv global 3.7.1
+        - pyenv global 3.6
         - pip3 install travis-wait-improved
       script: travis-wait-improved --timeout 30m bash ./scripts/gh-pages-publish.sh
       name: 'GitHub Pages'
