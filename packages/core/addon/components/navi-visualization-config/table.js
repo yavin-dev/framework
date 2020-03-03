@@ -33,6 +33,11 @@ class NaviVisualizationConfigTableComponent extends Component {
   @mapBy('request.dimensions', 'dimension') dimensions;
 
   /**
+   * @property {Boolean} showDropdown - initial value to show subtotal dropdown
+   */
+  _showSubtotalDropdown;
+
+  /**
    * @property {Array} subtotalDimensions - dimensions used to subtotal including dateTime
    */
   @computed('dimensions')
@@ -49,11 +54,6 @@ class NaviVisualizationConfigTableComponent extends Component {
 
     this.set('_showSubtotalDropdown', !!get(this, 'options.showTotals.subtotal'));
   }
-
-  /**
-   * @property {Boolean} showDropdown - initial value to show subtotal dropdown
-   */
-  _showSubtotalDropdown = undefined;
 
   /**
    * @property {Object} selectedSubtotal - selected subtotal

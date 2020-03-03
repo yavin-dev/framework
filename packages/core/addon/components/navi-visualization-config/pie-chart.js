@@ -27,8 +27,7 @@ class NaviVisualizationConfigPieChartComponent extends Component {
    */
   @action
   onUpdateSeriesConfig(seriesConfig) {
-    const { options } = this;
-    let newOptions = copy(options);
+    const newOptions = copy(this.options);
     set(newOptions, 'series.config', seriesConfig);
     this.onUpdateConfig(newOptions);
   }

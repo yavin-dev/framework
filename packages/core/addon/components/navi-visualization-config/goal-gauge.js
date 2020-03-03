@@ -11,18 +11,12 @@
  */
 import Component from '@ember/component';
 import { action } from '@ember/object';
-import { alias } from '@ember/object/computed';
 import layout from '../../templates/components/navi-visualization-config/goal-gauge';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
 @templateLayout(layout)
 @tagName('')
 class NaviVisualizationConfigGoalGaugeComponent extends Component {
-  /**
-   * @property {object} metric fragment
-   */
-  @alias('request.metrics.firstObject') metricModel;
-
   /**
    * @action updateConfig
    */
