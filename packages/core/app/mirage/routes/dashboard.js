@@ -52,7 +52,7 @@ export default function() {
     if (idFilter) {
       let ids = idFilter.split(',');
       dashboardObject = dashboards.find(ids);
-    } else if ('filter[dashboards]' in request.queryParams) {
+    } else if (queryFilter) {
       dashboardObject = filterModel(dashboards, queryFilter);
     } else {
       dashboardObject = dashboards.all();
