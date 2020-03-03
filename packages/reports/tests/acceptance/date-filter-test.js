@@ -4,7 +4,7 @@ import { setupApplicationTest } from 'ember-qunit';
 import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 import $ from 'jquery';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
-import { clickItemFilter } from 'navi-reports/test-support/report-builder';
+import { clickItem, clickItemFilter } from 'navi-reports/test-support/report-builder';
 
 module('Acceptance | date filter', function(hooks) {
   setupApplicationTest(hooks);
@@ -69,36 +69,21 @@ module('Acceptance | date filter', function(hooks) {
   test('verify the different time grains work as expected', async function(assert) {
     await visit('/reports/1/view');
 
-    assert.ok(!!$('.grouped-list__item:contains(Day)').length, 'Day is the default selected time grain');
-    assert.ok(
-      !!$('.filter-builder__operator:contains(Between)').length,
-      'Between is the default selected filter builder operator'
-    );
-
     const timeGrains = ['Hour', 'Day', 'Week', 'Month', 'Quarter', 'Year'];
-    const grain = 'Year';
 
     for (const grain of timeGrains) {
-      await click($(`.grouped-list__item:contains(${grain})`)[0]);
+      await clickItem('timeGrain', grain);
+      assert.ok(!!$(`.filter-builder__subject:contains(${grain})`)[0], `${grain} is selected`);
       assert.ok(
         !!$('.filter-builder__operator:contains(Between)').length,
         'Between is the selected filter builder operator'
       );
 
-      //Set low value
       await clickTrigger('.filter-values--date-range-input__low-value .ember-basic-dropdown-trigger');
-      await click($('button.ember-power-calendar-day--current-month:contains(4)')[0]);
+      assert.ok(!!$('.ember-power-calendar')[0], 'Low value calendar opened');
 
-      //Set high value
       await clickTrigger('.filter-values--date-range-input__high-value .ember-basic-dropdown-trigger');
-      await click($('button.ember-power-calendar-day--current-month:contains(5)')[0]);
-
-      assert
-        .dom('.filter-values--date-range-input__low-value .dropdown-date-picker__trigger')
-        .includesText('04,', 'The low value is set');
-      assert
-        .dom('.filter-values--date-range-input__high-value .dropdown-date-picker__trigger')
-        .includesText('05,', 'The high value is set');
+      assert.ok(!!$('.ember-power-calendar')[0], 'High value calendar opened');
 
       await click($('.filter-builder__operator:contains(Between) .filter-builder__select-trigger')[0]);
       await click($('li.ember-power-select-option:contains(Current)')[0]);
@@ -107,11 +92,38 @@ module('Acceptance | date filter', function(hooks) {
         'Current is the selected filter builder operator'
       );
 
+      assert.ok(!!$('.filter-values--current-period:contains(current)')[0], `Shows current ${grain}`);
+
       await click($('.filter-builder__operator:contains(Current) .filter-builder__select-trigger')[0]);
       await click($('li.ember-power-select-option:contains(In The Past)')[0]);
       assert.ok(
         !!$('.filter-builder__operator:contains(In The Past)').length,
         'In the Past is the selected filter builder operator'
+      );
+
+      await clickTrigger('.filter-values--lookback-input .ember-basic-dropdown-trigger');
+      assert.ok(!!$('.navi-basic-dropdown-content')[0], 'Preset dropdown opened');
+
+      await click($('.filter-builder__operator:contains(In The Past) .filter-builder__select-trigger')[0]);
+      await click($('li.ember-power-select-option:contains(Since)')[0]);
+      assert.ok(
+        !!$('.filter-builder__operator:contains(Since)').length,
+        'Since is the selected filter builder operator'
+      );
+
+      await clickTrigger('.filter-values--since-input__low-value .ember-basic-dropdown-trigger');
+      assert.ok(!!$('.ember-power-calendar')[0], 'Low value calendar opened');
+
+      await click($('.filter-builder__operator:contains(Since) .filter-builder__select-trigger')[0]);
+      await click($('li.ember-power-select-option:contains(Advanced)')[0]);
+      assert.ok(
+        !!$('.filter-builder__operator:contains(Advanced)').length,
+        'Advanced is the selected filter builder operator'
+      );
+
+      assert.ok(
+        !!$('.filter-values--advanced-interval-input__value').length,
+        'The advanced interval selector is shown'
       );
     }
   });
