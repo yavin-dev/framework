@@ -42,9 +42,9 @@ module('Unit | Adapters | Dimensions | Keg', function(hooks) {
     Adapter = this.owner.lookup('adapter:dimensions/keg');
 
     Keg = Adapter.get('keg');
-    Keg.pushMany('dimension/dummy.dimensionOne', Records, { dataSourceName: 'dummy' });
+    Keg.pushMany('dimension/dummy.dimensionOne', Records, { namespace: 'dummy' });
     Keg.pushMany('dimension/blockhead.dimensionFour', [{ id: 1, description: 'one' }, { id: 2, description: 'two' }], {
-      dataSourceName: 'blockhead'
+      namespace: 'blockhead'
     });
 
     //Load metadata

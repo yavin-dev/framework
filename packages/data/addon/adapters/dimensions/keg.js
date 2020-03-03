@@ -41,7 +41,7 @@ export default EmberObject.extend({
    * @param {String} namespace - namespace from keg
    * @returns {Object} metadata object
    */
-  _getDimensionMetadata(dimensionName, namespace=getDefaultDataSourceName()) {
+  _getDimensionMetadata(dimensionName, namespace = getDefaultDataSourceName()) {
     return this.bardMetadata.getById('dimension', dimensionName, namespace);
   },
 
@@ -141,8 +141,8 @@ export default EmberObject.extend({
    * @param {String} namespace - namespace from the keg
    * @returns {Object} - The dimension value object
    */
-  getById(dimension, value, namespace=getDefaultDataSourceName()) {
-    return this.keg.getById(`${KEG_NAMESPACE}/${namespace}.${dimension}`, value);
+  getById(dimension, value, namespace = getDefaultDataSourceName()) {
+    return this.keg.getById(`${KEG_NAMESPACE}/${namespace}.${dimension}`, value, namespace);
   },
 
   /**
@@ -152,7 +152,7 @@ export default EmberObject.extend({
    * @param {String} namespace - namespace from the keg
    * @returns {Promise} - Promise with the response
    */
-  findById(dimension, value, namespace=getDefaultDataSourceName()) {
+  findById(dimension, value, namespace = getDefaultDataSourceName()) {
     return Promise.resolve(this.getById(dimension, value, namespace));
   },
 
