@@ -99,7 +99,8 @@ export default class NaviAssetSearchProviderService extends NaviBaseSearchProvid
    * @method search – Searches for reports and dashboards in the persistence layer
    * @override
    * @param {String} query
-   * @returns {Promise} promise with search query results
+   * @yields {Promise} promise with search query results
+   * @returns {Object} Object containing component, title, and data to be displayed
    */
   @keepLatestTask
   *search(query) {
