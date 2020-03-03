@@ -2,11 +2,13 @@ import { A } from '@ember/array';
 import { helper as buildHelper } from '@ember/component/helper';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, settled } from '@ember/test-helpers';
+import { click, render } from '@ember/test-helpers';
 import $ from 'jquery';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import hbs from 'htmlbars-inline-precompile';
 import Interval from 'navi-core/utils/classes/interval';
+import config from 'ember-get-config';
+import { animationsSettled } from 'ember-animated/test-support';
 
 const RESPONSE = {
   rows: [
@@ -53,7 +55,7 @@ module('Integration | Component | report view', function(hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(async function() {
     this.owner.register(
       'helper:route-action',
       buildHelper(() => {
@@ -64,157 +66,193 @@ module('Integration | Component | report view', function(hooks) {
       }
     );
 
-    let metadataService = this.owner.lookup('service:bard-metadata'),
-      store = this.owner.lookup('service:store');
+    const metadataService = this.owner.lookup('service:bard-metadata');
+    const store = this.owner.lookup('service:store');
 
-    metadataService.loadMetadata().then(() => {
-      this.set('response', RESPONSE);
+    await metadataService.loadMetadata();
+    this.set('response', RESPONSE);
 
-      //set report object
-      this.set(
-        'report',
-        store.createRecord('report', {
-          request: store.createFragment('bard-request/request', {
-            logicalTable: store.createFragment('bard-request/fragments/logicalTable', {
-              table: metadataService.getById('table', 'tableA'),
-              timeGrainName: 'day'
-            }),
-            responseFormat: 'csv',
-            intervals: A([{ interval: new Interval('current', 'next') }])
+    //set report object
+    this.set(
+      'report',
+      store.createRecord('report', {
+        request: store.createFragment('bard-request/request', {
+          logicalTable: store.createFragment('bard-request/fragments/logicalTable', {
+            table: metadataService.getById('table', 'tableA'),
+            timeGrainName: 'day'
           }),
-          visualization: {
-            type: 'line-chart',
-            version: 1,
-            metadata: {
-              axis: {
-                y: {
-                  series: {
-                    type: 'metric',
-                    config: {
-                      metrics: [
-                        {
-                          metric: 'adClicks',
-                          parameters: {},
-                          canonicalName: 'adClicks'
-                        }
-                      ]
-                    }
+          responseFormat: 'csv',
+          intervals: A([{ interval: new Interval('current', 'next') }])
+        }),
+        visualization: {
+          type: 'line-chart',
+          version: 1,
+          metadata: {
+            axis: {
+              y: {
+                series: {
+                  type: 'metric',
+                  config: {
+                    metrics: [
+                      {
+                        metric: 'adClicks',
+                        parameters: {},
+                        canonicalName: 'adClicks'
+                      }
+                    ]
                   }
                 }
               }
             }
           }
-        })
-      );
-    });
+        }
+      })
+    );
   });
 
-  test('metric label visualization selector is available on single metric, single time bucket, no dimensions', function(assert) {
+  test('metric label visualization selector is available on single metric, single time bucket, no dimensions', async function(assert) {
     assert.expect(2);
 
-    return settled().then(async () => {
-      this.set('report.request', {
-        logicalTable: {
-          table: 'network',
-          timeGrain: { name: 'day' }
-        },
-        metrics: [{ metric: 'adClicks' }],
-        dimensions: [],
-        filters: [],
-        sort: [
-          {
-            metric: 'navClicks',
-            direction: 'asc'
-          }
-        ],
-        intervals: A([{ interval: new Interval('current', 'next') }]),
-        bardVersion: 'v1',
-        requestVersion: 'v1'
-      });
-
-      await render(hbs`
-              {{report-view
-                  report=report
-                  response=response
-              }}
-          `);
-
-      assert.ok($('.visualization-toggle__option:contains(Data Table)').is(':visible'), 'Table Selector is visible');
-
-      assert.ok(
-        $('.visualization-toggle__option:contains(Metric Label)').is(':visible'),
-        'Metric Label Selector is visible'
-      );
+    this.set('report.request', {
+      logicalTable: {
+        table: 'network',
+        timeGrain: { name: 'day' }
+      },
+      metrics: [{ metric: 'adClicks' }],
+      dimensions: [],
+      filters: [],
+      sort: [
+        {
+          metric: 'navClicks',
+          direction: 'asc'
+        }
+      ],
+      intervals: A([{ interval: new Interval('current', 'next') }]),
+      bardVersion: 'v1',
+      requestVersion: 'v1'
     });
+
+    await render(hbs`
+      <ReportView
+        @report={{this.report}}
+        @response={{this.response}}
+      />
+    `);
+
+    assert.ok($('.visualization-toggle__option:contains(Data Table)').is(':visible'), 'Table Selector is visible');
+
+    assert.ok(
+      $('.visualization-toggle__option:contains(Metric Label)').is(':visible'),
+      'Metric Label Selector is visible'
+    );
   });
 
-  test('visualization is chosen based on report', function(assert) {
+  test('visualization is chosen based on report', async function(assert) {
     assert.expect(3);
 
-    return settled().then(async () => {
-      await render(hbs`
-              {{report-view
-                  report=report
-                  response=response
-              }}
-          `);
+    await render(hbs`
+      <ReportView
+        @report={{this.report}}
+        @response={{this.response}}
+      />
+    `);
 
-      assert.ok(
-        $('.line-chart-widget').is(':visible'),
-        'Visualization is rendered based on the report visualization type'
-      );
+    assert.ok(
+      $('.line-chart-widget').is(':visible'),
+      'Visualization is rendered based on the report visualization type'
+    );
 
-      this.set('report.visualization', {
-        type: 'table',
-        version: 1,
-        metadata: {
-          columns: [
-            {
-              attributes: { name: 'dateTime' },
-              type: 'dateTime',
-              displayName: 'Date'
-            },
-            {
-              attributes: { name: 'adClicks' },
-              type: 'metric',
-              displayName: 'Ad Clicks'
-            }
-          ]
-        }
-      });
-
-      assert.ok($('.table-widget').is(':visible'), 'Rendered visualization updates with report');
-
-      assert.notOk($('.line-chart-widget').is(':visible'), 'Old visualization is removed');
+    this.set('report.visualization', {
+      type: 'table',
+      version: 1,
+      metadata: {
+        columns: [
+          {
+            attributes: { name: 'dateTime' },
+            type: 'dateTime',
+            displayName: 'Date'
+          },
+          {
+            attributes: { name: 'adClicks' },
+            type: 'metric',
+            displayName: 'Ad Clicks'
+          }
+        ]
+      }
     });
+
+    assert.ok($('.table-widget').is(':visible'), 'Rendered visualization updates with report');
+
+    assert.notOk($('.line-chart-widget').is(':visible'), 'Old visualization is removed');
   });
 
-  test('no data', function(assert) {
+  test('no data', async function(assert) {
     assert.expect(1);
-    return settled().then(() => {
-      this.set('response', {
-        rows: [],
-        meta: {
-          pagination: {
-            currentPage: 1,
-            rowsPerPage: 10000,
-            numberOfResults: 0
-          }
+    this.set('response', {
+      rows: [],
+      meta: {
+        pagination: {
+          currentPage: 1,
+          rowsPerPage: 10000,
+          numberOfResults: 0
         }
-      });
-
-      return settled().then(async () => {
-        await render(hbs`
-              {{report-view
-                  report=report
-                  response=response
-              }}
-          `);
-
-        assert
-          .dom('.report-view__visualization-no-results')
-          .hasText('No results available.', 'A message is displayed when the response has no data');
-      });
+      }
     });
+
+    await render(hbs`
+      <ReportView
+        @report={{this.report}}
+        @response={{this.response}}
+      />
+    `);
+
+    assert
+      .dom('.report-view__visualization-no-results')
+      .hasText('No results available.', 'A message is displayed when the response has no data');
+  });
+
+  test('toggle columns drawer', async function(assert) {
+    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
+    config.navi.FEATURES.enableRequestPreview = true;
+
+    this.set('response', {
+      rows: [],
+      meta: {
+        pagination: {
+          currentPage: 1,
+          rowsPerPage: 10000,
+          numberOfResults: 0
+        }
+      }
+    });
+
+    await render(hbs`
+      <ReportView
+        @report={{this.report}}
+        @response={{this.response}}
+      />
+    `);
+
+    assert.dom('.navi-column-config__panel').exists('Column config drawer is open by default');
+    assert
+      .dom('.report-view__columns-icon.fa-chevron-left')
+      .exists('Column config drawer displays "back" icon when open');
+
+    await click('.report-view__columns-button');
+    await animationsSettled();
+    assert
+      .dom('.navi-column-config__panel')
+      .doesNotExist('Column config drawer is closed after toggling the columns button');
+    assert
+      .dom('.report-view__columns-icon.fa-columns')
+      .exists('Column config drawer displays "column" icon when closedk');
+
+    await click('.report-view__columns-button');
+    await animationsSettled();
+    assert.dom('.navi-column-config__panel').exists('Column config drawer is open after toggleing the columns button');
+    assert
+      .dom('.report-view__columns-icon.fa-chevron-left')
+      .exists('Column config drawer displays "back" icon when open');
+    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
   });
 });

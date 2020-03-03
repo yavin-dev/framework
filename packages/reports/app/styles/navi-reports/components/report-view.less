@@ -8,6 +8,7 @@
   flex: 1;
   min-height: 0; // Firefox fix
   min-width: 0; // Firefox fix
+  overflow: hidden;
   position: relative;
   width: 100%;
 
@@ -97,5 +98,50 @@
     flex-flow: column;
     justify-content: center;
     margin: 10px;
+  }
+
+  &__visualization-body {
+    display: flex;
+    flex: 1;
+    flex-flow: row;
+  }
+
+  &__visualization-container {
+    display: flex;
+    flex: 1;
+    flex-flow: column;
+    min-height: 0;
+    min-width: 0;
+  }
+
+  &__columns-button {
+    align-items: center;
+    background: white;
+    border: 1px solid @denali-gray-300;
+    border-left: 1px solid white;
+    border-left-width: 0;
+    border-radius: 0px 45% 45% 0px;
+    box-shadow: rgba(60, 64, 67, 0.3) 2px 1px 4px -1px;
+    display: flex;
+    height: 40px;
+    justify-content: center;
+    left: -2px;
+    margin-right: 2px;
+    margin-bottom: 15px;
+    position: relative;
+    width: 40px;
+    z-index: 10;
+  }
+
+  &__columns-icon {
+    font-size: 20px;
+    left: -1px;
+    position: relative;
+  }
+
+  &__columns-toggle {
+    display: flex;
+    flex-flow: column;
+    justify-content: flex-end;
   }
 }
