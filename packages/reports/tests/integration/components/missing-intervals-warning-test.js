@@ -1,10 +1,9 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click } from '@ember/test-helpers';
-import $ from 'jquery';
+import { click, findAll, render } from '@ember/test-helpers';
 import { set } from '@ember/object';
-import { later } from '@ember/runloop';
 import hbs from 'htmlbars-inline-precompile';
+import { animationsSettled } from 'ember-animated/test-support';
 
 module('Integration | Component | missing intervals warning', function(hooks) {
   setupRenderingTest(hooks);
@@ -24,10 +23,10 @@ module('Integration | Component | missing intervals warning', function(hooks) {
     set(this, 'response', response);
     set(this, 'onDetailsToggle', () => {});
 
-    await render(hbs`{{missing-intervals-warning
-      response=response
-      onDetailsToggle=onDetailsToggle
-    }}`);
+    await render(hbs`<MissingIntervalsWarning
+      @response={{this.response}}
+      @onDetailsToggle={{this.onDetailsToggle}}
+    />`);
 
     assert
       .dom('.missing-intervals-warning__message-text')
@@ -36,22 +35,19 @@ module('Integration | Component | missing intervals warning', function(hooks) {
         'The component is visible when missing intervals are present and the warning is displayed'
       );
 
-    assert.notOk(
-      $('.missing-intervals-warning__details-content').is(':visible'),
-      'The details section is not expanded by default'
-    );
+    assert
+      .dom('.missing-intervals-warning__details-content')
+      .isNotVisible('The details section is not expanded by default');
 
     await click('.missing-intervals-warning__contents');
+    await animationsSettled();
 
-    assert.ok(
-      $('.missing-intervals-warning__details-content').is(':visible'),
-      'The details section expands when the component is clicked'
-    );
+    assert
+      .dom('.missing-intervals-warning__details-content')
+      .isVisible('The details section expands when the component is clicked');
 
     assert.deepEqual(
-      $('.missing-intervals-warning__date-interval')
-        .toArray()
-        .map(elm => elm.innerHTML),
+      findAll('.missing-intervals-warning__date-interval').map(e => e.textContent),
       ['2018/11/10 - 2018/11/12', '2018/11/14 - 2018/11/15', '2018/11/19'],
       'The missing intervals are displayed correctly'
     );
@@ -64,11 +60,11 @@ module('Integration | Component | missing intervals warning', function(hooks) {
       );
 
     await click('.missing-intervals-warning__contents');
+    await animationsSettled();
 
-    assert.notOk(
-      $('.missing-intervals-warning__details-content').is(':visible'),
-      'The details section collapses when the component is clicked'
-    );
+    assert
+      .dom('.missing-intervals-warning__details-content')
+      .isNotVisible('The details section collapses when the component is clicked');
   });
 
   test('no missing intervals', async function(assert) {
@@ -81,15 +77,12 @@ module('Integration | Component | missing intervals warning', function(hooks) {
       response=response
     }}`);
 
-    assert.notOk(
-      $('.missing-intervals-warning__footer').is(':visible'),
-      'The component is not visible when there are no missing intervals'
-    );
+    assert
+      .dom('.missing-intervals-warning__footer')
+      .isNotVisible('The component is not visible when there are no missing intervals');
   });
 
   test('onDetailsToggle', async function(assert) {
-    const done = assert.async();
-
     assert.expect(1);
 
     let response = {
@@ -106,13 +99,12 @@ module('Integration | Component | missing intervals warning', function(hooks) {
       assert.ok(true, 'onDetailsToggle action is called when the details are toggled')
     );
 
-    await render(hbs`{{missing-intervals-warning
-      response=response
-      onDetailsToggle=onDetailsToggle
-    }}`);
+    await render(hbs`<MissingIntervalsWarning
+      @response={{this.response}}
+      @onDetailsToggle={{this.onDetailsToggle}}
+    />`);
 
     await click('.missing-intervals-warning__contents');
-
-    later(() => done(), 300);
+    await animationsSettled();
   });
 });
