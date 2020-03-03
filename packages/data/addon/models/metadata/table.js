@@ -3,8 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import EmberObject from '@ember/object';
-import { getOwner } from '@ember/application';
-import { tracked } from '@glimmer/tracking';
+import { inject as service } from '@ember/service';
 
 export default class Table extends EmberObject {
   /**
@@ -12,6 +11,12 @@ export default class Table extends EmberObject {
    * @property {String} identifierField
    */
   static identifierField = 'id';
+
+  /**
+   * @property {Ember.Service} keg
+   */
+  @service('keg')
+  keg;
 
   /**
    * @param {String} id
@@ -41,29 +46,24 @@ export default class Table extends EmberObject {
   /**
    * @property {Array} metricIds - array of metric ids
    */
-  @tracked
   metricIds;
 
   /**
    * @property {Array} dimensionIds - array of dimension ids
    */
-  @tracked
   dimensionIds;
 
   /**
    * @property {Array} timeDimensionIds - array of time dimension ids
    */
-  @tracked
   timeDimensionIds;
 
   /**
-   * @param {Metric[]]} metrics
+   * @param {Metric[]} metrics
    */
   get metrics() {
     return this.metricIds.map(metricId => {
-      return getOwner(this)
-        .lookup('service:keg')
-        .getById('metadata/metric', metricId, this.source);
+      return this.keg.getById('metadata/metric', metricId, this.source);
     });
   }
 
@@ -72,9 +72,7 @@ export default class Table extends EmberObject {
    */
   get dimensions() {
     return this.dimensionIds.map(dimensionId => {
-      return getOwner(this)
-        .lookup('service:keg')
-        .getById('metadata/dimension', dimensionId, this.source);
+      return this.keg.getById('metadata/dimension', dimensionId, this.source);
     });
   }
 
@@ -83,9 +81,7 @@ export default class Table extends EmberObject {
    */
   get timeDimensions() {
     return this.timeDimensionIds.map(dimensionId => {
-      return getOwner(this)
-        .lookup('service:keg')
-        .getById('metadata/time-dimension', dimensionId, this.source);
+      return this.keg.getById('metadata/time-dimension', dimensionId, this.source);
     });
   }
 

@@ -6,8 +6,15 @@
  * The values control configuration for an argument on a base metric
  */
 import EmberObject from '@ember/object';
+import { inject as service } from '@ember/service';
 
 export default class FunctionArgument extends EmberObject {
+  /**
+   * @property {Service} metadataService
+   */
+  @service('bard-metadata')
+  metadataService;
+
   /**
    * @property {String} id
    */
@@ -35,13 +42,32 @@ export default class FunctionArgument extends EmberObject {
 
   /**
    * @property {String} expression - used if type is ref to get the valid values
+   * Expected format is e.g. "dimension:dimensionOne" or "self" if the values come from an enum
    */
   expression;
 
   /**
+   * @private
+   * @property {String[]} _localValues
+   * if metric function ids are not supplied by the metadata endpoint,
+   * then enum values provided in the parameter will be placed here
+   */
+  _localValues;
+
+  /**
    * @property {String[]} values - array of values used for function arguments with an enum type
    */
-  values;
+  get values() {
+    if (this.expression === 'self') {
+      return this._localValues;
+    }
+
+    const [type, id] = this.expression.split(':');
+    if (this.type === 'ref' && type && id) {
+      return this.metadataService.findById(type, id);
+    }
+    return undefined;
+  }
 
   /**
    * @property {String} defaultValue

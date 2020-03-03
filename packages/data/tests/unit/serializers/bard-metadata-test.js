@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 
-const uuidRegex = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+const emberGuidRegex = /ember\d+/;
 
 const Payload = {
     source: 'dummy',
@@ -252,7 +252,8 @@ const Payload = {
       source: 'dummy',
       tableId: 'tableName',
       valueType: 'text',
-      storageStrategy: null
+      storageStrategy: null,
+      timegrains: ['day', 'month']
     },
     {
       category: 'categoryTwo',
@@ -261,7 +262,8 @@ const Payload = {
       source: 'dummy',
       tableId: 'tableName',
       valueType: 'text',
-      storageStrategy: null
+      storageStrategy: null,
+      timegrains: ['day', 'month']
     },
     {
       category: 'categoryTwo',
@@ -270,7 +272,8 @@ const Payload = {
       source: 'dummy',
       tableId: 'secondTable',
       valueType: 'text',
-      storageStrategy: null
+      storageStrategy: null,
+      timegrains: ['day', 'week']
     }
   ],
   TimeDimensions = [
@@ -281,7 +284,8 @@ const Payload = {
       source: 'dummy',
       tableId: 'tableName',
       valueType: 'date',
-      storageStrategy: null
+      storageStrategy: null,
+      timegrains: ['day', 'month']
     },
     {
       category: 'dateCategory',
@@ -290,7 +294,8 @@ const Payload = {
       source: 'dummy',
       tableId: 'secondTable',
       valueType: 'date',
-      storageStrategy: null
+      storageStrategy: null,
+      timegrains: ['day', 'week']
     }
   ],
   Metrics = [
@@ -300,7 +305,8 @@ const Payload = {
       name: 'Metric One',
       valueType: 'number',
       source: 'dummy',
-      tableId: 'tableName'
+      tableId: 'tableName',
+      timegrains: ['day', 'month']
     },
     {
       category: 'category',
@@ -308,7 +314,8 @@ const Payload = {
       name: 'Metric Two',
       valueType: 'money',
       source: 'dummy',
-      tableId: 'tableName'
+      tableId: 'tableName',
+      timegrains: ['day', 'month']
     },
     {
       category: 'category',
@@ -316,7 +323,8 @@ const Payload = {
       name: 'Metric One',
       valueType: 'number',
       source: 'dummy',
-      tableId: 'secondTable'
+      tableId: 'secondTable',
+      timegrains: ['day', 'week']
     },
     {
       category: 'category',
@@ -324,7 +332,8 @@ const Payload = {
       name: 'Metric Two',
       valueType: 'money',
       source: 'dummy',
-      tableId: 'secondTable'
+      tableId: 'secondTable',
+      timegrains: ['day']
     },
     {
       category: 'category',
@@ -332,7 +341,8 @@ const Payload = {
       name: 'Metric Three',
       valueType: 'number',
       source: 'dummy',
-      tableId: 'secondTable'
+      tableId: 'secondTable',
+      timegrains: ['week']
     }
   ],
   FunctionArguments = [
@@ -341,7 +351,7 @@ const Payload = {
       name: 'currency',
       valueType: 'TEXT',
       type: 'ref',
-      expression: 'displayCurrency',
+      expression: 'dimension:displayCurrency',
       values: null,
       defaultValue: 'USD'
     },
@@ -408,19 +418,16 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
         name: 'currency',
         valueType: 'TEXT',
         type: 'ref',
-        expression: 'displayCurrency',
+        expression: 'dimension:displayCurrency',
         values: null,
         defaultValue: 'USD'
       }
     ];
-    assert.deepEqual(
-      metricFunctions[0].arguments,
-      currencyMetricFunctionArguments,
-      'The derived metric function has the correct arguments'
-    );
-    assert.ok(uuidRegex.test(metricFunctions[0].id), 'Derived metric function has a uuid as the id');
 
-    const metricFunctionId = metricFunctions[0].id;
+    const { id: metricFunctionId, arguments: args } = metricFunctions[0];
+    assert.deepEqual(args, currencyMetricFunctionArguments, 'The derived metric function has the correct arguments');
+    assert.ok(emberGuidRegex.test(metricFunctionId), 'Derived metric function has a uuid as the id');
+
     const expectedMetricsWithFunctionIds = Metrics.map(metric => {
       if (metric.valueType === 'money') {
         metric.metricFunctionId = metricFunctionId;
@@ -529,7 +536,8 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
           name: 'Metric One',
           valueType: 'number',
           source: 'dummy',
-          tableId: 'tableName'
+          tableId: 'tableName',
+          timegrains: ['day', 'month']
         },
         {
           category: 'category',
@@ -538,7 +546,8 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
           valueType: 'money',
           source: 'dummy',
           tableId: 'tableName',
-          metricFunctionId: 'moneyMetric'
+          metricFunctionId: 'moneyMetric',
+          timegrains: ['day', 'month']
         }
       ],
       'The metric with parameters has a metricFunctionId provided by the raw data'
@@ -571,7 +580,8 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
           source: 'dummy',
           tableId: 'tableName',
           valueType: 'text',
-          storageStrategy: null
+          storageStrategy: null,
+          timegrains: ['day', 'month']
         }
       ],
       'The lone dimension on the table is returned in the dimensions list'
@@ -621,42 +631,42 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
   });
 
   test('_getMetricFunction', function(assert) {
-    assert.expect(10);
+    assert.expect(9);
 
-    const metricFunctions = [];
+    const metricFunctions = new Set();
 
     const result = Serializer._getMetricFunction(metricFunctions, FunctionArguments);
     assert.deepEqual(
       Object.keys(result),
-      ['id', 'name', 'description', 'arguments'],
+      ['name', 'description', 'arguments', 'id'],
       'Serialized metric function object is returned in the right shape'
     );
-    assert.ok(uuidRegex.test(result.id), 'A metric function with a uuid as its id is returned');
-    assert.deepEqual(
-      metricFunctions,
-      [result],
-      'The newly created metric function is pushed to the metric functions dictionary'
-    );
+    assert.ok(emberGuidRegex.test(result.id), 'A metric function with a ember-guid as its id is returned');
     assert.deepEqual(result.arguments, FunctionArguments, 'The newly created metric function contains the arguments');
 
+    // Add result to the metric functions set
+    metricFunctions.add(result);
+
     const sameResult = Serializer._getMetricFunction(metricFunctions, FunctionArguments);
-    assert.deepEqual(
+    assert.equal(
+      //explicitly use assert.equal because we are checking that they are the same reference
       sameResult,
       result,
       'Passing the same arguments as an existing metric function returns the existing metric function'
     );
-    assert.deepEqual(metricFunctions, [result], 'No new metric functions should have been created');
+    assert.deepEqual([...metricFunctions], [result], 'No new metric functions should have been created');
 
     const distinctResult = Serializer._getMetricFunction(metricFunctions, [FunctionArguments[0]]);
-    assert.deepEqual(
-      metricFunctions,
-      [result, distinctResult],
-      'A new metric function is added to the dictionary when there is no existing metric function with the exact same arguments'
+    assert.notEqual(
+      // Make sure the new result is a different reference
+      distinctResult,
+      result,
+      'A new metric function is created when there is no existing metric function with the exact same arguments'
     );
-    assert.ok(uuidRegex.test(distinctResult.id), 'New metric function with a uuid as its id is returned');
+    assert.ok(emberGuidRegex.test(distinctResult.id), 'New metric function with a uuid as its id is returned');
     assert.deepEqual(
       Object.keys(distinctResult),
-      ['id', 'name', 'description', 'arguments'],
+      ['name', 'description', 'arguments', 'id'],
       'Serialized metric function object is returned in the right shape'
     );
     assert.deepEqual(

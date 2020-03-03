@@ -39,7 +39,7 @@ export default class Dimension extends Column {
    * @property {CardinalitySize} cardinality - the cardinality size of the table the dimension is sourced from
    */
   get cardinality() {
-    return this.sourceColumn.table.cardinalitySize;
+    return this.table.cardinalitySize;
   }
 
   /**
@@ -104,6 +104,6 @@ export default class Dimension extends Column {
    */
   get extended() {
     const { metadata, name } = this;
-    return metadata.findById('metric', name);
+    return metadata.findById('dimension', name);
   }
 }

@@ -1,7 +1,8 @@
-import { computed, get } from '@ember/object';
-import { isEmpty } from '@ember/utils';
+/**
+ * Copyright 2020, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
 import { inject as service } from '@ember/service';
-import { getOwner } from '@ember/application';
 import Column from './column';
 
 export default class Metric extends Column {
@@ -10,6 +11,12 @@ export default class Metric extends Column {
    * @property {String} identifierField
    */
   static identifierField = 'id';
+
+  /**
+   * @property {Ember.Service} keg
+   */
+  @service('bard-metadata')
+  metadataService;
 
   /**
    * @property {Ember.Service} metadata
@@ -32,25 +39,21 @@ export default class Metric extends Column {
    * @property {MetricFunction} metricFunction
    */
   get metricFunction() {
-    return getOwner(this)
-      .lookup('service:keg')
-      .getById('metadata/metric/metric-function', this.metricFunctionId, this.source);
+    return this.metadataService.findById('metadata/metric/metric-function', this.metricFunctionId, this.source);
   }
 
   /**
    * @property {Boolean} hasParameters
    */
-  @computed('metricFunction.arguments.[]')
   get hasParameters() {
-    return (this.metricFunction || false) && !isEmpty(get(this, 'metricFunction.arguments'));
+    return !!(this.metricFunction && this.metricFunction?.arguments.length);
   }
 
   /**
-   * @property {Array} paramNames - paramNames for the metric
+   * @property {Array} arguments - arguments for the metric
    */
-  @computed('metricFunction.arguments.[]')
-  get paramNames() {
-    return get(this, 'metricFunction.arguments') || [];
+  get arguments() {
+    return this.metricFunction?.arguments || [];
   }
 
   /**
@@ -61,11 +64,11 @@ export default class Metric extends Column {
    * @returns {Object}
    */
   getParameter(name) {
-    if (!get(this, 'hasParameters')) {
+    if (!this.hasParameters) {
       return;
     }
 
-    return get(this, `metricFunction.arguments`).findBy('name', name);
+    return this.metricFunction.arguments.find(arg => arg.name === name);
   }
 
   /**
@@ -74,11 +77,11 @@ export default class Metric extends Column {
    * @returns {Object|undefined}
    */
   getDefaultParameters() {
-    if (!get(this, 'hasParameters')) {
+    if (!this.hasParameters) {
       return;
     }
 
-    const args = get(this, 'metricFunction.arguments') || [];
+    const { arguments: args } = this;
 
     return args.reduce((acc, curr) => {
       acc[curr.name] = curr.defaultValue;

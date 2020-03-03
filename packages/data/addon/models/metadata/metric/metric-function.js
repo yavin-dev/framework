@@ -4,11 +4,16 @@
  *
  * A collection of function arguments that has a one to many relationship to metrics
  */
-import { getOwner } from '@ember/application';
-import { tracked } from '@glimmer/tracking';
+import { inject as service } from '@ember/service';
 import EmberObject from '@ember/object';
 
 export default class MetricFunction extends EmberObject {
+  /**
+   * @property {Ember.Service} keg
+   */
+  @service('bard-metadata')
+  metadataService;
+
   /**
    * @property {String} id
    */
@@ -32,7 +37,6 @@ export default class MetricFunction extends EmberObject {
   /**
    * @property {String[]} argumentIds - ids that map to the function argument instances related to this metric function
    */
-  @tracked
   argumentIds = [];
 
   /**
@@ -40,9 +44,7 @@ export default class MetricFunction extends EmberObject {
    */
   get arguments() {
     return this.argumentIds.map(argId => {
-      return getOwner(this)
-        .lookup('service:keg')
-        .getById('metadata/metric/metric-function', argId, this.source);
+      return this.metadataService.findById('metadata/metric/function-argument', argId, this.source);
     });
   }
 }

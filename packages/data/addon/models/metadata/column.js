@@ -3,7 +3,6 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import { A as arr } from '@ember/array';
 import EmberObject from '@ember/object';
 
 export default class Column extends EmberObject {
@@ -33,9 +32,14 @@ export default class Column extends EmberObject {
   table;
 
   /**
-   * @property {Column} sourceColumn - defaults to self. point to the terminal source column
+   * @property {String} type - will be "ref", "formula", or "field" depending on where its values are sourced from
    */
-  sourceColumn;
+  type;
+
+  /**
+   * @property {String} expression - e.g. tableA.name if type is ref
+   */
+  expression;
 
   /**
    * @property {String} category
@@ -48,7 +52,12 @@ export default class Column extends EmberObject {
   valueType;
 
   /**
-   * @property {Set} tags
+   * @property {String[]} tags
    */
-  tags = arr([]);
+  tags = [];
+
+  /**
+   * @property {String[]} timegrains - supported timegrains for a column
+   */
+  timegrains = [];
 }
