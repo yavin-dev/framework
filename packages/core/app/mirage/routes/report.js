@@ -17,7 +17,7 @@ export default function() {
     if (idFilter) {
       let ids = idFilter.split(',');
       reportObject = reports.find(ids);
-    } else if ('filter[reports]' in request.queryParams) {
+    } else if (queryFilter) {
       reportObject = filterModel(reports, queryFilter);
     } else {
       reportObject = reports.all();
