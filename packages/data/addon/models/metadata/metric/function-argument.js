@@ -55,11 +55,13 @@ export default class FunctionArgument extends EmberObject {
   _localValues;
 
   /**
-   * @property {String[]} values - array of values used for function arguments with an enum type
+   * @property {Promise} values - array of values used for function arguments with an enum type
    */
   get values() {
     if (this.expression === 'self') {
-      return this._localValues;
+      return new Promise(resolve => {
+        resolve(this._localValues);
+      });
     }
 
     const [type, id] = this.expression.split(':');
