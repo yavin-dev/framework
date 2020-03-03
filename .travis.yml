@@ -19,7 +19,7 @@ cache:
     - '$HOME/.gradle/wrapper/'
 env:
   global:
-    - NODE_VERSION=8.16.0
+    - NODE_VERSION=12.16.0
     - JOBS=1 # See https://git.io/vdao3 for details.
   jobs:
     - PACKAGE=navi-app
