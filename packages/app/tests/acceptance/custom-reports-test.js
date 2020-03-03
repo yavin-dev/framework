@@ -1,10 +1,10 @@
-import { click, currentURL, find, visit } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
-import { linkContains } from '../helpers/contains-helpers';
-import $ from 'jquery';
+import { click, currentURL, find, visit } from '@ember/test-helpers';
+import { linkContains } from 'navi-core/test-support/contains-helpers';
 import { selectChoose } from 'ember-power-select/test-support';
+import { clickItemFilter } from 'navi-reports/test-support/report-builder';
 
 module('Acceptance | custom reports', function(hooks) {
   setupApplicationTest(hooks);
@@ -47,7 +47,7 @@ module('Acceptance | custom reports', function(hooks) {
     await visit('/reports/new');
 
     // Add filter
-    await click($('.checkbox-selector--dimension .grouped-list__item:contains(Character) .grouped-list__filter')[0]);
+    await clickItemFilter('dimension', 'Character');
     await selectChoose('.filter-values--dimension-select__trigger', 'Luigi');
     assert.dom('.filter-builder-dimension__values').containsText('Luigi', 'A filter value can be selected');
 

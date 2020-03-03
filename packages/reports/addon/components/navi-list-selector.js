@@ -16,7 +16,6 @@
 
 import Component from '@ember/component';
 import { set, get, computed } from '@ember/object';
-import { or } from '@ember/object/computed';
 import layout from '../templates/components/navi-list-selector';
 import { searchRecords } from 'navi-core/utils/search';
 
@@ -47,7 +46,9 @@ export default Component.extend({
   /**
    * @property {Boolean} areItemsFiltered - true if items are filtered by selected state or a search query
    */
-  areItemsFiltered: or('showSelected', 'query'),
+  areItemsFiltered: computed('showSelected', 'query', function() {
+    return !!this.showSelected || !!this.query;
+  }),
 
   /*
    * @property {Array} filteredItems - items filtered either by selected and by searchQuery

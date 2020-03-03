@@ -218,5 +218,16 @@ export default Service.extend({
       return defaultIfNone;
     }
     return getWithDefault(meta, field, defaultIfNone);
+  },
+
+  /**
+   * Convenience method to get namespace of a table
+   * @param {String} table
+   * @returns {string} - namespace
+   */
+  getTableNamespace(table) {
+    const items = this._keg.getBy('metadata/table', recordTable => (recordTable.name = table));
+
+    return items.length ? items[0].source : getDefaultDataSourceName();
   }
 });

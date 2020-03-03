@@ -9,7 +9,7 @@ import { assert, warn } from '@ember/debug';
 import { inject as service } from '@ember/service';
 import { assign } from '@ember/polyfills';
 import EmberObject, { get } from '@ember/object';
-import { configHost } from '../../utils/adapter';
+import { configHost, getDefaultDataSourceName } from '../../utils/adapter';
 import { serializeFilters } from '../bard-facts';
 
 const SUPPORTED_FILTER_OPERATORS = ['in', 'notin', 'startswith', 'contains'];
@@ -52,10 +52,11 @@ export default EmberObject.extend({
    * @method _getDimensionMetadata
    * @private
    * @param {String} dimensionName - name of dimension
+   * @param {String} namespace - namespace of keg.
    * @returns {Object} metadata object
    */
-  _getDimensionMetadata(dimensionName) {
-    return get(this, 'bardMetadata').getById('dimension', dimensionName);
+  _getDimensionMetadata(dimensionName, namespace=getDefaultDataSourceName()) {
+  return this.bardMetadata.getById('dimension', dimensionName, namespace);
   },
 
   /**
@@ -84,9 +85,10 @@ export default EmberObject.extend({
    * @param {String} query.field - field used to query
    * @param {String} query.operator - valid operators 'contains', 'in'
    * @param {Array<String|number>} query.values
+   * @param {Object} options - adapter options
    * @returns {String} filter query string
    */
-  _buildFilterQuery(dimension, andQueries) {
+  _buildFilterQuery(dimension, andQueries, options = {}) {
     if (!Array.isArray(andQueries)) {
       warn('_buildFilterQuery() was not passed an array of AND queries, wrapping as single query array', {
         id: 'bard-_buildFilterQuery-query-as-array'
@@ -96,7 +98,9 @@ export default EmberObject.extend({
     assert("You must pass an 'Array' of queries to be ANDed together", Array.isArray(andQueries));
     let defaultQueryOptions = {
       dimension,
-      field: this._getDimensionMetadata(dimension).get('primaryKeyFieldName'),
+      field: this._getDimensionMetadata(dimension, options.dataSourceName || getDefaultDataSourceName()).get(
+        'primaryKeyFieldName'
+      ),
       operator: 'in',
       values: []
     };
@@ -260,7 +264,7 @@ export default EmberObject.extend({
 
     // If filter query is present, build query having the filter
     if (andQueries) {
-      data = this._buildFilterQuery(dimension, andQueries);
+      data = this._buildFilterQuery(dimension, andQueries, options);
     }
 
     return this._find(url, data, options);
@@ -285,7 +289,7 @@ export default EmberObject.extend({
       data = {};
 
     if (andQueries) {
-      data = this._buildSearchQuery(dimension, andQueries);
+      data = this._buildSearchQuery(dimension, andQueries, options);
     }
 
     return this._find(url, data, options);

@@ -10,26 +10,23 @@
  */
 
 import { readOnly } from '@ember/object/computed';
-import { scheduleOnce, later } from '@ember/runloop';
+import { scheduleOnce } from '@ember/runloop';
 import { capitalize } from '@ember/string';
 import { inject as service } from '@ember/service';
 import Component from '@ember/component';
 import { set, get, computed, action } from '@ember/object';
 import layout from '../templates/components/report-view';
-import { DETAILS_DURATION } from '../transitions';
 import { layout as templateLayout, classNames } from '@ember-decorators/component';
 import { observes } from '@ember-decorators/object';
+import move from 'ember-animated/motions/move';
+import { easeOut, easeIn } from 'ember-animated/easings/cosine';
+import { fadeOut, fadeIn } from 'ember-animated/motions/opacity';
 
 const VISUALIZATION_RESIZE_EVENT = 'resizestop';
 
 @templateLayout(layout)
 @classNames('report-view') //Cannot be tagless because of the resize event needing an element value on this component
 class ReportView extends Component {
-  /**
-   * @property {Number} warningAnimationDuration - amount of time in ms for missing intervals warning to expand
-   */
-  warningAnimationDuration = DETAILS_DURATION;
-
   /**
    * Property representing any data useful for providing additional functionality to a visualization and request
    * Acts a hook to be extended by other navi addons
@@ -118,8 +115,8 @@ class ReportView extends Component {
    * @method doResizeVisualization
    */
   doResizeVisualization() {
-    if (this.$()) {
-      this.$().trigger(VISUALIZATION_RESIZE_EVENT);
+    if (this.element) {
+      this.element.dispatchEvent(new Event(VISUALIZATION_RESIZE_EVENT));
     }
   }
 
@@ -140,15 +137,14 @@ class ReportView extends Component {
   @action
   toggleEditVisualization() {
     this.toggleProperty('isEditingVisualization');
-    scheduleOnce('afterRender', this, 'resizeVisualization');
   }
 
   /**
    * @action resizeVisualization
    */
   @action
-  resizeVisualization(delay) {
-    later(this, 'doResizeVisualization', delay);
+  resizeVisualization() {
+    scheduleOnce('afterRender', this, 'doResizeVisualization');
   }
 
   /**
@@ -176,6 +172,39 @@ class ReportView extends Component {
     set(report, 'visualization', newVisualization);
     this.set('showRequestPreview', false);
   }
-}
 
+  /**
+   * @property fadeTransition - fade transition
+   */
+  @action
+  *fadeTransition({ removedSprites, insertedSprites }) {
+    // fadeIn a little bit longer so we can see the fade after the drawer closes
+    yield Promise.all(insertedSprites.map(s => fadeIn(s, { duration: 800 })));
+    yield Promise.all(removedSprites.map(fadeOut));
+  }
+
+  /**
+   * @param drawerTransition - drawer transition
+   */
+  @action
+  *drawerTransition({ insertedSprites, removedSprites }) {
+    const x = document.querySelector('.report-view__animation-container').getBoundingClientRect().right;
+    yield Promise.all(
+      insertedSprites.map(sprite => {
+        sprite.startAtPixel({ x });
+        sprite.applyStyles({ 'z-index': '1' });
+        return move(sprite, { easing: easeOut });
+      })
+    );
+
+    yield Promise.all(
+      removedSprites.map(sprite => {
+        sprite.applyStyles({ 'z-index': '1' });
+        sprite.endAtPixel({ x });
+        return move(sprite, { easing: easeIn });
+      })
+    );
+    this.doResizeVisualization();
+  }
+}
 export default ReportView;

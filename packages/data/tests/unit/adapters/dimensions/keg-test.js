@@ -36,16 +36,25 @@ module('Unit | Adapters | Dimensions | Keg', function(hooks) {
   setupTest(hooks);
 
   hooks.beforeEach(function() {
-    this.owner.register('model:dimension/dimensionOne', EmberObject.extend({ name: 'dimensionOne' }));
+    this.owner.register('model:dimension/dummy.dimensionOne', EmberObject.extend({ name: 'dimensionOne' }));
+    this.owner.register('model:dimension/blockhead.dimensionFour', EmberObject.extend({ name: 'dimensionFour' }));
 
     Adapter = this.owner.lookup('adapter:dimensions/keg');
 
     Keg = Adapter.get('keg');
-    Keg.pushMany('dimension/dimensionOne', Records);
+    Keg.pushMany('dimension/dummy.dimensionOne', Records, { namespace: 'dummy' });
+    Keg.pushMany('dimension/blockhead.dimensionFour', [{ id: 1, description: 'one' }, { id: 2, description: 'two' }], {
+      namespace: 'blockhead'
+    });
 
     //Load metadata
     Server = new Pretender(metadataRoutes);
-    return this.owner.lookup('service:bard-metadata').loadMetadata();
+    metadataRoutes.bind(Server)(1);
+
+    return Promise.all([
+      this.owner.lookup('service:bard-metadata').loadMetadata(),
+      this.owner.lookup('service:bard-metadata').loadMetadata({ dataSourceName: 'blockhead' })
+    ]);
   });
 
   hooks.afterEach(function() {
@@ -68,20 +77,29 @@ module('Unit | Adapters | Dimensions | Keg', function(hooks) {
     );
   });
 
-  test('all', function(assert) {
-    assert.expect(1);
+  test('all', async function(assert) {
+    assert.expect(3);
 
-    return Adapter.all('dimensionOne').then(result => {
-      assert.deepEqual(
-        result.rows.mapBy('id'),
-        [1, 2, 3],
-        'all() contains the expected response object for Test dimension without any filters'
-      );
-    });
+    const result = await Adapter.all('dimensionOne');
+    assert.deepEqual(
+      result.rows.mapBy('id'),
+      [1, 2, 3],
+      'all() contains the expected response object for Test dimension without any filters'
+    );
+
+    const blockheadResult = await Adapter.all('dimensionFour', { dataSourceName: 'blockhead' });
+    assert.deepEqual(
+      blockheadResult.rows.mapBy('id'),
+      [1, 2],
+      'all() contains the expected response object for blockhead dimension without any filters'
+    );
+
+    const nonFoundResult = await Adapter.all('dimensionFour');
+    assert.deepEqual(nonFoundResult.rows.mapBy('id'), [], "all() returns empty array when dimension can't be found");
   });
 
   test('find', async function(assert) {
-    assert.expect(8);
+    assert.expect(9);
 
     const assertThrowOperator = query => {
       assert.throws(
@@ -125,22 +143,32 @@ module('Unit | Adapters | Dimensions | Keg', function(hooks) {
       { field: 'id', values: [3, 4] },
       { field: 'description', values: ['bar', 'gar'] }
     ]).then(assertEquals([3], 'find() returns expected when passed multiple overlapping filters'));
+
+    await Adapter.find('dimensionFour', [{ field: 'description', values: ['two'] }], {
+      dataSourceName: 'blockhead'
+    }).then(assertEquals([2], 'find() returns expected when using a dimension from a different data source'));
   });
 
-  test('findById', function(assert) {
-    assert.expect(1);
+  test('findById', async function(assert) {
+    assert.expect(2);
 
-    return Adapter.findById('dimensionOne', '1').then(result => {
-      assert.deepEqual(
-        result.get('id'),
-        1,
-        'findById() returns the expected response object for Test dimension, identifierField and query'
-      );
-    });
+    const result = await Adapter.findById('dimensionOne', '1');
+    assert.deepEqual(
+      result.id,
+      1,
+      'findById() returns the expected response object for Test dimension, identifierField and query'
+    );
+
+    const blockheadResult = await Adapter.findById('dimensionFour', '1', 'blockhead');
+    assert.deepEqual(
+      blockheadResult.description,
+      'one',
+      'findById() returns the expected response object for the blockhead sourced dimension'
+    );
   });
 
   test('getById', function(assert) {
-    assert.expect(3);
+    assert.expect(4);
 
     assert.deepEqual(
       Adapter.getById('unknownDimensionName', '1'),
@@ -159,16 +187,31 @@ module('Unit | Adapters | Dimensions | Keg', function(hooks) {
       1,
       'getById() returns the expected response object for Test dimension, identifierField and query'
     );
+
+    assert.deepEqual(
+      Adapter.getById('dimensionFour', '1', 'blockhead').description,
+      'one',
+      'getById() returns the expected response object from a dimension in another namespace'
+    );
   });
 
   test('pushMany', function(assert) {
-    assert.expect(2);
+    assert.expect(4);
     Adapter.pushMany('dimensionOne', [{ id: 22, foo: 'bar' }, { id: 44, foo: 'baz' }]);
+    Adapter.pushMany('dimensionFour', [{ id: 77, foo: 'quux' }, { id: 99, foo: 'plugh' }], {
+      dataSourceName: 'blockhead'
+    });
 
-    let { foo: bar } = Keg.getById('dimension/dimensionOne', 22);
+    let { foo: bar } = Keg.getById('dimension/dummy.dimensionOne', 22, 'dummy');
     assert.deepEqual(bar, 'bar', 'pushMany stores records into the keg');
 
-    let { foo: baz } = Keg.getById('dimension/dimensionOne', 44);
+    let { foo: baz } = Keg.getById('dimension/dummy.dimensionOne', 44, 'dummy');
     assert.deepEqual(baz, 'baz', 'pushMany stores records into the keg');
+
+    let { foo: quux } = Keg.getById('dimension/blockhead.dimensionFour', 77, 'blockhead');
+    assert.deepEqual(quux, 'quux', 'pushMany stores records into the keg from different datasource');
+
+    let { foo: plugh } = Keg.getById('dimension/blockhead.dimensionFour', 99, 'blockhead');
+    assert.deepEqual(plugh, 'plugh', 'pushMany stores records into the keg from different datasource');
   });
 });

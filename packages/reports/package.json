@@ -28,6 +28,7 @@
     "@ember/optional-features": "^1.1.0",
     "@html-next/vertical-collection": "^1.0.0",
     "ember-ajax": "^5.0.0",
+    "ember-animated": "^0.10.0",
     "ember-auto-import": "^1.5.3",
     "ember-cli-babel": "^7.7.3",
     "ember-cli-clipboard": "^0.8.1",
@@ -54,7 +55,6 @@
     "ember-tooltips": "^3.2.0",
     "ember-truth-helpers": "^2.0.0",
     "ember-uuid": "^1.0.0",
-    "liquid-fire": "^0.31.0",
     "lodash-es": "^4.17.11",
     "navi-core": "0.2.0",
     "navi-data": "0.2.0"
@@ -90,6 +90,7 @@
     "ember-power-select": "^2.3.5",
     "ember-qunit": "^4.6.0",
     "ember-qunit-assert-helpers": "^0.2.1",
+    "ember-raf-scheduler": "^0.1.0",
     "ember-resize": "^0.3.4",
     "ember-resolver": "^5.0.1",
     "ember-sortable": "2.1.3",
