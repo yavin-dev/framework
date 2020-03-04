@@ -61,10 +61,9 @@ export default class Dimension extends Column {
    * @returns {Array} array of tags
    */
   getTagsForField(fieldName) {
-    const fields = this.fields;
-    const field = fields.find(f => f.name === fieldName) || {};
+    const field = this.fields.find(f => f.name === fieldName);
 
-    return field.tags || [];
+    return field?.tags || [];
   }
 
   /**
@@ -85,8 +84,8 @@ export default class Dimension extends Column {
    */
   get primaryKeyFieldName() {
     const { primaryKeyTag: tag } = this;
-    const field = this.getFieldsForTag(tag)[0] || {};
-    return field.name || 'id';
+    const field = this.getFieldsForTag(tag)[0];
+    return field?.name || 'id';
   }
 
   /**
@@ -94,8 +93,8 @@ export default class Dimension extends Column {
    */
   get descriptionFieldName() {
     const { descriptionTag: tag } = this;
-    const field = this.getFieldsForTag(tag)[0] || {};
-    return field.name || 'desc';
+    const field = this.getFieldsForTag(tag)[0];
+    return field?.name || 'desc';
   }
 
   /**
@@ -103,8 +102,8 @@ export default class Dimension extends Column {
    */
   get idFieldName() {
     const { idTag: tag } = this;
-    const field = this.getFieldsForTag(tag)[0] || {};
-    return field.name || this.primaryKeyFieldName;
+    const field = this.getFieldsForTag(tag)[0];
+    return field?.name || this.primaryKeyFieldName;
   }
 
   /**

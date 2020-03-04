@@ -69,7 +69,7 @@ export default class FunctionArgument extends EmberObject {
 
     const [type, id] = this.expression.split(':');
     if (this.type === 'ref' && type && id) {
-      return this.metadataService.findById(type, id), this.source;
+      return this.metadataService.findById(type, id, this.source);
     }
     return undefined;
   }
