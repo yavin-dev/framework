@@ -83,12 +83,12 @@ class LookbackInput extends BaseIntervalComponent {
 
   @computed('calendarDateTimePeriod', 'lookback', 'dateRange')
   get dateDescription() {
-    const { calendarDateTimePeriod, dateRange, lookBack } = this;
-    let datePeriod = this.calendarDateTimePeriod;
-    if (this.calendarDateTimePeriod === 'hour') {
+    const { calendarDateTimePeriod, dateRange } = this;
+    let datePeriod = calendarDateTimePeriod;
+    if (datePeriod === 'hour') {
       datePeriod = 'day';
     }
-    return `${datePeriod}${(this.lookback === 1 ? '' : 's') + ' (' + this.dateRange + ')'}`;
+    return `${datePeriod}${this.lookback === 1 ? '' : 's'} (${dateRange})`;
   }
 
   /**
