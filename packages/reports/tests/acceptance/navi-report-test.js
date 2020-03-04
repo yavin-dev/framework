@@ -614,7 +614,7 @@ module('Acceptance | Navi Report', function(hooks) {
     });
 
     /* == Change to table == */
-    await click($('.visualization-toggle__option:contains(Data Table)')[0]);
+    await click('.visualization-toggle__option[title="Data Table"]');
     await click('.navi-report__run-btn');
     await clickTrigger('.multiple-format-export');
 
@@ -830,13 +830,13 @@ module('Acceptance | Navi Report', function(hooks) {
 
     assert.dom('.c3-legend-item').exists({ count: 3 }, 'Line chart visualization has 3 series as configured');
 
-    await click($('.visualization-toggle__option:contains(Data Table)')[0]);
+    await click('.visualization-toggle__option[title="Data Table"]');
 
     assert.ok(!!findAll('.table-widget').length, 'table visualization is shown when selected');
 
     assert.dom('.report-view__visualization-edit-btn').hasText('Edit Table', 'Edit Data Table label is displayed');
 
-    await click($('.visualization-toggle__option:contains(Line Chart)')[0]);
+    await click('.visualization-toggle__option[title="Line Chart"]');
 
     assert.ok(!!findAll('.line-chart-widget').length, 'line-chart visualization is shown when selected');
 
@@ -973,7 +973,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.ok(!!findAll('.line-chart-widget').length, 'Line chart visualization is shown as configured');
 
     /* == Switch to table == */
-    await click($('.visualization-toggle__option:contains(Data Table)')[0]);
+    await click('.visualization-toggle__option[title="Data Table"]');
 
     assert.ok(!!findAll('.table-widget').length, 'table visualization is shown when selected');
 
@@ -992,7 +992,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.ok(!!findAll('.line-chart-widget').length, 'Line chart visualization is shown as configured');
 
     /* == Switch to table == */
-    await click($('.visualization-toggle__option:contains(Data Table)')[0]);
+    await click('.visualization-toggle__option[title="Data Table"]');
 
     assert.ok(!!findAll('.table-widget').length, 'table visualization is shown when selected');
 
@@ -1002,7 +1002,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.ok(!!findAll('.table-widget').length, 'table visualization is still shown when saved');
 
     /* == Switch to chart == */
-    await click($('.visualization-toggle__option:contains(Line Chart)')[0]);
+    await click('.visualization-toggle__option[title="Line Chart"]');
 
     assert.ok(!!findAll('.line-chart-widget').length, 'line-chart visualization is shown when selected');
 
@@ -1029,7 +1029,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.ok(!!findAll('.table-widget').length, 'Table visualization is still shown when saved');
 
     /* == Switch to metric label == */
-    await click($('.visualization-toggle__option:contains(Metric Label)')[0]);
+    await click('.visualization-toggle__option[title="Metric Label"]');
 
     assert.ok(!!findAll('.metric-label-vis').length, 'Metric label visualization is shown when selected');
 
@@ -1304,7 +1304,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     /* == Modify report by adding a metric == */
     await visit('/reports/1/view');
-    await click($('.visualization-toggle__option:contains(Data Table)')[0]);
+    await click('.visualization-toggle__option[title="Data Table"]');
     await clickItem('metric', 'Time Spent');
     await click('.navi-report__run-btn');
 
@@ -1338,7 +1338,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await click('.navi-report__cancel-btn');
     await selectChoose('.navi-table-select__dropdown', 'Network');
     await click('.navi-report__run-btn');
-    await click($('.visualization-toggle__option:contains(Table)')[0]);
+    await click('.visualization-toggle__option[title="Data Table"]');
 
     assert.equal(currentURL(), '/reports/1/view', 'check to seee if we are on the view route');
 
@@ -1959,7 +1959,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.expect(4);
     await visit('/reports/2/view');
 
-    await click($('.visualization-toggle__option:contains(Data Table)')[0]);
+    await click('.visualization-toggle__option[title="Data Table"]');
     await click('.report-view__visualization-edit-btn');
 
     await click(findAll('.number-format-dropdown__trigger')[1]); // open nav clicks dropdown
