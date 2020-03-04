@@ -67,6 +67,8 @@ module('Acceptance | date filter', function(hooks) {
   });
 
   test('verify the different time grains work as expected', async function(assert) {
+    assert.expect(72);
+
     await visit('/reports/1/view');
 
     const timeGrains = ['Hour', 'Day', 'Week', 'Month', 'Quarter', 'Year'];
@@ -80,10 +82,10 @@ module('Acceptance | date filter', function(hooks) {
       );
 
       await clickTrigger('.filter-values--date-range-input__low-value .ember-basic-dropdown-trigger');
-      assert.ok(!!$('.ember-power-calendar')[0], 'Low value calendar opened');
+      assert.dom('.ember-power-calendar').exists('Low value calendar opened');
 
       await clickTrigger('.filter-values--date-range-input__high-value .ember-basic-dropdown-trigger');
-      assert.ok(!!$('.ember-power-calendar')[0], 'High value calendar opened');
+      assert.dom('.ember-power-calendar').exists('High value calendar opened');
 
       await click($('.filter-builder__operator:contains(Between) .filter-builder__select-trigger')[0]);
       await click($('li.ember-power-select-option:contains(Current)')[0]);
@@ -102,7 +104,7 @@ module('Acceptance | date filter', function(hooks) {
       );
 
       await clickTrigger('.filter-values--lookback-input .ember-basic-dropdown-trigger');
-      assert.ok(!!$('.navi-basic-dropdown-content')[0], 'Preset dropdown opened');
+      assert.dom('.navi-basic-dropdown-content').exists('Preset dropdown opened');
 
       await click($('.filter-builder__operator:contains(In The Past) .filter-builder__select-trigger')[0]);
       await click($('li.ember-power-select-option:contains(Since)')[0]);
@@ -112,7 +114,7 @@ module('Acceptance | date filter', function(hooks) {
       );
 
       await clickTrigger('.filter-values--since-input__low-value .ember-basic-dropdown-trigger');
-      assert.ok(!!$('.ember-power-calendar')[0], 'Low value calendar opened');
+      assert.dom('.ember-power-calendar').exists('Low value calendar opened');
 
       await click($('.filter-builder__operator:contains(Since) .filter-builder__select-trigger')[0]);
       await click($('li.ember-power-select-option:contains(Advanced)')[0]);
@@ -121,10 +123,7 @@ module('Acceptance | date filter', function(hooks) {
         'Advanced is the selected filter builder operator'
       );
 
-      assert.ok(
-        !!$('.filter-values--advanced-interval-input__value').length,
-        'The advanced interval selector is shown'
-      );
+      assert.dom('.filter-values--advanced-interval-input__value').exists('The advanced interval selector is shown');
     }
   });
 });

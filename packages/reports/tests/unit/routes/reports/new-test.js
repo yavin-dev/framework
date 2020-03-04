@@ -147,9 +147,9 @@ module('Unit | Route | reports/new', function(hooks) {
         tableTimeGrains = A(get(table, 'timeGrains')),
         timeGrainName = this.owner.lookup('route:reports/new')._getDefaultTimeGrainName(table);
 
-      assert.deepEqual(timeGrainName, 'day', 'Return the default time grain from config');
-
       let defaultTimeGrain = get(config, 'navi.defaultTimeGrain');
+
+      assert.deepEqual(timeGrainName, defaultTimeGrain, 'Return the default time grain from config');
 
       set(config, 'navi.defaultTimeGrain', 'year');
       timeGrainName = this.owner.lookup('route:reports/new')._getDefaultTimeGrainName(table);
