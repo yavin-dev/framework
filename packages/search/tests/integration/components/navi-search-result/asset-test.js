@@ -26,12 +26,6 @@ module('Integration | Component | navi-search-result-asset', function(hooks) {
     );
   });
 
-  test('it renders', async function(assert) {
-    await render(hbs`<NaviSearchResult::Asset />`);
-
-    assert.equal(this.element.textContent.trim(), '');
-  });
-
   test('displays results', async function(assert) {
     const result = await service.search.perform('Revenue');
     set(this, 'result', result.find(element => element.component === 'navi-search-result/asset'));
