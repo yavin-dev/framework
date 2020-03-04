@@ -20,7 +20,7 @@
   }}
   {{navi-icon "times-circle" class="navi-list-selector__search-input-clear" click=(action (set this "query" undefined))}}
 </div>
-<div class="navi-list-selector__content">
+<div class="navi-list-selector__content {{@contentClass}}">
   {{#if (eq filteredItems.length 0)}}
     <span class="navi-list-selector__content navi-list-selector__content--error">{{errorMessage}}</span>
   {{else}}

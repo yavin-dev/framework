@@ -66,7 +66,11 @@ module('Unit | Adapter | Dimensions | Bard', function(hooks) {
 
     //Load metadata
     Server.map(metadataRoutes);
-    return this.owner.lookup('service:bard-metadata').loadMetadata();
+    metadataRoutes.bind(Server)(1);
+    return Promise.all([
+      this.owner.lookup('service:bard-metadata').loadMetadata(),
+      this.owner.lookup('service:bard-metadata').loadMetadata({ dataSourceName: 'blockhead' })
+    ]);
   });
 
   hooks.afterEach(function() {
@@ -91,7 +95,7 @@ module('Unit | Adapter | Dimensions | Bard', function(hooks) {
   });
 
   test('_buildFilterQuery', function(assert) {
-    assert.expect(7);
+    assert.expect(8);
 
     assert.deepEqual(
       Adapter._buildFilterQuery('dimensionOne', { values: 'v1' }),
@@ -147,6 +151,12 @@ module('Unit | Adapter | Dimensions | Bard', function(hooks) {
       }),
       { filters: 'dimensionOne|id-in["ok","weird ""quote"" value","but why"]' },
       'correctly wraps values, even with quotes'
+    );
+
+    assert.deepEqual(
+      Adapter._buildFilterQuery('dimensionFour', { values: 'v4' }, { dataSourceName: 'blockhead' }),
+      { filters: 'dimensionFour|id-in["v4"]' },
+      'correctly built filters for dimension in blockhead datasource'
     );
   });
 

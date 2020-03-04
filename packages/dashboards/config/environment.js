@@ -6,6 +6,7 @@ module.exports = function(/* environment, appConfig */) {
       includeTimezone: 'all'
     },
     navi: {
+      widgetsRequestsMaxConcurrency: 15, // Remove or set to Infinity to run all concurrently
       FEATURES: {
         dashboards: true,
         enableDashboardExport: false,

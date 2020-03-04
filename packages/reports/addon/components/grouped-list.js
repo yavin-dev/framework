@@ -1,36 +1,64 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
- *   {{#grouped-list
- *      items=items
- *      shouldOpenAllGroups=false
- *      groupByField=field
- *      sortByField=field
+ *   <GroupedList
+ *      @items={{this.items}}
+ *      @shouldOpenAllGroups={{false}}
+ *      @groupByField={{this.field}}
+ *      @sortByField={{this.field}}
  *      as | item |
- *   }}
+ *   >
  *       {{item.val}}
- *   {{/grouped-list}}
+ *   </GroupedList>
  */
 import Component from '@ember/component';
-import { get, computed } from '@ember/object';
+import { getWithDefault, set, computed, action } from '@ember/object';
 import { isBlank } from '@ember/utils';
 import layout from '../templates/components/grouped-list';
 import { groupBy, sortBy } from 'lodash-es';
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
-export default Component.extend({
-  layout,
+@templateLayout(layout)
+@tagName('')
+class GroupedListComponent extends Component {
+  /**
+   * @property {Object} groupConfigs - contains map from [group] -> config
+   */
+  groupConfigs = {};
 
-  classNames: ['grouped-list'],
+  /**
+   * @property {String} groupedListClass - the class to apply to this element
+   */
+  groupedListClass = 'grouped-list';
 
-  /*
+  /**
+   * @property {String} containerQuerySelector - a query selector to get the parent element of this instance
+   */
+  get containerQuerySelector() {
+    const { containerSelector, groupedListClass, parentView } = this;
+    if (containerSelector) {
+      return containerSelector;
+    }
+    if (!parentView || !parentView.element) {
+      return 'body';
+    }
+    const parentClasses = parentView.element.querySelector(`.${groupedListClass}`).parentElement.classList.value;
+    const parentSelector = parentClasses
+      .split(' ')
+      .filter(cls => cls.length)
+      .map(cls => `.${cls}`)
+      .join('');
+    return parentSelector;
+  }
+
+  /**
    * @property {Object} groupedItems - object with keys as group names and the values as items in the group
    */
-  groupedItems: computed('items', 'groupByField', 'sortByField', function() {
-    let items = get(this, 'items'),
-      groupByField = get(this, 'groupByField'),
-      sortByField = get(this, 'sortByField');
+  @computed('items', 'groupByField', 'sortByField')
+  get groupedItems() {
+    const { items, groupByField, sortByField } = this;
 
     let grouped = groupBy(items, row => row[groupByField].split(',')[0]);
 
@@ -41,5 +69,41 @@ export default Component.extend({
     }
 
     return grouped;
-  })
-});
+  }
+
+  /**
+   * @property {Array<Object>} - list of all groups and the items of opened groups
+   */
+  @computed('groupedItems', 'groupConfigs', 'shouldOpenAllGroups')
+  get flatItems() {
+    const { groupedItems, shouldOpenAllGroups, groupConfigs } = this;
+    return Object.keys(groupedItems).reduce((items, name) => {
+      const groupItems = groupedItems[name];
+      const isOpen = getWithDefault(groupConfigs, `${name}.isOpen`, false) || shouldOpenAllGroups;
+
+      items.push({ name, groupLength: groupItems.length, _isGroup: true, _isOpen: isOpen });
+      if (isOpen) {
+        items.push(...groupItems);
+      }
+      return items;
+    }, []);
+  }
+
+  /**
+   * Toggles the open state for a given group
+   * @action
+   * @method toggleOpen
+   * @param {String} group - the name of the group to toggle the open state
+   * @returns {void}
+   */
+  @action
+  toggleOpen(group) {
+    const { groupConfigs } = this;
+    groupConfigs[group] = groupConfigs[group] || {};
+    groupConfigs[group].isOpen = !this.groupConfigs[group].isOpen;
+
+    set(this, 'groupConfigs', Object.assign({}, groupConfigs));
+  }
+}
+
+export default GroupedListComponent;

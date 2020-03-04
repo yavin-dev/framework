@@ -3,7 +3,7 @@ import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import config from 'ember-get-config';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
-import { buttonContains } from '../helpers/contains-helpers';
+import { buttonContains } from 'navi-core/test-support/contains-helpers';
 
 module('Acceptance | delete transition', function(hooks) {
   setupApplicationTest(hooks);

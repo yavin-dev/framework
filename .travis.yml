@@ -19,7 +19,8 @@ cache:
     - '$HOME/.gradle/wrapper/'
 env:
   global:
-    - NODE_VERSION=8.16.0
+    - NODE_VERSION=12.16.0
+    - JOBS=1 # See https://git.io/vdao3 for details.
   jobs:
     - PACKAGE=navi-app
     - PACKAGE=navi-core
@@ -55,7 +56,10 @@ jobs:
       node_js: '8'
       name: 'NPM'
       script: bash ./scripts/npm-publish.sh
-    - script: bash ./scripts/gh-pages-publish.sh
+    - before_script:
+        - pyenv global 3.6
+        - pip3 install travis-wait-improved
+      script: travis-wait-improved --timeout 30m bash ./scripts/gh-pages-publish.sh
       name: 'GitHub Pages'
       node_js: '8'
       if: branch = master AND repo = yahoo/navi AND type = push

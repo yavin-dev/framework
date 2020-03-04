@@ -1,0 +1,25 @@
+/**
+ * Copyright 2020, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ *
+ * Navi specific styles for ember-basic-dropdown
+ */
+
+@import 'ember-basic-dropdown';
+
+.ember-basic-dropdown-content {
+  z-index: 10;
+}
+
+.navi-basic-dropdown {
+  &-content {
+    .ember-power-select-options;
+    .ember-power-select-dropdown;
+    .ember-power-select-dropdown.ember-basic-dropdown-content--below;
+  }
+
+  &-option {
+    .ember-power-select-option;
+    font-size: @font-size-mid-base;
+  }
+}

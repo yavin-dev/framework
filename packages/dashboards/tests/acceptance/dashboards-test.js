@@ -1,4 +1,4 @@
-import { click, currentURL, fillIn, find, findAll, triggerEvent, visit, blur } from '@ember/test-helpers';
+import { click, currentURL, fillIn, find, findAll, triggerEvent, visit, blur, waitFor } from '@ember/test-helpers';
 import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import config from 'ember-get-config';
@@ -6,6 +6,7 @@ import { setupApplicationTest } from 'ember-qunit';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import { Response } from 'ember-cli-mirage';
 import { selectChoose } from 'ember-power-select/test-support';
+import { clickItem } from 'navi-reports/test-support/report-builder';
 import $ from 'jquery';
 
 let confirm;
@@ -23,13 +24,14 @@ module('Acceptance | Dashboards', function(hooks) {
   });
 
   test('dashboard success', async function(assert) {
-    assert.expect(2);
+    assert.expect(5);
 
     await visit('/dashboards/1');
     assert.dom('.error').doesNotExist('Error message not present when route is successfully loaded');
-    assert
-      .dom('.navi-dashboard')
-      .exists('the dashboard collection component is rendered when route is successfully loaded');
+    assert.dom('.navi-dashboard').exists('the dashboard component is rendered when route is successfully loaded');
+    assert.dom('.navi-widget__content .goal-gauge-widget').exists('the goal gauge widget is rendered');
+    assert.dom('.navi-widget__content .line-chart-widget').exists('the line chart widget is rendered');
+    assert.dom('.navi-widget__content .table-widget').exists('the table widget is rendered');
   });
 
   test('dashboard error', async function(assert) {
@@ -50,6 +52,40 @@ module('Acceptance | Dashboards', function(hooks) {
     await visit('/dashboards/loading');
 
     assert.dom('.loader-container').exists('Loader is present when visiting loading route');
+  });
+
+  test('navigating between dashboards', async function(assert) {
+    assert.expect(5);
+
+    let dataRequestsCount = 0;
+    server.pretender.handledRequest = (_, url) => {
+      if (url.includes('/v1/data')) {
+        dataRequestsCount++;
+      }
+      return { rows: [] };
+    };
+
+    visit('/dashboards/1');
+
+    //navigate to index route before widgets finish loading
+    await waitFor('.navi-dashboard__breadcrumb-link');
+    assert.dom('.navi-widget__content.loader-container').exists({ count: 3 });
+    await click('.navi-dashboard__breadcrumb-link');
+    //navigate to `Dashboard 2`
+    await click('.navi-collection__row1 td:first-child a');
+
+    assert.deepEqual(
+      findAll('.navi-widget__title').map(el => el.textContent.trim()),
+      ['Clicks', 'Last Week By OS'],
+      'Widgets of `Dashboard 2` are successfully rendered'
+    );
+    assert
+      .dom('.navi-widget__content .line-chart-widget')
+      .exists('the line chart widget of `Dashboard 2` is successfully loaded');
+    assert
+      .dom('.navi-widget__content .table-widget')
+      .exists('the table widget of `Dashboard 2` is successfully loaded');
+    assert.equal(dataRequestsCount, 4, 'only 4 requests were fired (third request of first dashboard was canceled)');
   });
 
   test('updates to dashboard layout', async function(assert) {
@@ -383,7 +419,7 @@ module('Acceptance | Dashboards', function(hooks) {
     await click('.add-widget-modal .add-to-dashboard');
 
     // Fill out request
-    await click($('.checkbox-selector--metric .grouped-list__item:contains(Total Clicks) .grouped-list__add-icon')[0]);
+    await clickItem('metric', 'Total Clicks');
 
     // Save without running
     await click('.navi-report-widget__save-btn');
@@ -413,9 +449,7 @@ module('Acceptance | Dashboards', function(hooks) {
     await click('.add-widget-modal .add-to-dashboard');
 
     // Fill out request
-    await click(
-      $('.checkbox-selector--metric .grouped-list__item:contains(Total Page Views) .grouped-list__add-icon')[0]
-    );
+    await clickItem('metric', 'Total Page Views');
 
     // Run request
     await click('.navi-report-widget__run-btn');
@@ -497,7 +531,7 @@ module('Acceptance | Dashboards', function(hooks) {
 
     // Create and save
     await visit('/dashboards/1/widgets/new');
-    await click($('.checkbox-selector--metric .grouped-list__item:contains(Total Clicks) .grouped-list__add-icon')[0]);
+    await clickItem('metric', 'Total Clicks');
     await click('.navi-report-widget__run-btn');
     await click('.navi-report-widget__save-btn');
 
@@ -677,7 +711,7 @@ module('Acceptance | Dashboards', function(hooks) {
     await click('.add-widget-modal .add-to-dashboard');
 
     // Fill out request
-    await click($('.checkbox-selector--metric .grouped-list__item:contains(Total Clicks) .grouped-list__add-icon')[0]);
+    await clickItem('metric', 'Total Clicks');
 
     // Save without running
     await click('.navi-report-widget__save-btn');

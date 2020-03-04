@@ -92,12 +92,36 @@ export default Route.extend({
      * empty filters are pruned from the request
      */
     if (cachedWidgetData && (wasEmptyFilterAdded || wasEmptyFilterRemoved)) {
-      return { dashboard, dataForWidget: cachedWidgetData };
+      return { dashboard, taskByWidget: cachedWidgetData };
     }
-    const dataForWidget = await this.get('dashboardData').fetchDataForDashboard(dashboard);
-    this.set('_widgetDataCache', dataForWidget);
 
-    return { dashboard, dataForWidget };
+    this._cancelWidgetDataTasks();
+    const widgetsData = await this.dashboardData.fetchDataForDashboard(dashboard);
+    this.set('_widgetDataCache', widgetsData);
+
+    return { dashboard, taskByWidget: widgetsData };
+  },
+
+  /**
+   * Cancel running and enqueued widget data tasks, if any
+   *
+   * @private
+   * @method _cancelWidgetDataTasks
+   * @returns {Boolean} - true after canceling
+   */
+  _cancelWidgetDataTasks() {
+    const { id: dashboardId } = this.modelFor('dashboards.dashboard');
+    const { _widgetDataCache } = this;
+
+    if (!_widgetDataCache) {
+      return true;
+    }
+
+    for (const [widgetId, widgetTask] of Object.entries(_widgetDataCache)) {
+      widgetTask.cancel(`dashboard ${dashboardId} canceled widget task ${widgetId}`);
+    }
+
+    return true;
   },
 
   /**
@@ -145,12 +169,28 @@ export default Route.extend({
 
   /**
    * @override
-   * @method deactivate - reset query params on exit of route
+   * @method deactivate - cancel tasks and reset filters, cache on exit of route
    */
   deactivate() {
     this._super(...arguments);
 
-    this.get('controller').set('filters', null);
+    this.controller.set('filters', null);
+
     this.set('_widgetDataCache', null);
+  },
+
+  actions: {
+    /**
+     * @override
+     * @action willTransition
+     * @param {Transition} transition
+     */
+    willTransition(transition) {
+      //don't cancel on filters updates, cancelation is in the `model` hook if model or filter values have changed
+      if (transition.targetName !== this.routeName && transition.targetName !== 'dashboards.dashboard.index') {
+        this._cancelWidgetDataTasks();
+      }
+      return true;
+    }
   }
 });

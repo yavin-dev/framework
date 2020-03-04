@@ -1,5 +1,5 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 .grouped-list {
@@ -8,35 +8,23 @@
 
   &__group-header {
     cursor: pointer;
-    margin: 2px 0;
+    margin: 3px 0;
 
     &-content {
-      font-family: @font-family-sans-serif; // override icon font
       text-transform: capitalize;
-    }
-
-    &::-webkit-details-marker {
-      display: none; // hide default <summary> marker in Chrome
-    }
-
-    &::marker {
-      content: ''; // hide default <summary> marker in FF
-    }
-
-    &:before {
-      // mimic <NaviIcon @icon="fa-angle-right" /> or class="fa fa-angle-right"
-      content: '\f105';
       display: inline-block;
-      margin-left: 2px;
-      width: 8px;
     }
-  }
 
-  &__group[open] &__group-header:before {
-    // mimic <NaviIcon @icon="fa-angle-down" /> or class="fa fa-angle-down"
-    content: '\f107';
-    margin-left: 0;
-    width: 10px;
+    &-icon {
+      &--closed {
+        margin-left: 2px;
+        width: 8px;
+      }
+      &--open {
+        margin-left: 0;
+        width: 10px;
+      }
+    }
   }
 
   &__item {
@@ -56,7 +44,7 @@
 
     &-checkbox {
       opacity: 0; // Hide it
-      position: absolute; // Take it out of the documenet flow
+      position: absolute; // Take it out of the document flow
 
       &-container {
         position: relative;

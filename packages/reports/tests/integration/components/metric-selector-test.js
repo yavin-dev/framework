@@ -1,16 +1,23 @@
-import { isEmpty } from '@ember/utils';
 import { run } from '@ember/runloop';
 import { A } from '@ember/array';
 import { helper as buildHelper } from '@ember/component/helper';
 import { set, get } from '@ember/object';
 import hbs from 'htmlbars-inline-precompile';
-import $ from 'jquery';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click, findAll, fillIn, triggerEvent } from '@ember/test-helpers';
+import { render, findAll, triggerEvent } from '@ember/test-helpers';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import { assertTooltipRendered, assertTooltipNotRendered, assertTooltipContent } from 'ember-tooltips/test-support';
 import config from 'ember-get-config';
+import {
+  clickItem,
+  clickItemFilter,
+  clickShowSelected,
+  hasMetricConfig,
+  getAll,
+  getItem,
+  renderAll
+} from 'navi-reports/test-support/report-builder';
 
 let Store, MetadataService, AdClicks, PageViews;
 
@@ -88,6 +95,7 @@ module('Integration | Component | metric selector', function(hooks) {
 
   test('show selected', async function(assert) {
     assert.expect(10);
+    await renderAll('metric');
 
     assert.ok(
       findAll('.grouped-list__item').length > this.get('request.metrics.length'),
@@ -98,7 +106,7 @@ module('Integration | Component | metric selector', function(hooks) {
       .dom('.navi-list-selector__show-link')
       .hasText('Show Selected (1)', 'The Show Selected link has the correct number of selected base metrics shown');
 
-    await click('.navi-list-selector__show-link');
+    let resetShowSelected = await clickShowSelected('metric');
 
     assert.deepEqual(
       findAll('.grouped-list__item').map(el => el.textContent.trim()),
@@ -120,7 +128,7 @@ module('Integration | Component | metric selector', function(hooks) {
       "Removing one metric while another metric with the same base is still selected does not change 'Show Selected'"
     );
 
-    await click('.navi-list-selector__show-link');
+    await resetShowSelected();
 
     assert
       .dom('.navi-list-selector__show-link')
@@ -143,7 +151,7 @@ module('Integration | Component | metric selector', function(hooks) {
         'The Show Selected link increases the count when a metric with a different base is added'
       );
 
-    await click('.navi-list-selector__show-link');
+    resetShowSelected = await clickShowSelected('metric');
 
     assert.deepEqual(
       findAll('.grouped-list__item').map(el => el.textContent.trim()),
@@ -152,6 +160,8 @@ module('Integration | Component | metric selector', function(hooks) {
     );
 
     assert.notOk(findAll('.grouped-list__add-icon--deselected').length, 'All selected items are marked as selected');
+
+    await resetShowSelected();
 
     config.navi.FEATURES.enableRequestPreview = true;
 
@@ -162,7 +172,8 @@ module('Integration | Component | metric selector', function(hooks) {
       onToggleMetricFilter=(action addMetricFilter)
     }}`);
 
-    await click('.navi-list-selector__show-link');
+    await renderAll('metric');
+    resetShowSelected = await clickShowSelected('metric');
 
     assert.equal(
       findAll('.grouped-list__item-container').length,
@@ -171,6 +182,7 @@ module('Integration | Component | metric selector', function(hooks) {
     );
 
     config.navi.FEATURES.enableRequestPreview = false;
+    await resetShowSelected();
   });
 
   test('add and remove metric actions', async function(assert) {
@@ -187,30 +199,34 @@ module('Integration | Component | metric selector', function(hooks) {
     //select first time grain
 
     //add total clicks
-    await click($('.grouped-list__item:contains(Total Clicks) .grouped-list__add-icon')[0]);
+    await clickItem('metric', 'Total Clicks');
 
     //remove ad clicks
-    await click($('.grouped-list__item:contains(Ad Clicks) .grouped-list__add-icon')[0]);
+    await clickItem('metric', 'Ad Clicks');
   });
 
   test('filter icon', async function(assert) {
     assert.expect(3);
 
-    assert.notOk(
-      isEmpty($('.grouped-list__item:contains(Ad Clicks) .grouped-list__filter--active')),
+    let { item: adClicksItem, reset: adClicksReset } = await getItem('metric', 'Ad Clicks');
+    assert.ok(
+      adClicksItem.querySelector('.grouped-list__filter--active'),
       'The filter icon with the adclicks metric has the active class'
     );
+    await adClicksReset();
 
-    assert.ok(
-      isEmpty($('.grouped-list__item:contains(Total Clicks) .grouped-list__filter--active')),
+    let { item: totalClicksItem, reset: totalClicksReset } = await getItem('metric', 'Total Clicks');
+    assert.notOk(
+      totalClicksItem.querySelector('.grouped-list__filter--active'),
       'The filter icon with the total clicks metric does not have the active class'
     );
+    await totalClicksReset();
 
     this.set('addMetricFilter', metric => {
       assert.deepEqual(metric, AdClicks, 'The adclicks metric is passed to the action when filter icon is clicked');
     });
 
-    await click($('.grouped-list__item:contains(Ad Clicks) .grouped-list__filter')[0]);
+    await clickItemFilter('metric', 'Ad Clicks');
   });
 
   test('tooltip', async function(assert) {
@@ -221,9 +237,9 @@ module('Integration | Component | metric selector', function(hooks) {
       content: { description: 'foo' }
     });
 
-    await click($('.grouped-list__group-header:contains(Clicks)')[0]);
     // triggerTooltipTargetEvent will not work for hidden elementc
-    await triggerEvent($('.grouped-list__item:contains(Ad Clicks) .grouped-list__item-info')[0], 'mouseenter');
+    const { item } = await getItem('metric', 'Ad Clicks');
+    await triggerEvent(item.querySelector('.grouped-list__item-info'), 'mouseenter');
 
     assertTooltipRendered(assert);
     assertTooltipContent(assert, {
@@ -234,13 +250,13 @@ module('Integration | Component | metric selector', function(hooks) {
   test('metric config for metric with parameters', async function(assert) {
     assert.expect(2);
 
-    assert.ok(
-      isEmpty($('.grouped-list__item:contains(Ad Clicks) .metric-config')),
+    assert.notOk(
+      await hasMetricConfig('Ad Clicks'),
       'The metric config trigger icon is not present for a metric without parameters'
     );
 
-    assert.notOk(
-      isEmpty($('.grouped-list__item:contains(Revenue) .metric-config')),
+    assert.ok(
+      await hasMetricConfig('Revenue'),
       'The metric config trigger icon is present for a metric with parameters'
     );
   });
@@ -248,27 +264,27 @@ module('Integration | Component | metric selector', function(hooks) {
   test('ranked search', async function(assert) {
     assert.expect(2);
 
+    const pageResults = (await getAll('metric')).filter(item => item.includes('Page'));
     assert.deepEqual(
-      $('.grouped-list__item:contains(Page)')
-        .toArray()
-        .map(el => el.textContent.trim()),
+      pageResults,
       ['Additive Page Views', 'Page Views', 'Total Page Views', 'Total Page Views WoW'],
       'Initially the page view metrics are ordered alphabetically'
     );
 
-    await fillIn('.navi-list-selector__search-input', 'page');
-    await triggerEvent('.navi-list-selector__search-input', 'focusout');
+    const searchPageResults = await getAll('metric', 'Page');
 
     assert.deepEqual(
-      findAll('.grouped-list__item').map(el => el.textContent.trim()),
+      searchPageResults,
       ['Page Views', 'Total Page Views', 'Additive Page Views', 'Total Page Views WoW'],
       'The search results are ranked based on relevance'
     );
   });
 
-  test('hide filter if metric not allowed to show filter on base metric', function(assert) {
+  test('hide filter if metric not allowed to show filter on base metric', async function(assert) {
+    const resetRenderAll = await renderAll('metric');
     assert.dom('.grouped-list__icon-set--no-filter').exists({ count: 1 });
     assert.dom('.grouped-list__icon-set--no-filter .grouped-list__filter').doesNotExist();
     assert.dom('.grouped-list__icon-set .grouped-list__filter').exists();
+    await resetRenderAll();
   });
 });
