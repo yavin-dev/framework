@@ -48,6 +48,9 @@ class LookbackInput extends BaseIntervalComponent {
       amount = amount * MONTHS_IN_QUARTER;
       dateTimePeriod = 'month';
     }
+    if (dateTimePeriod === 'hour') {
+      dateTimePeriod = 'day';
+    }
     return new Duration(`P${amount}${dateTimePeriod[0].toUpperCase()}`);
   }
 
@@ -76,6 +79,19 @@ class LookbackInput extends BaseIntervalComponent {
         };
       })
       .filter(i => !!i);
+  }
+
+  /**
+   * @property {String} dateDescription
+   */
+  @computed('calendarDateTimePeriod', 'lookback', 'dateRange')
+  get dateDescription() {
+    const { calendarDateTimePeriod, dateRange, lookback } = this;
+    let datePeriod = calendarDateTimePeriod;
+    if (datePeriod === 'hour') {
+      datePeriod = 'day';
+    }
+    return `${datePeriod}${lookback === 1 ? '' : 's'} (${dateRange})`;
   }
 
   /**

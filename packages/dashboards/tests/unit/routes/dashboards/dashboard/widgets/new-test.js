@@ -21,7 +21,7 @@ const NEW_MODEL = {
       ],
       logicalTable: {
         table: 'tableA',
-        timeGrain: 'day'
+        timeGrain: 'hour'
       },
       metrics: [],
       having: [],

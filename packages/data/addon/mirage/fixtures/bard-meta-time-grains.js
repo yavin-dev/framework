@@ -1,4 +1,5 @@
 export default [
+  { name: 'hour', longName: 'Hour' },
   { name: 'day', longName: 'Day' },
   { name: 'week', longName: 'Week' },
   { name: 'month', longName: 'Month' },
