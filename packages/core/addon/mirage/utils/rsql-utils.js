@@ -40,6 +40,12 @@ export function getQueryAuthor(queryFilter) {
   return null;
 }
 
+/**
+ * @method filterModel – Filter a model's entries (report, dashboard) based on a query filter
+ * @param {Object} model
+ * @param {String} queryFilter
+ * @returns {Object} modelObject
+ */
 export function filterModel(model, queryFilter) {
   let modelObject;
   try {
@@ -48,14 +54,14 @@ export function filterModel(model, queryFilter) {
     if (filterParameters == null && author == null) {
       throw new Error('No search parameters');
     }
-    modelObject = model.all().filter(report => {
+    modelObject = model.where(report => {
       // Author can be optional, ie., not included in the query, but filterparameters are always included.
       const matchesFilterParameterIfExists = filterParameters
         ? filterParameters.some(filterParameter =>
             JSON.stringify(report[filterParameter[0]]).match(new RegExp(filterParameter[1], 'i'))
           )
         : false;
-      const matchesAuthorIfExists = author ? report.author.id.match(new RegExp(author, 'i')) : true;
+      const matchesAuthorIfExists = author ? report.authorId.match(new RegExp(author, 'i')) : true;
       return matchesFilterParameterIfExists && matchesAuthorIfExists;
     });
   } catch (error) {
