@@ -85,18 +85,6 @@ export default class NaviAssetSearchProviderService extends NaviBaseSearchProvid
   }
 
   /**
-   * @method _extractRoute – Extracts the route name of a given asset (report or dashboard)
-   * @private
-   * @param {Object} asset
-   * @returns {String} Route
-   */
-  _extractRoute(asset) {
-    const type = asset?.constructor?.modelName,
-      pluralType = pluralize(type);
-    return `${pluralType}.${type}`;
-  }
-
-  /**
    * @method search – Searches for reports and dashboards in the persistence layer
    * @override
    * @param {String} query
@@ -113,14 +101,8 @@ export default class NaviAssetSearchProviderService extends NaviBaseSearchProvid
       promises.push(this.store.query(type, this._constructSearchQuery(query, author, type)));
     });
 
-    let that = this;
     const data = yield Promise.all(promises).then(function(values) {
-      return values
-        .flatMap(value => value.toArray())
-        .map(value => {
-          value.route = that._extractRoute(value);
-          return value;
-        });
+      return values.flatMap(value => value.toArray());
     });
     return {
       component: this._displayComponentName,
