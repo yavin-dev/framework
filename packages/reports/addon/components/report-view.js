@@ -72,7 +72,7 @@ class ReportView extends Component {
   }
 
   /**
-   * @property {Boolean} isEditingVisualization - Display column config or not
+   * @property {Boolean} isColumnDrawerOpen - Display column config or not
    */
   isColumnDrawerOpen = config.navi.FEATURES.enableRequestPreview;
 
