@@ -5,6 +5,7 @@ import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 import $ from 'jquery';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import { clickItem, clickItemFilter } from 'navi-reports/test-support/report-builder';
+import { selectChoose } from 'ember-power-select/test-support';
 
 module('Acceptance | date filter', function(hooks) {
   setupApplicationTest(hooks);
@@ -87,8 +88,7 @@ module('Acceptance | date filter', function(hooks) {
       await clickTrigger('.filter-values--date-range-input__high-value .ember-basic-dropdown-trigger');
       assert.dom('.ember-power-calendar').exists('High value calendar opened');
 
-      await click($('.filter-builder__operator:contains(Between) .filter-builder__select-trigger')[0]);
-      await click($('li.ember-power-select-option:contains(Current)')[0]);
+      await selectChoose('.filter-builder__select-trigger', 'Current');
       assert.ok(
         !!$('.filter-builder__operator:contains(Current)').length,
         'Current is the selected filter builder operator'
@@ -96,8 +96,7 @@ module('Acceptance | date filter', function(hooks) {
 
       assert.ok(!!$('.filter-values--current-period:contains(current)')[0], `Shows current ${grain}`);
 
-      await click($('.filter-builder__operator:contains(Current) .filter-builder__select-trigger')[0]);
-      await click($('li.ember-power-select-option:contains(In The Past)')[0]);
+      await selectChoose('.filter-builder__select-trigger', 'In The Past');
       assert.ok(
         !!$('.filter-builder__operator:contains(In The Past)').length,
         'In the Past is the selected filter builder operator'
@@ -106,8 +105,7 @@ module('Acceptance | date filter', function(hooks) {
       await clickTrigger('.filter-values--lookback-input .ember-basic-dropdown-trigger');
       assert.dom('.navi-basic-dropdown-content').exists('Preset dropdown opened');
 
-      await click($('.filter-builder__operator:contains(In The Past) .filter-builder__select-trigger')[0]);
-      await click($('li.ember-power-select-option:contains(Since)')[0]);
+      await selectChoose('.filter-builder__select-trigger', 'Since');
       assert.ok(
         !!$('.filter-builder__operator:contains(Since)').length,
         'Since is the selected filter builder operator'
@@ -116,8 +114,7 @@ module('Acceptance | date filter', function(hooks) {
       await clickTrigger('.filter-values--since-input__low-value .ember-basic-dropdown-trigger');
       assert.dom('.ember-power-calendar').exists('Low value calendar opened');
 
-      await click($('.filter-builder__operator:contains(Since) .filter-builder__select-trigger')[0]);
-      await click($('li.ember-power-select-option:contains(Advanced)')[0]);
+      await selectChoose('.filter-builder__select-trigger', 'Advanced');
       assert.ok(
         !!$('.filter-builder__operator:contains(Advanced)').length,
         'Advanced is the selected filter builder operator'
