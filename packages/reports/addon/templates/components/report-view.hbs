@@ -5,11 +5,15 @@
 />
 <div class="report-view__visualization-main">
   <div class="report-view__visualization-header">
-    <VisualizationToggle
-        @report={{@report}}
-        @validVisualizations={{this.validVisualizations}}
-        @onVisualizationTypeUpdate={{this.onVisualizationTypeUpdate}}
-    />
+    <div class="report-view__visualization-header-left">
+      <h3 class="report-view__title">Visualization</h3>
+      <VisualizationToggle
+          class="report-view__visualization-toggle"
+          @report={{@report}}
+          @validVisualizations={{this.validVisualizations}}
+          @onVisualizationTypeUpdate={{this.onVisualizationTypeUpdate}}
+      />
+    </div>
       {{#animated-if (and this.hasRequestRun (not this.isEditingVisualization)) use=this.visFadeTransition}}
         <div class="clickable report-view__visualization-edit-btn" role="button" {{on "click" this.toggleEditVisualization}}>
           Edit {{this.visualizationTypeLabel}}
@@ -33,12 +37,12 @@
         </button>
       </div>
     {{/if}}
-    {{#if hasNoData}}
-      <div class="report-view__visualization-no-results">
-        No results available.
-      </div>
-    {{else}}
-      <div class="report-view__visualization-container">
+    <div class="report-view__visualization-container">
+      {{#if hasNoData}}
+        <div class="report-view__visualization-no-results">
+          No results available.
+        </div>
+      {{else}}
         <ReportVisualization
           class="report-view__visualization"
           @report={{@report}}
@@ -56,8 +60,8 @@
           @response={{this.response}}
           @onDetailsToggle={{this.resizeVisualization}}
         />
-      </div>
-    {{/if}}
+      {{/if}}
+    </div>
   </div>
 </div>
 <AnimatedContainer class="report-view__animation-container">

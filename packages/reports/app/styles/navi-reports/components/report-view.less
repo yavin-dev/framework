@@ -63,23 +63,21 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    margin: 10px;
+    margin: 10px 10px 0;
+  }
 
-    &__data-toggle {
-      align-items: center;
-      display: flex;
-      flex-direction: row;
+  &__visualization-header-left {
+    align-items: center;
+    display: flex;
+  }
 
-      &-icon {
-        color: @denali-brand-600;
-        font-size: @font-size-large;
-      }
-    }
+  &__title {
+    font-size: @font-size-base;
+    margin: 0;
+  }
 
-    &__title {
-      font-size: @font-size-base;
-      margin: 0 5px 0 10px;
-    }
+  &__visualization-toggle {
+    margin: 0 5px;
   }
 
   &__visualization-main {
@@ -97,7 +95,6 @@
     flex: 1;
     flex-flow: column;
     justify-content: center;
-    margin: 10px;
   }
 
   &__visualization-body {
@@ -112,6 +109,7 @@
     flex-flow: column;
     min-height: 0;
     min-width: 0;
+    padding: 10px;
   }
 
   &__columns-button {
