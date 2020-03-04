@@ -81,6 +81,17 @@ class LookbackInput extends BaseIntervalComponent {
       .filter(i => !!i);
   }
 
+  @computed('calendarDateTimePeriod', 'lookback', 'dateRange')
+  get dateDescription() {
+    let datePeriod;
+    if (this.calendarDateTimePeriod === 'hour') {
+      datePeriod = 'day';
+    } else {
+      datePeriod = this.calendarDateTimePeriod;
+    }
+    return datePeriod + (this.lookback === 1 ? '' : 's') + ' (' + this.dateRange + ')';
+  }
+
   /**
    * Converts a duration into string representing how long ago duration is from today
    *
