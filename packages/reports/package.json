@@ -26,6 +26,7 @@
     "ember-decorators": "^6.1.1",
     "@ember/jquery": "^0.6.0",
     "@ember/optional-features": "^1.1.0",
+    "@ember/render-modifiers": "^1.0.2",
     "@html-next/vertical-collection": "^1.0.0",
     "ember-ajax": "^5.0.0",
     "ember-animated": "^0.10.0",

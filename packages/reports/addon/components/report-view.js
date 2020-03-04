@@ -186,7 +186,8 @@ class ReportView extends Component {
   fadeTransition = fade;
 
   /**
-   * @property visFadeTransition - custom fade transition when editing a visualization
+   * Custom fade transition when editing a visualization
+   * @param context - animation context
    */
   *visFadeTransition({ removedSprites, insertedSprites }) {
     // fadeIn a little bit longer so we can see the fade after the drawer closes
@@ -195,7 +196,8 @@ class ReportView extends Component {
   }
 
   /**
-   * @param drawerTransition - drawer transition
+   * Drawer transition
+   * @param context - animation context
    */
   @action
   *drawerTransition({ insertedSprites, removedSprites }) {

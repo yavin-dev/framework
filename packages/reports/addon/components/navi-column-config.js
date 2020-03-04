@@ -20,12 +20,22 @@ const noop = () => null;
 @templateLayout(layout)
 class NaviColumnConfig extends Component {
   /**
-   * @param drawerTransition - drawer transition
+   * Stores element reference after render
+   * @param element - element inserted
+   */
+  @action
+  setupElement(element) {
+    this.componentElement = element;
+  }
+
+  /**
+   * Drawer transition
+   * @param context - animation context
    */
   @action
   *drawerTransition({ insertedSprites, removedSprites }) {
     const offset = 500; // 2x the size of the drawer
-    const x = document.querySelector('.navi-column-config').getBoundingClientRect().left - offset;
+    const x = this.componentElement.getBoundingClientRect().left - offset;
     yield Promise.all([
       ...removedSprites.map(sprite => {
         sprite.applyStyles({ 'z-index': '1' });
