@@ -6,7 +6,7 @@
  *  <NaviColumnConfig
  *    @isOpen={{true}}
  *    @drawerDidChange={{this.callback}}
- *  }}
+ *  />
  */
 import Component from '@ember/component';
 import layout from '../templates/components/navi-column-config';

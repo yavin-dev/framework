@@ -245,11 +245,11 @@ module('Integration | Component | report view', function(hooks) {
       .doesNotExist('Column config drawer is closed after toggling the columns button');
     assert
       .dom('.report-view__columns-icon.fa-columns')
-      .exists('Column config drawer displays "column" icon when closedk');
+      .exists('Column config drawer displays "column" icon when closed');
 
     await click('.report-view__columns-button');
     await animationsSettled();
-    assert.dom('.navi-column-config__panel').exists('Column config drawer is open after toggleing the columns button');
+    assert.dom('.navi-column-config__panel').exists('Column config drawer is open after toggling the columns button');
     assert
       .dom('.report-view__columns-icon.fa-chevron-left')
       .exists('Column config drawer displays "back" icon when open');

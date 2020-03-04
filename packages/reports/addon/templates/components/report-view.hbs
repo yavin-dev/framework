@@ -26,9 +26,9 @@
       <div class="report-view__columns-toggle">
         <button class="report-view__columns-button" type="button" aria-label="Toggle column drawer" {{on "click" (toggle "isColumnDrawerOpen" this)}}>
           {{#animated-if this.isColumnDrawerOpen use=this.fadeTransition}}
-            <NaviIcon @icon="chevron-left" @classNames="report-view__columns-icon" />
+            <NaviIcon @icon="chevron-left" class="report-view__columns-icon" />
           {{else}}
-            <NaviIcon @icon="columns" @classNames="report-view__columns-icon" />
+            <NaviIcon @icon="columns" class="report-view__columns-icon" />
           {{/animated-if}}
         </button>
       </div>
