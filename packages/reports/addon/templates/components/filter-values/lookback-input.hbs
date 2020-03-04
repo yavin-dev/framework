@@ -1,5 +1,5 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{#with (concat (if (eq this.calendarDateTimePeriod "hour") "day" this.calendarDataTimePeriod) (if (eq this.lookback 1) "" "s") " (" this.dateRange ")") as |dateDescription|}}
+{{#with (concat (if (eq this.calendarDateTimePeriod "hour") "day" this.calendarDateTimePeriod) (if (eq this.lookback 1) "" "s") " (" this.dateRange ")") as |dateDescription|}}
   {{#if @isCollapsed}}
     {{#if this.lookback}}
       {{this.lookback}} {{dateDescription}}
