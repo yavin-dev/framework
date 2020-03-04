@@ -81,6 +81,9 @@ class LookbackInput extends BaseIntervalComponent {
       .filter(i => !!i);
   }
 
+  /**
+   * @property {String} dateDescription
+   */
   @computed('calendarDateTimePeriod', 'lookback', 'dateRange')
   get dateDescription() {
     const { calendarDateTimePeriod, dateRange, lookback } = this;
