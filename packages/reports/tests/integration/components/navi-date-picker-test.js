@@ -79,6 +79,23 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
     assert.ok(!isDayActive(clickDate), 'Clicked date is no longer selected');
   });
 
+  test('Change center date - hour', async function(assert) {
+    assert.expect(4);
+
+    this.set('date', moment('2015-07-14', TEST_FORMAT));
+    this.set('dateTimePeriod', 'hour');
+
+    await render(hbs`<NaviDatePicker @date={{this.date}} @dateTimePeriod={{this.dateTimePeriod}} />`);
+
+    assert.equal(getMonth(), 'July', 'The center date starts as the passed in month');
+    await clickPrevious();
+    assert.equal(getMonth(), 'June', 'The center date changes to previous month');
+    await clickNext();
+    assert.equal(getMonth(), 'July', 'The center date goes back to original month');
+    await clickNext();
+    assert.equal(getMonth(), 'August', 'The center date goes one month ahead of original');
+  });
+
   test('Change center date - day', async function(assert) {
     assert.expect(4);
 
@@ -293,7 +310,7 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
   });
 
   test('Selection changes with time period', async function(assert) {
-    assert.expect(8);
+    assert.expect(10);
 
     let startDate = moment('2015-06-14', TEST_FORMAT),
       clickDate = moment('2015-06-03', TEST_FORMAT);
@@ -306,6 +323,12 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
             @dateTimePeriod={{this.dateTimePeriod}}
         />
       `);
+
+    /* == Hour Selection == */
+    this.set('dateTimePeriod', 'hour');
+
+    assert.ok(isDayActive(startDate), 'Hour Selection - Chosen day is selected');
+    assert.ok(!isDayActive(startDate.clone().subtract(1, 'day')), 'Hour Selection - Other day in week is not selected');
 
     /* == Day Selection == */
     assert.ok(isDayActive(startDate), 'Day Selection - Chosen day is selected');
