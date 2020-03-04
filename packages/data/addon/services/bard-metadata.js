@@ -104,7 +104,6 @@ export default Service.extend({
    */
   _loadMetadataForType(type, metadataObjects, namespace) {
     const owner = getOwner(this);
-    // const typeFactory = owner.factoryFor(`model:metadata/${type}`);
     const metadata = metadataObjects.map(data => {
       const payload = assign({}, data);
 
