@@ -15,7 +15,6 @@ import move from 'ember-animated/motions/move';
 import { easeOut, easeIn } from 'ember-animated/easings/cosine';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
-const noop = () => null;
 @tagName('')
 @templateLayout(layout)
 class NaviColumnConfig extends Component {
@@ -48,8 +47,7 @@ class NaviColumnConfig extends Component {
         return move(sprite, { easing: easeOut });
       })
     ]);
-    const { drawerDidChange = noop } = this;
-    drawerDidChange();
+    this.drawerDidChange?.();
   }
 }
 export default NaviColumnConfig;
