@@ -46,7 +46,7 @@
           @container={{this}}
           @annotationData={{this.annotationData}}
           @isEditing={{and this.isEditingVisualization @hasRequestRun}}
-          @onUpdateReport={{pipe
+          @onUpdateReport={{queue
             (route-action "onUpdateReport")
             (route-action "validate" @report)
             (route-action "runReport" @report)
