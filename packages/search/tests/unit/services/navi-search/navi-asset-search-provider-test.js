@@ -89,7 +89,7 @@ module('Unit | Service | navi-asset-search-provider', function(hooks) {
     assert.equal(results.title, 'Reports & Dashboards', 'Result contains correct title for the search result section');
     results.data.forEach(async function(result) {
       let author = await result.author;
-      // Only Report object have a request property.
+      // Only Report objects have a request property.
       let hasRequest = !!result?.request;
       assert.ok(result.title.includes('Revenue'), 'The service returns a report that includes the requested title.');
       assert.ok(
