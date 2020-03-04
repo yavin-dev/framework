@@ -53,6 +53,7 @@ export default EmberObject.extend({
                   name: longName,
                   category,
                   valueType,
+                  type: 'field',
                   storageStrategy: storageStrategy || null,
                   source,
                   tableId: table.name,
@@ -88,7 +89,7 @@ export default EmberObject.extend({
                   newMetric.metricFunctionId = metricFunctionId;
                 } else if (!metricFunctionsProvided && parameters) {
                   const functionArguments = this._constructFunctionArguments(parameters);
-                  const metricFunction = this._getMetricFunction(metricFunctions, functionArguments);
+                  const metricFunction = this._getMetricFunction(metricFunctions, functionArguments, source);
 
                   newMetric.metricFunctionId = metricFunction.id;
                   metricFunctions.add(metricFunction);
@@ -130,9 +131,10 @@ export default EmberObject.extend({
    * @method _getMetricFunction
    * @param {Set<Object>} metricFunctions - the current dictionary of metric functions
    * @param {Object[]} functionArgs - the set of function argument objects to find or create a metric function for
+   * @param {String} source - datasource the payload is from
    * @returns {Object} the existing metric function with the same arguments or a new metric function with passed in arguments
    */
-  _getMetricFunction(metricFunctions, functionArgs) {
+  _getMetricFunction(metricFunctions, functionArgs, source) {
     //Check for an existing metric function in the set
     for (const func of metricFunctions) {
       const metricFunctionArgumentIds = func.arguments.map(metricFunctionArg => metricFunctionArg.id).join(',');
@@ -144,7 +146,8 @@ export default EmberObject.extend({
     const newMetricFunction = {
       name: '',
       description: '',
-      arguments: functionArgs
+      arguments: functionArgs,
+      source
     };
     newMetricFunction.id = guidFor(newMetricFunction);
 

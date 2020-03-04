@@ -2,8 +2,6 @@
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import { A as array } from '@ember/array';
-import { get } from '@ember/object';
 import { inject as service } from '@ember/service';
 import Column from './column';
 
@@ -19,6 +17,12 @@ export default class Dimension extends Column {
    */
   @service('bard-metadata')
   metadata;
+
+  /**
+   * @property {Object[]} fields - Array of field objects
+   */
+
+  fields;
 
   /**
    * @property {String} primaryKeyTag - name of the primary key tag
@@ -39,7 +43,14 @@ export default class Dimension extends Column {
    * @property {CardinalitySize} cardinality - the cardinality size of the table the dimension is sourced from
    */
   get cardinality() {
-    return this.table.cardinalitySize;
+    const { type, table } = this;
+
+    if (type === 'field') {
+      return Promise.resolve(table.cardinalitySize);
+    }
+
+    // TODO: get cardinality for ref and formula type dimensions
+    return undefined;
   }
 
   /**
@@ -50,10 +61,10 @@ export default class Dimension extends Column {
    * @returns {Array} array of tags
    */
   getTagsForField(fieldName) {
-    let fields = array(get(this, 'fields')),
-      field = fields.findBy('name', fieldName) || {};
+    const fields = this.fields;
+    const field = fields.find(f => f.name === fieldName) || {};
 
-    return get(field, 'tags') || [];
+    return field.tags || [];
   }
 
   /**
@@ -64,11 +75,8 @@ export default class Dimension extends Column {
    * @returns {Array} array of field objects
    */
   getFieldsForTag(tag) {
-    let fields = array(get(this, 'fields'));
-
-    return fields.filter(field => {
-      let tags = array(get(field, 'tags'));
-      return tags.includes(tag);
+    return this.fields.filter(field => {
+      return field.tags.includes(tag);
     });
   }
 
@@ -76,34 +84,34 @@ export default class Dimension extends Column {
    * @property {String} primaryKeyFieldName
    */
   get primaryKeyFieldName() {
-    let tag = get(this, 'primaryKeyTag'),
-      field = this.getFieldsForTag(tag)[0] || {};
-    return get(field, 'name') || 'id';
+    const { primaryKeyTag: tag } = this;
+    const field = this.getFieldsForTag(tag)[0] || {};
+    return field.name || 'id';
   }
 
   /**
    * @property {String} descriptionFieldName
    */
   get descriptionFieldName() {
-    let tag = get(this, 'descriptionTag'),
-      field = this.getFieldsForTag(tag)[0] || {};
-    return get(field, 'name') || 'desc';
+    const { descriptionTag: tag } = this;
+    const field = this.getFieldsForTag(tag)[0] || {};
+    return field.name || 'desc';
   }
 
   /**
    * @property {String} idFieldName
    */
   get idFieldName() {
-    let tag = get(this, 'idTag'),
-      field = this.getFieldsForTag(tag)[0] || {};
-    return get(field, 'name') || get(this, 'primaryKeyFieldName');
+    const { idTag: tag } = this;
+    const field = this.getFieldsForTag(tag)[0] || {};
+    return field.name || this.primaryKeyFieldName;
   }
 
   /**
    * @property {Promise} extended - extended metadata for the dimension that isn't provided in initial table fullView metadata load
    */
   get extended() {
-    const { metadata, name } = this;
-    return metadata.findById('dimension', name);
+    const { metadata, name, source } = this;
+    return metadata.findById('dimension', name, source);
   }
 }

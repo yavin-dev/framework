@@ -31,6 +31,11 @@ export default class FunctionArgument extends EmberObject {
   description;
 
   /**
+   * @property {String} source - name of the data source this argument is from.
+   */
+  source;
+
+  /**
    * @property {ValueType} valueType
    */
   valueType;
@@ -59,14 +64,12 @@ export default class FunctionArgument extends EmberObject {
    */
   get values() {
     if (this.expression === 'self') {
-      return new Promise(resolve => {
-        resolve(this._localValues);
-      });
+      return Promise.resolve(this._localValues);
     }
 
     const [type, id] = this.expression.split(':');
     if (this.type === 'ref' && type && id) {
-      return this.metadataService.findById(type, id);
+      return this.metadataService.findById(type, id), this.source;
     }
     return undefined;
   }

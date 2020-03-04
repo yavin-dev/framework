@@ -19,12 +19,6 @@ export default class Metric extends Column {
   metadataService;
 
   /**
-   * @property {Ember.Service} metadata
-   */
-  @service('bard-metadata')
-  metadata;
-
-  /**
    * @property {String} defaultFormat - e.g. decimal for numbers
    */
   defaultFormat;
@@ -36,7 +30,7 @@ export default class Metric extends Column {
 
   /**
    * Many to One relationship
-   * @property {MetricFunction} metricFunction
+   * @property {Promise<MetricFunction>} metricFunction
    */
   get metricFunction() {
     return this.metadataService.findById('metadata/metric/metric-function', this.metricFunctionId, this.source);
@@ -46,7 +40,7 @@ export default class Metric extends Column {
    * @property {Boolean} hasParameters
    */
   get hasParameters() {
-    return !!(this.metricFunction && this.metricFunction?.arguments.length);
+    return !!this.metricFunction?.arguments?.length;
   }
 
   /**
@@ -92,7 +86,7 @@ export default class Metric extends Column {
    * @property {Promise} extended - extended metadata for the metric that isn't provided in initial table fullView metadata load
    */
   get extended() {
-    const { metadata, name } = this;
-    return metadata.findById('metric', name);
+    const { metadataService, name, source } = this;
+    return metadataService.findById('metric', name, source);
   }
 }

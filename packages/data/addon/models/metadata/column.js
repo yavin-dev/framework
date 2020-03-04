@@ -7,11 +7,6 @@ import EmberObject from '@ember/object';
 
 export default class Column extends EmberObject {
   /**
-   * @property {String} identifierField - field used as the id
-   */
-  static identifierField = 'id';
-
-  /**
    * @property {String} id
    */
   id;
@@ -30,6 +25,11 @@ export default class Column extends EmberObject {
    * @property {Table} table
    */
   table;
+
+  /**
+   * @property {String} source - name of the data source this column is from.
+   */
+  source;
 
   /**
    * @property {String} type - will be "ref", "formula", or "field" depending on where its values are sourced from

@@ -251,6 +251,7 @@ const Payload = {
       name: 'Dimension One',
       source: 'dummy',
       tableId: 'tableName',
+      type: 'field',
       valueType: 'text',
       storageStrategy: null,
       timegrains: ['day', 'month']
@@ -261,6 +262,7 @@ const Payload = {
       name: 'Dimension Two',
       source: 'dummy',
       tableId: 'tableName',
+      type: 'field',
       valueType: 'text',
       storageStrategy: null,
       timegrains: ['day', 'month']
@@ -271,6 +273,7 @@ const Payload = {
       name: 'Dimension Two',
       source: 'dummy',
       tableId: 'secondTable',
+      type: 'field',
       valueType: 'text',
       storageStrategy: null,
       timegrains: ['day', 'week']
@@ -283,6 +286,7 @@ const Payload = {
       name: 'Dimension Three',
       source: 'dummy',
       tableId: 'tableName',
+      type: 'field',
       valueType: 'date',
       storageStrategy: null,
       timegrains: ['day', 'month']
@@ -293,6 +297,7 @@ const Payload = {
       name: 'Dimension Three',
       source: 'dummy',
       tableId: 'secondTable',
+      type: 'field',
       valueType: 'date',
       storageStrategy: null,
       timegrains: ['day', 'week']
@@ -579,6 +584,7 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
           name: 'Dimension One',
           source: 'dummy',
           tableId: 'tableName',
+          type: 'field',
           valueType: 'text',
           storageStrategy: null,
           timegrains: ['day', 'month']
@@ -638,7 +644,7 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
     const result = Serializer._getMetricFunction(metricFunctions, FunctionArguments);
     assert.deepEqual(
       Object.keys(result),
-      ['name', 'description', 'arguments', 'id'],
+      ['name', 'description', 'arguments', 'source', 'id'],
       'Serialized metric function object is returned in the right shape'
     );
     assert.ok(emberGuidRegex.test(result.id), 'A metric function with a ember-guid as its id is returned');
@@ -666,7 +672,7 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
     assert.ok(emberGuidRegex.test(distinctResult.id), 'New metric function with a uuid as its id is returned');
     assert.deepEqual(
       Object.keys(distinctResult),
-      ['name', 'description', 'arguments', 'id'],
+      ['name', 'description', 'arguments', 'source', 'id'],
       'Serialized metric function object is returned in the right shape'
     );
     assert.deepEqual(
