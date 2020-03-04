@@ -23,6 +23,7 @@
     "test:all": "ember try:each"
   },
   "dependencies": {
+    "@babel/plugin-proposal-optional-chaining": "^7.8.3",
     "ember-decorators": "^6.1.1",
     "@ember/jquery": "^0.6.0",
     "@ember/optional-features": "^1.1.0",
