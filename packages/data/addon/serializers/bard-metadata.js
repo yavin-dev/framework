@@ -153,7 +153,6 @@ export default EmberObject.extend({
    * @param {Object} currentDimensions
    * @returns {Object} dimension object newly created or existing dimension with an added timegrain
    */
-
   _constructDimension(dimension, grain, source, tableName, currentDimensions) {
     let newDimension;
     const { name, longName, category, datatype: valueType, storageStrategy } = dimension;
