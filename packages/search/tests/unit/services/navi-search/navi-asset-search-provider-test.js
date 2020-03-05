@@ -24,16 +24,15 @@ module('Unit | Service | navi-asset-search-provider', function(hooks) {
   });
 
   test('construct full search query for reports', function(assert) {
+    assert.expect(6);
+
     assert.deepEqual(
       service._constructSearchQuery('Hyrule', 'navi_user', 'report'),
       {
-        filter: { reports: '(title==*Hyrule*,request==*Hyrule*);author==*navi_user*' }
+        filter: { reports: '(title==*Hyrule*,request==*Hyrule*);author==navi_user' }
       },
       'Constructs the correct report query for the api with both filter parameters and author.'
     );
-  });
-
-  test('construct only query parameters search query for reports', function(assert) {
     assert.deepEqual(
       service._constructSearchQuery('Hyrule', null, 'report'),
       {
@@ -41,29 +40,20 @@ module('Unit | Service | navi-asset-search-provider', function(hooks) {
       },
       'Constructs the correct report query for the api with filter parameters.'
     );
-  });
-
-  test('construct only author search query for reports', function(assert) {
     assert.deepEqual(
       service._constructSearchQuery(null, 'navi_user', 'report'),
       {
-        filter: { reports: 'author==*navi_user*' }
+        filter: { reports: 'author==navi_user' }
       },
       'Constructs the correct report query for the api with author.'
     );
-  });
-
-  test('construct full search query for dashboards', function(assert) {
     assert.deepEqual(
       service._constructSearchQuery('Hyrule', 'navi_user', 'dashboard'),
       {
-        filter: { dashboards: '(title==*Hyrule*);author==*navi_user*' }
+        filter: { dashboards: '(title==*Hyrule*);author==navi_user' }
       },
       'Constructs the correct dashboard query for the api with both filter parameters and author.'
     );
-  });
-
-  test('construct only query parameters search query for dashboards', function(assert) {
     assert.deepEqual(
       service._constructSearchQuery('Hyrule', null, 'dashboard'),
       {
@@ -71,19 +61,18 @@ module('Unit | Service | navi-asset-search-provider', function(hooks) {
       },
       'Constructs the correct report query for the api with filter parameters.'
     );
-  });
-
-  test('construct only author search query for dashboards', function(assert) {
     assert.deepEqual(
       service._constructSearchQuery(null, 'navi_user', 'dashboard'),
       {
-        filter: { dashboards: 'author==*navi_user*' }
+        filter: { dashboards: 'author==navi_user' }
       },
       'Constructs the correct dashboard query for the api with author.'
     );
   });
 
   test('search by user search returns reports and dashboards', async function(assert) {
+    assert.expect(5);
+
     const results = await service.search.perform('Revenue');
     assert.equal(results.component, 'navi-search-result/asset', 'Result contains correct display component name');
     assert.equal(results.title, 'Reports & Dashboards', 'Result contains correct title for the search result section');
@@ -101,6 +90,8 @@ module('Unit | Service | navi-asset-search-provider', function(hooks) {
   });
 
   test('search with no results for search parameters', async function(assert) {
+    assert.expect(3);
+
     const results = await service.search.perform('something');
     assert.equal(results.component, 'navi-search-result/asset', 'Result contains correct display component name');
     assert.equal(results.title, 'Reports & Dashboards', 'Result contains correct title for the search result section');
@@ -108,6 +99,8 @@ module('Unit | Service | navi-asset-search-provider', function(hooks) {
   });
 
   test('search with empty parameters', async function(assert) {
+    assert.expect(3);
+
     const results = await service.search.perform();
     assert.equal(results.component, 'navi-search-result/asset', 'Result contains correct display component name');
     assert.equal(results.title, 'Reports & Dashboards', 'Result contains correct title for the search result section');

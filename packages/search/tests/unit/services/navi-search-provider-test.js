@@ -24,6 +24,8 @@ module('Unit | Service | navi-search-provider', function(hooks) {
   });
 
   test('get all search providers', function(assert) {
+    assert.expect(1);
+
     let availableSearchProviders = service._all();
     let systemSearchProviders = ['NaviSampleSearchProviderService', 'NaviAssetSearchProviderService'];
     assert.deepEqual(
@@ -34,6 +36,8 @@ module('Unit | Service | navi-search-provider', function(hooks) {
   });
 
   test('search all providers', async function(assert) {
+    assert.expect(1);
+
     let results = await service.search.perform('Revenue');
     let expectedResults = ['Revenue result', 'Revenue success'];
     assert.deepEqual(
@@ -44,6 +48,8 @@ module('Unit | Service | navi-search-provider', function(hooks) {
   });
 
   test('search with no results', async function(assert) {
+    assert.expect(1);
+
     let results = await service.search.perform('something');
     assert.equal(results.length, 0, 'Returns no results');
   });

@@ -55,8 +55,10 @@ export default class NaviAssetSearchProviderService extends NaviBaseSearchProvid
 
   /**
    * @method _constructSearchQuery – Constructs the query filter parameters adhering to the RSQL standard
+   * The query is built to return results from the specified author. The user's query is matched against multiple fields,
+   * therefore an 'or' is used between the different parameters and finally there's an 'and' with the author.
    * @private
-   * @param {Object} searchParams
+   * @param {String} userQuery
    * @param {String} author
    * @param {String} type
    * @returns {Object} search query object
@@ -76,7 +78,7 @@ export default class NaviAssetSearchProviderService extends NaviBaseSearchProvid
 
     let authorFilterString = '';
     if (author) {
-      authorFilterString = paramsFilterString ? `;author==*${author}*` : `author==*${author}*`; //add semicolon if param filters present
+      authorFilterString = paramsFilterString ? `;author==${author}` : `author==${author}`; //add semicolon if param filters present
     }
 
     query.filter[pluralType] = `${paramsFilterString}${authorFilterString}`;

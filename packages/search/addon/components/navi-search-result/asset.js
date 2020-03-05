@@ -1,3 +1,10 @@
+/**
+ * Copyright 2020, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ *
+ * A component that displays results for reports and dashboards
+ */
+
 import Component from '@glimmer/component';
 import { pluralize } from 'ember-inflector';
 
@@ -7,7 +14,7 @@ export default class NaviAssetSearchResultComponent extends Component {
    */
   get results() {
     return this.args?.data?.map(value => {
-      value.route = this._extractRoute(value);
+      value.route = this._getRouteFor(value);
       return value;
     });
   }
@@ -18,7 +25,7 @@ export default class NaviAssetSearchResultComponent extends Component {
    * @param {Object} asset
    * @returns {String} Route
    */
-  _extractRoute(asset) {
+  _getRouteFor(asset) {
     const type = asset?.constructor?.modelName,
       pluralType = pluralize(type);
     return `${pluralType}.${type}`;

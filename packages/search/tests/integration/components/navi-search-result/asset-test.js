@@ -2,39 +2,44 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, findAll } from '@ember/test-helpers';
 import { hbs } from 'ember-cli-htmlbars';
-import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
-import Service from '@ember/service';
 import { set } from '@ember/object';
 
 module('Integration | Component | navi-search-result-asset', function(hooks) {
   setupRenderingTest(hooks);
-  setupMirage(hooks);
-
-  let service;
-
-  hooks.beforeEach(async function() {
-    // Load metadata needed for request fragment
-    await this.owner.lookup('service:bard-metadata').loadMetadata();
-    service = this.owner.lookup('service:navi-search-provider');
-    const store = this.owner.lookup('service:store'),
-      mockAuthor = store.createRecord('user', { id: 'ciela' });
-    this.owner.register(
-      'service:user',
-      Service.extend({
-        getUser: () => mockAuthor
-      })
-    );
-  });
 
   test('it renders', async function(assert) {
+    assert.expect(1);
+
     await render(hbs`<NaviSearchResult::Asset />`);
 
     assert.equal(this.element.textContent.trim(), '');
   });
 
   test('displays results', async function(assert) {
-    const result = await service.search.perform('Revenue');
-    set(this, 'result', result.find(element => element.component === 'navi-search-result/asset'));
+    assert.expect(2);
+
+    const data = [
+      {
+        title: 'Revenue report 1',
+        modelId: 7,
+        constructor: {
+          modelName: 'report'
+        }
+      },
+      {
+        title: 'Revenue Dashboard',
+        modelId: 4,
+        constructor: {
+          modelName: 'dashboard'
+        }
+      }
+    ];
+    const result = {
+      component: 'navi-search-result/asset',
+      title: 'Reports & Dashboards',
+      data
+    };
+    set(this, 'result', result);
 
     await render(hbs`<NaviSearchResult::Asset @data={{this.result.data}}/>`);
 

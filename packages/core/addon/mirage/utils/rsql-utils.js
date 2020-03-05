@@ -35,7 +35,7 @@ export function getQueryAuthor(queryFilter) {
     if (queryFilter.includes('(')) {
       queryFilter = queryFilter.split(';')[1];
     }
-    return queryFilter.match(/\*(.*?)\*/)[0].replace(/\*/g, '');
+    return queryFilter.split('==')[1];
   }
   return null;
 }
