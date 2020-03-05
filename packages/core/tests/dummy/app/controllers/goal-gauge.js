@@ -30,7 +30,7 @@ export default class GoalGaugeController extends Controller {
    */
   @action
   onUpdateConfig(configUpdates) {
-    let config = get(this, 'goalGaugeOptions');
+    const { goalGaugeOptions: config } = this;
     set(this, 'goalGaugeOptions', merge({}, config, configUpdates));
   }
 }

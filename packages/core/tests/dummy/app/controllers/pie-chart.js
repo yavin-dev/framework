@@ -297,7 +297,7 @@ export default class PieChartController extends Controller {
 
   @action
   onUpdateConfigOneDimension(configUpdates) {
-    let options = get(this, 'options');
+    const { options } = this;
     set(this, 'options', merge({}, options, configUpdates));
   }
 
