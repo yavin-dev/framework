@@ -1,4 +1,3 @@
-import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, find, fillIn, blur } from '@ember/test-helpers';
@@ -9,7 +8,7 @@ let Template = hbs`
     response=response
     request=request
     options=options
-    onUpdateConfig=(action onUpdateConfig)
+    onUpdateConfig=this.onUpdateConfig
   }}`;
 
 module('Integration | Component | visualization config/metric-label', function(hooks) {
@@ -51,10 +50,8 @@ module('Integration | Component | visualization config/metric-label', function(h
 
     await render(Template);
 
-    await run(async () => {
-      await fillIn('.number-format-selector__format-input', 'foo');
-      await blur('.number-format-selector__format-input');
-    });
+    await fillIn('.number-format-selector__format-input', 'foo');
+    await blur('.number-format-selector__format-input');
   });
 
   test('onUpdateConfig description input', async function(assert) {
@@ -66,9 +63,7 @@ module('Integration | Component | visualization config/metric-label', function(h
 
     await render(Template);
 
-    await run(async () => {
-      await fillIn('.metric-label-config__description-input', 'foo');
-      await blur('.metric-label-config__description-input');
-    });
+    await fillIn('.metric-label-config__description-input', 'foo');
+    await blur('.metric-label-config__description-input');
   });
 });

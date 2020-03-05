@@ -1,5 +1,5 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -14,7 +14,6 @@ import { readOnly, alias } from '@ember/object/computed';
 import layout from '../../templates/components/navi-visualizations/table';
 import { computed, get, set, action } from '@ember/object';
 import { inject as service } from '@ember/service';
-import { run } from '@ember/runloop';
 import { assign } from '@ember/polyfills';
 import { A as arr } from '@ember/array';
 import Component from '@ember/component';
@@ -373,14 +372,7 @@ class Table extends Component {
    */
   @action
   updateColumnDisplayName(column, displayName) {
-    run.scheduleOnce('afterRender', () => {
-      this.onUpdateReport(
-        'updateColumn',
-        assign({}, column, {
-          displayName
-        })
-      );
-    });
+    this.onUpdateReport('updateColumn', assign({}, column, { displayName }));
   }
 }
 

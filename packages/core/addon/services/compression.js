@@ -1,5 +1,5 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Service for converting an Ember Data model into a URL safe string
@@ -19,7 +19,7 @@ export default Service.extend({
   /**
    * @property {Object} codec - compression library
    */
-  codec: computed(() => {
+  codec: computed(function() {
     return new JsonUrl('lzstring');
   }),
 

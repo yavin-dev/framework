@@ -1,42 +1,42 @@
-{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 
 <nav class="header">
   <h2 class="title">Navi Visualizations</h2>
   <ul class="core-links">
     <li class="core-link">
-      {{#link-to "bar-chart"}}
-        {{navi-icon "bar-chart"}} Bar Chart
-      {{/link-to}}
+      <LinkTo @route="bar-chart">
+        <NaviIcon @icon="bar-chart" /> Bar Chart
+      </LinkTo>
     </li>
     <li class="core-link">
-      {{#link-to "goal-gauge"}}
-        {{navi-icon "tachometer"}} Goal Gauge
-      {{/link-to}}
+      <LinkTo @route="goal-gauge">
+        <NaviIcon @icon="tachometer" /> Goal Gauge
+      </LinkTo>
     </li>
     <li class="core-link">
-      {{#link-to "line-chart"}}
-        {{navi-icon "line-chart"}}Line Chart
-      {{/link-to}}
+      <LinkTo @route="line-chart">
+        <NaviIcon @icon="line-chart" />Line Chart
+      </LinkTo>
     </li>
     <li class="core-link">
-      {{#link-to "metric-label"}}
-        {{navi-icon "list-alt"}} Metric Label
-      {{/link-to}}
+      <LinkTo @route="metric-label">
+        <NaviIcon @icon="list-alt" /> Metric Label
+      </LinkTo>
     </li>
     <li class="core-link">
-      {{#link-to "pie-chart"}}
-        {{navi-icon "pie-chart"}} Pie Chart
-      {{/link-to}}
+      <LinkTo @route="pie-chart">
+        <NaviIcon @icon="pie-chart" /> Pie Chart
+      </LinkTo>
     </li>
     <li class="core-link">
-      {{#link-to "table"}}
-        {{navi-icon "table"}} Table
-      {{/link-to}}
+      <LinkTo @route="table">
+        <NaviIcon @icon="table" /> Table
+      </LinkTo>
     </li>
     <li class="core-link">
-      {{#link-to "buttons"}}
-        {{navi-icon "mouse-pointer"}} Buttons
-      {{/link-to}}
+      <LinkTo @route="buttons">
+        <NaviIcon @icon="mouse-pointer" /> Buttons
+      </LinkTo>
     </li>
   </ul>
 </nav>

@@ -1,18 +1,18 @@
-{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<div class={{tableHeadersClass}}>
-  {{#unless isEditingMode}}
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<div class={{this.tableHeadersClass}}>
+  {{#unless @isEditingMode}}
     <SortableGroup
       class="table-header-row-vc table-header-row-vc--view"
       @direction="x"
-      @model={{readonly columns}}
-      @onChange={{action updateColumnOrder}}
+      @model={{readonly @columns}}
+      @onChange={{@updateColumnOrder}}
       as |group|
     >
       {{#each group.model as |column|}}
         <group.item
-          class={{concat "table-header-cell " column.type}}
+          class="table-header-cell {{column.type}}"
           @model={{readonly column}}
-          @click={{action headerClicked column}}
+          @click={{fn @headerClicked column}}
           @onDragStart={{set this "isDragged" true}}
           @onDragStop={{set this "isDragged" false}}
           @isDraggingDisabled={{@isDraggingDisabled}}
@@ -25,7 +25,7 @@
           </span>
           {{#if column.sortDirection}}
             <NaviTableSortIcon
-              class={{"table-header-cell__icon"}}
+              class="table-header-cell__icon"
               @direction={{readonly column.sortDirection}}
             />
           {{else}}
@@ -42,32 +42,36 @@
     </SortableGroup>
   {{/unless}}
 </div>
-<div class={{tableWrapperClass}}>
+<div class="{{this.tableWrapperClass}}">
   <table class="table-widget__table">
     <thead>
-      <tr class="table-header-row-vc {{if isEditingMode "table-header-row-vc--edit"}}">
-        {{#each columns as |column|}}
+      <tr class="table-header-row-vc {{if @isEditingMode "table-header-row-vc--edit"}}">
+        {{#each @columns as |column|}}
           <th>
             <div class="table-header-cell {{column.type}}">
-              {{#if isEditingMode}}
-                {{input
+              {{#if @isEditingMode}}
+                <Input
                   class="table-header-cell__input"
-                  value=(readonly column.displayName)
-                  placeholder=(default-column-name column)
-                  focus-out=(action updateColumnDisplayName column)
-                }}
+                  @value={{readonly column.displayName}}
+                  @placeholder={{default-column-name column}}
+                  @focus-out={{fn @updateColumnDisplayName column}}
+                />
                 {{#if (or (eq column.type "metric") (eq column.type "threshold"))}}
-                  {{number-format-dropdown class="table-header-cell__number-format-dropdown" column=column onUpdateReport=(action onUpdateReport)}}
+                  <NumberFormatDropdown 
+                    class="table-header-cell__number-format-dropdown" 
+                    @column={{column}} 
+                    @onUpdateReport={{@onUpdateReport}}
+                  />
                 {{/if}}
               {{else}}
                 <span class="table-header-cell__title">
                   {{or column.displayName (default-column-name column)}}
                 </span>
                 {{#if column.sortDirection}}
-                  {{navi-table-sort-icon
+                  <NaviTableSortIcon
                     class="table-header-cell__icon"
-                    direction=(readonly column.sortDirection)
-                  }}
+                    @direction={{readonly column.sortDirection}}
+                  />
                 {{/if}}
               {{/if}}
             </div>
@@ -78,19 +82,19 @@
     <tbody>
       <TableIterator
         @useVerticalCollection={{true}}
-        @tableData={{tableData}}
-        @occlusion={{occlusion}}
-        @containerSelector={{concat "." tableWrapperClass}}
-        @estimateHeight={{estimateHeight}}
-        @bufferSize={{bufferSize}}
+        @tableData={{@tableData}}
+        @occlusion={{@occlusion}}
+        @containerSelector=".{{this.tableWrapperClass}}"
+        @estimateHeight={{@estimateHeight}}
+        @bufferSize={{@bufferSize}}
         as |row idx|
       >
-        <tr class="table-row-vc {{if row.__meta__.isTotalRow "table-row__total-row"}} {{if (eq idx (sub tableData.length 1)) "table-row__last-row"}}">
-          {{#each columns as |column|}}
+        <tr class="table-row-vc {{if row.__meta__.isTotalRow "table-row__total-row"}} {{if (eq idx (sub @tableData.length 1)) "table-row__last-row"}}">
+          {{#each @columns as |column|}}
             <td class="table-cell">
               {{#if (and (eq column.type "dateTime") row.__meta__.isTotalRow)}}
                 {{component
-                  (concat cellRendererPrefix "total")
+                  (concat @cellRendererPrefix "total")
                     data=row
                     column=column
                 }}
@@ -98,7 +102,7 @@
                 <NaviTableCellRenderer
                   @data={{row}}
                   @column={{column}}
-                  @request={{request}}
+                  @request={{@request}}
                 />
               {{/if}}
             </td>

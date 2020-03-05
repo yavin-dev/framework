@@ -45,7 +45,7 @@ module('helper:serialize', function(hooks) {
 
       await render(hbs`{{get (serialize model) 'data.attributes.something'}}`);
 
-      assert.dom('*').hasText('#####', 'Serializes model with transforms and everything!');
+      assert.dom().hasText('#####', 'Serializes model with transforms and everything!');
     });
   });
 
@@ -54,10 +54,10 @@ module('helper:serialize', function(hooks) {
     this.set('model', null);
     await render(hbs`{{serialize model}}`);
 
-    assert.dom('*').hasText('', 'renders nothing if null is passed');
+    assert.dom().hasText('', 'renders nothing if null is passed');
 
     this.set('model', undefined);
 
-    assert.dom('*').hasText('', 'renders nothing if undefined is passed');
+    assert.dom().hasText('', 'renders nothing if undefined is passed');
   });
 });

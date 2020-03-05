@@ -1,35 +1,36 @@
 import Controller from '@ember/controller';
-import { set, get, computed } from '@ember/object';
+import { set, get, computed, action } from '@ember/object';
 import { merge } from 'lodash-es';
 
-export default Controller.extend({
-  request: computed(() => ({})),
+export default class MetricLabelController extends Controller {
+  request = {};
 
-  response: computed('model', function() {
-    return this.get('model.0.response.rows');
-  }),
+  @computed('model')
+  get response() {
+    return get(this, 'model.0.response.rows');
+  }
 
-  metricLabelOptions: computed(() => ({
+  metricLabelOptions = {
     description: "Glass Bottles of the ranch's finest pasteurized whole milk!!!!!!!",
     metric: { metric: 'bottles', parameters: {} },
     format: '$0,0[.]00'
-  })),
+  };
 
-  metricVisualization: computed('metricLabelOptions', function() {
+  @computed('metricLabelOptions')
+  get metricVisualization() {
     return {
       type: 'metric-label',
       version: 1,
       metadata: get(this, 'metricLabelOptions')
     };
-  }),
-
-  actions: {
-    /**
-     * @action - onUpdateConfig merges config into the metricLabelOptions
-     */
-    onUpdateConfig(configUpdates) {
-      let config = get(this, 'metricLabelOptions');
-      set(this, 'metricLabelOptions', merge({}, config, configUpdates));
-    }
   }
-});
+
+  /**
+   * @action - onUpdateConfig merges config into the metricLabelOptions
+   */
+  @action
+  onUpdateConfig(configUpdates) {
+   const { metricLabelOptions: config } = this;
+    set(this, 'metricLabelOptions', merge({}, config, configUpdates));
+  }
+}

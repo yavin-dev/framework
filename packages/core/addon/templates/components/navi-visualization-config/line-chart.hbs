@@ -1,58 +1,61 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <NaviVisualizationConfig::SeriesChart
-  @request={{request}}
-  @response={{response}}
-  @seriesConfig={{seriesConfig}}
-  @seriesType={{seriesType}}
-  @onUpdateConfig={{action "onUpdateConfig"}}
+  class="line-chart-config"
+  @request={{@request}}
+  @response={{@response}}
+  @seriesConfig={{this.seriesConfig}}
+  @seriesType={{this.seriesType}}
+  @onUpdateConfig={{this.onUpdateSeriesConfig}}
+  ...attributes
 >
-  {{#if (or (eq type "line-chart") showStackOption)}}
+  {{#if (or (eq @type "line-chart") this.showStackOption)}}
     <div class="line-chart-config__header">Chart Style Options</div>
     <div class="line-chart-config__style-options">
-      {{#if (eq type "line-chart")}}
+      {{#if (eq @type "line-chart")}}
         <div class="line-chart-config__curve-opt">
           <span class="line-chart-config__curve-opt-title">Line Style</span>
-          {{#power-select
-            triggerClass="line-chart-config__curve-opt-select"
-            options=curveOptions
-            selected=(or (readonly options.style.curve) "line")
-            onchange=(action "onUpdateStyle" "curve")
-            searchEnabled=false
-            as |curve|}}
+          <PowerSelect
+            @triggerClass="line-chart-config__curve-opt-select"
+            @options={{this.curveOptions}}
+            @selected={{or (readonly @options.style.curve) "line"}}
+            @onchange={{fn this.onUpdateStyle "curve"}}
+            @searchEnabled={{false}}
+            as |curve|
+          >
             {{capitalize curve}}
-          {{/power-select}}
+          </PowerSelect>
         </div>
         <div class="line-chart-config__area-opt">
           <span class="line-chart-config__area-opt-title">Area</span>
-          {{x-toggle
+          <XToggle
             class="line-chart-config__area-opt-select"
-            value=(readonly options.style.area)
-            size="small"
-            onToggle=(action "onUpdateStyle" "area")
-          }}
+            @value={{readonly @options.style.area}}
+            @size="small"
+            @onToggle={{fn this.onUpdateStyle "area"}}
+          />
         </div>
       {{/if}}
-      {{#if showStackOption}}
+      {{#if this.showStackOption}}
         <div class="line-chart-config__stacked-opt">
           <span class="line-chart-config__stacked-opt-title">Stacked</span>
-          {{x-toggle
+          <XToggle
             class="line-chart-config__stacked-opt-select"
-            value=(readonly options.style.stacked)
-            size="small"
-            onToggle=(action "onUpdateStyle" "stacked")
-          }}
+            @value={{readonly @options.style.stacked}}
+            @size="small"
+            @onToggle={{fn this.onUpdateStyle "stacked"}}
+          />
         </div>
       {{/if}}
     </div>
-    {{#if (and showStackOption options.style.stacked)}}
-      {{chart-series-config
-        seriesConfig=seriesConfig
-        seriesType=seriesType
-        onUpdateConfig=(action "onUpdateConfig")
+    {{#if (and this.showStackOption @options.style.stacked)}}
+      <ChartSeriesConfig
         class="line-chart-config__series-config"
-      }}
+        @seriesConfig={{this.seriesConfig}}
+        @seriesType={{this.seriesType}}
+        @onUpdateConfig={{this.onUpdateSeriesConfig}}
+      />
     {{/if}}
-  {{else if (not (eq seriesType "dimension"))}}
+  {{else if (not (eq this.seriesType "dimension"))}}
     <div class="navi-visualization-config__warn-msg">No configuration options available.</div>
   {{/if}}
 </NaviVisualizationConfig::SeriesChart>

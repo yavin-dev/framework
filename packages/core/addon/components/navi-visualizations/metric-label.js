@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -50,6 +50,7 @@ export default Component.extend({
 
       return options.format ? numeral(value).format(options.format) : String(value);
     }
+    return undefined;
   }),
 
   /**
@@ -59,8 +60,9 @@ export default Component.extend({
    */
   description: computed('options.description', 'model.[]', function() {
     if (get(this, 'model')) {
-      return get(this, 'options.description');
+      return this.options?.description;
     }
+    return undefined;
   }),
 
   /**

@@ -1,5 +1,5 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -10,50 +10,46 @@
  *   }}
  */
 import Component from '@ember/component';
-import { set, get, computed } from '@ember/object';
+import { set, get, computed, action } from '@ember/object';
 import { copy } from 'ember-copy';
 import layout from '../templates/components/chart-series-config';
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
-export default Component.extend({
-  layout,
-
-  /**
-   * @property {Array} classNames
-   */
-  classNames: ['line-chart-config__series-config'],
-
+@templateLayout(layout)
+@tagName('')
+class ChartSeriesConfigComponent extends Component {
   /**
    * @property {String} seriesConfigDataKey - object key of `seriesConfig` to read from and update when reordering
    */
-  seriesConfigDataKey: computed('seriesType', function() {
+  @computed('seriesType')
+  get seriesConfigDataKey() {
     return this.seriesType === 'dimension' ? 'dimensions' : 'metrics';
-  }),
+  }
 
   /**
    * @property {Array} seriesData - array of series data in the form:
    * [{ metric: "adClicks", parameters: {} }, { ... }] for metrics or [{ name: "Dimension 1" }, { ... }] for dimensions
    */
-  seriesData: computed('seriesConfigDataKey', 'seriesConfig', function() {
+  @computed('seriesConfigDataKey', 'seriesConfig')
+  get seriesData() {
     return get(this, `seriesConfig.${get(this, 'seriesConfigDataKey')}`);
-  }),
+  }
 
   /**
-   * actions
+   * @method onReorderSeries
+   * @param {Array} series - new order of series
    */
-  actions: {
-    /**
-     * @method onReorderSeries
-     * @param {Array} series - new order of series
-     */
-    onReorderSeries(series) {
-      const newSeriesConfig = copy(this.seriesConfig),
-        seriesConfigDataKey = get(this, 'seriesConfigDataKey');
+  @action
+  onReorderSeries(series) {
+    const newSeriesConfig = copy(this.seriesConfig),
+      seriesConfigDataKey = get(this, 'seriesConfigDataKey');
 
-      // lowest item in stack should be first in order. Using `flex-flow: column-reverse` when rendering
-      const reverseSeries = copy(series).reverse();
+    // lowest item in stack should be first in order. Using `flex-flow: column-reverse` when rendering
+    const reverseSeries = copy(series).reverse();
 
-      set(newSeriesConfig, seriesConfigDataKey, reverseSeries);
-      this.onUpdateConfig(newSeriesConfig);
-    }
+    set(newSeriesConfig, seriesConfigDataKey, reverseSeries);
+    this.onUpdateConfig(newSeriesConfig);
   }
-});
+}
+
+export default ChartSeriesConfigComponent;

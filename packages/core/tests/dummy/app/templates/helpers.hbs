@@ -3,4 +3,4 @@
 <div id="current">{{current-route}}</div>
 <div id="sibling">{{sibling-route "sibling"}}</div>
 
-{{#link-to "helpers.child1.child2" id="link-to-child"}}Visit child route{{/link-to}}
+<LinkTo id="link-to-child" @route="helpers.child1.child2">Visit child route</LinkTo>

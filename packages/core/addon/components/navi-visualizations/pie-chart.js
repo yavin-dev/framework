@@ -1,5 +1,5 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -13,7 +13,7 @@ import d3 from 'd3';
 import { alias, readOnly } from '@ember/object/computed';
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
-import { get, computed } from '@ember/object';
+import { get, computed, action } from '@ember/object';
 import { getOwner } from '@ember/application';
 import { run } from '@ember/runloop';
 import { guidFor } from '@ember/object/internals';
@@ -23,65 +23,67 @@ import { merge } from 'lodash-es';
 import { smartFormatNumber } from 'navi-core/helpers/smart-format-number';
 import hasChartBuilders from 'navi-core/mixins/components/has-chart-builders';
 import { getTranslation } from '../../utils/chart';
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
-export default Component.extend(hasChartBuilders, {
-  layout,
-
-  /**
-   * @property {String} tagName - don't render a DOM element
-   */
-  tagName: '',
-
+@templateLayout(layout)
+@tagName('')
+class NaviVisualizationsPieChartComponent extends Component.extend(hasChartBuilders) {
   /**
    * @property {Service} metricName
    */
-  metricName: service(),
+  @service metricName;
 
   /**
    * @property {String} chartId - return pie-chart-widget with its ember id appended to it
    */
-  chartId: computed(function() {
+  @computed
+  get chartId() {
     return `pie-chart-widget-${guidFor(this)}`;
-  }),
+  }
 
   /**
    * @property {Array} widgetClassNames - since pie-chart is a tagless wrapper component,
    * classes specified here are applied to the underlying c3-chart component
    */
-  widgetClassNames: computed(function() {
+  @computed
+  get widgetClassNames() {
     return ['pie-chart-widget', this.get('chartId')];
-  }),
+  }
 
   /**
    * @property {Object} request
    */
-  request: alias('model.firstObject.request'),
+  @alias('model.firstObject.request') request;
 
   /**
    * @property {Object} builder - builder based on series type
    */
-  builder: computed('seriesType', function() {
-    const type = get(this, 'seriesType'),
-      builders = get(this, 'chartBuilders');
+  @computed('seriesType')
+  get builder() {
+    const {
+      seriesType: type,
+      chartBuilders: builders
+    } = this;
 
     return builders[type];
-  }),
+  }
 
   /**
    * @property {Object} seriesConfig - config for chart series
    */
-  seriesConfig: readOnly('options.series.config'),
+  @readOnly('options.series.config') seriesConfig;
 
   /**
    * @property {String} seriesType
    */
-  seriesType: readOnly('options.series.type'),
+  @readOnly('options.series.type') seriesType;
 
   /**
    * Formatter for label (percentage value) shown on pie slices
    * @property {Object} pieConfig - pie chart specific config
    */
-  pieConfig: computed(function() {
+  @computed
+  get pieConfig() {
     return {
       pie: {
         label: {
@@ -91,21 +93,23 @@ export default Component.extend(hasChartBuilders, {
         }
       }
     };
-  }),
+  }
 
   /**
    * @property {String} metricDisplayName - display name for metric
    */
-  metricDisplayName: computed('options', function() {
+  @computed('options')
+  get metricDisplayName() {
     let metric = get(this, 'seriesConfig.metric');
 
     return metric && get(this, 'metricName').getDisplayName(metric);
-  }),
+  }
 
   /**
    * @property {Object} chart data config
    */
-  dataConfig: computed('model.firstObject', 'seriesConfig', function() {
+  @computed('model.firstObject', 'seriesConfig')
+  get dataConfig() {
     let response = get(this, 'model.firstObject.response'),
       request = get(this, 'request'),
       seriesConfig = get(this, 'seriesConfig'),
@@ -117,29 +121,31 @@ export default Component.extend(hasChartBuilders, {
         json: seriesData
       }
     };
-  }),
+  }
 
   /**
    * @property {Object} config - config options for the chart
    */
-  config: computed('options', 'dataConfig', function() {
+  @computed('options', 'dataConfig')
+  get config() {
     return merge({}, get(this, 'pieConfig'), get(this, 'options'), get(this, 'dataConfig'), {
       tooltip: get(this, 'chartTooltip')
     });
-  }),
+  }
 
   /**
    * @property {String} tooltipComponentName - name of the tooltip component
    */
-  tooltipComponentName: computed(function() {
-    const guid = guidFor(this);
-    return `pie-chart-tooltip-${guid}`;
-  }),
+  @computed
+  get tooltipComponentName() {
+    return `pie-chart-tooltip-${guidFor(this)}`;
+  }
 
   /**
    * @property {Component} tooltipComponent - component used for rendering HTMLBars templates
    */
-  tooltipComponent: computed(function() {
+  @computed
+  get tooltipComponent() {
     let owner = getOwner(this),
       tooltipComponentName = get(this, 'tooltipComponentName'),
       registryEntry = `component:${tooltipComponentName}`,
@@ -169,12 +175,13 @@ export default Component.extend(hasChartBuilders, {
      * Use the factory that has been registered instead of an anonymous component.
      */
     return owner.factoryFor(registryEntry);
-  }),
+  }
 
   /**
    * @property {Object} chartTooltip - configuration for tooltip
    */
-  chartTooltip: computed('seriesConfig.metric', function() {
+  @computed('seriesConfig.metric')
+  get chartTooltip() {
     let tooltipComponent = get(this, 'tooltipComponent'),
       rawData = get(this, 'dataConfig.data.json'),
       metric = get(this, 'seriesConfig.metric');
@@ -198,7 +205,7 @@ export default Component.extend(hasChartBuilders, {
         return innerHTML;
       }
     };
-  }),
+  }
 
   /**
    * Fires before the element is destroyed
@@ -206,10 +213,10 @@ export default Component.extend(hasChartBuilders, {
    * @override
    */
   willDestroyElement() {
-    this._super(...arguments);
+    super.willDestroyElement(...arguments);
     this._removeMetricLabel();
     this._removeTooltipFromRegistry();
-  },
+  }
 
   /**
    * Removes tooltip component from registry
@@ -219,7 +226,7 @@ export default Component.extend(hasChartBuilders, {
   _removeTooltipFromRegistry() {
     const tooltipComponentName = get(this, 'tooltipComponentName');
     getOwner(this).unregister(`component:${tooltipComponentName}`);
-  },
+  }
 
   /**
    * Removes metric label from pie chart
@@ -229,7 +236,7 @@ export default Component.extend(hasChartBuilders, {
   _removeMetricLabel() {
     let tspans = d3.selectAll(`.${this.get('chartId')} text.c3-title > .pie-metric-label`);
     tspans.remove();
-  },
+  }
 
   /**
    * Creates the pie chart's metric label
@@ -259,22 +266,20 @@ export default Component.extend(hasChartBuilders, {
       //rotate the label to be vertical and place it just left of the pie chart
       titleElm.attr('text-anchor', 'middle').attr('transform', `translate(${xTranslate}, ${yTranslate}) rotate(-90)`);
     }
-  },
+  }
 
   /**
-   * @property {Object} actions
+   * Redraws the metric label. Called when pie chart is rendered.
+   * @method redrawMetricLabel
+   * @private
    */
-  actions: {
-    /**
-     * Redraws the metric label. Called when pie chart is rendered.
-     * @method redrawMetricLabel
-     * @private
-     */
-    redrawMetricLabel() {
-      if (!get(this, 'isDestroyed') && !get(this, 'isDestroying')) {
-        this._removeMetricLabel();
-        this._drawMetricLabel();
-      }
+  @action
+  redrawMetricLabel() {
+    if (!this.isDestroyed && !this.isDestroying) {
+      this._removeMetricLabel();
+      this._drawMetricLabel();
     }
   }
-});
+}
+
+export default NaviVisualizationsPieChartComponent;

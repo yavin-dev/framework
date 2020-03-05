@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -19,26 +19,28 @@
  * }}
  */
 import Component from '@ember/component';
-import { computed, get } from '@ember/object';
+import { computed } from '@ember/object';
 import layout from '../templates/components/table-renderer';
 import { formatItemDimension } from '../helpers/mixed-height-layout';
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
-export default Component.extend({
-  layout,
-
-  classNames: ['table-widget__horizontal-scroll-container'],
-
+@templateLayout(layout)
+@tagName('')
+class TableRendererComponent extends Component {
   /**
    * @property {Array} rowDimensions - indicates the dimensions for each row of data
    */
-  rowDimensions: computed('tableData', function() {
-    let rowDimension = formatItemDimension(get(this, 'estimateHeight'));
+  @computed('tableData')
+  get rowDimensions() {
+    const rowDimension = formatItemDimension(this.estimateHeight);
     //Create a set of row dimensions for each row of data
-    let rowDimensions = new Array(get(this, 'tableData.length'));
+    const rowDimensions = new Array(this.tableData?.length);
     for (let i = 0; i < rowDimensions.length; i++) {
       rowDimensions[i] = rowDimension;
     }
 
     return rowDimensions;
-  })
-});
+  }
+}
+
+export default TableRendererComponent;
