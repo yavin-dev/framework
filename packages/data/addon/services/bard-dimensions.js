@@ -194,7 +194,7 @@ export default Service.extend({
    * @param {String} namespace - namespace to the keg
    * @returns {Object} - The bard dimension model object
    */
-  getById(dimension, value, namespace = getDefaultDataSourceName()) {
+  getById(dimension, value, namespace=getDefaultDataSourceName()) {
     return this._kegAdapter.getById(dimension, value, namespace);
   },
 
@@ -382,7 +382,7 @@ export default Service.extend({
    * @param namespace {String} - namespace of dimension
    * @returns {Object} dimension model factory
    */
-  getFactoryFor(dimensionName, namespace = getDefaultDataSourceName()) {
+  getFactoryFor(dimensionName, namespace=getDefaultDataSourceName()) {
     const key = `${namespace}.${dimensionName}`;
     if (MODEL_FACTORY_CACHE[key]) {
       return MODEL_FACTORY_CACHE[key];
@@ -395,7 +395,7 @@ export default Service.extend({
    * @param dimensionName {String} - name of the dimension
    * @returns {Object} dimension model factory
    */
-  _createDimensionModelFactory(dimensionName, namespace = getDefaultDataSourceName()) {
+  _createDimensionModelFactory(dimensionName, namespace=getDefaultDataSourceName()) {
     const metadata = this.metadataService.getById('dimension', dimensionName, namespace),
       dimensionModel = getOwner(this).factoryFor('model:bard-dimension').class,
       identifierField = metadata.get('primaryKeyFieldName');
