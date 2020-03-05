@@ -28,29 +28,22 @@ export default class NaviAssetSearchProviderService extends NaviBaseSearchProvid
   _displayComponentName = 'navi-search-result/asset';
 
   /**
-   * @method _parseQueryString – Parses string query to search parameters
+   * @method _parseParamsFilterString – Parses string query to search parameters
    * @private
    * @param {String} query
    * @param {String} type
    * @returns {Object} query object
    */
-  _parseQueryString(query, type) {
-    let searchParams;
-
+  _parseParamsFilterString(query, type) {
+    let paramsFilterString = '';
     if (typeof query == 'string' && query) {
       if (type === 'report') {
-        searchParams = {
-          title: query,
-          request: query
-        };
+        paramsFilterString = `(title==*${query}*,request==*${query}*)`;
       } else if (type === 'dashboard') {
-        searchParams = {
-          title: query
-        };
+        paramsFilterString = `(title==*${query}*)`;
       }
     }
-
-    return searchParams;
+    return paramsFilterString;
   }
 
   /**
@@ -59,28 +52,16 @@ export default class NaviAssetSearchProviderService extends NaviBaseSearchProvid
    * therefore an 'or' is used between the different parameters and finally there's an 'and' with the author.
    * @private
    * @param {String} userQuery
-   * @param {String} author
    * @param {String} type
    * @returns {Object} search query object
    */
   _constructSearchQuery(userQuery, type) {
     const author = this.user.getUser().id;
-    const searchParams = this._parseQueryString(userQuery, type);
     const pluralType = pluralize(type);
     let query = { filter: { [pluralType]: '' } };
 
-    let paramsFilterString = '';
-    if (searchParams) {
-      const paramsFilter = Object.keys(searchParams)
-        .map(p => `${p}==*${searchParams[p]}*`)
-        .join(','); // comma separated list of param filters
-      paramsFilterString = paramsFilter ? `(${paramsFilter})` : ''; //wrap in parentheses if param filter present
-    }
-
-    let authorFilterString = '';
-    if (author) {
-      authorFilterString = paramsFilterString ? `;author==${author}` : `author==${author}`; //add semicolon if param filters present
-    }
+    const paramsFilterString = this._parseParamsFilterString(userQuery, type);
+    const authorFilterString = author ? (paramsFilterString ? `;author==${author}` : `author==${author}`) : '';
 
     query.filter[pluralType] = `${paramsFilterString}${authorFilterString}`;
 
