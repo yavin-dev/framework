@@ -2,7 +2,6 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 
 const emberGuidRegex = /ember\d+/;
-
 const Payload = {
     source: 'dummy',
     tables: [
@@ -669,7 +668,7 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
       result,
       'A new metric function is created when there is no existing metric function with the exact same arguments'
     );
-    assert.ok(emberGuidRegex.test(distinctResult.id), 'New metric function with a uuid as its id is returned');
+    assert.ok(emberGuidRegex.test(distinctResult.id), 'New metric function with a ember-guid as its id is returned');
     assert.deepEqual(
       Object.keys(distinctResult),
       ['name', 'description', 'arguments', 'source', 'id'],
@@ -679,6 +678,232 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
       distinctResult.arguments,
       [FunctionArguments[0]],
       'The new metric function has the expected arguments'
+    );
+  });
+
+  test('_constructDimension', function(assert) {
+    let grain = 'day';
+    const dimension = {
+      category: 'categoryOne',
+      name: 'dimensionOne',
+      longName: 'Dimension One',
+      uri: 'https://host:port/namespace/dimensions/dimensionOne',
+      cardinality: '10',
+      datatype: 'text'
+    };
+    const source = 'dummy';
+    const tableName = 'tableOne';
+    const currentDimensions = {};
+    const expectedDimension = {
+      id: dimension.name,
+      name: dimension.longName,
+      category: dimension.category,
+      valueType: dimension.datatype,
+      type: 'field',
+      storageStrategy: null,
+      source,
+      tableId: tableName,
+      timegrains: [grain]
+    };
+
+    const result = Serializer._constructDimension(dimension, grain, source, tableName, currentDimensions);
+    assert.deepEqual(result, expectedDimension, 'New dimension is constructed correctly in the new shape');
+
+    currentDimensions[dimension.name] = result;
+    grain = 'month';
+    expectedDimension.timegrains.push(grain); //expect timegrains to be ['day', 'month']
+    const existingDimensionResult = Serializer._constructDimension(
+      dimension,
+      grain,
+      source,
+      tableName,
+      currentDimensions
+    );
+
+    assert.deepEqual(
+      existingDimensionResult,
+      expectedDimension,
+      'timegrain is added to the existing dimension in the currentDimensions list'
+    );
+
+    const otherDimension = Object.assign({}, dimension, { name: 'dimensionTwo' });
+    const otherDimensionResult = Serializer._constructDimension(
+      otherDimension,
+      grain,
+      source,
+      tableName,
+      currentDimensions
+    );
+    const otherExpectedDimension = Object.assign({}, expectedDimension, { id: 'dimensionTwo', timegrains: ['month'] });
+    assert.deepEqual(
+      otherDimensionResult,
+      otherExpectedDimension,
+      'Dimension with different name than any existing dimension returns a new dimension with a single grain'
+    );
+  });
+
+  test('_constructMetric WITHOUT parameters or metric function id provided', function(assert) {
+    let grain = 'day';
+    const metric = {
+      category: 'categoryOne',
+      name: 'metricOne',
+      longName: 'Metric One',
+      uri: 'https://metric-one-url',
+      type: 'number'
+    };
+    const source = 'dummy';
+    const tableName = 'tableOne';
+    const currentMetrics = {};
+    const metricFunctions = new Set();
+    const expectedMetric = {
+      id: metric.name,
+      name: metric.longName,
+      category: metric.category,
+      valueType: metric.type,
+      source,
+      tableId: tableName,
+      timegrains: [grain]
+    };
+    const result = Serializer._constructMetric(metric, grain, source, tableName, currentMetrics, metricFunctions);
+    assert.deepEqual(
+      result,
+      { metric: expectedMetric, metricFunction: null, metricFunctionsProvided: false },
+      'Metric is constructed correctly with no new metric function and flag for functions being provided is false'
+    );
+
+    currentMetrics[metric.name] = result.metric;
+    grain = 'month';
+    expectedMetric.timegrains.push(grain);
+
+    const existingMetricResult = Serializer._constructMetric(
+      metric,
+      grain,
+      source,
+      tableName,
+      currentMetrics,
+      metricFunctions
+    );
+    assert.deepEqual(
+      existingMetricResult,
+      { metric: expectedMetric, metricFunction: null, metricFunctionsProvided: false },
+      'Existing metric is returned with the added timegrain with no new metric function and flag for functions being provided is false'
+    );
+
+    const otherMetric = Object.assign({}, metric, { name: 'metricTwo' });
+    const otherMetricResult = Serializer._constructMetric(
+      otherMetric,
+      grain,
+      source,
+      tableName,
+      currentMetrics,
+      metricFunctions
+    );
+    const otherExpectedMetric = Object.assign({}, expectedMetric, { id: 'metricTwo', timegrains: ['month'] });
+    assert.deepEqual(
+      otherMetricResult,
+      {
+        metric: otherExpectedMetric,
+        metricFunction: null,
+        metricFunctionsProvided: false
+      },
+      'Metric with different name than any existing metric returns a new metric with a single grain'
+    );
+  });
+
+  test('_constructMetric WITH parameters and no metric function id provided', function(assert) {
+    let grain = 'day';
+    const metric = {
+      category: 'categoryOne',
+      name: 'metricOne',
+      longName: 'Metric One',
+      uri: 'https://metric-one-url',
+      type: 'number',
+      parameters: {
+        currency: {
+          type: 'dimension',
+          dimensionName: 'displayCurrency',
+          defaultValue: 'USD'
+        }
+      }
+    };
+    const source = 'dummy';
+    const tableName = 'tableOne';
+    const currentMetrics = {};
+    const metricFunctions = new Set();
+    const expectedMetric = {
+      id: metric.name,
+      name: metric.longName,
+      category: metric.category,
+      valueType: metric.type,
+      source,
+      tableId: tableName,
+      timegrains: [grain]
+    };
+    const {
+      metric: resultMetric,
+      metricFunction: resultMetricFunction,
+      metricFunctionsProvided
+    } = Serializer._constructMetric(metric, grain, source, tableName, currentMetrics, metricFunctions);
+
+    assert.deepEqual(
+      Object.keys(resultMetricFunction),
+      ['name', 'description', 'arguments', 'source', 'id'],
+      'Metric function object is returned'
+    );
+    assert.ok(
+      emberGuidRegex.test(resultMetricFunction.id),
+      'Created metric function id is an instance of an ember guid'
+    );
+    assert.notOk(
+      metricFunctionsProvided,
+      'No metricFunctionId in the input metric makes metricFunctionsProvided false'
+    );
+
+    expectedMetric.metricFunctionId = resultMetricFunction.id;
+
+    assert.deepEqual(
+      resultMetric,
+      expectedMetric,
+      "Metric is constructed correctly with the new metric function's id included"
+    );
+  });
+
+  test('_constructMetric WITHOUT parameters and metric function id provided', function(assert) {
+    let grain = 'day';
+    const metric = {
+      category: 'categoryOne',
+      name: 'metricOne',
+      longName: 'Metric One',
+      uri: 'https://metric-one-url',
+      type: 'number',
+      metricFunctionId: 'moneyMetric'
+    };
+    const source = 'dummy';
+    const tableName = 'tableOne';
+    const currentMetrics = {};
+    const metricFunctions = new Set();
+    const expectedMetric = {
+      id: metric.name,
+      name: metric.longName,
+      category: metric.category,
+      valueType: metric.type,
+      source,
+      tableId: tableName,
+      timegrains: [grain],
+      metricFunctionId: metric.metricFunctionId
+    };
+    const {
+      metric: resultMetric,
+      metricFunction: resultMetricFunction,
+      metricFunctionsProvided
+    } = Serializer._constructMetric(metric, grain, source, tableName, currentMetrics, metricFunctions);
+
+    assert.notOk(resultMetricFunction, 'Metric function object is NOT returned');
+    assert.ok(metricFunctionsProvided, 'metricFunctionId in the input metric makes metricFunctionsProvided true');
+    assert.deepEqual(
+      resultMetric,
+      expectedMetric,
+      "Metric is constructed correctly with the new metric function's id included"
     );
   });
 });

@@ -8,6 +8,8 @@
 import EmberObject from '@ember/object';
 import { inject as service } from '@ember/service';
 
+export const INTRINSIC_VALUE_EXPRESSION = 'self';
+
 export default class FunctionArgument extends EmberObject {
   /**
    * @property {Service} metadataService
@@ -63,7 +65,7 @@ export default class FunctionArgument extends EmberObject {
    * @property {Promise} values - array of values used for function arguments with an enum type
    */
   get values() {
-    if (this.expression === 'self') {
+    if (this.expression === INTRINSIC_VALUE_EXPRESSION) {
       return Promise.resolve(this._localValues);
     }
 

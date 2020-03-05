@@ -6,13 +6,16 @@
  */
 
 import { guidFor } from '@ember/object/internals';
+import { INTRINSIC_VALUE_EXPRESSION } from 'navi-data/models/metadata/metric/function-argument';
 import EmberObject from '@ember/object';
 
 export default EmberObject.extend({
   /**
    * Transform the bard metadata into a shape that our internal data models can use
+   * @private
    * @method _normalizeTable - normalizes the table object
-   * @param rawTables {Array} - array of table objects
+   * @param {Object[]} rawTables - array of table objects
+   * @param {String} source - datasource of the payload
    * @returns {Object} - normalized table object
    */
   _normalizeTable(rawTables, source) {
@@ -21,81 +24,40 @@ export default EmberObject.extend({
       dimensions = [],
       timeDimensions = [],
       metricFunctions = new Set(),
-      metricFunctionsProvided = false, //Will be set to true if a metric is found to have a metricFunctionId field
       tables = rawTables.map(table => {
-        const newTable = {
-          id: table.name,
-          name: table.longName,
-          description: table.description,
-          category: table.category,
-          source
-        };
-
         // Reduce all columns regardless of timegrain into one object
         const allTableColumns = table.timeGrains.reduce(
           (acc, timegrain) => {
-            const grain = timegrain.name;
-            const currentMetrics = acc.metrics;
-            const currentDimensions = acc.dimensions;
-            const currentTimeDimensions = acc.timeDimensions;
+            const { name: grain } = timegrain;
+            const {
+              metrics: currentMetrics,
+              dimensions: currentDimensions,
+              timeDimensions: currentTimeDimensions
+            } = acc;
 
             // Construct each dimension / time-dimension
             timegrain.dimensions.forEach(dimension => {
-              const { name, longName, category, datatype: valueType, storageStrategy } = dimension;
+              const { datatype: valueType, name } = dimension;
               const accDimensionList = valueType === 'date' ? currentTimeDimensions : currentDimensions;
 
-              const existingDimension = accDimensionList[name];
-              if (existingDimension) {
-                accDimensionList[name].timegrains.push(grain);
-              } else {
-                accDimensionList[name] = {
-                  id: name,
-                  name: longName,
-                  category,
-                  valueType,
-                  type: 'field',
-                  storageStrategy: storageStrategy || null,
-                  source,
-                  tableId: table.name,
-                  timegrains: [grain]
-                };
-              }
+              accDimensionList[name] = this._constructDimension(dimension, grain, source, table.name, accDimensionList);
             });
 
             // Construct each metric and metric function + function arguments if necessary
             timegrain.metrics.forEach(metric => {
-              const { type: valueType, longName, name, category, parameters, metricFunctionId } = metric;
-              const existingMetric = currentMetrics[name];
+              const {
+                metric: newMetric,
+                metricFunction: newMetricFunction,
+                metricFunctionsProvided
+              } = this._constructMetric(metric, grain, source, table.name, currentMetrics, metricFunctions);
+              currentMetrics[metric.name] = newMetric;
 
-              if (existingMetric) {
-                currentMetrics[name].timegrains.push(grain);
-              } else {
-                const newMetric = {
-                  id: name,
-                  name: longName,
-                  valueType,
-                  source,
-                  category,
-                  tableId: table.name,
-                  timegrains: [grain]
-                };
-                /*
-                 * If Fili provides a metric function id, then we can look up the parameter metadata later in the metricFunctions endpoint
-                 * If it does not provide a metric function id and parameters are present, we derive a metric function object in our own dictionary
-                 */
-                if (metricFunctionId) {
-                  metricFunctionsProvided = true;
-                  metricFunctions = null; // set the internal dictionary to null so that we know to use the endpoint later
-                  newMetric.metricFunctionId = metricFunctionId;
-                } else if (!metricFunctionsProvided && parameters) {
-                  const functionArguments = this._constructFunctionArguments(parameters);
-                  const metricFunction = this._getMetricFunction(metricFunctions, functionArguments, source);
+              if (metricFunctionsProvided) {
+                metricFunctions = null;
+              }
 
-                  newMetric.metricFunctionId = metricFunction.id;
-                  metricFunctions.add(metricFunction);
-                }
-
-                currentMetrics[name] = newMetric;
+              if (newMetricFunction) {
+                metricFunctions.add(newMetricFunction);
               }
             });
 
@@ -104,17 +66,21 @@ export default EmberObject.extend({
           { metrics: {}, dimensions: {}, timeDimensions: {} }
         );
 
-        // Add the ids of each metrics and dimension to the table
-        newTable.metricIds = Object.keys(allTableColumns.metrics);
-        newTable.dimensionIds = Object.keys(allTableColumns.dimensions);
-        newTable.timeDimensionIds = Object.keys(allTableColumns.timeDimensions);
-
         // Add metrics and dimensions for the table to the overall metrics and dimensions arrays
         metrics = metrics.concat(Object.values(allTableColumns.metrics));
         dimensions = dimensions.concat(Object.values(allTableColumns.dimensions));
         timeDimensions = timeDimensions.concat(Object.values(allTableColumns.timeDimensions));
 
-        return newTable;
+        return {
+          id: table.name,
+          name: table.longName,
+          description: table.description,
+          category: table.category,
+          source,
+          metricIds: Object.keys(allTableColumns.metrics),
+          dimensionIds: Object.keys(allTableColumns.dimensions),
+          timeDimensionIds: Object.keys(allTableColumns.timeDimensions)
+        };
       });
 
     return {
@@ -158,6 +124,7 @@ export default EmberObject.extend({
    * @private
    * @method _constructFunctionArguments
    * @param {Object} parameters - map of parameter objects to turn into function arguments
+   * @returns {Object[]} array of function argument objects
    */
   _constructFunctionArguments(parameters) {
     return Object.keys(parameters).map(param => {
@@ -169,11 +136,98 @@ export default EmberObject.extend({
         name: param,
         valueType: 'TEXT',
         type: 'ref', // It will always be ref for our case because all our parameters have their valid values defined in a dimension or enum
-        expression: type === 'dimension' ? `dimension:${dimensionName}` : 'self',
+        expression: type === 'dimension' ? `dimension:${dimensionName}` : INTRINSIC_VALUE_EXPRESSION,
         values: values || null,
         defaultValue
       };
     });
+  },
+
+  /**
+   * @private
+   * @method _constructDimension
+   * @param {Object} dimension
+   * @param {String} grain
+   * @param {String} source
+   * @param {String} tableName
+   * @param {Object} currentDimensions
+   * @returns {Object} dimension object newly created or existing dimension with an added timegrain
+   */
+
+  _constructDimension(dimension, grain, source, tableName, currentDimensions) {
+    let newDimension;
+    const { name, longName, category, datatype: valueType, storageStrategy } = dimension;
+    const existingDimension = currentDimensions[name];
+
+    if (existingDimension) {
+      const newGrains = [...existingDimension.timegrains, grain];
+      newDimension = Object.assign({}, existingDimension, { timegrains: newGrains });
+    } else {
+      newDimension = {
+        id: name,
+        name: longName,
+        category,
+        valueType,
+        type: 'field',
+        storageStrategy: storageStrategy || null,
+        source,
+        tableId: tableName,
+        timegrains: [grain]
+      };
+    }
+
+    return newDimension;
+  },
+
+  /**
+   * @private
+   * @method _constructMetric
+   * @param {Object} metric
+   * @param {String} grain
+   * @param {String} source
+   * @param {String} tableName
+   * @param {Object} currentMetrics
+   * @param {Set<Object>} metricFunctions
+   * @returns {Object} created or existing metric object with applicable timegrains,
+   * possibly created metric function object, and flag on whether a provided metric id was found
+   */
+  _constructMetric(metric, grain, source, tableName, currentMetrics, metricFunctions) {
+    let newMetric,
+      newMetricFunction = null,
+      metricFunctionsProvided = false;
+    const { type: valueType, longName, name, category, parameters, metricFunctionId } = metric;
+    const existingMetric = currentMetrics[name];
+
+    if (existingMetric) {
+      const newGrains = [...existingMetric.timegrains, grain];
+      newMetric = Object.assign({}, existingMetric, { timegrains: newGrains });
+    } else {
+      newMetric = {
+        id: name,
+        name: longName,
+        valueType,
+        source,
+        category,
+        tableId: tableName,
+        timegrains: [grain]
+      };
+      /*
+       * If Fili provides a metric function id, then we can look up the parameter metadata later in the metricFunctions endpoint
+       * If it does not provide a metric function id and parameters are present, we derive a metric function object in our own dictionary
+       */
+      if (metricFunctionId) {
+        newMetric.metricFunctionId = metricFunctionId;
+        metricFunctionsProvided = true;
+      } else if (parameters && metricFunctions) {
+        const functionArguments = this._constructFunctionArguments(parameters);
+        const metricFunction = this._getMetricFunction(metricFunctions, functionArguments, source);
+
+        newMetric.metricFunctionId = metricFunction.id;
+        newMetricFunction = metricFunction;
+      }
+    }
+
+    return { metric: newMetric, metricFunction: newMetricFunction, metricFunctionsProvided };
   },
 
   /**

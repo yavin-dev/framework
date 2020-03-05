@@ -10,6 +10,9 @@ module.exports = {
   options: {
     autoImport: {
       exclude: ['papaparse'] // only included during development
+    },
+    babel: {
+      plugins: ['@babel/plugin-proposal-optional-chaining']
     }
   },
 

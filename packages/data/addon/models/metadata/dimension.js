@@ -21,7 +21,6 @@ export default class Dimension extends Column {
   /**
    * @property {Object[]} fields - Array of field objects
    */
-
   fields;
 
   /**
@@ -30,7 +29,7 @@ export default class Dimension extends Column {
   primaryKeyTag = 'primaryKey';
 
   /**
-   * @property {String} description - name of the description tag
+   * @property {String} descriptionTag - name of the description tag
    */
   descriptionTag = 'description';
 
