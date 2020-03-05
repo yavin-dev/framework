@@ -152,8 +152,8 @@ class NaviVisualizationConfigSeriesChartComponent extends Component {
    */
   @action
   onAddSeries(series) {
-    const newSeriesConfig = copy(this.seriesConfig));
-    const { onUpdateConfig: handleUpdateConfig  } = this;
+    const newSeriesConfig = copy(this.seriesConfig);
+    const { onUpdateConfig: handleUpdateConfig } = this;
 
     arr(newSeriesConfig.dimensions).pushObject(series.config);
     if (handleUpdateConfig) handleUpdateConfig(newSeriesConfig);

@@ -22,9 +22,7 @@ class NaviVisualizationConfigGoalGaugeComponent extends Component {
    */
   @action
   updateConfig(type, value) {
-    const { onUpdateConfig } = this;
-
-    this.onUpdateConfig?.{ [type]: value })
+    this.onUpdateConfig?.({ [type]: value });
   }
 }
 

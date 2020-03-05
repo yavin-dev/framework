@@ -87,7 +87,7 @@ export default class NaviVisualizationsGoalGaugeComponent extends Component {
    */
   @computed('config.{metricTitle,metric}')
   get metricTitle() {
-    return this.config?.metricTitle) || this.defaultMetricTitle;
+    return this.config?.metricTitle || this.defaultMetricTitle;
   }
 
   /**
@@ -173,12 +173,8 @@ export default class NaviVisualizationsGoalGaugeComponent extends Component {
    */
   @computed('options.{baselineValue,goalValue}')
   get thresholdValues() {
-    const { 
-      thresholdPercentages: percentages,
-      goalValue: goal,
-      baselineValue: baseline 
-    } = this;
-    const  diff = goal - baseline;
+    const { thresholdPercentages: percentages, goalValue: goal, baselineValue: baseline } = this;
+    const diff = goal - baseline;
 
     return percentages.map(p => Number(baseline) + (diff * p) / 100);
   }

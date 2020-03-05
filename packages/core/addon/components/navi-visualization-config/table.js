@@ -62,7 +62,7 @@ class NaviVisualizationConfigTableComponent extends Component {
   get selectedSubtotal() {
     const subtotals = this.options?.showTotals?.subtotal;
     if (subtotals) {
-      return arr(this.subtotalDimensions').findBy('name', subtotals);
+      return arr(this.subtotalDimensions).findBy('name', subtotals);
     }
     return undefined;
   }
