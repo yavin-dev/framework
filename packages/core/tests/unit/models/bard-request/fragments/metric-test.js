@@ -40,9 +40,9 @@ module('Unit | Model | Fragment | BardRequest - Metric', function(hooks) {
         mockModel
           .get('metrics')
           .objectAt(0)
-          .get('metric.longName'),
+          .get('metric.name'),
         'Unique Identifiers',
-        'The property metric `ui` was deserialized to the metric object with longName `Unique Identifiers`'
+        'The property metric `ui` was deserialized to the metric object with name `Unique Identifiers`'
       );
 
       /* == Setter Method == */
@@ -56,7 +56,7 @@ module('Unit | Model | Fragment | BardRequest - Metric', function(hooks) {
       mockModel
         .get('metrics')
         .objectAt(0)
-        .get('metric.longName'),
+        .get('metric.name'),
       'Page Views',
       'The property metric is set as `Page Views` using the setter'
     );

@@ -35,7 +35,7 @@ export default Helper.extend({
       metadataDisplayNames = ids.map(id => {
         let metadataModel = lookupMetadata(id);
         assert(`No ${type} found for id: ${id}`, metadataModel);
-        return get(metadataModel, 'longName');
+        return metadataModel.name;
       });
 
     return metadataDisplayNames.join(', ');

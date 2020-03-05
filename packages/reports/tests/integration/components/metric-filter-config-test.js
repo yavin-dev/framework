@@ -17,7 +17,7 @@ module('Integration | Component | metric filter config', function(hooks) {
     this.owner.register('helper:update-report-action', buildHelper(() => {}), { instantiate: false });
 
     Metric = {
-      metric: { name: 'testMetric', longName: 'Test Metric' },
+      metric: { id: 'testMetric', name: 'Test Metric' },
       parameters: {
         param: 'foo'
       },
@@ -27,22 +27,22 @@ module('Integration | Component | metric filter config', function(hooks) {
     Request = {
       metrics: arr([
         {
-          metric: { name: 'testMetric' },
+          metric: { id: 'testMetric' },
           parameters: { param: 'foo' },
           canonicalName: 'testMetric(foo)'
         },
         {
-          metric: { name: 'testMetric' },
+          metric: { id: 'testMetric' },
           parameters: { param: 'bar' },
           canonicalName: 'testMetric(bar)'
         },
         {
-          metric: { name: 'testMetric' },
+          metric: { id: 'testMetric' },
           parameters: { param: 'baz' },
           canonicalName: 'testMetric(baz)'
         },
         {
-          metric: { name: 'testMetric1' },
+          metric: { id: 'testMetric1' },
           parameters: { param: 'fooz' },
           canonicalName: 'testMetric1(fooz)'
         }
@@ -50,7 +50,7 @@ module('Integration | Component | metric filter config', function(hooks) {
       having: arr([
         {
           metric: {
-            metric: { name: 'testMetric' },
+            metric: { id: 'testMetric' },
             parameters: { param: 'foo' },
             canonicalName: 'testMetric(foo)'
           }
@@ -113,13 +113,13 @@ module('Integration | Component | metric filter config', function(hooks) {
       arr([
         {
           metric: {
-            metric: { name: 'testMetric' },
+            metric: { id: 'testMetric' },
             canonicalName: 'testMetric(foo)'
           }
         },
         {
           metric: {
-            metric: { name: 'testMetric' },
+            metric: { id: 'testMetric' },
             canonicalName: 'testMetric(bar)'
           }
         }
@@ -144,19 +144,19 @@ module('Integration | Component | metric filter config', function(hooks) {
       arr([
         {
           metric: {
-            metric: { name: 'testMetric' },
+            metric: { id: 'testMetric' },
             canonicalName: 'testMetric(foo)'
           }
         },
         {
           metric: {
-            metric: { name: 'testMetric' },
+            metric: { id: 'testMetric' },
             canonicalName: 'testMetric(bar)'
           }
         },
         {
           metric: {
-            metric: { name: 'testMetric' },
+            metric: { id: 'testMetric' },
             canonicalName: 'testMetric(baz)'
           }
         }

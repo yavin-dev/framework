@@ -18,7 +18,7 @@ export function buildTestRequest(
   timeGrain = 'day'
 ) {
   return {
-    logicalTable: { timeGrain: { name: timeGrain } },
+    logicalTable: { timeGrain },
     metrics: metrics.map(m => {
       if (typeof m === 'string') {
         let metricObj = parseMetricName(m);
@@ -34,8 +34,8 @@ export function buildTestRequest(
       } else if (typeof m === 'object' && m.metric && m.parameters) {
         return {
           metric: {
-            name: m.metric,
-            longName: classify(m.metric),
+            id: m.metric,
+            name: classify(m.metric),
             category: 'category'
           },
           canonicalName: canonicalizeMetric(m),
@@ -50,7 +50,7 @@ export function buildTestRequest(
       }
     }),
     dimensions: dimensions.map(d => {
-      return { dimension: { name: d, longName: classify(d) } };
+      return { dimension: { id: d, name: classify(d) } };
     }),
     intervals: A(
       intervals.map(interval => ({

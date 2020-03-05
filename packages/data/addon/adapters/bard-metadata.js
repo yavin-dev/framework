@@ -4,7 +4,9 @@
  */
 
 import { inject as service } from '@ember/service';
+import { getOwner } from '@ember/application';
 import EmberObject from '@ember/object';
+import { camelize, dasherize } from '@ember/string';
 import { pluralize } from 'ember-inflector';
 import { configHost } from '../utils/adapter';
 
@@ -32,7 +34,12 @@ export default class BardMetadataAdapter extends EmberObject {
   _buildURLPath(type, id, options = {}) {
     const host = configHost(options);
     const { namespace } = this;
-    return `${host}/${namespace}/${pluralize(type)}/${id}`;
+    const urlId =
+        getOwner(this)
+          .lookup(`adapter:metadata/${dasherize(type)}`)
+          ?.buildURLId(id) || id;
+
+    return `${host}/${namespace}/${camelize(pluralize(type))}/${urlId}`;
   }
 
   /**

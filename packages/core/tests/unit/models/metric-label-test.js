@@ -19,7 +19,7 @@ module('Unit | Model | Metric Label Visualization Fragment', function(hooks) {
       set(metricLabel, 'metadata', {
         format: '0a',
         metric: {
-          metric: { name: 'rupees', longName: 'Rupees', category: 'category' },
+          metric: { id: 'rupees', name: 'Rupees', category: 'category' },
           parameters: {},
           canonicalName: 'rupees'
         }
@@ -49,7 +49,7 @@ module('Unit | Model | Metric Label Visualization Fragment', function(hooks) {
       set(metricLabel, 'metadata', {
         format: '0a',
         metric: {
-          metric: { name: 'revenue', longName: 'Revenue', category: 'category' },
+          metric: { id: 'revenue', name: 'Revenue', category: 'category' },
           parameters: { currency: 'HYR' },
           canonicalName: 'revenue(currency=HYR)'
         }

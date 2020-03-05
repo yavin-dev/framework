@@ -90,9 +90,7 @@ const Model = arr([
       sort: [{ metric: 'm1', direction: 'desc' }, { metric: 'uniqueIdentifier', direction: 'asc' }],
       logicalTable: {
         table: 'network',
-        timeGrain: {
-          name: 'day'
-        }
+        timeGrain: 'day'
       }
     },
     response: {

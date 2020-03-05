@@ -3,78 +3,113 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import EmberObject from '@ember/object';
-import { assign } from '@ember/polyfills';
-import { getOwner } from '@ember/application';
+import { inject as service } from '@ember/service';
+import { upperFirst } from 'lodash-es';
 
-const timeGrainSorting = {
-  millisecond: 1,
-  second: 2,
-  minute: 3,
-  hour: 4,
-  day: 5,
-  week: 6,
-  month: 7,
-  quarter: 8,
-  year: 9,
-  all: 10
-};
-let Model = EmberObject.extend({
+export default class Table extends EmberObject {
   /**
-   * @property {String} name
+   * @static
+   * @property {String} identifierField
    */
-  name: undefined,
+  static identifierField = 'id';
 
   /**
-   * @property {String} longName
+   * @property {Ember.Service} keg
    */
-  longName: undefined,
+  @service('keg')
+  keg;
 
   /**
-   * @property {String} description
+   * @param {String} id
    */
-  description: undefined,
+  id;
 
   /**
-   * @property {String} category
+   * @param {String} name
    */
-  category: undefined,
+  name;
 
   /**
-   * @property {Array} timeGrains - array of timeGrain models
+   * @param {String} description
    */
-  timeGrains: undefined,
+  description;
+
+  /**
+   * @param {String} category
+   */
+  category;
+
+  /**
+   * @param {CaridnalitySize} cardinalitySize
+   */
+  cardinalitySize;
+
+  /**
+   * @property {Array} metricIds - array of metric ids
+   */
+  metricIds;
+
+  /**
+   * @property {Array} dimensionIds - array of dimension ids
+   */
+  dimensionIds;
+
+  /**
+   * @property {Array} timeDimensionIds - array of time dimension ids
+   */
+  timeDimensionIds;
+
+  /**
+   * @param {Metric[]} metrics
+   */
+  get metrics() {
+    return this.metricIds.map(metricId => {
+      return this.keg.getById('metadata/metric', metricId, this.source);
+    });
+  }
+
+  /**
+   * @param {Dimension[]} dimensions
+   */
+  get dimensions() {
+    return this.dimensionIds.map(dimensionId => {
+      return this.keg.getById('metadata/dimension', dimensionId, this.source);
+    });
+  }
+
+  /**
+   * @param {TimeDimension[]} timeDimensions
+   */
+  get timeDimensions() {
+    return this.timeDimensionIds.map(dimensionId => {
+      return this.keg.getById('metadata/time-dimension', dimensionId, this.source);
+    });
+  }
+
+  /**
+   * @param {String[]} tags
+   */
+  tags = [];
 
   /**
    * @property {String} source - the datasource this metadata is from.
    */
-  source: undefined,
+  source;
 
   /**
-   * @method init
-   * Converts timeGrains to timeGrain fragment objects
+   * @property {String[]} timeGrainIds - supported timegrains for a column
    */
-  init() {
-    let timeGrains = this.get('timeGrains');
-    if (timeGrains) {
-      this.set(
-        'timeGrains',
-        timeGrains.map(timeGrain => {
-          let timeGrainPayload = assign({}, timeGrain, { source: this.source }),
-            owner = getOwner(this);
-          return owner.factoryFor('model:metadata/time-grain').create(timeGrainPayload);
-        })
-        .sort((l, r) => {
-          return (timeGrainSorting[l.name] || Infinity) - (timeGrainSorting[r.name] || Infinity);
-        })
-      );
-    }
+  timeGrainIds = [];
+
+  /**
+   * @property {Object[]} timeGrains - timeGrain objects with id and display name
+   */
+  get timeGrains() {
+    return this.timeGrainIds.map(grain => {
+      return {
+        id: grain,
+        name: upperFirst(grain)
+      };
+    });
   }
-});
-
-//factory level properties
-export default Model.reopenClass({
-  /**
-   * @property {String} identifierField - used by the keg as identifierField
-   */
-  identifierField: 'name'
-});
+}

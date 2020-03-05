@@ -26,7 +26,7 @@ const Validations = buildValidations(
       dependentKeys: [
         'model._request.dimensions.[]',
         'model._request.metrics.@each.parameters.{}',
-        'model._request.logicalTable.timeGrain.name'
+        'model._request.logicalTable.timeGrain'
       ]
     })
   },
@@ -59,7 +59,7 @@ export default VisualizationBase.extend(Validations, {
       columns = get(this, 'metadata.columns'),
       // index column based on metricId or dimensionId
       columnIndex = indexColumnById(columns),
-      timeGrain = get(request, 'logicalTable.timeGrain.name');
+      timeGrain = request.logicalTable?.timeGrain;
 
     //Only add dateColumn if timegrain is not 'all'
     let dateColumn =
@@ -106,13 +106,13 @@ function getDefaultDimensionFields(dimension) {
  * @returns {Object} - dimension column
  */
 function buildDimensionColumn(dimension, columnIndex, field) {
-  let dimensionName = get(dimension, 'dimension.name'),
-    column = columnIndex[dimensionName],
-    defaultName = formatDimensionName({ name: get(dimension, 'dimension.longName'), field });
+  let dimensionId = dimension.dimension.id,
+    column = columnIndex[dimensionId],
+    defaultName = formatDimensionName({ name: dimension.dimension.name, field });
 
   return {
     type: 'dimension',
-    attributes: Object.assign({}, { name: get(dimension, 'dimension.name') }, field ? { field } : {}),
+    attributes: Object.assign({}, { name: get(dimension, 'dimension.id') }, field ? { field } : {}),
     displayName: column ? column.displayName : defaultName
   };
 }
@@ -150,8 +150,8 @@ function buildMetricColumns(metrics, columnIndex) {
       type = isTrend ? 'threshold' : 'metric',
       metricObject = metric.toJSON(),
       column = columnIndex[canonicalizeMetric(metricObject)],
-      longName = get(metric, 'metric.longName'),
-      displayName = column ? column.displayName : metricFormat(metric, longName),
+      name = metric.metric.name,
+      displayName = column ? column.displayName : metricFormat(metric, name),
       format = column ? get(column, 'attributes.format') : '';
 
     return {
@@ -205,21 +205,23 @@ function hasAllColumns(request, columns) {
       .map(column => {
         let attributes = get(column, 'attributes');
         if (get(column, 'type') === 'dimension') {
-          return canonicalizeDimension(attributes);
+          const attrs = Object.assign({}, attributes, { id: attributes.name });
+          delete attrs.name;
+          return canonicalizeDimension(attrs);
         } else {
           return canonicalizeColumnAttributes(attributes);
         }
       }),
     dimensions = [].concat(
       ...get(request, 'dimensions').map(dimension => {
-        let name = get(dimension, 'dimension.name'),
+        let name = dimension.dimension.id,
           defaultFields = getDefaultDimensionFields(dimension);
-        return !defaultFields.length ? name : defaultFields.map(field => canonicalizeDimension({ name, field }));
+        return !defaultFields.length ? name : defaultFields.map(field => canonicalizeDimension({ id: name, field }));
       })
     ),
     metrics = arr(get(request, 'metrics')).mapBy('canonicalName'),
     requestFields = [...dimensions, ...metrics],
-    timeGrain = get(request, 'logicalTable.timeGrain.name'),
+    timeGrain = request.logicalTable?.timeGrain,
     shouldHaveDateTimeCol = timeGrain !== 'all',
     doesHaveDateTimeCol = !!arr(columns).findBy('type', 'dateTime');
 
@@ -239,7 +241,9 @@ export function indexColumnById(columns) {
     if (type === 'metric') {
       return canonicalizeColumnAttributes(attributes);
     } else if (type === 'dimension' && attributes.field) {
-      return canonicalizeDimension(attributes);
+      const attrs = Object.assign({}, attributes, { id: attributes.name });
+      delete attrs.name;
+      return canonicalizeDimension(attrs);
     } else {
       return attributes.name;
     }

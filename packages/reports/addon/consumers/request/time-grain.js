@@ -18,11 +18,11 @@ export default ActionConsumer.extend({
      * @action ADD_TIME_GRAIN
      * @param {Object} route - route that has a model that contains a request property
      * @param {String} actionType - add or remove timeGrain
-     * @param {Object} timeGrain - the new timeGrain
+     * @param {String} timeGrain - the new timeGrain
      */
     [RequestActions.ADD_TIME_GRAIN](route, timeGrain) {
       let model = route.currentModel;
-      set(model, 'request.logicalTable.timeGrain', timeGrain);
+      set(model, 'request.logicalTable.timeGrain', timeGrain.id);
 
       get(this, 'requestActionDispatcher').dispatch(RequestActions.DID_UPDATE_TIME_GRAIN, route, timeGrain);
     },
@@ -34,14 +34,14 @@ export default ActionConsumer.extend({
      *
      * @param {Object} route - route that has a model that contains a request property
      * @param {String} actionType - add or remove timeGrain
-     * @param {Object} timeGrain - the new timeGrain
+     * @param {String} timeGrain - the new timeGrain
      */
     [RequestActions.REMOVE_TIME_GRAIN](route) {
       let model = route.currentModel,
-        allTimeGrain = get(model, 'request.logicalTable.table.timeGrains').filterBy('name', 'all')[0];
+        allTimeGrain = get(model, 'request.logicalTable.table.timeGrains').find(grain => grain.id === 'all');
 
       if (allTimeGrain) {
-        set(model, 'request.logicalTable.timeGrain', allTimeGrain);
+        set(model, 'request.logicalTable.timeGrain', allTimeGrain.id);
         get(this, 'requestActionDispatcher').dispatch(RequestActions.DID_UPDATE_TIME_GRAIN, route, allTimeGrain);
       }
     }

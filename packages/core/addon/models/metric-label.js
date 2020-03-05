@@ -4,7 +4,7 @@
  */
 import { readOnly } from '@ember/object/computed';
 import { A } from '@ember/array';
-import { get, set } from '@ember/object';
+import { set } from '@ember/object';
 import VisualizationBase from './visualization';
 import { buildValidations, validator } from 'ember-cp-validations';
 import DS from 'ember-data';
@@ -43,11 +43,11 @@ export default VisualizationBase.extend(Validations, {
    * @return {Object} this object
    */
   rebuildConfig(request /*response*/) {
-    let metrics = A(get(request, 'metrics')),
-      metric = get(metrics, 'firstObject').toJSON(),
-      description = metricFormat(get(metrics, 'firstObject'), get(metrics, 'firstObject.metric.longName')),
+    let metrics = A(request.metrics),
+      metric = metrics.firstObject.toJSON(),
+      description = metricFormat(metrics.firstObject, metrics.firstObject?.metric?.name),
       allFormats = NumberFormats,
-      format = get(this, 'metadata.format') || get(allFormats[0], 'format');
+      format = this.metadata.format || allFormats[0]?.format;
 
     set(this, 'metadata', { metric, description, format });
     return this;

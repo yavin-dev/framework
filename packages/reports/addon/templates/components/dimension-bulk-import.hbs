@@ -1,6 +1,6 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="dimension-bulk-import" ...attributes>
-  {{#with (pluralize 2 this.dimension.longName without-count=true) as |normalizedDimensionName|}}
+  {{#with (pluralize 2 this.dimension.name without-count=true) as |normalizedDimensionName|}}
     <div class="navi-modal-header">
       <div class="text-capitalize primary-header">Add Multiple {{normalizedDimensionName}}</div>
       {{#if (is-pending this._loadingPromise)}}
@@ -17,14 +17,14 @@
     </NaviLoadingMessage>
   {{else}}
     <div class="id-container valid-ids">
-      <span class="valid-id-count">{{this._validDimValues.length}}</span> valid <span class="text-capitalize dimension">{{pluralize this._validDimValues.length this.dimension.longName without-count=true}}</span>
+      <span class="valid-id-count">{{this._validDimValues.length}}</span> valid <span class="text-capitalize dimension">{{pluralize this._validDimValues.length this.dimension.name without-count=true}}</span>
       <PaginatedScrollList @items={{this._validDimValues}} @trim={{false}} as |dimVal|>
         <span role="button" class="remove-pill" {{on "click" (fn this.removeRecord dimVal)}}>×</span>
         {{format-dimension dimVal}}
       </PaginatedScrollList>
     </div>
     <div class="id-container invalid-ids">
-      <span class="invalid-id-count">{{this._invalidDimValueIds.length}}</span> invalid <span class="text-capitalize dimension">{{pluralize this._invalidDimValueIds.length this.dimension.longName without-count=true}}</span>
+      <span class="invalid-id-count">{{this._invalidDimValueIds.length}}</span> invalid <span class="text-capitalize dimension">{{pluralize this._invalidDimValueIds.length this.dimension.name without-count=true}}</span>
       <PaginatedScrollList @items={{this._invalidDimValueIds}} @trim={{false}} as |invalidDimId|>
         {{invalidDimId}}
       </PaginatedScrollList>

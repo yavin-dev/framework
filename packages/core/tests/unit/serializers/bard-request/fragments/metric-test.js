@@ -11,8 +11,8 @@ module('Unit | Serializer | Metric Fragment', function(hooks) {
     let record = run(() => {
       return this.owner.lookup('service:store').createFragment('bard-request/fragments/metric', {
         metric: {
-          name: 'test',
-          longName: 'Test',
+          id: 'test',
+          name: 'Test',
           type: 'number'
         },
         parameters: {}
@@ -32,8 +32,8 @@ module('Unit | Serializer | Metric Fragment', function(hooks) {
     record = run(() => {
       return this.owner.lookup('service:store').createFragment('bard-request/fragments/metric', {
         metric: {
-          name: 'test',
-          longName: 'Test',
+          id: 'test',
+          name: 'Test',
           type: 'number'
         },
         parameters: null
@@ -53,8 +53,8 @@ module('Unit | Serializer | Metric Fragment', function(hooks) {
     record = run(() => {
       return this.owner.lookup('service:store').createFragment('bard-request/fragments/metric', {
         metric: {
-          name: 'test',
-          longName: 'Test',
+          id: 'test',
+          name: 'Test',
           type: 'number'
         }
       });
@@ -73,8 +73,8 @@ module('Unit | Serializer | Metric Fragment', function(hooks) {
     record = run(() => {
       return this.owner.lookup('service:store').createFragment('bard-request/fragments/metric', {
         metric: {
-          name: 'test',
-          longName: 'Test',
+          id: 'test',
+          name: 'Test',
           type: 'number'
         },
         parameters: {

@@ -1,4 +1,3 @@
-import { get } from '@ember/object';
 import { module, test } from 'qunit';
 import DimensionMetadataModel from 'navi-data/models/metadata/dimension';
 import { setupTest } from 'ember-qunit';
@@ -12,10 +11,9 @@ module('Unit | Metadata Model | Dimension', function(hooks) {
 
   hooks.beforeEach(function() {
     Payload = {
-      name: 'age',
-      longName: 'Age',
+      id: 'age',
+      name: 'Age',
       category: 'Audience',
-      cardinality: 13,
       fields: [
         {
           name: 'id',
@@ -38,21 +36,19 @@ module('Unit | Metadata Model | Dimension', function(hooks) {
   test('factory has identifierField defined', function(assert) {
     assert.expect(1);
 
-    assert.equal(get(DimensionMetadataModel, 'identifierField'), 'name', 'identifierField property is set to `name`');
+    assert.equal(DimensionMetadataModel.identifierField, 'id', 'identifierField property is set to `id`');
   });
 
   test('it properly hydrates properties', function(assert) {
-    assert.expect(5);
+    assert.expect(4);
 
-    assert.deepEqual(get(Dimension, 'name'), Payload.name, 'name property is hydrated properly');
+    assert.deepEqual(Dimension.id, Payload.id, 'name property is hydrated properly');
 
-    assert.equal(get(Dimension, 'longName'), Payload.longName, 'longName property was properly hydrated');
+    assert.equal(Dimension.name, Payload.name, 'longName property was properly hydrated');
 
-    assert.equal(get(Dimension, 'category'), Payload.category, 'category property was properly hydrated');
+    assert.equal(Dimension.category, Payload.category, 'category property was properly hydrated');
 
-    assert.equal(get(Dimension, 'cardinality'), Payload.cardinality, 'cardinality property was properly hydrated');
-
-    assert.deepEqual(get(Dimension, 'fields'), Payload.fields, 'fields property was properly hydrated');
+    assert.deepEqual(Dimension.fields, Payload.fields, 'fields property was properly hydrated');
   });
 
   test('getTagForField', function(assert) {
@@ -200,25 +196,71 @@ module('Unit | Metadata Model | Dimension', function(hooks) {
   });
 
   test('extended property', async function(assert) {
-    const dimensionOne = DimensionMetadataModel.create(this.owner.ownerInjection(), {
-      name: 'dimensionOne'
-    });
     const server = new Pretender(metadataRoutes);
-    const originalDataSources = dimensionOne.metadata.loadedDataSources;
-    dimensionOne.metadata.set('loadedDataSources', ['dummy']);
+    await this.owner.lookup('service:bard-metadata').loadMetadata();
+    const dimensionOne = DimensionMetadataModel.create(this.owner.ownerInjection(), {
+      id: 'dimensionOne'
+    });
 
-    const expected = {
-      cardinality: 60,
-      category: 'categoryOne',
-      longName: 'Dimension One',
-      name: 'dimensionOne'
-    };
-    const result = await dimensionOne.get('extended');
-    assert.ok(
-      Object.keys(expected).every(key => result[key] === expected[key]),
-      'dimension model can fetch extended attributes'
-    );
+    const result = await dimensionOne.extended;
+    const expected = await this.owner.lookup('service:bard-metadata').findById('dimension', dimensionOne.id, 'dummy');
+    assert.equal(result, expected, 'dimension model can fetch extended attributes');
     server.shutdown();
-    dimensionOne.metadata.set('loadedDataSources', originalDataSources);
+  });
+
+  test('cardinality', function(assert) {
+    const dimension = DimensionMetadataModel.create(this.owner.ownerInjection(), {
+      cardinality: 'MEDIUM',
+      type: 'field'
+    });
+
+    assert.equal(
+      dimension.cardinality,
+      'MEDIUM',
+      'Dimension successfully gets its cardinality from its table when type of dimension is field'
+    );
+
+    const dimension2 = DimensionMetadataModel.create(this.owner.ownerInjection(), {
+      cardinality: 'MEDIUM',
+      type: 'somethingElse'
+    });
+
+    assert.strictEqual(dimension2.cardinality, undefined, 'Dimension returns undefined for non-field type dimension');
+
+    assert.throws(
+      () => {
+        dimension2.cardinality = 'chicago cubity';
+      },
+      /Dimension cardinality should be set to a value included in CARDINALITY_SIZES/,
+      'Assert fails when invalid cardinality value is set'
+    );
+  });
+
+  test('idFieldName', async function(assert) {
+    assert.expect(4);
+
+    const TestDimension = DimensionMetadataModel.create(this.owner.ownerInjection(), {
+      fields: [
+        {
+          name: 'identifier',
+          tags: ['id']
+        }
+      ]
+    });
+
+    assert.deepEqual(TestDimension.idFieldName, 'identifier', 'idFieldName returned `identifier` as the id field');
+
+    let noId = DimensionMetadataModel.create({
+      fields: [{ name: 'name', tags: ['something'] }]
+    });
+    assert.deepEqual(noId.idFieldName, 'id', 'idFieldName returned `id` as the default id field name');
+
+    let twoKeys = DimensionMetadataModel.create({
+      fields: [{ name: 'name1', tags: ['id'] }, { name: 'name2', tags: ['id'] }]
+    });
+    assert.deepEqual(twoKeys.idFieldName, 'name1', 'idFieldName returns the first field tagged as `id`');
+
+    let noFields = DimensionMetadataModel.create({});
+    assert.deepEqual(noFields.idFieldName, 'id', 'idFieldName returns `id` when there is no `fields` metadata prop');
   });
 });

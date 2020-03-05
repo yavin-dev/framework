@@ -26,7 +26,8 @@
     "ember-cli-htmlbars": "^4.2.0",
     "ember-cli-mirage": "^1.1.6",
     "ember-data": "~3.12.0",
-    "navi-core": "0.2.0"
+    "navi-core": "0.2.0",
+    "navi-data": "0.2.0"
   },
   "devDependencies": {
     "@ember/optional-features": "^1.3.0",

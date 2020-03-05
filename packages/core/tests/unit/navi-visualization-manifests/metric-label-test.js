@@ -9,7 +9,7 @@ import moment from 'moment';
 const VALID_REQUEST = {
   logicalTable: {
     table: 'network',
-    timeGrain: { name: 'day' }
+    timeGrain: 'day'
   },
   metrics: [{ metric: 'adClicks' }],
   dimensions: [],

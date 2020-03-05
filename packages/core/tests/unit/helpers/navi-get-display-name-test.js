@@ -10,7 +10,7 @@ module('Unit | Helper | navi get display name', function(hooks) {
   hooks.beforeEach(function() {
     // Mock metadata service
     const MockMeta = {
-      pageViews: { longName: 'Page Views' }
+      pageViews: { name: 'Page Views' }
     };
 
     const MockService = Service.extend({
@@ -29,7 +29,7 @@ module('Unit | Helper | navi get display name', function(hooks) {
   test('display name is returned', function(assert) {
     assert.expect(3);
 
-    assert.equal(helper.compute(['metric', 'pageViews']), 'Page Views', 'The helper returns the metric longName');
+    assert.equal(helper.compute(['metric', 'pageViews']), 'Page Views', 'The helper returns the metric name');
 
     assert.equal(helper.compute(['metric', undefined]), undefined, 'Undefined is returned when id is not given');
 

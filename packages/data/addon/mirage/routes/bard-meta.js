@@ -27,21 +27,24 @@ export default function() {
       tables = tables.map(table => {
         let timeGrains = timeGrainModels.map(timeGrain => {
           let tableDimModels = isBlockhead ? dimModels.blockheadDims : dimModels.defaultDims;
+          let defaultMetricModels = isBlockhead ? metricModels.blockheadMetrics : metricModels.defaultMetrics;
+
+          if (table.name === 'tableC') {
+            defaultMetricModels = defaultMetricModels.slice(0, 10);
+          }
 
           if (table.name !== 'network') {
             tableDimModels = tableDimModels.concat(dimModels.highCardinalityDims);
           }
 
           if (timeGrain.name === 'day') {
-            let defaultMetricModels = isBlockhead ? metricModels.blockheadMetrics : metricModels.defaultMetrics;
-
             return Object.assign({}, timeGrain, { metrics: defaultMetricModels }, { dimensions: tableDimModels });
           } else {
-            let metricsWithDayAvg = isBlockhead
-              ? metricModels.blockheadMetrics
-              : metricModels.defaultMetrics.concat(metricModels.dayAvgMetrics);
+            if (!isBlockhead) {
+              defaultMetricModels = defaultMetricModels.concat(metricModels.dayAvgMetrics);
+            }
 
-            return Object.assign({}, timeGrain, { metrics: metricsWithDayAvg }, { dimensions: tableDimModels });
+            return Object.assign({}, timeGrain, { metrics: defaultMetricModels }, { dimensions: tableDimModels });
           }
         });
 

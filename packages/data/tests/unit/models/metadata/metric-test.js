@@ -3,104 +3,114 @@ import { module, test } from 'qunit';
 import MetricMetadataModel from 'navi-data/models/metadata/metric';
 import { setupTest } from 'ember-qunit';
 import Pretender from 'pretender';
+
 import metadataRoutes from '../../../helpers/metadata-routes';
 
-let Payload, Metric;
+let Payload, Metric, MoneyMetric, ClicksMetric, server;
 
 module('Unit | Metadata Model | Metric', function(hooks) {
   setupTest(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(async function() {
+    server = new Pretender(metadataRoutes);
+    await this.owner.lookup('service:bard-metadata').loadMetadata();
+
     Payload = {
-      name: 'dayAvgPageViews',
-      longName: 'Page Views (Daily Avg)',
+      id: 'dayAvgPageViews',
+      name: 'Page Views (Daily Avg)',
       category: 'Page Views',
-      valueType: 'number',
-      parameters: {
-        testParam: {
-          type: 'dimension',
-          dimensionName: 'testParamDim',
-          defaultValue: 'testValue'
-        }
-      }
+      valueType: 'number'
     };
 
     Metric = MetricMetadataModel.create(this.owner.ownerInjection(), Payload);
+    MoneyMetric = MetricMetadataModel.create(this.owner.ownerInjection(), {
+      id: 'metricOne',
+      metricFunctionId: 'moneyMetric'
+    });
+    ClicksMetric = MetricMetadataModel.create(this.owner.ownerInjection(), {
+      id: 'metricTwo',
+      metricFunctionId: 'aggregationTrend'
+    });
+  });
+
+  hooks.afterEach(function() {
+    server.shutdown();
   });
 
   test('factory has identifierField defined', function(assert) {
     assert.expect(1);
 
-    assert.equal(get(MetricMetadataModel, 'identifierField'), 'name', 'identifierField property is set to `name`');
+    assert.equal(get(MetricMetadataModel, 'identifierField'), 'id', 'identifierField property is set to `id`');
   });
 
   test('it properly hydrates properties', function(assert) {
     assert.expect(4);
 
-    assert.deepEqual(get(Metric, 'name'), Payload.name, 'name property is hydrated properly');
+    assert.deepEqual(Metric.id, Payload.id, 'id property is hydrated properly');
 
-    assert.equal(get(Metric, 'longName'), Payload.longName, 'longName property was properly hydrated');
+    assert.equal(Metric.name, Payload.name, 'name property was properly hydrated');
 
-    assert.equal(get(Metric, 'category'), Payload.category, 'category property was properly hydrated');
+    assert.equal(Metric.category, Payload.category, 'category property was properly hydrated');
 
-    assert.equal(get(Metric, 'valueType'), Payload.valueType, 'value type property was properly hydrated');
+    assert.equal(Metric.valueType, Payload.valueType, 'valueType property was properly hydrated');
   });
 
-  test('Parameterized Metrics', function(assert) {
+  test('Metric with Metric Function', async function(assert) {
     assert.expect(4);
 
-    assert.equal(get(Metric, 'parameters'), Payload.parameters, 'paramters property was properly hydrated');
+    const metricOne = MetricMetadataModel.create(this.owner.ownerInjection(), {
+      id: 'metricOne',
+      metricFunctionId: 'moneyMetric'
+    });
 
-    assert.ok(get(Metric, 'hasParameters'), 'hasParamters property is computed');
+    const metricFunction = metricOne.metricFunction;
+    const expectedMetricFunc = this.owner
+      .lookup('service:keg')
+      .getById('metadata/metric-function', 'moneyMetric', 'dummy');
+    assert.equal(metricFunction, expectedMetricFunc, 'Metric function is returned correctly');
+    assert.ok(metricOne.hasParameters, 'hasParameters property is computed');
 
     assert.deepEqual(
-      get(Metric, 'paramNames'),
-      ['testParam'],
-      'keys of the parameter object are retrieved as paramNames'
+      metricOne.arguments.map(arg => arg.id),
+      ['currency'],
+      'Arguments of the associated metric function are shown through arguments'
     );
 
     assert.deepEqual(
-      Metric.getParameter('testParam'),
-      Payload.parameters['testParam'],
-      'the queried parameter object is retrived from parameters'
+      metricOne.getParameter('currency'),
+      expectedMetricFunc.arguments.find(arg => arg.id === 'currency'),
+      'the queried metric function argument object is retrieved from parameters'
     );
   });
 
-  test('Non Parameterized Metric', function(assert) {
-    assert.expect(4);
+  test('Metric without Metric Function', async function(assert) {
+    assert.expect(3);
 
     let payload = {
-        name: 'dayAvgPageViews',
-        longName: 'Page Views (Daily Avg)',
+        id: 'dayAvgPageViews',
+        name: 'Page Views (Daily Avg)',
         category: 'Page Views',
-        valueType: 'number',
-        parameters: {}
+        valueType: 'number'
       },
-      metric = MetricMetadataModel.create(payload);
+      metric = MetricMetadataModel.create(this.owner.ownerInjection(), payload);
 
-    assert.deepEqual(get(metric, 'paramNames'), [], 'paramNames is an empty array when metric has no parameters');
+    assert.deepEqual(metric.arguments, [], 'arguments is an empty array when metric has no metric function');
 
-    assert.notOk(get(metric, 'hasParameters'), 'hasParamters property is false since the metric has no parameters');
+    assert.notOk(metric.hasParameters, 'hasParameters property is false since the metric has no metric function');
 
-    (payload = {
-      name: 'pageViews',
-      longName: 'Page Views',
-      category: 'Page Views',
-      valueType: 'number'
-    }),
-      (metric = MetricMetadataModel.create(payload));
-
-    assert.deepEqual(get(metric, 'paramNames'), [], 'paramNames is an empty array when metric has no parameters');
-
-    assert.notOk(get(metric, 'hasParameters'), 'hasParamters property is false since the metric has no parameters');
+    assert.strictEqual(
+      metric.getParameter('someParam'),
+      undefined,
+      'getParameter returns falsey value when no parameters are present'
+    );
   });
 
-  test('getDefaultParameters', function(assert) {
+  test('getDefaultParameters', async function(assert) {
     assert.expect(3);
 
     assert.deepEqual(
-      Metric.getDefaultParameters(),
-      { testParam: 'testValue' },
+      MoneyMetric.getDefaultParameters(),
+      { currency: 'USD' },
       'The default values of the metric parameters are returned as a key value pair'
     );
 
@@ -108,53 +118,32 @@ module('Unit | Metadata Model | Metric', function(hooks) {
         name: 'dayAvgPageViews',
         longName: 'Page Views (Daily Avg)',
         category: 'Page Views',
-        valueType: 'number',
-        parameters: {}
+        valueType: 'number'
       },
-      metric = MetricMetadataModel.create(payload);
+      metric = MetricMetadataModel.create(this.owner.ownerInjection(), payload);
 
-    assert.deepEqual(
+    assert.strictEqual(
       metric.getDefaultParameters(),
       undefined,
       'The method returns undefined when trying to fetch defaults from a metric without parameters'
     );
 
-    (payload = {
-      name: 'revenue',
-      longName: 'revenue',
-      category: 'Revenue',
-      parameters: {
-        currency: {
-          dimensionName: 'currency',
-          defaultValue: 'USD'
-        },
-        country: {
-          dimensionName: 'country',
-          defaultValue: 'US'
-        }
-      }
-    }),
-      (metric = MetricMetadataModel.create(payload));
-
     assert.deepEqual(
-      metric.getDefaultParameters(),
-      { currency: 'USD', country: 'US' },
+      ClicksMetric.getDefaultParameters(),
+      { aggregation: '7DayAvg', trend: 'DO_D' },
       'The method returns all the defaults for all the parameters of the metric'
     );
   });
 
   test('extended property', async function(assert) {
     const metricOne = MetricMetadataModel.create(this.owner.ownerInjection(), {
-      name: 'metricOne'
+      id: 'metricOne'
     });
-    const server = new Pretender(metadataRoutes);
-    const originalDataSources = metricOne.metadata.loadedDataSources;
-    metricOne.metadata.set('loadedDataSources', ['dummy']);
 
     const expected = {
       category: 'category',
-      longName: 'Metric One',
-      name: 'metricOne'
+      name: 'Metric One',
+      id: 'metricOne'
     };
 
     const result = await metricOne.get('extended');
@@ -162,7 +151,5 @@ module('Unit | Metadata Model | Metric', function(hooks) {
       Object.keys(expected).every(key => result[key] === expected[key]),
       'metric model can fetch extended attributes'
     );
-    server.shutdown();
-    metricOne.metadata.set('loadedDataSources', originalDataSources);
   });
 });

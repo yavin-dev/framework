@@ -5,7 +5,7 @@ import hbs from 'htmlbars-inline-precompile';
 import $ from 'jquery';
 import { clickTrigger, nativeMouseUp } from '../../helpers/ember-power-select';
 
-const options = [{ longName: 'network' }, { longName: 'network2' }];
+const options = [{ name: 'network' }, { name: 'network2' }];
 const selected = options[0];
 
 module('Integration | Component | navi table select', function(hooks) {
@@ -15,7 +15,7 @@ module('Integration | Component | navi table select', function(hooks) {
     this.set('selected', selected);
     this.set('options', options);
     this.set('onChange', value => {
-      assert.equal(value.longName, 'network2', 'network2 should be selected');
+      assert.equal(value.name, 'network2', 'network2 should be selected');
       this.set('selected', value);
     });
 
@@ -58,7 +58,7 @@ module('Integration | Component | navi table select', function(hooks) {
     assert.expect(2);
 
     this.set('searchEnabled', true);
-    this.set('searchField', 'longName');
+    this.set('searchField', 'name');
     await render(hbs`<NaviTableSelect
           @selected={{selected}}
           @options={{options}}
@@ -72,11 +72,11 @@ module('Integration | Component | navi table select', function(hooks) {
     assert.dom('.ember-power-select-search').isVisible('search input should be visible');
   });
 
-  test('search longName', async function(assert) {
+  test('search name', async function(assert) {
     assert.expect(2);
 
     this.set('searchEnabled', true);
-    this.set('searchField', 'longName');
+    this.set('searchField', 'name');
     await render(hbs`<NaviTableSelect
           @selected={{selected}}
           @options={{options}}
@@ -100,11 +100,11 @@ module('Integration | Component | navi table select', function(hooks) {
     );
   });
 
-  test('search empty longName', async function(assert) {
+  test('search empty name', async function(assert) {
     assert.expect(2);
 
     this.set('searchEnabled', true);
-    this.set('searchField', 'longName');
+    this.set('searchField', 'name');
     await render(hbs`<NaviTableSelect
           @selected={{selected}}
           @options={{options}}
@@ -128,11 +128,11 @@ module('Integration | Component | navi table select', function(hooks) {
     );
   });
 
-  test('search longName no match', async function(assert) {
+  test('search name no match', async function(assert) {
     assert.expect(2);
 
     this.set('searchEnabled', true);
-    this.set('searchField', 'longName');
+    this.set('searchField', 'name');
     await render(hbs`<NaviTableSelect
           @selected={{selected}}
           @options={{options}}

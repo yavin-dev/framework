@@ -16,6 +16,7 @@ import layout from '../templates/components/navi-table-select';
 
 class NaviTableSelectComponent extends Component {
   layout = layout;
+  tagName = '';
 
   /**
    * @property {Boolean} searchEnabled
@@ -25,7 +26,7 @@ class NaviTableSelectComponent extends Component {
   /**
    * @property {String} searchField
    */
-  searchField = 'longName';
+  searchField = 'name';
 }
 
 export default NaviTableSelectComponent;

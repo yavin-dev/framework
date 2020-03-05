@@ -23,7 +23,7 @@
  *}
  */
 import Mixin from '@ember/object/mixin';
-import EmberObject, { set, get, computed } from '@ember/object';
+import EmberObject, { set, computed } from '@ember/object';
 import moment from 'moment';
 import DataGroup from 'navi-core/utils/classes/data-group';
 import Interval from 'navi-core/utils/classes/interval';
@@ -44,7 +44,7 @@ export default EmberObject.extend({
   getSeriesName: (row, config /*, request */) => {
     let dimensionOrder = config.dimensionOrder;
 
-    return dimensionOrder.map(dim => get(row, `${dim}|id`)).join(',');
+    return dimensionOrder.map(dim => row[`${dim}|id`]).join(',');
   },
 
   /**
@@ -82,8 +82,8 @@ export default EmberObject.extend({
       seriesKey = buildSeriesKey(config), // Build the series required
       seriesName = getSeriesName(config), // Get all the series names
       byDate = new DataGroup(data, row => buildDateKey(row.dateTime)), // Group by dates for easier lookup
-      grain = get(request, 'logicalTable.timeGrain.name') || get(request, 'logicalTable.timeGrain'),
-      requestInterval = Interval.parseFromStrings(get(request, 'intervals.0.start'), get(request, 'intervals.0.end'));
+      grain = request.logicalTable.timeGrain,
+      requestInterval = Interval.parseFromStrings(request.intervals?.[0]?.start, request.intervals?.[0]?.end);
 
     // For each unique date, build the series
     return DateUtils.getDatesForInterval(requestInterval, grain).map(date => {
@@ -145,9 +145,9 @@ export default EmberObject.extend({
        * @property {Object[]} rowData - maps a response row to each series in a tooltip
        */
       rowData: computed('x', 'tooltipData', function() {
-        return get(this, 'tooltipData').map(series => {
+        return this.tooltipData.map(series => {
           // Get the full data for this combination of x + series
-          let dataForSeries = get(builder, 'byXSeries').getDataForKey(get(this, 'x') + series.id) || [];
+          let dataForSeries = builder.byXSeries.getDataForKey(this.x + series.id) || [];
 
           return dataForSeries[0];
         });

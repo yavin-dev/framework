@@ -34,21 +34,21 @@ export default Base.extend({
     }
 
     return [
-      { id: 'in', longName: 'Equals', valuesComponent: inputComponent },
-      { id: 'notin', longName: 'Not Equals', valuesComponent: inputComponent },
+      { id: 'in', name: 'Equals', valuesComponent: inputComponent },
+      { id: 'notin', name: 'Not Equals', valuesComponent: inputComponent },
       {
         id: 'null',
-        longName: 'Is Empty',
+        name: 'Is Empty',
         valuesComponent: 'filter-values/null-input'
       },
       {
         id: 'notnull',
-        longName: 'Is Not Empty',
+        name: 'Is Not Empty',
         valuesComponent: 'filter-values/null-input'
       },
       {
         id: 'contains',
-        longName: 'Contains',
+        name: 'Contains',
         valuesComponent: 'filter-values/multi-value-input',
         showFields: true
       }

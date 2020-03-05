@@ -98,14 +98,14 @@ export default Route.extend({
     // Default to first data source + time grain
     let defaultVisualization = get(this, 'naviVisualizations').defaultVisualization(),
       table = this._getDefaultTable(),
-      timeGrainName = this._getDefaultTimeGrainName(table);
+      timeGrain = this._getDefaultTimeGrainName(table);
 
     let report = this.store.createRecord('report', {
       author,
       request: this.store.createFragment('bard-request/request', {
         logicalTable: this.store.createFragment('bard-request/fragments/logicalTable', {
           table,
-          timeGrainName
+          timeGrain
         }),
         dataSource: table.source,
         responseFormat: 'csv'
@@ -114,7 +114,7 @@ export default Route.extend({
     });
 
     get(report, 'request.intervals').createFragment({
-      interval: new Interval(new Duration(DefaultIntervals[timeGrainName]), 'current')
+      interval: new Interval(new Duration(DefaultIntervals[timeGrain]), 'current')
     });
 
     return report;
@@ -130,12 +130,12 @@ export default Route.extend({
   _getDefaultTable() {
     let table = get(this, 'metadataService')
       .all('table')
-      .findBy('name', get(config, 'navi.defaultDataTable'));
+      .findBy('id', get(config, 'navi.defaultDataTable'));
 
     if (!table) {
       let dataSourceTables = get(this, 'metadataService')
         .all('table')
-        .sortBy('longName');
+        .sortBy('name');
       table = dataSourceTables[0];
     }
 
@@ -152,10 +152,10 @@ export default Route.extend({
   _getDefaultTimeGrainName(table) {
     let timeGrainName = get(config, 'navi.defaultTimeGrain'),
       tableTimeGrains = A(get(table, 'timeGrains')),
-      timeGrainExist = tableTimeGrains.findBy('name', timeGrainName);
+      timeGrainExist = tableTimeGrains.find(grain => grain.id === timeGrainName);
 
     if (!timeGrainExist) {
-      timeGrainName = get(tableTimeGrains, 'firstObject.name');
+      timeGrainName = tableTimeGrains[0]?.id;
     }
 
     return timeGrainName;

@@ -10,7 +10,7 @@ module('Unit | Validator | request-dimension-order', function(hooks) {
 
     let Validator = this.owner.lookup('validator:request-dimension-order'),
       request = {
-        dimensions: A([{ dimension: { name: 'd1' } }, { dimension: { name: 'd2' } }])
+        dimensions: A([{ dimension: { id: 'd1' } }, { dimension: { id: 'd2' } }])
       };
 
     assert.equal(

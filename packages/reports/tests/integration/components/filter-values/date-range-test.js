@@ -9,7 +9,7 @@ import { formatDateRange } from 'navi-reports/helpers/format-interval-inclusive-
 import { getIsoDateTimePeriod } from 'navi-core/utils/date';
 
 export function getDateRangeFormat(source) {
-  const dateTimePeriod = source.request.logicalTable.timeGrain.name;
+  const dateTimePeriod = source.request.logicalTable.timeGrain;
   const { start, end } = source.filter.values.firstObject.asMomentsForTimePeriod(dateTimePeriod);
   end.subtract(1, getIsoDateTimePeriod(dateTimePeriod));
   return formatDateRange(start, end, dateTimePeriod);
@@ -20,7 +20,7 @@ module('Integration | Component | filter values/date range', function(hooks) {
 
   hooks.beforeEach(async function() {
     this.filter = { values: [] };
-    this.request = { logicalTable: { timeGrain: { name: 'day' } } };
+    this.request = { logicalTable: { timeGrain: 'day' } };
     this.onUpdateFilter = () => null;
 
     await render(hbs`<FilterValues::DateRange

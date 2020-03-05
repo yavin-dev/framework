@@ -82,7 +82,7 @@ module('Unit | Service | dashboard data', function(hooks) {
         this.filters.push(filter);
       },
       logicalTable: {
-        table: { name: 'table1' },
+        table: { id: 'table1' },
         timeGrain: { dimensionIds: [] }
       },
       data,
@@ -271,8 +271,8 @@ module('Unit | Service | dashboard data', function(hooks) {
         this.filters.push(filter);
       },
       logicalTable: {
-        table: { name: 'table1' },
-        timeGrain: { dimensionIds: VALID_FILTERS }
+        table: { id: 'table1', dimensionIds: VALID_FILTERS },
+        timeGrain: { id: 'day', name: 'Day' }
       },
       data,
       filters: filters || [makeFilter({ dimension: `${DIMENSIONS[data + 4]}` })],
@@ -306,19 +306,19 @@ module('Unit | Service | dashboard data', function(hooks) {
     const widget3 = await get(data, '3');
 
     assert.deepEqual(
-      widget1.map(result => get(result, 'request.filters').map(filter => get(filter, 'dimension.name'))),
+      widget1.map(result => get(result, 'request.filters').map(filter => get(filter, 'dimension.id'))),
       [['property', 'os'], ['os'], ['userCountry', 'os']],
       'Applicable global filters are applied to widget 1 requests'
     );
 
     assert.deepEqual(
-      widget2.map(result => get(result, 'request.filters').map(filter => get(filter, 'dimension.name'))),
+      widget2.map(result => get(result, 'request.filters').map(filter => get(filter, 'dimension.id'))),
       [['screenType', 'os']],
       'Applicable global filters are applied to widget 2 requests'
     );
 
     assert.deepEqual(
-      widget3.map(result => get(result, 'request.filters').map(filter => get(filter, 'dimension.name'))),
+      widget3.map(result => get(result, 'request.filters').map(filter => get(filter, 'dimension.id'))),
       [],
       'Applicable global filters are applied to widget 3 requests'
     );
@@ -362,8 +362,8 @@ module('Unit | Service | dashboard data', function(hooks) {
     assert.expect(4);
     const request = {
       logicalTable: {
-        table: { name: 'foo' },
-        timeGrain: { dimensionIds: ['ham', 'spam'] }
+        table: { id: 'foo', dimensionIds: ['ham', 'spam'] },
+        timeGrain: 'day'
       },
       dimensions: [],
       metrics: [],
@@ -372,20 +372,20 @@ module('Unit | Service | dashboard data', function(hooks) {
 
     const service = this.owner.lookup('service:dashboard-data');
     assert.notOk(
-      service._isFilterValid(request, { dimension: { name: 'ham', source: 'two' } }),
-      'even though dimension name is valid datasource does not match'
+      service._isFilterValid(request, { dimension: { id: 'ham', source: 'two' } }),
+      'even though dimension id is valid datasource does not match'
     );
     assert.ok(
-      service._isFilterValid(request, { dimension: { name: 'ham', source: 'one' } }),
-      'dimension name is valid and datasource matches'
+      service._isFilterValid(request, { dimension: { id: 'ham', source: 'one' } }),
+      'dimension id is valid and datasource matches'
     );
     assert.notOk(
-      service._isFilterValid(request, { dimension: { name: 'scam', source: 'one' } }),
-      'dimension name is invalid and datasource matches'
+      service._isFilterValid(request, { dimension: { id: 'scam', source: 'one' } }),
+      'dimension id is invalid and datasource matches'
     );
     assert.notOk(
-      service._isFilterValid(request, { dimension: { name: 'scam', source: 'two' } }),
-      'neither dimension name is valid nor datasource matches'
+      service._isFilterValid(request, { dimension: { id: 'scam', source: 'two' } }),
+      'neither dimension id is valid nor datasource matches'
     );
   });
 });

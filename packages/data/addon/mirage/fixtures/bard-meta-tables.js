@@ -18,5 +18,10 @@ export default [
     name: 'protected',
     longName: 'Protected Table',
     description: "Table you don't have access to"
+  },
+  {
+    name: 'tableC',
+    longName: 'Table C',
+    description: 'Rich in vitamin C'
   }
 ];

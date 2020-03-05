@@ -7,6 +7,7 @@
 
 import { assert, warn } from '@ember/debug';
 import { inject as service } from '@ember/service';
+import { getOwner } from '@ember/application';
 import { assign } from '@ember/polyfills';
 import EmberObject from '@ember/object';
 import { configHost, getDefaultDataSourceName } from '../../utils/adapter';
@@ -55,7 +56,7 @@ export default class BardDimensionAdapter extends EmberObject {
    * @param {String} namespace - namespace of keg.
    * @returns {Object} metadata object
    */
-  _getDimensionMetadata(dimensionName, namespace=getDefaultDataSourceName()) {
+  _getDimensionMetadata(dimensionName, namespace = getDefaultDataSourceName()) {
     return this.bardMetadata.getById('dimension', dimensionName, namespace);
   }
 
@@ -71,8 +72,12 @@ export default class BardDimensionAdapter extends EmberObject {
   _buildUrl(dimension, path = 'values', options = {}) {
     const host = configHost(options);
     const { namespace } = this;
+    const urlId =
+        getOwner(this)
+          .lookup(`adapter:metadata/dimension`)
+          ?.buildURLId(dimension) || dimension;
 
-    return `${host}/${namespace}/dimensions/${dimension}/${path}/`;
+    return `${host}/${namespace}/dimensions/${urlId}/${path}/`;
   }
 
   /**
@@ -89,6 +94,11 @@ export default class BardDimensionAdapter extends EmberObject {
    * @returns {String} filter query string
    */
   _buildFilterQuery(dimension, andQueries, options = {}) {
+    const dimensionId =
+      getOwner(this)
+        .lookup(`adapter:metadata/dimension`)
+        ?.buildURLId(dimension) || dimension;
+
     if (!Array.isArray(andQueries)) {
       warn('_buildFilterQuery() was not passed an array of AND queries, wrapping as single query array', {
         id: 'bard-_buildFilterQuery-query-as-array'
@@ -97,7 +107,7 @@ export default class BardDimensionAdapter extends EmberObject {
     }
     assert("You must pass an 'Array' of queries to be ANDed together", Array.isArray(andQueries));
     let defaultQueryOptions = {
-      dimension,
+      dimension: dimensionId,
       field: this._getDimensionMetadata(dimension, options.dataSourceName || getDefaultDataSourceName()).get(
         'primaryKeyFieldName'
       ),

@@ -12,14 +12,14 @@ module('Unit | Validator | request-metric-exist', function(hooks) {
       request = {
         metrics: A([
           {
-            metric: { name: 'm1' },
+            metric: { id: 'm1' },
             canonicalName: 'm1',
             toJSON() {
               return { metric: this.metric, canonicalName: this.canonicalName };
             }
           },
           {
-            metric: { name: 'm2' },
+            metric: { id: 'm2' },
             canonicalName: 'm2',
             toJSON() {
               return { metric: this.metric, canonicalName: this.canonicalName };
@@ -29,13 +29,13 @@ module('Unit | Validator | request-metric-exist', function(hooks) {
       };
 
     assert.equal(
-      Validator.validate({ metric: { name: 'm1' }, canonicalName: 'm1' }, { request }),
+      Validator.validate({ metric: { id: 'm1' }, canonicalName: 'm1' }, { request }),
       true,
       'request-metric-exist returns `true` when metric exists in request'
     );
 
     assert.equal(
-      Validator.validate({ metric: { name: 'm3' }, canonicalName: 'm3' }, { request }),
+      Validator.validate({ metric: { id: 'm3' }, canonicalName: 'm3' }, { request }),
       false,
       'request-metric-exist returns `false` when metric does not exists in request'
     );

@@ -1,4 +1,3 @@
-import { A } from '@ember/array';
 import Service from '@ember/service';
 import { set, get } from '@ember/object';
 import { module, test } from 'qunit';
@@ -125,17 +124,13 @@ module('Unit | Route | reports/new', function(hooks) {
 
     return settled().then(() => {
       let table = this.owner.lookup('route:reports/new')._getDefaultTable();
-      assert.deepEqual(
-        table.name,
-        'network',
-        'Return table based on alphabetical order if default config not specified'
-      );
+      assert.deepEqual(table.id, 'network', 'Return table based on alphabetical order if default config not specified');
 
       let defaultDataTable = get(config, 'navi.defaultDataTable');
 
       set(config, 'navi.defaultDataTable', 'tableA');
       table = this.owner.lookup('route:reports/new')._getDefaultTable();
-      assert.deepEqual(table.name, 'tableA', 'Return default table');
+      assert.equal(table.id, 'tableA', 'Return default table');
 
       set(config, 'navi.defaultDataTable', defaultDataTable);
     });
@@ -146,7 +141,7 @@ module('Unit | Route | reports/new', function(hooks) {
 
     return settled().then(() => {
       let table = this.owner.lookup('route:reports/new')._getDefaultTable(),
-        tableTimeGrains = A(get(table, 'timeGrains')),
+        tableTimeGrains = table.timeGrains,
         timeGrainName = this.owner.lookup('route:reports/new')._getDefaultTimeGrainName(table);
 
       let defaultTimeGrain = get(config, 'navi.defaultTimeGrain');
@@ -161,7 +156,7 @@ module('Unit | Route | reports/new', function(hooks) {
       timeGrainName = this.owner.lookup('route:reports/new')._getDefaultTimeGrainName(table);
       assert.deepEqual(
         timeGrainName,
-        get(tableTimeGrains, 'firstObject.name'),
+        tableTimeGrains[0].id,
         'Return the first time grain in the table when default is not found'
       );
 

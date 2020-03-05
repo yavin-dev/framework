@@ -588,8 +588,8 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
 
         return {
           metric: {
-            name: metricName,
-            longName: classify(metricName),
+            id: metricName,
+            name: classify(metricName),
             category: 'category',
             valueType: 'number'
           },
@@ -605,16 +605,14 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
       }),
       dimensions: dimensions.map(({ dimension, fields }) => ({
         dimension: {
-          name: dimension,
-          longName: classify(dimension),
+          id: dimension,
+          name: classify(dimension),
           fields,
           getFieldsForTag: () => (fields ? fields.map(name => ({ name })) : [])
         }
       })),
       logicalTable: {
-        timeGrain: {
-          name: timeGrain
-        }
+        timeGrain
       }
     };
   }

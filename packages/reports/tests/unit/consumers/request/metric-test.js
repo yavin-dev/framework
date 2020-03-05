@@ -126,30 +126,28 @@ module('Unit | Consumer | request metric', function(hooks) {
     );
   });
 
-  test('DID_UPDATE_TIME_GRAIN', function(assert) {
+  test('DID_UPDATE_TABLE', function(assert) {
     assert.expect(2);
 
-    run(() => {
-      Consumer.send(RequestActions.ADD_METRIC, { currentModel: CurrentModel }, AdClicks);
-      Consumer.send(RequestActions.ADD_METRIC, { currentModel: CurrentModel }, PageViews);
-    });
+    Consumer.send(RequestActions.ADD_METRIC, { currentModel: CurrentModel }, AdClicks);
+    Consumer.send(RequestActions.ADD_METRIC, { currentModel: CurrentModel }, PageViews);
 
     assert.deepEqual(
-      get(CurrentModel, 'request.metrics').mapBy('metric'),
+      CurrentModel.request.metrics.mapBy('metric'),
       [AdClicks, PageViews],
       'Both given metrics are added to request'
     );
 
     Consumer.send(
-      RequestActions.DID_UPDATE_TIME_GRAIN,
+      RequestActions.DID_UPDATE_TABLE,
       { currentModel: CurrentModel },
       {
-        metrics: [AdClicks] // Time grain with no page views
+        metrics: [AdClicks] // Table with no page views
       }
     );
 
     assert.deepEqual(
-      get(CurrentModel, 'request.metrics').mapBy('metric'),
+      CurrentModel.request.metrics.mapBy('metric'),
       [AdClicks],
       'Page views metric is removed since it was not found in the new time grain'
     );

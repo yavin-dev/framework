@@ -113,10 +113,7 @@ module('Integration | Component | visualization config/table', function(hooks) {
       .isNotVisible('The subtotal toggle is not visible when there are no dimension groupbys');
 
     this.set('request', {
-      dimensions: [
-        { dimension: { name: 'os', longName: 'Operating System' } },
-        { dimension: { name: 'age', longName: 'Age' } }
-      ]
+      dimensions: [{ dimension: { id: 'os', name: 'Operating System' } }, { dimension: { id: 'age', name: 'Age' } }]
     });
 
     this.set('onUpdateConfig', result => {
@@ -161,10 +158,7 @@ module('Integration | Component | visualization config/table', function(hooks) {
     config.navi.FEATURES.enableTotals = true;
 
     let request = {
-      dimensions: [
-        { dimension: { name: 'os', longName: 'Operating System' } },
-        { dimension: { name: 'age', longName: 'Age' } }
-      ]
+      dimensions: [{ dimension: { id: 'os', name: 'Operating System' } }, { dimension: { id: 'age', name: 'Age' } }]
     };
 
     this.set('request', request);

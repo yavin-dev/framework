@@ -22,7 +22,7 @@ export default BaseValidator.extend({
       //check if each series value belongs to a filter
       allSeries.forEach(series => {
         Object.entries(get(series, 'values')).forEach(([key, value]) => {
-          let filter = requestFilters.findBy('dimension.name', key);
+          let filter = requestFilters.findBy('dimension.id', key);
           if (filter && !get(filter, 'rawValues').includes(value)) {
             isValid = false;
           }

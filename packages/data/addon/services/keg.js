@@ -83,7 +83,7 @@ export default class KegService extends Service {
     const recordKeg = this._getRecordKegForType(type);
     const idIndex = this._getIdIndexForType(type);
     const namespace = options.namespace || this.defaultNamespace;
-    const identifierField = factory.identifierField || KegService.identifierField;
+    const identifierField = factory?.identifierField || KegService.identifierField;
     const owner = getOwner(this);
 
     const returnedRecords = A();
@@ -179,7 +179,7 @@ export default class KegService extends Service {
    */
   _getFactoryForType(type) {
     if (typeOf(type) === 'string') {
-      return getOwner(this).factoryFor(`model:${type}`).class;
+      return getOwner(this).factoryFor(`model:${type}`)?.class;
     } else {
       return type;
     }

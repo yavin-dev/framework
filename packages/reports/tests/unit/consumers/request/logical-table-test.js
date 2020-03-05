@@ -2,33 +2,38 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { RequestActions } from 'navi-reports/services/request-action-dispatcher';
 
-const DAY = { name: 'day' },
-  WEEK = { name: 'week' };
-
 module('Unit | Consumer | request logical table', function(hooks) {
   setupTest(hooks);
 
   test('UPDATE_TABLE', function(assert) {
-    assert.expect(5);
+    assert.expect(9);
+
+    const logicalTable = { table: 'oldTable', timeGrain: 'day' };
+    const currentModel = { request: { logicalTable, dataSource: 'oldDataSource' } };
+    const newTable = { name: 'newTable', timeGrains: ['day', 'week'], source: 'newDataSource' };
+
+    let actionCallCount = 0;
 
     const MockDispatcher = {
-      dispatch(action, route, timeGrain) {
-        assert.equal(action, RequestActions.ADD_TIME_GRAIN, 'ADD_TIME_GRAIN is sent as part of UPDATE_TABLE');
+      dispatch(action, route, arg) {
+        if (actionCallCount % 2 === 1) {
+          assert.equal(action, RequestActions.DID_UPDATE_TABLE, 'DID_UPDATE_TABLE is sent as part of UPDATE_TABLE');
+          assert.deepEqual(arg, newTable, 'New table is passed to DID_UPDATE_TABLE');
+        } else {
+          assert.equal(action, RequestActions.ADD_TIME_GRAIN, 'ADD_TIME_GRAIN is sent as part of UPDATE_TABLE');
 
-        assert.equal(
-          timeGrain,
-          DAY,
-          'When the old and new tables share a time grain, that grain is given to ADD_TIME_GRAIN'
-        );
+          assert.equal(
+            arg,
+            'day',
+            'When the old and new tables share a time grain, that grain is given to ADD_TIME_GRAIN'
+          );
+        }
+        actionCallCount++;
       }
     };
-
-    let logicalTable = { table: 'oldTable', timeGrain: DAY },
-      currentModel = { request: { logicalTable, dataSource: 'oldDataSource' } },
-      subject = this.owner
-        .factoryFor('consumer:request/logical-table')
-        .create({ requestActionDispatcher: MockDispatcher }),
-      newTable = { name: 'newTable', timeGrains: [DAY, WEEK], source: 'newDataSource' };
+    const subject = this.owner
+      .factoryFor('consumer:request/logical-table')
+      .create({ requestActionDispatcher: MockDispatcher });
 
     /* == Old + New tables share a time grain == */
     subject.send(RequestActions.UPDATE_TABLE, { currentModel }, newTable);
@@ -36,13 +41,19 @@ module('Unit | Consumer | request logical table', function(hooks) {
     assert.equal(currentModel.request.dataSource, 'newDataSource');
 
     /* == New table has different time grains == */
-    newTable.timeGrains = [WEEK];
-    MockDispatcher.dispatch = (action, route, timeGrain) => {
-      assert.equal(
-        timeGrain,
-        WEEK,
-        "When new table doesn't have previous time grain, the first grain is given to ADD_TIME_GRAIN"
-      );
+    newTable.timeGrains = ['week'];
+    MockDispatcher.dispatch = (action, route, arg) => {
+      if (actionCallCount % 2 === 1) {
+        assert.equal(action, RequestActions.DID_UPDATE_TABLE, 'DID_UPDATE_TABLE is sent as part of UPDATE_TABLE');
+        assert.deepEqual(arg, newTable, 'New table is passed to DID_UPDATE_TABLE');
+      } else {
+        assert.equal(
+          arg,
+          'week',
+          "When new table doesn't have previous time grain, the first grain is given to ADD_TIME_GRAIN"
+        );
+      }
+      actionCallCount++;
     };
     subject.send(RequestActions.UPDATE_TABLE, { currentModel }, newTable);
   });

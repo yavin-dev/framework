@@ -1,7 +1,7 @@
 import { run } from '@ember/runloop';
 import { A } from '@ember/array';
 import { helper as buildHelper } from '@ember/component/helper';
-import { set, get } from '@ember/object';
+import { get } from '@ember/object';
 import hbs from 'htmlbars-inline-precompile';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
@@ -40,7 +40,7 @@ module('Integration | Component | metric selector', function(hooks) {
     this.owner.register(
       'helper:can-having',
       buildHelper(([metric]) => {
-        return get(metric, 'name') !== 'regUsers';
+        return get(metric, 'id') !== 'regUsers';
       }),
       { instantiate: false }
     );
@@ -58,7 +58,7 @@ module('Integration | Component | metric selector', function(hooks) {
         Store.createFragment('bard-request/request', {
           logicalTable: Store.createFragment('bard-request/fragments/logicalTable', {
             table: MetadataService.getById('table', 'tableA'),
-            timeGrainName: 'day'
+            timeGrain: 'day'
           }),
           metrics: [
             {
@@ -187,11 +187,11 @@ module('Integration | Component | metric selector', function(hooks) {
     config.navi.FEATURES.enableRequestPreview = false;
 
     this.set('addMetric', metric => {
-      assert.equal(metric.get('longName'), 'Total Clicks', 'the clicked metric is passed as a param to the action');
+      assert.equal(metric.name, 'Total Clicks', 'the clicked metric is passed as a param to the action');
     });
 
     this.set('removeMetric', metric => {
-      assert.equal(metric.get('longName'), 'Ad Clicks', 'the clicked metric is passed as a param to the action');
+      assert.equal(metric.name, 'Ad Clicks', 'the clicked metric is passed as a param to the action');
     });
 
     //add total clicks
@@ -205,7 +205,7 @@ module('Integration | Component | metric selector', function(hooks) {
 
     this.set('addMetric', metric => {
       assert.equal(
-        metric.get('longName'),
+        metric.get('name'),
         'Total Clicks',
         'the clicked metric is passed as a param to the action when enableRequestPreview is on'
       );
@@ -252,8 +252,14 @@ module('Integration | Component | metric selector', function(hooks) {
     assert.expect(3);
 
     assertTooltipNotRendered(assert);
-    set(AdClicks, 'extended', {
-      content: { description: 'foo' }
+    this.server.get(`${config.navi.dataSources[0].uri}/v1/metrics/adClicks`, function() {
+      return {
+        category: 'Clicks',
+        name: 'adClicks',
+        longName: 'Ad Clicks',
+        type: 'number',
+        description: 'foo'
+      };
     });
 
     // triggerTooltipTargetEvent will not work for hidden elementc
@@ -283,18 +289,44 @@ module('Integration | Component | metric selector', function(hooks) {
   test('ranked search', async function(assert) {
     assert.expect(2);
 
+    const tableMetrics = MetadataService.getById('table', 'tableA', 'dummy').metrics;
+
+    // Sort by category then by name
+    const groupedSortedMetrics = A(tableMetrics.filter(m => m.name.includes('Page')))
+      .sortBy('name')
+      .reduce((acc, metric) => {
+        const { category: cat, name } = metric;
+        acc[cat] = acc[cat] ? [...acc[cat], name] : [name];
+        return acc;
+      }, {});
+    const expectedPageResults = Object.values(groupedSortedMetrics).flat();
+
     const pageResults = (await getAll('metric')).filter(item => item.includes('Page'));
     assert.deepEqual(
       pageResults,
-      ['Additive Page Views', 'Page Views', 'Total Page Views', 'Total Page Views WoW'],
-      'Initially the page view metrics are ordered alphabetically'
+      expectedPageResults,
+      'Initially the page view metrics are ordered alphabetically by category and name'
     );
 
     const searchPageResults = await getAll('metric', 'Page');
 
     assert.deepEqual(
       searchPageResults,
-      ['Page Views', 'Total Page Views', 'Additive Page Views', 'Total Page Views WoW'],
+      [
+        'Page Views',
+        'Total Page Views',
+        'Additive Page Views',
+        'Page Views (Daily Avg)',
+        'Total Page Views (Daily Avg)',
+        'Additive Page Views (Daily Avg)',
+        'Total Page Views WoW',
+        'Page Views per Unique Identifier',
+        'Total Page Views per Unique Identifier',
+        'Additive Page Views per Unique Identifier',
+        'Page Views per Unique Identifier (Daily Avg)',
+        'Total Page Views per Unique Identifier (Daily Avg)',
+        'Additive Page Views per Unique Identifier (Daily Avg)'
+      ],
       'The search results are ranked based on relevance'
     );
   });

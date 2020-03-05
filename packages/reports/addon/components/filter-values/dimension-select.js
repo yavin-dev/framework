@@ -8,7 +8,6 @@
  *       @onUpdateFilter={{action "update"}}
  *   />
  */
-import config from 'ember-get-config';
 import { featureFlag } from 'navi-core/helpers/feature-flag';
 import { debounce } from '@ember/runloop';
 import { A } from '@ember/array';
@@ -17,12 +16,11 @@ import { inject as service } from '@ember/service';
 import Component from '@ember/component';
 import { get, set, computed, action } from '@ember/object';
 import { readOnly } from '@ember/object/computed';
+import { CARDINALITY_SIZES } from 'navi-data/models/metadata/dimension';
 import layout from '../../templates/components/filter-values/dimension-select';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
 const SEARCH_DEBOUNCE_TIME = 200;
-
-const LOAD_CARDINALITY = config.navi.searchThresholds.contains;
 
 @templateLayout(layout)
 @tagName('')
@@ -42,7 +40,7 @@ class DimensionSelectComponent extends Component {
   /**
    * @property {String} dimensionName - name of dimension to be filtered
    */
-  @readOnly('filter.subject.name') dimensionName;
+  @readOnly('filter.subject.id') dimensionName;
 
   /**
    * @property {String} primaryKey - primary key for this dimension
@@ -61,12 +59,10 @@ class DimensionSelectComponent extends Component {
     const dimensionName = get(this, 'dimensionName'),
       dimensionService = get(this, '_dimensionService'),
       metadataService = get(this, '_metadataService'),
-      source = get(this, 'filter.subject.source');
+      source = get(this, 'filter.subject.source'),
+      loadedDimension = metadataService.getById('dimension', dimensionName, source);
 
-    if (
-      dimensionName &&
-      get(metadataService.getById('dimension', dimensionName, source), 'cardinality') <= LOAD_CARDINALITY
-    ) {
+    if (dimensionName && loadedDimension?.cardinality === CARDINALITY_SIZES[0]) {
       return dimensionService.all(dimensionName, { dataSourceName: source });
     }
 

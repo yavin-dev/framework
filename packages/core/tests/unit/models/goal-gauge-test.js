@@ -20,8 +20,8 @@ module('Unit | Model | Gauge Visualization Fragment', function(hooks) {
         metric: {
           metric: {
             category: 'category',
-            longName: 'Rupees',
-            name: 'rupees'
+            name: 'Rupees',
+            id: 'rupees'
           },
           parameters: {},
           canonicalName: 'rupees'
@@ -38,8 +38,8 @@ module('Unit | Model | Gauge Visualization Fragment', function(hooks) {
         metric: {
           metric: {
             category: 'category',
-            longName: 'Rupees',
-            name: 'rupees'
+            name: 'Rupees',
+            id: 'rupees'
           },
           parameters: {},
           canonicalName: 'rupees'
@@ -58,8 +58,8 @@ module('Unit | Model | Gauge Visualization Fragment', function(hooks) {
         metric: {
           metric: {
             category: 'category',
-            longName: 'Rupees',
-            name: 'rupees'
+            name: 'Rupees',
+            id: 'rupees'
           },
           parameters: {},
           canonicalName: 'rupees'
@@ -78,8 +78,8 @@ module('Unit | Model | Gauge Visualization Fragment', function(hooks) {
         metric: {
           metric: {
             category: 'category',
-            longName: 'Rupees',
-            name: 'rupees'
+            name: 'Rupees',
+            id: 'rupees'
           },
           parameters: {},
           canonicalName: 'rupees'
@@ -98,8 +98,8 @@ module('Unit | Model | Gauge Visualization Fragment', function(hooks) {
         metric: {
           metric: {
             category: 'category',
-            longName: 'Rupees',
-            name: 'rupees'
+            name: 'Rupees',
+            id: 'rupees'
           },
           parameters: {},
           canonicalName: 'rupees'
