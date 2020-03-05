@@ -1,0 +1,10 @@
+{{! Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. }}
+<ul class='navi-search-results' ...attributes>
+  {{#each this.results as |result|}}
+    <li class='navi-search-result__asset'>
+      <LinkTo @route={{result.route}} @model={{result.modelId}}>
+        {{result.title}}
+      </LinkTo>
+    </li>
+  {{/each}}
+</ul>
