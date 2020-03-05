@@ -6,11 +6,12 @@ export default class NaviAssetSearchResultComponent extends Component {
    * @property {Array} results
    */
   get results() {
-    return this.args.data.map(value => {
+    return this.args?.data?.map(value => {
       value.route = this._extractRoute(value);
       return value;
     });
   }
+
   /**
    * @method _extractRoute – Extracts the route name of a given asset (report or dashboard)
    * @private
