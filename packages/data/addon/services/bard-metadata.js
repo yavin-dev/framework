@@ -81,6 +81,7 @@ export default class BardMetadataService extends Service {
             //create metadata model objects and load into keg
             this._loadMetadataForType('table', metadata.tables, dataSource);
             this._loadMetadataForType('dimension', metadata.dimensions, dataSource);
+            this._loadMetadataForType('timeDimension', metadata.timeDimensions, dataSource);
             this._loadMetadataForType('metric', metadata.metrics, dataSource);
 
             this.loadedDataSources.push(dataSource);
@@ -99,11 +100,12 @@ export default class BardMetadataService extends Service {
    * @param {Array} metadataObjects - array of metadata objects
    */
   _loadMetadataForType(type, metadataObjects, namespace) {
+    const owner = getOwner(this);
     const metadata = metadataObjects.map(data => {
       const payload = assign({}, data);
-      const owner = getOwner(this);
+
       setOwner(payload, owner);
-      return owner.factoryFor(`model:metadata/${type}`).create(payload);
+      return payload;
     });
 
     return this._keg.pushMany(`metadata/${type}`, metadata, { namespace });

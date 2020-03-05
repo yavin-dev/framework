@@ -1,59 +1,54 @@
-import EmberObject, { computed, get } from '@ember/object';
-import { isEmpty } from '@ember/utils';
-import { forIn } from 'lodash-es';
-import PromiseProxyMixin from '@ember/object/promise-proxy-mixin';
-import ObjectProxy from '@ember/object/proxy';
+/**
+ * Copyright 2020, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
 import { inject as service } from '@ember/service';
+import Column from './column';
 
-const Model = EmberObject.extend({
+export default class Metric extends Column {
   /**
-   * @property {Ember.Service} metadata
+   * @static
+   * @property {String} identifierField
    */
-  metadata: service('bard-metadata'),
-
-  /**
-   * @property {String} type
-   */
-  type: 'metric',
+  static identifierField = 'id';
 
   /**
-   * @property {String} name
+   * @property {Ember.Service} keg
    */
-  name: undefined,
+  @service('bard-metadata')
+  metadataService;
 
   /**
-   * @property {String} longName
+   * @property {String} defaultFormat - e.g. decimal for numbers
    */
-  longName: undefined,
+  defaultFormat;
 
   /**
-   * @property {String} category
+   * @property {String} metricFunctionId
    */
-  category: undefined,
+  metricFunctionId;
 
   /**
-   * @property {String} type of the value
+   * Many to One relationship
+   * @property {Promise<MetricFunction>} metricFunction
    */
-  valueType: undefined,
-
-  /**
-   * @property {Object} parameters - parameters for the metric
-   */
-  parameters: undefined,
+  get metricFunction() {
+    return this.metadataService.findById('metadata/metric/metric-function', this.metricFunctionId, this.source);
+  }
 
   /**
    * @property {Boolean} hasParameters
    */
-  hasParameters: computed('paramNames', function() {
-    return !isEmpty(get(this, 'paramNames'));
-  }),
+  get hasParameters() {
+    return !!this.metricFunction?.arguments?.length;
+  }
 
   /**
-   * @property {Array} paramNames - paramNames for the metric
+   * @property {Array} arguments - arguments for the metric
    */
-  paramNames: computed('parameters', function() {
-    return Object.keys(get(this, 'parameters') || {});
-  }),
+  get arguments() {
+    return this.metricFunction?.arguments || [];
+  }
 
   /**
    * @method {Object} getParameter
@@ -63,12 +58,12 @@ const Model = EmberObject.extend({
    * @returns {Object}
    */
   getParameter(name) {
-    if (!get(this, 'hasParameters')) {
+    if (!this.hasParameters) {
       return;
     }
 
-    return get(this, `parameters.${name}`);
-  },
+    return this.metricFunction.arguments.find(arg => arg.name === name);
+  }
 
   /**
    * @method {Object} getDefaultParameters
@@ -76,33 +71,22 @@ const Model = EmberObject.extend({
    * @returns {Object|undefined}
    */
   getDefaultParameters() {
-    if (!get(this, 'hasParameters')) {
+    if (!this.hasParameters) {
       return;
     }
 
-    let defaultParameters = {};
-    forIn(get(this, 'parameters'), (value, key) => {
-      defaultParameters[key] = get(value, 'defaultValue');
-    });
+    const { arguments: args } = this;
 
-    return defaultParameters;
-  },
+    return args.reduce((acc, curr) => {
+      acc[curr.name] = curr.defaultValue;
+    }, {});
+  }
 
   /**
-   * @property {Promise} extended
+   * @property {Promise} extended - extended metadata for the metric that isn't provided in initial table fullView metadata load
    */
-  extended: computed(function() {
-    const { metadata, name, type } = this;
-    return ObjectProxy.extend(PromiseProxyMixin).create({
-      promise: metadata.findById(type, name)
-    });
-  })
-});
-
-//factory level properties
-export default Model.reopenClass({
-  /**
-   * @property {String} identifierField - used by the keg as identifierField
-   */
-  identifierField: 'name'
-});
+  get extended() {
+    const { metadataService, name, source } = this;
+    return metadataService.findById('metric', name, source);
+  }
+}

@@ -30,9 +30,9 @@ export default class MetricParameterService extends Service {
   @service('bard-dimensions') _dimensionService;
 
   /**
-   * @returns {Array} list of parameter types this service supports
+   * @property {String[]} list of parameter types this service supports
    */
-  supportedTypes() {
+  get supportedTypes() {
     return Object.keys(this._supportedHandlers);
   }
 
@@ -44,7 +44,7 @@ export default class MetricParameterService extends Service {
    * @returns {Promise} response with dimension values
    */
   fetchAllValues(meta) {
-    assert(`Fetching values of type: '${meta.type}' is not supported`, this.supportedTypes().includes(meta.type));
+    assert(`Fetching values of type: '${meta.type}' is not supported`, this.supportedTypes.includes(meta.type));
 
     return this._supportedHandlers[meta.type](meta);
   }
