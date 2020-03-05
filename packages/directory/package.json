@@ -43,7 +43,6 @@
     "navi-reports": "0.2.0"
   },
   "devDependencies": {
-    "@babel/plugin-proposal-optional-chaining": "^7.8.3",
     "@ember/edition-utils": "^1.2.0",
     "@ember/jquery": "^0.6.0",
     "@ember/optional-features": "^1.3.0",
