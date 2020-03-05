@@ -8,11 +8,5 @@ module.exports = {
 
     var target = parentAddon || app;
     target.import('vendor/loader.css');
-  },
-
-  options: {
-    babel: {
-      plugins: ['@babel/plugin-proposal-optional-chaining']
-    }
   }
 };
