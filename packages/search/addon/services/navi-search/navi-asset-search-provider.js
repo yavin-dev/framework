@@ -63,7 +63,8 @@ export default class NaviAssetSearchProviderService extends NaviBaseSearchProvid
    * @param {String} type
    * @returns {Object} search query object
    */
-  _constructSearchQuery(userQuery, author, type) {
+  _constructSearchQuery(userQuery, type) {
+    const author = this.user.getUser().id;
     const searchParams = this._parseQueryString(userQuery, type);
     const pluralType = pluralize(type);
     let query = { filter: { [pluralType]: '' } };
@@ -95,12 +96,11 @@ export default class NaviAssetSearchProviderService extends NaviBaseSearchProvid
    */
   @keepLatestTask
   *search(query) {
-    const author = this.user.getUser().id;
     const types = ['report', 'dashboard'];
     const promises = [];
 
     types.forEach(type => {
-      promises.push(this.store.query(type, this._constructSearchQuery(query, author, type)));
+      promises.push(this.store.query(type, this._constructSearchQuery(query, type)));
     });
 
     const data = yield Promise.all(promises).then(function(values) {

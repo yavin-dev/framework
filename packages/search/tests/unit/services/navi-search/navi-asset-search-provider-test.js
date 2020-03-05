@@ -24,47 +24,33 @@ module('Unit | Service | navi-asset-search-provider', function(hooks) {
   });
 
   test('construct full search query for reports', function(assert) {
-    assert.expect(6);
+    assert.expect(4);
 
     assert.deepEqual(
-      service._constructSearchQuery('Hyrule', 'navi_user', 'report'),
+      service._constructSearchQuery('Hyrule', 'report'),
       {
-        filter: { reports: '(title==*Hyrule*,request==*Hyrule*);author==navi_user' }
+        filter: { reports: '(title==*Hyrule*,request==*Hyrule*);author==ciela' }
       },
       'Constructs the correct report query for the api with both filter parameters and author.'
     );
     assert.deepEqual(
-      service._constructSearchQuery('Hyrule', null, 'report'),
+      service._constructSearchQuery(null, 'report'),
       {
-        filter: { reports: '(title==*Hyrule*,request==*Hyrule*)' }
-      },
-      'Constructs the correct report query for the api with filter parameters.'
-    );
-    assert.deepEqual(
-      service._constructSearchQuery(null, 'navi_user', 'report'),
-      {
-        filter: { reports: 'author==navi_user' }
+        filter: { reports: 'author==ciela' }
       },
       'Constructs the correct report query for the api with author.'
     );
     assert.deepEqual(
-      service._constructSearchQuery('Hyrule', 'navi_user', 'dashboard'),
+      service._constructSearchQuery('Hyrule', 'dashboard'),
       {
-        filter: { dashboards: '(title==*Hyrule*);author==navi_user' }
+        filter: { dashboards: '(title==*Hyrule*);author==ciela' }
       },
       'Constructs the correct dashboard query for the api with both filter parameters and author.'
     );
     assert.deepEqual(
-      service._constructSearchQuery('Hyrule', null, 'dashboard'),
+      service._constructSearchQuery(null, 'dashboard'),
       {
-        filter: { dashboards: '(title==*Hyrule*)' }
-      },
-      'Constructs the correct report query for the api with filter parameters.'
-    );
-    assert.deepEqual(
-      service._constructSearchQuery(null, 'navi_user', 'dashboard'),
-      {
-        filter: { dashboards: 'author==navi_user' }
+        filter: { dashboards: 'author==ciela' }
       },
       'Constructs the correct dashboard query for the api with author.'
     );
