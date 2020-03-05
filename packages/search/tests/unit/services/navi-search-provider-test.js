@@ -36,7 +36,11 @@ module('Unit | Service | navi-search-provider', function(hooks) {
   test('search all providers', async function(assert) {
     let results = await service.search.perform('Revenue');
     let expectedResults = ['Revenue result', 'Revenue success'];
-    assert.deepEqual(results.find(result => result.component === 'navi-search-result/sample').data, expectedResults);
+    assert.deepEqual(
+      results.find(result => result.component === 'navi-search-result/sample').data,
+      expectedResults,
+      'Search returns the expected results'
+    );
   });
 
   test('search with no results', async function(assert) {
