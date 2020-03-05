@@ -42,7 +42,7 @@ class NaviVisualizationConfigTableComponent extends Component {
    */
   @computed('dimensions')
   get subtotalDimensions() {
-    return [{ name: 'dateTime', longName: 'Date Time' }, ...get(this, 'dimensions')];
+    return [{ name: 'dateTime', longName: 'Date Time' }, ...this.dimensions];
   }
 
   /**
@@ -60,9 +60,9 @@ class NaviVisualizationConfigTableComponent extends Component {
    */
   @computed('options.showTotals.subtotal')
   get selectedSubtotal() {
-    let subtotals = get(this, 'options.showTotals.subtotal');
+    const subtotals = this.options?.showTotals?.subtotal;
     if (subtotals) {
-      return arr(get(this, 'subtotalDimensions')).findBy('name', subtotals);
+      return arr(this.subtotalDimensions').findBy('name', subtotals);
     }
     return undefined;
   }
@@ -86,12 +86,12 @@ class NaviVisualizationConfigTableComponent extends Component {
   @action
   onToggleSubtotal(val) {
     if (val) {
-      let firstDim = get(this, 'subtotalDimensions')[0];
+      const firstDim = this.subtotalDimensions[0];
       this.onUpdateConfig({
         showTotals: { subtotal: get(firstDim, 'name') }
       });
     } else if (get(this, 'options.showTotals.subtotal')) {
-      let newOptions = copy(get(this, 'options'));
+      const newOptions = copy(this.options);
       delete newOptions.showTotals.subtotal;
       this.onUpdateConfig(newOptions);
     }

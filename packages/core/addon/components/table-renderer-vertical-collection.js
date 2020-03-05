@@ -276,7 +276,7 @@ class TableRendererVerticalCollectionComponent extends Component {
    * @method setupListener
    */
   setupListener() {
-    if (!get(this, 'isDestroyed') && !get(this, 'isDestroying')) {
+    if (!this.isDestroyed && !this.isDestroying) {
       this._registerTableScroll();
       this._registerViewResize();
 

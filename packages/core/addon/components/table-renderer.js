@@ -19,7 +19,7 @@
  * }}
  */
 import Component from '@ember/component';
-import { computed, get } from '@ember/object';
+import { computed } from '@ember/object';
 import layout from '../templates/components/table-renderer';
 import { formatItemDimension } from '../helpers/mixed-height-layout';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
@@ -32,9 +32,9 @@ class TableRendererComponent extends Component {
    */
   @computed('tableData')
   get rowDimensions() {
-    let rowDimension = formatItemDimension(get(this, 'estimateHeight'));
+    const rowDimension = formatItemDimension(this.estimateHeight);
     //Create a set of row dimensions for each row of data
-    let rowDimensions = new Array(get(this, 'tableData.length'));
+    const rowDimensions = new Array(this.tableData?.length);
     for (let i = 0; i < rowDimensions.length; i++) {
       rowDimensions[i] = rowDimension;
     }

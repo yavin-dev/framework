@@ -75,9 +75,9 @@ export default class NaviVisualizationsGoalGaugeComponent extends Component {
    */
   @computed('metricModel')
   get defaultMetricTitle() {
-    let metricModel = get(this, 'metricModel'),
-      baseMetric = get(metricModel, 'metric'),
-      longName = get(this, 'bardMetadata').getMetaField('metric', baseMetric, 'longName');
+    const { metricModel } = this;
+    const { metric: baseMetric } = metricModel;
+    const longName = this.bardMetadata.getMetaField('metric', baseMetric, 'longName');
 
     return metricFormat(metricModel, longName);
   }
@@ -87,7 +87,7 @@ export default class NaviVisualizationsGoalGaugeComponent extends Component {
    */
   @computed('config.{metricTitle,metric}')
   get metricTitle() {
-    return get(this, 'config.metricTitle') || get(this, 'defaultMetricTitle');
+    return this.config?.metricTitle) || this.defaultMetricTitle;
   }
 
   /**
@@ -123,7 +123,7 @@ export default class NaviVisualizationsGoalGaugeComponent extends Component {
    */
   @computed('options')
   get config() {
-    return Object.assign({}, DEFAULT_OPTIONS, get(this, 'options'));
+    return { ...DEFAULT_OPTIONS, ...this.options };
   }
 
   /**
@@ -173,10 +173,12 @@ export default class NaviVisualizationsGoalGaugeComponent extends Component {
    */
   @computed('options.{baselineValue,goalValue}')
   get thresholdValues() {
-    let percentages = get(this, 'thresholdPercentages'),
-      goal = get(this, 'goalValue'),
-      baseline = get(this, 'baselineValue'),
-      diff = goal - baseline;
+    const { 
+      thresholdPercentages: percentages,
+      goalValue: goal,
+      baselineValue: baseline 
+    } = this;
+    const  diff = goal - baseline;
 
     return percentages.map(p => Number(baseline) + (diff * p) / 100);
   }

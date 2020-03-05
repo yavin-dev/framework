@@ -24,7 +24,7 @@ class NaviVisualizationConfigGoalGaugeComponent extends Component {
   updateConfig(type, value) {
     const { onUpdateConfig } = this;
 
-    if (onUpdateConfig) onUpdateConfig({ [type]: value });
+    this.onUpdateConfig?.{ [type]: value })
   }
 }
 

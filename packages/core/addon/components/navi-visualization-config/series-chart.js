@@ -32,7 +32,7 @@ class NaviVisualizationConfigSeriesChartComponent extends Component {
    */
   @computed('request')
   get metrics() {
-    return getRequestMetrics(get(this, 'request'));
+    return getRequestMetrics(this.request);
   }
 
   /**
@@ -45,8 +45,7 @@ class NaviVisualizationConfigSeriesChartComponent extends Component {
    */
   @computed('metrics', 'seriesType')
   get showMetricSelect() {
-    const metrics = get(this, 'metrics'),
-      seriesType = get(this, 'seriesType');
+    const { metrics, seriesType } = this;
     return seriesType === 'dimension' && isArray(metrics) && metrics.length > 1;
   }
 
@@ -129,7 +128,7 @@ class NaviVisualizationConfigSeriesChartComponent extends Component {
    */
   @computed('seriesByDimensions')
   get allSeriesData() {
-    return values(get(this, 'seriesByDimensions'));
+    return values(this.seriesByDimensions);
   }
 
   /**
@@ -153,8 +152,8 @@ class NaviVisualizationConfigSeriesChartComponent extends Component {
    */
   @action
   onAddSeries(series) {
-    const newSeriesConfig = copy(get(this, 'seriesConfig'));
-    const handleUpdateConfig = get(this, 'onUpdateConfig');
+    const newSeriesConfig = copy(this.seriesConfig));
+    const { onUpdateConfig: handleUpdateConfig  } = this;
 
     arr(newSeriesConfig.dimensions).pushObject(series.config);
     if (handleUpdateConfig) handleUpdateConfig(newSeriesConfig);
@@ -166,9 +165,9 @@ class NaviVisualizationConfigSeriesChartComponent extends Component {
    */
   @action
   onRemoveSeries(series) {
-    const seriesInConfig = get(this, 'seriesConfig.dimensions');
-    const newSeriesConfig = copy(get(this, 'seriesConfig'));
-    const handleUpdateConfig = get(this, 'onUpdateConfig');
+    const seriesInConfig = this.seriesConfig?.dimensions;
+    const newSeriesConfig = copy(this.seriesConfig);
+    const { onUpdateConfig: handleUpdateConfig } = this;
 
     //remove series from config
     set(newSeriesConfig, 'dimensions', reject(seriesInConfig, series.config));
@@ -181,7 +180,7 @@ class NaviVisualizationConfigSeriesChartComponent extends Component {
    */
   @action
   onUpdateChartMetric(metric) {
-    const newConfig = copy(get(this, 'seriesConfig'));
+    const newConfig = copy(this.seriesConfig);
     set(newConfig, `metric`, metric);
     this.onUpdateConfig(newConfig);
   }

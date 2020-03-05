@@ -34,9 +34,8 @@ class NaviVisualizationConfigLineChartComponent extends Component {
    */
   @computed('type', 'request')
   get showStackOption() {
-    const type = get(this, 'type'),
-      request = get(this, 'request'),
-      visualizationManifest = getOwner(this).lookup(`navi-visualization-manifest:${type}`);
+    const { type, request } = this;
+    const visualizationManifest = getOwner(this).lookup(`navi-visualization-manifest:${type}`);
 
     return visualizationManifest.hasGroupBy(request) || visualizationManifest.hasMultipleMetrics(request);
   }
@@ -62,7 +61,7 @@ class NaviVisualizationConfigLineChartComponent extends Component {
    */
   @action
   onUpdateSeriesConfig(seriesConfig) {
-    let newOptions = copy(get(this, 'options'));
+    const newOptions = copy(this.options);
     set(newOptions, 'axis.y.series.config', seriesConfig);
     this.onUpdateConfig(newOptions);
   }

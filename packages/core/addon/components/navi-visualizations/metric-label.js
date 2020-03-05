@@ -60,7 +60,7 @@ export default Component.extend({
    */
   description: computed('options.description', 'model.[]', function() {
     if (get(this, 'model')) {
-      return get(this, 'options.description');
+      return this.options?.description;
     }
     return undefined;
   }),

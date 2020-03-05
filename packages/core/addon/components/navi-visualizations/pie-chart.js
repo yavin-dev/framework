@@ -60,8 +60,10 @@ class NaviVisualizationsPieChartComponent extends Component.extend(hasChartBuild
    */
   @computed('seriesType')
   get builder() {
-    const type = get(this, 'seriesType'),
-      builders = get(this, 'chartBuilders');
+    const {
+      seriesType: type,
+      chartBuilders: builders
+    } = this;
 
     return builders[type];
   }
@@ -273,7 +275,7 @@ class NaviVisualizationsPieChartComponent extends Component.extend(hasChartBuild
    */
   @action
   redrawMetricLabel() {
-    if (!get(this, 'isDestroyed') && !get(this, 'isDestroying')) {
+    if (!this.isDestroyed && !this.isDestroying) {
       this._removeMetricLabel();
       this._drawMetricLabel();
     }
