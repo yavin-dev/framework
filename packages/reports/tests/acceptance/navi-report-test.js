@@ -1688,7 +1688,7 @@ module('Acceptance | Navi Report', function(hooks) {
         '"The start date should be before end date" error is rendered'
       );
 
-    //start date equals to end date
+    //start date is equal to end date
     await clickTrigger('.filter-values--date-range-input__high-value');
     await click($('.ember-power-calendar-day--current-month:contains(18)')[0]);
 

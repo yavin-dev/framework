@@ -117,7 +117,7 @@ export default class Interval {
    * Converts interval into a POJO with moments that are aligned to the given time period
    * @method asMomentsForTimePeriod
    * @param {String} timePeriod - period to align to
-   * @param {Boolean} makeEndInclusiveIfSame - add an extra time period to include the end date if it equals to the start date
+   * @param {Boolean} makeEndInclusiveIfSame - add an extra time period to include end date if it's equal to start date
    * @returns {Object} object with start and end properties
    */
   asMomentsForTimePeriod(timePeriod, makeEndInclusiveIfSame = true) {
