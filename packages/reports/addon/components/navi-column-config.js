@@ -6,6 +6,10 @@
  *  <NaviColumnConfig
  *    @isOpen={{true}}
  *    @drawerDidChange={{this.callback}}
+ *    @report={{@report}}
+ *    @onRemoveDateTime={{update-report-action "REMOVE_TIME_GRAIN"}}
+ *    @onRemoveDimension={{update-report-action "REMOVE_DIMENSION_FRAGMENT"}}
+ *    @onRemoveMetric={{update-report-action "REMOVE_METRIC_FRAGMENT"}}
  *  />
  */
 import Component from '@ember/component';
@@ -17,12 +21,6 @@ import { easeOut, easeIn } from 'ember-animated/easings/cosine';
 import { fadeIn, fadeOut } from 'ember-animated/motions/opacity';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
 import { inject as service } from '@ember/service';
-
-const ID_FIELD_MAP = {
-  metric: metric => metric.canonicalName,
-  dimension: dimension => dimension.dimension.name,
-  dateTime: () => 'dateTime'
-};
 
 @tagName('')
 @templateLayout(layout)
@@ -47,19 +45,16 @@ class NaviColumnConfig extends Component {
   @computed('report.request.{metrics.[],dimensions.[],logicalTable.timeGrain}')
   get columns() {
     const {
-      request: {
-        metrics,
-        dimensions,
-        logicalTable: { timeGrain }
-      },
-      visualization
-    } = this.report;
+      metrics,
+      dimensions,
+      logicalTable: { timeGrain }
+    } = this.report.request;
 
     const metricColumns = metrics.toArray().map(metric => {
       return {
         type: 'metric',
         name: metric.canonicalName,
-        displayName: this.getDisplayName(metric, 'metric', visualization),
+        displayName: this.getDisplayName(metric, 'metric'),
         fragment: metric
       };
     });
@@ -67,7 +62,7 @@ class NaviColumnConfig extends Component {
       return {
         type: 'dimension',
         name: dimension.dimension.name,
-        displayName: this.getDisplayName(dimension, 'dimension', visualization),
+        displayName: this.getDisplayName(dimension, 'dimension'),
         fragment: dimension
       };
     });
@@ -78,7 +73,7 @@ class NaviColumnConfig extends Component {
       columns.unshift({
         type: 'dateTime',
         name: 'dateTime',
-        displayName: this.getDisplayName(timeGrain, 'dateTime', visualization),
+        displayName: this.getDisplayName(timeGrain, 'dateTime'),
         fragment: timeGrain
       });
     }
@@ -89,8 +84,7 @@ class NaviColumnConfig extends Component {
   /**
    * @property {Service} metricName
    */
-  @service
-  metricName;
+  @service metricName;
 
   /**
    * @method getDisplayName
@@ -99,18 +93,14 @@ class NaviColumnConfig extends Component {
    * @param {Object} visualization
    * @returns {String} display name from visualization metadata or default display name for metric, dimension, or Date
    */
-  getDisplayName(asset, type, visualization) {
+  getDisplayName(asset, type) {
     const nameServiceMap = {
       metric: metric => this.metricName.getDisplayName(metric.serialize()),
       dimension: dimension => dimension.dimension.longName || dimension.dimension.name,
       dateTime: dateTime => `Date Time (${dateTime.longName})`
     };
 
-    const alias = visualization.metadata.style?.aliases?.find(
-      alias => alias.name === ID_FIELD_MAP[type](asset) && alias.type === type
-    );
-
-    return alias?.as || nameServiceMap[type](asset);
+    return nameServiceMap[type](asset);
   }
 
   /**
