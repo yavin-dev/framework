@@ -3,8 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Controller from '@ember/controller';
-import { tracked } from '@glimmer/tracking';
-import { getProperties, get, computed, action } from '@ember/object';
+import { getProperties, get, set, computed, action } from '@ember/object';
 import { inject as service } from '@ember/service';
 import { A as arr } from '@ember/array';
 
@@ -34,12 +33,12 @@ export default class DirectoryController extends Controller {
    * @property {String} type - query param for type
    * allowed types - reports, dashboards
    */
-  @tracked type = null;
+  type = null;
 
   /**
    * @property {String} sortBy - query param for sortBy
    */
-  @tracked sortBy = 'updatedOn';
+  sortBy = 'updatedOn';
 
   /**
    * @property {String} sortKey - sort key (computed by sortBy query param)
@@ -52,12 +51,12 @@ export default class DirectoryController extends Controller {
   /**
    * @property {String} sortDir - query param for sort direction
    */
-  @tracked sortDir = 'desc';
+  sortDir = 'desc';
 
   /**
    * @property {String} q - query param for the search query
    */
-  @tracked q = '';
+  q = '';
 
   /**
    * @property {String} title - Title for the table
@@ -86,7 +85,7 @@ export default class DirectoryController extends Controller {
    */
   @action
   searchFor(query) {
-    this.q = query;
+    set(this, 'q', query);
   }
 
   /**
