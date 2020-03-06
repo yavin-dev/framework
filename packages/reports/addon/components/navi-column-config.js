@@ -10,14 +10,120 @@
  */
 import Component from '@ember/component';
 import layout from '../templates/components/navi-column-config';
-import { action } from '@ember/object';
+import { action, computed } from '@ember/object';
+import { capitalize } from '@ember/string';
 import move from 'ember-animated/motions/move';
 import { easeOut, easeIn } from 'ember-animated/easings/cosine';
+import { fadeIn, fadeOut } from 'ember-animated/motions/opacity';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
+import { inject as service } from '@ember/service';
+
+const ID_FIELD_MAP = {
+  metric: metric => metric.canonicalName,
+  dimension: dimension => dimension.dimension.name,
+  dateTime: () => 'dateTime'
+};
 
 @tagName('')
 @templateLayout(layout)
 class NaviColumnConfig extends Component {
+  /**
+   * @property fadeTransition - fade transition
+   */
+  *transition({ keptSprites, removedSprites, insertedSprites }) {
+    let moveDuration;
+    if (removedSprites.length > 0) {
+      // when removing an item, we want to quickly fill in the gap
+      moveDuration = 50;
+    }
+
+    yield Promise.all([
+      ...keptSprites.map(sprite => move(sprite, { duration: moveDuration })),
+      ...insertedSprites.map(sprite => fadeIn(sprite, { duration: 100 })),
+      ...removedSprites.map(sprite => fadeOut(sprite, { duration: 0 }))
+    ]);
+  }
+
+  @computed('report.request.{metrics.[],dimensions.[],logicalTable.timeGrain}')
+  get columns() {
+    const {
+      request: {
+        metrics,
+        dimensions,
+        logicalTable: { timeGrain }
+      },
+      visualization
+    } = this.report;
+
+    const metricColumns = metrics.toArray().map(metric => {
+      return {
+        type: 'metric',
+        name: metric.canonicalName,
+        displayName: this.getDisplayName(metric, 'metric', visualization),
+        fragment: metric
+      };
+    });
+    const dimensionColumns = dimensions.toArray().map(dimension => {
+      return {
+        type: 'dimension',
+        name: dimension.dimension.name,
+        displayName: this.getDisplayName(dimension, 'dimension', visualization),
+        fragment: dimension
+      };
+    });
+
+    const columns = [...dimensionColumns, ...metricColumns];
+
+    if (timeGrain.name !== 'all') {
+      columns.unshift({
+        type: 'dateTime',
+        name: 'dateTime',
+        displayName: this.getDisplayName(timeGrain, 'dateTime', visualization),
+        fragment: timeGrain
+      });
+    }
+
+    return columns;
+  }
+
+  /**
+   * @property {Service} metricName
+   */
+  @service
+  metricName;
+
+  /**
+   * @method getDisplayName
+   * @param {Object} asset
+   * @param {String} type
+   * @param {Object} visualization
+   * @returns {String} display name from visualization metadata or default display name for metric, dimension, or Date
+   */
+  getDisplayName(asset, type, visualization) {
+    const nameServiceMap = {
+      metric: metric => this.metricName.getDisplayName(metric.serialize()),
+      dimension: dimension => dimension.dimension.longName || dimension.dimension.name,
+      dateTime: dateTime => `Date Time (${dateTime.longName})`
+    };
+
+    const alias = visualization.metadata.style?.aliases?.find(
+      alias => alias.name === ID_FIELD_MAP[type](asset) && alias.type === type
+    );
+
+    return alias?.as || nameServiceMap[type](asset);
+  }
+
+  /**
+   * @action
+   * @param {Object} column - contains type and name of column to remove from request
+   */
+  @action
+  removeColumn(column) {
+    const { type } = column;
+    const removalHandler = this[`onRemove${capitalize(type)}`];
+    removalHandler?.(column.fragment);
+  }
+
   /**
    * Stores element reference after render
    * @param element - element inserted
