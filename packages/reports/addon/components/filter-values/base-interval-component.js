@@ -76,7 +76,7 @@ export default class BaseIntervalComponent extends Component {
   get endDate() {
     const { interval, calendarDateTimePeriod } = this;
     if (Interval.isInterval(interval)) {
-      let end = interval.asMomentsForTimePeriod(calendarDateTimePeriod).end;
+      let end = interval.asMomentsForTimePeriod(calendarDateTimePeriod, false).end;
       end = end.clone().subtract(1, calendarDateTimePeriod);
       return end;
     }

@@ -160,6 +160,22 @@ module('Unit | Utils | Interval Class', function() {
     assert.ok(moments.end.isSame(expected), 'Setting end to next will be computed correctly');
   });
 
+  test('asMomentsForTimePeriod - same start and end date', function(assert) {
+    assert.expect(3);
+
+    let start = moment('2017-10-10', FORMAT),
+      end = moment('2017-10-10', FORMAT),
+      moments = new Interval(start, end).asMomentsForTimePeriod('week');
+
+    assert.equal(moments.start.format(FORMAT), '2017-10-09', 'Start moment is at start of isoweek');
+
+    assert.equal(moments.end.format(FORMAT), '2017-10-16', 'End moment is at start of isoweek');
+
+    moments = new Interval(start, end).asMomentsForTimePeriod('week', false);
+
+    assert.ok(moments.start.isSame(moments.end), 'Start moment is same as end moment');
+  });
+
   test('asIntervalForTimePeriod', function(assert) {
     assert.expect(2);
 

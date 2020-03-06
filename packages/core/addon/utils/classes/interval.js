@@ -117,9 +117,10 @@ export default class Interval {
    * Converts interval into a POJO with moments that are aligned to the given time period
    * @method asMomentsForTimePeriod
    * @param {String} timePeriod - period to align to
+   * @param {Boolean} makeEndInclusiveIfSame - add an extra time period to include the end date if it equals to the start date
    * @returns {Object} object with start and end properties
    */
-  asMomentsForTimePeriod(timePeriod) {
+  asMomentsForTimePeriod(timePeriod, makeEndInclusiveIfSame = true) {
     /*
      * moment does not know how to deal with all,
      * and we only concern day here, so use day as base unit
@@ -139,7 +140,7 @@ export default class Interval {
     moments.start.startOf(DateUtils.getIsoDateTimePeriod(timePeriod));
     moments.end.startOf(DateUtils.getIsoDateTimePeriod(timePeriod));
 
-    if (moments.start.isSame(moments.end)) {
+    if (makeEndInclusiveIfSame && moments.start.isSame(moments.end)) {
       moments.end.startOf(DateUtils.getIsoDateTimePeriod(timePeriod)).add(1, timePeriod);
     }
 
