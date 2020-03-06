@@ -1,11 +1,11 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
- * Description: Navi Request Column Config Dimension Component
+ * Description: Navi Request Column Config DateTime Component
  *
  * Usage:
- *  <NaviRequestColumnConfig::Dimension
+ *  <NaviRequestColumnConfig::DateTime
  *    @column={{editingColumn}}
  *    @metadata={{visualization.metadata}}
  *    @onClose={{action "onClose"}}
@@ -14,10 +14,10 @@
  */
 import Component from '@ember/component';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
-import layout from '../../templates/components/navi-request-column-config/dimension';
+import layout from '../../templates/components/navi-column-config/date-time';
 
 @tagName('')
 @templateLayout(layout)
-class Dimension extends Component {}
+class DateTime extends Component {}
 
-export default Dimension;
+export default DateTime;
