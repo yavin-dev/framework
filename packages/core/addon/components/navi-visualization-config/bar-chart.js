@@ -7,5 +7,6 @@
  * }}
  */
 
-import LineChartConfig from './line-chart';
-export default LineChartConfig.extend({});
+import NaviVisualizationConfigLineChartComponent from './line-chart';
+
+export default class NaviVisualizationConfigBarChartComponent extends NaviVisualizationConfigLineChartComponent {}

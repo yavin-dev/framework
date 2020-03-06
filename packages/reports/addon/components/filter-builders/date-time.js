@@ -117,7 +117,8 @@ export default class DateTimeFilterBuilder extends Base {
       return Interval.parseFromStrings('current', 'next');
     } else if (newOperator === OPERATORS.lookback) {
       const isQuarter = dateTimePeriod === 'quarter';
-      const intervalDateTimePeriod = isQuarter ? 'month' : dateTimePeriod;
+      const isHour = dateTimePeriod === 'hour';
+      const intervalDateTimePeriod = isQuarter ? 'month' : isHour ? 'day' : dateTimePeriod;
 
       let intervalValue;
       if (end.isSame(moment(getFirstDayOfIsoDateTimePeriod(moment(), dateTimePeriod)))) {

@@ -1,8 +1,14 @@
 'use strict';
 
 module.exports = {
-  extends: 'recommended',
+  extends: 'octane',
   rules: {
-    'no-bare-strings': false
+    'no-bare-strings': false,
+    'no-curly-component-invocation': {
+      allow: ['current-route', 'parent-route', 'sibling-route']
+    },
+    'no-implicit-this': {
+      allow: ['current-route', 'parent-route', 'sibling-route']
+    }
   }
 };

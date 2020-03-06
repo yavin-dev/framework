@@ -103,6 +103,7 @@ export default class BaseIntervalComponent extends Component {
   @computed('calendarDateTimePeriod')
   get calendarTriggerFormat() {
     const dateMap = {
+      hour: 'MMM DD, YYYY',
       day: 'MMM DD, YYYY',
       month: 'MMM YYYY',
       quarter: '[Q]Q YYYY',

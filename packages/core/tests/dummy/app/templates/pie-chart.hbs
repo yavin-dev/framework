@@ -1,29 +1,29 @@
-{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 
 <h3>Group by One dimension</h3>
 <div class="chart-container pie-chart-container">
-  {{navi-visualization-config/wrapper
-    request=request
-    response=response
-    visualization=visualizationOptions
-    onUpdateConfig=(action "onUpdateConfigOneDimension")
-  }}
-  {{navi-visualizations/pie-chart
-    model=model
-    options=options
-  }}
+  <NaviVisualizationConfig::Wrapper
+    @request={{this.request}}
+    @response={{this.response}}
+    @visualization={{this.visualizationOptions}}
+    @onUpdateConfig={{this.onUpdateConfigOneDimension}}
+  />
+  <NaviVisualizations::PieChart
+    @model={{this.model}}
+    @options={{this.options}}
+  />
 </div>
 
 <h3>Group by Two dimensions</h3>
 <div class="chart-container pie-chart-container">
-  {{navi-visualization-config/wrapper
-    request=multiDimensionRequest
-    response=multiDimensionResponse
-    visualization=visualizationOptionsMultiDimension
-    onUpdateConfig=(action "onUpdateConfigMultipleDimension")
-  }}
-  {{navi-visualizations/pie-chart
-    model=multiDimensionModel
-    options=multiDimensionOptions
-  }}
+  <NaviVisualizationConfig::Wrapper
+    @request={{this.multiDimensionRequest}}
+    @response={{this.multiDimensionResponse}}
+    @visualization={{this.visualizationOptionsMultiDimension}}
+    @onUpdateConfig={{this.onUpdateConfigMultipleDimension}}
+  />
+  <NaviVisualizations::PieChart
+    @model={{this.multiDimensionModel}}
+    @options={{this.multiDimensionOptions}}
+  />
 </div>

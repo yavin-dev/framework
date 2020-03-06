@@ -1,59 +1,61 @@
-{{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{#if (feature-flag "enableTotals")}}
-  <span class="table-config__header">
-    Totals
-    {{navi-icon "info-circle" class="table-config__info-icon"}}
-    {{ember-tooltip text="Display metric totals and subtotals in table" side="right"}}
-  </span>
-  <div class="table-config__totals-toggle-container">
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<div class="table-config" ...attributes>
+  {{#if (feature-flag "enableTotals")}}
+    <span class="table-config__header">
+      Totals
+      <NaviIcon @icon="info-circle" class="table-config__info-icon" />
+      <EmberTooltip @text="Display metric totals and subtotals in table" @side="right" />
+    </span>
+    <div class="table-config__totals-toggle-container">
 
-    {{!-- Toggle for grand total --}}
-    <div class="table-config__totals-toggle-section">
-      <span class="table-config__totals-toggle-label">Grand Total</span>
-      {{x-toggle
-        class="table-config__total-toggle-button table-config__total-toggle-button--grand-total"
-        value=(readonly options.showTotals.grandTotal)
-        size="small"
-        onToggle=(action "onToggleGrandTotal")
-      }}
-    </div>
-
-    {{!-- Toggle for subtotal --}}
-    {{#if request.dimensions.length}}
+      {{!-- Toggle for grand total --}}
       <div class="table-config__totals-toggle-section">
-        <span class="table-config__totals-toggle-label">Subtotal</span>
-        {{x-toggle
-          class="table-config__total-toggle-button table-config__total-toggle-button--subtotal"
-          value=(readonly _showSubtotalDropdown)
-          size="small"
-          onToggle=(queue (toggle-action "_showSubtotalDropdown" this) (action "onToggleSubtotal"))
-        }}
+        <span class="table-config__totals-toggle-label">Grand Total</span>
+        <XToggle
+          class="table-config__total-toggle-button table-config__total-toggle-button--grand-total"
+          @value={{readonly @options.showTotals.grandTotal}}
+          @size="small"
+          @onToggle={{this.onToggleGrandTotal}}
+        />
       </div>
 
-      {{!-- Dimension dropdown for subtotal --}}
-      {{#if _showSubtotalDropdown}}
-        {{#power-select
-          class="table-config__subtotal-dimension-select"
-          dropdownClass="subtotal-dimension-select__options"
-          onchange=(action "updateSubtotal")
-          options=subtotalDimensions
-          searchEnabled=false
-          selected=selectedSubtotal
-          triggerComponent="subtotal-dimension-select-trigger"
-          tagName="div"
-          as | dimension |
-        }}
-          {{dimension.longName}}
-        {{/power-select}}
-      {{/if}}
-    {{/if}}
-  </div>
+      {{!-- Toggle for subtotal --}}
+      {{#if @request.dimensions.length}}
+        <div class="table-config__totals-toggle-section">
+          <span class="table-config__totals-toggle-label">Subtotal</span>
+          <XToggle
+            class="table-config__total-toggle-button table-config__total-toggle-button--subtotal"
+            @value={{readonly this._showSubtotalDropdown}}
+            @size="small"
+            @onToggle={{queue (toggle-action "_showSubtotalDropdown" this) this.onToggleSubtotal}}
+          />
+        </div>
 
-  <div class="navi-visualization-config__warn-msg">
-    Header names and data formats can be modified to customize each column
-  </div>
-{{else}}
-  <div class="navi-visualization-config__warn-msg">
-    You can access more configuration in each of the column headers
-  </div>
-{{/if}}
+        {{!-- Dimension dropdown for subtotal --}}
+        {{#if this._showSubtotalDropdown}}
+          <PowerSelect
+            class="table-config__subtotal-dimension-select"
+            @tagName="div"
+            @triggerComponent="subtotal-dimension-select-trigger"
+            @dropdownClass="subtotal-dimension-select__options"
+            @onchange={{this.updateSubtotal}}
+            @options={{this.subtotalDimensions}}
+            @searchEnabled={{false}}
+            @selected={{this.selectedSubtotal}}
+            as |dimension|
+          >
+            {{dimension.longName}}
+          </PowerSelect>
+        {{/if}}
+      {{/if}}
+    </div>
+
+    <div class="navi-visualization-config__warn-msg">
+      Header names and data formats can be modified to customize each column
+    </div>
+  {{else}}
+    <div class="navi-visualization-config__warn-msg">
+      You can access more configuration in each of the column headers
+    </div>
+  {{/if}}
+</div>

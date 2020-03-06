@@ -1,45 +1,68 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<NaviColumnConfig
+  @isOpen={{this.isColumnDrawerOpen}}
+  @drawerDidChange={{this.resizeVisualization}}
+/>
 <div class="report-view__visualization-main">
-  {{#if hasNoData}}
-    <div class="report-view__visualization-no-results">
-      No results available.
-    </div>
-  {{else}}
-    <div class="report-view__visualization-header">
+  <div class="report-view__visualization-header">
+    <div class="report-view__visualization-header-left">
+      <h3 class="report-view__title">Visualization</h3>
       <VisualizationToggle
+          class="report-view__visualization-toggle"
           @report={{@report}}
           @validVisualizations={{this.validVisualizations}}
           @onVisualizationTypeUpdate={{this.onVisualizationTypeUpdate}}
       />
-        {{#animated-if (and this.hasRequestRun (not this.isEditingVisualization)) use=this.fadeTransition}}
-          <div class="clickable report-view__visualization-edit-btn" role="button" {{on "click" this.toggleEditVisualization}}>
-            Edit {{this.visualizationTypeLabel}}
-            <NaviIcon @icon="pencil" />
-          </div>
-        {{/animated-if}}
-        {{#animated-if (not this.hasRequestRun) use=this.fadeTransition}}
-          <div class="report-view__info-text">
-          <NaviIcon @icon="exclamation-circle" /> Run request to update {{this.visualizationTypeLabel}}</div>
-        {{/animated-if}}
     </div>
-    <ReportVisualization
-      class="report-view__visualization"
-      @report={{@report}}
-      @response={{@response}}
-      @container={{this}}
-      @annotationData={{this.annotationData}}
-      @isEditing={{and this.isEditingVisualization @hasRequestRun}}
-      @onUpdateReport={{pipe
-        (route-action "onUpdateReport")
-        (route-action "validate" @report)
-        (route-action "runReport" @report)
-      }}
-    />
-    <MissingIntervalsWarning
-      @response={{this.response}}
-      @onDetailsToggle={{this.resizeVisualization}}
-    />
-  {{/if}}
+      {{#animated-if (and this.hasRequestRun (not this.isEditingVisualization)) use=this.visFadeTransition}}
+        <div class="clickable report-view__visualization-edit-btn" role="button" {{on "click" this.toggleEditVisualization}}>
+          Edit {{this.visualizationTypeLabel}}
+          <NaviIcon @icon="pencil" />
+        </div>
+      {{/animated-if}}
+      {{#animated-if (not this.hasRequestRun) use=this.visFadeTransition}}
+        <div class="report-view__info-text">
+        <NaviIcon @icon="exclamation-circle" /> Run request to update {{this.visualizationTypeLabel}}</div>
+      {{/animated-if}}
+  </div>
+  <div class= "report-view__visualization-body">
+    {{#if (feature-flag "enableRequestPreview")}}
+      <div class="report-view__columns-toggle">
+        <button class="report-view__columns-button" type="button" aria-label="Toggle column drawer" {{on "click" (toggle "isColumnDrawerOpen" this)}}>
+          {{#animated-if this.isColumnDrawerOpen use=this.fadeTransition}}
+            <NaviIcon @icon="chevron-left" class="report-view__columns-icon" />
+          {{else}}
+            <NaviIcon @icon="columns" class="report-view__columns-icon" />
+          {{/animated-if}}
+        </button>
+      </div>
+    {{/if}}
+    <div class="report-view__visualization-container">
+      {{#if hasNoData}}
+        <div class="report-view__visualization-no-results">
+          No results available.
+        </div>
+      {{else}}
+        <ReportVisualization
+          class="report-view__visualization"
+          @report={{@report}}
+          @response={{@response}}
+          @container={{this}}
+          @annotationData={{this.annotationData}}
+          @isEditing={{and this.isEditingVisualization @hasRequestRun}}
+          @onUpdateReport={{queue
+            (route-action "onUpdateReport")
+            (route-action "validate" @report)
+            (route-action "runReport" @report)
+          }}
+        />
+        <MissingIntervalsWarning
+          @response={{this.response}}
+          @onDetailsToggle={{this.resizeVisualization}}
+        />
+      {{/if}}
+    </div>
+  </div>
 </div>
 <AnimatedContainer class="report-view__animation-container">
   {{#animated-if (and this.isEditingVisualization @hasRequestRun) use=this.drawerTransition}}

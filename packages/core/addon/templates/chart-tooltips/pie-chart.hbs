@@ -1,13 +1,13 @@
-{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="title pie-chart-tooltip__title">
-  {{requiredToolTipData.name}}
-  ({{if requiredToolTipData.ratio (format-number requiredToolTipData.ratio style="percent") "--"}})
+  {{this.requiredToolTipData.name}}
+  ({{if this.requiredToolTipData.ratio (format-number this.requiredToolTipData.ratio style="percent") "--"}})
 </div>
 <ol class="pie-chart-tooltip__series">
   <li class="pie-chart-tooltip__metric-val">
     <svg class="pie-chart-tooltip__series-indicator">
-      <circle cx="50%" cy="50%" r="40%" class="chart-series-{{requiredToolTipData.seriesIndex}}"/>
+      <circle cx="50%" cy="50%" r="40%" class="chart-series-{{this.requiredToolTipData.seriesIndex}}" />
     </svg>
-    <span>{{tooltip-value-formatter requiredToolTipData.value metric rowData}}</span>
+    <span>{{tooltip-value-formatter this.requiredToolTipData.value this.metric this.rowData}}</span>
   </li>
 </ol>

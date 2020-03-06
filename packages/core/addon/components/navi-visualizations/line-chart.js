@@ -1,5 +1,5 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -147,6 +147,7 @@ export default Component.extend(hasChartBuilders, {
     if (metricName) {
       return get(this, 'metricName').getDisplayName(metricName);
     }
+    return undefined;
   }),
 
   /**

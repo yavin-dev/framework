@@ -1,5 +1,5 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -11,37 +11,33 @@
  *  }}
  */
 import Component from '@ember/component';
+import { action } from '@ember/object';
 import layout from '../../templates/components/navi-visualization-config/metric-label';
-import { get } from '@ember/object';
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
-export default Component.extend({
+@templateLayout(layout)
+@tagName('')
+class NaviVisualizationConfigMetricLabelComponent extends Component {
   /**
-   * @property {Object} layout
+   * @action updateLabel
+   * @param {InputEvent} event - date string input event
    */
-  layout,
+  @action
+  updateLabel(description) {
+    const { onUpdateConfig } = this;
 
-  /**
-   * @property {Array} classNames
-   */
-  classNames: ['metric-label-config'],
-
-  actions: {
-    /**
-     * @action updateLabel
-     */
-    updateLabel(description) {
-      const handleUpdateConfig = get(this, 'onUpdateConfig');
-
-      if (handleUpdateConfig) handleUpdateConfig({ description });
-    },
-
-    /**
-     * @action updateFormat
-     */
-    updateFormat(format) {
-      const handleUpdateConfig = get(this, 'onUpdateConfig');
-
-      if (handleUpdateConfig) handleUpdateConfig({ format });
-    }
+    if (onUpdateConfig) onUpdateConfig({ description });
   }
-});
+
+  /**
+   * @action updateFormat
+   */
+  @action
+  updateFormat(format) {
+    const { onUpdateConfig } = this;
+
+    if (onUpdateConfig) onUpdateConfig({ format });
+  }
+}
+
+export default NaviVisualizationConfigMetricLabelComponent;

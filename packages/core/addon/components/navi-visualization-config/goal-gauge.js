@@ -1,5 +1,5 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -9,35 +9,21 @@
  *    options=options
  *  }}
  */
-import { alias } from '@ember/object/computed';
 import Component from '@ember/component';
+import { action } from '@ember/object';
 import layout from '../../templates/components/navi-visualization-config/goal-gauge';
-import { get } from '@ember/object';
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
-export default Component.extend({
+@templateLayout(layout)
+@tagName('')
+class NaviVisualizationConfigGoalGaugeComponent extends Component {
   /**
-   * @property {Object} layout
+   * @action updateConfig
    */
-  layout,
-
-  /**
-   * @property {Array} classNames
-   */
-  classNames: ['goal-gauge-config'],
-
-  /**
-   * @property {object} metric fragment
-   */
-  metricModel: alias('request.metrics.firstObject'),
-
-  actions: {
-    /**
-     * @action updateConfig
-     */
-    updateConfig(type, value) {
-      const handleUpdateConfig = get(this, 'onUpdateConfig');
-
-      if (handleUpdateConfig) handleUpdateConfig({ [type]: value });
-    }
+  @action
+  updateConfig(type, value) {
+    this.onUpdateConfig?.({ [type]: value });
   }
-});
+}
+
+export default NaviVisualizationConfigGoalGaugeComponent;

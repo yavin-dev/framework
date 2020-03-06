@@ -70,6 +70,9 @@ export function formatDurationFromCurrent(duration, timePeriod) {
     durationValue = durationValue / 3;
     durationUnit = 'quarter';
   }
+  if (timePeriod === 'hour') {
+    assert('Formatting hour the same way as we do day', durationUnit === 'day');
+  }
 
   // Singular
   if (durationValue === 1) {

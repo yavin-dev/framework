@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * {{navi-visualization-config/pie-chart
@@ -11,29 +11,26 @@
  */
 
 import Component from '@ember/component';
-import { set, get } from '@ember/object';
+import { set, action } from '@ember/object';
 import { copy } from 'ember-copy';
 import layout from '../../templates/components/navi-visualization-config/pie-chart';
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
-export default Component.extend({
-  layout,
-
+@templateLayout(layout)
+@tagName('')
+class NaviVisualizationConfigPieChartComponent extends Component {
   /**
-   * @property classNames
+   * Method to replace the seriesConfig in visualization config object.
+   *
+   * @method onUpdateConfig
+   * @param {Object} seriesConfig
    */
-  classNames: ['pie-chart-config'],
-
-  actions: {
-    /**
-     * Method to replace the seriesConfig in visualization config object.
-     *
-     * @method onUpdateConfig
-     * @param {Object} seriesConfig
-     */
-    onUpdateConfig(seriesConfig) {
-      let newOptions = copy(get(this, 'options'));
-      set(newOptions, 'series.config', seriesConfig);
-      this.onUpdateConfig(newOptions);
-    }
+  @action
+  onUpdateSeriesConfig(seriesConfig) {
+    const newOptions = copy(this.options);
+    set(newOptions, 'series.config', seriesConfig);
+    this.onUpdateConfig(newOptions);
   }
-});
+}
+
+export default NaviVisualizationConfigPieChartComponent;

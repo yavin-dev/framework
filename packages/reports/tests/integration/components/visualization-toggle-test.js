@@ -2,7 +2,6 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, findAll, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import $ from 'jquery';
 
 module('Integration | Component | visualization toggle', function(hooks) {
   setupRenderingTest(hooks);
@@ -44,15 +43,15 @@ module('Integration | Component | visualization toggle', function(hooks) {
       }}`);
 
     assert.deepEqual(
-      findAll('.visualization-toggle__option').map(el => el.textContent.trim()),
+      findAll('.visualization-toggle__option').map(el => el.attributes.title.value),
       ['Bar Chart', 'Line Chart', 'Data Table'],
       'All valid visualizations are shown as options'
     );
 
     assert
       .dom('.visualization-toggle__option--is-active')
-      .hasText('Bar Chart', 'The visualization type of the report is selected/active');
+      .hasAttribute('title', 'Bar Chart', 'The visualization type of the report is selected/active');
 
-    await click($('.visualization-toggle__option:contains(Line Chart)')[0]);
+    await click('.visualization-toggle__option[title="Line Chart"]');
   });
 });

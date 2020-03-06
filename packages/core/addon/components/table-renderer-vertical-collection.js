@@ -1,5 +1,5 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -21,8 +21,9 @@
 import Component from '@ember/component';
 import layout from '../templates/components/table-renderer-vertical-collection';
 import { computed, get, set } from '@ember/object';
-import { run } from '@ember/runloop';
+import { scheduleOnce } from '@ember/runloop';
 import ResizeObserver from 'resize-observer-polyfill';
+import { layout as templateLayout, classNames } from '@ember-decorators/component';
 
 /**
  * @constant {String} SCROLL_EVENT - Scroll event name
@@ -49,58 +50,54 @@ try {
   // noop
 }
 
-export default Component.extend({
-  layout,
-
-  classNames: ['table-widget-container', 'table-widget-container--vc'],
-
+@templateLayout(layout)
+@classNames('table-widget-container table-widget-container--vc') // TODO tagName(''), using this.element below
+class TableRendererVerticalCollectionComponent extends Component {
   /**
    * @property {ResizeObserver} -- chrome resize observer for header changes
    */
-  resizeObserver: null,
+  resizeObserver = null;
 
   /**
    * @property {mutationObserver} -- mutation observer for header changes (drag drop, adding and removing metrics)
    */
-  mutationObserver: null,
+  mutationObserver = null;
 
   /**
    * @property {String} tableWrapperClass - class of table wrapper div
    */
-  tableWrapperClass: 'table-widget__table-wrapper',
+  tableWrapperClass = 'table-widget__table-wrapper';
 
   /**
    * @property {Object} tableWrapperDomElement - table wrapper div DOM element
    */
-  tableWrapperDomElement: computed(function() {
+  @computed
+  get tableWrapperDomElement() {
     return this.element.querySelector(`.${get(this, 'tableWrapperClass')}`);
-  }),
+  }
 
   /**
    * @property {String} tableHeadersClass - class of outer div of visible table headers
    */
-  tableHeadersClass: 'table-widget__table-headers',
+  tableHeadersClass = 'table-widget__table-headers';
 
   /**
    * @property {Object} tableHeadersDomElement - outer div of visible table headers DOM element
    */
-  tableHeadersDomElement: computed(function() {
+  @computed
+  get tableHeadersDomElement() {
     return this.element.querySelector(`.${get(this, 'tableHeadersClass')}`);
-  }),
+  }
 
   /**
    * @property {Boolean} isDragged - whether or not a table header is being dragged (re-ordered)
    */
-  isDragged: false,
+  isDragged = false;
 
   /**
-   * @method init
-   * @override
+   * @property {Array} columnsWidth - width of table columns
    */
-  init() {
-    this._super(...arguments);
-    set(this, 'columnsWidth', []);
-  },
+  columnsWidth = [];
 
   /**
    * Registers table scroll event
@@ -119,7 +116,7 @@ export default Component.extend({
       e => this._headerWheelSync(e),
       supportsPassive ? { passive: true } : false
     );
-  },
+  }
 
   /**
    * Registers and reregisters resize observer
@@ -143,7 +140,7 @@ export default Component.extend({
       );
     }
     document.querySelectorAll('.table-header-row-vc th').forEach(el => this.resizeObserver.observe(el));
-  },
+  }
 
   /**
    * Synchronizes scroll position of table headers and table body
@@ -173,7 +170,7 @@ export default Component.extend({
     }
 
     elementToScroll.scrollLeft = scrollLeft;
-  },
+  }
 
   /**
    * Synchronizes the width of visible table headers with real (hidden) table header elements
@@ -212,7 +209,7 @@ export default Component.extend({
       set(this, 'columnsWidth', widths);
       headerRowElm.style.minWidth = `${this.element.querySelector('table').getBoundingClientRect().width}px`;
     }
-  },
+  }
 
   /**
    * Event handler for wheel events in header to scroll the table body vertically.
@@ -226,36 +223,17 @@ export default Component.extend({
 
     table.scrollLeft += event.deltaX;
     event.preventDefault(); // Prevents the page navigation gesture in Mac OSX
-  },
+  }
 
   /**
-   * attach scroll and view resize event listeners when first rendered
-   *
    * @method didInsertElement
    * @override
    */
   didInsertElement() {
-    this._super(...arguments);
+    super.didInsertElement(...arguments);
 
-    run.scheduleOnce('afterRender', () => {
-      if (!get(this, 'isDestroyed') && !get(this, 'isDestroying')) {
-        this._registerTableScroll();
-        this._registerViewResize();
-
-        set(
-          this,
-          'mutationObserver',
-          new MutationObserver(() => {
-            this._registerViewResize();
-          })
-        );
-
-        document
-          .querySelectorAll('tr.table-header-row-vc')
-          .forEach(el => this.mutationObserver.observe(el, { attributes: false, childList: true, subtree: true }));
-      }
-    });
-  },
+    scheduleOnce('afterRender', this, this.setupListener);
+  }
 
   /**
    * during both render and re-render, sync headers width and scroll position
@@ -264,12 +242,12 @@ export default Component.extend({
    * @override
    */
   didRender() {
-    this._super(...arguments);
+    super.didRender(...arguments);
 
     if (!get(this, 'isDestroyed') && !get(this, 'isDestroying')) {
       this._syncScroll();
     }
-  },
+  }
 
   /**
    * turn off event listeners before removing from the DOM
@@ -289,6 +267,32 @@ export default Component.extend({
     this.resizeObserver.disconnect();
     this.mutationObserver.disconnect();
 
-    this._super(...arguments);
+    super.willDestroyElement(...arguments);
   }
-});
+
+  /**
+   * attach scroll and view resize event listeners when first rendered
+   *
+   * @method setupListener
+   */
+  setupListener() {
+    if (!this.isDestroyed && !this.isDestroying) {
+      this._registerTableScroll();
+      this._registerViewResize();
+
+      set(
+        this,
+        'mutationObserver',
+        new MutationObserver(() => {
+          this._registerViewResize();
+        })
+      );
+
+      document
+        .querySelectorAll('tr.table-header-row-vc')
+        .forEach(el => this.mutationObserver.observe(el, { attributes: false, childList: true, subtree: true }));
+    }
+  }
+}
+
+export default TableRendererVerticalCollectionComponent;

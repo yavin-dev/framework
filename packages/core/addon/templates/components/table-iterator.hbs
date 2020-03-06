@@ -1,18 +1,18 @@
-{{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{#if occlusion}}
-  {{#component collectionRenderer
-    items=tableData
-    estimateHeight=estimateHeight
-    containerSelector=containerSelector
-    bufferSize=bufferSize
-    buffer=bufferSize
-    cell-layout=(mixed-height-layout rowDimensions)
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{#if this.occlusion}}
+  {{#component this.collectionRenderer
+    items=@tableData
+    estimateHeight=@estimateHeight
+    containerSelector=@containerSelector
+    bufferSize=@bufferSize
+    buffer=@bufferSize
+    cell-layout=(mixed-height-layout @rowDimensions)
     as |row idx|
   }}
     {{yield row idx}}
   {{/component}}
 {{else}}
-  {{#each tableData as |row idx|}}
+  {{#each @tableData as |row idx|}}
     {{yield row idx}}
   {{/each}}
 {{/if}}
