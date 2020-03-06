@@ -1654,7 +1654,7 @@ module('Acceptance | Navi Report', function(hooks) {
   });
 
   test('Date Picker start date beyond end date', async function(assert) {
-    assert.expect(16);
+    assert.expect(19);
 
     await visit('/reports/1');
     await selectChoose('.filter-builder__select-trigger', 'Between');
@@ -1670,6 +1670,14 @@ module('Acceptance | Navi Report', function(hooks) {
     assert
       .dom('.filter-values--date-range-input__high-value')
       .hasText('Nov 15, 2015', 'The end date is still Nov 15, 2015');
+
+    //collapse filters
+    await click('.report-builder__container-header__filters-toggle');
+    assert
+      .dom('.filter-collection')
+      .hasText('Date Time (Day) between Nov 18, 2015 - Nov 15, 2015', 'Collapsed range is Nov 18, 2015 - Nov 15, 2015');
+    //expand filters
+    await click('.filter-collection--collapsed');
 
     await click('.navi-report__run-btn');
 
@@ -1689,6 +1697,12 @@ module('Acceptance | Navi Report', function(hooks) {
       .hasText('Nov 18, 2015', 'The start date is still Nov 18, 2015');
     assert.dom('.filter-values--date-range-input__high-value').hasText('Nov 18, 2015', 'The end date is Nov 18, 2015');
 
+    //collapse filters
+    await click('.report-builder__container-header__filters-toggle');
+    assert.dom('.filter-collection').hasText('Date Time (Day) between Nov 18, 2015', 'Collapsed range is Nov 18, 2015');
+    //expand filters
+    await click('.filter-collection--collapsed');
+
     await click('.navi-report__run-btn');
 
     assert.dom('.navi-info-message__error-list').doesNotExist('No error if dates are equal');
@@ -1701,6 +1715,14 @@ module('Acceptance | Navi Report', function(hooks) {
     assert
       .dom('.filter-values--date-range-input__high-value')
       .hasText('Nov 18, 2015', 'The end date is still Nov 18, 2015');
+
+    //collapse filters
+    await click('.report-builder__container-header__filters-toggle');
+    assert
+      .dom('.filter-collection')
+      .hasText('Date Time (Day) between Nov 19, 2015 - Nov 18, 2015', 'Collapsed range is Nov 19, 2015 - Nov 18, 2015');
+    //expand filters
+    await click('.filter-collection--collapsed');
 
     await click('.navi-report__run-btn');
 
