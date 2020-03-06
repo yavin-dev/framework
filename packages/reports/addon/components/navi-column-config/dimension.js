@@ -5,7 +5,7 @@
  * Description: Navi Request Column Config Dimension Component
  *
  * Usage:
- *  <NaviRequestColumnConfig::Dimension
+ *  <NaviColumnConfig::Dimension
  *    @column={{editingColumn}}
  *    @metadata={{visualization.metadata}}
  *    @onClose={{action "onClose"}}

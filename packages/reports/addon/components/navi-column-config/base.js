@@ -5,7 +5,7 @@
  * Description: Navi Request Column Config Base Component
  *
  * Usage:
- *  <NaviRequestColumnConfig::Base
+ *  <NaviColumnConfig::Base
  *    @column={{editingColumn}}
  *    @metadata={{visualization.metadata}}
  *    @onClose={{action "onClose"}}

@@ -5,7 +5,7 @@
  * Description: Navi Request Column Config Base Component
  *
  * Usage:
- *  <NaviRequestColumnConfig::Item
+ *  <NaviColumnConfig::Item
  *    @column={{this.column}}
  *    @onRemoveColumn={{fn this.removeColumn this.column}}
  *  />

@@ -5,7 +5,7 @@
  * Description: Navi Request Column Config Metric Component
  *
  * Usage:
- *  <NaviRequestColumnConfig::Metric
+ *  <NaviColumnConfig::Metric
  *    @column={{editingColumn}}
  *    @metadata={{visualization.metadata}}
  *    @onClose={{action "onClose"}}

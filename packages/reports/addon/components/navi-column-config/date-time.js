@@ -5,7 +5,7 @@
  * Description: Navi Request Column Config DateTime Component
  *
  * Usage:
- *  <NaviRequestColumnConfig::DateTime
+ *  <NaviColumnConfig::DateTime
  *    @column={{editingColumn}}
  *    @metadata={{visualization.metadata}}
  *    @onClose={{action "onClose"}}
