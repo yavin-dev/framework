@@ -1664,7 +1664,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     //start date beyond end date
     await clickTrigger('.filter-values--date-range-input__low-value');
-    await click($('.ember-power-calendar-day--current-month:contains(18)')[0]);
+    await click('.ember-power-calendar-day[data-date="2015-11-18"]');
 
     assert.dom('.filter-values--date-range-input__low-value').hasText('Nov 18, 2015', 'The start date is Nov 18, 2015');
     assert
@@ -1690,7 +1690,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     //start date is equal to end date
     await clickTrigger('.filter-values--date-range-input__high-value');
-    await click($('.ember-power-calendar-day--current-month:contains(18)')[0]);
+    await click('.ember-power-calendar-day[data-date="2015-11-18"]');
 
     assert
       .dom('.filter-values--date-range-input__low-value')
@@ -1709,7 +1709,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     //start date 1 day beyond end date
     await clickTrigger('.filter-values--date-range-input__low-value');
-    await click($('.ember-power-calendar-day--current-month:contains(19)')[0]);
+    await click('.ember-power-calendar-day[data-date="2015-11-19"]');
 
     assert.dom('.filter-values--date-range-input__low-value').hasText('Nov 19, 2015', 'The start date is Nov 19, 2015');
     assert
