@@ -42,6 +42,9 @@ class NaviColumnConfig extends Component {
     ]);
   }
 
+  /**
+   * @property {Object[]} columns - date time (if not all), dimension, and metric columns from the request
+   */
   @computed('report.request.{metrics.[],dimensions.[],logicalTable.timeGrain}')
   get columns() {
     const {
@@ -50,20 +53,20 @@ class NaviColumnConfig extends Component {
       logicalTable: { timeGrain }
     } = this.report.request;
 
-    const metricColumns = metrics.toArray().map(metric => {
-      return {
-        type: 'metric',
-        name: metric.canonicalName,
-        displayName: this.getDisplayName(metric, 'metric'),
-        fragment: metric
-      };
-    });
     const dimensionColumns = dimensions.toArray().map(dimension => {
       return {
         type: 'dimension',
         name: dimension.dimension.name,
         displayName: this.getDisplayName(dimension, 'dimension'),
         fragment: dimension
+      };
+    });
+    const metricColumns = metrics.toArray().map(metric => {
+      return {
+        type: 'metric',
+        name: metric.canonicalName,
+        displayName: this.getDisplayName(metric, 'metric'),
+        fragment: metric
       };
     });
 
@@ -95,6 +98,7 @@ class NaviColumnConfig extends Component {
    */
   getDisplayName(asset, type) {
     const nameServiceMap = {
+      // TODO: Add namespace pararemeter when metricName service supports it
       metric: metric => this.metricName.getDisplayName(metric.serialize()),
       dimension: dimension => dimension.dimension.longName || dimension.dimension.name,
       dateTime: dateTime => `Date Time (${dateTime.longName})`

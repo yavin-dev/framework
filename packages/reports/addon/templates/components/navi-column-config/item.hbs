@@ -1,7 +1,7 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <li class="navi-column-config-item navi-column-config-item--{{column.type}}" ...attributes>
   <NaviIcon @icon="chevron-right" class="navi-column-config-item__dropdown-icon"/>
-  <span class="navi-column-config-item__name">{{column.displayName}}</span>
+  <span title="{{column.displayName}}" class="navi-column-config-item__name">{{column.displayName}}</span>
   <button type="button" aria-label="delete {{column.type}} {{column.displayName}}" class="navi-column-config-item__remove-icon" {{on "click" @onRemoveColumn}}>×</button>
   {{!-- TODO: Use navi-request-column-config components --}}
 </li>

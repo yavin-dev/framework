@@ -16,7 +16,7 @@
 .navi-column-config {
   display: flex;
   font-family: @font-family-sans-serif;
-  font-size: 14px;
+  font-size: @font-size-base;
 
   &__title {
     font-size: @font-size-base;
@@ -40,28 +40,31 @@
 
   &-item {
     align-items: center;
-    display: flex;
-    cursor: pointer;
-    margin-left: 15px;
-    padding: 10px 0;
-    min-height: 20px;
     border-bottom: 1px solid @denali-gray-300;
+    cursor: pointer;
+    display: flex;
+    margin-left: 15px;
+    min-height: 20px;
+    padding: 10px 0;
 
     &__name {
       flex: 3;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     &__dropdown-icon {
       .navi-column-config-icon;
       flex: 0.5;
-      font-size: 12px;
+      font-size: @font-size-mid;
     }
 
     &__remove-icon {
       .navi-column-config-icon;
       flex: 0.5;
+      font-size: @font-size-base-large;
       text-align: center;
-      font-size: 16px;
     }
   }
 }

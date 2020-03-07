@@ -48,7 +48,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
 
     assert.dom('.filter-builder__subject').hasText('Date Time (Day)', 'Time grain is initially day');
 
-    await click(findAll('.navi-column-config-item__remove-icon')[0]); // Remove Date Time (Day)
+    await click('.navi-column-config-item__remove-icon'); // Remove Date Time (Day)
 
     assert.dom('.filter-builder__subject').hasText('Date Time (All)', 'Deselecting day changes time grain to all');
     await animationsSettled();
