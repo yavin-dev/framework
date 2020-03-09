@@ -388,19 +388,19 @@ module('Integration | Component | pie chart', function(hooks) {
         type: 'dimension',
         config: {
           metric: {
-            metric: 'totalPageViews',
+            metric: 'globalySold',
             parameters: {},
-            canonicalName: 'totalPageViews'
+            canonicalName: 'globalySold'
           },
-          dimensionOrder: ['age'],
+          dimensionOrder: ['container'],
           dimensions: [
             {
-              name: 'All Other',
-              values: { age: '-3' }
+              name: 'Bag',
+              values: { container: '1' }
             },
             {
-              name: 'Under 13',
-              values: { age: '1' }
+              name: 'Bank',
+              values: { container: '2' }
             }
           ]
         }
@@ -409,7 +409,11 @@ module('Integration | Component | pie chart', function(hooks) {
 
     await render(TEMPLATE);
 
-    assert.dom('.c3-title').hasText('Total Page Views', 'The metric name is displayed in the metric label correctly');
+    assert
+      .dom('.c3-title')
+      .hasText('How many have sold worldwide', 'The metric name is displayed in the metric label correctly');
+
+    this.set('model', Model);
   });
 
   test('parameterized metric renders correctly for metric series', async function(assert) {

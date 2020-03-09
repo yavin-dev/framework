@@ -273,5 +273,38 @@ export default {
       longName: 'Unique Identifiers (Daily Avg) per Total Unique Identifiers (Percentage)',
       type: 'number'
     }
+  ],
+
+  blockheadMetrics: [
+    {
+      category: 'Personal',
+      name: 'ownedQuantity',
+      longName: 'Quantity of thing',
+      type: 'number'
+    },
+    {
+      category: 'Personal',
+      name: 'usedAmount',
+      longName: 'Used Amount',
+      type: 'number'
+    },
+    {
+      category: 'Personal',
+      name: 'personalSold',
+      longName: 'Personally sold amount',
+      type: 'number'
+    },
+    {
+      category: 'World',
+      name: 'available',
+      longName: 'How many are available',
+      type: 'number'
+    },
+    {
+      category: 'World',
+      name: 'globalySold',
+      longName: 'How many have sold worldwide',
+      type: 'number'
+    }
   ]
 };

@@ -15,7 +15,7 @@ module('Unit | Transform | Table', function(hooks) {
   });
 
   test('serialize and deserialize', async function(assert) {
-    assert.expect(2);
+    assert.expect(3);
 
     await settled();
     let transform = this.owner.lookup('transform:table'),
@@ -24,5 +24,6 @@ module('Unit | Transform | Table', function(hooks) {
     assert.equal(transform.serialize(table), 'network', 'Table is serialized to the name');
 
     assert.equal(transform.deserialize('network'), table, 'Table is deserialized to the right object');
+    assert.equal(transform.deserialize('dummy.network'), table, 'namespaced table is deserialized to the right object');
   });
 });

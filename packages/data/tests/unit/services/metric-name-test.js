@@ -52,14 +52,14 @@ module('Unit | Service | metric long name', function(hooks) {
     let service = this.owner.lookup('service:metric-name');
 
     assert.equal(
-      service.getDisplayName({ metric: 'adClicks', parameters: {} }, 'blockhead'),
-      'Ad Clicks',
+      service.getDisplayName({ metric: 'usedAmount', parameters: {} }, 'blockhead'),
+      'Used Amount',
       'Service returns the long name for a non parameterized metric'
     );
 
     assert.equal(
-      service.getLongName('revenue', 'blockhead'),
-      'Revenue',
+      service.getLongName('available', 'blockhead'),
+      'How many are available',
       'Service can succesfully retrieve the long name for a valid metric'
     );
 

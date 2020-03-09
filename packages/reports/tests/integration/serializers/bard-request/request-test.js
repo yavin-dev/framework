@@ -70,6 +70,11 @@ module('Integration | Serializer | Request Fragment', function(hooks) {
   test('Removes aliases during normalization', function(assert) {
     assert.expect(3);
     let payload = {
+      logicalTable: {
+        table: 'foo'
+      },
+      dimensions: [],
+      filters: [],
       metrics: [
         {
           metric: 'navClicks'

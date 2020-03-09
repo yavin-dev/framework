@@ -29,12 +29,27 @@ export default DS.Transform.extend({
    */
   deserialize(serialized) {
     let metadataService = get(this, 'metadataService');
+    let namespace = null;
 
     if (isArray(serialized)) {
-      return serialized.map(dimension => metadataService.getById(get(this, 'type'), dimension));
+      return serialized.map(dimension => {
+        namespace = null;
+        if (dimension.includes('.')) {
+          let splitName = serialized.split('.');
+          namespace = splitName[0];
+          dimension = splitName[1];
+        }
+        return metadataService.getById(get(this, 'type'), dimension, namespace);
+      });
     }
 
-    return metadataService.getById(get(this, 'type'), serialized);
+    if (serialized.includes('.')) {
+      let splitName = serialized.split('.');
+      namespace = splitName[0];
+      serialized = splitName[1];
+    }
+
+    return metadataService.getById(get(this, 'type'), serialized, namespace);
   },
 
   /**

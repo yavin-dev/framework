@@ -122,7 +122,7 @@ module('Acceptance | Navi Report', function(hooks) {
   });
 
   test('New report - copy api', async function(assert) {
-    assert.expect(2);
+    assert.expect(3);
 
     await visit('/reports/new');
     await clickItem('metric', 'Ad Clicks');
@@ -139,6 +139,10 @@ module('Acceptance | Navi Report', function(hooks) {
       find('.navi-modal__input').value.includes('metrics=adClicks%2CaddPageViews'),
       'API query updates with request'
     );
+
+    assert
+      .dom('.get-api-modal-container input')
+      .hasValue(/^https:\/\/data.naviapp.io\/\S+$/, 'shows api url from right datasource');
   });
 
   test('Revert changes when exiting report - existing report', async function(assert) {
@@ -534,7 +538,7 @@ module('Acceptance | Navi Report', function(hooks) {
   });
 
   test('Multi export action - csv href', async function(assert) {
-    assert.expect(4);
+    assert.expect(5);
 
     await visit('/reports/1/view');
     await clickTrigger('.multiple-format-export');
@@ -578,6 +582,10 @@ module('Acceptance | Navi Report', function(hooks) {
       ),
       'Filter updates are automatically included in export url'
     );
+
+    assert
+      .dom(findAll('.multiple-format-export__dropdown a').filter(el => el.textContent.trim() === 'CSV')[0])
+      .hasAttribute('href', /^https:\/\/data.naviapp.io\/\S+$/, 'uses csv export from right datasource');
   });
 
   test('Multi export action - pdf href', async function(assert) {

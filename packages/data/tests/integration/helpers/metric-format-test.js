@@ -51,20 +51,18 @@ module('helper:metric-format', function(hooks) {
     await metaData.loadMetadata({ dataSourceName: 'blockhead' });
 
     this.set('metric', {
-      metric: 'revenue',
-      parameters: { currency: 'USD', as: 'revenueUSD' }
+      metric: 'usedAmount',
+      parameters: {}
     });
 
-    this.set('namespace', 'blockhead');
-
-    await render(hbs`{{metric-format metric namespace}}`);
-    assert.dom().hasText('Revenue (USD)');
+    await render(hbs`{{metric-format metric 'blockhead'}}`);
+    assert.dom().hasText('Used Amount');
 
     this.set('metric', {
       metric: 'navClicks',
       parameters: {}
     });
-    assert.dom().hasText('Nav Link Clicks', 'Fall back works');
+    assert.dom().hasText('navClicks', 'Fall back works');
 
     this.set('namespace', undefined);
     assert.dom().hasText('navClicks', 'default works if datasource is not loaded');

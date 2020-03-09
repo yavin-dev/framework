@@ -556,26 +556,26 @@ export default Fragment.extend(Validations, {
 
     return store.createFragment('bard-request/request', {
       logicalTable: store.createFragment('bard-request/fragments/logicalTable', {
-        table: metadataService.getById('table', clonedRequest.logicalTable.table),
+        table: metadataService.getById('table', clonedRequest.logicalTable.table, clonedRequest.dataSource),
         timeGrainName: clonedRequest.logicalTable.timeGrain
       }),
 
       dimensions: clonedRequest.dimensions.map(dimension =>
         store.createFragment('bard-request/fragments/dimension', {
-          dimension: metadataService.getById('dimension', dimension.dimension)
+          dimension: metadataService.getById('dimension', dimension.dimension, clonedRequest.dataSource)
         })
       ),
 
       metrics: clonedRequest.metrics.map(metric =>
         store.createFragment('bard-request/fragments/metric', {
-          metric: metadataService.getById('metric', metric.metric),
+          metric: metadataService.getById('metric', metric.metric, clonedRequest.dataSource),
           parameters: metric.parameters
         })
       ),
 
       filters: clonedRequest.filters.map(filter =>
         store.createFragment('bard-request/fragments/filter', {
-          dimension: metadataService.getById('dimension', filter.dimension),
+          dimension: metadataService.getById('dimension', filter.dimension, clonedRequest.dataSource),
           field: filter.field,
           operator: filter.operator,
           rawValues: filter.values
@@ -586,7 +586,7 @@ export default Fragment.extend(Validations, {
       having: makeArray(clonedRequest.having).map(having =>
         store.createFragment('bard-request/fragments/having', {
           metric: store.createFragment('bard-request/fragments/metric', {
-            metric: metadataService.getById('metric', having.metric.metric),
+            metric: metadataService.getById('metric', having.metric.metric, clonedRequest.dataSource),
             parameters: having.metric.parameters || {}
           }),
           operator: having.operator,
@@ -606,7 +606,7 @@ export default Fragment.extend(Validations, {
           });
         } else {
           metric = store.createFragment('bard-request/fragments/metric', {
-            metric: metadataService.getById('metric', sort.metric.metric),
+            metric: metadataService.getById('metric', sort.metric.metric, clonedRequest.dataSource),
             parameters: sort.metric.parameters
           });
         }

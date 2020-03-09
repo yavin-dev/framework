@@ -226,7 +226,7 @@ export default Service.extend({
    * @returns {string} - namespace
    */
   getTableNamespace(table) {
-    const items = this._keg.getBy('metadata/table', recordTable => (recordTable.name = table));
+    const items = this._keg.getBy('metadata/table', recordTable => recordTable.name === table);
 
     return items.length ? items[0].source : getDefaultDataSourceName();
   }

@@ -531,5 +531,77 @@ export default [
       bardVersion: 'v1',
       requestVersion: 'v1'
     }
+  },
+  {
+    id: 12,
+    title: 'Report for different datasource',
+    createdOn: '2020-01-01 00:00:00',
+    updatedOn: '2020-01-01 00:00:00',
+    authorId: 'navi_user',
+    deliveryRuleIds: [],
+    visualization: {
+      type: 'table',
+      version: 1,
+      metadata: {
+        columns: [
+          {
+            field: 'dateTime',
+            type: 'dateTime',
+            displayName: 'Date'
+          },
+          {
+            field: 'container',
+            type: 'dimension',
+            displayName: 'Container'
+          },
+          {
+            field: { metric: 'usedAmount', parameters: {} },
+            type: 'metric',
+            displayName: 'Used Amount'
+          }
+        ]
+      }
+    },
+    request: {
+      logicalTable: {
+        table: 'inventory',
+        timeGrain: 'day'
+      },
+      metrics: [
+        {
+          metric: 'usedAmount',
+          parameters: {}
+        }
+      ],
+      dimensions: [
+        {
+          dimension: 'container'
+        }
+      ],
+      filters: [
+        {
+          dimension: 'container',
+          field: 'id',
+          operator: 'in',
+          values: ['2']
+        }
+      ],
+      having: [
+        {
+          metric: 'usedAmount',
+          operator: 'gt',
+          values: [50]
+        }
+      ],
+      intervals: [
+        {
+          end: 'current',
+          start: 'P3D'
+        }
+      ],
+      bardVersion: 'v1',
+      requestVersion: 'v1',
+      dataSource: 'blockhead'
+    }
   }
 ];

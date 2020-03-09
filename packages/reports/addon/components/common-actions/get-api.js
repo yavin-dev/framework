@@ -32,7 +32,7 @@ export default Component.extend({
   requestUrl: computed('request', 'showModal', function() {
     // Observe 'showModal' to recompute each time the modal opens
     let request = get(this, 'request').serialize();
-    return get(this, 'facts').getURL(request);
+    return get(this, 'facts').getURL(request, { dataSourceName: request.dataSource });
   }),
 
   actions: {

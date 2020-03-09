@@ -19,7 +19,10 @@ export default Route.extend({
   model() {
     return hash({
       user: get(this, 'user').findOrRegister(),
-      metadata: get(this, 'bardMetadata').loadMetadata()
+      metadata: Promise.all([
+        get(this, 'bardMetadata').loadMetadata(),
+        get(this, 'bardMetadata').loadMetadata({ dataSourceName: 'blockhead' })
+      ])
     }).then(() => undefined);
   }
 });

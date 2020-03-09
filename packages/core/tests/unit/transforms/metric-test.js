@@ -15,7 +15,7 @@ module('Unit | Transform | Metric', function(hooks) {
   });
 
   test('serialize and deserialize', async function(assert) {
-    assert.expect(2);
+    assert.expect(3);
 
     await settled();
     let transform = this.owner.lookup('transform:metric'),
@@ -24,6 +24,11 @@ module('Unit | Transform | Metric', function(hooks) {
     assert.equal(transform.serialize(metric), 'pageViews', 'Metric is serialized to the name');
 
     assert.equal(transform.deserialize('pageViews'), metric, 'Metric is deserialized to the right object');
+    assert.equal(
+      transform.deserialize('dummy.pageViews'),
+      metric,
+      'namespaced metric is deserialized to the right object'
+    );
   });
 
   test('datetime test', async function(assert) {

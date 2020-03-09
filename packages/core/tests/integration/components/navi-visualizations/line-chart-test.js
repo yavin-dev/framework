@@ -646,25 +646,15 @@ module('Integration | Component | line chart', function(hooks) {
             config: {
               metrics: [
                 {
-                  metric: 'uniqueIdentifier',
-                  canonicalName: 'uniqueIdentifier',
+                  metric: 'ownedQuantity',
+                  canonicalName: 'ownedQuantity',
                   toJSON() {
                     return this;
                   }
                 },
                 {
-                  metric: 'totalPageViews',
-                  canonicalName: 'totalPageViews',
-                  toJSON() {
-                    return this;
-                  }
-                },
-                {
-                  metric: 'revenue',
-                  parameters: {
-                    currency: 'USD'
-                  },
-                  canonicalName: 'revenue(currency=USD)',
+                  metric: 'usedAmount',
+                  canonicalName: 'usedAmount',
                   toJSON() {
                     return this;
                   }
@@ -681,7 +671,7 @@ module('Integration | Component | line chart', function(hooks) {
       A([
         {
           request: {
-            metrics: ['uniqueIdentifier', 'totalPageViews', 'revenue(currency=USD)'],
+            metrics: ['ownedQuantity', 'usedAmount'],
             intervals: [
               {
                 start: '2016-05-30 00:00:00.000',
@@ -697,33 +687,28 @@ module('Integration | Component | line chart', function(hooks) {
             rows: [
               {
                 dateTime: '2016-05-30 00:00:00.000',
-                uniqueIdentifier: 172933788,
-                totalPageViews: 3669828357,
-                'revenue(currency=USD)': 2000323439.23
+                ownedQuantity: 172933788,
+                usedAmount: 3669828357
               },
               {
                 dateTime: '2016-05-31 00:00:00.000',
-                uniqueIdentifier: 183206656,
-                totalPageViews: 4088487125,
-                'revenue(currency=USD)': 1999243823.74
+                ownedQuantity: 183206656,
+                usedAmount: 4088487125
               },
               {
                 dateTime: '2016-06-01 00:00:00.000',
-                uniqueIdentifier: 183380921,
-                totalPageViews: 4024700302,
-                'revenue(currency=USD)': 1400324934.92
+                ownedQuantity: 183380921,
+                usedAmount: 4024700302
               },
               {
                 dateTime: '2016-06-02 00:00:00.000',
-                uniqueIdentifier: 180559793,
-                totalPageViews: 3950276031,
-                'revenue(currency=USD)': 923843934.11
+                ownedQuantity: 180559793,
+                usedAmount: 3950276031
               },
               {
                 dateTime: '2016-06-03 00:00:00.000',
-                uniqueIdentifier: 172724594,
-                totalPageViews: 3697156058,
-                'revenue(currency=USD)': 1623430236.42
+                ownedQuantity: 172724594,
+                usedAmount: 3697156058
               }
             ]
           }
@@ -734,7 +719,7 @@ module('Integration | Component | line chart', function(hooks) {
 
     assert.deepEqual(
       findAll('.c3-legend-item').map(el => el.textContent),
-      ['Unique Identifiers', 'Total Page Views', 'Revenue (USD)'],
+      ['Quantity of thing', 'Used Amount'],
       'Metric display names are used properly for parameterized and non-parameterized metrics in the legend'
     );
   });
