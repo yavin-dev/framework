@@ -1653,6 +1653,116 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.dom('.filter-values--current-period').hasText(`The current day. (${today})`, 'The current day');
   });
 
+  test('Date Picker start date beyond end date', async function(assert) {
+    assert.expect(19);
+
+    await visit('/reports/1');
+    await selectChoose('.filter-builder__select-trigger', 'Between');
+
+    assert.dom('.filter-values--date-range-input__low-value').hasText('Nov 09, 2015', 'The start date is Nov 09, 2015');
+    assert.dom('.filter-values--date-range-input__high-value').hasText('Nov 15, 2015', 'The end date is Nov 15, 2015');
+
+    //start date beyond end date
+    await clickTrigger('.filter-values--date-range-input__low-value');
+    await click('.ember-power-calendar-day[data-date="2015-11-18"]');
+
+    assert.dom('.filter-values--date-range-input__low-value').hasText('Nov 18, 2015', 'The start date is Nov 18, 2015');
+    assert
+      .dom('.filter-values--date-range-input__high-value')
+      .hasText('Nov 15, 2015', 'The end date is still Nov 15, 2015');
+
+    //collapse filters
+    await click('.report-builder__container-header__filters-toggle');
+    assert
+      .dom('.filter-collection')
+      .hasText('Date Time (Day) between Nov 18, 2015 - Nov 15, 2015', 'Collapsed range is Nov 18, 2015 - Nov 15, 2015');
+    //expand filters
+    await click('.filter-collection--collapsed');
+
+    await click('.navi-report__run-btn');
+
+    assert
+      .dom('.navi-info-message__error-list')
+      .hasText(
+        'The start date should be before end date',
+        '"The start date should be before end date" error is rendered'
+      );
+
+    //start date is equal to end date
+    await clickTrigger('.filter-values--date-range-input__high-value');
+    await click('.ember-power-calendar-day[data-date="2015-11-18"]');
+
+    assert
+      .dom('.filter-values--date-range-input__low-value')
+      .hasText('Nov 18, 2015', 'The start date is still Nov 18, 2015');
+    assert.dom('.filter-values--date-range-input__high-value').hasText('Nov 18, 2015', 'The end date is Nov 18, 2015');
+
+    //collapse filters
+    await click('.report-builder__container-header__filters-toggle');
+    assert.dom('.filter-collection').hasText('Date Time (Day) between Nov 18, 2015', 'Collapsed range is Nov 18, 2015');
+    //expand filters
+    await click('.filter-collection--collapsed');
+
+    await click('.navi-report__run-btn');
+
+    assert.dom('.navi-info-message__error-list').doesNotExist('No error if dates are equal');
+
+    //start date 1 day beyond end date
+    await clickTrigger('.filter-values--date-range-input__low-value');
+    await click('.ember-power-calendar-day[data-date="2015-11-19"]');
+
+    assert.dom('.filter-values--date-range-input__low-value').hasText('Nov 19, 2015', 'The start date is Nov 19, 2015');
+    assert
+      .dom('.filter-values--date-range-input__high-value')
+      .hasText('Nov 18, 2015', 'The end date is still Nov 18, 2015');
+
+    //collapse filters
+    await click('.report-builder__container-header__filters-toggle');
+    assert
+      .dom('.filter-collection')
+      .hasText('Date Time (Day) between Nov 19, 2015 - Nov 18, 2015', 'Collapsed range is Nov 19, 2015 - Nov 18, 2015');
+    //expand filters
+    await click('.filter-collection--collapsed');
+
+    await click('.navi-report__run-btn');
+
+    assert
+      .dom('.navi-info-message__error-list')
+      .hasText(
+        'The start date should be before end date',
+        '"The start date should be before end date" error is rendered when start date is 1 day beyond end date'
+      );
+
+    //select month grain
+    await clickItem('timeGrain', 'Month');
+
+    assert.dom('.filter-values--date-range-input__low-value').hasText('Nov 2015', 'The start date is month Nov 2015');
+    assert.dom('.filter-values--date-range-input__high-value').hasText('Nov 2015', 'The end date is month Nov 2015');
+
+    await click('.navi-report__run-btn');
+
+    assert.dom('.navi-info-message__error-list').doesNotExist('No error if months are equal');
+
+    await clickTrigger('.filter-values--date-range-input__low-value');
+    await click($('.ember-power-calendar-selector-month:contains(Dec)')[0]);
+
+    await click('.navi-report__run-btn');
+
+    assert
+      .dom('.navi-info-message__error-list')
+      .hasText(
+        'The start date should be before end date',
+        '"The start date should be before end date" error is rendered when start month is 1 month beyond end month'
+      );
+
+    await clickTrigger('.filter-values--date-range-input__high-value');
+    await click($('.ember-power-calendar-selector-month:contains(Dec)')[0]);
+
+    await click('.navi-report__run-btn');
+
+    assert.dom('.navi-info-message__error-list').doesNotExist('No error if months are equal');
+  });
+
   test('Date picker all timegrain', async function(assert) {
     assert.expect(5);
 
