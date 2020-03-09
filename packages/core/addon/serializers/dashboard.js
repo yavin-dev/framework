@@ -1,5 +1,5 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -20,6 +20,16 @@ export default AssetSerializer.extend({
       return this._super(type, newPayload);
     }
     return this._super(...arguments);
+  },
+
+  serialize(snapshot) {
+    const filterSources = snapshot.attr('filters').map(filter => filter.attr('dimension').source);
+    const dashboard = this._super(...arguments);
+    dashboard.data.attributes.filters = dashboard.data.attributes.filters.map((filter, i) => {
+      filter.dimension = filterSources[i] ? `${filterSources[i]}.${filter.dimension}` : filter.dimension;
+      return filter;
+    });
+    return dashboard;
   },
 
   /**

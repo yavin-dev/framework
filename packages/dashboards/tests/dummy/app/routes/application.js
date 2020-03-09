@@ -1,7 +1,5 @@
-import { hash } from 'rsvp';
 import { inject as service } from '@ember/service';
 import Route from '@ember/routing/route';
-import { get } from '@ember/object';
 
 export default Route.extend({
   user: service(),
@@ -12,9 +10,10 @@ export default Route.extend({
   bardMetadata: service(),
 
   model() {
-    return hash({
-      user: get(this, 'user').findOrRegister(),
-      metadata: get(this, 'bardMetadata').loadMetadata()
-    }).then(() => undefined);
+    return Promise.all([
+      this.user.findOrRegister(),
+      this.bardMetadata.loadMetadata(),
+      this.bardMetadata.loadMetadata({ dataSourceName: 'blockhead' })
+    ]);
   }
 });

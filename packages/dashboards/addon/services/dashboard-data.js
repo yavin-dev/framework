@@ -12,6 +12,7 @@ import { computed } from '@ember/object';
 import { v1 } from 'ember-uuid';
 import config from 'ember-get-config';
 import { isForbidden } from 'navi-core/helpers/is-forbidden';
+import { getDefaultDataSourceName } from 'navi-data/utils/adapter';
 
 const FETCH_MAX_CONCURRENCY = config.navi.widgetsRequestsMaxConcurrency || Infinity;
 
@@ -108,6 +109,8 @@ export default class DashboardDataService extends Service {
       options.customHeaders = {
         uiView: `dashboard.${dashboardId}.${uuid}.${widgetId}`
       };
+
+      options.dataSourceName = request.dataSource || getDefaultDataSourceName();
 
       const requestWithFilters = this._applyFilters(dashboard, request);
       const requestDecorated = this._decorate(decorators, requestWithFilters.serialize());
@@ -238,6 +241,6 @@ export default class DashboardDataService extends Service {
   _isFilterValid(request, filter) {
     const validDimensions = get(request, 'logicalTable.timeGrain.dimensionIds');
 
-    return validDimensions.includes(get(filter, 'dimension.name'));
+    return filter.dimension.source === request.dataSource && validDimensions.includes(get(filter, 'dimension.name'));
   }
 }

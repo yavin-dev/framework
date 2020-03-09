@@ -30,7 +30,7 @@ module('Acceptance | Add New Widget', function(hooks) {
     await visit('/dashboards/1/');
     assert.dom('.navi-widget').exists({ count: 3 }, 'dashboard 1 initially has 3 widgets');
 
-    const NEW_WIDGET_ID = 7;
+    const NEW_WIDGET_ID = 10;
 
     assert.notOk(!!findAll(`[data-gs-id="${NEW_WIDGET_ID}"]`).length, '4th widget is not present');
 

@@ -44,7 +44,7 @@ module('Unit | Controller | dashboards/dashboard/view', function(hooks) {
         {
           queryParams: {
             filters:
-              'EQbwOsBmCWA2AuBTATgZwgLgNrmAE2gFtEA7VaAexMwgvWABpaAHFAQ3guRuGmsYgA3NrACuietggBZNgGMA8gGUITYAHU-eCgHd6AXTUxEsPD2hngAX31XgQAA'
+              'EQbwOsBmCWA2AuBTATgZwgLgNrmAE2gFtEA7VaAexMwgvWABpaAHFAQ3guRuGmsYgA3NrACuietggBZNgGMA8gGUITYAHU-eCgHd6AXTUxEsPD2hmB-DmyUVRyOYh55RhQgE8IAX33fgQAAA'
           }
         },
         'Updating the filter sets the filters query param to the expected compressed string'
@@ -59,7 +59,8 @@ module('Unit | Controller | dashboards/dashboard/view', function(hooks) {
               dimension: 'os',
               field: 'id',
               operator: 'in',
-              values: ['MacOS', 'Windows']
+              values: ['MacOS', 'Windows'],
+              dataSource: 'dummy'
             }
           ]
         },
@@ -143,5 +144,97 @@ module('Unit | Controller | dashboards/dashboard/view', function(hooks) {
     };
 
     await controller.send('addFilter', dashboard, { dimension: 'age' });
+  });
+
+  test('Add filter from other datasource', async function(assert) {
+    assert.expect(2);
+    await MetadataService.loadMetadata({ dataSourceName: 'blockhead' });
+    let author = await Store.findRecord('user', 'navi_user'),
+      dashboard = Store.createRecord('dashboard', {
+        title: 'Test Dashboard',
+        author
+      });
+
+    controller.transitionToRoute = async (destination, transition) => {
+      assert.deepEqual(
+        transition,
+        {
+          queryParams: {
+            filters:
+              'EQbwOsBmCWA2AuBTATgZwgLgNrmAE2gFtEA7VaAexMwgGMr4BDaElCAGggoAcVH4KyGsBYcIAN0awAronTBsAXU5RoiWHmHRNwFXn6MAyhWnJaiYQCNYFWgGsAFokY6AvotfAgAA'
+          }
+        },
+        'Adding a filter sets the filters query param to the expected compressed string'
+      );
+
+      const decompressed = await compression.decompress(transition.queryParams.filters);
+      assert.deepEqual(
+        decompressed,
+        {
+          filters: [
+            {
+              dimension: 'container',
+              operator: 'in',
+              values: [],
+              field: 'id',
+              dataSource: 'blockhead'
+            }
+          ]
+        },
+        'The filter decompresses correctly to an array with a valueless filter'
+      );
+    };
+
+    await controller.send('addFilter', dashboard, { dimension: 'container', dataSource: 'blockhead' });
+  });
+
+  test('Updating multidatasource filter', async function(assert) {
+    assert.expect(2);
+    await MetadataService.loadMetadata({ dataSourceName: 'blockhead' });
+    const containerFilter = Store.createFragment('bard-request/fragments/filter', {
+      dimension: MetadataService.getById('dimension', 'container', 'blockhead'),
+      operator: 'in',
+      fiel: 'id',
+      values: []
+    });
+    let author = await Store.findRecord('user', 'navi_user'),
+      dashboard = Store.createRecord('dashboard', {
+        title: 'Test Dashboard',
+        author
+      });
+
+    dashboard.filters.pushObject(containerFilter);
+
+    controller.transitionToRoute = async (destination, transition) => {
+      assert.deepEqual(
+        transition,
+        {
+          queryParams: {
+            filters:
+              'EQbwOsBmCWA2AuBTATgZwgLgNrmAE2gFtEA7VaAexMwgGMr4BDaElCAGggoAcVH4KyGsBYcIAN0awAronTBsEAIwQAupyjREsPMOi7gGvP0YBlCtOS1EwgEawKtANYALRIwMBfVZ-BAAAA'
+          }
+        },
+        'Adding a filter sets the filters query param to the expected compressed string'
+      );
+
+      const decompressed = await compression.decompress(transition.queryParams.filters);
+      assert.deepEqual(
+        decompressed,
+        {
+          filters: [
+            {
+              dimension: 'container',
+              operator: 'in',
+              values: ['1'],
+              field: 'id',
+              dataSource: 'blockhead'
+            }
+          ]
+        },
+        'The filter decompresses correctly to an array with updated values'
+      );
+    };
+
+    await controller.send('updateFilter', dashboard, containerFilter, { rawValues: ['1'] });
   });
 });
