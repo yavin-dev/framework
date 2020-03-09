@@ -58,7 +58,7 @@ module('Integration | Component | navi-request-column-config/metric', function(h
       { instantiate: false }
     );
     await render(hbs`
-      <NaviRequestColumnConfig::Base
+      <NaviColumnConfig::Base
         @column={{editingColumn}} 
         @metadata={{metadata}}
         @onClose={{action onClose}}

@@ -25,7 +25,7 @@ module('Integration | Component | navi-request-column-config/base', function(hoo
     });
 
     await render(hbs`
-      <NaviRequestColumnConfig::Base 
+      <NaviColumnConfig::Base 
         @column={{column}} 
         @metadata={{metadata}}
         @onClose={{action onClose}}

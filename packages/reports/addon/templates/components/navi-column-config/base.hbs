@@ -18,7 +18,7 @@
       />
     </div>
 
-    {{#let (component (concat "navi-request-column-config/" (dasherize @column.type))) 
+    {{#let (component (concat "navi-column-config/" (dasherize @column.type))) 
         as | ColumnConfig |
     }}
       <ColumnConfig

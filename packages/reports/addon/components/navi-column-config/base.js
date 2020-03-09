@@ -1,11 +1,11 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Description: Navi Request Column Config Base Component
  *
  * Usage:
- *  <NaviRequestColumnConfig::Base
+ *  <NaviColumnConfig::Base
  *    @column={{editingColumn}}
  *    @metadata={{visualization.metadata}}
  *    @onClose={{action "onClose"}}
@@ -14,7 +14,7 @@
  */
 import Component from '@ember/component';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
-import layout from '../../templates/components/navi-request-column-config/base';
+import layout from '../../templates/components/navi-column-config/base';
 
 @tagName('')
 @templateLayout(layout)
