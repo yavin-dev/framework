@@ -1,11 +1,12 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { inject as service } from '@ember/service';
 import { get } from '@ember/object';
 import ActionConsumer from 'navi-core/consumers/action-consumer';
 import { RequestActions } from 'navi-reports/services/request-action-dispatcher';
+import { featureFlag } from 'navi-core/helpers/feature-flag';
 
 export default ActionConsumer.extend({
   /**
@@ -81,6 +82,13 @@ export default ActionConsumer.extend({
      */
     [RequestActions.ADD_METRIC_FILTER](route, metric, parameters) {
       // Metric filter can't exist without the metric present in the request
+
+      if (featureFlag('enableRequestPreview') && route.currentModel.request.metrics.mapBy('metric').includes(metric)) {
+        // When adding a metric filter with the requestPreview, users can add multiple of the same metric
+        // So if the metric already exists we assume they don't want to add it again
+        return;
+      }
+
       if (parameters) {
         get(this, 'requestActionDispatcher').dispatch(RequestActions.ADD_METRIC_WITH_PARAM, route, metric, parameters);
       } else {

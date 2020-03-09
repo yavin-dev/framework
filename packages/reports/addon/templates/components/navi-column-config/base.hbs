@@ -1,31 +1,42 @@
-{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<div class="navi-request-column-config" ...attributes>
-  <div class="navi-request-column-config__header">
-    <span class="navi-request-column-config__header-label">Column Configuration</span>
-    <span class="navi-request-column-config__header-icons">
-      <NaviIcon @icon="star-o" class="navi-request-column-config__star-icon" role="button"/>
-      <NaviIcon @icon="times" class="navi-request-column-config__exit-icon" role="button" {{action this.onClose}}/>
-    </span>
-  </div>
-  <div class="navi-request-column-config__body">
-    <div class="navi-request-column-config__option navi-request-column-config__column-name">
-      <label for="columnName" class="navi-request-column-config__column-name-label navi-request-column-config__option-label">Column Name</label>
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<div class="navi-column-config-base" ...attributes>
+  <div class="navi-column-config-base__body">
+  {{#if (or (eq @column.type "metric") (eq @column.type "dimension"))}}
+    <div class="navi-column-config-base__option navi-column-config-base-type">
+      <div class="navi-column-config-base__header">
+        <label for="{{this.classId}}-base-type-input" class="navi-column-config-base__base-type-label navi-column-config-base__option-label">Base {{capitalize @column.type}}</label>
+        <span class="navi-column-config-base__header-icons">
+          <NaviIcon @icon="star-o" class="navi-column-config-base__star-icon" role="button" />
+          <NaviIcon @icon="clone" class="navi-column-config-base__clone-icon" role="button" {{on "click" @cloneColumn}} />
+          <NaviIcon @icon="filter" class="navi-column-config-base__filter-icon" role="button" {{on "click" @toggleColumnFilter}} />
+        </span>
+      </div>
+      <Input
+        class="navi-column-config-base__base-type-input navi-column-config-base__option-input"
+        id="{{this.classId}}-base-type-input"
+        @disabled={{true}}
+        @value={{get @column.fragment (concat @column.type ".name")}}
+        @key-up={{@onUpdateColumnName}}
+      />
+    </div>
+  {{/if}}
+
+    <div class="navi-column-config-base__option navi-column-config-base__column-name">
+      <label for="{{this.classId}}-column-name-input" class="navi-column-config-base__column-name-label navi-column-config-base__option-label">Column Name</label>
       <Input 
-        class="navi-request-column-config__column-name-input navi-request-column-config__option-input"
-        @id="columnName" 
+        class="navi-column-config-base__column-name-input navi-column-config-base__option-input"
+        id="{{this.classId}}-column-name-input" 
         @value={{@column.displayName}}
-        @key-up={{action @onUpdateColumnName}}
+        @key-up={{@onUpdateColumnName}}
       />
     </div>
 
-    {{#let (component (concat "navi-column-config/" (dasherize @column.type))) 
-        as | ColumnConfig |
-    }}
+    {{#let (component (concat "navi-column-config/" (dasherize @column.type))) as |ColumnConfig|}}
       <ColumnConfig
         @column={{@column}} 
         @metadata={{@metadata}}
-        @onClose={{action @onClose}}
-        @onUpdateColumnName={{action @onUpdateColumnName}}
+        @onClose={{@onClose}}
+        @onUpdateColumnName={{@onUpdateColumnName}}
         @onUpdateMetricParam={{update-report-action "UPDATE_METRIC_PARAM"}}
       />
     {{/let}}

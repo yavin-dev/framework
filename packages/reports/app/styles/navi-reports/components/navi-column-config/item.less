@@ -1,0 +1,63 @@
+/**
+ * Copyright 2020, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
+
+.navi-column-config-item {
+  margin-left: 15px;
+  border-bottom: 1px solid @denali-gray-300;
+  z-index: 2;
+
+  &__header {
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  &__trigger {
+    cursor: pointer;
+    align-items: center;
+    display: flex;
+    flex: 1;
+    padding: 10px 0;
+    text-align: left;
+  }
+
+  &__name {
+    font-family: @font-family-sans-serif;
+    font-size: @font-size-base;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__dropdown-icon {
+    .navi-column-config-icon;
+    font-size: @font-size-mid;
+    margin-right: 20px;
+    transition: transform 100ms;
+  }
+
+  &__remove-icon {
+    .navi-column-config-icon;
+    font-size: @font-size-base-large;
+    text-align: center;
+    width: 40px;
+  }
+
+  &--open {
+    .navi-column-config-item__name {
+      font-weight: bold;
+    }
+
+    .navi-column-config-item__header {
+      border-bottom: none;
+    }
+
+    .navi-column-config-item__dropdown-icon {
+      transform: rotate(90deg);
+    }
+  }
+}

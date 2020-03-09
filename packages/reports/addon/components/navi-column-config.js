@@ -45,19 +45,22 @@ class NaviColumnConfig extends Component {
   /**
    * @property {Object[]} columns - date time (if not all), dimension, and metric columns from the request
    */
-  @computed('report.request.{metrics.[],dimensions.[],logicalTable.timeGrain}')
+  @computed('report.request.{metrics.@each.parameters,dimensions.[],logicalTable.timeGrain}')
   get columns() {
     const {
-      metrics,
-      dimensions,
-      logicalTable: { timeGrain }
-    } = this.report.request;
+      request: {
+        metrics,
+        dimensions,
+        logicalTable: { timeGrain }
+      },
+      visualization
+    } = this.report;
 
     const dimensionColumns = dimensions.toArray().map(dimension => {
       return {
         type: 'dimension',
         name: dimension.dimension.name,
-        displayName: this.getDisplayName(dimension, 'dimension'),
+        displayName: this.getDisplayName(dimension, 'dimension', visualization),
         fragment: dimension
       };
     });
@@ -65,7 +68,7 @@ class NaviColumnConfig extends Component {
       return {
         type: 'metric',
         name: metric.canonicalName,
-        displayName: this.getDisplayName(metric, 'metric'),
+        displayName: this.getDisplayName(metric, 'metric', visualization),
         fragment: metric
       };
     });
@@ -76,7 +79,7 @@ class NaviColumnConfig extends Component {
       columns.unshift({
         type: 'dateTime',
         name: 'dateTime',
-        displayName: this.getDisplayName(timeGrain, 'dateTime'),
+        displayName: this.getDisplayName(timeGrain, 'dateTime', visualization),
         fragment: timeGrain
       });
     }
@@ -91,12 +94,13 @@ class NaviColumnConfig extends Component {
 
   /**
    * @method getDisplayName
-   * @param {Object} asset
-   * @param {String} type
-   * @param {Object} visualization
+   * @param {Object} column - the column being displayed
+   * @param {String} type - the type of column (metric, dimension, dateTime)
+   * @param {Object} visualization - the visualization metadata
    * @returns {String} display name from visualization metadata or default display name for metric, dimension, or Date
    */
-  getDisplayName(asset, type) {
+  getDisplayName(column, type, visualization) {
+    const visMetaData = visualization.metadata.style || {};
     const nameServiceMap = {
       // TODO: Add namespace pararemeter when metricName service supports it
       metric: metric => this.metricName.getDisplayName(metric.serialize()),
@@ -104,7 +108,67 @@ class NaviColumnConfig extends Component {
       dateTime: dateTime => `Date Time (${dateTime.longName})`
     };
 
-    return nameServiceMap[type](asset);
+    const ID_FIELD_MAP = {
+      metric: metric => metric.canonicalName,
+      dimension: dimension => dimension.dimension.name,
+      dateTime: () => 'dateTime'
+    };
+
+    const alias = visMetaData.aliases?.find(alias => alias.name === ID_FIELD_MAP[type](column) && alias.type === type);
+
+    return alias && alias.as ? alias.as : nameServiceMap[type](column);
+  }
+
+  /**
+   * Makes a copy of the metrics parameters e.g { curreny: USD }
+   * @method _cloneMetricParams
+   * @param {Object} metricColumn - a metric column
+   */
+  _cloneMetricParams(metricColumn) {
+    return metricColumn.metric.paramNames.reduce((params, newParam) => {
+      params[newParam] = metricColumn.parameters[newParam];
+      return params;
+    }, {});
+  }
+
+  /**
+   * Adds a copy of the given column to the request including its parameters
+   * @action
+   * @param {Object} column - The metric/dimension column to make a copy of
+   */
+  @action
+  cloneColumn(column) {
+    const { type } = column;
+    const newColumn = column.fragment[type];
+    if (type === 'metric') {
+      if (newColumn.hasParameters) {
+        this.onAddMetricWithParameter?.(newColumn, this._cloneMetricParams(column.fragment));
+      } else {
+        this.onAddMetric?.(newColumn);
+      }
+    } else if (type === 'dimension') {
+      this.onAddDimension?.(newColumn);
+    }
+  }
+
+  /**
+   * Adds/removes a filter for the given column including its parameters
+   * @action
+   * @param {Object} column  - The metric/dimension to add a filter for
+   */
+  @action
+  toggleColumnFilter(column) {
+    const { type } = column;
+    const newColumn = column.fragment[type];
+    if (type === 'metric') {
+      if (newColumn.hasParameters) {
+        this.onToggleParameterizedMetricFilter?.(newColumn, this._cloneMetricParams(column.fragment));
+      } else {
+        this.onToggleMetricFilter?.(newColumn);
+      }
+    } else if (type === 'dimension') {
+      this.onToggleDimFilter?.(newColumn);
+    }
   }
 
   /**

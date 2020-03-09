@@ -1,7 +1,32 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<li class="navi-column-config-item navi-column-config-item--{{column.type}}" ...attributes>
-  <NaviIcon @icon="chevron-right" class="navi-column-config-item__dropdown-icon"/>
-  <span title="{{column.displayName}}" class="navi-column-config-item__name">{{column.displayName}}</span>
-  <button type="button" aria-label="delete {{column.type}} {{column.displayName}}" class="navi-column-config-item__remove-icon" {{on "click" @onRemoveColumn}}>×</button>
-  {{!-- TODO: Use navi-request-column-config components --}}
+<li 
+  class="navi-column-config-item navi-column-config-item--{{column.type}} {{if this.isColumnConfigOpen "navi-column-config-item--open"}}" 
+  ...attributes
+  {{did-insert this.setupElement}}
+>
+  <div class="navi-column-config-item__header">
+    <button
+      class="navi-column-config-item__trigger"
+      type="button"
+      {{on "click" (toggle "isColumnConfigOpen" this)}}
+    >
+      <NaviIcon 
+        class="navi-column-config-item__dropdown-icon"
+        @icon="chevron-right" 
+      />
+      <span title="{{column.displayName}}" class="navi-column-config-item__name">{{column.displayName}}</span>
+    </button>
+  
+    <button type="button" aria-label="delete {{column.type}} {{column.displayName}}" class="navi-column-config-item__remove-icon" {{on "click" @onRemoveColumn}}>×</button>
+  </div>
+
+  {{#if this.isColumnConfigOpen}}
+    <NaviColumnConfig::Base
+      @column={{@column}} 
+      @metadata={{@visualization.metadata}}
+      @cloneColumn={{@cloneColumn}}
+      @toggleColumnFilter={{@toggleColumnFilter}}
+      @onUpdateColumnName={{this.updateColumnName}}
+    />
+  {{/if}}
 </li>

@@ -15,9 +15,17 @@
 import Component from '@ember/component';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
 import layout from '../../templates/components/navi-column-config/base';
+import { guidFor } from '@ember/object/internals';
 
 @tagName('')
 @templateLayout(layout)
-class Base extends Component {}
+class Base extends Component {
+  /**
+   * @property {String} classId - a unique id for this instance of the column config
+   */
+  get classId() {
+    return guidFor(this);
+  }
+}
 
 export default Base;
