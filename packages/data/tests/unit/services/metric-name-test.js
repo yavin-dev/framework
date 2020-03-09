@@ -42,4 +42,27 @@ module('Unit | Service | metric long name', function(hooks) {
       'Service returns a correctly formatted metric name for a parameterized metric'
     );
   });
+
+  test('multi-data source support', async function(assert) {
+    assert.expect(2);
+    const metaData = this.owner.lookup('service:bard-metadata');
+    metaData._keg.reset();
+    await metaData.loadMetadata({ dataSourceName: 'blockhead' });
+
+    let service = this.owner.lookup('service:metric-name');
+
+    assert.equal(
+      service.getDisplayName({ metric: 'adClicks', parameters: {} }, 'blockhead'),
+      'Ad Clicks',
+      'Service returns the long name for a non parameterized metric'
+    );
+
+    assert.equal(
+      service.getLongName('revenue', 'blockhead'),
+      'Revenue',
+      'Service can succesfully retrieve the long name for a valid metric'
+    );
+
+    metaData._keg.reset();
+  });
 });

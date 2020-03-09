@@ -142,6 +142,68 @@ const DATA2 = [
       totalPageViews: 289431575
     }
   ],
+  DATA3 = [
+    {
+      dateTime: '2016-01-01 00:00:00.000',
+      'age|desc': 'Not Available',
+      totalPageViews: 176267792438
+    },
+    {
+      dateTime: '2016-01-01 00:00:00.000',
+      'age|desc': 'Not Available',
+      totalPageViews: 76735188
+    },
+    {
+      dateTime: '2016-01-01 00:00:00.000',
+      'age|desc': 'Not Available',
+      totalPageViews: 74621538
+    },
+    {
+      dateTime: '2016-01-01 00:00:00.000',
+      'age|desc': 'under 13',
+      totalPageViews: 2306935
+    },
+    {
+      dateTime: '2016-01-01 00:00:00.000',
+      'age|desc': 'under 13',
+      totalPageViews: 158591335
+    },
+    {
+      dateTime: '2016-01-01 00:00:00.000',
+      'age|desc': 'under 13',
+      totalPageViews: 293462742
+    },
+    {
+      dateTime: '2016-01-02 00:00:00.000',
+      'age|desc': 'Not Available',
+      totalPageViews: 163354994741
+    },
+    {
+      dateTime: '2016-01-02 00:00:00.000',
+      'age|desc': 'Not Available',
+      totalPageViews: 74006011
+    },
+    {
+      dateTime: '2016-01-02 00:00:00.000',
+      'age|desc': 'Not Available',
+      totalPageViews: 72011227
+    },
+    {
+      dateTime: '2016-01-02 00:00:00.000',
+      'age|desc': 'under 13',
+      totalPageViews: 5630202
+    },
+    {
+      dateTime: '2016-01-02 00:00:00.000',
+      'age|desc': 'under 13',
+      totalPageViews: 156664890
+    },
+    {
+      dateTime: '2016-01-02 00:00:00.000',
+      'age|desc': 'under 13',
+      totalPageViews: 289431575
+    }
+  ],
   REQUEST = {
     logicalTable: {
       timeGrain: 'day'
@@ -151,7 +213,8 @@ const DATA2 = [
         start: '2016-05-30 00:00:00.000',
         end: '2016-06-02 00:00:00.000'
       }
-    ]
+    ],
+    dataSource: 'dummy'
   },
   REQUEST2 = {
     logicalTable: {
@@ -162,7 +225,20 @@ const DATA2 = [
         start: 'P2D',
         end: '2016-01-03 00:00:00.000'
       }
-    ]
+    ],
+    dataSource: 'dummy'
+  },
+  REQUEST3 = {
+    logicalTable: {
+      timeGrain: 'day'
+    },
+    intervals: [
+      {
+        start: 'P2D',
+        end: '2016-01-03 00:00:00.000'
+      }
+    ],
+    dataSource: 'blockhead'
   };
 
 module('Unit | Chart Builders | Dimension', function() {
@@ -638,5 +714,48 @@ module('Unit | Chart Builders | Dimension', function() {
     assert.equal(get(tooltip, 'layout'), TooltipTemplate, 'Tooltip uses dimension tooltip template');
 
     assert.deepEqual(get(tooltip, 'rowData'), [DATA[1]], 'The correct response row is given to the tooltip');
+  });
+
+  test('group by dimension with when id is not present', function(assert) {
+    let config = {
+      metric: {
+        metric: 'totalPageViews',
+        parameters: {},
+        canonicalName: 'totalPageViews'
+      },
+      dimensionOrder: ['age'],
+      dimensions: [
+        {
+          name: 'Not Available',
+          values: { age: 'Not Available' }
+        },
+        {
+          name: 'Under 13',
+          values: { age: 'under 13' }
+        }
+      ]
+    };
+    assert.deepEqual(
+      DimensionChartBuilder.buildData(DATA3, config, REQUEST3),
+      [
+        {
+          'Not Available': 176267792438,
+          'Under 13': 2306935,
+          x: {
+            displayValue: 'Jan 1',
+            rawValue: '2016-01-01 00:00:00.000'
+          }
+        },
+        {
+          'Not Available': 163354994741,
+          'Under 13': 5630202,
+          x: {
+            displayValue: 'Jan 2',
+            rawValue: '2016-01-02 00:00:00.000'
+          }
+        }
+      ],
+      'Data is built correctly when dimension has no id field'
+    );
   });
 });

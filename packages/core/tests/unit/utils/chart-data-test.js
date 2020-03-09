@@ -12,7 +12,7 @@ import { buildTestRequest } from '../../helpers/request';
 
 module('Unit | Utils | Chart Data', function() {
   test('groupDataByDimensions', function(assert) {
-    assert.expect(1);
+    assert.expect(2);
 
     let rows = [
         {
@@ -56,6 +56,42 @@ module('Unit | Utils | Chart Data', function() {
       dataGroup = groupDataByDimensions(rows, config);
 
     assert.deepEqual(dataGroup.getDataForKey('1'), expectedDataGroup, 'groupDataByDimensions groups data as expected');
+
+    assert.deepEqual(
+      groupDataByDimensions(
+        [
+          {
+            'foo|desc': 'foo',
+            metricName: 123
+          },
+          {
+            'foo|desc': 'bar',
+            metricName: 321
+          }
+        ],
+        {
+          metric: 'metricName',
+          dimensionOrder: ['foo'],
+          dimensions: [
+            {
+              name: 'foo',
+              values: { foo: 'foo' }
+            },
+            {
+              name: 'bar',
+              values: { foo: 'bar' }
+            }
+          ]
+        }
+      ).getDataForKey('bar'),
+      [
+        {
+          'foo|desc': 'bar',
+          metricName: 321
+        }
+      ],
+      "Still can group even if identifier field isn't present"
+    );
   });
 
   test('buildSeriesKey', function(assert) {

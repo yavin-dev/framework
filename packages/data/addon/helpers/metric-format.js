@@ -13,6 +13,7 @@ import { hasParameters } from '../utils/metric';
 import { get } from '@ember/object';
 import { isPresent } from '@ember/utils';
 import Helper from '@ember/component/helper';
+import { getDefaultDataSourceName } from 'navi-data/utils/adapter';
 
 export default Helper.extend({
   /**
@@ -25,7 +26,7 @@ export default Helper.extend({
    * @param metric - serialized bard-request metric fragment
    * @returns {string} - formatted metric
    */
-  compute([metric /*...rest*/]) {
+  compute([metric, namespace = getDefaultDataSourceName() /*...rest*/]) {
     let longName = '--';
     if (!metric) {
       return longName;
@@ -33,7 +34,7 @@ export default Helper.extend({
 
     let metricId = get(metric, 'metric');
     if (isPresent(metricId)) {
-      longName = get(this, 'metricName').getLongName(metricId);
+      longName = get(this, 'metricName').getLongName(metricId, namespace);
     }
     return metricFormat(metric, longName);
   }

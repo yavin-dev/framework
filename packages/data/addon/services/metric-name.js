@@ -18,8 +18,8 @@ export default Service.extend({
    * @param {String} metricId - base metric name for a metric
    * @returns {String} - long name for the metric from the metadata
    */
-  getLongName(metricId) {
-    return get(this, 'metricMeta').getMetaField('metric', metricId, 'longName', metricId);
+  getLongName(metricId, namespace) {
+    return get(this, 'metricMeta').getMetaField('metric', metricId, 'longName', metricId, namespace);
   },
 
   /**
@@ -27,9 +27,9 @@ export default Service.extend({
    * @param {Object} metricObject - object with metric and parameter properties
    * @returns {String} formatted metric display name
    */
-  getDisplayName(metricObject) {
+  getDisplayName(metricObject, namespace) {
     let metricId = get(metricObject, 'metric'),
-      longName = this.getLongName(metricId);
+      longName = this.getLongName(metricId, namespace);
 
     return metricFormat(metricObject, longName);
   }

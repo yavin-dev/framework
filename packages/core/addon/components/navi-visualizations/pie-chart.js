@@ -56,14 +56,16 @@ class NaviVisualizationsPieChartComponent extends Component.extend(hasChartBuild
   @alias('model.firstObject.request') request;
 
   /**
+   * @property {String} namespace - meta data namespace to use
+   */
+  @alias('request.dataSource') namespace;
+
+  /**
    * @property {Object} builder - builder based on series type
    */
   @computed('seriesType')
   get builder() {
-    const {
-      seriesType: type,
-      chartBuilders: builders
-    } = this;
+    const { seriesType: type, chartBuilders: builders } = this;
 
     return builders[type];
   }
@@ -98,11 +100,11 @@ class NaviVisualizationsPieChartComponent extends Component.extend(hasChartBuild
   /**
    * @property {String} metricDisplayName - display name for metric
    */
-  @computed('options')
+  @computed('options', 'namespace')
   get metricDisplayName() {
     let metric = get(this, 'seriesConfig.metric');
 
-    return metric && get(this, 'metricName').getDisplayName(metric);
+    return metric && get(this, 'metricName').getDisplayName(metric, this.namespace);
   }
 
   /**

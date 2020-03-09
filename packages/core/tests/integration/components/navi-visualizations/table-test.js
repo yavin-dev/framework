@@ -1,7 +1,7 @@
 import config from 'ember-get-config';
 import { set } from '@ember/object';
 import { A as arr } from '@ember/array';
-import { merge } from 'lodash-es';
+import { merge, cloneDeep } from 'lodash-es';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, settled, click, find, findAll } from '@ember/test-helpers';
@@ -147,6 +147,7 @@ module('Integration | Component | table', function(hooks) {
 
   hooks.afterEach(function() {
     config.navi.FEATURES.enableVerticalCollectionTableIterator = false;
+    return this.owner.lookup('service:bard-metadata')._keg.reset();
   });
 
   test('it renders', async function(assert) {
@@ -180,6 +181,28 @@ module('Integration | Component | table', function(hooks) {
         ['05/30/2016', 'Unknown', '155,191,081', '3,072,620,639', '--']
       ],
       'The table renders the response dataset correctly'
+    );
+  });
+
+  test('render alternative datasource', async function(assert) {
+    assert.expect(2);
+    const bardMeta = this.owner.lookup('service:bard-metadata');
+    bardMeta._keg.reset();
+    await bardMeta.loadMetadata({ dataSourceName: 'blockhead' });
+    const blockheadModel = cloneDeep(Model[0]);
+    blockheadModel.request.dataSource = 'blockhead';
+    this.set('model', arr([blockheadModel]));
+
+    await render(TEMPLATE);
+
+    assert.dom('.table-widget').isVisible('The table widget component is visible');
+
+    let headers = findAll('.table-header-row-vc--view .table-header-cell').map(el => el.textContent.trim());
+
+    assert.deepEqual(
+      headers,
+      ['Date', 'Operating System', 'Unique Identifiers', 'Total Page Views', 'Platform Revenue (USD)'],
+      'The table renders the headers correctly based on the request'
     );
   });
 

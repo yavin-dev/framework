@@ -43,4 +43,21 @@ module('helper:metric-format', function(hooks) {
     this.set('metric', { metric: 'foo' });
     assert.dom().hasText('foo');
   });
+
+  test('multi-datasource support', async function(assert) {
+    assert.expect(1);
+    const metaData = this.owner.lookup('service:bard-metadata');
+    metaData._keg.reset();
+    await metaData.loadMetadata({ dataSourceName: 'blockhead' });
+
+    this.set('metric', {
+      metric: 'revenue',
+      parameters: { currency: 'USD', as: 'revenueUSD' }
+    });
+
+    await render(hbs`{{metric-format metric 'blockhead'}}`);
+    assert.dom().hasText('Revenue (USD)');
+
+    metaData._keg.reset();
+  });
 });

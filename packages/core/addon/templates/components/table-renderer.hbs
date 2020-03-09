@@ -8,7 +8,7 @@
             <Input
               class="table-header-cell__input"
               @value={{readonly column.displayName}}
-              @placeholder={{default-column-name column}}
+              @placeholder={{default-column-name column @request.dataSource}}
               @focus-out={{fn @updateColumnDisplayName column}}
             />
             {{#if (or (eq column.type "metric") (eq column.type "threshold"))}}

@@ -1,10 +1,11 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { A as arr } from '@ember/array';
 import { get } from '@ember/object';
 import DataGroup from 'navi-core/utils/classes/data-group';
+import { bestDimensionField } from 'navi-core/utils/data';
 
 export const METRIC_SERIES = 'metric';
 export const DIMENSION_SERIES = 'dimension';
@@ -20,7 +21,9 @@ export const DATE_TIME_SERIES = 'dateTime';
  */
 export function groupDataByDimensions(rows, config) {
   let dimensionOrder = config.dimensionOrder,
-    byDimensions = new DataGroup(rows, row => dimensionOrder.map(dimension => row[`${dimension}|id`]).join('|'));
+    byDimensions = new DataGroup(rows, row =>
+      dimensionOrder.map(dimension => row[bestDimensionField([row], dimension)]).join('|')
+    );
 
   return byDimensions;
 }
@@ -121,7 +124,7 @@ export function buildDimensionSeriesValues(request, rows) {
       let id = get(row, `${dimension}|id`),
         desc = get(row, `${dimension}|desc`);
 
-      values[dimension] = id;
+      values[dimension] = id || desc;
       dimensionLabels.push(desc || id);
     });
 

@@ -100,6 +100,10 @@ module('Integration | Component | line chart', function(hooks) {
     return MetadataService.loadMetadata();
   });
 
+  hooks.afterEach(function() {
+    MetadataService._keg.reset();
+  });
+
   test('it renders', async function(assert) {
     assert.expect(2);
 
@@ -619,6 +623,113 @@ module('Integration | Component | line chart', function(hooks) {
     });
 
     this.set('model', Model);
+    await render(TEMPLATE);
+
+    assert.deepEqual(
+      findAll('.c3-legend-item').map(el => el.textContent),
+      ['Unique Identifiers', 'Total Page Views', 'Revenue (USD)'],
+      'Metric display names are used properly for parameterized and non-parameterized metrics in the legend'
+    );
+  });
+
+  test('multi-datasource labels', async function(assert) {
+    MetadataService._keg.reset();
+    await MetadataService.loadMetadata({ dataSourceName: 'blockhead' });
+
+    assert.expect(1);
+
+    this.set('options', {
+      axis: {
+        y: {
+          series: {
+            type: 'metric',
+            config: {
+              metrics: [
+                {
+                  metric: 'uniqueIdentifier',
+                  canonicalName: 'uniqueIdentifier',
+                  toJSON() {
+                    return this;
+                  }
+                },
+                {
+                  metric: 'totalPageViews',
+                  canonicalName: 'totalPageViews',
+                  toJSON() {
+                    return this;
+                  }
+                },
+                {
+                  metric: 'revenue',
+                  parameters: {
+                    currency: 'USD'
+                  },
+                  canonicalName: 'revenue(currency=USD)',
+                  toJSON() {
+                    return this;
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    });
+
+    this.set(
+      'model',
+      A([
+        {
+          request: {
+            metrics: ['uniqueIdentifier', 'totalPageViews', 'revenue(currency=USD)'],
+            intervals: [
+              {
+                start: '2016-05-30 00:00:00.000',
+                end: '2016-06-04 00:00:00.000'
+              }
+            ],
+            logicalTable: {
+              timeGrain: 'day'
+            },
+            dataSource: 'blockhead'
+          },
+          response: {
+            rows: [
+              {
+                dateTime: '2016-05-30 00:00:00.000',
+                uniqueIdentifier: 172933788,
+                totalPageViews: 3669828357,
+                'revenue(currency=USD)': 2000323439.23
+              },
+              {
+                dateTime: '2016-05-31 00:00:00.000',
+                uniqueIdentifier: 183206656,
+                totalPageViews: 4088487125,
+                'revenue(currency=USD)': 1999243823.74
+              },
+              {
+                dateTime: '2016-06-01 00:00:00.000',
+                uniqueIdentifier: 183380921,
+                totalPageViews: 4024700302,
+                'revenue(currency=USD)': 1400324934.92
+              },
+              {
+                dateTime: '2016-06-02 00:00:00.000',
+                uniqueIdentifier: 180559793,
+                totalPageViews: 3950276031,
+                'revenue(currency=USD)': 923843934.11
+              },
+              {
+                dateTime: '2016-06-03 00:00:00.000',
+                uniqueIdentifier: 172724594,
+                totalPageViews: 3697156058,
+                'revenue(currency=USD)': 1623430236.42
+              }
+            ]
+          }
+        }
+      ])
+    );
     await render(TEMPLATE);
 
     assert.deepEqual(
