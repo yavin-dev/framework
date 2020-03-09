@@ -4,6 +4,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, click, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { fillInSync } from '../../helpers/fill-in-sync';
+import config from 'ember-get-config';
 
 module('Integration | Component | navi list selector', function(hooks) {
   setupRenderingTest(hooks);
@@ -71,7 +72,27 @@ module('Integration | Component | navi list selector', function(hooks) {
   });
 
   test('show all/show selected', async function(assert) {
-    assert.expect(8);
+    assert.expect(9);
+
+    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
+
+    config.navi.FEATURES.enableRequestPreview = false;
+
+    await render(hbs`
+          {{#navi-list-selector
+              title='Items'
+              items=items
+              searchField='field'
+              selected=selected
+              as | items areItemsFiltered |
+          }}
+              {{#each items as | item |}}
+                  <li class='test-item {{if areItemsFiltered 'test-item__filtered'}}'>
+                    {{item.field}}
+                  </li>
+              {{/each}}
+          {{/navi-list-selector}}
+      `);
 
     assert
       .dom('.navi-list-selector__show-link')
@@ -114,6 +135,30 @@ module('Integration | Component | navi list selector', function(hooks) {
     assert
       .dom('.navi-list-selector__content--error')
       .hasText('No items selected', 'No items selected error message is displayed when no items are selected');
+
+    config.navi.FEATURES.enableRequestPreview = true;
+
+    await render(hbs`
+          {{#navi-list-selector
+              title='Items'
+              items=items
+              searchField='field'
+              selected=selected
+              as | items areItemsFiltered |
+          }}
+              {{#each items as | item |}}
+                  <li class='test-item {{if areItemsFiltered 'test-item__filtered'}}'>
+                    {{item.field}}
+                  </li>
+              {{/each}}
+          {{/navi-list-selector}}
+      `);
+
+    assert
+      .dom('.navi-list-selector__show-link')
+      .doesNotExist('Show Selected toggle is hidden if enableRequestPreview flag is turned on');
+
+    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
   });
 
   test('search', async function(assert) {

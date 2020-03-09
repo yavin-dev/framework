@@ -15,6 +15,7 @@ import {
   clickShowSelected,
   renderAll
 } from 'navi-reports/test-support/report-builder';
+import config from 'ember-get-config';
 
 let MockRequest, MockMetric, MetadataService;
 
@@ -132,7 +133,21 @@ module('Integration | Component | metric config', function(hooks) {
   });
 
   test('show selected', async function(assert) {
-    assert.expect(3);
+    assert.expect(4);
+
+    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
+
+    config.navi.FEATURES.enableRequestPreview = false;
+
+    await render(hbs`
+      {{metric-config
+        metric=metric
+        request=request
+        onAddParameterizedMetric=(action addParameterizedMetric)
+        onRemoveParameterizedMetric=(action removeParameterizedMetric)
+        onToggleParameterizedMetricFilter=(action toggleParameterizedMetricFilter)
+        parametersPromise=parametersPromise
+      }}`);
 
     await clickTrigger('.metric-config__dropdown-trigger');
 
@@ -149,9 +164,25 @@ module('Integration | Component | metric config', function(hooks) {
       'When show selected is clicked only the selected parameter is shown'
     );
 
-    const resetRenderAll = await renderAll('metricConfig');
-    assert.notOk(findAll('.grouped-list__add-icon--deselected').length, 'The selected items are marked as selected');
-    await resetRenderAll();
+    assert.notOk(findAll('.grouped-list__add-icon--deselected').length, 'No unselected parameters are shown');
+
+    config.navi.FEATURES.enableRequestPreview = true;
+
+    await render(hbs`
+      {{metric-config
+        metric=metric
+        request=request
+        onAddParameterizedMetric=(action addParameterizedMetric)
+        onRemoveParameterizedMetric=(action removeParameterizedMetric)
+        onToggleParameterizedMetricFilter=(action toggleParameterizedMetricFilter)
+        parametersPromise=parametersPromise
+      }}`);
+
+    assert
+      .dom('.navi-list-selector__show-link')
+      .doesNotExist('Show Selected toggle is hidden if enableRequestPreview flag is turned on');
+
+    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
   });
 
   test('add/remove param', async function(assert) {
