@@ -169,7 +169,7 @@ module('Unit | Utils | Interval Class', function() {
 
     assert.equal(moments.start.format(FORMAT), '2017-10-09', 'Start moment is at start of isoweek');
 
-    assert.equal(moments.end.format(FORMAT), '2017-10-16', 'End moment is at start of isoweek');
+    assert.equal(moments.end.format(FORMAT), '2017-10-16', 'End moment is at start of next isoweek');
 
     moments = new Interval(start, end).asMomentsForTimePeriod('week', false);
 
