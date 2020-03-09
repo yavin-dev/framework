@@ -61,9 +61,14 @@ module('Integration | Component | report view', function(hooks) {
       buildHelper(() => {
         return () => {};
       }),
-      {
-        instantiate: false
-      }
+      { instantiate: false }
+    );
+    this.owner.register(
+      'helper:update-report-action',
+      buildHelper(() => {
+        return () => {};
+      }),
+      { instantiate: false }
     );
 
     const metadataService = this.owner.lookup('service:bard-metadata');

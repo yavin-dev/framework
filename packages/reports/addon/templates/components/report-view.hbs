@@ -2,6 +2,10 @@
 <NaviColumnConfig
   @isOpen={{this.isColumnDrawerOpen}}
   @drawerDidChange={{this.resizeVisualization}}
+  @report={{@report}}
+  @onRemoveDateTime={{update-report-action "REMOVE_TIME_GRAIN"}}
+  @onRemoveDimension={{update-report-action "REMOVE_DIMENSION_FRAGMENT"}}
+  @onRemoveMetric={{update-report-action "REMOVE_METRIC_FRAGMENT"}}
 />
 <div class="report-view__visualization-main">
   <div class="report-view__visualization-header">
@@ -14,13 +18,13 @@
           @onVisualizationTypeUpdate={{this.onVisualizationTypeUpdate}}
       />
     </div>
-      {{#animated-if (and this.hasRequestRun (not this.isEditingVisualization)) use=this.visFadeTransition}}
+      {{#animated-if (and this.hasRequestRun (not this.isEditingVisualization)) use=this.visFadeTransition duration=200}}
         <div class="clickable report-view__visualization-edit-btn" role="button" {{on "click" this.toggleEditVisualization}}>
           Edit {{this.visualizationTypeLabel}}
           <NaviIcon @icon="pencil" />
         </div>
       {{/animated-if}}
-      {{#animated-if (not this.hasRequestRun) use=this.visFadeTransition}}
+      {{#animated-if (not this.hasRequestRun) use=this.visFadeTransition duration=200}}
         <div class="report-view__info-text">
         <NaviIcon @icon="exclamation-circle" /> Run request to update {{this.visualizationTypeLabel}}</div>
       {{/animated-if}}
@@ -65,7 +69,7 @@
   </div>
 </div>
 <AnimatedContainer class="report-view__animation-container">
-  {{#animated-if (and this.isEditingVisualization @hasRequestRun) use=this.drawerTransition}}
+  {{#animated-if (and this.isEditingVisualization @hasRequestRun) use=this.drawerTransition duration=400}}
     <div class="report-view__visualization-edit">
       <div class="report-view__visualization-edit-header">
         <div class="clickable report-view__visualization-edit-btn" role="button" {{on "click" this.toggleEditVisualization}}>

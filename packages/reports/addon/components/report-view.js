@@ -191,7 +191,7 @@ class ReportView extends Component {
    */
   *visFadeTransition({ removedSprites, insertedSprites }) {
     // fadeIn a little bit longer so we can see the fade after the drawer closes
-    yield Promise.all(insertedSprites.map(s => fadeIn(s, { duration: 800 })));
+    yield Promise.all(insertedSprites.map(s => fadeIn(s, { duration: 500 })));
     yield Promise.all(removedSprites.map(fadeOut));
   }
 

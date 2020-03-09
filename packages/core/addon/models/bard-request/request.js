@@ -1,5 +1,5 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import DS from 'ember-data';
@@ -16,6 +16,7 @@ import { canonicalizeMetric } from 'navi-data/utils/metric';
 import Fragment from 'ember-data-model-fragments/fragment';
 import { fragment, fragmentArray } from 'ember-data-model-fragments/attributes';
 import { featureFlag } from 'navi-core/helpers/feature-flag';
+import { getDefaultDataSourceName } from 'navi-data/utils/adapter';
 
 const Validations = buildValidations({
   logicalTable: [
@@ -82,6 +83,7 @@ export default Fragment.extend(Validations, {
   intervals: fragmentArray('bard-request/fragments/interval', {
     defaultValue: []
   }),
+  dataSource: DS.attr('string', { defaultValue: getDefaultDataSourceName() }),
   responseFormat: DS.attr('string', { defaultValue: 'json' }),
   bardVersion: DS.attr('string', { defaultValue: 'v1' }),
   requestVersion: DS.attr('string', { defaultValue: 'v1' }),
@@ -621,7 +623,8 @@ export default Fragment.extend(Validations, {
         })
       ),
 
-      responseFormat: clonedRequest.responseFormat
+      responseFormat: clonedRequest.responseFormat,
+      dataSource: clonedRequest.dataSource
     });
   },
 
