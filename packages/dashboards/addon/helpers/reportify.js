@@ -1,4 +1,3 @@
-/* eslint-disable ember/no-observers */
 /**
  * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
