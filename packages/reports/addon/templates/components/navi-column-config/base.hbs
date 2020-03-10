@@ -9,7 +9,12 @@
           {{!-- TODO: Favorites are not supported yet --}}
           {{!-- <NaviIcon @icon="star-o" class="navi-column-config-base__star-icon" role="button" /> --}}
           <NaviIcon @icon="clone" class="navi-column-config-base__clone-icon" role="button" {{on "click" @cloneColumn}} />
-          <NaviIcon @icon="filter" class="navi-column-config-base__filter-icon" role="button" {{on "click" @toggleColumnFilter}} />
+          <NaviIcon 
+            class="navi-column-config-base__filter-icon {{if column.isFiltered "navi-column-config-base__filter-icon--active"}}"
+            @icon="filter" 
+            role="button" 
+            {{on "click" @toggleColumnFilter}} 
+           />
         </span>
       </div>
       <Input
@@ -38,7 +43,7 @@
         @metadata={{@metadata}}
         @onClose={{@onClose}}
         @onUpdateColumnName={{@onUpdateColumnName}}
-        @onUpdateMetricParam={{update-report-action "UPDATE_METRIC_PARAM"}}
+        @onUpdateMetricParam={{update-report-action "UPDATE_METRIC_FRAGMENT_WITH_PARAM"}}
       />
     {{/let}}
   </div>

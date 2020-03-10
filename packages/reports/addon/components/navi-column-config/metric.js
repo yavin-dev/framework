@@ -102,20 +102,9 @@ class Metric extends Component {
    */
   @action
   updateMetricParam(param) {
-    const visMetadata = this.get('metadata.style.aliases');
-    const oldMetricName = this.column.fragment.canonicalName;
+    const { fragment: metricFragment } = this.column;
 
-    this.onUpdateMetricParam(oldMetricName, param.id, param.param);
-
-    const newMetricName = this.column.fragment.canonicalName;
-
-    if (Array.isArray(visMetadata)) {
-      const existingAlias = visMetadata.find(alias => alias.name === oldMetricName);
-
-      if (existingAlias) {
-        existingAlias.name = newMetricName;
-      }
-    }
+    this.onUpdateMetricParam(metricFragment, param.id, param.param);
   }
 }
 

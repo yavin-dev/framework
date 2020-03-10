@@ -66,6 +66,17 @@ export default ActionConsumer.extend({
     },
 
     /**
+     * @action UPDATE_METRIC_FRAGMENT_WITH_PARAM
+     * @param {Object} route - route that has a model that contains a request property
+     * @param {Object} metric - metric fragment to change param of
+     * @param {String} parameterId - id property of parameter object, value of param
+     * @param {String} parameterKey - type of parameter, e.g. 'currency'
+     */
+    [RequestActions.UPDATE_METRIC_FRAGMENT_WITH_PARAM](route, metricModel, parameterId, parameterKey) {
+      metricModel && metricModel.updateParameter(parameterId, parameterKey);
+    },
+
+    /**
      * @action REMOVE_METRIC_WITH_PARAM
      * @param {Object} route - route that has a model that contains a request property
      * @param {Object} metric - metadata model of metric to add
