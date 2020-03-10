@@ -46,10 +46,9 @@ export default class BardMetadataService extends Service {
     super(...arguments);
 
     //Instantiating the bard metadata adapter & serializer
-    let owner = getOwner(this);
-
-    this.set('_adapter', owner.lookup('adapter:bard-metadata'));
-    this.set('_serializer', owner.lookup('serializer:bard-metadata'));
+    const owner = getOwner(this);
+    this._adapter = owner.lookup('adapter:bard-metadata');
+    this._serializer = owner.lookup('serializer:bard-metadata');
   }
 
   /**
@@ -100,9 +99,9 @@ export default class BardMetadataService extends Service {
    * @param {Array} metadataObjects - array of metadata objects
    */
   _loadMetadataForType(type, metadataObjects, namespace) {
-    let metadata = metadataObjects.map(data => {
-      let payload = assign({}, data),
-        owner = getOwner(this);
+    const metadata = metadataObjects.map(data => {
+      const payload = assign({}, data);
+      const owner = getOwner(this);
       setOwner(payload, owner);
       return owner.factoryFor(`model:metadata/${type}`).create(payload);
     });

@@ -31,7 +31,7 @@ export default class MetricFormatHelper extends Helper {
       return longName;
     }
 
-    let metricId = metric.metric;
+    const metricId = metric.metric;
     if (isPresent(metricId)) {
       longName = this.metricName.getLongName(metricId, namespace);
     }

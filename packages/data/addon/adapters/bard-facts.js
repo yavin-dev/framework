@@ -59,7 +59,7 @@ export default class BardFactsAdapter extends EmberObject {
    * @return {String} dimensions path
    */
   _buildDimensionsPath(request /*options*/) {
-    let dimensions = array(request.dimensions);
+    const dimensions = array(request.dimensions);
     return dimensions.length
       ? `/${array(dimensions.mapBy('dimension'))
           .uniq()
@@ -76,9 +76,7 @@ export default class BardFactsAdapter extends EmberObject {
    * @return {String} dateTime param value
    */
   _buildDateTimeParam(request) {
-    const { intervals } = request;
-
-    return intervals.map(interval => `${interval.start}/${interval.end}`).join(',');
+    return request.intervals.map(interval => `${interval.start}/${interval.end}`).join(',');
   }
 
   /**
@@ -130,8 +128,8 @@ export default class BardFactsAdapter extends EmberObject {
     if (sort && sort.length) {
       return sort
         .map(sortMetric => {
-          let metric = aliasFunction(sortMetric.metric),
-            direction = getWithDefault(sortMetric, 'direction', 'desc');
+          const metric = aliasFunction(sortMetric.metric);
+          const direction = getWithDefault(sortMetric, 'direction', 'desc');
 
           assert(
             `'${direction}' is not a valid sort direction (${SORT_DIRECTIONS.join()})`,
