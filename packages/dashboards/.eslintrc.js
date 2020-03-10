@@ -17,7 +17,8 @@ module.exports = {
     browser: true
   },
   rules: {
-    'ember/no-jquery': 'warn'
+    'ember/no-jquery': 'warn',
+    'ember/no-new-mixins': 'warn'
   },
   overrides: [
     // node files

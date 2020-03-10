@@ -3,20 +3,20 @@
   {{!-- Breadcrumb --}}
   <div class="navi-report-widget__breadcrumb">
     {{#if (feature-flag "enableDirectory")}}
-      {{#link-to "directory.my-data" class="navi-report-widget__breadcrumb-link"}}Directory{{/link-to}}
+      <LinkTo @route="directory.my-data" class="navi-report-widget__breadcrumb-link">Directory</LinkTo>
     {{else}}
-      {{#link-to "dashboards" class="navi-report-widget__breadcrumb-link"}}Dashboards{{/link-to}}
+      <LinkTo @route="dashboards" class="navi-report-widget__breadcrumb-link">Dashboards</LinkTo>
     {{/if}}
     {{navi-icon "angle-right"}}
     {{#with (model-for "dashboards.dashboard") as |parentDashboard|}}
-      {{#if parentQueryParams}}
-        {{#link-to "dashboards.dashboard" parentDashboard.id (query-params filters=parentQueryParams.filters) class="navi-report-widget__breadcrumb-link"}}
+      {{#if this.parentQueryParams}}
+        <LinkTo @route="dashboards.dashboard" @model={{parentDashboard.id}} @query={{hash filters=this.parentQueryParams.filters}} class="navi-report-widget__breadcrumb-link">
           {{parentDashboard.title}}
-        {{/link-to}}
+        </LinkTo>
       {{else}}
-        {{#link-to "dashboards.dashboard" parentDashboard.id class="navi-report-widget__breadcrumb-link"}}
+        <LinkTo @route="dashboards.dashboard" @model={{parentDashboard.id}} class="navi-report-widget__breadcrumb-link">
           {{parentDashboard.title}}
-        {{/link-to}}
+        </LinkTo>
       {{/if}}
     {{/with}}
     {{navi-icon "angle-right"}}
@@ -25,81 +25,80 @@
   {{!-- Header --}}
   <header class="navi-report-widget__header">
     <span class="navi-report-widget__title">
-      {{#if model.dashboard.canUserEdit}}
-        {{editable-label
-          classNames="navi-report-widget__edit-title"
-          value=model.title
-          onChange=(route-action "updateTitle")
-        }}
+      {{#if @model.dashboard.canUserEdit}}
+        <EditableLabel
+          class="navi-report-widget__edit-title"
+          @value={{@model.title}}
+          @onChange={{route-action "updateTitle"}}
+        />
       {{else}}
-        <span>{{model.title}}</span>
+        <span>{{@model.title}}</span>
       {{/if}}
     </span>
     <ul class="navi-report-widget__actions">
       <li class="navi-report-widget__action">
         {{!-- Get API action is only enabled when request is valid --}}
-        {{#common-actions/get-api
-          request=model.request
-          classNameBindings="model.request.validations.isTruelyValid::navi-report-widget__action--is-disabled"
-          disabled=(not model.request.validations.isTruelyValid)
-        }}
-
-          {{navi-icon "code" class="navi-report-widget__icon"}}
+        <CommonActions::GetApi
+          @classNameBindings="model.request.validations.isTruelyValid::navi-report-widget__action--is-disabled"
+          @request={{@model.request}}
+          @disabled={{not @model.request.validations.isTruelyValid}}
+        >
+          <NaviIcon @icon="code" class="navi-report-widget__icon" />
           Copy API Query
-          {{#ember-tooltip}}
-            {{if model.request.validations.isTruelyValid "Copy API Query" "Run a valid report to copy"}}
-          {{/ember-tooltip}}
-        {{/common-actions/get-api}}
+          <EmberTooltip>
+            {{if @model.request.validations.isTruelyValid "Copy API Query" "Run a valid report to copy"}}
+          </EmberTooltip>
+        </CommonActions::GetApi>
       </li>
 
       <li class="navi-report-widget__action">
         {{!-- Export action is only enabled when request is valid --}}
         {{#component
           (concat "report-actions/" (if (feature-flag "enableMultipleExport") "multiple-format-export" "export"))
-          report=(reportify model)
+          report=(reportify @model)
           classNames="navi-report-widget__action-link"
-          disabled=(not model.validations.isTruelyValid)
+          disabled=(not @model.validations.isTruelyValid)
           classNameBindings="model.validations.isTruelyValid::navi-report-widget__action-link--is-disabled"
         }}
-          {{navi-icon "download" class="navi-report-widget__icon"}}
+          <NaviIcon @icon="download" class="navi-report-widget__icon" />
           Export
-          {{#ember-tooltip}}
-            {{if model.validations.isTruelyValid "Export the report" "Run a valid report to enable export"}}
-          {{/ember-tooltip}}
+          <EmberTooltip>
+            {{if @model.validations.isTruelyValid "Export the report" "Run a valid report to enable export"}}
+          </EmberTooltip>
         {{/component}}
       </li>
 
       <li class="navi-report-widget__action">
-        {{#link-to "dashboards.dashboard.widgets.widget.clone-to-report" classNames="navi-report-widget__action-link"}}
-          {{navi-icon "copy" class="navi-report-widget__icon"}}
+        <LinkTo @route="dashboards.dashboard.widgets.widget.clone-to-report" class="navi-report-widget__action-link">
+          <NaviIcon @icon="copy" class="navi-report-widget__icon" />
           Clone As Report
-        {{/link-to}}
+        </LinkTo>
       </li>
 
-      {{#unless model.isNew}}
+      {{#unless @model.isNew}}
         {{!-- Share only enabled on a Valid widget --}}
         <li class="navi-report-widget__action">
-          {{#common-actions/share
-            pageTitle=model.title
-            disabled=(not model.request.validations.isTruelyValid)
-          }}
+          <CommonActions::Share
+            @pageTitle={{@model.title}}
+            @disabled={{not @model.request.validations.isTruelyValid}}
+          >
             {{navi-icon "share" class="navi-report-widget__icon"}}
             Share
-            {{#ember-tooltip}}
-              {{if model.request.validations.isTruelyValid "Share" "Run a valid report to share"}}
-            {{/ember-tooltip}}
-          {{/common-actions/share}}
+            <EmberTooltip>
+              {{if @model.request.validations.isTruelyValid "Share" "Run a valid report to share"}}
+            </EmberTooltip>
+          </CommonActions::Share>
         </li>
       {{/unless}}
-      {{#if model.dashboard.isUserOwner}}
+      {{#if @model.dashboard.isUserOwner}}
         <li class="navi-report-widget__action">
-          {{#common-actions/delete
-            model=model
-            deleteAction=(route-action "deleteWidget")
-          }}
+          <CommonActions::Delete
+            @model={{@model}}
+            @deleteAction={{route-action "deleteWidget"}}
+          >
             {{navi-icon "trash-o" class="navi-report-widget__icon"}}
             Delete
-          {{/common-actions/delete}}
+          </CommonActions::Delete>
         </li>
       {{/if}}
     </ul>
@@ -110,7 +109,7 @@
     <ReportBuilder
       @report={{this.model}}
       @isFiltersCollapsed={{this.isFiltersCollapsed}}
-      @onUpdateFiltersCollapsed={{set this.isFiltersCollapsed _}}
+      @onUpdateFiltersCollapsed={{toggle "isFiltersCollapsed" this}}
     >
       {{outlet}}
     </ReportBuilder>
@@ -119,11 +118,11 @@
   {{!-- Footer --}}
 
   <footer class="navi-report-widget__footer">
-    {{#if isRunningReport}}
+    {{#if this.isRunningReport}}
       <button
         type="button"
         class="btn btn-primary navi-report-widget__cancel-btn"
-        onclick={{route-action "cancelReport" model}}
+        onclick={{route-action "cancelReport" @model}}
       >
         Cancel
       </button>
@@ -132,24 +131,24 @@
         type="button"
         class="btn btn-primary navi-report-widget__run-btn"
         onclick={{pipe
-          (route-action "validate" model)
-          (route-action "runReport" model)
+          (route-action "validate" @model)
+          (route-action "runReport" @model)
         }}
       >
         Run
       </button>
 
-      {{#if (and model.dashboard.canUserEdit model.hasDirtyAttributes)}}
+      {{#if (and @model.dashboard.canUserEdit @model.hasDirtyAttributes)}}
         <button
           type="button"
           class="btn btn-secondary navi-report-widget__save-btn"
           onclick={{pipe
-            (route-action "validate" model)
-            (route-action "runReport" model)
-            (route-action "saveWidget" model)
+            (route-action "validate" @model)
+            (route-action "runReport" @model)
+            (route-action "saveWidget" @model)
           }}
         >
-          {{#if model.isNew}}
+          {{#if @model.isNew}}
             Save Widget
           {{else}}
             Save Changes
@@ -157,11 +156,11 @@
         </button>
       {{/if}}
 
-      {{#if (and model.hasDirtyAttributes (not model.isNew))}}
+      {{#if (and @model.hasDirtyAttributes (not @model.isNew))}}
         <button
           type="button"
           class="btn btn-secondary navi-report-widget__revert-btn"
-          onclick={{route-action "revertChanges" model}}
+          onclick={{route-action "revertChanges" @model}}
         >
           Revert Changes
         </button>
@@ -170,7 +169,7 @@
   </footer>
 </div>
 
-{{report-actions/save-as
-  model=model
-  showModal=showModal
-}}
+<ReportActions::SaveAs
+  @model={{@model}}
+  @showModal={{@showModal}}
+/>

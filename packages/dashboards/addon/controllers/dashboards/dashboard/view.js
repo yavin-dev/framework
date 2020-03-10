@@ -6,128 +6,130 @@
 import Controller from '@ember/controller';
 import { inject as service } from '@ember/service';
 import { isEqual } from 'lodash-es';
-import { get, setProperties } from '@ember/object';
+import { get, setProperties, action } from '@ember/object';
 import ReportToWidget from 'navi-dashboards/mixins/controllers/report-to-widget';
 
-export default Controller.extend(ReportToWidget, {
+export default class DashboardsDashboardViewController extends Controller.extend(ReportToWidget) {
   /**
    * @property {Service} compression
    */
-  compression: service(),
+  @service compression;
 
   /**
    * @property {Service} metadataService
    */
-  metadataService: service('bard-metadata'),
+  @service('bard-metadata') metadataService;
 
   /**
    * @property {Service} store
    */
-  store: service(),
+  @service store;
 
   /**
    * @property {String[]} queryParams
    */
-  queryParams: ['filters'],
+  queryParams = ['filters'];
 
   /**
    * @property {String} filters query param holding encoded filters for the dashboard
    */
-  filters: null,
+  filters = null;
 
-  actions: {
-    /**
-     * @action updateFilter
-     * @param {Object} dashboard
-     * @param {Object} originalFilter
-     * @param {Object} changeSet
-     */
-    async updateFilter(dashboard, originalFilter, changeSet) {
-      const origFilter = originalFilter.serialize();
-      origFilter.dataSource = originalFilter.dimension.source;
-      const newFilters = get(dashboard, 'filters')
-        .toArray()
-        .map(fil => {
+  /**
+   * @action updateFilter
+   * @param {Object} dashboard
+   * @param {Object} originalFilter
+   * @param {Object} changeSet
+   */
+  @action
+  async updateFilter(dashboard, originalFilter, changeSet) {
+    const origFilter = originalFilter.serialize();
+    origFilter.dataSource = originalFilter.dimension.source;const newFilters = get(dashboard, 'filters')
+      .toArray()
+      .map(fil => {
           const newFil = fil.serialize();
           newFil.dataSource = fil.dimension.source;
           return newFil;
         }); //Native array of serialized filters
-      const filterToUpdate = newFilters.find(fil => isEqual(fil, origFilter));
+    const filterToUpdate = newFilters.find(fil => isEqual(fil, origFilter));
 
-      setProperties(filterToUpdate, changeSet);
+    setProperties(filterToUpdate, changeSet);
 
-      const newFilter = this.store
-        .createFragment('bard-request/fragments/filter', {
-          dimension: this.metadataService.getById(
+    const newFilter = this.store
+      .createFragment('bard-request/fragments/filter', {
+        dimension: this.metadataService.getById(
             'dimension',
             filterToUpdate.dimension,
             originalFilter.dimension.source
           ),
-          operator: filterToUpdate.operator,
-          field: filterToUpdate.field,
-          rawValues: filterToUpdate.rawValues || filterToUpdate.values
-        })
-        .serialize();
+        operator: filterToUpdate.operator,
+        field: filterToUpdate.field,
+        rawValues: filterToUpdate.rawValues || filterToUpdate.values
+      })
+      .serialize();
 
-      newFilter.dataSource = originalFilter.dimension.source;
-      const index = newFilters.indexOf(filterToUpdate);
-      newFilters[index] = newFilter;
+    newFilter.dataSource = originalFilter.dimension.source;const index = newFilters.indexOf(filterToUpdate);
+    newFilters[index] = newFilter;
 
-      const filterQueryParams = await this.compression.compress({ filters: newFilters });
+    const filterQueryParams = await this.compression.compress({ filters: newFilters });
 
-      this.transitionToRoute('dashboards.dashboard', { queryParams: { filters: filterQueryParams } });
-    },
+    this.transitionToRoute('dashboards.dashboard', { queryParams: { filters: filterQueryParams } });
+  }
 
-    /**
-     * @action removeFilter
-     * @param {Object} dashboard
-     * @param {Object} filter
-     */
-    async removeFilter(dashboard, filter) {
-      const filters = get(dashboard, 'filters').serialize();
-      const removedFilter = filter.serialize();
-      const newFilters = filters.filter(fil => !isEqual(fil, removedFilter));
-      const filterQueryParams = await get(this, 'compression').compress({ filters: newFilters });
+  /**
+   * @action removeFilter
+   * @param {Object} dashboard
+   * @param {Object} filter
+   */
+  @action
+  async removeFilter(dashboard, filter) {
+    const filters = get(dashboard, 'filters').serialize();
+    const removedFilter = filter.serialize();
+    const newFilters = filters.filter(fil => !isEqual(fil, removedFilter));
+    const filterQueryParams = await get(this, 'compression').compress({ filters: newFilters });
 
-      this.transitionToRoute('dashboards.dashboard', { queryParams: { filters: filterQueryParams } });
-    },
+    this.transitionToRoute('dashboards.dashboard', { queryParams: { filters: filterQueryParams } });
+  }
 
-    /**
-     * @action addFilter
-     * @param {Object} dashboard
-     * @param {Object} dimension
-     */
-    async addFilter(dashboard, dimension) {
-      const store = this.store;
-      const bardMetadata = this.metadataService;
-      const filters = dashboard.filters.toArray().map(fil => {
+  /**
+   * @action addFilter
+   * @param {Object} dashboard
+   * @param {Object} dimension
+   */
+  @action
+  async addFilter(dashboard, dimension) {
+    const store = this.store;
+    const bardMetadata = this.metadataService;
+    const filters = dashboard.filters
+      .toArray()
+      .map(fil => {
         const newFil = fil.serialize();
         newFil.dataSource = fil.dimension.source;
         return newFil;
       }); //Native array of serialized filters
-      const dimensionMeta = bardMetadata.getById('dimension', dimension.dimension, dimension.dataSource);
-      const filter = store
-        .createFragment('bard-request/fragments/filter', {
-          dimension: dimensionMeta,
-          operator: 'in',
-          field: dimensionMeta.primaryKeyFieldName
-        })
-        .serialize();
+    const dimensionMeta = bardMetadata.getById('dimension', dimension.dimension, dimension.dataSource);
+    const filter = store
+      .createFragment('bard-request/fragments/filter', {
+        dimension: dimensionMeta,
+        operator: 'in',
+        field: dimensionMeta.primaryKeyFieldName
+      })
+      .serialize();
 
-      filter.dataSource = dimension.dataSource;
+    filter.dataSource = dimension.dataSource;
 
       filters.push(filter);
 
-      const filterQueryParams = await this.compression.compress({ filters });
+    const filterQueryParams = await this.compression.compress({ filters });
 
-      this.transitionToRoute('dashboards.dashboard', { queryParams: { filters: filterQueryParams } });
-    },
-
-    /**
-     * @action clearFilterQueryParams - Remove query params as model enters clean state
-     */
-    clearFilterQueryParams() {
-      this.set('filters', null);
-    }
+    this.transitionToRoute('dashboards.dashboard', { queryParams: { filters: filterQueryParams } });
   }
-});
+
+  /**
+   * @action clearFilterQueryParams - Remove query params as model enters clean state
+   */
+  @action
+  clearFilterQueryParams() {
+    this.set('filters', null);
+  }
+}

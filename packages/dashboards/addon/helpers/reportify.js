@@ -1,3 +1,4 @@
+/* eslint-disable ember/no-observers */
 /**
  * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
@@ -13,7 +14,6 @@ export default Helper.extend({
    * @observer onModelChange
    * Forces recompute when model request or visualization change
    */
-  // eslint-disable-next-line ember/no-observers
   onModelChange: observer('model.{request,visualization}', function() {
     this.recompute();
   }),

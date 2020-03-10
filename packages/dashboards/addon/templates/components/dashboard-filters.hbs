@@ -1,4 +1,4 @@
-{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <span class="dashboard-filters__expand-button" role="button" {{on "click" (toggle "isCollapsed" this)}}>
   <NaviIcon @icon="sliders" /> Settings<NaviIcon @icon="angle-down" class="dashboard-filters__toggle" />
 </span>
@@ -6,11 +6,11 @@
 <FilterCollection
   class="dashboard-filters-collection"
   @isCollapsed={{this.isCollapsed}}
-  @onUpdateCollapsed={{set this.isCollapsed _}}
+  @onUpdateCollapsed={{mut this.isCollapsed}}
   @request={{this.filters}}
-  @onUpdateFilter={{action @onUpdateFilter}}
-  @onRemoveFilter={{action @onRemoveFilter}}
-  @onAddFilter={{action @onAddFilter}}
+  @onUpdateFilter={{@onUpdateFilter}}
+  @onRemoveFilter={{@onRemoveFilter}}
+  @onAddFilter={{@onAddFilter}}
 />
 
 {{#unless this.isCollapsed}}
@@ -24,7 +24,7 @@
       <DashboardDimensionSelector
         class="dashboard-filters--expanded-add-row__dimension-selector"
         @dashboard={{@dashboard}}
-        @onChange={{queue (action @onAddFilter) (toggle "isAddingMode" this)}}
+        @onChange={{queue @onAddFilter (toggle "isAddingMode" this)}}
       />
       <div class="dashboard-filters--expanded-add-row__placeholder dashboard-filters--expanded-add-row__placeholder--operator">
         <div class="dashboard-filters--expanded-add-row__placeholder-inner dashboard-filters--expanded-add-row__placeholder-inner--operator"></div>

@@ -1,11 +1,11 @@
 <nav class="header">
-  <h2 class="title">{{#link-to "dashboards"}}navi dashboards{{/link-to}}</h2>
+  <h2 class="title"><LinkTo @route="dashboards">navi dashboards</LinkTo></h2>
   <ul class="dashboard-collections">
-    <li class="collection-link"> {{#link-to "dashboard-collections.collection" 1}} Collection 1 {{/link-to}} </li>
-    <li class="collection-link"> {{#link-to "dashboard-collections.collection" 2}} Collection 2 {{/link-to}} </li>
+    <li class="collection-link"><LinkTo @route="dashboard-collections.collection" @model={{1}}> Collection 1 </LinkTo></li>
+    <li class="collection-link"><LinkTo @route="dashboard-collections.collection" @model={{2}}> Collection 2 </LinkTo></li>
   </ul>
 </nav>
 {{outlet}}
 <div class="navi-notifications">
-  {{naviNotifications.options.message}} {{naviNotifications.options.type}}
+  {{this.naviNotifications.options.message}} {{this.naviNotifications.options.type}}
 </div>
