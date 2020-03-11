@@ -197,25 +197,15 @@ module('Unit | Metadata Model | Dimension', function(hooks) {
   });
 
   test('extended property', async function(assert) {
+    const server = new Pretender(metadataRoutes);
+    await this.owner.lookup('service:bard-metadata').loadMetadata();
     const dimensionOne = DimensionMetadataModel.create(this.owner.ownerInjection(), {
       id: 'dimensionOne'
     });
-    const server = new Pretender(metadataRoutes);
-    const originalDataSources = dimensionOne.metadata.loadedDataSources;
-    dimensionOne.metadata.set('loadedDataSources', ['dummy']);
 
-    const expected = {
-      cardinality: 60,
-      category: 'categoryOne',
-      longName: 'Dimension One',
-      name: 'dimensionOne'
-    };
-    const result = await dimensionOne.get('extended');
-    assert.ok(
-      Object.keys(expected).every(key => result[key] === expected[key]),
-      'dimension model can fetch extended attributes'
-    );
+    const result = await dimensionOne.extended;
+    const expected = await this.owner.lookup('service:bard-metadata').findById('dimension', dimensionOne.id, 'dummy');
+    assert.equal(result, expected, 'dimension model can fetch extended attributes');
     server.shutdown();
-    dimensionOne.metadata.set('loadedDataSources', originalDataSources);
   });
 });

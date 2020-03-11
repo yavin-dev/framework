@@ -86,6 +86,9 @@ export default class BardMetadataService extends Service {
             this._loadMetadataForType('table', metadata.tables, dataSource);
             this._loadMetadataForType('dimension', metadata.dimensions, dataSource);
             this._loadMetadataForType('time-dimension', metadata.timeDimensions, dataSource);
+            if (metadata.metricFunctions?.length > 0) {
+              this._loadMetadataForType('metric-function', metadata.metricFunctions, dataSource);
+            }
             this._loadMetadataForType('metric', metadata.metrics, dataSource);
 
             this.loadedDataSources.push(dataSource);
