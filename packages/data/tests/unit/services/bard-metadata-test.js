@@ -296,7 +296,7 @@ module('Unit - Service - Bard Metadata', function(hooks) {
   });
 
   test('findById', async function(assert) {
-    assert.expect(6);
+    assert.expect(9);
     metadataRoutes.bind(Server)(1);
     Service.set('loadedDataSources', ['dummy']);
     const metricOne = await Service.findById('metric', 'metricOne');
@@ -322,6 +322,15 @@ module('Unit - Service - Bard Metadata', function(hooks) {
       'Service findById should return correct data when requesting other datasource'
     );
     assert.equal(Server.handledRequests.length, 2, 'Meta data endpoint called once for each metric');
+
+    keg.push('metadata/metric', Object.assign({}, MetricTwo, { partial: true }), { namespace: 'dummy' });
+
+    const kegRecord = keg.getById('metadata/metric', 'metricTwo', 'dummy');
+    assert.ok(kegRecord?.partial, 'Partial metric exists in keg with partial flag');
+
+    const findOnPartiallyLoadedMetric = await Service.findById('metric', 'metricTwo', 'dummy');
+    assert.deepEqual(findOnPartiallyLoadedMetric, MetricTwo, 'Partial flag is removed on findById');
+    assert.equal(Server.handledRequests.length, 3, 'Another request is sent for a partially loaded model');
   });
 
   test('getMetaField', async function(assert) {
