@@ -1,15 +1,15 @@
-{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{#if this.column.fragment.metric.hasParameters}}
-  <div class="navi-request-column-config__option navi-request-column-config__parameter">
-    <label for="columnParameter" class="navi-request-column-config__parameter-label navi-request-column-config__option-label">Metric Parameter</label>
+  <div class="navi-column-config-base__option navi-column-config-metric__parameter">
+    <label for="{{this.classId}}-columnParameter" class="navi-column-config-metric__parameter-label navi-column-config-base__option-label">Metric Parameter</label>
     <PowerSelect 
-      @triggerClass="navi-request-column-config__parameter-trigger navi-request-column-config__option-input"
-      @triggerId="columnParameter" 
-      @dropdownClass="navi-request-column-config__parameter-dropdown"
+      @triggerClass="navi-column-config-metric__parameter-trigger navi-column-config-base__option-input"
+      @triggerId="{{this.classId}}-columnParameter" 
+      @dropdownClass="navi-column-config-metric__parameter-dropdown"
       @selected={{this.currentParameter}}
       @searchPlaceholder="Type to search"
       @options={{this.allParameters}}
-      @onchange={{action "updateMetricParam"}}
+      @onchange={{this.updateMetricParam}}
       as | param |
     >
       {{param.description}} ({{param.id}})

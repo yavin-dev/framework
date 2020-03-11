@@ -17,6 +17,7 @@ import { layout as templateLayout, tagName } from '@ember-decorators/component';
 import layout from '../../templates/components/navi-column-config/metric';
 import { action, set, computed } from '@ember/object';
 import { inject as service } from '@ember/service';
+import { guidFor } from '@ember/object/internals';
 
 @tagName('')
 @templateLayout(layout)
@@ -27,13 +28,20 @@ class Metric extends Component {
   @service('metric-parameter') parameterService;
 
   /**
-   * @override
-   * @method init
+   * @property {String} _previousMetricName - the name of the last fetched metric
    */
-  init() {
-    super.init(...arguments);
-    this._previousMetric = null;
-    this._parametersPromise = null;
+  _previousMetricName = null;
+
+  /**
+   * @property {Promise|null} - A promise to a list of all the parameters for the given metric
+   */
+  allParameters = null;
+
+  /**
+   * @property {String} classId - a unique id for this instance of the column config
+   */
+  get classId() {
+    return guidFor(this);
   }
 
   /**
@@ -94,20 +102,9 @@ class Metric extends Component {
    */
   @action
   updateMetricParam(param) {
-    const visMetadata = this.get('metadata.style.aliases');
-    const oldMetricName = this.column.fragment.canonicalName;
+    const { fragment: metricFragment } = this.column;
 
-    this.onUpdateMetricParam(oldMetricName, param.id, param.param);
-
-    const newMetricName = this.column.fragment.canonicalName;
-
-    if (Array.isArray(visMetadata)) {
-      const existingAlias = visMetadata.find(alias => alias.name === oldMetricName);
-
-      if (existingAlias) {
-        existingAlias.name = newMetricName;
-      }
-    }
+    this.onUpdateMetricParam(metricFragment, param.id, param.param);
   }
 }
 

@@ -8,6 +8,7 @@
   cursor: pointer;
   opacity: 0.5;
 
+  &--active,
   &:hover {
     opacity: 1;
   }
@@ -20,8 +21,8 @@
 
   &__title {
     font-size: @font-size-base;
+    padding: 10px;
     margin: 0;
-    margin-bottom: 10px;
   }
 
   &__panel {
@@ -29,42 +30,11 @@
     display: flex;
     flex: 1;
     flex-flow: column;
-    padding: 10px 0 10px 10px;
     width: 250px;
   }
 
   &__columns {
     flex: 1;
     overflow-y: auto;
-  }
-
-  &-item {
-    align-items: center;
-    border-bottom: 1px solid @denali-gray-300;
-    cursor: pointer;
-    display: flex;
-    margin-left: 15px;
-    min-height: 20px;
-    padding: 10px 0;
-
-    &__name {
-      flex: 3;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    &__dropdown-icon {
-      .navi-column-config-icon;
-      flex: 0.5;
-      font-size: @font-size-mid;
-    }
-
-    &__remove-icon {
-      .navi-column-config-icon;
-      flex: 0.5;
-      font-size: @font-size-base-large;
-      text-align: center;
-    }
   }
 }

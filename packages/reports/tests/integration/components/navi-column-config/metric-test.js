@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click, fillIn, triggerKeyEvent } from '@ember/test-helpers';
+import { render, click, findAll, fillIn, triggerKeyEvent } from '@ember/test-helpers';
 import { A as arr } from '@ember/array';
 import { helper as buildHelper } from '@ember/component/helper';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
@@ -9,7 +9,7 @@ import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 let MetadataService;
 
-module('Integration | Component | navi-request-column-config/metric', function(hooks) {
+module('Integration | Component | navi-column-config/metric', function(hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
@@ -20,7 +20,7 @@ module('Integration | Component | navi-request-column-config/metric', function(h
   });
 
   test('Configuring metric column', async function(assert) {
-    assert.expect(9);
+    assert.expect(8);
 
     const metric = this.owner.lookup('service:store').createFragment('bard-request/fragments/metric', {
       metric: await MetadataService.findById('metric', 'revenue'),
@@ -28,26 +28,26 @@ module('Integration | Component | navi-request-column-config/metric', function(h
         currency: 'USD'
       }
     });
-    this.set('metadata', { style: { aliases: arr([]) } });
-    this.set('editingColumn', {
+    this.metadata = { style: { aliases: arr([]) } };
+    this.editingColumn = {
       type: 'metric',
       name: metric.canonicalName,
       displayName: 'Revenue',
       sort: 'none',
       fragment: metric
-    });
-    this.set('onClose', () => {
-      assert.ok(true, 'onClose called');
-    });
-    this.set('onUpdateColumnName', newName => {
+    };
+    this.cloneColumn = () => undefined;
+    this.toggleColumnFilter = () => undefined;
+    this.onUpdateColumnName = newName => {
+      // this must be called with action in the template
       assert.equal(newName, 'Money', 'New display name is passed to name update action');
-    });
+    };
     this.owner.register(
       'helper:update-report-action',
       buildHelper(() => {
-        return (metricName, paramId, paramKey) => {
+        return (metricFragment, paramId, paramKey) => {
           assert.equal(
-            metricName,
+            metricFragment.canonicalName,
             'revenue(currency=USD)',
             'Metric name is passed with the currently selected parameter'
           );
@@ -59,19 +59,24 @@ module('Integration | Component | navi-request-column-config/metric', function(h
     );
     await render(hbs`
       <NaviColumnConfig::Base
-        @column={{editingColumn}} 
-        @metadata={{metadata}}
-        @onClose={{action onClose}}
-        @onUpdateColumnName={{action onUpdateColumnName}}
+        @column={{this.editingColumn}} 
+        @metadata={{this.metadata}}
+        @cloneColumn={{this.cloneColumn}}
+        @toggleColumnFilter={{this.toggleColumnFilter}}
+        @onUpdateColumnName={{action this.onUpdateColumnName}}
       />
     `);
 
-    assert.dom('#columnName').hasValue('Revenue', 'Display name of column is shown in the column input');
-    assert.dom('#columnParameter').hasText('Dollars (USD)', 'Current parameter is displayed in the dropdown input');
+    assert
+      .dom('.navi-column-config-base__column-name-input')
+      .hasValue('Revenue', 'Display name of column is shown in the column input');
+    assert
+      .dom('.navi-column-config-metric__parameter-trigger')
+      .hasText('Dollars (USD)', 'Current parameter is displayed in the dropdown input');
 
-    await click('.navi-request-column-config__parameter-trigger.ember-power-select-trigger');
+    await click('.navi-column-config-metric__parameter-trigger.ember-power-select-trigger');
     assert.deepEqual(
-      [...document.querySelectorAll('.ember-power-select-option')].map(el => el.textContent.trim()),
+      findAll('.ember-power-select-option').map(el => el.textContent.trim()),
       [
         'NULL (-1)',
         'UNKNOWN (-2)',
@@ -90,14 +95,16 @@ module('Integration | Component | navi-request-column-config/metric', function(h
       ],
       'The parameter values are loaded into the dropdown'
     );
-    await selectChoose('#columnParameter', 'Dollars (CAD)');
+    await selectChoose('.navi-column-config-metric__parameter', 'Dollars (CAD)');
 
-    assert.dom('#columnName').hasValue('Revenue', 'Custom display name is still shown when parameter is changed');
-    assert.dom('#columnParameter').hasText('Dollars (CAD)', 'Parameter selector shows new parameter value');
+    assert
+      .dom('.navi-column-config-base__column-name-input')
+      .hasValue('Revenue', 'Custom display name is still shown when parameter is changed');
+    assert
+      .dom('.navi-column-config-metric__parameter-trigger')
+      .hasText('Dollars (CAD)', 'Parameter selector shows new parameter value');
 
-    await fillIn('#columnName', 'Money');
-    await triggerKeyEvent('#columnName', 'keyup', 13);
-
-    await click('.navi-request-column-config__exit-icon');
+    await fillIn('.navi-column-config-base__column-name-input', 'Money');
+    await triggerKeyEvent('.navi-column-config-base__column-name-input', 'keyup', 13);
   });
 });

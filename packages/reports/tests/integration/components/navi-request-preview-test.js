@@ -1,4 +1,4 @@
-import { module, test } from 'qunit';
+import { module, skip } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, click, triggerKeyEvent, fillIn, findAll } from '@ember/test-helpers';
 import { helper as buildHelper } from '@ember/component/helper';
@@ -12,6 +12,7 @@ import hbs from 'htmlbars-inline-precompile';
 let Store, MetadataService, AdClicks, Revenue, Age, UpdateReportAction;
 const textContentArray = selector => findAll(selector).map(el => el.textContent.trim());
 
+// TODO: Delete this
 module('Integration | Component | navi-request-preview', function(hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
@@ -99,7 +100,7 @@ module('Integration | Component | navi-request-preview', function(hooks) {
     });
   });
 
-  test('columns render and options work properly', async function(assert) {
+  skip('columns render and options work properly', async function(assert) {
     assert.expect(29);
 
     this.set('visualization', { metadata: {} });
@@ -282,7 +283,7 @@ module('Integration | Component | navi-request-preview', function(hooks) {
     );
   });
 
-  test('Remove and edit columns that have duplicates', async function(assert) {
+  skip('Remove and edit columns that have duplicates', async function(assert) {
     assert.expect(19);
 
     const selectColumnHeaderOptions = (content, index) =>

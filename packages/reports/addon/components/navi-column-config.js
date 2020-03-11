@@ -7,9 +7,16 @@
  *    @isOpen={{true}}
  *    @drawerDidChange={{this.callback}}
  *    @report={{@report}}
+ *    @openFilters={{route-action "openFilters"}}
  *    @onRemoveDateTime={{update-report-action "REMOVE_TIME_GRAIN"}}
  *    @onRemoveDimension={{update-report-action "REMOVE_DIMENSION_FRAGMENT"}}
  *    @onRemoveMetric={{update-report-action "REMOVE_METRIC_FRAGMENT"}}
+ *    @onAddDimension={{update-report-action "ADD_DIMENSION"}}
+ *    @onAddMetric={{update-report-action "ADD_METRIC"}}
+ *    @onAddMetricWithParameter={{update-report-action "ADD_METRIC_WITH_PARAM"}}
+ *    @onToggleDimFilter={{update-report-action "TOGGLE_DIM_FILTER"}}
+ *    @onToggleMetricFilter={{update-report-action "TOGGLE_METRIC_FILTER"}}
+ *    @onToggleParameterizedMetricFilter={{update-report-action "TOGGLE_PARAMETERIZED_METRIC_FILTER"}}
  *  />
  */
 import Component from '@ember/component';
@@ -45,27 +52,40 @@ class NaviColumnConfig extends Component {
   /**
    * @property {Object[]} columns - date time (if not all), dimension, and metric columns from the request
    */
-  @computed('report.request.{metrics.[],dimensions.[],logicalTable.timeGrain}')
+  @computed(
+    'report.request.{metrics.@each.parameters,dimensions.[],filters.[],having.[],logicalTable.timeGrain}',
+    'report.visualization'
+  )
   get columns() {
+    const { request, visualization } = this.report;
     const {
       metrics,
       dimensions,
+      filters,
+      having,
       logicalTable: { timeGrain }
-    } = this.report.request;
+    } = request;
+
+    const filteredDimensions = filters.toArray().map(f => f.dimension.name);
+    const filteredMetrics = having.toArray().map(h => h.metric.canonicalName);
 
     const dimensionColumns = dimensions.toArray().map(dimension => {
+      const { name } = dimension.dimension;
       return {
         type: 'dimension',
-        name: dimension.dimension.name,
-        displayName: this.getDisplayName(dimension, 'dimension'),
+        name,
+        displayName: this.getDisplayName(dimension, 'dimension', visualization),
+        isFiltered: filteredDimensions.includes(name),
         fragment: dimension
       };
     });
     const metricColumns = metrics.toArray().map(metric => {
+      const name = metric.canonicalName;
       return {
         type: 'metric',
-        name: metric.canonicalName,
-        displayName: this.getDisplayName(metric, 'metric'),
+        name,
+        displayName: this.getDisplayName(metric, 'metric', visualization),
+        isFiltered: filteredMetrics.includes(name),
         fragment: metric
       };
     });
@@ -76,7 +96,7 @@ class NaviColumnConfig extends Component {
       columns.unshift({
         type: 'dateTime',
         name: 'dateTime',
-        displayName: this.getDisplayName(timeGrain, 'dateTime'),
+        displayName: this.getDisplayName(timeGrain, 'dateTime', visualization),
         fragment: timeGrain
       });
     }
@@ -91,12 +111,13 @@ class NaviColumnConfig extends Component {
 
   /**
    * @method getDisplayName
-   * @param {Object} asset
-   * @param {String} type
-   * @param {Object} visualization
+   * @param {Object} column - the column being displayed
+   * @param {String} type - the type of column (metric, dimension, dateTime)
+   * @param {Object} visualization - the visualization metadata
    * @returns {String} display name from visualization metadata or default display name for metric, dimension, or Date
    */
-  getDisplayName(asset, type) {
+  getDisplayName(column, type, visualization) {
+    const visMetaData = visualization.metadata.style || {};
     const nameServiceMap = {
       // TODO: Add namespace pararemeter when metricName service supports it
       metric: metric => this.metricName.getDisplayName(metric.serialize()),
@@ -104,7 +125,74 @@ class NaviColumnConfig extends Component {
       dateTime: dateTime => `Date Time (${dateTime.longName})`
     };
 
-    return nameServiceMap[type](asset);
+    const ID_FIELD_MAP = {
+      metric: metric => metric.canonicalName,
+      dimension: dimension => dimension.dimension.name,
+      dateTime: () => 'dateTime'
+    };
+
+    const alias = visMetaData.aliases?.find(alias => alias.name === ID_FIELD_MAP[type](column) && alias.type === type);
+
+    return alias?.as || nameServiceMap[type](column);
+  }
+
+  /**
+   * Makes a copy of the metrics parameters e.g { currency: USD }
+   * @method _cloneMetricParams
+   * @param {Object} metricColumn - a metric column
+   */
+  _cloneMetricParams(metricColumn) {
+    return metricColumn.metric.paramNames.reduce((params, newParam) => {
+      params[newParam] = metricColumn.parameters[newParam];
+      return params;
+    }, {});
+  }
+
+  /**
+   * Adds a copy of the given column to the request including its parameters
+   * @action
+   * @param {Object} column - The metric/dimension column to make a copy of
+   */
+  @action
+  cloneColumn(column) {
+    const { type } = column;
+    const newColumn = column.fragment[type];
+    if (type === 'metric') {
+      if (newColumn.hasParameters) {
+        this.onAddMetricWithParameter?.(newColumn, this._cloneMetricParams(column.fragment));
+      } else {
+        this.onAddMetric?.(newColumn);
+      }
+    } else if (type === 'dimension') {
+      this.onAddDimension?.(newColumn);
+    }
+  }
+
+  /**
+   * Adds/removes a filter for the given column including its parameters
+   * @action
+   * @param {Object} column  - The metric/dimension to add a filter for
+   */
+  @action
+  toggleColumnFilter(column) {
+    const oldFilters = this.report.request.filters.length + this.report.request.having.length;
+    const { type } = column;
+    const newColumn = column.fragment[type];
+    if (type === 'metric') {
+      if (newColumn.hasParameters) {
+        this.onToggleParameterizedMetricFilter?.(newColumn, this._cloneMetricParams(column.fragment));
+      } else {
+        this.onToggleMetricFilter?.(newColumn);
+      }
+    } else if (type === 'dimension') {
+      this.onToggleDimFilter?.(newColumn);
+    }
+    const newFilters = this.report.request.filters.length + this.report.request.having.length;
+
+    if (newFilters > oldFilters) {
+      // If we added a filter/having we should open the filters
+      this.openFilters?.();
+    }
   }
 
   /**

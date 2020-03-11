@@ -33,6 +33,7 @@ export const RequestActions = {
   UPDATE_FILTER: 'updateFilter',
   UPDATE_FILTER_PARAM: 'updateFilterParam',
   UPDATE_METRIC_PARAM: 'updateMetricParam',
+  UPDATE_METRIC_FRAGMENT_WITH_PARAM: 'updateMetricFragmentWithParam',
   UPDATE_TABLE: 'updateTable',
   UPSERT_SORT: 'upsertSort'
 };

@@ -3,9 +3,16 @@
   @isOpen={{this.isColumnDrawerOpen}}
   @drawerDidChange={{this.resizeVisualization}}
   @report={{@report}}
+  @openFilters={{route-action "openFilters"}}
   @onRemoveDateTime={{update-report-action "REMOVE_TIME_GRAIN"}}
   @onRemoveDimension={{update-report-action "REMOVE_DIMENSION_FRAGMENT"}}
   @onRemoveMetric={{update-report-action "REMOVE_METRIC_FRAGMENT"}}
+  @onAddDimension={{update-report-action "ADD_DIMENSION"}}
+  @onAddMetric={{update-report-action "ADD_METRIC"}}
+  @onAddMetricWithParameter={{update-report-action "ADD_METRIC_WITH_PARAM"}}
+  @onToggleDimFilter={{update-report-action "TOGGLE_DIM_FILTER"}}
+  @onToggleMetricFilter={{update-report-action "TOGGLE_METRIC_FILTER"}}
+  @onToggleParameterizedMetricFilter={{update-report-action "TOGGLE_PARAMETERIZED_METRIC_FILTER"}}
 />
 <div class="report-view__visualization-main">
   <div class="report-view__visualization-header">
