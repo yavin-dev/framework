@@ -204,14 +204,21 @@ module('Unit | Metadata Model | Dimension', function(hooks) {
       name: 'dimensionOne'
     });
     const server = new Pretender(metadataRoutes);
+    const originalDataSources = dimensionOne.metadata.loadedDataSources;
+    dimensionOne.metadata.set('loadedDataSources', ['dummy']);
 
+    const expected = {
+      cardinality: 60,
+      category: 'categoryOne',
+      longName: 'Dimension One',
+      name: 'dimensionOne'
+    };
     const result = await dimensionOne.get('extended');
-    assert.deepEqual(result, {
-      'cardinality': 60,
-      'category': 'categoryOne',
-      'longName': 'Dimension One',
-      'name': 'dimensionOne'
-    }, 'dimension model can fetch extended attributes');
+    assert.ok(
+      Object.keys(expected).every(key => result[key] === expected[key]),
+      'dimension model can fetch extended attributes'
+    );
     server.shutdown();
+    dimensionOne.metadata.set('loadedDataSources', originalDataSources);
   });
 });

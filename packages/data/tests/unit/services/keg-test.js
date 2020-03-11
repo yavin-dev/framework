@@ -216,15 +216,19 @@ module('Unit | Service | keg', function(hooks) {
   });
 
   test('pushMany updates keg records when provided records have the same id', function(assert) {
-    assert.expect(4);
+    assert.expect(7);
 
     let firstPush = Keg.pushMany('record', [Record1, Record2]);
 
-    let secondPush = Keg.pushMany('record', [{ id: 1, description: 'updated' }, Record3]);
+    let secondPush = Keg.pushMany('record', [
+      { id: 1, description: 'updated' },
+      Record3,
+      { id: 4, description: 'partially loaded record', partial: true }
+    ]);
 
     assert.deepEqual(
       Keg.all('record'),
-      firstPush.concat(secondPush.get(1)),
+      [...firstPush, secondPush[1], secondPush[2]],
       'Pushing a records into the keg with an existing id does not add a new record'
     );
 
@@ -246,6 +250,26 @@ module('Unit | Service | keg', function(hooks) {
       firstPush.get('firstObject'),
       'After updating a record the same object is return when fetching'
     );
+
+    let thirdPush = Keg.pushMany('record', [
+      {
+        id: 4,
+        description: 'Fully loaded record'
+      }
+    ]);
+
+    assert.deepEqual(
+      Keg.all('record'),
+      [...firstPush, secondPush[1], ...thirdPush],
+      'Pushing a records into the keg with an existing id does not add a new record'
+    );
+
+    assert.notOk(
+      Keg.getById('record', 4).partial,
+      'Partial flag is removed when partial record is updated without flag in update set'
+    );
+
+    assert.equal(secondPush[2], thirdPush[0], 'After update the returned record is the same object');
   });
 
   test('pushMany can take an explicit modelFactory', function(assert) {
