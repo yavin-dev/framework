@@ -75,7 +75,7 @@ class NaviColumnConfig extends Component {
         type: 'dimension',
         name,
         displayName: this.getDisplayName(dimension, 'dimension', visualization),
-        isFiltered: !!filteredDimensions.includes(name),
+        isFiltered: filteredDimensions.includes(name),
         fragment: dimension
       };
     });
@@ -85,7 +85,7 @@ class NaviColumnConfig extends Component {
         type: 'metric',
         name,
         displayName: this.getDisplayName(metric, 'metric', visualization),
-        isFiltered: !!filteredMetrics.includes(name),
+        isFiltered: filteredMetrics.includes(name),
         fragment: metric
       };
     });
@@ -133,11 +133,11 @@ class NaviColumnConfig extends Component {
 
     const alias = visMetaData.aliases?.find(alias => alias.name === ID_FIELD_MAP[type](column) && alias.type === type);
 
-    return alias && alias.as ? alias.as : nameServiceMap[type](column);
+    return alias?.as || nameServiceMap[type](column);
   }
 
   /**
-   * Makes a copy of the metrics parameters e.g { curreny: USD }
+   * Makes a copy of the metrics parameters e.g { currency: USD }
    * @method _cloneMetricParams
    * @param {Object} metricColumn - a metric column
    */

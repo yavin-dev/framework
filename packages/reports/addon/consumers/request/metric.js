@@ -73,7 +73,7 @@ export default ActionConsumer.extend({
      * @param {String} parameterKey - type of parameter, e.g. 'currency'
      */
     [RequestActions.UPDATE_METRIC_FRAGMENT_WITH_PARAM](route, metricModel, parameterId, parameterKey) {
-      metricModel && metricModel.updateParameter(parameterId, parameterKey);
+      metricModel?.updateParameter?.(parameterId, parameterKey);
     },
 
     /**

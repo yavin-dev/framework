@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, findAll, click } from '@ember/test-helpers';
+import { render, findAll, click, settled } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import { setupAnimationTest, animationsSettled } from 'ember-animated/test-support';
@@ -353,8 +353,10 @@ module('Integration | Component | navi-column-config', function(hooks) {
     assert
       .dom('.navi-column-config-base__filter-icon')
       .doesNotHaveClass('navi-column-config-base__filter-icon--active', 'Metric config filter is not active');
+
     this.report.request.having.pushObject({ metric: this.report.request.metrics.objectAt(0) });
-    this.set('report', this.report);
+    await settled();
+
     assert
       .dom('.navi-column-config-base__filter-icon')
       .hasClass('navi-column-config-base__filter-icon--active', 'Metric config filter is active if there is a having');
@@ -389,8 +391,10 @@ module('Integration | Component | navi-column-config', function(hooks) {
     assert
       .dom('.navi-column-config-base__filter-icon')
       .doesNotHaveClass('navi-column-config-base__filter-icon--active', 'Metric config filter is not active');
+
     this.report.request.having.pushObject({ metric: this.report.request.metrics.objectAt(0) });
-    this.set('report', this.report);
+    await settled();
+
     assert
       .dom('.navi-column-config-base__filter-icon')
       .hasClass('navi-column-config-base__filter-icon--active', 'Metric config filter is active if there is a having');
@@ -425,8 +429,10 @@ module('Integration | Component | navi-column-config', function(hooks) {
     assert
       .dom('.navi-column-config-base__filter-icon')
       .doesNotHaveClass('navi-column-config-base__filter-icon--active', 'Dimension config filter is not active');
+
     this.report.request.filters.pushObject({ dimension: this.report.request.dimensions.objectAt(0).dimension });
-    this.set('report', this.report);
+    await settled();
+
     assert
       .dom('.navi-column-config-base__filter-icon')
       .hasClass(

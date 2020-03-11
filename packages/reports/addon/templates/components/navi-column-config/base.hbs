@@ -20,6 +20,7 @@
       <Input
         class="navi-column-config-base__base-type-input navi-column-config-base__option-input"
         id="{{this.classId}}-base-type-input"
+        {{!-- TODO: Possibly remove @disabled={{false}} and allow changing base metric here in the future --}}
         @disabled={{true}}
         @value={{get @column.fragment (concat @column.type ".name")}}
         @key-up={{@onUpdateColumnName}}

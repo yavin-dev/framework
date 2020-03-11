@@ -856,6 +856,38 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
       .hasClass('report-builder__container--filters--collapsed', 'Filters stay collapsed when a filter is removed');
   });
 
+  test('config - filters - parameterized metrics - stay collapsed on remove', async function(assert) {
+    assert.expect(4);
+    await visit('/reports/new');
+    await click('.navi-report__run-btn');
+
+    await clickItem('metric', 'Platform Revenue');
+    await animationsSettled();
+
+    assert
+      .dom('.report-builder__container--filters')
+      .doesNotHaveClass('report-builder__container--filters--collapsed', 'Filters are open by default');
+    await click('.report-builder__container-header__filters-toggle-icon');
+
+    await click('.navi-column-config-item__name[title="Platform Revenue (USD)"]');
+    await click('.navi-column-config-base__filter-icon');
+
+    assert
+      .dom('.navi-column-config-base__filter-icon')
+      .hasClass('navi-column-config-base__filter-icon--active', 'The filter is active after being added');
+
+    await click('.report-builder__container-header__filters-toggle-icon');
+    assert
+      .dom('.report-builder__container--filters')
+      .hasClass('report-builder__container--filters--collapsed', 'Filters are collapsed after click');
+
+    await click('.navi-column-config-base__filter-icon');
+
+    assert
+      .dom('.report-builder__container--filters')
+      .hasClass('report-builder__container--filters--collapsed', 'Filters stay collapsed when a filter is removed');
+  });
+
   test('config - filters - dimensions - stay collapsed on remove', async function(assert) {
     assert.expect(4);
     await visit('/reports/new');
