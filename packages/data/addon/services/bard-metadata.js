@@ -182,7 +182,7 @@ export default Service.extend({
     //Get entity if already present in the keg
     let dataSourceName = namespace || getDefaultDataSourceName();
     const kegRecord = get(this, '_keg').getById(`metadata/${type}`, id, dataSourceName);
-    if (kegRecord && !kegRecord.partial) {
+    if (kegRecord && !kegRecord.partialData) {
       return resolve(this.getById(type, id, dataSourceName));
     }
 

@@ -21,7 +21,7 @@ export default EmberObject.extend({
       tables = rawTables.map(table => {
         let timeGrains = table.timeGrains.map(timegrain => {
           dimensions = dimensions.concat(
-            timegrain.dimensions.map(dimension => Object.assign({}, dimension, { source, partial: true }))
+            timegrain.dimensions.map(dimension => Object.assign({}, dimension, { source, partialData: true }))
           );
 
           /*
@@ -33,7 +33,7 @@ export default EmberObject.extend({
               Object.assign({ valueType: metric.type }, metric, {
                 type: 'metric',
                 source,
-                partial: true
+                partialData: true
               })
             )
           );

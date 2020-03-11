@@ -223,13 +223,13 @@ module('Unit | Service | keg', function(hooks) {
     let secondPush = Keg.pushMany('record', [
       { id: 1, description: 'updated' },
       Record3,
-      { id: 4, description: 'partially loaded record', partial: true }
+      { id: 4, description: 'partially loaded record', partialData: true }
     ]);
 
     assert.deepEqual(
       Keg.all('record'),
       [...firstPush, secondPush[1], secondPush[2]],
-      'Pushing a records into the keg with an existing id does not add a new record'
+      'Pushing records into the keg with an existing id does not add a new record'
     );
 
     assert.equal(
@@ -261,11 +261,11 @@ module('Unit | Service | keg', function(hooks) {
     assert.deepEqual(
       Keg.all('record'),
       [...firstPush, secondPush[1], ...thirdPush],
-      'Pushing a records into the keg with an existing id does not add a new record'
+      'Pushing a record into the keg with an existing id containing partial data does not add a new record'
     );
 
     assert.notOk(
-      Keg.getById('record', 4).partial,
+      Keg.getById('record', 4).partialData,
       'Partial flag is removed when partial record is updated without flag in update set'
     );
 
