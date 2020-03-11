@@ -551,7 +551,8 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
           valueType: 'number',
           source: 'dummy',
           tableId: 'tableName',
-          timegrains: ['day', 'month']
+          timegrains: ['day', 'month'],
+          partialData: true
         },
         {
           category: 'category',
@@ -561,7 +562,8 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
           source: 'dummy',
           tableId: 'tableName',
           metricFunctionId: 'moneyMetric',
-          timegrains: ['day', 'month']
+          timegrains: ['day', 'month'],
+          partialData: true
         }
       ],
       'The metric with parameters has a metricFunctionId provided by the raw data'
@@ -596,7 +598,8 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
           type: 'field',
           valueType: 'text',
           storageStrategy: null,
-          timegrains: ['day', 'month']
+          timegrains: ['day', 'month'],
+          partialData: true
         }
       ],
       'The lone dimension on the table is returned in the dimensions list'
@@ -713,7 +716,8 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
       storageStrategy: null,
       source,
       tableId: tableName,
-      timegrains: [grain]
+      timegrains: [grain],
+      partialData: true
     };
 
     const result = Serializer._constructDimension(dimension, grain, source, tableName, currentDimensions);
@@ -772,7 +776,8 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
       valueType: metric.type,
       source,
       tableId: tableName,
-      timegrains: [grain]
+      timegrains: [grain],
+      partialData: true
     };
     const result = Serializer._constructMetric(metric, grain, source, tableName, currentMetrics, metricFunctions);
     assert.deepEqual(
@@ -847,7 +852,8 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
       valueType: metric.type,
       source,
       tableId: tableName,
-      timegrains: [grain]
+      timegrains: [grain],
+      partialData: true
     };
     const {
       metric: resultMetric,
@@ -900,7 +906,8 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
       source,
       tableId: tableName,
       timegrains: [grain],
-      metricFunctionId: metric.metricFunctionId
+      metricFunctionId: metric.metricFunctionId,
+      partialData: true
     };
     const {
       metric: resultMetric,
