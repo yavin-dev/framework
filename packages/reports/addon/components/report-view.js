@@ -87,16 +87,11 @@ class ReportView extends Component {
   hasMostRecentResponse = false;
 
   /**
-   * @property {Boolean} showRequestPreview - true if request preview is selected, false otherwise
+   * @property {String} currentView - the visualization type of the report
    */
-  showRequestPreview = false;
-
-  /**
-   * @property {String} currentView - request-preview or the visualization type of the report
-   */
-  @computed('showRequestPreview', 'report.visualization.type')
+  @computed('report.visualization.type')
   get currentView() {
-    return this.showRequestPreview ? 'request-preview' : this.report.visualization.type;
+    return this.report.visualization.type;
   }
 
   /**
@@ -166,18 +161,11 @@ class ReportView extends Component {
       response
     } = this;
 
-    if (type === 'request-preview') {
-      this.set('showRequestPreview', true);
-      this.set('isEditingVisualization', false);
-      return;
-    }
-
     let newVisualization = this.store.createFragment(type, {
       _request: request //Provide request for validation
     });
     newVisualization.rebuildConfig(request, response);
     set(report, 'visualization', newVisualization);
-    this.set('showRequestPreview', false);
   }
 
   /**
