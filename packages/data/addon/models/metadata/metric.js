@@ -7,6 +7,24 @@ import Column from './column';
 
 export default class Metric extends Column {
   /**
+   * @override
+   * @method init
+   */
+  init() {
+    super.init(...arguments);
+
+    const { metricFunctionId, source, metadataService } = this;
+
+    if (metricFunctionId) {
+      this.metricFunctionPromise = metadataService
+        .findById('metric-function', metricFunctionId, source)
+        .then(result => {
+          this.metricFunction = result;
+        });
+    }
+  }
+
+  /**
    * @static
    * @property {String} identifierField
    */
@@ -30,11 +48,14 @@ export default class Metric extends Column {
 
   /**
    * Many to One relationship
-   * @property {Promise<MetricFunction>} metricFunction
+   * @property {MetricFunction} metricFunction
    */
-  get metricFunction() {
-    return this.metadataService.findById('metadata/metric/metric-function', this.metricFunctionId, this.source);
-  }
+  metricFunction;
+
+  /**
+   * @property {Promise} metricFunctionPromise - resolves when metricFunction is fetched from the id
+   */
+  metricFunctionPromise;
 
   /**
    * @property {Boolean} hasParameters
@@ -44,30 +65,27 @@ export default class Metric extends Column {
   }
 
   /**
-   * @property {Array} arguments - arguments for the metric
+   * @property {Object[]} arguments - arguments for the metric
    */
   get arguments() {
     return this.metricFunction?.arguments || [];
   }
 
   /**
-   * @method {Object} getParameter
-   * retrieves the queried parameter object from metadata
-   *
-   * @param {String} name
+   * @method getParameter - retrieves the queried parameter object from metadata
+   * @param {String} id
    * @returns {Object}
    */
-  getParameter(name) {
+  getParameter(id) {
     if (!this.hasParameters) {
       return;
     }
 
-    return this.metricFunction.arguments.find(arg => arg.name === name);
+    return this.metricFunction.arguments.find(arg => arg.id === id);
   }
 
   /**
-   * @method {Object} getDefaultParameters
-   * retrieves all the default values for all the parameters
+   * @method getDefaultParameters - retrieves all the default values for all the parameters
    * @returns {Object|undefined}
    */
   getDefaultParameters() {
@@ -78,7 +96,8 @@ export default class Metric extends Column {
     const { arguments: args } = this;
 
     return args.reduce((acc, curr) => {
-      acc[curr.name] = curr.defaultValue;
+      acc[curr.id] = curr.defaultValue;
+      return acc;
     }, {});
   }
 
@@ -86,7 +105,7 @@ export default class Metric extends Column {
    * @property {Promise} extended - extended metadata for the metric that isn't provided in initial table fullView metadata load
    */
   get extended() {
-    const { metadataService, name, source } = this;
-    return metadataService.findById('metric', name, source);
+    const { metadataService, id, source } = this;
+    return metadataService.findById('metric', id, source);
   }
 }

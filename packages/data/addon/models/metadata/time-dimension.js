@@ -6,12 +6,6 @@ import Dimension from './dimension';
 
 export default class TimeDimension extends Dimension {
   /**
-   * @static
-   * @property {String} identifierField
-   */
-  static identifierField = 'id';
-
-  /**
    * @property {String[]} supportedGrains
    */
   supportedGrains;

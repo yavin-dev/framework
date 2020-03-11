@@ -6,14 +6,17 @@
  */
 
 import { deprecate } from '@ember/application/deprecations';
-import { A } from '@ember/array';
 import { assert } from '@ember/debug';
 import Service, { inject as service } from '@ember/service';
+import { dasherize } from '@ember/string';
+import { pluralize } from 'ember-inflector';
 import { assign } from '@ember/polyfills';
 import { setOwner, getOwner } from '@ember/application';
+
 import { getWithDefault } from '@ember/object';
-import { resolve } from 'rsvp';
 import { getDefaultDataSourceName } from '../utils/adapter';
+
+const VALID_TYPES = ['table', 'dimension', 'time-dimension', 'metric', 'metric-function', 'function-argument'];
 
 export default class BardMetadataService extends Service {
   /**
@@ -51,6 +54,7 @@ export default class BardMetadataService extends Service {
     this._serializer = owner.lookup('serializer:bard-metadata');
   }
 
+
   /**
    * @method loadMetadata
    * Fetches metadata from the bard WS using the metadata adapter and loads into keg
@@ -81,14 +85,14 @@ export default class BardMetadataService extends Service {
             //create metadata model objects and load into keg
             this._loadMetadataForType('table', metadata.tables, dataSource);
             this._loadMetadataForType('dimension', metadata.dimensions, dataSource);
-            this._loadMetadataForType('timeDimension', metadata.timeDimensions, dataSource);
+            this._loadMetadataForType('time-dimension', metadata.timeDimensions, dataSource);
             this._loadMetadataForType('metric', metadata.metrics, dataSource);
 
             this.loadedDataSources.push(dataSource);
           }
         });
     }
-    return resolve();
+    return Promise.resolve();
   }
 
   /**
@@ -108,7 +112,7 @@ export default class BardMetadataService extends Service {
       return payload;
     });
 
-    return this._keg.pushMany(`metadata/${type}`, metadata, { namespace });
+    return this._keg.pushMany(`metadata/${dasherize(type)}`, metadata, { namespace });
   }
 
   /**
@@ -120,7 +124,7 @@ export default class BardMetadataService extends Service {
    * @returns {Promise} - array of all table metadata
    */
   all(type, namespace) {
-    assert('Type must be table, metric or dimension', A(['table', 'dimension', 'metric']).includes(type));
+    assert('Type must be a valid navi-data model type', VALID_TYPES.includes(type));
     assert('Metadata must be loaded before the operation can be performed', this.loadedDataSources.length > 0);
 
     if (namespace) {
@@ -140,7 +144,7 @@ export default class BardMetadataService extends Service {
    * @returns {Object} metadata model object
    */
   getById(type, id, namespace) {
-    assert('Type must be table, metric or dimension', A(['table', 'dimension', 'metric']).includes(type));
+    assert('Type must be a valid navi-data model type', VALID_TYPES.includes(type));
     let source = namespace || getDefaultDataSourceName();
     assert('Metadata must be loaded before the operation can be performed', this.loadedDataSources.includes(source));
 
@@ -157,12 +161,17 @@ export default class BardMetadataService extends Service {
    * @returns {Promise}
    */
   fetchById(type, id, namespace) {
-    assert('Type must be table, metric or dimension', A(['table', 'dimension', 'metric']).includes(type));
+    assert('Type must be a valid navi-data model type', VALID_TYPES.includes(type));
     let dataSourceName = namespace || getDefaultDataSourceName();
 
     return this._adapter.fetchMetadata(type, id, { dataSourceName }).then(meta => {
+      //If there is a serializer defined for the type, normalize before loading into keg
+      meta = getOwner(this)
+        .lookup(`serializer:${type}`)
+        ?.normalize({ [pluralize(type)]: [meta] }, namespace) || [meta];
+
       //load into keg if not already present
-      return this._loadMetadataForType(type, [meta], dataSourceName)?.[0];
+      return this._loadMetadataForType(type, meta, dataSourceName)?.[0];
     });
   }
 
@@ -180,7 +189,7 @@ export default class BardMetadataService extends Service {
     let dataSourceName = namespace || getDefaultDataSourceName();
     const kegRecord = this._keg.getById(`metadata/${type}`, id, dataSourceName);
     if (kegRecord && !kegRecord.partialData) {
-      return resolve(this.getById(type, id, dataSourceName));
+      return Promise.resolve(this.getById(type, id, dataSourceName));
     }
 
     return this.fetchById(type, id, dataSourceName);

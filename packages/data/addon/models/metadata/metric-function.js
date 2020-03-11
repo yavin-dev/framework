@@ -11,8 +11,8 @@ export default class MetricFunction extends EmberObject {
   /**
    * @property {Ember.Service} keg
    */
-  @service('bard-metadata')
-  metadataService;
+  @service('keg')
+  keg;
 
   /**
    * @property {String} id
@@ -35,16 +35,7 @@ export default class MetricFunction extends EmberObject {
   source;
 
   /**
-   * @property {String[]} argumentIds - ids that map to the function argument instances related to this metric function
-   */
-  argumentIds = [];
-
-  /**
    * @property {FunctionArgument[]} - Function argument instances related to this metric function
    */
-  get arguments() {
-    return this.argumentIds.map(argId => {
-      return this.metadataService.findById('metadata/metric/function-argument', argId, this.source);
-    });
-  }
+  arguments;
 }

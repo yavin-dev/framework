@@ -39,17 +39,25 @@ export default class Dimension extends Column {
   idTag = 'id';
 
   /**
+   * @property {String} _cardinality
+   */
+  _cardinality;
+
+  /**
    * @property {CardinalitySize} cardinality - the cardinality size of the table the dimension is sourced from
    */
   get cardinality() {
-    const { type, table } = this;
+    const { type, table, _cardinality } = this;
 
-    if (type === 'field') {
-      return Promise.resolve(table.cardinalitySize);
-    }
+    if (_cardinality) return _cardinality;
+
+    if (type === 'field') return Promise.resolve(table.cardinalitySize);
 
     // TODO: get cardinality for ref and formula type dimensions
     return undefined;
+  }
+  set cardinality(card) {
+    this._cardinality = card;
   }
 
   /**
@@ -60,7 +68,7 @@ export default class Dimension extends Column {
    * @returns {Array} array of tags
    */
   getTagsForField(fieldName) {
-    const field = this.fields.find(f => f.name === fieldName);
+    const field = this.fields?.find(f => f.name === fieldName);
 
     return field?.tags || [];
   }
@@ -73,8 +81,8 @@ export default class Dimension extends Column {
    * @returns {Array} array of field objects
    */
   getFieldsForTag(tag) {
-    return this.fields.filter(field => {
-      return field.tags.includes(tag);
+    return this.fields?.filter(field => {
+      return field.tags?.includes(tag);
     });
   }
 
@@ -83,7 +91,7 @@ export default class Dimension extends Column {
    */
   get primaryKeyFieldName() {
     const { primaryKeyTag: tag } = this;
-    const field = this.getFieldsForTag(tag)[0];
+    const field = this.getFieldsForTag(tag)?.[0];
     return field?.name || 'id';
   }
 
@@ -92,7 +100,7 @@ export default class Dimension extends Column {
    */
   get descriptionFieldName() {
     const { descriptionTag: tag } = this;
-    const field = this.getFieldsForTag(tag)[0];
+    const field = this.getFieldsForTag(tag)?.[0];
     return field?.name || 'desc';
   }
 
@@ -101,7 +109,7 @@ export default class Dimension extends Column {
    */
   get idFieldName() {
     const { idTag: tag } = this;
-    const field = this.getFieldsForTag(tag)[0];
+    const field = this.getFieldsForTag(tag)?.[0];
     return field?.name || this.primaryKeyFieldName;
   }
 
@@ -109,7 +117,7 @@ export default class Dimension extends Column {
    * @property {Promise} extended - extended metadata for the dimension that isn't provided in initial table fullView metadata load
    */
   get extended() {
-    const { metadata, name, source } = this;
-    return metadata.findById('dimension', name, source);
+    const { metadata, id, source } = this;
+    return metadata.findById('dimension', id, source);
   }
 }

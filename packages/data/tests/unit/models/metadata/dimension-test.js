@@ -12,10 +12,9 @@ module('Unit | Metadata Model | Dimension', function(hooks) {
 
   hooks.beforeEach(function() {
     Payload = {
-      name: 'age',
-      longName: 'Age',
+      id: 'age',
+      name: 'Age',
       category: 'Audience',
-      cardinality: 13,
       fields: [
         {
           name: 'id',
@@ -38,19 +37,17 @@ module('Unit | Metadata Model | Dimension', function(hooks) {
   test('factory has identifierField defined', function(assert) {
     assert.expect(1);
 
-    assert.equal(get(DimensionMetadataModel, 'identifierField'), 'name', 'identifierField property is set to `name`');
+    assert.equal(get(DimensionMetadataModel, 'identifierField'), 'id', 'identifierField property is set to `id`');
   });
 
   test('it properly hydrates properties', function(assert) {
-    assert.expect(5);
+    assert.expect(4);
 
-    assert.deepEqual(get(Dimension, 'name'), Payload.name, 'name property is hydrated properly');
+    assert.deepEqual(get(Dimension, 'id'), Payload.id, 'name property is hydrated properly');
 
-    assert.equal(get(Dimension, 'longName'), Payload.longName, 'longName property was properly hydrated');
+    assert.equal(get(Dimension, 'name'), Payload.name, 'longName property was properly hydrated');
 
     assert.equal(get(Dimension, 'category'), Payload.category, 'category property was properly hydrated');
-
-    assert.equal(get(Dimension, 'cardinality'), Payload.cardinality, 'cardinality property was properly hydrated');
 
     assert.deepEqual(get(Dimension, 'fields'), Payload.fields, 'fields property was properly hydrated');
   });
@@ -201,7 +198,7 @@ module('Unit | Metadata Model | Dimension', function(hooks) {
 
   test('extended property', async function(assert) {
     const dimensionOne = DimensionMetadataModel.create(this.owner.ownerInjection(), {
-      name: 'dimensionOne'
+      id: 'dimensionOne'
     });
     const server = new Pretender(metadataRoutes);
     const originalDataSources = dimensionOne.metadata.loadedDataSources;

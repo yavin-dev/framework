@@ -5,9 +5,9 @@
  * Description: A serializer for the bard metadata
  */
 
-import { guidFor } from '@ember/object/internals';
-import { INTRINSIC_VALUE_EXPRESSION } from 'navi-data/models/metadata/metric/function-argument';
 import EmberObject from '@ember/object';
+import { guidFor } from '@ember/object/internals';
+import { constructFunctionArguments } from 'navi-data/serializers/metric-function';
 
 export default class BardMetadataSerializer extends EmberObject {
   /**
@@ -122,29 +122,6 @@ export default class BardMetadataSerializer extends EmberObject {
 
   /**
    * @private
-   * @method _constructFunctionArguments
-   * @param {Object} parameters - map of parameter objects to turn into function arguments
-   * @returns {Object[]} array of function argument objects
-   */
-  _constructFunctionArguments(parameters) {
-    return Object.keys(parameters).map(param => {
-      const paramObj = parameters[param];
-      const { type, defaultValue, values, dimensionName } = paramObj;
-
-      return {
-        id: param,
-        name: param,
-        valueType: 'TEXT',
-        type: 'ref', // It will always be ref for our case because all our parameters have their valid values defined in a dimension or enum
-        expression: type === 'dimension' ? `dimension:${dimensionName}` : INTRINSIC_VALUE_EXPRESSION,
-        values: values || null,
-        defaultValue
-      };
-    });
-  }
-
-  /**
-   * @private
    * @method _constructDimension
    * @param {Object} dimension
    * @param {String} grain
@@ -220,7 +197,7 @@ export default class BardMetadataSerializer extends EmberObject {
         newMetric.metricFunctionId = metricFunctionId;
         metricFunctionsProvided = true;
       } else if (parameters && metricFunctions) {
-        const functionArguments = this._constructFunctionArguments(parameters);
+        const functionArguments = constructFunctionArguments(parameters);
         const metricFunction = this._getMetricFunction(metricFunctions, functionArguments, source);
 
         newMetric.metricFunctionId = metricFunction.id;

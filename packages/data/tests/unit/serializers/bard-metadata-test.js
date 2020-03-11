@@ -614,40 +614,6 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
     );
   });
 
-  test('_constructFunctionArguments', function(assert) {
-    const parameters = {
-      currency: {
-        type: 'dimension',
-        defaultValue: 'USD',
-        dimensionName: 'displayCurrency'
-      },
-      type: {
-        type: 'enum',
-        defaultValue: 'l',
-        values: [
-          {
-            id: 'l',
-            description: 'Left'
-          },
-          {
-            id: 'r',
-            description: 'Right'
-          },
-          {
-            id: 'm',
-            description: 'Middle'
-          }
-        ]
-      }
-    };
-
-    assert.deepEqual(
-      Serializer._constructFunctionArguments(parameters),
-      FunctionArguments,
-      'The parameter objects are successfully turned into metric function arguments'
-    );
-  });
-
   test('_getMetricFunction', function(assert) {
     assert.expect(9);
 

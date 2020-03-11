@@ -5,6 +5,7 @@
 
 import { inject as service } from '@ember/service';
 import EmberObject from '@ember/object';
+import { camelize } from '@ember/string';
 import { pluralize } from 'ember-inflector';
 import { configHost } from '../utils/adapter';
 
@@ -32,7 +33,7 @@ export default class BardMetadataAdapter extends EmberObject {
   _buildURLPath(type, id, options = {}) {
     const host = configHost(options);
     const { namespace } = this;
-    return `${host}/${namespace}/${pluralize(type)}/${id}`;
+    return `${host}/${namespace}/${camelize(pluralize(type))}/${id}`;
   }
 
   /**
