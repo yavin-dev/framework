@@ -148,13 +148,21 @@ module('Unit | Metadata Model | Metric', function(hooks) {
       name: 'metricOne'
     });
     const server = new Pretender(metadataRoutes);
+    const originalDataSources = metricOne.metadata.loadedDataSources;
+    metricOne.metadata.set('loadedDataSources', ['dummy']);
+
+    const expected = {
+      category: 'category',
+      longName: 'Metric One',
+      name: 'metricOne'
+    };
 
     const result = await metricOne.get('extended');
-    assert.deepEqual(result, 	{
-      'category': 'category',
-      'longName': 'Metric One',
-      'name': 'metricOne'
-    }, 'metric model can fetch extended attributes');
+    assert.ok(
+      Object.keys(expected).every(key => result[key] === expected[key]),
+      'metric model can fetch extended attributes'
+    );
     server.shutdown();
+    metricOne.metadata.set('loadedDataSources', originalDataSources);
   });
 });

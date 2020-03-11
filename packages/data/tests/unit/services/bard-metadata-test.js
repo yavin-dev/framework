@@ -1,5 +1,5 @@
 import EmberObject from '@ember/object';
-import { getOwner, setOwner } from '@ember/application';
+import { getOwner } from '@ember/application';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import Pretender from 'pretender';
@@ -14,22 +14,29 @@ import metadataRoutes, {
   Host
 } from '../../helpers/metadata-routes';
 
-let Service, Server;
+let Service, Server, originalService;
 
 module('Unit - Service - Bard Metadata', function(hooks) {
   setupTest(hooks);
 
   hooks.beforeEach(function() {
-    Service = this.owner.factoryFor('service:bard-metadata').create({
+    originalService = this.owner.factoryFor('service:bard-metadata');
+    const newService = this.owner.factoryFor('service:bard-metadata').class.extend({
       host: Host
     });
-    setOwner(Service, this.owner);
+    this.owner.unregister('service:bard-metadata');
+    this.owner.register('service:bard-metadata', newService);
+
+    Service = this.owner.lookup('service:bard-metadata');
 
     //setup Pretender
     Server = new Pretender(metadataRoutes);
   });
 
   hooks.afterEach(function() {
+    this.owner.unregister('service:bard-metadata');
+    this.owner.register('service:bard-metadata', originalService);
+
     //shutdown pretender
     Server.shutdown();
   });
@@ -245,10 +252,14 @@ module('Unit - Service - Bard Metadata', function(hooks) {
 
   test('fetchById', async function(assert) {
     assert.expect(5);
+    Service.set('loadedDataSources', ['dummy']);
     metadataRoutes.bind(Server)(1);
 
     const data = await Service.fetchById('metric', 'metricOne');
-    assert.deepEqual(data, MetricOne, 'Service fetchById should load correct data');
+    assert.ok(
+      Object.keys(MetricOne).every(key => MetricOne[key] === data[key]),
+      'Service fetchById should load correct data'
+    );
 
     let keg = Service._keg;
 
@@ -269,6 +280,8 @@ module('Unit - Service - Bard Metadata', function(hooks) {
 
     await Service.fetchById('metric', 'metricThree', 'blockhead');
     assert.deepEqual(keg.all('metadata/metric').mapBy('name'), ['metricOne', 'metricThree']);
+
+    Service.set('loadedDataSources', []);
   });
 
   test('multi-source all', async function(assert) {
@@ -296,11 +309,14 @@ module('Unit - Service - Bard Metadata', function(hooks) {
   });
 
   test('findById', async function(assert) {
-    assert.expect(6);
+    assert.expect(12);
     metadataRoutes.bind(Server)(1);
     Service.set('loadedDataSources', ['dummy']);
-    const metricOne = await Service.findById('metric', 'metricOne');
-    assert.deepEqual(metricOne, MetricOne, 'Service findById should load correct data');
+    const metricOne = await Service.findById('metric', 'metricOne', 'dummy');
+    assert.ok(
+      Object.keys(MetricOne).every(key => MetricOne[key] === metricOne[key]),
+      'Service findById should load correct data'
+    );
 
     let keg = Service._keg;
 
@@ -311,17 +327,42 @@ module('Unit - Service - Bard Metadata', function(hooks) {
     );
 
     const data = await Service.findById('metric', 'metricOne');
-    assert.deepEqual(data.name, MetricOne.name, 'Service findById should return correct data');
+    assert.ok(
+      Object.keys(MetricOne).every(key => MetricOne[key] === data[key]),
+      'Service findById should return correct data'
+    );
     assert.equal(Server.handledRequests.length, 1, 'Meta data endpoint only called once');
 
     let blockheadData = await Service.findById('metric', 'metricThree', 'blockhead');
 
-    assert.deepEqual(
+    assert.equal(
       blockheadData.name,
       'metricThree',
       'Service findById should return correct data when requesting other datasource'
     );
     assert.equal(Server.handledRequests.length, 2, 'Meta data endpoint called once for each metric');
+
+    keg.push('metadata/metric', Object.assign({}, MetricTwo, { partialData: true }), { namespace: 'dummy' });
+
+    const kegRecord = keg.getById('metadata/metric', 'metricTwo', 'dummy');
+    assert.ok(kegRecord.partialData, 'Partial metric exists in keg with partial data flag');
+
+    const findOnPartiallyLoadedMetric = await Service.findById('metric', 'metricTwo', 'dummy');
+    assert.ok(
+      Object.keys(MetricTwo).every(key => MetricTwo[key] === findOnPartiallyLoadedMetric[key]),
+      'Correct metric is returned'
+    );
+    assert.notOk(
+      findOnPartiallyLoadedMetric.partialData,
+      'Partial data flag is no longer present after direct access of metric'
+    );
+    assert.equal(Server.handledRequests.length, 3, 'Another request is sent for a partially loaded model');
+
+    const findAgain = await Service.findById('metric', 'metricTwo', 'dummy');
+    assert.equal(findAgain, findOnPartiallyLoadedMetric, 'Same record is returned on a second call');
+    assert.equal(Server.handledRequests.length, 3, 'No more requests are sent for subsequent findById calls');
+
+    Service.set('loadedDataSources', []);
   });
 
   test('getMetaField', async function(assert) {

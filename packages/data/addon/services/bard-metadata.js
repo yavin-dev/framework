@@ -109,7 +109,7 @@ export default Service.extend({
       return owner.factoryFor(`model:metadata/${type}`).create(payload);
     });
 
-    get(this, '_keg').pushMany(`metadata/${type}`, metadata, { namespace });
+    return get(this, '_keg').pushMany(`metadata/${type}`, metadata, { namespace });
   },
 
   /**
@@ -165,8 +165,7 @@ export default Service.extend({
       .fetchMetadata(type, id, { dataSourceName })
       .then(meta => {
         //load into keg if not already present
-        this._loadMetadataForType(type, [meta], dataSourceName);
-        return meta;
+        return this._loadMetadataForType(type, [meta], dataSourceName)?.[0];
       });
   },
 
@@ -182,7 +181,8 @@ export default Service.extend({
   findById(type, id, namespace) {
     //Get entity if already present in the keg
     let dataSourceName = namespace || getDefaultDataSourceName();
-    if (get(this, '_keg').getById(`metadata/${type}`, id, dataSourceName)) {
+    const kegRecord = get(this, '_keg').getById(`metadata/${type}`, id, dataSourceName);
+    if (kegRecord && !kegRecord.partialData) {
       return resolve(this.getById(type, id, dataSourceName));
     }
 
