@@ -12,8 +12,7 @@ import {
   clickItemFilter,
   getItem,
   getAll,
-  clickShowSelected,
-  renderAll
+  clickShowSelected
 } from 'navi-reports/test-support/report-builder';
 import config from 'ember-get-config';
 
