@@ -107,7 +107,7 @@ export default class BardMetadataService extends Service {
     });
 
     return this._keg.pushMany(`metadata/${type}`, metadata, { namespace });
-  },
+  }
 
   /**
    * @method all
