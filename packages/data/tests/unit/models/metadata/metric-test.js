@@ -136,8 +136,6 @@ module('Unit | Metadata Model | Metric', function(hooks) {
       id: 'metricOne'
     });
     const server = new Pretender(metadataRoutes);
-    const originalDataSources = metricOne.metadata.loadedDataSources;
-    metricOne.metadata.set('loadedDataSources', ['dummy']);
 
     const expected = {
       category: 'category',
@@ -151,6 +149,5 @@ module('Unit | Metadata Model | Metric', function(hooks) {
       'metric model can fetch extended attributes'
     );
     server.shutdown();
-    metricOne.metadata.set('loadedDataSources', originalDataSources);
   });
 });
