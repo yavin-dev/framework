@@ -177,6 +177,8 @@ class Table extends Component {
    * Determines if column has a custom display name
    *
    * @private
+   * @param {Object} column - column object
+   * @param {String} namespace - metadata namespace
    * @returns {Boolean}
    */
   _hasCustomDisplayName(column, namespace) {

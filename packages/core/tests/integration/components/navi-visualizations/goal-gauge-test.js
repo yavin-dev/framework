@@ -54,14 +54,14 @@ module('Integration | Component | goal gauge ', function(hooks) {
     _setModel(this, 'pageViews', 3030000000, 'blockhead');
     set(this, 'metric', { metric: 'pageViews', paramters: {} });
     await render(hbs`
-    {{navi-visualizations/goal-gauge
-        model=model
-        options=(hash
+    <NaviVisualizations::GoalGauge
+       @model={{this.model}}
+        @options={{hash
           baselineValue=290000000
           goalValue=310000000
           metric=metric
-        )
-      }}
+        }}
+      />
     `);
 
     assert.dom('.metric-title').hasText('Page Views', 'the default metric title is correctly displayed');

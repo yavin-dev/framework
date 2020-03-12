@@ -59,13 +59,16 @@ export function dataByDimensions(rows, dimensionOrder) {
 
 /**
  * Selects best available dimension field to group on.
+ * Given a response rowSet, tries to find the best identifier field for the given dimension to use.
+ * If there is only one available use that. otherwise it will try to find key in preference order:
+ * key > id > desc
  *
  * @param {Array} rows
  * @param {String} dimension
  * @returns {String} field
  */
 export function bestDimensionField(rows, dimension) {
-  const fields = Object.keys(rows[0]).filter(field => field.startsWith(dimension + '|'));
+  const fields = Object.keys(rows[0]).filter(field => field.startsWith(`${dimension}|`));
   if (fields.length === 1) {
     return fields[0];
   }

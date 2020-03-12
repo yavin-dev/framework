@@ -131,6 +131,8 @@ const Options = {
   ]
 };
 
+let MetadataService;
+
 module('Integration | Component | table', function(hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
@@ -142,12 +144,14 @@ module('Integration | Component | table', function(hooks) {
     this.set('options', Options);
     this.set('onUpdateReport', () => {});
 
-    return this.owner.lookup('service:bard-metadata').loadMetadata();
+    MetadataService = this.owner.lookup('service:bard-metadata');
+
+    return MetadataService.loadMetadata();
   });
 
   hooks.afterEach(function() {
     config.navi.FEATURES.enableVerticalCollectionTableIterator = false;
-    return this.owner.lookup('service:bard-metadata')._keg.reset();
+    return MetadataService._keg.reset();
   });
 
   test('it renders', async function(assert) {
@@ -186,9 +190,8 @@ module('Integration | Component | table', function(hooks) {
 
   test('render alternative datasource', async function(assert) {
     assert.expect(2);
-    const bardMeta = this.owner.lookup('service:bard-metadata');
-    bardMeta._keg.reset();
-    await bardMeta.loadMetadata({ dataSourceName: 'blockhead' });
+    MetadataService._keg.reset();
+    await MetadataService.loadMetadata({ dataSourceName: 'blockhead' });
     const blockheadModel = cloneDeep(Model[0]);
     blockheadModel.request.dataSource = 'blockhead';
     this.set('model', arr([blockheadModel]));

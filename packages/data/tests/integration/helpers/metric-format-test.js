@@ -45,7 +45,7 @@ module('helper:metric-format', function(hooks) {
   });
 
   test('multi-datasource support', async function(assert) {
-    assert.expect(1);
+    assert.expect(3);
     const metaData = this.owner.lookup('service:bard-metadata');
     metaData._keg.reset();
     await metaData.loadMetadata({ dataSourceName: 'blockhead' });
@@ -55,8 +55,19 @@ module('helper:metric-format', function(hooks) {
       parameters: { currency: 'USD', as: 'revenueUSD' }
     });
 
-    await render(hbs`{{metric-format metric 'blockhead'}}`);
+    this.set('namespace', 'blockhead');
+
+    await render(hbs`{{metric-format metric namespace}}`);
     assert.dom().hasText('Revenue (USD)');
+
+    this.set('metric', {
+      metric: 'navClicks',
+      parameters: {}
+    });
+    assert.dom().hasText('Nav Link Clicks', 'Fall back works');
+
+    this.set('namespace', undefined);
+    assert.dom().hasText('navClicks', 'default works if datasource is not loaded');
 
     metaData._keg.reset();
   });

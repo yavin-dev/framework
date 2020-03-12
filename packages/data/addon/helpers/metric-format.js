@@ -34,7 +34,7 @@ export default Helper.extend({
 
     let metricId = get(metric, 'metric');
     if (isPresent(metricId)) {
-      longName = get(this, 'metricName').getLongName(metricId, namespace);
+      longName = this.metricName.getLongName(metricId, namespace);
     }
     return metricFormat(metric, longName);
   }

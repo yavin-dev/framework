@@ -410,8 +410,6 @@ module('Integration | Component | pie chart', function(hooks) {
     await render(TEMPLATE);
 
     assert.dom('.c3-title').hasText('Total Page Views', 'The metric name is displayed in the metric label correctly');
-
-    this.set('model', Model);
   });
 
   test('parameterized metric renders correctly for metric series', async function(assert) {

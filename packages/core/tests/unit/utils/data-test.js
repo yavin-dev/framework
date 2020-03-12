@@ -228,7 +228,7 @@ module('Unit | Utils | Data', function() {
         'dim'
       ),
       'dim|desc',
-      'desc is prefferred when it is the only field available'
+      'desc is preferred when it is the only field available'
     );
   });
 });
