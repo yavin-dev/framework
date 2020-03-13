@@ -1,5 +1,5 @@
 import { module, test } from 'qunit';
-import { findAll, visit, click, fillIn, blur } from '@ember/test-helpers';
+import { findAll, visit, click, fillIn, blur, currentURL } from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
 import config from 'ember-get-config';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
@@ -35,16 +35,32 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
     );
   });
 
-  test('New report loads correct columns', async function(assert) {
-    assert.expect(3);
+  test('Creating new report shows column config if enableRequestPreview is on', async function(assert) {
+    assert.expect(4);
     await visit('/reports/new');
 
-    assert.dom('.navi-column-config').doesNotExist('The column config does not exist until the report has been run');
+    assert.ok(currentURL().endsWith('/edit'), 'We are on the edit report route');
+
+    assert.dom('.navi-column-config').exists('The column config exists on the edit route');
     await click('.navi-report__run-btn');
 
     assert.dom('.navi-column-config').exists('The column config exists after running the report');
+
     await animationsSettled();
     assert.deepEqual(getColumns(), ['Date Time (Day)'], 'Initially only the date time is visible');
+  });
+
+  test('Creating new report does not show column config without enableRequestPreview', async function(assert) {
+    assert.expect(3);
+    config.navi.FEATURES.enableRequestPreview = false;
+    await visit('/reports/new');
+
+    assert.ok(currentURL().endsWith('/edit'), 'We are on the edit report route');
+
+    assert.dom('.navi-column-config').doesNotExist('The column config is not present with feature flag disabled');
+    await click('.navi-report__run-btn');
+
+    assert.dom('.navi-column-config').doesNotExist('The column config is not present after running the report either');
   });
 
   test('adding and removing - date time', async function(assert) {

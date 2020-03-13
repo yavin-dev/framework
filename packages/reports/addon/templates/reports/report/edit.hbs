@@ -1,20 +1,36 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{#navi-info-message classNames="navi-report-new__info-message"}}
-  <span class="navi-report-new__report-icons">
-    {{navi-icon "line-chart"}}
-    {{navi-icon "bar-chart"}}
-    {{navi-icon "table"}}
-  </span>
-  {{#with (model-for (parent-route)) as | report |}}
-    <p>
-      Select some dimensions and metrics, then click
-      <button class="navi-link clickable" type="button"
-        {{on "click" (pipe
-          (route-action "validate" report)
-          (route-action "runReport" report)
-        )}}>
-        Run
-      </button>
-    </p>
-  {{/with}}
-{{/navi-info-message}}
+{{#with (model-for (parent-route)) as | report |}}
+  {{#if (feature-flag "enableRequestPreview")}}
+    <NaviColumnConfig
+      @isOpen={{true}}
+      @report={{report}}
+      @openFilters={{route-action "openFilters"}}
+      @onRemoveDateTime={{update-report-action "REMOVE_TIME_GRAIN"}}
+      @onRemoveDimension={{update-report-action "REMOVE_DIMENSION_FRAGMENT"}}
+      @onRemoveMetric={{update-report-action "REMOVE_METRIC_FRAGMENT"}}
+      @onAddDimension={{update-report-action "ADD_DIMENSION"}}
+      @onAddMetric={{update-report-action "ADD_METRIC"}}
+      @onAddMetricWithParameter={{update-report-action "ADD_METRIC_WITH_PARAM"}}
+      @onToggleDimFilter={{update-report-action "TOGGLE_DIM_FILTER"}}
+      @onToggleMetricFilter={{update-report-action "TOGGLE_METRIC_FILTER"}}
+      @onToggleParameterizedMetricFilter={{update-report-action "TOGGLE_PARAMETERIZED_METRIC_FILTER"}}
+    />
+  {{/if}}
+  <NaviInfoMessage class="navi-report-new__info-message">
+    <span class="navi-report-new__report-icons">
+      <NaviIcon @icon="line-chart" />
+      <NaviIcon @icon="bar-chart" />
+      <NaviIcon @icon="table" />
+    </span>
+      <p>
+        Select some dimensions and metrics, then click
+        <button class="navi-link clickable" type="button"
+          {{on "click" (pipe
+            (route-action "validate" report)
+            (route-action "runReport" report)
+          )}}>
+          Run
+        </button>
+      </p>
+  </NaviInfoMessage>
+{{/with}}

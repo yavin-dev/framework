@@ -19,14 +19,7 @@ import { computed } from '@ember/object';
 class VisualizationSelector extends Component {
   @computed('validVisualizations')
   get visualizations() {
-    return [
-      {
-        name: 'request-preview',
-        niceName: 'Request Preview',
-        icon: 'paint-brush'
-      },
-      ...this.validVisualizations
-    ];
+    return this.validVisualizations;
   }
 }
 
