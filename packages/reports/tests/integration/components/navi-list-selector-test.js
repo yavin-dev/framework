@@ -6,6 +6,21 @@ import hbs from 'htmlbars-inline-precompile';
 import { fillInSync } from '../../helpers/fill-in-sync';
 import config from 'ember-get-config';
 
+const TEMPLATE = hbs`
+  <NaviListSelector
+    @title="Items"
+    @items={{this.items}}
+    @searchField="field"
+    @selected={{this.selected}}
+    as | items areItemsFiltered |
+  >
+    {{#each items as | item |}}
+      <li class="test-item {{if areItemsFiltered "test-item__filtered"}}">
+        {{item.field}}
+      </li>
+    {{/each}}
+  </NaviListSelector>`;
+
 module('Integration | Component | navi list selector', function(hooks) {
   setupRenderingTest(hooks);
 
@@ -32,21 +47,7 @@ module('Integration | Component | navi list selector', function(hooks) {
       }
     ]);
 
-    await render(hbs`
-          {{#navi-list-selector
-              title='Items'
-              items=items
-              searchField='field'
-              selected=selected
-              as | items areItemsFiltered |
-          }}
-              {{#each items as | item |}}
-                  <li class='test-item {{if areItemsFiltered 'test-item__filtered'}}'>
-                    {{item.field}}
-                  </li>
-              {{/each}}
-          {{/navi-list-selector}}
-      `);
+    await render(TEMPLATE);
   });
 
   test('it renders', async function(assert) {
@@ -78,21 +79,7 @@ module('Integration | Component | navi list selector', function(hooks) {
 
     config.navi.FEATURES.enableRequestPreview = false;
 
-    await render(hbs`
-          {{#navi-list-selector
-              title='Items'
-              items=items
-              searchField='field'
-              selected=selected
-              as | items areItemsFiltered |
-          }}
-              {{#each items as | item |}}
-                  <li class='test-item {{if areItemsFiltered 'test-item__filtered'}}'>
-                    {{item.field}}
-                  </li>
-              {{/each}}
-          {{/navi-list-selector}}
-      `);
+    await render(TEMPLATE);
 
     assert
       .dom('.navi-list-selector__show-link')
@@ -138,21 +125,7 @@ module('Integration | Component | navi list selector', function(hooks) {
 
     config.navi.FEATURES.enableRequestPreview = true;
 
-    await render(hbs`
-          {{#navi-list-selector
-              title='Items'
-              items=items
-              searchField='field'
-              selected=selected
-              as | items areItemsFiltered |
-          }}
-              {{#each items as | item |}}
-                  <li class='test-item {{if areItemsFiltered 'test-item__filtered'}}'>
-                    {{item.field}}
-                  </li>
-              {{/each}}
-          {{/navi-list-selector}}
-      `);
+    await render(TEMPLATE);
 
     assert
       .dom('.navi-list-selector__show-link')

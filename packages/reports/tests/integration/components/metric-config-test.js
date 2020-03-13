@@ -18,6 +18,15 @@ import config from 'ember-get-config';
 
 let MockRequest, MockMetric, MetadataService;
 
+const TEMPLATE = hbs`<MetricConfig
+  @metric={{this.metric}}
+  @request={{this.request}}
+  @onAddParameterizedMetric={{this.addParameterizedMetric}}
+  @onRemoveParameterizedMetric={{this.removeParameterizedMetric}}
+  @onToggleParameterizedMetricFilter={{this.toggleParameterizedMetricFilter}}
+  @parametersPromise={{this.parametersPromise}}
+/>`;
+
 module('Integration | Component | metric config', function(hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
@@ -78,15 +87,7 @@ module('Integration | Component | metric config', function(hooks) {
     await MetadataService.loadMetadata();
     set(this, 'metric', MockMetric);
     set(this, 'request', MockRequest);
-    await render(hbs`
-      {{metric-config
-        metric=metric
-        request=request
-        onAddParameterizedMetric=(action addParameterizedMetric)
-        onRemoveParameterizedMetric=(action removeParameterizedMetric)
-        onToggleParameterizedMetricFilter=(action toggleParameterizedMetricFilter)
-        parametersPromise=parametersPromise
-      }}`);
+    await render(TEMPLATE);
   });
 
   test('it renders', async function(assert) {
@@ -138,15 +139,7 @@ module('Integration | Component | metric config', function(hooks) {
 
     config.navi.FEATURES.enableRequestPreview = false;
 
-    await render(hbs`
-      {{metric-config
-        metric=metric
-        request=request
-        onAddParameterizedMetric=(action addParameterizedMetric)
-        onRemoveParameterizedMetric=(action removeParameterizedMetric)
-        onToggleParameterizedMetricFilter=(action toggleParameterizedMetricFilter)
-        parametersPromise=parametersPromise
-      }}`);
+    await render(TEMPLATE);
 
     await clickTrigger('.metric-config__dropdown-trigger');
 
@@ -167,15 +160,7 @@ module('Integration | Component | metric config', function(hooks) {
 
     config.navi.FEATURES.enableRequestPreview = true;
 
-    await render(hbs`
-      {{metric-config
-        metric=metric
-        request=request
-        onAddParameterizedMetric=(action addParameterizedMetric)
-        onRemoveParameterizedMetric=(action removeParameterizedMetric)
-        onToggleParameterizedMetricFilter=(action toggleParameterizedMetricFilter)
-        parametersPromise=parametersPromise
-      }}`);
+    await render(TEMPLATE);
 
     assert
       .dom('.navi-list-selector__show-link')

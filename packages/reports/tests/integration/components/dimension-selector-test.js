@@ -18,6 +18,15 @@ import {
 
 let Store, MetadataService, Age;
 
+const TEMPLATE = hbs`<DimensionSelector
+  @request={{this.request}}
+  @onAddTimeGrain={{this.addTimeGrain}}
+  @onRemoveTimeGrain={{this.removeTimeGrain}}
+  @onAddDimension={{this.addDimension}}
+  @onRemoveDimension={{this.removeDimension}}
+  @onToggleDimFilter={{this.addDimFilter}}
+/>`;
+
 module('Integration | Component | dimension selector', function(hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
@@ -49,14 +58,7 @@ module('Integration | Component | dimension selector', function(hooks) {
         })
       );
 
-      await render(hbs`{{dimension-selector
-            request=request
-            onAddTimeGrain=(action addTimeGrain)
-            onRemoveTimeGrain=(action removeTimeGrain)
-            onAddDimension=(action addDimension)
-            onRemoveDimension=(action removeDimension)
-            onToggleDimFilter=(action addDimFilter)
-          }}`);
+      await render(TEMPLATE);
     });
   });
 
@@ -96,14 +98,7 @@ module('Integration | Component | dimension selector', function(hooks) {
 
     config.navi.FEATURES.enableRequestPreview = false;
 
-    await render(hbs`{{dimension-selector
-      request=request
-      onAddTimeGrain=(action addTimeGrain)
-      onRemoveTimeGrain=(action removeTimeGrain)
-      onAddDimension=(action addDimension)
-      onRemoveDimension=(action removeDimension)
-      onToggleDimFilter=(action addDimFilter)
-    }}`);
+    await render(TEMPLATE);
 
     const allDimensions = await getAll('dimension');
     assert.ok(
@@ -129,14 +124,7 @@ module('Integration | Component | dimension selector', function(hooks) {
 
     config.navi.FEATURES.enableRequestPreview = true;
 
-    await render(hbs`{{dimension-selector
-      request=request
-      onAddTimeGrain=(action addTimeGrain)
-      onRemoveTimeGrain=(action removeTimeGrain)
-      onAddDimension=(action addDimension)
-      onRemoveDimension=(action removeDimension)
-      onToggleDimFilter=(action addDimFilter)
-    }}`);
+    await render(TEMPLATE);
 
     assert
       .dom('.navi-list-selector__show-link')

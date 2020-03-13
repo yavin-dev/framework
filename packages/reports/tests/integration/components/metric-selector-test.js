@@ -21,6 +21,13 @@ import {
 
 let Store, MetadataService, AdClicks, PageViews;
 
+const TEMPLATE = hbs`<MetricSelector
+  @request={{this.request}}
+  @onAddMetric={{this.addMetric}}
+  @onRemoveMetric={{this.removeMetric}}
+  @onToggleMetricFilter={{this.addMetricFilter}}
+/>`;
+
 module('Integration | Component | metric selector', function(hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
@@ -72,12 +79,7 @@ module('Integration | Component | metric selector', function(hooks) {
         })
       );
 
-      await render(hbs`{{metric-selector
-            request=request
-            onAddMetric=(action addMetric)
-            onRemoveMetric=(action removeMetric)
-            onToggleMetricFilter=(action addMetricFilter)
-          }}`);
+      await render(TEMPLATE);
     });
   });
 
@@ -100,12 +102,7 @@ module('Integration | Component | metric selector', function(hooks) {
 
     config.navi.FEATURES.enableRequestPreview = false;
 
-    await render(hbs`{{metric-selector
-      request=request
-      onAddMetric=(action addMetric)
-      onRemoveMetric=(action removeMetric)
-      onToggleMetricFilter=(action addMetricFilter)
-    }}`);
+    await render(TEMPLATE);
 
     await renderAll('metric');
 
@@ -126,7 +123,7 @@ module('Integration | Component | metric selector', function(hooks) {
       'When show selected is clicked the selected adClicks base metric is still shown'
     );
 
-    assert.notOk(findAll('.grouped-list__add-icon--deselected').length, 'No unselected metrics are shown');
+    assert.dom('.grouped-list__add-icon--deselected').doesNotExist('No unselected metrics are shown');
 
     let metrics = get(this, 'request.metrics');
     metrics.removeFragment(metrics.toArray()[0]);
@@ -168,16 +165,11 @@ module('Integration | Component | metric selector', function(hooks) {
       'Adding a new metric will show its base metric as selected'
     );
 
-    assert.notOk(findAll('.grouped-list__add-icon--deselected').length, 'No unselected metrics are shown');
+    assert.dom('.grouped-list__add-icon--deselected').doesNotExist('No unselected metrics are shown');
 
     config.navi.FEATURES.enableRequestPreview = true;
 
-    await render(hbs`{{metric-selector
-      request=request
-      onAddMetric=(action addMetric)
-      onRemoveMetric=(action removeMetric)
-      onToggleMetricFilter=(action addMetricFilter)
-    }}`);
+    await render(TEMPLATE);
 
     assert
       .dom('.navi-list-selector__show-link')
