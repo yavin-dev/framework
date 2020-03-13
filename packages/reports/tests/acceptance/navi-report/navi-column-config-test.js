@@ -35,7 +35,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
     );
   });
 
-  test('Creating new report shows column config if feature flag on', async function(assert) {
+  test('Creating new report shows column config if enableRequestPreview is on', async function(assert) {
     assert.expect(4);
     await visit('/reports/new');
 
