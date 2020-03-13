@@ -12,11 +12,20 @@ import {
   clickItemFilter,
   getItem,
   getAll,
-  clickShowSelected,
-  renderAll
+  clickShowSelected
 } from 'navi-reports/test-support/report-builder';
+import config from 'ember-get-config';
 
 let MockRequest, MockMetric, MetadataService;
+
+const TEMPLATE = hbs`<MetricConfig
+  @metric={{this.metric}}
+  @request={{this.request}}
+  @onAddParameterizedMetric={{this.addParameterizedMetric}}
+  @onRemoveParameterizedMetric={{this.removeParameterizedMetric}}
+  @onToggleParameterizedMetricFilter={{this.toggleParameterizedMetricFilter}}
+  @parametersPromise={{this.parametersPromise}}
+/>`;
 
 module('Integration | Component | metric config', function(hooks) {
   setupRenderingTest(hooks);
@@ -78,15 +87,7 @@ module('Integration | Component | metric config', function(hooks) {
     await MetadataService.loadMetadata();
     set(this, 'metric', MockMetric);
     set(this, 'request', MockRequest);
-    await render(hbs`
-      {{metric-config
-        metric=metric
-        request=request
-        onAddParameterizedMetric=(action addParameterizedMetric)
-        onRemoveParameterizedMetric=(action removeParameterizedMetric)
-        onToggleParameterizedMetricFilter=(action toggleParameterizedMetricFilter)
-        parametersPromise=parametersPromise
-      }}`);
+    await render(TEMPLATE);
   });
 
   test('it renders', async function(assert) {
@@ -132,7 +133,13 @@ module('Integration | Component | metric config', function(hooks) {
   });
 
   test('show selected', async function(assert) {
-    assert.expect(3);
+    assert.expect(4);
+
+    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
+
+    config.navi.FEATURES.enableRequestPreview = false;
+
+    await render(TEMPLATE);
 
     await clickTrigger('.metric-config__dropdown-trigger');
 
@@ -149,9 +156,17 @@ module('Integration | Component | metric config', function(hooks) {
       'When show selected is clicked only the selected parameter is shown'
     );
 
-    const resetRenderAll = await renderAll('metricConfig');
-    assert.notOk(findAll('.grouped-list__add-icon--deselected').length, 'The selected items are marked as selected');
-    await resetRenderAll();
+    assert.notOk(findAll('.grouped-list__add-icon--deselected').length, 'No unselected parameters are shown');
+
+    config.navi.FEATURES.enableRequestPreview = true;
+
+    await render(TEMPLATE);
+
+    assert
+      .dom('.navi-list-selector__show-link')
+      .doesNotExist('Show Selected toggle is hidden if enableRequestPreview flag is turned on');
+
+    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
   });
 
   test('add/remove param', async function(assert) {

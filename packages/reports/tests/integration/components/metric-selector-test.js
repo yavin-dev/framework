@@ -21,6 +21,13 @@ import {
 
 let Store, MetadataService, AdClicks, PageViews;
 
+const TEMPLATE = hbs`<MetricSelector
+  @request={{this.request}}
+  @onAddMetric={{this.addMetric}}
+  @onRemoveMetric={{this.removeMetric}}
+  @onToggleMetricFilter={{this.addMetricFilter}}
+/>`;
+
 module('Integration | Component | metric selector', function(hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
@@ -72,12 +79,7 @@ module('Integration | Component | metric selector', function(hooks) {
         })
       );
 
-      await render(hbs`{{metric-selector
-            request=request
-            onAddMetric=(action addMetric)
-            onRemoveMetric=(action removeMetric)
-            onToggleMetricFilter=(action addMetricFilter)
-          }}`);
+      await render(TEMPLATE);
     });
   });
 
@@ -95,6 +97,13 @@ module('Integration | Component | metric selector', function(hooks) {
 
   test('show selected', async function(assert) {
     assert.expect(10);
+
+    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
+
+    config.navi.FEATURES.enableRequestPreview = false;
+
+    await render(TEMPLATE);
+
     await renderAll('metric');
 
     assert.ok(
@@ -111,13 +120,10 @@ module('Integration | Component | metric selector', function(hooks) {
     assert.deepEqual(
       findAll('.grouped-list__item').map(el => el.textContent.trim()),
       ['Ad Clicks'],
-      'When show selected is clicked only the selected adClicks base metric is shown'
+      'When show selected is clicked the selected adClicks base metric is still shown'
     );
 
-    assert.notOk(
-      findAll('.grouped-list__add-icon--deselected').length,
-      'The selected items are marked as added or selected'
-    );
+    assert.dom('.grouped-list__add-icon--deselected').doesNotExist('No unselected metrics are shown');
 
     let metrics = get(this, 'request.metrics');
     metrics.removeFragment(metrics.toArray()[0]);
@@ -159,30 +165,17 @@ module('Integration | Component | metric selector', function(hooks) {
       'Adding a new metric will show its base metric as selected'
     );
 
-    assert.notOk(findAll('.grouped-list__add-icon--deselected').length, 'All selected items are marked as selected');
-
-    await resetShowSelected();
+    assert.dom('.grouped-list__add-icon--deselected').doesNotExist('No unselected metrics are shown');
 
     config.navi.FEATURES.enableRequestPreview = true;
 
-    await render(hbs`{{metric-selector
-      request=request
-      onAddMetric=(action addMetric)
-      onRemoveMetric=(action removeMetric)
-      onToggleMetricFilter=(action addMetricFilter)
-    }}`);
+    await render(TEMPLATE);
 
-    await renderAll('metric');
-    resetShowSelected = await clickShowSelected('metric');
+    assert
+      .dom('.navi-list-selector__show-link')
+      .doesNotExist('Show Selected toggle is hidden if enableRequestPreview flag is turned on');
 
-    assert.equal(
-      findAll('.grouped-list__item-container').length,
-      findAll('.grouped-list__item-container--selected').length,
-      'All selected items are marked as added or selected when enableRequestPreview is on'
-    );
-
-    config.navi.FEATURES.enableRequestPreview = false;
-    await resetShowSelected();
+    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
   });
 
   test('add and remove metric actions', async function(assert) {

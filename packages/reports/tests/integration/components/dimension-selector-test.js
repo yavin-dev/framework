@@ -18,6 +18,15 @@ import {
 
 let Store, MetadataService, Age;
 
+const TEMPLATE = hbs`<DimensionSelector
+  @request={{this.request}}
+  @onAddTimeGrain={{this.addTimeGrain}}
+  @onRemoveTimeGrain={{this.removeTimeGrain}}
+  @onAddDimension={{this.addDimension}}
+  @onRemoveDimension={{this.removeDimension}}
+  @onToggleDimFilter={{this.addDimFilter}}
+/>`;
+
 module('Integration | Component | dimension selector', function(hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
@@ -49,14 +58,7 @@ module('Integration | Component | dimension selector', function(hooks) {
         })
       );
 
-      await render(hbs`{{dimension-selector
-            request=request
-            onAddTimeGrain=(action addTimeGrain)
-            onRemoveTimeGrain=(action removeTimeGrain)
-            onAddDimension=(action addDimension)
-            onRemoveDimension=(action removeDimension)
-            onToggleDimFilter=(action addDimFilter)
-          }}`);
+      await render(TEMPLATE);
     });
   });
 
@@ -92,48 +94,43 @@ module('Integration | Component | dimension selector', function(hooks) {
   test('show selected', async function(assert) {
     assert.expect(4);
 
+    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
+
+    config.navi.FEATURES.enableRequestPreview = false;
+
+    await render(TEMPLATE);
+
     const allDimensions = await getAll('dimension');
     assert.ok(
       allDimensions.length > this.get('request.dimensions.length') + 1 /*for timegrain*/,
       'Initially all the dimensions are shown in the dimension-selector'
     );
 
+    await clickShowSelected('dimension');
+
     const selectedDimensions = await getAllSelected('dimension');
     assert.deepEqual(
       selectedDimensions,
       ['Day', 'Age'],
-      'When show selected is clicked only the selected age dimension and the selected timegrain are shown'
+      'When show selected is clicked the selected age dimension and the selected timegrain are still shown'
     );
 
     assert.notOk(
       findAll('.grouped-list__item-checkbox')
         .filter(el => !el.checked)
         .concat(findAll('.grouped-list__add-icon--deselected')).length,
-      'No items are marked as unselected'
+      'No unselected dimensions are shown'
     );
 
     config.navi.FEATURES.enableRequestPreview = true;
 
-    await render(hbs`{{dimension-selector
-      request=request
-      onAddTimeGrain=(action addTimeGrain)
-      onRemoveTimeGrain=(action removeTimeGrain)
-      onAddDimension=(action addDimension)
-      onRemoveDimension=(action removeDimension)
-      onToggleDimFilter=(action addDimFilter)
-    }}`);
+    await render(TEMPLATE);
 
-    await clickShowSelected('dimension');
+    assert
+      .dom('.navi-list-selector__show-link')
+      .doesNotExist('Show Selected toggle is hidden if enableRequestPreview flag is turned on');
 
-    assert.equal(
-      findAll('.grouped-list__item-checkbox')
-        .filter(el => el.checked)
-        .concat(findAll('.grouped-list__item-container--selected')).length,
-      2,
-      'The selected items are marked as added or selected when enableRequestPreview is on'
-    );
-
-    config.navi.FEATURES.enableRequestPreview = false;
+    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
   });
 
   test('actions', async function(assert) {
