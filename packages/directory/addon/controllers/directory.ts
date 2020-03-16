@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Controller from '@ember/controller';
-import { action, set } from '@ember/object';
+import { action, set, computed } from '@ember/object';
 import { inject as service } from '@ember/service';
 import DirectoriesService from 'navi-directory/services/directories';
 import RouterService from '@ember/routing/router-service';
@@ -62,6 +62,7 @@ export default class DirectoryController extends Controller {
   /**
    * @property {String} title - Title for the table
    */
+  @computed('filter', 'router.currentRouteName')
   get title() {
     const { router, directories, filter } = this;
     const currentDir = directories.getDirectories().find(dir => dir.routeLink === router.currentRouteName);
@@ -71,12 +72,11 @@ export default class DirectoryController extends Controller {
       filter => JSON.stringify(filter.queryParams) === JSON.stringify(queryParams)
     );
 
-    let title = currentDir?.name;
     if (match?.length === 1) {
-      title = match[0].name;
+      return match[0].name;
     }
 
-    return title;
+    return currentDir?.name;
   }
 
   /**

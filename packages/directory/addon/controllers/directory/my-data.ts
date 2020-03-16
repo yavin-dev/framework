@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import SearchFilterController from '../search-filter';
-import { action } from '@ember/object';
+import { action, computed } from '@ember/object';
 import { A as arr } from '@ember/array';
 import { tracked } from '@glimmer/tracking';
 import moment from 'moment';
@@ -16,6 +16,7 @@ export default class DirectoryMyDataController extends SearchFilterController {
   /**
    * @property {Promise<Array>} sortedItems - items sorted by `sortKey` and `sortDir`
    */
+  @computed('directory.{sortKey,sortDir}', 'model.items')
   get sortedItems() {
     return new Promise<Array<TODO>>(async resolve => {
       const {
