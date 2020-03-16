@@ -7,6 +7,7 @@
  *          selected=selected
  *          onChange=onChange
  *          searchEnabled=searchEnabled
+ *          searchField=searchField
  *          tagName=tagName
  *        }}
  */
@@ -22,5 +23,10 @@ export default Component.extend({
   /**
    * @property {Boolean} searchEnabled
    */
-  searchEnabled: false
+  searchEnabled: false,
+
+  /**
+   * @property {String} searchField
+   */
+  searchField: 'longName'
 });
