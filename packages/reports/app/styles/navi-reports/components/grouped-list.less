@@ -43,6 +43,15 @@
       }
     }
 
+    &-label {
+      &:hover {
+        .grouped-list__add-icon {
+          color: @denali-link-hover;
+          opacity: 1;
+        }
+      }
+    }
+
     &-checkbox {
       opacity: 0; // Hide it
       position: absolute; // Take it out of the document flow
@@ -66,7 +75,7 @@
     }
 
     &-checkbox:hover + &-label:before {
-      box-shadow: 0 0 0 2px @denali-brand-600;
+      box-shadow: 0 0 0 2px @denali-link;
     }
 
     &-checkbox:focus + &-label:before {
@@ -74,8 +83,8 @@
     }
 
     &-checkbox:checked + &-label:before {
-      box-shadow: 0 0 0 2px @denali-brand-600;
-      background: @denali-brand-600;
+      box-shadow: 0 0 0 2px @denali-link;
+      background: @denali-link;
     }
 
     &-checkbox:checked + &-label:after {
@@ -111,7 +120,7 @@
   }
 
   &__add-icon {
-    color: @denali-brand-600;
+    color: @denali-link;
     cursor: pointer;
     display: inline-block;
     font-size: @font-size-base;
@@ -136,7 +145,7 @@
   }
 
   &__filter {
-    color: @denali-brand-600;
+    color: @denali-link;
     cursor: pointer;
     margin: 0 5px;
     opacity: 0.5;
