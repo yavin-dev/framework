@@ -4,7 +4,6 @@
  *
  */
 import Helper from '@ember/component/helper';
-import { get } from '@ember/object';
 import { inject as service } from '@ember/service';
 import { metricFormat } from 'navi-data/helpers/metric-format';
 import { mapColumnAttributes } from 'navi-data/utils/metric';
