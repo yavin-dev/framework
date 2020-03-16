@@ -124,7 +124,7 @@ export function buildDimensionSeriesValues(request, rows) {
       let id = get(row, getDimensionGroupingField([row], dimension)),
         desc = get(row, `${dimension}|desc`);
 
-      values[dimension] = id || desc;
+      values[dimension] = id;
       dimensionLabels.push(desc || id);
     });
 
