@@ -18,14 +18,14 @@
   "scripts": {
     "build": "ember build --environment=production",
     "lint:hbs": "ember-template-lint .",
-    "lint:js": "eslint .",
+    "lint:js": "eslint . && tsc --noEmit",
+    "lint": "npm run lint:hbs && npm run lint:js",
     "start": "ember serve",
     "test": "export COVERAGE=true; ember test --test-port 0",
     "prepublishOnly": "ember ts:precompile",
     "postpublish": "ember ts:clean"
   },
   "dependencies": {
-    "@ember-decorators/component": "^6.1.1",
     "@glimmer/component": "^1.0.0",
     "@glimmer/tracking": "^1.0.0",
     "ember-auto-import": "^1.5.3",
@@ -56,9 +56,8 @@
     "@types/ember__test-helpers": "^0.7.9",
     "@types/qunit": "^2.9.0",
     "@types/rsvp": "^4.0.3",
-    "@typescript-eslint/eslint-plugin": "^2.21.0",
-    "@typescript-eslint/parser": "^2.21.0",
-    "babel-eslint": "^10.0.3",
+    "@typescript-eslint/eslint-plugin": "^2.23.0",
+    "@typescript-eslint/parser": "^2.23.0",
     "broccoli-asset-rev": "^3.0.0",
     "ember-basic-dropdown": "1.1.3",
     "ember-cli": "~3.16.0",

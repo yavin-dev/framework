@@ -18,6 +18,7 @@
     "build": "ember build --environment=production",
     "lint:hbs": "ember-template-lint .",
     "lint:js": "eslint .",
+    "lint": "npm run lint:hbs && npm run lint:js",
     "start": "ember serve",
     "test": "export COVERAGE=true; ember test --test-port 0"
   },

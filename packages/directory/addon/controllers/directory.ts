@@ -3,7 +3,6 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Controller from '@ember/controller';
-import { tracked } from '@glimmer/tracking';
 import { action, set } from '@ember/object';
 import { inject as service } from '@ember/service';
 import DirectoriesService from 'navi-directory/services/directories';
@@ -29,7 +28,7 @@ export default class DirectoryController extends Controller {
    * @property {String} filter - query param for filter
    * allowed filters - favorites
    */
-  @tracked filter = null;
+  filter = null;
 
   /**
    * @property {String} type - query param for type
@@ -67,10 +66,12 @@ export default class DirectoryController extends Controller {
     const { router, directories, filter } = this;
     const currentDir = directories.getDirectories().find(dir => dir.routeLink === router.currentRouteName);
 
-    let title = currentDir?.name,
-      queryParams = { filter },
-      match = currentDir?.filters.filter(filter => JSON.stringify(filter.queryParams) === JSON.stringify(queryParams));
+    const queryParams = { filter };
+    const match = currentDir?.filters?.filter(
+      filter => JSON.stringify(filter.queryParams) === JSON.stringify(queryParams)
+    );
 
+    let title = currentDir?.name;
     if (match?.length === 1) {
       title = match[0].name;
     }
