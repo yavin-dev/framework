@@ -198,7 +198,7 @@ module('Unit | Utils | Chart Data', function() {
   });
 
   test('buildDimensionSeriesValues', function(assert) {
-    assert.expect(1);
+    assert.expect(2);
 
     let request = {
         metrics: [{ metric: { name: 'totalPageViews' } }],
@@ -267,6 +267,51 @@ module('Unit | Utils | Chart Data', function() {
         }
       ],
       'buildDimensionSeriesValues retuns expected series object'
+    );
+
+    assert.deepEqual(
+      buildDimensionSeriesValues(
+        request,
+        rows.map(row => ({
+          dateTime: row.dateTime,
+          'age|desc': row['age|desc'],
+          uniqueIdentifier: row.uniqueIdentifier,
+          totalPageViews: row.totalPageViews
+        }))
+      ),
+      [
+        {
+          name: 'All Other',
+          values: {
+            age: 'All Other'
+          }
+        },
+        {
+          name: 'under 13',
+          values: {
+            age: 'under 13'
+          }
+        },
+        {
+          name: '13 - 25',
+          values: {
+            age: '13 - 25'
+          }
+        },
+        {
+          name: '25 - 35',
+          values: {
+            age: '25 - 35'
+          }
+        },
+        {
+          name: '35 - 45',
+          values: {
+            age: '35 - 45'
+          }
+        }
+      ],
+      'Builds series when id is not available'
     );
   });
 });

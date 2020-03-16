@@ -55,7 +55,7 @@ module('Integration | Component | goal gauge ', function(hooks) {
     set(this, 'metric', { metric: 'pageViews', paramters: {} });
     await render(hbs`
     <NaviVisualizations::GoalGauge
-       @model={{this.model}}
+        @model={{this.model}}
         @options={{hash
           baselineValue=290000000
           goalValue=310000000

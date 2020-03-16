@@ -50,7 +50,7 @@ export function dataByDimensions(rows, dimensionOrder) {
   return new DataGroup(rows, row =>
     dimensionOrder
       .map(dimension => {
-        const field = bestDimensionField([row], dimension);
+        const field = getDimensionGroupingField([row], dimension);
         return row[field];
       })
       .join('|')
@@ -67,7 +67,7 @@ export function dataByDimensions(rows, dimensionOrder) {
  * @param {String} dimension
  * @returns {String} field
  */
-export function bestDimensionField(rows, dimension) {
+export function getDimensionGroupingField(rows, dimension) {
   const fields = Object.keys(rows[0]).filter(field => field.startsWith(`${dimension}|`));
   if (fields.length === 1) {
     return fields[0];
@@ -79,7 +79,7 @@ export function bestDimensionField(rows, dimension) {
       return `${dimension}|${field}`;
     }
   }
-  return `${dimension}|id`;
+  return fields[0];
 }
 
 /**

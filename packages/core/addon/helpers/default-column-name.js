@@ -50,6 +50,6 @@ export default Helper.extend({
   bardMetadata: service(),
 
   compute([column, namespace]) {
-    return getColumnDefaultName(column, get(this, 'bardMetadata'), namespace);
+    return getColumnDefaultName(column, this.bardMetadata, namespace);
   }
 });

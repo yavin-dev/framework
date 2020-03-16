@@ -186,7 +186,7 @@ class Table extends Component {
       return false;
     }
 
-    let defaultName = getColumnDefaultName(column, get(this, 'bardMetadata'), namespace);
+    const defaultName = getColumnDefaultName(column, this.bardMetadata, namespace);
     return column.displayName !== defaultName;
   }
 

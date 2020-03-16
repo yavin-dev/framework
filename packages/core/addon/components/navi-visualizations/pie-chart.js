@@ -104,7 +104,7 @@ class NaviVisualizationsPieChartComponent extends Component.extend(hasChartBuild
   get metricDisplayName() {
     let metric = get(this, 'seriesConfig.metric');
 
-    return metric && get(this, 'metricName').getDisplayName(metric, this.namespace);
+    return metric && this.metricName.getDisplayName(metric, this.namespace);
   }
 
   /**
