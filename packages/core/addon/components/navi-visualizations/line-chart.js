@@ -12,6 +12,7 @@
 import { A as arr } from '@ember/array';
 import Component from '@ember/component';
 import { computed, get } from '@ember/object';
+import { alias } from '@ember/object/computed';
 import { getOwner } from '@ember/application';
 import { guidFor } from '@ember/object/internals';
 import { inject as service } from '@ember/service';
@@ -99,6 +100,11 @@ export default Component.extend(hasChartBuilders, {
   }),
 
   /**
+   * @property {String} namespace - metadata namespace to use
+   */
+  namespace: alias('firstModel.request.dataSource'),
+
+  /**
    * @property {Object} config - config options for the chart
    */
   config: computed('options', 'dataConfig', function() {
@@ -140,12 +146,12 @@ export default Component.extend(hasChartBuilders, {
   /**
    * @property {String} metricDisplayName - display name for the current metric in a non-metric chart
    */
-  metricDisplayName: computed('options', function() {
+  metricDisplayName: computed('options', 'namespace', function() {
     let seriesConfig = get(this, 'seriesConfig'),
       metricName = get(seriesConfig, 'config.metric');
 
     if (metricName) {
-      return get(this, 'metricName').getDisplayName(metricName);
+      return get(this, 'metricName').getDisplayName(metricName, this.namespace);
     }
     return undefined;
   }),
@@ -195,7 +201,7 @@ export default Component.extend(hasChartBuilders, {
   /**
    * @property {Array} seriesDataGroups - chart series groups for stacking
    */
-  seriesDataGroups: computed('options', 'seriesConfig', function() {
+  seriesDataGroups: computed('options', 'seriesConfig', 'namespace', function() {
     const seriesConfig = get(this, 'seriesConfig'),
       seriesType = get(seriesConfig, 'type'),
       options = merge({}, DEFAULT_OPTIONS, this.options),
@@ -209,7 +215,9 @@ export default Component.extend(hasChartBuilders, {
     if (seriesType === 'dimension') {
       return [get(seriesConfig, 'config.dimensions').map(dimension => dimension.name)];
     } else if (seriesType === 'metric') {
-      return [get(seriesConfig, 'config.metrics').map(metric => this.get('metricName').getDisplayName(metric))];
+      return [
+        get(seriesConfig, 'config.metrics').map(metric => this.get('metricName').getDisplayName(metric, this.namespace))
+      ];
     }
 
     return [];

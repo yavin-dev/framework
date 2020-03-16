@@ -16,7 +16,6 @@ export function initialize() {
      *dataEpoch: NAVI_APP.appSettings.dataEpoch,
      */
     dataSources: [{ name: 'default', uri: config.appSettings.factApiHost }],
-    defaultDataSource: 'default',
     appPersistence: {
       type: 'webservice',
       uri: config.appSettings.persistenceApiHost,

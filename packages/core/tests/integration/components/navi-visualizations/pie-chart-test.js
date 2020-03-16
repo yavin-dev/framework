@@ -8,6 +8,7 @@ import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import $ from 'jquery';
 import { next } from '@ember/runloop';
 import { getTranslation } from 'navi-core/utils/chart';
+import { cloneDeep } from 'lodash-es';
 
 const TEMPLATE = hbs`
     {{navi-visualizations/pie-chart
@@ -115,6 +116,10 @@ module('Integration | Component | pie chart', function(hooks) {
     this.set('model', Model);
     MetadataService = this.owner.lookup('service:bard-metadata');
     return MetadataService.loadMetadata();
+  });
+
+  hooks.afterEach(function() {
+    MetadataService._keg.reset();
   });
 
   test('it renders for a dimension series', async function(assert) {
@@ -368,6 +373,43 @@ module('Integration | Component | pie chart', function(hooks) {
     assert
       .dom('.c3-target-Under-13 text')
       .hasText('60%', 'Percentage label shown on slice is formatted properly for `Under 13`');
+  });
+
+  test('renders correctly with multi datasource', async function(assert) {
+    assert.expect(1);
+    MetadataService._keg.reset();
+    await MetadataService.loadMetadata({ dataSourceName: 'blockhead' });
+    const blockheadModel = cloneDeep(Model[0]);
+    blockheadModel.request.dataSource = 'blockhead';
+    this.set('model', A([blockheadModel]));
+
+    this.set('options', {
+      series: {
+        type: 'dimension',
+        config: {
+          metric: {
+            metric: 'totalPageViews',
+            parameters: {},
+            canonicalName: 'totalPageViews'
+          },
+          dimensionOrder: ['age'],
+          dimensions: [
+            {
+              name: 'All Other',
+              values: { age: '-3' }
+            },
+            {
+              name: 'Under 13',
+              values: { age: '1' }
+            }
+          ]
+        }
+      }
+    });
+
+    await render(TEMPLATE);
+
+    assert.dom('.c3-title').hasText('Total Page Views', 'The metric name is displayed in the metric label correctly');
   });
 
   test('parameterized metric renders correctly for metric series', async function(assert) {

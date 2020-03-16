@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Logic for grouping chart data by many metrics
@@ -77,7 +77,7 @@ export default EmberObject.extend({
       return Object.assign(
         { x },
         ...metrics.map(metric => {
-          let metricDisplayName = get(this, 'metricName').getDisplayName(metric),
+          let metricDisplayName = get(this, 'metricName').getDisplayName(metric, request.dataSource),
             canonicalName = canonicalizeMetric(metric);
 
           return {

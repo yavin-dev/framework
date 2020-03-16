@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Extend c3 to listen to incoming resize events
@@ -14,6 +14,7 @@
  *   point=pointConfig
  *   tooltip=tooltipConfig
  *   containerComponent=container
+ *   metaNamespace=namespace
  *  }}
  */
 import { next, scheduleOnce } from '@ember/runloop';
@@ -121,7 +122,9 @@ export default C3Chart.extend({
     if (dataSelection) {
       dataSelection.then(insightsData => {
         let metricName = get(this, 'metricName'),
-          metrics = get(this, 'axis.y.series.config.metrics').map(metric => metricName.getDisplayName(metric)),
+          metrics = get(this, 'axis.y.series.config.metrics').map(metric =>
+            metricName.getDisplayName(metric, this.metaNamespace)
+          ),
           dataSelectionIndices = insightsData.mapBy('index');
         get(this, 'chart').select(metrics, dataSelectionIndices);
       });

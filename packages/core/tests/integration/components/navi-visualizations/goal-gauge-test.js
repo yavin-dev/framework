@@ -45,6 +45,29 @@ module('Integration | Component | goal gauge ', function(hooks) {
     assert.dom('.goal-title').hasText('310M Goal', 'goal title is correctly displayed');
   });
 
+  test('goal-gauge renders correctly with multi datasource', async function(assert) {
+    assert.expect(1);
+    const metaData = this.owner.lookup('service:bard-metadata');
+    metaData._keg.reset();
+    await metaData.loadMetadata({ dataSourceName: 'blockhead' });
+
+    _setModel(this, 'pageViews', 3030000000, 'blockhead');
+    set(this, 'metric', { metric: 'pageViews', paramters: {} });
+    await render(hbs`
+    <NaviVisualizations::GoalGauge
+        @model={{this.model}}
+        @options={{hash
+          baselineValue=290000000
+          goalValue=310000000
+          metric=metric
+        }}
+      />
+    `);
+
+    assert.dom('.metric-title').hasText('Page Views', 'the default metric title is correctly displayed');
+    metaData._keg.reset();
+  });
+
   test('goal-gauge renders correctly with unit', async function(assert) {
     assert.expect(6);
 
@@ -303,13 +326,13 @@ module('Integration | Component | goal gauge ', function(hooks) {
    * @param {Number} value - value of metric
    * @return {Void}
    */
-  function _setModel(context, metric, value) {
+  function _setModel(context, metric, value, dataSource = 'dummy') {
     context.set(
       'model',
       arr([
         {
           response: { rows: [{ [metric]: value }] },
-          request: { metrics: [{ metric }] }
+          request: { metrics: [{ metric }], dataSource }
         }
       ])
     );

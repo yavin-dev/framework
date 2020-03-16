@@ -1,5 +1,11 @@
 import { module, test } from 'qunit';
-import { topN, mostRecentData, dataByDimensions, maxDataByDimensions } from 'navi-core/utils/data';
+import {
+  topN,
+  mostRecentData,
+  dataByDimensions,
+  maxDataByDimensions,
+  getDimensionGroupingField
+} from 'navi-core/utils/data';
 
 module('Unit | Utils | Data', function() {
   test('top n values', function(assert) {
@@ -185,6 +191,50 @@ module('Unit | Utils | Data', function() {
         }
       ],
       'All data rows for max value based on dimensions are returned'
+    );
+  });
+
+  test('best dimension field', function(assert) {
+    assert.equal(
+      getDimensionGroupingField(
+        [
+          {
+            'dim|key': 'foo',
+            'dim|id': 'foo',
+            'dim|desc': 'foo'
+          }
+        ],
+        'dim'
+      ),
+      'dim|key',
+      'key is best field to use when it is available'
+    );
+
+    assert.equal(
+      getDimensionGroupingField(
+        [
+          {
+            'dim|id': 'foo',
+            'dim|desc': 'foo'
+          }
+        ],
+        'dim'
+      ),
+      'dim|id',
+      'id is next field to use when it is available'
+    );
+
+    assert.equal(
+      getDimensionGroupingField(
+        [
+          {
+            'dim|desc': 'foo'
+          }
+        ],
+        'dim'
+      ),
+      'dim|desc',
+      'desc is preferred when it is the only field available'
     );
   });
 });
