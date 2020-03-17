@@ -1,5 +1,5 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Notification service
@@ -24,7 +24,7 @@ export default class NaviNotifications extends NaviNotificationInterface {
    * @param {Object} options
    * @param {String} options.message - Required. The message that the flash message displays.
    * @param {String} [options.type] - The flash message's type is set as a class name on the rendered component.
-   * @param {String} [options.timeout] - Key into navi.notifications config
+   * @param {String|Number} [options.timeout] - Key into navi.notifications config
    * @param {Boolean} [options.sticky] - By default, flash messages disappear after a certain amount of time.
    *                                   To disable this and make flash messages permanent (they can still
    *                                   be dismissed by click), set sticky to true.
@@ -34,10 +34,10 @@ export default class NaviNotifications extends NaviNotificationInterface {
     const { notificationService } = this;
     if (notificationService.queue.find(q => q.message === options.message)) {
       return notificationService;
-    } else {
-      options.timeout = TIMEOUTS[options.timeout];
-      return notificationService.add(options);
     }
+
+    options.timeout = Number(TIMEOUTS[options.timeout]) || Number(options.timeout);
+    return notificationService.add(options);
   }
 
   /**
