@@ -15,18 +15,21 @@
 import Component from '@ember/component';
 import layout from '../templates/components/navi-table-select';
 
-export default Component.extend({
-  layout,
+export default class NaviTableSelect extends Component {
+  layout = layout;
 
-  classNames: ['navi-table-select'],
+  /**
+   * @property {Array} classNames
+   */
+  classNames = ['navi-table-select'];
 
   /**
    * @property {Boolean} searchEnabled
    */
-  searchEnabled: false,
+  searchEnabled = false;
 
   /**
    * @property {String} searchField
    */
-  searchField: 'longName'
-});
+  searchField = 'longName';
+}

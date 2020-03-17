@@ -99,4 +99,60 @@ module('Integration | Component | navi table select', function(hooks) {
       'Filtered options are shown'
     );
   });
+
+  test('search empty longName', async function(assert) {
+    assert.expect(2);
+
+    this.set('searchEnabled', true);
+    this.set('searchField', 'longName');
+    await render(hbs`<NaviTableSelect
+          @selected={{selected}}
+          @options={{options}}
+          @onChange={{onChange}}
+          @searchEnabled={{searchEnabled}}
+          @searchField={{searchField}}
+      />`);
+
+    await clickTrigger();
+    assert.deepEqual(
+      findAll('.ember-power-select-option').map(el => el.textContent.trim()),
+      ['network', 'network2'],
+      'All options are shown'
+    );
+
+    await fillIn('.ember-power-select-search-input', '');
+    assert.deepEqual(
+      findAll('.ember-power-select-option').map(el => el.textContent.trim()),
+      ['network', 'network2'],
+      'All options are shown again'
+    );
+  });
+
+  test('search longName no match', async function(assert) {
+    assert.expect(2);
+
+    this.set('searchEnabled', true);
+    this.set('searchField', 'longName');
+    await render(hbs`<NaviTableSelect
+          @selected={{selected}}
+          @options={{options}}
+          @onChange={{onChange}}
+          @searchEnabled={{searchEnabled}}
+          @searchField={{searchField}}
+      />`);
+
+    await clickTrigger();
+    assert.deepEqual(
+      findAll('.ember-power-select-option').map(el => el.textContent.trim()),
+      ['network', 'network2'],
+      'All options are shown'
+    );
+
+    await fillIn('.ember-power-select-search-input', 'hello');
+    assert.deepEqual(
+      findAll('.ember-power-select-option').map(el => el.textContent.trim()),
+      ['No results found'],
+      'No options are shown'
+    );
+  });
 });
