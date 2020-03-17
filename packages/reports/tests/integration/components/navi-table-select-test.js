@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, findAll } from '@ember/test-helpers';
+import { render, findAll, fillIn } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import $ from 'jquery';
 import { clickTrigger, nativeMouseUp } from '../../helpers/ember-power-select';
@@ -58,15 +58,45 @@ module('Integration | Component | navi table select', function(hooks) {
     assert.expect(2);
 
     this.set('searchEnabled', true);
-    await render(hbs`{{navi-table-select
-          selected=selected
-          options=options
-          onChange=onChange
-          searchEnabled=searchEnabled
-      }}`);
+    this.set('searchField', 'longName');
+    await render(hbs`<NaviTableSelect
+          @selected={{selected}}
+          @options={{options}}
+          @onChange={{onChange}}
+          @searchEnabled={{searchEnabled}}
+          @searchField={{searchField}}
+      />`);
 
     assert.dom('.ember-power-select-search').isNotVisible('search input should not be visible');
     await clickTrigger();
     assert.dom('.ember-power-select-search').isVisible('search input should be visible');
+  });
+
+  test('search longName', async function(assert) {
+    assert.expect(2);
+
+    this.set('searchEnabled', true);
+    this.set('searchField', 'longName');
+    await render(hbs`<NaviTableSelect
+          @selected={{selected}}
+          @options={{options}}
+          @onChange={{onChange}}
+          @searchEnabled={{searchEnabled}}
+          @searchField={{searchField}}
+      />`);
+
+    await clickTrigger();
+    assert.deepEqual(
+      findAll('.ember-power-select-option').map(el => el.textContent.trim()),
+      ['network', 'network2'],
+      'All options are shown'
+    );
+
+    await fillIn('.ember-power-select-search-input', '2');
+    assert.deepEqual(
+      findAll('.ember-power-select-option').map(el => el.textContent.trim()),
+      ['network2'],
+      'Filtered options are shown'
+    );
   });
 });
