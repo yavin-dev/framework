@@ -13,16 +13,12 @@
  */
 
 import Component from '@ember/component';
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
 import layout from '../templates/components/navi-table-select';
 
-export default class NaviTableSelect extends Component {
-  layout = layout;
-
-  /**
-   * @property {Array} classNames
-   */
-  classNames = ['navi-table-select'];
-
+@templateLayout(layout)
+@tagName('')
+export default class NaviTableSelectComponent extends Component {
   /**
    * @property {Boolean} searchEnabled
    */
