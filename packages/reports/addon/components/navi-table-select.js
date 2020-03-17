@@ -1,15 +1,15 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
- * Usage: {{navi-table-select
- *          options=options
- *          selected=selected
- *          onChange=onChange
- *          searchEnabled=searchEnabled
- *          searchField=searchField
- *          tagName=tagName
- *        }}
+ * Usage: <NaviTableSelect
+ *          @options={{options}}
+ *          @selected={{selected}}
+ *          @onChange={{onChange}}
+ *          @searchEnabled={{searchEnabled}}
+ *          @searchField={{searchField}}
+ *          @tagName={{tagName}}
+ *        />
  */
 
 import Component from '@ember/component';
