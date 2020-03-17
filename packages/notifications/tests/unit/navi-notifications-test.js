@@ -1,14 +1,12 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 
-let Container, ServiceFactory;
-
 module('Unit | Service | navi-notifications', function(hooks) {
   setupTest(hooks);
+  let ServiceFactory;
 
   hooks.beforeEach(function() {
-    Container = this.owner;
-    ServiceFactory = Container.factoryFor('service:navi-notifications');
+    ServiceFactory = this.owner.factoryFor('service:navi-notifications');
   });
 
   test('add notification options', function(assert) {

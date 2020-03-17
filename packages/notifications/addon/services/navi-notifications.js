@@ -36,7 +36,7 @@ export default class NaviNotifications extends NaviNotificationInterface {
       return notificationService;
     }
 
-    options.timeout = Number(TIMEOUTS[options.timeout]) || Number(options.timeout);
+    options.timeout = Number(TIMEOUTS[options.timeout] || options.timeout);
     return notificationService.add(options);
   }
 
