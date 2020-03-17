@@ -7,7 +7,7 @@ import $ from 'jquery';
 import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 import { selectChoose, selectSearch } from 'ember-power-select/test-support';
 import { setupApplicationTest } from 'ember-qunit';
-import reorder from '../../helpers/reorder';
+import reorder from '../helpers/reorder';
 import config from 'ember-get-config';
 import { Response } from 'ember-cli-mirage';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
@@ -1184,33 +1184,6 @@ module('Acceptance | Navi Report', function(hooks) {
 
     Ember.Logger.error = originalLoggerError;
     Ember.Test.adapter.exception = originalException;
-  });
-
-  test('Error data request', async function(assert) {
-    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
-    config.navi.FEATURES.enableRequestPreview = true;
-
-    server.get(
-      `${config.navi.dataSources[0].uri}/v1/data/*path`,
-      () => new Response(400, {}, { description: 'Cannot merge mismatched time grains month and day' })
-    );
-
-    await visit('/reports/5/view');
-
-    assert
-      .dom('.navi-report-error__info-message')
-      .hasText(
-        'Oops! There was an error with your request. Cannot merge mismatched time grains month and day',
-        'An error message is displayed for an invalid request'
-      );
-
-    assert.deepEqual(
-      findAll('.navi-column-config-item__name').map(e => e.textContent),
-      ['Date Time (Day)', 'Ad Clicks', 'Nav Link Clicks'],
-      'The column config is displayed in the error route'
-    );
-
-    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
   });
 
   test('Updating chart series', async function(assert) {
