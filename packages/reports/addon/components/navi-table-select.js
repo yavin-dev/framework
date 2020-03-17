@@ -8,7 +8,6 @@
  *          @onChange={{onChange}}
  *          @searchEnabled={{searchEnabled}}
  *          @searchField={{searchField}}
- *          @tagName={{tagName}}
  *        />
  */
 
