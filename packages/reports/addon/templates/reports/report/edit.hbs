@@ -1,5 +1,5 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{#with (model-for (parent-route)) as | report |}}
+{{#let (model-for (parent-route)) as | report |}}
   {{#if (feature-flag "enableRequestPreview")}}
     <NaviColumnConfig
       @isOpen={{true}}
@@ -33,4 +33,4 @@
         </button>
       </p>
   </NaviInfoMessage>
-{{/with}}
+{{/let}}

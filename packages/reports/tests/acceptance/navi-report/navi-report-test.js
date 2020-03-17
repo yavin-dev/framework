@@ -1187,32 +1187,30 @@ module('Acceptance | Navi Report', function(hooks) {
   });
 
   test('Error data request', async function(assert) {
-    assert.expect(1);
+    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
+    config.navi.FEATURES.enableRequestPreview = true;
 
     server.get(
       `${config.navi.dataSources[0].uri}/v1/data/*path`,
       () => new Response(400, {}, { description: 'Cannot merge mismatched time grains month and day' })
     );
 
-    //suppress errors and exceptions for this test
-    let originalLoggerError = Ember.Logger.error,
-      originalException = Ember.Test.adapter.exception;
-
-    Ember.Logger.error = function() {};
-    Ember.Test.adapter.exception = function() {};
-
     await visit('/reports/5/view');
 
-    assert.equal(
-      find('.navi-report-error__info-message')
-        .innerText.replace(/\s+/g, ' ')
-        .trim(),
-      'Oops! There was an error with your request. Cannot merge mismatched time grains month and day',
-      'An error message is displayed for an invalid request'
+    assert
+      .dom('.navi-report-error__info-message')
+      .hasText(
+        'Oops! There was an error with your request. Cannot merge mismatched time grains month and day',
+        'An error message is displayed for an invalid request'
+      );
+
+    assert.deepEqual(
+      findAll('.navi-column-config-item__name').map(e => e.textContent),
+      ['Date Time (Day)', 'Ad Clicks', 'Nav Link Clicks'],
+      'The column config is displayed in the error route'
     );
 
-    Ember.Logger.error = originalLoggerError;
-    Ember.Test.adapter.exception = originalException;
+    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
   });
 
   test('Updating chart series', async function(assert) {
