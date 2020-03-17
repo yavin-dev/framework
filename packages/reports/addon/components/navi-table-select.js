@@ -1,26 +1,31 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
- * Usage: {{navi-table-select
- *          options=options
- *          selected=selected
- *          onChange=onChange
- *          searchEnabled=searchEnabled
- *          tagName=tagName
- *        }}
+ * Usage: <NaviTableSelect
+ *          @options={{options}}
+ *          @selected={{selected}}
+ *          @onChange={{onChange}}
+ *          @searchEnabled={{searchEnabled}}
+ *          @searchField={{searchField}}
+ *        />
  */
 
 import Component from '@ember/component';
 import layout from '../templates/components/navi-table-select';
 
-export default Component.extend({
-  layout,
-
-  classNames: ['navi-table-select'],
+class NaviTableSelectComponent extends Component {
+  layout = layout;
 
   /**
    * @property {Boolean} searchEnabled
    */
-  searchEnabled: false
-});
+  searchEnabled = false;
+
+  /**
+   * @property {String} searchField
+   */
+  searchField = 'longName';
+}
+
+export default NaviTableSelectComponent;
