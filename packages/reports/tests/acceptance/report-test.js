@@ -7,7 +7,7 @@ import $ from 'jquery';
 import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 import { selectChoose, selectSearch } from 'ember-power-select/test-support';
 import { setupApplicationTest } from 'ember-qunit';
-import reorder from '../../helpers/reorder';
+import reorder from '../helpers/reorder';
 import config from 'ember-get-config';
 import { Response } from 'ember-cli-mirage';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
@@ -1180,35 +1180,6 @@ module('Acceptance | Navi Report', function(hooks) {
         .trim(),
       'Oops! Something went wrong with this report. Try going back to where you were last or to the reports page.',
       'An error message is displayed for an invalid route'
-    );
-
-    Ember.Logger.error = originalLoggerError;
-    Ember.Test.adapter.exception = originalException;
-  });
-
-  test('Error data request', async function(assert) {
-    assert.expect(1);
-
-    server.get(
-      `${config.navi.dataSources[0].uri}/v1/data/*path`,
-      () => new Response(400, {}, { description: 'Cannot merge mismatched time grains month and day' })
-    );
-
-    //suppress errors and exceptions for this test
-    let originalLoggerError = Ember.Logger.error,
-      originalException = Ember.Test.adapter.exception;
-
-    Ember.Logger.error = function() {};
-    Ember.Test.adapter.exception = function() {};
-
-    await visit('/reports/5/view');
-
-    assert.equal(
-      find('.navi-report-error__info-message')
-        .innerText.replace(/\s+/g, ' ')
-        .trim(),
-      'Oops! There was an error with your request. Cannot merge mismatched time grains month and day',
-      'An error message is displayed for an invalid request'
     );
 
     Ember.Logger.error = originalLoggerError;
