@@ -1,12 +1,15 @@
 <div class="input has-icon-back">
   <Input @type="text" @value={{this.searchQuery}} @placeholder="Search" @class="search-input"
-    @key-down={{this.search}} />
+    @keyDown={{this.search}} />
   <span class="d-icon d-search is-brand-700"></span>
 </div>
-{{#if this.searchResults}}
-<div class="results">
-  {{#each this.searchResults as |result|}}
-  {{component result.component data=result.data}}
-  {{/each}}
-</div>
-{{/if}}
+{{log this.searchResults}}
+{{#with (await this.searchResults) as |results|}}
+  {{#if results}}
+  <div class="results">
+    {{#each results as |result|}}
+    {{component result.component data=result.data}}
+    {{/each}}
+  </div>
+  {{/if}}
+{{/with}}

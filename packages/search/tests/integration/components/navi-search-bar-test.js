@@ -45,8 +45,7 @@ module('Integration | Component | navi-search-bar', function(hooks) {
     await render(hbs`<NaviSearchBar />`);
 
     await fillIn('.search-input', 'Revenue');
-
-    await triggerKeyEvent('.search-input', 'keydown', 'Enter');
+    await triggerKeyEvent('.search-input', 'keydown', 13);
     debugger;
 
     assert.dom('.results').exists();
