@@ -1,7 +1,11 @@
 'use strict';
 
 module.exports = {
-  name: 'navi-reports',
+  name: require('./package').name,
+
+  isDevelopingAddon() {
+    return process.env.DEV_NAVI;
+  },
 
   included: function(app, parentAddon) {
     this._super.included.apply(this, arguments);
