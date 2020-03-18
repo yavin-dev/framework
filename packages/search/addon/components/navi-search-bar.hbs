@@ -6,7 +6,7 @@
 {{#if this.searchResults}}
 <div class="results">
   {{#each this.searchResults as |result|}}
-  {{component result.component data=result.data}}
+    {{component result.component data=result.data}}
   {{/each}}
 </div>
 {{/if}}

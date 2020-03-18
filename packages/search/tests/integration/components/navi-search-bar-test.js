@@ -1,7 +1,7 @@
 import Service from '@ember/service';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find, click, fillIn, triggerKeyEvent } from '@ember/test-helpers';
+import { render, fillIn, triggerKeyEvent } from '@ember/test-helpers';
 import { hbs } from 'ember-cli-htmlbars';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
@@ -32,11 +32,9 @@ module('Integration | Component | navi-search-bar', function(hooks) {
 
   test('click search button no results', async function(assert) {
     await render(hbs`<NaviSearchBar />`);
-    debugger;
 
     await fillIn('.search-input', 'Hello!');
-
-    await click(find('.search-button'));
+    await triggerKeyEvent('.search-input', 'keydown', 13);
 
     assert.dom('.results').doesNotExist();
   });
