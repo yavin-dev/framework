@@ -1,5 +1,9 @@
 'use strict';
 
 module.exports = {
-  name: 'navi-core'
+  name: require('./package').name,
+
+  isDevelopingAddon() {
+    return process.env.DEV_NAVI;
+  }
 };
