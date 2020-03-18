@@ -228,9 +228,10 @@ const Payload = {
       name: 'tableLongName',
       category: 'General',
       source: 'dummy',
-      metricIds: ['metricOne', 'metricTwo'],
-      dimensionIds: ['dimensionOne', 'dimensionTwo'],
-      timeDimensionIds: ['dimensionThree']
+      metricIds: ['tableName.metricOne', 'tableName.metricTwo'],
+      dimensionIds: ['tableName.dimensionOne', 'tableName.dimensionTwo'],
+      timeDimensionIds: ['tableName.dimensionThree'],
+      cardinalitySize: 'MEDIUM'
     },
     {
       id: 'secondTable',
@@ -238,15 +239,16 @@ const Payload = {
       name: 'Second Table',
       category: 'Special',
       source: 'dummy',
-      metricIds: ['metricOne', 'metricTwo', 'metricThree'],
-      dimensionIds: ['dimensionTwo'],
-      timeDimensionIds: ['dimensionThree']
+      metricIds: ['secondTable.metricOne', 'secondTable.metricTwo', 'secondTable.metricThree'],
+      dimensionIds: ['secondTable.dimensionTwo'],
+      timeDimensionIds: ['secondTable.dimensionThree'],
+      cardinalitySize: 'MEDIUM'
     }
   ],
   Dimensions = [
     {
       category: 'categoryOne',
-      id: 'dimensionOne',
+      id: 'tableName.dimensionOne',
       name: 'Dimension One',
       source: 'dummy',
       tableId: 'tableName',
@@ -258,7 +260,7 @@ const Payload = {
     },
     {
       category: 'categoryTwo',
-      id: 'dimensionTwo',
+      id: 'tableName.dimensionTwo',
       name: 'Dimension Two',
       source: 'dummy',
       tableId: 'tableName',
@@ -270,7 +272,7 @@ const Payload = {
     },
     {
       category: 'categoryTwo',
-      id: 'dimensionTwo',
+      id: 'secondTable.dimensionTwo',
       name: 'Dimension Two',
       source: 'dummy',
       tableId: 'secondTable',
@@ -284,7 +286,7 @@ const Payload = {
   TimeDimensions = [
     {
       category: 'dateCategory',
-      id: 'dimensionThree',
+      id: 'tableName.dimensionThree',
       name: 'Dimension Three',
       source: 'dummy',
       tableId: 'tableName',
@@ -296,7 +298,7 @@ const Payload = {
     },
     {
       category: 'dateCategory',
-      id: 'dimensionThree',
+      id: 'secondTable.dimensionThree',
       name: 'Dimension Three',
       source: 'dummy',
       tableId: 'secondTable',
@@ -310,7 +312,7 @@ const Payload = {
   Metrics = [
     {
       category: 'category',
-      id: 'metricOne',
+      id: 'tableName.metricOne',
       name: 'Metric One',
       valueType: 'number',
       source: 'dummy',
@@ -320,7 +322,7 @@ const Payload = {
     },
     {
       category: 'category',
-      id: 'metricTwo',
+      id: 'tableName.metricTwo',
       name: 'Metric Two',
       valueType: 'money',
       source: 'dummy',
@@ -330,7 +332,7 @@ const Payload = {
     },
     {
       category: 'category',
-      id: 'metricOne',
+      id: 'secondTable.metricOne',
       name: 'Metric One',
       valueType: 'number',
       source: 'dummy',
@@ -340,7 +342,7 @@ const Payload = {
     },
     {
       category: 'category',
-      id: 'metricTwo',
+      id: 'secondTable.metricTwo',
       name: 'Metric Two',
       valueType: 'money',
       source: 'dummy',
@@ -350,7 +352,7 @@ const Payload = {
     },
     {
       category: 'category',
-      id: 'metricThree',
+      id: 'secondTable.metricThree',
       name: 'Metric Three',
       valueType: 'number',
       source: 'dummy',
@@ -546,7 +548,7 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
       [
         {
           category: 'category',
-          id: 'metricOne',
+          id: 'tableName.metricOne',
           name: 'Metric One',
           valueType: 'number',
           source: 'dummy',
@@ -556,7 +558,7 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
         },
         {
           category: 'category',
-          id: 'metricTwo',
+          id: 'tableName.metricTwo',
           name: 'Metric Two',
           valueType: 'money',
           source: 'dummy',
@@ -578,9 +580,10 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
           name: 'tableLongName',
           category: 'General',
           source: 'dummy',
-          metricIds: ['metricOne', 'metricTwo'],
-          dimensionIds: ['dimensionOne'],
-          timeDimensionIds: []
+          metricIds: ['tableName.metricOne', 'tableName.metricTwo'],
+          dimensionIds: ['tableName.dimensionOne'],
+          timeDimensionIds: [],
+          cardinalitySize: 'SMALL'
         }
       ],
       'Table has the correct columns associated with it'
@@ -591,7 +594,7 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
       [
         {
           category: 'categoryOne',
-          id: 'dimensionOne',
+          id: 'tableName.dimensionOne',
           name: 'Dimension One',
           source: 'dummy',
           tableId: 'tableName',
@@ -674,7 +677,7 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
     const tableName = 'tableOne';
     const currentDimensions = {};
     const expectedDimension = {
-      id: dimension.name,
+      id: `${tableName}.${dimension.name}`,
       name: dimension.longName,
       category: dimension.category,
       valueType: dimension.datatype,
@@ -689,7 +692,7 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
     const result = Serializer._constructDimension(dimension, grain, source, tableName, currentDimensions);
     assert.deepEqual(result, expectedDimension, 'New dimension is constructed correctly in the new shape');
 
-    currentDimensions[dimension.name] = result;
+    currentDimensions[expectedDimension.id] = result;
     grain = 'month';
     expectedDimension.timegrains.push(grain); //expect timegrains to be ['day', 'month']
     const existingDimensionResult = Serializer._constructDimension(
@@ -714,7 +717,10 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
       tableName,
       currentDimensions
     );
-    const otherExpectedDimension = Object.assign({}, expectedDimension, { id: 'dimensionTwo', timegrains: ['month'] });
+    const otherExpectedDimension = Object.assign({}, expectedDimension, {
+      id: 'tableOne.dimensionTwo',
+      timegrains: ['month']
+    });
     assert.deepEqual(
       otherDimensionResult,
       otherExpectedDimension,
@@ -736,7 +742,7 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
     const currentMetrics = {};
     const metricFunctions = new Set();
     const expectedMetric = {
-      id: metric.name,
+      id: `${tableName}.${metric.name}`,
       name: metric.longName,
       category: metric.category,
       valueType: metric.type,
@@ -752,7 +758,7 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
       'Metric is constructed correctly with no new metric function and flag for functions being provided is false'
     );
 
-    currentMetrics[metric.name] = result.metric;
+    currentMetrics[expectedMetric.id] = result.metric;
     grain = 'month';
     expectedMetric.timegrains.push(grain);
 
@@ -779,7 +785,7 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
       currentMetrics,
       metricFunctions
     );
-    const otherExpectedMetric = Object.assign({}, expectedMetric, { id: 'metricTwo', timegrains: ['month'] });
+    const otherExpectedMetric = Object.assign({}, expectedMetric, { id: 'tableOne.metricTwo', timegrains: ['month'] });
     assert.deepEqual(
       otherMetricResult,
       {
@@ -812,7 +818,7 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
     const currentMetrics = {};
     const metricFunctions = new Set();
     const expectedMetric = {
-      id: metric.name,
+      id: `${tableName}.${metric.name}`,
       name: metric.longName,
       category: metric.category,
       valueType: metric.type,
@@ -865,7 +871,7 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
     const currentMetrics = {};
     const metricFunctions = new Set();
     const expectedMetric = {
-      id: metric.name,
+      id: `${tableName}.${metric.name}`,
       name: metric.longName,
       category: metric.category,
       valueType: metric.type,

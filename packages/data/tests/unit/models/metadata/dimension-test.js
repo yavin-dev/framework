@@ -200,7 +200,7 @@ module('Unit | Metadata Model | Dimension', function(hooks) {
     const server = new Pretender(metadataRoutes);
     await this.owner.lookup('service:bard-metadata').loadMetadata();
     const dimensionOne = DimensionMetadataModel.create(this.owner.ownerInjection(), {
-      id: 'dimensionOne'
+      id: 'table1.dimensionOne'
     });
 
     const result = await dimensionOne.extended;

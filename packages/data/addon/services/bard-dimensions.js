@@ -5,7 +5,6 @@
  * Description: Bard dimensions service that fetches dimension values
  */
 
-import { hashSettled, resolve } from 'rsvp';
 import { A } from '@ember/array';
 import Service, { inject as service } from '@ember/service';
 import { assert } from '@ember/debug';
@@ -14,13 +13,8 @@ import { getWithDefault } from '@ember/object';
 import { isEmpty } from '@ember/utils';
 import BardDimensionArray from 'navi-data/models/bard-dimension-array';
 import SearchUtils from 'navi-data/utils/search';
-import config from 'ember-get-config';
 import { intersection } from 'lodash-es';
 import { getDefaultDataSourceName } from '../utils/adapter';
-
-const LOAD_CARDINALITY = config.navi.searchThresholds.contains;
-
-const MAX_LOAD_CARDINALITY = config.navi.searchThresholds.in;
 
 const SEARCH_OPERATOR_PRIORITY = ['contains', 'in'];
 
@@ -269,7 +263,7 @@ export default class BardDimensionService extends Service {
     const source = options.dataSourceName || getDefaultDataSourceName();
     let operator = this._getSearchOperator(dimension);
 
-    if (metadataService.getById('dimension', dimension, source).cardinality > MAX_LOAD_CARDINALITY) {
+    if (metadataService.getById('dimension', dimension, source).cardinality === 'LARGE') {
       operator = 'in';
     }
 
@@ -311,7 +305,7 @@ export default class BardDimensionService extends Service {
    *              pagination is optional but if specified both page and limit must be defined
    * @returns {Promise} - Array Promise containing the search result
    */
-  search(dimension, options) {
+  async search(dimension, options) {
     assert('dimension must be defined', dimension);
     assert('search query must be defined', options.term);
 
@@ -319,47 +313,42 @@ export default class BardDimensionService extends Service {
       assert('for pagination both page and limit must be defined in search options', options.page && options.limit);
     }
 
+    const { metadataService } = this;
     const source = options.dataSourceName || getDefaultDataSourceName();
     const query = options.term.trim();
-    let promise;
+    const dimensionLookup = metadataService.getById('dimension', dimension, source);
+    const cardinality = await dimensionLookup?.cardinality;
     let dimensionRecords;
 
-    const { cardinality } = this.metadataService.getById('dimension', dimension, source);
-    if (cardinality <= LOAD_CARDINALITY) {
-      promise = this.all(dimension, options).then(dimValues => {
-        dimensionRecords = A(dimValues);
+    if (cardinality === 'SMALL') {
+      const dimValues = await this.all(dimension, options);
+      dimensionRecords = A(dimValues);
 
-        return A(
-          SearchUtils.searchDimensionRecords(
-            dimensionRecords,
-            query,
-            options.limit || MAX_SEARCH_RESULT_COUNT,
-            options.page
-          )
-        ).mapBy('record');
-      });
+      return A(
+        SearchUtils.searchDimensionRecords(
+          dimensionRecords,
+          query,
+          options.limit || MAX_SEARCH_RESULT_COUNT,
+          options.page
+        )
+      ).mapBy('record');
     } else if (options.useNewSearchAPI) {
-      promise = this.searchValue(dimension, query, options).then(dimValues => {
-        dimensionRecords = A(getWithDefault(dimValues, 'rows', []));
+      const dimValues = await this.searchValue(dimension, query, options);
+      dimensionRecords = A(getWithDefault(dimValues, 'rows', []));
 
-        return A(SearchUtils.searchDimensionRecords(dimensionRecords, query, MAX_SEARCH_RESULT_COUNT)).mapBy('record');
-      });
+      return A(SearchUtils.searchDimensionRecords(dimensionRecords, query, MAX_SEARCH_RESULT_COUNT)).mapBy('record');
     } else {
-      let promises = {
-        searchById: this.searchValueField(dimension, 'id', query, options),
-        searchByDescription: this.searchValueField(dimension, 'description', query, options)
-      };
+      const searchById = await this.searchValueField(dimension, 'id', query, options).catch(() => ({ rows: [] }));
+      const searchByDescription = await this.searchValueField(dimension, 'description', query, options).catch(() => ({
+        rows: []
+      }));
 
-      promise = hashSettled(promises).then(({ searchById, searchByDescription }) => {
-        dimensionRecords = A()
-          .addObjects(getWithDefault(searchById, 'value.rows', []))
-          .addObjects(getWithDefault(searchByDescription, 'value.rows', []));
+      dimensionRecords = A()
+        .addObjects(searchById?.rows || [])
+        .addObjects(searchByDescription?.rows || []);
 
-        return A(SearchUtils.searchDimensionRecords(dimensionRecords, query, MAX_SEARCH_RESULT_COUNT)).mapBy('record');
-      });
+      return A(SearchUtils.searchDimensionRecords(dimensionRecords, query, MAX_SEARCH_RESULT_COUNT)).mapBy('record');
     }
-
-    return new resolve(promise);
   }
 
   /**

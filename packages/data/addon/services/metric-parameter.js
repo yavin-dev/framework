@@ -15,7 +15,7 @@ export default class MetricParameterService extends Service {
   constructor() {
     super(...arguments);
     /**
-     * @property {Object} _supportedHandlers List of parametery types supported.
+     * @property {Object} _supportedHandlers List of parameter types supported.
      */
     this._supportedHandlers = {
       dimension: this._dimension.bind(this),
@@ -57,8 +57,10 @@ export default class MetricParameterService extends Service {
   fetchAllParams(metricMeta) {
     const promises = {};
     const parameterObj = metricMeta.parameters || {};
-    const supportedTypes = this.supportedTypes();
-    const parameters = Object.entries(parameterObj).filter(([, paramMeta]) => supportedTypes.includes(paramMeta.type));
+    const supportedTypes = this.supportedTypes;
+    const parameters = Object.entries(parameterObj).filter(([, paramMeta]) =>
+      supportedTypes.includes(paramMeta.type)
+    );
 
     parameters.forEach(([paramType, paramMeta]) => {
       promises[paramType] = this.fetchAllValues(paramMeta);

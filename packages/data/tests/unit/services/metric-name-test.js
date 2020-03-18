@@ -6,8 +6,8 @@ module('Unit | Service | metric long name', function(hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
-    return this.owner.lookup('service:bard-metadata').loadMetadata();
+  hooks.beforeEach(async function() {
+    await this.owner.lookup('service:bard-metadata').loadMetadata();
   });
 
   test('getLongName', function(assert) {
@@ -15,7 +15,7 @@ module('Unit | Service | metric long name', function(hooks) {
     let service = this.owner.lookup('service:metric-name');
 
     assert.equal(
-      service.getLongName('revenue'),
+      service.getLongName('network.revenue'),
       'Revenue',
       'Service can succesfully retrieve the long name for a valid metric'
     );
@@ -27,14 +27,14 @@ module('Unit | Service | metric long name', function(hooks) {
     let service = this.owner.lookup('service:metric-name');
 
     assert.equal(
-      service.getDisplayName({ metric: 'adClicks', parameters: {} }),
+      service.getDisplayName({ metric: 'network.adClicks', parameters: {} }),
       'Ad Clicks',
       'Service returns the long name for a non parameterized metric'
     );
 
     assert.equal(
       service.getDisplayName({
-        metric: 'revenue',
+        metric: 'network.revenue',
         parameters: { currency: 'USD' },
         canonicalName: 'revenue(currency=USD)'
       }),

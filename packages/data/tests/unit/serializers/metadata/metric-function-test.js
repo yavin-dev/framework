@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { constructFunctionArguments } from 'navi-data/serializers/metric-function';
-import { MetricFunctionMoneyMetric } from '../../helpers/metadata-routes';
+import { constructFunctionArguments } from 'navi-data/serializers/metadata/metric-function';
+import { MetricFunctionMoneyMetric } from '../../../helpers/metadata-routes';
 
 const FunctionArguments = [
   {
@@ -43,7 +43,7 @@ module('Unit | Metric Function Serializer', function(hooks) {
   setupTest(hooks);
 
   hooks.beforeEach(function() {
-    Serializer = this.owner.lookup('serializer:metric-function');
+    Serializer = this.owner.lookup('serializer:metadata/metric-function');
   });
 
   test('_normalizeMetricFunctions', function(assert) {

@@ -88,7 +88,7 @@ module('Unit | Service | metric parameter', function(hooks) {
     let service = this.owner.lookup('service:metric-parameter'),
       parameter = {
         type: 'dimension',
-        dimensionName: 'dimensionOne'
+        dimensionName: 'table1.dimensionOne'
       };
 
     return service.fetchAllValues(parameter).then(res => {
@@ -136,11 +136,11 @@ module('Unit | Service | metric parameter', function(hooks) {
         parameters: [
           {
             type: 'dimension',
-            dimensionName: 'dimensionOne'
+            dimensionName: 'table1.dimensionOne'
           },
           {
             type: 'dimension',
-            dimensionName: 'dimensionThree'
+            dimensionName: 'table1.dimensionThree'
           }
         ]
       };

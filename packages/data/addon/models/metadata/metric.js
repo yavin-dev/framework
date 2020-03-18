@@ -3,27 +3,10 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { inject as service } from '@ember/service';
+import { computed } from '@ember/object';
 import Column from './column';
 
 export default class Metric extends Column {
-  /**
-   * @override
-   * @method init
-   */
-  init() {
-    super.init(...arguments);
-
-    const { metricFunctionId, source, metadataService } = this;
-
-    if (metricFunctionId) {
-      this.metricFunctionPromise = metadataService
-        .findById('metric-function', metricFunctionId, source)
-        .then(result => {
-          this.metricFunction = result;
-        });
-    }
-  }
-
   /**
    * @static
    * @property {String} identifierField
@@ -48,52 +31,54 @@ export default class Metric extends Column {
 
   /**
    * Many to One relationship
-   * @property {MetricFunction} metricFunction
+   * @property {Promise<MetricFunction>} metricFunction
    */
-  metricFunction;
+  get metricFunction() {
+    const { metricFunctionId, source, metadataService } = this;
 
-  /**
-   * @property {Promise} metricFunctionPromise - resolves when metricFunction is fetched from the id
-   */
-  metricFunctionPromise;
-
-  /**
-   * @property {Boolean} hasParameters
-   */
-  get hasParameters() {
-    return !!this.metricFunction?.arguments?.length;
+    if (metricFunctionId) {
+      return metadataService.findById('metric-function', metricFunctionId, source);
+    }
+    return undefined;
   }
 
   /**
-   * @property {Object[]} arguments - arguments for the metric
+   * @property {Promise<Boolean>} hasParameters
+   */
+  get hasParameters() {
+    return this.arguments.then(args => !!args.length);
+  }
+
+  /**
+   * @property {Promise<Object[]>} arguments - arguments for the metric
    */
   get arguments() {
-    return this.metricFunction?.arguments || [];
+    return this.metricFunction?.then(func => func?.arguments || []) || Promise.resolve([]);
   }
 
   /**
    * @method getParameter - retrieves the queried parameter object from metadata
    * @param {String} id
-   * @returns {Object}
+   * @returns {Promise<Object>}
    */
-  getParameter(id) {
-    if (!this.hasParameters) {
+  async getParameter(id) {
+    if (!(await this.hasParameters)) {
       return;
     }
 
-    return this.metricFunction.arguments.find(arg => arg.id === id);
+    return this.arguments.then(args => args.find(arg => arg.id === id));
   }
 
   /**
    * @method getDefaultParameters - retrieves all the default values for all the parameters
-   * @returns {Object|undefined}
+   * @returns {Promise<Object|undefined>}
    */
-  getDefaultParameters() {
-    if (!this.hasParameters) {
+  async getDefaultParameters() {
+    if (!(await this.hasParameters)) {
       return;
     }
 
-    const { arguments: args } = this;
+    const args = await this.arguments;
 
     return args.reduce((acc, curr) => {
       acc[curr.id] = curr.defaultValue;
@@ -104,6 +89,7 @@ export default class Metric extends Column {
   /**
    * @property {Promise} extended - extended metadata for the metric that isn't provided in initial table fullView metadata load
    */
+  @computed
   get extended() {
     const { metadataService, id, source } = this;
     return metadataService.findById('metric', id, source);

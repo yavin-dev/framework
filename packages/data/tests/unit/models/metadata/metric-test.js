@@ -57,7 +57,7 @@ module('Unit | Metadata Model | Metric', function(hooks) {
     assert.equal(Metric.valueType, Payload.valueType, 'valueType property was properly hydrated');
   });
 
-  test('Parameterized Metrics', async function(assert) {
+  test('Metric with Metric Function', async function(assert) {
     assert.expect(4);
 
     const metricOne = MetricMetadataModel.create(this.owner.ownerInjection(), {
@@ -65,27 +65,27 @@ module('Unit | Metadata Model | Metric', function(hooks) {
       metricFunctionId: 'moneyMetric'
     });
 
-    await metricOne.metricFunctionPromise;
+    const metricFunction = await metricOne.metricFunction;
     const expectedMetricFunc = this.owner
       .lookup('service:keg')
       .getById('metadata/metric-function', 'moneyMetric', 'dummy');
-    assert.equal(metricOne.metricFunction, expectedMetricFunc, 'Metric function is returned correctly');
-    assert.ok(metricOne.hasParameters, 'hasParameters property is computed');
+    assert.equal(metricFunction, expectedMetricFunc, 'Metric function is returned correctly');
+    assert.ok(await metricOne.hasParameters, 'hasParameters property is computed');
 
     assert.deepEqual(
-      metricOne.arguments.map(arg => arg.id),
+      (await metricOne.arguments).map(arg => arg.id),
       ['currency'],
       'Arguments of the associated metric function are shown through arguments'
     );
 
     assert.deepEqual(
-      metricOne.getParameter('currency'),
+      await metricOne.getParameter('currency'),
       expectedMetricFunc.arguments.find(arg => arg.id === 'currency'),
       'the queried metric function argument object is retrived from parameters'
     );
   });
 
-  test('Non Parameterized Metric', function(assert) {
+  test('Metric without Metric Function', async function(assert) {
     assert.expect(2);
 
     let payload = {
@@ -96,16 +96,16 @@ module('Unit | Metadata Model | Metric', function(hooks) {
       },
       metric = MetricMetadataModel.create(this.owner.ownerInjection(), payload);
 
-    assert.deepEqual(metric.arguments, [], 'arguments is an empty array when metric has no metric function');
+    assert.deepEqual(await metric.arguments, [], 'arguments is an empty array when metric has no metric function');
 
-    assert.notOk(metric.hasParameters, 'hasParameters property is false since the metric has no metric function');
+    assert.notOk(await metric.hasParameters, 'hasParameters property is false since the metric has no metric function');
   });
 
-  test('getDefaultParameters', function(assert) {
+  test('getDefaultParameters', async function(assert) {
     assert.expect(3);
 
     assert.deepEqual(
-      MoneyMetric.getDefaultParameters(),
+      await MoneyMetric.getDefaultParameters(),
       { currency: 'USD' },
       'The default values of the metric parameters are returned as a key value pair'
     );
@@ -119,13 +119,13 @@ module('Unit | Metadata Model | Metric', function(hooks) {
       metric = MetricMetadataModel.create(this.owner.ownerInjection(), payload);
 
     assert.deepEqual(
-      metric.getDefaultParameters(),
+      await metric.getDefaultParameters(),
       undefined,
       'The method returns undefined when trying to fetch defaults from a metric without parameters'
     );
 
     assert.deepEqual(
-      ClicksMetric.getDefaultParameters(),
+      await ClicksMetric.getDefaultParameters(),
       { aggregation: '7DayAvg', trend: 'DO_D' },
       'The method returns all the defaults for all the parameters of the metric'
     );
@@ -133,7 +133,7 @@ module('Unit | Metadata Model | Metric', function(hooks) {
 
   test('extended property', async function(assert) {
     const metricOne = MetricMetadataModel.create(this.owner.ownerInjection(), {
-      id: 'metricOne'
+      id: 'table1.metricOne'
     });
     const server = new Pretender(metadataRoutes);
 

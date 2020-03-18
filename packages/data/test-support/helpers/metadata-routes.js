@@ -4,48 +4,48 @@ export const Host = config.navi.dataSources[0].uri;
 
 export const MetricOne = {
   category: 'category',
-  id: 'metricOne',
-  name: 'Metric One'
+  name: 'metricOne',
+  longName: 'Metric One'
 };
 
 export const MetricTwo = {
   category: 'category',
-  id: 'metricTwo',
-  name: 'Metric Two'
+  name: 'metricTwo',
+  longName: 'Metric Two'
 };
 
 export const MetricThree = {
   category: 'category',
-  id: 'metricThree',
-  name: 'Metric Three'
+  name: 'metricThree',
+  longName: 'Metric Three'
 };
 
 export const MetricFour = {
   category: 'category',
-  id: 'metricFour',
-  name: 'Metric Four'
+  name: 'metricFour',
+  longName: 'Metric Four'
 };
 
 export const MetricFive = {
   category: 'currencyMetrics',
-  id: 'metricFive',
-  name: 'Metric Five',
+  name: 'metricFive',
+  longName: 'Metric Five',
   metricFunctionId: 'moneyMetric'
 };
 
 export const DimensionOne = {
   category: 'categoryOne',
-  id: 'dimensionOne',
-  name: 'Dimension One',
-  cardinality: 'SMALL' // 60
+  name: 'dimensionOne',
+  longName: 'Dimension One',
+  cardinality: 60
   //No Fields
 };
 
 export const DimensionTwo = {
   category: 'categoryTwo',
-  id: 'dimensionTwo',
-  name: 'Dimension Two',
-  cardinality: 'LARGE', // 6000000000
+  name: 'dimensionTwo',
+  longName: 'Dimension Two',
+  cardinality: 6000000000,
   fields: [
     {
       name: 'key',
@@ -62,9 +62,9 @@ export const DimensionTwo = {
 
 export const DimensionThree = {
   category: 'categoryTwo',
-  id: 'dimensionThree',
-  name: 'Dimension Three',
-  cardinality: 'SMALL', // 700
+  name: 'dimensionThree',
+  longName: 'Dimension Three',
+  cardinality: 700,
   fields: [
     {
       name: 'id',
@@ -81,9 +81,9 @@ export const DimensionThree = {
 
 export const DimensionFour = {
   category: 'categoryTwo',
-  id: 'dimensionFour',
-  name: 'Dimension Four',
-  cardinality: 'SMALL', // 70
+  name: 'dimensionFour',
+  longName: 'Dimension Four',
+  cardinality: 70,
   fields: [
     {
       name: 'id',
@@ -100,9 +100,9 @@ export const DimensionFour = {
 
 export const DimensionFive = {
   category: 'categoryTwo',
-  id: 'dimensionFive',
-  name: 'Dimension Five',
-  cardinality: 'LARGE', // 6000000000,
+  name: 'dimensionFive',
+  longName: 'Dimension Five',
+  cardinality: 6000000000,
   fields: [
     {
       name: 'id',
@@ -119,8 +119,8 @@ export const DimensionFive = {
 
 export const TableOne = {
   description: 'Table1 Description',
-  name: 'table1LongName',
-  id: 'table1',
+  longName: 'table1LongName',
+  name: 'table1',
   category: 'General',
   timeGrains: [
     {
@@ -136,8 +136,8 @@ export const TableOne = {
 
 export const TableTwo = {
   description: 'Table2 Description',
-  name: 'table2LongName',
-  id: 'table2',
+  longName: 'table2LongName',
+  name: 'table2',
   category: 'General',
   timeGrains: [
     {
@@ -153,9 +153,9 @@ export const TableTwo = {
 
 export const Tables = [
   {
-    id: 'table1',
+    name: 'table1',
     description: 'Table1 Description',
-    name: 'table1LongName',
+    longName: 'table1LongName',
     category: 'General',
     timeGrains: [
       {
@@ -169,9 +169,9 @@ export const Tables = [
     ]
   },
   {
-    id: 'table2',
+    name: 'table2',
     description: 'Table2 Description',
-    name: 'table2LongName',
+    longName: 'table2LongName',
     category: 'General',
     timeGrains: [
       {
@@ -183,14 +183,30 @@ export const Tables = [
         dimensions: [DimensionTwo]
       }
     ]
+  },
+  {
+    name: 'smallTable',
+    description: 'Small table description',
+    longName: 'Small Table',
+    category: 'General',
+    timeGrains: [
+      {
+        name: 'day',
+        description: 'The table1 day grain',
+        metrics: [MetricOne],
+        retention: 'P24M',
+        longName: 'Day',
+        dimensions: [DimensionOne]
+      }
+    ]
   }
 ];
 
 export const Tables2 = [
   {
-    id: 'table3',
+    name: 'table3',
     description: 'Table3 Description',
-    name: 'table3DisplayName',
+    longName: 'table3DisplayName',
     category: 'General',
     timeGrains: [
       {
@@ -204,9 +220,9 @@ export const Tables2 = [
     ]
   },
   {
-    id: 'table4',
+    name: 'table4',
     description: 'Table4 Description',
-    name: 'table4DisplayName',
+    longName: 'table4DisplayName',
     category: 'General',
     timeGrains: [
       {
@@ -220,11 +236,20 @@ export const Tables2 = [
     ]
   },
   {
-    id: 'table5',
+    name: 'table5',
     description: 'Table5 Description',
-    name: 'table5DisplayName',
+    longName: 'table5DisplayName',
     category: 'General',
-    timeGrains: []
+    timeGrains: [
+      {
+        name: 'week',
+        description: 'The table4 week grain',
+        metrics: [MetricFour],
+        retention: 'P24M',
+        longName: 'Day',
+        dimensions: [DimensionFour]
+      }
+    ]
   }
 ];
 
@@ -312,5 +337,6 @@ const METRIC_MAP = {
   metricOne: MetricOne,
   metricTwo: MetricTwo,
   metricThree: MetricThree,
-  metricFour: MetricFour
+  metricFour: MetricFour,
+  metricFive: MetricFive
 };

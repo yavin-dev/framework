@@ -7,7 +7,11 @@
 
 import EmberObject from '@ember/object';
 import { guidFor } from '@ember/object/internals';
-import { constructFunctionArguments } from 'navi-data/serializers/metric-function';
+import { constructFunctionArguments } from 'navi-data/serializers/metadata/metric-function';
+import config from 'ember-get-config';
+
+const LOAD_CARDINALITY = config.navi.searchThresholds.contains;
+const MAX_LOAD_CARDINALITY = config.navi.searchThresholds.in;
 
 export default class BardMetadataSerializer extends EmberObject {
   /**
@@ -37,10 +41,16 @@ export default class BardMetadataSerializer extends EmberObject {
 
             // Construct each dimension / time-dimension
             timegrain.dimensions.forEach(dimension => {
-              const { datatype: valueType, name } = dimension;
+              const { datatype: valueType, cardinality } = dimension;
               const accDimensionList = valueType === 'date' ? currentTimeDimensions : currentDimensions;
+              if (cardinality > MAX_LOAD_CARDINALITY) {
+                acc.tableCardinality = 'LARGE';
+              } else if (cardinality > LOAD_CARDINALITY) {
+                acc.tableCardinality = 'MEDIUM';
+              }
 
-              accDimensionList[name] = this._constructDimension(dimension, grain, source, table.name, accDimensionList);
+              const newDim = this._constructDimension(dimension, grain, source, table.name, accDimensionList);
+              accDimensionList[newDim.id] = newDim;
             });
 
             // Construct each metric and metric function + function arguments if necessary
@@ -50,7 +60,7 @@ export default class BardMetadataSerializer extends EmberObject {
                 metricFunction: newMetricFunction,
                 metricFunctionsProvided
               } = this._constructMetric(metric, grain, source, table.name, currentMetrics, metricFunctions);
-              currentMetrics[metric.name] = newMetric;
+              currentMetrics[newMetric.id] = newMetric;
 
               if (metricFunctionsProvided) {
                 metricFunctions = null;
@@ -63,7 +73,7 @@ export default class BardMetadataSerializer extends EmberObject {
 
             return acc;
           },
-          { metrics: {}, dimensions: {}, timeDimensions: {} }
+          { metrics: {}, dimensions: {}, timeDimensions: {}, tableCardinality: 'SMALL' }
         );
 
         // Add metrics and dimensions for the table to the overall metrics and dimensions arrays
@@ -76,6 +86,7 @@ export default class BardMetadataSerializer extends EmberObject {
           name: table.longName,
           description: table.description,
           category: table.category,
+          cardinalitySize: allTableColumns.tableCardinality,
           source,
           metricIds: Object.keys(allTableColumns.metrics),
           dimensionIds: Object.keys(allTableColumns.dimensions),
@@ -133,14 +144,15 @@ export default class BardMetadataSerializer extends EmberObject {
   _constructDimension(dimension, grain, source, tableName, currentDimensions) {
     let newDimension;
     const { name, longName, category, datatype: valueType, storageStrategy } = dimension;
-    const existingDimension = currentDimensions[name];
+    const dimensionId = `${tableName}.${name}`;
+    const existingDimension = currentDimensions[dimensionId];
 
     if (existingDimension) {
       const newGrains = [...existingDimension.timegrains, grain];
       newDimension = Object.assign({}, existingDimension, { timegrains: newGrains });
     } else {
       newDimension = {
-        id: name,
+        id: dimensionId,
         name: longName,
         category,
         valueType,
@@ -173,14 +185,15 @@ export default class BardMetadataSerializer extends EmberObject {
       newMetricFunction = null,
       metricFunctionsProvided = false;
     const { type: valueType, longName, name, category, parameters, metricFunctionId } = metric;
-    const existingMetric = currentMetrics[name];
+    const metricId = `${tableName}.${name}`;
+    const existingMetric = currentMetrics[metricId];
 
     if (existingMetric) {
       const newGrains = [...existingMetric.timegrains, grain];
       newMetric = Object.assign({}, existingMetric, { timegrains: newGrains });
     } else {
       newMetric = {
-        id: name,
+        id: metricId,
         name: longName,
         valueType,
         source,

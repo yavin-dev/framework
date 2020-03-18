@@ -4,8 +4,15 @@
  */
 
 import EmberObject from '@ember/object';
+import { inject as service } from '@ember/service';
 
 export default class Column extends EmberObject {
+  /**
+   * @property {Ember.Service} keg
+   */
+  @service('keg')
+  keg;
+
   /**
    * @property {String} id
    */
@@ -21,10 +28,16 @@ export default class Column extends EmberObject {
    */
   description;
 
+  tableId;
+
   /**
    * @property {Table} table
    */
-  table;
+  get table() {
+    const { tableId, keg, source } = this;
+
+    return keg.getById('metadata/table', tableId, source);
+  }
 
   /**
    * @property {String} source - name of the data source this column is from.

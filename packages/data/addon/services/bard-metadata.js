@@ -167,11 +167,13 @@ export default class BardMetadataService extends Service {
     assert('Type must be a valid navi-data model type', VALID_TYPES.includes(type));
     let dataSourceName = namespace || getDefaultDataSourceName();
 
-    return this._adapter.fetchMetadata(type, id, { dataSourceName }).then(meta => {
-      //If there is a serializer defined for the type, normalize before loading into keg
-      meta = getOwner(this)
-        .lookup(`serializer:${type}`)
-        ?.normalize({ [pluralize(type)]: [meta] }, namespace) || [meta];
+    return this._adapter
+      .fetchMetadata(type, id, { dataSourceName })
+      .then(meta => {
+        //If there is a serializer defined for the type, normalize before loading into keg
+        meta = getOwner(this)
+          .lookup(`serializer:metadata/${type}`)
+          ?.normalize({ [pluralize(type)]: [meta] }, namespace) || [meta];
 
       //load into keg if not already present
       return this._loadMetadataForType(type, meta, dataSourceName)?.[0];

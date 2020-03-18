@@ -39,19 +39,12 @@ export default class Dimension extends Column {
   idTag = 'id';
 
   /**
-   * @property {String} _cardinality
-   */
-  _cardinality;
-
-  /**
-   * @property {CardinalitySize} cardinality - the cardinality size of the table the dimension is sourced from
+   * @property {Promise<String>|undefined} cardinality - the cardinality size of the table the dimension is sourced from
    */
   get cardinality() {
-    const { type, table, _cardinality } = this;
+    const { type, table } = this;
 
-    if (_cardinality) return _cardinality;
-
-    if (type === 'field') return Promise.resolve(table.cardinalitySize);
+    if (type === 'field') return Promise.resolve(table?.cardinalitySize);
 
     // TODO: get cardinality for ref and formula type dimensions
     return undefined;

@@ -82,13 +82,13 @@ module('Unit | Adapter | Dimensions | Bard', function(hooks) {
     assert.expect(2);
 
     assert.equal(
-      Adapter._buildUrl('dimensionOne'),
+      Adapter._buildUrl('table1.dimensionOne'),
       `${HOST}/v1/dimensions/dimensionOne/values/`,
       '_buildUrl correctly built the URL for the provided dimension when a host is configured'
     );
 
     assert.equal(
-      Adapter._buildUrl('dimensionOne', 'search'),
+      Adapter._buildUrl('table1.dimensionOne', 'search'),
       `${HOST}/v1/dimensions/dimensionOne/search/`,
       '_buildUrl correctly built the URL for the provided dimension and `search` path'
     );
@@ -98,25 +98,25 @@ module('Unit | Adapter | Dimensions | Bard', function(hooks) {
     assert.expect(8);
 
     assert.deepEqual(
-      Adapter._buildFilterQuery('dimensionOne', { values: 'v1' }),
+      Adapter._buildFilterQuery('table1.dimensionOne', { values: 'v1' }),
       { filters: 'dimensionOne|id-in["v1"]' },
       'correctly built filters for object with one string value'
     );
 
     assert.deepEqual(
-      Adapter._buildFilterQuery('dimensionOne', { values: 'v1,v2,v3' }),
+      Adapter._buildFilterQuery('table1.dimensionOne', { values: 'v1,v2,v3' }),
       { filters: 'dimensionOne|id-in["v1","v2","v3"]' },
       'correctly built the query for object with csv string values'
     );
 
     assert.deepEqual(
-      Adapter._buildFilterQuery('dimensionOne', { values: ['v1', 'v2', 'v3'] }),
+      Adapter._buildFilterQuery('table1.dimensionOne', { values: ['v1', 'v2', 'v3'] }),
       { filters: 'dimensionOne|id-in["v1","v2","v3"]' },
       'correctly built the query for object with array of values'
     );
 
     assert.deepEqual(
-      Adapter._buildFilterQuery('dimensionOne', [
+      Adapter._buildFilterQuery('table1.dimensionOne', [
         { field: 'id', operator: 'contains', values: [1, 3] },
         { field: 'id', operator: 'contains', values: [2] }
       ]),
@@ -125,7 +125,7 @@ module('Unit | Adapter | Dimensions | Bard', function(hooks) {
     );
 
     assert.deepEqual(
-      Adapter._buildFilterQuery('dimensionOne', {
+      Adapter._buildFilterQuery('table1.dimensionOne', {
         field: 'description',
         values: ['value1,value2']
       }),
@@ -134,7 +134,7 @@ module('Unit | Adapter | Dimensions | Bard', function(hooks) {
     );
 
     assert.deepEqual(
-      Adapter._buildFilterQuery('dimensionOne', {
+      Adapter._buildFilterQuery('table1.dimensionOne', {
         field: 'id',
         operator: 'in',
         values: ['yes, comma', 'no comma']
@@ -144,7 +144,7 @@ module('Unit | Adapter | Dimensions | Bard', function(hooks) {
     );
 
     assert.deepEqual(
-      Adapter._buildFilterQuery('dimensionOne', {
+      Adapter._buildFilterQuery('table1.dimensionOne', {
         field: 'id',
         operator: 'in',
         values: ['ok', 'weird "quote" value', 'but why']
@@ -154,7 +154,7 @@ module('Unit | Adapter | Dimensions | Bard', function(hooks) {
     );
 
     assert.deepEqual(
-      Adapter._buildFilterQuery('dimensionFour', { values: 'v4' }, { dataSourceName: 'blockhead' }),
+      Adapter._buildFilterQuery('table3.dimensionFour', { values: 'v4' }, { dataSourceName: 'blockhead' }),
       { filters: 'dimensionFour|id-in["v4"]' },
       'correctly built filters for dimension in blockhead datasource'
     );
@@ -164,19 +164,19 @@ module('Unit | Adapter | Dimensions | Bard', function(hooks) {
     assert.expect(3);
 
     assert.deepEqual(
-      Adapter._buildSearchQuery('dimensionOne', { values: 'v1' }),
+      Adapter._buildSearchQuery('table1.dimensionOne', { values: 'v1' }),
       { query: 'v1' },
       '_buildSearchQuery correctly built the query object for the provided dimension filters'
     );
 
     assert.deepEqual(
-      Adapter._buildSearchQuery('dimensionOne', { values: ['foo', 'bar'] }),
+      Adapter._buildSearchQuery('table1.dimensionOne', { values: ['foo', 'bar'] }),
       { query: 'foo bar' },
       '_buildSearchQuery correctly built the query object when given an array of values'
     );
 
     assert.deepEqual(
-      Adapter._buildSearchQuery('dimensionOne', { values: ['foo,bar'] }),
+      Adapter._buildSearchQuery('table1.dimensionOne', { values: ['foo,bar'] }),
       { query: 'foo,bar' },
       '_buildSearchQuery correctly built the query object when given a value containing a comma'
     );
@@ -185,7 +185,7 @@ module('Unit | Adapter | Dimensions | Bard', function(hooks) {
   test('all', function(assert) {
     assert.expect(1);
 
-    return Adapter.all('dimensionOne').then(result => {
+    return Adapter.all('table1.dimensionOne').then(result => {
       assert.deepEqual(result, Response, 'Ajax GET returns the response object for Test dimension without any filters');
     });
   });
@@ -193,7 +193,7 @@ module('Unit | Adapter | Dimensions | Bard', function(hooks) {
   test('find', function(assert) {
     assert.expect(1);
 
-    return Adapter.find('dimensionOne', { values: 'v1' }).then(function(result) {
+    return Adapter.find('table1.dimensionOne', { values: 'v1' }).then(function(result) {
       return assert.deepEqual(
         result,
         Response2,
@@ -205,7 +205,7 @@ module('Unit | Adapter | Dimensions | Bard', function(hooks) {
   test('search', function(assert) {
     assert.expect(1);
 
-    return Adapter.search('dimensionOne', { values: 'v1' }).then(function(result) {
+    return Adapter.search('table1.dimensionOne', { values: 'v1' }).then(function(result) {
       return assert.deepEqual(
         result,
         Response2,
@@ -217,7 +217,7 @@ module('Unit | Adapter | Dimensions | Bard', function(hooks) {
   test('findById', function(assert) {
     assert.expect(1);
 
-    return Adapter.findById('dimensionOne', 'v1').then(function(result) {
+    return Adapter.findById('table1.dimensionOne', 'v1').then(function(result) {
       return assert.deepEqual(result, Response2, 'Ajax GET returns the response object for Test dimension and filters');
     });
   });
@@ -232,7 +232,7 @@ module('Unit | Adapter | Dimensions | Bard', function(hooks) {
     });
 
     // Sending request for default clientId
-    return Adapter.find('dimensionOne', { values: 'v1' }).then(() => {
+    return Adapter.find('table1.dimensionOne', { values: 'v1' }).then(() => {
       // Setting up assert for provided clientId
       Server.get(`${HOST}/v1/dimensions/dimensionOne/values/`, request => {
         assert.equal(request.requestHeaders.clientid, 'test id', 'Client id is set to value given in options');
@@ -241,7 +241,7 @@ module('Unit | Adapter | Dimensions | Bard', function(hooks) {
 
       // Sending request for provided clientId
       return Adapter.find(
-        'dimensionOne',
+        'table1.dimensionOne',
         { values: 'v1' },
         {
           clientId: 'test id'
