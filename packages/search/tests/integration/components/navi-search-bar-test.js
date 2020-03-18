@@ -46,9 +46,7 @@ module('Integration | Component | navi-search-bar', function(hooks) {
 
     await fillIn('.search-input', 'Revenue');
     await triggerKeyEvent('.search-input', 'keydown', 13);
-    debugger;
 
     assert.dom('.results').exists();
-    assert.dom('.results').hasClass('search-result');
   });
 });
