@@ -1,12 +1,17 @@
-<div class="input has-icon-back">
-  <Input @type="text" @value={{this.searchQuery}} @placeholder="Search" @class="search-input"
-    @keyDown={{this.search}} />
-  <span class="d-icon d-search is-brand-700"></span>
+<div>
+  <div class="input has-icon-back navi-search-bar__searchfield">
+    <Input @type="text" @value={{this.searchQuery}} @placeholder="Search" @class="search-input"
+      @keyDown={{this.search}} @focusIn={{this.focusIn}} @focusOut={{this.focusOut}} />
+      {{!-- <NaviIcon @icon="search" /> --}}
+    <span class="d-icon d-search is-brand-700"></span>
+  </div>
+  {{#if (and this.searchResults this.hasFocus)}}
+  <ul class="box search-results">
+    {{#each this.searchResults as |result|}}
+      <li>
+        <NaviSearchResult::Wrapper @result={{result}} />
+      </li>
+    {{/each}}
+  </ul>
+  {{/if}}
 </div>
-{{#if this.searchResults}}
-<div class="results">
-  {{#each this.searchResults as |result|}}
-    {{component result.component data=result.data}}
-  {{/each}}
-</div>
-{{/if}}

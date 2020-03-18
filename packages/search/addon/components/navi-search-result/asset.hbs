@@ -1,10 +1,24 @@
 {{! Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. }}
-<ul class='navi-search-results' ...attributes>
-  {{#each this.results as |result|}}
-    <li class='navi-search-result__asset'>
-      <LinkTo @route={{result.route}} @model={{result.modelId}}>
-        {{result.title}}
-      </LinkTo>
-    </li>
-  {{/each}}
-</ul>
+<table class="table is-striped navi-search-result" ...attributes>
+  <tbody>
+    {{#each this.results as |result|}}
+      <tr class='navi-search-result__asset'>
+        {{#if (eq result.type 'report')}}
+          <td class="is-center">
+            <span class="d-icon d-file-text is-grey-800"></span>
+          </td>
+        {{/if}}
+        {{#if (eq result.type 'dashboard')}}
+          <td class="is-center">
+            <span class="d-icon d-dashboard-tile is-grey-800"></span>
+          </td>
+        {{/if}}
+        <td>
+          <LinkTo @route={{result.route}} @model={{result.modelId}}>
+            {{result.title}}
+          </LinkTo>
+        </td>
+      </tr>
+    {{/each}}
+  </tbody>
+</table>
