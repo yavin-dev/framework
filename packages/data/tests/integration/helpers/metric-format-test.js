@@ -55,7 +55,7 @@ module('helper:metric-format', function(hooks) {
       parameters: {}
     });
 
-    await render(hbs`{{metric-format metric 'blockhead'}}`);
+    await render(hbs`{{metric-format metric "blockhead"}}`);
     assert.dom().hasText('Used Amount');
 
     this.set('metric', {

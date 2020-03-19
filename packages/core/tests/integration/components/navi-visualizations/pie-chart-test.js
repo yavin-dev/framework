@@ -412,8 +412,6 @@ module('Integration | Component | pie chart', function(hooks) {
     assert
       .dom('.c3-title')
       .hasText('How many have sold worldwide', 'The metric name is displayed in the metric label correctly');
-
-    this.set('model', Model);
   });
 
   test('parameterized metric renders correctly for metric series', async function(assert) {

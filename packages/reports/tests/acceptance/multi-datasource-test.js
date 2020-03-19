@@ -58,7 +58,7 @@ module('Acceptance | multi-datasource report builder', function(hooks) {
 
     //check visualizations are showing up correctly
     assert.deepEqual(
-      findAll('.table-widget__table-headers .table-header-cell__title ').map(el => el.textContent.trim()),
+      findAll('.table-widget__table-headers .table-header-cell__title').map(el => el.textContent.trim()),
       ['Date', 'Container', 'Used Amount'],
       'Table displays correct header titles'
     );
@@ -109,7 +109,7 @@ module('Acceptance | multi-datasource report builder', function(hooks) {
 
     //check visualizations are showing up correctly
     assert.deepEqual(
-      findAll('.table-widget__table-headers .table-header-cell__title ').map(el => el.textContent.trim()),
+      findAll('.table-widget__table-headers .table-header-cell__title').map(el => el.textContent.trim()),
       ['Date', 'Container', 'Used Amount'],
       'Table displays correct header titles'
     );

@@ -80,6 +80,6 @@ export default Component.extend({
     }
 
     let request = get(this, 'report.request').serialize();
-    return get(this, 'facts').getURL(request, { format: 'csv', dataSourceName: request.dataSource });
+    return this.facts.getURL(request, { format: 'csv', dataSourceName: request.dataSource });
   })
 });
