@@ -4,16 +4,16 @@
     {{#each this.results as |result|}}
       <tr class='navi-search-result__asset'>
         {{#if (eq result.type 'report')}}
-          <td class="is-center">
+          <td class="navi-search-result__asset result_icon is-center">
             <span class="d-icon d-file-text is-grey-800"></span>
           </td>
         {{/if}}
         {{#if (eq result.type 'dashboard')}}
-          <td class="is-center">
+          <td class="navi-search-result__asset result_icon is-center">
             <span class="d-icon d-dashboard-tile is-grey-800"></span>
           </td>
         {{/if}}
-        <td>
+        <td class="navi-search-result__asset result_element">
           <LinkTo @route={{result.route}} @model={{result.modelId}}>
             {{result.title}}
           </LinkTo>
