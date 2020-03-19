@@ -49,9 +49,6 @@ export default class Dimension extends Column {
     // TODO: get cardinality for ref and formula type dimensions
     return undefined;
   }
-  set cardinality(card) {
-    this._cardinality = card;
-  }
 
   /**
    * Fetches tags for a given field name

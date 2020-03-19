@@ -12,6 +12,7 @@ import metadataRoutes, {
   DimensionThree,
   MetricOne,
   MetricTwo,
+  MetricSix,
   Host
 } from '../../helpers/metadata-routes';
 
@@ -357,22 +358,29 @@ module('Unit - Service - Bard Metadata', function(hooks) {
     );
     assert.equal(Server.handledRequests.length, 2, 'Meta data endpoint called once for each metric');
 
-    keg.push(
-      'metadata/metric',
-      { id: MetricTwo.name, name: MetricTwo.longName, category: MetricTwo.category, partialData: true },
-      { namespace: 'dummy' }
-    );
+    const foonction = { id: 'foonction', arguments: [{ id: 'foonctionArg' }] };
+    const partiallyLoadedMetric = {
+      id: MetricSix.name,
+      name: MetricSix.longName,
+      category: MetricSix.category,
+      metricFunctionId: 'foonction',
+      partialData: true
+    };
 
-    const kegRecord = keg.getById('metadata/metric', 'metricTwo', 'dummy');
+    keg.push('metadata/metric-function', foonction, { namespace: 'dummy' });
+    keg.push('metadata/metric', partiallyLoadedMetric, { namespace: 'dummy' });
+
+    const kegRecord = keg.getById('metadata/metric', 'metricSix', 'dummy');
     assert.ok(kegRecord?.partialData, 'Partial metric exists in keg with partial data flag');
 
     const partialLoadExpectedMetric = {
-      id: MetricTwo.name,
-      name: MetricTwo.longName,
-      category: MetricTwo.category
+      id: partiallyLoadedMetric.id,
+      name: partiallyLoadedMetric.name,
+      category: partiallyLoadedMetric.category,
+      metricFunctionId: partiallyLoadedMetric.metricFunctionId
     };
 
-    const findOnPartiallyLoadedMetric = await Service.findById('metric', 'metricTwo', 'dummy');
+    const findOnPartiallyLoadedMetric = await Service.findById('metric', 'metricSix', 'dummy');
     assert.ok(
       Object.keys(partialLoadExpectedMetric).every(
         key => partialLoadExpectedMetric[key] === findOnPartiallyLoadedMetric[key]
@@ -385,7 +393,7 @@ module('Unit - Service - Bard Metadata', function(hooks) {
     );
     assert.equal(Server.handledRequests.length, 3, 'Another request is sent for a partially loaded model');
 
-    const findAgain = await Service.findById('metric', 'metricTwo', 'dummy');
+    const findAgain = await Service.findById('metric', 'metricSix', 'dummy');
     assert.equal(findAgain, findOnPartiallyLoadedMetric, 'Same record is returned on a second call');
     assert.equal(Server.handledRequests.length, 3, 'No more requests are sent for subsequent findById calls');
 

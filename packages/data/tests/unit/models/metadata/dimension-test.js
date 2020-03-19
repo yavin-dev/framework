@@ -208,4 +208,59 @@ module('Unit | Metadata Model | Dimension', function(hooks) {
     assert.equal(result, expected, 'dimension model can fetch extended attributes');
     server.shutdown();
   });
+
+  test('cardinality', async function(assert) {
+    const keg = this.owner.lookup('service:keg');
+    keg.push('metadata/table', { id: 'table1', cardinalitySize: 'MEDIUM' });
+
+    const dimension = DimensionMetadataModel.create(this.owner.ownerInjection(), {
+      tableId: 'table1',
+      type: 'field'
+    });
+
+    assert.equal(
+      await dimension.cardinality,
+      'MEDIUM',
+      'Dimension successfully gets its cardinality from its table when type of dimension is field'
+    );
+
+    const dimension2 = DimensionMetadataModel.create(this.owner.ownerInjection(), {
+      tableId: 'table1',
+      type: 'somethingElse'
+    });
+
+    assert.strictEqual(
+      await dimension2.cardinality,
+      undefined,
+      'Dimension returns undefined for non-field type dimension'
+    );
+  });
+
+  test('idFieldName', async function(assert) {
+    assert.expect(4);
+
+    const TestDimension = DimensionMetadataModel.create(this.owner.ownerInjection(), {
+      fields: [
+        {
+          name: 'identifier',
+          tags: ['id']
+        }
+      ]
+    });
+
+    assert.deepEqual(TestDimension.idFieldName, 'identifier', 'idFieldName returned `identifier` as the id field');
+
+    let noId = DimensionMetadataModel.create({
+      fields: [{ name: 'name', tags: ['something'] }]
+    });
+    assert.deepEqual(noId.idFieldName, 'id', 'idFieldName returned `id` as the default id field name');
+
+    let twoKeys = DimensionMetadataModel.create({
+      fields: [{ name: 'name1', tags: ['id'] }, { name: 'name2', tags: ['id'] }]
+    });
+    assert.deepEqual(twoKeys.idFieldName, 'name1', 'idFieldName returns the first field tagged as `id`');
+
+    let noFields = DimensionMetadataModel.create({});
+    assert.deepEqual(noFields.idFieldName, 'id', 'idFieldName returns `id` when there is no `fields` metadata prop');
+  });
 });

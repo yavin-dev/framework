@@ -24,7 +24,7 @@ export function constructFunctionArguments(parameters) {
       valueType: 'TEXT',
       type: 'ref', // It will always be ref for our case because all our parameters have their valid values defined in a dimension or enum
       expression: type === 'dimension' ? `dimension:${dimensionName}` : INTRINSIC_VALUE_EXPRESSION,
-      values: values || null,
+      _localValues: values || null,
       defaultValue
     };
   });

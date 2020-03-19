@@ -28,6 +28,9 @@ export default class Column extends EmberObject {
    */
   description;
 
+  /**
+   * @property {String} tableId
+   */
   tableId;
 
   /**

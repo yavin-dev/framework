@@ -17,7 +17,15 @@ export default class DimensionSerializer extends EmberObject {
    */
   _normalizeDimensions(dimensions, source) {
     return dimensions.map(dimension => {
-      const { name: id, longName: name, description, category, datatype: valueType, storageStrategy } = dimension;
+      const {
+        name: id,
+        longName: name,
+        description,
+        category,
+        datatype: valueType,
+        storageStrategy,
+        fields
+      } = dimension;
 
       return {
         id,
@@ -26,7 +34,8 @@ export default class DimensionSerializer extends EmberObject {
         category,
         valueType,
         source,
-        storageStrategy
+        storageStrategy,
+        fields
       };
     });
   }

@@ -9,6 +9,12 @@ import EmberObject from '@ember/object';
 
 export default class MetricFunction extends EmberObject {
   /**
+   * @static
+   * @property {String} identifierField
+   */
+  static identifierField = 'id';
+
+  /**
    * @property {Ember.Service} keg
    */
   @service('keg')

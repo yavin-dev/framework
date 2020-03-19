@@ -31,18 +31,16 @@ module('Unit | Metadata Model | Metric', function(hooks) {
       id: 'metricTwo',
       metricFunctionId: 'aggregationTrend'
     });
-
-    await Promise.all([MoneyMetric.metricFunctionPromise, ClicksMetric.metricFunctionPromise]);
   });
 
   hooks.afterEach(function() {
-    server.shutdown;
+    server.shutdown();
   });
 
   test('factory has identifierField defined', function(assert) {
     assert.expect(1);
 
-    assert.equal(get(MetricMetadataModel, 'identifierField'), 'id', 'identifierField property is set to `name`');
+    assert.equal(get(MetricMetadataModel, 'identifierField'), 'id', 'identifierField property is set to `id`');
   });
 
   test('it properly hydrates properties', function(assert) {
@@ -81,12 +79,12 @@ module('Unit | Metadata Model | Metric', function(hooks) {
     assert.deepEqual(
       await metricOne.getParameter('currency'),
       expectedMetricFunc.arguments.find(arg => arg.id === 'currency'),
-      'the queried metric function argument object is retrived from parameters'
+      'the queried metric function argument object is retrieved from parameters'
     );
   });
 
   test('Metric without Metric Function', async function(assert) {
-    assert.expect(2);
+    assert.expect(3);
 
     let payload = {
         id: 'dayAvgPageViews',
@@ -99,6 +97,12 @@ module('Unit | Metadata Model | Metric', function(hooks) {
     assert.deepEqual(await metric.arguments, [], 'arguments is an empty array when metric has no metric function');
 
     assert.notOk(await metric.hasParameters, 'hasParameters property is false since the metric has no metric function');
+
+    assert.strictEqual(
+      await metric.getParameter('someParam'),
+      undefined,
+      'getParameter returns falsey value when no parameters are present'
+    );
   });
 
   test('getDefaultParameters', async function(assert) {
@@ -118,7 +122,7 @@ module('Unit | Metadata Model | Metric', function(hooks) {
       },
       metric = MetricMetadataModel.create(this.owner.ownerInjection(), payload);
 
-    assert.deepEqual(
+    assert.strictEqual(
       await metric.getDefaultParameters(),
       undefined,
       'The method returns undefined when trying to fetch defaults from a metric without parameters'
@@ -135,7 +139,6 @@ module('Unit | Metadata Model | Metric', function(hooks) {
     const metricOne = MetricMetadataModel.create(this.owner.ownerInjection(), {
       id: 'table1.metricOne'
     });
-    const server = new Pretender(metadataRoutes);
 
     const expected = {
       category: 'category',
@@ -148,6 +151,5 @@ module('Unit | Metadata Model | Metric', function(hooks) {
       Object.keys(expected).every(key => result[key] === expected[key]),
       'metric model can fetch extended attributes'
     );
-    server.shutdown();
   });
 });

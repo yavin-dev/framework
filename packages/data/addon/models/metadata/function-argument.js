@@ -12,10 +12,16 @@ export const INTRINSIC_VALUE_EXPRESSION = 'self';
 
 export default class FunctionArgument extends EmberObject {
   /**
-   * @property {Service} metadataService
+   * @static
+   * @property {String} identifierField
    */
-  @service('bard-metadata')
-  metadataService;
+  static identifierField = 'id';
+
+  /**
+   * @property {Service} dimensionService
+   */
+  @service('bard-dimensions')
+  dimensionService;
 
   /**
    * @property {String} id
@@ -69,9 +75,9 @@ export default class FunctionArgument extends EmberObject {
       return Promise.resolve(this._localValues);
     }
 
-    const [type, id] = this.expression.split(':');
-    if (this.type === 'ref' && type && id) {
-      return this.metadataService.findById(type, id, this.source);
+    const [type, id] = this.expression?.split(':') || [];
+    if (this.type === 'ref' && type === 'dimension' && id) {
+      return this.dimensionService.all(id, this.source).then(results => results.content?.toArray?.());
     }
     return undefined;
   }

@@ -435,7 +435,7 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
         valueType: 'TEXT',
         type: 'ref',
         expression: 'dimension:displayCurrency',
-        values: null,
+        _localValues: null,
         defaultValue: 'USD'
       }
     ];

@@ -3,7 +3,6 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { inject as service } from '@ember/service';
-import { computed } from '@ember/object';
 import Column from './column';
 
 export default class Metric extends Column {
@@ -78,18 +77,17 @@ export default class Metric extends Column {
       return;
     }
 
-    const args = await this.arguments;
-
-    return args.reduce((acc, curr) => {
-      acc[curr.id] = curr.defaultValue;
-      return acc;
-    }, {});
+    return this.arguments.then(args =>
+      args.reduce((acc, curr) => {
+        acc[curr.id] = curr.defaultValue;
+        return acc;
+      }, {})
+    );
   }
 
   /**
    * @property {Promise} extended - extended metadata for the metric that isn't provided in initial table fullView metadata load
    */
-  @computed
   get extended() {
     const { metadataService, id, source } = this;
     return metadataService.findById('metric', id, source);

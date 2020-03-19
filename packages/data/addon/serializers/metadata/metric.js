@@ -26,7 +26,6 @@ export default class MetricSerializer extends EmberObject {
         valueType,
         source
       };
-      // const metricId = `${tableName}.${name}`;
       if (metricFunctionId) {
         normalizedMetric.metricFunctionId = metricFunctionId;
       }

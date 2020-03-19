@@ -175,9 +175,11 @@ export default class BardMetadataService extends Service {
           .lookup(`serializer:metadata/${type}`)
           ?.normalize({ [pluralize(type)]: [meta] }, namespace) || [meta];
 
-      //load into keg if not already present
-      return this._loadMetadataForType(type, meta, dataSourceName)?.[0];
-    });
+        meta.id = id; // Ensure the returned record has the same id as the request
+
+        //load into keg if not already present
+        return this._loadMetadataForType(type, meta, dataSourceName)?.[0];
+      });
   }
 
   /**
