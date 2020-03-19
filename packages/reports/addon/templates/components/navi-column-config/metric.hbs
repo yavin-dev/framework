@@ -7,7 +7,8 @@
       @triggerId="{{this.classId}}-columnParameter" 
       @dropdownClass="navi-column-config-metric__parameter-dropdown"
       @selected={{this.currentParameter}}
-      @searchPlaceholder="Type to search"
+      @searchField="id"
+      @searchPlaceholder="Type to search by id"
       @options={{this.allParameters}}
       @onchange={{this.updateMetricParam}}
       as | param |
