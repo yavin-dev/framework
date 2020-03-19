@@ -14,7 +14,12 @@ export default class NaviAssetSearchResultComponent extends Component {
    */
   get results() {
     return this.args?.data?.map(value => {
-      value.route = this._getRouteFor(value);
+      if (!value.route) {
+        value.route = this._getRouteFor(value);
+      }
+      if (!value.type) {
+        value.type = value?.constructor?.modelName;
+      }
       return value;
     });
   }
