@@ -936,6 +936,37 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
       .hasClass('report-builder__container--filters--collapsed', 'Filters stay collapsed when a filter is removed');
   });
 
+  test('config - parameterized metric - search parameters', async function(assert) {
+    assert.expect(4);
+    await visit('/reports/new');
+
+    await clickItem('metric', 'Platform Revenue');
+
+    await animationsSettled();
+    assert.deepEqual(getColumns(), ['Date Time (Day)', 'Platform Revenue (USD)'], 'The initial metrics was added');
+
+    await click('.navi-column-config-item__name[title="Platform Revenue (USD)"]');
+    await click('.navi-column-config-metric__parameter-trigger');
+    assert.strictEqual(
+      findAll('.ember-power-select-option').map(el => el.textContent.trim()).length,
+      14,
+      'All options are shown initially'
+    );
+    await fillIn('.ember-power-select-search-input', 'CAD');
+    assert.deepEqual(
+      findAll('.ember-power-select-option').map(el => el.textContent.trim()),
+      ['Dollars (CAD)'],
+      'After searching only the filtered metric is shown'
+    );
+    await click('.ember-power-select-option');
+
+    assert.deepEqual(
+      getColumns(),
+      ['Date Time (Day)', 'Platform Revenue (CAD)'],
+      'Clicking the filtered option changes the metrics parameter'
+    );
+  });
+
   function getColumns() {
     return findAll('.navi-column-config-item__name').map(el => el.textContent.trim());
   }
