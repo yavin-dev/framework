@@ -58,6 +58,4 @@ export default class NaviSearchBarComponent extends Component {
 
     return valid;
   }
-
-  shouldCloseDropdown(dd, event) {}
 }
