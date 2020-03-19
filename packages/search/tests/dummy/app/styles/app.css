@@ -2,6 +2,10 @@ li:not(:last-child) .search-result {
   margin-bottom: 1.5em;
 }
 
+li {
+  list-style-type: none;
+}
+
 .input {
   width: 100%;
 }
@@ -21,4 +25,50 @@ td:first-child {
   border-color: #d5d5d5;
   border-width: 1px;
   border-style: solid;
+}
+
+@keyframes drop-fade-below {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+    -webkit-transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0px);
+    -webkit-transform: translateY(0px);
+  }
+}
+@keyframes drop-fade-above {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+    -webkit-transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0px);
+    -webkit-transform: translateY(0px);
+  }
+}
+
+.slide-fade {
+  will-change: transform, opacity;
+}
+
+.slide-fade.ember-basic-dropdown-content--below.ember-basic-dropdown--transitioning-in {
+  animation: drop-fade-below 0.15s;
+  -webkit-animation: drop-fade-below 0.15s;
+}
+.slide-fade.ember-basic-dropdown-content--below.ember-basic-dropdown--transitioning-out {
+  animation: drop-fade-below 0.15s reverse;
+  -webkit-animation: drop-fade-below 0.15s reverse;
+}
+.slide-fade.ember-basic-dropdown-content--above.ember-basic-dropdown--transitioning-in {
+  animation: drop-fade-above 0.15s;
+  -webkit-animation: drop-fade-above 0.15s;
+}
+.slide-fade.ember-basic-dropdown-content--above.ember-basic-dropdown--transitioning-out {
+  animation: drop-fade-above 0.15s reverse;
+  -webkit-animation: drop-fade-above 0.15s reverse;
 }
