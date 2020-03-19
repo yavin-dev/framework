@@ -19,7 +19,7 @@ export default class NaviSearchBarComponent extends Component {
   ];
 
   @action
-  async search(dd, event) {
+  search(dd, event) {
     if (this.searchQuery.length == 0 || event.code === 'Escape') {
       dd.actions.close(event);
       return;
