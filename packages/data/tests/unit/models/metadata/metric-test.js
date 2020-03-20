@@ -137,7 +137,7 @@ module('Unit | Metadata Model | Metric', function(hooks) {
 
   test('extended property', async function(assert) {
     const metricOne = MetricMetadataModel.create(this.owner.ownerInjection(), {
-      id: 'table1.metricOne'
+      id: 'metricOne'
     });
 
     const expected = {

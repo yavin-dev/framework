@@ -61,18 +61,13 @@ module('Unit - Service - Bard Metadata', function(hooks) {
 
     assert.deepEqual(
       keg.all('metadata/dimension').mapBy('id'),
-      [
-        `table1.${DimensionOne.name}`,
-        `table1.${DimensionThree.name}`,
-        `table2.${DimensionTwo.name}`,
-        `smallTable.${DimensionOne.name}`
-      ],
+      [`${DimensionOne.name}`, `${DimensionThree.name}`, `${DimensionTwo.name}`],
       'All dimensions are loaded in the keg'
     );
 
     assert.deepEqual(
       keg.all('metadata/metric').mapBy('id'),
-      [`table1.${MetricOne.name}`, `table2.${MetricTwo.name}`, `smallTable.${MetricOne.name}`],
+      [`${MetricOne.name}`, `${MetricTwo.name}`],
       'All metrics are loaded in the keg'
     );
 
@@ -103,43 +98,43 @@ module('Unit - Service - Bard Metadata', function(hooks) {
     );
 
     assert.equal(
-      Service.getById('metric', 'table1.metricOne', 'dummy').source,
+      Service.getById('metric', 'metricOne', 'dummy').source,
       'dummy',
       'MetricOne is loaded with the correct data source'
     );
     assert.equal(
-      Service.getById('metric', 'table2.metricTwo').source,
+      Service.getById('metric', 'metricTwo').source,
       'dummy',
       'MetricTwo is loaded with the correct data source'
     );
     assert.equal(
-      Service.getById('metric', 'table3.metricThree', 'blockhead').source,
+      Service.getById('metric', 'metricThree', 'blockhead').source,
       'blockhead',
       'MetricThree is loaded with the correct data source'
     );
     assert.equal(
-      Service.getById('metric', 'table4.metricFour', 'blockhead').source,
+      Service.getById('metric', 'metricFour', 'blockhead').source,
       'blockhead',
       'MetricFour is loaded with the correct data source'
     );
 
     assert.equal(
-      Service.getById('dimension', 'table1.dimensionOne', 'dummy').source,
+      Service.getById('dimension', 'dimensionOne', 'dummy').source,
       'dummy',
       'DimensionOne is loaded with the correct data source'
     );
     assert.equal(
-      Service.getById('dimension', 'table2.dimensionTwo').source,
+      Service.getById('dimension', 'dimensionTwo').source,
       'dummy',
       'DimensionTwo is loaded with the correct data source'
     );
     assert.equal(
-      Service.getById('dimension', 'table1.dimensionThree').source,
+      Service.getById('dimension', 'dimensionThree').source,
       'dummy',
       'DimensionThree is loaded with the correct data source'
     );
     assert.equal(
-      Service.getById('dimension', 'table3.dimensionFour', 'blockhead').source,
+      Service.getById('dimension', 'dimensionFour', 'blockhead').source,
       'blockhead',
       'DimensionFour is loaded with the correct data source'
     );
@@ -183,13 +178,13 @@ module('Unit - Service - Bard Metadata', function(hooks) {
 
     assert.deepEqual(
       Service.all('dimension').mapBy('id'),
-      ['table1.dimensionOne', 'table1.dimensionThree', 'table2.dimensionTwo', 'smallTable.dimensionOne'],
+      ['dimensionOne', 'dimensionThree', 'dimensionTwo'],
       'all method returns all loaded dimensions'
     );
 
     assert.deepEqual(
       Service.all('metric').mapBy('id'),
-      ['table1.metricOne', 'table2.metricTwo', 'smallTable.metricOne'],
+      ['metricOne', 'metricTwo'],
       'all method returns all loaded metrics'
     );
 
@@ -299,26 +294,19 @@ module('Unit - Service - Bard Metadata', function(hooks) {
 
     assert.deepEqual(
       Service.all('metric').mapBy('id'),
-      [
-        'table1.metricOne',
-        'table2.metricTwo',
-        'smallTable.metricOne',
-        'table3.metricThree',
-        'table4.metricFour',
-        'table5.metricFour'
-      ],
+      ['metricOne', 'metricTwo', 'metricThree', 'metricFour'],
       'All query pulls in all metrics'
     );
 
     assert.deepEqual(
       Service.all('metric', 'dummy').mapBy('id'),
-      ['table1.metricOne', 'table2.metricTwo', 'smallTable.metricOne'],
+      ['metricOne', 'metricTwo'],
       'All query pulls in metrics for dummy datasource'
     );
 
     assert.deepEqual(
       Service.all('metric', 'blockhead').mapBy('id'),
-      ['table3.metricThree', 'table4.metricFour', 'table5.metricFour'],
+      ['metricThree', 'metricFour'],
       'All query pulls in metrics for blockhead datasource'
     );
   });
@@ -403,10 +391,10 @@ module('Unit - Service - Bard Metadata', function(hooks) {
   test('getMetaField', async function(assert) {
     assert.expect(3);
     await Service.loadMetadata();
-    assert.equal(Service.getMetaField('metric', 'table1.metricOne', 'name'), 'Metric One', 'gets field from requested');
+    assert.equal(Service.getMetaField('metric', 'metricOne', 'name'), 'Metric One', 'gets field from requested');
 
     assert.equal(
-      Service.getMetaField('metric', 'table1.metricOne', 'shortName', 'someDefault'),
+      Service.getMetaField('metric', 'metricOne', 'shortName', 'someDefault'),
       'someDefault',
       'returns default when field is not found'
     );
@@ -424,18 +412,18 @@ module('Unit - Service - Bard Metadata', function(hooks) {
     await Service.loadMetadata({ dataSourceName: 'dummy' });
     await Service.loadMetadata({ dataSourceName: 'blockhead' });
     assert.equal(
-      Service.getMetaField('metric', 'table1.metricOne', 'name', null, 'dummy'),
+      Service.getMetaField('metric', 'metricOne', 'name', null, 'dummy'),
       'Metric One',
       'gets field from requested dummy datasource'
     );
     assert.equal(
-      Service.getMetaField('metric', 'table3.metricThree', 'name', null, 'blockhead'),
+      Service.getMetaField('metric', 'metricThree', 'name', null, 'blockhead'),
       'Metric Three',
       'gets field from requested blockhead data source'
     );
 
     assert.equal(
-      Service.getMetaField('metric', 'table1.metricOne', 'shortName', 'someDefault', 'dummy'),
+      Service.getMetaField('metric', 'metricOne', 'shortName', 'someDefault', 'dummy'),
       'someDefault',
       'returns default when field is not found'
     );
@@ -447,7 +435,7 @@ module('Unit - Service - Bard Metadata', function(hooks) {
     );
 
     assert.equal(
-      Service.getMetaField('metric', 'table1.metricOne', 'name', 'someDefault', 'blockhead'),
+      Service.getMetaField('metric', 'metricOne', 'name', 'someDefault', 'blockhead'),
       'someDefault',
       'Returns default when metric can not be found in given namespace'
     );

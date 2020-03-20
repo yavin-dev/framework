@@ -200,7 +200,7 @@ module('Unit | Metadata Model | Dimension', function(hooks) {
     const server = new Pretender(metadataRoutes);
     await this.owner.lookup('service:bard-metadata').loadMetadata();
     const dimensionOne = DimensionMetadataModel.create(this.owner.ownerInjection(), {
-      id: 'table1.dimensionOne'
+      id: 'dimensionOne'
     });
 
     const result = await dimensionOne.extended;
@@ -209,31 +209,24 @@ module('Unit | Metadata Model | Dimension', function(hooks) {
     server.shutdown();
   });
 
-  test('cardinality', async function(assert) {
-    const keg = this.owner.lookup('service:keg');
-    keg.push('metadata/table', { id: 'table1', cardinalitySize: 'MEDIUM' });
-
+  test('cardinality', function(assert) {
     const dimension = DimensionMetadataModel.create(this.owner.ownerInjection(), {
-      tableId: 'table1',
+      cardinality: 'MEDIUM',
       type: 'field'
     });
 
     assert.equal(
-      await dimension.cardinality,
+      dimension.cardinality,
       'MEDIUM',
       'Dimension successfully gets its cardinality from its table when type of dimension is field'
     );
 
     const dimension2 = DimensionMetadataModel.create(this.owner.ownerInjection(), {
-      tableId: 'table1',
+      cardinality: 'MEDIUM',
       type: 'somethingElse'
     });
 
-    assert.strictEqual(
-      await dimension2.cardinality,
-      undefined,
-      'Dimension returns undefined for non-field type dimension'
-    );
+    assert.strictEqual(dimension2.cardinality, undefined, 'Dimension returns undefined for non-field type dimension');
   });
 
   test('idFieldName', async function(assert) {

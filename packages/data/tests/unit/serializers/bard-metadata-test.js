@@ -228,9 +228,9 @@ const Payload = {
       name: 'tableLongName',
       category: 'General',
       source: 'dummy',
-      metricIds: ['tableName.metricOne', 'tableName.metricTwo'],
-      dimensionIds: ['tableName.dimensionOne', 'tableName.dimensionTwo'],
-      timeDimensionIds: ['tableName.dimensionThree'],
+      metricIds: ['metricOne', 'metricTwo'],
+      dimensionIds: ['dimensionOne', 'dimensionTwo'],
+      timeDimensionIds: ['dimensionThree'],
       cardinalitySize: 'MEDIUM'
     },
     {
@@ -239,19 +239,20 @@ const Payload = {
       name: 'Second Table',
       category: 'Special',
       source: 'dummy',
-      metricIds: ['secondTable.metricOne', 'secondTable.metricTwo', 'secondTable.metricThree'],
-      dimensionIds: ['secondTable.dimensionTwo'],
-      timeDimensionIds: ['secondTable.dimensionThree'],
+      metricIds: ['metricOne', 'metricTwo', 'metricThree'],
+      dimensionIds: ['dimensionTwo'],
+      timeDimensionIds: ['dimensionThree'],
       cardinalitySize: 'MEDIUM'
     }
   ],
   Dimensions = [
     {
+      cardinality: 'SMALL',
       category: 'categoryOne',
-      id: 'tableName.dimensionOne',
+      id: 'dimensionOne',
       name: 'Dimension One',
       source: 'dummy',
-      tableId: 'tableName',
+      tableIds: ['tableName'],
       type: 'field',
       valueType: 'text',
       storageStrategy: null,
@@ -259,104 +260,62 @@ const Payload = {
       timegrains: ['day', 'month']
     },
     {
+      cardinality: 'SMALL',
       category: 'categoryTwo',
-      id: 'tableName.dimensionTwo',
+      id: 'dimensionTwo',
       name: 'Dimension Two',
       source: 'dummy',
-      tableId: 'tableName',
+      tableIds: ['tableName', 'secondTable'],
       type: 'field',
       valueType: 'text',
       storageStrategy: null,
       partialData: true,
-      timegrains: ['day', 'month']
-    },
-    {
-      category: 'categoryTwo',
-      id: 'secondTable.dimensionTwo',
-      name: 'Dimension Two',
-      source: 'dummy',
-      tableId: 'secondTable',
-      type: 'field',
-      valueType: 'text',
-      storageStrategy: null,
-      partialData: true,
-      timegrains: ['day', 'week']
+      timegrains: ['day', 'month', 'week']
     }
   ],
   TimeDimensions = [
     {
+      cardinality: 'MEDIUM',
       category: 'dateCategory',
-      id: 'tableName.dimensionThree',
+      id: 'dimensionThree',
       name: 'Dimension Three',
       source: 'dummy',
-      tableId: 'tableName',
+      tableIds: ['tableName', 'secondTable'],
       type: 'field',
       valueType: 'date',
       storageStrategy: null,
       partialData: true,
-      timegrains: ['day', 'month']
-    },
-    {
-      category: 'dateCategory',
-      id: 'secondTable.dimensionThree',
-      name: 'Dimension Three',
-      source: 'dummy',
-      tableId: 'secondTable',
-      type: 'field',
-      valueType: 'date',
-      storageStrategy: null,
-      partialData: true,
-      timegrains: ['day', 'week']
+      timegrains: ['day', 'month', 'week']
     }
   ],
   Metrics = [
     {
       category: 'category',
-      id: 'tableName.metricOne',
+      id: 'metricOne',
       name: 'Metric One',
       valueType: 'number',
       source: 'dummy',
-      tableId: 'tableName',
+      tableIds: ['tableName', 'secondTable'],
+      partialData: true,
+      timegrains: ['day', 'month', 'week']
+    },
+    {
+      category: 'category',
+      id: 'metricTwo',
+      name: 'Metric Two',
+      valueType: 'money',
+      source: 'dummy',
+      tableIds: ['tableName', 'secondTable'],
       partialData: true,
       timegrains: ['day', 'month']
     },
     {
       category: 'category',
-      id: 'tableName.metricTwo',
-      name: 'Metric Two',
-      valueType: 'money',
-      source: 'dummy',
-      tableId: 'tableName',
-      partialData: true,
-      timegrains: ['day', 'month']
-    },
-    {
-      category: 'category',
-      id: 'secondTable.metricOne',
-      name: 'Metric One',
-      valueType: 'number',
-      source: 'dummy',
-      tableId: 'secondTable',
-      partialData: true,
-      timegrains: ['day', 'week']
-    },
-    {
-      category: 'category',
-      id: 'secondTable.metricTwo',
-      name: 'Metric Two',
-      valueType: 'money',
-      source: 'dummy',
-      tableId: 'secondTable',
-      partialData: true,
-      timegrains: ['day']
-    },
-    {
-      category: 'category',
-      id: 'secondTable.metricThree',
+      id: 'metricThree',
       name: 'Metric Three',
       valueType: 'number',
       source: 'dummy',
-      tableId: 'secondTable',
+      tableIds: ['secondTable'],
       partialData: true,
       timegrains: ['week']
     }
@@ -548,21 +507,21 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
       [
         {
           category: 'category',
-          id: 'tableName.metricOne',
+          id: 'metricOne',
           name: 'Metric One',
           valueType: 'number',
           source: 'dummy',
-          tableId: 'tableName',
+          tableIds: ['tableName'],
           timegrains: ['day', 'month'],
           partialData: true
         },
         {
           category: 'category',
-          id: 'tableName.metricTwo',
+          id: 'metricTwo',
           name: 'Metric Two',
           valueType: 'money',
           source: 'dummy',
-          tableId: 'tableName',
+          tableIds: ['tableName'],
           metricFunctionId: 'moneyMetric',
           timegrains: ['day', 'month'],
           partialData: true
@@ -580,8 +539,8 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
           name: 'tableLongName',
           category: 'General',
           source: 'dummy',
-          metricIds: ['tableName.metricOne', 'tableName.metricTwo'],
-          dimensionIds: ['tableName.dimensionOne'],
+          metricIds: ['metricOne', 'metricTwo'],
+          dimensionIds: ['dimensionOne'],
           timeDimensionIds: [],
           cardinalitySize: 'SMALL'
         }
@@ -593,11 +552,12 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
       dimensions,
       [
         {
+          cardinality: 'SMALL',
           category: 'categoryOne',
-          id: 'tableName.dimensionOne',
+          id: 'dimensionOne',
           name: 'Dimension One',
           source: 'dummy',
-          tableId: 'tableName',
+          tableIds: ['tableName'],
           type: 'field',
           valueType: 'text',
           storageStrategy: null,
@@ -677,14 +637,15 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
     const tableName = 'tableOne';
     const currentDimensions = {};
     const expectedDimension = {
-      id: `${tableName}.${dimension.name}`,
+      id: dimension.name,
       name: dimension.longName,
       category: dimension.category,
       valueType: dimension.datatype,
+      cardinality: 'SMALL',
       type: 'field',
       storageStrategy: null,
       source,
-      tableId: tableName,
+      tableIds: [tableName],
       timegrains: [grain],
       partialData: true
     };
@@ -718,7 +679,7 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
       currentDimensions
     );
     const otherExpectedDimension = Object.assign({}, expectedDimension, {
-      id: 'tableOne.dimensionTwo',
+      id: 'dimensionTwo',
       timegrains: ['month']
     });
     assert.deepEqual(
@@ -742,12 +703,12 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
     const currentMetrics = {};
     const metricFunctions = new Set();
     const expectedMetric = {
-      id: `${tableName}.${metric.name}`,
+      id: metric.name,
       name: metric.longName,
       category: metric.category,
       valueType: metric.type,
       source,
-      tableId: tableName,
+      tableIds: [tableName],
       timegrains: [grain],
       partialData: true
     };
@@ -785,7 +746,7 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
       currentMetrics,
       metricFunctions
     );
-    const otherExpectedMetric = Object.assign({}, expectedMetric, { id: 'tableOne.metricTwo', timegrains: ['month'] });
+    const otherExpectedMetric = Object.assign({}, expectedMetric, { id: 'metricTwo', timegrains: ['month'] });
     assert.deepEqual(
       otherMetricResult,
       {
@@ -818,12 +779,12 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
     const currentMetrics = {};
     const metricFunctions = new Set();
     const expectedMetric = {
-      id: `${tableName}.${metric.name}`,
+      id: metric.name,
       name: metric.longName,
       category: metric.category,
       valueType: metric.type,
       source,
-      tableId: tableName,
+      tableIds: [tableName],
       timegrains: [grain],
       partialData: true
     };
@@ -871,12 +832,12 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
     const currentMetrics = {};
     const metricFunctions = new Set();
     const expectedMetric = {
-      id: `${tableName}.${metric.name}`,
+      id: metric.name,
       name: metric.longName,
       category: metric.category,
       valueType: metric.type,
       source,
-      tableId: tableName,
+      tableIds: [tableName],
       timegrains: [grain],
       metricFunctionId: metric.metricFunctionId,
       partialData: true

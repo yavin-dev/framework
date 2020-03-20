@@ -22,7 +22,7 @@ module('Unit | Metadata Model | Function Argument', function(hooks) {
       name: 'Currency',
       valueType: 'TEXT',
       type: 'ref',
-      expression: 'dimension:table1.dimensionOne',
+      expression: 'dimension:dimensionOne',
       _localValues: null,
       defaultValue: 'USD'
     };

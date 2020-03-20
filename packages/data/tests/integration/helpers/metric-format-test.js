@@ -15,7 +15,7 @@ module('helper:metric-format', function(hooks) {
   test('it renders with serialized metric object', async function(assert) {
     assert.expect(7);
     this.set('metric', {
-      metric: 'network.revenue',
+      metric: 'revenue',
       parameters: { currency: 'USD', as: 'revenueUSD' }
     });
 
@@ -23,12 +23,12 @@ module('helper:metric-format', function(hooks) {
     assert.dom().hasText('Revenue (USD)');
 
     this.set('metric', {
-      metric: 'network.revenue',
+      metric: 'revenue',
       parameters: { currency: 'CAD', as: 'revenueUSD' }
     });
     assert.dom().hasText('Revenue (CAD)');
 
-    this.set('metric', { metric: 'network.revenue' });
+    this.set('metric', { metric: 'revenue' });
     assert.dom().hasText('Revenue');
 
     this.set('metric', { metric: null });

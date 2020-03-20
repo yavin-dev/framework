@@ -13,6 +13,12 @@ import config from 'ember-get-config';
 const LOAD_CARDINALITY = config.navi.searchThresholds.contains;
 const MAX_LOAD_CARDINALITY = config.navi.searchThresholds.in;
 
+const CARDINALITY_SORTING = {
+  SMALL: 0,
+  MEDIUM: 1,
+  LARGE: 2
+};
+
 export default class BardMetadataSerializer extends EmberObject {
   /**
    * Transform the bard metadata into a shape that our internal data models can use
@@ -24,9 +30,9 @@ export default class BardMetadataSerializer extends EmberObject {
    */
   _normalizeTable(rawTables, source) {
     // build dimension and metric arrays
-    let metrics = [],
-      dimensions = [],
-      timeDimensions = [],
+    let metrics = {},
+      dimensions = {},
+      timeDimensions = {},
       metricFunctions = new Set(),
       tables = rawTables.map(table => {
         // Reduce all columns regardless of timegrain into one object
@@ -36,21 +42,24 @@ export default class BardMetadataSerializer extends EmberObject {
             const {
               metrics: currentMetrics,
               dimensions: currentDimensions,
-              timeDimensions: currentTimeDimensions
+              timeDimensions: currentTimeDimensions,
+              tableMetricIds,
+              tableDimensionIds,
+              tableTimeDimensionIds
             } = acc;
 
             // Construct each dimension / time-dimension
             timegrain.dimensions.forEach(dimension => {
-              const { datatype: valueType, cardinality } = dimension;
+              const { datatype: valueType } = dimension;
               const accDimensionList = valueType === 'date' ? currentTimeDimensions : currentDimensions;
-              if (cardinality > MAX_LOAD_CARDINALITY) {
-                acc.tableCardinality = 'LARGE';
-              } else if (cardinality > LOAD_CARDINALITY) {
-                acc.tableCardinality = 'MEDIUM';
-              }
+              const accTableDimensionList = valueType === 'date' ? tableTimeDimensionIds : tableDimensionIds;
 
               const newDim = this._constructDimension(dimension, grain, source, table.name, accDimensionList);
-              accDimensionList[newDim.id] = newDim;
+              if (CARDINALITY_SORTING[newDim.cardinality] > CARDINALITY_SORTING[acc.tableCardinality]) {
+                acc.tableCardinality = newDim.cardinality;
+              }
+              accDimensionList[newDim.id] = newDim; // Add dim to all dimensions list
+              accTableDimensionList.add(newDim.id); // Add dim id to table's dimensionIds/timeDimensionIds list
             });
 
             // Construct each metric and metric function + function arguments if necessary
@@ -60,7 +69,9 @@ export default class BardMetadataSerializer extends EmberObject {
                 metricFunction: newMetricFunction,
                 metricFunctionsProvided
               } = this._constructMetric(metric, grain, source, table.name, currentMetrics, metricFunctions);
-              currentMetrics[newMetric.id] = newMetric;
+
+              currentMetrics[newMetric.id] = newMetric; // Add metric to all metrics list
+              tableMetricIds.add(newMetric.id); // Add metric id to table's metricIds list
 
               if (metricFunctionsProvided) {
                 metricFunctions = null;
@@ -73,13 +84,16 @@ export default class BardMetadataSerializer extends EmberObject {
 
             return acc;
           },
-          { metrics: {}, dimensions: {}, timeDimensions: {}, tableCardinality: 'SMALL' }
+          {
+            metrics,
+            dimensions,
+            timeDimensions,
+            tableMetricIds: new Set(),
+            tableDimensionIds: new Set(),
+            tableTimeDimensionIds: new Set(),
+            tableCardinality: 'SMALL'
+          }
         );
-
-        // Add metrics and dimensions for the table to the overall metrics and dimensions arrays
-        metrics = metrics.concat(Object.values(allTableColumns.metrics));
-        dimensions = dimensions.concat(Object.values(allTableColumns.dimensions));
-        timeDimensions = timeDimensions.concat(Object.values(allTableColumns.timeDimensions));
 
         return {
           id: table.name,
@@ -88,17 +102,17 @@ export default class BardMetadataSerializer extends EmberObject {
           category: table.category,
           cardinalitySize: allTableColumns.tableCardinality,
           source,
-          metricIds: Object.keys(allTableColumns.metrics),
-          dimensionIds: Object.keys(allTableColumns.dimensions),
-          timeDimensionIds: Object.keys(allTableColumns.timeDimensions)
+          metricIds: [...allTableColumns.tableMetricIds],
+          dimensionIds: [...allTableColumns.tableDimensionIds],
+          timeDimensionIds: [...allTableColumns.tableTimeDimensionIds]
         };
       });
 
     return {
       tables,
-      dimensions,
-      metrics,
-      timeDimensions,
+      dimensions: Object.values(dimensions),
+      metrics: Object.values(metrics),
+      timeDimensions: Object.values(timeDimensions),
       metricFunctions: metricFunctions ? [...metricFunctions] : null // Set -> Array
     };
   }
@@ -143,23 +157,30 @@ export default class BardMetadataSerializer extends EmberObject {
    */
   _constructDimension(dimension, grain, source, tableName, currentDimensions) {
     let newDimension;
-    const { name, longName, category, datatype: valueType, storageStrategy } = dimension;
-    const dimensionId = `${tableName}.${name}`;
-    const existingDimension = currentDimensions[dimensionId];
+    const { name, longName, category, datatype: valueType, storageStrategy, cardinality } = dimension;
+    const existingDimension = currentDimensions[name];
 
     if (existingDimension) {
-      const newGrains = [...existingDimension.timegrains, grain];
-      newDimension = Object.assign({}, existingDimension, { timegrains: newGrains });
+      const newGrains = new Set([...existingDimension.timegrains, grain]);
+      const newTableIds = new Set([...existingDimension.tableIds, tableName]);
+      newDimension = Object.assign({}, existingDimension, { timegrains: [...newGrains], tableIds: [...newTableIds] });
     } else {
+      let dimCardinality = 'SMALL';
+      if (cardinality > MAX_LOAD_CARDINALITY) {
+        dimCardinality = 'LARGE';
+      } else if (cardinality > LOAD_CARDINALITY) {
+        dimCardinality = 'MEDIUM';
+      }
       newDimension = {
-        id: dimensionId,
+        id: name,
         name: longName,
         category,
         valueType,
         type: 'field',
+        cardinality: dimCardinality,
         storageStrategy: storageStrategy || null,
         source,
-        tableId: tableName,
+        tableIds: [tableName],
         timegrains: [grain],
         partialData: true
       };
@@ -185,20 +206,20 @@ export default class BardMetadataSerializer extends EmberObject {
       newMetricFunction = null,
       metricFunctionsProvided = false;
     const { type: valueType, longName, name, category, parameters, metricFunctionId } = metric;
-    const metricId = `${tableName}.${name}`;
-    const existingMetric = currentMetrics[metricId];
+    const existingMetric = currentMetrics[name];
 
     if (existingMetric) {
-      const newGrains = [...existingMetric.timegrains, grain];
-      newMetric = Object.assign({}, existingMetric, { timegrains: newGrains });
+      const newGrains = new Set([...existingMetric.timegrains, grain]);
+      const newTableIds = new Set([...existingMetric.tableIds, tableName]);
+      newMetric = Object.assign({}, existingMetric, { timegrains: [...newGrains], tableIds: [...newTableIds] });
     } else {
       newMetric = {
-        id: metricId,
+        id: name,
         name: longName,
         valueType,
         source,
         category,
-        tableId: tableName,
+        tableIds: [tableName],
         timegrains: [grain],
         partialData: true
       };
