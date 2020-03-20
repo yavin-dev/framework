@@ -191,10 +191,10 @@ module('Integration | Component | metric config', function(hooks) {
 
     await clickTrigger('.metric-config__dropdown-trigger');
     //add Param `Drams`
-    await clickItem('metricConfig', 'AMD');
+    await clickItem('metricConfig', 'Drams');
 
     //remove Param `Dollars(USD)`
-    await clickItem('metricConfig', 'USD');
+    await clickItem('metricConfig', 'Dollars', 'USD');
 
     //enableRequestPreview feature flag on
     config.navi.FEATURES.enableRequestPreview = true;
@@ -217,10 +217,10 @@ module('Integration | Component | metric config', function(hooks) {
 
     await clickTrigger('.metric-config__dropdown-trigger');
 
-    await clickItem('metricConfig', 'AMD');
+    await clickItem('metricConfig', 'Drams');
 
     //clicking again adds when feature flag is on
-    await clickItem('metricConfig', 'AMD');
+    await clickItem('metricConfig', 'Drams');
 
     config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
   });
@@ -236,21 +236,21 @@ module('Integration | Component | metric config', function(hooks) {
 
     await clickTrigger('.metric-config__dropdown-trigger');
 
-    let { item: usdItem, reset: usdReset } = await getItem('metricConfig', 'USD');
+    let { item: usdItem, reset: usdReset } = await getItem('metricConfig', 'Dollars', 'USD');
     assert.ok(
       usdItem.querySelector('.grouped-list__filter--active'),
       'The filter icon with the `USD` param has the active class'
     );
     await usdReset();
 
-    let { item: amdItem, reset: amdReset } = await getItem('metricConfig', 'AMD');
+    let { item: amdItem, reset: amdReset } = await getItem('metricConfig', 'Drams');
     assert.notOk(
       amdItem.querySelector('.grouped-list__filter--active'),
       'The filter icon with the `AMD` param does not have the active class'
     );
     await amdReset();
 
-    await clickItemFilter('metricConfig', 'AMD');
+    await clickItemFilter('metricConfig', 'Drams');
   });
 
   test('loader', async function(assert) {

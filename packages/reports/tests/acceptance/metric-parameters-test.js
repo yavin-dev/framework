@@ -125,9 +125,9 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
     await visit('/reports/1/view');
     await clickItem('metric', 'Platform Revenue');
     const closeConfig = await clickMetricConfigTrigger('Platform Revenue');
-    await clickItem('metricConfig', 'AUD');
-    await clickItem('metricConfig', 'CAD');
-    await clickItemFilter('metricConfig', 'EUR');
+    await clickItem('metricConfig', 'Dollars', 'AUD');
+    await clickItem('metricConfig', 'Dollars', 'CAD');
+    await clickItemFilter('metricConfig', 'Euro');
     await click('.metric-config__dropdown-container .navi-list-selector__show-link');
 
     assert.ok(
@@ -163,7 +163,7 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
     await visit('/reports/1/view');
     await clickItem('metric', 'Platform Revenue');
     const closeConfig = await clickMetricConfigTrigger('Platform Revenue');
-    await clickItem('metricConfig', 'AUD');
+    await clickItem('metricConfig', 'Dollars', 'AUD');
     await click('.metric-config__dropdown-container .metric-config__done-btn');
 
     //collapse filters
