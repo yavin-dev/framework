@@ -71,9 +71,4 @@ export default class Column extends EmberObject {
    * @property {String[]} tags
    */
   tags = [];
-
-  /**
-   * @property {String[]} timegrains - supported timegrains for a column
-   */
-  timegrains = [];
 }

@@ -94,4 +94,9 @@ export default class Table extends EmberObject {
    * @property {String} source - the datasource this metadata is from.
    */
   source;
+
+  /**
+   * @property {String[]} timegrains - supported timegrains for a column
+   */
+  timegrains = [];
 }

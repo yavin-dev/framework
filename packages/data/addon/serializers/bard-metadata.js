@@ -38,7 +38,6 @@ export default class BardMetadataSerializer extends EmberObject {
         // Reduce all columns regardless of timegrain into one object
         const allTableColumns = table.timeGrains.reduce(
           (acc, timegrain) => {
-            const { name: grain } = timegrain;
             const {
               metrics: currentMetrics,
               dimensions: currentDimensions,
@@ -54,7 +53,7 @@ export default class BardMetadataSerializer extends EmberObject {
               const accDimensionList = valueType === 'date' ? currentTimeDimensions : currentDimensions;
               const accTableDimensionList = valueType === 'date' ? tableTimeDimensionIds : tableDimensionIds;
 
-              const newDim = this._constructDimension(dimension, grain, source, table.name, accDimensionList);
+              const newDim = this._constructDimension(dimension, source, table.name, accDimensionList);
               if (CARDINALITY_SORTING[newDim.cardinality] > CARDINALITY_SORTING[acc.tableCardinality]) {
                 acc.tableCardinality = newDim.cardinality;
               }
@@ -68,7 +67,7 @@ export default class BardMetadataSerializer extends EmberObject {
                 metric: newMetric,
                 metricFunction: newMetricFunction,
                 metricFunctionsProvided
-              } = this._constructMetric(metric, grain, source, table.name, currentMetrics, metricFunctions);
+              } = this._constructMetric(metric, source, table.name, currentMetrics, metricFunctions);
 
               currentMetrics[newMetric.id] = newMetric; // Add metric to all metrics list
               tableMetricIds.add(newMetric.id); // Add metric id to table's metricIds list
@@ -101,6 +100,7 @@ export default class BardMetadataSerializer extends EmberObject {
           description: table.description,
           category: table.category,
           cardinalitySize: allTableColumns.tableCardinality,
+          timeGrains: table.timeGrains.map(grain => grain.name),
           source,
           metricIds: [...allTableColumns.tableMetricIds],
           dimensionIds: [...allTableColumns.tableDimensionIds],
@@ -149,21 +149,19 @@ export default class BardMetadataSerializer extends EmberObject {
    * @private
    * @method _constructDimension
    * @param {Object} dimension
-   * @param {String} grain
    * @param {String} source
    * @param {String} tableName
    * @param {Object} currentDimensions
    * @returns {Object} dimension object newly created or existing dimension with an added timegrain
    */
-  _constructDimension(dimension, grain, source, tableName, currentDimensions) {
+  _constructDimension(dimension, source, tableName, currentDimensions) {
     let newDimension;
     const { name, longName, category, datatype: valueType, storageStrategy, cardinality } = dimension;
     const existingDimension = currentDimensions[name];
 
     if (existingDimension) {
-      const newGrains = new Set([...existingDimension.timegrains, grain]);
       const newTableIds = new Set([...existingDimension.tableIds, tableName]);
-      newDimension = Object.assign({}, existingDimension, { timegrains: [...newGrains], tableIds: [...newTableIds] });
+      newDimension = Object.assign({}, existingDimension, { tableIds: [...newTableIds] });
     } else {
       let dimCardinality = 'SMALL';
       if (cardinality > MAX_LOAD_CARDINALITY) {
@@ -181,7 +179,6 @@ export default class BardMetadataSerializer extends EmberObject {
         storageStrategy: storageStrategy || null,
         source,
         tableIds: [tableName],
-        timegrains: [grain],
         partialData: true
       };
     }
@@ -193,7 +190,6 @@ export default class BardMetadataSerializer extends EmberObject {
    * @private
    * @method _constructMetric
    * @param {Object} metric
-   * @param {String} grain
    * @param {String} source
    * @param {String} tableName
    * @param {Object} currentMetrics
@@ -201,7 +197,7 @@ export default class BardMetadataSerializer extends EmberObject {
    * @returns {Object} created or existing metric object with applicable timegrains,
    * possibly created metric function object, and flag on whether a provided metric id was found
    */
-  _constructMetric(metric, grain, source, tableName, currentMetrics, metricFunctions) {
+  _constructMetric(metric, source, tableName, currentMetrics, metricFunctions) {
     let newMetric,
       newMetricFunction = null,
       metricFunctionsProvided = false;
@@ -209,9 +205,8 @@ export default class BardMetadataSerializer extends EmberObject {
     const existingMetric = currentMetrics[name];
 
     if (existingMetric) {
-      const newGrains = new Set([...existingMetric.timegrains, grain]);
       const newTableIds = new Set([...existingMetric.tableIds, tableName]);
-      newMetric = Object.assign({}, existingMetric, { timegrains: [...newGrains], tableIds: [...newTableIds] });
+      newMetric = Object.assign({}, existingMetric, { tableIds: [...newTableIds] });
     } else {
       newMetric = {
         id: name,
@@ -220,7 +215,6 @@ export default class BardMetadataSerializer extends EmberObject {
         source,
         category,
         tableIds: [tableName],
-        timegrains: [grain],
         partialData: true
       };
       /*

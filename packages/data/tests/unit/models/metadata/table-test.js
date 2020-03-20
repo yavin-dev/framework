@@ -18,6 +18,7 @@ module('Unit | Metadata Model | Table', function(hooks) {
       metricIds: ['pv'],
       dimensionIds: ['age'],
       timeDimensionIds: ['orderDate'],
+      timeGrains: ['day', 'month', 'week'],
       source: 'dummy',
       tags: ['DISPLAY']
     };
@@ -61,8 +62,6 @@ module('Unit | Metadata Model | Table', function(hooks) {
       { namespace: 'dummy' }
     );
 
-    // let timeGrainPayload = assign({}, timeGrain);
-    // TimeGrain = this.owner.factoryFor('model:metadata/time-grain').create(timeGrainPayload);
     TableFactory = this.owner.factoryFor('model:metadata/table').class;
   });
 
@@ -73,7 +72,7 @@ module('Unit | Metadata Model | Table', function(hooks) {
   });
 
   test('it properly hydrates properties', function(assert) {
-    assert.expect(10);
+    assert.expect(11);
 
     const {
       id,
@@ -85,6 +84,7 @@ module('Unit | Metadata Model | Table', function(hooks) {
       dimensionIds,
       timeDimensionIds,
       source,
+      timeGrains,
       tags
     } = Model;
 
@@ -98,6 +98,7 @@ module('Unit | Metadata Model | Table', function(hooks) {
     assert.deepEqual(timeDimensionIds, Payload.timeDimensionIds, 'timeDimensionIds property is hydrated properly');
     assert.equal(source, Payload.source, 'source property is hydrated properly');
     assert.deepEqual(tags, Payload.tags, 'tags property is hydrated properly');
+    assert.deepEqual(timeGrains, Payload.timeGrains);
   });
 
   test('Metric in Table', function(assert) {

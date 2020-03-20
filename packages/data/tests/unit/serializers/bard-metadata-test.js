@@ -231,6 +231,7 @@ const Payload = {
       metricIds: ['metricOne', 'metricTwo'],
       dimensionIds: ['dimensionOne', 'dimensionTwo'],
       timeDimensionIds: ['dimensionThree'],
+      timeGrains: ['day', 'month'],
       cardinalitySize: 'MEDIUM'
     },
     {
@@ -242,7 +243,8 @@ const Payload = {
       metricIds: ['metricOne', 'metricTwo', 'metricThree'],
       dimensionIds: ['dimensionTwo'],
       timeDimensionIds: ['dimensionThree'],
-      cardinalitySize: 'MEDIUM'
+      cardinalitySize: 'MEDIUM',
+      timeGrains: ['day', 'week']
     }
   ],
   Dimensions = [
@@ -256,8 +258,7 @@ const Payload = {
       type: 'field',
       valueType: 'text',
       storageStrategy: null,
-      partialData: true,
-      timegrains: ['day', 'month']
+      partialData: true
     },
     {
       cardinality: 'SMALL',
@@ -269,8 +270,7 @@ const Payload = {
       type: 'field',
       valueType: 'text',
       storageStrategy: null,
-      partialData: true,
-      timegrains: ['day', 'month', 'week']
+      partialData: true
     }
   ],
   TimeDimensions = [
@@ -284,8 +284,7 @@ const Payload = {
       type: 'field',
       valueType: 'date',
       storageStrategy: null,
-      partialData: true,
-      timegrains: ['day', 'month', 'week']
+      partialData: true
     }
   ],
   Metrics = [
@@ -296,8 +295,7 @@ const Payload = {
       valueType: 'number',
       source: 'dummy',
       tableIds: ['tableName', 'secondTable'],
-      partialData: true,
-      timegrains: ['day', 'month', 'week']
+      partialData: true
     },
     {
       category: 'category',
@@ -306,8 +304,7 @@ const Payload = {
       valueType: 'money',
       source: 'dummy',
       tableIds: ['tableName', 'secondTable'],
-      partialData: true,
-      timegrains: ['day', 'month']
+      partialData: true
     },
     {
       category: 'category',
@@ -316,8 +313,7 @@ const Payload = {
       valueType: 'number',
       source: 'dummy',
       tableIds: ['secondTable'],
-      partialData: true,
-      timegrains: ['week']
+      partialData: true
     }
   ],
   FunctionArguments = [
@@ -512,7 +508,6 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
           valueType: 'number',
           source: 'dummy',
           tableIds: ['tableName'],
-          timegrains: ['day', 'month'],
           partialData: true
         },
         {
@@ -523,7 +518,6 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
           source: 'dummy',
           tableIds: ['tableName'],
           metricFunctionId: 'moneyMetric',
-          timegrains: ['day', 'month'],
           partialData: true
         }
       ],
@@ -542,6 +536,7 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
           metricIds: ['metricOne', 'metricTwo'],
           dimensionIds: ['dimensionOne'],
           timeDimensionIds: [],
+          timeGrains: ['day', 'month'],
           cardinalitySize: 'SMALL'
         }
       ],
@@ -561,7 +556,6 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
           type: 'field',
           valueType: 'text',
           storageStrategy: null,
-          timegrains: ['day', 'month'],
           partialData: true
         }
       ],
@@ -624,7 +618,6 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
   });
 
   test('_constructDimension', function(assert) {
-    let grain = 'day';
     const dimension = {
       category: 'categoryOne',
       name: 'dimensionOne',
@@ -646,23 +639,14 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
       storageStrategy: null,
       source,
       tableIds: [tableName],
-      timegrains: [grain],
       partialData: true
     };
 
-    const result = Serializer._constructDimension(dimension, grain, source, tableName, currentDimensions);
+    const result = Serializer._constructDimension(dimension, source, tableName, currentDimensions);
     assert.deepEqual(result, expectedDimension, 'New dimension is constructed correctly in the new shape');
 
     currentDimensions[expectedDimension.id] = result;
-    grain = 'month';
-    expectedDimension.timegrains.push(grain); //expect timegrains to be ['day', 'month']
-    const existingDimensionResult = Serializer._constructDimension(
-      dimension,
-      grain,
-      source,
-      tableName,
-      currentDimensions
-    );
+    const existingDimensionResult = Serializer._constructDimension(dimension, source, tableName, currentDimensions);
 
     assert.deepEqual(
       existingDimensionResult,
@@ -671,16 +655,9 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
     );
 
     const otherDimension = Object.assign({}, dimension, { name: 'dimensionTwo' });
-    const otherDimensionResult = Serializer._constructDimension(
-      otherDimension,
-      grain,
-      source,
-      tableName,
-      currentDimensions
-    );
+    const otherDimensionResult = Serializer._constructDimension(otherDimension, source, tableName, currentDimensions);
     const otherExpectedDimension = Object.assign({}, expectedDimension, {
-      id: 'dimensionTwo',
-      timegrains: ['month']
+      id: 'dimensionTwo'
     });
     assert.deepEqual(
       otherDimensionResult,
@@ -690,7 +667,6 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
   });
 
   test('_constructMetric WITHOUT parameters or metric function id provided', function(assert) {
-    let grain = 'day';
     const metric = {
       category: 'categoryOne',
       name: 'metricOne',
@@ -709,10 +685,9 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
       valueType: metric.type,
       source,
       tableIds: [tableName],
-      timegrains: [grain],
       partialData: true
     };
-    const result = Serializer._constructMetric(metric, grain, source, tableName, currentMetrics, metricFunctions);
+    const result = Serializer._constructMetric(metric, source, tableName, currentMetrics, metricFunctions);
     assert.deepEqual(
       result,
       { metric: expectedMetric, metricFunction: null, metricFunctionsProvided: false },
@@ -720,12 +695,9 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
     );
 
     currentMetrics[expectedMetric.id] = result.metric;
-    grain = 'month';
-    expectedMetric.timegrains.push(grain);
 
     const existingMetricResult = Serializer._constructMetric(
       metric,
-      grain,
       source,
       tableName,
       currentMetrics,
@@ -740,13 +712,12 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
     const otherMetric = Object.assign({}, metric, { name: 'metricTwo' });
     const otherMetricResult = Serializer._constructMetric(
       otherMetric,
-      grain,
       source,
       tableName,
       currentMetrics,
       metricFunctions
     );
-    const otherExpectedMetric = Object.assign({}, expectedMetric, { id: 'metricTwo', timegrains: ['month'] });
+    const otherExpectedMetric = Object.assign({}, expectedMetric, { id: 'metricTwo' });
     assert.deepEqual(
       otherMetricResult,
       {
@@ -759,7 +730,6 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
   });
 
   test('_constructMetric WITH parameters and no metric function id provided', function(assert) {
-    let grain = 'day';
     const metric = {
       category: 'categoryOne',
       name: 'metricOne',
@@ -785,14 +755,13 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
       valueType: metric.type,
       source,
       tableIds: [tableName],
-      timegrains: [grain],
       partialData: true
     };
     const {
       metric: resultMetric,
       metricFunction: resultMetricFunction,
       metricFunctionsProvided
-    } = Serializer._constructMetric(metric, grain, source, tableName, currentMetrics, metricFunctions);
+    } = Serializer._constructMetric(metric, source, tableName, currentMetrics, metricFunctions);
 
     assert.deepEqual(
       Object.keys(resultMetricFunction),
@@ -818,7 +787,6 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
   });
 
   test('_constructMetric WITHOUT parameters and metric function id provided', function(assert) {
-    let grain = 'day';
     const metric = {
       category: 'categoryOne',
       name: 'metricOne',
@@ -838,7 +806,6 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
       valueType: metric.type,
       source,
       tableIds: [tableName],
-      timegrains: [grain],
       metricFunctionId: metric.metricFunctionId,
       partialData: true
     };
@@ -846,7 +813,7 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
       metric: resultMetric,
       metricFunction: resultMetricFunction,
       metricFunctionsProvided
-    } = Serializer._constructMetric(metric, grain, source, tableName, currentMetrics, metricFunctions);
+    } = Serializer._constructMetric(metric, source, tableName, currentMetrics, metricFunctions);
 
     assert.notOk(resultMetricFunction, 'Metric function object is NOT returned');
     assert.ok(metricFunctionsProvided, 'metricFunctionId in the input metric makes metricFunctionsProvided true');
