@@ -7,12 +7,15 @@ import metadataRoutes, {
   TableOne,
   TableTwo,
   Tables,
+  Tables2,
   DimensionOne,
   DimensionTwo,
   DimensionThree,
   MetricOne,
   MetricTwo,
   MetricSix,
+  MetricFunctionAggTrend,
+  MetricFunctionMoneyMetric,
   Host
 } from '../../helpers/metadata-routes';
 
@@ -72,6 +75,53 @@ module('Unit - Service - Bard Metadata', function(hooks) {
     );
 
     assert.deepEqual(Service.loadedDataSources, ['dummy'], 'One datasource should be loaded');
+  });
+
+  test('loadMetadata with metric function ids provided', async function(assert) {
+    assert.expect(3);
+
+    Server.shutdown();
+    Server = new Pretender(function() {
+      this.get(`${Host}/v1/tables`, function() {
+        return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ tables: Tables2 })];
+      });
+      this.get(`${Host}/v1/metricFunctions`, function() {
+        return [
+          200,
+          { 'Content-Type': 'application/json' },
+          JSON.stringify([MetricFunctionMoneyMetric, MetricFunctionAggTrend])
+        ];
+      });
+    });
+    const dataSource = 'dummy';
+    const keg = Service._keg;
+    const originalSerializer = this.owner.factoryFor('serializer:metadata/metric-function');
+    const testSerializer = originalSerializer.class.extend({
+      normalize(payload, source) {
+        assert.equal(source, dataSource, 'The datasource is passed in correctly to the metric function serializer');
+        assert.deepEqual(
+          payload,
+          {
+            'metric-functions': [MetricFunctionMoneyMetric, MetricFunctionAggTrend]
+          },
+          'The correct payload is passed to the metric-function serializer'
+        );
+      }
+    });
+
+    this.owner.unregister('serializer:metadata/metric-function');
+    this.owner.register('serializer:metadata/metric-function', testSerializer);
+
+    await Service.loadMetadata();
+
+    assert.deepEqual(
+      keg.all('metadata/metric-function', dataSource).mapBy('id'),
+      [MetricFunctionMoneyMetric.id, MetricFunctionAggTrend.id],
+      'When at least one metric has a metricFunctionId provided, all metric functions from the metric function endpoint are loaded into the keg'
+    );
+
+    this.owner.unregister('serializer:metadata/metric-function');
+    this.owner.register('serializer:metadata/metric-function', originalSerializer);
   });
 
   test('loadMetadata from multiple sources', async function(assert) {
@@ -294,7 +344,7 @@ module('Unit - Service - Bard Metadata', function(hooks) {
 
     assert.deepEqual(
       Service.all('metric').mapBy('id'),
-      ['metricOne', 'metricTwo', 'metricThree', 'metricFour'],
+      ['metricOne', 'metricTwo', 'metricThree', 'metricFour', 'metricFive'],
       'All query pulls in all metrics'
     );
 
@@ -306,7 +356,7 @@ module('Unit - Service - Bard Metadata', function(hooks) {
 
     assert.deepEqual(
       Service.all('metric', 'blockhead').mapBy('id'),
-      ['metricThree', 'metricFour'],
+      ['metricThree', 'metricFour', 'metricFive'],
       'All query pulls in metrics for blockhead datasource'
     );
   });

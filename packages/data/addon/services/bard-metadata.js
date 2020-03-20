@@ -62,38 +62,46 @@ export default class BardMetadataService extends Service {
    * @param {Object} options - options object used by the adapter
    * @returns {Promise} promise that loads metadata
    */
-  loadMetadata(options = {}) {
+  async loadMetadata(options = {}) {
     const dataSource = options.dataSourceName || getDefaultDataSourceName();
     //fetch metadata from WS if metadata not yet loaded
     if (!this.loadedDataSources.includes(dataSource)) {
-      return this._adapter
-        .fetchAll(
-          'table',
-          assign(
-            {
-              query: { format: 'fullview' }
-            },
-            options
-          )
+      const payload = await this._adapter.fetchAll(
+        'table',
+        assign(
+          {
+            query: { format: 'fullview' }
+          },
+          options
         )
-        .then(payload => {
-          //normalize payload
-          payload.source = dataSource;
-          let metadata = this._serializer.normalize(payload);
+      );
 
-          if (!(this.isDestroyed || this.isDestroying)) {
-            //create metadata model objects and load into keg
-            this._loadMetadataForType('table', metadata.tables, dataSource);
-            this._loadMetadataForType('dimension', metadata.dimensions, dataSource);
-            this._loadMetadataForType('time-dimension', metadata.timeDimensions, dataSource);
-            if (metadata.metricFunctions?.length > 0) {
-              this._loadMetadataForType('metric-function', metadata.metricFunctions, dataSource);
-            }
-            this._loadMetadataForType('metric', metadata.metrics, dataSource);
+      //normalize payload
+      payload.source = dataSource;
+      const metadata = this._serializer.normalize(payload);
 
-            this.loadedDataSources.push(dataSource);
-          }
-        });
+      // If metricFunctions are provided in an endpoint, fetch them, normalize them, and then load them into the keg
+      let metricFunctionMetadata = metadata.metricFunctions;
+      if (metadata.metricFunctions === null) {
+        const fetchedMetricFunctions = (await this._adapter.fetchAll('metricFunction', options)) || [];
+        metricFunctionMetadata =
+          getOwner(this)
+            .lookup(`serializer:metadata/metric-function`)
+            ?.normalize({ 'metric-functions': fetchedMetricFunctions }, dataSource) || fetchedMetricFunctions;
+      }
+
+      if (!(this.isDestroyed || this.isDestroying)) {
+        //create metadata model objects and load into keg
+        this._loadMetadataForType('table', metadata.tables, dataSource);
+        this._loadMetadataForType('dimension', metadata.dimensions, dataSource);
+        this._loadMetadataForType('time-dimension', metadata.timeDimensions, dataSource);
+        if (metricFunctionMetadata?.length > 0) {
+          this._loadMetadataForType('metric-function', metricFunctionMetadata, dataSource);
+        }
+        this._loadMetadataForType('metric', metadata.metrics, dataSource);
+
+        this.loadedDataSources.push(dataSource);
+      }
     }
     return Promise.resolve();
   }

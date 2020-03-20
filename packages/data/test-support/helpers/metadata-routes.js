@@ -241,7 +241,7 @@ export const Tables2 = [
       {
         name: 'week',
         description: 'The table4 week grain',
-        metrics: [MetricFour],
+        metrics: [MetricFour, MetricFive],
         retention: 'P24M',
         longName: 'Day',
         dimensions: [DimensionFour, DimensionFive]
@@ -257,7 +257,7 @@ export const Tables2 = [
       {
         name: 'week',
         description: 'The table4 week grain',
-        metrics: [MetricFour],
+        metrics: [MetricFour, MetricFive],
         retention: 'P24M',
         longName: 'Day',
         dimensions: [DimensionFour]
@@ -343,6 +343,14 @@ export default function(index = 0) {
 
   this.get(`${host}/v1/metricFunctions/aggregationTrend`, function() {
     return [200, { 'Content-Type': 'application/json' }, JSON.stringify(MetricFunctionAggTrend)];
+  });
+
+  this.get(`${host}/v1/metricFunctions/`, function() {
+    return [
+      200,
+      { 'Content-Type': 'application/json' },
+      JSON.stringify([MetricFunctionMoneyMetric, MetricFunctionAggTrend])
+    ];
   });
 }
 
