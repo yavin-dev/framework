@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click, findAll, fillIn, triggerKeyEvent } from '@ember/test-helpers';
+import { render, click, findAll } from '@ember/test-helpers';
 import { A as arr } from '@ember/array';
 import { helper as buildHelper } from '@ember/component/helper';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
@@ -20,7 +20,7 @@ module('Integration | Component | navi-column-config/metric', function(hooks) {
   });
 
   test('Configuring metric column', async function(assert) {
-    assert.expect(8);
+    assert.expect(5);
 
     const metric = this.owner.lookup('service:store').createFragment('bard-request/fragments/metric', {
       metric: await MetadataService.findById('metric', 'revenue'),
@@ -38,9 +38,13 @@ module('Integration | Component | navi-column-config/metric', function(hooks) {
     };
     this.cloneColumn = () => undefined;
     this.toggleColumnFilter = () => undefined;
-    this.onUpdateColumnName = newName => {
+    this.onUpdateColumnName = (/*newName*/) => {
       // this must be called with action in the template
-      assert.equal(newName, 'Money', 'New display name is passed to name update action');
+      /**
+       * TODO: Reenable column relabeling, uncomment line below
+       */
+      // assert.equal(newName, 'Money', 'New display name is passed to name update action');
+      return undefined;
     };
     this.owner.register(
       'helper:update-report-action',
@@ -67,9 +71,7 @@ module('Integration | Component | navi-column-config/metric', function(hooks) {
       />
     `);
 
-    assert
-      .dom('.navi-column-config-base__column-name-input')
-      .hasValue('Revenue', 'Display name of column is shown in the column input');
+    // assert.dom('.navi-column-config-base__column-name-input').hasValue('Revenue', 'Display name of column is shown in the column input');
     assert
       .dom('.navi-column-config-metric__parameter-trigger')
       .hasText('Dollars (USD)', 'Current parameter is displayed in the dropdown input');
@@ -97,14 +99,13 @@ module('Integration | Component | navi-column-config/metric', function(hooks) {
     );
     await selectChoose('.navi-column-config-metric__parameter', 'Dollars (CAD)');
 
-    assert
-      .dom('.navi-column-config-base__column-name-input')
-      .hasValue('Revenue', 'Custom display name is still shown when parameter is changed');
+    // assert.dom('.navi-column-config-base__column-name-input').hasValue('Revenue', 'Custom display name is still shown when parameter is changed');
     assert
       .dom('.navi-column-config-metric__parameter-trigger')
       .hasText('Dollars (CAD)', 'Parameter selector shows new parameter value');
 
-    await fillIn('.navi-column-config-base__column-name-input', 'Money');
-    await triggerKeyEvent('.navi-column-config-base__column-name-input', 'keyup', 13);
+    // await fillIn('.navi-column-config-base__column-name-input', 'Money');
+
+    // await triggerKeyEvent('.navi-column-config-base__column-name-input', 'keyup', 13);
   });
 });

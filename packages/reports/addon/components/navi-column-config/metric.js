@@ -45,6 +45,14 @@ class Metric extends Component {
   }
 
   /**
+   * @property {String} - The name of the first metric parameter
+   */
+  @computed('column.fragment.metric.parameters.{}')
+  get paramName() {
+    return Object.keys(this.column.fragment.metric.parameters)[0];
+  }
+
+  /**
    * @override
    * @method didReceiveAttrs
    */

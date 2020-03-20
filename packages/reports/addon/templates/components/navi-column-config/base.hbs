@@ -28,7 +28,8 @@
     </div>
   {{/if}}
 
-    <div class="navi-column-config-base__option navi-column-config-base__column-name">
+    {{!-- TODO: Reenable column relabeling --}}
+    {{!-- <div class="navi-column-config-base__option navi-column-config-base__column-name">
       <label for="{{this.classId}}-column-name-input" class="navi-column-config-base__column-name-label navi-column-config-base__option-label">Column Name</label>
       <Input 
         class="navi-column-config-base__column-name-input navi-column-config-base__option-input"
@@ -36,7 +37,7 @@
         @value={{@column.displayName}}
         @key-up={{@onUpdateColumnName}}
       />
-    </div>
+    </div> --}}
 
     {{#let (component (concat "navi-column-config/" (dasherize @column.type))) as |ColumnConfig|}}
       <ColumnConfig
