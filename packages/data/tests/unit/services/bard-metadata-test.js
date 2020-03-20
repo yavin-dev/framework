@@ -7,12 +7,12 @@ import metadataRoutes, {
   TableOne,
   TableTwo,
   Tables,
-  Tables2,
   DimensionOne,
   DimensionTwo,
   DimensionThree,
   MetricOne,
   MetricTwo,
+  MetricFive,
   MetricSix,
   MetricFunctionAggTrend,
   MetricFunctionMoneyMetric,
@@ -64,13 +64,13 @@ module('Unit - Service - Bard Metadata', function(hooks) {
 
     assert.deepEqual(
       keg.all('metadata/dimension').mapBy('id'),
-      [`${DimensionOne.name}`, `${DimensionThree.name}`, `${DimensionTwo.name}`],
+      [DimensionOne.name, DimensionThree.name, DimensionTwo.name],
       'All dimensions are loaded in the keg'
     );
 
     assert.deepEqual(
       keg.all('metadata/metric').mapBy('id'),
-      [`${MetricOne.name}`, `${MetricTwo.name}`],
+      [MetricOne.name, MetricTwo.name, MetricFive.name],
       'All metrics are loaded in the keg'
     );
 
@@ -80,19 +80,6 @@ module('Unit - Service - Bard Metadata', function(hooks) {
   test('loadMetadata with metric function ids provided', async function(assert) {
     assert.expect(3);
 
-    Server.shutdown();
-    Server = new Pretender(function() {
-      this.get(`${Host}/v1/tables`, function() {
-        return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ tables: Tables2 })];
-      });
-      this.get(`${Host}/v1/metricFunctions`, function() {
-        return [
-          200,
-          { 'Content-Type': 'application/json' },
-          JSON.stringify([MetricFunctionMoneyMetric, MetricFunctionAggTrend])
-        ];
-      });
-    });
     const dataSource = 'dummy';
     const keg = Service._keg;
     const originalSerializer = this.owner.factoryFor('serializer:metadata/metric-function');
@@ -234,7 +221,7 @@ module('Unit - Service - Bard Metadata', function(hooks) {
 
     assert.deepEqual(
       Service.all('metric').mapBy('id'),
-      ['metricOne', 'metricTwo'],
+      ['metricOne', 'metricTwo', 'metricFive'],
       'all method returns all loaded metrics'
     );
 
@@ -344,19 +331,19 @@ module('Unit - Service - Bard Metadata', function(hooks) {
 
     assert.deepEqual(
       Service.all('metric').mapBy('id'),
-      ['metricOne', 'metricTwo', 'metricThree', 'metricFour', 'metricFive'],
+      ['metricOne', 'metricTwo', 'metricFive', 'metricThree', 'metricFour'],
       'All query pulls in all metrics'
     );
 
     assert.deepEqual(
       Service.all('metric', 'dummy').mapBy('id'),
-      ['metricOne', 'metricTwo'],
+      ['metricOne', 'metricTwo', 'metricFive'],
       'All query pulls in metrics for dummy datasource'
     );
 
     assert.deepEqual(
       Service.all('metric', 'blockhead').mapBy('id'),
-      ['metricThree', 'metricFour', 'metricFive'],
+      ['metricThree', 'metricFour'],
       'All query pulls in metrics for blockhead datasource'
     );
   });

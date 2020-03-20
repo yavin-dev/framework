@@ -30,59 +30,57 @@ export default class Metric extends Column {
 
   /**
    * Many to One relationship
-   * @property {Promise<MetricFunction>} metricFunction
+   * @property {MetricFunction} metricFunction
    */
   get metricFunction() {
     const { metricFunctionId, source, metadataService } = this;
 
     if (metricFunctionId) {
-      return metadataService.findById('metric-function', metricFunctionId, source);
+      return metadataService.getById('metric-function', metricFunctionId, source);
     }
     return undefined;
   }
 
   /**
-   * @property {Promise<Boolean>} hasParameters
+   * @property {Boolean} hasParameters
    */
   get hasParameters() {
-    return this.arguments.then(args => !!args.length);
+    return !!this.arguments?.length;
   }
 
   /**
-   * @property {Promise<Object[]>} arguments - arguments for the metric
+   * @property {Object[]} arguments - arguments for the metric
    */
   get arguments() {
-    return this.metricFunction?.then(func => func?.arguments || []) || Promise.resolve([]);
+    return this.metricFunction?.arguments || [];
   }
 
   /**
    * @method getParameter - retrieves the queried parameter object from metadata
    * @param {String} id
-   * @returns {Promise<Object>}
+   * @returns {Object}
    */
-  async getParameter(id) {
-    if (!(await this.hasParameters)) {
+  getParameter(id) {
+    if (!this.hasParameters) {
       return;
     }
 
-    return this.arguments.then(args => args.find(arg => arg.id === id));
+    return this.arguments.find(arg => arg.id === id);
   }
 
   /**
    * @method getDefaultParameters - retrieves all the default values for all the parameters
-   * @returns {Promise<Object|undefined>}
+   * @returns {Object|undefined}
    */
   async getDefaultParameters() {
-    if (!(await this.hasParameters)) {
+    if (!this.hasParameters) {
       return;
     }
 
-    return this.arguments.then(args =>
-      args.reduce((acc, curr) => {
-        acc[curr.id] = curr.defaultValue;
-        return acc;
-      }, {})
-    );
+    return this.arguments.reduce((acc, curr) => {
+      acc[curr.id] = curr.defaultValue;
+      return acc;
+    }, {});
   }
 
   /**

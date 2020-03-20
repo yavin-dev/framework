@@ -206,7 +206,7 @@ export const Tables = [
       {
         name: 'day',
         description: 'The table1 day grain',
-        metrics: [MetricOne],
+        metrics: [MetricOne, MetricFive],
         retention: 'P24M',
         longName: 'Day',
         dimensions: [DimensionOne]
@@ -241,7 +241,7 @@ export const Tables2 = [
       {
         name: 'week',
         description: 'The table4 week grain',
-        metrics: [MetricFour, MetricFive],
+        metrics: [MetricFour],
         retention: 'P24M',
         longName: 'Day',
         dimensions: [DimensionFour, DimensionFive]
@@ -257,7 +257,7 @@ export const Tables2 = [
       {
         name: 'week',
         description: 'The table4 week grain',
-        metrics: [MetricFour, MetricFive],
+        metrics: [MetricFour],
         retention: 'P24M',
         longName: 'Day',
         dimensions: [DimensionFour]

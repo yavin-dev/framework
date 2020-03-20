@@ -63,21 +63,21 @@ module('Unit | Metadata Model | Metric', function(hooks) {
       metricFunctionId: 'moneyMetric'
     });
 
-    const metricFunction = await metricOne.metricFunction;
+    const metricFunction = metricOne.metricFunction;
     const expectedMetricFunc = this.owner
       .lookup('service:keg')
       .getById('metadata/metric-function', 'moneyMetric', 'dummy');
     assert.equal(metricFunction, expectedMetricFunc, 'Metric function is returned correctly');
-    assert.ok(await metricOne.hasParameters, 'hasParameters property is computed');
+    assert.ok(metricOne.hasParameters, 'hasParameters property is computed');
 
     assert.deepEqual(
-      (await metricOne.arguments).map(arg => arg.id),
+      metricOne.arguments.map(arg => arg.id),
       ['currency'],
       'Arguments of the associated metric function are shown through arguments'
     );
 
     assert.deepEqual(
-      await metricOne.getParameter('currency'),
+      metricOne.getParameter('currency'),
       expectedMetricFunc.arguments.find(arg => arg.id === 'currency'),
       'the queried metric function argument object is retrieved from parameters'
     );
