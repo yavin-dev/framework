@@ -961,13 +961,13 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
       14,
       'All options are shown initially'
     );
-    await fillIn('.ember-power-select-search-input', 'CAD');
+    await fillIn('.ember-power-select-search-input', 'Dollars');
     assert.deepEqual(
       findAll('.ember-power-select-option').map(el => el.textContent.trim()),
-      ['Dollars (CAD)'],
+      ['Dollars (AUD)', 'Dollars (CAD)', 'Dollars (USD)'],
       'After searching only the filtered metric is shown'
     );
-    await click('.ember-power-select-option');
+    await click(findAll('.ember-power-select-option')[1]);
 
     assert.deepEqual(
       getColumns(),
