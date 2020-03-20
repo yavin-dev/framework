@@ -16,6 +16,7 @@ import layout from '../templates/components/metric-config';
 import { inject as service } from '@ember/service';
 import { computed, get, observer, set } from '@ember/object';
 import { A as arr } from '@ember/array';
+import { featureFlag } from 'navi-core/helpers/feature-flag';
 
 export default Component.extend({
   layout,
@@ -144,8 +145,12 @@ export default Component.extend({
      * @param {Object} param
      */
     paramToggled(metric, param) {
-      const action = get(this, 'parametersChecked')[`${get(param, 'param')}|${get(param, 'id')}`] ? 'Remove' : 'Add';
-      const handler = get(this, `on${action}ParameterizedMetric`);
+      const enableRequestPreview = featureFlag('enableRequestPreview'),
+        action =
+          !enableRequestPreview && get(this, 'parametersChecked')[`${get(param, 'param')}|${get(param, 'id')}`]
+            ? 'Remove'
+            : 'Add',
+        handler = get(this, `on${action}ParameterizedMetric`);
 
       if (handler) handler(metric, { [get(param, 'param')]: get(param, 'id') });
     },

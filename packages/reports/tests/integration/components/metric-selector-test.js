@@ -179,7 +179,12 @@ module('Integration | Component | metric selector', function(hooks) {
   });
 
   test('add and remove metric actions', async function(assert) {
-    assert.expect(2);
+    assert.expect(4);
+
+    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
+
+    //enableRequestPreview feature flag off
+    config.navi.FEATURES.enableRequestPreview = false;
 
     this.set('addMetric', metric => {
       assert.equal(metric.get('longName'), 'Total Clicks', 'the clicked metric is passed as a param to the action');
@@ -189,13 +194,34 @@ module('Integration | Component | metric selector', function(hooks) {
       assert.equal(metric.get('longName'), 'Ad Clicks', 'the clicked metric is passed as a param to the action');
     });
 
-    //select first time grain
-
     //add total clicks
     await clickItem('metric', 'Total Clicks');
 
     //remove ad clicks
     await clickItem('metric', 'Ad Clicks');
+
+    //enableRequestPreview feature flag on
+    config.navi.FEATURES.enableRequestPreview = true;
+
+    this.set('addMetric', metric => {
+      assert.equal(
+        metric.get('longName'),
+        'Total Clicks',
+        'the clicked metric is passed as a param to the action when enableRequestPreview is on'
+      );
+    });
+
+    this.set('removeMetric', () => assert.notOk(true, 'removeMetric is not called when enableRequestPreview is on'));
+
+    await render(TEMPLATE);
+
+    //add total clicks
+    await clickItem('metric', 'Total Clicks');
+
+    //clicking again adds when feature flag is on
+    await clickItem('metric', 'Total Clicks');
+
+    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
   });
 
   test('filter icon', async function(assert) {

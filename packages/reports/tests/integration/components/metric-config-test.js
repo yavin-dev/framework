@@ -170,7 +170,12 @@ module('Integration | Component | metric config', function(hooks) {
   });
 
   test('add/remove param', async function(assert) {
-    assert.expect(4);
+    assert.expect(8);
+
+    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
+
+    //enableRequestPreview feature flag off
+    config.navi.FEATURES.enableRequestPreview = false;
 
     set(this, 'addParameterizedMetric', (metric, param) => {
       assert.deepEqual(metric, MockMetric, 'The mock metric is passed to the action');
@@ -190,6 +195,34 @@ module('Integration | Component | metric config', function(hooks) {
 
     //remove Param `Dollars(USD)`
     await clickItem('metricConfig', 'USD');
+
+    //enableRequestPreview feature flag on
+    config.navi.FEATURES.enableRequestPreview = true;
+
+    await render(TEMPLATE);
+
+    set(this, 'addParameterizedMetric', (metric, param) => {
+      assert.deepEqual(metric, MockMetric, 'The mock metric is passed to the action when enableRequestPreview is on');
+
+      assert.deepEqual(
+        param,
+        { currency: 'AMD' },
+        'The selected param is also passed to the action when enableRequestPreview is on'
+      );
+    });
+
+    set(this, 'removeParameterizedMetric', () =>
+      assert.notOk(true, 'removeParameterizedMetric is not called when enableRequestPreview is on')
+    );
+
+    await clickTrigger('.metric-config__dropdown-trigger');
+
+    await clickItem('metricConfig', 'AMD');
+
+    //clicking again adds when feature flag is on
+    await clickItem('metricConfig', 'AMD');
+
+    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
   });
 
   test('filter icon', async function(assert) {
