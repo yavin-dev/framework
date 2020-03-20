@@ -133,8 +133,8 @@ module('Integration | Component | dimension selector', function(hooks) {
     config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
   });
 
-  test('actions', async function(assert) {
-    assert.expect(6);
+  test('add/remove time grain', async function(assert) {
+    assert.expect(4);
 
     const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
 
@@ -156,6 +156,28 @@ module('Integration | Component | dimension selector', function(hooks) {
 
     //removeTimeGrain when selected time grain is clicked
     await clickItem('timeGrain', 'Day');
+
+    //enableRequestPreview feature flag on
+    config.navi.FEATURES.enableRequestPreview = true;
+
+    await render(TEMPLATE);
+
+    //addTimeGrain when a different time grain is clicked
+    await clickItem('timeGrain', 'Week');
+
+    //removeTimeGrain when selected time grain is clicked
+    await clickItem('timeGrain', 'Day');
+
+    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
+  });
+
+  test('add/remove dimension', async function(assert) {
+    assert.expect(4);
+
+    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
+
+    //enableRequestPreview feature flag off
+    config.navi.FEATURES.enableRequestPreview = false;
 
     this.set('addDimension', item => {
       assert.equal(

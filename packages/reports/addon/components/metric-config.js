@@ -145,14 +145,11 @@ export default Component.extend({
      * @param {Object} param
      */
     paramToggled(metric, param) {
-      const enableRequestPreview = featureFlag('enableRequestPreview'),
-        action =
-          !enableRequestPreview && get(this, 'parametersChecked')[`${get(param, 'param')}|${get(param, 'id')}`]
-            ? 'Remove'
-            : 'Add',
-        handler = get(this, `on${action}ParameterizedMetric`);
+      const enableRequestPreview = featureFlag('enableRequestPreview');
+      const action = !enableRequestPreview && this.parametersChecked[`${param.param}|${param.id}`] ? 'Remove' : 'Add';
+      const handler = this[`on${action}ParameterizedMetric`];
 
-      if (handler) handler(metric, { [get(param, 'param')]: get(param, 'id') });
+      if (handler) handler(metric, { [param.param]: param.id });
     },
 
     /*
