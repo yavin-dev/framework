@@ -12,8 +12,8 @@ export default class LineChartController extends Controller {
     dimensions: [
       {
         dimension: {
-          name: 'age',
-          longName: 'Age'
+          id: 'age',
+          name: 'Age'
         }
       }
     ],

@@ -108,11 +108,11 @@ function getDefaultDimensionFields(dimension) {
 function buildDimensionColumn(dimension, columnIndex, field) {
   let dimensionName = get(dimension, 'dimension.name'),
     column = columnIndex[dimensionName],
-    defaultName = formatDimensionName({ name: get(dimension, 'dimension.longName'), field });
+    defaultName = formatDimensionName({ name: get(dimension, 'dimension.name'), field });
 
   return {
     type: 'dimension',
-    attributes: Object.assign({}, { name: get(dimension, 'dimension.name') }, field ? { field } : {}),
+    attributes: Object.assign({}, { name: get(dimension, 'dimension.id') }, field ? { field } : {}),
     displayName: column ? column.displayName : defaultName
   };
 }
@@ -150,8 +150,8 @@ function buildMetricColumns(metrics, columnIndex) {
       type = isTrend ? 'threshold' : 'metric',
       metricObject = metric.toJSON(),
       column = columnIndex[canonicalizeMetric(metricObject)],
-      longName = get(metric, 'metric.longName'),
-      displayName = column ? column.displayName : metricFormat(metric, longName),
+      name = get(metric, 'metric.name'),
+      displayName = column ? column.displayName : metricFormat(metric, name),
       format = column ? get(column, 'attributes.format') : '';
 
     return {

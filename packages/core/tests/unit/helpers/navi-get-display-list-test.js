@@ -10,9 +10,9 @@ module('Unit | Helper | navi get display list', function(hooks) {
   hooks.beforeEach(function() {
     // Mock metadata service
     const MockMeta = {
-      pageViews: { longName: 'Page Views' },
-      adClicks: { longName: 'Ad Clicks' },
-      timeSpent: { longName: 'Time Spent' }
+      pageViews: { name: 'Page Views' },
+      adClicks: { name: 'Ad Clicks' },
+      timeSpent: { name: 'Time Spent' }
     };
 
     const MockService = Service.extend({
@@ -34,7 +34,7 @@ module('Unit | Helper | navi get display list', function(hooks) {
     assert.equal(
       helper.compute(['metric', ['pageViews', 'adClicks', 'timeSpent']]),
       'Page Views, Ad Clicks, Time Spent',
-      'The helper returns comma seperated list of longNames'
+      'The helper returns comma seperated list of name'
     );
 
     assert.equal(helper.compute(['metric', undefined]), undefined, 'Undefined is returned when ids are not given');

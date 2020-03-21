@@ -26,8 +26,8 @@ export default Fragment.extend(Copyable, Validations, {
    * ex: revenue(currency=USD)
    * @return string
    */
-  canonicalName: computed('metric.name', 'parameters.{}', function() {
-    const metric = get(this, 'metric.name'),
+  canonicalName: computed('metric.id', 'parameters.{}', function() {
+    const metric = get(this, 'metric.id'),
       parameters = get(this, 'parameters') || {};
 
     return canonicalizeMetric({

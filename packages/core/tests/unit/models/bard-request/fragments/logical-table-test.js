@@ -67,62 +67,6 @@ module('Unit | Model Fragment | BardRequest - Logical Table', function(hooks) {
     });
   });
 
-  test('Computed timeGrains', async function(assert) {
-    assert.expect(3);
-
-    await settled();
-    run(() => {
-      let mockModel = Store.peekRecord('fragments-mock', 1);
-
-      assert.equal(
-        mockModel.get('table.timeGrain.longName'),
-        'Day',
-        'Network Daily Time Grain Object is fetched from the store'
-      );
-
-      let mockTimeGrain = {
-        name: 'week',
-        longName: 'Week'
-      };
-      mockModel.set('table.timeGrain', mockTimeGrain);
-
-      assert.equal(
-        mockModel.get('table.timeGrain.longName'),
-        'Week',
-        'Network Weekly Time Grain Object is fetched from the store'
-      );
-
-      assert.equal(
-        mockModel.get('table.timeGrainName'),
-        'week',
-        'The property `table` has been updated with the time grain `week`'
-      );
-    });
-  });
-
-  test('timeGrain updates when table changed', async function(assert) {
-    assert.expect(2);
-
-    await settled();
-    let mockModel = Store.peekRecord('fragments-mock', 1);
-
-    run(() => {
-      assert.equal(
-        mockModel.get('table.timeGrain.longName'),
-        'Day',
-        'Network Daily Time Grain Object is set by default'
-      );
-
-      mockModel.set('table.table', MetadataService.getById('table', 'tableA'));
-
-      assert.equal(
-        mockModel.get('table.timeGrain.longName'),
-        'Day',
-        'Table A Daily Time Grain Object is set by default'
-      );
-    });
-  });
-
   test('Validations', async function(assert) {
     assert.expect(8);
 

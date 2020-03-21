@@ -27,7 +27,7 @@ const Validations = buildValidations({
     }),
     validator('array-number', {
       message() {
-        let metricName = get(this, 'model.metric.metric.longName');
+        let metricName = get(this, 'model.metric.metric.name');
         return `${metricFormat(get(this, 'model.metric'), metricName)} filter must be a number`;
       }
     })

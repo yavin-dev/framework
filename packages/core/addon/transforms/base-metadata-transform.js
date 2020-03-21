@@ -50,6 +50,6 @@ export default DS.Transform.extend({
       return deserialized;
     }
 
-    return deserialized.name || null;
+    return deserialized.id || null;
   }
 });

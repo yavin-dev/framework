@@ -24,7 +24,7 @@ const Validations = buildValidations({
     validator('length', {
       min: 1,
       message() {
-        let dimensionName = get(this, 'model.dimension.longName');
+        let dimensionName = get(this, 'model.dimension.name');
         return `${dimensionName} filter needs at least one value`;
       }
     }),
@@ -53,7 +53,7 @@ export default Fragment.extend(Validations, {
 
         return DS.PromiseArray.create({ promise });
       } else {
-        let dimensionName = get(this, 'dimension.name'),
+        let dimensionName = get(this, 'dimension.id'),
           values = arr(get(this, 'rawValues')),
           dimensionService = get(this, 'dimensionService');
 

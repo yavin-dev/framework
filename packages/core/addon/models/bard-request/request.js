@@ -192,7 +192,7 @@ export default Fragment.extend(Validations, {
   removeRequestMetricWithParam(metricModel, parameters) {
     let metrics = get(this, 'metrics').filterBy('metric', metricModel),
       canonicalizedMetric = canonicalizeMetric({
-        metric: get(metricModel, 'name'),
+        metric: get(metricModel, 'id'),
         parameters
       });
 
@@ -412,7 +412,7 @@ export default Fragment.extend(Validations, {
     let sort = get(this, 'sort'),
       dateTimeSort = this.store.createFragment('bard-request/fragments/sort', {
         metric: this.store.createFragment('bard-request/fragments/metric', {
-          metric: { name: 'dateTime' }
+          metric: { id: 'dateTime' }
         }),
         direction
       });
@@ -456,7 +456,7 @@ export default Fragment.extend(Validations, {
   },
 
   /**
-   * Add a sort to the sort array using the metric name
+   * Add a sort to the sort array using the metric id
    *
    * @method addSortByMetricName
    * @param {String} metricName
@@ -467,7 +467,7 @@ export default Fragment.extend(Validations, {
     let metrics = get(this, 'metrics'),
       metric = metrics.findBy('canonicalName', metricName);
 
-    assert(`Metric with name "${metricName}" was not found in the request`, metric);
+    assert(`Metric with id "${metricName}" was not found in the request`, metric);
 
     this.addSort({
       direction,
@@ -487,7 +487,7 @@ export default Fragment.extend(Validations, {
   },
 
   /**
-   * Removes the sort from the sort array using the metric name
+   * Removes the sort from the sort array using the metric id
    *
    * @method removeSortByMetricName
    * @param {String} metricName
@@ -521,7 +521,7 @@ export default Fragment.extend(Validations, {
    */
   removeSortMetricWithParam(metricModel, parameters) {
     let canonicalizedMetric = canonicalizeMetric({
-      metric: get(metricModel, 'name'),
+      metric: get(metricModel, 'id'),
       parameters
     });
 
@@ -602,7 +602,7 @@ export default Fragment.extend(Validations, {
         let metric;
         if (sort.metric.metric === 'dateTime') {
           metric = store.createFragment('bard-request/fragments/metric', {
-            metric: { name: 'dateTime' }
+            metric: { id: 'dateTime' }
           });
         } else {
           metric = store.createFragment('bard-request/fragments/metric', {

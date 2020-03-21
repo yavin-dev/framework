@@ -72,7 +72,7 @@ export default class Metric extends Column {
    * @method getDefaultParameters - retrieves all the default values for all the parameters
    * @returns {Object|undefined}
    */
-  async getDefaultParameters() {
+  getDefaultParameters() {
     if (!this.hasParameters) {
       return;
     }

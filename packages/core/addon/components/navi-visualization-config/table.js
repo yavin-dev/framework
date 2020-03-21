@@ -42,7 +42,7 @@ class NaviVisualizationConfigTableComponent extends Component {
    */
   @computed('dimensions')
   get subtotalDimensions() {
-    return [{ name: 'dateTime', longName: 'Date Time' }, ...this.dimensions];
+    return [{ id: 'dateTime', name: 'Date Time' }, ...this.dimensions];
   }
 
   /**

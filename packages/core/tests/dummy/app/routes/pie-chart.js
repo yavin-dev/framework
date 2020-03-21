@@ -21,8 +21,8 @@ export default Route.extend({
             dimensions: [
               {
                 dimension: {
-                  name: 'age',
-                  longName: 'Age'
+                  id: 'age',
+                  name: 'Age'
                 }
               }
             ]

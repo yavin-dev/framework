@@ -320,7 +320,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
 
     assert.deepEqual(
       request.get('sort.firstObject.metric.metric'),
-      { name: 'dateTime' },
+      { id: 'dateTime' },
       'The dateTime property in sort is set with correct metadata'
     );
     assert.equal(
@@ -389,7 +389,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
     /* == Test adding existing metric == */
     request.addMetric(newMetric);
     assert.deepEqual(
-      request.get('metrics').map(m => get(m, 'metric.name')),
+      request.get('metrics').map(m => get(m, 'metric.id')),
       ['uniqueIdentifier', 'pageViews'],
       'Adding a metric already present in the request does not result in duplicate metrics'
     );
@@ -397,7 +397,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
     config.navi.FEATURES.enableRequestPreview = true;
     request.addMetric(newMetric);
     assert.deepEqual(
-      request.get('metrics').map(m => get(m, 'metric.name')),
+      request.get('metrics').map(m => get(m, 'metric.id')),
       ['uniqueIdentifier', 'pageViews', 'pageViews'],
       'Adding a metric already present in the request results in duplicate metrics when enableRequestPreview feature flag is on'
     );
@@ -583,7 +583,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
     let selectedRevenueMetric = request.get('metrics').objectAt(1);
 
     assert.equal(
-      get(selectedRevenueMetric, 'metric.name'),
+      get(selectedRevenueMetric, 'metric.id'),
       'revenue',
       'One revenue metric is part of the selected metric list'
     );
@@ -683,7 +683,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
     /* == Test adding existing dimension == */
     request.addDimension(newDimension);
     assert.deepEqual(
-      request.get('dimensions').map(m => get(m, 'dimension.name')),
+      request.get('dimensions').map(m => get(m, 'dimension.id')),
       ['age'],
       'Adding a dimension already present in the request does not result in duplicate dimensions'
     );
@@ -691,7 +691,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
     config.navi.FEATURES.enableRequestPreview = true;
     request.addDimension(newDimension);
     assert.deepEqual(
-      request.get('dimensions').map(m => get(m, 'dimension.name')),
+      request.get('dimensions').map(m => get(m, 'dimension.id')),
       ['age', 'age'],
       'Adding a dimension already present in the request results in duplicate dimensions when enableRequestPreview feature flag is on'
     );
@@ -809,7 +809,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
       request.get('filters').map(m => m.serialize()),
       [
         {
-          dimension: get(newFilter, 'dimension.name'),
+          dimension: get(newFilter, 'dimension.id'),
           field: get(newFilter, 'field'),
           operator: get(newFilter, 'operator'),
           values: get(newFilter, 'values')
@@ -998,7 +998,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
       [
         {
           metric: {
-            metric: get(newHaving, 'metric.metric.name')
+            metric: get(newHaving, 'metric.metric.id')
           },
           operator: get(newHaving, 'operator'),
           values: [get(newHaving, 'value')]
@@ -1133,7 +1133,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
         .get('sort')
         .objectAt(0)
         .get('metric.metric'),
-      { name: 'dateTime' },
+      { id: 'dateTime' },
       'The new dateTime sort has been added to the model fragment as the first object'
     );
 
@@ -1196,7 +1196,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
       [
         {
           metric: {
-            metric: get(newSort, 'metric.metric.name')
+            metric: get(newSort, 'metric.metric.id')
           },
           direction: get(newSort, 'direction')
         }
@@ -1254,7 +1254,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
       [
         {
           metric: {
-            metric: get(newSort, 'metric.metric.name'),
+            metric: get(newSort, 'metric.metric.id'),
             parameters: { currency: 'USD' }
           },
           direction: get(newSort, 'direction')
@@ -1273,7 +1273,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
       latestSort.serialize(),
       {
         metric: {
-          metric: get(newSort, 'metric.metric.name'),
+          metric: get(newSort, 'metric.metric.id'),
           parameters: { currency: 'CAD' }
         },
         direction: 'desc'
@@ -1295,7 +1295,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
 
     let theSort = request.get('sort').objectAt(0);
 
-    assert.equal(get(theSort, 'metric.metric.name'), 'uniqueIdentifier', 'Copied the right metric');
+    assert.equal(get(theSort, 'metric.metric.id'), 'uniqueIdentifier', 'Copied the right metric');
 
     assert.equal(get(theSort, 'direction'), 'desc', 'Goes the right direction');
 
@@ -1303,7 +1303,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
       function() {
         request.addSortByMetricName('revenue');
       },
-      /Metric with name "revenue" was not found in the request/,
+      /Metric with id "revenue" was not found in the request/,
       'ambiguous adding of parameterized sorts throws error'
     );
 
@@ -1314,7 +1314,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
 
     theSort = request.get('sort').objectAt(1);
 
-    assert.equal(get(theSort, 'metric.metric.name'), 'revenue', 'Copied the right parameterized CAD metric');
+    assert.equal(get(theSort, 'metric.metric.id'), 'revenue', 'Copied the right parameterized CAD metric');
 
     assert.equal(get(theSort, 'metric.parameters.currency'), 'CAD', 'Copied the right parameterized CAD metric');
 
@@ -1322,7 +1322,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
 
     theSort = request.get('sort').objectAt(2);
 
-    assert.equal(get(theSort, 'metric.metric.name'), 'revenue', 'Copied the right parameterized USD metric');
+    assert.equal(get(theSort, 'metric.metric.id'), 'revenue', 'Copied the right parameterized USD metric');
 
     assert.equal(get(theSort, 'metric.parameters.currency'), 'USD', 'Copied the right parameterized USD metric');
 
@@ -1502,7 +1502,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
       request
         .get('sort')
         .objectAt(0)
-        .get('metric.metric.name'),
+        .get('metric.metric.id'),
       'pageViews',
       'pageViews metric is not removed from the sort in the model fragment'
     );

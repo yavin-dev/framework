@@ -45,7 +45,7 @@ export default VisualizationBase.extend(Validations, {
   rebuildConfig(request /*response*/) {
     let metrics = A(get(request, 'metrics')),
       metric = get(metrics, 'firstObject').toJSON(),
-      description = metricFormat(get(metrics, 'firstObject'), get(metrics, 'firstObject.metric.longName')),
+      description = metricFormat(get(metrics, 'firstObject'), get(metrics, 'firstObject.metric.name')),
       allFormats = NumberFormats,
       format = get(this, 'metadata.format') || get(allFormats[0], 'format');
 
