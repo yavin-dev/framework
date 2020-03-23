@@ -18,7 +18,7 @@ export function buildTestRequest(
   timeGrain = 'day'
 ) {
   return {
-    logicalTable: { timeGrain: { name: timeGrain } },
+    logicalTable: { timeGrain },
     metrics: metrics.map(m => {
       if (typeof m === 'string') {
         let metricObj = parseMetricName(m);

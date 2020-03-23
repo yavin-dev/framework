@@ -71,7 +71,7 @@ export function chartTypeForRequest(request) {
   }
 
   let metricCount = get(request, 'metrics.length'),
-    timeGrain = get(request, 'logicalTable.timeGrain.name'),
+    timeGrain = get(request, 'logicalTable.timeGrain'),
     interval = get(request, 'intervals.firstObject.interval'),
     monthPeriod = interval.diffForTimePeriod('month'),
     applicableTimeGrain = ['day', 'week', 'month'].includes(timeGrain);
@@ -84,7 +84,7 @@ export function chartTypeForRequest(request) {
 }
 
 /**
- * Returns a list of metric names from the request
+ * Returns a list of metrics from the request
  *
  * @function getRequestMetrics
  * @param {Object} request - request object
@@ -95,14 +95,14 @@ export function getRequestMetrics(request) {
 }
 
 /**
- * Returns a list of dimensions names from the request
+ * Returns a list of dimensions id from the request
  *
  * @function getRequestDimensions
  * @param {Object} request - request object
- * @returns {Array} - list of dimension names
+ * @returns {Array} - list of dimension ids
  */
 export function getRequestDimensions(request) {
-  return arr(get(request, 'dimensions')).mapBy('dimension.name');
+  return arr(get(request, 'dimensions')).mapBy('dimension.id');
 }
 
 /**

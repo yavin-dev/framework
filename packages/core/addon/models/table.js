@@ -106,8 +106,8 @@ function getDefaultDimensionFields(dimension) {
  * @returns {Object} - dimension column
  */
 function buildDimensionColumn(dimension, columnIndex, field) {
-  let dimensionName = get(dimension, 'dimension.name'),
-    column = columnIndex[dimensionName],
+  let dimensionId = get(dimension, 'dimension.id'),
+    column = columnIndex[dimensionId],
     defaultName = formatDimensionName({ name: get(dimension, 'dimension.name'), field });
 
   return {
@@ -205,16 +205,18 @@ function hasAllColumns(request, columns) {
       .map(column => {
         let attributes = get(column, 'attributes');
         if (get(column, 'type') === 'dimension') {
-          return canonicalizeDimension(attributes);
+          const attrs = Object.assign({}, attributes, { id: attributes.name });
+          delete attrs.name;
+          return canonicalizeDimension(attrs);
         } else {
           return canonicalizeColumnAttributes(attributes);
         }
       }),
     dimensions = [].concat(
       ...get(request, 'dimensions').map(dimension => {
-        let name = get(dimension, 'dimension.name'),
+        let name = get(dimension, 'dimension.id'),
           defaultFields = getDefaultDimensionFields(dimension);
-        return !defaultFields.length ? name : defaultFields.map(field => canonicalizeDimension({ name, field }));
+        return !defaultFields.length ? name : defaultFields.map(field => canonicalizeDimension({ id: name, field }));
       })
     ),
     metrics = arr(get(request, 'metrics')).mapBy('canonicalName'),
@@ -239,7 +241,9 @@ export function indexColumnById(columns) {
     if (type === 'metric') {
       return canonicalizeColumnAttributes(attributes);
     } else if (type === 'dimension' && attributes.field) {
-      return canonicalizeDimension(attributes);
+      const attrs = Object.assign({}, attributes, { id: attributes.name });
+      delete attrs.name;
+      return canonicalizeDimension(attrs);
     } else {
       return attributes.name;
     }

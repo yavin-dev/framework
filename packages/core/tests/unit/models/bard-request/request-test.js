@@ -1671,7 +1671,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
       );
       assert.equal(
         validations.get('messages').objectAt(1),
-        'The timeGrainName field cannot be empty',
+        'The timeGrain field cannot be empty',
         'Time Grain Name cannot be empty is a part of the messages'
       );
     });

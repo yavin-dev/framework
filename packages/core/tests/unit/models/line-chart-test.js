@@ -56,7 +56,7 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
         dimensionOrder: ['d1'],
         dimensions: [
           {
-            name: 'Foo',
+            id: 'Foo',
             values: { d1: 'foo' }
           }
         ]

@@ -138,12 +138,12 @@ export function parseMetricName(canonicalName) {
  * Returns a metric object given column attributes
  * @function mapColumnAttributes
  * @param {Object} attributes - column attributes
- * @param {String} attributes.id - metric id
+ * @param {String} attributes.name - metric name
  * @param {Object} attributes.parameters - metric parameters
  * @returns {Object} - object with metric id and parameters
  */
 export function mapColumnAttributes(attributes) {
-  let metric = get(attributes, 'id'),
+  let metric = get(attributes, 'name'),
     parameters = get(attributes, 'parameters') || {};
 
   if (isEmpty(metric)) {

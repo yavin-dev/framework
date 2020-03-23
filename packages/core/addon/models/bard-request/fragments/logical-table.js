@@ -12,13 +12,13 @@ const Validations = buildValidations({
     presence: true,
     message: 'Table is invalid or unavailable'
   }),
-  timeGrainName: validator('presence', {
+  timeGrain: validator('presence', {
     presence: true,
-    message: 'The timeGrainName field cannot be empty'
+    message: 'The timeGrain field cannot be empty'
   })
 });
 
 export default Fragment.extend(Validations, {
   table: DS.attr('table'),
-  timeGrainName: DS.attr('string')
+  timeGrain: DS.attr('string')
 });

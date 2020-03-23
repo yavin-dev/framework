@@ -26,8 +26,8 @@ export function canonicalizeDimension({ id, field }) {
  * @param {String} dimension.name - dimension name
  * @param {String} dimension.field - field name
  */
-export function formatDimensionName({ id, field }) {
-  let upperName = upperFirst(id);
+export function formatDimensionName({ name, field }) {
+  let upperName = upperFirst(name);
 
   if (field) {
     return `${upperName} (${field})`;

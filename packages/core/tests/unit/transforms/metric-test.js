@@ -36,13 +36,13 @@ module('Unit | Transform | Metric', function(hooks) {
 
     await settled();
     let transform = this.owner.lookup('transform:metric'),
-      metric = { name: 'dateTime' };
+      metric = { id: 'dateTime' };
 
     assert.equal(transform.serialize(metric), 'dateTime', 'dateTime is serialized to the name');
 
     assert.deepEqual(
       transform.deserialize('dateTime'),
-      { name: 'dateTime' },
+      { id: 'dateTime' },
       'dateTime is deserialized to the right object'
     );
   });

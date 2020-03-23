@@ -557,7 +557,7 @@ export default Fragment.extend(Validations, {
     return store.createFragment('bard-request/request', {
       logicalTable: store.createFragment('bard-request/fragments/logicalTable', {
         table: metadataService.getById('table', clonedRequest.logicalTable.table, clonedRequest.dataSource),
-        timeGrainName: clonedRequest.logicalTable.timeGrain
+        timeGrain: clonedRequest.logicalTable.timeGrain
       }),
 
       dimensions: clonedRequest.dimensions.map(dimension =>
