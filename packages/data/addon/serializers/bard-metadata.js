@@ -8,13 +8,13 @@
 import { A } from '@ember/array';
 import EmberObject from '@ember/object';
 
-export default EmberObject.extend({
+export default class BardMetadataSerializer extends EmberObject {
   /**
    * @method _normalizeTable - normalizes the table object
    * @param rawTables {Array} - array of table objects
    * @returns {Object} - normalized table object
    */
-  _normalizeTable: function(rawTables, source) {
+  _normalizeTable(rawTables, source) {
     // build dimension and metric arrays
     let dimensions = [],
       metrics = [],
@@ -65,7 +65,7 @@ export default EmberObject.extend({
       dimensions,
       metrics
     };
-  },
+  }
 
   /**
    * @method normalize - normalizes the JSON response
@@ -77,4 +77,4 @@ export default EmberObject.extend({
       return this._normalizeTable(payload.tables, payload.source);
     }
   }
-});
+}

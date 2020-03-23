@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Description: Helper that formats metrics for display
@@ -10,16 +10,15 @@
 
 import { inject as service } from '@ember/service';
 import { hasParameters } from '../utils/metric';
-import { get } from '@ember/object';
 import { isPresent } from '@ember/utils';
 import Helper from '@ember/component/helper';
 import { getDefaultDataSourceName } from 'navi-data/utils/adapter';
 
-export default Helper.extend({
+export default class MetricFormatHelper extends Helper {
   /**
    * @property {Service} metricName
    */
-  metricName: service(),
+  @service metricName;
 
   /**
    * returns formatted metric
@@ -32,13 +31,13 @@ export default Helper.extend({
       return longName;
     }
 
-    let metricId = get(metric, 'metric');
+    const metricId = metric.metric;
     if (isPresent(metricId)) {
       longName = this.metricName.getLongName(metricId, namespace);
     }
     return metricFormat(metric, longName);
   }
-});
+}
 
 function _formatParameters(obj) {
   return Object.entries(obj)
@@ -55,6 +54,6 @@ function _formatParameters(obj) {
  */
 export function metricFormat(metric, longName = '--') {
   return isPresent(metric) && hasParameters(metric)
-    ? `${longName} (${_formatParameters(get(metric, 'parameters'))})`
+    ? `${longName} (${_formatParameters(metric.parameters)})`
     : longName;
 }

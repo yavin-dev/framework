@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Description: Bard facts service that executes and delivers the results
@@ -11,7 +11,7 @@ import NaviFactsModel from 'navi-data/models/navi-facts';
 import RequestBuilder from 'navi-data/builder/request';
 import config from 'ember-get-config';
 
-export default Service.extend({
+export default class NaviFactsService extends Service {
   /**
    * @method _adapterFor
    *
@@ -20,7 +20,7 @@ export default Service.extend({
    */
   _adapterFor(type = 'bard-facts') {
     return getOwner(this).lookup(`adapter:${type}`);
-  },
+  }
 
   /**
    * @method _serializerFor
@@ -30,7 +30,7 @@ export default Service.extend({
    */
   _serializerFor(type = 'bard-facts') {
     return getOwner(this).lookup(`serializer:${type}`);
-  },
+  }
 
   /**
    * Creates a new request builder instance
@@ -41,7 +41,7 @@ export default Service.extend({
    */
   request(baseRequest) {
     return RequestBuilder.create(baseRequest);
-  },
+  }
 
   /**
    * @method getURL - Uses the adapter to get the bard query url for the request
@@ -53,7 +53,7 @@ export default Service.extend({
     const type = config.navi.dataSources[0].type,
       adapter = this._adapterFor(type);
     return adapter.urlForFindQuery(request, options);
-  },
+  }
 
   /**
    * @method fetch - Returns the bard response model for the request
@@ -76,7 +76,7 @@ export default Service.extend({
         _factsService: this
       });
     });
-  },
+  }
 
   /**
    * @method fetchNext
@@ -100,7 +100,7 @@ export default Service.extend({
       }
     }
     return null;
-  },
+  }
 
   /**
    * @method fetchPrevious
@@ -122,4 +122,4 @@ export default Service.extend({
 
     return null;
   }
-});
+}
