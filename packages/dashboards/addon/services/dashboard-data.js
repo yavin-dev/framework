@@ -221,9 +221,9 @@ export default class DashboardDataService extends Service {
     const invalidFilters = this._getInvalidGlobalFilters(dashboard, request);
 
     return invalidFilters.map(filter => ({
-      detail: `"${get(filter, 'dimension.name')}" is not a dimension in the "${get(
+      detail: `"${get(filter, 'dimension.id')}" is not a dimension in the "${get(
         request,
-        'logicalTable.table.name'
+        'logicalTable.table.id'
       )}" table.`,
       title: 'Invalid Filter'
     }));
@@ -238,6 +238,6 @@ export default class DashboardDataService extends Service {
   _isFilterValid(request, filter) {
     const validDimensions = get(request, 'logicalTable.timeGrain.dimensionIds');
 
-    return validDimensions.includes(get(filter, 'dimension.name'));
+    return validDimensions.includes(get(filter, 'dimension.id'));
   }
 }

@@ -130,12 +130,12 @@ export default Route.extend({
   _getDefaultTable() {
     let table = get(this, 'metadataService')
       .all('table')
-      .findBy('name', get(config, 'navi.defaultDataTable'));
+      .findBy('id', get(config, 'navi.defaultDataTable'));
 
     if (!table) {
       let dataSourceTables = get(this, 'metadataService')
         .all('table')
-        .sortBy('longName');
+        .sortBy('name');
       table = dataSourceTables[0];
     }
 

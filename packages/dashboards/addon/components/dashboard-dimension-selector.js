@@ -24,7 +24,7 @@ export default Component.extend({
     /*
      * get a list of dimensions per table/timeGrain involved
      * do this so each table/timegrain combination is unique and we don't have to flatten more than we have to.
-     * shape will be: {table: [{name, longName, category}, ...], ...}
+     * shape will be: {table: [{id, name, category}, ...], ...}
      */
     return widgetPromises.then(this.mergeWidgetDimensions).then(dimensionMap => {
       /*
@@ -62,7 +62,7 @@ export default Component.extend({
   /**
    * Takes an object that is mapped by table and list of dimensions, and merges them into a object
    * that is keyed by {category: [dimensions]}
-   * @param {Object} dimensionMap - {table: [{name, longName, category}, ...], ...}
+   * @param {Object} dimensionMap - {table: [{id, name, category}, ...], ...}
    * @return {Object} - {categoryName: {dimensionName: {dimension, longName, tables}, ...}, ....}
    */
   buildCategoryMap(dimensionMap) {
@@ -72,14 +72,14 @@ export default Component.extend({
           results[dimension.category] = {};
         }
 
-        if (!results[dimension.category][dimension.name]) {
-          results[dimension.category][dimension.name] = {
-            dimension: dimension.name,
-            longName: dimension.longName,
+        if (!results[dimension.category][dimension.id]) {
+          results[dimension.category][dimension.id] = {
+            dimension: dimension.id,
+            longName: dimension.name,
             tables: [table]
           };
         } else {
-          results[dimension.category][dimension.name].tables.push(table);
+          results[dimension.category][dimension.id].tables.push(table);
         }
       });
       return results;
@@ -93,10 +93,9 @@ export default Component.extend({
    */
   mergeWidgetDimensions(widgets) {
     return widgets.reduce((dimensionMap, widget) => {
-      const tableKey = get(widget, 'requests.firstObject.logicalTable.table.name');
-      const timeGrain = get(widget, 'requests.firstObject.logicalTable.timeGrain');
+      const { id: tableKey, dimensions } = widget.requests?.firstObject?.logicalTable?.table;
       if (!dimensionMap[tableKey]) {
-        dimensionMap[tableKey] = get(timeGrain, 'dimensions');
+        dimensionMap[tableKey] = dimensions;
       }
       return dimensionMap;
     }, {});

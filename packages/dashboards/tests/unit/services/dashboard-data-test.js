@@ -82,7 +82,7 @@ module('Unit | Service | dashboard data', function(hooks) {
         this.filters.push(filter);
       },
       logicalTable: {
-        table: { name: 'table1' },
+        table: { id: 'table1' },
         timeGrain: { dimensionIds: [] }
       },
       data,
@@ -271,7 +271,7 @@ module('Unit | Service | dashboard data', function(hooks) {
         this.filters.push(filter);
       },
       logicalTable: {
-        table: { name: 'table1' },
+        table: { id: 'table1' },
         timeGrain: { dimensionIds: VALID_FILTERS }
       },
       data,
@@ -305,19 +305,19 @@ module('Unit | Service | dashboard data', function(hooks) {
     const widget3 = await get(data, '3');
 
     assert.deepEqual(
-      widget1.map(result => get(result, 'request.filters').map(filter => get(filter, 'dimension.name'))),
+      widget1.map(result => get(result, 'request.filters').map(filter => get(filter, 'dimension.id'))),
       [['property', 'os'], ['os'], ['userCountry', 'os']],
       'Applicable global filters are applied to widget 1 requests'
     );
 
     assert.deepEqual(
-      widget2.map(result => get(result, 'request.filters').map(filter => get(filter, 'dimension.name'))),
+      widget2.map(result => get(result, 'request.filters').map(filter => get(filter, 'dimension.id'))),
       [['screenType', 'os']],
       'Applicable global filters are applied to widget 2 requests'
     );
 
     assert.deepEqual(
-      widget3.map(result => get(result, 'request.filters').map(filter => get(filter, 'dimension.name'))),
+      widget3.map(result => get(result, 'request.filters').map(filter => get(filter, 'dimension.id'))),
       [],
       'Applicable global filters are applied to widget 3 requests'
     );
