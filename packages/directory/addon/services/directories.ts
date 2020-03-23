@@ -3,7 +3,6 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Service from '@ember/service';
-import { computed } from '@ember/object';
 
 export interface DirectoryFilterQueryParams {
   filter?: string;
@@ -23,23 +22,19 @@ export default class DirectoriesService extends Service {
   /**
    * @property {Array<Directory>} directories - Object list with info on each directory
    */
-  @computed()
-  get directories(): Array<Directory> {
-    //Default supported directories. Override this property in your app to add directories.
-    return [
-      {
-        name: 'My Data',
-        routeLink: 'directory.my-data',
-        filters: [
-          {
-            name: 'Favorites',
-            icon: 'star-o',
-            queryParams: { filter: 'favorites' }
-          }
-        ]
-      }
-    ];
-  }
+  directories: Array<Directory> = [
+    {
+      name: 'My Data',
+      routeLink: 'directory.my-data',
+      filters: [
+        {
+          name: 'Favorites',
+          icon: 'star-o',
+          queryParams: { filter: 'favorites' }
+        }
+      ]
+    }
+  ];
 
   /**
    * @function getDirectories - returns list of valid directories

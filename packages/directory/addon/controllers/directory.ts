@@ -8,6 +8,14 @@ import { inject as service } from '@ember/service';
 import DirectoriesService from 'navi-directory/services/directories';
 import RouterService from '@ember/routing/router-service';
 
+type DirectoryQueryParams = {
+  filter: string | null;
+  type: string | null;
+  sortBy: string;
+  sortDir: string;
+  q: string;
+};
+
 export default class DirectoryController extends Controller {
   /**
    * @property {Service} directories - service to load the valid directory options
@@ -94,7 +102,7 @@ export default class DirectoryController extends Controller {
    * @param {object} queryParams
    */
   @action
-  updateQueryParams(queryParams: object) {
+  updateQueryParams(queryParams: Partial<DirectoryQueryParams>) {
     this.transitionToRoute({ queryParams });
   }
 }

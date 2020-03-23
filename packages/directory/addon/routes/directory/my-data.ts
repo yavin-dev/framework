@@ -48,7 +48,7 @@ export default class DirectoryMyDataRoute extends Route {
    * @param {object} queryParams - all directory query params
    */
   async _fetchItems(user: TODO, { type, filter }: DirectoryParams) {
-    let items = arr();
+    const items = arr();
 
     if (type === null || type === 'reports') {
       const reports =
