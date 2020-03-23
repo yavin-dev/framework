@@ -571,11 +571,18 @@ export default [
         {
           metric: 'usedAmount',
           parameters: {}
+        },
+        {
+          metric: 'revenue',
+          parameters: { currency: 'GIL' }
         }
       ],
       dimensions: [
         {
           dimension: 'container'
+        },
+        {
+          dimension: 'displayCurrency'
         }
       ],
       filters: [

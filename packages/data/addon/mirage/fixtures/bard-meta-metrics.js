@@ -305,6 +305,19 @@ export default {
       name: 'globalySold',
       longName: 'How many have sold worldwide',
       type: 'number'
+    },
+    {
+      category: 'World',
+      name: 'revenue',
+      longName: 'Revenue',
+      type: 'money',
+      parameters: {
+        currency: {
+          type: 'dimension',
+          dimensionName: 'displayCurrency',
+          defaultValue: 'GIL'
+        }
+      }
     }
   ]
 };

@@ -290,6 +290,14 @@ export default {
       category: 'Personal',
       datatype: 'text',
       storageStrategy: 'loaded'
+    },
+    {
+      name: 'displayCurrency',
+      longName: 'Display Currency',
+      cardinality: 34,
+      category: 'Personal',
+      datatype: 'text',
+      storageStrategy: 'loaded'
     }
   ]
 };
