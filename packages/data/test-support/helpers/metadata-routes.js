@@ -349,7 +349,7 @@ export default function(index = 0) {
     return [
       200,
       { 'Content-Type': 'application/json' },
-      JSON.stringify([MetricFunctionMoneyMetric, MetricFunctionAggTrend])
+      JSON.stringify({ rows: [MetricFunctionMoneyMetric, MetricFunctionAggTrend] })
     ];
   });
 }

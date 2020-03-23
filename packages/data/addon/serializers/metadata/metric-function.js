@@ -61,8 +61,8 @@ export default class MetricFunctionSerializer extends EmberObject {
    * @returns {Object} - normalized JSON object
    */
   normalize(payload, source) {
-    if (payload && payload['metric-functions']) {
-      return this._normalizeMetricFunctions(payload['metric-functions'], source);
+    if (payload && payload['metric-functions']?.rows) {
+      return this._normalizeMetricFunctions(payload['metric-functions'].rows, source);
     }
   }
 }

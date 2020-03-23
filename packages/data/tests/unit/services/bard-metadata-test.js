@@ -89,10 +89,11 @@ module('Unit - Service - Bard Metadata', function(hooks) {
         assert.deepEqual(
           payload,
           {
-            'metric-functions': [MetricFunctionMoneyMetric, MetricFunctionAggTrend]
+            'metric-functions': { rows: [MetricFunctionMoneyMetric, MetricFunctionAggTrend] }
           },
           'The correct payload is passed to the metric-function serializer'
         );
+        return this._super(...arguments);
       }
     });
 

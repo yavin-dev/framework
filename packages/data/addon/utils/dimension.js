@@ -11,12 +11,12 @@ import { upperFirst } from 'lodash-es';
  * @param {String} dimension.name - dimension name
  * @param {String} dimension.field - field name
  */
-export function canonicalizeDimension({ name, field }) {
+export function canonicalizeDimension({ id, field }) {
   if (field) {
-    return `${name}(${field})`;
+    return `${id}(${field})`;
   }
 
-  return name;
+  return id;
 }
 
 /**
@@ -26,8 +26,8 @@ export function canonicalizeDimension({ name, field }) {
  * @param {String} dimension.name - dimension name
  * @param {String} dimension.field - field name
  */
-export function formatDimensionName({ name, field }) {
-  let upperName = upperFirst(name);
+export function formatDimensionName({ id, field }) {
+  let upperName = upperFirst(id);
 
   if (field) {
     return `${upperName} (${field})`;

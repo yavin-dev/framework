@@ -9,7 +9,7 @@ import { get } from '@ember/object';
  * Returns canonicalized name of a paramterized metric
  * @function canonicalizeMetric
  * @param {Object} metric
- * @param {String} metric.metric - metric name
+ * @param {String} metric.metric - metric id
  * @param {Object} metric.parameters - a key: value object of parameters
  */
 export function canonicalizeMetric(metric) {
@@ -20,7 +20,7 @@ export function canonicalizeMetric(metric) {
  * Returns canonicalized name given metric column attributes
  * @function canonicalizeColumnAttributes
  * @param {Object} attributes
- * @param {String} attributes.name - metric name
+ * @param {String} attributes.id - metric id
  * @param {Object} attributes.parameters - a key: value object of parameters
  */
 export function canonicalizeColumnAttributes(attributes) {
@@ -33,7 +33,7 @@ export function canonicalizeColumnAttributes(attributes) {
  * Returns if metric has parameters
  * @function hasParameters
  * @param {Object} obj
- * @param {String} obj.metric - metric name
+ * @param {String} obj.metric - metric id
  * @param {Object} obj.parameters (optional) - a key: value object of parameters
  * @returns {Boolean} true if metric has parameters
  */
@@ -59,7 +59,7 @@ export function serializeParameters(obj = {}) {
  * Returns a map of aliases to canonicalized metrics to help with alias lookup.
  * @function getAliasedMetrics
  * @param metrics {Array} - list of metric objects from a request
- * @returns {object} - list of canonicalized metric names keyed by alias
+ * @returns {object} - list of canonicalized metric ids keyed by alias
  */
 export function getAliasedMetrics(metrics = []) {
   return metrics.reduce((obj, metric) => {
@@ -121,11 +121,11 @@ export function parseMetricName(canonicalName) {
 
   // validation
   if (isEmpty(metric)) {
-    throw new Error('Metric Name Parser: Error, empty metric name');
+    throw new Error('Metric Name Parser: Error, empty metric id');
   }
 
   if (metric.includes(')') || metric.includes('(')) {
-    throw new Error('Metric Name Parser: Error, could not parse name');
+    throw new Error('Metric Name Parser: Error, could not parse id');
   }
 
   return {
@@ -138,16 +138,16 @@ export function parseMetricName(canonicalName) {
  * Returns a metric object given column attributes
  * @function mapColumnAttributes
  * @param {Object} attributes - column attributes
- * @param {String} attributes.name - metric name
+ * @param {String} attributes.id - metric id
  * @param {Object} attributes.parameters - metric parameters
- * @returns {Object} - object with metric name and parameters
+ * @returns {Object} - object with metric id and parameters
  */
 export function mapColumnAttributes(attributes) {
-  let metric = get(attributes, 'name'),
+  let metric = get(attributes, 'id'),
     parameters = get(attributes, 'parameters') || {};
 
   if (isEmpty(metric)) {
-    throw new Error('Metric Column Attributes Mapper: Error, empty metric name');
+    throw new Error('Metric Column Attributes Mapper: Error, empty metric id');
   }
 
   return { metric, parameters };
