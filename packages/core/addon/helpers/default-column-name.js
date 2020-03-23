@@ -32,17 +32,17 @@ export function getColumnDefaultName({ type, attributes }, bardMetadata, namespa
     model = bardMetadata.getById(type, id, namespace);
 
   if (type === 'metric') {
-    return metricFormat(mapColumnAttributes(attributes), model.id);
+    return metricFormat(mapColumnAttributes(attributes), model.name);
   }
 
   if (type === 'dimension' && field) {
     return formatDimensionName({
-      id: model.id,
+      id: model.name,
       field
     });
   }
 
-  return model.id;
+  return model.name;
 }
 
 export default Helper.extend({

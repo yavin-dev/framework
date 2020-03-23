@@ -131,8 +131,8 @@ module('Unit - Utils - Metrics Utils', function() {
     metricString = '';
     assert.throws(
       () => parseMetricName(metricString),
-      new Error('Metric Name Parser: Error, empty metric id'),
-      'Parser throws an error for an empty metric id'
+      new Error('Metric Name Parser: Error, empty metric name'),
+      'Parser throws an error for an empty metric name'
     );
 
     metricString = 'base(value)';
@@ -145,7 +145,7 @@ module('Unit - Utils - Metrics Utils', function() {
     metricString = 'base(value';
     assert.throws(
       () => parseMetricName(metricString),
-      new Error('Metric Name Parser: Error, could not parse id'),
+      new Error('Metric Name Parser: Error, could not parse name'),
       'Parser throws an error for corrupted metric'
     );
   });
@@ -154,25 +154,25 @@ module('Unit - Utils - Metrics Utils', function() {
     assert.expect(6);
 
     assert.deepEqual(
-      mapColumnAttributes({ id: 'base' }),
+      mapColumnAttributes({ name: 'base' }),
       { metric: 'base', parameters: {} },
       'Mapper correctly constructs a metric object given no `parameters` property'
     );
 
     assert.deepEqual(
-      mapColumnAttributes({ id: 'base', parameters: {} }),
+      mapColumnAttributes({ name: 'base', parameters: {} }),
       { metric: 'base', parameters: {} },
       'Mapper correctly constructs a metric object given an empty `parameters` object'
     );
 
     assert.deepEqual(
-      mapColumnAttributes({ id: 'base', parameters: { param1: 'paramVal1' } }),
+      mapColumnAttributes({ name: 'base', parameters: { param1: 'paramVal1' } }),
       { metric: 'base', parameters: { param1: 'paramVal1' } },
       'Mapper correctly constructs a metric object given one parameter'
     );
 
     assert.deepEqual(
-      mapColumnAttributes({ id: 'base', parameters: { param1: 'paramVal1', param2: 'paramVal2' } }),
+      mapColumnAttributes({ name: 'base', parameters: { param1: 'paramVal1', param2: 'paramVal2' } }),
       {
         metric: 'base',
         parameters: { param1: 'paramVal1', param2: 'paramVal2' }
@@ -181,42 +181,42 @@ module('Unit - Utils - Metrics Utils', function() {
     );
 
     assert.throws(
-      () => mapColumnAttributes({ id: '' }),
-      new Error('Metric Column Attributes Mapper: Error, empty metric id'),
-      'Mapper throws an error given an empty metric id'
+      () => mapColumnAttributes({ name: '' }),
+      new Error('Metric Column Attributes Mapper: Error, empty metric name'),
+      'Mapper throws an error given an empty metric name'
     );
 
     assert.throws(
       () => mapColumnAttributes({}),
-      new Error('Metric Column Attributes Mapper: Error, empty metric id'),
-      'Mapper throws an error given a missing `id` property'
+      new Error('Metric Column Attributes Mapper: Error, empty metric name'),
+      'Mapper throws an error given a missing `name` property'
     );
   });
 
   test('canonicalize column attributes', function(assert) {
     assert.expect(5);
-    assert.equal(canonicalizeColumnAttributes({ id: 'foo' }), 'foo', 'correctly serializes metric with no params');
+    assert.equal(canonicalizeColumnAttributes({ name: 'foo' }), 'foo', 'correctly serializes metric with no params');
 
     assert.equal(
-      canonicalizeColumnAttributes({ id: 'foo', parameters: {} }),
+      canonicalizeColumnAttributes({ name: 'foo', parameters: {} }),
       'foo',
       'correctly serializes metric with empty object params'
     );
 
     assert.equal(
-      canonicalizeColumnAttributes({ id: 'foo', parameters: null }),
+      canonicalizeColumnAttributes({ name: 'foo', parameters: null }),
       'foo',
       'correctly serializes metric with null object params'
     );
 
     assert.equal(
-      canonicalizeColumnAttributes({ id: 'foo', parameters: { p1: '100' } }),
+      canonicalizeColumnAttributes({ name: 'foo', parameters: { p1: '100' } }),
       'foo(p1=100)',
       'correctly serializes metric with one param'
     );
 
     assert.equal(
-      canonicalizeColumnAttributes({ id: 'foo', parameters: { p1: '100', a: '12' } }),
+      canonicalizeColumnAttributes({ name: 'foo', parameters: { p1: '100', a: '12' } }),
       'foo(a=12,p1=100)',
       'correctly serializes metric with multiple params'
     );
