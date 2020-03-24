@@ -36,6 +36,6 @@ export default Component.extend({
    * request model
    */
   granularity: computed('request.logicalTable.timeGrain', function() {
-    return get(this, 'request.logicalTable.timeGrain.name') || get(this, 'request.logicalTable.timeGrain');
+    return get(this, 'request.logicalTable.timeGrain') || get(this, 'request.logicalTable.timeGrain');
   })
 });

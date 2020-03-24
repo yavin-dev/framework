@@ -31,7 +31,13 @@ export default class DateTimeFilterBuilder extends Base {
    */
   @computed('request.logicalTable.timeGrain')
   get dateTimePeriodName() {
-    return get(this, 'request.logicalTable.timeGrain.longName');
+    const {
+      logicalTable: {
+        timeGrain,
+        table: { timeGrains }
+      }
+    } = this.request;
+    return timeGrains.find(grain => grain.id === timeGrain)?.name;
   }
 
   /**
@@ -174,7 +180,7 @@ export default class DateTimeFilterBuilder extends Base {
       return;
     }
 
-    const dateTimePeriod = get(this, 'request.logicalTable.timeGrain.name');
+    const dateTimePeriod = get(this, 'request.logicalTable.timeGrain');
     const originalInterval = get(this, 'requestFragment.interval');
 
     const newInterval = this.intervalForOperator(originalInterval, dateTimePeriod, newOperator);

@@ -52,7 +52,7 @@ export default EmberObject.extend({
     const buildDateKey = dateTime => moment(dateTime).format(DateUtils.API_DATE_FORMAT_STRING);
 
     let metrics = config.metrics,
-      grain = get(request, 'logicalTable.timeGrain.name') || get(request, 'logicalTable.timeGrain'),
+      grain = get(request, 'logicalTable.timeGrain'),
       requestInterval = Interval.parseFromStrings(get(request, 'intervals.0.start'), get(request, 'intervals.0.end'));
 
     /*

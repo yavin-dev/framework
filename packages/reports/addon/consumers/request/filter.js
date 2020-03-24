@@ -210,34 +210,12 @@ export default ActionConsumer.extend({
       // Set interval to default for time grain
       let request = get(route, 'currentModel.request'),
         interval = get(request, 'intervals.firstObject.interval'),
-        timeGrainName = get(timeGrain, 'name'),
+        timeGrainName = timeGrain.id,
         newInterval = interval
           ? interval.asIntervalForTimePeriod(timeGrainName)
           : DefaultIntervals.getDefault(timeGrainName);
 
       set(request, 'intervals.firstObject.interval', newInterval);
-
-      // Remove any dimension filter if the dim is not present in new time grain
-      let timeGrainDimensions = get(timeGrain, 'dimensions');
-
-      /*
-       * .toArray() is used to clone the array, otherwise removing a filter while
-       * iterating over `request.filters` causes problems
-       */
-      get(request, 'filters')
-        .toArray()
-        .forEach(dimensionFilter => {
-          let dimension = get(dimensionFilter, 'dimension');
-
-          if (!timeGrainDimensions.includes(dimension)) {
-            get(this, 'requestActionDispatcher').dispatch(RequestActions.REMOVE_FILTER, route, dimensionFilter);
-          }
-        });
-
-      /*
-       * Having filters are already taken care of:
-       * DID_UPDATE_TIME_GRAIN triggers REMOVE_METRIC triggers REMOVE_FILTER
-       */
     }
   }
 });

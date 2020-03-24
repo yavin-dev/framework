@@ -42,7 +42,7 @@ class DimensionSelectComponent extends Component {
   /**
    * @property {String} dimensionName - name of dimension to be filtered
    */
-  @readOnly('filter.subject.name') dimensionName;
+  @readOnly('filter.subject.id') dimensionName;
 
   /**
    * @property {String} primaryKey - primary key for this dimension

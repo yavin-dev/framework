@@ -32,7 +32,7 @@ export default Component.extend({
   /**
    * @property {String} displayName - display name for the filter
    */
-  displayName: readOnly('filter.subject.longName'),
+  displayName: readOnly('filter.subject.name'),
 
   /**
    * @property {Array} supportedOperators - list of valid values for filter.operator

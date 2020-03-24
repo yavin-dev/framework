@@ -33,14 +33,14 @@ export default Component.extend({
   /*
    * @property {Array} allMetrics
    */
-  allMetrics: readOnly('request.logicalTable.timeGrain.metrics'),
+  allMetrics: readOnly('request.logicalTable.table.metrics'),
 
   /*
    * @property {Array} selectedMetrics - selected metrics in the request
    */
   selectedMetrics: computed('request.metrics.[]', function() {
     let metrics = get(this, 'request.metrics').toArray(),
-      selectedBaseMetrics = uniqBy(metrics, metric => get(metric, 'metric.name'));
+      selectedBaseMetrics = uniqBy(metrics, metric => get(metric, 'metric.id'));
 
     return A(selectedBaseMetrics).mapBy('metric');
   }),
@@ -51,7 +51,7 @@ export default Component.extend({
    */
   metricsChecked: computed('selectedMetrics', function() {
     return get(this, 'selectedMetrics').reduce((list, metric) => {
-      list[get(metric, 'name')] = true;
+      list[get(metric, 'id')] = true;
       return list;
     }, {});
   }),
@@ -62,7 +62,7 @@ export default Component.extend({
    */
   metricsFiltered: computed('request.having.[]', function() {
     return A(get(this, 'request.having'))
-      .mapBy('metric.metric.name')
+      .mapBy('metric.metric.id')
       .reduce((list, metric) => {
         list[metric] = true;
         return list;
@@ -77,19 +77,19 @@ export default Component.extend({
    * @param metric -
    */
   _openConfig(metricMeta) {
-    let longName = get(metricMeta, 'longName');
+    let name = get(metricMeta, 'name');
 
     //create mousedown event using document.createEvent as supported by all browsers
     let mouseEvent = document.createEvent('MouseEvent');
     mouseEvent.initEvent('mousedown', true, true);
 
     run(this, () => {
-      //find the right config trigger by matching metric longNames
+      //find the right config trigger by matching metric names
       let metricSelector = document.querySelector('.report-builder__metric-selector'),
         groupedListItems = Array.from(metricSelector.getElementsByClassName('grouped-list__item'));
 
       groupedListItems.filter(item => {
-        if (item.textContent.trim() === longName) {
+        if (item.textContent.trim() === name) {
           item.querySelector('.metric-config__trigger-icon').dispatchEvent(mouseEvent);
         }
       });
@@ -103,7 +103,7 @@ export default Component.extend({
      */
     metricClicked(metric) {
       const enableRequestPreview = featureFlag('enableRequestPreview'),
-        action = !enableRequestPreview && get(this, 'metricsChecked')[get(metric, 'name')] ? 'Remove' : 'Add',
+        action = !enableRequestPreview && get(this, 'metricsChecked')[get(metric, 'id')] ? 'Remove' : 'Add',
         handler = this[`on${action}Metric`];
 
       if (handler) handler(metric);

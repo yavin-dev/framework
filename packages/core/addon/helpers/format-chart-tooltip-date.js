@@ -27,7 +27,7 @@ const TOOLTIP_DATE_TIME_FORMAT = {
  */
 export function formatChartTooltipDate(request, value) {
   if (request && value) {
-    let granularity = get(request, 'logicalTable.timeGrain.name') || get(request, 'logicalTable.timeGrain');
+    let granularity = get(request, 'logicalTable.timeGrain');
     return moment(value).format(TOOLTIP_DATE_TIME_FORMAT[granularity]);
   }
 }

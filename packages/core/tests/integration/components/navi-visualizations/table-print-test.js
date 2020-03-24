@@ -44,9 +44,7 @@ const Model = A([
       metrics: [{ metric: 'uniqueIdentifier' }, { metric: 'totalPageViews' }],
       logicalTable: {
         table: 'network',
-        timeGrain: {
-          name: 'day'
-        }
+        timeGrain: 'day'
       }
     },
     response: {

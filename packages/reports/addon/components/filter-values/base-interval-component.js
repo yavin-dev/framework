@@ -24,12 +24,12 @@ export default class BaseIntervalComponent extends Component {
   /**
    * @property {String} dateTimePeriod - the current time grain
    */
-  @readOnly('request.logicalTable.timeGrain.name') dateTimePeriod;
+  @readOnly('request.logicalTable.timeGrain') dateTimePeriod;
 
   /**
    * @property {String} lowestDateTimePeriod - the lowest supported time grain of the table
    */
-  @readOnly('request.logicalTable.table.timeGrains.firstObject.name') lowestDateTimePeriod;
+  @readOnly('request.logicalTable.table.timeGrains.firstObject.id') lowestDateTimePeriod;
 
   /**
    * @property {String} calendarDateTimePeriod - the active dateTimePeriod which does not include 'all'

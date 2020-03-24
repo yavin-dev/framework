@@ -20,9 +20,7 @@ const Model = A([
   {
     request: {
       logicalTable: {
-        timeGrain: {
-          name: 'day'
-        }
+        timeGrain: 'day'
       },
       intervals: [
         {

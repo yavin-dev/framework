@@ -92,7 +92,7 @@ class NaviColumnConfig extends Component {
 
     const columns = [...dimensionColumns, ...metricColumns];
 
-    if (timeGrain.name !== 'all') {
+    if (timeGrain !== 'all') {
       columns.unshift({
         type: 'dateTime',
         name: 'dateTime',

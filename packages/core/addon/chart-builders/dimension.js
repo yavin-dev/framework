@@ -82,7 +82,7 @@ export default EmberObject.extend({
       seriesKey = buildSeriesKey(config), // Build the series required
       seriesName = getSeriesName(config), // Get all the series names
       byDate = new DataGroup(data, row => buildDateKey(row.dateTime)), // Group by dates for easier lookup
-      grain = get(request, 'logicalTable.timeGrain.name') || get(request, 'logicalTable.timeGrain'),
+      grain = get(request, 'logicalTable.timeGrain'),
       requestInterval = Interval.parseFromStrings(get(request, 'intervals.0.start'), get(request, 'intervals.0.end'));
 
     // For each unique date, build the series

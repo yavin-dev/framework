@@ -26,7 +26,7 @@ const Validations = buildValidations(
       dependentKeys: [
         'model._request.dimensions.[]',
         'model._request.metrics.@each.parameters.{}',
-        'model._request.logicalTable.timeGrain.name'
+        'model._request.logicalTable.timeGrain'
       ]
     })
   },
@@ -59,7 +59,7 @@ export default VisualizationBase.extend(Validations, {
       columns = get(this, 'metadata.columns'),
       // index column based on metricId or dimensionId
       columnIndex = indexColumnById(columns),
-      timeGrain = get(request, 'logicalTable.timeGrain.name');
+      timeGrain = get(request, 'logicalTable.timeGrain');
 
     //Only add dateColumn if timegrain is not 'all'
     let dateColumn =
@@ -221,7 +221,7 @@ function hasAllColumns(request, columns) {
     ),
     metrics = arr(get(request, 'metrics')).mapBy('canonicalName'),
     requestFields = [...dimensions, ...metrics],
-    timeGrain = get(request, 'logicalTable.timeGrain.name'),
+    timeGrain = get(request, 'logicalTable.timeGrain'),
     shouldHaveDateTimeCol = timeGrain !== 'all',
     doesHaveDateTimeCol = !!arr(columns).findBy('type', 'dateTime');
 

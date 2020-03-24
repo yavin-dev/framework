@@ -612,9 +612,7 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
         }
       })),
       logicalTable: {
-        timeGrain: {
-          name: timeGrain
-        }
+        timeGrain
       }
     };
   }

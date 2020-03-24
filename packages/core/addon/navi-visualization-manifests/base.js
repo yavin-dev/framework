@@ -58,7 +58,7 @@ export default EmberObject.extend({
    * @returns {Boolean} has single time bucket
    */
   hasSingleTimeBucket(request) {
-    let timeGrain = get(request, 'logicalTable.timeGrain.name'),
+    let timeGrain = get(request, 'logicalTable.timeGrain'),
       numTimeBuckets = get(request, 'intervals.firstObject.interval').diffForTimePeriod(timeGrain);
 
     return numTimeBuckets === 1;

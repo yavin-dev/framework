@@ -1,5 +1,5 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -14,112 +14,120 @@
  *   {{/dimension-selector}}
  */
 
-import { readOnly, filter, mapBy } from '@ember/object/computed';
+import { readOnly, mapBy } from '@ember/object/computed';
 import Component from '@ember/component';
-import { getWithDefault, set, get, computed } from '@ember/object';
+import { get, computed } from '@ember/object';
 import { A as arr } from '@ember/array';
 import layout from '../templates/components/dimension-selector';
 import { featureFlag } from 'navi-core/helpers/feature-flag';
 
-export default Component.extend({
-  layout,
+export default class DimensionSelector extends Component {
+  layout = layout;
 
   /*
    * @property {Array} classNames
    */
-  classNames: ['checkbox-selector', 'checkbox-selector--dimension'],
+  classNames = ['checkbox-selector', 'checkbox-selector--dimension'];
 
   /*
    * @property {Array} allDimensions
    */
-  allDimensions: readOnly('request.logicalTable.timeGrain.dimensions'),
+  @readOnly('request.logicalTable.table.dimensions')
+  allDimensions;
 
   /*
    * @property {Array} timeGrains - copy of all time grains for the logical table selected
    */
-  timeGrains: readOnly('request.logicalTable.table.timeGrains'),
+  @readOnly('request.logicalTable.table.timeGrains')
+  timeGrains;
 
   /*
    * @property {Array} allTimeGrains - all time grains for the logical table selected
    */
-  allTimeGrains: filter('timeGrains', function(timeGrain) {
-    //add category to every timegrain object
-    set(timeGrain, 'category', 'Time Grain');
+  @computed('timeGrains')
+  get allTimeGrains() {
+    const timeGrains = this.timeGrains;
 
-    /*
-     *filtering all timegrain, if no option is selected in the list
-     *`all` timegrain will be assumed
-     */
-    return get(timeGrain, 'name') !== 'all';
-  }),
+    return timeGrains
+      .filter(grain => grain?.id !== 'all')
+      .map(grain => Object.assign({}, grain, { category: 'Time Grain' }));
+  }
 
   /*
    * @property {Array} listItems - all list items to populate the dimension selector,
    *                               combination of timegrains and dimensions
    */
-  listItems: computed('allTimeGrains', 'allDimensions', function() {
-    return [...getWithDefault(this, 'allTimeGrains', []), ...getWithDefault(this, 'allDimensions', [])];
-  }),
+  @computed('allTimeGrains', 'allDimensions')
+  get listItems() {
+    return [...(this.allTimeGrains || []), ...(this.allDimensions || [])];
+  }
 
   /*
    * @property {Array} selectedDimensions - dimensions in the request
    */
-  selectedDimensions: mapBy('request.dimensions', 'dimension'),
+  @mapBy('request.dimensions', 'dimension')
+  selectedDimensions;
 
   /*
    * @property {Array} selectedFilters - filters in the request
    */
-  selectedFilters: computed('request.filters.[]', function() {
+  @computed('request.filters.[]')
+  get selectedFilters() {
     return get(this, 'request.filters').mapBy('dimension');
-  }),
+  }
 
   /*
    * @property {Object} selectedTimeGrain - timeGrain in the request
    */
-  selectedTimeGrain: readOnly('request.logicalTable.timeGrain'),
+  @readOnly('request.logicalTable.timeGrain')
+  selectedTimeGrain;
 
   /*
    * @property {Object} selectedColumnsAndFilters - combination of selectedColumns and SelectedFilters
    */
-  selectedColumnsAndFilters: computed('selectedColumns', 'selectedFilters', function() {
+  @computed('selectedColumns', 'selectedFilters')
+  get selectedColumnsAndFilters() {
     return arr([...get(this, 'selectedColumns'), ...get(this, 'selectedFilters')]).uniq();
-  }),
+  }
 
   /*
    * @property {Object} selectedColumns - unique selectedDimensions
    */
-  selectedColumns: computed('selectedTimeGrain', 'selectedDimensions', function() {
-    if (get(this, 'selectedTimeGrain.name') === 'all') {
-      return get(this, 'selectedDimensions');
+  @computed('selectedTimeGrain', 'selectedDimensions')
+  get selectedColumns() {
+    if (this.selectedTimeGrain === 'all') {
+      return this.selectedDimensions;
     } else {
-      return arr([get(this, 'selectedTimeGrain'), ...get(this, 'selectedDimensions')]).uniq();
+      return arr([this.selectedTimeGrain, ...this.selectedDimensions]).uniq();
     }
-  }),
+  }
 
   /*
    * @property {Object} itemsChecked - item -> boolean map to denote if item should be checked
    */
-  itemsChecked: computed('selectedColumns', function() {
+  @computed('selectedColumns')
+  get itemsChecked() {
     return get(this, 'selectedColumns').reduce((items, item) => {
-      items[get(item, 'name')] = true;
+      items[get(item, 'id')] = true;
       return items;
     }, {});
-  }),
+  }
 
   /*
    * @property {Object} dimensionsFiltered - dimension -> boolean mapping denoting presence of dimension
    *                                         in request filters
    */
-  dimensionsFiltered: computed('request.filters.[]', function() {
+  @computed('request.filters.[]')
+  get dimensionsFiltered() {
     return get(this, 'request.filters')
-      .mapBy('dimension.name')
+      .mapBy('dimension.id')
       .reduce((list, dimension) => {
         list[dimension] = true;
         return list;
       }, {});
-  }),
+  }
 
-  actions: {
+  actions = {
     /*
      * @action itemClicked
      * @param {Object} item
@@ -127,14 +135,11 @@ export default Component.extend({
     itemClicked(item) {
       const type = item.category === 'Time Grain' ? 'TimeGrain' : 'Dimension',
         enableRequestPreview = featureFlag('enableRequestPreview'),
-        action =
-          (enableRequestPreview && type === 'Dimension') || !get(this, 'itemsChecked')[get(item, 'name')]
-            ? 'Add'
-            : 'Remove';
+        action = (enableRequestPreview && type === 'Dimension') || !this.itemsChecked[item.id] ? 'Add' : 'Remove';
 
       const handler = this[`on${action}${type}`];
 
       if (handler) handler(item);
     }
-  }
-});
+  };
+}
