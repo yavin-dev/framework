@@ -231,7 +231,7 @@ const Payload = {
       metricIds: ['metricOne', 'metricTwo'],
       dimensionIds: ['dimensionOne', 'dimensionTwo'],
       timeDimensionIds: ['dimensionThree'],
-      timeGrains: ['day', 'month'],
+      timeGrainIds: ['day', 'month'],
       cardinalitySize: 'MEDIUM'
     },
     {
@@ -244,7 +244,7 @@ const Payload = {
       dimensionIds: ['dimensionTwo'],
       timeDimensionIds: ['dimensionThree'],
       cardinalitySize: 'MEDIUM',
-      timeGrains: ['day', 'week']
+      timeGrainIds: ['day', 'week']
     }
   ],
   Dimensions = [
@@ -536,7 +536,7 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
           metricIds: ['metricOne', 'metricTwo'],
           dimensionIds: ['dimensionOne'],
           timeDimensionIds: [],
-          timeGrains: ['day', 'month'],
+          timeGrainIds: ['day', 'month'],
           cardinalitySize: 'SMALL'
         }
       ],

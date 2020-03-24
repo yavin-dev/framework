@@ -96,7 +96,19 @@ export default class Table extends EmberObject {
   source;
 
   /**
-   * @property {String[]} timegrains - supported timegrains for a column
+   * @property {String[]} timeGrainIds - supported timegrains for a column
    */
-  timegrains = [];
+  timeGrainIds = [];
+
+  /**
+   * @property {Object[]} timeGrains - timeGrain objects with id and display name
+   */
+  get timeGrains() {
+    return this.timeGrainIds.map(grain => {
+      return {
+        id: grain,
+        name: `${grain.substr(0, 1).toUpperCase()}${grain.substr(1)}`
+      };
+    });
+  }
 }

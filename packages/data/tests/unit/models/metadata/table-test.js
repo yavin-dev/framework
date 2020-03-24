@@ -18,7 +18,7 @@ module('Unit | Metadata Model | Table', function(hooks) {
       metricIds: ['pv'],
       dimensionIds: ['age'],
       timeDimensionIds: ['orderDate'],
-      timeGrains: ['day', 'month', 'week'],
+      timeGrainIds: ['day', 'month', 'week'],
       source: 'dummy',
       tags: ['DISPLAY']
     };
@@ -84,7 +84,7 @@ module('Unit | Metadata Model | Table', function(hooks) {
       dimensionIds,
       timeDimensionIds,
       source,
-      timeGrains,
+      timeGrainIds,
       tags
     } = Model;
 
@@ -98,7 +98,7 @@ module('Unit | Metadata Model | Table', function(hooks) {
     assert.deepEqual(timeDimensionIds, Payload.timeDimensionIds, 'timeDimensionIds property is hydrated properly');
     assert.equal(source, Payload.source, 'source property is hydrated properly');
     assert.deepEqual(tags, Payload.tags, 'tags property is hydrated properly');
-    assert.deepEqual(timeGrains, Payload.timeGrains);
+    assert.deepEqual(timeGrainIds, Payload.timeGrainIds);
   });
 
   test('Metric in Table', function(assert) {

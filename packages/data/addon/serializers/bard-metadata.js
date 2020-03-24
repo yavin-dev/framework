@@ -100,7 +100,7 @@ export default class BardMetadataSerializer extends EmberObject {
           description: table.description,
           category: table.category,
           cardinalitySize: allTableColumns.tableCardinality,
-          timeGrains: table.timeGrains.map(grain => grain.name),
+          timeGrainIds: table.timeGrains.map(grain => grain.name),
           source,
           metricIds: [...allTableColumns.tableMetricIds],
           dimensionIds: [...allTableColumns.tableDimensionIds],
