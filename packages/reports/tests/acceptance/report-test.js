@@ -1553,7 +1553,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     dimensionItem = await getItem('dimension', 'Operating System');
 
-    assert.ok(dimensionItem.item.querySelector('.fa-plus-circle'), 'Removed dimension row has a plus icon again');
+    assert.ok(dimensionItem.item.querySelector('.fa-plus-circle'), 'Removed dimension row has a plus icon');
 
     config.navi.FEATURES.enableRequestPreview = true;
 
@@ -1674,7 +1674,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     metricItem = await getItem('metric', 'Total Clicks');
 
-    assert.ok(metricItem.item.querySelector('.fa-plus-circle'), 'Removed metric row has a plus icon again');
+    assert.ok(metricItem.item.querySelector('.fa-plus-circle'), 'Removed metric row has a plus icon');
 
     config.navi.FEATURES.enableRequestPreview = true;
 
