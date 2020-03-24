@@ -1,11 +1,11 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Service from '@ember/service';
 import ReplaceNull from 'navi-data/request-decorators/replace-null';
 
-export default Service.extend({
+export default class RequestDecoratorService extends Service {
   /**
    * @method applyGlobalDecorators
    * @param {Object} request - object to modify
@@ -14,4 +14,4 @@ export default Service.extend({
   applyGlobalDecorators(request) {
     return ReplaceNull.replaceNullFilter(request);
   }
-});
+}

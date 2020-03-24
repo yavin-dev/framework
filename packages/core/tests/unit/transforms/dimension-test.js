@@ -15,7 +15,7 @@ module('Unit | Transform | Dimension', function(hooks) {
   });
 
   test('serialize and deserialize', async function(assert) {
-    assert.expect(2);
+    assert.expect(3);
 
     await settled();
     let transform = this.owner.lookup('transform:dimension'),
@@ -24,6 +24,8 @@ module('Unit | Transform | Dimension', function(hooks) {
     assert.equal(transform.serialize(dim), 'os', 'Dimension is serialized to the name');
 
     assert.equal(transform.deserialize('os'), dim, 'Dimension is deserialized to the right object');
+
+    assert.equal(transform.deserialize('dummy.os'), dim, 'Dimension with namespace is deserialized to right object');
   });
 
   test('Do not cause crash when metadata is not available', function(assert) {

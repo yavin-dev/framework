@@ -33,7 +33,11 @@ module.exports = function(environment) {
     navi: {
       user: 'navi_user',
       defaultTimeGrain: 'day',
-      dataSources: [{ name: 'dummy', uri: 'https://data.naviapp.io', type: 'bard-facts' }],
+      defaultDataTable: 'network',
+      dataSources: [
+        { name: 'dummy', uri: 'https://data.naviapp.io', type: 'bard-facts' },
+        { name: 'blockhead', uri: 'https://data2.naviapp.io', type: 'bard-facts' }
+      ],
       appPersistence: {
         type: 'webservice',
         uri: 'https://persistence.naviapp.io',

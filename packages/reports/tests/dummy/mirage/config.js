@@ -15,6 +15,10 @@ export default function() {
   BardLite.call(this);
   BardMeta.call(this);
 
+  this.urlPrefix = `${config.navi.dataSources[1].uri}/v1`;
+  BardLite.call(this);
+  BardMeta.call(this);
+
   // Mock persistence
   this.urlPrefix = config.navi.appPersistence.uri;
   UserWS.call(this);
