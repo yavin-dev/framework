@@ -5,6 +5,7 @@ import hbs from 'htmlbars-inline-precompile';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import { clickTrigger, nativeMouseUp } from 'ember-power-select/test-support/helpers';
 import AgeValues from 'navi-data/mirage/bard-lite/dimensions/age';
+import ContainerValues from 'navi-data/mirage/bard-lite/dimensions/container';
 import config from 'ember-get-config';
 import $ from 'jquery';
 import { set } from '@ember/object';
@@ -76,7 +77,7 @@ module('Integration | Component | filter values/dimension select', function(hook
 
     const datasourceFilter = {
       subject: {
-        name: 'age',
+        name: 'container',
         storageStrategy: 'loaded',
         primaryKeyFieldName: 'id',
         source: 'blockhead'
@@ -95,16 +96,16 @@ module('Integration | Component | filter values/dimension select', function(hook
     let selectedValueText = findAll('.ember-power-select-multiple-option span:nth-of-type(2)').map(el =>
         el.textContent.trim()
       ),
-      expectedValueDimensions = AgeValues.filter(age => MockFilter.values.includes(age.id));
+      expectedValueDimensions = ContainerValues.filter(container => MockFilter.values.includes(container.id));
 
     assert.deepEqual(
       selectedValueText,
-      expectedValueDimensions.map(age => `${age.description} (${age.id})`),
+      expectedValueDimensions.map(container => `${container.description} (${container.id})`),
       'Filter value ids are converted into full dimension objects and displayed as selected'
     );
 
     let optionText = findAll('.ember-power-select-option').map(el => el.textContent.trim()),
-      expectedOptionText = AgeValues.map(age => `${age.description} (${age.id})`);
+      expectedOptionText = ContainerValues.map(container => `${container.description} (${container.id})`);
 
     /*
      * Since ember-collection is used for rendering the dropdown options,
@@ -121,7 +122,7 @@ module('Integration | Component | filter values/dimension select', function(hook
 
     this.set('isCollapsed', true);
 
-    assert.dom().hasText('under 13 (1) 13-17 (2) 18-20 (3)', 'Selected values are rendered correctly when collapsed');
+    assert.dom().hasText('Bag (1) Bank (2) Saddle Bag (3)', 'Selected values are rendered correctly when collapsed');
   });
 
   test('no values', async function(assert) {

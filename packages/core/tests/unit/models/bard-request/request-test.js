@@ -23,7 +23,10 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
 
     MetadataService = this.owner.lookup('service:bard-metadata');
 
-    await MetadataService.loadMetadata().then(() => {
+    await Promise.all([
+      MetadataService.loadMetadata(),
+      MetadataService.loadMetadata({ dataSourceName: 'blockhead' })
+    ]).then(() => {
       run(() => {
         Store.pushPayload({
           data: [
@@ -90,7 +93,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
                     table: 'network',
                     timeGrain: 'day'
                   },
-                  dataSource: 'blockhead',
+                  dataSource: 'dummy',
                   metrics: [
                     {
                       metric: 'uniqueIdentifier',
@@ -341,7 +344,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
       'The property having is set with correct parameters'
     );
 
-    assert.equal(request.dataSource, 'blockhead', 'datasource was cloned correctly');
+    assert.equal(request.dataSource, 'dummy', 'datasource was cloned correctly');
   });
 
   // Test that navi supports legacy saved reports without a sort field

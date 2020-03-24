@@ -47,7 +47,8 @@ export default Route.extend({
       requestOptions = merge({}, get(this, 'requestOptions'), {
         customHeaders: {
           uiView: `report.spv.${get(report, 'id')}`
-        }
+        },
+        dataSourceName: request.dataSource
       });
 
     // Wrap the response in a promise object so we can manually handle loading spinners

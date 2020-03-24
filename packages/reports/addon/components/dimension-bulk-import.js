@@ -114,24 +114,32 @@ class DimensionBulkImportComponent extends Component {
     }
 
     const splitValuesPromise = get(this, '_dimensionService')
-      .find(get(this, 'dimension.name'), [
-        {
-          values: get(this, '_trimmedQueryIds'),
-          field: get(this, 'searchableIdField')
-        }
-      ])
+      .find(
+        this.dimension?.name,
+        [
+          {
+            values: get(this, '_trimmedQueryIds'),
+            field: get(this, 'searchableIdField')
+          }
+        ],
+        { dataSourceName: this.dimension?.source }
+      )
       .then(dimValues => {
         set(this, '_validDimValues', dimValues.toArray());
       });
 
     set(this, '_validRawInputDimValue', undefined);
     const rawInputPromise = get(this, '_dimensionService')
-      .find(get(this, 'dimension.name'), [
-        {
-          field: get(this, 'searchableIdField'),
-          values: [this.rawQuery]
-        }
-      ])
+      .find(
+        this.dimension?.name,
+        [
+          {
+            field: get(this, 'searchableIdField'),
+            values: [this.rawQuery]
+          }
+        ],
+        { dataSourceName: this.dimension?.source }
+      )
       .then(dimValue => set(this, '_validRawInputDimValue', dimValue.toArray()));
 
     //set loading promise
@@ -149,7 +157,7 @@ class DimensionBulkImportComponent extends Component {
    */
   @computed('dimension.name')
   get searchableIdField() {
-    const meta = this._bardMetadata.getById('dimension', get(this, 'dimension.name'));
+    const meta = this._bardMetadata.getById('dimension', this.dimension?.name, this.dimension?.source);
     return get(meta, 'idFieldName');
   }
 

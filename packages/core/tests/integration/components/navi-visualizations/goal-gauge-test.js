@@ -51,8 +51,8 @@ module('Integration | Component | goal gauge ', function(hooks) {
     metaData._keg.reset();
     await metaData.loadMetadata({ dataSourceName: 'blockhead' });
 
-    _setModel(this, 'pageViews', 3030000000, 'blockhead');
-    set(this, 'metric', { metric: 'pageViews', paramters: {} });
+    _setModel(this, 'available', 3030000000, 'blockhead');
+    set(this, 'metric', { metric: 'available', parameters: {} });
     await render(hbs`
     <NaviVisualizations::GoalGauge
         @model={{this.model}}
@@ -64,7 +64,7 @@ module('Integration | Component | goal gauge ', function(hooks) {
       />
     `);
 
-    assert.dom('.metric-title').hasText('Page Views', 'the default metric title is correctly displayed');
+    assert.dom('.metric-title').hasText('How many are available', 'the default metric title is correctly displayed');
     metaData._keg.reset();
   });
 

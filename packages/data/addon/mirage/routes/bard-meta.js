@@ -7,6 +7,7 @@ import { faker } from 'ember-cli-mirage';
 
 //metadata
 import tableModels from '../fixtures/bard-meta-tables';
+import blockheadTableModels from '../fixtures/bard-meta-blockhead-tables';
 import timeGrainModels from '../fixtures/bard-meta-time-grains';
 import dimModels from '../fixtures/bard-meta-dimensions';
 import metricModels from '../fixtures/bard-meta-metrics';
@@ -19,23 +20,26 @@ export default function() {
    * /tables endpoint
    */
   this.get('/tables', function(db, req) {
-    let tables = tableModels;
+    let isBlockhead = req.url.startsWith('https://data2');
+    let tables = isBlockhead ? blockheadTableModels : tableModels;
 
     if (req.queryParams.format === 'fullview') {
       tables = tables.map(table => {
         let timeGrains = timeGrainModels.map(timeGrain => {
-          let tableDimModels = dimModels.defaultDims;
+          let tableDimModels = isBlockhead ? dimModels.blockheadDims : dimModels.defaultDims;
 
           if (table.name !== 'network') {
             tableDimModels = tableDimModels.concat(dimModels.highCardinalityDims);
           }
 
           if (timeGrain.name === 'day') {
-            let defaultMetricModels = metricModels.defaultMetrics;
+            let defaultMetricModels = isBlockhead ? metricModels.blockheadMetrics : metricModels.defaultMetrics;
 
             return Object.assign({}, timeGrain, { metrics: defaultMetricModels }, { dimensions: tableDimModels });
           } else {
-            let metricsWithDayAvg = metricModels.defaultMetrics.concat(metricModels.dayAvgMetrics);
+            let metricsWithDayAvg = isBlockhead
+              ? metricModels.blockheadMetrics
+              : metricModels.defaultMetrics.concat(metricModels.dayAvgMetrics);
 
             return Object.assign({}, timeGrain, { metrics: metricsWithDayAvg }, { dimensions: tableDimModels });
           }

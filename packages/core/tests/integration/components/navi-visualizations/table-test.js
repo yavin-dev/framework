@@ -1,7 +1,7 @@
 import config from 'ember-get-config';
 import { set } from '@ember/object';
 import { A as arr } from '@ember/array';
-import { merge, cloneDeep } from 'lodash-es';
+import { merge } from 'lodash-es';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, settled, click, find, findAll } from '@ember/test-helpers';
@@ -190,11 +190,87 @@ module('Integration | Component | table', function(hooks) {
 
   test('render alternative datasource', async function(assert) {
     assert.expect(2);
-    MetadataService._keg.reset();
-    await MetadataService.loadMetadata({ dataSourceName: 'blockhead' });
-    const blockheadModel = cloneDeep(Model[0]);
-    blockheadModel.request.dataSource = 'blockhead';
-    this.set('model', arr([blockheadModel]));
+    const bardMeta = this.owner.lookup('service:bard-metadata');
+    bardMeta._keg.reset();
+    await bardMeta.loadMetadata({ dataSourceName: 'blockhead' });
+    const model = arr([
+      {
+        request: {
+          dimensions: [{ dimension: 'container' }],
+          metrics: [
+            { metric: 'ownedQuantity', parameters: {} },
+            { metric: 'usedAmount', parameters: {} },
+            { metric: 'personalSold', parameters: { as: 'm1' } }
+          ],
+          sort: [{ metric: 'm1', direction: 'desc' }, { metric: 'usedAmount', direction: 'asc' }],
+          logicalTable: {
+            table: 'inventory',
+            timeGrain: {
+              name: 'day'
+            }
+          },
+          dataSource: 'blockhead'
+        },
+        response: {
+          rows: [
+            {
+              dateTime: '2016-05-30 00:00:00.000',
+              'container|id': '1',
+              'container|desc': 'Bag',
+              ownedQuantity: 172933788,
+              usedAmount: 3669828357
+            },
+            {
+              dateTime: '2016-06-10 00:00:00.000',
+              'container|id': '1',
+              'container|desc': 'Bag',
+              ownedQuantity: 172933788,
+              usedAmount: 3669828357
+            },
+            {
+              dateTime: '2016-05-30 00:00:00.000',
+              'container|id': '2',
+              'os|desc': 'Bank',
+              ownedQuantity: 183206656,
+              usedAmount: 4088487125
+            }
+          ]
+        }
+      }
+    ]);
+
+    const options = {
+      columns: [
+        {
+          attributes: { name: 'dateTime' },
+          type: 'dateTime',
+          displayName: 'Date'
+        },
+        {
+          attributes: { name: 'container' },
+          type: 'dimension',
+          displayName: 'Container'
+        },
+        {
+          attributes: { name: 'ownedQuantity', parameters: {} },
+          type: 'metric',
+          displayName: 'Quantity Owned'
+        },
+        {
+          attributes: { name: 'usedAmount', parameters: {} },
+          type: 'metric',
+          displayName: 'Amount Used'
+        },
+        {
+          attributes: { name: 'personalSold', parameters: {} },
+          type: 'metric',
+          displayName: 'Amount personally sold'
+        }
+      ]
+    };
+
+    this.set('model', model);
+    this.set('options', options);
 
     await render(TEMPLATE);
 
@@ -204,7 +280,7 @@ module('Integration | Component | table', function(hooks) {
 
     assert.deepEqual(
       headers,
-      ['Date', 'Operating System', 'Unique Identifiers', 'Total Page Views', 'Platform Revenue (USD)'],
+      ['Date', 'Container', 'Quantity Owned', 'Amount Used', 'Amount personally sold'],
       'The table renders the headers correctly based on the request'
     );
   });
