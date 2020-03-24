@@ -1,27 +1,46 @@
-{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{#navi-info-message classNames="navi-report-invalid__info-message"}}
-  {{#with (get (model-for (parent-route)) "request.validations") as |validations|}}
-    {{#if validations.isTruelyValid}}
-      <span>
-        {{navi-icon "check-square-o"}}
-      </span>
-      <p>
-        Lookin' good. We're ready to
-        {{#link-to (sibling-route "view") class="navi-link info-message__run-link"}}run{{/link-to}}.
-      </p>
-    {{else}}
-      <span>
-        {{navi-icon "ambulance"}}
-      </span>
-      <p>Whoa! We can't run this query. Let's figure out what went wrong.</p>
-      <ul class="navi-info-message__error-list">
-        {{#each validations.messages as |message|}}
-          <li class="navi-info-message__error-list-item">
-            {{navi-icon "times" class="navi-info-message__error-list-icon"}}
-            {{message}}
-          </li>
-        {{/each}}
-      </ul>
-    {{/if}}
-  {{/with}}
-{{/navi-info-message}}
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{#let (model-for (parent-route)) as | report |}}
+  {{#if (feature-flag "enableRequestPreview")}}
+    <NaviColumnConfig
+      @isOpen={{true}}
+      @report={{report}}
+      @openFilters={{route-action "openFilters"}}
+      @onRemoveDateTime={{update-report-action "REMOVE_TIME_GRAIN"}}
+      @onRemoveDimension={{update-report-action "REMOVE_DIMENSION_FRAGMENT"}}
+      @onRemoveMetric={{update-report-action "REMOVE_METRIC_FRAGMENT"}}
+      @onAddDimension={{update-report-action "ADD_DIMENSION"}}
+      @onAddMetric={{update-report-action "ADD_METRIC"}}
+      @onAddMetricWithParameter={{update-report-action "ADD_METRIC_WITH_PARAM"}}
+      @onToggleDimFilter={{update-report-action "TOGGLE_DIM_FILTER"}}
+      @onToggleMetricFilter={{update-report-action "TOGGLE_METRIC_FILTER"}}
+      @onToggleParameterizedMetricFilter={{update-report-action "TOGGLE_PARAMETERIZED_METRIC_FILTER"}}
+    />
+  {{/if}}
+  <NaviInfoMessage class="navi-report-invalid__info-message">
+    {{#let (get report "request.validations") as |validations|}}
+      {{#if validations.isTruelyValid}}
+        <span>
+          <NaviIcon @icon="check-square-o" />
+        </span>
+        <p>
+          Lookin' good. We're ready to
+          <LinkTo @route={{sibling-route "view"}} class="navi-link info-message__run-link">run</LinkTo>.
+        </p>
+      {{else}}
+        <span>
+          <NaviIcon @icon="ambulance" />
+        </span>
+        <p>Whoa! We can't run this query. Let's figure out what went wrong.</p>
+        <ul class="navi-info-message__error-list">
+          {{#each validations.messages as |message|}}
+            <li class="navi-info-message__error-list-item">
+              <NaviIcon @icon="times" class="navi-info-message__error-list-icon" />
+              {{message}}
+            </li>
+          {{/each}}
+        </ul>
+      {{/if}}
+    {{/let}}
+  </NaviInfoMessage>
+{{/let}}
+
