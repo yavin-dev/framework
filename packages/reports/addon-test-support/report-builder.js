@@ -7,6 +7,7 @@ import { getVerticalCollection, renderAllItems } from './vertical-collection';
 const groupedList = '.grouped-list';
 const groupedListItemFilter = `${groupedList}__filter`; // dimension/metric row filter button
 const groupedListItem = `${groupedList}__item`; // dimension/metric row
+const groupedListItemSelected = `${groupedListItem}-container--selected`; // selected dimension/metric row (feature flagged)
 const groupedListItemLabel = `${groupedListItem}-label`; // add button
 const groupedListItemCheckbox = `${groupedListItem}-checkbox`; // add button
 const naviListSelector = '.navi-list-selector';
@@ -182,7 +183,12 @@ export async function getAllSelected(type, query) {
   const resetRenderAll = await renderAll(type, query);
 
   const selected = findAll(`${getSelector(type)} ${groupedListItem}`)
-    .filter(el => el.querySelector('.fa-minus-circle') || el.querySelector('input:checked'))
+    .filter(
+      el =>
+        el.querySelector('.fa-minus-circle') ||
+        el.querySelector(groupedListItemSelected) ||
+        el.querySelector('input:checked')
+    )
     .map(el => el.textContent.trim());
 
   await resetRenderAll();
