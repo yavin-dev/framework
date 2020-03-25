@@ -31,7 +31,7 @@ module('Integration | Component | navi-column-config/base', function(hooks) {
       name: 'property',
       type: 'dimension',
       displayName: 'Property',
-      fragment: { dimension: { name: 'Property' } }
+      fragment: { dimension: { id: 'property', name: 'Property' } }
     };
     this.cloneColumn = () => assert.ok(true, 'cloneColumn is called when clone is clicked');
     this.toggleColumnFilter = () => assert.ok(true, 'toggleColumnFilter is called when filter is clicked');
@@ -40,7 +40,9 @@ module('Integration | Component | navi-column-config/base', function(hooks) {
 
     await render(TEMPLATE);
 
-    assert.dom('input').hasValue('Property', "Column Name field has value of column's display name");
+    assert
+      .dom('input.navi-column-config-base__column-name-input')
+      .hasValue('Property', "Column Name field has value of column's display name");
     await fillIn('input', 'Some other value');
     await triggerKeyEvent('input', 'keyup', 13);
 

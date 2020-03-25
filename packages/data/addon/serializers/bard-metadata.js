@@ -128,8 +128,16 @@ export default class BardMetadataSerializer extends EmberObject {
   _getMetricFunction(metricFunctions, functionArgs, source) {
     //Check for an existing metric function in the set
     for (const func of metricFunctions) {
-      const metricFunctionArgumentIds = func.arguments.map(metricFunctionArg => metricFunctionArg.id).join(',');
-      if (functionArgs.map(arg => arg.id).join(',') === metricFunctionArgumentIds) {
+      const metricFunctionArgumentIds = func.arguments
+        .map(metricFunctionArg => metricFunctionArg.id)
+        .sort()
+        .join(',');
+      if (
+        functionArgs
+          .map(arg => arg.id)
+          .sort()
+          .join(',') === metricFunctionArgumentIds
+      ) {
         return func;
       }
     }

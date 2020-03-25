@@ -41,10 +41,12 @@
 
         <NaviIcon @icon="question-circle-o" class="grouped-list__item-info">
           <EmberTooltip @side="right" @popperContainer="body" @effect="none">
-            {{#if item.extended.isPending}}
+            {{#if (is-pending item.extended)}}
               {{navi-loading-message}}
             {{else}}
-              {{or item.extended.content.description "No description available"}}
+              {{#let (await item.extended) as |extended|}}
+                {{or extended.description "No description available"}}
+              {{/let}}
             {{/if}}
           </EmberTooltip>
         </NaviIcon>

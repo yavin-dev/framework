@@ -12,9 +12,11 @@ import { set } from '@ember/object';
 
 const MockFilter = {
   subject: {
-    name: 'age',
+    id: 'age',
+    name: 'Age',
     storageStrategy: 'loaded',
-    primaryKeyFieldName: 'id'
+    primaryKeyFieldName: 'id',
+    source: 'dummy'
   },
   values: ['1', '2', '3'],
   validations: {}
@@ -77,7 +79,7 @@ module('Integration | Component | filter values/dimension select', function(hook
 
     const datasourceFilter = {
       subject: {
-        name: 'container',
+        id: 'age',
         storageStrategy: 'loaded',
         primaryKeyFieldName: 'id',
         source: 'blockhead'
@@ -137,7 +139,7 @@ module('Integration | Component | filter values/dimension select', function(hook
     });
 
     this.filter = {
-      subject: { name: 'age', longName: 'Age' },
+      subject: { id: 'age', name: 'Age' },
       values: []
     };
 
@@ -186,7 +188,7 @@ module('Integration | Component | filter values/dimension select', function(hook
     assert.expect(1);
     this.filter = {
       subject: {
-        name: 'multiSystemId',
+        id: 'multiSystemId',
         storageStrategy: 'loaded',
         primaryKeyFieldName: 'key'
       },

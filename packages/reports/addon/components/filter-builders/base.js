@@ -21,9 +21,9 @@ export default Component.extend({
   /**
    * @property {Object} filter
    * @property {Object} filter.subject
-   * @property {String} filter.subject.longName - display name for the filter subject
+   * @property {String} filter.subject.name - display name for the filter subject
    * @property {Object} filter.operator - object with the same shape as the objects in `supportedOperators` property
-   * @property {String} filter.operator.longName - display name for operator
+   * @property {String} filter.operator.name - display name for operator
    * @property {String} filter.operator.valuesComponent - name of component to use for selecting filter values
    * @property {Array} filter.values
    */

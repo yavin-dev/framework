@@ -84,7 +84,7 @@ module('Integration | Component | report view', function(hooks) {
         request: store.createFragment('bard-request/request', {
           logicalTable: store.createFragment('bard-request/fragments/logicalTable', {
             table: metadataService.getById('table', 'tableA'),
-            timeGrainName: 'day'
+            timeGrain: 'day'
           }),
           responseFormat: 'csv',
           intervals: A([{ interval: new Interval('current', 'next') }])
@@ -121,7 +121,7 @@ module('Integration | Component | report view', function(hooks) {
     this.set('report.request', {
       logicalTable: {
         table: 'network',
-        timeGrain: { name: 'day' }
+        timeGrain: 'day'
       },
       metrics: [{ metric: 'adClicks' }],
       dimensions: [],

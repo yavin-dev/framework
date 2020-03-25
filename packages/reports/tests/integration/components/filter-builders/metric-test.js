@@ -30,7 +30,7 @@ module('Integration | Component | filter-builders/metric', function(hooks) {
     //check display name for metric with params
     const filter = {
       subject: {
-        metric: { longName: 'metric-with-params' },
+        metric: { name: 'metric-with-params' },
         parameters: {
           foo: 'bar',
           bar: 'baz'
@@ -38,7 +38,7 @@ module('Integration | Component | filter-builders/metric', function(hooks) {
       },
       operator: {
         id: 'in',
-        longName: 'Equals',
+        name: 'Equals',
         valuesComponent: 'mock/values-component'
       },
       values: [1, 2, 3]
@@ -64,12 +64,12 @@ module('Integration | Component | filter-builders/metric', function(hooks) {
     //check display name for metric without params
     const filter = {
       subject: {
-        metric: { longName: 'metric-without-params' },
+        metric: { name: 'metric-without-params' },
         parameters: {}
       },
       operator: {
         id: 'in',
-        longName: 'Equals',
+        name: 'Equals',
         valuesComponent: 'mock/values-component'
       },
       values: [1, 2, 3]

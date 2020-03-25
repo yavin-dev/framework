@@ -87,8 +87,8 @@ module('Unit | Service | metric parameter', function(hooks) {
 
     let service = this.owner.lookup('service:metric-parameter'),
       parameter = {
-        type: 'dimension',
-        dimensionName: 'dimensionOne'
+        type: 'ref',
+        expression: 'dimension:dimensionOne'
       };
 
     return service.fetchAllValues(parameter).then(res => {
@@ -101,8 +101,8 @@ module('Unit | Service | metric parameter', function(hooks) {
 
     let service = this.owner.lookup('service:metric-parameter'),
       invalidParameter = {
-        type: 'invalidType',
-        dimensionName: 'dimensionOne'
+        type: 'ref',
+        expression: 'invalidType:dimensionOne'
       };
 
     assert.throws(
@@ -115,8 +115,9 @@ module('Unit | Service | metric parameter', function(hooks) {
   test('fetchAllValues - enum type', async function(assert) {
     let service = this.owner.lookup('service:metric-parameter'),
       parameter = {
-        type: 'enum',
-        values: [{ id: 1, description: 'One' }, { id: 2, description: 'Two' }]
+        type: 'ref',
+        expression: 'self',
+        _localValues: [{ id: 1, description: 'One' }, { id: 2, description: 'Two' }]
       };
 
     const results = await service.fetchAllValues(parameter);
@@ -133,14 +134,16 @@ module('Unit | Service | metric parameter', function(hooks) {
 
     const service = this.owner.lookup('service:metric-parameter'),
       metricMeta = {
-        parameters: [
+        arguments: [
           {
-            type: 'dimension',
-            dimensionName: 'dimensionOne'
+            id: 'arg0',
+            type: 'ref',
+            expression: 'dimension:dimensionOne'
           },
           {
-            type: 'dimension',
-            dimensionName: 'dimensionThree'
+            id: 'arg1',
+            type: 'ref',
+            expression: 'dimension:dimensionThree'
           }
         ]
       };
@@ -159,8 +162,8 @@ module('Unit | Service | metric parameter', function(hooks) {
     assert.deepEqual(
       results,
       {
-        0: Rows,
-        1: OtherRows
+        arg0: Rows,
+        arg1: OtherRows
       },
       'All Values for each metric parameter is returned'
     );

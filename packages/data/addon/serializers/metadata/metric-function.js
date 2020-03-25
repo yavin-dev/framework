@@ -47,7 +47,7 @@ export default class MetricFunctionSerializer extends EmberObject {
         description,
         source
       };
-      if (func.arguments) {
+      if (args) {
         normalizedFunc.arguments = constructFunctionArguments(args);
       }
       return normalizedFunc;

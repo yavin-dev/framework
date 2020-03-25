@@ -12,7 +12,7 @@ import { get } from '@ember/object';
  * @returns {Array} - array of selected metrics of given meta type
  */
 export function getSelectedMetricsOfBase(metricMeta, request) {
-  return arr(get(request, 'metrics')).filterBy('metric.name', get(metricMeta, 'name'));
+  return arr(get(request, 'metrics')).filterBy('metric.id', get(metricMeta, 'id'));
 }
 
 /**
@@ -22,7 +22,7 @@ export function getSelectedMetricsOfBase(metricMeta, request) {
  * @returns {Array} - array of filtered metrics of given meta type
  */
 export function getFilteredMetricsOfBase(metricMeta, request) {
-  return arr(get(request, 'having')).filterBy('metric.metric.name', get(metricMeta, 'name'));
+  return arr(get(request, 'having')).filterBy('metric.metric.id', get(metricMeta, 'id'));
 }
 
 /**

@@ -9,7 +9,7 @@ module('Unit | Component | filter-builders/dimension', function(hooks) {
     assert.expect(3);
 
     const mockFilterFragment = {
-      dimension: { longName: 'age' },
+      dimension: { name: 'age' },
       operator: 'notnull',
       rawValues: [1, 2, 3]
     };

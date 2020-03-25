@@ -1,4 +1,3 @@
-import { set } from '@ember/object';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import $ from 'jquery';
@@ -50,7 +49,7 @@ module('Integration | Component | dimension selector', function(hooks) {
         Store.createFragment('bard-request/request', {
           logicalTable: Store.createFragment('bard-request/fragments/logicalTable', {
             table: MetadataService.getById('table', 'tableA'),
-            timeGrainName: 'day'
+            timeGrain: 'day'
           }),
           dimensions: [{ dimension: Age }],
           filters: [{ dimension: Age }],
@@ -74,7 +73,7 @@ module('Integration | Component | dimension selector', function(hooks) {
     assert.dom('.grouped-list').exists('a grouped-list component is rendered as part of the dimension selector');
   });
 
-  test('groups', function(assert) {
+  test('groups', async function(assert) {
     assert.expect(2);
 
     let groups = findAll('.grouped-list__group-header').map(el => el.textContent.trim());
@@ -142,11 +141,11 @@ module('Integration | Component | dimension selector', function(hooks) {
     config.navi.FEATURES.enableRequestPreview = false;
 
     this.set('addTimeGrain', item => {
-      assert.equal(item.get('name'), 'week', 'the week time grain item is passed as a param to the action');
+      assert.equal(item.id, 'week', 'the week time grain item is passed as a param to the action');
     });
 
     this.set('removeTimeGrain', item => {
-      assert.equal(item.get('name'), 'day', 'the day time grain item is passed as a param to the action');
+      assert.equal(item.id, 'day', 'the day time grain item is passed as a param to the action');
     });
 
     //select first time grain
@@ -180,19 +179,11 @@ module('Integration | Component | dimension selector', function(hooks) {
     config.navi.FEATURES.enableRequestPreview = false;
 
     this.set('addDimension', item => {
-      assert.equal(
-        item.get('longName'),
-        'Gender',
-        'the gender dimension item is passed as a param to the action for addition'
-      );
+      assert.equal(item.name, 'Gender', 'the gender dimension item is passed as a param to the action for addition');
     });
 
     this.set('removeDimension', item => {
-      assert.equal(
-        item.get('longName'),
-        'Age',
-        'the Age dimension item is passed as a param to the action for removal'
-      );
+      assert.equal(item.name, 'Age', 'the Age dimension item is passed as a param to the action for removal');
     });
 
     //select a random dimension
@@ -257,10 +248,18 @@ module('Integration | Component | dimension selector', function(hooks) {
   test('tooltip', async function(assert) {
     assert.expect(3);
 
-    assertTooltipNotRendered(assert);
-    set(Age, 'extended', {
-      content: { description: 'foo' }
+    this.server.get(`${config.navi.dataSources[0].uri}/v1/dimensions/age`, function() {
+      return {
+        name: 'age',
+        longName: 'Age',
+        cardinality: 100,
+        category: 'test',
+        datatype: 'text',
+        storageStrategy: 'loaded',
+        description: 'foo'
+      };
     });
+    assertTooltipNotRendered(assert);
 
     await click($('.grouped-list__group-header:contains(test)')[0]);
     // triggerTooltipTargetEvent will not work for hidden element

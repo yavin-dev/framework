@@ -32,8 +32,11 @@ export default class DimensionSelector extends Component {
   /*
    * @property {Array} allDimensions
    */
-  @readOnly('request.logicalTable.table.dimensions')
-  allDimensions;
+  @computed('request.logicalTable.table.{dimensions,timeDimensions}')
+  get allDimensions() {
+    const { dimensions, timeDimensions } = this.request.logicalTable.table;
+    return [...dimensions, ...timeDimensions];
+  }
 
   /*
    * @property {Array} timeGrains - copy of all time grains for the logical table selected
@@ -79,8 +82,17 @@ export default class DimensionSelector extends Component {
   /*
    * @property {Object} selectedTimeGrain - timeGrain in the request
    */
-  @readOnly('request.logicalTable.timeGrain')
-  selectedTimeGrain;
+  @computed('request.logicalTable.timeGrain', 'allTimeGrains')
+  get selectedTimeGrain() {
+    const {
+      allTimeGrains,
+      request: {
+        logicalTable: { timeGrain }
+      }
+    } = this;
+
+    return allTimeGrains.find(grain => grain.id === timeGrain);
+  }
 
   /*
    * @property {Object} selectedColumnsAndFilters - combination of selectedColumns and SelectedFilters

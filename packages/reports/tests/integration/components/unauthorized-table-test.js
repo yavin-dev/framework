@@ -13,7 +13,7 @@ module('Integration | Component | unauthorized table', function(hooks) {
       request: {
         logicalTable: {
           table: {
-            longName: 'Protected Table'
+            name: 'Protected Table'
           }
         }
       }

@@ -8,31 +8,31 @@ import hbs from 'htmlbars-inline-precompile';
 
 const filter = {
   subject: {
-    longName: 'Device Type'
+    name: 'Device Type'
   },
   operator: {
     id: 'in',
-    longName: 'Equals',
+    name: 'Equals',
     valuesComponent: 'mock/values-component'
   },
   values: [1, 2, 3]
 };
 
 const supportedOperators = [
-  { id: 'in', longName: 'Equals', valuesComponent: 'mock/values-component' },
+  { id: 'in', name: 'Equals', valuesComponent: 'mock/values-component' },
   {
     id: 'notin',
-    longName: 'Not Equals',
+    name: 'Not Equals',
     valuesComponent: 'mock/values-component'
   },
   {
     id: 'null',
-    longName: 'Is Empty',
+    name: 'Is Empty',
     valuesComponent: 'mock/another-values-component'
   },
   {
     id: 'contains',
-    longName: 'Contains',
+    name: 'Contains',
     valuesComponent: 'mock/values-component',
     showFields: true
   }
@@ -40,7 +40,7 @@ const supportedOperators = [
 
 const requestFragment = {
   dimension: {
-    name: 'deviceType',
+    id: 'deviceType',
     fields: [{ name: 'id' }, { name: 'desc' }, { name: 'foo' }],
     primaryKeyFieldName: 'id'
   }
@@ -81,18 +81,18 @@ module('Integration | Component | filter-builders/dimension', function(hooks) {
     assert
       .dom('.filter-builder')
       .hasText(
-        `${filter.subject.longName} ${filter.operator.longName.toLowerCase()} dimension values`,
+        `${filter.subject.name} ${filter.operator.name.toLowerCase()} dimension values`,
         'Rendered correctly when collapsed'
       );
 
     const field = 'desc',
       filterWithDescField = {
         subject: {
-          longName: 'Device Type'
+          name: 'Device Type'
         },
         operator: {
           id: 'contains',
-          longName: 'Contains',
+          name: 'Contains',
           valuesComponent: 'mock/values-component',
           showFields: true
         },
@@ -106,8 +106,8 @@ module('Integration | Component | filter-builders/dimension', function(hooks) {
       .dom('.filter-builder')
       .hasText(
         `${
-          filterWithDescField.subject.longName
-        } (${field}) ${filterWithDescField.operator.longName.toLowerCase()} dimension values`,
+          filterWithDescField.subject.name
+        } (${field}) ${filterWithDescField.operator.name.toLowerCase()} dimension values`,
         'Rendered correctly with field when collapsed'
       );
   });

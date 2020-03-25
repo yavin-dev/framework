@@ -5,11 +5,11 @@ import { module, test } from 'qunit';
 const TABLE_ITEMS = [
   {
     id: 'eid',
-    longName: 'EventId'
+    name: 'EventId'
   },
   {
     id: 'nw',
-    longName: 'Network'
+    name: 'Network'
   }
 ];
 
@@ -43,7 +43,7 @@ module('Unit | Mixin | Collection Selector', function(hooks) {
       () => {
         CollectionSelector.create({
           items: TABLE_ITEMS.concat(TABLE_ITEMS[1]),
-          selectedItem: { id: 'foo', longName: 'Foo Name' }
+          selectedItem: { id: 'foo', name: 'Foo Name' }
         });
       },
       /^Error.*Items array should be unique$/,

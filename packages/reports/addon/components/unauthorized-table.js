@@ -27,6 +27,6 @@ export default Component.extend({
 
   init() {
     this._super(...arguments);
-    set(this, 'tableName', get(this, 'report.request.logicalTable.table.longName'));
+    set(this, 'tableName', get(this, 'report.request.logicalTable.table.name'));
   }
 });

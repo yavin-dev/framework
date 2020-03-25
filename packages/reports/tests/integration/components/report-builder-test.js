@@ -24,7 +24,7 @@ module('Integration | Component | report builder', function(hooks) {
           request: Store.createFragment('bard-request/request', {
             logicalTable: Store.createFragment('bard-request/fragments/logicalTable', {
               table: MetadataService.getById('table', 'tableA'),
-              timeGrainName: 'day'
+              timeGrain: 'day'
             })
           }),
           visualization: {}
@@ -39,8 +39,8 @@ module('Integration | Component | report builder', function(hooks) {
     MetadataService.get('_keg').resetByType('metadata/table');
     MetadataService._loadMetadataForType('table', [
       {
-        name: 'tableA',
-        longName: 'Table A',
+        id: 'tableA',
+        name: 'Table A',
         description: 'Table A'
       }
     ]);

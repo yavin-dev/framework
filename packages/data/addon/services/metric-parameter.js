@@ -19,7 +19,7 @@ export default class MetricParameterService extends Service {
      */
     this._supportedHandlers = {
       dimension: this._dimension.bind(this),
-      enum: this._enum.bind(this)
+      self: this._enum.bind(this)
     };
   }
 
@@ -44,9 +44,13 @@ export default class MetricParameterService extends Service {
    * @returns {Promise} response with dimension values
    */
   fetchAllValues(meta) {
-    assert(`Fetching values of type: '${meta.type}' is not supported`, this.supportedTypes.includes(meta.type));
-
-    return this._supportedHandlers[meta.type](meta);
+    const valueSourceType = meta.expression?.split(':')[0];
+    assert(
+      this.supportedTypes.includes(valueSourceType)
+      `Fetching values of type: '${valueSourceType}' is not supported`,
+    );
+      
+    return this._supportedHandlers[valueSourceType](meta);
   }
 
   /**
@@ -56,14 +60,13 @@ export default class MetricParameterService extends Service {
    */
   fetchAllParams(metricMeta) {
     const promises = {};
-    const parameterObj = metricMeta.parameters || {};
     const supportedTypes = this.supportedTypes;
-    const parameters = Object.entries(parameterObj).filter(([, paramMeta]) =>
-      supportedTypes.includes(paramMeta.type)
+    const parameters = (metricMeta.arguments || []).filter(
+      param => param.type === 'ref' && supportedTypes.includes(param.expression.split(':')[0])
     );
 
-    parameters.forEach(([paramType, paramMeta]) => {
-      promises[paramType] = this.fetchAllValues(paramMeta);
+    parameters.forEach(param => {
+      promises[param.id] = this.fetchAllValues(param);
     });
 
     const promiseHash = hash(promises).then(res => {
@@ -91,7 +94,8 @@ export default class MetricParameterService extends Service {
    * @param {Object} meta - parameterized metric metadata
    * @returns {Promise} response with dimension values
    */
-  _dimension({ dimensionName }) {
+  _dimension({ expression }) {
+    const dimensionName = expression.split(':')[1];
     return this._dimensionService.all(dimensionName);
   }
 
@@ -102,6 +106,6 @@ export default class MetricParameterService extends Service {
    * @returns {Promise} response with dimension values
    */
   _enum(meta) {
-    return resolve(meta.values);
+    return resolve(meta._localValues);
   }
 }

@@ -118,7 +118,7 @@ export default Component.extend({
    */
   paramsFiltered: computed('request.having.[]', 'metric', function() {
     return arr(get(this, 'request.having'))
-      .filterBy('metric.metric.name', get(this, 'metric.name'))
+      .filterBy('metric.metric.id', get(this, 'metric.id'))
       .reduce((list, having) => {
         let paramArray = Object.entries(get(having, 'metric.parameters')).filter(([key]) => key.toLowerCase() !== 'as');
 

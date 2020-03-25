@@ -9,26 +9,26 @@ import hbs from 'htmlbars-inline-precompile';
 
 const filter = {
   subject: {
-    longName: 'Device Type'
+    name: 'Device Type'
   },
   operator: {
     id: 'in',
-    longName: 'Equals',
+    name: 'Equals',
     valuesComponent: 'mock/values-component'
   },
   values: [1, 2, 3]
 };
 
 const supportedOperators = [
-  { id: 'in', longName: 'Equals', valuesComponent: 'mock/values-component' },
+  { id: 'in', name: 'Equals', valuesComponent: 'mock/values-component' },
   {
     id: 'notin',
-    longName: 'Not Equals',
+    name: 'Not Equals',
     valuesComponent: 'mock/values-component'
   },
   {
     id: 'null',
-    longName: 'Is Empty',
+    name: 'Is Empty',
     valuesComponent: 'mock/another-values-component'
   }
 ];
@@ -62,18 +62,18 @@ module('Integration | Component | filter-builders/base', function(hooks) {
 
     assert
       .dom('.filter-builder__subject')
-      .hasText(filter.subject.longName, "Subject's long name is display in filter builder");
+      .hasText(filter.subject.name, "Subject's long name is display in filter builder");
 
     assert
       .dom('.filter-builder__operator .ember-power-select-selected-item')
-      .hasText(filter.operator.longName, 'The filter current operator is selected by default');
+      .hasText(filter.operator.name, 'The filter current operator is selected by default');
 
     assert.dom('.mock-value-component').isVisible('The component specified by the filter operator is rendered');
 
     await clickTrigger();
     assert.deepEqual(
       findAll('.ember-power-select-option').map(el => el.textContent.trim()),
-      arr(supportedOperators).mapBy('longName'),
+      arr(supportedOperators).mapBy('name'),
       'All supported operators show up as options in the operator selector'
     );
   });
@@ -89,7 +89,7 @@ module('Integration | Component | filter-builders/base', function(hooks) {
     assert
       .dom('.filter-builder')
       .hasText(
-        `${filter.subject.longName} ${filter.operator.longName.toLowerCase()} Test`,
+        `${filter.subject.name} ${filter.operator.name.toLowerCase()} Test`,
         'Rendered correctly when collapsed'
       );
   });

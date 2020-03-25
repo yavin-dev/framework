@@ -31,13 +31,13 @@ module('Unit | Component | filter builders/date time', function(hooks) {
     });
 
     assert.equal(
-      dateBuilder.get('filter.subject.longName'),
+      dateBuilder.get('filter.subject.name'),
       'Date Time (Day)',
       'Filter subject has a display name of "Date Time" plus the time grain'
     );
 
     assert.deepEqual(
-      dateBuilder.get('supportedOperators').map(op => op.longName),
+      dateBuilder.get('supportedOperators').map(op => op.name),
       ['Current Day', 'In The Past', 'Since', 'Between', 'Advanced'],
       'Filter operator is the first and only supported operator'
     );
@@ -74,7 +74,7 @@ module('Unit | Component | filter builders/date time', function(hooks) {
     });
 
     assert.deepEqual(
-      dateBuilder.get('supportedOperators').map(op => op.longName),
+      dateBuilder.get('supportedOperators').map(op => op.name),
       ['Current Week', 'In The Past', 'Since', 'Between', 'Advanced'],
       'Filter operator is the first and only supported operator'
     );

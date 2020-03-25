@@ -8,7 +8,6 @@
  *       @onUpdateFilter={{action "update"}}
  *   />
  */
-import config from 'ember-get-config';
 import { featureFlag } from 'navi-core/helpers/feature-flag';
 import { debounce } from '@ember/runloop';
 import { A } from '@ember/array';
@@ -21,8 +20,6 @@ import layout from '../../templates/components/filter-values/dimension-select';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
 const SEARCH_DEBOUNCE_TIME = 200;
-
-const LOAD_CARDINALITY = config.navi.searchThresholds.contains;
 
 @templateLayout(layout)
 @tagName('')
@@ -63,10 +60,7 @@ class DimensionSelectComponent extends Component {
       metadataService = get(this, '_metadataService'),
       source = get(this, 'filter.subject.source');
 
-    if (
-      dimensionName &&
-      get(metadataService.getById('dimension', dimensionName, source), 'cardinality') <= LOAD_CARDINALITY
-    ) {
+    if (dimensionName && get(metadataService.getById('dimension', dimensionName, source), 'cardinality') === 'SMALL') {
       return dimensionService.all(dimensionName, { dataSourceName: source });
     }
 
