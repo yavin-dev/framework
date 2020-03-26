@@ -22,6 +22,21 @@
 - Update `package.json`
   - Update `description` field
   - Update `version` field
+  - Update versions of every navi package
+    ```diff
+    - "navi-core": "0.2.0",
+    + "navi-core": "canary",
+    - "navi-dashboards": "0.2.0",
+    + "navi-dashboards": "canary",
+    - "navi-data": "0.2.0",
+    + "navi-data": "canary",
+    - "navi-directory": "0.2.0",
+    + "navi-directory": "canary",
+    - "navi-notifications": "0.2.0",
+    + "navi-notifications": "canary",
+    - "navi-reports": "0.2.0",
+    + "navi-reports": "canary",
+    ```
 
 ## FAQ
 
