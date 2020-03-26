@@ -39,24 +39,6 @@ export default ActionConsumer.extend({
      */
     [RequestActions.REMOVE_DIMENSION_FRAGMENT]({ currentModel }, dimension) {
       get(currentModel, 'request').removeRequestDimension(dimension);
-    },
-
-    /**
-     * @action DID_UPDATE_TIME_GRAIN
-     * @param {Object} route - route that has a model that contains a request property
-     * @param {Object} timeGrain - newly updated time grain
-     */
-    [RequestActions.DID_UPDATE_TIME_GRAIN](route, timeGrain) {
-      let request = get(route, 'currentModel.request'),
-        timeGrainDimensions = get(timeGrain, 'dimensions');
-
-      get(request, 'dimensions')
-        .mapBy('dimension')
-        .forEach(dimension => {
-          if (!timeGrainDimensions.includes(dimension)) {
-            get(this, 'requestActionDispatcher').dispatch(RequestActions.REMOVE_DIMENSION, route, dimension);
-          }
-        });
     }
   }
 });

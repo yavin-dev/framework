@@ -429,7 +429,7 @@ module('Unit | Consumer | request filter', function(hooks) {
     assert.expect(3);
 
     const parameters = { foo: 'bar' },
-      metricWParam = { name: 'metric-with-param' },
+      metricWParam = { id: 'metric-with-param' },
       havings = [
         {
           metric: {

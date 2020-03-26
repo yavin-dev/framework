@@ -164,7 +164,7 @@ export default class BardMetadataSerializer extends EmberObject {
    */
   _constructDimension(dimension, source, tableName, currentDimensions) {
     let newDimension;
-    const { name, longName, category, datatype: valueType, storageStrategy, cardinality } = dimension;
+    const { name, longName, category, datatype: valueType, storageStrategy, cardinality, fields } = dimension;
     const existingDimension = currentDimensions[name];
 
     if (existingDimension) {
@@ -183,6 +183,7 @@ export default class BardMetadataSerializer extends EmberObject {
         category,
         valueType,
         type: 'field',
+        fields,
         cardinality: dimCardinality,
         storageStrategy: storageStrategy || null,
         source,

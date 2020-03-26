@@ -79,9 +79,11 @@ export default class Dimension extends Column {
    * @returns {Array} array of field objects
    */
   getFieldsForTag(tag) {
-    return this.fields?.filter(field => {
-      return field.tags?.includes(tag);
-    });
+    return (
+      this.fields?.filter(field => {
+        return field.tags?.includes(tag);
+      }) || []
+    );
   }
 
   /**

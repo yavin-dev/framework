@@ -1007,7 +1007,7 @@ module('Unit | Service | Dimensions', function(hooks) {
 
     assert.equal(
       Service.getFactoryFor('dimensionTwo').identifierField,
-      'id',
+      'key',
       'getFactoryFor returned a factory with the correct identifierField'
     );
 

@@ -54,6 +54,12 @@ const Payload = {
                 longName: 'Dimension Two',
                 uri: 'https://host:port/namespace/dimensions/dimensionTwo',
                 cardinality: '5',
+                fields: [
+                  {
+                    name: 'foo',
+                    description: 'bar'
+                  }
+                ],
                 datatype: 'text'
               },
               {
@@ -257,6 +263,7 @@ const Payload = {
       tableIds: ['tableName'],
       type: 'field',
       valueType: 'text',
+      fields: undefined,
       storageStrategy: null,
       partialData: true
     },
@@ -269,6 +276,12 @@ const Payload = {
       tableIds: ['tableName', 'secondTable'],
       type: 'field',
       valueType: 'text',
+      fields: [
+        {
+          name: 'foo',
+          description: 'bar'
+        }
+      ],
       storageStrategy: null,
       partialData: true
     }
@@ -282,6 +295,7 @@ const Payload = {
       source: 'dummy',
       tableIds: ['tableName', 'secondTable'],
       type: 'field',
+      fields: undefined,
       valueType: 'date',
       storageStrategy: null,
       partialData: true
@@ -554,6 +568,7 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
           source: 'dummy',
           tableIds: ['tableName'],
           type: 'field',
+          fields: undefined,
           valueType: 'text',
           storageStrategy: null,
           partialData: true
@@ -624,6 +639,16 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
       longName: 'Dimension One',
       uri: 'https://host:port/namespace/dimensions/dimensionOne',
       cardinality: '10',
+      fields: [
+        {
+          name: 'foo',
+          description: 'bar'
+        },
+        {
+          name: 'baz',
+          description: 'bang'
+        }
+      ],
       datatype: 'text'
     };
     const source = 'dummy';
@@ -637,6 +662,16 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
       cardinality: 'SMALL',
       type: 'field',
       storageStrategy: null,
+      fields: [
+        {
+          name: 'foo',
+          description: 'bar'
+        },
+        {
+          name: 'baz',
+          description: 'bang'
+        }
+      ],
       source,
       tableIds: [tableName],
       partialData: true

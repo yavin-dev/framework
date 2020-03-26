@@ -75,7 +75,7 @@ export default ActionConsumer.extend({
         'Dimension model has correct primaryKeyFieldName',
         typeof get(dimension, 'primaryKeyFieldName') === 'string'
       );
-      let defaultOperator = featureFlag('dateDimensionFilter') && get(dimension, 'datatype') === 'date' ? 'gte' : 'in';
+      let defaultOperator = featureFlag('dateDimensionFilter') && get(dimension, 'valueType') === 'date' ? 'gte' : 'in';
 
       get(currentModel, 'request').addFilter({
         dimension,
@@ -132,7 +132,7 @@ export default ActionConsumer.extend({
         //find if having for metric and parameters exists in request using the canonicalName
         having = filteredMetrics.find(
           having =>
-            get(having, 'metric.canonicalName') === canonicalizeMetric({ metric: get(metric, 'name'), parameters })
+            get(having, 'metric.canonicalName') === canonicalizeMetric({ metric: get(metric, 'id'), parameters })
         );
 
       if (!having) {

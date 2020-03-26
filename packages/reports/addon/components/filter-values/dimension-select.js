@@ -58,9 +58,10 @@ class DimensionSelectComponent extends Component {
     const dimensionName = get(this, 'dimensionName'),
       dimensionService = get(this, '_dimensionService'),
       metadataService = get(this, '_metadataService'),
-      source = get(this, 'filter.subject.source');
+      source = get(this, 'filter.subject.source'),
+      loadedDimension = metadataService.getById('dimension', dimensionName, source);
 
-    if (dimensionName && get(metadataService.getById('dimension', dimensionName, source), 'cardinality') === 'SMALL') {
+    if (dimensionName && loadedDimension?.cardinality === 'SMALL') {
       return dimensionService.all(dimensionName, { dataSourceName: source });
     }
 

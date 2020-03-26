@@ -105,24 +105,6 @@ export default ActionConsumer.extend({
       } else {
         get(this, 'requestActionDispatcher').dispatch(RequestActions.ADD_METRIC, route, metric);
       }
-    },
-
-    /**
-     * @action DID_UPDATE_TIME_GRAIN
-     * @param {Object} route - route that has a model that contains a request property
-     * @param {Object} timeGrain - newly updated time grain
-     */
-    [RequestActions.DID_UPDATE_TIME_GRAIN](route, timeGrain) {
-      let request = get(route, 'currentModel.request'),
-        timeGrainMetrics = get(timeGrain, 'metrics');
-
-      get(request, 'metrics')
-        .mapBy('metric')
-        .forEach(metric => {
-          if (!timeGrainMetrics.includes(metric)) {
-            get(this, 'requestActionDispatcher').dispatch(RequestActions.REMOVE_METRIC, route, metric);
-          }
-        });
     }
   }
 });

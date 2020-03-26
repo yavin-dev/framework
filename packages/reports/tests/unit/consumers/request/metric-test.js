@@ -6,7 +6,7 @@ import { RequestActions } from 'navi-reports/services/request-action-dispatcher'
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import { A as arr } from '@ember/array';
 
-let Store, MetadataService, AdClicks, PageViews, CurrentModel, Consumer, Revenue;
+let Store, MetadataService, AdClicks, CurrentModel, Consumer, Revenue;
 
 module('Unit | Consumer | request metric', function(hooks) {
   setupTest(hooks);
@@ -29,7 +29,6 @@ module('Unit | Consumer | request metric', function(hooks) {
 
     return MetadataService.loadMetadata().then(() => {
       AdClicks = MetadataService.getById('metric', 'adClicks');
-      PageViews = MetadataService.getById('metric', 'pageViews');
       Revenue = MetadataService.getById('metric', 'revenue');
     });
   });
@@ -123,35 +122,6 @@ module('Unit | Consumer | request metric', function(hooks) {
       get(CurrentModel, 'request.metrics').mapBy('metric'),
       [AdClicks],
       'When a metric filter is added, the metric is added too'
-    );
-  });
-
-  test('DID_UPDATE_TIME_GRAIN', function(assert) {
-    assert.expect(2);
-
-    run(() => {
-      Consumer.send(RequestActions.ADD_METRIC, { currentModel: CurrentModel }, AdClicks);
-      Consumer.send(RequestActions.ADD_METRIC, { currentModel: CurrentModel }, PageViews);
-    });
-
-    assert.deepEqual(
-      get(CurrentModel, 'request.metrics').mapBy('metric'),
-      [AdClicks, PageViews],
-      'Both given metrics are added to request'
-    );
-
-    Consumer.send(
-      RequestActions.DID_UPDATE_TIME_GRAIN,
-      { currentModel: CurrentModel },
-      {
-        metrics: [AdClicks] // Time grain with no page views
-      }
-    );
-
-    assert.deepEqual(
-      get(CurrentModel, 'request.metrics').mapBy('metric'),
-      [AdClicks],
-      'Page views metric is removed since it was not found in the new time grain'
     );
   });
 });

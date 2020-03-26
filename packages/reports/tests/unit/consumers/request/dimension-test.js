@@ -5,7 +5,7 @@ import { setupTest } from 'ember-qunit';
 import { RequestActions } from 'navi-reports/services/request-action-dispatcher';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
-let Age, EventId, CurrentModel, Consumer;
+let Age, CurrentModel, Consumer;
 
 module('Unit | Consumer | request dimension', function(hooks) {
   setupTest(hooks);
@@ -28,7 +28,6 @@ module('Unit | Consumer | request dimension', function(hooks) {
 
     return metadataService.loadMetadata().then(() => {
       Age = metadataService.getById('dimension', 'age');
-      EventId = metadataService.getById('dimension', 'eventId');
     });
   });
 
@@ -70,34 +69,5 @@ module('Unit | Consumer | request dimension', function(hooks) {
     });
 
     assert.ok(get(CurrentModel, 'request.dimensions.length') === 0, 'The given dimension is removed from the request');
-  });
-
-  test('DID_UPDATE_TIME_GRAIN', function(assert) {
-    assert.expect(2);
-
-    run(() => {
-      Consumer.send(RequestActions.ADD_DIMENSION, { currentModel: CurrentModel }, Age);
-      Consumer.send(RequestActions.ADD_DIMENSION, { currentModel: CurrentModel }, EventId);
-    });
-
-    assert.deepEqual(
-      get(CurrentModel, 'request.dimensions').mapBy('dimension'),
-      [Age, EventId],
-      'Both given dimensions are added to request'
-    );
-
-    Consumer.send(
-      RequestActions.DID_UPDATE_TIME_GRAIN,
-      { currentModel: CurrentModel },
-      {
-        dimensions: [Age] // Time grain with no event id
-      }
-    );
-
-    assert.deepEqual(
-      get(CurrentModel, 'request.dimensions').mapBy('dimension'),
-      [Age],
-      'EventId dimension is removed since it was not found in the new time grain'
-    );
   });
 });

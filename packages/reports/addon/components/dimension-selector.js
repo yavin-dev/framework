@@ -107,7 +107,7 @@ export default class DimensionSelector extends Component {
    */
   @computed('selectedTimeGrain', 'selectedDimensions')
   get selectedColumns() {
-    if (this.selectedTimeGrain === 'all') {
+    if (!this.selectedTimeGrain || this.selectedTimeGrain === 'all') {
       return this.selectedDimensions;
     } else {
       return arr([this.selectedTimeGrain, ...this.selectedDimensions]).uniq();

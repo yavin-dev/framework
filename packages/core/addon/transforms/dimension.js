@@ -10,5 +10,27 @@ export default BaseMetadataTransform.extend({
    * @property {String} type - type of metadata
    * @override
    */
-  type: 'dimension'
+  type: 'dimension',
+
+  /**
+   * @method deserialize
+   *
+   * Deserializes to a Ember Object or Array of Ember objects
+   *
+   * @param {String|Array} serialized
+   * @returns {Object|Array} Ember Object | Array of Ember Objects
+   */
+  deserialize(serialized) {
+    let metadataService = this.metadataService;
+
+    if (Array.isArray(serialized)) {
+      return serialized.map(
+        dimension =>
+          metadataService.getById('dimension', dimension) || metadataService.getById('time-dimension', dimension)
+      );
+    }
+
+    // Lookup dimension id in time-dimensions if not found
+    return metadataService.getById('dimension', serialized) || metadataService.getById('time-dimension', serialized);
+  }
 });

@@ -29,7 +29,7 @@ export default class BaseIntervalComponent extends Component {
   /**
    * @property {String} lowestDateTimePeriod - the lowest supported time grain of the table
    */
-  @readOnly('request.logicalTable.table.timeGrains.firstObject.id') lowestDateTimePeriod;
+  @readOnly('request.logicalTable.table.timeGrains.0.id') lowestDateTimePeriod;
 
   /**
    * @property {String} calendarDateTimePeriod - the active dateTimePeriod which does not include 'all'
