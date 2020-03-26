@@ -18,15 +18,13 @@ module('Integration | Component | dashboard dimension selector', function(hooks)
             {
               logicalTable: {
                 table: {
-                  name: 'a',
-                  timeGrain: 'day'
-                },
-                timeGrain: {
+                  id: 'a',
                   dimensions: [
-                    { name: 'dim1', longName: 'dim1', category: 'cat1' },
-                    { name: 'dim2', longName: 'dim2', category: 'cat2' }
+                    { id: 'dim1', name: 'dim1', category: 'cat1' },
+                    { id: 'dim2', name: 'dim2', category: 'cat2' }
                   ]
-                }
+                },
+                timeGrain: 'day'
               }
             }
           ])
@@ -37,15 +35,13 @@ module('Integration | Component | dashboard dimension selector', function(hooks)
             {
               logicalTable: {
                 table: {
-                  name: 'b',
-                  timeGrain: 'day'
-                },
-                timeGrain: {
+                  id: 'b',
                   dimensions: [
-                    { name: 'dim3', longName: 'dim3', category: 'cat2' },
-                    { name: 'dim1', longName: 'dim1', category: 'cat1' }
+                    { id: 'dim3', name: 'dim3', category: 'cat2' },
+                    { id: 'dim1', name: 'dim1', category: 'cat1' }
                   ]
-                }
+                },
+                timeGrain: 'day'
               }
             }
           ])
@@ -57,7 +53,7 @@ module('Integration | Component | dashboard dimension selector', function(hooks)
 
     this.set('changeme', function(selection) {
       assert.deepEqual(
-        { dimension: 'dim1', longName: 'dim1', tables: ['a', 'b'] },
+        { dimension: 'dim1', name: 'dim1', tables: ['a', 'b'] },
         selection,
         'Selection sends correct dimension object'
       );

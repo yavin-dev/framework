@@ -37,8 +37,7 @@ export default ReportsNewRoute.extend({
       .then(author => {
         // Default to first data source + time grain
         let table = this._getDefaultTable(),
-          tableTimeGrains = A(get(table, 'timeGrains')),
-          timeGrain = get(tableTimeGrains, 'firstObject');
+          timeGrain = table.timeGrains?.[0]?.id;
 
         let widget = this.store.createRecord('dashboard-widget', {
           author,

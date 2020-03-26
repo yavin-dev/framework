@@ -29,13 +29,13 @@ export default Component.extend({
     return widgetPromises.then(this.mergeWidgetDimensions).then(dimensionMap => {
       /*
        * merge and build category: dimension map
-       * shape will be: {categoryName: {dimensionName: {dimension, longName, tables}, ...}, ....}
+       * shape will be: {categoryName: {dimensionName: {dimension, name, tables}, ...}, ....}
        */
       const dimObject = this.buildCategoryMap(dimensionMap);
 
       /*
        * transform into powerselect friendly option
-       * shape will be [{groupName, options: [{dimension, longName, tables}, ...]}, ...]
+       * shape will be [{groupName, options: [{dimension, name, tables}, ...]}, ...]
        */
       const selectOptions = this.buildPowerSelectOptions(dimObject);
 
@@ -47,13 +47,13 @@ export default Component.extend({
 
   /**
    * Takes category mapped dimension objects and maps it to power-select grouped list
-   * @param {Object} dimObject - {categoryName: {dimensionName: {dimension, longName, tables}, ...}, ....}
-   * @returns {Object} - [{groupName, options: [{dimension, longName, tables}, ...]}, ...]
+   * @param {Object} dimObject - {categoryName: {dimensionName: {dimension, name, tables}, ...}, ....}
+   * @returns {Object} - [{groupName, options: [{dimension, name, tables}, ...]}, ...]
    */
   buildPowerSelectOptions(dimObject) {
     return Object.entries(dimObject).reduce((selectOptions, [category, dimensions]) => {
       dimensions = Object.values(dimensions);
-      dimensions.sort((a, b) => a.longName.localeCompare(b.longName));
+      dimensions.sort((a, b) => a.name.localeCompare(b.name));
       selectOptions.push({ groupName: category, options: dimensions });
       return selectOptions;
     }, []);
@@ -63,7 +63,7 @@ export default Component.extend({
    * Takes an object that is mapped by table and list of dimensions, and merges them into a object
    * that is keyed by {category: [dimensions]}
    * @param {Object} dimensionMap - {table: [{id, name, category}, ...], ...}
-   * @return {Object} - {categoryName: {dimensionName: {dimension, longName, tables}, ...}, ....}
+   * @return {Object} - {categoryName: {dimensionName: {dimension, name, tables}, ...}, ....}
    */
   buildCategoryMap(dimensionMap) {
     return Object.entries(dimensionMap).reduce((results, [table, dimensions]) => {
@@ -75,7 +75,7 @@ export default Component.extend({
         if (!results[dimension.category][dimension.id]) {
           results[dimension.category][dimension.id] = {
             dimension: dimension.id,
-            longName: dimension.name,
+            name: dimension.name,
             tables: [table]
           };
         } else {
@@ -89,7 +89,7 @@ export default Component.extend({
   /**
    * Takes a list of widgets and builds an object keyed by table and list of dimensions
    * @param {Widget} widgets
-   * @returns {Object} - {table: [{name, longName, category}, ...], ...}
+   * @returns {Object} - {table: [{id, name, category}, ...], ...}
    */
   mergeWidgetDimensions(widgets) {
     return widgets.reduce((dimensionMap, widget) => {

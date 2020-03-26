@@ -236,7 +236,7 @@ export default class DashboardDataService extends Service {
    * @returns {Boolean}
    */
   _isFilterValid(request, filter) {
-    const validDimensions = get(request, 'logicalTable.timeGrain.dimensionIds');
+    const validDimensions = get(request, 'logicalTable.table.dimensionIds');
 
     return validDimensions.includes(get(filter, 'dimension.id'));
   }

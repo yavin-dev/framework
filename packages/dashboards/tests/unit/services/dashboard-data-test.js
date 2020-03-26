@@ -271,8 +271,8 @@ module('Unit | Service | dashboard data', function(hooks) {
         this.filters.push(filter);
       },
       logicalTable: {
-        table: { id: 'table1' },
-        timeGrain: { dimensionIds: VALID_FILTERS }
+        table: { id: 'table1', dimensionIds: VALID_FILTERS },
+        timeGrain: { id: 'day', name: 'Day' }
       },
       data,
       filters: filters || [makeFilter({ dimension: `${DIMENSIONS[data + 4]}` })]
