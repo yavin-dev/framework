@@ -317,7 +317,7 @@ export default class BardDimensionService extends Service {
     const source = options.dataSourceName || getDefaultDataSourceName();
     const query = options.term.trim();
     const dimensionLookup = metadataService.getById('dimension', dimension, source);
-    const cardinality = await dimensionLookup?.cardinality;
+    const cardinality = dimensionLookup?.cardinality;
     let dimensionRecords;
 
     if (cardinality === 'SMALL') {
