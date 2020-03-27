@@ -105,6 +105,24 @@ export default ActionConsumer.extend({
       } else {
         get(this, 'requestActionDispatcher').dispatch(RequestActions.ADD_METRIC, route, metric);
       }
+    },
+
+    /**
+     * @action DID_UPDATE_TABLE
+     * @param {Object} route - route that has a model that contains a request property
+     * @param {Object} table - newly updated table
+     */
+    [RequestActions.DID_UPDATE_TABLE](route, table) {
+      let request = get(route, 'currentModel.request'),
+        tableMetrics = get(table, 'metrics');
+
+      get(request, 'metrics')
+        .mapBy('metric')
+        .forEach(metric => {
+          if (!tableMetrics.includes(metric)) {
+            get(this, 'requestActionDispatcher').dispatch(RequestActions.REMOVE_METRIC, route, metric);
+          }
+        });
     }
   }
 });

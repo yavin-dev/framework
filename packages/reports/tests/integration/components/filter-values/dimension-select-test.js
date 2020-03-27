@@ -79,7 +79,7 @@ module('Integration | Component | filter values/dimension select', function(hook
 
     const datasourceFilter = {
       subject: {
-        id: 'age',
+        id: 'container',
         storageStrategy: 'loaded',
         primaryKeyFieldName: 'id',
         source: 'blockhead'

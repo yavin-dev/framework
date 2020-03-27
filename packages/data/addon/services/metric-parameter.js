@@ -46,10 +46,10 @@ export default class MetricParameterService extends Service {
   fetchAllValues(meta) {
     const valueSourceType = meta.expression?.split(':')[0];
     assert(
-      this.supportedTypes.includes(valueSourceType)
       `Fetching values of type: '${valueSourceType}' is not supported`,
+      this.supportedTypes.includes(valueSourceType)
     );
-      
+
     return this._supportedHandlers[valueSourceType](meta);
   }
 

@@ -155,7 +155,7 @@ export default Route.extend({
       timeGrainExist = tableTimeGrains.find(grain => grain.id === timeGrainName);
 
     if (!timeGrainExist) {
-      timeGrainName = get(tableTimeGrains, 'firstObject').id;
+      timeGrainName = tableTimeGrains[0]?.id;
     }
 
     return timeGrainName;

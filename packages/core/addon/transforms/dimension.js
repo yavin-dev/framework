@@ -13,6 +13,7 @@ export default BaseMetadataTransform.extend({
   type: 'dimension',
 
   /**
+   * @override
    * @method deserialize
    *
    * Deserializes to a Ember Object or Array of Ember objects
@@ -21,16 +22,18 @@ export default BaseMetadataTransform.extend({
    * @returns {Object|Array} Ember Object | Array of Ember Objects
    */
   deserialize(serialized) {
-    let metadataService = this.metadataService;
+    let namespace = null;
 
-    if (Array.isArray(serialized)) {
-      return serialized.map(
-        dimension =>
-          metadataService.getById('dimension', dimension) || metadataService.getById('time-dimension', dimension)
-      );
+    if (serialized.includes('.')) {
+      const splitName = serialized.split('.');
+      namespace = splitName[0];
+      serialized = splitName[1];
     }
 
     // Lookup dimension id in time-dimensions if not found
-    return metadataService.getById('dimension', serialized) || metadataService.getById('time-dimension', serialized);
+    return (
+      this.metadataService.getById(this.type, serialized, namespace) ||
+      this.metadataService.getById('time-dimension', serialized, namespace)
+    );
   }
 });

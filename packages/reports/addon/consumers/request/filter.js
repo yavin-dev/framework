@@ -216,6 +216,34 @@ export default ActionConsumer.extend({
           : DefaultIntervals.getDefault(timeGrainName);
 
       set(request, 'intervals.firstObject.interval', newInterval);
+    },
+
+    /**
+     * @action DID_UPDATE_TABLE
+     * @param {Object} route - route that has a model that contains a request property
+     * @param {Object} table - newly updated table
+     */
+    [RequestActions.DID_UPDATE_TABLE](route, table) {
+      // Remove any dimension filter if the dim is not present in new time grain
+      const tableDimensions = table.dimensions;
+      const request = route.currentModel.request;
+
+      /*
+       * .toArray() is used to clone the array, otherwise removing a filter while
+       * iterating over `request.filters` causes problems
+       */
+      request.filters.toArray().forEach(dimensionFilter => {
+        const dimension = dimensionFilter.dimension;
+
+        if (!tableDimensions.includes(dimension)) {
+          get(this, 'requestActionDispatcher').dispatch(RequestActions.REMOVE_FILTER, route, dimensionFilter);
+        }
+      });
+
+      /*
+       * Having filters are already taken care of:
+       * DID_UPDATE_TABLE triggers REMOVE_METRIC triggers REMOVE_FILTER
+       */
     }
   }
 });

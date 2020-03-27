@@ -350,33 +350,33 @@ module('Unit | Serializer | Request', function(hooks) {
 
     const result = serializer.normalize(type, request);
 
-    assert.equal(result.data.attributes.logicalTable.table.longName, 'Inventory', 'table meta is normalized correctly');
+    assert.equal(result.data.attributes.logicalTable.table.name, 'Inventory', 'table meta is normalized correctly');
     assert.deepEqual(
-      result.data.attributes.metrics.map(metric => metric.metric.longName),
+      result.data.attributes.metrics.map(metric => metric.metric.name),
       ['Quantity of thing', 'How many are available', 'Personally sold amount'],
       'metrics meta is normalized correctly'
     );
 
     assert.deepEqual(
-      result.data.attributes.dimensions.map(dimension => dimension.dimension.longName),
+      result.data.attributes.dimensions.map(dimension => dimension.dimension.name),
       ['Container', 'Item'],
       'dimension meta is loaded correctly'
     );
 
     assert.deepEqual(
-      result.data.attributes.filters.map(filter => filter.dimension.longName),
+      result.data.attributes.filters.map(filter => filter.dimension.name),
       ['Container'],
       'dimension meta is loaded correctly into filters'
     );
 
     assert.deepEqual(
-      result.data.attributes.having.map(having => having.metric.metric.longName),
+      result.data.attributes.having.map(having => having.metric.metric.name),
       ['Quantity of thing', 'Personally sold amount'],
       'metric meta is loaded correctly into havings'
     );
 
     assert.deepEqual(
-      result.data.attributes.sort.map(sort => sort.metric.metric.longName || sort.metric.metric.name),
+      result.data.attributes.sort.map(sort => sort.metric.metric.name || sort.metric.metric.id),
       ['dateTime', 'How many are available', 'Personally sold amount'],
       'metric meta is loaded correctly into sort'
     );

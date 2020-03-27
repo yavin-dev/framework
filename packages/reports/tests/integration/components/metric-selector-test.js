@@ -205,7 +205,7 @@ module('Integration | Component | metric selector', function(hooks) {
 
     this.set('addMetric', metric => {
       assert.equal(
-        metric.get('longName'),
+        metric.get('name'),
         'Total Clicks',
         'the clicked metric is passed as a param to the action when enableRequestPreview is on'
       );

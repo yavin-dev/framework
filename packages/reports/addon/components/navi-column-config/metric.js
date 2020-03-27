@@ -49,7 +49,7 @@ class Metric extends Component {
    */
   @computed('column.fragment.metric.parameters.{}')
   get paramName() {
-    return Object.keys(this.column.fragment.metric.parameters)[0];
+    return this.column.fragment.metric.arguments[0]?.id;
   }
 
   /**

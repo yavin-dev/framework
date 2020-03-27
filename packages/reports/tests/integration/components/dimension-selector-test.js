@@ -199,7 +199,7 @@ module('Integration | Component | dimension selector', function(hooks) {
 
     this.set('addDimension', item => {
       assert.equal(
-        item.longName,
+        item.name,
         'Gender',
         'the gender dimension item is passed as a param to the action when enableRequestPreview is on'
       );

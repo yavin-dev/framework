@@ -39,6 +39,22 @@ export default ActionConsumer.extend({
      */
     [RequestActions.REMOVE_DIMENSION_FRAGMENT]({ currentModel }, dimension) {
       get(currentModel, 'request').removeRequestDimension(dimension);
+    },
+
+    /**
+     * @action DID_UPDATE_TABLE
+     * @param {Object} route - route that has a model that contains a request property
+     * @param {Object} table - newly updated table
+     */
+    [RequestActions.DID_UPDATE_TABLE](route, table) {
+      let request = get(route, 'currentModel.request'),
+        tableDimensions = table.dimensions;
+
+      request.dimensions.mapBy('dimension').forEach(dim => {
+        if (!tableDimensions.includes(dim)) {
+          get(this, 'requestActionDispatcher').dispatch(RequestActions.REMOVE_DIMENSION, route, dim);
+        }
+      });
     }
   }
 });
