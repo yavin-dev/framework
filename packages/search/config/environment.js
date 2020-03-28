@@ -1,5 +1,9 @@
 'use strict';
 
 module.exports = function(/* environment, appConfig */) {
-  return {};
+  return {
+    navi: {
+      dataSources: [{ name: 'dummy', uri: 'https://data.naviapp.io', type: 'bard-facts' }]
+    }
+  };
 };

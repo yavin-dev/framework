@@ -11,7 +11,7 @@ import { keepLatestTask } from 'ember-concurrency-decorators';
 
 export default class NaviDefinitionSearchProviderService extends NaviBaseSearchProviderService {
   /**
-   * @property {Ember.Sercice} metadataService
+   * @property {Ember.Service} metadataService
    */
   @service('bard-metadata') metadataService;
 
@@ -19,7 +19,7 @@ export default class NaviDefinitionSearchProviderService extends NaviBaseSearchP
    * @property {String} _displayComponentName
    * @private
    */
-  _displayComponentName = 'navi-search-result/asset';
+  _displayComponentName = 'navi-search-result/definition';
 
   /**
    * @method search – Searches for definitions in the metadata
@@ -32,11 +32,16 @@ export default class NaviDefinitionSearchProviderService extends NaviBaseSearchP
     const types = ['table', 'dimension', 'metric'];
     const promises = [];
 
+    let test;
+    test = yield this.metadataService.getById(type, query);
+    debugger;
+
     types.forEach(type => {
-      promises.push(this.metadataService.findByType(type, query, 'defaultMetrics'));
+      promises.push(this.metadataService.findById(type, query));
     });
 
     const data = yield Promise.all(promises).then(function(values) {
+      debugger;
       return values.flatMap(value => value.toArray());
     });
     return {
