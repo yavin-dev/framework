@@ -60,7 +60,7 @@ module('Unit | Model Fragment | BardRequest - Logical Table', function(hooks) {
       );
 
       assert.equal(
-        mockModel.get('table.timeGrain'),
+        mockModel.table?.timeGrain,
         'week',
         'The property `table` has been updated with the time grain `week`'
       );

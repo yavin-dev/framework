@@ -158,7 +158,7 @@ export default class DateTimeFilterBuilder extends Base {
    */
   @computed('requestFragment.interval', 'dateTimePeriodName')
   get filter() {
-    const interval = get(this, 'requestFragment.interval');
+    const interval = this.requestFragment?.interval;
 
     return {
       subject: { name: `Date Time (${this.dateTimePeriodName})` },
@@ -180,8 +180,8 @@ export default class DateTimeFilterBuilder extends Base {
       return;
     }
 
-    const dateTimePeriod = get(this, 'request.logicalTable.timeGrain');
-    const originalInterval = get(this, 'requestFragment.interval');
+    const dateTimePeriod = this.request.logicalTable?.timeGrain;
+    const originalInterval = this.requestFragment?.interval;
 
     const newInterval = this.intervalForOperator(originalInterval, dateTimePeriod, newOperator);
     set(this, 'requestFragment.interval', newInterval);

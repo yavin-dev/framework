@@ -15,7 +15,7 @@ import { mapBy } from '@ember/object/computed';
 import Component from '@ember/component';
 import { A as arr } from '@ember/array';
 import { copy } from 'ember-copy';
-import { get, computed, action } from '@ember/object';
+import { computed, action } from '@ember/object';
 import layout from '../../templates/components/navi-visualization-config/table';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
@@ -52,7 +52,7 @@ class NaviVisualizationConfigTableComponent extends Component {
   didReceiveAttrs() {
     super.didReceiveAttrs(...arguments);
 
-    this.set('_showSubtotalDropdown', !!get(this, 'options.showTotals.subtotal'));
+    this.set('_showSubtotalDropdown', !!this.options?.showTotals?.subtotal);
   }
 
   /**
@@ -88,9 +88,9 @@ class NaviVisualizationConfigTableComponent extends Component {
     if (val) {
       const firstDim = this.subtotalDimensions[0];
       this.onUpdateConfig({
-        showTotals: { subtotal: get(firstDim, 'id') }
+        showTotals: { subtotal: firstDim.id }
       });
-    } else if (get(this, 'options.showTotals.subtotal')) {
+    } else if (this.options?.showTotals?.subtotal) {
       const newOptions = copy(this.options);
       delete newOptions.showTotals.subtotal;
       this.onUpdateConfig(newOptions);

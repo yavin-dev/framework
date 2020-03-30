@@ -1,4 +1,3 @@
-import { get } from '@ember/object';
 import { module, test } from 'qunit';
 import DimensionMetadataModel from 'navi-data/models/metadata/dimension';
 import { setupTest } from 'ember-qunit';
@@ -37,19 +36,19 @@ module('Unit | Metadata Model | Dimension', function(hooks) {
   test('factory has identifierField defined', function(assert) {
     assert.expect(1);
 
-    assert.equal(get(DimensionMetadataModel, 'identifierField'), 'id', 'identifierField property is set to `id`');
+    assert.equal(DimensionMetadataModel.identifierField, 'id', 'identifierField property is set to `id`');
   });
 
   test('it properly hydrates properties', function(assert) {
     assert.expect(4);
 
-    assert.deepEqual(get(Dimension, 'id'), Payload.id, 'name property is hydrated properly');
+    assert.deepEqual(Dimension.id, Payload.id, 'name property is hydrated properly');
 
-    assert.equal(get(Dimension, 'name'), Payload.name, 'longName property was properly hydrated');
+    assert.equal(Dimension.name, Payload.name, 'longName property was properly hydrated');
 
-    assert.equal(get(Dimension, 'category'), Payload.category, 'category property was properly hydrated');
+    assert.equal(Dimension.category, Payload.category, 'category property was properly hydrated');
 
-    assert.deepEqual(get(Dimension, 'fields'), Payload.fields, 'fields property was properly hydrated');
+    assert.deepEqual(Dimension.fields, Payload.fields, 'fields property was properly hydrated');
   });
 
   test('getTagForField', function(assert) {

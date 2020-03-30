@@ -34,7 +34,7 @@ module('Unit | Helper | navi get display list', function(hooks) {
     assert.equal(
       helper.compute(['metric', ['pageViews', 'adClicks', 'timeSpent']]),
       'Page Views, Ad Clicks, Time Spent',
-      'The helper returns comma seperated list of name'
+      'The helper returns comma separated list of names'
     );
 
     assert.equal(helper.compute(['metric', undefined]), undefined, 'Undefined is returned when ids are not given');

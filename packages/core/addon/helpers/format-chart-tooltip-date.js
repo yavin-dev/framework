@@ -3,7 +3,6 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { helper as buildHelper } from '@ember/component/helper';
-import { get } from '@ember/object';
 import moment from 'moment';
 
 const TOOLTIP_DATE_TIME_FORMAT = {
@@ -27,7 +26,7 @@ const TOOLTIP_DATE_TIME_FORMAT = {
  */
 export function formatChartTooltipDate(request, value) {
   if (request && value) {
-    let granularity = get(request, 'logicalTable.timeGrain');
+    let granularity = request.logicalTable?.timeGrain;
     return moment(value).format(TOOLTIP_DATE_TIME_FORMAT[granularity]);
   }
 }

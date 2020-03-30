@@ -75,7 +75,7 @@ export default Base.extend({
    */
   displayName: computed('filter.subject.{metric,parameters}', function() {
     let metric = get(this, 'filter.subject');
-    return metricFormat(metric, get(metric, 'metric.name'));
+    return metricFormat(metric, metric.metric?.name);
   }),
 
   /**

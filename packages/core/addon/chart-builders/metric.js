@@ -21,7 +21,7 @@ import Interval from 'navi-core/utils/classes/interval';
 import DateUtils from 'navi-core/utils/date';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 import { inject as service } from '@ember/service';
-import EmberObject, { get, set, getWithDefault, computed } from '@ember/object';
+import EmberObject, { set, getWithDefault, computed } from '@ember/object';
 
 export default EmberObject.extend({
   /**
@@ -52,8 +52,8 @@ export default EmberObject.extend({
     const buildDateKey = dateTime => moment(dateTime).format(DateUtils.API_DATE_FORMAT_STRING);
 
     let metrics = config.metrics,
-      grain = get(request, 'logicalTable.timeGrain'),
-      requestInterval = Interval.parseFromStrings(get(request, 'intervals.0.start'), get(request, 'intervals.0.end'));
+      grain = request.logicalTable?.timeGrain,
+      requestInterval = Interval.parseFromStrings(request.intervals?.[0]?.start, request.intervals?.[0]?.end);
 
     /*
      * Get all date buckets spanned by the data,
@@ -77,7 +77,7 @@ export default EmberObject.extend({
       return Object.assign(
         { x },
         ...metrics.map(metric => {
-          let metricDisplayName = get(this, 'metricName').getDisplayName(metric, request.dataSource),
+          let metricDisplayName = this.metricName.getDisplayName(metric, request.dataSource),
             canonicalName = canonicalizeMetric(metric);
 
           return {
@@ -102,9 +102,9 @@ export default EmberObject.extend({
        * @property {Object[]} rowData - maps a response row to each series in a tooltip
        */
       rowData: computed('x', 'tooltipData', function() {
-        return get(this, 'tooltipData').map(() => {
+        return this.tooltipData.map(() => {
           // Get the full data for this combination of x + series
-          let dataForSeries = get(builder, 'byXSeries').getDataForKey(get(this, 'x')) || [];
+          let dataForSeries = builder.byXSeries.getDataForKey(this.x) || [];
           return dataForSeries[0];
         });
       })

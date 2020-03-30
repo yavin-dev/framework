@@ -44,7 +44,7 @@ export default class DashboardDataService extends Service {
    */
   async fetchDataForDashboard(dashboard) {
     const widgets = await dashboard.widgets;
-    const layout = get(dashboard, 'presentation.layout');
+    const layout = dashboard.presentation?.layout;
 
     return this.fetchDataForWidgets(dashboard.id, widgets, layout, [], this.widgetOptions);
   }
@@ -221,10 +221,7 @@ export default class DashboardDataService extends Service {
     const invalidFilters = this._getInvalidGlobalFilters(dashboard, request);
 
     return invalidFilters.map(filter => ({
-      detail: `"${get(filter, 'dimension.id')}" is not a dimension in the "${get(
-        request,
-        'logicalTable.table.id'
-      )}" table.`,
+      detail: `"${filter.dimension?.id}" is not a dimension in the "${request.logicalTable.table.id}" table.`,
       title: 'Invalid Filter'
     }));
   }
@@ -236,8 +233,8 @@ export default class DashboardDataService extends Service {
    * @returns {Boolean}
    */
   _isFilterValid(request, filter) {
-    const validDimensions = get(request, 'logicalTable.table.dimensionIds');
+    const validDimensions = request.logicalTable?.table?.dimensionIds;
 
-    return validDimensions.includes(get(filter, 'dimension.id'));
+    return validDimensions.includes(filter.dimension.id);
   }
 }

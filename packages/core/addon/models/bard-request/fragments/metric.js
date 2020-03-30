@@ -6,7 +6,7 @@
 import DS from 'ember-data';
 import Fragment from 'ember-data-model-fragments/fragment';
 import { validator, buildValidations } from 'ember-cp-validations';
-import { computed, get, set } from '@ember/object';
+import { computed, set } from '@ember/object';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 import { Copyable } from 'ember-copy';
 
@@ -27,8 +27,8 @@ export default Fragment.extend(Copyable, Validations, {
    * @return string
    */
   canonicalName: computed('metric.id', 'parameters.{}', function() {
-    const metric = get(this, 'metric.id'),
-      parameters = get(this, 'parameters') || {};
+    const metric = this.metric?.id,
+      parameters = this.parameters || {};
 
     return canonicalizeMetric({
       metric,
@@ -54,8 +54,8 @@ export default Fragment.extend(Copyable, Validations, {
    */
   copy() {
     return this.store.createFragment('bard-request/fragments/metric', {
-      metric: get(this, 'metric'),
-      parameters: Object.assign({}, get(this, 'parameters'))
+      metric: this.metric,
+      parameters: Object.assign({}, this.parameters)
     });
   }
 });

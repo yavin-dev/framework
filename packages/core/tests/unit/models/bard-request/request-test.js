@@ -3,7 +3,7 @@ import { setupTest } from 'ember-qunit';
 import config from 'ember-get-config';
 import { settled } from '@ember/test-helpers';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
-import { get, set } from '@ember/object';
+import { set } from '@ember/object';
 import { run } from '@ember/runloop';
 import moment from 'moment';
 import Interval from 'navi-core/utils/classes/interval';
@@ -198,7 +198,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
       request = mockModel.get('request');
 
     assert.equal(
-      request.get('logicalTable.table'),
+      request.logicalTable?.table,
       MetadataService.getById('table', 'network'),
       'The property Logical Table is set correctly in the request model fragment'
     );
@@ -218,28 +218,28 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
     );
 
     assert.equal(
-      request.get('responseFormat'),
+      request.responseFormat,
       'json',
       'The property responseFormat is set correctly in the request model fragment'
     );
 
     assert.equal(
-      request.get('bardVersion'),
+      request.bardVersion,
       'v1',
       'The property bardVersion is set correctly to the default in the request model fragment'
     );
 
     assert.equal(
-      request.get('requestVersion'),
+      request.requestVersion,
       'v1',
       'The property requestVersion is set correctly to the default in the request model fragment'
     );
 
-    assert.equal(request.get('dimensions.length'), 0, 'There are no groupBy dimensions in the request model fragment');
+    assert.equal(request.dimensions.length, 0, 'There are no groupBy dimensions in the request model fragment');
 
-    assert.equal(request.get('filters.length'), 0, 'There are no filters in the request model fragment');
+    assert.equal(request.filters.length, 0, 'There are no filters in the request model fragment');
 
-    assert.equal(request.get('sort.length'), 0, 'There are no sort in the request model fragment');
+    assert.equal(request.sort.length, 0, 'There are no sort in the request model fragment');
   });
 
   test('Clone Request', async function(assert) {
@@ -250,7 +250,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
     const request = mockModel.get('request').clone();
 
     assert.equal(
-      request.get('logicalTable.table'),
+      request.logicalTable?.table,
       MetadataService.getById('table', 'network'),
       'The property Logical Table is set correctly in the request model fragment'
     );
@@ -279,19 +279,19 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
     );
 
     assert.equal(
-      request.get('responseFormat'),
+      request.responseFormat,
       'json',
       'The property responseFormat is set correctly in the request model fragment'
     );
 
     assert.equal(
-      request.get('bardVersion'),
+      request.bardVersion,
       'v1',
       'The property bardVersion is set correctly to the default in the request model fragment'
     );
 
     assert.equal(
-      request.get('requestVersion'),
+      request.requestVersion,
       'v1',
       'The property requestVersion is set correctly to the default in the request model fragment'
     );
@@ -355,7 +355,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
     let mockModel = Store.peekRecord('fragments-mock', UNDEFINED_SORT_MODEL),
       request = mockModel.get('request').clone();
 
-    assert.equal(request.get('sort.length'), 0, 'Undefined sort is cloned to be an empty array');
+    assert.equal(request.sort.length, 0, 'Undefined sort is cloned to be an empty array');
   });
 
   /* == Metric == */
@@ -371,11 +371,11 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
       request = mockModel.get('request');
 
     /* == Test initial state == */
-    assert.equal(request.get('metrics.length'), 1, 'There is one metric in the request model fragment');
+    assert.equal(request.metrics.length, 1, 'There is one metric in the request model fragment');
 
     /* == Test adding new metric == */
     request.addMetric(newMetric);
-    assert.equal(request.get('metrics.length'), 2, 'There are now two metrics in the request model fragment');
+    assert.equal(request.metrics.length, 2, 'There are now two metrics in the request model fragment');
 
     assert.equal(
       request
@@ -389,7 +389,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
     /* == Test adding existing metric == */
     request.addMetric(newMetric);
     assert.deepEqual(
-      request.get('metrics').map(m => get(m, 'metric.id')),
+      request.metrics.map(m => m.metric.id),
       ['uniqueIdentifier', 'pageViews'],
       'Adding a metric already present in the request does not result in duplicate metrics'
     );
@@ -397,7 +397,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
     config.navi.FEATURES.enableRequestPreview = true;
     request.addMetric(newMetric);
     assert.deepEqual(
-      request.get('metrics').map(m => get(m, 'metric.id')),
+      request.metrics.map(m => m.metric?.id),
       ['uniqueIdentifier', 'pageViews', 'pageViews'],
       'Adding a metric already present in the request results in duplicate metrics when enableRequestPreview feature flag is on'
     );
@@ -412,11 +412,11 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
       newMetric = MetadataService.getById('metric', 'pageViews'),
       request = mockModel.get('request');
 
-    assert.equal(request.get('metrics.length'), 1, 'There is one metric in the model fragment');
+    assert.equal(request.metrics.length, 1, 'There is one metric in the model fragment');
 
     request.addRequestMetricByModel(newMetric);
 
-    assert.equal(request.get('metrics.length'), 2, 'There are now two metrics in the model fragment');
+    assert.equal(request.metrics.length, 2, 'There are now two metrics in the model fragment');
 
     assert.equal(
       request
@@ -431,7 +431,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
 
     request.addRequestMetricByModel(revenueMetric);
 
-    assert.equal(request.get('metrics.length'), 3, 'There are now three metrics in the model fragment');
+    assert.equal(request.metrics.length, 3, 'There are now three metrics in the model fragment');
 
     assert.equal(
       request
@@ -460,11 +460,11 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
       newMetric = MetadataService.getById('metric', 'revenue'),
       request = mockModel.get('request');
 
-    assert.equal(request.get('metrics.length'), 1, 'There is one metric in the model fragment');
+    assert.equal(request.metrics.length, 1, 'There is one metric in the model fragment');
 
     request.addRequestMetricWithParam(newMetric);
 
-    assert.equal(request.get('metrics.length'), 2, 'There are now two metrics in the model fragment');
+    assert.equal(request.metrics.length, 2, 'There are now two metrics in the model fragment');
 
     assert.equal(
       request
@@ -486,7 +486,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
 
     request.addRequestMetricWithParam(newMetric, { currency: 'AUD' });
 
-    assert.equal(request.get('metrics.length'), 3, 'There are now three metrics in the model fragment');
+    assert.equal(request.metrics.length, 3, 'There are now three metrics in the model fragment');
 
     assert.equal(
       request
@@ -508,11 +508,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
 
     request.addRequestMetricWithParam(newMetric, { currency: 'USD' });
 
-    assert.equal(
-      request.get('metrics.length'),
-      3,
-      'The final metric is not added since it already exists in the request'
-    );
+    assert.equal(request.metrics.length, 3, 'The final metric is not added since it already exists in the request');
   });
 
   test('removeRequestMetric', async function(assert) {
@@ -522,10 +518,10 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
     let mockModel = Store.peekRecord('fragments-mock', 1),
       request = mockModel.get('request');
 
-    assert.equal(request.get('metrics.length'), 1, 'There is one metric in the model fragment');
+    assert.equal(request.metrics.length, 1, 'There is one metric in the model fragment');
 
     request.removeRequestMetric(request.get('metrics').objectAt(0));
-    assert.equal(request.get('metrics.length'), 0, 'There are no metrics in the model fragment');
+    assert.equal(request.metrics.length, 0, 'There are no metrics in the model fragment');
   });
 
   test('removeRequestMetricByModel', async function(assert) {
@@ -535,11 +531,11 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
     let mockModel = Store.peekRecord('fragments-mock', 1),
       request = mockModel.get('request');
 
-    assert.equal(request.get('metrics.length'), 1, 'There is one metric in the model fragment');
+    assert.equal(request.metrics.length, 1, 'There is one metric in the model fragment');
 
     request.removeRequestMetricByModel(MetadataService.getById('metric', 'uniqueIdentifier'));
 
-    assert.equal(request.get('metrics.length'), 0, 'There are no metrics in the model fragment');
+    assert.equal(request.metrics.length, 0, 'There are no metrics in the model fragment');
   });
 
   test('removeRequestMetricByModel - multiple metrics', async function(assert) {
@@ -553,11 +549,11 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
     request.addRequestMetricWithParam(revenueMetric);
     request.addRequestMetricWithParam(revenueMetric, { currency: 'AUD' });
 
-    assert.equal(request.get('metrics.length'), 3, 'There is one metric in the model fragment');
+    assert.equal(request.metrics.length, 3, 'There is one metric in the model fragment');
 
     request.removeRequestMetricByModel(revenueMetric);
 
-    assert.equal(request.get('metrics.length'), 1, 'There are no metrics in the model fragment');
+    assert.equal(request.metrics.length, 1, 'There are no metrics in the model fragment');
   });
 
   test('removeRequestMetricWithParam', async function(assert) {
@@ -574,22 +570,18 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
       as: 'm1'
     });
 
-    assert.equal(request.get('metrics.length'), 3, 'There are three metrics in the model fragment');
+    assert.equal(request.metrics.length, 3, 'There are three metrics in the model fragment');
 
     request.removeRequestMetricWithParam(revenueMetric, { currency: 'AUD' });
 
-    assert.equal(request.get('metrics.length'), 2, 'There is now two metrics in the model fragment');
+    assert.equal(request.metrics.length, 2, 'There is now two metrics in the model fragment');
 
     let selectedRevenueMetric = request.get('metrics').objectAt(1);
 
-    assert.equal(
-      get(selectedRevenueMetric, 'metric.id'),
-      'revenue',
-      'One revenue metric is part of the selected metric list'
-    );
+    assert.equal(selectedRevenueMetric.metric?.id, 'revenue', 'One revenue metric is part of the selected metric list');
 
     assert.deepEqual(
-      get(selectedRevenueMetric, 'parameters'),
+      selectedRevenueMetric.parameters,
       { currency: 'USD' },
       'the selected revenue metric has the right parameter'
     );
@@ -604,10 +596,10 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
       request = mockModel.get('request');
 
     request.addRequestMetricByModel(newMetric);
-    assert.equal(request.get('metrics.length'), 2, 'There are now two metrics in the model fragment');
+    assert.equal(request.metrics.length, 2, 'There are now two metrics in the model fragment');
 
     request.clearMetrics();
-    assert.equal(request.get('metrics.length'), 0, 'All metrics have been cleared in the model fragment');
+    assert.equal(request.metrics.length, 0, 'All metrics have been cleared in the model fragment');
   });
 
   /* == Interval == */
@@ -622,11 +614,11 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
       newInterval = new Interval(startDate, endDate),
       request = mockModel.get('request');
 
-    assert.equal(request.get('intervals.length'), 1, 'There is one interval in the model fragment');
+    assert.equal(request.intervals.length, 1, 'There is one interval in the model fragment');
 
     request.addInterval(newInterval);
 
-    assert.equal(request.get('intervals.length'), 2, 'There are now two intervals in the model fragment');
+    assert.equal(request.intervals.length, 2, 'There are now two intervals in the model fragment');
 
     assert.ok(
       request.get('intervals.lastObject.interval').isEqual(newInterval),
@@ -649,10 +641,10 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
     let mockModel = Store.peekRecord('fragments-mock', 1),
       request = mockModel.get('request');
 
-    assert.equal(request.get('intervals.length'), 1, 'There is one interval in the model fragment');
+    assert.equal(request.intervals.length, 1, 'There is one interval in the model fragment');
 
     request.removeInterval(request.get('intervals.firstObject'));
-    assert.equal(request.get('intervals.length'), 0, 'There are no intervals in the model fragment');
+    assert.equal(request.intervals.length, 0, 'There are no intervals in the model fragment');
   });
 
   /* == Dimension == */
@@ -669,7 +661,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
 
     request.addDimension(newDimension);
 
-    assert.equal(request.get('dimensions.length'), 1, 'There is now one dimension in the model fragment');
+    assert.equal(request.dimensions.length, 1, 'There is now one dimension in the model fragment');
 
     assert.equal(
       request
@@ -683,7 +675,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
     /* == Test adding existing dimension == */
     request.addDimension(newDimension);
     assert.deepEqual(
-      request.get('dimensions').map(m => get(m, 'dimension.id')),
+      request.dimensions.map(m => m.dimension?.id),
       ['age'],
       'Adding a dimension already present in the request does not result in duplicate dimensions'
     );
@@ -691,7 +683,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
     config.navi.FEATURES.enableRequestPreview = true;
     request.addDimension(newDimension);
     assert.deepEqual(
-      request.get('dimensions').map(m => get(m, 'dimension.id')),
+      request.dimensions.map(m => m.dimension?.id),
       ['age', 'age'],
       'Adding a dimension already present in the request results in duplicate dimensions when enableRequestPreview feature flag is on'
     );
@@ -708,7 +700,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
 
     request.addRequestDimensionByModel(newDimension);
 
-    assert.equal(request.get('dimensions.length'), 1, 'There is now one dimension in the model fragment');
+    assert.equal(request.dimensions.length, 1, 'There is now one dimension in the model fragment');
 
     assert.equal(
       request
@@ -731,10 +723,10 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
       request = mockModel.get('request');
 
     request.addDimension(newDimension);
-    assert.equal(request.get('dimensions.length'), 1, 'There is one groupBy dimension in the model fragment');
+    assert.equal(request.dimensions.length, 1, 'There is one groupBy dimension in the model fragment');
 
     request.removeRequestDimension(request.get('dimensions').objectAt(0));
-    assert.equal(request.get('dimensions.length'), 0, 'There are no groupBy dimensions in the model fragment');
+    assert.equal(request.dimensions.length, 0, 'There are no groupBy dimensions in the model fragment');
   });
 
   test('removeRequestDimensionByModel', async function(assert) {
@@ -748,10 +740,10 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
       request = mockModel.get('request');
 
     request.addDimension(newDimension);
-    assert.equal(request.get('dimensions.length'), 1, 'There is one groupBy dimension in the model fragment');
+    assert.equal(request.dimensions.length, 1, 'There is one groupBy dimension in the model fragment');
 
     request.removeRequestDimensionByModel(MetadataService.getById('dimension', 'age'));
-    assert.equal(request.get('dimensions.length'), 0, 'There are no groupBy dimensions in the model fragment');
+    assert.equal(request.dimensions.length, 0, 'There are no groupBy dimensions in the model fragment');
   });
 
   test('clearDimensions', async function(assert) {
@@ -769,10 +761,10 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
 
     request.addDimension(dimension1);
     request.addDimension(dimension2);
-    assert.equal(request.get('dimensions.length'), 2, 'There are now two dimensions in the model fragment');
+    assert.equal(request.dimensions.length, 2, 'There are now two dimensions in the model fragment');
 
     request.clearDimensions();
-    assert.equal(request.get('dimensions.length'), 0, 'All dimensions have been cleared in the model fragment');
+    assert.equal(request.dimensions.length, 0, 'All dimensions have been cleared in the model fragment');
   });
 
   /* == Filters == */
@@ -792,7 +784,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
 
     request.addFilter(newFilter);
 
-    assert.equal(request.get('filters.length'), 1, 'There is now one filter in the model fragment');
+    assert.equal(request.filters.length, 1, 'There is now one filter in the model fragment');
 
     assert.equal(
       request
@@ -809,10 +801,10 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
       request.get('filters').map(m => m.serialize()),
       [
         {
-          dimension: get(newFilter, 'dimension.id'),
-          field: get(newFilter, 'field'),
-          operator: get(newFilter, 'operator'),
-          values: get(newFilter, 'values')
+          dimension: newFilter.dimension?.id,
+          field: newFilter.field,
+          operator: newFilter.operator,
+          values: newFilter.values
         }
       ],
       'Adding a filter that is already present in the request does not result in duplicate filters'
@@ -832,10 +824,10 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
       request = mockModel.get('request');
 
     request.addFilter(newFilter);
-    assert.equal(request.get('filters.length'), 1, 'There is one filter in the model fragment');
+    assert.equal(request.filters.length, 1, 'There is one filter in the model fragment');
 
     request.removeRequestFilter(request.get('filters').objectAt(0));
-    assert.equal(request.get('filters.length'), 0, 'There is no filters in the model fragment');
+    assert.equal(request.filters.length, 0, 'There is no filters in the model fragment');
   });
 
   test('removeRequestFilterByDimension', async function(assert) {
@@ -851,10 +843,10 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
       request = mockModel.get('request');
 
     request.addFilter(newFilter);
-    assert.equal(request.get('filters.length'), 1, 'There is one filter in the model fragment');
+    assert.equal(request.filters.length, 1, 'There is one filter in the model fragment');
 
     request.removeRequestFilterByDimension(MetadataService.getById('dimension', 'age'));
-    assert.equal(request.get('filters.length'), 0, 'There are no filters in the model fragment');
+    assert.equal(request.filters.length, 0, 'There are no filters in the model fragment');
   });
 
   test('updateFilter', async function(assert) {
@@ -871,7 +863,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
 
     request.addFilter(filter);
 
-    assert.equal(request.get('filters.length'), 1, 'There is one filter in the model fragment');
+    assert.equal(request.filters.length, 1, 'There is one filter in the model fragment');
 
     assert.equal(
       request
@@ -979,7 +971,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
 
     request.addHaving(newHaving);
 
-    assert.equal(request.get('having.length'), 1, 'There is now one having in the model fragment');
+    assert.equal(request.having.length, 1, 'There is now one having in the model fragment');
 
     assert.equal(
       request
@@ -998,10 +990,10 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
       [
         {
           metric: {
-            metric: get(newHaving, 'metric.metric.id')
+            metric: newHaving.metric?.metric?.id
           },
-          operator: get(newHaving, 'operator'),
-          values: [get(newHaving, 'value')]
+          operator: newHaving.operator,
+          values: [newHaving.value]
         }
       ],
       'Adding a having already present in the request does not result in duplicate havings'
@@ -1023,10 +1015,10 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
       request = mockModel.get('request');
 
     request.addHaving(newHaving);
-    assert.equal(request.get('having.length'), 1, 'There is one having in the model fragment');
+    assert.equal(request.having.length, 1, 'There is one having in the model fragment');
 
     request.removeRequestHaving(request.get('having').objectAt(0));
-    assert.equal(request.get('having.length'), 0, 'There is no having in the model fragment');
+    assert.equal(request.having.length, 0, 'There is no having in the model fragment');
   });
 
   test('removeRequestHavingByMetric', async function(assert) {
@@ -1044,10 +1036,10 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
       request = mockModel.get('request');
 
     request.addHaving(newHaving);
-    assert.equal(request.get('having.length'), 1, 'There is one having in the model fragment');
+    assert.equal(request.having.length, 1, 'There is one having in the model fragment');
 
     request.removeRequestHavingByMetric(MetadataService.getById('metric', 'pageViews'));
-    assert.equal(request.get('having.length'), 0, 'There are no having in the model fragment');
+    assert.equal(request.having.length, 0, 'There are no having in the model fragment');
   });
 
   test('updateHaving', async function(assert) {
@@ -1066,7 +1058,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
 
     request.addHaving(having);
 
-    assert.equal(request.get('having.length'), 1, 'There is one having in the model fragment');
+    assert.equal(request.having.length, 1, 'There is one having in the model fragment');
 
     assert.equal(
       request
@@ -1126,7 +1118,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
     request.addSort(newSort);
     request.addDateTimeSort('desc');
 
-    assert.equal(request.get('sort.length'), 2, 'There is now one sort in the model fragment');
+    assert.equal(request.sort.length, 2, 'There is now one sort in the model fragment');
 
     assert.deepEqual(
       request
@@ -1166,7 +1158,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
 
     request.addSort(newSort);
 
-    assert.equal(request.get('sort.length'), 1, 'There is now one sort in the model fragment');
+    assert.equal(request.sort.length, 1, 'There is now one sort in the model fragment');
 
     assert.equal(
       request
@@ -1196,9 +1188,9 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
       [
         {
           metric: {
-            metric: get(newSort, 'metric.metric.id')
+            metric: newSort.metric?.metric?.id
           },
-          direction: get(newSort, 'direction')
+          direction: newSort.direction
         }
       ],
       'Adding a sort already present in the request does not result in duplicate sorts'
@@ -1220,7 +1212,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
 
     request.addSort(newSort);
 
-    assert.equal(request.get('sort.length'), 1, 'There is now one sort in the model fragment');
+    assert.equal(request.sort.length, 1, 'There is now one sort in the model fragment');
 
     assert.equal(
       request
@@ -1254,10 +1246,10 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
       [
         {
           metric: {
-            metric: get(newSort, 'metric.metric.id'),
+            metric: newSort.metric.metric.id,
             parameters: { currency: 'USD' }
           },
-          direction: get(newSort, 'direction')
+          direction: newSort.direction
         }
       ],
       'Adding a sort already present in the request does not result in duplicate sorts'
@@ -1273,7 +1265,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
       latestSort.serialize(),
       {
         metric: {
-          metric: get(newSort, 'metric.metric.id'),
+          metric: newSort.metric.metric.id,
           parameters: { currency: 'CAD' }
         },
         direction: 'desc'
@@ -1291,42 +1283,42 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
 
     request.addSortByMetricName('uniqueIdentifier', 'desc');
 
-    assert.equal(request.get('sort.length'), 1, 'There is now one sort in the model fragment');
+    assert.equal(request.sort.length, 1, 'There is now one sort in the model fragment');
 
     let theSort = request.get('sort').objectAt(0);
 
-    assert.equal(get(theSort, 'metric.metric.id'), 'uniqueIdentifier', 'Copied the right metric');
+    assert.equal(theSort.metric.metric.id, 'uniqueIdentifier', 'Copied the right metric');
 
-    assert.equal(get(theSort, 'direction'), 'desc', 'Goes the right direction');
+    assert.equal(theSort.direction, 'desc', 'Goes the right direction');
 
     assert.expectAssertion(
       function() {
         request.addSortByMetricName('revenue');
       },
-      /Metric with id "revenue" was not found in the request/,
+      /Metric with canonical name "revenue" was not found in the request/,
       'ambiguous adding of parameterized sorts throws error'
     );
 
     request.addSortByMetricName('revenue(currency=CAD)');
     request.addSortByMetricName('revenue(currency=USD)', 'desc');
 
-    assert.equal(request.get('sort.length'), 3, 'Adding parameterized metrics should add each metric');
+    assert.equal(request.sort.length, 3, 'Adding parameterized metrics should add each metric');
 
     theSort = request.get('sort').objectAt(1);
 
-    assert.equal(get(theSort, 'metric.metric.id'), 'revenue', 'Copied the right parameterized CAD metric');
+    assert.equal(theSort.metric.metric.id, 'revenue', 'Copied the right parameterized CAD metric');
 
-    assert.equal(get(theSort, 'metric.parameters.currency'), 'CAD', 'Copied the right parameterized CAD metric');
+    assert.equal(theSort.metric.parameters.currency, 'CAD', 'Copied the right parameterized CAD metric');
 
-    assert.equal(get(theSort, 'direction'), 'asc', 'parameterized CAD metric Goes the right direction');
+    assert.equal(theSort.direction, 'asc', 'parameterized CAD metric Goes the right direction');
 
     theSort = request.get('sort').objectAt(2);
 
-    assert.equal(get(theSort, 'metric.metric.id'), 'revenue', 'Copied the right parameterized USD metric');
+    assert.equal(theSort.metric.metric.id, 'revenue', 'Copied the right parameterized USD metric');
 
-    assert.equal(get(theSort, 'metric.parameters.currency'), 'USD', 'Copied the right parameterized USD metric');
+    assert.equal(theSort.metric.parameters.currency, 'USD', 'Copied the right parameterized USD metric');
 
-    assert.equal(get(theSort, 'direction'), 'desc', 'parameterized USD metric Goes the right direction');
+    assert.equal(theSort.direction, 'desc', 'parameterized USD metric Goes the right direction');
   });
 
   test('removeSort', async function(assert) {
@@ -1341,10 +1333,10 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
       request = mockModel.get('request');
 
     request.addSort(newSort);
-    assert.equal(request.get('sort.length'), 1, 'There is one sort in the model fragment');
+    assert.equal(request.sort.length, 1, 'There is one sort in the model fragment');
 
     request.removeSort(request.get('sort').objectAt(0));
-    assert.equal(request.get('sort.length'), 0, 'There is no sort in the model fragment');
+    assert.equal(request.sort.length, 0, 'There is no sort in the model fragment');
 
     let parameterizedSortUSD = {
       metric: {
@@ -1365,10 +1357,10 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
     request.addSort(parameterizedSortUSD);
     request.addSort(parameterizedSortCAD);
 
-    assert.equal(request.get('sort.length'), 2, 'There are two parameterized sorts in the model fragment');
+    assert.equal(request.sort.length, 2, 'There are two parameterized sorts in the model fragment');
 
     request.removeSort(request.get('sort').objectAt(0));
-    assert.equal(request.get('sort.length'), 1, 'There is one parameterized sort in the model fragment');
+    assert.equal(request.sort.length, 1, 'There is one parameterized sort in the model fragment');
   });
 
   test('removeSortByMetricName', async function(assert) {
@@ -1383,10 +1375,10 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
       request = mockModel.get('request');
 
     request.addSort(newSort);
-    assert.equal(request.get('sort.length'), 1, 'There is one sort in the model fragment');
+    assert.equal(request.sort.length, 1, 'There is one sort in the model fragment');
 
     request.removeSortByMetricName('pageViews');
-    assert.equal(request.get('sort.length'), 0, 'There are no sort in the model fragment');
+    assert.equal(request.sort.length, 0, 'There are no sort in the model fragment');
 
     let parameterizedSortUSD = {
       metric: {
@@ -1407,10 +1399,10 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
     request.addSort(parameterizedSortUSD);
     request.addSort(parameterizedSortCAD);
 
-    assert.equal(request.get('sort.length'), 2, 'There are two parameterized sorts in the model fragment');
+    assert.equal(request.sort.length, 2, 'There are two parameterized sorts in the model fragment');
 
     request.removeSortByMetricName('revenue(currency=CAD)');
-    assert.equal(request.get('sort.length'), 1, 'There is one parameterized sort in the model fragment');
+    assert.equal(request.sort.length, 1, 'There is one parameterized sort in the model fragment');
   });
 
   test('removeSortMetricWithParam', async function(assert) {
@@ -1440,11 +1432,11 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
     request.addSort(parameterizedSortUSD);
     request.addSort(parameterizedSortCAD);
 
-    assert.equal(request.get('sort.length'), 2, 'There are two parameterized sorts in the model fragment');
+    assert.equal(request.sort.length, 2, 'There are two parameterized sorts in the model fragment');
 
     request.removeSortMetricWithParam(revenueMetric, { currency: 'USD' });
 
-    assert.equal(request.get('sort.length'), 1, 'There is one parameterized sort in the model fragment');
+    assert.equal(request.sort.length, 1, 'There is one parameterized sort in the model fragment');
 
     assert.deepEqual(
       request
@@ -1492,11 +1484,11 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
     request.addSort(parameterizedSortUSD);
     request.addSort(parameterizedSortCAD);
 
-    assert.equal(request.get('sort.length'), 3, 'There are three sorts in the model fragment');
+    assert.equal(request.sort.length, 3, 'There are three sorts in the model fragment');
 
     request.removeSortMetricByModel(revenueMetric);
 
-    assert.equal(request.get('sort.length'), 1, 'There is one sort in the model fragment');
+    assert.equal(request.sort.length, 1, 'There is one sort in the model fragment');
 
     assert.equal(
       request
@@ -1523,7 +1515,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
 
     request.addSort(sort);
 
-    assert.equal(request.get('sort.length'), 1, 'There is one sort in the model fragment');
+    assert.equal(request.sort.length, 1, 'There is one sort in the model fragment');
 
     assert.equal(
       request

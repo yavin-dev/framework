@@ -59,7 +59,7 @@ export default VisualizationBase.extend(Validations, {
       columns = get(this, 'metadata.columns'),
       // index column based on metricId or dimensionId
       columnIndex = indexColumnById(columns),
-      timeGrain = get(request, 'logicalTable.timeGrain');
+      timeGrain = request.logicalTable?.timeGrain;
 
     //Only add dateColumn if timegrain is not 'all'
     let dateColumn =
@@ -106,9 +106,9 @@ function getDefaultDimensionFields(dimension) {
  * @returns {Object} - dimension column
  */
 function buildDimensionColumn(dimension, columnIndex, field) {
-  let dimensionId = get(dimension, 'dimension.id'),
+  let dimensionId = dimension.dimension.id,
     column = columnIndex[dimensionId],
-    defaultName = formatDimensionName({ name: get(dimension, 'dimension.name'), field });
+    defaultName = formatDimensionName({ name: dimension.dimension.name, field });
 
   return {
     type: 'dimension',
@@ -150,7 +150,7 @@ function buildMetricColumns(metrics, columnIndex) {
       type = isTrend ? 'threshold' : 'metric',
       metricObject = metric.toJSON(),
       column = columnIndex[canonicalizeMetric(metricObject)],
-      name = get(metric, 'metric.name'),
+      name = metric.metric.name,
       displayName = column ? column.displayName : metricFormat(metric, name),
       format = column ? get(column, 'attributes.format') : '';
 
@@ -214,14 +214,14 @@ function hasAllColumns(request, columns) {
       }),
     dimensions = [].concat(
       ...get(request, 'dimensions').map(dimension => {
-        let name = get(dimension, 'dimension.id'),
+        let name = dimension.dimension.id,
           defaultFields = getDefaultDimensionFields(dimension);
         return !defaultFields.length ? name : defaultFields.map(field => canonicalizeDimension({ id: name, field }));
       })
     ),
     metrics = arr(get(request, 'metrics')).mapBy('canonicalName'),
     requestFields = [...dimensions, ...metrics],
-    timeGrain = get(request, 'logicalTable.timeGrain'),
+    timeGrain = request.logicalTable?.timeGrain,
     shouldHaveDateTimeCol = timeGrain !== 'all',
     doesHaveDateTimeCol = !!arr(columns).findBy('type', 'dateTime');
 

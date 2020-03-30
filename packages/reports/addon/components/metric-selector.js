@@ -39,7 +39,7 @@ class MetricSelectorComponent extends Component {
   @computed('request.metrics.[]')
   get selectedMetrics() {
     let metrics = get(this, 'request.metrics').toArray(),
-      selectedBaseMetrics = uniqBy(metrics, metric => get(metric, 'metric.id'));
+      selectedBaseMetrics = uniqBy(metrics, metric => metric.metric?.id);
 
     return A(selectedBaseMetrics).mapBy('metric');
   }
