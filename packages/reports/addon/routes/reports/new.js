@@ -105,7 +105,7 @@ export default Route.extend({
       request: this.store.createFragment('bard-request/request', {
         logicalTable: this.store.createFragment('bard-request/fragments/logicalTable', {
           table,
-          timeGrain: timeGrain
+          timeGrain
         }),
         dataSource: table.source,
         responseFormat: 'csv'

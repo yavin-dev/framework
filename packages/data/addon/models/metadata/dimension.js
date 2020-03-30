@@ -3,7 +3,10 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { inject as service } from '@ember/service';
+import { assert } from '@ember/debug';
 import Column from './column';
+
+export const CARDINALITY_SIZES = ['SMALL', 'MEDIUM', 'LARGE'];
 
 export default class Dimension extends Column {
   /**
@@ -55,6 +58,10 @@ export default class Dimension extends Column {
     return undefined;
   }
   set cardinality(cardinality) {
+    assert(
+      'Dimension cardinality should be set to a value included in CARDINALITY_SIZES',
+      CARDINALITY_SIZES.includes(cardinality)
+    );
     this._cardinality = cardinality;
   }
 

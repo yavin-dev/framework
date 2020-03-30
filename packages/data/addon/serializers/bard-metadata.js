@@ -8,16 +8,11 @@
 import EmberObject from '@ember/object';
 import { guidFor } from '@ember/object/internals';
 import { constructFunctionArguments } from 'navi-data/serializers/metadata/metric-function';
+import { CARDINALITY_SIZES } from 'navi-data/models/metadata/dimension';
 import config from 'ember-get-config';
 
 const LOAD_CARDINALITY = config.navi.searchThresholds.contains;
 const MAX_LOAD_CARDINALITY = config.navi.searchThresholds.in;
-
-const CARDINALITY_SORTING = {
-  SMALL: 0,
-  MEDIUM: 1,
-  LARGE: 2
-};
 
 export default class BardMetadataSerializer extends EmberObject {
   /**
@@ -54,7 +49,7 @@ export default class BardMetadataSerializer extends EmberObject {
               const accTableDimensionList = valueType === 'date' ? tableTimeDimensionIds : tableDimensionIds;
 
               const newDim = this._constructDimension(dimension, source, table.name, accDimensionList);
-              if (CARDINALITY_SORTING[newDim.cardinality] > CARDINALITY_SORTING[acc.tableCardinality]) {
+              if (CARDINALITY_SIZES.indexOf(newDim.cardinality) > CARDINALITY_SIZES.indexOf(acc.tableCardinality)) {
                 acc.tableCardinality = newDim.cardinality;
               }
               accDimensionList[newDim.id] = newDim; // Add dim to all dimensions list
@@ -90,7 +85,7 @@ export default class BardMetadataSerializer extends EmberObject {
             tableMetricIds: new Set(),
             tableDimensionIds: new Set(),
             tableTimeDimensionIds: new Set(),
-            tableCardinality: 'SMALL'
+            tableCardinality: CARDINALITY_SIZES[0]
           }
         );
 
@@ -171,11 +166,11 @@ export default class BardMetadataSerializer extends EmberObject {
       const newTableIds = new Set([...existingDimension.tableIds, tableName]);
       newDimension = Object.assign({}, existingDimension, { tableIds: [...newTableIds] });
     } else {
-      let dimCardinality = 'SMALL';
+      let dimCardinality = CARDINALITY_SIZES[0];
       if (cardinality > MAX_LOAD_CARDINALITY) {
-        dimCardinality = 'LARGE';
+        dimCardinality = CARDINALITY_SIZES[2];
       } else if (cardinality > LOAD_CARDINALITY) {
-        dimCardinality = 'MEDIUM';
+        dimCardinality = CARDINALITY_SIZES[1];
       }
       newDimension = {
         id: name,

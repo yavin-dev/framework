@@ -12,14 +12,13 @@ module('Unit | Consumer | request logical table', function(hooks) {
     const currentModel = { request: { logicalTable, dataSource: 'oldDataSource' } };
     const newTable = { name: 'newTable', timeGrains: ['day', 'week'], source: 'newDataSource' };
 
-    let expectTableAction = false;
+    let actionCallCount = 0;
 
     const MockDispatcher = {
       dispatch(action, route, arg) {
-        if (expectTableAction) {
+        if (actionCallCount % 2 === 1) {
           assert.equal(action, RequestActions.DID_UPDATE_TABLE, 'DID_UPDATE_TABLE is sent as part of UPDATE_TABLE');
           assert.deepEqual(arg, newTable, 'New table is passed to DID_UPDATE_TABLE');
-          expectTableAction = false;
         } else {
           assert.equal(action, RequestActions.ADD_TIME_GRAIN, 'ADD_TIME_GRAIN is sent as part of UPDATE_TABLE');
 
@@ -28,8 +27,8 @@ module('Unit | Consumer | request logical table', function(hooks) {
             'day',
             'When the old and new tables share a time grain, that grain is given to ADD_TIME_GRAIN'
           );
-          expectTableAction = true;
         }
+        actionCallCount++;
       }
     };
     const subject = this.owner
@@ -44,18 +43,17 @@ module('Unit | Consumer | request logical table', function(hooks) {
     /* == New table has different time grains == */
     newTable.timeGrains = ['week'];
     MockDispatcher.dispatch = (action, route, arg) => {
-      if (expectTableAction) {
+      if (actionCallCount % 2 === 1) {
         assert.equal(action, RequestActions.DID_UPDATE_TABLE, 'DID_UPDATE_TABLE is sent as part of UPDATE_TABLE');
         assert.deepEqual(arg, newTable, 'New table is passed to DID_UPDATE_TABLE');
-        expectTableAction = false;
       } else {
         assert.equal(
           arg,
           'week',
           "When new table doesn't have previous time grain, the first grain is given to ADD_TIME_GRAIN"
         );
-        expectTableAction = true;
       }
+      actionCallCount++;
     };
     subject.send(RequestActions.UPDATE_TABLE, { currentModel }, newTable);
   });

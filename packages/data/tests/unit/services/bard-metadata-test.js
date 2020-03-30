@@ -397,7 +397,7 @@ module('Unit - Service - Bard Metadata', function(hooks) {
     keg.push('metadata/metric', partiallyLoadedMetric, { namespace: 'dummy' });
 
     const kegRecord = keg.getById('metadata/metric', 'metricSix', 'dummy');
-    assert.ok(kegRecord?.partialData, 'Partial metric exists in keg with partial data flag');
+    assert.ok(kegRecord.partialData, 'Partial metric exists in keg with partial data flag');
 
     const partialLoadExpectedMetric = {
       id: partiallyLoadedMetric.id,
@@ -414,7 +414,7 @@ module('Unit - Service - Bard Metadata', function(hooks) {
       'Correct metric is returned'
     );
     assert.notOk(
-      findOnPartiallyLoadedMetric?.partialData,
+      findOnPartiallyLoadedMetric.partialData,
       'Partial data flag is no longer present after direct access of metric'
     );
     assert.equal(Server.handledRequests.length, 3, 'Another request is sent for a partially loaded model');

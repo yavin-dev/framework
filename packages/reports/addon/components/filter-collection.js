@@ -52,7 +52,7 @@ export default Component.extend({
     });
 
     let dimFilters = getWithDefault(this, 'request.filters', []).map(filter => {
-      let dimensionDataType = filter.dimension.valueType?.toLowerCase(),
+      let dimensionDataType = filter.dimension.valueType?.toLowerCase?.(),
         type = featureFlag('dateDimensionFilter') && dimensionDataType === 'date' ? 'date-dimension' : 'dimension';
 
       return {

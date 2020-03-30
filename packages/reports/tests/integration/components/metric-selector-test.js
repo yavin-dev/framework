@@ -299,9 +299,7 @@ module('Integration | Component | metric selector', function(hooks) {
         acc[cat] = acc[cat] ? [...acc[cat], name] : [name];
         return acc;
       }, {});
-    const expectedPageResults = Object.values(groupedSortedMetrics).reduce((result, group) => {
-      return [...result, ...group];
-    }, []);
+    const expectedPageResults = Object.values(groupedSortedMetrics).flat();
 
     const pageResults = (await getAll('metric')).filter(item => item.includes('Page'));
     assert.deepEqual(

@@ -226,6 +226,14 @@ module('Unit | Metadata Model | Dimension', function(hooks) {
     });
 
     assert.strictEqual(dimension2.cardinality, undefined, 'Dimension returns undefined for non-field type dimension');
+
+    assert.throws(
+      () => {
+        dimension2.cardinality = 'chicago cubity';
+      },
+      /Dimension cardinality should be set to a value included in CARDINALITY_SIZES/,
+      'Assert fails when invalid cardinality value is set'
+    );
   });
 
   test('idFieldName', async function(assert) {

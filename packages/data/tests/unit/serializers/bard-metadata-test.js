@@ -686,7 +686,7 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
     assert.deepEqual(
       existingDimensionResult,
       expectedDimension,
-      'timegrain is added to the existing dimension in the currentDimensions list'
+      'New dimension is not constructed, existing dimension is returned'
     );
 
     const otherDimension = Object.assign({}, dimension, { name: 'dimensionTwo' });

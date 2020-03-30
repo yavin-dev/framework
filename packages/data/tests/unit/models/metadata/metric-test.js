@@ -94,12 +94,12 @@ module('Unit | Metadata Model | Metric', function(hooks) {
       },
       metric = MetricMetadataModel.create(this.owner.ownerInjection(), payload);
 
-    assert.deepEqual(await metric.arguments, [], 'arguments is an empty array when metric has no metric function');
+    assert.deepEqual(metric.arguments, [], 'arguments is an empty array when metric has no metric function');
 
-    assert.notOk(await metric.hasParameters, 'hasParameters property is false since the metric has no metric function');
+    assert.notOk(metric.hasParameters, 'hasParameters property is false since the metric has no metric function');
 
     assert.strictEqual(
-      await metric.getParameter('someParam'),
+      metric.getParameter('someParam'),
       undefined,
       'getParameter returns falsey value when no parameters are present'
     );
@@ -109,7 +109,7 @@ module('Unit | Metadata Model | Metric', function(hooks) {
     assert.expect(3);
 
     assert.deepEqual(
-      await MoneyMetric.getDefaultParameters(),
+      MoneyMetric.getDefaultParameters(),
       { currency: 'USD' },
       'The default values of the metric parameters are returned as a key value pair'
     );
@@ -123,13 +123,13 @@ module('Unit | Metadata Model | Metric', function(hooks) {
       metric = MetricMetadataModel.create(this.owner.ownerInjection(), payload);
 
     assert.strictEqual(
-      await metric.getDefaultParameters(),
+      metric.getDefaultParameters(),
       undefined,
       'The method returns undefined when trying to fetch defaults from a metric without parameters'
     );
 
     assert.deepEqual(
-      await ClicksMetric.getDefaultParameters(),
+      ClicksMetric.getDefaultParameters(),
       { aggregation: '7DayAvg', trend: 'DO_D' },
       'The method returns all the defaults for all the parameters of the metric'
     );

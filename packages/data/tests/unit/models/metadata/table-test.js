@@ -98,7 +98,7 @@ module('Unit | Metadata Model | Table', function(hooks) {
     assert.deepEqual(timeDimensionIds, Payload.timeDimensionIds, 'timeDimensionIds property is hydrated properly');
     assert.equal(source, Payload.source, 'source property is hydrated properly');
     assert.deepEqual(tags, Payload.tags, 'tags property is hydrated properly');
-    assert.deepEqual(timeGrainIds, Payload.timeGrainIds);
+    assert.deepEqual(timeGrainIds, Payload.timeGrainIds, 'timeGrainIds property is hydrated properly');
   });
 
   test('Metric in Table', function(assert) {

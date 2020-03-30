@@ -16,6 +16,7 @@ import { inject as service } from '@ember/service';
 import Component from '@ember/component';
 import { get, set, computed, action } from '@ember/object';
 import { readOnly } from '@ember/object/computed';
+import { CARDINALITY_SIZES } from 'navi-data/models/metadata/dimension';
 import layout from '../../templates/components/filter-values/dimension-select';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
@@ -61,7 +62,7 @@ class DimensionSelectComponent extends Component {
       source = get(this, 'filter.subject.source'),
       loadedDimension = metadataService.getById('dimension', dimensionName, source);
 
-    if (dimensionName && loadedDimension?.cardinality === 'SMALL') {
+    if (dimensionName && loadedDimension?.cardinality === CARDINALITY_SIZES[0]) {
       return dimensionService.all(dimensionName, { dataSourceName: source });
     }
 

@@ -15,6 +15,7 @@ import BardDimensionArray from 'navi-data/models/bard-dimension-array';
 import SearchUtils from 'navi-data/utils/search';
 import { intersection } from 'lodash-es';
 import { getDefaultDataSourceName } from '../utils/adapter';
+import { CARDINALITY_SIZES } from 'navi-data/models/metadata/dimension';
 
 const SEARCH_OPERATOR_PRIORITY = ['contains', 'in'];
 
@@ -263,7 +264,7 @@ export default class BardDimensionService extends Service {
     const source = options.dataSourceName || getDefaultDataSourceName();
     let operator = this._getSearchOperator(dimension);
 
-    if (metadataService.getById('dimension', dimension, source).cardinality === 'LARGE') {
+    if (metadataService.getById('dimension', dimension, source).cardinality === CARDINALITY_SIZES[2]) {
       operator = 'in';
     }
 
@@ -318,11 +319,10 @@ export default class BardDimensionService extends Service {
     const query = options.term.trim();
     const dimensionLookup = metadataService.getById('dimension', dimension, source);
     const cardinality = dimensionLookup?.cardinality;
-    let dimensionRecords;
 
-    if (cardinality === 'SMALL') {
+    if (cardinality === CARDINALITY_SIZES[0]) {
       const dimValues = await this.all(dimension, options);
-      dimensionRecords = A(dimValues);
+      const dimensionRecords = A(dimValues);
 
       return A(
         SearchUtils.searchDimensionRecords(
@@ -334,7 +334,7 @@ export default class BardDimensionService extends Service {
       ).mapBy('record');
     } else if (options.useNewSearchAPI) {
       const dimValues = await this.searchValue(dimension, query, options);
-      dimensionRecords = A(getWithDefault(dimValues, 'rows', []));
+      const dimensionRecords = A(getWithDefault(dimValues, 'rows', []));
 
       return A(SearchUtils.searchDimensionRecords(dimensionRecords, query, MAX_SEARCH_RESULT_COUNT)).mapBy('record');
     } else {
@@ -343,7 +343,7 @@ export default class BardDimensionService extends Service {
         rows: []
       }));
 
-      dimensionRecords = A()
+      const dimensionRecords = A()
         .addObjects(searchById?.rows || [])
         .addObjects(searchByDescription?.rows || []);
 

@@ -16,7 +16,7 @@
 
 import { readOnly, mapBy } from '@ember/object/computed';
 import Component from '@ember/component';
-import { get, computed } from '@ember/object';
+import { get, computed, action } from '@ember/object';
 import { A as arr } from '@ember/array';
 import layout from '../templates/components/dimension-selector';
 import { featureFlag } from 'navi-core/helpers/feature-flag';
@@ -139,19 +139,18 @@ export default class DimensionSelector extends Component {
       }, {});
   }
 
-  actions = {
-    /*
-     * @action itemClicked
-     * @param {Object} item
-     */
-    itemClicked(item) {
-      const type = item.category === 'Time Grain' ? 'TimeGrain' : 'Dimension',
-        enableRequestPreview = featureFlag('enableRequestPreview'),
-        action = (enableRequestPreview && type === 'Dimension') || !this.itemsChecked[item.id] ? 'Add' : 'Remove';
+  /*
+   * @action itemClicked
+   * @param {Object} item
+   */
+  @action
+  itemClicked(item) {
+    const type = item.category === 'Time Grain' ? 'TimeGrain' : 'Dimension',
+      enableRequestPreview = featureFlag('enableRequestPreview'),
+      actionHandler = (enableRequestPreview && type === 'Dimension') || !this.itemsChecked[item.id] ? 'Add' : 'Remove';
 
-      const handler = this[`on${action}${type}`];
+    const handler = this[`on${actionHandler}${type}`];
 
-      if (handler) handler(item);
-    }
-  };
+    if (handler) handler(item);
+  }
 }
