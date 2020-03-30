@@ -37,7 +37,6 @@ module('Acceptance | Multi datasource Dashboard', function(hooks) {
       ['Equals', 'Not Equals'],
       'Dimension filter operators are shown correctly'
     );
-    //ember-power-select-multiple-remove-btn
 
     assert.deepEqual(
       findAll('.filter-builder-dimension__values').map(el =>
