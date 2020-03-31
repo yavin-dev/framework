@@ -51,7 +51,7 @@ module('Acceptance | Multi datasource Dashboard', function(hooks) {
     );
   });
 
-  test('Create new multisource daashboard', async function(assert) {
+  test('Create new multisource dashboard', async function(assert) {
     assert.expect(8);
 
     await visit('/dashboards/new');
