@@ -1,0 +1,13 @@
+{{! Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. }}
+<table class="table navi-search-result" ...attributes>
+  <tbody>
+    {{#each @data as |result|}}
+      <tr class='navi-search-result__asset'>
+        <td class="navi-search-result__asset result_element">
+            <h5>{{result.longName}}</h5>
+            <p>{{result.description}}</p>
+        </td>
+      </tr>
+    {{/each}}
+  </tbody>
+</table>
