@@ -8,7 +8,7 @@ import { upperFirst } from 'lodash-es';
  * Returns canonicalized name of a dimension
  * @function canonicalizeDimension
  * @param {Object} dimension - dimension
- * @param {String} dimension.name - dimension name
+ * @param {String} dimension.id - dimension name
  * @param {String} dimension.field - field name
  */
 export function canonicalizeDimension({ id, field }) {

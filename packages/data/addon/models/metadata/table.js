@@ -4,6 +4,7 @@
  */
 import EmberObject from '@ember/object';
 import { inject as service } from '@ember/service';
+import { upperFirst } from 'lodash-es';
 
 export default class Table extends EmberObject {
   /**
@@ -107,7 +108,7 @@ export default class Table extends EmberObject {
     return this.timeGrainIds.map(grain => {
       return {
         id: grain,
-        name: `${grain.substr(0, 1).toUpperCase()}${grain.substr(1)}`
+        name: upperFirst(grain)
       };
     });
   }

@@ -15,11 +15,11 @@
       @sortByField={{unless areMetricsFiltered "name"}}
       as | metric |
     >
-      <div class="grouped-list__item-container {{if (and (get metricsChecked metric.id) (feature-flag "enableRequestPreview")) "grouped-list__item-container--selected"}}">
+      <div class="grouped-list__item-container {{if (and (get this.metricsChecked metric.id) (feature-flag "enableRequestPreview")) "grouped-list__item-container--selected"}}">
         <span class="grouped-list__item-label" {{on "click" (fn this.metricClicked metric)}} role="button">
           <NaviIcon
-            @icon={{if (and (get metricsChecked metric.id) (not (feature-flag "enableRequestPreview"))) "minus-circle" "plus-circle"}}
-            class="grouped-list__add-icon {{if (not (or (feature-flag "enableRequestPreview") (get metricsChecked metric.id))) "grouped-list__add-icon--deselected"}}"
+            @icon={{if (and (get this.metricsChecked metric.id) (not (feature-flag "enableRequestPreview"))) "minus-circle" "plus-circle"}}
+            class="grouped-list__add-icon {{if (not (or (feature-flag "enableRequestPreview") (get this.metricsChecked metric.id))) "grouped-list__add-icon--deselected"}}"
           />
           {{metric.name}}
         </span>
@@ -49,7 +49,7 @@
           {{#if (can-having metric)}}
             <NaviIcon
               @icon="filter"
-              class={{concat (if (get metricsFiltered metric.id) "grouped-list__filter--active ") "grouped-list__filter"}}
+              class={{concat (if (get this.metricsFiltered metric.id) "grouped-list__filter--active ") "grouped-list__filter"}}
               {{on "click" (fn this.onToggleMetricFilter metric)}}
             >
               <EmberTooltip @side="right" @popperContainer="body" @effect="none">
@@ -60,7 +60,7 @@
                     Remove all
                   {{/if}}
                 {{else}}
-                  {{#if (get metricsFiltered metric.id)}}
+                  {{#if (get this.metricsFiltered metric.id)}}
                     Remove Filter
                   {{else}}
                     Add Filter

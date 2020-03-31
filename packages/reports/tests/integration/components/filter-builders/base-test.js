@@ -60,9 +60,7 @@ module('Integration | Component | filter-builders/base', function(hooks) {
 
     await render(hbs`{{filter-builders/base filter=filter supportedOperators=supportedOperators }}`);
 
-    assert
-      .dom('.filter-builder__subject')
-      .hasText(filter.subject.name, "Subject's long name is display in filter builder");
+    assert.dom('.filter-builder__subject').hasText(filter.subject.name, "Subject's name is display in filter builder");
 
     assert
       .dom('.filter-builder__operator .ember-power-select-selected-item')

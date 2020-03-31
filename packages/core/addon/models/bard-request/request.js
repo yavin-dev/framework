@@ -455,7 +455,7 @@ export default Fragment.extend(Validations, {
   },
 
   /**
-   * Add a sort to the sort array using the metric id
+   * Add a sort to the sort array using the metric canonical name
    *
    * @method addSortByMetricName
    * @param {String} metricName
@@ -486,7 +486,7 @@ export default Fragment.extend(Validations, {
   },
 
   /**
-   * Removes the sort from the sort array using the metric id
+   * Removes the sort from the sort array using the metric canonical name
    *
    * @method removeSortByMetricName
    * @param {String} metricName
