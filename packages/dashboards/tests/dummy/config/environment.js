@@ -24,6 +24,11 @@ module.exports = function(environment) {
 
     navi: {
       widgetsRequestsMaxConcurrency: 2,
+      defaultDataTable: 'network',
+      dataSources: [
+        { name: 'dummy', uri: 'https://data.naviapp.io', type: 'bard-facts' },
+        { name: 'blockhead', uri: 'https://data2.naviapp.io', type: 'bard-facts' }
+      ],
       FEATURES: {
         enableDashboardExport: true,
         enableMultipleExport: true,

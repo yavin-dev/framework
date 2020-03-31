@@ -1,5 +1,5 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -20,6 +20,29 @@ export default AssetSerializer.extend({
       return this._super(type, newPayload);
     }
     return this._super(...arguments);
+  },
+
+  /**
+   * Overrides default serialize method to add datasources to filter object
+   *
+   * @param {Snapshot} snapshot
+   * @returns {Object} serialized dashboard
+   */
+  serialize(snapshot) {
+    const buildKey = (dimension, values) => `${dimension}[${values.join(',')}]`;
+    const filterSources = snapshot.attr('filters').reduce((dimensionSources, filter) => {
+      dimensionSources[buildKey(filter.attr('dimension').name, filter.attr('rawValues'))] = filter.attr(
+        'dimension'
+      ).source;
+      return dimensionSources;
+    }, {});
+    const dashboard = this._super(...arguments);
+    dashboard.data.attributes.filters = dashboard.data.attributes.filters.map((filter, i) => {
+      const key = buildKey(filter.dimension, filter.values);
+      filter.dimension = filterSources[key] ? `${filterSources[key]}.${filter.dimension}` : filter.dimension;
+      return filter;
+    });
+    return dashboard;
   },
 
   /**

@@ -17,6 +17,10 @@ export default function() {
   metaService.call(this);
   factService.call(this);
 
+  this.urlPrefix = `${config.navi.dataSources[1].uri}/v1`;
+  metaService.call(this);
+  factService.call(this);
+
   /* == Mock Persistence == */
   this.urlPrefix = config.navi.appPersistence.uri;
   dashboard.call(this);

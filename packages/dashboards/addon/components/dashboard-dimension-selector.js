@@ -1,5 +1,5 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -11,6 +11,8 @@
 import Component from '@ember/component';
 import { computed, get } from '@ember/object';
 import layout from '../templates/components/dashboard-dimension-selector';
+import { getDefaultDataSourceName } from 'navi-data/utils/adapter';
+import { groupBy } from 'lodash-es';
 
 export default Component.extend({
   layout,
@@ -52,9 +54,15 @@ export default Component.extend({
    */
   buildPowerSelectOptions(dimObject) {
     return Object.entries(dimObject).reduce((selectOptions, [category, dimensions]) => {
-      dimensions = Object.values(dimensions);
-      dimensions.sort((a, b) => a.longName.localeCompare(b.longName));
-      selectOptions.push({ groupName: category, options: dimensions });
+      dimensions = groupBy(Object.values(dimensions), 'dataSource');
+      const needsDatasourceSpecifier = Object.keys(dimensions).length > 1;
+      Object.entries(dimensions).forEach(([dataSource, dims]) => {
+        dims.sort((a, b) => a.longName.localeCompare(b.longName));
+        selectOptions.push({
+          groupName: needsDatasourceSpecifier ? `${category} (${dataSource})` : category,
+          options: dims
+        });
+      });
       return selectOptions;
     }, []);
   },
@@ -67,19 +75,26 @@ export default Component.extend({
    */
   buildCategoryMap(dimensionMap) {
     return Object.entries(dimensionMap).reduce((results, [table, dimensions]) => {
+      let dataSource = getDefaultDataSourceName();
+      if (table.includes('.')) {
+        [dataSource, ...table] = table.split('.');
+        table = table.join('.');
+      }
+
       dimensions.forEach(dimension => {
         if (!results[dimension.category]) {
           results[dimension.category] = {};
         }
 
-        if (!results[dimension.category][dimension.name]) {
-          results[dimension.category][dimension.name] = {
+        if (!results[dimension.category][`${dataSource}.${dimension.name}`]) {
+          results[dimension.category][`${dataSource}.${dimension.name}`] = {
             dimension: dimension.name,
             longName: dimension.longName,
-            tables: [table]
+            tables: [table],
+            dataSource
           };
         } else {
-          results[dimension.category][dimension.name].tables.push(table);
+          results[dimension.category][`${dataSource}.${dimension.name}`].tables.push(table);
         }
       });
       return results;
@@ -93,10 +108,11 @@ export default Component.extend({
    */
   mergeWidgetDimensions(widgets) {
     return widgets.reduce((dimensionMap, widget) => {
-      const tableKey = get(widget, 'requests.firstObject.logicalTable.table.name');
-      const timeGrain = get(widget, 'requests.firstObject.logicalTable.timeGrain');
+      const tableKey = widget?.requests?.firstObject?.logicalTable?.table?.name;
+      const timeGrain = widget?.requests?.firstObject?.logicalTable?.timeGrain;
+      const dataSource = widget?.requests?.firstObject?.dataSource || getDefaultDataSourceName();
       if (!dimensionMap[tableKey]) {
-        dimensionMap[tableKey] = get(timeGrain, 'dimensions');
+        dimensionMap[`${dataSource}.${tableKey}`] = timeGrain.dimensions;
       }
       return dimensionMap;
     }, {});

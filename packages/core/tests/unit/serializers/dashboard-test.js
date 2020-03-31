@@ -111,4 +111,22 @@ module('Unit | Serializer | dashboard', function(hooks) {
       'No changes are made when filters is something other than null'
     );
   });
+
+  test('serialize', async function(assert) {
+    await MetadataService.loadMetadata({ dataSourceName: 'blockhead' });
+    const dashboard = await this.owner.lookup('service:store').findRecord('dashboard', 6);
+    const serialized = dashboard.serialize();
+
+    assert.equal(serialized.data.attributes.title, 'Multi Source Dashboard', 'Title got serialized correctly');
+    assert.deepEqual(
+      serialized.data.attributes.filters[0],
+      { dimension: 'dummy.age', operator: 'in', field: 'id', values: [1, 2, 3] },
+      'Dummy filter serializes correctly with datasource'
+    );
+    assert.deepEqual(
+      serialized.data.attributes.filters[1],
+      { dimension: 'blockhead.container', operator: 'notin', field: 'id', values: [1] },
+      'Blockhead filter serializes correctly with datasource'
+    );
+  });
 });

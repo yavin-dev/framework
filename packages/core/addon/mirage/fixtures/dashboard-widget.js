@@ -273,5 +273,129 @@ export default [
     ],
     createdOn: '2016-01-01 00:00:00',
     updatedOn: '2016-01-01 00:00:00'
+  },
+  {
+    id: 7,
+    dashboardId: 6,
+    authorId: 'ciela',
+    title: 'Sale Contribution Value',
+    visualization: {
+      type: 'line-chart',
+      version: 1,
+      metadata: {
+        axis: {
+          y: {
+            series: {
+              type: 'metric',
+              config: {
+                metrics: ['personalSold', 'globalySold']
+              }
+            }
+          }
+        }
+      }
+    },
+    requests: [
+      {
+        logicalTable: {
+          table: 'inventory',
+          timeGrain: 'day'
+        },
+        metrics: [{ metric: 'personalSold' }, { metric: 'globalySold' }],
+        dimensions: [],
+        filters: [],
+        intervals: [
+          {
+            end: 'current',
+            start: 'P7D'
+          }
+        ],
+        bardVersion: 'v1',
+        requestVersion: 'v1',
+        dataSource: 'blockhead'
+      }
+    ],
+    createdOn: '2016-01-01 00:00:00',
+    updatedOn: '2016-01-01 00:00:00'
+  },
+  {
+    id: 8,
+    dashboardId: 6,
+    authorId: 'navi_user',
+    title: 'Mobile DAU Goal',
+    visualization: {
+      type: 'goal-gauge',
+      version: 1,
+      metadata: {
+        baselineValue: 200,
+        goalValue: 1000,
+        metric: { metric: 'adClicks', parameters: {} }
+      }
+    },
+    requests: [
+      {
+        logicalTable: {
+          table: 'network',
+          timeGrain: 'day'
+        },
+        metrics: [{ metric: 'adClicks' }, { metric: 'navClicks' }],
+        dimensions: [],
+        filters: [],
+        intervals: [
+          {
+            end: 'current',
+            start: 'P1D'
+          }
+        ],
+        bardVersion: 'v1',
+        requestVersion: 'v1'
+      }
+    ],
+    createdOn: '2016-01-01 00:00:00',
+    updatedOn: '2016-01-01 00:00:00'
+  },
+  {
+    id: 9,
+    dashboardId: 6,
+    authorId: 'navi_user',
+    title: 'Mobile DAU Graph',
+    visualization: {
+      type: 'line-chart',
+      version: 1,
+      metadata: {
+        axis: {
+          y: {
+            series: {
+              type: 'metric',
+              config: {
+                metrics: ['adClicks', 'navClicks']
+              }
+            }
+          }
+        }
+      }
+    },
+    requests: [
+      {
+        logicalTable: {
+          table: 'network',
+          timeGrain: 'day'
+        },
+        metrics: [{ metric: 'adClicks' }, { metric: 'navClicks' }],
+        dimensions: [],
+        filters: [],
+        intervals: [
+          {
+            end: 'current',
+            start: 'P7D'
+          }
+        ],
+        bardVersion: 'v1',
+        requestVersion: 'v1',
+        dataSource: 'dummy'
+      }
+    ],
+    createdOn: '2016-01-01 00:00:00',
+    updatedOn: '2016-01-01 00:00:00'
   }
 ];
