@@ -36,6 +36,9 @@ export default class NaviDefinitionSearchProviderService extends NaviBaseSearchP
       promises.push(this.metadataService.findById(type, query));
     });
 
+    // If the dimension/metric/table doesn't its query promise is rejected.
+    // To ignore rejections and open the remaining promises, I set the catch function
+    // to return undefined.
     const data = yield Promise.all(promises.map(p => p.catch(() => undefined)));
 
     return {
