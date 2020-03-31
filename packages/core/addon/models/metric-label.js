@@ -44,7 +44,7 @@ export default VisualizationBase.extend(Validations, {
    */
   rebuildConfig(request /*response*/) {
     let metrics = A(request.metrics),
-      metric = metrics.firstObject?.toJSON(),
+      metric = metrics.firstObject.toJSON(),
       description = metricFormat(metrics.firstObject, metrics.firstObject?.metric?.name),
       allFormats = NumberFormats,
       format = this.metadata.format || allFormats[0]?.format;

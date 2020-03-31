@@ -15,7 +15,7 @@ import BardDimensionArray from 'navi-data/models/bard-dimension-array';
 import SearchUtils from 'navi-data/utils/search';
 import { intersection } from 'lodash-es';
 import { getDefaultDataSourceName } from '../utils/adapter';
-import { CARDINALITY_SIZES } from 'navi-data/models/metadata/dimension';
+import { CARDINALITY_SIZES } from '../models/metadata/dimension';
 
 const SEARCH_OPERATOR_PRIORITY = ['contains', 'in'];
 
