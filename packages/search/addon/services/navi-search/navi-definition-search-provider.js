@@ -32,22 +32,16 @@ export default class NaviDefinitionSearchProviderService extends NaviBaseSearchP
     const types = ['table', 'dimension', 'metric'];
     const promises = [];
 
-    let test;
-    test = yield this.metadataService.getById(type, query);
-    debugger;
-
     types.forEach(type => {
       promises.push(this.metadataService.findById(type, query));
     });
 
-    const data = yield Promise.all(promises).then(function(values) {
-      debugger;
-      return values.flatMap(value => value.toArray());
-    });
+    const data = yield Promise.all(promises.map(p => p.catch(() => undefined)));
+
     return {
       component: this._displayComponentName,
       title: 'Definition',
-      data
+      data: data.filter(result => result !== undefined)
     };
   }
 }
