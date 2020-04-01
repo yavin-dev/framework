@@ -1,35 +1,17 @@
-{{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{#let (model-for (parent-route)) as | report |}}
-  {{#if (feature-flag "enableRequestPreview")}}
-    <NaviColumnConfig
-      @isOpen={{true}}
-      @report={{report}}
-      @openFilters={{route-action "openFilters"}}
-      @onRemoveDateTime={{update-report-action "REMOVE_TIME_GRAIN"}}
-      @onRemoveDimension={{update-report-action "REMOVE_DIMENSION_FRAGMENT"}}
-      @onRemoveMetric={{update-report-action "REMOVE_METRIC_FRAGMENT"}}
-      @onAddDimension={{update-report-action "ADD_DIMENSION"}}
-      @onAddMetric={{update-report-action "ADD_METRIC"}}
-      @onAddMetricWithParameter={{update-report-action "ADD_METRIC_WITH_PARAM"}}
-      @onToggleDimFilter={{update-report-action "TOGGLE_DIM_FILTER"}}
-      @onToggleMetricFilter={{update-report-action "TOGGLE_METRIC_FILTER"}}
-      @onToggleParameterizedMetricFilter={{update-report-action "TOGGLE_PARAMETERIZED_METRIC_FILTER"}}
-    />
-  {{/if}}
-  <NaviInfoMessage class="navi-report-error__info-message">
-    <span>
-      <NaviIcon @icon="ambulance" />
-    </span>
-    <p>Oops! There was an error with your request.</p>
-    <ul class="navi-info-message__error-list">
-      {{#let model.payload.description as | error | }}
-        <li class="navi-info-message__error-list-item">
-          <NaviIcon @icon="times" class="navi-info-message__error-list-icon" />
-          {{error-message (hash detail=error)}}
-        </li>
-      {{/let}}
-    </ul>
-    {{!-- The App will handle the look and feel of this component --}}
-    <SubmitDefect />
-  </NaviInfoMessage>
-{{/let}}
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<NaviInfoMessage class="navi-report-error__info-message">
+  <span>
+    <NaviIcon @icon="ambulance" />
+  </span>
+  <p>Oops! There was an error with your request.</p>
+  <ul class="navi-info-message__error-list">
+    {{#let model.payload.description as | error | }}
+      <li class="navi-info-message__error-list-item">
+        <NaviIcon @icon="times" class="navi-info-message__error-list-icon" />
+        {{error-message (hash detail=error)}}
+      </li>
+    {{/let}}
+  </ul>
+  {{!-- The App will handle the look and feel of this component --}}
+  <SubmitDefect />
+</NaviInfoMessage>
