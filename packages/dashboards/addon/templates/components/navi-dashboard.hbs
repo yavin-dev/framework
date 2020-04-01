@@ -117,7 +117,7 @@
   {{#if @dashboard.widgets.length}}
     <div class="navi-dashboard__widgets">
       <GridStack
-      {{!-- TODO: I don't think width is a valid option. It should be @width but there's a bug when using that where it doesn't revert right --}}
+      {{!-- TODO: Investigate why @width causes 'Failing to save a new widget' test to fail --}}
         @options={{hash width=this.width}}
         @onChange={{route-action "didUpdateLayout"}}
       >
