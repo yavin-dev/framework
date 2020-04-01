@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render } from '@ember/test-helpers';
+import { render, findAll } from '@ember/test-helpers';
 import { hbs } from 'ember-cli-htmlbars';
 import { set } from '@ember/object';
 
@@ -16,13 +16,13 @@ module('Integration | Component | definition', function(hooks) {
   });
 
   test('displays results', async function(assert) {
-    assert.expect(1);
+    assert.expect(2);
 
     const data = [
       {
         name: 'pageViews',
         longName: 'Page Views',
-        description: 'The number of view of a page.'
+        description: 'The number of views of a page.'
       },
       {
         name: 'impressions',
@@ -38,8 +38,17 @@ module('Integration | Component | definition', function(hooks) {
     set(this, 'result', result);
 
     await render(hbs`<NaviSearchResult::Definition @data={{this.result.data}} />`);
-    debugger;
 
     assert.dom('td').exists({ count: 2 });
+    const results = findAll('td');
+    const expectedResults = [
+      ['Page Views', 'The number of views of a page.'],
+      ['Impressions', 'Number of times a user saw the ad.']
+    ];
+    assert.deepEqual(
+      results.map(result => result.textContent.trim().split(/[\n ][ ]+/)),
+      expectedResults,
+      'Displayed correct search result.'
+    );
   });
 });
