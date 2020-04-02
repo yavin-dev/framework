@@ -21,7 +21,6 @@ import { observes } from '@ember-decorators/object';
 import move from 'ember-animated/motions/move';
 import { easeOut, easeIn } from 'ember-animated/easings/cosine';
 import { fadeOut, fadeIn } from 'ember-animated/motions/opacity';
-import fade from 'ember-animated/transitions/fade';
 import config from 'ember-get-config';
 
 const VISUALIZATION_RESIZE_EVENT = 'resizestop';
@@ -70,11 +69,6 @@ class ReportView extends Component {
       .map(capitalize)
       .join(' ');
   }
-
-  /**
-   * @property {Boolean} isColumnDrawerOpen - Display column config or not
-   */
-  isColumnDrawerOpen = config.navi.FEATURES.enableRequestPreview;
 
   /**
    * @property {Boolean} isEditingVisualization - Display visualization config or not
@@ -167,11 +161,6 @@ class ReportView extends Component {
     newVisualization.rebuildConfig(request, response);
     set(report, 'visualization', newVisualization);
   }
-
-  /**
-   * @property fadeTransition - fade transition
-   */
-  fadeTransition = fade;
 
   /**
    * Custom fade transition when editing a visualization

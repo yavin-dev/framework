@@ -63,6 +63,33 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
     assert.dom('.navi-column-config').doesNotExist('The column config is not present after running the report either');
   });
 
+  test('toggle columns drawer', async function(assert) {
+    assert.expect(6);
+
+    await visit('reports/1/view');
+
+    assert.dom('.navi-column-config__panel').exists('Column config drawer is open by default');
+    assert
+      .dom('.report-view__columns-icon.fa-chevron-left')
+      .exists('Column config drawer displays "back" icon when open');
+
+    await click('.report-view__columns-button');
+    await animationsSettled();
+    assert
+      .dom('.navi-column-config__panel')
+      .doesNotExist('Column config drawer is closed after toggling the columns button');
+    assert
+      .dom('.report-view__columns-icon.fa-columns')
+      .exists('Column config drawer displays "column" icon when closed');
+
+    await click('.report-view__columns-button');
+    await animationsSettled();
+    assert.dom('.navi-column-config__panel').exists('Column config drawer is open after toggling the columns button');
+    assert
+      .dom('.report-view__columns-icon.fa-chevron-left')
+      .exists('Column config drawer displays "back" icon when open');
+  });
+
   test('adding and removing - date time', async function(assert) {
     assert.expect(5);
     await visit('reports/1/view');
