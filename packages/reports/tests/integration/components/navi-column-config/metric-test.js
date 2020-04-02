@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click, findAll } from '@ember/test-helpers';
+import { render, click, findAll, getContext } from '@ember/test-helpers';
 import { A as arr } from '@ember/array';
 import { helper as buildHelper } from '@ember/component/helper';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
@@ -9,35 +9,125 @@ import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 let MetadataService;
 
+const TEMPLATE = hbs`
+<NaviColumnConfig::Base
+  @column={{this.column}} 
+  @metadata={{this.metadata}}
+  @cloneColumn={{this.cloneColumn}}
+  @toggleColumnFilter={{this.toggleColumnFilter}}
+  @onUpdateColumnName={{action this.onUpdateColumnName}}
+/>
+`;
 module('Integration | Component | navi-column-config/metric', function(hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(async function() {
     MetadataService = this.owner.lookup('service:bard-metadata');
+    await MetadataService.loadMetadata();
 
-    return MetadataService.loadMetadata();
+    this.metadata = { style: { aliases: arr([]) } };
+    this.cloneColumn = () => undefined;
+    this.toggleColumnFilter = () => undefined;
+    this.onUpdateColumnName = () => undefined;
+
+    this.owner.register(
+      'helper:update-report-action',
+      buildHelper(() => {
+        return (metricFragment, paramId, paramKey) => {
+          this.updateMetricParameters?.(metricFragment, paramId, paramKey);
+          metricFragment.updateParameter(paramId, paramKey);
+        };
+      }),
+      { instantiate: false }
+    );
+  });
+
+  async function getMetricColumn(metric, parameters) {
+    const metricFragment = getContext()
+      .owner.lookup('service:store')
+      .createFragment('bard-request/fragments/metric', {
+        metric: await MetadataService.findById('metric', metric),
+        parameters
+      });
+
+    return {
+      type: 'metric',
+      name: metricFragment.canonicalName,
+      displayName: metric,
+      fragment: metricFragment,
+      isFiltered: false
+    };
+  }
+
+  test('Configuring multiple parameters', async function(assert) {
+    assert.expect(3);
+
+    this.column = await getMetricColumn('multipleParamMetric', {
+      type: 'l',
+      aggregation: 'total',
+      age: '6',
+      currency: 'USD',
+      currencyButNullDefault: 'CAD'
+    });
+    await render(TEMPLATE);
+
+    assert.deepEqual(
+      findAll('.navi-column-config-metric__parameter-label').map(el => el.textContent.trim()),
+      ['Type Type', 'Aggregation Type', 'Age Type', 'Currency Type', 'CurrencyButNullDefault Type'],
+      'Multiple parameters config lists are displayed'
+    );
+    assert.deepEqual(
+      findAll('.navi-column-config-metric__parameter-trigger').map(el => el.textContent.trim()),
+      ['Left (l)', 'Total (total)', '30-34 (6)', 'Dollars (USD)', 'Dollars (CAD)'],
+      'Mulitple parameters values are filled in with selected values'
+    );
+
+    await selectChoose('.navi-column-config-metric__parameter', 'Right (r)');
+    await selectChoose(findAll('.navi-column-config-metric__parameter')[1], 'Daily Average (dayAvg)');
+    await selectChoose(findAll('.navi-column-config-metric__parameter')[2], '13-17 (2)');
+    await selectChoose(findAll('.navi-column-config-metric__parameter')[3], 'Euro (EUR)');
+    await selectChoose(findAll('.navi-column-config-metric__parameter')[4], 'Drams (AMD)');
+
+    assert.deepEqual(
+      findAll('.navi-column-config-metric__parameter-trigger').map(el => el.textContent.trim()),
+      ['Right (r)', 'Daily Average (dayAvg)', '13-17 (2)', 'Euro (EUR)', 'Drams (AMD)'],
+      'A selected parameter can be changed and a null valued parameter can be changed'
+    );
+  });
+
+  test('Configuring null parameter', async function(assert) {
+    assert.expect(2);
+
+    this.column = await getMetricColumn('multipleParamMetric', {
+      type: null,
+      aggregation: 'total',
+      age: '6',
+      currency: 'USD',
+      currencyButNullDefault: null
+    });
+    await render(TEMPLATE);
+
+    assert.deepEqual(
+      findAll('.navi-column-config-metric__parameter-trigger').map(el => el.textContent.trim()),
+      ['', 'Total (total)', '30-34 (6)', 'Dollars (USD)', ''],
+      'Null parameters have no selected values in trigger'
+    );
+
+    await selectChoose('.navi-column-config-metric__parameter', 'Right (r)');
+    await selectChoose('.navi-column-config-metric__parameter:last-child', 'Dollars (CAD)');
+
+    assert.deepEqual(
+      findAll('.navi-column-config-metric__parameter-trigger').map(el => el.textContent.trim()),
+      ['Right (r)', 'Total (total)', '30-34 (6)', 'Dollars (USD)', 'Dollars (CAD)'],
+      'Null value parameters can be changed'
+    );
   });
 
   test('Configuring metric column', async function(assert) {
     assert.expect(5);
 
-    const metric = this.owner.lookup('service:store').createFragment('bard-request/fragments/metric', {
-      metric: await MetadataService.findById('metric', 'revenue'),
-      parameters: {
-        currency: 'USD'
-      }
-    });
-    this.metadata = { style: { aliases: arr([]) } };
-    this.editingColumn = {
-      type: 'metric',
-      name: metric.canonicalName,
-      displayName: 'Revenue',
-      sort: 'none',
-      fragment: metric
-    };
-    this.cloneColumn = () => undefined;
-    this.toggleColumnFilter = () => undefined;
+    this.column = await getMetricColumn('revenue', { currency: 'USD' });
     this.onUpdateColumnName = (/*newName*/) => {
       // this must be called with action in the template
       /**
@@ -46,30 +136,15 @@ module('Integration | Component | navi-column-config/metric', function(hooks) {
       // assert.equal(newName, 'Money', 'New display name is passed to name update action');
       return undefined;
     };
-    this.owner.register(
-      'helper:update-report-action',
-      buildHelper(() => {
-        return (metricFragment, paramId, paramKey) => {
-          assert.equal(
-            metricFragment.canonicalName,
-            'revenue(currency=USD)',
-            'Metric name is passed with the currently selected parameter'
-          );
-          assert.equal(`${paramKey}=${paramId}`, 'currency=CAD', 'Parameter is passed to onUpdateMetricParam method');
-          metric.set('parameters', { [paramKey]: paramId });
-        };
-      }),
-      { instantiate: false }
-    );
-    await render(hbs`
-      <NaviColumnConfig::Base
-        @column={{this.editingColumn}} 
-        @metadata={{this.metadata}}
-        @cloneColumn={{this.cloneColumn}}
-        @toggleColumnFilter={{this.toggleColumnFilter}}
-        @onUpdateColumnName={{action this.onUpdateColumnName}}
-      />
-    `);
+    this.updateMetricParameters = (metricFragment, paramId, paramKey) => {
+      assert.equal(
+        metricFragment.canonicalName,
+        'revenue(currency=USD)',
+        'Metric name is passed with the currently selected parameter'
+      );
+      assert.equal(`${paramKey}=${paramId}`, 'currency=CAD', 'Parameter is passed to onUpdateMetricParam method');
+    };
+    await render(TEMPLATE);
 
     // assert.dom('.navi-column-config-base__column-name-input').hasValue('Revenue', 'Display name of column is shown in the column input');
     assert
