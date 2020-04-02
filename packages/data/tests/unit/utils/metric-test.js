@@ -12,7 +12,7 @@ import { module, test } from 'qunit';
 
 module('Unit - Utils - Metrics Utils', function() {
   test('canonicalize metric', function(assert) {
-    assert.expect(5);
+    assert.expect(6);
     assert.equal(canonicalizeMetric({ metric: 'foo' }), 'foo', 'correctly serializes metric with no params');
 
     assert.equal(
@@ -37,6 +37,12 @@ module('Unit - Utils - Metrics Utils', function() {
       canonicalizeMetric({ metric: 'foo', parameters: { p1: '100', a: '12' } }),
       'foo(a=12,p1=100)',
       'correctly serializes metric with multiple params'
+    );
+
+    assert.equal(
+      canonicalizeMetric({ metric: 'ham', parameters: { p1: 'value', p2: null } }),
+      'ham(p1=value)',
+      'Do not send parameters with null or undefined values'
     );
   });
 

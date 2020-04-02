@@ -52,7 +52,10 @@ export function serializeParameters(obj = {}) {
   // TODO remove this line when aliases are natively supported in the fact web service
   paramArray = paramArray.filter(([key]) => key.toLowerCase() !== 'as');
   paramArray.sort(([keyA], [keyB]) => keyA.localeCompare(keyB));
-  return paramArray.map(([key, value]) => `${key}=${value}`).join(',');
+  return paramArray
+    .filter(([, value]) => value !== null && value !== undefined)
+    .map(([key, value]) => `${key}=${value}`)
+    .join(',');
 }
 
 /**
