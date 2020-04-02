@@ -4,6 +4,7 @@ import { setupTest } from 'ember-qunit';
 import config from 'ember-get-config';
 import Pretender from 'pretender';
 import metadataRoutes from '../../helpers/metadata-routes';
+import { groupBy } from 'lodash-es';
 
 const HOST = config.navi.dataSources[0].uri;
 
@@ -167,5 +168,40 @@ module('Unit | Service | metric parameter', function(hooks) {
 
     const emptyResults = await service.fetchAllParams({});
     assert.deepEqual(emptyResults, {}, 'A metric metadata object with no parameters returns no values');
+  });
+
+  test('fetchAllParams - duplicated dimension', async function(assert) {
+    assert.expect(1);
+
+    const service = this.owner.lookup('service:metric-parameter'),
+      metricMeta = {
+        parameters: {
+          one: {
+            type: 'dimension',
+            dimensionName: 'dimensionOne'
+          },
+          oneCopy: {
+            type: 'dimension',
+            dimensionName: 'dimensionOne'
+          },
+          three: {
+            type: 'dimension',
+            dimensionName: 'dimensionThree'
+          }
+        }
+      };
+
+    const results = await service.fetchAllParams(metricMeta);
+    const groupedResults = groupBy(results, paramVal => paramVal.param);
+
+    assert.deepEqual(
+      groupedResults,
+      {
+        one: Rows.map(row => ({ ...row, param: 'one' })),
+        oneCopy: Rows.map(row => ({ ...row, param: 'oneCopy' })),
+        three: OtherRows.map(row => ({ ...row, param: 'three' }))
+      },
+      'The parameter values reference the param they originate from even with duplicate dimensions'
+    );
   });
 });

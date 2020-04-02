@@ -132,6 +132,43 @@ export default {
           defaultValue: 'l'
         }
       }
+    },
+    {
+      category: 'Multiple Params',
+      name: 'multipleParamMetric',
+      longName: 'Give me params',
+      type: 'number',
+      parameters: {
+        type: {
+          type: 'enum',
+          values: [
+            { id: 'l', description: 'Left' },
+            { id: 'r', description: 'Right' },
+            { id: 'm', description: 'Middle' }
+          ],
+          defaultValue: 'l'
+        },
+        aggregation: {
+          type: 'enum',
+          values: [{ id: 'dayAvg', description: 'Daily Average' }, { id: 'total', description: 'Total' }],
+          defaultValue: 'total'
+        },
+        age: {
+          type: 'dimension',
+          dimensionName: 'age',
+          defaultValue: '6'
+        },
+        currency: {
+          type: 'dimension',
+          dimensionName: 'displayCurrency',
+          defaultValue: 'USD'
+        },
+        currencyButNullDefault: {
+          type: 'dimension',
+          dimensionName: 'displayCurrency',
+          defaultValue: null
+        }
+      }
     }
   ],
 

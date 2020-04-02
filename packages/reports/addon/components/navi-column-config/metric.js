@@ -18,10 +18,11 @@ import layout from '../../templates/components/navi-column-config/metric';
 import { action, set, computed } from '@ember/object';
 import { inject as service } from '@ember/service';
 import { guidFor } from '@ember/object/internals';
+import { groupBy } from 'lodash-es';
 
 @tagName('')
 @templateLayout(layout)
-class Metric extends Component {
+class NaviColumnConfigMetricComponent extends Component {
   /**
    * @service
    */
@@ -33,11 +34,6 @@ class Metric extends Component {
   _previousMetricName = null;
 
   /**
-   * @property {Promise|null} - A promise to a list of all the parameters for the given metric
-   */
-  allParameters = null;
-
-  /**
    * @property {String} classId - a unique id for this instance of the column config
    */
   get classId() {
@@ -45,63 +41,48 @@ class Metric extends Component {
   }
 
   /**
-   * @property {String} - The name of the first metric parameter
+   * @property {Array} metricParameters - Returns a list of the metrics parameters or empty if there are none
    */
   @computed('column.fragment.metric.parameters.{}')
-  get paramName() {
-    return Object.keys(this.column.fragment.metric.parameters)[0];
-  }
-
-  /**
-   * @override
-   * @method didReceiveAttrs
-   */
-  didReceiveAttrs() {
-    super.didReceiveAttrs(...arguments);
-    const { metric, canonicalName } = this.column.fragment;
-    const prevMetricName = this._previousMetricName;
-
-    if (!prevMetricName || canonicalName !== prevMetricName) {
-      this._fetchParameters(metric);
+  get metricParameters() {
+    const { metric } = this.column.fragment;
+    if (!metric.hasParameters) {
+      return [];
     }
-
-    this._previousMetricName = canonicalName;
+    return Object.keys(metric.parameters);
   }
 
   /**
    * @property {Promise} currentParameter - Returns promise that returns parameter object of the currently applied parameter
    */
   @computed('column.fragment.parameters.{}', 'allParameters')
-  get currentParameter() {
-    const params = this.column.fragment.parameters || {};
-    const paramId = Object.keys(params).find(key => key !== 'as' && params[key]);
-    const loadedParamVals = this.allParameters;
+  get currentParameters() {
+    const { metricParameters, allParameters } = this;
+    const selectedParamIds = this.column.fragment.parameters || {};
 
-    if (!paramId) {
-      return null;
-    }
+    return allParameters.then(vals => {
+      const selected = metricParameters.reduce((selectedParams, paramId) => {
+        selectedParams[paramId] = vals[paramId].find(param => param.id === selectedParamIds[paramId]);
+        return selectedParams;
+      }, {});
 
-    return loadedParamVals.then(vals => vals.find(param => param.param === paramId && param.id === params[paramId]));
+      return selected;
+    });
   }
 
   /**
-   * @private
-   * @method _fetchParameters - fetch all parameter values for a given metric
-   * @param {Object} metric - metric meta data object
+   * @property {Promise} - A promise to an object of parameter to its list of values for the given metric
    */
-  _fetchParameters(metric) {
+  @computed('column.fragment.metric')
+  get allParameters() {
+    const { metric } = this.column.fragment;
     if (!metric.hasParameters) {
-      this.set('allParameters', null);
-      return;
+      return Promise.resolve({});
     }
 
-    set(
-      this,
-      'allParameters',
-      this.parameterService.fetchAllParams(metric).then(result => {
-        return Object.values(result);
-      })
-    );
+    return this.parameterService
+      .fetchAllParams(metric)
+      .then(result => groupBy(Object.values(result), paramValue => paramValue.param));
   }
 
   /**
@@ -116,4 +97,4 @@ class Metric extends Component {
   }
 }
 
-export default Metric;
+export default NaviColumnConfigMetricComponent;

@@ -70,10 +70,11 @@ export default class MetricParameterService extends Service {
       Object.entries(res).forEach(([key, values]) => {
         const valArray = Array.isArray(values) ? values : values.toArray();
         valArray.forEach(val => {
-          set(val, 'param', key);
+          // copy value and specify param
+          const paramVal = Object.assign({}, val, { param: key });
 
           //add object to map
-          allParametersMap[`${key}|${val.id}`] = val;
+          allParametersMap[`${key}|${paramVal.id}`] = paramVal;
         });
       });
 
