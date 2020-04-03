@@ -779,7 +779,7 @@ table > tbody > tr > td.is-center {
   color: #303030 !important;
 }
 
-li:not(:last-child) .navi-search-bar__result {
+li:not(:last-child) {
   margin-bottom: 1.5em;
 }
 
