@@ -1,26 +1,26 @@
 @font-face {
   font-family: 'denali-icon-font';
+  font-style: normal;
+  font-weight: normal;
   src: url('denali-icon-font.eot?1576615905868');
   src: url('denali-icon-font.eot?#iefix-1576615905868') format('embedded-opentype'),
     url('denali-icon-font.svg?1576615905868') format('svg'), url('denali-icon-font.woff?1576615905868') format('woff'),
     url('denali-icon-font.ttf?1576615905868') format('truetype');
-  font-weight: normal;
-  font-style: normal;
 }
 
 .d-icon[class^='d-'],
 .d-icon[class*=' d-'] {
   font-family: 'denali-icon-font' !important;
-  speak: none;
-  font-style: normal;
-  font-weight: normal;
-  font-variant: normal;
-  text-transform: none;
-  line-height: 1;
   font-size: 24px;
-  vertical-align: middle;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: normal;
+  line-height: 1;
+  speak: none;
   text-decoration: inherit;
   text-rendering: optimizeLegibility;
+  text-transform: none;
+  vertical-align: middle;
   /* Better Font Rendering */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -67,17 +67,17 @@ table.navi-search-result {
 }
 
 .navi-search-result {
-  font-family: Helvetica, 'Arial', sans-serif;
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 1.5;
-  background: @denali-grey-100;
   color: @denali-grey-800;
+  border-collapse: collapse;
+  background: @denali-grey-100;
+  line-height: 1.5;
+  font-family: Helvetica, 'Arial', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  text-align: left;
+  width: 100%;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  border-collapse: collapse;
-  width: 100%;
-  text-align: left;
 }
 
 .d-icon {
@@ -86,8 +86,8 @@ table.navi-search-result {
 
 .result_element a {
   color: @denali-brand-600;
-  text-decoration: none;
   font-size: inherit;
+  text-decoration: none;
 }
 
 .result_element a:hover {
@@ -100,8 +100,8 @@ table.navi-search-result {
 }
 
 .navi-search-result > table > tbody > tr > td {
-  padding: 14px 10px;
   border-bottom: 1px solid rgba(@denali-grey-800, 0.2);
+  padding: 14px 10px;
 }
 
 .is-grey-800 {
@@ -109,8 +109,20 @@ table.navi-search-result {
 }
 
 td.result_icon {
-  width: 1%;
   white-space: nowrap;
+  width: 1%;
+}
+
+.navi-search-result.table.is-striped > tbody > tr > td {
+  border: none;
+}
+
+.navi-search-resulttable.is-striped > tbody > tr:nth-child(even) {
+  background: rgba(@denali-brand-700, 0.05);
+}
+
+.navi-search-result.table > tbody > tr > td.is-center {
+  text-align: center;
 }
 
 @keyframes drop-fade-below {
