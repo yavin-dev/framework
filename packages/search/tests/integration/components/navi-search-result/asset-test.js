@@ -43,8 +43,8 @@ module('Integration | Component | navi-search-result-asset', function(hooks) {
 
     await render(hbs`<NaviSearchResult::Asset @data={{this.result.data}}/>`);
 
-    assert.dom('tr').exists({ count: 2 });
-    let results = findAll('tr');
+    assert.dom('.navi-search-result__asset.result_element').exists({ count: 2 }, '2 results are displayed');
+    let results = findAll('.navi-search-result__asset.result_element');
     let expectedResults = ['Revenue report 1', 'Revenue Dashboard'];
     assert.deepEqual(
       results.map(result => result.textContent.trim()),
