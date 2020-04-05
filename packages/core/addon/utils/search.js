@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import { get } from '@ember/object';
+import { get, getWithDefault } from '@ember/object';
 import { w as words } from '@ember/string';
 import { A as arr } from '@ember/array';
 import { getPaginatedRecords } from 'navi-core/utils/pagination';
@@ -31,9 +31,14 @@ export function getPartialMatchWeight(string, query) {
     if (string.indexOf(searchTokens[i]) === -1) {
       allTokensFound = false;
       break;
-      //Remove matched tokens from string as they have already matched
+      // Remove matched tokens from string as they have already matched
     } else if (stringTokens.includes(searchTokens[i])) {
       string = string.replace(searchTokens[i], '');
+      // Partial match of a token must start with the search-token
+      // (avoid age matching language)
+    } else if (stringTokens.every(token => !token.startsWith(searchTokens[i]))) {
+      allTokensFound = false;
+      break;
     }
   }
 
@@ -88,6 +93,43 @@ export function searchRecords(records, query, searchField) {
     if (relevance) {
       results.push({ relevance, record });
     }
+  }
+
+  return arr(results.sortBy('relevance')).mapBy('record');
+}
+
+/**
+ * Searches records by an array of searchFields and returns results sorted by relevance
+ *
+ * @method searchRecordsByFields
+ * @param {Array} records - collection of records to search
+ * @param {String} query - search query used to filter and rank records
+ * @param {Array} searchFields - field in record to compare
+ * @param {Number} threshold – relevance threshold for matching records
+ * @returns {Array} array of matching records
+ */
+export function searchRecordsByFields(records, query, searchFields, threshold) {
+  let results = arr();
+  records = arr(records);
+  query = query.toLowerCase();
+
+  for (let i = 0; i < records.length; i++) {
+    let record = records.objectAt(i),
+      // Get average relevance between search fields
+      relevance =
+        searchFields
+          .flatMap(searchField => getPartialMatchWeight(getWithDefault(record, searchField, '').toLowerCase(), query))
+          .reduce(function(sum, value) {
+            return sum + (value || 0);
+          }, 0) / searchFields.length;
+
+    if (relevance) {
+      results.push({ relevance, record });
+    }
+  }
+
+  if (threshold) {
+    results = arr(results.filter(result => result.relevance <= threshold));
   }
 
   return arr(results.sortBy('relevance')).mapBy('record');

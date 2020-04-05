@@ -2,10 +2,18 @@
 <table class="table navi-search-result" ...attributes>
   <tbody>
     {{#each @data as |result|}}
-      <tr class='navi-search-result__asset'>
-        <td class="navi-search-result__asset result_element">
-            <h5>{{result.longName}}</h5>
-            <p>{{result.description}}</p>
+      <tr class='navi-search-result__definition'>
+        <td class="navi-search-result__definition result_element">
+            <h5>{{result.name}}</h5>
+            <p>
+              {{#if result.description}}
+               {{result.description}}
+              {{else}}
+                {{#with (await result.extented) as |extendedResult|}}
+                  {{extendedResult.description}}
+                {{/with}}
+              {{/if}}
+            </p>
         </td>
       </tr>
     {{/each}}

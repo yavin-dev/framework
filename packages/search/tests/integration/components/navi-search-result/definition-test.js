@@ -20,13 +20,13 @@ module('Integration | Component | definition', function(hooks) {
 
     const data = [
       {
-        name: 'pageViews',
-        longName: 'Page Views',
+        id: 'pageViews',
+        name: 'Page Views',
         description: 'The number of views of a page.'
       },
       {
-        name: 'impressions',
-        longName: 'Impressions',
+        id: 'impressions',
+        name: 'Impressions',
         description: 'Number of times a user saw the ad.'
       }
     ];
@@ -39,14 +39,14 @@ module('Integration | Component | definition', function(hooks) {
 
     await render(hbs`<NaviSearchResult::Definition @data={{this.result.data}} />`);
 
-    assert.dom('td').exists({ count: 2 });
-    const results = findAll('td');
+    assert.dom('.navi-search-result__definition.result_element').exists({ count: 2 });
+    const results = findAll('.navi-search-result__definition.result_element');
     const expectedResults = [
       ['Page Views', 'The number of views of a page.'],
       ['Impressions', 'Number of times a user saw the ad.']
     ];
     assert.deepEqual(
-      results.map(result => result.textContent.trim().split(/[\n ][ ]+/)),
+      results.map(result => result.textContent.trim().split(/[\n ][\n ]+/)),
       expectedResults,
       'Displayed correct search result.'
     );

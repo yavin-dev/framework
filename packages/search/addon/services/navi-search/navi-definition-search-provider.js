@@ -8,6 +8,7 @@
 import { inject as service } from '@ember/service';
 import NaviBaseSearchProviderService from '../navi-base-search-provider';
 import { keepLatestTask } from 'ember-concurrency-decorators';
+import { searchRecordsByFields } from 'navi-core/utils/search';
 
 export default class NaviDefinitionSearchProviderService extends NaviBaseSearchProviderService {
   /**
@@ -24,27 +25,23 @@ export default class NaviDefinitionSearchProviderService extends NaviBaseSearchP
   /**
    * @method search – Searches for definitions in the metadata
    * @param {String} query
-   * @yields {Promise} promise with search results
    * @returns {Object} Object containing, component, title and data
    */
   @keepLatestTask
   *search(query) {
     const types = ['table', 'dimension', 'metric'];
-    const promises = [];
+    const kegData = [];
+    let data = [];
 
-    types.forEach(type => {
-      promises.push(this.metadataService.findById(type, query));
-    });
-
-    // If the dimension/metric/table doesn't its query promise is rejected.
-    // To ignore rejections and open the remaining promises, I set the catch function
-    // to return undefined.
-    const data = yield Promise.all(promises.map(p => p.catch(() => undefined)));
+    if (query && query.length > 0) {
+      types.forEach(type => kegData.push(...this.metadataService.all(type)));
+      data = searchRecordsByFields(kegData, query, ['id', 'name', 'description']);
+    }
 
     return {
       component: this._displayComponentName,
       title: 'Definition',
-      data: data.filter(result => result !== undefined)
+      data
     };
   }
 }

@@ -23,13 +23,12 @@ module('Unit | Service | navi-definition-search-provider', function(hooks) {
   test('search definition of a dimension', async function(assert) {
     assert.expect(3);
     metadataRoutes.bind(Server);
-    const results = await Service.search.perform('dimensionOne');
+    const results = await Service.search.perform('age');
 
     const expectedResults = [
       {
-        name: 'dimensionOne',
-        longName: 'Dimension One',
-        description: 'This is Dimension One'
+        id: 'age',
+        name: 'Age'
       }
     ];
 
@@ -44,15 +43,18 @@ module('Unit | Service | navi-definition-search-provider', function(hooks) {
   });
 
   test('search definition of a metric', async function(assert) {
-    assert.expect(3);
+    assert.expect(4);
     metadataRoutes.bind(Server);
-    const results = await Service.search.perform('metricOne');
+    const results = await Service.search.perform('time');
 
     const expectedResults = [
       {
-        name: 'metricOne',
-        longName: 'Metric One',
-        description: 'This is Metric One'
+        id: 'timeSpent',
+        name: 'Time Spent'
+      },
+      {
+        id: 'dayAvgTimeSpent',
+        name: 'Time Spent (Daily Avg)'
       }
     ];
 
@@ -72,8 +74,8 @@ module('Unit | Service | navi-definition-search-provider', function(hooks) {
 
     const expectedResults = [
       {
-        name: 'tableA',
-        longName: 'Table A',
+        id: 'tableA',
+        name: 'Table A',
         description: 'Table A'
       }
     ];
@@ -100,6 +102,15 @@ module('Unit | Service | navi-definition-search-provider', function(hooks) {
   test('search with empty parameters', async function(assert) {
     assert.expect(3);
     const results = await Service.search.perform();
+
+    assert.equal(results.component, 'navi-search-result/definition', 'Result contains correct display component name');
+    assert.equal(results.title, 'Definition', 'Result contains correct title for the search result section');
+    assert.equal(results.data.length, 0, 'Does not return any results');
+  });
+
+  test('search with empty query', async function(assert) {
+    assert.expect(3);
+    const results = await Service.search.perform('');
 
     assert.equal(results.component, 'navi-search-result/definition', 'Result contains correct display component name');
     assert.equal(results.title, 'Definition', 'Result contains correct title for the search result section');

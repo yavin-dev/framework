@@ -37,6 +37,14 @@ export const MetricFive = {
   metricFunctionId: 'moneyMetric'
 };
 
+export const pageViews = {
+  category: 'pageMetrics',
+  id: 'pageViews',
+  name: 'Page Views',
+  description: 'Views of a page',
+  cardinality: 100
+};
+
 export const MetricSix = {
   category: 'currencyMetrics',
   name: 'metricSix',
@@ -369,5 +377,6 @@ const METRIC_MAP = {
   metricThree: MetricThree,
   metricFour: MetricFour,
   metricFive: MetricFive,
-  metricSix: MetricSix
+  metricSix: MetricSix,
+  pageViews: pageViews
 };
