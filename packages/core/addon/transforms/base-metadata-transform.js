@@ -4,8 +4,6 @@
  */
 
 import { inject as service } from '@ember/service';
-import { get } from '@ember/object';
-import { isArray } from '@ember/array';
 import DS from 'ember-data';
 
 export default DS.Transform.extend({
@@ -24,17 +22,19 @@ export default DS.Transform.extend({
    *
    * Deserializes to a Ember Object or Array of Ember objects
    *
-   * @param {String|Array} serialized
-   * @returns {Object|Array} Ember Object | Array of Ember Objects
+   * @param {String} serialized
+   * @returns {Object} Ember Object
    */
   deserialize(serialized) {
-    let metadataService = get(this, 'metadataService');
+    let namespace = null;
 
-    if (isArray(serialized)) {
-      return serialized.map(dimension => metadataService.getById(get(this, 'type'), dimension));
+    if (serialized.includes('.')) {
+      const splitName = serialized.split('.');
+      namespace = splitName[0];
+      serialized = splitName[1];
     }
 
-    return metadataService.getById(get(this, 'type'), serialized);
+    return this.metadataService.getById(this.type, serialized, namespace);
   },
 
   /**
@@ -42,18 +42,14 @@ export default DS.Transform.extend({
    *
    * Serialized to a string or array of strings
    *
-   * @param {Object|Array} deserialized
-   * @returns {String|Array|Null} - name | array of names
+   * @param {Object} deserialized
+   * @returns {String|Null} - name
    */
   serialize(deserialized = {}) {
     if (typeof deserialized === 'string') {
       return deserialized;
     }
 
-    if (isArray(deserialized)) {
-      return deserialized.map(item => get(item, 'name') || null);
-    }
-
-    return get(deserialized, 'name') || null;
+    return deserialized.name || null;
   }
 });

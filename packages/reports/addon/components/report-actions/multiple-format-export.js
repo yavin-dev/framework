@@ -48,7 +48,7 @@ export default Component.extend({
    */
   csvHref: computed('report.{request,validations.isTruelyValid}', function() {
     let request = get(this, 'report.request').serialize();
-    return get(this, 'facts').getURL(request, { format: 'csv' });
+    return this.facts.getURL(request, { format: 'csv', dataSourceName: request.dataSource });
   }),
 
   /**

@@ -36,9 +36,19 @@
       align-items: center;
       display: flex;
       flex: 1;
+      transition: background-color 0.2s ease-out;
 
       &--selected {
         background-color: @denali-brand-100;
+      }
+    }
+
+    &-label {
+      &:hover {
+        .grouped-list__add-icon {
+          color: @denali-link-hover;
+          opacity: unset;
+        }
       }
     }
 
@@ -65,7 +75,7 @@
     }
 
     &-checkbox:hover + &-label:before {
-      box-shadow: 0 0 0 2px @denali-brand-600;
+      box-shadow: 0 0 0 2px @denali-link;
     }
 
     &-checkbox:focus + &-label:before {
@@ -73,8 +83,8 @@
     }
 
     &-checkbox:checked + &-label:before {
-      box-shadow: 0 0 0 2px @denali-brand-600;
-      background: @denali-brand-600;
+      box-shadow: 0 0 0 2px @denali-link;
+      background: @denali-link;
     }
 
     &-checkbox:checked + &-label:after {
@@ -110,7 +120,7 @@
   }
 
   &__add-icon {
-    color: @denali-brand-600;
+    color: @denali-link;
     cursor: pointer;
     display: inline-block;
     font-size: @font-size-base;
@@ -135,14 +145,18 @@
   }
 
   &__filter {
-    color: @denali-brand-600;
+    color: @denali-link;
     cursor: pointer;
     margin: 0 5px;
     opacity: 0.5;
 
-    &:hover,
+    &:hover {
+      color: @denali-link-hover;
+      opacity: unset;
+    }
+
     &--active {
-      opacity: 1;
+      opacity: unset;
     }
   }
 }

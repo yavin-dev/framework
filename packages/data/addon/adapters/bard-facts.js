@@ -39,16 +39,16 @@ export function serializeFilters(filters) {
     .join(',');
 }
 
-export default EmberObject.extend({
+export default class BardFactsAdapter extends EmberObject {
   /**
    * @property namespace
    */
-  namespace: 'v1/data',
+  namespace = 'v1/data';
 
   /**
    * @property {Service} ajax
    */
-  ajax: service(),
+  @service ajax;
 
   /**
    * Builds the dimensions path for a request
@@ -59,13 +59,13 @@ export default EmberObject.extend({
    * @return {String} dimensions path
    */
   _buildDimensionsPath(request /*options*/) {
-    let dimensions = array(get(request, 'dimensions'));
+    const dimensions = array(request.dimensions);
     return dimensions.length
       ? `/${array(dimensions.mapBy('dimension'))
           .uniq()
           .join('/')}`
       : '';
-  },
+  }
 
   /**
    * Builds a dateTime param string for a request
@@ -76,14 +76,8 @@ export default EmberObject.extend({
    * @return {String} dateTime param value
    */
   _buildDateTimeParam(request) {
-    let intervals = get(request, 'intervals');
-
-    return intervals
-      .map(interval => {
-        return `${get(interval, 'start')}/${get(interval, 'end')}`;
-      })
-      .join(',');
-  },
+    return request.intervals.map(interval => `${interval.start}/${interval.end}`).join(',');
+  }
 
   /**
    * Builds a metrics param string for a request
@@ -94,10 +88,10 @@ export default EmberObject.extend({
    * @return {String} metrics param value
    */
   _buildMetricsParam(request) {
-    return array((get(request, 'metrics') || []).map(canonicalizeMetric))
+    return array((request.metrics || []).map(canonicalizeMetric))
       .uniq()
       .join(',');
-  },
+  }
 
   /**
    * Builds a filters param string for a request
@@ -108,16 +102,16 @@ export default EmberObject.extend({
    * @return {String} filters param value
    */
   _buildFiltersParam(request) {
-    let filters = get(request, 'filters');
+    const { filters } = request;
 
     if (filters && filters.length) {
       // default field to 'id'
-      filters = filters.map(filter => ({ field: 'id', ...filter }));
-      return serializeFilters(filters);
+      const defaultedFilters = filters.map(filter => ({ field: 'id', ...filter }));
+      return serializeFilters(defaultedFilters);
     } else {
       return undefined;
     }
-  },
+  }
 
   /**
    * Builds a sort param string for a request
@@ -129,13 +123,13 @@ export default EmberObject.extend({
    * @return {String} sort param value
    */
   _buildSortParam(request, aliasFunction = a => a) {
-    let sort = get(request, 'sort');
+    const { sort } = request;
 
     if (sort && sort.length) {
       return sort
         .map(sortMetric => {
-          let metric = aliasFunction(get(sortMetric, 'metric')),
-            direction = getWithDefault(sortMetric, 'direction', 'desc');
+          const metric = aliasFunction(sortMetric.metric);
+          const direction = getWithDefault(sortMetric, 'direction', 'desc');
 
           assert(
             `'${direction}' is not a valid sort direction (${SORT_DIRECTIONS.join()})`,
@@ -148,7 +142,7 @@ export default EmberObject.extend({
     } else {
       return undefined;
     }
-  },
+  }
 
   /**
    * Builds a having param string for a request
@@ -160,7 +154,7 @@ export default EmberObject.extend({
    * @return {String} having param value
    */
   _buildHavingParam(request, aliasFunction = a => a) {
-    let having = get(request, 'having');
+    const { having } = request;
 
     if (having && having.length) {
       return having
@@ -170,21 +164,19 @@ export default EmberObject.extend({
             until: '4.0.0'
           });
 
-          let metric = aliasFunction(get(having, 'metric')),
-            operator = get(having, 'operator'),
-            value = array([get(having, 'value')]), //value is deprecated
-            values = array(get(having, 'values')),
-            valuesStr = array(values.concat(value))
-              .compact()
-              .join(',');
+          //value is deprecated
+          const { metric, operator, value, values = [] } = having;
+          const valuesStr = array(values.concat(...[value]))
+            .compact()
+            .join(',');
 
-          return `${metric}-${operator}[${valuesStr}]`;
+          return `${aliasFunction(metric)}-${operator}[${valuesStr}]`;
         })
         .join(',');
     } else {
       return undefined;
     }
-  },
+  }
 
   /**
    * Builds a URL path for a request
@@ -196,14 +188,14 @@ export default EmberObject.extend({
    * @return {String} URL Path
    */
   _buildURLPath(request, options = {}) {
-    const host = configHost(options),
-      namespace = get(this, 'namespace'),
-      table = get(request, 'logicalTable.table'),
+    const host = configHost(options);
+    const { namespace } = this;
+    const table = get(request, 'logicalTable.table'),
       timeGrain = get(request, 'logicalTable.timeGrain'),
       dimensions = this._buildDimensionsPath(request, options);
 
     return `${host}/${namespace}/${table}/${timeGrain}${dimensions}/`;
-  },
+  }
 
   /**
    * Builds a query object for a request
@@ -267,7 +259,7 @@ export default EmberObject.extend({
     }
 
     return query;
-  },
+  }
 
   /**
    * Returns URL String for a request
@@ -287,11 +279,12 @@ export default EmberObject.extend({
         .join('&');
 
     return `${path}?${queryStr}`;
-  },
+  }
+
   /**
    * @property {Ember.Service} requestDecorator
    */
-  requestDecorator: service(),
+  @service requestDecorator;
 
   /**
    * @method _decorate
@@ -300,9 +293,8 @@ export default EmberObject.extend({
    * @returns {Object} decorated request
    */
   _decorate(request) {
-    let decorator = get(this, 'requestDecorator');
-    return decorator.applyGlobalDecorators(request);
-  },
+    return this.requestDecorator.applyGlobalDecorators(request);
+  }
 
   /**
    * @method fetchDataForRequest - Uses the url generated using the adapter to make an ajax request
@@ -340,7 +332,7 @@ export default EmberObject.extend({
       customHeaders = options.customHeaders;
     }
 
-    return get(this, 'ajax').request(url, {
+    return this.ajax.request(url, {
       xhrFields: {
         withCredentials: true
       },
@@ -353,4 +345,4 @@ export default EmberObject.extend({
       timeout: timeout
     });
   }
-});
+}

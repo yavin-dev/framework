@@ -282,6 +282,10 @@ export default Route.extend({
           timeout: 'medium'
         });
       });
+    },
+
+    openFilters() {
+      set(this.controller, 'isFiltersCollapsed', false);
     }
   }
 });

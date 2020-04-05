@@ -15,6 +15,7 @@ const NEW_MODEL = {
   createdOn: null,
   request: {
     bardVersion: 'v1',
+    dataSource: 'dummy',
     dimensions: [],
     filters: [],
     having: [],
@@ -72,11 +73,12 @@ module('Unit | Route | reports/new', function(hooks) {
   });
 
   test('_newModel', function(assert) {
-    assert.expect(1);
+    assert.expect(2);
 
     return settled().then(() => {
       let model = this.owner.lookup('route:reports/new')._newModel();
       assert.deepEqual(model.toJSON(), NEW_MODEL, 'A new report model is returned');
+      assert.equal(model.request.dataSource, 'dummy', 'Should fall back to default dataSource');
     });
   });
 

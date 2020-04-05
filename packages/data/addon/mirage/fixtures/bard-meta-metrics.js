@@ -132,6 +132,43 @@ export default {
           defaultValue: 'l'
         }
       }
+    },
+    {
+      category: 'Multiple Params',
+      name: 'multipleParamMetric',
+      longName: 'Give me params',
+      type: 'number',
+      parameters: {
+        type: {
+          type: 'enum',
+          values: [
+            { id: 'l', description: 'Left' },
+            { id: 'r', description: 'Right' },
+            { id: 'm', description: 'Middle' }
+          ],
+          defaultValue: 'l'
+        },
+        aggregation: {
+          type: 'enum',
+          values: [{ id: 'dayAvg', description: 'Daily Average' }, { id: 'total', description: 'Total' }],
+          defaultValue: 'total'
+        },
+        age: {
+          type: 'dimension',
+          dimensionName: 'age',
+          defaultValue: '6'
+        },
+        currency: {
+          type: 'dimension',
+          dimensionName: 'displayCurrency',
+          defaultValue: 'USD'
+        },
+        currencyButNullDefault: {
+          type: 'dimension',
+          dimensionName: 'displayCurrency',
+          defaultValue: null
+        }
+      }
     }
   ],
 
@@ -272,6 +309,52 @@ export default {
       name: 'dayAvgUniqueIdentifiersPerTotalUniqueIdentifiers',
       longName: 'Unique Identifiers (Daily Avg) per Total Unique Identifiers (Percentage)',
       type: 'number'
+    }
+  ],
+
+  blockheadMetrics: [
+    {
+      category: 'Personal',
+      name: 'ownedQuantity',
+      longName: 'Quantity of thing',
+      type: 'number'
+    },
+    {
+      category: 'Personal',
+      name: 'usedAmount',
+      longName: 'Used Amount',
+      type: 'number'
+    },
+    {
+      category: 'Personal',
+      name: 'personalSold',
+      longName: 'Personally sold amount',
+      type: 'number'
+    },
+    {
+      category: 'World',
+      name: 'available',
+      longName: 'How many are available',
+      type: 'number'
+    },
+    {
+      category: 'World',
+      name: 'globalySold',
+      longName: 'How many have sold worldwide',
+      type: 'number'
+    },
+    {
+      category: 'World',
+      name: 'revenue',
+      longName: 'Revenue',
+      type: 'money',
+      parameters: {
+        currency: {
+          type: 'dimension',
+          dimensionName: 'displayCurrency',
+          defaultValue: 'GIL'
+        }
+      }
     }
   ]
 };

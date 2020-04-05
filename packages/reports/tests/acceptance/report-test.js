@@ -16,7 +16,8 @@ import {
   clickItem,
   clickItemFilter,
   getTimeGrainCheckbox,
-  getAllSelected
+  getAllSelected,
+  getItem
 } from 'navi-reports/test-support/report-builder';
 import { animationsSettled } from 'ember-animated/test-support';
 
@@ -122,7 +123,7 @@ module('Acceptance | Navi Report', function(hooks) {
   });
 
   test('New report - copy api', async function(assert) {
-    assert.expect(2);
+    assert.expect(3);
 
     await visit('/reports/new');
     await clickItem('metric', 'Ad Clicks');
@@ -139,6 +140,10 @@ module('Acceptance | Navi Report', function(hooks) {
       find('.navi-modal__input').value.includes('metrics=adClicks%2CaddPageViews'),
       'API query updates with request'
     );
+
+    assert
+      .dom('.get-api-modal-container input')
+      .hasValue(/^https:\/\/data.naviapp.io\/\S+$/, 'shows api url from right datasource');
   });
 
   test('Revert changes when exiting report - existing report', async function(assert) {
@@ -534,7 +539,7 @@ module('Acceptance | Navi Report', function(hooks) {
   });
 
   test('Multi export action - csv href', async function(assert) {
-    assert.expect(4);
+    assert.expect(5);
 
     await visit('/reports/1/view');
     await clickTrigger('.multiple-format-export');
@@ -578,13 +583,17 @@ module('Acceptance | Navi Report', function(hooks) {
       ),
       'Filter updates are automatically included in export url'
     );
+
+    assert
+      .dom(findAll('.multiple-format-export__dropdown a').filter(el => el.textContent.trim() === 'CSV')[0])
+      .hasAttribute('href', /^https:\/\/data.naviapp.io\/\S+$/, 'uses csv export from right datasource');
   });
 
   test('Multi export action - pdf href', async function(assert) {
     assert.expect(4);
 
     const initialUrl =
-      '/export?reportModel=EQbwOsAmCGAu0QFzmAS0kiBGCAaCcsATqgEYCusApgM5IoBuqN50ANqgF5yoD2AdvQiwAngAcqmYB35UAtAGMAFtCKw8EBlSI0-g4Iiz5gAWyrwY8IcGgAPZtZHWa21LWuiJUyKjP9dAhrACgIAZqgA5tZmxKgK0eYk8QYEkADCHAoA1nTAxmKq0DHaucgAvmXGPn4B_ADyRJDaSADaEGJEvBJqTsAAulW-VP56pS0o_EWSKcAACp3dogAEOHma7OTuBigdXdqiUlhYACwQFbgTU1Lzez1LAExBDBtbyO0L-72I2AAMfz-rc6XMzXD53ADMTxepR2YIOMyw_x-j2AFT6FQxlWEqFgbGm32AAAkRERyHilgA5KgAd1yxiIVAAjpsaOpthA2LwInF2AAVaCkPEeAVCmayWDU3hELJBWBDADiRGgqH0BJgvSxpkScTGKBiSSk0HSmRyZwuEH1cSkkwYGTiptRAwg1WGtV1zqGI0CM12iw1TuA4TY1B0rQDKiY_CiBhaAZoUrZiHGFu1yQJNrt2TpHoZCjl3oJ0BoyTKAZVIeebHdwFZqkTEHuAIArHIjnIfgBOJZ_RA9v4AOn-QWGGBmjawLbbWAAbN2fr35wOh47jKRVJAAGolPRSBirelMlmwLc6HczPdnTUMtg8AQ0JSoMQwgiUJRS6yWBDs4CefEQcguKGaxoKO6bQEwAD6AHNKi5zCOIf7AAyYgJrkFTAEAA';
+      '/export?reportModel=EQbwOsAmCGAu0QFzmAS0kiBGCAaCcsATqgEYCusApgM5IoBuqN50ANqgF5yoD2AdvQiwAngAcqmYB35UAtAGMAFtCKw8EBlSI0-g4Iiz5gAWyrwY8IcGgAPZtZHWa21LWuiJUyKjP9dAhrACgIAZqgA5tZmxKgK0eYk8QYEkADCHAoA1nTAxmKq0DHaucgAvmXGPn4B_ADyRJDaSADaEGJEvBJqTsAAulW-VP56pS0o_EWSKcAACp3dogAEOHma7OTuBigdXdqiUlhYACwQFbgTU1Lzez1LAExBDBtbyO0L-72I2AAMfz-rc6XMzXD53ADMTxepR2YIOMyw_x-j2AFT6FQxlWEqFgbGm32AAAkRERyHilgA5KgAd1yxiIVAAjpsaOpthA2LwInF2AAVaCkPEeAVCmayWDU3hELJBWBDADiRGgqH0BJgvSxpkScTGKBiSSk0HSmRyZwuEH1cSkkwYGTiptRAwg1WGtV1zqGI0CM12iw1TuA4TY1B0rQDKiY_CiBhaAZoUrZiHGFu1yQJNrt2TpHoZCjl3oJ0BoyTKAZVIeebHdwFZqkTEHuAIArHIjnIfgBOJZ_RA9v4AOn-QWGGBmjawLbbWAAbN2fr35wOh46qnBoABlXjkIgKfHO8gmEy9YykVSQABqJT0UgYq3pTJZsEvOmvM1vZ01DLYPAENCUqDEGECEoJQpWsSwEHZYBPD3YByBcUM1jQUd02gJgAH14OaVFzmEcRYIZMQE1yCpgCAAA';
     await visit('/reports/1/view');
     await clickTrigger('.multiple-format-export');
 
@@ -1186,35 +1195,6 @@ module('Acceptance | Navi Report', function(hooks) {
     Ember.Test.adapter.exception = originalException;
   });
 
-  test('Error data request', async function(assert) {
-    assert.expect(1);
-
-    server.get(
-      `${config.navi.dataSources[0].uri}/v1/data/*path`,
-      () => new Response(400, {}, { description: 'Cannot merge mismatched time grains month and day' })
-    );
-
-    //suppress errors and exceptions for this test
-    let originalLoggerError = Ember.Logger.error,
-      originalException = Ember.Test.adapter.exception;
-
-    Ember.Logger.error = function() {};
-    Ember.Test.adapter.exception = function() {};
-
-    await visit('/reports/5/view');
-
-    assert.equal(
-      find('.navi-report-error__info-message')
-        .innerText.replace(/\s+/g, ' ')
-        .trim(),
-      'Oops! There was an error with your request. Cannot merge mismatched time grains month and day',
-      'An error message is displayed for an invalid request'
-    );
-
-    Ember.Logger.error = originalLoggerError;
-    Ember.Test.adapter.exception = originalException;
-  });
-
   test('Updating chart series', async function(assert) {
     assert.expect(4);
 
@@ -1498,10 +1478,24 @@ module('Acceptance | Navi Report', function(hooks) {
       .hasClass('filter-collection--collapsed', 'Filters are still collapsed when removing a metric filter');
   });
 
-  test('Show selected dimensions and filters', async function(assert) {
-    assert.expect(4);
+  test('Dimension selector', async function(assert) {
+    assert.expect(15);
+
+    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
+
+    config.navi.FEATURES.enableRequestPreview = false;
 
     await visit('/reports/1');
+
+    assert.deepEqual(
+      await getAllSelected('dimension'),
+      ['Day', 'Property'],
+      'Selected dimensions and time grain initially include "Day" and "Property"'
+    );
+
+    let dimensionItem = await getItem('dimension', 'Operating System');
+
+    assert.ok(dimensionItem.item.querySelector('.fa-plus-circle'), 'An unselected dimension row has a plus icon');
 
     // Add Dimension
     await clickItem('dimension', 'Operating System');
@@ -1509,7 +1503,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.deepEqual(
       await getAllSelected('dimension'),
       ['Day', 'Operating System', 'Property'],
-      'Initially selected items include selected dimensions, filters and timegrains'
+      'Adding a dimension changes selected dimensions'
     );
 
     // Add selected dimension as filter
@@ -1521,13 +1515,31 @@ module('Acceptance | Navi Report', function(hooks) {
       'Adding a selected dimension as filter does not change the selected items'
     );
 
-    // Remove the dimension filter
+    // Remove the selected dimension filter
     await clickItemFilter('dimension', 'Operating System');
 
     assert.deepEqual(
       await getAllSelected('dimension'),
       ['Day', 'Operating System', 'Property'],
       'Removing a filter of a dimension already selected does not change selected items'
+    );
+
+    // Add unselected dimension as filter
+    await clickItemFilter('dimension', 'Gender');
+
+    assert.deepEqual(
+      await getAllSelected('dimension'),
+      ['Day', 'Operating System', 'Property'],
+      'Adding an unselected dimension as filter does not change the selected items'
+    );
+
+    // Remove the unselected dimension filter
+    await clickItemFilter('dimension', 'Gender');
+
+    assert.deepEqual(
+      await getAllSelected('dimension'),
+      ['Day', 'Operating System', 'Property'],
+      'Removing a filter of an unselected dimension does not change selected items'
     );
 
     // Remove Dimension
@@ -1538,6 +1550,182 @@ module('Acceptance | Navi Report', function(hooks) {
       ['Day', 'Property'],
       'Removing a dimension as a filter and dimension changes the selected items'
     );
+
+    dimensionItem = await getItem('dimension', 'Operating System');
+
+    assert.ok(dimensionItem.item.querySelector('.fa-plus-circle'), 'Removed dimension row has a plus icon');
+
+    config.navi.FEATURES.enableRequestPreview = true;
+
+    await visit('/reports/1');
+
+    assert.deepEqual(
+      await getAllSelected('dimension'),
+      ['Day', 'Property'],
+      'Selected dimensions and time grain initially include "Day" and "Property"'
+    );
+
+    dimensionItem = await getItem('dimension', 'Operating System');
+
+    assert.ok(
+      dimensionItem.item.querySelector('.fa-plus-circle'),
+      'An unselected dimension row has a plus icon (enableRequestPreview on)'
+    );
+
+    // Add Dimension
+    await clickItem('dimension', 'Operating System');
+
+    assert.deepEqual(
+      await getAllSelected('dimension'),
+      ['Day', 'Operating System', 'Property'],
+      'Adding a dimension changes selected dimensions (enableRequestPreview on)'
+    );
+
+    dimensionItem = await getItem('dimension', 'Operating System');
+
+    assert.ok(
+      dimensionItem.item.querySelector('.fa-plus-circle'),
+      'Added dimension row still has a plus icon (enableRequestPreview on)'
+    );
+
+    // Click dimension again
+    await clickItem('dimension', 'Operating System');
+
+    assert.deepEqual(
+      await getAllSelected('dimension'),
+      ['Day', 'Operating System', 'Property'],
+      'Clicking a selected dimension does not change selected dimensions (enableRequestPreview on)'
+    );
+
+    dimensionItem = await getItem('dimension', 'Operating System');
+
+    assert.ok(
+      dimensionItem.item.querySelector('.fa-plus-circle'),
+      'Dimension row still has a plus icon (enableRequestPreview on)'
+    );
+
+    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
+  });
+
+  test('Metric selector', async function(assert) {
+    assert.expect(14);
+
+    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
+
+    config.navi.FEATURES.enableRequestPreview = false;
+
+    await visit('/reports/1');
+
+    assert.deepEqual(
+      await getAllSelected('metric'),
+      ['Ad Clicks', 'Nav Link Clicks'],
+      'Selected metrics initally include "Ad Clicks" and "Nav Link Clicks"'
+    );
+
+    let metricItem = await getItem('metric', 'Total Clicks');
+
+    assert.ok(metricItem.item.querySelector('.fa-plus-circle'), 'An unselected metric row has a plus icon');
+
+    // Add Metric
+    await clickItem('metric', 'Total Clicks');
+
+    assert.deepEqual(
+      await getAllSelected('metric'),
+      ['Ad Clicks', 'Nav Link Clicks', 'Total Clicks'],
+      'Adding a metric changes selected metrics'
+    );
+
+    // Add selected metric as filter
+    await clickItemFilter('metric', 'Total Clicks');
+
+    assert.deepEqual(
+      await getAllSelected('metric'),
+      ['Ad Clicks', 'Nav Link Clicks', 'Total Clicks'],
+      'Adding a selected metric as filter does not change the selected items'
+    );
+
+    // Remove the selected metric filter
+    await clickItemFilter('metric', 'Total Clicks');
+
+    assert.deepEqual(
+      await getAllSelected('metric'),
+      ['Ad Clicks', 'Nav Link Clicks', 'Total Clicks'],
+      'Removing a filter of a metric already selected does not change selected items'
+    );
+
+    // Add unselected metric as filter
+    await clickItemFilter('metric', 'Other Clicks');
+
+    assert.deepEqual(
+      await getAllSelected('metric'),
+      ['Ad Clicks', 'Nav Link Clicks', 'Other Clicks', 'Total Clicks'],
+      'Adding an unselected metric as filter selects the metric'
+    );
+
+    // Remove Metrics
+    await clickItem('metric', 'Total Clicks');
+    await clickItem('metric', 'Other Clicks');
+
+    assert.deepEqual(
+      await getAllSelected('metric'),
+      ['Ad Clicks', 'Nav Link Clicks'],
+      'Removing a metric changes selected metrics'
+    );
+
+    metricItem = await getItem('metric', 'Total Clicks');
+
+    assert.ok(metricItem.item.querySelector('.fa-plus-circle'), 'Removed metric row has a plus icon');
+
+    config.navi.FEATURES.enableRequestPreview = true;
+
+    await visit('/reports/1');
+
+    assert.deepEqual(
+      await getAllSelected('metric'),
+      ['Ad Clicks', 'Nav Link Clicks'],
+      'Selected metrics initally include "Ad Clicks" and "Nav Link Clicks"'
+    );
+
+    metricItem = await getItem('metric', 'Total Clicks');
+
+    assert.ok(
+      metricItem.item.querySelector('.fa-plus-circle'),
+      'An unselected metric row has a plus icon (enableRequestPreview on)'
+    );
+
+    // Add Metric
+    await clickItem('metric', 'Total Clicks');
+
+    assert.deepEqual(
+      await getAllSelected('metric'),
+      ['Ad Clicks', 'Nav Link Clicks', 'Total Clicks'],
+      'Adding a metric changes selected metrics (enableRequestPreview on)'
+    );
+
+    metricItem = await getItem('metric', 'Total Clicks');
+
+    assert.ok(
+      metricItem.item.querySelector('.fa-plus-circle'),
+      'Added metric row still has a plus icon (enableRequestPreview on)'
+    );
+
+    // Click metric again
+    await clickItem('metric', 'Total Clicks');
+
+    assert.deepEqual(
+      await getAllSelected('metric'),
+      ['Ad Clicks', 'Nav Link Clicks', 'Total Clicks'],
+      'Clicking a selected metric does not change selected metrics (enableRequestPreview on)'
+    );
+
+    metricItem = await getItem('metric', 'Total Clicks');
+
+    assert.ok(
+      metricItem.item.querySelector('.fa-plus-circle'),
+      'Metric row still has a plus icon (enableRequestPreview on)'
+    );
+
+    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
   });
 
   test('Test filter "Is Empty" is accepted', async function(assert) {
@@ -1651,6 +1839,116 @@ module('Acceptance | Navi Report', function(hooks) {
 
     const today = moment().format(dateFormat);
     assert.dom('.filter-values--current-period').hasText(`The current day. (${today})`, 'The current day');
+  });
+
+  test('Date Picker start date beyond end date', async function(assert) {
+    assert.expect(19);
+
+    await visit('/reports/1');
+    await selectChoose('.filter-builder__select-trigger', 'Between');
+
+    assert.dom('.filter-values--date-range-input__low-value').hasText('Nov 09, 2015', 'The start date is Nov 09, 2015');
+    assert.dom('.filter-values--date-range-input__high-value').hasText('Nov 15, 2015', 'The end date is Nov 15, 2015');
+
+    //start date beyond end date
+    await clickTrigger('.filter-values--date-range-input__low-value');
+    await click('.ember-power-calendar-day[data-date="2015-11-18"]');
+
+    assert.dom('.filter-values--date-range-input__low-value').hasText('Nov 18, 2015', 'The start date is Nov 18, 2015');
+    assert
+      .dom('.filter-values--date-range-input__high-value')
+      .hasText('Nov 15, 2015', 'The end date is still Nov 15, 2015');
+
+    //collapse filters
+    await click('.report-builder__container-header__filters-toggle');
+    assert
+      .dom('.filter-collection')
+      .hasText('Date Time (Day) between Nov 18, 2015 - Nov 15, 2015', 'Collapsed range is Nov 18, 2015 - Nov 15, 2015');
+    //expand filters
+    await click('.filter-collection--collapsed');
+
+    await click('.navi-report__run-btn');
+
+    assert
+      .dom('.navi-info-message__error-list')
+      .hasText(
+        'The start date should be before end date',
+        '"The start date should be before end date" error is rendered'
+      );
+
+    //start date is equal to end date
+    await clickTrigger('.filter-values--date-range-input__high-value');
+    await click('.ember-power-calendar-day[data-date="2015-11-18"]');
+
+    assert
+      .dom('.filter-values--date-range-input__low-value')
+      .hasText('Nov 18, 2015', 'The start date is still Nov 18, 2015');
+    assert.dom('.filter-values--date-range-input__high-value').hasText('Nov 18, 2015', 'The end date is Nov 18, 2015');
+
+    //collapse filters
+    await click('.report-builder__container-header__filters-toggle');
+    assert.dom('.filter-collection').hasText('Date Time (Day) between Nov 18, 2015', 'Collapsed range is Nov 18, 2015');
+    //expand filters
+    await click('.filter-collection--collapsed');
+
+    await click('.navi-report__run-btn');
+
+    assert.dom('.navi-info-message__error-list').doesNotExist('No error if dates are equal');
+
+    //start date 1 day beyond end date
+    await clickTrigger('.filter-values--date-range-input__low-value');
+    await click('.ember-power-calendar-day[data-date="2015-11-19"]');
+
+    assert.dom('.filter-values--date-range-input__low-value').hasText('Nov 19, 2015', 'The start date is Nov 19, 2015');
+    assert
+      .dom('.filter-values--date-range-input__high-value')
+      .hasText('Nov 18, 2015', 'The end date is still Nov 18, 2015');
+
+    //collapse filters
+    await click('.report-builder__container-header__filters-toggle');
+    assert
+      .dom('.filter-collection')
+      .hasText('Date Time (Day) between Nov 19, 2015 - Nov 18, 2015', 'Collapsed range is Nov 19, 2015 - Nov 18, 2015');
+    //expand filters
+    await click('.filter-collection--collapsed');
+
+    await click('.navi-report__run-btn');
+
+    assert
+      .dom('.navi-info-message__error-list')
+      .hasText(
+        'The start date should be before end date',
+        '"The start date should be before end date" error is rendered when start date is 1 day beyond end date'
+      );
+
+    //select month grain
+    await clickItem('timeGrain', 'Month');
+
+    assert.dom('.filter-values--date-range-input__low-value').hasText('Nov 2015', 'The start date is month Nov 2015');
+    assert.dom('.filter-values--date-range-input__high-value').hasText('Nov 2015', 'The end date is month Nov 2015');
+
+    await click('.navi-report__run-btn');
+
+    assert.dom('.navi-info-message__error-list').doesNotExist('No error if months are equal');
+
+    await clickTrigger('.filter-values--date-range-input__low-value');
+    await click($('.ember-power-calendar-selector-month:contains(Dec)')[0]);
+
+    await click('.navi-report__run-btn');
+
+    assert
+      .dom('.navi-info-message__error-list')
+      .hasText(
+        'The start date should be before end date',
+        '"The start date should be before end date" error is rendered when start month is 1 month beyond end month'
+      );
+
+    await clickTrigger('.filter-values--date-range-input__high-value');
+    await click($('.ember-power-calendar-selector-month:contains(Dec)')[0]);
+
+    await click('.navi-report__run-btn');
+
+    assert.dom('.navi-info-message__error-list').doesNotExist('No error if months are equal');
   });
 
   test('Date picker all timegrain', async function(assert) {

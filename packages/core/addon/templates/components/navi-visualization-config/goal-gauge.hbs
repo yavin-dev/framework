@@ -12,7 +12,7 @@
       @value={{readonly @options.metricTitle}}
       @focus-out={{fn this.updateConfig "metricTitle"}}
       @key-up={{fn this.updateConfig "metricTitle"}}
-      @placeholder={{metric-format (serialize @request.metrics.firstObject)}}
+      @placeholder={{metric-format (serialize @request.metrics.firstObject @request.dataSource)}}
     />
   </div>
   <div class="goal-gauge-config__section-header">

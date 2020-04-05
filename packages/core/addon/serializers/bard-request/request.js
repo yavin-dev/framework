@@ -6,8 +6,10 @@
 import DS from 'ember-data';
 import { hasParameters, getAliasedMetrics, canonicalizeMetric } from 'navi-data/utils/metric';
 import { get } from '@ember/object';
+import { inject as service } from '@ember/service';
 
 export default DS.JSONSerializer.extend({
+  bardMetadata: service(),
   /**
    * @override
    * @property {Object} attrs - model attribute config while serialization
@@ -61,15 +63,34 @@ export default DS.JSONSerializer.extend({
     //add dateTime to cannonicalName -> metric map
     canonToMetric['dateTime'] = { metric: 'dateTime' };
 
-    request.having = this._toggleAlias(request.having, aliasToCanon, canonToMetric);
-    request.sort = this._toggleAlias(request.sort, aliasToCanon, canonToMetric);
+    const namespace = request.dataSource || this.bardMetadata.getTableNamespace(request.logicalTable.table); //if datasource is undefined, try to infer from metadata
+
+    request.having = this._toggleAlias(request.having, aliasToCanon, canonToMetric, namespace);
+    request.sort = this._toggleAlias(request.sort, aliasToCanon, canonToMetric, namespace);
+
+    if (!request.dataSource) {
+      request.dataSource = namespace;
+    }
 
     //remove AS from metric parameters
     request.metrics = request.metrics.map(metric => {
       if (hasParameters(metric)) {
         delete metric.parameters.as;
       }
+      metric.metric = `${namespace}.${metric.metric}`;
       return metric;
+    });
+
+    request.logicalTable.table = `${namespace}.${request.logicalTable.table}`;
+
+    request.dimensions = request.dimensions.map(dimension => {
+      dimension.dimension = `${namespace}.${dimension.dimension}`;
+      return dimension;
+    });
+
+    request.filters = request.filters.map(filter => {
+      filter.dimension = `${namespace}.${filter.dimension}`;
+      return filter;
     });
 
     return this._super(type, request);
@@ -116,7 +137,7 @@ export default DS.JSONSerializer.extend({
    * @return {array} - copy of the field object transformed with aliases, or alias to metric object
    * @private
    */
-  _toggleAlias(field, aliasMap, canonMap = {}) {
+  _toggleAlias(field, aliasMap, canonMap = {}, namespace = null) {
     if (!field) {
       return;
     }
@@ -128,6 +149,11 @@ export default DS.JSONSerializer.extend({
 
       obj.metric = aliasMap[metricName] || metricName;
       obj.metric = canonMap[obj.metric] || obj.metric;
+      obj.metric = typeof obj.metric === 'string' ? obj.metric : Object.assign({}, obj.metric);
+
+      if (namespace && obj.metric.metric) {
+        obj.metric.metric = `${namespace}.${obj.metric.metric}`;
+      }
       return obj;
     });
   }

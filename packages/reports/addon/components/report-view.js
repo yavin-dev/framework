@@ -21,7 +21,6 @@ import { observes } from '@ember-decorators/object';
 import move from 'ember-animated/motions/move';
 import { easeOut, easeIn } from 'ember-animated/easings/cosine';
 import { fadeOut, fadeIn } from 'ember-animated/motions/opacity';
-import fade from 'ember-animated/transitions/fade';
 import config from 'ember-get-config';
 
 const VISUALIZATION_RESIZE_EVENT = 'resizestop';
@@ -72,11 +71,6 @@ class ReportView extends Component {
   }
 
   /**
-   * @property {Boolean} isColumnDrawerOpen - Display column config or not
-   */
-  isColumnDrawerOpen = config.navi.FEATURES.enableRequestPreview;
-
-  /**
    * @property {Boolean} isEditingVisualization - Display visualization config or not
    */
   isEditingVisualization = false;
@@ -87,16 +81,11 @@ class ReportView extends Component {
   hasMostRecentResponse = false;
 
   /**
-   * @property {Boolean} showRequestPreview - true if request preview is selected, false otherwise
+   * @property {String} currentView - the visualization type of the report
    */
-  showRequestPreview = false;
-
-  /**
-   * @property {String} currentView - request-preview or the visualization type of the report
-   */
-  @computed('showRequestPreview', 'report.visualization.type')
+  @computed('report.visualization.type')
   get currentView() {
-    return this.showRequestPreview ? 'request-preview' : this.report.visualization.type;
+    return this.report.visualization.type;
   }
 
   /**
@@ -166,24 +155,12 @@ class ReportView extends Component {
       response
     } = this;
 
-    if (type === 'request-preview') {
-      this.set('showRequestPreview', true);
-      this.set('isEditingVisualization', false);
-      return;
-    }
-
     let newVisualization = this.store.createFragment(type, {
       _request: request //Provide request for validation
     });
     newVisualization.rebuildConfig(request, response);
     set(report, 'visualization', newVisualization);
-    this.set('showRequestPreview', false);
   }
-
-  /**
-   * @property fadeTransition - fade transition
-   */
-  fadeTransition = fade;
 
   /**
    * Custom fade transition when editing a visualization
@@ -191,7 +168,7 @@ class ReportView extends Component {
    */
   *visFadeTransition({ removedSprites, insertedSprites }) {
     // fadeIn a little bit longer so we can see the fade after the drawer closes
-    yield Promise.all(insertedSprites.map(s => fadeIn(s, { duration: 800 })));
+    yield Promise.all(insertedSprites.map(s => fadeIn(s, { duration: 500 })));
     yield Promise.all(removedSprites.map(fadeOut));
   }
 

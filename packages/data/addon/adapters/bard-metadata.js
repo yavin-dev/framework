@@ -8,16 +8,16 @@ import EmberObject from '@ember/object';
 import { pluralize } from 'ember-inflector';
 import { configHost } from '../utils/adapter';
 
-export default EmberObject.extend({
+export default class BardMetadataAdapter extends EmberObject {
   /**
    * @property namespace
    */
-  namespace: 'v1',
+  namespace = 'v1';
 
   /**
    * @property {Service} ajax
    */
-  ajax: service(),
+  @service ajax;
 
   /**
    * Builds a URL path for a metadata query
@@ -30,10 +30,10 @@ export default EmberObject.extend({
    * @return {String} URL Path
    */
   _buildURLPath(type, id, options = {}) {
-    const host = configHost(options),
-      namespace = this.get('namespace');
+    const host = configHost(options);
+    const { namespace } = this;
     return `${host}/${namespace}/${pluralize(type)}/${id}`;
-  },
+  }
 
   /**
    * Fetches all Bard metadata
@@ -46,7 +46,7 @@ export default EmberObject.extend({
    */
   fetchAll(type, options) {
     return this.fetchMetadata(type, '', options);
-  },
+  }
 
   /**
    * Fetches Bard metadata
@@ -64,7 +64,7 @@ export default EmberObject.extend({
       clientId = options.clientId || 'UI',
       timeout = options.timeout || 300000;
 
-    return this.get('ajax').request(url, {
+    return this.ajax.request(url, {
       xhrFields: {
         withCredentials: true
       },
@@ -76,4 +76,4 @@ export default EmberObject.extend({
       timeout: timeout
     });
   }
-});
+}

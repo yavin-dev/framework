@@ -39,10 +39,6 @@ class ReportVisualization extends Component {
   @computed('report.visualization.type', 'print')
   get visualizationComponent() {
     const visType = get(this, 'report.visualization.type');
-    if (visType === 'request-preview') {
-      return 'navi-request-preview';
-    }
-
     let componentName = `navi-visualizations/${visType}`;
     if (get(this, 'print')) {
       let printComponent = `${componentName}-print`;

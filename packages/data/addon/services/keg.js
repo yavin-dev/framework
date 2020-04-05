@@ -92,6 +92,9 @@ export default class KegService extends Service {
       const existingRecord = this.getById(type, id, namespace);
 
       if (existingRecord) {
+        if (existingRecord.partialData && !rawRecords[i].partialData) {
+          delete existingRecord.partialData;
+        }
         setProperties(existingRecord, rawRecords[i]);
         returnedRecords.pushObject(existingRecord);
       } else {

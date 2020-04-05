@@ -94,7 +94,7 @@ const Model = EmberObject.extend({
   extended: computed(function() {
     const { metadata, name, type } = this;
     return ObjectProxy.extend(PromiseProxyMixin).create({
-      promise: metadata.fetchById(type, name)
+      promise: metadata.findById(type, name)
     });
   })
 });

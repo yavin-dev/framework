@@ -248,5 +248,56 @@ export default {
       datatype: 'text',
       storageStrategy: 'loaded'
     }
+  ],
+
+  blockheadDims: [
+    {
+      name: 'item',
+      longName: 'Item',
+      cardinality: 100,
+      category: 'Personal',
+      datatype: 'text',
+      storageStrategy: 'loaded'
+    },
+    {
+      name: 'container',
+      longName: 'Container',
+      cardinality: 100,
+      category: 'Personal',
+      datatype: 'text',
+      storageStrategy: 'loaded'
+    },
+    {
+      name: 'location',
+      longName: 'Location',
+      cardinality: 100,
+      category: 'World',
+      datatype: 'text',
+      storageStrategy: 'loaded'
+    },
+    {
+      name: 'requirement',
+      longName: 'Requirement',
+      cardinality: 100,
+      category: 'World',
+      datatype: 'text',
+      storageStrategy: 'loaded'
+    },
+    {
+      name: 'recipe',
+      longName: 'Recipe',
+      cardinality: 100,
+      category: 'Personal',
+      datatype: 'text',
+      storageStrategy: 'loaded'
+    },
+    {
+      name: 'displayCurrency',
+      longName: 'Display Currency',
+      cardinality: 34,
+      category: 'Personal',
+      datatype: 'text',
+      storageStrategy: 'loaded'
+    }
   ]
 };

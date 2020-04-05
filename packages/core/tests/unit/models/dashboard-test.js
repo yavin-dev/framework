@@ -118,7 +118,7 @@ module('Unit | Model | dashboard', function(hooks) {
   });
 
   test('Cloning Dashboards', async function(assert) {
-    assert.expect(1);
+    assert.expect(2);
 
     await run(async () => {
       const model = await Store.findRecord('dashboard', 3);
@@ -132,6 +132,19 @@ module('Unit | Model | dashboard', function(hooks) {
       expectedModel.updatedOn = null;
 
       assert.deepEqual(clonedModel, expectedModel, 'The cloned dashboard model has the same attrs as original model');
+
+      await this.owner.lookup('service:bard-metadata').loadMetadata({ dataSourceName: 'blockhead' });
+
+      const filterModel = await Store.findRecord('dashboard', 6);
+      const clonedFilterModel = filterModel.clone().toJSON();
+      assert.deepEqual(
+        clonedFilterModel.filters,
+        [
+          { dimension: 'dummy.age', field: 'id', operator: 'in', values: [1, 2, 3] },
+          { dimension: 'blockhead.container', field: 'id', operator: 'notin', values: [1] }
+        ],
+        'multi datasource filters has the datasource specified'
+      );
     });
   });
 

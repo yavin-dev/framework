@@ -11,48 +11,45 @@ import { assert } from '@ember/debug';
 import Service, { inject as service } from '@ember/service';
 import { assign } from '@ember/polyfills';
 import { setOwner, getOwner } from '@ember/application';
-import { getWithDefault, get } from '@ember/object';
+import { getWithDefault } from '@ember/object';
 import { resolve } from 'rsvp';
 import { getDefaultDataSourceName } from '../utils/adapter';
 
-export default Service.extend({
+export default class BardMetadataService extends Service {
   /**
    * @private
    * @property {Object} adapter - the adapter object
    */
-  _adapter: undefined,
+  _adapter = undefined;
 
   /**
    * @private
    * @property {Object} serializer - the serializer object
    */
-  _serializer: undefined,
+  _serializer = undefined;
 
   /**
    * @private
    * @property {Ember.Service} _keg - keg service
    */
-  _keg: service('keg'),
+  @service('keg') _keg;
 
   /**
    * @property {Array} loadedDataSources - list of data sources in which meta data has already been loaded
    */
-  loadedDataSources: null,
+  loadedDataSources = [];
 
   /**
    * @method init
    */
-  init() {
-    this._super(...arguments);
+  constructor() {
+    super(...arguments);
 
     //Instantiating the bard metadata adapter & serializer
-    let owner = getOwner(this),
-      adapter = owner.lookup('adapter:bard-metadata');
-
-    this.set('_adapter', adapter);
-    this.set('_serializer', owner.lookup('serializer:bard-metadata'));
-    this.set('loadedDataSources', []);
-  },
+    const owner = getOwner(this);
+    this._adapter = owner.lookup('adapter:bard-metadata');
+    this._serializer = owner.lookup('serializer:bard-metadata');
+  }
 
   /**
    * @method loadMetadata
@@ -65,7 +62,7 @@ export default Service.extend({
     const dataSource = options.dataSourceName || getDefaultDataSourceName();
     //fetch metadata from WS if metadata not yet loaded
     if (!this.loadedDataSources.includes(dataSource)) {
-      return get(this, '_adapter')
+      return this._adapter
         .fetchAll(
           'table',
           assign(
@@ -78,9 +75,9 @@ export default Service.extend({
         .then(payload => {
           //normalize payload
           payload.source = dataSource;
-          let metadata = get(this, '_serializer').normalize(payload);
+          let metadata = this._serializer.normalize(payload);
 
-          if (!(get(this, 'isDestroyed') || get(this, 'isDestroying'))) {
+          if (!(this.isDestroyed || this.isDestroying)) {
             //create metadata model objects and load into keg
             this._loadMetadataForType('table', metadata.tables, dataSource);
             this._loadMetadataForType('dimension', metadata.dimensions, dataSource);
@@ -91,7 +88,7 @@ export default Service.extend({
         });
     }
     return resolve();
-  },
+  }
 
   /**
    * @method _loadMetadataForType
@@ -102,15 +99,15 @@ export default Service.extend({
    * @param {Array} metadataObjects - array of metadata objects
    */
   _loadMetadataForType(type, metadataObjects, namespace) {
-    let metadata = metadataObjects.map(data => {
-      let payload = assign({}, data),
-        owner = getOwner(this);
+    const metadata = metadataObjects.map(data => {
+      const payload = assign({}, data);
+      const owner = getOwner(this);
       setOwner(payload, owner);
       return owner.factoryFor(`model:metadata/${type}`).create(payload);
     });
 
-    get(this, '_keg').pushMany(`metadata/${type}`, metadata, { namespace });
-  },
+    return this._keg.pushMany(`metadata/${type}`, metadata, { namespace });
+  }
 
   /**
    * @method all
@@ -128,8 +125,8 @@ export default Service.extend({
       assert('Metadata must have the requested namespace loaded', this.loadedDataSources.includes(namespace));
     }
 
-    return get(this, '_keg').all(`metadata/${type}`, namespace);
-  },
+    return this._keg.all(`metadata/${type}`, namespace);
+  }
 
   /**
    * @method getById
@@ -145,8 +142,8 @@ export default Service.extend({
     let source = namespace || getDefaultDataSourceName();
     assert('Metadata must be loaded before the operation can be performed', this.loadedDataSources.includes(source));
 
-    return get(this, '_keg').getById(`metadata/${type}`, id, source);
-  },
+    return this._keg.getById(`metadata/${type}`, id, source);
+  }
 
   /**
    * @method fetchById
@@ -161,14 +158,11 @@ export default Service.extend({
     assert('Type must be table, metric or dimension', A(['table', 'dimension', 'metric']).includes(type));
     let dataSourceName = namespace || getDefaultDataSourceName();
 
-    return get(this, '_adapter')
-      .fetchMetadata(type, id, { dataSourceName })
-      .then(meta => {
-        //load into keg if not already present
-        this._loadMetadataForType(type, [meta], dataSourceName);
-        return meta;
-      });
-  },
+    return this._adapter.fetchMetadata(type, id, { dataSourceName }).then(meta => {
+      //load into keg if not already present
+      return this._loadMetadataForType(type, [meta], dataSourceName)?.[0];
+    });
+  }
 
   /**
    * @method findById
@@ -182,12 +176,13 @@ export default Service.extend({
   findById(type, id, namespace) {
     //Get entity if already present in the keg
     let dataSourceName = namespace || getDefaultDataSourceName();
-    if (get(this, '_keg').getById(`metadata/${type}`, id, dataSourceName)) {
+    const kegRecord = this._keg.getById(`metadata/${type}`, id, dataSourceName);
+    if (kegRecord && !kegRecord.partialData) {
       return resolve(this.getById(type, id, dataSourceName));
     }
 
     return this.fetchById(type, id, dataSourceName);
-  },
+  }
 
   /**
    * @method getMetadataById
@@ -200,7 +195,7 @@ export default Service.extend({
       until: '4.0.0'
     });
     return this.getById(...arguments);
-  },
+  }
 
   /**
    * Convenience method to get a meta data field
@@ -218,7 +213,7 @@ export default Service.extend({
       return defaultIfNone;
     }
     return getWithDefault(meta, field, defaultIfNone);
-  },
+  }
 
   /**
    * Convenience method to get namespace of a table
@@ -226,8 +221,8 @@ export default Service.extend({
    * @returns {string} - namespace
    */
   getTableNamespace(table) {
-    const items = this._keg.getBy('metadata/table', recordTable => (recordTable.name = table));
+    const items = this._keg.getBy('metadata/table', recordTable => recordTable.name === table);
 
     return items.length ? items[0].source : getDefaultDataSourceName();
   }
-});
+}

@@ -1,7 +1,5 @@
 import Route from '@ember/routing/route';
 import { inject } from '@ember/service';
-import { get } from '@ember/object';
-import { hash } from 'rsvp';
 
 export default Route.extend({
   user: inject(),
@@ -16,10 +14,11 @@ export default Route.extend({
    * @override
    * @returns {Ember.RSVP.Promise}
    */
-  model() {
-    return hash({
-      user: get(this, 'user').findOrRegister(),
-      metadata: get(this, 'bardMetadata').loadMetadata()
-    }).then(() => undefined);
+  async model() {
+    await this.user.findOrRegister();
+    await Promise.all([
+      this.bardMetadata.loadMetadata(),
+      this.bardMetadata.loadMetadata({ dataSourceName: 'blockhead' })
+    ]);
   }
 });

@@ -2,13 +2,11 @@ import { A } from '@ember/array';
 import { helper as buildHelper } from '@ember/component/helper';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { click, render } from '@ember/test-helpers';
+import { render } from '@ember/test-helpers';
 import $ from 'jquery';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import hbs from 'htmlbars-inline-precompile';
 import Interval from 'navi-core/utils/classes/interval';
-import config from 'ember-get-config';
-import { animationsSettled } from 'ember-animated/test-support';
 
 const RESPONSE = {
   rows: [
@@ -61,9 +59,14 @@ module('Integration | Component | report view', function(hooks) {
       buildHelper(() => {
         return () => {};
       }),
-      {
-        instantiate: false
-      }
+      { instantiate: false }
+    );
+    this.owner.register(
+      'helper:update-report-action',
+      buildHelper(() => {
+        return () => {};
+      }),
+      { instantiate: false }
     );
 
     const metadataService = this.owner.lookup('service:bard-metadata');
@@ -205,50 +208,5 @@ module('Integration | Component | report view', function(hooks) {
     assert
       .dom('.report-view__visualization-no-results')
       .hasText('No results available.', 'A message is displayed when the response has no data');
-  });
-
-  test('toggle columns drawer', async function(assert) {
-    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
-    config.navi.FEATURES.enableRequestPreview = true;
-
-    this.set('response', {
-      rows: [],
-      meta: {
-        pagination: {
-          currentPage: 1,
-          rowsPerPage: 10000,
-          numberOfResults: 0
-        }
-      }
-    });
-
-    await render(hbs`
-      <ReportView
-        @report={{this.report}}
-        @response={{this.response}}
-      />
-    `);
-
-    assert.dom('.navi-column-config__panel').exists('Column config drawer is open by default');
-    assert
-      .dom('.report-view__columns-icon.fa-chevron-left')
-      .exists('Column config drawer displays "back" icon when open');
-
-    await click('.report-view__columns-button');
-    await animationsSettled();
-    assert
-      .dom('.navi-column-config__panel')
-      .doesNotExist('Column config drawer is closed after toggling the columns button');
-    assert
-      .dom('.report-view__columns-icon.fa-columns')
-      .exists('Column config drawer displays "column" icon when closed');
-
-    await click('.report-view__columns-button');
-    await animationsSettled();
-    assert.dom('.navi-column-config__panel').exists('Column config drawer is open after toggling the columns button');
-    assert
-      .dom('.report-view__columns-icon.fa-chevron-left')
-      .exists('Column config drawer displays "back" icon when open');
-    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
   });
 });
