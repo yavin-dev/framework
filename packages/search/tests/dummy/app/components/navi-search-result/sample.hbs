@@ -1,0 +1,15 @@
+{{! Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. }}
+<table class="table is-striped navi-search-result" ...attributes>
+  <tbody>
+    {{#each @data as |result|}}
+      <tr class="navi-search-result__sample">
+        <td class="navi-search-result__sample result_icon is-center">
+          <span class="d-icon d-file-text is-grey-800"></span>
+        </td>
+        <td class="navi-search-result__sample result_element">
+          {{result}}
+        </td>
+      </tr>
+    {{/each}}
+  </tbody>
+</table>

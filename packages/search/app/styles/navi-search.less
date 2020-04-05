@@ -1,18 +1,159 @@
-.navi-search-result {
-  font-family: Helvetica, 'Arial', sans-serif;
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 1.5;
-  background: @denali-grey-100;
-  color: @denali-grey-800;
-  -moz-osx-font-smoothing: grayscale;
+/**
+ * Copyright 2020, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
+
+@font-face {
+  font-family: 'denali-icon-font';
+  font-style: normal;
+  font-weight: normal;
+  src: url('denali-icon-font.eot?1576615905868');
+  src: url('denali-icon-font.eot?#iefix-1576615905868') format('embedded-opentype'),
+    url('denali-icon-font.svg?1576615905868') format('svg'), url('denali-icon-font.woff?1576615905868') format('woff'),
+    url('denali-icon-font.ttf?1576615905868') format('truetype');
+}
+
+.d-icon[class^='d-'],
+.d-icon[class*=' d-'] {
+  font-family: 'denali-icon-font' !important;
+  font-size: 24px;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: normal;
+  line-height: 1;
+  speak: none;
+  text-decoration: inherit;
+  text-rendering: optimizeLegibility;
+  text-transform: none;
+  vertical-align: middle;
+  /* Better Font Rendering */
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Glyphs list */
+
+.d-dashboard-tile:before {
+  content: '\eb4c';
+}
+
+.d-dashboard:before {
+  content: '\eb4d';
+}
+
+.d-file-search:before {
+  content: '\ebab';
+}
+
+.d-file-text:before {
+  content: '\ebad';
+}
+
+.d-search:before {
+  content: '\ecfd';
+}
+
+.d-table:before {
+  content: '\ed5f';
+}
+
+.d-text-center:before {
+  content: '\ed6b';
+}
+
+table.navi-search-result {
   border-collapse: collapse;
-  width: 100%;
+  border-spacing: 0;
+}
+
+.navi-search-result > td {
+  padding: 0;
   text-align: left;
 }
 
+.navi-search-result {
+  color: @denali-grey-800;
+  border-collapse: collapse;
+  background: @denali-grey-100;
+  line-height: 1.5;
+  font-family: Helvetica, 'Arial', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  text-align: left;
+  width: 100%;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+}
+
+.d-icon {
+  font-size: 24px;
+}
+
+.result_element a {
+  color: @denali-brand-600;
+  font-size: inherit;
+  text-decoration: none;
+}
+
+.result_element a:hover {
+  color: @denali-brand-700 !important;
+}
+
+.result_element a[disabled] {
+  color: @denali-grey-800;
+  cursor: not-allowed;
+}
+
 .navi-search-result td {
-  padding: 14px 10px !important;
   border-bottom: 1px solid rgba(@denali-grey-800, 0.2) !important;
+  padding: 14px 10px !important;
+}
+
+.is-grey-800 {
+  color: #303030 !important;
+}
+
+td.result_icon {
+  white-space: nowrap;
+  width: 1%;
+}
+
+.navi-search-result.table.is-striped > tbody > tr > td {
+  border: none;
+}
+
+.navi-search-resulttable.is-striped > tbody > tr:nth-child(even) {
+  background: rgba(@denali-brand-700, 0.05);
+}
+
+.navi-search-result.table > tbody > tr > td.is-center {
+  text-align: center;
+}
+
+@keyframes drop-fade-below {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+    -webkit-transform: translateY(-20px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0px);
+    -webkit-transform: translateY(0px);
+  }
+}
+
+@keyframes drop-fade-above {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+    -webkit-transform: translateY(20px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0px);
+    -webkit-transform: translateY(0px);
+  }
 }
