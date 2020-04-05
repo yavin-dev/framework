@@ -1,25 +1,22 @@
 import Route from '@ember/routing/route';
-import { inject } from '@ember/service';
-import { get } from '@ember/object';
+import { inject as service } from '@ember/service';
 import { hash } from 'rsvp';
 
-export default Route.extend({
-  user: inject(),
+export default class Application extends Route {
+  /**
+   * @property {Ember.Service}
+   */
+  @service user;
 
   /**
    * @property {Ember.Service}
    */
-  bardMetadata: inject(),
+  @service bardMetadata;
 
-  /**
-   * @method model
-   * @override
-   * @returns {Ember.RSVP.Promise}
-   */
   model() {
     return hash({
-      user: get(this, 'user').findOrRegister(),
-      metadata: get(this, 'bardMetadata').loadMetadata()
+      user: this.user.findOrRegister(),
+      metadata: this.bardMetadata.loadMetadata()
     }).then(() => undefined);
   }
-});
+}
