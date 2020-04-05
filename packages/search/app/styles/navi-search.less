@@ -1,26 +1,31 @@
+/**
+ * Copyright 2020, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
+
 @font-face {
   font-family: 'denali-icon-font';
+  font-style: normal;
+  font-weight: normal;
   src: url('denali-icon-font.eot?1576615905868');
   src: url('denali-icon-font.eot?#iefix-1576615905868') format('embedded-opentype'),
     url('denali-icon-font.svg?1576615905868') format('svg'), url('denali-icon-font.woff?1576615905868') format('woff'),
     url('denali-icon-font.ttf?1576615905868') format('truetype');
-  font-weight: normal;
-  font-style: normal;
 }
 
 .d-icon[class^='d-'],
 .d-icon[class*=' d-'] {
   font-family: 'denali-icon-font' !important;
-  speak: none;
-  font-style: normal;
-  font-weight: normal;
-  font-variant: normal;
-  text-transform: none;
   font-size: 24px;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: normal;
   line-height: 1;
-  vertical-align: middle;
+  speak: none;
   text-decoration: inherit;
   text-rendering: optimizeLegibility;
+  text-transform: none;
+  vertical-align: middle;
   /* Better Font Rendering */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -96,8 +101,8 @@ table.navi-search-result {
 
 .result_element a {
   color: @denali-brand-600;
-  text-decoration: none;
   font-size: inherit;
+  text-decoration: none;
 }
 
 .result_element a:hover {
@@ -110,8 +115,8 @@ table.navi-search-result {
 }
 
 .navi-search-result__definition td {
-  padding: 14px 10px !important;
   border-bottom: 1px solid rgba(@denali-grey-800, 0.2) !important;
+  padding: 14px 10px !important;
 }
 
 .is-grey-800 {
@@ -216,7 +221,7 @@ td.result_icon {
   right: 10px;
 }
 
-li:not(:last-child) {
+.navi-search-bar__results li:not(:last-child) {
   margin-bottom: 1.5em;
 }
 
@@ -228,7 +233,7 @@ li:not(:last-child) {
   width: 100%;
 }
 
-td:first-child {
+.navi-search-bar__results td:first-child {
   width: 1%;
   white-space: nowrap;
 }
@@ -298,6 +303,23 @@ td:first-child {
   font-weight: 400;
   color: @denali-grey-800;
   line-height: 1.5;
+}
+
+td.result_icon {
+  white-space: nowrap;
+  width: 1%;
+}
+
+.navi-search-result.table.is-striped > tbody > tr > td {
+  border: none;
+}
+
+.navi-search-resulttable.is-striped > tbody > tr:nth-child(even) {
+  background: rgba(@denali-brand-700, 0.05);
+}
+
+.navi-search-result.table > tbody > tr > td.is-center {
+  text-align: center;
 }
 
 @keyframes drop-fade-below {
