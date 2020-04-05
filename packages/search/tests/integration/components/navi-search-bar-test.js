@@ -33,38 +33,38 @@ module('Integration | Component | navi-search-bar', function(hooks) {
   test('perform search that returns results', async function(assert) {
     await render(hbs`<NaviSearchBar />`);
 
-    await fillIn('.search-input', 'Revenue');
-    await triggerKeyEvent('.search-input', 'keydown', 13);
+    await fillIn('.navi-search-bar__input', 'Revenue');
+    await triggerKeyEvent('.navi-search-bar__input', 'keyup', 13);
 
     assert
-      .dom('.search-results')
+      .dom('.navi-search-bar__results')
       .hasText('Reports & Dashboards Revenue report 1 Revenue Dashboard Sample Revenue result Revenue success');
   });
 
   test('perform search with special characters', async function(assert) {
     await render(hbs`<NaviSearchBar />`);
 
-    await fillIn('.search-input', '!@#$%^&*()');
-    await triggerKeyEvent('.search-input', 'keydown', 13);
+    await fillIn('.navi-search-bar__input', '!@#$%^&*()');
+    await triggerKeyEvent('.navi-search-bar__input', 'keyup', 13);
 
-    assert.dom('.search-results').doesNotExist();
+    assert.dom('.navi-search-bar__results').hasText('No results', 'Search results return "No results"');
   });
 
   test('perform search with no results', async function(assert) {
     await render(hbs`<NaviSearchBar />`);
 
-    await fillIn('.search-input', 'Hello!');
-    await triggerKeyEvent('.search-input', 'keydown', 13);
+    await fillIn('.navi-search-bar__input', 'Hello!');
+    await triggerKeyEvent('.navi-search-bar__input', 'keyup', 13);
 
-    assert.dom('.search-results').doesNotExist();
+    assert.dom('.navi-search-bar__results').hasText('No results', 'Search results return "No results"');
   });
 
   test('perform empty search', async function(assert) {
     await render(hbs`<NaviSearchBar />`);
 
-    await fillIn('.search-input', '');
-    await triggerKeyEvent('.search-input', 'keydown', 13);
+    await fillIn('.navi-search-bar__input', '');
+    await triggerKeyEvent('.navi-search-bar__input', 'keyup', 13);
 
-    assert.dom('.search-results').doesNotExist();
+    assert.dom('.navi-search-bar__results').doesNotExist('Nothing happens if you search with empty query');
   });
 });
