@@ -16,8 +16,8 @@
   font-weight: normal;
   font-variant: normal;
   text-transform: none;
-  line-height: 1;
   font-size: 24px;
+  line-height: 1;
   vertical-align: middle;
   text-decoration: inherit;
   text-rendering: optimizeLegibility;
@@ -76,7 +76,7 @@ table.navi-search-result {
 
 .navi-search,
 .navi-search-result,
-.ember-basic-dropdown-wormhole {
+#ember-basic-dropdown-wormhole {
   font-family: Helvetica, 'Arial', sans-serif;
   font-weight: 400;
   font-size: 14px;
@@ -88,7 +88,6 @@ table.navi-search-result {
   border-collapse: collapse;
   width: 100%;
   text-align: left;
-  background: red;
 }
 
 .d-icon {
@@ -246,47 +245,59 @@ td:first-child {
   border-style: solid;
 }
 
-.nav-search h1 {
+.navi-search h1,
+.navi-search-result h1,
+#ember-basic-dropdown-wormhole h1 {
   font-size: 28px;
-  line-height: 1.25;
   font-weight: 600;
   color: @denali-grey-800;
+  line-height: 1.25;
 }
 
-.nav-search h2 {
+.navi-search h2,
+.navi-search-result h2,
+#ember-basic-dropdown-wormhole h2 {
   font-size: 26px;
-  line-height: 1.25;
   font-weight: 600;
   color: @denali-grey-800;
+  line-height: 1.25;
 }
 
+.navi-search h3,
+.navi-search-result h3,
 #ember-basic-dropdown-wormhole h3 {
   font-size: 20px;
-  line-height: 1.5;
   font-weight: 600;
   color: @denali-grey-800;
-  background: red !important;
+  line-height: 1.5;
+  margin-block-start: 0em;
 }
 
-h4 {
+.navi-search h4,
+.navi-search-result h4,
+#ember-basic-dropdown-wormhole h4 {
   font-size: 16px;
-  line-height: 1.5;
   font-weight: 600;
   color: @denali-grey-800;
+  line-height: 1.5;
 }
 
-h5 {
+.navi-search h5,
+.navi-search-result h5,
+#ember-basic-dropdown-wormhole h5 {
   font-size: 14px;
-  line-height: 1.5;
   font-weight: 600;
   color: @denali-grey-800;
+  line-height: 1.5;
 }
 
-.navi-search h6 {
+.navi-search h6,
+.navi-search-result h6,
+#ember-basic-dropdown-wormhole h6 {
   font-size: 12px;
-  line-height: 1.5;
   font-weight: 400;
   color: @denali-grey-800;
+  line-height: 1.5;
 }
 
 @keyframes drop-fade-below {
