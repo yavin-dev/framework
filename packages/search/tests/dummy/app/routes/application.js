@@ -13,10 +13,16 @@ export default class Application extends Route {
    */
   @service bardMetadata;
 
-  model() {
-    return hash({
-      user: this.user.findOrRegister(),
-      metadata: this.bardMetadata.loadMetadata()
-    }).then(() => undefined);
+  /**
+   * @method model
+   * @override
+   * @returns {Ember.RSVP.Promise}
+   */
+  async model() {
+    await this.user.findOrRegister();
+    await Promise.all([
+      this.bardMetadata.loadMetadata(),
+      this.bardMetadata.loadMetadata({ dataSourceName: 'blockhead' })
+    ]);
   }
 }
