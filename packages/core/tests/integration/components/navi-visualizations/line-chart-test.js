@@ -100,6 +100,10 @@ module('Integration | Component | line chart', function(hooks) {
     return MetadataService.loadMetadata();
   });
 
+  hooks.afterEach(function() {
+    MetadataService._keg.reset();
+  });
+
   test('it renders', async function(assert) {
     assert.expect(2);
 
@@ -624,6 +628,98 @@ module('Integration | Component | line chart', function(hooks) {
     assert.deepEqual(
       findAll('.c3-legend-item').map(el => el.textContent),
       ['Unique Identifiers', 'Total Page Views', 'Revenue (USD)'],
+      'Metric display names are used properly for parameterized and non-parameterized metrics in the legend'
+    );
+  });
+
+  test('multi-datasource labels', async function(assert) {
+    MetadataService._keg.reset();
+    await MetadataService.loadMetadata({ dataSourceName: 'blockhead' });
+
+    assert.expect(1);
+
+    this.set('options', {
+      axis: {
+        y: {
+          series: {
+            type: 'metric',
+            config: {
+              metrics: [
+                {
+                  metric: 'ownedQuantity',
+                  canonicalName: 'ownedQuantity',
+                  toJSON() {
+                    return this;
+                  }
+                },
+                {
+                  metric: 'usedAmount',
+                  canonicalName: 'usedAmount',
+                  toJSON() {
+                    return this;
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    });
+
+    this.set(
+      'model',
+      A([
+        {
+          request: {
+            metrics: ['ownedQuantity', 'usedAmount'],
+            intervals: [
+              {
+                start: '2016-05-30 00:00:00.000',
+                end: '2016-06-04 00:00:00.000'
+              }
+            ],
+            logicalTable: {
+              timeGrain: 'day'
+            },
+            dataSource: 'blockhead'
+          },
+          response: {
+            rows: [
+              {
+                dateTime: '2016-05-30 00:00:00.000',
+                ownedQuantity: 172933788,
+                usedAmount: 3669828357
+              },
+              {
+                dateTime: '2016-05-31 00:00:00.000',
+                ownedQuantity: 183206656,
+                usedAmount: 4088487125
+              },
+              {
+                dateTime: '2016-06-01 00:00:00.000',
+                ownedQuantity: 183380921,
+                usedAmount: 4024700302
+              },
+              {
+                dateTime: '2016-06-02 00:00:00.000',
+                ownedQuantity: 180559793,
+                usedAmount: 3950276031
+              },
+              {
+                dateTime: '2016-06-03 00:00:00.000',
+                ownedQuantity: 172724594,
+                usedAmount: 3697156058
+              }
+            ]
+          }
+        }
+      ])
+    );
+    await render(TEMPLATE);
+
+    assert.deepEqual(
+      findAll('.c3-legend-item').map(el => el.textContent),
+      ['Quantity of thing', 'Used Amount'],
       'Metric display names are used properly for parameterized and non-parameterized metrics in the legend'
     );
   });

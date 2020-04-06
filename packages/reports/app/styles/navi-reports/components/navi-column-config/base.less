@@ -1,0 +1,50 @@
+/**
+ * Copyright 2020, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
+
+.navi-column-config-base {
+  padding: 0 10px 10px 10px;
+  margin-top: -10px;
+
+  &__option {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+
+    &-label {
+      display: block;
+      padding-bottom: 5px;
+      font-size: 13px;
+    }
+
+    &-input {
+      background-color: @denali-fields-default-bg;
+      border-radius: 2px;
+      flex: 1;
+      font-family: @font-family-sans-serif;
+      font-size: @font-size-mid-base;
+      min-height: 32px;
+      padding: 5px 10px;
+    }
+  }
+
+  &__header {
+    align-items: center;
+    display: flex;
+  }
+
+  &__header-icons {
+    display: inline-flex;
+    flex: 1;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  &__clone-icon,
+  &__filter-icon,
+  &__star-icon {
+    .navi-column-config-icon;
+    margin: 0 4px;
+  }
+}

@@ -275,7 +275,8 @@ module('Unit | Service | dashboard data', function(hooks) {
         timeGrain: { dimensionIds: VALID_FILTERS }
       },
       data,
-      filters: filters || [makeFilter({ dimension: `${DIMENSIONS[data + 4]}` })]
+      filters: filters || [makeFilter({ dimension: `${DIMENSIONS[data + 4]}` })],
+      dataSource: 'dummy'
     });
 
     const widgets = [
@@ -354,6 +355,37 @@ module('Unit | Service | dashboard data', function(hooks) {
         ]
       ],
       'Errors are injected into the response.'
+    );
+  });
+
+  test('multi-datasource validFilters', function(assert) {
+    assert.expect(4);
+    const request = {
+      logicalTable: {
+        table: { name: 'foo' },
+        timeGrain: { dimensionIds: ['ham', 'spam'] }
+      },
+      dimensions: [],
+      metrics: [],
+      dataSource: 'one'
+    };
+
+    const service = this.owner.lookup('service:dashboard-data');
+    assert.notOk(
+      service._isFilterValid(request, { dimension: { name: 'ham', source: 'two' } }),
+      'even though dimension name is valid datasource does not match'
+    );
+    assert.ok(
+      service._isFilterValid(request, { dimension: { name: 'ham', source: 'one' } }),
+      'dimension name is valid and datasource matches'
+    );
+    assert.notOk(
+      service._isFilterValid(request, { dimension: { name: 'scam', source: 'one' } }),
+      'dimension name is invalid and datasource matches'
+    );
+    assert.notOk(
+      service._isFilterValid(request, { dimension: { name: 'scam', source: 'two' } }),
+      'neither dimension name is valid nor datasource matches'
     );
   });
 });

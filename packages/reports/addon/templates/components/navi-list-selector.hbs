@@ -1,29 +1,34 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="navi-list-selector__header">
-  <h3 class="navi-list-selector__title" title={{title}}>{{title}}</h3>
-  <button type="button" class="navi-list-selector__show-link" {{on "click" (toggle "showSelected" this)}}>
-    {{#if showSelected}}
-      Show All
-    {{else}}
-      Show Selected ({{selected.length}})
-    {{/if}}
-  </button>
+  <h3 class="navi-list-selector__title" title="{{@title}}">{{@title}}</h3>
+  {{#unless (feature-flag "enableRequestPreview")}}
+    <button type="button" class="navi-list-selector__show-link" {{on "click" (toggle "showSelected" this)}}>
+      {{#if this.showSelected}}
+        Show All
+      {{else}}
+        Show Selected ({{@selected.length}})
+      {{/if}}
+    </button>
+  {{/unless}}
 </div>
 <div class="navi-list-selector__search">
-  {{navi-icon "search" class="navi-list-selector__search-icon"}}
-  {{input
-    placeholder=(concat "Search " (capitalize title))
-    value=query
-    autocomplete=false
-    spellcheck=false
+  <NaviIcon @icon="search" class="navi-list-selector__search-icon" />
+  <Input
+    placeholder={{concat "Search " (capitalize @title)}}
+    @value={{this.query}}
+    autocomplete="false"
+    spellcheck="false"
     class="navi-list-selector__search-input"
-  }}
-  {{navi-icon "times-circle" class="navi-list-selector__search-input-clear" click=(action (set this "query" undefined))}}
+  />
+  <NaviIcon @icon="times-circle"
+    class="navi-list-selector__search-input-clear"
+    {{on "click" (fn (mut this.query) undefined)}}
+  />
 </div>
 <div class="navi-list-selector__content {{@contentClass}}">
-  {{#if (eq filteredItems.length 0)}}
-    <span class="navi-list-selector__content navi-list-selector__content--error">{{errorMessage}}</span>
+  {{#if (eq this.filteredItems.length 0)}}
+    <span class="navi-list-selector__content navi-list-selector__content--error">{{this.errorMessage}}</span>
   {{else}}
-    {{yield filteredItems areItemsFiltered}}
+    {{yield this.filteredItems this.areItemsFiltered}}
   {{/if}}
 </div>

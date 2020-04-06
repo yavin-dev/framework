@@ -125,6 +125,7 @@ const Payload = {
       longName: 'Dimension One',
       uri: 'https://host:port/namespace/dimensions/dimensionOne',
       cardinality: '10',
+      partialData: true,
       source: 'dummy'
     },
     {
@@ -133,6 +134,7 @@ const Payload = {
       longName: 'Dimension Two',
       uri: 'https://host:port/namespace/dimensions/dimensionTwo',
       cardinality: '5',
+      partialData: true,
       source: 'dummy'
     },
     {
@@ -141,6 +143,7 @@ const Payload = {
       longName: 'Dimension One',
       uri: 'https://host:port/namespace/dimensions/dimensionOne',
       cardinality: '10',
+      partialData: true,
       source: 'dummy'
     },
     {
@@ -149,6 +152,7 @@ const Payload = {
       longName: 'Dimension Two',
       uri: 'https://host:port/namespace/dimensions/dimensionTwo',
       cardinality: '5',
+      partialData: true,
       source: 'dummy'
     }
   ],
@@ -160,6 +164,7 @@ const Payload = {
       type: 'metric',
       uri: 'https://metric-one-url',
       valueType: 'number',
+      partialData: true,
       source: 'dummy'
     },
     {
@@ -169,6 +174,7 @@ const Payload = {
       type: 'metric',
       uri: 'https://metric-two-url',
       valueType: 'money',
+      partialData: true,
       source: 'dummy'
     },
     {
@@ -178,6 +184,7 @@ const Payload = {
       type: 'metric',
       uri: 'https://metric-one-url',
       valueType: 'number',
+      partialData: true,
       source: 'dummy'
     },
     {
@@ -187,6 +194,7 @@ const Payload = {
       type: 'metric',
       uri: 'https://metric-two-url',
       valueType: 'money',
+      partialData: true,
       source: 'dummy'
     }
   ];

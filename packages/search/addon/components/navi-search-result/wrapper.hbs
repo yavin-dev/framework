@@ -1,0 +1,6 @@
+<div class="box search-result">
+    {{#if @result.title}}
+        <h3>{{@result.title}}</h3>
+    {{/if}}
+    {{component @result.component data=@result.data}}
+</div>

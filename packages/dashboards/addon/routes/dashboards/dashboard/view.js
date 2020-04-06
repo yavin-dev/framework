@@ -156,7 +156,7 @@ export default Route.extend({
           field: fil.field,
           operator: fil.operator,
           rawValues: fil.values,
-          dimension: this.get('metadataService').getById('dimension', fil.dimension)
+          dimension: this.metadataService.getById('dimension', fil.dimension, fil.dataSource)
         };
 
         const newFragment = this.store.createFragment('bard-request/fragments/filter', newFragmentFields);

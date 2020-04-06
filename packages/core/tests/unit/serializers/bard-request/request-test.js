@@ -23,6 +23,10 @@ module('Unit | Serializer | Request', function(hooks) {
         id: '99',
         attributes: {
           request: {
+            logicalTable: { table: 'network' },
+            dimensions: [],
+            filters: [],
+            having: [],
             metrics: [
               {
                 metric: 'revenue',
@@ -168,6 +172,9 @@ module('Unit | Serializer | Request', function(hooks) {
         id: '99',
         attributes: {
           request: {
+            logicalTable: { table: 'network' },
+            dimensions: [],
+            filters: [],
             metrics: [
               {
                 metric: 'revenue',
@@ -269,5 +276,109 @@ module('Unit | Serializer | Request', function(hooks) {
       );
       assert.equal(get(sort.objectAt(2), 'direction'), 'desc', 'operator is preserved for simple sort metrics');
     });
+  });
+
+  test('multidatasource namespace normalization', async function(assert) {
+    assert.expect(6);
+    await this.owner.lookup('service:bard-metadata').loadMetadata({ dataSourceName: 'blockhead' });
+    const request = {
+      logicalTable: { table: 'inventory' },
+      dataSource: 'blockhead',
+      dimensions: [
+        {
+          dimension: 'container'
+        },
+        {
+          dimension: 'item'
+        }
+      ],
+      filters: [
+        {
+          dimension: 'container',
+          field: 'id',
+          operator: 'in',
+          values: ['1']
+        }
+      ],
+      metrics: [
+        {
+          metric: 'ownedQuantity',
+          parameters: {
+            as: 'm1'
+          }
+        },
+        {
+          metric: 'available',
+          parameters: {
+            as: 'm2'
+          }
+        },
+        {
+          metric: 'personalSold'
+        }
+      ],
+      having: [
+        {
+          metric: 'm1',
+          operator: 'lt',
+          values: [24]
+        },
+        {
+          metric: 'personalSold',
+          operator: 'gt',
+          values: [11]
+        }
+      ],
+      sort: [
+        {
+          metric: 'dateTime',
+          direction: 'desc'
+        },
+        {
+          metric: 'm2',
+          direction: 'asc'
+        },
+        {
+          metric: 'personalSold',
+          direction: 'desc'
+        }
+      ]
+    };
+
+    const serializer = this.owner.lookup('serializer:bard-request/request'),
+      type = this.owner.resolveRegistration('model:bard-request/request');
+
+    const result = serializer.normalize(type, request);
+
+    assert.equal(result.data.attributes.logicalTable.table.longName, 'Inventory', 'table meta is normalized correctly');
+    assert.deepEqual(
+      result.data.attributes.metrics.map(metric => metric.metric.longName),
+      ['Quantity of thing', 'How many are available', 'Personally sold amount'],
+      'metrics meta is normalized correctly'
+    );
+
+    assert.deepEqual(
+      result.data.attributes.dimensions.map(dimension => dimension.dimension.longName),
+      ['Container', 'Item'],
+      'dimension meta is loaded correctly'
+    );
+
+    assert.deepEqual(
+      result.data.attributes.filters.map(filter => filter.dimension.longName),
+      ['Container'],
+      'dimension meta is loaded correctly into filters'
+    );
+
+    assert.deepEqual(
+      result.data.attributes.having.map(having => having.metric.metric.longName),
+      ['Quantity of thing', 'Personally sold amount'],
+      'metric meta is loaded correctly into havings'
+    );
+
+    assert.deepEqual(
+      result.data.attributes.sort.map(sort => sort.metric.metric.longName || sort.metric.metric.name),
+      ['dateTime', 'How many are available', 'Personally sold amount'],
+      'metric meta is loaded correctly into sort'
+    );
   });
 });

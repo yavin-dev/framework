@@ -131,6 +131,8 @@ const Options = {
   ]
 };
 
+let MetadataService;
+
 module('Integration | Component | table', function(hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
@@ -142,11 +144,14 @@ module('Integration | Component | table', function(hooks) {
     this.set('options', Options);
     this.set('onUpdateReport', () => {});
 
-    return this.owner.lookup('service:bard-metadata').loadMetadata();
+    MetadataService = this.owner.lookup('service:bard-metadata');
+
+    return MetadataService.loadMetadata();
   });
 
   hooks.afterEach(function() {
     config.navi.FEATURES.enableVerticalCollectionTableIterator = false;
+    return MetadataService._keg.reset();
   });
 
   test('it renders', async function(assert) {
@@ -180,6 +185,103 @@ module('Integration | Component | table', function(hooks) {
         ['05/30/2016', 'Unknown', '155,191,081', '3,072,620,639', '--']
       ],
       'The table renders the response dataset correctly'
+    );
+  });
+
+  test('render alternative datasource', async function(assert) {
+    assert.expect(2);
+    const bardMeta = this.owner.lookup('service:bard-metadata');
+    bardMeta._keg.reset();
+    await bardMeta.loadMetadata({ dataSourceName: 'blockhead' });
+    const model = arr([
+      {
+        request: {
+          dimensions: [{ dimension: 'container' }],
+          metrics: [
+            { metric: 'ownedQuantity', parameters: {} },
+            { metric: 'usedAmount', parameters: {} },
+            { metric: 'personalSold', parameters: { as: 'm1' } }
+          ],
+          sort: [{ metric: 'm1', direction: 'desc' }, { metric: 'usedAmount', direction: 'asc' }],
+          logicalTable: {
+            table: 'inventory',
+            timeGrain: {
+              name: 'day'
+            }
+          },
+          dataSource: 'blockhead'
+        },
+        response: {
+          rows: [
+            {
+              dateTime: '2016-05-30 00:00:00.000',
+              'container|id': '1',
+              'container|desc': 'Bag',
+              ownedQuantity: 172933788,
+              usedAmount: 3669828357
+            },
+            {
+              dateTime: '2016-06-10 00:00:00.000',
+              'container|id': '1',
+              'container|desc': 'Bag',
+              ownedQuantity: 172933788,
+              usedAmount: 3669828357
+            },
+            {
+              dateTime: '2016-05-30 00:00:00.000',
+              'container|id': '2',
+              'os|desc': 'Bank',
+              ownedQuantity: 183206656,
+              usedAmount: 4088487125
+            }
+          ]
+        }
+      }
+    ]);
+
+    const options = {
+      columns: [
+        {
+          attributes: { name: 'dateTime' },
+          type: 'dateTime',
+          displayName: 'Date'
+        },
+        {
+          attributes: { name: 'container' },
+          type: 'dimension',
+          displayName: 'Container'
+        },
+        {
+          attributes: { name: 'ownedQuantity', parameters: {} },
+          type: 'metric',
+          displayName: 'Quantity Owned'
+        },
+        {
+          attributes: { name: 'usedAmount', parameters: {} },
+          type: 'metric',
+          displayName: 'Amount Used'
+        },
+        {
+          attributes: { name: 'personalSold', parameters: {} },
+          type: 'metric',
+          displayName: 'Amount personally sold'
+        }
+      ]
+    };
+
+    this.set('model', model);
+    this.set('options', options);
+
+    await render(TEMPLATE);
+
+    assert.dom('.table-widget').isVisible('The table widget component is visible');
+
+    let headers = findAll('.table-header-row-vc--view .table-header-cell').map(el => el.textContent.trim());
+
+    assert.deepEqual(
+      headers,
+      ['Date', 'Container', 'Quantity Owned', 'Amount Used', 'Amount personally sold'],
+      'The table renders the headers correctly based on the request'
     );
   });
 

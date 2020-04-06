@@ -12,7 +12,7 @@ import { buildTestRequest } from '../../helpers/request';
 
 module('Unit | Utils | Chart Data', function() {
   test('groupDataByDimensions', function(assert) {
-    assert.expect(1);
+    assert.expect(2);
 
     let rows = [
         {
@@ -56,6 +56,42 @@ module('Unit | Utils | Chart Data', function() {
       dataGroup = groupDataByDimensions(rows, config);
 
     assert.deepEqual(dataGroup.getDataForKey('1'), expectedDataGroup, 'groupDataByDimensions groups data as expected');
+
+    assert.deepEqual(
+      groupDataByDimensions(
+        [
+          {
+            'foo|desc': 'foo',
+            metricName: 123
+          },
+          {
+            'foo|desc': 'bar',
+            metricName: 321
+          }
+        ],
+        {
+          metric: 'metricName',
+          dimensionOrder: ['foo'],
+          dimensions: [
+            {
+              name: 'foo',
+              values: { foo: 'foo' }
+            },
+            {
+              name: 'bar',
+              values: { foo: 'bar' }
+            }
+          ]
+        }
+      ).getDataForKey('bar'),
+      [
+        {
+          'foo|desc': 'bar',
+          metricName: 321
+        }
+      ],
+      "Still can group even if identifier field isn't present"
+    );
   });
 
   test('buildSeriesKey', function(assert) {
@@ -162,7 +198,7 @@ module('Unit | Utils | Chart Data', function() {
   });
 
   test('buildDimensionSeriesValues', function(assert) {
-    assert.expect(1);
+    assert.expect(2);
 
     let request = {
         metrics: [{ metric: { name: 'totalPageViews' } }],
@@ -231,6 +267,51 @@ module('Unit | Utils | Chart Data', function() {
         }
       ],
       'buildDimensionSeriesValues retuns expected series object'
+    );
+
+    assert.deepEqual(
+      buildDimensionSeriesValues(
+        request,
+        rows.map(row => ({
+          dateTime: row.dateTime,
+          'age|desc': row['age|desc'],
+          uniqueIdentifier: row.uniqueIdentifier,
+          totalPageViews: row.totalPageViews
+        }))
+      ),
+      [
+        {
+          name: 'All Other',
+          values: {
+            age: 'All Other'
+          }
+        },
+        {
+          name: 'under 13',
+          values: {
+            age: 'under 13'
+          }
+        },
+        {
+          name: '13 - 25',
+          values: {
+            age: '13 - 25'
+          }
+        },
+        {
+          name: '25 - 35',
+          values: {
+            age: '25 - 35'
+          }
+        },
+        {
+          name: '35 - 45',
+          values: {
+            age: '35 - 45'
+          }
+        }
+      ],
+      'Builds series when id is not available'
     );
   });
 });

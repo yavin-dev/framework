@@ -12,11 +12,20 @@ import {
   clickItemFilter,
   getItem,
   getAll,
-  clickShowSelected,
-  renderAll
+  clickShowSelected
 } from 'navi-reports/test-support/report-builder';
+import config from 'ember-get-config';
 
 let MockRequest, MockMetric, MetadataService;
+
+const TEMPLATE = hbs`<MetricConfig
+  @metric={{this.metric}}
+  @request={{this.request}}
+  @onAddParameterizedMetric={{this.addParameterizedMetric}}
+  @onRemoveParameterizedMetric={{this.removeParameterizedMetric}}
+  @onToggleParameterizedMetricFilter={{this.toggleParameterizedMetricFilter}}
+  @parametersPromise={{this.parametersPromise}}
+/>`;
 
 module('Integration | Component | metric config', function(hooks) {
   setupRenderingTest(hooks);
@@ -78,15 +87,7 @@ module('Integration | Component | metric config', function(hooks) {
     await MetadataService.loadMetadata();
     set(this, 'metric', MockMetric);
     set(this, 'request', MockRequest);
-    await render(hbs`
-      {{metric-config
-        metric=metric
-        request=request
-        onAddParameterizedMetric=(action addParameterizedMetric)
-        onRemoveParameterizedMetric=(action removeParameterizedMetric)
-        onToggleParameterizedMetricFilter=(action toggleParameterizedMetricFilter)
-        parametersPromise=parametersPromise
-      }}`);
+    await render(TEMPLATE);
   });
 
   test('it renders', async function(assert) {
@@ -132,7 +133,13 @@ module('Integration | Component | metric config', function(hooks) {
   });
 
   test('show selected', async function(assert) {
-    assert.expect(3);
+    assert.expect(4);
+
+    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
+
+    config.navi.FEATURES.enableRequestPreview = false;
+
+    await render(TEMPLATE);
 
     await clickTrigger('.metric-config__dropdown-trigger');
 
@@ -149,13 +156,26 @@ module('Integration | Component | metric config', function(hooks) {
       'When show selected is clicked only the selected parameter is shown'
     );
 
-    const resetRenderAll = await renderAll('metricConfig');
-    assert.notOk(findAll('.grouped-list__add-icon--deselected').length, 'The selected items are marked as selected');
-    await resetRenderAll();
+    assert.notOk(findAll('.grouped-list__add-icon--deselected').length, 'No unselected parameters are shown');
+
+    config.navi.FEATURES.enableRequestPreview = true;
+
+    await render(TEMPLATE);
+
+    assert
+      .dom('.navi-list-selector__show-link')
+      .doesNotExist('Show Selected toggle is hidden if enableRequestPreview flag is turned on');
+
+    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
   });
 
   test('add/remove param', async function(assert) {
-    assert.expect(4);
+    assert.expect(8);
+
+    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
+
+    //enableRequestPreview feature flag off
+    config.navi.FEATURES.enableRequestPreview = false;
 
     set(this, 'addParameterizedMetric', (metric, param) => {
       assert.deepEqual(metric, MockMetric, 'The mock metric is passed to the action');
@@ -171,10 +191,38 @@ module('Integration | Component | metric config', function(hooks) {
 
     await clickTrigger('.metric-config__dropdown-trigger');
     //add Param `Drams`
-    await clickItem('metricConfig', 'AMD');
+    await clickItem('metricConfig', 'Drams');
 
     //remove Param `Dollars(USD)`
-    await clickItem('metricConfig', 'USD');
+    await clickItem('metricConfig', 'Dollars', 'USD');
+
+    //enableRequestPreview feature flag on
+    config.navi.FEATURES.enableRequestPreview = true;
+
+    await render(TEMPLATE);
+
+    set(this, 'addParameterizedMetric', (metric, param) => {
+      assert.deepEqual(metric, MockMetric, 'The mock metric is passed to the action when enableRequestPreview is on');
+
+      assert.deepEqual(
+        param,
+        { currency: 'AMD' },
+        'The selected param is also passed to the action when enableRequestPreview is on'
+      );
+    });
+
+    set(this, 'removeParameterizedMetric', () =>
+      assert.notOk(true, 'removeParameterizedMetric is not called when enableRequestPreview is on')
+    );
+
+    await clickTrigger('.metric-config__dropdown-trigger');
+
+    await clickItem('metricConfig', 'Drams');
+
+    //clicking again adds when feature flag is on
+    await clickItem('metricConfig', 'Drams');
+
+    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
   });
 
   test('filter icon', async function(assert) {
@@ -188,21 +236,21 @@ module('Integration | Component | metric config', function(hooks) {
 
     await clickTrigger('.metric-config__dropdown-trigger');
 
-    let { item: usdItem, reset: usdReset } = await getItem('metricConfig', 'USD');
+    let { item: usdItem, reset: usdReset } = await getItem('metricConfig', 'Dollars', 'USD');
     assert.ok(
       usdItem.querySelector('.grouped-list__filter--active'),
       'The filter icon with the `USD` param has the active class'
     );
     await usdReset();
 
-    let { item: amdItem, reset: amdReset } = await getItem('metricConfig', 'AMD');
+    let { item: amdItem, reset: amdReset } = await getItem('metricConfig', 'Drams');
     assert.notOk(
       amdItem.querySelector('.grouped-list__filter--active'),
       'The filter icon with the `AMD` param does not have the active class'
     );
     await amdReset();
 
-    await clickItemFilter('metricConfig', 'AMD');
+    await clickItemFilter('metricConfig', 'Drams');
   });
 
   test('loader', async function(assert) {

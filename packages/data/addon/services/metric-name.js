@@ -1,36 +1,35 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Service from '@ember/service';
 import { inject as service } from '@ember/service';
 import { metricFormat } from 'navi-data/helpers/metric-format';
-import { get } from '@ember/object';
 
-export default Service.extend({
+export default class MetricNameService extends Service {
   /**
    * @property {Service} metricMeta
    */
-  metricMeta: service('bard-metadata'),
+  @service('bard-metadata') metricMeta;
 
   /**
    * @method getLongName
    * @param {String} metricId - base metric name for a metric
    * @returns {String} - long name for the metric from the metadata
    */
-  getLongName(metricId) {
-    return get(this, 'metricMeta').getMetaField('metric', metricId, 'longName', metricId);
-  },
+  getLongName(metricId, namespace) {
+    return this.metricMeta.getMetaField('metric', metricId, 'longName', metricId, namespace);
+  }
 
   /**
    * @method getDisplayName
    * @param {Object} metricObject - object with metric and parameter properties
    * @returns {String} formatted metric display name
    */
-  getDisplayName(metricObject) {
-    let metricId = get(metricObject, 'metric'),
-      longName = this.getLongName(metricId);
+  getDisplayName(metricObject, namespace) {
+    const metricId = metricObject.metric;
+    const longName = this.getLongName(metricId, namespace);
 
     return metricFormat(metricObject, longName);
   }
-});
+}

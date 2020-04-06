@@ -7,6 +7,7 @@ import { getVerticalCollection, renderAllItems } from './vertical-collection';
 const groupedList = '.grouped-list';
 const groupedListItemFilter = `${groupedList}__filter`; // dimension/metric row filter button
 const groupedListItem = `${groupedList}__item`; // dimension/metric row
+const groupedListItemSelected = `${groupedListItem}-container--selected`; // selected dimension/metric row (feature flagged)
 const groupedListItemLabel = `${groupedListItem}-label`; // add button
 const groupedListItemCheckbox = `${groupedListItem}-checkbox`; // add button
 const naviListSelector = '.navi-list-selector';
@@ -88,12 +89,14 @@ export async function searchFor(type, query) {
  * Searches for the given item, then retrieves it from grouped list
  * @param {String} type - a valid selector for grouped lists
  * @param {String} query - The query to type in the search bar
+ * @param {String} itemText - The text content of the element to return
  * @returns {Object} - the element and a function to reset the search bar
  */
-export async function getItem(type, query) {
+export async function getItem(type, query, itemText) {
   assert('getItem must be passed an accepted type', isAcceptedType(type));
   const reset = await searchFor(type, query);
-  const item = findByContains(groupedListItem, query);
+  itemText = itemText || query;
+  const item = findByContains(groupedListItem, itemText);
   return { item, reset };
 }
 
@@ -102,10 +105,11 @@ export async function getItem(type, query) {
  * @param {Object} instance - the test or application instance
  * @param {String} type - a valid selector for grouped lists
  * @param {String} query - The query to type in the search bar
+ * @param {String} itemText - The text content of the element to click
  */
-export async function clickItem(type, query) {
+export async function clickItem(type, query, itemText) {
   assert('clickItem must be passed an accepted type', isAcceptedType(type));
-  const { item, reset } = await getItem(type, query);
+  const { item, reset } = await getItem(type, query, itemText);
   await click(item.querySelector(groupedListItemLabel));
   await reset();
 }
@@ -114,10 +118,11 @@ export async function clickItem(type, query) {
  * Searches for the given item, retrieves it, clicks its filter button, then resets the state
  * @param {String} type - a valid selector for grouped lists
  * @param {String} query - The query to type in the search bar
+ * @param {String} itemText - The text content of the element to click the filter of
  */
-export async function clickItemFilter(type, query) {
+export async function clickItemFilter(type, query, itemText) {
   assert('clickItemFilter must be passed an accepted type', isAcceptedType(type));
-  const { item, reset } = await getItem(type, query);
+  const { item, reset } = await getItem(type, query, itemText);
   await click(item.querySelector(groupedListItemFilter));
   await reset();
 }
@@ -178,7 +183,12 @@ export async function getAllSelected(type, query) {
   const resetRenderAll = await renderAll(type, query);
 
   const selected = findAll(`${getSelector(type)} ${groupedListItem}`)
-    .filter(el => el.querySelector('.fa-minus-circle') || el.querySelector('input:checked'))
+    .filter(
+      el =>
+        el.querySelector('.fa-minus-circle') ||
+        el.querySelector(groupedListItemSelected) ||
+        el.querySelector('input:checked')
+    )
     .map(el => el.textContent.trim());
 
   await resetRenderAll();

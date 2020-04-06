@@ -50,7 +50,8 @@ module('Unit | Route | reports/report/view', function(hooks) {
               clientId: 'customReports',
               customHeaders: {
                 uiView: 'report.spv.1'
-              }
+              },
+              dataSourceName: undefined
             },
             'Options from route are passed to fact service'
           );

@@ -8,20 +8,20 @@
 import { A } from '@ember/array';
 import EmberObject from '@ember/object';
 
-export default EmberObject.extend({
+export default class BardMetadataSerializer extends EmberObject {
   /**
    * @method _normalizeTable - normalizes the table object
    * @param rawTables {Array} - array of table objects
    * @returns {Object} - normalized table object
    */
-  _normalizeTable: function(rawTables, source) {
+  _normalizeTable(rawTables, source) {
     // build dimension and metric arrays
     let dimensions = [],
       metrics = [],
       tables = rawTables.map(table => {
         let timeGrains = table.timeGrains.map(timegrain => {
           dimensions = dimensions.concat(
-            timegrain.dimensions.map(dimension => Object.assign({}, dimension, { source }))
+            timegrain.dimensions.map(dimension => Object.assign({}, dimension, { source, partialData: true }))
           );
 
           /*
@@ -32,7 +32,8 @@ export default EmberObject.extend({
             timegrain.metrics.map(metric =>
               Object.assign({ valueType: metric.type }, metric, {
                 type: 'metric',
-                source
+                source,
+                partialData: true
               })
             )
           );
@@ -64,7 +65,7 @@ export default EmberObject.extend({
       dimensions,
       metrics
     };
-  },
+  }
 
   /**
    * @method normalize - normalizes the JSON response
@@ -76,4 +77,4 @@ export default EmberObject.extend({
       return this._normalizeTable(payload.tables, payload.source);
     }
   }
-});
+}

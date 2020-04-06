@@ -201,7 +201,7 @@ module('Acceptance | Dashboards', function(hooks) {
     await click($('button:contains(Cancel)')[0]);
     await click('.navi-icon__copy');
 
-    assert.equal(currentURL(), '/dashboards/6/view', 'A dashboard is cloned when the action is clicked');
+    assert.equal(currentURL(), '/dashboards/7/view', 'A dashboard is cloned when the action is clicked');
   });
 
   test('Add new dashboard in index route', async function(assert) {
@@ -373,7 +373,7 @@ module('Acceptance | Dashboards', function(hooks) {
 
     await click('.navi-icon__copy');
 
-    assert.equal(currentURL(), '/dashboards/6/view', 'Cloning a dashboard transitions to newly made dashboard');
+    assert.equal(currentURL(), '/dashboards/7/view', 'Cloning a dashboard transitions to newly made dashboard');
 
     assert
       .dom('.page-title .clickable')
@@ -704,7 +704,7 @@ module('Acceptance | Dashboards', function(hooks) {
 
     await click('.navi-icon__copy');
 
-    assert.equal(currentURL(), '/dashboards/6/view', 'Cloning a dashboard transitions to newly made dashboard');
+    assert.equal(currentURL(), '/dashboards/7/view', 'Cloning a dashboard transitions to newly made dashboard');
 
     // Create new widget
     await click('.add-widget .btn');
@@ -716,7 +716,7 @@ module('Acceptance | Dashboards', function(hooks) {
     // Save without running
     await click('.navi-report-widget__save-btn');
     assert.ok(
-      currentURL().endsWith('/dashboards/6/view'),
+      currentURL().endsWith('/dashboards/7/view'),
       'After saving without running, user is brought back to dashboard view'
     );
 

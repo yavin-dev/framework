@@ -43,4 +43,30 @@ module('helper:metric-format', function(hooks) {
     this.set('metric', { metric: 'foo' });
     assert.dom().hasText('foo');
   });
+
+  test('multi-datasource support', async function(assert) {
+    assert.expect(3);
+    const metaData = this.owner.lookup('service:bard-metadata');
+    metaData._keg.reset();
+    await metaData.loadMetadata({ dataSourceName: 'blockhead' });
+
+    this.set('metric', {
+      metric: 'usedAmount',
+      parameters: {}
+    });
+
+    await render(hbs`{{metric-format metric "blockhead"}}`);
+    assert.dom().hasText('Used Amount');
+
+    this.set('metric', {
+      metric: 'navClicks',
+      parameters: {}
+    });
+    assert.dom().hasText('navClicks', 'Fall back works');
+
+    this.set('namespace', undefined);
+    assert.dom().hasText('navClicks', 'default works if datasource is not loaded');
+
+    metaData._keg.reset();
+  });
 });

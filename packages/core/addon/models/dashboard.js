@@ -80,10 +80,13 @@ export default DeliverableItem.extend(Validations, {
       clonedDashboard = Object.assign(this.toJSON(), {
         author: user,
         widgets: [],
-        filters: this.get('filters').map(filter =>
-          this.store.createFragment('bard-request/fragments/filter', filter.toJSON())
-        ),
-        presentation: copy(get(this, 'presentation')),
+        filters: this.filters.map(filter => {
+          const filterJson = filter.toJSON();
+          const namespace = filter.dimension.source;
+          filterJson.dimension = `${namespace}.${filterJson.dimension}`;
+          return this.store.createFragment('bard-request/fragments/filter', filterJson);
+        }),
+        presentation: copy(this.presentation),
         createdOn: null,
         updatedOn: null
       });

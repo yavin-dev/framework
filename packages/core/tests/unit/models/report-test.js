@@ -32,7 +32,8 @@ const ExpectedRequest = {
       }
     ],
     bardVersion: 'v1',
-    requestVersion: 'v1'
+    requestVersion: 'v1',
+    dataSource: 'dummy'
   },
   ExpectedReport = {
     data: {

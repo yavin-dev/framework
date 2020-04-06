@@ -1,7 +1,7 @@
 import Service from '@ember/service';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find, click, fillIn, triggerKeyEvent } from '@ember/test-helpers';
+import { render, fillIn, triggerKeyEvent } from '@ember/test-helpers';
 import { hbs } from 'ember-cli-htmlbars';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
@@ -30,26 +30,41 @@ module('Integration | Component | navi-search-bar', function(hooks) {
     assert.equal(this.element.textContent.trim(), '');
   });
 
-  test('click search button no results', async function(assert) {
+  test('perform search that returns results', async function(assert) {
     await render(hbs`<NaviSearchBar />`);
-    debugger;
 
-    await fillIn('.search-input', 'Hello!');
+    await fillIn('.navi-search-bar__input', 'Revenue');
+    await triggerKeyEvent('.navi-search-bar__input', 'keyup', 13);
 
-    await click(find('.search-button'));
-
-    assert.dom('.results').doesNotExist();
+    assert
+      .dom('.navi-search-bar__results')
+      .hasText('Reports & Dashboards Revenue report 1 Revenue Dashboard Sample Revenue result Revenue success');
   });
 
-  test('press enter on search button with results', async function(assert) {
+  test('perform search with special characters', async function(assert) {
     await render(hbs`<NaviSearchBar />`);
 
-    await fillIn('.search-input', 'Revenue');
+    await fillIn('.navi-search-bar__input', '!@#$%^&*()');
+    await triggerKeyEvent('.navi-search-bar__input', 'keyup', 13);
 
-    await triggerKeyEvent('.search-input', 'keydown', 'Enter');
-    debugger;
+    assert.dom('.navi-search-bar__results').hasText('No results', 'Search results return "No results"');
+  });
 
-    assert.dom('.results').exists();
-    assert.dom('.results').hasClass('search-result');
+  test('perform search with no results', async function(assert) {
+    await render(hbs`<NaviSearchBar />`);
+
+    await fillIn('.navi-search-bar__input', 'Hello!');
+    await triggerKeyEvent('.navi-search-bar__input', 'keyup', 13);
+
+    assert.dom('.navi-search-bar__results').hasText('No results', 'Search results return "No results"');
+  });
+
+  test('perform empty search', async function(assert) {
+    await render(hbs`<NaviSearchBar />`);
+
+    await fillIn('.navi-search-bar__input', '');
+    await triggerKeyEvent('.navi-search-bar__input', 'keyup', 13);
+
+    assert.dom('.navi-search-bar__results').doesNotExist('Nothing happens if you search with empty query');
   });
 });

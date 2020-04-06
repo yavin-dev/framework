@@ -71,13 +71,18 @@ export default class NaviVisualizationsGoalGaugeComponent extends Component {
   legend = { hide: true };
 
   /**
+   * @property {String} - which meta data namespace to use
+   */
+  @alias('model.firstObject.request.dataSource') namespace;
+
+  /**
    * @property {String} formatted default metric
    */
-  @computed('metricModel')
+  @computed('metricModel', 'namespace')
   get defaultMetricTitle() {
-    const { metricModel } = this;
+    const { metricModel, namespace } = this;
     const { metric: baseMetric } = metricModel;
-    const longName = this.bardMetadata.getMetaField('metric', baseMetric, 'longName');
+    const longName = this.bardMetadata.getMetaField('metric', baseMetric, 'longName', null, namespace);
 
     return metricFormat(metricModel, longName);
   }

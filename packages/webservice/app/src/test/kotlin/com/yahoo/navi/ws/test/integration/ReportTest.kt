@@ -37,6 +37,7 @@ class ReportTest : IntegrationTest() {
             |   "timeGrain":"day",
             |   "table":"base"
             |},
+            |"dataSource": "",
             |"bardVersion":"1.0",
             |"requestVersion":"2.0",
             |"intervals":[{
@@ -66,6 +67,7 @@ class ReportTest : IntegrationTest() {
             |},
             |"having": [],
             |"sort": [],
+            |"dataSource":"",
             |"bardVersion":"1.0",
             |"requestVersion":"2.0",
             |"intervals":[{

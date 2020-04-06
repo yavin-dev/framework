@@ -1,5 +1,5 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -44,26 +44,36 @@ export default Controller.extend(ReportToWidget, {
      */
     async updateFilter(dashboard, originalFilter, changeSet) {
       const origFilter = originalFilter.serialize();
+      origFilter.dataSource = originalFilter.dimension.source;
       const newFilters = get(dashboard, 'filters')
         .toArray()
-        .map(fil => fil.serialize()); //Native array of serialized filters
+        .map(fil => {
+          const newFil = fil.serialize();
+          newFil.dataSource = fil.dimension.source;
+          return newFil;
+        }); //Native array of serialized filters
       const filterToUpdate = newFilters.find(fil => isEqual(fil, origFilter));
 
       setProperties(filterToUpdate, changeSet);
 
-      const newFilter = get(this, 'store')
+      const newFilter = this.store
         .createFragment('bard-request/fragments/filter', {
-          dimension: get(this, 'metadataService').getById('dimension', filterToUpdate.dimension),
+          dimension: this.metadataService.getById(
+            'dimension',
+            filterToUpdate.dimension,
+            originalFilter.dimension.source
+          ),
           operator: filterToUpdate.operator,
           field: filterToUpdate.field,
           rawValues: filterToUpdate.rawValues || filterToUpdate.values
         })
         .serialize();
 
+      newFilter.dataSource = originalFilter.dimension.source;
       const index = newFilters.indexOf(filterToUpdate);
       newFilters[index] = newFilter;
 
-      const filterQueryParams = await get(this, 'compression').compress({ filters: newFilters });
+      const filterQueryParams = await this.compression.compress({ filters: newFilters });
 
       this.transitionToRoute('dashboards.dashboard', { queryParams: { filters: filterQueryParams } });
     },
@@ -88,12 +98,14 @@ export default Controller.extend(ReportToWidget, {
      * @param {Object} dimension
      */
     async addFilter(dashboard, dimension) {
-      const store = get(this, 'store');
-      const bardMetadata = get(this, 'metadataService');
-      const filters = get(dashboard, 'filters')
-        .toArray()
-        .map(fil => fil.serialize()); //Native array of serialized filters
-      const dimensionMeta = bardMetadata.getById('dimension', dimension.dimension);
+      const store = this.store;
+      const bardMetadata = this.metadataService;
+      const filters = dashboard.filters.toArray().map(fil => {
+        const newFil = fil.serialize();
+        newFil.dataSource = fil.dimension.source;
+        return newFil;
+      }); //Native array of serialized filters
+      const dimensionMeta = bardMetadata.getById('dimension', dimension.dimension, dimension.dataSource);
       const filter = store
         .createFragment('bard-request/fragments/filter', {
           dimension: dimensionMeta,
@@ -102,9 +114,11 @@ export default Controller.extend(ReportToWidget, {
         })
         .serialize();
 
+      filter.dataSource = dimension.dataSource;
+
       filters.push(filter);
 
-      const filterQueryParams = await get(this, 'compression').compress({ filters });
+      const filterQueryParams = await this.compression.compress({ filters });
 
       this.transitionToRoute('dashboards.dashboard', { queryParams: { filters: filterQueryParams } });
     },

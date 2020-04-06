@@ -16,7 +16,7 @@
           @renderInPlace={{true}}
           as |metric|
         >
-          {{metric-format metric}}
+          {{metric-format metric @request.dataSource}}
         </PowerSelect>
       </div>
     </div>

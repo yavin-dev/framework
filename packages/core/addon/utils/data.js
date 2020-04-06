@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { get } from '@ember/object';
@@ -47,7 +47,39 @@ export function mostRecentData(rows) {
  * @returns {DataGroup}
  */
 export function dataByDimensions(rows, dimensionOrder) {
-  return new DataGroup(rows, row => dimensionOrder.map(dimension => row[`${dimension}|id`]).join('|'));
+  return new DataGroup(rows, row =>
+    dimensionOrder
+      .map(dimension => {
+        const field = getDimensionGroupingField([row], dimension);
+        return row[field];
+      })
+      .join('|')
+  );
+}
+
+/**
+ * Selects best available dimension field to group on.
+ * Given a response rowSet, tries to find the best identifier field for the given dimension to use.
+ * If there is only one available use that. otherwise it will try to find key in preference order:
+ * key > id > desc
+ *
+ * @param {Array} rows
+ * @param {String} dimension
+ * @returns {String} field
+ */
+export function getDimensionGroupingField(rows, dimension) {
+  const fields = Object.keys(rows[0]).filter(field => field.startsWith(`${dimension}|`));
+  if (fields.length === 1) {
+    return fields[0];
+  }
+  //TODO: add meta dataservice to get dimension meta data id field, need to get namespace down here consistently though
+  const preferredFields = ['key', 'id', 'desc'];
+  for (const field of preferredFields) {
+    if (fields.includes(`${dimension}|${field}`)) {
+      return `${dimension}|${field}`;
+    }
+  }
+  return fields[0];
 }
 
 /**

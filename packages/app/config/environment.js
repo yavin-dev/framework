@@ -25,6 +25,7 @@ module.exports = function(environment) {
     },
 
     navi: {
+      defaultDataSource: 'default',
       FEATURES: {
         enableDashboardFilters: true,
         enableMultipleExport: false,

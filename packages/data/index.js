@@ -2,11 +2,15 @@
 
 const path = require('path');
 const Funnel = require('broccoli-funnel');
-const name = require('./package').name;
 const MergeTrees = require('broccoli-merge-trees');
 
 module.exports = {
-  name,
+  name: require('./package').name,
+
+  isDevelopingAddon() {
+    return process.env.DEV_NAVI;
+  },
+
   options: {
     autoImport: {
       exclude: ['papaparse'] // only included during development

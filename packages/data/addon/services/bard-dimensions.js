@@ -10,7 +10,7 @@ import { A } from '@ember/array';
 import Service, { inject as service } from '@ember/service';
 import { assert } from '@ember/debug';
 import { getOwner } from '@ember/application';
-import { set, getWithDefault, get } from '@ember/object';
+import { getWithDefault } from '@ember/object';
 import { isEmpty } from '@ember/utils';
 import BardDimensionArray from 'navi-data/models/bard-dimension-array';
 import SearchUtils from 'navi-data/utils/search';
@@ -28,64 +28,59 @@ const MAX_SEARCH_RESULT_COUNT = 500;
 
 const MODEL_FACTORY_CACHE = {};
 
-export default Service.extend({
+export default class BardDimensionService extends Service {
   /**
    * @private
    * @property {Object} _loadedAllDimensions - the loaded status per dimension
    */
-  _loadedAllDimensions: undefined,
+  _loadedAllDimensions = {};
 
   /**
    * @property {String} identifierField - field name of the id field
    */
-  identifierField: 'id',
+  identifierField = 'id';
 
   /**
    * @private
    * @property {Object} _kegAdapter - the keg adapter object
    */
-  _kegAdapter: undefined,
+  _kegAdapter = undefined;
 
   /**
    * @private
    * @property {Object} _bardAdapter - the bard adapter object
    */
-  _bardAdapter: undefined,
+  _bardAdapter = undefined;
 
   /**
    * @private
    * @property {Object} _serializer - the serializer object
    */
-  _serializer: undefined,
+  _serializer = undefined;
 
   /**
    * @private
    * @property {String} _dimensionKeyPrefix - the prefix for dimension keys stored in Keg
    */
-  _dimensionKeyPrefix: 'dimension/',
+  _dimensionKeyPrefix = 'dimension/';
 
   /**
    * @property metadataService
    */
-  metadataService: service('bard-metadata'),
+  @service('bard-metadata') metadataService;
 
   /**
    * @method init
    */
-  init() {
-    this._super(...arguments);
-
-    this.set('_loadedAllDimensions', {});
-
-    let owner = getOwner(this);
+  constructor() {
+    super(...arguments);
+    const owner = getOwner(this);
 
     //Instantiating the dimension adapter & serializer
-    let bardAdapter = owner.lookup('adapter:dimensions/bard');
-
-    this.set('_bardAdapter', bardAdapter);
-    this.set('_kegAdapter', owner.lookup('adapter:dimensions/keg'));
-    this.set('_serializer', owner.lookup('serializer:dimensions/bard'));
-  },
+    this._bardAdapter = owner.lookup('adapter:dimensions/bard');
+    this._kegAdapter = owner.lookup('adapter:dimensions/keg');
+    this._serializer = owner.lookup('serializer:dimensions/bard');
+  }
 
   /**
    * @method getLoadedStatus - Get loaded status for a dimension
@@ -93,16 +88,16 @@ export default Service.extend({
    * @returns {Boolean} - A boolean indicating loaded status for a dimension
    */
   getLoadedStatus(dimension) {
-    return !!get(this, `_loadedAllDimensions.${dimension}`);
-  },
+    return !!this._loadedAllDimensions[dimension];
+  }
 
   /**
    * @method _setLoadedStatus - Set loaded status for a dimension
    * @param {String} dimension - dimension name
    */
   _setLoadedStatus(dimension) {
-    return set(this, `_loadedAllDimensions.${dimension}`, true);
-  },
+    return (this._loadedAllDimensions[dimension] = true);
+  }
 
   /**
    * @method all - Returns all the dimension values for a bard dimension
@@ -111,7 +106,7 @@ export default Service.extend({
    * @returns {Promise} - Promise with the bard dimension model object
    */
   all(dimension, options = {}) {
-    let kegAdapter = get(this, '_kegAdapter');
+    const { _kegAdapter: kegAdapter, _bardAdapter: bardAdapter, _serializer: serializer } = this;
 
     // fetch all from keg if all records are loaded in keg
     if (this.getLoadedStatus(dimension)) {
@@ -120,21 +115,19 @@ export default Service.extend({
       });
     }
 
-    return get(this, '_bardAdapter')
-      .all(dimension, options)
-      .then(recordsFromBard => {
-        let serialized = get(this, '_serializer').normalize(dimension, recordsFromBard),
-          dimensions = kegAdapter.pushMany(dimension, serialized, options);
+    return bardAdapter.all(dimension, options).then(recordsFromBard => {
+      const serialized = serializer.normalize(dimension, recordsFromBard);
+      const dimensions = kegAdapter.pushMany(dimension, serialized, options);
 
-        // Fili provides pagination metadata only when data is partially fetched
-        let isPartiallyLoaded = get(recordsFromBard, 'meta.pagination');
-        if (!isPartiallyLoaded) {
-          this._setLoadedStatus(dimension);
-        }
+      // Fili provides pagination metadata only when data is partially fetched
+      const isPartiallyLoaded = recordsFromBard.meta?.pagination;
+      if (!isPartiallyLoaded) {
+        this._setLoadedStatus(dimension);
+      }
 
-        return this._createBardDimensionsArray(recordsFromBard, dimensions, dimension);
-      });
-  },
+      return this._createBardDimensionsArray(recordsFromBard, dimensions, dimension);
+    });
+  }
 
   /**
    * Returns dimension values for a bard dimension.
@@ -169,7 +162,7 @@ export default Service.extend({
    * @returns {BardDimensionArray} - array of bard dimension model objects
    */
   find(dimension, andQueries, options) {
-    let kegAdapter = get(this, '_kegAdapter');
+    const { _kegAdapter: kegAdapter, _bardAdapter: bardAdapter, _serializer: serializer } = this;
 
     // fetch from keg if all records are loaded in keg
     if (this.getLoadedStatus(dimension)) {
@@ -178,14 +171,12 @@ export default Service.extend({
       });
     }
 
-    return get(this, '_bardAdapter')
-      .find(dimension, andQueries, options)
-      .then(recordsFromBard => {
-        let serialized = get(this, '_serializer').normalize(dimension, recordsFromBard),
-          dimensions = kegAdapter.pushMany(dimension, serialized, options);
-        return this._createBardDimensionsArray(recordsFromBard, dimensions, dimension);
-      });
-  },
+    return bardAdapter.find(dimension, andQueries, options).then(recordsFromBard => {
+      const serialized = serializer.normalize(dimension, recordsFromBard);
+      const dimensions = kegAdapter.pushMany(dimension, serialized, options);
+      return this._createBardDimensionsArray(recordsFromBard, dimensions, dimension);
+    });
+  }
 
   /**
    * @method getById - Returns the dimension value object for a bard dimension where identifierField value matches value
@@ -194,9 +185,9 @@ export default Service.extend({
    * @param {String} namespace - namespace to the keg
    * @returns {Object} - The bard dimension model object
    */
-  getById(dimension, value, namespace=getDefaultDataSourceName()) {
+  getById(dimension, value, namespace = getDefaultDataSourceName()) {
     return this._kegAdapter.getById(dimension, value, namespace);
-  },
+  }
 
   /**
    * @method findById - Returns the dimension value object for a bard dimension where identifierField value matches value
@@ -206,22 +197,20 @@ export default Service.extend({
    * @returns {Promise} - Promise with the bard dimension model object
    */
   findById(dimension, value, options = {}) {
-    const { _kegAdapter: kegAdapter } = this;
+    const { _kegAdapter: kegAdapter, _bardAdapter: bardAdapter, _serializer: serializer } = this;
     const namespace = options.dataSourceName || getDefaultDataSourceName();
 
     return kegAdapter.findById(dimension, value, namespace).then(recordFromKeg => {
       if (!isEmpty(recordFromKeg)) {
         return recordFromKeg;
       } else {
-        return get(this, '_bardAdapter')
-          .findById(dimension, value, options)
-          .then(recordFromBard => {
-            let serialized = get(this, '_serializer').normalize(dimension, recordFromBard);
-            return kegAdapter.pushMany(dimension, serialized, options).get('firstObject');
-          });
+        return bardAdapter.findById(dimension, value, options).then(recordFromBard => {
+          const serialized = serializer.normalize(dimension, recordFromBard);
+          return kegAdapter.pushMany(dimension, serialized, options).get('firstObject');
+        });
       }
     });
-  },
+  }
 
   /**
    * @method _createBardDimensionsArray - Returns a bard dimension array model
@@ -235,11 +224,11 @@ export default Service.extend({
       return BardDimensionArray.create({
         dimension,
         content: A(serializedRecords),
-        meta: get(rawPayload, 'meta'),
+        meta: rawPayload.meta,
         _dimensionsService: this
       });
     }
-  },
+  }
 
   /**
    * Gets search filter operator given a dimension model name
@@ -252,9 +241,7 @@ export default Service.extend({
   _getSearchOperator(dimension) {
     assert('dimension must be defined', dimension);
 
-    let searchOperator = A(
-      intersection(SEARCH_OPERATOR_PRIORITY, get(this, '_bardAdapter').supportedFilterOperators)
-    ).objectAt(0);
+    const searchOperator = intersection(SEARCH_OPERATOR_PRIORITY, this._bardAdapter.supportedFilterOperators)[0];
 
     assert(
       `valid search operator not found for dimensions/${dimension}, supported operators: ${SEARCH_OPERATOR_PRIORITY}`,
@@ -262,7 +249,7 @@ export default Service.extend({
     );
 
     return searchOperator;
-  },
+  }
 
   /**
    * Gets all dimension records containing the search string in the given field
@@ -277,12 +264,12 @@ export default Service.extend({
   searchValueField(dimension, field, query, options = {}) {
     assert('search query must be defined', query);
     assert('dimension must be defined', dimension);
+    const { metadataService, _bardAdapter: bardAdapter } = this;
 
-    let metadataService = get(this, 'metadataService'),
-      source = options.dataSourceName || getDefaultDataSourceName(),
-      operator = this._getSearchOperator(dimension);
+    const source = options.dataSourceName || getDefaultDataSourceName();
+    let operator = this._getSearchOperator(dimension);
 
-    if (get(metadataService.getById('dimension', dimension, source), 'cardinality') > MAX_LOAD_CARDINALITY) {
+    if (metadataService.getById('dimension', dimension, source).cardinality > MAX_LOAD_CARDINALITY) {
       operator = 'in';
     }
 
@@ -292,8 +279,8 @@ export default Service.extend({
       operator,
       values: [v]
     }));
-    return this._bardAdapter.find(dimension, andFilters, options);
-  },
+    return bardAdapter.find(dimension, andFilters, options);
+  }
 
   /**
    * Gets all dimension records containing the search string
@@ -305,10 +292,10 @@ export default Service.extend({
    * @returns {Promise} - Array Promise containing the search result
    */
   searchValue(dimension, query, options = {}) {
-    let values = query.split(/,\s+|\s+/).map(v => v.trim());
+    const values = query.split(/,\s+|\s+/).map(v => v.trim());
 
     return this._bardAdapter.search(dimension, { values }, options);
-  },
+  }
 
   /**
    * Searches dimension records for search term in options and returns filtered results sorted by relevance
@@ -332,13 +319,12 @@ export default Service.extend({
       assert('for pagination both page and limit must be defined in search options', options.page && options.limit);
     }
 
-    let metadataService = get(this, 'metadataService'),
-      source = options.dataSourceName || getDefaultDataSourceName(),
-      query = options.term.trim(),
-      promise,
-      dimensionRecords;
+    const source = options.dataSourceName || getDefaultDataSourceName();
+    const query = options.term.trim();
+    let promise;
+    let dimensionRecords;
 
-    const { cardinality } = metadataService.getById('dimension', dimension, source);
+    const { cardinality } = this.metadataService.getById('dimension', dimension, source);
     if (cardinality <= LOAD_CARDINALITY) {
       promise = this.all(dimension, options).then(dimValues => {
         dimensionRecords = A(dimValues);
@@ -374,7 +360,7 @@ export default Service.extend({
     }
 
     return new resolve(promise);
-  },
+  }
 
   /**
    * @method getFactoryFor - fetches a dimension model for a dimension type
@@ -382,24 +368,24 @@ export default Service.extend({
    * @param namespace {String} - namespace of dimension
    * @returns {Object} dimension model factory
    */
-  getFactoryFor(dimensionName, namespace=getDefaultDataSourceName()) {
+  getFactoryFor(dimensionName, namespace = getDefaultDataSourceName()) {
     const key = `${namespace}.${dimensionName}`;
     if (MODEL_FACTORY_CACHE[key]) {
       return MODEL_FACTORY_CACHE[key];
     }
     return (MODEL_FACTORY_CACHE[key] = this._createDimensionModelFactory(dimensionName, namespace));
-  },
+  }
 
   /**
    * @method _createDimensionModelFactory - creates a dimension model for a dimension type
    * @param dimensionName {String} - name of the dimension
    * @returns {Object} dimension model factory
    */
-  _createDimensionModelFactory(dimensionName, namespace=getDefaultDataSourceName()) {
+  _createDimensionModelFactory(dimensionName, namespace = getDefaultDataSourceName()) {
     const metadata = this.metadataService.getById('dimension', dimensionName, namespace),
       dimensionModel = getOwner(this).factoryFor('model:bard-dimension').class,
-      identifierField = metadata.get('primaryKeyFieldName');
+      identifierField = metadata.primaryKeyFieldName;
 
     return dimensionModel.extend().reopenClass({ identifierField, dimensionName, metadata });
   }
-});
+}

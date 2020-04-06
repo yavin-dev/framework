@@ -1,0 +1,112 @@
+/**
+ * Copyright 2020, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
+
+.navi-column-config-item {
+  border-bottom: 1px solid @denali-gray-300;
+  margin-left: 15px;
+  z-index: 2;
+
+  &__header {
+    align-items: center;
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+
+    &:hover {
+      .navi-column-config-item__remove-icon {
+        display: inline-block;
+      }
+
+      .navi-column-config-item__type-icon {
+        display: none;
+      }
+    }
+  }
+
+  &__trigger {
+    align-items: center;
+    cursor: pointer;
+    display: flex;
+    flex: 1;
+    justify-content: space-between;
+    min-height: 40px;
+    min-width: 0;
+    padding-left: 5px;
+
+    &:hover {
+      .navi-column-config-item__dropdown-icon {
+        color: @denali-link-hover;
+      }
+    }
+  }
+
+  &__name {
+    font-family: @font-family-sans-serif;
+    font-size: @font-size-base;
+    overflow: hidden;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__dropdown-icon {
+    .navi-column-config-icon;
+    flex-basis: 20px;
+    flex-shrink: 0;
+    font-size: @font-size-large;
+    transition: transform 100ms;
+  }
+
+  &__type-icon,
+  &__remove-icon {
+    .navi-column-config-icon;
+  }
+
+  &__type-icon {
+    flex-shrink: 0;
+    height: 8px;
+    margin: 0 3px;
+    width: 8px;
+  }
+
+  &--datetime,
+  &--dimension {
+    .navi-column-config-item__type-icon {
+      background-color: @denali-graph-orange;
+      border-radius: 50%;
+    }
+  }
+
+  &--metric {
+    .navi-column-config-item__type-icon {
+      background-color: @denali-graph-purple;
+      border-radius: 1px;
+    }
+  }
+
+  &__remove-icon {
+    display: none;
+    flex-shrink: 0;
+    font-size: @font-size-mid-base;
+    padding: 0;
+    width: 14px;
+    text-align: center;
+  }
+
+  &--open {
+    .navi-column-config-item__name {
+      font-weight: bold;
+      font-family: @font-family-thin;
+    }
+
+    .navi-column-config-item__header {
+      border-bottom: none;
+    }
+
+    .navi-column-config-item__dropdown-icon {
+      transform: rotate(90deg);
+    }
+  }
+}

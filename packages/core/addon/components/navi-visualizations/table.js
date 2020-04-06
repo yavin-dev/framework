@@ -177,14 +177,16 @@ class Table extends Component {
    * Determines if column has a custom display name
    *
    * @private
+   * @param {Object} column - column object
+   * @param {String} namespace - metadata namespace
    * @returns {Boolean}
    */
-  _hasCustomDisplayName(column) {
+  _hasCustomDisplayName(column, namespace) {
     if (isBlank(column.displayName)) {
       return false;
     }
 
-    let defaultName = getColumnDefaultName(column, get(this, 'bardMetadata'));
+    const defaultName = getColumnDefaultName(column, this.bardMetadata, namespace);
     return column.displayName !== defaultName;
   }
 
@@ -249,7 +251,7 @@ class Table extends Component {
   /**
    * @property {Object} columns
    */
-  @computed('options.columns', 'request.sort')
+  @computed('options.columns', 'request.{sort,dataSource}')
   get columns() {
     let sorts = this._mapAlias(get(this, 'request')),
       columns = cloneDeep(get(this, 'options.columns') || []);
@@ -258,7 +260,7 @@ class Table extends Component {
       let { attributes, type } = column,
         canonicalName = type === 'dateTime' ? type : canonicalizeColumnAttributes(attributes),
         sort = arr(sorts).findBy('metric', canonicalName) || {},
-        hasCustomDisplayName = this._hasCustomDisplayName(column),
+        hasCustomDisplayName = this._hasCustomDisplayName(column, this.request.dataSource),
         sortDirection;
 
       if (column.type === 'dateTime') {
