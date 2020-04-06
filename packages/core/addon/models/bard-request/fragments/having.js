@@ -4,7 +4,7 @@
  */
 
 import { A as array } from '@ember/array';
-import { set, get, computed } from '@ember/object';
+import { set, computed } from '@ember/object';
 import DS from 'ember-data';
 import { fragment } from 'ember-data-model-fragments/attributes';
 import Fragment from 'ember-data-model-fragments/fragment';
@@ -27,8 +27,8 @@ const Validations = buildValidations({
     }),
     validator('array-number', {
       message() {
-        let metricName = get(this, 'model.metric.metric.longName');
-        return `${metricFormat(get(this, 'model.metric'), metricName)} filter must be a number`;
+        let metricName = this.model.metric?.metric?.name;
+        return `${metricFormat(this.model.metric, metricName)} filter must be a number`;
       }
     })
   ]
@@ -43,7 +43,7 @@ export default Fragment.extend(Validations, {
 
   value: computed('values', {
     get() {
-      return get(this, 'values')[0];
+      return this.values?.[0];
     },
 
     set(type, value) {

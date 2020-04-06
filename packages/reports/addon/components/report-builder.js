@@ -39,7 +39,7 @@ export default Component.extend({
    */
   allTables: computed(function() {
     let metadataService = get(this, 'metadataService');
-    return metadataService.all('table').sortBy('longName');
+    return metadataService.all('table').sortBy('name');
   }),
 
   /**

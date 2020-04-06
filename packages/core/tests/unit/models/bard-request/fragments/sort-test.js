@@ -48,9 +48,9 @@ module('Unit | Model | Fragment | BardRequest - Sort', function(hooks) {
       mockModel
         .get('sorts')
         .objectAt(0)
-        .get('metric.metric.longName'),
+        .get('metric.metric.name'),
       'Unique Identifiers (Daily Avg)',
-      'The property metric `ui` was deserialized to the metric object with longName `Unique Identifiers (Daily Avg)`'
+      'The property metric `ui` was deserialized to the metric object with name `Unique Identifiers (Daily Avg)`'
     );
 
     assert.equal(
@@ -78,7 +78,7 @@ module('Unit | Model | Fragment | BardRequest - Sort', function(hooks) {
       mockModel
         .get('sorts')
         .objectAt(0)
-        .get('metric.metric.longName'),
+        .get('metric.metric.name'),
       'Page Views',
       'The property sort has the metric with value  `Page Views` using the setter'
     );

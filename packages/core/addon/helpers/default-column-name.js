@@ -28,21 +28,21 @@ export function getColumnDefaultName({ type, attributes }, bardMetadata, namespa
     type = 'metric';
   }
 
-  let { name, field } = attributes,
-    model = bardMetadata.getById(type, name, namespace);
+  let { name: id, field } = attributes,
+    model = bardMetadata.getById(type, id, namespace);
 
   if (type === 'metric') {
-    return metricFormat(mapColumnAttributes(attributes), model.longName);
+    return metricFormat(mapColumnAttributes(attributes), model.name);
   }
 
   if (type === 'dimension' && field) {
     return formatDimensionName({
-      name: model.longName,
+      id: model.name,
       field
     });
   }
 
-  return model.longName;
+  return model.name;
 }
 
 export default Helper.extend({

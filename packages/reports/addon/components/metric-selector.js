@@ -13,61 +13,62 @@
  *   {{/metric-selector}}
  */
 
-import { readOnly } from '@ember/object/computed';
 import { A } from '@ember/array';
 import Component from '@ember/component';
-import { get, computed } from '@ember/object';
+import { get, computed, action } from '@ember/object';
 import { uniqBy } from 'lodash-es';
 import layout from '../templates/components/metric-selector';
 import { run } from '@ember/runloop';
 import { featureFlag } from 'navi-core/helpers/feature-flag';
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
-export default Component.extend({
-  layout,
-
-  /*
-   * @property {Array} classNames
-   */
-  classNames: ['checkbox-selector', 'checkbox-selector--metric'],
-
+@templateLayout(layout)
+@tagName('')
+class MetricSelectorComponent extends Component {
   /*
    * @property {Array} allMetrics
    */
-  allMetrics: readOnly('request.logicalTable.timeGrain.metrics'),
+  @computed('request.logicalTable.table.metrics')
+  get allMetrics() {
+    return A(this.request.logicalTable.table.metrics).sortBy('name');
+  }
 
   /*
    * @property {Array} selectedMetrics - selected metrics in the request
    */
-  selectedMetrics: computed('request.metrics.[]', function() {
+  @computed('request.metrics.[]')
+  get selectedMetrics() {
     let metrics = get(this, 'request.metrics').toArray(),
-      selectedBaseMetrics = uniqBy(metrics, metric => get(metric, 'metric.name'));
+      selectedBaseMetrics = uniqBy(metrics, metric => metric.metric?.id);
 
     return A(selectedBaseMetrics).mapBy('metric');
-  }),
+  }
 
   /*
    * @property {Object} metricsChecked - object with metric -> boolean mapping to denote
    *                                     if metric checkbox should be checked
    */
-  metricsChecked: computed('selectedMetrics', function() {
+  @computed('selectedMetrics')
+  get metricsChecked() {
     return get(this, 'selectedMetrics').reduce((list, metric) => {
-      list[get(metric, 'name')] = true;
+      list[get(metric, 'id')] = true;
       return list;
     }, {});
-  }),
+  }
 
   /*
    * @property {Object} metricsFiltered - metric -> boolean mapping denoting presence of metric
    *                                         in request havings
    */
-  metricsFiltered: computed('request.having.[]', function() {
+  @computed('request.having.[]')
+  get metricsFiltered() {
     return A(get(this, 'request.having'))
-      .mapBy('metric.metric.name')
+      .mapBy('metric.metric.id')
       .reduce((list, metric) => {
         list[metric] = true;
         return list;
       }, {});
-  }),
+  }
 
   /*
    * @method _openConfig
@@ -77,41 +78,42 @@ export default Component.extend({
    * @param metric -
    */
   _openConfig(metricMeta) {
-    let longName = get(metricMeta, 'longName');
+    let name = get(metricMeta, 'name');
 
     //create mousedown event using document.createEvent as supported by all browsers
     let mouseEvent = document.createEvent('MouseEvent');
     mouseEvent.initEvent('mousedown', true, true);
 
     run(this, () => {
-      //find the right config trigger by matching metric longNames
+      //find the right config trigger by matching metric names
       let metricSelector = document.querySelector('.report-builder__metric-selector'),
         groupedListItems = Array.from(metricSelector.getElementsByClassName('grouped-list__item'));
 
       groupedListItems.filter(item => {
-        if (item.textContent.trim() === longName) {
+        if (item.textContent.trim() === name) {
           item.querySelector('.metric-config__trigger-icon').dispatchEvent(mouseEvent);
         }
       });
     });
-  },
+  }
 
-  actions: {
-    /*
-     * @action metricClicked
-     * @param {Object} metric
-     */
-    metricClicked(metric) {
-      const enableRequestPreview = featureFlag('enableRequestPreview'),
-        action = !enableRequestPreview && get(this, 'metricsChecked')[get(metric, 'name')] ? 'Remove' : 'Add',
-        handler = this[`on${action}Metric`];
+  /*
+   * @action metricClicked
+   * @param {Object} metric
+   */
+  @action
+  metricClicked(metric) {
+    const enableRequestPreview = featureFlag('enableRequestPreview'),
+      actionName = !enableRequestPreview && get(this, 'metricsChecked')[get(metric, 'id')] ? 'Remove' : 'Add',
+      handler = this[`on${actionName}Metric`];
 
-      if (handler) handler(metric);
+    if (handler) handler(metric);
 
-      //On add, trigger metric-config mousedown event when metric has parameters
-      if (action === 'Add' && get(metric, 'hasParameters') && !enableRequestPreview) {
-        this._openConfig(metric);
-      }
+    //On add, trigger metric-config mousedown event when metric has parameters
+    if (actionName === 'Add' && get(metric, 'hasParameters') && !enableRequestPreview) {
+      this._openConfig(metric);
     }
   }
-});
+}
+
+export default MetricSelectorComponent;

@@ -3,7 +3,7 @@ import hbs from 'htmlbars-inline-precompile';
 import { setupRenderingTest } from 'ember-qunit';
 import { A as arr } from '@ember/array';
 import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
-import { settled } from '@ember/test-helpers';
+import { settled, render } from '@ember/test-helpers';
 
 module('Integration | Component | dashboard dimension selector', function(hooks) {
   setupRenderingTest(hooks);
@@ -18,15 +18,13 @@ module('Integration | Component | dashboard dimension selector', function(hooks)
             {
               logicalTable: {
                 table: {
-                  name: 'a',
-                  timeGrain: 'day'
-                },
-                timeGrain: {
+                  id: 'a',
                   dimensions: [
-                    { name: 'dim1', longName: 'dim1', category: 'cat1' },
-                    { name: 'dim2', longName: 'dim2', category: 'cat2' }
+                    { id: 'dim1', name: 'dim1', category: 'cat1' },
+                    { id: 'dim2', name: 'dim2', category: 'cat2' }
                   ]
-                }
+                },
+                timeGrain: 'day'
               }
             }
           ])
@@ -37,15 +35,13 @@ module('Integration | Component | dashboard dimension selector', function(hooks)
             {
               logicalTable: {
                 table: {
-                  name: 'b',
-                  timeGrain: 'day'
-                },
-                timeGrain: {
+                  id: 'b',
                   dimensions: [
-                    { name: 'dim3', longName: 'dim3', category: 'cat2' },
-                    { name: 'dim1', longName: 'dim1', category: 'cat1' }
+                    { id: 'dim3', name: 'dim3', category: 'cat2' },
+                    { id: 'dim1', name: 'dim1', category: 'cat1' }
                   ]
-                }
+                },
+                timeGrain: 'day'
               }
             }
           ])
@@ -57,13 +53,13 @@ module('Integration | Component | dashboard dimension selector', function(hooks)
 
     this.set('changeme', function(selection) {
       assert.deepEqual(
-        { dimension: 'dim1', longName: 'dim1', tables: ['a', 'b'], dataSource: 'dummy' },
         selection,
+        { dimension: 'dim1', name: 'dim1', tables: ['a', 'b'], dataSource: 'dummy' },
         'Selection sends correct dimension object'
       );
     });
 
-    await this.render(hbs`{{dashboard-dimension-selector dashboard=dashboard onChange=changeme}}`);
+    await render(hbs`{{dashboard-dimension-selector dashboard=dashboard onChange=changeme}}`);
 
     await settled();
 
@@ -92,15 +88,13 @@ module('Integration | Component | dashboard dimension selector', function(hooks)
               dataSource: 'dummy',
               logicalTable: {
                 table: {
-                  name: 'a',
-                  timeGrain: 'day'
-                },
-                timeGrain: {
+                  id: 'a',
                   dimensions: [
-                    { name: 'dim1', longName: 'dim1', category: 'cat1' },
-                    { name: 'dim2', longName: 'dim2', category: 'cat2' }
+                    { id: 'dim1', name: 'dim1', category: 'cat1' },
+                    { id: 'dim2', name: 'dim2', category: 'cat2' }
                   ]
-                }
+                },
+                timeGrain: 'day'
               }
             }
           ])
@@ -112,16 +106,14 @@ module('Integration | Component | dashboard dimension selector', function(hooks)
               dataSource: 'blockhead',
               logicalTable: {
                 table: {
-                  name: 'b',
-                  timeGrain: 'day'
-                },
-                timeGrain: {
+                  id: 'b',
                   dimensions: [
-                    { name: 'dim3', longName: 'dim3', category: 'cat3' },
-                    { name: 'dim4', longName: 'dim4', category: 'cat1' },
-                    { name: 'dim2', longName: 'dim2', category: 'cat4' }
+                    { id: 'dim3', name: 'dim3', category: 'cat3' },
+                    { id: 'dim4', name: 'dim4', category: 'cat1' },
+                    { id: 'dim2', name: 'dim2', category: 'cat4' }
                   ]
-                }
+                },
+                timeGrain: 'day'
               }
             }
           ])

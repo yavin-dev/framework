@@ -8,7 +8,6 @@ import { validator, buildValidations } from 'ember-cp-validations';
 import Interval from 'navi-core/utils/classes/interval';
 import { A as arr, makeArray } from '@ember/array';
 import { assert } from '@ember/debug';
-import { get } from '@ember/object';
 import { isEmpty } from '@ember/utils';
 import { inject as service } from '@ember/service';
 import { copy } from 'ember-copy';
@@ -103,23 +102,23 @@ export default Fragment.extend(Validations, {
    * @returns {Void}
    */
   addMetric(requestMetric) {
-    const metrics = get(this, 'metrics');
+    const metrics = this.metrics;
 
     if (featureFlag('enableRequestPreview')) {
       return metrics.createFragment(requestMetric);
     }
 
-    let metricMetadata = get(requestMetric, 'metric'),
+    let metricMetadata = requestMetric.metric,
       metricDoesntExist = isEmpty(metrics.findBy('metric', metricMetadata));
 
     //check if metric with parameter exists when metric hasParameters
-    if (metricMetadata && get(metricMetadata, 'hasParameters')) {
-      let parameters = get(requestMetric, 'parameters'),
+    if (metricMetadata && metricMetadata.hasParameters) {
+      let parameters = requestMetric.parameters,
         //filter all metrics of type `metricMetadata`
         existingMetrics = metrics.filterBy('metric', metricMetadata);
 
       //check if parameters in requestMetric in in the filtered metrics
-      metricDoesntExist = isEmpty(existingMetrics.filter(metric => isEqual(get(metric, 'parameters'), parameters)));
+      metricDoesntExist = isEmpty(existingMetrics.filter(metric => isEqual(metric.parameters, parameters)));
     }
 
     if (metricDoesntExist) {
@@ -134,7 +133,7 @@ export default Fragment.extend(Validations, {
    * @param {Object} metricModel - metric metadata model
    */
   addRequestMetricByModel(metricModel) {
-    if (get(metricModel, 'hasParameters')) {
+    if (metricModel.hasParameters) {
       this.addRequestMetricWithParam(metricModel);
     } else {
       this.addMetric({
@@ -167,7 +166,7 @@ export default Fragment.extend(Validations, {
    * @returns {DS.ModelFragment} removed metric fragment
    */
   removeRequestMetric(requestMetric) {
-    return get(this, 'metrics').removeFragment(requestMetric);
+    return this.metrics.removeFragment(requestMetric);
   },
 
   /**
@@ -177,7 +176,7 @@ export default Fragment.extend(Validations, {
    * @param {Object} metricModel - metric metadata model
    */
   removeRequestMetricByModel(metricModel) {
-    let metrics = get(this, 'metrics').filterBy('metric', metricModel);
+    let metrics = this.metrics.filterBy('metric', metricModel);
     metrics.forEach(requestMetric => this.removeRequestMetric(requestMetric));
   },
 
@@ -190,14 +189,14 @@ export default Fragment.extend(Validations, {
    * @returns removed metric fragment
    */
   removeRequestMetricWithParam(metricModel, parameters) {
-    let metrics = get(this, 'metrics').filterBy('metric', metricModel),
+    let metrics = this.metrics.filterBy('metric', metricModel),
       canonicalizedMetric = canonicalizeMetric({
-        metric: get(metricModel, 'name'),
+        metric: metricModel.id,
         parameters
       });
 
     metrics.forEach(requestMetric => {
-      if (get(requestMetric, 'canonicalName') === canonicalizedMetric) {
+      if (requestMetric.canonicalName === canonicalizedMetric) {
         this.removeRequestMetric(requestMetric);
       }
     });
@@ -209,7 +208,7 @@ export default Fragment.extend(Validations, {
    * @metod clearMetrics
    */
   clearMetrics() {
-    get(this, 'metrics').clear();
+    this.metrics.clear();
   },
 
   /* == Interval == */
@@ -222,7 +221,7 @@ export default Fragment.extend(Validations, {
    * @returns {Void}
    */
   addInterval(intervalObj) {
-    let intervals = get(this, 'intervals'),
+    let intervals = this.intervals,
       existingInterval = intervals.find(interval => intervalObj.isEqual(interval.get('interval')));
     if (!existingInterval) {
       intervals.createFragment({
@@ -239,7 +238,7 @@ export default Fragment.extend(Validations, {
    * @returns {DS.ModelFragment} removed interval fragment
    */
   removeInterval(intervalObj) {
-    return get(this, 'intervals').removeFragment(intervalObj);
+    return this.intervals.removeFragment(intervalObj);
   },
 
   /* == Group By == */
@@ -252,13 +251,13 @@ export default Fragment.extend(Validations, {
    * @returns {Void}
    */
   addDimension(dimensionObj) {
-    const dimensions = get(this, 'dimensions');
+    const dimensions = this.dimensions;
 
     if (featureFlag('enableRequestPreview')) {
       return dimensions.createFragment(dimensionObj);
     }
 
-    const newDimension = get(dimensionObj, 'dimension'),
+    const newDimension = dimensionObj.dimension,
       existingDimension = dimensions.findBy('dimension', newDimension);
 
     if (!existingDimension) {
@@ -286,7 +285,7 @@ export default Fragment.extend(Validations, {
    * @returns {DS.ModelFragment} removed dimension fragment
    */
   removeRequestDimension(dimensionObj) {
-    return get(this, 'dimensions').removeFragment(dimensionObj);
+    return this.dimensions.removeFragment(dimensionObj);
   },
 
   /**
@@ -297,7 +296,7 @@ export default Fragment.extend(Validations, {
    * @returns {DS.ModelFragment} the removed dimension fragment
    */
   removeRequestDimensionByModel(dimensionModel) {
-    let dimensions = get(this, 'dimensions'),
+    let dimensions = this.dimensions,
       dimensionObj = dimensions.findBy('dimension', dimensionModel);
     return this.removeRequestDimension(dimensionObj);
   },
@@ -308,7 +307,7 @@ export default Fragment.extend(Validations, {
    * @method clearDimensions
    */
   clearDimensions() {
-    get(this, 'dimensions').clear();
+    this.dimensions.clear();
   },
 
   /* == Filter == */
@@ -346,12 +345,12 @@ export default Fragment.extend(Validations, {
    */
   _addFilter(filterObj, valueParam) {
     let newFilter = this.store.createFragment('bard-request/fragments/filter', {
-        dimension: get(filterObj, 'dimension'),
-        operator: get(filterObj, 'operator'),
-        field: get(filterObj, 'field'),
-        [valueParam]: arr(get(filterObj, valueParam))
+        dimension: filterObj.dimension,
+        operator: filterObj.operator,
+        field: filterObj.field,
+        [valueParam]: arr(filterObj[valueParam])
       }),
-      filters = get(this, 'filters'),
+      filters = this.filters,
       existingFilter = filters.find(filter => isEqual(filter.serialize(), newFilter.serialize()));
 
     if (!existingFilter) {
@@ -367,7 +366,7 @@ export default Fragment.extend(Validations, {
    * @returns {DS.ModelFragment} removed filter fragment
    */
   removeRequestFilter(filterObj) {
-    return get(this, 'filters').removeFragment(filterObj);
+    return this.filters.removeFragment(filterObj);
   },
 
   /**
@@ -378,7 +377,7 @@ export default Fragment.extend(Validations, {
    * @returns {DS.ModelFragment} removed filter fragment
    */
   removeRequestFilterByDimension(dimensionModel) {
-    let filters = get(this, 'filters'),
+    let filters = this.filters,
       filterObj = filters.findBy('dimension', dimensionModel);
     return this.removeRequestFilter(filterObj);
   },
@@ -392,7 +391,7 @@ export default Fragment.extend(Validations, {
    * @returns {Void}
    */
   updateFilterForDimension(dimension, props) {
-    let filter = get(this, 'filters').findBy('dimension', dimension);
+    let filter = this.filters.findBy('dimension', dimension);
 
     assert(`${dimension.modelName} as a filter does not exist`, filter);
 
@@ -409,10 +408,10 @@ export default Fragment.extend(Validations, {
    * @returns {Void}
    */
   addDateTimeSort(direction) {
-    let sort = get(this, 'sort'),
+    let sort = this.sort,
       dateTimeSort = this.store.createFragment('bard-request/fragments/sort', {
         metric: this.store.createFragment('bard-request/fragments/metric', {
-          metric: { name: 'dateTime' }
+          metric: { id: 'dateTime' }
         }),
         direction
       });
@@ -428,7 +427,7 @@ export default Fragment.extend(Validations, {
    * @returns {Void}
    */
   updateDateTimeSort(props) {
-    let sort = get(this, 'sort').findBy('metric.canonicalName', 'dateTime');
+    let sort = this.sort.findBy('metric.canonicalName', 'dateTime');
 
     assert(`dateTime as a sort does not exist`, sort);
 
@@ -443,8 +442,8 @@ export default Fragment.extend(Validations, {
    * @returns {Void}
    */
   addSort({ metric, direction }) {
-    let sort = get(this, 'sort'),
-      metricName = get(metric, 'canonicalName'),
+    let sort = this.sort,
+      metricName = metric.canonicalName,
       existingSort = sort.findBy('metric.canonicalName', metricName);
 
     assert(`Metric: ${metricName} cannot have multiple sorts on it`, !existingSort);
@@ -456,7 +455,7 @@ export default Fragment.extend(Validations, {
   },
 
   /**
-   * Add a sort to the sort array using the metric name
+   * Add a sort to the sort array using the metric canonical name
    *
    * @method addSortByMetricName
    * @param {String} metricName
@@ -464,10 +463,10 @@ export default Fragment.extend(Validations, {
    * @returns {Void}
    */
   addSortByMetricName(metricName, direction = 'asc') {
-    let metrics = get(this, 'metrics'),
+    let metrics = this.metrics,
       metric = metrics.findBy('canonicalName', metricName);
 
-    assert(`Metric with name "${metricName}" was not found in the request`, metric);
+    assert(`Metric with canonical name "${metricName}" was not found in the request`, metric);
 
     this.addSort({
       direction,
@@ -483,18 +482,18 @@ export default Fragment.extend(Validations, {
    * @returns {DS.ModelFragment} removed sort fragment
    */
   removeSort(sortObj) {
-    return get(this, 'sort').removeFragment(sortObj);
+    return this.sort.removeFragment(sortObj);
   },
 
   /**
-   * Removes the sort from the sort array using the metric name
+   * Removes the sort from the sort array using the metric canonical name
    *
    * @method removeSortByMetricName
    * @param {String} metricName
    * @returns {DS.ModelFragment} removed sort fragment
    */
   removeSortByMetricName(metricName) {
-    let sort = get(this, 'sort'),
+    let sort = this.sort,
       sortObj = sort.findBy('metric.canonicalName', metricName);
     return this.removeSort(sortObj);
   },
@@ -507,7 +506,7 @@ export default Fragment.extend(Validations, {
    * @returns {Void}
    */
   removeSortMetricByModel(metricModel) {
-    let sorts = get(this, 'sort').filterBy('metric.metric', metricModel);
+    let sorts = this.sort.filterBy('metric.metric', metricModel);
     sorts.forEach(sortMetric => this.removeSort(sortMetric));
   },
 
@@ -521,7 +520,7 @@ export default Fragment.extend(Validations, {
    */
   removeSortMetricWithParam(metricModel, parameters) {
     let canonicalizedMetric = canonicalizeMetric({
-      metric: get(metricModel, 'name'),
+      metric: metricModel.id,
       parameters
     });
 
@@ -537,8 +536,8 @@ export default Fragment.extend(Validations, {
    * @returns {Void}
    */
   updateSortForMetric(metric, props) {
-    let metricName = get(metric, 'canonicalName'),
-      sort = get(this, 'sort').findBy('metric.canonicalName', metricName);
+    let metricName = metric.canonicalName,
+      sort = this.sort.findBy('metric.canonicalName', metricName);
 
     assert(`${metricName} as a sort does not exist`, sort);
 
@@ -552,12 +551,12 @@ export default Fragment.extend(Validations, {
   clone() {
     let clonedRequest = this.toJSON(),
       store = this.store,
-      metadataService = get(this, 'metadataService');
+      metadataService = this.metadataService;
 
     return store.createFragment('bard-request/request', {
       logicalTable: store.createFragment('bard-request/fragments/logicalTable', {
         table: metadataService.getById('table', clonedRequest.logicalTable.table, clonedRequest.dataSource),
-        timeGrainName: clonedRequest.logicalTable.timeGrain
+        timeGrain: clonedRequest.logicalTable.timeGrain
       }),
 
       dimensions: clonedRequest.dimensions.map(dimension =>
@@ -602,7 +601,7 @@ export default Fragment.extend(Validations, {
         let metric;
         if (sort.metric.metric === 'dateTime') {
           metric = store.createFragment('bard-request/fragments/metric', {
-            metric: { name: 'dateTime' }
+            metric: { id: 'dateTime' }
           });
         } else {
           metric = store.createFragment('bard-request/fragments/metric', {
@@ -638,7 +637,7 @@ export default Fragment.extend(Validations, {
    * @returns {Void}
    */
   addHaving(havingObj) {
-    let havings = get(this, 'having'),
+    let havings = this.having,
       newHaving = this.store.createFragment('bard-request/fragments/having', havingObj),
       existingHaving = havings.find(having => isEqual(having.serialize(), newHaving.serialize()));
 
@@ -655,7 +654,7 @@ export default Fragment.extend(Validations, {
    * @returns {DS.ModelFragment} removed having fragment
    */
   removeRequestHaving(havingObj) {
-    return get(this, 'having').removeFragment(havingObj);
+    return this.having.removeFragment(havingObj);
   },
 
   /**
@@ -666,7 +665,7 @@ export default Fragment.extend(Validations, {
    * @returns {DS.ModelFragment} removed having fragment
    */
   removeRequestHavingByMetric(metricModel) {
-    let having = get(this, 'having'),
+    let having = this.having,
       havingObj = having.findBy('metric.metric', metricModel);
     return this.removeRequestHaving(havingObj);
   },
@@ -680,7 +679,7 @@ export default Fragment.extend(Validations, {
    * @returns {Void}
    */
   updateHavingForMetric(metric, props) {
-    let having = get(this, 'having').findBy('metric.metric', metric);
+    let having = this.having.findBy('metric.metric', metric);
 
     assert(`${metric.modelName} as a having does not exist`, having);
 

@@ -31,7 +31,7 @@ export default EmberObject.extend({
    * @returns {Boolean} has single metric
    */
   hasSingleMetric(request) {
-    return get(request, 'metrics.length') === 1;
+    return request.metrics?.length === 1;
   },
 
   /**
@@ -40,7 +40,7 @@ export default EmberObject.extend({
    * @returns {Boolean} has no metrics
    */
   hasNoMetric(request) {
-    return get(request, 'metrics.length') === 0;
+    return request.metrics?.length === 0;
   },
 
   /**
@@ -58,8 +58,8 @@ export default EmberObject.extend({
    * @returns {Boolean} has single time bucket
    */
   hasSingleTimeBucket(request) {
-    let timeGrain = get(request, 'logicalTable.timeGrain.name'),
-      numTimeBuckets = get(request, 'intervals.firstObject.interval').diffForTimePeriod(timeGrain);
+    let timeGrain = request.logicalTable?.timeGrain,
+      numTimeBuckets = request.intervals?.firstObject?.interval?.diffForTimePeriod(timeGrain);
 
     return numTimeBuckets === 1;
   },
@@ -70,7 +70,7 @@ export default EmberObject.extend({
    * @returns {Boolean} has no group by
    */
   hasNoGroupBy(request) {
-    return get(request, 'dimensions.length') === 0;
+    return request.dimensions?.length === 0;
   },
 
   /**

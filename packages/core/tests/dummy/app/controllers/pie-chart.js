@@ -8,8 +8,8 @@ export default class PieChartController extends Controller {
     dimensions: [
       {
         dimension: {
-          name: 'age',
-          longName: 'Age'
+          id: 'age',
+          name: 'Age'
         }
       }
     ],
@@ -22,8 +22,8 @@ export default class PieChartController extends Controller {
     metrics: [
       {
         metric: {
-          name: 'totalPageViews',
-          longName: 'Total Page Views'
+          id: 'totalPageViews',
+          name: 'Total Page Views'
         },
         toJSON() {
           return { metric: this.metric.name, parameters: {} };
@@ -31,8 +31,8 @@ export default class PieChartController extends Controller {
       },
       {
         metric: {
-          name: 'uniqueIdentifier',
-          longName: 'Unique Identifier'
+          id: 'uniqueIdentifier',
+          name: 'Unique Identifier'
         },
         toJSON() {
           return { metric: this.metric.name, parameters: {} };
@@ -40,8 +40,8 @@ export default class PieChartController extends Controller {
       },
       {
         metric: {
-          name: 'revenue',
-          longName: 'Revenue'
+          id: 'revenue',
+          name: 'Revenue'
         },
         toJSON() {
           return { metric: this.metric.name, parameters: {} };
@@ -192,8 +192,8 @@ export default class PieChartController extends Controller {
     metrics: [
       {
         metric: {
-          name: 'totalPageViews',
-          longName: 'Total Page Views'
+          id: 'totalPageViews',
+          name: 'Total Page Views'
         },
         toJSON() {
           return { metric: this.metric.name, parameters: {} };
@@ -201,8 +201,8 @@ export default class PieChartController extends Controller {
       },
       {
         metric: {
-          name: 'uniqueIdentifier',
-          longName: 'Unique Identifier'
+          id: 'uniqueIdentifier',
+          name: 'Unique Identifier'
         },
         toJSON() {
           return { metric: this.metric.name, parameters: {} };
@@ -210,8 +210,8 @@ export default class PieChartController extends Controller {
       },
       {
         metric: {
-          name: 'revenue',
-          longName: 'Revenue'
+          id: 'revenue',
+          name: 'Revenue'
         },
         toJSON() {
           return { metric: this.metric.name, parameters: {} };
@@ -230,14 +230,14 @@ export default class PieChartController extends Controller {
     dimensions: [
       {
         dimension: {
-          name: 'age',
-          longName: 'Age'
+          id: 'age',
+          name: 'Age'
         }
       },
       {
         dimension: {
-          name: 'browser',
-          longName: 'Browser'
+          id: 'browser',
+          name: 'Browser'
         }
       }
     ]

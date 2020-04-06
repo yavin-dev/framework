@@ -37,8 +37,7 @@ export default ReportsNewRoute.extend({
       .then(author => {
         // Default to first data source + time grain
         let table = this._getDefaultTable(),
-          tableTimeGrains = A(get(table, 'timeGrains')),
-          timeGrainName = get(tableTimeGrains, 'firstObject.name');
+          timeGrain = table.timeGrains?.[0]?.id;
 
         let widget = this.store.createRecord('dashboard-widget', {
           author,
@@ -47,7 +46,7 @@ export default ReportsNewRoute.extend({
             {
               logicalTable: {
                 table,
-                timeGrainName
+                timeGrain
               }
             }
           ]),
@@ -55,7 +54,7 @@ export default ReportsNewRoute.extend({
         });
 
         get(widget, 'request.intervals').createFragment({
-          interval: new Interval(new Duration(DefaultIntervals[timeGrainName]), 'current')
+          interval: new Interval(new Duration(DefaultIntervals[timeGrain]), 'current')
         });
 
         return widget;

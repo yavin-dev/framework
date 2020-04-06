@@ -15,7 +15,7 @@
  *      scrollPadding=250 - [optional] {Number} padding from bottom of scroll to initiate loading of more items, default 250
  *      as |item|
  *   }}
- *      {{item.longName}}
+ *      {{item.name}}
  *   {{/paginated-scroll-list}}
  *
  *

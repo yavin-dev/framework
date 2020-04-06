@@ -11,7 +11,7 @@ module('Integration | Component | filter values/advanced interval input', functi
 
   hooks.beforeEach(async function() {
     this.filter = { values: arr([Interval.parseFromStrings('P4D', '2020-01-10')]) };
-    this.request = { logicalTable: { timeGrain: { name: 'day' } } };
+    this.request = { logicalTable: { timeGrain: 'day', table: { timeGrains: [{ id: 'day', name: 'Day' }] } } };
     this.onUpdateFilter = () => null;
 
     await render(hbs`<FilterValues::AdvancedIntervalInput

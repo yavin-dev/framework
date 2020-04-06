@@ -227,7 +227,7 @@ module('Unit | Model Fragment | BardRequest - Having', function(hooks) {
       );
     });
 
-    having.set('metric', { metric: { longName: 'Ad Clicks' }, parameters: {} });
+    having.set('metric', { metric: { name: 'Ad Clicks' }, parameters: {} });
     having.set('values', ['foo']);
     having.validate().then(({ validations }) => {
       assert.ok(!validations.get('isValid'), 'Having is invalid');

@@ -12,8 +12,8 @@ let Store, MetadataService;
 
 const filterFragment1 = {
     dimension: {
-      name: 'age',
-      longName: 'Age',
+      id: 'age',
+      name: 'Age',
       primaryKeyFieldName: 'id'
     },
     operator: 'in',
@@ -22,8 +22,8 @@ const filterFragment1 = {
   },
   filterFragment2 = {
     dimension: {
-      name: 'currency',
-      longName: 'Currency',
+      id: 'currency',
+      name: 'Currency',
       primaryKeyFieldName: 'id'
     },
     operator: 'contains',
@@ -105,15 +105,13 @@ module('Integration | Component | dashboard filters', function(hooks) {
             {
               logicalTable: {
                 table: {
-                  name: 'a',
-                  timeGrain: 'day'
-                },
-                timeGrain: {
+                  id: 'a',
                   dimensions: [
-                    { name: 'productFamily', longName: 'Product Family', category: 'cat1', primaryKeyFieldName: 'id' },
-                    { name: 'dim2', longName: 'dim2', category: 'cat2', primaryKeyFieldName: 'id' }
+                    { id: 'productFamily', name: 'Product Family', category: 'cat1', primaryKeyFieldName: 'id' },
+                    { id: 'dim2', name: 'dim2', category: 'cat2', primaryKeyFieldName: 'id' }
                   ]
-                }
+                },
+                timeGrain: 'day'
               }
             }
           ])
@@ -124,15 +122,13 @@ module('Integration | Component | dashboard filters', function(hooks) {
             {
               logicalTable: {
                 table: {
-                  name: 'b',
-                  timeGrain: 'day'
-                },
-                timeGrain: {
+                  id: 'b',
                   dimensions: [
-                    { name: 'dim3', longName: 'dim3', category: 'cat2', primaryKeyFieldName: 'id' },
-                    { name: 'dim1', longName: 'dim1', category: 'cat1', primaryKeyFieldName: 'id' }
+                    { id: 'dim3', name: 'dim3', category: 'cat2', primaryKeyFieldName: 'id' },
+                    { id: 'dim1', name: 'dim1', category: 'cat1', primaryKeyFieldName: 'id' }
                   ]
-                }
+                },
+                timeGrain: 'day'
               }
             }
           ])

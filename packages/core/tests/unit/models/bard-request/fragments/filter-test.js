@@ -77,9 +77,9 @@ module('Unit | Model Fragment | BardRequest - Filter', function(hooks) {
         mockModel
           .get('filters')
           .objectAt(0)
-          .get('dimension.longName'),
+          .get('dimension.name'),
         'Age',
-        'The property dimension is deserialized to the longName `Age`'
+        'The property dimension is deserialized to the name `Age`'
       );
 
       assert.equal(
@@ -106,7 +106,7 @@ module('Unit | Model Fragment | BardRequest - Filter', function(hooks) {
       mockModel
         .get('filters')
         .objectAt(0)
-        .get('dimension.longName'),
+        .get('dimension.name'),
       'Logged-in State',
       'The property filter has the dimension with value `Login State` set using setter'
     );
@@ -134,9 +134,9 @@ module('Unit | Model Fragment | BardRequest - Filter', function(hooks) {
         mockModel
           .get('filters')
           .objectAt(0)
-          .get('dimension.longName'),
+          .get('dimension.name'),
         'Age',
-        'The property dimension is deserialized to the longName `Age`'
+        'The property dimension is deserialized to the name `Age`'
       );
 
       assert.equal(
@@ -163,7 +163,7 @@ module('Unit | Model Fragment | BardRequest - Filter', function(hooks) {
       mockModel
         .get('filters')
         .objectAt(0)
-        .get('dimension.longName'),
+        .get('dimension.name'),
       'Logged-in State',
       'The property filter has the dimension with value `Login State` set using setter'
     );
@@ -292,7 +292,7 @@ module('Unit | Model Fragment | BardRequest - Filter', function(hooks) {
       );
     });
 
-    filter.set('dimension', { longName: 'Age' });
+    filter.set('dimension', { name: 'Age' });
     filter.set('rawValues', []);
     filter.validate().then(({ validations }) => {
       assert.ok(!validations.get('isValid'), 'Filter is invalid');

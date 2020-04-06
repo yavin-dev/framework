@@ -12,14 +12,14 @@ module('Unit | Validator | request-metrics', function(hooks) {
       request = {
         metrics: [
           {
-            metric: { name: 'm1' },
+            metric: { id: 'm1' },
             canonicalName: 'm1',
             toJSON() {
               return { metric: this.metric, canonicalName: this.canonicalName };
             }
           },
           {
-            metric: { name: 'm2' },
+            metric: { id: 'm2' },
             canonicalName: 'm2',
             toJSON() {
               return { metric: this.metric, canonicalName: this.canonicalName };
@@ -30,7 +30,7 @@ module('Unit | Validator | request-metrics', function(hooks) {
 
     assert.equal(
       Validator.validate(
-        [{ metric: { name: 'm1' }, canonicalName: 'm1' }, { metric: { name: 'm2' }, canonicalName: 'm2' }],
+        [{ metric: { id: 'm1' }, canonicalName: 'm1' }, { metric: { id: 'm2' }, canonicalName: 'm2' }],
         { request }
       ),
       true,
@@ -41,7 +41,7 @@ module('Unit | Validator | request-metrics', function(hooks) {
       Validator.validate(
         A([
           {
-            metric: { name: 'm1' },
+            metric: { id: 'm1' },
             canonicalName: 'm1',
             toJSON() {
               return { metric: this.metric, canonicalName: this.canonicalName };

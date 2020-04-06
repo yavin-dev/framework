@@ -1,5 +1,4 @@
 import { set } from '@ember/object';
-import { A } from '@ember/array';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { RequestActions } from 'navi-reports/services/request-action-dispatcher';
@@ -18,7 +17,7 @@ module('Unit | Consumer | request time grain', function(hooks) {
           'DID_UPDATE_TIME_GRAIN is sent after ADD_TIME_GRAIN has made a change'
         );
 
-        assert.equal(timeGrain, 'newTimeGrain', 'New time grain value is given to action');
+        assert.deepEqual(timeGrain, { id: 'newTimeGrain' }, 'New time grain value is given to action');
       }
     };
 
@@ -28,7 +27,7 @@ module('Unit | Consumer | request time grain', function(hooks) {
         .factoryFor('consumer:request/time-grain')
         .create({ requestActionDispatcher: MockDispatcher });
 
-    consumer.send(RequestActions.ADD_TIME_GRAIN, { currentModel }, 'newTimeGrain');
+    consumer.send(RequestActions.ADD_TIME_GRAIN, { currentModel }, { id: 'newTimeGrain' });
 
     assert.equal(logicalTable.timeGrain, 'newTimeGrain', 'addTimeGrain updates the timeGrain in the currentModel');
   });
@@ -44,12 +43,12 @@ module('Unit | Consumer | request time grain', function(hooks) {
           'DID_UPDATE_TIME_GRAIN is sent after REMOVE_TIME_GRAIN has set time grain to `All`'
         );
 
-        assert.equal(timeGrain.name, 'all', 'New time grain value is given to action');
+        assert.equal(timeGrain.id, 'all', 'New time grain value is given to action');
       }
     };
 
-    let tableWithAll = { timeGrains: A([{ name: 'all' }]) },
-      tableWithoutAll = { timeGrains: A([]) },
+    let tableWithAll = { timeGrains: [{ id: 'all' }] },
+      tableWithoutAll = { timeGrains: [] },
       logicalTable = { table: tableWithAll },
       currentModel = { request: { logicalTable } },
       consumer = this.owner
@@ -60,7 +59,7 @@ module('Unit | Consumer | request time grain', function(hooks) {
     consumer.send(RequestActions.REMOVE_TIME_GRAIN, { currentModel });
 
     assert.equal(
-      logicalTable.timeGrain.name,
+      logicalTable.timeGrain,
       'all',
       'removeTimeGrain updates the timeGrain to all when table has the all timeGrain'
     );
@@ -70,11 +69,11 @@ module('Unit | Consumer | request time grain', function(hooks) {
       throw new Error('DID_UPDATE_TIME_GRAIN should not be called when REMOVE_TIME_GRAIN makes no change');
     };
     set(logicalTable, 'table', tableWithoutAll);
-    set(logicalTable, 'timeGrain', { name: 'week' });
+    set(logicalTable, 'timeGrain', 'week');
     consumer.send(RequestActions.REMOVE_TIME_GRAIN, { currentModel });
 
     assert.equal(
-      logicalTable.timeGrain.name,
+      logicalTable.timeGrain,
       'week',
       'removeTimeGrain does not update the timeGrain when table does not have the all timeGrain'
     );

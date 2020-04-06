@@ -14,6 +14,7 @@ export const RequestActions = {
   ADD_TIME_GRAIN: 'addTimeGrain',
 
   DID_UPDATE_TIME_GRAIN: 'didUpdateTimeGrain',
+  DID_UPDATE_TABLE: 'didUpdateTable',
 
   REMOVE_DIMENSION: 'removeDimension',
   REMOVE_DIMENSION_FRAGMENT: 'removeDimensionFragment',

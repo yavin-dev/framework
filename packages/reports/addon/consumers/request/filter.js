@@ -75,7 +75,7 @@ export default ActionConsumer.extend({
         'Dimension model has correct primaryKeyFieldName',
         typeof get(dimension, 'primaryKeyFieldName') === 'string'
       );
-      let defaultOperator = featureFlag('dateDimensionFilter') && get(dimension, 'datatype') === 'date' ? 'gte' : 'in';
+      let defaultOperator = featureFlag('dateDimensionFilter') && dimension.valueType === 'date' ? 'gte' : 'in';
 
       get(currentModel, 'request').addFilter({
         dimension,
@@ -131,8 +131,7 @@ export default ActionConsumer.extend({
       let filteredMetrics = get(route, 'currentModel.request.having'),
         //find if having for metric and parameters exists in request using the canonicalName
         having = filteredMetrics.find(
-          having =>
-            get(having, 'metric.canonicalName') === canonicalizeMetric({ metric: get(metric, 'name'), parameters })
+          having => having.metric.canonicalName === canonicalizeMetric({ metric: metric.id, parameters })
         );
 
       if (!having) {
@@ -210,33 +209,39 @@ export default ActionConsumer.extend({
       // Set interval to default for time grain
       let request = get(route, 'currentModel.request'),
         interval = get(request, 'intervals.firstObject.interval'),
-        timeGrainName = get(timeGrain, 'name'),
+        timeGrainName = timeGrain.id,
         newInterval = interval
           ? interval.asIntervalForTimePeriod(timeGrainName)
           : DefaultIntervals.getDefault(timeGrainName);
 
       set(request, 'intervals.firstObject.interval', newInterval);
+    },
 
+    /**
+     * @action DID_UPDATE_TABLE
+     * @param {Object} route - route that has a model that contains a request property
+     * @param {Object} table - newly updated table
+     */
+    [RequestActions.DID_UPDATE_TABLE](route, table) {
       // Remove any dimension filter if the dim is not present in new time grain
-      let timeGrainDimensions = get(timeGrain, 'dimensions');
+      const tableDimensions = table.dimensions;
+      const request = route.currentModel.request;
 
       /*
        * .toArray() is used to clone the array, otherwise removing a filter while
        * iterating over `request.filters` causes problems
        */
-      get(request, 'filters')
-        .toArray()
-        .forEach(dimensionFilter => {
-          let dimension = get(dimensionFilter, 'dimension');
+      request.filters.toArray().forEach(dimensionFilter => {
+        const dimension = dimensionFilter.dimension;
 
-          if (!timeGrainDimensions.includes(dimension)) {
-            get(this, 'requestActionDispatcher').dispatch(RequestActions.REMOVE_FILTER, route, dimensionFilter);
-          }
-        });
+        if (!tableDimensions.includes(dimension)) {
+          get(this, 'requestActionDispatcher').dispatch(RequestActions.REMOVE_FILTER, route, dimensionFilter);
+        }
+      });
 
       /*
        * Having filters are already taken care of:
-       * DID_UPDATE_TIME_GRAIN triggers REMOVE_METRIC triggers REMOVE_FILTER
+       * DID_UPDATE_TABLE triggers REMOVE_METRIC triggers REMOVE_FILTER
        */
     }
   }

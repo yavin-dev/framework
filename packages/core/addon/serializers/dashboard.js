@@ -31,7 +31,7 @@ export default AssetSerializer.extend({
   serialize(snapshot) {
     const buildKey = (dimension, values) => `${dimension}[${values.join(',')}]`;
     const filterSources = snapshot.attr('filters').reduce((dimensionSources, filter) => {
-      dimensionSources[buildKey(filter.attr('dimension').name, filter.attr('rawValues'))] = filter.attr(
+      dimensionSources[buildKey(filter.attr('dimension').id, filter.attr('rawValues'))] = filter.attr(
         'dimension'
       ).source;
       return dimensionSources;

@@ -3,12 +3,12 @@
   {{#power-select
     options=(await groupedDimensions)
     onchange=(action "change")
-    searchField="longName"
+    searchField="name"
     placeholder="Select a Dimension"
     searchPlaceholder="Search"
     beforeOptionsComponent="power-select-search"
     as |dimension|
   }}
-    <div title="data source: {{dimension.dataSource}}">{{dimension.longName}}</div>
+    <div title="data source: {{dimension.dataSource}}">{{dimension.name}}</div>
   {{/power-select}}
 {{/if}}

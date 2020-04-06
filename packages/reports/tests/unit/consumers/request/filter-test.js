@@ -377,22 +377,17 @@ module('Unit | Consumer | request filter', function(hooks) {
   });
 
   test('DID_UPDATE_TIME_GRAIN', function(assert) {
-    assert.expect(2);
-
-    const Age = { name: 'age' },
-      Gender = { name: 'gender' },
-      Device = { name: 'device' };
+    assert.expect(1);
 
     let currentModel = {
         request: {
           intervals: A([{}]),
-          filters: A([{ dimension: Age }, { dimension: Gender }]),
+          filters: A([]),
           having: A()
         }
       },
       newTimeGrain = {
-        name: 'day',
-        dimensions: [Age, Device]
+        id: 'day'
       };
 
     this.owner
@@ -400,16 +395,8 @@ module('Unit | Consumer | request filter', function(hooks) {
       .send(RequestActions.DID_UPDATE_TIME_GRAIN, { currentModel }, newTimeGrain);
 
     assert.ok(
-      get(currentModel, 'request.intervals.firstObject.interval').isEqual(
-        DefaultIntervals.getDefault(newTimeGrain.name)
-      ),
+      get(currentModel, 'request.intervals.firstObject.interval').isEqual(DefaultIntervals.getDefault(newTimeGrain.id)),
       'After time grain change, interval filter is set to default for new time grain'
-    );
-
-    assert.deepEqual(
-      currentModel.request.filters.toArray(),
-      [{ dimension: Age }],
-      'Filter based on dimension that is not in new time grain is removed'
     );
   });
 
@@ -442,7 +429,7 @@ module('Unit | Consumer | request filter', function(hooks) {
     assert.expect(3);
 
     const parameters = { foo: 'bar' },
-      metricWParam = { name: 'metric-with-param' },
+      metricWParam = { id: 'metric-with-param' },
       havings = [
         {
           metric: {

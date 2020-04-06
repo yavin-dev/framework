@@ -113,17 +113,17 @@ class Table extends Component {
       hasPartialData = get(this, 'totalRows') > get(this, 'rowsInResponse');
 
     let totalRow = columns.reduce((totRow, column) => {
-      let { name } = column.attributes;
+      let { name: id } = column.attributes;
 
       //if dateTime set type
       if (column.type === 'dateTime') {
-        set(totRow, name, HEADER_TITLE[type]);
+        set(totRow, id, HEADER_TITLE[type]);
       }
 
       //set subtotal dimension if subtotal row
-      if (name === get(this, 'selectedSubtotal') && type === 'subtotal') {
-        let idField = `${name}|id`,
-          descField = `${name}|desc`;
+      if (id === get(this, 'selectedSubtotal') && type === 'subtotal') {
+        let idField = `${id}|id`,
+          descField = `${id}|desc`;
 
         set(totRow, idField, data[0][idField]);
         set(totRow, descField, data[0][descField]);

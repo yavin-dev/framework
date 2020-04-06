@@ -13,28 +13,28 @@ module('Unit | Utils | request metric', function() {
     let request = {
       metrics: [
         {
-          metric: { name: 'foo' },
+          metric: { id: 'foo' },
           canonicalName: 'foo-metric1'
         },
         {
-          metric: { name: 'foo' },
+          metric: { id: 'foo' },
           canonicalName: 'foo-metric2'
         },
         {
-          metric: { name: 'bar' },
+          metric: { id: 'bar' },
           canonicalName: 'bar-metric2'
         }
       ]
     };
 
     assert.deepEqual(
-      arr(getSelectedMetricsOfBase({ name: 'foo' }, request)).mapBy('canonicalName'),
+      arr(getSelectedMetricsOfBase({ id: 'foo' }, request)).mapBy('canonicalName'),
       ['foo-metric1', 'foo-metric2'],
       'getSelectedMetricsOfBase returns all the metrics in request with the baseMetric type `foo`'
     );
 
     assert.deepEqual(
-      getSelectedMetricsOfBase({ name: 'foo' }, { metrics: [] }),
+      getSelectedMetricsOfBase({ id: 'foo' }, { metrics: [] }),
       [],
       'getSelectedMetricsOfBase returns an empty array when no metrics in the request match'
     );
@@ -47,19 +47,19 @@ module('Unit | Utils | request metric', function() {
       having: [
         {
           metric: {
-            metric: { name: 'foo' },
+            metric: { id: 'foo' },
             canonicalName: 'foo-metric1'
           }
         },
         {
           metric: {
-            metric: { name: 'foo' },
+            metric: { id: 'foo' },
             canonicalName: 'foo-metric2'
           }
         },
         {
           metric: {
-            metric: { name: 'bar' },
+            metric: { id: 'bar' },
             canonicalName: 'bar-metric2'
           }
         }
@@ -67,13 +67,13 @@ module('Unit | Utils | request metric', function() {
     };
 
     assert.deepEqual(
-      arr(getFilteredMetricsOfBase({ name: 'foo' }, request)).mapBy('metric.canonicalName'),
+      arr(getFilteredMetricsOfBase({ id: 'foo' }, request)).mapBy('metric.canonicalName'),
       ['foo-metric1', 'foo-metric2'],
       'getFilteredMetricsOfBase returns all the havings in request with the baseMetric type `foo`'
     );
 
     assert.deepEqual(
-      getFilteredMetricsOfBase({ name: 'foo' }, { having: [] }),
+      getFilteredMetricsOfBase({ id: 'foo' }, { having: [] }),
       [],
       'getFilteredMetricsOfBase returns an empty array when no having in the request match'
     );
@@ -85,22 +85,22 @@ module('Unit | Utils | request metric', function() {
     let request = {
       metrics: [
         {
-          metric: { name: 'foo' },
+          metric: { id: 'foo' },
           canonicalName: 'foo-metric1'
         },
         {
-          metric: { name: 'foo' },
+          metric: { id: 'foo' },
           canonicalName: 'foo-metric2'
         },
         {
-          metric: { name: 'bar' },
+          metric: { id: 'bar' },
           canonicalName: 'bar-metric2'
         }
       ],
       having: [
         {
           metric: {
-            metric: { name: 'foo' },
+            metric: { id: 'foo' },
             canonicalName: 'foo-metric1'
           }
         }
@@ -108,13 +108,13 @@ module('Unit | Utils | request metric', function() {
     };
 
     assert.deepEqual(
-      arr(getUnfilteredMetricsOfBase({ name: 'foo' }, request)).mapBy('canonicalName'),
+      arr(getUnfilteredMetricsOfBase({ id: 'foo' }, request)).mapBy('canonicalName'),
       ['foo-metric2'],
       'getUnfilteredMetricsOfBase returns all the metrics in request that are not filtered with baseMetric type `foo`'
     );
 
     assert.deepEqual(
-      getUnfilteredMetricsOfBase({ name: 'foo' }, { having: [] }),
+      getUnfilteredMetricsOfBase({ id: 'foo' }, { having: [] }),
       [],
       'getSelectedMetricsOfBase returns an empty array when no having in the request match'
     );

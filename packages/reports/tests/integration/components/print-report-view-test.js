@@ -65,7 +65,7 @@ module('Integration | Component | print report view', function(hooks) {
           request: store.createFragment('bard-request/request', {
             logicalTable: store.createFragment('bard-request/fragments/logicalTable', {
               table: metadataService.getById('table', 'spaceId'),
-              timeGrainName: 'day'
+              timeGrain: 'day'
             }),
             responseFormat: 'csv',
             intervals: A([{ interval: new Interval('current', 'next') }])

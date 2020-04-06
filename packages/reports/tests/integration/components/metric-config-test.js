@@ -14,6 +14,7 @@ import {
   getAll,
   clickShowSelected
 } from 'navi-reports/test-support/report-builder';
+import { INTRINSIC_VALUE_EXPRESSION } from 'navi-data/models/metadata/function-argument';
 import config from 'ember-get-config';
 
 let MockRequest, MockMetric, MetadataService;
@@ -35,26 +36,31 @@ module('Integration | Component | metric config', function(hooks) {
     MetadataService = this.owner.lookup('service:bard-metadata');
 
     MockMetric = {
-      name: 'metric1',
-      longName: 'Metric 1',
-      parameters: {
-        currency: {
-          type: 'dimension',
-          dimensionName: 'displayCurrency'
+      id: 'metric1',
+      name: 'Metric 1',
+      arguments: [
+        {
+          id: 'currency',
+          type: 'ref',
+          expression: 'dimension:displayCurrency'
         },
-        property: {
-          type: 'dimension',
-          dimensionName: 'property'
+        {
+          id: 'property',
+          type: 'ref',
+          expression: 'dimension:property'
         },
-        embargo: {
-          type: 'enum',
-          values: [{ id: 'Y', description: 'Embargo enforced' }, { id: 'N', description: 'No Embargo' }]
+        {
+          id: 'embargo',
+          type: 'ref',
+          expression: INTRINSIC_VALUE_EXPRESSION,
+          _localValues: [{ id: 'Y', description: 'Embargo enforced' }, { id: 'N', description: 'No Embargo' }]
         },
-        invalid: {
+        {
+          id: 'invalid',
           type: 'invalid',
           name: 'invalid'
         }
-      }
+      ]
     };
 
     MockRequest = {
@@ -119,7 +125,7 @@ module('Integration | Component | metric config', function(hooks) {
 
     assert
       .dom('.metric-config__dropdown-container .navi-list-selector__title')
-      .hasText('Metric 1', 'the metric longName is included in the header');
+      .hasText('Metric 1', 'the metric name is included in the header');
 
     assert.deepEqual(
       findAll('.grouped-list__group-header').map(el => el.textContent.trim()),

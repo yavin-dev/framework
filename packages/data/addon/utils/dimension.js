@@ -8,15 +8,15 @@ import { upperFirst } from 'lodash-es';
  * Returns canonicalized name of a dimension
  * @function canonicalizeDimension
  * @param {Object} dimension - dimension
- * @param {String} dimension.name - dimension name
+ * @param {String} dimension.id - dimension name
  * @param {String} dimension.field - field name
  */
-export function canonicalizeDimension({ name, field }) {
+export function canonicalizeDimension({ id, field }) {
   if (field) {
-    return `${name}(${field})`;
+    return `${id}(${field})`;
   }
 
-  return name;
+  return id;
 }
 
 /**

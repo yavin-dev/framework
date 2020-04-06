@@ -162,7 +162,7 @@ module('Unit | Utils | Chart Data', function() {
     let request = {
       metrics: [
         {
-          metric: { name: 'totalPageViews' },
+          metric: { id: 'totalPageViews' },
           canonicalName: 'totalPageViews',
           toJSON() {
             return {
@@ -172,12 +172,12 @@ module('Unit | Utils | Chart Data', function() {
           }
         }
       ],
-      dimensions: [{ dimension: { name: 'age' } }, { dimension: { name: 'gender' } }]
+      dimensions: [{ dimension: { id: 'age' } }, { dimension: { id: 'gender' } }]
     };
 
     assert.deepEqual(
       getRequestMetrics(request),
-      [{ metric: { name: 'totalPageViews' }, canonicalName: 'totalPageViews' }],
+      [{ metric: { id: 'totalPageViews' }, canonicalName: 'totalPageViews' }],
       'getRequestMetrics returns expected metric object'
     );
   });
@@ -186,8 +186,8 @@ module('Unit | Utils | Chart Data', function() {
     assert.expect(1);
 
     let request = {
-      metrics: [{ metric: { name: 'totalPageViews' } }],
-      dimensions: [{ dimension: { name: 'age' } }, { dimension: { name: 'gender' } }]
+      metrics: [{ metric: { id: 'totalPageViews' } }],
+      dimensions: [{ dimension: { id: 'age' } }, { dimension: { id: 'gender' } }]
     };
 
     assert.deepEqual(
@@ -201,8 +201,8 @@ module('Unit | Utils | Chart Data', function() {
     assert.expect(2);
 
     let request = {
-        metrics: [{ metric: { name: 'totalPageViews' } }],
-        dimensions: [{ dimension: { name: 'age', longName: 'Age' } }]
+        metrics: [{ metric: { id: 'totalPageViews' } }],
+        dimensions: [{ dimension: { id: 'age', name: 'Age' } }]
       },
       rows = [
         {
