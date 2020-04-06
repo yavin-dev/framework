@@ -30,32 +30,12 @@ export const MetricFour = {
   description: 'This is Metric Four'
 };
 
-export const MetricFive = {
-  category: 'currencyMetrics',
-  name: 'metricFive',
-  longName: 'Metric Five',
-  metricFunctionId: 'moneyMetric'
-};
-
 export const pageViews = {
   category: 'pageMetrics',
   id: 'pageViews',
   name: 'Page Views',
   description: 'Views of a page',
   cardinality: 100
-};
-
-export const MetricSix = {
-  category: 'currencyMetrics',
-  name: 'metricSix',
-  longName: 'Metric Six',
-  parameters: {
-    currency: {
-      defaultValue: 'USD',
-      type: 'dimension',
-      dimensionName: 'displayCurrency'
-    }
-  }
 };
 
 export const MetricFive = {
