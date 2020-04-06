@@ -12,7 +12,7 @@
  *   />
  */
 import layout from '../templates/components/filter-collection';
-import { computed, get, getWithDefault } from '@ember/object';
+import { computed, getWithDefault } from '@ember/object';
 import { featureFlag } from 'navi-core/helpers/feature-flag';
 import Component from '@ember/component';
 
@@ -52,7 +52,7 @@ export default Component.extend({
     });
 
     let dimFilters = getWithDefault(this, 'request.filters', []).map(filter => {
-      let dimensionDataType = get(filter, 'dimension.datatype'),
+      let dimensionDataType = filter.dimension.valueType?.toLowerCase?.(),
         type = featureFlag('dateDimensionFilter') && dimensionDataType === 'date' ? 'date-dimension' : 'dimension';
 
       return {

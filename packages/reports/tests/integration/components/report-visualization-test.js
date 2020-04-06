@@ -16,9 +16,7 @@ const Request = {
       ],
       logicalTable: {
         table: 'network',
-        timeGrain: {
-          name: 'day'
-        }
+        timeGrain: 'day'
       }
     };
   }

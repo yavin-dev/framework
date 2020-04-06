@@ -13,7 +13,7 @@ module('Integration | Component | filter-builders/collapsed', function(hooks) {
       filter: {
         operator: {
           id: 'in',
-          longName: 'Equals',
+          name: 'Equals',
           valuesComponent: 'mock/values-component'
         }
       }

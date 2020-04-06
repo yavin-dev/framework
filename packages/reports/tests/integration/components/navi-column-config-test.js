@@ -36,7 +36,7 @@ module('Integration | Component | navi-column-config', function(hooks) {
         request: Store.createFragment('bard-request/request', {
           logicalTable: Store.createFragment('bard-request/fragments/logicalTable', {
             table: Metadata.getById('table', 'tableA'),
-            timeGrainName: 'day'
+            timeGrain: 'day'
           }),
           metrics: A([]),
           dimensions: A([]),
@@ -118,7 +118,7 @@ module('Integration | Component | navi-column-config', function(hooks) {
       'The date time column is initially added and set to day'
     );
 
-    this.set('report.request.logicalTable.timeGrainName', 'week');
+    this.set('report.request.logicalTable.timeGrain', 'week');
     await animationsSettled();
     assert.deepEqual(
       findAll('.navi-column-config-item__name').map(el => el.textContent.trim()),
@@ -126,7 +126,7 @@ module('Integration | Component | navi-column-config', function(hooks) {
       'The date time column is changed to week'
     );
 
-    this.set('report.request.logicalTable.timeGrainName', 'all');
+    this.set('report.request.logicalTable.timeGrain', 'all');
     await animationsSettled();
     assert.deepEqual(
       findAll('.navi-column-config-item__name').map(el => el.textContent.trim()),

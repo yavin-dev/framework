@@ -49,7 +49,7 @@ class NaviColumnConfigMetricComponent extends Component {
     if (!metric.hasParameters) {
       return [];
     }
-    return Object.keys(metric.parameters);
+    return metric.arguments.map(arg => arg.id);
   }
 
   /**

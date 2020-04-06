@@ -79,8 +79,8 @@ module('Integration | Component | Dimension Bulk Import', function(hooks) {
     );
 
     let dimension = {
-      name: 'property',
-      longName: 'Property'
+      id: 'property',
+      name: 'Property'
     };
 
     this.setProperties({
@@ -299,7 +299,7 @@ module('Integration | Component | Dimension Bulk Import', function(hooks) {
   test('Search dimension with smart key', async function(assert) {
     assert.expect(1);
     this.setProperties({
-      dimension: { name: 'multiSystemId', longName: 'Multi System Id' },
+      dimension: { id: 'multiSystemId', name: 'Multi System Id' },
       onSelectValues: () => {},
       onCancel: () => {},
       queryIds: ['6', '7']
@@ -325,7 +325,7 @@ module('Integration | Component | Dimension Bulk Import', function(hooks) {
     assert.expect(1);
     const rawQuery = 'yes, comma';
     this.setProperties({
-      dimension: { name: 'commaDim', longName: 'Dimension With Comma' },
+      dimension: { id: 'commaDim', name: 'Dimension With Comma' },
       onSelectValues: () => {},
       onCancel: () => {},
       rawQuery,

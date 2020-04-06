@@ -15,10 +15,7 @@ module('Unit | Component | table config', function(hooks) {
     assert.expect(1);
 
     let request = {
-      dimensions: [
-        { dimension: { name: 'os', longName: 'Operating System' } },
-        { dimension: { name: 'age', longName: 'Age' } }
-      ]
+      dimensions: [{ dimension: { id: 'os', name: 'Operating System' } }, { dimension: { id: 'age', name: 'Age' } }]
     };
 
     assert.deepEqual(
@@ -27,7 +24,7 @@ module('Unit | Component | table config', function(hooks) {
           .factoryFor('component:navi-visualization-config/table')
           .create({ request })
           .get('dimensions')
-      ).mapBy('longName'),
+      ).mapBy('name'),
       ['Operating System', 'Age'],
       'The metadata for each of the dimensions in the request is fetched using the metadata service'
     );

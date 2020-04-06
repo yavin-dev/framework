@@ -19,7 +19,7 @@ export default BaseMetadataTransform.extend({
   deserialize(serialized) {
     //This is used for special case of dateTime in sorting
     if (serialized === 'dateTime' || serialized.endsWith('.dateTime')) {
-      return { name: 'dateTime' };
+      return { id: 'dateTime' };
     }
 
     //for metric

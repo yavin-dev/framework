@@ -25,7 +25,7 @@ import { layout as templateLayout, tagName } from '@ember-decorators/component';
 @tagName('')
 class DimensionBulkImportComponent extends Component {
   /**
-   * @property {Object} - dimension - dimension metadata containing name and longName properties
+   * @property {Object} - dimension - dimension metadata containing id and name properties
    */
   dimension = undefined;
 
@@ -115,7 +115,7 @@ class DimensionBulkImportComponent extends Component {
 
     const splitValuesPromise = get(this, '_dimensionService')
       .find(
-        this.dimension?.name,
+        this.dimension?.id,
         [
           {
             values: get(this, '_trimmedQueryIds'),
@@ -131,7 +131,7 @@ class DimensionBulkImportComponent extends Component {
     set(this, '_validRawInputDimValue', undefined);
     const rawInputPromise = get(this, '_dimensionService')
       .find(
-        this.dimension?.name,
+        this.dimension?.id,
         [
           {
             field: get(this, 'searchableIdField'),
@@ -155,9 +155,9 @@ class DimensionBulkImportComponent extends Component {
   /**
    * @property {String} - which id field that we would want to search values against
    */
-  @computed('dimension.name')
+  @computed('dimension.id')
   get searchableIdField() {
-    const meta = this._bardMetadata.getById('dimension', this.dimension?.name, this.dimension?.source);
+    const meta = this._bardMetadata.getById('dimension', this.dimension?.id, this.dimension?.source);
     return get(meta, 'idFieldName');
   }
 

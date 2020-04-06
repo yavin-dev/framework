@@ -39,7 +39,7 @@ const HOST2 = config.navi.dataSources[1].uri;
 module('Unit | Service | Dimensions', function(hooks) {
   setupTest(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(async function() {
     Service = this.owner.lookup('service:bard-dimensions');
     MetadataService = this.owner.lookup('service:bard-metadata');
 
@@ -96,7 +96,7 @@ module('Unit | Service | Dimensions', function(hooks) {
 
     Server.map(metadataRoutes);
     metadataRoutes.bind(Server)(1);
-    return Promise.all([MetadataService.loadMetadata(), MetadataService.loadMetadata({ dataSourceName: 'blockhead' })]);
+    await Promise.all([MetadataService.loadMetadata(), MetadataService.loadMetadata({ dataSourceName: 'blockhead' })]);
   });
 
   hooks.afterEach(function() {
@@ -199,7 +199,7 @@ module('Unit | Service | Dimensions', function(hooks) {
     });
   });
 
-  test('find from bard', function(assert) {
+  test('find from bard', async function(assert) {
     assert.expect(3);
 
     //Mock service - dimensions are loaded in keg
@@ -207,21 +207,20 @@ module('Unit | Service | Dimensions', function(hooks) {
       dimensionOne: false
     });
 
-    return Service.find(TestDimension, { values: ['v1'] }).then(function(model) {
-      assert.deepEqual(
-        get(model, 'dimension'),
-        TestDimension,
-        'find returns a bard dimension array model with the requested dimension'
-      );
+    let model = await Service.find(TestDimension, { values: ['v1'] });
+    assert.deepEqual(
+      model.dimension,
+      TestDimension,
+      'find returns a bard dimension array model with the requested dimension'
+    );
 
-      assert.deepEqual(
-        get(model, '_dimensionsService'),
-        Service,
-        'find returns a bard dimension array model object with the service instance'
-      );
+    assert.deepEqual(
+      get(model, '_dimensionsService'),
+      Service,
+      'find returns a bard dimension array model object with the service instance'
+    );
 
-      assert.deepEqual(get(model, 'content').mapBy('id'), ['v1'], 'find returns requested dimension rows');
-    });
+    assert.deepEqual(get(model, 'content').mapBy('id'), ['v1'], 'find returns requested dimension rows');
   });
 
   test('find from bard from other datasource', function(assert) {
@@ -378,7 +377,10 @@ module('Unit | Service | Dimensions', function(hooks) {
       undefined,
       'getById returnd undefined for unloaded dimension from other datasource'
     );
-    keg.pushMany('dimension/blockhead.dimensionFour', Response3.rows, { modelFactory: Object, namespace: 'blockhead' });
+    keg.pushMany('dimension/blockhead.dimensionFour', Response3.rows, {
+      modelFactory: Object,
+      namespace: 'blockhead'
+    });
     const dimensionFourId = get(Service.getById('dimensionFour', 'v4', 'blockhead'), 'id');
     assert.deepEqual(dimensionFourId, 'v4', 'getById returns the expected dimension value from alternate datasource');
   });
@@ -640,75 +642,53 @@ module('Unit | Service | Dimensions', function(hooks) {
     });
   });
 
-  test('search: low dimension cardinality', function(assert) {
+  test('search: low dimension cardinality', async function(assert) {
     assert.expect(3);
 
-    return settled().then(() => {
-      let options = { term: 'v1' };
-      return Service.search('dimensionOne', options).then(res => {
-        assert.deepEqual(
-          A(res).mapBy('id'),
-          ['v1'],
-          'search returns dimension values as expected when searched for "v1"'
-        );
+    await settled();
 
-        options.term = 'value1';
-        return Service.search('dimensionOne', options).then(res => {
-          assert.deepEqual(
-            A(res).mapBy('description'),
-            ['value1'],
-            'search returns dimension values as expected when searched for "value1"'
-          );
+    let options = { term: 'v1' };
 
-          /* == no results == */
-          options.term = 'foo';
-          return Service.search('dimensionOne', options).then(res => {
-            assert.deepEqual(
-              A(res).mapBy('id'),
-              [],
-              'search returns no dimension values as expected when searched for "foo"'
-            );
-          });
-        });
-      });
-    });
+    const res = await Service.search('dimensionOne', options);
+    assert.deepEqual(A(res).mapBy('id'), ['v1'], 'search returns dimension values as expected when searched for "v1"');
+
+    options.term = 'value1';
+    const res2 = await Service.search('dimensionOne', options);
+    assert.deepEqual(
+      A(res2).mapBy('description'),
+      ['value1'],
+      'search returns dimension values as expected when searched for "value1"'
+    );
+
+    /* == no results == */
+    options.term = 'foo';
+    const res3 = await Service.search('dimensionOne', options);
+    assert.deepEqual(A(res3).mapBy('id'), [], 'search returns no dimension values as expected when searched for "foo"');
   });
 
-  test('search: low dimension cardinality alternate datasource', function(assert) {
+  test('search: low dimension cardinality alternate datasource', async function(assert) {
     assert.expect(3);
 
-    return settled().then(() => {
-      let options = { term: 'v4', dataSourceName: 'blockhead' };
-      return Service.search('dimensionFour', options).then(res => {
-        assert.deepEqual(
-          A(res).mapBy('id'),
-          ['v4'],
-          'search returns dimension values as expected when searched for "v4"'
-        );
+    await settled();
+    let options = { term: 'v4', dataSourceName: 'blockhead' };
+    let res = await Service.search('dimensionFour', options);
+    assert.deepEqual(A(res).mapBy('id'), ['v4'], 'search returns dimension values as expected when searched for "v4"');
 
-        options.term = 'value4';
-        return Service.search('dimensionFour', options).then(res => {
-          assert.deepEqual(
-            A(res).mapBy('description'),
-            ['value4'],
-            'search returns dimension values as expected when searched for "value4"'
-          );
+    options.term = 'value4';
+    res = await Service.search('dimensionFour', options);
+    assert.deepEqual(
+      A(res).mapBy('description'),
+      ['value4'],
+      'search returns dimension values as expected when searched for "value4"'
+    );
 
-          /* == no results == */
-          options.term = 'foo';
-          return Service.search('dimensionFour', options).then(res => {
-            assert.deepEqual(
-              A(res).mapBy('id'),
-              [],
-              'search returns no dimension values as expected when searched for "foo"'
-            );
-          });
-        });
-      });
-    });
+    /* == no results == */
+    options.term = 'foo';
+    res = await Service.search('dimensionFour', options);
+    assert.deepEqual(A(res).mapBy('id'), [], 'search returns no dimension values as expected when searched for "foo"');
   });
 
-  test('search: high dimension cardinality', function(assert) {
+  test('search: high dimension cardinality', async function(assert) {
     assert.expect(2);
 
     let response3 = {
@@ -734,29 +714,21 @@ module('Unit | Service | Dimensions', function(hooks) {
       return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ rows })];
     });
 
-    return settled().then(() => {
-      //Set dimension cardinality above threshold & supportedFilterOperators for point lookup
-      set(Service, '_bardAdapter.supportedFilterOperators', ['in']);
+    //Set dimension cardinality above threshold & supportedFilterOperators for point lookup
+    set(Service, '_bardAdapter.supportedFilterOperators', ['in']);
 
-      let options = { term: 'v1' };
-      return Service.search('dimensionTwo', options).then(res => {
-        assert.deepEqual(
-          A(res).mapBy('id'),
-          ['v1'],
-          'search returns expected dimension values when searched for "EMEA Region"'
-        );
+    let options = { term: 'v1' };
+    let res = await Service.search('dimensionTwo', options);
+    assert.deepEqual(
+      A(res).mapBy('id'),
+      ['v1'],
+      'search returns expected dimension values when searched for "EMEA Region"'
+    );
 
-        /* == no results == */
-        options = { term: 'foo' };
-        return Service.search('dimensionTwo', options).then(res => {
-          assert.deepEqual(
-            A(res).mapBy('id'),
-            [],
-            'search returns no dimension values as expected when searched for "foo"'
-          );
-        });
-      });
-    });
+    /* == no results == */
+    options = { term: 'foo' };
+    res = await Service.search('dimensionTwo', options);
+    assert.deepEqual(A(res).mapBy('id'), [], 'search returns no dimension values as expected when searched for "foo"');
   });
 
   test('search: high dimension cardinality with alternate datasource', function(assert) {
@@ -857,24 +829,22 @@ module('Unit | Service | Dimensions', function(hooks) {
     });
   });
 
-  test('search: pagination', function(assert) {
+  test('search: pagination', async function(assert) {
     assert.expect(2);
 
-    return settled().then(() => {
-      let options = { term: 'val', page: 2, limit: 1 };
-      return Service.search('dimensionOne', options).then(res => {
-        assert.deepEqual(A(res).mapBy('id'), ['v2'], 'search returns dimension values for page 2 as expected');
+    let options = { term: 'val', page: 2, limit: 1 };
+    let res = await Service.search('dimensionOne', options);
+    assert.deepEqual(A(res).mapBy('id'), ['v2'], 'search returns dimension values for page 2 as expected');
 
-        options = { term: 'foo', page: 2 };
-        assert.throws(
-          () => {
-            Service.search('product-region', options);
-          },
-          /for pagination both page and limit must be defined in search options/,
-          'search throws an error when both page and limit params attributes are not present in the search options'
-        );
-      });
-    });
+    options = { term: 'foo', page: 2 };
+    try {
+      await Service.search('dimensionOne', options);
+    } catch (e) {
+      assert.ok(
+        /for pagination both page and limit must be defined in search options/.test(e),
+        'search throws an error when both page and limit params attributes are not present in the search options'
+      );
+    }
   });
 
   test('search: low dimension cardinality with useNewSearchAPI=true', function(assert) {
@@ -995,24 +965,23 @@ module('Unit | Service | Dimensions', function(hooks) {
     });
   });
 
-  test('search: pagination with useNewSearchAPI=true', function(assert) {
+  test('search: pagination with useNewSearchAPI=true', async function(assert) {
     assert.expect(2);
 
-    return settled().then(() => {
-      let options = { term: 'val', page: 2, limit: 1, useNewSearchAPI: true };
-      return Service.search('dimensionOne', options).then(res => {
-        assert.deepEqual(A(res).mapBy('id'), ['v2'], 'search returns dimension values for page 2 as expected');
+    let options = { term: 'val', page: 2, limit: 1, useNewSearchAPI: true };
+    let res = await Service.search('dimensionOne', options);
+    assert.deepEqual(A(res).mapBy('id'), ['v2'], 'search returns dimension values for page 2 as expected');
 
-        options = { term: 'foo', page: 2, useNewSearchAPI: true };
-        assert.throws(
-          () => {
-            Service.search('product-region', options);
-          },
-          /for pagination both page and limit must be defined in search options/,
-          'search throws an error when both page and limit params attributes are not present in the search options'
-        );
-      });
-    });
+    options = { term: 'foo', page: 2, useNewSearchAPI: true };
+
+    try {
+      await Service.search('dimensionOne', options);
+    } catch (e) {
+      assert.ok(
+        /for pagination both page and limit must be defined in search options/.test(e),
+        'search throws an error when both page and limit params attributes are not present in the search options'
+      );
+    }
   });
 
   test('getFactoryFor', function(assert) {
@@ -1055,7 +1024,7 @@ module('Unit | Service | Dimensions', function(hooks) {
     );
   });
 
-  test('search: without description', function(assert) {
+  test('search: without description', async function(assert) {
     assert.expect(1);
 
     let rows = [
@@ -1078,12 +1047,11 @@ module('Unit | Service | Dimensions', function(hooks) {
     });
 
     let options = { term: 'value' };
-    return Service.search('dimensionThree', options).then(res => {
-      assert.deepEqual(
-        res,
-        [],
-        'search returns an empty array when the server returns an error for a search query using description'
-      );
-    });
+    let res = await Service.search('dimensionThree', options);
+    assert.deepEqual(
+      res,
+      [],
+      'search returns an empty array when the server returns an error for a search query using description'
+    );
   });
 });

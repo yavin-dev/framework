@@ -8,12 +8,12 @@ import Duration from 'navi-core/utils/classes/duration';
 import Interval from 'navi-core/utils/classes/interval';
 
 const MockFilterFragment1 = {
-    dimension: { longName: 'age' },
+    dimension: { name: 'age' },
     operator: 'notnull',
     rawValues: ['']
   },
   MockFilterFragment2 = {
-    dimension: { longName: 'property' },
+    dimension: { name: 'property' },
     operator: 'null',
     rawValues: ['']
   },
@@ -21,12 +21,12 @@ const MockFilterFragment1 = {
     interval: new Interval(new Duration('P7D'), 'current')
   },
   MockMetricFragment1 = {
-    metric: { metric: { longName: 'Page Views' }, parameters: {} },
+    metric: { metric: { name: 'Page Views' }, parameters: {} },
     operator: 'gt',
     values: ['1000']
   },
   MockMetricFragment2 = {
-    metric: { metric: { longName: 'Page Views' }, parameters: {} },
+    metric: { metric: { name: 'Page Views' }, parameters: {} },
     operator: 'bet',
     values: ['1000', '2000']
   },
@@ -34,7 +34,7 @@ const MockFilterFragment1 = {
     filters: [MockFilterFragment1, MockFilterFragment2],
     intervals: [MockIntervalFragment],
     having: [MockMetricFragment1, MockMetricFragment2],
-    logicalTable: { timeGrain: { name: 'day', longName: 'Day' } }
+    logicalTable: { timeGrain: 'day', table: { timeGrains: [{ id: 'day', name: 'Day' }] } }
   };
 
 module('Integration | Component | filter collection', function(hooks) {

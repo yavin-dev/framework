@@ -63,14 +63,18 @@ class NaviColumnConfig extends Component {
       dimensions,
       filters,
       having,
-      logicalTable: { timeGrain }
+      logicalTable: {
+        timeGrain,
+        table: { timeGrains }
+      }
     } = request;
+    const timeGrainObject = timeGrains.find(grain => grain.id === timeGrain) || {};
 
-    const filteredDimensions = filters.toArray().map(f => f.dimension.name);
+    const filteredDimensions = filters.toArray().map(f => f.dimension.id);
     const filteredMetrics = having.toArray().map(h => h.metric.canonicalName);
 
     const dimensionColumns = dimensions.toArray().map(dimension => {
-      const { name } = dimension.dimension;
+      const { id: name } = dimension.dimension;
       return {
         type: 'dimension',
         name,
@@ -92,11 +96,11 @@ class NaviColumnConfig extends Component {
 
     const columns = [...dimensionColumns, ...metricColumns];
 
-    if (timeGrain.name !== 'all') {
+    if (timeGrain !== 'all') {
       columns.unshift({
         type: 'dateTime',
         name: 'dateTime',
-        displayName: this.getDisplayName(timeGrain, 'dateTime', visualization),
+        displayName: this.getDisplayName(timeGrainObject, 'dateTime', visualization),
         fragment: timeGrain
       });
     }
@@ -121,13 +125,13 @@ class NaviColumnConfig extends Component {
     const nameServiceMap = {
       // TODO: Add namespace pararemeter when metricName service supports it
       metric: metric => this.metricName.getDisplayName(metric.serialize()),
-      dimension: dimension => dimension.dimension.longName || dimension.dimension.name,
-      dateTime: dateTime => `Date Time (${dateTime.longName})`
+      dimension: dimension => dimension.dimension.name || dimension.dimension.id,
+      dateTime: dateTime => `Date Time (${dateTime.name})`
     };
 
     const ID_FIELD_MAP = {
       metric: metric => metric.canonicalName,
-      dimension: dimension => dimension.dimension.name,
+      dimension: dimension => dimension.dimension.id,
       dateTime: () => 'dateTime'
     };
 
@@ -142,8 +146,8 @@ class NaviColumnConfig extends Component {
    * @param {Object} metricColumn - a metric column
    */
   _cloneMetricParams(metricColumn) {
-    return metricColumn.metric.paramNames.reduce((params, newParam) => {
-      params[newParam] = metricColumn.parameters[newParam];
+    return metricColumn.metric.arguments.reduce((params, arg) => {
+      params[arg.id] = metricColumn.parameters[arg.id];
       return params;
     }, {});
   }

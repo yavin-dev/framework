@@ -340,9 +340,7 @@ export default Component.extend(hasChartBuilders, {
     if (chartGrain !== 'year') {
       return {};
     }
-    const requestGrain =
-      get(this, 'model.firstObject.request.logicalTable.timeGrain.name') ||
-      get(this, 'model.firstObject.request.logicalTable.timeGrain');
+    const requestGrain = this.model?.firstObject?.request?.logicalTable?.timeGrain;
 
     const values = this.get('xAxisTickValuesByGrain')[requestGrain];
     return {

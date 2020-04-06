@@ -9,7 +9,7 @@ module('Unit | Component | filter builders/metric', function(hooks) {
     assert.expect(3);
 
     const mockHavingFragment = {
-      metric: { metric: { longName: 'Page Views' } },
+      metric: { metric: { name: 'Page Views' } },
       operator: 'gt',
       values: [1000]
     };

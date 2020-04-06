@@ -18,7 +18,7 @@ export default class MetricNameService extends Service {
    * @returns {String} - long name for the metric from the metadata
    */
   getLongName(metricId, namespace) {
-    return this.metricMeta.getMetaField('metric', metricId, 'longName', metricId, namespace);
+    return this.metricMeta.getMetaField('metric', metricId, 'name', metricId, namespace);
   }
 
   /**

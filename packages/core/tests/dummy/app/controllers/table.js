@@ -5,7 +5,7 @@ import { isEqual, merge, omit } from 'lodash-es';
 
 export default class TableController extends Controller {
   request = {
-    dimensions: [{ dimension: { name: 'os', longName: 'Operating System' } }]
+    dimensions: [{ dimension: { id: 'os', name: 'Operating System' } }]
   };
 
   @computed('options')

@@ -75,7 +75,7 @@ export default {
    *          record - asset record
    *          relevance - distance between record and search query
    */
-  searchDimensionRecords: function(records, query, resultLimit, page) {
+  searchDimensionRecords(records, query, resultLimit, page) {
     let results = [],
       record;
 

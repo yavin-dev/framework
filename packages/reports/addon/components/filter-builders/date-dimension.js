@@ -26,17 +26,17 @@ export default Base.extend({
     return [
       {
         id: 'gte',
-        longName: 'Since (>=)',
+        name: 'Since (>=)',
         valuesComponent: 'filter-values/date'
       },
       {
         id: 'lt',
-        longName: 'Before (<)',
+        name: 'Before (<)',
         valuesComponent: 'filter-values/date'
       },
       {
         id: 'bet',
-        longName: 'Between (<=>)',
+        name: 'Between (<=>)',
         valuesComponent: 'filter-values/dimension-date-range'
       }
     ];

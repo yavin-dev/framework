@@ -6,11 +6,16 @@ import Pretender from 'pretender';
 import metadataRoutes, {
   TableOne,
   TableTwo,
+  Tables,
   DimensionOne,
   DimensionTwo,
   DimensionThree,
   MetricOne,
   MetricTwo,
+  MetricFive,
+  MetricSix,
+  MetricFunctionAggTrend,
+  MetricFunctionMoneyMetric,
   Host
 } from '../../helpers/metadata-routes';
 
@@ -52,24 +57,59 @@ module('Unit - Service - Bard Metadata', function(hooks) {
     let keg = Service._keg;
 
     assert.deepEqual(
-      keg.all('metadata/table').mapBy('name'),
-      [TableOne.name, TableTwo.name],
+      keg.all('metadata/table').mapBy('id'),
+      Tables.map(table => table.name),
       'All tables are loaded in the keg'
     );
 
     assert.deepEqual(
-      keg.all('metadata/dimension').mapBy('name'),
+      keg.all('metadata/dimension').mapBy('id'),
       [DimensionOne.name, DimensionThree.name, DimensionTwo.name],
       'All dimensions are loaded in the keg'
     );
 
     assert.deepEqual(
-      keg.all('metadata/metric').mapBy('name'),
-      [MetricOne.name, MetricTwo.name],
+      keg.all('metadata/metric').mapBy('id'),
+      [MetricOne.name, MetricTwo.name, MetricFive.name],
       'All metrics are loaded in the keg'
     );
 
-    assert.ok(Service.loadedDataSources[0], 'dummy', 'One datasource should be loaded');
+    assert.deepEqual(Service.loadedDataSources, ['dummy'], 'One datasource should be loaded');
+  });
+
+  test('loadMetadata with metric function ids provided', async function(assert) {
+    assert.expect(3);
+
+    const dataSource = 'dummy';
+    const keg = Service._keg;
+    const originalSerializer = this.owner.factoryFor('serializer:metadata/metric-function');
+    const testSerializer = originalSerializer.class.extend({
+      normalize(payload, source) {
+        assert.equal(source, dataSource, 'The datasource is passed in correctly to the metric function serializer');
+        assert.deepEqual(
+          payload,
+          {
+            'metric-functions': { rows: [MetricFunctionMoneyMetric, MetricFunctionAggTrend] }
+          },
+          'The correct payload is passed to the metric-function serializer'
+        );
+        return this._super(...arguments);
+      }
+    });
+
+    this.owner.unregister('serializer:metadata/metric-function');
+    this.owner.register('serializer:metadata/metric-function', testSerializer);
+
+    await Service.loadMetadata();
+
+    assert.deepEqual(
+      keg.all('metadata/metric-function', dataSource).mapBy('id'),
+      [MetricFunctionMoneyMetric.id, MetricFunctionAggTrend.id],
+      'When at least one metric has a metricFunctionId provided, all metric functions from the metric function endpoint are loaded into the keg'
+    );
+
+    this.owner.unregister('serializer:metadata/metric-function');
+    this.owner.register('serializer:metadata/metric-function', originalSerializer);
   });
 
   test('loadMetadata from multiple sources', async function(assert) {
@@ -169,20 +209,20 @@ module('Unit - Service - Bard Metadata', function(hooks) {
 
     await Service.loadMetadata();
     assert.deepEqual(
-      Service.all('table').mapBy('name'),
-      [TableOne.name, TableTwo.name],
+      Service.all('table').mapBy('id'),
+      [TableOne.name, TableTwo.name, 'smallTable'],
       'all method returns all loaded tables'
     );
 
     assert.deepEqual(
-      Service.all('dimension').mapBy('name'),
-      [DimensionOne.name, DimensionThree.name, DimensionTwo.name],
+      Service.all('dimension').mapBy('id'),
+      ['dimensionOne', 'dimensionThree', 'dimensionTwo'],
       'all method returns all loaded dimensions'
     );
 
     assert.deepEqual(
-      Service.all('metric').mapBy('name'),
-      [MetricOne.name, MetricTwo.name],
+      Service.all('metric').mapBy('id'),
+      ['metricOne', 'metricTwo', 'metricFive'],
       'all method returns all loaded metrics'
     );
 
@@ -190,7 +230,7 @@ module('Unit - Service - Bard Metadata', function(hooks) {
       () => {
         Service.all('foo');
       },
-      new Error('Assertion Failed: Type must be table, metric or dimension'),
+      new Error('Assertion Failed: Type must be a valid navi-data model type'),
       'Service `all` method throws error when metadata type is invalid'
     );
 
@@ -235,7 +275,7 @@ module('Unit - Service - Bard Metadata', function(hooks) {
       () => {
         Service.getById('foo');
       },
-      new Error('Assertion Failed: Type must be table, metric or dimension'),
+      new Error('Assertion Failed: Type must be a valid navi-data model type'),
       'Service `getById` method throws error when metadata type is invalid'
     );
 
@@ -255,31 +295,32 @@ module('Unit - Service - Bard Metadata', function(hooks) {
     Service.set('loadedDataSources', ['dummy']);
     metadataRoutes.bind(Server)(1);
 
+    const expectedMetric = {
+      id: MetricOne.name,
+      name: MetricOne.longName,
+      description: MetricOne.description
+    };
     const data = await Service.fetchById('metric', 'metricOne');
     assert.ok(
-      Object.keys(MetricOne).every(key => MetricOne[key] === data[key]),
+      Object.keys(expectedMetric).every(key => expectedMetric[key] === data[key]),
       'Service fetchById should load correct data'
     );
 
     let keg = Service._keg;
 
-    assert.deepEqual(
-      keg.all('metadata/metric').mapBy('name'),
-      ['metricOne'],
-      'Fetched entity has been added to the keg'
-    );
+    assert.deepEqual(keg.all('metadata/metric').mapBy('id'), ['metricOne'], 'Fetched entity has been added to the keg');
 
     await Service.fetchById('metric', 'metricOne');
     assert.equal(Server.handledRequests.length, 2, 'Fetched entity from service every call');
 
     assert.deepEqual(
-      keg.all('metadata/metric').mapBy('name'),
+      keg.all('metadata/metric').mapBy('id'),
       ['metricOne'],
       'Fetching an entity already present in the keg doesn`t add another copy into the keg'
     );
 
     await Service.fetchById('metric', 'metricThree', 'blockhead');
-    assert.deepEqual(keg.all('metadata/metric').mapBy('name'), ['metricOne', 'metricThree']);
+    assert.deepEqual(keg.all('metadata/metric').mapBy('id'), ['metricOne', 'metricThree']);
 
     Service.set('loadedDataSources', []);
   });
@@ -290,19 +331,19 @@ module('Unit - Service - Bard Metadata', function(hooks) {
     await Service.loadMetadata({ dataSourceName: 'blockhead' });
 
     assert.deepEqual(
-      Service.all('metric').mapBy('name'),
-      ['metricOne', 'metricTwo', 'metricThree', 'metricFour'],
+      Service.all('metric').mapBy('id'),
+      ['metricOne', 'metricTwo', 'metricFive', 'metricThree', 'metricFour'],
       'All query pulls in all metrics'
     );
 
     assert.deepEqual(
-      Service.all('metric', 'dummy').mapBy('name'),
-      ['metricOne', 'metricTwo'],
+      Service.all('metric', 'dummy').mapBy('id'),
+      ['metricOne', 'metricTwo', 'metricFive'],
       'All query pulls in metrics for dummy datasource'
     );
 
     assert.deepEqual(
-      Service.all('metric', 'blockhead').mapBy('name'),
+      Service.all('metric', 'blockhead').mapBy('id'),
       ['metricThree', 'metricFour'],
       'All query pulls in metrics for blockhead datasource'
     );
@@ -313,22 +354,23 @@ module('Unit - Service - Bard Metadata', function(hooks) {
     metadataRoutes.bind(Server)(1);
     Service.set('loadedDataSources', ['dummy']);
     const metricOne = await Service.findById('metric', 'metricOne', 'dummy');
+    const expectedMetric = {
+      id: MetricOne.name,
+      name: MetricOne.longName,
+      description: MetricOne.description
+    };
     assert.ok(
-      Object.keys(MetricOne).every(key => MetricOne[key] === metricOne[key]),
+      Object.keys(expectedMetric).every(key => expectedMetric[key] === metricOne[key]),
       'Service findById should load correct data'
     );
 
     let keg = Service._keg;
 
-    assert.deepEqual(
-      keg.all('metadata/metric').mapBy('name'),
-      ['metricOne'],
-      'Fetched entity has been added to the keg'
-    );
+    assert.deepEqual(keg.all('metadata/metric').mapBy('id'), ['metricOne'], 'Fetched entity has been added to the keg');
 
     const data = await Service.findById('metric', 'metricOne');
     assert.ok(
-      Object.keys(MetricOne).every(key => MetricOne[key] === data[key]),
+      Object.keys(expectedMetric).every(key => expectedMetric[key] === data[key]),
       'Service findById should return correct data'
     );
     assert.equal(Server.handledRequests.length, 1, 'Meta data endpoint only called once');
@@ -336,20 +378,39 @@ module('Unit - Service - Bard Metadata', function(hooks) {
     let blockheadData = await Service.findById('metric', 'metricThree', 'blockhead');
 
     assert.equal(
-      blockheadData.name,
+      blockheadData.id,
       'metricThree',
       'Service findById should return correct data when requesting other datasource'
     );
     assert.equal(Server.handledRequests.length, 2, 'Meta data endpoint called once for each metric');
 
-    keg.push('metadata/metric', Object.assign({}, MetricTwo, { partialData: true }), { namespace: 'dummy' });
+    const foonction = { id: 'foonction', arguments: [{ id: 'foonctionArg' }] };
+    const partiallyLoadedMetric = {
+      id: MetricSix.name,
+      name: MetricSix.longName,
+      category: MetricSix.category,
+      metricFunctionId: 'foonction',
+      partialData: true
+    };
 
-    const kegRecord = keg.getById('metadata/metric', 'metricTwo', 'dummy');
+    keg.push('metadata/metric-function', foonction, { namespace: 'dummy' });
+    keg.push('metadata/metric', partiallyLoadedMetric, { namespace: 'dummy' });
+
+    const kegRecord = keg.getById('metadata/metric', 'metricSix', 'dummy');
     assert.ok(kegRecord.partialData, 'Partial metric exists in keg with partial data flag');
 
-    const findOnPartiallyLoadedMetric = await Service.findById('metric', 'metricTwo', 'dummy');
+    const partialLoadExpectedMetric = {
+      id: partiallyLoadedMetric.id,
+      name: partiallyLoadedMetric.name,
+      category: partiallyLoadedMetric.category,
+      metricFunctionId: partiallyLoadedMetric.metricFunctionId
+    };
+
+    const findOnPartiallyLoadedMetric = await Service.findById('metric', 'metricSix', 'dummy');
     assert.ok(
-      Object.keys(MetricTwo).every(key => MetricTwo[key] === findOnPartiallyLoadedMetric[key]),
+      Object.keys(partialLoadExpectedMetric).every(
+        key => partialLoadExpectedMetric[key] === findOnPartiallyLoadedMetric[key]
+      ),
       'Correct metric is returned'
     );
     assert.notOk(
@@ -358,7 +419,7 @@ module('Unit - Service - Bard Metadata', function(hooks) {
     );
     assert.equal(Server.handledRequests.length, 3, 'Another request is sent for a partially loaded model');
 
-    const findAgain = await Service.findById('metric', 'metricTwo', 'dummy');
+    const findAgain = await Service.findById('metric', 'metricSix', 'dummy');
     assert.equal(findAgain, findOnPartiallyLoadedMetric, 'Same record is returned on a second call');
     assert.equal(Server.handledRequests.length, 3, 'No more requests are sent for subsequent findById calls');
 
@@ -368,7 +429,7 @@ module('Unit - Service - Bard Metadata', function(hooks) {
   test('getMetaField', async function(assert) {
     assert.expect(3);
     await Service.loadMetadata();
-    assert.equal(Service.getMetaField('metric', 'metricOne', 'longName'), 'Metric One', 'gets field from requested');
+    assert.equal(Service.getMetaField('metric', 'metricOne', 'name'), 'Metric One', 'gets field from requested');
 
     assert.equal(
       Service.getMetaField('metric', 'metricOne', 'shortName', 'someDefault'),
@@ -383,18 +444,18 @@ module('Unit - Service - Bard Metadata', function(hooks) {
     );
   });
 
-  test('mutli datasource getMetaField', async function(assert) {
+  test('multi datasource getMetaField', async function(assert) {
     assert.expect(5);
     metadataRoutes.bind(Server)(1);
     await Service.loadMetadata({ dataSourceName: 'dummy' });
     await Service.loadMetadata({ dataSourceName: 'blockhead' });
     assert.equal(
-      Service.getMetaField('metric', 'metricOne', 'longName', null, 'dummy'),
+      Service.getMetaField('metric', 'metricOne', 'name', null, 'dummy'),
       'Metric One',
       'gets field from requested dummy datasource'
     );
     assert.equal(
-      Service.getMetaField('metric', 'metricThree', 'longName', null, 'blockhead'),
+      Service.getMetaField('metric', 'metricThree', 'name', null, 'blockhead'),
       'Metric Three',
       'gets field from requested blockhead data source'
     );
@@ -412,7 +473,7 @@ module('Unit - Service - Bard Metadata', function(hooks) {
     );
 
     assert.equal(
-      Service.getMetaField('metric', 'metricOne', 'longName', 'someDefault', 'blockhead'),
+      Service.getMetaField('metric', 'metricOne', 'name', 'someDefault', 'blockhead'),
       'someDefault',
       'Returns default when metric can not be found in given namespace'
     );

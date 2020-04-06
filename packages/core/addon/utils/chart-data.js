@@ -64,15 +64,15 @@ export function getSeriesName(config) {
  * @returns {Boolean}
  */
 export function chartTypeForRequest(request) {
-  let dimensionCount = get(request, 'dimensions.length');
+  let dimensionCount = request.dimensions?.length;
 
   if (dimensionCount > 0) {
     return DIMENSION_SERIES;
   }
 
-  let metricCount = get(request, 'metrics.length'),
-    timeGrain = get(request, 'logicalTable.timeGrain.name'),
-    interval = get(request, 'intervals.firstObject.interval'),
+  let metricCount = request.metrics?.length,
+    timeGrain = request.logicalTable?.timeGrain,
+    interval = request.intervals?.firstObject?.interval,
     monthPeriod = interval.diffForTimePeriod('month'),
     applicableTimeGrain = ['day', 'week', 'month'].includes(timeGrain);
 
@@ -84,25 +84,25 @@ export function chartTypeForRequest(request) {
 }
 
 /**
- * Returns a list of metric names from the request
+ * Returns a list of metrics from the request
  *
  * @function getRequestMetrics
  * @param {Object} request - request object
  * @returns {Array} - list of metric JSON objects
  */
 export function getRequestMetrics(request) {
-  return get(request, 'metrics').map(metric => metric.toJSON());
+  return request.metrics.map(metric => metric.toJSON());
 }
 
 /**
- * Returns a list of dimensions names from the request
+ * Returns a list of dimensions id from the request
  *
  * @function getRequestDimensions
  * @param {Object} request - request object
- * @returns {Array} - list of dimension names
+ * @returns {Array} - list of dimension ids
  */
 export function getRequestDimensions(request) {
-  return arr(get(request, 'dimensions')).mapBy('dimension.name');
+  return arr(request.dimensions).mapBy('dimension.id');
 }
 
 /**

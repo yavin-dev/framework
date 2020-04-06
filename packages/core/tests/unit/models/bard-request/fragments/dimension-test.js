@@ -44,9 +44,9 @@ module('Unit | Model Fragment | BardRequest - Dimension', function(hooks) {
         mockModel
           .get('dimensions')
           .objectAt(0)
-          .get('dimension.longName'),
+          .get('dimension.name'),
         'Age',
-        'The property Dimension with id `age` was deserialized correctly with the longName `Age`'
+        'The property Dimension with id `age` was deserialized correctly with the name `Age`'
       );
 
       /* == Setter Method == */
@@ -60,7 +60,7 @@ module('Unit | Model Fragment | BardRequest - Dimension', function(hooks) {
       mockModel
         .get('dimensions')
         .objectAt(0)
-        .get('dimension.longName'),
+        .get('dimension.name'),
       'Logged-in State',
       'The property dimension was set to `Login State` using the setter'
     );

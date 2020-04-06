@@ -20,7 +20,7 @@ module('Integration | Component | power select bulk import trigger', function(ho
       selected: [],
       onChange: () => null,
       extra: {
-        filter: { subject: { name: 'property', longName: 'property' } }
+        filter: { subject: { id: 'property', name: 'property' } }
       }
     });
 
@@ -133,7 +133,7 @@ module('Integration | Component | power select bulk import trigger', function(ho
       onChange: newValues => this.set('selected', newValues.toArray()),
       selected: [{ id: 'no comma' }],
       extra: {
-        filter: { subject: { name: 'commaDim', longName: 'commaDim' } }
+        filter: { subject: { id: 'commaDim', name: 'commaDim' } }
       }
     });
 

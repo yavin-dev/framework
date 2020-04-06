@@ -32,6 +32,6 @@ export default Helper.extend({
 
     let metadataModel = get(this, 'metadata').getById(type, id);
     assert(`No ${type} found for id: ${id}`, metadataModel);
-    return get(metadataModel, 'longName');
+    return metadataModel.name;
   }
 });

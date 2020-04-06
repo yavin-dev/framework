@@ -24,42 +24,42 @@ export default Base.extend({
     return [
       {
         id: 'gt',
-        longName: 'Greater than (>)',
+        name: 'Greater than (>)',
         valuesComponent: 'filter-values/value-input'
       },
       {
         id: 'gte',
-        longName: 'Greater than or equals (>=)',
+        name: 'Greater than or equals (>=)',
         valuesComponent: 'filter-values/value-input'
       },
       {
         id: 'lt',
-        longName: 'Less than (<)',
+        name: 'Less than (<)',
         valuesComponent: 'filter-values/value-input'
       },
       {
         id: 'lte',
-        longName: 'Less than or equals (<=)',
+        name: 'Less than or equals (<=)',
         valuesComponent: 'filter-values/value-input'
       },
       {
         id: 'eq',
-        longName: 'Equals (=)',
+        name: 'Equals (=)',
         valuesComponent: 'filter-values/value-input'
       },
       {
         id: 'neq',
-        longName: 'Not equals (!=)',
+        name: 'Not equals (!=)',
         valuesComponent: 'filter-values/value-input'
       },
       {
         id: 'bet',
-        longName: 'Between (<=>)',
+        name: 'Between (<=>)',
         valuesComponent: 'filter-values/range-input'
       },
       {
         id: 'nbet',
-        longName: 'Not between (!<=>)',
+        name: 'Not between (!<=>)',
         valuesComponent: 'filter-values/range-input'
       }
     ];
@@ -75,7 +75,7 @@ export default Base.extend({
    */
   displayName: computed('filter.subject.{metric,parameters}', function() {
     let metric = get(this, 'filter.subject');
-    return metricFormat(metric, get(metric, 'metric.longName'));
+    return metricFormat(metric, metric.metric?.name);
   }),
 
   /**

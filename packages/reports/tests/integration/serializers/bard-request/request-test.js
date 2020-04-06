@@ -22,16 +22,16 @@ module('Integration | Serializer | Request Fragment', function(hooks) {
       let record = store.createFragment('bard-request/request', {
         metrics: [
           {
-            metric: { name: 'navClicks' }
+            metric: { id: 'navClicks' }
           },
           {
-            metric: { name: 'revenue' },
+            metric: { id: 'revenue' },
             parameters: {
               currency: 'USD'
             }
           },
           {
-            metric: { name: 'revenue' },
+            metric: { id: 'revenue' },
             parameters: {
               currency: 'CAD',
               as: 'preExistingAlias'

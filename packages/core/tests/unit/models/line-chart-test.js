@@ -49,14 +49,14 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
       type: 'dimension',
       config: {
         metric: {
-          metric: { name: 'm1', category: 'category', longName: 'M1' },
+          metric: { id: 'm1', category: 'category', name: 'M1' },
           parameters: {},
           canonicalName: 'm1'
         },
         dimensionOrder: ['d1'],
         dimensions: [
           {
-            name: 'Foo',
+            id: 'Foo',
             values: { d1: 'foo' }
           }
         ]
@@ -117,7 +117,7 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
       type: 'dimension',
       config: {
         metric: {
-          metric: { name: 'm1', category: 'category', longName: 'M1' },
+          metric: { id: 'm1', category: 'category', name: 'M1' },
           parameters: {},
           canonicalName: 'm1'
         },
@@ -155,7 +155,7 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
       type: 'dimension',
       config: {
         metric: {
-          metric: { name: 'm1', category: 'category', longName: 'M1' },
+          metric: { id: 'm1', category: 'category', name: 'M1' },
           parameters: {},
           canonicalName: 'm1'
         },

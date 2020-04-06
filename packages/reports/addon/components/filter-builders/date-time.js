@@ -31,7 +31,13 @@ export default class DateTimeFilterBuilder extends Base {
    */
   @computed('request.logicalTable.timeGrain')
   get dateTimePeriodName() {
-    return get(this, 'request.logicalTable.timeGrain.longName');
+    const {
+      logicalTable: {
+        timeGrain,
+        table: { timeGrains }
+      }
+    } = this.request;
+    return timeGrains.find(grain => grain.id === timeGrain)?.name;
   }
 
   /**
@@ -43,27 +49,27 @@ export default class DateTimeFilterBuilder extends Base {
     return [
       {
         id: OPERATORS.current,
-        longName: `Current ${this.dateTimePeriodName}`,
+        name: `Current ${this.dateTimePeriodName}`,
         valuesComponent: 'filter-values/current-period'
       },
       {
         id: OPERATORS.lookback,
-        longName: 'In The Past',
+        name: 'In The Past',
         valuesComponent: 'filter-values/lookback-input'
       },
       {
         id: OPERATORS.since,
-        longName: 'Since',
+        name: 'Since',
         valuesComponent: 'filter-values/since-input'
       },
       {
         id: OPERATORS.dateRange,
-        longName: 'Between',
+        name: 'Between',
         valuesComponent: 'filter-values/date-range'
       },
       {
         id: OPERATORS.advanced,
-        longName: 'Advanced',
+        name: 'Advanced',
         valuesComponent: 'filter-values/advanced-interval-input'
       }
     ];
@@ -152,10 +158,10 @@ export default class DateTimeFilterBuilder extends Base {
    */
   @computed('requestFragment.interval', 'dateTimePeriodName')
   get filter() {
-    const interval = get(this, 'requestFragment.interval');
+    const interval = this.requestFragment?.interval;
 
     return {
-      subject: { longName: `Date Time (${this.dateTimePeriodName})` },
+      subject: { name: `Date Time (${this.dateTimePeriodName})` },
       operator: this.operatorForInterval(interval),
       values: arr([interval])
     };
@@ -174,8 +180,8 @@ export default class DateTimeFilterBuilder extends Base {
       return;
     }
 
-    const dateTimePeriod = get(this, 'request.logicalTable.timeGrain.name');
-    const originalInterval = get(this, 'requestFragment.interval');
+    const dateTimePeriod = this.request.logicalTable?.timeGrain;
+    const originalInterval = this.requestFragment?.interval;
 
     const newInterval = this.intervalForOperator(originalInterval, dateTimePeriod, newOperator);
     set(this, 'requestFragment.interval', newInterval);

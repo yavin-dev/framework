@@ -3,7 +3,7 @@
 {{#if @field}}
   <span class="filter-field--collapsed">({{@field}})</span>
 {{/if}}
-<span class="filter-operator--collapsed">{{lowercase @filter.operator.longName}}</span>
+<span class="filter-operator--collapsed">{{lowercase @filter.operator.name}}</span>
 <strong>
   {{component
     @filter.operator.valuesComponent

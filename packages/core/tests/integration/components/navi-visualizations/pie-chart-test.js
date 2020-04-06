@@ -20,9 +20,7 @@ const Model = A([
   {
     request: {
       logicalTable: {
-        timeGrain: {
-          name: 'day'
-        }
+        timeGrain: 'day'
       },
       intervals: [
         {
@@ -33,22 +31,22 @@ const Model = A([
       metrics: [
         {
           metric: {
-            name: 'totalPageViews',
-            longName: 'Total Page Views'
+            id: 'totalPageViews',
+            name: 'Total Page Views'
           }
         },
         {
           metric: {
-            name: 'uniqueIdentifier',
-            longName: 'Unique Identifier'
+            id: 'uniqueIdentifier',
+            name: 'Unique Identifier'
           }
         }
       ],
       dimensions: [
         {
           dimension: {
-            name: 'age',
-            longName: 'Age'
+            id: 'age',
+            name: 'Age'
           }
         }
       ]

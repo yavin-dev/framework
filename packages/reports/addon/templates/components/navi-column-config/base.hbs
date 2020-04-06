@@ -22,7 +22,7 @@
         id="{{this.classId}}-base-type-input"
         {{!-- TODO: Possibly remove @disabled={{false}} and allow changing base metric here in the future --}}
         @disabled={{true}}
-        @value={{get @column.fragment (concat @column.type ".name")}}
+        @value={{get @column.fragment (concat @column.type ".id")}}
         @key-up={{@onUpdateColumnName}}
       />
     </div>

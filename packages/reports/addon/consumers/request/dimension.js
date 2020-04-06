@@ -42,21 +42,19 @@ export default ActionConsumer.extend({
     },
 
     /**
-     * @action DID_UPDATE_TIME_GRAIN
+     * @action DID_UPDATE_TABLE
      * @param {Object} route - route that has a model that contains a request property
-     * @param {Object} timeGrain - newly updated time grain
+     * @param {Object} table - newly updated table
      */
-    [RequestActions.DID_UPDATE_TIME_GRAIN](route, timeGrain) {
+    [RequestActions.DID_UPDATE_TABLE](route, table) {
       let request = get(route, 'currentModel.request'),
-        timeGrainDimensions = get(timeGrain, 'dimensions');
+        tableDimensions = table.dimensions;
 
-      get(request, 'dimensions')
-        .mapBy('dimension')
-        .forEach(dimension => {
-          if (!timeGrainDimensions.includes(dimension)) {
-            get(this, 'requestActionDispatcher').dispatch(RequestActions.REMOVE_DIMENSION, route, dimension);
-          }
-        });
+      request.dimensions.mapBy('dimension').forEach(dim => {
+        if (!tableDimensions.includes(dim)) {
+          get(this, 'requestActionDispatcher').dispatch(RequestActions.REMOVE_DIMENSION, route, dim);
+        }
+      });
     }
   }
 });

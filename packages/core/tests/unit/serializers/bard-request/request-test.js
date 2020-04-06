@@ -55,14 +55,14 @@ module('Unit | Serializer | Request', function(hooks) {
       set(report, 'request.having', [
         {
           metric: {
-            metric: { name: 'revenue' },
+            metric: { id: 'revenue' },
             parameters: { currency: 'USD' }
           },
           operator: 'lt',
           values: [2]
         },
         {
-          metric: { metric: { name: 'adClicks' } },
+          metric: { metric: { id: 'adClicks' } },
           operator: 'gt',
           values: [1]
         }
@@ -88,7 +88,7 @@ module('Unit | Serializer | Request', function(hooks) {
       set(report, 'request.having', [
         {
           metric: {
-            metric: { name: 'revenue' },
+            metric: { id: 'revenue' },
             parameters: { currency: 'JPY' }
           },
           parameters: { currency: 'JPY' },
@@ -113,13 +113,13 @@ module('Unit | Serializer | Request', function(hooks) {
       set(report, 'request.sort', [
         {
           metric: {
-            metric: { name: 'revenue' },
+            metric: { id: 'revenue' },
             parameters: { currency: 'CAD' }
           },
           direction: 'asc'
         },
         {
-          metric: { metric: { name: 'adClicks' } },
+          metric: { metric: { id: 'adClicks' } },
           direction: 'desc'
         }
       ]);
@@ -143,7 +143,7 @@ module('Unit | Serializer | Request', function(hooks) {
       set(report, 'request.sort', [
         {
           metric: {
-            metric: { name: 'revenue' },
+            metric: { id: 'revenue' },
             parameters: { currency: 'JPY' }
           },
           direction: 'asc'
@@ -234,9 +234,9 @@ module('Unit | Serializer | Request', function(hooks) {
 
       //havings
       assert.equal(
-        get(having.objectAt(0), 'metric.metric.name'),
+        get(having.objectAt(0), 'metric.metric.id'),
         'revenue',
-        'base metric in metric.name in parameterized having'
+        'base metric in metric.id in parameterized having'
       );
       assert.equal(get(having.objectAt(0), 'operator'), 'lt', 'having operator is preserved');
       assert.equal(
@@ -246,21 +246,21 @@ module('Unit | Serializer | Request', function(hooks) {
       );
 
       assert.equal(
-        get(having.objectAt(1), 'metric.metric.name'),
+        get(having.objectAt(1), 'metric.metric.id'),
         'adClicks',
         'Simple metrics are handled correctly in having'
       );
       assert.equal(get(having.objectAt(1), 'operator'), 'gt', 'operator is preserved for simple having metrics');
 
       //dateTime sort
-      assert.equal(get(sort.objectAt(0), 'metric.metric.name'), 'dateTime', 'dateTime sort is deserialized properly');
+      assert.equal(get(sort.objectAt(0), 'metric.metric.id'), 'dateTime', 'dateTime sort is deserialized properly');
       assert.equal(get(sort.objectAt(0), 'direction'), 'desc', 'dateTime sort direction is preserved');
 
       //other sorts
       assert.equal(
-        get(sort.objectAt(1), 'metric.metric.name'),
+        get(sort.objectAt(1), 'metric.metric.id'),
         'revenue',
-        'base metric in metric.name in parameterized sort'
+        'base metric in metric.id in parameterized sort'
       );
       assert.equal(get(sort.objectAt(1), 'direction'), 'asc', 'sort direction is preserved');
       assert.equal(
@@ -270,7 +270,7 @@ module('Unit | Serializer | Request', function(hooks) {
       );
 
       assert.equal(
-        get(sort.objectAt(2), 'metric.metric.name'),
+        get(sort.objectAt(2), 'metric.metric.id'),
         'adClicks',
         'Simple metrics are handled correctly in sort'
       );
@@ -350,33 +350,33 @@ module('Unit | Serializer | Request', function(hooks) {
 
     const result = serializer.normalize(type, request);
 
-    assert.equal(result.data.attributes.logicalTable.table.longName, 'Inventory', 'table meta is normalized correctly');
+    assert.equal(result.data.attributes.logicalTable.table.name, 'Inventory', 'table meta is normalized correctly');
     assert.deepEqual(
-      result.data.attributes.metrics.map(metric => metric.metric.longName),
+      result.data.attributes.metrics.map(metric => metric.metric.name),
       ['Quantity of thing', 'How many are available', 'Personally sold amount'],
       'metrics meta is normalized correctly'
     );
 
     assert.deepEqual(
-      result.data.attributes.dimensions.map(dimension => dimension.dimension.longName),
+      result.data.attributes.dimensions.map(dimension => dimension.dimension.name),
       ['Container', 'Item'],
       'dimension meta is loaded correctly'
     );
 
     assert.deepEqual(
-      result.data.attributes.filters.map(filter => filter.dimension.longName),
+      result.data.attributes.filters.map(filter => filter.dimension.name),
       ['Container'],
       'dimension meta is loaded correctly into filters'
     );
 
     assert.deepEqual(
-      result.data.attributes.having.map(having => having.metric.metric.longName),
+      result.data.attributes.having.map(having => having.metric.metric.name),
       ['Quantity of thing', 'Personally sold amount'],
       'metric meta is loaded correctly into havings'
     );
 
     assert.deepEqual(
-      result.data.attributes.sort.map(sort => sort.metric.metric.longName || sort.metric.metric.name),
+      result.data.attributes.sort.map(sort => sort.metric.metric.name || sort.metric.metric.id),
       ['dateTime', 'How many are available', 'Personally sold amount'],
       'metric meta is loaded correctly into sort'
     );

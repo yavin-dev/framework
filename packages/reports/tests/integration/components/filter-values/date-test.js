@@ -10,7 +10,7 @@ module('Integration | Component | filter values/date', function(hooks) {
 
   hooks.beforeEach(async function() {
     this.filter = { values: [] };
-    this.request = { logicalTable: { timeGrain: { name: 'day' } } };
+    this.request = { logicalTable: { timeGrain: 'day' } };
     this.onUpdateFilter = () => null;
     this.selectedDate = null;
 

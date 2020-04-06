@@ -11,8 +11,8 @@ module('Unit | Validator | request-filters', function(hooks) {
     let Validator = this.owner.lookup('validator:request-filters'),
       request = {
         filters: arr([
-          { dimension: { name: 'dim1' }, rawValues: ['d1'] },
-          { dimension: { name: 'dim2' }, rawValues: ['d2'] }
+          { dimension: { id: 'dim1' }, rawValues: ['d1'] },
+          { dimension: { id: 'dim2' }, rawValues: ['d2'] }
         ])
       };
 

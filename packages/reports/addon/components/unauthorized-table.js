@@ -7,7 +7,7 @@
  */
 
 import Component from '@ember/component';
-import { set, get } from '@ember/object';
+import { set } from '@ember/object';
 import layout from '../templates/components/unauthorized-table';
 
 export default Component.extend({
@@ -27,6 +27,6 @@ export default Component.extend({
 
   init() {
     this._super(...arguments);
-    set(this, 'tableName', get(this, 'report.request.logicalTable.table.longName'));
+    set(this, 'tableName', this.report?.request?.logicalTable?.table?.name);
   }
 });

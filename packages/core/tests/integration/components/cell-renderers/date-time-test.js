@@ -29,9 +29,7 @@ const request = {
   metrics: [{ metric: 'uniqueIdentifier' }, { metric: 'totalPageViews' }],
   logicalTable: {
     table: 'network',
-    timeGrain: {
-      name: 'day'
-    }
+    timeGrain: 'day'
   }
 };
 
