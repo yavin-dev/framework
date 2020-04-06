@@ -58,6 +58,26 @@ export const MetricSix = {
   }
 };
 
+export const MetricFive = {
+  category: 'currencyMetrics',
+  name: 'metricFive',
+  longName: 'Metric Five',
+  metricFunctionId: 'moneyMetric'
+};
+
+export const MetricSix = {
+  category: 'currencyMetrics',
+  name: 'metricSix',
+  longName: 'Metric Six',
+  parameters: {
+    currency: {
+      defaultValue: 'USD',
+      type: 'dimension',
+      dimensionName: 'displayCurrency'
+    }
+  }
+};
+
 export const DimensionOne = {
   category: 'categoryOne',
   name: 'dimensionOne',
