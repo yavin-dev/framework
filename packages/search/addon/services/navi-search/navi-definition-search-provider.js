@@ -33,7 +33,7 @@ export default class NaviDefinitionSearchProviderService extends NaviBaseSearchP
     const kegData = [];
     let data = [];
 
-    if (query && query.length > 0) {
+    if (query?.length > 0) {
       types.forEach(type => kegData.push(...this.metadataService.all(type)));
       data = searchRecordsByFields(kegData, query, ['id', 'name', 'description']);
     }
