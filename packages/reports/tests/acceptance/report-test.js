@@ -1985,7 +1985,7 @@ module('Acceptance | Navi Report', function(hooks) {
       .hasText('May 30, 2015', 'Calendar defaults "all" grain  to show the lowest grain which is day');
   });
 
-  test('Date picker advanced doesnt modify interval', async function(assert) {
+  test("Date picker advanced doesn't modify interval", async function(assert) {
     assert.expect(6);
     await visit('/reports/1/view');
 
