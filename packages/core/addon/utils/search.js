@@ -104,7 +104,7 @@ export function searchRecords(records, query, searchField) {
  * @method searchRecordsByFields
  * @param {Array} records - collection of records to search
  * @param {String} query - search query used to filter and rank records
- * @param {Array} searchFields - field in record to compare
+ * @param {Array} searchFields - fields in record to compare
  * @param {Number} threshold – relevance threshold for matching records
  * @returns {Array} array of matching records
  */
@@ -116,12 +116,7 @@ export function searchRecordsByFields(records, query, searchFields, threshold) {
   for (let i = 0; i < records.length; i++) {
     let record = records.objectAt(i),
       // Get average relevance between search fields
-      relevance =
-        searchFields
-          .flatMap(searchField => getPartialMatchWeight(getWithDefault(record, searchField, '').toLowerCase(), query))
-          .reduce(function(sum, value) {
-            return sum + (value || 0);
-          }, 0) / searchFields.length;
+      relevance = getAverageRelevance(record, query, searchFields);
 
     if (relevance) {
       results.push({ relevance, record });
@@ -177,4 +172,23 @@ export function searchDimensionRecords(records, query, resultLimit, page) {
   results = results.sortBy('relevance');
 
   return arr(getPaginatedRecords(results, resultLimit, page));
+}
+
+/**
+ * Searches dimension records and returns filtered results sorted by relevance
+ *
+ * @method getAverageRelevance
+ * @param {Array} record - Record to search
+ * @param {String} query - search query used to filter and rank assets
+ * @param {Number} searchFields - Fields in record to compare
+ * @returns {Number} Average relevance of record based on the query
+ */
+export function getAverageRelevance(record, query, searchFields) {
+  return (
+    searchFields
+      .flatMap(searchField => getPartialMatchWeight(getWithDefault(record, searchField, '').toLowerCase(), query))
+      .reduce(function(sum, value) {
+        return sum + (value || 0);
+      }, 0) / searchFields.length
+  );
 }
