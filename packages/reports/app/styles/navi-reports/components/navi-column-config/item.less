@@ -45,22 +45,22 @@
   &__name {
     font-family: @font-family-sans-serif;
     font-size: @font-size-base;
+    margin: 10px 0;
     overflow: hidden;
     text-align: left;
     text-overflow: ellipsis;
     white-space: nowrap;
-    margin: 10px 0;
 
     // Multi line ellipsis for supported browsers
     @supports (-webkit-line-clamp: 2) {
+      display: -webkit-box;
       overflow: hidden;
       text-overflow: ellipsis;
-      white-space: initial;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
       /* autoprefixer: off */
       -webkit-box-orient: vertical;
       /* autoprefixer: on */
+      -webkit-line-clamp: 2;
+      white-space: initial;
     }
   }
 
