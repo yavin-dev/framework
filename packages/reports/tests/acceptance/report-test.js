@@ -1809,7 +1809,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.dom(findAll('.filter-values--advanced-interval-input__value')[0]).hasValue('P7D', 'The start date is P7D');
     assert
       .dom(findAll('.filter-values--advanced-interval-input__value')[1])
-      .hasValue('2015-11-15', 'The end date is 2015-11-15');
+      .hasValue('2015-11-16', 'The end date is 2015-11-16');
 
     await selectChoose('.filter-builder__select-trigger', 'Between');
     assert

@@ -13,7 +13,7 @@ module('Integration | Component | filter values/lookback input', function(hooks)
 
   hooks.beforeEach(async function() {
     this.filter = { values: arr([Interval.parseFromStrings('P4D', 'current')]) };
-    this.request = { logicalTable: { timeGrain: 'day' } };
+    this.request = { logicalTable: { timeGrain: 'day', table: { timeGrainIds: ['day'] } } };
     this.onUpdateFilter = () => null;
 
     await render(hbs`<FilterValues::LookbackInput

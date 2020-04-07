@@ -11,7 +11,7 @@ module('Integration | Component | filter values/since input', function(hooks) {
 
   hooks.beforeEach(async function() {
     this.filter = { values: arr([Interval.parseFromStrings('2020-01-01', 'current')]) };
-    this.request = { logicalTable: { timeGrain: 'day' } };
+    this.request = { logicalTable: { timeGrain: 'day', table: { timeGrainIds: ['day'] } } };
     this.onUpdateFilter = () => null;
 
     await render(hbs`<FilterValues::SinceInput

@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, findAll, fillIn, focus, blur } from '@ember/test-helpers';
+import { render, findAll, fillIn, blur } from '@ember/test-helpers';
 import { A as arr } from '@ember/array';
 import hbs from 'htmlbars-inline-precompile';
 import Interval from 'navi-core/utils/classes/interval';
