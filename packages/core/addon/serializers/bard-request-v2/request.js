@@ -4,13 +4,4 @@
  */
 import JSONSerializer from '@ember-data/serializer/json';
 
-export default class RequestSerializer extends JSONSerializer {
-  /**
-   * @property {Object} attrs - mapping between model properties and serialized json keys
-   * @override
-   */
-  attrs = {
-    // prevents sending below attributes in request payload
-    responseFormat: { serialize: false }
-  };
-}
+export default class RequestSerializer extends JSONSerializer {}

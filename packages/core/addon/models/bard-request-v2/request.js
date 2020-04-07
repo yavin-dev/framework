@@ -37,11 +37,7 @@ const Validations = buildValidations({
       collection: true,
       message: 'Sort must be a collection'
     })
-  ],
-  responseFormat: validator('presence', {
-    presence: true,
-    message: 'Response format cannot be empty'
-  })
+  ]
 });
 
 export default Fragment.extend(Validations, {
@@ -52,7 +48,6 @@ export default Fragment.extend(Validations, {
   limit: attr('number'),
   requestVersion: attr('string', { defaultValue: '2.0' }),
   dataSource: attr('string', { defaultValue: getDefaultDataSourceName() }),
-  responseFormat: attr('string', { defaultValue: 'json' }),
 
   /**
    * @method clone
@@ -89,8 +84,7 @@ export default Fragment.extend(Validations, {
       ),
       limit: clonedRequest.limit,
       requestVersion: clonedRequest.requestVersion,
-      dataSource: clonedRequest.dataSource,
-      responseFormat: clonedRequest.responseFormat
+      dataSource: clonedRequest.dataSource
     });
   }
 });

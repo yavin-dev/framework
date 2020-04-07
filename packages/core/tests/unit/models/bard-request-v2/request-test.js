@@ -63,7 +63,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
   });
 
   test('Model using the Request Fragment', async function(assert) {
-    assert.expect(6);
+    assert.expect(5);
 
     assert.ok(mockModel, 'mockModel is fetched from the store');
 
@@ -76,12 +76,10 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
     assert.equal(request.requestVersion, '2.0', 'the `requestVersion` property has the correct default value');
 
     assert.equal(request.dataSource, 'dummy', 'the `dataSource` property has the correct value');
-
-    assert.equal(request.responseFormat, 'json', 'the `responseFormat` property has the correct default value');
   });
 
   test('Clone Request', async function(assert) {
-    assert.expect(14);
+    assert.expect(13);
 
     const request = mockModel.request.clone();
 
@@ -96,12 +94,6 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
     );
 
     assert.equal(request.dataSource, 'dummy', 'the `dataSource` property of the cloned request has the correct value');
-
-    assert.equal(
-      request.responseFormat,
-      'json',
-      'the `responseFormat` property of the cloned request has the correct value'
-    );
 
     // filters
 
@@ -165,22 +157,13 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
   });
 
   test('Validation', async function(assert) {
-    assert.expect(14);
+    assert.expect(12);
 
     const { request } = mockModel;
 
     assert.ok(request.validations.isValid, 'request is valid');
     assert.equal(request.validations.messages.length, 0, 'there are no validation errors for a valid request');
 
-    request.set('responseFormat', '');
-    assert.notOk(request.validations.isValid, 'a request with an empty `responseFormat` is invalid');
-    assert.deepEqual(
-      request.validations.messages,
-      ['Response format cannot be empty'],
-      'error messages collection is correct for a request with an empty `responseFormat'
-    );
-
-    request.set('responseFormat', 'json');
     request.set('table', '');
     assert.notOk(request.validations.isValid, 'a request with an empty `table` is invalid');
     assert.deepEqual(
