@@ -267,7 +267,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
         field: null
       }
     ]);
-    assert.notOk(request.validations.isValid, 'a request with an invalid filter is invalid');
+    assert.notOk(request.validations.isValid, 'a request with an invalid column is invalid');
     assert.deepEqual(
       request.validations.messages,
       ['The `field` field cannot be empty'],
@@ -291,7 +291,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
         direction: null
       }
     ]);
-    assert.notOk(request.validations.isValid, 'a request with an invalid filter is invalid');
+    assert.notOk(request.validations.isValid, 'a request with an invalid sort is invalid');
     assert.equal(request.validations.messages.length, 2, 'there are 2 error messages for the invalid sort');
     assert.ok(
       request.validations.messages.includes('The `field` field cannot be empty'),
