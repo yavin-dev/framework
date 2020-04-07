@@ -30,7 +30,7 @@ export const MetricFour = {
   description: 'This is Metric Four'
 };
 
-export const pageViews = {
+export const PageViews = {
   category: 'pageMetrics',
   id: 'pageViews',
   name: 'Page Views',
@@ -378,5 +378,5 @@ const METRIC_MAP = {
   metricFour: MetricFour,
   metricFive: MetricFive,
   metricSix: MetricSix,
-  pageViews: pageViews
+  pageViews: PageViews
 };
