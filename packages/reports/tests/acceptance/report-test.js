@@ -1809,7 +1809,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.dom(findAll('.filter-values--advanced-interval-input__value')[0]).hasValue('P7D', 'The start date is P7D');
     assert
       .dom(findAll('.filter-values--advanced-interval-input__value')[1])
-      .hasValue('2015-11-15', 'The end date is 2015-11-15');
+      .hasValue('2015-11-16', 'The end date is 2015-11-16');
 
     await selectChoose('.filter-builder__select-trigger', 'Between');
     assert
@@ -1983,6 +1983,38 @@ module('Acceptance | Navi Report', function(hooks) {
     assert
       .dom('.filter-values--date-range-input__high-value')
       .hasText('May 30, 2015', 'Calendar defaults "all" grain  to show the lowest grain which is day');
+  });
+
+  test("Date picker advanced doesn't modify interval", async function(assert) {
+    assert.expect(6);
+    await visit('/reports/1/view');
+
+    await selectChoose('.filter-builder__select-trigger', 'Advanced');
+    const startInput = findAll('.filter-values--advanced-interval-input__value')[0];
+    const endInput = findAll('.filter-values--advanced-interval-input__value')[1];
+    assert.dom(startInput).hasValue('P7D', 'The start input is not modified');
+    assert.dom(endInput).hasValue('2015-11-16', 'The end input is not modified');
+
+    await click('.get-api__btn');
+    assert.ok(
+      find('.navi-modal__input').value.includes('dateTime=P7D%2F2015-11-16'),
+      'The while in advanced mode shows exactly what is in the start/end inputs'
+    );
+    await click('.navi-modal__close');
+
+    await fillIn(startInput, 'P1M');
+    await blur(startInput);
+    await fillIn(endInput, '2020-04-01');
+    await blur(endInput);
+    assert.dom(startInput).hasValue('P1M', 'The start input was updated exactly');
+    assert.dom(endInput).hasValue('2020-04-01', 'The end input was updated exactly');
+
+    await click('.get-api__btn');
+    assert.ok(
+      find('.navi-modal__input').value.includes('dateTime=P1M%2F2020-04-01'),
+      'The query is updated to show the new start/end inputs exactly'
+    );
+    await click('.navi-modal__close');
   });
 
   test("Report with an unknown table doesn't crash", async function(assert) {

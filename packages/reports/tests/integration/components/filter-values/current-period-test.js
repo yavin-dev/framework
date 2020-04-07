@@ -11,7 +11,7 @@ module('Integration | Component | filter values/current period', function(hooks)
 
   hooks.beforeEach(async function() {
     this.filter = { values: arr([Interval.parseFromStrings('current', 'next')]) };
-    this.request = { logicalTable: { timeGrain: 'day' } };
+    this.request = { logicalTable: { timeGrain: 'day', table: { timeGrainIds: ['day', 'week'] } } };
 
     await render(hbs`<FilterValues::CurrentPeriod
             @filter={{this.filter}}
@@ -27,7 +27,7 @@ module('Integration | Component | filter values/current period', function(hooks)
       .dom('.filter-values--current-period')
       .hasText(`The current day. (${getDateRangeFormat(this)})`, 'The current period is day');
 
-    this.set('request', { logicalTable: { timeGrain: 'week' } });
+    this.set('request.logicalTable.timeGrain', 'week');
     assert
       .dom('.filter-values--current-period')
       .hasText(`The current week. (${getDateRangeFormat(this)})`, 'The current period changes to week');

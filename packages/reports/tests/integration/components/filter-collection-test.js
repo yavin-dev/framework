@@ -34,7 +34,7 @@ const MockFilterFragment1 = {
     filters: [MockFilterFragment1, MockFilterFragment2],
     intervals: [MockIntervalFragment],
     having: [MockMetricFragment1, MockMetricFragment2],
-    logicalTable: { timeGrain: 'day', table: { timeGrains: [{ id: 'day', name: 'Day' }] } }
+    logicalTable: { timeGrain: 'day', table: { timeGrainIds: ['day'], timeGrains: [{ id: 'day', name: 'Day' }] } }
   };
 
 module('Integration | Component | filter collection', function(hooks) {

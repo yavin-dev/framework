@@ -16,7 +16,7 @@
     <input
       class="filter-values--advanced-interval-input__value"
       value={{this.dateStrings.end}}
-      {{on "focusout" (pipe this.parseDate this.setIntervalEnd)}}
+      {{on "focusout" (pipe this.parseDate this.setIntervalEndExact)}}
     >
 
     <div class="filter-values--advanced-interval-input__label">
