@@ -1,1 +1,1 @@
-export { default } from 'navi-core/serializers/bard-request-v2/fragments/sort';
+export { default } from 'navi-core/serializers/bard-request-v2/fragments/base';
