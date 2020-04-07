@@ -178,9 +178,9 @@ export function searchDimensionRecords(records, query, resultLimit, page) {
  * Searches dimension records and returns filtered results sorted by relevance
  *
  * @method getAverageRelevance
- * @param {Array} record - Record to search
+ * @param {String} record - Record to search
  * @param {String} query - search query used to filter and rank assets
- * @param {Number} searchFields - Fields in record to compare
+ * @param {Array} searchFields - Fields in record to compare
  * @returns {Number} Average relevance of record based on the query
  */
 export function getAverageRelevance(record, query, searchFields) {
