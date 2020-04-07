@@ -67,7 +67,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Column', function(hooks) {
     assert.notOk(column.validations.isValid, 'a column with an invalid `type` is invalid');
     assert.deepEqual(
       column.validations.messages,
-      ['The `type` column field must equal to `dimension` or `metric`'],
+      ['The `type` field of `dateTime` column must equal to `dimension` or `metric`'],
       'error messages collection is correct for a column with an invalid `type`'
     );
 

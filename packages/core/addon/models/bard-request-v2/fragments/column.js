@@ -10,7 +10,10 @@ const Validations = buildValidations({
   type: validator('inclusion', {
     in: ['dimension', 'metric'],
     allowBlank: true,
-    message: 'The `type` column field must equal to `dimension` or `metric`'
+    message() {
+      const { field } = this.model;
+      return 'The `type` field of `' + field + '` column must equal to `dimension` or `metric`';
+    }
   })
 });
 
