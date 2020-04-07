@@ -45,10 +45,23 @@
   &__name {
     font-family: @font-family-sans-serif;
     font-size: @font-size-base;
+    margin: 10px 0;
     overflow: hidden;
     text-align: left;
     text-overflow: ellipsis;
     white-space: nowrap;
+
+    // Multi line ellipsis for supported browsers
+    @supports (-webkit-line-clamp: 2) {
+      display: -webkit-box;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      /* autoprefixer: off */
+      -webkit-box-orient: vertical;
+      /* autoprefixer: on */
+      -webkit-line-clamp: 2;
+      white-space: initial;
+    }
   }
 
   &__dropdown-icon {
