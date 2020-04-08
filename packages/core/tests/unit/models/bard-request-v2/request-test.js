@@ -222,7 +222,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
       {
         field: null,
         operator: null,
-        values: []
+        values: null
       }
     ]);
     assert.notOk(request.validations.isValid, 'a request with an invalid filter is invalid');

@@ -11,19 +11,13 @@ const Validations = buildValidations({
     presence: true,
     message: 'The `operator` filter field cannot be empty'
   }),
-  values: [
-    validator('length', {
-      min: 1,
-      allowNone: false,
-      message() {
-        const { field } = this.model;
-        return `${field} filter must have at least one value`;
-      }
-    }),
-    validator('array-empty-value', {
-      message: 'A filter cannot have any empty values'
-    })
-  ]
+  values: validator('collection', {
+    collection: true,
+    message() {
+      const { field } = this.model;
+      return `${field} filter must be a collection`;
+    }
+  })
 });
 
 export default BaseFragment.extend(Validations, {

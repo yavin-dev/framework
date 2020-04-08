@@ -52,7 +52,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Filter', function(hooks) {
   });
 
   test('Validation', async function(assert) {
-    assert.expect(12);
+    assert.expect(8);
 
     const filter = mockModel.filters.objectAt(0);
 
@@ -81,24 +81,8 @@ module('Unit | Model | Fragment | BardRequest V2 - Filter', function(hooks) {
     assert.notOk(filter.validations.isValid, 'a filter without `values` is invalid');
     assert.deepEqual(
       filter.validations.messages,
-      ['revenue filter must have at least one value'],
+      ['revenue filter must be a collection'],
       'error messages collection is correct for a filter without `values`'
-    );
-
-    filter.set('values', []);
-    assert.notOk(filter.validations.isValid, 'a filter with an empty `values` array is invalid');
-    assert.deepEqual(
-      filter.validations.messages,
-      ['revenue filter must have at least one value'],
-      'error messages collection is correct for a filter with an empty `values` array'
-    );
-
-    filter.set('values', [2, '']);
-    assert.notOk(filter.validations.isValid, 'a filter with a `values` array that includes an empty value is invalid');
-    assert.deepEqual(
-      filter.validations.messages,
-      ['A filter cannot have any empty values'],
-      'error messages collection is correct for a filter with a `values` array that includes an empty value'
     );
   });
 
