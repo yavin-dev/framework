@@ -16,7 +16,7 @@ module('Integration | Component | definition', function(hooks) {
   });
 
   test('displays results', async function(assert) {
-    assert.expect(2);
+    assert.expect(5);
 
     const data = [
       {
@@ -39,16 +39,64 @@ module('Integration | Component | definition', function(hooks) {
 
     await render(hbs`<NaviSearchResult::Definition @data={{this.result.data}} />`);
 
-    assert.dom('.navi-search-result__definition.result_element').exists({ count: 2 });
-    const results = findAll('.navi-search-result__definition.result_element');
-    const expectedResults = [
-      ['Page Views', 'The number of views of a page.'],
-      ['Impressions', 'Number of times a user saw the ad.']
+    assert.dom('.navi-search-result__definition.result_element').exists({ count: 2 }, 'Two results are displayed');
+    const definitionTitles = findAll('.navi-search-result__definition-name'),
+      definitionDescription = findAll('.navi-search-result__definition-description');
+    const expectedDefinitionTitles = ['Page Views', 'Impressions'],
+      expectedDefinitionDescriptions = ['The number of views of a page.', 'Number of times a user saw the ad.'];
+
+    definitionTitles.forEach((title, index) =>
+      assert.equal(title.textContent.trim(), expectedDefinitionTitles[index], 'Expected definition title is returned')
+    );
+    definitionDescription.forEach((description, index) =>
+      assert.equal(
+        description.textContent.trim(),
+        expectedDefinitionDescriptions[index],
+        'Expected definition description is returned'
+      )
+    );
+  });
+
+  test('Fetch extended result and display', async function(assert) {
+    assert.expect(3);
+    const data = [
+      {
+        id: 'pageViews',
+        name: 'Page Views',
+        extended: new Promise(function(resolve) {
+          resolve({
+            id: 'pageViews',
+            name: 'Page Views',
+            description: 'The number of views of a page.'
+          });
+        })
+      }
     ];
-    assert.deepEqual(
-      results.map(result => result.textContent.trim().split(/[\n ][\n ]+/)),
-      expectedResults,
-      'Displayed correct search result.'
+    const result = {
+      component: 'navi-search-result/definition',
+      title: 'Definitions',
+      data
+    };
+    set(this, 'result', result);
+
+    await render(hbs`<NaviSearchResult::Definition @data={{this.result.data}} />`);
+
+    assert.dom('.navi-search-result__definition.result_element').exists({ count: 1 }, 'One result is displayed');
+
+    const definitionTitles = findAll('.navi-search-result__definition-name'),
+      definitionDescription = findAll('.navi-search-result__definition-description');
+    const expectedDefinitionTitles = ['Page Views'],
+      expectedDefinitionDescriptions = ['The number of views of a page.'];
+
+    definitionTitles.forEach((title, index) =>
+      assert.equal(title.textContent.trim(), expectedDefinitionTitles[index], 'Expected definition title is returned')
+    );
+    definitionDescription.forEach((description, index) =>
+      assert.equal(
+        description.textContent.trim(),
+        expectedDefinitionDescriptions[index],
+        'Expected definition description is returned'
+      )
     );
   });
 });
