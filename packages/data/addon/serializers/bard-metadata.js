@@ -8,7 +8,7 @@
 import EmberObject from '@ember/object';
 import { guidFor } from '@ember/object/internals';
 import { constructFunctionArguments } from 'navi-data/serializers/metadata/metric-function';
-import { CARDINALITY_SIZES } from '../models/metadata/dimension';
+import CARDINALITY_SIZES from '../utils/enums/cardinality-sizes';
 import config from 'ember-get-config';
 
 const LOAD_CARDINALITY = config.navi.searchThresholds.contains;
