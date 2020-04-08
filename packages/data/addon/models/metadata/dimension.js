@@ -5,8 +5,7 @@
 import { inject as service } from '@ember/service';
 import { assert } from '@ember/debug';
 import Column from './column';
-
-export const CARDINALITY_SIZES = ['SMALL', 'MEDIUM', 'LARGE'];
+import CARDINALITY_SIZES from '../../utils/enums/cardinality-sizes';
 
 export default class Dimension extends Column {
   /**
