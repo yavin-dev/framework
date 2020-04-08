@@ -29,7 +29,7 @@ export default class NaviDefinitionSearchProviderService extends NaviBaseSearchP
    */
   @keepLatestTask
   *search(query) {
-    const types = ['table', 'dimension', 'metric'];
+    const types = ['table', 'dimension', 'metric', 'time-dimension'];
     const kegData = [];
     let data = [];
 
