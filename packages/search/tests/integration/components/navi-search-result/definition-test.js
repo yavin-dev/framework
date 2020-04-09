@@ -40,21 +40,13 @@ module('Integration | Component | definition', function(hooks) {
     await render(hbs`<NaviSearchResult::Definition @data={{this.result.data}} />`);
 
     assert.dom('.navi-search-result__definition.result_element').exists({ count: 2 }, 'Two results are displayed');
-    const definitionTitles = findAll('.navi-search-result__definition-name'),
-      definitionDescription = findAll('.navi-search-result__definition-description');
-    const expectedDefinitionTitles = ['Page Views', 'Impressions'],
-      expectedDefinitionDescriptions = ['The number of views of a page.', 'Number of times a user saw the ad.'];
+    const definitionTitles = findAll('.navi-search-result__definition-name').map(el => el.textContent.trim());
+    const definitionDescription = findAll('.navi-search-result__definition-description').map(el => el.textContent.trim());
+    const expectedDefinitionTitles = ['Page Views', 'Impressions'];
+    const expectedDefinitionDescriptions = ['The number of views of a page.', 'Number of times a user saw the ad.'];
 
-    definitionTitles.forEach((title, index) =>
-      assert.equal(title.textContent.trim(), expectedDefinitionTitles[index], 'Expected definition title is returned')
-    );
-    definitionDescription.forEach((description, index) =>
-      assert.equal(
-        description.textContent.trim(),
-        expectedDefinitionDescriptions[index],
-        'Expected definition description is returned'
-      )
-    );
+    assert.deepEqual(definitionTitles, expectedDefinitionTitles, 'definition titles are shown correctly');
+    assert.deepEqual(definitionDescriptions, expectedDefinitionDescriptions, 'definition descriptions are shown correctly');
   });
 
   test('Fetch extended result and display', async function(assert) {
@@ -63,12 +55,10 @@ module('Integration | Component | definition', function(hooks) {
       {
         id: 'pageViews',
         name: 'Page Views',
-        extended: new Promise(function(resolve) {
-          resolve({
+        extended: Promise.resolve({
             id: 'pageViews',
             name: 'Page Views',
             description: 'The number of views of a page.'
-          });
         })
       }
     ];
@@ -83,20 +73,12 @@ module('Integration | Component | definition', function(hooks) {
 
     assert.dom('.navi-search-result__definition.result_element').exists({ count: 1 }, 'One result is displayed');
 
-    const definitionTitles = findAll('.navi-search-result__definition-name'),
-      definitionDescription = findAll('.navi-search-result__definition-description');
-    const expectedDefinitionTitles = ['Page Views'],
-      expectedDefinitionDescriptions = ['The number of views of a page.'];
-
-    definitionTitles.forEach((title, index) =>
-      assert.equal(title.textContent.trim(), expectedDefinitionTitles[index], 'Expected definition title is returned')
-    );
-    definitionDescription.forEach((description, index) =>
-      assert.equal(
-        description.textContent.trim(),
-        expectedDefinitionDescriptions[index],
-        'Expected definition description is returned'
-      )
+    const definitionTitles = findAll('.navi-search-result__definition-name').map(el => el.textContent.trim());
+    const definitionDescription = findAll('.navi-search-result__definition-description').map(el => el.textContent.trim());
+    const expectedDefinitionTitles = ['Page Views',];
+    const expectedDefinitionDescriptions = ['The number of views of a page.'];
+    assert.deepEqual(definitionTitles, expectedDefinitionTitles, 'definition titles are shown correctly');
+    assert.deepEqual(definitionDescriptions, expectedDefinitionDescriptions, 'definition descriptions are shown correctly');
     );
   });
 });
