@@ -13,11 +13,12 @@ const Validations = buildValidations({
   })
 });
 
-export default Fragment.extend(Validations, {
-  field: attr('string'),
-  parameters: attr({
+export default class Base extends Fragment.extend(Validations) {
+  @attr('string') field;
+  @attr({
     defaultValue() {
       return {};
     }
   })
-});
+  parameters;
+}

@@ -40,14 +40,29 @@ const Validations = buildValidations({
   ]
 });
 
-export default Fragment.extend(Validations, {
-  filters: fragmentArray('bard-request-v2/fragments/filter', { defaultValue: [] }),
-  columns: fragmentArray('bard-request-v2/fragments/column', { defaultValue: [] }),
-  table: attr('string'),
-  sort: fragmentArray('bard-request-v2/fragments/sort', { defaultValue: [] }),
-  limit: attr('number'),
-  requestVersion: attr('string', { defaultValue: '2.0' }),
-  dataSource: attr('string', { defaultValue: getDefaultDataSourceName() }),
+export default class Request extends Fragment.extend(Validations) {
+  @fragmentArray('bard-request-v2/fragments/filter', {
+    defaultValue: []
+  })
+  filters;
+  @fragmentArray('bard-request-v2/fragments/column', {
+    defaultValue: []
+  })
+  columns;
+  @attr('string') table;
+  @fragmentArray('bard-request-v2/fragments/sort', {
+    defaultValue: []
+  })
+  sort;
+  @attr('number') limit;
+  @attr('string', {
+    defaultValue: '2.0'
+  })
+  requestVersion;
+  @attr('string', {
+    defaultValue: getDefaultDataSourceName()
+  })
+  dataSource;
 
   /**
    * @method clone
@@ -87,4 +102,4 @@ export default Fragment.extend(Validations, {
       dataSource: clonedRequest.dataSource
     });
   }
-});
+}
