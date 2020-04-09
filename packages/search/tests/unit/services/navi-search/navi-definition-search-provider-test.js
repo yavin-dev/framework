@@ -34,11 +34,15 @@ module('Unit | Service | navi-definition-search-provider', function(hooks) {
 
     assert.equal(results.component, 'navi-search-result/definition', 'Result contains correct display component name');
     assert.equal(results.title, 'Definition', 'Result contains correct title for the search result section');
-    assert.deepEqual(result.data.map(res => ({ id: res.id, name: res.name})), expectedResults, 'Result contains the the expected properties and values');
+    assert.deepEqual(
+      results.data.map(result => ({ id: result.id, name: result.name })),
+      expectedResults,
+      'Result contains the the expected properties and values'
+    );
   });
 
   test('search definition of a metric', async function(assert) {
-    assert.expect(4);
+    assert.expect(3);
     metadataRoutes.bind(Server);
     const results = await Service.search.perform('time');
 
@@ -55,12 +59,11 @@ module('Unit | Service | navi-definition-search-provider', function(hooks) {
 
     assert.equal(results.component, 'navi-search-result/definition', 'Result contains correct display component name');
     assert.equal(results.title, 'Definition', 'Result contains correct title for the search result section');
-    results.data.forEach((result, index) => {
-      assert.ok(
-        Object.keys(expectedResults[index]).every(key => result[key] === expectedResults[index][key]),
-        'Result contains the the expected properties and values'
-      );
-    });
+    assert.deepEqual(
+      results.data.map(result => ({ id: result.id, name: result.name })),
+      expectedResults,
+      'Result contains the the expected properties and values'
+    );
   });
 
   test('search definition of a table', async function(assert) {
@@ -77,12 +80,11 @@ module('Unit | Service | navi-definition-search-provider', function(hooks) {
 
     assert.equal(results.component, 'navi-search-result/definition', 'Result contains correct display component name');
     assert.equal(results.title, 'Definition', 'Result contains correct title for the search result section');
-    results.data.forEach((result, index) => {
-      assert.ok(
-        Object.keys(expectedResults[index]).every(key => result[key] === expectedResults[index][key]),
-        'Result contains the the expected properties and values'
-      );
-    });
+    assert.deepEqual(
+      results.data.map(result => ({ id: result.id, name: result.name, description: result.description })),
+      expectedResults,
+      'Result contains the the expected properties and values'
+    );
   });
 
   test('search does not return a definition', async function(assert) {
