@@ -34,12 +34,7 @@ module('Unit | Service | navi-definition-search-provider', function(hooks) {
 
     assert.equal(results.component, 'navi-search-result/definition', 'Result contains correct display component name');
     assert.equal(results.title, 'Definition', 'Result contains correct title for the search result section');
-    results.data.forEach((result, index) => {
-      assert.ok(
-        Object.keys(expectedResults[index]).every(key => result[key] === expectedResults[index][key]),
-        'Result contains the the expected properties and values'
-      );
-    });
+    assert.deepEqual(result.data.map(res => ({ id: res.id, name: res.name})), expectedResults, 'Result contains the the expected properties and values');
   });
 
   test('search definition of a metric', async function(assert) {
