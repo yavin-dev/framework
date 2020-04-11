@@ -1,6 +1,5 @@
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
-import { hash } from 'rsvp';
 
 export default class Application extends Route {
   /**
@@ -19,8 +18,8 @@ export default class Application extends Route {
    * @returns {Ember.RSVP.Promise}
    */
   async model() {
-    await this.user.findOrRegister();
     await Promise.all([
+      this.user.findOrRegister(),
       this.bardMetadata.loadMetadata(),
       this.bardMetadata.loadMetadata({ dataSourceName: 'blockhead' })
     ]);

@@ -1,15 +1,15 @@
 <div class="navi-search">
   <BasicDropdown @matchTriggerWidth={{true}} as |dd|>
-  <div class="input has-icon-back navi-search-bar">
-    <Input @type="text" @value={{this.searchQuery}} @placeholder="Search" @class="navi-search-bar__input"
-      @keyUp={{fn this.search dd}} @focusIn={{fn this.focus dd}} data-ebd-id="{{dd.uniqueId}}-trigger"/>
-      {{!-- <NaviIcon @icon="search" /> --}}
-    <span class="d-icon d-search is-brand-700"></span>
-  </div>
-  <dd.Content class="box navi-search-bar__results slide-fade">
-    {{#each this.searchResults as |result|}}
-      <li><NaviSearchResult::Wrapper @result={{result}} /></li>
-    {{/each}}
-  </dd.Content>
+    <div class="input has-icon-back navi-search-bar">
+      <Input @type="text" @value={{this.searchQuery}} @placeholder="Search" @class="navi-search-bar__input"
+        @keyUp={{fn this.search dd}} @focusIn={{fn this.focus dd}} data-ebd-id="{{dd.uniqueId}}-trigger"/>
+        {{!-- <NaviIcon @icon="search" /> --}}
+      <span class="d-icon d-search is-brand-700"></span>
+    </div>
+    {{#dd.content class="box navi-search-bar__results slide-fade"}}
+      {{#each this.searchResults as |result|}}
+        <li><NaviSearchResult::Wrapper @result={{result}} /></li>
+      {{/each}}
+    {{/dd.content}}
   </BasicDropdown>
 </div>
