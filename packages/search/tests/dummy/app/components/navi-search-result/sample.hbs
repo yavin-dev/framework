@@ -1,12 +1,12 @@
 {{! Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. }}
-<table class="table is-striped navi-search-result" ...attributes>
+<table class="navi-search-results__item navi-search-results__item--striped" ...attributes>
   <tbody>
     {{#each @data as |result|}}
-      <tr class="navi-search-result__sample">
-        <td class="navi-search-result__sample result_icon is-center">
+      <tr class="navi-search-sample-result">
+        <td class="navi-search-sample-result__icon">
           <NaviIcon @icon="file-text" />
         </td>
-        <td class="navi-search-result__sample result_element">
+        <td class="navi-search-sample-result__item">
           {{result}}
         </td>
       </tr>

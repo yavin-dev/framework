@@ -1,13 +1,13 @@
-<div class="navi-search">
+<div class="navi-search" ...attributes>
   <BasicDropdown @matchTriggerWidth={{true}} as |dd|>
-  <div class="input has-icon-back navi-search-bar">
+  <div class="navi-search-bar">
     <Input @type="text" @value={{this.searchQuery}} @placeholder="Search" @class="navi-search-bar__input"
       @keyUp={{fn this.search dd}} @focusIn={{fn this.focus dd}} data-ebd-id="{{dd.uniqueId}}-trigger"/>
-      <NaviIcon @icon="search" class="s-icon"/>
+    <NaviIcon @icon="search" class="navi-search-bar__icon"/>
   </div>
-  <dd.content @class="box navi-search-bar__results slide-fade">
+  <dd.content @class="navi-search-results navi-search-results--box slide-fade">
     {{#each this.searchResults as |result|}}
-      <li><NaviSearchResult::Wrapper @result={{result}} /></li>
+      <li><NaviSearchResult::Wrapper @result={{result}} class="navi-search-results__item navi-search-results--box"/></li>
     {{/each}}
   </dd.content>
   </BasicDropdown>

@@ -3,85 +3,9 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-@font-face {
-  font-family: 'denali-icon-font';
-  font-style: normal;
-  font-weight: normal;
-  src: url('denali-icon-font.eot?1576615905868');
-  src: url('denali-icon-font.eot?#iefix-1576615905868') format('embedded-opentype'),
-    url('denali-icon-font.svg?1576615905868') format('svg'), url('denali-icon-font.woff?1576615905868') format('woff'),
-    url('denali-icon-font.ttf?1576615905868') format('truetype');
-}
-
-.d-icon[class^='d-'],
-.d-icon[class*=' d-'] {
-  font-family: 'denali-icon-font' !important;
-  font-size: 24px;
-  font-style: normal;
-  font-variant: normal;
-  font-weight: normal;
-  line-height: 1;
-  speak: none;
-  text-decoration: inherit;
-  text-rendering: optimizeLegibility;
-  text-transform: none;
-  vertical-align: middle;
-  /* Better Font Rendering */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* Glyphs list */
-
-.d-dashboard-tile:before {
-  content: '\eb4c';
-}
-
-.d-dashboard:before {
-  content: '\eb4d';
-}
-
-.d-file-search:before {
-  content: '\ebab';
-}
-
-.d-file-text:before {
-  content: '\ebad';
-}
-
-.d-input:before {
-  content: '\ebf5';
-}
-
-.d-search:before {
-  content: '\ecfd';
-}
-
-.d-table:before {
-  content: '\ed5f';
-}
-
-.d-text-center:before {
-  content: '\ed6b';
-}
-
-.d-warning:before {
-  content: '\eded';
-}
-
-table.navi-search-result {
-  border-collapse: collapse;
-  border-spacing: 0;
-}
-
-.navi-search-result > td {
-  padding: 0;
-  text-align: left;
-}
-
 .navi-search,
-.navi-search-result,
-#ember-basic-dropdown-wormhole {
+.navi-search-results,
+.navi-search-results__item {
   font-family: Helvetica, 'Arial', sans-serif;
   font-weight: 400;
   font-size: 14px;
@@ -92,225 +16,178 @@ table.navi-search-result {
   border-collapse: collapse;
   width: 100%;
   text-align: left;
+
+  h1 {
+    font-size: 28px;
+    font-weight: 600;
+    color: @denali-grey-800;
+    line-height: 1.25;
+  }
+
+  h2 {
+    font-size: 26px;
+    font-weight: 600;
+    color: @denali-grey-800;
+    line-height: 1.25;
+  }
+
+  h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: @denali-grey-800;
+    line-height: 1.5;
+    margin-block-start: 0em;
+  }
+
+  h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: @denali-grey-800;
+    line-height: 1.5;
+    margin-block-start: 0em;
+    margin-block-end: 0em;
+  }
+
+  h5 {
+    font-size: 14px;
+    font-weight: 600;
+    color: @denali-grey-800;
+    line-height: 1.5;
+    margin-block-start: 0em;
+    margin-block-end: 0em;
+  }
+
+  h6 {
+    font-size: 12px;
+    font-weight: 400;
+    color: @denali-grey-800;
+    line-height: 1.5;
+    margin-block-start: 0em;
+    margin-block-end: 0em;
+  }
+
+  a {
+    color: @denali-brand-600;
+    font-size: inherit;
+    text-decoration: none;
+  }
+
+  a:hover {
+    color: @denali-brand-700 !important;
+  }
+
+  a[disabled] {
+    color: @denali-grey-800;
+    cursor: not-allowed;
+  }
 }
 
-.s-icon {
-  font-size: 24px;
-}
-
-.result_element a {
-  color: @denali-brand-600;
-  font-size: inherit;
-  text-decoration: none;
-}
-
-.result_element a:hover {
-  color: @denali-brand-700 !important;
-}
-
-.result_element a[disabled] {
-  color: @denali-grey-800;
-  cursor: not-allowed;
-}
-
-.navi-search-result__definition td {
-  border-bottom: 1px solid rgba(@denali-grey-800, 0.2) !important;
-}
-
-.is-grey-800 {
-  color: #303030 !important;
-}
-
-.is-brand-700 {
-  color: #3570f4 !important;
-}
-
-td.result_icon {
-  width: 1%;
-  white-space: nowrap;
-}
-
-.box {
-  padding: 20px;
-  background: @denali-grey-100;
-  border-radius: 4px;
-  border-color: @denali-grey-500;
-  border-width: 1px;
-  border-style: solid;
-}
-
-.input {
+.navi-search-bar {
   position: relative;
   z-index: 0;
-}
-
-.input input {
-  margin: 0;
-  appearance: none;
-  border: none;
-  box-shadow: none;
-  flex: 1 0 auto;
-  font: inherit;
-  outline: none;
-  text-align: left;
-  padding: 0px 12px;
-  width: inherit;
-}
-
-.input input:active,
-.input input:focus {
-  transition: 300ms;
-}
-
-.input {
   min-width: 250px;
   width: 100%;
+
+  &__input {
+    margin: 0;
+    appearance: none;
+    border: none;
+    box-shadow: none;
+    flex: 1 0 auto;
+    font: inherit;
+    outline: none;
+    text-align: left;
+    padding: 0px 12px;
+    width: inherit;
+    height: 36px;
+    background: @denali-grey-100;
+    border-radius: 4px;
+    box-shadow: none;
+    color: @denali-grey-800;
+  }
+
+  &__input:active,
+  &__input:focus {
+    transition: 300ms;
+    box-shadow: inset 0 -2px rgba(@denali-brand-700, 1);
+  }
+
+  &__input::placeholder {
+    color: rgba(@denali-grey-800, 0.6);
+  }
+
+  &__input[disabled] {
+    background: rgba(@denali-grey-800, 0.05);
+    color: rgba(@denali-grey-800, 0.25);
+    box-shadow: inset 0 -2px rgba(c @denali-grey-800, 0.05);
+  }
+
+  &__input[disabled]::placeholder {
+    color: rgba(@denali-grey-800, 0.6);
+  }
+
+  &__input:invalid {
+    box-shadow: inset 0 -2px #ea0000;
+  }
+
+  &__icon {
+    display: inline;
+    font-size: 18px;
+    pointer-events: none;
+    color: @denali-brand-700;
+  }
+
+  &__icon::before {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+  }
 }
 
-.input input {
-  height: 36px;
+.navi-search-results {
+  margin-top: 5px;
+
+  &--box {
+    padding: 20px;
+    background: @denali-grey-100;
+    border-radius: 4px;
+    border-color: @denali-grey-500;
+    border-width: 1px;
+    border-style: solid;
+  }
+
+  li:not(:last-child) {
+    margin-bottom: 1.5em;
+  }
+
+  li {
+    list-style-type: none;
+  }
+
+  td:first-child {
+    width: 1%;
+    white-space: nowrap;
+  }
 }
 
-.input input {
-  background: @denali-grey-100;
-  border-radius: 4px;
-  box-shadow: none;
-  color: @denali-grey-800;
+table.navi-search-results__item {
+  border-collapse: collapse;
+  border-spacing: 0;
 }
 
-.input input:active,
-.input input:focus {
-  box-shadow: inset 0 -2px rgba(@denali-brand-700, 1);
+table.navi-search-results__item > tbody > tr > td {
+  padding: 8px;
 }
 
-.input input::placeholder {
-  color: rgba(@denali-grey-800, 0.6);
-}
-
-.input input[disabled] {
-  background: rgba(@denali-grey-800, 0.05);
-  color: rgba(@denali-grey-800, 0.25);
-  box-shadow: inset 0 -2px rgba(c @denali-grey-800, 0.05);
-}
-
-.input input[disabled]::placeholder {
-  color: rgba(@denali-grey-800, 0.6);
-}
-
-.input input:invalid {
-  box-shadow: inset 0 -2px #ea0000;
-}
-
-.input.has-icon-back input {
-  padding-right: 34px;
-}
-
-.input.has-icon-back .s-icon {
-  font-size: 18px;
-  margin-top: 0;
-  margin-left: 0;
-  pointer-events: none;
-}
-
-.input.has-icon-back .s-icon::before {
-  position: absolute;
-  top: 8px;
-  right: 10px;
-}
-
-.navi-search-bar__results li:not(:last-child) {
-  margin-bottom: 1.5em;
-}
-
-.navi-search-bar__results li {
-  list-style-type: none;
-}
-
-.input.navi-search-bar {
-  width: 100%;
-}
-
-.navi-search-bar__results td:first-child {
-  width: 1%;
-  white-space: nowrap;
-}
-
-.navi-search-bar__results {
-  margin-top: 0.4em;
-}
-
-.navi-search h1,
-.navi-search-result h1,
-#ember-basic-dropdown-wormhole h1 {
-  font-size: 28px;
-  font-weight: 600;
-  color: @denali-grey-800;
-  line-height: 1.25;
-}
-
-.navi-search h2,
-.navi-search-result h2,
-#ember-basic-dropdown-wormhole h2 {
-  font-size: 26px;
-  font-weight: 600;
-  color: @denali-grey-800;
-  line-height: 1.25;
-}
-
-.navi-search h3,
-.navi-search-result h3,
-#ember-basic-dropdown-wormhole h3 {
-  font-size: 20px;
-  font-weight: 600;
-  color: @denali-grey-800;
-  line-height: 1.5;
-  margin-block-start: 0em;
-}
-
-.navi-search h4,
-.navi-search-result h4,
-#ember-basic-dropdown-wormhole h4 {
-  font-size: 16px;
-  font-weight: 600;
-  color: @denali-grey-800;
-  line-height: 1.5;
-  margin-block-start: 0em;
-}
-
-.navi-search h5,
-.navi-search-result h5,
-#ember-basic-dropdown-wormhole h5 {
-  font-size: 14px;
-  font-weight: 600;
-  color: @denali-grey-800;
-  line-height: 1.5;
-  margin-block-start: 0em;
-}
-
-.navi-search h6,
-.navi-search-result h6,
-#ember-basic-dropdown-wormhole h6 {
-  font-size: 12px;
-  font-weight: 400;
-  color: @denali-grey-800;
-  line-height: 1.5;
-  margin-block-start: 0em;
-}
-
-td.result_icon {
-  white-space: nowrap;
-  width: 1%;
-}
-
-.navi-search-result.table.is-striped > tbody > tr > td {
+table.navi-search-results__item--striped > tbody > tr > td {
   border: none;
 }
 
-.navi-search-result.table.is-striped > tbody > tr:nth-child(even) {
+table.navi-search-results__item--striped > tbody > tr:nth-child(even) {
   background: rgba(@denali-brand-700, 0.05);
 }
 
-.navi-search-result.table > tbody > tr > td.is-center {
+.navi-search-asset-result__icon.table > tbody > tr > td.is-center {
   text-align: center;
 }
 

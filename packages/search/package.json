@@ -2,7 +2,6 @@
   "name": "navi-search",
   "version": "0.2.0",
   "description": "Search for navi",
-  "private": true,
   "keywords": [
     "ember-addon"
   ],
