@@ -37,7 +37,7 @@ module('Integration | Component | navi-search-bar', function(hooks) {
     await triggerKeyEvent('.navi-search-bar__input', 'keyup', 13);
 
     assert
-      .dom('.navi-search-bar__results')
+      .dom('.navi-search-results')
       .hasText('Reports & Dashboards Revenue report 1 Revenue Dashboard Sample Revenue result Revenue success');
   });
 
@@ -47,7 +47,7 @@ module('Integration | Component | navi-search-bar', function(hooks) {
     await fillIn('.navi-search-bar__input', '!@#$%^&*()');
     await triggerKeyEvent('.navi-search-bar__input', 'keyup', 13);
 
-    assert.dom('.navi-search-bar__results').hasText('No results', 'Search results return "No results"');
+    assert.dom('.navi-search-results').hasText('No results', 'Search results return "No results"');
   });
 
   test('perform search with no results', async function(assert) {
@@ -56,7 +56,7 @@ module('Integration | Component | navi-search-bar', function(hooks) {
     await fillIn('.navi-search-bar__input', 'Hello!');
     await triggerKeyEvent('.navi-search-bar__input', 'keyup', 13);
 
-    assert.dom('.navi-search-bar__results').hasText('No results', 'Search results return "No results"');
+    assert.dom('.navi-search-results').hasText('No results', 'Search results return "No results"');
   });
 
   test('perform empty search', async function(assert) {
@@ -65,6 +65,6 @@ module('Integration | Component | navi-search-bar', function(hooks) {
     await fillIn('.navi-search-bar__input', '');
     await triggerKeyEvent('.navi-search-bar__input', 'keyup', 13);
 
-    assert.dom('.navi-search-bar__results').doesNotExist('Nothing happens if you search with empty query');
+    assert.dom('.navi-search-results').doesNotExist('Nothing happens if you search with empty query');
   });
 });
