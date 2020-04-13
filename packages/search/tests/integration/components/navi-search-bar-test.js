@@ -33,12 +33,10 @@ module('Integration | Component | navi-search-bar', function(hooks) {
   test('perform search that returns results', async function(assert) {
     await render(hbs`<NaviSearchBar />`);
 
-    await fillIn('.navi-search-bar__input', 'Revenue');
+    await fillIn('.navi-search-bar__input', 'sample');
     await triggerKeyEvent('.navi-search-bar__input', 'keyup', 13);
 
-    assert
-      .dom('.navi-search-results')
-      .hasText('Reports & Dashboards Revenue report 1 Revenue Dashboard Sample Revenue result Revenue success');
+    assert.dom('.navi-search-results').hasText('Sample Revenue result Revenue success');
   });
 
   test('perform search with special characters', async function(assert) {

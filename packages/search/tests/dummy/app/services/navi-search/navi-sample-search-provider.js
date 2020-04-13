@@ -18,7 +18,7 @@ export default class NaviSampleSearchProviderService extends NaviBaseSearchProvi
   *search(query) {
     let data = yield new Promise(function(resolve) {
       let payload = [];
-      if (query.toLowerCase().includes('revenue')) {
+      if (query.toLowerCase().includes('sample')) {
         payload = ['Revenue result', 'Revenue success'];
       }
       resolve(payload);

@@ -16,7 +16,7 @@ import { inject as service } from '@ember/service';
 import Component from '@ember/component';
 import { get, set, computed, action } from '@ember/object';
 import { readOnly } from '@ember/object/computed';
-import { CARDINALITY_SIZES } from 'navi-data/models/metadata/dimension';
+import CARDINALITY_SIZES from 'navi-data/utils/enums/cardinality-sizes';
 import layout from '../../templates/components/filter-values/dimension-select';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
 

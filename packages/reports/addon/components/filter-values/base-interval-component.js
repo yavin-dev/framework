@@ -10,6 +10,19 @@ import { formatDateRange } from 'navi-reports/helpers/format-interval-inclusive-
 import { getIsoDateTimePeriod } from 'navi-core/utils/date';
 import moment from 'moment';
 
+const timeGrainSorting = {
+  millisecond: 1,
+  second: 2,
+  minute: 3,
+  hour: 4,
+  day: 5,
+  week: 6,
+  month: 7,
+  quarter: 8,
+  year: 9,
+  all: 10
+};
+
 export default class BaseIntervalComponent extends Component {
   /**
    * @property {String} startPlaceholder - The text displayed when there is no startDate
@@ -29,7 +42,17 @@ export default class BaseIntervalComponent extends Component {
   /**
    * @property {String} lowestDateTimePeriod - the lowest supported time grain of the table
    */
-  @readOnly('request.logicalTable.table.timeGrains.0.id') lowestDateTimePeriod;
+  @computed('request.logicalTable.table.timeGrainIds.[]')
+  get lowestDateTimePeriod() {
+    const { timeGrainIds } = this.request.logicalTable.table;
+    const sorted = [...timeGrainIds].sort((lId, rId) => {
+      const leftValue = timeGrainSorting[lId] || Infinity;
+      const rightValue = timeGrainSorting[rId] || Infinity;
+      return leftValue >= rightValue;
+    });
+
+    return sorted[0];
+  }
 
   /**
    * @property {String} calendarDateTimePeriod - the active dateTimePeriod which does not include 'all'

@@ -27,7 +27,11 @@ module('Unit | Service | navi-search-provider', function(hooks) {
     assert.expect(1);
 
     let availableSearchProviders = service._all();
-    let systemSearchProviders = ['NaviSampleSearchProviderService', 'NaviAssetSearchProviderService'];
+    let systemSearchProviders = [
+      'NaviSampleSearchProviderService',
+      'NaviAssetSearchProviderService',
+      'NaviDefinitionSearchProviderService'
+    ];
     assert.deepEqual(
       availableSearchProviders.map(provider => provider.constructor.name).sort(),
       systemSearchProviders.sort(),
@@ -38,7 +42,7 @@ module('Unit | Service | navi-search-provider', function(hooks) {
   test('search all providers', async function(assert) {
     assert.expect(1);
 
-    let results = await service.search.perform('Revenue');
+    let results = await service.search.perform('sample');
     let expectedResults = ['Revenue result', 'Revenue success'];
     assert.deepEqual(
       results.find(result => result.component === 'navi-search-result/sample').data,

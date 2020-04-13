@@ -10,7 +10,7 @@
  *   />
  */
 import BaseIntervalComponent from './base-interval-component';
-import { computed } from '@ember/object';
+import { computed, action } from '@ember/object';
 import layout from '../../templates/components/filter-values/advanced-interval-input';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
 import DateUtils from 'navi-core/utils/date';
@@ -23,17 +23,10 @@ class AdvancedIntervalInputComponent extends BaseIntervalComponent {
   /**
    * @property {Object} dateStrings - the formatted {start, end} dates
    */
-  @computed('interval')
+  @computed('interval', 'calendarDateTimePeriod')
   get dateStrings() {
-    const { dateTimePeriod, interval } = this;
-    let end;
-    if (moment.isMoment(interval._end)) {
-      const endMoment = interval.asMomentsForTimePeriod(dateTimePeriod).end;
-      end = endMoment.clone().subtract(1, dateTimePeriod);
-    } else {
-      end = interval._end;
-    }
-    return new Interval(interval._start, end).asStrings(DateUtils.PARAM_DATE_FORMAT_STRING);
+    const { calendarDateTimePeriod, interval } = this;
+    return new Interval(interval._start, interval._end).asStrings(DateUtils.PARAM_DATE_FORMAT_STRING);
   }
 
   /**
@@ -48,6 +41,15 @@ class AdvancedIntervalInputComponent extends BaseIntervalComponent {
       return Interval.fromString(value);
     }
     return value;
+  }
+
+  /**
+   * @action setIntervalEndExact
+   * @param {Moment} value - end date for interval
+   */
+  @action
+  setIntervalEndExact(value) {
+    return this.setInterval(this.interval._start, value, false);
   }
 }
 

@@ -5,25 +5,37 @@ export const Host = config.navi.dataSources[0].uri;
 export const MetricOne = {
   category: 'category',
   name: 'metricOne',
-  longName: 'Metric One'
+  longName: 'Metric One',
+  description: 'This is Metric One'
 };
 
 export const MetricTwo = {
   category: 'category',
   name: 'metricTwo',
-  longName: 'Metric Two'
+  longName: 'Metric Two',
+  description: 'This is Metric Two'
 };
 
 export const MetricThree = {
   category: 'category',
   name: 'metricThree',
-  longName: 'Metric Three'
+  longName: 'Metric Three',
+  description: 'This is Metric Three'
 };
 
 export const MetricFour = {
   category: 'category',
   name: 'metricFour',
-  longName: 'Metric Four'
+  longName: 'Metric Four',
+  description: 'This is Metric Four'
+};
+
+export const PageViews = {
+  category: 'pageMetrics',
+  id: 'pageViews',
+  name: 'Page Views',
+  description: 'Views of a page',
+  cardinality: 100
 };
 
 export const MetricFive = {
@@ -50,6 +62,7 @@ export const DimensionOne = {
   category: 'categoryOne',
   name: 'dimensionOne',
   longName: 'Dimension One',
+  description: 'This is Dimension One',
   cardinality: 60
   //No Fields
 };
@@ -58,6 +71,7 @@ export const DimensionTwo = {
   category: 'categoryTwo',
   name: 'dimensionTwo',
   longName: 'Dimension Two',
+  description: 'This is Dimension Two',
   cardinality: 6000000000,
   fields: [
     {
@@ -77,6 +91,7 @@ export const DimensionThree = {
   category: 'categoryTwo',
   name: 'dimensionThree',
   longName: 'Dimension Three',
+  description: 'This is Dimension Three',
   cardinality: 700,
   fields: [
     {
@@ -96,6 +111,7 @@ export const DimensionFour = {
   category: 'categoryTwo',
   name: 'dimensionFour',
   longName: 'Dimension Four',
+  description: 'This is Dimension Four',
   cardinality: 70,
   fields: [
     {
@@ -115,6 +131,7 @@ export const DimensionFive = {
   category: 'categoryTwo',
   name: 'dimensionFive',
   longName: 'Dimension Five',
+  description: 'This is Dimension Five',
   cardinality: 6000000000,
   fields: [
     {
@@ -360,5 +377,6 @@ const METRIC_MAP = {
   metricThree: MetricThree,
   metricFour: MetricFour,
   metricFive: MetricFive,
-  metricSix: MetricSix
+  metricSix: MetricSix,
+  pageViews: PageViews
 };

@@ -20,7 +20,7 @@ module('Integration | Component | filter values/date range', function(hooks) {
 
   hooks.beforeEach(async function() {
     this.filter = { values: [] };
-    this.request = { logicalTable: { timeGrain: 'day' } };
+    this.request = { logicalTable: { timeGrain: 'day', table: { timeGrainIds: ['day'] } } };
     this.onUpdateFilter = () => null;
 
     await render(hbs`<FilterValues::DateRange

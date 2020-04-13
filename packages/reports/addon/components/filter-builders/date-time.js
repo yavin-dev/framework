@@ -29,7 +29,7 @@ export default class DateTimeFilterBuilder extends Base {
   /**
    * @property {String} dateTimePeriodName - the date time period
    */
-  @computed('request.logicalTable.timeGrain')
+  @computed('request.logicalTable.{timeGrain,table.timeGrains.[]}')
   get dateTimePeriodName() {
     const {
       logicalTable: {
