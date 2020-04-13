@@ -1,7 +1,7 @@
 {{! Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. }}
-<div ...attributes>
+<li class="navi-search-result-wrapper" ...attributes>
     {{#if @result.title}}
         <h3>{{@result.title}}</h3>
     {{/if}}
     {{component @result.component data=@result.data}}
-</div>
+</li>
