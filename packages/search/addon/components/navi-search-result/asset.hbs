@@ -7,7 +7,7 @@
            <NaviIcon @icon="{{if (eq result.type "report") "file-text"}}{{if (eq result.type "dashboard") "bar-chart"}}" />
         </td>
         <td class="navi-search-asset-result__item">
-          <LinkTo @route={{result.route}} @model={{result.modelId}}>
+          <LinkTo @route={{result.route}} @model={{result.modelId}} @invokeAction={{@closeResults}}>
             {{result.title}}
           </LinkTo>
         </td>

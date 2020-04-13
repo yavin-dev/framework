@@ -3,5 +3,5 @@
     {{#if @result.title}}
         <h3>{{@result.title}}</h3>
     {{/if}}
-    {{component @result.component data=@result.data}}
+    {{component @result.component data=@result.data closeResults=@closeResults}}
 </li>

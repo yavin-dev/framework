@@ -43,6 +43,11 @@ export default class NaviSearchBarComponent extends Component {
     }
   }
 
+  @action
+  closeResults(dd, event) {
+    dd.actions.close(event);
+  }
+
   @keepLatestTask
   *launchQuery(query, dd) {
     dd.actions.open(event);

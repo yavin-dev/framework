@@ -8,7 +8,7 @@
   </div>
   <dd.content @class="navi-search-results navi-search-results--box slide-fade">
     {{#each this.searchResults as |result|}}
-      <NaviSearchResult::Wrapper @result={{result}} class="navi-search-results__item navi-search-results--box"/>
+      <NaviSearchResult::Wrapper @result={{result}} @closeResults={{action "closeResults" dd}} class="navi-search-results__item navi-search-results--box"/>
     {{/each}}
   </dd.content>
   </BasicDropdown>
