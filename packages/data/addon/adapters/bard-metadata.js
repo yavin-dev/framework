@@ -35,9 +35,9 @@ export default class BardMetadataAdapter extends EmberObject {
     const host = configHost(options);
     const { namespace } = this;
     const urlId =
-      getOwner(this)
-        .lookup(`adapter:metadata/${dasherize(type)}`)
-        ?.buildURLId(id) || id;
+        getOwner(this)
+          .lookup(`adapter:metadata/${dasherize(type)}`)
+          ?.buildURLId(id) || id;
 
     return `${host}/${namespace}/${camelize(pluralize(type))}/${urlId}`;
   }
