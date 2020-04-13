@@ -37,7 +37,7 @@ module('Unit | Service | navi-definition-search-provider', function(hooks) {
     assert.deepEqual(
       results.data.map(result => ({ id: result.id, name: result.name })),
       expectedResults,
-      'Result contains the the expected properties and values'
+      'Result contains the expected properties and values'
     );
   });
 
