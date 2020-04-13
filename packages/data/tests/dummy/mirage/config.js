@@ -9,8 +9,6 @@ export default function() {
   for (let dataSource of config.navi.dataSources) {
     this.urlPrefix = `${dataSource.uri}/v1`;
     BardMeta.call(this);
+    GraphQL.call(this);
   }
-
-  this.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
-  GraphQL.call(this);
 }

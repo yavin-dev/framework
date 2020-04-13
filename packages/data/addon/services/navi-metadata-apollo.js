@@ -1,6 +1,6 @@
 import ApolloService from 'ember-apollo-client/services/apollo';
 import { setContext } from 'apollo-link-context';
-import { getHost } from 'navi-data/utils/adapter';
+import { configHost } from 'navi-data/utils/adapter';
 
 export default class NaviMetadataApolloService extends ApolloService {
   /**
@@ -68,7 +68,7 @@ export default class NaviMetadataApolloService extends ApolloService {
    * @returns {String} complete url including host and namespace
    */
   _buildURLPath() {
-    const host = getHost();
+    const host = configHost();
     const { namespace } = this;
 
     return `${host}/${namespace}`;
