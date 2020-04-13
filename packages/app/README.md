@@ -97,14 +97,13 @@ Make use of the many generators for code, try `ember help generate` for more det
 
 ### Building Demo App
 
-The demo app should be rebuild automatically when a publish build executes on Travis. To rebuild manually,
+The demo app should be rebuild automatically when a publish build executes on Travis. To rebuild manually, 
 from this directory (`packages/app`), run:
-
 ```
 BUILD_NAVI_DEMO=true ember github-pages:commit --message 'update gh-pages' --destination ../../
 ```
 
-This will commit the latest demo-app changes on the `gh-pages` branch.
+This will commit the latest demo-app changes on the `gh-pages` branch. 
 
 You can also execute `npm run-script deploy-demo-app` from this directory,
 but that will `git push` the changes to `origin`.

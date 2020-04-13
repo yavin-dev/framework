@@ -16,7 +16,6 @@ export default class NaviSearchBarComponent extends Component {
 
   @tracked searchQuery = '';
   @tracked searchResults = [];
-  @tracked hasFocus = false;
 
   emptyResult = [
     {

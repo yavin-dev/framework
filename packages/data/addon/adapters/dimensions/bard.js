@@ -73,9 +73,9 @@ export default class BardDimensionAdapter extends EmberObject {
     const host = configHost(options);
     const { namespace } = this;
     const urlId =
-      getOwner(this)
-        .lookup(`adapter:metadata/dimension`)
-        ?.buildURLId(dimension) || dimension;
+        getOwner(this)
+          .lookup(`adapter:metadata/dimension`)
+          ?.buildURLId(dimension) || dimension;
 
     return `${host}/${namespace}/dimensions/${urlId}/${path}/`;
   }
