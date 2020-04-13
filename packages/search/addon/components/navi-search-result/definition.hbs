@@ -1,0 +1,21 @@
+{{! Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. }}
+<table class="table navi-search-result" ...attributes>
+  <tbody class="navi-search-result__table-body">
+    {{#each @data as |result|}}
+      <tr class="navi-search-result__definition">
+        <td class="navi-search-result__definition result_element">
+            <h5 class="navi-search-result__definition-name">{{result.name}}</h5>
+            <p class="navi-search-result__definition-description">
+              {{#if result.description}}
+               {{result.description}}
+              {{else}}
+                {{#let (await result.extended) as |extendedResult|}}
+                  {{extendedResult.description}}
+                {{/let}}
+              {{/if}}
+            </p>
+        </td>
+      </tr>
+    {{/each}}
+  </tbody>
+</table>
