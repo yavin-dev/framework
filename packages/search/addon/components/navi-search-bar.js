@@ -59,7 +59,7 @@ export default class NaviSearchBarComponent extends Component {
    */
   @action
   focus(dd, event) {
-    if (this.searchQuery != '') {
+    if (this.searchQuery !== '') {
       dd.actions.open(event);
     }
   }
@@ -84,7 +84,7 @@ export default class NaviSearchBarComponent extends Component {
   *launchQuery(query, dd) {
     dd.actions.open(event);
     this.searchResults = yield this.searchProviderService.search.perform(query);
-    if (this.searchResults.length == 0 && query != '') {
+    if (this.searchResults.length == 0 && query !== '') {
       this.searchResults = emptyResult;
     }
   }

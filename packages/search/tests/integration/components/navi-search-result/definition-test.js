@@ -119,7 +119,7 @@ module('Integration | Component | definition', function(hooks) {
 
     await render(hbs`<NaviSearchResult::Definition @data={{this.result.data}} />`);
 
-    assert.dom('.navi-search-definition-result').exists({ count: 2 }, 'Two result is displayed');
+    assert.dom('.navi-search-definition-result').exists({ count: 2 }, 'Two results are displayed');
 
     const definitionTitles = findAll('.navi-search-definition-result__item-name').map(el => el.textContent.trim());
     const definitionDescriptions = findAll('.navi-search-definition-result__item-description').map(el =>
