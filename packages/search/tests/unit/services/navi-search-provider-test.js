@@ -63,9 +63,9 @@ module('Unit | Service | navi-search-provider', function(hooks) {
   test('provider returns error response', async function(assert) {
     assert.expect(1);
 
-    const oldWarn = Ember.Logger.warn;
+    const oldError = Ember.Logger.error;
 
-    Ember.Logger.warn = function(message) {
+    Ember.Logger.error = function(message) {
       assert.equal(
         message,
         'Provider NaviSampleSearchProviderService failed to return results. [object Object]',
@@ -75,6 +75,6 @@ module('Unit | Service | navi-search-provider', function(hooks) {
 
     await service.search.perform('error');
 
-    Ember.Logger.warn = oldWarn;
+    Ember.Logger.error = oldError;
   });
 });

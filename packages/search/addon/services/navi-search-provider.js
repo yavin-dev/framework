@@ -53,7 +53,7 @@ export default class NaviSearchProviderService extends Service {
           results.push(result);
         }
       } catch (e) {
-        Ember.Logger.warn(`Provider ${provider.constructor.name} failed to return results. ${e}`);
+        Ember.Logger.error(`Provider ${provider.constructor.name} failed to return results. ${e}`);
       }
     }
     return results;

@@ -5,6 +5,9 @@
       <tr class="navi-search-definition-result">
         <td class="navi-search-definition-result__item">
             <h5 class="navi-search-definition-result__item-name">{{result.name}}</h5>
+            {{#if this.hasMultipleDataSources}}
+              <span><em>Source: {{result.source}}</em></span>
+            {{/if}}
             <p class="navi-search-definition-result__item-description">
               {{#if result.description}}
                {{result.description}}
