@@ -30,12 +30,16 @@ const ENTER_KEY = 13;
 const ESCAPE_KEY = 27;
 
 export default class NaviSearchBarComponent extends Component {
+  /**
+   * @property {Ember.Service} searchProviderService
+   */
   @service('navi-search-provider') searchProviderService;
 
   /**
    * @property {String} searchQuery
    */
   @tracked searchQuery = '';
+
   /**
    * @property {String} searchResults
    */
