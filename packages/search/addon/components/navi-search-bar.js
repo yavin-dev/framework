@@ -12,14 +12,22 @@ import { action } from '@ember/object';
 import { keepLatestTask } from 'ember-concurrency-decorators';
 
 /**
- * @constant emptyResult – Empty result object
+ * @constant EMPTY_RESULT – Empty result object
  */
-const emptyResult = [
-  {
-    title: '',
-    component: 'navi-search-result/no-result'
-  }
-];
+const EMPTY_RESULT = {
+  title: '',
+  component: 'navi-search-result/no-result'
+};
+
+/**
+ * @constant ENTER_KEY
+ */
+const ENTER_KEY = 13;
+
+/**
+ * @constant ESCAPE_KEY
+ */
+const ESCAPE_KEY = 27;
 
 export default class NaviSearchBarComponent extends Component {
   @service('navi-search-provider') searchProviderService;
@@ -34,20 +42,20 @@ export default class NaviSearchBarComponent extends Component {
   @tracked searchResults = [];
 
   /**
-   * @method search – Perform search based on user query
+   * @method onKeyUp – Perform search based on user query
    * @param {Object} dd
    * @param {Object} event
    */
   @action
-  search(dd, event) {
+  onKeyUp(dd, event) {
     // Close results window if the user deletes the query or presses escape
-    if (this.searchQuery.length == 0 || event.code === 'Escape') {
+    if (this.searchQuery.length == 0 || event.keyCode === ESCAPE_KEY) {
       dd.actions.close(event);
       // Don't perform query if you press escape
       return;
     }
 
-    if ((event.code === 'Enter' && this.searchQuery.length != 0) || this.searchQuery.length > 2) {
+    if ((event.keyCode === ENTER_KEY && this.searchQuery.length != 0) || this.searchQuery.length > 2) {
       this.launchQuery.perform(this.searchQuery, dd);
     }
   }
@@ -85,7 +93,7 @@ export default class NaviSearchBarComponent extends Component {
     dd.actions.open(event);
     this.searchResults = yield this.searchProviderService.search.perform(query);
     if (this.searchResults.length == 0 && query !== '') {
-      this.searchResults = emptyResult;
+      this.searchResults = [EMPTY_RESULT];
     }
   }
 }

@@ -3,7 +3,7 @@
   <BasicDropdown @matchTriggerWidth={{true}} as |dd|>
   <div class="navi-search-bar">
     <Input @type="text" @value={{this.searchQuery}} @placeholder="Search" @class="navi-search-bar__input"
-      @keyUp={{fn this.search dd}} @focusIn={{fn this.focus dd}} data-ebd-id="{{dd.uniqueId}}-trigger"/>
+      @keyUp={{fn this.onKeyUp dd}} @focusIn={{fn this.focus dd}} data-ebd-id="{{dd.uniqueId}}-trigger"/>
     <NaviIcon @icon="search" class="navi-search-bar__icon"/>
   </div>
   <dd.content @class="navi-search-results navi-search-results--box navi-search-result-wrapper slide-fade">
