@@ -46,6 +46,7 @@ export default class NaviSearchBarComponent extends Component {
   @action
   closeResults(dd, event) {
     dd.actions.close(event);
+    event.stopPropagation();
   }
 
   @keepLatestTask
