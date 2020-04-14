@@ -1,3 +1,5 @@
+/* global Ember */
+
 import Service from '@ember/service';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
@@ -56,5 +58,23 @@ module('Unit | Service | navi-search-provider', function(hooks) {
 
     let results = await service.search.perform('something');
     assert.equal(results.length, 0, 'Returns no results');
+  });
+
+  test('provider returns error response', async function(assert) {
+    assert.expect(1);
+
+    const oldWarn = Ember.Logger.warn;
+
+    Ember.Logger.warn = function(message) {
+      assert.equal(
+        message,
+        'Provider NaviSampleSearchProviderService failed to return results. [object Object]',
+        'Warn message was logged for bad provider response'
+      );
+    };
+
+    await service.search.perform('error');
+
+    Ember.Logger.warn = oldWarn;
   });
 });

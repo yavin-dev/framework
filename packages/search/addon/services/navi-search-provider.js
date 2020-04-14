@@ -47,9 +47,13 @@ export default class NaviSearchProviderService extends Service {
     const searchProviders = this._all();
     let results = [];
     for (const provider of searchProviders) {
-      const result = yield provider.search.perform(query);
-      if (result.data.length) {
-        results.push(result);
+      try {
+        const result = yield provider.search.perform(query);
+        if (result.data.length) {
+          results.push(result);
+        }
+      } catch (e) {
+        Ember.Logger.warn(`Provider ${provider.constructor.name} failed to return results. ${e}`);
       }
     }
     return results;

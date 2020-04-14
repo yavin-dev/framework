@@ -7,6 +7,7 @@
 
 import NaviBaseSearchProviderService from '../navi-base-search-provider';
 import { keepLatestTask } from 'ember-concurrency-decorators';
+import Response from 'ember-cli-mirage/response';
 
 export default class NaviSampleSearchProviderService extends NaviBaseSearchProviderService {
   /**
@@ -16,10 +17,12 @@ export default class NaviSampleSearchProviderService extends NaviBaseSearchProvi
    */
   @keepLatestTask
   *search(query) {
-    let data = yield new Promise(function(resolve) {
+    let data = yield new Promise(function(resolve, reject) {
       let payload = [];
       if (query.toLowerCase().includes('sample')) {
         payload = ['Revenue result', 'Revenue success'];
+      } else if (query.toLowerCase().includes('error')) {
+        reject(new Response(403));
       }
       resolve(payload);
     });
