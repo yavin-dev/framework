@@ -9,15 +9,19 @@
  *  />
  */
 import Component from '@glimmer/component';
-import { computed, action } from '@ember/object';
+import { action } from '@ember/object';
 import { isEmpty } from '@ember/utils';
 import FileTypes from 'navi-directory/utils/enums/file-types';
 
-export default class DirTableFilterComponent extends Component {
+interface DirTableFilterComponentArgs {
+  selectedType: TODO<'all' | 'reports' | 'dashboards'>;
+  updateQueryParams: (queryParams: object) => void;
+}
+
+export default class DirTableFilterComponent extends Component<DirTableFilterComponentArgs> {
   /**
    * @property {Array} fileTypes
    */
-  @computed
   get fileTypes() {
     return ['all', ...FileTypes.getTypes()];
   }
@@ -35,7 +39,7 @@ export default class DirTableFilterComponent extends Component {
    * @param {Object} dropdown
    */
   @action
-  close(dropdown) {
+  close(dropdown: TODO) {
     dropdown.actions.close();
   }
 
@@ -44,10 +48,12 @@ export default class DirTableFilterComponent extends Component {
    * @param {String} type - query param value for type
    */
   @action
-  filterByType(type) {
-    let queryParam = type;
+  filterByType(type: string) {
+    let queryParam;
     if (type === 'all') {
       queryParam = null;
+    } else {
+      queryParam = type;
     }
 
     this.args.updateQueryParams?.({ type: queryParam });

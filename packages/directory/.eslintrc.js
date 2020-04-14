@@ -3,21 +3,35 @@ module.exports = {
     server: true
   },
   root: true,
-  parser: 'babel-eslint',
-  parserOptions: {
-    ecmaVersion: 2018,
-    sourceType: 'module',
-    ecmaFeatures: {
-      legacyDecorators: true
-    }
-  },
-  plugins: ['ember'],
-  extends: ['eslint:recommended', 'plugin:ember/recommended', 'prettier'],
+  parser: '@typescript-eslint/parser',
+  plugins: ['ember', 'prettier', 'qunit', '@typescript-eslint'],
+  extends: [
+    'eslint:recommended',
+    'plugin:ember/recommended',
+    'plugin:qunit/recommended',
+    'plugin:@typescript-eslint/recommended',
+    'prettier',
+    'prettier/@typescript-eslint'
+  ],
   env: {
     browser: true
   },
   rules: {
-    'ember/no-jquery': 'error'
+    // ember specific
+    'ember/no-jquery': 'error',
+
+    // cleanliness & consistency
+    'prefer-const': 'off', // const has misleading safety implications
+
+    // typescript
+    '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+    '@typescript-eslint/explicit-function-return-type': 'off',
+
+    // prettier
+    'prettier/prettier': 'error',
+
+    // better handled by prettier:
+    '@typescript-eslint/indent': 'off'
   },
   overrides: [
     // node files
@@ -42,6 +56,8 @@ module.exports = {
       },
       plugins: ['node'],
       rules: Object.assign({}, require('eslint-plugin-node').configs.recommended.rules, {
+        '@typescript-eslint/camelcase': 'off',
+        '@typescript-eslint/no-var-requires': 'off'
         // add your custom rules and overrides for node files here
       })
     }

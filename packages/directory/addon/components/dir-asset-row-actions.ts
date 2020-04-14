@@ -10,7 +10,12 @@
  */
 import Component from '@glimmer/component';
 
-export default class DirAssetRowActionsComponent extends Component {
+interface DirAssetRowActionsComponentArgs {
+  value: TODO<{ constructor: { modelName: string } }>;
+  row: TODO<{ rowId: number }>;
+}
+
+export default class DirAssetRowActionsComponent extends Component<DirAssetRowActionsComponentArgs> {
   /**
    * @property {String} type - the type of the asset
    */

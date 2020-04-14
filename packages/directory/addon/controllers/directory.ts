@@ -3,20 +3,29 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Controller from '@ember/controller';
-import { getProperties, get, set, computed, action } from '@ember/object';
+import { action, set, computed } from '@ember/object';
 import { inject as service } from '@ember/service';
-import { A as arr } from '@ember/array';
+import DirectoriesService from 'navi-directory/services/directories';
+import RouterService from '@ember/routing/router-service';
+
+type DirectoryQueryParams = {
+  filter: string | null;
+  type: string | null;
+  sortBy: string;
+  sortDir: string;
+  q: string;
+};
 
 export default class DirectoryController extends Controller {
   /**
    * @property {Service} directories - service to load the valid directory options
    */
-  @service directories;
+  @service directories!: DirectoriesService;
 
   /**
    * @property {Service} router - service to check current route
    */
-  @service router;
+  @service router!: RouterService;
 
   /**
    * @property {Array} queryParams - array of allowed query params
@@ -41,14 +50,6 @@ export default class DirectoryController extends Controller {
   sortBy = 'updatedOn';
 
   /**
-   * @property {String} sortKey - sort key (computed by sortBy query param)
-   */
-  get sortKey() {
-    const { sortBy } = this;
-    return sortBy === 'author' ? 'author.id' : sortBy;
-  }
-
-  /**
    * @property {String} sortDir - query param for sort direction
    */
   sortDir = 'desc';
@@ -59,41 +60,55 @@ export default class DirectoryController extends Controller {
   q = '';
 
   /**
+   * @property {String} sortKey - sort key (computed by sortBy query param)
+   */
+  get sortKey() {
+    const { sortBy } = this;
+    return sortBy === 'author' ? 'author.id' : sortBy;
+  }
+
+  /**
    * @property {String} title - Title for the table
    */
   @computed('filter', 'router.currentRouteName')
   get title() {
-    const currentRoute = get(this, 'router.currentRouteName'),
-      dirInfo = this.directories.getDirectories(),
-      currentDir = arr(dirInfo).findBy('routeLink', currentRoute);
+    const { router, directories, filter } = this;
+    const currentDir = directories.getDirectories().find(dir => dir.routeLink === router.currentRouteName);
 
-    let title = currentDir.name,
-      queryParams = getProperties(this, ['filter']),
-      match = currentDir.filters.filter(filter => JSON.stringify(filter.queryParam) === JSON.stringify(queryParams));
+    const queryParams = { filter };
+    const match = currentDir?.filters?.filter(
+      filter => JSON.stringify(filter.queryParams) === JSON.stringify(queryParams)
+    );
 
-    if (match.length === 1) {
-      title = match[0].name;
+    if (match?.length === 1) {
+      return match[0].name;
     }
 
-    return title;
+    return currentDir?.name;
   }
 
   /**
    * @action searchFor
    * Sets the query param for search
-   * @param {String} query
+   * @param {string} query
    */
   @action
-  searchFor(query) {
+  searchFor(query: string) {
     set(this, 'q', query);
   }
 
   /**
    * @action updateQueryParams - update to the new query params
-   * @param {Object} queryParams
+   * @param {object} queryParams
    */
   @action
-  updateQueryParams(queryParams) {
+  updateQueryParams(queryParams: Partial<DirectoryQueryParams>) {
     this.transitionToRoute({ queryParams });
+  }
+}
+
+declare module '@ember/controller' {
+  interface Registry {
+    directory: DirectoryController;
   }
 }
