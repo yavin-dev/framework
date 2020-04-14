@@ -69,7 +69,7 @@ module('Unit | Service | navi-search-provider', function(hooks) {
       assert.equal(
         message,
         'Provider NaviSampleSearchProviderService failed to return results. [object Object]',
-        'Warn message was logged for bad provider response'
+        'Error message was logged for bad provider response'
       );
     };
 
