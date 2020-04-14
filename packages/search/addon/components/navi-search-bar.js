@@ -21,13 +21,26 @@ const emptyResult = [
 export default class NaviSearchBarComponent extends Component {
   @service('navi-search-provider') searchProviderService;
 
+  /**
+   * @property {String} searchQuery
+   */
   @tracked searchQuery = '';
+  /**
+   * @property {String} searchResults
+   */
   @tracked searchResults = [];
 
+  /**
+   * @method search – Perform search based on user query
+   * @param {Object} dd
+   * @param {Object} event
+   */
   @action
   search(dd, event) {
+    // Close results window if the user deletes the query or presses escape
     if (this.searchQuery.length == 0 || event.code === 'Escape') {
       dd.actions.close(event);
+      // Don't perform query if you press escape
       return;
     }
 
@@ -36,6 +49,11 @@ export default class NaviSearchBarComponent extends Component {
     }
   }
 
+  /**
+   * @method focus – Open result window on search bar focus
+   * @param {Object} dd
+   * @param {Object} event
+   */
   @action
   focus(dd, event) {
     if (this.searchQuery != '') {
@@ -43,12 +61,22 @@ export default class NaviSearchBarComponent extends Component {
     }
   }
 
+  /**
+   * @method closeResults – Close result pane on result component action
+   * @param {Object} dd
+   * @param {Object} event
+   */
   @action
   closeResults(dd, event) {
     dd.actions.close(event);
     event.stopPropagation();
   }
 
+  /**
+   * @method launchQuery – Launch search task
+   * @param {String} query
+   * @param {Object} dd
+   */
   @keepLatestTask
   *launchQuery(query, dd) {
     dd.actions.open(event);
