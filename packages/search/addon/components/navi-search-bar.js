@@ -11,18 +11,18 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { keepLatestTask } from 'ember-concurrency-decorators';
 
+const emptyResult = [
+  {
+    title: '',
+    component: 'navi-search-result/no-result'
+  }
+];
+
 export default class NaviSearchBarComponent extends Component {
   @service('navi-search-provider') searchProviderService;
 
   @tracked searchQuery = '';
   @tracked searchResults = [];
-
-  emptyResult = [
-    {
-      title: '',
-      component: 'navi-search-result/no-result'
-    }
-  ];
 
   @action
   search(dd, event) {
@@ -53,7 +53,7 @@ export default class NaviSearchBarComponent extends Component {
     dd.actions.open(event);
     this.searchResults = yield this.searchProviderService.search.perform(query);
     if (this.searchResults.length == 0 && query != '') {
-      this.searchResults = this.emptyResult;
+      this.searchResults = emptyResult;
     }
   }
 }
