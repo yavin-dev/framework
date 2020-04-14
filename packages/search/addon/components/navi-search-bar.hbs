@@ -6,7 +6,7 @@
       @keyUp={{fn this.search dd}} @focusIn={{fn this.focus dd}} data-ebd-id="{{dd.uniqueId}}-trigger"/>
     <NaviIcon @icon="search" class="navi-search-bar__icon"/>
   </div>
-  <dd.content @class="navi-search-results navi-search-results--box slide-fade">
+  <dd.content @class="navi-search-results navi-search-results--box navi-search-result-wrapper slide-fade">
     {{#each this.searchResults as |result|}}
       <NaviSearchResult::Wrapper @result={{result}} @closeResults={{action "closeResults" dd}} class="navi-search-results__item navi-search-results--box"/>
     {{/each}}
