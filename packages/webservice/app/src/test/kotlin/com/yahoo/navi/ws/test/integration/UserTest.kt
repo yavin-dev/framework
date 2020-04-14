@@ -145,7 +145,7 @@ class UserTest : IntegrationTest() {
                                    "table":"base"
                                 },
                                 "bardVersion":"1.0",
-                                "requestVersion":"2.0",
+                                "requestVersion":"v1",
                                 "intervals":[{
                                     "start":"2015-08-20 00:00:00.000",
                                     "end":"2015-08-21 00:00:00.000"
