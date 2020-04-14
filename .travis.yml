@@ -46,6 +46,7 @@ script:
   - if [[ "${PACKAGE}" == "navi-webservice" ]]; then
     pushd packages/webservice && ./gradlew check && popd;
     else
+    npx lerna run lint --scope ${PACKAGE} --stream;
     npx lerna run test --scope ${PACKAGE} --stream;
     fi
 jobs:

@@ -9,7 +9,7 @@ const Directories = [
       {
         name: 'Favorites',
         icon: 'star-o',
-        queryParam: { filter: 'favorites' }
+        queryParams: { filter: 'favorites' }
       }
     ]
   },

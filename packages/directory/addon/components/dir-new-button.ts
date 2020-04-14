@@ -11,9 +11,11 @@ import FileTypes from 'navi-directory/utils/enums/file-types';
 export default class DirNewButtonComponent extends Component {
   /**
    * @method calculatePosition
+   * @param {HTMLElement} trigger
+   * @param {HTMLElement} content
    * @returns {Object} - positioning info used by ember-basic-dropdown
    */
-  calculatePosition(trigger, content) {
+  calculatePosition(trigger: HTMLElement, content: HTMLElement) {
     let { top, left, width, height } = trigger.getBoundingClientRect(),
       { width: contentWidth } = content.getBoundingClientRect(),
       marginFromTopBar = 15,
