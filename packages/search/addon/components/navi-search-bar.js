@@ -11,6 +11,9 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { keepLatestTask } from 'ember-concurrency-decorators';
 
+/**
+ * @constant emptyResult – Empty result object
+ */
 const emptyResult = [
   {
     title: '',
