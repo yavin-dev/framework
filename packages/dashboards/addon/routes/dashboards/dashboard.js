@@ -157,7 +157,7 @@ export default class DashboardsDashboardRoute extends Route {
     const presentation = this.currentDashboard?.presentation;
     const newLayout = arr(presentation.layout).rejectBy('widgetId', Number(id));
 
-    set(presentation, 'layout', newLayout);
+    presentation.layout = newLayout;
 
     return this.transitionTo('dashboards.dashboard', this.get('currentDashboard.id'));
   }
@@ -190,7 +190,7 @@ export default class DashboardsDashboardRoute extends Route {
   updateTitle(title) {
     if (!isEmpty(title)) {
       const { currentDashboard } = this;
-      set(currentDashboard, 'title', title);
+      currentDashboard.title = title;
     }
   }
 

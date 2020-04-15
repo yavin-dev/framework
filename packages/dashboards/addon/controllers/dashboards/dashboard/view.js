@@ -6,7 +6,7 @@
 import Controller from '@ember/controller';
 import { inject as service } from '@ember/service';
 import { isEqual } from 'lodash-es';
-import { get, setProperties, action } from '@ember/object';
+import { get, set, setProperties, action } from '@ember/object';
 import ReportToWidget from 'navi-dashboards/mixins/controllers/report-to-widget';
 
 export default class DashboardsDashboardViewController extends Controller.extend(ReportToWidget) {
@@ -44,31 +44,29 @@ export default class DashboardsDashboardViewController extends Controller.extend
   @action
   async updateFilter(dashboard, originalFilter, changeSet) {
     const origFilter = originalFilter.serialize();
-    origFilter.dataSource = originalFilter.dimension.source;const newFilters = get(dashboard, 'filters')
+    origFilter.dataSource = originalFilter.dimension.source;
+    const newFilters = get(dashboard, 'filters')
       .toArray()
       .map(fil => {
-          const newFil = fil.serialize();
-          newFil.dataSource = fil.dimension.source;
-          return newFil;
-        }); //Native array of serialized filters
+        const newFil = fil.serialize();
+        newFil.dataSource = fil.dimension.source;
+        return newFil;
+      }); //Native array of serialized filters
     const filterToUpdate = newFilters.find(fil => isEqual(fil, origFilter));
 
     setProperties(filterToUpdate, changeSet);
 
     const newFilter = this.store
       .createFragment('bard-request/fragments/filter', {
-        dimension: this.metadataService.getById(
-            'dimension',
-            filterToUpdate.dimension,
-            originalFilter.dimension.source
-          ),
+        dimension: this.metadataService.getById('dimension', filterToUpdate.dimension, originalFilter.dimension.source),
         operator: filterToUpdate.operator,
         field: filterToUpdate.field,
         rawValues: filterToUpdate.rawValues || filterToUpdate.values
       })
       .serialize();
 
-    newFilter.dataSource = originalFilter.dimension.source;const index = newFilters.indexOf(filterToUpdate);
+    newFilter.dataSource = originalFilter.dimension.source;
+    const index = newFilters.indexOf(filterToUpdate);
     newFilters[index] = newFilter;
 
     const filterQueryParams = await this.compression.compress({ filters: newFilters });
@@ -100,13 +98,11 @@ export default class DashboardsDashboardViewController extends Controller.extend
   async addFilter(dashboard, dimension) {
     const store = this.store;
     const bardMetadata = this.metadataService;
-    const filters = dashboard.filters
-      .toArray()
-      .map(fil => {
-        const newFil = fil.serialize();
-        newFil.dataSource = fil.dimension.source;
-        return newFil;
-      }); //Native array of serialized filters
+    const filters = dashboard.filters.toArray().map(fil => {
+      const newFil = fil.serialize();
+      newFil.dataSource = fil.dimension.source;
+      return newFil;
+    }); //Native array of serialized filters
     const dimensionMeta = bardMetadata.getById('dimension', dimension.dimension, dimension.dataSource);
     const filter = store
       .createFragment('bard-request/fragments/filter', {
@@ -118,7 +114,7 @@ export default class DashboardsDashboardViewController extends Controller.extend
 
     filter.dataSource = dimension.dataSource;
 
-      filters.push(filter);
+    filters.push(filter);
 
     const filterQueryParams = await this.compression.compress({ filters });
 
@@ -130,6 +126,6 @@ export default class DashboardsDashboardViewController extends Controller.extend
    */
   @action
   clearFilterQueryParams() {
-    this.set('filters', null);
+    set(this, 'filters', null);
   }
 }
