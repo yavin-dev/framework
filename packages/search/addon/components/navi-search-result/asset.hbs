@@ -2,11 +2,11 @@
 <table class="navi-search-results__item navi-search-results__item--striped navi-search-results__item--asset" ...attributes>
   <tbody class="navi-search-result__item-body">
     {{#each this.results as |result|}}
-      <tr class="navi-search-asset-result">
-       <td class="navi-search-asset-result__icon">
+      <tr class="navi-search-asset-result navi-search-results__item--row">
+       <td class="navi-search-asset-result__icon navi-search-results__item--icon navi-search-results__item--cell">
            <NaviIcon @icon={{result.icon}} />
         </td>
-        <td class="navi-search-asset-result__item">
+        <td class="navi-search-asset-result__item navi-search-results__item--cell">
           <LinkTo @route={{result.route}} @model={{result.modelId}} @invokeAction={{@closeResults}} class="navi-search--link">
             {{result.title}}
           </LinkTo>

@@ -10,7 +10,7 @@
   color: @denali-grey-800;
   font-family: Helvetica, 'Arial', sans-serif;
   font-weight: 400;
-  font-size: 14px;
+  font-size: @font-size-base;
   line-height: 1.5;
   text-align: left;
   width: 100%;
@@ -18,19 +18,20 @@
   -webkit-font-smoothing: antialiased;
 }
 
-.navi-search--link {
-  color: @denali-brand-600;
-  font-size: inherit;
-  text-decoration: none;
-}
+.navi-search {
+  &--link {
+    color: @denali-brand-600;
+    font-size: inherit;
+    text-decoration: none;
+  }
+  &--link:hover {
+    color: @denali-brand-700;
+  }
 
-.navi-search--link:hover {
-  color: @denali-brand-700;
-}
-
-.navi-search--link[disabled] {
-  color: @denali-grey-800;
-  cursor: not-allowed;
+  &--link[disabled] {
+    color: @denali-grey-800;
+    cursor: not-allowed;
+  }
 }
 
 .navi-search-bar {
@@ -108,6 +109,25 @@
 
   &__item {
     list-style-type: none;
+
+    &--striped {
+      &--cell {
+        border: none;
+      }
+    }
+
+    &--icon {
+      width: 1%;
+      white-space: nowrap;
+    }
+
+    &--cell {
+      padding: 8px;
+    }
+
+    &--row:nth-child(even) {
+      background: rgba(@denali-brand-700, 0.05);
+    }
   }
 
   &__item:not(:last-child) {
@@ -119,56 +139,34 @@
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.16);
 
   &__item {
+    border-collapse: collapse;
+    border-spacing: 0;
     box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.08);
   }
 
   &__item-title {
     color: @denali-grey-800;
-    font-size: 20px;
+    font-size: @font-size-xlarge;
     font-weight: 600;
     line-height: 1.5;
     margin-block-start: 0;
   }
 }
 
-.navi-search-asset-result__icon {
-  width: 1%;
-  white-space: nowrap;
-}
+.navi-search-definition-result {
+  &__item {
+    border-bottom: 1px solid rgba(@denali-grey-800, 0.2);
+    padding: 14px 10px;
+  }
 
-.navi-search-definition-result__item-name {
-  color: @denali-grey-800;
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 1.5;
-  margin-block-start: 0;
-  margin-block-end: 0;
-}
-
-td.navi-search-definition-result__item {
-  border-bottom: 1px solid rgba(@denali-grey-800, 0.2);
-  padding: 14px 10px;
-}
-
-table.navi-search-results__item {
-  border-collapse: collapse;
-  border-spacing: 0;
-}
-
-table.navi-search-results__item > tbody > tr > td {
-  padding: 8px;
-}
-
-table.navi-search-results__item--striped > tbody > tr > td {
-  border: none;
-}
-
-table.navi-search-results__item--striped > tbody > tr:nth-child(even) {
-  background: rgba(@denali-brand-700, 0.05);
-}
-
-.navi-search-asset-result__icon.table > tbody > tr > td.is-center {
-  text-align: center;
+  &__item-name {
+    color: @denali-grey-800;
+    font-size: @font-size-base;
+    font-weight: 600;
+    line-height: 1.5;
+    margin-block-start: 0;
+    margin-block-end: 0;
+  }
 }
 
 @keyframes drop-fade-below {

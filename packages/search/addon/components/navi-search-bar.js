@@ -66,7 +66,7 @@ export default class NaviSearchBarComponent extends Component {
 
     // Perform search on enter press or when query is longer than 2 characters
     if ((event.keyCode === ENTER_KEY && this.searchQuery.length != 0) || this.searchQuery.length > 2) {
-      this.launchQuery.perform(this.searchQuery, dd);
+      this.launchQuery.perform(this.searchQuery, dd, event);
     }
   }
 
@@ -99,7 +99,7 @@ export default class NaviSearchBarComponent extends Component {
    * @param {Object} dd
    */
   @keepLatestTask
-  *launchQuery(query, dd) {
+  *launchQuery(query, dd, event) {
     dd.actions.open(event);
     this.searchResults = yield this.searchProviderService.search.perform(query);
     if (this.searchResults.length == 0 && query !== '') {

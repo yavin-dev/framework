@@ -2,11 +2,11 @@
 <table class="navi-search-results__item navi-search-results__item--striped navi-search-results__item--sample" ...attributes>
   <tbody class="navi-search-results__item-body">
     {{#each @data as |result|}}
-      <tr class="navi-search-sample-result">
-        <td class="navi-search-sample-result__icon">
+      <tr class="navi-search-sample-result navi-search-results__item--row">
+        <td class="navi-search-sample-result__icon navi-search-results__item--icon navi-search-results__item--cell">
           <NaviIcon @icon="file-text" />
         </td>
-        <td class="navi-search-sample-result__item">
+        <td class="navi-search-sample-result__item navi-search-results__item--cell">
           {{result}}
         </td>
       </tr>

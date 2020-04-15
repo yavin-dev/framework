@@ -3,7 +3,7 @@
   <tbody class="navi-search-results__item-body">
     {{#each @data as |result|}}
       <tr class="navi-search-definition-result">
-        <td class="navi-search-definition-result__item">
+        <td class="navi-search-definition-result__item navi-search-results__item--cell">
             <h5 class="navi-search-definition-result__item-name">{{result.name}}</h5>
             {{#if this.hasMultipleDataSources}}
               <span class="navi-search-definition-result__item-source"><em>Source: {{result.source}}</em></span>
