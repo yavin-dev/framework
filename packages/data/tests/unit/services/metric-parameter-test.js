@@ -118,13 +118,19 @@ module('Unit | Service | metric parameter', function(hooks) {
       parameter = {
         type: 'ref',
         expression: 'self',
-        _localValues: [{ id: 1, description: 'One' }, { id: 2, description: 'Two' }]
+        _localValues: [
+          { id: 1, description: 'One' },
+          { id: 2, description: 'Two' }
+        ]
       };
 
     const results = await service.fetchAllValues(parameter);
 
     assert.deepEqual(
-      [{ id: 1, description: 'One' }, { id: 2, description: 'Two' }],
+      [
+        { id: 1, description: 'One' },
+        { id: 2, description: 'Two' }
+      ],
       results,
       'Enum paramter type returns correct values from meta.'
     );

@@ -133,7 +133,10 @@ module('Unit | Bard facts Adapter', function(hooks) {
     );
 
     let manyIntervals = {
-      intervals: [{ start: 'start1', end: 'end1' }, { start: 'start2', end: 'end2' }]
+      intervals: [
+        { start: 'start1', end: 'end1' },
+        { start: 'start2', end: 'end2' }
+      ]
     };
     assert.equal(
       Adapter._buildDateTimeParam(manyIntervals),

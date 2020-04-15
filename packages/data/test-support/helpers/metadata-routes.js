@@ -340,6 +340,16 @@ export const MetricFunctionAggTrend = {
   }
 };
 
+const METRIC_MAP = {
+  metricOne: MetricOne,
+  metricTwo: MetricTwo,
+  metricThree: MetricThree,
+  metricFour: MetricFour,
+  metricFive: MetricFive,
+  metricSix: MetricSix,
+  pageViews: PageViews
+};
+
 export default function(index = 0) {
   const host = config.navi.dataSources[index].uri;
   this.get(`${host}/v1/tables`, function() {
@@ -370,13 +380,3 @@ export default function(index = 0) {
     ];
   });
 }
-
-const METRIC_MAP = {
-  metricOne: MetricOne,
-  metricTwo: MetricTwo,
-  metricThree: MetricThree,
-  metricFour: MetricFour,
-  metricFive: MetricFive,
-  metricSix: MetricSix,
-  pageViews: PageViews
-};

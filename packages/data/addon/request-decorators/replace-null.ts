@@ -14,10 +14,10 @@ const NULL_STRING_VALUE = '';
  * @param {Object} request - object with filters to replace
  * @returns {Object} new request object with updated filters
  */
-export function replaceNullFilter(request) {
+export function replaceNullFilter(request: TODO) {
   // only decorate if the request and the filters array are defined
   if (request && request.filters) {
-    const updatedFilters = request.filters.map(filter => {
+    const updatedFilters = request.filters.map((filter: TODO) => {
       // Update any filter that matches the given dimension
       if (filter.operator === 'null' || filter.operator === 'notnull') {
         // Build new value array and replace id with newIds

@@ -89,19 +89,6 @@ function _filterDimensions(dimensions, filter) {
 }
 
 /**
- * @method _getDimensionValues
- * @param {String} name - dimension to get values for
- * @returns {Array} list of object with id + description
- */
-function _getDimensionValues(name, filter) {
-  // Return cached values, or fake new ones
-  let values =
-    DIMENSION_VALUE_MAP[name] ||
-    (DIMENSION_VALUE_MAP[name] = _fakeDimensionValues(name, faker.random.number({ min: 3, max: 5 })));
-  return _filterDimensions(values, filter);
-}
-
-/**
  * @method _fakeDimensionValues
  * @param {String} name - dimension to fake values for
  * @param {Number} count - number of values dimension should have
@@ -128,6 +115,19 @@ function _fakeDimensionValues(name, count) {
   }
 
   return fakeValues;
+}
+
+/**
+ * @method _getDimensionValues
+ * @param {String} name - dimension to get values for
+ * @returns {Array} list of object with id + description
+ */
+function _getDimensionValues(name, filter) {
+  // Return cached values, or fake new ones
+  let values =
+    DIMENSION_VALUE_MAP[name] ||
+    (DIMENSION_VALUE_MAP[name] = _fakeDimensionValues(name, faker.random.number({ min: 3, max: 5 })));
+  return _filterDimensions(values, filter);
 }
 
 /**
