@@ -1,2 +1,18 @@
-{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{yield}}
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<div class="navi-column-config-base__option navi-column-config-item__parameter">
+  <label for="navi-column-config-item-datetime-timegrain" class="navi-column-config-item__parameter-label navi-column-config-base__option-label">
+    Time Grain
+  </label>
+  <PowerSelect
+    @triggerClass="navi-column-config-item__parameter-trigger navi-column-config-base__option-input"
+    @triggerId="navi-column-config-item-datetime-timegrain"
+    @dropdownClass="navi-column-config-item__parameter-dropdown"
+    @searchEnabled={{false}}
+    @options={{@column.timeGrains}}
+    @selected={{find-by 'id' @column.timeGrain @column.timeGrains}}
+    @onchange={{this.updateTimeGrain}}
+    as | grain |
+  >
+    {{grain.name}}
+  </PowerSelect>
+</div>

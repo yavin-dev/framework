@@ -83,6 +83,19 @@ class NaviColumnConfig extends Component {
         fragment: dimension
       };
     });
+
+    if (timeGrain !== 'all') {
+      dimensionColumns.unshift({
+        type: 'dimension',
+        name: 'dateTime',
+        displayName: this.getDisplayName(timeGrainObject, 'dateTime', visualization),
+        isFiltered: true,
+        fragment: 'dateTime',
+        timeGrain,
+        timeGrains: timeGrains.filter(grain => grain.id !== 'all')
+      });
+    }
+
     const metricColumns = metrics.toArray().map(metric => {
       const name = metric.canonicalName;
       return {
@@ -94,18 +107,7 @@ class NaviColumnConfig extends Component {
       };
     });
 
-    const columns = [...dimensionColumns, ...metricColumns];
-
-    if (timeGrain !== 'all') {
-      columns.unshift({
-        type: 'dateTime',
-        name: 'dateTime',
-        displayName: this.getDisplayName(timeGrainObject, 'dateTime', visualization),
-        fragment: timeGrain
-      });
-    }
-
-    return columns;
+    return [...dimensionColumns, ...metricColumns];
   }
 
   /**
@@ -159,7 +161,12 @@ class NaviColumnConfig extends Component {
    */
   @action
   cloneColumn(column) {
-    const { type } = column;
+    const { type, fragment } = column;
+
+    if (fragment === 'dateTime') {
+      return; // dateTime column cannot be cloned
+    }
+
     const newColumn = column.fragment[type];
     if (type === 'metric') {
       if (newColumn.hasParameters) {
@@ -179,8 +186,13 @@ class NaviColumnConfig extends Component {
    */
   @action
   toggleColumnFilter(column) {
+    const { type, fragment } = column;
+
+    if (fragment === 'dateTime') {
+      return; // dateTime filter cannot be toggled
+    }
+
     const oldFilters = this.report.request.filters.length + this.report.request.having.length;
-    const { type } = column;
     const newColumn = column.fragment[type];
     if (type === 'metric') {
       if (newColumn.hasParameters) {
@@ -205,8 +217,8 @@ class NaviColumnConfig extends Component {
    */
   @action
   removeColumn(column) {
-    const { type } = column;
-    const removalHandler = this[`onRemove${capitalize(type)}`];
+    const { type, fragment } = column;
+    const removalHandler = this[`onRemove${fragment === 'dateTime' ? 'DateTime' : capitalize(type)}`];
     removalHandler?.(column.fragment);
   }
 

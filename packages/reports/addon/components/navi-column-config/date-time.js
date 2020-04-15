@@ -6,18 +6,28 @@
  *
  * Usage:
  *  <NaviColumnConfig::DateTime
- *    @column={{editingColumn}}
- *    @metadata={{visualization.metadata}}
- *    @onClose={{action "onClose"}}
- *    @onUpdateColumnName={{action "onUpdateColumnName"}}
+ *    @column={{this.column}}
+ *    @metadata={{this.visualization.metadata}}
+ *    @onUpdateColumnName={{this.onUpdateColumnName}}
+ *    @onUpdateTimeGrain={{this.onUpdateTimeGrain}}
  *  />
  */
 import Component from '@ember/component';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
 import layout from '../../templates/components/navi-column-config/date-time';
+import { action } from '@ember/object';
 
 @tagName('')
 @templateLayout(layout)
-class DateTime extends Component {}
+class NaviColumnConfigDateTimeComponent extends Component {
+  /**
+   * @action
+   * @param {Object} timeGrain
+   */
+  @action
+  updateTimeGrain(timeGrain) {
+    this.onUpdateTimeGrain?.(timeGrain);
+  }
+}
 
-export default DateTime;
+export default NaviColumnConfigDateTimeComponent;

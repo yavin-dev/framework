@@ -7,8 +7,21 @@
   color: @denali-link;
   cursor: pointer;
 
+  &--disabled {
+    color: @denali-grey-500;
+  }
+
   &--active,
   &:hover {
+    color: @denali-link-hover;
+  }
+
+  &--disabled:hover {
+    color: @denali-grey-500;
+    cursor: not-allowed;
+  }
+
+  &--active:hover {
     color: @denali-link-hover;
   }
 }

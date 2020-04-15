@@ -15,20 +15,35 @@
     @sortByField={{unless areItemsFiltered "name"}}
     as | item |
   >
-    {{#if (eq item.category "Time Grain")}}
-      <div class="grouped-list__item-checkbox-container">
-        <input
-          type="checkbox"
-          class="grouped-list__item-checkbox"
-          id={{concat "grouped-list-item-checkbox-" (dasherize item.name)}}
-          onchange={{action "itemClicked" item}}
-          checked={{get itemsChecked item.id}}
-        >
-        <label for={{concat "grouped-list-item-checkbox-" (dasherize item.name)}}
-          class="grouped-list__item-label">
-          {{item.name}}
-        </label>
-      </div>
+    {{#if (or (eq item.category "Time Grain") (eq item.category "Date Time"))}}
+      {{#if (feature-flag "enableRequestPreview")}}
+        <div class="grouped-list__item-container {{if this.selectedTimeGrain "grouped-list__item-container--selected grouped-list__item-container--disabled"}}">
+          <span class="grouped-list__item-label"
+            role="button"
+            aria-disabled="{{not (is-empty this.selectedTimeGrain)}}"
+            {{on "click" (fn this.itemClicked item)}}>
+            <NaviIcon
+              @icon="plus-circle"
+              class="grouped-list__add-icon"
+            />
+            {{item.name}}
+          </span>
+        </div>
+      {{else}}
+        <div class="grouped-list__item-checkbox-container">
+          <input
+            type="checkbox"
+            class="grouped-list__item-checkbox"
+            id={{concat "grouped-list-item-checkbox-" (dasherize item.name)}}
+            checked={{get itemsChecked item.id}}
+            {{on "change" (fn this.itemClicked item)}}
+          >
+          <label for={{concat "grouped-list-item-checkbox-" (dasherize item.name)}}
+            class="grouped-list__item-label">
+            {{item.name}}
+          </label>
+        </div>
+      {{/if}}
     {{else}}
       <div class="grouped-list__item-container {{if (and (get itemsChecked item.id) (feature-flag "enableRequestPreview")) "grouped-list__item-container--selected"}}">
         <span class="grouped-list__item-label" onclick={{action "itemClicked" item}} role="button">

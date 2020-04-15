@@ -20,6 +20,7 @@ import { get, computed, action } from '@ember/object';
 import { A as arr } from '@ember/array';
 import layout from '../templates/components/dimension-selector';
 import { featureFlag } from 'navi-core/helpers/feature-flag';
+import { getDefaultTimeGrain } from 'navi-reports/utils/request-table';
 
 export default class DimensionSelector extends Component {
   layout = layout;
@@ -49,11 +50,19 @@ export default class DimensionSelector extends Component {
    */
   @computed('timeGrains')
   get allTimeGrains() {
-    const timeGrains = this.timeGrains;
+    const { timeGrains } = this;
 
     return timeGrains
       .filter(grain => grain?.id !== 'all')
       .map(grain => Object.assign({}, grain, { category: 'Time Grain' }));
+  }
+
+  /*
+   * @property {Object} defaultTimeGrain - the default time grain for the logical table selected
+   */
+  @computed('allTimeGrains')
+  get defaultTimeGrain() {
+    return getDefaultTimeGrain(this.allTimeGrains);
   }
 
   /*
@@ -62,7 +71,21 @@ export default class DimensionSelector extends Component {
    */
   @computed('allTimeGrains', 'allDimensions')
   get listItems() {
-    return [...(this.allTimeGrains || []), ...(this.allDimensions || [])];
+    let timeGrains;
+
+    if (featureFlag('enableRequestPreview')) {
+      // only option is to add the default time grain (if none is selected)
+      timeGrains = [
+        {
+          name: 'Date Time',
+          category: 'Date Time'
+        }
+      ];
+    } else {
+      timeGrains = this.allTimeGrains;
+    }
+
+    return [...timeGrains, ...this.allDimensions];
   }
 
   /*
@@ -107,7 +130,7 @@ export default class DimensionSelector extends Component {
    */
   @computed('selectedTimeGrain', 'selectedDimensions')
   get selectedColumns() {
-    if (!this.selectedTimeGrain || this.selectedTimeGrain === 'all') {
+    if (!this.selectedTimeGrain) {
       return this.selectedDimensions;
     } else {
       return arr([this.selectedTimeGrain, ...this.selectedDimensions]).uniq();
@@ -145,12 +168,21 @@ export default class DimensionSelector extends Component {
    */
   @action
   itemClicked(item) {
-    const type = item.category === 'Time Grain' ? 'TimeGrain' : 'Dimension',
-      enableRequestPreview = featureFlag('enableRequestPreview'),
-      actionHandler = (enableRequestPreview && type === 'Dimension') || !this.itemsChecked[item.id] ? 'Add' : 'Remove';
+    const type = ['Time Grain', 'Date Time'].includes(item.category) ? 'TimeGrain' : 'Dimension',
+      enableRequestPreview = featureFlag('enableRequestPreview');
 
-    const handler = this[`on${actionHandler}${type}`];
+    let actionHandler;
 
-    if (handler) handler(item);
+    if (enableRequestPreview) {
+      if (type === 'TimeGrain' && !this.selectedTimeGrain) {
+        return this.onAddTimeGrain?.(this.defaultTimeGrain);
+      } else if (type === 'Dimension') {
+        actionHandler = 'Add';
+      }
+    } else {
+      actionHandler = this.itemsChecked[item.id] ? 'Remove' : 'Add';
+    }
+
+    this[`on${actionHandler}${type}`]?.(item);
   }
 }
