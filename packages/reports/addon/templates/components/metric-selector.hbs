@@ -6,6 +6,7 @@
     @selected={{this.selectedMetrics}}
     @title="Metrics"
     @contentClass="navi-list-selector__content--metric"
+    class="{{if (feature-flag "enableRequestPreview") "navi-list-selector__request_preview"}}"
     as | metrics areMetricsFiltered |
   >
     <GroupedList
