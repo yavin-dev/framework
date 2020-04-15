@@ -58,7 +58,10 @@ module('Integration | Component | navi vis c3 chart', function(hooks) {
     assert.expect(2);
 
     this.set('data', {
-      columns: [['series0', 30, 200, 100, 400, 150, 250], ['series1', 30, 200, 100, 400, 150, 250]]
+      columns: [
+        ['series0', 30, 200, 100, 400, 150, 250],
+        ['series1', 30, 200, 100, 400, 150, 250]
+      ]
     });
 
     await render(hbs`

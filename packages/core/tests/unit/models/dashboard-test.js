@@ -150,7 +150,7 @@ module('Unit | Model | dashboard', function(hooks) {
 
   /**
    * TODO Fix test after moving to core
-   * test('deliveryRuleForUser', function (assert) {
+   * skip('deliveryRuleForUser', function (assert) {
    *   assert.expect(1);
    *
    *   return Ember.run(() => {

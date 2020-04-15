@@ -30,7 +30,10 @@ module('Unit | Validator | request-metrics', function(hooks) {
 
     assert.equal(
       Validator.validate(
-        [{ metric: { id: 'm1' }, canonicalName: 'm1' }, { metric: { id: 'm2' }, canonicalName: 'm2' }],
+        [
+          { metric: { id: 'm1' }, canonicalName: 'm1' },
+          { metric: { id: 'm2' }, canonicalName: 'm2' }
+        ],
         { request }
       ),
       true,

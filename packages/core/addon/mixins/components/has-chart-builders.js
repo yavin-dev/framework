@@ -29,5 +29,5 @@ export default Mixin.create({
       }, {});
 
     return builderMap;
-  }),
+  })
 });

@@ -65,6 +65,12 @@ module.exports = {
       })
     },
     {
+      files: ['blueprints/**'],
+      rules: {
+        'node/no-extraneous-require': 'off'
+      }
+    },
+    {
       files: ['tests/**/*.js'],
       rules: {
         'ember/no-jquery': 'off',

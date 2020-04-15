@@ -87,7 +87,10 @@ const Model = arr([
         { metric: 'totalPageViews', parameters: {} },
         { metric: 'platformRevenue', parameters: { currency: 'USD', as: 'm1' } }
       ],
-      sort: [{ metric: 'm1', direction: 'desc' }, { metric: 'uniqueIdentifier', direction: 'asc' }],
+      sort: [
+        { metric: 'm1', direction: 'desc' },
+        { metric: 'uniqueIdentifier', direction: 'asc' }
+      ],
       logicalTable: {
         table: 'network',
         timeGrain: 'day'
@@ -140,7 +143,7 @@ module('Integration | Component | table', function(hooks) {
 
     this.set('model', Model);
     this.set('options', Options);
-    this.set('onUpdateReport', () => {});
+    this.set('onUpdateReport', () => undefined);
 
     MetadataService = this.owner.lookup('service:bard-metadata');
 
@@ -200,7 +203,10 @@ module('Integration | Component | table', function(hooks) {
             { metric: 'usedAmount', parameters: {} },
             { metric: 'personalSold', parameters: { as: 'm1' } }
           ],
-          sort: [{ metric: 'm1', direction: 'desc' }, { metric: 'usedAmount', direction: 'asc' }],
+          sort: [
+            { metric: 'm1', direction: 'desc' },
+            { metric: 'usedAmount', direction: 'asc' }
+          ],
           logicalTable: {
             table: 'inventory',
             timeGrain: {

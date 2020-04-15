@@ -87,7 +87,7 @@ module('Integration | Component | navi visualizations/table print', function(hoo
 
     this.set('model', Model);
     this.set('options', Options);
-    this.set('onUpdateReport', () => {});
+    this.set('onUpdateReport', () => undefined);
 
     return this.owner.lookup('service:bard-metadata').loadMetadata();
   });
