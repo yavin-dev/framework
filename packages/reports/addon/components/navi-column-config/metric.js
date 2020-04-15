@@ -15,7 +15,7 @@
 import Component from '@ember/component';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
 import layout from '../../templates/components/navi-column-config/metric';
-import { action, set, computed } from '@ember/object';
+import { action, computed } from '@ember/object';
 import { inject as service } from '@ember/service';
 import { guidFor } from '@ember/object/internals';
 import { groupBy } from 'lodash-es';
