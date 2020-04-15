@@ -6,7 +6,7 @@
 <FilterCollection
   class="dashboard-filters-collection"
   @isCollapsed={{this.isCollapsed}}
-  @onUpdateCollapsed={{mut this.isCollapsed}}
+  @onUpdateCollapsed={{fn (mut this.isCollapsed})}
   @request={{this.filters}}
   @onUpdateFilter={{@onUpdateFilter}}
   @onRemoveFilter={{@onRemoveFilter}}
