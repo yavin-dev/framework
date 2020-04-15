@@ -7,7 +7,6 @@
 
 import Service from '@ember/service';
 import { inject as service } from '@ember/service';
-import { set } from '@ember/object';
 import { assert } from '@ember/debug';
 import { resolve, hash } from 'rsvp';
 

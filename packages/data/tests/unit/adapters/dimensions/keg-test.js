@@ -43,9 +43,16 @@ module('Unit | Adapters | Dimensions | Keg', function(hooks) {
 
     Keg = Adapter.get('keg');
     Keg.pushMany('dimension/dummy.dimensionOne', Records, { namespace: 'dummy' });
-    Keg.pushMany('dimension/blockhead.dimensionFour', [{ id: 1, description: 'one' }, { id: 2, description: 'two' }], {
-      namespace: 'blockhead'
-    });
+    Keg.pushMany(
+      'dimension/blockhead.dimensionFour',
+      [
+        { id: 1, description: 'one' },
+        { id: 2, description: 'two' }
+      ],
+      {
+        namespace: 'blockhead'
+      }
+    );
 
     //Load metadata
     Server = new Pretender(metadataRoutes);
@@ -197,10 +204,20 @@ module('Unit | Adapters | Dimensions | Keg', function(hooks) {
 
   test('pushMany', function(assert) {
     assert.expect(4);
-    Adapter.pushMany('dimensionOne', [{ id: 22, foo: 'bar' }, { id: 44, foo: 'baz' }]);
-    Adapter.pushMany('dimensionFour', [{ id: 77, foo: 'quux' }, { id: 99, foo: 'plugh' }], {
-      dataSourceName: 'blockhead'
-    });
+    Adapter.pushMany('dimensionOne', [
+      { id: 22, foo: 'bar' },
+      { id: 44, foo: 'baz' }
+    ]);
+    Adapter.pushMany(
+      'dimensionFour',
+      [
+        { id: 77, foo: 'quux' },
+        { id: 99, foo: 'plugh' }
+      ],
+      {
+        dataSourceName: 'blockhead'
+      }
+    );
 
     let { foo: bar } = Keg.getById('dimension/dummy.dimensionOne', 22, 'dummy');
     assert.deepEqual(bar, 'bar', 'pushMany stores records into the keg');

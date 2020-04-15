@@ -4,7 +4,7 @@ import NaviFactsModel from 'navi-data/models/navi-facts';
 
 module('Unit | Navi Facts Model', function(hooks) {
   let Response, Payload;
-  
+
   hooks.beforeEach(function() {
     Payload = {
       request: {
@@ -63,20 +63,19 @@ module('Unit | Navi Facts Model', function(hooks) {
     //Mocking facts service
     Response.set('_factService', {
       fetchNext: () => {
-        assert.ok('The service`s fetch Next method is invoked with the response and request')
+        assert.ok('The service`s fetch Next method is invoked with the response and request');
       }
     });
 
     Response.next();
 
-
     //Mocking facts service
     Response.set('_factService', {
       fetchPrevious: () => {
-        assert.ok('The service`s fetch Previous method is invoked with the response and request')
+        assert.ok('The service`s fetch Previous method is invoked with the response and request');
       }
     });
-    
+
     Response.previous();
   });
 });
