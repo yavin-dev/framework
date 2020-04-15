@@ -1,15 +1,15 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="navi-dashboard navi-dashboard--print">
   <div class="navi-dashboard__body">
-    {{#if model.dashboard.widgets.length}}
+    {{#if @model.dashboard.widgets.length}}
       <div class="navi-dashboard__widgets">
-        {{#each model.dashboard.presentation.layout as |layout|}}
+        {{#each @model.dashboard.presentation.layout as |layout|}}
           {{#with (get-widget layout.widgetId) as |widget|}}
             {{#if widget}}
-              {{navi-widget
-                model=widget
-                taskInstance=(get model.taskByWidget widget.id)
-              }}
+              <NaviWidget
+                @model={{widget}}
+                @taskInstance={{get @model.taskByWidget widget.id}}
+              />
             {{/if}}
           {{/with}}
         {{/each}}

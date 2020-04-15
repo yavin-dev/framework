@@ -1,8 +1,6 @@
-{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{yield}}
-{{#navi-modal
-    isShown=showModal
-}}
+<NaviModal @isShown={{this.showModal}} >
   <div class="add-widget-modal">
     <div class="navi-modal-header">
       <h1 class="primary-header">Add Widget</h1>
@@ -10,33 +8,33 @@
         <p>To add a widget, choose a report or create a new one using the dropdown below.</p>
       </h5>
     </div>
-    {{#power-select
-      options=reportsWithCreate
-      selected=selectedReport
-      searchField="title"
-      searchPlaceholder="Search for a report..."
-      onchange=(action (set this "selectedReport" _))
-      classNames="report-select"
-      tagName="div"
-      renderInPlace=true
+    <PowerSelect
+      @options={{this.reportsWithCreate}}
+      @selected={{this.selectedReport}}
+      @searchField="title"
+      @searchPlaceholder="Search for a report..."
+      @onchange={{fn (mut this.selectedReport)}}
+      @classNames="report-select"
+      @tagName="div"
+      @renderInPlace={{true}}
       as |report|
-    }}
+    >
       {{report.title}}
-    {{/power-select}}
+    </PowerSelect>
     <div class="btn-container">
-      {{#if (eq selectedReport.id "new")}}
-        {{#link-to "dashboards.dashboard.widgets.new" dashboard.id classNames="btn btn-primary add-to-dashboard"}}Take me there!{{/link-to}}
+      {{#if (eq this.selectedReport.id "new")}}
+        <LinkTo @route="dashboards.dashboard.widgets.new" @model={{this.dashboard.id}} class="btn btn-primary add-to-dashboard">Take me there!</LinkTo>
       {{else}}
         <button type="button" class="btn btn-primary add-to-dashboard"
                 onclick={{pipe
-                          (action onSelectReport selectedReport dashboard.id selectedReport.title)
-                          (action (toggle "showModal" this))
+                          (fn @onSelectReport this.selectedReport this.dashboard.id this.selectedReport.title)
+                          (toggle "showModal" this)
                         }}
         >
           Add to dashboard
         </button>
       {{/if}}
-      <button type="button" class="btn btn-secondary" onclick={{action (toggle "showModal" this)}}>Cancel</button>
+      <button type="button" class="btn btn-secondary" {{on "click" (toggle "showModal" this)}}>Cancel</button>
     </div>
   </div>
-{{/navi-modal}}
+</NaviModal>

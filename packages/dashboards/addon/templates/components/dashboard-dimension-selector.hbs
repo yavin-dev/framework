@@ -1,14 +1,19 @@
-{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{#if (is-fulfilled groupedDimensions)}}
-  {{#power-select
-    options=(await groupedDimensions)
-    onchange=(action "change")
-    searchField="name"
-    placeholder="Select a Dimension"
-    searchPlaceholder="Search"
-    beforeOptionsComponent="power-select-search"
-    as |dimension|
-  }}
-    <div title="data source: {{dimension.dataSource}}">{{dimension.name}}</div>
-  {{/power-select}}
-{{/if}}
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<div
+  class="dashboard-dimension-selector"
+  ...attributes
+>
+  {{#if (is-fulfilled this.groupedDimensions)}}
+    <PowerSelect
+      @options={{await this.groupedDimensions}}
+      @onchange={{@onChange}}
+      @searchField="name"
+      @placeholder="Select a Dimension"
+      @searchPlaceholder="Search"
+      @beforeOptionsComponent="power-select-search"
+      as |dimension|
+    >
+      <div title="data source: {{dimension.dataSource}}">{{dimension.name}}</div>
+    </PowerSelect>
+  {{/if}}
+</div>
