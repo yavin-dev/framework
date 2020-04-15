@@ -7,6 +7,7 @@
 
 import Component from '@glimmer/component';
 import { pluralize } from 'ember-inflector';
+import { set } from '@ember/object';
 
 export default class NaviAssetSearchResultComponent extends Component {
   /**
@@ -14,12 +15,9 @@ export default class NaviAssetSearchResultComponent extends Component {
    */
   get results() {
     return this.args.data?.map(value => {
-      if (!value.route) {
-        value.route = this._getRouteFor(value);
-      }
-      if (!value.type) {
-        value.type = value?.constructor?.modelName;
-      }
+      set(value, 'route', this._getRouteFor(value));
+      set(value, 'type', value.constructor?.modelName);
+      set(value, 'icon', value.type === 'report' ? 'file-text' : 'bar-chart');
       return value;
     });
   }

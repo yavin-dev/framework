@@ -54,12 +54,14 @@ export default class NaviSearchBarComponent extends Component {
   onKeyUp(dd, event) {
     // Close results window if the user deletes the query or presses escape
     if (this.searchQuery.length == 0 || event.keyCode === ESCAPE_KEY) {
-      dd.actions.close(event);
-    }
+      // Empty results if search query is deleted
+      if (this.searchQuery.length == 0) {
+        this.searchResults = [];
+      }
 
-    // Empty results if search query is deleted
-    if (this.searchQuery.length == 0) {
-      this.searchResults = [];
+      dd.actions.close(event);
+      // Don't perform query if you press escape or delete query
+      return;
     }
 
     // Perform search on enter press or when query is longer than 2 characters
