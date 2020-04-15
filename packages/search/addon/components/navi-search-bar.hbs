@@ -1,6 +1,6 @@
 {{! Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. }}
 <div class="navi-search" ...attributes>
-  <BasicDropdown @matchTriggerWidth={{true}} as |dd|>
+  <BasicDropdown @matchTriggerWidth={{true}} @verticalPosition="below" as |dd|>
   <div class="navi-search-bar">
     <Input @type="text" @value={{this.searchQuery}} @placeholder="Search" @class="navi-search-bar__input"
       @keyUp={{fn this.onKeyUp dd}} @focusIn={{fn this.focus dd}} data-ebd-id="{{dd.uniqueId}}-trigger"/>

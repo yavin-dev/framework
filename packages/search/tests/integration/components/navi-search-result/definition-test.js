@@ -3,9 +3,17 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, findAll } from '@ember/test-helpers';
 import { hbs } from 'ember-cli-htmlbars';
 import { set } from '@ember/object';
+import Service from '@ember/service';
 
+class MetadataServiceStub extends Service {
+  loadedDataSources = ['dummy', 'blockhead'];
+}
 module('Integration | Component | definition', function(hooks) {
   setupRenderingTest(hooks);
+
+  hooks.beforeEach(async function() {
+    this.owner.register('service:bard-metadata', MetadataServiceStub);
+  });
 
   test('it renders', async function(assert) {
     assert.expect(1);

@@ -6,12 +6,18 @@
  */
 
 import Component from '@glimmer/component';
+import { inject as service } from '@ember/service';
 
 export default class NaviDefinitionSearchResultComponent extends Component {
+  /**
+   * @property {Ember.Service} metadataService
+   */
+  @service('bard-metadata') metadataService;
+
   /**
    * @property {Boolean} hasMultipleDataSources
    */
   get hasMultipleDataSources() {
-    return new Set(this.args?.data.map(value => value.source)).size !== 1;
+    return this.metadataService.loadedDataSources.length > 1;
   }
 }
