@@ -14,12 +14,18 @@ let Service, Server, MetadataService;
 const TestDimension = 'dimensionOne';
 
 const Response = {
-  rows: [{ id: 'v1', description: 'value1' }, { id: 'v2', description: 'value2' }],
+  rows: [
+    { id: 'v1', description: 'value1' },
+    { id: 'v2', description: 'value2' }
+  ],
   meta: { test: true }
 };
 
 const KegResponse = {
-  rows: [{ id: 'v3', description: 'value3' }, { id: 'v4', description: 'value4' }],
+  rows: [
+    { id: 'v3', description: 'value3' },
+    { id: 'v4', description: 'value4' }
+  ],
   meta: { test: true }
 };
 
@@ -171,7 +177,7 @@ module('Unit | Service | Dimensions', function(hooks) {
     });
   });
 
-  test('find from keg with pagination', function(assert) {
+  test('find from keg with pagination - dimensions are loaded', function(assert) {
     assert.expect(1);
 
     let keg = Service.get('_kegAdapter').get('keg');
@@ -248,7 +254,7 @@ module('Unit | Service | Dimensions', function(hooks) {
     });
   });
 
-  test('find from keg with pagination', function(assert) {
+  test('find from keg with pagination - dimension not loaded', function(assert) {
     assert.expect(1);
 
     //Mock service - dimensions are loaded in keg
@@ -456,7 +462,10 @@ module('Unit | Service | Dimensions', function(hooks) {
     assert.expect(2);
 
     let response3 = {
-      rows: [{ id: 'v1', desc: 'value1' }, { id: 'v2', desc: 'value2' }],
+      rows: [
+        { id: 'v1', desc: 'value1' },
+        { id: 'v2', desc: 'value2' }
+      ],
       meta: { test: true }
     };
 
@@ -492,7 +501,10 @@ module('Unit | Service | Dimensions', function(hooks) {
     const options = { dataSourceName: 'blockhead' };
 
     let response3 = {
-      rows: [{ id: 'v4', desc: 'value4' }, { id: 'v5', desc: 'value5' }],
+      rows: [
+        { id: 'v4', desc: 'value4' },
+        { id: 'v5', desc: 'value5' }
+      ],
       meta: { test: true }
     };
 
@@ -526,7 +538,10 @@ module('Unit | Service | Dimensions', function(hooks) {
     assert.expect(7);
 
     let response3 = {
-      rows: [{ id: 'v1', desc: 'value1' }, { id: 'v2', desc: 'value2' }],
+      rows: [
+        { id: 'v1', desc: 'value1' },
+        { id: 'v2', desc: 'value2' }
+      ],
       meta: { test: true }
     };
 

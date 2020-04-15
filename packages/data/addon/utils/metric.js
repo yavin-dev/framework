@@ -6,25 +6,22 @@ import { isEmpty } from '@ember/utils';
 import { get } from '@ember/object';
 
 /**
- * Returns canonicalized name of a paramterized metric
- * @function canonicalizeMetric
- * @param {Object} metric
- * @param {String} metric.metric - metric name
- * @param {Object} metric.parameters - a key: value object of parameters
- */
-export function canonicalizeMetric(metric) {
-  return hasParameters(metric) ? `${metric.metric}(${serializeParameters(metric.parameters)})` : metric.metric;
-}
-
-/**
- * Returns canonicalized name given metric column attributes
- * @function canonicalizeColumnAttributes
- * @param {Object} attributes
+ * Returns a metric object given column attributes
+ * @function mapColumnAttributes
+ * @param {Object} attributes - column attributes
  * @param {String} attributes.name - metric name
- * @param {Object} attributes.parameters - a key: value object of parameters
+ * @param {Object} attributes.parameters - metric parameters
+ * @returns {Object} - object with metric name and parameters
  */
-export function canonicalizeColumnAttributes(attributes) {
-  return canonicalizeMetric(mapColumnAttributes(attributes));
+export function mapColumnAttributes(attributes) {
+  let metric = get(attributes, 'name'),
+    parameters = get(attributes, 'parameters') || {};
+
+  if (isEmpty(metric)) {
+    throw new Error('Metric Column Attributes Mapper: Error, empty metric name');
+  }
+
+  return { metric, parameters };
 }
 
 /**
@@ -56,6 +53,28 @@ export function serializeParameters(obj = {}) {
     .filter(([, value]) => value !== null && value !== undefined)
     .map(([key, value]) => `${key}=${value}`)
     .join(',');
+}
+
+/**
+ * Returns canonicalized name of a paramterized metric
+ * @function canonicalizeMetric
+ * @param {Object} metric
+ * @param {String} metric.metric - metric name
+ * @param {Object} metric.parameters - a key: value object of parameters
+ */
+export function canonicalizeMetric(metric) {
+  return hasParameters(metric) ? `${metric.metric}(${serializeParameters(metric.parameters)})` : metric.metric;
+}
+
+/**
+ * Returns canonicalized name given metric column attributes
+ * @function canonicalizeColumnAttributes
+ * @param {Object} attributes
+ * @param {String} attributes.name - metric name
+ * @param {Object} attributes.parameters - a key: value object of parameters
+ */
+export function canonicalizeColumnAttributes(attributes) {
+  return canonicalizeMetric(mapColumnAttributes(attributes));
 }
 
 /**
@@ -135,23 +154,4 @@ export function parseMetricName(canonicalName) {
     metric,
     parameters
   };
-}
-
-/**
- * Returns a metric object given column attributes
- * @function mapColumnAttributes
- * @param {Object} attributes - column attributes
- * @param {String} attributes.name - metric name
- * @param {Object} attributes.parameters - metric parameters
- * @returns {Object} - object with metric name and parameters
- */
-export function mapColumnAttributes(attributes) {
-  let metric = get(attributes, 'name'),
-    parameters = get(attributes, 'parameters') || {};
-
-  if (isEmpty(metric)) {
-    throw new Error('Metric Column Attributes Mapper: Error, empty metric name');
-  }
-
-  return { metric, parameters };
 }

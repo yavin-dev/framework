@@ -150,7 +150,10 @@ export default {
         },
         aggregation: {
           type: 'enum',
-          values: [{ id: 'dayAvg', description: 'Daily Average' }, { id: 'total', description: 'Total' }],
+          values: [
+            { id: 'dayAvg', description: 'Daily Average' },
+            { id: 'total', description: 'Total' }
+          ],
           defaultValue: 'total'
         },
         age: {

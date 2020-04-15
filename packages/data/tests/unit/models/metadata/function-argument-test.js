@@ -66,7 +66,10 @@ module('Unit | Metadata Model | Function Argument', function(hooks) {
     assert.expect(3);
 
     const valuesResponse = {
-      rows: [{ id: 'USD', description: 'US Dollars' }, { id: 'EUR', description: 'Euros' }],
+      rows: [
+        { id: 'USD', description: 'US Dollars' },
+        { id: 'EUR', description: 'Euros' }
+      ],
       meta: { test: true }
     };
 

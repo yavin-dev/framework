@@ -179,7 +179,10 @@ export default class KegDimensionAdapter extends EmberObject {
       });
       stringQueries.forEach(query => (query.values = query.values.split(',')));
     }
-    assert("Only 'Array' query values are currently supported in Keg", andQueries.every(q => Array.isArray(q.values)));
+    assert(
+      "Only 'Array' query values are currently supported in Keg",
+      andQueries.every(q => Array.isArray(q.values))
+    );
 
     let defaultQueryOptions = {
       field: this._getDimensionMetadata(dimension, namespace).get('primaryKeyFieldName'),

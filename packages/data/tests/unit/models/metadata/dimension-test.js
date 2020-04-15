@@ -130,7 +130,10 @@ module('Unit | Metadata Model | Dimension', function(hooks) {
     );
 
     let twoKeys = DimensionMetadataModel.create({
-      fields: [{ name: 'key1', tags: ['primaryKey'] }, { name: 'key2', tags: ['primaryKey'] }]
+      fields: [
+        { name: 'key1', tags: ['primaryKey'] },
+        { name: 'key2', tags: ['primaryKey'] }
+      ]
     });
     assert.deepEqual(
       twoKeys.get('primaryKeyFieldName'),
@@ -172,7 +175,10 @@ module('Unit | Metadata Model | Dimension', function(hooks) {
     );
 
     let twoKeys = DimensionMetadataModel.create({
-      fields: [{ name: 'name1', tags: ['description'] }, { name: 'name2', tags: ['description'] }]
+      fields: [
+        { name: 'name1', tags: ['description'] },
+        { name: 'name2', tags: ['description'] }
+      ]
     });
     assert.deepEqual(
       twoKeys.get('descriptionFieldName'),
@@ -256,7 +262,10 @@ module('Unit | Metadata Model | Dimension', function(hooks) {
     assert.deepEqual(noId.idFieldName, 'id', 'idFieldName returned `id` as the default id field name');
 
     let twoKeys = DimensionMetadataModel.create({
-      fields: [{ name: 'name1', tags: ['id'] }, { name: 'name2', tags: ['id'] }]
+      fields: [
+        { name: 'name1', tags: ['id'] },
+        { name: 'name2', tags: ['id'] }
+      ]
     });
     assert.deepEqual(twoKeys.idFieldName, 'name1', 'idFieldName returns the first field tagged as `id`');
 

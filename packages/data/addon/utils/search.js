@@ -22,11 +22,11 @@ export default {
    */
   getPartialMatchWeight(string, query) {
     // Split search query into individual words
-    var searchTokens = w(query.trim()),
+    let searchTokens = w(query.trim()),
       allTokensFound = true;
 
     // Check that all words in the search query can be found in the given string
-    for (var i = 0; i < searchTokens.length; i++) {
+    for (let i = 0; i < searchTokens.length; i++) {
       if (string.indexOf(searchTokens[i]) === -1) {
         allTokensFound = false;
         break;

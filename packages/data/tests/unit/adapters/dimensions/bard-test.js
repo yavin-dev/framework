@@ -8,7 +8,10 @@ import { assign } from '@ember/polyfills';
 const HOST = config.navi.dataSources[0].uri;
 
 const Response = {
-  rows: [{ id: 'v1', description: 'value1' }, { id: 'v2', description: 'value2' }],
+  rows: [
+    { id: 'v1', description: 'value1' },
+    { id: 'v2', description: 'value2' }
+  ],
   meta: { test: true }
 };
 
