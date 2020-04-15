@@ -79,19 +79,19 @@ module('Integration | Component | navi-column-config/metric', function(hooks) {
     );
     assert.deepEqual(
       findAll('.navi-column-config-metric__parameter-trigger').map(el => el.textContent.trim()),
-      ['Left (l)', 'Total (total)', '30-34 (6)', 'Dollars (USD)', 'Dollars (CAD)'],
+      ['Left', 'Total', '30-34', 'Dollars (USD)', 'Dollars (CAD)'],
       'Mulitple parameters values are filled in with selected values'
     );
 
-    await selectChoose('.navi-column-config-metric__parameter', 'Right (r)');
-    await selectChoose(findAll('.navi-column-config-metric__parameter')[1], 'Daily Average (dayAvg)');
-    await selectChoose(findAll('.navi-column-config-metric__parameter')[2], '13-17 (2)');
-    await selectChoose(findAll('.navi-column-config-metric__parameter')[3], 'Euro (EUR)');
-    await selectChoose(findAll('.navi-column-config-metric__parameter')[4], 'Drams (AMD)');
+    await selectChoose('.navi-column-config-metric__parameter', 'Right');
+    await selectChoose(findAll('.navi-column-config-metric__parameter')[1], 'Daily Average');
+    await selectChoose(findAll('.navi-column-config-metric__parameter')[2], '13-17');
+    await selectChoose(findAll('.navi-column-config-metric__parameter')[3], 'Euro');
+    await selectChoose(findAll('.navi-column-config-metric__parameter')[4], 'Drams');
 
     assert.deepEqual(
       findAll('.navi-column-config-metric__parameter-trigger').map(el => el.textContent.trim()),
-      ['Right (r)', 'Daily Average (dayAvg)', '13-17 (2)', 'Euro (EUR)', 'Drams (AMD)'],
+      ['Right', 'Daily Average', '13-17', 'Euro', 'Drams'],
       'A selected parameter can be changed and a null valued parameter can be changed'
     );
   });
@@ -110,16 +110,16 @@ module('Integration | Component | navi-column-config/metric', function(hooks) {
 
     assert.deepEqual(
       findAll('.navi-column-config-metric__parameter-trigger').map(el => el.textContent.trim()),
-      ['', 'Total (total)', '30-34 (6)', 'Dollars (USD)', ''],
+      ['', 'Total', '30-34', 'Dollars (USD)', ''],
       'Null parameters have no selected values in trigger'
     );
 
-    await selectChoose('.navi-column-config-metric__parameter', 'Right (r)');
+    await selectChoose('.navi-column-config-metric__parameter', 'Right');
     await selectChoose('.navi-column-config-metric__parameter:last-child', 'Dollars (CAD)');
 
     assert.deepEqual(
       findAll('.navi-column-config-metric__parameter-trigger').map(el => el.textContent.trim()),
-      ['Right (r)', 'Total (total)', '30-34 (6)', 'Dollars (USD)', 'Dollars (CAD)'],
+      ['Right', 'Total', '30-34', 'Dollars (USD)', 'Dollars (CAD)'],
       'Null value parameters can be changed'
     );
   });
@@ -155,20 +155,20 @@ module('Integration | Component | navi-column-config/metric', function(hooks) {
     assert.deepEqual(
       findAll('.ember-power-select-option').map(el => el.textContent.trim()),
       [
-        'NULL (-1)',
-        'UNKNOWN (-2)',
-        'Dirhams (AED)',
-        'Afghanis (AFA)',
-        'Leke (ALL)',
-        'Drams (AMD)',
-        'Guilders (ANG)',
-        'Kwanza (AOA)',
-        'Pesos (ARS)',
+        'NULL',
+        'UNKNOWN',
+        'Dirhams',
+        'Afghanis',
+        'Leke',
+        'Drams',
+        'Guilders',
+        'Kwanza',
+        'Pesos',
         'Dollars (AUD)',
         'Dollars (CAD)',
         'Dollars (USD)',
-        'Euro (EUR)',
-        'Rupees (INR)'
+        'Euro',
+        'Rupees'
       ],
       'The parameter values are loaded into the dropdown'
     );

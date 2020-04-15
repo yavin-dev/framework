@@ -16,17 +16,16 @@ import { inject as service } from '@ember/service';
 import Component from '@ember/component';
 import { set, get, computed, action } from '@ember/object';
 import layout from '../templates/components/report-view';
-import { layout as templateLayout, classNames } from '@ember-decorators/component';
+import { layout as templateLayout } from '@ember-decorators/component';
 import { observes } from '@ember-decorators/object';
 import move from 'ember-animated/motions/move';
 import { easeOut, easeIn } from 'ember-animated/easings/cosine';
 import { fadeOut, fadeIn } from 'ember-animated/motions/opacity';
-import config from 'ember-get-config';
+import { featureFlag } from 'navi-core/helpers/feature-flag';
 
 const VISUALIZATION_RESIZE_EVENT = 'resizestop';
 
 @templateLayout(layout)
-@classNames('report-view') //Cannot be tagless because of the resize event needing an element value on this component
 class ReportView extends Component {
   /**
    * Property representing any data useful for providing additional functionality to a visualization and request
@@ -40,6 +39,14 @@ class ReportView extends Component {
    */
   @readOnly('report.request')
   request;
+
+  get classNames() {
+    const classNames = ['report-view'];
+    if (featureFlag('enableRequestPreview')) {
+      classNames.push('report-view--request-preview');
+    }
+    return classNames;
+  }
 
   /**
    * @property {Service} naviVisualizations - navi visualizations service
