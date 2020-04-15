@@ -3,25 +3,26 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
- *   {{dashboard-dimension-selector
- *      dashboard=dashboardModel
- *      onChange=(action changeAction)
- *   }}
+ *   <DashboardDimensionSelector
+ *      @dashboard={{this.dashboardModel}}
+ *      @onChange={{this.changeAction}}
+ *   />
  */
 import Component from '@ember/component';
 import { computed, get } from '@ember/object';
 import layout from '../templates/components/dashboard-dimension-selector';
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
 import { getDefaultDataSourceName } from 'navi-data/utils/adapter';
 import { groupBy } from 'lodash-es';
 
-export default Component.extend({
-  layout,
-  classNames: ['dashboard-dimension-selector'],
-
+@templateLayout(layout)
+@tagName('')
+export default class DashboardDimensionSelectorComponent extends Component {
   /**
    * @property {Promise} -- creates powerselect options of all dimensions that can be pick based on widgets on the dashboard
    */
-  groupedDimensions: computed('dashboard', 'dashboard.widgets', function() {
+  @computed('dashboard', 'dashboard.widgets')
+  get groupedDimensions() {
     const widgetPromises = get(this, 'dashboard.widgets');
     /*
      * get a list of dimensions per table/timeGrain involved
@@ -45,7 +46,7 @@ export default Component.extend({
       selectOptions.sort((a, b) => a.groupName.localeCompare(b.groupName));
       return selectOptions;
     });
-  }),
+  }
 
   /**
    * Takes category mapped dimension objects and maps it to power-select grouped list
@@ -65,7 +66,7 @@ export default Component.extend({
       });
       return selectOptions;
     }, []);
-  },
+  }
 
   /**
    * Takes an object that is mapped by table and list of dimensions, and merges them into a object
@@ -99,7 +100,7 @@ export default Component.extend({
       });
       return results;
     }, {});
-  },
+  }
 
   /**
    * Takes a list of widgets and builds an object keyed by table and list of dimensions
@@ -115,19 +116,5 @@ export default Component.extend({
       }
       return dimensionMap;
     }, {});
-  },
-
-  actions: {
-    /**
-     * Action on selector change.
-     *
-     * @action
-     * @param  {...any} args
-     */
-    change(...args) {
-      const handleChange = get(this, 'onChange');
-
-      if (handleChange) handleChange(...args);
-    }
   }
-});
+}

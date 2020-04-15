@@ -1,9 +1,9 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="navi-dashboard__breadcrumb">
   {{#if (feature-flag "enableDirectory")}}
-    {{#link-to "directory.my-data" class="navi-dashboard__breadcrumb-link"}}Directory{{/link-to}}
+    <LinkTo @route="directory.my-data" class="navi-dashboard__breadcrumb-link">Directory</LinkTo>
   {{else}}
-    {{#link-to "dashboards" class="navi-dashboard__breadcrumb-link"}}Dashboards{{/link-to}}
+    <LinkTo @route="dashboards" class="navi-dashboard__breadcrumb-link">Dashboards</LinkTo>
   {{/if}}
   {{navi-icon "angle-right"}}
 </div>
@@ -12,98 +12,94 @@
 
   {{!-- Editable title --}}
   <div class="page-title">
-    {{#if dashboard.canUserEdit}}
-      {{editable-label
-        classNames="navi-dashboard__edit-title"
-        value=dashboard.title
-        onChange=(route-action "updateTitle")
-      }}
+    {{#if @dashboard.canUserEdit}}
+      <EditableLabel
+        class="navi-dashboard__edit-title"
+        @value={{@dashboard.title}}
+        @onChange={{route-action "updateTitle"}}
+      />
     {{else}}
-      <span>{{dashboard.title}}</span>
+      <span>{{@dashboard.title}}</span>
     {{/if}}
 
-    {{favorite-item
-      user=(get-user)
-      item=dashboard
-      click=(route-action "toggleFavorite" dashboard)
-      classNames="navi-dashboard__fav-icon"
-    }}
+    <FavoriteItem
+      class="navi-dashboard__fav-icon"
+      @user={{get-user}}
+      @item={{@dashboard}}
+      @click={{route-action "toggleFavorite" @dashboard}}
+    />
   </div>
 
   {{!-- Actions --}}
   <div class="dashboard-actions">
 
     {{!-- Clone action enabled at all times --}}
-    {{#common-actions/buttonize
-      classNames="clone"
-    }}
-      {{#link-to
-        "dashboards.dashboard.clone" dashboard.id
-      }}
-        {{navi-icon "copy" class="navi-icon__copy"}}
+    <CommonActions::Buttonize class="clone">
+      <LinkTo @route="dashboards.dashboard.clone" @model={{@dashboard.id}}>
+        <NaviIcon @icon="copy" class="navi-icon__copy" />
         Clone
-      {{/link-to}}
-    {{/common-actions/buttonize}}
+      </LinkTo>
+    </CommonActions::Buttonize>
 
     {{#if (feature-flag "enableDashboardExport")}}
       {{!-- Export action enabled if the dashboard is valid --}}
-      {{#dashboard-actions/export
-        classNames="action export btn"
-        dashboard=dashboard
-        disabled=(not dashboard.validations.isTruelyValid)
-      }}
-        {{navi-icon "download" class="navi-icon__download"}}
+      <DashboardActions::Export
+        class="action export btn"
+        @dashboard={{@dashboard}}
+        @disabled={{not @dashboard.validations.isTruelyValid}}
+      >
+        <NaviIcon @icon="download" class="navi-icon__download" />
         PDF Export
-      {{/dashboard-actions/export}}
+      </DashboardActions::Export>
     {{/if}}
 
     {{!-- Share action enables when dashboard is valid --}}
-    {{#common-actions/share
-      classNames="action share"
-      pageTitle=dashboard.title
-      disabled=(not dashboard.validations.isTruelyValid)
-    }}
-      {{navi-icon "share" class="navi-icon__share"}}
+    <CommonActions::Share
+      class="action share"
+      @pageTitle={{@dashboard.title}}
+      @disabled={{not @dashboard.validations.isTruelyValid}}
+    >
+      <NaviIcon @icon="share" class="navi-icon__share" />
       Share
-    {{/common-actions/share}}
+    </CommonActions::Share>
 
     {{!-- Delete visible when user owns the Dashboard --}}
-    {{#if dashboard.isUserOwner}}
+    {{#if @dashboard.isUserOwner}}
       {{!-- Schedule only enabled for an owned dashboard and if it valid--}}
       {{#if (feature-flag "enableScheduleDashboards")}}
-        {{#dashboard-actions/schedule
-          model=dashboard
-          classNames="action schedule"
-          disabled=(not dashboard.validations.isTruelyValid)
-          onSave=(delivery-rule-action "SAVE_DELIVERY_RULE")
-          onRevert=(delivery-rule-action "REVERT_DELIVERY_RULE")
-          onDelete=(delivery-rule-action "DELETE_DELIVERY_RULE")
-        }}
+        <DashboardActions::Schedule
+          class="action schedule"
+          @model={{@dashboard}}
+          @disabled={{not @dashboard.validations.isTruelyValid}}
+          @onSave={{delivery-rule-action "SAVE_DELIVERY_RULE"}}
+          @onRevert={{delivery-rule-action "REVERT_DELIVERY_RULE"}}
+          @onDelete={{delivery-rule-action "DELETE_DELIVERY_RULE"}}
+        >
           Schedule
-        {{/dashboard-actions/schedule}}
+        </DashboardActions::Schedule>
       {{/if}}
 
-      {{#common-actions/delete
-        classNames="action delete"
-        model=dashboard
-        warnMsg="Are you sure you want to delete this dashboard and all of its widgets?"
-        deleteAction=deleteAction
-      }}
-        {{navi-icon "trash-o" class="navi-icon__delete"}}
+      <CommonActions::Delete
+        class="action delete"
+        @model={{@dashboard}}
+        @warnMsg="Are you sure you want to delete this dashboard and all of its widgets?"
+        @deleteAction={{@deleteAction}}
+      >
+        <NaviIcon @icon="trash-o" class="navi-icon__delete" />
         Delete
-      {{/common-actions/delete}}
+      </CommonActions::Delete>
     {{/if}}
 
     {{!-- Add Widget visible when user has edit permissions --}}
-    {{#if dashboard.canUserEdit}}
-      {{#dashboard-actions/add-widget
-        classNames="add-widget primary action"
-        reports=(get (get-user) "reports")
-        dashboard=dashboard
-        onSelectReport=(action addWidgetToDashboard)
-      }}
+    {{#if @dashboard.canUserEdit}}
+      <DashboardActions::AddWidget
+        class="add-widget primary action"
+        @reports={{get (get-user) "reports"}}
+        @dashboard={{@dashboard}}
+        @onSelectReport={{@addWidgetToDashboard}}
+      >
         <button type="button" class="btn btn-primary">+ Add Widget</button>
-      {{/dashboard-actions/add-widget}}
+      </DashboardActions::AddWidget>
     {{/if}}
   </div>
 </div>
@@ -111,50 +107,49 @@
 {{#if (feature-flag "enableDashboardFilters")}}
   <DashboardFilters
     @dashboard={{@dashboard}}
-    @onUpdateFilter={{action @onUpdateFilter @dashboard}}
-    @onRemoveFilter={{action @onRemoveFilter @dashboard}}
-    @onAddFilter={{action @onAddFilter @dashboard}}
+    @onUpdateFilter={{fn @onUpdateFilter @dashboard}}
+    @onRemoveFilter={{fn @onRemoveFilter @dashboard}}
+    @onAddFilter={{fn @onAddFilter @dashboard}}
   />
 {{/if}}
 
 <div class="navi-dashboard__body">
-  {{#if dashboard.widgets.length}}
+  {{#if @dashboard.widgets.length}}
     <div class="navi-dashboard__widgets">
-      {{#grid-stack
-        options=(hash
-          width=width
-        )
-        onChange=(route-action "didUpdateLayout")
-      }}
-        {{#each dashboard.presentation.layout as |layout|}}
+      <GridStack
+      {{!-- TODO: Investigate why @width causes 'Failing to save a new widget' test to fail --}}
+        @options={{hash width=this.width}}
+        @onChange={{route-action "didUpdateLayout"}}
+      >
+        {{#each @dashboard.presentation.layout as |layout|}}
           {{#with (get-widget layout.widgetId) as |widget|}}
             {{#if widget}}
-              {{navi-widget
-                model=widget
-                layoutOptions=layout
-                taskInstance=(get taskByWidget widget.id)
-                canEdit=dashboard.canUserEdit
-              }}
+              <NaviWidget
+                @model={{widget}}
+                @layoutOptions={{layout}}
+                @taskInstance={{get @taskByWidget widget.id}}
+                @canEdit={{@dashboard.canUserEdit}}
+              />
             {{/if}}
           {{/with}}
         {{/each}}
-      {{/grid-stack}}
+      </GridStack>
     </div>
   {{else}}
     <div class="error-container">
       <div class="error">
         <p>
           Looks like this dashboard has no widgets.
-          {{#if dashboard.canUserEdit}}
+          {{#if @dashboard.canUserEdit}}
             Go ahead and
-            {{#dashboard-actions/add-widget
-              classNames="navi-dashboard-container__add-widget-text"
-              reports=(get (get-user) "reports")
-              dashboard=dashboard
-              onSelectReport=(action addWidgetToDashboard)
-            }}
+            <DashboardActions::AddWidget
+              class="navi-dashboard-container__add-widget-text"
+              @reports={{get (get-user) "reports"}}
+              @dashboard={{@dashboard}}
+              @onSelectReport={{@addWidgetToDashboard}}
+            >
               add a widget
-            {{/dashboard-actions/add-widget}}
+            </DashboardActions::AddWidget>
             now?
           {{/if}}
         </p>
@@ -163,11 +158,11 @@
   {{/if}}
 </div>
 
-{{#if dashboardIsDirty}}
+{{#if this.dashboardIsDirty}}
   <div class="navi-dashboard__save-dialogue">
-    {{#if dashboard.canUserEdit}}
-      <button type="button" onclick={{queue (route-action "saveDashboard") (action onModelSaveOrRevert)}} class="btn btn-secondary navi-dashboard__save-button">Save Changes</button>
+    {{#if @dashboard.canUserEdit}}
+      <button type="button" class="btn btn-secondary navi-dashboard__save-button" {{on "click" (queue (route-action "saveDashboard") @onModelSaveOrRevert)}}>Save Changes</button>
     {{/if}}
-    <button type="button" onclick={{queue (route-action "revertDashboard") (action onModelSaveOrRevert)}} class="btn btn-secondary navi-dashboard__revert-button">Revert Changes</button>
+    <button type="button" class="btn btn-secondary navi-dashboard__revert-button" {{on "click" (queue (route-action "revertDashboard") @onModelSaveOrRevert)}}>Revert Changes</button>
   </div>
 {{/if}}

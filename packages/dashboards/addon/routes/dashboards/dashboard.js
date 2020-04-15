@@ -2,30 +2,30 @@
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import { computed, get, set, setProperties } from '@ember/object';
+import { action, set, setProperties } from '@ember/object';
 import { A as arr, makeArray } from '@ember/array';
 import { isEmpty } from '@ember/utils';
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
 import { all } from 'rsvp';
 
-export default Route.extend({
+export default class DashboardsDashboardRoute extends Route {
   /**
    * @property {Service} user
    */
-  user: service(),
+  @service user;
 
   /**
    * @property {DS.Model} currentDashboard - current dashboard model
    */
-  currentDashboard: computed(function() {
+  get currentDashboard() {
     return this.modelFor(this.routeName);
-  }).volatile(),
+  }
 
   /**
    * @property {Service} naviNotifications
    */
-  naviNotifications: service(),
+  @service naviNotifications;
 
   /**
    * Makes an ajax request to retrieve relevant widgets in the dashboard
@@ -38,8 +38,8 @@ export default Route.extend({
    *
    */
   model({ dashboard_id }) {
-    return get(this, 'store').find('dashboard', dashboard_id);
-  },
+    return this.store.find('dashboard', dashboard_id);
+  }
 
   /**
    * Updates the dashboard layout property given a list of dashboard items
@@ -51,8 +51,8 @@ export default Route.extend({
    * @return {Void}
    */
   _updateLayout(updatedWidgets) {
-    const dashboard = get(this, 'currentDashboard');
-    const layout = get(dashboard, 'presentation.layout');
+    const { currentDashboard } = this;
+    const layout = currentDashboard?.presentation?.layout;
 
     makeArray(updatedWidgets).forEach(updatedWidget => {
       let modelWidget = layout.find(widget => widget.get('widgetId') === Number(updatedWidget.id));
@@ -63,7 +63,7 @@ export default Route.extend({
         setProperties(modelWidget, { column, row, height, width });
       }
     });
-  },
+  }
 
   /**
    * Notifies user about errors
@@ -73,25 +73,25 @@ export default Route.extend({
    * @returns {Void}
    */
   showErrorNotification(message) {
-    get(this, 'naviNotifications').add({
+    this.naviNotifications.add({
       message: message,
       type: 'danger',
       timeout: 'medium'
     });
-  },
+  }
 
   /**
    * @override
    * @method deactivate - reset query params on exit of route
    */
   deactivate() {
-    this._super(...arguments);
+    super.deactivate(...arguments);
     const dashboard = this.modelFor(this.routeName);
     // don't rollback attributes if dashboard was unloaded.
     if (dashboard.isEmpty !== true) {
       dashboard.rollbackAttributes();
     }
-  },
+  }
 
   /**
    * If traveling to the same route as the current dashboard, cache the query for breadcrumb purposes
@@ -111,123 +111,128 @@ export default Route.extend({
       }
     }
     this.controller.set('queryCache', null);
-  },
+  }
 
-  actions: {
-    /**
-     * @action didUpdateLayout - updates dashboard's layout property and save it
-     * @param {Event} event - event object
-     * @param {Array} [widgets] - Array of widgets that updated
-     */
-    didUpdateLayout(event, widgets) {
-      this._updateLayout(widgets);
-    },
+  /**
+   * @action didUpdateLayout - updates dashboard's layout property and save it
+   * @param {Event} event - event object
+   * @param {Array} [widgets] - Array of widgets that updated
+   */
+  @action
+  didUpdateLayout(event, widgets) {
+    this._updateLayout(widgets);
+  }
 
-    /**
-     * @action saveDashboard - saves dashboard updates
-     */
-    saveDashboard() {
-      const dashboard = get(this, 'currentDashboard');
-      const widgets = get(this, 'currentDashboard.widgets');
+  /**
+   * @action saveDashboard - saves dashboard updates
+   */
+  @action
+  saveDashboard() {
+    const { currentDashboard } = this;
+    const widgets = currentDashboard?.widgets;
 
-      return dashboard
-        .save()
-        .then(all(widgets.map(async widget => widget.hasDirtyAttributes && widget.save())))
-        .catch(() => {
-          get(this, 'naviNotifications').add({
-            message: 'OOPS! An error occured while trying to save your dashboard.',
-            type: 'danger',
-            timeout: 'short'
-          });
+    return currentDashboard
+      .save()
+      .then(all(widgets.map(async widget => widget.hasDirtyAttributes && widget.save())))
+      .catch(() => {
+        this.naviNotifications.add({
+          message: 'OOPS! An error occured while trying to save your dashboard.',
+          type: 'danger',
+          timeout: 'short'
         });
-    },
-
-    /**
-     * @action deleteWidget
-     * @param {DS.Model} widgetModel - object to delete
-     */
-    deleteWidget(widgetModel) {
-      const id = get(widgetModel, 'id');
-
-      widgetModel.deleteRecord();
-
-      // Remove layout reference
-      const presentation = get(this, 'currentDashboard.presentation');
-      const newLayout = arr(get(presentation, 'layout')).rejectBy('widgetId', Number(id));
-
-      set(presentation, 'layout', newLayout);
-
-      return this.transitionTo('dashboards.dashboard', this.get('currentDashboard.id'));
-    },
-
-    /**
-     * @action toggleFavorite - toggles favorite dashboard
-     */
-    toggleFavorite(dashboard) {
-      let user = get(this, 'user').getUser(),
-        isFavorite = get(dashboard, 'isFavorite'),
-        updateOperation = isFavorite ? 'removeObject' : 'addObject',
-        rollbackOperation = isFavorite ? 'addObject' : 'removeObject';
-
-      get(user, 'favoriteDashboards')[updateOperation](dashboard);
-      user.save().catch(() => {
-        //manually rollback - fix once ember-data has a way to rollback relationships
-        get(user, 'favoriteDashboards')[rollbackOperation](dashboard);
-        this.showErrorNotification('OOPS! An error occurred while updating favorite dashboards');
       });
-    },
+  }
 
-    /**
-     * @action updateTitle
-     *
-     * Updates dashboard model's title, unless new title is empty
-     * @param {String} title
-     */
-    updateTitle(title) {
-      if (!isEmpty(title)) {
-        let dashboard = get(this, 'currentDashboard');
-        set(dashboard, 'title', title);
-      }
-    },
+  /**
+   * @action deleteWidget
+   * @param {DS.Model} widgetModel - object to delete
+   */
+  @action
+  deleteWidget(widgetModel) {
+    const { id } = widgetModel;
 
-    /**
-     * Revert the dashboard.
-     *
-     * @action revertDashboard
-     */
-    revertDashboard() {
-      const dashboard = get(this, 'currentDashboard');
-      get(dashboard, 'widgets').forEach(widget => widget.rollbackAttributes());
-      dashboard.rollbackAttributes();
-    },
+    widgetModel.deleteRecord();
 
-    /**
-     * Prompts user if they are leaving the route with unsaved changes.
-     * @param {Transition} transition
-     */
-    willTransition(transition) {
-      //subroute cache queryString and continue
-      if (transition.targetName.startsWith(this.routeName)) {
-        this.cacheQuery(transition);
-        return true;
-      }
+    // Remove layout reference
+    const presentation = this.currentDashboard?.presentation;
+    const newLayout = arr(presentation.layout).rejectBy('widgetId', Number(id));
 
-      const dashboard = get(this, 'currentDashboard');
+    presentation.layout = newLayout;
 
-      const isDirty =
-        dashboard.get('hasDirtyAttributes') ||
-        dashboard.get('filters.hasDirtyAttributes') ||
-        dashboard.get('presentation.hasDirtyAttributes');
+    return this.transitionTo('dashboards.dashboard', this.get('currentDashboard.id'));
+  }
 
-      if (
-        isDirty &&
-        dashboard.get('canUserEdit') &&
-        !confirm('You have unsaved changes, are you sure you want to exit?')
-      ) {
-        transition.abort();
-      } else {
-        return true;
-      }
+  /**
+   * @action toggleFavorite - toggles favorite dashboard
+   */
+  @action
+  toggleFavorite(dashboard) {
+    const user = this.user.getUser();
+    const { isFavorite } = dashboard;
+    const updateOperation = isFavorite ? 'removeObject' : 'addObject';
+    const rollbackOperation = isFavorite ? 'addObject' : 'removeObject';
+
+    user.favoriteDashboards[updateOperation](dashboard);
+    user.save().catch(() => {
+      //manually rollback - fix once ember-data has a way to rollback relationships
+      user.favoriteDashboards[rollbackOperation](dashboard);
+      this.showErrorNotification('OOPS! An error occurred while updating favorite dashboards');
+    });
+  }
+
+  /**
+   * @action updateTitle
+   *
+   * Updates dashboard model's title, unless new title is empty
+   * @param {String} title
+   */
+  @action
+  updateTitle(title) {
+    if (!isEmpty(title)) {
+      const { currentDashboard } = this;
+      currentDashboard.title = title;
     }
   }
-});
+
+  /**
+   * Revert the dashboard.
+   *
+   * @action revertDashboard
+   */
+  @action
+  revertDashboard() {
+    const { currentDashboard } = this;
+    currentDashboard.widgets.forEach(widget => widget.rollbackAttributes());
+    currentDashboard.rollbackAttributes();
+  }
+
+  /**
+   * Prompts user if they are leaving the route with unsaved changes.
+   * @param {Transition} transition
+   */
+  @action
+  willTransition(transition) {
+    //subroute cache queryString and continue
+    if (transition.targetName.startsWith(this.routeName)) {
+      this.cacheQuery(transition);
+      return true;
+    }
+
+    const { currentDashboard } = this;
+
+    const isDirty =
+      currentDashboard.get('hasDirtyAttributes') ||
+      currentDashboard.get('filters.hasDirtyAttributes') ||
+      currentDashboard.get('presentation.hasDirtyAttributes');
+
+    if (
+      isDirty &&
+      currentDashboard.get('canUserEdit') &&
+      !confirm('You have unsaved changes, are you sure you want to exit?')
+    ) {
+      transition.abort();
+    } else {
+      return true;
+    }
+  }
+}

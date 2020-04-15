@@ -2,14 +2,14 @@
 <div class="page-header">
   <div class="page-title">Dashboard</div>
 </div>
-{{#link-to "dashboards.new" class="btn btn-primary dashboards-index__new-btn"}}
+<LinkTo @route="dashboards.new" class="btn btn-primary dashboards-index__new-btn">
   + New Dashboard
-{{/link-to}}
-{{navi-collection
-  items=model.dashboards
-  itemType="dashboard"
-  config=(hash
+</LinkTo>
+<NaviCollection
+  @items={{@model.dashboards}}
+  @itemType="dashboard"
+  @config={{hash
     actions="dashboard-action-list"
     filterable=true
-  )
-}}
+  }}
+/>

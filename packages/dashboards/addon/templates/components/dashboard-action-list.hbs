@@ -1,69 +1,69 @@
 {{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{#with item as | dashboard |}}
+{{#with @item as | dashboard |}}
   {{!-- Clone action enabled at all times --}}
   <li class="action">
-    {{#link-to "dashboards.dashboard.clone" dashboard.id
-      classNames="clone"
-    }}
-      {{navi-icon "copy" class="navi-icon__copy"}}
-      {{ember-tooltip text="Clone the dashboard"}}
-    {{/link-to}}
+    <LinkTo class="clone" @route="dashboards.dashboard.clone" @model={{dashboard.id}}>
+      <NaviIcon @icon="copy" class="navi-icon__copy" />
+      <EmberTooltip @text="Clone the dashboard"/>
+    </LinkTo>
   </li>
 
   {{#if (feature-flag "enableDashboardExport")}}
     {{!-- Export action enabled if the dashboard is valid --}}
-    {{#dashboard-actions/export
-      classNames="action export btn"
-      dashboard=dashboard
-      disabled=(not item.validations.isTruelyValid)
-      tagName="li"
-    }}
-      {{navi-icon "download" class="navi-icon__download"}}
-      {{ember-tooltip text="Export the dashboard"}}
-    {{/dashboard-actions/export}}
+    <DashboardActions::Export
+      class="action export btn"
+      @dashboard={{dashboard}}
+      @disabled={{not dashboard.validations.isTruelyValid}}
+      @tagName="li"
+    >
+      <NaviIcon @icon="download" class="navi-icon__download" />
+      <EmberTooltip @text="Export the dashboard"/>
+    </DashboardActions::Export>
   {{/if}}
 
   {{!-- Share action enabled if the dashboard is valid --}}
-  {{#common-actions/share
-    tagName="li"
-    classNames="action share"
-    pageTitle=dashboard.title
-    buildUrl=(action "buildUrl" dashboard)
-    disabled=(not item.validations.isTruelyValid)
-  }}
-    {{navi-icon "share" class="navi-icon__share"}}
-    {{ember-tooltip text="Share the dashboard"}}
-  {{/common-actions/share}}
+  <CommonActions::Share
+    class="action share"
+    @tagName="li"
+    @pageTitle={{dashboard.title}}
+    @buildUrl={{action "buildUrl" dashboard}}
+    @disabled={{not dashboard.validations.isTruelyValid}}
+    {{!-- template-lint-disable no-action --}}
+    {{!-- TODO: Fix action by removing mixin --}}
+  >
+    <NaviIcon @icon="share" class="navi-icon__share" />
+    <EmberTooltip @text="Share the dashboard"/>
+  </CommonActions::Share>
 
   {{!-- Delete action visible when user owns the Dashboard --}}
   {{#if dashboard.isUserOwner}}
     {{!-- Schedule only enabled for an owned dashboard and if it valid--}}
     {{#if (feature-flag "enableScheduleDashboards")}}
-      {{#dashboard-actions/schedule
-        tagName="li"
-        id=(concat "navi-dashboard-action-schedule-" index)
-        model=dashboard
-        classNames="action schedule"
-        disabled=(not item.validations.isTruelyValid)
-        onSave=(delivery-rule-action "SAVE_DELIVERY_RULE")
-        onRevert=(delivery-rule-action "REVERT_DELIVERY_RULE")
-        onDelete=(delivery-rule-action "DELETE_DELIVERY_RULE")
-      }}
-        {{#ember-tooltip targetId=(concat "navi-dashboard-action-schedule-" index)}}
-          {{if item.validations.isTruelyValid "Schedule the dashboard" "Validate dashboard to enable scheduling"}}
-        {{/ember-tooltip}}
-      {{/dashboard-actions/schedule}}
+      <DashboardActions::Schedule
+        id="navi-dashboard-action-schedule-{{@index}}"
+        class="action schedule"
+        @tagName="li"
+        @model={{dashboard}}
+        @disabled={{not dashboard.validations.isTruelyValid}}
+        @onSave={{delivery-rule-action "SAVE_DELIVERY_RULE"}}
+        @onRevert={{delivery-rule-action "REVERT_DELIVERY_RULE"}}
+        @onDelete={{delivery-rule-action "DELETE_DELIVERY_RULE"}}
+      >
+        <EmberTooltip @targetId="navi-dashboard-action-schedule-{{@index}}">
+          {{if dashboard.validations.isTruelyValid "Schedule the dashboard" "Validate dashboard to enable scheduling"}}
+        </EmberTooltip>
+      </DashboardActions::Schedule>
     {{/if}}
 
-    {{#common-actions/delete
-      tagName="li"
-      classNames="action delete"
-      model=dashboard
-      warnMsg="Are you sure you want to delete this dashboard and all of its widgets?"
-      deleteAction=(item-action "DELETE_ITEM" dashboard)
-    }}
-      {{navi-icon "trash-o" class="navi-icon__delete"}}
-      {{ember-tooltip text="Delete the dashboard"}}
-    {{/common-actions/delete}}
+    <CommonActions::Delete
+      class="action delete"
+      @tagName="li"
+      @model={{dashboard}}
+      @warnMsg="Are you sure you want to delete this dashboard and all of its widgets?"
+      @deleteAction={{item-action "DELETE_ITEM" dashboard}}
+    >
+      <NaviIcon @icon="trash-o" class="navi-icon__delete" />
+      <EmberTooltip @text="Delete the dashboard"/>
+    </CommonActions::Delete>
   {{/if}}
 {{/with}}

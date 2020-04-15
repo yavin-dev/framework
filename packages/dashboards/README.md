@@ -11,13 +11,9 @@ Analytics dashboard library for navi
 
 ## Requirements
 
-- node >= 4
-
-- Ember.js v2.18 or above
+- Ember.js v3.12 or above
 - Ember CLI v2.13 or above
-
-- `ember server`
-- Visit the dummy app at [http://localhost:4200](http://localhost:4200).
+- Node.js v10 or above
 
 ## Contributing
 

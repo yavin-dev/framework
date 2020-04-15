@@ -1,5 +1,10 @@
 'use strict';
 
 module.exports = {
-  extends: 'recommended'
+  extends: 'octane',
+  rules: {
+    'no-implicit-this': {
+      allow: ['get-user']
+    }
+  }
 };
