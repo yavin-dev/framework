@@ -1,11 +1,11 @@
 {{! Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. }}
-<table class="navi-search-results__item" ...attributes>
-  <tbody>
+<table class="navi-search-results__item navi-search-results__item--no-result" ...attributes>
+  <tbody class="navi-search-result__item-body">
     <tr class="navi-search-no-result">
-        <td>
+        <td class="navi-search-no-result__icon">
           <NaviIcon @icon="exclamation" />
         </td>
-        <td>
+        <td class="navi-search-rno-result__title">
             <span>No results</span>
         </td>
     </tr>
