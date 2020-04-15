@@ -25,6 +25,7 @@ module.exports = {
     // typescript
     '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     '@typescript-eslint/explicit-function-return-type': 'off',
+    '@typescript-eslint/ban-ts-ignore': 'off',
 
     // prettier
     'prettier/prettier': 'error',
