@@ -8,6 +8,7 @@ import Service from '@ember/service';
 class MetadataServiceStub extends Service {
   loadedDataSources = ['dummy', 'blockhead'];
 }
+
 module('Integration | Component | definition', function(hooks) {
   setupRenderingTest(hooks);
 
