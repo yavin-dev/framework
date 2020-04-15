@@ -17,7 +17,7 @@
   "scripts": {
     "build": "ember build --environment=production",
     "lint:hbs": "ember-template-lint .",
-    "lint:js": "eslint . && tsc --noEmit",
+    "lint:js": "eslint . && tsc --allowJs false --noEmit",
     "lint": "npm run lint:hbs && npm run lint:js",
     "start": "ember serve",
     "test": "export COVERAGE=true; ember test --test-port 0",
