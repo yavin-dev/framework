@@ -2,18 +2,24 @@
 {{#each this.metricParameters as |param|}}
   <div class="navi-column-config-base__option navi-column-config-metric__parameter">
     <label for="{{this.classId}}-{{param}}" class="navi-column-config-metric__parameter-label navi-column-config-base__option-label">{{capitalize param}} Type</label>
-    <PowerSelect 
-      @triggerClass="navi-column-config-metric__parameter-trigger navi-column-config-base__option-input"
-      @triggerId="{{this.classId}}-{{param}}" 
-      @dropdownClass="navi-column-config-metric__parameter-dropdown"
-      @selected={{get (await this.currentParameters) param}}
-      @searchField="description"
-      @searchPlaceholder="Search {{capitalize param}}"
-      @options={{get (await this.allParameters) param}}
-      @onchange={{this.updateMetricParam}}
-      as | param |
-    >
-      {{param.description}}
-    </PowerSelect>
+    {{#let (get (await this.allParameters) param) as |allParams|}}
+      <PowerSelect 
+        @triggerClass="navi-column-config-metric__parameter-trigger navi-column-config-base__option-input"
+        @triggerId="{{this.classId}}-{{param}}" 
+        @dropdownClass="navi-column-config-metric__parameter-dropdown"
+        @selected={{get (await this.currentParameters) param}}
+        @searchField="description"
+        @searchPlaceholder="Search {{capitalize param}}"
+        @options={{allParams}}
+        @onchange={{this.updateMetricParam}}
+        as | param |
+      >
+        {{#if (eq (get (filter-by "description" param.description allParams) "length") 1)}}
+          {{param.description}}
+        {{else}}
+          {{param.description}} ({{param.id}})
+        {{/if}}
+      </PowerSelect>
+    {{/let}}
   </div>
 {{/each}}
