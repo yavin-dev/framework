@@ -39,14 +39,9 @@ module('Integration | Component | definition', function(hooks) {
         description: 'Number of times a user saw the ad.'
       }
     ];
-    const result = {
-      component: 'navi-search-result/definition',
-      title: 'Definitions',
-      data
-    };
-    set(this, 'result', result);
+    set(this, 'data', data);
 
-    await render(hbs`<NaviSearchResult::Definition @data={{this.result.data}} />`);
+    await render(hbs`<NaviSearchResult::Definition @data={{this.data}} />`);
 
     assert.dom('.navi-search-definition-result').exists({ count: 2 }, 'Two results are displayed');
 
@@ -75,14 +70,9 @@ module('Integration | Component | definition', function(hooks) {
         })
       }
     ];
-    const result = {
-      component: 'navi-search-result/definition',
-      title: 'Definitions',
-      data
-    };
-    set(this, 'result', result);
+    set(this, 'data', data);
 
-    await render(hbs`<NaviSearchResult::Definition @data={{this.result.data}} />`);
+    await render(hbs`<NaviSearchResult::Definition @data={{this.data}} />`);
 
     assert.dom('.navi-search-definition-result').exists({ count: 1 }, 'One result is displayed');
 
@@ -115,14 +105,9 @@ module('Integration | Component | definition', function(hooks) {
         source: 'blockhead'
       }
     ];
-    const result = {
-      component: 'navi-search-result/definition',
-      title: 'Definitions',
-      data
-    };
-    set(this, 'result', result);
+    set(this, 'data', data);
 
-    await render(hbs`<NaviSearchResult::Definition @data={{this.result.data}} />`);
+    await render(hbs`<NaviSearchResult::Definition @data={{this.data}} />`);
 
     assert.dom('.navi-search-definition-result').exists({ count: 2 }, 'Two results are displayed');
 

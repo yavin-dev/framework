@@ -64,21 +64,9 @@ export default class NaviSearchBarComponent extends Component {
       return;
     }
 
-    // Perform search on enter press or when query is longer than 2 characters
-    if ((event.keyCode === ENTER_KEY && this.searchQuery.length !== 0) || this.searchQuery.length > 2) {
+    // Perform search on enter press or when there's a search query
+    if ((event.keyCode === ENTER_KEY && this.searchQuery.length !== 0) || this.searchQuery.length > 0) {
       this.launchQuery.perform(this.searchQuery, dd, event);
-    }
-  }
-
-  /**
-   * @method focus – Open result window on search bar focus
-   * @param {Object} dd
-   * @param {Object} event
-   */
-  @action
-  focus(dd, event) {
-    if (this.searchQuery !== '') {
-      dd.actions.open(event);
     }
   }
 
@@ -90,7 +78,6 @@ export default class NaviSearchBarComponent extends Component {
   @action
   closeResults(dd, event) {
     dd.actions.close(event);
-    event.stopPropagation();
   }
 
   /**

@@ -22,6 +22,7 @@ module('Integration | Component | navi-search-bar', function(hooks) {
   });
 
   test('it renders', async function(assert) {
+    assert.expect(1);
     // Set any properties with this.set('myProperty', 'value');
     // Handle any actions with this.set('myAction', function(val) { ... });
 
@@ -31,6 +32,7 @@ module('Integration | Component | navi-search-bar', function(hooks) {
   });
 
   test('perform search that returns results', async function(assert) {
+    assert.expect(1);
     await render(hbs`<NaviSearchBar />`);
 
     await fillIn('.navi-search-bar__input', 'sample');
@@ -40,6 +42,7 @@ module('Integration | Component | navi-search-bar', function(hooks) {
   });
 
   test('perform search with special characters', async function(assert) {
+    assert.expect(1);
     await render(hbs`<NaviSearchBar />`);
 
     await fillIn('.navi-search-bar__input', '!@#$%^&*()');
@@ -49,6 +52,7 @@ module('Integration | Component | navi-search-bar', function(hooks) {
   });
 
   test('perform search with no results', async function(assert) {
+    assert.expect(1);
     await render(hbs`<NaviSearchBar />`);
 
     await fillIn('.navi-search-bar__input', 'Hello!');
@@ -58,6 +62,7 @@ module('Integration | Component | navi-search-bar', function(hooks) {
   });
 
   test('perform empty search', async function(assert) {
+    assert.expect(1);
     await render(hbs`<NaviSearchBar />`);
 
     await fillIn('.navi-search-bar__input', '');
