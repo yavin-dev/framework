@@ -1,13 +1,16 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { run } from '@ember/runloop';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 let mockModel;
 
 module('Unit | Model | Fragment | BardRequest V2 - Column', function(hooks) {
   setupTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(async function() {
+    await this.owner.lookup('service:bard-metadata').loadMetadata();
     mockModel = run(() =>
       this.owner.lookup('service:store').createRecord('fragments-v2-mock', {
         columns: [
@@ -23,7 +26,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Column', function(hooks) {
   });
 
   test('Model using the Column Fragment', async function(assert) {
-    assert.expect(9);
+    assert.expect(10);
 
     assert.ok(mockModel, 'mockModel is fetched from the store');
 
@@ -49,6 +52,8 @@ module('Unit | Model | Fragment | BardRequest V2 - Column', function(hooks) {
     assert.equal(column.type, 'metric', 'the `type` property is set correctly');
 
     assert.equal(column.alias, 'revenueUSD', 'the `alias` property is set correctly');
+
+    assert.equal(column.meta.id, 'revenue', 'metadata is populated with the right field');
   });
 
   test('Validation', async function(assert) {
