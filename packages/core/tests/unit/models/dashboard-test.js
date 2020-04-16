@@ -148,26 +148,22 @@ module('Unit | Model | dashboard', function(hooks) {
     });
   });
 
-  /**
-   * TODO Fix test after moving to core
-   * skip('deliveryRuleForUser', function (assert) {
-   *   assert.expect(1);
-   *
-   *   return Ember.run(() => {
-   *     return Store.findRecord('user', 'navi_user').then(() => {
-   *       return Store.findRecord('dashboard', 2).then(dashboardModel => {
-   *         dashboardModel.user = {
-   *           getUser: () => Store.peekRecord('user', 'navi_user')
-   *         };
-   *
-   *         return dashboardModel.get('deliveryRuleForUser').then(rule => {
-   *           assert.deepEqual(rule,
-   *             Store.peekRecord('deliveryRule', 3),
-   *             'deliveryRule is fetched for current user');
-   *         });
-   *       });
-   *     });
-   *   });
-   * });
-   */
+  //TODO Fix test after moving to core
+  skip('deliveryRuleForUser', function(assert) {
+    assert.expect(1);
+
+    return Ember.run(() => {
+      return Store.findRecord('user', 'navi_user').then(() => {
+        return Store.findRecord('dashboard', 2).then(dashboardModel => {
+          dashboardModel.user = {
+            getUser: () => Store.peekRecord('user', 'navi_user')
+          };
+
+          return dashboardModel.get('deliveryRuleForUser').then(rule => {
+            assert.deepEqual(rule, Store.peekRecord('deliveryRule', 3), 'deliveryRule is fetched for current user');
+          });
+        });
+      });
+    });
+  });
 });
