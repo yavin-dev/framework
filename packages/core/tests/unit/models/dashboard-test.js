@@ -1,6 +1,6 @@
-import { run } from '@ember/runloop';
-import { module, test } from 'qunit';
+import { module, test, skip } from 'qunit';
 import { setupTest } from 'ember-qunit';
+import { run } from '@ember/runloop';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 let Store;
@@ -148,11 +148,11 @@ module('Unit | Model | dashboard', function(hooks) {
     });
   });
 
-  //TODO Fix test after moving to core
+  // TODO Fix test after moving to core
   skip('deliveryRuleForUser', function(assert) {
     assert.expect(1);
 
-    return Ember.run(() => {
+    return run(() => {
       return Store.findRecord('user', 'navi_user').then(() => {
         return Store.findRecord('dashboard', 2).then(dashboardModel => {
           dashboardModel.user = {
