@@ -1,13 +1,16 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { run } from '@ember/runloop';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 let mockModel;
 
 module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
   setupTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(async function() {
+    await this.owner.lookup('service:bard-metadata').loadMetadata();
     mockModel = run(() =>
       this.owner.lookup('service:store').createRecord('fragments-v2-mock', {
         request: {
@@ -31,7 +34,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
               alias: 'time'
             },
             {
-              field: 'property',
+              field: 'property.id',
               type: 'dimension'
             },
             {
@@ -63,7 +66,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
   });
 
   test('Model using the Request Fragment', async function(assert) {
-    assert.expect(5);
+    assert.expect(9);
 
     assert.ok(mockModel, 'mockModel is fetched from the store');
 
@@ -76,10 +79,15 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
     assert.equal(request.requestVersion, '2.0', 'the `requestVersion` property has the correct default value');
 
     assert.equal(request.dataSource, 'dummy', 'the `dataSource` property has the correct value');
+
+    assert.equal(request.columns.objectAt(1).meta.category, 'Asset', 'meta data is populated on sub fragments');
+    assert.equal(request.columns.objectAt(2).meta.category, 'Revenue', 'meta data is populated on sub fragments');
+    assert.equal(request.filters.objectAt(1).meta.category, 'Identifiers', 'Filters also have meta data populated');
+    assert.equal(request.sort.objectAt(1).meta.category, 'Clicks', 'Sorts have meta data populated');
   });
 
   test('Clone Request', async function(assert) {
-    assert.expect(13);
+    assert.expect(16);
 
     const request = mockModel.request.clone();
 
@@ -115,6 +123,8 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
       'the `values` property of the second filter has the correct value'
     );
 
+    assert.equal(request.filters.objectAt(1).meta.category, 'Identifiers', 'the meta data attached is correct');
+
     // columns
 
     assert.equal(
@@ -141,6 +151,8 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
       'the `type` property of the second column has the correct value'
     );
 
+    assert.equal(request.columns.objectAt(1).meta.category, 'Asset', 'the meta data attached is correct');
+
     // sort
 
     assert.equal(
@@ -154,6 +166,8 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
       'desc',
       'the `direction` property of the second sort has the correct value'
     );
+
+    assert.equal(request.sort.objectAt(1).meta.category, 'Clicks', 'the meta data attached is correct');
   });
 
   test('Validation', async function(assert) {
@@ -308,7 +322,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
             alias: 'time'
           },
           {
-            field: 'property',
+            field: 'property.id',
             type: 'dimension',
             alias: null
           },
