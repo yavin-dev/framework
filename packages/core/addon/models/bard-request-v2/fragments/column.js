@@ -17,6 +17,9 @@ const Validations = buildValidations({
   })
 });
 
+/**
+ * @augments {BaseFragment}
+ */
 export default class Column extends BaseFragment.extend(Validations) {
   @attr('string') type;
   @attr('string') alias;
