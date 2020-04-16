@@ -53,9 +53,9 @@ export default class NaviSearchBarComponent extends Component {
   @action
   onKeyUp(dd, event) {
     // Close results window if the user deletes the query or presses escape
-    if (this.searchQuery.length == 0 || event.keyCode === ESCAPE_KEY) {
+    if (this.searchQuery.length === 0 || event.keyCode === ESCAPE_KEY) {
       // Empty results if search query is deleted
-      if (this.searchQuery.length == 0) {
+      if (this.searchQuery.length === 0) {
         this.searchResults = [];
       }
 
@@ -65,7 +65,7 @@ export default class NaviSearchBarComponent extends Component {
     }
 
     // Perform search on enter press or when query is longer than 2 characters
-    if ((event.keyCode === ENTER_KEY && this.searchQuery.length != 0) || this.searchQuery.length > 2) {
+    if ((event.keyCode === ENTER_KEY && this.searchQuery.length !== 0) || this.searchQuery.length > 2) {
       this.launchQuery.perform(this.searchQuery, dd, event);
     }
   }
@@ -102,7 +102,7 @@ export default class NaviSearchBarComponent extends Component {
   *launchQuery(query, dd, event) {
     dd.actions.open(event);
     this.searchResults = yield this.searchProviderService.search.perform(query);
-    if (this.searchResults.length == 0 && query !== '') {
+    if (this.searchResults.length === 0 && query !== '') {
       this.searchResults = [EMPTY_RESULT];
     }
   }
