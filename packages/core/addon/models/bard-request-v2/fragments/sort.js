@@ -13,6 +13,9 @@ const Validations = buildValidations({
   })
 });
 
+/**
+ * @augments {BaseFragment}
+ */
 export default class Sort extends BaseFragment.extend(Validations) {
   @attr('string', {
     defaultValue: 'desc'

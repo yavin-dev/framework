@@ -1,13 +1,16 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { run } from '@ember/runloop';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 let mockModel;
 
 module('Unit | Model | Fragment | BardRequest V2 - Sort', function(hooks) {
   setupTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(async function() {
+    await this.owner.lookup('service:bard-metadata').loadMetadata();
     mockModel = run(() =>
       this.owner.lookup('service:store').createRecord('fragments-v2-mock', {
         sort: [
@@ -21,7 +24,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Sort', function(hooks) {
   });
 
   test('Model using the Sort Fragment', async function(assert) {
-    assert.expect(7);
+    assert.expect(8);
 
     assert.ok(mockModel, 'mockModel is fetched from the store');
 
@@ -42,6 +45,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Sort', function(hooks) {
     assert.deepEqual(sort.parameters, { grain: 'day' }, 'the `parameters` property is set correctly');
 
     assert.equal(sort.direction, 'asc', 'the `direction` property is set correctly');
+    assert.equal(sort.meta.id, 'dateTime', 'correct meta data is populated');
   });
 
   test('Validation', async function(assert) {
