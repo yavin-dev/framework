@@ -20,6 +20,9 @@ const Validations = buildValidations({
   })
 });
 
+/**
+ * @augments {BaseFragment}
+ */
 export default class Filter extends BaseFragment.extend(Validations) {
   @attr('string', { defaultValue: 'in' }) operator;
   @attr({
