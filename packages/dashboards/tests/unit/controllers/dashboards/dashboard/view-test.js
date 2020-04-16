@@ -72,6 +72,7 @@ module('Unit | Controller | dashboards/dashboard/view', function(hooks) {
   });
 
   test('removeFilter', async function(assert) {
+    assert.expect(3);
     let osFilter = Store.createFragment('bard-request/fragments/filter', {
         dimension: MetadataService.getById('dimension', 'os'),
         operator: 'in',
@@ -108,6 +109,7 @@ module('Unit | Controller | dashboards/dashboard/view', function(hooks) {
   });
 
   test('addFilter', async function(assert) {
+    assert.expect(2);
     let author = await Store.findRecord('user', 'navi_user'),
       dashboard = Store.createRecord('dashboard', {
         title: 'Test Dashboard',

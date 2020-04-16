@@ -20,9 +20,13 @@ module('Integration | Component | navi widget', function(hooks) {
   setupRenderingTest(hooks);
 
   hooks.beforeEach(function() {
-    this.owner.register('helper:route-action', buildHelper(() => {}), {
-      instantiate: false
-    });
+    this.owner.register(
+      'helper:route-action',
+      buildHelper(() => undefined),
+      {
+        instantiate: false
+      }
+    );
 
     // Mock a visualization component
     this.owner.register('component:navi-visualizations/my-test-visualization', Component.extend());

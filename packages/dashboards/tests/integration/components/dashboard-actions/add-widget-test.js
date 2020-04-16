@@ -14,7 +14,13 @@ module('Integration | Component | dashboard actions/add widget', function(hooks)
   setupMirage(hooks);
 
   hooks.beforeEach(async function() {
-    this.set('reports', arr([{ id: 1, title: 'Report 1' }, { id: 2, title: 'Report 2' }]));
+    this.set(
+      'reports',
+      arr([
+        { id: 1, title: 'Report 1' },
+        { id: 2, title: 'Report 2' }
+      ])
+    );
     this.set('dashboard', { id: DASHBOARD_ID });
 
     await render(hbs`

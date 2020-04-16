@@ -27,6 +27,7 @@ module.exports = {
 
     // typescript
     '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+    '@typescript-eslint/camelcase': ['error', { allow: ['_id$'] }],
     '@typescript-eslint/explicit-function-return-type': 'off',
 
     // prettier
@@ -66,7 +67,8 @@ module.exports = {
     {
       files: ['tests/**/*.js'],
       rules: {
-        'ember/no-jquery': 'off'
+        'ember/no-jquery': 'off',
+        '@typescript-eslint/no-use-before-define': 'off'
       }
     }
   ]
