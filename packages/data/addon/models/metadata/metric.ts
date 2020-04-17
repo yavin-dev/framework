@@ -3,10 +3,11 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { inject as service } from '@ember/service';
-import Column from './column';
+import Column, { BaseExtendedAttributes } from './column';
 import MetricFunction from './metric-function';
 import FunctionArgument from './function-argument';
 
+type ExtendedAttributes = BaseExtendedAttributes;
 export default class Metric extends Column {
   /**
    * @static
@@ -88,7 +89,7 @@ export default class Metric extends Column {
   /**
    * @property {Promise} extended - extended metadata for the metric that isn't provided in initial table fullView metadata load
    */
-  get extended(): Promise<TODO> {
+  get extended(): Promise<Metric & ExtendedAttributes> {
     const { metadataService, id, source } = this;
     return metadataService.findById('metric', id, source);
   }

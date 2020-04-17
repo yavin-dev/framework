@@ -10,6 +10,10 @@ import Table from './table';
 
 export type ColumnType = 'ref' | 'formula' | 'field';
 
+export type BaseExtendedAttributes = {
+  description: string;
+};
+
 export default class Column extends EmberObject {
   /**
    * @property {KegService} keg
@@ -28,9 +32,9 @@ export default class Column extends EmberObject {
   name!: string;
 
   /**
-   * @property {string} description
+   * @property {string|undefined} description - an extended attribute that can be fetched
    */
-  description!: string;
+  description?: string;
 
   /**
    * @property {string} tableId
