@@ -8,8 +8,6 @@
         </td>
         <td class="navi-search-asset-result__item navi-search-results__item--cell">
           <LinkTo @route={{result.route}} @model={{result.modelId}} {{on "click" @closeResults}} class="navi-search--link">
-{{log "asset"}}
-{{log @closeResults}}
             {{result.title}}
           </LinkTo>
         </td>
