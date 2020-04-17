@@ -71,16 +71,6 @@ export default class NaviSearchBarComponent extends Component {
   }
 
   /**
-   * @method closeResults – Close result pane on result component action
-   * @param {Object} dd
-   * @param {Object} event
-   */
-  @action
-  closeResults(dd, event) {
-    dd.actions.close(event);
-  }
-
-  /**
    * @method launchQuery – Launch search task
    * @param {String} query
    * @param {Object} dd

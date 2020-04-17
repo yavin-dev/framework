@@ -1,15 +1,13 @@
 {{! Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. }}
 <BasicDropdown @tagName="div" @matchTriggerWidth={{true}} @verticalPosition="below" @class="navi-search" ...attributes as |dd|>
-  <dd.trigger class="navi-search-bar">
+  <div class="navi-search-bar">
     <Input @type="text" @value={{this.searchQuery}} @placeholder="Search" @class="navi-search-bar__input"
-      @keyUp={{fn this.onKeyUp dd}} />
+      @keyUp={{fn this.onKeyUp dd}} @focusIn={{fn dd.actions.open}} data-ebd-id="{{dd.uniqueId}}-trigger" />
     <NaviIcon @icon="search" class="navi-search-bar__icon" />
-  </dd.trigger>
+  </div>
   {{#if this.searchResults}}
     <dd.content @class="navi-search-results navi-search-results--box navi-search-result-wrapper slide-fade">
-      {{#each this.searchResults as |result|}}
-        <NaviSearchResult::Wrapper @result={{result}} @closeResults={{fn this.closeResults dd}} class="navi-search-results__item navi-search-results--box"/>
-      {{/each}}
+      <NaviSearchResult::Wrapper @searchResults={{this.searchResults}} @closeResults={{fn dd.actions.close event}} class="navi-search-results__item navi-search-results--box"/>
     </dd.content>
   {{/if}}
 </BasicDropdown>

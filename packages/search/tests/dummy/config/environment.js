@@ -23,8 +23,15 @@ module.exports = function(environment) {
     },
 
     navi: {
-      dataSources: [{ name: 'dummy', uri: 'https://data.naviapp.io', type: 'bard-facts' }],
-      defaultDataSource: 'dummy'
+      dataSources: [
+        { name: 'dummy', uri: 'https://data.naviapp.io', type: 'bard-facts' },
+        { name: 'blockhead', uri: 'https://data2.naviapp.io', type: 'bard-facts' }
+      ],
+      appPersistence: {
+        type: 'webservice',
+        uri: 'https://persistence.naviapp.io',
+        timeout: 90000
+      }
     }
   };
 

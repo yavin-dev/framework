@@ -34,14 +34,10 @@ module('Integration | Component | navi-search-result-asset', function(hooks) {
         }
       }
     ];
-    const result = {
-      component: 'navi-search-result/asset',
-      title: 'Reports & Dashboards',
-      data
-    };
-    set(this, 'result', result);
+    set(this, 'data', data);
+    set(this, 'closeResults', () => {});
 
-    await render(hbs`<NaviSearchResult::Asset @data={{this.result.data}}/>`);
+    await render(hbs`<NaviSearchResult::Asset @data={{this.data}} @closeResults={{fn this.closeResults}} />`);
 
     assert.dom('.navi-search-asset-result').exists({ count: 2 }, '2 results are displayed');
     let results = findAll('.navi-search-asset-result__item');
