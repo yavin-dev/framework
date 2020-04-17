@@ -13,7 +13,7 @@ export const INTRINSIC_VALUE_EXPRESSION = 'self';
 export default class FunctionArgument extends EmberObject {
   /**
    * @static
-   * @property {String} identifierField
+   * @property {string} identifierField
    */
   static identifierField = 'id';
 
@@ -21,43 +21,43 @@ export default class FunctionArgument extends EmberObject {
    * @property {Service} dimensionService
    */
   @service('bard-dimensions')
-  dimensionService;
+  dimensionService!: TODO;
 
   /**
-   * @property {String} id
+   * @property {string} id
    */
-  id;
+  id!: string;
 
   /**
-   * @property {String} name
+   * @property {string} name
    */
-  name;
+  name!: string;
 
   /**
-   * @property {String} description
+   * @property {string} description
    */
-  description;
+  description!: string;
 
   /**
-   * @property {String} source - name of the data source this argument is from.
+   * @property {string} source - name of the data source this argument is from.
    */
-  source;
+  source!: string;
 
   /**
    * @property {ValueType} valueType
    */
-  valueType;
+  valueType!: TODO;
 
   /**
-   * @property {String} type - either "ref" or "primitive"
+   * @property {string} type - either "ref" or "primitive"
    */
-  type;
+  type!: string;
 
   /**
-   * @property {String} expression - used if type is ref to get the valid values
+   * @property {string} expression - used if type is ref to get the valid values
    * Expected format is e.g. "dimension:dimensionOne" or "self" if the values come from an enum
    */
-  expression;
+  expression!: string;
 
   /**
    * @private
@@ -65,25 +65,25 @@ export default class FunctionArgument extends EmberObject {
    * if metric function ids are not supplied by the metadata endpoint,
    * then enum values provided in the parameter will be placed here
    */
-  _localValues;
+  _localValues!: string[];
 
   /**
    * @property {Promise} values - array of values used for function arguments with an enum type
    */
-  get values() {
+  get values(): Promise<string[]> | undefined {
     if (this.expression === INTRINSIC_VALUE_EXPRESSION) {
       return Promise.resolve(this._localValues);
     }
 
     const [type, id] = this.expression?.split(':') || [];
     if (this.type === 'ref' && type === 'dimension' && id) {
-      return this.dimensionService.all(id, this.source).then(results => results.content?.toArray?.());
+      return this.dimensionService.all(id, this.source).then((results: TODO) => results.content?.toArray?.());
     }
     return undefined;
   }
 
   /**
-   * @property {String} defaultValue
+   * @property {string} defaultValue
    */
-  defaultValue;
+  defaultValue!: string;
 }

@@ -5,10 +5,27 @@
  * Ember service that can store and fetch records
  */
 import { typeOf } from '@ember/utils';
-import { A, makeArray } from '@ember/array';
+import EmberArray, { A } from '@ember/array';
+import MutableArray from '@ember/array/mutable';
 import Service from '@ember/service';
 import { getOwner } from '@ember/application';
 import { setProperties } from '@ember/object';
+
+type Identifier = string | number;
+type Record = unknown & {
+  partialData?: boolean;
+  [key: string]: unknown;
+};
+interface Factory {
+  create(obj: object): Record;
+  identifierField: string;
+}
+type Options = {
+  modelFactory: string; // name of explicit modelFactory to store
+  namespace: string; // namespace to store data under, defaults to 'navi'
+};
+
+type Filter = (value: Record, index: number, array: Record[]) => unknown;
 
 export default class KegService extends Service {
   /**
@@ -19,12 +36,12 @@ export default class KegService extends Service {
   /**
    * @property {Object} recordKeg - Object of record arrays
    */
-  recordKegs = {};
+  recordKegs: Dict<MutableArray<Record>> = {};
 
   /**
    * @property {Object} idIndexes - Object of record idexes
    */
-  idIndexes = {};
+  idIndexes: Dict<Dict<Record>> = {};
 
   /**
    * @property {String} defaultNamespace
@@ -37,7 +54,7 @@ export default class KegService extends Service {
    * @method reset
    * @returns {undefined}
    */
-  reset() {
+  reset(): void {
     this.recordKegs = {};
     this.idIndexes = {};
   }
@@ -46,9 +63,9 @@ export default class KegService extends Service {
    * resets internal data structure by type
    *
    * @method resetByType
-   * @param {String} type - model type to reset
+   * @param {string} type - model type to reset
    */
-  resetByType(type) {
+  resetByType(type: string): void {
     const { recordKegs, idIndexes } = this;
     idIndexes[type] = {};
     recordKegs[type] = A();
@@ -58,13 +75,13 @@ export default class KegService extends Service {
    * Pushes a single record into the store
    *
    * @method push
-   * @param {String} type- name of the model type
-   * @param {Object} rawRecord - object that is passed the type factory
+   * @param {string} type- name of the model type
+   * @param {object} rawRecord - object that is passed the type factory
    * @param {Object} [options] - config object
    * @param {String} [options.modelFactory] - name of explicit modelFactory to store
    * @returns {Object} record that was pushed to the keg
    */
-  push(type, rawRecord, options) {
+  push(type: string, rawRecord: Record, options: Partial<Options>) {
     return this.pushMany(type, [rawRecord], options).get('firstObject');
   }
 
@@ -72,13 +89,12 @@ export default class KegService extends Service {
    * Pushes an array of records into the store
    *
    * @method pushMany
-   * @param {String} type - type name of the model type
+   * @param {string} type - type name of the model type
    * @param {Array} rawRecords - array of objects that are passed the type factory
-   * @param {Object} [options] - config object
-   * @param {String} [options.modelFactory] - name of explicit modelFactory to store
+   * @param {Options} [options] - config object
    * @returns {Array} records that were pushed to the keg
    */
-  pushMany(type, rawRecords, options = {}) {
+  pushMany(type: string, rawRecords: Array<Record>, options: Partial<Options> = {}) {
     const factory = this._getFactoryForType(options.modelFactory || type);
     const recordKeg = this._getRecordKegForType(type);
     const idIndex = this._getIdIndexForType(type);
@@ -88,7 +104,7 @@ export default class KegService extends Service {
 
     const returnedRecords = A();
     for (let i = 0; i < rawRecords.length; i++) {
-      const id = rawRecords[i][identifierField];
+      const id = rawRecords[i][identifierField] as Identifier;
       const existingRecord = this.getById(type, id, namespace);
 
       if (existingRecord) {
@@ -112,12 +128,12 @@ export default class KegService extends Service {
    * Fetches a record by its identifier
    *
    * @method getById
-   * @param {String} type - type name of the model type
-   * @param {String|Number} id - identifier value
-   * @param {String} namespace - (optional) namespace for the id
+   * @param {string} type - type name of the model type
+   * @param {Identifier} id - identifier value
+   * @param {string} namespace - (optional) namespace for the id
    * @returns {Object|undefined} the found record
    */
-  getById(type, id, namespace) {
+  getById(type: string, id: Identifier, namespace?: string): Record | undefined {
     let idIndex = this._getIdIndexForType(type) || {};
     let source = namespace || this.defaultNamespace;
     return idIndex[`${source}.${id}`];
@@ -129,21 +145,19 @@ export default class KegService extends Service {
    * @method getBy
    * @param {String} type - type name of the model type
    * @param {Object|Function} clause
-   * @returns {Array} array of found records
+   * @returns {EmberArray<Record>} array of found records
    */
-  getBy(type, clause) {
-    let recordKeg = this._getRecordKegForType(type),
-      foundRecords;
+  getBy(type: string, clause: Dict<Array<unknown>> | Filter): EmberArray<Record> {
+    const recordKeg = this._getRecordKegForType(type);
+    let foundRecords: EmberArray<Record> = A();
 
     if (typeof clause === 'object') {
-      let fields = Object.keys(clause);
-
       foundRecords = recordKeg;
 
-      fields.forEach(field => {
+      Object.keys(clause).forEach(field => {
         foundRecords = A(
           foundRecords.filter(item => {
-            let values = makeArray(clause[field]);
+            const values = Array.isArray(clause[field]) ? clause[field] : [clause[field]];
             return values.indexOf(item[field]) > -1;
           })
         );
@@ -158,10 +172,11 @@ export default class KegService extends Service {
    * Fetches all records for a type
    *
    * @method getBy
-   * @param {String} type - type name of the model type
+   * @param {string} type - type name of the model type
+   * @param {string} namespace - (optional) namespace for the id
    * @returns {Array} array of records of the provided type
    */
-  all(type, namespace) {
+  all(type: string, namespace: string): EmberArray<Record> {
     const all = this._getRecordKegForType(type);
     if (namespace && all.any(item => !!item.source)) {
       return A(all.filter(item => item.source === namespace));
@@ -174,14 +189,14 @@ export default class KegService extends Service {
    *
    * @private
    * @method _getFactoryForType
-   * @param {String} type - type name of the model type
+   * @param {string} type - type name of the model type
    * @returns {Object} - model factory
    */
-  _getFactoryForType(type) {
+  _getFactoryForType(type: string | Factory): Factory {
     if (typeOf(type) === 'string') {
       return getOwner(this).factoryFor(`model:${type}`)?.class;
     } else {
-      return type;
+      return type as Factory;
     }
   }
 
@@ -190,10 +205,10 @@ export default class KegService extends Service {
    *
    * @private
    * @method _getRecordKegForType
-   * @param {String} type - type name of the model type
-   * @returns {Object} - record keg
+   * @param {string} type - type name of the model type
+   * @returns {EmberArray<Record>} - record keg
    */
-  _getRecordKegForType(type) {
+  _getRecordKegForType(type: string): MutableArray<Record> {
     const { recordKegs } = this;
 
     recordKegs[type] = recordKegs[type] || A();
@@ -205,13 +220,19 @@ export default class KegService extends Service {
    *
    * @private
    * @method _getIdIndexForType
-   * @param {String} type - type name of the model type
-   * @returns {Object} - record id index
+   * @param {string} type - type name of the model type
+   * @returns {Dict<Record>} - record id index
    */
-  _getIdIndexForType(type) {
+  _getIdIndexForType(type: string): Dict<Record> {
     const { idIndexes } = this;
 
     idIndexes[type] = idIndexes[type] || {};
     return idIndexes[type];
+  }
+}
+
+declare module '@ember/service' {
+  interface Registry {
+    keg: KegService;
   }
 }
