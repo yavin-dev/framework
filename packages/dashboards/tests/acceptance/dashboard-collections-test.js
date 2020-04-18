@@ -8,6 +8,19 @@ module('Acceptance | Dashboard Collections', function(hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
 
+  test('dashobard-collection index', async function(assert) {
+    assert.expect(3);
+
+    await visit('/dashboard-collections');
+    assert.dom('.error').doesNotExist('Error message not present when route is successfully loaded');
+
+    assert
+      .dom('.navi-collection')
+      .exists('the dashboard collection component is rendered when route is successfully loaded');
+
+    assert.dom('.navi-collection__row').exists({ count: 3 }, 'The dashboard collection shows 3 collections');
+  });
+
   test('dashobard-collection success', async function(assert) {
     assert.expect(2);
 
