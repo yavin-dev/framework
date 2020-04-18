@@ -10,6 +10,17 @@ import { inject as service } from '@ember/service';
 
 export const INTRINSIC_VALUE_EXPRESSION = 'self';
 
+type LocalFunctionArgument = {
+  expression: 'self';
+  _localValues: string[];
+};
+
+function isLocalFunction(
+  functionArgument: FunctionArgument
+): functionArgument is FunctionArgument & LocalFunctionArgument {
+  return functionArgument.expression === INTRINSIC_VALUE_EXPRESSION;
+}
+
 export default class FunctionArgument extends EmberObject {
   /**
    * @static
@@ -54,24 +65,24 @@ export default class FunctionArgument extends EmberObject {
   type!: string;
 
   /**
-   * @property {string} expression - used if type is ref to get the valid values
+   * @property {string|undefined} expression - used if type is ref to get the valid values
    * Expected format is e.g. "dimension:dimensionOne" or "self" if the values come from an enum
    */
-  expression!: string;
+  expression?: string;
 
   /**
    * @private
-   * @property {String[]} _localValues
+   * @property {string[]|undefined} _localValues
    * if metric function ids are not supplied by the metadata endpoint,
    * then enum values provided in the parameter will be placed here
    */
-  _localValues!: string[];
+  _localValues?: string[];
 
   /**
    * @property {Promise} values - array of values used for function arguments with an enum type
    */
   get values(): Promise<string[]> | undefined {
-    if (this.expression === INTRINSIC_VALUE_EXPRESSION) {
+    if (isLocalFunction(this)) {
       return Promise.resolve(this._localValues);
     }
 

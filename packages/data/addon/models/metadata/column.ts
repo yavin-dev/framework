@@ -51,7 +51,7 @@ export default class Column extends EmberObject {
   }
 
   /**
-   * @property {String} source - name of the data source this column is from.
+   * @property {string} source - name of the data source this column is from.
    */
   source!: string;
 
@@ -61,9 +61,9 @@ export default class Column extends EmberObject {
   type!: ColumnType;
 
   /**
-   * @property {String} expression - e.g. tableA.name if type is ref
+   * @property {string|undefined} expression - e.g. tableA.name if type is ref
    */
-  expression!: string;
+  expression?: string;
 
   /**
    * @property {string} category

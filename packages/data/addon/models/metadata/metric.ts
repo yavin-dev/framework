@@ -5,7 +5,6 @@
 import { inject as service } from '@ember/service';
 import Column, { BaseExtendedAttributes } from './column';
 import MetricFunction from './metric-function';
-import FunctionArgument from './function-argument';
 
 type ExtendedAttributes = BaseExtendedAttributes;
 export default class Metric extends Column {
@@ -52,18 +51,18 @@ export default class Metric extends Column {
   }
 
   /**
-   * @property {FunctionArgument[]} arguments - arguments for the metric
+   * @property {object[]} arguments - arguments for the metric
    */
-  get arguments(): FunctionArgument[] {
+  get arguments(): TODO[] {
     return this.metricFunction?.arguments || [];
   }
 
   /**
    * @method getParameter - retrieves the queried parameter object from metadata
    * @param {string} id
-   * @returns {FunctionArgument|undefined}
+   * @returns {object|undefined}
    */
-  getParameter(id: string): FunctionArgument | undefined {
+  getParameter(id: string): TODO | undefined {
     if (!this.hasParameters) {
       return;
     }
@@ -73,7 +72,7 @@ export default class Metric extends Column {
 
   /**
    * @method getDefaultParameters - retrieves all the default values for all the parameters
-   * @returns {Object|undefined}
+   * @returns {Dict<string>|undefined}
    */
   getDefaultParameters(): Dict<string> | undefined {
     if (!this.hasParameters) {

@@ -19,7 +19,7 @@ export type TimeGrain = {
 export default class Table extends EmberObject {
   /**
    * @static
-   * @property {String} identifierField
+   * @property {string} identifierField
    */
   static identifierField = 'id';
 
@@ -113,7 +113,7 @@ export default class Table extends EmberObject {
   source!: string;
 
   /**
-   * @property {String[]} timeGrainIds - supported timegrains for a column
+   * @property {string[]} timeGrainIds - supported timegrains for a column
    */
   timeGrainIds: string[] = [];
 
