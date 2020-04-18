@@ -8,7 +8,7 @@ module('Acceptance | Dashboard Collections', function(hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
 
-  test('dashobard-collection index', async function(assert) {
+  test('dashboard-collection index', async function(assert) {
     assert.expect(3);
 
     await visit('/dashboard-collections');
