@@ -1,11 +1,14 @@
 {{! Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. }}
-<table class="table navi-search-result" ...attributes>
-  <tbody class="navi-search-result__table-body">
+<table class="navi-search-results__item navi-search-results__item--definition" ...attributes>
+  <tbody class="navi-search-results__item-body">
     {{#each @data as |result|}}
-      <tr class="navi-search-result__definition">
-        <td class="navi-search-result__definition result_element">
-            <h5 class="navi-search-result__definition-name">{{result.name}}</h5>
-            <p class="navi-search-result__definition-description">
+      <tr class="navi-search-definition-result">
+        <td class="navi-search-definition-result__item navi-search-results__item--cell">
+            <h5 class="navi-search-definition-result__item-name">{{result.name}}</h5>
+            {{#if this.hasMultipleDataSources}}
+              <em class="navi-search-definition-result__item-source">Source: {{result.source}}</em>
+            {{/if}}
+            <p class="navi-search-definition-result__item-description">
               {{#if result.description}}
                {{result.description}}
               {{else}}

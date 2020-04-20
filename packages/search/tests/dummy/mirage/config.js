@@ -18,6 +18,10 @@ export default function() {
   BardMeta.call(this);
   BardLite.call(this);
 
+  this.urlPrefix = `${config.navi.dataSources[1].uri}/v1`;
+  BardMeta.call(this);
+  BardLite.call(this);
+
   /* == Mock Persistence == */
   this.urlPrefix = config.navi.appPersistence.uri;
   dashboard.call(this);

@@ -1,17 +1,13 @@
 {{! Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. }}
-<table class="table is-striped navi-search-result" ...attributes>
-  <tbody>
+<table class="navi-search-results__item navi-search-results__item--striped navi-search-results__item--asset" ...attributes>
+  <tbody class="navi-search-result__item-body">
     {{#each this.results as |result|}}
-      <tr class='navi-search-result__asset'>
-       <td class="navi-search-result__asset result_icon is-center">
-           <span class="d-icon 
-              {{if (eq result.type "report") "d-file-text"}}
-              {{if (eq result.type "dashboard") "d-dashboard-tile"}}
-               is-grey-800"
-            ></span>
+      <tr class="navi-search-asset-result navi-search-results__item--row">
+       <td class="navi-search-asset-result__icon navi-search-results__item--icon navi-search-results__item--cell">
+           <NaviIcon @icon={{result.icon}} />
         </td>
-        <td class="navi-search-result__asset result_element">
-          <LinkTo @route={{result.route}} @model={{result.modelId}}>
+        <td class="navi-search-asset-result__item navi-search-results__item--cell">
+          <LinkTo @route={{result.route}} @model={{result.modelId}} {{on "click" @closeResults}} class="navi-search--link">
             {{result.title}}
           </LinkTo>
         </td>
