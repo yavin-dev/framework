@@ -18,8 +18,7 @@ export default class Column extends EmberObject {
   /**
    * @property {KegService} keg
    */
-  @service('keg')
-  keg!: KegService;
+  @service keg!: KegService;
 
   /**
    * @property {string} id

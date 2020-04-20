@@ -26,8 +26,7 @@ export default class Table extends EmberObject {
   /**
    * @property {KegService} keg
    */
-  @service('keg')
-  keg!: KegService;
+  @service keg!: KegService;
 
   /**
    * @param {string} id
