@@ -42,6 +42,25 @@ export function getDatesForInterval(interval, grain) {
 }
 
 /**
+ * Given a dateTimePeriod this functions returns its equivalent ISO dateTimePeriod
+ *
+ * @method getIsoDateTimePeriod
+ * @param {String} dateTimePeriod
+ * @return {String} ISO equivalent dateTimePeriod
+ */
+export function getIsoDateTimePeriod(dateTimePeriod) {
+  if (dateTimePeriod) {
+    let timePeriod = dateTimePeriod;
+    if (dateTimePeriod.toLowerCase() === 'week') {
+      timePeriod = 'isoweek';
+    }
+    return timePeriod;
+  } else {
+    throw new Error('getIsoDateTimePeriod : Required DateTimePeriod is missing');
+  }
+}
+
+/**
  * Converts the epoch date obtained from the getEpochDate function by rounding the beginning to the start of the next DateTimePeriod
  * if the feature flag is on,else rounds the epoch date configured by the dataEpoch configuration to the start of next DateTimePeriod and returns it.
  *
@@ -135,24 +154,5 @@ export function getFirstDayOfIsoDateTimePeriod(date, dateTimePeriod, dateFormat)
       .format(format);
   } else {
     throw new Error('getFirstDayOfIsoDateTimePeriod : Required Date/DateTimePeriod is missing');
-  }
-}
-
-/**
- * Given a dateTimePeriod this functions returns its equivalent ISO dateTimePeriod
- *
- * @method getIsoDateTimePeriod
- * @param {String} dateTimePeriod
- * @return {String} ISO equivalent dateTimePeriod
- */
-export function getIsoDateTimePeriod(dateTimePeriod) {
-  if (dateTimePeriod) {
-    let timePeriod = dateTimePeriod;
-    if (dateTimePeriod.toLowerCase() === 'week') {
-      timePeriod = 'isoweek';
-    }
-    return timePeriod;
-  } else {
-    throw new Error('getIsoDateTimePeriod : Required DateTimePeriod is missing');
   }
 }

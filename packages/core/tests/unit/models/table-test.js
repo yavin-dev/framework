@@ -13,7 +13,10 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
   test('default value', function(assert) {
     assert.expect(1);
 
-    let metricsAndDims = [[{ dimension: 'd1' }, { dimension: 'd2' }], [{ metric: 'm1' }, { metric: 'm2' }]],
+    let metricsAndDims = [
+        [{ dimension: 'd1' }, { dimension: 'd2' }],
+        [{ metric: 'm1' }, { metric: 'm2' }]
+      ],
       table = run(() => run(() => this.owner.lookup('service:store').createRecord('all-the-fragments')).get('table'));
 
     assert.ok(
@@ -104,7 +107,10 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
         model,
         'table',
         buildTestConfig(
-          [{ dimension: 'd2', field: 'id' }, { dimension: 'd2', field: 'desc' }],
+          [
+            { dimension: 'd2', field: 'id' },
+            { dimension: 'd2', field: 'desc' }
+          ],
           [{ metric: 'm1' }, { metric: 'm2' }],
           [{ metric: 't1' }]
         )

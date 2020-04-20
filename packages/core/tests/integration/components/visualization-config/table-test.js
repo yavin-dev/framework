@@ -38,7 +38,7 @@ module('Integration | Component | visualization config/table', function(hooks) {
     let originalFlag = config.navi.FEATURES.enableTotals;
     config.navi.FEATURES.enableTotals = true;
 
-    this.set('onUpdateConfig', () => {});
+    this.set('onUpdateConfig', () => undefined);
     this.set('request', {
       dimensions: [{ dimension: 'os' }, { dimension: 'age' }]
     });
@@ -100,7 +100,7 @@ module('Integration | Component | visualization config/table', function(hooks) {
 
     this.set('request', {});
     this.set('options', { showTotals: { grandTotal: true } });
-    this.set('onUpdateConfig', () => {});
+    this.set('onUpdateConfig', () => undefined);
 
     await render(hbs`{{navi-visualization-config/table
       request=request

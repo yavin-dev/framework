@@ -1,6 +1,6 @@
-import { run } from '@ember/runloop';
-import { module, test } from 'qunit';
+import { module, test, skip } from 'qunit';
 import { setupTest } from 'ember-qunit';
+import { run } from '@ember/runloop';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 let Store;
@@ -148,26 +148,22 @@ module('Unit | Model | dashboard', function(hooks) {
     });
   });
 
-  /**
-   * TODO Fix test after moving to core
-   * test('deliveryRuleForUser', function (assert) {
-   *   assert.expect(1);
-   *
-   *   return Ember.run(() => {
-   *     return Store.findRecord('user', 'navi_user').then(() => {
-   *       return Store.findRecord('dashboard', 2).then(dashboardModel => {
-   *         dashboardModel.user = {
-   *           getUser: () => Store.peekRecord('user', 'navi_user')
-   *         };
-   *
-   *         return dashboardModel.get('deliveryRuleForUser').then(rule => {
-   *           assert.deepEqual(rule,
-   *             Store.peekRecord('deliveryRule', 3),
-   *             'deliveryRule is fetched for current user');
-   *         });
-   *       });
-   *     });
-   *   });
-   * });
-   */
+  // TODO Fix test after moving to core
+  skip('deliveryRuleForUser', function(assert) {
+    assert.expect(1);
+
+    return run(() => {
+      return Store.findRecord('user', 'navi_user').then(() => {
+        return Store.findRecord('dashboard', 2).then(dashboardModel => {
+          dashboardModel.user = {
+            getUser: () => Store.peekRecord('user', 'navi_user')
+          };
+
+          return dashboardModel.get('deliveryRuleForUser').then(rule => {
+            assert.deepEqual(rule, Store.peekRecord('deliveryRule', 3), 'deliveryRule is fetched for current user');
+          });
+        });
+      });
+    });
+  });
 });

@@ -10,7 +10,10 @@ module('Unit | Model | Pie Chart Visualization Fragment', function(hooks) {
   test('default value', function(assert) {
     assert.expect(1);
 
-    let metricsAndDims = [['m1', 'm2'], ['d1', 'd2']],
+    let metricsAndDims = [
+        ['m1', 'm2'],
+        ['d1', 'd2']
+      ],
       chart = run(() =>
         run(() => this.owner.lookup('service:store').createRecord('all-the-fragments')).get('pieChart')
       );

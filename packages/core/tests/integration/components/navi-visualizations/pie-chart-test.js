@@ -475,7 +475,10 @@ module('Integration | Component | pie chart', function(hooks) {
             canonicalName: 'revenue(currency=USD)'
           },
           dimensionOrder: ['age'],
-          dimensions: [{ name: 'All Other', values: { age: '-3' } }, { name: 'Under 13', values: { age: '1' } }]
+          dimensions: [
+            { name: 'All Other', values: { age: '-3' } },
+            { name: 'Under 13', values: { age: '1' } }
+          ]
         }
       }
     });

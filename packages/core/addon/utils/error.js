@@ -13,22 +13,6 @@ const MESSAGE_OVERRIDES = {
 };
 
 /**
- * Returns formatted message based on error object
- * @function getApiErrorMsg
- * @param {Object} error - error object from ajax service
- * @returns {String} formatted error message
- */
-export function getApiErrMsg(error) {
-  let errorText = _getErrorText(error) || UNKNOWN_ERROR;
-
-  if (MESSAGE_OVERRIDES[errorText]) {
-    errorText = MESSAGE_OVERRIDES[errorText];
-  }
-
-  return errorText;
-}
-
-/**
  * Retrieves error message from error object
  * @function _getErrorText
  * @private
@@ -47,4 +31,20 @@ export function _getErrorText(error = {}) {
   }
 
   return null;
+}
+
+/**
+ * Returns formatted message based on error object
+ * @function getApiErrorMsg
+ * @param {Object} error - error object from ajax service
+ * @returns {String} formatted error message
+ */
+export function getApiErrMsg(error) {
+  let errorText = _getErrorText(error) || UNKNOWN_ERROR;
+
+  if (MESSAGE_OVERRIDES[errorText]) {
+    errorText = MESSAGE_OVERRIDES[errorText];
+  }
+
+  return errorText;
 }

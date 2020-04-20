@@ -14,80 +14,6 @@ import { canonicalizeDimension, formatDimensionName } from 'navi-data/utils/dime
 import { keyBy } from 'lodash-es';
 
 /**
- * @constant {Object} Validations - Validation object
- */
-const Validations = buildValidations(
-  {
-    'metadata.columns': validator('inline', {
-      validate(columns, options) {
-        let request = get(options, 'request');
-        return request && hasAllColumns(request, arr(columns));
-      },
-      dependentKeys: [
-        'model._request.dimensions.[]',
-        'model._request.metrics.@each.parameters.{}',
-        'model._request.logicalTable.timeGrain'
-      ]
-    })
-  },
-  {
-    //Global Validation Options
-    request: readOnly('model._request')
-  }
-);
-
-export default VisualizationBase.extend(Validations, {
-  type: DS.attr('string', { defaultValue: 'table' }),
-  version: DS.attr('number', { defaultValue: 1 }),
-  metadata: DS.attr({
-    defaultValue: () => {
-      return { columns: [] };
-    }
-  }),
-
-  /**
-   * Rebuild config based on request and response
-   *
-   * @method rebuildConfig
-   * @param {MF.Fragment} request - request model fragment
-   * @param {Object} response - response object
-   * @return {Object} this object
-   */
-  rebuildConfig(request /*, response */) {
-    let dimensions = get(request, 'dimensions') || [],
-      metrics = get(request, 'metrics') || [],
-      columns = get(this, 'metadata.columns'),
-      // index column based on metricId or dimensionId
-      columnIndex = indexColumnById(columns),
-      timeGrain = request.logicalTable?.timeGrain;
-
-    //Only add dateColumn if timegrain is not 'all'
-    let dateColumn =
-      timeGrain !== 'all'
-        ? [
-            {
-              type: 'dateTime',
-              attributes: { name: 'dateTime' },
-              displayName: 'Date'
-            }
-          ]
-        : [];
-
-    const newColumns = [
-      ...dateColumn,
-      ...buildDimensionColumns(dimensions, columnIndex),
-      ...buildMetricColumns(metrics, columnIndex)
-    ];
-
-    set(this, 'metadata', {
-      columns: columnTransform(newColumns, columns)
-    });
-
-    return this;
-  }
-});
-
-/**
  * returns default dimension fields (show clause)
  * @param {Object} dimension - dimension from request
  * @returns {Object} - list of field names
@@ -249,3 +175,77 @@ export function indexColumnById(columns) {
     }
   });
 }
+
+/**
+ * @constant {Object} Validations - Validation object
+ */
+const Validations = buildValidations(
+  {
+    'metadata.columns': validator('inline', {
+      validate(columns, options) {
+        let request = get(options, 'request');
+        return request && hasAllColumns(request, arr(columns));
+      },
+      dependentKeys: [
+        'model._request.dimensions.[]',
+        'model._request.metrics.@each.parameters.{}',
+        'model._request.logicalTable.timeGrain'
+      ]
+    })
+  },
+  {
+    //Global Validation Options
+    request: readOnly('model._request')
+  }
+);
+
+export default VisualizationBase.extend(Validations, {
+  type: DS.attr('string', { defaultValue: 'table' }),
+  version: DS.attr('number', { defaultValue: 1 }),
+  metadata: DS.attr({
+    defaultValue: () => {
+      return { columns: [] };
+    }
+  }),
+
+  /**
+   * Rebuild config based on request and response
+   *
+   * @method rebuildConfig
+   * @param {MF.Fragment} request - request model fragment
+   * @param {Object} response - response object
+   * @return {Object} this object
+   */
+  rebuildConfig(request /*, response */) {
+    let dimensions = get(request, 'dimensions') || [],
+      metrics = get(request, 'metrics') || [],
+      columns = get(this, 'metadata.columns'),
+      // index column based on metricId or dimensionId
+      columnIndex = indexColumnById(columns),
+      timeGrain = request.logicalTable?.timeGrain;
+
+    //Only add dateColumn if timegrain is not 'all'
+    let dateColumn =
+      timeGrain !== 'all'
+        ? [
+            {
+              type: 'dateTime',
+              attributes: { name: 'dateTime' },
+              displayName: 'Date'
+            }
+          ]
+        : [];
+
+    const newColumns = [
+      ...dateColumn,
+      ...buildDimensionColumns(dimensions, columnIndex),
+      ...buildMetricColumns(metrics, columnIndex)
+    ];
+
+    set(this, 'metadata', {
+      columns: columnTransform(newColumns, columns)
+    });
+
+    return this;
+  }
+});

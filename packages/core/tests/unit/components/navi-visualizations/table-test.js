@@ -29,21 +29,41 @@ module('Unit | Component | table', function(hooks) {
     });
 
     //helpers
-    this.owner.register('helper:and', buildHelper(() => {}), {
-      instantiate: false
-    });
-    this.owner.register('helper:sub', buildHelper(() => {}), {
-      instantiate: false
-    });
-    this.owner.register('helper:not-eq', buildHelper(() => {}), {
-      instantiate: false
-    });
-    this.owner.register('helper:is-valid-moment', buildHelper(() => {}), {
-      instantiate: false
-    });
-    this.owner.register('helper:format-number', buildHelper(() => {}), {
-      instantiate: false
-    });
+    this.owner.register(
+      'helper:and',
+      buildHelper(() => undefined),
+      {
+        instantiate: false
+      }
+    );
+    this.owner.register(
+      'helper:sub',
+      buildHelper(() => undefined),
+      {
+        instantiate: false
+      }
+    );
+    this.owner.register(
+      'helper:not-eq',
+      buildHelper(() => undefined),
+      {
+        instantiate: false
+      }
+    );
+    this.owner.register(
+      'helper:is-valid-moment',
+      buildHelper(() => undefined),
+      {
+        instantiate: false
+      }
+    );
+    this.owner.register(
+      'helper:format-number',
+      buildHelper(() => undefined),
+      {
+        instantiate: false
+      }
+    );
 
     return this.owner.lookup('service:bard-metadata').loadMetadata();
   });

@@ -76,6 +76,7 @@ module.exports = function(environment) {
   }
 
   if (environment === 'production') {
+    // nothing
   }
 
   return ENV;

@@ -2,18 +2,18 @@
  * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-
+import Store from 'ember-data/store';
 import Service, { inject as service } from '@ember/service';
-import { get } from '@ember/object';
+//@ts-ignore
 import config from 'ember-get-config';
 
 const NOT_FOUND = '404';
 
-export default Service.extend({
+export default class UserService extends Service {
   /**
    * @property {Ember.Service} store
    */
-  store: service(),
+  @service() store!: Store;
 
   /**
    * Gets user model given user ID without triggering a fetch, if  user ID not specified gets logged-in user
@@ -22,9 +22,9 @@ export default Service.extend({
    * @param {String} [userId] - user ID
    * @returns {DS.Model} - user model, if not found returns null
    */
-  getUser(userId = config.navi.user) {
-    return get(this, 'store').peekRecord('user', userId);
-  },
+  getUser(userId: string = config.navi.user): TODO {
+    return this.store.peekRecord('user', userId);
+  }
 
   /**
    * Finds user given user ID, if user ID not specified gets logged-in user
@@ -33,9 +33,9 @@ export default Service.extend({
    * @param {String} [userId] - user ID
    * @returns {Promise} - Promise containing user model
    */
-  findUser(userId = config.navi.user) {
-    return get(this, 'store').findRecord('user', userId);
-  },
+  findUser(userId = config.navi.user): TODO {
+    return this.store.findRecord('user', userId);
+  }
 
   /**
    * Registers logged-in user
@@ -43,12 +43,12 @@ export default Service.extend({
    * @method register
    * @returns {Promise} - Promise containing logged-in user model
    */
-  register() {
-    let userId = config.navi.user,
-      userModel = get(this, 'store').createRecord('user', { id: userId });
+  register(): Promise<TODO> {
+    const userId = config.navi.user;
+    const userModel = this.store.createRecord('user', { id: userId });
 
     return userModel.save();
-  },
+  }
 
   /**
    * Finds logged-in user, if not present registers user
@@ -56,9 +56,9 @@ export default Service.extend({
    * @method findOrRegister
    * @returns {Promise} - Promise containing logged-in user model
    */
-  findOrRegister() {
-    return this.findUser().catch(serverError => {
-      if (get(serverError, 'errors.0.status') === NOT_FOUND) {
+  findOrRegister(): Promise<TODO> {
+    return this.findUser().catch((serverError: any) => {
+      if (serverError.errors?.[0]?.status === NOT_FOUND) {
         return this.register();
       }
 
@@ -66,4 +66,9 @@ export default Service.extend({
       throw serverError;
     });
   }
-});
+}
+declare module '@ember/service' {
+  interface Registry {
+    user: UserService;
+  }
+}
