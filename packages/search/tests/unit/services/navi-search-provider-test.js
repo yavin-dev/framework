@@ -42,7 +42,7 @@ module('Unit | Service | navi-search-provider', function(hooks) {
   test('search all providers', async function(assert) {
     assert.expect(1);
 
-    let results = await service.search.perform('Revenue');
+    let results = await service.search.perform('sample');
     let expectedResults = ['Revenue result', 'Revenue success'];
     assert.deepEqual(
       results.find(result => result.component === 'navi-search-result/sample').data,

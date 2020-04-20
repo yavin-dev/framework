@@ -3,9 +3,18 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, findAll } from '@ember/test-helpers';
 import { hbs } from 'ember-cli-htmlbars';
 import { set } from '@ember/object';
+import Service from '@ember/service';
+
+class MetadataServiceStub extends Service {
+  loadedDataSources = ['dummy', 'blockhead'];
+}
 
 module('Integration | Component | definition', function(hooks) {
   setupRenderingTest(hooks);
+
+  hooks.beforeEach(async function() {
+    this.owner.register('service:bard-metadata', MetadataServiceStub);
+  });
 
   test('it renders', async function(assert) {
     assert.expect(1);
@@ -30,27 +39,20 @@ module('Integration | Component | definition', function(hooks) {
         description: 'Number of times a user saw the ad.'
       }
     ];
-    const result = {
-      component: 'navi-search-result/definition',
-      title: 'Definitions',
-      data
-    };
-    set(this, 'result', result);
+    set(this, 'data', data);
 
-    await render(hbs`<NaviSearchResult::Definition @data={{this.result.data}} />`);
+    await render(hbs`<NaviSearchResult::Definition @data={{this.data}} />`);
 
-    assert.dom('.navi-search-result__definition.result_element').exists({ count: 2 }, 'Two results are displayed');
-    const definitionTitles = findAll('.navi-search-result__definition-name').map(el => el.textContent.trim());
-    const definitionDescriptions = findAll('.navi-search-result__definition-description').map(el =>
-      el.textContent.trim()
-    );
-    const expectedDefinitionTitles = ['Page Views', 'Impressions'];
-    const expectedDefinitionDescriptions = ['The number of views of a page.', 'Number of times a user saw the ad.'];
+    assert.dom('.navi-search-definition-result').exists({ count: 2 }, 'Two results are displayed');
 
-    assert.deepEqual(definitionTitles, expectedDefinitionTitles, 'definition titles are shown correctly');
     assert.deepEqual(
-      definitionDescriptions,
-      expectedDefinitionDescriptions,
+      findAll('.navi-search-definition-result__item-name').map(el => el.textContent.trim()),
+      ['Page Views', 'Impressions'],
+      'definition titles are shown correctly'
+    );
+    assert.deepEqual(
+      findAll('.navi-search-definition-result__item-description').map(el => el.textContent.trim()),
+      ['The number of views of a page.', 'Number of times a user saw the ad.'],
       'definition descriptions are shown correctly'
     );
   });
@@ -68,28 +70,61 @@ module('Integration | Component | definition', function(hooks) {
         })
       }
     ];
-    const result = {
-      component: 'navi-search-result/definition',
-      title: 'Definitions',
-      data
-    };
-    set(this, 'result', result);
+    set(this, 'data', data);
 
-    await render(hbs`<NaviSearchResult::Definition @data={{this.result.data}} />`);
+    await render(hbs`<NaviSearchResult::Definition @data={{this.data}} />`);
 
-    assert.dom('.navi-search-result__definition.result_element').exists({ count: 1 }, 'One result is displayed');
+    assert.dom('.navi-search-definition-result').exists({ count: 1 }, 'One result is displayed');
 
-    const definitionTitles = findAll('.navi-search-result__definition-name').map(el => el.textContent.trim());
-    const definitionDescriptions = findAll('.navi-search-result__definition-description').map(el =>
-      el.textContent.trim()
-    );
-    const expectedDefinitionTitles = ['Page Views'];
-    const expectedDefinitionDescriptions = ['The number of views of a page.'];
-    assert.deepEqual(definitionTitles, expectedDefinitionTitles, 'definition titles are shown correctly');
     assert.deepEqual(
-      definitionDescriptions,
-      expectedDefinitionDescriptions,
+      findAll('.navi-search-definition-result__item-name').map(el => el.textContent.trim()),
+      ['Page Views'],
+      'definition titles are shown correctly'
+    );
+    assert.deepEqual(
+      findAll('.navi-search-definition-result__item-description').map(el => el.textContent.trim()),
+      ['The number of views of a page.'],
       'definition descriptions are shown correctly'
+    );
+  });
+
+  test('Multiple datasources', async function(assert) {
+    assert.expect(4);
+
+    const data = [
+      {
+        id: 'pageViews',
+        name: 'Page Views',
+        description: 'The number of views of a page.',
+        source: 'dummy'
+      },
+      {
+        id: 'impressions',
+        name: 'Impressions',
+        description: 'Number of times a user saw the ad.',
+        source: 'blockhead'
+      }
+    ];
+    set(this, 'data', data);
+
+    await render(hbs`<NaviSearchResult::Definition @data={{this.data}} />`);
+
+    assert.dom('.navi-search-definition-result').exists({ count: 2 }, 'Two results are displayed');
+
+    assert.deepEqual(
+      findAll('.navi-search-definition-result__item-name').map(el => el.textContent.trim()),
+      ['Page Views', 'Impressions'],
+      'definition titles are shown correctly'
+    );
+    assert.deepEqual(
+      findAll('.navi-search-definition-result__item-description').map(el => el.textContent.trim()),
+      ['The number of views of a page.', 'Number of times a user saw the ad.'],
+      'definition descriptions are shown correctly'
+    );
+    assert.deepEqual(
+      findAll('.navi-search-definition-result__item-source').map(el => el.textContent.trim()),
+      ['Source: dummy', 'Source: blockhead'],
+      'definitions sources are shown correctly'
     );
   });
 });
