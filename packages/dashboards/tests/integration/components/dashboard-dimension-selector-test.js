@@ -123,7 +123,7 @@ module('Integration | Component | dashboard dimension selector', function(hooks)
 
     this.set('dashboard', dashboard);
 
-    this.set('changeme', () => {});
+    this.set('changeme', () => undefined);
 
     await this.render(hbs`{{dashboard-dimension-selector dashboard=dashboard onChange=changeme}}`);
 

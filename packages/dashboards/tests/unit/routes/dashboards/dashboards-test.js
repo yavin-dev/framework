@@ -82,7 +82,10 @@ module('Unit | Route | dashboards/dashboard', function(hooks) {
     };
     const route = TestRoute.create();
 
-    route._updateLayout([{ id: 1, x: 1, y: 1, height: 3, width: 1 }, { id: 2, x: 2, y: 4, height: 4, width: 5 }]);
+    route._updateLayout([
+      { id: 1, x: 1, y: 1, height: 3, width: 1 },
+      { id: 2, x: 2, y: 4, height: 4, width: 5 }
+    ]);
 
     const expectedLayout = [
       { widgetId: 1, column: 1, row: 1, height: 3, width: 1 },
