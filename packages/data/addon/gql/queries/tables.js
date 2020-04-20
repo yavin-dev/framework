@@ -8,7 +8,11 @@ import TableFragment from '../fragments/table';
 const query = gql`
   query {
     tables {
-      ...TableFragment
+      edges {
+        node {
+          ...TableFragment
+        }
+      }
     }
   }
   ${TableFragment}

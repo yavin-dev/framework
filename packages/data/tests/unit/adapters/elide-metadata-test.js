@@ -74,13 +74,14 @@ module('Unit | Elide Metadata Adapter', function(hooks) {
       'name',
       'description',
       'category',
-      'cardinalitySize',
+      'cardinality',
       'metrics',
       'dimensions',
       '__typename'
     ];
 
-    const { tables } = await Adapter.fetchAll('table');
+    const { tables: tableConnection } = await Adapter.fetchAll('table');
+    const tables = tableConnection.edges.map(edge => edge.node);
 
     // Test that all fields specified in the query are included in the result and none of them are null as they should be populated by the factories
     assert.deepEqual(
@@ -106,7 +107,7 @@ module('Unit | Elide Metadata Adapter', function(hooks) {
               description: 'This is metric 0',
               category: 'categoryOne',
               valueType: 'NUMBER',
-              tags: ['DISPLAY'],
+              columnTags: ['DISPLAY'],
               defaultFormat: 'number',
               __typename: 'Metric'
             },
@@ -119,7 +120,7 @@ module('Unit | Elide Metadata Adapter', function(hooks) {
               description: 'This is metric 1',
               category: 'categoryOne',
               valueType: 'NUMBER',
-              tags: ['DISPLAY'],
+              columnTags: ['DISPLAY'],
               defaultFormat: 'number',
               __typename: 'Metric'
             },
@@ -143,7 +144,7 @@ module('Unit | Elide Metadata Adapter', function(hooks) {
               description: 'This is dimension 0',
               category: 'categoryOne',
               valueType: 'TEXT',
-              tags: ['DISPLAY'],
+              columnTags: ['DISPLAY'],
               __typename: 'Dimension'
             }
           }
@@ -165,7 +166,7 @@ module('Unit | Elide Metadata Adapter', function(hooks) {
               description: 'This is metric 2',
               category: 'categoryOne',
               valueType: 'NUMBER',
-              tags: ['DISPLAY'],
+              columnTags: ['DISPLAY'],
               defaultFormat: 'number',
               __typename: 'Metric'
             },
@@ -178,7 +179,7 @@ module('Unit | Elide Metadata Adapter', function(hooks) {
               description: 'This is metric 3',
               category: 'categoryOne',
               valueType: 'NUMBER',
-              tags: ['DISPLAY'],
+              columnTags: ['DISPLAY'],
               defaultFormat: 'number',
               __typename: 'Metric'
             },
@@ -215,7 +216,7 @@ module('Unit | Elide Metadata Adapter', function(hooks) {
           name: 'Table 0',
           description: 'This is Table 0',
           category: 'categoryOne',
-          cardinalitySize: 'SMALL',
+          cardinality: 'SMALL',
           metrics: {
             edges: [
               {
@@ -225,7 +226,7 @@ module('Unit | Elide Metadata Adapter', function(hooks) {
                   description: 'This is metric 0',
                   category: 'categoryOne',
                   valueType: 'NUMBER',
-                  tags: ['DISPLAY'],
+                  columnTags: ['DISPLAY'],
                   defaultFormat: 'number',
                   __typename: 'Metric'
                 },
@@ -238,7 +239,7 @@ module('Unit | Elide Metadata Adapter', function(hooks) {
                   description: 'This is metric 1',
                   category: 'categoryOne',
                   valueType: 'NUMBER',
-                  tags: ['DISPLAY'],
+                  columnTags: ['DISPLAY'],
                   defaultFormat: 'number',
                   __typename: 'Metric'
                 },
@@ -256,7 +257,7 @@ module('Unit | Elide Metadata Adapter', function(hooks) {
                   description: 'This is dimension 0',
                   category: 'categoryOne',
                   valueType: 'TEXT',
-                  tags: ['DISPLAY'],
+                  columnTags: ['DISPLAY'],
                   __typename: 'Dimension'
                 },
                 __typename: 'DimensionEdge'

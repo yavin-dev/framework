@@ -10,7 +10,7 @@ const fragment = gql`
     name
     description
     category
-    cardinalitySize
+    cardinality
     metrics {
       edges {
         node {
@@ -19,7 +19,7 @@ const fragment = gql`
           description
           category
           valueType
-          tags
+          columnTags
           defaultFormat
         }
       }
@@ -32,7 +32,7 @@ const fragment = gql`
           description
           category
           valueType
-          tags
+          columnTags
         }
       }
     }
