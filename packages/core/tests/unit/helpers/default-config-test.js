@@ -18,7 +18,13 @@ module('Unit | Helper | default config', function(hooks) {
     assert.expect(1);
 
     let rows = [{ rupees: 999, hp: 0 }],
-      request = buildTestRequest([{ metric: 'rupees', parameters: {} }, { metric: 'hp', parameters: {} }], []),
+      request = buildTestRequest(
+        [
+          { metric: 'rupees', parameters: {} },
+          { metric: 'hp', parameters: {} }
+        ],
+        []
+      ),
       generatedConfig = run(() => helper.compute(['metric-label', request, { rows }]));
 
     assert.deepEqual(

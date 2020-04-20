@@ -39,25 +39,6 @@ export function mostRecentData(rows) {
 }
 
 /**
- * group rows based on dimensions
- *
- * @function dataByDimensions
- * @param {Array} rows - rows to parse by dimensions
- * @param {Array} dimensionOrder
- * @returns {DataGroup}
- */
-export function dataByDimensions(rows, dimensionOrder) {
-  return new DataGroup(rows, row =>
-    dimensionOrder
-      .map(dimension => {
-        const field = getDimensionGroupingField([row], dimension);
-        return row[field];
-      })
-      .join('|')
-  );
-}
-
-/**
  * Selects best available dimension field to group on.
  * Given a response rowSet, tries to find the best identifier field for the given dimension to use.
  * If there is only one available use that. otherwise it will try to find key in preference order:
@@ -80,6 +61,25 @@ export function getDimensionGroupingField(rows, dimension) {
     }
   }
   return fields[0];
+}
+
+/**
+ * group rows based on dimensions
+ *
+ * @function dataByDimensions
+ * @param {Array} rows - rows to parse by dimensions
+ * @param {Array} dimensionOrder
+ * @returns {DataGroup}
+ */
+export function dataByDimensions(rows, dimensionOrder) {
+  return new DataGroup(rows, row =>
+    dimensionOrder
+      .map(dimension => {
+        const field = getDimensionGroupingField([row], dimension);
+        return row[field];
+      })
+      .join('|')
+  );
 }
 
 /**

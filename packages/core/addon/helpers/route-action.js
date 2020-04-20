@@ -14,28 +14,25 @@ import { runInDebug, assert } from '@ember/debug';
 import { inject } from '@ember/service';
 
 let ClosureActionModule;
-if('ember-glimmer/helpers/action' in Ember.__loader.registry) {
+if ('ember-glimmer/helpers/action' in Ember.__loader.registry) {
   ClosureActionModule = Ember.__loader.require('ember-glimmer/helpers/action');
 } else if ('ember-htmlbars/keywords/closure-action' in Ember.__loader.registry) {
   ClosureActionModule = Ember.__loader.require('ember-htmlbars/keywords/closure-action');
 } else if ('ember-routing-htmlbars/keywords/closure-action' in Ember.__loader.registry) {
   ClosureActionModule = Ember.__loader.require('ember-routing-htmlbars/keywords/closure-action');
 } else {
-  ClosureActionModule = { };
+  ClosureActionModule = {};
 }
 
 const ACTION = ClosureActionModule.ACTION;
 
 function getCurrentInfos(router, routerService) {
-  let routerLib =
-    get(routerService, '_router._routerMicroLib')
-    || router._routerMicrolib
-    || router.router;
+  let routerLib = get(routerService, '_router._routerMicroLib') || router._routerMicrolib || router.router;
 
   return {
     currentInfos: routerLib.currentRouteInfos || routerLib.currentHandlerInfos,
-    mapBy: routerLib.currentRouteInfos && 'route' || 'handler'
-  }
+    mapBy: (routerLib.currentRouteInfos && 'route') || 'handler'
+  };
 }
 
 function getRoutes(router, routerService) {
@@ -47,11 +44,11 @@ function getRoutes(router, routerService) {
 
 function getRouteWithAction(router, routerService, actionName) {
   let action;
-  let handler = emberArray(getRoutes(router, routerService)).find((route) => {
+  let handler = emberArray(getRoutes(router, routerService)).find(route => {
     let actions = route.actions || route._actions;
     action = actions[actionName];
 
-    return typeof(action) === 'function';
+    return typeof action === 'function';
   });
 
   return { action, handler };
@@ -66,7 +63,7 @@ export default Helper.extend({
 
   compute([actionName, ...params]) {
     let router = get(this, 'router'),
-        routerService = get(this, 'routerService');
+      routerService = get(this, 'routerService');
 
     runInDebug(() => {
       let { handler } = getRouteWithAction(router, routerService, actionName);

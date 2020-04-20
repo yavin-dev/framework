@@ -39,7 +39,7 @@ export default DS.Model.extend(Validations, {
       return { mustHaveData: false };
     }
   }),
-  format: DS.attr({ defaultValue: () => {} }),
+  format: DS.attr(),
   recipients: DS.attr({ defaultValue: () => [] }),
   version: DS.attr('number', { defaultValue: '1' }),
 

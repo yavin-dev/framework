@@ -18,25 +18,6 @@ export const DATE_TIME_FORMATS = {
   year: 'YYYY'
 };
 
-/**
- * @function formatDateForGranularity
- * @param {String} date
- * @param {String} granularity
- * @returns {String} date in a human readable format based on granularity
- */
-export function formatDateForGranularity(date, granularity) {
-  //Construct date to avoid deprecation warning
-  if (!isValidMoment(date)) {
-    return '--';
-  }
-
-  if (granularity === 'week') {
-    return _formatWeek(date);
-  }
-
-  return moment(date).format(DATE_TIME_FORMATS[granularity]);
-}
-
 /*
  * Formats Date for Week
  * If the week starts and ends in different years, the whole date should be rendered (M/D/YYYY)
@@ -55,6 +36,25 @@ function _formatWeek(startDate) {
     startDateOfWeekFormatted = startDateOfWeek.format(DATE_TIME_FORMATS[endFormat]);
 
   return `${startDateOfWeekFormatted} - ${endDateOfWeekFormatted}`;
+}
+
+/**
+ * @function formatDateForGranularity
+ * @param {String} date
+ * @param {String} granularity
+ * @returns {String} date in a human readable format based on granularity
+ */
+export function formatDateForGranularity(date, granularity) {
+  //Construct date to avoid deprecation warning
+  if (!isValidMoment(date)) {
+    return '--';
+  }
+
+  if (granularity === 'week') {
+    return _formatWeek(date);
+  }
+
+  return moment(date).format(DATE_TIME_FORMATS[granularity]);
 }
 
 export default buildHelper(args => formatDateForGranularity(...args));

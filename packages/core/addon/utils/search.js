@@ -99,6 +99,25 @@ export function searchRecords(records, query, searchField) {
 }
 
 /**
+ * Computes average relevance of query among given search fields
+ *
+ * @method getAverageRelevance
+ * @param {String} record - Record to search
+ * @param {String} query - search query used to filter and rank assets
+ * @param {Array} searchFields - Fields in record to compare
+ * @returns {Number} Average relevance of record based on the query
+ */
+export function getAverageRelevance(record, query, searchFields) {
+  return (
+    searchFields
+      .flatMap(searchField => getPartialMatchWeight(getWithDefault(record, searchField, '').toLowerCase(), query))
+      .reduce(function(sum, value) {
+        return sum + (value || 0);
+      }, 0) / searchFields.length
+  );
+}
+
+/**
  * Searches records by an array of searchFields and returns results sorted by relevance
  *
  * @method searchRecordsByFields
@@ -172,23 +191,4 @@ export function searchDimensionRecords(records, query, resultLimit, page) {
   results = results.sortBy('relevance');
 
   return arr(getPaginatedRecords(results, resultLimit, page));
-}
-
-/**
- * Computes average relevance of query among given search fields
- *
- * @method getAverageRelevance
- * @param {String} record - Record to search
- * @param {String} query - search query used to filter and rank assets
- * @param {Array} searchFields - Fields in record to compare
- * @returns {Number} Average relevance of record based on the query
- */
-export function getAverageRelevance(record, query, searchFields) {
-  return (
-    searchFields
-      .flatMap(searchField => getPartialMatchWeight(getWithDefault(record, searchField, '').toLowerCase(), query))
-      .reduce(function(sum, value) {
-        return sum + (value || 0);
-      }, 0) / searchFields.length
-  );
 }

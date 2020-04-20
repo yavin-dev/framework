@@ -74,7 +74,13 @@ module('Unit | Model | Metric Label Visualization Fragment', function(hooks) {
       run(() => this.owner.lookup('service:store').createRecord('all-the-fragments')).get('metricLabel')
     );
 
-    let request = buildTestRequest([{ metric: 'rupees', parameters: {} }, { metric: 'hp', parameters: {} }], []),
+    let request = buildTestRequest(
+        [
+          { metric: 'rupees', parameters: {} },
+          { metric: 'hp', parameters: {} }
+        ],
+        []
+      ),
       config = run(() => metricLabel.rebuildConfig(request, { rows }).toJSON());
 
     assert.deepEqual(

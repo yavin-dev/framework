@@ -10,7 +10,13 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
   test('default value', function(assert) {
     assert.expect(1);
 
-    let metricsAndDims = [[{ metric: 'm1', parameters: {} }, { metric: 'm2', parameters: {} }], ['d1', 'd2']],
+    let metricsAndDims = [
+        [
+          { metric: 'm1', parameters: {} },
+          { metric: 'm2', parameters: {} }
+        ],
+        ['d1', 'd2']
+      ],
       chart = run(() =>
         run(() => this.owner.lookup('service:store').createRecord('all-the-fragments')).get('lineChart')
       );
@@ -84,13 +90,22 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
     set(chart, 'metadata.axis.y.series', {
       type: 'metric',
       config: {
-        metrics: [{ metric: 'm1', parameters: {} }, { metric: 'm2', parameters: {} }]
+        metrics: [
+          { metric: 'm1', parameters: {} },
+          { metric: 'm2', parameters: {} }
+        ]
       }
     });
 
     assert.ok(
       chart.isValidForRequest(
-        buildTestRequest([{ metric: 'm1', parameters: {} }, { metric: 'm2', parameters: {} }], [])
+        buildTestRequest(
+          [
+            { metric: 'm1', parameters: {} },
+            { metric: 'm2', parameters: {} }
+          ],
+          []
+        )
       ),
       'metric line-chart is valid when it matches the request metrics'
     );
@@ -98,7 +113,11 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
     assert.ok(
       !chart.isValidForRequest(
         buildTestRequest(
-          [{ metric: 'm1', parameters: {} }, { metric: 'm2', parameters: {} }, { metric: 'm3', parameters: {} }],
+          [
+            { metric: 'm1', parameters: {} },
+            { metric: 'm2', parameters: {} },
+            { metric: 'm3', parameters: {} }
+          ],
           []
         )
       ),
@@ -133,7 +152,13 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
 
     assert.ok(
       chart.isValidForRequest(
-        buildTestRequest([{ metric: 'm1', parameters: {} }, { metric: 'm2', parameters: {} }], ['d1'])
+        buildTestRequest(
+          [
+            { metric: 'm1', parameters: {} },
+            { metric: 'm2', parameters: {} }
+          ],
+          ['d1']
+        )
       ),
       'dimension line-chart is valid when it has a metric in the request metrics'
     );
@@ -188,7 +213,13 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
     let chart = run(() =>
         run(() => this.owner.lookup('service:store').createRecord('all-the-fragments')).get('lineChart')
       ),
-      request = buildTestRequest([{ metric: 'm1', parameters: {} }, { metric: 'm2', parameters: {} }], []),
+      request = buildTestRequest(
+        [
+          { metric: 'm1', parameters: {} },
+          { metric: 'm2', parameters: {} }
+        ],
+        []
+      ),
       config = run(() => chart.rebuildConfig(request).toJSON());
 
     assert.deepEqual(
@@ -203,7 +234,10 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
               series: {
                 type: 'metric',
                 config: {
-                  metrics: [{ metric: 'm1', parameters: {} }, { metric: 'm2', parameters: {} }]
+                  metrics: [
+                    { metric: 'm1', parameters: {} },
+                    { metric: 'm2', parameters: {} }
+                  ]
                 }
               }
             }

@@ -30,7 +30,7 @@ export default class MetricLabelController extends Controller {
    */
   @action
   onUpdateConfig(configUpdates) {
-   const { metricLabelOptions: config } = this;
+    const { metricLabelOptions: config } = this;
     set(this, 'metricLabelOptions', merge({}, config, configUpdates));
   }
 }
