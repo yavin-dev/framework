@@ -69,7 +69,7 @@ module('Unit | Route | dashboards/dashboard/widgets/widget', function(hooks) {
       mockNotificationService = {},
       route = this.owner.factoryFor('route:dashboards/dashboard/widgets/widget').create({
         naviNotifications: mockNotificationService,
-        replaceWith: () => {} // Functionality covered in acceptance test
+        replaceWith: () => undefined // Functionality covered in acceptance test
       });
 
     return run(() => {

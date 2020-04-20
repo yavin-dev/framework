@@ -2,7 +2,7 @@
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import { action, set, setProperties } from '@ember/object';
+import { action, setProperties } from '@ember/object';
 import { A as arr, makeArray } from '@ember/array';
 import { isEmpty } from '@ember/utils';
 import Route from '@ember/routing/route';
