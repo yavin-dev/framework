@@ -3,12 +3,14 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { inject as service } from '@ember/service';
-import Column from './column';
+import Column, { BaseExtendedAttributes } from './column';
+import MetricFunction from './metric-function';
 
+type ExtendedAttributes = BaseExtendedAttributes;
 export default class Metric extends Column {
   /**
    * @static
-   * @property {String} identifierField
+   * @property {string} identifierField
    */
   static identifierField = 'id';
 
@@ -16,23 +18,23 @@ export default class Metric extends Column {
    * @property {Ember.Service} keg
    */
   @service('bard-metadata')
-  metadataService;
+  metadataService!: TODO;
 
   /**
-   * @property {String} defaultFormat - e.g. decimal for numbers
+   * @property {string} defaultFormat - e.g. decimal for numbers
    */
-  defaultFormat;
+  defaultFormat!: string;
 
   /**
-   * @property {String} metricFunctionId
+   * @property {string} metricFunctionId
    */
-  metricFunctionId;
+  metricFunctionId!: string;
 
   /**
    * Many to One relationship
    * @property {MetricFunction} metricFunction
    */
-  get metricFunction() {
+  get metricFunction(): MetricFunction | undefined {
     const { metricFunctionId, source, metadataService } = this;
 
     if (metricFunctionId) {
@@ -42,25 +44,25 @@ export default class Metric extends Column {
   }
 
   /**
-   * @property {Boolean} hasParameters
+   * @property {boolean} hasParameters
    */
-  get hasParameters() {
+  get hasParameters(): boolean {
     return !!this.arguments?.length;
   }
 
   /**
-   * @property {Object[]} arguments - arguments for the metric
+   * @property {object[]} arguments - arguments for the metric
    */
-  get arguments() {
+  get arguments(): TODO[] {
     return this.metricFunction?.arguments || [];
   }
 
   /**
    * @method getParameter - retrieves the queried parameter object from metadata
-   * @param {String} id
-   * @returns {Object}
+   * @param {string} id
+   * @returns {object|undefined}
    */
-  getParameter(id) {
+  getParameter(id: string): TODO | undefined {
     if (!this.hasParameters) {
       return;
     }
@@ -70,14 +72,14 @@ export default class Metric extends Column {
 
   /**
    * @method getDefaultParameters - retrieves all the default values for all the parameters
-   * @returns {Object|undefined}
+   * @returns {Dict<string>|undefined}
    */
-  getDefaultParameters() {
+  getDefaultParameters(): Dict<string> | undefined {
     if (!this.hasParameters) {
       return;
     }
 
-    return this.arguments.reduce((acc, curr) => {
+    return this.arguments.reduce((acc: Dict<string>, curr) => {
       acc[curr.id] = curr.defaultValue;
       return acc;
     }, {});
@@ -86,7 +88,7 @@ export default class Metric extends Column {
   /**
    * @property {Promise} extended - extended metadata for the metric that isn't provided in initial table fullView metadata load
    */
-  get extended() {
+  get extended(): Promise<Metric & ExtendedAttributes> {
     const { metadataService, id, source } = this;
     return metadataService.findById('metric', id, source);
   }

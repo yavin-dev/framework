@@ -6,12 +6,12 @@ import Dimension from './dimension';
 
 export default class TimeDimension extends Dimension {
   /**
-   * @property {String[]} supportedGrains
+   * @property {string[]} supportedGrains
    */
-  supportedGrains;
+  supportedGrains!: string[];
 
   /**
-   * @property {String} timeZone
+   * @property {string} timeZone
    */
-  timeZone;
+  timeZone!: string;
 }
