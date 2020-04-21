@@ -11,7 +11,7 @@ import Table from './table';
 export type ColumnType = 'ref' | 'formula' | 'field';
 
 export type BaseExtendedAttributes = {
-  description: string;
+  description?: string;
 };
 
 export default class Column extends EmberObject {
@@ -67,7 +67,7 @@ export default class Column extends EmberObject {
   /**
    * @property {string} category
    */
-  category!: string;
+  category?: string;
 
   /**
    * @property {ValueType} valueType - enum value describing what type the values of this column hold

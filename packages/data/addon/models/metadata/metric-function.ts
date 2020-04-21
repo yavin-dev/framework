@@ -35,7 +35,7 @@ export default class MetricFunction extends EmberObject {
   /**
    * @property {string} description
    */
-  description!: string;
+  description?: string;
 
   /**
    * @property {string} source

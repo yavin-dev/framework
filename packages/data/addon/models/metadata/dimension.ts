@@ -32,22 +32,22 @@ export default class Dimension extends Column {
   /**
    * @property {string} primaryKeyTag - name of the primary key tag
    */
-  primaryKeyTag = 'primaryKey';
+  private primaryKeyTag = 'primaryKey';
 
   /**
    * @property {string} descriptionTag - name of the description tag
    */
-  descriptionTag = 'description';
+  private descriptionTag = 'description';
 
   /**
    * @property {string} idTag - name of the searchable id tag
    */
-  idTag = 'id';
+  private idTag = 'id';
 
   /**
    * @property {string} _cardinality - cardinality assigned directly to the dimension
    */
-  _cardinality: Cardinality;
+  private _cardinality: Cardinality;
 
   /**
    * @property {Cardinality|undefined} cardinality - the cardinality size of the table the dimension is sourced from

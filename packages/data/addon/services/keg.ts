@@ -25,7 +25,7 @@ type Options = {
   namespace: string; // namespace to store data under, defaults to 'navi'
 };
 
-type Filter = (value: Record, index: number, array: Record[]) => unknown;
+type FilterFn = (value: Record, index: number, array: Record[]) => boolean;
 
 export default class KegService extends Service {
   /**
@@ -144,10 +144,10 @@ export default class KegService extends Service {
    *
    * @method getBy
    * @param {String} type - type name of the model type
-   * @param {Object|Function} clause
+   * @param {Dict<unknown|Array<unknown>>|FilterFn} clause
    * @returns {EmberArray<Record>} array of found records
    */
-  getBy(type: string, clause: Dict<Array<unknown>> | Filter): EmberArray<Record> {
+  getBy(type: string, clause: Dict<unknown | Array<unknown>> | FilterFn): EmberArray<Record> {
     const recordKeg = this._getRecordKegForType(type);
     let foundRecords: EmberArray<Record> = A();
 
@@ -157,8 +157,12 @@ export default class KegService extends Service {
       Object.keys(clause).forEach(field => {
         foundRecords = A(
           foundRecords.filter(item => {
-            const values = Array.isArray(clause[field]) ? clause[field] : [clause[field]];
-            return values.indexOf(item[field]) > -1;
+            const clauseValue = clause[field];
+            if (Array.isArray(clauseValue)) {
+              return clauseValue.indexOf(item[field]) > -1;
+            } else {
+              return clauseValue === item[field];
+            }
           })
         );
       });

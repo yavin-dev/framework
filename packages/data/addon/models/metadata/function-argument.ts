@@ -10,14 +10,15 @@ import { inject as service } from '@ember/service';
 
 export const INTRINSIC_VALUE_EXPRESSION = 'self';
 
-type LocalFunctionArgument = {
+type FunctionArgumentType = 'ref' | 'primitive';
+
+type LocalFunctionArgument = FunctionArgument & {
+  type: 'ref';
   expression: 'self';
   _localValues: string[];
 };
 
-function isLocalFunction(
-  functionArgument: FunctionArgument
-): functionArgument is FunctionArgument & LocalFunctionArgument {
+function isLocalFunction(functionArgument: FunctionArgument): functionArgument is LocalFunctionArgument {
   return functionArgument.expression === INTRINSIC_VALUE_EXPRESSION;
 }
 
@@ -47,7 +48,7 @@ export default class FunctionArgument extends EmberObject {
   /**
    * @property {string} description
    */
-  description!: string;
+  description?: string;
 
   /**
    * @property {string} source - name of the data source this argument is from.
@@ -62,7 +63,7 @@ export default class FunctionArgument extends EmberObject {
   /**
    * @property {string} type - either "ref" or "primitive"
    */
-  type!: string;
+  type!: FunctionArgumentType;
 
   /**
    * @property {string|undefined} expression - used if type is ref to get the valid values

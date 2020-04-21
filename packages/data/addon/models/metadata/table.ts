@@ -41,12 +41,12 @@ export default class Table extends EmberObject {
   /**
    * @param {string} description
    */
-  description!: string;
+  description?: string;
 
   /**
    * @param {string} category
    */
-  category!: string;
+  category?: string;
 
   /**
    * @param {CaridnalitySize} cardinalitySize
@@ -56,17 +56,17 @@ export default class Table extends EmberObject {
   /**
    * @property {string[]} metricIds - array of metric ids
    */
-  metricIds!: string[];
+  private metricIds!: string[];
 
   /**
    * @property {string[]} dimensionIds - array of dimension ids
    */
-  dimensionIds!: string[];
+  private dimensionIds!: string[];
 
   /**
    * @property {string[]} timeDimensionIds - array of time dimension ids
    */
-  timeDimensionIds!: string[];
+  private timeDimensionIds!: string[];
 
   /**
    * @param {Metric[]} metrics
@@ -114,7 +114,7 @@ export default class Table extends EmberObject {
   /**
    * @property {string[]} timeGrainIds - supported timegrains for a column
    */
-  timeGrainIds: string[] = [];
+  private timeGrainIds: string[] = [];
 
   /**
    * @property {Object[]} timeGrains - timeGrain objects with id and display name
