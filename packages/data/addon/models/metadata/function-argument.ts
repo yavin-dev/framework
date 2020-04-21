@@ -18,6 +18,12 @@ type LocalFunctionArgument = FunctionArgument & {
   _localValues: string[];
 };
 
+/**
+ * Determines whether the values for this function are stored locally
+ *
+ * @function isLocalFunction
+ * @returns {boolean} true if values are stored locally
+ */
 function isLocalFunction(functionArgument: FunctionArgument): functionArgument is LocalFunctionArgument {
   return functionArgument.expression === INTRINSIC_VALUE_EXPRESSION;
 }
@@ -77,7 +83,7 @@ export default class FunctionArgument extends EmberObject {
    * if metric function ids are not supplied by the metadata endpoint,
    * then enum values provided in the parameter will be placed here
    */
-  _localValues?: string[];
+  protected _localValues?: string[];
 
   /**
    * @property {Promise} values - array of values used for function arguments with an enum type
