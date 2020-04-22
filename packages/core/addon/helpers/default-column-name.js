@@ -5,7 +5,6 @@
  */
 import Helper from '@ember/component/helper';
 import { inject as service } from '@ember/service';
-import { metricFormat } from 'navi-data/helpers/metric-format';
 import { mapColumnAttributes } from 'navi-data/utils/metric';
 import { formatDimensionName } from 'navi-data/utils/dimension';
 import { getDefaultDataSourceName } from 'navi-data/utils/adapter';
@@ -19,7 +18,12 @@ import { getDefaultDataSourceName } from 'navi-data/utils/adapter';
  * @param {String} namespace - meta data namespace
  * @return {String} - default display name
  */
-export function getColumnDefaultName({ type, attributes }, bardMetadata, namespace = getDefaultDataSourceName()) {
+export function getColumnDefaultName(
+  { type, attributes },
+  bardMetadata,
+  naviFormatter,
+  namespace = getDefaultDataSourceName()
+) {
   if (type === 'dateTime') {
     return 'Date';
   }
@@ -32,7 +36,7 @@ export function getColumnDefaultName({ type, attributes }, bardMetadata, namespa
     model = bardMetadata.getById(type, id, namespace);
 
   if (type === 'metric') {
-    return metricFormat(mapColumnAttributes(attributes), model.name);
+    return naviFormatter.formatMetric(mapColumnAttributes(attributes), model.name);
   }
 
   if (type === 'dimension' && field) {
@@ -45,10 +49,11 @@ export function getColumnDefaultName({ type, attributes }, bardMetadata, namespa
   return model.name;
 }
 
-export default Helper.extend({
-  bardMetadata: service(),
+export default class DefaultColumnNameHelper extends Helper {
+  @service bardMetadata;
+  @service naviFormatter;
 
   compute([column, namespace]) {
-    return getColumnDefaultName(column, this.bardMetadata, namespace);
+    return getColumnDefaultName(column, this.bardMetadata, this.naviFormatter, namespace);
   }
-});
+}

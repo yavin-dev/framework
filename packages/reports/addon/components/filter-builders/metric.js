@@ -11,8 +11,8 @@
 import { A as arr } from '@ember/array';
 import Base from './base';
 import { computed, get } from '@ember/object';
-import { metricFormat } from 'navi-data/helpers/metric-format';
 import layout from 'navi-reports/templates/components/filter-builders/metric';
+import { getOwner } from '@ember/application';
 
 export default Base.extend({
   layout,
@@ -75,7 +75,9 @@ export default Base.extend({
    */
   displayName: computed('filter.subject.{metric,parameters}', function() {
     let metric = get(this, 'filter.subject');
-    return metricFormat(metric, metric.metric?.name);
+    return getOwner(this)
+      .lookup('service:navi-formatter')
+      .formatMetric(metric, metric.metric?.name);
   }),
 
   /**

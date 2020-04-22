@@ -4,20 +4,23 @@
  */
 import Service from '@ember/service';
 import { inject as service } from '@ember/service';
-import { metricFormat } from 'navi-data/helpers/metric-format';
+import NaviFormatterService from './navi-formatter';
 
 export default class MetricNameService extends Service {
   /**
    * @property {Service} metricMeta
    */
-  @service('bard-metadata') metricMeta;
+  @service('bard-metadata') metricMeta: TODO;
+
+  @service('navi-formatter') naviFormatter!: NaviFormatterService;
 
   /**
    * @method getLongName
    * @param {String} metricId - base metric name for a metric
+   * @param {String} namespace - The namespace the metric lives in
    * @returns {String} - long name for the metric from the metadata
    */
-  getLongName(metricId, namespace) {
+  getLongName(metricId: string, namespace: string): string {
     return this.metricMeta.getMetaField('metric', metricId, 'name', metricId, namespace);
   }
 
@@ -26,10 +29,14 @@ export default class MetricNameService extends Service {
    * @param {Object} metricObject - object with metric and parameter properties
    * @returns {String} formatted metric display name
    */
-  getDisplayName(metricObject, namespace) {
-    const metricId = metricObject.metric;
-    const longName = this.getLongName(metricId, namespace);
+  getDisplayName(metricObject: TODO, namespace: string): string {
+    const longName = this.getLongName(metricObject.metric, namespace);
+    return this.naviFormatter.formatMetric(metricObject, longName);
+  }
+}
 
-    return metricFormat(metricObject, longName);
+declare module '@ember/service' {
+  interface Registry {
+    'metric-name': MetricNameService;
   }
 }

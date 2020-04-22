@@ -19,7 +19,7 @@ module('helper:metric-format', function(hooks) {
       parameters: { currency: 'USD', as: 'revenueUSD' }
     });
 
-    await render(hbs`{{metric-format metric}}`);
+    await render(hbs`{{metric-format this.metric}}`);
     assert.dom().hasText('Revenue (USD)');
 
     this.set('metric', {
@@ -55,7 +55,7 @@ module('helper:metric-format', function(hooks) {
       parameters: {}
     });
 
-    await render(hbs`{{metric-format metric "blockhead"}}`);
+    await render(hbs`{{metric-format this.metric "blockhead"}}`);
     assert.dom().hasText('Used Amount');
 
     this.set('metric', {

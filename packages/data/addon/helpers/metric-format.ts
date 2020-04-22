@@ -9,42 +9,29 @@
  */
 
 import { inject as service } from '@ember/service';
-import { hasParameters } from '../utils/metric';
-import { isPresent } from '@ember/utils';
 import Helper from '@ember/component/helper';
 import { getDefaultDataSourceName } from 'navi-data/utils/adapter';
-
-function _formatParameters(obj) {
-  return Object.entries(obj)
-    .filter(([key]) => key !== 'as')
-    .map(([, val]) => val)
-    .join(',');
-}
-
-/**
- * Formats a metric given the longName
- * @param {object} metric - bard-request metric fragment
- * @param {string} longName - longname from metric meta data
- * @returns {string} - formatted string
- */
-export function metricFormat(metric, longName = '--') {
-  return isPresent(metric) && hasParameters(metric)
-    ? `${longName} (${_formatParameters(metric.parameters)})`
-    : longName;
-}
+import { isPresent } from '@ember/utils';
+import NaviFormatterService from '../services/navi-formatter';
+import MetricNameService from '../services/metric-name';
 
 export default class MetricFormatHelper extends Helper {
   /**
    * @property {Service} metricName
    */
-  @service metricName;
+  @service('metric-name') metricName!: MetricNameService;
+
+  /**
+   * @property {Service} metricName
+   */
+  @service('navi-formatter') naviFormatter!: NaviFormatterService;
 
   /**
    * returns formatted metric
    * @param metric - serialized bard-request metric fragment
    * @returns {string} - formatted metric
    */
-  compute([metric, namespace = getDefaultDataSourceName() /*...rest*/]) {
+  compute([metric, namespace = getDefaultDataSourceName() /*...rest*/]: [TODO, string]) {
     let longName = '--';
     if (!metric) {
       return longName;
@@ -54,6 +41,6 @@ export default class MetricFormatHelper extends Helper {
     if (isPresent(metricId)) {
       longName = this.metricName.getLongName(metricId, namespace);
     }
-    return metricFormat(metric, longName);
+    return this.naviFormatter.formatMetric(metric, longName);
   }
 }
