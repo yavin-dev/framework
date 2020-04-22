@@ -65,7 +65,7 @@ export default class BardMetadataService extends Service {
     const dataSource = options.dataSourceName || getDefaultDataSourceName();
     //fetch metadata from WS if metadata not yet loaded
     if (!this.loadedDataSources.includes(dataSource)) {
-      const payload = await this._fetchMetadataForSource(options);
+      const payload = await this._fetchMetadata(options);
 
       //normalize payload
       payload.source = dataSource;
@@ -81,12 +81,12 @@ export default class BardMetadataService extends Service {
   /**
    * This method can be easily overridden to configure what metadata is loaded
    * @private
-   * @method _fetchMetadataForSource
+   * @method _fetchMetadata
    * @param {Object} options
    * @param {String} options.dataSourceName
    * @returns {Promise<Object>} Payload for a given datasource or the default datasource
    */
-  _fetchMetadataForSource(options = {}) {
+  _fetchMetadata(options = {}) {
     return this._adapter.fetchAll(
       'table',
       assign(
@@ -150,9 +150,7 @@ export default class BardMetadataService extends Service {
       this._loadMetadataForType('table', metadata.tables, dataSource);
       this._loadMetadataForType('dimension', metadata.dimensions, dataSource);
       this._loadMetadataForType('time-dimension', metadata.timeDimensions, dataSource);
-      if (metadata.metricFunctions?.length > 0) {
-        this._loadMetadataForType('metric-function', metadata.metricFunctions, dataSource);
-      }
+      this._loadMetadataForType('metric-function', metadata.metricFunctions, dataSource);
       this._loadMetadataForType('metric', metadata.metrics, dataSource);
 
       this.loadedDataSources.push(dataSource);
