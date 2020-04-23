@@ -79,14 +79,11 @@ module('Unit | Service | navi formatter', function(hooks) {
     );
   });
 
-  test('formatMetric', async function(assert) {
-    assert.expect(6);
+  test('empty metric', async function(assert) {
+    assert.expect(3);
 
     assert.equal(Service.formatMetric({ id: 'foo' } as Metric), '--', 'Prints "--" if name is not given');
-    assert.equal(
-      Service.formatMetric({ name: 'foo', longName: 'Foo' }, { p: 1, m: 3, as: 'ham' }),
-      '-- (1,3)',
-      'Formats multiple params and ignores the `as` parameter when default longname is allowed'
-    );
+    assert.equal(Service.formatMetric(emptyMetric), '--', 'Prints "--" if metric is empty');
+    assert.equal(Service.formatMetric(undefined), '--', 'Prints "--" if metric is undefined');
   });
 });
