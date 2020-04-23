@@ -77,7 +77,7 @@ export default Base.extend({
     let metric = get(this, 'filter.subject');
     return getOwner(this)
       .lookup('service:navi-formatter')
-      .formatMetric(metric, metric.metric?.name);
+      .formatMetric(metric.metric, metric.parameters);
   }),
 
   /**

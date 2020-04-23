@@ -2,37 +2,28 @@
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import Service, { inject as service } from '@ember/service';
-import { isPresent } from '@ember/utils';
-import { hasParameters } from '../utils/metric';
-
-function _formatParameters(obj: object) {
-  return Object.entries(obj)
-    .filter(([key]) => key !== 'as')
-    .map(([, val]) => val)
-    .join(',');
-}
-
-/**
- * Formats a metric given the longName
- * @param {object} metric - bard-request metric fragment
- * @param {string} longName - longname from metric meta data
- * @returns {string} - formatted string
- */
-function metricFormat(metric: TODO, longName = '--'): string {
-  return isPresent(metric) && hasParameters(metric)
-    ? `${longName} (${_formatParameters(metric.parameters)})`
-    : longName;
-}
+import Service from '@ember/service';
+import Metric from '../models/metadata/metric';
+import { omit } from 'lodash-es';
 
 export default class NaviFormatterService extends Service {
   /**
-   * @property {Service} metricName
+   * Formats a metric
+   * @param {Metric} metric - metric metadata object
+   * @param {Dict<string|number>} parameters - metric parameters
+   * @param {string} alias - aliased name for metric
+   * @returns {string} - formatted string
    */
-  @service metricName!: TODO;
+  formatMetric(metric?: Metric, parameters?: Dict<string | number>, alias?: string): string {
+    const allParams = omit(parameters || {}, 'as');
+    const paramValues = Object.values(allParams);
 
-  formatMetric(metric: TODO, longName = '--') {
-    return metricFormat(metric, longName);
+    const name = alias || metric?.name || '--';
+    if (paramValues.length) {
+      return `${name} (${paramValues.join(',')})`;
+    } else {
+      return name;
+    }
   }
 }
 

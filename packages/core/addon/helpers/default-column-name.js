@@ -5,7 +5,6 @@
  */
 import Helper from '@ember/component/helper';
 import { inject as service } from '@ember/service';
-import { mapColumnAttributes } from 'navi-data/utils/metric';
 import { formatDimensionName } from 'navi-data/utils/dimension';
 import { getDefaultDataSourceName } from 'navi-data/utils/adapter';
 
@@ -36,7 +35,7 @@ export function getColumnDefaultName(
     model = bardMetadata.getById(type, id, namespace);
 
   if (type === 'metric') {
-    return naviFormatter.formatMetric(mapColumnAttributes(attributes), model.name);
+    return naviFormatter.formatMetric(model, attributes.parameters);
   }
 
   if (type === 'dimension' && field) {

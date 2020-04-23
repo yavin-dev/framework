@@ -8,18 +8,17 @@
  *
  */
 
-import { inject as service } from '@ember/service';
 import Helper from '@ember/component/helper';
+import { inject as service } from '@ember/service';
 import { getDefaultDataSourceName } from 'navi-data/utils/adapter';
-import { isPresent } from '@ember/utils';
 import NaviFormatterService from '../services/navi-formatter';
-import MetricNameService from '../services/metric-name';
+import Metric from '../models/metadata/metric';
 
 export default class MetricFormatHelper extends Helper {
   /**
-   * @property {Service} metricName
+   * @property {Service} bardMetadata
    */
-  @service('metric-name') metricName!: MetricNameService;
+  @service('bard-metadata') bardMetadata!: TODO;
 
   /**
    * @property {Service} metricName
@@ -28,19 +27,16 @@ export default class MetricFormatHelper extends Helper {
 
   /**
    * returns formatted metric
-   * @param metric - serialized bard-request metric fragment
+   * @param {object} metric - serialized bard-request metric fragment
+   * @param {string} namespace - The source of the metric
+   * @param {string} alias - An alias to use instead of the name of the metric
    * @returns {string} - formatted metric
    */
-  compute([metric, namespace = getDefaultDataSourceName() /*...rest*/]: [TODO, string]) {
-    let longName = '--';
-    if (!metric) {
-      return longName;
+  compute([metric, namespace = getDefaultDataSourceName(), alias /*...rest*/]: [TODO?, string?, string?]): string {
+    const metricMeta = this.bardMetadata.getById('metric', metric?.metric, namespace) as Metric | undefined;
+    if (metricMeta) {
+      return this.naviFormatter.formatMetric(metricMeta, metric?.parameters, alias);
     }
-
-    const metricId = metric.metric;
-    if (isPresent(metricId)) {
-      longName = this.metricName.getLongName(metricId, namespace);
-    }
-    return this.naviFormatter.formatMetric(metric, longName);
+    return this.naviFormatter.formatMetric({ name: metric?.metric } as Metric, metric?.parameters, alias);
   }
 }

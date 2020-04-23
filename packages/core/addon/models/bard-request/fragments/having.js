@@ -27,9 +27,9 @@ const Validations = buildValidations({
     }),
     validator('array-number', {
       message() {
-        const metricName = this.model.metric?.metric?.name;
+        const { metric } = this.model;
         const naviFormatter = getOwner(this).lookup('service:navi-formatter');
-        return `${naviFormatter.formatMetric(this.model.metric, metricName)} filter must be a number`;
+        return `${naviFormatter.formatMetric(metric.metric, metric.parameters)} filter must be a number`;
       }
     })
   ]

@@ -78,13 +78,14 @@ export default class NaviVisualizationsGoalGaugeComponent extends Component {
   /**
    * @property {String} formatted default metric
    */
-  @computed('metricModel', 'namespace')
+  @computed('options.metric.{metric,parameters}', 'namespace')
   get defaultMetricTitle() {
-    const { metricModel, namespace } = this;
-    const { metric: baseMetric } = metricModel;
-    const name = this.bardMetadata.getMetaField('metric', baseMetric, 'name', null, namespace);
-
-    return this.naviFormatter.formatMetric(metricModel, name);
+    const {
+      options: { metric },
+      namespace
+    } = this;
+    const metricMetadata = this.bardMetadata.getById('metric', metric.metric, namespace);
+    return this.naviFormatter.formatMetric(metricMetadata, metric.parameters);
   }
 
   /**

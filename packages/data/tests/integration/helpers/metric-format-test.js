@@ -4,7 +4,7 @@ import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
-module('helper:metric-format', function(hooks) {
+module('Integration | Helper | metric-format', function(hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
@@ -55,8 +55,9 @@ module('helper:metric-format', function(hooks) {
       parameters: {}
     });
 
-    await render(hbs`{{metric-format this.metric "blockhead"}}`);
-    assert.dom().hasText('Used Amount');
+    this.set('namespace', 'blockhead');
+    await render(hbs`{{metric-format this.metric this.namespace}}`);
+    assert.dom().hasText('Used Amount', 'metric is looked up and rendered');
 
     this.set('metric', {
       metric: 'navClicks',

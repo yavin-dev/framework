@@ -76,8 +76,7 @@ function buildMetricColumns(metrics, columnIndex, naviFormatter) {
       type = isTrend ? 'threshold' : 'metric',
       metricObject = metric.toJSON(),
       column = columnIndex[canonicalizeMetric(metricObject)],
-      name = metric.metric.name,
-      displayName = column ? column.displayName : naviFormatter.formatMetric(metric, name),
+      displayName = column ? column.displayName : naviFormatter.formatMetric(metric.metric, metric.parameters),
       format = column ? get(column, 'attributes.format') : '';
 
     return {

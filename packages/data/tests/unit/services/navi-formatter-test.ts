@@ -4,8 +4,11 @@ import { setupTest } from 'ember-qunit';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import NaviFormatterService from 'navi-data/services/navi-formatter';
 import { TestContext } from 'ember-test-helpers';
+import Metric from 'dummy/models/metadata/metric';
 
 let Service: NaviFormatterService;
+const metric = { name: 'Revenue' } as Metric;
+const emptyMetric = {} as Metric;
 
 module('Unit | Service | navi formatter', function(hooks) {
   setupTest(hooks);
@@ -16,33 +19,72 @@ module('Unit | Service | navi formatter', function(hooks) {
     Service = this.owner.lookup('service:navi-formatter');
   });
 
+  test('no parameters', async function(assert) {
+    assert.expect(3);
+
+    assert.equal(Service.formatMetric(metric), 'Revenue', 'Prints name');
+    assert.equal(Service.formatMetric(metric, undefined, 'override'), 'override', 'Prints alias instead of name');
+    assert.equal(
+      Service.formatMetric(emptyMetric, undefined, 'override'),
+      'override',
+      'Prints alias even with no name'
+    );
+  });
+
+  test('parameters', async function(assert) {
+    assert.expect(5);
+
+    assert.equal(Service.formatMetric(metric, {}), 'Revenue', 'Prints name and hides empty parameters');
+    assert.equal(Service.formatMetric(metric, { as: 'lame' }), 'Revenue', 'Prints name and hides the "as" parameter');
+    assert.equal(
+      Service.formatMetric(metric, { realParam: 'realValue' }),
+      'Revenue (realValue)',
+      'Prints name with real parameter'
+    );
+    assert.equal(
+      Service.formatMetric(metric, { as: 'lame', realParam: 'realValue' }),
+      'Revenue (realValue)',
+      'Prints name with real parameter and hides "as"'
+    );
+    assert.equal(
+      Service.formatMetric(metric, { as: 'lame', realParam1: 'realValue1', realParam2: 'realValue2' }),
+      'Revenue (realValue1,realValue2)',
+      'Prints name with multiple real parameters and hides "as"'
+    );
+  });
+
+  test('parameters with alias', async function(assert) {
+    assert.expect(5);
+
+    assert.equal(Service.formatMetric(metric, {}, 'override'), 'override', 'Prints alias and hides empty parameters');
+    assert.equal(
+      Service.formatMetric(metric, { as: 'lame' }, 'override'),
+      'override',
+      'Prints alias and hides the "as" parameter'
+    );
+    assert.equal(
+      Service.formatMetric(metric, { realParam: 'realValue' }, 'override'),
+      'override (realValue)',
+      'Prints alias with real parameter'
+    );
+    assert.equal(
+      Service.formatMetric(metric, { as: 'lame', realParam: 'realValue' }, 'override'),
+      'override (realValue)',
+      'Prints alias with real parameter and hides "as"'
+    );
+    assert.equal(
+      Service.formatMetric(metric, { as: 'lame', realParam1: 'realValue1', realParam2: 'realValue2' }, 'override'),
+      'override (realValue1,realValue2)',
+      'Prints alias with multiple real parameters and hides "as"'
+    );
+  });
+
   test('formatMetric', async function(assert) {
     assert.expect(6);
 
-    assert.equal(Service.formatMetric({ metric: 'revenue' }, 'Revenue'), 'Revenue', 'Formats metrics given longname');
-    assert.equal(Service.formatMetric(null, 'bar'), 'bar', 'Returns long name in case metric is not available');
-    assert.equal(Service.formatMetric({ metric: 'foo' }), '--', 'Renders -- if longname is not given');
+    assert.equal(Service.formatMetric({ id: 'foo' } as Metric), '--', 'Prints "--" if name is not given');
     assert.equal(
-      Service.formatMetric({ metric: { name: 'foo', longName: 'Foo' }, parameters: { p: 1 } }, 'Bar'),
-      'Bar (1)',
-      'Formats metric with parameters'
-    );
-    assert.equal(
-      Service.formatMetric(
-        {
-          metric: { name: 'foo', longName: 'Foo' },
-          parameters: { p: 1, m: 3, as: 'ham' }
-        },
-        'Bar'
-      ),
-      'Bar (1,3)',
-      'Formats multiple params and ignores the `as` parameter'
-    );
-    assert.equal(
-      Service.formatMetric({
-        metric: { name: 'foo', longName: 'Foo' },
-        parameters: { p: 1, m: 3, as: 'ham' }
-      }),
+      Service.formatMetric({ name: 'foo', longName: 'Foo' }, { p: 1, m: 3, as: 'ham' }),
       '-- (1,3)',
       'Formats multiple params and ignores the `as` parameter when default longname is allowed'
     );

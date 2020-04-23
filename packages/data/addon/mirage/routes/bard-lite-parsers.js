@@ -62,3 +62,32 @@ export function parseHavings(havingParam) {
     return havingObj;
   }, {});
 }
+
+/**
+ * Parses a string of metrics into an array of metrics
+ * @param {String} metricsParam - the raw having query param `metrics=some(param=a),or,normalMetrics`
+ * @returns {Array} metrics
+ */
+export function parseMetrics(metricsParam) {
+  if (!metricsParam) {
+    return [];
+  }
+
+  const metrics = [];
+  const str = `${metricsParam},`;
+  let lastStrIndex = 0;
+  let inParen = 0;
+  for (let i = 0; i < str.length; i++) {
+    if (str[i] === '(') {
+      inParen++;
+      continue;
+    } else if (str[i] === ')') {
+      inParen--;
+      continue;
+    } else if (inParen === 0 && str[i] === ',') {
+      metrics.push(str.slice(lastStrIndex, i));
+      lastStrIndex = i + 1;
+    }
+  }
+  return metrics;
+}
