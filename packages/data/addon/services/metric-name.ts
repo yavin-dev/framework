@@ -11,17 +11,17 @@ export default class MetricNameService extends Service {
   /**
    * @property {Service} metricMeta
    */
-  @service('bard-metadata') bardMetadata: TODO;
+  @service bardMetadata: TODO;
 
-  @service('navi-formatter') naviFormatter!: NaviFormatterService;
+  @service naviFormatter!: NaviFormatterService;
 
   /**
-   * @method getLongName
+   * @method getName
    * @param {String} metricId - base metric name for a metric
    * @param {String} namespace - The namespace the metric lives in
    * @returns {String} - long name for the metric from the metadata
    */
-  getLongName(metricId: string, namespace: string): string {
+  getName(metricId: string, namespace: string): string {
     return this.bardMetadata.getMetaField('metric', metricId, 'name', metricId, namespace);
   }
 

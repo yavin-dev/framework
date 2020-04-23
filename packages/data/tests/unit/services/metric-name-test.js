@@ -10,17 +10,17 @@ module('Unit | Service | metric long name', function(hooks) {
     await this.owner.lookup('service:bard-metadata').loadMetadata();
   });
 
-  test('getLongName', function(assert) {
+  test('getName', function(assert) {
     assert.expect(2);
     let service = this.owner.lookup('service:metric-name');
 
     assert.equal(
-      service.getLongName('revenue'),
+      service.getName('revenue'),
       'Revenue',
       'Service can succesfully retrieve the long name for a valid metric'
     );
 
-    assert.equal(service.getLongName('foo'), 'foo', 'The metric id is returned if there is no metadata found');
+    assert.equal(service.getName('foo'), 'foo', 'The metric id is returned if there is no metadata found');
   });
 
   test('getDisplayName', function(assert) {
@@ -58,7 +58,7 @@ module('Unit | Service | metric long name', function(hooks) {
     );
 
     assert.equal(
-      service.getLongName('available', 'blockhead'),
+      service.getName('available', 'blockhead'),
       'How many are available',
       'Service can succesfully retrieve the long name for a valid metric'
     );

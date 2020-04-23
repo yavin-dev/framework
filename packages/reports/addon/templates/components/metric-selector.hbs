@@ -22,7 +22,7 @@
             @icon={{if (and (get this.metricsChecked metric.id) (not (feature-flag "enableRequestPreview"))) "minus-circle" "plus-circle"}}
             class="grouped-list__add-icon {{if (not (or (feature-flag "enableRequestPreview") (get this.metricsChecked metric.id))) "grouped-list__add-icon--deselected"}}"
           />
-          {{metric-format (hash metric=metric.id) metric.source}}
+          {{metric.name}}
         </span>
 
         <NaviIcon @icon="question-circle-o" class="grouped-list__item-info">

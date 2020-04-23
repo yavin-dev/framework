@@ -18,12 +18,12 @@ export default class MetricFormatHelper extends Helper {
   /**
    * @property {Service} bardMetadata
    */
-  @service('bard-metadata') bardMetadata!: TODO;
+  @service bardMetadata!: TODO;
 
   /**
    * @property {Service} metricName
    */
-  @service('navi-formatter') naviFormatter!: NaviFormatterService;
+  @service naviFormatter!: NaviFormatterService;
 
   /**
    * returns formatted metric
