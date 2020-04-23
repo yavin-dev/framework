@@ -3,9 +3,15 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, fillIn, blur, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 module('Integration | Component | visualization config/goal gauge', function(hooks) {
   setupRenderingTest(hooks);
+  setupMirage(hooks);
+
+  hooks.beforeEach(async function() {
+    await this.owner.lookup('service:bard-metadata').loadMetadata();
+  });
 
   let Template = hbs`
     {{navi-visualization-config/goal-gauge

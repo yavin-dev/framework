@@ -218,12 +218,9 @@ export default function(
           }
           return metricsObj;
         }, {});
-        if (Object.keys(metrics).length > 0) {
-          Object.keys(metrics).forEach(metric => (row[metric] = metrics[metric]));
-          return row;
-        } else {
-          return undefined;
-        }
+
+        Object.keys(metrics).forEach(metric => (row[metric] = metrics[metric]));
+        return row;
       })
       .filter(r => r !== undefined);
 

@@ -3,7 +3,6 @@ import { setupTest } from 'ember-qunit';
 import Service from '@ember/service';
 import { A as arr } from '@ember/array';
 import { get } from '@ember/object';
-import { classify } from '@ember/string';
 
 let Component;
 
@@ -13,11 +12,11 @@ module('Unit | Component | Goal Gauge', function(hooks) {
   hooks.beforeEach(function() {
     this.owner.register(
       'service:bard-metadata',
-      Service.extend({
-        getMetaField(type, field) {
-          return classify(field);
+      class extends Service {
+        getById(type, id) {
+          return { name: id };
         }
-      })
+      }
     );
     Component = this.owner.factoryFor('component:navi-visualizations/goal-gauge').create({
       actualValue: 75,
@@ -25,7 +24,10 @@ module('Unit | Component | Goal Gauge', function(hooks) {
       options: {
         goalValue: 100,
         baselineValue: 50,
-        metric: 'm1',
+        metric: {
+          metric: 'm1',
+          parameters: {}
+        },
         metricTitle: 'Custom Metric Title',
         unit: '%'
       }
@@ -114,11 +116,11 @@ module('Unit | Component | Goal Gauge', function(hooks) {
     );
 
     //Set options without metricTitle
-    Component.set('options', { metric: 'm1' });
+    Component.set('options', { metric: { metric: 'm1', parameters: {} } });
 
     assert.equal(
       get(Component, 'metricTitle'),
-      'M1',
+      'm1',
       'metricTitle is the value of options.metric if if options.metricTitle is not provided'
     );
   });
