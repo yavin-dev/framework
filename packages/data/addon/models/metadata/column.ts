@@ -8,6 +8,15 @@ import { inject as service } from '@ember/service';
 import KegService from '../../services/keg';
 import Table from './table';
 
+export type ColumnNode = {
+  id: string;
+  name: string;
+  description: string;
+  category: string;
+  valueType: TODO<string>;
+  columnTags: string[];
+};
+
 export type ColumnType = 'ref' | 'formula' | 'field';
 
 export type BaseExtendedAttributes = {

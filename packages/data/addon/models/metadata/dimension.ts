@@ -4,8 +4,18 @@
  */
 import { inject as service } from '@ember/service';
 import { assert } from '@ember/debug';
-import Column, { BaseExtendedAttributes } from './column';
+import Column, { BaseExtendedAttributes, ColumnNode } from './column';
 import CARDINALITY_SIZES from '../../utils/enums/cardinality-sizes';
+
+export type DimensionNode = ColumnNode;
+export type DimensionEdge = {
+  node: DimensionNode;
+  cursor: string;
+};
+export type DimensionConnection = {
+  edges: DimensionEdge[];
+  pageInfo: TODO;
+};
 
 type Cardinality = typeof CARDINALITY_SIZES[number] | undefined;
 type Field = TODO;

@@ -7,13 +7,32 @@ import { inject as service } from '@ember/service';
 import { upperFirst } from 'lodash-es';
 import Metric from './metric';
 import KegService from '../../services/keg';
-import Dimension from './dimension';
-import TimeDimension from './time-dimension';
+import { MetricConnection } from './metric';
+import Dimension, { DimensionConnection } from './dimension';
+import TimeDimension, { TimeDimensionConnection } from './time-dimension';
 import CARDINALITY_SIZES from '../../utils/enums/cardinality-sizes';
 
 export type TimeGrain = {
   id: string;
   name: string;
+};
+export type TableNode = {
+  id: string;
+  name: string;
+  description: string;
+  category: string;
+  cardinality: typeof CARDINALITY_SIZES[number];
+  metrics: MetricConnection;
+  dimensions: DimensionConnection;
+  timeDimensions: TimeDimensionConnection;
+};
+export type TableEdge = {
+  node: TableNode;
+  cursor: string;
+};
+export type TableConnection = {
+  edges: TableEdge[];
+  pageInfo: TODO;
 };
 
 export default class Table extends EmberObject {
@@ -49,9 +68,9 @@ export default class Table extends EmberObject {
   category?: string;
 
   /**
-   * @param {CaridnalitySize} cardinalitySize
+   * @param {CaridnalitySize} cardinality
    */
-  cardinalitySize!: typeof CARDINALITY_SIZES[number];
+  cardinality!: typeof CARDINALITY_SIZES[number];
 
   /**
    * @property {string[]} metricIds - array of metric ids
