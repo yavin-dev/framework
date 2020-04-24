@@ -1,23 +1,26 @@
-{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{#if isEditingValue}}
-  {{input
-    classNames="editable-label__input"
-    value=_localValue
-    size=_inputSize
-    maxlength=150
-    enter=(action "blurLabelInput")
-    focus-out=(action "editComplete")
-  }}
-{{else}}
-  <span
-    class="clickable editable-label__value"
-    {{action (pipe (action "resetValue") (toggle "isEditingValue" this) (action "highlightLabelInput"))}}
-    role="button"
-  >
-    {{value}}
-    <span>
-      {{navi-icon "pencil" class="editable-label__icon"}}
-      {{ember-tooltip text="Rename" popperContainer="body" effect="none"}}
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<div class="editable-label" ...attributes>
+  {{#if this.isEditingValue}}
+    <Input
+      @classNames="editable-label__input"
+      @value={{this._localValue}}
+      @size={{this._inputSize}}
+      @maxlength={{150}}
+      @enter={{fn this.blurLabelInput}}
+      @focus-out={{fn this.editComplete}}
+      {{did-insert this.setupInputElement}}
+    />
+  {{else}}
+    <span
+      class="clickable editable-label__value"
+      role="button"
+      {{on "click" (pipe this.resetValue (toggle "isEditingValue" this) this.highlightLabelInput)}}
+    >
+      {{this.value}}
+      <span>
+        <NaviIcon @icon="pencil" class="editable-label__icon" />
+        <EmberTooltip @text="Rename" @popperContainer="body" @effect="none" />
+      </span>
     </span>
-  </span>
-{{/if}}
+  {{/if}}
+</div>
