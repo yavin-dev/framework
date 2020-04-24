@@ -96,7 +96,7 @@ class DimensionBulkImportComponent extends Component {
    * @override
    */
   didInsertElement() {
-    this._super(...arguments);
+    super.didInsertElement(...arguments);
     this._search();
   }
 

@@ -613,11 +613,11 @@ module('Acceptance | Navi Report', function(hooks) {
       .split('=')[1];
 
     await CompressionService.decompressModel(modelStr).then(model => {
-      assert.ok(
+      assert.equal(
         get(model, 'request.dimensions')
           .objectAt(1)
           .get('dimension.name'),
-        'productFamily',
+        'Product Family',
         'Groupby changes are automatically included in export url'
       );
     });

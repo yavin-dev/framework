@@ -25,7 +25,11 @@ module('Integration | Component | navi-column-config/base', function(hooks) {
 
   test('it renders', async function(assert) {
     assert.expect(2);
-    this.owner.register('helper:update-report-action', buildHelper(() => {}), { instantiate: false });
+    this.owner.register(
+      'helper:update-report-action',
+      buildHelper(() => {}),
+      { instantiate: false }
+    );
 
     this.column = {
       name: 'property',
@@ -55,7 +59,11 @@ module('Integration | Component | navi-column-config/base', function(hooks) {
 
   test('Filter is active when column is filtered', async function(assert) {
     assert.expect(2);
-    this.owner.register('helper:update-report-action', buildHelper(() => {}), { instantiate: false });
+    this.owner.register(
+      'helper:update-report-action',
+      buildHelper(() => {}),
+      { instantiate: false }
+    );
 
     this.column = {
       name: 'property',

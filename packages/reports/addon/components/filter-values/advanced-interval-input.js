@@ -15,7 +15,6 @@ import layout from '../../templates/components/filter-values/advanced-interval-i
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
 import DateUtils from 'navi-core/utils/date';
 import Interval from 'navi-core/utils/classes/interval';
-import moment from 'moment';
 
 @templateLayout(layout)
 @tagName('')
@@ -23,9 +22,9 @@ class AdvancedIntervalInputComponent extends BaseIntervalComponent {
   /**
    * @property {Object} dateStrings - the formatted {start, end} dates
    */
-  @computed('interval', 'calendarDateTimePeriod')
+  @computed('interval')
   get dateStrings() {
-    const { calendarDateTimePeriod, interval } = this;
+    const { interval } = this;
     return new Interval(interval._start, interval._end).asStrings(DateUtils.PARAM_DATE_FORMAT_STRING);
   }
 

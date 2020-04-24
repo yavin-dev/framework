@@ -9,7 +9,7 @@
  *   />
  */
 import { A as arr } from '@ember/array';
-import { get, set, computed, action } from '@ember/object';
+import { set, computed, action } from '@ember/object';
 import Base from './base';
 import Interval from 'navi-core/utils/classes/interval';
 import Duration, { parseDuration } from 'navi-core/utils/classes/duration';

@@ -79,7 +79,7 @@ module('Unit | Utils | request metric', function() {
     );
   });
 
-  test('getFilteredMetricsOfBase', function(assert) {
+  test('getUnfilteredMetricsOfBase', function(assert) {
     assert.expect(2);
 
     let request = {
