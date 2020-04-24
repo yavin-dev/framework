@@ -4,13 +4,17 @@
  */
 import { inject as service } from '@ember/service';
 import { assert } from '@ember/debug';
-import Column from './column';
+import Column, { BaseExtendedAttributes } from './column';
 import CARDINALITY_SIZES from '../../utils/enums/cardinality-sizes';
+
+type Cardinality = typeof CARDINALITY_SIZES[number] | undefined;
+type Field = TODO;
+type ExtendedAttributes = BaseExtendedAttributes;
 
 export default class Dimension extends Column {
   /**
    * @static
-   * @property {String} identifierField
+   * @property {string} identifierField
    */
   static identifierField = 'id';
 
@@ -18,37 +22,37 @@ export default class Dimension extends Column {
    * @property {Ember.Service} metadata
    */
   @service('bard-metadata')
-  metadata;
+  metadata!: TODO;
 
   /**
    * @property {Object[]} fields - Array of field objects
    */
-  fields;
+  fields?: Field[];
 
   /**
-   * @property {String} primaryKeyTag - name of the primary key tag
+   * @property {string} primaryKeyTag - name of the primary key tag
    */
-  primaryKeyTag = 'primaryKey';
+  private primaryKeyTag = 'primaryKey';
 
   /**
-   * @property {String} descriptionTag - name of the description tag
+   * @property {string} descriptionTag - name of the description tag
    */
-  descriptionTag = 'description';
+  private descriptionTag = 'description';
 
   /**
-   * @property {String} idTag - name of the searchable id tag
+   * @property {string} idTag - name of the searchable id tag
    */
-  idTag = 'id';
+  private idTag = 'id';
 
   /**
-   * @property {String} _cardinality - cardinality assigned directly to the dimension
+   * @property {string} _cardinality - cardinality assigned directly to the dimension
    */
-  _cardinality;
+  private _cardinality: Cardinality;
 
   /**
-   * @property {String|undefined} cardinality - the cardinality size of the table the dimension is sourced from
+   * @property {Cardinality|undefined} cardinality - the cardinality size of the table the dimension is sourced from
    */
-  get cardinality() {
+  get cardinality(): Cardinality {
     const { type } = this;
 
     if (type === 'field') return this._cardinality;
@@ -56,10 +60,10 @@ export default class Dimension extends Column {
     // TODO: get cardinality for ref and formula type dimensions
     return undefined;
   }
-  set cardinality(cardinality) {
+  set cardinality(cardinality: Cardinality) {
     assert(
       'Dimension cardinality should be set to a value included in CARDINALITY_SIZES',
-      CARDINALITY_SIZES.includes(cardinality)
+      cardinality && CARDINALITY_SIZES.includes(cardinality)
     );
     this._cardinality = cardinality;
   }
@@ -68,10 +72,10 @@ export default class Dimension extends Column {
    * Fetches tags for a given field name
    *
    * @method getTagsForField
-   * @param {String} fieldName - name of the field to query tags
+   * @param {string} fieldName - name of the field to query tags
    * @returns {Array} array of tags
    */
-  getTagsForField(fieldName) {
+  getTagsForField(fieldName: string): string[] {
     const field = this.fields?.find(f => f.name === fieldName);
 
     return field?.tags || [];
@@ -81,10 +85,10 @@ export default class Dimension extends Column {
    * Fetches fields for a given tag
    *
    * @method getFieldsForTag
-   * @param {String} tag - name of tag
+   * @param {string} tag - name of tag
    * @returns {Array} array of field objects
    */
-  getFieldsForTag(tag) {
+  getFieldsForTag(tag: string): Field[] {
     return (
       this.fields?.filter(field => {
         return field.tags?.includes(tag);
@@ -93,27 +97,27 @@ export default class Dimension extends Column {
   }
 
   /**
-   * @property {String} primaryKeyFieldName
+   * @property {string} primaryKeyFieldName
    */
-  get primaryKeyFieldName() {
+  get primaryKeyFieldName(): string {
     const { primaryKeyTag: tag } = this;
     const field = this.getFieldsForTag(tag)?.[0];
     return field?.name || 'id';
   }
 
   /**
-   * @property {String} descriptionFieldName
+   * @property {string} descriptionFieldName
    */
-  get descriptionFieldName() {
+  get descriptionFieldName(): string {
     const { descriptionTag: tag } = this;
     const field = this.getFieldsForTag(tag)?.[0];
     return field?.name || 'desc';
   }
 
   /**
-   * @property {String} idFieldName
+   * @property {string} idFieldName
    */
-  get idFieldName() {
+  get idFieldName(): string {
     const { idTag: tag } = this;
     const field = this.getFieldsForTag(tag)?.[0];
     return field?.name || this.primaryKeyFieldName;
@@ -122,7 +126,7 @@ export default class Dimension extends Column {
   /**
    * @property {Promise} extended - extended metadata for the dimension that isn't provided in initial table fullView metadata load
    */
-  get extended() {
+  get extended(): Promise<Dimension & ExtendedAttributes> {
     const { metadata, id, source } = this;
     return metadata.findById('dimension', id, source);
   }

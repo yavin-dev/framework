@@ -15,7 +15,11 @@ module('Integration | Component | navi dashboard', function(hooks) {
   hooks.beforeEach(async function() {
     const { owner } = this;
 
-    owner.register('helper:route-action', buildHelper(() => () => {}), { instantiate: false });
+    owner.register(
+      'helper:route-action',
+      buildHelper(() => () => undefined),
+      { instantiate: false }
+    );
 
     const dashboardModel = {
       title: 'Test Dashboard',

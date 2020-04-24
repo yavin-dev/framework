@@ -8,7 +8,7 @@
     <NaviDatePicker
       @date={{@date}}
       @dateTimePeriod={{@dateTimePeriod}}
-      @onUpdate={{queue (action @onUpdate) (action dd.actions.close)}}
+      @onUpdate={{queue @onUpdate dd.actions.close}}
     />
   </dd.content>
 </BasicDropdown>

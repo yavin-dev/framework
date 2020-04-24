@@ -48,8 +48,8 @@ module('Integration | Component | report actions/add to dashboard', function(hoo
       ])
     );
 
-    set(this, 'addToDashboard', () => {});
-    set(this, 'addToNewDashboard', () => {});
+    set(this, 'addToDashboard', () => undefined);
+    set(this, 'addToNewDashboard', () => undefined);
   });
 
   test('component renders', async function(assert) {

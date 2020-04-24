@@ -15,3 +15,9 @@ export default class RequestDecoratorService extends Service {
     return replaceNullFilter(request);
   }
 }
+
+declare module '@ember/service' {
+  interface Registry {
+    'request-decorator': RequestDecoratorService;
+  }
+}

@@ -37,7 +37,7 @@ export default AssetSerializer.extend({
       return dimensionSources;
     }, {});
     const dashboard = this._super(...arguments);
-    dashboard.data.attributes.filters = dashboard.data.attributes.filters.map((filter, i) => {
+    dashboard.data.attributes.filters = dashboard.data.attributes.filters.map(filter => {
       const key = buildKey(filter.dimension, filter.values);
       filter.dimension = filterSources[key] ? `${filterSources[key]}.${filter.dimension}` : filter.dimension;
       return filter;

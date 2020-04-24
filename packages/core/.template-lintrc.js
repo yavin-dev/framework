@@ -10,5 +10,6 @@ module.exports = {
     'no-implicit-this': {
       allow: ['current-route', 'parent-route', 'sibling-route']
     }
-  }
+  },
+  ignore: ['blueprints/**']
 };

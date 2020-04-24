@@ -7,23 +7,23 @@
 
   <div class="dimension-bulk-import-simple-row dimension-bulk-import-simple-row--split-values">
     <span class="text-capitalize dimension-bulk-import-simple-row__header">Input split by commas ({{this.splitValues.length}})</span>
-    {{#paginated-scroll-list
-      trim=false
-      items=this.splitValues
+    <PaginatedScrollList
+      @trim={{false}}
+      @items={{this.splitValues}}
       as |dimVal|
-    }}
+    >
       {{dimVal}}
-    {{/paginated-scroll-list}}
+    </PaginatedScrollList>
   </div>
   <div class="dimension-bulk-import-simple-row dimension-bulk-import-simple-row--raw-value">
     <span class="text-capitalize dimension-bulk-import-simple-row__header">Raw input</span>
-    {{#paginated-scroll-list
-      trim=false
-      items=this.unsplitValue
+    <PaginatedScrollList
+      @trim={{false}}
+      @items={{this.unsplitValue}}
       as |dimVal|
-    }}
+    >
       {{dimVal}}
-    {{/paginated-scroll-list}}
+    </PaginatedScrollList>
   </div>
 
   <div class="btn-container">

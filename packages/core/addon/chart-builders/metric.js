@@ -93,6 +93,7 @@ export default EmberObject.extend({
    * @returns {Object} layout for tooltip
    */
   buildTooltip() {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     let builder = this;
 
     return Mixin.create({

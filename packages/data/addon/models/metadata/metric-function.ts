@@ -6,11 +6,13 @@
  */
 import { inject as service } from '@ember/service';
 import EmberObject from '@ember/object';
+import FunctionArgument from './function-argument';
+import KegService from '../../services/keg';
 
 export default class MetricFunction extends EmberObject {
   /**
    * @static
-   * @property {String} identifierField
+   * @property {string} identifierField
    */
   static identifierField = 'id';
 
@@ -18,30 +20,30 @@ export default class MetricFunction extends EmberObject {
    * @property {Ember.Service} keg
    */
   @service('keg')
-  keg;
+  keg!: KegService;
 
   /**
-   * @property {String} id
+   * @property {string} id
    */
-  id;
+  id!: string;
 
   /**
-   * @property {String} name
+   * @property {string} name
    */
-  name;
+  name!: string;
 
   /**
-   * @property {String} description
+   * @property {string} description
    */
-  description;
+  description?: string;
 
   /**
-   * @property {String} source
+   * @property {string} source
    */
-  source;
+  source!: string;
 
   /**
    * @property {FunctionArgument[]} - Function argument instances related to this metric function
    */
-  arguments;
+  arguments!: FunctionArgument[];
 }
