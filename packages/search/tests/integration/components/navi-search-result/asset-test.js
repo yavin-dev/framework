@@ -35,7 +35,7 @@ module('Integration | Component | navi-search-result-asset', function(hooks) {
       }
     ];
     set(this, 'data', data);
-    set(this, 'closeResults', () => {});
+    set(this, 'closeResults', () => undefined);
 
     await render(hbs`<NaviSearchResult::Asset @data={{this.data}} @closeResults={{fn this.closeResults}} />`);
 
