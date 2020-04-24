@@ -1,8 +1,8 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import ReportsReportViewRoute from 'navi-reports/routes/reports/report/view';
+import ReportsReportViewRoute from '../../../reports/report/view';
 
 export default class PrintReportsReportViewRoute extends ReportsReportViewRoute {
   /**
