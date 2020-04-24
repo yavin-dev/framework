@@ -35,7 +35,7 @@ const DEFAULT_OPTIONS = {
 @tagName('')
 export default class NaviVisualizationsGoalGaugeComponent extends Component {
   @service bardMetadata;
-  @service('navi-formatter') naviFormatter;
+  @service naviFormatter;
 
   /**
    * @property {Array} - List of class names added to the gauge component
