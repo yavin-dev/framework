@@ -54,7 +54,11 @@ module('Unit | Consumer | request dimension', function(hooks) {
       Consumer.send(RequestActions.REMOVE_DIMENSION, { currentModel: CurrentModel }, Age);
     });
 
-    assert.ok(get(CurrentModel, 'request.dimensions.length') === 0, 'The given dimension is removed from the request');
+    assert.strictEqual(
+      get(CurrentModel, 'request.dimensions.length'),
+      0,
+      'The given dimension is removed from the request'
+    );
   });
 
   test('REMOVE_DIMENSION_FRAGMENT', function(assert) {
@@ -69,7 +73,11 @@ module('Unit | Consumer | request dimension', function(hooks) {
       );
     });
 
-    assert.ok(get(CurrentModel, 'request.dimensions.length') === 0, 'The given dimension is removed from the request');
+    assert.strictEqual(
+      get(CurrentModel, 'request.dimensions.length'),
+      0,
+      'The given dimension is removed from the request'
+    );
   });
 
   test('DID_UPDATE_TABLE', function(assert) {

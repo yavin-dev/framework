@@ -53,7 +53,10 @@ module('Integration | Component | metric config', function(hooks) {
           id: 'embargo',
           type: 'ref',
           expression: INTRINSIC_VALUE_EXPRESSION,
-          _localValues: [{ id: 'Y', description: 'Embargo enforced' }, { id: 'N', description: 'No Embargo' }]
+          _localValues: [
+            { id: 'Y', description: 'Embargo enforced' },
+            { id: 'N', description: 'No Embargo' }
+          ]
         },
         {
           id: 'invalid',

@@ -118,7 +118,10 @@ module('Integration | Component | filter-builders/dimension', function(hooks) {
     this.set('onUpdateFilter', changeSet => {
       assert.equal(changeSet.operator, 'contains', 'Selected operator is given to action');
 
-      this.set('filter.operator', this.supportedOperators.find(oper => oper.id === changeSet.operator));
+      this.set(
+        'filter.operator',
+        this.supportedOperators.find(oper => oper.id === changeSet.operator)
+      );
     });
 
     await render(
@@ -143,7 +146,10 @@ module('Integration | Component | filter-builders/dimension', function(hooks) {
       assert.equal(changeSet.operator, 'notin', 'Selected operator is given to action');
       assert.equal(changeSet.field, 'id', 'field is switched back to id');
 
-      this.set('filter.operator', this.supportedOperators.find(oper => oper.id === changeSet.operator));
+      this.set(
+        'filter.operator',
+        this.supportedOperators.find(oper => oper.id === changeSet.operator)
+      );
       this.set('filter.field', changeSet.field);
     });
 

@@ -370,8 +370,9 @@ module('Unit | Consumer | request filter', function(hooks) {
 
     /* == Remove a metric that is also a having == */
     consumer.send(RequestActions.REMOVE_METRIC, { currentModel }, AdClicks);
-    assert.ok(
-      get(currentModel, 'request.having').length === 0,
+    assert.strictEqual(
+      get(currentModel, 'request.having').length,
+      0,
       'When removing a metric, all havings for that metric is removed'
     );
   });

@@ -2,39 +2,39 @@
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import { get, set, computed } from '@ember/object';
+import { get, set, action } from '@ember/object';
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
 import { merge } from 'lodash-es';
 import { isForbiddenError } from 'ember-ajax/errors';
 import { reject } from 'rsvp';
 
-export default Route.extend({
+export default class ReportsReportViewRoute extends Route {
   /**
    * @property {Service} facts - instance of navi facts service
    */
-  facts: service('navi-facts'),
+  @service('navi-facts') facts;
 
   /**
    * @property {Service} naviVisualizations - instance of navi visualizations service
    */
-  naviVisualizations: service(),
+  @service naviVisualizations;
 
   /**
    * @property {Object} requestOptions - options for bard request
    */
-  requestOptions: computed(() => ({
+  requestOptions = {
     page: 1,
     perPage: 10000,
     clientId: 'customReports'
-  })),
+  };
 
   /**
    * @property {Object} parentModel - object containing request to view
    */
-  parentModel: computed(function() {
+  get parentModel() {
     return this.modelFor('reports.report');
-  }).volatile(),
+  }
 
   /**
    * @method model
@@ -67,7 +67,7 @@ export default Route.extend({
           return reject(response);
         }
       });
-  },
+  }
 
   /**
    * Makes sure the visualization type is valid for the request
@@ -87,7 +87,7 @@ export default Route.extend({
       visualizationModel = this.store.createFragment(visualizationService.defaultVisualization());
       set(report, 'visualization', visualizationModel);
     }
-  },
+  }
 
   /**
    * Makes sure the visualization config is valid for the request
@@ -104,7 +104,7 @@ export default Route.extend({
     if (!visualizationModel.isValidForRequest(request)) {
       visualizationModel.rebuildConfig(request, response);
     }
-  },
+  }
 
   /**
    * Returns whether the current request has already run
@@ -114,77 +114,81 @@ export default Route.extend({
    */
   _hasRequestRun() {
     return this.controllerFor(this.routeName).get('hasRequestRun');
-  },
+  }
 
-  actions: {
-    /**
-     * Runs report if it has changed
-     *
-     * @action runReport
-     * @returns {Transition|Void} - the model refresh transition
-     */
-    runReport() {
-      // Run the report only if there are request changes
-      if (!this._hasRequestRun()) {
-        return this.refresh();
-      } else {
-        this.send('setReportState', 'completed');
-      }
-    },
-
-    /**
-     * Forces the report to be rerun, used when user explicitly pushes run button.
-     *
-     * @action forceRun
-     * @returns {Transition} - refreshes model transition
-     */
-    forceRun() {
+  /**
+   * Runs report if it has changed
+   *
+   * @action runReport
+   * @returns {Transition|Void} - the model refresh transition
+   */
+  @action
+  runReport() {
+    // Run the report only if there are request changes
+    if (!this._hasRequestRun()) {
       return this.refresh();
-    },
-
-    /**
-     * Code to run before validating the request
-     *
-     * @action beforeValidate
-     * @returns {Void}
-     */
-    beforeValidate() {
-      // noop
-    },
-
-    /**
-     * @action loading
-     */
-    loading(transition) {
-      /**
-       * false is sent as the first argument due to a change in router_js
-       * TODO: Remove false if this is ever removed
-       * https://github.com/emberjs/ember.js/issues/17545
-       */
-      transition.send(false, 'setReportState', 'running');
-      return true; // allows the loading template to be shown
-    },
-
-    /**
-     * @action error
-     */
-    error(error, transition) {
-      /**
-       * false is sent as the first argument due to a change in router_js
-       * TODO: Remove false if this is ever removed
-       * https://github.com/emberjs/ember.js/issues/17545
-       */
-      transition.send(false, 'setReportState', 'failed');
-      return true; // allows the error template to be shown
-    },
-
-    /**
-     * @action didTransition
-     */
-    didTransition() {
+    } else {
       this.send('setReportState', 'completed');
-
-      return true;
     }
   }
-});
+
+  /**
+   * Forces the report to be rerun, used when user explicitly pushes run button.
+   *
+   * @action forceRun
+   * @returns {Transition} - refreshes model transition
+   */
+  @action
+  forceRun() {
+    return this.refresh();
+  }
+
+  /**
+   * Code to run before validating the request
+   *
+   * @action beforeValidate
+   * @returns {Void}
+   */
+  @action
+  beforeValidate() {
+    // noop
+  }
+
+  /**
+   * @action loading
+   */
+  @action
+  loading(transition) {
+    /**
+     * false is sent as the first argument due to a change in router_js
+     * TODO: Remove false if this is ever removed
+     * https://github.com/emberjs/ember.js/issues/17545
+     */
+    transition.send(false, 'setReportState', 'running');
+    return true; // allows the loading template to be shown
+  }
+
+  /**
+   * @action error
+   */
+  @action
+  error(error, transition) {
+    /**
+     * false is sent as the first argument due to a change in router_js
+     * TODO: Remove false if this is ever removed
+     * https://github.com/emberjs/ember.js/issues/17545
+     */
+    transition.send(false, 'setReportState', 'failed');
+    return true; // allows the error template to be shown
+  }
+
+  /**
+   * @action didTransition
+   */
+  @action
+  didTransition() {
+    this.send('setReportState', 'completed');
+
+    return true;
+  }
+}

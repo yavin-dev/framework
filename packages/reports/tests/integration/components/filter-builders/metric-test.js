@@ -15,9 +15,13 @@ module('Integration | Component | filter-builders/metric', function(hooks) {
   setupRenderingTest(hooks);
 
   hooks.beforeEach(async function() {
-    this.owner.register('helper:update-report-action', Helper.helper(() => {}), {
-      instantiate: false
-    });
+    this.owner.register(
+      'helper:update-report-action',
+      Helper.helper(() => {}),
+      {
+        instantiate: false
+      }
+    );
 
     this.owner.register(
       'component:mock/values-component',
