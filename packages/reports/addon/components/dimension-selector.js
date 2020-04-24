@@ -54,7 +54,12 @@ export default class DimensionSelector extends Component {
 
     return timeGrains
       .filter(grain => grain?.id !== 'all')
-      .map(grain => Object.assign({}, grain, { category: 'Time Grain' }));
+      .map(grain =>
+        Object.assign({}, grain, {
+          category: 'Time Grain',
+          dateTimeDimension: true
+        })
+      );
   }
 
   /*
@@ -78,7 +83,8 @@ export default class DimensionSelector extends Component {
       timeGrains = [
         {
           name: 'Date Time',
-          category: 'Date Time'
+          category: 'Date',
+          dateTimeDimension: true
         }
       ];
     } else {
@@ -168,8 +174,8 @@ export default class DimensionSelector extends Component {
    */
   @action
   itemClicked(item) {
-    const type = ['Time Grain', 'Date Time'].includes(item.category) ? 'TimeGrain' : 'Dimension',
-      enableRequestPreview = featureFlag('enableRequestPreview');
+    const type = item.dateTimeDimension ? 'TimeGrain' : 'Dimension';
+    const enableRequestPreview = featureFlag('enableRequestPreview');
 
     let actionHandler;
 
@@ -183,6 +189,8 @@ export default class DimensionSelector extends Component {
       actionHandler = this.itemsChecked[item.id] ? 'Remove' : 'Add';
     }
 
-    this[`on${actionHandler}${type}`]?.(item);
+    if (actionHandler) {
+      this[`on${actionHandler}${type}`]?.(item);
+    }
   }
 }

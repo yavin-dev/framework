@@ -324,14 +324,22 @@ module('Integration | Component | navi-column-config', function(hooks) {
     assert.expect(8);
 
     this.onAddDimension = () => assert.ok(false, 'Clone was called for dateTime column');
+    this.onAddMetric = () => assert.ok(false, 'Clone was called for dateTime column');
+    this.onAddMetricWithParameter = () => assert.ok(false, 'Clone was called for dateTime column');
+    this.onToggleDimFilter = () => assert.ok(false, 'Filter toggle was called for dateTime column');
     this.onToggleMetricFilter = () => assert.ok(false, 'Filter toggle was called for dateTime column');
+    this.onToggleParameterizedMetricFilter = () => assert.ok(false, 'Filter toggle was called for dateTime column');
     this.onRemoveDateTime = () => assert.ok(true, 'onRemoveDateTime was called');
     await render(
       hbs`<NaviColumnConfig
         @report={{this.report}}
         @isOpen={{true}}
         @onAddDimension={{this.onAddDimension}}
+        @onAddMetric={{this.onAddMetric}}
+        @onAddMetricWithParameter={{this.onAddMetricWithParameter}}
         @onToggleDimFilter={{this.onToggleDimFilter}}
+        @onToggleMetricFilter={{this.onToggleMetricFilter}}
+        @onToggleParameterizedMetricFilter={{this.onToggleParameterizedMetricFilter}}
         @onRemoveDateTime={{this.onRemoveDateTime}} />`
     );
 

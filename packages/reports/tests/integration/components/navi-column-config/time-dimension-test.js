@@ -15,7 +15,7 @@ const TEMPLATE = hbs`
   />
 `;
 
-module('Integration | Component | navi-column-config/date-time', function(hooks) {
+module('Integration | Component | navi-column-config/time-dimension', function(hooks) {
   setupRenderingTest(hooks);
 
   hooks.beforeEach(async function() {
@@ -40,7 +40,7 @@ module('Integration | Component | navi-column-config/date-time', function(hooks)
     );
 
     this.column = {
-      type: 'dimension',
+      type: 'timeDimension',
       name: 'dateTime',
       fragment: 'dateTime',
       isFiltered: true,

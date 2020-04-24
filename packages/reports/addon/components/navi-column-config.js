@@ -28,6 +28,7 @@ import { easeOut, easeIn } from 'ember-animated/easings/cosine';
 import { fadeIn, fadeOut } from 'ember-animated/motions/opacity';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
 import { inject as service } from '@ember/service';
+import { assert } from '@ember/debug';
 
 @tagName('')
 @templateLayout(layout)
@@ -84,18 +85,6 @@ class NaviColumnConfig extends Component {
       };
     });
 
-    if (timeGrain !== 'all') {
-      dimensionColumns.unshift({
-        type: 'dimension',
-        name: 'dateTime',
-        displayName: this.getDisplayName(timeGrainObject, 'dateTime', visualization),
-        isFiltered: true,
-        fragment: 'dateTime',
-        timeGrain,
-        timeGrains: timeGrains.filter(grain => grain.id !== 'all')
-      });
-    }
-
     const metricColumns = metrics.toArray().map(metric => {
       const name = metric.canonicalName;
       return {
@@ -107,7 +96,21 @@ class NaviColumnConfig extends Component {
       };
     });
 
-    return [...dimensionColumns, ...metricColumns];
+    const columns = [...dimensionColumns, ...metricColumns];
+
+    if (timeGrain !== 'all') {
+      columns.unshift({
+        type: 'timeDimension',
+        name: 'dateTime',
+        displayName: this.getDisplayName(timeGrainObject, 'timeDimension', visualization),
+        isFiltered: true,
+        fragment: 'dateTime',
+        timeGrain,
+        timeGrains: timeGrains.filter(grain => grain.id !== 'all')
+      });
+    }
+
+    return columns;
   }
 
   /**
@@ -118,7 +121,7 @@ class NaviColumnConfig extends Component {
   /**
    * @method getDisplayName
    * @param {Object} column - the column being displayed
-   * @param {String} type - the type of column (metric, dimension, dateTime)
+   * @param {String} type - the type of column (metric, dimension, timeDimension)
    * @param {Object} visualization - the visualization metadata
    * @returns {String} display name from visualization metadata or default display name for metric, dimension, or Date
    */
@@ -128,13 +131,13 @@ class NaviColumnConfig extends Component {
       // TODO: Add namespace pararemeter when metricName service supports it
       metric: metric => this.metricName.getDisplayName(metric.serialize()),
       dimension: dimension => dimension.dimension.name || dimension.dimension.id,
-      dateTime: dateTime => `Date Time (${dateTime.name})`
+      timeDimension: timeGrain => `Date Time (${timeGrain.name})`
     };
 
     const ID_FIELD_MAP = {
       metric: metric => metric.canonicalName,
       dimension: dimension => dimension.dimension.id,
-      dateTime: () => 'dateTime'
+      timeDimension: timeDimension => timeDimension.name
     };
 
     const alias = visMetaData.aliases?.find(alias => alias.name === ID_FIELD_MAP[type](column) && alias.type === type);
@@ -163,11 +166,7 @@ class NaviColumnConfig extends Component {
   cloneColumn(column) {
     const { type, fragment } = column;
 
-    if (fragment === 'dateTime') {
-      return; // dateTime column cannot be cloned
-    }
-
-    const newColumn = column.fragment[type];
+    const newColumn = fragment[type];
     if (type === 'metric') {
       if (newColumn.hasParameters) {
         this.onAddMetricWithParameter?.(newColumn, this._cloneMetricParams(column.fragment));
@@ -188,12 +187,8 @@ class NaviColumnConfig extends Component {
   toggleColumnFilter(column) {
     const { type, fragment } = column;
 
-    if (fragment === 'dateTime') {
-      return; // dateTime filter cannot be toggled
-    }
-
     const oldFilters = this.report.request.filters.length + this.report.request.having.length;
-    const newColumn = column.fragment[type];
+    const newColumn = fragment[type];
     if (type === 'metric') {
       if (newColumn.hasParameters) {
         this.onToggleParameterizedMetricFilter?.(newColumn, this._cloneMetricParams(column.fragment));
@@ -217,9 +212,9 @@ class NaviColumnConfig extends Component {
    */
   @action
   removeColumn(column) {
-    const { type, fragment } = column;
-    const removalHandler = this[`onRemove${fragment === 'dateTime' ? 'DateTime' : capitalize(type)}`];
-    removalHandler?.(column.fragment);
+    const { type, fragment, name } = column;
+    const removalHandler = this[`onRemove${name === 'dateTime' ? 'DateTime' : capitalize(type)}`];
+    removalHandler?.(fragment);
   }
 
   /**

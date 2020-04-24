@@ -5,7 +5,7 @@
  * Description: Navi Request Column Config DateTime Component
  *
  * Usage:
- *  <NaviColumnConfig::DateTime
+ *  <NaviColumnConfig::TimeDimension
  *    @column={{this.column}}
  *    @metadata={{this.visualization.metadata}}
  *    @onUpdateColumnName={{this.onUpdateColumnName}}
@@ -14,12 +14,12 @@
  */
 import Component from '@ember/component';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
-import layout from '../../templates/components/navi-column-config/date-time';
+import layout from '../../templates/components/navi-column-config/time-dimension';
 import { action } from '@ember/object';
 
 @tagName('')
 @templateLayout(layout)
-class NaviColumnConfigDateTimeComponent extends Component {
+class NaviColumnConfigTimeDimensionComponent extends Component {
   /**
    * @action
    * @param {Object} timeGrain
@@ -30,4 +30,4 @@ class NaviColumnConfigDateTimeComponent extends Component {
   }
 }
 
-export default NaviColumnConfigDateTimeComponent;
+export default NaviColumnConfigTimeDimensionComponent;
