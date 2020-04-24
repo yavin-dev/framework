@@ -12,7 +12,7 @@ export default class NaviDefinitionSearchResultComponent extends Component {
   /**
    * @property {Ember.Service} metadataService
    */
-  @service('bard-metadata') metadataService;
+  @service('bard-metadata') metadataService!: TODO;
 
   /**
    * @property {Boolean} hasMultipleDataSources
