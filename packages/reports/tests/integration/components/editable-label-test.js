@@ -4,11 +4,10 @@ import { render, find, click, fillIn, blur } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 const TEMPLATE = hbs`
-        {{editable-label
-            value=value
-            onChange=(action onChange)
-        }}
-    `;
+<EditableLabel
+  @value={{this.value}}
+  @onChange={{this.onChange}}
+/>`;
 
 module('Integration | Component | Editable Label', function(hooks) {
   setupRenderingTest(hooks);
@@ -31,11 +30,7 @@ module('Integration | Component | Editable Label', function(hooks) {
 
     await blur('.editable-label__input');
 
-    assert.equal(
-      this.get('value'),
-      'Default Value',
-      'Editing the label does not mutate the provided `value` attribute'
-    );
+    assert.equal(this.value, 'Default Value', 'Editing the label does not mutate the provided `value` attribute');
   });
 
   test('no change in value', async function(assert) {
