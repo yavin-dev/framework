@@ -1,11 +1,12 @@
-import { A as arr } from '@ember/array';
-import Component from '@ember/component';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, findAll } from '@ember/test-helpers';
-import $ from 'jquery';
 import { clickTrigger, nativeMouseUp } from 'ember-power-select/test-support/helpers';
 import hbs from 'htmlbars-inline-precompile';
+import { A as arr } from '@ember/array';
+import Component from '@ember/component';
+import BaseFilterBuilderComponent from 'navi-reports/components/filter-builders/base';
+import $ from 'jquery';
 
 const filter = {
   subject: {
@@ -33,6 +34,12 @@ const supportedOperators = [
   }
 ];
 
+const TEMPLATE = hbs`
+<FilterBuilders::Base
+  @supportedOperators={{this.supportedOperators}}
+  @onUpdateFilter={{this.onUpdateFilter}}
+  @isCollapsed={{this.isCollapsed}} 
+/>`;
 module('Integration | Component | filter-builders/base', function(hooks) {
   setupRenderingTest(hooks);
 
@@ -46,6 +53,14 @@ module('Integration | Component | filter-builders/base', function(hooks) {
       supportedOperators
     });
     this.owner.register(
+      'component:filter-builders/base',
+      class extends BaseFilterBuilderComponent {
+        get filter() {
+          return filter;
+        }
+      }
+    );
+    this.owner.register(
       'component:mock/values-component',
       Component.extend({
         classNames: 'mock-value-component',
@@ -58,7 +73,7 @@ module('Integration | Component | filter-builders/base', function(hooks) {
   test('it renders', async function(assert) {
     assert.expect(4);
 
-    await render(hbs`{{filter-builders/base filter=filter supportedOperators=supportedOperators }}`);
+    await render(TEMPLATE);
 
     assert.dom('.filter-builder__subject').hasText(filter.subject.name, "Subject's name is display in filter builder");
 
@@ -79,10 +94,8 @@ module('Integration | Component | filter-builders/base', function(hooks) {
   test('collapsed', async function(assert) {
     assert.expect(1);
 
-    await render(hbs`<FilterBuilders::Base
-      @filter={{this.filter}}
-      @supportedOperators={{this.supportedOperators}}
-      @isCollapsed={{true}} />`);
+    this.set('isCollapsed', true);
+    await render(TEMPLATE);
 
     assert
       .dom('.filter-builder')
@@ -104,9 +117,7 @@ module('Integration | Component | filter-builders/base', function(hooks) {
       );
     });
 
-    await render(
-      hbs`{{filter-builders/base filter=filter supportedOperators=supportedOperators onUpdateFilter=(action onUpdateFilter)}}`
-    );
+    await render(TEMPLATE);
 
     /* == Operator with same valuesComponent == */
     await clickTrigger();

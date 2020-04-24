@@ -4,13 +4,13 @@
  *
  * Usage:
  *   <FilterBuilders::DateTime
- *       @requestFragment={{request.filters.firstObject}}
- *       @request={{request}}
+ *       @requestFragment={{this.request.filters.firstObject}}
+ *       @request={{this.request}}
  *   />
  */
 import { A as arr } from '@ember/array';
 import { set, computed, action } from '@ember/object';
-import Base from './base';
+import BaseFilterBuilderComponent from './base';
 import Interval from 'navi-core/utils/classes/interval';
 import Duration, { parseDuration } from 'navi-core/utils/classes/duration';
 import { getFirstDayOfIsoDateTimePeriod } from 'navi-core/utils/date';
@@ -25,7 +25,7 @@ export const OPERATORS = {
   advanced: 'advanced'
 };
 
-export default class DateTimeFilterBuilder extends Base {
+export default class DateTimeFilterBuilder extends BaseFilterBuilderComponent {
   /**
    * @property {String} dateTimePeriodName - the date time period
    */
