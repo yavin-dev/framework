@@ -25,7 +25,11 @@ module('Integration | Component | navi-column-config', function(hooks) {
   setupMirage(hooks);
 
   hooks.beforeEach(async function() {
-    this.owner.register('helper:update-report-action', buildHelper(() => {}), { instantiate: false });
+    this.owner.register(
+      'helper:update-report-action',
+      buildHelper(() => {}),
+      { instantiate: false }
+    );
     Metadata = this.owner.lookup('service:bard-metadata');
     Store = this.owner.lookup('service:store');
 

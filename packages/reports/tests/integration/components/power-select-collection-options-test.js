@@ -8,7 +8,11 @@ module('Integration | Component | Power Select Collection Options', function(hoo
   setupRenderingTest(hooks);
 
   hooks.beforeEach(function() {
-    this.set('options', [{ id: 1, name: 'foo' }, { id: 2, name: 'bar' }, { id: 3, name: 'baz' }]);
+    this.set('options', [
+      { id: 1, name: 'foo' },
+      { id: 2, name: 'bar' },
+      { id: 3, name: 'baz' }
+    ]);
 
     this.set('select', {
       actions: {

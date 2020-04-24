@@ -41,6 +41,7 @@ export default Component.extend({
     } else if (get(this, 'showSelected')) {
       return `No ${get(this, 'title').toLowerCase()} selected`;
     }
+    return undefined;
   }),
 
   /**

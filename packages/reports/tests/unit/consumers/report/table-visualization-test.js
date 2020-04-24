@@ -100,7 +100,10 @@ module('Unit | Consumer | report table visualization', function(hooks) {
       visualization: {
         type: 'table',
         metadata: {
-          columns: [{ attributes: { name: 'a' }, value: 1 }, { attributes: { name: 'b', format: 'foo' }, value: 2 }]
+          columns: [
+            { attributes: { name: 'a' }, value: 1 },
+            { attributes: { name: 'b', format: 'foo' }, value: 2 }
+          ]
         }
       }
     };
@@ -117,7 +120,10 @@ module('Unit | Consumer | report table visualization', function(hooks) {
 
     assert.deepEqual(
       get(currentModel, 'visualization.metadata.columns'),
-      [{ attributes: { name: 'a' }, value: 1 }, { attributes: { name: 'b', format: 'bar' }, value: 3 }],
+      [
+        { attributes: { name: 'a' }, value: 1 },
+        { attributes: { name: 'b', format: 'bar' }, value: 3 }
+      ],
       'updateColumn updates the column in the visualization metadata'
     );
   });

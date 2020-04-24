@@ -25,7 +25,9 @@ export default Component.extend({
   /**
    * @property {Array} emails
    */
-  emails: computed(() => []),
+  emails: computed(function() {
+    return [];
+  }),
 
   actions: {
     /**

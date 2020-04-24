@@ -36,7 +36,11 @@ module('Integration | Component | metric selector', function(hooks) {
     Store = this.owner.lookup('service:store');
     MetadataService = this.owner.lookup('service:bard-metadata');
 
-    this.owner.register('helper:update-report-action', buildHelper(() => {}), { instantiate: false });
+    this.owner.register(
+      'helper:update-report-action',
+      buildHelper(() => {}),
+      { instantiate: false }
+    );
     this.owner.register(
       'helper:can-having',
       buildHelper(([metric]) => {

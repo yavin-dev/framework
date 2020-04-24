@@ -45,12 +45,14 @@ export default ActionDispatcher.extend({
    */
   concatenatedProperties: ['consumers'],
 
-  consumers: computed(() => [
-    'request/dimension',
-    'request/filter',
-    'request/logical-table',
-    'request/metric',
-    'request/time-grain',
-    'request/sort'
-  ])
+  consumers: computed(function() {
+    return [
+      'request/dimension',
+      'request/filter',
+      'request/logical-table',
+      'request/metric',
+      'request/time-grain',
+      'request/sort'
+    ];
+  })
 });

@@ -14,7 +14,11 @@ module('Integration | Component | metric filter config', function(hooks) {
   setupRenderingTest(hooks);
 
   hooks.beforeEach(async function() {
-    this.owner.register('helper:update-report-action', buildHelper(() => {}), { instantiate: false });
+    this.owner.register(
+      'helper:update-report-action',
+      buildHelper(() => {}),
+      { instantiate: false }
+    );
 
     Metric = {
       metric: { id: 'testMetric', name: 'Test Metric' },

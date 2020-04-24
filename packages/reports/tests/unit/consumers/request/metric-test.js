@@ -56,7 +56,7 @@ module('Unit | Consumer | request metric', function(hooks) {
       Consumer.send(RequestActions.REMOVE_METRIC, { currentModel: CurrentModel }, AdClicks);
     });
 
-    assert.ok(get(CurrentModel, 'request.metrics.length') === 0, 'The given metric is removed from the request');
+    assert.strictEqual(get(CurrentModel, 'request.metrics.length'), 0, 'The given metric is removed from the request');
   });
 
   test('REMOVE_METRIC_FRAGMENT', function(assert) {
@@ -71,7 +71,7 @@ module('Unit | Consumer | request metric', function(hooks) {
       );
     });
 
-    assert.ok(get(CurrentModel, 'request.metrics.length') === 0, 'The given metric is removed from the request');
+    assert.strictEqual(get(CurrentModel, 'request.metrics.length'), 0, 'The given metric is removed from the request');
   });
 
   test('UPDATE_METRIC_PARAM', async function(assert) {

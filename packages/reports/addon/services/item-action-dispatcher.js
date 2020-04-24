@@ -16,5 +16,7 @@ export default ActionDispatcher.extend({
   /**
    * @property {Array} consumers
    */
-  consumers: computed(() => ['item'])
+  consumers: computed(function() {
+    return ['item'];
+  })
 });
