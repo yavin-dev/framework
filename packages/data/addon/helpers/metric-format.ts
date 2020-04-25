@@ -10,6 +10,7 @@
 
 import Helper from '@ember/component/helper';
 import { inject as service } from '@ember/service';
+// @ts-ignore
 import { getDefaultDataSourceName } from 'navi-data/utils/adapter';
 import NaviFormatterService from '../services/navi-formatter';
 import Metric from '../models/metadata/metric';

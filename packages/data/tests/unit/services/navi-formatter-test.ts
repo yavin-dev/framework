@@ -4,7 +4,7 @@ import { setupTest } from 'ember-qunit';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import NaviFormatterService from 'navi-data/services/navi-formatter';
 import { TestContext } from 'ember-test-helpers';
-import Metric from 'dummy/models/metadata/metric';
+import Metric from 'navi-data/models/metadata/metric';
 
 let Service: NaviFormatterService;
 const metric = { name: 'Revenue' } as Metric;
