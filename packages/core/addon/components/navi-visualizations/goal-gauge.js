@@ -17,7 +17,6 @@ import { inject as service } from '@ember/service';
 import numeral from 'numeral';
 import d3 from 'd3';
 import layout from '../../templates/components/navi-visualizations/goal-gauge';
-import { metricFormat } from 'navi-data/helpers/metric-format';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
@@ -36,6 +35,7 @@ const DEFAULT_OPTIONS = {
 @tagName('')
 export default class NaviVisualizationsGoalGaugeComponent extends Component {
   @service bardMetadata;
+  @service naviFormatter;
 
   /**
    * @property {Array} - List of class names added to the gauge component
@@ -78,13 +78,14 @@ export default class NaviVisualizationsGoalGaugeComponent extends Component {
   /**
    * @property {String} formatted default metric
    */
-  @computed('metricModel', 'namespace')
+  @computed('options.metric.{metric,parameters}', 'namespace')
   get defaultMetricTitle() {
-    const { metricModel, namespace } = this;
-    const { metric: baseMetric } = metricModel;
-    const name = this.bardMetadata.getMetaField('metric', baseMetric, 'name', null, namespace);
-
-    return metricFormat(metricModel, name);
+    const {
+      options: { metric },
+      namespace
+    } = this;
+    const metricMetadata = this.bardMetadata.getById('metric', metric.metric, namespace);
+    return this.naviFormatter.formatMetric(metricMetadata, metric.parameters);
   }
 
   /**

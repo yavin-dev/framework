@@ -9,9 +9,9 @@ import DS from 'ember-data';
 import VisualizationBase from './visualization';
 import { canonicalizeMetric, canonicalizeColumnAttributes } from 'navi-data/utils/metric';
 import { validator, buildValidations } from 'ember-cp-validations';
-import { metricFormat } from 'navi-data/helpers/metric-format';
 import { canonicalizeDimension, formatDimensionName } from 'navi-data/utils/dimension';
 import { keyBy } from 'lodash-es';
+import { getOwner } from '@ember/application';
 
 /**
  * returns default dimension fields (show clause)
@@ -68,7 +68,7 @@ function buildDimensionColumns(dimensions, columnIndex) {
  * @param {Object} columnIndex - column lookup table indexed by dimension/metric name
  * @returns {Array} - list of metric columns
  */
-function buildMetricColumns(metrics, columnIndex) {
+function buildMetricColumns(metrics, columnIndex, naviFormatter) {
   return metrics.map(metric => {
     // Trend metrics should render using threshold coloring
     let category = get(metric, 'metric.category'),
@@ -76,8 +76,7 @@ function buildMetricColumns(metrics, columnIndex) {
       type = isTrend ? 'threshold' : 'metric',
       metricObject = metric.toJSON(),
       column = columnIndex[canonicalizeMetric(metricObject)],
-      name = metric.metric.name,
-      displayName = column ? column.displayName : metricFormat(metric, name),
+      displayName = column ? column.displayName : naviFormatter.formatMetric(metric.metric, metric.parameters),
       format = column ? get(column, 'attributes.format') : '';
 
     return {
@@ -217,12 +216,14 @@ export default VisualizationBase.extend(Validations, {
    * @return {Object} this object
    */
   rebuildConfig(request /*, response */) {
-    let dimensions = get(request, 'dimensions') || [],
-      metrics = get(request, 'metrics') || [],
-      columns = get(this, 'metadata.columns'),
-      // index column based on metricId or dimensionId
-      columnIndex = indexColumnById(columns),
-      timeGrain = request.logicalTable?.timeGrain;
+    const dimensions = get(request, 'dimensions') || [];
+    const metrics = get(request, 'metrics') || [];
+    const columns = get(this, 'metadata.columns');
+    // index column based on metricId or dimensionId
+    const columnIndex = indexColumnById(columns);
+    const timeGrain = request.logicalTable?.timeGrain;
+
+    const naviFormatter = getOwner(this).lookup('service:navi-formatter');
 
     //Only add dateColumn if timegrain is not 'all'
     let dateColumn =
@@ -239,7 +240,7 @@ export default VisualizationBase.extend(Validations, {
     const newColumns = [
       ...dateColumn,
       ...buildDimensionColumns(dimensions, columnIndex),
-      ...buildMetricColumns(metrics, columnIndex)
+      ...buildMetricColumns(metrics, columnIndex, naviFormatter)
     ];
 
     set(this, 'metadata', {

@@ -8,7 +8,7 @@ import { set } from '@ember/object';
 import VisualizationBase from './visualization';
 import { buildValidations, validator } from 'ember-cp-validations';
 import DS from 'ember-data';
-import { metricFormat } from 'navi-data/helpers/metric-format';
+import { getOwner } from '@ember/application';
 import NumberFormats from 'navi-core/utils/enums/number-formats';
 
 /**
@@ -43,11 +43,13 @@ export default VisualizationBase.extend(Validations, {
    * @return {Object} this object
    */
   rebuildConfig(request /*response*/) {
-    let metrics = A(request.metrics),
-      metric = metrics.firstObject.toJSON(),
-      description = metricFormat(metrics.firstObject, metrics.firstObject?.metric?.name),
-      allFormats = NumberFormats,
-      format = this.metadata.format || allFormats[0]?.format;
+    const metrics = A(request.metrics);
+    const metric = metrics.firstObject.toJSON();
+    const description = getOwner(this)
+      .lookup('service:navi-formatter')
+      .formatMetric(metrics.firstObject.metric, metrics.firstObject.parameters);
+    const allFormats = NumberFormats;
+    const format = this.metadata.format || allFormats[0]?.format;
 
     set(this, 'metadata', { metric, description, format });
     return this;
