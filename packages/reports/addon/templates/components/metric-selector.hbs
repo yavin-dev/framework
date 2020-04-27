@@ -28,7 +28,7 @@
         <NaviIcon @icon="question-circle-o" class="grouped-list__item-info">
           <EmberTooltip @side="right" @popperContainer="body" @effect="none">
             {{#if (is-pending metric.extended)}}
-              {{navi-loading-message}}
+              <NaviLoadingMessage />
             {{else}}
               {{#let (await metric.extended) as |extended|}}
                 {{or extended.description "No description available"}}

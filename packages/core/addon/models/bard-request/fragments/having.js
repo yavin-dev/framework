@@ -9,7 +9,7 @@ import DS from 'ember-data';
 import { fragment } from 'ember-data-model-fragments/attributes';
 import Fragment from 'ember-data-model-fragments/fragment';
 import { validator, buildValidations } from 'ember-cp-validations';
-import { metricFormat } from 'navi-data/helpers/metric-format';
+import { getOwner } from '@ember/application';
 
 const Validations = buildValidations({
   metric: validator('presence', {
@@ -27,8 +27,9 @@ const Validations = buildValidations({
     }),
     validator('array-number', {
       message() {
-        let metricName = this.model.metric?.metric?.name;
-        return `${metricFormat(this.model.metric, metricName)} filter must be a number`;
+        const { metric } = this.model;
+        const naviFormatter = getOwner(this).lookup('service:navi-formatter');
+        return `${naviFormatter.formatMetric(metric.metric, metric.parameters)} filter must be a number`;
       }
     })
   ]

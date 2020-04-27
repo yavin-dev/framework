@@ -7,7 +7,7 @@
 
 import { faker, Response } from 'ember-cli-mirage';
 import moment from 'moment';
-import { parseFilters, parseHavings } from './bard-lite-parsers';
+import { parseFilters, parseHavings, parseMetrics } from './bard-lite-parsers';
 
 const API_DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss.SSS',
   DIMENSION_VALUE_MAP = {},
@@ -210,7 +210,7 @@ export default function(
     rows = rows
       .map(row => {
         const dimensionKey = dimensions.map(d => `${d}=${row[`${d}|id`]}`).join('_');
-        const metrics = request.queryParams.metrics.split(',').reduce((metricsObj, metric) => {
+        const metrics = parseMetrics(request.queryParams.metrics).reduce((metricsObj, metric) => {
           const having = havings[metric];
           const metricValue = metricBuilder(metric, row, dimensionKey);
           if (!having || HAVING_OPS[having.operator](having.values, metricValue)) {
@@ -218,12 +218,9 @@ export default function(
           }
           return metricsObj;
         }, {});
-        if (Object.keys(metrics).length > 0) {
-          Object.keys(metrics).forEach(metric => (row[metric] = metrics[metric]));
-          return row;
-        } else {
-          return undefined;
-        }
+
+        Object.keys(metrics).forEach(metric => (row[metric] = metrics[metric]));
+        return row;
       })
       .filter(r => r !== undefined);
 

@@ -41,8 +41,12 @@ class Table extends Component {
   /**
    * @property {Service} bardMetadata
    */
-  @service
-  bardMetadata;
+  @service bardMetadata;
+
+  /**
+   * @property {Service} naviFormatter
+   */
+  @service naviFormatter;
 
   /*
    * @property {Boolean} occlusion - whether or not to incremental render
@@ -186,7 +190,7 @@ class Table extends Component {
       return false;
     }
 
-    const defaultName = getColumnDefaultName(column, this.bardMetadata, namespace);
+    const defaultName = getColumnDefaultName(column, this.bardMetadata, this.naviFormatter, namespace);
     return column.displayName !== defaultName;
   }
 
