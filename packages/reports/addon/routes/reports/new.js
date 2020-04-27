@@ -8,8 +8,8 @@ import { reject } from 'rsvp';
 import { inject as service } from '@ember/service';
 import Route from '@ember/routing/route';
 import { get } from '@ember/object';
-import Interval from 'navi-core/utils/classes/interval';
-import Duration from 'navi-core/utils/classes/duration';
+import Interval from 'navi-data/utils/classes/interval';
+import Duration from 'navi-data/utils/classes/duration';
 import DefaultIntervals from 'navi-reports/utils/enums/default-intervals';
 import config from 'ember-get-config';
 

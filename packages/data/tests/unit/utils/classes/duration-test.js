@@ -1,8 +1,12 @@
-import Duration from 'navi-core/utils/classes/duration';
-import { parseDuration, isIsoDurationString } from 'navi-core/utils/classes/duration';
+import Duration from 'navi-data/utils/classes/duration';
+import { parseDuration, isIsoDurationString } from 'navi-data/utils/classes/duration';
 import { module, test } from 'qunit';
 
 const ALL = Duration.ALL;
+
+function buildDuration(isoDuration) {
+  return new Duration(isoDuration);
+}
 
 module('Unit | Utils | Duration Class', function() {
   test('Construction of duration objects', function(assert) {
@@ -223,8 +227,4 @@ module('Unit | Utils | Duration Class', function() {
     assert.ok(isIsoDurationString('PT1H'), 'PT1H is a valid ISO duration');
     assert.ok(isIsoDurationString('P7D'), 'P7D is a valid ISO duration');
   });
-
-  function buildDuration(isoDuration) {
-    return new Duration(isoDuration);
-  }
 });

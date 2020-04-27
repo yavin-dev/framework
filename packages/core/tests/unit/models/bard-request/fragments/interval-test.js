@@ -1,9 +1,9 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import moment from 'moment';
-import DateUtils from 'navi-core/utils/date';
-import Interval from 'navi-core/utils/classes/interval';
-import Duration from 'navi-core/utils/classes/duration';
+import DateUtils from 'navi-data/utils/date';
+import Interval from 'navi-data/utils/classes/interval';
+import Duration from 'navi-data/utils/classes/duration';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import { run } from '@ember/runloop';
 

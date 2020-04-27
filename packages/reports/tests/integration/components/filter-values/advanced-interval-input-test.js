@@ -3,7 +3,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, findAll, fillIn, blur } from '@ember/test-helpers';
 import { A as arr } from '@ember/array';
 import hbs from 'htmlbars-inline-precompile';
-import Interval from 'navi-core/utils/classes/interval';
+import Interval from 'navi-data/utils/classes/interval';
 import { getDateRangeFormat } from './date-range-test';
 
 const TEMPLATE = hbs`

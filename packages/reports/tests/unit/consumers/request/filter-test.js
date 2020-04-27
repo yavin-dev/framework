@@ -3,7 +3,7 @@ import { get } from '@ember/object';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { RequestActions } from 'navi-reports/services/request-action-dispatcher';
-import Interval from 'navi-core/utils/classes/interval';
+import Interval from 'navi-data/utils/classes/interval';
 import Moment from 'moment';
 import DefaultIntervals from 'navi-reports/utils/enums/default-intervals';
 

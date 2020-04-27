@@ -1,11 +1,11 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
 import DS from 'ember-data';
 import moment from 'moment';
-import DateUtils from 'navi-core/utils/date';
+import DateUtils from 'navi-data/utils/date';
 
 export default DS.Transform.extend({
   /**

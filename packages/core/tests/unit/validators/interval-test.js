@@ -1,8 +1,8 @@
 import moment from 'moment';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import Interval from 'navi-core/utils/classes/interval';
-import Duration from 'navi-core/utils/classes/duration';
+import Interval from 'navi-data/utils/classes/interval';
+import Duration from 'navi-data/utils/classes/duration';
 
 let Validator, TestInterval;
 

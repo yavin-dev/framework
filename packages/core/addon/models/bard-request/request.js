@@ -5,7 +5,7 @@
 import DS from 'ember-data';
 import { isEqual } from 'lodash-es';
 import { validator, buildValidations } from 'ember-cp-validations';
-import Interval from 'navi-core/utils/classes/interval';
+import Interval from 'navi-data/utils/classes/interval';
 import { A as arr, makeArray } from '@ember/array';
 import { assert } from '@ember/debug';
 import { isEmpty } from '@ember/utils';

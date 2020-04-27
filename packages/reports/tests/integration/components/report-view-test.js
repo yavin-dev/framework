@@ -6,7 +6,7 @@ import { render } from '@ember/test-helpers';
 import $ from 'jquery';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import hbs from 'htmlbars-inline-precompile';
-import Interval from 'navi-core/utils/classes/interval';
+import Interval from 'navi-data/utils/classes/interval';
 
 const RESPONSE = {
   rows: [

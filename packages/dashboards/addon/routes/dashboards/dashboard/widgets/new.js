@@ -5,8 +5,8 @@
 
 import { A } from '@ember/array';
 import { get } from '@ember/object';
-import Interval from 'navi-core/utils/classes/interval';
-import Duration from 'navi-core/utils/classes/duration';
+import Interval from 'navi-data/utils/classes/interval';
+import Duration from 'navi-data/utils/classes/duration';
 import DefaultIntervals from 'navi-reports/utils/enums/default-intervals';
 import ReportsNewRoute from 'navi-reports/routes/reports/new';
 

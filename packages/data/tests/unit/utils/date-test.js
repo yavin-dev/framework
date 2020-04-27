@@ -1,8 +1,8 @@
-import * as DateUtils from 'navi-core/utils/date';
+import * as DateUtils from 'navi-data/utils/date';
 import { module, test } from 'qunit';
 import moment from 'moment';
 import config from 'ember-get-config';
-import Interval from 'navi-core/utils/classes/interval';
+import Interval from 'navi-data/utils/classes/interval';
 
 module('Unit | Utils | DateUtils', function() {
   test('getDatesForInterval', function(assert) {

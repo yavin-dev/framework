@@ -1,7 +1,7 @@
-import Interval from 'navi-core/utils/classes/interval';
-import Duration from 'navi-core/utils/classes/duration';
+import Interval from 'navi-data/utils/classes/interval';
+import Duration from 'navi-data/utils/classes/duration';
 import { module, test } from 'qunit';
-import DateUtils from 'navi-core/utils/date';
+import DateUtils from 'navi-data/utils/date';
 import moment from 'moment';
 
 const FORMAT = 'YYYY-MM-DD';

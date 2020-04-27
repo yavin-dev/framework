@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import moment from 'moment';
-import DateUtils from 'navi-core/utils/date';
+import DateUtils from 'navi-data/utils/date';
 
 module('Unit | Transform | moment', function(hooks) {
   setupTest(hooks);

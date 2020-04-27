@@ -6,8 +6,8 @@ import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import { set } from '@ember/object';
 import { run } from '@ember/runloop';
 import moment from 'moment';
-import Interval from 'navi-core/utils/classes/interval';
-import Duration from 'navi-core/utils/classes/duration';
+import Interval from 'navi-data/utils/classes/interval';
+import Duration from 'navi-data/utils/classes/duration';
 
 const UNDEFINED_SORT_MODEL = 2,
   MODEL_TO_CLONE = 3;

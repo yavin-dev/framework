@@ -1,6 +1,6 @@
 import { classify } from '@ember/string';
 import { A } from '@ember/array';
-import Interval from 'navi-core/utils/classes/interval';
+import Interval from 'navi-data/utils/classes/interval';
 import { canonicalizeMetric, parseMetricName } from 'navi-data/utils/metric';
 
 /**

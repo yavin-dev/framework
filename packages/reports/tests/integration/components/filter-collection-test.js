@@ -4,8 +4,8 @@ import { render, findAll, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import $ from 'jquery';
 import { clickTrigger, nativeMouseUp } from '../../helpers/ember-power-select';
-import Duration from 'navi-core/utils/classes/duration';
-import Interval from 'navi-core/utils/classes/interval';
+import Duration from 'navi-data/utils/classes/duration';
+import Interval from 'navi-data/utils/classes/interval';
 
 const MockFilterFragment1 = {
     dimension: { name: 'age' },

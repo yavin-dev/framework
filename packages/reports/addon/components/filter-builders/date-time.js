@@ -11,9 +11,9 @@
 import { A as arr } from '@ember/array';
 import { set, computed, action } from '@ember/object';
 import Base from './base';
-import Interval from 'navi-core/utils/classes/interval';
-import Duration, { parseDuration } from 'navi-core/utils/classes/duration';
-import { getFirstDayOfIsoDateTimePeriod } from 'navi-core/utils/date';
+import Interval from 'navi-data/utils/classes/interval';
+import Duration, { parseDuration } from 'navi-data/utils/classes/duration';
+import { getFirstDayOfIsoDateTimePeriod } from 'navi-data/utils/date';
 import moment from 'moment';
 
 export const MONTHS_IN_QUARTER = 3;
