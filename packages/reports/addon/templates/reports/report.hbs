@@ -42,6 +42,7 @@
       @disabled={{this.isRunningReport}}
       @isFiltersCollapsed={{this.isFiltersCollapsed}}
       @onUpdateFiltersCollapsed={{set this.isFiltersCollapsed _}}
+      @onBeforeAddItem={{fn this.updateColumnDrawerOpen true}}
       as |builder|
     >
       {{#if (feature-flag "enableRequestPreview")}}
@@ -62,7 +63,7 @@
         />
 
         <div class="report-view__columns-toggle">
-          <button class="report-view__columns-button" type="button" aria-label="Toggle column drawer" {{on "click" (fn this.toggleColumnConfig builder)}}>
+          <button class="report-view__columns-button" type="button" aria-label="Toggle column drawer" {{on "click" (fn this.updateColumnDrawerOpen (not this.isColumnDrawerOpen) builder)}}>
             {{#animated-if this.isColumnDrawerOpen use=this.fadeTransition}}
               <NaviIcon @icon="chevron-left" class="report-view__columns-icon" />
             {{else}}
