@@ -4,6 +4,7 @@ import { render, findAll, click, settled } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import { setupAnimationTest, animationsSettled } from 'ember-animated/test-support';
+import { clickTrigger } from 'ember-power-select/test-support/helpers';
 import { A } from '@ember/array';
 import { getContext } from '@ember/test-helpers';
 import { helper as buildHelper } from '@ember/component/helper';
@@ -111,7 +112,7 @@ module('Integration | Component | navi-column-config', function(hooks) {
   });
 
   test('time grain - switching and removing', async function(assert) {
-    assert.expect(3);
+    assert.expect(4);
 
     await render(hbs`<NaviColumnConfig @report={{this.report}} @isOpen={{true}} />`);
 
@@ -120,6 +121,16 @@ module('Integration | Component | navi-column-config', function(hooks) {
       findAll('.navi-column-config-item__name').map(el => el.textContent.trim()),
       ['Date Time (Day)'],
       'The date time column is initially added and set to day'
+    );
+
+    await click('.navi-column-config-item__name[title="Date Time (Day)"]'); // open date time config
+    await clickTrigger('.navi-column-config-item__parameter'); // open the time grain dropdown
+    assert.deepEqual(
+      findAll('.navi-column-config-item__parameter-dropdown .ember-power-select-option').map(el =>
+        el.textContent.trim()
+      ),
+      ['Hour', 'Day', 'Week', 'Month', 'Quarter', 'Year'],
+      'The table time grains are passed correctly to the time grain column'
     );
 
     this.set('report.request.logicalTable.timeGrain', 'week');
@@ -310,11 +321,26 @@ module('Integration | Component | navi-column-config', function(hooks) {
   });
 
   test('Header config buttons - date time', async function(assert) {
-    assert.expect(4);
+    assert.expect(8);
 
-    this.onRemoveDateTime = () => assert.ok(true, 'onRemoveDateTime was called');
+    this.onAddDimension = () => assert.ok(false, 'Clone was called for dateTime column');
+    this.onAddMetric = () => assert.ok(false, 'Clone was called for dateTime column');
+    this.onAddMetricWithParameter = () => assert.ok(false, 'Clone was called for dateTime column');
+    this.onToggleDimFilter = () => assert.ok(false, 'Filter toggle was called for dateTime column');
+    this.onToggleMetricFilter = () => assert.ok(false, 'Filter toggle was called for dateTime column');
+    this.onToggleParameterizedMetricFilter = () => assert.ok(false, 'Filter toggle was called for dateTime column');
+    this.onRemoveTimeDimension = () => assert.ok(true, 'onRemoveTimeDimension was called');
     await render(
-      hbs`<NaviColumnConfig @report={{this.report}} @isOpen={{true}} @onRemoveDateTime={{this.onRemoveDateTime}} />`
+      hbs`<NaviColumnConfig
+        @report={{this.report}}
+        @isOpen={{true}}
+        @onAddDimension={{this.onAddDimension}}
+        @onAddMetric={{this.onAddMetric}}
+        @onAddMetricWithParameter={{this.onAddMetricWithParameter}}
+        @onToggleDimFilter={{this.onToggleDimFilter}}
+        @onToggleMetricFilter={{this.onToggleMetricFilter}}
+        @onToggleParameterizedMetricFilter={{this.onToggleParameterizedMetricFilter}}
+        @onRemoveTimeDimension={{this.onRemoveTimeDimension}} />`
     );
 
     await animationsSettled();
@@ -325,13 +351,27 @@ module('Integration | Component | navi-column-config', function(hooks) {
     );
 
     await click('.navi-column-config-item__name[title="Date Time (Day)"]'); // open date time config
-    assert.dom('.navi-column-config-base__clone-icon').doesNotExist('Date time config has no clone icon');
-    assert.dom('.navi-column-config-base__filter-icon').doesNotExist('Date time config has no filter icon');
+    assert.dom('.navi-column-config-base__clone-icon').exists({ count: 1 }, 'Date time config has clone icon');
+    assert
+      .dom('.navi-column-config-base__clone-icon')
+      .hasClass('navi-column-config-base__clone-icon--disabled', 'Date time config clone icon has a `disabled` class');
+    assert
+      .dom('.navi-column-config-base__clone-icon')
+      .hasAttribute('aria-disabled', 'true', 'Date time config clone icon has aria-disabled="true" attribute');
+    await click('.navi-column-config-base__clone-icon');
+    assert.dom('.navi-column-config-base__filter-icon').exists({ count: 1 }, 'Date time config has filter icon');
+    assert
+      .dom('.navi-column-config-base__filter-icon')
+      .hasClass('navi-column-config-base__filter-icon--disabled', 'Date time config filter has a `disabled` class');
+    assert
+      .dom('.navi-column-config-base__filter-icon')
+      .hasAttribute('aria-disabled', 'true', 'Date time config filter icon has aria-disabled="true" attribute');
+    await click('.navi-column-config-base__filter-icon');
     await click('.navi-column-config-item__remove-icon');
   });
 
   test('Header config buttons - metric', async function(assert) {
-    assert.expect(8);
+    assert.expect(12);
 
     this.onAddMetric = () => assert.ok(true, 'Clone was called');
     this.onToggleMetricFilter = () => assert.ok(true, 'Filter was called');
@@ -350,8 +390,26 @@ module('Integration | Component | navi-column-config', function(hooks) {
 
     await click('.navi-column-config-item__name[title="Nav Link Clicks"]'); // open metric config
     assert.dom('.navi-column-config-base__clone-icon').exists({ count: 1 }, 'Metric config has clone icon');
+    assert
+      .dom('.navi-column-config-base__clone-icon')
+      .doesNotHaveClass(
+        'navi-column-config-base__clone-icon--disabled',
+        'Metric config clone icon does not have a `disabled` class'
+      );
+    assert
+      .dom('.navi-column-config-base__clone-icon')
+      .hasAttribute('aria-disabled', 'false', 'Metric config clone icon has aria-disabled="false" attribute');
     await click('.navi-column-config-base__clone-icon');
     assert.dom('.navi-column-config-base__filter-icon').exists({ count: 1 }, 'Metric config has filter icon');
+    assert
+      .dom('.navi-column-config-base__filter-icon')
+      .doesNotHaveClass(
+        'navi-column-config-base__filter-icon--disabled',
+        'Metric config filter icon does not have a `disabled` class'
+      );
+    assert
+      .dom('.navi-column-config-base__filter-icon')
+      .hasAttribute('aria-disabled', 'false', 'Metric config filter icon has aria-disabled="false" attribute');
     await click('.navi-column-config-base__filter-icon');
 
     assert
@@ -369,7 +427,7 @@ module('Integration | Component | navi-column-config', function(hooks) {
   });
 
   test('Header config buttons - parameterized metric', async function(assert) {
-    assert.expect(8);
+    assert.expect(12);
 
     this.onAddMetricWithParameter = () => assert.ok(true, 'onAddMetricWithParameter was called');
     this.onToggleParameterizedMetricFilter = () => assert.ok(true, 'onToggleParameterizedMetricFilter was called');
@@ -388,8 +446,26 @@ module('Integration | Component | navi-column-config', function(hooks) {
 
     await click('.navi-column-config-item__name[title="Platform Revenue"]'); // open parameterized metric config
     assert.dom('.navi-column-config-base__clone-icon').exists({ count: 1 }, 'Metric config has clone icon');
+    assert
+      .dom('.navi-column-config-base__clone-icon')
+      .doesNotHaveClass(
+        'navi-column-config-base__clone-icon--disabled',
+        'Metric config clone icon does not have a `disabled` class'
+      );
+    assert
+      .dom('.navi-column-config-base__clone-icon')
+      .hasAttribute('aria-disabled', 'false', 'Metric config clone icon has aria-disabled="false" attribute');
     await click('.navi-column-config-base__clone-icon');
     assert.dom('.navi-column-config-base__filter-icon').exists({ count: 1 }, 'Metric config has filter icon');
+    assert
+      .dom('.navi-column-config-base__filter-icon')
+      .doesNotHaveClass(
+        'navi-column-config-base__filter-icon--disabled',
+        'Metric config filter icon does not have a `disabled` class'
+      );
+    assert
+      .dom('.navi-column-config-base__filter-icon')
+      .hasAttribute('aria-disabled', 'false', 'Metric config filter icon has aria-disabled="false" attribute');
     await click('.navi-column-config-base__filter-icon');
 
     assert
@@ -407,7 +483,7 @@ module('Integration | Component | navi-column-config', function(hooks) {
   });
 
   test('Header config buttons - dimension', async function(assert) {
-    assert.expect(8);
+    assert.expect(12);
 
     this.onAddDimension = () => assert.ok(true, 'Clone was called');
     this.onToggleDimFilter = () => assert.ok(true, 'Filter was called');
@@ -426,8 +502,26 @@ module('Integration | Component | navi-column-config', function(hooks) {
 
     await click('.navi-column-config-item__name[title="Browser"]'); // open dimension config
     assert.dom('.navi-column-config-base__clone-icon').exists({ count: 1 }, 'Dimension config has clone icon');
+    assert
+      .dom('.navi-column-config-base__clone-icon')
+      .doesNotHaveClass(
+        'navi-column-config-base__clone-icon--disabled',
+        'Dimension config clone icon does not have a `disabled` class'
+      );
+    assert
+      .dom('.navi-column-config-base__clone-icon')
+      .hasAttribute('aria-disabled', 'false', 'Dimension config clone icon has aria-disabled="false" attribute');
     await click('.navi-column-config-base__clone-icon');
     assert.dom('.navi-column-config-base__filter-icon').exists({ count: 1 }, 'Dimension config has filter icon');
+    assert
+      .dom('.navi-column-config-base__filter-icon')
+      .doesNotHaveClass(
+        'navi-column-config-base__filter-icon--disabled',
+        'Dimension config filter icon does not have a `disabled` class'
+      );
+    assert
+      .dom('.navi-column-config-base__filter-icon')
+      .hasAttribute('aria-disabled', 'false', 'Dimension config filter icon has aria-disabled="false" attribute');
     await click('.navi-column-config-base__filter-icon');
 
     assert

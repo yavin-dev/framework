@@ -6,10 +6,10 @@
  *
  * Usage:
  *  <NaviColumnConfig::Metric
- *    @column={{editingColumn}}
- *    @metadata={{visualization.metadata}}
- *    @onClose={{action "onClose"}}
- *    @onUpdateColumnName={{action "onUpdateColumnName"}}
+ *    @column={{this.column}}
+ *    @metadata={{this.visualization.metadata}}
+ *    @onUpdateColumnName={{this.onUpdateColumnName}}
+ *    @onUpdateMetricParam={{this.onUpdateMetricParam}}
  *  />
  */
 import Component from '@ember/component';
@@ -27,11 +27,6 @@ class NaviColumnConfigMetricComponent extends Component {
    * @service
    */
   @service('metric-parameter') parameterService;
-
-  /**
-   * @property {String} _previousMetricName - the name of the last fetched metric
-   */
-  _previousMetricName = null;
 
   /**
    * @property {String} classId - a unique id for this instance of the column config

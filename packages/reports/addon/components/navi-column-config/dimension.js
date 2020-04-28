@@ -6,10 +6,9 @@
  *
  * Usage:
  *  <NaviColumnConfig::Dimension
- *    @column={{editingColumn}}
- *    @metadata={{visualization.metadata}}
- *    @onClose={{action "onClose"}}
- *    @onUpdateColumnName={{action "onUpdateColumnName"}}
+ *    @column={{this.column}}
+ *    @metadata={{this.visualization.metadata}}
+ *    @onUpdateColumnName={{this.onUpdateColumnName}}
  *  />
  */
 import Component from '@ember/component';
