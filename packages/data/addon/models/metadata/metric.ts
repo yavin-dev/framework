@@ -3,20 +3,10 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { inject as service } from '@ember/service';
-import Column, { BaseExtendedAttributes, ColumnNode } from './column';
+import Column, { BaseExtendedAttributes, NormalizedColumn } from './column';
 import MetricFunction from './metric-function';
 
-export type MetricNode = ColumnNode & {
-  defaultFormat: string;
-};
-export type MetricEdge = {
-  node: MetricNode;
-  cursor: string;
-};
-export type MetricConnection = {
-  edges: MetricEdge[];
-  pageInfo: TODO;
-};
+export type NormalizedMetric = NormalizedColumn & { defaultFormat: string };
 
 type ExtendedAttributes = BaseExtendedAttributes;
 export default class Metric extends Column {

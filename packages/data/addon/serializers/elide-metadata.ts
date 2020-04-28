@@ -3,44 +3,48 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import EmberObject from '@ember/object';
-import { MetricConnection, MetricEdge } from '../models/metadata/metric';
-import { DimensionConnection, DimensionEdge } from '../models/metadata/dimension';
-import { TimeDimensionConnection, TimeDimensionEdge } from '../models/metadata/time-dimension';
-import { TableConnection } from '../models/metadata/table';
+import CARDINALITY_SIZES from '../utils/enums/cardinality-sizes';
+import { NormalizedTable } from '../models/metadata/table';
+import { NormalizedMetric } from '../models/metadata/metric';
+import { NormalizedDimension } from '../models/metadata/dimension';
+import { NormalizedTimeDimension } from '../models/metadata/time-dimension';
+
+type Edge<T> = {
+  node: T;
+  cursor: string;
+};
+type Connection<T> = {
+  edges: Edge<T>[];
+  pageInfo: TODO;
+};
+type ColumnNode = {
+  id: string;
+  name: string;
+  description: string;
+  category: string;
+  valueType: TODO<string>;
+  columnTags: string[];
+};
+type MetricNode = ColumnNode & { defaultFormat: string };
+type DimensionNode = ColumnNode;
+type TimeDimensionNode = DimensionNode & {
+  supportedGrains: string[];
+  timeZone: string;
+};
+type TableNode = {
+  id: string;
+  name: string;
+  description: string;
+  category: string;
+  cardinality: typeof CARDINALITY_SIZES[number];
+  metrics: Connection<MetricNode>;
+  dimensions: Connection<DimensionNode>;
+  timeDimensions: Connection<TimeDimensionNode>;
+};
 
 type TablePayload = {
-  tables: TableConnection;
+  tables: Connection<TableNode>;
   source: string;
-};
-
-type NormalizedTable = {
-  id: string;
-  name: string;
-  category: string;
-  description: string;
-  cardinality: string;
-  metricIds: string[];
-  dimensionIds: string[];
-  timeDimensionIds: string[];
-  source: string;
-};
-
-type NormalizedColumn = {
-  id: string;
-  name: string;
-  category: string;
-  description: string;
-  tableId: string;
-  source: string;
-  valueType: TODO<string>;
-  tags: string[];
-};
-
-type NormalizedMetric = NormalizedColumn & { defaultFormat: string };
-type NormalizedDimension = NormalizedColumn;
-type NormalizedTimeDimension = NormalizedDimension & {
-  supportedGrains: string[];
-  timeZone: TODO;
 };
 
 export default class ElideMetadataSerializer extends EmberObject {
@@ -49,10 +53,10 @@ export default class ElideMetadataSerializer extends EmberObject {
    * @private
    * @method _normalizeTableConnection - normalizes the table connection object
    * @param {Object} tableConnection - table connection with array of edges to table nodes
-   * @param {String} source - datasource of the payload
+   * @param {string} source - datasource of the payload
    * @returns {Object} - normalized tables and their associated columns
    */
-  _normalizeTableConnection(tableConnection: TableConnection, source: string) {
+  _normalizeTableConnection(tableConnection: Connection<TableNode>, source: string) {
     const edges = tableConnection.edges || [];
     let metrics: NormalizedMetric[] = [];
     let dimensions: NormalizedDimension[] = [];
@@ -98,12 +102,12 @@ export default class ElideMetadataSerializer extends EmberObject {
   /**
    * @private
    * @method _normalizeTableMetrics - normalizes the MetricConnection JSON response
-   * @param {MetricConnection} metricConnection - MetricConnection JSON
-   * @param {String} source - datasource name
+   * @param {Connection<MetricNode>} metricConnection - MetricConnection JSON
+   * @param {string} source - datasource name
    * @returns {Object[]} - normalized metric objects
    */
-  _normalizeTableMetrics(metricConnection: MetricConnection, tableId: string, source: string) {
-    return metricConnection.edges.map((edge: MetricEdge) => {
+  _normalizeTableMetrics(metricConnection: Connection<MetricNode>, tableId: string, source: string) {
+    return metricConnection.edges.map((edge: Edge<MetricNode>) => {
       const { node } = edge;
       return {
         id: node.id,
@@ -121,13 +125,13 @@ export default class ElideMetadataSerializer extends EmberObject {
 
   /**
    * @private
-   * @method _normalizeDimensions - normalizes the DimensionConnection JSON response
-   * @param {DimensionConnection} dimensionConnection - DimensionConnection JSON
-   * @param {String} source - datasource name
+   * @method _normalizeDimensions - normalizes the Connection<DimensionNode> JSON response
+   * @param {Connection<DimensionNode>} dimensionConnection - Connection<DimensionNode> JSON
+   * @param {string} source - datasource name
    * @returns {Object[]} - normalized dimension objects
    */
-  _normalizeTableDimensions(dimensionConnection: DimensionConnection, tableId: string, source: string) {
-    return dimensionConnection.edges.map((edge: DimensionEdge) => {
+  _normalizeTableDimensions(dimensionConnection: Connection<DimensionNode>, tableId: string, source: string) {
+    return dimensionConnection.edges.map((edge: Edge<DimensionNode>) => {
       const { node } = edge;
       return {
         id: node.id,
@@ -144,13 +148,17 @@ export default class ElideMetadataSerializer extends EmberObject {
 
   /**
    * @private
-   * @method _normalizeTableTimeDimensions - normalizes the TimeDimensionConnection JSON response
-   * @param {TimeDimensionConnection} timeDimensionConnection - TimeDimensionConnection JSON
-   * @param {String} source - datasource name
+   * @method _normalizeTableTimeDimensions - normalizes the TimeConnection<DimensionNode> JSON response
+   * @param {TimeConnection<DimensionNode>} timeConnection<DimensionNode> - TimeConnection<DimensionNode> JSON
+   * @param {string} source - datasource name
    * @returns {Object[]} - normalized timeDimension objects
    */
-  _normalizeTableTimeDimensions(timeDimensionConnection: TimeDimensionConnection, tableId: string, source: string) {
-    return timeDimensionConnection.edges.map((edge: TimeDimensionEdge) => {
+  _normalizeTableTimeDimensions(
+    timeDimensionConnection: Connection<TimeDimensionNode>,
+    tableId: string,
+    source: string
+  ) {
+    return timeDimensionConnection.edges.map((edge: Edge<TimeDimensionNode>) => {
       const { node } = edge;
       return {
         id: node.id,

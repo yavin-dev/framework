@@ -7,32 +7,24 @@ import { inject as service } from '@ember/service';
 import { upperFirst } from 'lodash-es';
 import Metric from './metric';
 import KegService from '../../services/keg';
-import { MetricConnection } from './metric';
-import Dimension, { DimensionConnection } from './dimension';
-import TimeDimension, { TimeDimensionConnection } from './time-dimension';
+import Dimension from './dimension';
+import TimeDimension from './time-dimension';
 import CARDINALITY_SIZES from '../../utils/enums/cardinality-sizes';
 
 export type TimeGrain = {
   id: string;
   name: string;
 };
-export type TableNode = {
+export type NormalizedTable = {
   id: string;
   name: string;
-  description: string;
   category: string;
+  description: string;
   cardinality: typeof CARDINALITY_SIZES[number];
-  metrics: MetricConnection;
-  dimensions: DimensionConnection;
-  timeDimensions: TimeDimensionConnection;
-};
-export type TableEdge = {
-  node: TableNode;
-  cursor: string;
-};
-export type TableConnection = {
-  edges: TableEdge[];
-  pageInfo: TODO;
+  metricIds: string[];
+  dimensionIds: string[];
+  timeDimensionIds: string[];
+  source: string;
 };
 
 export default class Table extends EmberObject {
