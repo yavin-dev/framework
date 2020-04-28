@@ -11,7 +11,7 @@ let MetadataService;
 
 const TEMPLATE = hbs`
 <NaviColumnConfig::Base
-  @column={{this.column}} 
+  @column={{this.column}}
   @metadata={{this.metadata}}
   @cloneColumn={{this.cloneColumn}}
   @toggleColumnFilter={{this.toggleColumnFilter}}
@@ -73,24 +73,24 @@ module('Integration | Component | navi-column-config/metric', function(hooks) {
     await render(TEMPLATE);
 
     assert.deepEqual(
-      findAll('.navi-column-config-metric__parameter-label').map(el => el.textContent.trim()),
+      findAll('.navi-column-config-item__parameter-label').map(el => el.textContent.trim()),
       ['Type Type', 'Aggregation Type', 'Age Type', 'Currency Type', 'CurrencyButNullDefault Type'],
       'Multiple parameters config lists are displayed'
     );
     assert.deepEqual(
-      findAll('.navi-column-config-metric__parameter-trigger').map(el => el.textContent.trim()),
+      findAll('.navi-column-config-item__parameter-trigger').map(el => el.textContent.trim()),
       ['Left', 'Total', '30-34', 'Dollars (USD)', 'Dollars (CAD)'],
       'Mulitple parameters values are filled in with selected values'
     );
 
-    await selectChoose('.navi-column-config-metric__parameter', 'Right');
-    await selectChoose(findAll('.navi-column-config-metric__parameter')[1], 'Daily Average');
-    await selectChoose(findAll('.navi-column-config-metric__parameter')[2], '13-17');
-    await selectChoose(findAll('.navi-column-config-metric__parameter')[3], 'Euro');
-    await selectChoose(findAll('.navi-column-config-metric__parameter')[4], 'Drams');
+    await selectChoose('.navi-column-config-item__parameter', 'Right');
+    await selectChoose(findAll('.navi-column-config-item__parameter')[1], 'Daily Average');
+    await selectChoose(findAll('.navi-column-config-item__parameter')[2], '13-17');
+    await selectChoose(findAll('.navi-column-config-item__parameter')[3], 'Euro');
+    await selectChoose(findAll('.navi-column-config-item__parameter')[4], 'Drams');
 
     assert.deepEqual(
-      findAll('.navi-column-config-metric__parameter-trigger').map(el => el.textContent.trim()),
+      findAll('.navi-column-config-item__parameter-trigger').map(el => el.textContent.trim()),
       ['Right', 'Daily Average', '13-17', 'Euro', 'Drams'],
       'A selected parameter can be changed and a null valued parameter can be changed'
     );
@@ -109,16 +109,16 @@ module('Integration | Component | navi-column-config/metric', function(hooks) {
     await render(TEMPLATE);
 
     assert.deepEqual(
-      findAll('.navi-column-config-metric__parameter-trigger').map(el => el.textContent.trim()),
+      findAll('.navi-column-config-item__parameter-trigger').map(el => el.textContent.trim()),
       ['', 'Total', '30-34', 'Dollars (USD)', ''],
       'Null parameters have no selected values in trigger'
     );
 
-    await selectChoose('.navi-column-config-metric__parameter', 'Right');
-    await selectChoose('.navi-column-config-metric__parameter:last-child', 'Dollars (CAD)');
+    await selectChoose('.navi-column-config-item__parameter', 'Right');
+    await selectChoose('.navi-column-config-item__parameter:last-child', 'Dollars (CAD)');
 
     assert.deepEqual(
-      findAll('.navi-column-config-metric__parameter-trigger').map(el => el.textContent.trim()),
+      findAll('.navi-column-config-item__parameter-trigger').map(el => el.textContent.trim()),
       ['Right', 'Total', '30-34', 'Dollars (USD)', 'Dollars (CAD)'],
       'Null value parameters can be changed'
     );
@@ -148,10 +148,10 @@ module('Integration | Component | navi-column-config/metric', function(hooks) {
 
     // assert.dom('.navi-column-config-base__column-name-input').hasValue('Revenue', 'Display name of column is shown in the column input');
     assert
-      .dom('.navi-column-config-metric__parameter-trigger')
+      .dom('.navi-column-config-item__parameter-trigger')
       .hasText('Dollars (USD)', 'Current parameter is displayed in the dropdown input');
 
-    await click('.navi-column-config-metric__parameter-trigger.ember-power-select-trigger');
+    await click('.navi-column-config-item__parameter-trigger.ember-power-select-trigger');
     assert.deepEqual(
       findAll('.ember-power-select-option').map(el => el.textContent.trim()),
       [
@@ -172,11 +172,11 @@ module('Integration | Component | navi-column-config/metric', function(hooks) {
       ],
       'The parameter values are loaded into the dropdown'
     );
-    await selectChoose('.navi-column-config-metric__parameter', 'Dollars (CAD)');
+    await selectChoose('.navi-column-config-item__parameter', 'Dollars (CAD)');
 
     // assert.dom('.navi-column-config-base__column-name-input').hasValue('Revenue', 'Custom display name is still shown when parameter is changed');
     assert
-      .dom('.navi-column-config-metric__parameter-trigger')
+      .dom('.navi-column-config-item__parameter-trigger')
       .hasText('Dollars (CAD)', 'Parameter selector shows new parameter value');
 
     // await fillIn('.navi-column-config-base__column-name-input', 'Money');

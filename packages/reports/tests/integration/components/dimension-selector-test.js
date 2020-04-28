@@ -76,18 +76,33 @@ module('Integration | Component | dimension selector', function(hooks) {
   test('groups', async function(assert) {
     assert.expect(2);
 
-    let groups = findAll('.grouped-list__group-header').map(el => el.textContent.trim());
+    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
 
-    assert.ok(
-      groups[0].includes('Time Grain'),
-      'Time Grains are included as the first group in the dimension selector'
-    );
+    config.navi.FEATURES.enableRequestPreview = false;
+
+    await render(TEMPLATE);
+
+    let groups = findAll('.grouped-list__group-header').map(el => el.textContent.trim());
 
     assert.deepEqual(
       groups,
       ['Time Grain (6)', 'test (26)', 'Asset (4)'],
       'The groups rendered by the component include dimension groups and Time Grain'
     );
+
+    config.navi.FEATURES.enableRequestPreview = true;
+
+    await render(TEMPLATE);
+
+    groups = findAll('.grouped-list__group-header').map(el => el.textContent.trim());
+
+    assert.deepEqual(
+      groups,
+      ['Date (1)', 'test (26)', 'Asset (4)'],
+      'The groups rendered by the component include dimension groups and Date'
+    );
+
+    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
   });
 
   test('show selected', async function(assert) {
@@ -133,7 +148,7 @@ module('Integration | Component | dimension selector', function(hooks) {
   });
 
   test('add/remove time grain', async function(assert) {
-    assert.expect(4);
+    assert.expect(6);
 
     const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
 
@@ -148,30 +163,77 @@ module('Integration | Component | dimension selector', function(hooks) {
       assert.equal(item.id, 'day', 'the day time grain item is passed as a param to the action');
     });
 
-    //select first time grain
-
     //addTimeGrain when a different time grain is clicked
     await clickItem('timeGrain', 'Week');
 
     //removeTimeGrain when selected time grain is clicked
+    await clickItem('timeGrain', 'Day');
+
+    await clickShowSelected('dimension');
+
+    this.set('removeTimeGrain', item => {
+      assert.equal(
+        item.id,
+        'day',
+        'the day time grain item is passed as a param to the action when only selected are shown'
+      );
+    });
+
+    //removeTimeGrain when only selected are shown and selected time grain is clicked
     await clickItem('timeGrain', 'Day');
 
     //enableRequestPreview feature flag on
     config.navi.FEATURES.enableRequestPreview = true;
 
+    //a time grain is selected
+    this.set('addTimeGrain', () => {
+      assert.ok(false, 'addTimeGrain was called when a time grain is already selected');
+    });
+
     await render(TEMPLATE);
 
-    //addTimeGrain when a different time grain is clicked
-    await clickItem('timeGrain', 'Week');
+    let item = await getItem('timeGrain', 'Date Time');
 
-    //removeTimeGrain when selected time grain is clicked
-    await clickItem('timeGrain', 'Day');
+    assert
+      .dom(item.item.querySelector('.grouped-list__item-label'))
+      .hasAttribute(
+        'aria-disabled',
+        'true',
+        'Date Time has aria-disabled="true" attribute when a time grain is already selected'
+      );
+
+    await clickItem('timeGrain', 'Date Time');
+
+    //a time grain is not selected
+    this.set('request.logicalTable.timeGrain', 'all');
+
+    this.set('addTimeGrain', item => {
+      assert.equal(
+        item.id,
+        config.navi.defaultTimeGrain,
+        'addTimeGrain is called with the default time grain when a time grain is not selected'
+      );
+    });
+
+    await render(TEMPLATE);
+
+    item = await getItem('timeGrain', 'Date Time');
+
+    assert
+      .dom(item.item.querySelector('.grouped-list__item-label'))
+      .hasAttribute(
+        'aria-disabled',
+        'false',
+        'Date Time has aria-disabled="false" attribute when a time grain is not selected'
+      );
+
+    await clickItem('timeGrain', 'Date Time');
 
     config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
   });
 
   test('add/remove dimension', async function(assert) {
-    assert.expect(4);
+    assert.expect(5);
 
     const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
 
@@ -192,6 +254,19 @@ module('Integration | Component | dimension selector', function(hooks) {
     await clickItem('dimension', 'Gender');
 
     //removeDimension when a selected dimension is clicked
+    await clickItem('dimension', 'Age');
+
+    await clickShowSelected('dimension');
+
+    this.set('removeDimension', item => {
+      assert.equal(
+        item.name,
+        'Age',
+        'the Age dimension item is passed as a param to the action for removal when only selected dimensions are shown'
+      );
+    });
+
+    //removeTimeGrain when only selected are shown and selected time grain is clicked
     await clickItem('dimension', 'Age');
 
     //enableRequestPreview feature flag on

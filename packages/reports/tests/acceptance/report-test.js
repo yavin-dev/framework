@@ -1479,7 +1479,7 @@ module('Acceptance | Navi Report', function(hooks) {
   });
 
   test('Dimension selector', async function(assert) {
-    assert.expect(15);
+    assert.expect(9);
 
     const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
 
@@ -1555,60 +1555,65 @@ module('Acceptance | Navi Report', function(hooks) {
 
     assert.ok(dimensionItem.item.querySelector('.fa-plus-circle'), 'Removed dimension row has a plus icon');
 
+    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
+  });
+
+  test('Dimension selector - enableRequestPreview', async function(assert) {
+    assert.expect(7);
+
+    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
+
     config.navi.FEATURES.enableRequestPreview = true;
 
     await visit('/reports/1');
 
     assert.deepEqual(
       await getAllSelected('dimension'),
-      ['Day', 'Property'],
-      'Selected dimensions and time grain initially include "Day" and "Property"'
+      ['Date Time', 'Property'],
+      'Selected dimensions initially include "Date Time" and "Property"'
     );
+
+    let dimensionItem = await getItem('dimension', 'Date Time');
+
+    assert
+      .dom(dimensionItem.item.querySelector('.grouped-list__item-label'))
+      .hasAttribute('aria-disabled', 'true', 'Date Time has aria-disabled="true" attribute');
 
     dimensionItem = await getItem('dimension', 'Operating System');
 
-    assert.ok(
-      dimensionItem.item.querySelector('.fa-plus-circle'),
-      'An unselected dimension row has a plus icon (enableRequestPreview on)'
-    );
+    assert.ok(dimensionItem.item.querySelector('.fa-plus-circle'), 'An unselected dimension row has a plus icon');
 
     // Add Dimension
     await clickItem('dimension', 'Operating System');
 
     assert.deepEqual(
       await getAllSelected('dimension'),
-      ['Day', 'Operating System', 'Property'],
-      'Adding a dimension changes selected dimensions (enableRequestPreview on)'
+      ['Date Time', 'Operating System', 'Property'],
+      'Adding a dimension changes selected dimensions'
     );
 
     dimensionItem = await getItem('dimension', 'Operating System');
 
-    assert.ok(
-      dimensionItem.item.querySelector('.fa-plus-circle'),
-      'Added dimension row still has a plus icon (enableRequestPreview on)'
-    );
+    assert.ok(dimensionItem.item.querySelector('.fa-plus-circle'), 'Added dimension row still has a plus icon');
 
     // Click dimension again
     await clickItem('dimension', 'Operating System');
 
     assert.deepEqual(
       await getAllSelected('dimension'),
-      ['Day', 'Operating System', 'Property'],
-      'Clicking a selected dimension does not change selected dimensions (enableRequestPreview on)'
+      ['Date Time', 'Operating System', 'Property'],
+      'Clicking a selected dimension does not change selected dimensions'
     );
 
     dimensionItem = await getItem('dimension', 'Operating System');
 
-    assert.ok(
-      dimensionItem.item.querySelector('.fa-plus-circle'),
-      'Dimension row still has a plus icon (enableRequestPreview on)'
-    );
+    assert.ok(dimensionItem.item.querySelector('.fa-plus-circle'), 'Dimension row still has a plus icon');
 
     config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
   });
 
   test('Metric selector', async function(assert) {
-    assert.expect(14);
+    assert.expect(8);
 
     const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
 
@@ -1676,6 +1681,14 @@ module('Acceptance | Navi Report', function(hooks) {
 
     assert.ok(metricItem.item.querySelector('.fa-plus-circle'), 'Removed metric row has a plus icon');
 
+    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
+  });
+
+  test('Metric selector - enableRequestPreview', async function(assert) {
+    assert.expect(6);
+
+    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
+
     config.navi.FEATURES.enableRequestPreview = true;
 
     await visit('/reports/1');
@@ -1686,12 +1699,9 @@ module('Acceptance | Navi Report', function(hooks) {
       'Selected metrics initally include "Ad Clicks" and "Nav Link Clicks"'
     );
 
-    metricItem = await getItem('metric', 'Total Clicks');
+    let metricItem = await getItem('metric', 'Total Clicks');
 
-    assert.ok(
-      metricItem.item.querySelector('.fa-plus-circle'),
-      'An unselected metric row has a plus icon (enableRequestPreview on)'
-    );
+    assert.ok(metricItem.item.querySelector('.fa-plus-circle'), 'An unselected metric row has a plus icon');
 
     // Add Metric
     await clickItem('metric', 'Total Clicks');
@@ -1699,15 +1709,12 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.deepEqual(
       await getAllSelected('metric'),
       ['Ad Clicks', 'Nav Link Clicks', 'Total Clicks'],
-      'Adding a metric changes selected metrics (enableRequestPreview on)'
+      'Adding a metric changes selected metrics'
     );
 
     metricItem = await getItem('metric', 'Total Clicks');
 
-    assert.ok(
-      metricItem.item.querySelector('.fa-plus-circle'),
-      'Added metric row still has a plus icon (enableRequestPreview on)'
-    );
+    assert.ok(metricItem.item.querySelector('.fa-plus-circle'), 'Added metric row still has a plus icon');
 
     // Click metric again
     await clickItem('metric', 'Total Clicks');
@@ -1715,15 +1722,12 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.deepEqual(
       await getAllSelected('metric'),
       ['Ad Clicks', 'Nav Link Clicks', 'Total Clicks'],
-      'Clicking a selected metric does not change selected metrics (enableRequestPreview on)'
+      'Clicking a selected metric does not change selected metrics'
     );
 
     metricItem = await getItem('metric', 'Total Clicks');
 
-    assert.ok(
-      metricItem.item.querySelector('.fa-plus-circle'),
-      'Metric row still has a plus icon (enableRequestPreview on)'
-    );
+    assert.ok(metricItem.item.querySelector('.fa-plus-circle'), 'Metric row still has a plus icon');
 
     config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
   });

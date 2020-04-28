@@ -18,7 +18,7 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
   setupMirage(hooks);
 
   test('adding and removing metrics', async function(assert) {
-    assert.expect(15);
+    assert.expect(8);
 
     const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
 
@@ -87,6 +87,14 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
 
     assert.ok(metricConfigItem.item.querySelector('.fa-plus-circle'), 'Default param row has a plus icon again');
 
+    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
+  });
+
+  test('adding and removing metrics - enableRequestPreview', async function(assert) {
+    assert.expect(7);
+
+    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
+
     config.navi.FEATURES.enableRequestPreview = true;
 
     await visit('/reports/1/view');
@@ -98,15 +106,12 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
     assert.deepEqual(
       await getAllSelected('metricConfig'),
       ['Dollars (USD)'],
-      'Only the default parameter for the metric is selected (enableRequestPreview on)'
+      'Only the default parameter for the metric is selected'
     );
 
-    metricConfigItem = await getItem('metricConfig', 'Dollars', 'USD');
+    let metricConfigItem = await getItem('metricConfig', 'Dollars', 'USD');
 
-    assert.ok(
-      metricConfigItem.item.querySelector('.fa-plus-circle'),
-      'Selected param still has a plus icon (enableRequestPreview on)'
-    );
+    assert.ok(metricConfigItem.item.querySelector('.fa-plus-circle'), 'Selected param still has a plus icon');
 
     //clicking same param again
     await clickItem('metricConfig', 'Dollars', 'USD');
@@ -114,22 +119,19 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
     assert.deepEqual(
       await getAllSelected('metricConfig'),
       ['Dollars (USD)'],
-      'Selection is unchanged after clicking an already added param (enableRequestPreview on)'
+      'Selection is unchanged after clicking an already added param'
     );
 
     metricConfigItem = await getItem('metricConfig', 'Dollars', 'USD');
 
     assert.ok(
       metricConfigItem.item.querySelector('.fa-plus-circle'),
-      'Param still has a plus icon after secondary click (enableRequestPreview on)'
+      'Param still has a plus icon after secondary click'
     );
 
     metricConfigItem = await getItem('metricConfig', 'Euro');
 
-    assert.ok(
-      metricConfigItem.item.querySelector('.fa-plus-circle'),
-      'An unselected param has a plus icon (enableRequestPreview on)'
-    );
+    assert.ok(metricConfigItem.item.querySelector('.fa-plus-circle'), 'An unselected param has a plus icon');
 
     //adding another param for the same metric
     await clickItem('metricConfig', 'Euro');
@@ -137,15 +139,12 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
     assert.deepEqual(
       await getAllSelected('metricConfig'),
       ['Dollars (USD)', 'Euro (EUR)'],
-      'Adding another parameter changes selected items (enableRequestPreview on)'
+      'Adding another parameter changes selected items'
     );
 
     metricConfigItem = await getItem('metricConfig', 'Euro');
 
-    assert.ok(
-      metricConfigItem.item.querySelector('.fa-plus-circle'),
-      'Second param still has a plus icon (enableRequestPreview on)'
-    );
+    assert.ok(metricConfigItem.item.querySelector('.fa-plus-circle'), 'Second param still has a plus icon');
 
     config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
   });

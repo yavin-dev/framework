@@ -135,32 +135,4 @@ module('Unit | Route | reports/new', function(hooks) {
       set(config, 'navi.defaultDataTable', defaultDataTable);
     });
   });
-
-  test('_getDefaultTimeGrainName', function(assert) {
-    assert.expect(3);
-
-    return settled().then(() => {
-      let table = this.owner.lookup('route:reports/new')._getDefaultTable(),
-        tableTimeGrains = table.timeGrains,
-        timeGrainName = this.owner.lookup('route:reports/new')._getDefaultTimeGrainName(table);
-
-      let defaultTimeGrain = get(config, 'navi.defaultTimeGrain');
-
-      assert.deepEqual(timeGrainName, defaultTimeGrain, 'Return the default time grain from config');
-
-      set(config, 'navi.defaultTimeGrain', 'year');
-      timeGrainName = this.owner.lookup('route:reports/new')._getDefaultTimeGrainName(table);
-      assert.deepEqual(timeGrainName, 'year', 'Return default time grain');
-
-      set(config, 'navi.defaultTimeGrain', 'no');
-      timeGrainName = this.owner.lookup('route:reports/new')._getDefaultTimeGrainName(table);
-      assert.deepEqual(
-        timeGrainName,
-        tableTimeGrains[0].id,
-        'Return the first time grain in the table when default is not found'
-      );
-
-      set(config, 'navi.defaultTimeGrain', defaultTimeGrain);
-    });
-  });
 });
