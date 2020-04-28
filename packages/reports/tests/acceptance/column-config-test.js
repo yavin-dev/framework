@@ -90,8 +90,8 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
       .exists('Column config drawer displays "back" icon when open');
   });
 
-  test('adding and removing - date time', async function(assert) {
-    assert.expect(5);
+  test('adding, removing and changing - date time', async function(assert) {
+    assert.expect(7);
     await visit('reports/1/view');
 
     assert.dom('.filter-builder__subject').hasText('Date Time (Day)', 'Time grain is initially day');
@@ -106,16 +106,26 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
       'Date Time is removed after selecting All timegrain'
     );
 
-    await clickItem('timeGrain', 'Week');
-
+    await clickItem('dimension', 'Date Time');
     await animationsSettled();
+
+    assert.dom('.filter-builder__subject').hasText('Date Time (Day)', 'Default time grain (day) is set on the report');
+    assert.deepEqual(
+      getColumns(),
+      ['Date Time (Day)', 'Property', 'Ad Clicks', 'Nav Link Clicks'],
+      'A Date Time (Day) column is added'
+    );
+
+    await click('.navi-column-config-item__name[title="Date Time (Day)"]');
+    await selectChoose('.navi-column-config-item__parameter-trigger', 'Week');
+
     assert
       .dom('.filter-builder__subject')
-      .hasText('Date Time (Week)', 'Clicking week changes timegrain from all to week');
+      .hasText('Date Time (Week)', 'Choosing week changes timegrain from day to week');
     assert.deepEqual(
       getColumns(),
       ['Date Time (Week)', 'Property', 'Ad Clicks', 'Nav Link Clicks'],
-      'Date Time can be added back'
+      'Column is changed to Date Time (Week)'
     );
   });
 
@@ -435,7 +445,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
     );
 
     await click('.navi-column-config-item__name[title="Platform Revenue (USD)"]');
-    await selectChoose('.navi-column-config-metric__parameter-trigger', 'Dollars (CAD)');
+    await selectChoose('.navi-column-config-item__parameter-trigger', 'Dollars (CAD)');
 
     assert.deepEqual(
       getColumns(),
@@ -461,7 +471,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
     );
 
     await click(findAll('.navi-column-config-item__name[title="Platform Revenue (USD)"]')[1]);
-    await selectChoose('.navi-column-config-metric__parameter-trigger', 'Dollars (CAD)');
+    await selectChoose('.navi-column-config-item__parameter-trigger', 'Dollars (CAD)');
 
     assert.deepEqual(
       getColumns(),
@@ -590,7 +600,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
     /**
      * await click(findAll('.navi-column-config-item__name[title="Platform Revenue (USD)"]')[1]);
      * await blur('.navi-column-config-base__column-name-input');
-     * await selectChoose('.navi-column-config-metric__parameter-trigger', 'Dollars (CAD)');
+     * await selectChoose('.navi-column-config-item__parameter-trigger', 'Dollars (CAD)');
      * assert
      *   .dom(findAll('.navi-column-config-item__name')[3])
      *   .hasText('Platform Revenue (CAD)', 'Text is set back to default when parameter changes');
@@ -851,7 +861,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
 
     assert.dom('.navi-column-config-base__filter-icon--active').exists({ count: 2 }, 'Both filter icons are active');
 
-    await selectChoose(findAll('.navi-column-config-metric__parameter-trigger')[1], 'Dollars (CAD)');
+    await selectChoose(findAll('.navi-column-config-item__parameter-trigger')[1], 'Dollars (CAD)');
 
     assert.deepEqual(
       getColumns(),
@@ -982,7 +992,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
     assert.deepEqual(getColumns(), ['Date Time (Day)', 'Platform Revenue (USD)'], 'The initial metrics was added');
 
     await click('.navi-column-config-item__name[title="Platform Revenue (USD)"]');
-    await click('.navi-column-config-metric__parameter-trigger');
+    await click('.navi-column-config-item__parameter-trigger');
     assert.strictEqual(
       findAll('.ember-power-select-option').map(el => el.textContent.trim()).length,
       14,

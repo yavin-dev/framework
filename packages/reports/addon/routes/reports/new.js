@@ -3,7 +3,6 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import { A } from '@ember/array';
 import { reject } from 'rsvp';
 import { inject as service } from '@ember/service';
 import Route from '@ember/routing/route';
@@ -11,6 +10,7 @@ import { get } from '@ember/object';
 import Interval from 'navi-core/utils/classes/interval';
 import Duration from 'navi-core/utils/classes/duration';
 import DefaultIntervals from 'navi-reports/utils/enums/default-intervals';
+import { getDefaultTimeGrain } from 'navi-reports/utils/request-table';
 import config from 'ember-get-config';
 
 export default Route.extend({
@@ -98,7 +98,7 @@ export default Route.extend({
     // Default to first data source + time grain
     let defaultVisualization = get(this, 'naviVisualizations').defaultVisualization(),
       table = this._getDefaultTable(),
-      timeGrain = this._getDefaultTimeGrainName(table);
+      timeGrain = getDefaultTimeGrain(table.timeGrains)?.id;
 
     let report = this.store.createRecord('report', {
       author,
@@ -140,24 +140,5 @@ export default Route.extend({
     }
 
     return table;
-  },
-
-  /**
-   * Returns a default time grain name for new report
-   *
-   * @method _getDefaultTimeGrainName
-   * @private
-   * @returns {String} time grain name
-   */
-  _getDefaultTimeGrainName(table) {
-    let timeGrainName = get(config, 'navi.defaultTimeGrain'),
-      tableTimeGrains = A(get(table, 'timeGrains')),
-      timeGrainExist = tableTimeGrains.find(grain => grain.id === timeGrainName);
-
-    if (!timeGrainExist) {
-      timeGrainName = tableTimeGrains[0]?.id;
-    }
-
-    return timeGrainName;
   }
 });
