@@ -78,6 +78,22 @@ module('Acceptance | Exploring Widgets', function(hooks) {
       .isVisible('Widget body has a visualization on the view route');
   });
 
+  test('Viewing a widget when enableRequestPreview is on', async function(assert) {
+    assert.expect(1);
+
+    let originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
+
+    config.navi.FEATURES.enableRequestPreview = true;
+
+    await visit('/dashboards/1/widgets/2/view');
+
+    assert
+      .dom('.navi-report-widget__body .report-builder .navi-column-config')
+      .exists('The column config exists on the view route');
+
+    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
+  });
+
   test('Exploring a widget', async function(assert) {
     assert.expect(1);
 
