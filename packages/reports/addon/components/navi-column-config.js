@@ -8,7 +8,7 @@
  *    @drawerDidChange={{this.callback}}
  *    @report={{@report}}
  *    @openFilters={{route-action "openFilters"}}
- *    @onRemoveDateTime={{update-report-action "REMOVE_TIME_GRAIN"}}
+ *    @onRemoveTimeDimension={{update-report-action "REMOVE_TIME_GRAIN"}}
  *    @onRemoveDimension={{update-report-action "REMOVE_DIMENSION_FRAGMENT"}}
  *    @onRemoveMetric={{update-report-action "REMOVE_METRIC_FRAGMENT"}}
  *    @onAddDimension={{update-report-action "ADD_DIMENSION"}}
@@ -212,8 +212,8 @@ class NaviColumnConfig extends Component {
    */
   @action
   removeColumn(column) {
-    const { type, fragment, name } = column;
-    const removalHandler = this[`onRemove${name === 'dateTime' ? 'DateTime' : capitalize(type)}`];
+    const { type, fragment } = column;
+    const removalHandler = this[`onRemove${capitalize(type)}`];
     removalHandler?.(fragment);
   }
 

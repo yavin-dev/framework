@@ -329,7 +329,7 @@ module('Integration | Component | navi-column-config', function(hooks) {
     this.onToggleDimFilter = () => assert.ok(false, 'Filter toggle was called for dateTime column');
     this.onToggleMetricFilter = () => assert.ok(false, 'Filter toggle was called for dateTime column');
     this.onToggleParameterizedMetricFilter = () => assert.ok(false, 'Filter toggle was called for dateTime column');
-    this.onRemoveDateTime = () => assert.ok(true, 'onRemoveDateTime was called');
+    this.onRemoveTimeDimension = () => assert.ok(true, 'onRemoveTimeDimension was called');
     await render(
       hbs`<NaviColumnConfig
         @report={{this.report}}
@@ -340,7 +340,7 @@ module('Integration | Component | navi-column-config', function(hooks) {
         @onToggleDimFilter={{this.onToggleDimFilter}}
         @onToggleMetricFilter={{this.onToggleMetricFilter}}
         @onToggleParameterizedMetricFilter={{this.onToggleParameterizedMetricFilter}}
-        @onRemoveDateTime={{this.onRemoveDateTime}} />`
+        @onRemoveTimeDimension={{this.onRemoveTimeDimension}} />`
     );
 
     await animationsSettled();
