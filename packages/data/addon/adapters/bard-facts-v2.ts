@@ -47,14 +47,16 @@ type Sort = {
   parameters: Parameters;
   direction: SortDirection;
 };
-type Request = {
+// TODO: Remove V2 once V1 is no longer in use
+type RequestV2 = {
   filters: Filter[];
   columns: Column[];
   table: string;
   sort: Sort[];
   limit: TODO<string>;
-  requestVersion: string;
+  requestVersion: '2.0';
 };
+type AliasFn = (column: string) => string;
 
 /**
  * @function formatDimensionFieldName
@@ -76,9 +78,9 @@ function formatDimensionFieldName(field: string, parameters: Parameters, include
 /**
  * Serializes a list of filters to a fili filter string
  * @param {Array<Filter>} filters - list of filters to be ANDed together for fili
- * @param {Filter} filter - filters object
+ * @returns {string} serialized filter string
  */
-export function serializeFilters(filters: Filter[]) {
+export function serializeFilters(filters: Filter[]): string {
   return filters
     .map(filter => {
       const { field, operator, values, parameters } = filter;
@@ -112,7 +114,7 @@ export default class BardFactsAdapter extends EmberObject {
    * @param {Object} request
    * @return {String} dimensions path
    */
-  _buildDimensionsPath(request: Request /*options*/): string {
+  _buildDimensionsPath(request: RequestV2 /*options*/): string {
     const dimensions = array(request.columns)
       .filterBy('type', 'dimension')
       .map(dim => formatDimensionFieldName(dim.field, dim.parameters, false));
@@ -132,7 +134,7 @@ export default class BardFactsAdapter extends EmberObject {
    * @param {Object} request
    * @return {String} dateTime param value
    */
-  _buildDateTimeParam(request: Request): string {
+  _buildDateTimeParam(request: RequestV2): string {
     const dateTimeFilters = request.filters.filter(fil => fil.field === 'dateTime');
 
     return dateTimeFilters.map(filter => `${filter.values[0]}/${filter.values[1]}`).join(',');
@@ -146,9 +148,9 @@ export default class BardFactsAdapter extends EmberObject {
    * @param {Object} request
    * @return {String} metrics param value
    */
-  _buildMetricsParam(request: Request): string {
+  _buildMetricsParam(request: RequestV2): string {
     const metrics = request.columns.filter(col => col.type === 'metric');
-    const metricIds = (metrics || []).map(metric =>
+    const metricIds = metrics.map(metric =>
       canonicalizeMetric({ metric: metric.field, parameters: metric.parameters })
     );
 
@@ -165,8 +167,8 @@ export default class BardFactsAdapter extends EmberObject {
    * @param {Object} request
    * @return {String} filters param value
    */
-  _buildFiltersParam(request: Request) {
-    const filters = request.filters?.filter((fil: Filter) => fil.type === 'dimension');
+  _buildFiltersParam(request: RequestV2) {
+    const filters = request.filters.filter((fil: Filter) => fil.type === 'dimension');
 
     if (filters?.length) {
       return serializeFilters(filters);
@@ -183,10 +185,10 @@ export default class BardFactsAdapter extends EmberObject {
    * @param {function} aliasFunction function that returns metrics from aliases
    * @return {String} sort param value
    */
-  _buildSortParam(request: Request, aliasFunction = (a: string) => a) {
+  _buildSortParam(request: RequestV2, aliasFunction: AliasFn = a => a) {
     const { sort } = request;
 
-    if (sort?.length) {
+    if (sort.length) {
       return sort
         .map(sortField => {
           const field = aliasFunction(sortField.field);
@@ -213,8 +215,8 @@ export default class BardFactsAdapter extends EmberObject {
    * @param {function} aliasFunction function that returns metrics from aliases
    * @return {String} having param value
    */
-  _buildHavingParam(request: Request, aliasFunction = (a: string) => a) {
-    const having = request.filters?.filter(fil => fil.type === 'metric');
+  _buildHavingParam(request: RequestV2, aliasFunction: AliasFn = a => a) {
+    const having = request.filters.filter(fil => fil.type === 'metric');
 
     if (having?.length) {
       return having
@@ -237,11 +239,11 @@ export default class BardFactsAdapter extends EmberObject {
    * @param {Object} options - optional host options
    * @return {String} URL Path
    */
-  _buildURLPath(request: Request, options: RequestOptions = {}) {
+  _buildURLPath(request: RequestV2, options: RequestOptions = {}) {
     const host = configHost(options);
     const { namespace } = this;
     const table = request.table;
-    const timeGrain = request.columns.find(col => col.field === 'dateTime')?.parameters.grain || 'all';
+    const timeGrain = request.columns.find(col => col.field === 'dateTime')?.parameters?.grain || 'all';
     const dimensions = this._buildDimensionsPath(request);
 
     return `${host}/${namespace}/${table}/${timeGrain}${dimensions}/`;
@@ -262,13 +264,13 @@ export default class BardFactsAdapter extends EmberObject {
    *
    * @return {Object} query object
    */
-  _buildQuery(request: Request, options: RequestOptions) {
+  _buildQuery(request: RequestV2, options: RequestOptions) {
     const { columns } = request;
     const metrics = columns
       .filter(col => col.type === 'metric')
       .map(col => ({ metric: col.field, parameters: col.parameters }));
     const aliasMap = getAliasedMetrics(metrics);
-    const aliasFunction = (alias: string) => canonicalizeAlias(alias, aliasMap);
+    const aliasFunction: AliasFn = alias => canonicalizeAlias(alias, aliasMap);
     const filters = this._buildFiltersParam(request);
     const having = this._buildHavingParam(request, aliasFunction);
     const sort = this._buildSortParam(request, aliasFunction);
@@ -323,7 +325,7 @@ export default class BardFactsAdapter extends EmberObject {
    * @param {RequestOptions} [options] - options object
    * @return {String} url
    */
-  urlForFindQuery(request: Request, options: RequestOptions) {
+  urlForFindQuery(request: RequestV2, options: RequestOptions) {
     assert('Request for bard-facts-v2 adapter must be version 2', request.requestVersion.startsWith('2.'));
 
     // Decorate and translate the request
@@ -348,7 +350,7 @@ export default class BardFactsAdapter extends EmberObject {
    * @param {Request} request - request to decorate
    * @returns {Object} decorated request
    */
-  _decorate(request: Request): Request {
+  _decorate(request: RequestV2): RequestV2 {
     return this.requestDecorator.applyGlobalDecorators(request);
   }
 
@@ -364,7 +366,7 @@ export default class BardFactsAdapter extends EmberObject {
    *      }
    * @returns {Promise} - Promise with the response
    */
-  fetchDataForRequest(request: Request, options: RequestOptions) {
+  fetchDataForRequest(request: RequestV2, options: RequestOptions) {
     assert('Request for bard-facts-v2 adapter must be version 2', request.requestVersion.startsWith('2.'));
 
     // Decorate and translate the request
