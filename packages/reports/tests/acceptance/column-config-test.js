@@ -106,7 +106,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
     assert.dom('.navi-column-config__panel').doesNotExist('Column config drawer is closed');
 
     //add back Date Time
-    await clickItem('timeGrain', 'Week');
+    await clickItem('timeGrain', 'Date Time');
     await animationsSettled();
     assert.dom('.navi-column-config__panel').exists('Column config drawer is open after adding date time');
 
