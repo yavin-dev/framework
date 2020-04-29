@@ -4,10 +4,10 @@
  */
 import EmberObject from '@ember/object';
 import CARDINALITY_SIZES from '../utils/enums/cardinality-sizes';
-import { NormalizedTable } from '../models/metadata/table';
-import { NormalizedMetric } from '../models/metadata/metric';
-import { NormalizedDimension } from '../models/metadata/dimension';
-import { NormalizedTimeDimension } from '../models/metadata/time-dimension';
+import { TableMetadata } from '../models/metadata/table';
+import { MetricMetadata } from '../models/metadata/metric';
+import { DimensionMetadata } from '../models/metadata/dimension';
+import { TimeDimensionMetadata } from '../models/metadata/time-dimension';
 
 type Edge<T> = {
   node: T;
@@ -58,12 +58,12 @@ export default class ElideMetadataSerializer extends EmberObject {
    */
   _normalizeTableConnection(tableConnection: Connection<TableNode>, source: string) {
     const edges = tableConnection.edges || [];
-    let metrics: NormalizedMetric[] = [];
-    let dimensions: NormalizedDimension[] = [];
-    let timeDimensions: NormalizedTimeDimension[] = [];
+    let metrics: MetricMetadata[] = [];
+    let dimensions: DimensionMetadata[] = [];
+    let timeDimensions: TimeDimensionMetadata[] = [];
 
     const tables = edges.map(({ node: table }) => {
-      const newTable: NormalizedTable = {
+      const newTable: TableMetadata = {
         id: table.id,
         name: table.name,
         category: table.category,
@@ -79,9 +79,9 @@ export default class ElideMetadataSerializer extends EmberObject {
       const newTableDimensions = this._normalizeTableDimensions(table.dimensions, table.id, source);
       const newTableTimeDimensions = this._normalizeTableTimeDimensions(table.timeDimensions, table.id, source);
 
-      newTable.metricIds = newTableMetrics.map((m: NormalizedMetric) => m.id);
-      newTable.dimensionIds = newTableDimensions.map((d: NormalizedDimension) => d.id);
-      newTable.timeDimensionIds = newTableTimeDimensions.map((d: NormalizedTimeDimension) => d.id);
+      newTable.metricIds = newTableMetrics.map((m: MetricMetadata) => m.id);
+      newTable.dimensionIds = newTableDimensions.map((d: DimensionMetadata) => d.id);
+      newTable.timeDimensionIds = newTableTimeDimensions.map((d: TimeDimensionMetadata) => d.id);
 
       metrics = metrics.concat(newTableMetrics);
       dimensions = dimensions.concat(newTableDimensions);

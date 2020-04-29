@@ -15,19 +15,19 @@ export type TimeGrain = {
   id: string;
   name: string;
 };
-export type NormalizedTable = {
+export interface TableMetadata {
   id: string;
   name: string;
-  category: string;
-  description: string;
+  category?: string;
+  description?: string;
   cardinality: typeof CARDINALITY_SIZES[number];
   metricIds: string[];
   dimensionIds: string[];
   timeDimensionIds: string[];
   source: string;
-};
+}
 
-export default class Table extends EmberObject {
+export default class Table extends EmberObject implements TableMetadata {
   /**
    * @static
    * @property {string} identifierField
@@ -67,17 +67,17 @@ export default class Table extends EmberObject {
   /**
    * @property {string[]} metricIds - array of metric ids
    */
-  private metricIds!: string[];
+  metricIds!: string[];
 
   /**
    * @property {string[]} dimensionIds - array of dimension ids
    */
-  private dimensionIds!: string[];
+  dimensionIds!: string[];
 
   /**
    * @property {string[]} timeDimensionIds - array of time dimension ids
    */
-  private timeDimensionIds!: string[];
+  timeDimensionIds!: string[];
 
   /**
    * @param {Metric[]} metrics

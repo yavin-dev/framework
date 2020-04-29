@@ -9,22 +9,22 @@ import KegService from '../../services/keg';
 import Table from './table';
 
 export type ColumnType = 'ref' | 'formula' | 'field';
-export type NormalizedColumn = {
+export interface ColumnMetadata {
   id: string;
   name: string;
-  category: string;
-  description: string;
+  category?: string;
+  description?: string;
   tableId: string;
   source: string;
   valueType: TODO<string>;
   tags: string[];
-};
+}
 
 export type BaseExtendedAttributes = {
   description?: string;
 };
 
-export default class Column extends EmberObject {
+export default class Column extends EmberObject implements ColumnMetadata {
   /**
    * @property {KegService} keg
    */
