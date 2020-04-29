@@ -90,6 +90,76 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
       .exists('Column config drawer displays "back" icon when open');
   });
 
+  test('columns drawer - opens when adding', async function(assert) {
+    assert.expect(12);
+
+    await visit('/reports/new');
+    await click('.navi-report__run-btn');
+    assert.deepEqual(getColumns(), ['Date Time (Day)'], 'Initially the only column is date time');
+
+    //remove Date Time
+    await click('.navi-column-config-item__remove-icon');
+
+    //close the drawer
+    await click('.report-view__columns-button');
+    await animationsSettled();
+    assert.dom('.navi-column-config__panel').doesNotExist('Column config drawer is closed');
+
+    //add back Date Time
+    await clickItem('timeGrain', 'Date Time');
+    await animationsSettled();
+    assert.dom('.navi-column-config__panel').exists('Column config drawer is open after adding date time');
+
+    //close the drawer
+    await click('.report-view__columns-button');
+    await animationsSettled();
+    assert.dom('.navi-column-config__panel').doesNotExist('Column config drawer is closed');
+
+    //add a dimension
+    await clickItem('dimension', 'Age');
+    await animationsSettled();
+    assert.dom('.navi-column-config__panel').exists('Column config drawer is open after adding a dimension');
+
+    //add another dimension
+    await clickItem('dimension', 'Browser');
+    await animationsSettled();
+    assert
+      .dom('.navi-column-config__panel')
+      .exists('Column config drawer is still open after adding another dimension');
+
+    //close the drawer
+    await click('.report-view__columns-button');
+    await animationsSettled();
+    assert.dom('.navi-column-config__panel').doesNotExist('Column config drawer is closed');
+
+    //add a metric
+    await clickItem('metric', 'Ad Clicks');
+    await animationsSettled();
+    assert.dom('.navi-column-config__panel').exists('Column config drawer is open after adding a metric');
+
+    //add another metric
+    await clickItem('metric', 'Nav Link Clicks');
+    await animationsSettled();
+    assert.dom('.navi-column-config__panel').exists('Column config drawer is still open after adding another metric');
+
+    //close the drawer
+    await click('.report-view__columns-button');
+    await animationsSettled();
+    assert.dom('.navi-column-config__panel').doesNotExist('Column config drawer is closed');
+
+    //add a parameterized metric
+    await clickItem('metric', 'Platform Revenue');
+    await animationsSettled();
+    assert.dom('.navi-column-config__panel').exists('Column config drawer is open after adding a parameterized metric');
+
+    //add another parameterized metric
+    await clickItem('metric', 'button click count');
+    await animationsSettled();
+    assert
+      .dom('.navi-column-config__panel')
+      .exists('Column config drawer is still open after adding another parameterized metric');
+  });
+
   test('adding, removing and changing - date time', async function(assert) {
     assert.expect(7);
     await visit('reports/1/view');

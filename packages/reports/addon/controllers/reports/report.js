@@ -90,20 +90,23 @@ export default class ReportsReportController extends Controller {
   }
 
   /**
-   * Toggles the column config open and close as well as configuring a listener to resize the visualization
+   * Opens or closes the column config as well as configures a listener to resize the visualization
+   * @param {Boolean} isOpen
    * @param {ReportBuilderComponent} reportBuilder - The report builder component containing the visualization
    */
   @action
-  toggleColumnConfig(reportBuilder) {
+  updateColumnDrawerOpen(isOpen, reportBuilder) {
     const { isColumnDrawerOpen } = this;
-    set(this, 'isColumnDrawerOpen', !isColumnDrawerOpen);
+    set(this, 'isColumnDrawerOpen', isOpen);
 
-    const visualizationElement = reportBuilder.element.querySelector('.report-view');
-    if (visualizationElement) {
-      const visualizationResizeEvent = new Event('resizestop');
-      this.onFadeEnd = () => visualizationElement.dispatchEvent(visualizationResizeEvent);
-    } else {
-      this.onFadeEnd = null;
+    if (isOpen !== isColumnDrawerOpen) {
+      const visualizationElement = reportBuilder.element.querySelector('.report-view');
+      if (visualizationElement) {
+        const visualizationResizeEvent = new Event('resizestop');
+        this.onFadeEnd = () => visualizationElement.dispatchEvent(visualizationResizeEvent);
+      } else {
+        this.onFadeEnd = null;
+      }
     }
   }
 
