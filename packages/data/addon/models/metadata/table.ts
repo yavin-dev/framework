@@ -27,7 +27,7 @@ export interface TableMetadata {
   source: string;
 }
 
-export default class Table extends EmberObject implements TableMetadata {
+export default class TableMetadataModel extends EmberObject implements TableMetadata {
   /**
    * @static
    * @property {string} identifierField

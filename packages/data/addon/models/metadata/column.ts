@@ -24,7 +24,7 @@ export type BaseExtendedAttributes = {
   description?: string;
 };
 
-export default class Column extends EmberObject implements ColumnMetadata {
+export default class ColumnMetadataModel extends EmberObject implements ColumnMetadata {
   /**
    * @property {KegService} keg
    */
