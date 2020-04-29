@@ -12,7 +12,7 @@ export const INTRINSIC_VALUE_EXPRESSION = 'self';
 
 type FunctionArgumentType = 'ref' | 'primitive';
 
-type LocalFunctionArgument = FunctionArgument & {
+type LocalFunctionArgument = FunctionArgumentMetadataModel & {
   type: 'ref';
   expression: 'self';
   _localValues: string[];
@@ -24,11 +24,11 @@ type LocalFunctionArgument = FunctionArgument & {
  * @function isLocalFunction
  * @returns {boolean} true if values are stored locally
  */
-function isLocalFunction(functionArgument: FunctionArgument): functionArgument is LocalFunctionArgument {
+function isLocalFunction(functionArgument: FunctionArgumentMetadataModel): functionArgument is LocalFunctionArgument {
   return functionArgument.expression === INTRINSIC_VALUE_EXPRESSION;
 }
 
-export default class FunctionArgument extends EmberObject {
+export default class FunctionArgumentMetadataModel extends EmberObject {
   /**
    * @static
    * @property {string} identifierField

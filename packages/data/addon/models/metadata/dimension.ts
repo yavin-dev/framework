@@ -4,14 +4,16 @@
  */
 import { inject as service } from '@ember/service';
 import { assert } from '@ember/debug';
-import Column, { BaseExtendedAttributes } from './column';
+import ColumnMetadataModel, { BaseExtendedAttributes, ColumnMetadata } from './column';
 import CARDINALITY_SIZES from '../../utils/enums/cardinality-sizes';
 
 type Cardinality = typeof CARDINALITY_SIZES[number] | undefined;
 type Field = TODO;
 type ExtendedAttributes = BaseExtendedAttributes;
 
-export default class Dimension extends Column {
+export type DimensionMetadata = ColumnMetadata;
+
+export default class DimensionMetadataModel extends ColumnMetadataModel implements DimensionMetadata {
   /**
    * @static
    * @property {string} identifierField
@@ -126,7 +128,7 @@ export default class Dimension extends Column {
   /**
    * @property {Promise} extended - extended metadata for the dimension that isn't provided in initial table fullView metadata load
    */
-  get extended(): Promise<Dimension & ExtendedAttributes> {
+  get extended(): Promise<DimensionMetadataModel & ExtendedAttributes> {
     const { metadata, id, source } = this;
     return metadata.findById('dimension', id, source);
   }

@@ -6,7 +6,7 @@ import gql from 'graphql-tag';
 import TableFragment from '../fragments/table';
 
 const query = gql`
-  query($id: String!) {
+  query($id: DeferredID!) {
     table(id: $id) {
       ...TableFragment
     }

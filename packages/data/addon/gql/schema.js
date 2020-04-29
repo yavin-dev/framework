@@ -6,21 +6,37 @@
 import gql from 'graphql-tag';
 
 const schema = gql`
+  scalar DeferredID
+
+  scalar Long
+
+  scalar Date
+
+  type TableConnection {
+    pageInfo: PageInfo
+    edges: [TableEdge!]!
+  }
+
+  type TableEdge {
+    cursor: String
+    node: Table!
+  }
+
   type Table implements Node {
-    id: String!
-    name: String!
+    id: DeferredID!
+    name: String
     description: String
     category: String
     metrics: MetricConnection
-    cardinalitySize: CardinalitySize
+    cardinality: com_yahoo_elide_datastores_aggregation_annotation_CardinalitySize
     dimensions: DimensionConnection
     timeDimensions: TimeDimensionConnection
-    tags: [String!]
+    tableTags: [String!]
   }
 
   type MetricConnection {
     pageInfo: PageInfo
-    edges: [MetricEdge]!
+    edges: [MetricEdge!]!
   }
 
   type MetricEdge {
@@ -30,92 +46,88 @@ const schema = gql`
 
   type DimensionConnection {
     pageInfo: PageInfo
-    edges: [DimensionEdge]!
+    edges: [DimensionEdge!]!
   }
 
   type DimensionEdge {
     cursor: String
-    node: Dimension
+    node: Dimension!
   }
 
   type TimeDimensionConnection {
     pageInfo: PageInfo
-    edges: [TimeDimensionEdge]!
+    edges: [TimeDimensionEdge!]!
   }
 
   type TimeDimensionEdge {
     cursor: String
-    node: TimeDimension
+    node: TimeDimension!
   }
 
   interface Node {
-    id: String!
+    id: DeferredID!
   }
 
   interface ColumnInterface {
-    id: String!
+    id: DeferredID!
     name: String
     description: String
     table: Table
-    sourceColumn: ColumnInterface
     category: String
-    valueType: ValueType
-    tags: [String!]
+    valueType: com_yahoo_elide_datastores_aggregation_metadata_enums_ValueType
+    columnTags: [String!]
   }
 
   type Metric implements Node & ColumnInterface {
-    id: String!
+    id: DeferredID!
     name: String
     description: String
     table: Table
-    sourceColumn: Metric
     category: String
-    valueType: ValueType
-    tags: [String!]
+    valueType: com_yahoo_elide_datastores_aggregation_metadata_enums_ValueType
+    columnTags: [String!]
     defaultFormat: String
-    metricFunction: MetricFunction
+    metricFunction: metricFunction
   }
 
   type Dimension implements Node & ColumnInterface {
-    id: String!
+    id: DeferredID!
     name: String!
     description: String
     table: Table
-    sourceColumn: Dimension
     category: String
-    valueType: ValueType
-    tags: [String!]
+    valueType: com_yahoo_elide_datastores_aggregation_metadata_enums_ValueType
+    columnTags: [String!]
   }
 
   type TimeDimension implements Node & ColumnInterface {
-    id: String!
+    id: DeferredID!
     name: String!
     description: String
     table: Table
-    sourceColumn: TimeDimension
     category: String
-    valueType: ValueType
-    tags: [String!]
+    valueType: com_yahoo_elide_datastores_aggregation_metadata_enums_ValueType
+    columnTags: [String!]
     supportedGrains: [TimeGrain]
     timeZone: TimeZone
   }
 
-  type MetricFunction {
-    id: String!
+  type metricFunction {
+    id: DeferredID!
     name: String
     description: String
-    Arguments: [FunctionArgument]
+    arguments: [functionArgument]
   }
 
-  type FunctionArgument {
-    id: String!
+  type functionArgument {
+    id: DeferredID!
     name: String
     description: String
-    type: ValueType
+    type: com_yahoo_elide_datastores_aggregation_metadata_enums_ValueType
     subType: String
   }
 
-  enum CardinalitySize {
+  enum com_yahoo_elide_datastores_aggregation_annotation_CardinalitySize {
     SMALL
     MEDIUM
     LARGE
@@ -129,7 +141,7 @@ const schema = gql`
     YEAR
   }
 
-  enum ValueType {
+  enum com_yahoo_elide_datastores_aggregation_metadata_enums_ValueType {
     TIME
     NUMBER
     TEXT
@@ -147,11 +159,12 @@ const schema = gql`
     hasNextPage: Boolean!
     hasPreviousPage: Boolean!
     startCursor: String
+    totalRecords: Long
   }
 
   type Query {
-    tables: [Table]
-    table(id: String!): Table
+    tables: TableConnection
+    table(id: DeferredID!): Table
   }
 `;
 
