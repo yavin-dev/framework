@@ -15,7 +15,9 @@ export type TimeGrain = {
   id: string;
   name: string;
 };
-export interface TableMetadata {
+
+// Shape passed to model constructor
+export interface TableMetadataPayload {
   id: string;
   name: string;
   category?: string;
@@ -26,8 +28,20 @@ export interface TableMetadata {
   timeDimensionIds: string[];
   source: string;
 }
+// Shape of public properties on model
+export interface TableMetadata {
+  id: string;
+  name: string;
+  category?: string;
+  description?: string;
+  cardinality: typeof CARDINALITY_SIZES[number];
+  metrics: Metric[];
+  dimensions: Dimension[];
+  timeDimensions: TimeDimension[];
+  source: string;
+}
 
-export default class TableMetadataModel extends EmberObject implements TableMetadata {
+export default class TableMetadataModel extends EmberObject implements TableMetadata, TableMetadataPayload {
   /**
    * @static
    * @property {string} identifierField

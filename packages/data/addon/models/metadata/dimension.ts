@@ -4,16 +4,20 @@
  */
 import { inject as service } from '@ember/service';
 import { assert } from '@ember/debug';
-import ColumnMetadataModel, { BaseExtendedAttributes, ColumnMetadata } from './column';
+import ColumnMetadataModel, { BaseExtendedAttributes, ColumnMetadata, ColumnMetadataPayload } from './column';
 import CARDINALITY_SIZES from '../../utils/enums/cardinality-sizes';
 
 type Cardinality = typeof CARDINALITY_SIZES[number] | undefined;
 type Field = TODO;
 type ExtendedAttributes = BaseExtendedAttributes;
 
+// Shape of public properties on model
 export type DimensionMetadata = ColumnMetadata;
+// Shape passed to model constructor
+export type DimensionMetadataPayload = ColumnMetadataPayload;
 
-export default class DimensionMetadataModel extends ColumnMetadataModel implements DimensionMetadata {
+export default class DimensionMetadataModel extends ColumnMetadataModel
+  implements DimensionMetadata, DimensionMetadataPayload {
   /**
    * @static
    * @property {string} identifierField

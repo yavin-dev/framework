@@ -3,15 +3,20 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { inject as service } from '@ember/service';
-import ColumnMetadataModel, { BaseExtendedAttributes, ColumnMetadata } from './column';
+import ColumnMetadataModel, { BaseExtendedAttributes, ColumnMetadata, ColumnMetadataPayload } from './column';
 import MetricFunction from './metric-function';
 
+// Shape of public properties on model
 export interface MetricMetadata extends ColumnMetadata {
+  defaultFormat: string;
+}
+// Shape passed to model constructor
+export interface MetricMetadataPayload extends ColumnMetadataPayload {
   defaultFormat: string;
 }
 
 type ExtendedAttributes = BaseExtendedAttributes;
-export default class MetricMetadataModel extends ColumnMetadataModel implements MetricMetadata {
+export default class MetricMetadataModel extends ColumnMetadataModel implements MetricMetadata, MetricMetadataPayload {
   /**
    * @static
    * @property {string} identifierField
