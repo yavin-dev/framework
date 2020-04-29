@@ -81,7 +81,8 @@ const TestRequest = {
         parameters: {},
         type: 'dimension'
       }
-    ]
+    ],
+    sort: []
   },
   Response = {
     rows: [
@@ -299,7 +300,7 @@ module('Unit | Bard Facts V2 Adapter', function(hooks) {
   });
 
   test('_buildFiltersParam', function(assert) {
-    assert.expect(8);
+    assert.expect(7);
 
     let singleFilter = {
       filters: [{ field: 'd1.desc', parameters: {}, type: 'dimension', operator: 'in', values: ['v1', 'v2'] }]
@@ -320,13 +321,6 @@ module('Unit | Bard Facts V2 Adapter', function(hooks) {
       Adapter._buildFiltersParam(manyFilters),
       'd1|desc-in["v1","v2"],d2|id-notin["v3","v4"]',
       '_buildFiltersParam built the correct string for many filters'
-    );
-
-    let noFilters = {};
-    assert.equal(
-      Adapter._buildFiltersParam(noFilters),
-      undefined,
-      '_buildFiltersParam returns undefined with no filters'
     );
 
     let emptyFilters = { filters: [] };
@@ -376,7 +370,7 @@ module('Unit | Bard Facts V2 Adapter', function(hooks) {
   });
 
   test('_buildSortParam', function(assert) {
-    assert.expect(8);
+    assert.expect(7);
 
     let singleSort = {
       sort: [
@@ -460,9 +454,6 @@ module('Unit | Bard Facts V2 Adapter', function(hooks) {
       'sort param with aliases mixed with non aliases work'
     );
 
-    let noSorts = {};
-    assert.equal(Adapter._buildSortParam(noSorts), undefined, '_buildSortParam returns undefined with no sort');
-
     let emptySorts = { sort: [] };
     assert.equal(Adapter._buildSortParam(emptySorts), undefined, '_buildSortParam returns undefined with empty sort');
 
@@ -484,7 +475,7 @@ module('Unit | Bard Facts V2 Adapter', function(hooks) {
   });
 
   test('_buildHavingParam', function(assert) {
-    assert.expect(7);
+    assert.expect(6);
 
     let singleHaving = {
       filters: [
@@ -523,9 +514,6 @@ module('Unit | Bard Facts V2 Adapter', function(hooks) {
       'm1-gt[0],m2-lte[10]',
       '_buildHavingParam built the correct string for multiple having'
     );
-
-    let noHavings = {};
-    assert.equal(Adapter._buildHavingParam(noHavings), undefined, '_buildHavingParam returns undefined with no having');
 
     let emptyHavings = { filters: [] };
     assert.equal(
