@@ -9,7 +9,7 @@
  *   />
  */
 import BaseFilterBuilderComponent from './base';
-import { computed, get } from '@ember/object';
+import { computed } from '@ember/object';
 import { A as arr } from '@ember/array';
 
 export default class DateDimensionFilterBuilderComponent extends BaseFilterBuilderComponent {
@@ -22,26 +22,23 @@ export default class DateDimensionFilterBuilderComponent extends BaseFilterBuild
    * @property {Array} supportedOperators
    * @override
    */
-  @computed
-  get supportedOperators() {
-    return [
-      {
-        id: 'gte',
-        name: 'Since (>=)',
-        valuesComponent: 'filter-values/date'
-      },
-      {
-        id: 'lt',
-        name: 'Before (<)',
-        valuesComponent: 'filter-values/date'
-      },
-      {
-        id: 'bet',
-        name: 'Between (<=>)',
-        valuesComponent: 'filter-values/dimension-date-range'
-      }
-    ];
-  }
+  supportedOperators = [
+    {
+      id: 'gte',
+      name: 'Since (>=)',
+      valuesComponent: 'filter-values/date'
+    },
+    {
+      id: 'lt',
+      name: 'Before (<)',
+      valuesComponent: 'filter-values/date'
+    },
+    {
+      id: 'bet',
+      name: 'Between (<=>)',
+      valuesComponent: 'filter-values/dimension-date-range'
+    }
+  ];
 
   /**
    * @property {Object} filter
@@ -49,16 +46,19 @@ export default class DateDimensionFilterBuilderComponent extends BaseFilterBuild
    */
   @computed('requestFragment.{operator,dimension,values.[]}')
   get filter() {
-    const requestFragment = get(this, 'requestFragment'),
-      serializedFilter =
-        typeof requestFragment.serialize === 'function' ? requestFragment.serialize() : requestFragment,
-      operatorId = get(requestFragment, 'operator'),
-      operator = arr(get(this, 'supportedOperators')).findBy('id', operatorId);
+    const { requestFragment } = this;
+    const serializedFilter =
+      typeof requestFragment.serialize === 'function' ? requestFragment.serialize() : requestFragment;
+
+    const { values } = serializedFilter;
+
+    const { dimension, operator: operatorId } = requestFragment;
+    const operator = arr(this.supportedOperators).findBy('id', operatorId);
 
     return {
-      subject: get(requestFragment, 'dimension'),
+      subject: dimension,
       operator,
-      values: arr(get(serializedFilter, 'values'))
+      values: arr(values)
     };
   }
 }
