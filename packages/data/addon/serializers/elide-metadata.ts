@@ -24,7 +24,10 @@ type ColumnNode = {
   category: string;
   valueType: TODO<string>;
   columnTags: string[];
+  columnType: ColumnType;
+  expression: string;
 };
+type ColumnType = 'ref' | 'formula' | 'field';
 type MetricNode = ColumnNode & { defaultFormat: string };
 type DimensionNode = ColumnNode;
 type TimeDimensionNode = DimensionNode & {
@@ -118,7 +121,9 @@ export default class ElideMetadataSerializer extends EmberObject {
         tableId,
         source,
         tags: node.columnTags,
-        defaultFormat: node.defaultFormat
+        defaultFormat: node.defaultFormat,
+        type: node.columnType,
+        expression: node.expression
       };
     });
   }
@@ -141,7 +146,9 @@ export default class ElideMetadataSerializer extends EmberObject {
         valueType: node.valueType,
         tableId,
         source,
-        tags: node.columnTags
+        tags: node.columnTags,
+        type: node.columnType,
+        expression: node.expression
       };
     });
   }
@@ -170,7 +177,9 @@ export default class ElideMetadataSerializer extends EmberObject {
         source,
         tags: node.columnTags,
         supportedGrains: node.supportedGrains,
-        timeZone: node.timeZone
+        timeZone: node.timeZone,
+        type: node.columnType,
+        expression: node.expression
       };
     });
   }

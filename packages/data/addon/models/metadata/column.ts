@@ -19,6 +19,8 @@ export interface ColumnMetadataPayload {
   tableId: string;
   source: string;
   valueType: TODO<string>;
+  type: ColumnType;
+  expression?: string;
   tags: string[];
 }
 
@@ -31,6 +33,8 @@ export interface ColumnMetadata {
   table: Table;
   source: string;
   valueType: TODO<string>;
+  type: ColumnType;
+  expression?: string;
   tags: string[];
 }
 

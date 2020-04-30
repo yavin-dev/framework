@@ -31,7 +31,9 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
                       category: 'cat1',
                       valueType: 'NUMBER',
                       columnTags: ['IMPORTANT'],
-                      defaultFormat: 'NONE'
+                      defaultFormat: 'NONE',
+                      columnType: 'field',
+                      expression: null
                     }
                   }
                 ]
@@ -45,7 +47,9 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
                       description: 'Table A Dimension 1',
                       category: 'cat1',
                       valueType: 'TEXT',
-                      columnTags: ['IMPORTANT']
+                      columnTags: ['IMPORTANT'],
+                      columnType: 'field',
+                      expression: null
                     }
                   },
                   {
@@ -55,7 +59,9 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
                       description: 'Table A Dimension 2',
                       category: 'cat1',
                       valueType: 'TEXT',
-                      columnTags: ['IMPORTANT']
+                      columnTags: ['IMPORTANT'],
+                      columnType: 'field',
+                      expression: null
                     }
                   }
                 ]
@@ -71,7 +77,9 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
                       valueType: 'DATE',
                       columnTags: ['IMPORTANT'],
                       supportedGrains: ['day', 'week'],
-                      timeZone: 'UTC'
+                      timeZone: 'UTC',
+                      columnType: 'field',
+                      expression: null
                     }
                   }
                 ]
@@ -95,7 +103,9 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
                       category: 'cat2',
                       valueType: 'NUMBER',
                       columnTags: ['IMPORTANT'],
-                      defaultFormat: 'NONE'
+                      defaultFormat: 'NONE',
+                      columnType: 'field',
+                      expression: null
                     }
                   },
                   {
@@ -106,7 +116,9 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
                       category: 'cat2',
                       valueType: 'NUMBER',
                       columnTags: ['IMPORTANT'],
-                      defaultFormat: 'NONE'
+                      defaultFormat: 'NONE',
+                      columnType: 'field',
+                      expression: null
                     }
                   }
                 ]
@@ -120,7 +132,9 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
                       description: 'Table B Dimension 1',
                       category: 'cat2',
                       valueType: 'TEXT',
-                      columnTags: ['IMPORTANT']
+                      columnTags: ['IMPORTANT'],
+                      columnType: 'field',
+                      expression: null
                     }
                   },
                   {
@@ -130,7 +144,9 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
                       description: 'Table B Dimension 2',
                       category: 'cat2',
                       valueType: 'TEXT',
-                      columnTags: ['IMPORTANT']
+                      columnTags: ['IMPORTANT'],
+                      columnType: 'field',
+                      expression: null
                     }
                   }
                 ]
@@ -181,6 +197,8 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
             valueType: 'NUMBER',
             tags: ['IMPORTANT'],
             defaultFormat: 'NONE',
+            type: 'field',
+            expression: null,
             source: 'dummy',
             tableId: 'tableA'
           },
@@ -192,6 +210,8 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
             valueType: 'NUMBER',
             tags: ['IMPORTANT'],
             defaultFormat: 'NONE',
+            type: 'field',
+            expression: null,
             tableId: 'tableB',
             source: 'dummy'
           },
@@ -203,6 +223,8 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
             valueType: 'NUMBER',
             tags: ['IMPORTANT'],
             defaultFormat: 'NONE',
+            type: 'field',
+            expression: null,
             tableId: 'tableB',
             source: 'dummy'
           }
@@ -215,6 +237,8 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
             category: 'cat1',
             valueType: 'TEXT',
             tags: ['IMPORTANT'],
+            type: 'field',
+            expression: null,
             source: 'dummy',
             tableId: 'tableA'
           },
@@ -225,6 +249,8 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
             category: 'cat1',
             valueType: 'TEXT',
             tags: ['IMPORTANT'],
+            type: 'field',
+            expression: null,
             source: 'dummy',
             tableId: 'tableA'
           },
@@ -235,6 +261,8 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
             category: 'cat2',
             valueType: 'TEXT',
             tags: ['IMPORTANT'],
+            type: 'field',
+            expression: null,
             source: 'dummy',
             tableId: 'tableB'
           },
@@ -245,6 +273,8 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
             category: 'cat2',
             valueType: 'TEXT',
             tags: ['IMPORTANT'],
+            type: 'field',
+            expression: null,
             source: 'dummy',
             tableId: 'tableB'
           }
@@ -257,6 +287,8 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
             category: 'cat1',
             valueType: 'DATE',
             tags: ['IMPORTANT'],
+            type: 'field',
+            expression: null,
             supportedGrains: ['day', 'week'],
             timeZone: 'UTC',
             source: 'dummy',
@@ -289,7 +321,9 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
             category: 'userMetrics',
             valueType: 'NUMBER',
             columnTags: ['IMPORTANT'],
-            defaultFormat: 'NONE'
+            defaultFormat: 'NONE',
+            columnType: 'field',
+            expression: null
           }
         },
         {
@@ -300,7 +334,9 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
             category: 'userMetrics',
             valueType: 'NUMBER',
             columnTags: ['DISPLAY'],
-            defaultFormat: 'NONE'
+            defaultFormat: 'NONE',
+            columnType: 'field',
+            expression: null
           }
         }
       ]
@@ -318,7 +354,9 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
           tags: ['IMPORTANT'],
           defaultFormat: 'NONE',
           source,
-          tableId
+          tableId,
+          type: 'field',
+          expression: null
         },
         {
           id: 'impressions',
@@ -329,7 +367,9 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
           tags: ['DISPLAY'],
           defaultFormat: 'NONE',
           source,
-          tableId
+          tableId,
+          type: 'field',
+          expression: null
         }
       ],
       'Metric connection payload is normalized properly for a table'
@@ -354,7 +394,9 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
             description: 'User Age',
             category: 'userDimensions',
             valueType: 'TEXT',
-            columnTags: ['IMPORTANT']
+            columnTags: ['IMPORTANT'],
+            columnType: 'field',
+            expression: null
           }
         },
         {
@@ -364,7 +406,9 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
             description: 'User Gender',
             category: 'userDimensions',
             valueType: 'TEXT',
-            columnTags: ['DISPLAY']
+            columnTags: ['DISPLAY'],
+            columnType: 'field',
+            expression: null
           }
         }
       ]
@@ -381,7 +425,9 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
           valueType: 'TEXT',
           tags: ['IMPORTANT'],
           source,
-          tableId
+          tableId,
+          type: 'field',
+          expression: null
         },
         {
           id: 'gender',
@@ -391,7 +437,9 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
           valueType: 'TEXT',
           tags: ['DISPLAY'],
           source,
-          tableId
+          tableId,
+          type: 'field',
+          expression: null
         }
       ],
       'Dimension connection payload is normalized properly for a table'
@@ -421,7 +469,9 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
             timeZone: {
               short: 'PST',
               long: 'Pacific Standard Time'
-            }
+            },
+            columnType: 'field',
+            expression: null
           }
         },
         {
@@ -436,7 +486,9 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
             timeZone: {
               short: 'CST',
               long: 'Central Standard Time'
-            }
+            },
+            columnType: 'field',
+            expression: null
           }
         }
       ]
@@ -458,7 +510,9 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
             long: 'Pacific Standard Time'
           },
           source,
-          tableId
+          tableId,
+          type: 'field',
+          expression: null
         },
         {
           id: 'orderMonth',
@@ -473,7 +527,9 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
             long: 'Central Standard Time'
           },
           source,
-          tableId
+          tableId,
+          type: 'field',
+          expression: null
         }
       ],
       'Time Dimension connection payload is normalized properly for a table'

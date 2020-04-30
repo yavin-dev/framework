@@ -12,9 +12,19 @@ type Field = TODO;
 type ExtendedAttributes = BaseExtendedAttributes;
 
 // Shape of public properties on model
-export type DimensionMetadata = ColumnMetadata;
+export interface DimensionMetadata extends ColumnMetadata {
+  cardinality: Cardinality;
+  getTagsForField(fieldName: string): string[];
+  getFieldsForTag(tag: string): Field[];
+  primaryKeyFieldName: string;
+  descriptionFieldName: string;
+  idFieldName: string;
+  extended: Promise<DimensionMetadataModel & ExtendedAttributes>;
+}
 // Shape passed to model constructor
-export type DimensionMetadataPayload = ColumnMetadataPayload;
+export interface DimensionMetadataPayload extends ColumnMetadataPayload {
+  fields?: Field[];
+}
 
 export default class DimensionMetadataModel extends ColumnMetadataModel
   implements DimensionMetadata, DimensionMetadataPayload {

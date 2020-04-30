@@ -9,10 +9,17 @@ import MetricFunction from './metric-function';
 // Shape of public properties on model
 export interface MetricMetadata extends ColumnMetadata {
   defaultFormat: string;
+  metricFunction: MetricFunction | undefined;
+  hasParameters: boolean;
+  arguments: TODO[];
+  getParameter(id: string): TODO | undefined;
+  getDefaultParameters(): Dict<string> | undefined;
+  extended: Promise<MetricMetadataModel & ExtendedAttributes>;
 }
 // Shape passed to model constructor
 export interface MetricMetadataPayload extends ColumnMetadataPayload {
   defaultFormat: string;
+  metricFunctionId?: string;
 }
 
 type ExtendedAttributes = BaseExtendedAttributes;

@@ -18,5 +18,7 @@ export default Factory.extend({
   columnTags() {
     return ['DISPLAY'];
   },
-  defaultFormat: 'number'
+  defaultFormat: 'number',
+  columnType: 'field',
+  expression: null
 });

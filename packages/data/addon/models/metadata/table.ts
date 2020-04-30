@@ -27,6 +27,8 @@ export interface TableMetadataPayload {
   dimensionIds: string[];
   timeDimensionIds: string[];
   source: string;
+  timeGrainIds?: string[];
+  tags?: string[];
 }
 // Shape of public properties on model
 export interface TableMetadata {
@@ -39,6 +41,8 @@ export interface TableMetadata {
   dimensions: Dimension[];
   timeDimensions: TimeDimension[];
   source: string;
+  timeGrains: TimeGrain[];
+  tags: string[];
 }
 
 export default class TableMetadataModel extends EmberObject implements TableMetadata, TableMetadataPayload {
@@ -139,7 +143,7 @@ export default class TableMetadataModel extends EmberObject implements TableMeta
   /**
    * @property {string[]} timeGrainIds - supported timegrains for a column
    */
-  private timeGrainIds: string[] = [];
+  timeGrainIds: string[] = [];
 
   /**
    * @property {Object[]} timeGrains - timeGrain objects with id and display name
