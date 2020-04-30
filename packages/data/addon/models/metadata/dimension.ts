@@ -24,6 +24,7 @@ export interface DimensionMetadata extends ColumnMetadata {
 // Shape passed to model constructor
 export interface DimensionMetadataPayload extends ColumnMetadataPayload {
   fields?: Field[];
+  cardinality?: Cardinality;
 }
 
 export default class DimensionMetadataModel extends ColumnMetadataModel
