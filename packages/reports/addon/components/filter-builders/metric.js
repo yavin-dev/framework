@@ -10,14 +10,8 @@
 
 import { A as arr } from '@ember/array';
 import BaseFilterBuilderComponent from './base';
-<<<<<<< HEAD
-import { computed, get } from '@ember/object';
 import { getOwner } from '@ember/application';
-=======
 import { computed } from '@ember/object';
-import { metricFormat } from 'navi-data/helpers/metric-format';
-import layout from 'navi-reports/templates/components/filter-builders/metric';
->>>>>>> Update: PR Comments
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
 import layout from 'navi-reports/templates/components/filter-builders/metric';
 
@@ -80,15 +74,10 @@ class MetricFilterBuilderComponent extends BaseFilterBuilderComponent {
    */
   @computed('filter.subject.{metric,parameters}')
   get displayName() {
-<<<<<<< HEAD
-    let metric = get(this, 'filter.subject');
+    const metric = this.filter.subject;
     return getOwner(this)
       .lookup('service:navi-formatter')
       .formatMetric(metric.metric, metric.parameters);
-=======
-    const metric = this.filter.subject;
-    return metricFormat(metric, metric.metric?.name);
->>>>>>> Update: PR Comments
   }
 
   /**
