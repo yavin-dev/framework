@@ -8,7 +8,8 @@ module.exports = function(defaults) {
       useLess: true
     },
     'ember-cli-babel': {
-      includePolyfill: true
+      includePolyfill: true,
+      enableTypeScriptTransform: true
     },
     /* fingerprint is disabled for the demo build, which is otherwise like production */
     fingerprint: {
