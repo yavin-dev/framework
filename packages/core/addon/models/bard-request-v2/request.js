@@ -70,36 +70,66 @@ export default class Request extends Fragment.extend(Validations) {
    */
   clone() {
     const { store } = this,
-      clonedRequest = this.toJSON();
+      clonedRequest = this.toJSON(),
+      typeMap = this._buildTypeMap();
 
     return store.createFragment('bard-request-v2/request', {
-      filters: clonedRequest.filters.map(filter =>
-        store.createFragment('bard-request-v2/fragments/filter', {
+      filters: clonedRequest.filters.map(filter => {
+        const newFilter = store.createFragment('bard-request-v2/fragments/filter', {
           field: filter.field,
           parameters: filter.parameters,
           operator: filter.operator,
           values: filter.values
-        })
-      ),
-      columns: clonedRequest.columns.map(column =>
-        store.createFragment('bard-request-v2/fragments/column', {
+        });
+        newFilter.applyMeta(typeMap[newFilter.lookupField], clonedRequest.dataSource);
+        return newFilter;
+      }),
+      columns: clonedRequest.columns.map(column => {
+        const newColumn = store.createFragment('bard-request-v2/fragments/column', {
           field: column.field,
           parameters: column.parameters,
           type: column.type,
           alias: column.alias
-        })
-      ),
+        });
+        newColumn.applyMeta(typeMap[newColumn.lookupField], clonedRequest.dataSource);
+        return newColumn;
+      }),
       table: clonedRequest.table,
-      sort: clonedRequest.sort.map(sort =>
-        store.createFragment('bard-request-v2/fragments/sort', {
+      sort: clonedRequest.sort.map(sort => {
+        const newSort = store.createFragment('bard-request-v2/fragments/sort', {
           field: sort.field,
           parameters: sort.parameters,
           direction: sort.direction
-        })
-      ),
+        });
+        newSort.applyMeta(typeMap[newSort.lookupField], clonedRequest.dataSource);
+        return newSort;
+      }),
       limit: clonedRequest.limit,
       requestVersion: clonedRequest.requestVersion,
       dataSource: clonedRequest.dataSource
     });
+  }
+
+  /**
+   * Builds field -> type map for request
+   * @returns {object<BaseFragment>}
+   */
+  _buildTypeMap() {
+    const typeMap = this.columns.reduce(
+      (types, col) => {
+        if (!types[col.lookupField]) {
+          return Object.assign({}, types, { [col.lookupField]: col.type });
+        }
+        return types;
+      },
+      { dateTime: 'dimension' }
+    );
+
+    [...this.filters.toArray(), ...this.sort.toArray()].forEach(col => {
+      if (!typeMap[col.lookupField] && col.columnMetaType) {
+        typeMap[col.lookupField] = col.columnMetaType;
+      }
+    });
+    return typeMap;
   }
 }
