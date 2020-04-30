@@ -5,10 +5,10 @@
 import Service, { inject as service } from '@ember/service';
 import Store from 'ember-data/store';
 import Column from 'navi-data/models/metadata/column';
-import Metric from 'navi-data/models/metadata/metric';
 import ColumnFragment from '../models/bard-request-v2/fragments/column';
 import FilterFragment from '../models/bard-request-v2/fragments/filter';
 import SortFragment from '../models/bard-request-v2/fragments/sort';
+import { camelize } from '@ember/string';
 
 interface StoreWithFragment extends Store {
   createFragment(fragmentName: string, attributes: object): ColumnFragment | FilterFragment | SortFragment;
@@ -23,15 +23,20 @@ export default class FragmentFactory extends Service {
    * @param alias - optional alias for this column
    * @param dimensionField - dimension field if passing in a dimension `id` or `description` for example
    */
-  createColumnFromMeta(meta: Column, parameters: object = {}, alias?: string, dimensionField?: string): ColumnFragment {
-    const type = meta instanceof Metric ? 'metric' : 'dimension';
+  createColumnFromMeta(
+    columnMetadata: Column,
+    parameters: Dict<string> = {},
+    alias?: string,
+    dimensionField?: string
+  ): ColumnFragment {
+    const type = this._getMetaColumnType(columnMetadata);
     const column = this.store.createFragment('bard-request-v2/fragments/column', {
-      field: dimensionField ? `${meta.id}.${dimensionField}` : meta.id,
+      field: dimensionField ? `${columnMetadata.id}.${dimensionField}` : columnMetadata.id,
       type,
       parameters,
       alias
     }) as ColumnFragment;
-    column.meta = meta;
+    column.applyMeta(type, columnMetadata.source);
     return column;
   }
 
@@ -40,14 +45,14 @@ export default class FragmentFactory extends Service {
    * @param type - metric or dimension
    * @param dataSource - datasource or namespace for metadata lookups
    * @param field - field name, if dimension includes field `dimension.id`
-   * @param parameters - parameters to attach to column, if noen pass empty object `{}`
+   * @param parameters - parameters to attach to column, if none pass empty object `{}`
    * @param alias - optional alias for this column
    */
   createColumn(
-    type: 'metric' | 'dimension',
+    type: 'metric' | 'dimension' | 'timeDimension',
     dataSource: string,
     field: string,
-    parameters: object = {},
+    parameters: Dict<string> = {},
     alias?: string
   ): ColumnFragment {
     const column = this.store.createFragment('bard-request-v2/fragments/column', {
@@ -63,25 +68,25 @@ export default class FragmentFactory extends Service {
   /**
    * Builds a request v2 filter fragment given meta data object.
    * @param meta - meta data object to build this filter from
-   * @param parameters - parameters to attach to column, if noen pass empty object `{}`
+   * @param parameters - parameters to attach to column, if none pass empty object `{}`
    * @param operator - operator to pass in: 'contains, in, notnull etc'
    * @param values - array of values to filter by
    * @param dimensionField - dimension field if passing in a dimension `id` or `description` for example
    */
   createFilterFromMeta(
-    meta: Column,
-    parameters: object = {},
+    columnMetadata: Column,
+    parameters: Dict<string> = {},
     operator: string,
     values: Array<string | number>,
     dimensionField?: string
   ): FilterFragment {
     const filter = this.store.createFragment('bard-request-v2/fragments/filter', {
-      field: dimensionField ? `${meta.id}.${dimensionField}` : meta.id,
+      field: dimensionField ? `${columnMetadata.id}.${dimensionField}` : columnMetadata.id,
       parameters,
       operator,
       values
     }) as FilterFragment;
-    filter.meta = meta;
+    filter.applyMeta(this._getMetaColumnType(columnMetadata), columnMetadata.source);
     return filter;
   }
 
@@ -90,15 +95,15 @@ export default class FragmentFactory extends Service {
    * @param type - metric or dimension
    * @param dataSource - datasource or namespace for metadata lookups
    * @param field - field name, if dimension includes field `dimension.id`
-   * @param parameters - parameters to attach to column, if noen pass empty object `{}`
+   * @param parameters - parameters to attach to column, if none pass empty object `{}`
    * @param operator - operator to pass in: 'contains, in, notnull etc'
    * @param values - array of values to filter by
    */
   createFilter(
-    type: 'metric' | 'dimension',
+    type: 'metric' | 'dimension' | 'timeDimension',
     dataSource: string,
     field: string,
-    parameters: object = {},
+    parameters: Dict<string> = {},
     operator: string,
     values: Array<string | number>
   ): FilterFragment {
@@ -108,7 +113,6 @@ export default class FragmentFactory extends Service {
       operator,
       values
     }) as FilterFragment;
-
     filter.applyMeta(type, dataSource);
     return filter;
   }
@@ -116,22 +120,22 @@ export default class FragmentFactory extends Service {
   /**
    * Builds a request v2 sort fragment given meta data object.
    * @param meta - meta data object to build this filter from
-   * @param parameters - parameters to attach to column, if noen pass empty object `{}`
+   * @param parameters - parameters to attach to column, if none pass empty object `{}`
    * @param direction  - `desc` or `asc`
    * @param dimensionField - dimension field if passing in a dimension `id` or `description` for example
    */
   createSortFromMeta(
-    meta: Column,
-    parameters: object = {},
+    columnMetadata: Column,
+    parameters: Dict<string> = {},
     direction: 'asc' | 'desc',
     dimensionField?: string
   ): SortFragment {
     const sort = this.store.createFragment('bard-request-v2/fragments/sort', {
-      field: dimensionField ? `${meta.id}.${dimensionField}` : meta.id,
+      field: dimensionField ? `${columnMetadata.id}.${dimensionField}` : columnMetadata.id,
       parameters,
       direction
     }) as SortFragment;
-    sort.meta = meta;
+    sort.applyMeta(this._getMetaColumnType(columnMetadata), columnMetadata.source);
     return sort;
   }
 
@@ -140,14 +144,14 @@ export default class FragmentFactory extends Service {
    * @param type - metric or dimension
    * @param dataSource - datasource or namespace for metadata lookups
    * @param field - field name, if dimension includes field `dimension.id`
-   * @param parameters - parameters to attach to column, if noen pass empty object `{}`
+   * @param parameters - parameters to attach to column, if none pass empty object `{}`
    * @param direction - `desc` or `asc`
    */
   createSort(
-    type: 'metric' | 'dimension',
+    type: 'metric' | 'dimension' | 'timeDimension',
     dataSource: string,
     field: string,
-    parameters: object = {},
+    parameters: Dict<string> = {},
     direction: 'asc' | 'desc'
   ): SortFragment {
     const sort = this.store.createFragment('bard-request-v2/fragments/sort', {
@@ -157,6 +161,10 @@ export default class FragmentFactory extends Service {
     }) as SortFragment;
     sort.applyMeta(type, dataSource);
     return sort;
+  }
+
+  private _getMetaColumnType(columnMetadata: Column): string {
+    return camelize(columnMetadata.constructor.name);
   }
 }
 

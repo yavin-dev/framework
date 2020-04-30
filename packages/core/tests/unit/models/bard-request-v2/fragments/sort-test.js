@@ -45,7 +45,8 @@ module('Unit | Model | Fragment | BardRequest V2 - Sort', function(hooks) {
     assert.deepEqual(sort.parameters, { grain: 'day' }, 'the `parameters` property is set correctly');
 
     assert.equal(sort.direction, 'asc', 'the `direction` property is set correctly');
-    assert.equal(sort.meta.id, 'dateTime', 'correct meta data is populated');
+    sort.applyMeta('dimension', 'dummy');
+    assert.equal(sort.columnMeta.id, 'dateTime', 'correct meta data is populated');
   });
 
   test('Validation', async function(assert) {
