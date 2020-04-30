@@ -63,6 +63,14 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
         }
       })
     );
+    /**
+     * TODO: remove these applyMeta when serializer is in place that will do this automatically
+     */
+    mockModel.request.columns.objectAt(1).applyMeta('dimension', 'dummy');
+    mockModel.request.columns.objectAt(2).applyMeta('metric', 'dummy');
+    mockModel.request.columns.objectAt(3).applyMeta('metric', 'dummy');
+    mockModel.request.filters.objectAt(1).applyMeta('metric', 'dummy');
+    mockModel.request.sort.objectAt(1).applyMeta('metric', 'dummy');
   });
 
   test('Model using the Request Fragment', async function(assert) {
@@ -80,10 +88,15 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
 
     assert.equal(request.dataSource, 'dummy', 'the `dataSource` property has the correct value');
 
-    assert.equal(request.columns.objectAt(1).meta.category, 'Asset', 'meta data is populated on sub fragments');
-    assert.equal(request.columns.objectAt(2).meta.category, 'Revenue', 'meta data is populated on sub fragments');
-    assert.equal(request.filters.objectAt(1).meta.category, 'Identifiers', 'Filters also have meta data populated');
-    assert.equal(request.sort.objectAt(1).meta.category, 'Clicks', 'Sorts have meta data populated');
+    assert.equal(request.columns.objectAt(1).columnMeta.category, 'Asset', 'meta data is populated on sub fragments');
+    assert.equal(request.columns.objectAt(2).columnMeta.category, 'Revenue', 'meta data is populated on sub fragments');
+    assert.equal(
+      request.filters.objectAt(1).columnMeta.category,
+      'Identifiers',
+      'Filters also have meta data populated'
+    );
+
+    assert.equal(request.sort.objectAt(1).columnMeta.category, 'Clicks', 'Sorts have meta data populated');
   });
 
   test('Clone Request', async function(assert) {
@@ -123,7 +136,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
       'the `values` property of the second filter has the correct value'
     );
 
-    assert.equal(request.filters.objectAt(1).meta.category, 'Identifiers', 'the meta data attached is correct');
+    assert.equal(request.filters.objectAt(1).columnMeta.category, 'Identifiers', 'the meta data attached is correct');
 
     // columns
 
@@ -151,7 +164,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
       'the `type` property of the second column has the correct value'
     );
 
-    assert.equal(request.columns.objectAt(1).meta.category, 'Asset', 'the meta data attached is correct');
+    assert.equal(request.columns.objectAt(1).columnMeta.category, 'Asset', 'the meta data attached is correct');
 
     // sort
 
@@ -167,7 +180,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
       'the `direction` property of the second sort has the correct value'
     );
 
-    assert.equal(request.sort.objectAt(1).meta.category, 'Clicks', 'the meta data attached is correct');
+    assert.equal(request.sort.objectAt(1).columnMeta.category, 'Clicks', 'the meta data attached is correct');
   });
 
   test('Validation', async function(assert) {
