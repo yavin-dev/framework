@@ -53,7 +53,8 @@ module('Unit | Model | Fragment | BardRequest V2 - Column', function(hooks) {
 
     assert.equal(column.alias, 'revenueUSD', 'the `alias` property is set correctly');
 
-    assert.equal(column.meta.id, 'revenue', 'metadata is populated with the right field');
+    column.applyMeta('metric', 'dummy');
+    assert.equal(column.columnMeta.id, 'revenue', 'metadata is populated with the right field');
   });
 
   test('Validation', async function(assert) {

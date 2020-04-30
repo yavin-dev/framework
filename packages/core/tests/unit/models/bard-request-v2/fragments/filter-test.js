@@ -53,7 +53,8 @@ module('Unit | Model | Fragment | BardRequest V2 - Filter', function(hooks) {
 
     assert.deepEqual(filter.values, ['P1D', 'current'], 'the `values` property is set correctly');
 
-    assert.equal(filter.meta.id, 'dateTime', 'metadata is loaded correctly');
+    filter.applyMeta('dimension', 'dummy');
+    assert.equal(filter.columnMeta.id, 'dateTime', 'metadata is loaded correctly');
   });
 
   test('Validation', async function(assert) {
