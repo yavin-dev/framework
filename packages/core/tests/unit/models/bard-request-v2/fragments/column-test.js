@@ -31,6 +31,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Column', function(hooks) {
     assert.ok(mockModel, 'mockModel is fetched from the store');
 
     const column = mockModel.columns.objectAt(0);
+    column.source = 'dummy';
 
     assert.equal(column.field, 'dateTime', 'the `field` property has the correct value');
 
@@ -53,7 +54,6 @@ module('Unit | Model | Fragment | BardRequest V2 - Column', function(hooks) {
 
     assert.equal(column.alias, 'revenueUSD', 'the `alias` property is set correctly');
 
-    column.applyMeta('metric', 'dummy');
     assert.equal(column.columnMeta.id, 'revenue', 'metadata is populated with the right field');
   });
 
