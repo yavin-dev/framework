@@ -13,6 +13,8 @@ import { dasherize } from '@ember/string';
 interface StoreWithFragment extends Store {
   createFragment(fragmentName: string, attributes: object): ColumnFragment | FilterFragment | SortFragment;
 }
+type fieldType = 'metric' | 'dimension' | 'time-dimension';
+
 export default class FragmentFactory extends Service {
   @service store!: StoreWithFragment;
 
@@ -30,14 +32,8 @@ export default class FragmentFactory extends Service {
     dimensionField?: string
   ): ColumnFragment {
     const type = this._getMetaColumnType(columnMetadata);
-    const column = this.store.createFragment('bard-request-v2/fragments/column', {
-      field: dimensionField ? `${columnMetadata.id}.${dimensionField}` : columnMetadata.id,
-      type,
-      parameters,
-      alias
-    }) as ColumnFragment;
-    column.source = columnMetadata.source;
-    return column;
+    const field = dimensionField ? `${columnMetadata.id}.${dimensionField}` : columnMetadata.id;
+    return this.createColumn(type, columnMetadata.source, field, parameters, alias);
   }
 
   /**
@@ -49,7 +45,7 @@ export default class FragmentFactory extends Service {
    * @param alias - optional alias for this column
    */
   createColumn(
-    type: 'metric' | 'dimension' | 'time-dimension',
+    type: fieldType,
     dataSource: string,
     field: string,
     parameters: Dict<string> = {},
@@ -81,15 +77,8 @@ export default class FragmentFactory extends Service {
     dimensionField?: string
   ): FilterFragment {
     const type = this._getMetaColumnType(columnMetadata);
-    const filter = this.store.createFragment('bard-request-v2/fragments/filter', {
-      field: dimensionField ? `${columnMetadata.id}.${dimensionField}` : columnMetadata.id,
-      parameters,
-      type,
-      operator,
-      values
-    }) as FilterFragment;
-    filter.source = columnMetadata.source;
-    return filter;
+    const field = dimensionField ? `${columnMetadata.id}.${dimensionField}` : columnMetadata.id;
+    return this.createFilter(type, columnMetadata.source, field, parameters, operator, values);
   }
 
   /**
@@ -102,7 +91,7 @@ export default class FragmentFactory extends Service {
    * @param values - array of values to filter by
    */
   createFilter(
-    type: 'metric' | 'dimension' | 'time-dimension',
+    type: fieldType,
     dataSource: string,
     field: string,
     parameters: Dict<string> = {},
@@ -134,14 +123,8 @@ export default class FragmentFactory extends Service {
     dimensionField?: string
   ): SortFragment {
     const type = this._getMetaColumnType(columnMetadata);
-    const sort = this.store.createFragment('bard-request-v2/fragments/sort', {
-      field: dimensionField ? `${columnMetadata.id}.${dimensionField}` : columnMetadata.id,
-      parameters,
-      type,
-      direction
-    }) as SortFragment;
-    sort.source = columnMetadata.source;
-    return sort;
+    const field = dimensionField ? `${columnMetadata.id}.${dimensionField}` : columnMetadata.id;
+    return this.createSort(type, columnMetadata.source, field, parameters, direction);
   }
 
   /**
@@ -153,7 +136,7 @@ export default class FragmentFactory extends Service {
    * @param direction - `desc` or `asc`
    */
   createSort(
-    type: 'metric' | 'dimension' | 'time-dimension',
+    type: fieldType,
     dataSource: string,
     field: string,
     parameters: Dict<string> = {},
@@ -173,8 +156,8 @@ export default class FragmentFactory extends Service {
    * Deducts meta column type from class type
    * @param columnMetadata - meta data to get type from
    */
-  private _getMetaColumnType(columnMetadata: Column): string {
-    return dasherize(columnMetadata.constructor.name);
+  private _getMetaColumnType(columnMetadata: Column): fieldType {
+    return dasherize(columnMetadata.constructor.name) as fieldType;
   }
 }
 
