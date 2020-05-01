@@ -16,6 +16,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Sort', function(hooks) {
         sort: [
           {
             field: 'revenue',
+            type: 'metric',
             parameters: { currency: 'USD' }
           }
         ]
@@ -29,6 +30,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Sort', function(hooks) {
     assert.ok(mockModel, 'mockModel is fetched from the store');
 
     const sort = mockModel.sort.objectAt(0);
+    sort.source = 'dummy';
 
     assert.equal(sort.field, 'revenue', 'the `field` property has the correct value');
 
@@ -45,7 +47,6 @@ module('Unit | Model | Fragment | BardRequest V2 - Sort', function(hooks) {
     assert.deepEqual(sort.parameters, { grain: 'day' }, 'the `parameters` property is set correctly');
 
     assert.equal(sort.direction, 'asc', 'the `direction` property is set correctly');
-    sort.applyMeta('dimension', 'dummy');
     assert.equal(sort.columnMeta.id, 'dateTime', 'correct meta data is populated');
   });
 
@@ -94,6 +95,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Sort', function(hooks) {
           parameters: {
             currency: 'USD'
           },
+          type: 'metric',
           direction: 'desc'
         }
       ],
@@ -107,6 +109,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Sort', function(hooks) {
       [
         {
           field: 'revenue',
+          type: 'metric',
           direction: 'desc'
         }
       ],
@@ -120,6 +123,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Sort', function(hooks) {
       [
         {
           field: 'revenue',
+          type: 'metric',
           direction: 'desc'
         }
       ],

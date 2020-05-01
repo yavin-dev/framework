@@ -14,6 +14,14 @@ const Validations = buildValidations({
   field: validator('presence', {
     presence: true,
     message: 'The `field` field cannot be empty'
+  }),
+  type: validator('inclusion', {
+    in: ['dimension', 'metric', 'time-dimension'],
+    allowBlank: true,
+    message() {
+      const { field } = this.model;
+      return 'The `type` field of `' + field + '` column must equal to `dimension` or `metric`';
+    }
   })
 });
 
@@ -25,6 +33,7 @@ export default class Base extends Fragment.extend(Validations) {
     }
   })
   parameters;
+  @attr('string') type;
 
   @service('bard-metadata')
   metadataService;
@@ -36,25 +45,19 @@ export default class Base extends Fragment.extend(Validations) {
   source;
 
   /**
-   * 'metric', 'dimension', 'timeDimension' used to look up metadata;
-   * @property {string}
-   */
-  columnMetaType;
-
-  /**
    * @type {Meta}
    */
-  @computed('field', 'columnMetaType')
+  @computed('field', 'type', 'source')
   get columnMeta() {
     assert('Source must be set in order to access columnMeta', isPresent(this.source));
-    assert('columnMetaType must be set in order to access columnMeta', isPresent(this.columnMetaType));
+    assert('column type must be set in order to access columnMeta', isPresent(this.type));
     if (this.lookupField === 'dateTime') {
       return {
         id: 'dateTime',
         name: 'Date Time'
       };
     }
-    return this.metadataService.getById(this.columnMetaType, this.lookupField, this.source);
+    return this.metadataService.getById(this.type, this.lookupField, this.source);
   }
 
   /**
@@ -63,16 +66,5 @@ export default class Base extends Fragment.extend(Validations) {
    */
   get lookupField() {
     return this.field.split('.')[0];
-  }
-
-  /**
-   * Adds meta data to the fragment given column type and namespace
-   * @param {string} columnMetaType - 'dimension or metric'
-   * @param {string} source
-   * @return {void}
-   */
-  applyMeta(columnMetaType, source) {
-    this.columnMetaType = columnMetaType;
-    this.source = source;
   }
 }
