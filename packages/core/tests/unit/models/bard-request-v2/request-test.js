@@ -68,7 +68,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
       })
     );
     /**
-     * TODO: remove these applyMeta when serializer is in place that will do this automatically
+     * TODO: remove when serializer is in place that will do this automatically
      */
     mockModel.request.columns.forEach(column => {
       column.source = 'dummy';
