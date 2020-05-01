@@ -17,6 +17,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Filter', function(hooks) {
           {
             field: 'revenue',
             parameters: { currency: 'USD' },
+            type: 'metric',
             operator: 'gt',
             values: [3]
           }
@@ -31,6 +32,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Filter', function(hooks) {
     assert.ok(mockModel, 'mockModel is fetched from the store');
 
     const filter = mockModel.filters.objectAt(0);
+    filter.source = 'dummy';
 
     assert.equal(filter.field, 'revenue', 'the `field` property has the correct value');
 
@@ -53,7 +55,6 @@ module('Unit | Model | Fragment | BardRequest V2 - Filter', function(hooks) {
 
     assert.deepEqual(filter.values, ['P1D', 'current'], 'the `values` property is set correctly');
 
-    filter.applyMeta('dimension', 'dummy');
     assert.equal(filter.columnMeta.id, 'dateTime', 'metadata is loaded correctly');
   });
 
@@ -103,6 +104,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Filter', function(hooks) {
           parameters: {
             currency: 'USD'
           },
+          type: 'metric',
           operator: 'gt',
           values: [3]
         }
@@ -118,6 +120,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Filter', function(hooks) {
         {
           field: 'revenue',
           operator: 'gt',
+          type: 'metric',
           values: [3]
         }
       ],
@@ -132,6 +135,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Filter', function(hooks) {
         {
           field: 'revenue',
           operator: 'gt',
+          type: 'metric',
           values: [3]
         }
       ],
