@@ -8,7 +8,7 @@ import Column from 'navi-data/models/metadata/column';
 import ColumnFragment from '../models/bard-request-v2/fragments/column';
 import FilterFragment from '../models/bard-request-v2/fragments/filter';
 import SortFragment from '../models/bard-request-v2/fragments/sort';
-import { camelize } from '@ember/string';
+import { dasherize } from '@ember/string';
 
 interface StoreWithFragment extends Store {
   createFragment(fragmentName: string, attributes: object): ColumnFragment | FilterFragment | SortFragment;
@@ -36,7 +36,7 @@ export default class FragmentFactory extends Service {
       parameters,
       alias
     }) as ColumnFragment;
-    column.applyMeta(type, columnMetadata.source);
+    column.source = columnMetadata.source;
     return column;
   }
 
@@ -49,7 +49,7 @@ export default class FragmentFactory extends Service {
    * @param alias - optional alias for this column
    */
   createColumn(
-    type: 'metric' | 'dimension' | 'timeDimension',
+    type: 'metric' | 'dimension' | 'time-dimension',
     dataSource: string,
     field: string,
     parameters: Dict<string> = {},
@@ -61,7 +61,7 @@ export default class FragmentFactory extends Service {
       parameters,
       alias
     }) as ColumnFragment;
-    column.applyMeta(type, dataSource);
+    column.source = dataSource;
     return column;
   }
 
@@ -80,13 +80,15 @@ export default class FragmentFactory extends Service {
     values: Array<string | number>,
     dimensionField?: string
   ): FilterFragment {
+    const type = this._getMetaColumnType(columnMetadata);
     const filter = this.store.createFragment('bard-request-v2/fragments/filter', {
       field: dimensionField ? `${columnMetadata.id}.${dimensionField}` : columnMetadata.id,
       parameters,
+      type,
       operator,
       values
     }) as FilterFragment;
-    filter.applyMeta(this._getMetaColumnType(columnMetadata), columnMetadata.source);
+    filter.source = columnMetadata.source;
     return filter;
   }
 
@@ -100,7 +102,7 @@ export default class FragmentFactory extends Service {
    * @param values - array of values to filter by
    */
   createFilter(
-    type: 'metric' | 'dimension' | 'timeDimension',
+    type: 'metric' | 'dimension' | 'time-dimension',
     dataSource: string,
     field: string,
     parameters: Dict<string> = {},
@@ -110,10 +112,11 @@ export default class FragmentFactory extends Service {
     const filter = this.store.createFragment('bard-request-v2/fragments/filter', {
       field,
       parameters,
+      type,
       operator,
       values
     }) as FilterFragment;
-    filter.applyMeta(type, dataSource);
+    filter.source = dataSource;
     return filter;
   }
 
@@ -130,12 +133,14 @@ export default class FragmentFactory extends Service {
     direction: 'asc' | 'desc',
     dimensionField?: string
   ): SortFragment {
+    const type = this._getMetaColumnType(columnMetadata);
     const sort = this.store.createFragment('bard-request-v2/fragments/sort', {
       field: dimensionField ? `${columnMetadata.id}.${dimensionField}` : columnMetadata.id,
       parameters,
+      type,
       direction
     }) as SortFragment;
-    sort.applyMeta(this._getMetaColumnType(columnMetadata), columnMetadata.source);
+    sort.source = columnMetadata.source;
     return sort;
   }
 
@@ -148,7 +153,7 @@ export default class FragmentFactory extends Service {
    * @param direction - `desc` or `asc`
    */
   createSort(
-    type: 'metric' | 'dimension' | 'timeDimension',
+    type: 'metric' | 'dimension' | 'time-dimension',
     dataSource: string,
     field: string,
     parameters: Dict<string> = {},
@@ -157,14 +162,19 @@ export default class FragmentFactory extends Service {
     const sort = this.store.createFragment('bard-request-v2/fragments/sort', {
       field,
       parameters,
+      type,
       direction
     }) as SortFragment;
-    sort.applyMeta(type, dataSource);
+    sort.source = dataSource;
     return sort;
   }
 
+  /**
+   * Deducts meta column type from class type
+   * @param columnMetadata - meta data to get type from
+   */
   private _getMetaColumnType(columnMetadata: Column): string {
-    return camelize(columnMetadata.constructor.name);
+    return dasherize(columnMetadata.constructor.name);
   }
 }
 
