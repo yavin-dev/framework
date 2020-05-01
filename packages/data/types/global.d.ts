@@ -5,5 +5,7 @@ declare module 'navi-data/templates/*' {
   export default tmpl;
 }
 
+declare module 'ember-get-config';
+
 type Dict<T = string> = { [key: string]: T };
 type TODO<T = any> = T;

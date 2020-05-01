@@ -24,6 +24,7 @@ type RequestOptions = {
   format?: string;
   cache?: boolean;
   queryParams?: Dict<string>;
+  dataSourceName?: string;
 };
 type Query = RequestOptions & Dict<string | number | boolean>;
 type SortDirection = typeof SORT_DIRECTIONS[number];

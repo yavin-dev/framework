@@ -1,19 +1,27 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { isEmpty } from '@ember/utils';
 import { get } from '@ember/object';
 
+type Parameters = Dict<string>;
+interface ColumnAttributes {
+  name: string;
+  parameters: Parameters;
+}
+interface MetricObject {
+  metric: string;
+  parameters: Parameters;
+}
+
 /**
  * Returns a metric object given column attributes
  * @function mapColumnAttributes
- * @param {Object} attributes - column attributes
- * @param {String} attributes.name - metric name
- * @param {Object} attributes.parameters - metric parameters
- * @returns {Object} - object with metric name and parameters
+ * @param attributes - column attributes
+ * @returns object with metric name and parameters
  */
-export function mapColumnAttributes(attributes) {
+export function mapColumnAttributes(attributes: ColumnAttributes): MetricObject {
   let metric = get(attributes, 'name'),
     parameters = get(attributes, 'parameters') || {};
 
@@ -26,25 +34,20 @@ export function mapColumnAttributes(attributes) {
 
 /**
  * @function hasParameters
- *
- * Returns if metric has parameters
- * @function hasParameters
- * @param {Object} obj
- * @param {String} obj.metric - metric name
- * @param {Object} obj.parameters (optional) - a key: value object of parameters
- * @returns {Boolean} true if metric has parameters
+ * @param metric
+ * @returns true if metric has parameters
  */
-export function hasParameters(obj = {}) {
-  let parameters = get(obj, 'parameters');
+export function hasParameters(metric: MetricObject = { metric: '', parameters: {} }): boolean {
+  let parameters = metric.parameters || {};
   return !isEmpty(parameters) && Object.keys(parameters).length > 0;
 }
 
 /**
  * Returns a seriailzed list of parameters
  * @function serializeParameters
- * @param {Object} obj - a key: value object of parameters
+ * @param obj - a key: value object of parameters
  */
-export function serializeParameters(obj = {}) {
+export function serializeParameters(obj: Parameters = {}): string {
   let paramArray = Object.entries(obj);
   // TODO remove this line when aliases are natively supported in the fact web service
   paramArray = paramArray.filter(([key]) => key.toLowerCase() !== 'as');
@@ -58,32 +61,28 @@ export function serializeParameters(obj = {}) {
 /**
  * Returns canonicalized name of a paramterized metric
  * @function canonicalizeMetric
- * @param {Object} metric
- * @param {String} metric.metric - metric name
- * @param {Object} metric.parameters - a key: value object of parameters
+ * @param metric
  */
-export function canonicalizeMetric(metric) {
+export function canonicalizeMetric(metric: MetricObject): string {
   return hasParameters(metric) ? `${metric.metric}(${serializeParameters(metric.parameters)})` : metric.metric;
 }
 
 /**
  * Returns canonicalized name given metric column attributes
  * @function canonicalizeColumnAttributes
- * @param {Object} attributes
- * @param {String} attributes.name - metric name
- * @param {Object} attributes.parameters - a key: value object of parameters
+ * @param attributes
  */
-export function canonicalizeColumnAttributes(attributes) {
+export function canonicalizeColumnAttributes(attributes: ColumnAttributes): string {
   return canonicalizeMetric(mapColumnAttributes(attributes));
 }
 
 /**
  * Returns a map of aliases to canonicalized metrics to help with alias lookup.
  * @function getAliasedMetrics
- * @param metrics {Array} - list of metric objects from a request
- * @returns {object} - list of canonicalized metric names keyed by alias
+ * @param metrics - list of metric objects from a request
+ * @returns list of canonicalized metric names keyed by alias
  */
-export function getAliasedMetrics(metrics = []) {
+export function getAliasedMetrics(metrics: MetricObject[] = []): Dict<string> {
   return metrics.reduce((obj, metric) => {
     if (hasParameters(metric) && 'as' in metric.parameters) {
       return Object.assign({}, obj, {
@@ -98,37 +97,37 @@ export function getAliasedMetrics(metrics = []) {
  * Returns a canonicalized metric given an alias
  * Needs the alias map from getAliasedMetrics, this setup so can curry it
  * @function canonicalizeAlias
- * @param alias {string} - the alias string
- * @param aliasMap {object} - key value of alias -> canonicalizedName
- * @returns {string} - canonicalised metric, or alias if not found
+ * @param alias - the alias string
+ * @param aliasMap - key value of alias -> canonicalizedName
+ * @returns  canonicalised metric, or alias if not found
  */
-export function canonicalizeAlias(alias, aliasMap = {}) {
+export function canonicalizeAlias(alias: string, aliasMap: Dict<string> = {}): string {
   return aliasMap[alias] || alias;
 }
 
 /**
  * Returns a metric object given a canonical name
  * @function parseMetricName
- * @param {String} canonicalName - the metric's canonical name
- * @returns {Object} - object with base metric and parameters
+ * @param canonicalName - the metric's canonical name
+ * @returns object with base metric and parameters
  */
-export function parseMetricName(canonicalName) {
+export function parseMetricName(canonicalName: string): MetricObject {
   if (typeof canonicalName !== 'string') {
     return canonicalName;
   }
 
-  let hasParameters = canonicalName.endsWith(')') && canonicalName.includes('('),
-    metric = canonicalName,
-    parameters = {};
+  /*
+   * extracts the parameter string from the metric that's between parenthesis
+   * `baseName(parameter string)` => extracts `parameter string`
+   */
+  const paramRegex = /\((.*)\)$/;
+  const stringParams = paramRegex.exec(canonicalName);
 
-  if (hasParameters) {
-    /*
-     * extracts the parameter string from the metric that's between parenthesis
-     * `baseName(parameter string)` => extracts `parameter string`
-     */
-    let paramRegex = /\((.*)\)$/,
-      results = paramRegex.exec(canonicalName),
-      paramStr = results.length >= 2 ? results[1] : ''; // checks if capture group exists, and uses it if it does
+  let metric = canonicalName;
+  let parameters = {};
+
+  if (stringParams) {
+    let paramStr = stringParams[1] || '';
 
     if (!paramStr.includes('=')) {
       throw new Error('Metric Parameter Parser: Error, invalid parameter list');
