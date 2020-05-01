@@ -48,8 +48,8 @@ export function getDefaultDataSourceName(): string {
 
 /**
  * Gets the appropriate host given the adapter options
- * @param {Object} options - adapter options that includes dataSourceName
- * @returns {String} correct host for the options given
+ * @param options - adapter options that includes dataSourceName
+ * @returns correct host for the options given
  */
 export function configHost(options: SourceAdapterOptions = {}): string {
   const dataSourceName = getWithDefault(options, 'dataSourceName', getDefaultDataSourceName());
