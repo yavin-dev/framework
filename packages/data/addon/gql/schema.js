@@ -76,6 +76,8 @@ const schema = gql`
     category: String
     valueType: com_yahoo_elide_datastores_aggregation_metadata_enums_ValueType
     columnTags: [String!]
+    columnType: ColumnType
+    expression: String
   }
 
   type Metric implements Node & ColumnInterface {
@@ -88,6 +90,8 @@ const schema = gql`
     columnTags: [String!]
     defaultFormat: String
     metricFunction: metricFunction
+    columnType: ColumnType
+    expression: String
   }
 
   type Dimension implements Node & ColumnInterface {
@@ -98,6 +102,8 @@ const schema = gql`
     category: String
     valueType: com_yahoo_elide_datastores_aggregation_metadata_enums_ValueType
     columnTags: [String!]
+    columnType: ColumnType
+    expression: String
   }
 
   type TimeDimension implements Node & ColumnInterface {
@@ -108,6 +114,8 @@ const schema = gql`
     category: String
     valueType: com_yahoo_elide_datastores_aggregation_metadata_enums_ValueType
     columnTags: [String!]
+    columnType: ColumnType
+    expression: String
     supportedGrains: [TimeGrain]
     timeZone: TimeZone
   }
@@ -123,8 +131,14 @@ const schema = gql`
     id: DeferredID!
     name: String
     description: String
-    type: com_yahoo_elide_datastores_aggregation_metadata_enums_ValueType
-    subType: String
+    valueType: com_yahoo_elide_datastores_aggregation_metadata_enums_ValueType
+    type: FunctionArgumentType
+    expression: String
+  }
+
+  enum FunctionArgumentType {
+    ref
+    primitive
   }
 
   enum com_yahoo_elide_datastores_aggregation_annotation_CardinalitySize {
@@ -147,6 +161,12 @@ const schema = gql`
     TEXT
     COORDINATE
     BOOLEAN
+  }
+
+  enum ColumnType {
+    ref
+    formula
+    field
   }
 
   type TimeZone { # modeled after java.util.TimeZone

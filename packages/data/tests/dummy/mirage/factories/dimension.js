@@ -15,5 +15,7 @@ export default Factory.extend({
   },
   category: 'categoryOne',
   valueType: 'TEXT',
-  columnTags: () => ['DISPLAY']
+  columnTags: () => ['DISPLAY'],
+  columnType: 'field',
+  expression: null
 });

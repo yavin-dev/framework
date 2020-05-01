@@ -4,10 +4,11 @@
  */
 import EmberObject from '@ember/object';
 import CARDINALITY_SIZES from '../utils/enums/cardinality-sizes';
-import { TableMetadata } from '../models/metadata/table';
-import { MetricMetadata } from '../models/metadata/metric';
-import { DimensionMetadata } from '../models/metadata/dimension';
-import { TimeDimensionMetadata } from '../models/metadata/time-dimension';
+import { ColumnType } from '../models/metadata/column';
+import { TableMetadataPayload } from '../models/metadata/table';
+import { MetricMetadataPayload } from '../models/metadata/metric';
+import { DimensionMetadataPayload } from '../models/metadata/dimension';
+import { TimeDimensionMetadataPayload } from '../models/metadata/time-dimension';
 
 type Edge<T> = {
   node: T;
@@ -24,6 +25,8 @@ type ColumnNode = {
   category: string;
   valueType: TODO<string>;
   columnTags: string[];
+  columnType: ColumnType;
+  expression: string;
 };
 type MetricNode = ColumnNode & { defaultFormat: string };
 type DimensionNode = ColumnNode;
@@ -58,12 +61,12 @@ export default class ElideMetadataSerializer extends EmberObject {
    */
   _normalizeTableConnection(tableConnection: Connection<TableNode>, source: string) {
     const edges = tableConnection.edges || [];
-    let metrics: MetricMetadata[] = [];
-    let dimensions: DimensionMetadata[] = [];
-    let timeDimensions: TimeDimensionMetadata[] = [];
+    let metrics: MetricMetadataPayload[] = [];
+    let dimensions: DimensionMetadataPayload[] = [];
+    let timeDimensions: TimeDimensionMetadataPayload[] = [];
 
     const tables = edges.map(({ node: table }) => {
-      const newTable: TableMetadata = {
+      const newTable: TableMetadataPayload = {
         id: table.id,
         name: table.name,
         category: table.category,
@@ -79,9 +82,9 @@ export default class ElideMetadataSerializer extends EmberObject {
       const newTableDimensions = this._normalizeTableDimensions(table.dimensions, table.id, source);
       const newTableTimeDimensions = this._normalizeTableTimeDimensions(table.timeDimensions, table.id, source);
 
-      newTable.metricIds = newTableMetrics.map((m: MetricMetadata) => m.id);
-      newTable.dimensionIds = newTableDimensions.map((d: DimensionMetadata) => d.id);
-      newTable.timeDimensionIds = newTableTimeDimensions.map((d: TimeDimensionMetadata) => d.id);
+      newTable.metricIds = newTableMetrics.map(m => m.id);
+      newTable.dimensionIds = newTableDimensions.map(d => d.id);
+      newTable.timeDimensionIds = newTableTimeDimensions.map(d => d.id);
 
       metrics = metrics.concat(newTableMetrics);
       dimensions = dimensions.concat(newTableDimensions);
@@ -106,7 +109,11 @@ export default class ElideMetadataSerializer extends EmberObject {
    * @param {string} source - datasource name
    * @returns {Object[]} - normalized metric objects
    */
-  _normalizeTableMetrics(metricConnection: Connection<MetricNode>, tableId: string, source: string) {
+  _normalizeTableMetrics(
+    metricConnection: Connection<MetricNode>,
+    tableId: string,
+    source: string
+  ): MetricMetadataPayload[] {
     return metricConnection.edges.map((edge: Edge<MetricNode>) => {
       const { node } = edge;
       return {
@@ -118,7 +125,9 @@ export default class ElideMetadataSerializer extends EmberObject {
         tableId,
         source,
         tags: node.columnTags,
-        defaultFormat: node.defaultFormat
+        defaultFormat: node.defaultFormat,
+        type: node.columnType,
+        expression: node.expression
       };
     });
   }
@@ -130,7 +139,11 @@ export default class ElideMetadataSerializer extends EmberObject {
    * @param {string} source - datasource name
    * @returns {Object[]} - normalized dimension objects
    */
-  _normalizeTableDimensions(dimensionConnection: Connection<DimensionNode>, tableId: string, source: string) {
+  _normalizeTableDimensions(
+    dimensionConnection: Connection<DimensionNode>,
+    tableId: string,
+    source: string
+  ): DimensionMetadataPayload[] {
     return dimensionConnection.edges.map((edge: Edge<DimensionNode>) => {
       const { node } = edge;
       return {
@@ -141,7 +154,9 @@ export default class ElideMetadataSerializer extends EmberObject {
         valueType: node.valueType,
         tableId,
         source,
-        tags: node.columnTags
+        tags: node.columnTags,
+        type: node.columnType,
+        expression: node.expression
       };
     });
   }
@@ -157,7 +172,7 @@ export default class ElideMetadataSerializer extends EmberObject {
     timeDimensionConnection: Connection<TimeDimensionNode>,
     tableId: string,
     source: string
-  ) {
+  ): TimeDimensionMetadataPayload[] {
     return timeDimensionConnection.edges.map((edge: Edge<TimeDimensionNode>) => {
       const { node } = edge;
       return {
@@ -170,7 +185,9 @@ export default class ElideMetadataSerializer extends EmberObject {
         source,
         tags: node.columnTags,
         supportedGrains: node.supportedGrains,
-        timeZone: node.timeZone
+        timeZone: node.timeZone,
+        type: node.columnType,
+        expression: node.expression
       };
     });
   }

@@ -109,6 +109,8 @@ module('Unit | Elide Metadata Adapter', function(hooks) {
               valueType: 'NUMBER',
               columnTags: ['DISPLAY'],
               defaultFormat: 'number',
+              columnType: 'field',
+              expression: null,
               __typename: 'Metric'
             },
             __typename: 'MetricEdge'
@@ -122,6 +124,8 @@ module('Unit | Elide Metadata Adapter', function(hooks) {
               valueType: 'NUMBER',
               columnTags: ['DISPLAY'],
               defaultFormat: 'number',
+              columnType: 'field',
+              expression: null,
               __typename: 'Metric'
             },
             __typename: 'MetricEdge'
@@ -145,6 +149,8 @@ module('Unit | Elide Metadata Adapter', function(hooks) {
               category: 'categoryOne',
               valueType: 'TEXT',
               columnTags: ['DISPLAY'],
+              columnType: 'field',
+              expression: null,
               __typename: 'Dimension'
             }
           }
@@ -168,6 +174,8 @@ module('Unit | Elide Metadata Adapter', function(hooks) {
               valueType: 'NUMBER',
               columnTags: ['DISPLAY'],
               defaultFormat: 'number',
+              columnType: 'field',
+              expression: null,
               __typename: 'Metric'
             },
             __typename: 'MetricEdge'
@@ -181,6 +189,8 @@ module('Unit | Elide Metadata Adapter', function(hooks) {
               valueType: 'NUMBER',
               columnTags: ['DISPLAY'],
               defaultFormat: 'number',
+              columnType: 'field',
+              expression: null,
               __typename: 'Metric'
             },
             __typename: 'MetricEdge'
@@ -228,6 +238,8 @@ module('Unit | Elide Metadata Adapter', function(hooks) {
                   valueType: 'NUMBER',
                   columnTags: ['DISPLAY'],
                   defaultFormat: 'number',
+                  columnType: 'field',
+                  expression: null,
                   __typename: 'Metric'
                 },
                 __typename: 'MetricEdge'
@@ -241,6 +253,8 @@ module('Unit | Elide Metadata Adapter', function(hooks) {
                   valueType: 'NUMBER',
                   columnTags: ['DISPLAY'],
                   defaultFormat: 'number',
+                  columnType: 'field',
+                  expression: null,
                   __typename: 'Metric'
                 },
                 __typename: 'MetricEdge'
@@ -258,6 +272,8 @@ module('Unit | Elide Metadata Adapter', function(hooks) {
                   category: 'categoryOne',
                   valueType: 'TEXT',
                   columnTags: ['DISPLAY'],
+                  columnType: 'field',
+                  expression: null,
                   __typename: 'Dimension'
                 },
                 __typename: 'DimensionEdge'
