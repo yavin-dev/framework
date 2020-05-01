@@ -18,10 +18,12 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
             {
               field: 'dateTime',
               operator: 'bet',
+              type: 'time-dimension',
               values: ['P1D', 'current']
             },
             {
               field: 'uniqueIdentifier',
+              type: 'metric',
               operator: 'gt',
               values: [3]
             }
@@ -47,13 +49,15 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
               type: 'metric'
             }
           ],
-          sort: [
+          sorts: [
             {
               field: 'dateTime',
+              type: 'time-dimension',
               direction: 'asc'
             },
             {
               field: 'navClicks',
+              type: 'metric',
               direction: 'desc'
             }
           ],
@@ -66,11 +70,15 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
     /**
      * TODO: remove these applyMeta when serializer is in place that will do this automatically
      */
-    mockModel.request.columns.objectAt(1).applyMeta('dimension', 'dummy');
-    mockModel.request.columns.objectAt(2).applyMeta('metric', 'dummy');
-    mockModel.request.columns.objectAt(3).applyMeta('metric', 'dummy');
-    mockModel.request.filters.objectAt(1).applyMeta('metric', 'dummy');
-    mockModel.request.sort.objectAt(1).applyMeta('metric', 'dummy');
+    mockModel.request.columns.forEach(column => {
+      column.source = 'dummy';
+    });
+    mockModel.request.filters.forEach(filter => {
+      filter.source = 'dummy';
+    });
+    mockModel.request.sorts.forEach(sort => {
+      sort.source = 'dummy';
+    });
   });
 
   test('Model using the Request Fragment', async function(assert) {
@@ -96,7 +104,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
       'Filters also have meta data populated'
     );
 
-    assert.equal(request.sort.objectAt(1).columnMeta.category, 'Clicks', 'Sorts have meta data populated');
+    assert.equal(request.sorts.objectAt(1).columnMeta.category, 'Clicks', 'Sorts have meta data populated');
   });
 
   test('Clone Request', async function(assert) {
@@ -169,18 +177,18 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
     // sort
 
     assert.equal(
-      request.sort.objectAt(0).field,
+      request.sorts.objectAt(0).field,
       'dateTime',
       'the `field` property of the first sort has the correct value'
     );
 
     assert.equal(
-      request.sort.objectAt(1).direction,
+      request.sorts.objectAt(1).direction,
       'desc',
       'the `direction` property of the second sort has the correct value'
     );
 
-    assert.equal(request.sort.objectAt(1).columnMeta.category, 'Clicks', 'the meta data attached is correct');
+    assert.equal(request.sorts.objectAt(1).columnMeta.category, 'Clicks', 'the meta data attached is correct');
   });
 
   test('Validation', async function(assert) {
@@ -225,12 +233,12 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
       'error messages collection is correct for a request with an empty `columns` collection'
     );
 
-    request.set('sort', null);
-    assert.notOk(request.validations.isValid, 'a request without a `sort` collection is invalid');
+    request.set('sorts', null);
+    assert.notOk(request.validations.isValid, 'a request without a `sorts` collection is invalid');
     assert.equal(
       request.validations.messages.objectAt(1),
-      'Sort must be a collection',
-      'error messages collection is correct for a request without a `sort` collection'
+      'Sorts must be a collection',
+      'error messages collection is correct for a request without a `sorts` collection'
     );
   });
 
@@ -244,11 +252,13 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
       {
         field: 'dateTime',
         operator: 'bet',
+        type: 'time-dimension',
         values: ['P1D', 'current']
       },
       {
         field: null,
         operator: null,
+        type: null,
         values: null
       }
     ]);
@@ -285,15 +295,16 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
     );
   });
 
-  test('Validation - sort has-many', async function(assert) {
+  test('Validation - sorts has-many', async function(assert) {
     assert.expect(3);
 
     const { request } = mockModel;
 
     //TODO: use addSort()
-    request.set('sort', [
+    request.set('sorts', [
       {
         field: 'dateTime',
+        type: 'time-dimension',
         direction: 'asc'
       },
       {
@@ -318,11 +329,13 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
         filters: [
           {
             field: 'dateTime',
+            type: 'time-dimension',
             operator: 'bet',
             values: ['P1D', 'current']
           },
           {
             field: 'uniqueIdentifier',
+            type: 'metric',
             operator: 'gt',
             values: [3]
           }
@@ -351,13 +364,15 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
             alias: null
           }
         ],
-        sort: [
+        sorts: [
           {
             field: 'dateTime',
+            type: 'time-dimension',
             direction: 'asc'
           },
           {
             field: 'navClicks',
+            type: 'metric',
             direction: 'desc'
           }
         ],

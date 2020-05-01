@@ -31,11 +31,11 @@ const Validations = buildValidations({
     presence: true,
     message: 'Table is invalid or unavailable'
   }),
-  sort: [
+  sorts: [
     validator('has-many'),
     validator('collection', {
       collection: true,
-      message: 'Sort must be a collection'
+      message: 'Sorts must be a collection'
     })
   ]
 });
@@ -53,7 +53,7 @@ export default class Request extends Fragment.extend(Validations) {
   @fragmentArray('bard-request-v2/fragments/sort', {
     defaultValue: []
   })
-  sort;
+  sorts;
   @attr('number') limit;
   @attr('string', {
     defaultValue: '2.0'
@@ -70,18 +70,18 @@ export default class Request extends Fragment.extend(Validations) {
    */
   clone() {
     const { store } = this,
-      clonedRequest = this.toJSON(),
-      typeMap = this._buildTypeMap();
+      clonedRequest = this.toJSON();
 
     return store.createFragment('bard-request-v2/request', {
       filters: clonedRequest.filters.map(filter => {
         const newFilter = store.createFragment('bard-request-v2/fragments/filter', {
           field: filter.field,
           parameters: filter.parameters,
+          type: filter.type,
           operator: filter.operator,
           values: filter.values
         });
-        newFilter.applyMeta(typeMap[newFilter.lookupField], clonedRequest.dataSource);
+        newFilter.source = clonedRequest.dataSource;
         return newFilter;
       }),
       columns: clonedRequest.columns.map(column => {
@@ -91,45 +91,23 @@ export default class Request extends Fragment.extend(Validations) {
           type: column.type,
           alias: column.alias
         });
-        newColumn.applyMeta(typeMap[newColumn.lookupField], clonedRequest.dataSource);
+        newColumn.source = clonedRequest.dataSource;
         return newColumn;
       }),
       table: clonedRequest.table,
-      sort: clonedRequest.sort.map(sort => {
+      sorts: clonedRequest.sorts.map(sort => {
         const newSort = store.createFragment('bard-request-v2/fragments/sort', {
           field: sort.field,
           parameters: sort.parameters,
+          type: sort.type,
           direction: sort.direction
         });
-        newSort.applyMeta(typeMap[newSort.lookupField], clonedRequest.dataSource);
+        newSort.source = clonedRequest.dataSource;
         return newSort;
       }),
       limit: clonedRequest.limit,
       requestVersion: clonedRequest.requestVersion,
       dataSource: clonedRequest.dataSource
     });
-  }
-
-  /**
-   * Builds field -> type map for request
-   * @returns {object<BaseFragment>}
-   */
-  _buildTypeMap() {
-    const typeMap = this.columns.reduce(
-      (types, col) => {
-        if (!types[col.lookupField]) {
-          return Object.assign({}, types, { [col.lookupField]: col.type });
-        }
-        return types;
-      },
-      { dateTime: 'dimension' }
-    );
-
-    [...this.filters.toArray(), ...this.sort.toArray()].forEach(col => {
-      if (!typeMap[col.lookupField] && col.columnMetaType) {
-        typeMap[col.lookupField] = col.columnMetaType;
-      }
-    });
-    return typeMap;
   }
 }
