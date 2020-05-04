@@ -25,31 +25,13 @@ import { action, computed } from '@ember/object';
 import { capitalize } from '@ember/string';
 import move from 'ember-animated/motions/move';
 import { easeOut, easeIn } from 'ember-animated/easings/cosine';
-import { fadeIn, fadeOut } from 'ember-animated/motions/opacity';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
 import { inject as service } from '@ember/service';
-import { assert } from '@ember/debug';
+import { later } from '@ember/runloop';
 
 @tagName('')
 @templateLayout(layout)
 class NaviColumnConfig extends Component {
-  /**
-   * @property fadeTransition - fade transition
-   */
-  *transition({ keptSprites, removedSprites, insertedSprites }) {
-    let moveDuration;
-    if (removedSprites.length > 0) {
-      // when removing an item, we want to quickly fill in the gap
-      moveDuration = 50;
-    }
-
-    yield Promise.all([
-      ...keptSprites.map(sprite => move(sprite, { duration: moveDuration })),
-      ...insertedSprites.map(sprite => fadeIn(sprite, { duration: 100 })),
-      ...removedSprites.map(sprite => fadeOut(sprite, { duration: 0 }))
-    ]);
-  }
-
   /**
    * @property {Object[]} columns - date time (if not all), dimension, and metric columns from the request
    */
@@ -111,6 +93,23 @@ class NaviColumnConfig extends Component {
     }
 
     return columns;
+  }
+
+  @computed('columns', 'lastAddedColumn')
+  get lastAddedItem() {
+    const { columns, lastAddedColumn } = this;
+
+    if (lastAddedColumn) {
+      for (let i = columns.length - 1; i >= 0; i--) {
+        const column = columns[i];
+        const columnName = column.type === 'timeDimension' ? 'dateTime' : column.fragment[column.type].id;
+        if (column.type === lastAddedColumn.type && columnName === lastAddedColumn.name) {
+          return column;
+        }
+      }
+    }
+
+    return null;
   }
 
   /**
@@ -211,10 +210,13 @@ class NaviColumnConfig extends Component {
    * @param {Object} column - contains type and name of column to remove from request
    */
   @action
-  removeColumn(column) {
+  removeColumn(column, { componentElement }) {
     const { type, fragment } = column;
     const removalHandler = this[`onRemove${capitalize(type)}`];
-    removalHandler?.(fragment);
+    if (removalHandler) {
+      componentElement.classList.add('navi-column-config-item--removing');
+      later(() => removalHandler(fragment), 200);
+    }
   }
 
   /**

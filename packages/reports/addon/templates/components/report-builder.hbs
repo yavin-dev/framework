@@ -13,8 +13,8 @@
       <DimensionSelector
         class="report-builder__container report-builder__dimension-selector{{if @disabled " report-builder__container--disabled"}}"
         @request={{this.request}}
-        @onAddTimeGrain={{queue (fn (optional @onBeforeAddItem) this) (update-report-action "ADD_TIME_GRAIN")}}
-        @onAddDimension={{queue (fn (optional @onBeforeAddItem) this) (update-report-action "ADD_DIMENSION")}}
+        @onAddTimeGrain={{queue (fn @onBeforeAddItem this "timeDimension") (update-report-action "ADD_TIME_GRAIN")}}
+        @onAddDimension={{queue (fn @onBeforeAddItem this "dimension") (update-report-action "ADD_DIMENSION")}}
         @onRemoveTimeGrain={{update-report-action "REMOVE_TIME_GRAIN"}}
         @onRemoveDimension={{update-report-action "REMOVE_DIMENSION"}}
         @onToggleDimFilter={{queue (update-report-action "TOGGLE_DIM_FILTER") (action "onToggleDimFilter")}}
@@ -22,8 +22,8 @@
       <MetricSelector
         class="report-builder__container report-builder__metric-selector{{if @disabled " report-builder__container--disabled"}}"
         @request={{this.request}}
-        @onAddMetric={{queue (fn (optional @onBeforeAddItem) this) (update-report-action "ADD_METRIC")}}
-        @onAddMetricWithParameter={{queue (fn (optional @onBeforeAddItem) this) (update-report-action "ADD_METRIC_WITH_PARAM")}}
+        @onAddMetric={{queue (fn @onBeforeAddItem this "metric") (update-report-action "ADD_METRIC")}}
+        @onAddMetricWithParameter={{queue (fn @onBeforeAddItem this "metric") (update-report-action "ADD_METRIC_WITH_PARAM")}}
         @onRemoveMetric={{update-report-action "REMOVE_METRIC"}}
         @onToggleMetricFilter={{queue (update-report-action "TOGGLE_METRIC_FILTER") (action "onToggleMetricFilter")}}
         @onToggleParameterizedMetricFilter={{action "onToggleParameterizedMetricFilter"}}

@@ -15,7 +15,7 @@ import { set, action } from '@ember/object';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
 import layout from '../../templates/components/navi-column-config/item';
 import { A as arr } from '@ember/array';
-import { debounce } from '@ember/runloop';
+import { debounce, next } from '@ember/runloop';
 
 @tagName('')
 @templateLayout(layout)
@@ -75,6 +75,13 @@ class NaviColumnConfigItemComponent extends Component {
   @action
   setupElement(element) {
     this.componentElement = element;
+
+    if (this.isLastAdded) {
+      set(this, 'isColumnConfigOpen', true);
+      next(() => {
+        element.parentElement.scrollTop = element.offsetTop - element.parentElement.offsetTop;
+      });
+    }
   }
 }
 

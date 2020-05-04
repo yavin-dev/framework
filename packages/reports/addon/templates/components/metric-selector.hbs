@@ -42,7 +42,7 @@
             <MetricConfig
               @metric={{metric}}
               @request={{@request}}
-              @onAddParameterizedMetric={{update-report-action "ADD_METRIC_WITH_PARAM"}}
+              @onAddParameterizedMetric={{@onAddMetricWithParameter}}
               @onRemoveParameterizedMetric={{update-report-action "REMOVE_METRIC_WITH_PARAM"}}
               @onToggleParameterizedMetricFilter={{queue (update-report-action "TOGGLE_PARAMETERIZED_METRIC_FILTER") (action (optional @onToggleParameterizedMetricFilter))}}
             />

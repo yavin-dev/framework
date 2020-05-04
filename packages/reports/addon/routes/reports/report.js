@@ -76,7 +76,8 @@ export default Route.extend({
     controller.setProperties({
       showSaveAs: false,
       isFiltersCollapsed: false,
-      modifiedRequest: null
+      modifiedRequest: null,
+      lastAddedColumn: null
     });
   },
 

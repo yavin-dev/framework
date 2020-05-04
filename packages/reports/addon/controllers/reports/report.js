@@ -37,6 +37,11 @@ export default class ReportsReportController extends Controller {
   modifiedRequest = null;
 
   /**
+   * @property {Object} lastAddedColumn
+   */
+  lastAddedColumn = null;
+
+  /**
    * @property {String} reportState - state of the the report
    */
   get reportState() {
@@ -99,6 +104,10 @@ export default class ReportsReportController extends Controller {
     const { isColumnDrawerOpen } = this;
     set(this, 'isColumnDrawerOpen', isOpen);
 
+    if (!isOpen) {
+      set(this, 'lastAddedColumn', null);
+    }
+
     if (isOpen !== isColumnDrawerOpen) {
       const visualizationElement = reportBuilder.element.querySelector('.report-view');
       if (visualizationElement) {
@@ -108,6 +117,11 @@ export default class ReportsReportController extends Controller {
         this.onFadeEnd = null;
       }
     }
+  }
+
+  @action
+  updateLastAddedColumn(reportBuilder, type, { id }) {
+    set(this, 'lastAddedColumn', { type, name: type === 'timeDimension' ? 'dateTime' : id });
   }
 
   /**
