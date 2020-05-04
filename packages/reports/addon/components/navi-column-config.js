@@ -21,7 +21,7 @@
  */
 import Component from '@ember/component';
 import layout from '../templates/components/navi-column-config';
-import { action, computed } from '@ember/object';
+import { action, computed, set } from '@ember/object';
 import { capitalize } from '@ember/string';
 import move from 'ember-animated/motions/move';
 import { easeOut, easeIn } from 'ember-animated/easings/cosine';
@@ -210,11 +210,11 @@ class NaviColumnConfig extends Component {
    * @param {Object} column - contains type and name of column to remove from request
    */
   @action
-  removeColumn(column, { componentElement }) {
+  removeColumn(column) {
     const { type, fragment } = column;
     const removalHandler = this[`onRemove${capitalize(type)}`];
     if (removalHandler) {
-      componentElement.classList.add('navi-column-config-item--removing');
+      set(column, 'isRemoving', true);
       later(() => removalHandler(fragment), 200);
     }
   }
