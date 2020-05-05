@@ -7,6 +7,9 @@
 
 import Component from '@glimmer/component';
 
+/**
+ * @interface Args
+ */
 interface Args {
   data: Array<Object>;
 }
