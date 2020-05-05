@@ -74,6 +74,7 @@ export default class NaviSearchBarComponent extends Component {
   /**
    * @method launchQuery – Launch search task
    * @param {String} query
+   * @returns {Array} results
    */
   @restartableTask
   *launchQuery(query, event) {
