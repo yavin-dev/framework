@@ -3,7 +3,7 @@ import { findAll, visit, click, fillIn, blur, currentURL } from '@ember/test-hel
 import { setupApplicationTest } from 'ember-qunit';
 import config from 'ember-get-config';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
-import { clickItem } from 'navi-reports/test-support/report-builder';
+import { clickItem, clickMetricConfigTrigger } from 'navi-reports/test-support/report-builder';
 import { setupAnimationTest, animationsSettled } from 'ember-animated/test-support';
 import { selectChoose } from 'ember-power-select/test-support';
 
@@ -161,7 +161,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
   });
 
   test('highlights last added/cloned item', async function(assert) {
-    assert.expect(15);
+    assert.expect(29);
 
     await visit('/reports/new');
     await click('.navi-report__run-btn');
@@ -219,15 +219,15 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
     assert.deepEqual(
       findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--open')),
       [false, false, false, true],
-      'Only most recently added dimension is open'
+      'Only most recently added Browser dimension is open'
     );
     assert.deepEqual(
       findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--last-added')),
       [false, false, false, true],
-      'Only most recently added dimension is highlighted'
+      'Only most recently added Browser dimension is highlighted'
     );
 
-    //clone
+    //clone dimension
     await click('.navi-column-config-base__clone-icon');
     await animationsSettled();
     assert.deepEqual(
@@ -250,13 +250,103 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
     assert.dom('.navi-column-config-item--open').doesNotExist('No column is open after removing');
     assert.dom('.navi-column-config-item--last-added').doesNotExist('No column is highlighted after removing');
 
-    //save, revert
+    //save, add Browser, revert
     await click('.navi-report__save-btn');
     await clickItem('dimension', 'Browser');
     await animationsSettled();
     await click('.navi-report__revert-btn');
-    assert.dom('.navi-column-config-item--open').doesNotExist('No column is open after reverting');
-    assert.dom('.navi-column-config-item--last-added').doesNotExist('No column is highlighted after reverting');
+    assert.dom('.navi-column-config-item--open').doesNotExist('No column is open after revert');
+    assert.dom('.navi-column-config-item--last-added').doesNotExist('No column is highlighted after revert');
+
+    //add a metric
+    await clickItem('metric', 'Ad Clicks');
+    await animationsSettled();
+    assert.deepEqual(
+      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--open')),
+      [false, false, false, false, true],
+      'Only Ad Clicks metric is open'
+    );
+    assert.deepEqual(
+      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--last-added')),
+      [false, false, false, false, true],
+      'Only Ad Clicks metric is highlighted'
+    );
+
+    //clone metric
+    await click('.navi-column-config-base__clone-icon');
+    await animationsSettled();
+    assert.deepEqual(
+      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--open')),
+      [false, false, false, false, true, true],
+      'Original and cloned metrics are open'
+    );
+    assert.deepEqual(
+      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--last-added')),
+      [false, false, false, false, false, true],
+      'Only cloned metric is highlighted'
+    );
+
+    //close open configs
+    await click('.navi-column-config-item__name[title="Ad Clicks"]');
+    await click(findAll('.navi-column-config-item__name[title="Ad Clicks"]')[1]);
+
+    //remove last added column
+    await click(findAll('.navi-column-config-item__remove-icon')[5]);
+    assert.dom('.navi-column-config-item--open').doesNotExist('No column is open after removing');
+    assert.dom('.navi-column-config-item--last-added').doesNotExist('No column is highlighted after removing');
+
+    //add a parameterized metric
+    await clickItem('metric', 'Platform Revenue');
+    await animationsSettled();
+    assert.deepEqual(
+      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--open')),
+      [false, false, false, false, false, true],
+      'Only Platform Revenue metric is open'
+    );
+    assert.deepEqual(
+      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--last-added')),
+      [false, false, false, false, false, true],
+      'Only Platform Revenue metric is highlighted'
+    );
+
+    //clone parameterized metric
+    await click('.navi-column-config-base__clone-icon');
+    await animationsSettled();
+    assert.deepEqual(
+      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--open')),
+      [false, false, false, false, false, true, true],
+      'Original and cloned parameterized metrics are open'
+    );
+    assert.deepEqual(
+      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--last-added')),
+      [false, false, false, false, false, false, true],
+      'Only cloned parameterized metric is highlighted'
+    );
+
+    //close open configs
+    await click('.navi-column-config-item__name[title="Platform Revenue (USD)"]');
+    await click(findAll('.navi-column-config-item__name[title="Platform Revenue (USD)"]')[1]);
+
+    //remove last added column
+    await click(findAll('.navi-column-config-item__remove-icon')[5]);
+    assert.dom('.navi-column-config-item--open').doesNotExist('No column is open after removing');
+    assert.dom('.navi-column-config-item--last-added').doesNotExist('No column is highlighted after removing');
+
+    //add a parameterized metric from metric config
+    const closeConfig = await clickMetricConfigTrigger('Platform Revenue');
+    await clickItem('metricConfig', 'Dollars', 'CAD');
+    await animationsSettled();
+    await closeConfig();
+    assert.deepEqual(
+      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--open')),
+      [false, false, false, false, false, false, true],
+      'Only Platform Revenue (CAD) is open'
+    );
+    assert.deepEqual(
+      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--last-added')),
+      [false, false, false, false, false, false, true],
+      'Only Platform Revenue (CAD) is highlighted'
+    );
   });
 
   test('adding, removing and changing - date time', async function(assert) {
