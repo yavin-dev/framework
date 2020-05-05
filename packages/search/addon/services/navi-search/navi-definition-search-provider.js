@@ -7,7 +7,7 @@
 
 import { inject as service } from '@ember/service';
 import NaviBaseSearchProviderService from '../navi-base-search-provider';
-import { keepLatestTask } from 'ember-concurrency-decorators';
+import { restartableTask } from 'ember-concurrency-decorators';
 import { searchRecordsByFields } from 'navi-core/utils/search';
 
 export default class NaviDefinitionSearchProviderService extends NaviBaseSearchProviderService {
@@ -27,7 +27,7 @@ export default class NaviDefinitionSearchProviderService extends NaviBaseSearchP
    * @param {String} query
    * @returns {Object} Object containing, component, title and data
    */
-  @keepLatestTask
+  @restartableTask
   // eslint-disable-next-line require-yield
   *search(query) {
     const types = ['table', 'dimension', 'metric', 'time-dimension'];

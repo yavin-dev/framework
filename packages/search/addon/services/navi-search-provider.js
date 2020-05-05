@@ -8,7 +8,7 @@
 import Service from '@ember/service';
 import { getOwner } from '@ember/application';
 import config from 'ember-get-config';
-import { keepLatestTask } from 'ember-concurrency-decorators';
+import { restartableTask } from 'ember-concurrency-decorators';
 
 /* global requirejs */
 
@@ -42,7 +42,7 @@ export default class NaviSearchProviderService extends Service {
    * @returns {Array} array of objects that contain the search results,
    * the name of the result component as well as result ordering information
    */
-  @keepLatestTask
+  @restartableTask
   *search(query) {
     const searchProviders = this._all();
     let results = [];
