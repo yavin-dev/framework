@@ -12,7 +12,7 @@ import { inject as service } from '@ember/service';
 /**
  * @constant NUM_TOP
  */
-const NUM_TOP:number = 2;
+const NUM_TOP: number = 2;
 
 export default class NaviDefinitionSearchResultComponent extends NaviBaseSearchResultComponent {
   /**
