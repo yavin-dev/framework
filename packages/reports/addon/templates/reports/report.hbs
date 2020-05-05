@@ -42,7 +42,7 @@
       @disabled={{this.isRunningReport}}
       @isFiltersCollapsed={{this.isFiltersCollapsed}}
       @onUpdateFiltersCollapsed={{set this.isFiltersCollapsed _}}
-      @onBeforeAddItem={{queue (fn this.updateColumnDrawerOpen true) this.updateLastAddedColumn}}
+      @onBeforeAddItem={{this.onBeforeAddItem}}
       as |builder|
     >
       {{#if (feature-flag "enableRequestPreview")}}
@@ -55,9 +55,9 @@
           @onRemoveTimeDimension={{queue (set this.lastAddedColumn null) (update-report-action "REMOVE_TIME_GRAIN")}}
           @onRemoveDimension={{queue (set this.lastAddedColumn null) (update-report-action "REMOVE_DIMENSION_FRAGMENT")}}
           @onRemoveMetric={{queue (set this.lastAddedColumn null) (update-report-action "REMOVE_METRIC_FRAGMENT")}}
-          @onAddDimension={{queue (fn this.updateLastAddedColumn builder "dimension") (update-report-action "ADD_DIMENSION")}}
-          @onAddMetric={{queue (fn this.updateLastAddedColumn builder "metric") (update-report-action "ADD_METRIC")}}
-          @onAddMetricWithParameter={{queue (fn this.updateLastAddedColumn builder "metric") (update-report-action "ADD_METRIC_WITH_PARAM")}}
+          @onAddDimension={{queue (fn this.updateLastAddedColumn "dimension") (update-report-action "ADD_DIMENSION")}}
+          @onAddMetric={{queue (fn this.updateLastAddedColumn "metric") (update-report-action "ADD_METRIC")}}
+          @onAddMetricWithParameter={{queue (fn this.updateLastAddedColumn "metric") (update-report-action "ADD_METRIC_WITH_PARAM")}}
           @onToggleDimFilter={{update-report-action "TOGGLE_DIM_FILTER"}}
           @onToggleMetricFilter={{update-report-action "TOGGLE_METRIC_FILTER"}}
           @onToggleParameterizedMetricFilter={{update-report-action "TOGGLE_PARAMETERIZED_METRIC_FILTER"}}

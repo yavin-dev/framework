@@ -69,7 +69,8 @@ class NaviColumnConfigItemComponent extends Component {
   }
 
   /**
-   * Stores element reference after render
+   * Stores element reference after render.
+   * If the column was just added, open the config and scroll to element
    * @param element - element inserted
    */
   @action

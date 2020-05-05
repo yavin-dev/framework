@@ -111,21 +111,22 @@
       @disabled={{this.isRunningReport}}
       @isFiltersCollapsed={{this.isFiltersCollapsed}}
       @onUpdateFiltersCollapsed={{toggle "isFiltersCollapsed" this}}
-      @onBeforeAddItem={{fn this.updateColumnDrawerOpen true}}
+      @onBeforeAddItem={{this.onBeforeAddItem}}
       as |builder|
     >
       {{#if (feature-flag "enableRequestPreview")}}
         <NaviColumnConfig
           class="{{if this.isRunningReport "navi-column-config--disabled"}}"
           @isOpen={{this.isColumnDrawerOpen}}
+          @lastAddedColumn={{this.lastAddedColumn}}
           @report={{this.model}}
           @openFilters={{route-action "openFilters"}}
-          @onRemoveTimeDimension={{update-report-action "REMOVE_TIME_GRAIN"}}
-          @onRemoveDimension={{update-report-action "REMOVE_DIMENSION_FRAGMENT"}}
-          @onRemoveMetric={{update-report-action "REMOVE_METRIC_FRAGMENT"}}
-          @onAddDimension={{update-report-action "ADD_DIMENSION"}}
-          @onAddMetric={{update-report-action "ADD_METRIC"}}
-          @onAddMetricWithParameter={{update-report-action "ADD_METRIC_WITH_PARAM"}}
+          @onRemoveTimeDimension={{queue (set this.lastAddedColumn null) (update-report-action "REMOVE_TIME_GRAIN")}}
+          @onRemoveDimension={{queue (set this.lastAddedColumn null) (update-report-action "REMOVE_DIMENSION_FRAGMENT")}}
+          @onRemoveMetric={{queue (set this.lastAddedColumn null) (update-report-action "REMOVE_METRIC_FRAGMENT")}}
+          @onAddDimension={{queue (fn this.updateLastAddedColumn "dimension") (update-report-action "ADD_DIMENSION")}}
+          @onAddMetric={{queue (fn this.updateLastAddedColumn "metric") (update-report-action "ADD_METRIC")}}
+          @onAddMetricWithParameter={{queue (fn this.updateLastAddedColumn "metric") (update-report-action "ADD_METRIC_WITH_PARAM")}}
           @onToggleDimFilter={{update-report-action "TOGGLE_DIM_FILTER"}}
           @onToggleMetricFilter={{update-report-action "TOGGLE_METRIC_FILTER"}}
           @onToggleParameterizedMetricFilter={{update-report-action "TOGGLE_PARAMETERIZED_METRIC_FILTER"}}
@@ -190,7 +191,7 @@
         <button
           type="button"
           class="btn btn-secondary navi-report-widget__revert-btn"
-          onclick={{route-action "revertChanges" @model}}
+          onclick={{queue (set this.lastAddedColumn null) (route-action "revertChanges" @model)}}
         >
           Revert Changes
         </button>

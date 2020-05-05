@@ -124,32 +124,17 @@
   }
 
   @keyframes navi-column-config-item-pulse-once {
-    0% {
+    0%,
+    100% {
       background-color: @navi-white;
     }
     50% {
       background-color: @denali-brand-200;
     }
-    100% {
-      background-color: @navi-white;
-    }
   }
 
   &--last-added {
     animation: navi-column-config-item-pulse-once 0.75s;
-  }
-
-  @keyframes navi-column-config-item-fade-out {
-    0% {
-      opacity: 1;
-    }
-    100% {
-      opacity: 0;
-    }
-  }
-
-  &--removing {
-    animation: navi-column-config-item-fade-out 0.3s;
   }
 
   &__parameter {

@@ -37,7 +37,7 @@ export default class ReportsReportController extends Controller {
   modifiedRequest = null;
 
   /**
-   * @property {Object} lastAddedColumn
+   * @property {Object} lastAddedColumn - the column that has been added last
    */
   lastAddedColumn = null;
 
@@ -119,9 +119,27 @@ export default class ReportsReportController extends Controller {
     }
   }
 
+  /**
+   * Updates the last added column
+   * @param {String} type - the added column type
+   * @param {Object} fragment - the added request fragment
+   * @param {String} fragment.id - fragment id
+   */
   @action
-  updateLastAddedColumn(reportBuilder, type, { id }) {
+  updateLastAddedColumn(type, { id }) {
     set(this, 'lastAddedColumn', { type, name: type === 'timeDimension' ? 'dateTime' : id });
+  }
+
+  /**
+   * Opens the column config drawer and updates the last added column
+   * @param {ReportBuilderComponent} reportBuilder - The report builder component
+   * @param {String} columnType - the added column type
+   * @param {Object} fragment - the added request fragment
+   */
+  @action
+  onBeforeAddItem(reportBuilder, columnType, fragment) {
+    this.send('updateColumnDrawerOpen', true, reportBuilder);
+    this.send('updateLastAddedColumn', columnType, fragment);
   }
 
   /**

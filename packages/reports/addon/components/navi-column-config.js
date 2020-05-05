@@ -95,7 +95,10 @@ class NaviColumnConfig extends Component {
     return columns;
   }
 
-  @computed('columns', 'lastAddedColumn')
+  /**
+   * @property {Object} lastAddedItem - the column that has been added last
+   */
+  @computed('columns.[]', 'lastAddedColumn')
   get lastAddedItem() {
     const { columns, lastAddedColumn } = this;
 
