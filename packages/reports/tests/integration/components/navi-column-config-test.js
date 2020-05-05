@@ -368,6 +368,7 @@ module('Integration | Component | navi-column-config', function(hooks) {
       .hasAttribute('aria-disabled', 'true', 'Date time config filter icon has aria-disabled="true" attribute');
     await click('.navi-column-config-base__filter-icon');
     await click('.navi-column-config-item__remove-icon');
+    await animationsSettled();
   });
 
   test('Header config buttons - metric', async function(assert) {
@@ -424,6 +425,7 @@ module('Integration | Component | navi-column-config', function(hooks) {
       .hasClass('navi-column-config-base__filter-icon--active', 'Metric config filter is active if there is a having');
 
     await click(findAll('.navi-column-config-item__remove-icon')[1]);
+    await animationsSettled();
   });
 
   test('Header config buttons - parameterized metric', async function(assert) {
@@ -480,6 +482,7 @@ module('Integration | Component | navi-column-config', function(hooks) {
       .hasClass('navi-column-config-base__filter-icon--active', 'Metric config filter is active if there is a having');
 
     await click(findAll('.navi-column-config-item__remove-icon')[1]);
+    await animationsSettled();
   });
 
   test('Header config buttons - dimension', async function(assert) {
@@ -539,5 +542,61 @@ module('Integration | Component | navi-column-config', function(hooks) {
       );
 
     await click(findAll('.navi-column-config-item__remove-icon')[1]);
+    await animationsSettled();
+  });
+
+  test('last added column', async function(assert) {
+    assert.expect(6);
+
+    this.set('lastAddedColumn', { type: 'dimension', name: 'foo' });
+    addItem('dimension', 'browser');
+    await render(
+      hbs`<NaviColumnConfig @report={{this.report}} @lastAddedColumn={{this.lastAddedColumn}} @isOpen={{true}} />`
+    );
+
+    await animationsSettled();
+    let elements = findAll('.navi-column-config-item');
+    assert.deepEqual(
+      elements.map(el => el.classList.contains('navi-column-config-item--last-added')),
+      [false, false],
+      'No column has the `last-added` class'
+    );
+    assert.deepEqual(
+      elements.map(el => el.classList.contains('navi-column-config-item--open')),
+      [false, false],
+      'No column is open'
+    );
+
+    this.set('lastAddedColumn', { type: 'dimension', name: 'browser' });
+    await render(
+      hbs`<NaviColumnConfig @report={{this.report}} @lastAddedColumn={{this.lastAddedColumn}} @isOpen={{true}} />`
+    );
+
+    await animationsSettled();
+    elements = findAll('.navi-column-config-item');
+    assert.deepEqual(
+      elements.map(el => el.classList.contains('navi-column-config-item--last-added')),
+      [false, true],
+      'Last added column has the correct class'
+    );
+    assert.deepEqual(
+      elements.map(el => el.classList.contains('navi-column-config-item--open')),
+      [false, true],
+      'Last added column is open'
+    );
+
+    addItem('dimension', 'browser');
+    await animationsSettled();
+    elements = findAll('.navi-column-config-item');
+    assert.deepEqual(
+      elements.map(el => el.classList.contains('navi-column-config-item--last-added')),
+      [false, false, true],
+      'Only the most recently added column has the correct class'
+    );
+    assert.deepEqual(
+      elements.map(el => el.classList.contains('navi-column-config-item--open')),
+      [false, true, true],
+      'Previously added column is still open as well as the most recently added one'
+    );
   });
 });
