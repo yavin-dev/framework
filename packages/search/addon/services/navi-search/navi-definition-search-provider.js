@@ -10,6 +10,11 @@ import NaviBaseSearchProviderService from '../navi-base-search-provider';
 import { keepLatestTask } from 'ember-concurrency-decorators';
 import { searchRecordsByFields } from 'navi-core/utils/search';
 
+/**
+ * @constant RESULT_THRESHOLD
+ */
+const RESULT_THRESHOLD = 10;
+
 export default class NaviDefinitionSearchProviderService extends NaviBaseSearchProviderService {
   /**
    * @property {Ember.Service} metadataService
@@ -42,7 +47,7 @@ export default class NaviDefinitionSearchProviderService extends NaviBaseSearchP
     return {
       component: this._displayComponentName,
       title: 'Definition',
-      data
+      data: data.slice(0, RESULT_THRESHOLD)
     };
   }
 }

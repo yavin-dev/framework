@@ -22,5 +22,12 @@
         {{/if}}
       {{/let}}
     {{/each}}
+    {{#if this.hasMoreResults}}
+      <tr {{on "click" (toggle "showTop" this)}} class="navi-search-definition-options">
+        <td class="navi-search-definition-options__button">
+          {{if this.showTop "Show more" "Show less"}}
+        </td>
+      </tr>
+    {{/if}}
   </tbody>
 </table>

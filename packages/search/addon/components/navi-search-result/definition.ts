@@ -33,10 +33,17 @@ export default class NaviDefinitionSearchResultComponent extends NaviBaseSearchR
   }
 
   /**
+   * @property {Boolean} hasMoreResults
+   */
+  get hasMoreResults(): Boolean {
+    return this.args?.data.length > NUM_TOP;
+  }
+
+  /**
    * @property {Array} results
    */
   get results(): Array<Object> {
-    if (this.showTop) {
+    if (this.showTop && this.hasMoreResults) {
       return this.args?.data.slice(0, NUM_TOP);
     }
     return this.args?.data;
