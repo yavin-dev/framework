@@ -77,7 +77,7 @@ export default class NaviSearchBarComponent extends Component {
    * @returns {Array} results
    */
   @restartableTask
-  *launchQuery(query, event) {
+  *launchQuery(query) {
     let results;
     yield setTimeout(() => {}, DEBOUNCE_MS);
     results = yield this.searchProviderService.search.perform(query);
