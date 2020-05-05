@@ -127,4 +127,19 @@ module('Integration | Component | definition', function(hooks) {
       'definitions sources are shown correctly'
     );
   });
+
+  test('result without a description', async function(assert) {
+    assert.expect(1);
+
+    const data = [
+      {
+        id: 'pageViews',
+        name: 'Page Views'
+      }
+    ];
+    set(this, 'data', data);
+
+    await render(hbs`<NaviSearchResult::Definition @data={{this.data}} />`);
+    assert.dom('.navi-search-definition-result').doesNotExist('No results are displayed');
+  });
 });

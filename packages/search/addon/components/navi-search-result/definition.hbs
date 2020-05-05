@@ -2,23 +2,25 @@
 <table class="navi-search-results__item navi-search-results__item--definition" ...attributes>
   <tbody class="navi-search-results__item-body">
     {{#each @data as |result|}}
-      <tr class="navi-search-definition-result">
-        <td class="navi-search-definition-result__item navi-search-results__item--cell">
-            <h5 class="navi-search-definition-result__item-name">{{result.name}}</h5>
-            {{#if this.hasMultipleDataSources}}
-              <em class="navi-search-definition-result__item-source">Source: {{result.source}}</em>
-            {{/if}}
-            <p class="navi-search-definition-result__item-description">
-              {{#if result.description}}
-               {{result.description}}
-              {{else}}
-                {{#let (await result.extended) as |extendedResult|}}
-                  {{extendedResult.description}}
-                {{/let}}
-              {{/if}}
-            </p>
-        </td>
-      </tr>
+      {{#let (await result.extended) as |extendedResult|}}
+        {{#if (or result.description extendedResult.description)}}
+          <tr class="navi-search-definition-result">
+            <td class="navi-search-definition-result__item navi-search-results__item--cell">
+                <h5 class="navi-search-definition-result__item-name">{{result.name}}</h5>
+                {{#if this.hasMultipleDataSources}}
+                  <em class="navi-search-definition-result__item-source">Source: {{result.source}}</em>
+                {{/if}}
+                <p class="navi-search-definition-result__item-description">
+                  {{#if result.description}}
+                  {{result.description}}
+                  {{else}}
+                    {{extendedResult.description}}
+                  {{/if}}
+                </p>
+            </td>
+          </tr>
+        {{/if}}
+      {{/let}}
     {{/each}}
   </tbody>
 </table>
