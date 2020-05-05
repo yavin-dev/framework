@@ -9,7 +9,7 @@ import Component from '@glimmer/component';
 import { inject as service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { keepLatestTask } from 'ember-concurrency-decorators';
+import { restartableTask } from 'ember-concurrency-decorators';
 
 /**
  * @constant EMPTY_RESULT – Empty result object
@@ -29,6 +29,11 @@ const ENTER_KEY = 13;
  */
 const ESCAPE_KEY = 27;
 
+/**
+ * @constant DEBOUNCE_MS
+ */
+const DEBOUNCE_MS = 250;
+
 export default class NaviSearchBarComponent extends Component {
   /**
    * @property {Ember.Service} searchProviderService
@@ -39,11 +44,6 @@ export default class NaviSearchBarComponent extends Component {
    * @property {String} searchQuery
    */
   @tracked searchQuery = '';
-
-  /**
-   * @property {String} searchResults
-   */
-  @tracked searchResults = [];
 
   /**
    * @method onKeyUp – Perform search based on user query
@@ -66,6 +66,7 @@ export default class NaviSearchBarComponent extends Component {
 
     // Perform search on enter press or when there's a search query
     if ((event.keyCode === ENTER_KEY && this.searchQuery.length !== 0) || this.searchQuery.length > 0) {
+      dd.actions.open(event);
       this.launchQuery.perform(this.searchQuery, dd, event);
     }
   }
@@ -73,14 +74,15 @@ export default class NaviSearchBarComponent extends Component {
   /**
    * @method launchQuery – Launch search task
    * @param {String} query
-   * @param {Object} dd
    */
-  @keepLatestTask
-  *launchQuery(query, dd, event) {
-    dd.actions.open(event);
-    this.searchResults = yield this.searchProviderService.search.perform(query);
-    if (this.searchResults.length === 0 && query !== '') {
-      this.searchResults = [EMPTY_RESULT];
+  @restartableTask
+  *launchQuery(query, event) {
+    let results;
+    yield setTimeout(() => {}, DEBOUNCE_MS);
+    results = yield this.searchProviderService.search.perform(query);
+    if (results.length === 0 && query !== '') {
+      results = [EMPTY_RESULT];
     }
+    return results;
   }
 }
