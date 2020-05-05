@@ -6,7 +6,7 @@
  */
 
 import Component from '@ember/component';
-import { action, computed } from '@ember/object';
+import { action } from '@ember/object';
 import layout from 'navi-reports/templates/components/filter-builders/base';
 import { readOnly } from '@ember/object/computed';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
@@ -35,7 +35,6 @@ class BaseFilterBuilderComponent extends Component {
   /**
    * @property {Array} supportedOperators - list of valid values for filter.operator
    */
-  @computed
   get supportedOperators() {
     return [];
   }

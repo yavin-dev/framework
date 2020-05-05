@@ -36,7 +36,6 @@ const supportedOperators = [
 
 const TEMPLATE = hbs`
 <FilterBuilders::Base
-  @supportedOperators={{this.supportedOperators}}
   @onUpdateFilter={{this.onUpdateFilter}}
   @isCollapsed={{this.isCollapsed}} 
 />`;
@@ -57,6 +56,9 @@ module('Integration | Component | filter-builders/base', function(hooks) {
       class extends BaseFilterBuilderComponent {
         get filter() {
           return filter;
+        }
+        get supportedOperators() {
+          return supportedOperators;
         }
       }
     );
