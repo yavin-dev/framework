@@ -112,7 +112,7 @@ module('Integration | Component | navi-column-config', function(hooks) {
   });
 
   test('time grain - switching and removing', async function(assert) {
-    assert.expect(4);
+    assert.expect(8);
 
     await render(hbs`<NaviColumnConfig @report={{this.report}} @isOpen={{true}} />`);
 
@@ -122,6 +122,16 @@ module('Integration | Component | navi-column-config', function(hooks) {
       ['Date Time (Day)'],
       'The date time column is initially added and set to day'
     );
+
+    assert
+      .dom('.navi-column-config-item__remove-icon')
+      .doesNotHaveClass(
+        'navi-column-config-item__remove-icon--disabled',
+        'remove button of date time column does not have disabled class'
+      );
+    assert
+      .dom('.navi-column-config-item__remove-icon')
+      .isNotDisabled('remove button of date time column is not disabled');
 
     await click('.navi-column-config-item__name[title="Date Time (Day)"]'); // open date time config
     await clickTrigger('.navi-column-config-item__parameter'); // open the time grain dropdown
@@ -148,6 +158,17 @@ module('Integration | Component | navi-column-config', function(hooks) {
       [],
       'The date time column is removed when timegrain is set to all'
     );
+
+    this.set('report.request.logicalTable.table', { timeGrainIds: ['day'], timeGrains: [{ id: 'day', name: 'Day' }] });
+    this.set('report.request.logicalTable.timeGrain', 'day');
+    await animationsSettled();
+    assert
+      .dom('.navi-column-config-item__remove-icon')
+      .hasClass(
+        'navi-column-config-item__remove-icon--disabled',
+        'remove button of date time column has disabled class'
+      );
+    assert.dom('.navi-column-config-item__remove-icon').isDisabled('remove button of date time column is disabled');
   });
 
   test('metrics - adding', async function(assert) {

@@ -12,7 +12,8 @@
         <button
           type="button"
           aria-label="delete {{dasherize @column.type}} {{@column.displayName}}"
-          class="navi-column-config-item__remove-icon"
+          class="navi-column-config-item__remove-icon {{unless @column.isRemovable "navi-column-config-item__remove-icon--disabled"}}"
+          disabled={{not @column.isRemovable}}
           {{on "click" @onRemoveColumn}}>
           <NaviIcon @icon="minus-circle" />
         </button>

@@ -63,6 +63,7 @@ class NaviColumnConfig extends Component {
         name,
         displayName: this.getDisplayName(dimension, 'dimension', visualization),
         isFiltered: filteredDimensions.includes(name),
+        isRemovable: true,
         fragment: dimension
       };
     });
@@ -74,6 +75,7 @@ class NaviColumnConfig extends Component {
         name,
         displayName: this.getDisplayName(metric, 'metric', visualization),
         isFiltered: filteredMetrics.includes(name),
+        isRemovable: true,
         fragment: metric
       };
     });
@@ -86,6 +88,7 @@ class NaviColumnConfig extends Component {
         name: 'dateTime',
         displayName: this.getDisplayName(timeGrainObject, 'timeDimension', visualization),
         isFiltered: true,
+        isRemovable: timeGrains.find(grain => grain.id === 'all') ? true : false,
         fragment: 'dateTime',
         timeGrain,
         timeGrains: timeGrains.filter(grain => grain.id !== 'all')
