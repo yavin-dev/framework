@@ -16,14 +16,6 @@ module('Integration | Component | definition', function(hooks) {
     this.owner.register('service:bard-metadata', MetadataServiceStub);
   });
 
-  test('it renders', async function(assert) {
-    assert.expect(1);
-
-    await render(hbs`<NaviSearchResult::Definition />`);
-
-    assert.equal(this.element.textContent.trim(), '');
-  });
-
   test('displays results', async function(assert) {
     assert.expect(3);
 
