@@ -7,7 +7,7 @@
 
 import { inject as service } from '@ember/service';
 import NaviBaseSearchProviderService from '../navi-base-search-provider';
-import { keepLatestTask } from 'ember-concurrency-decorators';
+import { restartableTask } from 'ember-concurrency-decorators';
 import { pluralize } from 'ember-inflector';
 
 export default class NaviAssetSearchProviderService extends NaviBaseSearchProviderService {
@@ -75,7 +75,7 @@ export default class NaviAssetSearchProviderService extends NaviBaseSearchProvid
    * @yields {Promise} promise with search query results
    * @returns {Object} Object containing component, title, and data to be displayed
    */
-  @keepLatestTask
+  @restartableTask
   *search(query) {
     const types = ['report', 'dashboard'];
     const promises = [];

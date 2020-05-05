@@ -19,20 +19,20 @@ module('Unit | Component | filter-builders/dimension', function(hooks) {
       .create({ requestFragment: mockFilterFragment });
 
     assert.deepEqual(
-      dimBuilder.get('filter.subject'),
       mockFilterFragment.dimension,
+      dimBuilder.filter.subject,
       'Filter subject matches the dimension from the request fragment'
     );
 
     assert.deepEqual(
-      dimBuilder.get('filter.operator'),
-      A(dimBuilder.get('supportedOperators')).findBy('id', mockFilterFragment.operator),
+      A(dimBuilder.supportedOperators).findBy('id', mockFilterFragment.operator),
+      dimBuilder.filter.operator,
       'Filter operator matches the supported operator object with the id from the request fragment'
     );
 
     assert.deepEqual(
-      dimBuilder.get('filter.values'),
       mockFilterFragment.rawValues,
+      dimBuilder.filter.values,
       'Filter values match the rawValues property in the request fragment'
     );
   });
