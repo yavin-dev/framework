@@ -29,28 +29,32 @@ module('Unit | Service | navi-asset-search-provider', function(hooks) {
     assert.deepEqual(
       service._constructSearchQuery('Hyrule', 'report'),
       {
-        filter: { reports: '(title==*Hyrule*,request==*Hyrule*);author==ciela' }
+        filter: { reports: '(title==*Hyrule*,request==*Hyrule*);author.id==ciela' },
+        page: { limit: 10 }
       },
       'Constructs the correct report query for the api with both filter parameters and author.'
     );
     assert.deepEqual(
       service._constructSearchQuery(null, 'report'),
       {
-        filter: { reports: 'author==ciela' }
+        filter: { reports: 'author.id==ciela' },
+        page: { limit: 10 }
       },
       'Constructs the correct report query for the api with author.'
     );
     assert.deepEqual(
       service._constructSearchQuery('Hyrule', 'dashboard'),
       {
-        filter: { dashboards: '(title==*Hyrule*);author==ciela' }
+        filter: { dashboards: '(title==*Hyrule*);author.id==ciela' },
+        page: { limit: 10 }
       },
       'Constructs the correct dashboard query for the api with both filter parameters and author.'
     );
     assert.deepEqual(
       service._constructSearchQuery(null, 'dashboard'),
       {
-        filter: { dashboards: 'author==ciela' }
+        filter: { dashboards: 'author.id==ciela' },
+        page: { limit: 10 }
       },
       'Constructs the correct dashboard query for the api with author.'
     );

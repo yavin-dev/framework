@@ -11,6 +11,11 @@ import { restartableTask } from 'ember-concurrency-decorators';
 import { pluralize } from 'ember-inflector';
 import { getPartialMatchWeight } from 'navi-core/utils/search';
 
+/**
+ * @constant RESULT_THRESHOLD
+ */
+const RESULT_THRESHOLD = 10;
+
 export default class NaviAssetSearchProviderService extends NaviBaseSearchProviderService {
   /**
    * @property {Ember.Service} store
@@ -59,7 +64,7 @@ export default class NaviAssetSearchProviderService extends NaviBaseSearchProvid
   _constructSearchQuery(userQuery, type) {
     const author = this.user.getUser().id;
     const pluralType = pluralize(type);
-    let query = { filter: { [pluralType]: '' } };
+    let query = { filter: { [pluralType]: '' }, page: { limit: RESULT_THRESHOLD } };
 
     const paramsFilterString = this._parseParamsFilterString(userQuery, type);
     const authorFilterString = author ? (paramsFilterString ? `;author.id==${author}` : `author.id==${author}`) : '';

@@ -8,42 +8,7 @@ module('Integration | Component | navi-search-result-asset', function(hooks) {
   setupRenderingTest(hooks);
 
   test('displays results', async function(assert) {
-    assert.expect(3);
-
-    const data = [
-      {
-        title: 'Revenue report 1',
-        modelId: 7,
-        constructor: {
-          modelName: 'report'
-        }
-      },
-      {
-        title: 'Revenue Dashboard',
-        modelId: 4,
-        constructor: {
-          modelName: 'dashboard'
-        }
-      }
-    ];
-    set(this, 'data', data);
-    set(this, 'closeResults', () => undefined);
-
-    await render(hbs`<NaviSearchResult::Asset @data={{this.data}} @closeResults={{fn this.closeResults}} />`);
-
-    assert.dom('.navi-search-asset-result').exists({ count: 2 }, '2 results are displayed');
-    assert.deepEqual(
-      findAll('.navi-search-asset-result__item').map(result => result.textContent.trim()),
-      ['Revenue report 1', 'Revenue Dashboard'],
-      'Displayed correct search result.'
-    );
-    assert
-      .dom('.navi-search-defition-options__button')
-      .doesNotExist('Show more button is not displayed when there are few results');
-  });
-
-  test('show more results', async function(assert) {
-    assert.expect(9);
+    assert.expect(2);
 
     const data = [
       {
