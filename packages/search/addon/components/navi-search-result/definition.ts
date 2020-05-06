@@ -6,7 +6,6 @@
  */
 
 import NaviBaseSearchResultComponent from './base';
-import { tracked } from '@glimmer/tracking';
 import { inject as service } from '@ember/service';
 
 /**
@@ -21,31 +20,15 @@ export default class NaviDefinitionSearchResultComponent extends NaviBaseSearchR
   @service('bard-metadata') metadataService!: TODO;
 
   /**
-   * @property {Boolean} showTop
+   * @override
+   * @property {number} numberOfTopResults
    */
-  @tracked showTop: Boolean = true;
+  numberOfTopResults: number = NUM_TOP;
 
   /**
    * @property {Boolean} hasMultipleDataSources
    */
   get hasMultipleDataSources(): Boolean {
     return this.metadataService.loadedDataSources.length > 1;
-  }
-
-  /**
-   * @property {Boolean} hasMoreResults
-   */
-  get hasMoreResults(): Boolean {
-    return this.args?.data.length > NUM_TOP;
-  }
-
-  /**
-   * @property {Array} results
-   */
-  get results(): Array<Object> {
-    if (this.showTop && this.hasMoreResults) {
-      return this.args?.data.slice(0, NUM_TOP);
-    }
-    return this.args?.data;
   }
 }

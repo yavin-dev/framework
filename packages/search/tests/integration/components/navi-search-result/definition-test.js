@@ -160,7 +160,7 @@ module('Integration | Component | definition', function(hooks) {
 
     assert.dom('.navi-search-definition-result').exists({ count: 2 }, 'Two results are displayed');
     assert.equal(
-      find('.navi-search-definition-options__button').textContent.trim(),
+      find('.navi-search-result-options__button').textContent.trim(),
       'Show more',
       'Show less button is shown.'
     );
@@ -176,11 +176,11 @@ module('Integration | Component | definition', function(hooks) {
       'definition descriptions are shown correctly'
     );
 
-    await click('.navi-search-definition-options__button');
+    await click('.navi-search-result-options__button');
 
     assert.dom('.navi-search-definition-result').exists({ count: 3 }, 'Three results are displayed');
     assert.equal(
-      find('.navi-search-definition-options__button').textContent.trim(),
+      find('.navi-search-result-options__button').textContent.trim(),
       'Show less',
       'Show less button is shown.'
     );
@@ -196,11 +196,11 @@ module('Integration | Component | definition', function(hooks) {
       'definition descriptions are shown correctly'
     );
 
-    await click('.navi-search-definition-options__button');
+    await click('.navi-search-result-options__button');
 
     assert.dom('.navi-search-definition-result').exists({ count: 2 }, 'Two results are displayed');
     assert.equal(
-      find('.navi-search-definition-options__button').textContent.trim(),
+      find('.navi-search-result-options__button').textContent.trim(),
       'Show more',
       'Show less button is shown.'
     );
@@ -229,7 +229,7 @@ module('Integration | Component | definition', function(hooks) {
     set(this, 'data', data);
 
     await render(hbs`<NaviSearchResult::Definition @data={{this.data}} />`);
-    assert.dom('.navi-search-definition-result').exists({ count: 1 }, 'One results are displayed');
+    assert.dom('.navi-search-definition-result').exists({ count: 1 }, 'One result is displayed');
     assert
       .dom('.navi-search-defition-options__button')
       .doesNotExist('Show more button is not displayed when there are few results');
