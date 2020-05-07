@@ -23,22 +23,16 @@ export default class FragmentFactory extends Service {
    * @param meta - The metadata object to use as field to build this fragment from
    * @param parameters - parameters to attach to column, if none pass empty object `{}`
    * @param alias - optional alias for this column
-   * @param dimensionField - dimension field if passing in a dimension `id` or `description` for example
    */
-  createColumnFromMeta(
-    columnMetadata: Column,
-    parameters: Dict<string> = {},
-    alias?: string,
-    dimensionField?: string
-  ): ColumnFragment {
+  createColumnFromMeta(columnMetadata: Column, parameters: Dict<string> = {}, alias?: string): ColumnFragment {
     const type = this._getMetaColumnType(columnMetadata);
-    const field = dimensionField ? `${columnMetadata.id}.${dimensionField}` : columnMetadata.id;
+    const field = columnMetadata.id;
     return this.createColumn(type, columnMetadata.source, field, parameters, alias);
   }
 
   /**
    * Builds a request v2 column fragment and applies the appropriate meta data
-   * @param type - metric or dimension
+   * @param type - metric, dimension or time-dimension
    * @param dataSource - datasource or namespace for metadata lookups
    * @param field - field name, if dimension includes field `dimension.id`
    * @param parameters - parameters to attach to column, if none pass empty object `{}`
@@ -67,23 +61,21 @@ export default class FragmentFactory extends Service {
    * @param parameters - parameters to attach to column, if none pass empty object `{}`
    * @param operator - operator to pass in: 'contains, in, notnull etc'
    * @param values - array of values to filter by
-   * @param dimensionField - dimension field if passing in a dimension `id` or `description` for example
    */
   createFilterFromMeta(
     columnMetadata: Column,
     parameters: Dict<string> = {},
     operator: string,
-    values: Array<string | number>,
-    dimensionField?: string
+    values: Array<string | number>
   ): FilterFragment {
     const type = this._getMetaColumnType(columnMetadata);
-    const field = dimensionField ? `${columnMetadata.id}.${dimensionField}` : columnMetadata.id;
+    const field = columnMetadata.id;
     return this.createFilter(type, columnMetadata.source, field, parameters, operator, values);
   }
 
   /**
    * Builds a request v2 filter fragment and applies the appropriate meta data
-   * @param type - metric or dimension
+   * @param type - metric, dimension or time-dimension
    * @param dataSource - datasource or namespace for metadata lookups
    * @param field - field name, if dimension includes field `dimension.id`
    * @param parameters - parameters to attach to column, if none pass empty object `{}`
@@ -114,22 +106,16 @@ export default class FragmentFactory extends Service {
    * @param meta - meta data object to build this filter from
    * @param parameters - parameters to attach to column, if none pass empty object `{}`
    * @param direction  - `desc` or `asc`
-   * @param dimensionField - dimension field if passing in a dimension `id` or `description` for example
    */
-  createSortFromMeta(
-    columnMetadata: Column,
-    parameters: Dict<string> = {},
-    direction: 'asc' | 'desc',
-    dimensionField?: string
-  ): SortFragment {
+  createSortFromMeta(columnMetadata: Column, parameters: Dict<string> = {}, direction: 'asc' | 'desc'): SortFragment {
     const type = this._getMetaColumnType(columnMetadata);
-    const field = dimensionField ? `${columnMetadata.id}.${dimensionField}` : columnMetadata.id;
+    const field = columnMetadata.id;
     return this.createSort(type, columnMetadata.source, field, parameters, direction);
   }
 
   /**
    * Builds a request v2 sort fragment and applies the appropriate meta data
-   * @param type - metric or dimension
+   * @param type - metric, dimension or time-dimension
    * @param dataSource - datasource or namespace for metadata lookups
    * @param field - field name, if dimension includes field `dimension.id`
    * @param parameters - parameters to attach to column, if none pass empty object `{}`
