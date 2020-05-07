@@ -36,7 +36,8 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
               alias: 'time'
             },
             {
-              field: 'property.id',
+              field: 'property',
+              parameters: { projection: 'id' },
               type: 'dimension'
             },
             {
@@ -348,7 +349,8 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
             alias: 'time'
           },
           {
-            field: 'property.id',
+            field: 'property',
+            parameters: { projection: 'id' },
             type: 'dimension',
             alias: null
           },
