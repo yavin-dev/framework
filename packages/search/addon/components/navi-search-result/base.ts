@@ -12,14 +12,14 @@ import { tracked } from '@glimmer/tracking';
  * @interface Args
  */
 interface Args {
-  data: Array<Object>;
+  data: Array<TODO>;
 }
 
 export default class NaviBaseSearchResultComponent extends Component<Args> {
   /**
-   * @property {Boolean} showTop
+   * @property {boolean} showTop
    */
-  @tracked showTop: Boolean = true;
+  @tracked showTop: boolean = true;
 
   /**
    * @property {number} numberOfTopResults
@@ -27,9 +27,9 @@ export default class NaviBaseSearchResultComponent extends Component<Args> {
   @tracked numberOfTopResults: number = 10;
 
   /**
-   * @property {Boolean} hasMoreResults
+   * @property {boolean} hasMoreResults
    */
-  get hasMoreResults(): Boolean {
+  get hasMoreResults(): boolean {
     return this.args?.data.length > this.numberOfTopResults;
   }
 

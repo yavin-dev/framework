@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find, findAll, click } from '@ember/test-helpers';
+import { render, findAll, click } from '@ember/test-helpers';
 import { hbs } from 'ember-cli-htmlbars';
 import { set } from '@ember/object';
 import Service from '@ember/service';
@@ -135,6 +135,25 @@ module('Integration | Component | definition', function(hooks) {
     assert.dom('.navi-search-definition-result').doesNotExist('No results are displayed');
   });
 
+  test('result without a description in extended', async function(assert) {
+    assert.expect(1);
+
+    const data = [
+      {
+        id: 'pageViews',
+        name: 'Page Views',
+        extended: Promise.resolve({
+          id: 'pageViews',
+          name: 'Page Views'
+        })
+      }
+    ];
+    set(this, 'data', data);
+
+    await render(hbs`<NaviSearchResult::Definition @data={{this.data}} />`);
+    assert.dom('.navi-search-definition-result').doesNotExist('No results are displayed');
+  });
+
   test('show more results', async function(assert) {
     assert.expect(12);
     const data = [
@@ -159,11 +178,7 @@ module('Integration | Component | definition', function(hooks) {
     await render(hbs`<NaviSearchResult::Definition @data={{this.data}} />`);
 
     assert.dom('.navi-search-definition-result').exists({ count: 2 }, 'Two results are displayed');
-    assert.equal(
-      find('.navi-search-result-options__button').textContent.trim(),
-      'Show more',
-      'Show less button is shown.'
-    );
+    assert.dom('.navi-search-result-options__button').hasText('Show more', 'Show more button is shown.');
 
     assert.deepEqual(
       findAll('.navi-search-definition-result__item-name').map(el => el.textContent.trim()),
@@ -179,11 +194,7 @@ module('Integration | Component | definition', function(hooks) {
     await click('.navi-search-result-options__button');
 
     assert.dom('.navi-search-definition-result').exists({ count: 3 }, 'Three results are displayed');
-    assert.equal(
-      find('.navi-search-result-options__button').textContent.trim(),
-      'Show less',
-      'Show less button is shown.'
-    );
+    assert.dom('.navi-search-result-options__button').hasText('Show less', 'Show less button is shown.');
 
     assert.deepEqual(
       findAll('.navi-search-definition-result__item-name').map(el => el.textContent.trim()),
@@ -199,11 +210,7 @@ module('Integration | Component | definition', function(hooks) {
     await click('.navi-search-result-options__button');
 
     assert.dom('.navi-search-definition-result').exists({ count: 2 }, 'Two results are displayed');
-    assert.equal(
-      find('.navi-search-result-options__button').textContent.trim(),
-      'Show more',
-      'Show less button is shown.'
-    );
+    assert.dom('.navi-search-result-options__button').hasText('Show more', 'Show more button is shown.');
 
     assert.deepEqual(
       findAll('.navi-search-definition-result__item-name').map(el => el.textContent.trim()),

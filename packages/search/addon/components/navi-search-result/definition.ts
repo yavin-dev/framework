@@ -26,9 +26,9 @@ export default class NaviDefinitionSearchResultComponent extends NaviBaseSearchR
   numberOfTopResults: number = NUM_TOP;
 
   /**
-   * @property {Boolean} hasMultipleDataSources
+   * @property {boolean} hasMultipleDataSources
    */
-  get hasMultipleDataSources(): Boolean {
+  get hasMultipleDataSources(): boolean {
     return this.metadataService.loadedDataSources.length > 1;
   }
 }
