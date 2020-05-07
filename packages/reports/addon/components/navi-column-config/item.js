@@ -78,9 +78,11 @@ class NaviColumnConfigItemComponent extends Component {
     this.componentElement = element;
 
     if (this.isLastAdded) {
-      set(this, 'isColumnConfigOpen', true);
+      if (this.column.type !== 'dimension') {
+        set(this, 'isColumnConfigOpen', true);
+      }
       next(() => {
-        element.parentElement.scrollTop = element.offsetTop - element.parentElement.offsetTop;
+        this.componentElement.scrollIntoView(true);
       });
     }
   }

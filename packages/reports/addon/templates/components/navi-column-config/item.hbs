@@ -6,42 +6,38 @@
   ...attributes
   {{did-insert this.setupElement}}
 >
-  <AnimatedContainer>
-    {{#animated-if (not @column.isRemoving) use=fade}}
-      <div class="navi-column-config-item__header">
-        <button
-          type="button"
-          aria-label="delete {{dasherize @column.type}} {{@column.displayName}}"
-          class="navi-column-config-item__remove-icon {{unless @column.isRemovable "navi-column-config-item__remove-icon--disabled"}}"
-          disabled={{not @column.isRemovable}}
-          {{on "click" @onRemoveColumn}}>
-          <NaviIcon @icon="minus-circle" />
-        </button>
+  <div class="navi-column-config-item__header">
+    <button
+      type="button"
+      aria-label="delete {{dasherize @column.type}} {{@column.displayName}}"
+      class="navi-column-config-item__remove-icon {{unless @column.isRemovable "navi-column-config-item__remove-icon--disabled"}}"
+      disabled={{not @column.isRemovable}}
+      {{on "click" @onRemoveColumn}}>
+      <NaviIcon @icon="minus-circle" />
+    </button>
 
-        <span class="navi-column-config-item__type-icon"></span>
+    <span class="navi-column-config-item__type-icon"></span>
 
-        <button
-          class="navi-column-config-item__trigger"
-          type="button"
-          {{on "click" (toggle "isColumnConfigOpen" this)}}
-        >
-          <span title="{{@column.displayName}}" class="navi-column-config-item__name">{{@column.displayName}}</span>
-          <NaviIcon
-            class="navi-column-config-item__dropdown-icon"
-            @icon="angle-right"
-          />
-        </button>
-      </div>
+    <button
+      class="navi-column-config-item__trigger"
+      type="button"
+      {{on "click" (toggle "isColumnConfigOpen" this)}}
+    >
+      <span title="{{@column.displayName}}" class="navi-column-config-item__name">{{@column.displayName}}</span>
+      <NaviIcon
+        class="navi-column-config-item__dropdown-icon"
+        @icon="angle-right"
+      />
+    </button>
+  </div>
 
-      {{#if this.isColumnConfigOpen}}
-        <NaviColumnConfig::Base
-          @column={{@column}}
-          @metadata={{@visualization.metadata}}
-          @cloneColumn={{@cloneColumn}}
-          @toggleColumnFilter={{@toggleColumnFilter}}
-          @onUpdateColumnName={{this.updateColumnName}}
-        />
-      {{/if}}
-    {{/animated-if}}
-  </AnimatedContainer>
+  {{#if this.isColumnConfigOpen}}
+    <NaviColumnConfig::Base
+      @column={{@column}}
+      @metadata={{@visualization.metadata}}
+      @cloneColumn={{@cloneColumn}}
+      @toggleColumnFilter={{@toggleColumnFilter}}
+      @onUpdateColumnName={{this.updateColumnName}}
+    />
+  {{/if}}
 </li>

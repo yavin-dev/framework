@@ -123,11 +123,10 @@ export default class ReportsReportController extends Controller {
    * Updates the last added column
    * @param {String} type - the added column type
    * @param {Object} fragment - the added request fragment
-   * @param {String} fragment.id - fragment id
    */
   @action
-  updateLastAddedColumn(type, { id }) {
-    set(this, 'lastAddedColumn', { type, name: type === 'timeDimension' ? 'dateTime' : id });
+  updateLastAddedColumn(type, fragment) {
+    set(this, 'lastAddedColumn', !type ? null : { type, name: type === 'timeDimension' ? 'dateTime' : fragment.id });
   }
 
   /**
@@ -138,8 +137,8 @@ export default class ReportsReportController extends Controller {
    */
   @action
   onBeforeAddItem(reportBuilder, columnType, fragment) {
-    this.send('updateColumnDrawerOpen', true, reportBuilder);
-    this.send('updateLastAddedColumn', columnType, fragment);
+    this.updateColumnDrawerOpen(true, reportBuilder);
+    this.updateLastAddedColumn(columnType, fragment);
   }
 
   /**

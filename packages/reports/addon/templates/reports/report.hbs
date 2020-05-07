@@ -52,9 +52,9 @@
           @lastAddedColumn={{this.lastAddedColumn}}
           @report={{this.model}}
           @openFilters={{route-action "openFilters"}}
-          @onRemoveTimeDimension={{queue (set this.lastAddedColumn null) (update-report-action "REMOVE_TIME_GRAIN")}}
-          @onRemoveDimension={{queue (set this.lastAddedColumn null) (update-report-action "REMOVE_DIMENSION_FRAGMENT")}}
-          @onRemoveMetric={{queue (set this.lastAddedColumn null) (update-report-action "REMOVE_METRIC_FRAGMENT")}}
+          @onRemoveTimeDimension={{queue (fn this.updateLastAddedColumn null) (update-report-action "REMOVE_TIME_GRAIN")}}
+          @onRemoveDimension={{queue (fn this.updateLastAddedColumn null) (update-report-action "REMOVE_DIMENSION_FRAGMENT")}}
+          @onRemoveMetric={{queue (fn this.updateLastAddedColumn null) (update-report-action "REMOVE_METRIC_FRAGMENT")}}
           @onAddDimension={{queue (fn this.updateLastAddedColumn "dimension") (update-report-action "ADD_DIMENSION")}}
           @onAddMetric={{queue (fn this.updateLastAddedColumn "metric") (update-report-action "ADD_METRIC")}}
           @onAddMetricWithParameter={{queue (fn this.updateLastAddedColumn "metric") (update-report-action "ADD_METRIC_WITH_PARAM")}}
@@ -125,7 +125,7 @@
         <NaviButton
           class="navi-report__revert-btn"
           @type="secondary"
-          @onClick={{queue (set this.lastAddedColumn null) (route-action "revertChanges" model)}}
+          @onClick={{queue (fn this.updateLastAddedColumn null) (route-action "revertChanges" model)}}
         >
           Revert
         </NaviButton>

@@ -106,13 +106,13 @@ class NaviColumnConfig extends Component {
     const { columns, lastAddedColumn } = this;
 
     if (lastAddedColumn) {
-      for (let i = columns.length - 1; i >= 0; i--) {
-        const column = columns[i];
-        const columnName = column.type === 'timeDimension' ? 'dateTime' : column.fragment[column.type].id;
-        if (column.type === lastAddedColumn.type && columnName === lastAddedColumn.name) {
-          return column;
-        }
-      }
+      return columns
+        .slice()
+        .reverse()
+        .find(column => {
+          const columnName = column.type === 'timeDimension' ? 'dateTime' : column.fragment[column.type].id;
+          return column.type === lastAddedColumn.type && columnName === lastAddedColumn.name;
+        });
     }
 
     return null;
@@ -219,10 +219,7 @@ class NaviColumnConfig extends Component {
   removeColumn(column) {
     const { type, fragment } = column;
     const removalHandler = this[`onRemove${capitalize(type)}`];
-    if (removalHandler) {
-      set(column, 'isRemoving', true);
-      later(() => removalHandler(fragment), 200);
-    }
+    removalHandler?.(fragment);
   }
 
   /**
