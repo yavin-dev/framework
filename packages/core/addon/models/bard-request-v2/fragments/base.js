@@ -20,7 +20,7 @@ const Validations = buildValidations({
     allowBlank: true,
     message() {
       const { field } = this.model;
-      return 'The `type` field of `' + field + '` column must equal to `dimension` or `metric`';
+      return 'The `type` field of `' + field + '` column must equal to `dimension`, `metric`, or `time-dimension`';
     }
   })
 });
@@ -51,20 +51,12 @@ export default class Base extends Fragment.extend(Validations) {
   get columnMeta() {
     assert('Source must be set in order to access columnMeta', isPresent(this.source));
     assert('column type must be set in order to access columnMeta', isPresent(this.type));
-    if (this.lookupField === 'dateTime') {
+    if (this.field === 'dateTime') {
       return {
         id: 'dateTime',
         name: 'Date Time'
       };
     }
-    return this.metadataService.getById(this.type, this.lookupField, this.source);
-  }
-
-  /**
-   * Field without dimension subfield
-   * @type {string}
-   */
-  get lookupField() {
-    return this.field.split('.')[0];
+    return this.metadataService.getById(this.type, this.field, this.source);
   }
 }
