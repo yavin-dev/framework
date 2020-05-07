@@ -7,7 +7,9 @@
   font-size: @font-size-mid-base;
 
   &__group-header {
+    align-items: flex-start;
     cursor: pointer;
+    display: flex;
     margin: 3px 0;
 
     &-content {
@@ -16,13 +18,17 @@
     }
 
     &-icon {
+      flex-shrink: 0;
+      margin-top: 2px;
+
       &--closed {
-        margin-left: 2px;
-        width: 8px;
+        flex-basis: 10px;
+        margin-left: 4px;
       }
+
       &--open {
-        margin-left: 0;
-        width: 10px;
+        flex-basis: 12px;
+        margin-left: 2px;
       }
     }
   }
@@ -124,12 +130,12 @@
       align-self: center;
       color: @denali-grey-700;
       cursor: help;
-      display: none;
-      margin-left: 5px;
+      margin-left: 2px;
+      visibility: hidden;
     }
 
     &:hover &-info {
-      display: initial;
+      visibility: visible;
     }
   }
 
@@ -149,7 +155,7 @@
     align-items: center;
     display: flex;
     font-size: @font-size-base;
-    margin: 0 15px 0 auto;
+    margin: 0 5px 0 auto;
 
     &--no-filter {
       .metric-config {

@@ -37,7 +37,7 @@
               {{param.description}} ({{param.id}})
             </span>
 
-            <div class="grouped-list__icon-set">
+            <div class="grouped-list__icon-set metric-config__icon-set">
               <NaviIcon
                 @icon="filter"
                 class={{concat (if (get paramsFiltered (concat param.param "|" param.id)) "grouped-list__filter--active ") "grouped-list__filter"}}
