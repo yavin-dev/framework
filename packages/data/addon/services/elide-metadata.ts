@@ -50,12 +50,12 @@ export default class ElideMetadata extends Service {
   @service('keg') _keg: TODO;
 
   /**
-   * @property {Array} loadedDataSources - list of data sources in which meta data has already been loaded
+   * @property loadedDataSources - list of data sources in which meta data has already been loaded
    */
   loadedDataSources: string[] = [];
 
   /**
-   * @method init
+   * @constructor
    */
   constructor() {
     super(...arguments);
@@ -70,7 +70,7 @@ export default class ElideMetadata extends Service {
    * @method loadMetadata
    * Fetches metadata from the bard WS using the metadata adapter and loads into keg
    *
-   * @param {Object} options - options object used by the adapter
+   * @param options - options object used by the adapter
    * @returns {Promise} promise that loads metadata
    */
   async loadMetadata(options: MetadataRequestOptions = {}) {
@@ -90,9 +90,8 @@ export default class ElideMetadata extends Service {
    * This method can be easily overridden to configure what metadata is loaded
    * @private
    * @method _fetchMetadata
-   * @param {Object} options
-   * @param {String} options.dataSourceName
-   * @returns {Promise<Object>} Payload for a given datasource or the default datasource
+   * @param options - optionally contains data source name
+   * @returns {Promise} Payload for a given datasource or the default datasource
    */
   _fetchMetadata(options: MetadataRequestOptions = {}) {
     return this._adapter?.fetchAll('table', options);
@@ -103,8 +102,8 @@ export default class ElideMetadata extends Service {
    * @private
    * Loads metadata based on type
    *
-   * @param {String} type - type of metadata, table, dimension, or metric
-   * @param {Array} metadataObjects - array of metadata objects
+   * @param type - type of metadata, table, dimension, time-dimension, or metric
+   * @param metadataObjects - array of metadata objects
    */
   _loadMetadataForType(type: MetadataType, metadataObjects: MetadataPayload[], namespace: string) {
     const owner = getOwner(this);
@@ -122,10 +121,11 @@ export default class ElideMetadata extends Service {
    * Loads normalized metadata POJO into the Keg
    * @private
    * @method _loadMetadataIntoKeg
-   * @param {Object} metadata - normalized metadata
-   * @param {String} dataSource
+   * @param metadata - normalized metadata
+   * @param dataSource
+   * @returns void
    */
-  _loadMetadataIntoKeg(metadata: NormalizedMetadata | TablePayload | undefined, dataSource: string) {
+  _loadMetadataIntoKeg(metadata: NormalizedMetadata | TablePayload | undefined, dataSource: string): void {
     if (!(this.isDestroyed || this.isDestroying) && this.isMetadataNormalized(metadata)) {
       //create metadata model objects and load into keg
       this._loadMetadataForType('table', metadata.tables, dataSource);
@@ -141,9 +141,9 @@ export default class ElideMetadata extends Service {
    * @method all
    * returns all metadata objects of type `type`
    *
-   * @param {String} type
-   * @param {String} namespace - optional, filters the result by namespace
-   * @returns {Promise} - array of all table metadata
+   * @param type
+   * @param namespace - optional, filters the result by namespace
+   * @returns {Promise<MetadataModel[]>} - array of all table metadata
    */
   all(type: MetadataType, namespace?: string) {
     assert('Type must be a valid navi-data model type', this.isValidType(type));
@@ -160,10 +160,10 @@ export default class ElideMetadata extends Service {
    * @method getById
    * Retrieves metadata based on type and id
    *
-   * @param {String} type
-   * @param {String} id
-   * @param {String} namespace - optional
-   * @returns {Object} metadata model object
+   * @param type
+   * @param id
+   * @param namespace - optional
+   * @returns {MetadataModel} metadata model object
    */
   getById(type: MetadataType, id: string, namespace?: string) {
     assert('Type must be a valid navi-data model type', this.isValidType(type));
@@ -191,10 +191,10 @@ export default class ElideMetadata extends Service {
    * @method findById
    * gets Metadata or fetches it if necessary
    *
-   * @param {String} type
-   * @param {String} id
-   * @param {String} namespace
-   * @returns {Promise}
+   * @param type
+   * @param id
+   * @param namespace
+   * @returns {Promise<MetadataModel>}
    */
   findById(type: MetadataType, id: string, namespace?: string) {
     //Get entity if already present in the keg

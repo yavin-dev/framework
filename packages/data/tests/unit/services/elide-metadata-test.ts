@@ -372,4 +372,25 @@ module('Unit | Service | elide-metadata', function(hooks) {
     //TODO: Implement this test when fetchById is supported
     assert.ok(false);
   });
+
+  test('getTableNamespace', async function(assert) {
+    assert.expect(3);
+
+    const Server = (this as MirageTestContext).server;
+    // Seed our mirage database
+    DummyScenario(Server);
+    await Service.loadMetadata({ dataSourceName: 'dummy' });
+    Server.db.emptyData();
+    BlockheadScenario(Server);
+    await Service.loadMetadata({ dataSourceName: 'blockhead' });
+
+    assert.equal(Service.getTableNamespace('table0'), 'dummy', 'Correct table namespace is shown');
+    assert.equal(
+      Service.getTableNamespace('table2'),
+      'blockhead',
+      'Correct table namespace is returned for non-default source'
+    );
+
+    assert.equal(Service.getTableNamespace('foo'), 'dummy', 'Default namespace returned when table not found');
+  });
 });
