@@ -24,7 +24,7 @@ export default class NaviBaseSearchResultComponent extends Component<Args> {
   /**
    * @property {number} numberOfTopResults
    */
-  numberOfTopResults: number = 10;
+  @tracked numberOfTopResults: number = 10;
 
   /**
    * @property {Boolean} hasMoreResults

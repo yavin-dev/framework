@@ -101,7 +101,7 @@ module('Integration | Component | navi-search-result-asset', function(hooks) {
       'Show more button is shown.'
     );
     assert.deepEqual(
-      findAll('.navi-search-asset-result__item').map(result => result.textContent.trim()),
+      findAll('.navi-search-asset-result__item').map(el => el.textContent.trim()),
       ['Revenue report 1', 'Revenue Dashboard 1', 'Revenue report 2', 'Revenue Dashboard 2', 'Revenue report 3'],
       'Displayed correct search result.'
     );
