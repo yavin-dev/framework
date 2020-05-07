@@ -30,8 +30,8 @@ module('Unit | Service | fragmentFactory', function(hooks) {
     assert.equal(metricMetaFragment.columnMeta.category, 'Clicks', 'Metric fragment meta is populated correctly');
     assert.equal(metricMetaFragment.columnMeta.source, 'dummy', 'Metric fragment meta data has right datasource');
 
-    const dimensionMetaFragment = service.createColumnFromMeta(dimMeta, {}, 'agent', 'description');
-    assert.equal(dimensionMetaFragment.field, 'browser.description', 'Dimension has right field');
+    const dimensionMetaFragment = service.createColumnFromMeta(dimMeta, {}, 'agent');
+    assert.equal(dimensionMetaFragment.field, 'browser', 'Dimension has right field');
     assert.deepEqual(dimensionMetaFragment.parameters, {}, 'Dimension fragment has right parameters');
     assert.equal(dimensionMetaFragment.alias, 'agent', 'Dimension Fragment has passed alias');
     assert.equal(dimensionMetaFragment.type, 'dimension', 'Dimension Fragment has metric type');
@@ -54,8 +54,8 @@ module('Unit | Service | fragmentFactory', function(hooks) {
     assert.equal(metricMetaFragment.columnMeta.category, 'Revenue', 'Metric fragment meta is populated correctly');
     assert.equal(metricMetaFragment.columnMeta.source, 'dummy', 'Metric fragment meta data has right datasource');
 
-    const dimensionMetaFragment = service.createColumn('dimension', 'dummy', 'browser.description', {}, 'agent');
-    assert.equal(dimensionMetaFragment.field, 'browser.description', 'Dimension has right field');
+    const dimensionMetaFragment = service.createColumn('dimension', 'dummy', 'browser', {}, 'agent');
+    assert.equal(dimensionMetaFragment.field, 'browser', 'Dimension has right field');
     assert.deepEqual(dimensionMetaFragment.parameters, {}, 'Dimension fragment has right parameters');
     assert.equal(dimensionMetaFragment.alias, 'agent', 'Dimension Fragment has passed alias');
     assert.equal(dimensionMetaFragment.type, 'dimension', 'Dimension Fragment has metric type');
@@ -75,14 +75,8 @@ module('Unit | Service | fragmentFactory', function(hooks) {
     assert.equal(metricMetaFragment.columnMeta.category, 'Clicks', 'Metric fragment meta is populated correctly');
     assert.equal(metricMetaFragment.columnMeta.source, 'dummy', 'Metric fragment meta data has right datasource');
 
-    const dimensionMetaFragment = service.createFilterFromMeta(
-      dimMeta,
-      {},
-      'contains',
-      ['chrome', 'firefox'],
-      'description'
-    );
-    assert.equal(dimensionMetaFragment.field, 'browser.description', 'Dimension has right field');
+    const dimensionMetaFragment = service.createFilterFromMeta(dimMeta, {}, 'contains', ['chrome', 'firefox']);
+    assert.equal(dimensionMetaFragment.field, 'browser', 'Dimension has right field');
     assert.deepEqual(dimensionMetaFragment.parameters, {}, 'Dimension fragment has right parameters');
     assert.equal(dimensionMetaFragment.operator, 'contains', 'Dimension Fragment has passed opeator');
     assert.deepEqual(dimensionMetaFragment.values, ['chrome', 'firefox'], 'Dimension Fragment has metric values');
@@ -103,16 +97,11 @@ module('Unit | Service | fragmentFactory', function(hooks) {
     assert.equal(metricMetaFragment.columnMeta.category, 'Clicks', 'Metric fragment meta is populated correctly');
     assert.equal(metricMetaFragment.columnMeta.source, 'dummy', 'Metric fragment meta data has right datasource');
 
-    const dimensionMetaFragment = service.createFilter(
-      'dimension',
-      'dummy',
-      'browser.description',
-      {},
-      'contains',
-      ['chrome', 'firefox'],
-      'description'
-    );
-    assert.equal(dimensionMetaFragment.field, 'browser.description', 'Dimension has right field');
+    const dimensionMetaFragment = service.createFilter('dimension', 'dummy', 'browser', {}, 'contains', [
+      'chrome',
+      'firefox'
+    ]);
+    assert.equal(dimensionMetaFragment.field, 'browser', 'Dimension has right field');
     assert.deepEqual(dimensionMetaFragment.parameters, {}, 'Dimension fragment has right parameters');
     assert.equal(dimensionMetaFragment.operator, 'contains', 'Dimension Fragment has passed opeator');
     assert.deepEqual(dimensionMetaFragment.values, ['chrome', 'firefox'], 'Dimension Fragment has metric values');
