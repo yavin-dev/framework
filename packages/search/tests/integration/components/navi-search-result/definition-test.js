@@ -178,7 +178,7 @@ module('Integration | Component | definition', function(hooks) {
     await render(hbs`<NaviSearchResult::Definition @data={{this.data}} />`);
 
     assert.dom('.navi-search-definition-result').exists({ count: 2 }, 'Two results are displayed');
-    assert.dom('.navi-search-result-options__button').hasText('Show more', 'Show more button is shown.');
+    assert.dom('.navi-search-result-options__show-button').hasText('Show more', 'Show more button is shown.');
 
     assert.deepEqual(
       findAll('.navi-search-definition-result__item-name').map(el => el.textContent.trim()),
@@ -191,10 +191,10 @@ module('Integration | Component | definition', function(hooks) {
       'definition descriptions are shown correctly'
     );
 
-    await click('.navi-search-result-options__button');
+    await click('.navi-search-result-options__show-button');
 
     assert.dom('.navi-search-definition-result').exists({ count: 3 }, 'Three results are displayed');
-    assert.dom('.navi-search-result-options__button').hasText('Show less', 'Show less button is shown.');
+    assert.dom('.navi-search-result-options__show-button').hasText('Show less', 'Show less button is shown.');
 
     assert.deepEqual(
       findAll('.navi-search-definition-result__item-name').map(el => el.textContent.trim()),
@@ -207,10 +207,10 @@ module('Integration | Component | definition', function(hooks) {
       'definition descriptions are shown correctly'
     );
 
-    await click('.navi-search-result-options__button');
+    await click('.navi-search-result-options__show-button');
 
     assert.dom('.navi-search-definition-result').exists({ count: 2 }, 'Two results are displayed');
-    assert.dom('.navi-search-result-options__button').hasText('Show more', 'Show more button is shown.');
+    assert.dom('.navi-search-result-options__show-button').hasText('Show more', 'Show more button is shown.');
 
     assert.deepEqual(
       findAll('.navi-search-definition-result__item-name').map(el => el.textContent.trim()),
