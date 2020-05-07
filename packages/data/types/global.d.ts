@@ -6,6 +6,7 @@ declare module 'navi-data/templates/*' {
 }
 
 declare module 'ember-get-config';
+declare module 'ember-apollo-client';
 
 type Dict<T = string> = { [key: string]: T };
 type TODO<T = any> = T;

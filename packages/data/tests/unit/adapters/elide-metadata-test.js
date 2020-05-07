@@ -77,6 +77,7 @@ module('Unit | Elide Metadata Adapter', function(hooks) {
       'cardinality',
       'metrics',
       'dimensions',
+      'timeDimensions',
       '__typename'
     ];
 
@@ -280,6 +281,10 @@ module('Unit | Elide Metadata Adapter', function(hooks) {
               }
             ],
             __typename: 'DimensionConnection'
+          },
+          timeDimensions: {
+            edges: [],
+            __typename: 'TimeDimensionConnection'
           },
           __typename: 'Table'
         }

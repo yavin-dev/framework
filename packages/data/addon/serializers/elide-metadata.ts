@@ -45,10 +45,17 @@ type TableNode = {
   timeDimensions: Connection<TimeDimensionNode>;
 };
 
-type TablePayload = {
+export interface TablePayload {
   tables: Connection<TableNode>;
   source: string;
-};
+}
+
+export interface NormalizedMetadata {
+  tables: TableMetadataPayload[];
+  metrics: MetricMetadataPayload[];
+  dimensions: DimensionMetadataPayload[];
+  timeDimensions: TimeDimensionMetadataPayload[];
+}
 
 export default class ElideMetadataSerializer extends EmberObject {
   /**
@@ -59,7 +66,7 @@ export default class ElideMetadataSerializer extends EmberObject {
    * @param {string} source - datasource of the payload
    * @returns {Object} - normalized tables and their associated columns
    */
-  _normalizeTableConnection(tableConnection: Connection<TableNode>, source: string) {
+  _normalizeTableConnection(tableConnection: Connection<TableNode>, source: string): NormalizedMetadata {
     const edges = tableConnection.edges || [];
     let metrics: MetricMetadataPayload[] = [];
     let dimensions: DimensionMetadataPayload[] = [];
@@ -198,9 +205,18 @@ export default class ElideMetadataSerializer extends EmberObject {
    * @returns {Object} - normalized JSON object
    */
   normalize(payload: TablePayload) {
-    if (payload?.tables) {
+    if (this.isTablePayload(payload)) {
       return this._normalizeTableConnection(payload.tables, payload.source);
     }
     return payload;
+  }
+
+  /**
+   * Runtime typecheck that typescript can understand
+   * @param payload
+   * @return true if payload is an instance of TablePayload
+   */
+  isTablePayload(payload: TablePayload): payload is TablePayload {
+    return !!(payload as TablePayload).tables;
   }
 }
