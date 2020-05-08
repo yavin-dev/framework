@@ -35,13 +35,13 @@ export default class ElideMetadata extends Service {
    * @private
    * @property {Object} adapter - the adapter object
    */
-  _adapter?: Adapter = undefined;
+  _adapter!: Readonly<Adapter>;
 
   /**
    * @private
    * @property {Object} serializer - the serializer object
    */
-  _serializer?: Serializer = undefined;
+  _serializer!: Readonly<Serializer>;
 
   /**
    * @private
@@ -81,7 +81,7 @@ export default class ElideMetadata extends Service {
 
       //normalize payload
       payload.source = dataSource;
-      const metadata = this._serializer?.normalize(payload);
+      const metadata = this._serializer.normalize(payload);
       this._loadMetadataIntoKeg(metadata, dataSource);
     }
   }
@@ -94,7 +94,7 @@ export default class ElideMetadata extends Service {
    * @returns {Promise} Payload for a given datasource or the default datasource
    */
   _fetchMetadata(options: MetadataRequestOptions = {}) {
-    return this._adapter?.fetchAll('table', options);
+    return this._adapter.fetchAll('table', options);
   }
 
   /**
@@ -184,7 +184,7 @@ export default class ElideMetadata extends Service {
    */
   fetchById(/*type: MetadataQueryType, id: string, namespace: string*/) {
     //TODO: Implement fetchById
-    return undefined;
+    assert('elide-metadata.fetchById must be defined before it can be called', false);
   }
 
   /**
@@ -241,10 +241,8 @@ export default class ElideMetadata extends Service {
    * @param metadata - Payload
    * @returns true if metadata is of type NormalizedMetadata
    */
-  isMetadataNormalized(metadata: NormalizedMetadata | TablePayload | undefined): metadata is NormalizedMetadata {
-    return Object.keys(metadata || {}).every(type =>
-      VALID_TYPES.includes(singularize(dasherize(type)) as MetadataType)
-    );
+  isMetadataNormalized(metadata: object | undefined): metadata is NormalizedMetadata {
+    return Object.keys(metadata || {}).every(type => this.isValidType(singularize(dasherize(type))));
   }
 
   /**
@@ -253,7 +251,7 @@ export default class ElideMetadata extends Service {
    * @returns true if type is MetadataType
    */
   isValidType(type: string): type is MetadataType {
-    return VALID_TYPES.includes(type as MetadataType);
+    return ((VALID_TYPES as unknown) as string[]).includes(type);
   }
 
   /**

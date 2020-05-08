@@ -215,8 +215,9 @@ export default class ElideMetadataSerializer extends EmberObject {
    * Runtime typecheck that typescript can understand
    * @param payload
    * @return true if payload is an instance of TablePayload
-   */
-  isTablePayload(payload: TablePayload): payload is TablePayload {
-    return !!(payload as TablePayload).tables;
+   * */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  isTablePayload(payload: any): payload is TablePayload {
+    return !!payload.tables;
   }
 }

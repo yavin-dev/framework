@@ -368,9 +368,17 @@ module('Unit | Service | elide-metadata', function(hooks) {
     );
   });
 
-  skip('fetchById', async function(assert) {
+  test('fetchById', async function(assert) {
+    assert.expect(1);
+
     //TODO: Implement this test when fetchById is supported
-    assert.ok(false);
+    assert.throws(
+      () => {
+        Service.fetchById();
+      },
+      new Error('Assertion Failed: elide-metadata.fetchById must be defined before it can be called'),
+      "Service `fetchById` method throws error because it's not implemented yet"
+    );
   });
 
   test('getTableNamespace', async function(assert) {
