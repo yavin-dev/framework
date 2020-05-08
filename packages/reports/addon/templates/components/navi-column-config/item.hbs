@@ -1,6 +1,8 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <li
-  class="navi-column-config-item navi-column-config-item--{{dasherize @column.type}} {{if this.isColumnConfigOpen "navi-column-config-item--open"}}"
+  class="navi-column-config-item navi-column-config-item--{{dasherize @column.type}}
+    {{if this.isColumnConfigOpen "navi-column-config-item--open"}}
+    {{if @isLastAdded "navi-column-config-item--last-added"}}"
   ...attributes
   {{did-insert this.setupElement}}
 >
@@ -8,7 +10,8 @@
     <button
       type="button"
       aria-label="delete {{dasherize @column.type}} {{@column.displayName}}"
-      class="navi-column-config-item__remove-icon"
+      class="navi-column-config-item__remove-icon {{unless @column.isRemovable "navi-column-config-item__remove-icon--disabled"}}"
+      disabled={{not @column.isRemovable}}
       {{on "click" @onRemoveColumn}}>
       <NaviIcon @icon="minus-circle" />
     </button>

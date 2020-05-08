@@ -21,35 +21,17 @@
  */
 import Component from '@ember/component';
 import layout from '../templates/components/navi-column-config';
-import { action, computed } from '@ember/object';
+import { action, computed, set } from '@ember/object';
 import { capitalize } from '@ember/string';
 import move from 'ember-animated/motions/move';
 import { easeOut, easeIn } from 'ember-animated/easings/cosine';
-import { fadeIn, fadeOut } from 'ember-animated/motions/opacity';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
 import { inject as service } from '@ember/service';
-import { assert } from '@ember/debug';
+import { later } from '@ember/runloop';
 
 @tagName('')
 @templateLayout(layout)
 class NaviColumnConfig extends Component {
-  /**
-   * @property fadeTransition - fade transition
-   */
-  *transition({ keptSprites, removedSprites, insertedSprites }) {
-    let moveDuration;
-    if (removedSprites.length > 0) {
-      // when removing an item, we want to quickly fill in the gap
-      moveDuration = 50;
-    }
-
-    yield Promise.all([
-      ...keptSprites.map(sprite => move(sprite, { duration: moveDuration })),
-      ...insertedSprites.map(sprite => fadeIn(sprite, { duration: 100 })),
-      ...removedSprites.map(sprite => fadeOut(sprite, { duration: 0 }))
-    ]);
-  }
-
   /**
    * @property {Object[]} columns - date time (if not all), dimension, and metric columns from the request
    */
@@ -81,6 +63,7 @@ class NaviColumnConfig extends Component {
         name,
         displayName: this.getDisplayName(dimension, 'dimension', visualization),
         isFiltered: filteredDimensions.includes(name),
+        isRemovable: true,
         fragment: dimension
       };
     });
@@ -92,6 +75,7 @@ class NaviColumnConfig extends Component {
         name,
         displayName: this.getDisplayName(metric, 'metric', visualization),
         isFiltered: filteredMetrics.includes(name),
+        isRemovable: true,
         fragment: metric
       };
     });
@@ -104,6 +88,7 @@ class NaviColumnConfig extends Component {
         name: 'dateTime',
         displayName: this.getDisplayName(timeGrainObject, 'timeDimension', visualization),
         isFiltered: true,
+        isRemovable: timeGrains.find(grain => grain.id === 'all') ? true : false,
         fragment: 'dateTime',
         timeGrain,
         timeGrains: timeGrains.filter(grain => grain.id !== 'all')
@@ -111,6 +96,26 @@ class NaviColumnConfig extends Component {
     }
 
     return columns;
+  }
+
+  /**
+   * @property {Object} lastAddedItem - the column that has been added last
+   */
+  @computed('columns.[]', 'lastAddedColumn')
+  get lastAddedItem() {
+    const { columns, lastAddedColumn } = this;
+
+    if (lastAddedColumn) {
+      return columns
+        .slice()
+        .reverse()
+        .find(column => {
+          const columnName = column.type === 'timeDimension' ? 'dateTime' : column.fragment[column.type].id;
+          return column.type === lastAddedColumn.type && columnName === lastAddedColumn.name;
+        });
+    }
+
+    return null;
   }
 
   /**

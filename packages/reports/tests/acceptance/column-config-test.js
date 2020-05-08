@@ -3,7 +3,7 @@ import { findAll, visit, click, fillIn, blur, currentURL } from '@ember/test-hel
 import { setupApplicationTest } from 'ember-qunit';
 import config from 'ember-get-config';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
-import { clickItem } from 'navi-reports/test-support/report-builder';
+import { clickItem, clickMetricConfigTrigger } from 'navi-reports/test-support/report-builder';
 import { setupAnimationTest, animationsSettled } from 'ember-animated/test-support';
 import { selectChoose } from 'ember-power-select/test-support';
 
@@ -160,6 +160,178 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
       .exists('Column config drawer is still open after adding another parameterized metric');
   });
 
+  test('highlights last added/cloned item', async function(assert) {
+    assert.expect(28);
+
+    await visit('/reports/new');
+    await click('.navi-report__run-btn');
+    assert.deepEqual(getColumns(), ['Date Time (Day)'], 'Initially the only column is date time');
+
+    //remove Date Time
+    await click('.navi-column-config-item__remove-icon');
+
+    //add back Date Time
+    await clickItem('timeGrain', 'Date Time');
+    await animationsSettled();
+    assert.dom('.navi-column-config-item').hasClass('navi-column-config-item--open', 'Date time config is open');
+    assert
+      .dom('.navi-column-config-item')
+      .hasClass('navi-column-config-item--last-added', 'Date time column is highlighted');
+
+    //close the config
+    await click('.navi-column-config-item__name[title="Date Time (Day)"]');
+
+    //add a dimension
+    await clickItem('dimension', 'Age');
+    await animationsSettled();
+    assert.dom('.navi-column-config-item--open').doesNotExist('No column is open - dimensions do not open when added');
+    assert.deepEqual(
+      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--last-added')),
+      [false, true],
+      'Only Age dimension is highlighted'
+    );
+
+    //add another dimension
+    await clickItem('dimension', 'Browser');
+    await animationsSettled();
+    assert.deepEqual(
+      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--last-added')),
+      [false, false, true],
+      'Only Browser dimension is highlighted'
+    );
+
+    //add same dimension again
+    await clickItem('dimension', 'Browser');
+    await animationsSettled();
+    assert.deepEqual(
+      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--last-added')),
+      [false, false, false, true],
+      'Only most recently added Browser dimension is highlighted'
+    );
+
+    //clone dimension
+    await click(findAll('.navi-column-config-item__name[title="Browser"]')[1]);
+    await click('.navi-column-config-base__clone-icon');
+    await animationsSettled();
+    assert.deepEqual(
+      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--open')),
+      [false, false, false, true, false],
+      'Original dimension is still open, cloned one is closed'
+    );
+    assert.deepEqual(
+      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--last-added')),
+      [false, false, false, false, true],
+      'Only cloned dimension is highlighted'
+    );
+
+    //close open config
+    await click(findAll('.navi-column-config-item__name[title="Browser"]')[1]);
+    assert.dom('.navi-column-config-item--open').doesNotExist('No column is open');
+
+    //remove last added column
+    await click(findAll('.navi-column-config-item__remove-icon')[4]);
+    assert.dom('.navi-column-config-item--open').doesNotExist('No column is open after removing');
+    assert.dom('.navi-column-config-item--last-added').doesNotExist('No column is highlighted after removing');
+
+    //save, add Browser, revert
+    await click('.navi-report__save-btn');
+    await clickItem('dimension', 'Browser');
+    await animationsSettled();
+    await click('.navi-report__revert-btn');
+    assert.dom('.navi-column-config-item--open').doesNotExist('No column is open after revert');
+    assert.dom('.navi-column-config-item--last-added').doesNotExist('No column is highlighted after revert');
+
+    //add a metric
+    await clickItem('metric', 'Ad Clicks');
+    await animationsSettled();
+    assert.deepEqual(
+      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--open')),
+      [false, false, false, false, true],
+      'Only Ad Clicks metric is open'
+    );
+    assert.deepEqual(
+      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--last-added')),
+      [false, false, false, false, true],
+      'Only Ad Clicks metric is highlighted'
+    );
+
+    //clone metric
+    await click('.navi-column-config-base__clone-icon');
+    await animationsSettled();
+    assert.deepEqual(
+      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--open')),
+      [false, false, false, false, true, true],
+      'Original and cloned metrics are open'
+    );
+    assert.deepEqual(
+      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--last-added')),
+      [false, false, false, false, false, true],
+      'Only cloned metric is highlighted'
+    );
+
+    //close open configs
+    await click('.navi-column-config-item__name[title="Ad Clicks"]');
+    await click(findAll('.navi-column-config-item__name[title="Ad Clicks"]')[1]);
+
+    //remove last added column
+    await click(findAll('.navi-column-config-item__remove-icon')[5]);
+    assert.dom('.navi-column-config-item--open').doesNotExist('No column is open after removing');
+    assert.dom('.navi-column-config-item--last-added').doesNotExist('No column is highlighted after removing');
+
+    //add a parameterized metric
+    await clickItem('metric', 'Platform Revenue');
+    await animationsSettled();
+    assert.deepEqual(
+      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--open')),
+      [false, false, false, false, false, true],
+      'Only Platform Revenue metric is open'
+    );
+    assert.deepEqual(
+      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--last-added')),
+      [false, false, false, false, false, true],
+      'Only Platform Revenue metric is highlighted'
+    );
+
+    //clone parameterized metric
+    await click('.navi-column-config-base__clone-icon');
+    await animationsSettled();
+    assert.deepEqual(
+      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--open')),
+      [false, false, false, false, false, true, true],
+      'Original and cloned parameterized metrics are open'
+    );
+    assert.deepEqual(
+      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--last-added')),
+      [false, false, false, false, false, false, true],
+      'Only cloned parameterized metric is highlighted'
+    );
+
+    //close open configs
+    await click('.navi-column-config-item__name[title="Platform Revenue (USD)"]');
+    await click(findAll('.navi-column-config-item__name[title="Platform Revenue (USD)"]')[1]);
+
+    //remove last added column
+    await click(findAll('.navi-column-config-item__remove-icon')[5]);
+    assert.dom('.navi-column-config-item--open').doesNotExist('No column is open after removing');
+    assert.dom('.navi-column-config-item--last-added').doesNotExist('No column is highlighted after removing');
+
+    //add a parameterized metric from metric config
+    const closeConfig = await clickMetricConfigTrigger('Platform Revenue');
+    await clickItem('metricConfig', 'Dollars', 'CAD');
+    await animationsSettled();
+    await closeConfig();
+    assert.deepEqual(
+      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--open')),
+      [false, false, false, false, false, false, true],
+      'Only Platform Revenue (CAD) is open'
+    );
+    assert.deepEqual(
+      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--last-added')),
+      [false, false, false, false, false, false, true],
+      'Only Platform Revenue (CAD) is highlighted'
+    );
+  });
+
   test('adding, removing and changing - date time', async function(assert) {
     assert.expect(7);
     await visit('reports/1/view');
@@ -170,11 +342,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
 
     assert.dom('.filter-builder__subject').hasText('Date Time (All)', 'Deselecting day changes time grain to all');
     await animationsSettled();
-    assert.deepEqual(
-      getColumns(),
-      ['Property', 'Ad Clicks', 'Nav Link Clicks'],
-      'Date Time is removed after selecting All timegrain'
-    );
+    assert.deepEqual(getColumns(), ['Property', 'Ad Clicks', 'Nav Link Clicks'], 'Date Time is removed');
 
     await clickItem('dimension', 'Date Time');
     await animationsSettled();
@@ -185,8 +353,6 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
       ['Date Time (Day)', 'Property', 'Ad Clicks', 'Nav Link Clicks'],
       'A Date Time (Day) column is added'
     );
-
-    await click('.navi-column-config-item__name[title="Date Time (Day)"]');
     await selectChoose('.navi-column-config-item__parameter-trigger', 'Week');
 
     assert
@@ -514,8 +680,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
       'The initial parameterized metrics were added'
     );
 
-    await click('.navi-column-config-item__name[title="Platform Revenue (USD)"]');
-    await selectChoose('.navi-column-config-item__parameter-trigger', 'Dollars (CAD)');
+    await selectChoose(findAll('.navi-column-config-item__parameter-trigger')[0], 'Dollars (CAD)');
 
     assert.deepEqual(
       getColumns(),
@@ -540,8 +705,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
       'The initial parameterized metrics were added'
     );
 
-    await click(findAll('.navi-column-config-item__name[title="Platform Revenue (USD)"]')[1]);
-    await selectChoose('.navi-column-config-item__parameter-trigger', 'Dollars (CAD)');
+    await selectChoose(findAll('.navi-column-config-item__parameter-trigger')[2], 'Dollars (CAD)');
 
     assert.deepEqual(
       getColumns(),
@@ -564,7 +728,6 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
     await click('.navi-column-config-item__name[title="Age"]');
     await click('.navi-column-config-base__clone-icon');
     await animationsSettled();
-    await click('.navi-column-config-item__name[title="Age"]');
 
     assert.deepEqual(getColumns(), ['Date Time (Day)', 'Age', 'Browser', 'Age'], 'The dimension can be cloned');
 
@@ -604,10 +767,8 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
       'The initial metrics were added'
     );
 
-    await click('.navi-column-config-item__name[title="Ad Clicks"]');
     await click('.navi-column-config-base__clone-icon');
     await animationsSettled();
-    await click('.navi-column-config-item__name[title="Ad Clicks"]');
 
     assert.deepEqual(
       getColumns(),
@@ -655,10 +816,8 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
       'The initial metrics were added'
     );
 
-    await click('.navi-column-config-item__name[title="Platform Revenue (USD)"]');
     await click('.navi-column-config-base__clone-icon');
     await animationsSettled();
-    await click('.navi-column-config-item__name[title="Platform Revenue (USD)"]');
 
     assert.deepEqual(
       getColumns(),
@@ -816,7 +975,6 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
       .dom('.report-builder__container--filters')
       .hasClass('report-builder__container--filters--collapsed', 'Filters are collapsed after click');
 
-    await click('.navi-column-config-item__name[title="Ad Clicks"]');
     await click('.navi-column-config-base__filter-icon');
 
     assert
@@ -839,7 +997,6 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
     await clickItem('metric', 'Ad Clicks');
     await animationsSettled();
 
-    await click(findAll('.navi-column-config-item__name[title="Ad Clicks"]')[1]);
     assert.dom('.navi-column-config-base__filter-icon--active').exists({ count: 2 }, 'Both filter icons are active');
 
     await click(findAll('.navi-column-config-base__filter-icon')[1]);
@@ -870,7 +1027,6 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
       .dom('.report-builder__container--filters')
       .hasClass('report-builder__container--filters--collapsed', 'Filters are collapsed after click');
 
-    await click('.navi-column-config-item__name[title="Platform Revenue (USD)"]');
     await click('.navi-column-config-base__filter-icon');
 
     assert
@@ -893,7 +1049,6 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
     await clickItem('metric', 'Platform Revenue');
     await animationsSettled();
 
-    await click(findAll('.navi-column-config-item__name[title="Platform Revenue (USD)"]')[1]);
     assert.dom('.navi-column-config-base__filter-icon--active').exists({ count: 2 }, 'Both filter icons are active');
 
     await click(findAll('.navi-column-config-base__filter-icon')[1]);
@@ -918,7 +1073,6 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
     await clickItem('metric', 'Platform Revenue');
     await animationsSettled();
 
-    await click('.navi-column-config-item__name[title="Platform Revenue (USD)"]');
     await click('.navi-column-config-base__filter-icon');
 
     assert.deepEqual(
@@ -926,8 +1080,6 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
       ['Date Time (Day)', 'Platform Revenue (USD)'],
       'Metric filter is added'
     );
-
-    await click(findAll('.navi-column-config-item__name[title="Platform Revenue (USD)"]')[1]);
 
     assert.dom('.navi-column-config-base__filter-icon--active').exists({ count: 2 }, 'Both filter icons are active');
 
@@ -969,7 +1121,6 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
       .doesNotHaveClass('report-builder__container--filters--collapsed', 'Filters are open by default');
     await click('.report-builder__container-header__filters-toggle-icon');
 
-    await click('.navi-column-config-item__name[title="Ad Clicks"]');
     await click('.navi-column-config-base__filter-icon');
 
     assert
@@ -1001,7 +1152,6 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
       .doesNotHaveClass('report-builder__container--filters--collapsed', 'Filters are open by default');
     await click('.report-builder__container-header__filters-toggle-icon');
 
-    await click('.navi-column-config-item__name[title="Platform Revenue (USD)"]');
     await click('.navi-column-config-base__filter-icon');
 
     assert
@@ -1061,7 +1211,6 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
     await animationsSettled();
     assert.deepEqual(getColumns(), ['Date Time (Day)', 'Platform Revenue (USD)'], 'The initial metrics was added');
 
-    await click('.navi-column-config-item__name[title="Platform Revenue (USD)"]');
     await click('.navi-column-config-item__parameter-trigger');
     assert.strictEqual(
       findAll('.ember-power-select-option').map(el => el.textContent.trim()).length,

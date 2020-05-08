@@ -6,7 +6,7 @@
     @selected={{this.selectedMetrics}}
     @title="Metrics"
     @contentClass="navi-list-selector__content--metric"
-    class="{{if (feature-flag "enableRequestPreview") "navi-list-selector__request_preview"}}"
+    class="{{if (feature-flag "enableRequestPreview") "navi-list-selector--request-preview"}}"
     as | metrics areMetricsFiltered |
   >
     <GroupedList
@@ -42,7 +42,7 @@
             <MetricConfig
               @metric={{metric}}
               @request={{@request}}
-              @onAddParameterizedMetric={{update-report-action "ADD_METRIC_WITH_PARAM"}}
+              @onAddParameterizedMetric={{@onAddMetricWithParameter}}
               @onRemoveParameterizedMetric={{update-report-action "REMOVE_METRIC_WITH_PARAM"}}
               @onToggleParameterizedMetricFilter={{queue (update-report-action "TOGGLE_PARAMETERIZED_METRIC_FILTER") (action (optional @onToggleParameterizedMetricFilter))}}
             />

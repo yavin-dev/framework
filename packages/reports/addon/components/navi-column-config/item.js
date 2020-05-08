@@ -15,7 +15,7 @@ import { set, action } from '@ember/object';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
 import layout from '../../templates/components/navi-column-config/item';
 import { A as arr } from '@ember/array';
-import { debounce } from '@ember/runloop';
+import { debounce, next } from '@ember/runloop';
 
 @tagName('')
 @templateLayout(layout)
@@ -69,12 +69,22 @@ class NaviColumnConfigItemComponent extends Component {
   }
 
   /**
-   * Stores element reference after render
+   * Stores element reference after render.
+   * If the column was just added, open the config and scroll to element
    * @param element - element inserted
    */
   @action
   setupElement(element) {
     this.componentElement = element;
+
+    if (this.isLastAdded) {
+      if (this.column.type !== 'dimension') {
+        set(this, 'isColumnConfigOpen', true);
+      }
+      next(() => {
+        element.parentElement.scrollTop = element.offsetTop - element.parentElement.offsetTop;
+      });
+    }
   }
 }
 

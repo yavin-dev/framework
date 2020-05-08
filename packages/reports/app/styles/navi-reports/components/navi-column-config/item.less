@@ -123,6 +123,20 @@
     }
   }
 
+  @keyframes navi-column-config-item-pulse-once {
+    0%,
+    100% {
+      background-color: @navi-white;
+    }
+    50% {
+      background-color: @denali-brand-200;
+    }
+  }
+
+  &--last-added {
+    animation: navi-column-config-item-pulse-once 0.75s;
+  }
+
   &__parameter {
     &-trigger {
       &,
