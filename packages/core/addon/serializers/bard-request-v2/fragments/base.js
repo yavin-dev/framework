@@ -7,6 +7,15 @@ import { isEmpty } from 'lodash-es';
 
 export default class BaseSerializer extends JSONSerializer {
   /**
+   * @override
+   * @property {Object} attrs
+   */
+  attrs = {
+    //don't include source in the payload
+    source: { serialize: false }
+  };
+
+  /**
    * Called when a record is saved in order to convert the record into JSON.
    * @method serialize
    * @returns {Object} json

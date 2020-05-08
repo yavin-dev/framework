@@ -19,7 +19,8 @@ module('Unit | Model | Fragment | BardRequest V2 - Filter', function(hooks) {
             parameters: { currency: 'USD' },
             type: 'metric',
             operator: 'gt',
-            values: [3]
+            values: [3],
+            source: 'dummy'
           }
         ]
       })
@@ -32,7 +33,6 @@ module('Unit | Model | Fragment | BardRequest V2 - Filter', function(hooks) {
     assert.ok(mockModel, 'mockModel is fetched from the store');
 
     const filter = mockModel.filters.objectAt(0);
-    filter.source = 'dummy';
 
     assert.equal(filter.field, 'revenue', 'the `field` property has the correct value');
 

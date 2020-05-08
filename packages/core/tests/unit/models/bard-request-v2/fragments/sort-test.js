@@ -17,7 +17,8 @@ module('Unit | Model | Fragment | BardRequest V2 - Sort', function(hooks) {
           {
             field: 'revenue',
             type: 'metric',
-            parameters: { currency: 'USD' }
+            parameters: { currency: 'USD' },
+            source: 'dummy'
           }
         ]
       })
@@ -30,7 +31,6 @@ module('Unit | Model | Fragment | BardRequest V2 - Sort', function(hooks) {
     assert.ok(mockModel, 'mockModel is fetched from the store');
 
     const sort = mockModel.sort.objectAt(0);
-    sort.source = 'dummy';
 
     assert.equal(sort.field, 'revenue', 'the `field` property has the correct value');
 
