@@ -161,7 +161,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
   });
 
   test('highlights last added/cloned item', async function(assert) {
-    assert.expect(29);
+    assert.expect(28);
 
     await visit('/reports/new');
     await click('.navi-report__run-btn');
@@ -184,11 +184,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
     //add a dimension
     await clickItem('dimension', 'Age');
     await animationsSettled();
-    assert.deepEqual(
-      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--open')),
-      [false, true],
-      'Only Age dimension is open'
-    );
+    assert.dom('.navi-column-config-item--open').doesNotExist('No column is open - dimensions do not open when added');
     assert.deepEqual(
       findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--last-added')),
       [false, true],
@@ -199,28 +195,14 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
     await clickItem('dimension', 'Browser');
     await animationsSettled();
     assert.deepEqual(
-      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--open')),
-      [false, true, true],
-      'Age and Browser dimensions are open'
-    );
-    assert.deepEqual(
       findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--last-added')),
       [false, false, true],
       'Only Browser dimension is highlighted'
     );
 
-    //close open configs
-    await click('.navi-column-config-item__name[title="Age"]');
-    await click('.navi-column-config-item__name[title="Browser"]');
-
     //add same dimension again
     await clickItem('dimension', 'Browser');
     await animationsSettled();
-    assert.deepEqual(
-      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--open')),
-      [false, false, false, true],
-      'Only most recently added Browser dimension is open'
-    );
     assert.deepEqual(
       findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--last-added')),
       [false, false, false, true],
@@ -228,12 +210,13 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
     );
 
     //clone dimension
+    await click(findAll('.navi-column-config-item__name[title="Browser"]')[1]);
     await click('.navi-column-config-base__clone-icon');
     await animationsSettled();
     assert.deepEqual(
       findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--open')),
-      [false, false, false, true, true],
-      'Original and cloned dimensions are open'
+      [false, false, false, true, false],
+      'Original dimension is still open, cloned one is closed'
     );
     assert.deepEqual(
       findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--last-added')),
@@ -241,9 +224,9 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
       'Only cloned dimension is highlighted'
     );
 
-    //close open configs
+    //close open config
     await click(findAll('.navi-column-config-item__name[title="Browser"]')[1]);
-    await click(findAll('.navi-column-config-item__name[title="Browser"]')[2]);
+    assert.dom('.navi-column-config-item--open').doesNotExist('No column is open');
 
     //remove last added column
     await click(findAll('.navi-column-config-item__remove-icon')[4]);
@@ -742,6 +725,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
     await animationsSettled();
     assert.deepEqual(getColumns(), ['Date Time (Day)', 'Age', 'Browser'], 'The initial dimensions were added');
 
+    await click('.navi-column-config-item__name[title="Age"]');
     await click('.navi-column-config-base__clone-icon');
     await animationsSettled();
 
@@ -937,6 +921,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
       .dom('.report-builder__container--filters')
       .hasClass('report-builder__container--filters--collapsed', 'Filters are collapsed after click');
 
+    await click('.navi-column-config-item__name[title="Age"]');
     await click('.navi-column-config-base__filter-icon');
 
     assert
@@ -959,6 +944,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
     await clickItem('dimension', 'Age');
     await animationsSettled();
 
+    await click(findAll('.navi-column-config-item__name[title="Age"]')[1]);
     assert.dom('.navi-column-config-base__filter-icon--active').exists({ count: 2 }, 'Both filter icons are active');
 
     await click(findAll('.navi-column-config-base__filter-icon')[1]);
@@ -1197,6 +1183,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
       .doesNotHaveClass('report-builder__container--filters--collapsed', 'Filters are open by default');
     await click('.report-builder__container-header__filters-toggle-icon');
 
+    await click('.navi-column-config-item__name[title="Age"]');
     await click('.navi-column-config-base__filter-icon');
 
     assert

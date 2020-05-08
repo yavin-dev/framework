@@ -567,57 +567,85 @@ module('Integration | Component | navi-column-config', function(hooks) {
   });
 
   test('last added column', async function(assert) {
-    assert.expect(6);
+    assert.expect(11);
 
     this.set('lastAddedColumn', { type: 'dimension', name: 'foo' });
     addItem('dimension', 'browser');
+    addItem('metric', 'adClicks');
     await render(
       hbs`<NaviColumnConfig @report={{this.report}} @lastAddedColumn={{this.lastAddedColumn}} @isOpen={{true}} />`
     );
 
     await animationsSettled();
+    assert.dom('.navi-column-config-item--last-added').doesNotExist('No column has the `last-added` class');
+    assert.dom('.navi-column-config-item--open').doesNotExist('No column is open');
+
+    this.set('lastAddedColumn', { type: 'timeDimension', name: 'dateTime' });
+    await render(
+      hbs`<NaviColumnConfig @report={{this.report}} @lastAddedColumn={{this.lastAddedColumn}} @isOpen={{true}} />`
+    );
+    await animationsSettled();
     let elements = findAll('.navi-column-config-item');
     assert.deepEqual(
       elements.map(el => el.classList.contains('navi-column-config-item--last-added')),
-      [false, false],
-      'No column has the `last-added` class'
+      [true, false, false],
+      'Date time column has the correct class'
     );
     assert.deepEqual(
       elements.map(el => el.classList.contains('navi-column-config-item--open')),
-      [false, false],
-      'No column is open'
+      [true, false, false],
+      'Date time column is open'
     );
 
     this.set('lastAddedColumn', { type: 'dimension', name: 'browser' });
     await render(
       hbs`<NaviColumnConfig @report={{this.report}} @lastAddedColumn={{this.lastAddedColumn}} @isOpen={{true}} />`
     );
-
     await animationsSettled();
-    elements = findAll('.navi-column-config-item');
+    assert.dom('.navi-column-config-item--open').doesNotExist('No column is open - dimensions are not open when added');
     assert.deepEqual(
-      elements.map(el => el.classList.contains('navi-column-config-item--last-added')),
-      [false, true],
-      'Last added column has the correct class'
-    );
-    assert.deepEqual(
-      elements.map(el => el.classList.contains('navi-column-config-item--open')),
-      [false, true],
-      'Last added column is open'
+      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--last-added')),
+      [false, true, false],
+      'Last added dimensnion column has the correct class'
     );
 
     addItem('dimension', 'browser');
     await animationsSettled();
+    assert.deepEqual(
+      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--last-added')),
+      [false, false, true, false],
+      'Only the most recently added column has the correct class'
+    );
+
+    this.set('lastAddedColumn', { type: 'metric', name: 'adClicks' });
+    await render(
+      hbs`<NaviColumnConfig @report={{this.report}} @lastAddedColumn={{this.lastAddedColumn}} @isOpen={{true}} />`
+    );
+    await animationsSettled();
     elements = findAll('.navi-column-config-item');
     assert.deepEqual(
       elements.map(el => el.classList.contains('navi-column-config-item--last-added')),
-      [false, false, true],
-      'Only the most recently added column has the correct class'
+      [false, false, false, true],
+      'Last added metric column has the correct class'
     );
     assert.deepEqual(
       elements.map(el => el.classList.contains('navi-column-config-item--open')),
-      [false, true, true],
-      'Previously added column is still open as well as the most recently added one'
+      [false, false, false, true],
+      'Last added metric column is open'
+    );
+
+    addItem('metric', 'adClicks');
+    await animationsSettled();
+    elements = findAll('.navi-column-config-item');
+    assert.deepEqual(
+      elements.map(el => el.classList.contains('navi-column-config-item--last-added')),
+      [false, false, false, false, true],
+      'Only last added metric column has the correct class'
+    );
+    assert.deepEqual(
+      elements.map(el => el.classList.contains('navi-column-config-item--open')),
+      [false, false, false, true, true],
+      'Previously added metric is open as well as the last added one'
     );
   });
 });
