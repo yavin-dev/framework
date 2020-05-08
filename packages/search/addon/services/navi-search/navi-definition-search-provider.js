@@ -42,7 +42,7 @@ export default class NaviDefinitionSearchProviderService extends NaviBaseSearchP
     return {
       component: this._displayComponentName,
       title: 'Definition',
-      data
+      data: data.slice(0, this.resultThreshold)
     };
   }
 }
