@@ -9,6 +9,7 @@ import { inject as service } from '@ember/service';
 import NaviBaseSearchProviderService from '../navi-base-search-provider';
 import { restartableTask } from 'ember-concurrency-decorators';
 import { pluralize } from 'ember-inflector';
+import { getPartialMatchWeight } from 'navi-core/utils/search';
 
 export default class NaviAssetSearchProviderService extends NaviBaseSearchProviderService {
   /**
@@ -38,9 +39,9 @@ export default class NaviAssetSearchProviderService extends NaviBaseSearchProvid
     let paramsFilterString = '';
     if (typeof query === 'string' && query) {
       if (type === 'report') {
-        paramsFilterString = `(title==*${query}*,request==*${query}*)`;
+        paramsFilterString = `(title=='*${query}*',request=='*${query}*')`;
       } else if (type === 'dashboard') {
-        paramsFilterString = `(title==*${query}*)`;
+        paramsFilterString = `(title=='*${query}*')`;
       }
     }
     return paramsFilterString;
@@ -58,10 +59,10 @@ export default class NaviAssetSearchProviderService extends NaviBaseSearchProvid
   _constructSearchQuery(userQuery, type) {
     const author = this.user.getUser().id;
     const pluralType = pluralize(type);
-    let query = { filter: { [pluralType]: '' } };
+    let query = { filter: { [pluralType]: '' }, page: { limit: this.resultThreshold } };
 
     const paramsFilterString = this._parseParamsFilterString(userQuery, type);
-    const authorFilterString = author ? (paramsFilterString ? `;author==${author}` : `author==${author}`) : '';
+    const authorFilterString = author ? (paramsFilterString ? `;author.id==${author}` : `author.id==${author}`) : '';
 
     query.filter[pluralType] = `${paramsFilterString}${authorFilterString}`;
 
@@ -87,10 +88,16 @@ export default class NaviAssetSearchProviderService extends NaviBaseSearchProvid
     const data = yield Promise.all(promises).then(function(values) {
       return values.flatMap(value => value.toArray());
     });
+
+    // sort results by best match
     return {
       component: this._displayComponentName,
       title: 'Reports & Dashboards',
-      data
+      data: data.sort(
+        (resultA, resultB) =>
+          getPartialMatchWeight(resultA.title.toLowerCase(), query.toLowerCase()) -
+          getPartialMatchWeight(resultB.title.toLowerCase(), query.toLowerCase())
+      )
     };
   }
 }
