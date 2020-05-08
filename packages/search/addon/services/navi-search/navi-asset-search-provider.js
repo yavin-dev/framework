@@ -11,11 +11,6 @@ import { restartableTask } from 'ember-concurrency-decorators';
 import { pluralize } from 'ember-inflector';
 import { getPartialMatchWeight } from 'navi-core/utils/search';
 
-/**
- * @constant RESULT_THRESHOLD
- */
-const RESULT_THRESHOLD = 10;
-
 export default class NaviAssetSearchProviderService extends NaviBaseSearchProviderService {
   /**
    * @property {Ember.Service} store
@@ -44,9 +39,9 @@ export default class NaviAssetSearchProviderService extends NaviBaseSearchProvid
     let paramsFilterString = '';
     if (typeof query === 'string' && query) {
       if (type === 'report') {
-        paramsFilterString = `(title==*${query}*,request==*${query}*)`;
+        paramsFilterString = `(title=='*${query}*',request=='*${query}*')`;
       } else if (type === 'dashboard') {
-        paramsFilterString = `(title==*${query}*)`;
+        paramsFilterString = `(title=='*${query}*')`;
       }
     }
     return paramsFilterString;
@@ -64,7 +59,7 @@ export default class NaviAssetSearchProviderService extends NaviBaseSearchProvid
   _constructSearchQuery(userQuery, type) {
     const author = this.user.getUser().id;
     const pluralType = pluralize(type);
-    let query = { filter: { [pluralType]: '' }, page: { limit: RESULT_THRESHOLD } };
+    let query = { filter: { [pluralType]: '' }, page: { limit: this.resultThreshold } };
 
     const paramsFilterString = this._parseParamsFilterString(userQuery, type);
     const authorFilterString = author ? (paramsFilterString ? `;author.id==${author}` : `author.id==${author}`) : '';
