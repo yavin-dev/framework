@@ -1,23 +1,26 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-
-import DS from 'ember-data';
-import { hasParameters, getAliasedMetrics, canonicalizeMetric } from 'navi-data/utils/metric';
-import { get } from '@ember/object';
+import JSONSerializer from '@ember-data/serializer/json';
+import { hasParameters, getAliasedMetrics } from 'navi-data/utils/metric';
 import { inject as service } from '@ember/service';
+import { normalizeV1, toggleAlias } from 'navi-core/utils/request';
 
-export default DS.JSONSerializer.extend({
-  bardMetadata: service(),
+export default class RequestSerializer extends JSONSerializer {
+  /**
+   * @property {Service}
+   */
+  @service bardMetadata;
+
   /**
    * @override
    * @property {Object} attrs - model attribute config while serialization
    */
-  attrs: {
+  attrs = {
     // Prevent sending below attributes in request payload
     responseFormat: { serialize: false }
-  },
+  };
 
   /**
    * Serializes report to proper json api structure
@@ -26,7 +29,7 @@ export default DS.JSONSerializer.extend({
    * @return {Object} report as a json api structure
    */
   serialize(/*snapshot, options*/) {
-    let request = this._super(...arguments);
+    const request = super.serialize(...arguments);
     request.metrics = this._addAliases(request.metrics);
 
     // Flip the alias map so it's an object of canonName -> aliases
@@ -36,10 +39,10 @@ export default DS.JSONSerializer.extend({
     ); // flip flip flipadelphia
 
     // transform sorts to have appropriate aliases, removes parameter map
-    request.sort = this._removeParameters(this._toggleAlias(request.sort, canonToAlias));
-    request.having = this._removeParameters(this._toggleAlias(request.having, canonToAlias));
+    request.sort = this._removeParameters(toggleAlias(request.sort, canonToAlias));
+    request.having = this._removeParameters(toggleAlias(request.having, canonToAlias));
     return request;
-  },
+  }
 
   /**
    * Normalizes payload so that it can be applied to models correctly
@@ -48,53 +51,13 @@ export default DS.JSONSerializer.extend({
    * @return {Object} normalized payload
    */
   normalize(type, request) {
-    // get alias -> canonName map
-    const aliasToCanon = getAliasedMetrics(request.metrics);
+    //if datasource is undefined, try to infer from metadata
+    const namespace = request.dataSource || this.bardMetadata.getTableNamespace(request.logicalTable.table);
 
-    // build canonName -> metric map
-    const canonToMetric = request.metrics.reduce(
-      (obj, metric) =>
-        Object.assign({}, obj, {
-          [canonicalizeMetric(metric)]: metric
-        }),
-      {}
-    );
+    const normalized = normalizeV1(request, namespace);
 
-    //add dateTime to cannonicalName -> metric map
-    canonToMetric['dateTime'] = { metric: 'dateTime' };
-
-    const namespace = request.dataSource || this.bardMetadata.getTableNamespace(request.logicalTable.table); //if datasource is undefined, try to infer from metadata
-
-    request.having = this._toggleAlias(request.having, aliasToCanon, canonToMetric, namespace);
-    request.sort = this._toggleAlias(request.sort, aliasToCanon, canonToMetric, namespace);
-
-    if (!request.dataSource) {
-      request.dataSource = namespace;
-    }
-
-    //remove AS from metric parameters
-    request.metrics = request.metrics.map(metric => {
-      if (hasParameters(metric)) {
-        delete metric.parameters.as;
-      }
-      metric.metric = `${namespace}.${metric.metric}`;
-      return metric;
-    });
-
-    request.logicalTable.table = `${namespace}.${request.logicalTable.table}`;
-
-    request.dimensions = request.dimensions.map(dimension => {
-      dimension.dimension = `${namespace}.${dimension.dimension}`;
-      return dimension;
-    });
-
-    request.filters = request.filters.map(filter => {
-      filter.dimension = `${namespace}.${filter.dimension}`;
-      return filter;
-    });
-
-    return this._super(type, request);
-  },
+    return super.normalize(type, normalized);
+  }
 
   /**
    * Used to remove parameters from having/sorts for serialization
@@ -107,7 +70,7 @@ export default DS.JSONSerializer.extend({
       delete value.parameters;
       return value;
     });
-  },
+  }
 
   /**
    * Adds aliases to each parameterized metric
@@ -123,38 +86,5 @@ export default DS.JSONSerializer.extend({
       }
       return metric;
     });
-  },
-
-  /**
-   * Input a list of objects, replace with alias or canonicalized metric,
-   * if provided will replace serialized metric.
-   *
-   * This works on both ends of serialization and deserialization
-   *
-   * @param {array} field - property off the request object to transform
-   * @param aliasMap {object} - Either a map of of aliases to canon name (for deserialization) or canon name to alias (for serialization)
-   * @param canonMap {object} - Map of canon name to metric object {metric, parameters}
-   * @return {array} - copy of the field object transformed with aliases, or alias to metric object
-   * @private
-   */
-  _toggleAlias(field, aliasMap, canonMap = {}, namespace = null) {
-    if (!field) {
-      return;
-    }
-    return field.map(obj => {
-      let metricName =
-        canonicalizeMetric(obj.metric) ||
-        (typeof get(obj, 'metric') === 'string' && get(obj, 'metric')) ||
-        get(obj, 'metric.metric');
-
-      obj.metric = aliasMap[metricName] || metricName;
-      obj.metric = canonMap[obj.metric] || obj.metric;
-      obj.metric = typeof obj.metric === 'string' ? obj.metric : Object.assign({}, obj.metric);
-
-      if (namespace && obj.metric.metric) {
-        obj.metric.metric = `${namespace}.${obj.metric.metric}`;
-      }
-      return obj;
-    });
   }
-});
+}
