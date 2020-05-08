@@ -4,7 +4,7 @@
  */
 import Service, { inject as service } from '@ember/service';
 import Store from 'ember-data/store';
-import Column from 'navi-data/models/metadata/column';
+import ColumnMetadata from 'navi-data/models/metadata/column';
 import ColumnFragment from '../models/bard-request-v2/fragments/column';
 import FilterFragment from '../models/bard-request-v2/fragments/filter';
 import SortFragment from '../models/bard-request-v2/fragments/sort';
@@ -24,7 +24,7 @@ export default class FragmentFactory extends Service {
    * @param parameters - parameters to attach to column, if none pass empty object `{}`
    * @param alias - optional alias for this column
    */
-  createColumnFromMeta(columnMetadata: Column, parameters: Dict<string> = {}, alias?: string): ColumnFragment {
+  createColumnFromMeta(columnMetadata: ColumnMetadata, parameters: Dict<string> = {}, alias?: string): ColumnFragment {
     const type = this._getMetaColumnType(columnMetadata);
     const field = columnMetadata.id;
     return this.createColumn(type, columnMetadata.source, field, parameters, alias);
@@ -63,7 +63,7 @@ export default class FragmentFactory extends Service {
    * @param values - array of values to filter by
    */
   createFilterFromMeta(
-    columnMetadata: Column,
+    columnMetadata: ColumnMetadata,
     parameters: Dict<string> = {},
     operator: string,
     values: Array<string | number>
@@ -107,7 +107,11 @@ export default class FragmentFactory extends Service {
    * @param parameters - parameters to attach to column, if none pass empty object `{}`
    * @param direction  - `desc` or `asc`
    */
-  createSortFromMeta(columnMetadata: Column, parameters: Dict<string> = {}, direction: 'asc' | 'desc'): SortFragment {
+  createSortFromMeta(
+    columnMetadata: ColumnMetadata,
+    parameters: Dict<string> = {},
+    direction: 'asc' | 'desc'
+  ): SortFragment {
     const type = this._getMetaColumnType(columnMetadata);
     const field = columnMetadata.id;
     return this.createSort(type, columnMetadata.source, field, parameters, direction);
@@ -142,7 +146,7 @@ export default class FragmentFactory extends Service {
    * Deducts meta column type from class type
    * @param columnMetadata - meta data to get type from
    */
-  private _getMetaColumnType(columnMetadata: Column): FieldType {
+  private _getMetaColumnType(columnMetadata: ColumnMetadata): FieldType {
     return dasherize(columnMetadata.constructor.name) as FieldType;
   }
 }
