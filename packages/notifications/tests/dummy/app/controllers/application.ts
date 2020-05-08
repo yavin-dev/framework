@@ -4,10 +4,10 @@ import { inject as service } from '@ember/service';
 
 export default class extends Controller {
   @service
-  naviNotifications;
+  naviNotifications!: TODO;
 
   @action
-  addSuccess() {
+  addSuccess(): void {
     const type = 'success';
     this.naviNotifications.add({
       message: `${type} message`,
@@ -16,7 +16,7 @@ export default class extends Controller {
   }
 
   @action
-  addWarning() {
+  addWarning(): void {
     const type = 'warning';
     this.naviNotifications.add({
       message: `${type} message`,
@@ -25,7 +25,7 @@ export default class extends Controller {
   }
 
   @action
-  addInfo() {
+  addInfo(): void {
     const type = 'info';
     this.naviNotifications.add({
       message: `${type} message`,
@@ -34,7 +34,7 @@ export default class extends Controller {
   }
 
   @action
-  addDanger() {
+  addDanger(): void {
     const type = 'danger';
     this.naviNotifications.add({
       message: `${type} message`,
@@ -43,7 +43,7 @@ export default class extends Controller {
   }
 
   @action
-  clear() {
+  clear(): void {
     this.naviNotifications.clearMessages();
   }
 }
