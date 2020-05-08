@@ -10,75 +10,74 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
   setupMirage(hooks);
 
   hooks.beforeEach(async function() {
+    const Store = this.owner.lookup('service:store');
     await this.owner.lookup('service:bard-metadata').loadMetadata();
-    mockModel = run(() =>
-      this.owner.lookup('service:store').createRecord('fragments-v2-mock', {
-        request: {
-          filters: [
-            {
-              field: 'dateTime',
-              operator: 'bet',
-              type: 'time-dimension',
-              values: ['P1D', 'current']
-            },
-            {
-              field: 'uniqueIdentifier',
-              type: 'metric',
-              operator: 'gt',
-              values: [3]
+    run(() => {
+      Store.pushPayload({
+        data: [
+          {
+            id: 1,
+            type: 'fragments-v2-mock',
+            attributes: {
+              request: {
+                filters: [
+                  {
+                    field: 'dateTime',
+                    operator: 'bet',
+                    type: 'time-dimension',
+                    values: ['P1D', 'current']
+                  },
+                  {
+                    field: 'uniqueIdentifier',
+                    type: 'metric',
+                    operator: 'gt',
+                    values: [3]
+                  }
+                ],
+                columns: [
+                  {
+                    field: 'dateTime',
+                    parameters: { grain: 'day' },
+                    type: 'time-dimension',
+                    alias: 'time'
+                  },
+                  {
+                    field: 'property',
+                    parameters: { projection: 'id' },
+                    type: 'dimension'
+                  },
+                  {
+                    field: 'revenue',
+                    parameters: { currency: 'USD' },
+                    type: 'metric'
+                  },
+                  {
+                    field: 'navClicks',
+                    type: 'metric'
+                  }
+                ],
+                sorts: [
+                  {
+                    field: 'dateTime',
+                    type: 'time-dimension',
+                    direction: 'asc'
+                  },
+                  {
+                    field: 'navClicks',
+                    type: 'metric',
+                    direction: 'desc'
+                  }
+                ],
+                table: 'network',
+                dataSource: 'dummy',
+                limit: 2
+              }
             }
-          ],
-          columns: [
-            {
-              field: 'dateTime',
-              parameters: { grain: 'day' },
-              type: 'dimension',
-              alias: 'time'
-            },
-            {
-              field: 'property',
-              parameters: { projection: 'id' },
-              type: 'dimension'
-            },
-            {
-              field: 'revenue',
-              parameters: { currency: 'USD' },
-              type: 'metric'
-            },
-            {
-              field: 'navClicks',
-              type: 'metric'
-            }
-          ],
-          sorts: [
-            {
-              field: 'dateTime',
-              type: 'time-dimension',
-              direction: 'asc'
-            },
-            {
-              field: 'navClicks',
-              type: 'metric',
-              direction: 'desc'
-            }
-          ],
-          table: 'network',
-          dataSource: 'dummy',
-          limit: 2
-        }
-      })
-    );
-    /**
-     * TODO: remove when serializer is in place that will do this automatically
-     */
-    mockModel.request.columns.forEach(column => {
-      column.source = 'dummy';
-    });
-    mockModel.request.filters.forEach(filter => {
-      filter.source = 'dummy';
-    });
-    mockModel.request.sorts.forEach(sort => {
-      sort.source = 'dummy';
+          }
+        ]
+      });
+
+      mockModel = Store.peekRecord('fragments-v2-mock', 1);
     });
   });
 
@@ -281,7 +280,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
       {
         field: 'dateTime',
         parameters: { grain: 'day' },
-        type: 'dimension',
+        type: 'time-dimension',
         alias: 'time'
       },
       {
@@ -345,7 +344,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
           {
             field: 'dateTime',
             parameters: { grain: 'day' },
-            type: 'dimension',
+            type: 'time-dimension',
             alias: 'time'
           },
           {
