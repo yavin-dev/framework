@@ -13,7 +13,7 @@ import { dasherize } from '@ember/string';
 interface StoreWithFragment extends Store {
   createFragment(fragmentName: string, attributes: object): ColumnFragment | FilterFragment | SortFragment;
 }
-type fieldType = 'metric' | 'dimension' | 'time-dimension';
+type FieldType = 'metric' | 'dimension' | 'time-dimension';
 
 export default class FragmentFactory extends Service {
   @service store!: StoreWithFragment;
@@ -39,7 +39,7 @@ export default class FragmentFactory extends Service {
    * @param alias - optional alias for this column
    */
   createColumn(
-    type: fieldType,
+    type: FieldType,
     dataSource: string,
     field: string,
     parameters: Dict<string> = {},
@@ -83,7 +83,7 @@ export default class FragmentFactory extends Service {
    * @param values - array of values to filter by
    */
   createFilter(
-    type: fieldType,
+    type: FieldType,
     dataSource: string,
     field: string,
     parameters: Dict<string> = {},
@@ -122,7 +122,7 @@ export default class FragmentFactory extends Service {
    * @param direction - `desc` or `asc`
    */
   createSort(
-    type: fieldType,
+    type: FieldType,
     dataSource: string,
     field: string,
     parameters: Dict<string> = {},
@@ -142,8 +142,8 @@ export default class FragmentFactory extends Service {
    * Deducts meta column type from class type
    * @param columnMetadata - meta data to get type from
    */
-  private _getMetaColumnType(columnMetadata: Column): fieldType {
-    return dasherize(columnMetadata.constructor.name) as fieldType;
+  private _getMetaColumnType(columnMetadata: Column): FieldType {
+    return dasherize(columnMetadata.constructor.name) as FieldType;
   }
 }
 
