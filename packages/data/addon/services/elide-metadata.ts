@@ -35,13 +35,13 @@ export default class ElideMetadata extends Service {
    * @private
    * @property {Object} adapter - the adapter object
    */
-  _adapter!: Readonly<Adapter>;
+  readonly _adapter!: Adapter;
 
   /**
    * @private
    * @property {Object} serializer - the serializer object
    */
-  _serializer!: Readonly<Serializer>;
+  readonly _serializer!: Serializer;
 
   /**
    * @private
