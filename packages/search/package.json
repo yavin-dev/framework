@@ -61,7 +61,6 @@
     "ember-cli-uglify": "^3.0.0",
     "ember-concurrency": "^1.1.5",
     "ember-composable-helpers": "^3.1.1",
-    "ember-concurrency-decorators": "^1.0.0",
     "ember-disable-prototype-extensions": "^1.1.3",
     "ember-export-application-global": "^2.0.1",
     "ember-font-awesome": "^3.1.1",

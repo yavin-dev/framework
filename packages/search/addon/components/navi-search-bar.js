@@ -9,7 +9,7 @@ import Component from '@glimmer/component';
 import { inject as service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { restartableTask } from 'ember-concurrency-decorators';
+import { task } from 'ember-concurrency';
 import { timeout } from 'ember-concurrency';
 
 /**
@@ -77,13 +77,13 @@ export default class NaviSearchBarComponent extends Component {
    * @param {String} query
    * @returns {Array} results
    */
-  @restartableTask
-  *launchQuery(query) {
+  @(task(function*(query) {
     yield timeout(DEBOUNCE_MS);
     const results = yield this.searchProviderService.search.perform(query);
     if (results.length === 0 && query !== '') {
       return [EMPTY_RESULT];
     }
     return results;
-  }
+  }).restartable())
+  launchQuery;
 }

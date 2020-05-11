@@ -7,7 +7,7 @@
 
 import { inject as service } from '@ember/service';
 import NaviBaseSearchProviderService from '../navi-base-search-provider';
-import { restartableTask } from 'ember-concurrency-decorators';
+import { task } from 'ember-concurrency';
 import { searchRecordsByFields } from 'navi-core/utils/search';
 
 export default class NaviDefinitionSearchProviderService extends NaviBaseSearchProviderService {
@@ -27,9 +27,7 @@ export default class NaviDefinitionSearchProviderService extends NaviBaseSearchP
    * @param {String} query
    * @returns {Object} Object containing, component, title and data
    */
-  @restartableTask
-  // eslint-disable-next-line require-yield
-  *search(query) {
+  @(task(function*(query) {
     const types = ['table', 'dimension', 'metric', 'time-dimension'];
     const kegData = [];
     let data = [];
@@ -44,5 +42,6 @@ export default class NaviDefinitionSearchProviderService extends NaviBaseSearchP
       title: 'Definition',
       data: data.slice(0, this.resultThreshold)
     };
-  }
+  }).restartable())
+  search;
 }
