@@ -27,6 +27,7 @@ export default class NaviDefinitionSearchProviderService extends NaviBaseSearchP
    * @param {String} query
    * @returns {Object} Object containing, component, title and data
    */
+  // eslint-disable-next-line require-yield
   @(task(function*(query) {
     const types = ['table', 'dimension', 'metric', 'time-dimension'];
     const kegData = [];
