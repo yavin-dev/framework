@@ -6,13 +6,20 @@ import EmberObject from '@ember/object';
 import { queryManager } from 'ember-apollo-client';
 import GQLQueries from 'navi-data/gql/metadata-queries';
 import { assert } from '@ember/debug';
+import { DocumentNode } from 'graphql';
+
+export type MetadataQueryType = keyof typeof GQLQueries;
+export interface MetadataRequestOptions {
+  dataSourceName?: string;
+  variables?: Dict<string>;
+}
 
 export default class GraphQLMetadataAdapter extends EmberObject {
   /**
    * @property {Object} apollo - apollo client query manager using the overriden metadata service
    */
   @queryManager({ service: 'navi-metadata-apollo' })
-  apollo;
+  apollo: TODO;
 
   /**
    * @method fetchAll
@@ -20,7 +27,7 @@ export default class GraphQLMetadataAdapter extends EmberObject {
    * @param {Object} options
    * @returns {Object} JSON response
    */
-  fetchAll(type, options) {
+  fetchAll(type: MetadataQueryType, options: MetadataRequestOptions) {
     return this.fetchMetadata(type, undefined, options);
   }
 
@@ -31,19 +38,20 @@ export default class GraphQLMetadataAdapter extends EmberObject {
    * @param {Object} options
    * @returns {Object} JSON response for type
    */
-  async fetchMetadata(type, id, options = {}) {
-    const query = GQLQueries[type][id ? 'single' : 'all'];
+  async fetchMetadata(type: MetadataQueryType, id: string | undefined, options: MetadataRequestOptions = {}) {
+    const query: DocumentNode | undefined = GQLQueries[type]?.[id ? 'single' : 'all'];
+
+    assert(
+      'Type requested in navi-data/elide-metadata adapter must be defined as a query in the gql/metadata-queries.js file',
+      query
+    );
+
     const queryOptions = Object.assign({}, options, { query });
     if (id) {
       queryOptions.variables = Object.assign(queryOptions.variables || {}, {
         id
       });
     }
-
-    assert(
-      'Type requested in navi-data/elide-metadata adapter must be defined as a query in the gql/metadata-queries.js file',
-      query
-    );
 
     return await this.apollo.query(queryOptions);
   }

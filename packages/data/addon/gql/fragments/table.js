@@ -40,6 +40,24 @@ const fragment = gql`
         }
       }
     }
+    timeDimensions {
+      edges {
+        node {
+          id
+          name
+          description
+          category
+          valueType
+          columnTags
+          columnType
+          expression
+          supportedGrains
+          timeZone {
+            short
+          }
+        }
+      }
+    }
   }
 `;
 

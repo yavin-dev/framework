@@ -15,7 +15,7 @@ import { configHost } from '../utils/adapter';
 
 const SORT_DIRECTIONS = ['desc', 'asc'];
 
-type RequestOptions = {
+export type RequestOptions = {
   clientId?: string;
   customHeaders?: Dict<string>;
   timeout?: number;
