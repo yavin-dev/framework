@@ -1,5 +1,5 @@
 import { module, test } from 'qunit';
-import { setupTest, skip } from 'ember-qunit';
+import { setupTest } from 'ember-qunit';
 //@ts-ignore
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import { TestContext } from 'ember-test-helpers';
@@ -8,7 +8,9 @@ import TableMetadataModel, { TableMetadata } from 'navi-data/models/metadata/tab
 import DimensionMetadataModel, { DimensionMetadata } from 'navi-data/models/metadata/dimension';
 import MetricMetadataModel, { MetricMetadata, MetricMetadataPayload } from 'navi-data/models/metadata/metric';
 import TimeDimensionMetadataModel, { TimeDimensionMetadata } from 'navi-data/models/metadata/time-dimension';
+//@ts-ignore
 import DummyScenario from 'dummy/mirage/scenarios/graphql';
+//@ts-ignore
 import BlockheadScenario from 'dummy/mirage/scenarios/graphql-blockhead';
 
 type MirageTestContext = TestContext & { server?: TODO };
