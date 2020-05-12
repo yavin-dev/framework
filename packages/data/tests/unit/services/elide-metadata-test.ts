@@ -8,9 +8,7 @@ import TableMetadataModel, { TableMetadata } from 'navi-data/models/metadata/tab
 import DimensionMetadataModel, { DimensionMetadata } from 'navi-data/models/metadata/dimension';
 import MetricMetadataModel, { MetricMetadata, MetricMetadataPayload } from 'navi-data/models/metadata/metric';
 import TimeDimensionMetadataModel, { TimeDimensionMetadata } from 'navi-data/models/metadata/time-dimension';
-//@ts-ignore
 import DummyScenario from 'dummy/mirage/scenarios/graphql';
-//@ts-ignore
 import BlockheadScenario from 'dummy/mirage/scenarios/graphql-blockhead';
 
 type MirageTestContext = TestContext & { server?: TODO };
