@@ -133,8 +133,7 @@ class NaviColumnConfig extends Component {
   getDisplayName(column, type, visualization) {
     const visMetaData = visualization.metadata.style || {};
     const nameServiceMap = {
-      // TODO: Add namespace pararemeter when metricName service supports it
-      metric: metric => this.metricName.getDisplayName(metric.serialize()),
+      metric: metric => this.metricName.getDisplayName(metric.serialize(), metric.metric.source),
       dimension: dimension => dimension.dimension.name || dimension.dimension.id,
       timeDimension: timeGrain => `Date Time (${timeGrain.name})`
     };
