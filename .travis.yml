@@ -44,7 +44,7 @@ install:
     fi
 script:
   - if [[ "${PACKAGE}" != "navi-app" && "${PACKAGE}" != "navi-webservice" ]]; then
-    npx lerna exec --scope ${PACKAGE} ember ts:precompile;
+    npx lerna exec --scope ${PACKAGE} ember ts:precompile || exit 1;
     npx lerna exec --scope ${PACKAGE} ember ts:clean;
     fi
   - if [[ "${PACKAGE}" == "navi-webservice" ]]; then
