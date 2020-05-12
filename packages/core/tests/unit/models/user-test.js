@@ -130,4 +130,16 @@ module('Unit | Model | user', function(hooks) {
       assert.equal(rules.get('firstObject'), deliveryRule, 'user deliveryRule property contains deliveryRule model');
     });
   });
+
+  test('add role to user', async function(assert) {
+    assert.expect(1);
+
+    await run(async () => {
+      const roleModel = await Store.findRecord('role', 'admin');
+      const userModel = await Store.findRecord('user', 'navi_user');
+      const roles = await userModel.get('roles');
+
+      assert.equal(roles.get('firstObject'), roleModel, 'user role property contains role model');
+    });
+  });
 });
