@@ -46,6 +46,10 @@ script:
   - if [[ "${PACKAGE}" == "navi-webservice" ]]; then
     pushd packages/webservice && ./gradlew check && popd;
     else
+    if [[ "${PACKAGE}" != "navi-app"]]; then
+    npx lerna exec --scope ${PACKAGE} ember ts:precompile;
+    npx lerna exec --scope ${PACKAGE} ember ts:clean;
+    fi
     npx lerna run lint --scope ${PACKAGE} --stream;
     npx lerna run test --scope ${PACKAGE} --stream;
     fi
