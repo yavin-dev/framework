@@ -11,11 +11,11 @@ import { helper as buildHelper } from '@ember/component/helper';
 
 let Store, Metadata;
 
-function addItem(type, item) {
+function addItem(type, item, dataSource) {
   const self = getContext();
   self.report.request[`${type}s`].pushObject(
     Store.createFragment(`bard-request/fragments/${type}`, {
-      [type]: self.owner.lookup('service:bard-metadata').getById(type, item)
+      [type]: self.owner.lookup('service:bard-metadata').getById(type, item, dataSource)
     })
   );
 }
@@ -646,6 +646,59 @@ module('Integration | Component | navi-column-config', function(hooks) {
       elements.map(el => el.classList.contains('navi-column-config-item--open')),
       [false, false, false, true, true],
       'Previously added metric is open as well as the last added one'
+    );
+  });
+
+  test('multidatasource support', async function(assert) {
+    assert.expect(1);
+
+    await Metadata.loadMetadata({ dataSourceName: 'blockhead' });
+    this.set(
+      'report',
+      Store.createRecord('report', {
+        request: Store.createFragment('bard-request/request', {
+          logicalTable: Store.createFragment('bard-request/fragments/logicalTable', {
+            table: Metadata.getById('table', 'inventory', 'blockhead'),
+            timeGrain: 'day'
+          }),
+          dataSource: 'blockhead',
+          metrics: A([]),
+          dimensions: A([]),
+          filters: A([]),
+          having: A([])
+        }),
+        visualization: {
+          type: 'line-chart',
+          version: 1,
+          metadata: {
+            axis: {
+              y: {
+                series: {
+                  type: 'metric',
+                  config: {
+                    metrics: [{ metric: 'ownedQuantity', parameters: {}, canonicalName: 'ownedQuantity' }]
+                  }
+                }
+              }
+            }
+          }
+        }
+      })
+    );
+
+    await render(hbs`<NaviColumnConfig 
+      @report={{this.report}}
+      @lastAddedColumn={{this.lastAddedColumn}} 
+      @isOpen={{true}} 
+    />`);
+
+    addItem('dimension', 'container', 'blockhead');
+    addItem('metric', 'ownedQuantity', 'blockhead');
+    await animationsSettled();
+    assert.deepEqual(
+      findAll('.navi-column-config-item__name').map(el => el.textContent.trim()),
+      ['Date Time (Day)', 'Container', 'Quantity of thing'],
+      'Columns from another datasource are displayed properly'
     );
   });
 });
