@@ -136,7 +136,7 @@ module('Unit | Model | user', function(hooks) {
 
     await run(async () => {
       const roleModel = await Store.findRecord('role', 'admin');
-      const userModel = await Store.findRecord('user', 'navi_user');
+      const userModel = await Store.findRecord('user', 'midna');
       const roles = await userModel.get('roles');
 
       assert.equal(roles.get('firstObject'), roleModel, 'user role property contains role model');

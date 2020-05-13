@@ -9,7 +9,7 @@ export default [
     deliveryRuleIds: [1, 2, 3],
     dashboardIds: [1, 2, 5],
     dashboardWidgetIds: [1, 2, 3, 4, 5],
-    roleIds: ['admin'],
+    roleIds: [],
     email: 'navi_user@email.com'
   },
   {
@@ -22,7 +22,7 @@ export default [
     deliveryRuleIds: [],
     dashboardIds: [3, 4],
     dashboardWidgetIds: [],
-    roleIds: ['user'],
+    roleIds: [],
     email: 'ciela@email.com'
   },
   {
@@ -35,7 +35,7 @@ export default [
     deliveryRuleIds: [],
     dashboardIds: [],
     dashboardWidgetIds: [],
-    roleIds: [],
+    roleIds: ['admin'],
     email: ''
   }
 ];
