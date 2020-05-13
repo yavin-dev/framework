@@ -43,6 +43,12 @@ install:
     npm ci;
     fi
 script:
+  - if [[ "${PACKAGE}" != "navi-app" && "${PACKAGE}" != "navi-webservice" ]]; then
+    npx lerna exec --scope ${PACKAGE} ember ts:precompile;
+    PRECOMPILE_RESULT=$?;
+    npx lerna exec --scope ${PACKAGE} ember ts:clean;
+    exit $PRECOMPILE_RESULT;
+    fi
   - if [[ "${PACKAGE}" == "navi-webservice" ]]; then
     pushd packages/webservice && ./gradlew check && popd;
     else

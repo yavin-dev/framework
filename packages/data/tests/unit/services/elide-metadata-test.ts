@@ -1,5 +1,5 @@
 import { module, test } from 'qunit';
-import { setupTest, skip } from 'ember-qunit';
+import { setupTest } from 'ember-qunit';
 //@ts-ignore
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import { TestContext } from 'ember-test-helpers';

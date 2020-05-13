@@ -11,3 +11,5 @@ export default {
     single: TableQuery
   }
 };
+
+declare module 'navi-data/gql/metadata-queries';
