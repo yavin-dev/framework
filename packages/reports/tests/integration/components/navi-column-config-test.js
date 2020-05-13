@@ -133,7 +133,6 @@ module('Integration | Component | navi-column-config', function(hooks) {
       .dom('.navi-column-config-item__remove-icon')
       .isNotDisabled('remove button of date time column is not disabled');
 
-    await click('.navi-column-config-item__name[title="Date Time (Day)"]'); // open date time config
     await clickTrigger('.navi-column-config-item__parameter'); // open the time grain dropdown
     assert.deepEqual(
       findAll('.navi-column-config-item__parameter-dropdown .ember-power-select-option').map(el =>
@@ -371,7 +370,6 @@ module('Integration | Component | navi-column-config', function(hooks) {
       'Initial columns are added'
     );
 
-    await click('.navi-column-config-item__name[title="Date Time (Day)"]'); // open date time config
     assert.dom('.navi-column-config-base__clone-icon').exists({ count: 1 }, 'Date time config has clone icon');
     assert
       .dom('.navi-column-config-base__clone-icon')
@@ -410,6 +408,7 @@ module('Integration | Component | navi-column-config', function(hooks) {
       'Initial columns are added'
     );
 
+    await click('.navi-column-config-item__name[title="Date Time (Day)"]'); // close date time
     await click('.navi-column-config-item__name[title="Nav Link Clicks"]'); // open metric config
     assert.dom('.navi-column-config-base__clone-icon').exists({ count: 1 }, 'Metric config has clone icon');
     assert
@@ -467,6 +466,7 @@ module('Integration | Component | navi-column-config', function(hooks) {
       'Initial columns are added'
     );
 
+    await click('.navi-column-config-item__name[title="Date Time (Day)"]'); // close date time
     await click('.navi-column-config-item__name[title="Platform Revenue"]'); // open parameterized metric config
     assert.dom('.navi-column-config-base__clone-icon').exists({ count: 1 }, 'Metric config has clone icon');
     assert
@@ -524,6 +524,7 @@ module('Integration | Component | navi-column-config', function(hooks) {
       'Initial columns are added'
     );
 
+    await click('.navi-column-config-item__name[title="Date Time (Day)"]'); // close date time
     await click('.navi-column-config-item__name[title="Browser"]'); // open dimension config
     assert.dom('.navi-column-config-base__clone-icon').exists({ count: 1 }, 'Dimension config has clone icon');
     assert

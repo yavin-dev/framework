@@ -3,6 +3,7 @@
   class="navi-column-config-item navi-column-config-item--{{dasherize @column.type}}
     {{if this.isColumnConfigOpen "navi-column-config-item--open"}}
     {{if @isLastAdded "navi-column-config-item--last-added"}}"
+  data-name={{@column.name}}
   ...attributes
   {{did-insert this.setupElement}}
 >
