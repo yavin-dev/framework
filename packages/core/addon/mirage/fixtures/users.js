@@ -9,7 +9,8 @@ export default [
     deliveryRuleIds: [1, 2, 3],
     dashboardIds: [1, 2, 5],
     dashboardWidgetIds: [1, 2, 3, 4, 5],
-    roleIds: ['admin']
+    roleIds: ['admin'],
+    email: 'navi_user@email.com'
   },
   {
     id: 'ciela',
@@ -21,7 +22,8 @@ export default [
     deliveryRuleIds: [],
     dashboardIds: [3, 4],
     dashboardWidgetIds: [],
-    roleIds: ['user']
+    roleIds: ['user'],
+    email: 'ciela@email.com'
   },
   {
     id: 'midna',
@@ -33,6 +35,7 @@ export default [
     deliveryRuleIds: [],
     dashboardIds: [],
     dashboardWidgetIds: [],
-    roleIds: []
+    roleIds: [],
+    email: ''
   }
 ];

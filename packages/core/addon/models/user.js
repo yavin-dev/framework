@@ -11,5 +11,6 @@ export default DS.Model.extend({
   deliveryRules: DS.hasMany('deliveryRule', { async: true, inverse: 'owner' }),
   dashboards: DS.hasMany('dashboard', { async: true, inverse: 'author' }),
   favoriteDashboards: DS.hasMany('dashboard', { async: true, inverse: null }),
-  roles: DS.hasMany('role', { async: true })
+  roles: DS.hasMany('role', { async: true }),
+  email: DS.attr('string')
 });
