@@ -1,11 +1,12 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <li
   class="navi-column-config-item navi-column-config-item--{{dasherize @column.type}}
-    {{if this.isColumnConfigOpen "navi-column-config-item--open"}}
+    {{if @isOpen "navi-column-config-item--open"}}
     {{if @isLastAdded "navi-column-config-item--last-added"}}"
   data-name={{@column.name}}
   ...attributes
   {{did-insert this.setupElement}}
+  {{did-update this.onUpdateLastAdded @isLastAdded}}
 >
   <div class="navi-column-config-item__header">
     <button
@@ -22,7 +23,7 @@
     <button
       class="navi-column-config-item__trigger"
       type="button"
-      {{on "click" (toggle "isColumnConfigOpen" this)}}
+      {{on "click" (fn @onOpenColumn (if @isOpen null @column))}}
     >
       <span title="{{@column.displayName}}" class="navi-column-config-item__name">{{@column.displayName}}</span>
       <NaviIcon
@@ -32,7 +33,7 @@
     </button>
   </div>
 
-  {{#if this.isColumnConfigOpen}}
+  {{#if @isOpen}}
     <NaviColumnConfig::Base
       @column={{@column}}
       @metadata={{@visualization.metadata}}

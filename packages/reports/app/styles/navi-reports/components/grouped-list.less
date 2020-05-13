@@ -38,15 +38,6 @@
     margin-left: 15px;
     font-size: @font-size-mid;
 
-    &-label {
-      &:hover {
-        .grouped-list__add-icon {
-          color: @denali-link-hover;
-          opacity: unset;
-        }
-      }
-    }
-
     &-container {
       align-items: center;
       display: flex;
@@ -56,18 +47,13 @@
       &--selected {
         background-color: @denali-brand-100;
       }
+    }
 
-      &--disabled {
-        .grouped-list__item-label,
+    &-label {
+      &:hover {
         .grouped-list__add-icon {
-          color: @denali-grey-600;
-          cursor: not-allowed;
-
-          &:hover {
-            .grouped-list__add-icon {
-              color: @denali-grey-600;
-            }
-          }
+          color: @denali-link-hover;
+          opacity: unset;
         }
       }
     }

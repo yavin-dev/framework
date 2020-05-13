@@ -78,12 +78,31 @@ class NaviColumnConfigItemComponent extends Component {
     this.componentElement = element;
 
     if (this.isLastAdded) {
-      if (this.column.type !== 'dimension') {
-        set(this, 'isColumnConfigOpen', true);
+      this.onOpenColumn(this.column);
+      next(this, 'scrollToElement');
+    }
+  }
+
+  scrollToElement() {
+    this.componentElement.parentElement.scrollTop =
+      this.componentElement.offsetTop - this.componentElement.parentElement.offsetTop;
+  }
+
+  @action
+  onUpdateLastAdded(element, [isLastAdded]) {
+    const { column, isOpen, onOpenColumn } = this;
+
+    if (isLastAdded && column.type === 'timeDimension') {
+      //dateTime element doesn't re-render so open config, restart animation and scroll
+      if (!isOpen) {
+        onOpenColumn(column);
       }
-      next(() => {
-        element.parentElement.scrollTop = element.offsetTop - element.parentElement.offsetTop;
-      });
+
+      element.classList.remove('navi-column-config-item--last-added');
+      void element.offsetWidth;
+      element.classList.add('navi-column-config-item--last-added');
+
+      next(this, 'scrollToElement');
     }
   }
 }

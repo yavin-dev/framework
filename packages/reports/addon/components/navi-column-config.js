@@ -114,13 +114,15 @@ class NaviColumnConfig extends Component {
         });
     }
 
-    return columns.length === 1 && columns[0].type === 'timeDimension' ? columns[0] : null;
+    return null;
   }
 
   /**
    * @property {Service} metricName
    */
   @service metricName;
+
+  currentlyOpenColumn;
 
   /**
    * @method getDisplayName
@@ -220,6 +222,19 @@ class NaviColumnConfig extends Component {
     removalHandler?.(fragment);
   }
 
+  @action
+  openColumn(column) {
+    this.set('currentlyOpenColumn', column);
+  }
+
+  @action
+  openDefaultColumn() {
+    const { columns, openColumn } = this;
+    if (columns.length === 1 && columns[0].type === 'timeDimension') {
+      openColumn(columns[0]);
+    }
+  }
+
   /**
    * Stores element reference after render
    * @param element - element inserted
@@ -227,6 +242,7 @@ class NaviColumnConfig extends Component {
   @action
   setupElement(element) {
     this.componentElement = element;
+    this.openDefaultColumn();
   }
 
   /**
