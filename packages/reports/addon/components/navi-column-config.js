@@ -114,7 +114,7 @@ class NaviColumnConfig extends Component {
         });
     }
 
-    return columns.length === 1 ? columns[0] : null;
+    return columns.length === 1 && column.type === 'timeDimension' ? columns[0] : null;
   }
 
   /**
