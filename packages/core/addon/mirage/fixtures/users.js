@@ -28,7 +28,7 @@ export default [
   {
     id: 'midna',
     createdOn: '03-21-2017 00:00:00',
-    createdOn: '03-21-2018 00:00:00',
+    updatedOn: '03-21-2018 00:00:00',
     reportIds: [],
     favoriteReportIds: [],
     favoriteDashboardIds: [],
