@@ -47,4 +47,9 @@ export default function() {
    * roles/:id -  PATCH endpoint for an existing role
    */
   this.patch('/roles/:id');
+
+  /**
+   * roles/:id -  DELETE endpoint for an existing role
+   */
+  this.delete('/roles/:id');
 }
