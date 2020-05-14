@@ -134,12 +134,10 @@ module('Unit | Model | user', function(hooks) {
   test('roles relationship', async function(assert) {
     assert.expect(1);
 
-    await run(async () => {
-      const roleModel = await Store.findRecord('role', 'admin');
-      const userModel = await Store.findRecord('user', 'midna');
-      const roles = await userModel.get('roles');
+    const roleModel = await Store.findRecord('role', 'admin');
+    const userModel = await Store.findRecord('user', 'midna');
+    const roles = await userModel.get('roles');
 
-      assert.equal(roles.get('firstObject'), roleModel, 'user role property contains role model');
-    });
+    assert.equal(roles.get('firstObject'), roleModel, 'user role property contains role model');
   });
 });

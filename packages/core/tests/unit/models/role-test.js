@@ -27,8 +27,6 @@ module('Unit | Model | role', function(hooks) {
     const newRole = 'new_role';
     await Store.createRecord('role', { id: newRole }).save();
 
-    Store.unloadAll('role'); // flush casche/store
-
     const role = await Store.findRecord('role', newRole, { reload: true });
     assert.ok(role, 'Newly created role is successfully persisted');
     assert.equal(role.id, newRole, 'Role id of new role is set as expected');
