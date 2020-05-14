@@ -1240,7 +1240,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
   });
 
   test('Sort gets removed when metric is removed', async function(assert) {
-    assert.expect(3);
+    assert.expect(6);
     await visit('/reports/new');
 
     await clickItem('metric', 'Platform Revenue');
@@ -1259,6 +1259,28 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
 
     apiURL = await getRequestURL();
     assert.notOk(apiURL.searchParams.has('sort'), 'Sort is removed from request when metric is removed');
+
+    //test param changing
+    await visit('/reports/new');
+
+    await clickItem('metric', 'Platform Revenue');
+
+    await animationsSettled();
+    assert.deepEqual(getColumns(), ['Date Time (Day)', 'Platform Revenue (USD)'], 'The initial metrics was added');
+    await click('.navi-report__run-btn');
+
+    await click('.table-header-row .table-header-cell.metric .navi-table-sort-icon');
+
+    apiURL = await getRequestURL();
+    assert.equal(apiURL.searchParams.get('sort'), 'platformRevenue(currency=USD)|desc', 'Sort is included in request');
+
+    //removing metric from column config
+    await click('.navi-column-config-item__parameter-trigger');
+    await fillIn('.ember-power-select-search-input', 'Dollars');
+    await click(findAll('.ember-power-select-option')[1]);
+
+    apiURL = await getRequestURL();
+    assert.notOk(apiURL.searchParams.has('sort'), 'Sort is removed from request when metric params changed');
   });
 
   function getColumns() {
