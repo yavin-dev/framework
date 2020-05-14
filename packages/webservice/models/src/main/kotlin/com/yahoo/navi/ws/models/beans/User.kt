@@ -1,5 +1,5 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 package com.yahoo.navi.ws.models.beans
@@ -44,6 +44,12 @@ class User {
     @get:UpdatePermission(expression = "nobody")
     var createdOn: Date? = null
 
+    @get:CreationTimestamp
+    @get:Column(columnDefinition = "timestamp default current_timestamp")
+    @get:Temporal(TemporalType.TIMESTAMP)
+    @get:UpdatePermission(expression = "nobody")
+    var modifiedOn: Date? = null
+
     @get:OneToMany(mappedBy = "author", targetEntity = Asset::class)
     @get:Where(clause = "ASSET_TYPE = 'Report'")
     var reports: Collection<Report> = arrayListOf()
@@ -75,4 +81,9 @@ class User {
             inverseJoinColumns = arrayOf(JoinColumn(name = "dashboard_id", referencedColumnName = "id"))
     )
     var favoriteDashboards: Collection<Dashboard> = arrayListOf()
+
+    open var email: String? = null
+
+    @get:OneToMany(mappedBy = "id", targetEntity = Role::class)
+    var roles: Collection<Role> = arrayListOf()
 }
