@@ -131,7 +131,7 @@ module('Unit | Model | user', function(hooks) {
     });
   });
 
-  test('add role to user', async function(assert) {
+  test('roles relationship', async function(assert) {
     assert.expect(1);
 
     await run(async () => {

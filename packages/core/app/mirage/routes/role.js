@@ -8,16 +8,7 @@ export default function() {
   /**
    * roles/:id - GET endpoint to fetch role by id
    */
-  this.get('/roles/:id', function({ roles }, request) {
-    let id = request.params.id,
-      role = roles.find(id);
-
-    if (!role) {
-      return new Mirage.Response(RESPONSE_CODES.NOT_FOUND, {}, { errors: [`Unknown identifier '${id}'`] });
-    }
-
-    return role;
-  });
+  this.get('/roles/:id');
 
   /**
    * roles/ - GET endpoint to fetch many roles
