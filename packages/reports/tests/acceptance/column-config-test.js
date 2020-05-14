@@ -1,5 +1,5 @@
 import { module, test, skip } from 'qunit';
-import { findAll, visit, click, fillIn, blur, currentURL } from '@ember/test-helpers';
+import { findAll, visit, click, fillIn, blur, currentURL, find } from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
 import config from 'ember-get-config';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
@@ -1232,7 +1232,36 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
     );
   });
 
+  test('Sort gets removed when metric is removed', async function(assert) {
+    assert.expect(3);
+    await visit('/reports/new');
+
+    await clickItem('metric', 'Platform Revenue');
+
+    await animationsSettled();
+    assert.deepEqual(getColumns(), ['Date Time (Day)', 'Platform Revenue (USD)'], 'The initial metrics was added');
+    await click('.navi-report__run-btn');
+
+    await click('.table-header-row .table-header-cell.metric .navi-table-sort-icon');
+
+    let apiURL = await getRequestURL();
+    assert.equal(apiURL.searchParams.get('sort'), 'platformRevenue(currency=USD)|desc', 'Sort is included in request');
+
+    //removing metric from column config
+    await click(findAll('.navi-column-config-item__remove-icon')[1]);
+
+    apiURL = await getRequestURL();
+    assert.notOk(apiURL.searchParams.has('sort'), 'Sort is removed from request when metric is removed');
+  });
+
   function getColumns() {
     return findAll('.navi-column-config-item__name').map(el => el.textContent.trim());
+  }
+
+  async function getRequestURL() {
+    await click('.get-api button');
+    const url = find('.get-api-modal-container input').value;
+    await click(findAll('.get-api-modal-container button').find(butt => butt.textContent === 'Cancel'));
+    return new URL(url);
   }
 });
