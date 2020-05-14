@@ -10,7 +10,6 @@ import com.yahoo.elide.annotation.DeletePermission
 import com.yahoo.elide.annotation.CreatePermission
 import com.yahoo.elide.annotation.UpdatePermission
 import org.hibernate.annotations.CreationTimestamp
-import org.hibernate.annotations.Where
 
 import java.util.Date
 
@@ -18,12 +17,8 @@ import javax.persistence.Entity
 import javax.persistence.Table
 import javax.persistence.Id
 import javax.persistence.Column
-import javax.persistence.JoinTable
-import javax.persistence.JoinColumn
 import javax.persistence.Temporal
 import javax.persistence.TemporalType
-import javax.persistence.OneToMany
-import javax.persistence.ManyToMany
 import javax.validation.constraints.NotBlank
 
 @Entity
