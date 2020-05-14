@@ -21,13 +21,12 @@
  */
 import Component from '@ember/component';
 import layout from '../templates/components/navi-column-config';
-import { action, computed, set } from '@ember/object';
+import { action, computed } from '@ember/object';
 import { capitalize } from '@ember/string';
 import move from 'ember-animated/motions/move';
 import { easeOut, easeIn } from 'ember-animated/easings/cosine';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
 import { inject as service } from '@ember/service';
-import { later } from '@ember/runloop';
 
 @tagName('')
 @templateLayout(layout)
@@ -115,7 +114,7 @@ class NaviColumnConfig extends Component {
         });
     }
 
-    return null;
+    return columns.length === 1 && columns[0].type === 'timeDimension' ? columns[0] : null;
   }
 
   /**

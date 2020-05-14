@@ -24,7 +24,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
   });
 
   test('Existing report loads correct columns', async function(assert) {
-    assert.expect(1);
+    assert.expect(2);
     await visit('reports/1/view');
 
     await animationsSettled();
@@ -33,10 +33,12 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
       ['Date Time (Day)', 'Property', 'Ad Clicks', 'Nav Link Clicks'],
       'Existing report loads columns correctly'
     );
+
+    assert.dom('.navi-column-config-item--open').doesNotExist('No columns are open when an existing report is loaded');
   });
 
   test('Creating new report shows column config if enableRequestPreview is on', async function(assert) {
-    assert.expect(4);
+    assert.expect(5);
     await visit('/reports/new');
 
     assert.ok(currentURL().endsWith('/edit'), 'We are on the edit report route');
@@ -48,6 +50,10 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
 
     await animationsSettled();
     assert.deepEqual(getColumns(), ['Date Time (Day)'], 'Initially only the date time is visible');
+
+    assert
+      .dom('.navi-column-config-item[data-name="dateTime"]')
+      .hasClass('navi-column-config-item--open', 'The date time is open on a new report');
   });
 
   test('Creating new report does not show column config without enableRequestPreview', async function(assert) {
@@ -94,7 +100,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
     assert.expect(12);
 
     await visit('/reports/new');
-    await click('.navi-report__run-btn');
+    await click('.navi-column-config-item[data-name="dateTime"] .navi-column-config-item__trigger');
     assert.deepEqual(getColumns(), ['Date Time (Day)'], 'Initially the only column is date time');
 
     //remove Date Time
@@ -164,7 +170,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
     assert.expect(28);
 
     await visit('/reports/new');
-    await click('.navi-report__run-btn');
+    await click('.navi-column-config-item[data-name="dateTime"] .navi-column-config-item__trigger');
     assert.deepEqual(getColumns(), ['Date Time (Day)'], 'Initially the only column is date time');
 
     //remove Date Time
@@ -368,7 +374,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
   test('adding - metrics', async function(assert) {
     assert.expect(3);
     await visit('/reports/new');
-    await click('.navi-report__run-btn');
+    await click('.navi-column-config-item[data-name="dateTime"] .navi-column-config-item__trigger');
 
     assert.deepEqual(getColumns(), ['Date Time (Day)'], 'Initially only the date time is visible');
     await clickItem('metric', 'Ad Clicks');
@@ -394,7 +400,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
   test('removing - metrics from start and end', async function(assert) {
     assert.expect(3);
     await visit('/reports/new');
-    await click('.navi-report__run-btn');
+    await click('.navi-column-config-item[data-name="dateTime"] .navi-column-config-item__trigger');
 
     await clickItem('metric', 'Ad Clicks');
     await clickItem('metric', 'Nav Link Clicks');
@@ -431,7 +437,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
   test('adding - dimensions', async function(assert) {
     assert.expect(3);
     await visit('/reports/new');
-    await click('.navi-report__run-btn');
+    await click('.navi-column-config-item[data-name="dateTime"] .navi-column-config-item__trigger');
 
     assert.deepEqual(getColumns(), ['Date Time (Day)'], 'Initially only the date time is visible');
     await clickItem('dimension', 'Age');
@@ -449,7 +455,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
   test('removing - dimensions from start and end', async function(assert) {
     assert.expect(3);
     await visit('/reports/new');
-    await click('.navi-report__run-btn');
+    await click('.navi-column-config-item[data-name="dateTime"] .navi-column-config-item__trigger');
 
     await clickItem('dimension', 'Age');
     await clickItem('dimension', 'Browser');
@@ -482,7 +488,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
   test('adding - metrics and dimensions', async function(assert) {
     assert.expect(2);
     await visit('/reports/new');
-    await click('.navi-report__run-btn');
+    await click('.navi-column-config-item[data-name="dateTime"] .navi-column-config-item__trigger');
 
     assert.deepEqual(getColumns(), ['Date Time (Day)'], 'Initially only the date time is visible');
     await clickItem('metric', 'Ad Clicks');
@@ -502,7 +508,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
   skip('config - renaming - date time', async function(assert) {
     assert.expect(4);
     await visit('/reports/new');
-    await click('.navi-report__run-btn');
+    await click('.navi-column-config-item[data-name="dateTime"] .navi-column-config-item__trigger');
 
     assert.deepEqual(getColumns(), ['Date Time (Day)'], 'Initially only the date time is visible');
 
@@ -522,7 +528,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
   skip('config - renaming - metrics', async function(assert) {
     assert.expect(7);
     await visit('/reports/new');
-    await click('.navi-report__run-btn');
+    await click('.navi-column-config-item[data-name="dateTime"] .navi-column-config-item__trigger');
 
     await clickItem('metric', 'Ad Clicks');
     await clickItem('metric', 'Nav Link Clicks');
@@ -573,7 +579,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
   skip('config - renaming - parameterized metrics', async function(assert) {
     assert.expect(7);
     await visit('/reports/new');
-    await click('.navi-report__run-btn');
+    await click('.navi-column-config-item[data-name="dateTime"] .navi-column-config-item__trigger');
 
     await clickItem('metric', 'Platform Revenue');
     await clickItem('metric', 'button click count');
@@ -624,7 +630,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
   skip('config - renaming - dimensions', async function(assert) {
     assert.expect(7);
     await visit('/reports/new');
-    await click('.navi-report__run-btn');
+    await click('.navi-column-config-item[data-name="dateTime"] .navi-column-config-item__trigger');
 
     await clickItem('dimension', 'Age');
     await clickItem('dimension', 'Browser');
@@ -667,7 +673,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
   test('config - parameters - metrics change first instance parameter', async function(assert) {
     assert.expect(2);
     await visit('/reports/new');
-    await click('.navi-report__run-btn');
+    await click('.navi-column-config-item[data-name="dateTime"] .navi-column-config-item__trigger');
 
     await clickItem('metric', 'Platform Revenue');
     await clickItem('metric', 'button click count');
@@ -692,7 +698,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
   test('config - parameters - metrics change last instance parameter', async function(assert) {
     assert.expect(2);
     await visit('/reports/new');
-    await click('.navi-report__run-btn');
+    await click('.navi-column-config-item[data-name="dateTime"] .navi-column-config-item__trigger');
 
     await clickItem('metric', 'Platform Revenue');
     await clickItem('metric', 'button click count');
@@ -717,7 +723,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
   test('config - clone - dimension', async function(assert) {
     assert.expect(2);
     await visit('/reports/new');
-    await click('.navi-report__run-btn');
+    await click('.navi-column-config-item[data-name="dateTime"] .navi-column-config-item__trigger');
 
     await clickItem('dimension', 'Age');
     await clickItem('dimension', 'Browser');
@@ -755,7 +761,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
   test('config - clone - metric', async function(assert) {
     assert.expect(2);
     await visit('/reports/new');
-    await click('.navi-report__run-btn');
+    await click('.navi-column-config-item[data-name="dateTime"] .navi-column-config-item__trigger');
 
     await clickItem('metric', 'Ad Clicks');
     await clickItem('metric', 'Nav Link Clicks');
@@ -804,7 +810,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
   test('config - clone - parameterized metric', async function(assert) {
     assert.expect(3);
     await visit('/reports/new');
-    await click('.navi-report__run-btn');
+    await click('.navi-column-config-item[data-name="dateTime"] .navi-column-config-item__trigger');
 
     await clickItem('metric', 'Platform Revenue');
     await clickItem('metric', 'Nav Link Clicks');
@@ -856,7 +862,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
   skip('config - duplicate columns - can configure multiple of the same base metrics', async function(assert) {
     assert.expect(2);
     await visit('/reports/new');
-    await click('.navi-report__run-btn');
+    await click('.navi-column-config-item[data-name="dateTime"] .navi-column-config-item__trigger');
 
     await clickItem('metric', 'Ad Clicks');
     await clickItem('metric', 'Nav Link Clicks');
@@ -884,7 +890,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
   skip('config - duplicate columns - can configure multiple of the same base dimension', async function(assert) {
     assert.expect(2);
     await visit('/reports/new');
-    await click('.navi-report__run-btn');
+    await click('.navi-column-config-item[data-name="dateTime"] .navi-column-config-item__trigger');
 
     await clickItem('dimension', 'Age');
     await clickItem('dimension', 'Browser');
@@ -908,7 +914,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
   test('config - filters - dimensions - expand on add', async function(assert) {
     assert.expect(8);
     await visit('/reports/new');
-    await click('.navi-report__run-btn');
+    await click('.navi-column-config-item[data-name="dateTime"] .navi-column-config-item__trigger');
 
     await clickItem('dimension', 'Age');
     await animationsSettled();
@@ -962,7 +968,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
   test('config - filters - metrics - expand on add', async function(assert) {
     assert.expect(8);
     await visit('/reports/new');
-    await click('.navi-report__run-btn');
+    await click('.navi-column-config-item[data-name="dateTime"] .navi-column-config-item__trigger');
 
     await clickItem('metric', 'Ad Clicks');
     await animationsSettled();
@@ -1014,7 +1020,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
   test('config - filters - parameterized metrics - expand on add', async function(assert) {
     assert.expect(8);
     await visit('/reports/new');
-    await click('.navi-report__run-btn');
+    await click('.navi-column-config-item[data-name="dateTime"] .navi-column-config-item__trigger');
 
     await clickItem('metric', 'Platform Revenue');
     await animationsSettled();
@@ -1067,7 +1073,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
   test('config - filters - parameterized metrics - different parameters make different filters', async function(assert) {
     assert.expect(6);
     await visit('/reports/new');
-    await click('.navi-report__run-btn');
+    await click('.navi-column-config-item[data-name="dateTime"] .navi-column-config-item__trigger');
 
     await clickItem('metric', 'Platform Revenue');
     await clickItem('metric', 'Platform Revenue');
@@ -1111,7 +1117,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
   test('config - filters - metrics - stay collapsed on remove', async function(assert) {
     assert.expect(4);
     await visit('/reports/new');
-    await click('.navi-report__run-btn');
+    await click('.navi-column-config-item[data-name="dateTime"] .navi-column-config-item__trigger');
 
     await clickItem('metric', 'Ad Clicks');
     await animationsSettled();
@@ -1142,7 +1148,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
   test('config - filters - parameterized metrics - stay collapsed on remove', async function(assert) {
     assert.expect(4);
     await visit('/reports/new');
-    await click('.navi-report__run-btn');
+    await click('.navi-column-config-item[data-name="dateTime"] .navi-column-config-item__trigger');
 
     await clickItem('metric', 'Platform Revenue');
     await animationsSettled();
@@ -1173,7 +1179,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
   test('config - filters - dimensions - stay collapsed on remove', async function(assert) {
     assert.expect(4);
     await visit('/reports/new');
-    await click('.navi-report__run-btn');
+    await click('.navi-column-config-item[data-name="dateTime"] .navi-column-config-item__trigger');
 
     await clickItem('dimension', 'Age');
     await animationsSettled();
@@ -1205,6 +1211,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
   test('config - parameterized metric - search parameters', async function(assert) {
     assert.expect(4);
     await visit('/reports/new');
+    await click('.navi-column-config-item[data-name="dateTime"] .navi-column-config-item__trigger');
 
     await clickItem('metric', 'Platform Revenue');
 
