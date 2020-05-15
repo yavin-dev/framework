@@ -44,7 +44,7 @@ module('Unit | Model | role', function(hooks) {
 
     const updatedRole = await Store.findRecord('role', newRole, { reload: true });
     assert.ok(updatedRole, 'Updated role is successfully persisted');
-    assert.equal(role.updateOn, '2020-05-15 00:00:00.000', 'UpdatedOn of updated role is set as expected');
+    assert.equal(role.updatedOn, '2020-05-15 00:00:00.000', 'UpdatedOn of updated role is set as expected');
   });
 
   test('Delete records', async function(assert) {
