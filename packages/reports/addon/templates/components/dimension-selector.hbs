@@ -46,7 +46,7 @@
       {{/if}}
     {{else}}
       <div class="grouped-list__item-container {{if (and (get this.itemsChecked item.id) (feature-flag "enableRequestPreview")) "grouped-list__item-container--selected"}}">
-        <button class="grouped-list__item-label" {{on "click" (fn this.itemClicked item)}} role="button">
+        <button class="grouped-list__item-label" {{on "click" (fn this.itemClicked item)}} role="button" type="button">
           <NaviIcon
             @icon={{if (and (get this.itemsChecked item.id) (not (feature-flag "enableRequestPreview"))) "minus-circle" "plus-circle"}}
             class="grouped-list__add-icon {{if (not (or (feature-flag "enableRequestPreview") (get this.itemsChecked item.id))) "grouped-list__add-icon--deselected"}}"

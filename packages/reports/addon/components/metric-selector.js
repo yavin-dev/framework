@@ -22,7 +22,7 @@ import layout from '../templates/components/metric-selector';
 import { run } from '@ember/runloop';
 import { featureFlag } from 'navi-core/helpers/feature-flag';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
-import { THROTTLE_TIME } from './dimension-selector';
+import { THROTTLE_TIME, BlurOnAnimationEnd } from './dimension-selector';
 
 @templateLayout(layout)
 @tagName('')
@@ -129,13 +129,7 @@ class MetricSelectorComponent extends Component {
 
     throttle(this, 'doMetricClicked', metric, button, THROTTLE_TIME);
 
-    const listItemContainer = target.closest('.grouped-list__item-container--selected');
-    if (listItemContainer) {
-      // Detect the end of the css animation and blur the button
-      ['animationend', 'webkitAnimationEnd', 'oAnimationEnd', 'MSAnimationEnd'].forEach(ev => {
-        listItemContainer.addEventListener(ev, button.blur());
-      });
-    }
+    BlurOnAnimationEnd(target, button);
   }
 }
 

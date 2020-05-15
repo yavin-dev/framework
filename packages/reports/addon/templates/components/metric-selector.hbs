@@ -17,7 +17,7 @@
       as | metric |
     >
       <div class="grouped-list__item-container {{if (and (get this.metricsChecked metric.id) (feature-flag "enableRequestPreview")) "grouped-list__item-container--selected"}}">
-        <button class="grouped-list__item-label" {{on "click" (fn this.metricClicked metric)}} role="button">
+        <button class="grouped-list__item-label" {{on "click" (fn this.metricClicked metric)}} role="button" type="button">
           <NaviIcon
             @icon={{if (and (get this.metricsChecked metric.id) (not (feature-flag "enableRequestPreview"))) "minus-circle" "plus-circle"}}
             class="grouped-list__add-icon {{if (not (or (feature-flag "enableRequestPreview") (get this.metricsChecked metric.id))) "grouped-list__add-icon--deselected"}}"

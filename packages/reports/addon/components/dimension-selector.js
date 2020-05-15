@@ -25,6 +25,35 @@ import { getDefaultTimeGrain } from 'navi-reports/utils/request-table';
 
 export const THROTTLE_TIME = 750; // milliseconds
 
+const ANIMATIONS = {
+  animation: 'animationend',
+  OAnimation: 'oAnimationEnd',
+  MozAnimation: 'animationend',
+  WebkitAnimation: 'webkitAnimationEnd'
+};
+
+/**
+ * Blur button at the end of the target's animation
+ * @param {Element} target - grouped-list__item-container--selected element for the clicked item that will play the animation
+ * @param {Element} button - grouped-list__item-label element that is the button that fired off the action
+ */
+export function BlurOnAnimationEnd(target, button) {
+  const listItemContainer = target.closest('.grouped-list__item-container--selected');
+  if (listItemContainer) {
+    // Detect the end of the css animation depending on browser and blur the button
+    let animationEndEvent;
+    for (let animation in ANIMATIONS) {
+      if (listItemContainer.style[animation] != undefined) {
+        animationEndEvent = ANIMATIONS[animation];
+      }
+    }
+
+    if (animationEndEvent) {
+      listItemContainer.addEventListener(animationEndEvent, () => button.blur(), { once: true });
+    }
+  }
+}
+
 export default class DimensionSelector extends Component {
   layout = layout;
 
@@ -210,12 +239,6 @@ export default class DimensionSelector extends Component {
 
     throttle(this, 'doItemClicked', item, button, THROTTLE_TIME);
 
-    const listItemContainer = target.closest('.grouped-list__item-container--selected');
-    if (listItemContainer) {
-      // Detect the end of the css animation and blur the button
-      ['animationend', 'webkitAnimationEnd', 'oAnimationEnd', 'MSAnimationEnd'].forEach(ev => {
-        listItemContainer.addEventListener(ev, button.blur());
-      });
-    }
+    BlurOnAnimationEnd(target, button);
   }
 }
