@@ -32,21 +32,6 @@ module('Unit | Model | role', function(hooks) {
     assert.equal(role.id, newRole, 'Role id of new role is set as expected');
   });
 
-  test('Update records', async function(assert) {
-    assert.expect(2);
-
-    const newRole = 'new_role';
-    await Store.createRecord('role', { id: newRole }).save();
-
-    const role = await Store.findRecord('role', newRole, { reload: true });
-    role.updatedOn = '2020-05-15 00:00:00.000';
-    await role.save();
-
-    const updatedRole = await Store.findRecord('role', newRole, { reload: true });
-    assert.ok(updatedRole, 'Updated role is successfully persisted');
-    assert.equal(role.updatedOn, '2020-05-15 00:00:00.000', 'UpdatedOn of updated role is set as expected');
-  });
-
   test('Delete records', async function(assert) {
     assert.expect(2);
 
