@@ -39,7 +39,7 @@ module('Unit | Model | role', function(hooks) {
     await Store.createRecord('role', { id: newRole }).save();
 
     const role = await Store.findRecord('role', newRole, { reload: true });
-    role.updateOn = '2020-05-15 00:00:00.000';
+    role.updatedOn = '2020-05-15 00:00:00.000';
     await role.save();
 
     const updatedRole = await Store.findRecord('role', newRole, { reload: true });
@@ -67,7 +67,7 @@ module('Unit | Model | role', function(hooks) {
     assert.deepEqual(
       rolesAfter.toArray().map(model => model.id),
       ['admin', 'user'],
-      'Deleted role new_user no longer in the store'
+      'Deleted role new_role no longer in the store'
     );
   });
 });
