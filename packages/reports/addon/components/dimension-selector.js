@@ -14,6 +14,7 @@
  *   {{/dimension-selector}}
  */
 
+import { throttle } from '@ember/runloop';
 import { readOnly, mapBy } from '@ember/object/computed';
 import Component from '@ember/component';
 import { get, computed, action } from '@ember/object';
@@ -21,6 +22,8 @@ import { A as arr } from '@ember/array';
 import layout from '../templates/components/dimension-selector';
 import { featureFlag } from 'navi-core/helpers/feature-flag';
 import { getDefaultTimeGrain } from 'navi-reports/utils/request-table';
+
+export const THROTTLE_TIME = 750; // milliseconds
 
 export default class DimensionSelector extends Component {
   layout = layout;
@@ -168,12 +171,13 @@ export default class DimensionSelector extends Component {
       }, {});
   }
 
-  /*
-   * @action itemClicked
-   * @param {Object} item
+  /**
+   * Pass clicked dimenion to action handler
+   * @param {Object} item - grouped list item for clicked dimension
+   * @param {Node} target - DOM Node for clicked dimension
    */
-  @action
-  itemClicked(item) {
+  doItemClicked(item, target) {
+    target.focus(); // firefox does not focus a button on click in MacOS specifically
     const type = item.dateTimeDimension ? 'TimeGrain' : 'Dimension';
     const enableRequestPreview = featureFlag('enableRequestPreview');
 
@@ -191,6 +195,27 @@ export default class DimensionSelector extends Component {
 
     if (actionHandler) {
       this[`on${actionHandler}${type}`]?.(item);
+    }
+  }
+
+  /**
+   * @action
+   * @param {Object} item - grouped list item for clicked dimension
+   * @param {Event.target} target - clicked dimension element
+   */
+  @action
+  itemClicked(item, { target }) {
+    const button =
+      target.closest('button.grouped-list__item-label') || target.closest('input.grouped-list__item-checkbox');
+
+    throttle(this, 'doItemClicked', item, button, THROTTLE_TIME);
+
+    const listItemContainer = target.closest('.grouped-list__item-container--selected');
+    if (listItemContainer) {
+      // Detect the end of the css animation and blur the button
+      ['animationend', 'webkitAnimationEnd', 'oAnimationEnd', 'MSAnimationEnd'].forEach(ev => {
+        listItemContainer.addEventListener(ev, button.blur());
+      });
     }
   }
 }

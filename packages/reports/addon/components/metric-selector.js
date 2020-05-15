@@ -13,6 +13,7 @@
  *   {{/metric-selector}}
  */
 
+import { throttle } from '@ember/runloop';
 import { A } from '@ember/array';
 import Component from '@ember/component';
 import { get, computed, action } from '@ember/object';
@@ -21,6 +22,7 @@ import layout from '../templates/components/metric-selector';
 import { run } from '@ember/runloop';
 import { featureFlag } from 'navi-core/helpers/feature-flag';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
+import { THROTTLE_TIME } from './dimension-selector';
 
 @templateLayout(layout)
 @tagName('')
@@ -97,12 +99,13 @@ class MetricSelectorComponent extends Component {
     });
   }
 
-  /*
-   * @action metricClicked
-   * @param {Object} metric
+  /**
+   * Pass clicked metric to action handler
+   * @param {Object} metric - grouped list item for clicked metric
+   * @param {Node} target - DOM Node for clicked metric
    */
-  @action
-  metricClicked(metric) {
+  doMetricClicked(metric, target) {
+    target.focus(); // firefox does not focus a button on click in MacOS specifically
     const enableRequestPreview = featureFlag('enableRequestPreview'),
       actionName = !enableRequestPreview && get(this, 'metricsChecked')[get(metric, 'id')] ? 'Remove' : 'Add',
       handler = this[`on${actionName}Metric`];
@@ -112,6 +115,26 @@ class MetricSelectorComponent extends Component {
     //On add, trigger metric-config mousedown event when metric has parameters
     if (actionName === 'Add' && get(metric, 'hasParameters') && !enableRequestPreview) {
       this._openConfig(metric);
+    }
+  }
+
+  /**
+   * @action
+   * @param {Object} metric - grouped list item for clicked metric
+   * @param {Event.target} target - clicked metric element
+   */
+  @action
+  metricClicked(metric, { target }) {
+    const button = target.closest('button.grouped-list__item-label');
+
+    throttle(this, 'doMetricClicked', metric, button, THROTTLE_TIME);
+
+    const listItemContainer = target.closest('.grouped-list__item-container--selected');
+    if (listItemContainer) {
+      // Detect the end of the css animation and blur the button
+      ['animationend', 'webkitAnimationEnd', 'oAnimationEnd', 'MSAnimationEnd'].forEach(ev => {
+        listItemContainer.addEventListener(ev, button.blur());
+      });
     }
   }
 }
