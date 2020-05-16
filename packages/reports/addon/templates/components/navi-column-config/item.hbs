@@ -1,8 +1,6 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <li
-  class="navi-column-config-item navi-column-config-item--{{dasherize @column.type}}
-    {{if @isOpen "navi-column-config-item--open"}}
-    {{if @isLastAdded "navi-column-config-item--last-added"}}"
+  class="navi-column-config-item navi-column-config-item--{{dasherize @column.type}} {{if @isOpen "navi-column-config-item--open"}}"
   data-name={{@column.name}}
   ...attributes
   {{did-insert this.setupElement}}
@@ -23,7 +21,7 @@
     <button
       class="navi-column-config-item__trigger"
       type="button"
-      {{on "click" (fn @onOpenColumn (if @isOpen null @column))}}
+      {{on "click" this.openColumn}}
     >
       <span title="{{@column.displayName}}" class="navi-column-config-item__name">{{@column.displayName}}</span>
       <NaviIcon

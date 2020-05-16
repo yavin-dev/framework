@@ -585,6 +585,9 @@ module('Integration | Component | navi-column-config', function(hooks) {
     );
 
     this.set('lastAddedColumn', { type: 'dimension', name: 'browser' });
+    await render(
+      hbs`<NaviColumnConfig @report={{this.report}} @lastAddedColumn={{this.lastAddedColumn}} @isOpen={{true}} />`
+    );
     await animationsSettled();
     assert.deepEqual(
       findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--last-added')),
@@ -593,6 +596,9 @@ module('Integration | Component | navi-column-config', function(hooks) {
     );
 
     addItem('dimension', 'browser');
+    await render(
+      hbs`<NaviColumnConfig @report={{this.report}} @lastAddedColumn={{this.lastAddedColumn}} @isOpen={{true}} />`
+    );
     await animationsSettled();
     assert.deepEqual(
       findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--last-added')),
@@ -601,6 +607,9 @@ module('Integration | Component | navi-column-config', function(hooks) {
     );
 
     this.set('lastAddedColumn', { type: 'metric', name: 'adClicks' });
+    await render(
+      hbs`<NaviColumnConfig @report={{this.report}} @lastAddedColumn={{this.lastAddedColumn}} @isOpen={{true}} />`
+    );
     await animationsSettled();
     assert.deepEqual(
       findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--last-added')),
@@ -609,6 +618,9 @@ module('Integration | Component | navi-column-config', function(hooks) {
     );
 
     addItem('metric', 'adClicks');
+    await render(
+      hbs`<NaviColumnConfig @report={{this.report}} @lastAddedColumn={{this.lastAddedColumn}} @isOpen={{true}} />`
+    );
     await animationsSettled();
     assert.deepEqual(
       findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--last-added')),
