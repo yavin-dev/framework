@@ -176,7 +176,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
   });
 
   test('accordion behavior and highlighting last added item', async function(assert) {
-    assert.expect(38);
+    assert.expect(41);
 
     await visit('/reports/new');
     assert.deepEqual(getColumns(), ['Date Time (Day)'], 'Initially the only column is date time');
@@ -254,6 +254,14 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
       findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--last-added')),
       [true, false],
       'Date time is highlighted when it is already added'
+    );
+
+    await selectChoose('.navi-column-config-item__parameter-trigger', 'Week');
+    await animationsSettled();
+    assert.deepEqual(
+      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--open')),
+      [true, false],
+      'Date time is still open after changing the time grain'
     );
 
     //add duplicate Browser dimension
@@ -385,11 +393,28 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
       'Only cloned parameterized metric is highlighted'
     );
 
-    //remove last added column
-    await click(findAll('.navi-column-config-item__remove-icon')[4]);
+    //open first parameterized metric config
+    await click('.navi-column-config-item__name[title="Platform Revenue (USD)"]');
+    assert.deepEqual(
+      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--open')),
+      [false, false, false, true, false],
+      'The first parameterized metric is open'
+    );
+
+    //change parameter
+    await selectChoose('.navi-column-config-item__parameter-trigger', 'Dollars (CAD)');
+    await animationsSettled();
+    assert.deepEqual(
+      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--open')),
+      [false, false, false, true, false],
+      'The first parameterized metric is still open after parameter change'
+    );
+
+    //remove the first parameterizde metric
+    await click(findAll('.navi-column-config-item__remove-icon')[3]);
     assert
       .dom('.navi-column-config-item--open')
-      .doesNotExist('No column is open after removing the parameterized metric');
+      .doesNotExist('No column is open after removing the first parameterized metric');
     assert
       .dom('.navi-column-config-item--last-added')
       .doesNotExist('No column is highlighted after removing the parameterized metric');

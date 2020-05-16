@@ -70,7 +70,7 @@ class NaviColumnConfigItemComponent extends Component {
 
   /**
    * Stores element reference after render.
-   * If the column was just added, open the config and scroll to element
+   * If the column was just added, opens the config and scrolls to the element
    * @param element - element inserted
    */
   @action
@@ -83,21 +83,30 @@ class NaviColumnConfigItemComponent extends Component {
     }
   }
 
+  /**
+   * @method scrollToElement - set the scroll position of the column config to the current item
+   */
   scrollToElement() {
     this.componentElement.parentElement.scrollTop =
       this.componentElement.offsetTop - this.componentElement.parentElement.offsetTop;
   }
 
+  /**
+   * When the column is last added, opens it, highlights it and scrolls to it.
+   * Typically this is performed only once when inserted (in `setupElement`).
+   * The only current use case is for the date time column, which is not re-rendered when clicked in the dimension selector.
+   * @param element - the item element
+   */
   @action
-  onUpdateLastAdded(element, [isLastAdded]) {
-    const { column, isOpen, onOpenColumn } = this;
+  onUpdateLastAdded(element) {
+    const { column, isOpen, isLastAdded, onOpenColumn } = this;
 
     if (isLastAdded && column.type === 'timeDimension') {
-      //dateTime element doesn't re-render so open config, restart animation and scroll
       if (!isOpen) {
         onOpenColumn(column);
       }
 
+      //restart the highlight animation https://css-tricks.com/restart-css-animation/
       element.classList.remove('navi-column-config-item--last-added');
       void element.offsetWidth;
       element.classList.add('navi-column-config-item--last-added');

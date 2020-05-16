@@ -122,7 +122,10 @@ class NaviColumnConfig extends Component {
    */
   @service metricName;
 
-  currentlyOpenColumn;
+  /**
+   * @property {Object} currentlyOpenFragment - fragment of the column that is currently open
+   */
+  currentlyOpenFragment = null;
 
   /**
    * @method getDisplayName
@@ -222,11 +225,20 @@ class NaviColumnConfig extends Component {
     removalHandler?.(fragment);
   }
 
+  /**
+   * Opens a column
+   * @action
+   * @param {Object} column - The column to open
+   */
   @action
   openColumn(column) {
-    this.set('currentlyOpenColumn', column);
+    this.set('currentlyOpenFragment', column?.fragment);
   }
 
+  /**
+   * Opens the date time column when it's the only column
+   * @action
+   */
   @action
   openDefaultColumn() {
     const { columns, openColumn } = this;
@@ -236,7 +248,7 @@ class NaviColumnConfig extends Component {
   }
 
   /**
-   * Stores element reference after render
+   * Stores element reference and opens the default column after render
    * @param element - element inserted
    */
   @action
