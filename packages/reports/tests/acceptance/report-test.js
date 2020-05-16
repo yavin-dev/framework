@@ -1573,13 +1573,16 @@ module('Acceptance | Navi Report', function(hooks) {
       'Selected dimensions initially include "Date Time" and "Property"'
     );
 
-    let dimensionItem = await getItem('dimension', 'Date Time');
+    // Click Date Time again
+    await clickItem('timeGrain', 'Date Time');
 
-    assert
-      .dom(dimensionItem.item.querySelector('.grouped-list__item-label'))
-      .hasAttribute('aria-disabled', 'true', 'Date Time has aria-disabled="true" attribute');
+    assert.deepEqual(
+      await getAllSelected('dimension'),
+      ['Date Time', 'Property'],
+      'Clicking date time again does not change selected dimensions'
+    );
 
-    dimensionItem = await getItem('dimension', 'Operating System');
+    let dimensionItem = await getItem('dimension', 'Operating System');
 
     assert.ok(dimensionItem.item.querySelector('.fa-plus-circle'), 'An unselected dimension row has a plus icon');
 
