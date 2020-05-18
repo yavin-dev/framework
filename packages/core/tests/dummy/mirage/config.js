@@ -8,6 +8,7 @@ import dashboardCollection from './routes/dashboard-collection';
 import reportCollection from './routes/report-collections';
 import dashboardWidget from './routes/dashboard-widget';
 import deliveryRules from './routes/delivery-rules';
+import role from './routes/role';
 
 export default function() {
   // https://github.com/kategengler/ember-cli-code-coverage#create-a-passthrough-when-intercepting-all-ajax-requests-in-tests
@@ -31,4 +32,5 @@ export default function() {
   deliveryRules.call(this);
   user.call(this);
   report.call(this);
+  role.call(this);
 }
