@@ -87,9 +87,9 @@ class NaviColumnConfigItemComponent extends Component {
   }
 
   /**
-   * Opens and highlights the column (if is not already open) and scrolls to it.
+   * Opens and highlights the column (if it is not already open) and scrolls to it.
    * This is done for the date time column since it is not re-rendered when clicked via the dimension selector.
-   * For other columns, this is performed only once when inserted (in `setupElement`).
+   * For other columns, it is performed only once when inserted (in `setupElement`).
    */
   @action
   onUpdateLastAdded() {

@@ -176,7 +176,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
   });
 
   test('accordion behavior and highlighting last added item', async function(assert) {
-    assert.expect(41);
+    assert.expect(42);
 
     await visit('/reports/new');
     assert.deepEqual(getColumns(), ['Date Time (Day)'], 'Initially the only column is date time');
@@ -263,6 +263,9 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
       [true, false],
       'Date time is still open after changing the time grain'
     );
+    assert
+      .dom('.navi-column-config-item--last-added')
+      .doesNotExist('Date time is not highlighted after changing the time grain');
 
     //add duplicate Browser dimension
     await clickItem('dimension', 'Browser');
