@@ -21,6 +21,7 @@
           <button class="grouped-list__item-label"
             role="button"
             aria-disabled="{{not (is-empty this.selectedTimeGrain)}}"
+            type="button"
             {{on "click" (fn this.itemClicked item)}}>
             <NaviIcon
               @icon="plus-circle"
