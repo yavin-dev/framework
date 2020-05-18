@@ -49,6 +49,10 @@
           opacity: unset;
         }
       }
+
+      &::-moz-focus-inner {
+        border: 0; // prevents dotted outline when button is focused
+      }
     }
 
     &-container {

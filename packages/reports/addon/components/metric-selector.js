@@ -1,5 +1,5 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -105,7 +105,7 @@ class MetricSelectorComponent extends Component {
    * @param {Node} target - DOM Node for clicked metric
    */
   doMetricClicked(metric, target) {
-    target.focus(); // firefox does not focus a button on click in MacOS specifically
+    target && target.focus(); // firefox does not focus a button on click in MacOS specifically
     const enableRequestPreview = featureFlag('enableRequestPreview'),
       actionName = !enableRequestPreview && get(this, 'metricsChecked')[get(metric, 'id')] ? 'Remove' : 'Add',
       handler = this[`on${actionName}Metric`];
@@ -127,9 +127,12 @@ class MetricSelectorComponent extends Component {
   metricClicked(metric, { target }) {
     const button = target.closest('button.grouped-list__item-label');
 
-    throttle(this, 'doMetricClicked', metric, button, THROTTLE_TIME);
-
-    BlurOnAnimationEnd(target, button);
+    if (featureFlag('enableRequestPreview')) {
+      throttle(this, 'doMetricClicked', metric, button, THROTTLE_TIME);
+      BlurOnAnimationEnd(target, button);
+    } else {
+      this.doMetricClicked(metric, null);
+    }
   }
 }
 

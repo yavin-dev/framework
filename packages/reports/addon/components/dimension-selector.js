@@ -206,7 +206,7 @@ export default class DimensionSelector extends Component {
    * @param {Node} target - DOM Node for clicked dimension
    */
   doItemClicked(item, target) {
-    target.focus(); // firefox does not focus a button on click in MacOS specifically
+    target && target.focus(); // firefox does not focus a button on click in MacOS specifically
     const type = item.dateTimeDimension ? 'TimeGrain' : 'Dimension';
     const enableRequestPreview = featureFlag('enableRequestPreview');
 
@@ -234,11 +234,13 @@ export default class DimensionSelector extends Component {
    */
   @action
   itemClicked(item, { target }) {
-    const button =
-      target.closest('button.grouped-list__item-label') || target.closest('input.grouped-list__item-checkbox');
+    const button = target.closest('button.grouped-list__item-label');
 
-    throttle(this, 'doItemClicked', item, button, THROTTLE_TIME);
-
-    BlurOnAnimationEnd(target, button);
+    if (featureFlag('enableRequestPreview')) {
+      throttle(this, 'doItemClicked', item, button, THROTTLE_TIME);
+      BlurOnAnimationEnd(target, button);
+    } else {
+      this.doItemClicked(item, null);
+    }
   }
 }
