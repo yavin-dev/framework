@@ -1275,7 +1275,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
     assert.equal(apiURL.searchParams.get('sort'), 'platformRevenue(currency=USD)|desc', 'Sort is included in request');
 
     //changing metric param
-    await selectChoose(findAll('.navi-column-config-item__parameter-trigger')[0], 'Dollars (CAD)');
+    await selectChoose(findAll('.navi-column-config-item__parameter-trigger')[1], 'Dollars (CAD)');
 
     apiURL = await getRequestURL();
     assert.notOk(apiURL.searchParams.has('sort'), 'Sort is removed from request when metric params changed');
