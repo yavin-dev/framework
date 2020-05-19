@@ -10,7 +10,7 @@
           <NaviColumnConfig::Item
             @column={{column}}
             @isLastAdded={{eq column this.lastAddedItem}}
-            @isOpen={{eq column.fragment this.currentlyOpenFragment}}
+            @isOpen={{eq column.fragment this.currentlyOpenColumn.fragment}}
             @onOpenColumn={{this.openColumn}}
             @visualization={{@report.visualization}}
             @onRemoveColumn={{fn this.removeColumn column}}

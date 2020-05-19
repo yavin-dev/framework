@@ -123,9 +123,9 @@ class NaviColumnConfig extends Component {
   @service metricName;
 
   /**
-   * @property {Object} currentlyOpenFragment - fragment of the column that is currently open
+   * @property {Object} currentlyOpenColumn - the column that is currently open
    */
-  currentlyOpenFragment = null;
+  currentlyOpenColumn = null;
 
   /**
    * @method getDisplayName
@@ -232,7 +232,7 @@ class NaviColumnConfig extends Component {
    */
   @action
   openColumn(column) {
-    this.set('currentlyOpenFragment', column?.fragment);
+    this.set('currentlyOpenColumn', column);
   }
 
   /**
