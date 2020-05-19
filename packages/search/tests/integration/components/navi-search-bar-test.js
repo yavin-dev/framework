@@ -82,6 +82,6 @@ module('Integration | Component | navi-search-bar', function(hooks) {
 
     await render(hbs`<NaviSearchBar @focusOut={{this.focusOut}} />`);
 
-    blur('.navi-search-bar__input');
+    await blur('.navi-search-bar__input');
   });
 });

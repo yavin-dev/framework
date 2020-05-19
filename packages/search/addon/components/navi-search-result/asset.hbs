@@ -16,7 +16,7 @@
   </tbody>
 </table>
 {{#if this.hasMoreResults}}
-  <button {{on "click" (toggle "showTop" this)}} class="navi-search-result-options__show-button">
+  <button {{on "click" (toggle "showTop" this)}} class="navi-search-result-options__show-button" type="button">
     {{if this.showTop "Show more" "Show less"}}
   </button>
 {{/if}}
