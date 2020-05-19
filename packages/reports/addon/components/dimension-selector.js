@@ -14,6 +14,7 @@
  *   {{/dimension-selector}}
  */
 
+import { throttle } from '@ember/runloop';
 import { readOnly, mapBy } from '@ember/object/computed';
 import Component from '@ember/component';
 import { get, computed, action } from '@ember/object';
@@ -21,6 +22,37 @@ import { A as arr } from '@ember/array';
 import layout from '../templates/components/dimension-selector';
 import { featureFlag } from 'navi-core/helpers/feature-flag';
 import { getDefaultTimeGrain } from 'navi-reports/utils/request-table';
+
+export const THROTTLE_TIME = 750; // milliseconds
+
+const ANIMATIONS = {
+  animation: 'animationend',
+  OAnimation: 'oAnimationEnd',
+  MozAnimation: 'animationend',
+  WebkitAnimation: 'webkitAnimationEnd'
+};
+
+/**
+ * Blur button at the end of the target's animation
+ * @param {Element} target - grouped-list__item-container--selected element for the clicked item that will play the animation
+ * @param {Element} button - grouped-list__item-label element that is the button that fired off the action
+ */
+export function BlurOnAnimationEnd(target, button) {
+  const listItemContainer = target.closest('.grouped-list__item-container--selected');
+  if (listItemContainer) {
+    // Detect the end of the css animation depending on browser and blur the button
+    let animationEndEvent;
+    for (let animation in ANIMATIONS) {
+      if (listItemContainer.style[animation] != undefined) {
+        animationEndEvent = ANIMATIONS[animation];
+      }
+    }
+
+    if (animationEndEvent) {
+      listItemContainer.addEventListener(animationEndEvent, () => button.blur(), { once: true });
+    }
+  }
+}
 
 export default class DimensionSelector extends Component {
   layout = layout;
@@ -168,12 +200,13 @@ export default class DimensionSelector extends Component {
       }, {});
   }
 
-  /*
-   * @action itemClicked
-   * @param {Object} item
+  /**
+   * Pass clicked dimenion to action handler
+   * @param {Object} item - grouped list item for clicked dimension
+   * @param {Node} target - DOM Node for clicked dimension
    */
-  @action
-  itemClicked(item) {
+  doItemClicked(item, target) {
+    target && target.focus(); // firefox does not focus a button on click in MacOS specifically
     const type = item.dateTimeDimension ? 'TimeGrain' : 'Dimension';
     const enableRequestPreview = featureFlag('enableRequestPreview');
 
@@ -191,6 +224,22 @@ export default class DimensionSelector extends Component {
 
     if (actionHandler) {
       this[`on${actionHandler}${type}`]?.(item);
+    }
+  }
+
+  /**
+   * @action
+   * @param {Object} item - grouped list item for clicked dimension
+   * @param {Event.target} target - clicked dimension element
+   */
+  @action
+  itemClicked(item, { target }) {
+    if (featureFlag('enableRequestPreview')) {
+      const button = target.closest('button.grouped-list__item-label');
+      throttle(this, 'doItemClicked', item, button, THROTTLE_TIME);
+      BlurOnAnimationEnd(target, button);
+    } else {
+      this.doItemClicked(item, null);
     }
   }
 }

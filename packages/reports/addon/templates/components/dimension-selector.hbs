@@ -18,16 +18,17 @@
     {{#if item.dateTimeDimension}}
       {{#if (feature-flag "enableRequestPreview")}}
         <div class="grouped-list__item-container {{if this.selectedTimeGrain "grouped-list__item-container--selected grouped-list__item-container--disabled"}}">
-          <span class="grouped-list__item-label"
+          <button class="grouped-list__item-label"
             role="button"
             aria-disabled="{{not (is-empty this.selectedTimeGrain)}}"
+            type="button"
             {{on "click" (fn this.itemClicked item)}}>
             <NaviIcon
               @icon="plus-circle"
               class="grouped-list__add-icon"
             />
             {{item.name}}
-          </span>
+          </button>
         </div>
       {{else}}
         <div class="grouped-list__item-checkbox-container">
@@ -46,13 +47,13 @@
       {{/if}}
     {{else}}
       <div class="grouped-list__item-container {{if (and (get this.itemsChecked item.id) (feature-flag "enableRequestPreview")) "grouped-list__item-container--selected"}}">
-        <span class="grouped-list__item-label" {{on "click" (fn this.itemClicked item)}} role="button">
+        <button class="grouped-list__item-label" {{on "click" (fn this.itemClicked item)}} role="button" type="button">
           <NaviIcon
             @icon={{if (and (get this.itemsChecked item.id) (not (feature-flag "enableRequestPreview"))) "minus-circle" "plus-circle"}}
             class="grouped-list__add-icon {{if (not (or (feature-flag "enableRequestPreview") (get this.itemsChecked item.id))) "grouped-list__add-icon--deselected"}}"
           />
           {{item.name}}
-        </span>
+        </button>
 
         <NaviIcon @icon="question-circle-o" class="grouped-list__item-info">
           <EmberTooltip @side="right" @popperContainer="body" @effect="none">
