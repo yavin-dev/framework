@@ -166,10 +166,9 @@ class MetricConfig extends Component {
     const actionName = !enableRequestPreview && this.parametersChecked[`${param.param}|${param.id}`] ? 'Remove' : 'Add';
     const handler = this[`on${actionName}ParameterizedMetric`];
 
-    const button = target.closest('button.grouped-list__item-label');
-
     if (handler) {
       if (featureFlag('enableRequestPreview')) {
+        const button = target.closest('button.grouped-list__item-label');
         throttle(this, 'doParamToggled', handler, metric, param, button, THROTTLE_TIME);
         BlurOnAnimationEnd(target, button);
       } else {

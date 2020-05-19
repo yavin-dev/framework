@@ -234,9 +234,8 @@ export default class DimensionSelector extends Component {
    */
   @action
   itemClicked(item, { target }) {
-    const button = target.closest('button.grouped-list__item-label');
-
     if (featureFlag('enableRequestPreview')) {
+      const button = target.closest('button.grouped-list__item-label');
       throttle(this, 'doItemClicked', item, button, THROTTLE_TIME);
       BlurOnAnimationEnd(target, button);
     } else {

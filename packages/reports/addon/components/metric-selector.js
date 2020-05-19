@@ -125,9 +125,8 @@ class MetricSelectorComponent extends Component {
    */
   @action
   metricClicked(metric, { target }) {
-    const button = target.closest('button.grouped-list__item-label');
-
     if (featureFlag('enableRequestPreview')) {
+      const button = target.closest('button.grouped-list__item-label');
       throttle(this, 'doMetricClicked', metric, button, THROTTLE_TIME);
       BlurOnAnimationEnd(target, button);
     } else {
