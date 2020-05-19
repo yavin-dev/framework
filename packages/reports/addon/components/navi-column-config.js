@@ -109,7 +109,7 @@ class NaviColumnConfig extends Component {
         .slice()
         .reverse()
         .find(column => {
-          const columnName = column.type === 'timeDimension' ? 'dateTime' : column.fragment[column.type].id;
+          const columnName = column.name === 'dateTime' ? 'dateTime' : column.fragment[column.type].id;
           return column.type === lastAddedColumn.type && columnName === lastAddedColumn.name;
         });
     }
@@ -242,7 +242,7 @@ class NaviColumnConfig extends Component {
   @action
   openDefaultColumn() {
     const { columns, openColumn } = this;
-    if (columns.length === 1 && columns[0].type === 'timeDimension') {
+    if (columns.length === 1 && columns[0].name === 'dateTime') {
       openColumn(columns[0]);
     }
   }

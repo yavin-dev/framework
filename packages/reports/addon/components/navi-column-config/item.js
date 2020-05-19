@@ -95,7 +95,7 @@ class NaviColumnConfigItemComponent extends Component {
   onUpdateLastAdded() {
     const { column, isOpen, isLastAdded, onOpenColumn } = this;
 
-    if (isLastAdded && column.type === 'timeDimension') {
+    if (isLastAdded && column.name === 'dateTime') {
       if (!isOpen) {
         onOpenColumn(column);
         next(this, 'highlightElement');
