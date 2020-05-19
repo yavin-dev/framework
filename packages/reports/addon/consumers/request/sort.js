@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import ActionConsumer from 'navi-core/consumers/action-consumer';
@@ -89,6 +89,41 @@ export default ActionConsumer.extend({
     [RequestActions.REMOVE_METRIC_WITH_PARAM](route, metric, parameters) {
       // Find and remove any `sorts` attached to the metric and parameters
       get(this, 'requestActionDispatcher').dispatch(RequestActions.REMOVE_SORT_WITH_PARAM, route, metric, parameters);
+    },
+
+    /**
+     * @action REMOVE_METRIC_FRAGMENT
+     * @param {Object} route - route that has a model that contains a request property
+     * @param {Object} metric - metric fragment model of metric that needs to be removed
+     */
+    [RequestActions.REMOVE_METRIC_FRAGMENT](route, metric) {
+      // Find and remove any `sorts` attached to the metric and parameters
+      this.requestActionDispatcher.dispatch(
+        RequestActions.REMOVE_SORT_WITH_PARAM,
+        route,
+        metric.metric,
+        metric.parameters
+      );
+    },
+
+    /**
+     * Remove all metric sorts of same base metric if a param is updated
+     * @action REMOVE_METRIC_FRAGMENT
+     * @param {Object} route - route that has a model that contains a request property
+     * @param {Object} metric - metric fragment model of metric that needs to be removed
+     */
+    [RequestActions.UPDATE_METRIC_FRAGMENT_WITH_PARAM](route, metric) {
+      this.requestActionDispatcher.dispatch(RequestActions.REMOVE_SORT_BY_METRIC_MODEL, route, metric.metric);
+    },
+
+    /**
+     * Remove all metric sorts of same base metric if a param is updated
+     * @action REMOVE_METRIC_FRAGMENT
+     * @param {Object} route - route that has a model that contains a request property
+     * @param {string} metric - base metric to be removed
+     */
+    [RequestActions.UPDATE_METRIC_PARAM](route, metric) {
+      this.requestActionDispatcher.dispatch(RequestActions.REMOVE_SORT, route, metric);
     }
   }
 });

@@ -1,7 +1,7 @@
 import Service from '@ember/service';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { blur, render, fillIn, triggerKeyEvent } from '@ember/test-helpers';
+import { blur, render, fillIn, triggerKeyEvent, focus } from '@ember/test-helpers';
 import { hbs } from 'ember-cli-htmlbars';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import { set } from '@ember/object';
@@ -74,14 +74,16 @@ module('Integration | Component | navi-search-bar', function(hooks) {
 
   test('pass focusOut function', async function(assert) {
     assert.expect(1);
+    const done = assert.async();
 
-    const focusOut = function() {
+    set(this, 'focusOut', () => {
       assert.ok(true, 'focus out function called');
-    };
-    set(this, 'focusOut', focusOut);
+      done();
+    });
 
     await render(hbs`<NaviSearchBar @focusOut={{this.focusOut}} />`);
 
-    blur('.navi-search-bar__input');
+    await focus('input'); // focus the input first because otherwise the focusout event doesn't always fire
+    await blur('input');
   });
 });

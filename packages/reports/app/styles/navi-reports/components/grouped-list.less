@@ -35,8 +35,25 @@
 
   &__item {
     display: flex;
-    margin-left: 15px;
     font-size: @font-size-mid;
+    margin-left: 15px;
+
+    &-label {
+      display: block;
+      font: inherit;
+      padding: 0;
+
+      &:hover {
+        .grouped-list__add-icon {
+          color: @denali-link-hover;
+          opacity: unset;
+        }
+      }
+
+      &::-moz-focus-inner {
+        border: 0; // prevents dotted outline when button is focused
+      }
+    }
 
     &-container {
       align-items: center;
@@ -46,14 +63,9 @@
 
       &--selected {
         background-color: @denali-brand-100;
-      }
-    }
 
-    &-label {
-      &:hover {
-        .grouped-list__add-icon {
-          color: @denali-link-hover;
-          opacity: unset;
+        &:focus-within {
+          animation: navi-pulse-once 0.75s;
         }
       }
     }
@@ -107,9 +119,11 @@
       width: 5px;
     }
 
-    span&-label {
+    button&-label {
+      align-items: unset;
       cursor: pointer;
       margin: 0 3px;
+      text-align: left;
     }
 
     &-info {
