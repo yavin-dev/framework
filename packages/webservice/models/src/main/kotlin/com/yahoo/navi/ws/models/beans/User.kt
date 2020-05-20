@@ -33,7 +33,7 @@ import javax.validation.constraints.NotBlank
 @DeletePermission(expression = "nobody")
 @CreatePermission(expression = "is the same user")
 @UpdatePermission(expression = "is the same user now")
-class User {
+class User : HasRoles {
     @get:Id
     @get:NotBlank
     var id: String? = null
@@ -48,7 +48,7 @@ class User {
     @get:Column(columnDefinition = "timestamp default current_timestamp")
     @get:Temporal(TemporalType.TIMESTAMP)
     @get:UpdatePermission(expression = "nobody")
-    var modifiedOn: Date? = null
+    var updatedOn: Date? = null
 
     @get:OneToMany(mappedBy = "author", targetEntity = Asset::class)
     @get:Where(clause = "ASSET_TYPE = 'Report'")
@@ -82,8 +82,6 @@ class User {
     )
     var favoriteDashboards: Collection<Dashboard> = arrayListOf()
 
-    open var email: String? = null
-
     @get:OneToMany(mappedBy = "id", targetEntity = Role::class)
-    var roles: Collection<Role> = arrayListOf()
+    override var roles: Collection<Role> = arrayListOf()
 }

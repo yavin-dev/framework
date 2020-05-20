@@ -26,8 +26,8 @@ import javax.validation.constraints.NotBlank
 @Include(rootLevel = true, type = "roles")
 @SharePermission
 @DeletePermission(expression = "nobody")
-@CreatePermission(expression = "is the admin")
-@UpdatePermission(expression = "is the admin")
+@CreatePermission(expression = "is the same user")
+@UpdatePermission(expression = "is is the same user now")
 class Role {
     @get:Id
     @get:NotBlank
@@ -43,5 +43,5 @@ class Role {
     @get:Column(columnDefinition = "timestamp default current_timestamp")
     @get:Temporal(TemporalType.TIMESTAMP)
     @get:UpdatePermission(expression = "nobody")
-    var modifiedOn: Date? = null
+    var updatedOn: Date? = null
 }

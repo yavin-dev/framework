@@ -15,6 +15,8 @@ class UserTest : IntegrationTest() {
     private val naviUser1 = "user1"
     private val naviUser2 = "user2"
     private val naviUser3 = "user3"
+    private val adminRole = "admin"
+    private val userRole = "user"
 
     @Test
     fun userEndpointTest() {
@@ -938,5 +940,40 @@ class UserTest : IntegrationTest() {
             .body("data.relationships.reports.data.id", hasItems("1", "2"))
             .body("data.relationships.dashboards.data.type", equalTo(arrayListOf("dashboards")))
             .body("data.relationships.dashboards.data.id", equalTo(arrayListOf("3")))
+    }
+
+    @Test
+    fun roles() {
+        registerUser(naviUser1)
+
+        // // register admin role
+        // given()
+        //     .header("User", naviUser1)
+        //     .contentType("application/vnd.api+json")
+        //     .body("""
+        //         {
+        //             "data": {
+        //                 "type": "roles",
+        //                 "id": "$adminRole"
+        //             }
+        //         }
+        //     """.trimIndent())
+        // .When()
+        //     .post("/roles")
+        // .then()
+        //     .assertThat()
+        //     .statusCode(HttpStatus.SC_CREATED)
+        // register user role
+        // registerRole(userRole)
+
+        // // user starts out with no roles
+        // given()
+        //     .header("User", naviUser1)
+        //     .contentType("application/vnd.api+json")
+        // .When()
+        //     .get("/users/$naviUser1")
+        // .then()
+        //     .assertThat()
+        //     .body("data.relationships.roles.data", empty<Any>())
     }
 }
