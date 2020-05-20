@@ -6,7 +6,7 @@ export default class NaviMetadataApolloService extends ApolloService {
   /**
    * @property {String}
    */
-  namespace = 'v1/graphql';
+  namespace = 'graphql';
 
   /**
    * @override

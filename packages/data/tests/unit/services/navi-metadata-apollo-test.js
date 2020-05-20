@@ -8,10 +8,6 @@ module('Unit | Service | navi-metadata-apollo', function(hooks) {
   // Replace this with your real tests.
   test('_buildURLPath', function(assert) {
     const service = this.owner.lookup('service:navi-metadata-apollo');
-    assert.equal(
-      service._buildURLPath(),
-      `${config.navi.dataSources[0].uri}/v1/graphql`,
-      'URL path is built correctly'
-    );
+    assert.equal(service._buildURLPath(), `${config.navi.dataSources[0].uri}/graphql`, 'URL path is built correctly');
   });
 });

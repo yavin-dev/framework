@@ -26,7 +26,7 @@ module('Unit | Elide Metadata Adapter', function(hooks) {
 
     const gqlQuery = print(GQLQueries.table.all).trim(); //GQL Query as string
 
-    this.server.post('https://data.naviapp.io/v1/graphql', (schema, { requestBody }) => {
+    this.server.post('https://data.naviapp.io/graphql', (schema, { requestBody }) => {
       const { operationName, variables, query } = JSON.parse(requestBody);
 
       assert.notOk(operationName, 'No operation name specified');
@@ -47,7 +47,7 @@ module('Unit | Elide Metadata Adapter', function(hooks) {
 
     const gqlQuery = print(GQLQueries.table.single).trim(); //GQL Query as string
 
-    this.server.post('https://data.naviapp.io/v1/graphql', (schema, { requestBody }) => {
+    this.server.post('https://data.naviapp.io/graphql', (schema, { requestBody }) => {
       const { operationName, variables, query } = JSON.parse(requestBody);
 
       assert.notOk(operationName, 'No operation name specified');
