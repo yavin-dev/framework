@@ -70,7 +70,7 @@ class NaviColumnConfigItemComponent extends Component {
 
   /**
    * Stores element reference after render.
-   * If the column was just added, open the config and scroll to element
+   * If the column was last added, opens the config and scrolls to the element
    * @param element - element inserted
    */
   @action
@@ -78,13 +78,65 @@ class NaviColumnConfigItemComponent extends Component {
     this.componentElement = element;
 
     if (this.isLastAdded) {
-      if (this.column.type !== 'dimension') {
-        set(this, 'isColumnConfigOpen', true);
-      }
+      this.onOpenColumn(this.column);
       next(() => {
-        element.parentElement.scrollTop = element.offsetTop - element.parentElement.offsetTop;
+        this.scrollToElement();
+        this.highlightElement();
       });
     }
+  }
+
+  /**
+   * Opens and highlights the column (if it is not already open) and scrolls to it.
+   * This is done for the date time column since it is not re-rendered when clicked via the dimension selector.
+   * For other columns, it is performed only once when inserted (in `setupElement`).
+   */
+  @action
+  onUpdateLastAdded() {
+    const { column, isOpen, isLastAdded, onOpenColumn } = this;
+
+    if (isLastAdded && column.name === 'dateTime') {
+      if (!isOpen) {
+        onOpenColumn(column);
+        next(this, 'highlightElement');
+      }
+
+      next(this, 'scrollToElement');
+    }
+  }
+
+  /**
+   * Opens the column
+   */
+  @action
+  openColumn() {
+    const { column, isOpen, onOpenColumn, componentElement } = this;
+    onOpenColumn(isOpen ? null : column);
+
+    //headers of columns with a long config might not be in the viewport
+    next(() => {
+      if (
+        componentElement.parentElement.scrollTop >
+        componentElement.offsetTop - componentElement.parentElement.offsetTop
+      ) {
+        this.scrollToElement();
+      }
+    });
+  }
+
+  /**
+   * @method scrollToElement - sets the scroll position of the column config to the current item
+   */
+  scrollToElement() {
+    this.componentElement.parentElement.scrollTop =
+      this.componentElement.offsetTop - this.componentElement.parentElement.offsetTop;
+  }
+
+  /**
+   * @method highlightElement - adds a highlighting animation to the element
+   */
+  highlightElement() {
+    this.componentElement.classList.add('navi-column-config-item--last-added');
   }
 }
 

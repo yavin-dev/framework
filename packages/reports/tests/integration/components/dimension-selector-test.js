@@ -148,7 +148,7 @@ module('Integration | Component | dimension selector', function(hooks) {
   });
 
   test('add/remove time grain', async function(assert) {
-    assert.expect(6);
+    assert.expect(5);
 
     const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
 
@@ -185,22 +185,18 @@ module('Integration | Component | dimension selector', function(hooks) {
     //enableRequestPreview feature flag on
     config.navi.FEATURES.enableRequestPreview = true;
 
+    this.set('request.logicalTable.timeGrain', 'week');
+
     //a time grain is selected
-    this.set('addTimeGrain', () => {
-      assert.ok(false, 'addTimeGrain was called when a time grain is already selected');
+    this.set('addTimeGrain', item => {
+      assert.equal(item.id, 'week', 'addTimeGrain is called with the already selected time grain');
+    });
+
+    this.set('removeTimeGrain', () => {
+      assert.ok(false, 'removeTimeGrain was called');
     });
 
     await render(TEMPLATE);
-
-    let item = await getItem('timeGrain', 'Date Time');
-
-    assert
-      .dom(item.item.querySelector('.grouped-list__item-label'))
-      .hasAttribute(
-        'aria-disabled',
-        'true',
-        'Date Time has aria-disabled="true" attribute when a time grain is already selected'
-      );
 
     await clickItem('timeGrain', 'Date Time');
 
@@ -214,18 +210,6 @@ module('Integration | Component | dimension selector', function(hooks) {
         'addTimeGrain is called with the default time grain when a time grain is not selected'
       );
     });
-
-    await render(TEMPLATE);
-
-    item = await getItem('timeGrain', 'Date Time');
-
-    assert
-      .dom(item.item.querySelector('.grouped-list__item-label'))
-      .hasAttribute(
-        'aria-disabled',
-        'false',
-        'Date Time has aria-disabled="false" attribute when a time grain is not selected'
-      );
 
     await clickItem('timeGrain', 'Date Time');
 

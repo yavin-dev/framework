@@ -213,8 +213,8 @@ export default class DimensionSelector extends Component {
     let actionHandler;
 
     if (enableRequestPreview) {
-      if (type === 'TimeGrain' && !this.selectedTimeGrain) {
-        return this.onAddTimeGrain?.(this.defaultTimeGrain);
+      if (type === 'TimeGrain') {
+        return this.onAddTimeGrain?.(this.selectedTimeGrain || this.defaultTimeGrain);
       } else if (type === 'Dimension') {
         actionHandler = 'Add';
       }

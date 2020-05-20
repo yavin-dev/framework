@@ -408,7 +408,6 @@ module('Integration | Component | navi-column-config', function(hooks) {
       'Initial columns are added'
     );
 
-    await click('.navi-column-config-item__name[title="Date Time (Day)"]'); // close date time
     await click('.navi-column-config-item__name[title="Nav Link Clicks"]'); // open metric config
     assert.dom('.navi-column-config-base__clone-icon').exists({ count: 1 }, 'Metric config has clone icon');
     assert
@@ -466,7 +465,6 @@ module('Integration | Component | navi-column-config', function(hooks) {
       'Initial columns are added'
     );
 
-    await click('.navi-column-config-item__name[title="Date Time (Day)"]'); // close date time
     await click('.navi-column-config-item__name[title="Platform Revenue"]'); // open parameterized metric config
     assert.dom('.navi-column-config-base__clone-icon').exists({ count: 1 }, 'Metric config has clone icon');
     assert
@@ -524,7 +522,6 @@ module('Integration | Component | navi-column-config', function(hooks) {
       'Initial columns are added'
     );
 
-    await click('.navi-column-config-item__name[title="Date Time (Day)"]'); // close date time
     await click('.navi-column-config-item__name[title="Browser"]'); // open dimension config
     assert.dom('.navi-column-config-base__clone-icon').exists({ count: 1 }, 'Dimension config has clone icon');
     assert
@@ -568,34 +565,23 @@ module('Integration | Component | navi-column-config', function(hooks) {
   });
 
   test('last added column', async function(assert) {
-    assert.expect(11);
+    assert.expect(6);
 
-    this.set('lastAddedColumn', { type: 'dimension', name: 'foo' });
     addItem('dimension', 'browser');
     addItem('metric', 'adClicks');
+    this.set('lastAddedColumn', { type: 'dimension', name: 'foo' });
     await render(
       hbs`<NaviColumnConfig @report={{this.report}} @lastAddedColumn={{this.lastAddedColumn}} @isOpen={{true}} />`
     );
-
     await animationsSettled();
-    assert.dom('.navi-column-config-item--last-added').doesNotExist('No column has the `last-added` class');
-    assert.dom('.navi-column-config-item--open').doesNotExist('No column is open');
+    assert.dom('.navi-column-config-item--last-added').doesNotExist('No column has the correct class');
 
     this.set('lastAddedColumn', { type: 'timeDimension', name: 'dateTime' });
-    await render(
-      hbs`<NaviColumnConfig @report={{this.report}} @lastAddedColumn={{this.lastAddedColumn}} @isOpen={{true}} />`
-    );
     await animationsSettled();
-    let elements = findAll('.navi-column-config-item');
     assert.deepEqual(
-      elements.map(el => el.classList.contains('navi-column-config-item--last-added')),
+      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--last-added')),
       [true, false, false],
       'Date time column has the correct class'
-    );
-    assert.deepEqual(
-      elements.map(el => el.classList.contains('navi-column-config-item--open')),
-      [true, false, false],
-      'Date time column is open'
     );
 
     this.set('lastAddedColumn', { type: 'dimension', name: 'browser' });
@@ -603,7 +589,6 @@ module('Integration | Component | navi-column-config', function(hooks) {
       hbs`<NaviColumnConfig @report={{this.report}} @lastAddedColumn={{this.lastAddedColumn}} @isOpen={{true}} />`
     );
     await animationsSettled();
-    assert.dom('.navi-column-config-item--open').doesNotExist('No column is open - dimensions are not open when added');
     assert.deepEqual(
       findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--last-added')),
       [false, true, false],
@@ -611,6 +596,9 @@ module('Integration | Component | navi-column-config', function(hooks) {
     );
 
     addItem('dimension', 'browser');
+    await render(
+      hbs`<NaviColumnConfig @report={{this.report}} @lastAddedColumn={{this.lastAddedColumn}} @isOpen={{true}} />`
+    );
     await animationsSettled();
     assert.deepEqual(
       findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--last-added')),
@@ -623,30 +611,75 @@ module('Integration | Component | navi-column-config', function(hooks) {
       hbs`<NaviColumnConfig @report={{this.report}} @lastAddedColumn={{this.lastAddedColumn}} @isOpen={{true}} />`
     );
     await animationsSettled();
-    elements = findAll('.navi-column-config-item');
     assert.deepEqual(
-      elements.map(el => el.classList.contains('navi-column-config-item--last-added')),
+      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--last-added')),
       [false, false, false, true],
       'Last added metric column has the correct class'
     );
-    assert.deepEqual(
-      elements.map(el => el.classList.contains('navi-column-config-item--open')),
-      [false, false, false, true],
-      'Last added metric column is open'
-    );
 
     addItem('metric', 'adClicks');
+    await render(
+      hbs`<NaviColumnConfig @report={{this.report}} @lastAddedColumn={{this.lastAddedColumn}} @isOpen={{true}} />`
+    );
     await animationsSettled();
-    elements = findAll('.navi-column-config-item');
     assert.deepEqual(
-      elements.map(el => el.classList.contains('navi-column-config-item--last-added')),
+      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--last-added')),
       [false, false, false, false, true],
       'Only last added metric column has the correct class'
     );
+  });
+
+  test('accordion', async function(assert) {
+    assert.expect(6);
+
+    await render(
+      hbs`<NaviColumnConfig @report={{this.report}} @lastAddedColumn={{this.lastAddedColumn}} @isOpen={{true}} />`
+    );
+    await animationsSettled();
+    assert
+      .dom('.navi-column-config-item--open')
+      .exists({ count: 1 }, 'Date time column is open when there are no other columns');
+
+    addItem('dimension', 'browser');
+    addItem('metric', 'adClicks');
+    this.set('lastAddedColumn', { type: 'dimension', name: 'browser' });
+    await animationsSettled();
     assert.deepEqual(
-      elements.map(el => el.classList.contains('navi-column-config-item--open')),
-      [false, false, false, true, true],
-      'Previously added metric is open as well as the last added one'
+      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--open')),
+      [false, true, false],
+      'Last added column is open'
+    );
+
+    await click('.navi-column-config-item[data-name="adClicks"] .navi-column-config-item__trigger');
+    await animationsSettled();
+    assert.deepEqual(
+      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--open')),
+      [false, false, true],
+      'Clicked metric column is open'
+    );
+
+    this.set('lastAddedColumn', { type: 'timeDimension', name: 'dateTime' });
+    await animationsSettled();
+    assert.deepEqual(
+      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--open')),
+      [true, false, false],
+      'Date column is open'
+    );
+
+    this.set('lastAddedColumn', null);
+    await animationsSettled();
+    assert.deepEqual(
+      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--open')),
+      [true, false, false],
+      'Date column is still open'
+    );
+
+    await click('.navi-column-config-item[data-name="browser"] .navi-column-config-item__trigger');
+    await animationsSettled();
+    assert.deepEqual(
+      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--open')),
+      [false, true, false],
+      'Clicked dimension column is open'
     );
   });
 
@@ -687,10 +720,10 @@ module('Integration | Component | navi-column-config', function(hooks) {
       })
     );
 
-    await render(hbs`<NaviColumnConfig 
+    await render(hbs`<NaviColumnConfig
       @report={{this.report}}
-      @lastAddedColumn={{this.lastAddedColumn}} 
-      @isOpen={{true}} 
+      @lastAddedColumn={{this.lastAddedColumn}}
+      @isOpen={{true}}
     />`);
 
     addItem('dimension', 'container', 'blockhead');

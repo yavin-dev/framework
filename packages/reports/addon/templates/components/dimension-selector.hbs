@@ -17,10 +17,9 @@
   >
     {{#if item.dateTimeDimension}}
       {{#if (feature-flag "enableRequestPreview")}}
-        <div class="grouped-list__item-container {{if this.selectedTimeGrain "grouped-list__item-container--selected grouped-list__item-container--disabled"}}">
+        <div class="grouped-list__item-container {{if this.selectedTimeGrain "grouped-list__item-container--selected"}}">
           <button class="grouped-list__item-label"
             role="button"
-            aria-disabled="{{not (is-empty this.selectedTimeGrain)}}"
             type="button"
             {{on "click" (fn this.itemClicked item)}}>
             <NaviIcon

@@ -109,18 +109,23 @@ class NaviColumnConfig extends Component {
         .slice()
         .reverse()
         .find(column => {
-          const columnName = column.type === 'timeDimension' ? 'dateTime' : column.fragment[column.type].id;
+          const columnName = column.name === 'dateTime' ? 'dateTime' : column.fragment[column.type].id;
           return column.type === lastAddedColumn.type && columnName === lastAddedColumn.name;
         });
     }
 
-    return columns.length === 1 && columns[0].type === 'timeDimension' ? columns[0] : null;
+    return null;
   }
 
   /**
    * @property {Service} metricName
    */
   @service metricName;
+
+  /**
+   * @property {Object} currentlyOpenColumn - the column that is currently open
+   */
+  currentlyOpenColumn = null;
 
   /**
    * @method getDisplayName
@@ -221,12 +226,35 @@ class NaviColumnConfig extends Component {
   }
 
   /**
-   * Stores element reference after render
+   * Opens a column
+   * @action
+   * @param {Object} column - The column to open
+   */
+  @action
+  openColumn(column) {
+    this.set('currentlyOpenColumn', column);
+  }
+
+  /**
+   * Opens the date time column when it's the only column
+   * @action
+   */
+  @action
+  openDefaultColumn() {
+    const { columns, openColumn } = this;
+    if (columns.length === 1 && columns[0].name === 'dateTime') {
+      openColumn(columns[0]);
+    }
+  }
+
+  /**
+   * Stores element reference and opens the default column after render
    * @param element - element inserted
    */
   @action
   setupElement(element) {
     this.componentElement = element;
+    this.openDefaultColumn();
   }
 
   /**

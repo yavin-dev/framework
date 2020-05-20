@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { inject as service } from '@ember/service';
@@ -17,14 +17,16 @@ export default ActionConsumer.extend({
     /**
      * @action ADD_TIME_GRAIN
      * @param {Object} route - route that has a model that contains a request property
-     * @param {String} actionType - add or remove timeGrain
-     * @param {String} timeGrain - the new timeGrain
+     * @param {Object} newTimeGrain - the new timeGrain
      */
-    [RequestActions.ADD_TIME_GRAIN](route, timeGrain) {
-      let model = route.currentModel;
-      set(model, 'request.logicalTable.timeGrain', timeGrain.id);
+    [RequestActions.ADD_TIME_GRAIN](route, newTimeGrain) {
+      const model = route.currentModel;
+      const { timeGrain } = model.request.logicalTable;
 
-      get(this, 'requestActionDispatcher').dispatch(RequestActions.DID_UPDATE_TIME_GRAIN, route, timeGrain);
+      if (timeGrain !== newTimeGrain.id) {
+        set(model, 'request.logicalTable.timeGrain', newTimeGrain.id);
+        this.requestActionDispatcher.dispatch(RequestActions.DID_UPDATE_TIME_GRAIN, route, newTimeGrain);
+      }
     },
 
     /**
@@ -33,8 +35,6 @@ export default ActionConsumer.extend({
      * when time grain is unchecked
      *
      * @param {Object} route - route that has a model that contains a request property
-     * @param {String} actionType - add or remove timeGrain
-     * @param {String} timeGrain - the new timeGrain
      */
     [RequestActions.REMOVE_TIME_GRAIN](route) {
       let model = route.currentModel,
