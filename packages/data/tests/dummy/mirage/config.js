@@ -7,8 +7,9 @@ export default function() {
 
   // Mock bard facts + metadata
   for (let dataSource of config.navi.dataSources) {
+    this.urlPrefix = dataSource.uri;
+    GraphQL.call(this);
     this.urlPrefix = `${dataSource.uri}/v1`;
     BardMeta.call(this);
-    GraphQL.call(this);
   }
 }
