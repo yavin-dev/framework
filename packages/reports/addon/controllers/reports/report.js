@@ -126,7 +126,7 @@ export default class ReportsReportController extends Controller {
    */
   @action
   updateLastAddedColumn(type, fragment) {
-    set(this, 'lastAddedColumn', !type ? null : { type, name: name === 'dateTime' ? 'dateTime' : fragment.id });
+    set(this, 'lastAddedColumn', !type ? null : { type, name: type === 'timeDimension' ? 'dateTime' : fragment.id });
   }
 
   /**
