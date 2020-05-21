@@ -51,7 +51,13 @@ const fragment = gql`
           columnTags
           columnType
           expression
-          supportedGrains
+          supportedGrains {
+            edges {
+              node {
+                grain
+              }
+            }
+          }
           timeZone {
             short
           }

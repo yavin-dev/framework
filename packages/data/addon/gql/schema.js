@@ -116,8 +116,24 @@ const schema = gql`
     columnTags: [String!]
     columnType: ColumnType
     expression: String
-    supportedGrains: [TimeGrain]
+    supportedGrains: TimeDimensionGrainConnnection
     timeZone: TimeZone
+  }
+
+  type TimeDimensionGrainConnnection {
+    edges: [TimeDimensionGrainEdge!]!
+    pageInfo: PageInfo
+  }
+
+  type TimeDimensionGrainEdge {
+    node: TimeDimensionGrain
+    cursor: String!
+  }
+
+  type TimeDimensionGrain implements Node {
+    id: DeferredID!
+    expression: String
+    grain: TimeGrain
   }
 
   type metricFunction {
