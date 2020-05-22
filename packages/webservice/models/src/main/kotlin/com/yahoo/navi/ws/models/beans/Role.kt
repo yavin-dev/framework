@@ -25,9 +25,9 @@ import javax.validation.constraints.NotBlank
 @Table(name = "navi_roles")
 @Include(rootLevel = true, type = "roles")
 @SharePermission
-@DeletePermission(expression = "nobody")
-@CreatePermission(expression = "is the same user")
-@UpdatePermission(expression = "is is the same user now")
+@DeletePermission(expression = "everybody")
+@CreatePermission(expression = "everybody")
+@UpdatePermission(expression = "nobody")
 class Role {
     @get:Id
     @get:NotBlank

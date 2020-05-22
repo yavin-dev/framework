@@ -110,7 +110,7 @@ abstract class IntegrationTest : RestAssuredSupport {
      */
     fun registerRole(role: String, user: String) {
         given()
-            .header("Role", role)
+            .header("User", user)
             .contentType("application/vnd.api+json")
             .body("""
                 {

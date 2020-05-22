@@ -82,6 +82,6 @@ class User : HasRoles {
     )
     var favoriteDashboards: Collection<Dashboard> = arrayListOf()
 
-    @get:OneToMany(mappedBy = "id", targetEntity = Role::class)
+    @get:OneToMany(targetEntity = Role::class)
     override var roles: Collection<Role> = arrayListOf()
 }

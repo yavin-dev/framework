@@ -944,36 +944,101 @@ class UserTest : IntegrationTest() {
 
     @Test
     fun roles() {
+        // register new user
         registerUser(naviUser1)
 
-        // // register admin role
-        // given()
-        //     .header("User", naviUser1)
-        //     .contentType("application/vnd.api+json")
-        //     .body("""
-        //         {
-        //             "data": {
-        //                 "type": "roles",
-        //                 "id": "$adminRole"
-        //             }
-        //         }
-        //     """.trimIndent())
-        // .When()
-        //     .post("/roles")
-        // .then()
-        //     .assertThat()
-        //     .statusCode(HttpStatus.SC_CREATED)
-        // register user role
-        // registerRole(userRole)
-
         // // user starts out with no roles
-        // given()
-        //     .header("User", naviUser1)
-        //     .contentType("application/vnd.api+json")
-        // .When()
-        //     .get("/users/$naviUser1")
-        // .then()
-        //     .assertThat()
-        //     .body("data.relationships.roles.data", empty<Any>())
+        given()
+            .header("User", naviUser1)
+            .contentType("application/vnd.api+json")
+        .When()
+            .get("/users/$naviUser1")
+        .then()
+            .assertThat()
+            .body("data.relationships.roles.data", empty<Any>())
+
+        // register admin role
+        registerRole(adminRole, naviUser1)
+        // register user role
+        registerRole(userRole, naviUser1)
+
+        // Add roles to user, user can have multiple roles
+        given()
+            .header("User", naviUser1)
+            .contentType("application/vnd.api+json")
+            .body("""
+                {
+                    "data": {
+                        "type": "users",
+                        "id": "$naviUser1",
+                        "relationships": {
+                            "roles": {
+                                "data": [
+                                    {
+                                        "type": "roles",
+                                        "id": "$adminRole"
+                                    },
+                                    {
+                                        "type": "roles",
+                                        "id": "$userRole"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            """.trimIndent())
+        .When()
+            .patch("/users/$naviUser1")
+        .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_NO_CONTENT)
+
+        // roles show up for user
+        given()
+            .header("User", naviUser1)
+        .When()
+            .get("/users/$naviUser1")
+        .then()
+            .assertThat()
+            .body("data.relationships.roles.data.id", hasItems("admin", "user"))
+
+        // can remove a role from a user
+        given()
+            .header("User", naviUser1)
+            .contentType("application/vnd.api+json")
+            .body("""
+                {
+                    "data": {
+                        "type": "users",
+                        "id": "$naviUser1",
+                        "relationships": {
+                            "roles": {
+                                "data": [
+                                    {
+                                        "type": "roles",
+                                        "id": "$adminRole"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+                """.trimIndent())
+        .When()
+            .patch("/users/$naviUser1")
+        .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_NO_CONTENT)
+
+        // user role has been removed
+        given()
+            .header("User", naviUser1)
+            .contentType("application/vnd.api+json")
+        .When()
+            .get("/users/$naviUser1")
+        .then()
+            .assertThat()
+            .body("data.relationships.roles.data.id", not(hasItems("user")))
     }
 }
