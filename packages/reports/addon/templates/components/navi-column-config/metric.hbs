@@ -1,23 +1,32 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{#each this.metricParameters as |param|}}
   <div class="navi-column-config-base__option navi-column-config-item__parameter">
-    <label for="{{this.classId}}-{{param}}" class="navi-column-config-item__parameter-label navi-column-config-base__option-label">{{capitalize param}} Type</label>
-    {{#let (get (await this.allParameters) param) as |allParams|}}
+    <label for="{{this.classId}}-{{param.id}}" class="navi-column-config-item__parameter-label navi-column-config-base__option-label">{{capitalize param.name}} Type 
+      {{#if param.description}}
+        <NaviIcon @icon="question-circle-o">
+          <EmberTooltip @side="right" @popperContainer="body" @effect="none">
+            {{param.description}}
+          </EmberTooltip>
+        </NaviIcon>
+      {{/if}}
+    </label>
+    {{#let (get (await this.allParameters) param.id) as |allParams|}}
       <PowerSelect
         @triggerClass="navi-column-config-item__parameter-trigger navi-column-config-base__option-input"
-        @triggerId="{{this.classId}}-{{param}}"
+        @triggerId="{{this.classId}}-{{param.id}}"
         @dropdownClass="navi-column-config-item__parameter-dropdown"
-        @selected={{get (await this.currentParameters) param}}
-        @searchField="description"
-        @searchPlaceholder="Search {{capitalize param}}"
+        @selected={{get (await this.currentParameters) param.id}}
+        @searchField={{if allParams.firstObject.name "name" "description"}}
+        @searchPlaceholder="Search {{capitalize param.name}}"
         @options={{allParams}}
         @onchange={{this.updateMetricParam}}
-        as | param |
+        as | arg |
       >
-        {{#if (eq (get (filter-by "description" param.description allParams) "length") 1)}}
-          {{param.description}}
+        {{! TODO: Simplify this when we normalize function arguments }}
+        {{#if (eq (get (filter-by (if arg.name "name" "description") (if arg.name arg.name arg.description) allParams) "length") 1)}}
+          {{if arg.name arg.name arg.description}}
         {{else}}
-          {{param.description}} ({{param.id}})
+          {{if arg.name arg.name arg.description}} ({{arg.id}})
         {{/if}}
       </PowerSelect>
     {{/let}}

@@ -8,6 +8,7 @@ const FunctionArguments = [
     id: 'currency',
     name: 'currency',
     valueType: 'TEXT',
+    description: undefined,
     type: 'ref',
     expression: 'dimension:displayCurrency',
     _localValues: null,
@@ -16,6 +17,7 @@ const FunctionArguments = [
   {
     id: 'type',
     name: 'type',
+    description: undefined,
     valueType: 'TEXT',
     type: 'ref',
     expression: 'self',
@@ -70,6 +72,7 @@ module('Unit | Metric Function Serializer', function(hooks) {
                 id: 'EUR'
               }
             ],
+            description: undefined,
             defaultValue: 'USD'
           }
         ]

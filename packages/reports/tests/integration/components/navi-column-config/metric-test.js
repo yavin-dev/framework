@@ -1,11 +1,12 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click, findAll, getContext } from '@ember/test-helpers';
+import { render, click, findAll, getContext, triggerEvent } from '@ember/test-helpers';
 import { A as arr } from '@ember/array';
 import { helper as buildHelper } from '@ember/component/helper';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
 import hbs from 'htmlbars-inline-precompile';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { assertTooltipContent } from 'ember-tooltips/test-support/dom';
 
 let MetadataService;
 
@@ -61,7 +62,7 @@ module('Integration | Component | navi-column-config/metric', function(hooks) {
   }
 
   test('Configuring multiple parameters', async function(assert) {
-    assert.expect(3);
+    assert.expect(6);
 
     this.column = await getMetricColumn('multipleParamMetric', {
       type: 'l',
@@ -83,6 +84,13 @@ module('Integration | Component | navi-column-config/metric', function(hooks) {
       'Mulitple parameters values are filled in with selected values'
     );
 
+    await click('.navi-column-config-item__parameter-trigger.ember-power-select-trigger');
+    assert.deepEqual(
+      findAll('.ember-power-select-option').map(el => el.textContent.trim()),
+      ['Left', 'Right', 'Middle'],
+      'Param values with name key show up correctly'
+    );
+
     await selectChoose('.navi-column-config-item__parameter', 'Right');
     await selectChoose(findAll('.navi-column-config-item__parameter')[1], 'Daily Average');
     await selectChoose(findAll('.navi-column-config-item__parameter')[2], '13-17');
@@ -94,6 +102,17 @@ module('Integration | Component | navi-column-config/metric', function(hooks) {
       ['Right', 'Daily Average', '13-17', 'Euro', 'Drams'],
       'A selected parameter can be changed and a null valued parameter can be changed'
     );
+
+    assert
+      .dom('.ember-tooltip-target')
+      .exists({ count: 1 }, 'Description tooltip shows once for the one parameter that has a description');
+
+    await triggerEvent('.ember-tooltip-target', 'mouseenter');
+
+    assertTooltipContent(assert, {
+      targetSelector: '.ember-tooltip-target',
+      contentString: 'Gives the metric power to have directionality'
+    });
   });
 
   test('Configuring null parameter', async function(assert) {
