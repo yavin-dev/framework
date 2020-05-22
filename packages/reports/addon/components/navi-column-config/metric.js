@@ -44,7 +44,7 @@ class NaviColumnConfigMetricComponent extends Component {
     if (!metric.hasParameters) {
       return [];
     }
-    return metric.arguments.map(arg => arg);
+    return metric.arguments;
   }
 
   /**
