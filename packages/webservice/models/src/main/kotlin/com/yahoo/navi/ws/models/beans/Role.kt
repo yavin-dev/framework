@@ -10,6 +10,7 @@ import com.yahoo.elide.annotation.DeletePermission
 import com.yahoo.elide.annotation.CreatePermission
 import com.yahoo.elide.annotation.UpdatePermission
 import org.hibernate.annotations.CreationTimestamp
+import org.hibernate.annotations.UpdateTimestamp
 
 import java.util.Date
 
@@ -39,7 +40,7 @@ class Role {
     @get:UpdatePermission(expression = "nobody")
     var createdOn: Date? = null
 
-    @get:CreationTimestamp
+    @get:UpdateTimestamp
     @get:Column(columnDefinition = "timestamp default current_timestamp")
     @get:Temporal(TemporalType.TIMESTAMP)
     @get:UpdatePermission(expression = "nobody")
