@@ -402,6 +402,7 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
         id: 'currency',
         name: 'currency',
         valueType: 'TEXT',
+        description: undefined,
         type: 'ref',
         expression: 'dimension:displayCurrency',
         _localValues: null,

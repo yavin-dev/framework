@@ -141,10 +141,11 @@ export default {
       parameters: {
         type: {
           type: 'enum',
+          description: 'Gives the metric power to have directionality',
           values: [
-            { id: 'l', description: 'Left' },
-            { id: 'r', description: 'Right' },
-            { id: 'm', description: 'Middle' }
+            { id: 'l', name: 'Left' },
+            { id: 'r', name: 'Right' },
+            { id: 'm', name: 'Middle' }
           ],
           defaultValue: 'l'
         },

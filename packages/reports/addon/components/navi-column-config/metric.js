@@ -44,7 +44,7 @@ class NaviColumnConfigMetricComponent extends Component {
     if (!metric.hasParameters) {
       return [];
     }
-    return metric.arguments.map(arg => arg.id);
+    return metric.arguments.map(arg => arg);
   }
 
   /**
@@ -53,14 +53,14 @@ class NaviColumnConfigMetricComponent extends Component {
   @computed('column.fragment.parameters.{}', 'allParameters')
   get currentParameters() {
     const { metricParameters, allParameters } = this;
+    const metricParameterIds = metricParameters.map(param => param.id);
     const selectedParamIds = this.column.fragment.parameters || {};
 
     return allParameters.then(vals => {
-      const selected = metricParameters.reduce((selectedParams, paramId) => {
+      const selected = metricParameterIds.reduce((selectedParams, paramId) => {
         selectedParams[paramId] = vals[paramId].find(param => param.id === selectedParamIds[paramId]);
         return selectedParams;
       }, {});
-
       return selected;
     });
   }
