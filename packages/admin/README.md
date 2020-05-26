@@ -1,6 +1,6 @@
-# navi-search
+# navi-admin
 
-Search for navi
+Admin panel for navi
 
 ## Installation
 
