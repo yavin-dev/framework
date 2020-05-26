@@ -196,9 +196,7 @@ export default class ElideMetadataSerializer extends EmberObject {
         tableId,
         source,
         tags: node.columnTags,
-        supportedGrains: node.supportedGrains.edges.map((edge: Edge<TimeDimensionGrainNode>) => {
-          return edge.node;
-        }),
+        supportedGrains: node.supportedGrains.edges.map(edge => edge.node),
         timeZone: node.timeZone,
         type: node.columnType,
         expression: node.expression
