@@ -4,3 +4,6 @@ declare module 'navi-admin/templates/*' {
   const tmpl: TemplateFactory;
   export default tmpl;
 }
+
+type Dict<T = string> = { [key: string]: T };
+type TODO<T = any> = T;

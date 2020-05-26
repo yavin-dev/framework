@@ -1,26 +1,25 @@
 {
   "name": "navi-admin",
-  "version": "0.0.0",
-  "description": "The default blueprint for ember-cli addons.",
+  "version": "0.2.0",
+  "description": "Admin panel for navi",
+  "private": true,
   "keywords": [
     "ember-addon"
   ],
-  "repository": "",
+  "repository": "https://github.com/yahoo/navi/tree/master/packages/admin",
   "license": "MIT",
-  "author": "",
+  "author": "team-navi@googlegroups.com",
   "directories": {
     "doc": "doc",
     "test": "tests"
   },
   "scripts": {
-    "build": "ember build --environment=production",
-    "lint": "npm-run-all --aggregate-output --continue-on-error --parallel lint:*",
+    "build": "ember build",
+    "lint": "npm run lint:hbs && npm run lint:js",
     "lint:hbs": "ember-template-lint .",
     "lint:js": "eslint .",
     "start": "ember serve",
-    "test": "npm-run-all lint:* test:*",
-    "test:ember": "ember test",
-    "test:ember-compatibility": "ember try:each",
+    "test": "export COVERAGE=true; ember test --test-port 0",
     "prepublishOnly": "ember ts:precompile",
     "postpublish": "ember ts:clean"
   },

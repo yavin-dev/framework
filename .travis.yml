@@ -22,6 +22,7 @@ env:
     - NODE_VERSION=12.16.0
     - JOBS=1 # See https://git.io/vdao3 for details.
   jobs:
+    - PACKAGE=navi-admin
     - PACKAGE=navi-app
     - PACKAGE=navi-core
     - PACKAGE=navi-dashboards
