@@ -29,11 +29,11 @@
             @sortByField="description"
             as | param |
           >
-            <div class="grouped-list__item-container {{if (and (get-shallow parametersChecked (concat param.param "|" param.id)) (feature-flag "enableRequestPreview")) "grouped-list__item-container--selected"}}">
+            <div class="grouped-list__item-container {{if (get-shallow parametersChecked (concat param.param "|" param.id)) "grouped-list__item-container--selected"}}">
               <button class="grouped-list__item-label" {{on "click" (fn this.paramToggled metric param)}} role="button" type="button">
                 <NaviIcon
-                  @icon={{if (and (get-shallow parametersChecked (concat param.param "|" param.id)) (not (feature-flag "enableRequestPreview"))) "minus-circle" "plus-circle"}}
-                  class="grouped-list__add-icon {{if (not (or (feature-flag "enableRequestPreview") (get-shallow parametersChecked (concat param.param "|" param.id)))) "grouped-list__add-icon--deselected"}}"
+                  @icon={{if (get-shallow parametersChecked (concat param.param "|" param.id)) "minus-circle" "plus-circle"}}
+                  class="grouped-list__add-icon {{if (not (get-shallow parametersChecked (concat param.param "|" param.id))) "grouped-list__add-icon--deselected"}}"
                 />
                   {{! TODO: Simplify this when we normalize function arguments }}
                   {{if param.name param.name param.description}} ({{param.id}})

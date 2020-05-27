@@ -38,7 +38,7 @@
         </NaviIcon>
 
         <div class="grouped-list__icon-set {{if (not (can-having metric)) "grouped-list__icon-set--no-filter"}}">
-          {{#if (get metric "hasParameters")}}
+          {{#if (and metric.hasParameters (not (feature-flag "enableRequestPreview")))}}
             <MetricConfig
               @metric={{metric}}
               @request={{@request}}
