@@ -76,7 +76,12 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
                       category: 'cat1',
                       valueType: 'DATE',
                       columnTags: ['IMPORTANT'],
-                      supportedGrains: ['day', 'week'],
+                      supportedGrains: {
+                        edges: [
+                          { node: { id: 'day', grain: 'DAY', expression: '' } },
+                          { node: { id: 'week', grain: 'WEEK', expression: '' } }
+                        ]
+                      },
                       timeZone: 'UTC',
                       columnType: 'field',
                       expression: null
@@ -289,7 +294,10 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
             tags: ['IMPORTANT'],
             type: 'field',
             expression: null,
-            supportedGrains: ['day', 'week'],
+            supportedGrains: [
+              { id: 'day', grain: 'DAY', expression: '' },
+              { id: 'week', grain: 'WEEK', expression: '' }
+            ],
             timeZone: 'UTC',
             source: 'dummy',
             tableId: 'tableA'
@@ -465,7 +473,13 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
             category: 'userDimensions',
             valueType: 'DATE',
             columnTags: ['DISPLAY'],
-            supportedGrains: ['day', 'week', 'month'],
+            supportedGrains: {
+              edges: [
+                { node: { id: 'day', grain: 'DAY', expression: '' } },
+                { node: { id: 'week', grain: 'WEEK', expression: '' } },
+                { node: { id: 'month', grain: 'MONTH', expression: '' } }
+              ]
+            },
             timeZone: {
               short: 'PST',
               long: 'Pacific Standard Time'
@@ -482,7 +496,9 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
             category: 'userDimensions',
             valueType: 'DATE',
             columnTags: ['DISPLAY'],
-            supportedGrains: ['month'],
+            supportedGrains: {
+              edges: [{ node: { id: 'month', grain: 'MONTH', expression: '' } }]
+            },
             timeZone: {
               short: 'CST',
               long: 'Central Standard Time'
@@ -504,7 +520,11 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
           category: 'userDimensions',
           valueType: 'DATE',
           tags: ['DISPLAY'],
-          supportedGrains: ['day', 'week', 'month'],
+          supportedGrains: [
+            { id: 'day', grain: 'DAY', expression: '' },
+            { id: 'week', grain: 'WEEK', expression: '' },
+            { id: 'month', grain: 'MONTH', expression: '' }
+          ],
           timeZone: {
             short: 'PST',
             long: 'Pacific Standard Time'
@@ -521,7 +541,7 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
           category: 'userDimensions',
           valueType: 'DATE',
           tags: ['DISPLAY'],
-          supportedGrains: ['month'],
+          supportedGrains: [{ id: 'month', grain: 'MONTH', expression: '' }],
           timeZone: {
             short: 'CST',
             long: 'Central Standard Time'

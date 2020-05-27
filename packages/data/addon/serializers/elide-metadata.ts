@@ -31,8 +31,13 @@ type ColumnNode = {
 type MetricNode = ColumnNode & { defaultFormat: string };
 type DimensionNode = ColumnNode;
 type TimeDimensionNode = DimensionNode & {
-  supportedGrains: string[];
+  supportedGrains: Connection<TimeDimensionGrainNode>;
   timeZone: string;
+};
+type TimeDimensionGrainNode = {
+  id: string;
+  expression: string;
+  grain: string;
 };
 type TableNode = {
   id: string;
@@ -191,7 +196,7 @@ export default class ElideMetadataSerializer extends EmberObject {
         tableId,
         source,
         tags: node.columnTags,
-        supportedGrains: node.supportedGrains,
+        supportedGrains: node.supportedGrains.edges.map(edge => edge.node),
         timeZone: node.timeZone,
         type: node.columnType,
         expression: node.expression

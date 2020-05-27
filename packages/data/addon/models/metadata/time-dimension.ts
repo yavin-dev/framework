@@ -4,14 +4,19 @@
  */
 import DimensionMetadataModel, { DimensionMetadata, DimensionMetadataPayload } from './dimension';
 
+interface TimeDimensionGrain {
+  id: string;
+  expression: string;
+  grain: string;
+}
 // Shape of public properties on model
 export interface TimeDimensionMetadata extends DimensionMetadata {
-  supportedGrains: string[];
+  supportedGrains: TimeDimensionGrain[];
   timeZone: TODO;
 }
 // Shape passed to model constructor
 export interface TimeDimensionMetadataPayload extends DimensionMetadataPayload {
-  supportedGrains: string[];
+  supportedGrains: TimeDimensionGrain[];
   timeZone: TODO;
 }
 
@@ -20,7 +25,7 @@ export default class TimeDimensionMetadataModel extends DimensionMetadataModel
   /**
    * @property {string[]} supportedGrains
    */
-  supportedGrains!: string[];
+  supportedGrains!: TimeDimensionGrain[];
 
   /**
    * @property {string} timeZone
