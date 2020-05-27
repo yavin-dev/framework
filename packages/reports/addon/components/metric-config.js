@@ -161,19 +161,12 @@ class MetricConfig extends Component {
    * @param {Object} param
    */
   @action
-  paramToggled(metric, param, { target }) {
-    const enableRequestPreview = featureFlag('enableRequestPreview');
-    const actionName = !enableRequestPreview && this.parametersChecked[`${param.param}|${param.id}`] ? 'Remove' : 'Add';
+  paramToggled(metric, param) {
+    const actionName = this.parametersChecked[`${param.param}|${param.id}`] ? 'Remove' : 'Add';
     const handler = this[`on${actionName}ParameterizedMetric`];
 
     if (handler) {
-      if (featureFlag('enableRequestPreview')) {
-        const button = target.closest('button.grouped-list__item-label');
-        throttle(this, 'doParamToggled', handler, metric, param, button, THROTTLE_TIME);
-        BlurOnAnimationEnd(target, button);
-      } else {
-        this.doParamToggled(handler, metric, param, null);
-      }
+      this.doParamToggled(handler, metric, param, null);
     }
   }
 
