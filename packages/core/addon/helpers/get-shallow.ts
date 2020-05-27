@@ -13,9 +13,7 @@
 import { helper } from '@ember/component/helper';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Params = [Dict<any>, string];
-export function getShallow(params: Params) {
-  const [obj, key] = params;
+export function getShallow([obj, key]: [Dict<any>, string]) {
   return obj[key];
 }
 
