@@ -3,7 +3,7 @@ import { findAll, visit, click, fillIn, blur, currentURL, find } from '@ember/te
 import { setupApplicationTest } from 'ember-qunit';
 import config from 'ember-get-config';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
-import { clickItem, clickMetricConfigTrigger } from 'navi-reports/test-support/report-builder';
+import { clickItem } from 'navi-reports/test-support/report-builder';
 import { setupAnimationTest, animationsSettled } from 'ember-animated/test-support';
 import { selectChoose } from 'ember-power-select/test-support';
 
@@ -176,7 +176,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
   });
 
   test('accordion behavior and highlighting last added item', async function(assert) {
-    assert.expect(42);
+    assert.expect(40);
 
     await visit('/reports/new');
     assert.deepEqual(getColumns(), ['Date Time (Day)'], 'Initially the only column is date time');
@@ -421,22 +421,6 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
     assert
       .dom('.navi-column-config-item--last-added')
       .doesNotExist('No column is highlighted after removing the parameterized metric');
-
-    //add a parameterized metric from metric config
-    const closeConfig = await clickMetricConfigTrigger('Platform Revenue');
-    await clickItem('metricConfig', 'Dollars', 'CAD');
-    await animationsSettled();
-    await closeConfig();
-    assert.deepEqual(
-      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--open')),
-      [false, false, false, false, true],
-      'Only Platform Revenue (CAD) is open'
-    );
-    assert.deepEqual(
-      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--last-added')),
-      [false, false, false, false, true],
-      'Only Platform Revenue (CAD) is highlighted'
-    );
   });
 
   test('adding, removing and changing - date time', async function(assert) {
@@ -1337,7 +1321,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
   });
 
   test('config - parameterized metric - search parameters', async function(assert) {
-    assert.expect(4);
+    assert.expect(5);
     await visit('/reports/new');
 
     await clickItem('metric', 'Platform Revenue');
@@ -1364,6 +1348,9 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
       ['Date Time (Day)', 'Platform Revenue (CAD)'],
       'Clicking the filtered option changes the metrics parameter'
     );
+
+    await click(findAll('.grouped-list__group-header').filter(el => el.textContent.includes('Revenue'))[0]);
+    assert.dom('.metric-config').doesNotExist();
   });
 
   test('Sort gets removed when metric is removed', async function(assert) {
