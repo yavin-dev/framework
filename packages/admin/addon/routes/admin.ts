@@ -6,7 +6,7 @@
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
 
-export default class Admin extends Route {
+export default class AdminRoute extends Route {
   /**
    * @property { Service } user
    */
