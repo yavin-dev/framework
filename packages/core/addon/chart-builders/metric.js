@@ -21,7 +21,7 @@ import Interval from 'navi-core/utils/classes/interval';
 import DateUtils from 'navi-core/utils/date';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 import { inject as service } from '@ember/service';
-import EmberObject, { set, getWithDefault, computed } from '@ember/object';
+import EmberObject, { set, computed } from '@ember/object';
 
 export default EmberObject.extend({
   /**
@@ -81,7 +81,7 @@ export default EmberObject.extend({
             canonicalName = canonicalizeMetric(metric);
 
           return {
-            [metricDisplayName]: getWithDefault(row, canonicalName, null)
+            [metricDisplayName]: typeof row[canonicalName] === 'number' ? row[canonicalName] : null
           }; // c3 wants `null` for empty data points
         })
       );

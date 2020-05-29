@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Logic for grouping chart data by time
@@ -17,7 +17,7 @@ import Mixin from '@ember/object/mixin';
 import moment from 'moment';
 import tooltipLayout from '../templates/chart-tooltips/date';
 import DataGroup from 'navi-core/utils/classes/data-group';
-import EmberObject, { get, set, getWithDefault, computed } from '@ember/object';
+import EmberObject, { set, computed } from '@ember/object';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 
 const API_DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss.SSS';
@@ -130,7 +130,7 @@ export const GROUP = {
  */
 const _groupDataBySeries = (data, metric, grouper) => {
   return data.reduce((map, row) => {
-    let dateTime = moment(get(row, 'dateTime'), API_DATE_FORMAT),
+    let dateTime = moment(row.dateTime, API_DATE_FORMAT),
       series = grouper.getSeries(dateTime),
       x = grouper.getXValue(dateTime);
 
@@ -138,7 +138,7 @@ const _groupDataBySeries = (data, metric, grouper) => {
       map[series] = {};
     }
 
-    map[series][x] = get(row, metric);
+    map[series][x] = row[metric];
 
     return map;
   }, {});
@@ -162,9 +162,10 @@ const _buildDataRows = (seriesMap, grouper) => {
     };
 
     // Add each series to the row
-    Object.keys(seriesMap).forEach(
-      series => (row[series] = getWithDefault(seriesMap[series], x.toString(), null)) // c3 wants `null` for empty data points
-    );
+    Object.keys(seriesMap).forEach(series => {
+      const val = seriesMap[series][x.toString()];
+      row[series] = typeof val === 'number' ? val : null; // c3 wants `null` for empty data points
+    });
 
     return row;
   };
@@ -186,8 +187,8 @@ const _buildDataRows = (seriesMap, grouper) => {
  * @returns {Object} grouper for request and config
  */
 const _getGrouper = (request, config) => {
-  let timeGrain = get(request, 'logicalTable.timeGrain'),
-    seriesTimeGrain = get(config, 'timeGrain');
+  let timeGrain = request.logicalTable.timeGrain,
+    seriesTimeGrain = config.timeGrain;
 
   return GROUP[timeGrain].by[seriesTimeGrain];
 };
@@ -242,7 +243,7 @@ export default EmberObject.extend({
     );
 
     let { timeGrain: seriesTimeGrain, metric } = config,
-      requestTimeGrain = get(request, 'logicalTable.timeGrain'),
+      requestTimeGrain = request.logicalTable.timeGrain,
       grouper = GROUP[requestTimeGrain].by[seriesTimeGrain],
       canonicalName = canonicalizeMetric(metric);
 
@@ -266,9 +267,9 @@ export default EmberObject.extend({
        * @property {Object[]} rowData - maps a response row to each series in a tooltip
        */
       rowData: computed('x', 'tooltipData', function() {
-        return get(this, 'tooltipData').map(series => {
+        return this.tooltipData.map(series => {
           // Get the full data for this combination of x + series
-          let dataForSeries = get(builder, 'byXSeries').getDataForKey(get(this, 'x') + series.name) || [];
+          let dataForSeries = builder.byXSeries.getDataForKey(this.x + series.name) || [];
 
           return dataForSeries[0];
         });
