@@ -196,7 +196,7 @@ class Table extends Component {
    */
   @computed('selectedSubtotal', 'rawData')
   get groupedData() {
-    const { selectedSubtotal: groupingColumn, rawData } = this;
+    let { selectedSubtotal: groupingColumn, rawData } = this;
 
     if (groupingColumn !== 'dateTime') {
       groupingColumn = `${groupingColumn}|id`;
