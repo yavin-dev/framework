@@ -11,7 +11,7 @@
 
 import { alias } from '@ember/object/computed';
 import Component from '@ember/component';
-import { computed, get, getWithDefault } from '@ember/object';
+import { computed } from '@ember/object';
 import { guidFor } from '@ember/object/internals';
 import { inject as service } from '@ember/service';
 import numeral from 'numeral';
@@ -150,13 +150,13 @@ export default class NaviVisualizationsGoalGaugeComponent extends Component {
   get gauge() {
     return {
       width: 20,
-      max: get(this, 'goalValue'),
-      min: get(this, 'baselineValue'),
+      max: this.goalValue,
+      min: this.baselineValue,
       label: {
         extents: value => {
           let number = this._formatNumber(value),
-            prefix = get(this, 'prefix'),
-            unit = get(this, 'unit');
+            prefix = this.prefix,
+            unit = this.unit;
           return `${prefix}${number}${unit}`;
         }
       }
@@ -191,11 +191,11 @@ export default class NaviVisualizationsGoalGaugeComponent extends Component {
   @computed('thresholdValues', 'goalValue')
   get color() {
     return {
-      pattern: get(this, 'thresholdColors'),
+      pattern: this.thresholdColors,
       threshold: {
         unit: 'value',
-        max: get(this, 'goalValue'),
-        values: get(this, 'thresholdValues')
+        max: this.goalValue,
+        values: this.thresholdValues
       }
     };
   }
@@ -219,8 +219,8 @@ export default class NaviVisualizationsGoalGaugeComponent extends Component {
   didReceiveAttrs() {
     super.didReceiveAttrs(...arguments);
 
-    const metric = canonicalizeMetric(get(this, 'config.metric'));
-    this.actualValue = get(this, `model.firstObject.response.rows.0.${metric}`);
+    const metric = canonicalizeMetric(this.config.metric);
+    this.actualValue = this.model?.firstObject?.response?.rows?.[0]?.[metric];
   }
 
   /**
@@ -249,17 +249,13 @@ export default class NaviVisualizationsGoalGaugeComponent extends Component {
    * @private
    */
   _drawTitle() {
-    let titleElm = d3.select(`.${guidFor(this)}-goal-gauge-widget text.c3-chart-arcs-title`),
-      metricTitle = get(this, 'metricTitle'),
-      goalValue = get(this, 'goalValue'),
-      actualValue = get(this, 'actualValue'),
-      baseline = get(this, 'baselineValue'),
-      number = this._formatNumber(actualValue),
-      goal = this._formatNumber(goalValue),
-      prefix = getWithDefault(this, 'prefix', ''),
-      unit = getWithDefault(this, 'unit', '');
-
-    let valueClass = actualValue > baseline ? 'pos' : 'neg';
+    const titleElm = d3.select(`.${guidFor(this)}-goal-gauge-widget text.c3-chart-arcs-title`);
+    const { metricTitle, goalValue, actualValue, baselineValue: baseline } = this;
+    const number = this._formatNumber(actualValue);
+    const goal = this._formatNumber(goalValue);
+    const prefix = this.prefix || '';
+    const unit = this.unit || '';
+    const valueClass = actualValue > baseline ? 'pos' : 'neg';
 
     //Add titles
     titleElm

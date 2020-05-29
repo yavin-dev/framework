@@ -1,43 +1,37 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
- * {{navi-cell-renderers/threshold
- *   data=row
- *   column=column
- *   request=request
- * }}
+ * <NaviCellRenderers::Threshold
+ *   @data={{this.row}}
+ *   @column={{this.column}}
+ *   @request={{this.request}}
+ * />
  */
 
 import MetricRender from 'navi-core/components/navi-cell-renderers/metric';
-import { computed, get } from '@ember/object';
+import { computed } from '@ember/object';
+import layout from '../../templates/components/navi-cell-renderers/threshold';
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
-export default MetricRender.extend({
-  /**
-   * @property {Array} classNames - list of component class names
-   */
-  classNames: ['table-cell-content', 'threshold'],
-
-  /**
-   * @property {Array} classNameBindings - Binding with component class names
-   */
-  classNameBindings: ['valueIndicator'],
-
+@templateLayout(layout)
+@tagName('')
+export default class ThresholdCellRenderer extends MetricRender {
   /**
    * @property {String} - classname binding to render the actual metric value
    */
-  valueIndicator: computed('metricValue', function() {
-    let metricValue = get(this, 'metricValue'),
-      indicator = 'neutral';
+  @computed('metricValue')
+  get valueIndicator() {
+    const metricValue = this.metricValue;
 
     if (metricValue > 0) {
-      indicator = 'strong';
+      return 'strong';
     }
     if (metricValue < 0) {
-      indicator = 'weak';
+      return 'weak';
     }
 
-    return indicator;
-  })
-});
+    return 'neutral';
+  }
+}

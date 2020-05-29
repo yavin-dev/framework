@@ -12,7 +12,7 @@
  */
 import { readOnly, alias } from '@ember/object/computed';
 import layout from '../../templates/components/navi-visualizations/table';
-import { computed, get, set, action } from '@ember/object';
+import { computed, set, action } from '@ember/object';
 import { inject as service } from '@ember/service';
 import { assign } from '@ember/polyfills';
 import { A as arr } from '@ember/array';
@@ -113,8 +113,8 @@ class Table extends Component {
    * @returns {Object} totalRow
    */
   _computeTotal(data, type) {
-    let columns = get(this, 'columns'),
-      hasPartialData = get(this, 'totalRows') > get(this, 'rowsInResponse');
+    const { columns, totalRows, rowsInResponse, selectedSubtotal } = this;
+    const hasPartialData = totalRows > rowsInResponse;
 
     let totalRow = columns.reduce((totRow, column) => {
       let { name: id } = column.attributes;
@@ -125,7 +125,7 @@ class Table extends Component {
       }
 
       //set subtotal dimension if subtotal row
-      if (id === get(this, 'selectedSubtotal') && type === 'subtotal') {
+      if (id === selectedSubtotal && type === 'subtotal') {
         let idField = `${id}|id`,
           descField = `${id}|desc`;
 
@@ -143,7 +143,7 @@ class Table extends Component {
     }, {});
 
     //add totalRow indication to meta
-    set(totalRow, '__meta__', Object.assign({}, get(totalRow, '__meta__'), { isTotalRow: true }));
+    set(totalRow, '__meta__', Object.assign({}, totalRow.__meta__, { isTotalRow: true }));
 
     //if partial data add indication to meta
     if (hasPartialData) {
@@ -161,19 +161,16 @@ class Table extends Component {
    * @returns {Array} data with subtotal rows
    */
   _computeSubtotals() {
-    let groupingColumn = get(this, 'selectedSubtotal');
+    const { selectedSubtotal: groupingColumn, rawData, groupedData } = this;
 
     if (!groupingColumn) {
-      return get(this, 'rawData');
+      return rawData;
     }
 
-    let groupedData = get(this, 'groupedData'),
-      dataWithSubtotals = Object.keys(groupedData).reduce((arr, group) => {
-        let subTotalRow = this._computeTotal(groupedData[group], 'subtotal');
-        return [...arr, ...groupedData[group], subTotalRow];
-      }, []);
-
-    return dataWithSubtotals;
+    return Object.keys(groupedData).reduce((arr, group) => {
+      const subTotalRow = this._computeTotal(groupedData[group], 'subtotal');
+      return [...arr, ...groupedData[group], subTotalRow];
+    }, []);
   }
 
   /**
@@ -199,14 +196,13 @@ class Table extends Component {
    */
   @computed('selectedSubtotal', 'rawData')
   get groupedData() {
-    let groupingColumn = get(this, 'selectedSubtotal'),
-      rawData = get(this, 'rawData');
+    let { selectedSubtotal: groupingColumn, rawData } = this;
 
     if (groupingColumn !== 'dateTime') {
       groupingColumn = `${groupingColumn}|id`;
     }
 
-    return groupBy(rawData, row => get(row, groupingColumn));
+    return groupBy(rawData, row => row[groupingColumn]);
   }
 
   /**
@@ -215,9 +211,9 @@ class Table extends Component {
   @computed('rawData', 'columns', 'options.showTotals.{grandTotal,subtotal}')
   get tableData() {
     let tableData = this._computeSubtotals(),
-      rawData = get(this, 'rawData');
+      rawData = this.rawData;
 
-    if (!get(this, 'options.showTotals.grandTotal')) {
+    if (!this.options?.showTotals?.grandTotal) {
       return tableData;
     }
 
@@ -236,9 +232,9 @@ class Table extends Component {
       return arr([]);
     }
 
-    let requestSorts = arr(get(request, 'sort')),
-      requestMetricsAliasMap = arr(get(request, 'metrics')).reduce((map, metric) => {
-        let alias = get(metric, 'parameters.as');
+    const requestSorts = arr(request.sort),
+      requestMetricsAliasMap = arr(request.metrics).reduce((map, metric) => {
+        const alias = metric.parameters?.as;
         if (alias) {
           map[alias] = metric;
         }
@@ -246,7 +242,7 @@ class Table extends Component {
       }, {});
 
     return requestSorts.map(sort => {
-      let metric = requestMetricsAliasMap[get(sort, 'metric')];
+      const metric = requestMetricsAliasMap[sort.metric];
       sort.metric = metric ? canonicalizeMetric(metric) : sort.metric;
       return sort;
     });
@@ -257,8 +253,8 @@ class Table extends Component {
    */
   @computed('options.columns', 'request.{sort,dataSource}')
   get columns() {
-    let sorts = this._mapAlias(get(this, 'request')),
-      columns = cloneDeep(get(this, 'options.columns') || []);
+    const sorts = this._mapAlias(this.request),
+      columns = cloneDeep(this.options?.columns || []);
 
     return columns.map(column => {
       let { attributes, type } = column,
@@ -268,9 +264,9 @@ class Table extends Component {
         sortDirection;
 
       if (column.type === 'dateTime') {
-        sortDirection = get(sort, 'direction') || 'desc';
+        sortDirection = sort.direction || 'desc';
       } else if (/^metric|threshold$/.test(type)) {
-        sortDirection = get(sort, 'direction') || 'none';
+        sortDirection = sort.direction || 'none';
       }
 
       return assign({}, column, {
@@ -285,7 +281,7 @@ class Table extends Component {
    */
   @computed('isEditing')
   get isEditingMode() {
-    return featureFlag('enableTableEditing') && get(this, 'isEditing');
+    return featureFlag('enableTableEditing') && this.isEditing;
   }
 
   /**
@@ -301,7 +297,7 @@ class Table extends Component {
    */
   @computed('isVerticalCollectionEnabled')
   get tableRenderer() {
-    return `table-renderer${get(this, 'isVerticalCollectionEnabled') ? '-vertical-collection' : ''}`;
+    return `table-renderer${this.isVerticalCollectionEnabled ? '-vertical-collection' : ''}`;
   }
 
   /**
@@ -320,7 +316,7 @@ class Table extends Component {
    */
   @computed('isVerticalCollectionEnabled')
   get estimateHeight() {
-    return get(this, 'isVerticalCollectionEnabled') ? 32 : 30;
+    return this.isVerticalCollectionEnabled ? 32 : 30;
   }
 
   /**
