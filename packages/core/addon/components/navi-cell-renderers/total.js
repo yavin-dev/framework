@@ -1,16 +1,12 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
 import Component from '@ember/component';
 import layout from '../../templates/components/navi-cell-renderers/total';
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
-export default Component.extend({
-  layout,
-
-  /**
-   * @property {Array} classNames
-   */
-  classNames: ['table-cell--total', 'table-cell-content']
-});
+@templateLayout(layout)
+@tagName('')
+export default class TotalCellRenderer extends Component {}

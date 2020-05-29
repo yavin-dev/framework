@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -11,14 +11,14 @@
  */
 import Table from './table';
 
-export default Table.extend({
+export default class TablePrint extends Table {
   /**
    * @property {Array} classNames - list of component class names
    */
-  classNames: ['table-widget', 'table-widget--print'],
+  classNames = ['table-widget', 'table-widget--print'];
 
   /*
    * @property {Boolean} occlusion - whether or not to incremental render
    */
-  occlusion: false
-});
+  occlusion = false;
+}
