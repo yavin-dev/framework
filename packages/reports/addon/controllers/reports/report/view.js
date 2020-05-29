@@ -7,6 +7,12 @@ import { isEqual, omit } from 'lodash-es';
 import Controller, { inject as controller } from '@ember/controller';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 
+/**
+ * @param {Object} request
+ * @returns {Array} canonicalized metrics sorted alphabetically
+ */
+const sortedMetrics = request => (request.metrics || []).map(metric => canonicalizeMetric(metric)).sort();
+
 export default class ReportViewController extends Controller {
   /*
    * @property {Controller} reportController
@@ -20,14 +26,13 @@ export default class ReportViewController extends Controller {
   get hasRequestRun() {
     const { modifiedRequest } = this.reportController;
     const { request } = this.model;
-    const metricsKeys = request => (request.metrics || []).map(metric => canonicalizeMetric(metric)).sort();
 
     if (!modifiedRequest) {
       //no changes have been made yet
       return true;
     }
 
-    if (!isEqual(metricsKeys(request), metricsKeys(modifiedRequest))) {
+    if (!isEqual(sortedMetrics(request), sortedMetrics(modifiedRequest))) {
       //changes in metrics outside of order
       return false;
     }
