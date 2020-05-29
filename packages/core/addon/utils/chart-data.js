@@ -120,7 +120,7 @@ export function buildDimensionSeriesValues(request, rows) {
     let values = {},
       dimensionLabels = [];
     requestDimensions.forEach(dimension => {
-      let id = row[getDimensionGroupingField([row], dimension)],
+      const id = row[getDimensionGroupingField([row], dimension)],
         desc = row[`${dimension}|desc`];
 
       values[dimension] = id;

@@ -168,7 +168,7 @@ class Table extends Component {
     }
 
     return Object.keys(groupedData).reduce((arr, group) => {
-      let subTotalRow = this._computeTotal(groupedData[group], 'subtotal');
+      const subTotalRow = this._computeTotal(groupedData[group], 'subtotal');
       return [...arr, ...groupedData[group], subTotalRow];
     }, []);
   }
@@ -196,7 +196,7 @@ class Table extends Component {
    */
   @computed('selectedSubtotal', 'rawData')
   get groupedData() {
-    let { selectedSubtotal: groupingColumn, rawData } = this;
+    const { selectedSubtotal: groupingColumn, rawData } = this;
 
     if (groupingColumn !== 'dateTime') {
       groupingColumn = `${groupingColumn}|id`;
@@ -232,9 +232,9 @@ class Table extends Component {
       return arr([]);
     }
 
-    let requestSorts = arr(request.sort),
+    const requestSorts = arr(request.sort),
       requestMetricsAliasMap = arr(request.metrics).reduce((map, metric) => {
-        let alias = metric.parameters?.as;
+        const alias = metric.parameters?.as;
         if (alias) {
           map[alias] = metric;
         }
@@ -242,7 +242,7 @@ class Table extends Component {
       }, {});
 
     return requestSorts.map(sort => {
-      let metric = requestMetricsAliasMap[sort.metric];
+      const metric = requestMetricsAliasMap[sort.metric];
       sort.metric = metric ? canonicalizeMetric(metric) : sort.metric;
       return sort;
     });
@@ -253,7 +253,7 @@ class Table extends Component {
    */
   @computed('options.columns', 'request.{sort,dataSource}')
   get columns() {
-    let sorts = this._mapAlias(this.request),
+    const sorts = this._mapAlias(this.request),
       columns = cloneDeep(this.options?.columns || []);
 
     return columns.map(column => {

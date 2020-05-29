@@ -112,7 +112,7 @@ class NaviVisualizationsPieChartComponent extends Component.extend(hasChartBuild
    */
   @computed('model.firstObject', 'seriesConfig')
   get dataConfig() {
-    let response = this.model?.firstObject?.response,
+    const response = this.model?.firstObject?.response,
       request = this.request,
       seriesConfig = this.seriesConfig,
       seriesData = this.builder.buildData(response.rows, seriesConfig, request);
@@ -160,7 +160,7 @@ class NaviVisualizationsPieChartComponent extends Component.extend(hasChartBuild
 
           rowData: computed('x', 'requiredToolTipData', function() {
             // Get the full data for this combination of x + series
-            let series = this.requiredToolTipData,
+            const series = this.requiredToolTipData,
               dataForSeries = byXSeries.getDataForKey(this.x + series.id) || [];
 
             return dataForSeries[0];

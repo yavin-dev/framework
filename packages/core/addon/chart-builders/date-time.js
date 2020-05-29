@@ -187,7 +187,7 @@ const _buildDataRows = (seriesMap, grouper) => {
  * @returns {Object} grouper for request and config
  */
 const _getGrouper = (request, config) => {
-  let timeGrain = request.logicalTable.timeGrain,
+  const { timeGrain } = request.logicalTable,
     seriesTimeGrain = config.timeGrain;
 
   return GROUP[timeGrain].by[seriesTimeGrain];
