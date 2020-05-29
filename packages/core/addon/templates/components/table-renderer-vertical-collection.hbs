@@ -56,7 +56,7 @@
                   @placeholder={{default-column-name column @request.dataSource}}
                   @focus-out={{fn @updateColumnDisplayName column}}
                 />
-                {{#if (or (eq column.type "metric") (eq column.type "threshold"))}}
+                {{#if (eq column.type "metric")}}
                   <NumberFormatDropdown 
                     class="table-header-cell__number-format-dropdown" 
                     @column={{column}} 

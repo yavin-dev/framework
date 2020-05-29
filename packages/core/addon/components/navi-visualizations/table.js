@@ -134,7 +134,7 @@ class Table extends Component {
       }
 
       //if metric and not partial data compute totals
-      if (column.type === 'metric' && !hasPartialData) {
+      if (column.type === 'metric' && column.canAggregateSubtotal !== false && !hasPartialData) {
         let metricName = canonicalizeColumnAttributes(column.attributes);
         totRow[metricName] = this.computeColumnTotal(data, metricName, totRow, column, type);
       }
@@ -263,9 +263,9 @@ class Table extends Component {
         hasCustomDisplayName = this._hasCustomDisplayName(column, this.request.dataSource),
         sortDirection;
 
-      if (column.type === 'dateTime') {
+      if (type === 'dateTime') {
         sortDirection = sort.direction || 'desc';
-      } else if (/^metric|threshold$/.test(type)) {
+      } else if (type === 'metric') {
         sortDirection = sort.direction || 'none';
       }
 
@@ -351,7 +351,7 @@ class Table extends Component {
    */
   @action
   headerClicked({ attributes, type, sortDirection }) {
-    if (/^threshold|dateTime|metric$/.test(type)) {
+    if (/^dateTime|metric$/.test(type)) {
       let direction = this._getNextSortDirection(type, sortDirection),
         //TODO Fetch from report action dispatcher service
         actionType = direction === 'none' ? 'removeSort' : 'upsertSort',

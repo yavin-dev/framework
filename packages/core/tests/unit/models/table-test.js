@@ -28,7 +28,7 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
   test('valid and invalid table fragment', function(assert) {
     assert.expect(12);
 
-    let dimsMetricsAndThresholds = [
+    let metricsAndDims = [
         [
           { dimension: 'd1' },
           {
@@ -36,11 +36,10 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
             fields: ['id', 'desc']
           }
         ],
-        [{ metric: 'm1' }, { metric: 'm2' }],
-        [{ metric: 't1' }]
+        [{ metric: 'm1' }, { metric: 'm2' }]
       ],
-      request = buildTestRequest(...dimsMetricsAndThresholds, 'day'),
-      allTimeGrainRequest = buildTestRequest(...dimsMetricsAndThresholds, 'all'),
+      request = buildTestRequest(...metricsAndDims, 'day'),
+      allTimeGrainRequest = buildTestRequest(...metricsAndDims, 'all'),
       model = run(() => this.owner.lookup('service:store').createRecord('all-the-fragments'));
 
     run(() => {
@@ -49,8 +48,7 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
         'table',
         buildTestConfig(
           [{ dimension: 'd1' }, { dimension: 'd2', field: 'id' }, { dimension: 'd2', field: 'desc' }],
-          [{ metric: 'm1' }, { metric: 'm2' }],
-          [{ metric: 't1' }]
+          [{ metric: 'm1' }, { metric: 'm2' }]
         )
       );
     });
@@ -72,7 +70,6 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
         buildTestConfig(
           [{ dimension: 'd1' }, { dimension: 'd2', field: 'id' }, { dimension: 'd2', field: 'desc' }],
           [{ metric: 'm1' }, { metric: 'm2' }],
-          [{ metric: 't1' }],
           false //Don't include a date time column in the config
         )
       );
@@ -92,11 +89,7 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
       set(
         model,
         'table',
-        buildTestConfig(
-          [{ dimension: 'd1' }, { dimension: 'foo' }],
-          [{ metric: 'm1' }, { metric: 'm2' }],
-          [{ metric: 't1' }]
-        )
+        buildTestConfig([{ dimension: 'd1' }, { dimension: 'foo' }], [{ metric: 'm1' }, { metric: 'm2' }])
       );
     });
 
@@ -111,8 +104,7 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
             { dimension: 'd2', field: 'id' },
             { dimension: 'd2', field: 'desc' }
           ],
-          [{ metric: 'm1' }, { metric: 'm2' }],
-          [{ metric: 't1' }]
+          [{ metric: 'm1' }, { metric: 'm2' }]
         )
       );
     });
@@ -123,11 +115,7 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
       set(
         model,
         'table',
-        buildTestConfig(
-          [{ dimension: 'd1' }, { dimension: 'd2' }],
-          [{ metric: 'm1' }, { metric: 'm2' }],
-          [{ metric: 't1' }]
-        )
+        buildTestConfig([{ dimension: 'd1' }, { dimension: 'd2' }], [{ metric: 'm1' }, { metric: 'm2' }])
       );
     });
 
@@ -137,11 +125,7 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
       set(
         model,
         'table',
-        buildTestConfig(
-          [{ dimension: 'd1' }, { dimension: 'd2', field: 'id' }],
-          [{ metric: 'm1' }, { metric: 'm2' }],
-          [{ metric: 't1' }]
-        )
+        buildTestConfig([{ dimension: 'd1' }, { dimension: 'd2', field: 'id' }], [{ metric: 'm1' }, { metric: 'm2' }])
       );
     });
 
@@ -156,8 +140,7 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
         'table',
         buildTestConfig(
           [{ dimension: 'd1' }, { dimension: 'd2', field: 'id' }, { dimension: 'd2', field: 'foo' }],
-          [{ metric: 'm1' }, { metric: 'm2' }],
-          [{ metric: 't1' }]
+          [{ metric: 'm1' }, { metric: 'm2' }]
         )
       );
     });
@@ -173,8 +156,7 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
         'table',
         buildTestConfig(
           [{ dimension: 'd1' }, { dimension: 'd2', field: 'id' }, { dimension: 'd2', field: 'desc' }],
-          [{ metric: 'm1' }],
-          [{ metric: 't1' }]
+          [{ metric: 'm1' }]
         )
       );
     });
@@ -187,8 +169,7 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
         'table',
         buildTestConfig(
           [{ dimension: 'd1' }, { dimension: 'd2', field: 'id' }, { dimension: 'd2', field: 'foo' }],
-          [{ metric: 'm1' }, { metric: 'foo' }],
-          [{ metric: 't1' }]
+          [{ metric: 'm1' }, { metric: 'foo' }]
         )
       );
     });
@@ -201,8 +182,7 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
         'table',
         buildTestConfig(
           [{ dimension: 'd1' }, { dimension: 'd2', field: 'id' }, { dimension: 'd2', field: 'foo' }],
-          [{ metric: 'm1' }, { metric: 'm2' }, { metric: 'm3' }],
-          [{ metric: 't1' }]
+          [{ metric: 'm1' }, { metric: 'm2' }, { metric: 'm3' }]
         )
       );
     });
@@ -214,7 +194,7 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
   });
 
   test('rebuildConfig', function(assert) {
-    assert.expect(5);
+    assert.expect(4);
 
     let table = run(() => run(() => this.owner.lookup('service:store').createRecord('all-the-fragments')).get('table')),
       request1 = buildTestRequest(
@@ -226,7 +206,6 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
           }
         ],
         [{ metric: 'm1' }, { metric: 'm2' }],
-        [],
         'month'
       ),
       config1 = run(() => table.rebuildConfig(request1).toJSON());
@@ -248,12 +227,22 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
             { displayName: 'D2 (desc)', attributes: { name: 'd2', field: 'desc' }, type: 'dimension' },
             {
               displayName: 'M1',
-              attributes: { name: 'm1', parameters: {}, format: '' },
+              attributes: {
+                canAggregateSubtotal: true,
+                name: 'm1',
+                parameters: {},
+                format: ''
+              },
               type: 'metric'
             },
             {
               displayName: 'M2',
-              attributes: { name: 'm2', parameters: {}, format: '' },
+              attributes: {
+                canAggregateSubtotal: true,
+                name: 'm2',
+                parameters: {},
+                format: ''
+              },
               type: 'metric'
             }
           ]
@@ -279,12 +268,22 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
             },
             {
               displayName: 'M1',
-              attributes: { name: 'm1', parameters: {}, format: '' },
+              attributes: {
+                canAggregateSubtotal: true,
+                name: 'm1',
+                parameters: {},
+                format: ''
+              },
               type: 'metric'
             },
             {
               displayName: 'M2',
-              attributes: { name: 'm2', parameters: {}, format: '' },
+              attributes: {
+                canAggregateSubtotal: true,
+                name: 'm2',
+                parameters: {},
+                format: ''
+              },
               type: 'metric'
             }
           ]
@@ -293,10 +292,9 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
       'Dimension column is not required'
     );
 
-    let request3 = buildTestRequest([], [{ metric: 'm1' }, { metric: 'm2' }]);
-    request3.metrics[0].metric.category = 'Clicks,Trend';
-
-    let config3 = run(() => table.rebuildConfig(request3).toJSON());
+    config2.metadata.columns[1].displayName = 'M4';
+    config2.metadata.columns[2].format = 'number';
+    let config3 = run(() => table.rebuildConfig(request2).toJSON());
 
     assert.deepEqual(
       config3,
@@ -311,45 +309,23 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
               type: 'dateTime'
             },
             {
-              displayName: 'M1',
-              attributes: { name: 'm1', parameters: {}, format: '' },
-              type: 'threshold'
-            },
-            {
-              displayName: 'M2',
-              attributes: { name: 'm2', parameters: {}, format: '' },
-              type: 'metric'
-            }
-          ]
-        }
-      },
-      'Trend metrics use threshold column'
-    );
-
-    config3.metadata.columns[1].displayName = 'M4';
-    config3.metadata.columns[2].format = 'number';
-    let config4 = run(() => table.rebuildConfig(request3).toJSON());
-
-    assert.deepEqual(
-      config4,
-      {
-        type: 'table',
-        version: 1,
-        metadata: {
-          columns: [
-            {
-              displayName: 'Date',
-              attributes: { name: 'dateTime' },
-              type: 'dateTime'
-            },
-            {
               displayName: 'M4',
-              attributes: { name: 'm1', parameters: {}, format: '' },
-              type: 'threshold'
+              attributes: {
+                canAggregateSubtotal: true,
+                name: 'm1',
+                parameters: {},
+                format: ''
+              },
+              type: 'metric'
             },
             {
               displayName: 'M2',
-              attributes: { name: 'm2', parameters: {}, format: '' },
+              attributes: {
+                canAggregateSubtotal: true,
+                name: 'm2',
+                parameters: {},
+                format: ''
+              },
               type: 'metric'
             }
           ]
@@ -367,7 +343,6 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
         }
       ],
       [{ metric: 'm1' }, { metric: 'm2' }],
-      [],
       'all'
     );
 
@@ -385,12 +360,22 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
             { displayName: 'D2 (desc)', attributes: { name: 'd2', field: 'desc' }, type: 'dimension' },
             {
               displayName: 'M4',
-              attributes: { name: 'm1', parameters: {}, format: '' },
+              attributes: {
+                canAggregateSubtotal: true,
+                name: 'm1',
+                parameters: {},
+                format: ''
+              },
               type: 'metric'
             },
             {
               displayName: 'M2',
-              attributes: { name: 'm2', parameters: {}, format: '' },
+              attributes: {
+                canAggregateSubtotal: true,
+                name: 'm2',
+                parameters: {},
+                format: ''
+              },
               type: 'metric'
             }
           ]
@@ -437,17 +422,32 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
             },
             {
               displayName: 'M1 (paramVal1)',
-              attributes: { name: 'm1', parameters: { param1: 'paramVal1' }, format: '' },
+              attributes: {
+                canAggregateSubtotal: true,
+                name: 'm1',
+                parameters: { param1: 'paramVal1' },
+                format: ''
+              },
               type: 'metric'
             },
             {
               displayName: 'M1 (paramVal2)',
-              attributes: { name: 'm1', parameters: { param1: 'paramVal2' }, format: '' },
+              attributes: {
+                canAggregateSubtotal: true,
+                name: 'm1',
+                parameters: { param1: 'paramVal2' },
+                format: ''
+              },
               type: 'metric'
             },
             {
               displayName: 'M2',
-              attributes: { name: 'm2', parameters: {}, format: '' },
+              attributes: {
+                canAggregateSubtotal: true,
+                name: 'm2',
+                parameters: {},
+                format: ''
+              },
               type: 'metric'
             }
           ]
@@ -471,17 +471,32 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
             },
             {
               displayName: 'M1 (paramVal1)',
-              attributes: { name: 'm1', parameters: { param1: 'paramVal1' }, format: '' },
+              attributes: {
+                canAggregateSubtotal: true,
+                name: 'm1',
+                parameters: { param1: 'paramVal1' },
+                format: ''
+              },
               type: 'metric'
             },
             {
               displayName: 'M1 (paramVal2)',
-              attributes: { name: 'm1', parameters: { param1: 'paramVal2' }, format: '' },
+              attributes: {
+                canAggregateSubtotal: true,
+                name: 'm1',
+                parameters: { param1: 'paramVal2' },
+                format: ''
+              },
               type: 'metric'
             },
             {
               displayName: 'M2',
-              attributes: { name: 'm2', parameters: {}, format: '' },
+              attributes: {
+                canAggregateSubtotal: true,
+                name: 'm2',
+                parameters: {},
+                format: ''
+              },
               type: 'metric'
             }
           ]
@@ -513,21 +528,14 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
           name: 'M'
         }
       },
-      thresholdColumn = {
-        type: 'threshold',
-        attributes: {
-          name: 'T'
-        }
-      },
-      rows = [dimensionColumn, dimensionColumnWithField, metricColumn, thresholdColumn];
+      rows = [dimensionColumn, dimensionColumnWithField, metricColumn];
 
     assert.deepEqual(
       indexColumnById(rows),
       {
         D1: dimensionColumn,
         'D2(desc)': dimensionColumnWithField,
-        M: metricColumn,
-        T: thresholdColumn
+        M: metricColumn
       },
       'Should return object having canonical ids as keys, columns as values'
     );
@@ -541,22 +549,21 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
    * @param {Boolean} includeDateTime - should include DateTime column
    * @returns {Object} config object
    */
-  function buildTestConfig(dimensions = [], metrics = [], thresholds = [], includeDateTime = true) {
+  function buildTestConfig(dimensions = [], metrics = [], includeDateTime = true) {
     let columns = [
       ...metrics.map(m => {
         let name = get(m, 'metric'),
           parameters = get(m, 'parameters') || {},
           valueType = isPresent(parameters) && get(parameters, 'currency') ? 'money' : 'number';
         return {
-          attributes: { name, parameters },
+          attributes: {
+            canAggregateSubtotal: true,
+            name,
+            parameters
+          },
           type: 'metric',
           valueType
         };
-      }),
-      ...thresholds.map(t => {
-        let name = get(t, 'metric'),
-          parameters = get(t, 'parameters') || {};
-        return { attributes: { name, parameters }, type: 'threshold' };
       }),
       ...dimensions.map(({ dimension, field }) => ({
         attributes: { name: dimension, field },
@@ -585,9 +592,9 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
    * @param {Array} thresholds - array of thresholds
    * @returns {Object} request object
    */
-  function buildTestRequest(dimensions = [], metrics = [], thresholds = [], timeGrain = 'day') {
+  function buildTestRequest(dimensions = [], metrics = [], timeGrain = 'day') {
     return {
-      metrics: [...metrics, ...thresholds].map(m => {
+      metrics: [...metrics].map(m => {
         let metricName = get(m, 'metric'),
           parameters = get(m, 'parameters') || {},
           canonicalName = canonicalizeMetric({ metric: metricName, parameters });
