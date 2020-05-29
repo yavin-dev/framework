@@ -78,7 +78,7 @@ class RequestV2Test : IntegrationTest() {
         |    }
         |  ],
         |  "table": "certifiedAudience",
-        |  "sort": [
+        |  "sorts": [
         |    {
         |      "field": "dateTime",
         |      "parameters": {},
@@ -177,10 +177,10 @@ class RequestV2Test : IntegrationTest() {
                 .body("data.attributes.request.columns[3].type", equalTo("metric"))
                 .body("data.attributes.request.columns[3]", not(hasKey("alias")))
 
-                .body("data.attributes.request.sort.size()", Is(1))
-                .body("data.attributes.request.sort[0].field", equalTo("dateTime"))
-                .body("data.attributes.request.sort[0].parameters", matchesJsonMap("{}"))
-                .body("data.attributes.request.sort[0].direction", equalTo("desc"))
+                .body("data.attributes.request.sorts.size()", Is(1))
+                .body("data.attributes.request.sorts[0].field", equalTo("dateTime"))
+                .body("data.attributes.request.sorts[0].parameters", matchesJsonMap("{}"))
+                .body("data.attributes.request.sorts[0].direction", equalTo("desc"))
     }
 
     @Test
@@ -331,9 +331,9 @@ class RequestV2Test : IntegrationTest() {
                 .body("data.attributes.requests[0].columns[3].type", equalTo("metric"))
                 .body("data.attributes.requests[0].columns[3]", not(hasKey("alias")))
 
-                .body("data.attributes.requests[0].sort.size()", Is(1))
-                .body("data.attributes.requests[0].sort[0].field", equalTo("dateTime"))
-                .body("data.attributes.requests[0].sort[0].parameters", matchesJsonMap("{}"))
-                .body("data.attributes.requests[0].sort[0].direction", equalTo("desc"))
+                .body("data.attributes.requests[0].sorts.size()", Is(1))
+                .body("data.attributes.requests[0].sorts[0].field", equalTo("dateTime"))
+                .body("data.attributes.requests[0].sorts[0].parameters", matchesJsonMap("{}"))
+                .body("data.attributes.requests[0].sorts[0].direction", equalTo("desc"))
     }
 }

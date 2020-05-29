@@ -17,7 +17,7 @@ data class RequestV2(
     var filters: Array<Filter>,
     var columns: Array<Column>,
     var table: String,
-    var sort: Array<Sort>,
+    var sorts: Array<Sort>,
     var limit: Int?,
     var dataSource: String?,
     val requestVersion: String
