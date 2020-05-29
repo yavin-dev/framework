@@ -169,7 +169,7 @@ export default class LineChart extends Component.extend(hasChartBuilders) {
    */
   @computed('options')
   get seriesConfig() {
-    let optionsWithDefault = merge({}, DEFAULT_OPTIONS, this.options);
+    const optionsWithDefault = merge({}, DEFAULT_OPTIONS, this.options);
 
     return optionsWithDefault.axis.y.series;
   }
@@ -282,7 +282,7 @@ export default class LineChart extends Component.extend(hasChartBuilders) {
   @computed('model.[]')
   get dataSelectionConfig() {
     // model is an array, and object at index 1 is insights data promise
-    let insights = this.model.objectAt(1);
+    const insights = this.model.objectAt(1);
     return insights ? { dataSelection: insights } : {};
   }
 
