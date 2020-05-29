@@ -1,28 +1,43 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { computed } from '@ember/object';
-import { isEqual } from 'lodash-es';
+import { isEqual, omit } from 'lodash-es';
 import Controller, { inject as controller } from '@ember/controller';
+import { canonicalizeMetric } from 'navi-data/utils/metric';
 
-export default Controller.extend({
+export default class ReportViewController extends Controller {
   /*
    * @property {Controller} reportController
    */
-  reportController: controller('reports.report'),
+  @controller('reports.report') reportController;
 
   /*
    * @property {Boolean} hasRequestRun
    */
-  hasRequestRun: computed('reportController.modifiedRequest', 'model.request', function() {
-    const modifiedRequest = this.get('reportController.modifiedRequest');
+  @computed('reportController.modifiedRequest', 'model.request')
+  get hasRequestRun() {
+    const { modifiedRequest } = this.reportController;
+    const { request } = this.model;
+    const metricsKeys = request => (request.metrics || []).map(metric => canonicalizeMetric(metric)).sort();
 
     if (!modifiedRequest) {
-      // no changes have been made yet
+      //no changes have been made yet
       return true;
     }
 
-    return isEqual(modifiedRequest, this.model.get('request'));
-  })
-});
+    if (!isEqual(metricsKeys(request), metricsKeys(modifiedRequest))) {
+      //changes in metrics outside of order
+      return false;
+    }
+
+    if (!isEqual(omit(modifiedRequest, 'metrics'), omit(request, 'metrics'))) {
+      //changes in request outside of metrics
+      return false;
+    }
+
+    //no changes with the exception of order of metrics
+    return true;
+  }
+}
