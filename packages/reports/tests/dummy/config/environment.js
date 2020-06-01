@@ -49,8 +49,7 @@ module.exports = function(environment) {
         enabledNotifyIfData: true,
         enableContains: true,
         enableTableEditing: true,
-        dateDimensionFilter: true,
-        enableRequestPreview: true
+        dateDimensionFilter: true
       }
     }
   };

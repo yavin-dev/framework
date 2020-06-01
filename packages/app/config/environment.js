@@ -29,8 +29,7 @@ module.exports = function(environment) {
       FEATURES: {
         enableDashboardFilters: true,
         enableMultipleExport: false,
-        enableTableEditing: true,
-        enableRequestPreview: true
+        enableTableEditing: true
       }
     }
   };
