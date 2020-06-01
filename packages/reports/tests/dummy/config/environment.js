@@ -50,7 +50,7 @@ module.exports = function(environment) {
         enableContains: true,
         enableTableEditing: true,
         dateDimensionFilter: true,
-        enableRequestPreview: false
+        enableRequestPreview: true
       }
     }
   };

@@ -5,6 +5,7 @@
 
 .navi-column-config-item {
   border-bottom: 1px solid @denali-gray-300;
+  font-size: @font-size-base;
   margin-left: 15px;
   z-index: 2;
 
@@ -31,7 +32,6 @@
     display: flex;
     flex: 1;
     justify-content: space-between;
-    min-height: 40px;
     min-width: 0;
     padding-left: 5px;
 
@@ -45,7 +45,7 @@
   &__name {
     font-family: @font-family-sans-serif;
     font-size: @font-size-base;
-    margin: 10px 0;
+    margin: 8px 0;
     overflow: hidden;
     text-align: left;
     text-overflow: ellipsis;
@@ -102,7 +102,7 @@
   &__remove-icon {
     display: none;
     flex-shrink: 0;
-    font-size: @font-size-mid-base;
+    font-size: @font-size-base;
     padding: 0;
     width: 14px;
     text-align: center;
@@ -111,7 +111,6 @@
   &--open {
     .navi-column-config-item__name {
       font-weight: bold;
-      font-family: @font-family-thin;
     }
 
     .navi-column-config-item__header {
@@ -146,7 +145,7 @@
     &-dropdown.ember-power-select-dropdown {
       border: 1px solid @navi-gray-300;
       font-family: @font-family-sans-serif;
-      font-size: @font-size-mid-base;
+      font-size: @font-size-base;
 
       .ember-power-select-search-input {
         border: none;
