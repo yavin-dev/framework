@@ -2167,8 +2167,14 @@ module('Acceptance | Navi Report', function(hooks) {
   });
 
   test('adding metrics to reordered table keeps order', async function(assert) {
-    assert.expect(2);
+    assert.expect(3);
     await visit('/reports/2');
+
+    assert.deepEqual(
+      findAll('.table-header-row-vc--view .table-header-cell__title').map(el => el.innerText.trim()),
+      ['Date', 'Property', 'Ad Clicks', 'Nav Clicks'],
+      'The headers are ordered correctly'
+    );
 
     await reorder(
       'mouse',

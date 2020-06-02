@@ -37,7 +37,7 @@ export default class ReportViewController extends Controller {
       return false;
     }
 
-    if (!isEqual(omit(request 'metrics'), omit(modifiedRequest,, 'metrics'))) {
+    if (!isEqual(omit(request, 'metrics'), omit(modifiedRequest, 'metrics'))) {
       //changes in request outside of metrics
       return false;
     }
