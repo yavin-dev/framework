@@ -114,6 +114,7 @@ module('Unit | Component | table', function(hooks) {
       {
         attributes: { name: 'totalPageViewsWoW', parameters: {} },
         type: 'metric',
+        canAggregateSubtotal: false,
         displayName: 'Total Page Views WoW'
       }
     ]
@@ -209,7 +210,6 @@ module('Unit | Component | table', function(hooks) {
         __meta__: {
           isTotalRow: true
         },
-        totalPageViewsWoW: 0,
         uniqueIdentifier: 356140444
       },
       'table data has the total row appended when the flag in the options is set'
@@ -230,7 +230,6 @@ module('Unit | Component | table', function(hooks) {
           __meta__: {
             isTotalRow: true
           },
-          totalPageViewsWoW: 0,
           uniqueIdentifier: 172933788
         },
         {
@@ -243,7 +242,6 @@ module('Unit | Component | table', function(hooks) {
           __meta__: {
             isTotalRow: true
           },
-          totalPageViewsWoW: 0,
           uniqueIdentifier: 183206656
         }
       ],
@@ -265,7 +263,6 @@ module('Unit | Component | table', function(hooks) {
           __meta__: {
             isTotalRow: true
           },
-          totalPageViewsWoW: 0,
           uniqueIdentifier: 172933788
         },
         {
@@ -278,7 +275,6 @@ module('Unit | Component | table', function(hooks) {
           __meta__: {
             isTotalRow: true
           },
-          totalPageViewsWoW: 0,
           uniqueIdentifier: 183206656
         },
         {
@@ -286,7 +282,6 @@ module('Unit | Component | table', function(hooks) {
           __meta__: {
             isTotalRow: true
           },
-          totalPageViewsWoW: 0,
           uniqueIdentifier: 356140444
         }
       ],
@@ -316,7 +311,6 @@ module('Unit | Component | table', function(hooks) {
           __meta__: {
             isTotalRow: true
           },
-          totalPageViewsWoW: 0,
           uniqueIdentifier: 172933788
         },
         {
@@ -329,7 +323,6 @@ module('Unit | Component | table', function(hooks) {
           __meta__: {
             isTotalRow: true
           },
-          totalPageViewsWoW: 0,
           uniqueIdentifier: 183206656
         }
       ],
@@ -343,7 +336,6 @@ module('Unit | Component | table', function(hooks) {
         __meta__: {
           isTotalRow: true
         },
-        totalPageViewsWoW: 0,
         uniqueIdentifier: 356140444
       },
       'compute total returns a total row object for the rows passed in'
@@ -383,7 +375,6 @@ module('Unit | Component | table', function(hooks) {
           __meta__: {
             isTotalRow: true
           },
-          totalPageViewsWoW: 0,
           uniqueIdentifier: 172933788 + 1
         },
         {
@@ -396,7 +387,6 @@ module('Unit | Component | table', function(hooks) {
           __meta__: {
             isTotalRow: true
           },
-          totalPageViewsWoW: 0,
           uniqueIdentifier: 183206656 + 1
         }
       ],
@@ -410,7 +400,6 @@ module('Unit | Component | table', function(hooks) {
         __meta__: {
           isTotalRow: true
         },
-        totalPageViewsWoW: 0,
         uniqueIdentifier: 356140444 - 2
       },
       'compute total returns a total row object for the rows passed in based on the overriding method'
