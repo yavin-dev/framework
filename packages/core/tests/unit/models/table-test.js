@@ -594,7 +594,7 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
    */
   function buildTestRequest(dimensions = [], metrics = [], timeGrain = 'day') {
     return {
-      metrics: [...metrics].map(m => {
+      metrics: metrics.map(m => {
         let metricName = get(m, 'metric'),
           parameters = get(m, 'parameters') || {},
           canonicalName = canonicalizeMetric({ metric: metricName, parameters });
