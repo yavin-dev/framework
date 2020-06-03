@@ -4,6 +4,8 @@
  */
 
 import BaseMetadataTransform from './base-metadata-transform';
+import { isPresent } from '@ember/utils';
+import config from 'ember-get-config';
 
 export default BaseMetadataTransform.extend({
   /**
@@ -24,7 +26,7 @@ export default BaseMetadataTransform.extend({
   deserialize(serialized) {
     let namespace = null;
 
-    if (serialized.includes('.')) {
+    if (isPresent(config.navi.dataSources) && serialized.includes('.')) {
       const splitName = serialized.split('.');
       namespace = splitName.shift();
       serialized = splitName.join('.');
