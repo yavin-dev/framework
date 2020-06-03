@@ -25,7 +25,9 @@ export default BaseMetadataTransform.extend({
     let namespace = null;
 
     if (serialized.includes('.')) {
-      [namespace, serialized] = serialized.split('.');
+      const splitName = serialized.split('.');
+      namespace = splitName.shift();
+      serialized = splitName.join('.');
     }
 
     // Lookup dimension id in time-dimensions if not found

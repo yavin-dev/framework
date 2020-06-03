@@ -30,8 +30,8 @@ export default DS.Transform.extend({
 
     if (serialized.includes('.')) {
       const splitName = serialized.split('.');
-      namespace = splitName[0];
-      serialized = splitName[1];
+      namespace = splitName.shift();
+      serialized = splitName.join('.');
     }
 
     return this.metadataService.getById(this.type, serialized, namespace);
