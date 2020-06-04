@@ -4,6 +4,7 @@
  */
 package com.yahoo.navi.ws.models.beans.fragments.request.v2
 
+import com.yahoo.navi.ws.models.beans.enums.ColumnType
 import org.hibernate.annotations.Parameter
 import org.hibernate.annotations.Type
 
@@ -12,11 +13,13 @@ data class Sort(
     @get: Type(type = "com.yahoo.navi.ws.models.types.JsonType", parameters = [
         Parameter(name = "class", value = "kotlin.collections.HashMap")
     ]) var parameters: Map<String, String>,
+    var type: ColumnType?,
     var direction: String
 ) {
     constructor() : this(
             "",
             emptyMap(),
+            null,
             ""
     )
 }
