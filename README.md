@@ -2,7 +2,7 @@
 
 Navi is a production quality analytics reporting UI with _out of the box_ support for [Fili](http://fili.io/).
 
-[![Build Status](https://travis-ci.org/yahoo/navi.svg?branch=master)](https://travis-ci.org/yahoo/navi)
+[![Build Status](https://travis-ci.org/yahoo/navi.svg?branch=master)](https://travis-ci.com/github/yahoo/navi)
 ![npm (custom registry)](https://img.shields.io/npm/v/navi-app/latest)
 ![npm (custom registry)](https://img.shields.io/npm/v/navi-app/canary)
 
