@@ -107,7 +107,7 @@ module('Unit - Utils - Metrics Utils', function() {
   });
 
   test('parse metric name into object', function(assert) {
-    assert.expect(6);
+    assert.expect(7);
 
     let metricString = 'base(param=paramVal)';
 
@@ -132,6 +132,16 @@ module('Unit - Utils - Metrics Utils', function() {
         parameters: { param1: 'paramVal1', param2: 'paramVal2' }
       },
       'Parser correctly constructs a metric object with multiple parameters'
+    );
+
+    metricString = 'base(param1=paramVal1, param2=paramVal2)';
+    assert.deepEqual(
+      parseMetricName(metricString),
+      {
+        metric: 'base',
+        parameters: { param1: 'paramVal1', param2: 'paramVal2' }
+      },
+      'Parser correctly constructs a metric object with multiple parameters even with a space'
     );
 
     metricString = '';

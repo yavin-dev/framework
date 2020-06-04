@@ -137,7 +137,7 @@ export function parseMetricName(canonicalName: string): MetricObject {
     parameters = paramStr
       .split(',')
       .map(paramEntry => paramEntry.split('='))
-      .reduce((obj, [key, val]) => Object.assign({}, obj, { [key]: val }), {});
+      .reduce((obj, [key, val]) => Object.assign({}, obj, { [key.trim()]: val }), {});
   }
 
   // validation
