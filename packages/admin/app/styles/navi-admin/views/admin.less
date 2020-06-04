@@ -1,0 +1,23 @@
+/**
+ * Copyright 2020, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
+
+@top-bar-color: #1a2d48;
+
+.navi-admin {
+  display: flex;
+  flex-direction: column;
+
+  &__navbar {
+    background: @top-bar-color;
+  }
+
+  &__content {
+    display: flex;
+
+    &-tab {
+      min-height: 100vh;
+    }
+  }
+}

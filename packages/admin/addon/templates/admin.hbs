@@ -1,2 +1,25 @@
 {{! Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. }}
-{{outlet}}
+<div class="navi-admin">
+    <DenaliNavbar class="navi-admin__navbar" @isResponsive={{true}} as |Nav|>
+        <Nav.Left as |Left|>
+            <Left.Icon @icon="menu-dialpad" />
+            <Left.Logo @src="/assets/img/navi-graph.svg" />
+        </Nav.Left>
+        <Nav.Right as |Right|>
+            <Right.Icon @icon="notification" />
+            <Right.Icon @icon="user-profile-circle" />
+        </Nav.Right>
+    </DenaliNavbar>
+    <div class="navi-admin__content">
+        <DenaliTabs class="navi-admin__content-tab" @alignment="vertical" as |Tabs|>
+            {{#each this.tabOptions as |tabItem|}}
+                <Tabs.Tab class="navi-admin__content-tab-item">
+                    <LinkTo @route={{tabItem.route}}>{{tabItem.title}}</LinkTo>
+                </Tabs.Tab>
+            {{/each}}
+        </DenaliTabs>
+        <div class="navi-admin__content">
+            {{outlet}}
+        </div>
+    </div>
+</div>
