@@ -2,7 +2,7 @@
 <div class="navi-admin">
     <DenaliNavbar class="navi-admin__navbar" @isResponsive={{true}} as |Nav|>
         <Nav.Left as |Left|>
-            <Left.Icon @icon="menu-dialpad" />
+            <Left.Icon @icon="menu-dialpad" {{on "click" (toggle "isTabExpanded" this)}} />
             <Left.Logo @src="/assets/img/navi-graph.svg" />
         </Nav.Left>
         <Nav.Right as |Right|>
@@ -11,13 +11,15 @@
         </Nav.Right>
     </DenaliNavbar>
     <div class="navi-admin__content">
-        <DenaliTabs class="navi-admin__content-tab" @alignment="vertical" as |Tabs|>
-            {{#each this.tabOptions as |tabItem|}}
-                <Tabs.Tab class="navi-admin__content-tab-item">
-                    <LinkTo @route={{tabItem.route}}>{{tabItem.title}}</LinkTo>
-                </Tabs.Tab>
-            {{/each}}
-        </DenaliTabs>
+        {{#if this.isTabExpanded}}
+            <DenaliTabs class="navi-admin__content-tab" @alignment="vertical" as |Tabs|>
+                {{#each this.tabOptions as |tabItem|}}
+                    <Tabs.Tab class="navi-admin__content-tab-item">
+                        <LinkTo @route={{tabItem.route}}>{{tabItem.title}}</LinkTo>
+                    </Tabs.Tab>
+                {{/each}}
+            </DenaliTabs>
+        {{/if}}
         <div class="navi-admin__content">
             {{outlet}}
         </div>

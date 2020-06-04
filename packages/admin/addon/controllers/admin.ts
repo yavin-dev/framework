@@ -15,6 +15,7 @@ const ADMIN_TAB_OPTIONS = [
 
 export default class Admin extends Controller {
   @tracked tabOptions = ADMIN_TAB_OPTIONS;
+  @tracked isTabExpanded = true;
 }
 
 // DO NOT DELETE: this is how TypeScript knows how to look up your controllers.
