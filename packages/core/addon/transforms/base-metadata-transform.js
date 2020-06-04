@@ -4,6 +4,8 @@
  */
 
 import { inject as service } from '@ember/service';
+import { isPresent } from '@ember/utils';
+import config from 'ember-get-config';
 import DS from 'ember-data';
 
 export default DS.Transform.extend({
@@ -28,10 +30,10 @@ export default DS.Transform.extend({
   deserialize(serialized) {
     let namespace = null;
 
-    if (serialized.includes('.')) {
+    if (isPresent(config.navi.dataSources) && serialized.includes('.')) {
       const splitName = serialized.split('.');
-      namespace = splitName[0];
-      serialized = splitName[1];
+      namespace = splitName.shift();
+      serialized = splitName.join('.');
     }
 
     return this.metadataService.getById(this.type, serialized, namespace);
