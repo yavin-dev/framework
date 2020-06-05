@@ -6,6 +6,9 @@
 import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 
+/**
+ * @constant ADMIN_TAB_OPTIONS
+ */
 const ADMIN_TAB_OPTIONS = [
   {
     title: 'Manage Users',
@@ -14,8 +17,15 @@ const ADMIN_TAB_OPTIONS = [
 ];
 
 export default class Admin extends Controller {
+  /**
+   * @property {Array} tabOptions
+   */
   @tracked tabOptions = ADMIN_TAB_OPTIONS;
-  @tracked isTabExpanded = true;
+
+  /**
+   * @property {boolean} isTabExpanded
+   */
+  @tracked isTabExpanded: boolean = true;
 }
 
 // DO NOT DELETE: this is how TypeScript knows how to look up your controllers.
