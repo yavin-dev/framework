@@ -16,7 +16,7 @@ const ADMIN_TAB_OPTIONS = [
   }
 ];
 
-export default class Admin extends Controller {
+export default class AdminController extends Controller {
   /**
    * @property {Array} tabOptions
    */
