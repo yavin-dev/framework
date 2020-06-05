@@ -75,7 +75,7 @@ module('Unit | Consumer | report table visualization', function(hooks) {
         attributes: { name: 'b' }
       },
       {
-        type: 'threshold',
+        type: 'metric',
         attributes: { name: 'a' }
       }
     ];

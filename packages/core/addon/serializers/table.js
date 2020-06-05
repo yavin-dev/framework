@@ -34,10 +34,10 @@ function parseStringField(field) {
  */
 function transformFieldToAttributes(type, field) {
   if (typeof field === 'string') {
-    return ['metric', 'threshold'].includes(type) ? parseStringField(field) : { name: field };
+    return type === 'metric' ? parseStringField(field) : { name: field };
   }
 
-  return Object.assign({}, { name: field[type === 'threshold' ? 'metric' : type] }, omit(field, [type, 'metric']));
+  return Object.assign({}, { name: field[type] }, omit(field, [type, 'metric']));
 }
 
 export default VisualizationSerializer.extend({

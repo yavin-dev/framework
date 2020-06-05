@@ -36,12 +36,12 @@ module('Unit | Serializer | table', function(hooks) {
             },
             {
               attributes: { name: 'revenue', parameters: { currency: 'EUR' } },
-              type: 'threshold',
+              type: 'metric',
               displayName: 'Revenue (EUR)'
             },
             {
               field: 'revenue(currency=USD)',
-              type: 'threshold',
+              type: 'metric',
               displayName: 'Revenue (USD)',
               format: ''
             },
@@ -92,12 +92,12 @@ module('Unit | Serializer | table', function(hooks) {
                 },
                 {
                   attributes: { name: 'revenue', parameters: { currency: 'EUR' } },
-                  type: 'threshold',
+                  type: 'metric',
                   displayName: 'Revenue (EUR)'
                 },
                 {
                   attributes: { name: 'revenue', parameters: { currency: 'USD' }, format: '' },
-                  type: 'threshold',
+                  type: 'metric',
                   displayName: 'Revenue (USD)'
                 },
                 {

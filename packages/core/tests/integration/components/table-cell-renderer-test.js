@@ -55,23 +55,5 @@ module('Integration | Component | table cell renderer', function(hooks) {
 
     assert.dom('.table-cell-content').hasText('05/12/2012', 'renders date-time value');
     assert.dom('.table-cell-content').hasClass('date-time', 'renders using date-time cell-formatter');
-
-    this.set('column', {
-      attributes: { name: 'foo', parameters: {} },
-      type: 'threshold'
-    });
-
-    this.set('data', {
-      foo: 12
-    });
-
-    this.set('request', {
-      logicalTable: {
-        timeGrain: 'day'
-      }
-    });
-
-    assert.dom('.table-cell-content').hasText('12', 'renders threshold value');
-    assert.dom('.table-cell-content').hasClass('threshold', 'renders using threshold cell-formatter');
   });
 });
