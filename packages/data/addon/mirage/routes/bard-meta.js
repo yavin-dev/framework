@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import { faker } from 'ember-cli-mirage';
+import faker from 'faker';
 
 //metadata
 import tableModels from '../fixtures/bard-meta-tables';
