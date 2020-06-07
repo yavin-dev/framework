@@ -33,7 +33,7 @@ module('Acceptance | print dashboard', function(hooks) {
     );
 
     assert.dom('.goal-gauge-widget').isVisible('Goal gauge shows up');
-    assert.dom('.c3-chart-arcs-title .value-title').hasText('571', 'Goal gauge shows correct value');
+    assert.dom('.c3-chart-arcs-title .value-title').hasText('570.53', 'Goal gauge shows correct value');
     assert.dom('.c3-chart-arcs-title .metric-title').hasText('Ad Clicks', 'Goal gauge shows correct value');
 
     assert.dom('.line-chart-widget').isVisible('Line chart shows up');

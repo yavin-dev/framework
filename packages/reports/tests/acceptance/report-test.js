@@ -2342,6 +2342,6 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.dom('.number-format-selector__radio-money input').isChecked('The money input is selected');
 
     await click('.number-format-dropdown');
-    assert.dom(navClicksCell()).hasText('$718', 'The metric is re-rendered in the money format');
+    assert.dom(navClicksCell()).hasText('$717.78', 'The metric is re-rendered in the money format');
   });
 });

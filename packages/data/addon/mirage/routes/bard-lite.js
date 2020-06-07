@@ -5,7 +5,8 @@
 
 /* global requirejs */
 
-import { faker, Response } from 'ember-cli-mirage';
+import faker from 'faker';
+import { Response } from 'ember-cli-mirage';
 import moment from 'moment';
 import { parseFilters, parseHavings, parseMetrics } from './bard-lite-parsers';
 
