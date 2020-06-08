@@ -3,7 +3,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { blur, render, fillIn, triggerKeyEvent, focus } from '@ember/test-helpers';
 import { hbs } from 'ember-cli-htmlbars';
-import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { setupMirage } from 'ember-cli-mirage/test-support';
 import { set } from '@ember/object';
 
 module('Integration | Component | navi-search-bar', function(hooks) {

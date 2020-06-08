@@ -1,7 +1,7 @@
 import { findAll, currentURL, visit } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
-import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { setupMirage } from 'ember-cli-mirage/test-support';
 import { getContext } from '@ember/test-helpers';
 
 module('Acceptance | Add New Widget', function(hooks) {

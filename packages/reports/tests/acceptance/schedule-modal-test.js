@@ -5,7 +5,7 @@ import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import $ from 'jquery';
 import Mirage from 'ember-cli-mirage';
-import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { setupMirage } from 'ember-cli-mirage/test-support';
 import Ember from 'ember';
 
 module('Acceptance | Navi Report Schedule Modal', function(hooks) {

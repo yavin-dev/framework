@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
-import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { setupMirage } from 'ember-cli-mirage/test-support';
 import { click, currentURL, find, visit } from '@ember/test-helpers';
 import { linkContains } from 'navi-core/test-support/contains-helpers';
 import { selectChoose } from 'ember-power-select/test-support';

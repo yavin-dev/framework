@@ -4,7 +4,7 @@ import { helper as buildHelper } from '@ember/component/helper';
 import Component from '@ember/component';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { setupMirage } from 'ember-cli-mirage/test-support';
 import { merge } from 'lodash-es';
 
 module('Unit | Component | table', function(hooks) {

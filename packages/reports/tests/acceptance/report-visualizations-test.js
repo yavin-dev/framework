@@ -3,7 +3,7 @@ import { module, test } from 'qunit';
 import { selectChoose, selectSearch } from 'ember-power-select/test-support';
 import $ from 'jquery';
 import { setupApplicationTest } from 'ember-qunit';
-import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { setupMirage } from 'ember-cli-mirage/test-support';
 import { clickItemFilter, clickItem, clickMetricConfigTrigger } from 'navi-reports/test-support/report-builder';
 
 module('Acceptance | navi-report - report visualizations', function(hooks) {

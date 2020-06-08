@@ -2,7 +2,7 @@ import { find, click, fillIn, currentURL, currentRouteName, findAll, blur, visit
 import { module, test } from 'qunit';
 import config from 'ember-get-config';
 import { setupApplicationTest } from 'ember-qunit';
-import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { setupMirage } from 'ember-cli-mirage/test-support';
 import { Response } from 'ember-cli-mirage';
 import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 import $ from 'jquery';

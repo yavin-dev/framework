@@ -3,7 +3,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import $ from 'jquery';
 import { render, click, findAll, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { setupMirage } from 'ember-cli-mirage/test-support';
 import { assertTooltipRendered, assertTooltipNotRendered, assertTooltipContent } from 'ember-tooltips/test-support';
 import config from 'ember-get-config';
 import {

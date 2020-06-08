@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 //@ts-ignore
-import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { setupMirage } from 'ember-cli-mirage/test-support';
 import { TestContext } from 'ember-test-helpers';
 import ElideMetadataService from 'navi-data/services/elide-metadata';
 import TableMetadataModel, { TableMetadata } from 'navi-data/models/metadata/table';

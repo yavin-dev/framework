@@ -4,7 +4,7 @@ import moment from 'moment';
 import DateUtils from 'navi-core/utils/date';
 import Interval from 'navi-core/utils/classes/interval';
 import Duration from 'navi-core/utils/classes/duration';
-import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { setupMirage } from 'ember-cli-mirage/test-support';
 import { run } from '@ember/runloop';
 
 let Store;

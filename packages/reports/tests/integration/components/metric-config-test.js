@@ -4,7 +4,7 @@ import { render, settled, click, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 import { set } from '@ember/object';
-import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { setupMirage } from 'ember-cli-mirage/test-support';
 import RSVP, { reject } from 'rsvp';
 import { A as arr } from '@ember/array';
 import {

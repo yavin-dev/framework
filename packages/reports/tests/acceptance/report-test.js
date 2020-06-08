@@ -10,7 +10,7 @@ import { setupApplicationTest } from 'ember-qunit';
 import reorder from '../helpers/reorder';
 import config from 'ember-get-config';
 import { Response } from 'ember-cli-mirage';
-import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { setupMirage } from 'ember-cli-mirage/test-support';
 import moment from 'moment';
 import {
   clickItem,

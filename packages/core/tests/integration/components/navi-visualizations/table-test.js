@@ -7,7 +7,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, settled, click, find, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import $ from 'jquery';
-import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { setupMirage } from 'ember-cli-mirage/test-support';
 
 const TEMPLATE = hbs`
   <div style="width: 800px; height: 800px; display: flex;">

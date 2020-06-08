@@ -2,7 +2,7 @@ import { A } from '@ember/array';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, settled } from '@ember/test-helpers';
-import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { setupMirage } from 'ember-cli-mirage/test-support';
 import hbs from 'htmlbars-inline-precompile';
 import Interval from 'navi-core/utils/classes/interval';
 

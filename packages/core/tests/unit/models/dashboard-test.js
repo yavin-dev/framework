@@ -1,7 +1,7 @@
 import { module, test, skip } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { run } from '@ember/runloop';
-import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { setupMirage } from 'ember-cli-mirage/test-support';
 
 let Store;
 
