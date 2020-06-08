@@ -5,7 +5,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import config from 'ember-get-config';
-import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { setupMirage } from 'ember-cli-mirage/test-support';
 import { get } from '@ember/object';
 
 module('Integration | Component | navi dashboard', function(hooks) {

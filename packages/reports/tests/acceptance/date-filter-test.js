@@ -3,7 +3,7 @@ import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 import $ from 'jquery';
-import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { setupMirage } from 'ember-cli-mirage/test-support';
 import { clickItem, clickItemFilter } from 'navi-reports/test-support/report-builder';
 import { selectChoose } from 'ember-power-select/test-support';
 

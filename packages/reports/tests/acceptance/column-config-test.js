@@ -2,7 +2,7 @@ import { module, test, skip } from 'qunit';
 import { findAll, visit, click, fillIn, blur, currentURL, find } from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
 import config from 'ember-get-config';
-import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { setupMirage } from 'ember-cli-mirage/test-support';
 import { clickItem } from 'navi-reports/test-support/report-builder';
 import { setupAnimationTest, animationsSettled } from 'ember-animated/test-support';
 import { selectChoose } from 'ember-power-select/test-support';

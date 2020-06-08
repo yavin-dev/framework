@@ -5,7 +5,7 @@ import { A as arr } from '@ember/array';
 import { helper as buildHelper } from '@ember/component/helper';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
 import hbs from 'htmlbars-inline-precompile';
-import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { setupMirage } from 'ember-cli-mirage/test-support';
 import { assertTooltipContent } from 'ember-tooltips/test-support/dom';
 
 let MetadataService;

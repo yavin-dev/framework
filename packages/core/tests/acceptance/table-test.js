@@ -2,7 +2,7 @@ import { click, fillIn, findAll, blur, visit } from '@ember/test-helpers';
 import { module, test, skip } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import config from 'ember-get-config';
-import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { setupMirage } from 'ember-cli-mirage/test-support';
 import { reorder } from 'ember-sortable/test-support/helpers';
 
 module('Acceptance | table', function(hooks) {

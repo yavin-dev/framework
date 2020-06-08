@@ -4,7 +4,7 @@ import { setupApplicationTest } from 'ember-qunit';
 import { clickItem, clickItemFilter, getAllSelected } from 'navi-reports/test-support/report-builder';
 import { selectChoose } from 'ember-power-select/test-support';
 import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
-import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { setupMirage } from 'ember-cli-mirage/test-support';
 import config from 'ember-get-config';
 
 module('Acceptance | multi-datasource report builder', function(hooks) {
