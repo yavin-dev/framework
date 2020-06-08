@@ -1,27 +1,13 @@
 {{! Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. }}
 <div class="navi-admin">
-    <DenaliNavbar class="navi-admin__navbar" @isResponsive={{true}} as |Nav|>
-        <Nav.Left as |Left|>
-            <Left.Icon @icon="menu-dialpad" {{on "click" (toggle "isTabExpanded" this)}} />
-            <Left.Logo @src="/assets/img/navi-graph.svg" />
-        </Nav.Left>
-        <Nav.Right as |Right|>
-            <Right.Icon @icon="notification" />
-            <Right.Icon @icon="user-profile-circle" />
-        </Nav.Right>
-    </DenaliNavbar>
+    <DenaliTabs class="navi-admin__tab" @alignment="vertical" as |Tabs|>
+        {{#each this.tabOptions as |tabItem|}}
+            <Tabs.LinkToTab class="navi-admin__tab-item" @route={{tabItem.route}}>
+                {{tabItem.title}}
+            </Tabs.LinkToTab>
+        {{/each}}
+    </DenaliTabs>
     <div class="navi-admin__content">
-        {{#if this.isTabExpanded}}
-            <DenaliTabs class="navi-admin__content-tab" @alignment="vertical" as |Tabs|>
-                {{#each this.tabOptions as |tabItem|}}
-                    <Tabs.LinkToTab class="navi-admin__content-tab-item" @route={{tabItem.route}}>
-                        {{tabItem.title}}
-                    </Tabs.LinkToTab>
-                {{/each}}
-            </DenaliTabs>
-        {{/if}}
-        <div class="navi-admin__content-route">
-            {{outlet}}
-        </div>
+        {{outlet}}
     </div>
 </div>
