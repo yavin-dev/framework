@@ -12,13 +12,13 @@
     </DenaliNavbar>
     <div class="navi-admin__content">
         {{#if this.isTabExpanded}}
-        <DenaliTabs class="navi-admin__content-tab" @alignment="vertical" as |Tabs|>
-            {{#each this.tabOptions as |tabItem|}}
-                <Tabs.LinkToTab class="navi-admin__content-tab-item" @route={{tabItem.route}}>
-                    {{tabItem.title}}
-                </Tabs.LinkToTab>
-            {{/each}}
-        </DenaliTabs>
+            <DenaliTabs class="navi-admin__content-tab" @alignment="vertical" as |Tabs|>
+                {{#each this.tabOptions as |tabItem|}}
+                    <Tabs.LinkToTab class="navi-admin__content-tab-item" @route={{tabItem.route}}>
+                        {{tabItem.title}}
+                    </Tabs.LinkToTab>
+                {{/each}}
+            </DenaliTabs>
         {{/if}}
         <div class="navi-admin__content-route">
             {{outlet}}

@@ -25,7 +25,7 @@ export default class AdminController extends Controller {
   /**
    * @property {boolean} isTabExpanded
    */
-  @tracked isTabExpanded: boolean = true;
+  @tracked isTabExpanded = true;
 }
 
 // DO NOT DELETE: this is how TypeScript knows how to look up your controllers.
