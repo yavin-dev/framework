@@ -6,7 +6,7 @@ import JSONSerializer from '@ember-data/serializer/json';
 import { isEmpty } from 'lodash-es';
 import { inject as service } from '@ember/service';
 
-export default class RequestV2Serializer extends JSONSerializer {
+export default class RequestSerializer extends JSONSerializer {
   /**
    * @property {Service} store
    */
@@ -69,7 +69,7 @@ export default class RequestV2Serializer extends JSONSerializer {
         values
       }));
 
-      //normalize having and parameters
+      //normalize having
       request.having.forEach(({ metric: { metric, parameters }, operator, values }) => {
         request.filters.push({
           type: 'metric',

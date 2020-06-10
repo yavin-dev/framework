@@ -3,14 +3,14 @@ import { setupTest } from 'ember-qunit';
 import { run } from '@ember/runloop';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
-let Store, mockModel;
+let mockModel;
 
 module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
   hooks.beforeEach(async function() {
-    Store = this.owner.lookup('service:store');
+    const Store = this.owner.lookup('service:store');
     await this.owner.lookup('service:bard-metadata').loadMetadata();
     run(() => {
       Store.pushPayload({
