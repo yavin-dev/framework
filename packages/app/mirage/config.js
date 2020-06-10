@@ -31,6 +31,8 @@ function hashCode(str) {
 export default function() {
   // https://github.com/kategengler/ember-cli-code-coverage#create-a-passthrough-when-intercepting-all-ajax-requests-in-tests
   this.passthrough('/write-coverage');
+  this.passthrough('/backstop/**');
+  this.pretender.post('/backstop/**', this.pretender.passthrough);
 
   // Mock bard facts + metadata
   this.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;

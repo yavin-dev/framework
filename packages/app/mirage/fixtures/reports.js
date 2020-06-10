@@ -56,8 +56,8 @@ export default [
       ],
       intervals: [
         {
-          end: 'current',
-          start: 'P7D'
+          end: '2020-06-07',
+          start: '2020-06-01'
         }
       ],
       bardVersion: 'v1',
