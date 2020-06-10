@@ -40,7 +40,7 @@ export default class NaviMetadataApolloService extends ApolloService {
 
     return Object.assign({}, defaultOptions, {
       apiURL: this._buildURLPath(),
-      credentials: 'include'
+      requestCredentials: 'include'
     });
   }
 
