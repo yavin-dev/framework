@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -48,6 +48,17 @@ export default DS.JSONSerializer.extend({
    * @return {Object} normalized payload
    */
   normalize(type, request) {
+    this.normalizeRequest(request);
+
+    return this._super(type, request);
+  },
+
+  /**
+   * Normalizes payload so that it can be applied to models correctly
+   * @param {Object} request
+   * @return {Object} normalized payload
+   */
+  normalizeRequest(request) {
     // get alias -> canonName map
     const aliasToCanon = getAliasedMetrics(request.metrics);
 
@@ -92,8 +103,6 @@ export default DS.JSONSerializer.extend({
       filter.dimension = `${namespace}.${filter.dimension}`;
       return filter;
     });
-
-    return this._super(type, request);
   },
 
   /**

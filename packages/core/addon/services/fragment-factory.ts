@@ -49,9 +49,9 @@ export default class FragmentFactory extends Service {
       field,
       type,
       parameters,
-      alias
+      alias,
+      source: dataSource
     }) as ColumnFragment;
-    column.source = dataSource;
     return column;
   }
 
@@ -95,9 +95,9 @@ export default class FragmentFactory extends Service {
       parameters,
       type,
       operator,
-      values
+      values,
+      source: dataSource
     }) as FilterFragment;
-    filter.source = dataSource;
     return filter;
   }
 
@@ -136,9 +136,9 @@ export default class FragmentFactory extends Service {
       field,
       parameters,
       type,
-      direction
+      direction,
+      source: dataSource
     }) as SortFragment;
-    sort.source = dataSource;
     return sort;
   }
 
