@@ -2,6 +2,7 @@
 
 module.exports = {
   id: `ember-backstop test`,
+  docker: true,
   viewports: [
     {
       label: 'webview',
@@ -15,7 +16,7 @@ module.exports = {
     {
       label: '{testName}',
       url: '{origin}/backstop/dview/{testId}/{scenarioId}',
-      delay: 1000
+      delay: 500
     }
   ],
   paths: {
