@@ -49,7 +49,7 @@ export default class GraphQLMetadataAdapter extends EmberObject {
     const queryOptions = Object.assign({}, options, { query });
     if (id) {
       queryOptions.variables = Object.assign(queryOptions.variables || {}, {
-        id
+        ids: [id]
       });
     }
 

@@ -185,6 +185,15 @@ const schema = gql`
     field
   }
 
+  enum RelationshipOp {
+    FETCH
+    DELETE
+    UPSERT
+    REPLACE
+    REMOVE
+    UPDATE
+  }
+
   type TimeZone { # modeled after java.util.TimeZone
     long: String
     short: String
@@ -199,8 +208,14 @@ const schema = gql`
   }
 
   type Query {
-    tables: TableConnection
-    table(id: DeferredID!): Table
+    table(
+      op: RelationshipOp
+      ids: [String]
+      filter: String
+      sort: String
+      first: String
+      after: String
+    ): TableConnection
   }
 `;
 

@@ -12,7 +12,7 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
 
   test('normalize', function(assert) {
     const tableConnectionPayload = {
-      tables: {
+      table: {
         edges: [
           {
             node: {

@@ -51,7 +51,7 @@ module('Unit | Elide Metadata Adapter', function(hooks) {
       const { operationName, variables, query } = JSON.parse(requestBody);
 
       assert.notOk(operationName, 'No operation name specified');
-      assert.deepEqual(variables, { id: 'foo' }, 'id variable is passed in options');
+      assert.deepEqual(variables, { ids: ['foo'] }, 'id variable is passed in options');
       assert.equal(
         removeTypeNameField(query),
         gqlQuery,
@@ -81,7 +81,7 @@ module('Unit | Elide Metadata Adapter', function(hooks) {
       '__typename'
     ];
 
-    const { tables: tableConnection } = await Adapter.fetchAll('table');
+    const { table: tableConnection } = await Adapter.fetchAll('table');
     const tables = tableConnection.edges.map(edge => edge.node);
 
     // Test that all fields specified in the query are included in the result and none of them are null as they should be populated by the factories
@@ -223,70 +223,78 @@ module('Unit | Elide Metadata Adapter', function(hooks) {
       result,
       {
         table: {
-          id: 'table0',
-          name: 'Table 0',
-          description: 'This is Table 0',
-          category: 'categoryOne',
-          cardinality: 'SMALL',
-          metrics: {
-            edges: [
-              {
-                node: {
-                  id: 'metric0',
-                  name: 'Metric 0',
-                  description: 'This is metric 0',
-                  category: 'categoryOne',
-                  valueType: 'NUMBER',
-                  columnTags: ['DISPLAY'],
-                  defaultFormat: 'number',
-                  columnType: 'field',
-                  expression: null,
-                  __typename: 'Metric'
+          __typename: 'TableConnection',
+          edges: [
+            {
+              __typename: 'TableEdge',
+              node: {
+                id: 'table0',
+                name: 'Table 0',
+                description: 'This is Table 0',
+                category: 'categoryOne',
+                cardinality: 'SMALL',
+                metrics: {
+                  edges: [
+                    {
+                      node: {
+                        id: 'metric0',
+                        name: 'Metric 0',
+                        description: 'This is metric 0',
+                        category: 'categoryOne',
+                        valueType: 'NUMBER',
+                        columnTags: ['DISPLAY'],
+                        defaultFormat: 'number',
+                        columnType: 'field',
+                        expression: null,
+                        __typename: 'Metric'
+                      },
+                      __typename: 'MetricEdge'
+                    },
+                    {
+                      node: {
+                        id: 'metric1',
+                        name: 'Metric 1',
+                        description: 'This is metric 1',
+                        category: 'categoryOne',
+                        valueType: 'NUMBER',
+                        columnTags: ['DISPLAY'],
+                        defaultFormat: 'number',
+                        columnType: 'field',
+                        expression: null,
+                        __typename: 'Metric'
+                      },
+                      __typename: 'MetricEdge'
+                    }
+                  ],
+                  __typename: 'MetricConnection'
                 },
-                __typename: 'MetricEdge'
-              },
-              {
-                node: {
-                  id: 'metric1',
-                  name: 'Metric 1',
-                  description: 'This is metric 1',
-                  category: 'categoryOne',
-                  valueType: 'NUMBER',
-                  columnTags: ['DISPLAY'],
-                  defaultFormat: 'number',
-                  columnType: 'field',
-                  expression: null,
-                  __typename: 'Metric'
+                dimensions: {
+                  edges: [
+                    {
+                      node: {
+                        id: 'dimension0',
+                        name: 'Dimension 0',
+                        description: 'This is dimension 0',
+                        category: 'categoryOne',
+                        valueType: 'TEXT',
+                        columnTags: ['DISPLAY'],
+                        columnType: 'field',
+                        expression: null,
+                        __typename: 'Dimension'
+                      },
+                      __typename: 'DimensionEdge'
+                    }
+                  ],
+                  __typename: 'DimensionConnection'
                 },
-                __typename: 'MetricEdge'
+                timeDimensions: {
+                  edges: [],
+                  __typename: 'TimeDimensionConnection'
+                },
+                __typename: 'Table'
               }
-            ],
-            __typename: 'MetricConnection'
-          },
-          dimensions: {
-            edges: [
-              {
-                node: {
-                  id: 'dimension0',
-                  name: 'Dimension 0',
-                  description: 'This is dimension 0',
-                  category: 'categoryOne',
-                  valueType: 'TEXT',
-                  columnTags: ['DISPLAY'],
-                  columnType: 'field',
-                  expression: null,
-                  __typename: 'Dimension'
-                },
-                __typename: 'DimensionEdge'
-              }
-            ],
-            __typename: 'DimensionConnection'
-          },
-          timeDimensions: {
-            edges: [],
-            __typename: 'TimeDimensionConnection'
-          },
-          __typename: 'Table'
+            }
+          ]
         }
       },
       'The expected table is returned with all requested fields'

@@ -51,7 +51,7 @@ type TableNode = {
 };
 
 export interface TablePayload {
-  tables: Connection<TableNode>;
+  table: Connection<TableNode>;
   source: string;
 }
 
@@ -211,7 +211,7 @@ export default class ElideMetadataSerializer extends EmberObject {
    */
   normalize(payload: TablePayload) {
     if (this.isTablePayload(payload)) {
-      return this._normalizeTableConnection(payload.tables, payload.source);
+      return this._normalizeTableConnection(payload.table, payload.source);
     }
     return payload;
   }
@@ -223,6 +223,6 @@ export default class ElideMetadataSerializer extends EmberObject {
    * */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   isTablePayload(payload: any): payload is TablePayload {
-    return !!payload.tables;
+    return !!payload.table;
   }
 }

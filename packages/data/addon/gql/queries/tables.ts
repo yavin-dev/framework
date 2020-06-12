@@ -7,7 +7,7 @@ import TableFragment from '../fragments/table';
 
 const query = gql`
   query {
-    tables {
+    table {
       edges {
         node {
           ...TableFragment
