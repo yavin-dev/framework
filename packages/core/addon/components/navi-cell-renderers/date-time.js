@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -10,23 +10,20 @@
  * }}
  */
 
-import { alias, readOnly } from '@ember/object/computed';
+import { readOnly } from '@ember/object/computed';
 import Component from '@ember/component';
 import layout from '../../templates/components/navi-cell-renderers/date-time';
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
-export default Component.extend({
-  layout,
-
-  /**
-   * @property {Array} classNames - list of component class names
-   */
-  classNames: ['table-cell-content', 'date-time'],
-
+@templateLayout(layout)
+@tagName('')
+export default class DateTimeCellRenderer extends Component {
   /**
    * @property {String} value
    * Date start time from the response data or 'TOTAL'
    */
-  value: alias('data.dateTime'),
+  @readOnly('data.dateTime')
+  value;
 
   /**
    * @property {String} granularity- Time Grain in request
@@ -34,5 +31,6 @@ export default Component.extend({
    * the model, timeGrain is an interval fragment in the model and a string in the serialized
    * request model
    */
-  granularity: readOnly('request.logicalTable.timeGrain')
-});
+  @readOnly('request.logicalTable.timeGrain')
+  granularity;
+}

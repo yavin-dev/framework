@@ -3,7 +3,7 @@ import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import config from 'ember-get-config';
-import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { setupMirage } from 'ember-cli-mirage/test-support';
 
 module('Unit | Adapter | base json adapter', function(hooks) {
   setupTest(hooks);

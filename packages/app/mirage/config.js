@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import { faker } from 'ember-cli-mirage';
+import faker from 'faker';
 import config from 'navi-app/config/environment';
 import BardLite from 'navi-data/mirage/routes/bard-lite';
 import BardMeta from './bard-meta-stub';

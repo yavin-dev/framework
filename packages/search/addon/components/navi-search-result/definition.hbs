@@ -1,24 +1,31 @@
 {{! Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. }}
 <table class="navi-search-results__item navi-search-results__item--definition" ...attributes>
   <tbody class="navi-search-results__item-body">
-    {{#each @data as |result|}}
-      <tr class="navi-search-definition-result">
-        <td class="navi-search-definition-result__item navi-search-results__item--cell">
-            <h5 class="navi-search-definition-result__item-name">{{result.name}}</h5>
-            {{#if this.hasMultipleDataSources}}
-              <em class="navi-search-definition-result__item-source">Source: {{result.source}}</em>
-            {{/if}}
-            <p class="navi-search-definition-result__item-description">
-              {{#if result.description}}
-               {{result.description}}
-              {{else}}
-                {{#let (await result.extended) as |extendedResult|}}
-                  {{extendedResult.description}}
-                {{/let}}
-              {{/if}}
-            </p>
-        </td>
-      </tr>
+    {{#each this.data as |result|}}
+      {{#let (await result.extended) as |extendedResult|}}
+        {{#if (or result.description extendedResult.description)}}
+          <tr class="navi-search-definition-result">
+            <td class="navi-search-definition-result__item navi-search-results__item--cell">
+                <h5 class="navi-search-definition-result__item-name">{{result.name}}</h5>
+                {{#if this.hasMultipleDataSources}}
+                  <em class="navi-search-definition-result__item-source">Source: {{result.source}}</em>
+                {{/if}}
+                <p class="navi-search-definition-result__item-description">
+                  {{#if result.description}}
+                    {{result.description}}
+                  {{else}}
+                    {{extendedResult.description}}
+                  {{/if}}
+                </p>
+            </td>
+          </tr>
+        {{/if}}
+      {{/let}}
     {{/each}}
   </tbody>
 </table>
+{{#if this.hasMoreResults}}
+  <button {{on "click" (toggle "showTop" this)}} class="navi-search-result-options__show-button" type="button">
+    {{if this.showTop "Show more" "Show less"}}
+  </button>
+{{/if}}

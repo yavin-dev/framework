@@ -41,8 +41,12 @@ export default class TableController extends Controller {
         displayName: 'Total Page Views'
       },
       {
-        attributes: { name: 'totalPageViewsWoW', parameters: {} },
-        type: 'threshold',
+        attributes: {
+          name: 'totalPageViewsWoW',
+          parameters: {},
+          canAggregateSubtotal: false
+        },
+        type: 'metric',
         displayName: 'Total Page Views WoW'
       }
     ],

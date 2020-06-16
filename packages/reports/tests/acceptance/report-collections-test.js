@@ -3,7 +3,7 @@ import Ember from 'ember';
 import { module, test } from 'qunit';
 import { teardownModal } from '../helpers/teardown-modal';
 import { setupApplicationTest } from 'ember-qunit';
-import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { setupMirage } from 'ember-cli-mirage/test-support';
 
 let OriginalLoggerError, OriginalTestAdapterException;
 

@@ -6,7 +6,7 @@
  */
 
 import NaviBaseSearchProviderService from '../navi-base-search-provider';
-import { keepLatestTask } from 'ember-concurrency-decorators';
+import { task } from 'ember-concurrency';
 import Response from 'ember-cli-mirage/response';
 
 export default class NaviSampleSearchProviderService extends NaviBaseSearchProviderService {
@@ -15,8 +15,7 @@ export default class NaviSampleSearchProviderService extends NaviBaseSearchProvi
    * @param {String} query
    * @returns {Object} Object containing results and dislay component
    */
-  @keepLatestTask
-  *search(query) {
+  @(task(function*(query) {
     let data = yield new Promise(function(resolve, reject) {
       let payload = [];
       if (query.toLowerCase().includes('sample')) {
@@ -31,5 +30,6 @@ export default class NaviSampleSearchProviderService extends NaviBaseSearchProvi
       title: 'Sample',
       data
     };
-  }
+  }).restartable())
+  search;
 }

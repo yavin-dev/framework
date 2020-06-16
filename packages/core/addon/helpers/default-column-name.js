@@ -27,10 +27,6 @@ export function getColumnDefaultName(
     return 'Date';
   }
 
-  if (type === 'threshold') {
-    type = 'metric';
-  }
-
   let { name: id, field } = attributes,
     model = bardMetadata.getById(type, id, namespace);
 

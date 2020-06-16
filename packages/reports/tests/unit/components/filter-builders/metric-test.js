@@ -19,20 +19,20 @@ module('Unit | Component | filter builders/metric', function(hooks) {
       .create({ requestFragment: mockHavingFragment });
 
     assert.deepEqual(
-      metricBuilder.get('filter.subject'),
       mockHavingFragment.metric,
+      metricBuilder.filter.subject,
       'Filter subject matches the metric from the request fragment'
     );
 
     assert.deepEqual(
-      metricBuilder.get('filter.operator'),
-      A(metricBuilder.get('supportedOperators')).findBy('id', mockHavingFragment.operator),
+      A(metricBuilder.supportedOperators).findBy('id', mockHavingFragment.operator),
+      metricBuilder.filter.operator,
       'Filter operator matches the supported operator object with the id from the request fragment'
     );
 
     assert.deepEqual(
-      metricBuilder.get('filter.values'),
       mockHavingFragment.values,
+      metricBuilder.filter.values,
       'Filter values match the values property in the request fragment'
     );
   });

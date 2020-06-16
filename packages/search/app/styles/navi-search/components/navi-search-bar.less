@@ -13,7 +13,10 @@
     appearance: none;
     background: @denali-grey-100;
     border: none;
+    border-color: @denali-grey-500;
     border-radius: 4px;
+    border-style: solid;
+    border-width: 1px;
     box-shadow: none;
     color: @denali-grey-800;
     flex: 1 0 auto;
@@ -66,6 +69,9 @@
 
 .navi-search-results {
   margin-top: 5px;
+  max-height: 90vh;
+  overflow-x: auto;
+  z-index: 10;
 
   &--box {
     background: @denali-grey-100;

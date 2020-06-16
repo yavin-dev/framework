@@ -5,5 +5,8 @@
 package com.yahoo.navi.ws.models.beans.enums
 
 enum class ColumnType {
-    dimension, metric, computed
+    dimension,
+    timeDimension,
+    metric,
+    computed
 }

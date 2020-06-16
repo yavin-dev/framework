@@ -37,6 +37,11 @@ export default class ReportsReportController extends Controller {
   modifiedRequest = null;
 
   /**
+   * @property {Object} lastAddedColumn - the column that has been added last
+   */
+  lastAddedColumn = null;
+
+  /**
    * @property {String} reportState - state of the the report
    */
   get reportState() {
@@ -90,21 +95,50 @@ export default class ReportsReportController extends Controller {
   }
 
   /**
-   * Toggles the column config open and close as well as configuring a listener to resize the visualization
+   * Opens or closes the column config as well as configures a listener to resize the visualization
+   * @param {Boolean} isOpen
    * @param {ReportBuilderComponent} reportBuilder - The report builder component containing the visualization
    */
   @action
-  toggleColumnConfig(reportBuilder) {
+  updateColumnDrawerOpen(isOpen, reportBuilder) {
     const { isColumnDrawerOpen } = this;
-    set(this, 'isColumnDrawerOpen', !isColumnDrawerOpen);
+    set(this, 'isColumnDrawerOpen', isOpen);
 
-    const visualizationElement = reportBuilder.element.querySelector('.report-view');
-    if (visualizationElement) {
-      const visualizationResizeEvent = new Event('resizestop');
-      this.onFadeEnd = () => visualizationElement.dispatchEvent(visualizationResizeEvent);
-    } else {
-      this.onFadeEnd = null;
+    if (!isOpen) {
+      set(this, 'lastAddedColumn', null);
     }
+
+    if (isOpen !== isColumnDrawerOpen) {
+      const visualizationElement = reportBuilder.element.querySelector('.report-view');
+      if (visualizationElement) {
+        const visualizationResizeEvent = new Event('resizestop');
+        this.onFadeEnd = () => visualizationElement.dispatchEvent(visualizationResizeEvent);
+      } else {
+        this.onFadeEnd = null;
+      }
+    }
+  }
+
+  /**
+   * Updates the last added column
+   * @param {String} type - the added column type
+   * @param {Object} fragment - the added request fragment
+   */
+  @action
+  updateLastAddedColumn(type, fragment) {
+    set(this, 'lastAddedColumn', !type ? null : { type, name: type === 'timeDimension' ? 'dateTime' : fragment.id });
+  }
+
+  /**
+   * Opens the column config drawer and updates the last added column
+   * @param {ReportBuilderComponent} reportBuilder - The report builder component
+   * @param {String} columnType - the added column type
+   * @param {Object} fragment - the added request fragment
+   */
+  @action
+  onBeforeAddItem(reportBuilder, columnType, fragment) {
+    this.updateColumnDrawerOpen(true, reportBuilder);
+    this.updateLastAddedColumn(columnType, fragment);
   }
 
   /**

@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { setupMirage } from 'ember-cli-mirage/test-support';
 import { selectChoose } from 'ember-power-select/test-support';
 import $ from 'jquery';
 import { clickTrigger, nativeMouseUp } from '../../helpers/ember-power-select';

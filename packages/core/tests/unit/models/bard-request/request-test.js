@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import config from 'ember-get-config';
 import { settled } from '@ember/test-helpers';
-import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { setupMirage } from 'ember-cli-mirage/test-support';
 import { set } from '@ember/object';
 import { run } from '@ember/runloop';
 import moment from 'moment';

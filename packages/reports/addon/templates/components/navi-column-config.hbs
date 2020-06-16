@@ -1,18 +1,23 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<AnimatedContainer class="navi-column-config" ...attributes {{did-insert this.setupElement}}>
-  {{#animated-if @isOpen use=this.drawerTransition duration=200 }}
+<AnimatedContainer class="navi-column-config" ...attributes
+  {{did-insert this.setupElement}}
+  {{did-update this.openDefaultColumn this.columns}}>
+  {{#animated-if @isOpen use=this.drawerTransition duration=200}}
     <div class="navi-column-config__panel">
       <h3 class="navi-column-config__title">Columns</h3>
       <ul class="navi-column-config__columns">
-        {{#animated-each items=this.columns use=this.transition key="fragment" duration=200 as |column|}}
+        {{#each this.columns key="fragment" as |column|}}
           <NaviColumnConfig::Item
             @column={{column}}
+            @isLastAdded={{eq column this.lastAddedItem}}
+            @isOpen={{eq column.fragment this.currentlyOpenColumn.fragment}}
+            @onOpenColumn={{this.openColumn}}
             @visualization={{@report.visualization}}
             @onRemoveColumn={{fn this.removeColumn column}}
             @cloneColumn={{fn this.cloneColumn column}}
             @toggleColumnFilter={{fn this.toggleColumnFilter column}}
           />
-        {{/animated-each}}
+        {{/each}}
       </ul>
     </div>
   {{/animated-if}}

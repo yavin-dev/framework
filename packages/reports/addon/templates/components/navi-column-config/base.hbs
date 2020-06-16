@@ -8,17 +8,17 @@
         {{!-- TODO: Favorites are not supported yet --}}
         {{!-- <NaviIcon @icon="star-o" class="navi-column-config-base__star-icon" role="button" /> --}}
         <NaviIcon @icon="clone"
-          class="navi-column-config-base__clone-icon {{if (eq @column.type "timeDimension") "navi-column-config-base__clone-icon--disabled"}}"
+          class="navi-column-config-base__clone-icon {{if (eq @column.name "dateTime") "navi-column-config-base__clone-icon--disabled"}}"
           role="button"
-          aria-disabled="{{eq @column.type "timeDimension"}}"
+          aria-disabled="{{eq @column.name "dateTime"}}"
           {{on "click" @cloneColumn}} />
         <NaviIcon
           class="navi-column-config-base__filter-icon
             {{if column.isFiltered "navi-column-config-base__filter-icon--active"}}
-            {{if (eq @column.type "timeDimension") "navi-column-config-base__filter-icon--disabled"}}"
+            {{if (eq @column.name "dateTime") "navi-column-config-base__filter-icon--disabled"}}"
           @icon="filter"
           role="button"
-          aria-disabled="{{eq @column.type "timeDimension"}}"
+          aria-disabled="{{eq @column.name "dateTime"}}"
           {{on "click" @toggleColumnFilter}}
           />
       </span>
@@ -28,7 +28,7 @@
       id="{{this.classId}}-base-type-input"
       {{!-- TODO: Possibly remove @disabled={{false}} and allow changing base metric here in the future --}}
       @disabled={{true}}
-      @value={{if (eq @column.type "timeDimension") "dateTime" (get @column.fragment (concat @column.type ".id"))}}
+      @value={{if (eq @column.name "dateTime") "dateTime" (get @column.fragment (concat @column.type ".id"))}}
       @key-up={{@onUpdateColumnName}}
     />
   </div>

@@ -6,7 +6,7 @@ import hbs from 'htmlbars-inline-precompile';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, findAll, triggerEvent } from '@ember/test-helpers';
-import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { setupMirage } from 'ember-cli-mirage/test-support';
 import { assertTooltipRendered, assertTooltipNotRendered, assertTooltipContent } from 'ember-tooltips/test-support';
 import config from 'ember-get-config';
 import {

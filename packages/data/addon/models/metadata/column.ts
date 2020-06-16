@@ -10,11 +10,39 @@ import Table from './table';
 
 export type ColumnType = 'ref' | 'formula' | 'field';
 
+// Shape passed to model constructor
+export interface ColumnMetadataPayload {
+  id: string;
+  name: string;
+  category?: string;
+  description?: string;
+  tableId: string;
+  source: string;
+  valueType: TODO<string>;
+  type: ColumnType;
+  expression?: string;
+  tags: string[];
+}
+
+// Shape of public properties on model
+export interface ColumnMetadata {
+  id: string;
+  name: string;
+  category?: string;
+  description?: string;
+  table: Table;
+  source: string;
+  valueType: TODO<string>;
+  type: ColumnType;
+  expression?: string;
+  tags: string[];
+}
+
 export type BaseExtendedAttributes = {
   description?: string;
 };
 
-export default class Column extends EmberObject {
+export default class ColumnMetadataModel extends EmberObject implements ColumnMetadata, ColumnMetadataPayload {
   /**
    * @property {KegService} keg
    */

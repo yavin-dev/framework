@@ -5,7 +5,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, findAll } from '@ember/test-helpers';
 import { initialize as injectC3Enhancements } from 'navi-core/initializers/inject-c3-enhancements';
 import hbs from 'htmlbars-inline-precompile';
-import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { setupMirage } from 'ember-cli-mirage/test-support';
 
 module('Integration | Component | goal gauge ', function(hooks) {
   setupRenderingTest(hooks);

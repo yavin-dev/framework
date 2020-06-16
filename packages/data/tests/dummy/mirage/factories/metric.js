@@ -15,8 +15,10 @@ export default Factory.extend({
   },
   category: 'categoryOne',
   valueType: 'NUMBER',
-  tags() {
+  columnTags() {
     return ['DISPLAY'];
   },
-  defaultFormat: 'number'
+  defaultFormat: 'number',
+  columnType: 'field',
+  expression: null
 });

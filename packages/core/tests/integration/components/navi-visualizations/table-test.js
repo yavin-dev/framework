@@ -7,7 +7,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, settled, click, find, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import $ from 'jquery';
-import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { setupMirage } from 'ember-cli-mirage/test-support';
 
 const TEMPLATE = hbs`
   <div style="width: 800px; height: 800px; display: flex;">
@@ -322,8 +322,12 @@ module('Integration | Component | table', function(hooks) {
             displayName: 'Platform Revenue (USD)'
           },
           {
-            attributes: { name: 'totalPageViewsWoW', parameters: {} },
-            type: 'threshold',
+            attributes: {
+              name: 'totalPageViewsWoW',
+              parameters: {},
+              canAggregateSubtotal: false
+            },
+            type: 'metric',
             displayName: 'Total Page Views WoW'
           }
         ]
@@ -373,7 +377,7 @@ module('Integration | Component | table', function(hooks) {
       assert.equal(direction, 'desc', 'The desc direction is passed along when the dateTime header is clicked');
     });
 
-    await click($('.table-header-row-vc--view .table-header-cell.threshold:contains(Total Page Views WoW)')[0]);
+    await click($('.table-header-row-vc--view .table-header-cell.metric:contains(Total Page Views WoW)')[0]);
   });
 
   test('grand total in table', async function(assert) {

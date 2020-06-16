@@ -13,7 +13,7 @@ import d3 from 'd3';
 import { alias, readOnly } from '@ember/object/computed';
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
-import { get, computed, action } from '@ember/object';
+import { computed, action } from '@ember/object';
 import { getOwner } from '@ember/application';
 import { run } from '@ember/runloop';
 import { guidFor } from '@ember/object/internals';
@@ -47,7 +47,7 @@ class NaviVisualizationsPieChartComponent extends Component.extend(hasChartBuild
    */
   @computed
   get widgetClassNames() {
-    return ['pie-chart-widget', this.get('chartId')];
+    return ['pie-chart-widget', this.chartId];
   }
 
   /**
@@ -102,7 +102,7 @@ class NaviVisualizationsPieChartComponent extends Component.extend(hasChartBuild
    */
   @computed('options', 'namespace')
   get metricDisplayName() {
-    let metric = get(this, 'seriesConfig.metric');
+    const metric = this.seriesConfig.metric;
 
     return metric && this.metricName.getDisplayName(metric, this.namespace);
   }
@@ -112,10 +112,10 @@ class NaviVisualizationsPieChartComponent extends Component.extend(hasChartBuild
    */
   @computed('model.firstObject', 'seriesConfig')
   get dataConfig() {
-    let response = get(this, 'model.firstObject.response'),
-      request = get(this, 'request'),
-      seriesConfig = get(this, 'seriesConfig'),
-      seriesData = get(this, 'builder').buildData(get(response, 'rows'), seriesConfig, request);
+    const response = this.model?.firstObject?.response,
+      request = this.request,
+      seriesConfig = this.seriesConfig,
+      seriesData = this.builder.buildData(response.rows, seriesConfig, request);
 
     return {
       data: {
@@ -130,8 +130,8 @@ class NaviVisualizationsPieChartComponent extends Component.extend(hasChartBuild
    */
   @computed('options', 'dataConfig')
   get config() {
-    return merge({}, get(this, 'pieConfig'), get(this, 'options'), get(this, 'dataConfig'), {
-      tooltip: get(this, 'chartTooltip')
+    return merge({}, this.pieConfig, this.options, this.dataConfig, {
+      tooltip: this.chartTooltip
     });
   }
 
@@ -149,9 +149,9 @@ class NaviVisualizationsPieChartComponent extends Component.extend(hasChartBuild
   @computed
   get tooltipComponent() {
     let owner = getOwner(this),
-      tooltipComponentName = get(this, 'tooltipComponentName'),
+      tooltipComponentName = this.tooltipComponentName,
       registryEntry = `component:${tooltipComponentName}`,
-      byXSeries = get(this, 'builder.byXSeries'),
+      byXSeries = this.builder.byXSeries,
       tooltipComponent = Component.extend(
         owner.ownerInjection(),
 
@@ -160,8 +160,8 @@ class NaviVisualizationsPieChartComponent extends Component.extend(hasChartBuild
 
           rowData: computed('x', 'requiredToolTipData', function() {
             // Get the full data for this combination of x + series
-            let series = get(this, 'requiredToolTipData'),
-              dataForSeries = byXSeries.getDataForKey(get(this, 'x') + series.id) || [];
+            const series = this.requiredToolTipData,
+              dataForSeries = byXSeries.getDataForKey(this.x + series.id) || [];
 
             return dataForSeries[0];
           })
@@ -184,9 +184,9 @@ class NaviVisualizationsPieChartComponent extends Component.extend(hasChartBuild
    */
   @computed('seriesConfig.metric')
   get chartTooltip() {
-    let tooltipComponent = get(this, 'tooltipComponent'),
-      rawData = get(this, 'dataConfig.data.json'),
-      metric = get(this, 'seriesConfig.metric');
+    const tooltipComponent = this.tooltipComponent;
+    const rawData = this.dataConfig.data.json;
+    const metric = this.seriesConfig.metric;
 
     return {
       contents(tooltipData) {
@@ -226,7 +226,7 @@ class NaviVisualizationsPieChartComponent extends Component.extend(hasChartBuild
    * @private
    */
   _removeTooltipFromRegistry() {
-    const tooltipComponentName = get(this, 'tooltipComponentName');
+    const tooltipComponentName = this.tooltipComponentName;
     getOwner(this).unregister(`component:${tooltipComponentName}`);
   }
 
@@ -255,7 +255,7 @@ class NaviVisualizationsPieChartComponent extends Component.extend(hasChartBuild
        */
       xTranslate = getTranslation(chartElm.attr('transform')).x - chartElm.node().getBBox().width / 2 - 50,
       yTranslate = svgElm.style('height').replace('px', '') / 2, //vertically center the label in the svg
-      metricTitle = get(this, 'metricDisplayName');
+      metricTitle = this.metricDisplayName;
 
     if (metricTitle) {
       titleElm

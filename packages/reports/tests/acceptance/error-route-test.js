@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { visit, findAll } from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
-import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { setupMirage } from 'ember-cli-mirage/test-support';
 import { Response } from 'ember-cli-mirage';
 import config from 'ember-get-config';
 

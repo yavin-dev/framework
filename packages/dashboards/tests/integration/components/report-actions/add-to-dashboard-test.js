@@ -5,7 +5,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import { fillIn, findAll, render, click } from '@ember/test-helpers';
 import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
 import hbs from 'htmlbars-inline-precompile';
-import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { setupMirage } from 'ember-cli-mirage/test-support';
 import $ from 'jquery';
 
 let Template;

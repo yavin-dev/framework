@@ -4,7 +4,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import { click, findAll, render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { clickTrigger as toggleSelector } from 'ember-power-select/test-support/helpers';
-import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { setupMirage } from 'ember-cli-mirage/test-support';
 import $ from 'jquery';
 
 const DASHBOARD_ID = 12;

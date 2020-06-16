@@ -14,12 +14,7 @@
         role="button"
         {{on "click" (fn this.toggleOpen item.name)}}
         >
-        {{#if item._isOpen}}
-          <NaviIcon class="grouped-list__group-header-icon--open" @icon="angle-down" />
-        {{else}}
-          <NaviIcon class="grouped-list__group-header-icon--closed" @icon="angle-right" />
-        {{/if}}
-        
+        <NaviIcon class="grouped-list__group-header-icon grouped-list__group-header-icon--{{if item._isOpen "open" "closed"}}" @icon="angle-{{if item._isOpen "down" "right"}}" />
         <span class="grouped-list__group-header-content">{{item.name}} ({{item.groupLength}})</span>
       </li>
     {{else}}

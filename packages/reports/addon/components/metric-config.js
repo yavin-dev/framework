@@ -14,22 +14,22 @@
 import Component from '@ember/component';
 import layout from '../templates/components/metric-config';
 import { inject as service } from '@ember/service';
-import { computed, get, observer, set } from '@ember/object';
+import { computed, get, set, action } from '@ember/object';
+import { throttle } from '@ember/runloop';
+import { BlurOnAnimationEnd, THROTTLE_TIME } from './dimension-selector';
 import { A as arr } from '@ember/array';
 import { featureFlag } from 'navi-core/helpers/feature-flag';
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
+import { observes } from '@ember-decorators/object';
 
-export default Component.extend({
-  layout,
-
-  /**
-   * @property {Array} classNames
-   */
-  classNames: ['metric-config'],
-
+@tagName('')
+@templateLayout(layout)
+class MetricConfig extends Component {
   /**
    * @property {Service} parameterService - metric parameter service
    */
-  parameterService: service('metric-parameter'),
+  @service('metric-parameter')
+  parameterService;
 
   /**
    * @method calculatePosition
@@ -45,13 +45,14 @@ export default Component.extend({
       };
 
     return { style };
-  },
+  }
 
   /**
    * @observer _fetchAllParams
    * creates a hash of promises for all metric parameter values and sets the appropriate properties
    */
-  _fetchAllParams: observer('metric', function() {
+  @observes('metric')
+  _fetchAllParams() {
     const fetchParamsPromise = this.parameterService.fetchAllParams(this.metric);
 
     set(this, 'parametersPromise', fetchParamsPromise);
@@ -59,7 +60,7 @@ export default Component.extend({
       set(this, 'allParametersMap', result);
       set(this, 'allParameters', Object.values(result));
     });
-  }),
+  }
 
   /**
    * @property {Object} allParametersMap - parameters map of param type and id to parameter object
@@ -68,17 +69,18 @@ export default Component.extend({
    *    ...
    *  }
    */
-  allParametersMap: undefined,
+  allParametersMap;
 
   /**
    * @property {Array} allParameters - parameter value array
    */
-  allParameters: undefined,
+  allParameters;
 
   /**
    * @property {Array} selectedParams - selected param objects
    */
-  selectedParams: computed('request.metrics.[]', 'metric', 'allParametersMap', function() {
+  @computed('request.metrics.[]', 'metric', 'allParametersMap')
+  get selectedParams() {
     let selectedMetrics = arr(get(this, 'request.metrics')).filterBy('metric', get(this, 'metric')),
       selectedMetricParams = arr(selectedMetrics).mapBy('parameters'),
       allParametersMap = get(this, 'allParametersMap') || {};
@@ -100,23 +102,25 @@ export default Component.extend({
         return allParametersMap[`${key}|${value}`];
       })
       .filter(e => !!e); //filter out bad or outdated parameters
-  }),
+  }
 
   /**
    * @property {Array} parametersChecked - list of all parameters checked
    */
-  parametersChecked: computed('selectedParams', function() {
+  @computed('selectedParams')
+  get parametersChecked() {
     return get(this, 'selectedParams').reduce((list, param) => {
       list[`${get(param, 'param')}|${get(param, 'id')}`] = true;
       return list;
     }, {});
-  }),
+  }
 
-  /*
+  /**
    * @property {Object} paramsFiltered - having -> boolean mapping denoting presence of metric param
    *                                         in request havings
    */
-  paramsFiltered: computed('request.having.[]', 'metric', function() {
+  @computed('request.having.[]', 'metric')
+  get paramsFiltered() {
     return arr(get(this, 'request.having'))
       .filterBy('metric.metric.id', this.metric?.id)
       .reduce((list, having) => {
@@ -128,39 +132,55 @@ export default Component.extend({
 
         return list;
       }, {});
-  }),
+  }
 
-  actions: {
-    /*
-     * @action triggerFetch
-     * trigger parameter value fetch
-     */
-    triggerFetch() {
-      this._fetchAllParams();
-    },
+  /**
+   * @action Call the supplied handler to add the metric with param and focus the clicked button
+   * @param {Function} handler
+   * @param {String} metric
+   * @param {Object} param
+   * @param {Element} target
+   */
+  doParamToggled(handler, metric, param, target) {
+    target && target.focus();
+    handler(metric, { [param.param]: param.id });
+  }
 
-    /*
-     * @action paramToggled
-     * @param {Object} metric
-     * @param {Object} param
-     */
-    paramToggled(metric, param) {
-      const enableRequestPreview = featureFlag('enableRequestPreview');
-      const action = !enableRequestPreview && this.parametersChecked[`${param.param}|${param.id}`] ? 'Remove' : 'Add';
-      const handler = this[`on${action}ParameterizedMetric`];
+  /**
+   * @action triggerFetch
+   * trigger parameter value fetch
+   */
+  @action
+  triggerFetch() {
+    this._fetchAllParams();
+  }
 
-      if (handler) handler(metric, { [param.param]: param.id });
-    },
+  /**
+   * @action paramToggled - throttle the adding of metrics when requestPreview is enabled
+   * @param {Object} metric
+   * @param {Object} param
+   */
+  @action
+  paramToggled(metric, param) {
+    const actionName = this.parametersChecked[`${param.param}|${param.id}`] ? 'Remove' : 'Add';
+    const handler = this[`on${actionName}ParameterizedMetric`];
 
-    /*
-     * @action paramFilterToggled
-     * @param {Object} metric
-     * @param {Object} param
-     */
-    paramFilterToggled(metric, param) {
-      const handler = get(this, 'onToggleParameterizedMetricFilter');
-
-      if (handler) handler(metric, { [get(param, 'param')]: get(param, 'id') });
+    if (handler) {
+      this.doParamToggled(handler, metric, param, null);
     }
   }
-});
+
+  /**
+   * @action paramFilterToggled
+   * @param {Object} metric
+   * @param {Object} param
+   */
+  @action
+  paramFilterToggled(metric, param) {
+    const handler = get(this, 'onToggleParameterizedMetricFilter');
+
+    if (handler) handler(metric, { [get(param, 'param')]: get(param, 'id') });
+  }
+}
+
+export default MetricConfig;

@@ -10,5 +10,6 @@ export default DS.Model.extend({
   favoriteReports: DS.hasMany('report', { async: true, inverse: null }),
   deliveryRules: DS.hasMany('deliveryRule', { async: true, inverse: 'owner' }),
   dashboards: DS.hasMany('dashboard', { async: true, inverse: 'author' }),
-  favoriteDashboards: DS.hasMany('dashboard', { async: true, inverse: null })
+  favoriteDashboards: DS.hasMany('dashboard', { async: true, inverse: null }),
+  roles: DS.hasMany('role', { async: true })
 });

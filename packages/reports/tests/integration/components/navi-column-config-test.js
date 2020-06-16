@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, findAll, click, settled } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { setupMirage } from 'ember-cli-mirage/test-support';
 import { setupAnimationTest, animationsSettled } from 'ember-animated/test-support';
 import { clickTrigger } from 'ember-power-select/test-support/helpers';
 import { A } from '@ember/array';
@@ -11,11 +11,11 @@ import { helper as buildHelper } from '@ember/component/helper';
 
 let Store, Metadata;
 
-function addItem(type, item) {
+function addItem(type, item, dataSource) {
   const self = getContext();
   self.report.request[`${type}s`].pushObject(
     Store.createFragment(`bard-request/fragments/${type}`, {
-      [type]: self.owner.lookup('service:bard-metadata').getById(type, item)
+      [type]: self.owner.lookup('service:bard-metadata').getById(type, item, dataSource)
     })
   );
 }
@@ -112,7 +112,7 @@ module('Integration | Component | navi-column-config', function(hooks) {
   });
 
   test('time grain - switching and removing', async function(assert) {
-    assert.expect(4);
+    assert.expect(8);
 
     await render(hbs`<NaviColumnConfig @report={{this.report}} @isOpen={{true}} />`);
 
@@ -123,7 +123,16 @@ module('Integration | Component | navi-column-config', function(hooks) {
       'The date time column is initially added and set to day'
     );
 
-    await click('.navi-column-config-item__name[title="Date Time (Day)"]'); // open date time config
+    assert
+      .dom('.navi-column-config-item__remove-icon')
+      .doesNotHaveClass(
+        'navi-column-config-item__remove-icon--disabled',
+        'remove button of date time column does not have disabled class'
+      );
+    assert
+      .dom('.navi-column-config-item__remove-icon')
+      .isNotDisabled('remove button of date time column is not disabled');
+
     await clickTrigger('.navi-column-config-item__parameter'); // open the time grain dropdown
     assert.deepEqual(
       findAll('.navi-column-config-item__parameter-dropdown .ember-power-select-option').map(el =>
@@ -148,6 +157,17 @@ module('Integration | Component | navi-column-config', function(hooks) {
       [],
       'The date time column is removed when timegrain is set to all'
     );
+
+    this.set('report.request.logicalTable.table', { timeGrainIds: ['day'], timeGrains: [{ id: 'day', name: 'Day' }] });
+    this.set('report.request.logicalTable.timeGrain', 'day');
+    await animationsSettled();
+    assert
+      .dom('.navi-column-config-item__remove-icon')
+      .hasClass(
+        'navi-column-config-item__remove-icon--disabled',
+        'remove button of date time column has disabled class'
+      );
+    assert.dom('.navi-column-config-item__remove-icon').isDisabled('remove button of date time column is disabled');
   });
 
   test('metrics - adding', async function(assert) {
@@ -350,7 +370,6 @@ module('Integration | Component | navi-column-config', function(hooks) {
       'Initial columns are added'
     );
 
-    await click('.navi-column-config-item__name[title="Date Time (Day)"]'); // open date time config
     assert.dom('.navi-column-config-base__clone-icon').exists({ count: 1 }, 'Date time config has clone icon');
     assert
       .dom('.navi-column-config-base__clone-icon')
@@ -368,6 +387,7 @@ module('Integration | Component | navi-column-config', function(hooks) {
       .hasAttribute('aria-disabled', 'true', 'Date time config filter icon has aria-disabled="true" attribute');
     await click('.navi-column-config-base__filter-icon');
     await click('.navi-column-config-item__remove-icon');
+    await animationsSettled();
   });
 
   test('Header config buttons - metric', async function(assert) {
@@ -424,6 +444,7 @@ module('Integration | Component | navi-column-config', function(hooks) {
       .hasClass('navi-column-config-base__filter-icon--active', 'Metric config filter is active if there is a having');
 
     await click(findAll('.navi-column-config-item__remove-icon')[1]);
+    await animationsSettled();
   });
 
   test('Header config buttons - parameterized metric', async function(assert) {
@@ -480,6 +501,7 @@ module('Integration | Component | navi-column-config', function(hooks) {
       .hasClass('navi-column-config-base__filter-icon--active', 'Metric config filter is active if there is a having');
 
     await click(findAll('.navi-column-config-item__remove-icon')[1]);
+    await animationsSettled();
   });
 
   test('Header config buttons - dimension', async function(assert) {
@@ -539,5 +561,178 @@ module('Integration | Component | navi-column-config', function(hooks) {
       );
 
     await click(findAll('.navi-column-config-item__remove-icon')[1]);
+    await animationsSettled();
+  });
+
+  test('last added column', async function(assert) {
+    assert.expect(6);
+
+    addItem('dimension', 'browser');
+    addItem('metric', 'adClicks');
+    this.set('lastAddedColumn', { type: 'dimension', name: 'foo' });
+    await render(
+      hbs`<NaviColumnConfig @report={{this.report}} @lastAddedColumn={{this.lastAddedColumn}} @isOpen={{true}} />`
+    );
+    await animationsSettled();
+    assert.dom('.navi-column-config-item--last-added').doesNotExist('No column has the correct class');
+
+    this.set('lastAddedColumn', { type: 'timeDimension', name: 'dateTime' });
+    await animationsSettled();
+    assert.deepEqual(
+      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--last-added')),
+      [true, false, false],
+      'Date time column has the correct class'
+    );
+
+    this.set('lastAddedColumn', { type: 'dimension', name: 'browser' });
+    await render(
+      hbs`<NaviColumnConfig @report={{this.report}} @lastAddedColumn={{this.lastAddedColumn}} @isOpen={{true}} />`
+    );
+    await animationsSettled();
+    assert.deepEqual(
+      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--last-added')),
+      [false, true, false],
+      'Last added dimensnion column has the correct class'
+    );
+
+    addItem('dimension', 'browser');
+    await render(
+      hbs`<NaviColumnConfig @report={{this.report}} @lastAddedColumn={{this.lastAddedColumn}} @isOpen={{true}} />`
+    );
+    await animationsSettled();
+    assert.deepEqual(
+      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--last-added')),
+      [false, false, true, false],
+      'Only the most recently added column has the correct class'
+    );
+
+    this.set('lastAddedColumn', { type: 'metric', name: 'adClicks' });
+    await render(
+      hbs`<NaviColumnConfig @report={{this.report}} @lastAddedColumn={{this.lastAddedColumn}} @isOpen={{true}} />`
+    );
+    await animationsSettled();
+    assert.deepEqual(
+      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--last-added')),
+      [false, false, false, true],
+      'Last added metric column has the correct class'
+    );
+
+    addItem('metric', 'adClicks');
+    await render(
+      hbs`<NaviColumnConfig @report={{this.report}} @lastAddedColumn={{this.lastAddedColumn}} @isOpen={{true}} />`
+    );
+    await animationsSettled();
+    assert.deepEqual(
+      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--last-added')),
+      [false, false, false, false, true],
+      'Only last added metric column has the correct class'
+    );
+  });
+
+  test('accordion', async function(assert) {
+    assert.expect(6);
+
+    await render(
+      hbs`<NaviColumnConfig @report={{this.report}} @lastAddedColumn={{this.lastAddedColumn}} @isOpen={{true}} />`
+    );
+    await animationsSettled();
+    assert
+      .dom('.navi-column-config-item--open')
+      .exists({ count: 1 }, 'Date time column is open when there are no other columns');
+
+    addItem('dimension', 'browser');
+    addItem('metric', 'adClicks');
+    this.set('lastAddedColumn', { type: 'dimension', name: 'browser' });
+    await animationsSettled();
+    assert.deepEqual(
+      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--open')),
+      [false, true, false],
+      'Last added column is open'
+    );
+
+    await click('.navi-column-config-item[data-name="adClicks"] .navi-column-config-item__trigger');
+    await animationsSettled();
+    assert.deepEqual(
+      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--open')),
+      [false, false, true],
+      'Clicked metric column is open'
+    );
+
+    this.set('lastAddedColumn', { type: 'timeDimension', name: 'dateTime' });
+    await animationsSettled();
+    assert.deepEqual(
+      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--open')),
+      [true, false, false],
+      'Date column is open'
+    );
+
+    this.set('lastAddedColumn', null);
+    await animationsSettled();
+    assert.deepEqual(
+      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--open')),
+      [true, false, false],
+      'Date column is still open'
+    );
+
+    await click('.navi-column-config-item[data-name="browser"] .navi-column-config-item__trigger');
+    await animationsSettled();
+    assert.deepEqual(
+      findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--open')),
+      [false, true, false],
+      'Clicked dimension column is open'
+    );
+  });
+
+  test('multidatasource support', async function(assert) {
+    assert.expect(1);
+
+    await Metadata.loadMetadata({ dataSourceName: 'blockhead' });
+    this.set(
+      'report',
+      Store.createRecord('report', {
+        request: Store.createFragment('bard-request/request', {
+          logicalTable: Store.createFragment('bard-request/fragments/logicalTable', {
+            table: Metadata.getById('table', 'inventory', 'blockhead'),
+            timeGrain: 'day'
+          }),
+          dataSource: 'blockhead',
+          metrics: A([]),
+          dimensions: A([]),
+          filters: A([]),
+          having: A([])
+        }),
+        visualization: {
+          type: 'line-chart',
+          version: 1,
+          metadata: {
+            axis: {
+              y: {
+                series: {
+                  type: 'metric',
+                  config: {
+                    metrics: [{ metric: 'ownedQuantity', parameters: {}, canonicalName: 'ownedQuantity' }]
+                  }
+                }
+              }
+            }
+          }
+        }
+      })
+    );
+
+    await render(hbs`<NaviColumnConfig
+      @report={{this.report}}
+      @lastAddedColumn={{this.lastAddedColumn}}
+      @isOpen={{true}}
+    />`);
+
+    addItem('dimension', 'container', 'blockhead');
+    addItem('metric', 'ownedQuantity', 'blockhead');
+    await animationsSettled();
+    assert.deepEqual(
+      findAll('.navi-column-config-item__name').map(el => el.textContent.trim()),
+      ['Date Time (Day)', 'Container', 'Quantity of thing'],
+      'Columns from another datasource are displayed properly'
+    );
   });
 });

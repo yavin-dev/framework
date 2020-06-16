@@ -9,7 +9,7 @@ import EmberObject from '@ember/object';
 import FunctionArgument from './function-argument';
 import KegService from '../../services/keg';
 
-export default class MetricFunction extends EmberObject {
+export default class MetricFunctionMetadataModel extends EmberObject {
   /**
    * @static
    * @property {string} identifierField

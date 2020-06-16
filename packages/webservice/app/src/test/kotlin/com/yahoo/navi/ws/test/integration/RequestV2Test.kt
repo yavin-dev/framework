@@ -32,6 +32,7 @@ class RequestV2Test : IntegrationTest() {
         |   {
         |      "field": "product.id",
         |      "parameters": {},
+        |      "type": "dimension",
         |      "operator": "in",
         |      "values": [
         |        "access_manager"
@@ -40,6 +41,7 @@ class RequestV2Test : IntegrationTest() {
         |    {
         |      "field": "timeSpent",
         |      "parameters": {},
+        |      "type": "metric",
         |      "operator": "gt",
         |      "values": [
         |        3
@@ -48,6 +50,7 @@ class RequestV2Test : IntegrationTest() {
         |    { 
         |      "field": "dateTime",
         |      "parameters": {},
+        |      "type": "timeDimension",
         |      "operator": "bet",
         |      "values": [ "P1D", "current" ]
         |    }
@@ -58,18 +61,18 @@ class RequestV2Test : IntegrationTest() {
         |      "parameters": {
         |        "grain": "day"
         |      },
-        |      "type": "dimension",
+        |      "type": "timeDimension",
         |      "alias": "time"
         |    },
         |    {
         |      "field": "product",
         |      "parameters": {},
-        |
         |      "type": "dimension"
         |    },
         |    {
         |      "field": "spaceId.id",
-        |      "parameters": {}
+        |      "parameters": {},
+        |      "type": "dimension"
         |    },
         |    {
         |      "field": "timeSpent",
@@ -78,10 +81,11 @@ class RequestV2Test : IntegrationTest() {
         |    }
         |  ],
         |  "table": "certifiedAudience",
-        |  "sort": [
+        |  "sorts": [
         |    {
         |      "field": "dateTime",
         |      "parameters": {},
+        |      "type": "timeDimension",
         |      "direction": "desc"
         |    }
         |  ],
@@ -142,23 +146,26 @@ class RequestV2Test : IntegrationTest() {
 
                 .body("data.attributes.request.filters.size()", Is(3))
                 .body("data.attributes.request.filters[0].field", equalTo("product.id"))
+                .body("data.attributes.request.filters[0].type", equalTo("dimension"))
                 .body("data.attributes.request.filters[0].operator", equalTo("in"))
                 .body("data.attributes.request.filters[0].parameters", matchesJsonMap("{}"))
                 .body("data.attributes.request.filters[0].values", hasItems("access_manager"))
 
                 .body("data.attributes.request.filters[1].field", equalTo("timeSpent"))
                 .body("data.attributes.request.filters[1].operator", equalTo("gt"))
+                .body("data.attributes.request.filters[1].type", equalTo("metric"))
                 .body("data.attributes.request.filters[1].parameters", matchesJsonMap("{}"))
                 .body("data.attributes.request.filters[1].values", hasItems(3))
 
                 .body("data.attributes.request.filters[2].field", equalTo("dateTime"))
                 .body("data.attributes.request.filters[2].operator", equalTo("bet"))
+                .body("data.attributes.request.filters[2].type", equalTo("timeDimension"))
                 .body("data.attributes.request.filters[2].parameters", matchesJsonMap("{}"))
                 .body("data.attributes.request.filters[2].values", hasItems("P1D", "current"))
 
                 .body("data.attributes.request.columns[0].field", equalTo("dateTime"))
                 .body("data.attributes.request.columns[0].parameters", matchesJsonMap("{\"grain\":\"day\"}"))
-                .body("data.attributes.request.columns[0].type", equalTo("dimension"))
+                .body("data.attributes.request.columns[0].type", equalTo("timeDimension"))
                 .body("data.attributes.request.columns[0].alias", equalTo("time"))
 
                 .body("data.attributes.request.columns.size()", Is(4))
@@ -169,7 +176,7 @@ class RequestV2Test : IntegrationTest() {
 
                 .body("data.attributes.request.columns[2].field", equalTo("spaceId.id"))
                 .body("data.attributes.request.columns[2].parameters", matchesJsonMap("{}"))
-                .body("data.attributes.request.columns[2]", not(hasKey("type")))
+                .body("data.attributes.request.columns[2].type", equalTo("dimension"))
                 .body("data.attributes.request.columns[2]", not(hasKey("alias")))
 
                 .body("data.attributes.request.columns[3].field", equalTo("timeSpent"))
@@ -177,10 +184,11 @@ class RequestV2Test : IntegrationTest() {
                 .body("data.attributes.request.columns[3].type", equalTo("metric"))
                 .body("data.attributes.request.columns[3]", not(hasKey("alias")))
 
-                .body("data.attributes.request.sort.size()", Is(1))
-                .body("data.attributes.request.sort[0].field", equalTo("dateTime"))
-                .body("data.attributes.request.sort[0].parameters", matchesJsonMap("{}"))
-                .body("data.attributes.request.sort[0].direction", equalTo("desc"))
+                .body("data.attributes.request.sorts.size()", Is(1))
+                .body("data.attributes.request.sorts[0].field", equalTo("dateTime"))
+                .body("data.attributes.request.sorts[0].parameters", matchesJsonMap("{}"))
+                .body("data.attributes.request.sorts[0].type", equalTo("timeDimension"))
+                .body("data.attributes.request.sorts[0].direction", equalTo("desc"))
     }
 
     @Test
@@ -197,6 +205,7 @@ class RequestV2Test : IntegrationTest() {
                             "request": {
                                 "filters": [{
                                     "field": "foo",
+                                    "type": "metric",
                                     "operator": "gt",
                                     "values": [3, 3.156, -1]
                                 }],
@@ -225,6 +234,7 @@ class RequestV2Test : IntegrationTest() {
                 .assertThat()
                 .statusCode(HttpStatus.SC_OK)
                 .body("data.attributes.request.filters[0].values", hasItems(3, 3.156f, -1))
+                .body("data.attributes.request.filters[0].type", equalTo("metric"))
     }
 
     @Test
@@ -296,23 +306,26 @@ class RequestV2Test : IntegrationTest() {
 
                 .body("data.attributes.requests[0].filters.size()", Is(3))
                 .body("data.attributes.requests[0].filters[0].field", equalTo("product.id"))
+                .body("data.attributes.requests[0].filters[0].type", equalTo("dimension"))
                 .body("data.attributes.requests[0].filters[0].operator", equalTo("in"))
                 .body("data.attributes.requests[0].filters[0].parameters", matchesJsonMap("{}"))
                 .body("data.attributes.requests[0].filters[0].values", hasItems("access_manager"))
 
                 .body("data.attributes.requests[0].filters[1].field", equalTo("timeSpent"))
+                .body("data.attributes.requests[0].filters[1].type", equalTo("metric"))
                 .body("data.attributes.requests[0].filters[1].operator", equalTo("gt"))
                 .body("data.attributes.requests[0].filters[1].parameters", matchesJsonMap("{}"))
                 .body("data.attributes.requests[0].filters[1].values", hasItems(3))
 
                 .body("data.attributes.requests[0].filters[2].field", equalTo("dateTime"))
+                .body("data.attributes.requests[0].filters[2].type", equalTo("timeDimension"))
                 .body("data.attributes.requests[0].filters[2].operator", equalTo("bet"))
                 .body("data.attributes.requests[0].filters[2].parameters", matchesJsonMap("{}"))
                 .body("data.attributes.requests[0].filters[2].values", hasItems("P1D", "current"))
 
                 .body("data.attributes.requests[0].columns[0].field", equalTo("dateTime"))
                 .body("data.attributes.requests[0].columns[0].parameters", matchesJsonMap("{\"grain\":\"day\"}"))
-                .body("data.attributes.requests[0].columns[0].type", equalTo("dimension"))
+                .body("data.attributes.requests[0].columns[0].type", equalTo("timeDimension"))
                 .body("data.attributes.requests[0].columns[0].alias", equalTo("time"))
 
                 .body("data.attributes.requests[0].columns.size()", Is(4))
@@ -323,7 +336,7 @@ class RequestV2Test : IntegrationTest() {
 
                 .body("data.attributes.requests[0].columns[2].field", equalTo("spaceId.id"))
                 .body("data.attributes.requests[0].columns[2].parameters", matchesJsonMap("{}"))
-                .body("data.attributes.requests[0].columns[2]", not(hasKey("type")))
+                .body("data.attributes.requests[0].columns[2].type", equalTo("dimension"))
                 .body("data.attributes.requests[0].columns[2]", not(hasKey("alias")))
 
                 .body("data.attributes.requests[0].columns[3].field", equalTo("timeSpent"))
@@ -331,9 +344,10 @@ class RequestV2Test : IntegrationTest() {
                 .body("data.attributes.requests[0].columns[3].type", equalTo("metric"))
                 .body("data.attributes.requests[0].columns[3]", not(hasKey("alias")))
 
-                .body("data.attributes.requests[0].sort.size()", Is(1))
-                .body("data.attributes.requests[0].sort[0].field", equalTo("dateTime"))
-                .body("data.attributes.requests[0].sort[0].parameters", matchesJsonMap("{}"))
-                .body("data.attributes.requests[0].sort[0].direction", equalTo("desc"))
+                .body("data.attributes.requests[0].sorts.size()", Is(1))
+                .body("data.attributes.requests[0].sorts[0].field", equalTo("dateTime"))
+                .body("data.attributes.requests[0].sorts[0].parameters", matchesJsonMap("{}"))
+                .body("data.attributes.requests[0].sorts[0].type", equalTo("timeDimension"))
+                .body("data.attributes.requests[0].sorts[0].direction", equalTo("desc"))
     }
 }

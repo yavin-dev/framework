@@ -16,11 +16,12 @@ import EmberObject from '@ember/object';
 export function constructFunctionArguments(parameters) {
   return Object.keys(parameters).map(param => {
     const paramObj = parameters[param];
-    const { type, defaultValue, values, dimensionName } = paramObj;
+    const { type, defaultValue, values, dimensionName, description } = paramObj;
 
     return {
       id: param,
       name: param,
+      description,
       valueType: 'TEXT',
       type: 'ref', // It will always be ref for our case because all our parameters have their valid values defined in a dimension or enum
       expression: type === 'dimension' ? `dimension:${dimensionName}` : INTRINSIC_VALUE_EXPRESSION,

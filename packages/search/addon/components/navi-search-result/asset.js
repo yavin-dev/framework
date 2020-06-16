@@ -5,16 +5,27 @@
  * A component that displays results for reports and dashboards
  */
 
-import Component from '@glimmer/component';
+import NaviBaseSearchResultComponent from './base';
 import { pluralize } from 'ember-inflector';
 import { set } from '@ember/object';
 
-export default class NaviAssetSearchResultComponent extends Component {
+/**
+ * @constant NUM_TOP
+ */
+const NUM_TOP = 5;
+
+export default class NaviAssetSearchResultComponent extends NaviBaseSearchResultComponent {
+  /**
+   * @override
+   * @property {number} numberOfTopResults
+   */
+  numberOfTopResults = NUM_TOP;
+
   /**
    * @property {Array} results
    */
   get results() {
-    return this.args.data?.map(value => {
+    return this.data?.map(value => {
       set(value, 'route', this._getRouteFor(value));
       set(value, 'type', value.constructor?.modelName);
       set(value, 'icon', value.type === 'report' ? 'file-text' : 'bar-chart');

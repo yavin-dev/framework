@@ -7,7 +7,7 @@ module('Unit | Consumer | request time grain', function(hooks) {
   setupTest(hooks);
 
   test('ADD_TIME_GRAIN', function(assert) {
-    assert.expect(3);
+    assert.expect(5);
 
     const MockDispatcher = {
       dispatch(action, route, timeGrain) {
@@ -18,6 +18,8 @@ module('Unit | Consumer | request time grain', function(hooks) {
         );
 
         assert.deepEqual(timeGrain, { id: 'newTimeGrain' }, 'New time grain value is given to action');
+
+        assert.step('sent only once');
       }
     };
 
@@ -30,6 +32,10 @@ module('Unit | Consumer | request time grain', function(hooks) {
     consumer.send(RequestActions.ADD_TIME_GRAIN, { currentModel }, { id: 'newTimeGrain' });
 
     assert.equal(logicalTable.timeGrain, 'newTimeGrain', 'addTimeGrain updates the timeGrain in the currentModel');
+
+    consumer.send(RequestActions.ADD_TIME_GRAIN, { currentModel }, { id: 'newTimeGrain' });
+
+    assert.verifySteps(['sent only once'], 'DID_UPDATE_TIME_GRAIN is not sent if time grain is not changed');
   });
 
   test('REMOVE_TIME_GRAIN', function(assert) {

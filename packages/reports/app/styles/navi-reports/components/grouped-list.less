@@ -4,10 +4,12 @@
  */
 .grouped-list {
   color: @denali-grey-800;
-  font-size: @font-size-mid-base;
+  font-size: @font-size-base;
 
   &__group-header {
+    align-items: flex-start;
     cursor: pointer;
+    display: flex;
     margin: 3px 0;
 
     &-content {
@@ -16,13 +18,17 @@
     }
 
     &-icon {
+      flex-shrink: 0;
+      margin-top: 2px;
+
       &--closed {
-        margin-left: 2px;
-        width: 8px;
+        flex-basis: 10px;
+        margin-left: 4px;
       }
+
       &--open {
-        margin-left: 0;
-        width: 10px;
+        flex-basis: 12px;
+        margin-left: 2px;
       }
     }
   }
@@ -30,14 +36,21 @@
   &__item {
     display: flex;
     margin-left: 15px;
-    font-size: @font-size-mid;
 
     &-label {
+      display: block;
+      font: inherit;
+      padding: 0;
+
       &:hover {
         .grouped-list__add-icon {
           color: @denali-link-hover;
           opacity: unset;
         }
+      }
+
+      &::-moz-focus-inner {
+        border: 0; // prevents dotted outline when button is focused
       }
     }
 
@@ -49,19 +62,9 @@
 
       &--selected {
         background-color: @denali-brand-100;
-      }
 
-      &--disabled {
-        .grouped-list__item-label,
-        .grouped-list__add-icon {
-          color: @denali-grey-600;
-          cursor: not-allowed;
-
-          &:hover {
-            .grouped-list__add-icon {
-              color: @denali-grey-600;
-            }
-          }
+        &:focus-within {
+          animation: navi-pulse-once 0.75s;
         }
       }
     }
@@ -115,21 +118,23 @@
       width: 5px;
     }
 
-    span&-label {
+    button&-label {
+      align-items: unset;
       cursor: pointer;
       margin: 0 3px;
+      text-align: left;
     }
 
     &-info {
       align-self: center;
       color: @denali-grey-700;
       cursor: help;
-      display: none;
-      margin-left: 5px;
+      margin-left: 2px;
+      visibility: hidden;
     }
 
     &:hover &-info {
-      display: initial;
+      visibility: visible;
     }
   }
 
@@ -137,7 +142,6 @@
     color: @denali-link;
     cursor: pointer;
     display: inline-block;
-    font-size: @font-size-base;
     margin-right: 2px;
 
     &--deselected:not(:hover) {
@@ -148,8 +152,7 @@
   &__icon-set {
     align-items: center;
     display: flex;
-    font-size: @font-size-base;
-    margin: 0 15px 0 auto;
+    margin: 0 5px 0 auto;
 
     &--no-filter {
       .metric-config {

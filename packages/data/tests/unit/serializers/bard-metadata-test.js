@@ -238,7 +238,7 @@ const Payload = {
       dimensionIds: ['dimensionOne', 'dimensionTwo'],
       timeDimensionIds: ['dimensionThree'],
       timeGrainIds: ['day', 'month'],
-      cardinalitySize: 'MEDIUM'
+      cardinality: 'MEDIUM'
     },
     {
       id: 'secondTable',
@@ -249,7 +249,7 @@ const Payload = {
       metricIds: ['metricOne', 'metricTwo', 'metricThree'],
       dimensionIds: ['dimensionTwo'],
       timeDimensionIds: ['dimensionThree'],
-      cardinalitySize: 'MEDIUM',
+      cardinality: 'MEDIUM',
       timeGrainIds: ['day', 'week']
     }
   ],
@@ -402,6 +402,7 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
         id: 'currency',
         name: 'currency',
         valueType: 'TEXT',
+        description: undefined,
         type: 'ref',
         expression: 'dimension:displayCurrency',
         _localValues: null,
@@ -551,7 +552,7 @@ module('Unit | Bard Metadata Serializer', function(hooks) {
           dimensionIds: ['dimensionOne'],
           timeDimensionIds: [],
           timeGrainIds: ['day', 'month'],
-          cardinalitySize: 'SMALL'
+          cardinality: 'SMALL'
         }
       ],
       'Table has the correct columns associated with it'

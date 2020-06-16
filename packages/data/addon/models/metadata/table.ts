@@ -16,7 +16,36 @@ export type TimeGrain = {
   name: string;
 };
 
-export default class Table extends EmberObject {
+// Shape passed to model constructor
+export interface TableMetadataPayload {
+  id: string;
+  name: string;
+  category?: string;
+  description?: string;
+  cardinality: typeof CARDINALITY_SIZES[number];
+  metricIds: string[];
+  dimensionIds: string[];
+  timeDimensionIds: string[];
+  source: string;
+  timeGrainIds?: string[];
+  tags?: string[];
+}
+// Shape of public properties on model
+export interface TableMetadata {
+  id: string;
+  name: string;
+  category?: string;
+  description?: string;
+  cardinality: typeof CARDINALITY_SIZES[number];
+  metrics: Metric[];
+  dimensions: Dimension[];
+  timeDimensions: TimeDimension[];
+  source: string;
+  timeGrains: TimeGrain[];
+  tags: string[];
+}
+
+export default class TableMetadataModel extends EmberObject implements TableMetadata, TableMetadataPayload {
   /**
    * @static
    * @property {string} identifierField
@@ -49,24 +78,24 @@ export default class Table extends EmberObject {
   category?: string;
 
   /**
-   * @param {CaridnalitySize} cardinalitySize
+   * @param {CaridnalitySize} cardinality
    */
-  cardinalitySize!: typeof CARDINALITY_SIZES[number];
+  cardinality!: typeof CARDINALITY_SIZES[number];
 
   /**
    * @property {string[]} metricIds - array of metric ids
    */
-  private metricIds!: string[];
+  metricIds!: string[];
 
   /**
    * @property {string[]} dimensionIds - array of dimension ids
    */
-  private dimensionIds!: string[];
+  dimensionIds!: string[];
 
   /**
    * @property {string[]} timeDimensionIds - array of time dimension ids
    */
-  private timeDimensionIds!: string[];
+  timeDimensionIds!: string[];
 
   /**
    * @param {Metric[]} metrics
@@ -114,7 +143,7 @@ export default class Table extends EmberObject {
   /**
    * @property {string[]} timeGrainIds - supported timegrains for a column
    */
-  private timeGrainIds: string[] = [];
+  timeGrainIds: string[] = [];
 
   /**
    * @property {Object[]} timeGrains - timeGrain objects with id and display name
