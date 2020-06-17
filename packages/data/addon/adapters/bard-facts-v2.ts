@@ -12,52 +12,10 @@ import { assign } from '@ember/polyfills';
 import EmberObject from '@ember/object';
 import { canonicalizeMetric, serializeParameters, getAliasedMetrics, canonicalizeAlias } from '../utils/metric';
 import { configHost } from '../utils/adapter';
+import NaviFactAdapter, { Filter, Parameters, RequestOptions, RequestV2, SORT_DIRECTIONS } from './fact-interface';
 
-const SORT_DIRECTIONS = ['desc', 'asc'];
-
-export type RequestOptions = {
-  clientId?: string;
-  customHeaders?: Dict<string>;
-  timeout?: number;
-  page?: number;
-  perPage?: number;
-  format?: string;
-  cache?: boolean;
-  queryParams?: Dict<string>;
-  dataSourceName?: string;
-};
-type Query = RequestOptions & Dict<string | number | boolean>;
-type SortDirection = typeof SORT_DIRECTIONS[number];
-type ColumnType = 'metric' | 'dimension' | 'timeDimension';
-type Parameters = Dict<string>;
-type Column = {
-  field: string;
-  parameters: Parameters;
-  type: ColumnType;
-  alias: string;
-};
-type Filter = {
-  field: string;
-  parameters: Parameters;
-  type: ColumnType;
-  operator: string;
-  values: string[];
-};
-type Sort = {
-  field: string;
-  parameters: Parameters;
-  direction: SortDirection;
-};
-// TODO: Remove V2 once V1 is no longer in use
-type RequestV2 = {
-  filters: Filter[];
-  columns: Column[];
-  table: string;
-  sort: Sort[];
-  limit: TODO<string>;
-  requestVersion: '2.0';
-};
-type AliasFn = (column: string) => string;
+export type Query = RequestOptions & Dict<string | number | boolean>;
+export type AliasFn = (column: string) => string;
 
 /**
  * @function formatDimensionFieldName
@@ -96,7 +54,7 @@ export function serializeFilters(filters: Filter[]): string {
     .join(',');
 }
 
-export default class BardFactsAdapter extends EmberObject {
+export default class BardFactsAdapter extends EmberObject implements NaviFactAdapter {
   /**
    * @property namespace
    */

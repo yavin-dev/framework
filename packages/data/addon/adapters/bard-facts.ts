@@ -10,11 +10,11 @@ import { assert } from '@ember/debug';
 import { inject as service } from '@ember/service';
 import { A as array } from '@ember/array';
 import { assign } from '@ember/polyfills';
-import EmberObject, { getWithDefault, get } from '@ember/object';
+import EmberObject, { getWithDefault } from '@ember/object';
 import { canonicalizeMetric, getAliasedMetrics, canonicalizeAlias } from '../utils/metric';
 import { configHost } from '../utils/adapter';
-
-const SORT_DIRECTIONS = ['desc', 'asc'];
+import NaviFactAdapter, { RequestV1, RequestOptions, SORT_DIRECTIONS } from './fact-interface';
+import { AliasFn, Query } from './bard-facts-v2';
 
 /**
  * Serializes a list of filters to a fili filter string
@@ -25,13 +25,13 @@ const SORT_DIRECTIONS = ['desc', 'asc'];
  * @param {String} filter.operator - the type of filter operator
  * @param {Array<String|number>} filter.values - the values to pass to the operator
  */
-export function serializeFilters(filters) {
+export function serializeFilters(filters: TODO[]) {
   return filters
     .map(filter => {
       const { dimension, field, operator, values } = filter;
       const serializedValues = values
-        .map(v => String(v).replace(/"/g, '""')) // csv serialize " -> ""
-        .map(v => `"${v}"`) // wrap each "value"
+        .map((v: string | number) => String(v).replace(/"/g, '""')) // csv serialize " -> ""
+        .map((v: string) => `"${v}"`) // wrap each "value"
         .join(','); // comma to separate
 
       return `${dimension}|${field}-${operator}[${serializedValues}]`;
@@ -39,7 +39,7 @@ export function serializeFilters(filters) {
     .join(',');
 }
 
-export default class BardFactsAdapter extends EmberObject {
+export default class BardFactsAdapter extends EmberObject implements NaviFactAdapter {
   /**
    * @property namespace
    */
@@ -48,7 +48,7 @@ export default class BardFactsAdapter extends EmberObject {
   /**
    * @property {Service} ajax
    */
-  @service ajax;
+  @service ajax: TODO;
 
   /**
    * Builds the dimensions path for a request
@@ -58,7 +58,7 @@ export default class BardFactsAdapter extends EmberObject {
    * @param {Object} request
    * @return {String} dimensions path
    */
-  _buildDimensionsPath(request /*options*/) {
+  _buildDimensionsPath(request: RequestV1, _options: RequestOptions): string {
     const dimensions = array(request.dimensions);
     return dimensions.length
       ? `/${array(dimensions.mapBy('dimension'))
@@ -75,8 +75,10 @@ export default class BardFactsAdapter extends EmberObject {
    * @param {Object} request
    * @return {String} dateTime param value
    */
-  _buildDateTimeParam(request) {
-    return request.intervals.map(interval => `${interval.start}/${interval.end}`).join(',');
+  _buildDateTimeParam(request: RequestV1): string {
+    return request.intervals
+      .map((interval: { start: string; end: string }) => `${interval.start}/${interval.end}`)
+      .join(',');
   }
 
   /**
@@ -87,7 +89,7 @@ export default class BardFactsAdapter extends EmberObject {
    * @param {Object} request
    * @return {String} metrics param value
    */
-  _buildMetricsParam(request) {
+  _buildMetricsParam(request: RequestV1): string {
     return array((request.metrics || []).map(canonicalizeMetric))
       .uniq()
       .join(',');
@@ -101,12 +103,12 @@ export default class BardFactsAdapter extends EmberObject {
    * @param {Object} request
    * @return {String} filters param value
    */
-  _buildFiltersParam(request) {
+  _buildFiltersParam(request: RequestV1): string | undefined {
     const { filters } = request;
 
     if (filters && filters.length) {
       // default field to 'id'
-      const defaultedFilters = filters.map(filter => ({ field: 'id', ...filter }));
+      const defaultedFilters = filters.map((filter: TODO) => ({ field: 'id', ...filter }));
       return serializeFilters(defaultedFilters);
     } else {
       return undefined;
@@ -122,12 +124,12 @@ export default class BardFactsAdapter extends EmberObject {
    * @param {function} aliasFunction function that returns metrics from aliases
    * @return {String} sort param value
    */
-  _buildSortParam(request, aliasFunction = a => a) {
+  _buildSortParam(request: RequestV1, aliasFunction: AliasFn = a => a): string | undefined {
     const { sort } = request;
 
     if (sort && sort.length) {
       return sort
-        .map(sortMetric => {
+        .map((sortMetric: { metric: string; direction: string }) => {
           const metric = aliasFunction(sortMetric.metric);
           const direction = getWithDefault(sortMetric, 'direction', 'desc');
 
@@ -153,12 +155,12 @@ export default class BardFactsAdapter extends EmberObject {
    * @param {function} aliasFunction function that returns metrics from aliases
    * @return {String} having param value
    */
-  _buildHavingParam(request, aliasFunction = a => a) {
+  _buildHavingParam(request: RequestV1, aliasFunction: AliasFn = a => a): string | undefined {
     const { having } = request;
 
     if (having && having.length) {
       return having
-        .map(having => {
+        .map((having: { value: TODO; metric?: TODO; operator?: TODO; values?: TODO }) => {
           deprecate('Please use the property `values` instead of `value` in a `having` object', !having.value, {
             id: 'navi-data._buildHavingParam',
             until: '4.0.0'
@@ -187,12 +189,12 @@ export default class BardFactsAdapter extends EmberObject {
    * @param {Object} options - optional host options
    * @return {String} URL Path
    */
-  _buildURLPath(request, options = {}) {
+  _buildURLPath(request: RequestV1, options: RequestOptions = {}): string {
     const host = configHost(options);
     const { namespace } = this;
-    const table = get(request, 'logicalTable.table'),
-      timeGrain = get(request, 'logicalTable.timeGrain'),
-      dimensions = this._buildDimensionsPath(request, options);
+    const table = request.logicalTable.table;
+    const timeGrain = request.logicalTable.timeGrain;
+    const dimensions = this._buildDimensionsPath(request, options);
 
     return `${host}/${namespace}/${table}/${timeGrain}${dimensions}/`;
   }
@@ -212,13 +214,13 @@ export default class BardFactsAdapter extends EmberObject {
    *
    * @return {Object} query object
    */
-  _buildQuery(request, options) {
-    let query = {},
-      aliasMap = getAliasedMetrics(request.metrics),
-      aliasFunction = alias => canonicalizeAlias(alias, aliasMap),
-      filters = this._buildFiltersParam(request),
-      having = this._buildHavingParam(request, aliasFunction),
-      sort = this._buildSortParam(request, aliasFunction);
+  _buildQuery(request: RequestV1, options: RequestOptions): Query {
+    const query: Query = {};
+    const aliasMap = getAliasedMetrics(request.metrics);
+    const aliasFunction: AliasFn = alias => canonicalizeAlias(alias, aliasMap);
+    const filters = this._buildFiltersParam(request);
+    const having = this._buildHavingParam(request, aliasFunction);
+    const sort = this._buildSortParam(request, aliasFunction);
 
     query.dateTime = this._buildDateTimeParam(request);
     query.metrics = this._buildMetricsParam(request);
@@ -269,14 +271,14 @@ export default class BardFactsAdapter extends EmberObject {
    * @param {Object} [options] - options object
    * @return {String} url
    */
-  urlForFindQuery(request, options) {
+  urlForFindQuery(request: RequestV1, options: RequestOptions): string {
     // Decorate and translate the request
-    let decoratedRequest = this._decorate(request),
-      path = this._buildURLPath(decoratedRequest, options),
-      query = this._buildQuery(decoratedRequest, options),
-      queryStr = Object.entries(query)
-        .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
-        .join('&');
+    const decoratedRequest = this._decorate(request);
+    const path = this._buildURLPath(decoratedRequest, options);
+    const query = this._buildQuery(decoratedRequest, options);
+    const queryStr = Object.entries(query)
+      .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+      .join('&');
 
     return `${path}?${queryStr}`;
   }
@@ -284,15 +286,15 @@ export default class BardFactsAdapter extends EmberObject {
   /**
    * @property {Ember.Service} requestDecorator
    */
-  @service requestDecorator;
+  @service requestDecorator: TODO;
 
   /**
    * @method _decorate
    * @private
-   * @param {Object} request - request to decorate
-   * @returns {Object} decorated request
+   * @param {RequestV1} request - request to decorate
+   * @returns {RequestV1} decorated request
    */
-  _decorate(request) {
+  _decorate(request: RequestV1): RequestV1 {
     return this.requestDecorator.applyGlobalDecorators(request);
   }
 
@@ -308,14 +310,14 @@ export default class BardFactsAdapter extends EmberObject {
    *      }
    * @returns {Promise} - Promise with the response
    */
-  fetchDataForRequest(request, options) {
+  fetchDataForRequest(request: RequestV1, options: RequestOptions) {
     // Decorate and translate the request
-    let decoratedRequest = this._decorate(request),
-      url = this._buildURLPath(decoratedRequest, options),
-      query = this._buildQuery(decoratedRequest, options),
-      clientId = 'UI',
-      customHeaders = {},
-      timeout = 600000;
+    const decoratedRequest = this._decorate(request);
+    const url = this._buildURLPath(decoratedRequest, options);
+    const query = this._buildQuery(decoratedRequest, options);
+    let clientId = 'UI';
+    let customHeaders: Dict<string> = {};
+    let timeout = 600000;
 
     // Support custom clientid header
     if (options && options.clientId) {
@@ -336,7 +338,7 @@ export default class BardFactsAdapter extends EmberObject {
       xhrFields: {
         withCredentials: true
       },
-      beforeSend(xhr) {
+      beforeSend(xhr: TODO) {
         xhr.setRequestHeader('clientid', clientId);
         Object.keys(customHeaders).forEach(name => xhr.setRequestHeader(name, customHeaders[name]));
       },
