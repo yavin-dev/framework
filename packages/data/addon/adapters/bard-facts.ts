@@ -25,7 +25,7 @@ import { AliasFn, Query } from './bard-facts-v2';
  * @param {String} filter.operator - the type of filter operator
  * @param {Array<String|number>} filter.values - the values to pass to the operator
  */
-export function serializeFilters(filters: TODO[]) {
+export function serializeFilters(filters: TODO[]): string {
   return filters
     .map(filter => {
       const { dimension, field, operator, values } = filter;

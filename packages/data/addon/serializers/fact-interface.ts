@@ -11,5 +11,5 @@ export interface ResponseV1 {
 }
 
 export default interface NaviFactSerializer {
-  normalize(payload: ResponseV1): ResponseV1 | undefined;
+  normalize(payload?: ResponseV1): ResponseV1 | undefined;
 }

@@ -43,6 +43,7 @@ export type Filter = {
 export type Sort = {
   field: string;
   parameters: Parameters;
+  type: ColumnType;
   direction: SortDirection;
 };
 

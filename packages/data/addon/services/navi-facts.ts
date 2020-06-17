@@ -67,7 +67,7 @@ export default class NaviFactsService extends Service {
    * @param {Object} [options.customHeaders] - hash of header names and values
    * @returns {Promise} - Promise with the bard response model object
    */
-  fetch(this: NaviFactsService, request: RequestV1, options: RequestOptions) {
+  fetch(this: NaviFactsService, request: RequestV1, options: RequestOptions): Promise<NaviFactsModel> {
     const type = config.navi.dataSources[0].type;
     const adapter = this._adapterFor(type);
     const serializer = this._serializerFor(type);
@@ -87,7 +87,7 @@ export default class NaviFactsService extends Service {
    * @param {Object} request
    * @return {Promise|null} returns the promise with the next set of results or null
    */
-  fetchNext(this: NaviFactsService, response: ResponseV1, request: RequestV1): Promise<TODO> | null {
+  fetchNext(this: NaviFactsService, response: ResponseV1, request: RequestV1): Promise<NaviFactsModel> | null {
     if (response.meta.pagination) {
       const { perPage, numberOfResults, currentPage } = response.meta.pagination;
       const totalPages = numberOfResults / perPage;
@@ -108,7 +108,7 @@ export default class NaviFactsService extends Service {
    * @param {Object} request
    * @return {Promise|null} returns the promise with the previous set of results or null
    */
-  fetchPrevious(this: NaviFactsService, response: ResponseV1, request: RequestV1): Promise<TODO> | null {
+  fetchPrevious(this: NaviFactsService, response: ResponseV1, request: RequestV1): Promise<NaviFactsModel> | null {
     if (response.meta.pagination) {
       const { rowsPerPage, currentPage } = response.meta.pagination;
       if (currentPage > 1) {
