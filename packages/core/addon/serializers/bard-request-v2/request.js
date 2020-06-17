@@ -20,19 +20,23 @@ export default class RequestSerializer extends JSONSerializer {
    * @return {Object} normalized request
    */
   normalize(typeClass, request) {
+    let normalized;
+
     //normalize v1 into v2
     if (request.requestVersion === 'v1') {
       //if datasource is undefined, try to infer from metadata
       const namespace = request.dataSource || this.bardMetadata.getTableNamespace(request.logicalTable.table);
 
-      normalizeV1toV2(request, namespace);
+      normalized = normalizeV1toV2(request, namespace);
+    } else {
+      normalized = Object.assign({}, request);
     }
 
     //copy source property from request
     ['columns', 'filters', 'sorts'].forEach(attr =>
-      request[attr].forEach(fragment => (fragment.source = request.dataSource))
+      normalized[attr].forEach(fragment => (fragment.source = normalized.dataSource))
     );
 
-    return super.normalize(typeClass, request);
+    return super.normalize(typeClass, normalized);
   }
 }

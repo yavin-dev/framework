@@ -54,9 +54,9 @@ export default class RequestSerializer extends JSONSerializer {
     //if datasource is undefined, try to infer from metadata
     const namespace = request.dataSource || this.bardMetadata.getTableNamespace(request.logicalTable.table);
 
-    normalizeV1(request, namespace);
+    const normalized = normalizeV1(request, namespace);
 
-    return super.normalize(type, request);
+    return super.normalize(type, normalized);
   }
 
   /**
