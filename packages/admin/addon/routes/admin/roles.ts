@@ -4,5 +4,21 @@
  */
 
 import Route from '@ember/routing/route';
+import { inject as service } from '@ember/service';
 
-export default class AdminRoles extends Route {}
+export default class AdminRoles extends Route {
+  /**
+   * @property { Service } store;
+   */
+  @service store: TODO;
+
+  /**
+   * @method model
+   * @override
+   */
+  async model() {
+    const users = await this.store.findAll('user');
+
+    return { users };
+  }
+}
