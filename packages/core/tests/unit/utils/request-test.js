@@ -28,6 +28,7 @@ module('Unit | Utils | Request', function(hooks) {
       filters: [
         {
           dimension: 'age',
+          field: 'id',
           operator: 'in',
           values: ['2']
         },
@@ -249,6 +250,7 @@ module('Unit | Utils | Request', function(hooks) {
       [
         {
           dimension: 'dummy.age',
+          field: 'id',
           operator: 'in',
           values: ['2']
         },
@@ -368,6 +370,7 @@ module('Unit | Utils | Request', function(hooks) {
       [
         {
           dimension: 'age',
+          field: 'id',
           operator: 'in',
           values: ['2']
         },
