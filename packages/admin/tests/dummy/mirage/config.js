@@ -3,6 +3,7 @@ import BardLite from 'navi-data/mirage/routes/bard-lite';
 import BardMeta from 'navi-data/mirage/routes/bard-meta';
 import user from './routes/user';
 import report from './routes/report';
+import role from './routes/role';
 import dashboard from './routes/dashboard';
 import dashboardCollection from './routes/dashboard-collection';
 import reportCollection from './routes/report-collections';
@@ -31,4 +32,5 @@ export default function() {
   deliveryRules.call(this);
   user.call(this);
   report.call(this);
+  role.call(this);
 }

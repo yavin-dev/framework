@@ -12,17 +12,17 @@
       </modal.Header>
       <modal.Content>
         <DenaliInputGroup @label="User Id" class="navi-roles-dashboard__create-filter-group" as |Group|>
-          <Group.Input type="text" placeholder="User Id" />
+          <Group.Input id="navi-roles-dashboard__create-user-field" type="text" placeholder="User Id" />
         </DenaliInputGroup>
         <DenaliInputGroup @label="Email" class="navi-roles-dashboard__create-filter-group" as |Group|>
-          <Group.Input type="text" placeholder="user@verizonmedia.com" />
+          <Group.Input id="navi-roles-dashboard__create-email-field" type="text" placeholder="user@verizonmedia.com" />
         </DenaliInputGroup>
         <DenaliInputGroup @label="Roles" class="navi-roles-dashboard__create-filter-group" as |Group|>
-          <Group.Input type="text" placeholder="Roles" />
+          <Group.Input id="navi-roles-dashboard__create-roles-field" type="text" placeholder="Roles" />
         </DenaliInputGroup>
       </modal.Content>
       <modal.Footer>
-        <DenaliButton @style="solid" class="navi-roles-dashboard__create-button" {{on "click" (fn this.addUser)}}>Save
+        <DenaliButton @style="solid" @type="submit" class="navi-roles-dashboard__create-button" {{on "click" (fn this.addUser)}}>Save
         </DenaliButton>
         <DenaliButton @style="outline" class="navi-roles-dashboard__create-button"
           {{on "click" (fn (mut this.isAddUserModalOpen) false)}}>Cancel</DenaliButton>
