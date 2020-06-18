@@ -22,7 +22,7 @@
         </DenaliInputGroup>
       </modal.Content>
       <modal.Footer>
-        <DenaliButton @style="solid" @type="submit" class="navi-roles-dashboard__create-button" {{on "click" (fn this.addUser)}}>Save
+        <DenaliButton @style="solid" @type="submit" class="navi-roles-dashboard__create-button">Save
         </DenaliButton>
         <DenaliButton @style="outline" class="navi-roles-dashboard__create-button"
           {{on "click" (fn (mut this.isAddUserModalOpen) false)}}>Cancel</DenaliButton>
