@@ -3,9 +3,12 @@ import { setupApplicationTest } from 'ember-qunit';
 import { click, currentRouteName, visit } from '@ember/test-helpers';
 // @ts-ignore
 import { linkContains } from 'navi-core/test-support/contains-helpers';
+// @ts-ignore
+import { setupMirage } from 'ember-cli-mirage/test-support';
 
 module('Acceptance | Admin', function(hooks) {
   setupApplicationTest(hooks);
+  setupMirage(hooks);
 
   test('navigate to roles route', async function(assert) {
     assert.expect(2);
