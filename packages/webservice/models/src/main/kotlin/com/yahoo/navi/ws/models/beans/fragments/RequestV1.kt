@@ -6,15 +6,14 @@ package com.yahoo.navi.ws.models.beans.fragments
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.yahoo.navi.ws.models.beans.fragments.request.Dimension
-import com.yahoo.navi.ws.models.types.JsonType
-import org.hibernate.annotations.TypeDef
-
-import com.yahoo.navi.ws.models.beans.fragments.request.Interval
 import com.yahoo.navi.ws.models.beans.fragments.request.Filter
 import com.yahoo.navi.ws.models.beans.fragments.request.Having
+import com.yahoo.navi.ws.models.beans.fragments.request.Interval
 import com.yahoo.navi.ws.models.beans.fragments.request.LogicalTable
 import com.yahoo.navi.ws.models.beans.fragments.request.Metric
 import com.yahoo.navi.ws.models.beans.fragments.request.Sort
+import com.yahoo.navi.ws.models.types.JsonType
+import org.hibernate.annotations.TypeDef
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @TypeDef(typeClass = JsonType::class, name = "json")

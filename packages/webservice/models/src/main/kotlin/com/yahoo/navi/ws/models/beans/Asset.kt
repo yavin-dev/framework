@@ -5,6 +5,7 @@
 package com.yahoo.navi.ws.models.beans
 
 import com.yahoo.elide.annotation.UpdatePermission
+import com.yahoo.navi.ws.models.checks.DefaultNobodyCheck.Companion.NOBODY
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
 import java.util.Date
@@ -18,7 +19,6 @@ import javax.persistence.Inheritance
 import javax.persistence.InheritanceType
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
-
 import javax.persistence.Temporal
 import javax.persistence.TemporalType
 
@@ -26,25 +26,25 @@ import javax.persistence.TemporalType
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "ASSET_TYPE")
 abstract class Asset : HasAuthor {
-    @get:Id
-    @get:GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Int = 0
 
-    open var title: String? = null
+    var title: String? = null
 
-    @get:JoinColumn(name = "author")
-    @get:ManyToOne
+    @JoinColumn(name = "author")
+    @ManyToOne
     override var author: User? = null
 
-    @get:CreationTimestamp
-    @get:Column(columnDefinition = "timestamp default current_timestamp")
-    @get:Temporal(TemporalType.TIMESTAMP)
-    @get:UpdatePermission(expression = "nobody")
-    open var createdOn: Date? = null
+    @CreationTimestamp
+    @Column(columnDefinition = "timestamp default current_timestamp")
+    @Temporal(TemporalType.TIMESTAMP)
+    @UpdatePermission(expression = NOBODY)
+    var createdOn: Date? = null
 
-    @get:UpdateTimestamp
-    @get:Column(columnDefinition = "timestamp default current_timestamp")
-    @get:Temporal(TemporalType.TIMESTAMP)
-    @get:UpdatePermission(expression = "nobody")
-    open var updatedOn: Date? = null
+    @UpdateTimestamp
+    @Column(columnDefinition = "timestamp default current_timestamp")
+    @Temporal(TemporalType.TIMESTAMP)
+    @UpdatePermission(expression = NOBODY)
+    var updatedOn: Date? = null
 }

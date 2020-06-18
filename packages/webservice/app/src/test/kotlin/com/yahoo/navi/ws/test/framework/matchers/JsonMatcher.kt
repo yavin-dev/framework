@@ -4,8 +4,8 @@
  */
 package com.yahoo.navi.ws.test.framework.matchers
 
-import com.jayway.restassured.path.json.JsonPath
 import com.google.common.collect.Maps
+import com.jayway.restassured.path.json.JsonPath
 import org.hamcrest.Description
 import org.hamcrest.TypeSafeMatcher
 

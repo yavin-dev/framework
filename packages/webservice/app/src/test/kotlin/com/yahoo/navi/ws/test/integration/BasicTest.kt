@@ -4,9 +4,9 @@
  */
 package com.yahoo.navi.ws.test.integration
 
-import com.yahoo.navi.ws.test.framework.IntegrationTest
 import com.jayway.restassured.RestAssured.given
-import org.junit.Test
+import com.yahoo.navi.ws.test.framework.IntegrationTest
+import org.junit.jupiter.api.Test
 
 class BasicTest : IntegrationTest() {
     @Test

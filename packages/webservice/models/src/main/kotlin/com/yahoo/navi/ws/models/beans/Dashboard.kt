@@ -4,50 +4,46 @@
  */
 package com.yahoo.navi.ws.models.beans
 
-import com.yahoo.elide.annotation.Include
-import com.yahoo.elide.annotation.SharePermission
-import com.yahoo.elide.annotation.DeletePermission
 import com.yahoo.elide.annotation.CreatePermission
+import com.yahoo.elide.annotation.DeletePermission
+import com.yahoo.elide.annotation.Include
 import com.yahoo.elide.annotation.UpdatePermission
 import com.yahoo.navi.ws.models.beans.fragments.DashboardPresentation
 import com.yahoo.navi.ws.models.beans.fragments.request.Filter
-
+import com.yahoo.navi.ws.models.checks.DefaultAuthorCheck.Companion.IS_AUTHOR
+import com.yahoo.navi.ws.models.checks.DefaultEditorsCheck.Companion.IS_EDITOR
 import org.hibernate.annotations.Parameter
 import org.hibernate.annotations.Type
 import javax.persistence.CascadeType
-
-import javax.persistence.Entity
-import javax.persistence.Table
 import javax.persistence.Column
 import javax.persistence.DiscriminatorValue
+import javax.persistence.Entity
 import javax.persistence.ManyToMany
 import javax.persistence.OneToMany
 
-@Entity(name = "Dashboard")
-@DiscriminatorValue("Dashboard")
-@Table(name = "custom_dashboards")
+@Entity
 @Include(rootLevel = true, type = "dashboards")
-@SharePermission
-@CreatePermission(expression = "is an author")
-@UpdatePermission(expression = "is an author now OR is an editor now")
-@DeletePermission(expression = "is an author now")
+@DiscriminatorValue("Dashboard")
+@CreatePermission(expression = IS_AUTHOR)
+@UpdatePermission(expression = "$IS_AUTHOR OR $IS_EDITOR")
+@DeletePermission(expression = IS_AUTHOR)
 class Dashboard : Asset(), HasAuthor, HasEditors {
 
-    @get:ManyToMany(mappedBy = "editingDashboards")
-    override var editors: Collection<User> = arrayListOf()
+    @ManyToMany(mappedBy = "editingDashboards")
+    override var editors: MutableSet<User> = mutableSetOf()
 
-    @get:Column(name = "presentation", columnDefinition = "MEDIUMTEXT")
-    @get:Type(type = "com.yahoo.navi.ws.models.types.JsonType", parameters = arrayOf(
-            Parameter(name = "class", value = "com.yahoo.navi.ws.models.beans.fragments.DashboardPresentation")
-    ))
+    @Column(name = "presentation", columnDefinition = "MEDIUMTEXT")
+    @Type(type = "com.yahoo.navi.ws.models.types.JsonType", parameters = [
+        Parameter(name = "class", value = "com.yahoo.navi.ws.models.beans.fragments.DashboardPresentation")
+    ])
     var presentation: DashboardPresentation? = null
 
-    @get:OneToMany(mappedBy = "dashboard", cascade = arrayOf(CascadeType.REMOVE), orphanRemoval = true)
-    var widgets: Collection<DashboardWidget> = emptyList()
+    @OneToMany(mappedBy = "dashboard", cascade = [CascadeType.REMOVE], orphanRemoval = true)
+    var widgets: MutableSet<DashboardWidget> = mutableSetOf()
 
-    @get:Column(name = "filters", columnDefinition = "MEDIUMTEXT")
-    @get:Type(type = "com.yahoo.navi.ws.models.types.JsonType", parameters = arrayOf(
-            Parameter(name = "class", value = "java.util.ArrayList")
-    ))
-    var filters: Collection<Filter> = emptyList()
+    @Column(name = "filters", columnDefinition = "MEDIUMTEXT")
+    @Type(type = "com.yahoo.navi.ws.models.types.JsonType", parameters = [
+        Parameter(name = "class", value = "java.util.Set")
+    ])
+    var filters: MutableSet<Filter> = mutableSetOf()
 }

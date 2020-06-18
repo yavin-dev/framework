@@ -50,15 +50,10 @@ subprojects {
 
     dependencies {
         implementation(kotlin("stdlib-jdk8", "1.3.50"))
-        implementation("com.yahoo.elide", "elide-standalone", "5.0.0-pr2")
-        implementation("org.slf4j", "slf4j-api", "1.7.25")
-        implementation("ch.qos.logback", "logback-core", "1.2.3")
-        implementation("org.hibernate", "hibernate-validator", "6.1.0.Final")
-        implementation("org.glassfish", "jakarta.el", "3.0.3")
-        implementation("org.hibernate", "hibernate-validator-cdi", "6.1.0.Final")
-        testImplementation(kotlin("test"))
-        testImplementation(kotlin("test-junit"))
-        testImplementation("org.mockito", "mockito-core", "2.23.4")
-        testImplementation("com.jayway.restassured", "rest-assured", "2.9.0")
+        implementation("com.fasterxml.jackson.core:jackson-databind") {
+            version {
+                strictly("2.10.1")
+            }
+        }
     }
 }
