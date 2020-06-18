@@ -6,9 +6,9 @@
 import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 
-export default class Roles extends Controller {
+export default class AdminRolesController extends Controller {
   /**
-   * @property {Boolean} isAddUserModalOpen
+   * @property {boolean} isAddUserModalOpen
    */
   @tracked isAddUserModalOpen = false;
 
