@@ -114,29 +114,32 @@ type RequestV2 = {
 
 type Namespace = string | undefined;
 
-// interface AliasToCanonFunc {
-//   (metrics: NaviRequestMetric[]): Dict<string>;
-// }
-
 /**
  * Input a list of objects, replace with alias or canonicalized metric,
  * if provided will replace serialized metric.
  *
  * This works on both ends of serialization and deserialization
  *
- * @param {Array} field - property off the request object to transform
- * @param {Object} aliasMap  - Either a map of of aliases to canon name (for deserialization) or canon name to alias (for serialization)
- * @param {Object} canonMap  - Map of canon name to metric object {metric, parameters}
- * @param {String} namespace - request datasource
- * @returns {Array} - copy of the field object transformed with aliases, or alias to metric object
+ * @param field - property off the request object to transform
+ * @param aliasMap  - Either a map of of aliases to canon name (for deserialization) or canon name to alias (for serialization)
+ * @param canonMap  - Map of canon name to metric object {metric, parameters}
+ * @param namespace - request datasource
+ * @returns copy of the field object transformed with aliases, or alias to metric object
  */
-export function toggleAlias(field, aliasMap = {}, canonMap = {}, namespace: Namespace) {
+export function toggleAlias(
+  field: Array<{ metric: Metric | string }>,
+  aliasMap: Dict<string> = {},
+  canonMap: Dict<Metric> = {},
+  namespace: Namespace
+): TODO {
   if (!field) {
     return [];
   }
   return field.map(obj => {
-    const metricName =
-      canonicalizeMetric(obj.metric) || (typeof obj.metric === 'string' && obj.metric) || obj.metric.metric;
+    const metricName: string =
+      canonicalizeMetric(obj.metric) ||
+      (typeof obj.metric === 'string' && obj.metric) ||
+      (typeof obj.metric === 'object' && obj.metric.metric);
 
     obj.metric = aliasMap[metricName] || metricName;
     obj.metric = canonMap[obj.metric] || obj.metric;
