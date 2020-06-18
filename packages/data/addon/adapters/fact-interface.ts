@@ -29,7 +29,7 @@ export type Column = {
   field: string;
   parameters: Parameters;
   type: ColumnType;
-  alias: string;
+  alias?: string;
 };
 
 export type Filter = {
@@ -52,8 +52,9 @@ export type RequestV2 = {
   filters: Filter[];
   columns: Column[];
   table: string;
-  sort: Sort[];
-  limit: TODO<string>;
+  dataSource: string;
+  sorts: Sort[];
+  limit?: TODO<string>;
   requestVersion: '2.0';
 };
 

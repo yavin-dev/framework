@@ -145,10 +145,10 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
    * @return sort param value
    */
   _buildSortParam(request: RequestV2, aliasFunction: AliasFn = a => a): string | undefined {
-    const { sort } = request;
+    const { sorts } = request;
 
-    if (sort.length) {
-      return sort
+    if (sorts.length) {
+      return sorts
         .map(sortField => {
           const field = aliasFunction(sortField.field);
           const direction = sortField.direction || 'desc';
