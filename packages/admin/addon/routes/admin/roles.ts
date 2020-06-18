@@ -5,12 +5,13 @@
 
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
+import StoreService from '@ember-data/store';
 
 export default class AdminRolesRoute extends Route {
   /**
    * @property {Service} store;
    */
-  @service store: TODO;
+  @service store!: StoreService;
 
   /**
    * @method model
