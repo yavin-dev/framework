@@ -13,7 +13,7 @@ import { assign } from '@ember/polyfills';
 import EmberObject, { getWithDefault } from '@ember/object';
 import { canonicalizeMetric, getAliasedMetrics, canonicalizeAlias } from '../utils/metric';
 import { configHost } from '../utils/adapter';
-import NaviFactAdapter, { RequestV1, RequestOptions, SORT_DIRECTIONS } from './fact-interface';
+import NaviFactAdapter, { RequestV1, RequestOptions, SORT_DIRECTIONS, SortDirection } from './fact-interface';
 import { AliasFn, Query } from './bard-facts-v2';
 
 /**
@@ -129,7 +129,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
 
     if (sort && sort.length) {
       return sort
-        .map((sortMetric: { metric: string; direction: string }) => {
+        .map((sortMetric: { metric: string; direction: SortDirection }) => {
           const metric = aliasFunction(sortMetric.metric);
           const direction = getWithDefault(sortMetric, 'direction', 'desc');
 
