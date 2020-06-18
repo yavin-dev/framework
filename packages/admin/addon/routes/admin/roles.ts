@@ -5,6 +5,7 @@
 
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
+// @ts-ignore
 import StoreService from '@ember-data/store';
 
 export default class AdminRolesRoute extends Route {
