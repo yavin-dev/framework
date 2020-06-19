@@ -6,19 +6,16 @@
  */
 
 import EmberObject from '@ember/object';
+import NaviFactSerializer, { ResponseV1 } from './fact-interface';
 
-export default class BardFactsSerializer extends EmberObject {
-  /**
-   * @method normalize - normalizes the JSON response
-   * @param response {Object} - JSON response object
-   * @returns {Object} - normalized JSON object
-   */
-  normalize(payload) {
+export default class BardFactsSerializer extends EmberObject implements NaviFactSerializer {
+  normalize(payload?: ResponseV1): ResponseV1 | undefined {
     if (payload) {
       return {
         rows: payload.rows,
         meta: payload.meta || {}
       };
     }
+    return undefined;
   }
 }

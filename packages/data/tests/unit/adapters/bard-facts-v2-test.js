@@ -82,7 +82,7 @@ const TestRequest = {
         type: 'dimension'
       }
     ],
-    sort: []
+    sorts: []
   },
   Response = {
     rows: [
@@ -373,7 +373,7 @@ module('Unit | Bard Facts V2 Adapter', function(hooks) {
     assert.expect(7);
 
     let singleSort = {
-      sort: [
+      sorts: [
         {
           field: 'm1',
           parameters: {},
@@ -388,7 +388,7 @@ module('Unit | Bard Facts V2 Adapter', function(hooks) {
     );
 
     let sortNoDirection = {
-      sort: [
+      sorts: [
         {
           field: 'm1'
         }
@@ -401,7 +401,7 @@ module('Unit | Bard Facts V2 Adapter', function(hooks) {
     );
 
     let manySorts = {
-      sort: [
+      sorts: [
         {
           field: 'm1',
           direction: 'asc'
@@ -421,7 +421,7 @@ module('Unit | Bard Facts V2 Adapter', function(hooks) {
     assert.equal(
       Adapter._buildSortParam(
         {
-          sort: [
+          sorts: [
             {
               field: 'a',
               direction: 'asc'
@@ -437,7 +437,7 @@ module('Unit | Bard Facts V2 Adapter', function(hooks) {
     assert.equal(
       Adapter._buildSortParam(
         {
-          sort: [
+          sorts: [
             {
               field: 'a',
               direction: 'asc'
@@ -454,11 +454,11 @@ module('Unit | Bard Facts V2 Adapter', function(hooks) {
       'sort param with aliases mixed with non aliases work'
     );
 
-    let emptySorts = { sort: [] };
+    let emptySorts = { sorts: [] };
     assert.equal(Adapter._buildSortParam(emptySorts), undefined, '_buildSortParam returns undefined with empty sort');
 
     let invalidSort = {
-      sort: [
+      sorts: [
         { field: 'valid1' },
         { field: 'valid2', direction: 'asc' },
         { field: 'valid3', direction: 'desc' },
@@ -633,7 +633,7 @@ module('Unit | Bard Facts V2 Adapter', function(hooks) {
       '_buildQuery sets non default format if format is set in the options object'
     );
 
-    let sortRequest = assign({}, TestRequest, { sort: [{ field: 'm1' }] });
+    let sortRequest = assign({}, TestRequest, { sorts: [{ field: 'm1' }] });
     assert.deepEqual(
       Adapter._buildQuery(sortRequest),
       {
@@ -647,7 +647,7 @@ module('Unit | Bard Facts V2 Adapter', function(hooks) {
       '_buildQuery correctly built the query object for a request with sort'
     );
 
-    sortRequest = assign({}, TestRequest, { sort: [{ field: 'a' }] });
+    sortRequest = assign({}, TestRequest, { sorts: [{ field: 'a' }] });
     assert.deepEqual(
       Adapter._buildQuery(sortRequest),
       {
@@ -821,7 +821,7 @@ module('Unit | Bard Facts V2 Adapter', function(hooks) {
 
     let requestWithSort = assign({}, TestRequest, {
       filters: [{ field: 'dateTime', type: 'timeDimension', operator: 'bet', values: ['2015-01-03', '2015-01-04'] }],
-      sort: [{ field: 'm1' }, { field: 'm2' }]
+      sorts: [{ field: 'm1' }, { field: 'm2' }]
     });
     assert.equal(
       decodeURIComponent(Adapter.urlForFindQuery(requestWithSort)),
