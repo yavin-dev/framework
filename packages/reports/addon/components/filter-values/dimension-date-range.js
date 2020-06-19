@@ -1,67 +1,65 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
- *   {{filter-values/dimension-date-range
- *       filter=filter
- *       onUpdateFilter=(action 'update')
- *   }}
+ *   <Filter::Values::DimensionDateRange
+ *     @filter={{this.filter}}
+ *     @onUpdateFilter={{this.update}}
+ *   />
  */
 
-import { oneWay } from '@ember/object/computed';
 import Component from '@ember/component';
-import { get } from '@ember/object';
-import layout from '../../templates/components/filter-values/dimension-date-range';
+import { get, action } from '@ember/object';
+import { oneWay } from '@ember/object/computed';
 import Moment from 'moment';
+import layout from '../../templates/components/filter-values/dimension-date-range';
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
-export default Component.extend({
-  layout,
-
-  /**
-   * @property {Array} classNames
-   */
-  classNames: ['filter-values--dimension-date-range-input'],
-
+@templateLayout(layout)
+@tagName('')
+class DimensionDateRange extends Component {
   /**
    * @property {String} startDate - date (YYYY-MM-DD) of beginning of interval
    */
-  startDate: oneWay('filter.values.firstObject'),
+  @oneWay('filter.values.firstObject') startDate;
 
   /**
    * @property {String} endDate - date (YYYY-MM-DD) of end of interval
    */
-  endDate: oneWay('filter.values.lastObject'),
+  @oneWay('filter.values.lastObject') endDate;
 
   /**
    * @property {String} lowPlaceholder
    */
-  lowPlaceholder: 'Since',
+  lowPlaceholder = 'Since';
 
   /**
    * @property {String} highPlaceholder
    */
-  highPlaceholder: 'Before',
+  highPlaceholder = 'Before';
 
-  actions: {
-    /**
-     * @action setLowValue
-     * @param {String} value - first value to be set in filter
-     */
-    setLowValue(value) {
-      this.onUpdateFilter({
-        values: [Moment(value).format('YYYY-MM-DD'), get(this, 'filter.values.lastObject')]
-      });
-    },
-
-    /**
-     * @action setHighValue
-     * @param {String} value - last value to be set in filter
-     */
-    setHighValue(value) {
-      this.onUpdateFilter({
-        values: [get(this, 'filter.values.firstObject'), Moment(value).format('YYYY-MM-DD')]
-      });
-    }
+  /**
+   * @action setLowValue
+   * @param {String} value - first value to be set in filter
+   */
+  @action
+  setLowValue(value) {
+    this.onUpdateFilter({
+      values: [Moment(value).format('YYYY-MM-DD'), get(this, 'filter.values.lastObject')]
+    });
   }
-});
+
+  /**
+   * @action setHighValue
+   * @param {String} value - last value to be set in filter
+   */
+  @action
+  setHighValue(value) {
+    this.onUpdateFilter({
+      values: [get(this, 'filter.values.firstObject'), Moment(value).format('YYYY-MM-DD')]
+    });
+  }
+}
+
+export default DimensionDateRange;

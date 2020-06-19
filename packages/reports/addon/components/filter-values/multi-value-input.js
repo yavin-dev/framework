@@ -1,61 +1,58 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
- *   {{filter-values/multi-value-input
- *       filter=filter
- *       onUpdateFilter=(action 'update')
- *   }}
+ *   <FilterValues::MultiValueInput
+ *     @filter={{this.filter}}
+ *     @onUpdateFilter={{this.update}}
+ *   />
  */
 import Component from '@ember/component';
-import { set, get } from '@ember/object';
+import { set, action } from '@ember/object';
 import layout from '../../templates/components/filter-values/multi-value-input';
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
-export default Component.extend({
-  layout,
-
+@templateLayout(layout)
+@tagName('')
+class MultiValueInput extends Component {
   /**
    * @method init
    * @override
    */
   init() {
-    this._super(...arguments);
-    const tags = get(this, 'filter.values') || [];
+    super.init(...arguments);
+    const tags = this.filter.values || [];
     set(this, 'tags', tags);
-  },
+  }
 
   /**
-   * @property {String} tagName
-   * @override
+   * @action addValue
+   * @param {String} value - Add single value to the filter values list
    */
-  tagName: '',
+  @action
+  addValue(tag) {
+    const { tags } = this;
+    tags.push(tag);
 
-  actions: {
-    /**
-     * @action addValue
-     * @param {String} value - Add single value to the filter values list
-     */
-    addValue(tag) {
-      let tags = get(this, 'tags');
-      tags.push(tag);
-
-      this.onUpdateFilter({
-        rawValues: tags.slice()
-      });
-    },
-
-    /**
-     * @action removeValueAtIndex
-     * @param {String} value - Removes a single value from the filter values list
-     */
-    removeValueAtIndex(index) {
-      let tags = get(this, 'tags');
-      tags.splice(index, 1);
-
-      this.onUpdateFilter({
-        rawValues: tags.slice()
-      });
-    }
+    this.onUpdateFilter({
+      rawValues: tags.slice()
+    });
   }
-});
+
+  /**
+   * @action removeValueAtIndex
+   * @param {String} value - Removes a single value from the filter values list
+   */
+  @action
+  removeValueAtIndex(index) {
+    const { tags } = this;
+    tags.splice(index, 1);
+
+    this.onUpdateFilter({
+      rawValues: tags.slice()
+    });
+  }
+}
+
+export default MultiValueInput;
