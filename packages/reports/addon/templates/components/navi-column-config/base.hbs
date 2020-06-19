@@ -14,7 +14,7 @@
           {{on "click" @cloneColumn}} />
         <NaviIcon
           class="navi-column-config-base__filter-icon
-            {{if column.isFiltered "navi-column-config-base__filter-icon--active"}}
+            {{if @column.isFiltered "navi-column-config-base__filter-icon--active"}}
             {{if (eq @column.name "dateTime") "navi-column-config-base__filter-icon--disabled"}}"
           @icon="filter"
           role="button"
