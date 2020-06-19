@@ -8,17 +8,20 @@
 import Service from '@ember/service';
 import { getOwner } from '@ember/application';
 import NaviFactsModel from 'navi-data/models/navi-facts';
+//@ts-ignore
 import RequestBuilder from 'navi-data/builder/request';
 import config from 'ember-get-config';
+import NaviFactAdapter, { RequestV1, RequestOptions } from 'navi-data/adapters/fact-interface';
+import NaviFactSerializer, { ResponseV1 } from 'navi-data/serializers/fact-interface';
 
 export default class NaviFactsService extends Service {
   /**
    * @method _adapterFor
    *
    * @param {String} type
-   * @returns {Adapter} adpater instance for type
+   * @returns {Adapter} adapter instance for type
    */
-  _adapterFor(type = 'bard-facts') {
+  _adapterFor(type = 'bard-facts'): NaviFactAdapter {
     return getOwner(this).lookup(`adapter:${type}`);
   }
 
@@ -28,7 +31,7 @@ export default class NaviFactsService extends Service {
    * @param {String} type
    * @returns {Serializer} serializer instance for type
    */
-  _serializerFor(type = 'bard-facts') {
+  _serializerFor(type = 'bard-facts'): NaviFactSerializer {
     return getOwner(this).lookup(`serializer:${type}`);
   }
 
@@ -39,7 +42,7 @@ export default class NaviFactsService extends Service {
    * @param {Object} baseRequest - existing request to start from
    * @returns {Object} request builder interface
    */
-  request(baseRequest) {
+  request(baseRequest: RequestV1) {
     return RequestBuilder.create(baseRequest);
   }
 
@@ -49,9 +52,9 @@ export default class NaviFactsService extends Service {
    * @param {Object} [options] - options object
    * @returns {String} - url for the request
    */
-  getURL(request, options) {
-    const type = config.navi.dataSources[0].type,
-      adapter = this._adapterFor(type);
+  getURL(request: RequestV1, options: RequestOptions) {
+    const type = config.navi.dataSources[0].type;
+    const adapter = this._adapterFor(type);
     return adapter.urlForFindQuery(request, options);
   }
 
@@ -64,10 +67,10 @@ export default class NaviFactsService extends Service {
    * @param {Object} [options.customHeaders] - hash of header names and values
    * @returns {Promise} - Promise with the bard response model object
    */
-  fetch(request, options) {
-    const type = config.navi.dataSources[0].type,
-      adapter = this._adapterFor(type),
-      serializer = this._serializerFor(type);
+  fetch(this: NaviFactsService, request: RequestV1, options: RequestOptions): Promise<NaviFactsModel> {
+    const type = config.navi.dataSources[0].type;
+    const adapter = this._adapterFor(type);
+    const serializer = this._serializerFor(type);
 
     return adapter.fetchDataForRequest(request, options).then(payload => {
       return NaviFactsModel.create({
@@ -84,19 +87,16 @@ export default class NaviFactsService extends Service {
    * @param {Object} request
    * @return {Promise|null} returns the promise with the next set of results or null
    */
-  fetchNext(response, request) {
+  fetchNext(this: NaviFactsService, response: ResponseV1, request: RequestV1): Promise<NaviFactsModel> | null {
     if (response.meta.pagination) {
       const { perPage, numberOfResults, currentPage } = response.meta.pagination;
-
       const totalPages = numberOfResults / perPage;
 
       if (currentPage < totalPages) {
-        let options = {
+        return this.fetch(request, {
           page: currentPage + 1,
           perPage: perPage
-        };
-
-        return this.fetch(request, options);
+        });
       }
     }
     return null;
@@ -108,18 +108,16 @@ export default class NaviFactsService extends Service {
    * @param {Object} request
    * @return {Promise|null} returns the promise with the previous set of results or null
    */
-  fetchPrevious(response, request) {
+  fetchPrevious(this: NaviFactsService, response: ResponseV1, request: RequestV1): Promise<NaviFactsModel> | null {
     if (response.meta.pagination) {
-      if (response.meta.pagination.currentPage > 1) {
-        const options = {
-          page: response.meta.pagination.currentPage - 1,
-          perPage: response.meta.pagination.rowsPerPage
-        };
-
-        return this.fetch(request, options);
+      const { rowsPerPage, currentPage } = response.meta.pagination;
+      if (currentPage > 1) {
+        return this.fetch(request, {
+          page: currentPage - 1,
+          perPage: rowsPerPage
+        });
       }
     }
-
     return null;
   }
 }

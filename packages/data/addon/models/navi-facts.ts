@@ -6,22 +6,24 @@
  */
 
 import EmberObject from '@ember/object';
+import { ResponseV1 } from 'navi-data/serializers/fact-interface';
+import { RequestV1 } from 'navi-data/adapters/fact-interface';
 
 export default class NaviFacts extends EmberObject {
   /**
-   * @property {Object} request - the request object
+   * @property {RequestV1} request - the request object
    */
-  request = undefined;
+  request: RequestV1;
 
   /**
-   * @property {Object} response - response for request
+   * @property {ResponseV1} response - response for request
    */
-  response = undefined;
+  response?: ResponseV1;
 
   /**
    * @property {Service} _factsService - instance of the facts service passed in on create
    */
-  _factService = undefined;
+  _factService: TODO;
 
   /**
    * @method next
