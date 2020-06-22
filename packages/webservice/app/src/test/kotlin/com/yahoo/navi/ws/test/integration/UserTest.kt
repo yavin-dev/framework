@@ -1,5 +1,5 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 package com.yahoo.navi.ws.test.integration
@@ -15,6 +15,8 @@ class UserTest : IntegrationTest() {
     private val naviUser1 = "user1"
     private val naviUser2 = "user2"
     private val naviUser3 = "user3"
+    private val adminRole = "admin"
+    private val userRole = "user"
 
     @Test
     fun userEndpointTest() {
@@ -938,5 +940,105 @@ class UserTest : IntegrationTest() {
             .body("data.relationships.reports.data.id", hasItems("1", "2"))
             .body("data.relationships.dashboards.data.type", equalTo(arrayListOf("dashboards")))
             .body("data.relationships.dashboards.data.id", equalTo(arrayListOf("3")))
+    }
+
+    @Test
+    fun roles() {
+        // register new user
+        registerUser(naviUser1)
+
+        // // user starts out with no roles
+        given()
+            .header("User", naviUser1)
+            .contentType("application/vnd.api+json")
+        .When()
+            .get("/users/$naviUser1")
+        .then()
+            .assertThat()
+            .body("data.relationships.roles.data", empty<Any>())
+
+        // register admin role
+        registerRole(adminRole, naviUser1)
+        // register user role
+        registerRole(userRole, naviUser1)
+
+        // Add roles to user, user can have multiple roles
+        given()
+            .header("User", naviUser1)
+            .contentType("application/vnd.api+json")
+            .body("""
+                {
+                    "data": {
+                        "type": "users",
+                        "id": "$naviUser1",
+                        "relationships": {
+                            "roles": {
+                                "data": [
+                                    {
+                                        "type": "roles",
+                                        "id": "$adminRole"
+                                    },
+                                    {
+                                        "type": "roles",
+                                        "id": "$userRole"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            """.trimIndent())
+        .When()
+            .patch("/users/$naviUser1")
+        .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_NO_CONTENT)
+
+        // roles show up for user
+        given()
+            .header("User", naviUser1)
+        .When()
+            .get("/users/$naviUser1")
+        .then()
+            .assertThat()
+            .body("data.relationships.roles.data.id", hasItems("admin", "user"))
+
+        // can remove a role from a user
+        given()
+            .header("User", naviUser1)
+            .contentType("application/vnd.api+json")
+            .body("""
+                {
+                    "data": {
+                        "type": "users",
+                        "id": "$naviUser1",
+                        "relationships": {
+                            "roles": {
+                                "data": [
+                                    {
+                                        "type": "roles",
+                                        "id": "$adminRole"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+                """.trimIndent())
+        .When()
+            .patch("/users/$naviUser1")
+        .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_NO_CONTENT)
+
+        // user role has been removed
+        given()
+            .header("User", naviUser1)
+            .contentType("application/vnd.api+json")
+        .When()
+            .get("/users/$naviUser1")
+        .then()
+            .assertThat()
+            .body("data.relationships.roles.data.id", not(hasItems("user")))
     }
 }

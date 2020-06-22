@@ -70,23 +70,20 @@ function buildDimensionColumns(dimensions, columnIndex) {
  */
 function buildMetricColumns(metrics, columnIndex, naviFormatter) {
   return metrics.map(metric => {
-    // Trend metrics should render using threshold coloring
-    let category = get(metric, 'metric.category'),
-      isTrend = ~category.toLowerCase().indexOf('trend'),
-      type = isTrend ? 'threshold' : 'metric',
-      metricObject = metric.toJSON(),
-      column = columnIndex[canonicalizeMetric(metricObject)],
-      displayName = column ? column.displayName : naviFormatter.formatMetric(metric.metric, metric.parameters),
-      format = column ? get(column, 'attributes.format') : '';
+    const metricObject = metric.toJSON();
+    const column = columnIndex[canonicalizeMetric(metricObject)];
+    const displayName = column ? column.displayName : naviFormatter.formatMetric(metric.metric, metric.parameters);
+    const format = column ? get(column, 'attributes.format') : '';
 
     return {
-      type,
+      type: 'metric',
       displayName,
       attributes: Object.assign(
         {},
         {
           name: metricObject.metric,
-          parameters: metricObject.parameters
+          parameters: metricObject.parameters,
+          canAggregateSubtotal: true
         },
         { format }
       )
@@ -159,10 +156,6 @@ function hasAllColumns(request, columns) {
 
 export function indexColumnById(columns) {
   return keyBy(columns, ({ type, attributes }) => {
-    if (type === 'threshold') {
-      type = 'metric';
-    }
-
     if (type === 'metric') {
       return canonicalizeColumnAttributes(attributes);
     } else if (type === 'dimension' && attributes.field) {

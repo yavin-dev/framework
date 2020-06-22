@@ -2,7 +2,7 @@ import { findAll, find, visit, click } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
-import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { setupMirage } from 'ember-cli-mirage/test-support';
 import { drag } from 'ember-sortable/test-support/helpers';
 
 module('Acceptance | line chart', function(hooks) {

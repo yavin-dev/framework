@@ -11,8 +11,8 @@
 
 import { A as arr } from '@ember/array';
 import Component from '@ember/component';
-import { computed, get } from '@ember/object';
-import { alias } from '@ember/object/computed';
+import { computed } from '@ember/object';
+import { readOnly } from '@ember/object/computed';
 import { getOwner } from '@ember/application';
 import { guidFor } from '@ember/object/internals';
 import { inject as service } from '@ember/service';
@@ -22,6 +22,7 @@ import { merge } from 'lodash-es';
 import moment from 'moment';
 import { run } from '@ember/runloop';
 import hasChartBuilders from 'navi-core/mixins/components/has-chart-builders';
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
 const DEFAULT_OPTIONS = {
   style: {
@@ -65,119 +66,128 @@ const DEFAULT_OPTIONS = {
   }
 };
 
-export default Component.extend(hasChartBuilders, {
-  layout,
-
+@templateLayout(layout)
+@tagName('')
+export default class LineChart extends Component.extend(hasChartBuilders) {
   /**
    * @property {Service} metricName
    */
-  metricName: service(),
+  @service
+  metricName;
 
   /**
    * @property {String} chartType - the type of c3 chart
    */
-  chartType: 'line',
-
-  /**
-   * @property {String} tagName - don't render a DOM element
-   */
-  tagName: '',
+  chartType = 'line';
 
   /**
    * @property {Array} classNames - since line-chart is a tagless wrapper component,
    * classes specified here are applied to the underlying c3-chart component
    */
-  classNames: ['line-chart-widget'],
+  classNames = ['line-chart-widget'];
 
   /**
    * @property {Object} builder - builder based on series type
    */
-  builder: computed('seriesConfig.type', function() {
-    let type = get(this, 'seriesConfig.type'),
-      builders = get(this, 'chartBuilders');
+  @computed('seriesConfig.type')
+  get builder() {
+    const {
+      seriesConfig: { type },
+      chartBuilders
+    } = this;
 
-    return builders[type];
-  }),
+    return chartBuilders[type];
+  }
 
   /**
    * @property {String} namespace - metadata namespace to use
    */
-  namespace: alias('firstModel.request.dataSource'),
+  @readOnly('firstModel.request.dataSource')
+  namespace;
 
   /**
    * @property {Object} config - config options for the chart
    */
-  config: computed('options', 'dataConfig', function() {
-    let point = get(this, 'pointConfig');
+  @computed('options', 'dataConfig')
+  get config() {
+    const { pointConfig: point } = this;
     //deep merge DEFAULT_OPTIONS, custom options, and data
     return merge(
       {},
       DEFAULT_OPTIONS,
       this.options,
-      get(this, 'dataConfig'),
-      get(this, 'dataSelectionConfig'),
-      { tooltip: get(this, 'chartTooltip') },
+      this.dataConfig,
+      this.dataSelectionConfig,
+      { tooltip: this.chartTooltip },
       { point },
       { axis: { x: { type: 'category' } } }, // Override old 'timeseries' config saved in db
-      get(this, 'yAxisLabelConfig'),
-      get(this, 'yAxisDataFormat'),
-      get(this, 'xAxisTickValues')
+      this.yAxisLabelConfig,
+      this.yAxisDataFormat,
+      this.xAxisTickValues
     );
-  }),
+  }
 
   /**
    * @property {Object} yAxisLabelConfig - y axis label config options for the chart
    */
-  yAxisLabelConfig: computed('options', function() {
-    let metricDisplayName = get(this, 'metricDisplayName');
+  @computed('options')
+  get yAxisLabelConfig() {
+    const { metricDisplayName } = this;
     return metricDisplayName
       ? {
           axis: {
             y: {
               label: {
-                text: get(this, 'metricDisplayName')
+                text: metricDisplayName
               }
             }
           }
         }
       : {};
-  }),
+  }
 
   /**
    * @property {String} metricDisplayName - display name for the current metric in a non-metric chart
    */
-  metricDisplayName: computed('options', 'namespace', function() {
-    let seriesConfig = get(this, 'seriesConfig'),
-      metricName = get(seriesConfig, 'config.metric');
+  @computed('options', 'namespace')
+  get metricDisplayName() {
+    const {
+      seriesConfig: {
+        config: { metric }
+      },
+      metricName
+    } = this;
 
-    if (metricName) {
-      return get(this, 'metricName').getDisplayName(metricName, this.namespace);
+    if (metric) {
+      return metricName.getDisplayName(metric, this.namespace);
     }
     return undefined;
-  }),
+  }
 
   /**
    * @property {Object} seriesConfig - options for determining chart series
    */
-  seriesConfig: computed('options', function() {
-    let optionsWithDefault = merge({}, DEFAULT_OPTIONS, get(this, 'options'));
+  @computed('options')
+  get seriesConfig() {
+    const optionsWithDefault = merge({}, DEFAULT_OPTIONS, this.options);
 
-    return get(optionsWithDefault, 'axis.y.series');
-  }),
+    return optionsWithDefault.axis.y.series;
+  }
 
   /**
    * @property {Object} firstModel - the first model in the model array
    */
-  firstModel: computed('model.[]', function() {
-    const model = arr(get(this, 'model'));
-    return get(model, 'firstObject');
-  }),
+  @computed('model.[]')
+  get firstModel() {
+    return arr(this.model).firstObject;
+  }
 
   /**
    * @property {Object} pointConfig - point radius config options for chart
    */
-  pointConfig: computed('firstModel', function() {
-    const pointCount = get(this, 'firstModel.response.rows.length');
+  @computed('firstModel')
+  get pointConfig() {
+    const pointCount = this.firstModel?.response.rows.length;
 
     //set point radius higher for single data
     if (pointCount === 1) {
@@ -185,27 +195,29 @@ export default Component.extend(hasChartBuilders, {
     }
 
     return { r: 0 };
-  }),
+  }
 
   /**
    * @property {Array} seriesData - chart series data
    */
-  seriesData: computed('firstModel', 'builder', 'seriesConfig', function() {
-    const request = get(this, 'firstModel.request');
-    const rows = get(this, 'firstModel.response.rows');
-    const builder = get(this, 'builder');
-    const seriesConfig = get(this, 'seriesConfig.config');
+  @computed('firstModel', 'builder', 'seriesConfig')
+  get seriesData() {
+    const request = this.firstModel?.request;
+    const rows = this.firstModel?.response.rows;
+    const builder = this.builder;
+    const seriesConfig = this.seriesConfig.config;
     return builder.buildData(rows, seriesConfig, request);
-  }),
+  }
 
   /**
    * @property {Array} seriesDataGroups - chart series groups for stacking
    */
-  seriesDataGroups: computed('options', 'seriesConfig', 'namespace', function() {
-    const seriesConfig = get(this, 'seriesConfig'),
-      seriesType = get(seriesConfig, 'type'),
-      options = merge({}, DEFAULT_OPTIONS, this.options),
-      { stacked } = options.style;
+  @computed('options', 'seriesConfig', 'namespace')
+  get seriesDataGroups() {
+    const seriesConfig = this.seriesConfig;
+    const seriesType = seriesConfig.type;
+    const options = merge({}, DEFAULT_OPTIONS, this.options);
+    const { stacked } = options.style;
 
     if (!stacked) {
       return [];
@@ -213,23 +225,20 @@ export default Component.extend(hasChartBuilders, {
 
     // if stacked, return [[ "Dimension 1", "Dimension 2", ... ]] or [[ "Metric 1", "Metric 2", ... ]]
     if (seriesType === 'dimension') {
-      return [get(seriesConfig, 'config.dimensions').map(dimension => dimension.name)];
+      return [seriesConfig.config.dimensions.map(dimension => dimension.name)];
     } else if (seriesType === 'metric') {
-      return [
-        get(seriesConfig, 'config.metrics').map(metric => this.get('metricName').getDisplayName(metric, this.namespace))
-      ];
+      return [seriesConfig.config.metrics.map(metric => this.metricName.getDisplayName(metric, this.namespace))];
     }
 
     return [];
-  }),
+  }
 
   /**
    * @property {Object} dataConfig - configuration for chart x and y values
    */
-  dataConfig: computed('c3ChartType', 'seriesData', 'seriesDataGroups', function() {
-    const c3ChartType = get(this, 'c3ChartType'),
-      seriesData = get(this, 'seriesData'),
-      seriesDataGroups = get(this, 'seriesDataGroups');
+  @computed('c3ChartType', 'seriesData', 'seriesDataGroups')
+  get dataConfig() {
+    const { c3ChartType, seriesData, seriesDataGroups } = this;
 
     /**
      * controls the order of stacking which should be the same as order of groups
@@ -248,13 +257,14 @@ export default Component.extend(hasChartBuilders, {
         }
       }
     };
-  }),
+  }
 
   /**
    * @property {String} c3ChartType - c3 chart type to determine line behavior
    */
-  c3ChartType: computed('options', 'chartType', function() {
-    const options = merge({}, DEFAULT_OPTIONS, get(this, 'options')),
+  @computed('options', 'chartType')
+  get c3ChartType() {
+    const options = merge({}, DEFAULT_OPTIONS, this.options),
       { curve, area } = options.style;
 
     if (curve === 'line') {
@@ -264,36 +274,38 @@ export default Component.extend(hasChartBuilders, {
     }
 
     return this.chartType;
-  }),
+  }
 
   /**
    * @property {Object} dataSelectionConfig - config for selecting data points on chart
    */
-  dataSelectionConfig: computed('model.[]', function() {
+  @computed('model.[]')
+  get dataSelectionConfig() {
     // model is an array, and object at index 1 is insights data promise
-    let insights = get(this, 'model').objectAt(1);
+    const insights = this.model.objectAt(1);
     return insights ? { dataSelection: insights } : {};
-  }),
+  }
 
   /**
    * @property {String} tooltipComponentName - name of the tooltip component
    */
-  tooltipComponentName: computed(function() {
+  get tooltipComponentName() {
     const guid = guidFor(this);
-    const seriesType = get(this, 'seriesConfig.type');
-    const chartType = get(this, 'chartType');
+    const seriesType = this.seriesConfig.type;
+    const chartType = this.chartType;
     return `${chartType}-chart-${seriesType}-tooltip-${guid}`;
-  }),
+  }
 
   /**
    * @property {Ember.Component} tooltipComponent - component used for rendering HTMLBars templates
    */
-  tooltipComponent: computed('firstModel', 'dataConfig', function() {
-    const request = get(this, 'firstModel.request');
-    const seriesConfig = get(this, 'seriesConfig.config');
-    const tooltipComponentName = get(this, 'tooltipComponentName');
+  @computed('firstModel', 'dataConfig')
+  get tooltipComponent() {
+    const request = this.firstModel?.request;
+    const seriesConfig = this.seriesConfig.config;
+    const tooltipComponentName = this.tooltipComponentName;
     const registryEntry = `component:${tooltipComponentName}`;
-    const builder = get(this, 'builder');
+    const builder = this.builder;
     const owner = getOwner(this);
     const tooltipComponent = Component.extend(owner.ownerInjection(), builder.buildTooltip(seriesConfig, request), {
       renderer: owner.lookup('renderer:-dom')
@@ -308,12 +320,12 @@ export default Component.extend(hasChartBuilders, {
      * Use the factory that has been registered instead of an anonymous component.
      */
     return owner.factoryFor(registryEntry);
-  }),
+  }
 
   /**
    * @property {Object} xAxisTickValuesByGrain - x axis tick positions for day/week/month grain on year chart grain
    */
-  xAxisTickValuesByGrain: computed(function() {
+  get xAxisTickValuesByGrain() {
     const dayValues = [];
     for (let i = 0; i < 12; i++) {
       dayValues.push(
@@ -330,13 +342,14 @@ export default Component.extend(hasChartBuilders, {
       week: [1, 5, 9, 13, 18, 22, 26, 31, 35, 39, 44, 48],
       month: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
     };
-  }),
+  }
 
   /**
    * @property {Object} xAxisTickValues - explicity specifies x axis tick positions for year chart grain
    */
-  xAxisTickValues: computed('model.firstObject', 'seriesConfig', function() {
-    const chartGrain = get(this, 'seriesConfig.config.timeGrain');
+  @computed('model.firstObject', 'seriesConfig')
+  get xAxisTickValues() {
+    const chartGrain = this.seriesConfig.config.timeGrain;
     if (chartGrain !== 'year') {
       return {};
     }
@@ -354,16 +367,17 @@ export default Component.extend(hasChartBuilders, {
         }
       }
     };
-  }),
+  }
 
   /**
    * @property {Object} chartTooltip - configuration for tooltip
    */
-  chartTooltip: computed('seriesConfig.config', 'dataConfig.data.json', 'tooltipComponent', 'firstModel', function() {
-    const rawData = get(this, 'dataConfig.data.json');
-    const tooltipComponent = get(this, 'tooltipComponent');
-    const request = get(this, 'firstModel.request');
-    const seriesConfig = get(this, 'seriesConfig.config');
+  @computed('seriesConfig.config', 'dataConfig.data.json', 'tooltipComponent', 'firstModel')
+  get chartTooltip() {
+    const rawData = this.dataConfig.data?.json;
+    const tooltipComponent = this.tooltipComponent;
+    const request = this.firstModel?.request;
+    const seriesConfig = this.seriesConfig.config;
 
     return {
       contents(tooltipData) {
@@ -389,7 +403,7 @@ export default Component.extend(hasChartBuilders, {
         return innerHTML;
       }
     };
-  }),
+  }
 
   /**
    * @property {Function} formattingFunction
@@ -397,13 +411,14 @@ export default Component.extend(hasChartBuilders, {
    * @param {Number} val - number to format
    * @returns {Number} - formatted number
    */
-  formattingFunction: val => numeral(val).format('0.00a'),
+  formattingFunction = val => numeral(val).format('0.00a');
 
   /**
    * @property {Object} yAxisDataFormat - adds the formattingFunction to the chart config
    */
-  yAxisDataFormat: computed('formattingFunction', function() {
-    let formattingFunction = get(this, 'formattingFunction');
+  @computed('formattingFunction')
+  get yAxisDataFormat() {
+    const formattingFunction = this.formattingFunction;
     return {
       axis: {
         y: {
@@ -413,7 +428,7 @@ export default Component.extend(hasChartBuilders, {
         }
       }
     };
-  }),
+  }
 
   /**
    * Fires before the element is destroyed
@@ -421,9 +436,9 @@ export default Component.extend(hasChartBuilders, {
    * @override
    */
   willDestroyElement() {
-    this._super(...arguments);
+    super.willDestroyElement(...arguments);
     this._removeTooltipFromRegistry();
-  },
+  }
 
   /**
    * Removes tooltip component from registry
@@ -431,7 +446,7 @@ export default Component.extend(hasChartBuilders, {
    * @private
    */
   _removeTooltipFromRegistry() {
-    const tooltipComponentName = get(this, 'tooltipComponentName');
+    const tooltipComponentName = this.tooltipComponentName;
     getOwner(this).unregister(`component:${tooltipComponentName}`);
   }
-});
+}

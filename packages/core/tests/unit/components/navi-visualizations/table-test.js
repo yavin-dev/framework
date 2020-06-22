@@ -4,7 +4,7 @@ import { helper as buildHelper } from '@ember/component/helper';
 import Component from '@ember/component';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { setupMirage } from 'ember-cli-mirage/test-support';
 import { merge } from 'lodash-es';
 
 module('Unit | Component | table', function(hooks) {
@@ -113,22 +113,22 @@ module('Unit | Component | table', function(hooks) {
       },
       {
         attributes: { name: 'totalPageViewsWoW', parameters: {} },
-        type: 'threshold',
+        type: 'metric',
+        canAggregateSubtotal: false,
         displayName: 'Total Page Views WoW'
       }
     ]
   };
 
   test('columns', function(assert) {
-    assert.expect(3);
+    assert.expect(2);
 
     let component = this.owner.factoryFor('component:navi-visualizations/table').create({
         model: MODEL,
         options: OPTIONS
       }),
       dateTimeColumn = A(component.get('columns')).filterBy('type', 'dateTime')[0],
-      metricColumn = A(component.get('columns')).filterBy('type', 'metric')[0],
-      thresholdColumn = A(component.get('columns')).filterBy('type', 'threshold')[0];
+      metricColumn = A(component.get('columns')).filterBy('type', 'metric')[0];
 
     assert.equal(
       dateTimeColumn.sortDirection,
@@ -137,12 +137,6 @@ module('Unit | Component | table', function(hooks) {
     );
 
     assert.equal(metricColumn.sortDirection, 'none', 'sort direction is set to none as default for metric column');
-
-    assert.equal(
-      thresholdColumn.sortDirection,
-      'none',
-      'sort direction is set to none as default for threshold column'
-    );
   });
 
   test('datetime _getNextSortDirection', function(assert) {

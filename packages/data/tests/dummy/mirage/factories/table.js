@@ -14,8 +14,8 @@ export default Factory.extend({
     return `This is Table ${this.index}`;
   },
   category: 'categoryOne',
-  cardinalitySize: 'SMALL',
-  tags() {
+  cardinality: 'SMALL',
+  tableTags() {
     return ['IMPORTANT'];
   }
 });

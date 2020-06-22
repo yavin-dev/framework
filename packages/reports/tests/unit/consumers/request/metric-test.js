@@ -3,7 +3,7 @@ import { get } from '@ember/object';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { RequestActions } from 'navi-reports/services/request-action-dispatcher';
-import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { setupMirage } from 'ember-cli-mirage/test-support';
 import { A as arr } from '@ember/array';
 
 let Store, MetadataService, AdClicks, PageViews, CurrentModel, Consumer, Revenue;

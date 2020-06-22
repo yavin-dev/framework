@@ -2,7 +2,7 @@ import { find, click, fillIn, currentURL, currentRouteName, findAll, blur, visit
 import { module, test } from 'qunit';
 import config from 'ember-get-config';
 import { setupApplicationTest } from 'ember-qunit';
-import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { setupMirage } from 'ember-cli-mirage/test-support';
 import { Response } from 'ember-cli-mirage';
 import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 import $ from 'jquery';
@@ -76,6 +76,22 @@ module('Acceptance | Exploring Widgets', function(hooks) {
     assert
       .dom('.navi-report-widget__body .report-builder__container--result')
       .isVisible('Widget body has a visualization on the view route');
+  });
+
+  test('Viewing a widget when enableRequestPreview is on', async function(assert) {
+    assert.expect(1);
+
+    let originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
+
+    config.navi.FEATURES.enableRequestPreview = true;
+
+    await visit('/dashboards/1/widgets/2/view');
+
+    assert
+      .dom('.navi-report-widget__body .report-builder .navi-column-config')
+      .exists('The column config exists on the view route');
+
+    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
   });
 
   test('Exploring a widget', async function(assert) {

@@ -1,7 +1,7 @@
 import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { setupMirage } from 'ember-cli-mirage/test-support';
 import config from 'ember-get-config';
 
 let Store, MetadataService;
@@ -129,5 +129,15 @@ module('Unit | Model | user', function(hooks) {
 
       assert.equal(rules.get('firstObject'), deliveryRule, 'user deliveryRule property contains deliveryRule model');
     });
+  });
+
+  test('roles relationship', async function(assert) {
+    assert.expect(1);
+
+    const roleModel = await Store.findRecord('role', 'admin');
+    const userModel = await Store.findRecord('user', 'midna');
+    const roles = await userModel.get('roles');
+
+    assert.equal(roles.get('firstObject'), roleModel, 'user role property contains role model');
   });
 });

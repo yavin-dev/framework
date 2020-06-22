@@ -1,7 +1,7 @@
 import { blur, click, fillIn, triggerEvent, visit } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
-import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { setupMirage } from 'ember-cli-mirage/test-support';
 import $ from 'jquery';
 
 module('Acceptances | Navi Dashboard Schedule Modal', function(hooks) {

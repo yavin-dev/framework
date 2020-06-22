@@ -4,7 +4,7 @@
  */
 import Service, { inject as service } from '@ember/service';
 import Store from 'ember-data/store';
-import ColumnMetadata from 'navi-data/models/metadata/column';
+import { ColumnMetadata } from 'navi-data/models/metadata/column';
 import ColumnFragment from '../models/bard-request-v2/fragments/column';
 import FilterFragment from '../models/bard-request-v2/fragments/filter';
 import SortFragment from '../models/bard-request-v2/fragments/sort';
@@ -49,9 +49,9 @@ export default class FragmentFactory extends Service {
       field,
       type,
       parameters,
-      alias
+      alias,
+      source: dataSource
     }) as ColumnFragment;
-    column.source = dataSource;
     return column;
   }
 
@@ -95,9 +95,9 @@ export default class FragmentFactory extends Service {
       parameters,
       type,
       operator,
-      values
+      values,
+      source: dataSource
     }) as FilterFragment;
-    filter.source = dataSource;
     return filter;
   }
 
@@ -136,9 +136,9 @@ export default class FragmentFactory extends Service {
       field,
       parameters,
       type,
-      direction
+      direction,
+      source: dataSource
     }) as SortFragment;
-    sort.source = dataSource;
     return sort;
   }
 
@@ -147,7 +147,7 @@ export default class FragmentFactory extends Service {
    * @param columnMetadata - meta data to get type from
    */
   private _getMetaColumnType(columnMetadata: ColumnMetadata): FieldType {
-    return dasherize(columnMetadata.constructor.name) as FieldType;
+    return dasherize(columnMetadata.constructor.name).replace('-metadata-model', '') as FieldType;
   }
 }
 

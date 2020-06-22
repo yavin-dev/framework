@@ -76,7 +76,8 @@ export default Route.extend({
     controller.setProperties({
       showSaveAs: false,
       isFiltersCollapsed: false,
-      modifiedRequest: null
+      modifiedRequest: null,
+      lastAddedColumn: null
     });
   },
 
@@ -113,9 +114,9 @@ export default Route.extend({
    * @override
    */
   deactivate() {
-    let model = this.currentModel;
+    const model = this.modelFor(this.routeName);
     // https://github.com/emberjs/ember.js/issues/16820
-    if (!this.isDestroying && !get(model, 'isNew') && get(model, 'hasDirtyAttributes')) {
+    if (!this.isDestroying && !model.isNew && model.hasDirtyAttributes) {
       this.send('revertChanges', model);
     }
   },
@@ -208,7 +209,7 @@ export default Route.extend({
      */
     updateTitle(title) {
       if (!isEmpty(title)) {
-        set(this.currentModel, 'title', title);
+        set(this.modelFor(this.routeName), 'title', title);
       }
     },
 
@@ -237,9 +238,9 @@ export default Route.extend({
      * @param {Object} metadataUpdates
      */
     onUpdateVisualizationConfig(metadataUpdates) {
-      let metadata = get(this, 'currentModel.visualization.metadata');
+      const metadata = this.modelFor(this.routeName).visualization?.metadata;
 
-      set(this.currentModel, 'visualization.metadata', merge({}, metadata, metadataUpdates));
+      set(this.modelFor(this.routeName), 'visualization.metadata', merge({}, metadata, metadataUpdates));
     },
 
     /**
@@ -257,10 +258,10 @@ export default Route.extend({
        *TODO validate actionType is a valid report action
        */
       if (actionType) {
-        get(this, 'updateReportActionDispatcher').dispatch(actionType, this, ...args);
+        this.updateReportActionDispatcher.dispatch(actionType, this, ...args);
       }
 
-      this.send('setModifiedRequest', this.currentModel.get('request').serialize());
+      this.send('setModifiedRequest', this.modelFor(this.routeName).request.serialize());
     },
 
     /**

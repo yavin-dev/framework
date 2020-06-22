@@ -14,7 +14,7 @@ module('Unit | Metadata Model | Table', function(hooks) {
       name: 'Table A',
       description: 'Table A',
       category: 'table',
-      cardinalitySize: 'LARGE',
+      cardinality: 'LARGE',
       metricIds: ['pv'],
       dimensionIds: ['age'],
       timeDimensionIds: ['orderDate'],
@@ -79,7 +79,7 @@ module('Unit | Metadata Model | Table', function(hooks) {
       name,
       description,
       category,
-      cardinalitySize,
+      cardinality,
       metricIds,
       dimensionIds,
       timeDimensionIds,
@@ -92,7 +92,7 @@ module('Unit | Metadata Model | Table', function(hooks) {
     assert.equal(name, Payload.name, 'name property is hydrated properly');
     assert.equal(description, Payload.description, 'description property is hydrated properly');
     assert.equal(category, Payload.category, 'category property is hydrated properly');
-    assert.equal(cardinalitySize, Payload.cardinalitySize, 'cardinalitySize property is hydrated properly');
+    assert.equal(cardinality, Payload.cardinality, 'cardinality property is hydrated properly');
     assert.deepEqual(metricIds, Payload.metricIds, 'metricIds property is hydrated properly');
     assert.deepEqual(dimensionIds, Payload.dimensionIds, 'dimensionIds property is hydrated properly');
     assert.deepEqual(timeDimensionIds, Payload.timeDimensionIds, 'timeDimensionIds property is hydrated properly');

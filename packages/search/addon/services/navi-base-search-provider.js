@@ -10,6 +10,11 @@ import { assert } from '@ember/debug';
 
 export default class NaviBaseSearchProviderService extends Service {
   /**
+   * @property {number} resultThreshold
+   */
+  resultThreshold = 10;
+
+  /**
    * @method search
    * @returns {Array} array of search results
    */

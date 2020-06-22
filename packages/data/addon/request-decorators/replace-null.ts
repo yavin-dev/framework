@@ -16,7 +16,7 @@ const NULL_STRING_VALUE = '';
  */
 export function replaceNullFilter(request: TODO) {
   // only decorate if the request and the filters array are defined
-  if (request && request.filters) {
+  if (request?.filters) {
     const updatedFilters = request.filters.map((filter: TODO) => {
       // Update any filter that matches the given dimension
       if (filter.operator === 'null' || filter.operator === 'notnull') {

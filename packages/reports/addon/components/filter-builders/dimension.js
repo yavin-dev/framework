@@ -1,30 +1,33 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
- *   {{filter-builders/dimension
- *       requestFragment=request.filters.firstObject
- *   }}
+ *   <FilterBuilders::Dimension
+ *       @requestFragment={{this.request.filters.firstObject}}
+ *   />
  */
 import { A as arr } from '@ember/array';
-import { get, computed } from '@ember/object';
-import Base from './base';
+import { get, computed, action } from '@ember/object';
+import BaseFilterBuilderComponent from './base';
 import { readOnly } from '@ember/object/computed';
 import layout from 'navi-reports/templates/components/filter-builders/dimension';
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
-export default Base.extend({
-  layout,
+@templateLayout(layout)
+@tagName('')
+class DimensionFilterBuilderComponent extends BaseFilterBuilderComponent {
   /**
    * @property {Object} requestFragment - filter fragment from request model
    */
-  requestFragment: undefined,
+  requestFragment = undefined;
 
   /**
    * @property {Array} supportedOperators
    * @override
    */
-  supportedOperators: computed('requestFragment.dimension', function() {
+  @computed('requestFragment.dimension')
+  get supportedOperators() {
     let storageStrategy = get(this, 'requestFragment.dimension.storageStrategy'),
       inputComponent = 'filter-values/dimension-select';
 
@@ -53,31 +56,33 @@ export default Base.extend({
         showFields: true
       }
     ];
-  }),
+  }
 
   /**
    * @property {String} primaryKeyField - Primary Key Field used so we know what to use as default field for operators
    */
-  primaryKeyField: readOnly('requestFragment.dimension.primaryKeyFieldName'),
+  @readOnly('requestFragment.dimension.primaryKeyFieldName') primaryKeyField;
 
   /**
    * @property {?Boolean} showFields - Whether to show the field chooser in the filter builder
    */
-  showFields: readOnly('filter.operator.showFields'),
+  @readOnly('filter.operator.showFields') showFields;
 
   /**
    * @property {Array} fields - List of fields that a user can choose from
    */
-  fields: computed('requestFragment.dimension', function() {
+  @computed('requestFragment.dimension')
+  get fields() {
     let fields = get(this, 'requestFragment.dimension.fields');
     return fields ? fields.map(field => field.name) : ['id', 'desc'];
-  }),
+  }
 
   /**
    * @property {Object} filter
    * @override
    */
-  filter: computed('requestFragment.{operator,dimension,rawValues.[],field}', function() {
+  @computed('requestFragment.{operator,dimension,rawValues.[],field}')
+  get filter() {
     let dimensionFragment = get(this, 'requestFragment'),
       operatorId = get(dimensionFragment, 'operator'),
       operator = arr(get(this, 'supportedOperators')).findBy('id', operatorId);
@@ -89,12 +94,13 @@ export default Base.extend({
       validations: get(dimensionFragment, 'validations'),
       field: get(dimensionFragment, 'field')
     };
-  }),
+  }
 
   /**
    * @property {String} field - chosen field (if not primaryKeyField)
    */
-  field: computed('showFields', 'primaryKeyField', 'filter.field', function() {
+  @computed('showFields', 'primaryKeyField', 'filter.field')
+  get field() {
     const {
       showFields,
       primaryKeyField,
@@ -102,16 +108,17 @@ export default Base.extend({
     } = this;
 
     return showFields && field !== primaryKeyField ? field : null;
-  }),
-
-  actions: {
-    /**
-     * Sets the field on the filter.
-     * @param {String} field - field to set
-     */
-    setField(field) {
-      const changeSet = { field };
-      this.onUpdateFilter(changeSet);
-    }
   }
-});
+
+  /**
+   * Sets the field on the filter.
+   * @param {String} field - field to set
+   */
+  @action
+  setField(field) {
+    const changeSet = { field };
+    this.onUpdateFilter(changeSet);
+  }
+}
+
+export default DimensionFilterBuilderComponent;

@@ -1,0 +1,13 @@
+{{! Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. }}
+<div class="navi-admin">
+  <DenaliTabs class="navi-admin__tab" @alignment="vertical" as |Tabs|>
+    {{#each this.tabOptions as |tabItem|}}
+      <Tabs.LinkToTab class="navi-admin__tab-item" @route={{tabItem.route}}>
+        {{tabItem.title}}
+      </Tabs.LinkToTab>
+    {{/each}}
+  </DenaliTabs>
+  <div class="navi-admin__content">
+    {{outlet}}
+  </div>
+</div>

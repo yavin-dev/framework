@@ -6,7 +6,7 @@ export default class NaviMetadataApolloService extends ApolloService {
   /**
    * @property {String}
    */
-  namespace = 'v1/graphql';
+  namespace = 'graphql';
 
   /**
    * @override
@@ -40,7 +40,7 @@ export default class NaviMetadataApolloService extends ApolloService {
 
     return Object.assign({}, defaultOptions, {
       apiURL: this._buildURLPath(),
-      credentials: 'include'
+      requestCredentials: 'include'
     });
   }
 

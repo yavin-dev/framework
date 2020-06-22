@@ -3,7 +3,6 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { A as arr } from '@ember/array';
-import { get } from '@ember/object';
 import DataGroup from 'navi-core/utils/classes/data-group';
 import { getDimensionGroupingField } from 'navi-core/utils/data';
 
@@ -121,8 +120,8 @@ export function buildDimensionSeriesValues(request, rows) {
     let values = {},
       dimensionLabels = [];
     requestDimensions.forEach(dimension => {
-      let id = get(row, getDimensionGroupingField([row], dimension)),
-        desc = get(row, `${dimension}|desc`);
+      const id = row[getDimensionGroupingField([row], dimension)],
+        desc = row[`${dimension}|desc`];
 
       values[dimension] = id;
       dimensionLabels.push(desc || id);

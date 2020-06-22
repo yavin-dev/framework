@@ -79,9 +79,9 @@ export default class Request extends Fragment.extend(Validations) {
           parameters: filter.parameters,
           type: filter.type,
           operator: filter.operator,
-          values: filter.values
+          values: filter.values,
+          source: filter.source || clonedRequest.dataSource
         });
-        newFilter.source = clonedRequest.dataSource;
         return newFilter;
       }),
       columns: clonedRequest.columns.map(column => {
@@ -89,9 +89,9 @@ export default class Request extends Fragment.extend(Validations) {
           field: column.field,
           parameters: column.parameters,
           type: column.type,
-          alias: column.alias
+          alias: column.alias,
+          source: column.source || clonedRequest.dataSource
         });
-        newColumn.source = clonedRequest.dataSource;
         return newColumn;
       }),
       table: clonedRequest.table,
@@ -100,9 +100,9 @@ export default class Request extends Fragment.extend(Validations) {
           field: sort.field,
           parameters: sort.parameters,
           type: sort.type,
-          direction: sort.direction
+          direction: sort.direction,
+          source: sort.source || clonedRequest.dataSource
         });
-        newSort.source = clonedRequest.dataSource;
         return newSort;
       }),
       limit: clonedRequest.limit,

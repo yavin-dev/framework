@@ -10,7 +10,7 @@ import { setupApplicationTest } from 'ember-qunit';
 import reorder from '../helpers/reorder';
 import config from 'ember-get-config';
 import { Response } from 'ember-cli-mirage';
-import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { setupMirage } from 'ember-cli-mirage/test-support';
 import moment from 'moment';
 import {
   clickItem,
@@ -1573,13 +1573,16 @@ module('Acceptance | Navi Report', function(hooks) {
       'Selected dimensions initially include "Date Time" and "Property"'
     );
 
-    let dimensionItem = await getItem('dimension', 'Date Time');
+    // Click Date Time again
+    await clickItem('timeGrain', 'Date Time');
 
-    assert
-      .dom(dimensionItem.item.querySelector('.grouped-list__item-label'))
-      .hasAttribute('aria-disabled', 'true', 'Date Time has aria-disabled="true" attribute');
+    assert.deepEqual(
+      await getAllSelected('dimension'),
+      ['Date Time', 'Property'],
+      'Clicking date time again does not change selected dimensions'
+    );
 
-    dimensionItem = await getItem('dimension', 'Operating System');
+    let dimensionItem = await getItem('dimension', 'Operating System');
 
     assert.ok(dimensionItem.item.querySelector('.fa-plus-circle'), 'An unselected dimension row has a plus icon');
 
@@ -2138,9 +2141,40 @@ module('Acceptance | Navi Report', function(hooks) {
     );
   });
 
-  test('adding metrics to reordered table keeps order', async function(assert) {
-    assert.expect(2);
+  test('reordering metrics does not rerun the request', async function(assert) {
+    assert.expect(1);
     await visit('/reports/2');
+
+    server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
+    server.get('/data/*path', () => {
+      assert.ok(false, 'Request was rerun');
+    });
+
+    await reorder(
+      'mouse',
+      '.table-header-row-vc--view .table-header-cell',
+      '.table-header-row-vc--view .metric:contains(Nav Clicks)',
+      '.table-header-row-vc--view .dimension:contains(Property)',
+      '.table-header-row-vc--view .metric:contains(Ad Clicks)',
+      '.table-header-row-vc--view .dateTime'
+    );
+
+    assert.deepEqual(
+      findAll('.table-header-row-vc--view .table-header-cell__title').map(el => el.innerText.trim()),
+      ['Nav Clicks', 'Property', 'Ad Clicks', 'Date'],
+      'The headers are reordered as specified by the reorder'
+    );
+  });
+
+  test('adding metrics to reordered table keeps order', async function(assert) {
+    assert.expect(3);
+    await visit('/reports/2');
+
+    assert.deepEqual(
+      findAll('.table-header-row-vc--view .table-header-cell__title').map(el => el.innerText.trim()),
+      ['Date', 'Property', 'Ad Clicks', 'Nav Clicks'],
+      'The headers are ordered correctly'
+    );
 
     await reorder(
       'mouse',
@@ -2308,6 +2342,6 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.dom('.number-format-selector__radio-money input').isChecked('The money input is selected');
 
     await click('.number-format-dropdown');
-    assert.dom(navClicksCell()).hasText('$718', 'The metric is re-rendered in the money format');
+    assert.dom(navClicksCell()).hasText('$717.78', 'The metric is re-rendered in the money format');
   });
 });

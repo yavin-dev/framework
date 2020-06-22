@@ -1,16 +1,17 @@
-{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <span class="filter-dimension--collapsed">{{@displayName}}</span>
 {{#if @field}}
   <span class="filter-field--collapsed">({{@field}})</span>
 {{/if}}
 <span class="filter-operator--collapsed">{{lowercase @filter.operator.name}}</span>
 <strong>
-  {{component
-    @filter.operator.valuesComponent
-    tagName="span"
-    class="filter-values--collapsed"
-    filter=@filter
-    request=@request
-    isCollapsed=true
-  }}
+  {{#let (component @filter.operator.valuesComponent) as |FilterValue|}}
+    <FilterValue
+      class="filter-values--collapsed"
+      @tagName="span"
+      @filter={{@filter}}
+      @request={{@request}}
+      @isCollapsed={{true}}
+    />
+  {{/let}}
 </strong>

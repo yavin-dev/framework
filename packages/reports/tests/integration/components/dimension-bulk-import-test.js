@@ -4,7 +4,7 @@ import { render, settled, findAll, waitFor, click } from '@ember/test-helpers';
 import $ from 'jquery';
 import hbs from 'htmlbars-inline-precompile';
 import config from 'ember-get-config';
-import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { setupMirage } from 'ember-cli-mirage/test-support';
 
 const HOST = config.navi.dataSources[0].uri;
 

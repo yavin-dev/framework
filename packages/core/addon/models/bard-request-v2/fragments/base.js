@@ -34,15 +34,10 @@ export default class Base extends Fragment.extend(Validations) {
   })
   parameters;
   @attr('string') type;
+  @attr('string') source;
 
   @service('bard-metadata')
   metadataService;
-
-  /**
-   * Datasource or namespace
-   * @property {string}
-   */
-  source;
 
   /**
    * @type {Meta}

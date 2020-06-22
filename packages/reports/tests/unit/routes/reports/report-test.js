@@ -1,7 +1,6 @@
 import { run } from '@ember/runloop';
 import { resolve, reject } from 'rsvp';
 import { A } from '@ember/array';
-import { get } from '@ember/object';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 
@@ -107,14 +106,16 @@ module('Unit | Route | reports/report', function(hooks) {
   test('deactivate method', function(assert) {
     assert.expect(1);
 
-    let mockReport = {
+    const mockReport = {
         hasDirtyAttributes: true,
         rollbackAttributes() {
           assert.ok(true, 'Route model is asked to rollback');
         }
       },
       route = this.owner.factoryFor('route:reports/report').create({
-        currentModel: mockReport,
+        modelFor() {
+          return mockReport;
+        },
         routeName: 'reports.report'
       });
 
@@ -163,15 +164,17 @@ module('Unit | Route | reports/report', function(hooks) {
         title: 'Default Title'
       },
       route = this.owner.factoryFor('route:reports/report').create({
-        currentModel: mockReport
+        modelFor() {
+          return mockReport;
+        }
       });
 
-    assert.equal(get(route, 'currentModel.title'), 'Default Title', '`Default Title` is the current report title');
+    assert.equal(route.modelFor(route.routeName).title, 'Default Title', '`Default Title` is the current report title');
 
     route.send('updateTitle', 'Edited Title');
 
     assert.equal(
-      get(route, 'currentModel.title'),
+      route.modelFor(route.routeName).title,
       'Edited Title',
       'Title of the report is updated with `Edited Title`'
     );

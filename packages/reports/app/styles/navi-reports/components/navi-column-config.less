@@ -22,10 +22,9 @@
 .navi-column-config {
   display: flex;
   font-family: @font-family-sans-serif;
-  font-size: @font-size-base;
+  font-size: @font-size-mid;
 
   &__title {
-    font-size: @font-size-base;
     padding: 10px;
     margin: 0;
     font-family: @font-family-thin;
@@ -43,6 +42,8 @@
   &__columns {
     flex: 1;
     overflow-y: auto;
+    padding-bottom: 100px;
+    scroll-behavior: smooth;
   }
 
   &--disabled {

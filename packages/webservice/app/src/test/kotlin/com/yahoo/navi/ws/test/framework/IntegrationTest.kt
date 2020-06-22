@@ -106,6 +106,28 @@ abstract class IntegrationTest : RestAssuredSupport {
     }
 
     /**
+     * Registers a test role
+     */
+    fun registerRole(role: String, user: String) {
+        given()
+            .header("User", user)
+            .contentType("application/vnd.api+json")
+            .body("""
+                {
+                    "data": {
+                        "type": "roles",
+                        "id": "$role"
+                    }
+                }
+            """.trimIndent())
+        .When()
+            .post("/roles")
+        .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_CREATED)
+    }
+
+    /**
      * Execute a COUNT(*) select query and return the count
      * @return number returned by COUNT query
      */

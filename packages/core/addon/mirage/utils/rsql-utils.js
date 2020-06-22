@@ -17,7 +17,7 @@ export function getFilterParams(queryFilter) {
   if (queryFilter && queryFilter.includes('author') && queryFilter.includes(';')) {
     queryFilter = queryFilter.split(';')[0];
     return queryFilter
-      .replace(/[()*]/g, '')
+      .replace(/[()*']/g, '')
       .split(',')
       .map(el => el.split('=='));
   }
