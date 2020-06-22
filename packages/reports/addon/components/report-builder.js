@@ -1,46 +1,47 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { readOnly } from '@ember/object/computed';
 import { A as arr } from '@ember/array';
 import { inject as service } from '@ember/service';
 import Component from '@ember/component';
-import { get, computed } from '@ember/object';
+import { get, computed, action } from '@ember/object';
 import layout from '../templates/components/report-builder';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
-export default Component.extend({
-  layout,
-
-  classNames: ['report-builder'],
-
+@templateLayout(layout)
+@tagName('')
+export default class ReportBuilderComponent extends Component {
   /**
    * @property {Service} metadataService
    */
-  metadataService: service('bard-metadata'),
+  @service('bard-metadata') metadataService;
 
   /**
    * @property {Object} request
    */
-  request: readOnly('report.request'),
+  @readOnly('report.request') request;
 
   /**
    * @property {boolean} -- whether report has valid table
    */
-  hasValidLogicalTable: computed('report.request.logicalTable.table', function() {
+  @computed('report.request.logicalTable.table')
+  get hasValidLogicalTable() {
     const allTables = arr(get(this, 'allTables'));
     const tableName = get(this, 'report.request.logicalTable.table.name');
     return allTables.filter(t => t.name === tableName).length > 0;
-  }),
+  }
 
   /**
    * @property {Array} allTables - All metadata table records
    */
-  allTables: computed(function() {
+  @computed
+  get allTables() {
     let metadataService = get(this, 'metadataService');
     return metadataService.all('table').sortBy('name');
-  }),
+  }
 
   /**
    * @method _expandFilters
@@ -53,43 +54,53 @@ export default Component.extend({
     if (isFiltersCollapsed && typeof onUpdateFiltersCollapsed === 'function' && shouldExpand()) {
       onUpdateFiltersCollapsed(false);
     }
-  },
-
-  actions: {
-    /**
-     * @action onToggleDimFilter
-     * @param {Object} dimension
-     */
-    onToggleDimFilter(dimension) {
-      this._expandFilters(() => arr(this.request.filters).findBy('dimension', dimension));
-    },
-
-    /**
-     * @action onToggleMetricFilter
-     * @param {Object} metric
-     */
-    onToggleMetricFilter(metric) {
-      this._expandFilters(() =>
-        (this.request.having || []).find(having => get(having, 'metric.metric.name') === get(metric, 'name'))
-      );
-    },
-
-    /**
-     * @action onToggleParameterizedMetricFilter
-     * @param {Object} metric
-     * @param {Object} parameters
-     */
-    onToggleParameterizedMetricFilter(metric, parameters) {
-      this._expandFilters(() =>
-        (this.request.having || []).find(
-          having =>
-            get(having, 'metric.canonicalName') ===
-            canonicalizeMetric({
-              metric: get(metric, 'name'),
-              parameters
-            })
-        )
-      );
-    }
   }
-});
+
+  /**
+   * Stores element reference
+   * @param element - element inserted
+   */
+  @action
+  setupElement(element) {
+    this.componentElement = element;
+  }
+
+  /**
+   * @action onToggleDimFilter
+   * @param {Object} dimension
+   */
+  @action
+  onToggleDimFilter(dimension) {
+    this._expandFilters(() => arr(this.request.filters).findBy('dimension', dimension));
+  }
+
+  /**
+   * @action onToggleMetricFilter
+   * @param {Object} metric
+   */
+  @action
+  onToggleMetricFilter(metric) {
+    this._expandFilters(() =>
+      (this.request.having || []).find(having => get(having, 'metric.metric.name') === get(metric, 'name'))
+    );
+  }
+
+  /**
+   * @action onToggleParameterizedMetricFilter
+   * @param {Object} metric
+   * @param {Object} parameters
+   */
+  @action
+  onToggleParameterizedMetricFilter(metric, parameters) {
+    this._expandFilters(() =>
+      (this.request.having || []).find(
+        having =>
+          get(having, 'metric.canonicalName') ===
+          canonicalizeMetric({
+            metric: get(metric, 'name'),
+            parameters
+          })
+      )
+    );
+  }
+}

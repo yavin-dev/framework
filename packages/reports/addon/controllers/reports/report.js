@@ -109,7 +109,7 @@ export default class ReportsReportController extends Controller {
     }
 
     if (isOpen !== isColumnDrawerOpen) {
-      const visualizationElement = reportBuilder.element.querySelector('.report-view');
+      const visualizationElement = reportBuilder.componentElement.querySelector('.report-view');
       if (visualizationElement) {
         const visualizationResizeEvent = new Event('resizestop');
         this.onFadeEnd = () => visualizationElement.dispatchEvent(visualizationResizeEvent);

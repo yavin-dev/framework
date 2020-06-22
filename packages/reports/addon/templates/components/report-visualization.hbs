@@ -1,11 +1,12 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="report-visualization" ...attributes>
-  {{component
-    visualizationComponent
-    model=(ember-array visualizationHash annotationData)
-    options=report.visualization.metadata
-    onUpdateReport=(optional onUpdateReport)
-    containerComponent=(or container this)
-    isEditing=isEditing
-  }}
+  {{#let (component this.visualizationComponent) as |VisualizationComponent|}}
+    <VisualizationComponent
+      @model={{ember-array this.visualizationHash @annotationData}}
+      @options={{@report.visualization.metadata}}
+      @onUpdateReport={{optional @onUpdateReport}}
+      @containerComponent={{or @container this}}
+      @isEditing={{@isEditing}}
+    />
+  {{/let}}
 </div>

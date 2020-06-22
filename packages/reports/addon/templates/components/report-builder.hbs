@@ -1,72 +1,74 @@
-{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<div class="report-builder__side {{if (feature-flag "enableRequestPreview") "report-builder__side--request-preview"}}">
-  {{#if (or (gt allTables.length 1) (not hasValidLogicalTable))}}
-    <NaviTableSelect
-      class={{concat "report-builder__container report-builder__container--table" (if disabled " report-builder__container--disabled" "")}}
-      @options={{this.allTables}}
-      @selected={{this.request.logicalTable.table}}
-      @onChange={{update-report-action "UPDATE_TABLE"}}
-    />
-  {{/if}}
-  <div class="report-builder__container--builder {{unless hasValidLogicalTable "report-builder__container--builder-skel"}}">
-    {{#if hasValidLogicalTable}}
-      <DimensionSelector
-        class="report-builder__container report-builder__dimension-selector{{if @disabled " report-builder__container--disabled"}}"
-        @request={{this.request}}
-        @onAddTimeGrain={{queue (fn (optional @onBeforeAddItem) this "timeDimension") (update-report-action "ADD_TIME_GRAIN")}}
-        @onAddDimension={{queue (fn (optional @onBeforeAddItem) this "dimension") (update-report-action "ADD_DIMENSION")}}
-        @onRemoveTimeGrain={{update-report-action "REMOVE_TIME_GRAIN"}}
-        @onRemoveDimension={{update-report-action "REMOVE_DIMENSION"}}
-        @onToggleDimFilter={{queue (update-report-action "TOGGLE_DIM_FILTER") (action "onToggleDimFilter")}}
-      />
-      <MetricSelector
-        class="report-builder__container report-builder__metric-selector{{if @disabled " report-builder__container--disabled"}}"
-        @request={{this.request}}
-        @onAddMetric={{queue (fn (optional @onBeforeAddItem) this "metric") (update-report-action "ADD_METRIC")}}
-        @onAddMetricWithParameter={{queue (fn (optional @onBeforeAddItem) this "metric") (update-report-action "ADD_METRIC_WITH_PARAM")}}
-        @onRemoveMetric={{update-report-action "REMOVE_METRIC"}}
-        @onToggleMetricFilter={{queue (update-report-action "TOGGLE_METRIC_FILTER") (action "onToggleMetricFilter")}}
-        @onToggleParameterizedMetricFilter={{action "onToggleParameterizedMetricFilter"}}
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<div class="report-builder" ...attributes {{did-insert this.setupElement}}>
+  <div class="report-builder__side {{if (feature-flag "enableRequestPreview") "report-builder__side--request-preview"}}">
+    {{#if (or (gt this.allTables.length 1) (not this.hasValidLogicalTable))}}
+      <NaviTableSelect
+        class={{concat "report-builder__container report-builder__container--table" (if @disabled " report-builder__container--disabled" "")}}
+        @options={{this.allTables}}
+        @selected={{this.request.logicalTable.table}}
+        @onChange={{update-report-action "UPDATE_TABLE"}}
       />
     {{/if}}
-  </div>
-</div>
-<div class="report-builder__main">
-  {{#if hasValidLogicalTable}}
-    <div class={{
-      concat "report-builder__container report-builder__container--filters"
-        (if @disabled " report-builder__container--disabled")
-        (if @isFiltersCollapsed " report-builder__container--filters--collapsed")
-      }}>
-      <span class="report-builder__container-header">
-        <span
-          class="report-builder__container-header__filters-toggle"
-          role="button"
-          {{on "click" (fn (optional @onUpdateFiltersCollapsed) (not @isFiltersCollapsed))}}>
-          <h3 class="report-builder__container-header__title">Filters</h3>
-          <NaviIcon
-            class="report-builder__container-header__filters-toggle-icon"
-            @icon="angle-down" />
-        </span>
-        {{#unless @isFiltersCollapsed}}
-          <span class="report-builder__container-header__message">
-            Click the icon <NaviIcon @icon="filter" class="report-builder__container-header__message--icon" /> next to a dimension/metric to add a filter.
-          </span>
-        {{/unless}}
-      </span>
-
-      <FilterCollection
-        class="report-builder__filter-collection"
-        @isCollapsed={{@isFiltersCollapsed}}
-        @onUpdateCollapsed={{action (optional @onUpdateFiltersCollapsed)}}
-        @request={{this.request}}
-        @onUpdateFilter={{update-report-action "UPDATE_FILTER"}}
-        @onRemoveFilter={{update-report-action "REMOVE_FILTER"}}
-      />
-
+    <div class="report-builder__container--builder {{unless this.hasValidLogicalTable "report-builder__container--builder-skel"}}">
+      {{#if this.hasValidLogicalTable}}
+        <DimensionSelector
+          class="report-builder__container report-builder__dimension-selector{{if @disabled " report-builder__container--disabled"}}"
+          @request={{this.request}}
+          @onAddTimeGrain={{queue (fn (optional @onBeforeAddItem) this "timeDimension") (update-report-action "ADD_TIME_GRAIN")}}
+          @onAddDimension={{queue (fn (optional @onBeforeAddItem) this "dimension") (update-report-action "ADD_DIMENSION")}}
+          @onRemoveTimeGrain={{update-report-action "REMOVE_TIME_GRAIN"}}
+          @onRemoveDimension={{update-report-action "REMOVE_DIMENSION"}}
+          @onToggleDimFilter={{queue (update-report-action "TOGGLE_DIM_FILTER") this.onToggleDimFilter}}
+        />
+        <MetricSelector
+          class="report-builder__container report-builder__metric-selector{{if @disabled " report-builder__container--disabled"}}"
+          @request={{this.request}}
+          @onAddMetric={{queue (fn (optional @onBeforeAddItem) this "metric") (update-report-action "ADD_METRIC")}}
+          @onAddMetricWithParameter={{queue (fn (optional @onBeforeAddItem) this "metric") (update-report-action "ADD_METRIC_WITH_PARAM")}}
+          @onRemoveMetric={{update-report-action "REMOVE_METRIC"}}
+          @onToggleMetricFilter={{queue (update-report-action "TOGGLE_METRIC_FILTER") this.onToggleMetricFilter}}
+          @onToggleParameterizedMetricFilter={{this.onToggleParameterizedMetricFilter}}
+        />
+      {{/if}}
     </div>
-  {{/if}}
-  <div class="report-builder__container report-builder__container--result">
-    {{yield this}}
+  </div>
+  <div class="report-builder__main">
+    {{#if this.hasValidLogicalTable}}
+      <div class={{
+        concat "report-builder__container report-builder__container--filters"
+          (if @disabled " report-builder__container--disabled")
+          (if @isFiltersCollapsed " report-builder__container--filters--collapsed")
+        }}>
+        <span class="report-builder__container-header">
+          <span
+            class="report-builder__container-header__filters-toggle"
+            role="button"
+            {{on "click" (fn (optional @onUpdateFiltersCollapsed) (not @isFiltersCollapsed))}}>
+            <h3 class="report-builder__container-header__title">Filters</h3>
+            <NaviIcon
+              class="report-builder__container-header__filters-toggle-icon"
+              @icon="angle-down" />
+          </span>
+          {{#unless @isFiltersCollapsed}}
+            <span class="report-builder__container-header__message">
+              Click the icon <NaviIcon @icon="filter" class="report-builder__container-header__message--icon" /> next to a dimension/metric to add a filter.
+            </span>
+          {{/unless}}
+        </span>
+
+        <FilterCollection
+          class="report-builder__filter-collection"
+          @isCollapsed={{@isFiltersCollapsed}}
+          @onUpdateCollapsed={{optional @onUpdateFiltersCollapsed}}
+          @request={{this.request}}
+          @onUpdateFilter={{update-report-action "UPDATE_FILTER"}}
+          @onRemoveFilter={{update-report-action "REMOVE_FILTER"}}
+        />
+
+      </div>
+    {{/if}}
+    <div class="report-builder__container report-builder__container--result">
+      {{yield this}}
+    </div>
   </div>
 </div>
