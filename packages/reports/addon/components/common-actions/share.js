@@ -15,7 +15,7 @@ import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
 @templateLayout(layout)
 @tagName('')
-class ShareActionComponent extends Component {
+export default class ShareActionComponent extends Component {
   /**
    * @property {String} pageTitle - name of page being shared
    */
@@ -44,5 +44,3 @@ class ShareActionComponent extends Component {
     set(this, 'errorNotification', false);
   }
 }
-
-export default ShareActionComponent;

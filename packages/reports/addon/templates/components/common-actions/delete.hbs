@@ -1,6 +1,6 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div ...attributes>
-  <button type="button" onclick={{toggle "showModal" this}} disabled={{@disabled}}>
+  <button type="button" disabled={{@disabled}} {{on "click" (toggle "showModal" this)}}>
     {{yield}}
   </button>
   <NaviModal @isShown={{this.showModal}}>

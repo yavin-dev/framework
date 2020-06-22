@@ -19,7 +19,7 @@ import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
 @templateLayout(layout)
 @tagName('')
-class GetApiActionComponent extends Component {
+export default class GetApiActionComponent extends Component {
   /**
    * @property {Service} facts - instance of bard facts service
    */
@@ -44,5 +44,3 @@ class GetApiActionComponent extends Component {
     set(this, 'errorNotification', false);
   }
 }
-
-export default GetApiActionComponent;

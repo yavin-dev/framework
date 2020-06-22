@@ -20,7 +20,7 @@ import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
 @templateLayout(layout)
 @tagName('')
-class DeleteActionComponent extends Component {
+export default class DeleteActionComponent extends Component {
   /**
    * @property {Boolean} showModal - flag to control modal display
    */
@@ -67,5 +67,3 @@ class DeleteActionComponent extends Component {
     }
   }
 }
-
-export default DeleteActionComponent;

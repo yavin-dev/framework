@@ -27,7 +27,7 @@ const defaultFormats = ['csv'];
 
 @templateLayout(layout)
 @tagName('')
-class ScheduleActionComponent extends Component {
+export default class ScheduleActionComponent extends Component {
   /**
    * @property {Service} store
    */
@@ -245,5 +245,3 @@ class ScheduleActionComponent extends Component {
     set(this, 'notification', null);
   }
 }
-
-export default ScheduleActionComponent;
