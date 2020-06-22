@@ -6,7 +6,7 @@
  *   <CommonActions::Share
  *     @pageTitle={{this.nameOfPageToShare}}
  *     @buildUrl={{this.optionalCodeForGeneratingUrlToShare}}
- *   >
+ *   />
  */
 import Component from '@ember/component';
 import { action, set, computed } from '@ember/object';

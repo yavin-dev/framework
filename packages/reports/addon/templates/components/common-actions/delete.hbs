@@ -24,7 +24,7 @@
       >
         Confirm
       </button>
-      <button type="button" class="btn btn-secondary" onclick={{toggle "showModal" this}} disabled={{this.isDeleting}}>Cancel</button>
+      <button type="button" class="btn btn-secondary" {{on "click" (toggle "showModal" this)}} disabled={{this.isDeleting}}>Cancel</button>
     </div>
   </NaviModal>
 </div>

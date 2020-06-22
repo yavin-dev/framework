@@ -2,7 +2,7 @@
 <div class="get-api" ...attributes>
   {{!-- Check wether we need to disable the button click --}}
   <button class="get-api__btn {{@buttonClassNames}}" type="button" disabled={{@disabled}}
-    onclick={{queue (optional @beforeAction) (toggle "showModal" this)}}>
+    {{on "click" (queue (optional @beforeAction) (toggle "showModal" this))}}>
     {{yield}}
   </button>
 

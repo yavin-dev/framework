@@ -7,7 +7,7 @@
  *    @onSave={{this.onSave}}
  *    @onRevert={{this.onRevert}}
  *    @onDelete={{this.onDelete}}
- * >
+ * />
  */
 
 import { reads } from '@ember/object/computed';
@@ -31,17 +31,17 @@ class ScheduleActionComponent extends Component {
   /**
    * @property {Service} store
    */
-  @service() store;
+  @service store;
 
   /**
    * @property {Service} user
    */
-  @service() user;
+  @service user;
 
   /**
    * @property {Service} naviNotifications
    */
-  @service() naviNotifications;
+  @service naviNotifications;
 
   /**
    * This property is set in the onOpen action to make sure
