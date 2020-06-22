@@ -184,7 +184,8 @@ export function normalizeV1toV2(request: RequestV1<string>, namespace?: string):
     dataSource,
     columns: [],
     filters: [],
-    sorts: []
+    sorts: [],
+    limit: null
   };
 
   //normalize dateTime column
