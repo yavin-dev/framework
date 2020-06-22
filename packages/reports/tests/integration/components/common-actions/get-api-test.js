@@ -20,13 +20,13 @@ module('Integration | Component | common actions/get api', function(hooks) {
     this.MockRequest = MockRequest;
 
     Template = hbs`
-      {{#common-actions/get-api
-        request=MockRequest
-        buttonClassNames=buttonClassNames
-        beforeAction=beforeAction
-      }}
+      <CommonActions::GetApi
+        @request={{this.MockRequest}}
+        @buttonClassNames={{this.buttonClassNames}}
+        @beforeAction={{this.beforeAction}}
+      >
         Get API
-      {{/common-actions/get-api}}
+      </CommonActions::GetApi>
     `;
 
     // Mock fact service

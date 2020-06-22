@@ -1,45 +1,46 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
- *   {{#common-actions/share
- *      pageTitle=nameOfPageToShare
- *      buildUrl=(action 'optionalCodeForGeneratingUrlToShare')
- *   }}
+ *   <CommonActions::Share
+ *     @pageTitle={{this.nameOfPageToShare}}
+ *     @buildUrl={{this.optionalCodeForGeneratingUrlToShare}}
+ *   />
  */
 import Component from '@ember/component';
-import { get, set, computed } from '@ember/object';
+import { action, set, computed } from '@ember/object';
 import layout from '../../templates/components/common-actions/share';
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
-export default Component.extend({
-  layout,
-
+@templateLayout(layout)
+@tagName('')
+export default class ShareActionComponent extends Component {
   /**
    * @property {String} pageTitle - name of page being shared
    */
-  pageTitle: undefined,
+  pageTitle = undefined;
 
   /**
    * @property {String} currentUrl
    */
-  currentUrl: computed('showModal', function() {
+  @computed('showModal')
+  get currentUrl() {
     // Allow custom url logic for sharing something other than current page
-    let buildUrl = get(this, 'buildUrl');
+    const { buildUrl } = this;
     if (buildUrl) {
       return buildUrl();
     }
 
     return document.location.href;
-  }),
-
-  actions: {
-    /**
-     * Sets the notifications to false, used when modal is closed to clean it up.
-     */
-    resetNotifications() {
-      set(this, 'successNotification', false);
-      set(this, 'errorNotification', false);
-    }
   }
-});
+
+  /**
+   * Sets the notifications to false, used when modal is closed to clean it up.
+   */
+  @action
+  resetNotifications() {
+    set(this, 'successNotification', false);
+    set(this, 'errorNotification', false);
+  }
+}

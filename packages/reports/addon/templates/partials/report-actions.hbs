@@ -20,15 +20,14 @@
 
 {{!-- Copy API Query Enabled only for a valid report --}}
 <li class="navi-report__action">
-  {{#common-actions/get-api
-    request=model.request
-    classNames="navi-report__copy-api-btn"
-    disabled=(not model.request.validations.isTruelyValid)
-    classNameBindings="model.request.validations.isTruelyValid::navi-report__action--is-disabled"
-  }}
+  <CommonActions::GetApi
+    class="navi-report__copy-api-btn {{unless model.request.validations.isTruelyValid "navi-report__action--is-disabled"}}"
+    @request={{model.request}}
+    @disabled={{not model.request.validations.isTruelyValid}}
+  >
     {{navi-icon "code" class="navi-report__action-icon"}}
     Copy API Query
-  {{/common-actions/get-api}}
+  </CommonActions::GetApi>
   {{#ember-tooltip}}
     {{if model.request.validations.isTruelyValid "Copy API Query of the report" "Run a valid report to enable Copy API Query"}}
   {{/ember-tooltip}}

@@ -12,14 +12,14 @@ module('Integration | Component | common actions/delete', function(hooks) {
 
   hooks.beforeEach(function() {
     Template = hbs`
-      {{#common-actions/delete
-        model=widget
-        warnMsg='Are you sure you want to delete the widget?'
-        deleteAction=(action deleteWidget)
-        classNames='delete'
-      }}
+      <CommonActions::Delete
+        class="delete"
+        @model={{this.widget}}
+        @warnMsg="Are you sure you want to delete the widget?"
+        @deleteAction={{this.deleteWidget}}
+      >
         Delete
-      {{/common-actions/delete}}
+      </CommonActions::Delete>
     `;
 
     set(this, 'widget', {
@@ -70,13 +70,13 @@ module('Integration | Component | common actions/delete', function(hooks) {
     assert.expect(1);
 
     await render(hbs`
-      {{#common-actions/delete
-          model=widget
-          deleteAction=(action deleteWidget)
-          classNames='delete'
-      }}
+      <CommonActions::Delete
+        class="delete"
+        @model={{this.widget}}
+        @deleteAction={{this.deleteWidget}}
+      >
           Delete
-      {{/common-actions/delete}}
+      </CommonActions::Delete>
     `);
 
     await click('.delete > button');
