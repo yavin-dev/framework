@@ -1,51 +1,49 @@
-{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<div ...attributes>
+  {{!-- Check if in need of disabling the button on click --}}
+  <button class="btn" type="button" disabled={{@disabled}} {{on "click" (toggle "showModal" this)}}>
+    {{yield}}
+  </button>
 
-{{!-- Check if in need of disabling the button on click --}}
-<button class="btn" type="button" disabled={{disabled}} onclick={{toggle "showModal" this}}>
-  {{yield}}
-</button>
+  <NaviModal @isShown={{this.showModal}} @onClose={{this.resetNotifications}}>
+    <div class="share-report-modal-container">
+      <div class="navi-modal-header">
+        <div class="primary-header">Share "{{this.pageTitle}}"</div>
 
-{{#navi-modal
-  isShown=showModal
-  onClose=(action "resetNotifications")
-}}
-  <div class="share-report-modal-container">
-    <div class="navi-modal-header">
-      <div class="primary-header">Share "{{pageTitle}}"</div>
-
-      {{!-- Notification center --}}
-      {{#if errorNotification}}
-        <div class="modal-notification alert info">
-          {{navi-icon "exclamation-circle"}}
-          <div class="notification-text">Please Type ⌘-c to copy</div>
-          {navi-icon "times" class="notification-remove-icon clickable" click=(toggle "errorNotification" this)}}
-        </div>
-      {{else}}
-        {{#if successNotification}}
-          <div class="modal-notification alert success">
-            {{navi-icon "check"}}
-            <div class="notification-text">Success! The link has been copied to your clipboard</div>
-            {{navi-icon "times" class="notification-remove-icon clickable" click=(toggle "successNotification" this)}}
+        {{!-- Notification center --}}
+        {{#if this.errorNotification}}
+          <div class="modal-notification alert info">
+            <NaviIcon @icon="exclamation-circle" />
+            <div class="notification-text">Please Type ⌘-c to copy</div>
+            <NaviIcon @icon="times" class="notification-remove-icon clickable" {{on "click" (toggle "errorNotification" this)}} />
           </div>
         {{else}}
-          <div class="secondary-header">Select the Copy button to copy to clipboard.</div>
+          {{#if this.successNotification}}
+            <div class="modal-notification alert success">
+              <NaviIcon @icon="check" />
+              <div class="notification-text">Success! The link has been copied to your clipboard</div>
+              <NaviIcon @icon="times" class="notification-remove-icon clickable" {{on "click" (toggle "successNotification" this)}} />
+            </div>
+          {{else}}
+            <div class="secondary-header">Select the Copy button to copy to clipboard.</div>
+          {{/if}}
         {{/if}}
-      {{/if}}
-    </div>
+      </div>
 
-    <input class="modal-input-box copy-modal" value={{currentUrl}} readonly>
+      <input class="modal-input-box copy-modal" value={{this.currentUrl}} readonly>
 
-    {{!-- Buttons --}}
-    <div class="btn-container">
-      {{#copy-button
-        class="btn btn-primary"
-        clipboardText=currentUrl
-        success=(toggle "successNotification" this)
-        error=(toggle "errorNotification" this)
-      }}
-        Copy Link
-      {{/copy-button}}
-      <button type="button" class="btn btn-secondary" onclick={{queue (toggle "showModal" this) (action "resetNotifications")}}>Cancel</button>
+      {{!-- Buttons --}}
+      <div class="btn-container">
+        <CopyButton
+          class="btn btn-primary"
+          @clipboardText={{this.currentUrl}}
+          @success={{toggle "successNotification" this}}
+          @error={{toggle "errorNotification" this}}
+        >
+          Copy Link
+        </CopyButton>
+        <button type="button" class="btn btn-secondary" {{on "click" (queue (toggle "showModal" this) this.resetNotifications)}}>Cancel</button>
+      </div>
     </div>
-  </div>
-{{/navi-modal}}
+  </NaviModal>
+</div>

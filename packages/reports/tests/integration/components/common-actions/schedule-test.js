@@ -22,6 +22,15 @@ const unscheduledModel = {
   deliveryRuleForUser: new RSVP.Promise(resolve => resolve(null))
 };
 
+const TEMPLATE = hbs`
+<CommonActions::Schedule
+  @model={{this.model}}
+  @onSave={{this.onSaveAction}}
+  @onRevert={{this.onRevertAction}}
+  @onDelete={{this.onDeleteAction}}
+  @disabled={{this.isDisabled}}
+/>`;
+
 module('Integration | Component | common actions/schedule', function(hooks) {
   setupRenderingTest(hooks);
 
@@ -35,15 +44,7 @@ module('Integration | Component | common actions/schedule', function(hooks) {
     assert.expect(1);
     this.set('model', TestModel);
 
-    await render(hbs`
-          {{common-actions/schedule
-              model=model
-              onSave=(action onSaveAction)
-              onRevert=(action onRevertAction)
-              onDelete=(action onDeleteAction)
-              disabled=isDisabled
-          }}
-      `);
+    await render(TEMPLATE);
 
     this.set('isDisabled', false);
 
@@ -54,15 +55,7 @@ module('Integration | Component | common actions/schedule', function(hooks) {
     assert.expect(1);
     this.set('model', TestModel);
 
-    await render(hbs`
-          {{common-actions/schedule
-              model=model
-              onSave=(action onSaveAction)
-              onRevert=(action onRevertAction)
-              onDelete=(action onDeleteAction)
-              disabled=isDisabled
-          }}
-      `);
+    await render(TEMPLATE);
 
     this.set('isDisabled', true);
 
@@ -72,24 +65,16 @@ module('Integration | Component | common actions/schedule', function(hooks) {
   test('it renders', async function(assert) {
     assert.expect(3);
 
-    await render(
-      hbs`{{common-actions/schedule onSave=(action onSaveAction) onRevert=(action onRevertAction) onDelete=(action onDeleteAction)}}`
-    );
+    await render(TEMPLATE);
 
     assert.ok($('.schedule-action__button').is(':visible'), 'Schedule Modal component is rendered');
 
     assert.ok($('.schedule-action__icon').is(':visible'), 'A schedule icon is rendered in the component');
 
     // Template block usage:
-    await render(hbs`
-      {{#common-actions/schedule
-          onSave=(action onSaveAction)
-          onRevert=(action onRevertAction)
-          onDelete=(action onDeleteAction)
-      }}
-        Schedule
-      {{/common-actions/schedule}}
-      `);
+    await render(hbs`<CommonActions::Schedule @onSave={{this.onSaveAction}} @onRevert={{this.onRevertAction}} @onDelete={{this.onDeleteAction}}>
+      Schedule
+    </CommonActions::Schedule>`);
 
     assert
       .dom('.schedule-action__icon-label')
@@ -101,14 +86,7 @@ module('Integration | Component | common actions/schedule', function(hooks) {
 
     this.set('model', unscheduledModel);
 
-    await render(hbs`
-          {{common-actions/schedule
-              model=model
-              onSave=(action onSaveAction)
-              onRevert=(action onRevertAction)
-              onDelete=(action onDeleteAction)
-          }}
-      `);
+    await render(TEMPLATE);
 
     await click('.schedule-action__button');
 
@@ -172,14 +150,7 @@ module('Integration | Component | common actions/schedule', function(hooks) {
     assert.expect(2);
     this.set('model', TestModel);
 
-    await render(hbs`
-          {{common-actions/schedule
-              model=model
-              onSave=(action onSaveAction)
-              onRevert=(action onRevertAction)
-              onDelete=(action onDeleteAction)
-          }}
-      `);
+    await render(TEMPLATE);
 
     await click('.schedule-action__button');
 
@@ -205,14 +176,7 @@ module('Integration | Component | common actions/schedule', function(hooks) {
 
     this.set('model', unscheduledModel);
 
-    await render(hbs`
-      {{common-actions/schedule
-          model=model
-          onSave=(action onSaveAction)
-          onRevert=(action onRevertAction)
-          onDelete=(action onDeleteAction)
-      }}
-    `);
+    await render(TEMPLATE);
 
     //Open modal
     await click('.schedule-action__button');
@@ -273,14 +237,7 @@ module('Integration | Component | common actions/schedule', function(hooks) {
 
     this.set('model', TestModel);
 
-    await render(hbs`
-          {{common-actions/schedule
-              model=model
-              onSave=(action onSaveAction)
-              onRevert=(action onRevertAction)
-              onDelete=(action onDeleteAction)
-          }}
-      `);
+    await render(TEMPLATE);
 
     //Open modal
     await click('.schedule-action__button');
@@ -304,16 +261,7 @@ module('Integration | Component | common actions/schedule', function(hooks) {
       assert.ok(true, 'OnDelete action is called');
     });
 
-    await render(
-      hbs`
-        {{common-actions/schedule
-            model=model
-            onSave=(action onSaveAction)
-            onRevert=(action onRevertAction)
-            onDelete=(action onDeleteAction)
-        }}
-    `
-    );
+    await render(TEMPLATE);
 
     await click('.schedule-action__button');
 
@@ -332,15 +280,7 @@ module('Integration | Component | common actions/schedule', function(hooks) {
     assert.expect(1);
 
     this.set('model', TestModel);
-    await render(hbs`
-          {{common-actions/schedule
-              model=model
-              onSave=(action onSaveAction)
-              onRevert=(action onRevertAction)
-              onDelete=(action onDeleteAction)
-              disabled=isDisabled
-          }}
-      `);
+    await render(TEMPLATE);
 
     await click('.schedule-action__button');
 
@@ -359,15 +299,7 @@ module('Integration | Component | common actions/schedule', function(hooks) {
     config.navi.schedule = { frequencies: ['day', 'week', 'month'] };
 
     this.set('model', TestModel);
-    await render(hbs`
-          {{common-actions/schedule
-              model=model
-              onSave=(action onSaveAction)
-              onRevert=(action onRevertAction)
-              onDelete=(action onDeleteAction)
-              disabled=isDisabled
-          }}
-      `);
+    await render(TEMPLATE);
 
     await click('.schedule-action__button');
 
@@ -387,15 +319,7 @@ module('Integration | Component | common actions/schedule', function(hooks) {
     config.navi.schedule = { formats: ['csv', 'test'] };
 
     this.set('model', TestModel);
-    await render(hbs`
-          {{common-actions/schedule
-              model=model
-              onSave=(action onSaveAction)
-              onRevert=(action onRevertAction)
-              onDelete=(action onDeleteAction)
-              disabled=isDisabled
-          }}
-      `);
+    await render(TEMPLATE);
 
     await click('.schedule-action__button');
 
@@ -415,15 +339,7 @@ module('Integration | Component | common actions/schedule', function(hooks) {
     config.navi.FEATURES.enableMultipleExport = true;
 
     this.set('model', TestModel);
-    await render(hbs`
-          {{common-actions/schedule
-              model=model
-              onSave=(action onSaveAction)
-              onRevert=(action onRevertAction)
-              onDelete=(action onDeleteAction)
-              disabled=isDisabled
-          }}
-      `);
+    await render(TEMPLATE);
 
     await click('.schedule-action__button');
 
@@ -436,15 +352,7 @@ module('Integration | Component | common actions/schedule', function(hooks) {
 
     config.navi.FEATURES.enableMultipleExport = false;
 
-    await render(hbs`
-          {{common-actions/schedule
-              model=model
-              onSave=(action onSaveAction)
-              onRevert=(action onRevertAction)
-              onDelete=(action onDeleteAction)
-              disabled=isDisabled
-          }}
-      `);
+    await render(TEMPLATE);
 
     await click('.schedule-action__button');
 

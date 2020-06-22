@@ -11,14 +11,14 @@ module('Integration | Component | common actions/share', function(hooks) {
 
   hooks.beforeEach(function() {
     Template = hbs`
-      {{#common-actions/share
-        pageTitle=pageTitle
-        buildUrl=buildUrl
-        classNames='share'
-        disabled=isDisabled
-      }}
+      <CommonActions::Share
+        class="share"
+        @pageTitle={{this.pageTitle}}
+        @buildUrl={{this.buildUrl}}
+        @disabled={{this.isDisabled}}
+      >
         Share Report
-      {{/common-actions/share}}
+      </CommonActions::Share>
     `;
   });
 

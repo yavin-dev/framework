@@ -1,13 +1,13 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
- * {{common-actions/schedule
- *    model=model
- *    onSave=(action 'onSave')
- *    onRevert=(action 'onRevert')
- *    onDelete=(action 'onDelete')
- * }}
+ * <CommonActions::Schedule
+ *    @model={{this.model}}
+ *    @onSave={{this.onSave}}
+ *    @onRevert={{this.onRevert}}
+ *    @onDelete={{this.onDelete}}
+ * >
  */
 
 import { reads } from '@ember/object/computed';
@@ -17,54 +17,57 @@ import layout from '../../templates/components/common-actions/schedule';
 import config from 'ember-get-config';
 import { getApiErrMsg } from 'navi-core/utils/persistence-error';
 import { A as arr } from '@ember/array';
-import { get, set, computed, setProperties } from '@ember/object';
+import { get, set, computed, setProperties, action } from '@ember/object';
 import RSVP from 'rsvp';
 import { capitalize } from 'lodash-es';
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
 const defaultFrequencies = ['day', 'week', 'month', 'quarter', 'year'];
 const defaultFormats = ['csv'];
 
-export default Component.extend({
-  layout,
-
+@templateLayout(layout)
+@tagName('')
+class ScheduleActionComponent extends Component {
   /**
    * @property {Service} store
    */
-  store: service(),
+  @service() store;
 
   /**
    * @property {Service} user
    */
-  user: service(),
+  @service() user;
 
   /**
    * @property {Service} naviNotifications
    */
-  naviNotifications: service(),
+  @service() naviNotifications;
 
   /**
    * This property is set in the onOpen action to make sure
    * that we don't fetch any data until the modal is opened
    * @property {DS.Model} deliveryRule - deliveryRule for the current user
    */
-  deliveryRule: undefined,
+  deliveryRule = undefined;
 
   /**
    * @property {DS.Model} localDeliveryRule - Model that stores the values of the modal's fields
    */
-  localDeliveryRule: undefined,
+  localDeliveryRule = undefined;
 
   /**
    * @property {Array} frequencies
    */
-  frequencies: computed(function() {
+  @computed
+  get frequencies() {
     return arr(get(config, 'navi.schedule.frequencies') || defaultFrequencies);
-  }),
+  }
 
   /**
    * @property {Array} formats
    */
-  formats: computed(function() {
+  @computed
+  get formats() {
     let formats = get(config, 'navi.schedule.formats');
 
     if (!formats) {
@@ -75,28 +78,29 @@ export default Component.extend({
     }
 
     return arr(formats);
-  }),
+  }
 
   /**
    * @property {Boolean} isRuleValid
    */
-  isRuleValid: reads('localDeliveryRule.validations.isValid'),
+  @reads('localDeliveryRule.validations.isValid') isRuleValid;
 
   /**
    * @property {Boolean} disableSave
    */
-  disableSave: computed('localDeliveryRule.hasDirtyAttributes', 'isRuleValid', 'isSaving', function() {
+  @computed('localDeliveryRule.hasDirtyAttributes', 'isRuleValid', 'isSaving')
+  get disableSave() {
     if (get(this, 'isSaving')) {
       return true;
     }
 
     return !(get(this, 'localDeliveryRule.hasDirtyAttributes') && get(this, 'isRuleValid'));
-  }),
+  }
 
   /**
    * @property {Boolean} attemptedSave
    */
-  attemptedSave: false,
+  attemptedSave = false;
 
   /**
    * @method _createNewDeliveryRule
@@ -108,131 +112,138 @@ export default Component.extend({
       deliveryType: get(this, 'model.constructor.modelName'),
       format: { type: get(this, 'formats.firstObject') }
     });
-  },
+  }
 
-  actions: {
-    /**
-     * @action onSave
-     */
-    onSave() {
-      let deliveryRule = get(this, 'localDeliveryRule');
+  /**
+   * @action doSave
+   */
+  @action
+  doSave() {
+    let deliveryRule = get(this, 'localDeliveryRule');
 
-      if (get(this, 'isRuleValid')) {
-        // Only add relationships to the new delivery rule if the fields are valid
-        setProperties(deliveryRule, {
-          deliveredItem: get(this, 'model'),
-          owner: get(this, 'user').getUser()
-        });
+    if (get(this, 'isRuleValid')) {
+      // Only add relationships to the new delivery rule if the fields are valid
+      setProperties(deliveryRule, {
+        deliveredItem: get(this, 'model'),
+        owner: get(this, 'user').getUser()
+      });
 
-        set(this, 'attemptedSave', false);
-        let savePromise = new RSVP.Promise((resolve, reject) => {
-          this.onSave(deliveryRule, { resolve, reject });
-        });
+      set(this, 'attemptedSave', false);
+      let savePromise = new RSVP.Promise((resolve, reject) => {
+        this.onSave(deliveryRule, { resolve, reject });
+      });
 
-        return savePromise
-          .then(() => {
-            set(this, 'notification', {
-              text: `${capitalize(get(deliveryRule, 'deliveryType'))} delivery schedule successfully saved!`,
-              classNames: 'alert success'
-            });
-          })
-          .catch(({ errors }) => {
-            set(this, 'notification', {
-              text: getApiErrMsg(errors[0], 'Oops! There was an error updating your delivery settings'),
-              classNames: 'alert failure'
-            });
-          })
-          .finally(() => {
-            set(this, 'isSaving', false);
-            set(this, 'attemptedSave', true);
-          });
-      } else {
-        set(this, 'isSaving', false);
-        set(this, 'attemptedSave', true);
-      }
-    },
-
-    /**
-     * @action onDelete
-     */
-    onDelete() {
-      let deliveryRule = get(this, 'localDeliveryRule'),
-        deletePromise = new RSVP.Promise((resolve, reject) => {
-          this.onDelete(deliveryRule, { resolve, reject });
-        });
-
-      return deletePromise
+      return savePromise
         .then(() => {
-          //Make sure there is no more local rule after deletion
-          set(this, 'localDeliveryRule', undefined);
-
-          //Add Page notification
-          get(this, 'naviNotifications').add({
-            message: `Delivery schedule successfully removed!`,
-            type: 'success',
-            timeout: 'short'
+          set(this, 'notification', {
+            text: `${capitalize(get(deliveryRule, 'deliveryType'))} delivery schedule successfully saved!`,
+            classNames: 'alert success'
           });
         })
-        .catch(() => {
-          //Add Page notification
-          get(this, 'naviNotifications').add({
-            message: `OOPS! An error occurred while removing the delivery schedule.`,
-            type: 'danger',
-            timeout: 'short'
+        .catch(({ errors }) => {
+          set(this, 'notification', {
+            text: getApiErrMsg(errors[0], 'Oops! There was an error updating your delivery settings'),
+            classNames: 'alert failure'
           });
-        });
-    },
-
-    /**
-     * @action onOpen
-     */
-    onOpen() {
-      //Kick off a fetch for existing delivery rules
-      set(this, 'deliveryRule', get(this, 'model.deliveryRuleForUser'));
-
-      get(this, 'deliveryRule')
-        .then(rule => {
-          set(this, 'localDeliveryRule', rule ? rule : get(this, 'localDeliveryRule') || this._createNewDeliveryRule());
         })
-        .catch(() => {
-          set(this, 'localDeliveryRule', this._createNewDeliveryRule());
+        .finally(() => {
+          set(this, 'isSaving', false);
+          set(this, 'attemptedSave', true);
         });
-    },
+    } else {
+      set(this, 'isSaving', false);
+      set(this, 'attemptedSave', true);
+    }
+  }
 
-    /**
-     * @action updateRecipients
-     * @param {Array} recipients - list of email strings
-     */
-    updateRecipients(recipients) {
-      set(this, 'localDeliveryRule.recipients', recipients);
-    },
+  /**
+   * @action doDelete
+   */
+  @action
+  doDelete() {
+    let deliveryRule = get(this, 'localDeliveryRule'),
+      deletePromise = new RSVP.Promise((resolve, reject) => {
+        this.onDelete(deliveryRule, { resolve, reject });
+      });
 
-    /**
-     * @action updateFormat
-     * @param {String} type - format type
-     */
-    updateFormat(type) {
-      set(this, 'localDeliveryRule.format', { type });
-    },
+    return deletePromise
+      .then(() => {
+        //Make sure there is no more local rule after deletion
+        set(this, 'localDeliveryRule', undefined);
 
-    /**
-     * @action closeModal
-     */
-    closeModal() {
-      // Avoid `calling set on destroyed object` error
-      if (!get(this, 'isDestroyed') && !get(this, 'isDestroying')) {
-        set(this, 'isSaving', false);
-        set(this, 'showModal', false);
-        set(this, 'attemptedSave', false);
-        set(this, 'notification', null);
-      }
-    },
+        //Add Page notification
+        get(this, 'naviNotifications').add({
+          message: `Delivery schedule successfully removed!`,
+          type: 'success',
+          timeout: 'short'
+        });
+      })
+      .catch(() => {
+        //Add Page notification
+        get(this, 'naviNotifications').add({
+          message: `OOPS! An error occurred while removing the delivery schedule.`,
+          type: 'danger',
+          timeout: 'short'
+        });
+      });
+  }
 
-    /**
-     * @action closeNotification
-     */
-    closeNotification() {
+  /**
+   * @action onOpen
+   */
+  @action
+  onOpen() {
+    //Kick off a fetch for existing delivery rules
+    set(this, 'deliveryRule', get(this, 'model.deliveryRuleForUser'));
+
+    get(this, 'deliveryRule')
+      .then(rule => {
+        set(this, 'localDeliveryRule', rule ? rule : get(this, 'localDeliveryRule') || this._createNewDeliveryRule());
+      })
+      .catch(() => {
+        set(this, 'localDeliveryRule', this._createNewDeliveryRule());
+      });
+  }
+
+  /**
+   * @action updateRecipients
+   * @param {Array} recipients - list of email strings
+   */
+  @action
+  updateRecipients(recipients) {
+    set(this, 'localDeliveryRule.recipients', recipients);
+  }
+
+  /**
+   * @action updateFormat
+   * @param {String} type - format type
+   */
+  @action
+  updateFormat(type) {
+    set(this, 'localDeliveryRule.format', { type });
+  }
+
+  /**
+   * @action closeModal
+   */
+  @action
+  closeModal() {
+    // Avoid `calling set on destroyed object` error
+    if (!get(this, 'isDestroyed') && !get(this, 'isDestroying')) {
+      set(this, 'isSaving', false);
+      set(this, 'showModal', false);
+      set(this, 'attemptedSave', false);
       set(this, 'notification', null);
     }
   }
-});
+
+  /**
+   * @action closeNotification
+   */
+  @action
+  closeNotification() {
+    set(this, 'notification', null);
+  }
+}
+
+export default ScheduleActionComponent;
