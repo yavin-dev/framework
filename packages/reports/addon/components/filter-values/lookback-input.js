@@ -23,7 +23,7 @@ import { capitalize } from '@ember/string';
 
 @templateLayout(layout)
 @tagName('')
-class LookbackInput extends BaseIntervalComponent {
+export default class LookbackInput extends BaseIntervalComponent {
   /**
    * @property {Number} lookback - The number of `dateTimePeriod`s to look back by
    */
@@ -143,5 +143,3 @@ class LookbackInput extends BaseIntervalComponent {
     return this.setInterval(interval._start, interval._end, false);
   }
 }
-
-export default LookbackInput;

@@ -1,5 +1,5 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -11,6 +11,4 @@ import layout from '../../templates/components/filter-values/invalid-value';
 
 @tagName('')
 @templateLayout(layout)
-class InvalidValue extends Component {}
-
-export default InvalidValue;
+export default class InvalidValue extends Component {}

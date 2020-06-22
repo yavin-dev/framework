@@ -15,6 +15,4 @@ import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
 @templateLayout(layout)
 @tagName('')
-class SinceInputComponent extends BaseIntervalComponent {}
-
-export default SinceInputComponent;
+export default class SinceInputComponent extends BaseIntervalComponent {}

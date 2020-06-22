@@ -18,7 +18,7 @@ import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
 @templateLayout(layout)
 @tagName('')
-class DimensionDateRange extends Component {
+export default class DimensionDateRange extends Component {
   /**
    * @property {String} startDate - date (YYYY-MM-DD) of beginning of interval
    */
@@ -61,5 +61,3 @@ class DimensionDateRange extends Component {
     });
   }
 }
-
-export default DimensionDateRange;

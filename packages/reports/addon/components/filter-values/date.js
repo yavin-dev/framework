@@ -18,7 +18,7 @@ import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
 @templateLayout(layout)
 @tagName('')
-class DateComponent extends Component {
+export default class DateComponent extends Component {
   /**
    * @property {String} date - the date that's saved in the filter
    */
@@ -36,5 +36,3 @@ class DateComponent extends Component {
     });
   }
 }
-
-export default DateComponent;

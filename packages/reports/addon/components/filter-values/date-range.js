@@ -15,6 +15,4 @@ import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
 @templateLayout(layout)
 @tagName('')
-class DateRange extends BaseIntervalComponent {}
-
-export default DateRange;
+export default class DateRange extends BaseIntervalComponent {}

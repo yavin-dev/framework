@@ -24,7 +24,7 @@ const SEARCH_DEBOUNCE_TIME = 200;
 
 @templateLayout(layout)
 @tagName('')
-class DimensionSelectComponent extends Component {
+export default class DimensionSelectComponent extends Component {
   /**
    * @private
    * @property {Ember.Service} _dimensionService
@@ -168,5 +168,3 @@ class DimensionSelectComponent extends Component {
     }
   }
 }
-
-export default DimensionSelectComponent;

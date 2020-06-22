@@ -15,7 +15,7 @@ import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
 @templateLayout(layout)
 @tagName('')
-class MultiValueInput extends Component {
+export default class MultiValueInput extends Component {
   /**
    * @method init
    * @override
@@ -54,5 +54,3 @@ class MultiValueInput extends Component {
     });
   }
 }
-
-export default MultiValueInput;
