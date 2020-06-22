@@ -13,7 +13,13 @@ import { assign } from '@ember/polyfills';
 import EmberObject, { getWithDefault } from '@ember/object';
 import { canonicalizeMetric, getAliasedMetrics, canonicalizeAlias } from '../utils/metric';
 import { configHost } from '../utils/adapter';
-import NaviFactAdapter, { RequestV1, RequestOptions, SORT_DIRECTIONS, SortDirection } from './fact-interface';
+import NaviFactAdapter, {
+  RequestV1,
+  RequestOptions,
+  SORT_DIRECTIONS,
+  SortDirection,
+  AsyncQuery
+} from './fact-interface';
 import { AliasFn, Query } from './bard-facts-v2';
 
 /**
@@ -346,5 +352,9 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
       data: query,
       timeout: timeout
     });
+  }
+
+  asyncFetchDataForRequest(_request: RequestV1, _options: RequestOptions): AsyncQuery {
+    throw new Error('Method not implemented.');
   }
 }

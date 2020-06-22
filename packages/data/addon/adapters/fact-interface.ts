@@ -3,6 +3,8 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
+import NaviFactsModel from 'navi-data/models/navi-facts';
+
 export type RequestV1 = TODO;
 
 export type RequestOptions = {
@@ -58,7 +60,29 @@ export type RequestV2 = {
   requestVersion: '2.0';
 };
 
+export enum QueryStatus {
+  COMPLETE = 'complete',
+  QUEUED = 'queued',
+  PROCESSING = 'processing',
+  CANCELLED = 'cancelled',
+  TIMEDOUT = 'timedout',
+  FAILURE = 'failure'
+}
+
+export interface AsyncQuery {
+  requestId: string;
+  principalName: string;
+  request: RequestV1 | RequestV2;
+  status: QueryStatus;
+  result: NaviFactsModel;
+  createdOn: Date;
+  updatedOn: Date;
+  then: () => NaviFactsModel;
+  cancel: () => void;
+}
+
 export default interface NaviFactAdapter {
-  fetchDataForRequest(request: RequestV1, options: RequestOptions): Promise<TODO>;
-  urlForFindQuery(request: RequestV1, options: RequestOptions): string;
+  fetchDataForRequest(request: RequestV1 | RequestV2, options: RequestOptions): Promise<TODO>;
+  urlForFindQuery(request: RequestV1 | RequestV2, options: RequestOptions): string;
+  asyncFetchDataForRequest(request: RequestV1 | RequestV2, options: RequestOptions): AsyncQuery;
 }

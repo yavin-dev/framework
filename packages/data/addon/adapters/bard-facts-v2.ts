@@ -12,7 +12,14 @@ import { assign } from '@ember/polyfills';
 import EmberObject from '@ember/object';
 import { canonicalizeMetric, serializeParameters, getAliasedMetrics, canonicalizeAlias } from '../utils/metric';
 import { configHost } from '../utils/adapter';
-import NaviFactAdapter, { Filter, Parameters, RequestOptions, RequestV2, SORT_DIRECTIONS } from './fact-interface';
+import NaviFactAdapter, {
+  Filter,
+  Parameters,
+  RequestOptions,
+  RequestV2,
+  SORT_DIRECTIONS,
+  AsyncQuery
+} from './fact-interface';
 
 export type Query = RequestOptions & Dict<string | number | boolean>;
 export type AliasFn = (column: string) => string;
@@ -351,5 +358,9 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
       data: query,
       timeout: timeout
     });
+  }
+
+  asyncFetchDataForRequest(_request: RequestV2, _options: RequestOptions): AsyncQuery {
+    throw new Error('Method not implemented.');
   }
 }
