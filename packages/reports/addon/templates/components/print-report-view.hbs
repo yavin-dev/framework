@@ -1,14 +1,14 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="print-report-view__visualization-main">
-  {{#if hasNoData}}
+  {{#if this.hasNoData}}
     <div class="print-report-view__visualization-no-results">
       No results available.
     </div>
   {{else}}
     <ReportVisualization
       class="print-report-view__visualization"
-      @report={{report}}
-      @response={{response}}
+      @report={{@report}}
+      @response={{@response}}
       @print={{true}}
     />
   {{/if}}

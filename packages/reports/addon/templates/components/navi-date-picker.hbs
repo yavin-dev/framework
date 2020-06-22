@@ -13,7 +13,7 @@
           {{#with (moment-format powerCalendar.center "MMMM") as |currentMonth|}}
             {{currentMonth}}
             <select onchange={{fn this.changeCenter "month" powerCalendar}}>
-              {{#each months as |month|}}
+              {{#each this.months as |month|}}
                 <option value={{month}} selected={{eq month currentMonth}}>
                   {{month}}
                 </option>
@@ -27,7 +27,7 @@
         {{#with (moment-format powerCalendar.center "YYYY") as |currentYear|}}
           {{currentYear}}
           <select onchange={{fn this.changeCenter "year" powerCalendar}}>
-            {{#each years as |year|}}
+            {{#each this.years as |year|}}
               <option value={{year}} selected={{eq year currentYear}}>
                 {{year}}
               </option>
