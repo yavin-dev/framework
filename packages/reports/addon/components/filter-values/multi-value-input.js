@@ -28,7 +28,7 @@ class MultiValueInput extends Component {
 
   /**
    * @action addValue
-   * @param {String} value - Add single value to the filter values list
+   * @param {String} tag - Add single value to the filter values list
    */
   @action
   addValue(tag) {
@@ -42,7 +42,7 @@ class MultiValueInput extends Component {
 
   /**
    * @action removeValueAtIndex
-   * @param {String} value - Removes a single value from the filter values list
+   * @param {Number} index - index of value to remove
    */
   @action
   removeValueAtIndex(index) {
