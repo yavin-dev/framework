@@ -15,7 +15,7 @@ import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
 @tagName('')
 @templateLayout(layout)
-class ValueInput extends Component {
+export default class ValueInput extends Component {
   /**
    * @action setValue
    * @param {InputEvent} event
@@ -27,5 +27,3 @@ class ValueInput extends Component {
     });
   }
 }
-
-export default ValueInput;

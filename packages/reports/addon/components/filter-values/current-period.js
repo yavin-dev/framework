@@ -14,6 +14,4 @@ import layout from '../../templates/components/filter-values/current-period';
 
 @templateLayout(layout)
 @tagName('')
-class CurrentPeriodComponent extends BaseIntervalComponent {}
-
-export default CurrentPeriodComponent;
+export default class CurrentPeriodComponent extends BaseIntervalComponent {}

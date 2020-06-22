@@ -11,7 +11,7 @@
       <dd.trigger>
         <input
           class="filter-values--lookback-input__value
-            {{if filter.validations.attrs.values.isInvalid "filter-values--lookback-input--error"}}"
+            {{if @filter.validations.attrs.values.isInvalid "filter-values--lookback-input--error"}}"
           value={{this.lookback}}
           placeholder={{capitalize (concat this.calendarDateTimePeriod "s")}}
           type="number"

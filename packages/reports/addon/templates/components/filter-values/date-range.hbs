@@ -30,7 +30,7 @@
       @dateTimePeriod={{this.calendarDateTimePeriod}}
       @onUpdate={{this.setIntervalEnd}}
     >
-      {{#if endDate}}
+      {{#if this.endDate}}
         {{this.endFormat}}
       {{else}}
         <span class="date__placeholder">{{this.endPlaceholder}}</span>

@@ -18,7 +18,7 @@ import Interval from 'navi-core/utils/classes/interval';
 
 @templateLayout(layout)
 @tagName('')
-class AdvancedIntervalInputComponent extends BaseIntervalComponent {
+export default class AdvancedIntervalInputComponent extends BaseIntervalComponent {
   /**
    * @property {Object} dateStrings - the formatted {start, end} dates
    */
@@ -51,5 +51,3 @@ class AdvancedIntervalInputComponent extends BaseIntervalComponent {
     return this.setInterval(this.interval._start, value, false);
   }
 }
-
-export default AdvancedIntervalInputComponent;

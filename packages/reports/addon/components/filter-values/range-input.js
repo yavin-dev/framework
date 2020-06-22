@@ -18,7 +18,7 @@ import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
 @tagName('')
 @templateLayout(layout)
-class RangeInput extends Component {
+export default class RangeInput extends Component {
   /**
    * @property {String} lowPlaceholder
    */
@@ -51,5 +51,3 @@ class RangeInput extends Component {
     });
   }
 }
-
-export default RangeInput;

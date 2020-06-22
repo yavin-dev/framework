@@ -1,36 +1,38 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{#if @isCollapsed}}
-  {{#if (and this.startDate this.endDate)}}
-    {{moment-format this.startDate "MMM DD, YYYY"}} and {{moment-format this.endDate "MMM DD, YYYY"}}
+<div class="filter-values--dimension-date-range-input" ...attributes>
+  {{#if @isCollapsed}}
+    {{#if (and this.startDate this.endDate)}}
+      {{moment-format this.startDate "MMM DD, YYYY"}} and {{moment-format this.endDate "MMM DD, YYYY"}}
+    {{else}}
+      <FilterValues::InvalidValue/>
+    {{/if}}
   {{else}}
-    <FilterValues::InvalidValue/>
+    <DropdownDatePicker
+      @dateTimePeriod="day"
+      @date={{moment this.startDate}}
+      @onUpdate={{this.setLowValue}}
+      class="filter-values--dimension-date-range-input__trigger filter-values--dimension-date-range-input__low-value"
+    >
+      {{#if this.startDate}}
+        {{moment-format this.startDate "MMM DD, YYYY"}}
+      {{else}}
+        <span class="date__placeholder">{{this.lowPlaceholder}}</span>
+      {{/if}}
+    </DropdownDatePicker>
+
+    <span class="filter-values--dimension-date-range-input__separator">and</span>
+
+    <DropdownDatePicker
+      @dateTimePeriod="day"
+      @date={{moment this.endDate}}
+      @onUpdate={{this.setHighValue}}
+      class="filter-values--dimension-date-range-input__trigger filter-values--dimension-date-range-input__high-value"
+    >
+      {{#if this.endDate}}
+        {{moment-format this.endDate "MMM DD, YYYY"}}
+      {{else}}
+        <span class="date__placeholder">{{this.highPlaceholder}}</span>
+      {{/if}}
+    </DropdownDatePicker>
   {{/if}}
-{{else}}
-  <DropdownDatePicker
-    @dateTimePeriod="day"
-    @date={{moment this.startDate}}
-    @onUpdate={{action "setLowValue"}}
-    class="filter-values--dimension-date-range-input__trigger filter-values--dimension-date-range-input__low-value"
-  >
-    {{#if this.startDate}}
-      {{moment-format this.startDate "MMM DD, YYYY"}}
-    {{else}}
-      <span class="date__placeholder">{{this.lowPlaceholder}}</span>
-    {{/if}}
-  </DropdownDatePicker>
-
-  <span class="filter-values--dimension-date-range-input__separator">and</span>
-
-  <DropdownDatePicker
-    @dateTimePeriod="day"
-    @date={{moment this.endDate}}
-    @onUpdate={{action "setHighValue"}}
-    class="filter-values--dimension-date-range-input__trigger filter-values--dimension-date-range-input__high-value"
-  >
-    {{#if this.endDate}}
-      {{moment-format this.endDate "MMM DD, YYYY"}}
-    {{else}}
-      <span class="date__placeholder">{{this.highPlaceholder}}</span>
-    {{/if}}
-  </DropdownDatePicker>
-{{/if}}
+</div>

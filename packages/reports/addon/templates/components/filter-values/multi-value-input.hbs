@@ -8,17 +8,16 @@
     {{/each}}
   {{/if}}
 {{else}}
-  {{#navi-tag-input
-    tags=(readonly @filter.values)
-    addTag=(action "addValue")
-    classNames="filter-values--multi-value-input"
-    classNameBindings="filter.validations.isInvalid:filter-values--multi-value-input--error"
-    placeholder=(concat @filter.subject.name " Values")
-    removeTagAtIndex=(action "removeValueAtIndex")
-    allowSpacesInTags=true
-    splitOnPaste=true
+  <NaviTagInput
+    class="filter-values--multi-value-input {{if @filter.validations.isInvalid "filter-values--multi-value-input--error"}}"
+    @tags={{readonly @filter.values}}
+    @addTag={{this.addValue}}
+    @placeholder={{concat @filter.subject.name " Values"}}
+    @removeTagAtIndex={{this.removeValueAtIndex}}
+    @allowSpacesInTags={{true}}
+    @splitOnPaste={{true}}
     as |tag|
-  }}
+  >
     {{tag}}
-  {{/navi-tag-input}}
+  </NaviTagInput>
 {{/if}}
