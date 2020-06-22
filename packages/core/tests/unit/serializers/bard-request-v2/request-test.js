@@ -39,6 +39,7 @@ module('Unit | Serializer | Request V2', function(hooks) {
       filters: [
         {
           dimension: 'age',
+          field: 'id',
           operator: 'in',
           values: ['2']
         },
@@ -131,7 +132,7 @@ module('Unit | Serializer | Request V2', function(hooks) {
     assert.deepEqual(
       filters.objectAt(1).parameters,
       { projection: 'id' },
-      'dimension filters have correct default projection param'
+      'dimension filter has correct `id` projection param'
     );
     assert.equal(filters.objectAt(1).operator, 'in', 'dimension filter operator are normalized correctly');
     assert.deepEqual(filters.objectAt(1).values, ['2'], 'dimension filter values are normalized correctly');
@@ -139,7 +140,7 @@ module('Unit | Serializer | Request V2', function(hooks) {
     assert.deepEqual(
       filters.objectAt(2).parameters,
       { projection: 'desc' },
-      'dimension filters have correct projection param'
+      'dimension filter has correct `desc` projection param'
     );
 
     assert.equal(filters.objectAt(3).columnMeta.id, 'revenue', 'metric filters are normalized correctly');

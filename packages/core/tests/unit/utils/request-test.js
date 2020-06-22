@@ -408,11 +408,13 @@ module('Unit | Utils | Request', function(hooks) {
         },
         {
           field: 'age',
-          type: 'dimension'
+          type: 'dimension',
+          parameters: {}
         },
         {
           field: 'platform',
-          type: 'dimension'
+          type: 'dimension',
+          parameters: {}
         },
         {
           field: 'revenue',
@@ -430,7 +432,8 @@ module('Unit | Utils | Request', function(hooks) {
         },
         {
           field: 'adClicks',
-          type: 'metric'
+          type: 'metric',
+          parameters: {}
         }
       ],
       'columns are normalized correctly'
@@ -443,7 +446,8 @@ module('Unit | Utils | Request', function(hooks) {
           field: 'dateTime',
           operator: 'bet',
           type: 'time-dimension',
-          values: ['P7D', 'current']
+          values: ['P7D', 'current'],
+          parameters: {}
         },
         {
           field: 'age',
@@ -485,7 +489,8 @@ module('Unit | Utils | Request', function(hooks) {
           field: 'adClicks',
           operator: 'gt',
           type: 'metric',
-          values: ['11']
+          values: ['11'],
+          parameters: {}
         }
       ],
       'filters are normalized correctly'
@@ -497,7 +502,8 @@ module('Unit | Utils | Request', function(hooks) {
         {
           direction: 'desc',
           field: 'dateTime',
-          type: 'time-dimension'
+          type: 'time-dimension',
+          parameters: {}
         },
         {
           direction: 'asc',
@@ -535,11 +541,13 @@ module('Unit | Utils | Request', function(hooks) {
         },
         {
           field: 'age',
-          type: 'dimension'
+          type: 'dimension',
+          parameters: {}
         },
         {
           field: 'platform',
-          type: 'dimension'
+          type: 'dimension',
+          parameters: {}
         },
         {
           field: 'revenue',
@@ -557,7 +565,8 @@ module('Unit | Utils | Request', function(hooks) {
         },
         {
           field: 'adClicks',
-          type: 'metric'
+          type: 'metric',
+          parameters: {}
         }
       ],
       'columns are normalized correctly'
@@ -570,7 +579,8 @@ module('Unit | Utils | Request', function(hooks) {
           field: 'dateTime',
           operator: 'bet',
           type: 'time-dimension',
-          values: ['P7D', 'current']
+          values: ['P7D', 'current'],
+          parameters: {}
         },
         {
           field: 'age',
@@ -612,7 +622,8 @@ module('Unit | Utils | Request', function(hooks) {
           field: 'adClicks',
           operator: 'gt',
           type: 'metric',
-          values: ['11']
+          values: ['11'],
+          parameters: {}
         }
       ],
       'filters are normalized correctly'
@@ -624,7 +635,8 @@ module('Unit | Utils | Request', function(hooks) {
         {
           direction: 'desc',
           field: 'dateTime',
-          type: 'time-dimension'
+          type: 'time-dimension',
+          parameters: {}
         },
         {
           direction: 'asc',
