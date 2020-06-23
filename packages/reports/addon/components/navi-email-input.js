@@ -1,53 +1,48 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
- *   {{navi-email-input
- *       emails=emails
- *       addEmail=(action 'addEmail')
- *       removeEmailAtIndex=(action 'removeEmailAtIndex')
- *   }}
+ *   <NaviEmailInput
+ *      @emails={{this.emails}}
+ *      @addEmail={{this.addEmail}}
+ *      @removeEmailAtIndex={{this.removeEmailAtIndex}}
+ *      @isDisabled={{false}}
+ *   />
  */
-
-import { get, computed } from '@ember/object';
+import { action, computed } from '@ember/object';
 import Component from '@ember/component';
 import layout from '../templates/components/navi-email-input';
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
-export default Component.extend({
-  layout,
-
-  /**
-   * @property {Array} classNames
-   */
-  classNames: ['navi-email-input'],
-
+@tagName('')
+@templateLayout(layout)
+export default class NaviEmailInput extends Component {
   /**
    * @property {Array} emails
    */
-  emails: computed(function() {
+  @computed
+  get emails() {
     return [];
-  }),
-
-  actions: {
-    /**
-     * @action addEmail
-     * @param {String} email
-     */
-    addEmail(email) {
-      let emails = get(this, 'emails');
-
-      this.onUpdateEmails([...emails, email]);
-    },
-
-    /**
-     * @action removeEmailAtIndex
-     * @param {Number} index
-     */
-    removeEmailAtIndex(index) {
-      let emails = get(this, 'emails');
-
-      this.onUpdateEmails(emails.filter((email, i) => i != index));
-    }
   }
-});
+
+  /**
+   * @action addEmail
+   * @param {String} email
+   */
+  @action
+  addEmail(email) {
+    const { emails } = this;
+    this.onUpdateEmails([...emails, email]);
+  }
+
+  /**
+   * @action removeEmailAtIndex
+   * @param {Number} index
+   */
+  @action
+  removeEmailAtIndex(index) {
+    const { emails } = this;
+    this.onUpdateEmails(emails.filter((email, i) => i != index));
+  }
+}

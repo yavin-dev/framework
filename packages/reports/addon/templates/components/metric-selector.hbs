@@ -44,7 +44,7 @@
               @request={{@request}}
               @onAddParameterizedMetric={{@onAddMetricWithParameter}}
               @onRemoveParameterizedMetric={{update-report-action "REMOVE_METRIC_WITH_PARAM"}}
-              @onToggleParameterizedMetricFilter={{queue (update-report-action "TOGGLE_PARAMETERIZED_METRIC_FILTER") (action (optional @onToggleParameterizedMetricFilter))}}
+              @onToggleParameterizedMetricFilter={{queue (update-report-action "TOGGLE_PARAMETERIZED_METRIC_FILTER") (optional @onToggleParameterizedMetricFilter)}}
             />
           {{/if}}
           {{#if (can-having metric)}}
@@ -55,7 +55,7 @@
             >
               <EmberTooltip @side="right" @popperContainer="body" @effect="none">
                 {{#if (has-parameters metric)}}
-                  {{#if (has-unfiltered-parameters metric request)}}
+                  {{#if (has-unfiltered-parameters metric @request)}}
                     Add next filter
                   {{else}}
                     Remove all

@@ -25,7 +25,7 @@ import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
 @templateLayout(layout)
 @tagName('')
-class NaviCollection extends Component {
+export default class NaviCollection extends Component {
   /**
    * @property {DS.ArrayPromise} items - array of assets
    */
@@ -89,5 +89,3 @@ class NaviCollection extends Component {
    */
   @or('items.isSettled', 'items.isLoaded') hasTableLoaded;
 }
-
-export default NaviCollection;

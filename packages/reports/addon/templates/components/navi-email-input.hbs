@@ -1,11 +1,13 @@
-{{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.--}}
-{{#navi-tag-input
-  tags=(readonly emails)
-  addTag=(action "addEmail")
-  removeTagAtIndex=(action "removeEmailAtIndex")
-  tagComponent="navi-email-tag"
-  readOnly=isDisabled
-  as |email|
-}}
-  {{email}}
-{{/navi-tag-input}}
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.--}}
+<div class="navi-email-input">
+  <NaviTagInput
+    @tags={{readonly this.emails}}
+    @addTag={{this.addEmail}}
+    @removeTagAtIndex={{this.removeEmailAtIndex}}
+    @tagComponent="navi-email-tag"
+    @readOnly={{@isDisabled}}
+    as |email|
+  >
+    {{email}}
+  </NaviTagInput>
+</div>
