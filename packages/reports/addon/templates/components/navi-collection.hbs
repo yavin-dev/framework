@@ -1,13 +1,13 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="navi-collection" ...attributes>
-  {{#if config.filterable}}
+  {{#if @config.filterable}}
     <div class="navi-collection__filter-selector">
       <PowerSelect
         @triggerClass="navi-collection__filter-trigger"
         @dropdownClass="navi-collection__filter-dropdown"
         @options={{this.filterOptions}}
         @selected={{this.filter}}
-        @onchange={{set this.filter _}}
+        @onchange={{fn (mut this.filter)}}
         @searchEnabled={{false}}
         as |filter|
       >
@@ -19,7 +19,7 @@
     <thead>
       <tr>
         <th class="align left">Name</th>
-        {{#if config.actions}}
+        {{#if @config.actions}}
           <th class="align left navi-collection__actions"></th>
         {{/if}}
         <th class="align left">Author</th>
@@ -27,23 +27,23 @@
       </tr>
     </thead>
     <tbody>
-      {{#unless hasTableLoaded}}
+      {{#unless this.hasTableLoaded}}
         <tr class="is-loading">
           <td colspan="4">
             <NaviLoader/>
           </td>
         </tr>
       {{else}}
-        {{#each filteredItems as |item index|}}
+        {{#each this.filteredItems as |item index|}}
           <tr class="navi-collection__row {{concat "navi-collection__row" index}}">
             <td class="align left">
               {{#if item.tempId}}
-                <LinkTo @route={{itemRoute}} @model={{item.tempId}}>
+                <LinkTo @route={{this.itemRoute}} @model={{item.tempId}}>
                   {{item.title}}
                 </LinkTo>
                 <span class="navi-collection__unsaved-label">Unsaved</span>
               {{else}}
-                <LinkTo @route={{itemRoute}} @model={{item.id}}>
+                <LinkTo @route={{this.itemRoute}} @model={{item.id}}>
                   {{item.title}}
                 </LinkTo>
               {{/if}}
@@ -51,10 +51,10 @@
                 <NaviIcon @icon="star" class="favorite-item--active"/>
               {{/if}}
             </td>
-            {{#if config.actions}}
+            {{#if @config.actions}}
               <td class="align left navi-collection__actions">
                 <LazyRender @target={{concat ".navi-collection__row" index}}>
-                  {{component config.actions
+                  {{component @config.actions
                     item=item
                     index=index
                   }}
@@ -73,10 +73,10 @@
         {{else}}
           <tr class="no-results">
             <td colspan="4">
-              {{#if config.emptyMsg}}
-                {{config.emptyMsg}}
+              {{#if @config.emptyMsg}}
+                {{@config.emptyMsg}}
               {{else}}
-                You don't have any {{itemType}} yet. Go ahead and <LinkTo @route={{itemNewRoute}}>create one</LinkTo> now?
+                You don't have any {{@itemType}} yet. Go ahead and <LinkTo @route={{this.itemNewRoute}}>create one</LinkTo> now?
               {{/if}}
             </td>
           </tr>

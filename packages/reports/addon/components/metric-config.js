@@ -1,30 +1,27 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
- *   {{metric-config
- *      metric=metric
- *      onRequest=request
- *      onAddParameterizedMetric=(action 'addParameterizedMetric')
- *      onRemoveParameterizedMetric=(action 'removeParameterizedMetric')
- *      onToggleParameterizedMetricFilter=(action 'toggleParameterizedMetricFilter')
- *   }}
+ *   <MetricConfig
+ *      @metric={{this.metric}}
+ *      @onRequest={{this.request}}
+ *      @onAddParameterizedMetric={{this.addParameterizedMetric}}
+ *      @onRemoveParameterizedMetric={{this.removeParameterizedMetric}}
+ *      @onToggleParameterizedMetricFilter={{this.toggleParameterizedMetricFilter}}
+ *   />
  */
 import Component from '@ember/component';
 import layout from '../templates/components/metric-config';
 import { inject as service } from '@ember/service';
 import { computed, get, set, action } from '@ember/object';
-import { throttle } from '@ember/runloop';
-import { BlurOnAnimationEnd, THROTTLE_TIME } from './dimension-selector';
 import { A as arr } from '@ember/array';
-import { featureFlag } from 'navi-core/helpers/feature-flag';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
 import { observes } from '@ember-decorators/object';
 
 @tagName('')
 @templateLayout(layout)
-class MetricConfig extends Component {
+export default class MetricConfig extends Component {
   /**
    * @property {Service} parameterService - metric parameter service
    */
@@ -182,5 +179,3 @@ class MetricConfig extends Component {
     if (handler) handler(metric, { [get(param, 'param')]: get(param, 'id') });
   }
 }
-
-export default MetricConfig;

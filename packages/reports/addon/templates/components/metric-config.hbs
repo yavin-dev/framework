@@ -1,17 +1,14 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="metric-config" ...attributes>
-  <BasicDropdown
-    @calculatePosition={{calculatePosition}}
-    as |dd|
-  >
-    <dd.trigger @class="metric-config__dropdown-trigger" @onMouseDown={{action "triggerFetch"}}>
+  <BasicDropdown @calculatePosition={{this.calculatePosition}} as |dd|>
+    <dd.trigger @class="metric-config__dropdown-trigger" @onMouseDown={{this.triggerFetch}}>
       <NaviIcon @icon="cog" class="metric-config__trigger-icon" />
     </dd.trigger>
 
     <dd.content @class="metric-config__dropdown-container">
-      {{#if (is-pending parametersPromise)}}
+      {{#if (is-pending this.parametersPromise)}}
         <NaviLoader />
-      {{else if (is-rejected parametersPromise)}}
+      {{else if (is-rejected this.parametersPromise)}}
         <div class="metric-config__error-msg">OOPS! Something went wrong. Please try refreshing the page.</div>
       {{else}}
         <NaviListSelector
@@ -29,11 +26,11 @@
             @sortByField="description"
             as | param |
           >
-            <div class="grouped-list__item-container {{if (get-shallow parametersChecked (concat param.param "|" param.id)) "grouped-list__item-container--selected"}}">
-              <button class="grouped-list__item-label" {{on "click" (fn this.paramToggled metric param)}} role="button" type="button">
+            <div class="grouped-list__item-container {{if (get-shallow this.parametersChecked (concat param.param "|" param.id)) "grouped-list__item-container--selected"}}">
+              <button class="grouped-list__item-label" {{on "click" (fn this.paramToggled @metric param)}} role="button" type="button">
                 <NaviIcon
-                  @icon={{if (get-shallow parametersChecked (concat param.param "|" param.id)) "minus-circle" "plus-circle"}}
-                  class="grouped-list__add-icon {{if (not (get-shallow parametersChecked (concat param.param "|" param.id))) "grouped-list__add-icon--deselected"}}"
+                  @icon={{if (get-shallow this.parametersChecked (concat param.param "|" param.id)) "minus-circle" "plus-circle"}}
+                  class="grouped-list__add-icon {{if (not (get-shallow this.parametersChecked (concat param.param "|" param.id))) "grouped-list__add-icon--deselected"}}"
                 />
                   {{! TODO: Simplify this when we normalize function arguments }}
                   {{if param.name param.name param.description}} ({{param.id}})
@@ -42,15 +39,15 @@
               <div class="grouped-list__icon-set metric-config__icon-set">
                 <NaviIcon
                   @icon="filter"
-                  class={{concat (if (get-shallow paramsFiltered (concat param.param "|" param.id)) "grouped-list__filter--active ") "grouped-list__filter"}}
-                  onclick={{action "paramFilterToggled" metric param}}
+                  class={{concat (if (get-shallow this.paramsFiltered (concat param.param "|" param.id)) "grouped-list__filter--active ") "grouped-list__filter"}}
+                  {{on "click" (fn this.paramFilterToggled @metric param)}}
                 />
               </div>
             </div>
           </GroupedList>
         </NaviListSelector>
         <div class="metric-config__footer">
-          <div class="metric-config__done-btn btn btn-primary" role="button" onclick={{action dd.actions.close}}>Done</div>
+          <div class="metric-config__done-btn btn btn-primary" role="button" {{on "click" dd.actions.close}}>Done</div>
         </div>
       {{/if}}
     </dd.content>

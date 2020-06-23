@@ -1,11 +1,11 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<div class="{{_containerClass}} {{if trim "trimmed" "show-all"}}">
-  <ul class={{_collectionClass}}>
-    {{#each _itemsToRender as |item idx|}}
+<div class="{{this._containerClass}} {{if this.trim "trimmed" "show-all"}}">
+  <ul class={{this._collectionClass}}>
+    {{#each this._itemsToRender as |item idx|}}
       <li class="item">{{yield item idx}}</li>
     {{/each}}
   </ul>
 </div>
-{{#if _isTrimmed}}
-  <button type="button" class="paginated-scroll-list__show-more" {{on "click" (action "onShowMore")}}>{{moreLabel}}</button>
+{{#if this._isTrimmed}}
+  <button type="button" class="paginated-scroll-list__show-more" {{on "click" (action "onShowMore")}}>{{this.moreLabel}}</button>
 {{/if}}
