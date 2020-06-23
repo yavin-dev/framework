@@ -26,7 +26,7 @@ spring:
         use_scrollable_resultset: true
   datasource:
     url: 'jdbc:h2:mem:db1;DB_CLOSE_DELAY=-1'
-    username: 'sa'
+    username: 'navidev'
     password: ''
     driver-class-name: 'org.h2.Driver'
 server:
@@ -36,4 +36,3 @@ logging:
   path: /tmp
 
 ---
-
