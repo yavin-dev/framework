@@ -2,7 +2,7 @@
 <div class="metric-filter-config {{unless this.otherParams.length "metric-filter-config__hide"}}" ...attributes>
   <BasicDropdown @calculatePosition={{this.calculatePosition}} as |dd| >
     <dd.trigger @class="metric-filter-config__dropdown-trigger">
-      {{navi-icon "cog" class="metric-filter-config__trigger-icon"}}
+      <NaviIcon @icon="cog" class="metric-filter-config__trigger-icon" />
     </dd.trigger>
 
     <dd.content @class="metric-filter-config__dropdown-container">

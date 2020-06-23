@@ -6,9 +6,9 @@
  *
  * Usage:
  * <NaviModal
- *     @isShown={{this.isShown}}
- *     as |modalContainer|>
- *         Inner Template
+ *   @isShown={{this.isShown}}
+ *   as |modalContainer|>
+ *     Inner Template
  * </NaviModal>
  */
 
