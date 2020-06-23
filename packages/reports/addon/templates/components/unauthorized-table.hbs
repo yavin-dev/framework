@@ -1,6 +1,6 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <NaviInfoMessage class="navi-report-invalid__info-message navi-report-invalid__unauthorized">
-  <span>{{navi-icon "lock"}}</span>
+  <span><NaviIcon @icon="lock" /></span>
   <p class="navi-report-invalid__unauthorized-body">
     You do not have access to run queries against
     <span class="navi-report-invalid__highlight-text">{{this.tableName}}</span>.<br>

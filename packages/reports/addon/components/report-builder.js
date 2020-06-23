@@ -6,7 +6,7 @@ import { readOnly } from '@ember/object/computed';
 import { A as arr } from '@ember/array';
 import { inject as service } from '@ember/service';
 import Component from '@ember/component';
-import { get, computed, action } from '@ember/object';
+import { computed, action } from '@ember/object';
 import layout from '../templates/components/report-builder';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
@@ -29,8 +29,8 @@ export default class ReportBuilderComponent extends Component {
    */
   @computed('report.request.logicalTable.table')
   get hasValidLogicalTable() {
-    const allTables = arr(get(this, 'allTables'));
-    const tableName = get(this, 'report.request.logicalTable.table.name');
+    const allTables = arr(this.allTables);
+    const tableName = this.report.request.logicalTable.table?.name;
     return allTables.filter(t => t.name === tableName).length > 0;
   }
 
@@ -39,8 +39,7 @@ export default class ReportBuilderComponent extends Component {
    */
   @computed
   get allTables() {
-    let metadataService = get(this, 'metadataService');
-    return metadataService.all('table').sortBy('name');
+    return this.metadataService.all('table').sortBy('name');
   }
 
   /**
@@ -80,9 +79,7 @@ export default class ReportBuilderComponent extends Component {
    */
   @action
   onToggleMetricFilter(metric) {
-    this._expandFilters(() =>
-      (this.request.having || []).find(having => get(having, 'metric.metric.name') === get(metric, 'name'))
-    );
+    this._expandFilters(() => (this.request.having || []).find(having => having.metric.metric.name === metric.name));
   }
 
   /**
@@ -94,12 +91,7 @@ export default class ReportBuilderComponent extends Component {
   onToggleParameterizedMetricFilter(metric, parameters) {
     this._expandFilters(() =>
       (this.request.having || []).find(
-        having =>
-          get(having, 'metric.canonicalName') ===
-          canonicalizeMetric({
-            metric: get(metric, 'name'),
-            parameters
-          })
+        having => having.metric.canonicalName === canonicalizeMetric({ metric: metric.name, parameters })
       )
     );
   }
