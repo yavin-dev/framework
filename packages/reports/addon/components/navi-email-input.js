@@ -10,7 +10,7 @@
  *      @isDisabled={{false}}
  *   />
  */
-import { action, computed } from '@ember/object';
+import { action } from '@ember/object';
 import Component from '@ember/component';
 import layout from '../templates/components/navi-email-input';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
@@ -21,10 +21,7 @@ export default class NaviEmailInput extends Component {
   /**
    * @property {Array} emails
    */
-  @computed
-  get emails() {
-    return [];
-  }
+  emails = [];
 
   /**
    * @action addEmail
