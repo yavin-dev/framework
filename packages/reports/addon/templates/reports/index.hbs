@@ -1,17 +1,17 @@
-{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="navi-reports-index">
   <div class="navi-reports-index__page-title">
     Reports
   </div>
-  {{#link-to "reports.new" classNames="btn btn-primary navi-reports-index__new-btn"}}+ New Report{{/link-to}}
-  {{navi-collection
-    items=model.reports
-    itemType="reports"
-    config=(hash
+  <LinkTo @route="reports.new" class="btn btn-primary navi-reports-index__new-btn">+ New Report</LinkTo>
+  <NaviCollection
+    @items={{this.model.reports}}
+    @itemType="reports"
+    @config={{hash
       actions="navi-action-list"
       itemRoute="reports.report.view"
       itemNewRoute="reports.new"
       filterable=true
-    )
-  }}
+    }}
+  />
 </div>

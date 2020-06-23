@@ -1,33 +1,35 @@
-{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="navi-report">
   <div class="navi-report__breadcrumb">
     {{#if (feature-flag "enableDirectory")}}
-      {{#link-to "directory.my-data" class="navi-report__breadcrumb-link"}}Directory{{/link-to}}
+      <LinkTo @route="directory.my-data" class="navi-report__breadcrumb-link">Directory</LinkTo>
     {{else}}
-      {{#link-to "reports" class="navi-report__breadcrumb-link"}}Reports{{/link-to}}
+      <LinkTo @route="reports" class="navi-report__breadcrumb-link">Reports</LinkTo>
     {{/if}}
-    {{navi-icon "angle-right"}}
+    <NaviIcon @icon="angle-right" />
   </div>
   <header class="navi-report__header">
     <span class="navi-report__title">
-      {{#if model.isOwner}}
-        {{editable-label
-          classNames="navi-report__edit-title"
-          value=model.title
-          onChange=(route-action "updateTitle")
-        }}
+      {{#if this.model.isOwner}}
+        <EditableLabel
+          class="navi-report__edit-title"
+          @value={{this.model.title}}
+          @onChange={{route-action "updateTitle"}}
+        />
       {{else}}
-        <span>{{model.title}}</span>
+        <span>{{this.model.title}}</span>
       {{/if}}
 
       {{!-- Favorite icon is visible if a report has been saved --}}
-      {{#unless model.isNew}}
-        {{favorite-item
-          user=(get-user)
-          item=model
-          click=(route-action "toggleFavorite" model)
-          classNames="navi-report__fav-icon"
-        }}
+      {{#unless this.model.isNew}}
+        {{#let (get-user) as |user|}}
+          <FavoriteItem
+            class="navi-report__fav-icon"
+            @user={{user}}
+            @item={{this.model}}
+            @click={{route-action "toggleFavorite" this.model}}
+          />
+        {{/let}}
       {{/unless}}
 
     </span>
@@ -41,7 +43,7 @@
       @report={{this.model}}
       @disabled={{this.isRunningReport}}
       @isFiltersCollapsed={{this.isFiltersCollapsed}}
-      @onUpdateFiltersCollapsed={{set this.isFiltersCollapsed _}}
+      @onUpdateFiltersCollapsed={{fn (mut this.isFiltersCollapsed)}}
       @onBeforeAddItem={{this.onBeforeAddItem}}
       as |builder|
     >
@@ -78,42 +80,42 @@
   </div>
 
   <footer class="navi-report__footer">
-    {{#unless isRunningReport}}
+    {{#unless this.isRunningReport}}
 
       <NaviButton
         class="navi-report__run-btn"
         @onClick={{pipe
-          (route-action "validate" model)
-          (route-action "forceRun" model)
+          (route-action "validate" this.model)
+          (route-action "forceRun" this.model)
         }}
       >
         Run
       </NaviButton>
 
-      {{#if (and model.isOwner model.hasDirtyAttributes)}}
+      {{#if (and this.model.isOwner this.model.hasDirtyAttributes)}}
         <NaviButton
           class="navi-report__save-btn"
           @type="secondary"
           @onClick={{pipe
-            (route-action "validate" model)
-            (route-action "runReport" model)
-            (route-action "saveReport" model)
+            (route-action "validate" this.model)
+            (route-action "runReport" this.model)
+            (route-action "saveReport" this.model)
           }}
         >
-          {{#if model.isNew}}
+          {{#if this.model.isNew}}
             Save Report
           {{else}}
             Save
           {{/if}}
         </NaviButton>
 
-        {{#unless model.isNew}}
+        {{#unless this.model.isNew}}
           <NaviButton
             class="navi-report__save-as-btn"
             @type="secondary"
             @onClick={{pipe
-              (route-action "validate" model)
-              (route-action "runReport" model)
+              (route-action "validate" this.model)
+              (route-action "runReport" this.model)
               (toggle "showSaveAs" this)
           }}>
             Save As ...
@@ -121,11 +123,11 @@
         {{/unless}}
       {{/if}}
 
-      {{#if (and model.hasDirtyAttributes (not model.isNew))}}
+      {{#if (and this.model.hasDirtyAttributes (not this.model.isNew))}}
         <NaviButton
           class="navi-report__revert-btn"
           @type="secondary"
-          @onClick={{queue (fn this.updateLastAddedColumn null) (route-action "revertChanges" model)}}
+          @onClick={{queue (fn this.updateLastAddedColumn null) (route-action "revertChanges" this.model)}}
         >
           Revert
         </NaviButton>
@@ -135,7 +137,7 @@
 
       <NaviButton
         class="navi-report__cancel-btn"
-        @onClick={{route-action "cancelReport" model}}
+        @onClick={{route-action "cancelReport" this.model}}
       >
         Cancel
       </NaviButton>
@@ -144,7 +146,7 @@
   </footer>
 </div>
 
-{{report-actions/save-as
-  model=model
-  showModal=showSaveAs
-}}
+<ReportActions::SaveAs
+  @model={{this.model}}
+  @showModal={{this.showSaveAs}}
+/>
