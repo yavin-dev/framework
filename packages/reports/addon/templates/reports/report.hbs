@@ -34,11 +34,11 @@
 
     </span>
     <ul class="navi-report__actions">
-      <ReportActions
-        @model={{this.model}}
-        @addToDashboard={{action "addToDashboard"}}
-        @addToNewDashboard={{action "addToNewDashboard"}}
-      />
+      {{#if (feature-flag "dashboards")}}
+        <ReportActions @model={{this.model}} @addToDashboard={{action "addToDashboard"}} @addToNewDashboard={{action "addToNewDashboard"}} />
+      {{else}}
+        <ReportActions @model={{this.model}} />
+      {{/if}}
     </ul>
   </header>
 
