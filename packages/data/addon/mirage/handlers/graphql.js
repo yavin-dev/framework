@@ -96,11 +96,7 @@ const OPTIONS = {
             }
 
             // Convert each date into a row of data
-            let rows = dates.map(date => {
-              return {
-                dateTime: date
-              };
-            });
+            let rows = dates.map(dateTime => ({ dateTime }));
 
             // Add each dimension
             columns.dimension.forEach(dimension => {
@@ -129,11 +125,7 @@ const OPTIONS = {
             return JSON.stringify({
               data: {
                 [table]: {
-                  edges: rows.map(row => {
-                    return {
-                      node: row
-                    };
-                  })
+                  edges: rows.map(node => ({ node }))
                 }
               }
             });
