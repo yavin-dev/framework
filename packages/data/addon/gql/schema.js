@@ -152,6 +152,36 @@ const schema = gql`
     expression: String
   }
 
+  type AsyncQuery {
+    id: DeferredID
+    createdOn: Date
+    query: String
+    queryType: QueryType
+    status: QueryStatus
+    updatedOn: Date
+    result(op: RelationshipOp = FETCH, data: AsyncQueryResultInput): AsyncQueryResult
+  }
+
+  type AsyncQueryEdge {
+    node: AsyncQuery
+    cursor: String
+  }
+
+  type AsyncQueryConnection {
+    edges: [AsyncQueryEdge]
+    pageInfo: PageInfo
+  }
+
+  type AsyncQueryResult {
+    id: DeferredID
+    contentLength: Int
+    createdOn: Date
+    responseBody: String
+    status: Int
+    updatedOn: Date
+    query(op: RelationshipOp = FETCH, data: AsyncQueryInput): AsyncQuery
+  }
+
   enum FunctionArgumentType {
     ref
     primitive
@@ -207,15 +237,70 @@ const schema = gql`
     totalRecords: Long
   }
 
+  enum QueryType {
+    GRAPHQL_V1_0
+    JSONAPI_V1_0
+  }
+
+  enum QueryStatus {
+    COMPLETE
+    QUEUED
+    PROCESSING
+    CANCELLED
+    TIMEDOUT
+    FAILURE
+  }
+
+  input AsyncQueryInput {
+    id: ID
+    createdOn: Date
+    query: String
+    queryType: QueryType
+    status: QueryStatus
+    updatedOn: Date
+    result: AsyncQueryResultInput
+  }
+
+  input AsyncQueryResultInput {
+    id: ID
+    contentLength: Int
+    createdOn: Date
+    responseBody: String
+    status: Int
+    updatedOn: Date
+    query: AsyncQueryInput
+  }
+
   type Query {
     table(
-      op: RelationshipOp
+      op: RelationshipOp = FETCH
       ids: [String]
       filter: String
       sort: String
       first: String
       after: String
     ): TableConnection
+    asyncQuery(
+      op: RelationshipOp = FETCH
+      ids: [String]
+      filter: String
+      sort: String
+      first: String
+      after: String
+      data: [AsyncQueryInput]
+    ): AsyncQuery
+  }
+
+  type Mutation {
+    asyncQuery(
+      op: RelationshipOp = FETCH
+      ids: [String]
+      filter: String
+      sort: String
+      first: String
+      after: String
+      data: [AsyncQueryInput]
+    ): AsyncQueryConnection
   }
 `;
 
