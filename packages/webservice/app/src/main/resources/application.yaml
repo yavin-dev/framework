@@ -1,5 +1,4 @@
 elide:
-  modelPackage: 'com.yahoo.navi.ws.models.beans'
   json-api:
     path: /api/v1
     enabled: true
@@ -9,8 +8,6 @@ elide:
   swagger:
     path: /doc
     enabled: true
-  async:
-    enabled: false
 
 spring:
   application:
