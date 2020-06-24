@@ -3,7 +3,7 @@
   {{get @data @column.type}}
   {{#if @data.__meta__.hasPartialData}}
     <div class="table-cell__info-message">
-      {{navi-icon "exclamation-triangle" class="table-cell__info-message--icon"}}
+      <NaviIcon @icon="exclamation-triangle" class="table-cell__info-message--icon" />
       <EmberTooltip class="table-cell__info-message--tooltip" @side="right" @enableLazyRendering={{true}}>
         Totals and Subtotals are not calculated when data is partially loaded
       </EmberTooltip>
