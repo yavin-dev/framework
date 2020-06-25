@@ -11,6 +11,8 @@ plugins {
     `maven-publish`
     id("com.jfrog.bintray") version "1.8.4"
     id("com.jfrog.artifactory") version "4.9.10"
+    kotlin("plugin.allopen") version "1.3.72"
+    kotlin("plugin.jpa") version "1.3.72"
 }
 
 java {
@@ -18,6 +20,18 @@ java {
         getByName("main").java.setSrcDirs(arrayListOf("src/main/kotlin"))
         getByName("test").java.setSrcDirs(arrayListOf("src/test/kotlin"))
     }
+}
+
+allOpen {
+    annotation("javax.persistence.Entity")
+    annotation("javax.persistence.Embeddable")
+    annotation("javax.persistence.MappedSuperclass")
+}
+
+dependencies {
+    implementation("com.yahoo.elide", "elide-core", "5.0.0-pr10")
+    implementation("javax.persistence", "javax.persistence-api", "2.2")
+    implementation("org.hibernate", "hibernate-core", "5.4.15.Final")
 }
 
 val sourcesJar by tasks. registering(Jar::class) {

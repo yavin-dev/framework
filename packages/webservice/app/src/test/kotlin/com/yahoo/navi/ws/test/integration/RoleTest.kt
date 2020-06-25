@@ -4,12 +4,14 @@
  */
 package com.yahoo.navi.ws.test.integration
 
+import com.jayway.restassured.RestAssured.given
 import com.yahoo.navi.ws.test.framework.IntegrationTest
 import com.yahoo.navi.ws.test.framework.matchers.RegexMatcher
 import org.apache.http.HttpStatus
-import org.junit.Test
-import org.hamcrest.Matchers.*
-import com.jayway.restassured.RestAssured.given
+import org.hamcrest.Matchers.empty
+import org.hamcrest.Matchers.hasItems
+import org.hamcrest.Matchers.nullValue
+import org.junit.jupiter.api.Test
 
 class RoleTest : IntegrationTest() {
     private val naviUser1 = "user1"
@@ -22,7 +24,7 @@ class RoleTest : IntegrationTest() {
          * Role endpoint is initially empty
          */
         given()
-            .cookie("User", naviUser1)
+            .header("User", naviUser1)
         .When()
             .get("roles")
         .then()
@@ -39,7 +41,7 @@ class RoleTest : IntegrationTest() {
          * Created role is visible in roles endpoint
          */
         given()
-            .cookie("User", naviUser1)
+            .header("User", naviUser1)
         .When()
             .get("/roles")
         .then()
@@ -58,7 +60,7 @@ class RoleTest : IntegrationTest() {
          * Check for created date
          */
         given()
-            .cookie("User", naviUser1)
+            .header("User", naviUser1)
         .When()
             .get("/roles/$userRole")
         .then()
@@ -68,7 +70,7 @@ class RoleTest : IntegrationTest() {
                 RegexMatcher.matchesRegex("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}")) // YYYY-MM-DD HH:MM:ss
 
         given()
-            .cookie("User", naviUser1)
+            .header("User", naviUser1)
             .contentType("application/vnd.api+json")
             .body(
                     """

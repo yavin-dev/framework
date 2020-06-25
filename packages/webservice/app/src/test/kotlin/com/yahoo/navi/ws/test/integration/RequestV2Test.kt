@@ -2,15 +2,15 @@ package com.yahoo.navi.ws.test.integration
 
 import com.jayway.restassured.RestAssured.given
 import com.yahoo.navi.ws.test.framework.IntegrationTest
+import com.yahoo.navi.ws.test.framework.matchers.JsonMatcher.Companion.matchesJsonMap
 import org.apache.http.HttpStatus
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.not
-import org.hamcrest.CoreMatchers.`is` as Is
-import com.yahoo.navi.ws.test.framework.matchers.JsonMatcher.Companion.matchesJsonMap
-import org.hamcrest.Matchers.hasKey
 import org.hamcrest.Matchers.hasItems
-import org.junit.Before
-import org.junit.Test
+import org.hamcrest.Matchers.hasKey
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.hamcrest.CoreMatchers.`is` as Is
 
 class RequestV2Test : IntegrationTest() {
     private val USER = "user"
@@ -25,7 +25,7 @@ class RequestV2Test : IntegrationTest() {
         |}
         """.trimMargin() }
 
-    @Before
+    @BeforeEach
     fun setup() {
         reqStr = ("""{
         |"filters": [

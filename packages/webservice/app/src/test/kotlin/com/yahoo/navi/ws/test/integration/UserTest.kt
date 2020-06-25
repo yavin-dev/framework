@@ -4,12 +4,16 @@
  */
 package com.yahoo.navi.ws.test.integration
 
+import com.jayway.restassured.RestAssured.given
 import com.yahoo.navi.ws.test.framework.IntegrationTest
 import com.yahoo.navi.ws.test.framework.matchers.RegexMatcher
 import org.apache.http.HttpStatus
-import org.junit.Test
-import org.hamcrest.Matchers.*
-import com.jayway.restassured.RestAssured.given
+import org.hamcrest.Matchers.empty
+import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.hasItems
+import org.hamcrest.Matchers.not
+import org.hamcrest.Matchers.nullValue
+import org.junit.jupiter.api.Test
 
 class UserTest : IntegrationTest() {
     private val naviUser1 = "user1"
@@ -25,7 +29,7 @@ class UserTest : IntegrationTest() {
          * User endpoint is initially empty
          */
         given()
-            .cookie("User", naviUser1)
+            .header("User", naviUser1)
         .When()
             .get("/users")
         .then()
@@ -43,7 +47,7 @@ class UserTest : IntegrationTest() {
          * Created user is visible in users endpoint
          */
         given()
-            .cookie("User", naviUser1)
+            .header("User", naviUser1)
         .When()
             .get("/users")
         .then()
@@ -57,7 +61,7 @@ class UserTest : IntegrationTest() {
          * You cannot create a user under a different name
          */
         given()
-            .cookie("User", naviUser1)
+            .header("User", naviUser1)
             .contentType("application/vnd.api+json")
             .body(
                 """
@@ -94,7 +98,7 @@ class UserTest : IntegrationTest() {
          * Check for created date
          */
         given()
-            .cookie("User", user1)
+            .header("User", user1)
         .When()
             .get("/users/$user1")
         .then()
@@ -105,7 +109,7 @@ class UserTest : IntegrationTest() {
                 RegexMatcher.matchesRegex("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}")) // YYYY-MM-DD HH:MM:ss
 
         given()
-            .cookie("User", user1)
+            .header("User", user1)
             .contentType("application/vnd.api+json")
             .body(
                     """
@@ -230,7 +234,6 @@ class UserTest : IntegrationTest() {
         // a user cannot delete themselves
         given()
             .header("User", naviUser1)
-            .contentType("application/vnd.api+json")
         .When()
             .delete("/users/$naviUser1")
         .then()

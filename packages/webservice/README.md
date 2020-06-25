@@ -96,7 +96,7 @@ dependencies {
 To run the demo app
 
 ```shell script
-$ ./gradlew run
+$ ./gradlew bootRun
 ```
 
 # License

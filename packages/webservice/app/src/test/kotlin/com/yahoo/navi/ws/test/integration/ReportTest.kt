@@ -1,14 +1,14 @@
 package com.yahoo.navi.ws.test.integration
 
-import com.yahoo.navi.ws.test.framework.IntegrationTest
-import org.junit.Before
-import org.junit.Test
 import com.jayway.restassured.RestAssured.given
+import com.yahoo.navi.ws.test.framework.IntegrationTest
 import com.yahoo.navi.ws.test.framework.matchers.JsonMatcher.Companion.matchesJsonMap
 import com.yahoo.navi.ws.test.framework.matchers.RegexMatcher.Companion.matchesRegex
 import org.apache.http.HttpStatus
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasItems
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
 class ReportTest : IntegrationTest() {
     private val USER1 = "user1"
@@ -27,7 +27,7 @@ class ReportTest : IntegrationTest() {
         |}
         """.trimMargin() }
 
-    @Before
+    @BeforeEach
     fun setup() {
 
         // The test Request string, Order does not matter since
@@ -199,7 +199,6 @@ class ReportTest : IntegrationTest() {
         // test delete
         given()
             .header("User", USER1)
-            .contentType("application/vnd.api+json")
         .When()
             .delete("/reports/1")
         .then()
@@ -449,7 +448,6 @@ class ReportTest : IntegrationTest() {
 
         given()
             .header("User", USER2)
-            .contentType("application/vnd.api+json")
         .When()
             .delete("/reports/1")
         .then()
@@ -548,7 +546,6 @@ class ReportTest : IntegrationTest() {
         // non author should not be able to delete report
         given()
             .header("User", USER2)
-            .contentType("application/vnd.api+json")
         .When()
             .delete("/reports/1")
         .then()

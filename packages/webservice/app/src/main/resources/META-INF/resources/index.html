@@ -1,0 +1,48 @@
+<!--
+  ~ Copyright 2019, Verizon Media.
+  ~ Licensed under the Apache License, Version 2.0
+  ~ See LICENSE file in project root for terms.
+  -->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>JS Bin</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/denali-design/denali-css/css/denali.css" />
+    <script>
+      function switchFrame(url, element) {
+        let activeElements = document.getElementsByClassName('is-active');
+
+        for (let item of activeElements) {
+          item.classList.remove('is-active');
+        }
+
+        document.getElementById('iframe').src = url;
+        element.classList.add('is-active');
+      }
+    </script>
+  </head>
+  <body class="denali-default-theme">
+    <nav class="nav">
+      <div class="nav-left">
+        <a href="https://elide.io"
+          ><img class="nav-brand" src="https://elide.io//assets/images/elide-white-logo.png"
+        /></a>
+      </div>
+      <div class="nav-right">
+        <div class="nav-group">
+          <a class="nav-item is-active" onclick="switchFrame('swagger/index.html', this)">Explore JSON-API</a>
+          <a class="nav-item" onclick="switchFrame('/graphiql/index.html', this)">Explore GraphQL</a>
+        </div>
+      </div>
+    </nav>
+    <iframe
+      id="iframe"
+      src="/swagger/index.html"
+      style="left:0; bottom:0; right:0; width:100%; height:100vh; border:none; margin:0; padding:0;"
+    />
+  </body>
+</html>

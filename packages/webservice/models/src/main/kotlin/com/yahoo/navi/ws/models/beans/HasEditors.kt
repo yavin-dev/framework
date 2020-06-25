@@ -5,5 +5,5 @@
 package com.yahoo.navi.ws.models.beans
 
 interface HasEditors {
-    var editors: Collection<User>
+    var editors: MutableSet<User>
 }

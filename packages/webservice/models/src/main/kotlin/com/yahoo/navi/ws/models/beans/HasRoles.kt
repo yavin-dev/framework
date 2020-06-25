@@ -5,5 +5,5 @@
 package com.yahoo.navi.ws.models.beans
 
 interface HasRoles {
-    var roles: Collection<Role>
+    var roles: MutableSet<Role>
 }

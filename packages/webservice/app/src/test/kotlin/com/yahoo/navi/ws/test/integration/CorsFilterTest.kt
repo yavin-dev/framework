@@ -5,89 +5,40 @@
 package com.yahoo.navi.ws.test.integration
 
 import com.jayway.restassured.RestAssured.given
+import com.yahoo.elide.core.HttpStatus
 import com.yahoo.navi.ws.test.framework.IntegrationTest
-import org.junit.Test
-import org.hamcrest.Matchers.*
+import org.junit.jupiter.api.Test
 
 class CorsFilterTest : IntegrationTest() {
-    @Test
-    fun allowOriginTest() {
-        val testOrigin = "https://navi.yahoo.com"
-
-        /*
-         * Web service allows access from any origin
-         */
-        given()
-                .header("Origin", testOrigin)
-                .header("User", "testuser")
-        .When()
-            .get("/")
-        .then()
-            .assertThat()
-            .header("Access-Control-Allow-Origin", testOrigin)
-
-        /*
-         * When no origin header is given, all origins are allowed
-         */
-        given()
-                .header("User", "testuser")
-        .When()
-            .get("/")
-        .then()
-            .assertThat()
-            .header("Access-Control-Allow-Origin", "*")
-    }
+    val origin = "https://www.navi.yahoo.com"
+    val requestHeaders = "origin,content-type,accept"
 
     @Test
-    fun allowHeadersTest() {
-        val testHeaders = "origin, content-type, accept"
-
-        /*
-         * Web service allows any requested header
-         */
+    fun `it can return cors headers`() {
         given()
-            .header("Access-Control-Request-Headers", testHeaders)
-            .header("User", "testuser")
-        .When()
-            .get("/")
-        .then()
-            .assertThat()
-            .header("Access-Control-Allow-Headers", testHeaders)
-
-        /*
-         * Allowed headers is empty when none are given
-         */
-        given()
-            .header("User", "testuser")
-        .When()
-            .get("/")
-        .then()
-            .assertThat()
-            .header("Access-Control-Allow-Headers", isEmptyOrNullString())
-    }
-
-    @Test
-    fun allowMethodsTest() {
-        /*
-         * All methods are echoed and thus allowed
-         */
-        given()
-                .header("User", "testuser")
-        .When()
-            .options("/")
-        .then()
-            .assertThat()
-            .header("Access-Control-Allow-Methods", "OPTIONS,GET,POST,PATCH,DELETE")
-    }
-
-    @Test
-    fun allowCredentialsTest() {
-        given()
-                .header("User", "testuser")
+            .header("Origin", origin)
+            .header("Access-Control-Request-Method", "GET")
+            .header("Access-Control-Request-Headers", requestHeaders)
         .When()
             .options("/users")
         .then()
             .assertThat()
+            .header("Access-Control-Allow-Origin", origin)
             .header("Access-Control-Allow-Credentials", "true")
+            .header("Access-Control-Allow-Methods", "HEAD,GET,POST,PATCH,DELETE")
+            .statusCode(HttpStatus.SC_OK)
+    }
+
+    @Test
+    fun `it rejects bad request methods`() {
+        given()
+            .header("Origin", origin)
+            .header("Access-Control-Request-Method", "BAD_METHOD")
+            .header("Access-Control-Request-Headers", requestHeaders)
+        .When()
+            .options("/users/")
+        .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_FORBIDDEN)
     }
 }

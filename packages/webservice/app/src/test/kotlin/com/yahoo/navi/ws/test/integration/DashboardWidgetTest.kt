@@ -4,15 +4,16 @@
  */
 package com.yahoo.navi.ws.test.integration
 
-import com.yahoo.navi.ws.test.framework.IntegrationTest
-import org.junit.Before
-import org.junit.Test
 import com.jayway.restassured.RestAssured.given
+import com.yahoo.navi.ws.test.framework.IntegrationTest
 import com.yahoo.navi.ws.test.framework.matchers.JsonMatcher.Companion.matchesJsonMap
 import org.apache.http.HttpStatus
+import org.hamcrest.Matchers.containsInAnyOrder
 import org.hamcrest.Matchers.empty
 import org.hamcrest.Matchers.hasItems
 import org.hamcrest.Matchers.not
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
 class DashboardWidgetTest : IntegrationTest() {
     private val USER1 = "user1"
@@ -31,7 +32,7 @@ class DashboardWidgetTest : IntegrationTest() {
         |}
         """.trimMargin() }
 
-    @Before
+    @BeforeEach
     fun setup() {
         presentation = """
             {
@@ -232,8 +233,7 @@ class DashboardWidgetTest : IntegrationTest() {
             .body("data.id", hasItems("1", "2"))
             .body("data.attributes.title", hasItems("A widget 1"))
             .body("data.attributes.requests.logicalTable.table", hasItems(arrayListOf(arrayListOf("base"), arrayListOf("base")), arrayListOf(arrayListOf("base"), arrayListOf("base"))))
-            .body("data.attributes.visualization[0]", matchesJsonMap(visual1))
-            .body("data.attributes.visualization[1]", matchesJsonMap(visual2))
+            .body("data.attributes.visualization", containsInAnyOrder(matchesJsonMap(visual1), matchesJsonMap(visual2)))
 
         // delete a widget
         given()

@@ -6,15 +6,15 @@ package com.yahoo.navi.ws.test.integration
 
 import com.jayway.restassured.RestAssured.given
 import com.yahoo.navi.ws.test.framework.IntegrationTest
-import org.apache.http.HttpStatus
-import org.junit.Before
-import org.junit.Test
-
-import org.hamcrest.Matchers.hasItems
 import com.yahoo.navi.ws.test.framework.matchers.JsonMatcher.Companion.matchesJsonMap
-import org.hamcrest.Matchers.equalTo
+import org.apache.http.HttpStatus
+import org.hamcrest.Matchers.containsInAnyOrder
 import org.hamcrest.Matchers.empty
-import org.junit.Assert
+import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.hasItems
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
 class DashboardTest : IntegrationTest() {
     private val USER1 = "user1"
@@ -31,7 +31,7 @@ class DashboardTest : IntegrationTest() {
         |}
         """.trimMargin() }
 
-    @Before
+    @BeforeEach
     fun setup() {
         presentation = """
             {
@@ -140,7 +140,6 @@ class DashboardTest : IntegrationTest() {
 
         given()
             .header("User", USER1)
-            .contentType("application/vnd.api+json")
         .When()
             .delete("/dashboards/1")
         .then()
@@ -242,7 +241,6 @@ class DashboardTest : IntegrationTest() {
 
         given()
             .header("User", USER2)
-            .contentType("application/vnd.api+json")
         .When()
             .delete("/dashboards/1")
         .then()
@@ -305,7 +303,6 @@ class DashboardTest : IntegrationTest() {
 
         given()
             .header("User", USER3)
-            .contentType("application/vnd.api+json")
         .When()
             .delete("/dashboards/1")
         .then()
@@ -407,15 +404,14 @@ class DashboardTest : IntegrationTest() {
         .then()
             .assertThat()
             .statusCode(HttpStatus.SC_OK)
-            .body("data.size()", equalTo(2))
+            .body("data.id", containsInAnyOrder("1", "2"))
             .body("data.relationships.dashboard.data.id", equalTo(arrayListOf("1", "1")))
 
-        val numberOfWidgetsInDashboard1 = "select count(*) from dashboard_widgets where dashboard = 1 "
-        Assert.assertEquals(getCountForSelectQuery(numberOfWidgetsInDashboard1), 2)
+        val numberOfWidgetsInDashboard1 = "from DashboardWidget where dashboard.id = 1 "
+        assertEquals(2, getCountForSelectQuery(numberOfWidgetsInDashboard1))
 
         given()
             .header("User", USER1)
-            .contentType("application/vnd.api+json")
         .When()
             .delete("/dashboards/1")
         .then()
@@ -431,7 +427,7 @@ class DashboardTest : IntegrationTest() {
             // Custom matcher that takes string and compares to the get request
             .body("data.id", empty<Any>())
 
-        Assert.assertEquals(getCountForSelectQuery(numberOfWidgetsInDashboard1), 0)
+        assertEquals(0, getCountForSelectQuery(numberOfWidgetsInDashboard1))
     }
 
     @Test

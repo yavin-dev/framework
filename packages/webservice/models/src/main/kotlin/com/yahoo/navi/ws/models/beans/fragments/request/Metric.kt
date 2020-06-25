@@ -4,8 +4,8 @@
  */
 package com.yahoo.navi.ws.models.beans.fragments.request
 
-import org.hibernate.annotations.Type
 import org.hibernate.annotations.Parameter
+import org.hibernate.annotations.Type
 
 data class Metric(
     var metric: String,

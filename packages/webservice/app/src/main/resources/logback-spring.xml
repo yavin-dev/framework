@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <springProperty scope="context" name="logDir" source="logging.path"/>
+    <springProperty scope="context" name="springAppName" source="spring.application.name"/>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{dd-MM-yyyy HH:mm:ss.SSS} %magenta([%thread]) [${springAppName}, %X{X-B3-TraceId:-}] %highlight(%-5level) %logger{36}.%M - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="LOGFILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logDir}/server.log</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>%d{dd-MM-yyyy HH:mm:ss.SSS} [%thread] [${springAppName}, %X{X-B3-TraceId:-}] %-5level %logger{36}.%M - %msg%n</Pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${logDir}/archived/server_%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>100MB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <!-- Log Hibernate SQL Statements -->
+    <logger name="org.hibernate.SQL" level="DEBUG" />
+    <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE" />
+
+    <!-- Log JPA Datastore HQL Statements -->
+    <logger name="com.yahoo.elide.datastores.jpa.porting.EntityManagerWrapper" level="DEBUG" />
+
+    <!-- Log HTTP Error Explanations -->
+    <logger name="com.yahoo.elide.graphql.QueryRunner" level="DEBUG" />
+    <logger name="com.yahoo.elide.Elide" level="TRACE" />
+
+    <root level="info">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="LOGFILE" />
+    </root>
+</configuration>

@@ -4,85 +4,84 @@
  */
 package com.yahoo.navi.ws.models.beans
 
-import com.yahoo.elide.annotation.Include
-import com.yahoo.elide.annotation.SharePermission
-import com.yahoo.elide.annotation.DeletePermission
 import com.yahoo.elide.annotation.CreatePermission
+import com.yahoo.elide.annotation.DeletePermission
+import com.yahoo.elide.annotation.Include
 import com.yahoo.elide.annotation.UpdatePermission
+import com.yahoo.navi.ws.models.checks.DefaultDashboardAuthorCheck.Companion.IS_DASHBOARD_AUTHOR
+import com.yahoo.navi.ws.models.checks.DefaultNobodyCheck.Companion.NOBODY
+import com.yahoo.navi.ws.models.checks.DefaultSameUserCheck.Companion.IS_SAME_USER
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
 import org.hibernate.annotations.Where
-
 import java.util.Date
-
-import javax.persistence.Entity
-import javax.persistence.Table
-import javax.persistence.Id
 import javax.persistence.Column
-import javax.persistence.JoinTable
+import javax.persistence.Entity
+import javax.persistence.Id
 import javax.persistence.JoinColumn
+import javax.persistence.JoinTable
+import javax.persistence.ManyToMany
+import javax.persistence.OneToMany
 import javax.persistence.Temporal
 import javax.persistence.TemporalType
-import javax.persistence.OneToMany
-import javax.persistence.ManyToMany
 import javax.validation.constraints.NotBlank
 
 @Entity
-@Table(name = "navi_users")
 @Include(rootLevel = true, type = "users")
-@SharePermission
-@DeletePermission(expression = "nobody")
-@CreatePermission(expression = "is the same user")
-@UpdatePermission(expression = "is the same user now")
+@DeletePermission(expression = NOBODY)
+@CreatePermission(expression = IS_SAME_USER)
+@UpdatePermission(expression = IS_SAME_USER)
 class User : HasRoles {
-    @get:Id
-    @get:NotBlank
+
+    @Id
+    @NotBlank
     var id: String? = null
 
-    @get:CreationTimestamp
-    @get:Column(columnDefinition = "timestamp default current_timestamp")
-    @get:Temporal(TemporalType.TIMESTAMP)
-    @get:UpdatePermission(expression = "nobody")
+    @CreationTimestamp
+    @Column(columnDefinition = "timestamp default current_timestamp")
+    @Temporal(TemporalType.TIMESTAMP)
+    @UpdatePermission(expression = NOBODY)
     var createdOn: Date? = null
 
-    @get:UpdateTimestamp
-    @get:Column(columnDefinition = "timestamp default current_timestamp")
-    @get:Temporal(TemporalType.TIMESTAMP)
-    @get:UpdatePermission(expression = "nobody")
+    @UpdateTimestamp
+    @Column(columnDefinition = "timestamp default current_timestamp")
+    @Temporal(TemporalType.TIMESTAMP)
+    @UpdatePermission(expression = NOBODY)
     var updatedOn: Date? = null
 
-    @get:OneToMany(mappedBy = "author", targetEntity = Asset::class)
-    @get:Where(clause = "ASSET_TYPE = 'Report'")
-    var reports: Collection<Report> = arrayListOf()
+    @OneToMany(mappedBy = "author", targetEntity = Asset::class)
+    @Where(clause = "ASSET_TYPE = 'Report'")
+    var reports: MutableSet<Report> = mutableSetOf()
 
-    @get:ManyToMany
-    @get:JoinTable(
-            name = "map_user_to_fav_reports",
-            joinColumns = arrayOf(JoinColumn(name = "user_id", referencedColumnName = "id")),
-            inverseJoinColumns = arrayOf(JoinColumn(name = "report_id", referencedColumnName = "id"))
+    @ManyToMany
+    @JoinTable(
+        name = "map_user_to_fav_reports",
+        joinColumns = [JoinColumn(name = "user_id", referencedColumnName = "id")],
+        inverseJoinColumns = [JoinColumn(name = "report_id", referencedColumnName = "id")]
     )
-    var favoriteReports: Collection<Report> = arrayListOf()
+    var favoriteReports: MutableSet<Report> = mutableSetOf()
 
-    @get:OneToMany(mappedBy = "author", targetEntity = Asset::class)
-    @get:Where(clause = "ASSET_TYPE = 'Dashboard'")
-    var dashboards: Collection<Dashboard> = arrayListOf()
+    @OneToMany(mappedBy = "author", targetEntity = Asset::class)
+    @Where(clause = "ASSET_TYPE = 'Dashboard'")
+    var dashboards: MutableSet<Dashboard> = mutableSetOf()
 
-    @get:UpdatePermission(expression = "is author of dashboard")
-    @get:ManyToMany
-    @get:JoinTable(
-            name = "map_editor_to_dashboard_collections",
-            joinColumns = arrayOf(JoinColumn(name = "user_id", referencedColumnName = "id")),
-            inverseJoinColumns = arrayOf(JoinColumn(name = "dashboard_collection_id", referencedColumnName = "id")))
-    var editingDashboards: Collection<Dashboard> = arrayListOf()
-
-    @get:ManyToMany
-    @get:JoinTable(
-            name = "map_user_to_fav_dashboards",
-            joinColumns = arrayOf(JoinColumn(name = "user_id", referencedColumnName = "id")),
-            inverseJoinColumns = arrayOf(JoinColumn(name = "dashboard_id", referencedColumnName = "id"))
+    @UpdatePermission(expression = IS_DASHBOARD_AUTHOR)
+    @ManyToMany
+    @JoinTable(
+        name = "map_editor_to_dashboard_collections",
+        joinColumns = [JoinColumn(name = "user_id", referencedColumnName = "id")],
+        inverseJoinColumns = [JoinColumn(name = "dashboard_collection_id", referencedColumnName = "id")]
     )
-    var favoriteDashboards: Collection<Dashboard> = arrayListOf()
+    var editingDashboards: MutableSet<Dashboard> = mutableSetOf()
 
-    @get:OneToMany(targetEntity = Role::class)
-    override var roles: Collection<Role> = arrayListOf()
+    @ManyToMany
+    @JoinTable(
+        name = "map_user_to_fav_dashboards",
+        joinColumns = [JoinColumn(name = "user_id", referencedColumnName = "id")],
+        inverseJoinColumns = [JoinColumn(name = "dashboard_id", referencedColumnName = "id")]
+    )
+    var favoriteDashboards: MutableSet<Dashboard> = mutableSetOf()
+
+    @OneToMany
+    override var roles: MutableSet<Role> = mutableSetOf()
 }
