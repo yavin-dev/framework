@@ -228,6 +228,14 @@ export default {
       category: 'test',
       datatype: 'text',
       storageStrategy: 'loaded'
+    },
+    {
+      name: 'Budget',
+      longName: 'Budget',
+      cardinality: 462664,
+      category: 'test',
+      datatype: 'number',
+      storageStrategy: 'loaded'
     }
   ],
 

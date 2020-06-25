@@ -1,5 +1,5 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -53,7 +53,7 @@ export default Component.extend({
 
     let dimFilters = getWithDefault(this, 'request.filters', []).map(filter => {
       let dimensionDataType = filter.dimension.valueType?.toLowerCase?.(),
-        type = featureFlag('dateDimensionFilter') && dimensionDataType === 'date' ? 'date-dimension' : 'dimension';
+        type = this._dimensionFilterBuilder(dimensionDataType);
 
       return {
         type,
@@ -69,5 +69,23 @@ export default Component.extend({
     });
 
     return [...dateFilters, ...dimFilters, ...metricFilters];
-  })
+  }),
+
+  /**
+   * return appropriate dimension filter builder type based on dimension value Type.
+   * @param {String} type - dimension meta data value type.
+   * @return {String} which dimension filter builder to use
+   */
+  _dimensionFilterBuilder: function(type) {
+    if (!featureFlag('dateDimensionFilter')) {
+      return 'dimension';
+    }
+
+    const dimensionBuilders = {
+      date: 'date-dimension',
+      number: 'number-dimension'
+    };
+
+    return dimensionBuilders[type] || 'dimension';
+  }
 });

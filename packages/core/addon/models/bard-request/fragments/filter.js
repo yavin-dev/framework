@@ -65,7 +65,10 @@ export default Fragment.extend(Validations, {
 
     set(type, value) {
       // some operators don't need to be mapped, as values don't always have id fields and mapping by ID will cause errors
-      if (['contains', 'null', 'notnull', 'gte', 'lt', 'bet'].includes(this.operator)) {
+      if (
+        this.dimension.valueType === 'number' ||
+        ['contains', 'null', 'notnull', 'gte', 'lt', 'lte', 'bet', 'gt', 'nbet'].includes(this.operator)
+      ) {
         set(this, 'rawValues', value);
       } else {
         set(this, 'rawValues', arr(value).mapBy('id'));
