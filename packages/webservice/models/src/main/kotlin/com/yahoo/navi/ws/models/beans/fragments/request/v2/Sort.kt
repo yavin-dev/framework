@@ -9,17 +9,10 @@ import org.hibernate.annotations.Parameter
 import org.hibernate.annotations.Type
 
 data class Sort(
-    var field: String,
-    @get: Type(type = "com.yahoo.navi.ws.models.types.JsonType", parameters = [
-        Parameter(name = "class", value = "kotlin.collections.HashMap")
-    ]) var parameters: Map<String, String>,
-    var type: ColumnType?,
-    var direction: String
-) {
-    constructor() : this(
-            "",
-            emptyMap(),
-            null,
-            ""
-    )
-}
+    var field: String = "",
+    @Type(type = "com.yahoo.navi.ws.models.types.JsonType", parameters = [
+        Parameter(name = "class", value = "java.utils.HashMap")
+    ]) var parameters: Map<String, String> = emptyMap(),
+    var type: ColumnType? = null,
+    var direction: String = ""
+)

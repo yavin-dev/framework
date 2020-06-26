@@ -9,19 +9,11 @@ import org.hibernate.annotations.Parameter
 import org.hibernate.annotations.Type
 
 data class Filter(
-    var field: String,
-    @get: Type(type = "com.yahoo.navi.ws.models.types.JsonType", parameters = [
-        Parameter(name = "class", value = "kotlin.collections.HashMap")
-    ]) var parameters: Map<String, String>,
-    var operator: String,
-    var type: ColumnType?,
-    var values: Array<Any>
-) {
-    constructor() : this(
-            "",
-            emptyMap(),
-            "",
-            null,
-            emptyArray()
-    )
-}
+    var field: String = "",
+    @Type(type = "com.yahoo.navi.ws.models.types.JsonType", parameters = [
+        Parameter(name = "class", value = "java.utils.HashMap")
+    ]) var parameters: Map<String, String> = emptyMap(),
+    var operator: String = "",
+    var type: ColumnType? = null,
+    var values: List<Any> = emptyList()
+)

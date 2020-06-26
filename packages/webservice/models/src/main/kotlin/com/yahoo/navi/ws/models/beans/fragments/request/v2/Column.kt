@@ -11,17 +11,10 @@ import org.hibernate.annotations.Type
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class Column(
-    var field: String,
-    @get: Type(type = "com.yahoo.navi.ws.models.types.JsonType", parameters = [
-        Parameter(name = "class", value = "kotlin.collections.HashMap")
-    ]) var parameters: Map<String, String>,
-    var type: ColumnType?,
-    var alias: String?
-) {
-    constructor() : this(
-            "",
-            emptyMap(),
-            null,
-            null
-    )
-}
+    var field: String = "",
+    @Type(type = "com.yahoo.navi.ws.models.types.JsonType", parameters = [
+        Parameter(name = "class", value = "java.utils.HashMap")
+    ]) var parameters: Map<String, String> = emptyMap(),
+    var type: ColumnType? = null,
+    var alias: String? = null
+)

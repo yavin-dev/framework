@@ -18,27 +18,14 @@ import org.hibernate.annotations.TypeDef
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @TypeDef(typeClass = JsonType::class, name = "json")
 data class RequestV1(
-    var intervals: Array<Interval> = arrayOf(),
-    var filters: Array<Filter> = arrayOf(),
-    var dimensions: Array<Dimension> = arrayOf(),
-    var metrics: Array<Metric> = arrayOf(),
-    var logicalTable: LogicalTable,
-    var sort: Array<Sort> = arrayOf(),
-    var having: Array<Having> = arrayOf(),
+    var intervals: List<Interval> = emptyList(),
+    var filters: List<Filter> = emptyList(),
+    var dimensions: List<Dimension> = emptyList(),
+    var metrics: List<Metric> = emptyList(),
+    var logicalTable: LogicalTable = LogicalTable(),
+    var sort: List<Sort> = emptyList(),
+    var having: List<Having> = emptyList(),
     var dataSource: String? = null,
-    var bardVersion: String,
-    val requestVersion: String
-) : Request {
-    constructor() : this(
-        arrayOf<Interval>(),
-        arrayOf<Filter>(),
-        arrayOf<Dimension>(),
-        arrayOf<Metric>(),
-        LogicalTable("", ""),
-        arrayOf<Sort>(),
-        arrayOf<Having>(),
-        null,
-        "v1",
-        "v1"
-    )
-}
+    var bardVersion: String = "v1",
+    val requestVersion: String = "v1"
+) : Request

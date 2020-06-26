@@ -14,21 +14,11 @@ import org.hibernate.annotations.TypeDef
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @TypeDef(typeClass = JsonType::class, name = "json")
 data class RequestV2(
-    var filters: Array<Filter>,
-    var columns: Array<Column>,
-    var table: String,
-    var sorts: Array<Sort>,
-    var limit: Int?,
-    var dataSource: String?,
-    val requestVersion: String
-) : Request {
-    constructor() : this(
-            emptyArray(),
-            emptyArray(),
-            "",
-            emptyArray(),
-            null,
-            null,
-            "2.0"
-    )
-}
+    var filters: List<Filter> = emptyList(),
+    var columns: List<Column> = emptyList(),
+    var table: String = "",
+    var sorts: List<Sort> = emptyList(),
+    var limit: Int? = null,
+    var dataSource: String? = null,
+    val requestVersion: String = "2.0"
+) : Request
