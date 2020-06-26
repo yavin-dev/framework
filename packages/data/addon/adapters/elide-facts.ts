@@ -62,7 +62,7 @@ export default class ElideFacts extends EmberObject implements NaviFactAdapter {
    * @param options
    * @returns Promise that resolves to the result of the AsyncQuery creation mutation
    */
-  asyncFetchDataForRequest(request: RequestV1, options: RequestOptions): Promise<AsyncQueryResponse> {
+  createAsyncQueryRequest(request: RequestV1, options: RequestOptions): Promise<AsyncQueryResponse> {
     const mutation: DocumentNode = GQLQueries['asyncFactsMutation'];
     const dataQuery = this.dataQueryFromRequest(request);
     const clientId: string = options.clientId || v1();
@@ -93,10 +93,18 @@ export default class ElideFacts extends EmberObject implements NaviFactAdapter {
     });
   }
 
+  /**
+   * @param _request
+   * @param _options
+   */
   urlForFindQuery(_request: RequestV1, _options: RequestOptions): string {
     throw new Error('Method not implemented.');
   }
 
+  /**
+   * @param _request
+   * @param _options
+   */
   fetchDataForRequest(_request: RequestV1, _options: RequestOptions): Promise<TODO> {
     throw new Error('Method not implemented.');
   }
