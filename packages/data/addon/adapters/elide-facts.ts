@@ -92,4 +92,12 @@ export default class ElideFacts extends EmberObject implements NaviFactAdapter {
       }
     });
   }
+
+  urlForFindQuery(_request: RequestV1, _options: RequestOptions): string {
+    throw new Error('Method not implemented.');
+  }
+
+  fetchDataForRequest(_request: RequestV1, _options: RequestOptions): Promise<TODO> {
+    throw new Error('Method not implemented.');
+  }
 }
