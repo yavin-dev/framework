@@ -4,23 +4,19 @@
  */
 import gql from 'graphql-tag';
 
-const mutation = gql`
-  mutation(id: $id) {
-    asyncQuery(
-      op: UPDATE
-      ids: [$id]
-      data: {
-        status: CANCELLED
+export const asyncFactsCancelMutationStr = `mutation($id: string) {
+  asyncQuery(op: UPDATE, ids: [$id], data: { status: CANCELLED }) {
+    edges {
+      node {
+        id
+        status
       }
-    ) {
-      edges { 
-        node { 
-          id
-          status
-        } 
-      } 
     }
   }
+}`;
+
+const mutation = gql`
+  ${asyncFactsCancelMutationStr}
 `;
 
 export default mutation;

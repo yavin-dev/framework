@@ -71,18 +71,39 @@ export enum QueryStatus {
 
 export interface AsyncQuery {
   requestId: string;
-  principalName: string;
   request: RequestV1 | RequestV2;
   status: QueryStatus;
-  result: NaviFactsModel;
+  result: AsyncQueryResult | null;
   createdOn: Date;
   updatedOn: Date;
   then: () => NaviFactsModel;
   cancel: () => void;
 }
 
+export type AsyncQueryResponse = {
+  asyncQuery: {
+    edges: [
+      {
+        node: {
+          id: string;
+          query: string;
+          queryType: string;
+          status: QueryStatus;
+          result: AsyncQueryResult | null;
+        };
+      }
+    ];
+  };
+};
+
+export interface AsyncQueryResult {
+  httpStatus: number;
+  contentLength: number;
+  responseBody: string;
+}
+
 export default interface NaviFactAdapter {
-  fetchDataForRequest(request: RequestV1 | RequestV2, options: RequestOptions): Promise<TODO>;
-  urlForFindQuery(request: RequestV1 | RequestV2, options: RequestOptions): string;
-  asyncFetchDataForRequest(request: RequestV1 | RequestV2, options: RequestOptions): AsyncQuery;
+  fetchDataForRequest?(request: RequestV1 | RequestV2, options: RequestOptions): Promise<TODO>;
+  urlForFindQuery?(request: RequestV1 | RequestV2, options: RequestOptions): string;
+  asyncFetchDataForRequest?(request: RequestV1 | RequestV2, options: RequestOptions): Promise<AsyncQueryResponse>;
 }

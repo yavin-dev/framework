@@ -5,25 +5,22 @@
 import gql from 'graphql-tag';
 
 const query = gql`
-  query(id: $id) {
-    asyncQuery(
-      op: FETCH
-      ids: [$id]
-    ) {
-      edges { 
-        node { 
-          id 
-          query 
-          queryType 
-          status 
+  query($id: string, $query: string) {
+    asyncQuery(op: FETCH, ids: [$id], data: { query: $query }) {
+      edges {
+        node {
+          id
+          query
+          queryType
+          status
           result {
             id
             contentLength
             responseBody
             status
           }
-        } 
-      } 
+        }
+      }
     }
   }
 `;
