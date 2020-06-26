@@ -50,7 +50,7 @@ module('Unit | Adapter | elide facts', function(hooks) {
     assert.ok(adapter);
   });
 
-  test('asyncFetchDataForRequest', async function(assert) {
+  test('createAsyncQueryRequest', async function(assert) {
     assert.expect(5);
     const adapter = this.owner.lookup('adapter:elide-facts');
     let expectedResponse;
@@ -119,14 +119,14 @@ module('Unit | Adapter | elide facts', function(hooks) {
       });
     });
 
-    const asyncQuery = await adapter.asyncFetchDataForRequest(TestRequest, { clientId: v1() });
+    const asyncQuery = await adapter.createAsyncQueryRequest(TestRequest, { clientId: v1() });
 
     assert.deepEqual(asyncQuery, expectedResponse, 'Data block of the response is returned by the asyncFetch');
 
     Server.shutdown();
   });
 
-  test('asyncFetchDataForRequest - error', async function(assert) {
+  test('createAsyncQueryRequest - error', async function(assert) {
     assert.expect(1);
 
     const adapter = this.owner.lookup('adapter:elide-facts');
@@ -139,7 +139,7 @@ module('Unit | Adapter | elide facts', function(hooks) {
     });
 
     try {
-      await adapter.asyncFetchDataForRequest(TestRequest, { clientId: v1() });
+      await adapter.createAsyncQueryRequest(TestRequest, { clientId: v1() });
     } catch (e) {
       assert.deepEqual(e, expectedResult, 'When an error block is present in the response, the promise fails');
     }
