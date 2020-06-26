@@ -1,5 +1,5 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 package com.yahoo.navi.ws.models.beans.fragments
@@ -13,12 +13,6 @@ import org.hibernate.annotations.TypeDef
 @TypeDef(typeClass = JsonType::class, name = "json")
 data class DashboardPresentation(
     var version: Int = 0,
-    var layout: List<Layout> = arrayListOf(),
+    var layout: List<Layout> = emptyList(),
     var columns: Int = 0
-) {
-    constructor() : this(
-            0,
-            arrayListOf<Layout>(),
-            0
-    )
-}
+)

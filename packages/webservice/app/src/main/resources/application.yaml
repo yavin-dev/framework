@@ -4,7 +4,7 @@ elide:
     enabled: true
   graphql:
     path: /graphql/api/v1
-    enabled: false
+    enabled: true
   swagger:
     path: /doc
     enabled: true
@@ -33,3 +33,4 @@ logging:
   path: /tmp
 
 ---
+

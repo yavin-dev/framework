@@ -1,5 +1,5 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 package com.yahoo.navi.ws.models.beans.fragments
@@ -15,14 +15,8 @@ import org.hibernate.annotations.TypeDef
 data class DashboardWidgetVisualization(
     var type: String = "",
     var version: Int = 0,
-    @get:Type(type = "com.yahoo.navi.ws.models.types.JsonType", parameters = arrayOf(
-            Parameter(name = "class", value = "kotlin.collections.HashMap")
-    ))
+    @Type(type = "com.yahoo.navi.ws.models.types.JsonType", parameters = [
+        Parameter(name = "class", value = "java.util.HashMap")
+    ])
     var metadata: Map<Any, Any> = emptyMap()
-) {
-    constructor() : this(
-            "",
-            0,
-            emptyMap()
-    )
-}
+)
