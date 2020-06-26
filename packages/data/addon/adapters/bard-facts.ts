@@ -18,7 +18,7 @@ import NaviFactAdapter, {
   RequestOptions,
   SORT_DIRECTIONS,
   SortDirection,
-  AsyncQuery
+  AsyncQueryResponse
 } from './fact-interface';
 import { AliasFn, Query } from './bard-facts-v2';
 
@@ -354,7 +354,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
     });
   }
 
-  asyncFetchDataForRequest(_request: RequestV1, _options: RequestOptions): AsyncQuery {
+  asyncFetchDataForRequest(_request: RequestV1, _options: RequestOptions): Promise<AsyncQueryResponse> {
     throw new Error('Method not implemented.');
   }
 }

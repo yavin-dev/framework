@@ -18,7 +18,7 @@ export default class GraphQLMetadataAdapter extends EmberObject {
   /**
    * @property {Object} apollo - apollo client query manager using the overriden metadata service
    */
-  @queryManager({ service: 'navi-metadata-apollo' })
+  @queryManager({ service: 'navi-elide-apollo' })
   apollo: TODO;
 
   /**

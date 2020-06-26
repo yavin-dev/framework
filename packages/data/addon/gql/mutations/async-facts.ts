@@ -4,33 +4,28 @@
  */
 import gql from 'graphql-tag';
 
-const mutation = gql`
-  mutation(id: $id, query: $query) {
-    asyncQuery(
-      op: UPSERT
-      data: {
-        id: $id
-        query: $query
-        queryType: GRAPHQL_V1_0
-        status: QUEUED
-      }
-    ) {
-      edges { 
-        node { 
-          id 
-          query 
-          queryType 
-          status 
+export const asyncFactsMutationStr = `
+  mutation($id: string, $query: string) {
+    asyncQuery(op: UPSERT, data: { id: $id, query: $query, queryType: GRAPHQL_V1_0, status: QUEUED }) {
+      edges {
+        node {
+          id
+          query
+          queryType
+          status
           result {
-            id
             contentLength
             responseBody
-            status
+            httpStatus
           }
-        } 
-      } 
+        }
+      }
     }
   }
+`;
+
+const mutation = gql`
+  ${asyncFactsMutationStr}
 `;
 
 export default mutation;
