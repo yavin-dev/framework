@@ -4,9 +4,9 @@
  */
 import gql from 'graphql-tag';
 
-const query = gql`
-  query($id: string, $query: string) {
-    asyncQuery(op: FETCH, ids: [$id], data: { query: $query }) {
+export const asyncFactsQueryStr = `
+  query($id: string) {
+    asyncQuery(op: FETCH, ids: [$id]) {
       edges {
         node {
           id
@@ -14,15 +14,18 @@ const query = gql`
           queryType
           status
           result {
-            id
+            httpStatus
             contentLength
             responseBody
-            status
           }
         }
       }
     }
   }
+`;
+
+const query = gql`
+  ${asyncFactsQueryStr}
 `;
 
 export default query;

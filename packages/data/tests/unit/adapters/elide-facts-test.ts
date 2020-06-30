@@ -2,6 +2,7 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { asyncFactsMutationStr } from 'navi-data/gql/mutations/async-facts';
 import { asyncFactsCancelMutationStr } from 'navi-data/gql/mutations/async-facts-cancel';
+import { asyncFactsQueryStr } from 'navi-data/gql/queries/async-facts';
 import Pretender from 'pretender';
 import config from 'ember-get-config';
 import { v1 } from 'ember-uuid';
@@ -182,6 +183,183 @@ module('Unit | Adapter | elide facts', function(hooks) {
 
     const result = await adapter.cancelAsyncRequest('request1');
     assert.deepEqual(result, expectedResult, 'API response is returned on cancel');
+
+    Server.shutdown();
+  });
+
+  test('fetchAsyncQueryData', async function(assert) {
+    assert.expect(2);
+
+    const adapter = this.owner.lookup('adapter:elide-facts');
+    let expectedResult;
+
+    Server = new Pretender(function() {
+      this.post(`${HOST}/graphql`, function({ requestBody }) {
+        const requestObj = JSON.parse(requestBody);
+
+        assert.equal(
+          requestObj.query.replace(/__typename/g, '').replace(/[ \t\r\n]+/g, ''),
+          asyncFactsQueryStr.replace(/[ \t\r\n]+/g, ''),
+          'Correct query is sent with new async fact request'
+        );
+
+        expectedResult = {
+          asyncQuery: {
+            edges: [
+              {
+                node: {
+                  id: requestObj.variables.ids[0],
+                  query: 'foo',
+                  queryType: 'GRAPHQL_V1_0',
+                  status: 'COMPLETE',
+                  result: {
+                    httpStatus: '200',
+                    contentLength: 2,
+                    responseBody: JSON.stringify({
+                      table: {
+                        edges: [
+                          {
+                            node: {
+                              metric: 123,
+                              dimension: 'foo'
+                            }
+                          }
+                        ]
+                      }
+                    })
+                  }
+                }
+              }
+            ]
+          }
+        };
+
+        return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ data: expectedResult })];
+      });
+    });
+
+    const result = await adapter.fetchAsyncQueryData('request1');
+    assert.deepEqual(result, expectedResult, 'API response is returned on cancel');
+
+    Server.shutdown();
+  });
+
+  test('fetchDataForRequest', async function(assert) {
+    assert.expect(10);
+    const adapter = this.owner.lookup('adapter:elide-facts');
+    adapter._pollingInterval = 300;
+    let callCount = 0;
+    let expectedResponse: Record<string, any> = {};
+    let queryVariable: string;
+    let queryId: string;
+
+    Server = new Pretender(function() {
+      this.post(`${HOST}/graphql`, function({ requestBody }) {
+        callCount++;
+        let result = null;
+        const { query, variables } = JSON.parse(requestBody);
+
+        if (callCount === 1) {
+          queryVariable = variables.query;
+          queryId = variables.ids[0];
+
+          assert.equal(
+            query.replace(/__typename/g, '').replace(/[ \t\r\n]+/g, ''),
+            asyncFactsMutationStr.replace(/[ \t\r\n]+/g, ''),
+            'Mutation is first request sent'
+          );
+        } else if (callCount < 6) {
+          assert.equal(
+            query.replace(/__typename/g, '').replace(/[ \t\r\n]+/g, ''),
+            asyncFactsQueryStr.replace(/[ \t\r\n]+/g, ''),
+            'AsyncQuery fetch is sent in the follow-up requests'
+          );
+          assert.equal(variables.ids[0], queryId, 'Same id is sent for mutation and query');
+
+          if (callCount === 5) {
+            result = {
+              httpStatus: 200,
+              contentLength: 1,
+              responseBody: JSON.stringify({
+                data: {
+                  tableName: {
+                    edges: [
+                      {
+                        node: {
+                          column1: '123',
+                          column2: '321'
+                        }
+                      }
+                    ]
+                  }
+                }
+              })
+            };
+          }
+        } else {
+          assert.ok(false, 'Polling did not stop after a response was returned');
+        }
+
+        expectedResponse = {
+          asyncQuery: {
+            edges: [
+              {
+                node: {
+                  id: queryId,
+                  query: queryVariable,
+                  queryType: 'GRAPHQL_V1_0',
+                  status: 'QUEUED',
+                  result
+                }
+              }
+            ]
+          }
+        };
+
+        return [
+          200,
+          { 'Content-Type': 'application/json' },
+          JSON.stringify({
+            data: expectedResponse
+          })
+        ];
+      });
+    });
+
+    const result = await adapter.fetchDataForRequest.perform(TestRequest);
+    assert.deepEqual(result, expectedResponse.asyncQuery?.edges[0].node.result, 'Result has correct format');
+
+    Server.shutdown();
+  });
+
+  test('fetchDataForRequest - error', async function(assert) {
+    assert.expect(1);
+    const adapter = this.owner.lookup('adapter:elide-facts');
+    let expectedResponse: Record<string, any> = {};
+
+    Server = new Pretender(function() {
+      this.post(`${HOST}/graphql`, function() {
+        expectedResponse = [
+          {
+            message: 'Error: Unable to fetch data for AsyncRequest'
+          }
+        ];
+
+        return [
+          200,
+          { 'Content-Type': 'application/json' },
+          JSON.stringify({
+            errors: expectedResponse
+          })
+        ];
+      });
+    });
+
+    try {
+      await adapter.fetchDataForRequest.perform(TestRequest);
+    } catch (e) {
+      assert.deepEqual(e.errors, expectedResponse, 'API errors are propagated down when received by the adapter');
+    }
 
     Server.shutdown();
   });

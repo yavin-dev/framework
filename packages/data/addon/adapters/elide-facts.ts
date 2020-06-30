@@ -4,9 +4,10 @@
  */
 import EmberObject from '@ember/object';
 import { queryManager } from 'ember-apollo-client';
-import NaviFactAdapter, { RequestV1, RequestOptions, AsyncQueryResponse } from './fact-interface';
+import { RequestV1, RequestOptions, AsyncQueryResponse } from './fact-interface';
 import { DocumentNode } from 'graphql';
 import GQLQueries from 'navi-data/gql/fact-queries';
+import { task, timeout } from 'ember-concurrency';
 import { v1 } from 'ember-uuid';
 
 interface ApolloMutationOptions {
@@ -21,12 +22,17 @@ interface RequestDimension {
   dimension: string;
 }
 
-export default class ElideFacts extends EmberObject implements NaviFactAdapter {
+export default class ElideFacts extends EmberObject {
   /**
    * @property {Object} apollo - apollo client query manager using the overridden elide service
    */
   @queryManager({ service: 'navi-elide-apollo' })
   apollo: TODO;
+
+  /**
+   * @property {Number} _pollingInterval - number of ms between fetch requests during async request polling
+   */
+  _pollingInterval = 3000;
 
   /**
    * @param request
@@ -62,7 +68,7 @@ export default class ElideFacts extends EmberObject implements NaviFactAdapter {
    * @param options
    * @returns Promise that resolves to the result of the AsyncQuery creation mutation
    */
-  createAsyncQueryRequest(request: RequestV1, options: RequestOptions): Promise<AsyncQueryResponse> {
+  createAsyncQueryRequest(request: RequestV1, options: RequestOptions = {}): Promise<AsyncQueryResponse> {
     const mutation: DocumentNode = GQLQueries['asyncFactsMutation'];
     const dataQuery = this.dataQueryFromRequest(request);
     const clientId: string = options.clientId || v1();
@@ -94,6 +100,20 @@ export default class ElideFacts extends EmberObject implements NaviFactAdapter {
   }
 
   /**
+   * @param id
+   * @returns Promise that resolves to the result of the AsyncQuery fetch query
+   */
+  fetchAsyncQueryData(id: string) {
+    const query: DocumentNode = GQLQueries['asyncFactsQuery'];
+    return this.apollo.query({
+      query,
+      variables: {
+        ids: [id]
+      }
+    });
+  }
+
+  /**
    * @param _request
    * @param _options
    */
@@ -102,10 +122,30 @@ export default class ElideFacts extends EmberObject implements NaviFactAdapter {
   }
 
   /**
-   * @param _request
-   * @param _options
+   * @param request
+   * @param options
    */
-  fetchDataForRequest(_request: RequestV1, _options: RequestOptions): Promise<TODO> {
-    throw new Error('Method not implemented.');
-  }
+  @task(function*(request: RequestV1, options: RequestOptions) {
+    //@ts-ignore
+    let asyncQueryPayload = yield this.createAsyncQueryRequest(request, options);
+    let asyncQuery = asyncQueryPayload?.asyncQuery.edges[0]?.node;
+    let result = asyncQuery?.result;
+    const id = asyncQuery?.id;
+
+    if (!id) {
+      throw Error('navi-data/elide-facts: AsyncQuery creation failed');
+    }
+
+    while (result === null) {
+      //@ts-ignore
+      yield timeout(this._pollingInterval);
+      //@ts-ignore
+      asyncQueryPayload = yield this.fetchAsyncQueryData(id);
+      result = asyncQueryPayload?.asyncQuery?.edges[0]?.node.result;
+    }
+
+    return result;
+  })
+  //@ts-ignore
+  fetchDataForRequest: Promise<TODO>;
 }
