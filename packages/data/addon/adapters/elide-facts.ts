@@ -126,15 +126,14 @@ export default class ElideFacts extends EmberObject {
    * @param options
    */
   @task(function*(request: RequestV1, options: RequestOptions) {
-    //@ts-ignore
-    let asyncQueryPayload = yield this.createAsyncQueryRequest(request, options);
-    let asyncQuery = asyncQueryPayload?.asyncQuery.edges[0]?.node;
-    let result = asyncQuery?.result;
-    const id = asyncQuery?.id;
-
-    if (!id) {
-      throw Error('navi-data/elide-facts: AsyncQuery creation failed');
+    let asyncQueryPayload;
+    try {
+      //@ts-ignore
+      asyncQueryPayload = yield this.createAsyncQueryRequest(request, options);
+    } catch (e) {
+      return Promise.reject(e);
     }
+    let { result, id } = asyncQueryPayload.asyncQuery.edges[0].node;
 
     while (result === null) {
       //@ts-ignore
