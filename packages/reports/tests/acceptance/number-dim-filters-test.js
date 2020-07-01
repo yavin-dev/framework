@@ -13,11 +13,7 @@ module('Acceptance | number dim filters', function(hooks) {
     await visit('/reports/1/view');
     await clickItemFilter('dimension', 'Budget');
 
-    assert.equal(
-      find('.filter-collection__row:nth-child(2) .filter-builder__operator').textContent.trim(),
-      'Equals (=)',
-      'The number dimension filter builder is used for number dimension'
-    );
+    assert.dom('.filter-collection__row:nth-child(2) .filter-builder__operator').hasText('Equals (=)');
 
     await fillIn('.filter-values--value-input', '123');
 

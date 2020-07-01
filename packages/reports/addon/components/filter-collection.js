@@ -76,16 +76,13 @@ export default Component.extend({
    * @param {String} type - dimension meta data value type.
    * @return {String} which dimension filter builder to use
    */
-  _dimensionFilterBuilder: function(type) {
-    if (!featureFlag('dateDimensionFilter')) {
-      return 'dimension';
-    }
-
+  _dimensionFilterBuilder(type) {
     const dimensionBuilders = {
       date: 'date-dimension',
-      number: 'number-dimension'
+      number: 'number-dimension',
+      default: 'dimension'
     };
 
-    return dimensionBuilders[type] || 'dimension';
+    return dimensionBuilders[type] || dimensionBuilders.default;
   }
 });

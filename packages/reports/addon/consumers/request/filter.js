@@ -83,9 +83,6 @@ export default ActionConsumer.extend({
           default: 'in'
         };
 
-        if (!featureFlag('dateDimensionFilter')) {
-          return opDictionary.default;
-        }
         return opDictionary[type] || opDictionary.default;
       };
 
