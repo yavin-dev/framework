@@ -47,12 +47,7 @@ export default class DateDimensionFilterBuilderComponent extends BaseFilterBuild
   @computed('requestFragment.{operator,dimension,values.[]}')
   get filter() {
     const { requestFragment } = this;
-    const serializedFilter =
-      typeof requestFragment.serialize === 'function' ? requestFragment.serialize() : requestFragment;
-
-    const { values } = serializedFilter;
-
-    const { dimension, operator: operatorId } = requestFragment;
+    const { dimension, operator: operatorId, values } = requestFragment;
     const operator = arr(this.supportedOperators).findBy('id', operatorId);
 
     return {
