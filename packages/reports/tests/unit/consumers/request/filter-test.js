@@ -55,7 +55,7 @@ module('Unit | Consumer | request filter', function(hooks) {
     );
   });
 
-  test('UPDATE_FILTER_PARAM', function(assert) {
+  test('UPDATE_FILTER_PARAMS', function(assert) {
     assert.expect(1);
 
     let subject = { metric: 'foo', parameters: { param: 'bar' } },
@@ -65,7 +65,7 @@ module('Unit | Consumer | request filter', function(hooks) {
 
     this.owner
       .lookup('consumer:request/filter')
-      .send(RequestActions.UPDATE_FILTER_PARAM, { currentModel: null }, filter, parameter, parameterValue);
+      .send(RequestActions.UPDATE_FILTER_PARAMS, { currentModel: null }, filter, parameter, parameterValue);
 
     assert.deepEqual(
       filter,
@@ -124,31 +124,35 @@ module('Unit | Consumer | request filter', function(hooks) {
     );
   });
 
-  test('TOGGLE_DIM_FILTER - add dimension', function(assert) {
+  test('TOGGLE_DIMENSION_FILTER - add dimension', function(assert) {
     assert.expect(2);
 
     const MockDispatcher = {
       dispatch(action, route, dimension) {
-        assert.equal(action, RequestActions.ADD_DIM_FILTER, 'ADD_DIM_FILTER is sent as part of TOGGLE_DIM_FILTER');
+        assert.equal(
+          action,
+          RequestActions.ADD_DIMENSION_FILTER,
+          'ADD_DIMENSION_FILTER is sent as part of TOGGLE_DIMENSION_FILTER'
+        );
 
-        assert.equal(dimension, 'mockDim', 'the filter dimension is passed on to ADD_DIM_FILTER');
+        assert.equal(dimension, 'mockDim', 'the filter dimension is passed on to ADD_DIMENSION_FILTER');
       }
     };
 
     let consumer = this.owner.factoryFor('consumer:request/filter').create({ requestActionDispatcher: MockDispatcher }),
       currentModel = { request: { filters: A() } };
 
-    consumer.send(RequestActions.TOGGLE_DIM_FILTER, { currentModel }, 'mockDim');
+    consumer.send(RequestActions.TOGGLE_DIMENSION_FILTER, { currentModel }, 'mockDim');
   });
 
-  test('TOGGLE_DIM_FILTER - remove dimension', function(assert) {
+  test('TOGGLE_DIMENSION_FILTER - remove dimension', function(assert) {
     assert.expect(2);
 
     const dimension = 'mockDim';
 
     const MockDispatcher = {
       dispatch(action, route, dimension) {
-        assert.equal(action, RequestActions.REMOVE_FILTER, 'REMOVE_FILTER is sent as part of TOGGLE_DIM_FILTER');
+        assert.equal(action, RequestActions.REMOVE_FILTER, 'REMOVE_FILTER is sent as part of TOGGLE_DIMENSION_FILTER');
 
         assert.equal(dimension, dimension, 'the filter dimension is passed on to REMOVE_FILTER');
       }
@@ -157,10 +161,10 @@ module('Unit | Consumer | request filter', function(hooks) {
     let consumer = this.owner.factoryFor('consumer:request/filter').create({ requestActionDispatcher: MockDispatcher }),
       currentModel = { request: { filters: A([{ dimension }]) } };
 
-    consumer.send(RequestActions.TOGGLE_DIM_FILTER, { currentModel }, dimension);
+    consumer.send(RequestActions.TOGGLE_DIMENSION_FILTER, { currentModel }, dimension);
   });
 
-  test('ADD_DIM_FILTER', function(assert) {
+  test('ADD_DIMENSION_FILTER', function(assert) {
     assert.expect(1);
 
     let addFilter = filterObj => {
@@ -179,10 +183,10 @@ module('Unit | Consumer | request filter', function(hooks) {
 
     this.owner
       .lookup('consumer:request/filter')
-      .send(RequestActions.ADD_DIM_FILTER, { currentModel }, { dimension: 'mockDim', primaryKeyFieldName: 'id' });
+      .send(RequestActions.ADD_DIMENSION_FILTER, { currentModel }, { dimension: 'mockDim', primaryKeyFieldName: 'id' });
   });
 
-  test('ADD_DIM_FILTER - alternative primary key', function(assert) {
+  test('ADD_DIMENSION_FILTER - alternative primary key', function(assert) {
     assert.expect(1);
 
     let addFilter = filterObj => {
@@ -201,7 +205,11 @@ module('Unit | Consumer | request filter', function(hooks) {
 
     this.owner
       .lookup('consumer:request/filter')
-      .send(RequestActions.ADD_DIM_FILTER, { currentModel }, { dimension: 'mockDim', primaryKeyFieldName: 'key' });
+      .send(
+        RequestActions.ADD_DIMENSION_FILTER,
+        { currentModel },
+        { dimension: 'mockDim', primaryKeyFieldName: 'key' }
+      );
   });
 
   test('TOGGLE_METRIC_FILTER - add metric', function(assert) {

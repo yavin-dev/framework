@@ -14,17 +14,17 @@
         class="report-builder__container report-builder__dimension-selector{{if @disabled " report-builder__container--disabled"}}"
         @request={{this.request}}
         @onAddTimeGrain={{queue (fn (optional @onBeforeAddItem) this "timeDimension") (update-report-action "ADD_TIME_GRAIN")}}
-        @onAddDimension={{queue (fn (optional @onBeforeAddItem) this "dimension") (update-report-action "ADD_DIMENSION")}}
+        @onAddDimension={{queue (fn (optional @onBeforeAddItem) this "dimension") (update-report-action "ADD_COLUMN")}}
         @onRemoveTimeGrain={{update-report-action "REMOVE_TIME_GRAIN"}}
-        @onRemoveDimension={{update-report-action "REMOVE_DIMENSION"}}
-        @onToggleDimFilter={{queue (update-report-action "TOGGLE_DIM_FILTER") (action "onToggleDimFilter")}}
+        @onRemoveDimension={{update-report-action "REMOVE_COLUMN"}}
+        @onToggleDimFilter={{queue (update-report-action "TOGGLE_DIMENSION_FILTER") (action "onToggleDimFilter")}}
       />
       <MetricSelector
         class="report-builder__container report-builder__metric-selector{{if @disabled " report-builder__container--disabled"}}"
         @request={{this.request}}
-        @onAddMetric={{queue (fn (optional @onBeforeAddItem) this "metric") (update-report-action "ADD_METRIC")}}
-        @onAddMetricWithParameter={{queue (fn (optional @onBeforeAddItem) this "metric") (update-report-action "ADD_METRIC_WITH_PARAM")}}
-        @onRemoveMetric={{update-report-action "REMOVE_METRIC"}}
+        @onAddMetric={{queue (fn (optional @onBeforeAddItem) this "metric") (update-report-action "ADD_COLUMN")}}
+        @onAddMetricWithParameter={{queue (fn (optional @onBeforeAddItem) this "metric") (update-report-action "ADD_COLUMN_WITH_PARAMS")}}
+        @onRemoveMetric={{update-report-action "REMOVE_COLUMN"}}
         @onToggleMetricFilter={{queue (update-report-action "TOGGLE_METRIC_FILTER") (action "onToggleMetricFilter")}}
         @onToggleParameterizedMetricFilter={{action "onToggleParameterizedMetricFilter"}}
       />

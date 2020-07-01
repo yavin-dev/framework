@@ -63,7 +63,7 @@ module('Unit | Consumer | request sort', function(hooks) {
     consumer.send(RequestActions.REMOVE_SORT, { currentModel }, 'click');
   });
 
-  test('REMOVE_SORT_WITH_PARAM', function(assert) {
+  test('REMOVE_SORT_WITH_PARAMS', function(assert) {
     assert.expect(2);
 
     let parameters = { currency: 'USD' },
@@ -77,10 +77,10 @@ module('Unit | Consumer | request sort', function(hooks) {
     let currentModel = { request: { removeSortMetricWithParam } },
       consumer = this.owner.lookup('consumer:request/sort');
 
-    consumer.send(RequestActions.REMOVE_SORT_WITH_PARAM, { currentModel }, revenueUSD, parameters);
+    consumer.send(RequestActions.REMOVE_SORT_WITH_PARAMS, { currentModel }, revenueUSD, parameters);
   });
 
-  test('REMOVE_SORT_BY_METRIC_MODEL', function(assert) {
+  test('REMOVE_SORT_BY_METRIC_META', function(assert) {
     assert.expect(1);
 
     let adClicks = { name: 'adClicks' };
@@ -92,7 +92,7 @@ module('Unit | Consumer | request sort', function(hooks) {
     let currentModel = { request: { removeSortMetricByModel } },
       consumer = this.owner.lookup('consumer:request/sort');
 
-    consumer.send(RequestActions.REMOVE_SORT_BY_METRIC_MODEL, { currentModel }, adClicks);
+    consumer.send(RequestActions.REMOVE_SORT_BY_METRIC_META, { currentModel }, adClicks);
   });
 
   test('REMOVE_METRIC', function(assert) {
@@ -102,7 +102,7 @@ module('Unit | Consumer | request sort', function(hooks) {
       consumer = this.owner.lookup('consumer:request/sort');
 
     const removeSortMetricByModel = metric => {
-      assert.deepEqual(metric, adClicks, 'REMOVE_SORT_BY_METRIC_MODEL is dispatched with correct metric');
+      assert.deepEqual(metric, adClicks, 'REMOVE_SORT_BY_METRIC_META is dispatched with correct metric');
     };
 
     let currentModel = { request: { removeSortMetricByModel } };
@@ -119,8 +119,12 @@ module('Unit | Consumer | request sort', function(hooks) {
       consumer = this.owner.lookup('consumer:request/sort');
 
     const removeSortMetricWithParam = (metric, parameters) => {
-      assert.deepEqual(metric, revenueUSD, 'REMOVE_SORT_WITH_PARAM is dispatched with correct metric');
-      assert.deepEqual(parameters, { currency: 'USD' }, 'REMOVE_SORT_WITH_PARAM is dispatched with correct parameters');
+      assert.deepEqual(metric, revenueUSD, 'REMOVE_SORT_WITH_PARAMS is dispatched with correct metric');
+      assert.deepEqual(
+        parameters,
+        { currency: 'USD' },
+        'REMOVE_SORT_WITH_PARAMS is dispatched with correct parameters'
+      );
     };
 
     let currentModel = { request: { removeSortMetricWithParam } };

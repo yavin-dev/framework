@@ -6,35 +6,31 @@ import ActionDispatcher from 'navi-core/services/action-dispatcher';
 import { computed } from '@ember/object';
 
 export const RequestActions = {
-  ADD_DIMENSION: 'addDimension',
-  ADD_DIM_FILTER: 'addDimFilter',
-  ADD_METRIC: 'addMetric',
-  ADD_METRIC_WITH_PARAM: 'addMetricWithParam',
+  ADD_COLUMN: 'addColumn',
+  ADD_COLUMN_WITH_PARAMS: 'addColumnWithParams',
+  ADD_DIMENSION_FILTER: 'addDimensionFilter',
   ADD_METRIC_FILTER: 'addMetricFilter',
   ADD_TIME_GRAIN: 'addTimeGrain',
 
   DID_UPDATE_TIME_GRAIN: 'didUpdateTimeGrain',
   DID_UPDATE_TABLE: 'didUpdateTable',
 
-  REMOVE_DIMENSION: 'removeDimension',
-  REMOVE_DIMENSION_FRAGMENT: 'removeDimensionFragment',
-  REMOVE_METRIC: 'removeMetric',
-  REMOVE_METRIC_FRAGMENT: 'removeMetricFragment',
-  REMOVE_METRIC_WITH_PARAM: 'removeMetricWithParam',
+  REMOVE_COLUMN: 'removeColumn',
+  REMOVE_COLUMN_WITH_PARAMS: 'removeColumnWithParams',
+  REMOVE_COLUMN_FRAGMENT: 'removeColumnFragment',
   REMOVE_TIME_GRAIN: 'removeTimeGrain',
   REMOVE_FILTER: 'removeFilter',
   REMOVE_SORT: 'removeSort',
-  REMOVE_SORT_BY_METRIC_MODEL: 'removeSortByMetricModel',
-  REMOVE_SORT_WITH_PARAM: 'removeSortWithParam',
+  REMOVE_SORT_BY_METRIC_META: 'removeSortByMetricMeta',
+  REMOVE_SORT_WITH_PARAMS: 'removeSortWithParams',
 
-  TOGGLE_DIM_FILTER: 'toggleDimensionFilter',
+  TOGGLE_DIMENSION_FILTER: 'toggleDimensionFilter',
   TOGGLE_METRIC_FILTER: 'toggleMetricFilter',
   TOGGLE_PARAMETERIZED_METRIC_FILTER: 'toggleParameterizedMetricFilter',
 
   UPDATE_FILTER: 'updateFilter',
-  UPDATE_FILTER_PARAM: 'updateFilterParam',
-  UPDATE_METRIC_PARAM: 'updateMetricParam',
-  UPDATE_METRIC_FRAGMENT_WITH_PARAM: 'updateMetricFragmentWithParam',
+  UPDATE_FILTER_PARAMS: 'updateFilterParams',
+  UPDATE_COLUMN_FRAGMENT_WITH_PARAMS: 'updateColumnFragmentWithParams',
   UPDATE_TABLE: 'updateTable',
   UPSERT_SORT: 'upsertSort'
 };
@@ -46,13 +42,6 @@ export default ActionDispatcher.extend({
   concatenatedProperties: ['consumers'],
 
   consumers: computed(function() {
-    return [
-      'request/dimension',
-      'request/filter',
-      'request/logical-table',
-      'request/metric',
-      'request/time-grain',
-      'request/sort'
-    ];
+    return ['request/column', 'request/filter', 'request/table', 'request/time-grain', 'request/sort'];
   })
 });
