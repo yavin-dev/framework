@@ -82,9 +82,10 @@ export default ActionConsumer.extend({
 
       request.addFilter({
         type: 'dimension',
-        columnMetadataModel: dimensionMetadataModel,
+        dataSource: dimensionMetadataModel.source,
+        field: dimensionMetadataModel.id,
+        parameters: { projection: dimensionMetadataModel.primaryKeyFieldName },
         operator: defaultOperator,
-        field: dimensionMetadataModel.primaryKeyFieldName,
         values: []
       });
     },

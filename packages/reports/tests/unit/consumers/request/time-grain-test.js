@@ -25,8 +25,9 @@ module('Unit | Consumer | request time grain', function(hooks) {
     const currentModel = {
         request: {
           timeGrain: 'oldTimeGrain',
-          updateTimeGrain: timeGrain =>
-            assert.equal(timeGrain, 'newTimeGrain', 'request is updated with the new time grain id')
+          updateTimeGrain(timeGrain) {
+            assert.equal(timeGrain, 'newTimeGrain', 'request is updated with the new time grain id');
+          }
         }
       },
       consumer = this.owner
@@ -60,7 +61,9 @@ module('Unit | Consumer | request time grain', function(hooks) {
     const currentModel = {
         request: {
           timeGrain: 'oldTimeGrain',
-          updateTimeGrain: timeGrain => assert.equal(timeGrain, 'all', 'request is updated with the `all` time grain')
+          updateTimeGrain(timeGrain) {
+            assert.equal(timeGrain, 'all', 'request is updated with the `all` time grain');
+          }
         }
       },
       consumer = this.owner

@@ -39,8 +39,8 @@ export default ActionConsumer.extend({
       request.removeColumn(columnFragment);
     },
 
-    [RequestActions.UPDATE_COLUMN_FRAGMENT_WITH_PARAMS](route, columnFragment, parameterId, parameterKey) {
-      columnFragment.updateParameters({ [parameterId]: parameterKey });
+    [RequestActions.UPDATE_COLUMN_FRAGMENT_WITH_PARAMS](route, columnFragment, parameterKey, parameterValue) {
+      columnFragment.updateParameters({ [parameterKey]: parameterValue });
     },
 
     [RequestActions.ADD_METRIC_FILTER](route, metricMetadataModel, parameters) {
@@ -80,7 +80,7 @@ export default ActionConsumer.extend({
        * iterating over `request.columns` causes problems
        */
       request.columns.toArray().forEach(column => {
-        if (![...metrics, dimensions].includes(column.columnMeta)) {
+        if (![...metrics, ...dimensions].includes(column.columnMeta)) {
           this.requestActionDispatcher.dispatch(RequestActions.REMOVE_COLUMN, route, column.columnMeta);
         }
       });

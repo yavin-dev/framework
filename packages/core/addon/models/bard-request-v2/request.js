@@ -12,7 +12,6 @@ import { getDefaultDataSourceName } from 'navi-data/utils/adapter';
 import { isEqual } from 'lodash-es';
 import { featureFlag } from 'navi-core/helpers/feature-flag';
 import Interval from 'navi-core/utils/classes/interval';
-import { A as arr } from '@ember/array';
 import { assert } from '@ember/debug';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 
@@ -220,18 +219,13 @@ export default class Request extends Fragment.extend(Validations) {
     const filterExists = this.filters.find(filter => isEqual(filter.serialize(), filterToAdd.serialize()));
 
     if (!filterExists) {
-      this.filters.pushObject(filterToAdd);
+      this.filters.pushObject(filterToAdd); //TODO: add to specific index?
     }
   }
 
   //TODO: handle valueParam values vs rawValues
-  addFilter({ type, columnMetadataModel, field, parameters, operator, values }) {
-    const filterToAdd =
-      type && field
-        ? this.fragmentFactory.createFilter(type, columnMetadataModel.source, field, parameters, operator, arr(values))
-        : this.fragmentFactory.createFilterFromMeta(columnMetadataModel, parameters, operator, arr(values));
-
-    this._doAddFilter(filterToAdd);
+  addFilter({ type, dataSource, field, parameters, operator, values }) {
+    this._doAddFilter(this.fragmentFactory.createFilter(type, dataSource, field, parameters, operator, values));
   }
 
   removeFilter(filter) {
