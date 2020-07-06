@@ -48,8 +48,7 @@ module.exports = function(environment) {
         enableMultipleExport: true,
         enabledNotifyIfData: true,
         enableContains: true,
-        enableTableEditing: true,
-        dateDimensionFilter: true
+        enableTableEditing: true
       }
     }
   };

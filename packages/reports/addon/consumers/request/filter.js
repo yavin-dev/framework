@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { inject as service } from '@ember/service';
@@ -75,7 +75,18 @@ export default ActionConsumer.extend({
         'Dimension model has correct primaryKeyFieldName',
         typeof get(dimension, 'primaryKeyFieldName') === 'string'
       );
-      let defaultOperator = featureFlag('dateDimensionFilter') && dimension.valueType === 'date' ? 'gte' : 'in';
+
+      const findDefaultOperator = type => {
+        const opDictionary = {
+          date: 'gte',
+          number: 'eq',
+          default: 'in'
+        };
+
+        return opDictionary[type] || opDictionary.default;
+      };
+
+      let defaultOperator = findDefaultOperator(dimension.valueType);
 
       get(currentModel, 'request').addFilter({
         dimension,
