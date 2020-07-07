@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -15,25 +15,6 @@
         padding: 8px;
         border-bottom: 1px solid #f1f1f1;
         text-align: left;
-
-        button,
-        .btn,
-        a {
-          padding: 0;
-
-          i {
-            color: @navi-gray;
-            font-size: @font-size-base;
-
-            &:hover {
-              color: @navi-dark-gray;
-            }
-          }
-        }
-
-        .action {
-          margin-right: 15px;
-        }
       }
 
       a {
@@ -56,5 +37,24 @@
 
   .actions {
     display: flex;
+
+    button,
+    .btn,
+    a {
+      padding: 0;
+
+      i {
+        color: @navi-gray;
+        font-size: @font-size-base;
+
+        &:hover {
+          color: @navi-dark-gray;
+        }
+      }
+    }
+
+    .action {
+      margin-right: 10px;
+    }
   }
 }

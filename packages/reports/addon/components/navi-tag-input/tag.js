@@ -11,11 +11,15 @@
  *   />
  */
 import Component from '@ember/component';
+import { computed } from '@ember/object';
 import layout from '../../templates/components/navi-tag-input/tag';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
 @templateLayout(layout)
 @tagName('')
 export default class NaviTagInputTag extends Component {
-  extraClassNames = '';
+  @computed()
+  get extraClassNames() {
+    return '';
+  }
 }
