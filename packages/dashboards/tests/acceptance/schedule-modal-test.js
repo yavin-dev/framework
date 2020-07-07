@@ -13,7 +13,7 @@ module('Acceptances | Navi Dashboard Schedule Modal', function(hooks) {
     await visit('/dashboards');
 
     await triggerEvent('.navi-collection__row0', 'mouseenter');
-    await click('.navi-collection__row0 .schedule .btn');
+    await click('.navi-collection__row0 .schedule .schedule-action__button');
 
     assert.dom('.schedule-modal__header .primary-header').isVisible('Schedule modal pops up when action is clicked');
 

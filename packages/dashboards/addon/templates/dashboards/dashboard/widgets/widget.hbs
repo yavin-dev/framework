@@ -7,7 +7,7 @@
     {{else}}
       <LinkTo @route="dashboards" class="navi-report-widget__breadcrumb-link">Dashboards</LinkTo>
     {{/if}}
-    {{navi-icon "angle-right"}}
+    <NaviIcon @icon="angle-right" />
     {{#with (model-for "dashboards.dashboard") as |parentDashboard|}}
       {{#if this.parentQueryParams}}
         <LinkTo @route="dashboards.dashboard" @model={{parentDashboard.id}} @query={{hash filters=this.parentQueryParams.filters}} class="navi-report-widget__breadcrumb-link">
@@ -19,7 +19,7 @@
         </LinkTo>
       {{/if}}
     {{/with}}
-    {{navi-icon "angle-right"}}
+    <NaviIcon @icon="angle-right" />
   </div>
 
   {{!-- Header --}}
@@ -82,7 +82,7 @@
             @pageTitle={{@model.title}}
             @disabled={{not @model.request.validations.isTruelyValid}}
           >
-            {{navi-icon "share" class="navi-report-widget__icon"}}
+            <NaviIcon @icon="share" class="navi-report-widget__icon" />
             Share
             <EmberTooltip>
               {{if @model.request.validations.isTruelyValid "Share" "Run a valid report to share"}}
@@ -96,7 +96,7 @@
             @model={{@model}}
             @deleteAction={{route-action "deleteWidget"}}
           >
-            {{navi-icon "trash-o" class="navi-report-widget__icon"}}
+            <NaviIcon @icon="trash-o" class="navi-report-widget__icon" />
             Delete
           </CommonActions::Delete>
         </li>

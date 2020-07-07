@@ -43,6 +43,25 @@
   &__actions {
     width: 175px;
 
+    button,
+    .btn,
+    a {
+      padding: 0;
+
+      i {
+        color: @navi-gray;
+        font-size: @font-size-base;
+
+        &:hover {
+          color: @navi-dark-gray;
+        }
+      }
+    }
+
+    .action {
+      margin-right: 10px;
+    }
+
     .navi-collection__row & > ul {
       color: @gray-6;
       visibility: hidden;

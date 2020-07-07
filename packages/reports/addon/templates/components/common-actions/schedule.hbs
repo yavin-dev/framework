@@ -2,8 +2,8 @@
 
 <div ...attributes>
   {{!-- Check if in need of disabling the button when the action should be disabled --}}
-  <button type="button" class="schedule-action__button btn" disabled={{@disabled}} {{on "click" (queue (toggle "showModal" this) this.onOpen)}}>
-    {{navi-icon "clock-o" class="schedule-action__icon"}}
+  <button type="button" class="schedule-action__button" disabled={{@disabled}} {{on "click" (queue (toggle "showModal" this) this.onOpen)}}>
+    <NaviIcon @icon="clock-o" class="schedule-action__icon" />
     {{#if hasBlock}}
       <span class="schedule-action__icon-label">{{yield}}</span>
     {{/if}}
