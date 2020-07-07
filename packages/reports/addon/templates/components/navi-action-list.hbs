@@ -2,8 +2,8 @@
 <ul class="navi-action-list actions" ...attributes>
 
   {{!-- Clone only enabled on a saved report --}}
-  {{#if @item.isNew}}
-    <li class="action">
+  <li class="action">
+    {{#if @item.isNew}}
       <LinkTo
         class="navi-reports-index__report-control clone navi-report__action-link--force-disabled"
         disabled="true"
@@ -13,15 +13,13 @@
         <NaviIcon @icon="copy" />
         <EmberTooltip @text="Save report to enable clone" />
       </LinkTo>
-    </li>
-  {{else}}
-    <li class="action">
+    {{else}}
       <LinkTo @route="reports.report.clone" @model={{@item.id}} class="navi-reports-index__report-control clone">
         <NaviIcon @icon="copy" />
         <EmberTooltip @text="Clone the report" />
       </LinkTo>
-    </li>
-  {{/if}}
+    {{/if}}
+  </li>
 
   <li class="action">
   {{!-- Export only enabled on a validated report --}}
@@ -60,21 +58,21 @@
   {{#if @item.isOwner}}
     {{!-- Schedule only enabled for an owned report and if it valid--}}
     {{#if (feature-flag "enableScheduleReports")}}
-    <li class="action">
-      <CommonActions::Schedule
-        id={{concat "navi-report-action-schedule-" @index}}
-        class="navi-reports-index__report-control schedule {{unless @item.request.validations.isTruelyValid "navi-report__action--is-disabled"}}"
-        @model={{@item}}
-        @disabled={{not @item.request.validations.isTruelyValid}}
-        @onSave={{delivery-rule-action "SAVE_DELIVERY_RULE"}}
-        @onRevert={{delivery-rule-action "REVERT_DELIVERY_RULE"}}
-        @onDelete={{delivery-rule-action "DELETE_DELIVERY_RULE"}}
-      >
-        <EmberTooltip @targetId={{concat "navi-report-action-schedule-" @index}}>
-          {{if @item.request.validations.isTruelyValid "Schedule the report" "Validate report to enable scheduling"}}
-        </EmberTooltip>
-      </CommonActions::Schedule>
-    </li>
+      <li class="action">
+        <CommonActions::Schedule
+          id={{concat "navi-report-action-schedule-" @index}}
+          class="navi-reports-index__report-control schedule {{unless @item.request.validations.isTruelyValid "navi-report__action--is-disabled"}}"
+          @model={{@item}}
+          @disabled={{not @item.request.validations.isTruelyValid}}
+          @onSave={{delivery-rule-action "SAVE_DELIVERY_RULE"}}
+          @onRevert={{delivery-rule-action "REVERT_DELIVERY_RULE"}}
+          @onDelete={{delivery-rule-action "DELETE_DELIVERY_RULE"}}
+        >
+          <EmberTooltip @targetId={{concat "navi-report-action-schedule-" @index}}>
+            {{if @item.request.validations.isTruelyValid "Schedule the report" "Validate report to enable scheduling"}}
+          </EmberTooltip>
+        </CommonActions::Schedule>
+      </li>
     {{/if}}
 
     <li class="action">
