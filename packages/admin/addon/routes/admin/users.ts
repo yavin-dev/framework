@@ -6,7 +6,7 @@
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
 // @ts-ignore
-import type StoreService from '@ember-data/store';
+import StoreService from '@ember-data/store';
 
 export default class AdminUsersRoute extends Route {
   /**
