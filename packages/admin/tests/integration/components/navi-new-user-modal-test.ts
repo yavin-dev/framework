@@ -14,6 +14,7 @@ module('Integration | Component | navi-new-user-modal', function (hooks) {
     set(this, 'isUserModalOpen', true);
     // @ts-ignore
     set(this, 'toggleModal', () => {
+      // @ts-ignore
       this.isUserModalOpen = !this.isUserModalOpen;
     });
 
@@ -29,6 +30,7 @@ module('Integration | Component | navi-new-user-modal', function (hooks) {
     set(this, 'isUserModalOpen', false);
     // @ts-ignore
     set(this, 'toggleModal', () => {
+      // @ts-ignore
       this.isUserModalOpen = !this.isUserModalOpen;
     });
 
