@@ -6,11 +6,11 @@
 import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 
-export default class AdminRolesController extends Controller {
+export default class AdminUsersController extends Controller {
   /**
-   * @property {boolean} isAddUserModalOpen
+   * @property {boolean} isUserModalOpen
    */
-  @tracked isAddUserModalOpen = false;
+  @tracked isUserModalOpen = false;
 
   /**
    * @property {Number} userCount
@@ -23,6 +23,6 @@ export default class AdminRolesController extends Controller {
 // DO NOT DELETE: this is how TypeScript knows how to look up your controllers.
 declare module '@ember/controller' {
   interface Registry {
-    roles: Roles;
+    users: AdminUsersController;
   }
 }

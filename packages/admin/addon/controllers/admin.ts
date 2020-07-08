@@ -12,8 +12,8 @@ import { tracked } from '@glimmer/tracking';
 const ADMIN_TAB_OPTIONS = [
   {
     title: 'Manage Users',
-    route: 'admin.roles'
-  }
+    route: 'admin.users',
+  },
 ];
 
 export default class AdminController extends Controller {

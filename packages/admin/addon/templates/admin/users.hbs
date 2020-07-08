@@ -1,0 +1,14 @@
+{{! Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. }}
+<div class="navi-users-dashboard">
+  <h2 class="navi-users-dashboard__heading">Manage Users</h2>
+  <div class="navi-users-dashboard__tools">
+    <DenaliButton @icon="user-add" @style="solid" @iconOnly={{true}}
+      {{on "click" (fn (mut this.isAddUserModalOpen) true)}} class="navi-users-dashboard__tools-add-user" />
+    <NaviNewUserModal @isUserModalOpen={{this.isAddUserModalOpen}} @toggleModal={{toggle "isAddUserModalOpen" this}} />
+    <DenaliInput type="text" placeholder="Search" @iconBack="true"
+      @iconBackClass="d-search is-brand-300 navi-users-dashboard__tools-user-search" />
+    <div class="navi-users-dashboard__tools--spacer" />
+    <DenaliChip @textColor="brand" class="navi-users-dashboard__tools-chip">{{this.userCount}}</DenaliChip>
+    <h6 class="upper is-grey-600 navi-users-dashboard__tools-user-label">TOTAL USERS</h6>
+  </div>
+</div>

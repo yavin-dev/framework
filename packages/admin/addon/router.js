@@ -4,8 +4,8 @@
  */
 
 export function adminRoutes(router, nestedRoutes = () => null) {
-  router.route('admin', function() {
-    this.route('roles');
+  router.route('admin', function () {
+    this.route('users');
     nestedRoutes.apply(this);
   });
 }

@@ -1,0 +1,24 @@
+<DenaliModal @class="denali-modal navi-new-user-modal" @isOpen={{@isUserModalOpen}}
+  @onClose={{fn @toggleModal}} ...attributes as | modal |>
+  <modal.Header @class="modal-header navi-new-user-modal__header">
+    <DenaliIcon @icon="pencil-solid" @size="small" class="navi-new-user-modal__header-icon" />
+    <h3 class="navi-new-user-modal__header-title">Create User</h3>
+  </modal.Header>
+  <modal.Content @class="modal-content navi-new-user-modal__content">
+    <DenaliInputGroup @label="User Id" class="navi-new-user-modal__content-filter-group" as |Group|>
+      <Group.Input id="navi-new-user-modal__user-field" type="text" placeholder="User Id" />
+    </DenaliInputGroup>
+    <DenaliInputGroup @label="Email" class="navi-new-user-modal__content-filter-group" as |Group|>
+      <Group.Input id="navi-new-user-modal__email-field" type="text" placeholder="user@example.com" />
+    </DenaliInputGroup>
+    <DenaliInputGroup @label="users" class="navi-new-user-modal__content-filter-group" as |Group|>
+      <Group.Input id="navi-new-user-modal__roles-field" type="text" placeholder="Roles" />
+    </DenaliInputGroup>
+  </modal.Content>
+  <modal.Footer @class="modal-footer navi-new-user-modal__footer">
+    <DenaliButton @style="solid" @type="submit" class="navi-new-user-modal__footer-button-ok">Save
+    </DenaliButton>
+    <DenaliButton @style="outline" class="navi-new-user-modal__footer-button-cancel"
+      {{on "click" @toggleModal}}>Cancel</DenaliButton>
+  </modal.Footer>
+</DenaliModal>
