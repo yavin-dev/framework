@@ -1,120 +1,118 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
- *   {{#report-actions/multiple-format-export
- *      report=report
- *   }}
+ *   <ReportActions::MultipleFormatExport @report={{report}}>
  *      Inner template
- *   {{/report-actions/multiple-format-export}}
+ *   </ReportActions::MultipleFormatExport>
  */
 
 import { inject as service } from '@ember/service';
 import Component from '@ember/component';
-import { getProperties, get, computed } from '@ember/object';
+import { computed, action } from '@ember/object';
 import layout from '../../templates/components/report-actions/multiple-format-export';
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
-export default Component.extend({
-  layout,
-
-  /**
-   * @property {Array} list of class names given to element
-   */
-  classNames: ['report-control', 'multiple-format-export'],
-
+@templateLayout(layout)
+@tagName('')
+export default class MultipleFormatExport extends Component {
   /**
    * @property {Service} facts - instance of navi facts service
    */
-  facts: service('navi-facts'),
+  @service('navi-facts') facts;
 
   /**
    * @property {Service} compression
    */
-  compression: service(),
+  @service compression;
 
   /**
    * @property {Service} store
    */
-  store: service(),
+  @service store;
 
   /**
    * @property {Service} naviNotifications
    */
-  naviNotifications: service(),
+  @service naviNotifications;
 
   /**
    * @property {String} csvHref - CSV download link for the report
    */
-  csvHref: computed('report.{request,validations.isTruelyValid}', function() {
-    let request = get(this, 'report.request').serialize();
+  @computed('report.{request,validations.isTruelyValid}')
+  get csvHref() {
+    let request = this.report.request.serialize();
     return this.facts.getURL(request, { format: 'csv', dataSourceName: request.dataSource });
-  }),
+  }
 
   /**
    * @property {Promise} pdfHref - Promise resolving to pdf download link
    */
-  pdfHref: computed('report.{request,visualization,validations.isTruelyValid}', function() {
-    let { report, compression, store } = getProperties(this, 'report', 'compression', 'store'),
-      modelWithId = report;
+  @computed('report.{request,visualization,validations.isTruelyValid}')
+  get pdfHref() {
+    const { report, compression, store } = this;
+    let modelWithId = report;
 
     /*
      * Model compression requires an id, so if the report doesn't have one,
      * create a copy using the tempId as the id
      */
-    if (!get(report, 'id')) {
+    if (!report.id) {
       modelWithId = store.createRecord('report', report.clone());
-      modelWithId.set('id', get(modelWithId, 'tempId'));
+      modelWithId.set('id', modelWithId.tempId);
     }
 
     return compression.compressModel(modelWithId).then(serializedModel => `/export?reportModel=${serializedModel}`);
-  }),
+  }
 
   /**
    * @property {Array} exportFormats - A list of export formats
    */
-  exportFormats: computed('csvHref', 'pdfHref', function() {
+  @computed('csvHref', 'pdfHref')
+  get exportFormats() {
     return [
       {
         type: 'CSV',
-        href: get(this, 'csvHref'),
+        href: this.csvHref,
         icon: 'file-text-o'
       },
       {
         type: 'PDF',
-        href: get(this, 'pdfHref'),
+        href: this.pdfHref,
         icon: 'file-pdf-o'
       }
     ];
-  }),
-
-  actions: {
-    /*
-     * @action open
-     * A hack to make the trigger responding to click
-     */
-    open() {
-      return true;
-    },
-
-    /**
-     * @action close
-     */
-    close(dropdown) {
-      dropdown.actions.close();
-    },
-
-    /**
-     * Lets the user know to wait for the export download
-     * @action notify
-     * @param {String} type - user readable name for the selected export option
-     */
-    notify(type) {
-      get(this, 'naviNotifications').add({
-        message: `${type}? Got it. The download should begin soon.`,
-        type: 'info',
-        timeout: 'medium'
-      });
-    }
   }
-});
+
+  /**
+   * @action open
+   * A hack to make the trigger responding to click
+   */
+  @action
+  open() {
+    return true;
+  }
+
+  /**
+   * @action close
+   */
+  @action
+  close(dropdown) {
+    dropdown.actions.close();
+  }
+
+  /**
+   * Lets the user know to wait for the export download
+   * @action notify
+   * @param {String} type - user readable name for the selected export option
+   */
+  @action
+  notify(type) {
+    this.naviNotifications.add({
+      message: `${type}? Got it. The download should begin soon.`,
+      type: 'info',
+      timeout: 'medium'
+    });
+  }
+}

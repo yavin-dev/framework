@@ -54,10 +54,9 @@
             {{#if @config.actions}}
               <td class="align left navi-collection__actions">
                 <LazyRender @target={{concat ".navi-collection__row" index}}>
-                  {{component @config.actions
-                    item=item
-                    index=index
-                  }}
+                  {{#let (component @config.actions) as |AssetActions|}}
+                    <AssetActions @item={{item}} @index={{index}} />
+                  {{/let}}
                 </LazyRender>
               </td>
             {{/if}}

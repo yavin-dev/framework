@@ -1,26 +1,27 @@
-{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<div class="report-control multiple-format-export" ...attributes>
+  <BasicDropdownHover @openDelay={{0}} @closeDelay={{300}} @renderInPlace={{true}} as |dd|>
+    <dd.trigger @onMouseDown={{this.open}}>
+      {{yield}}
+    </dd.trigger>
 
-{{#basic-dropdown-hover openDelay=0 closeDelay=300 renderInPlace=true as |dd|}}
-  {{#dd.trigger onMouseDown=(action "open")}}
-    {{yield}}
-  {{/dd.trigger}}
-
-  {{#unless disabled}}
-    {{#dd.content}}
-      <ul class="multiple-format-export__dropdown">
-        {{#each exportFormats as |exportFormat|}}
-          <li>
-            <NaviIcon @icon={{exportFormat.icon}} />
-            <a
-              download={{dasherize report.title}}
-              href={{await exportFormat.href}}
-              onclick={{pipe (action "notify" exportFormat.type) (action "close" dd)}}
-            >
-              {{exportFormat.type}}
-            </a>
-          </li>
-        {{/each}}
-      </ul>
-    {{/dd.content}}
-  {{/unless}}
-{{/basic-dropdown-hover}}
+    {{#unless @disabled}}
+      <dd.content>
+        <ul class="multiple-format-export__dropdown">
+          {{#each this.exportFormats as |exportFormat|}}
+            <li>
+              <NaviIcon @icon={{exportFormat.icon}} />
+              <a
+                download={{dasherize @report.title}}
+                href={{await exportFormat.href}}
+                {{on "click" (queue (fn this.notify exportFormat.type) (fn this.close dd))}}
+              >
+                {{exportFormat.type}}
+              </a>
+            </li>
+          {{/each}}
+        </ul>
+      </dd.content>
+    {{/unless}}
+  </BasicDropdownHover>
+</div>

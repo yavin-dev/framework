@@ -39,7 +39,7 @@
       <li class="navi-report-widget__action">
         {{!-- Get API action is only enabled when request is valid --}}
         <CommonActions::GetApi
-          class={{unless model.request.validations.isTruelyValid "navi-report-widget__action--is-disabled"}}
+          class={{unless @model.request.validations.isTruelyValid "navi-report-widget__action--is-disabled"}}
           @request={{@model.request}}
           @disabled={{not @model.request.validations.isTruelyValid}}
         >
@@ -53,19 +53,19 @@
 
       <li class="navi-report-widget__action">
         {{!-- Export action is only enabled when request is valid --}}
-        {{#component
-          (concat "report-actions/" (if (feature-flag "enableMultipleExport") "multiple-format-export" "export"))
-          report=(reportify @model)
-          classNames="navi-report-widget__action-link"
-          disabled=(not @model.validations.isTruelyValid)
-          classNameBindings="model.validations.isTruelyValid::navi-report-widget__action-link--is-disabled"
-        }}
-          <NaviIcon @icon="download" class="navi-report-widget__icon" />
-          Export
-          <EmberTooltip>
-            {{if @model.validations.isTruelyValid "Export the report" "Run a valid report to enable export"}}
-          </EmberTooltip>
-        {{/component}}
+        {{#let (component (concat "report-actions/" (if (feature-flag "enableMultipleExport") "multiple-format-export" "export"))) as |ExportAction|}}
+          <ExportAction
+            class="navi-report-widget__action-link {{unless @model.validations.isTruelyValid "navi-report-widget__action-link--is-disabled"}}"
+            @report={{reportify @model}}
+            @disabled={{not @model.validations.isTruelyValid}}
+          >
+            <NaviIcon @icon="download" class="navi-report-widget__icon" />
+            Export
+            <EmberTooltip>
+              {{if @model.validations.isTruelyValid "Export the report" "Run a valid report to enable export"}}
+            </EmberTooltip>
+          </ExportAction>
+        {{/let}}
       </li>
 
       <li class="navi-report-widget__action">

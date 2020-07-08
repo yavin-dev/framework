@@ -35,6 +35,8 @@
     </span>
     <ul class="navi-report__actions">
       {{#if (feature-flag "dashboards")}}
+        {{!-- Disabling to allow calling report-to-widget mixin actions --}}
+        {{!-- template-lint-disable no-action --}}
         <ReportActions @model={{this.model}} @addToDashboard={{action "addToDashboard"}} @addToNewDashboard={{action "addToNewDashboard"}} />
       {{else}}
         <ReportActions @model={{this.model}} />

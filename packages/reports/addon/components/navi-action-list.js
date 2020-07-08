@@ -9,10 +9,31 @@
  *   />
  */
 import Component from '@ember/component';
-import BuildUrl from 'navi-reports/mixins/build-url';
+import { inject as service } from '@ember/service';
+import { action } from '@ember/object';
 import layout from '../templates/components/navi-action-list';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
 @templateLayout(layout)
 @tagName('')
-export default class NaviActionList extends Component.extend(BuildUrl) {}
+export default class NaviActionList extends Component {
+  /**
+   * @property {Service} router
+   */
+  @service router;
+
+  /**
+   * @action buildUrl
+   * @param {DS.Model} item - report or dashboard model with id
+   * @returns {String} url for given model
+   */
+  @action
+  buildUrl(model) {
+    const { id } = model;
+    const modelType = model.constructor.modelName;
+    const baseUrl = document.location.origin;
+    const modelUrl = this.router.urlFor(`${modelType}s.${modelType}`, id);
+
+    return baseUrl + modelUrl;
+  }
+}

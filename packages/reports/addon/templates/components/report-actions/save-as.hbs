@@ -1,31 +1,28 @@
-{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-
-{{#navi-modal
-  isShown=showModal
-}}
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<NaviModal @isShown={{this.showModal}} ...attributes>
   <div class="navi-modal-header">
     <h1 class="primary-header">Save Report As</h1>
     <h5 class="secondary-header">This will create a new report with the new given name.</h5>
   </div>
 
   {{!-- input for new Name of the Report --}}
-  {{input
-    placeholder=reportName
-    value=reportName
+  <Input
     class="text-input dashboard-title"
-    autofocus=true
-    maxlength=150
-  }}
+    @placeholder={{this.reportName}}
+    @value={{this.reportName}}
+    @autofocus={{true}}
+    @maxlength={{150}}
+  />
 
   {{!-- Buttons --}}
   <div class="btn-container">
     {{!-- Create a new copy of the report --}}
-    {{#link-to "reports.report.save-as" (query-params title=reportName)
-      tagName="button"
+    <LinkTo @route="reports.report.save-as" @query={{hash title=this.reportName}}
+      @tagName="button"
       class="btn btn-primary save-as__save-as-modal-btn"
-    }}
+    >
       Save
-    {{/link-to}}
-    <button type="button" class="btn btn-secondary save-as__cancel-modal-btn" onclick={{action "closeModal"}}>Cancel</button>
+    </LinkTo>
+    <button type="button" class="btn btn-secondary save-as__cancel-modal-btn" {{on "click" this.closeModal}}>Cancel</button>
   </div>
-{{/navi-modal}}
+</NaviModal>
