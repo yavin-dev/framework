@@ -82,13 +82,13 @@ module('Integration | Component | metric selector', function(hooks) {
           responseFormat: 'csv'
         })
       );
-
-      await render(TEMPLATE);
     });
   });
 
   test('it renders', async function(assert) {
     assert.expect(3);
+
+    await render(TEMPLATE);
 
     assert.dom('.checkbox-selector--metric').isVisible('The metric selector component is rendered');
 
@@ -100,7 +100,7 @@ module('Integration | Component | metric selector', function(hooks) {
   });
 
   test('show selected', async function(assert) {
-    assert.expect(10);
+    assert.expect(9);
 
     const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
 
@@ -171,7 +171,17 @@ module('Integration | Component | metric selector', function(hooks) {
 
     assert.dom('.grouped-list__add-icon--deselected').doesNotExist('No unselected metrics are shown');
 
+    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
+  });
+
+  test('show selected with enableRequestPreview', async function(assert) {
+    assert.expect(1);
+
+    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
+
     config.navi.FEATURES.enableRequestPreview = true;
+
+    debugger;
 
     await render(TEMPLATE);
 
@@ -184,6 +194,8 @@ module('Integration | Component | metric selector', function(hooks) {
 
   test('add and remove metric actions', async function(assert) {
     assert.expect(4);
+
+    await render(TEMPLATE);
 
     const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
 
@@ -231,6 +243,8 @@ module('Integration | Component | metric selector', function(hooks) {
   test('filter icon', async function(assert) {
     assert.expect(3);
 
+    await render(TEMPLATE);
+
     let { item: adClicksItem, reset: adClicksReset } = await getItem('metric', 'Ad Clicks');
     assert.ok(
       adClicksItem.querySelector('.grouped-list__filter--active'),
@@ -254,6 +268,8 @@ module('Integration | Component | metric selector', function(hooks) {
 
   test('tooltip', async function(assert) {
     assert.expect(3);
+
+    await render(TEMPLATE);
 
     assertTooltipNotRendered(assert);
     this.server.get(`${config.navi.dataSources[0].uri}/v1/metrics/adClicks`, function() {
@@ -279,6 +295,8 @@ module('Integration | Component | metric selector', function(hooks) {
   test('metric config for metric with parameters', async function(assert) {
     assert.expect(2);
 
+    await render(TEMPLATE);
+
     assert.notOk(
       await hasMetricConfig('Ad Clicks'),
       'The metric config trigger icon is not present for a metric without parameters'
@@ -292,6 +310,8 @@ module('Integration | Component | metric selector', function(hooks) {
 
   test('ranked search', async function(assert) {
     assert.expect(2);
+
+    await render(TEMPLATE);
 
     const tableMetrics = MetadataService.getById('table', 'tableA', 'dummy').metrics;
 
@@ -336,6 +356,10 @@ module('Integration | Component | metric selector', function(hooks) {
   });
 
   test('hide filter if metric not allowed to show filter on base metric', async function(assert) {
+    assert.expect(3);
+
+    await render(TEMPLATE);
+
     const resetRenderAll = await renderAll('metric');
     assert.dom('.grouped-list__icon-set--no-filter').exists({ count: 1 });
     assert.dom('.grouped-list__icon-set--no-filter .grouped-list__filter').doesNotExist();

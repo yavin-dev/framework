@@ -332,8 +332,8 @@ module('Integration | Component | common actions/schedule', function(hooks) {
     config.navi.schedule = originalSchedule;
   });
 
-  test('format options - config enableMultipleExport', async function(assert) {
-    assert.expect(3);
+  test('format options - config enableMultipleExport true', async function(assert) {
+    assert.expect(1);
 
     let originalFeatureFlag = config.navi.FEATURES.enableMultipleExport;
     config.navi.FEATURES.enableMultipleExport = true;
@@ -350,16 +350,24 @@ module('Integration | Component | common actions/schedule', function(hooks) {
       'Schedule format should have correct options'
     );
 
+    config.navi.FEATURES.enableMultipleExport = originalFeatureFlag;
+  });
+
+  test('format options - config enableMultipleExport false', async function(assert) {
+    assert.expect(2);
+
+    let originalFeatureFlag = config.navi.FEATURES.enableMultipleExport;
     config.navi.FEATURES.enableMultipleExport = false;
+
+    this.set('model', TestModel);
 
     await render(TEMPLATE);
 
     await click('.schedule-action__button');
 
-    assert.ok(
-      $('.schedule-modal__dropdown--format .ember-power-select-trigger').attr('aria-disabled'),
-      'The formats dropdown is disabled by default'
-    );
+    assert
+      .dom('.schedule-modal__dropdown--format .ember-power-select-trigger')
+      .hasAttribute('aria-disabled', 'true', 'The formats dropdown is disabled by default');
     assert
       .dom('.schedule-modal__dropdown--format .ember-power-select-selected-item')
       .includesText('csv', 'Schedule format should have correct default option');

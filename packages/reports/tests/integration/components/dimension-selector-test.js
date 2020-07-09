@@ -56,13 +56,13 @@ module('Integration | Component | dimension selector', function(hooks) {
           responseFormat: 'csv'
         })
       );
-
-      await render(TEMPLATE);
     });
   });
 
-  test('it renders', function(assert) {
+  test('it renders', async function(assert) {
     assert.expect(3);
+
+    await render(TEMPLATE);
 
     assert.dom('.checkbox-selector--dimension').isVisible('The dimension selector component is rendered');
 
@@ -73,8 +73,8 @@ module('Integration | Component | dimension selector', function(hooks) {
     assert.dom('.grouped-list').exists('a grouped-list component is rendered as part of the dimension selector');
   });
 
-  test('groups', async function(assert) {
-    assert.expect(2);
+  test('groups enableRequestPreview false', async function(assert) {
+    assert.expect(1);
 
     const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
 
@@ -82,22 +82,26 @@ module('Integration | Component | dimension selector', function(hooks) {
 
     await render(TEMPLATE);
 
-    let groups = findAll('.grouped-list__group-header').map(el => el.textContent.trim());
-
     assert.deepEqual(
-      groups,
+      findAll('.grouped-list__group-header').map(el => el.textContent.trim()),
       ['Time Grain (6)', 'test (27)', 'Asset (4)'],
       'The groups rendered by the component include dimension groups and Time Grain'
     );
+
+    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
+  });
+
+  test('groups enableRequestPreview true', async function(assert) {
+    assert.expect(1);
+
+    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
 
     config.navi.FEATURES.enableRequestPreview = true;
 
     await render(TEMPLATE);
 
-    groups = findAll('.grouped-list__group-header').map(el => el.textContent.trim());
-
     assert.deepEqual(
-      groups,
+      findAll('.grouped-list__group-header').map(el => el.textContent.trim()),
       ['Date (1)', 'test (27)', 'Asset (4)'],
       'The groups rendered by the component include dimension groups and Date'
     );
@@ -105,8 +109,8 @@ module('Integration | Component | dimension selector', function(hooks) {
     config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
   });
 
-  test('show selected', async function(assert) {
-    assert.expect(4);
+  test('show selected enableRequestPreview false', async function(assert) {
+    assert.expect(3);
 
     const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
 
@@ -136,6 +140,14 @@ module('Integration | Component | dimension selector', function(hooks) {
       'No unselected dimensions are shown'
     );
 
+    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
+  });
+
+  test('show selected enableRequestPreview true', async function(assert) {
+    assert.expect(1);
+
+    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
+
     config.navi.FEATURES.enableRequestPreview = true;
 
     await render(TEMPLATE);
@@ -147,13 +159,14 @@ module('Integration | Component | dimension selector', function(hooks) {
     config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
   });
 
-  test('add/remove time grain', async function(assert) {
-    assert.expect(5);
+  test('add/remove time grain enableRequestPreview false', async function(assert) {
+    assert.expect(3);
 
     const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
-
     //enableRequestPreview feature flag off
     config.navi.FEATURES.enableRequestPreview = false;
+
+    await render(TEMPLATE);
 
     this.set('addTimeGrain', item => {
       assert.equal(item.id, 'week', 'the week time grain item is passed as a param to the action');
@@ -182,8 +195,17 @@ module('Integration | Component | dimension selector', function(hooks) {
     //removeTimeGrain when only selected are shown and selected time grain is clicked
     await clickItem('timeGrain', 'Day');
 
+    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
+  });
+
+  test('add/remove time grain enableRequestPreview true', async function(assert) {
+    assert.expect(2);
+
+    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
     //enableRequestPreview feature flag on
     config.navi.FEATURES.enableRequestPreview = true;
+
+    await render(TEMPLATE);
 
     this.set('request.logicalTable.timeGrain', 'week');
 
@@ -216,13 +238,14 @@ module('Integration | Component | dimension selector', function(hooks) {
     config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
   });
 
-  test('add/remove dimension', async function(assert) {
-    assert.expect(5);
+  test('add/remove dimension enableRequestPreview false', async function(assert) {
+    assert.expect(3);
 
     const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
-
     //enableRequestPreview feature flag off
     config.navi.FEATURES.enableRequestPreview = false;
+
+    await render(TEMPLATE);
 
     this.set('addDimension', item => {
       assert.equal(item.name, 'Gender', 'the gender dimension item is passed as a param to the action for addition');
@@ -253,8 +276,17 @@ module('Integration | Component | dimension selector', function(hooks) {
     //removeTimeGrain when only selected are shown and selected time grain is clicked
     await clickItem('dimension', 'Age');
 
+    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
+  });
+
+  test('add/remove dimension enableRequestPreview true', async function(assert) {
+    assert.expect(2);
+
+    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
     //enableRequestPreview feature flag on
     config.navi.FEATURES.enableRequestPreview = true;
+
+    await render(TEMPLATE);
 
     this.set('addDimension', item => {
       assert.equal(
@@ -265,10 +297,8 @@ module('Integration | Component | dimension selector', function(hooks) {
     });
 
     this.set('removeDimension', () =>
-      assert.notOk(true, 'removeDimension is not called when enableRequestPreview is on')
+      assert.ok(false, 'removeDimension is not called when enableRequestPreview is on')
     );
-
-    await render(TEMPLATE);
 
     //addDimension when an unselected dimension is clicked
     await clickItem('dimension', 'Gender');
@@ -281,6 +311,8 @@ module('Integration | Component | dimension selector', function(hooks) {
 
   test('filter icon', async function(assert) {
     assert.expect(3);
+
+    await render(TEMPLATE);
 
     const { item: age, reset: resetAge } = await getItem('dimension', 'Age');
     assert
@@ -306,6 +338,8 @@ module('Integration | Component | dimension selector', function(hooks) {
 
   test('tooltip', async function(assert) {
     assert.expect(3);
+
+    await render(TEMPLATE);
 
     this.server.get(`${config.navi.dataSources[0].uri}/v1/dimensions/age`, function() {
       return {
@@ -335,6 +369,8 @@ module('Integration | Component | dimension selector', function(hooks) {
 
   test('ranked search', async function(assert) {
     assert.expect(2);
+
+    await render(TEMPLATE);
 
     const allDimensions = await getAll('dimension');
     assert.deepEqual(

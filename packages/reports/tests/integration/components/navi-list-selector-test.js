@@ -46,12 +46,12 @@ module('Integration | Component | navi list selector', function(hooks) {
         field: 'foo'
       }
     ]);
-
-    await render(TEMPLATE);
   });
 
   test('it renders', async function(assert) {
     assert.expect(5);
+
+    await render(TEMPLATE);
 
     assert.dom('.navi-list-selector').isVisible('The navi-list-selector component is rendered');
 
@@ -73,7 +73,7 @@ module('Integration | Component | navi list selector', function(hooks) {
   });
 
   test('show all/show selected', async function(assert) {
-    assert.expect(9);
+    assert.expect(8);
 
     const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
 
@@ -123,6 +123,14 @@ module('Integration | Component | navi list selector', function(hooks) {
       .dom('.navi-list-selector__content--error')
       .hasText('No items selected', 'No items selected error message is displayed when no items are selected');
 
+    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
+  });
+
+  test('show all/show selected with enableRequestPreview', async function(assert) {
+    assert.expect(1);
+
+    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
+
     config.navi.FEATURES.enableRequestPreview = true;
 
     await render(TEMPLATE);
@@ -136,6 +144,8 @@ module('Integration | Component | navi list selector', function(hooks) {
 
   test('search', async function(assert) {
     assert.expect(5);
+
+    await render(TEMPLATE);
 
     run(() => {
       fillInSync('.navi-list-selector__search-input', 'ba');
