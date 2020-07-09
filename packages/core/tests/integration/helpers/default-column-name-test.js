@@ -55,4 +55,13 @@ module('helper:default-column-name', function(hooks) {
         'The default column name for revenue metric with currency param of USD is Revenue (USD)'
       );
   });
+
+  test('time-dimension support test', async function(assert) {
+    const column = { type: 'dimension', attributes: { name: 'userSignupDate' } };
+    this.set('column', column);
+
+    await render(hbs`{{default-column-name column}}`);
+
+    assert.dom().hasText('User Signup Date', 'The default column name for time-dimension is correctly rendered');
+  });
 });
