@@ -30,6 +30,12 @@ export function getColumnDefaultName(
   let { name: id, field } = attributes,
     model = bardMetadata.getById(type, id, namespace);
 
+  //if metadata isn't found, check time-dimension bucket
+  //TODO: replace when we have full vizualization support for time-dimensions
+  if (model === undefined && type == 'dimension') {
+    model = bardMetadata.getById('time-dimension', id, namespace);
+  }
+
   if (type === 'metric') {
     return naviFormatter.formatMetric(model, attributes.parameters);
   }
@@ -41,7 +47,7 @@ export function getColumnDefaultName(
     });
   }
 
-  return model.name;
+  return model?.name;
 }
 
 export default class DefaultColumnNameHelper extends Helper {
