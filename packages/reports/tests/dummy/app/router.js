@@ -2,10 +2,10 @@ import EmberRouter from '@ember/routing/router';
 import config from './config/environment';
 import { reportRoutes, reportCollectionRoutes, reportPrintRoutes } from 'navi-reports/router';
 
-const Router = EmberRouter.extend({
-  location: config.locationType,
-  rootURL: config.rootURL
-});
+export default class Router extends EmberRouter {
+  location = config.locationType;
+  rootURL = config.rootURL;
+}
 
 Router.map(function() {
   //mock directoy route
@@ -17,5 +17,3 @@ Router.map(function() {
   reportCollectionRoutes(this);
   reportPrintRoutes(this);
 });
-
-export default Router;

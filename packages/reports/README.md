@@ -2,34 +2,29 @@
 
 Analytics reporting library for navi
 
+## Compatibility
+
+- Ember.js v3.12 or above
+- Ember CLI v2.13 or above
+- Node.js v10 or above
+
 ## Installation
 
-- Install Addon
-
-  - `ember install navi-reports`
+```
+ember install navi-reports
+```
 
 - Including CSS styling:
   - Add `@import "navi-reports";` into your `app.less`
 
-## Requirements
+## Usage
 
-- node >= 4
+- Including CSS styling:
+  - Add `@import "navi-reports";` into your `app.less`
 
-## Running
+## Contributing
 
-- `ember serve`
-- Visit the dummy app at [http://localhost:4200](http://localhost:4200).
-
-### Running tests
-
-- `ember test` – Runs the test suite on the current Ember version
-- `ember test --server` – Runs the test suite in "watch mode"
-- `npm test` – Runs `ember try:each` to test your addon against multiple Ember versions
-
-### Running the dummy application
-
-- `ember serve`
-- Visit the dummy application at [http://localhost:4200](http://localhost:4200).
+See the [Contributing](CONTRIBUTING.md) guide for details.
 
 ## License
 

@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = {
   root: true,
   parser: '@typescript-eslint/parser',
@@ -56,11 +58,12 @@ module.exports = {
         node: true
       },
       plugins: ['node'],
-      rules: Object.assign({}, require('eslint-plugin-node').configs.recommended.rules, {
+      extends: ['plugin:node/recommended'],
+      rules: {
         'multiline-comment-style': ['error', 'starred-block'],
         '@typescript-eslint/camelcase': 'off',
         '@typescript-eslint/no-var-requires': 'off'
-      })
+      }
     },
     {
       files: ['tests/**/*.js', 'tests/test-helper.ts'],
