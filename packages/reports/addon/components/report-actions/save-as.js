@@ -10,7 +10,7 @@
 
 import Component from '@ember/component';
 import layout from '../../templates/components/report-actions/save-as';
-import { action, set, computed } from '@ember/object';
+import { action, set } from '@ember/object';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
 @templateLayout(layout)
@@ -24,7 +24,6 @@ export default class ReportActionSaveAs extends Component {
   /**
    * @property {String} reportName - report name/title
    */
-  @computed('model')
   get reportName() {
     return `(New Copy) ${this.model.title}`.substring(0, 150);
   }
