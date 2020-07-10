@@ -1,21 +1,11 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import Component from '@ember/component';
+import NaviActionList from 'navi-reports/components/navi-action-list';
 import layout from '../templates/components/dashboard-action-list';
-import BuildUrl from 'navi-reports/mixins/build-url';
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
-export default Component.extend(BuildUrl, {
-  layout,
-
-  /**
-   * @property {String} tagName
-   */
-  tagName: 'ul',
-
-  /**
-   * @property {Array} classNames
-   */
-  classNames: ['dashboard-action-list', 'actions']
-});
+@templateLayout(layout)
+@tagName('')
+export default class DashboardActionList extends NaviActionList {}

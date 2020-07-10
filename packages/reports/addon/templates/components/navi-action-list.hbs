@@ -44,7 +44,7 @@
       id={{concat "navi-report-action-share-" @index}}
       class="navi-reports-index__report-control share {{if @item.isNew "navi-report__action--is-disabled"}}"
       @pageTitle={{@item.title}}
-      @buildUrl={{action "buildUrl" @item}}
+      @buildUrl={{fn this.buildUrl @item}}
       @disabled={{@item.isNew}}
     >
       <NaviIcon @icon="share" />

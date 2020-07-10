@@ -1,4 +1,6 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Disabling template lint until we come back to simplify this component --}}
+{{!-- template-lint-disable no-action --}}
 <div class="{{this._containerClass}} {{if this.trim "trimmed" "show-all"}}">
   <ul class={{this._collectionClass}}>
     {{#each this._itemsToRender as |item idx|}}

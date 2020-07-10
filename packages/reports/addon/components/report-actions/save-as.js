@@ -1,43 +1,41 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
- *   {{#report-actions/save-as
- *      model=model
- *   }}
+ *   <ReportActions::SaveAs @model={{model}}>
  *      Inner template
- *   {{/report-actions/save-as}}
+ *   </ReportActions::SaveAs>
  */
 
 import Component from '@ember/component';
 import layout from '../../templates/components/report-actions/save-as';
-import { get, set, computed } from '@ember/object';
+import { action, set } from '@ember/object';
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
-export default Component.extend({
-  layout,
-
+@templateLayout(layout)
+@tagName('')
+export default class ReportActionSaveAs extends Component {
   /**
    * @property {Boolean} showModal - flag to control modal display
    */
-  showModal: false,
+  showModal = false;
 
   /**
    * @property {String} reportName - report name/title
    */
-  reportName: computed('model', function() {
-    return `(New Copy) ${get(this, 'model.title')}`.substring(0, 150);
-  }),
+  get reportName() {
+    return `(New Copy) ${this.model.title}`.substring(0, 150);
+  }
 
-  actions: {
-    /**
-     * @action closeModal or cancel modal.
-     */
-    closeModal() {
-      // Avoid `calling set on destroyed object` error
-      if (!get(this, 'isDestroyed') && !get(this, 'isDestroying')) {
-        set(this, 'showModal', false);
-      }
+  /**
+   * @action closeModal or cancel modal.
+   */
+  @action
+  closeModal() {
+    // Avoid `calling set on destroyed object` error
+    if (!this.isDestroyed && !this.isDestroying) {
+      set(this, 'showModal', false);
     }
   }
-});
+}
