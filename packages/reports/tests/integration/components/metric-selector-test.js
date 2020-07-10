@@ -181,8 +181,6 @@ module('Integration | Component | metric selector', function(hooks) {
 
     config.navi.FEATURES.enableRequestPreview = true;
 
-    debugger;
-
     await render(TEMPLATE);
 
     assert

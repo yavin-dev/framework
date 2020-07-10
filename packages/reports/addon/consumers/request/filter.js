@@ -13,7 +13,6 @@ import { canonicalizeMetric } from 'navi-data/utils/metric';
 import { getSelectedMetricsOfBase, getUnfilteredMetricsOfBase } from 'navi-reports/utils/request-metric';
 import { isEmpty } from '@ember/utils';
 import IntervalFragment from 'navi-core/models/bard-request/fragments/interval';
-import { featureFlag } from 'navi-core/helpers/feature-flag';
 
 const DEFAULT_METRIC_FILTER = {
   operator: 'gt',

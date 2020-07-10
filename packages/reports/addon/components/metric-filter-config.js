@@ -40,7 +40,7 @@ export default class MetricFilterConfig extends Component {
   /**
    * @property {String} parameter - parameter to configure
    */
-  @computed('metric')
+  @computed('metric.parameters')
   get parameter() {
     return arr(Object.keys(this.metric.parameters)).reject(key => key === 'as')[0];
   }

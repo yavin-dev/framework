@@ -32,7 +32,7 @@ class EditableLabelComponent extends Component {
   /**
    * @property {Number} inputSize - length of the value with a max length of 50
    */
-  @computed('_localValue')
+  @computed('_localValue.length')
   get _inputSize() {
     return Math.min(this._localValue.length, 49) + 1;
   }

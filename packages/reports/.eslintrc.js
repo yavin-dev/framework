@@ -20,6 +20,9 @@ module.exports = {
     'ember/no-side-effects': 'warn',
     'ember/no-jquery': 'warn',
     'ember/no-new-mixins': 'warn',
+    'ember/no-mixins': 'warn', // get rid of mixins
+    'ember/no-get': 'off', // come back and do this
+    'ember/use-ember-data-rfc-395-imports': 'off', // after updating ember-data
 
     // cleanliness & consistency
     'prefer-const': 'off', // const has misleading safety implications

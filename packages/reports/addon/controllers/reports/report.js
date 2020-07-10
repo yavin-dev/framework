@@ -51,7 +51,7 @@ export default class ReportsReportController extends Controller {
   set reportState(value) {
     const states = Object.values(REPORT_STATE);
     assert(`Invalid reportState: \`${value}\`. Must be one of the following: ${states}`, states.includes(value));
-    return (this._reportState = value);
+    this._reportState = value;
   }
 
   /**

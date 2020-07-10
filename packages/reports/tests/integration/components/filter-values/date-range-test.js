@@ -5,15 +5,6 @@ import { render, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import Interval from 'navi-core/utils/classes/interval';
 import moment from 'moment';
-import { formatDateRange } from 'navi-reports/helpers/format-interval-inclusive-inclusive';
-import { getIsoDateTimePeriod } from 'navi-core/utils/date';
-
-export function getDateRangeFormat(source) {
-  const dateTimePeriod = source.request.logicalTable.timeGrain;
-  const { start, end } = source.filter.values.firstObject.asMomentsForTimePeriod(dateTimePeriod);
-  end.subtract(1, getIsoDateTimePeriod(dateTimePeriod));
-  return formatDateRange(start, end, dateTimePeriod);
-}
 
 module('Integration | Component | filter values/date range', function(hooks) {
   setupRenderingTest(hooks);
