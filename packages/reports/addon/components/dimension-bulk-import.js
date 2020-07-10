@@ -155,7 +155,7 @@ class DimensionBulkImportComponent extends Component {
   /**
    * @property {String} - which id field that we would want to search values against
    */
-  @computed('dimension.id')
+  @computed('dimension.{id,source}')
   get searchableIdField() {
     const meta = this._bardMetadata.getById('dimension', this.dimension?.id, this.dimension?.source);
     return get(meta, 'idFieldName');

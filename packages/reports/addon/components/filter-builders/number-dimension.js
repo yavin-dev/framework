@@ -64,7 +64,7 @@ export default class FilterBuildersNumberDimension extends BaseComponent {
    * @property {Object} filter
    * @override
    */
-  @computed('requestFragment.{operator,dimension,values.[]}')
+  @computed('supportedOperators', 'requestFragment.{operator,dimension,values.[]}')
   get filter() {
     const { requestFragment } = this;
 

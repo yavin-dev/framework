@@ -4,7 +4,7 @@ import { render } from '@ember/test-helpers';
 import { A as arr } from '@ember/array';
 import hbs from 'htmlbars-inline-precompile';
 import Interval from 'navi-core/utils/classes/interval';
-import { getDateRangeFormat } from './date-range-test';
+import { getDateRangeFormat } from '../../../helpers/get-date-range';
 
 module('Integration | Component | filter values/current period', function(hooks) {
   setupRenderingTest(hooks);

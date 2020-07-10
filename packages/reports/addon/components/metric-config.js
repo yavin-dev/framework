@@ -116,7 +116,7 @@ export default class MetricConfig extends Component {
    * @property {Object} paramsFiltered - having -> boolean mapping denoting presence of metric param
    *                                         in request havings
    */
-  @computed('request.having.[]', 'metric')
+  @computed('request.having.[]', 'metric.id')
   get paramsFiltered() {
     return arr(get(this, 'request.having'))
       .filterBy('metric.metric.id', this.metric?.id)

@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = {
   root: true,
   parser: '@typescript-eslint/parser',
@@ -18,6 +20,9 @@ module.exports = {
     'ember/no-side-effects': 'warn',
     'ember/no-jquery': 'warn',
     'ember/no-new-mixins': 'warn',
+    'ember/no-mixins': 'warn', // get rid of mixins
+    'ember/no-get': 'off', // come back and do this
+    'ember/use-ember-data-rfc-395-imports': 'off', // after updating ember-data
 
     // cleanliness & consistency
     'prefer-const': 'off', // const has misleading safety implications
@@ -56,11 +61,12 @@ module.exports = {
         node: true
       },
       plugins: ['node'],
-      rules: Object.assign({}, require('eslint-plugin-node').configs.recommended.rules, {
+      extends: ['plugin:node/recommended'],
+      rules: {
         'multiline-comment-style': ['error', 'starred-block'],
         '@typescript-eslint/camelcase': 'off',
         '@typescript-eslint/no-var-requires': 'off'
-      })
+      }
     },
     {
       files: ['tests/**/*.js', 'tests/test-helper.ts'],

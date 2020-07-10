@@ -4,7 +4,7 @@ import { render, findAll, fillIn, blur } from '@ember/test-helpers';
 import { A as arr } from '@ember/array';
 import hbs from 'htmlbars-inline-precompile';
 import Interval from 'navi-core/utils/classes/interval';
-import { getDateRangeFormat } from './date-range-test';
+import { getDateRangeFormat } from '../../../helpers/get-date-range';
 
 const TEMPLATE = hbs`
 <FilterValues::AdvancedIntervalInput

@@ -27,7 +27,7 @@ export default class ReportBuilderComponent extends Component {
   /**
    * @property {boolean} -- whether report has valid table
    */
-  @computed('report.request.logicalTable.table')
+  @computed('allTables', 'report.request.logicalTable.table.name')
   get hasValidLogicalTable() {
     const allTables = arr(this.allTables);
     const tableName = this.report.request.logicalTable.table?.name;

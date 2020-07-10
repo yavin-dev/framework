@@ -167,6 +167,9 @@ module('Integration | Component | metric config', function(hooks) {
 
     assert.notOk(findAll('.grouped-list__add-icon--deselected').length, 'No unselected parameters are shown');
 
+    // close metric config
+    await clickTrigger('.metric-config__dropdown-trigger');
+
     config.navi.FEATURES.enableRequestPreview = true;
 
     await render(TEMPLATE);
@@ -204,6 +207,9 @@ module('Integration | Component | metric config', function(hooks) {
 
     //remove Param `Dollars(USD)`
     await clickItem('metricConfig', 'Dollars', 'USD');
+
+    // close metric config
+    await clickTrigger('.metric-config__dropdown-trigger');
 
     //enableRequestPreview feature flag on
     config.navi.FEATURES.enableRequestPreview = true;

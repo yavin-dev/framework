@@ -12,8 +12,7 @@
  *   />
  */
 import layout from '../templates/components/filter-collection';
-import { computed, getWithDefault } from '@ember/object';
-import { featureFlag } from 'navi-core/helpers/feature-flag';
+import { computed } from '@ember/object';
 import Component from '@ember/component';
 
 export default Component.extend({
@@ -43,7 +42,7 @@ export default Component.extend({
    * @property {Array} orderedFilters - ordered collection of date, metric, and dimension filters from request
    */
   orderedFilters: computed('request.{filters.[],intervals.[],having.[]}', function() {
-    let dateFilters = getWithDefault(this, 'request.intervals', []).map(filter => {
+    let dateFilters = (this.request.intervals || []).map(filter => {
       return {
         type: 'date-time', // Dasherized to match filter-builder component name
         requestFragment: filter,
@@ -51,7 +50,7 @@ export default Component.extend({
       };
     });
 
-    let dimFilters = getWithDefault(this, 'request.filters', []).map(filter => {
+    let dimFilters = (this.request.filters || []).map(filter => {
       let dimensionDataType = filter.dimension.valueType?.toLowerCase?.(),
         type = this._dimensionFilterBuilder(dimensionDataType);
 
@@ -61,7 +60,7 @@ export default Component.extend({
       };
     });
 
-    let metricFilters = getWithDefault(this, 'request.having', []).map(filter => {
+    let metricFilters = (this.request.having || []).map(filter => {
       return {
         type: 'metric',
         requestFragment: filter

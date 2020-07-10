@@ -84,7 +84,7 @@ class MetricFilterBuilderComponent extends BaseFilterBuilderComponent {
    * @property {Object} filter
    * @override
    */
-  @computed('requestFragment.{operator,metric,values.[]}')
+  @computed('supportedOperators', 'requestFragment.{operator,metric,values.[]}')
   get filter() {
     const { requestFragment } = this;
     const { metric, values, validations, operator: operatorId } = requestFragment;
