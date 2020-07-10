@@ -114,20 +114,12 @@ module('Unit | Metadata Model | Dimension', function(hooks) {
   test('primaryKeyFieldName', function(assert) {
     assert.expect(5);
 
-    assert.deepEqual(
-      Dimension.get('primaryKeyFieldName'),
-      'id',
-      'primaryKeyFieldName returned `id` as the primary key field'
-    );
+    assert.deepEqual(Dimension.primaryKeyFieldName, 'id', 'primaryKeyFieldName returned `id` as the primary key field');
 
     let nonId = DimensionMetadataModel.create({
       fields: [{ name: 'key', tags: ['primaryKey'] }]
     });
-    assert.deepEqual(
-      nonId.get('primaryKeyFieldName'),
-      'key',
-      'primaryKeyFieldName returned `key` as the primary key field'
-    );
+    assert.deepEqual(nonId.primaryKeyFieldName, 'key', 'primaryKeyFieldName returned `key` as the primary key field');
 
     let twoKeys = DimensionMetadataModel.create({
       fields: [
@@ -136,21 +128,21 @@ module('Unit | Metadata Model | Dimension', function(hooks) {
       ]
     });
     assert.deepEqual(
-      twoKeys.get('primaryKeyFieldName'),
+      twoKeys.primaryKeyFieldName,
       'key1',
       'primaryKeyFieldName returns the first field tagged as `primaryKey`'
     );
 
     let noFields = DimensionMetadataModel.create({});
     assert.deepEqual(
-      noFields.get('primaryKeyFieldName'),
+      noFields.primaryKeyFieldName,
       'id',
       'primaryKeyFieldName returns `id` when there is no `fields` metadata prop'
     );
 
     let noPriKey = DimensionMetadataModel.create({});
     assert.deepEqual(
-      noPriKey.get('primaryKeyFieldName'),
+      noPriKey.primaryKeyFieldName,
       'id',
       'primaryKeyFieldName returns `id` when there are no `primaryKey` tags'
     );
@@ -160,7 +152,7 @@ module('Unit | Metadata Model | Dimension', function(hooks) {
     assert.expect(5);
 
     assert.deepEqual(
-      Dimension.get('descriptionFieldName'),
+      Dimension.descriptionFieldName,
       'desc',
       'descriptionFieldName returned `desc` as the description field'
     );
@@ -169,7 +161,7 @@ module('Unit | Metadata Model | Dimension', function(hooks) {
       fields: [{ name: 'name', tags: ['description'] }]
     });
     assert.deepEqual(
-      nonDesc.get('descriptionFieldName'),
+      nonDesc.descriptionFieldName,
       'name',
       'descriptionFieldName returned `name` as the description field'
     );
@@ -181,21 +173,21 @@ module('Unit | Metadata Model | Dimension', function(hooks) {
       ]
     });
     assert.deepEqual(
-      twoKeys.get('descriptionFieldName'),
+      twoKeys.descriptionFieldName,
       'name1',
       'descriptionFieldName returns the first field tagged as `description`'
     );
 
     let noFields = DimensionMetadataModel.create({});
     assert.deepEqual(
-      noFields.get('descriptionFieldName'),
+      noFields.descriptionFieldName,
       'desc',
       'descriptionFieldName returns `desc` when there is no `fields` metadata prop'
     );
 
     let noDesc = DimensionMetadataModel.create({});
     assert.deepEqual(
-      noDesc.get('descriptionFieldName'),
+      noDesc.descriptionFieldName,
       'desc',
       'descriptionFieldName returns `desc` when there are no `description` tags'
     );

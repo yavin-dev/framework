@@ -5,7 +5,6 @@
 
 import { A } from '@ember/array';
 import { w } from '@ember/string';
-import { getWithDefault, get } from '@ember/object';
 import PaginationUtils from './pagination';
 
 export default {
@@ -80,15 +79,15 @@ export default {
       record;
 
     // Filter, map, and sort records based on how close each record is to the search query
-    for (let i = 0; i < get(records, 'length'); i++) {
+    for (let i = 0; i < records.length; i++) {
       record = records.objectAt(i);
 
       // Determine relevance based on string match weight
       let descriptionMatchWeight = this.getPartialMatchWeight(
-          getWithDefault(record, 'description', '').toLowerCase(),
+          (record.description || '').toLowerCase(),
           query.toLowerCase()
         ),
-        idMatchWeight = this.getExactMatchWeight(getWithDefault(record, 'id', '').toLowerCase(), query.toLowerCase()),
+        idMatchWeight = this.getExactMatchWeight((record.id || '').toLowerCase(), query.toLowerCase()),
         relevance = descriptionMatchWeight || idMatchWeight;
 
       // If both id and description match the query, take the most relevant

@@ -72,7 +72,7 @@ module('Unit - Utils - Search Utils', function() {
 
     let results = A(SearchUtils.searchDimensionRecords(records, 'Bike', 100));
 
-    assert.equal(results[0].record.get('description'), 'All Bikes', 'First result is most relevant dimension');
+    assert.equal(results[0].record.description, 'All Bikes', 'First result is most relevant dimension');
 
     assert.equal(results[0].relevance, 1, 'When query matches id and description, smallest relevance value is used');
 

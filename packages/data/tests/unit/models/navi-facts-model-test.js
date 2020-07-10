@@ -1,4 +1,3 @@
-import { get } from '@ember/object';
 import { module, test } from 'qunit';
 import NaviFactsModel from 'navi-data/models/navi-facts';
 
@@ -52,9 +51,9 @@ module('Unit | Navi Facts Model', function(hooks) {
   test('it properly hydrates properties', function(assert) {
     assert.expect(2);
 
-    assert.deepEqual(get(Response, 'rows'), Payload.rows, 'rows property was properly hydrated');
+    assert.deepEqual(Response.rows, Payload.rows, 'rows property was properly hydrated');
 
-    assert.equal(get(Response, 'request'), Payload.request, 'request property was properly hydrated');
+    assert.equal(Response.request, Payload.request, 'request property was properly hydrated');
   });
 
   test('pagination methods', function(assert) {

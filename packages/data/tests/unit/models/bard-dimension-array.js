@@ -1,4 +1,3 @@
-import { get } from '@ember/object';
 import { module, test } from 'qunit';
 import BardDimensionArray from 'navi-data/models/bard-dimensions';
 
@@ -50,9 +49,9 @@ module('Unit | Model | Bard Dimension Array', function(hooks) {
   test('it properly hydrates properties', function(assert) {
     assert.expect(2);
 
-    assert.deepEqual(get(Response, 'content'), Payload.rows, '`content` was properly hydrated');
+    assert.deepEqual(Response.content, Payload.rows, '`content` was properly hydrated');
 
-    assert.equal(get(Response, 'dimension'), 'd1', '`dimension` property was properly hydrated');
+    assert.equal(Response.dimension, 'd1', '`dimension` property was properly hydrated');
   });
 
   test('pagination methods', function(assert) {

@@ -1,4 +1,3 @@
-import { get } from '@ember/object';
 import { module, test } from 'qunit';
 import MetricMetadataModel from 'navi-data/models/metadata/metric';
 import { setupTest } from 'ember-qunit';
@@ -40,7 +39,7 @@ module('Unit | Metadata Model | Metric', function(hooks) {
   test('factory has identifierField defined', function(assert) {
     assert.expect(1);
 
-    assert.equal(get(MetricMetadataModel, 'identifierField'), 'id', 'identifierField property is set to `id`');
+    assert.equal(MetricMetadataModel.identifierField, 'id', 'identifierField property is set to `id`');
   });
 
   test('it properly hydrates properties', function(assert) {
@@ -146,7 +145,7 @@ module('Unit | Metadata Model | Metric', function(hooks) {
       id: 'metricOne'
     };
 
-    const result = await metricOne.get('extended');
+    const result = await metricOne.extended;
     assert.ok(
       Object.keys(expected).every(key => result[key] === expected[key]),
       'metric model can fetch extended attributes'

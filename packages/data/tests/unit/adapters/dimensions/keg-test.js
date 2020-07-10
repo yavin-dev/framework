@@ -41,7 +41,7 @@ module('Unit | Adapters | Dimensions | Keg', function(hooks) {
 
     Adapter = this.owner.lookup('adapter:dimensions/keg');
 
-    Keg = Adapter.get('keg');
+    Keg = Adapter.keg;
     Keg.pushMany('dimension/dummy.dimensionOne', Records, { namespace: 'dummy' });
     Keg.pushMany(
       'dimension/blockhead.dimensionFour',
@@ -190,7 +190,7 @@ module('Unit | Adapters | Dimensions | Keg', function(hooks) {
     );
 
     assert.deepEqual(
-      Adapter.getById('dimensionOne', '1').get('id'),
+      Adapter.getById('dimensionOne', '1').id,
       1,
       'getById() returns the expected response object for Test dimension, identifierField and query'
     );

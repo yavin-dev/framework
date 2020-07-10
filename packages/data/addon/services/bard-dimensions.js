@@ -9,7 +9,6 @@ import { A } from '@ember/array';
 import Service, { inject as service } from '@ember/service';
 import { assert } from '@ember/debug';
 import { getOwner } from '@ember/application';
-import { getWithDefault } from '@ember/object';
 import { isEmpty } from '@ember/utils';
 import BardDimensionArray from 'navi-data/models/bard-dimension-array';
 import SearchUtils from 'navi-data/utils/search';
@@ -201,7 +200,7 @@ export default class BardDimensionService extends Service {
       } else {
         return bardAdapter.findById(dimension, value, options).then(recordFromBard => {
           const serialized = serializer.normalize(dimension, recordFromBard);
-          return kegAdapter.pushMany(dimension, serialized, options).get('firstObject');
+          return kegAdapter.pushMany(dimension, serialized, options).firstObject;
         });
       }
     });
@@ -334,7 +333,7 @@ export default class BardDimensionService extends Service {
       ).mapBy('record');
     } else if (options.useNewSearchAPI) {
       const dimValues = await this.searchValue(dimension, query, options);
-      const dimensionRecords = A(getWithDefault(dimValues, 'rows', []));
+      const dimensionRecords = A(dimValues.rows || []);
 
       return A(SearchUtils.searchDimensionRecords(dimensionRecords, query, MAX_SEARCH_RESULT_COUNT)).mapBy('record');
     } else {

@@ -108,9 +108,8 @@ export default class BardDimensionAdapter extends EmberObject {
     assert("You must pass an 'Array' of queries to be ANDed together", Array.isArray(andQueries));
     let defaultQueryOptions = {
       dimension: dimensionId,
-      field: this._getDimensionMetadata(dimension, options.dataSourceName || getDefaultDataSourceName()).get(
-        'primaryKeyFieldName'
-      ),
+      field: this._getDimensionMetadata(dimension, options.dataSourceName || getDefaultDataSourceName())
+        .primaryKeyFieldName,
       operator: 'in',
       values: []
     };

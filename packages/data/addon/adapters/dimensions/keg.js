@@ -185,7 +185,7 @@ export default class KegDimensionAdapter extends EmberObject {
     );
 
     let defaultQueryOptions = {
-      field: this._getDimensionMetadata(dimension, namespace).get('primaryKeyFieldName'),
+      field: this._getDimensionMetadata(dimension, namespace).primaryKeyFieldName,
       values: []
     };
 
@@ -194,7 +194,7 @@ export default class KegDimensionAdapter extends EmberObject {
     //convert navi-data query object interface to keg query object interface
     const query = andQueries.reduce((all, query) => {
       let values;
-      if (all.hasOwnProperty(query.field)) {
+      if (query.field in all) {
         // if it already exists, we AND it by intersecting the values
         values = intersection(all[query.field], query.values);
       } else {
