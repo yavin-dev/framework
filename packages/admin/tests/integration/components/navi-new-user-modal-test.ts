@@ -4,10 +4,10 @@ import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { set } from '@ember/object';
 
-module('Integration | Component | navi-new-user-modal', function (hooks) {
+module('Integration | Component | navi-new-user-modal', function(hooks) {
   setupRenderingTest(hooks);
 
-  test('modal is open', async function (assert) {
+  test('modal is open', async function(assert) {
     assert.expect(1);
 
     // @ts-ignore
@@ -17,13 +17,17 @@ module('Integration | Component | navi-new-user-modal', function (hooks) {
       // @ts-ignore
       this.isUserModalOpen = !this.isUserModalOpen;
     });
+    // @ts-ignore
+    set(this, 'addUser', () => {});
 
-    await render(hbs`<NaviNewUserModal @isUserModalOpen={{this.isUserModalOpen}} @toggleModal={{this.toggleModal}}/>`);
+    await render(
+      hbs`<NaviNewUserModal @isUserModalOpen={{this.isUserModalOpen}} @toggleModal={{this.toggleModal}} @addUser={{this.addUser}} />`
+    );
 
     assert.dom('.navi-new-user-modal__header-title').hasText('Create User', 'User modal is shown');
   });
 
-  test('modal is closed', async function (assert) {
+  test('modal is closed', async function(assert) {
     assert.expect(1);
 
     // @ts-ignore
@@ -33,8 +37,12 @@ module('Integration | Component | navi-new-user-modal', function (hooks) {
       // @ts-ignore
       this.isUserModalOpen = !this.isUserModalOpen;
     });
+    // @ts-ignore
+    set(this, 'addUser', () => {});
 
-    await render(hbs`<NaviNewUserModal @isUserModalOpen={{this.isUserModalOpen}} @toggleModal={{this.toggleModal}}/>`);
+    await render(
+      hbs`<NaviNewUserModal @isUserModalOpen={{this.isUserModalOpen}} @toggleModal={{this.toggleModal}} @addUser={{this.addUser}} />`
+    );
 
     assert.dom('.navi-new-user-modal__header-title').doesNotExist('User modal is not shown');
   });

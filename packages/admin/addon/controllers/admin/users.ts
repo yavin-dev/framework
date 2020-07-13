@@ -5,18 +5,28 @@
 
 import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
+import { action } from '@ember/object';
 
 export default class AdminUsersController extends Controller {
   /**
    * @property {boolean} isUserModalOpen
    */
-  @tracked isUserModalOpen = false;
+  @tracked isAddUserModalOpen = false;
 
   /**
    * @property {Number} userCount
    */
   get userCount(): number {
     return this.model.users.length;
+  }
+
+  /**
+   * @method addUser
+   */
+  @action
+  addUser(): void {
+    this.isAddUserModalOpen = false;
+    // TODO add user method
   }
 }
 

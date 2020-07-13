@@ -4,7 +4,7 @@
   <div class="navi-users-dashboard__tools">
     <DenaliButton @icon="user-add" @style="solid" @iconOnly={{true}}
       {{on "click" (fn (mut this.isAddUserModalOpen) true)}} class="navi-users-dashboard__tools-add-user" />
-    <NaviNewUserModal @isUserModalOpen={{this.isAddUserModalOpen}} @toggleModal={{toggle "isAddUserModalOpen" this}} />
+    <NaviNewUserModal @isUserModalOpen={{this.isAddUserModalOpen}} @toggleModal={{toggle "isAddUserModalOpen" this}} @addUser={{this.addUser}} />
     <DenaliInput type="text" placeholder="Search" @iconBack="true"
       @iconBackClass="d-search is-brand-300 navi-users-dashboard__tools-user-search" />
     <div class="navi-users-dashboard__tools--spacer" />
