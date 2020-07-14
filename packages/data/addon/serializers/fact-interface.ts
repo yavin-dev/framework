@@ -3,6 +3,11 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
+import { RequestV1, RequestV2 } from 'navi-data/adapters/fact-interface';
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type ResponsePayload = any;
+
 export interface ResponseV1 {
   rows: Array<object>;
   meta: {
@@ -11,5 +16,5 @@ export interface ResponseV1 {
 }
 
 export default interface NaviFactSerializer {
-  normalize(payload?: ResponseV1): ResponseV1 | undefined;
+  normalize(payload: ResponsePayload, request: RequestV1 | RequestV2): ResponseV1 | undefined;
 }
