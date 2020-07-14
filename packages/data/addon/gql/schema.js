@@ -177,7 +177,7 @@ const schema = gql`
     contentLength: Int
     createdOn: Date
     responseBody: String
-    status: Int
+    httpStatus: Int
     updatedOn: Date
     query(op: RelationshipOp = FETCH, data: AsyncQueryInput): AsyncQuery
   }
@@ -266,7 +266,7 @@ const schema = gql`
     contentLength: Int
     createdOn: Date
     responseBody: String
-    status: Int
+    httpStatus: Int
     updatedOn: Date
     query: AsyncQueryInput
   }
@@ -288,7 +288,7 @@ const schema = gql`
       first: String
       after: String
       data: [AsyncQueryInput]
-    ): AsyncQuery
+    ): AsyncQueryConnection
   }
 
   type Mutation {
