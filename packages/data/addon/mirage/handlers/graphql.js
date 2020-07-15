@@ -62,81 +62,92 @@ function _parseGQLQuery(queryStr) {
   };
 }
 
+function _getResponseBody(db, parent) {
+  // Create mocked response for an async query
+  const { createdOn, query } = parent;
+  const responseTime = Date.now();
+  debugger;
+
+  // Only respond if query was created over 10 seconds ago
+  if (responseTime - createdOn >= 10000) {
+    parent.status = 'COMPLETE';
+
+    // TODO: get args from _parseGQLQuery result and handle filtering
+    const { table, args, fields } = _parseGQLQuery(JSON.parse(query).query || '');
+
+    if (table) {
+      debugger;
+      const dbTable = db.tables.find(table) || db.metadataTables.find(table);
+      const columns = fields.reduce(
+        (groups, column) => {
+          const type = ['metric', 'dimension', 'timeDimension'].find(t => dbTable[`${t}Ids`].includes(column));
+
+          if (type) {
+            groups[type].push(column);
+          }
+          return groups;
+        },
+        { metric: [], dimension: [], timeDimension: [] }
+      );
+      let dates = [];
+
+      if (columns.timeDimension.length > 0) {
+        dates = _getDates(args.filter);
+      }
+
+      // Convert each date into a row of data
+      let rows = dates.map(dateTime => ({ dateTime }));
+
+      // Add each dimension
+      columns.dimension.forEach(dimension => {
+        rows = rows.reduce((newRows, currentRow) => {
+          let dimensionValues = _dimensionValues(faker.random.number({ min: 3, max: 5 }));
+
+          return newRows.concat(
+            dimensionValues.map(value => {
+              let newRow = Object.assign({}, currentRow);
+              newRow[dimension] = value;
+              return newRow;
+            })
+          );
+        }, []);
+      });
+
+      // Add each metric
+      rows = rows.map(row => {
+        columns.metric.forEach(metric => {
+          row[metric] = faker.finance.amount();
+        });
+
+        return row;
+      });
+
+      return JSON.stringify({
+        data: {
+          [table]: {
+            edges: rows.map(node => ({ node }))
+          }
+        }
+      });
+    }
+    return JSON.stringify({
+      errors: {
+        message: 'Invalid query sent with AsyncQuery'
+      }
+    });
+  }
+  return null;
+}
+
 const OPTIONS = {
   fieldsMap: {
-    AsyncQueryResult: {
-      responseBody(_, db, parent) {
-        // Create mocked response for an async query
-        const { createdOn, query } = parent;
-
-        // Only respond if query was created over 10 seconds ago
-        if (Date.now() - createdOn >= 10000) {
-          parent.status = 'COMPLETE';
-
-          // TODO: get args from _parseGQLQuery result and handle filtering
-          const { table, args, fields } = _parseGQLQuery(query);
-
-          if (table) {
-            const dbTable = db.tables.find(table);
-            const columns = fields.reduce(
-              (groups, column) => {
-                const type = ['metric', 'dimension', 'timeDimension'].find(t => dbTable[`${t}Ids`].includes(column));
-
-                if (type) {
-                  groups[type].push(column);
-                }
-                return groups;
-              },
-              { metric: [], dimension: [], timeDimension: [] }
-            );
-            let dates = [];
-
-            if (columns.timeDimension.length > 0) {
-              dates = _getDates(args.filter);
-            }
-
-            // Convert each date into a row of data
-            let rows = dates.map(dateTime => ({ dateTime }));
-
-            // Add each dimension
-            columns.dimension.forEach(dimension => {
-              rows = rows.reduce((newRows, currentRow) => {
-                let dimensionValues = _dimensionValues(faker.random.number({ min: 3, max: 5 }));
-
-                return newRows.concat(
-                  dimensionValues.map(value => {
-                    let newRow = Object.assign({}, currentRow);
-                    newRow[dimension] = value;
-                    return newRow;
-                  })
-                );
-              }, []);
-            });
-
-            // Add each metric
-            rows = rows.map(row => {
-              columns.metric.forEach(metric => {
-                row[metric] = faker.finance.amount();
-              });
-
-              return row;
-            });
-
-            return JSON.stringify({
-              data: {
-                [table]: {
-                  edges: rows.map(node => ({ node }))
-                }
-              }
-            });
-          }
-          return JSON.stringify({
-            errors: {
-              message: 'Invalid query sent with AsyncQuery'
-            }
-          });
-        }
-        return null;
+    AsyncQuery: {
+      result(_, db, parent) {
+        return {
+          httpStatus: 200,
+          contentLength: 5,
+          responseBody: _getResponseBody(db, parent)
+        };
       }
     }
   },
@@ -146,26 +157,39 @@ const OPTIONS = {
       ids(records, _, ids) {
         return Array.isArray(ids) ? records.filter(record => ids.includes(record.id)) : records;
       }
+    },
+    AsyncQueryEdge: {
+      ids(records, _, ids) {
+        return Array.isArray(ids) ? records.filter(record => ids.includes(record.id)) : records;
+      },
+      op(records) {
+        return records;
+      }
     }
   },
   mutations: {
-    asyncQuery(asyncQueries, { op, data }) {
+    asyncQuery(connection, { op, data }, { asyncQueries }) {
+      data = data[0];
       const queryIds = data.id ? [data.id] : [];
+      debugger;
       const existingQueries = asyncQueries.find(queryIds) || [];
       if (op === 'UPSERT' && existingQueries.length === 0) {
-        asyncQueries.add({
+        const node = asyncQueries.insert({
           id: data.id,
           asyncAfterSeconds: 10,
           requestId: data.id,
           query: data.query,
           queryType: data.queryType,
           status: data.status,
-          createdOn: Date.now()
+          createdOn: Date.now(),
+          result: null
         });
+        return { edges: [{ node }] };
       } else if (op === 'UPDATE' && existingQueries.length > 0) {
         existingQueries.forEach(query => {
           query.status = data.status;
         });
+        return { edges: existingQueries.map(node => ({ node })) };
       } else {
         throw new Error(`Unable to ${op} when ${existingQueries.length} queries exist with id `);
       }

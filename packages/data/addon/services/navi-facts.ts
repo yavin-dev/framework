@@ -21,7 +21,7 @@ export default class NaviFactsService extends Service {
    * @param {String} type
    * @returns {Adapter} adapter instance for type
    */
-  _adapterFor(type = 'bard-facts'): NaviFactAdapter {
+  _adapterFor(type = 'elide-facts'): NaviFactAdapter {
     return getOwner(this).lookup(`adapter:${type}`);
   }
 
@@ -31,7 +31,7 @@ export default class NaviFactsService extends Service {
    * @param {String} type
    * @returns {Serializer} serializer instance for type
    */
-  _serializerFor(type = 'bard-facts'): NaviFactSerializer {
+  _serializerFor(type = 'elide-facts'): NaviFactSerializer {
     return getOwner(this).lookup(`serializer:${type}`);
   }
 
@@ -68,10 +68,10 @@ export default class NaviFactsService extends Service {
    * @returns {Promise} - Promise with the bard response model object
    */
   fetch(this: NaviFactsService, request: RequestV1, options: RequestOptions): Promise<NaviFactsModel> {
-    const type = config.navi.dataSources[0].type;
-    const adapter = this._adapterFor(type);
-    const serializer = this._serializerFor(type);
+    const adapter = this._adapterFor();
+    const serializer = this._serializerFor();
 
+    debugger;
     return adapter.fetchDataForRequest(request, options).then(payload => {
       const response = serializer.normalize(payload, request);
       return NaviFactsModel.create({ request, response, _factsService: this });
