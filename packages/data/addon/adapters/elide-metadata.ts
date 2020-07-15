@@ -7,6 +7,7 @@ import { queryManager } from 'ember-apollo-client';
 import GQLQueries from 'navi-data/gql/metadata-queries';
 import { assert } from '@ember/debug';
 import { DocumentNode } from 'graphql';
+import { isPresent } from '@ember/utils';
 
 export type MetadataQueryType = keyof typeof GQLQueries;
 export interface MetadataRequestOptions {
@@ -38,21 +39,21 @@ export default class GraphQLMetadataAdapter extends EmberObject {
    * @param {Object} options
    * @returns {Object} JSON response for type
    */
-  async fetchMetadata(type: MetadataQueryType, id: string | undefined, options: MetadataRequestOptions = {}) {
+  fetchMetadata(type: MetadataQueryType, id: string | undefined, options: MetadataRequestOptions = {}) {
     const query: DocumentNode | undefined = GQLQueries[type]?.[id ? 'single' : 'all'];
 
     assert(
       'Type requested in navi-data/elide-metadata adapter must be defined as a query in the gql/metadata-queries.js file',
       query
     );
+    const variables = Object.assign({}, options.variables, isPresent(id) && { ids: [id] });
 
-    const queryOptions = Object.assign({}, options, { query });
-    if (id) {
-      queryOptions.variables = Object.assign(queryOptions.variables || {}, {
-        ids: [id]
-      });
-    }
+    const queryOptions = {
+      query,
+      ...options,
+      variables
+    };
 
-    return await this.apollo.query(queryOptions);
+    return this.apollo.query(queryOptions);
   }
 }

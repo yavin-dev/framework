@@ -4,7 +4,7 @@
  */
 import gql from 'graphql-tag';
 
-export const asyncFactsCancelMutationStr = `mutation($id: string) {
+export const asyncFactsCancelMutationStr = `mutation($id: String) {
   asyncQuery(op: UPDATE, ids: [$id], data: { status: CANCELLED }) {
     edges {
       node {
