@@ -46,13 +46,12 @@ export default class GraphQLMetadataAdapter extends EmberObject {
       'Type requested in navi-data/elide-metadata adapter must be defined as a query in the gql/metadata-queries.js file',
       query
     );
+    const variables = Object.assign({}, options.variables, isPresent(id) && { ids: [id] });
 
     const queryOptions = {
       query,
-      variables: {
-        ...(isPresent(id) && { ids: [id] })
-      },
-      ...options
+      ...options,
+      variables
     };
 
     return this.apollo.query(queryOptions);

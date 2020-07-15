@@ -110,7 +110,12 @@ export default class ElideFacts extends EmberObject implements NaviFactAdapter {
   })
   fetchDataForRequestTask!: TODO;
 
-  fetchDataForRequest(this: ElideFacts, request: RequestV1, options: RequestOptions): Promise<TODO> {
+  /**
+   * @param this
+   * @param request
+   * @param options
+   */
+  fetchDataForRequest(this: ElideFacts, request: RequestV1, options: RequestOptions): Promise<AsyncQueryResponse> {
     return this.fetchDataForRequestTask.perform(request, options);
   }
 }
