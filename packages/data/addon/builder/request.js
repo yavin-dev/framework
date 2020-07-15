@@ -63,7 +63,7 @@ export default class Request extends EmberObject {
    */
   _immutablePush(property, values) {
     let requestCopy = this.copy();
-    requestCopy.set(property, this.get(property).concat(values));
+    requestCopy.set(property, this[property].concat(values));
     return requestCopy;
   }
 

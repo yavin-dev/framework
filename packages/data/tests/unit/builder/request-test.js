@@ -7,12 +7,12 @@ module('Unit | Builder | Request', function() {
   test('logical table', function(assert) {
     assert.expect(3);
 
-    assert.deepEqual(Request.get('logicalTable'), {}, 'logicalTable is initially an empty object');
+    assert.deepEqual(Request.logicalTable, {}, 'logicalTable is initially an empty object');
 
     let updatedRequest = Request.setLogicalTable('network', 'day');
 
     assert.deepEqual(
-      updatedRequest.get('logicalTable'),
+      updatedRequest.logicalTable,
       {
         table: 'network',
         timeGrain: 'day'
@@ -26,12 +26,12 @@ module('Unit | Builder | Request', function() {
   test('dimensions', function(assert) {
     assert.expect(4);
 
-    assert.equal(Request.get('dimensions.length'), 0, 'dimensions is initially an empty array');
+    assert.equal(Request.dimensions.length, 0, 'dimensions is initially an empty array');
 
     let updatedRequest = Request.addDimensions('age', 'gender');
 
     assert.deepEqual(
-      updatedRequest.get('dimensions'),
+      updatedRequest.dimensions,
       [
         {
           dimension: 'age'
@@ -45,7 +45,7 @@ module('Unit | Builder | Request', function() {
 
     updatedRequest = updatedRequest.setDimensions('property', 'browser');
     assert.deepEqual(
-      updatedRequest.get('dimensions'),
+      updatedRequest.dimensions,
       [
         {
           dimension: 'property'
@@ -63,7 +63,7 @@ module('Unit | Builder | Request', function() {
   test('metrics', function(assert) {
     assert.expect(5);
 
-    assert.deepEqual(Request.get('metrics'), [], 'metrics is initially an empty array');
+    assert.deepEqual(Request.metrics, [], 'metrics is initially an empty array');
 
     let updatedRequest = Request.addMetrics(
       { metric: 'pageViews' },
@@ -71,7 +71,7 @@ module('Unit | Builder | Request', function() {
     );
 
     assert.deepEqual(
-      updatedRequest.get('metrics'),
+      updatedRequest.metrics,
       [
         {
           metric: 'pageViews'
@@ -88,7 +88,7 @@ module('Unit | Builder | Request', function() {
 
     updatedRequest = updatedRequest.setMetrics({ metric: 'navClicks' }, { metric: 'navClicksWoW' });
     assert.deepEqual(
-      updatedRequest.get('metrics'),
+      updatedRequest.metrics,
       [
         {
           metric: 'navClicks'
@@ -102,7 +102,7 @@ module('Unit | Builder | Request', function() {
 
     updatedRequest = updatedRequest.setMetricsByName('adClicks', 'adClicksDoD');
     assert.deepEqual(
-      updatedRequest.get('metrics'),
+      updatedRequest.metrics,
       [
         {
           metric: 'adClicks'
@@ -120,13 +120,13 @@ module('Unit | Builder | Request', function() {
   test('intervals', function(assert) {
     assert.expect(5);
 
-    assert.deepEqual(Request.get('intervals'), [], 'intervals is initially an empty array');
+    assert.deepEqual(Request.intervals, [], 'intervals is initially an empty array');
 
     /* == Add Interval Shorthand == */
     let updatedRequest = Request.addInterval('P7D', 'current');
 
     assert.deepEqual(
-      updatedRequest.get('intervals'),
+      updatedRequest.intervals,
       [
         {
           start: 'P7D',
@@ -143,7 +143,7 @@ module('Unit | Builder | Request', function() {
     });
 
     assert.deepEqual(
-      updatedRequest.get('intervals'),
+      updatedRequest.intervals,
       [
         {
           start: 'P7D',
@@ -161,7 +161,7 @@ module('Unit | Builder | Request', function() {
     updatedRequest = updatedRequest.setIntervals({ start: 'P4W', end: 'prev' });
 
     assert.deepEqual(
-      updatedRequest.get('intervals'),
+      updatedRequest.intervals,
       [
         {
           start: 'P4W',
@@ -177,13 +177,13 @@ module('Unit | Builder | Request', function() {
   test('filters', function(assert) {
     assert.expect(5);
 
-    assert.deepEqual(Request.get('filters'), [], 'filters is initially an empty array');
+    assert.deepEqual(Request.filters, [], 'filters is initially an empty array');
 
     /* == Add Filter Shorthand == */
     let updatedRequest = Request.addFilter('gender', 'notin', ['m', 'f']);
 
     assert.deepEqual(
-      updatedRequest.get('filters'),
+      updatedRequest.filters,
       [
         {
           dimension: 'gender',
@@ -202,7 +202,7 @@ module('Unit | Builder | Request', function() {
     });
 
     assert.deepEqual(
-      updatedRequest.get('filters'),
+      updatedRequest.filters,
       [
         {
           dimension: 'gender',
@@ -226,7 +226,7 @@ module('Unit | Builder | Request', function() {
     });
 
     assert.deepEqual(
-      updatedRequest.get('filters'),
+      updatedRequest.filters,
       [
         {
           dimension: 'browser',
@@ -243,13 +243,13 @@ module('Unit | Builder | Request', function() {
   test('having', function(assert) {
     assert.expect(5);
 
-    assert.deepEqual(Request.get('having'), [], 'having is initially an empty array');
+    assert.deepEqual(Request.having, [], 'having is initially an empty array');
 
     /* == Add Having Shorthand == */
     let updatedRequest = Request.addHaving('pageViews', 'gt', 1000);
 
     assert.deepEqual(
-      updatedRequest.get('having'),
+      updatedRequest.having,
       [
         {
           metric: 'pageViews',
@@ -268,7 +268,7 @@ module('Unit | Builder | Request', function() {
     });
 
     assert.deepEqual(
-      updatedRequest.get('having'),
+      updatedRequest.having,
       [
         {
           metric: 'pageViews',
@@ -292,7 +292,7 @@ module('Unit | Builder | Request', function() {
     });
 
     assert.deepEqual(
-      updatedRequest.get('having'),
+      updatedRequest.having,
       [
         {
           metric: 'navClicks',
@@ -309,13 +309,13 @@ module('Unit | Builder | Request', function() {
   test('sort', function(assert) {
     assert.expect(6);
 
-    assert.deepEqual(Request.get('sort'), [], 'sort is initially an empty array');
+    assert.deepEqual(Request.sort, [], 'sort is initially an empty array');
 
     /* == Add sort Shorthand == */
     let updatedRequest = Request.addSort('pageViews');
 
     assert.deepEqual(
-      updatedRequest.get('sort'),
+      updatedRequest.sort,
       [
         {
           metric: 'pageViews',
@@ -329,7 +329,7 @@ module('Unit | Builder | Request', function() {
     updatedRequest = Request.addSort('pageViews', 'asc');
 
     assert.deepEqual(
-      updatedRequest.get('sort'),
+      updatedRequest.sort,
       [
         {
           metric: 'pageViews',
@@ -346,7 +346,7 @@ module('Unit | Builder | Request', function() {
     });
 
     assert.deepEqual(
-      updatedRequest.get('sort'),
+      updatedRequest.sort,
       [
         {
           metric: 'pageViews',
@@ -367,7 +367,7 @@ module('Unit | Builder | Request', function() {
     });
 
     assert.deepEqual(
-      updatedRequest.get('sort'),
+      updatedRequest.sort,
       [
         {
           metric: 'navClicks',

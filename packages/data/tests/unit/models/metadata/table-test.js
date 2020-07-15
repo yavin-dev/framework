@@ -1,4 +1,3 @@
-import { get } from '@ember/object';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { run } from '@ember/runloop';
@@ -68,7 +67,7 @@ module('Unit | Metadata Model | Table', function(hooks) {
   test('factory has identifierField defined', function(assert) {
     assert.expect(1);
 
-    assert.equal(get(TableFactory, 'identifierField'), 'id', 'identifierField property is set to `id`');
+    assert.equal(TableFactory.identifierField, 'id', 'identifierField property is set to `id`');
   });
 
   test('it properly hydrates properties', function(assert) {

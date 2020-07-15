@@ -1,12 +1,11 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Description: A model that holds an array of dimension values.
  */
 
 import ArrayProxy from '@ember/array/proxy';
-import { get } from '@ember/object';
 
 export default ArrayProxy.extend({
   /**
@@ -30,18 +29,17 @@ export default ArrayProxy.extend({
    *                      or null when trying to go past last page
    */
   next() {
-    if (get(this, 'meta.pagination')) {
-      let perPage = get(this, 'meta.pagination.rowsPerPage'),
-        totalResults = get(this, 'meta.pagination.numberOfResults'),
-        currPage = get(this, 'meta.pagination.currentPage'),
-        totalPages = totalResults / perPage;
+    if (this.meta?.pagination) {
+      const perPage = this.meta.pagination.rowsPerPage;
+      const totalResults = this.meta.pagination.numberOfResults;
+      const currPage = this.meta.pagination.currentPage;
+      const totalPages = totalResults / perPage;
       if (currPage < totalPages) {
-        let dimension = get(this, 'dimension'),
-          options = {
-            page: currPage + 1,
-            perPage: perPage
-          };
-        return get(this, '_dimensionsService').fetchAll(dimension, options);
+        const options = {
+          page: currPage + 1,
+          perPage: perPage
+        };
+        return this._dimensionsService.fetchAll(this.dimension, options);
       }
     }
     return null;
@@ -53,14 +51,13 @@ export default ArrayProxy.extend({
    *                      or null when trying to access pages less than the first page
    */
   previous() {
-    if (get(this, 'meta.pagination')) {
-      if (get(this, 'meta.pagination.currentPage') > 1) {
-        let dimension = get(this, 'dimension'),
-          options = {
-            page: get(this, 'meta.pagination.currentPage') - 1,
-            perPage: get(this, 'meta.pagination.rowsPerPage')
-          };
-        return get(this, '_dimensionsService').fetchAll(dimension, options);
+    if (this.meta?.pagination) {
+      if (this.meta.pagination.currentPage > 1) {
+        const options = {
+          page: this.meta.pagination.currentPage - 1,
+          perPage: this.meta.pagination.rowsPerPage
+        };
+        return this._dimensionsService.fetchAll(this.dimension, options);
       }
     }
     return null;
