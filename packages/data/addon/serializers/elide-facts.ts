@@ -14,7 +14,7 @@ export default class ElideFactsSerializer extends EmberObject implements NaviFac
    * Normalizes elide response into ResponseV1
    * @param payload {AsyncQueryResponse} - payload to normalize
    * @param request {RequestV1} - request for response payload
-   * @returns {ResponseV1}
+   * @returns {ResponseV1|undefined}
    */
   normalize(payload: AsyncQueryResponse, request: RequestV1): ResponseV1 | undefined {
     const requestTable: string = request.logicalTable.table;
