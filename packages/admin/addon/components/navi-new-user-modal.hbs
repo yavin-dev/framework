@@ -1,0 +1,26 @@
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<DenaliModal @class="denali-modal navi-new-user-modal" @isOpen={{@isUserModalOpen}} @onClose={{@toggleModal}}
+  ...attributes as | modal |>
+  <modal.Header class="navi-new-user-modal__header">
+    <DenaliIcon @icon="pencil-solid" @size="small" class="navi-new-user-modal__header-icon" />
+    <h3 class="navi-new-user-modal__header-title">Create User</h3>
+  </modal.Header>
+  <modal.Content class="navi-new-user-modal__content">
+    <DenaliInputGroup @label="User Id" class="navi-new-user-modal__content-filter-group" as |Group|>
+      <Group.Input id="navi-new-user-modal__user-field" value={{this.userId}} type="text" placeholder="User Id" />
+    </DenaliInputGroup>
+    <DenaliInputGroup @label="Email" class="navi-new-user-modal__content-filter-group" as |Group|>
+      <Group.Input id="navi-new-user-modal__email-field" value={{this.userEmail}} type="text" placeholder="user@example.com" />
+    </DenaliInputGroup>
+    <DenaliInputGroup @label="Roles" class="navi-new-user-modal__content-filter-group" as |Group|>
+      <Group.Input id="navi-new-user-modal__roles-field" value={{this.userRoles}} type="text" placeholder="Roles" />
+    </DenaliInputGroup>
+  </modal.Content>
+  <modal.Footer class="navi-new-user-modal__footer">
+    <DenaliButton @style="solid" @type="submit" class="navi-new-user-modal__footer-button-ok" {{on "click" @addUser}}>
+      Save
+    </DenaliButton>
+    <DenaliButton @style="outline" class="navi-new-user-modal__footer-button-cancel" {{on "click" @toggleModal}}>Cancel
+    </DenaliButton>
+  </modal.Footer>
+</DenaliModal>

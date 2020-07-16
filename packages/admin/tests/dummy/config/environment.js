@@ -20,6 +20,18 @@ module.exports = function(environment) {
     APP: {
       // Here you can pass flags/options to your application instance
       // when it is created
+    },
+
+    navi: {
+      dataSources: [
+        { name: 'dummy', uri: 'https://data.naviapp.io', type: 'bard-facts' },
+        { name: 'blockhead', uri: 'https://data2.naviapp.io', type: 'bard-facts' }
+      ],
+      appPersistence: {
+        type: 'webservice',
+        uri: 'https://persistence.naviapp.io',
+        timeout: 90000
+      }
     }
   };
 
