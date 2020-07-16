@@ -58,9 +58,7 @@ const fragment = gql`
               }
             }
           }
-          timeZone {
-            short
-          }
+          timeZone
         }
       }
     }

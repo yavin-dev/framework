@@ -109,7 +109,6 @@ module('Unit | Elide Metadata Adapter', function(hooks) {
               category: 'categoryOne',
               valueType: 'NUMBER',
               columnTags: ['DISPLAY'],
-              defaultFormat: 'number',
               columnType: 'field',
               expression: null,
               __typename: 'Metric'
@@ -124,7 +123,6 @@ module('Unit | Elide Metadata Adapter', function(hooks) {
               category: 'categoryOne',
               valueType: 'NUMBER',
               columnTags: ['DISPLAY'],
-              defaultFormat: 'number',
               columnType: 'field',
               expression: null,
               __typename: 'Metric'
@@ -174,7 +172,6 @@ module('Unit | Elide Metadata Adapter', function(hooks) {
               category: 'categoryOne',
               valueType: 'NUMBER',
               columnTags: ['DISPLAY'],
-              defaultFormat: 'number',
               columnType: 'field',
               expression: null,
               __typename: 'Metric'
@@ -189,7 +186,6 @@ module('Unit | Elide Metadata Adapter', function(hooks) {
               category: 'categoryOne',
               valueType: 'NUMBER',
               columnTags: ['DISPLAY'],
-              defaultFormat: 'number',
               columnType: 'field',
               expression: null,
               __typename: 'Metric'
@@ -243,7 +239,6 @@ module('Unit | Elide Metadata Adapter', function(hooks) {
                         category: 'categoryOne',
                         valueType: 'NUMBER',
                         columnTags: ['DISPLAY'],
-                        defaultFormat: 'number',
                         columnType: 'field',
                         expression: null,
                         __typename: 'Metric'
@@ -258,7 +253,6 @@ module('Unit | Elide Metadata Adapter', function(hooks) {
                         category: 'categoryOne',
                         valueType: 'NUMBER',
                         columnTags: ['DISPLAY'],
-                        defaultFormat: 'number',
                         columnType: 'field',
                         expression: null,
                         __typename: 'Metric'
