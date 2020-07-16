@@ -1,5 +1,17 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 
+<NaviVisualizations::ApexGauge
+    @model={{this.model}}
+    @options={{this.goalGaugeOptions}}
+/>
+
+<NaviVisualizationConfig::Wrapper
+    @request={{this.request}}
+    @response={{this.response}}
+    @visualization={{this.goalGaugeVisualization}}
+    @onUpdateConfig={{this.onUpdateConfig}}
+/>
+
 <NaviVisualizations::GoalGauge
     @model={{this.model}}
     @options={{this.goalGaugeOptions}}
