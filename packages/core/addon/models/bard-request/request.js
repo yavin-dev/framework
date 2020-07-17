@@ -551,7 +551,9 @@ export default Fragment.extend(Validations, {
   clone() {
     let clonedRequest = this.toJSON(),
       store = this.store,
-      metadataService = this.metadataService;
+      metadataService = this.metadataService,
+      dimensionTypeMap = Object.fromEntries(this.dimensions.map(dim => [dim.dimension.id, dim.dimension.valueType])),
+      filterTypeMap = Object.fromEntries(this.filters.map(filter => [filter.dimension.id, filter.dimension.valueType]));
 
     return store.createFragment('bard-request/request', {
       logicalTable: store.createFragment('bard-request/fragments/logicalTable', {
@@ -561,7 +563,11 @@ export default Fragment.extend(Validations, {
 
       dimensions: clonedRequest.dimensions.map(dimension =>
         store.createFragment('bard-request/fragments/dimension', {
-          dimension: metadataService.getById('dimension', dimension.dimension, clonedRequest.dataSource)
+          dimension: metadataService.getById(
+            dimensionTypeMap[dimension.dimension] === 'date' ? 'time-dimension' : 'dimension',
+            dimension.dimension,
+            clonedRequest.dataSource
+          )
         })
       ),
 
@@ -574,7 +580,11 @@ export default Fragment.extend(Validations, {
 
       filters: clonedRequest.filters.map(filter =>
         store.createFragment('bard-request/fragments/filter', {
-          dimension: metadataService.getById('dimension', filter.dimension, clonedRequest.dataSource),
+          dimension: metadataService.getById(
+            dimensionTypeMap[filter.dimension] === 'date' ? 'time-dimension' : 'dimension',
+            filter.dimension,
+            clonedRequest.dataSource
+          ),
           field: filter.field,
           operator: filter.operator,
           rawValues: filter.values
