@@ -368,7 +368,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
   });
 
   test('Clone request with time-dimension filter and no matching dimension', async function(assert) {
-    assert.expect(2);
+    assert.expect(3);
     await settled();
     const mockRequest = Store.peekRecord('fragments-mock', MODEL_TO_CLONE).request;
     mockRequest.clearDimensions();
@@ -380,6 +380,12 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
       request.filters.objectAt(2).dimension,
       MetadataService.getById('time-dimension', 'userSignupDate'),
       'clone time dimension filter correctly when no request dimension is present'
+    );
+
+    assert.equal(
+      request.filters.objectAt(1).dimension,
+      MetadataService.getById('dimension', 'multiSystemId'),
+      'The dimension is set with correct metadata'
     );
   });
 
