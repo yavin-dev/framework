@@ -367,6 +367,22 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
     assert.equal(request.dataSource, 'dummy', 'datasource was cloned correctly');
   });
 
+  test('Clone request with time-dimension filter and no matching dimension', async function(assert) {
+    assert.expect(2);
+    await settled();
+    const mockRequest = Store.peekRecord('fragments-mock', MODEL_TO_CLONE).request;
+    mockRequest.clearDimensions();
+    const request = mockRequest.clone();
+
+    assert.ok(request.dimensions.length === 0, 'Dimensions for request are empty');
+
+    assert.equal(
+      request.filters.objectAt(2).dimension,
+      MetadataService.getById('time-dimension', 'userSignupDate'),
+      'clone time dimension filter correctly when no request dimension is present'
+    );
+  });
+
   // Test that navi supports legacy saved reports without a sort field
   test('Clone Request without sort', async function(assert) {
     assert.expect(1);
