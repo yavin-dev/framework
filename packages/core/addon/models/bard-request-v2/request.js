@@ -120,31 +120,52 @@ export default class Request extends Fragment.extend(Validations) {
     });
   }
 
+  /**
+   * @property {ColumnFragment} timeGrainColumn - The column containing the dateTime time-dimension
+   */
   @computed('columns.[]')
   get timeGrainColumn() {
     return this.columns.find(column => column.type === 'time-dimension' && column.field === 'dateTime');
   }
 
+  /**
+   * @property {string} timeGrain - The grain parameter of the column containing the dateTime time-dimension
+   */
   @computed('timeGrainColumn')
   get timeGrain() {
     return this.timeGrainColumn?.parameters?.grain;
   }
 
+  /**
+   * @property {FilterFragment} dateTimeFilter - The filter on the dateTime dimension
+   */
   @computed('filters.[]')
   get dateTimeFilter() {
     return this.filters.find(filter => filter.type === 'time-dimension' && filter.field === 'dateTime');
   }
 
+  /**
+   * @property {Interval|undefined} interval - The interval to filter the dateTime for
+   */
   @computed('dateTimeFilter.values')
   get interval() {
     const values = this.dateTimeFilter?.values;
     return values?.length ? Interval.parseFromStrings(values[0], values[1]) : undefined;
   }
 
+  /**
+   * Adds the column to the request
+   * @param {object} column - the column to add to the request
+   */
   addColumn({ type, dataSource, field, parameters, alias }) {
     this.columns.pushObject(this.fragmentFactory.createColumn(type, dataSource, field, parameters, alias));
   }
 
+  /**
+   * If feature flag enableRequestPreview disabled, then adds up to 1 of the column, otherwise adds a new column
+   * @param {ColumnMetadata} columnMetadataModel - the metadata for the column
+   * @param {object} parameters - the parameters to apply to the column
+   */
   addColumnFromMeta(columnMetadataModel, parameters) {
     const { columns } = this;
     let columnExists = false;
@@ -167,6 +188,11 @@ export default class Request extends Fragment.extend(Validations) {
     }
   }
 
+  /**
+   * Adds a column with it's default parameters
+   * @param {ColumnMetadata} columnMetadataModel - the metadata for the column
+   * @param {object} parameters - the parameters to apply to the column
+   */
   addColumnFromMetaWithParams(columnMetadataModel, parameters = {}) {
     this.addColumnFromMeta(columnMetadataModel, {
       ...(columnMetadataModel.getDefaultParameters?.() || {}),
@@ -174,10 +200,19 @@ export default class Request extends Fragment.extend(Validations) {
     });
   }
 
+  /**
+   * Removes an exact column from the request
+   * @param {ColumnFragment} column - the fragment of the column to remove
+   */
   removeColumn(column) {
     this.columns.removeFragment(column);
   }
 
+  /**
+   * Removes a column based on it's metadata and the given parameters
+   * @param {ColumnMetadata} columnMetadataModel - the metadata for the column
+   * @param {object} parameters - the parameters to search for to be removed
+   */
   removeColumnByMeta(columnMetadataModel, parameters) {
     let columnsToRemove = this.columns.filter(column => column.columnMeta === columnMetadataModel);
 
@@ -188,10 +223,19 @@ export default class Request extends Fragment.extend(Validations) {
     columnsToRemove.forEach(column => this.removeColumn(column));
   }
 
+  /**
+   * Updates the parameters of a column
+   * @param {ColumnFragment} column - the fragment of the column to update
+   * @param {object} parameters - the parameters to be updated and their values
+   */
   updateColumnParameters(column, parameters) {
     column.updateParameters(parameters);
   }
 
+  /**
+   * Makes the request have a dateTime time-dimension column with the given grain
+   * @param {string} newTimeGrain - the new timegrain to use for the request
+   */
   updateTimeGrain(newTimeGrain) {
     const { timeGrainColumn } = this;
 
@@ -209,12 +253,20 @@ export default class Request extends Fragment.extend(Validations) {
     }
   }
 
+  /**
+   * Updates the values of the dateTime filter to the given interval
+   * @param {Interval} newInterval - the new interval to apply to the request
+   */
   updateInterval(newInterval) {
     const { dateTimeFilter } = this;
     const { start, end } = newInterval.asStrings();
     set(dateTimeFilter, 'values', [start, end]);
   }
 
+  /**
+   * Adds a filter only if it is unique
+   * @param {FilterFragment} filterToAdd - the new filter to add
+   */
   _doAddFilter(filterToAdd) {
     const filterExists = this.filters.find(filter => isEqual(filter.serialize(), filterToAdd.serialize()));
 
@@ -224,14 +276,26 @@ export default class Request extends Fragment.extend(Validations) {
   }
 
   //TODO: handle valueParam values vs rawValues
+  /**
+   * Adds a filter to the request
+   * @param {object} filter - the filter to add
+   */
   addFilter({ type, dataSource, field, parameters, operator, values }) {
     this._doAddFilter(this.fragmentFactory.createFilter(type, dataSource, field, parameters, operator, values));
   }
 
+  /**
+   * Removes a filter by it's fragment
+   * @param {FilterFragment} filter - the filter to remove
+   */
   removeFilter(filter) {
     this.filters.removeFragment(filter);
   }
 
+  /**
+   * Adds a sort to the request if it does not exist
+   * @param {SortFragment} sort - the sort to add to the request
+   */
   addSort({ type, dataSource, field, parameters, direction }) {
     const canonicalName = canonicalizeMetric({
       metric: field,
@@ -244,12 +308,21 @@ export default class Request extends Fragment.extend(Validations) {
     this.sorts.pushObject(this.fragmentFactory.createSort(type, dataSource, field, parameters, direction));
   }
 
+  /**
+   * Changes the direction for the dateTime column
+   * @param {string} direction - the direction for the dateTime
+   */
   addDateTimeSort(direction) {
     this.sorts.unshiftObject(
       this.fragmentFactory.createSort('time-dimension', this.dataSource, 'dateTime', {}, direction)
     );
   }
 
+  /**
+   * Adds a sort based on the metric name with the direction
+   * @param {string} metricName - the canonical name of the metric
+   * @param {string} direction - the direction of the sort
+   */
   addSortByMetricName(metricName, direction) {
     const metricColumn = this.columns.find(column => column.type === 'metric' && column.canonicalName === metricName);
 
@@ -264,20 +337,37 @@ export default class Request extends Fragment.extend(Validations) {
     });
   }
 
+  /**
+   * Removes a sort from the request
+   * @param {SortFragment} sort - the fragment of the sort to remove
+   */
   removeSort(sort) {
     return this.sorts.removeFragment(sort);
   }
 
+  /**
+   * Removes all sorts on this metric
+   * @param {ColumnMetadata} metricMetadataModel - the metadata of the metric to remove sorts for
+   */
   removeSortByMeta(metricMetadataModel) {
     const sortsToRemove = this.sorts.filter(sort => sort.columnMeta === metricMetadataModel);
     sortsToRemove.forEach(sort => this.removeSort(sort));
   }
 
+  /**
+   * Removes a sort if it exists by the given metric name
+   * @param {string} metricName - the canonical name of the metric to remove sorts for
+   */
   removeSortByMetricName(metricName) {
     const sort = this.sorts.find(sort => sort.type === 'metric' && sort.canonicalName === metricName);
     return this.removeSort(sort);
   }
 
+  /**
+   * Removes a sort if it exists by the given metric with the given parameters
+   * @param {ColumnMetadata} metricMetadataModel - the   metadata of the metric to remove sorts
+   * @param {object} parameters - the parameters applied to the metric
+   */
   removeSortWithParams(metricMetadataModel, parameters) {
     return this.removeSortByMetricName(
       canonicalizeMetric({

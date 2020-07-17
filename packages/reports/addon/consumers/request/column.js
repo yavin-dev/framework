@@ -23,26 +23,61 @@ export default ActionConsumer.extend({
       request.addColumnFromMeta(columnMetadataModel);
     },
 
+    /**
+     * @action ADD_COLUMN_WITH_PARAMS
+     * @param route - route that has a model that contains a request property
+     * @param columnMetadataModel - metadata model to add
+     * @param parameters - parameters applied to the column
+     */
     [RequestActions.ADD_COLUMN_WITH_PARAMS]({ currentModel: { request } }, columnMetadataModel, parameters) {
       request.addColumnFromMetaWithParams(columnMetadataModel, parameters);
     },
 
+    /**
+     * @action REMOVE_COLUMN
+     * @param route - route that has a model that contains a request property
+     * @param columnMetadataModel - metadata model to add
+     */
     [RequestActions.REMOVE_COLUMN]({ currentModel: { request } }, columnMetadataModel) {
       request.removeColumnByMeta(columnMetadataModel);
     },
 
+    /**
+     * @action REMOVE_COLUMN_WITH_PARAMS
+     * @param route - route that has a model that contains a request property
+     * @param columnMetadataModel - metadata model to add
+     * @param parameters - parameters applied to the column
+     */
     [RequestActions.REMOVE_COLUMN_WITH_PARAMS]({ currentModel: { request } }, columnMetadataModel, parameters) {
       request.removeColumnByMeta(columnMetadataModel, parameters);
     },
 
+    /**
+     * @action REMOVE_COLUMN_FRAGMENT
+     * @param route - route that has a model that contains a request property
+     * @param columnFragment - data model fragment of the column
+     */
     [RequestActions.REMOVE_COLUMN_FRAGMENT]({ currentModel: { request } }, columnFragment) {
       request.removeColumn(columnFragment);
     },
 
+    /**
+     * @action REMOVE_COLUMN_FRAGMENT
+     * @param route - route that has a model that contains a request property
+     * @param columnFragment - data model fragment of the column
+     * @param parameterKey - the name of the parameter to update
+     * @param parameterValue - the value to update the parameter with
+     */
     [RequestActions.UPDATE_COLUMN_FRAGMENT_WITH_PARAMS](route, columnFragment, parameterKey, parameterValue) {
       columnFragment.updateParameters({ [parameterKey]: parameterValue });
     },
 
+    /**
+     * @action ADD_METRIC_FILTER
+     * @param route - route that has a model that contains a request property
+     * @param metricMetadataModel - metadata model of metric whose filter is being added
+     * @param parameters - parameters applied to the column
+     */
     [RequestActions.ADD_METRIC_FILTER](route, metricMetadataModel, parameters) {
       // Metric filter can't exist without the metric present in the request
 
@@ -69,6 +104,11 @@ export default ActionConsumer.extend({
       }
     },
 
+    /**
+     * @action DID_UPDATE_TABLE
+     * @param route - route that has a model that contains a request property
+     * @param table - table that the request is updated with
+     */
     [RequestActions.DID_UPDATE_TABLE](route, table) {
       const {
         currentModel: { request }
