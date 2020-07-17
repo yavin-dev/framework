@@ -374,7 +374,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
     mockRequest.clearDimensions();
     const request = mockRequest.clone();
 
-    assert.ok(request.dimensions.length === 0, 'Dimensions for request are empty');
+    assert.equal(request.dimensions.length, 0, 'Dimensions for request are empty');
 
     assert.equal(
       request.filters.objectAt(2).dimension,
