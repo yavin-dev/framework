@@ -549,11 +549,15 @@ export default Fragment.extend(Validations, {
    * @returns {MF.Fragment} copy of this fragment
    */
   clone() {
-    let clonedRequest = this.toJSON(),
-      store = this.store,
-      metadataService = this.metadataService,
-      dimensionTypeMap = Object.fromEntries(this.dimensions.map(dim => [dim.dimension.id, dim.dimension.valueType])),
-      filterTypeMap = Object.fromEntries(this.filters.map(filter => [filter.dimension.id, filter.dimension.valueType]));
+    const clonedRequest = this.toJSON();
+    const store = this.store;
+    const metadataService = this.metadataService;
+    const dimensionTypeMap = Object.fromEntries(
+      this.dimensions.map(dim => [dim.dimension.id, dim.dimension.valueType])
+    );
+    const filterTypeMap = Object.fromEntries(
+      this.filters.map(filter => [filter.dimension.id, filter.dimension.valueType])
+    );
 
     return store.createFragment('bard-request/request', {
       logicalTable: store.createFragment('bard-request/fragments/logicalTable', {
@@ -581,7 +585,7 @@ export default Fragment.extend(Validations, {
       filters: clonedRequest.filters.map(filter =>
         store.createFragment('bard-request/fragments/filter', {
           dimension: metadataService.getById(
-            dimensionTypeMap[filter.dimension] === 'date' ? 'time-dimension' : 'dimension',
+            filterTypeMap[filter.dimension] === 'date' ? 'time-dimension' : 'dimension',
             filter.dimension,
             clonedRequest.dataSource
           ),
