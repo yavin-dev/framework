@@ -114,6 +114,23 @@ module('Unit | Consumer | request column', function(hooks) {
     consumer.send(RequestActions.UPDATE_COLUMN_FRAGMENT_WITH_PARAMS, null, column, 'revenue', 'USD');
   });
 
+  test('RENAME_COLUMN_FRAGMENT', function(assert) {
+    assert.expect(2);
+
+    const currentModel = {
+      request: {
+        columns: arr([{ type: 'metric', alias: '', field: 'clicks', parameters: {} }]),
+
+        renameColumn(column, alias) {
+          assert.deepEqual(column, currentModel.request.columns[0], 'The correct column is passed in');
+          assert.deepEqual(alias, 'Number', 'The alias is Number');
+        }
+      }
+    };
+
+    consumer.send(RequestActions.RENAME_COLUMN_FRAGMENT, { currentModel }, currentModel.request.columns[0], 'Number');
+  });
+
   test('ADD_METRIC_FILTER', function(assert) {
     assert.expect(4);
 

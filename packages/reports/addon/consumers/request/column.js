@@ -73,6 +73,15 @@ export default ActionConsumer.extend({
     },
 
     /**
+     * @action REMOVE_COLUMN_FRAGMENT
+     * @param route - route that has a model that contains a request property
+     * @param columnFragment - data model fragment of the column
+     */
+    [RequestActions.RENAME_COLUMN_FRAGMENT]({ currentModel: { request } }, columnFragment, alias) {
+      request.renameColumn(columnFragment, alias);
+    },
+
+    /**
      * @action ADD_METRIC_FILTER
      * @param route - route that has a model that contains a request property
      * @param metricMetadataModel - metadata model of metric whose filter is being added

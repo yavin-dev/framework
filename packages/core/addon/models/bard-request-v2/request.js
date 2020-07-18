@@ -224,6 +224,15 @@ export default class Request extends Fragment.extend(Validations) {
   }
 
   /**
+   * Renames an exact column from the request
+   * @param {ColumnFragment} column - the fragment of the column to remove
+   * @param {string} alias - the new alias for the column
+   */
+  renameColumn(column, alias) {
+    set(column, 'alias', alias);
+  }
+
+  /**
    * Updates the parameters of a column
    * @param {ColumnFragment} column - the fragment of the column to update
    * @param {object} parameters - the parameters to be updated and their values

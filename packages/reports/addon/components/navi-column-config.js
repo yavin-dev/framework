@@ -226,6 +226,16 @@ class NaviColumnConfig extends Component {
   }
 
   /**
+   * @action
+   * @param {Object} column - the column fragment to be renamed
+   * @param {string} alias - the new name for the column
+   */
+  @action
+  renameColumn(column, alias) {
+    this.onRenameColumn(column, alias);
+  }
+
+  /**
    * Opens a column
    * @action
    * @param {Object} column - The column to open
