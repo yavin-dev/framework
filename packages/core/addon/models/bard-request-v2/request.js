@@ -385,4 +385,14 @@ export default class Request extends Fragment.extend(Validations) {
       })
     );
   }
+
+  /**
+   * Moves the given column to the index, shifting everything >= index by one position
+   * @param {ColumnFragment} column - the column fragment that is being moved
+   * @param {number} index - the index to move the selected column
+   */
+  reorderColumn(column, index) {
+    this.columns.removeFragment(column);
+    this.columns.insertAt(index, column);
+  }
 }

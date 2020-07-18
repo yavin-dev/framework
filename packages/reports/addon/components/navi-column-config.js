@@ -236,6 +236,16 @@ class NaviColumnConfig extends Component {
   }
 
   /**
+   * @action
+   * @param {Object} column - the column fragment to be renamed
+   * @param {number} index - the new name for the column
+   */
+  @action
+  reorderColumn(column, index) {
+    this.onReorderColumn(column, index);
+  }
+
+  /**
    * Opens a column
    * @action
    * @param {Object} column - The column to open

@@ -131,6 +131,23 @@ module('Unit | Consumer | request column', function(hooks) {
     consumer.send(RequestActions.RENAME_COLUMN_FRAGMENT, { currentModel }, currentModel.request.columns[0], 'Number');
   });
 
+  test('REORDER_COLUMN_FRAGMENT', function(assert) {
+    assert.expect(2);
+
+    const currentModel = {
+      request: {
+        columns: arr([{ field: 'clicks0' }, { field: 'clicks1' }, { field: 'clicks2' }, { field: 'clicks3' }]),
+
+        reorderColumn(column, index) {
+          assert.deepEqual(column, currentModel.request.columns[2], 'The correct column is passed in');
+          assert.deepEqual(index, index, 'The alias is Number');
+        }
+      }
+    };
+
+    consumer.send(RequestActions.REORDER_COLUMN_FRAGMENT, { currentModel }, currentModel.request.columns[2], 1);
+  });
+
   test('ADD_METRIC_FILTER', function(assert) {
     assert.expect(4);
 

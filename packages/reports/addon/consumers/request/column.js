@@ -76,9 +76,20 @@ export default ActionConsumer.extend({
      * @action REMOVE_COLUMN_FRAGMENT
      * @param route - route that has a model that contains a request property
      * @param columnFragment - data model fragment of the column
+     * @param alias - the new name for the column
      */
     [RequestActions.RENAME_COLUMN_FRAGMENT]({ currentModel: { request } }, columnFragment, alias) {
       request.renameColumn(columnFragment, alias);
+    },
+
+    /**
+     * @action REMOVE_COLUMN_FRAGMENT
+     * @param route - route that has a model that contains a request property
+     * @param columnFragment - data model fragment of the column
+     * @param index - the index to move the selected column
+     */
+    [RequestActions.REORDER_COLUMN_FRAGMENT]({ currentModel: { request } }, columnFragment, index) {
+      request.reorderColumn(columnFragment, index);
     },
 
     /**

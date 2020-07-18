@@ -19,6 +19,7 @@ export const RequestActions = {
   REMOVE_COLUMN_WITH_PARAMS: 'removeColumnWithParams',
   REMOVE_COLUMN_FRAGMENT: 'removeColumnFragment',
   RENAME_COLUMN_FRAGMENT: 'renameColumnFragment',
+  REORDER_COLUMN_FRAGMENT: 'reorderColumnFragment',
   REMOVE_TIME_GRAIN: 'removeTimeGrain',
   REMOVE_FILTER: 'removeFilter',
   REMOVE_SORT: 'removeSort',
