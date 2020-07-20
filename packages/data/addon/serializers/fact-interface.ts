@@ -16,5 +16,10 @@ export interface ResponseV1 {
 }
 
 export default interface NaviFactSerializer {
+  /**
+   * Normalizes a data source response into ResponseV1
+   * @param payload - payload to normalize
+   * @param request - request for response payload
+   */
   normalize(payload: ResponsePayload, request: RequestV1 | RequestV2): ResponseV1 | undefined;
 }
