@@ -71,7 +71,6 @@ export default class NaviFactsService extends Service {
     const adapter = this._adapterFor();
     const serializer = this._serializerFor();
 
-    debugger;
     return adapter.fetchDataForRequest(request, options).then(payload => {
       const response = serializer.normalize(payload, request);
       return NaviFactsModel.create({ request, response, _factsService: this });

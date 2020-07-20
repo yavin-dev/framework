@@ -1,33 +1,33 @@
 import { Factory } from 'ember-cli-mirage';
 
-export default class TimeDimensionFactory extends Factory {
-  index = i => i;
+export default Factory.extend({
+  index: i => i,
 
-  get id() {
+  id() {
     return `timeDimension${this.index}`;
-  }
+  },
 
-  get name() {
+  name() {
     return `Time Dimension ${this.index}`;
-  }
+  },
 
-  get description() {
+  description() {
     return `This is time dimension ${this.index}`;
-  }
+  },
 
-  category = 'categoryOne';
+  category: 'categoryOne',
 
-  valueType = 'TIME';
+  valueType: 'TIME',
 
-  columnTags = ['DISPLAY'];
+  columnTags: () => ['DISPLAY'],
 
-  columnType = 'field';
+  columnType: 'field',
 
-  expression = null;
+  expression: null,
 
-  supportedGrains = [];
+  supportedGrains: () => [],
 
-  get timeZone() {
+  timeZone() {
     return { short: 'UTC', long: 'Universal Time Coordinated' };
   }
-}
+});

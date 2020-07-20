@@ -1,27 +1,27 @@
 import { Factory } from 'ember-cli-mirage';
 
-export default class DimensionFactory extends Factory {
-  index = i => i;
+export default Factory.extend({
+  index: i => i,
 
-  get id() {
+  id() {
     return `dimension${this.index}`;
-  }
+  },
 
-  get name() {
+  name() {
     return `Dimension ${this.index}`;
-  }
+  },
 
   description() {
     return `This is dimension ${this.index}`;
-  }
+  },
 
-  category = 'categoryOne';
+  category: 'categoryOne',
 
-  valueType = 'TEXT';
+  valueType: 'TEXT',
 
-  columnTags = () => ['DISPLAY'];
+  columnTags: () => ['DISPLAY'],
 
-  columnType = 'field';
+  columnType: 'field',
 
-  expression = null;
-}
+  expression: null
+});

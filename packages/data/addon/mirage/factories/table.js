@@ -1,23 +1,23 @@
 import { Factory } from 'ember-cli-mirage';
 
-export default class TableFactory extends Factory {
-  index = i => i;
+export default Factory.extend({
+  index: i => i,
 
-  get id() {
+  id() {
     return `table${this.index}`;
-  }
+  },
 
-  get name() {
+  name() {
     return `Table ${this.index}`;
-  }
+  },
 
-  get description() {
+  description() {
     return `This is Table ${this.index}`;
-  }
+  },
 
-  category = 'categoryOne';
+  category: 'categoryOne',
 
-  cardinality = 'SMALL';
+  cardinality: 'SMALL',
 
-  tableTags = ['IMPORTANT'];
-}
+  tableTags: () => ['IMPORTANT']
+});

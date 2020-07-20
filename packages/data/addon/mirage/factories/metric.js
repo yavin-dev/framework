@@ -1,29 +1,29 @@
 import { Factory } from 'ember-cli-mirage';
 
-export default class MetricFactory extends Factory {
-  index = i => i;
+export default Factory.extend({
+  index: i => i,
 
-  get id() {
+  id() {
     return `metric${this.index}`;
-  }
+  },
 
-  get name() {
+  name() {
     return `Metric ${this.index}`;
-  }
+  },
 
-  get description() {
+  description() {
     return `This is metric ${this.index}`;
-  }
+  },
 
-  category = 'categoryOne';
+  category: 'categoryOne',
 
-  valueType = 'NUMBER';
+  valueType: 'NUMBER',
 
-  columnTags = ['DISPLAY'];
+  columnTags: () => ['DISPLAY'],
 
-  defaultFormat = 'number';
+  defaultFormat: 'number',
 
-  columnType = 'field';
+  columnType: 'field',
 
-  expression = null;
-}
+  expression: null
+});

@@ -66,40 +66,42 @@ function _getResponseBody(db, parent) {
   // Create mocked response for an async query
   const { createdOn, query } = parent;
   const responseTime = Date.now();
-  debugger;
 
-  // Only respond if query was created over 10 seconds ago
-  if (responseTime - createdOn >= 10000) {
+  // Only respond if query was created over 5 seconds ago
+  if (responseTime - createdOn >= 5000) {
     parent.status = 'COMPLETE';
 
     // TODO: get args from _parseGQLQuery result and handle filtering
     const { table, args, fields } = _parseGQLQuery(JSON.parse(query).query || '');
 
-    if (table) {
-      debugger;
-      const dbTable = db.tables.find(table) || db.metadataTables.find(table);
+    if (db.tables.find(table) && fields.length) {
       const columns = fields.reduce(
         (groups, column) => {
-          const type = ['metric', 'dimension', 'timeDimension'].find(t => dbTable[`${t}Ids`].includes(column));
+          const type = ['metrics', 'dimensions', 'timeDimensions'].find(t => db[t].find(column));
 
           if (type) {
             groups[type].push(column);
           }
           return groups;
         },
-        { metric: [], dimension: [], timeDimension: [] }
+        { metrics: [], dimensions: [], timeDimensions: [] }
       );
       let dates = [];
 
-      if (columns.timeDimension.length > 0) {
+      if (columns.timeDimensions.length > 0) {
         dates = _getDates(args.filter);
       }
 
       // Convert each date into a row of data
       let rows = dates.map(dateTime => ({ dateTime }));
 
+      // If no time dimension is sent, just return a single row
+      if (rows.length === 0) {
+        rows = [{}];
+      }
+
       // Add each dimension
-      columns.dimension.forEach(dimension => {
+      columns.dimensions.forEach(dimension => {
         rows = rows.reduce((newRows, currentRow) => {
           let dimensionValues = _dimensionValues(faker.random.number({ min: 3, max: 5 }));
 
@@ -115,7 +117,7 @@ function _getResponseBody(db, parent) {
 
       // Add each metric
       rows = rows.map(row => {
-        columns.metric.forEach(metric => {
+        columns.metrics.forEach(metric => {
           row[metric] = faker.finance.amount();
         });
 
@@ -171,7 +173,6 @@ const OPTIONS = {
     asyncQuery(connection, { op, data }, { asyncQueries }) {
       data = data[0];
       const queryIds = data.id ? [data.id] : [];
-      debugger;
       const existingQueries = asyncQueries.find(queryIds) || [];
       if (op === 'UPSERT' && existingQueries.length === 0) {
         const node = asyncQueries.insert({
