@@ -42,11 +42,15 @@ module('Unit | Service | elide-metadata', function(hooks) {
 
     assert.deepEqual(keg.all('metadata/table').mapBy('id'), ['table0', 'table1'], 'All tables are loaded in the keg');
 
-    assert.deepEqual(keg.all('metadata/dimension').mapBy('id'), ['dimension0'], 'All dimensions are loaded in the keg');
+    assert.deepEqual(
+      keg.all('metadata/dimension').mapBy('id'),
+      ['dimension0', 'dimension1', 'dimension2'],
+      'All dimensions are loaded in the keg'
+    );
 
     assert.deepEqual(
       keg.all('metadata/metric').mapBy('id'),
-      ['metric0', 'metric1', 'metric2', 'metric3'],
+      ['metric0', 'metric1', 'metric2', 'metric3', 'metric4'],
       'All metrics are loaded in the keg'
     );
 
@@ -91,11 +95,13 @@ module('Unit | Service | elide-metadata', function(hooks) {
       keg.all('metadata/dimension').map((dim: DimensionMetadata) => ({ id: dim.id, source: dim.source })),
       [
         { id: 'dimension0', source: 'dummy' },
-        { id: 'dimension1', source: 'blockhead' },
-        { id: 'dimension2', source: 'blockhead' },
+        { id: 'dimension1', source: 'dummy' },
+        { id: 'dimension2', source: 'dummy' },
         { id: 'dimension3', source: 'blockhead' },
         { id: 'dimension4', source: 'blockhead' },
-        { id: 'dimension5', source: 'blockhead' }
+        { id: 'dimension5', source: 'blockhead' },
+        { id: 'dimension6', source: 'blockhead' },
+        { id: 'dimension7', source: 'blockhead' }
       ],
       'All dimensions are loaded in the keg'
     );
@@ -107,8 +113,9 @@ module('Unit | Service | elide-metadata', function(hooks) {
         { id: 'metric1', source: 'dummy' },
         { id: 'metric2', source: 'dummy' },
         { id: 'metric3', source: 'dummy' },
-        { id: 'metric4', source: 'blockhead' },
-        { id: 'metric5', source: 'blockhead' }
+        { id: 'metric4', source: 'dummy' },
+        { id: 'metric5', source: 'blockhead' },
+        { id: 'metric6', source: 'blockhead' }
       ],
       'All metrics are loaded in the keg'
     );
@@ -201,7 +208,7 @@ module('Unit | Service | elide-metadata', function(hooks) {
     );
     assert.deepEqual(
       allDimensions.mapBy('id'),
-      ['dimension0', 'dimension1', 'dimension2', 'dimension3', 'dimension4', 'dimension5'],
+      ['dimension0', 'dimension1', 'dimension2', 'dimension3', 'dimension4', 'dimension5', 'dimension6', 'dimension7'],
       'all method returns all loaded dimensions for every source'
     );
 
@@ -212,7 +219,7 @@ module('Unit | Service | elide-metadata', function(hooks) {
     );
     assert.deepEqual(
       allMetrics.mapBy('id'),
-      ['metric0', 'metric1', 'metric2', 'metric3', 'metric4', 'metric5'],
+      ['metric0', 'metric1', 'metric2', 'metric3', 'metric4', 'metric5', 'metric6'],
       'all method returns all loaded metrics for every source'
     );
 
@@ -234,7 +241,7 @@ module('Unit | Service | elide-metadata', function(hooks) {
     );
     assert.deepEqual(
       allDummyMetrics.mapBy('id'),
-      ['metric0', 'metric1', 'metric2', 'metric3'],
+      ['metric0', 'metric1', 'metric2', 'metric3', 'metric4'],
       'all method returns all loaded metrics for only the specified source'
     );
 

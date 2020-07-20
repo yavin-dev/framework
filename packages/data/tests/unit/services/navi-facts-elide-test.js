@@ -22,7 +22,7 @@ const TestRequest = {
     {
       metric: 'metric1',
       operator: 'gt',
-      value: 0 // TODO switch to `values: [0]` after `value` backwards compatibility has been removed
+      values: [0] // TODO switch to `values: [0]` after `value` backwards compatibility has been removed
     }
   ],
   intervals: [
@@ -45,7 +45,7 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
   test('fetch', async function(assert) {
     assert.expect(2);
 
-    const response = await this.service.fetch(TestRequest);
+    const response = await this.service.fetch(TestRequest, { dataSourceName: 'dummy-gql' });
     const columns = [...TestRequest.metrics.map(m => m.metric), ...TestRequest.dimensions.map(d => d.dimension)];
     assert.deepEqual(Object.keys(response.response), ['rows', 'meta'], 'Response has the rows and meta keys');
     assert.ok(

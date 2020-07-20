@@ -128,6 +128,20 @@ module('Unit | Elide Metadata Adapter', function(hooks) {
               __typename: 'Metric'
             },
             __typename: 'MetricEdge'
+          },
+          {
+            node: {
+              id: 'metric2',
+              name: 'Metric 2',
+              description: 'This is metric 2',
+              category: 'categoryOne',
+              valueType: 'NUMBER',
+              columnTags: ['DISPLAY'],
+              columnType: 'field',
+              expression: null,
+              __typename: 'Metric'
+            },
+            __typename: 'MetricEdge'
           }
         ]
       },
@@ -152,6 +166,34 @@ module('Unit | Elide Metadata Adapter', function(hooks) {
               expression: null,
               __typename: 'Dimension'
             }
+          },
+          {
+            __typename: 'DimensionEdge',
+            node: {
+              id: 'dimension1',
+              name: 'Dimension 1',
+              description: 'This is dimension 1',
+              category: 'categoryOne',
+              valueType: 'TEXT',
+              columnTags: ['DISPLAY'],
+              columnType: 'field',
+              expression: null,
+              __typename: 'Dimension'
+            }
+          },
+          {
+            __typename: 'DimensionEdge',
+            node: {
+              id: 'dimension2',
+              name: 'Dimension 2',
+              description: 'This is dimension 2',
+              category: 'categoryOne',
+              valueType: 'TEXT',
+              columnTags: ['DISPLAY'],
+              columnType: 'field',
+              expression: null,
+              __typename: 'Dimension'
+            }
           }
         ]
       },
@@ -166,9 +208,9 @@ module('Unit | Elide Metadata Adapter', function(hooks) {
         edges: [
           {
             node: {
-              id: 'metric2',
-              name: 'Metric 2',
-              description: 'This is metric 2',
+              id: 'metric3',
+              name: 'Metric 3',
+              description: 'This is metric 3',
               category: 'categoryOne',
               valueType: 'NUMBER',
               columnTags: ['DISPLAY'],
@@ -180,9 +222,9 @@ module('Unit | Elide Metadata Adapter', function(hooks) {
           },
           {
             node: {
-              id: 'metric3',
-              name: 'Metric 3',
-              description: 'This is metric 3',
+              id: 'metric4',
+              name: 'Metric 4',
+              description: 'This is metric 4',
               category: 'categoryOne',
               valueType: 'NUMBER',
               columnTags: ['DISPLAY'],
@@ -258,6 +300,20 @@ module('Unit | Elide Metadata Adapter', function(hooks) {
                         __typename: 'Metric'
                       },
                       __typename: 'MetricEdge'
+                    },
+                    {
+                      node: {
+                        id: 'metric2',
+                        name: 'Metric 2',
+                        description: 'This is metric 2',
+                        category: 'categoryOne',
+                        valueType: 'NUMBER',
+                        columnTags: ['DISPLAY'],
+                        columnType: 'field',
+                        expression: null,
+                        __typename: 'Metric'
+                      },
+                      __typename: 'MetricEdge'
                     }
                   ],
                   __typename: 'MetricConnection'
@@ -269,6 +325,34 @@ module('Unit | Elide Metadata Adapter', function(hooks) {
                         id: 'dimension0',
                         name: 'Dimension 0',
                         description: 'This is dimension 0',
+                        category: 'categoryOne',
+                        valueType: 'TEXT',
+                        columnTags: ['DISPLAY'],
+                        columnType: 'field',
+                        expression: null,
+                        __typename: 'Dimension'
+                      },
+                      __typename: 'DimensionEdge'
+                    },
+                    {
+                      node: {
+                        id: 'dimension1',
+                        name: 'Dimension 1',
+                        description: 'This is dimension 1',
+                        category: 'categoryOne',
+                        valueType: 'TEXT',
+                        columnTags: ['DISPLAY'],
+                        columnType: 'field',
+                        expression: null,
+                        __typename: 'Dimension'
+                      },
+                      __typename: 'DimensionEdge'
+                    },
+                    {
+                      node: {
+                        id: 'dimension2',
+                        name: 'Dimension 2',
+                        description: 'This is dimension 2',
                         category: 'categoryOne',
                         valueType: 'TEXT',
                         columnTags: ['DISPLAY'],

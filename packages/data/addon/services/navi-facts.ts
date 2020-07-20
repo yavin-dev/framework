@@ -13,6 +13,7 @@ import RequestBuilder from 'navi-data/builder/request';
 import config from 'ember-get-config';
 import NaviFactAdapter, { RequestV1, RequestOptions } from 'navi-data/adapters/fact-interface';
 import NaviFactSerializer, { ResponseV1 } from 'navi-data/serializers/fact-interface';
+import { getDefaultDataSourceName } from 'navi-data/utils/adapter';
 
 export default class NaviFactsService extends Service {
   /**
@@ -21,7 +22,7 @@ export default class NaviFactsService extends Service {
    * @param {String} type
    * @returns {Adapter} adapter instance for type
    */
-  _adapterFor(type = 'elide-facts'): NaviFactAdapter {
+  _adapterFor(type = 'bard-facts'): NaviFactAdapter {
     return getOwner(this).lookup(`adapter:${type}`);
   }
 
@@ -31,7 +32,7 @@ export default class NaviFactsService extends Service {
    * @param {String} type
    * @returns {Serializer} serializer instance for type
    */
-  _serializerFor(type = 'elide-facts'): NaviFactSerializer {
+  _serializerFor(type = 'bard-facts'): NaviFactSerializer {
     return getOwner(this).lookup(`serializer:${type}`);
   }
 
@@ -68,8 +69,11 @@ export default class NaviFactsService extends Service {
    * @returns {Promise} - Promise with the bard response model object
    */
   fetch(this: NaviFactsService, request: RequestV1, options: RequestOptions): Promise<NaviFactsModel> {
-    const adapter = this._adapterFor();
-    const serializer = this._serializerFor();
+    const dataSource = options?.dataSourceName || getDefaultDataSourceName();
+    const type = config.navi.dataSources?.find((source: { name: string; type: string }) => source.name === dataSource)
+      ?.type;
+    const adapter = this._adapterFor(type);
+    const serializer = this._serializerFor(type);
 
     return adapter.fetchDataForRequest(request, options).then(payload => {
       const response = serializer.normalize(payload, request);

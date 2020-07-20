@@ -9,6 +9,7 @@ import faker from 'faker';
 import moment from 'moment';
 
 const API_DATE_FORMAT = 'YYYY-MM-DD';
+const ASYNC_RESPONSE_DELAY = 5000; // ms before async api response result is populated
 
 /**
  * @param {string} filter
@@ -68,7 +69,7 @@ function _getResponseBody(db, parent) {
   const responseTime = Date.now();
 
   // Only respond if query was created over 5 seconds ago
-  if (responseTime - createdOn >= 5000) {
+  if (responseTime - createdOn >= ASYNC_RESPONSE_DELAY) {
     parent.status = 'COMPLETE';
 
     // TODO: get args from _parseGQLQuery result and handle filtering
@@ -86,32 +87,25 @@ function _getResponseBody(db, parent) {
         },
         { metrics: [], dimensions: [], timeDimensions: [] }
       );
-      let dates = [];
 
-      if (columns.timeDimensions.length > 0) {
-        dates = _getDates(args.filter);
-      }
+      const dates = columns.timeDimensions.length > 0 ? _getDates(args.filter) : [];
 
       // Convert each date into a row of data
-      let rows = dates.map(dateTime => ({ dateTime }));
-
       // If no time dimension is sent, just return a single row
-      if (rows.length === 0) {
-        rows = [{}];
-      }
+      let rows = dates.length ? dates.map(dateTime => ({ dateTime })) : [{}];
 
       // Add each dimension
       columns.dimensions.forEach(dimension => {
         rows = rows.reduce((newRows, currentRow) => {
-          let dimensionValues = _dimensionValues(faker.random.number({ min: 3, max: 5 }));
+          const dimensionValues = _dimensionValues(faker.random.number({ min: 3, max: 5 }));
 
-          return newRows.concat(
-            dimensionValues.map(value => {
-              let newRow = Object.assign({}, currentRow);
-              newRow[dimension] = value;
-              return newRow;
-            })
-          );
+          return [
+            ...newRows,
+            ...dimensionValues.map(value => ({
+              ...currentRow,
+              [dimension]: value
+            }))
+          ];
         }, []);
       });
 
@@ -147,7 +141,6 @@ const OPTIONS = {
       result(_, db, parent) {
         return {
           httpStatus: 200,
-          contentLength: 5,
           responseBody: _getResponseBody(db, parent)
         };
       }
