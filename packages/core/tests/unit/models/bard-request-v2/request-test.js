@@ -247,7 +247,6 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
 
     const { request } = mockModel;
 
-    //TODO: use addFilter()
     request.set('filters', [
       {
         field: 'dateTime',
@@ -275,7 +274,6 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
 
     const { request } = mockModel;
 
-    //TODO: use addColumn()
     request.set('columns', [
       {
         field: 'dateTime',
@@ -300,7 +298,6 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
 
     const { request } = mockModel;
 
-    //TODO: use addSort()
     request.set('sorts', [
       {
         field: 'dateTime',

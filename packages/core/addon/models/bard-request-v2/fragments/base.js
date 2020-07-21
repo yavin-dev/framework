@@ -6,9 +6,10 @@ import attr from 'ember-data/attr';
 import Fragment from 'ember-data-model-fragments/fragment';
 import { validator, buildValidations } from 'ember-cp-validations';
 import { inject as service } from '@ember/service';
-import { computed } from '@ember/object';
+import { set, computed } from '@ember/object';
 import { assert } from '@ember/debug';
 import { isPresent } from '@ember/utils';
+import { canonicalizeMetric } from 'navi-data/utils/metric';
 
 const Validations = buildValidations({
   field: validator('presence', {
@@ -53,5 +54,20 @@ export default class Base extends Fragment.extend(Validations) {
       };
     }
     return this.metadataService.getById(this.type, this.field, this.source);
+  }
+
+  @computed('field', 'parameters.{}')
+  get canonicalName() {
+    const { field: metric, parameters } = this;
+
+    // TODO rename with generic canonicalizeColumn
+    return canonicalizeMetric({
+      metric,
+      parameters
+    });
+  }
+
+  updateParameters(parameters = {}) {
+    set(this, 'parameters', { ...this.parameters, ...parameters });
   }
 }
