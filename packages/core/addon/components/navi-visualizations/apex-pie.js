@@ -1,23 +1,35 @@
-import Component from '@ember/component';
+/**
+ * Copyright 2020, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ * <NaviVisualizations::ApexPie
+ *   @model={{this.model}}
+ *   @options={{this.visualizationOptions}}
+ * />
+ */
+import Component from '@glimmer/component';
 import { computed } from '@ember/object';
 import { inject as service } from '@ember/service';
-import layout from '../../templates/components/navi-visualizations/apex-pie';
-import { alias } from '@ember/object/computed';
+
 export default class NaviVisualizationsApexPie extends Component {
-  layout = layout;
   @service() bardMetadata;
 
-  @alias('options.metadata.series.config.metric.metric') metric;
+  /**
+   * @property {string} - the metric being displayed
+   */
+  @computed('options')
+  get metric() {
+    return this.args.options.metadata.series.config.metric.metric;
+  }
 
   /**
-   * @property {string} - the name of the fields that are going to be displayed
+   * @property {string} - the category that differentiates the pie slices
    */
   @computed('options')
   get descript() {
     let val = this.bardMetadata.getById(
       'dimension',
-      this.options.metadata.series.config.dimensionOrder[0],
-      this.model.firstObject.request.dataSource
+      this.args.options.metadata.series.config.dimensionOrder[0],
+      this.args.model.firstObject.request.dataSource
     );
     val = val.id + '|' + val.descriptionTag;
     return val;
@@ -28,8 +40,8 @@ export default class NaviVisualizationsApexPie extends Component {
    */
   @computed('model')
   get data() {
-    let vals = { series: [], labels: [] };
-    const location = this.model.firstObject.response.rows;
+    const vals = { series: [], labels: [] };
+    const location = this.args.model.firstObject.response.rows;
     for (let row = 0; row < location.length; row++) {
       vals.series.push(location[row][this.metric]);
       vals.labels.push(location[row][this.descript]);
@@ -42,11 +54,10 @@ export default class NaviVisualizationsApexPie extends Component {
    */
   @computed('series', 'labels')
   get chartOptions() {
-    let pie = {
+    return {
       chart: { type: 'pie' },
       series: this.data.series,
       labels: this.data.labels
     };
-    return pie;
   }
 }

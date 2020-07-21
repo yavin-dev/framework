@@ -1,18 +1,22 @@
-import Component from '@ember/component';
+/**
+ * Copyright 2020, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ * <NaviVisualizations::ApexGauge
+ *   @model={{this.model}}
+ *   @options={{this.goalGaugeOptions}}
+ * />
+ */
+import Component from '@glimmer/component';
 import { computed } from '@ember/object';
 import numeral from 'numeral';
-import layout from '../../templates/components/navi-visualizations/apex-gauge';
 
 export default class NaviVisualizationsApexGauge extends Component {
-  layout = layout;
-
   /**
    * @property {number} - the current value of the metric being displayed
    */
   @computed('model')
   get data() {
-    const metric = this.model.firstObject.request.metrics['0'].metric;
-    return this.model?.firstObject?.response?.rows?.[0]?.[metric];
+    return this.args.model?.firstObject?.response?.rows?.[0]?.[this.args.model.firstObject.request.metrics['0'].metric];
   }
 
   /**
@@ -22,8 +26,8 @@ export default class NaviVisualizationsApexGauge extends Component {
   get series() {
     const val =
       100 *
-      ((this.data - Number(this.options.baselineValue)) /
-        (Number(this.options.goalValue) - Number(this.options.baselineValue)));
+      ((this.data - Number(this.args.options.baselineValue)) /
+        (Number(this.args.options.goalValue) - Number(this.args.options.baselineValue)));
     return [val];
   }
 
@@ -32,14 +36,15 @@ export default class NaviVisualizationsApexGauge extends Component {
    */
   @computed('series')
   get gaugeColor() {
-    // thresholds:
-    // red < 75 <= yellow <= 85 < green
+    const RED = '#f05050';
+    const YELLOW = '#ffc831';
+    const GREEN = '#44b876';
     if (this.series[0] < 75) {
-      return '#f05050';
+      return RED;
     } else if (this.series[0] > 85) {
-      return '#44b876';
+      return GREEN;
     } else {
-      return '#ffc831';
+      return YELLOW;
     }
   }
 

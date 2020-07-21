@@ -97,7 +97,7 @@ const Model = A([
   }
 ]);
 
-const jeNeSaisPas = {
+const seriesInfo = {
   type: 'dimension',
   config: {
     metric: {
@@ -120,7 +120,7 @@ const jeNeSaisPas = {
 let MetadataService;
 const expectedInfo = {
   labels: ['All Other', 'under 13', '13 - 25', '25 - 35', '35 - 45'],
-  totalPageViewData: [310382162, 2072620639, 2620639, 72620639, 72620639]
+  totalPageViewData: ['310382162', '2072620639', '2620639', '72620639', '72620639']
 };
 
 module('Integration | Components | Apex-Pie', function(hooks) {
@@ -132,14 +132,17 @@ module('Integration | Components | Apex-Pie', function(hooks) {
     this.set('options', {
       type: 'pie-chart',
       version: 1,
-      metadata: { series: jeNeSaisPas }
+      metadata: { series: seriesInfo }
     });
     MetadataService = this.owner.lookup('service:bard-metadata');
     return MetadataService.loadMetadata();
   });
 
-  test('legend of pie chart renders', async function(assert) {
+  test('legend of apex-pie chart renders', async function(assert) {
+    assert.expect(3);
     await this.render(TEMPLATE);
+    assert.dom('.apexcharts-legend-series').exists({ count: expectedInfo.labels.length });
+    assert.dom('.apexcharts-legend-text').hasAttribute('data:default-text');
     let legendText = [];
     this.element.querySelectorAll('.apexcharts-legend-text').forEach(item => {
       legendText.push(item.textContent);
@@ -147,11 +150,12 @@ module('Integration | Components | Apex-Pie', function(hooks) {
     assert.deepEqual(legendText, expectedInfo.labels);
   });
 
-  test('slices of pie chart render', async function(assert) {
-    assert.expect(expectedInfo.totalPageViewData.length);
+  test('slices of apex-pie chart render with correct values', async function(assert) {
+    assert.expect(expectedInfo.totalPageViewData.length + 1);
     await this.render(TEMPLATE);
+    assert.dom('.apexcharts-pie-series').exists({ count: 5 });
     expectedInfo.totalPageViewData.forEach((item, index) => {
-      assert.equal(this.element.querySelector(`.apexcharts-pie-slice-${index}`).getAttribute('data:value'), item);
+      assert.dom(`.apexcharts-pie-slice-${index}`).hasAttribute('data:value', item);
     });
   });
 });
