@@ -10,7 +10,6 @@ import { fragmentArray } from 'ember-data-model-fragments/attributes';
 import { validator, buildValidations } from 'ember-cp-validations';
 import { getDefaultDataSourceName } from 'navi-data/utils/adapter';
 import { isEqual } from 'lodash-es';
-import { featureFlag } from 'navi-core/helpers/feature-flag';
 import Interval from 'navi-core/utils/classes/interval';
 import { assert } from '@ember/debug';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
@@ -162,30 +161,12 @@ export default class Request extends Fragment.extend(Validations) {
   }
 
   /**
-   * If feature flag enableRequestPreview disabled, then adds up to 1 of the column, otherwise adds a new column
+   * Adds a new column with the parameters
    * @param {ColumnMetadata} columnMetadataModel - the metadata for the column
    * @param {object} parameters - the parameters to apply to the column
    */
   addColumnFromMeta(columnMetadataModel, parameters) {
-    const { columns } = this;
-    let columnExists = false;
-
-    if (!featureFlag('enableRequestPreview')) {
-      //check if columns with same meta and params already exists
-      let existingColumns = columns.filter(column => column.columnMeta === columnMetadataModel);
-
-      if (parameters && columnMetadataModel.hasParameters) {
-        existingColumns = existingColumns.filter(column => isEqual(column.parameters, parameters));
-      }
-
-      if (existingColumns.length) {
-        columnExists = true;
-      }
-    }
-
-    if (!columnExists) {
-      this.columns.pushObject(this.fragmentFactory.createColumnFromMeta(columnMetadataModel, parameters));
-    }
+    this.columns.pushObject(this.fragmentFactory.createColumnFromMeta(columnMetadataModel, parameters));
   }
 
   /**
@@ -272,25 +253,13 @@ export default class Request extends Fragment.extend(Validations) {
     set(dateTimeFilter, 'values', [start, end]);
   }
 
-  /**
-   * Adds a filter only if it is unique
-   * @param {FilterFragment} filterToAdd - the new filter to add
-   */
-  _doAddFilter(filterToAdd) {
-    const filterExists = this.filters.find(filter => isEqual(filter.serialize(), filterToAdd.serialize()));
-
-    if (!filterExists) {
-      this.filters.pushObject(filterToAdd); //TODO: add to specific index?
-    }
-  }
-
   //TODO: handle valueParam values vs rawValues
   /**
    * Adds a filter to the request
    * @param {object} filter - the filter to add
    */
   addFilter({ type, dataSource, field, parameters, operator, values }) {
-    this._doAddFilter(this.fragmentFactory.createFilter(type, dataSource, field, parameters, operator, values));
+    this.filters.pushObject(this.fragmentFactory.createFilter(type, dataSource, field, parameters, operator, values));
   }
 
   /**

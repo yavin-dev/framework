@@ -60,6 +60,7 @@ export default class Base extends Fragment.extend(Validations) {
   get canonicalName() {
     const { field: metric, parameters } = this;
 
+    // TODO rename with generic canonicalizeColumn
     return canonicalizeMetric({
       metric,
       parameters
