@@ -11,6 +11,13 @@ import moment from 'moment';
 const API_DATE_FORMAT = 'YYYY-MM-DD';
 const ASYNC_RESPONSE_DELAY = 5000; // ms before async api response result is populated
 
+function _getSeedForRequest(table, args, fields) {
+  const tableLength = table.length;
+  const argsLength = Object.keys(args).join(' ').length;
+  const fieldsLength = fields.join(' ').length;
+  return tableLength + argsLength + fieldsLength;
+}
+
 /**
  * @param {string} filter
  * @returns 3 sequential days in format YYYY-MM-DD ending on today
@@ -74,6 +81,8 @@ function _getResponseBody(db, parent) {
 
     // TODO: get args from _parseGQLQuery result and handle filtering
     const { table, args, fields } = _parseGQLQuery(JSON.parse(query).query || '');
+    const seed = _getSeedForRequest(table, args, fields);
+    faker.seed(seed);
 
     if (db.tables.find(table) && fields.length) {
       const columns = fields.reduce(
@@ -110,13 +119,15 @@ function _getResponseBody(db, parent) {
       });
 
       // Add each metric
-      rows = rows.map(row => {
-        columns.metrics.forEach(metric => {
-          row[metric] = faker.finance.amount();
-        });
-
-        return row;
-      });
+      rows = rows.map(currRow =>
+        columns.metrics.reduce(
+          (row, metric) => ({
+            ...row,
+            [metric]: faker.finance.amount()
+          }),
+          currRow
+        )
+      );
 
       return JSON.stringify({
         data: {

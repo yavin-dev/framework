@@ -16,17 +16,15 @@ export type SourceAdapterOptions = {
 };
 
 /**
- * Gets host by name in [{name: String, uri: String}]
- * config datastructure in config.navi.dataSources.
- *
- * @param name - name of host to get
- * @returns uri of fact datasource to use
+ * @param field - requested field from datasource entry
+ * @param name - name of datasource entry
+ * @returns field of the datasource entry with matching name
  */
-export function getHost(name: string | undefined): string {
+export function getDataSourceField(field: string, name?: string): string {
   if (name) {
     const host = config.navi.dataSources.find((dataSource: DataSource) => dataSource.name === name);
-    if (host && host.uri) {
-      return host.uri;
+    if (host && host[field]) {
+      return host[field];
     }
     warn(
       `Fact host for ${name} requested but none was found in configuration. Falling back to first configured datasource`,
@@ -35,7 +33,18 @@ export function getHost(name: string | undefined): string {
       }
     );
   }
-  return config.navi.dataSources[0].uri;
+  return config.navi.dataSources[0][field];
+}
+
+/**
+ * Gets host by name in [{name: String, uri: String}]
+ * config datastructure in config.navi.dataSources.
+ *
+ * @param name - name of host to get
+ * @returns requested field of fact datasource to
+ */
+export function getHost(name: string | undefined): string {
+  return getDataSourceField('uri', name);
 }
 
 /**

@@ -1,9 +1,24 @@
 import { module, test } from 'qunit';
 import config from 'ember-get-config';
 import { set } from '@ember/object';
-import { getHost, getDefaultDataSourceName, configHost } from 'navi-data/utils/adapter';
+import { getHost, getDefaultDataSourceName, configHost, getDataSourceField } from 'navi-data/utils/adapter';
 
 module('Unit - Utils - Adapter Utils', function() {
+  test('getDataSourceField gets correct field from correct datasource', function(assert) {
+    assert.equal(
+      getDataSourceField('uri', 'dummy'),
+      'https://data.naviapp.io',
+      'host is fetched from existing data source'
+    );
+    assert.equal(getDataSourceField('type', 'dummy'), 'bard-facts', 'host type is fetched from existing data source');
+    assert.equal(
+      getDataSourceField('type', 'blockhead-gql'),
+      'elide-facts',
+      'different host type is returned for other existing data source'
+    );
+    assert.equal(getDataSourceField('type', 'foo'), 'bard-facts', 'unknown host returns field from first host');
+  });
+
   test('getHost gets correct host depending on configuration', function(assert) {
     assert.equal(getHost('dummy'), 'https://data.naviapp.io', 'dummy host is fetched correctly');
     assert.equal(getHost('blockhead'), 'https://data2.naviapp.com', 'blockhead host is fetched correctly');
