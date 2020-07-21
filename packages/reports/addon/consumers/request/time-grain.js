@@ -3,7 +3,6 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { inject as service } from '@ember/service';
-import { set, get } from '@ember/object';
 import ActionConsumer from 'navi-core/consumers/action-consumer';
 import { RequestActions } from 'navi-reports/services/request-action-dispatcher';
 
@@ -20,11 +19,11 @@ export default ActionConsumer.extend({
      * @param {Object} newTimeGrain - the new timeGrain
      */
     [RequestActions.ADD_TIME_GRAIN](route, newTimeGrain) {
-      const model = route.currentModel;
-      const { timeGrain } = model.request.logicalTable;
+      const { request } = route.currentModel;
+      const { timeGrain } = request;
 
       if (timeGrain !== newTimeGrain.id) {
-        set(model, 'request.logicalTable.timeGrain', newTimeGrain.id);
+        request.updateTimeGrain(newTimeGrain.id);
         this.requestActionDispatcher.dispatch(RequestActions.DID_UPDATE_TIME_GRAIN, route, newTimeGrain);
       }
     },
@@ -37,13 +36,12 @@ export default ActionConsumer.extend({
      * @param {Object} route - route that has a model that contains a request property
      */
     [RequestActions.REMOVE_TIME_GRAIN](route) {
-      let model = route.currentModel,
-        allTimeGrain = get(model, 'request.logicalTable.table.timeGrains').find(grain => grain.id === 'all');
+      const { request } = route.currentModel;
 
-      if (allTimeGrain) {
-        set(model, 'request.logicalTable.timeGrain', allTimeGrain.id);
-        get(this, 'requestActionDispatcher').dispatch(RequestActions.DID_UPDATE_TIME_GRAIN, route, allTimeGrain);
-      }
+      const allTimeGrain = { id: 'all' };
+
+      request.updateTimeGrain(allTimeGrain.id);
+      this.requestActionDispatcher.dispatch(RequestActions.DID_UPDATE_TIME_GRAIN, route, allTimeGrain);
     }
   }
 });
