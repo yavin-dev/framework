@@ -9,12 +9,12 @@
  *    @report={{@report}}
  *    @openFilters={{route-action "openFilters"}}
  *    @onRemoveTimeDimension={{update-report-action "REMOVE_TIME_GRAIN"}}
- *    @onRemoveDimension={{update-report-action "REMOVE_DIMENSION_FRAGMENT"}}
- *    @onRemoveMetric={{update-report-action "REMOVE_METRIC_FRAGMENT"}}
- *    @onAddDimension={{update-report-action "ADD_DIMENSION"}}
- *    @onAddMetric={{update-report-action "ADD_METRIC"}}
- *    @onAddMetricWithParameter={{update-report-action "ADD_METRIC_WITH_PARAM"}}
- *    @onToggleDimFilter={{update-report-action "TOGGLE_DIM_FILTER"}}
+ *    @onRemoveDimension={{update-report-action "REMOVE_COLUMN_FRAGMENT"}}
+ *    @onRemoveMetric={{update-report-action "REMOVE_COLUMN_FRAGMENT"}}
+ *    @onAddDimension={{update-report-action "ADD_COLUMN"}}
+ *    @onAddMetric={{update-report-action "ADD_COLUMN"}}
+ *    @onAddMetricWithParameter={{update-report-action "ADD_COLUMN_WITH_PARAMS"}}
+ *    @onToggleDimFilter={{update-report-action "TOGGLE_DIMENSION_FILTER"}}
  *    @onToggleMetricFilter={{update-report-action "TOGGLE_METRIC_FILTER"}}
  *    @onToggleParameterizedMetricFilter={{update-report-action "TOGGLE_PARAMETERIZED_METRIC_FILTER"}}
  *  />
@@ -223,6 +223,26 @@ class NaviColumnConfig extends Component {
     const { type, fragment } = column;
     const removalHandler = this[`onRemove${capitalize(type)}`];
     removalHandler?.(fragment);
+  }
+
+  /**
+   * @action
+   * @param {Object} column - the column fragment to be renamed
+   * @param {string} alias - the new name for the column
+   */
+  @action
+  renameColumn(column, alias) {
+    this.onRenameColumn(column, alias);
+  }
+
+  /**
+   * @action
+   * @param {Object} column - the column fragment to be renamed
+   * @param {number} index - the new name for the column
+   */
+  @action
+  reorderColumn(column, index) {
+    this.onReorderColumn(column, index);
   }
 
   /**

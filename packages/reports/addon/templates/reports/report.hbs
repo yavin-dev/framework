@@ -61,14 +61,16 @@
           @report={{this.model}}
           @openFilters={{route-action "openFilters"}}
           @onRemoveTimeDimension={{queue (fn this.updateLastAddedColumn null) (update-report-action "REMOVE_TIME_GRAIN")}}
-          @onRemoveDimension={{queue (fn this.updateLastAddedColumn null) (update-report-action "REMOVE_DIMENSION_FRAGMENT")}}
-          @onRemoveMetric={{queue (fn this.updateLastAddedColumn null) (update-report-action "REMOVE_METRIC_FRAGMENT")}}
-          @onAddDimension={{queue (fn this.updateLastAddedColumn "dimension") (update-report-action "ADD_DIMENSION")}}
-          @onAddMetric={{queue (fn this.updateLastAddedColumn "metric") (update-report-action "ADD_METRIC")}}
-          @onAddMetricWithParameter={{queue (fn this.updateLastAddedColumn "metric") (update-report-action "ADD_METRIC_WITH_PARAM")}}
-          @onToggleDimFilter={{update-report-action "TOGGLE_DIM_FILTER"}}
+          @onRemoveDimension={{queue (fn this.updateLastAddedColumn null) (update-report-action "REMOVE_COLUMN_FRAGMENT")}}
+          @onRemoveMetric={{queue (fn this.updateLastAddedColumn null) (update-report-action "REMOVE_COLUMN_FRAGMENT")}}
+          @onAddDimension={{queue (fn this.updateLastAddedColumn "dimension") (update-report-action "ADD_COLUMN")}}
+          @onAddMetric={{queue (fn this.updateLastAddedColumn "metric") (update-report-action "ADD_COLUMN")}}
+          @onAddMetricWithParameter={{queue (fn this.updateLastAddedColumn "metric") (update-report-action "ADD_COLUMN_WITH_PARAMS")}}
+          @onToggleDimFilter={{update-report-action "TOGGLE_DIMENSION_FILTER"}}
           @onToggleMetricFilter={{update-report-action "TOGGLE_METRIC_FILTER"}}
           @onToggleParameterizedMetricFilter={{update-report-action "TOGGLE_PARAMETERIZED_METRIC_FILTER"}}
+          @onRenameColumn={{update-report-action "RENAME_COLUMN_FRAGMENT"}}
+          @onReorderColumn={{update-report-action "REORDER_COLUMN_FRAGMENT"}}
         />
 
         <div class="report-view__columns-toggle">

@@ -40,7 +40,7 @@
         class="navi-column-config-base__column-name-input navi-column-config-base__option-input"
         id="{{this.classId}}-column-name-input"
         @value={{@column.displayName}}
-        @key-up={{@onUpdateColumnName}}
+        @key-up={{@onRenameColumn}}
       />
     </div> --}}
 
@@ -50,7 +50,7 @@
         @metadata={{@metadata}}
         @onUpdateColumnName={{@onUpdateColumnName}}
         @onUpdateTimeGrain={{update-report-action "ADD_TIME_GRAIN"}}
-        @onUpdateMetricParam={{update-report-action "UPDATE_METRIC_FRAGMENT_WITH_PARAM"}}
+        @onUpdateMetricParam={{update-report-action "UPDATE_COLUMN_FRAGMENT_WITH_PARAMS"}}
       />
     {{/let}}
   </div>
