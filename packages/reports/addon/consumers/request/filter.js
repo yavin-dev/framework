@@ -3,16 +3,17 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { inject as service } from '@ember/service';
-import { assign } from '@ember/polyfills';
-import { setProperties, set, get } from '@ember/object';
+import { setProperties, set } from '@ember/object';
 import { assert } from '@ember/debug';
 import ActionConsumer from 'navi-core/consumers/action-consumer';
 import { RequestActions } from 'navi-reports/services/request-action-dispatcher';
 import DefaultIntervals from 'navi-reports/utils/enums/default-intervals';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
-import { getSelectedMetricsOfBase, getUnfilteredMetricsOfBase } from 'navi-reports/utils/request-metric';
-import { isEmpty } from '@ember/utils';
-import IntervalFragment from 'navi-core/models/bard-request/fragments/interval';
+import {
+  getSelectedMetricsOfBase,
+  getFilteredMetricsOfBase,
+  getUnfilteredMetricsOfBase
+} from 'navi-reports/utils/request-metric';
 
 const DEFAULT_METRIC_FILTER = {
   operator: 'gt',
@@ -28,51 +29,53 @@ export default ActionConsumer.extend({
   /**
    * @method _getNextParameterForMetric
    *
+   *
    * @private
-   * @param metricMeta - metadata object of metric
+   * @param metricMetadataModel - metadata object of metric
    * @param request - request fragment
    * @returns {Object|undefined} next parameters object
    */
-  _getNextParameterForMetric(metricMeta, request) {
-    if (!get(metricMeta, 'hasParameters')) {
+  _getNextParameterForMetric(metricMetadataModel, request) {
+    if (!metricMetadataModel.hasParameters) {
       return;
     }
 
-    if (isEmpty(getSelectedMetricsOfBase(metricMeta, request))) {
-      return metricMeta.getDefaultParameters();
+    if (!getSelectedMetricsOfBase(metricMetadataModel, request).length) {
+      return metricMetadataModel.getDefaultParameters();
     }
 
-    let nextMetric = getUnfilteredMetricsOfBase(metricMeta, request)[0];
-    return nextMetric && get(nextMetric, 'parameters');
+    const nextUnfilteredMetric = getUnfilteredMetricsOfBase(metricMetadataModel, request)[0];
+    return nextUnfilteredMetric?.parameters;
   },
 
   actions: {
     /**
-     * @action TOGGLE_DIM_FILTER
+     * @action TOGGLE_DIMENSION_FILTER
      * @param {Object} route - route that has a model that contains a request property
      * @param {Object} dimension - dimension to filter
      */
-    [RequestActions.TOGGLE_DIM_FILTER]: function(route, dimension) {
-      let filteredDimensions = get(route, 'currentModel.request.filters'),
-        filter = filteredDimensions.findBy('dimension', dimension);
+    [RequestActions.TOGGLE_DIMENSION_FILTER]: function(route, dimensionMetadataModel) {
+      const filter = route.currentModel.request.filters.find(
+        filter => filter.type === 'dimension' && filter.columnMeta === dimensionMetadataModel
+      );
 
       //do not add filter if it already exists
       if (!filter) {
-        get(this, 'requestActionDispatcher').dispatch(RequestActions.ADD_DIM_FILTER, route, dimension);
+        this.requestActionDispatcher.dispatch(RequestActions.ADD_DIMENSION_FILTER, route, dimensionMetadataModel);
       } else {
-        get(this, 'requestActionDispatcher').dispatch(RequestActions.REMOVE_FILTER, route, filter);
+        this.requestActionDispatcher.dispatch(RequestActions.REMOVE_FILTER, route, filter);
       }
     },
 
     /**
-     * @action ADD_DIM_FILTER
+     * @action ADD_DIMENSION_FILTER
      * @param {Object} route - route that has a model that contains a request property
      * @param {Object} dimension - dimension to filter
      */
-    [RequestActions.ADD_DIM_FILTER]: ({ currentModel }, dimension) => {
+    [RequestActions.ADD_DIMENSION_FILTER]: ({ currentModel: { request } }, dimensionMetadataModel) => {
       assert(
         'Dimension model has correct primaryKeyFieldName',
-        typeof get(dimension, 'primaryKeyFieldName') === 'string'
+        typeof dimensionMetadataModel?.primaryKeyFieldName === 'string'
       );
 
       const findDefaultOperator = type => {
@@ -87,10 +90,12 @@ export default ActionConsumer.extend({
 
       let defaultOperator = findDefaultOperator(dimension.valueType);
 
-      get(currentModel, 'request').addFilter({
-        dimension,
+      request.addFilter({
+        type: 'dimension',
+        dataSource: dimensionMetadataModel.source,
+        field: dimensionMetadataModel.id,
+        parameters: { projection: dimensionMetadataModel.primaryKeyFieldName },
         operator: defaultOperator,
-        field: get(dimension, 'primaryKeyFieldName'),
         values: []
       });
     },
@@ -101,32 +106,40 @@ export default ActionConsumer.extend({
      * @param {Object} metric - metric to filter
      * @param {Object} [parameters] - metric parameters to filter [optional]
      */
-    [RequestActions.ADD_METRIC_FILTER]: ({ currentModel }, metric, parameters) => {
-      let newHavingMetric = { metric };
-
-      if (parameters) {
-        newHavingMetric = assign(newHavingMetric, { parameters });
-      }
-
-      get(currentModel, 'request').addHaving(assign({ metric: newHavingMetric }, DEFAULT_METRIC_FILTER));
+    [RequestActions.ADD_METRIC_FILTER]: ({ currentModel: { request } }, metricMetadataModel, parameters) => {
+      request.addFilter({
+        columnMetadataModel: metricMetadataModel,
+        parameters,
+        field: metricMetadataModel.primaryKeyFieldName,
+        ...DEFAULT_METRIC_FILTER
+      });
     },
 
     /**
      * @action TOGGLE_METRIC_FILTER
      * @param {Object} route - route that has a model that contains a request property
-     * @param {Object} metric - metric to filter
+     * @param {Object} metricMetadataModel - metric to filter
      */
-    [RequestActions.TOGGLE_METRIC_FILTER]: function(route, metric) {
-      let filteredMetrics = get(route, 'currentModel.request.having'),
-        havingsForMetric = filteredMetrics.filterBy('metric.metric.name', get(metric, 'name')),
-        nextParameter = this._getNextParameterForMetric(metric, get(route, 'currentModel.request')),
-        shouldAdd = !!nextParameter || isEmpty(havingsForMetric);
+    [RequestActions.TOGGLE_METRIC_FILTER]: function(route, metricMetadataModel) {
+      const {
+        currentModel: { request }
+      } = route;
+
+      const metricFilters = getFilteredMetricsOfBase(metricMetadataModel, request);
+
+      const nextParameter = this._getNextParameterForMetric(metricMetadataModel, request);
+      const shouldAdd = !!nextParameter || !metricFilters.length;
 
       if (shouldAdd) {
-        get(this, 'requestActionDispatcher').dispatch(RequestActions.ADD_METRIC_FILTER, route, metric, nextParameter);
+        this.requestActionDispatcher.dispatch(
+          RequestActions.ADD_METRIC_FILTER,
+          route,
+          metricMetadataModel,
+          nextParameter
+        );
       } else {
-        havingsForMetric.forEach(having => {
-          get(this, 'requestActionDispatcher').dispatch(RequestActions.REMOVE_FILTER, route, having);
+        metricFilters.forEach(filter => {
+          this.requestActionDispatcher.dispatch(RequestActions.REMOVE_FILTER, route, filter);
         });
       }
     },
@@ -134,36 +147,40 @@ export default ActionConsumer.extend({
     /**
      * @action TOGGLE_PARAMETERIZED_METRIC_FILTER
      * @param {Object} route - route that has a model that contains a request property
-     * @param {Object} metric - metric to filter
+     * @param {Object} metricMetadataModel - metric to filter
      * @param {Object} parameters - metric parameter to filter
      */
-    [RequestActions.TOGGLE_PARAMETERIZED_METRIC_FILTER]: function(route, metric, parameters) {
-      let filteredMetrics = get(route, 'currentModel.request.having'),
-        //find if having for metric and parameters exists in request using the canonicalName
-        having = filteredMetrics.find(
-          having => having.metric.canonicalName === canonicalizeMetric({ metric: metric.id, parameters })
-        );
+    [RequestActions.TOGGLE_PARAMETERIZED_METRIC_FILTER]: function(route, metricMetadataModel, parameters) {
+      const {
+        currentModel: { request }
+      } = route;
 
-      if (!having) {
-        get(this, 'requestActionDispatcher').dispatch(RequestActions.ADD_METRIC_FILTER, route, metric, parameters);
+      const filter = request.filters.find(
+        filter =>
+          filter.type === 'metric' &&
+          filter.canonicalName === canonicalizeMetric({ metric: metricMetadataModel.id, parameters })
+      );
+
+      if (!filter) {
+        this.requestActionDispatcher.dispatch(RequestActions.ADD_METRIC_FILTER, route, metricMetadataModel, parameters);
       } else {
-        get(this, 'requestActionDispatcher').dispatch(RequestActions.REMOVE_FILTER, route, having);
+        this.requestActionDispatcher.dispatch(RequestActions.REMOVE_FILTER, route, filter);
       }
     },
 
     /**
-     * @action REMOVE_METRIC
+     * @action REMOVE_COLUMN
      * @param {Object} route - route that has a model that contains a request property
-     * @param {Object} metric - metadata model of metric to add
+     * @param {Object} columnMetadataModel - metadata model of column to remove
      */
-    [RequestActions.REMOVE_METRIC](route, metric) {
-      // Find and remove all `havings` attached to the metric
-      let filteredMetrics = get(route, 'currentModel.request.having'),
-        havings = filteredMetrics.filterBy('metric.metric', metric);
+    [RequestActions.REMOVE_COLUMN](route, columnMetadataModel) {
+      // Find and remove all filters attached to the column
+      const {
+        currentModel: { request }
+      } = route;
 
-      havings.forEach(having =>
-        get(this, 'requestActionDispatcher').dispatch(RequestActions.REMOVE_FILTER, route, having)
-      );
+      const filters = request.filters.filter(filter => filter.columnMeta === columnMetadataModel);
+      filters.forEach(filter => this.requestActionDispatcher.dispatch(RequestActions.REMOVE_FILTER, route, filter));
     },
 
     /**
@@ -175,22 +192,23 @@ export default ActionConsumer.extend({
     [RequestActions.UPDATE_FILTER]: (route, originalFilter, changeSet) => {
       let changeSetUpdates = {};
 
-      //If the interval is set in a dimension filter (rather than datetime filter), set values instead of the interval property
-      if (get(changeSet, 'interval') && !(originalFilter instanceof IntervalFragment)) {
-        let intervalAsStrings = get(changeSet, 'interval').asStrings('YYYY-MM-DD');
-        changeSetUpdates = { values: [`${intervalAsStrings.start}/${intervalAsStrings.end}`] };
+      //if an interval is set on a filter, normalize to a string array
+      if (changeSet.interval) {
+        const { start, end } = changeSet.interval.asStrings('YYYY-MM-DD');
+        changeSetUpdates = { values: [start, end] };
         delete changeSet.interval;
       }
+
       setProperties(originalFilter, Object.assign({}, changeSet, changeSetUpdates));
     },
 
     /**
-     * @action UPDATE_FILTER_PARAM
+     * @action UPDATE_FILTER_PARAMS
      * @param {Object} route - route that has a model that contains a request property
      * @param {Object} originalFilter - object to update
      */
-    [RequestActions.UPDATE_FILTER_PARAM]: (route, originalFilter, key, value) => {
-      set(originalFilter, 'subject.parameters', {
+    [RequestActions.UPDATE_FILTER_PARAMS]: (route, originalFilter, key, value) => {
+      set(originalFilter, 'parameters', {
         [key]: value
       });
     },
@@ -200,14 +218,8 @@ export default ActionConsumer.extend({
      * @param {Object} route - route that has a model that contains a request property
      * @param {Object} filter - object to remove from request
      */
-    [RequestActions.REMOVE_FILTER]: ({ currentModel }, filter) => {
-      /*
-       * Since filters are backed by 3 seperate properties in the request,
-       * make sure the filter is removed from each
-       */
-      get(currentModel, 'request.filters').removeObject(filter);
-      get(currentModel, 'request.having').removeObject(filter);
-      get(currentModel, 'request.intervals').removeObject(filter);
+    [RequestActions.REMOVE_FILTER]: ({ currentModel: { request } }, filter) => {
+      request.removeFilter(filter);
     },
 
     /**
@@ -215,44 +227,13 @@ export default ActionConsumer.extend({
      * @param {Object} route - route that has a model that contains a request property
      * @param {Object} timeGrain - newly updated time grain
      */
-    [RequestActions.DID_UPDATE_TIME_GRAIN](route, timeGrain) {
+    [RequestActions.DID_UPDATE_TIME_GRAIN]({ currentModel: { request } }, timeGrain) {
       // Set interval to default for time grain
-      let request = get(route, 'currentModel.request'),
-        interval = get(request, 'intervals.firstObject.interval'),
-        timeGrainName = timeGrain.id,
-        newInterval = interval
-          ? interval.asIntervalForTimePeriod(timeGrainName)
-          : DefaultIntervals.getDefault(timeGrainName);
+      const { interval } = request;
+      const timeGrainId = timeGrain.id;
+      const newInterval = interval?.asIntervalForTimePeriod(timeGrainId) || DefaultIntervals.getDefault(timeGrainId);
 
-      set(request, 'intervals.firstObject.interval', newInterval);
-    },
-
-    /**
-     * @action DID_UPDATE_TABLE
-     * @param {Object} route - route that has a model that contains a request property
-     * @param {Object} table - newly updated table
-     */
-    [RequestActions.DID_UPDATE_TABLE](route, table) {
-      // Remove any dimension filter if the dim is not present in new time grain
-      const tableDimensions = table.dimensions;
-      const request = route.currentModel.request;
-
-      /*
-       * .toArray() is used to clone the array, otherwise removing a filter while
-       * iterating over `request.filters` causes problems
-       */
-      request.filters.toArray().forEach(dimensionFilter => {
-        const dimension = dimensionFilter.dimension;
-
-        if (!tableDimensions.includes(dimension)) {
-          get(this, 'requestActionDispatcher').dispatch(RequestActions.REMOVE_FILTER, route, dimensionFilter);
-        }
-      });
-
-      /*
-       * Having filters are already taken care of:
-       * DID_UPDATE_TABLE triggers REMOVE_METRIC triggers REMOVE_FILTER
-       */
+      request.updateInterval(newInterval);
     }
   }
 });
