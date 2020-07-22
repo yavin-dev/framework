@@ -38,8 +38,7 @@ export default class NaviSearchProviderService extends Service {
   /**
    * @method search – Uses all the discovered search providers to fetch search results
    * @param {String} query
-   * @returns {Array} array of objects that contain the search results,
-   * the name of the result component as well as result ordering information
+   * @returns {Array} array of task instances that fetch the search results
    */
   search(query) {
     const searchProviders = this._all();
