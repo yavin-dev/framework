@@ -42,12 +42,11 @@ module('Unit | Service | navi-search-provider', function(hooks) {
   test('search all providers', async function(assert) {
     assert.expect(1);
 
-    let availableSearchProviders = service._all();
     let results = service.search('sample');
 
     assert.deepEqual(
       results.map(result => result.context.constructor.name),
-      availableSearchProviders.map(result => result.constructor.name),
+      ['NaviAssetSearchProviderService', 'NaviDefinitionSearchProviderService', 'NaviSampleSearchProviderService'],
       'Search returns a task instance of every available search provider'
     );
   });
