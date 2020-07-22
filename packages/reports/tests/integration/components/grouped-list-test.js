@@ -12,7 +12,8 @@ module('Integration | Component | grouped list', function(hooks) {
       { val: 6, field: 'bar' },
       { val: 2, field: 'foo' },
       { val: 3, field: 'foo,bar' },
-      { val: 4 }
+      { val: 4 },
+      { val: 5, field: null }
     ]);
 
     this.set('sortme', [
@@ -51,7 +52,7 @@ module('Integration | Component | grouped list', function(hooks) {
     const groups = findAll('.grouped-list__group-header-content');
     assert.deepEqual(
       groups.map(el => el.textContent.trim()),
-      ['foo (3)', 'bar (1)', 'undefined (1)'],
+      ['foo (3)', 'bar (1)', 'undefined (1)', 'null (1)'],
       'the groups in the grouped-list are rendered, only the first item in the groupByField is considered for grouping'
     );
 
@@ -70,7 +71,7 @@ module('Integration | Component | grouped list', function(hooks) {
 
     assert.deepEqual(
       findAll('.grouped-list li').map(el => el.textContent.trim()),
-      ['foo (3)', '1', '2', '3', 'bar (1)', '6', 'undefined (1)', '4'],
+      ['foo (3)', '1', '2', '3', 'bar (1)', '6', 'undefined (1)', '4', 'null (1)', '5'],
       'All groups are open when `shouldOpenAllGroups` attribute is true'
     );
   });
