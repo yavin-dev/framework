@@ -42,19 +42,13 @@ module('Unit | Service | navi-search-provider', function(hooks) {
   test('search all providers', async function(assert) {
     assert.expect(1);
 
-    let results = await service.search.perform('sample');
-    let expectedResults = ['Revenue result', 'Revenue success'];
+    let availableSearchProviders = service._all();
+    let results = service.search('sample');
+
     assert.deepEqual(
-      results.find(result => result.component === 'navi-search-result/sample').data,
-      expectedResults,
-      'Search returns the expected results'
+      results.map(result => result.context.constructor.name),
+      availableSearchProviders.map(result => result.constructor.name),
+      'Search returns a task instance of every available search provider'
     );
-  });
-
-  test('search with no results', async function(assert) {
-    assert.expect(1);
-
-    let results = await service.search.perform('something');
-    assert.equal(results.length, 0, 'Returns no results');
   });
 });
