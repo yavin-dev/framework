@@ -1,9 +1,25 @@
 {{! Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. }}
-{{#each @searchResults as |result|}}
-  <li class="navi-search-result-wrapper__item" ...attributes>
-    {{#if result.title}}
-      <h3 class="navi-search-result-wrapper__item-title">{{result.title}}</h3>
-    {{/if}}
-    {{component result.component data=result.data closeResults=@closeResults}}
-  </li>
+{{#each @searchResults as |searchResult|}}
+  {{#if searchResult.isSuccessful}}
+    {{#let searchResult.value as |result|}}
+      {{#if (gt result.data.length 0)}}
+        <li class="navi-search-result-wrapper__item" ...attributes>
+          {{#if result.title}}
+            <h3 class="navi-search-result-wrapper__item-title">{{result.title}}</h3>
+          {{/if}}
+          {{component result.component data=result.data closeResults=@closeResults}}
+        </li>
+      {{/if}}
+    {{/let}}
+  {{/if}}
 {{/each}}
+{{#if this.areTasksRunning}}
+  <li class="navi-search-result-wrapper__item" ...attributes>
+    <NaviLoader />
+  </li>
+{{/if}}
+{{#if this.areResultsEmpty}}
+  <li class="navi-search-result-wrapper__item" ...attributes>
+    <NaviSearchResult::NoResult closeResults={{@closeResults}} />
+  </li>
+{{/if}}
