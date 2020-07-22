@@ -42,16 +42,13 @@ export default class NaviSearchProviderService extends Service {
    * @returns {Array} array of objects that contain the search results,
    * the name of the result component as well as result ordering information
    */
-  @(task(function*(query) {
+  search(query) {
     const searchProviders = this._all();
     let results = [];
     for (const provider of searchProviders) {
-      const result = yield provider.search.perform(query);
-      if (result.data.length) {
-        results.push(result);
-      }
+      const result = provider.search.perform(query);
+      results.push(result);
     }
     return results;
-  }).restartable())
-  search;
+  }
 }
