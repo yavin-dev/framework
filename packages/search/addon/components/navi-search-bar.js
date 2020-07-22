@@ -70,7 +70,7 @@ export default class NaviSearchBarComponent extends Component {
    */
   @(task(function*(query) {
     yield timeout(DEBOUNCE_MS);
-    return this.searchProviderService.search.perform(query);
+    return this.searchProviderService.search(query);
   }).restartable())
   launchQuery;
 }

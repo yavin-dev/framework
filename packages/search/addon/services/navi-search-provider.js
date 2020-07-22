@@ -8,7 +8,6 @@
 import Service from '@ember/service';
 import { getOwner } from '@ember/application';
 import config from 'ember-get-config';
-import { task } from 'ember-concurrency';
 
 /* global requirejs */
 

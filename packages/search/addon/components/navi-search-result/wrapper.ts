@@ -27,7 +27,10 @@ export default class NaviWrapperSearchResultComponent extends Component<Args> {
    */
   get areResultsEmpty() {
     return this.args?.searchResults.every(searchResult => {
-      return !searchResult.isSuccessful || !(searchResult.value.data.length > 0);
+      return (
+        (!searchResult.isRunning && !searchResult.isSuccessful) ||
+        (!searchResult.isRunning && !(searchResult.value.data.length > 0))
+      );
     });
   }
 }

@@ -13,13 +13,11 @@
     {{/let}}
   {{/if}}
 {{/each}}
-{{#if this.areTasksRunning}}
-  <li class="navi-search-result-wrapper__item" ...attributes>
-    <NaviLoader />
-  </li>
-{{/if}}
 {{#if this.areResultsEmpty}}
   <li class="navi-search-result-wrapper__item" ...attributes>
     <NaviSearchResult::NoResult closeResults={{@closeResults}} />
   </li>
+{{/if}}
+{{#if this.areTasksRunning}}
+  <NaviLoader class="navi-search-result-wrapper__loader"/>
 {{/if}}
