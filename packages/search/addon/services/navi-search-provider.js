@@ -42,11 +42,6 @@ export default class NaviSearchProviderService extends Service {
    */
   search(query) {
     const searchProviders = this._all();
-    let results = [];
-    for (const provider of searchProviders) {
-      const result = provider.search.perform(query);
-      results.push(result);
-    }
-    return results;
+    return searchProviders.map(provider => provider.search.perform(query));
   }
 }
