@@ -7,7 +7,9 @@
           {{#if result.title}}
             <h3 class="navi-search-result-wrapper__item-title">{{result.title}}</h3>
           {{/if}}
-          {{component result.component data=result.data closeResults=@closeResults}}
+          {{#let (component result.component) as |SearchResult|}}
+            <SearchResult @data={{result.data}} @closeResults={{@closeResults}} />
+          {{/let}}
         </li>
       {{/if}}
     {{/let}}
@@ -15,7 +17,7 @@
 {{/each}}
 {{#if this.areResultsEmpty}}
   <li class="navi-search-result-wrapper__item" ...attributes>
-    <NaviSearchResult::NoResult closeResults={{@closeResults}} />
+    <NaviSearchResult::NoResult @closeResults={{@closeResults}} />
   </li>
 {{/if}}
 {{#if this.areTasksRunning}}

@@ -19,14 +19,14 @@ export default class NaviWrapperSearchResultComponent extends Component<Args> {
    * @property {boolean} areTasksRunning
    */
   get areTasksRunning() {
-    return this.args?.searchResults.some(searchResult => searchResult.isRunning);
+    return this.args.searchResults.some(searchResult => searchResult.isRunning);
   }
 
   /**
-   * @property {boolean} areTasksRunning
+   * @property {boolean} areResultsEmpty
    */
   get areResultsEmpty() {
-    return this.args?.searchResults.every(searchResult => {
+    return this.args.searchResults.every(searchResult => {
       return (
         (!searchResult.isRunning && !searchResult.isSuccessful) ||
         (!searchResult.isRunning && !(searchResult.value.data.length > 0))
