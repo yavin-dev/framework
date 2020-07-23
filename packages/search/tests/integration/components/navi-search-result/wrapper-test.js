@@ -7,7 +7,7 @@ import { set } from '@ember/object';
 module('Integration | Component | navi-search-result-wrapper', function(hooks) {
   setupRenderingTest(hooks);
 
-  test('no results tasks are not succeeded', async function(assert) {
+  test('no successful results tasks', async function(assert) {
     assert.expect(2);
 
     set(this, 'searchResults', [
@@ -31,7 +31,7 @@ module('Integration | Component | navi-search-result-wrapper', function(hooks) {
     assert.dom('.navi-search-result-wrapper__loader').doesNotExist('Loader is not shown');
   });
 
-  test('no results tasks return no data', async function(assert) {
+  test('no results tasks return data', async function(assert) {
     assert.expect(2);
 
     set(this, 'searchResults', [
