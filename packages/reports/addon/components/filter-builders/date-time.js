@@ -29,15 +29,10 @@ export default class DateTimeFilterBuilder extends BaseFilterBuilderComponent {
   /**
    * @property {String} dateTimePeriodName - the date time period
    */
-  @computed('request.logicalTable.{timeGrain,table.timeGrains.[]}')
+  @computed('request.timeGrain')
   get dateTimePeriodName() {
-    const {
-      logicalTable: {
-        timeGrain,
-        table: { timeGrains }
-      }
-    } = this.request;
-    return timeGrains.find(grain => grain.id === timeGrain)?.name;
+    const { timeGrain } = this.request;
+    return timeGrain; // TODO: look up and use name
   }
 
   /**
@@ -156,9 +151,9 @@ export default class DateTimeFilterBuilder extends BaseFilterBuilderComponent {
    * @property {Object} filter
    * @override
    */
-  @computed('requestFragment.interval', 'dateTimePeriodName')
+  @computed('request.interval', 'dateTimePeriodName')
   get filter() {
-    const interval = this.requestFragment?.interval;
+    const interval = this.request.interval;
 
     return {
       subject: { name: `Date Time (${this.dateTimePeriodName})` },
@@ -180,15 +175,15 @@ export default class DateTimeFilterBuilder extends BaseFilterBuilderComponent {
       return;
     }
 
-    const dateTimePeriod = this.request.logicalTable?.timeGrain;
-    const originalInterval = this.requestFragment?.interval;
+    const dateTimePeriod = this.request.timeGrain;
+    const originalInterval = this.request.interval;
 
     const newInterval = this.intervalForOperator(originalInterval, dateTimePeriod, newOperator);
-    set(this, 'requestFragment.interval', newInterval);
+    const { start, end } = newInterval.asStrings();
 
     this.onUpdateFilter({
       operator: newOperator,
-      values: arr([newInterval])
+      values: arr([start, end])
     });
   }
 }

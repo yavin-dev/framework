@@ -20,30 +20,38 @@ import { get, computed, action } from '@ember/object';
 import { uniqBy } from 'lodash-es';
 import layout from '../templates/components/metric-selector';
 import { run } from '@ember/runloop';
-import { featureFlag } from 'navi-core/helpers/feature-flag';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
 import { THROTTLE_TIME, BlurOnAnimationEnd } from './dimension-selector';
+import { inject as service } from '@ember/service';
 
 @templateLayout(layout)
 @tagName('')
 class MetricSelectorComponent extends Component {
+  @service bardMetadata;
+
+  @computed('request.{dataSource,table}')
+  get currentTable() {
+    const { dataSource, table } = this.request;
+    return this.bardMetadata.getById('table', table, dataSource);
+  }
+
   /*
    * @property {Array} allMetrics
    */
-  @computed('request.logicalTable.table.metrics')
+  @computed('currentTable.metrics')
   get allMetrics() {
-    return A(this.request.logicalTable.table.metrics).sortBy('name');
+    return A(this.currentTable.metrics).sortBy('name');
   }
 
   /*
    * @property {Array} selectedMetrics - selected metrics in the request
    */
-  @computed('request.metrics.[]')
+  @computed('request.columns.[]')
   get selectedMetrics() {
-    let metrics = get(this, 'request.metrics').toArray(),
-      selectedBaseMetrics = uniqBy(metrics, metric => metric.metric?.id);
+    const metrics = this.request.columns.filter(c => c.type === 'metric');
+    const selectedBaseMetrics = uniqBy(metrics, metric => metric.field);
 
-    return A(selectedBaseMetrics).mapBy('metric');
+    return selectedBaseMetrics;
   }
 
   /*
@@ -52,8 +60,8 @@ class MetricSelectorComponent extends Component {
    */
   @computed('selectedMetrics')
   get metricsChecked() {
-    return get(this, 'selectedMetrics').reduce((list, metric) => {
-      list[get(metric, 'id')] = true;
+    return this.selectedMetrics.reduce((list, metric) => {
+      list[metric.id] = true;
       return list;
     }, {});
   }
@@ -62,10 +70,11 @@ class MetricSelectorComponent extends Component {
    * @property {Object} metricsFiltered - metric -> boolean mapping denoting presence of metric
    *                                         in request havings
    */
-  @computed('request.having.[]')
+  @computed('request.filters.[]')
   get metricsFiltered() {
-    return A(get(this, 'request.having'))
-      .mapBy('metric.metric.id')
+    return this.request.filters
+      .filter(f => f.type === 'metric')
+      .map(c => c.field)
       .reduce((list, metric) => {
         list[metric] = true;
         return list;
@@ -106,16 +115,8 @@ class MetricSelectorComponent extends Component {
    */
   doMetricClicked(metric, target) {
     target && target.focus(); // firefox does not focus a button on click in MacOS specifically
-    const enableRequestPreview = featureFlag('enableRequestPreview'),
-      actionName = !enableRequestPreview && get(this, 'metricsChecked')[get(metric, 'id')] ? 'Remove' : 'Add',
-      handler = this[`on${actionName}Metric`];
 
-    if (handler) handler(metric);
-
-    //On add, trigger metric-config mousedown event when metric has parameters
-    if (actionName === 'Add' && get(metric, 'hasParameters') && !enableRequestPreview) {
-      this._openConfig(metric);
-    }
+    this.onAddMetric?.(metric);
   }
 
   /**
@@ -125,13 +126,9 @@ class MetricSelectorComponent extends Component {
    */
   @action
   metricClicked(metric, { target }) {
-    if (featureFlag('enableRequestPreview')) {
-      const button = target.closest('button.grouped-list__item-label');
-      throttle(this, 'doMetricClicked', metric, button, THROTTLE_TIME);
-      BlurOnAnimationEnd(target, button);
-    } else {
-      this.doMetricClicked(metric, null);
-    }
+    const button = target.closest('button.grouped-list__item-label');
+    throttle(this, 'doMetricClicked', metric, button, THROTTLE_TIME);
+    BlurOnAnimationEnd(target, button);
   }
 }
 

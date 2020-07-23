@@ -8,34 +8,81 @@ const HOST = config.navi.dataSources[0].uri;
 const HOST2 = config.navi.dataSources[1].uri;
 
 const TestRequest = {
-    logicalTable: {
-      table: 'table1',
-      timeGrain: 'grain1'
-    },
-    metrics: [{ metric: 'm1' }, { metric: 'm2' }, { metric: 'r', parameters: { p: '123', as: 'a' } }],
-    dimensions: [{ dimension: 'd1' }, { dimension: 'd2' }],
+    table: 'table1',
+    limit: null,
+    requestVersion: '2.0',
     filters: [
-      { dimension: 'd3', operator: 'in', values: ['v1', 'v2'] },
       {
-        dimension: 'd4',
+        field: 'dateTime',
+        parameters: {},
+        type: 'timeDimension',
+        operator: 'bet',
+        values: ['2015-01-03', '2015-01-04']
+      },
+      {
+        field: 'd3',
+        parameters: {},
+        type: 'dimension',
+        operator: 'in',
+        values: ['v1', 'v2']
+      },
+      {
+        field: 'd4',
+        parameters: {},
+        type: 'dimension',
         operator: 'in',
         values: ['v3', 'v4']
       },
-      { dimension: 'd5', operator: 'notnull', values: [''] }
-    ],
-    intervals: [
       {
-        start: '2015-01-03',
-        end: '2015-01-04'
-      }
-    ],
-    having: [
+        field: 'd5',
+        parameters: {},
+        type: 'dimension',
+        operator: 'notnull',
+        values: ['']
+      },
       {
-        metric: 'm1',
+        field: 'm1',
+        parameters: {},
+        type: 'metric',
         operator: 'gt',
         values: [0]
       }
-    ]
+    ],
+    columns: [
+      {
+        field: 'dateTime',
+        parameters: {
+          grain: 'grain1'
+        },
+        type: 'timeDimension'
+      },
+      {
+        field: 'm1',
+        parameters: {},
+        type: 'metric'
+      },
+      {
+        field: 'm2',
+        parameters: {},
+        type: 'metric'
+      },
+      {
+        field: 'r',
+        parameters: { p: '123', as: 'a' },
+        type: 'metric'
+      },
+      {
+        field: 'd1',
+        parameters: {},
+        type: 'dimension'
+      },
+      {
+        field: 'd2',
+        parameters: {},
+        type: 'dimension'
+      }
+    ],
+    sorts: []
   },
   Response = {
     rows: [
@@ -54,11 +101,11 @@ let Adapter,
   Server,
   aliasFunction = alias => (alias === 'a' ? 'r(p=123)' : alias);
 
-module('Unit | Bard facts Adapter', function(hooks) {
+module('Unit | Bard Facts V2 Adapter', function(hooks) {
   setupTest(hooks);
 
   hooks.beforeEach(function() {
-    Adapter = this.owner.lookup('adapter:bard-facts');
+    Adapter = this.owner.lookup('adapter:bard-facts-v2');
 
     //setup Pretender
     Server = new Pretender(function() {
@@ -86,7 +133,7 @@ module('Unit | Bard facts Adapter', function(hooks) {
     assert.expect(4);
 
     let singleDim = {
-      dimensions: [{ dimension: 'd1' }]
+      columns: [{ field: 'd1', type: 'dimension', parameters: {} }]
     };
     assert.equal(
       Adapter._buildDimensionsPath(singleDim),
@@ -95,7 +142,10 @@ module('Unit | Bard facts Adapter', function(hooks) {
     );
 
     let manyDims = {
-      dimensions: [{ dimension: 'd1' }, { dimension: 'd2' }]
+      columns: [
+        { field: 'd1', type: 'dimension', parameters: {} },
+        { field: 'd2', type: 'dimension', parameters: {} }
+      ]
     };
     assert.equal(
       Adapter._buildDimensionsPath(manyDims),
@@ -104,7 +154,11 @@ module('Unit | Bard facts Adapter', function(hooks) {
     );
 
     let duplicateDims = {
-      dimensions: [{ dimension: 'd1' }, { dimension: 'd2' }, { dimension: 'd1' }]
+      columns: [
+        { field: 'd1', type: 'dimension', parameters: {} },
+        { field: 'd2', type: 'dimension', parameters: {} },
+        { field: 'd1', type: 'dimension', parameters: {} }
+      ]
     };
     assert.equal(
       Adapter._buildDimensionsPath(duplicateDims),
@@ -124,7 +178,14 @@ module('Unit | Bard facts Adapter', function(hooks) {
     assert.expect(2);
 
     let singleInterval = {
-      intervals: [{ start: 'start', end: 'end' }]
+      filters: [
+        {
+          field: 'dateTime',
+          parameters: {},
+          operator: 'bet',
+          values: ['start', 'end']
+        }
+      ]
     };
     assert.equal(
       Adapter._buildDateTimeParam(singleInterval),
@@ -133,9 +194,19 @@ module('Unit | Bard facts Adapter', function(hooks) {
     );
 
     let manyIntervals = {
-      intervals: [
-        { start: 'start1', end: 'end1' },
-        { start: 'start2', end: 'end2' }
+      filters: [
+        {
+          field: 'dateTime',
+          parameters: {},
+          operator: 'bet',
+          values: ['start1', 'end1']
+        },
+        {
+          field: 'dateTime',
+          parameters: {},
+          operator: 'bet',
+          values: ['start2', 'end2']
+        }
       ]
     };
     assert.equal(
@@ -149,7 +220,13 @@ module('Unit | Bard facts Adapter', function(hooks) {
     assert.expect(5);
 
     let singleMetric = {
-      metrics: [{ metric: 'm1' }]
+      columns: [
+        {
+          field: 'm1',
+          parameters: {},
+          type: 'metric'
+        }
+      ]
     };
     assert.equal(
       Adapter._buildMetricsParam(singleMetric),
@@ -158,7 +235,18 @@ module('Unit | Bard facts Adapter', function(hooks) {
     );
 
     let manyMetrics = {
-      metrics: [{ metric: 'm1' }, { metric: 'm2' }]
+      columns: [
+        {
+          field: 'm1',
+          parameters: {},
+          type: 'metric'
+        },
+        {
+          field: 'm2',
+          parameters: {},
+          type: 'metric'
+        }
+      ]
     };
     assert.equal(
       Adapter._buildMetricsParam(manyMetrics),
@@ -167,11 +255,11 @@ module('Unit | Bard facts Adapter', function(hooks) {
     );
 
     let differentParams = {
-      metrics: [
-        { metric: 'm1' },
-        { metric: 'm2' },
-        { metric: 'r', parameters: { p: '123', as: 'm1' } },
-        { metric: 'r', parameters: { p: 'xyz', as: 'm2' } }
+      columns: [
+        { field: 'm1', parameters: {}, type: 'metric' },
+        { field: 'm2', parameters: {}, type: 'metric' },
+        { field: 'r', parameters: { p: '123', as: 'm1' }, type: 'metric' },
+        { field: 'r', parameters: { p: 'xyz', as: 'm2' }, type: 'metric' }
       ]
     };
     assert.equal(
@@ -181,12 +269,12 @@ module('Unit | Bard facts Adapter', function(hooks) {
     );
 
     let duplicateMetrics = {
-      metrics: [
-        { metric: 'm1' },
-        { metric: 'm2' },
-        { metric: 'm1' },
-        { metric: 'r', parameters: { p: '123', as: 'm1' } },
-        { metric: 'r', parameters: { p: '123', as: 'm2' } }
+      columns: [
+        { field: 'm1', parameters: {}, type: 'metric' },
+        { field: 'm2', parameters: {}, type: 'metric' },
+        { field: 'm1', parameters: {}, type: 'metric' },
+        { field: 'r', parameters: { p: '123', as: 'm1' }, type: 'metric' },
+        { field: 'r', parameters: { p: '123', as: 'm2' }, type: 'metric' }
       ]
     };
     assert.equal(
@@ -196,12 +284,12 @@ module('Unit | Bard facts Adapter', function(hooks) {
     );
 
     let nullParams = {
-      metrics: [
-        { metric: 'm1' },
-        { metric: 'm2' },
-        { metric: 'r', parameters: { p: '123', q: 'bar' } },
-        { metric: 'r', parameters: { p: 'xyz', q: null } },
-        { metric: 'r', parameters: { p: 'tuv', q: undefined } }
+      columns: [
+        { field: 'm1', parameters: {}, type: 'metric' },
+        { field: 'm2', parameters: {}, type: 'metric' },
+        { field: 'r', parameters: { p: '123', q: 'bar' }, type: 'metric' },
+        { field: 'r', parameters: { p: 'xyz', q: null }, type: 'metric' },
+        { field: 'r', parameters: { p: 'tuv', q: undefined }, type: 'metric' }
       ]
     };
     assert.equal(
@@ -215,7 +303,7 @@ module('Unit | Bard facts Adapter', function(hooks) {
     assert.expect(7);
 
     let singleFilter = {
-      filters: [{ dimension: 'd1', field: 'desc', operator: 'in', values: ['v1', 'v2'] }]
+      filters: [{ field: 'd1.desc', parameters: {}, type: 'dimension', operator: 'in', values: ['v1', 'v2'] }]
     };
     assert.equal(
       Adapter._buildFiltersParam(singleFilter),
@@ -225,31 +313,14 @@ module('Unit | Bard facts Adapter', function(hooks) {
 
     let manyFilters = {
       filters: [
-        {
-          dimension: 'd1',
-          field: 'desc',
-          operator: 'in',
-          values: ['v1', 'v2']
-        },
-        {
-          dimension: 'd2',
-          field: 'id',
-          operator: 'notin',
-          values: ['v3', 'v4']
-        }
+        { field: 'd1.desc', parameters: {}, type: 'dimension', operator: 'in', values: ['v1', 'v2'] },
+        { field: 'd2.id', parameters: {}, type: 'dimension', operator: 'notin', values: ['v3', 'v4'] }
       ]
     };
     assert.equal(
       Adapter._buildFiltersParam(manyFilters),
       'd1|desc-in["v1","v2"],d2|id-notin["v3","v4"]',
       '_buildFiltersParam built the correct string for many filters'
-    );
-
-    let noFilters = {};
-    assert.equal(
-      Adapter._buildFiltersParam(noFilters),
-      undefined,
-      '_buildFiltersParam returns undefined with no filters'
     );
 
     let emptyFilters = { filters: [] };
@@ -259,8 +330,17 @@ module('Unit | Bard facts Adapter', function(hooks) {
       '_buildFiltersParam returns undefined with empty filters'
     );
 
+    let noDimensionFilters = { filters: [{ type: 'metric' }] };
+    assert.equal(
+      Adapter._buildFiltersParam(noDimensionFilters),
+      undefined,
+      '_buildFiltersParam returns undefined with only filters of non-dimension types'
+    );
+
     let commaFilters = {
-      filters: [{ dimension: 'd3', field: 'id', operator: 'in', values: ['with, comma', 'no comma'] }]
+      filters: [
+        { field: 'd3.id', parameters: {}, type: 'dimension', operator: 'in', values: ['with, comma', 'no comma'] }
+      ]
     };
     assert.equal(
       Adapter._buildFiltersParam(commaFilters),
@@ -269,7 +349,7 @@ module('Unit | Bard facts Adapter', function(hooks) {
     );
 
     let noIdFilters = {
-      filters: [{ dimension: 'd3', operator: 'in', values: ['with, comma', 'no comma'] }]
+      filters: [{ field: 'd3', parameters: {}, type: 'dimension', operator: 'in', values: ['with, comma', 'no comma'] }]
     };
     assert.equal(
       Adapter._buildFiltersParam(noIdFilters),
@@ -278,7 +358,9 @@ module('Unit | Bard facts Adapter', function(hooks) {
     );
 
     let quoteFilters = {
-      filters: [{ dimension: 'd3', field: 'id', operator: 'in', values: ['with "quote"', 'but why'] }]
+      filters: [
+        { field: 'd3.id', parameters: {}, type: 'dimension', operator: 'in', values: ['with "quote"', 'but why'] }
+      ]
     };
     assert.equal(
       Adapter._buildFiltersParam(quoteFilters),
@@ -288,12 +370,13 @@ module('Unit | Bard facts Adapter', function(hooks) {
   });
 
   test('_buildSortParam', function(assert) {
-    assert.expect(8);
+    assert.expect(7);
 
     let singleSort = {
-      sort: [
+      sorts: [
         {
-          metric: 'm1',
+          field: 'm1',
+          parameters: {},
           direction: 'asc'
         }
       ]
@@ -305,9 +388,9 @@ module('Unit | Bard facts Adapter', function(hooks) {
     );
 
     let sortNoDirection = {
-      sort: [
+      sorts: [
         {
-          metric: 'm1'
+          field: 'm1'
         }
       ]
     };
@@ -318,13 +401,13 @@ module('Unit | Bard facts Adapter', function(hooks) {
     );
 
     let manySorts = {
-      sort: [
+      sorts: [
         {
-          metric: 'm1',
+          field: 'm1',
           direction: 'asc'
         },
         {
-          metric: 'm2',
+          field: 'm2',
           direction: 'asc'
         }
       ]
@@ -338,9 +421,9 @@ module('Unit | Bard facts Adapter', function(hooks) {
     assert.equal(
       Adapter._buildSortParam(
         {
-          sort: [
+          sorts: [
             {
-              metric: 'a',
+              field: 'a',
               direction: 'asc'
             }
           ]
@@ -354,13 +437,13 @@ module('Unit | Bard facts Adapter', function(hooks) {
     assert.equal(
       Adapter._buildSortParam(
         {
-          sort: [
+          sorts: [
             {
-              metric: 'a',
+              field: 'a',
               direction: 'asc'
             },
             {
-              metric: 'm1',
+              field: 'm1',
               direction: 'desc'
             }
           ]
@@ -371,25 +454,22 @@ module('Unit | Bard facts Adapter', function(hooks) {
       'sort param with aliases mixed with non aliases work'
     );
 
-    let noSorts = {};
-    assert.equal(Adapter._buildSortParam(noSorts), undefined, '_buildSortParam returns undefined with no sort');
-
-    let emptySorts = { sort: [] };
+    let emptySorts = { sorts: [] };
     assert.equal(Adapter._buildSortParam(emptySorts), undefined, '_buildSortParam returns undefined with empty sort');
 
     let invalidSort = {
-      sort: [
-        { metric: 'valid1' },
-        { metric: 'valid2', direction: 'asc' },
-        { metric: 'valid3', direction: 'desc' },
-        { metric: 'invalid', direction: 'foo' }
+      sorts: [
+        { field: 'valid1' },
+        { field: 'valid2', direction: 'asc' },
+        { field: 'valid3', direction: 'desc' },
+        { field: 'invalid', direction: 'foo' }
       ]
     };
     assert.throws(
       () => {
         Adapter._buildSortParam(invalidSort);
       },
-      /'foo' is not a valid sort direction \(desc,asc\)/,
+      /'foo' must be a valid sort direction \(desc,asc\)/,
       '_buildSortParam throws error when invalid sort is given'
     );
   });
@@ -398,9 +478,10 @@ module('Unit | Bard facts Adapter', function(hooks) {
     assert.expect(6);
 
     let singleHaving = {
-      having: [
+      filters: [
         {
-          metric: 'm1',
+          field: 'm1',
+          type: 'metric',
           operator: 'gt',
           values: [0]
         }
@@ -413,14 +494,16 @@ module('Unit | Bard facts Adapter', function(hooks) {
     );
 
     let manyHavings = {
-      having: [
+      filters: [
         {
-          metric: 'm1',
+          field: 'm1',
+          type: 'metric',
           operator: 'gt',
           values: [0]
         },
         {
-          metric: 'm2',
+          field: 'm2',
+          type: 'metric',
           operator: 'lte',
           values: [10]
         }
@@ -432,20 +515,25 @@ module('Unit | Bard facts Adapter', function(hooks) {
       '_buildHavingParam built the correct string for multiple having'
     );
 
-    let noHavings = {};
-    assert.equal(Adapter._buildHavingParam(noHavings), undefined, '_buildHavingParam returns undefined with no having');
-
-    let emptyHavings = { having: [] };
+    let emptyHavings = { filters: [] };
     assert.equal(
       Adapter._buildHavingParam(emptyHavings),
       undefined,
       '_buildHavingParam returns undefined with empty having'
     );
 
+    let onlyDimFilters = { filters: [{ field: 'foo', type: 'dimension', operator: 'gt', values: [0] }] };
+    assert.equal(
+      Adapter._buildHavingParam(onlyDimFilters),
+      undefined,
+      '_buildHavingParam returns undefined with only dimension filters in request'
+    );
+
     let havingValueArray = {
-      having: [
+      filters: [
         {
-          metric: 'm1',
+          field: 'm1',
+          type: 'metric',
           operator: 'gt',
           values: [1, 2, 3]
         }
@@ -458,14 +546,16 @@ module('Unit | Bard facts Adapter', function(hooks) {
     );
 
     let aliasedHaving = {
-      having: [
+      filters: [
         {
-          metric: 'm1',
+          field: 'm1',
+          type: 'metric',
           operator: 'gt',
           values: [1, 2, 3]
         },
         {
-          metric: 'a',
+          field: 'a',
+          type: 'metric',
           operator: 'lt',
           values: [50]
         }
@@ -489,8 +579,8 @@ module('Unit | Bard facts Adapter', function(hooks) {
     );
 
     assert.equal(
-      Adapter._buildURLPath(TestRequest),
-      `${HOST}/v1/data/table1/grain1/d1/d2/`,
+      Adapter._buildURLPath(TestRequest, { dataSourceName: 'blockhead' }),
+      `${HOST2}/v1/data/table1/grain1/d1/d2/`,
       '_buildURLPath correctly built the URL path for the provided request when a host is configured'
     );
   });
@@ -511,8 +601,15 @@ module('Unit | Bard facts Adapter', function(hooks) {
     );
 
     let noFiltersAndNoHavings = assign({}, TestRequest, {
-      filters: [],
-      having: []
+      filters: [
+        {
+          field: 'dateTime',
+          parameters: {},
+          type: 'timeDimension',
+          operator: 'bet',
+          values: ['2015-01-03', '2015-01-04']
+        }
+      ]
     });
     assert.deepEqual(
       Adapter._buildQuery(noFiltersAndNoHavings),
@@ -536,7 +633,7 @@ module('Unit | Bard facts Adapter', function(hooks) {
       '_buildQuery sets non default format if format is set in the options object'
     );
 
-    let sortRequest = assign({}, TestRequest, { sort: [{ metric: 'm1' }] });
+    let sortRequest = assign({}, TestRequest, { sorts: [{ field: 'm1' }] });
     assert.deepEqual(
       Adapter._buildQuery(sortRequest),
       {
@@ -550,7 +647,7 @@ module('Unit | Bard facts Adapter', function(hooks) {
       '_buildQuery correctly built the query object for a request with sort'
     );
 
-    sortRequest = assign({}, TestRequest, { sort: [{ metric: 'a' }] });
+    sortRequest = assign({}, TestRequest, { sorts: [{ field: 'a' }] });
     assert.deepEqual(
       Adapter._buildQuery(sortRequest),
       {
@@ -564,9 +661,16 @@ module('Unit | Bard facts Adapter', function(hooks) {
       '_buildQuery correctly built the query object for an aliased with sort'
     );
 
-    let havingRequest = assign({}, TestRequest, {
-      having: [{ metric: 'a', operator: 'lt', values: [50] }]
+    const aliasedHaving = {
+      field: 'a',
+      type: 'metric',
+      operator: 'lt',
+      values: [50]
+    };
+    const havingRequest = assign({}, TestRequest, {
+      filters: assign([], TestRequest.filters).concat(aliasedHaving)
     });
+
     assert.deepEqual(
       Adapter._buildQuery(havingRequest),
       {
@@ -574,7 +678,7 @@ module('Unit | Bard facts Adapter', function(hooks) {
         filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notnull[""]',
         format: 'json',
         metrics: 'm1,m2,r(p=123)',
-        having: 'r(p=123)-lt[50]'
+        having: 'm1-gt[0],r(p=123)-lt[50]'
       },
       '_buildQuery correctly built the query object for an aliased having'
     );
@@ -678,7 +782,15 @@ module('Unit | Bard facts Adapter', function(hooks) {
   });
 
   test('urlForFindQuery', function(assert) {
-    assert.expect(6);
+    assert.expect(7);
+
+    assert.throws(
+      () => {
+        Adapter.urlForFindQuery({ requestVersion: 'v1' });
+      },
+      /Request for bard-facts-v2 adapter must be version 2/,
+      'urlForFindQuery fails assertion if v1 request is passed in'
+    );
 
     assert.equal(
       decodeURIComponent(Adapter.urlForFindQuery(TestRequest)),
@@ -698,20 +810,18 @@ module('Unit | Bard facts Adapter', function(hooks) {
       'urlForFindQuery correctly built the URL for the provided request with the format option'
     );
 
-    let noFiltersNoHavings = assign({}, TestRequest, {
-      filters: null,
-      having: null
+    let onlyDateFilter = assign({}, TestRequest, {
+      filters: [{ field: 'dateTime', type: 'timeDimension', operator: 'bet', values: ['2015-01-03', '2015-01-04'] }]
     });
     assert.equal(
-      decodeURIComponent(Adapter.urlForFindQuery(noFiltersNoHavings)),
+      decodeURIComponent(Adapter.urlForFindQuery(onlyDateFilter)),
       HOST + '/v1/data/table1/grain1/d1/d2/?dateTime=2015-01-03/2015-01-04&' + 'metrics=m1,m2,r(p=123)&format=json',
       'urlForFindQuery correctly built the URL for a request with no filters'
     );
 
     let requestWithSort = assign({}, TestRequest, {
-      filters: null,
-      having: null,
-      sort: [{ metric: 'm1' }, { metric: 'm2' }]
+      filters: [{ field: 'dateTime', type: 'timeDimension', operator: 'bet', values: ['2015-01-03', '2015-01-04'] }],
+      sorts: [{ field: 'm1' }, { field: 'm2' }]
     });
     assert.equal(
       decodeURIComponent(Adapter.urlForFindQuery(requestWithSort)),
@@ -741,7 +851,15 @@ module('Unit | Bard facts Adapter', function(hooks) {
   });
 
   test('fetchDataForRequest', function(assert) {
-    assert.expect(1);
+    assert.expect(2);
+
+    assert.throws(
+      () => {
+        Adapter.fetchDataForRequest({ requestVersion: 'v1' });
+      },
+      /Request for bard-facts-v2 adapter must be version 2/,
+      'fetchDataForRequest fails assertion if v1 request is passed in'
+    );
 
     return Adapter.fetchDataForRequest(TestRequest).then(function(result) {
       return assert.deepEqual(result, Response, 'Ajax GET returns the response object for TEST Request');

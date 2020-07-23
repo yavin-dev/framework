@@ -27,11 +27,9 @@ export default class ReportBuilderComponent extends Component {
   /**
    * @property {boolean} -- whether report has valid table
    */
-  @computed('allTables', 'report.request.logicalTable.table.name')
+  @computed('currentTable')
   get hasValidLogicalTable() {
-    const allTables = arr(this.allTables);
-    const tableName = this.report.request.logicalTable.table?.name;
-    return allTables.filter(t => t.name === tableName).length > 0;
+    return !!this.currentTable;
   }
 
   /**
@@ -40,6 +38,12 @@ export default class ReportBuilderComponent extends Component {
   @computed
   get allTables() {
     return this.metadataService.all('table').sortBy('name');
+  }
+
+  @computed('request.{dataSource,table}')
+  get currentTable() {
+    const { dataSource, table } = this.request;
+    return this.metadataService.getById('table', table, dataSource);
   }
 
   /**
@@ -70,7 +74,7 @@ export default class ReportBuilderComponent extends Component {
    */
   @action
   onToggleDimFilter(dimension) {
-    this._expandFilters(() => arr(this.request.filters).findBy('dimension', dimension));
+    this._expandFilters(() => arr(this.request.filters).find(f => f.type === 'dimension' && f.field === dimension));
   }
 
   /**
@@ -79,7 +83,7 @@ export default class ReportBuilderComponent extends Component {
    */
   @action
   onToggleMetricFilter(metric) {
-    this._expandFilters(() => (this.request.having || []).find(having => having.metric.metric.name === metric.name));
+    this._expandFilters(() => (this.request.filters || []).find(f => f.type === 'metric' && f.field === metric.name));
   }
 
   /**

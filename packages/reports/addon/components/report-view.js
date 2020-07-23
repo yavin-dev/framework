@@ -40,13 +40,8 @@ class ReportView extends Component {
   @readOnly('report.request')
   request;
 
-  get classNames() {
-    const classNames = ['report-view'];
-    if (featureFlag('enableRequestPreview')) {
-      classNames.push('report-view--request-preview');
-    }
-    return classNames;
-  }
+  // todo remove feature flag className
+  classNames = ['report-view', 'report-view--request-preview'];
 
   /**
    * @property {Service} naviVisualizations - navi visualizations service
@@ -129,7 +124,7 @@ class ReportView extends Component {
    *
    * @method filterCountOrCollapsedDidChange
    */
-  @observes('isFiltersCollapsed', 'report.request.{filters.[],having.[],intervals.[]}')
+  @observes('isFiltersCollapsed', 'report.request.filters.[]')
   filterCountOrCollapsedDidChange() {
     scheduleOnce('afterRender', this, 'resizeVisualization');
   }

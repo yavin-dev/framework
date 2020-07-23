@@ -9,6 +9,7 @@ import Interval from 'navi-core/utils/classes/interval';
 import { formatDateRange } from 'navi-reports/helpers/format-interval-inclusive-inclusive';
 import { getIsoDateTimePeriod } from 'navi-core/utils/date';
 import moment from 'moment';
+import { inject as service } from '@ember/service';
 
 const timeGrainSorting = {
   millisecond: 1,
@@ -37,15 +38,18 @@ export default class BaseIntervalComponent extends Component {
   /**
    * @property {String} dateTimePeriod - the current time grain
    */
-  @readOnly('request.logicalTable.timeGrain') dateTimePeriod;
+  @readOnly('request.timeGrain') dateTimePeriod;
+
+  @service bardMetadata;
 
   /**
    * @property {String} lowestDateTimePeriod - the lowest supported time grain of the table
    */
   @computed('request.logicalTable.table.timeGrainIds.[]')
   get lowestDateTimePeriod() {
-    const { timeGrainIds } = this.request.logicalTable.table;
-    const sorted = [...timeGrainIds].sort((lId, rId) => {
+    const { table, dataSource } = this.request;
+    const tableMetadata = this.bardMetadata.getById('table', table, dataSource);
+    const sorted = tableMetadata.timeGrainIds.sort((lId, rId) => {
       const leftValue = timeGrainSorting[lId] || Infinity;
       const rightValue = timeGrainSorting[rId] || Infinity;
       return leftValue >= rightValue;
@@ -66,7 +70,7 @@ export default class BaseIntervalComponent extends Component {
   /**
    * @property {Interval} interval - The interval of the selected date range
    */
-  @readOnly('filter.values.firstObject') interval;
+  @readOnly('request.interval') interval;
 
   /**
    * @property {Moment|undefined} startDate - start of interval

@@ -15,7 +15,7 @@
  */
 
 import Component from '@ember/component';
-import { set, get, computed } from '@ember/object';
+import { get, computed } from '@ember/object';
 import layout from '../templates/components/navi-list-selector';
 import { searchRecords } from 'navi-core/utils/search';
 
@@ -26,11 +26,6 @@ export default Component.extend({
    * @property {Array} classNames
    */
   classNames: ['navi-list-selector'],
-
-  /*
-   * @property {Boolean} showSelected
-   */
-  showSelected: false,
 
   /*
    * @property {String} errorMessage
@@ -47,23 +42,16 @@ export default Component.extend({
   /**
    * @property {Boolean} areItemsFiltered - true if items are filtered by selected state or a search query
    */
-  areItemsFiltered: computed('showSelected', 'query', function() {
-    return !!this.showSelected || !!this.query;
+  areItemsFiltered: computed('query', function() {
+    return !!this.query;
   }),
 
   /*
    * @property {Array} filteredItems - items filtered either by selected and by searchQuery
    */
-  filteredItems: computed('items', 'query', 'searchField', 'selected', 'showSelected', function() {
-    let query = get(this, 'query'),
-      items;
-
-    //set items to selected or all items based on showSelected
-    if (get(this, 'showSelected')) {
-      items = get(this, 'selected');
-    } else {
-      items = get(this, 'items');
-    }
+  filteredItems: computed('items', 'query', 'searchField', 'selected', function() {
+    const query = get(this, 'query');
+    const items = get(this, 'items');
 
     //filter items by searchQuery
     if (query) {
@@ -71,17 +59,5 @@ export default Component.extend({
     }
 
     return items;
-  }),
-
-  /**
-   * Called when the attributes passed into the component have been changed
-   *
-   * @event didUpdateAttrs
-   */
-  didUpdateAttrs() {
-    // For convenience, automatically take user to "Show All" when nothing is selected
-    if (!get(this, 'selected.length')) {
-      set(this, 'showSelected', false);
-    }
-  }
+  })
 });

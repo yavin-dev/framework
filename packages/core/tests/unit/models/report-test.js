@@ -11,28 +11,25 @@ import DeliverableItem from 'navi-core/models/deliverable-item';
 let Store, MetadataService;
 
 const ExpectedRequest = {
-    logicalTable: {
-      table: 'network',
-      timeGrain: 'day'
-    },
-    metrics: [{ metric: 'adClicks' }, { metric: 'navClicks' }],
-    dimensions: [{ dimension: 'property' }],
-    filters: [],
-    having: [],
-    sort: [
+    table: 'network',
+    columns: [
+      { type: 'time-dimension', field: 'dateTime', parameters: { grain: 'day' }, alias: null },
+      { type: 'dimension', field: 'property', parameters: {}, alias: null },
+      { type: 'metric', field: 'adClicks', parameters: {}, alias: null },
+      { type: 'metric', field: 'navClicks', parameters: {}, alias: null }
+    ],
+    filters: [
       {
-        metric: 'navClicks',
-        direction: 'asc'
+        type: 'time-dimension',
+        field: 'dateTime',
+        parameters: { grain: 'day' },
+        operator: 'bet',
+        values: ['2015-11-09 00:00:00.000', '2015-11-16 00:00:00.000']
       }
     ],
-    intervals: [
-      {
-        end: '2015-11-16 00:00:00.000',
-        start: '2015-11-09 00:00:00.000'
-      }
-    ],
-    bardVersion: 'v1',
-    requestVersion: 'v1',
+    sorts: [{ type: 'metric', field: 'navClicks', parameters: {}, direction: 'asc' }],
+    requestVersion: '2.0',
+    limit: null,
     dataSource: 'dummy'
   },
   ExpectedReport = {

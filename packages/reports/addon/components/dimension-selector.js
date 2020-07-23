@@ -15,13 +15,12 @@
  */
 
 import { throttle } from '@ember/runloop';
-import { readOnly, mapBy } from '@ember/object/computed';
 import Component from '@ember/component';
-import { get, computed, action } from '@ember/object';
+import { computed, action } from '@ember/object';
 import { A as arr } from '@ember/array';
 import layout from '../templates/components/dimension-selector';
-import { featureFlag } from 'navi-core/helpers/feature-flag';
 import { getDefaultTimeGrain } from 'navi-reports/utils/request-table';
+import { inject as service } from '@ember/service';
 
 export const THROTTLE_TIME = 750; // milliseconds
 
@@ -54,6 +53,8 @@ export function BlurOnAnimationEnd(target, button) {
   }
 }
 
+const IS_DIMENSION = c => c.type === 'time-dimension' || c.type === 'dimension';
+
 export default class DimensionSelector extends Component {
   layout = layout;
 
@@ -62,44 +63,29 @@ export default class DimensionSelector extends Component {
    */
   classNames = ['checkbox-selector', 'checkbox-selector--dimension'];
 
-  /*
-   * @property {Array} allDimensions
-   */
-  @computed('request.logicalTable.table.{dimensions,timeDimensions}')
-  get allDimensions() {
-    const { dimensions, timeDimensions } = this.request.logicalTable.table;
-    return [...dimensions, ...timeDimensions];
+  @service bardMetadata;
+
+  @computed('request.{dataSource,table}')
+  get currentTable() {
+    const { dataSource, table } = this.request;
+    return this.bardMetadata.getById('table', table, dataSource);
   }
 
   /*
-   * @property {Array} timeGrains - copy of all time grains for the logical table selected
+   * @property {Array} allDimensions
    */
-  @readOnly('request.logicalTable.table.timeGrains')
-  timeGrains;
-
-  /*
-   * @property {Array} allTimeGrains - all time grains for the logical table selected
-   */
-  @computed('timeGrains')
-  get allTimeGrains() {
-    const { timeGrains } = this;
-
-    return timeGrains
-      .filter(grain => grain?.id !== 'all')
-      .map(grain =>
-        Object.assign({}, grain, {
-          category: 'Time Grain',
-          dateTimeDimension: true
-        })
-      );
+  @computed('currentTable')
+  get allDimensions() {
+    const { dimensions, timeDimensions } = this.currentTable;
+    return [...dimensions, ...timeDimensions];
   }
 
   /*
    * @property {Object} defaultTimeGrain - the default time grain for the logical table selected
    */
-  @computed('allTimeGrains')
+  @computed('currentTable.timeGrains')
   get defaultTimeGrain() {
-    return getDefaultTimeGrain(this.allTimeGrains);
+    return getDefaultTimeGrain(this.currentTable.timeGrains);
   }
 
   /*
@@ -108,51 +94,39 @@ export default class DimensionSelector extends Component {
    */
   @computed('allTimeGrains', 'allDimensions')
   get listItems() {
-    let timeGrains;
-
-    if (featureFlag('enableRequestPreview')) {
-      // only option is to add the default time grain (if none is selected)
-      timeGrains = [
-        {
-          name: 'Date Time',
-          category: 'Date',
-          dateTimeDimension: true
-        }
-      ];
-    } else {
-      timeGrains = this.allTimeGrains;
-    }
-
-    return [...timeGrains, ...this.allDimensions];
+    return [
+      {
+        name: 'Date Time',
+        category: 'Date',
+        dateTimeDimension: true
+      },
+      ...this.allDimensions
+    ];
   }
 
   /*
    * @property {Array} selectedDimensions - dimensions in the request
    */
-  @mapBy('request.dimensions', 'dimension')
-  selectedDimensions;
+  @computed('request.columns.[]')
+  get selectedDimensions() {
+    return this.request.columns.filter(IS_DIMENSION);
+  }
 
   /*
    * @property {Array} selectedFilters - filters in the request
    */
   @computed('request.filters.[]')
   get selectedFilters() {
-    return get(this, 'request.filters').mapBy('dimension');
+    return this.request.filters.filter(IS_DIMENSION);
   }
 
   /*
    * @property {Object} selectedTimeGrain - timeGrain in the request
    */
-  @computed('request.logicalTable.timeGrain', 'allTimeGrains')
+  @computed('request.timeGrain', 'currentTable.timeGrains')
   get selectedTimeGrain() {
-    const {
-      allTimeGrains,
-      request: {
-        logicalTable: { timeGrain }
-      }
-    } = this;
-
-    return allTimeGrains.find(grain => grain.id === timeGrain);
+    const { currentTable, request } = this;
+    return currentTable.timeGrains.find(grain => grain.id === request.timeGrain);
   }
 
   /*
@@ -160,7 +134,8 @@ export default class DimensionSelector extends Component {
    */
   @computed('selectedColumns', 'selectedFilters')
   get selectedColumnsAndFilters() {
-    return arr([...get(this, 'selectedColumns'), ...get(this, 'selectedFilters')]).uniq();
+    const { selectedColumns, selectedFilters } = this;
+    return arr([...selectedColumns, ...selectedFilters]).uniq();
   }
 
   /*
@@ -180,8 +155,8 @@ export default class DimensionSelector extends Component {
    */
   @computed('selectedColumns')
   get itemsChecked() {
-    return get(this, 'selectedColumns').reduce((items, item) => {
-      items[get(item, 'id')] = true;
+    return this.selectedColumns.reduce((items, item) => {
+      items[item.id] = true;
       return items;
     }, {});
   }
@@ -192,8 +167,9 @@ export default class DimensionSelector extends Component {
    */
   @computed('request.filters.[]')
   get dimensionsFiltered() {
-    return get(this, 'request.filters')
-      .mapBy('dimension.id')
+    return this.request.filters
+      .filter(IS_DIMENSION)
+      .map(f => f.field)
       .reduce((list, dimension) => {
         list[dimension] = true;
         return list;
@@ -208,18 +184,13 @@ export default class DimensionSelector extends Component {
   doItemClicked(item, target) {
     target && target.focus(); // firefox does not focus a button on click in MacOS specifically
     const type = item.dateTimeDimension ? 'TimeGrain' : 'Dimension';
-    const enableRequestPreview = featureFlag('enableRequestPreview');
 
     let actionHandler;
 
-    if (enableRequestPreview) {
-      if (type === 'TimeGrain') {
-        return this.onAddTimeGrain?.(this.selectedTimeGrain || this.defaultTimeGrain);
-      } else if (type === 'Dimension') {
-        actionHandler = 'Add';
-      }
-    } else {
-      actionHandler = this.itemsChecked[item.id] ? 'Remove' : 'Add';
+    if (type === 'TimeGrain') {
+      return this.onAddTimeGrain?.(this.selectedTimeGrain || this.defaultTimeGrain);
+    } else if (type === 'Dimension') {
+      actionHandler = 'Add';
     }
 
     if (actionHandler) {
@@ -234,12 +205,8 @@ export default class DimensionSelector extends Component {
    */
   @action
   itemClicked(item, { target }) {
-    if (featureFlag('enableRequestPreview')) {
-      const button = target.closest('button.grouped-list__item-label');
-      throttle(this, 'doItemClicked', item, button, THROTTLE_TIME);
-      BlurOnAnimationEnd(target, button);
-    } else {
-      this.doItemClicked(item, null);
-    }
+    const button = target.closest('button.grouped-list__item-label');
+    throttle(this, 'doItemClicked', item, button, THROTTLE_TIME);
+    BlurOnAnimationEnd(target, button);
   }
 }

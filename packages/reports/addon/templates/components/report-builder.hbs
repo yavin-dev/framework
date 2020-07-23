@@ -5,7 +5,7 @@
       <NaviTableSelect
         class={{concat "report-builder__container report-builder__container--table" (if @disabled " report-builder__container--disabled" "")}}
         @options={{this.allTables}}
-        @selected={{this.request.logicalTable.table}}
+        @selected={{this.currentTable}}
         @onChange={{update-report-action "UPDATE_TABLE"}}
       />
     {{/if}}

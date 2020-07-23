@@ -7,13 +7,13 @@
 
 import EmberObject from '@ember/object';
 import { ResponseV1 } from 'navi-data/serializers/fact-interface';
-import { RequestV1 } from 'navi-data/adapters/fact-interface';
+import { RequestV2 } from 'navi-data/adapters/fact-interface';
 
 export default class NaviFacts extends EmberObject {
   /**
    * @property {RequestV1} request - the request object
    */
-  request: RequestV1;
+  request?: RequestV2;
 
   /**
    * @property {ResponseV1} response - response for request
