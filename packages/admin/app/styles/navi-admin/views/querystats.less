@@ -1,0 +1,113 @@
+/**
+ * Copyright 2020, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
+@import 'navi-core.less';
+
+@top-bar-color: #1a2d48;
+
+.header {
+  background: @top-bar-color;
+  color: #fff;
+  display: flex;
+  font-family: @font-family-thin;
+  margin-bottom: 30px;
+  padding: 20px;
+
+  .core-links {
+    display: flex;
+    flex: 1;
+  }
+
+  .title {
+    margin: 2px 20px 0 0;
+    font-weight: 400;
+  }
+
+  .core-link {
+    list-style: none;
+    padding: 10px;
+    margin-right: 15px;
+  }
+
+  a {
+    color: #fff;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .fa {
+    margin-right: 5px;
+  }
+}
+
+.table-example {
+  height: 450px;
+  display: flex;
+}
+
+h3 {
+  text-align: center;
+}
+
+.chart-container {
+  display: flex;
+  height: 500px;
+  width: 100%;
+
+  &.pie-chart-container {
+    .pie-chart-widget-container {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+  }
+}
+
+.navi-visualization-config {
+  width: 400px;
+  margin: 0 10px;
+}
+
+* {
+  font-family: @font-family-sans-serif;
+}
+
+/* Use `zoom` over `transform` since some tests depend on reading height and width */
+#ember-testing {
+  transform: none !important;
+  zoom: 50%;
+}
+
+.navi-visualization-config {
+  min-height: 500px;
+}
+
+.metric-label__container {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+//previous stuff
+.navi-querystats-dashboard {
+  display: flex;
+  flex-direction: column;
+  margin: 20px 30px 20px;
+
+  &__table {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    &-style {
+      margin-top: 0px;
+    }
+    &-table {
+      border: 1px solid black;
+      border-spacing: 5px;
+      font-family: arial, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+    }
+  }
+}
