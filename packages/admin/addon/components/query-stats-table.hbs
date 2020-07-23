@@ -1,0 +1,63 @@
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<style>
+  th, td {
+    padding: 15px;
+    border: 1px solid #dddddd;
+    text-align: left;
+  }
+  tr:nth-child(even) {
+    background-color: #dddddd;
+  }
+  caption {
+    display: table-caption;
+    text-align: center;
+    font-size: large;
+    font-weight: bold;
+  }
+</style>
+{{!-- <NaviVisualizationConfig::Table
+  @model={{this.model}} --}}
+
+<table class="navi-querystats-dashboard__table-table">
+  <caption class="navi-querystats-dashboard__table-caption">Query Stats</caption>
+  <thead>
+    <tr>
+      {{!-- <th>Id</th>
+      <th>ModelName</th>
+      <th>ApiQuery</th>
+      <th>StoreQuery</th>
+      <th>Duration</th>
+      <th>Rows Returned</th> --}}
+      {{#each columns as |column|}}
+        <th>
+          {{column.displayName}}
+        </th>
+      {{/each}}
+    </tr>
+  </thead>
+  <tbody>
+    {{#each sortedContent as |item|}}
+      <tr>
+        {{#each columns as |column|}}
+          <td>
+            {{get item column.key}}
+          </td>
+        {{/each}}
+        {{!-- <td>1</td>
+        <td>Books</td>
+        <td>/book</td>
+        <td>SELECT * FROM Books</td>
+        <td>15</td>
+        <td>4</td> --}}
+      </tr>
+    {{/each}}
+      {{!-- <tr>
+        <td>2</td>
+        <td>Authors</td>
+        <td>/author</td>
+        <td>SELECT * FROM Authors</td>
+        <td>10</td>
+        <td>5</td>
+      </tr> --}}
+  </tbody>
+</table>
