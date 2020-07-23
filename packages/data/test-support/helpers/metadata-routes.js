@@ -58,6 +58,21 @@ export const MetricSix = {
   }
 };
 
+export const IDOnlyDim = {
+  category: 'categoryTwo',
+  name: 'idOnlyDim',
+  longName: 'ID only dim',
+  description: 'This is Dimension that only has id field',
+  cardinality: 100,
+  fields: [
+    {
+      name: 'id',
+      description: 'description',
+      tags: ['primaryKey', 'display']
+    }
+  ]
+};
+
 export const DimensionOne = {
   category: 'categoryOne',
   name: 'dimensionOne',
@@ -210,7 +225,7 @@ export const Tables = [
         metrics: [MetricTwo],
         retention: 'P24M',
         longName: 'Day',
-        dimensions: [DimensionTwo]
+        dimensions: [DimensionTwo, IDOnlyDim]
       }
     ]
   },
