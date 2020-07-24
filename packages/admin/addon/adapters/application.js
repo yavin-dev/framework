@@ -1,5 +1,6 @@
 import DS from 'ember-data';
 
 export default DS.RESTAdapter.extend({
-  namespace: 'querystats'
+  namespace: 'admin'
+  //set the host here
 });
