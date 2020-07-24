@@ -33,17 +33,23 @@ class Dashboard : Asset(), HasAuthor, HasEditors {
     override var editors: MutableSet<User> = mutableSetOf()
 
     @Column(name = "presentation", columnDefinition = "MEDIUMTEXT")
-    @Type(type = "com.yahoo.navi.ws.models.types.JsonType", parameters = [
-        Parameter(name = "class", value = "com.yahoo.navi.ws.models.beans.fragments.DashboardPresentation")
-    ])
+    @Type(
+        type = "com.yahoo.navi.ws.models.types.JsonType",
+        parameters = [
+            Parameter(name = "class", value = "com.yahoo.navi.ws.models.beans.fragments.DashboardPresentation")
+        ]
+    )
     var presentation: DashboardPresentation? = null
 
     @OneToMany(mappedBy = "dashboard", cascade = [CascadeType.REMOVE], orphanRemoval = true)
     var widgets: MutableSet<DashboardWidget> = mutableSetOf()
 
     @Column(name = "filters", columnDefinition = "MEDIUMTEXT")
-    @Type(type = "com.yahoo.navi.ws.models.types.JsonType", parameters = [
-        Parameter(name = "class", value = "java.util.Set")
-    ])
+    @Type(
+        type = "com.yahoo.navi.ws.models.types.JsonType",
+        parameters = [
+            Parameter(name = "class", value = "java.util.Set")
+        ]
+    )
     var filters: MutableSet<Filter> = mutableSetOf()
 }

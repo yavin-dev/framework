@@ -15,8 +15,11 @@ import org.hibernate.annotations.TypeDef
 data class DashboardWidgetVisualization(
     var type: String = "",
     var version: Int = 0,
-    @Type(type = "com.yahoo.navi.ws.models.types.JsonType", parameters = [
-        Parameter(name = "class", value = "java.util.HashMap")
-    ])
+    @Type(
+        type = "com.yahoo.navi.ws.models.types.JsonType",
+        parameters = [
+            Parameter(name = "class", value = "java.util.HashMap")
+        ]
+    )
     var metadata: Map<Any, Any> = emptyMap()
 )

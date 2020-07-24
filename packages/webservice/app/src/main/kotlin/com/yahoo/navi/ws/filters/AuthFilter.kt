@@ -20,11 +20,14 @@ class AuthFilter : Filter {
     override fun doFilter(request: ServletRequest, response: ServletResponse, chain: FilterChain) {
         val user = (request as HttpServletRequest).getHeader("User")
         chain.run {
-            doFilter(object : HttpServletRequestWrapper(request) {
-                override fun getUserPrincipal(): Principal {
-                    return PreAuthenticatedAuthenticationToken(Principal { user }, null)
-                }
-            }, response)
+            doFilter(
+                object : HttpServletRequestWrapper(request) {
+                    override fun getUserPrincipal(): Principal {
+                        return PreAuthenticatedAuthenticationToken(Principal { user }, null)
+                    }
+                },
+                response
+            )
         }
     }
 }

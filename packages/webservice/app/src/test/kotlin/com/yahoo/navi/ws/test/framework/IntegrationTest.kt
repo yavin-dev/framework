@@ -46,17 +46,19 @@ abstract class IntegrationTest : RestAssuredSupport {
         given()
             .header("User", user)
             .contentType("application/vnd.api+json")
-            .body("""
+            .body(
+                """
                 {
                     "data": {
                         "type": "users",
                         "id": "$user"
                     }
                 }
-            """.trimIndent())
-        .When()
+                """.trimIndent()
+            )
+            .When()
             .post("/users")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_CREATED)
     }
@@ -68,17 +70,19 @@ abstract class IntegrationTest : RestAssuredSupport {
         given()
             .header("User", user)
             .contentType("application/vnd.api+json")
-            .body("""
+            .body(
+                """
                 {
                     "data": {
                         "type": "roles",
                         "id": "$role"
                     }
                 }
-            """.trimIndent())
-        .When()
+                """.trimIndent()
+            )
+            .When()
             .post("/roles")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_CREATED)
     }

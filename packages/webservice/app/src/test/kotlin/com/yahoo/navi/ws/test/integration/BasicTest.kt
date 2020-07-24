@@ -12,10 +12,10 @@ class BasicTest : IntegrationTest() {
     @Test
     fun basic_server_hello() {
         given()
-                .header("User", "testuser")
-        .When()
-                .get("/")
-        .then()
-                .statusCode(404)
+            .header("User", "testuser")
+            .When()
+            .get("/")
+            .then()
+            .statusCode(404)
     }
 }

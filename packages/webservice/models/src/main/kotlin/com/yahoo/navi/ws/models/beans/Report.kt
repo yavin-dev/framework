@@ -28,14 +28,20 @@ import javax.persistence.Table
 class Report : Asset(), HasAuthor {
 
     @Column(name = "request", columnDefinition = "MEDIUMTEXT")
-    @Type(type = "com.yahoo.navi.ws.models.types.JsonType", parameters = [
-        Parameter(name = "class", value = "com.yahoo.navi.ws.models.beans.fragments.Request")
-    ])
+    @Type(
+        type = "com.yahoo.navi.ws.models.types.JsonType",
+        parameters = [
+            Parameter(name = "class", value = "com.yahoo.navi.ws.models.beans.fragments.Request")
+        ]
+    )
     var request: Request? = null
 
     @Column(name = "visualization", columnDefinition = "MEDIUMTEXT")
-    @Type(type = "com.yahoo.navi.ws.models.types.JsonType", parameters = [
-        Parameter(name = "class", value = "com.yahoo.navi.ws.models.beans.fragments.Visualization")
-    ])
+    @Type(
+        type = "com.yahoo.navi.ws.models.types.JsonType",
+        parameters = [
+            Parameter(name = "class", value = "com.yahoo.navi.ws.models.beans.fragments.Visualization")
+        ]
+    )
     var visualization: Visualization? = null
 }
