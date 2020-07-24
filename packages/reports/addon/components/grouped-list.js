@@ -19,7 +19,6 @@ import { isBlank } from '@ember/utils';
 import layout from '../templates/components/grouped-list';
 import { groupBy, sortBy } from 'lodash-es';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
-import { capitalize } from '@ember/string';
 
 @templateLayout(layout)
 @tagName('')
