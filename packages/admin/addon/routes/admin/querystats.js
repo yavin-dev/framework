@@ -61,7 +61,7 @@ const MOCK_ROWS = [
 
 export default Route.extend({
   model() {
-    console.log('QueryStats Hook Runs');
+    //console.log('QueryStats Hook Runs');
     let rows = A();
 
     //20k rows
@@ -75,7 +75,7 @@ export default Route.extend({
       }
     };
 
-    console.log('Reached Return Statement');
+    //console.log('Reached Return Statement');
     return resolve(
       A([
         {

@@ -1,7 +1,7 @@
 import DS from 'ember-data';
 
 export default DS.Model.extend({
-  id: DS.attr('string'),
+  requestID: DS.attr('string'),
   apiVersion: DS.attr('string'),
   apiQuery: DS.attr('string'),
   storeQuery: DS.attr('string'),
