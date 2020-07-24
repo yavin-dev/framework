@@ -10,5 +10,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "requestVersion")
 @JsonSubTypes(
     JsonSubTypes.Type(value = RequestV1::class, name = "v1"),
-    JsonSubTypes.Type(value = RequestV2::class, name = "2.0"))
+    JsonSubTypes.Type(value = RequestV2::class, name = "2.0")
+)
 interface Request

@@ -25,9 +25,9 @@ class RoleTest : IntegrationTest() {
          */
         given()
             .header("User", naviUser1)
-        .When()
+            .When()
             .get("roles")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_OK)
             .body("data", empty<Any>())
@@ -42,9 +42,9 @@ class RoleTest : IntegrationTest() {
          */
         given()
             .header("User", naviUser1)
-        .When()
+            .When()
             .get("/roles")
-        .then()
+            .then()
             .assertThat()
             .body("data.id", hasItems<String>(adminRole))
     }
@@ -61,19 +61,21 @@ class RoleTest : IntegrationTest() {
          */
         given()
             .header("User", naviUser1)
-        .When()
+            .When()
             .get("/roles/$userRole")
-        .then()
+            .then()
             .assertThat()
             .body("data.attributes.createDate", nullValue())
-            .body("data.attributes.createdOn",
-                RegexMatcher.matchesRegex("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}")) // YYYY-MM-DD HH:MM:ss
+            .body(
+                "data.attributes.createdOn",
+                RegexMatcher.matchesRegex("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}")
+            ) // YYYY-MM-DD HH:MM:ss
 
         given()
             .header("User", naviUser1)
             .contentType("application/vnd.api+json")
             .body(
-                    """
+                """
                 {
                     "data": {
                         "type": "roles",
@@ -85,9 +87,9 @@ class RoleTest : IntegrationTest() {
                 }
                 """.trimIndent()
             )
-        .When()
+            .When()
             .patch("/roles/$userRole")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_FORBIDDEN)
     }

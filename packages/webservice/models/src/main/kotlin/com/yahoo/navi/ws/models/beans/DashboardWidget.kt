@@ -76,14 +76,20 @@ class DashboardWidget : HasAuthor, HasEditors {
     var updatedOn: Date? = null
 
     @Column(name = "requests", columnDefinition = "MEDIUMTEXT")
-    @Type(type = "com.yahoo.navi.ws.models.types.JsonType", parameters = [
-        Parameter(name = "class", value = "java.util.ArrayList")
-    ])
+    @Type(
+        type = "com.yahoo.navi.ws.models.types.JsonType",
+        parameters = [
+            Parameter(name = "class", value = "java.util.ArrayList")
+        ]
+    )
     var requests: ArrayList<Request> = arrayListOf()
 
     @Column(name = "visualization", columnDefinition = "MEDIUMTEXT")
-    @Type(type = "com.yahoo.navi.ws.models.types.JsonType", parameters = [
-        Parameter(name = "class", value = "com.yahoo.navi.ws.models.beans.fragments.DashboardWidgetVisualization")
-    ])
+    @Type(
+        type = "com.yahoo.navi.ws.models.types.JsonType",
+        parameters = [
+            Parameter(name = "class", value = "com.yahoo.navi.ws.models.beans.fragments.DashboardWidgetVisualization")
+        ]
+    )
     var visualization: DashboardWidgetVisualization? = null
 }

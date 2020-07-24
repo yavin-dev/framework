@@ -30,9 +30,9 @@ class UserTest : IntegrationTest() {
          */
         given()
             .header("User", naviUser1)
-        .When()
+            .When()
             .get("/users")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_OK)
 
@@ -48,9 +48,9 @@ class UserTest : IntegrationTest() {
          */
         given()
             .header("User", naviUser1)
-        .When()
+            .When()
             .get("/users")
-        .then()
+            .then()
             .assertThat()
             .body("data.id", hasItems<String>(naviUser1))
     }
@@ -73,9 +73,9 @@ class UserTest : IntegrationTest() {
                     }
                 """.trimIndent()
             )
-        .When()
+            .When()
             .post("/users")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_FORBIDDEN)
 
@@ -99,20 +99,22 @@ class UserTest : IntegrationTest() {
          */
         given()
             .header("User", user1)
-        .When()
+            .When()
             .get("/users/$user1")
-        .then()
+            .then()
             .assertThat()
             .body("data.attributes.createDate", nullValue())
 
-            .body("data.attributes.createdOn",
-                RegexMatcher.matchesRegex("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}")) // YYYY-MM-DD HH:MM:ss
+            .body(
+                "data.attributes.createdOn",
+                RegexMatcher.matchesRegex("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}")
+            ) // YYYY-MM-DD HH:MM:ss
 
         given()
             .header("User", user1)
             .contentType("application/vnd.api+json")
             .body(
-                    """
+                """
                 {
                     "data": {
                         "type": "users",
@@ -124,9 +126,9 @@ class UserTest : IntegrationTest() {
                 }
                 """.trimIndent()
             )
-        .When()
+            .When()
             .patch("/users/$user1")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_FORBIDDEN)
     }
@@ -139,7 +141,8 @@ class UserTest : IntegrationTest() {
         given()
             .header("User", naviUser1)
             .contentType("application/vnd.api+json")
-            .body("""
+            .body(
+                """
                 {
                     "data": {
                         "type": "reports",
@@ -172,10 +175,11 @@ class UserTest : IntegrationTest() {
                         }
                     }
                 }
-            """.trimIndent())
-        .When()
+                """.trimIndent()
+            )
+            .When()
             .post("/reports")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_CREATED)
 
@@ -183,7 +187,8 @@ class UserTest : IntegrationTest() {
         given()
             .header("User", naviUser2)
             .contentType("application/vnd.api+json")
-            .body("""
+            .body(
+                """
                 {
                     "data": {
                         "type": "users",
@@ -198,10 +203,11 @@ class UserTest : IntegrationTest() {
                         }
                     }
                 }
-            """.trimIndent())
-        .When()
+                """.trimIndent()
+            )
+            .When()
             .patch("/users/$naviUser1")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_FORBIDDEN)
 
@@ -209,7 +215,8 @@ class UserTest : IntegrationTest() {
         given()
             .header("User", naviUser2)
             .contentType("application/vnd.api+json")
-            .body("""
+            .body(
+                """
                 {
                     "data": {
                         "type": "users",
@@ -224,19 +231,20 @@ class UserTest : IntegrationTest() {
                         }
                     }
                 }
-            """.trimIndent())
-        .When()
+                """.trimIndent()
+            )
+            .When()
             .patch("/users/$naviUser2")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_FORBIDDEN)
 
         // a user cannot delete themselves
         given()
             .header("User", naviUser1)
-        .When()
+            .When()
             .delete("/users/$naviUser1")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_FORBIDDEN)
     }
@@ -250,7 +258,8 @@ class UserTest : IntegrationTest() {
         given()
             .header("User", naviUser1)
             .contentType("application/vnd.api+json")
-            .body("""
+            .body(
+                """
                 {
                     "data": {
                         "type": "reports",
@@ -267,10 +276,11 @@ class UserTest : IntegrationTest() {
                         }
                     }
                 }
-            """.trimIndent())
-        .When()
+                """.trimIndent()
+            )
+            .When()
             .post("/reports")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_CREATED)
 
@@ -278,7 +288,8 @@ class UserTest : IntegrationTest() {
         given()
             .header("User", naviUser2)
             .contentType("application/vnd.api+json")
-            .body("""
+            .body(
+                """
             {
                 "data": {
                     "type": "reports",
@@ -295,10 +306,11 @@ class UserTest : IntegrationTest() {
                     }
                 }
             }
-            """.trimIndent())
-        .When()
+                """.trimIndent()
+            )
+            .When()
             .post("/reports")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_CREATED)
 
@@ -306,9 +318,9 @@ class UserTest : IntegrationTest() {
         given()
             .header("User", naviUser2)
             .contentType("application/vnd.api+json")
-        .When()
+            .When()
             .get("/users/$naviUser1")
-        .then()
+            .then()
             .assertThat()
             .body("data.relationships.favoriteReports.data", empty<Boolean>())
 
@@ -316,7 +328,8 @@ class UserTest : IntegrationTest() {
         given()
             .header("User", naviUser1)
             .contentType("application/vnd.api+json")
-            .body("""
+            .body(
+                """
                 {
                     "data": {
                         "type": "users",
@@ -337,10 +350,11 @@ class UserTest : IntegrationTest() {
                         }
                     }
                 }
-                """.trimIndent())
-        .When()
+                """.trimIndent()
+            )
+            .When()
             .patch("/users/$naviUser1")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_NO_CONTENT)
 
@@ -348,9 +362,9 @@ class UserTest : IntegrationTest() {
         given()
             .header("User", naviUser1)
             .contentType("application/vnd.api+json")
-        .When()
+            .When()
             .get("/users/$naviUser1")
-        .then()
+            .then()
             .assertThat()
             .body("data.relationships.favoriteReports.data.id", hasItems("1", "2"))
 
@@ -358,7 +372,8 @@ class UserTest : IntegrationTest() {
         given()
             .header("User", naviUser1)
             .contentType("application/vnd.api+json")
-            .body("""
+            .body(
+                """
                 {
                     "data": {
                         "type": "users",
@@ -375,10 +390,11 @@ class UserTest : IntegrationTest() {
                         }
                     }
                 }
-                """.trimIndent())
-        .When()
+                """.trimIndent()
+            )
+            .When()
             .patch("/users/$naviUser1")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_NO_CONTENT)
 
@@ -386,9 +402,9 @@ class UserTest : IntegrationTest() {
         given()
             .header("User", naviUser1)
             .contentType("application/vnd.api+json")
-        .When()
+            .When()
             .get("/users/$naviUser1")
-        .then()
+            .then()
             .assertThat()
             .body("data.relationships.favoriteReports.data.id", not(hasItems("2")))
 
@@ -396,7 +412,8 @@ class UserTest : IntegrationTest() {
         given()
             .header("User", naviUser2)
             .contentType("application/vnd.api+json")
-            .body("""
+            .body(
+                """
                 {
                     "data": {
                         "type": "users",
@@ -413,10 +430,11 @@ class UserTest : IntegrationTest() {
                         }
                     }
                 }
-                """.trimIndent())
-        .When()
+                """.trimIndent()
+            )
+            .When()
             .patch("/users/$naviUser2")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_NO_CONTENT)
 
@@ -424,9 +442,9 @@ class UserTest : IntegrationTest() {
         given()
             .header("User", naviUser1)
             .contentType("application/vnd.api+json")
-        .When()
+            .When()
             .get("/users/$naviUser1")
-        .then()
+            .then()
             .assertThat()
             .body("data.relationships.favoriteReports.data.id", hasItems("1"))
     }
@@ -441,7 +459,8 @@ class UserTest : IntegrationTest() {
         given()
             .header("User", naviUser1)
             .contentType("application/vnd.api+json")
-            .body("""
+            .body(
+                """
                 {
                     "data": {
                         "type": "dashboards",
@@ -458,10 +477,11 @@ class UserTest : IntegrationTest() {
                         }
                     }
                 }
-            """.trimIndent())
-        .When()
+                """.trimIndent()
+            )
+            .When()
             .post("/dashboards")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_CREATED)
 
@@ -469,7 +489,8 @@ class UserTest : IntegrationTest() {
         given()
             .header("User", naviUser2)
             .contentType("application/vnd.api+json")
-            .body("""
+            .body(
+                """
                 {
                     "data": {
                         "type": "dashboards",
@@ -486,10 +507,11 @@ class UserTest : IntegrationTest() {
                         }
                     }
                 }
-            """.trimIndent())
-        .When()
+                """.trimIndent()
+            )
+            .When()
             .post("/dashboards")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_CREATED)
 
@@ -497,7 +519,8 @@ class UserTest : IntegrationTest() {
         given()
             .header("User", naviUser2)
             .contentType("application/vnd.api+json")
-            .body("""
+            .body(
+                """
                 {
                     "data": {
                         "type": "dashboards",
@@ -514,19 +537,20 @@ class UserTest : IntegrationTest() {
                         }
                     }
                 }
-            """.trimIndent())
-        .When()
+                """.trimIndent()
+            )
+            .When()
             .post("/dashboards")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_CREATED)
 
         // User 1 has no editor access
         given()
             .header("User", naviUser1)
-        .When()
+            .When()
             .get("/users/$naviUser1")
-        .then()
+            .then()
             .assertThat()
             .body("data.relationships.editingDashboards.data", empty<Any>())
 
@@ -534,7 +558,8 @@ class UserTest : IntegrationTest() {
         given()
             .header("User", naviUser2)
             .contentType("application/vnd.api+json")
-            .body("""
+            .body(
+                """
                 {
                     "data": {
                         "type": "dashboards",
@@ -555,10 +580,11 @@ class UserTest : IntegrationTest() {
                         }
                     }
                 }
-            """.trimIndent())
-        .When()
+                """.trimIndent()
+            )
+            .When()
             .patch("/dashboards/2")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_NO_CONTENT)
 
@@ -566,7 +592,8 @@ class UserTest : IntegrationTest() {
         given()
             .header("User", naviUser2)
             .contentType("application/vnd.api+json")
-            .body("""
+            .body(
+                """
                 {
                     "data": {
                         "type": "dashboards",
@@ -593,28 +620,29 @@ class UserTest : IntegrationTest() {
                         }
                     }
                 }
-            """.trimIndent())
-        .When()
+                """.trimIndent()
+            )
+            .When()
             .patch("/dashboards/3")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_NO_CONTENT)
 
         // dashboards that can be edited and authored are shown for user 1 and user 3
         given()
             .header("User", naviUser1)
-        .When()
+            .When()
             .get("/users/$naviUser1")
-        .then()
+            .then()
             .assertThat()
             .body("data.relationships.editingDashboards.data.id", hasItems("2", "3"))
             .body("data.relationships.dashboards.data.id", hasItems("1"))
 
         given()
             .header("User", naviUser3)
-        .When()
+            .When()
             .get("/users/$naviUser3")
-        .then()
+            .then()
             .assertThat()
             .body("data.relationships.editingDashboards.data.id", hasItems("3"))
             .body("data.relationships.dashboards.data.id", empty<Any>())
@@ -623,7 +651,8 @@ class UserTest : IntegrationTest() {
         given()
             .header("User", naviUser2)
             .contentType("application/vnd.api+json")
-            .body("""
+            .body(
+                """
                 {
                     "data": {
                         "type": "dashboards",
@@ -646,18 +675,19 @@ class UserTest : IntegrationTest() {
                         }
                     }
                 }
-            """.trimIndent())
-        .When()
+                """.trimIndent()
+            )
+            .When()
             .patch("/dashboards/3")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_NO_CONTENT)
 
         given()
             .header("User", naviUser3)
-        .When()
+            .When()
             .get("/users/$naviUser3")
-        .then()
+            .then()
             .assertThat()
             .body("data.relationships.editingDashboards.data.id", empty<Any>())
     }
@@ -671,7 +701,8 @@ class UserTest : IntegrationTest() {
         given()
             .header("User", naviUser1)
             .contentType("application/vnd.api+json")
-            .body("""
+            .body(
+                """
                 {
                     "data": {
                         "type": "dashboards",
@@ -688,10 +719,11 @@ class UserTest : IntegrationTest() {
                         }
                     }
                 }
-            """.trimIndent())
-        .When()
+                """.trimIndent()
+            )
+            .When()
             .post("/dashboards")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_CREATED)
 
@@ -699,7 +731,8 @@ class UserTest : IntegrationTest() {
         given()
             .header("User", naviUser2)
             .contentType("application/vnd.api+json")
-            .body("""
+            .body(
+                """
                 {
                     "data": {
                         "type": "dashboards",
@@ -716,19 +749,20 @@ class UserTest : IntegrationTest() {
                         }
                     }
                 }
-            """.trimIndent())
-        .When()
+                """.trimIndent()
+            )
+            .When()
             .post("/dashboards")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_CREATED)
 
         // user starts with no favorites
         given()
             .header("User", naviUser1)
-        .When()
+            .When()
             .get("/users/$naviUser1")
-        .then()
+            .then()
             .assertThat()
             .body("data.relationships.favoriteDashboards.data", empty<Any>())
 
@@ -736,7 +770,8 @@ class UserTest : IntegrationTest() {
         given()
             .header("User", naviUser1)
             .contentType("application/vnd.api+json")
-            .body("""
+            .body(
+                """
                 {
                     "data": {
                         "type": "users",
@@ -757,19 +792,20 @@ class UserTest : IntegrationTest() {
                         }
                     }
                 }
-            """.trimIndent())
-        .When()
+                """.trimIndent()
+            )
+            .When()
             .patch("/users/$naviUser1")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_NO_CONTENT)
 
         // favorite dashboards still show up for user
         given()
             .header("User", naviUser1)
-        .When()
+            .When()
             .get("/users/$naviUser1")
-        .then()
+            .then()
             .assertThat()
             .body("data.relationships.favoriteDashboards.data.id", hasItems("1", "2"))
 
@@ -777,7 +813,8 @@ class UserTest : IntegrationTest() {
         given()
             .header("User", naviUser1)
             .contentType("application/vnd.api+json")
-            .body("""
+            .body(
+                """
                 {
                     "data": {
                         "type": "users",
@@ -794,18 +831,19 @@ class UserTest : IntegrationTest() {
                         }
                     }
                 }
-            """.trimIndent())
-        .When()
+                """.trimIndent()
+            )
+            .When()
             .patch("/users/$naviUser1")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_NO_CONTENT)
 
         given()
             .header("User", naviUser1)
-        .When()
+            .When()
             .get("/users/$naviUser1")
-        .then()
+            .then()
             .assertThat()
             .body("data.relationships.favoriteDashboards.data.id", not(hasItems("2")))
 
@@ -813,7 +851,8 @@ class UserTest : IntegrationTest() {
         given()
             .header("User", naviUser2)
             .contentType("application/vnd.api+json")
-            .body("""
+            .body(
+                """
                 {
                     "data": {
                         "type": "users",
@@ -830,19 +869,20 @@ class UserTest : IntegrationTest() {
                         }
                     }
                 }
-            """.trimIndent())
-        .When()
+                """.trimIndent()
+            )
+            .When()
             .patch("/users/$naviUser2")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_NO_CONTENT)
 
         // favorite dashboard still shows for user1
         given()
             .header("User", naviUser1)
-        .When()
+            .When()
             .get("/users/$naviUser1")
-        .then()
+            .then()
             .assertThat()
             .body("data.relationships.favoriteDashboards.data.id", hasItems("1"))
     }
@@ -855,7 +895,8 @@ class UserTest : IntegrationTest() {
         given()
             .header("User", naviUser1)
             .contentType("application/vnd.api+json")
-            .body("""
+            .body(
+                """
                 {
                     "data": {
                         "type": "reports",
@@ -872,17 +913,19 @@ class UserTest : IntegrationTest() {
                         }
                     }
                 }
-            """.trimIndent())
-        .When()
+                """.trimIndent()
+            )
+            .When()
             .post("/reports")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_CREATED)
 
         given()
             .header("User", naviUser1)
             .contentType("application/vnd.api+json")
-            .body("""
+            .body(
+                """
                 {
                     "data": {
                         "type": "reports",
@@ -899,17 +942,19 @@ class UserTest : IntegrationTest() {
                         }
                     }
                 }
-            """.trimIndent())
-        .When()
+                """.trimIndent()
+            )
+            .When()
             .post("/reports")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_CREATED)
 
         given()
             .header("User", naviUser1)
             .contentType("application/vnd.api+json")
-            .body("""
+            .body(
+                """
                 {
                     "data": {
                         "type": "dashboards",
@@ -926,18 +971,19 @@ class UserTest : IntegrationTest() {
                         }
                     }
                 }
-            """.trimIndent())
-        .When()
+                """.trimIndent()
+            )
+            .When()
             .post("/dashboards")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_CREATED)
 
         given()
             .header("User", naviUser1)
-        .When()
+            .When()
             .get("/users/$naviUser1")
-        .then()
+            .then()
             .assertThat()
             .body("data.relationships.reports.data.type", equalTo(arrayListOf("reports", "reports")))
             .body("data.relationships.reports.data.id", hasItems("1", "2"))
@@ -954,9 +1000,9 @@ class UserTest : IntegrationTest() {
         given()
             .header("User", naviUser1)
             .contentType("application/vnd.api+json")
-        .When()
+            .When()
             .get("/users/$naviUser1")
-        .then()
+            .then()
             .assertThat()
             .body("data.relationships.roles.data", empty<Any>())
 
@@ -969,7 +1015,8 @@ class UserTest : IntegrationTest() {
         given()
             .header("User", naviUser1)
             .contentType("application/vnd.api+json")
-            .body("""
+            .body(
+                """
                 {
                     "data": {
                         "type": "users",
@@ -990,19 +1037,20 @@ class UserTest : IntegrationTest() {
                         }
                     }
                 }
-            """.trimIndent())
-        .When()
+                """.trimIndent()
+            )
+            .When()
             .patch("/users/$naviUser1")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_NO_CONTENT)
 
         // roles show up for user
         given()
             .header("User", naviUser1)
-        .When()
+            .When()
             .get("/users/$naviUser1")
-        .then()
+            .then()
             .assertThat()
             .body("data.relationships.roles.data.id", hasItems("admin", "user"))
 
@@ -1010,7 +1058,8 @@ class UserTest : IntegrationTest() {
         given()
             .header("User", naviUser1)
             .contentType("application/vnd.api+json")
-            .body("""
+            .body(
+                """
                 {
                     "data": {
                         "type": "users",
@@ -1027,10 +1076,11 @@ class UserTest : IntegrationTest() {
                         }
                     }
                 }
-                """.trimIndent())
-        .When()
+                """.trimIndent()
+            )
+            .When()
             .patch("/users/$naviUser1")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_NO_CONTENT)
 
@@ -1038,9 +1088,9 @@ class UserTest : IntegrationTest() {
         given()
             .header("User", naviUser1)
             .contentType("application/vnd.api+json")
-        .When()
+            .When()
             .get("/users/$naviUser1")
-        .then()
+            .then()
             .assertThat()
             .body("data.relationships.roles.data.id", not(hasItems("user")))
     }

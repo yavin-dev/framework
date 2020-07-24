@@ -18,21 +18,24 @@ class ReportTest : IntegrationTest() {
     private var testReqStrMF = String()
     private var expectedReqStr = String()
     private var visualStr = String()
-    private var author = { user: String -> """
+    private var author = { user: String ->
+        """
         |"author": {
         |   "data": {
         |        "type": "users",
         |        "id": "$user"
         |    }
         |}
-        """.trimMargin() }
+        """.trimMargin()
+    }
 
     @BeforeEach
     fun setup() {
 
         // The test Request string, Order does not matter since
         // our matcher compares JSON Elements
-        reqStr = ("""{
+        reqStr = (
+            """{
             |"logicalTable":{
             |   "timeGrain":"day",
             |   "table":"base"
@@ -58,9 +61,11 @@ class ReportTest : IntegrationTest() {
             |   {"dimension":"dim1"},
             |   {"dimension":"dim2"}
             |]
-            |}""".trimMargin())
+            |}""".trimMargin()
+            )
 
-        expectedReqStr = ("""{
+        expectedReqStr = (
+            """{
             |"logicalTable":{
             |   "timeGrain":"day",
             |   "table":"base"
@@ -88,10 +93,12 @@ class ReportTest : IntegrationTest() {
             |   {"dimension":"dim1"},
             |   {"dimension":"dim2"}
             |]
-            |}""".trimMargin())
+            |}""".trimMargin()
+            )
 
         // The test Request string with missing fields,
-        testReqStrMF = ("""[{
+        testReqStrMF = (
+            """[{
             |"logicalTable":{
             |   "timeGrain":"day",
             |   "table":"base"
@@ -107,16 +114,19 @@ class ReportTest : IntegrationTest() {
             |   {"metric":"metric2","parameters":{}},
             |   {"metric":"metric3","parameters":{"param1":"paramVal1"}}
             |]
-            |}]""".trimMargin())
+            |}]""".trimMargin()
+            )
 
-        visualStr = ("""{
+        visualStr = (
+            """{
             |"metadata":{
             |    "foo":"bar",
             |    "nestedFoo":{"innerFoo":"innerBar"}
             |},
             |"type":"chart",
             |"version":1
-            |}""".trimMargin())
+            |}""".trimMargin()
+            )
 
         /***
          * Post test users
@@ -131,7 +141,8 @@ class ReportTest : IntegrationTest() {
         given()
             .header("User", USER1)
             .contentType("application/vnd.api+json")
-            .body("""
+            .body(
+                """
                 {
                     "data": {
                         "type": "reports",
@@ -145,10 +156,11 @@ class ReportTest : IntegrationTest() {
                         }
                     }
                 }
-            """.trimIndent())
-        .When()
+                """.trimIndent()
+            )
+            .When()
             .post("/reports")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_CREATED)
 
@@ -156,9 +168,9 @@ class ReportTest : IntegrationTest() {
         given()
             .header("User", USER1)
             .contentType("application/vnd.api+json")
-        .When()
+            .When()
             .get("/reports")
-        .then()
+            .then()
             .assertThat()
             .body("data.id", hasItems("1"))
             .body("data[0].attributes.title", equalTo("A Report"))
@@ -169,7 +181,8 @@ class ReportTest : IntegrationTest() {
         given()
             .header("User", USER1)
             .contentType("application/vnd.api+json")
-            .body("""
+            .body(
+                """
                 {
                     "data": {
                         "type": "reports",
@@ -179,10 +192,11 @@ class ReportTest : IntegrationTest() {
                         }
                     }
                 }
-            """.trimIndent())
-        .When()
+                """.trimIndent()
+            )
+            .When()
             .patch("/reports/1")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_NO_CONTENT)
 
@@ -190,35 +204,36 @@ class ReportTest : IntegrationTest() {
         given()
             .header("User", USER1)
             .contentType("application/vnd.api+json")
-        .When()
+            .When()
             .get("/reports/1")
-        .then()
+            .then()
             .assertThat()
             .body("data.attributes.title", equalTo("Updated Title"))
 
         // test delete
         given()
             .header("User", USER1)
-        .When()
+            .When()
             .delete("/reports/1")
-        .then()
+            .then()
             .assertThat()
-                .statusCode(HttpStatus.SC_NO_CONTENT)
+            .statusCode(HttpStatus.SC_NO_CONTENT)
 
         // make sure report doesn't exist
         given()
             .header("User", USER1)
             .contentType("application/vnd.api+json")
-        .When()
+            .When()
             .get("/reports/1")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_NOT_FOUND)
     }
 
     @Test
     fun reportSort() {
-        val requestStr = """{
+        val requestStr =
+            """{
             |"logicalTable":{
             |   "timeGrain":"day",
             |   "table":"base"
@@ -253,7 +268,8 @@ class ReportTest : IntegrationTest() {
         given()
             .header("User", USER1)
             .contentType("application/vnd.api+json")
-            .body("""
+            .body(
+                """
                 {
                     "data": {
                         "type": "reports",
@@ -267,10 +283,11 @@ class ReportTest : IntegrationTest() {
                         }
                     }
                 }
-            """.trimIndent())
-        .When()
+                """.trimIndent()
+            )
+            .When()
             .post("/reports")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_CREATED)
 
@@ -278,9 +295,9 @@ class ReportTest : IntegrationTest() {
         given()
             .header("User", USER1)
             .contentType("application/vnd.api+json")
-        .When()
+            .When()
             .get("/reports/1")
-        .then()
+            .then()
             .assertThat()
             .body("data.attributes.request.sort.metric", hasItems("m1", "m2"))
             .body("data.attributes.request.sort.find { it.metric == 'm1'}.direction", equalTo("asc"))
@@ -289,7 +306,8 @@ class ReportTest : IntegrationTest() {
 
     @Test
     fun testHaving() {
-        val requestStr = """{
+        val requestStr =
+            """{
             |"logicalTable":{
             |   "timeGrain":"day",
             |   "table":"base"
@@ -324,7 +342,8 @@ class ReportTest : IntegrationTest() {
         given()
             .header("User", USER1)
             .contentType("application/vnd.api+json")
-            .body("""
+            .body(
+                """
                 {
                     "data": {
                         "type": "reports",
@@ -338,10 +357,11 @@ class ReportTest : IntegrationTest() {
                         }
                     }
                 }
-            """.trimIndent())
-        .When()
+                """.trimIndent()
+            )
+            .When()
             .post("/reports")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_CREATED)
 
@@ -349,9 +369,9 @@ class ReportTest : IntegrationTest() {
         given()
             .header("User", USER1)
             .contentType("application/vnd.api+json")
-        .When()
+            .When()
             .get("/reports/1")
-        .then()
+            .then()
             .assertThat()
             .body("data.attributes.request.having.metric", hasItems("m1", "m2"))
             .body("data.attributes.request.having.find { it.metric == 'm1'}.operator", equalTo("lt"))
@@ -367,7 +387,8 @@ class ReportTest : IntegrationTest() {
         given()
             .header("User", USER1)
             .contentType("application/vnd.api+json")
-            .body("""
+            .body(
+                """
                 {
                     "data": {
                         "type": "reports",
@@ -381,10 +402,11 @@ class ReportTest : IntegrationTest() {
                         }
                     }
                 }
-            """.trimIndent())
-        .When()
+                """.trimIndent()
+            )
+            .When()
             .post("/reports")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_FORBIDDEN)
 
@@ -392,9 +414,9 @@ class ReportTest : IntegrationTest() {
         given()
             .header("User", USER1)
             .contentType("application/vnd.api+json")
-        .When()
+            .When()
             .get("/reports/1")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_NOT_FOUND)
     }
@@ -405,7 +427,8 @@ class ReportTest : IntegrationTest() {
         given()
             .header("User", USER1)
             .contentType("application/vnd.api+json")
-            .body("""
+            .body(
+                """
                 {
                     "data": {
                         "type": "reports",
@@ -419,17 +442,19 @@ class ReportTest : IntegrationTest() {
                         }
                     }
                 }
-            """.trimIndent())
-        .When()
+                """.trimIndent()
+            )
+            .When()
             .post("/reports")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_CREATED)
 
         given()
             .header("User", USER2)
             .contentType("application/vnd.api+json")
-            .body("""
+            .body(
+                """
                 {
                     "data": {
                         "type": "reports",
@@ -439,18 +464,19 @@ class ReportTest : IntegrationTest() {
                         }
                     }
                 }
-            """.trimIndent())
-        .When()
+                """.trimIndent()
+            )
+            .When()
             .patch("/reports/1")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_FORBIDDEN)
 
         given()
             .header("User", USER2)
-        .When()
+            .When()
             .delete("/reports/1")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_FORBIDDEN)
     }
@@ -461,7 +487,8 @@ class ReportTest : IntegrationTest() {
         given()
             .header("User", USER1)
             .contentType("application/vnd.api+json")
-            .body("""
+            .body(
+                """
                 {
                     "data": {
                         "type": "reports",
@@ -475,10 +502,11 @@ class ReportTest : IntegrationTest() {
                         }
                     }
                 }
-            """.trimIndent())
-        .When()
+                """.trimIndent()
+            )
+            .When()
             .post("/reports")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_CREATED)
 
@@ -486,9 +514,9 @@ class ReportTest : IntegrationTest() {
         given()
             .header("User", USER1)
             .contentType("application/vnd.api+json")
-        .When()
+            .When()
             .get("/reports/1")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_OK)
             .body("data.attributes.createdOn", matchesRegex("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}"))
@@ -501,7 +529,8 @@ class ReportTest : IntegrationTest() {
         given()
             .header("User", USER1)
             .contentType("application/vnd.api+json")
-            .body("""
+            .body(
+                """
                 {
                     "data": {
                         "type": "reports",
@@ -515,10 +544,11 @@ class ReportTest : IntegrationTest() {
                         }
                     }
                 }
-            """.trimIndent())
-        .When()
+                """.trimIndent()
+            )
+            .When()
             .post("/reports")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_CREATED)
 
@@ -526,7 +556,8 @@ class ReportTest : IntegrationTest() {
         given()
             .header("User", USER2)
             .contentType("application/vnd.api+json")
-            .body("""
+            .body(
+                """
                 {
                     "data": {
                         "type": "reports",
@@ -536,19 +567,20 @@ class ReportTest : IntegrationTest() {
                         }
                     }
                 }
-            """.trimIndent())
-        .When()
+                """.trimIndent()
+            )
+            .When()
             .patch("/reports/1")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_FORBIDDEN)
 
         // non author should not be able to delete report
         given()
             .header("User", USER2)
-        .When()
+            .When()
             .delete("/reports/1")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_FORBIDDEN)
     }

@@ -10,9 +10,12 @@ import org.hibernate.annotations.Type
 
 data class Filter(
     var field: String = "",
-    @Type(type = "com.yahoo.navi.ws.models.types.JsonType", parameters = [
-        Parameter(name = "class", value = "java.utils.HashMap")
-    ]) var parameters: Map<String, String> = emptyMap(),
+    @Type(
+        type = "com.yahoo.navi.ws.models.types.JsonType",
+        parameters = [
+            Parameter(name = "class", value = "java.utils.HashMap")
+        ]
+    ) var parameters: Map<String, String> = emptyMap(),
     var operator: String = "",
     var type: ColumnType? = null,
     var values: List<Any> = emptyList()

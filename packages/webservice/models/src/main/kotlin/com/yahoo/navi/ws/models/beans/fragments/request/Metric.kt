@@ -10,7 +10,10 @@ import org.hibernate.annotations.Type
 data class Metric(
     var metric: String = "",
 
-    @Type(type = "com.yahoo.navi.ws.models.types.JsonType", parameters = [
-        Parameter(name = "class", value = "java.utils.HashMap")
-    ]) var parameters: Map<String, String> = emptyMap()
+    @Type(
+        type = "com.yahoo.navi.ws.models.types.JsonType",
+        parameters = [
+            Parameter(name = "class", value = "java.utils.HashMap")
+        ]
+    ) var parameters: Map<String, String> = emptyMap()
 )

@@ -12,9 +12,12 @@ import org.hibernate.annotations.Type
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class Column(
     var field: String = "",
-    @Type(type = "com.yahoo.navi.ws.models.types.JsonType", parameters = [
-        Parameter(name = "class", value = "java.utils.HashMap")
-    ]) var parameters: Map<String, String> = emptyMap(),
+    @Type(
+        type = "com.yahoo.navi.ws.models.types.JsonType",
+        parameters = [
+            Parameter(name = "class", value = "java.utils.HashMap")
+        ]
+    ) var parameters: Map<String, String> = emptyMap(),
     var type: ColumnType? = null,
     var alias: String? = null
 )
