@@ -91,4 +91,18 @@ module('Unit - Utils - Adapter Utils', function() {
 
     set(config, 'navi.defaultDataSource', oldDefault);
   });
+
+  test('queryStrForField', function(assert) {
+    assert.equal(
+      queryStrForField('foo', { bar: 'baz' }),
+      'foo(bar: baz)',
+      'Field with parameter is formatted correctly'
+    );
+    assert.equal(
+      queryStrForField('foo', { bar: 'baz', bang: 'boom' }),
+      'foo(bar: baz,bang: boom)',
+      'Field with multiple parameters is formatted correctly'
+    );
+    assert.equal(queryStrForField('foo'), 'foo', 'Name is returned for field with no parameters');
+  });
 });
