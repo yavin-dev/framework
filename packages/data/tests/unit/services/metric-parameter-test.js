@@ -45,6 +45,14 @@ let MetadataService,
       description: 'Two'
     }
   ]),
+  IDOnlyRows = [
+    {
+      id: 'foo'
+    },
+    {
+      id: 'bar'
+    }
+  ],
   Server;
 
 module('Unit | Service | metric parameter', function(hooks) {
@@ -68,6 +76,15 @@ module('Unit | Service | metric parameter', function(hooks) {
           { 'Content-Type': 'application/json' },
           JSON.stringify({
             rows: OtherRows
+          })
+        ];
+      });
+      this.get(`${HOST}/v1/dimensions/idOnlyDim/values/`, () => {
+        return [
+          200,
+          { 'Content-Type': 'application/json' },
+          JSON.stringify({
+            rows: IDOnlyRows
           })
         ];
       });
@@ -214,6 +231,31 @@ module('Unit | Service | metric parameter', function(hooks) {
         three: OtherRows.map(row => ({ ...row, param: 'three' }))
       },
       'The parameter values reference the param they originate from even with duplicate dimensions'
+    );
+  });
+
+  test('fetchAllParams - dimension parameter with values that need to be normalized', async function(assert) {
+    assert.expect(1);
+
+    let service = this.owner.lookup('service:metric-parameter'),
+      metricMeta = {
+        arguments: [
+          {
+            id: 'one',
+            type: 'ref',
+            expression: 'dimension:idOnlyDim'
+          }
+        ]
+      };
+
+    const result = await service.fetchAllParams(metricMeta);
+    assert.deepEqual(
+      result,
+      {
+        'one|foo': { id: 'foo', name: 'foo', param: 'one' },
+        'one|bar': { id: 'bar', name: 'bar', param: 'one' }
+      },
+      'Dimension values are normalized correctly'
     );
   });
 });

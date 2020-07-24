@@ -7,6 +7,7 @@ import metadataRoutes, {
   TableOne,
   TableTwo,
   Tables,
+  IDOnlyDim,
   DimensionOne,
   DimensionTwo,
   DimensionThree,
@@ -64,7 +65,7 @@ module('Unit - Service - Bard Metadata', function(hooks) {
 
     assert.deepEqual(
       keg.all('metadata/dimension').mapBy('id'),
-      [DimensionOne.name, DimensionThree.name, DimensionTwo.name],
+      [DimensionOne.name, DimensionThree.name, DimensionTwo.name, IDOnlyDim.name],
       'All dimensions are loaded in the keg'
     );
 
@@ -216,7 +217,7 @@ module('Unit - Service - Bard Metadata', function(hooks) {
 
     assert.deepEqual(
       Service.all('dimension').mapBy('id'),
-      ['dimensionOne', 'dimensionThree', 'dimensionTwo'],
+      ['dimensionOne', 'dimensionThree', 'dimensionTwo', 'idOnlyDim'],
       'all method returns all loaded dimensions'
     );
 
