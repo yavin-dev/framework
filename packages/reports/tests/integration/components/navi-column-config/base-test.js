@@ -17,20 +17,65 @@ module('Integration | Component | navi-column-config/base', function(hooks) {
   setupRenderingTest(hooks);
 
   hooks.beforeEach(function() {
-    this.metadata = {};
-    this.cloneColumn = () => undefined;
-    this.toggleColumnFilter = () => undefined;
-    this.onUpdateColumnName = () => undefined;
-  });
-
-  test('it renders', async function(assert) {
-    assert.expect(2);
     this.owner.register(
       'helper:update-report-action',
       buildHelper(() => {}),
       { instantiate: false }
     );
 
+    this.metadata = {};
+    this.cloneColumn = () => undefined;
+    this.toggleColumnFilter = () => undefined;
+    this.onUpdateColumnName = () => undefined;
+  });
+
+  test('it renders ', async function(assert) {
+    this.set('column', {
+      name: 'property',
+      type: 'dimension',
+      displayName: 'Property',
+      fragment: { dimension: { id: 'property', name: 'Property' } }
+    });
+
+    await render(TEMPLATE);
+
+    assert
+      .dom('.navi-column-config-base__api-column-name')
+      .hasText(this.column.fragment.dimension.id, 'NaviColumnConfig::Base renders dimension API column name');
+
+    assert
+      .dom('.navi-column-config-base__api-column-name')
+      .hasAttribute(
+        'title',
+        `API Column: ${this.column.fragment.dimension.id}`,
+        'NaviColumnConfig::Base renders a title attribute for the API Column name'
+      );
+
+    this.set('column', {
+      name: 'clicks',
+      type: 'metric',
+      displayName: 'Clicks',
+      fragment: { metric: { id: 'clicks', name: 'Clicks' } }
+    });
+
+    assert
+      .dom('.navi-column-config-base__api-column-name')
+      .hasText(this.column.fragment.metric.id, 'NaviColumnConfig::Base renders metric API column name');
+
+    this.set('column', {
+      name: 'dateTime',
+      type: 'timeDimension',
+      displayName: 'Date Time',
+      fragment: 'dateTime' //TODO make me real
+    });
+
+    assert
+      .dom('.navi-column-config-base__api-column-name')
+      .hasText('dateTime', 'NaviColumnConfig::Base has a special case for rendering the dateTime API column name');
+  });
+
+  test('it supports action', async function(assert) {
+    assert.expect(2);
     this.column = {
       name: 'property',
       type: 'dimension',
@@ -59,11 +104,6 @@ module('Integration | Component | navi-column-config/base', function(hooks) {
 
   test('Filter is active when column is filtered', async function(assert) {
     assert.expect(2);
-    this.owner.register(
-      'helper:update-report-action',
-      buildHelper(() => {}),
-      { instantiate: false }
-    );
 
     this.column = {
       name: 'property',
