@@ -19,6 +19,7 @@ import { isBlank } from '@ember/utils';
 import layout from '../templates/components/grouped-list';
 import { groupBy, sortBy } from 'lodash-es';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
+import { capitalize } from '@ember/string';
 
 @templateLayout(layout)
 @tagName('')
@@ -60,7 +61,7 @@ class GroupedListComponent extends Component {
   get groupedItems() {
     const { items, groupByField, sortByField } = this;
 
-    const grouped = groupBy(items, row => row[groupByField] && row[groupByField].split(',')[0]);
+    const grouped = groupBy(items, row => row[groupByField]?.split(',')[0] || `No ${capitalize(groupByField)}`);
 
     if (!isBlank(sortByField)) {
       Object.entries(grouped).forEach(([key, value]) => {
