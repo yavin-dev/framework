@@ -61,7 +61,7 @@ class DimensionFilterBuilderComponent extends BaseFilterBuilderComponent {
   /**
    * @property {String} primaryKeyField - Primary Key Field used so we know what to use as default field for operators
    */
-  @readOnly('requestFragment.dimension.primaryKeyFieldName') primaryKeyField;
+  @readOnly('requestFragment.columnMeta.primaryKeyFieldName') primaryKeyField;
 
   /**
    * @property {?Boolean} showFields - Whether to show the field chooser in the filter builder
@@ -71,9 +71,9 @@ class DimensionFilterBuilderComponent extends BaseFilterBuilderComponent {
   /**
    * @property {Array} fields - List of fields that a user can choose from
    */
-  @computed('requestFragment.dimension.fields')
+  @computed('requestFragment.columnMeta')
   get fields() {
-    let fields = get(this, 'requestFragment.dimension.fields');
+    let fields = this.requestFragment.columnMeta.fields;
     return fields ? fields.map(field => field.name) : ['id', 'desc'];
   }
 
@@ -81,18 +81,18 @@ class DimensionFilterBuilderComponent extends BaseFilterBuilderComponent {
    * @property {Object} filter
    * @override
    */
-  @computed('requestFragment.{operator,dimension,rawValues.[],field}', 'supportedOperators')
+  @computed('requestFragment.{operator,dimension,values,validations,field}')
   get filter() {
-    let dimensionFragment = get(this, 'requestFragment'),
-      operatorId = get(dimensionFragment, 'operator'),
-      operator = arr(get(this, 'supportedOperators')).findBy('id', operatorId);
+    let dimensionFragment = this.requestFragment,
+      operatorId = dimensionFragment.operator,
+      operator = arr(this.supportedOperators).findBy('id', operatorId);
 
     return {
-      subject: get(dimensionFragment, 'dimension'),
+      subject: dimensionFragment,
       operator,
-      values: get(dimensionFragment, 'rawValues'),
-      validations: get(dimensionFragment, 'validations'),
-      field: get(dimensionFragment, 'field')
+      values: dimensionFragment.values,
+      validations: dimensionFragment.validations,
+      field: dimensionFragment.parameters.projection
     };
   }
 
@@ -116,7 +116,12 @@ class DimensionFilterBuilderComponent extends BaseFilterBuilderComponent {
    */
   @action
   setField(field) {
-    const changeSet = { field };
+    const changeSet = {
+      paramaters: {
+        ...this.requestFragment.paramaters,
+        projection: field
+      }
+    };
     this.onUpdateFilter(changeSet);
   }
 }

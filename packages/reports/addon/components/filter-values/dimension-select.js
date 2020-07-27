@@ -40,12 +40,12 @@ export default class DimensionSelectComponent extends Component {
   /**
    * @property {String} dimensionName - name of dimension to be filtered
    */
-  @readOnly('filter.subject.id') dimensionName;
+  @readOnly('filter.subject.field') dimensionName;
 
   /**
    * @property {String} primaryKey - primary key for this dimension
    */
-  @readOnly('filter.subject.primaryKeyFieldName') primaryKey;
+  @readOnly('filter.subject.columnMeta.primaryKeyFieldName') primaryKey;
 
   /**
    * @property {BardDimensionArray} dimensionOptions - list of all dimension values
@@ -58,11 +58,9 @@ export default class DimensionSelectComponent extends Component {
 
     const dimensionName = get(this, 'dimensionName'),
       dimensionService = get(this, '_dimensionService'),
-      metadataService = get(this, '_metadataService'),
-      source = get(this, 'filter.subject.source'),
-      loadedDimension = metadataService.getById('dimension', dimensionName, source);
+      source = get(this, 'filter.subject.source');
 
-    if (dimensionName && loadedDimension?.cardinality === CARDINALITY_SIZES[0]) {
+    if (dimensionName && this.filter.subject.columnMeta.cardinality === CARDINALITY_SIZES[0]) {
       return dimensionService.all(dimensionName, { dataSourceName: source });
     }
 
@@ -100,14 +98,9 @@ export default class DimensionSelectComponent extends Component {
   /**
    * @property {String} filterValueFieldId - which id field to use as ID display.
    */
-  @computed('dimensionName', 'filter.{field,subject.source}')
+  @computed('filter.{subject.columnMeta.idFieldName,field}')
   get filterValueFieldId() {
-    const { dimensionName } = this,
-      metadataService = this._metadataService,
-      source = get(this, 'filter.subject.source'),
-      meta = metadataService.getById('dimension', dimensionName, source);
-
-    return meta ? meta.idFieldName : this.filter.field;
+    return this.filter.subject.columnMeta.idFieldName || this.filter.field;
   }
 
   /**

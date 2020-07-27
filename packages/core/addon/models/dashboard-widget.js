@@ -27,7 +27,7 @@ export default DS.Model.extend(hasVisualization, Validations, {
   title: DS.attr('string', { defaultValue: 'Untitled Widget' }),
   createdOn: DS.attr('moment'),
   updatedOn: DS.attr('moment'),
-  requests: fragmentArray('bard-request/request', {
+  requests: fragmentArray('bard-request-v2/request', {
     defaultValue: () => []
   }),
 

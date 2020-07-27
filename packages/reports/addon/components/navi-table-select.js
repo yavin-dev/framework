@@ -26,7 +26,7 @@ class NaviTableSelectComponent extends Component {
   /**
    * @property {String} searchField
    */
-  searchField = 'name';
+  searchField = 'id';
 }
 
 export default NaviTableSelectComponent;

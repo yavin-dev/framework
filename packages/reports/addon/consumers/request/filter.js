@@ -17,7 +17,7 @@ import {
 
 const DEFAULT_METRIC_FILTER = {
   operator: 'gt',
-  values: 0
+  values: [0]
 };
 
 export default ActionConsumer.extend({
@@ -88,7 +88,7 @@ export default ActionConsumer.extend({
         return opDictionary[type] || opDictionary.default;
       };
 
-      let defaultOperator = findDefaultOperator(dimension.valueType);
+      let defaultOperator = findDefaultOperator(dimensionMetadataModel.valueType);
 
       request.addFilter({
         type: 'dimension',
@@ -108,9 +108,10 @@ export default ActionConsumer.extend({
      */
     [RequestActions.ADD_METRIC_FILTER]: ({ currentModel: { request } }, metricMetadataModel, parameters) => {
       request.addFilter({
-        columnMetadataModel: metricMetadataModel,
+        type: 'metric',
+        dataSource: request.dataSource,
+        field: metricMetadataModel.id,
         parameters,
-        field: metricMetadataModel.primaryKeyFieldName,
         ...DEFAULT_METRIC_FILTER
       });
     },
