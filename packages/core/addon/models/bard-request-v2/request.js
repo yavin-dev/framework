@@ -135,11 +135,11 @@ export default class Request extends Fragment.extend(Validations) {
   }
 
   /**
-   * @property {ColumnFragment[]} dimensionColumns - The dimension columns
+   * @property {ColumnFragment[]} dimensionColumns - The dimension and time-dimension columns
    */
   @computed('columns.[]')
   get dimensionColumns() {
-    return this.columns.filter(column => column.type === 'dimension');
+    return this.columns.filter(column => column.type === 'time-dimension' || column.type === 'dimension');
   }
 
   /**
@@ -151,11 +151,11 @@ export default class Request extends Fragment.extend(Validations) {
   }
 
   /**
-   * @property {ColumnFragment[]} dimensionFilters - The dimension filters
+   * @property {ColumnFragment[]} dimensionFilters - The dimension and time-dimension filters
    */
   @computed('filters.[]')
   get dimensionFilters() {
-    return this.filters.filter(filter => filter.type === 'dimension');
+    return this.filters.filter(filter => filter.type === 'time-dimension' || filter.type === 'dimension');
   }
 
   /**
