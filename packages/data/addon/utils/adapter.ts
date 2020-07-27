@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import config from 'ember-get-config';
-import { warn } from '@ember/debug';
+import { assert } from '@ember/debug';
 
 type DataSource = {
   name: string;
@@ -15,11 +15,24 @@ export type SourceAdapterOptions = {
 };
 
 /**
+ * @returns default data source if one is configured otherwise the first data source
+ */
+export function getDefaultDataSource(): DataSource {
+  const {
+    navi: { defaultDataSource, dataSources }
+  } = config;
+
+  return defaultDataSource
+    ? dataSources.find((source: DataSource) => source.name === defaultDataSource)
+    : dataSources[0];
+}
+
+/**
  * @param name - name of the data source. falsey name will return default data source
  */
 export function getDataSource(name?: string): DataSource {
   const {
-    navi: { defaultDataSource, dataSources }
+    navi: { dataSources }
   } = config;
 
   if (name) {
@@ -27,16 +40,9 @@ export function getDataSource(name?: string): DataSource {
     if (host) {
       return host;
     }
-    warn(
-      `Fact host for ${name} requested but none was found in configuration. Falling back to configured default datasource`,
-      {
-        id: 'navi-fact-host-not-configured'
-      }
-    );
+    assert(`Datasource ${name} should be configured in the navi environment`);
   }
-  return defaultDataSource
-    ? dataSources.find((source: DataSource) => source.name === defaultDataSource)
-    : dataSources[0];
+  return getDefaultDataSource();
 }
 
 /**
