@@ -41,31 +41,36 @@ export default Component.extend({
   /**
    * @property {Array} orderedFilters - ordered collection of date, metric, and dimension filters from request
    */
-  orderedFilters: computed('request.{filters.[],intervals.[],having.[]}', function() {
-    let dateFilters = (this.request.intervals || []).map(filter => {
-      return {
+  orderedFilters: computed('request.filters.[]', function() {
+    const { filters } = this.request;
+    const dateFilters = filters
+      .filter(f => f.type === 'time-dimension' && f.field === 'dateTime')
+      .map(filter => ({
         type: 'date-time', // Dasherized to match filter-builder component name
         requestFragment: filter,
         required: true
-      };
-    });
+      }));
 
-    let dimFilters = (this.request.filters || []).map(filter => {
-      let dimensionDataType = filter.dimension.valueType?.toLowerCase?.(),
-        type = this._dimensionFilterBuilder(dimensionDataType);
+    let dimFilters = filters
+      .filter(f => f.type === 'dimension' || (f.type === 'time-dimension' && f.field !== 'dateTime'))
+      .map(filter => {
+        let dimensionDataType = filter.columnMeta?.valueType?.toLowerCase?.(),
+          type = this._dimensionFilterBuilder(dimensionDataType);
 
-      return {
-        type,
-        requestFragment: filter
-      };
-    });
+        return {
+          type,
+          requestFragment: filter
+        };
+      });
 
-    let metricFilters = (this.request.having || []).map(filter => {
-      return {
-        type: 'metric',
-        requestFragment: filter
-      };
-    });
+    let metricFilters = filters
+      .filter(f => f.type === 'metric')
+      .map(filter => {
+        return {
+          type: filter.type,
+          requestFragment: filter
+        };
+      });
 
     return [...dateFilters, ...dimFilters, ...metricFilters];
   }),

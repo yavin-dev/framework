@@ -355,7 +355,7 @@ export default class LineChart extends Component.extend(hasChartBuilders) {
     }
     const requestGrain = this.model?.firstObject?.request?.logicalTable?.timeGrain;
 
-    const values = this.get('xAxisTickValuesByGrain')[requestGrain];
+    const values = this.xAxisTickValuesByGrain[requestGrain];
     return {
       axis: {
         x: {

@@ -10,7 +10,7 @@
  */
 
 import Component from '@ember/component';
-import { get, computed } from '@ember/object';
+import { computed } from '@ember/object';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
 import { getOwner } from '@ember/application';
 import layout from '../templates/components/report-visualization';
@@ -24,12 +24,9 @@ class ReportVisualization extends Component {
    */
   @computed('report.request', 'response')
   get visualizationHash() {
-    let request = get(this, 'report.request').serialize(), // Visualization wants serialized request
-      response = get(this, 'response') || { rows: [] };
-
     return {
-      request,
-      response
+      request: this.report.request,
+      response: this.response || { rows: [] }
     };
   }
 
@@ -38,10 +35,10 @@ class ReportVisualization extends Component {
    */
   @computed('report.visualization.type', 'print')
   get visualizationComponent() {
-    const visType = get(this, 'report.visualization.type');
-    let componentName = `navi-visualizations/${visType}`;
-    if (get(this, 'print')) {
-      let printComponent = `${componentName}-print`;
+    const { type } = this.report.visualization;
+    let componentName = `navi-visualizations/${type}`;
+    if (this.print) {
+      const printComponent = `${componentName}-print`;
       if (getOwner(this).factoryFor(`component:${printComponent}`)) {
         componentName = printComponent;
       }

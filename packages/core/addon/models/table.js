@@ -121,6 +121,7 @@ function columnTransform(newColumns, oldColumns) {
  * @returns {Boolean} whether or not
  */
 function hasAllColumns(request, columns) {
+  // TODO: come back to simplify this
   //retrieve everything but dateTime from metadata.columns
   let columnFields = arr(columns)
       .rejectBy('type', 'dateTime')
@@ -135,15 +136,17 @@ function hasAllColumns(request, columns) {
         }
       }),
     dimensions = [].concat(
-      ...get(request, 'dimensions').map(dimension => {
-        let name = dimension.dimension.id,
-          defaultFields = getDefaultDimensionFields(dimension);
-        return !defaultFields.length ? name : defaultFields.map(field => canonicalizeDimension({ id: name, field }));
-      })
+      ...request.columns
+        .filter(c => c.type === 'time-dimension' || c.type === 'dimension')
+        .map(dimension => {
+          let name = dimension.dimension.id,
+            defaultFields = getDefaultDimensionFields(dimension);
+          return !defaultFields.length ? name : defaultFields.map(field => canonicalizeDimension({ id: name, field }));
+        })
     ),
-    metrics = arr(get(request, 'metrics')).mapBy('canonicalName'),
+    metrics = arr(request.columns.filter(c => c.type === 'metric')).mapBy('canonicalName'),
     requestFields = [...dimensions, ...metrics],
-    timeGrain = request.logicalTable?.timeGrain,
+    timeGrain = request.timeGrain,
     shouldHaveDateTimeCol = timeGrain !== 'all',
     doesHaveDateTimeCol = !!arr(columns).findBy('type', 'dateTime');
 

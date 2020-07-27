@@ -30,7 +30,7 @@ class BaseFilterBuilderComponent extends Component {
   /**
    * @property {String} displayName - display name for the filter
    */
-  @readOnly('filter.subject.name') displayName;
+  @readOnly('filter.subject.columnMeta.name') displayName;
 
   /**
    * @property {Array} supportedOperators - list of valid values for filter.operator

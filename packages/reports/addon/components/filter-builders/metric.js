@@ -72,12 +72,12 @@ class MetricFilterBuilderComponent extends BaseFilterBuilderComponent {
   /**
    * @property {String} displayName - display name for the filter with metric and parameters
    */
-  @computed('filter.subject.{metric,parameters}')
+  @computed('requestFragment.{field,parameters}')
   get displayName() {
-    const metric = this.filter.subject;
+    const { columnMeta, parameters } = this.requestFragment;
     return getOwner(this)
       .lookup('service:navi-formatter')
-      .formatMetric(metric.metric, metric.parameters);
+      .formatMetric(columnMeta, parameters);
   }
 
   /**
@@ -87,11 +87,11 @@ class MetricFilterBuilderComponent extends BaseFilterBuilderComponent {
   @computed('supportedOperators', 'requestFragment.{operator,metric,values.[]}')
   get filter() {
     const { requestFragment } = this;
-    const { metric, values, validations, operator: operatorId } = requestFragment;
+    const { values, validations, operator: operatorId } = requestFragment;
     const operator = arr(this.supportedOperators).findBy('id', operatorId);
 
     return {
-      subject: metric,
+      subject: requestFragment,
       operator,
       values: arr(values),
       validations
