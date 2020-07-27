@@ -69,9 +69,9 @@ export function chartTypeForRequest(request) {
     return DIMENSION_SERIES;
   }
 
-  let metricCount = request.metrics?.length,
-    timeGrain = request.logicalTable?.timeGrain,
-    interval = request.intervals?.firstObject?.interval,
+  let metricCount = request.columns.filter(f => f.type === 'metric').length,
+    timeGrain = request.timeGrain,
+    interval = request.interval,
     monthPeriod = interval.diffForTimePeriod('month'),
     applicableTimeGrain = ['day', 'week', 'month'].includes(timeGrain);
 
@@ -90,7 +90,7 @@ export function chartTypeForRequest(request) {
  * @returns {Array} - list of metric JSON objects
  */
 export function getRequestMetrics(request) {
-  return request.metrics.map(metric => metric.toJSON());
+  return request.columns.filter(f => f.type === 'metric').map(metric => metric.toJSON());
 }
 
 /**
@@ -101,7 +101,9 @@ export function getRequestMetrics(request) {
  * @returns {Array} - list of dimension ids
  */
 export function getRequestDimensions(request) {
-  return arr(request.dimensions).mapBy('dimension.id');
+  return request.columns
+    .filter(c => c.type === 'dimension' || (c.type === 'time-dimension' && c.field !== 'dateTime'))
+    .map(c => c.field);
 }
 
 /**

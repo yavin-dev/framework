@@ -11,7 +11,7 @@ import NaviFactsModel from 'navi-data/models/navi-facts';
 //@ts-ignore
 import RequestBuilder from 'navi-data/builder/request';
 import config from 'ember-get-config';
-import NaviFactAdapter, { RequestV1, RequestOptions } from 'navi-data/adapters/fact-interface';
+import NaviFactAdapter, { RequestOptions, RequestV2 } from 'navi-data/adapters/fact-interface';
 import NaviFactSerializer, { ResponseV1 } from 'navi-data/serializers/fact-interface';
 import { getDataSource, getDefaultDataSource } from 'navi-data/utils/adapter';
 
@@ -43,7 +43,8 @@ export default class NaviFactsService extends Service {
    * @param {Object} baseRequest - existing request to start from
    * @returns {Object} request builder interface
    */
-  request(baseRequest: RequestV1) {
+  request(baseRequest: RequestV2) {
+    // TODO: Fix here
     return RequestBuilder.create(baseRequest);
   }
 
@@ -53,7 +54,7 @@ export default class NaviFactsService extends Service {
    * @param {Object} [options] - options object
    * @returns {String} - url for the request
    */
-  getURL(request: RequestV1, options: RequestOptions) {
+  getURL(request: RequestV2, options: RequestOptions) {
     const type = config.navi.dataSources[0].type;
     const adapter = this._adapterFor(type);
     return adapter.urlForFindQuery(request, options);
@@ -68,7 +69,7 @@ export default class NaviFactsService extends Service {
    * @param {Object} [options.customHeaders] - hash of header names and values
    * @returns {Promise} - Promise with the bard response model object
    */
-  fetch(this: NaviFactsService, request: RequestV1, options: RequestOptions): Promise<NaviFactsModel> {
+  fetch(this: NaviFactsService, request: RequestV2, options: RequestOptions): Promise<NaviFactsModel> {
     const dataSourceName = options?.dataSourceName;
     const type = dataSourceName ? getDataSource(dataSourceName).type : getDefaultDataSource().type;
     const adapter = this._adapterFor(type);
@@ -86,7 +87,7 @@ export default class NaviFactsService extends Service {
    * @param {Object} request
    * @return {Promise|null} returns the promise with the next set of results or null
    */
-  fetchNext(this: NaviFactsService, response: ResponseV1, request: RequestV1): Promise<NaviFactsModel> | null {
+  fetchNext(this: NaviFactsService, response: ResponseV1, request: RequestV2): Promise<NaviFactsModel> | null {
     if (response.meta.pagination) {
       const { perPage, numberOfResults, currentPage } = response.meta.pagination;
       const totalPages = numberOfResults / perPage;
@@ -107,7 +108,7 @@ export default class NaviFactsService extends Service {
    * @param {Object} request
    * @return {Promise|null} returns the promise with the previous set of results or null
    */
-  fetchPrevious(this: NaviFactsService, response: ResponseV1, request: RequestV1): Promise<NaviFactsModel> | null {
+  fetchPrevious(this: NaviFactsService, response: ResponseV1, request: RequestV2): Promise<NaviFactsModel> | null {
     if (response.meta.pagination) {
       const { rowsPerPage, currentPage } = response.meta.pagination;
       if (currentPage > 1) {
