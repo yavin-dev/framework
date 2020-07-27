@@ -121,6 +121,7 @@ function columnTransform(newColumns, oldColumns) {
  * @returns {Boolean} whether or not
  */
 function hasAllColumns(request, columns) {
+  // TODO: come back to simplify this
   //retrieve everything but dateTime from metadata.columns
   let columnFields = arr(columns)
       .rejectBy('type', 'dateTime')

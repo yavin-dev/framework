@@ -53,8 +53,6 @@ export function BlurOnAnimationEnd(target, button) {
   }
 }
 
-const IS_DIMENSION = c => c.type === 'time-dimension' || c.type === 'dimension';
-
 export default class DimensionSelector extends Component {
   layout = layout;
 
@@ -65,27 +63,21 @@ export default class DimensionSelector extends Component {
 
   @service bardMetadata;
 
-  @computed('request.{dataSource,table}')
-  get currentTable() {
-    const { dataSource, table } = this.request;
-    return this.bardMetadata.getById('table', table, dataSource);
-  }
-
   /*
    * @property {Array} allDimensions
    */
-  @computed('currentTable')
+  @computed('request.tableMetadata')
   get allDimensions() {
-    const { dimensions, timeDimensions } = this.currentTable;
+    const { dimensions, timeDimensions } = this.request.tableMetadata;
     return [...dimensions, ...timeDimensions];
   }
 
   /*
    * @property {Object} defaultTimeGrain - the default time grain for the logical table selected
    */
-  @computed('currentTable.timeGrains')
+  @computed('request.tableMetadata.timeGrains')
   get defaultTimeGrain() {
-    return getDefaultTimeGrain(this.currentTable.timeGrains);
+    return getDefaultTimeGrain(this.request.tableMetadata.timeGrains);
   }
 
   /*
@@ -107,35 +99,17 @@ export default class DimensionSelector extends Component {
   /*
    * @property {Array} selectedDimensions - dimensions in the request
    */
-  @computed('request.columns.[]')
+  @computed('request.dimensionColumns.[]')
   get selectedDimensions() {
-    return this.request.columns.filter(IS_DIMENSION);
-  }
-
-  /*
-   * @property {Array} selectedFilters - filters in the request
-   */
-  @computed('request.filters.[]')
-  get selectedFilters() {
-    return this.request.filters.filter(IS_DIMENSION);
+    return this.request.dimensionColumns;
   }
 
   /*
    * @property {Object} selectedTimeGrain - timeGrain in the request
    */
-  @computed('request.timeGrain', 'currentTable.timeGrains')
+  @computed('request.timeGrainColumn')
   get selectedTimeGrain() {
-    const { currentTable, request } = this;
-    return currentTable.timeGrains.find(grain => grain.id === request.timeGrain);
-  }
-
-  /*
-   * @property {Object} selectedColumnsAndFilters - combination of selectedColumns and SelectedFilters
-   */
-  @computed('selectedColumns', 'selectedFilters')
-  get selectedColumnsAndFilters() {
-    const { selectedColumns, selectedFilters } = this;
-    return arr([...selectedColumns, ...selectedFilters]).uniq();
+    return this.request.timeGrainColumn;
   }
 
   /*
@@ -156,7 +130,7 @@ export default class DimensionSelector extends Component {
   @computed('selectedColumns')
   get itemsChecked() {
     return this.selectedColumns.reduce((items, item) => {
-      items[item.id] = true;
+      items[item.columnMeta.id] = true;
       return items;
     }, {});
   }
@@ -165,15 +139,12 @@ export default class DimensionSelector extends Component {
    * @property {Object} dimensionsFiltered - dimension -> boolean mapping denoting presence of dimension
    *                                         in request filters
    */
-  @computed('request.filters.[]')
+  @computed('request.dimensionFilters.[]')
   get dimensionsFiltered() {
-    return this.request.filters
-      .filter(IS_DIMENSION)
-      .map(f => f.field)
-      .reduce((list, dimension) => {
-        list[dimension] = true;
-        return list;
-      }, {});
+    return this.request.dimensionFilters.reduce((list, dimension) => {
+      list[dimension.columnMeta.id] = true;
+      return list;
+    }, {});
   }
 
   /**

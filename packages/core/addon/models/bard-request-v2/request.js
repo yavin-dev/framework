@@ -72,6 +72,8 @@ export default class Request extends Fragment.extend(Validations) {
 
   @service fragmentFactory;
 
+  @service('bard-metadata') metadataService;
+
   /**
    * @method clone
    * @returns {Fragment} copy of this fragment
@@ -117,6 +119,43 @@ export default class Request extends Fragment.extend(Validations) {
       requestVersion: clonedRequest.requestVersion,
       dataSource: clonedRequest.dataSource
     });
+  }
+
+  @computed('table', 'dataSource')
+  get tableMetadata() {
+    return this.metadataService.getById('table', this.table, this.dataSource);
+  }
+
+  /**
+   * @property {ColumnFragment[]} metricColumns - The metric columns
+   */
+  @computed('columns.[]')
+  get metricColumns() {
+    return this.columns.filter(column => column.type === 'metric');
+  }
+
+  /**
+   * @property {ColumnFragment[]} dimensionColumns - The dimension columns
+   */
+  @computed('columns.[]')
+  get dimensionColumns() {
+    return this.columns.filter(column => column.type === 'dimension');
+  }
+
+  /**
+   * @property {ColumnFragment[]} metricFilters - The metric filters
+   */
+  @computed('filters.[]')
+  get metricFilters() {
+    return this.filters.filter(filter => filter.type === 'metric');
+  }
+
+  /**
+   * @property {ColumnFragment[]} dimensionFilters - The dimension filters
+   */
+  @computed('filters.[]')
+  get dimensionFilters() {
+    return this.filters.filter(filter => filter.type === 'dimension');
   }
 
   /**

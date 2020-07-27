@@ -27,9 +27,8 @@ export default class ReportBuilderComponent extends Component {
   /**
    * @property {boolean} -- whether report has valid table
    */
-  @computed('currentTable')
   get hasValidLogicalTable() {
-    return !!this.currentTable;
+    return !!this.request.tableMetadata;
   }
 
   /**
@@ -38,12 +37,6 @@ export default class ReportBuilderComponent extends Component {
   @computed
   get allTables() {
     return this.metadataService.all('table').sortBy('name');
-  }
-
-  @computed('request.{dataSource,table}')
-  get currentTable() {
-    const { dataSource, table } = this.request;
-    return this.metadataService.getById('table', table, dataSource);
   }
 
   /**
@@ -74,7 +67,7 @@ export default class ReportBuilderComponent extends Component {
    */
   @action
   onToggleDimFilter(dimension) {
-    this._expandFilters(() => arr(this.request.filters).find(f => f.type === 'dimension' && f.field === dimension));
+    this._expandFilters(() => this.request.dimensionFilters.find(f => f.field === dimension));
   }
 
   /**
@@ -83,7 +76,7 @@ export default class ReportBuilderComponent extends Component {
    */
   @action
   onToggleMetricFilter(metric) {
-    this._expandFilters(() => (this.request.filters || []).find(f => f.type === 'metric' && f.field === metric.name));
+    this._expandFilters(() => this.request.metricFilters.find(f => f.field === metric.name));
   }
 
   /**
@@ -94,8 +87,8 @@ export default class ReportBuilderComponent extends Component {
   @action
   onToggleParameterizedMetricFilter(metric, parameters) {
     this._expandFilters(() =>
-      (this.request.having || []).find(
-        having => having.metric.canonicalName === canonicalizeMetric({ metric: metric.name, parameters })
+      this.request.metricFilters.find(
+        filter => filter.canonicalName === canonicalizeMetric({ metric: metric.name, parameters })
       )
     );
   }

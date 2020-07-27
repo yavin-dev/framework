@@ -9,7 +9,8 @@
  *   />
  */
 import { A as arr } from '@ember/array';
-import { set, computed, action } from '@ember/object';
+import { computed, action } from '@ember/object';
+import { readOnly } from '@ember/object/computed';
 import BaseFilterBuilderComponent from './base';
 import Interval from 'navi-core/utils/classes/interval';
 import Duration, { parseDuration } from 'navi-core/utils/classes/duration';
@@ -29,10 +30,10 @@ export default class DateTimeFilterBuilder extends BaseFilterBuilderComponent {
   /**
    * @property {String} dateTimePeriodName - the date time period
    */
-  @computed('request.timeGrain')
+  @computed('request.{timeGrain,tableMetadata.timeGrains}')
   get dateTimePeriodName() {
-    const { timeGrain } = this.request;
-    return timeGrain; // TODO: look up and use name
+    const { timeGrain, tableMetadata } = this.request;
+    return tableMetadata.timeGrains.find(t => t.id === timeGrain).name;
   }
 
   /**
@@ -146,6 +147,11 @@ export default class DateTimeFilterBuilder extends BaseFilterBuilderComponent {
       return new Interval(new Duration(`P${intervalValue}D`), end);
     }
   }
+
+  /**
+   * @property {String} displayName - display name for the filter
+   */
+  @readOnly('filter.subject.name') displayName;
 
   /**
    * @property {Object} filter

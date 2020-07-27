@@ -47,8 +47,7 @@ export default class BaseIntervalComponent extends Component {
    */
   @computed('request.logicalTable.table.timeGrainIds.[]')
   get lowestDateTimePeriod() {
-    const { table, dataSource } = this.request;
-    const tableMetadata = this.bardMetadata.getById('table', table, dataSource);
+    const { tableMetadata } = this.request;
     const sorted = tableMetadata.timeGrainIds.sort((lId, rId) => {
       const leftValue = timeGrainSorting[lId] || Infinity;
       const rightValue = timeGrainSorting[rId] || Infinity;

@@ -7,7 +7,6 @@
  *      title=title
  *      items=items
  *      searchField=field
- *      selected=selected
  *      as | items |
  *   }}
  *      {{yield items}}
@@ -47,15 +46,14 @@ export default Component.extend({
   }),
 
   /*
-   * @property {Array} filteredItems - items filtered either by selected and by searchQuery
+   * @property {Array} filteredItems - items or items filtered by searchQuery
    */
-  filteredItems: computed('items', 'query', 'searchField', 'selected', function() {
-    const query = get(this, 'query');
-    const items = get(this, 'items');
+  filteredItems: computed('items', 'query', 'searchField', function() {
+    const { items, query } = this;
 
     //filter items by searchQuery
     if (query) {
-      return searchRecords(items, query, get(this, 'searchField'));
+      return searchRecords(items, query, this.searchField);
     }
 
     return items;

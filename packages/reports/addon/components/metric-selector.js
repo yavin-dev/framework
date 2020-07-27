@@ -29,26 +29,20 @@ import { inject as service } from '@ember/service';
 class MetricSelectorComponent extends Component {
   @service bardMetadata;
 
-  @computed('request.{dataSource,table}')
-  get currentTable() {
-    const { dataSource, table } = this.request;
-    return this.bardMetadata.getById('table', table, dataSource);
-  }
-
   /*
    * @property {Array} allMetrics
    */
-  @computed('currentTable.metrics')
+  @computed('request.tableMetadata.metrics')
   get allMetrics() {
-    return A(this.currentTable.metrics).sortBy('name');
+    return A(this.request.tableMetadata.metrics).sortBy('name');
   }
 
   /*
    * @property {Array} selectedMetrics - selected metrics in the request
    */
-  @computed('request.columns.[]')
+  @computed('request.metricColumns.[]')
   get selectedMetrics() {
-    const metrics = this.request.columns.filter(c => c.type === 'metric');
+    const metrics = this.request.metricColumns;
     const selectedBaseMetrics = uniqBy(metrics, metric => metric.field);
 
     return selectedBaseMetrics;
@@ -61,7 +55,7 @@ class MetricSelectorComponent extends Component {
   @computed('selectedMetrics')
   get metricsChecked() {
     return this.selectedMetrics.reduce((list, metric) => {
-      list[metric.id] = true;
+      list[metric.columnMeta.id] = true;
       return list;
     }, {});
   }
@@ -70,15 +64,12 @@ class MetricSelectorComponent extends Component {
    * @property {Object} metricsFiltered - metric -> boolean mapping denoting presence of metric
    *                                         in request havings
    */
-  @computed('request.filters.[]')
+  @computed('request.metricFilters.[]')
   get metricsFiltered() {
-    return this.request.filters
-      .filter(f => f.type === 'metric')
-      .map(c => c.field)
-      .reduce((list, metric) => {
-        list[metric] = true;
-        return list;
-      }, {});
+    return this.request.metricFilters.reduce((list, metric) => {
+      list[metric.columnMeta.id] = true;
+      return list;
+    }, {});
   }
 
   /*
