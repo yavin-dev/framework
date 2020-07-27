@@ -60,7 +60,7 @@ class GroupedListComponent extends Component {
   get groupedItems() {
     const { items, groupByField, sortByField } = this;
 
-    const grouped = groupBy(items, row => row[groupByField] && row[groupByField].split(',')[0]);
+    const grouped = groupBy(items, row => row[groupByField]?.split(',')[0] || `Uncategorized`);
 
     if (!isBlank(sortByField)) {
       Object.entries(grouped).forEach(([key, value]) => {

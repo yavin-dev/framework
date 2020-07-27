@@ -52,7 +52,7 @@ module('Integration | Component | grouped list', function(hooks) {
     const groups = findAll('.grouped-list__group-header-content');
     assert.deepEqual(
       groups.map(el => el.textContent.trim()),
-      ['foo (3)', 'bar (1)', 'undefined (1)', 'null (1)'],
+      ['foo (3)', 'bar (1)', 'Uncategorized (2)'],
       'the groups in the grouped-list are rendered, only the first item in the groupByField is considered for grouping'
     );
 
@@ -71,7 +71,7 @@ module('Integration | Component | grouped list', function(hooks) {
 
     assert.deepEqual(
       findAll('.grouped-list li').map(el => el.textContent.trim()),
-      ['foo (3)', '1', '2', '3', 'bar (1)', '6', 'undefined (1)', '4', 'null (1)', '5'],
+      ['foo (3)', '1', '2', '3', 'bar (1)', '6', 'Uncategorized (2)', '4', '5'],
       'All groups are open when `shouldOpenAllGroups` attribute is true'
     );
   });
