@@ -30,7 +30,7 @@ module('Unit | Adapter | Dimensions | Bard', function(hooks) {
   setupTest(hooks);
 
   hooks.beforeEach(function() {
-    Adapter = this.owner.lookup('Adapter:dimensions/bard');
+    Adapter = this.owner.lookup('adapter:dimensions/bard');
 
     //setup Pretender
     Server = new Pretender(function() {
