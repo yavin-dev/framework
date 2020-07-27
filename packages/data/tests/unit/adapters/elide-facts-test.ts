@@ -4,7 +4,6 @@ import { asyncFactsMutationStr } from 'navi-data/gql/mutations/async-facts';
 import { asyncFactsCancelMutationStr } from 'navi-data/gql/mutations/async-facts-cancel';
 import { asyncFactsQueryStr } from 'navi-data/gql/queries/async-facts';
 import { RequestV2 } from 'navi-data/adapters/fact-interface';
-import { queryStrForField } from 'navi-data/utils/adapter';
 import Pretender from 'pretender';
 import config from 'ember-get-config';
 
@@ -18,7 +17,7 @@ const TestRequest = {
   filters: [
     { dimension: 'd3', operator: 'in', values: ['v1', 'v2'] },
     { dimension: 'd4', operator: 'in', values: ['v3', 'v4'] },
-    { dimension: 'd5', operator: 'notnull', values: [''] }
+    { dimension: 'd5', operator: 'isnull', values: ['false'] }
   ],
   intervals: [{ start: '2015-01-03', end: '2015-01-04' }],
   having: [{ metric: 'm1', operator: 'gt', values: [0] }]
@@ -36,7 +35,7 @@ const TestRequestV2: RequestV2 = {
   filters: [
     { field: 'd3', operator: 'in', values: ['v1', 'v2'], type: 'dimension', parameters: {} },
     { field: 'd4', operator: 'in', values: ['v3', 'v4'], type: 'dimension', parameters: {} },
-    { field: 'd5', operator: 'neq', values: ['null'], type: 'dimension', parameters: {} },
+    { field: 'd5', operator: 'isnull', values: ['false'], type: 'dimension', parameters: {} },
     { field: 'time', operator: 'ge', values: ['2015-01-03'], type: 'timeDimension', parameters: {} },
     { field: 'time', operator: 'lt', values: ['2015-01-04'], type: 'timeDimension', parameters: {} },
     { field: 'm1', operator: 'gt', values: ['0'], type: 'metric', parameters: {} }
@@ -65,6 +64,22 @@ module('Unit | Adapter | elide facts', function(hooks) {
     assert.ok(adapter, 'elide-fact adapter exists');
   });
 
+  test('queryStrForField', function(assert) {
+    const adapter = this.owner.lookup('adapter:elide-facts');
+
+    assert.equal(
+      adapter.queryStrForField('foo', { bar: 'baz' }),
+      'foo(bar: baz)',
+      'Field with parameter is formatted correctly'
+    );
+    assert.equal(
+      adapter.queryStrForField('foo', { bar: 'baz', bang: 'boom' }),
+      'foo(bar: baz,bang: boom)',
+      'Field with multiple parameters is formatted correctly'
+    );
+    assert.equal(adapter.queryStrForField('foo'), 'foo', 'Name is returned for field with no parameters');
+  });
+
   test('dataQueryFromRequest', function(assert) {
     const adapter = this.owner.lookup('adapter:elide-facts');
     const queryStr = adapter.dataQueryFromRequest(TestRequest);
@@ -80,9 +95,81 @@ module('Unit | Adapter | elide facts', function(hooks) {
     const queryStr = adapter.dataQueryFromRequestV2(TestRequestV2);
     assert.equal(
       queryStr,
-      // QUnit forces us to escape all our escapes which are escapes of escapes for the request. It's messy
-      '{"query":"{ table1(filter: \\\\\\"d3=in=(v1,v2);d4=in=(v3,v4);d5!=null;time=ge=2015-01-03;time=lt=2015-01-04;m1=gt=0\\\\\\",sort: \\\\\\"d1\\\\\\",first: \\\\\\"10000\\\\\\") { edges { node { m1 m2 r(p: 123,as: a) d1 d2 } } } }"}',
+      // We have to escape each escape character so we end up with double the escape characters in this comparison
+      '{"query":"{ table1(filter: \\\\\\"d3=in=(v1,v2);d4=in=(v3,v4);d5=isnull=(false);time=ge=(2015-01-03);time=lt=(2015-01-04);m1=gt=(0)\\\\\\",sort: \\\\\\"d1\\\\\\",first: \\\\\\"10000\\\\\\") { edges { node { m1 m2 r(p: 123,as: a) d1 d2 } } } }"}',
       'dataQueryFromRequestV2 returns the correct query string for the given request V2'
+    );
+
+    assert.equal(
+      adapter.dataQueryFromRequestV2({
+        table: 'myTable',
+        columns: [
+          { field: 'm1', parameters: { p: 'q' }, type: 'metric' },
+          { field: 'd1', parameters: {}, type: 'dimension' }
+        ],
+        sorts: [],
+        filters: [],
+        requestVersion: '2.0',
+        dataSource: 'dummy-graphql'
+      }),
+      `{"query":"{ myTable { edges { node { m1(p: q) d1 } } } }"}`,
+      'Arguments are properly excluded if they are not in the request'
+    );
+
+    assert.equal(
+      adapter.dataQueryFromRequestV2({
+        table: 'myTable',
+        columns: [
+          { field: 'm1', parameters: { p: 'q' }, type: 'metric' },
+          { field: 'd1', parameters: {}, type: 'dimension' }
+        ],
+        sorts: [
+          { field: 'm1', parameters: { p: 'q' }, type: 'metric', direction: 'desc' },
+          { field: 'd1', parameters: {}, type: 'dimension', direction: 'asc' }
+        ],
+        filters: [],
+        requestVersion: '2.0',
+        dataSource: 'dummy-graphql'
+      }),
+      `{"query":"{ myTable(sort: \\\\\\"-m1(p: q),d1\\\\\\") { edges { node { m1(p: q) d1 } } } }"}`,
+      'Request with sorts and parameters is queried correctly'
+    );
+
+    assert.equal(
+      adapter.dataQueryFromRequestV2({
+        table: 'myTable',
+        columns: [
+          { field: 'm1', parameters: { p: 'q' }, type: 'metric' },
+          { field: 'd1', parameters: {}, type: 'dimension' }
+        ],
+        sorts: [],
+        filters: [
+          { field: 'm1', parameters: { p: 'q' }, type: 'metric', operator: 'in', values: ['v1', 'v2'] },
+          { field: 'd1', parameters: {}, type: 'dimension', operator: 'neq', values: ['a'] },
+          { field: 'd2', parameters: {}, type: 'dimension', operator: 'eq', values: ['b'] }
+        ],
+        requestVersion: '2.0',
+        dataSource: 'dummy-graphql'
+      }),
+      `{"query":"{ myTable(filter: \\\\\\"m1(p: q)=in=(v1,v2);d1!=(a);d2==(b)\\\\\\") { edges { node { m1(p: q) d1 } } } }"}`,
+      'Request with filters and parameters is queried correctly'
+    );
+
+    assert.equal(
+      adapter.dataQueryFromRequestV2({
+        table: 'myTable',
+        columns: [
+          { field: 'm1', parameters: { p: 'q' }, type: 'metric' },
+          { field: 'd1', parameters: {}, type: 'dimension' }
+        ],
+        sorts: [],
+        filters: [],
+        limit: '5',
+        requestVersion: '2.0',
+        dataSource: 'dummy-graphql'
+      }),
+      `{"query":"{ myTable(first: \\\\\\"5\\\\\\") { edges { node { m1(p: q) d1 } } } }"}`,
+      'Request with limit is queried correctly'
     );
   });
 
@@ -163,9 +250,9 @@ module('Unit | Adapter | elide facts', function(hooks) {
       assert.ok(uuidRegex.exec(requestObj.variables.id), 'A uuid is generated for the request id');
 
       const expectedTable = TestRequestV2.table;
-      const expectedColumns = TestRequestV2.columns.map(c => queryStrForField(c.field, c.parameters)).join(' ');
+      const expectedColumns = TestRequestV2.columns.map(c => adapter.queryStrForField(c.field, c.parameters)).join(' ');
       const expectedArgs =
-        '(filter: \\"d3=in=(v1,v2);d4=in=(v3,v4);d5!=null;time=ge=2015-01-03;time=lt=2015-01-04;m1=gt=0\\",sort: \\"d1\\",first: \\"10000\\")';
+        '(filter: \\"d3=in=(v1,v2);d4=in=(v3,v4);d5=isnull=(false);time=ge=(2015-01-03);time=lt=(2015-01-04);m1=gt=(0)\\",sort: \\"d1\\",first: \\"10000\\")';
 
       assert.equal(
         requestObj.variables.query.replace(/[ \t\r\n]+/g, ' '),
