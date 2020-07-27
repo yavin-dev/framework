@@ -220,7 +220,9 @@ export function normalizeV1toV2(request: RequestV1<string>, namespace?: string):
       field: 'dateTime',
       operator: 'bet',
       values: [start, end],
-      parameters: {}
+      parameters: {
+        grain
+      }
     })
   );
 
@@ -252,7 +254,7 @@ export function normalizeV1toV2(request: RequestV1<string>, namespace?: string):
     requestV2.sorts.push({
       type: isDateTime ? 'time-dimension' : 'metric',
       field: isDateTime ? 'dateTime' : removeNamespace(metric, namespace),
-      parameters,
+      parameters: isDateTime ? { grain } : parameters,
       direction
     });
   });

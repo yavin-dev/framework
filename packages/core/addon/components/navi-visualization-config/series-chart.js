@@ -54,7 +54,9 @@ class NaviVisualizationConfigSeriesChartComponent extends Component {
    */
   @computed('request')
   get dimensions() {
-    return arr(get(this, 'request.dimensions')).mapBy('dimension');
+    return this.request.columns
+      .filter(c => c.type === 'dimension' || (c.type === 'time-dimension' && c.field !== 'dateTime'))
+      .map(c => c.columnMeta);
   }
 
   /**
@@ -62,7 +64,7 @@ class NaviVisualizationConfigSeriesChartComponent extends Component {
    */
   @computed('seriesConfig', 'response')
   get dataByDimensions() {
-    return dataByDimensions(get(this, 'response'), get(this, 'seriesConfig.dimensionOrder'));
+    return dataByDimensions(this.response, this.seriesConfig.dimensionOrder);
   }
 
   /**
@@ -70,10 +72,9 @@ class NaviVisualizationConfigSeriesChartComponent extends Component {
    */
   @computed('dataByDimensions')
   get seriesByDimensions() {
-    let dataByDimensions = get(this, 'dataByDimensions'),
-      dimensions = get(this, 'dimensions'),
-      keys = dataByDimensions.getKeys(),
-      series = {};
+    const { dimensions, dataByDimensions } = this;
+    const keys = dataByDimensions.getKeys();
+    const series = {};
 
     // Build a series object for each series key
     for (let i = 0; i < keys.length; i++) {
@@ -106,7 +107,7 @@ class NaviVisualizationConfigSeriesChartComponent extends Component {
         });
 
         dimensionLabels.push(description || id);
-        assign(values, { [get(dimension, 'name')]: id });
+        assign(values, { [dimension.name]: id });
       }
 
       series[key] = {

@@ -3,10 +3,9 @@
   <NaviListSelector
     @items={{this.allMetrics}}
     @searchField="name"
-    @selected={{this.selectedMetrics}}
     @title="Metrics"
     @contentClass="navi-list-selector__content--metric"
-    class="{{if (feature-flag "enableRequestPreview") "navi-list-selector--request-preview"}}"
+    class="navi-list-selector--request-preview"
     as | metrics areMetricsFiltered |
   >
     <GroupedList
@@ -16,11 +15,11 @@
       @sortByField={{unless areMetricsFiltered "name"}}
       as | metric |
     >
-      <div class="grouped-list__item-container {{if (and (get-shallow this.metricsChecked metric.id) (feature-flag "enableRequestPreview")) "grouped-list__item-container--selected"}}">
+      <div class="grouped-list__item-container {{if (get-shallow this.metricsChecked metric.id) "grouped-list__item-container--selected"}}">
         <button class="grouped-list__item-label" {{on "click" (fn this.metricClicked metric)}} role="button" type="button">
           <NaviIcon
-            @icon={{if (and (get-shallow this.metricsChecked metric.id) (not (feature-flag "enableRequestPreview"))) "minus-circle" "plus-circle"}}
-            class="grouped-list__add-icon {{if (not (or (feature-flag "enableRequestPreview") (get-shallow this.metricsChecked metric.id))) "grouped-list__add-icon--deselected"}}"
+            @icon="plus-circle"
+            class="grouped-list__add-icon"
           />
           {{metric.name}}
         </button>
@@ -38,15 +37,6 @@
         </NaviIcon>
 
         <div class="grouped-list__icon-set {{if (not (can-having metric)) "grouped-list__icon-set--no-filter"}}">
-          {{#if (and metric.hasParameters (not (feature-flag "enableRequestPreview")))}}
-            <MetricConfig
-              @metric={{metric}}
-              @request={{@request}}
-              @onAddParameterizedMetric={{@onAddMetricWithParameter}}
-              @onRemoveParameterizedMetric={{update-report-action "REMOVE_COLUMN_WITH_PARAMS"}}
-              @onToggleParameterizedMetricFilter={{queue (update-report-action "TOGGLE_PARAMETERIZED_METRIC_FILTER") (optional @onToggleParameterizedMetricFilter)}}
-            />
-          {{/if}}
           {{#if (can-having metric)}}
             <NaviIcon
               @icon="filter"

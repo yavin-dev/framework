@@ -51,9 +51,10 @@ export default EmberObject.extend({
     // Support different `dateTime` formats by mapping them to a standard
     const buildDateKey = dateTime => moment(dateTime).format(DateUtils.API_DATE_FORMAT_STRING);
 
-    let metrics = config.metrics,
-      grain = request.logicalTable?.timeGrain,
-      requestInterval = Interval.parseFromStrings(request.intervals?.[0]?.start, request.intervals?.[0]?.end);
+    const metrics = config.metrics;
+    const grain = request.columns.find(f => f.type === 'time-dimension' && f.field === 'dateTime').parameters.grain;
+    const interval = request.filters.find(f => f.type === 'time-dimension' && f.field === 'dateTime');
+    const requestInterval = Interval.parseFromStrings(interval.values[0], interval.values[1]);
 
     /*
      * Get all date buckets spanned by the data,

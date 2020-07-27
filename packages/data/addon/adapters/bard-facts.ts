@@ -2,45 +2,61 @@
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
- * Description: The adapter for the bard-facts model.
+ * Description: The adapter for the bard-facts request v2 model.
  */
 
-import { deprecate } from '@ember/application/deprecations';
 import { assert } from '@ember/debug';
 import { inject as service } from '@ember/service';
 import { A as array } from '@ember/array';
 import { assign } from '@ember/polyfills';
-import EmberObject, { getWithDefault } from '@ember/object';
-import { canonicalizeMetric, getAliasedMetrics, canonicalizeAlias } from '../utils/metric';
+import EmberObject from '@ember/object';
+import { canonicalizeMetric, serializeParameters, getAliasedMetrics, canonicalizeAlias } from '../utils/metric';
 import { configHost } from '../utils/adapter';
 import NaviFactAdapter, {
-  RequestV1,
+  Filter,
+  Parameters,
   RequestOptions,
+  RequestV2,
   SORT_DIRECTIONS,
-  SortDirection,
   AsyncQueryResponse
 } from './fact-interface';
-import { AliasFn, Query } from './bard-facts-v2';
+
+export type Query = RequestOptions & Dict<string | number | boolean>;
+export type AliasFn = (column: string) => string;
+
+/**
+ * @function formatDimensionFieldName
+ * @param field - dimension id
+ * @param parameters - parameters object
+ * @param {boolean} includeFieldProj - whether to include the projected field in the formatted name e.g. age|id  OR  age
+ * @returns formatted dimension name
+ */
+function formatDimensionFieldName(field: string, parameters: Parameters, includeFieldProj = true): string {
+  const [fieldName, displayField = 'id'] = field.split('.'); // default dimension field projection to "id"
+  let parameterString = serializeParameters(parameters);
+
+  if (parameterString.length > 0) {
+    parameterString = `(${parameterString})`;
+  }
+  return `${fieldName}${parameterString}${includeFieldProj ? '|' + displayField : ''}`;
+}
 
 /**
  * Serializes a list of filters to a fili filter string
- * @param {Array<Filter>} filters - list of filters to be ANDed together for fili
- * @param {Filter} filter - filters object
- * @param {String} filter.dimension - dimension to be filtered on
- * @param {String} filter.field - the dimension field to filter
- * @param {String} filter.operator - the type of filter operator
- * @param {Array<String|number>} filter.values - the values to pass to the operator
+ * @param filters - list of filters to be ANDed together for fili
+ * @returns serialized filter string
  */
-export function serializeFilters(filters: TODO[]): string {
+export function serializeFilters(filters: Filter[]): string {
   return filters
     .map(filter => {
-      const { dimension, field, operator, values } = filter;
+      const { field, operator, values, parameters } = filter;
       const serializedValues = values
-        .map((v: string | number) => String(v).replace(/"/g, '""')) // csv serialize " -> ""
-        .map((v: string) => `"${v}"`) // wrap each "value"
+        .map(v => String(v).replace(/"/g, '""')) // csv serialize " -> ""
+        .map(v => `"${v}"`) // wrap each "value"
         .join(','); // comma to separate
+      const formattedFieldName = formatDimensionFieldName(field, parameters, true);
 
-      return `${dimension}|${field}-${operator}[${serializedValues}]`;
+      return `${formattedFieldName}-${operator}[${serializedValues}]`;
     })
     .join(',');
 }
@@ -61,13 +77,16 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
    *
    * @method _buildDimensionsPath
    * @private
-   * @param {Object} request
-   * @return {String} dimensions path
+   * @param request
+   * @return dimensions path
    */
-  _buildDimensionsPath(request: RequestV1, _options: RequestOptions): string {
-    const dimensions = array(request.dimensions);
+  _buildDimensionsPath(request: RequestV2 /*options*/): string {
+    const dimensions = array(request.columns)
+      .filterBy('type', 'dimension')
+      .map(dim => formatDimensionFieldName(dim.field, dim.parameters, false));
+
     return dimensions.length
-      ? `/${array(dimensions.mapBy('dimension'))
+      ? `/${array(dimensions)
           .uniq()
           .join('/')}`
       : '';
@@ -78,13 +97,13 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
    *
    * @method _buildDateTimeParam
    * @private
-   * @param {Object} request
-   * @return {String} dateTime param value
+   * @param request
+   * @return dateTime param value
    */
-  _buildDateTimeParam(request: RequestV1): string {
-    return request.intervals
-      .map((interval: { start: string; end: string }) => `${interval.start}/${interval.end}`)
-      .join(',');
+  _buildDateTimeParam(request: RequestV2): string {
+    const dateTimeFilters = request.filters.filter(fil => fil.field === 'dateTime');
+
+    return dateTimeFilters.map(filter => `${filter.values[0]}/${filter.values[1]}`).join(',');
   }
 
   /**
@@ -92,11 +111,16 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
    *
    * @method _buildMetricsParam
    * @private
-   * @param {Object} request
-   * @return {String} metrics param value
+   * @param request
+   * @return metrics param value
    */
-  _buildMetricsParam(request: RequestV1): string {
-    return array((request.metrics || []).map(canonicalizeMetric))
+  _buildMetricsParam(request: RequestV2): string {
+    const metrics = request.columns.filter(col => col.type === 'metric');
+    const metricIds = metrics.map(metric =>
+      canonicalizeMetric({ metric: metric.field, parameters: metric.parameters })
+    );
+
+    return array(metricIds)
       .uniq()
       .join(',');
   }
@@ -106,19 +130,16 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
    *
    * @method _buildFiltersParam
    * @private
-   * @param {Object} request
-   * @return {String} filters param value
+   * @param request
+   * @return filters param value
    */
-  _buildFiltersParam(request: RequestV1): string | undefined {
-    const { filters } = request;
+  _buildFiltersParam(request: RequestV2): string | undefined {
+    const filters = request.filters.filter((fil: Filter) => fil.type === 'dimension');
 
-    if (filters && filters.length) {
-      // default field to 'id'
-      const defaultedFilters = filters.map((filter: TODO) => ({ field: 'id', ...filter }));
-      return serializeFilters(defaultedFilters);
-    } else {
-      return undefined;
+    if (filters?.length) {
+      return serializeFilters(filters);
     }
+    return undefined;
   }
 
   /**
@@ -126,30 +147,29 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
    *
    * @method _buildSortParam
    * @private
-   * @param {Object} request
-   * @param {function} aliasFunction function that returns metrics from aliases
-   * @return {String} sort param value
+   * @param request
+   * @param aliasFunction function that returns metrics from aliases
+   * @return sort param value
    */
-  _buildSortParam(request: RequestV1, aliasFunction: AliasFn = a => a): string | undefined {
-    const { sort } = request;
+  _buildSortParam(request: RequestV2, aliasFunction: AliasFn = a => a): string | undefined {
+    const { sorts } = request;
 
-    if (sort && sort.length) {
-      return sort
-        .map((sortMetric: { metric: string; direction: SortDirection }) => {
-          const metric = aliasFunction(sortMetric.metric);
-          const direction = getWithDefault(sortMetric, 'direction', 'desc');
+    if (sorts.length) {
+      return sorts
+        .map(sortField => {
+          const field = aliasFunction(sortField.field);
+          const direction = sortField.direction || 'desc';
 
           assert(
-            `'${direction}' is not a valid sort direction (${SORT_DIRECTIONS.join()})`,
-            SORT_DIRECTIONS.indexOf(direction) !== -1
+            `'${direction}' must be a valid sort direction (${SORT_DIRECTIONS.join()})`,
+            SORT_DIRECTIONS.includes(direction)
           );
 
-          return `${metric}|${direction}`;
+          return `${field}|${direction}`;
         })
         .join(',');
-    } else {
-      return undefined;
     }
+    return undefined;
   }
 
   /**
@@ -157,33 +177,23 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
    *
    * @method _buildHavingParam
    * @private
-   * @param {Object} request
-   * @param {function} aliasFunction function that returns metrics from aliases
-   * @return {String} having param value
+   * @param request
+   * @param aliasFunction function that returns metrics from aliases
+   * @return having param value
    */
-  _buildHavingParam(request: RequestV1, aliasFunction: AliasFn = a => a): string | undefined {
-    const { having } = request;
+  _buildHavingParam(request: RequestV2, aliasFunction: AliasFn = a => a): string | undefined {
+    const having = request.filters.filter(fil => fil.type === 'metric');
 
-    if (having && having.length) {
+    if (having?.length) {
       return having
-        .map((having: { value: TODO; metric?: TODO; operator?: TODO; values?: TODO }) => {
-          deprecate('Please use the property `values` instead of `value` in a `having` object', !having.value, {
-            id: 'navi-data._buildHavingParam',
-            until: '4.0.0'
-          });
+        .map(having => {
+          const { field, operator, values = [] } = having;
 
-          //value is deprecated
-          const { metric, operator, value, values = [] } = having;
-          const valuesStr = array(values.concat(...[value]))
-            .compact()
-            .join(',');
-
-          return `${aliasFunction(metric)}-${operator}[${valuesStr}]`;
+          return `${aliasFunction(field)}-${operator}[${values.join(',')}]`;
         })
         .join(',');
-    } else {
-      return undefined;
     }
+    return undefined;
   }
 
   /**
@@ -191,16 +201,16 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
    *
    * @method _buildURLPath
    * @private
-   * @param {Object} request
-   * @param {Object} options - optional host options
-   * @return {String} URL Path
+   * @param request
+   * @param options - optional host options
+   * @return URL Path
    */
-  _buildURLPath(request: RequestV1, options: RequestOptions = {}): string {
+  _buildURLPath(request: RequestV2, options: RequestOptions = {}): string {
     const host = configHost(options);
     const { namespace } = this;
-    const table = request.logicalTable.table;
-    const timeGrain = request.logicalTable.timeGrain;
-    const dimensions = this._buildDimensionsPath(request, options);
+    const table = request.table;
+    const timeGrain = request.columns.find(col => col.field === 'dateTime')?.parameters?.grain || 'all';
+    const dimensions = this._buildDimensionsPath(request);
 
     return `${host}/${namespace}/${table}/${timeGrain}${dimensions}/`;
   }
@@ -210,26 +220,24 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
    *
    * @method _buildQuery
    * @private
-   *
-   * @param {Object} request
-   * @param {Number} options.page - page number
-   * @param {Number} options.perPage - number of results per page
-   * @param {String} options.format - result format type
-   * @param {Boolean} options.cache - with/without cache
-   * @param {Object} options.queryParams - other params
-   *
-   * @return {Object} query object
+   * @param request
+   * @param options
+   * @returns query object
    */
-  _buildQuery(request: RequestV1, options: RequestOptions): Query {
-    const query: Query = {};
-    const aliasMap = getAliasedMetrics(request.metrics);
+  _buildQuery(request: RequestV2, options: RequestOptions): Query {
+    const { columns } = request;
+    const metrics = columns
+      .filter(col => col.type === 'metric')
+      .map(col => ({ metric: col.field, parameters: col.parameters }));
+    const aliasMap = getAliasedMetrics(metrics);
     const aliasFunction: AliasFn = alias => canonicalizeAlias(alias, aliasMap);
     const filters = this._buildFiltersParam(request);
     const having = this._buildHavingParam(request, aliasFunction);
     const sort = this._buildSortParam(request, aliasFunction);
-
-    query.dateTime = this._buildDateTimeParam(request);
-    query.metrics = this._buildMetricsParam(request);
+    const query: Query = {
+      dateTime: this._buildDateTimeParam(request),
+      metrics: this._buildMetricsParam(request)
+    };
 
     if (filters) {
       query.filters = filters;
@@ -273,18 +281,20 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
    * Returns URL String for a request
    *
    * @method urlForFindQuery
-   * @param {Object} request
-   * @param {Object} [options] - options object
-   * @return {String} url
+   * @param request
+   * @param options
+   * @return url
    */
-  urlForFindQuery(request: RequestV1, options: RequestOptions): string {
+  urlForFindQuery(request: RequestV2, options: RequestOptions): string {
+    assert('Request for bard-facts-v2 adapter must be version 2', request.requestVersion.startsWith('2.'));
+
     // Decorate and translate the request
-    const decoratedRequest = this._decorate(request);
-    const path = this._buildURLPath(decoratedRequest, options);
-    const query = this._buildQuery(decoratedRequest, options);
-    const queryStr = Object.entries(query)
-      .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
-      .join('&');
+    let decoratedRequest = this._decorate(request),
+      path = this._buildURLPath(decoratedRequest, options),
+      query = this._buildQuery(decoratedRequest, options),
+      queryStr = Object.entries(query)
+        .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+        .join('&');
 
     return `${path}?${queryStr}`;
   }
@@ -297,26 +307,22 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
   /**
    * @method _decorate
    * @private
-   * @param {RequestV1} request - request to decorate
-   * @returns {RequestV1} decorated request
+   * @param request - request to decorate
+   * @returns decorated request
    */
-  _decorate(request: RequestV1): RequestV1 {
+  _decorate(request: RequestV2): RequestV2 {
     return this.requestDecorator.applyGlobalDecorators(request);
   }
 
   /**
    * @method fetchDataForRequest - Uses the url generated using the adapter to make an ajax request
-   * @param {Object} request - request object
-   * @param {Object} [options] - options object
-   *      Ex: {
-   *        page: 1,
-   *        perPage: 200,
-   *        clientId: 'custom id',
-   *        ...
-   *      }
+   * @param request - request (v2) object
+   * @param options - options object
    * @returns {Promise} - Promise with the response
    */
-  fetchDataForRequest(request: RequestV1, options: RequestOptions) {
+  fetchDataForRequest(request: RequestV2, options: RequestOptions) {
+    assert('Request for bard-facts-v2 adapter must be version 2', request.requestVersion.startsWith('2.'));
+
     // Decorate and translate the request
     const decoratedRequest = this._decorate(request);
     const url = this._buildURLPath(decoratedRequest, options);
@@ -326,17 +332,17 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
     let timeout = 600000;
 
     // Support custom clientid header
-    if (options && options.clientId) {
+    if (options?.clientId) {
       clientId = options.clientId;
     }
 
     // Support custom timeout
-    if (options && options.timeout) {
+    if (options?.timeout) {
       timeout = options.timeout;
     }
 
     // Support custom headers
-    if (options && options.customHeaders) {
+    if (options?.customHeaders) {
       customHeaders = options.customHeaders;
     }
 
@@ -354,7 +360,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
     });
   }
 
-  asyncFetchDataForRequest(_request: RequestV1, _options: RequestOptions): Promise<AsyncQueryResponse> {
+  asyncFetchDataForRequest(_request: RequestV2, _options: RequestOptions): Promise<AsyncQueryResponse> {
     throw new Error('Method not implemented.');
   }
 }

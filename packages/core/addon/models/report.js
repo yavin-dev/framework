@@ -31,7 +31,7 @@ export default DeliverableItem.extend(hasVisualization, Validations, {
   createdOn: DS.attr('moment'),
   updatedOn: DS.attr('moment'),
   author: DS.belongsTo('user', { async: true }),
-  request: fragment('bard-request/request', { defaultValue: {} }),
+  request: fragment('bard-request-v2/request', { defaultValue: {} }),
 
   /**
    * @property {String} tempId - uuid for unsaved records
