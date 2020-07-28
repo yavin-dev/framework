@@ -13,6 +13,7 @@ import RequestBuilder from 'navi-data/builder/request';
 import config from 'ember-get-config';
 import NaviFactAdapter, { RequestV1, RequestOptions } from 'navi-data/adapters/fact-interface';
 import NaviFactSerializer, { ResponseV1 } from 'navi-data/serializers/fact-interface';
+import { getDataSource, getDefaultDataSource } from 'navi-data/utils/adapter';
 
 export default class NaviFactsService extends Service {
   /**
@@ -68,7 +69,8 @@ export default class NaviFactsService extends Service {
    * @returns {Promise} - Promise with the bard response model object
    */
   fetch(this: NaviFactsService, request: RequestV1, options: RequestOptions): Promise<NaviFactsModel> {
-    const type = config.navi.dataSources[0].type;
+    const dataSourceName = options?.dataSourceName;
+    const type = dataSourceName ? getDataSource(dataSourceName).type : getDefaultDataSource().type;
     const adapter = this._adapterFor(type);
     const serializer = this._serializerFor(type);
 

@@ -27,7 +27,9 @@ module.exports = function(environment) {
     navi: {
       dataSources: [
         { name: 'dummy', uri: 'https://data.naviapp.io', type: 'bard-facts' },
-        { name: 'blockhead', uri: 'https://data2.naviapp.com', type: 'bard-facts' }
+        { name: 'blockhead', uri: 'https://data2.naviapp.com', type: 'bard-facts' },
+        { name: 'dummy-gql', uri: 'https://data.naviapp.io', type: 'elide-facts' },
+        { name: 'blockhead-gql', uri: 'https://data2.naviapp.com', type: 'elide-facts' }
       ],
       defaultDataSource: 'dummy',
       searchThresholds: {

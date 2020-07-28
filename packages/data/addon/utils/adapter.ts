@@ -3,8 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import config from 'ember-get-config';
-import { warn } from '@ember/debug';
-import { getWithDefault } from '@ember/object';
+import { assert } from '@ember/debug';
 
 type DataSource = {
   name: string;
@@ -16,26 +15,31 @@ export type SourceAdapterOptions = {
 };
 
 /**
- * Gets host by name in [{name: String, uri: String}]
- * config datastructure in config.navi.dataSources.
- *
- * @param name - name of host to get
- * @returns uri of fact datasource to use
+ * @param name - name of the data source. falsey name will return default data source
  */
-export function getHost(name: string | undefined): string {
-  if (name) {
-    const host = config.navi.dataSources.find((dataSource: DataSource) => dataSource.name === name);
-    if (host && host.uri) {
-      return host.uri;
-    }
-    warn(
-      `Fact host for ${name} requested but none was found in configuration. Falling back to first configured datasource`,
-      {
-        id: 'navi-fact-host-not-configured'
-      }
-    );
+export function getDataSource(name: string): DataSource {
+  assert('getDataSource should be given a data source name to lookup', name);
+
+  const {
+    navi: { dataSources }
+  } = config;
+
+  const host = dataSources.find((dataSource: DataSource) => dataSource.name === name);
+  if (host) {
+    return host;
   }
-  return config.navi.dataSources[0].uri;
+  assert(`Datasource ${name} should be configured in the navi environment`);
+}
+
+/**
+ * @returns default data source if one is configured otherwise the first data source
+ */
+export function getDefaultDataSource(): DataSource {
+  const {
+    navi: { defaultDataSource, dataSources }
+  } = config;
+
+  return defaultDataSource ? getDataSource(defaultDataSource) : dataSources[0];
 }
 
 /**
@@ -43,7 +47,7 @@ export function getHost(name: string | undefined): string {
  * @returns name of default data source
  */
 export function getDefaultDataSourceName(): string {
-  return getWithDefault(config, 'navi.defaultDataSource', config.navi.dataSources[0].name);
+  return getDefaultDataSource().name;
 }
 
 /**
@@ -52,6 +56,6 @@ export function getDefaultDataSourceName(): string {
  * @returns correct host for the options given
  */
 export function configHost(options: SourceAdapterOptions = {}): string {
-  const dataSourceName = getWithDefault(options, 'dataSourceName', getDefaultDataSourceName());
-  return getHost(dataSourceName);
+  const { dataSourceName } = options;
+  return dataSourceName ? getDataSource(dataSourceName).uri : getDefaultDataSource().uri;
 }
