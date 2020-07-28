@@ -15,6 +15,23 @@ export type SourceAdapterOptions = {
 };
 
 /**
+ * @param name - name of the data source. falsey name will return default data source
+ */
+export function getDataSource(name: string): DataSource {
+  assert('getDataSource should be given a data source name to lookup', name);
+
+  const {
+    navi: { dataSources }
+  } = config;
+
+  const host = dataSources.find((dataSource: DataSource) => dataSource.name === name);
+  if (host) {
+    return host;
+  }
+  assert(`Datasource ${name} should be configured in the navi environment`);
+}
+
+/**
  * @returns default data source if one is configured otherwise the first data source
  */
 export function getDefaultDataSource(): DataSource {
@@ -22,27 +39,7 @@ export function getDefaultDataSource(): DataSource {
     navi: { defaultDataSource, dataSources }
   } = config;
 
-  return defaultDataSource
-    ? dataSources.find((source: DataSource) => source.name === defaultDataSource)
-    : dataSources[0];
-}
-
-/**
- * @param name - name of the data source. falsey name will return default data source
- */
-export function getDataSource(name?: string): DataSource {
-  const {
-    navi: { dataSources }
-  } = config;
-
-  if (name) {
-    const host = dataSources.find((dataSource: DataSource) => dataSource.name === name);
-    if (host) {
-      return host;
-    }
-    assert(`Datasource ${name} should be configured in the navi environment`);
-  }
-  return getDefaultDataSource();
+  return defaultDataSource ? getDataSource(defaultDataSource) : dataSources[0];
 }
 
 /**
@@ -50,7 +47,7 @@ export function getDataSource(name?: string): DataSource {
  * @returns name of default data source
  */
 export function getDefaultDataSourceName(): string {
-  return getDataSource().name;
+  return getDefaultDataSource().name;
 }
 
 /**
@@ -59,5 +56,6 @@ export function getDefaultDataSourceName(): string {
  * @returns correct host for the options given
  */
 export function configHost(options: SourceAdapterOptions = {}): string {
-  return getDataSource(options.dataSourceName).uri;
+  const { dataSourceName } = options;
+  return dataSourceName ? getDataSource(dataSourceName).uri : getDefaultDataSource().uri;
 }

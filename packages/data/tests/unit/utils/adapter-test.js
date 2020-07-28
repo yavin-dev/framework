@@ -6,11 +6,8 @@ import { getDefaultDataSourceName, configHost, getDataSource, getDefaultDataSour
 module('Unit - Utils - Adapter Utils', function() {
   test('getDataSource correctly returns datasource object', function(assert) {
     const {
-      navi: { dataSources, defaultDataSource }
+      navi: { dataSources }
     } = config;
-    const defaultDataSourceObj = defaultDataSource
-      ? dataSources.find(d => d.name === defaultDataSource)
-      : dataSources[0];
 
     assert.deepEqual(
       getDataSource('dummy'),
@@ -23,7 +20,13 @@ module('Unit - Utils - Adapter Utils', function() {
       'Other datasource is fetched from config'
     );
 
-    assert.deepEqual(getDataSource(), defaultDataSourceObj, 'Default data source is returned when no name is given');
+    assert.throws(
+      () => {
+        getDataSource();
+      },
+      /getDataSource should be given a data source name to lookup/,
+      'Data source name must be provided'
+    );
     assert.throws(
       () => {
         getDataSource('wowie');
