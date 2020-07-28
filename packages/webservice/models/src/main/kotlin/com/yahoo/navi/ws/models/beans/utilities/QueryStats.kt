@@ -9,7 +9,6 @@ import com.yahoo.elide.annotation.CreatePermission
 import com.yahoo.elide.annotation.DeletePermission
 import com.yahoo.elide.annotation.Include
 import com.yahoo.elide.annotation.UpdatePermission
-import com.yahoo.elide.security.User
 import com.yahoo.navi.ws.models.checks.DefaultNobodyCheck
 import org.hibernate.annotations.CreationTimestamp
 import java.util.Date
@@ -51,7 +50,7 @@ class QueryStats(id: UUID){
     var modelName: String? = null
 
     @Column(columnDefinition = "user information")
-    var user: User? = null
+    var user: String? = null
 
     @Column(columnDefinition = "current query state")
     var status: QueryStatus? = null

@@ -70,9 +70,10 @@ open class CarbonQueryLogger constructor(
     ) {
         var start: Long = System.currentTimeMillis()
         var apiQuery: String? = constructAPIQuery(queryParams, path)
+        var userName: String? = user?.name
         synchronized(queryWatcher) {
             var qStat = QueryStats(queryId)
-            qStat.user = user
+            qStat.user = userName
             qStat.apiVersion = apiVer
             qStat.apiQuery = apiQuery
             qStat.startTime = start
