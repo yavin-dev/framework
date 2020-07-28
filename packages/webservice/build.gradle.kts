@@ -22,20 +22,16 @@ buildscript {
     }
 
     dependencies {
-        classpath(kotlin("gradle-plugin", version = "1.3.50"))
-        classpath("org.jmailen.gradle:kotlinter-gradle:1.26.0")
+        classpath(kotlin("gradle-plugin", version = "1.3.72"))
+        classpath("org.jmailen.gradle:kotlinter-gradle:2.4.1")
     }
 }
 
 plugins {
     java
     base
-    kotlin("jvm") version "1.3.50" apply false
-    id("org.jmailen.kotlinter") version "1.26.0"
-}
-
-kotlinter {
-    allowWildcardImports = false
+    kotlin("jvm") version "1.3.72" apply false
+    id("org.jmailen.kotlinter") version "2.4.1"
 }
 
 subprojects {
@@ -45,11 +41,11 @@ subprojects {
     repositories {
         jcenter()
         mavenLocal()
-        maven(url = "http://repo.maven.apache.org/maven2")
+        maven(url = "https://repo.maven.apache.org/maven2")
     }
 
     dependencies {
-        implementation(kotlin("stdlib-jdk8", "1.3.50"))
+        implementation(kotlin("stdlib-jdk8", "1.3.72"))
         implementation("com.fasterxml.jackson.core:jackson-databind") {
             version {
                 strictly("2.10.1")

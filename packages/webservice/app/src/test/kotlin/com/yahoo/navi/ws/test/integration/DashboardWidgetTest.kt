@@ -23,18 +23,21 @@ class DashboardWidgetTest : IntegrationTest() {
     private var requests = String()
     private var visual1 = String()
     private var visual2 = String()
-    private var author = { user: String -> """
+    private var author = { user: String ->
+        """
         |"author": {
         |   "data": {
         |        "type": "users",
         |        "id": "$user"
         |    }
         |}
-        """.trimMargin() }
+        """.trimMargin()
+    }
 
     @BeforeEach
     fun setup() {
-        presentation = """
+        presentation =
+            """
             {
                 "version":1,
                 "layout": [{
@@ -52,9 +55,10 @@ class DashboardWidgetTest : IntegrationTest() {
                 }],
                 "columns":4
             }
-        """.trimIndent()
+            """.trimIndent()
 
-        requests = ("""[
+        requests = (
+            """[
             [{
                 "logicalTable":{
                     "timeGrain":"day",
@@ -109,9 +113,12 @@ class DashboardWidgetTest : IntegrationTest() {
                     {"dimension":"dim2"}
                 ]
             }]
-        ]""".trimIndent())
+        ]
+            """.trimIndent()
+            )
 
-        visual1 = """
+        visual1 =
+            """
             {
                 "metadata":{
                     "foo":"bar",
@@ -120,9 +127,10 @@ class DashboardWidgetTest : IntegrationTest() {
                 "type":"chart",
                 "version":1
             }
-        """.trimIndent()
+            """.trimIndent()
 
-        visual2 = """
+        visual2 =
+            """
             {
                "metadata":{
                     "foo2":"bar2"
@@ -130,18 +138,19 @@ class DashboardWidgetTest : IntegrationTest() {
                 "type":"table",
                 "version":1
             }
-        """.trimIndent()
+            """.trimIndent()
 
         /***
-        * Post test users
-        */
+         * Post test users
+         */
         registerUser(USER1)
         registerUser(USER2)
 
         given()
             .header("User", USER1)
             .contentType("application/vnd.api+json")
-            .body("""
+            .body(
+                """
                 {
                     "data": {
                         "type": "dashboards",
@@ -154,10 +163,11 @@ class DashboardWidgetTest : IntegrationTest() {
                         }
                     }
                 }
-            """.trimIndent())
-        .When()
+                """.trimIndent()
+            )
+            .When()
             .post("/dashboards")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_CREATED)
     }
@@ -168,7 +178,8 @@ class DashboardWidgetTest : IntegrationTest() {
         given()
             .header("User", USER1)
             .contentType("application/vnd.api+json")
-            .body("""
+            .body(
+                """
                 {
                     "data": {
                         "type": "dashboardWidgets",
@@ -187,17 +198,19 @@ class DashboardWidgetTest : IntegrationTest() {
                         }
                     }
                 }
-            """.trimIndent())
-        .When()
+                """.trimIndent()
+            )
+            .When()
             .post("/dashboards/1/widgets")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_CREATED)
 
         given()
             .header("User", USER1)
             .contentType("application/vnd.api+json")
-            .body("""
+            .body(
+                """
                 {
                     "data": {
                         "type": "dashboardWidgets",
@@ -216,19 +229,20 @@ class DashboardWidgetTest : IntegrationTest() {
                         }
                     }
                 }
-            """.trimIndent())
-        .When()
+                """.trimIndent()
+            )
+            .When()
             .post("/dashboards/1/widgets")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_CREATED)
 
         // assert widget 1 and 2 exists
         given()
             .header("User", USER1)
-        .When()
+            .When()
             .get("/dashboards/1/widgets")
-        .then()
+            .then()
             .assertThat()
             .body("data.id", hasItems("1", "2"))
             .body("data.attributes.title", hasItems("A widget 1"))
@@ -238,17 +252,17 @@ class DashboardWidgetTest : IntegrationTest() {
         // delete a widget
         given()
             .header("User", USER1)
-        .When()
+            .When()
             .delete("/dashboards/1/widgets/1")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_NO_CONTENT)
 
         given()
             .header("User", USER1)
-        .When()
+            .When()
             .get("/dashboards/1/widgets")
-        .then()
+            .then()
             .assertThat()
             .body("data.id", not(hasItems("1")))
             .body("data.id", hasItems("2"))
@@ -261,7 +275,8 @@ class DashboardWidgetTest : IntegrationTest() {
         given()
             .header("User", USER1)
             .contentType("application/vnd.api+json")
-            .body("""
+            .body(
+                """
               {
                   "data": {
                       "type": "dashboardWidgets",
@@ -280,18 +295,20 @@ class DashboardWidgetTest : IntegrationTest() {
                       }
                   }
               }
-          """.trimIndent())
-        .When()
+                """.trimIndent()
+            )
+            .When()
             .post("/dashboards/1/widgets")
-        .then()
+            .then()
             .assertThat()
-        .statusCode(HttpStatus.SC_CREATED)
+            .statusCode(HttpStatus.SC_CREATED)
 
         // User 1 edits widget1 of dashboard1
         given()
             .header("User", USER1)
             .contentType("application/vnd.api+json")
-            .body("""
+            .body(
+                """
             {
                 "data": {
                     "type": "dashboardWidgets",
@@ -309,19 +326,20 @@ class DashboardWidgetTest : IntegrationTest() {
                     }
                 }
             }
-        """.trimIndent())
-        .When()
+                """.trimIndent()
+            )
+            .When()
             .patch("/dashboards/1/widgets/1")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_NO_CONTENT)
 
         // title should be updated
         given()
             .header("User", USER1)
-        .When()
+            .When()
             .get("/dashboards/1/widgets")
-        .then()
+            .then()
             .assertThat()
             .body("data.attributes.title", hasItems("edited by User 1"))
 
@@ -329,7 +347,8 @@ class DashboardWidgetTest : IntegrationTest() {
         given()
             .header("User", USER2)
             .contentType("application/vnd.api+json")
-            .body("""
+            .body(
+                """
             {
                 "data": {
                     "type": "dashboardWidgets",
@@ -347,10 +366,11 @@ class DashboardWidgetTest : IntegrationTest() {
                     }
                 }
             }
-        """.trimIndent())
-        .When()
+                """.trimIndent()
+            )
+            .When()
             .patch("/dashboards/1/widgets/1")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_FORBIDDEN)
 
@@ -358,7 +378,8 @@ class DashboardWidgetTest : IntegrationTest() {
         given()
             .header("User", USER1)
             .contentType("application/vnd.api+json")
-            .body("""
+            .body(
+                """
                 {
                     "data": {
                         "type": "dashboards",
@@ -375,10 +396,11 @@ class DashboardWidgetTest : IntegrationTest() {
                         }
                     }
                 }
-            """.trimIndent())
-        .When()
+                """.trimIndent()
+            )
+            .When()
             .patch("/dashboards/1")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_NO_CONTENT)
 
@@ -386,7 +408,8 @@ class DashboardWidgetTest : IntegrationTest() {
         given()
             .header("User", USER2)
             .contentType("application/vnd.api+json")
-            .body("""
+            .body(
+                """
             {
                 "data": {
                     "type": "dashboardWidgets",
@@ -404,28 +427,29 @@ class DashboardWidgetTest : IntegrationTest() {
                     }
                 }
             }
-        """.trimIndent())
-        .When()
+                """.trimIndent()
+            )
+            .When()
             .patch("/dashboards/1/widgets/1")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_NO_CONTENT)
 
         // user2 (editor) deletes widget1 from dashboard1
         given()
             .header("User", USER2)
-        .When()
+            .When()
             .delete("/dashboards/1/widgets/1")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_NO_CONTENT)
 
         // checking if widget was deleted
         given()
             .header("User", USER1)
-        .When()
+            .When()
             .get("/dashboards/1/widgets")
-        .then()
+            .then()
             .assertThat()
             .body("data.id", empty<Any>())
     }
@@ -435,7 +459,8 @@ class DashboardWidgetTest : IntegrationTest() {
         given()
             .header("User", USER1)
             .contentType("application/vnd.api+json")
-            .body("""
+            .body(
+                """
                 {
                     "data": {
                         "type": "dashboardWidgets",
@@ -460,10 +485,11 @@ class DashboardWidgetTest : IntegrationTest() {
                         }
                     }
                 }
-            """.trimIndent())
-        .When()
+                """.trimIndent()
+            )
+            .When()
             .post("/dashboards/1/widgets")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_BAD_REQUEST)
 
@@ -471,7 +497,8 @@ class DashboardWidgetTest : IntegrationTest() {
         given()
             .header("User", USER1)
             .contentType("application/vnd.api+json")
-            .body("""
+            .body(
+                """
                 {
                     "data": {
                         "type": "dashboardWidgets",
@@ -496,10 +523,11 @@ class DashboardWidgetTest : IntegrationTest() {
                         }
                     }
                 }
-            """.trimIndent())
-        .When()
+                """.trimIndent()
+            )
+            .When()
             .post("/dashboards/1/widgets")
-        .then()
+            .then()
             .assertThat()
             .statusCode(HttpStatus.SC_CREATED)
     }

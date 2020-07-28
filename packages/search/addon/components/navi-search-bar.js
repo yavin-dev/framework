@@ -12,14 +12,6 @@ import { action } from '@ember/object';
 import { task, timeout } from 'ember-concurrency';
 
 /**
- * @constant EMPTY_RESULT – Empty result object
- */
-const EMPTY_RESULT = {
-  title: '',
-  component: 'navi-search-result/no-result'
-};
-
-/**
  * @constant ENTER_KEY
  */
 const ENTER_KEY = 13;
@@ -78,11 +70,7 @@ export default class NaviSearchBarComponent extends Component {
    */
   @(task(function*(query) {
     yield timeout(DEBOUNCE_MS);
-    const results = yield this.searchProviderService.search.perform(query);
-    if (results.length === 0 && query !== '') {
-      return [EMPTY_RESULT];
-    }
-    return results;
+    return this.searchProviderService.search(query);
   }).restartable())
   launchQuery;
 }

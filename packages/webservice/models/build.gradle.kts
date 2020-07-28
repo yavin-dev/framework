@@ -9,8 +9,8 @@ plugins {
     base
     kotlin("jvm")
     `maven-publish`
-    id("com.jfrog.bintray") version "1.8.4"
-    id("com.jfrog.artifactory") version "4.9.10"
+    id("com.jfrog.bintray") version "1.8.5"
+    id("com.jfrog.artifactory") version "4.16.1"
     kotlin("plugin.allopen") version "1.3.72"
     kotlin("plugin.jpa") version "1.3.72"
 }
@@ -34,7 +34,7 @@ dependencies {
     implementation("org.hibernate", "hibernate-core", "5.4.15.Final")
 }
 
-val sourcesJar by tasks. registering(Jar::class) {
+val sourcesJar by tasks.registering(Jar::class) {
     dependsOn(JavaPlugin.CLASSES_TASK_NAME)
     archiveClassifier.set("sources")
     from(sourceSets.main.get().allSource)
@@ -68,14 +68,10 @@ publishing {
 
 }
 
-tasks {
-    "generatePomFileForModelsPublication" {
-        doFirst {
-            if(project.gradle.taskGraph.hasTask(":models:artifactoryPublish")) {
-                version = "$version-SNAPSHOT"
-                println("Overriding version as $version for artifactory")
-            }
-        }
+gradle.taskGraph.whenReady {
+    if (hasTask(":models:artifactoryPublish")) {
+        version = "$version-SNAPSHOT"
+        println("Overriding version as $version for artifactory")
     }
 }
 

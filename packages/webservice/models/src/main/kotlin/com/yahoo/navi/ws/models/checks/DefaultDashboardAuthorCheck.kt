@@ -28,7 +28,8 @@ open class DefaultDashboardAuthorCheck : OperationCheck<User>() {
         val original: Any? = changeSpec.get().original
 
         if (modified is Collection<*> && original is Collection<*> &&
-                modified.all { it is HasAuthor } && original.all { it is HasAuthor }) {
+            modified.all { it is HasAuthor } && original.all { it is HasAuthor }
+        ) {
             val records: List<HasAuthor> = modified.subtract(original).map { it as HasAuthor }
             return records.all { asset -> asset.author!!.id == userId }
         }

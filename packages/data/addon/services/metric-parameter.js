@@ -74,6 +74,12 @@ export default class MetricParameterService extends Service {
       Object.entries(res).forEach(([key, values]) => {
         const valArray = Array.isArray(values) ? values : values.toArray();
         valArray.forEach(val => {
+          const valKeys = Object.keys(val);
+
+          //normalize values to use name if it's id only
+          if (valKeys.length === 1 && valKeys[0] === 'id') {
+            val.name = val.id;
+          }
           // copy value and specify param
           const paramVal = Object.assign({}, val, { param: key });
 

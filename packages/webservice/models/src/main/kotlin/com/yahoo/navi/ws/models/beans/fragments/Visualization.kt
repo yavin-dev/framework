@@ -15,7 +15,10 @@ import org.hibernate.annotations.TypeDef
 data class Visualization(
     var type: String = "",
     var version: Int = 1,
-    @Type(type = "com.yahoo.navi.ws.models.types.JsonType", parameters = [
-        (Parameter(name = "class", value = "java.utils.HashMap"))
-    ]) var metadata: Map<Any, Any> = emptyMap()
+    @Type(
+        type = "com.yahoo.navi.ws.models.types.JsonType",
+        parameters = [
+            (Parameter(name = "class", value = "java.utils.HashMap"))
+        ]
+    ) var metadata: Map<Any, Any> = emptyMap()
 )

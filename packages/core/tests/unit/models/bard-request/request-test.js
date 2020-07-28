@@ -110,6 +110,9 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
                   dimensions: [
                     {
                       dimension: 'property'
+                    },
+                    {
+                      dimension: 'userSignupDate'
                     }
                   ],
                   filters: [
@@ -123,6 +126,11 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
                       operator: 'in',
                       field: 'key',
                       values: ['12345']
+                    },
+                    {
+                      dimension: 'userSignupDate',
+                      operator: 'in',
+                      values: ['1']
                     }
                   ],
                   having: [
@@ -243,7 +251,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
   });
 
   test('Clone Request', async function(assert) {
-    assert.expect(14);
+    assert.expect(16);
 
     await settled();
     const mockModel = Store.peekRecord('fragments-mock', MODEL_TO_CLONE);
@@ -302,6 +310,12 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
       'The property dimensions is set with correct metadata'
     );
 
+    assert.equal(
+      request.dimensions.objectAt(1).dimension,
+      MetadataService.getById('time-dimension', 'userSignupDate'),
+      'The date dimension is set with correct metadata'
+    );
+
     /**
      * TODO uncomment when cloning filters is fixed
      * assert.equal(request.get('filters.firstObject.values.length'),
@@ -316,6 +330,12 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
         .get('field'),
       'key',
       'clone field when it is present'
+    );
+
+    assert.equal(
+      request.filters.objectAt(2).dimension,
+      MetadataService.getById('time-dimension', 'userSignupDate'),
+      'clone time dimension filter correctly'
     );
 
     assert.deepEqual(
@@ -345,6 +365,28 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
     );
 
     assert.equal(request.dataSource, 'dummy', 'datasource was cloned correctly');
+  });
+
+  test('Clone request with time-dimension filter and no matching dimension', async function(assert) {
+    assert.expect(3);
+    await settled();
+    const mockRequest = Store.peekRecord('fragments-mock', MODEL_TO_CLONE).request;
+    mockRequest.clearDimensions();
+    const request = mockRequest.clone();
+
+    assert.equal(request.dimensions.length, 0, 'Dimensions for request are empty');
+
+    assert.equal(
+      request.filters.objectAt(2).dimension,
+      MetadataService.getById('time-dimension', 'userSignupDate'),
+      'clone time dimension filter correctly when no request dimension is present'
+    );
+
+    assert.equal(
+      request.filters.objectAt(1).dimension,
+      MetadataService.getById('dimension', 'multiSystemId'),
+      'The dimension is set with correct metadata'
+    );
   });
 
   // Test that navi supports legacy saved reports without a sort field
