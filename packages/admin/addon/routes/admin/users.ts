@@ -19,6 +19,7 @@ export default class AdminUsersRoute extends Route {
    * @override
    */
   async model() {
+    console.log('Reached Here 1');
     const users = await this.store.findAll('user');
 
     return { users };

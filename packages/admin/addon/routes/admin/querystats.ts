@@ -1,14 +1,43 @@
+/**
+ * Copyright 2020, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
+
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
+// @ts-ignore
 import StoreService from '@ember-data/store';
 
-export default class QueryStatsRoute extends Route {
-  @service store;
+export default class AdminUsersRoute extends Route {
+  /**
+   * @property {Service} store;
+   */
+  @service store!: StoreService;
 
-  model() {
-    return this.store.findAll('querystats');
+  /**
+   * @method model
+   * @override
+   */
+  async model() {
+    console.log('Blah');
+    const querystats = await this.store.findAll('querystats');
+
+    return { querystats };
   }
 }
+
+// import Route from '@ember/routing/route';
+// import { inject as service } from '@ember/service';
+// import StoreService from '@ember-data/store';
+
+// export default class QueryStatsRoute extends Route {
+//   @service store;
+
+//   async model() {
+//     console.log('blah')
+//     return await this.store.findAll('/admin/querystats');
+//   }
+// }
 
 // import { resolve } from 'rsvp';
 // import { A } from '@ember/array';

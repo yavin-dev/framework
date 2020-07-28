@@ -5,6 +5,7 @@ import RESPONSE_CODES from '../enums/response-codes';
 const TIMESTAMP_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 
 export default function() {
+  console.log('REached Here as well');
   /**
    * users/:id - GET endpoint to fetch user by id
    */

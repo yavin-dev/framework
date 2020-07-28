@@ -6,7 +6,7 @@ export default DS.Model.extend({
   apiQuery: DS.attr('string'),
   storeQuery: DS.attr('string'),
   modelName: DS.attr('string'),
-  user: DS.attr('string'),
+  user: DS.attr('string'), //maybe an inverse to user
   fromUI: DS.attr('boolean'),
   status: DS.attr('string'),
   duration: DS.attr('number'),
