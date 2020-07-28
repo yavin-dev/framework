@@ -20,7 +20,7 @@ export default class AdminUsersRoute extends Route {
    */
   async model() {
     console.log('Blah');
-    const querystats = await this.store.findAll('querystats');
+    const querystats = await this.store.findAll('querystat');
 
     return { querystats };
   }

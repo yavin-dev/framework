@@ -9,7 +9,7 @@ import dashboardCollection from './routes/dashboard-collection';
 import reportCollection from './routes/report-collections';
 import dashboardWidget from './routes/dashboard-widget';
 import deliveryRules from './routes/delivery-rules';
-import querystats from './routes/querystats';
+import querystat from './routes/querystat';
 
 export default function() {
   // https://github.com/kategengler/ember-cli-code-coverage#create-a-passthrough-when-intercepting-all-ajax-requests-in-tests
@@ -34,7 +34,7 @@ export default function() {
   user.call(this);
   report.call(this);
   role.call(this);
-  querystats.call(this);
+  querystat.call(this);
 
   // this.namespace = '/admin';
   // this.get('/querystats');

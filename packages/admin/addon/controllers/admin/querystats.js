@@ -61,7 +61,7 @@ import { A as arr } from '@ember/array';
 import { setProperties, set, get, computed, action } from '@ember/object';
 import { isEqual, merge, omit } from 'lodash-es';
 
-export default class TableController extends Controller {
+export default class AdminQuerystatsController extends Controller {
   request = {
     dimensions: [{ dimension: { id: 'os', name: 'Operating System' } }]
   };

@@ -1,3 +1,7 @@
+/**
+ * Copyright 2020, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
 import DS from 'ember-data';
 
 export default DS.Model.extend({
@@ -12,6 +16,6 @@ export default DS.Model.extend({
   duration: DS.attr('number'),
   rowsReturned: DS.attr('number'),
   bytesReturned: DS.attr('number'),
-  createdOn: DS.attr('date'),
+  createdOn: DS.attr('string'),
   hostName: DS.attr('string')
 });
