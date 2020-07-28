@@ -34,14 +34,15 @@ export default function() {
   user.call(this);
   report.call(this);
   role.call(this);
-  //querystats.call(this);
+  querystats.call(this);
 
-  this.namespace = '/admin';
-  this.get('/querystats', () => ({
-    querystats: [
-      { id: 1, text: 'Row 1' },
-      { id: 2, text: 'Row 2' },
-      { id: 3, text: 'row 3' }
-    ]
-  }));
+  // this.namespace = '/admin';
+  // this.get('/querystats');
+  // this.get('/querystats', () => ({
+  //   querystats: [
+  //     { id: 1, text: 'Row 1' },
+  //     { id: 2, text: 'Row 2' },
+  //     { id: 3, text: 'row 3' }
+  //   ]
+  // }));
 }

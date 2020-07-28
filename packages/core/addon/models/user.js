@@ -4,7 +4,7 @@
  */
 
 import DS from 'ember-data';
-
+console.log('Model 1');
 export default DS.Model.extend({
   reports: DS.hasMany('report', { async: true, inverse: 'author' }),
   favoriteReports: DS.hasMany('report', { async: true, inverse: null }),
