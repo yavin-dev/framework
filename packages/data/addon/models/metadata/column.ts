@@ -6,6 +6,7 @@
 import EmberObject from '@ember/object';
 import { inject as service } from '@ember/service';
 import KegService from '../../services/keg';
+import { isNone } from '@ember/utils';
 import Table from './table';
 
 export type ColumnType = 'ref' | 'formula' | 'field';
@@ -16,12 +17,13 @@ export interface ColumnMetadataPayload {
   name: string;
   category?: string;
   description?: string;
-  tableId: string;
+  tableId?: string; // Some columns do not have unique IDs
   source: string;
   valueType: TODO<string>;
   type: ColumnType;
   expression?: string;
-  tags: string[];
+  tags?: string[];
+  partialData?: boolean; //TODO refactor me
 }
 
 // Shape of public properties on model
@@ -30,12 +32,11 @@ export interface ColumnMetadata {
   name: string;
   category?: string;
   description?: string;
-  table: Table;
+  table: Table | null;
   source: string;
   valueType: TODO<string>;
   type: ColumnType;
   expression?: string;
-  tags: string[];
 }
 
 export type BaseExtendedAttributes = {
@@ -66,13 +67,14 @@ export default class ColumnMetadataModel extends EmberObject implements ColumnMe
   /**
    * @property {string} tableId
    */
-  tableId!: string;
+  tableId?: string;
 
   /**
    * @property {Table} table
    */
-  get table(): Table {
+  get table(): Table | null {
     const { tableId, keg, source } = this;
+    if (isNone(tableId)) return null;
     const table = keg.getById('metadata/table', tableId, source);
     return (table as unknown) as Table;
   }
@@ -105,5 +107,7 @@ export default class ColumnMetadataModel extends EmberObject implements ColumnMe
   /**
    * @property {string[]} tags
    */
-  tags: string[] = [];
+  tags?: string[];
+
+  partialData?: boolean;
 }

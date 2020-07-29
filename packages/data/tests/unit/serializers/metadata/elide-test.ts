@@ -1,17 +1,26 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
+import ElideMetadataSerializer from 'navi-data/serializers/metadata/elide';
+import { TestContext } from 'ember-test-helpers';
+import {
+  TablePayload,
+  MetricNode,
+  Connection,
+  DimensionNode,
+  TimeDimensionNode
+} from 'navi-data/serializers/metadata/elide';
 
-let Serializer;
+let Serializer: ElideMetadataSerializer;
 
-module('Unit | Serializer | elide-metadata', function(hooks) {
+module('Unit | Serializer | metadata/elide', function(hooks) {
   setupTest(hooks);
 
-  hooks.beforeEach(function() {
-    Serializer = this.owner.lookup('serializer:elide-metadata');
+  hooks.beforeEach(function(this: TestContext) {
+    Serializer = this.owner.lookup('serializer:metadata/elide');
   });
 
   test('normalize', function(assert) {
-    const tableConnectionPayload = {
+    const tableConnectionPayload: TablePayload = {
       table: {
         edges: [
           {
@@ -33,10 +42,12 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
                       columnTags: ['IMPORTANT'],
                       defaultFormat: 'NONE',
                       columnType: 'field',
-                      expression: null
-                    }
+                      expression: ''
+                    },
+                    cursor: ''
                   }
-                ]
+                ],
+                pageInfo: []
               },
               dimensions: {
                 edges: [
@@ -49,8 +60,9 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
                       valueType: 'TEXT',
                       columnTags: ['IMPORTANT'],
                       columnType: 'field',
-                      expression: null
-                    }
+                      expression: ''
+                    },
+                    cursor: ''
                   },
                   {
                     node: {
@@ -61,10 +73,12 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
                       valueType: 'TEXT',
                       columnTags: ['IMPORTANT'],
                       columnType: 'field',
-                      expression: null
-                    }
+                      expression: ''
+                    },
+                    cursor: ''
                   }
-                ]
+                ],
+                pageInfo: {}
               },
               timeDimensions: {
                 edges: [
@@ -78,18 +92,22 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
                       columnTags: ['IMPORTANT'],
                       supportedGrains: {
                         edges: [
-                          { node: { id: 'day', grain: 'DAY', expression: '' } },
-                          { node: { id: 'week', grain: 'WEEK', expression: '' } }
-                        ]
+                          { node: { id: 'day', grain: 'DAY', expression: '' }, cursor: '' },
+                          { node: { id: 'week', grain: 'WEEK', expression: '' }, cursor: '' }
+                        ],
+                        pageInfo: {}
                       },
                       timeZone: 'UTC',
                       columnType: 'field',
-                      expression: null
-                    }
+                      expression: ''
+                    },
+                    cursor: ''
                   }
-                ]
+                ],
+                pageInfo: {}
               }
-            }
+            },
+            cursor: ''
           },
           {
             node: {
@@ -110,8 +128,9 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
                       columnTags: ['IMPORTANT'],
                       defaultFormat: 'NONE',
                       columnType: 'field',
-                      expression: null
-                    }
+                      expression: ''
+                    },
+                    cursor: ''
                   },
                   {
                     node: {
@@ -123,10 +142,12 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
                       columnTags: ['IMPORTANT'],
                       defaultFormat: 'NONE',
                       columnType: 'field',
-                      expression: null
-                    }
+                      expression: ''
+                    },
+                    cursor: ''
                   }
-                ]
+                ],
+                pageInfo: {}
               },
               dimensions: {
                 edges: [
@@ -139,8 +160,9 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
                       valueType: 'TEXT',
                       columnTags: ['IMPORTANT'],
                       columnType: 'field',
-                      expression: null
-                    }
+                      expression: ''
+                    },
+                    cursor: ''
                   },
                   {
                     node: {
@@ -151,23 +173,28 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
                       valueType: 'TEXT',
                       columnTags: ['IMPORTANT'],
                       columnType: 'field',
-                      expression: null
-                    }
+                      expression: ''
+                    },
+                    cursor: ''
                   }
-                ]
+                ],
+                pageInfo: {}
               },
               timeDimensions: {
-                edges: []
+                edges: [],
+                pageInfo: {}
               }
-            }
+            },
+            cursor: ''
           }
-        ]
+        ],
+        pageInfo: {}
       },
       source: 'dummy'
     };
 
     assert.deepEqual(
-      Serializer.normalize(tableConnectionPayload),
+      Serializer.normalize('everything', tableConnectionPayload),
       {
         tables: [
           {
@@ -203,7 +230,7 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
             tags: ['IMPORTANT'],
             defaultFormat: 'NONE',
             type: 'field',
-            expression: null,
+            expression: '',
             source: 'dummy',
             tableId: 'tableA'
           },
@@ -216,7 +243,7 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
             tags: ['IMPORTANT'],
             defaultFormat: 'NONE',
             type: 'field',
-            expression: null,
+            expression: '',
             tableId: 'tableB',
             source: 'dummy'
           },
@@ -229,7 +256,7 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
             tags: ['IMPORTANT'],
             defaultFormat: 'NONE',
             type: 'field',
-            expression: null,
+            expression: '',
             tableId: 'tableB',
             source: 'dummy'
           }
@@ -243,7 +270,7 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
             valueType: 'TEXT',
             tags: ['IMPORTANT'],
             type: 'field',
-            expression: null,
+            expression: '',
             source: 'dummy',
             tableId: 'tableA'
           },
@@ -255,7 +282,7 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
             valueType: 'TEXT',
             tags: ['IMPORTANT'],
             type: 'field',
-            expression: null,
+            expression: '',
             source: 'dummy',
             tableId: 'tableA'
           },
@@ -267,7 +294,7 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
             valueType: 'TEXT',
             tags: ['IMPORTANT'],
             type: 'field',
-            expression: null,
+            expression: '',
             source: 'dummy',
             tableId: 'tableB'
           },
@@ -279,7 +306,7 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
             valueType: 'TEXT',
             tags: ['IMPORTANT'],
             type: 'field',
-            expression: null,
+            expression: '',
             source: 'dummy',
             tableId: 'tableB'
           }
@@ -293,7 +320,7 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
             valueType: 'DATE',
             tags: ['IMPORTANT'],
             type: 'field',
-            expression: null,
+            expression: '',
             supportedGrains: [
               { id: 'day', grain: 'DAY', expression: '' },
               { id: 'week', grain: 'WEEK', expression: '' }
@@ -306,20 +333,12 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
       },
       'Normalizes typical tables response correctly'
     );
-
-    const nonTablePayload = { foo: 'bar' };
-
-    assert.equal(
-      Serializer.normalize(nonTablePayload),
-      nonTablePayload,
-      'A payload without a tables key is passed through the normalize function'
-    );
   });
 
   test('_normalizeTableMetrics', function(assert) {
     const tableId = 'siteAnalytics';
     const source = 'myApi';
-    const metricConnectionPayload = {
+    const metricConnectionPayload: Connection<MetricNode> = {
       edges: [
         {
           node: {
@@ -331,8 +350,9 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
             columnTags: ['IMPORTANT'],
             defaultFormat: 'NONE',
             columnType: 'field',
-            expression: null
-          }
+            expression: ''
+          },
+          cursor: ''
         },
         {
           node: {
@@ -344,10 +364,12 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
             columnTags: ['DISPLAY'],
             defaultFormat: 'NONE',
             columnType: 'field',
-            expression: null
-          }
+            expression: ''
+          },
+          cursor: ''
         }
-      ]
+      ],
+      pageInfo: {}
     };
 
     assert.deepEqual(
@@ -364,7 +386,7 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
           source,
           tableId,
           type: 'field',
-          expression: null
+          expression: ''
         },
         {
           id: 'impressions',
@@ -377,14 +399,14 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
           source,
           tableId,
           type: 'field',
-          expression: null
+          expression: ''
         }
       ],
       'Metric connection payload is normalized properly for a table'
     );
 
     assert.deepEqual(
-      Serializer._normalizeTableMetrics({ edges: [] }, tableId, source),
+      Serializer._normalizeTableMetrics({ edges: [], pageInfo: {} }, tableId, source),
       [],
       'A connection with no edges returns an empty array'
     );
@@ -393,7 +415,7 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
   test('_normalizeTableDimensions', function(assert) {
     const tableId = 'siteAnalytics';
     const source = 'myApi';
-    const dimensionConnectionPayload = {
+    const dimensionConnectionPayload: Connection<DimensionNode> = {
       edges: [
         {
           node: {
@@ -404,8 +426,9 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
             valueType: 'TEXT',
             columnTags: ['IMPORTANT'],
             columnType: 'field',
-            expression: null
-          }
+            expression: ''
+          },
+          cursor: ''
         },
         {
           node: {
@@ -416,10 +439,12 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
             valueType: 'TEXT',
             columnTags: ['DISPLAY'],
             columnType: 'field',
-            expression: null
-          }
+            expression: ''
+          },
+          cursor: ''
         }
-      ]
+      ],
+      pageInfo: []
     };
 
     assert.deepEqual(
@@ -435,7 +460,7 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
           source,
           tableId,
           type: 'field',
-          expression: null
+          expression: ''
         },
         {
           id: 'gender',
@@ -447,14 +472,14 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
           source,
           tableId,
           type: 'field',
-          expression: null
+          expression: ''
         }
       ],
       'Dimension connection payload is normalized properly for a table'
     );
 
     assert.deepEqual(
-      Serializer._normalizeTableDimensions({ edges: [] }, tableId, source),
+      Serializer._normalizeTableDimensions({ edges: [], pageInfo: {} }, tableId, source),
       [],
       'A connection with no edges returns an empty array'
     );
@@ -463,7 +488,7 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
   test('_normalizeTableTimeDimensions', function(assert) {
     const tableId = 'siteAnalytics';
     const source = 'myApi';
-    const timeDimensionPayload = {
+    const timeDimensionPayload: Connection<TimeDimensionNode> = {
       edges: [
         {
           node: {
@@ -475,18 +500,17 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
             columnTags: ['DISPLAY'],
             supportedGrains: {
               edges: [
-                { node: { id: 'day', grain: 'DAY', expression: '' } },
-                { node: { id: 'week', grain: 'WEEK', expression: '' } },
-                { node: { id: 'month', grain: 'MONTH', expression: '' } }
-              ]
+                { node: { id: 'day', grain: 'DAY', expression: '' }, cursor: '' },
+                { node: { id: 'week', grain: 'WEEK', expression: '' }, cursor: '' },
+                { node: { id: 'month', grain: 'MONTH', expression: '' }, cursor: '' }
+              ],
+              pageInfo: {}
             },
-            timeZone: {
-              short: 'PST',
-              long: 'Pacific Standard Time'
-            },
+            timeZone: 'PST',
             columnType: 'field',
-            expression: null
-          }
+            expression: ''
+          },
+          cursor: ''
         },
         {
           node: {
@@ -497,17 +521,17 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
             valueType: 'DATE',
             columnTags: ['DISPLAY'],
             supportedGrains: {
-              edges: [{ node: { id: 'month', grain: 'MONTH', expression: '' } }]
+              edges: [{ node: { id: 'month', grain: 'MONTH', expression: '' }, cursor: '' }],
+              pageInfo: []
             },
-            timeZone: {
-              short: 'CST',
-              long: 'Central Standard Time'
-            },
+            timeZone: 'CST',
             columnType: 'field',
-            expression: null
-          }
+            expression: ''
+          },
+          cursor: ''
         }
-      ]
+      ],
+      pageInfo: {}
     };
 
     assert.deepEqual(
@@ -525,14 +549,11 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
             { id: 'week', grain: 'WEEK', expression: '' },
             { id: 'month', grain: 'MONTH', expression: '' }
           ],
-          timeZone: {
-            short: 'PST',
-            long: 'Pacific Standard Time'
-          },
+          timeZone: 'PST',
           source,
           tableId,
           type: 'field',
-          expression: null
+          expression: ''
         },
         {
           id: 'orderMonth',
@@ -542,21 +563,18 @@ module('Unit | Serializer | elide-metadata', function(hooks) {
           valueType: 'DATE',
           tags: ['DISPLAY'],
           supportedGrains: [{ id: 'month', grain: 'MONTH', expression: '' }],
-          timeZone: {
-            short: 'CST',
-            long: 'Central Standard Time'
-          },
+          timeZone: 'CST',
           source,
           tableId,
           type: 'field',
-          expression: null
+          expression: ''
         }
       ],
       'Time Dimension connection payload is normalized properly for a table'
     );
 
     assert.deepEqual(
-      Serializer._normalizeTableTimeDimensions({ edges: [] }, tableId, source),
+      Serializer._normalizeTableTimeDimensions({ edges: [], pageInfo: {} }, tableId, source),
       [],
       'A connection with no edges returns an empty array'
     );
