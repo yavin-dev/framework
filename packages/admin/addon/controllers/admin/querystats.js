@@ -63,7 +63,7 @@ import { isEqual, merge, omit } from 'lodash-es';
 
 export default class AdminQuerystatsController extends Controller {
   request = {
-    dimensions: [{ dimension: { id: 'os', name: 'Operating System' } }]
+    dimensions: [{ dimension: { id: 'requestID', name: 'Query Request ID' } }]
   };
 
   @computed('options')
@@ -79,33 +79,33 @@ export default class AdminQuerystatsController extends Controller {
   options = {
     columns: [
       {
-        attributes: { name: 'dateTime' },
-        type: 'dateTime',
-        displayName: 'Date'
-      },
-      {
-        attributes: { name: 'os' },
-        type: 'dimension',
-        displayName: 'Operating System'
-      },
-      {
-        attributes: { name: 'uniqueIdentifier', parameters: {} },
+        attributes: { name: 'requestID' },
         type: 'metric',
-        displayName: 'Unique Identifiers'
+        displayName: 'Request ID'
       },
       {
-        attributes: { name: 'totalPageViews', parameters: {} },
+        attributes: { name: 'nameModel' },
         type: 'metric',
-        displayName: 'Total Page Views'
+        displayName: 'Model Name'
+      },
+      {
+        attributes: { name: 'user', parameters: {} },
+        type: 'metric',
+        displayName: 'User'
+      },
+      {
+        attributes: { name: 'status', parameters: {} },
+        type: 'metric',
+        displayName: 'Query Status'
       },
       {
         attributes: {
-          name: 'totalPageViewsWoW',
+          name: 'duration',
           parameters: {},
           canAggregateSubtotal: false
         },
         type: 'metric',
-        displayName: 'Total Page Views WoW'
+        displayName: 'Query Duration'
       }
     ],
     showTotals: {

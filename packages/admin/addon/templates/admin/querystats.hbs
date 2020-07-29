@@ -17,10 +17,13 @@
   /> --}}
 </div>
 
+<div class="navi-querystats-dashboard">
+  <h2 class="navi-querystats-dashboard__heading">PreCanned UI Dashboard</h2>
+</div>
 <div class="table-example">
   <NaviVisualizations::Table
     @model={{this.model}}
-    @options={{getColumns}}
+    @options={{this.options}}
     {{!-- @isEditing={{true}}
     @isEditing={{this.isEditing}}
     @options={{this.options}}

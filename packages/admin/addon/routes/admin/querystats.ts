@@ -4,6 +4,7 @@
  */
 
 import Route from '@ember/routing/route';
+import {A} from '@ember/array';
 import { inject as service } from '@ember/service';
 // @ts-ignore
 import StoreService from '@ember-data/store';
