@@ -35,7 +35,8 @@ env:
 branches:
   only:
     - master
-    - /^request-v2.*$/
+    - request-v2
+    - apex-charts
 install:
   - if [[ "${PACKAGE}" == "navi-webservice" ]]; then
     pushd packages/webservice && ./gradlew assemble && popd;
