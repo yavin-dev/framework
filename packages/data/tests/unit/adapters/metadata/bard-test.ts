@@ -3,6 +3,7 @@ import { setupTest } from 'ember-qunit';
 import BardMetadataAdapter from 'navi-data/adapters/metadata/bard';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
+import { TestContext } from 'ember-test-helpers';
 
 let Adapter: BardMetadataAdapter;
 
@@ -10,7 +11,7 @@ module('Unit | Adapter | metadata/bard', function(hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function(this: TODO) {
+  hooks.beforeEach(function(this: TestContext) {
     Adapter = this.owner.lookup('adapter:metadata/bard');
   });
 

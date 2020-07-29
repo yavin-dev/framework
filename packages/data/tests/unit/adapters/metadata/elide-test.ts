@@ -6,14 +6,14 @@ import GQLQueries from 'navi-data/gql/metadata-queries';
 import { print } from 'graphql/language/printer';
 import scenario from 'dummy/mirage/scenarios/graphql';
 import ElideMetadataAdapter from 'navi-data/adapters/metadata/elide';
+import { TestContext } from 'ember-test-helpers';
 
 // Apollo includes this field in its queries, but we don't want to compare against that in our tests
 const removeTypeNameField = (query: string) => query.replace(/\n\s*__typename/g, '').trim();
 
-type TestContext = {
-  owner: TODO;
-  server?: TODO;
-};
+interface MirageTestContext extends TestContext {
+  server: TODO
+}
 
 module('Unit | Adapter | metadata/elide', function(hooks) {
   setupTest(hooks);
@@ -21,14 +21,14 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
 
   let Adapter: ElideMetadataAdapter;
 
-  hooks.beforeEach(function(this: TestContext) {
+  hooks.beforeEach(function(this: MirageTestContext) {
     Adapter = this.owner.lookup('adapter:metadata/elide');
   });
 
   /*
    * Test whether the url path is built correctly
    */
-  test('fetchAll - request format', async function(this: TestContext, assert) {
+  test('fetchAll - request format', async function(this: MirageTestContext, assert) {
     assert.expect(3);
 
     const gqlQuery = print(GQLQueries.table.all).trim(); //GQL Query as string
@@ -49,7 +49,7 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
     await Adapter.fetchAll('table');
   });
 
-  test('fetchById - request format', async function(this: TestContext, assert) {
+  test('fetchById - request format', async function(this: MirageTestContext, assert) {
     assert.expect(3);
 
     const gqlQuery = print(GQLQueries.table.single).trim(); //GQL Query as string
@@ -70,7 +70,7 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
     await Adapter.fetchById('table', 'foo');
   });
 
-  test('fetchAll - response', async function(this: TestContext, assert) {
+  test('fetchAll - response', async function(this: MirageTestContext, assert) {
     assert.expect(6);
 
     // Seed our mirage database
@@ -256,7 +256,7 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
     );
   });
 
-  test('fetchById - response', async function(this: TestContext, assert) {
+  test('fetchById - response', async function(this: MirageTestContext, assert) {
     assert.expect(1);
 
     // Seed our mirage database
@@ -386,7 +386,7 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
     );
   });
 
-  test('fetchEverything - response', async function(this: TestContext, assert) {
+  test('fetchEverything - response', async function(this: MirageTestContext, assert) {
     const allTables = await Adapter.fetchAll('table');
     const everything = await Adapter.fetchEverything();
     assert.deepEqual(everything, allTables, "`fetchEverything` returns the same payload `fetchAll('table')`");
