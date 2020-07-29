@@ -35,6 +35,7 @@ env:
 branches:
   only:
     - master
+    - /^request-v2.*$/
 install:
   - if [[ "${PACKAGE}" == "navi-webservice" ]]; then
     pushd packages/webservice && ./gradlew assemble && popd;
