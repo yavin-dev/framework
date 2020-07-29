@@ -104,7 +104,7 @@ export default ActionConsumer.extend({
       if (
         featureFlag('enableRequestPreview') &&
         route.currentModel.request.columns.find(
-          column => column.type === 'metric' && column.columnMeta === metricMetadataModel
+          column => column.type === 'metric' && column.columnMetadata === metricMetadataModel
         )
       ) {
         // When adding a metric filter with the requestPreview, users can add multiple of the same metric
@@ -140,8 +140,8 @@ export default ActionConsumer.extend({
        * iterating over `request.columns` causes problems
        */
       request.columns.toArray().forEach(column => {
-        if (![...metrics, ...dimensions].includes(column.columnMeta)) {
-          this.requestActionDispatcher.dispatch(RequestActions.REMOVE_COLUMN, route, column.columnMeta);
+        if (![...metrics, ...dimensions].includes(column.columnMetadata)) {
+          this.requestActionDispatcher.dispatch(RequestActions.REMOVE_COLUMN, route, column.columnMetadata);
         }
       });
     }

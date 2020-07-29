@@ -130,7 +130,7 @@ export default class DimensionSelector extends Component {
   @computed('selectedColumns')
   get itemsChecked() {
     return this.selectedColumns.reduce((items, item) => {
-      items[item.columnMeta.id] = true;
+      items[item.columnMetadata.id] = true;
       return items;
     }, {});
   }
@@ -142,7 +142,7 @@ export default class DimensionSelector extends Component {
   @computed('request.dimensionFilters.[]')
   get dimensionsFiltered() {
     return this.request.dimensionFilters.reduce((list, dimension) => {
-      list[dimension.columnMeta.id] = true;
+      list[dimension.columnMetadata.id] = true;
       return list;
     }, {});
   }

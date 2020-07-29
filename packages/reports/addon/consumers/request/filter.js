@@ -56,7 +56,7 @@ export default ActionConsumer.extend({
      */
     [RequestActions.TOGGLE_DIMENSION_FILTER]: function(route, dimensionMetadataModel) {
       const filter = route.currentModel.request.filters.find(
-        filter => filter.type === 'dimension' && filter.columnMeta === dimensionMetadataModel
+        filter => filter.type === 'dimension' && filter.columnMetadata === dimensionMetadataModel
       );
 
       //do not add filter if it already exists
@@ -180,7 +180,7 @@ export default ActionConsumer.extend({
         currentModel: { request }
       } = route;
 
-      const filters = request.filters.filter(filter => filter.columnMeta === columnMetadataModel);
+      const filters = request.filters.filter(filter => filter.columnMetadata === columnMetadataModel);
       filters.forEach(filter => this.requestActionDispatcher.dispatch(RequestActions.REMOVE_FILTER, route, filter));
     },
 

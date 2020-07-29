@@ -44,9 +44,9 @@ export default class Base extends Fragment.extend(Validations) {
    * @type {Meta}
    */
   @computed('field', 'type', 'source')
-  get columnMeta() {
-    assert('Source must be set in order to access columnMeta', isPresent(this.source));
-    assert('column type must be set in order to access columnMeta', isPresent(this.type));
+  get columnMetadata() {
+    assert('Source must be set in order to access columnMetadata', isPresent(this.source));
+    assert('column type must be set in order to access columnMetadata', isPresent(this.type));
     if (this.field === 'dateTime') {
       return {
         id: 'dateTime',
