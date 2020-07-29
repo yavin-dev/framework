@@ -359,19 +359,17 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
           {
             field: 'property',
             parameters: { projection: 'id' },
-            type: 'dimension',
-            alias: null
+            type: 'dimension'
           },
           {
             field: 'revenue',
             parameters: { currency: 'USD' },
-            type: 'metric',
-            alias: null
+            type: 'metric'
           },
           {
             field: 'navClicks',
-            type: 'metric',
-            alias: null
+            parameters: {},
+            type: 'metric'
           }
         ],
         sorts: [

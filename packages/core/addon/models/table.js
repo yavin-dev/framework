@@ -7,7 +7,7 @@ import { get, set } from '@ember/object';
 import { A as arr } from '@ember/array';
 import DS from 'ember-data';
 import VisualizationBase from './visualization';
-import { canonicalizeMetric, canonicalizeColumnAttributes } from 'navi-data/utils/metric';
+import { canonicalizeColumnAttributes } from 'navi-data/utils/metric';
 import { validator, buildValidations } from 'ember-cp-validations';
 import { canonicalizeDimension, formatDimensionName } from 'navi-data/utils/dimension';
 import { keyBy } from 'lodash-es';
@@ -19,9 +19,9 @@ import { getOwner } from '@ember/application';
  * @returns {Object} - list of field names
  */
 function getDefaultDimensionFields(dimension) {
-  return get(dimension, 'dimension')
-    .getFieldsForTag('show')
-    .map(field => field.name);
+  // TODO: Come back and clean this up for dateTime
+  const fields = dimension.data.getFieldsForTag?.('show') || [];
+  return fields.map(field => field.name);
 }
 
 /**
@@ -32,13 +32,13 @@ function getDefaultDimensionFields(dimension) {
  * @returns {Object} - dimension column
  */
 function buildDimensionColumn(dimension, columnIndex, field) {
-  let dimensionId = dimension.dimension.id,
+  let dimensionId = dimension.field,
     column = columnIndex[dimensionId],
-    defaultName = formatDimensionName({ name: dimension.dimension.name, field });
+    defaultName = formatDimensionName({ name: dimension.columnMetadata.name, field });
 
   return {
     type: 'dimension',
-    attributes: Object.assign({}, { name: get(dimension, 'dimension.id') }, field ? { field } : {}),
+    attributes: Object.assign({}, { name: dimensionId }, field ? { field } : {}),
     displayName: column ? column.displayName : defaultName
   };
 }
@@ -70,9 +70,10 @@ function buildDimensionColumns(dimensions, columnIndex) {
  */
 function buildMetricColumns(metrics, columnIndex, naviFormatter) {
   return metrics.map(metric => {
-    const metricObject = metric.toJSON();
-    const column = columnIndex[canonicalizeMetric(metricObject)];
-    const displayName = column ? column.displayName : naviFormatter.formatMetric(metric.metric, metric.parameters);
+    const column = columnIndex[metric.columnMetadata.id];
+    const displayName = column
+      ? column.displayName
+      : naviFormatter.formatMetric(metric.columnMetadata, metric.parameters, metric.alias);
     const format = column ? get(column, 'attributes.format') : '';
 
     return {
@@ -81,8 +82,8 @@ function buildMetricColumns(metrics, columnIndex, naviFormatter) {
       attributes: Object.assign(
         {},
         {
-          name: metricObject.metric,
-          parameters: metricObject.parameters,
+          name: metric.field,
+          parameters: metric.parameters,
           canAggregateSubtotal: true
         },
         { format }
@@ -121,34 +122,22 @@ function columnTransform(newColumns, oldColumns) {
  * @returns {Boolean} whether or not
  */
 function hasAllColumns(request, columns) {
-  // TODO: come back to simplify this
-  //retrieve everything but dateTime from metadata.columns
-  let columnFields = arr(columns)
-      .rejectBy('type', 'dateTime')
-      .map(column => {
-        let attributes = get(column, 'attributes');
-        if (get(column, 'type') === 'dimension') {
-          const attrs = Object.assign({}, attributes, { id: attributes.name });
-          delete attrs.name;
-          return canonicalizeDimension(attrs);
-        } else {
-          return canonicalizeColumnAttributes(attributes);
-        }
-      }),
-    dimensions = [].concat(
-      ...request.columns
-        .filter(c => c.type === 'time-dimension' || c.type === 'dimension')
-        .map(dimension => {
-          let name = dimension.dimension.id,
-            defaultFields = getDefaultDimensionFields(dimension);
-          return !defaultFields.length ? name : defaultFields.map(field => canonicalizeDimension({ id: name, field }));
-        })
-    ),
-    metrics = arr(request.columns.filter(c => c.type === 'metric')).mapBy('canonicalName'),
-    requestFields = [...dimensions, ...metrics],
-    timeGrain = request.timeGrain,
-    shouldHaveDateTimeCol = timeGrain !== 'all',
-    doesHaveDateTimeCol = !!arr(columns).findBy('type', 'dateTime');
+  const columnFields = arr(columns)
+    .rejectBy('type', 'dateTime')
+    .map(column => {
+      const { attributes, type } = column;
+      if (type === 'dimension' || type === 'time-dimension') {
+        const attrs = Object.assign({}, attributes, { id: attributes.name });
+        delete attrs.name;
+        return canonicalizeDimension(attrs);
+      } else {
+        return canonicalizeColumnAttributes(attributes);
+      }
+    });
+
+  const requestFields = request.columns.filter(c => c.field !== 'dateTime').map(c => c.canonicalName);
+  const shouldHaveDateTimeCol = request.timeGrain !== 'all' || request.timeGrainColumn;
+  const doesHaveDateTimeCol = columns.some(c => c.type === 'dateTime');
 
   return (
     requestFields.length === columnFields.length &&
@@ -178,13 +167,13 @@ const Validations = buildValidations(
   {
     'metadata.columns': validator('inline', {
       validate(columns, options) {
-        let request = get(options, 'request');
-        return request && hasAllColumns(request, arr(columns));
+        const { request } = options;
+        return request && hasAllColumns(request, columns);
       },
       dependentKeys: [
-        'model._request.dimensions.[]',
-        'model._request.metrics.@each.parameters.{}',
-        'model._request.logicalTable.timeGrain'
+        'model._request.columns.[]',
+        'model._request.columns.@each.parameters',
+        'model._request.timeGrain'
       ]
     })
   },
@@ -212,26 +201,25 @@ export default VisualizationBase.extend(Validations, {
    * @return {Object} this object
    */
   rebuildConfig(request /*, response */) {
-    const dimensions = get(request, 'dimensions') || [];
-    const metrics = get(request, 'metrics') || [];
-    const columns = get(this, 'metadata.columns');
+    const dimensions = request.dimensionColumns.filter(c => c.field !== 'dateTime');
+    const metrics = request.metricColumns;
+    const { columns } = this.metadata;
     // index column based on metricId or dimensionId
     const columnIndex = indexColumnById(columns);
-    const timeGrain = request.logicalTable?.timeGrain;
+    const hasTimeGrainColumn = !!request.timeGrainColumn;
 
     const naviFormatter = getOwner(this).lookup('service:navi-formatter');
 
     //Only add dateColumn if timegrain is not 'all'
-    let dateColumn =
-      timeGrain !== 'all'
-        ? [
-            {
-              type: 'dateTime',
-              attributes: { name: 'dateTime' },
-              displayName: 'Date'
-            }
-          ]
-        : [];
+    let dateColumn = hasTimeGrainColumn
+      ? [
+          {
+            type: 'dateTime',
+            attributes: { name: 'dateTime' },
+            displayName: 'Date'
+          }
+        ]
+      : [];
 
     const newColumns = [
       ...dateColumn,
