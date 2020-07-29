@@ -1,32 +1,39 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
+//@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import GQLQueries from 'navi-data/gql/metadata-queries';
 import { print } from 'graphql/language/printer';
 import scenario from 'dummy/mirage/scenarios/graphql';
+import ElideMetadataAdapter from 'navi-data/adapters/metadata/elide';
 
 // Apollo includes this field in its queries, but we don't want to compare against that in our tests
-const removeTypeNameField = query => query.replace(/\n\s*__typename/g, '').trim();
+const removeTypeNameField = (query: string) => query.replace(/\n\s*__typename/g, '').trim();
 
-module('Unit | Elide Metadata Adapter', function(hooks) {
+type TestContext = {
+  owner: TODO;
+  server?: TODO;
+};
+
+module('Unit | Adapter | metadata/elide', function(hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  let Adapter;
+  let Adapter: ElideMetadataAdapter;
 
-  hooks.beforeEach(function() {
-    Adapter = this.owner.lookup('adapter:elide-metadata');
+  hooks.beforeEach(function(this: TestContext) {
+    Adapter = this.owner.lookup('adapter:metadata/elide');
   });
 
   /*
    * Test whether the url path is built correctly
    */
-  test('fetchAll - request format', async function(assert) {
+  test('fetchAll - request format', async function(this: TestContext, assert) {
     assert.expect(3);
 
     const gqlQuery = print(GQLQueries.table.all).trim(); //GQL Query as string
 
-    this.server.post('https://data.naviapp.io/graphql', (schema, { requestBody }) => {
+    this.server.post('https://data.naviapp.io/graphql', (_schema: TODO, { requestBody }: { requestBody: string }) => {
       const { operationName, variables, query } = JSON.parse(requestBody);
 
       assert.notOk(operationName, 'No operation name specified');
@@ -42,12 +49,12 @@ module('Unit | Elide Metadata Adapter', function(hooks) {
     await Adapter.fetchAll('table');
   });
 
-  test('fetchMetadata - request format', async function(assert) {
+  test('fetchById - request format', async function(this: TestContext, assert) {
     assert.expect(3);
 
     const gqlQuery = print(GQLQueries.table.single).trim(); //GQL Query as string
 
-    this.server.post('https://data.naviapp.io/graphql', (schema, { requestBody }) => {
+    this.server.post('https://data.naviapp.io/graphql', (_schema: TODO, { requestBody }: { requestBody: string }) => {
       const { operationName, variables, query } = JSON.parse(requestBody);
 
       assert.notOk(operationName, 'No operation name specified');
@@ -60,10 +67,10 @@ module('Unit | Elide Metadata Adapter', function(hooks) {
 
       return [];
     });
-    await Adapter.fetchMetadata('table', 'foo');
+    await Adapter.fetchById('table', 'foo');
   });
 
-  test('fetchAll', async function(assert) {
+  test('fetchAll - response', async function(this: TestContext, assert) {
     assert.expect(6);
 
     // Seed our mirage database
@@ -82,7 +89,7 @@ module('Unit | Elide Metadata Adapter', function(hooks) {
     ];
 
     const { table: tableConnection } = await Adapter.fetchAll('table');
-    const tables = tableConnection.edges.map(edge => edge.node);
+    const tables = tableConnection.edges.map((edge: TODO) => edge.node);
 
     // Test that all fields specified in the query are included in the result and none of them are null as they should be populated by the factories
     assert.deepEqual(
@@ -91,7 +98,7 @@ module('Unit | Elide Metadata Adapter', function(hooks) {
       'Both tables in the mirage database are returned with the expected fields for every table'
     );
     assert.ok(
-      tables.every(table => Object.keys(table).every(key => !!table[key])),
+      tables.every((table: TODO) => Object.keys(table).every(key => !!table[key])),
       'No null values returned in table fields'
     );
 
@@ -249,13 +256,13 @@ module('Unit | Elide Metadata Adapter', function(hooks) {
     );
   });
 
-  test('fetchMetadata', async function(assert) {
+  test('fetchById - response', async function(this: TestContext, assert) {
     assert.expect(1);
 
     // Seed our mirage database
     scenario(this.server);
 
-    const result = await Adapter.fetchMetadata('table', 'table0');
+    const result = await Adapter.fetchById('table', 'table0');
 
     assert.deepEqual(
       result,
@@ -377,5 +384,11 @@ module('Unit | Elide Metadata Adapter', function(hooks) {
       },
       'The expected table is returned with all requested fields'
     );
+  });
+
+  test('fetchEverything - response', async function(this: TestContext, assert) {
+    const allTables = await Adapter.fetchAll('table');
+    const everything = await Adapter.fetchEverything();
+    assert.deepEqual(everything, allTables, "`fetchEverything` returns the same payload `fetchAll('table')`");
   });
 });
