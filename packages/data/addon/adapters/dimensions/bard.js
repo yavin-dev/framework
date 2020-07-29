@@ -106,10 +106,23 @@ export default class BardDimensionAdapter extends EmberObject {
       andQueries = [andQueries]; // if not array, wrap
     }
     assert("You must pass an 'Array' of queries to be ANDed together", Array.isArray(andQueries));
+
+    const defaultDimensionField = this._getDimensionMetadata(
+      dimension,
+      options.dataSourceName || getDefaultDataSourceName()
+    ).primaryKeyFieldName;
+
+    andQueries.forEach(query => {
+      if (!query.field?.includes('.')) {
+        // field passed in is typically id/desc, but we want it to be 'dimension.dimensionField'
+        const field = query.field || defaultDimensionField;
+        const fieldForUrl = URL_FIELD_NAMES[field] || field;
+        query.field = `${dimension}.${fieldForUrl}`;
+      }
+    });
+
     let defaultQueryOptions = {
-      dimension: dimensionId,
-      field: this._getDimensionMetadata(dimension, options.dataSourceName || getDefaultDataSourceName())
-        .primaryKeyFieldName,
+      field: `${dimensionId}.${defaultDimensionField}`,
       operator: 'in',
       values: []
     };
@@ -128,14 +141,8 @@ export default class BardDimensionAdapter extends EmberObject {
       andQueries.every(q => Array.isArray(q.values))
     );
 
-    // replace field name if necessary
-    const filters = andQueries.map(query => ({
-      ...query,
-      field: URL_FIELD_NAMES[query.field] || query.field
-    }));
-
     return {
-      filters: serializeFilters(filters)
+      filters: serializeFilters(andQueries)
     };
   }
 

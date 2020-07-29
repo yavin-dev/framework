@@ -6,33 +6,48 @@ import config from 'ember-get-config';
 let Service, Server;
 
 const TestRequest = {
-  logicalTable: {
-    table: 'table1',
-    timeGrain: 'grain1'
-  },
-  metrics: [{ metric: 'm1' }, { metric: 'm2' }],
-  dimensions: [{ dimension: 'd1' }, { dimension: 'd2' }],
+  table: 'table1',
+  requestVersion: '2.0',
+  columns: [
+    { type: 'time-dimension', field: 'dateTime', parameters: { grain: 'grain1' } },
+    { type: 'metric', field: 'm1', parameters: {} },
+    { type: 'metric', field: 'm2', parameters: {} },
+    { type: 'dimension', field: 'd1', parameters: {} },
+    { type: 'dimension', field: 'd2', parameters: {} }
+  ],
   filters: [
-    { dimension: 'd3', operator: 'in', values: ['v1', 'v2'] },
     {
-      dimension: 'd4',
+      type: 'time-dimension',
+      field: 'dateTime',
+      parameters: {
+        grain: 'grain1'
+      },
+      operator: 'bet',
+      values: ['2015-01-03', '2015-01-04']
+    },
+    {
+      type: 'dimension',
+      field: 'd3',
+      parameters: {},
+      operator: 'in',
+      values: ['v1', 'v2']
+    },
+    {
+      type: 'dimension',
+      field: 'd4',
+      parameters: {},
       operator: 'in',
       values: ['v3', 'v4']
-    }
-  ],
-  having: [
+    },
     {
-      metric: 'm1',
+      type: 'metric',
+      field: 'm1',
+      parameters: {},
       operator: 'gt',
-      value: 0 // TODO switch to `values: [0]` after `value` backwards compatibility has been removed
+      values: [0]
     }
   ],
-  intervals: [
-    {
-      start: '2015-01-03',
-      end: '2015-01-04'
-    }
-  ]
+  sorts: []
 };
 
 const Response = {

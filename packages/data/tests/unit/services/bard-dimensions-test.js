@@ -160,7 +160,7 @@ module('Unit | Service | Dimensions', function(hooks) {
       dimensionOne: true
     });
 
-    return Service.find(TestDimension, { field: 'id', values: ['v4'] }).then(model => {
+    return Service.find(TestDimension, [{ field: 'id', values: ['v4'] }]).then(model => {
       assert.deepEqual(
         model.dimension,
         TestDimension,
@@ -190,7 +190,7 @@ module('Unit | Service | Dimensions', function(hooks) {
       dimensionOne: true
     });
 
-    return Service.find(TestDimension, { values: ['v4'] }, { page: 1, perPage: 1 }).then(model => {
+    return Service.find(TestDimension, [{ values: ['v4'] }], { page: 1, perPage: 1 }).then(model => {
       assert.deepEqual(
         model.meta,
         {
@@ -213,7 +213,7 @@ module('Unit | Service | Dimensions', function(hooks) {
       dimensionOne: false
     });
 
-    let model = await Service.find(TestDimension, { values: ['v1'] });
+    let model = await Service.find(TestDimension, [{ values: ['v1'] }]);
     assert.deepEqual(
       model.dimension,
       TestDimension,
@@ -237,7 +237,7 @@ module('Unit | Service | Dimensions', function(hooks) {
       dimensionFour: false
     });
 
-    return Service.find('dimensionFour', { values: ['v4'] }, { dataSourceName: 'blockhead' }).then(function(model) {
+    return Service.find('dimensionFour', [{ values: ['v4'] }], { dataSourceName: 'blockhead' }).then(function(model) {
       assert.deepEqual(
         model.dimension,
         'dimensionFour',
@@ -262,7 +262,7 @@ module('Unit | Service | Dimensions', function(hooks) {
       dimensionOne: false
     });
 
-    return Service.find(TestDimension, { values: ['v1'] }, { page: 1, perPage: 10 }).then(model => {
+    return Service.find(TestDimension, [{ values: ['v1'] }], { page: 1, perPage: 10 }).then(model => {
       assert.deepEqual(
         model.meta,
         {

@@ -1,10 +1,8 @@
-import { set, get } from '@ember/object';
-import { isPresent } from '@ember/utils';
-import { run } from '@ember/runloop';
-import { classify } from '@ember/string';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { canonicalizeMetric } from 'navi-data/utils/metric';
+import { getContext } from '@ember/test-helpers';
+import { set } from '@ember/object';
+import { run } from '@ember/runloop';
 import { indexColumnById } from 'navi-core/models/table';
 
 module('Unit | Model | Table Visualization Fragment', function(hooks) {
@@ -17,7 +15,10 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
         [{ dimension: 'd1' }, { dimension: 'd2' }],
         [{ metric: 'm1' }, { metric: 'm2' }]
       ],
-      table = run(() => run(() => this.owner.lookup('service:store').createRecord('all-the-fragments')).get('table'));
+      table = this.owner
+        .lookup('service:store')
+        .createRecord('all-the-fragments')
+        .get('table');
 
     assert.ok(
       !table.isValidForRequest(buildTestRequest(...metricsAndDims)),
@@ -552,13 +553,12 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
   function buildTestConfig(dimensions = [], metrics = [], includeDateTime = true) {
     let columns = [
       ...metrics.map(m => {
-        let name = get(m, 'metric'),
-          parameters = get(m, 'parameters') || {},
-          valueType = isPresent(parameters) && get(parameters, 'currency') ? 'money' : 'number';
+        const { metric, parameters = {} } = m;
+        const valueType = parameters.currency ? 'money' : 'number';
         return {
           attributes: {
             canAggregateSubtotal: true,
-            name,
+            name: metric,
             parameters
           },
           type: 'metric',
@@ -574,7 +574,7 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
     if (includeDateTime) {
       columns.unshift({
         attributes: { name: 'dateTime' },
-        type: 'dateTime'
+        type: 'time-dimension'
       });
     }
 
@@ -593,40 +593,37 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
    * @returns {Object} request object
    */
   function buildTestRequest(dimensions = [], metrics = [], timeGrain = 'day') {
-    return {
-      metrics: metrics.map(m => {
-        let metricName = get(m, 'metric'),
-          parameters = get(m, 'parameters') || {},
-          canonicalName = canonicalizeMetric({ metric: metricName, parameters });
+    const store = getContext().owner.lookup('service:store');
 
-        return {
-          metric: {
-            id: metricName,
-            name: classify(metricName),
-            category: 'category',
-            valueType: 'number'
-          },
-          parameters,
-          canonicalName,
-          toJSON() {
-            return {
-              metric: metricName,
-              parameters
-            };
+    return store.createFragment('bard-request-v2/request', {
+      columns: [
+        store.createFragment('bard-request-v2/fragments/column', {
+          type: 'time-dimension',
+          field: 'dateTime',
+          parameters: {
+            grain: timeGrain
           }
-        };
-      }),
-      dimensions: dimensions.map(({ dimension, fields }) => ({
-        dimension: {
-          id: dimension,
-          name: classify(dimension),
-          fields,
-          getFieldsForTag: () => (fields ? fields.map(name => ({ name })) : [])
-        }
-      })),
-      logicalTable: {
-        timeGrain
-      }
-    };
+        }),
+        ...metrics.map(m => {
+          const { metric, parameters = {} } = m;
+          return store.createFragment('bard-request-v2/fragments/column', {
+            type: 'metric',
+            field: metric,
+            parameters
+          });
+        }),
+        ...dimensions.flatMap(({ dimension, fields = ['id'] }) => {
+          return fields.map(field => {
+            return store.createFragment('bard-request-v2/fragments/column', {
+              type: 'dimension',
+              field: dimension,
+              parameters: {
+                projection: field
+              }
+            });
+          });
+        })
+      ]
+    });
   }
 });
