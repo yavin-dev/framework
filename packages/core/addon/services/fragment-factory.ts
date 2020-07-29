@@ -10,13 +10,10 @@ import FilterFragment from '../models/bard-request-v2/fragments/filter';
 import SortFragment from '../models/bard-request-v2/fragments/sort';
 import { dasherize } from '@ember/string';
 
-interface StoreWithFragment extends Store {
-  createFragment(fragmentName: string, attributes: object): ColumnFragment | FilterFragment | SortFragment;
-}
 type FieldType = 'metric' | 'dimension' | 'time-dimension';
 
 export default class FragmentFactory extends Service {
-  @service store!: StoreWithFragment;
+  @service store!: Store;
 
   /**
    * Builds a request v2 column fragment given meta data object.
@@ -45,14 +42,13 @@ export default class FragmentFactory extends Service {
     parameters: Dict<string> = {},
     alias?: string
   ): ColumnFragment {
-    const column = this.store.createFragment('bard-request-v2/fragments/column', {
+    return this.store.createFragment('bard-request-v2/fragments/column', {
       field,
       type,
       parameters,
       alias,
       source: dataSource
-    }) as ColumnFragment;
-    return column;
+    });
   }
 
   /**
@@ -90,15 +86,14 @@ export default class FragmentFactory extends Service {
     operator: string,
     values: Array<string | number>
   ): FilterFragment {
-    const filter = this.store.createFragment('bard-request-v2/fragments/filter', {
+    return this.store.createFragment('bard-request-v2/fragments/filter', {
       field,
       parameters,
       type,
       operator,
       values,
       source: dataSource
-    }) as FilterFragment;
-    return filter;
+    });
   }
 
   /**
@@ -132,14 +127,13 @@ export default class FragmentFactory extends Service {
     parameters: Dict<string> = {},
     direction: 'asc' | 'desc'
   ): SortFragment {
-    const sort = this.store.createFragment('bard-request-v2/fragments/sort', {
+    return this.store.createFragment('bard-request-v2/fragments/sort', {
       field,
       parameters,
       type,
       direction,
       source: dataSource
-    }) as SortFragment;
-    return sort;
+    });
   }
 
   /**

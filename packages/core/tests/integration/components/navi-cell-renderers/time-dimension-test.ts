@@ -2,6 +2,9 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
+import { TestContext } from 'ember-test-helpers';
+import FragmentFactory from 'navi-core/services/fragment-factory';
+import StoreService from 'ember-data/store';
 
 const TEMPLATE = hbs`
   <NaviCellRenderers::TimeDimension
@@ -10,42 +13,50 @@ const TEMPLATE = hbs`
     @request={{this.request}}
   />`;
 
-const data = {
-  dateTime: '2016-06-03 11:12:13.000',
-  'os|id': 'All Other',
-  'os|desc': 'All Other',
-  uniqueIdentifier: 172933788,
-  totalPageViews: 3669828357
-};
-
-const column = {
-  type: 'time-dimension',
-  displayName: 'Date',
-  attributes: {
-    name: 'dateTime',
-    parameters: {
-      grain: 'day'
-    }
-  }
-};
-
-const request = {
-  columns: [
-    { type: 'dimension', field: 'os', parameters: {}, alias: null },
-    { type: 'metric', field: 'uniqueIdentifier', parameters: {}, alias: null },
-    { type: 'metric', field: 'totalPageViews', parameters: {}, alias: null }
-  ],
-  timeGrain: 'day',
-  table: 'network'
-};
+/**
+ * Set the test context request property with a granularity string
+ * @function _setRequestForTimeGrain
+ * @param {Object} context - test context
+ * @param {String} timeGrain - value of granularity
+ * @return {Void}
+ */
+function _setRequestForTimeGrain(context: any, timeGrain: string) {
+  context.request.timeGrainColumn.updateParameters({ grain: timeGrain });
+}
 
 module('Integration | Component | cell renderers/time-dimension', function(hooks) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(function() {
-    this.set('data', data);
-    this.set('column', column);
-    this.set('request', request);
+  hooks.beforeEach(function(this: TestContext) {
+    const store = this.owner.lookup('service:store') as StoreService;
+    const factory = this.owner.lookup('service:fragment-factory') as FragmentFactory;
+
+    this.set('data', {
+      dateTime: '2016-06-03 11:12:13.000'
+    });
+
+    this.set(
+      'request',
+      store.createFragment('bard-request-v2/request', {
+        columns: [factory.createColumn('time-dimension', 'dummy', 'dateTime', { grain: 'day' })],
+        filters: [],
+        sorts: [],
+        requestVersion: '2.0',
+        dataSource: 'dummy',
+        table: 'network'
+      })
+    );
+
+    this.set('column', {
+      type: 'time-dimension',
+      displayName: 'Date',
+      attributes: {
+        name: 'dateTime',
+        parameters: {
+          grain: 'day'
+        }
+      }
+    });
   });
 
   test('date-time renders day format correctly', async function(assert) {
@@ -147,15 +158,4 @@ module('Integration | Component | cell renderers/time-dimension', function(hooks
       .dom('.table-cell-content')
       .hasText('06/03/2016 11:12:13', 'The date-time cell renders the second value correctly');
   });
-
-  /**
-   * Set the test context request property with a granularity string
-   * @function _setRequestForTimeGrain
-   * @param {Object} context - test context
-   * @param {String} timeGrain - value of granularity
-   * @return {Void}
-   */
-  function _setRequestForTimeGrain(context, timeGrain) {
-    context.set('request', { timeGrain });
-  }
 });

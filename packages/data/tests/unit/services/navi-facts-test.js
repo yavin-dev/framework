@@ -9,11 +9,11 @@ const TestRequest = {
   table: 'table1',
   requestVersion: '2.0',
   columns: [
-    { type: 'time-dimension', field: 'dateTime', parameters: { grain: 'grain1' }, alias: null },
-    { type: 'metric', field: 'm1', parameters: {}, alias: null },
-    { type: 'metric', field: 'm2', parameters: {}, alias: null },
-    { type: 'dimension', field: 'd1', parameters: {}, alias: null },
-    { type: 'dimension', field: 'd2', parameters: {}, alias: null }
+    { type: 'time-dimension', field: 'dateTime', parameters: { grain: 'grain1' } },
+    { type: 'metric', field: 'm1', parameters: {} },
+    { type: 'metric', field: 'm2', parameters: {} },
+    { type: 'dimension', field: 'd1', parameters: {} },
+    { type: 'dimension', field: 'd2', parameters: {} }
   ],
   filters: [
     {

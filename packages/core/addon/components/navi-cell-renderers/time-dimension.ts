@@ -11,14 +11,22 @@
  */
 
 import Component from '@glimmer/component';
+import Request from 'navi-core/models/bard-request-v2/request';
 
-export default class DateTimeCellRenderer extends Component {
+type Args = {
+  data: Dict;
+  column: TODO;
+  request: Request;
+};
+
+export default class DateTimeCellRenderer extends Component<Args> {
   /**
    * @property {String} value
    * Date start time from the response data or 'TOTAL'
    */
   get value() {
-    return this.args.data[this.args.column.attributes.name];
+    const { data, column } = this.args;
+    return data[column.attributes.name];
   }
 
   /**

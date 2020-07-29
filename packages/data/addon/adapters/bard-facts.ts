@@ -321,7 +321,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
    * @returns {Promise} - Promise with the response
    */
   fetchDataForRequest(request: RequestV2, options: RequestOptions) {
-    assert('Request for bard-facts adapter must be version 2', request.requestVersion.startsWith('2.'));
+    assert('Request for bard-facts adapter must be version 2', (request.requestVersion || '').startsWith('2.'));
 
     // Decorate and translate the request
     const decoratedRequest = this._decorate(request);

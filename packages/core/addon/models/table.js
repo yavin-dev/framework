@@ -19,7 +19,8 @@ import { getOwner } from '@ember/application';
  * @returns {Object} - list of field names
  */
 function getDefaultDimensionFields(dimension) {
-  const fields = dimension.columnMeta.getFieldsForTag?.('show') || [];
+  // TODO: Come back and clean this up for dateTime
+  const fields = dimension.data.getFieldsForTag?.('show') || [];
   return fields.map(field => field.name);
 }
 
@@ -33,7 +34,7 @@ function getDefaultDimensionFields(dimension) {
 function buildDimensionColumn(dimension, columnIndex, field) {
   let dimensionId = dimension.field,
     column = columnIndex[dimensionId],
-    defaultName = formatDimensionName({ name: dimension.columnMeta.name, field });
+    defaultName = formatDimensionName({ name: dimension.columnMetadata.name, field });
 
   return {
     type: 'dimension',
@@ -69,10 +70,10 @@ function buildDimensionColumns(dimensions, columnIndex) {
  */
 function buildMetricColumns(metrics, columnIndex, naviFormatter) {
   return metrics.map(metric => {
-    const column = columnIndex[metric.columnMeta.id];
+    const column = columnIndex[metric.columnMetadata.id];
     const displayName = column
       ? column.displayName
-      : naviFormatter.formatMetric(metric.columnMeta, metric.parameters, metric.alias);
+      : naviFormatter.formatMetric(metric.columnMetadata, metric.parameters, metric.alias);
     const format = column ? get(column, 'attributes.format') : '';
 
     return {
@@ -124,8 +125,8 @@ function hasAllColumns(request, columns) {
   const columnFields = arr(columns)
     .rejectBy('type', 'dateTime')
     .map(column => {
-      const { attributes } = column;
-      if (column.type === 'dimension' || column.type === 'time-dimension') {
+      const { attributes, type } = column;
+      if (type === 'dimension' || type === 'time-dimension') {
         const attrs = Object.assign({}, attributes, { id: attributes.name });
         delete attrs.name;
         return canonicalizeDimension(attrs);
@@ -136,7 +137,7 @@ function hasAllColumns(request, columns) {
 
   const requestFields = request.columns.filter(c => c.field !== 'dateTime').map(c => c.canonicalName);
   const shouldHaveDateTimeCol = request.timeGrain !== 'all' || request.timeGrainColumn;
-  const doesHaveDateTimeCol = !!columns.find(c => c.type === 'dateTime');
+  const doesHaveDateTimeCol = columns.some(c => c.type === 'dateTime');
 
   return (
     requestFields.length === columnFields.length &&
