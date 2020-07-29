@@ -234,7 +234,7 @@ export default class Request extends Fragment.extend(Validations) {
    * @param {object} parameters - the parameters to search for to be removed
    */
   removeColumnByMeta(columnMetadataModel, parameters) {
-    let columnsToRemove = this.columns.filter(column => column.columnMeta === columnMetadataModel);
+    let columnsToRemove = this.columns.filter(column => column.columnMetadata === columnMetadataModel);
 
     if (parameters) {
       columnsToRemove = columnsToRemove.filter(column => isEqual(column.parameters, parameters));
@@ -367,7 +367,7 @@ export default class Request extends Fragment.extend(Validations) {
    * @param {ColumnMetadata} metricMetadataModel - the metadata of the metric to remove sorts for
    */
   removeSortByMeta(metricMetadataModel) {
-    const sortsToRemove = this.sorts.filter(sort => sort.columnMeta === metricMetadataModel);
+    const sortsToRemove = this.sorts.filter(sort => sort.columnMetadata === metricMetadataModel);
     sortsToRemove.forEach(sort => this.removeSort(sort));
   }
 

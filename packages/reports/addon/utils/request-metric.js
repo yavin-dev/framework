@@ -11,7 +11,9 @@ import { A as arr } from '@ember/array';
  * @returns {Array} - array of selected metrics of given meta type
  */
 export function getSelectedMetricsOfBase(metricMetadataModel, request) {
-  return request.columns.filter(column => column.type === 'metric' && column.columnMeta?.id === metricMetadataModel.id);
+  return request.columns.filter(
+    column => column.type === 'metric' && column.columnMetadata?.id === metricMetadataModel.id
+  );
 }
 
 /**
@@ -21,7 +23,9 @@ export function getSelectedMetricsOfBase(metricMetadataModel, request) {
  * @returns {Array} - array of filtered metrics of given meta type
  */
 export function getFilteredMetricsOfBase(metricMetadataModel, request) {
-  return request.filters.filter(filter => filter.type === 'metric' && filter.columnMeta?.id === metricMetadataModel.id);
+  return request.filters.filter(
+    filter => filter.type === 'metric' && filter.columnMetadata?.id === metricMetadataModel.id
+  );
 }
 
 /**

@@ -54,7 +54,7 @@ export default Component.extend({
     let dimFilters = filters
       .filter(f => f.type === 'dimension' || (f.type === 'time-dimension' && f.field !== 'dateTime'))
       .map(filter => {
-        let dimensionDataType = filter.columnMeta?.valueType?.toLowerCase?.(),
+        let dimensionDataType = filter.columnMetadata?.valueType?.toLowerCase?.(),
           type = this._dimensionFilterBuilder(dimensionDataType);
 
         return {

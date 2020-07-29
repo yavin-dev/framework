@@ -153,7 +153,7 @@ module('Unit | Consumer | request column', function(hooks) {
 
     const currentModel = {
       request: {
-        columns: [{ type: 'metric', columnMeta: 'pageViews' }]
+        columns: [{ type: 'metric', columnMetadata: 'pageViews' }]
       }
     };
 
@@ -200,10 +200,10 @@ module('Unit | Consumer | request column', function(hooks) {
     const currentModel = {
       request: {
         columns: arr([
-          { columnMeta: 'age' },
-          { columnMeta: 'browser' },
-          { columnMeta: 'adClicks' },
-          { columnMeta: 'pageViews' }
+          { columnMetadata: 'age' },
+          { columnMetadata: 'browser' },
+          { columnMetadata: 'adClicks' },
+          { columnMetadata: 'pageViews' }
         ])
       }
     };
