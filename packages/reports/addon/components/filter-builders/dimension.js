@@ -61,7 +61,7 @@ class DimensionFilterBuilderComponent extends BaseFilterBuilderComponent {
   /**
    * @property {String} primaryKeyField - Primary Key Field used so we know what to use as default field for operators
    */
-  @readOnly('requestFragment.columnMeta.primaryKeyFieldName') primaryKeyField;
+  @readOnly('requestFragment.columnMetadata.primaryKeyFieldName') primaryKeyField;
 
   /**
    * @property {?Boolean} showFields - Whether to show the field chooser in the filter builder
@@ -71,9 +71,9 @@ class DimensionFilterBuilderComponent extends BaseFilterBuilderComponent {
   /**
    * @property {Array} fields - List of fields that a user can choose from
    */
-  @computed('requestFragment.columnMeta')
+  @computed('requestFragment.columnMetadata')
   get fields() {
-    let fields = this.requestFragment.columnMeta.fields;
+    let fields = this.requestFragment.columnMetadata.fields;
     return fields ? fields.map(field => field.name) : ['id', 'desc'];
   }
 

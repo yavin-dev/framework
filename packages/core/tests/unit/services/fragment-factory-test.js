@@ -27,16 +27,24 @@ module('Unit | Service | fragmentFactory', function(hooks) {
     assert.equal(metricMetaFragment.parameters.avg, 'trailing31day', 'Metric fragment has right parameters');
     assert.equal(metricMetaFragment.alias, 'clicksTrailingMonthAvg', 'Metric Fragment has passed alias');
     assert.equal(metricMetaFragment.type, 'metric', 'Metric Fragment has metric type');
-    assert.equal(metricMetaFragment.columnMeta.category, 'Clicks', 'Metric fragment meta is populated correctly');
-    assert.equal(metricMetaFragment.columnMeta.source, 'dummy', 'Metric fragment meta data has right datasource');
+    assert.equal(metricMetaFragment.columnMetadata.category, 'Clicks', 'Metric fragment meta is populated correctly');
+    assert.equal(metricMetaFragment.columnMetadata.source, 'dummy', 'Metric fragment meta data has right datasource');
 
     const dimensionMetaFragment = service.createColumnFromMeta(dimMeta, {}, 'agent');
     assert.equal(dimensionMetaFragment.field, 'browser', 'Dimension has right field');
     assert.deepEqual(dimensionMetaFragment.parameters, {}, 'Dimension fragment has right parameters');
     assert.equal(dimensionMetaFragment.alias, 'agent', 'Dimension Fragment has passed alias');
     assert.equal(dimensionMetaFragment.type, 'dimension', 'Dimension Fragment has metric type');
-    assert.equal(dimensionMetaFragment.columnMeta.category, 'test', 'Dimension fragment meta is populated correctly');
-    assert.equal(dimensionMetaFragment.columnMeta.source, 'dummy', 'Dimension fragment meta data has right datasource');
+    assert.equal(
+      dimensionMetaFragment.columnMetadata.category,
+      'test',
+      'Dimension fragment meta is populated correctly'
+    );
+    assert.equal(
+      dimensionMetaFragment.columnMetadata.source,
+      'dummy',
+      'Dimension fragment meta data has right datasource'
+    );
   });
 
   test('Build Column Fragments Without Meta', function(assert) {
@@ -51,16 +59,24 @@ module('Unit | Service | fragmentFactory', function(hooks) {
     assert.equal(metricMetaFragment.parameters.currency, 'USD', 'Metric fragment has right parameters');
     assert.equal(metricMetaFragment.alias, 'revenueTrailingMonthAvg', 'Metric Fragment has passed alias');
     assert.equal(metricMetaFragment.type, 'metric', 'Metric Fragment has metric type');
-    assert.equal(metricMetaFragment.columnMeta.category, 'Revenue', 'Metric fragment meta is populated correctly');
-    assert.equal(metricMetaFragment.columnMeta.source, 'dummy', 'Metric fragment meta data has right datasource');
+    assert.equal(metricMetaFragment.columnMetadata.category, 'Revenue', 'Metric fragment meta is populated correctly');
+    assert.equal(metricMetaFragment.columnMetadata.source, 'dummy', 'Metric fragment meta data has right datasource');
 
     const dimensionMetaFragment = service.createColumn('dimension', 'dummy', 'browser', {}, 'agent');
     assert.equal(dimensionMetaFragment.field, 'browser', 'Dimension has right field');
     assert.deepEqual(dimensionMetaFragment.parameters, {}, 'Dimension fragment has right parameters');
     assert.equal(dimensionMetaFragment.alias, 'agent', 'Dimension Fragment has passed alias');
     assert.equal(dimensionMetaFragment.type, 'dimension', 'Dimension Fragment has metric type');
-    assert.equal(dimensionMetaFragment.columnMeta.category, 'test', 'Dimension fragment meta is populated correctly');
-    assert.equal(dimensionMetaFragment.columnMeta.source, 'dummy', 'Dimension fragment meta data has right datasource');
+    assert.equal(
+      dimensionMetaFragment.columnMetadata.category,
+      'test',
+      'Dimension fragment meta is populated correctly'
+    );
+    assert.equal(
+      dimensionMetaFragment.columnMetadata.source,
+      'dummy',
+      'Dimension fragment meta data has right datasource'
+    );
   });
 
   test('Build Filter Fragments From Meta', function(assert) {
@@ -72,16 +88,24 @@ module('Unit | Service | fragmentFactory', function(hooks) {
     assert.equal(metricMetaFragment.parameters.avg, 'trailing31day', 'Metric fragment has right parameters');
     assert.equal(metricMetaFragment.operator, 'in', 'Metric Fragment has passed operator');
     assert.deepEqual(metricMetaFragment.values, [1, 2, 3], 'Metric Fragment has right values');
-    assert.equal(metricMetaFragment.columnMeta.category, 'Clicks', 'Metric fragment meta is populated correctly');
-    assert.equal(metricMetaFragment.columnMeta.source, 'dummy', 'Metric fragment meta data has right datasource');
+    assert.equal(metricMetaFragment.columnMetadata.category, 'Clicks', 'Metric fragment meta is populated correctly');
+    assert.equal(metricMetaFragment.columnMetadata.source, 'dummy', 'Metric fragment meta data has right datasource');
 
     const dimensionMetaFragment = service.createFilterFromMeta(dimMeta, {}, 'contains', ['chrome', 'firefox']);
     assert.equal(dimensionMetaFragment.field, 'browser', 'Dimension has right field');
     assert.deepEqual(dimensionMetaFragment.parameters, {}, 'Dimension fragment has right parameters');
     assert.equal(dimensionMetaFragment.operator, 'contains', 'Dimension Fragment has passed opeator');
     assert.deepEqual(dimensionMetaFragment.values, ['chrome', 'firefox'], 'Dimension Fragment has metric values');
-    assert.equal(dimensionMetaFragment.columnMeta.category, 'test', 'Dimension fragment meta is populated correctly');
-    assert.equal(dimensionMetaFragment.columnMeta.source, 'dummy', 'Dimension fragment meta data has right datasource');
+    assert.equal(
+      dimensionMetaFragment.columnMetadata.category,
+      'test',
+      'Dimension fragment meta is populated correctly'
+    );
+    assert.equal(
+      dimensionMetaFragment.columnMetadata.source,
+      'dummy',
+      'Dimension fragment meta data has right datasource'
+    );
   });
 
   test('Build Filter Fragments Without Meta', function(assert) {
@@ -94,8 +118,8 @@ module('Unit | Service | fragmentFactory', function(hooks) {
     assert.equal(metricMetaFragment.parameters.avg, 'trailing31day', 'Metric fragment has right parameters');
     assert.equal(metricMetaFragment.operator, 'in', 'Metric Fragment has passed operator');
     assert.deepEqual(metricMetaFragment.values, [1, 2, 3], 'Metric Fragment has right values');
-    assert.equal(metricMetaFragment.columnMeta.category, 'Clicks', 'Metric fragment meta is populated correctly');
-    assert.equal(metricMetaFragment.columnMeta.source, 'dummy', 'Metric fragment meta data has right datasource');
+    assert.equal(metricMetaFragment.columnMetadata.category, 'Clicks', 'Metric fragment meta is populated correctly');
+    assert.equal(metricMetaFragment.columnMetadata.source, 'dummy', 'Metric fragment meta data has right datasource');
 
     const dimensionMetaFragment = service.createFilter('dimension', 'dummy', 'browser', {}, 'contains', [
       'chrome',
@@ -105,8 +129,16 @@ module('Unit | Service | fragmentFactory', function(hooks) {
     assert.deepEqual(dimensionMetaFragment.parameters, {}, 'Dimension fragment has right parameters');
     assert.equal(dimensionMetaFragment.operator, 'contains', 'Dimension Fragment has passed opeator');
     assert.deepEqual(dimensionMetaFragment.values, ['chrome', 'firefox'], 'Dimension Fragment has metric values');
-    assert.equal(dimensionMetaFragment.columnMeta.category, 'test', 'Dimension fragment meta is populated correctly');
-    assert.equal(dimensionMetaFragment.columnMeta.source, 'dummy', 'Dimension fragment meta data has right datasource');
+    assert.equal(
+      dimensionMetaFragment.columnMetadata.category,
+      'test',
+      'Dimension fragment meta is populated correctly'
+    );
+    assert.equal(
+      dimensionMetaFragment.columnMetadata.source,
+      'dummy',
+      'Dimension fragment meta data has right datasource'
+    );
   });
 
   test('Build Sort Fragments From Meta', function(assert) {
@@ -116,8 +148,8 @@ module('Unit | Service | fragmentFactory', function(hooks) {
     assert.equal(metricMetaFragment.field, 'navClicks', 'Sort Fragment has right field');
     assert.equal(metricMetaFragment.parameters.avg, 'trailing31day', 'Sort fragment has right parameters');
     assert.equal(metricMetaFragment.direction, 'asc', 'Sort Fragment has passed operator');
-    assert.equal(metricMetaFragment.columnMeta.category, 'Clicks', 'Sort fragment meta is populated correctly');
-    assert.equal(metricMetaFragment.columnMeta.source, 'dummy', 'Sort fragment meta data has right datasource');
+    assert.equal(metricMetaFragment.columnMetadata.category, 'Clicks', 'Sort fragment meta is populated correctly');
+    assert.equal(metricMetaFragment.columnMetadata.source, 'dummy', 'Sort fragment meta data has right datasource');
   });
 
   test('Build Sort Fragments Without Meta', function(assert) {
@@ -125,7 +157,7 @@ module('Unit | Service | fragmentFactory', function(hooks) {
     assert.equal(metricMetaFragment.field, 'revenue', 'Sort Fragment has right field');
     assert.equal(metricMetaFragment.parameters.currency, 'USD', 'Sort fragment has right parameters');
     assert.equal(metricMetaFragment.direction, 'desc', 'Sort Fragment has passed operator');
-    assert.equal(metricMetaFragment.columnMeta.category, 'Revenue', 'Sort fragment meta is populated correctly');
-    assert.equal(metricMetaFragment.columnMeta.source, 'dummy', 'Sort fragment meta data has right datasource');
+    assert.equal(metricMetaFragment.columnMetadata.category, 'Revenue', 'Sort fragment meta is populated correctly');
+    assert.equal(metricMetaFragment.columnMetadata.source, 'dummy', 'Sort fragment meta data has right datasource');
   });
 });

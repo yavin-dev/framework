@@ -55,7 +55,7 @@ class MetricSelectorComponent extends Component {
   @computed('selectedMetrics')
   get metricsChecked() {
     return this.selectedMetrics.reduce((list, metric) => {
-      list[metric.columnMeta.id] = true;
+      list[metric.columnMetadata.id] = true;
       return list;
     }, {});
   }
@@ -67,7 +67,7 @@ class MetricSelectorComponent extends Component {
   @computed('request.metricFilters.[]')
   get metricsFiltered() {
     return this.request.metricFilters.reduce((list, metric) => {
-      list[metric.columnMeta.id] = true;
+      list[metric.columnMetadata.id] = true;
       return list;
     }, {});
   }

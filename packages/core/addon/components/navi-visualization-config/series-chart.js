@@ -56,7 +56,7 @@ class NaviVisualizationConfigSeriesChartComponent extends Component {
   get dimensions() {
     return this.request.columns
       .filter(c => c.type === 'dimension' || (c.type === 'time-dimension' && c.field !== 'dateTime'))
-      .map(c => c.columnMeta);
+      .map(c => c.columnMetadata);
   }
 
   /**

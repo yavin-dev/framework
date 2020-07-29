@@ -45,7 +45,7 @@ export default class DimensionSelectComponent extends Component {
   /**
    * @property {String} primaryKey - primary key for this dimension
    */
-  @readOnly('filter.subject.columnMeta.primaryKeyFieldName') primaryKey;
+  @readOnly('filter.subject.columnMetadata.primaryKeyFieldName') primaryKey;
 
   /**
    * @property {BardDimensionArray} dimensionOptions - list of all dimension values
@@ -60,7 +60,7 @@ export default class DimensionSelectComponent extends Component {
       dimensionService = get(this, '_dimensionService'),
       source = get(this, 'filter.subject.source');
 
-    if (dimensionName && this.filter.subject.columnMeta.cardinality === CARDINALITY_SIZES[0]) {
+    if (dimensionName && this.filter.subject.columnMetadata.cardinality === CARDINALITY_SIZES[0]) {
       return dimensionService.all(dimensionName, { dataSourceName: source });
     }
 
@@ -98,9 +98,9 @@ export default class DimensionSelectComponent extends Component {
   /**
    * @property {String} filterValueFieldId - which id field to use as ID display.
    */
-  @computed('filter.{subject.columnMeta.idFieldName,field}')
+  @computed('filter.{subject.columnMetadata.idFieldName,field}')
   get filterValueFieldId() {
-    return this.filter.subject.columnMeta.idFieldName || this.filter.field;
+    return this.filter.subject.columnMetadata.idFieldName || this.filter.field;
   }
 
   /**

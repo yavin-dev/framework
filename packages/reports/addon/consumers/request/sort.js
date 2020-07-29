@@ -98,7 +98,7 @@ export default ActionConsumer.extend({
       this.requestActionDispatcher.dispatch(
         RequestActions.REMOVE_SORT_WITH_PARAMS,
         route,
-        columnFragment.columnMeta,
+        columnFragment.columnMetadata,
         columnFragment.parameters
       );
     },
@@ -113,7 +113,7 @@ export default ActionConsumer.extend({
       this.requestActionDispatcher.dispatch(
         RequestActions.REMOVE_SORT_BY_COLUMN_META,
         route,
-        columnFragment.columnMeta
+        columnFragment.columnMetadata
       );
     }
   }

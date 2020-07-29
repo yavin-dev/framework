@@ -74,10 +74,10 @@ class MetricFilterBuilderComponent extends BaseFilterBuilderComponent {
    */
   @computed('requestFragment.{field,parameters}')
   get displayName() {
-    const { columnMeta, parameters } = this.requestFragment;
+    const { columnMetadata, parameters } = this.requestFragment;
     return getOwner(this)
       .lookup('service:navi-formatter')
-      .formatMetric(columnMeta, parameters);
+      .formatMetric(columnMetadata, parameters);
   }
 
   /**

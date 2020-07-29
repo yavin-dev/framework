@@ -96,15 +96,23 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
 
     assert.equal(request.dataSource, 'dummy', 'the `dataSource` property has the correct value');
 
-    assert.equal(request.columns.objectAt(1).columnMeta.category, 'Asset', 'meta data is populated on sub fragments');
-    assert.equal(request.columns.objectAt(2).columnMeta.category, 'Revenue', 'meta data is populated on sub fragments');
     assert.equal(
-      request.filters.objectAt(1).columnMeta.category,
+      request.columns.objectAt(1).columnMetadata.category,
+      'Asset',
+      'meta data is populated on sub fragments'
+    );
+    assert.equal(
+      request.columns.objectAt(2).columnMetadata.category,
+      'Revenue',
+      'meta data is populated on sub fragments'
+    );
+    assert.equal(
+      request.filters.objectAt(1).columnMetadata.category,
       'Identifiers',
       'Filters also have meta data populated'
     );
 
-    assert.equal(request.sorts.objectAt(1).columnMeta.category, 'Clicks', 'Sorts have meta data populated');
+    assert.equal(request.sorts.objectAt(1).columnMetadata.category, 'Clicks', 'Sorts have meta data populated');
   });
 
   test('Clone Request', async function(assert) {
@@ -144,7 +152,11 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
       'the `values` property of the second filter has the correct value'
     );
 
-    assert.equal(request.filters.objectAt(1).columnMeta.category, 'Identifiers', 'the meta data attached is correct');
+    assert.equal(
+      request.filters.objectAt(1).columnMetadata.category,
+      'Identifiers',
+      'the meta data attached is correct'
+    );
 
     // columns
 
@@ -172,7 +184,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
       'the `type` property of the second column has the correct value'
     );
 
-    assert.equal(request.columns.objectAt(1).columnMeta.category, 'Asset', 'the meta data attached is correct');
+    assert.equal(request.columns.objectAt(1).columnMetadata.category, 'Asset', 'the meta data attached is correct');
 
     // sort
 
@@ -188,7 +200,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
       'the `direction` property of the second sort has the correct value'
     );
 
-    assert.equal(request.sorts.objectAt(1).columnMeta.category, 'Clicks', 'the meta data attached is correct');
+    assert.equal(request.sorts.objectAt(1).columnMetadata.category, 'Clicks', 'the meta data attached is correct');
   });
 
   test('Validation', async function(assert) {
