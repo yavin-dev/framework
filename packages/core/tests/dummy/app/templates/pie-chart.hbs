@@ -1,5 +1,21 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 
+<h3>Apex Pie Chart</h3>
+<div class="chart-container pie-chart-container">
+  {{!--
+  <NaviVisualizationConfig::ApexConfig
+    @request={{this.apexPieRequest}}
+    @response={{this.apexPieResponse}}
+    @visualization={{this.apexPieOptions}}
+    @onUpdateConfig={{this.onUpdateConfigApexPie}}
+  />
+  --}}
+  <NaviVisualizations::ApexPie
+    @model={{this.apexModel}}
+    @options={{this.apexPieOptions}}
+  />
+</div>
+
 <h3>Group by One dimension</h3>
 <div class="chart-container pie-chart-container">
   <NaviVisualizationConfig::Wrapper

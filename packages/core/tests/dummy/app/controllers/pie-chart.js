@@ -4,6 +4,141 @@ import { set, get, computed, action } from '@ember/object';
 import { merge } from 'lodash-es';
 
 export default class PieChartController extends Controller {
+  apexModel = A([
+    {
+      request: {
+        metrics: [
+          {
+            metric: 'uniqueIdentifier'
+          },
+          {
+            metric: 'totalPageViews'
+          },
+          {
+            metric: 'revenue'
+          }
+        ],
+        logicalTable: {
+          timeGrain: 'day'
+        },
+        intervals: [
+          {
+            start: '2015-12-14 00:00:00.000',
+            end: '2015-12-15 00:00:00.000'
+          }
+        ],
+        dimensions: [
+          {
+            dimension: 'age'
+          }
+        ]
+      },
+      response: {
+        rows: [
+          {
+            dateTime: '2015-12-14 00:00:00.000',
+            'age|id': '-3',
+            'age|desc': 'All Other',
+            uniqueIdentifier: 1234,
+            totalPageViews: 4321,
+            revenue: 1234
+          },
+          {
+            dateTime: '2015-12-14 00:00:00.000',
+            'age|id': '1',
+            'age|desc': 'under 13',
+            uniqueIdentifier: 5432,
+            totalPageViews: 2345,
+            revenue: 54320
+          },
+          {
+            dateTime: '2015-12-14 00:00:00.000',
+            'age|id': '2',
+            'age|desc': '13 - 25',
+            uniqueIdentifier: 3456,
+            totalPageViews: 6543,
+            revenue: 3456
+          },
+          {
+            dateTime: '2015-12-14 00:00:00.000',
+            'age|id': '3',
+            'age|desc': '25 - 35',
+            uniqueIdentifier: 7654,
+            totalPageViews: 4567,
+            revenue: 76540
+          },
+          {
+            dateTime: '2015-12-14 00:00:00.000',
+            'age|id': '4',
+            'age|desc': '35 - 45',
+            uniqueIdentifier: 5678,
+            totalPageViews: 8765,
+            revenue: 5678
+          }
+        ]
+      }
+    }
+  ]);
+
+  apexOptions = {
+    series: {
+      type: 'dimension',
+      config: {
+        metric: {
+          metric: 'totalPageViews'
+        },
+        dimensionOrder: ['age'],
+        dimensions: [
+          {
+            name: 'All Other',
+            values: { age: '-3' }
+          },
+          {
+            name: 'under 13',
+            values: { age: '1' }
+          },
+          {
+            name: '13 - 25',
+            values: { age: '2' }
+          },
+          {
+            name: '25 - 35',
+            values: { age: '3' }
+          },
+          {
+            name: '35 - 45',
+            values: { age: '4' }
+          }
+        ]
+      }
+    }
+  };
+
+  @computed('apexModel')
+  get apexPieRequest() {
+    return this.get('apexModel.0.request');
+  }
+
+  @computed('apexModel')
+  get apexPieResponse() {
+    return this.get('apexModel.0.response.rows');
+  }
+
+  @computed('apexOptions')
+  get apexPieOptions() {
+    return {
+      type: 'apex-pie',
+      version: 1,
+      metadata: get(this, 'apexOptions')
+    };
+  }
+
+  @action
+  onUpdateConfigApexPie(configUpdates) {
+    let apexOptions = get(this, 'apexOptions');
+    set(this, 'apexOptions', merge({}, apexOptions, configUpdates));
+  }
+
   request = {
     dimensions: [
       {
