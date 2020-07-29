@@ -13,10 +13,10 @@ let Store, MetadataService;
 const ExpectedRequest = {
     table: 'network',
     columns: [
-      { type: 'time-dimension', field: 'dateTime', parameters: { grain: 'day' }, alias: null },
-      { type: 'dimension', field: 'property', parameters: {}, alias: null },
-      { type: 'metric', field: 'adClicks', parameters: {}, alias: null },
-      { type: 'metric', field: 'navClicks', parameters: {}, alias: null }
+      { type: 'time-dimension', field: 'dateTime', parameters: { grain: 'day' } },
+      { type: 'dimension', field: 'property', parameters: {} },
+      { type: 'metric', field: 'adClicks', parameters: {} },
+      { type: 'metric', field: 'navClicks', parameters: {} }
     ],
     filters: [
       {

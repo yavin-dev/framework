@@ -105,7 +105,7 @@ module('Unit | Bard Facts V2 Adapter', function(hooks) {
   setupTest(hooks);
 
   hooks.beforeEach(function() {
-    Adapter = this.owner.lookup('adapter:bard-facts-v2');
+    Adapter = this.owner.lookup('adapter:bard-facts');
 
     //setup Pretender
     Server = new Pretender(function() {
@@ -788,7 +788,7 @@ module('Unit | Bard Facts V2 Adapter', function(hooks) {
       () => {
         Adapter.urlForFindQuery({ requestVersion: 'v1' });
       },
-      /Request for bard-facts-v2 adapter must be version 2/,
+      /Request for bard-facts adapter must be version 2/,
       'urlForFindQuery fails assertion if v1 request is passed in'
     );
 
@@ -857,7 +857,7 @@ module('Unit | Bard Facts V2 Adapter', function(hooks) {
       () => {
         Adapter.fetchDataForRequest({ requestVersion: 'v1' });
       },
-      /Request for bard-facts-v2 adapter must be version 2/,
+      /Request for bard-facts adapter must be version 2/,
       'fetchDataForRequest fails assertion if v1 request is passed in'
     );
 
